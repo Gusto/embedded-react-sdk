@@ -1,5 +1,5 @@
 import type { ReactNode, JSX, ErrorInfo } from 'react'
-import { Suspense } from 'react'
+import React, { Suspense } from 'react'
 import type { FallbackProps } from 'react-error-boundary'
 import { ErrorBoundary } from 'react-error-boundary'
 import { useTranslation } from 'react-i18next'
@@ -132,6 +132,27 @@ export const BaseBoundaries = ({
 }: BaseBoundariesProps) => {
   const { LoadingIndicator: LoadingIndicatorFromContext } = useLoadingIndicator()
   const LoaderComponent = LoadingIndicatorFromProps ?? LoadingIndicatorFromContext
+  const { observability } = useObservability()
+
+  // Wrapper to track loading duration
+  const LoaderWithMetrics = () => {
+    const loadingStartTime = React.useRef(Date.now())
+
+    React.useEffect(() => {
+      // When this component unmounts, loading is complete
+      return () => {
+        const duration = Date.now() - loadingStartTime.current
+        observability?.onMetric?.({
+          name: 'sdk.component.loading_duration',
+          value: duration,
+          unit: 'ms',
+          timestamp: Date.now(),
+        })
+      }
+    }, [])
+
+    return <LoaderComponent />
+  }
 
   return (
     <QueryErrorResetBoundary>
@@ -141,7 +162,7 @@ export const BaseBoundaries = ({
           onReset={resetQueries}
           onError={onErrorBoundaryError}
         >
-          <Suspense fallback={<LoaderComponent />}>{children}</Suspense>
+          <Suspense fallback={<LoaderWithMetrics />}>{children}</Suspense>
         </ErrorBoundary>
       )}
     </QueryErrorResetBoundary>

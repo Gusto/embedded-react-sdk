@@ -156,6 +156,7 @@ The SDK tracks the following performance metrics:
 | Metric Name | Description | Unit | Tags |
 |-------------|-------------|------|------|
 | `sdk.form.submit_duration` | Form submission time | ms | `status` (success/error) |
+| `sdk.component.loading_duration` | Time spent in loading/suspense state | ms | none |
 
 Additional metrics can be added by the SDK as needed.
 

@@ -59,31 +59,13 @@ export const useBaseSubmit = () => {
       const startTime = Date.now()
       setError(null)
       setFieldErrors(null)
+      
+      let success = false
+      
       try {
         await componentHandler(data)
-
-        const duration = Date.now() - startTime
-        observability?.onMetric?.({
-          name: 'sdk.form.submit_duration',
-          value: duration,
-          unit: 'ms',
-          tags: {
-            status: 'success',
-          },
-          timestamp: Date.now(),
-        })
+        success = true
       } catch (err) {
-        const duration = Date.now() - startTime
-        observability?.onMetric?.({
-          name: 'sdk.form.submit_duration',
-          value: duration,
-          unit: 'ms',
-          tags: {
-            status: 'error',
-          },
-          timestamp: Date.now(),
-        })
-
         if (
           err instanceof APIError ||
           err instanceof SDKValidationError ||
@@ -92,6 +74,17 @@ export const useBaseSubmit = () => {
         ) {
           processError(err)
         } else throwError(err)
+      } finally {
+        const duration = Date.now() - startTime
+        observability?.onMetric?.({
+          name: 'sdk.form.submit_duration',
+          value: duration,
+          unit: 'ms',
+          tags: {
+            status: success ? 'success' : 'error',
+          },
+          timestamp: Date.now(),
+        })
       }
     },
     [setError, throwError, observability],
