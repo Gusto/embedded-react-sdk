@@ -12,7 +12,7 @@ import { getFieldErrors } from '@/helpers/apiErrorToList'
 
 type SubmitHandler<T> = (data: T) => Promise<void>
 
-export const useBaseSubmit = () => {
+export const useBaseSubmit = (componentName?: string) => {
   const [error, setError] = useState<KnownErrors | null>(null)
   const [fieldErrors, setFieldErrors] = useState<EntityErrorObject[] | null>(null)
   const throwError = useAsyncError()
@@ -26,13 +26,19 @@ export const useBaseSubmit = () => {
     }
   }, [])
 
-  const processError = (error: KnownErrors) => {
+  const processError = useCallback((error: KnownErrors) => {
     setError(error)
 
     // Report error to observability
     const observabilityError = createObservabilityError(error)
     if (observabilityError) {
-      observability?.onError?.(observabilityError)
+      observability?.onError?.({
+        ...observabilityError,
+        context: {
+          ...observabilityError.context,
+          componentName,
+        },
+      })
     }
 
     if (error instanceof UnprocessableEntityErrorObject && Array.isArray(error.errors)) {
@@ -52,7 +58,7 @@ export const useBaseSubmit = () => {
         }
       }
     }
-  }
+  }, [observability, componentName])
 
   const baseSubmitHandler = useCallback(
     async <T>(data: T, componentHandler: SubmitHandler<T>) => {
@@ -82,12 +88,13 @@ export const useBaseSubmit = () => {
           unit: 'ms',
           tags: {
             status: success ? 'success' : 'error',
+            ...(componentName && { component: componentName }),
           },
           timestamp: Date.now(),
         })
       }
     },
-    [setError, throwError, observability],
+    [setError, throwError, observability, componentName, processError],
   )
 
   return {

@@ -54,7 +54,28 @@ function App() {
 }
 ```
 
-**Note:** The `componentName` field in error context will be `undefined` for boundary errors. The `componentStack` field provides React's component hierarchy which you can use for debugging. For more precise component identification, you can parse the `componentStack` string in your error tracking service.
+## Component Identification
+
+The SDK provides a `componentName` prop on all SDK components, allowing you to pass an identifier for more precise error tracking:
+
+```tsx
+<Employee.Profile
+  companyId={companyId}
+  employeeId={employeeId}
+  componentName="EmployeeProfile"
+  onEvent={(eventType, data) => {
+    analytics.track(eventType, data)
+  }}
+/>
+```
+
+When provided, the `componentName` will be included in:
+- Error context (`error.context.componentName`)
+- Metric tags (`metric.tags.component`)
+
+This allows you to track which specific component instances are experiencing errors or performance issues.
+
+**Note:** The `componentStack` field in error context provides React's component hierarchy for debugging. It's automatically included for all boundary errors.
 
 ---
 
@@ -155,8 +176,8 @@ The SDK tracks the following performance metrics:
 
 | Metric Name | Description | Unit | Tags |
 |-------------|-------------|------|------|
-| `sdk.form.submit_duration` | Form submission time | ms | `status` (success/error) |
-| `sdk.component.loading_duration` | Time spent in loading/suspense state | ms | none |
+| `sdk.form.submit_duration` | Form submission time | ms | `status` (success/error), `component` (if `componentName` provided) |
+| `sdk.component.loading_duration` | Time spent in loading/suspense state | ms | `component` (if `componentName` provided) |
 
 Additional metrics can be added by the SDK as needed.
 
