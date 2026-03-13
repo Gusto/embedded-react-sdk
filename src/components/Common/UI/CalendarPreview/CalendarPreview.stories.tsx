@@ -17,7 +17,7 @@ export const CalendarOneMonthDefault = () => {
       {
         date: new Date('2025-02-20'),
         highlightColor: 'secondary',
-        label: 'Run payroll by 4:00PM (PDT) on ',
+        label: 'Run payroll by 4:00PM PT',
       },
       {
         date: new Date('2025-02-24'),
@@ -46,7 +46,7 @@ export const CalendarTwoMonthsDefault = () => {
       {
         date: new Date('2025-04-02'),
         highlightColor: 'secondary',
-        label: 'Run payroll by 4:00PM (PDT) on ',
+        label: 'Run payroll by 4:00PM PT',
       },
       {
         date: new Date('2025-04-04'),
@@ -75,7 +75,7 @@ export const CalendarDatesWithinRange = () => {
       {
         date: new Date('2025-03-24'),
         highlightColor: 'secondary',
-        label: 'Run payroll by 4:00PM (PDT) on ',
+        label: 'Run payroll by 4:00PM PT',
       },
       {
         date: new Date('2025-03-27'),
