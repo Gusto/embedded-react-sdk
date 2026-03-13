@@ -29,14 +29,14 @@ import { GustoProvider } from '@gusto/embedded-react-sdk'
 import type { ObservabilityHook } from '@gusto/embedded-react-sdk'
 
 const observability: ObservabilityHook = {
-  onError: (error) => {
+  onError: error => {
     // Handle error tracking
     console.error('[SDK Error]', error)
   },
-  onMetric: (metric) => {
+  onMetric: metric => {
     // Handle performance metrics
     console.log('[SDK Metric]', metric.name, metric.value, metric.unit)
-  }
+  },
 }
 
 function App() {
@@ -57,6 +57,7 @@ function App() {
 ## Component Identification
 
 SDK components report their name in error reports and metrics when available. Component names appear in:
+
 - Error context (`error.context.componentName`) - e.g., `"Contractor.Payments.CreatePayment"`
 - Metric tags (`metric.tags.component`) - e.g., `"Employee.Compensation"`
 
@@ -88,12 +89,12 @@ This allows you to track which specific SDK components are experiencing errors o
 
 The SDK reports errors with the following types:
 
-| Type | Description | When It Occurs |
-|------|-------------|----------------|
-| `boundary_error` | Component rendering errors | When a component crashes and is caught by an error boundary |
-| `validation_error` | Schema validation failures | When API request/response fails Zod validation |
-| `api_error` | HTTP errors from API | When API returns 4xx or 5xx status codes |
-| `internal_error` | Unexpected SDK errors | Critical errors in the SDK itself |
+| Type               | Description                | When It Occurs                                              |
+| ------------------ | -------------------------- | ----------------------------------------------------------- |
+| `boundary_error`   | Component rendering errors | When a component crashes and is caught by an error boundary |
+| `validation_error` | Schema validation failures | When API request/response fails Zod validation              |
+| `api_error`        | HTTP errors from API       | When API returns 4xx or 5xx status codes                    |
+| `internal_error`   | Unexpected SDK errors      | Critical errors in the SDK itself                           |
 
 ### Error Structure
 
@@ -116,6 +117,8 @@ interface ObservabilityError {
 
 ### Integration Example: Sentry
 
+**Option 1: Using sanitized error data (Recommended for production)**
+
 ```tsx
 import * as Sentry from '@sentry/react'
 import { GustoProvider } from '@gusto/embedded-react-sdk'
@@ -123,7 +126,14 @@ import type { ObservabilityHook } from '@gusto/embedded-react-sdk'
 
 const observability: ObservabilityHook = {
   onError: (error) => {
-    Sentry.captureException(error.originalError, {
+    // Create a new Error from sanitized data since originalError is excluded by default
+    const sentryError = new Error(error.message)
+    sentryError.name = error.type
+    if (error.stack) {
+      sentryError.stack = error.stack
+    }
+
+    Sentry.captureException(sentryError, {
       level: error.type === 'validation_error' ? 'warning' : 'error',
       tags: {
         error_type: error.type,
@@ -132,7 +142,6 @@ const observability: ObservabilityHook = {
       contexts: {
         sdk_error: {
           type: error.type,
-          message: error.message,
           component: error.context.componentName,
           status_code: error.context.statusCode,
         }
@@ -151,21 +160,67 @@ const observability: ObservabilityHook = {
 </GustoProvider>
 ```
 
+**Option 2: Include original error (Use with caution)**
+
+```tsx
+const observability: ObservabilityHook = {
+  onError: error => {
+    // originalError will be available but may contain PII
+    Sentry.captureException(error.originalError || new Error(error.message), {
+      level: error.type === 'validation_error' ? 'warning' : 'error',
+      tags: {
+        error_type: error.type,
+        component: error.context.componentName,
+      },
+    })
+  },
+  sanitization: {
+    includeOriginalError: true, // ⚠️ WARNING: originalError may contain PII from form data/API responses
+  },
+}
+```
+
 ### Integration Example: Datadog
+
+**Option 1: Using sanitized error data (Recommended for production)**
 
 ```tsx
 import { datadogRum } from '@datadog/browser-rum'
 import type { ObservabilityHook } from '@gusto/embedded-react-sdk'
 
 const observability: ObservabilityHook = {
-  onError: (error) => {
-    datadogRum.addError(error.originalError, {
+  onError: error => {
+    // Create a new Error from sanitized data since originalError is excluded by default
+    const datadogError = new Error(error.message)
+    datadogError.name = error.type
+    if (error.stack) {
+      datadogError.stack = error.stack
+    }
+
+    datadogRum.addError(datadogError, {
+      type: error.type,
+      component: error.context.componentName,
+      statusCode: error.context.statusCode,
+    })
+  },
+}
+```
+
+**Option 2: Include original error (Use with caution)**
+
+```tsx
+const observability: ObservabilityHook = {
+  onError: error => {
+    datadogRum.addError(error.originalError || new Error(error.message), {
       type: error.type,
       component: error.context.componentName,
       statusCode: error.context.statusCode,
       message: error.message,
     })
-  }
+  },
+  sanitization: {
+    includeOriginalError: true, // ⚠️ WARNING: originalError may contain PII from form data/API responses
+  },
 }
 ```
 
@@ -177,10 +232,10 @@ const observability: ObservabilityHook = {
 
 The SDK tracks the following performance metrics:
 
-| Metric Name | Description | Unit | Tags |
-|-------------|-------------|------|------|
-| `sdk.form.submit_duration` | Form submission time | ms | `status` (success/error), `component` (when available) |
-| `sdk.component.loading_duration` | Time spent in loading/suspense state | ms | `component` (when available) |
+| Metric Name                      | Description                          | Unit | Tags                                                   |
+| -------------------------------- | ------------------------------------ | ---- | ------------------------------------------------------ |
+| `sdk.form.submit_duration`       | Form submission time                 | ms   | `status` (success/error), `component` (when available) |
+| `sdk.component.loading_duration` | Time spent in loading/suspense state | ms   | `component` (when available)                           |
 
 Additional metrics can be added by the SDK as needed.
 
@@ -203,9 +258,9 @@ import { datadogRum } from '@datadog/browser-rum'
 import type { ObservabilityHook } from '@gusto/embedded-react-sdk'
 
 const observability: ObservabilityHook = {
-  onMetric: (metric) => {
+  onMetric: metric => {
     datadogRum.addTiming(metric.name, metric.value)
-    
+
     // Or send as custom metric
     if (metric.unit === 'ms') {
       datadogRum.addAction(metric.name, {
@@ -213,7 +268,7 @@ const observability: ObservabilityHook = {
         ...metric.tags,
       })
     }
-  }
+  },
 }
 ```
 
@@ -223,7 +278,7 @@ const observability: ObservabilityHook = {
 import type { ObservabilityHook } from '@gusto/embedded-react-sdk'
 
 const observability: ObservabilityHook = {
-  onMetric: (metric) => {
+  onMetric: metric => {
     // Send to your analytics service
     fetch('/api/metrics', {
       method: 'POST',
@@ -234,9 +289,9 @@ const observability: ObservabilityHook = {
         unit: metric.unit,
         tags: metric.tags,
         timestamp: metric.timestamp,
-      })
+      }),
     })
-  }
+  },
 }
 ```
 
@@ -250,17 +305,17 @@ Avoid logging sensitive information from error contexts:
 
 ```tsx
 const observability: ObservabilityHook = {
-  onError: (error) => {
+  onError: error => {
     // Filter out sensitive data from context
     const sanitizedContext = {
       ...error.context,
       componentProps: undefined, // Remove props that might contain PII
     }
-    
+
     yourErrorTracker.captureError(error.originalError, {
       context: sanitizedContext,
     })
-  }
+  },
 }
 ```
 
@@ -270,14 +325,14 @@ For high-traffic applications, consider sampling metrics:
 
 ```tsx
 const observability: ObservabilityHook = {
-  onMetric: (metric) => {
+  onMetric: metric => {
     // Sample 10% of form submission metrics
     if (metric.name === 'sdk.form.submit_duration' && Math.random() > 0.1) {
       return
     }
-    
+
     yourMetricsService.track(metric)
-  }
+  },
 }
 ```
 
@@ -287,16 +342,16 @@ Use error type to set appropriate alert thresholds:
 
 ```tsx
 const observability: ObservabilityHook = {
-  onError: (error) => {
+  onError: error => {
     const severity = {
       validation_error: 'warning',
       api_error: 'error',
       boundary_error: 'critical',
       internal_error: 'critical',
     }[error.type]
-    
+
     yourMonitoring.logError(error, { severity })
-  }
+  },
 }
 ```
 
@@ -343,6 +398,7 @@ The SDK includes built-in safeguards to prevent accidental exposure of Personall
 By default, the SDK automatically sanitizes all error and metric data before sending it to your observability hooks. This includes:
 
 **Pattern-based Redaction:**
+
 - Social Security Numbers (SSN)
 - Email addresses
 - Phone numbers
@@ -350,6 +406,7 @@ By default, the SDK automatically sanitizes all error and metric data before sen
 - API keys and tokens
 
 **Field-based Removal:**
+
 - Fields named `password`, `token`, `apiKey`, `secret`, `ssn`, `creditCard`, `cvv`, `pin`, `bankAccount`, `routingNumber`, `accountNumber`, etc.
 
 ### Configuration
@@ -372,14 +429,14 @@ const observability: ObservabilityHook = {
   sanitization: {
     // Enable/disable sanitization (default: true)
     enabled: true,
-    
+
     // Include original error object (default: false)
     // WARNING: Original errors may contain sensitive data
     includeOriginalError: false,
-    
+
     // Add custom sensitive field names
     additionalSensitiveFields: ['customerId', 'employeeId'],
-    
+
     // Provide custom sanitization logic
     customErrorSanitizer: (error) => {
       // Your custom sanitization logic
@@ -399,12 +456,14 @@ const observability: ObservabilityHook = {
 ### What Gets Sanitized
 
 #### Errors
+
 - **Message**: PII patterns are replaced with `[TYPE-REDACTED]` placeholders
 - **Stack traces**: PII patterns are redacted
 - **Context**: Sensitive field names are replaced with `[REDACTED]`
 - **Original error**: Excluded by default (can be included with `includeOriginalError: true`)
 
 #### Metrics
+
 - **Tags**: Sensitive field names and PII patterns are sanitized
 - **Name & Value**: Not sanitized (should not contain PII)
 
@@ -414,9 +473,9 @@ To verify your sanitization is working:
 
 ```tsx
 const observability: ObservabilityHook = {
-  onError: (error) => {
+  onError: error => {
     console.log('Sanitized error:', JSON.stringify(error, null, 2))
-    
+
     // Verify no PII is present
     const errorStr = JSON.stringify(error)
     if (errorStr.includes('@') || /\d{3}-\d{2}-\d{4}/.test(errorStr)) {
@@ -426,7 +485,7 @@ const observability: ObservabilityHook = {
   sanitization: {
     enabled: true,
     includeOriginalError: false,
-  }
+  },
 }
 ```
 
@@ -437,6 +496,7 @@ const observability: ObservabilityHook = {
 2. **Never include original errors in production**: The `originalError` field may contain form data, API responses, or other sensitive information.
 
 3. **Add application-specific sensitive fields**: Use `additionalSensitiveFields` to protect your custom data:
+
    ```tsx
    sanitization: {
      additionalSensitiveFields: ['internalId', 'taxId', 'bankAccountToken']
@@ -471,11 +531,11 @@ import type {
 
 The SDK provides multiple ways to track different types of information:
 
-| Mechanism | Purpose | Use Case |
-|-----------|---------|----------|
-| **`observability.onError`** | Error tracking | Send errors to Sentry, Datadog, etc. |
-| **`observability.onMetric`** | Performance metrics | Track form submission times, component render times |
-| **`onEvent`** (component prop) | Business events | Track user actions, flow completions, API responses |
+| Mechanism                       | Purpose                       | Use Case                                            |
+| ------------------------------- | ----------------------------- | --------------------------------------------------- |
+| **`observability.onError`**     | Error tracking                | Send errors to Sentry, Datadog, etc.                |
+| **`observability.onMetric`**    | Performance metrics           | Track form submission times, component render times |
+| **`onEvent`** (component prop)  | Business events               | Track user actions, flow completions, API responses |
 | **`hooks.afterError`** (config) | Request/response interception | Modify requests, add auth tokens, log all API calls |
 
 These mechanisms work together and don't conflict with each other.
@@ -488,7 +548,7 @@ During development, you can use a simple console-based observability implementat
 
 ```tsx
 const observability: ObservabilityHook = {
-  onError: (error) => {
+  onError: error => {
     console.group(`[SDK Error] ${error.type}`)
     console.error('Message:', error.message)
     console.error('Component:', error.context.componentName)
@@ -496,11 +556,8 @@ const observability: ObservabilityHook = {
     if (error.stack) console.error('Stack:', error.stack)
     console.groupEnd()
   },
-  onMetric: (metric) => {
-    console.log(
-      `[SDK Metric] ${metric.name}: ${metric.value}${metric.unit || ''}`,
-      metric.tags
-    )
-  }
+  onMetric: metric => {
+    console.log(`[SDK Metric] ${metric.name}: ${metric.value}${metric.unit || ''}`, metric.tags)
+  },
 }
 ```
