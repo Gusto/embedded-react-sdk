@@ -23,3 +23,4 @@ export { ExampleEmployeeWorkAddress } from '@/components/UNSTABLE_Hooks/examples
 export { ExampleEmployeeDetails } from '@/components/UNSTABLE_Hooks/examples/ExampleEmployeeDetails'
 export { ExampleEmployeeProfile } from '@/components/UNSTABLE_Hooks/examples/ExampleEmployeeProfile'
 export { ExampleCompensation } from '@/components/UNSTABLE_Hooks/examples/ExampleCompensation'
+export { ExampleStateTaxes } from '@/components/UNSTABLE_Hooks/examples/ExampleStateTaxes'

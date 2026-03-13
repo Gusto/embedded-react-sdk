@@ -1059,6 +1059,14 @@
         },
         {
           "method": "GET",
+          "path": "/v1/employees/:employeeUuid/state_taxes"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/employees/:employeeUuid/state_taxes"
+        },
+        {
+          "method": "GET",
           "path": "/v1/companies/:companyId/locations"
         },
         {
@@ -1074,6 +1082,7 @@
         "companyId",
         "compensationId",
         "employeeId",
+        "employeeUuid",
         "homeAddressUuid",
         "jobId",
         "locationUuid",
