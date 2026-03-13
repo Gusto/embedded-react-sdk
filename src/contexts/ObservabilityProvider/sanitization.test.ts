@@ -207,6 +207,65 @@ describe('sanitizeError', () => {
       internalId: '[REDACTED]',
     })
   })
+
+  it('should not mutate global SENSITIVE_FIELD_NAMES array', () => {
+    // Call sanitizeError with additional fields
+    sanitizeError(mockError, {
+      additionalSensitiveFields: ['customField1', 'customField2'],
+    })
+    
+    // Call again with different fields
+    sanitizeError(mockError, {
+      additionalSensitiveFields: ['customField3', 'customField4'],
+    })
+    
+    // Verify the global array wasn't mutated by checking a new error without custom fields
+    const errorWithPassword: ObservabilityError = {
+      ...mockError,
+      context: {
+        metadata: {
+          password: 'secret',
+          customField1: 'should not be redacted',
+        },
+      },
+    }
+    
+    const result = sanitizeError(errorWithPassword, {})
+    
+    // password should be redacted (it's in default list)
+    expect(result.context.metadata).toHaveProperty('password', '[REDACTED]')
+    // customField1 should NOT be redacted (not in default list)
+    expect(result.context.metadata).toHaveProperty('customField1', 'should not be redacted')
+  })
+
+  it('should apply additionalSensitiveFields consistently across multiple calls', () => {
+    const error1: ObservabilityError = {
+      ...mockError,
+      context: {
+        metadata: { myCustomField: 'value1' },
+      },
+    }
+    
+    const error2: ObservabilityError = {
+      ...mockError,
+      context: {
+        metadata: { myCustomField: 'value2' },
+      },
+    }
+    
+    // First call with custom field
+    const result1 = sanitizeError(error1, {
+      additionalSensitiveFields: ['myCustomField'],
+    })
+    
+    // Second call without custom field
+    const result2 = sanitizeError(error2, {})
+    
+    // First should be redacted
+    expect(result1.context.metadata).toHaveProperty('myCustomField', '[REDACTED]')
+    // Second should NOT be redacted (config doesn't include it)
+    expect(result2.context.metadata).toHaveProperty('myCustomField', 'value2')
+  })
 })
 
 describe('sanitizeMetric', () => {
@@ -260,5 +319,59 @@ describe('sanitizeMetric', () => {
     const result = sanitizeMetric(metricWithoutTags)
     
     expect(result).toEqual(metricWithoutTags)
+  })
+
+  it('should apply additionalSensitiveFields to metrics', () => {
+    const metricWithCustomFields: ObservabilityMetric = {
+      name: 'sdk.custom.metric',
+      value: 100,
+      unit: 'count',
+      tags: {
+        component: 'MyComponent',
+        customerId: '12345',
+        internalId: 'abc-xyz',
+      },
+      timestamp: Date.now(),
+    }
+    
+    const result = sanitizeMetric(metricWithCustomFields, {
+      additionalSensitiveFields: ['customerId', 'internalId'],
+    })
+    
+    expect(result.tags).toEqual({
+      component: 'MyComponent',
+      customerId: '[REDACTED]',
+      internalId: '[REDACTED]',
+    })
+  })
+
+  it('should not leak additionalSensitiveFields between error and metric calls', () => {
+    // First sanitize an error with custom fields
+    const error: ObservabilityError = {
+      type: 'api_error',
+      message: 'Error',
+      context: {
+        metadata: { myField: 'value1' },
+      },
+      originalError: null,
+      timestamp: Date.now(),
+    }
+    
+    sanitizeError(error, {
+      additionalSensitiveFields: ['myField'],
+    })
+    
+    // Then sanitize a metric without specifying custom fields
+    const metric: ObservabilityMetric = {
+      name: 'test.metric',
+      value: 1,
+      tags: { myField: 'value2' },
+      timestamp: Date.now(),
+    }
+    
+    const result = sanitizeMetric(metric, {})
+    
+    // myField should NOT be redacted in metric (wasn't in metric config)
+    expect(result.tags).toHaveProperty('myField', 'value2')
   })
 })

@@ -63,7 +63,10 @@ export function sanitizeString(value: string): string {
  * 1. Removing sensitive field names
  * 2. Redacting PII patterns in string values
  */
-export function sanitizeObject(obj: unknown): unknown {
+export function sanitizeObject(
+  obj: unknown,
+  additionalSensitiveFields: string[] = [],
+): unknown {
   if (obj === null || obj === undefined) {
     return obj
   }
@@ -77,20 +80,23 @@ export function sanitizeObject(obj: unknown): unknown {
   }
 
   if (Array.isArray(obj)) {
-    return obj.map(item => sanitizeObject(item))
+    return obj.map(item => sanitizeObject(item, additionalSensitiveFields))
   }
 
   if (typeof obj === 'object') {
     const sanitized: Record<string, unknown> = {}
     
+    // Combine default and additional sensitive fields for this call only
+    const allSensitiveFields = [...SENSITIVE_FIELD_NAMES, ...additionalSensitiveFields]
+    
     for (const [key, value] of Object.entries(obj)) {
       // Skip sensitive fields entirely
-      if (SENSITIVE_FIELD_NAMES.some(field => key.toLowerCase().includes(field.toLowerCase()))) {
+      if (allSensitiveFields.some(field => key.toLowerCase().includes(field.toLowerCase()))) {
         sanitized[key] = '[REDACTED]'
         continue
       }
       
-      sanitized[key] = sanitizeObject(value)
+      sanitized[key] = sanitizeObject(value, additionalSensitiveFields)
     }
     
     return sanitized
@@ -123,17 +129,12 @@ export function sanitizeError(
     return includeOriginalError ? error : { ...error, originalError: undefined }
   }
 
-  // Add custom sensitive fields to the list
-  if (additionalSensitiveFields.length > 0) {
-    SENSITIVE_FIELD_NAMES.push(...additionalSensitiveFields)
-  }
-
-  // Sanitize the error
+  // Sanitize the error, passing additionalSensitiveFields to sanitizeObject
   const sanitized: ObservabilityError = {
     ...error,
     message: sanitizeString(error.message),
     stack: error.stack ? sanitizeString(error.stack) : undefined,
-    context: sanitizeObject(error.context) as ObservabilityError['context'],
+    context: sanitizeObject(error.context, additionalSensitiveFields) as ObservabilityError['context'],
     originalError: includeOriginalError ? error.originalError : undefined,
   }
 
@@ -147,7 +148,7 @@ export function sanitizeMetric(
   metric: ObservabilityMetric,
   config: SanitizationConfig = {},
 ): ObservabilityMetric {
-  const { enabled = true, customMetricSanitizer } = config
+  const { enabled = true, customMetricSanitizer, additionalSensitiveFields = [] } = config
 
   // If custom sanitizer is provided, use it
   if (customMetricSanitizer) {
@@ -159,10 +160,12 @@ export function sanitizeMetric(
     return metric
   }
 
-  // Sanitize metric tags (in case they contain dynamic values)
+  // Sanitize metric tags (in case they contain dynamic values), passing additionalSensitiveFields
   const sanitized: ObservabilityMetric = {
     ...metric,
-    tags: metric.tags ? (sanitizeObject(metric.tags) as Record<string, string>) : undefined,
+    tags: metric.tags
+      ? (sanitizeObject(metric.tags, additionalSensitiveFields) as Record<string, string>)
+      : undefined,
   }
 
   return sanitized
