@@ -184,10 +184,12 @@ const expectedUpdatedCompensation = {
     {
       name: 'Vacation Hours',
       hours: '8',
+      finalPayoutUnusedHoursInput: '0',
     },
     {
       name: 'Sick Hours',
       hours: '0',
+      finalPayoutUnusedHoursInput: '0',
     },
   ],
 }
@@ -301,7 +303,7 @@ describe('PayrollEditEmployeePresentation', () => {
     renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} />)
 
     await waitFor(() => {
-      expect(screen.getAllByLabelText('Regular Hours')).toHaveLength(2) // One for each job
+      expect(screen.getAllByLabelText('Regular Hours')).toHaveLength(2)
     })
     expect(screen.getByLabelText('Overtime')).toBeInTheDocument()
   })
@@ -312,8 +314,8 @@ describe('PayrollEditEmployeePresentation', () => {
     const regularHoursInputs = await screen.findAllByLabelText('Regular Hours')
 
     expect(regularHoursInputs).toHaveLength(2)
-    expect(regularHoursInputs[0]).toHaveValue(40) // First job (Software Engineer)
-    expect(regularHoursInputs[1]).toHaveValue(20) // Second job (Senior Developer)
+    expect(regularHoursInputs[0]).toHaveValue(40)
+    expect(regularHoursInputs[1]).toHaveValue(20)
 
     const overtimeInput = screen.getByLabelText('Overtime')
     expect(overtimeInput).toHaveValue(5)
@@ -346,9 +348,8 @@ describe('PayrollEditEmployeePresentation', () => {
     const user = userEvent.setup()
     renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} onSave={onSave} />)
 
-    // Get the first Regular Hours input (job-1) and update it
     const regularHoursInputs = await screen.findAllByLabelText('Regular Hours')
-    const regularHoursJob1Input = regularHoursInputs[0]! // First job's Regular Hours input
+    const regularHoursJob1Input = regularHoursInputs[0]!
     await user.clear(regularHoursJob1Input)
     await user.type(regularHoursJob1Input, '45')
 
@@ -379,12 +380,12 @@ describe('PayrollEditEmployeePresentation', () => {
     renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} />)
 
     const regularHoursInputs = await screen.findAllByLabelText('Regular Hours')
-    expect(regularHoursInputs[0]).toHaveValue(40) // Regular Hours for job-1
+    expect(regularHoursInputs[0]).toHaveValue(40)
 
     const overtimeInput = screen.getByLabelText('Overtime')
-    expect(overtimeInput).toHaveValue(5) // Overtime for job-1
+    expect(overtimeInput).toHaveValue(5)
 
-    expect(regularHoursInputs[1]).toHaveValue(20) // Regular Hours for job-2
+    expect(regularHoursInputs[1]).toHaveValue(20)
   })
 
   it('handles case-insensitive compensation name matching', async () => {
@@ -428,7 +429,7 @@ describe('PayrollEditEmployeePresentation', () => {
     )
 
     const regularHoursInputs = await screen.findAllByLabelText('Regular Hours')
-    expect(regularHoursInputs[0]).toHaveValue(null) // Should be null when hours is undefined
+    expect(regularHoursInputs[0]).toHaveValue(null)
   })
 
   it('preserves existing compensation data when updating hours', async () => {
@@ -437,7 +438,7 @@ describe('PayrollEditEmployeePresentation', () => {
     renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} onSave={onSave} />)
 
     const regularHoursInputs = await screen.findAllByLabelText('Regular Hours')
-    const regularHoursJob1Input = regularHoursInputs[0]! // First job's Regular Hours input
+    const regularHoursJob1Input = regularHoursInputs[0]!
     await user.clear(regularHoursJob1Input)
     await user.type(regularHoursJob1Input, '42')
 
@@ -490,7 +491,6 @@ describe('PayrollEditEmployeePresentation', () => {
       renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} />)
 
       await waitFor(() => {
-        // Vacation Hours: 40.0 balance - 8.0 hours = 32.0 remaining
         expect(screen.getByText(/32\.0.*remaining/)).toBeInTheDocument()
       })
     })
@@ -502,9 +502,8 @@ describe('PayrollEditEmployeePresentation', () => {
         expect(screen.getByLabelText('Sick Hours')).toBeInTheDocument()
       })
 
-      // Should not show remaining balance for sick hours (unlimited policy)
       const remainingTexts = screen.queryAllByText(/remaining/)
-      expect(remainingTexts).toHaveLength(1) // Only vacation hours should show remaining
+      expect(remainingTexts).toHaveLength(1)
     })
 
     it('updates time off hours when form values change', async () => {
@@ -541,16 +540,13 @@ describe('PayrollEditEmployeePresentation', () => {
 
       const vacationInput = await screen.findByLabelText('Vacation Hours')
 
-      // Initially should show 32.0 remaining (40.0 - 8.0)
       await waitFor(() => {
         expect(screen.getByText(/32\.0.*remaining/)).toBeInTheDocument()
       })
 
-      // Change to 10 hours
       await user.clear(vacationInput)
       await user.type(vacationInput, '10')
 
-      // Should now show 30.0 remaining (40.0 - 10.0)
       await waitFor(() => {
         expect(screen.getByText(/30\.0.*remaining/)).toBeInTheDocument()
       })
@@ -567,7 +563,6 @@ describe('PayrollEditEmployeePresentation', () => {
 
       renderWithProviders(<PayrollEditEmployeePresentation {...propsWithoutTimeOff} />)
 
-      // Should not render time off section if no time off data
       expect(screen.queryByText('Time off')).not.toBeInTheDocument()
     })
 
@@ -588,11 +583,11 @@ describe('PayrollEditEmployeePresentation', () => {
           paidTimeOff: expect.arrayContaining([
             expect.objectContaining({
               name: 'Vacation Hours',
-              hours: '8', // Should preserve existing vacation hours
+              hours: '8',
             }),
             expect.objectContaining({
               name: 'Sick Hours',
-              hours: '4', // Should update sick hours
+              hours: '4',
             }),
           ]),
         }),
@@ -647,7 +642,7 @@ describe('PayrollEditEmployeePresentation', () => {
             },
           ],
         },
-        fixedCompensationTypes: [], // No types available
+        fixedCompensationTypes: [],
       }
 
       renderWithProviders(<PayrollEditEmployeePresentation {...ownerProps} />)
@@ -692,7 +687,7 @@ describe('PayrollEditEmployeePresentation', () => {
     })
   })
 
-  describe('Additional earnings functionality', () => {
+  describe('Additional Earnings updates', () => {
     const defaultPropsWithAdditionalEarnings = {
       ...defaultProps,
       employeeCompensation: {
@@ -842,7 +837,6 @@ describe('PayrollEditEmployeePresentation', () => {
 
       renderWithProviders(<PayrollEditEmployeePresentation {...ownerProps} />)
 
-      // Should not show additional earnings section for owners with no existing compensations
       expect(screen.queryByText('Additional earnings')).not.toBeInTheDocument()
     })
 
@@ -899,10 +893,9 @@ describe('PayrollEditEmployeePresentation', () => {
       expect(onSave).toHaveBeenCalledWith(
         expect.objectContaining({
           fixedCompensations: expect.arrayContaining([
-            expect.objectContaining({ name: 'Bonus', amount: '100', jobUuid: 'job-1' }), // Existing compensation kept
-            expect.objectContaining({ name: 'Commission', amount: '75.5', jobUuid: 'job-1' }), // New non-zero compensation added
-            expect.objectContaining({ name: 'Reimbursement', amount: '25', jobUuid: 'job-1' }), // New non-zero reimbursement added
-            // Cash Tips not included because it's 0 and doesn't exist originally
+            expect.objectContaining({ name: 'Bonus', amount: '100', jobUuid: 'job-1' }),
+            expect.objectContaining({ name: 'Commission', amount: '75.5', jobUuid: 'job-1' }),
+            expect.objectContaining({ name: 'Reimbursement', amount: '25', jobUuid: 'job-1' }),
           ]),
         }),
       )
@@ -1029,7 +1022,6 @@ describe('PayrollEditEmployeePresentation', () => {
     it('calculates gross pay correctly with simple inputs', async () => {
       const user = userEvent.setup()
 
-      // Simple test data: $25/hour, 10 hours = $250
       const simpleEmployee: Employee = {
         ...defaultProps.employee,
         jobs: [
@@ -1072,14 +1064,12 @@ describe('PayrollEditEmployeePresentation', () => {
         />,
       )
 
-      // Initial: 10 hours × $25/hour = $250.00
       await waitFor(() => {
         expect(
           screen.getByText('Gross pay: $250.00 (excluding reimbursements)'),
         ).toBeInTheDocument()
       })
 
-      // Update to 8 hours: 8 × $25 = $200.00
       const regularHoursInput = await screen.findByLabelText('Regular Hours')
       await user.clear(regularHoursInput)
       await user.type(regularHoursInput, '8')
