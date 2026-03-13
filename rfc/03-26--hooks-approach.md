@@ -53,7 +53,7 @@ Each hook bundles: **data** (query results, derived state, loading/error), **mut
 | Loading & error UX | Base utilities available (`BaseLayout`, `BaseBoundaries`) | Partner chooses how to present them |
 | Navigation & flow orchestration | — | Partner manages routing between steps |
 
-The guiding principle: hooks should never contain user-facing strings or layout opinions. Where we do provide UI helpers (field components, form providers), every piece should be fully customizable — partners can swap controls via `FieldComponent`, override labels via `getOptionLabel`, and arrange fields in any layout. Partners should never need to replicate API orchestration, validation rules, domain calculations, or business logic like conditional field visibility — that complexity is absorbed by the hook so partners can focus on their UI.
+The guiding principle: hooks should never contain user-facing strings or layout opinions. Where we do provide UI helpers (field components, form providers), every piece should be fully customizable. Partners should never need to replicate complex API orchestration, validation rules, domain calculations, or business logic like conditional field visibility — that complexity is absorbed by the hook so partners can focus on their UI.
 
 ---
 
@@ -485,6 +485,69 @@ Because the API supplies labels and descriptions for each question, state tax fi
 State taxes use the same hook API surface (Fields, onSubmit, FormProvider), but partners should expect a more dynamic rendering pattern. Reordering or selectively hiding state tax fields is possible but requires knowledge of the API's question keys.
 
 If we had a way of getting a stable shape of the state by state field response, there might be ways we could type this strongly. That would be the missing piece to enable custom label/descriptions, providing FieldComponent props etc.
+
+### 7. Base Infrastructure Changes
+
+The existing SDK components rely on `Suspense` inside `BaseBoundaries` for loading states — queries are suspense queries, and the `Suspense` boundary catches them. This doesn't work for hooks because the partner controls when and where to render loading UI, not the SDK.
+
+To support hooks without breaking existing components, we refactored `BaseBoundaries` to remove `Suspense` from its internals and instead add `Suspense` at each component call site that needs it. This means `BaseBoundaries` now only provides the error boundary and query error reset, which hooks can use directly:
+
+```tsx
+// Before: Suspense was baked into BaseBoundaries
+export const BaseBoundaries = ({ children, FallbackComponent, LoaderComponent }) => (
+  <QueryErrorResetBoundary>
+    {({ reset }) => (
+      <ErrorBoundary FallbackComponent={FallbackComponent} onReset={reset}>
+        <Suspense fallback={<LoaderComponent />}>{children}</Suspense>
+      </ErrorBoundary>
+    )}
+  </QueryErrorResetBoundary>
+)
+
+// After: Suspense removed — added at call sites that need it
+export const BaseBoundaries = ({ children, FallbackComponent }) => (
+  <QueryErrorResetBoundary>
+    {({ reset }) => (
+      <ErrorBoundary FallbackComponent={FallbackComponent} onReset={reset}>
+        {children}
+      </ErrorBoundary>
+    )}
+  </QueryErrorResetBoundary>
+)
+```
+
+We also added an `isLoading` prop to `BaseLayout` so hooks can use it for a simple loading state without Suspense:
+
+```tsx
+// Hook-based component can use BaseLayout directly
+if (form.isLoading) return <BaseLayout isLoading />
+
+return (
+  <BaseLayout error={errors.error} fieldErrors={errors.fieldErrors}>
+    {/* form content */}
+  </BaseLayout>
+)
+```
+
+Existing SDK components continue to work by wrapping their content in `<Suspense>` directly inside `BaseBoundaries`. The change is additive — no existing behavior breaks.
+
+### 8. Error Normalization
+
+Hooks need a consistent error contract that partners can rely on. Today, errors come from multiple sources: API errors (`GustoEmbeddedError`), SDK validation errors (`SDKValidationError`), field-level validation errors from the API (422 responses with `EntityErrorObject[]`), and unrecoverable errors that should propagate to the error boundary.
+
+We normalize all of these into a single `HookErrors` shape that every hook returns:
+
+```typescript
+interface HookErrors {
+  error: KnownErrors | null       // API or SDK-level error for display
+  fieldErrors: EntityErrorObject[] | null  // field-level errors from the API
+  setError: (err: KnownErrors | null) => void
+}
+```
+
+Under the hood, `useBaseSubmit` handles the classification: API errors and Gusto errors are caught and surfaced via `error`/`fieldErrors`; unknown errors are thrown to the error boundary. `useQueryErrorHandler` does the same for query errors, routing known errors to `setError` and unknown errors to the boundary.
+
+This means partners always interact with the same interface regardless of what went wrong. They render `error` for banner-level alerts, `fieldErrors` for inline field messages, and the error boundary catches anything truly unexpected. As we build more hooks, this contract should remain stable and well-documented.
 
 ---
 
