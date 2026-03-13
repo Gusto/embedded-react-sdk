@@ -1,9 +1,16 @@
 {
   "mcpServers": {
-    "eslint": {
+    "context7": {
       "command": "npx",
-      "args": ["@eslint/mcp@latest"],
-      "env": {}
+      "args": ["-y", "@upstash/context7-mcp"]
+    },
+    "memory": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-memory"]
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp"]
     }
   }
 }

@@ -1,0 +1,29 @@
+---
+alwaysApply: true
+---
+
+# Ship Smaller PRs
+
+Prefer multiple small, focused PRs over one large PR. Smaller PRs get reviewed faster, have fewer merge conflicts, and are easier to revert if something goes wrong.
+
+## Breaking Down Work
+
+When implementing a feature, suggest splitting it into independently mergeable PRs:
+
+1. **Types and interfaces** -- data models, API types, shared contracts
+2. **Hooks and logic** -- custom hooks, utilities, business logic
+3. **UI components** -- presentational components with Storybook stories
+4. **Integration** -- wiring components to real data and flows
+
+Each PR should ideally be independently mergeable without breaking the build. When PRs have sequential dependencies (e.g. PR 2 builds on PR 1), create them as **draft PRs** chained together so reviewers can see the full picture while each piece lands incrementally.
+
+## PR Guidelines
+
+- Keep PRs under ~400 lines of meaningful changes when possible
+- One concern per PR -- don't mix refactoring with new features
+- Use PR titles following semver convention: `feat:`, `fix:`, `chore:`, etc.
+- If a PR is getting large, look for a natural seam to split it
+
+## When Suggesting Changes
+
+When asked to implement something large, proactively suggest a breakdown into smaller shippable units rather than building everything in one pass.
