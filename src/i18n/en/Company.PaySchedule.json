@@ -39,7 +39,7 @@
   "payPreview": {
     "payPeriod": "Pay period",
     "payday": "Payday",
-    "payrollDeadline": "Run payroll by 4:00PM (PDT) on "
+    "payrollDeadline": "Run payroll by 4:00PM PT."
   },
   "actions": {
     "cancel": "Cancel",
