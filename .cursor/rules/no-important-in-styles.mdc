@@ -7,9 +7,3 @@ alwaysApply: false
 **NEVER use `!important` in CSS/SCSS files.**
 
 Use proper CSS specificity instead.
-
-# No !important in Styles
-
-**NEVER use `!important` in CSS/SCSS files.**
-
-Use proper CSS specificity instead.

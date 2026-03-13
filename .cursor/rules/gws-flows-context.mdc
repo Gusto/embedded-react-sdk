@@ -1,0 +1,29 @@
+---
+alwaysApply: true
+---
+
+# GWS-Flows: Production Source of Truth
+
+The sibling repository `../gws-flows` is a simpler, older Rails application that provides a local API proxy for testing the SDK. It serves as the **source of truth for how things currently work in production** -- use it to understand current behavior, API shapes, and flow logic.
+
+## How to Use gws-flows for Context
+
+When working on SDK features, read gws-flows to understand:
+
+- Current API behavior and response shapes
+- Routing and endpoint structure (`config/routes.rb`, `app/controllers/`)
+- Flow logic and view templates (`app/views/`)
+- The FeSdkProxy proxy pattern
+
+**Do NOT copy gws-flows code 1:1.** The SDK has its own architecture and patterns. Use gws-flows to understand _what_ the current behavior is, then implement it the SDK way.
+
+## Availability
+
+gws-flows is available at `../gws-flows` after running `npm run dev:setup`, which links the SDK into gws-flows for local development.
+
+## Key Paths in gws-flows
+
+- `app/controllers/` -- API endpoint handlers
+- `config/routes.rb` -- Route definitions
+- `app/views/` -- View templates and flow logic
+- `lib/` -- Shared utilities and service objects
