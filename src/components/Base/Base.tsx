@@ -126,6 +126,42 @@ export const BaseLayout = ({ children, error, fieldErrors }: BaseLayoutProps) =>
   )
 }
 
+interface LoaderWithMetricsProps {
+  LoaderComponent: LoadingIndicatorContextProps['LoadingIndicator']
+  observability: ReturnType<typeof useObservability>['observability']
+  componentName?: string
+}
+
+const LoaderWithMetrics = ({
+  LoaderComponent,
+  observability,
+  componentName,
+}: LoaderWithMetricsProps) => {
+  const loadingStartTime = useRef(Date.now())
+  const observabilityRef = useRef(observability)
+  const componentNameRef = useRef(componentName)
+
+  useEffect(() => {
+    observabilityRef.current = observability
+    componentNameRef.current = componentName
+  }, [observability, componentName])
+
+  useEffect(() => {
+    return () => {
+      const duration = Date.now() - loadingStartTime.current
+      observabilityRef.current?.onMetric?.({
+        name: 'sdk.component.loading_duration',
+        value: duration,
+        unit: 'ms',
+        tags: componentNameRef.current ? { component: componentNameRef.current } : undefined,
+        timestamp: Date.now(),
+      })
+    }
+  }, [])
+
+  return <LoaderComponent />
+}
+
 export interface BaseBoundariesProps {
   children?: ReactNode
   FallbackComponent?: (props: FallbackProps) => JSX.Element
@@ -145,36 +181,6 @@ export const BaseBoundaries = ({
   const LoaderComponent = LoadingIndicatorFromProps ?? LoadingIndicatorFromContext
   const { observability } = useObservability()
 
-  // Wrapper to track loading duration
-  const LoaderWithMetrics = () => {
-    const loadingStartTime = useRef(Date.now())
-    // Store latest observability and componentName in refs to avoid stale closures
-    const observabilityRef = useRef(observability)
-    const componentNameRef = useRef(componentName)
-
-    // Update refs when values change
-    useEffect(() => {
-      observabilityRef.current = observability
-      componentNameRef.current = componentName
-    }, [observability, componentName])
-
-    useEffect(() => {
-      // When this component unmounts, loading is complete
-      return () => {
-        const duration = Date.now() - loadingStartTime.current
-        observabilityRef.current?.onMetric?.({
-          name: 'sdk.component.loading_duration',
-          value: duration,
-          unit: 'ms',
-          tags: componentNameRef.current ? { component: componentNameRef.current } : undefined,
-          timestamp: Date.now(),
-        })
-      }
-    }, [])
-
-    return <LoaderComponent />
-  }
-
   return (
     <QueryErrorResetBoundary>
       {({ reset: resetQueries }) => (
@@ -183,7 +189,17 @@ export const BaseBoundaries = ({
           onReset={resetQueries}
           onError={onErrorBoundaryError}
         >
-          <Suspense fallback={<LoaderWithMetrics />}>{children}</Suspense>
+          <Suspense
+            fallback={
+              <LoaderWithMetrics
+                LoaderComponent={LoaderComponent}
+                observability={observability}
+                componentName={componentName}
+              />
+            }
+          >
+            {children}
+          </Suspense>
         </ErrorBoundary>
       )}
     </QueryErrorResetBoundary>
