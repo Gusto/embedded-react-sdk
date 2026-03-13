@@ -759,6 +759,26 @@
         "wireInRequestUuid"
       ]
     },
+    "Payroll.Dismissal": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/payrolls/:payrollId"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/pay_periods/unprocessed_termination_pay_periods"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyId/payrolls"
+        }
+      ],
+      "variables": [
+        "companyId",
+        "payrollId"
+      ]
+    },
     "Payroll.OffCycleFlow": {
       "endpoints": [
         {
