@@ -160,6 +160,9 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | `/v1/companies/:companyId/payrolls` |
 |  | PUT | `/v1/wire_in_requests/:wireInRequestUuid` |
 |  | GET | `/v1/wire_in_requests/:wireInRequestUuid` |
+| **Payroll.Dismissal** | GET | `/v1/companies/:companyId/payrolls/:payrollId` |
+|  | GET | `/v1/companies/:companyId/pay_periods/unprocessed_termination_pay_periods` |
+|  | POST | `/v1/companies/:companyId/payrolls` |
 | **Payroll.OffCycleFlow** | GET | `/v1/companies/:companyId/payrolls/:payrollId` |
 | **Payroll.OffCycleCreation** | POST | `/v1/companies/:companyId/payrolls` |
 |  | GET | `/v1/companies/:companyId/employees` |
