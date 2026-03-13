@@ -7,7 +7,12 @@ import {
   rateMinimumError,
   rateExemptThresholdError,
 } from './useCompensation'
-import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus, PAY_PERIODS } from '@/shared/constants'
+import {
+  FLSA_OVERTIME_SALARY_LIMIT,
+  FlsaStatus,
+  PAY_PERIODS,
+  TIP_CREDITS_UNSUPPORTED_STATES,
+} from '@/shared/constants'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 import {
   NumberInputField,
@@ -49,6 +54,7 @@ export const Edit = () => {
 
   const watchedFlsaStatus = useWatch({ control, name: 'flsaStatus' })
   const watchedStateWcCovered = useWatch({ control, name: 'stateWcCovered' })
+  const isAdjustingMinimumWage = useWatch({ control, name: 'adjustForMinimumWage' })
   const { currentJob, mode, minimumWages, handleFlsaChange, state, showTwoPercentStakeholder } =
     useCompensation()
 
@@ -96,7 +102,10 @@ export const Edit = () => {
     watchedFlsaStatus !== FlsaStatus.NONEXEMPT || currentJob?.primary || mode === 'ADD_INITIAL_JOB'
 
   const isAdjustMinimumWageEnabled =
-    watchedFlsaStatus === FlsaStatus.NONEXEMPT && minimumWages.length > 0
+    watchedFlsaStatus === FlsaStatus.NONEXEMPT &&
+    minimumWages.length > 0 &&
+    state !== undefined &&
+    !TIP_CREDITS_UNSUPPORTED_STATES.includes(state)
 
   let rateErrorMessage = t('validations.rate')
   if (errors.rate?.message === rateMinimumError) {
@@ -151,25 +160,6 @@ export const Edit = () => {
           watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT
         }
       />
-      {isAdjustMinimumWageEnabled && (
-        <>
-          <SwitchField
-            name="adjustForMinimumWage"
-            label={t('adjustForMinimumWage')}
-            description={t('adjustForMinimumWageDescription')}
-          />
-          <SelectField
-            name="minimumWageId"
-            label={t('minimumWageLabel')}
-            description={t('minimumWageDescription')}
-            options={minimumWages.map(wage => ({
-              value: wage.uuid,
-              label: `${format(Number(wage.wage))} - ${wage.authority}: ${wage.notes ?? ''}`,
-            }))}
-            errorMessage={t('validations.minimumWage')}
-          />
-        </>
-      )}
       <SelectField
         name="paymentUnit"
         label={t('paymentUnitLabel')}
@@ -183,6 +173,28 @@ export const Edit = () => {
           watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT
         }
       />
+      {isAdjustMinimumWageEnabled && (
+        <>
+          <SwitchField
+            name="adjustForMinimumWage"
+            label={t('adjustForMinimumWage')}
+            description={t('adjustForMinimumWageDescription')}
+          />
+          {isAdjustingMinimumWage && (
+            <SelectField
+              name="minimumWageId"
+              label={t('minimumWageLabel')}
+              description={t('minimumWageDescription')}
+              options={minimumWages.map(wage => ({
+                value: wage.uuid,
+                label: `${format(Number(wage.wage))} - ${wage.authority}: ${wage.notes ?? ''}`,
+              }))}
+              errorMessage={t('validations.minimumWage')}
+            />
+          )}
+        </>
+      )}
+
       {showTwoPercentStakeholder && (
         <CheckboxField label={t('twoPercentStakeholderLabel')} name="twoPercentShareholder" />
       )}

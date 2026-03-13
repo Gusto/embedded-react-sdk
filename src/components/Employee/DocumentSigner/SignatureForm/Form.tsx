@@ -5,7 +5,7 @@ export function Form() {
   const { t } = useTranslation('Employee.DocumentSigner')
   return (
     <SignatureFormFields
-      signatureLabel="Signature"
+      signatureLabel={t('signatureFieldLabel')}
       signatureDescription={t('signatureFieldDescription')}
       signatureError={t('signatureFieldError')}
       confirmationLabel={t('confirmSignatureCheckboxLabel')}

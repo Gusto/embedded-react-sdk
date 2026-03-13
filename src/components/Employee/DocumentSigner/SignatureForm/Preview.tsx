@@ -4,13 +4,13 @@ import { DocumentViewer } from '@/components/Common/DocumentViewer'
 
 export function Preview() {
   const { form, pdfUrl } = useSignatureForm()
-  const { t } = useTranslation('Company.SignatureForm')
+  const { t } = useTranslation('Employee.DocumentSigner')
 
   return (
     <DocumentViewer
       url={pdfUrl}
       title={form.title}
-      downloadInstructions={t('downloadInstructions')}
+      downloadInstructions={t('downloadAndReviewInstructions')}
       viewDocumentLabel={t('viewDocumentCta')}
     />
   )
