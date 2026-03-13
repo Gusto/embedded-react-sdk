@@ -15,9 +15,11 @@ import {
   type HookErrors,
   type HookSubmitResult,
 } from '../../helpers'
+import type { FieldsMetadata } from '../../FormFieldsContext'
 import { generateWorkAddressSchema, type WorkAddressFormData } from './schema'
 import * as WorkAddressFields from './WorkAddressFields'
 import type { WorkAddressFieldComponents } from './WorkAddressFields'
+import { addressInline } from '@/helpers/formattedStrings'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 
 const getActiveWorkAddress = (workAddresses?: EmployeeWorkAddress[]) => {
@@ -46,6 +48,7 @@ export interface WorkAddressFormReady {
   ) => Promise<HookSubmitResult<EmployeeWorkAddress> | undefined>
   Fields: WorkAddressFieldComponents
   hookFormInternals: HookFormInternals<WorkAddressFormData>
+  fieldsMetadata: FieldsMetadata<WorkAddressFormData>
   errors: HookErrors
 }
 
@@ -157,17 +160,28 @@ export function useWorkAddressForm({
     return { isLoading: true as const }
   }
 
+  const companyLocations = locationsData?.companyLocationsList ?? []
+
   return {
     isLoading: false as const,
     isPending: createMutation.isPending || updateMutation.isPending,
     mode,
     data: {
       currentWorkAddress,
-      companyLocations: locationsData?.companyLocationsList ?? [],
+      companyLocations,
     },
     onSubmit,
     Fields: WorkAddressFields,
     hookFormInternals: { formMethods },
+    fieldsMetadata: {
+      locationUuid: {
+        entries: companyLocations,
+        options: companyLocations.map(location => ({
+          label: addressInline(location),
+          value: location.uuid,
+        })),
+      },
+    },
     errors: { error, fieldErrors, setError },
   }
 }

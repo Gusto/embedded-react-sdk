@@ -1,0 +1,58 @@
+{
+  "formTitle": "Compensation",
+  "description": "Enter compensation details for the employee's job.",
+  "jobTitle": "Job title",
+  "employeeClassification": "Employee type",
+  "classificationDescription": "Learn more about employee classifications.",
+  "amount": "Compensation amount",
+  "paymentUnitLabel": "Per",
+  "paymentUnitDescription": "The period over which the compensation amount is tracked (e.g., hourly, daily, weekly, monthly, annually).",
+  "adjustForMinimumWage": "Adjust for minimum wage",
+  "adjustForMinimumWageDescription": "Determines whether the compensation should be adjusted for minimum wage. Only applies to Nonexempt employees.",
+  "minimumWageLabel": "Minimum wage",
+  "minimumWageDescription": "What minimum wage requirement should compensation be adjusted to",
+  "twoPercentShareholderLabel": "Select if employee is a 2% shareholder",
+  "stateWcCoveredLabel": "Workers' compensation coverage",
+  "stateWcCoveredDescription": "Washington administers workers' compensation insurance to protect workers and employers from the financial impact of a work-related injury. Indicate here if this employee is exempt from the workers' comp tax.",
+  "stateWcCoveredYes": "Yes, this employee is covered",
+  "stateWcCoveredNo": "No, this employee is not covered",
+  "stateWcClassCodeLabel": "Risk class code",
+  "stateWcClassCodeDescription": "The risk class code associated with this employee's job function.",
+  "submit": "Submit",
+  "flsaStatusLabels": {
+    "Exempt": "Salary/No overtime",
+    "Salaried Nonexempt": "Salary/Eligible for overtime",
+    "Nonexempt": "Paid by the hour",
+    "Owner": "Owner's draw",
+    "Commission Only Exempt": "Commission Only/No Overtime",
+    "Commission Only Nonexempt": "Commission Only/Eligible for overtime"
+  },
+  "paymentUnitOptions": {
+    "Hour": "Hour",
+    "Week": "Week",
+    "Month": "Month",
+    "Year": "Year",
+    "Paycheck": "Paycheck"
+  },
+  "fieldValidations": {
+    "jobTitle": {
+      "REQUIRED": "Job title is required"
+    },
+    "flsaStatus": {
+      "REQUIRED": "Employee classification is required"
+    },
+    "rate": {
+      "RATE_MINIMUM": "Amount must be at least $1.00",
+      "RATE_EXEMPT_THRESHOLD": "FLSA Exempt employees must meet the salary threshold"
+    },
+    "paymentUnit": {
+      "REQUIRED": "Payment unit is required"
+    },
+    "minimumWageId": {
+      "REQUIRED": "Please select minimum wage for adjustment"
+    },
+    "stateWcClassCode": {
+      "REQUIRED": "Please select a risk class code"
+    }
+  }
+}

@@ -1,11 +1,14 @@
 import { useTranslation } from 'react-i18next'
 import { Form } from '../Form'
-import { useWorkAddressForm, WorkAddressFormProvider } from '../hooks/useWorkAddress'
+import {
+  useWorkAddressForm,
+  WorkAddressFormProvider,
+  type WorkAddressFormReady,
+} from '../hooks/useWorkAddress'
 import { ActionsLayout, Grid } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { BaseBoundaries, BaseLayout } from '@/components/Base'
 import { useI18n } from '@/i18n'
-import { addressInline } from '@/helpers/formattedStrings'
 
 const I18N_NS = 'UNSTABLE_WorkAddress' as const
 
@@ -53,12 +56,7 @@ function ExampleEmployeeWorkAddressRoot({
     return <BaseLayout isLoading />
   }
 
-  const { Fields, companyLocations, onSubmit, isPending, errors } = workAddressForm
-
-  const locationOptions = companyLocations.map(location => ({
-    label: addressInline(location),
-    value: location.uuid,
-  }))
+  const { onSubmit, isPending, errors } = workAddressForm
 
   const handleSubmit = async () => {
     const result = await onSubmit()
@@ -73,34 +71,47 @@ function ExampleEmployeeWorkAddressRoot({
 
   return (
     <BaseLayout error={errors.error} fieldErrors={errors.fieldErrors}>
-      <WorkAddressFormProvider form={workAddressForm}>
-        <Form onSubmit={handleSubmit}>
-          <Components.Heading as="h2">{t('formTitle')}</Components.Heading>
-          <Components.Text>{t('description')}</Components.Text>
-          <Grid gridTemplateColumns={{ base: '1fr', small: ['1fr', '1fr'] }} gap={20}>
-            <Fields.Location
-              label={t('location')}
-              placeholder={t('locationPlaceholder')}
-              options={locationOptions}
-              validationMessages={{
-                REQUIRED: t('fieldValidations.location.REQUIRED'),
-              }}
-            />
-            <Fields.EffectiveDate
-              label={t('effectiveDate')}
-              description={t('effectiveDateDescription')}
-              validationMessages={{
-                REQUIRED: t('fieldValidations.effectiveDate.REQUIRED'),
-              }}
-            />
-          </Grid>
-          <ActionsLayout>
-            <Components.Button type="submit" isLoading={isPending}>
-              {t('submit')}
-            </Components.Button>
-          </ActionsLayout>
-        </Form>
-      </WorkAddressFormProvider>
+      <Form onSubmit={handleSubmit}>
+        <Components.Heading as="h2">{t('formTitle')}</Components.Heading>
+        <Components.Text>{t('description')}</Components.Text>
+        <WorkAddressFormFields form={workAddressForm} />
+        <ActionsLayout>
+          <Components.Button type="submit" isLoading={isPending}>
+            {t('submit')}
+          </Components.Button>
+        </ActionsLayout>
+      </Form>
     </BaseLayout>
+  )
+}
+
+export interface WorkAddressFormFieldsProps {
+  form: WorkAddressFormReady
+}
+
+export function WorkAddressFormFields({ form }: WorkAddressFormFieldsProps) {
+  const { t } = useTranslation(I18N_NS)
+
+  const { Fields } = form
+
+  return (
+    <WorkAddressFormProvider form={form}>
+      <Grid gridTemplateColumns={{ base: '1fr', small: ['1fr', '1fr'] }} gap={20}>
+        <Fields.Location
+          label={t('location')}
+          placeholder={t('locationPlaceholder')}
+          validationMessages={{
+            REQUIRED: t('fieldValidations.location.REQUIRED'),
+          }}
+        />
+        <Fields.EffectiveDate
+          label={t('effectiveDate')}
+          description={t('effectiveDateDescription')}
+          validationMessages={{
+            REQUIRED: t('fieldValidations.effectiveDate.REQUIRED'),
+          }}
+        />
+      </Grid>
+    </WorkAddressFormProvider>
   )
 }

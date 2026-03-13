@@ -1007,7 +1007,35 @@
       "endpoints": [
         {
           "method": "GET",
+          "path": "/v1/employees/:employeeId/jobs"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/employees/:employeeId/jobs"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/jobs/:jobId"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/compensations/:compensationId"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/work_addresses"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/locations/:locationUuid/minimum_wages"
+        },
+        {
+          "method": "GET",
           "path": "/v1/employees/:employeeId"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/federal_tax_details"
         },
         {
           "method": "PUT",
@@ -1031,10 +1059,6 @@
         },
         {
           "method": "GET",
-          "path": "/v1/employees/:employeeId/work_addresses"
-        },
-        {
-          "method": "GET",
           "path": "/v1/companies/:companyId/locations"
         },
         {
@@ -1048,8 +1072,11 @@
       ],
       "variables": [
         "companyId",
+        "compensationId",
         "employeeId",
         "homeAddressUuid",
+        "jobId",
+        "locationUuid",
         "workAddressUuid"
       ]
     }

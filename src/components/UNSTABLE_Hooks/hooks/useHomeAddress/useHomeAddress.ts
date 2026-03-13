@@ -12,6 +12,7 @@ import {
   type HookErrors,
   type HookSubmitResult,
 } from '../../helpers'
+import type { FieldsMetadata } from '../../FormFieldsContext'
 import { generateHomeAddressSchema, type HomeAddressFormData } from './schema'
 import * as HomeAddressFields from './HomeAddressFields'
 import type { HomeAddressFieldComponents } from './HomeAddressFields'
@@ -39,6 +40,7 @@ export interface HomeAddressFormReady {
   onSubmit: (submittedEmployeeId?: string) => Promise<HookSubmitResult<EmployeeAddress> | undefined>
   Fields: HomeAddressFieldComponents
   hookFormInternals: HookFormInternals<HomeAddressFormData>
+  fieldsMetadata: FieldsMetadata<HomeAddressFormData>
   errors: HookErrors
 }
 
@@ -157,6 +159,7 @@ export function useHomeAddressForm({
     onSubmit,
     Fields: HomeAddressFields,
     hookFormInternals: { formMethods },
+    fieldsMetadata: {},
     errors: { error, fieldErrors, setError },
   }
 }

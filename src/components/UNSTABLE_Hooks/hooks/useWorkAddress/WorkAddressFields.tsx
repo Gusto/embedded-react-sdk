@@ -1,5 +1,7 @@
 import type { ReactNode, ComponentType } from 'react'
 import { useFormContext } from 'react-hook-form'
+import type { Location as LocationModel } from '@gusto/embedded-api/models/components/location'
+import { useFieldMetadata } from '../../FormFieldsContext'
 import type { WorkAddressFormData } from './schema'
 import type { SelectProps } from '@/components/Common/UI/Select/SelectTypes'
 import type { DatePickerProps } from '@/components/Common/UI/DatePicker/DatePickerTypes'
@@ -29,13 +31,8 @@ function useFieldErrorMessage<TKeys extends string>(
   return errorCode ? validationMessages[errorCode] : undefined
 }
 
-export type LocationOption = {
-  label: string
-  value: string
-}
-
 export type LocationFieldProps = FieldPropsWithValidations<RequiredValidation> & {
-  options: LocationOption[]
+  getOptionLabel?: (location: LocationModel) => string
   FieldComponent?: ComponentType<SelectProps>
 }
 
@@ -44,10 +41,19 @@ export function Location({
   description,
   placeholder,
   validationMessages,
-  options,
+  getOptionLabel,
   FieldComponent,
 }: LocationFieldProps) {
+  const {
+    options = [],
+    entries = [],
+    isDisabled,
+  } = useFieldMetadata<WorkAddressFormData, LocationModel>('locationUuid')
   const errorMessage = useFieldErrorMessage('locationUuid', validationMessages)
+
+  const resolvedOptions = getOptionLabel
+    ? entries.map(location => ({ label: getOptionLabel(location), value: location.uuid }))
+    : options
 
   return (
     <SelectField
@@ -57,7 +63,8 @@ export function Location({
       description={description}
       placeholder={placeholder}
       errorMessage={errorMessage}
-      options={options}
+      options={resolvedOptions}
+      isDisabled={isDisabled}
       FieldComponent={FieldComponent}
     />
   )

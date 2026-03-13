@@ -12,6 +12,7 @@ import {
   type HookErrors,
   type HookSubmitResult,
 } from '../../helpers'
+import type { FieldsMetadata } from '../../FormFieldsContext'
 import { generateEmployeeDetailsSchema, type EmployeeDetailsFormData } from './schema'
 import * as EmployeeDetailsFields from './EmployeeDetailsFields'
 import type { EmployeeDetailsFieldComponents } from './EmployeeDetailsFields'
@@ -44,6 +45,7 @@ export interface EmployeeDetailsFormReady {
   onSubmit: (submittedEmployeeId?: string) => Promise<HookSubmitResult<Employee> | undefined>
   Fields: EmployeeDetailsFieldComponents
   hookFormInternals: HookFormInternals<EmployeeDetailsFormData>
+  fieldsMetadata: FieldsMetadata<EmployeeDetailsFormData>
   errors: HookErrors
 }
 
@@ -217,6 +219,7 @@ export function useEmployeeDetailsForm({
     onSubmit,
     Fields,
     hookFormInternals: { formMethods },
+    fieldsMetadata: {},
     errors: { error, fieldErrors, setError },
   }
 }
