@@ -1059,6 +1059,34 @@
         },
         {
           "method": "GET",
+          "path": "/v1/companies/:companyId/employees"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/pay_schedules/:payScheduleId"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/payrolls/:payrollId"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/companies/:companyId/payrolls/:payrollId/calculate"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/companies/:companyId/payrolls/:payrollId"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/payrolls/blockers"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/companies/:companyId/payrolls/:payrollId/prepare"
+        },
+        {
+          "method": "GET",
           "path": "/v1/employees/:employeeUuid/state_taxes"
         },
         {
@@ -1080,12 +1108,15 @@
       ],
       "variables": [
         "companyId",
+        "companyUuid",
         "compensationId",
         "employeeId",
         "employeeUuid",
         "homeAddressUuid",
         "jobId",
         "locationUuid",
+        "payScheduleId",
+        "payrollId",
         "workAddressUuid"
       ]
     }

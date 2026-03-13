@@ -216,6 +216,13 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | `/v1/employees/:employeeId/home_addresses` |
 |  | POST | `/v1/employees/:employeeId/home_addresses` |
 |  | PUT | `/v1/home_addresses/:homeAddressUuid` |
+|  | GET | `/v1/companies/:companyId/employees` |
+|  | GET | `/v1/companies/:companyId/pay_schedules/:payScheduleId` |
+|  | GET | `/v1/companies/:companyId/payrolls/:payrollId` |
+|  | PUT | `/v1/companies/:companyId/payrolls/:payrollId/calculate` |
+|  | PUT | `/v1/companies/:companyId/payrolls/:payrollId` |
+|  | GET | `/v1/companies/:companyUuid/payrolls/blockers` |
+|  | PUT | `/v1/companies/:companyId/payrolls/:payrollId/prepare` |
 |  | GET | `/v1/employees/:employeeUuid/state_taxes` |
 |  | PUT | `/v1/employees/:employeeUuid/state_taxes` |
 |  | GET | `/v1/companies/:companyId/locations` |

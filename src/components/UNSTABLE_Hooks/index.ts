@@ -32,6 +32,17 @@ export {
   type StateTaxesFieldComponents,
 } from './hooks/useStateTaxes'
 
+export {
+  usePayrollConfiguration,
+  type UsePayrollConfigurationResult,
+  type PayrollConfigurationReady,
+  type PayrollConfigurationData,
+  type EnrichedEmployeeCompensation,
+  type PaginationResult,
+} from './hooks/usePayrollConfiguration'
+
+export { ExamplePayrollConfiguration } from './examples/ExamplePayrollConfiguration'
+
 export { composeSubmitHandler } from './hooks/composeSubmitHandler'
 
 export {
