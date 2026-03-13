@@ -1,0 +1,33 @@
+---
+alwaysApply: false
+globs: src/components/**
+---
+
+# Storybook-First Development
+
+Build and test components in Storybook before integrating into flows.
+
+## Why Storybook First
+
+- **No backend required** -- Storybook runs standalone without ZenPayroll or gws-flows, enabling much faster iteration
+- **Isolated testing** -- verify component behavior, states, and edge cases in isolation
+- **Living documentation** -- stories serve as visual documentation for the team
+
+## Workflow
+
+1. Start Storybook: `npm run storybook` (port 6006)
+2. Build the component with all visual states:
+   - Default / populated state
+   - Loading state
+   - Error state
+   - Empty state
+   - Edge cases (long text, missing data, etc.)
+3. Verify each state renders correctly in Storybook
+4. Then wire up real data and integrate into flows
+
+## When to Use
+
+- Building new UI components
+- Modifying existing component appearance or behavior
+- Prototyping layout options
+- Verifying responsive or themed behavior
