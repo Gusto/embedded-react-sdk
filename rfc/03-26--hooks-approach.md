@@ -488,9 +488,7 @@ If we had a way of getting a stable shape of the state by state field response, 
 
 ### 7. Base Infrastructure Changes
 
-The existing SDK components rely on `Suspense` inside `BaseBoundaries` for loading states — queries are suspense queries, and the `Suspense` boundary catches them. This doesn't work for hooks because the partner controls when and where to render loading UI, not the SDK.
-
-To support hooks without breaking existing components, we refactored `BaseBoundaries` to remove `Suspense` from its internals and instead add `Suspense` at each component call site that needs it. This means `BaseBoundaries` now only provides the error boundary and query error reset, which hooks can use directly:
+To support hooks without breaking existing components, we will refactor `BaseBoundaries` to remove `Suspense` from its internals and instead add `Suspense` at the few component call sites that need it. This means `BaseBoundaries` now only provides the error boundary and query error reset, which hooks can use directly:
 
 ```tsx
 // Before: Suspense was baked into BaseBoundaries
@@ -516,6 +514,8 @@ export const BaseBoundaries = ({ children, FallbackComponent }) => (
 )
 ```
 
+Not a huge deal, but keeps us from using suspense unnecessarily. We will move suspense into the Base component usage directly so existing SDK components can continue to work without issue.
+
 We also added an `isLoading` prop to `BaseLayout` so hooks can use it for a simple loading state without Suspense:
 
 ```tsx
@@ -529,25 +529,9 @@ return (
 )
 ```
 
-Existing SDK components continue to work by wrapping their content in `<Suspense>` directly inside `BaseBoundaries`. The change is additive — no existing behavior breaks.
-
 ### 8. Error Normalization
 
-Hooks need a consistent error contract that partners can rely on. Today, errors come from multiple sources: API errors (`GustoEmbeddedError`), SDK validation errors (`SDKValidationError`), field-level validation errors from the API (422 responses with `EntityErrorObject[]`), and unrecoverable errors that should propagate to the error boundary.
-
-We normalize all of these into a single `HookErrors` shape that every hook returns:
-
-```typescript
-interface HookErrors {
-  error: KnownErrors | null       // API or SDK-level error for display
-  fieldErrors: EntityErrorObject[] | null  // field-level errors from the API
-  setError: (err: KnownErrors | null) => void
-}
-```
-
-Under the hood, `useBaseSubmit` handles the classification: API errors and Gusto errors are caught and surfaced via `error`/`fieldErrors`; unknown errors are thrown to the error boundary. `useQueryErrorHandler` does the same for query errors, routing known errors to `setError` and unknown errors to the boundary.
-
-This means partners always interact with the same interface regardless of what went wrong. They render `error` for banner-level alerts, `fieldErrors` for inline field messages, and the error boundary catches anything truly unexpected. As we build more hooks, this contract should remain stable and well-documented.
+Errors today come from multiple sources with different shapes: API errors, SDK validation errors, field-level validation errors from 422 responses, and unrecoverable errors. For hooks to be partner-facing, we need to normalize these into a single, parseable array of errors that partners can iterate over and display consistently. Additional work will be needed on this front to define the final shape and ensure it covers all error scenarios cleanly.
 
 ---
 
