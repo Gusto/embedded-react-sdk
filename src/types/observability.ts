@@ -52,8 +52,11 @@ export interface ObservabilityError {
   /** Context about where/how the error occurred */
   context: ObservabilityErrorContext
 
-  /** The original error object */
-  originalError: unknown
+  /**
+   * The original error object (may be undefined when sanitization.includeOriginalError is false)
+   * Default sanitization removes this to prevent PII leakage
+   */
+  originalError?: unknown
 
   /** When the error occurred (Unix timestamp in milliseconds) */
   timestamp: number
@@ -124,7 +127,14 @@ export interface SanitizationConfig {
  *     baseUrl: '/api/',
  *     observability: {
  *       onError: (error) => {
- *         Sentry.captureException(error.originalError, {
+ *         // Create Error from sanitized data (originalError is undefined by default)
+ *         const sentryError = new Error(error.message)
+ *         sentryError.name = error.type
+ *         if (error.stack) {
+ *           sentryError.stack = error.stack
+ *         }
+ *
+ *         Sentry.captureException(sentryError, {
  *           level: error.type === 'validation_error' ? 'warning' : 'error',
  *           tags: {
  *             error_type: error.type,
@@ -138,7 +148,7 @@ export interface SanitizationConfig {
  *       },
  *       sanitization: {
  *         enabled: true,
- *         includeOriginalError: false,
+ *         includeOriginalError: false, // Default: originalError will be undefined
  *       }
  *     }
  *   }}

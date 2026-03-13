@@ -110,10 +110,12 @@ interface ObservabilityError {
     statusCode?: number
     metadata?: Record<string, unknown>
   }
-  originalError: unknown
+  originalError?: unknown // undefined when sanitization.includeOriginalError is false (default)
   timestamp: number // Unix timestamp in milliseconds
 }
 ```
+
+**Note:** `originalError` is `undefined` by default to prevent PII leakage. Set `sanitization.includeOriginalError: true` to include it.
 
 ### Integration Example: Sentry
 
