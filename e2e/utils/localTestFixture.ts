@@ -7,6 +7,7 @@ interface E2EState {
   employeeId: string
   contractorId: string
   locationId: string
+  terminatedEmployeeId: string
 }
 
 interface LocalConfig {
@@ -16,6 +17,7 @@ interface LocalConfig {
   employeeId: string
   contractorId: string
   locationId: string
+  terminatedEmployeeId: string
 }
 
 function loadDynamicState(): Partial<E2EState> {
@@ -32,13 +34,18 @@ export const test = base.extend<{ localConfig: LocalConfig }>({
     async ({}, use) => {
       const dynamicState = loadDynamicState()
 
+      const isLocal = process.env.E2E_LOCAL === 'true'
+
       const config: LocalConfig = {
-        isLocal: process.env.E2E_LOCAL === 'true',
+        isLocal,
         flowToken: process.env.E2E_FLOW_TOKEN || '',
         companyId: dynamicState.companyId || process.env.E2E_COMPANY_ID || '123',
         employeeId: dynamicState.employeeId || process.env.E2E_EMPLOYEE_ID || '456',
         contractorId: dynamicState.contractorId || '789',
         locationId: dynamicState.locationId || '',
+        terminatedEmployeeId: isLocal
+          ? dynamicState.terminatedEmployeeId || ''
+          : 'dismissal-test-employee',
       }
 
       await use(config)

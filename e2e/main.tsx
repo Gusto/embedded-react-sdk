@@ -7,6 +7,7 @@ import { OnboardingFlow as CompanyOnboardingFlow } from '@/components/Company/On
 import { OnboardingFlow as ContractorOnboardingFlow } from '@/components/Contractor/OnboardingFlow/OnboardingFlow'
 import { PayrollFlow } from '@/components/Payroll/PayrollFlow/PayrollFlow'
 import { PaymentFlow } from '@/components/Contractor/Payments/PaymentFlow/PaymentFlow'
+import { DismissalFlow } from '@/components/Payroll/Dismissal/DismissalFlow'
 import '@/styles/sdk.scss'
 
 const DEFAULT_API_BASE_URL = 'https://api.gusto.com'
@@ -18,6 +19,7 @@ type FlowType =
   | 'contractor-onboarding'
   | 'payroll'
   | 'contractor-payment'
+  | 'dismissal'
 
 interface E2EConfig {
   flow: FlowType
@@ -65,6 +67,8 @@ function FlowRenderer({ config }: { config: E2EConfig }) {
       return <PayrollFlow companyId={companyId} onEvent={handleEvent} />
     case 'contractor-payment':
       return <PaymentFlow companyId={companyId} onEvent={handleEvent} />
+    case 'dismissal':
+      return <DismissalFlow companyId={companyId} employeeId={employeeId} onEvent={handleEvent} />
     default:
       return <div>Unknown flow: {flow}</div>
   }
@@ -84,10 +88,13 @@ async function startApp() {
   const config = getConfigFromUrl()
 
   if (!config.isLocal) {
+    const msw = await import('msw')
     const { worker } = await import('./mocks/browser')
     await worker.start({
       onUnhandledRequest: 'bypass',
     })
+    ;(window as Record<string, unknown>).__mswWorker = worker
+    ;(window as Record<string, unknown>).__msw = msw
   }
 
   const container = document.getElementById('root')
