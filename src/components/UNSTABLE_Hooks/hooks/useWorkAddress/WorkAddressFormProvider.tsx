@@ -1,14 +1,14 @@
 import type { ReactNode } from 'react'
 import { FormProvider } from 'react-hook-form'
 import { FormFieldsMetadataProvider } from '../../FormFieldsContext'
-import type { HomeAddressFormReady } from './useHomeAddress'
+import type { WorkAddressFormReady } from './useWorkAddressForm'
 
-interface HomeAddressFormProviderProps {
-  form: HomeAddressFormReady
+interface WorkAddressFormProviderProps {
+  form: WorkAddressFormReady
   children: ReactNode
 }
 
-export function HomeAddressFormProvider({ form, children }: HomeAddressFormProviderProps) {
+export function WorkAddressFormProvider({ form, children }: WorkAddressFormProviderProps) {
   return (
     <FormFieldsMetadataProvider metadata={form.fieldsMetadata}>
       <FormProvider {...form.hookFormInternals.formMethods}>{children}</FormProvider>

@@ -3,6 +3,6 @@ export {
   type UseCompensationFormResult,
   type CompensationFormReady,
   type CompensationData,
-} from './useCompensation'
-export { CompensationFormProvider } from './CompensationForm'
+} from './useCompensationForm'
+export { CompensationFormProvider } from './CompensationFormProvider'
 export { type WaRiskClassCode } from './CompensationFields'

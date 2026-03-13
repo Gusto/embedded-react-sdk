@@ -1,14 +1,14 @@
 import type { ReactNode } from 'react'
 import { FormProvider } from 'react-hook-form'
 import { FormFieldsMetadataProvider } from '../../FormFieldsContext'
-import type { CompensationFormReady } from './useCompensation'
+import type { HomeAddressFormReady } from './useHomeAddressForm'
 
-interface CompensationFormProviderProps {
-  form: CompensationFormReady
+interface HomeAddressFormProviderProps {
+  form: HomeAddressFormReady
   children: ReactNode
 }
 
-export function CompensationFormProvider({ form, children }: CompensationFormProviderProps) {
+export function HomeAddressFormProvider({ form, children }: HomeAddressFormProviderProps) {
   return (
     <FormFieldsMetadataProvider metadata={form.fieldsMetadata}>
       <FormProvider {...form.hookFormInternals.formMethods}>{children}</FormProvider>

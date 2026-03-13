@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { FormProvider } from 'react-hook-form'
 import { FormFieldsMetadataProvider } from '../../FormFieldsContext'
-import type { EmployeeDetailsFormReady } from './useEmployeeDetails'
+import type { EmployeeDetailsFormReady } from './useEmployeeDetailsForm'
 
 interface EmployeeDetailsFormProviderProps {
   form: EmployeeDetailsFormReady

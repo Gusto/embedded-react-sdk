@@ -3,5 +3,5 @@ export {
   type UseEmployeeDetailsFormResult,
   type EmployeeDetailsFormReady,
   type EmployeeDetailsData,
-} from './useEmployeeDetails'
-export { EmployeeDetailsFormProvider } from './EmployeeDetailsForm'
+} from './useEmployeeDetailsForm'
+export { EmployeeDetailsFormProvider } from './EmployeeDetailsFormProvider'
