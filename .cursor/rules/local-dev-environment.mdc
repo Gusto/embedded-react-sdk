@@ -1,6 +1,5 @@
 ---
 alwaysApply: false
-globs: e2e/**,*.config.*,CONTRIBUTING.md
 ---
 
 # Local Development Environment
