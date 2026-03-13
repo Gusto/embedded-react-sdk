@@ -11,14 +11,15 @@ const mockSDKHooksInstance = {
 }
 
 vi.mock('@gusto/embedded-api/core', () => ({
-  GustoEmbeddedCore: vi.fn().mockImplementation(config => ({
-    _options: { hooks: null },
-    config,
-  })),
+  GustoEmbeddedCore: vi.fn().mockImplementation(function (config: Record<string, unknown>) {
+    return { _options: { hooks: null }, config }
+  }),
 }))
 
 vi.mock('@gusto/embedded-api/hooks/hooks', () => ({
-  SDKHooks: vi.fn().mockImplementation(() => mockSDKHooksInstance),
+  SDKHooks: vi.fn().mockImplementation(function () {
+    return mockSDKHooksInstance
+  }),
 }))
 
 vi.mock('@gusto/embedded-api/react-query/_context', () => ({
