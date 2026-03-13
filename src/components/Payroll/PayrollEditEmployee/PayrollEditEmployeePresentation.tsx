@@ -4,6 +4,7 @@ import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type {
   FixedCompensations,
   PayrollEmployeeCompensationsType,
+  PayrollEmployeeCompensationsTypePaidTimeOff,
 } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import { PayrollEmployeeCompensationsTypePaymentMethod } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api/models/components/payrollfixedcompensationtypestype'
@@ -48,6 +49,7 @@ interface PayrollEditEmployeeProps {
   payPeriodStartDate?: string
   paySchedule?: PayScheduleObject
   isOffCycle?: boolean
+  isFinalTerminationPayroll?: boolean
   withReimbursements?: boolean
   hasDirectDepositSetup?: boolean
 }
@@ -55,6 +57,7 @@ interface PayrollEditEmployeeProps {
 export const PayrollEditEmployeeFormSchema = z.object({
   hourlyCompensations: z.record(z.string(), z.record(z.string(), z.string().optional())),
   timeOffCompensations: z.record(z.string(), z.string().optional()),
+  finalPayoutCompensations: z.record(z.string(), z.string().optional()),
   fixedCompensations: z.record(z.string(), z.number().optional()),
   paymentMethod: z.enum(PayrollEmployeeCompensationsTypePaymentMethod).optional(),
 })
@@ -64,7 +67,7 @@ export type PayrollEditEmployeeFormValues = z.infer<typeof PayrollEditEmployeeFo
 const buildCompensationFromFormData = (
   formData: PayrollEditEmployeeFormValues,
   employeeCompensation: PayrollEmployeeCompensationsType | undefined,
-  timeOff: Array<{ name?: string; hours?: string }>,
+  timeOff: PayrollEmployeeCompensationsTypePaidTimeOff[],
   primaryJobUuid?: string,
 ): PayrollEmployeeCompensationsType => {
   const updatedCompensation = {
@@ -88,9 +91,13 @@ const buildCompensationFromFormData = (
   )
 
   updatedCompensation.paidTimeOff = timeOff.map(timeOffEntry => {
+    const finalPayout =
+      formData.finalPayoutCompensations[timeOffEntry.name!] ??
+      timeOffEntry.finalPayoutUnusedHoursInput
     return {
       ...timeOffEntry,
       hours: formData.timeOffCompensations[timeOffEntry.name!],
+      ...(finalPayout != null ? { finalPayoutUnusedHoursInput: finalPayout } : {}),
     }
   })
 
@@ -135,6 +142,7 @@ export const PayrollEditEmployeePresentation = ({
   payPeriodStartDate,
   paySchedule,
   isOffCycle = false,
+  isFinalTerminationPayroll = false,
   withReimbursements = true,
   hasDirectDepositSetup = true,
 }: PayrollEditEmployeeProps) => {
@@ -249,6 +257,17 @@ export const PayrollEditEmployeePresentation = ({
       return timeOffCompensations
     })(),
 
+    finalPayoutCompensations: (() => {
+      const finalPayoutCompensations: PayrollEditEmployeeFormValues['finalPayoutCompensations'] = {}
+
+      timeOff.forEach(timeOffCompensation => {
+        finalPayoutCompensations[timeOffCompensation.name!] =
+          timeOffCompensation.finalPayoutUnusedHoursInput ?? '0'
+      })
+
+      return finalPayoutCompensations
+    })(),
+
     fixedCompensations: (() => {
       const fixedCompensations: PayrollEditEmployeeFormValues['fixedCompensations'] = {}
 
@@ -283,7 +302,6 @@ export const PayrollEditEmployeePresentation = ({
 
   const currentGrossPay = useMemo(() => {
     try {
-      // Build form data, filtering out undefined nested objects
       const hourlyCompensations: Record<string, Record<string, string | undefined>> = {}
       if (watchedFormData.hourlyCompensations) {
         Object.entries(watchedFormData.hourlyCompensations).forEach(([jobId, compensations]) => {
@@ -296,6 +314,7 @@ export const PayrollEditEmployeePresentation = ({
       const formDataWithDefaults: PayrollEditEmployeeFormValues = {
         hourlyCompensations,
         timeOffCompensations: watchedFormData.timeOffCompensations || {},
+        finalPayoutCompensations: watchedFormData.finalPayoutCompensations || {},
         fixedCompensations: watchedFormData.fixedCompensations || {},
         paymentMethod: watchedFormData.paymentMethod,
       }
@@ -315,7 +334,6 @@ export const PayrollEditEmployeePresentation = ({
         isOffCycle,
       )
     } catch {
-      // Fallback to original compensation on error
       return employeeCompensation
         ? calculateGrossPay(
             employeeCompensation,
@@ -441,6 +459,24 @@ export const PayrollEditEmployeePresentation = ({
                     key={timeOffEntry.name}
                     timeOff={timeOffEntry}
                     employee={employee}
+                  />
+                ))}
+              </Grid>
+            </div>
+          )}
+          {isFinalTerminationPayroll && timeOff.length > 0 && (
+            <div className={styles.fieldGroup}>
+              <Heading as="h4">{t('finalPayoutTitle')}</Heading>
+              <Grid gridTemplateColumns={{ base: '1fr', small: [320, 320] }} gap={20}>
+                {timeOff.map(timeOffEntry => (
+                  <TextInputField
+                    key={`payout-${timeOffEntry.name}`}
+                    name={`finalPayoutCompensations.${timeOffEntry.name}`}
+                    type="number"
+                    min={0}
+                    adornmentEnd={t('hoursUnit')}
+                    isRequired
+                    label={timeOffEntry.name}
                   />
                 ))}
               </Grid>

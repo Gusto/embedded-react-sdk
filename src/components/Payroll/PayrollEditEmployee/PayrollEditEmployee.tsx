@@ -108,6 +108,7 @@ export const Root = ({
       payPeriodStartDate={preparedPayroll?.payPeriod?.startDate}
       paySchedule={paySchedule}
       isOffCycle={preparedPayroll?.offCycle}
+      isFinalTerminationPayroll={preparedPayroll?.finalTerminationPayroll ?? false}
       withReimbursements={withReimbursements}
       hasDirectDepositSetup={hasDirectDepositSetup}
     />
