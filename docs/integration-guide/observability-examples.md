@@ -265,7 +265,7 @@ const observability: ObservabilityHook = {
     // Sample metrics at different rates based on name
     const sampleRates: Record<string, number> = {
       'sdk.form.submit_duration': 0.1, // 10% of form submissions
-      'sdk.component.mount': 0.01, // 1% of component mounts
+      'sdk.component.loading_duration': 0.05, // 5% of component loading events
     }
 
     const sampleRate = sampleRates[metric.name] || 1.0

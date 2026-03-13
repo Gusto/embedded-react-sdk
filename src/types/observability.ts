@@ -63,7 +63,7 @@ export interface ObservabilityError {
 }
 
 export interface ObservabilityMetric {
-  /** Metric name (e.g., 'sdk.component.mount', 'sdk.form.submit_duration') */
+  /** Metric name (e.g., 'sdk.form.submit_duration', 'sdk.component.loading_duration') */
   name: string
 
   /** Metric value */
