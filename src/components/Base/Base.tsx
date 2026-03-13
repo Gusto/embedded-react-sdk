@@ -148,16 +148,25 @@ export const BaseBoundaries = ({
   // Wrapper to track loading duration
   const LoaderWithMetrics = () => {
     const loadingStartTime = useRef(Date.now())
+    // Store latest observability and componentName in refs to avoid stale closures
+    const observabilityRef = useRef(observability)
+    const componentNameRef = useRef(componentName)
+
+    // Update refs when values change
+    useEffect(() => {
+      observabilityRef.current = observability
+      componentNameRef.current = componentName
+    }, [observability, componentName])
 
     useEffect(() => {
       // When this component unmounts, loading is complete
       return () => {
         const duration = Date.now() - loadingStartTime.current
-        observability?.onMetric?.({
+        observabilityRef.current?.onMetric?.({
           name: 'sdk.component.loading_duration',
           value: duration,
           unit: 'ms',
-          tags: componentName ? { component: componentName } : undefined,
+          tags: componentNameRef.current ? { component: componentNameRef.current } : undefined,
           timestamp: Date.now(),
         })
       }
