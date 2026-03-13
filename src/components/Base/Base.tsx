@@ -33,6 +33,10 @@ export interface BaseComponentInterface<
   FallbackComponent?: BaseBoundariesProps['FallbackComponent']
   LoaderComponent?: BaseBoundariesProps['LoaderComponent']
   onEvent: OnEventType<EventType, unknown>
+}
+
+// Internal prop for SDK components to set their component name
+interface InternalBaseComponentProps {
   componentName?: string
 }
 
@@ -42,7 +46,7 @@ export const BaseComponent = <TResourceKey extends keyof Resources = keyof Resou
   LoaderComponent: LoadingIndicatorFromProps,
   onEvent,
   componentName,
-}: BaseComponentInterface<TResourceKey>) => {
+}: BaseComponentInterface<TResourceKey> & InternalBaseComponentProps) => {
   const { error, fieldErrors, baseSubmitHandler, setError } = useBaseSubmit(componentName)
   const { observability } = useObservability()
 

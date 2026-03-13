@@ -56,26 +56,27 @@ function App() {
 
 ## Component Identification
 
-The SDK provides a `componentName` prop on all SDK components, allowing you to pass an identifier for more precise error tracking:
+The SDK automatically identifies components in error reports and metrics using internal component names. Each SDK component reports its name in:
+- Error context (`error.context.componentName`) - e.g., `"Contractor.Payments.CreatePayment"`
+- Metric tags (`metric.tags.component`) - e.g., `"Employee.Compensation"`
+
+This allows you to track which specific SDK components are experiencing errors or performance issues without any additional configuration.
+
+**Example error with component identification:**
 
 ```tsx
-<Employee.Profile
-  companyId={companyId}
-  employeeId={employeeId}
-  componentName="EmployeeProfile"
-  onEvent={(eventType, data) => {
-    analytics.track(eventType, data)
-  }}
-/>
+{
+  type: 'boundary_error',
+  message: 'Cannot read property of undefined',
+  context: {
+    componentName: 'Employee.Compensation',
+    componentStack: '...'
+  },
+  timestamp: 1234567890
+}
 ```
 
-When provided, the `componentName` will be included in:
-- Error context (`error.context.componentName`)
-- Metric tags (`metric.tags.component`)
-
-This allows you to track which specific component instances are experiencing errors or performance issues.
-
-**Note:** The `componentStack` field in error context provides React's component hierarchy for debugging. It's automatically included for all boundary errors.
+**Note:** The `componentStack` field provides React's full component hierarchy for debugging. It's automatically included for all boundary errors.
 
 ---
 
@@ -176,8 +177,8 @@ The SDK tracks the following performance metrics:
 
 | Metric Name | Description | Unit | Tags |
 |-------------|-------------|------|------|
-| `sdk.form.submit_duration` | Form submission time | ms | `status` (success/error), `component` (if `componentName` provided) |
-| `sdk.component.loading_duration` | Time spent in loading/suspense state | ms | `component` (if `componentName` provided) |
+| `sdk.form.submit_duration` | Form submission time | ms | `status` (success/error), `component` (component name) |
+| `sdk.component.loading_duration` | Time spent in loading/suspense state | ms | `component` (component name) |
 
 Additional metrics can be added by the SDK as needed.
 
