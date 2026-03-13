@@ -160,7 +160,6 @@ async function extractTokenFromPage(): Promise<TokenInfo> {
       throw new Error(`Could not find company ID from ${GWS_FLOWS_BASE}`)
     }
 
-    console.log(`✅ Got flow token: ${flowToken.slice(0, 15)}...`)
     console.log(`✅ Got company ID: ${companyId}`)
 
     return { flowToken, companyId }
