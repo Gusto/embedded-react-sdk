@@ -4,7 +4,31 @@ import { GustoEmbeddedCore } from '@gusto/embedded-api/core'
 import { SDKHooks as NativeSDKHooks } from '@gusto/embedded-api/hooks/hooks'
 import { useMemo } from 'react'
 import { apiVersionHook } from './apiVersionHook'
-import type { SDKHooks, BeforeRequestHook } from '@/types/hooks'
+import type { SDKHooks, BeforeRequestHook, AfterSuccessHook } from '@/types/hooks'
+
+// TODO(EMBPAY-591): Remove once @gusto/embedded-api handles nullable `final_payout_unused_hours_input`
+const PAYROLL_OPERATION_IDS = new Set([
+  'get-v1-companies-company_id-payrolls-payroll_id',
+  'put-v1-companies-company_id-payrolls-payroll_id-prepare',
+])
+
+const payrollResponseFixHook: AfterSuccessHook = {
+  afterSuccess: async (context, response) => {
+    if (!PAYROLL_OPERATION_IDS.has(context.operationID)) return response
+
+    const contentType = response.headers.get('content-type') ?? ''
+    if (!contentType.includes('application/json')) return response
+
+    const text = await response.text()
+    if (!text.includes('final_payout_unused_hours_input')) return new Response(text, response)
+
+    const fixed = text.replace(
+      /"final_payout_unused_hours_input"\s*:\s*null/g,
+      '"final_payout_unused_hours_input":"0"',
+    )
+    return new Response(fixed, response)
+  },
+}
 
 export interface ApiProviderProps {
   url: string
@@ -29,6 +53,7 @@ export function ApiProvider({
     const sdkHooks = client._options.hooks || new NativeSDKHooks()
 
     sdkHooks.registerBeforeRequestHook(apiVersionHook)
+    sdkHooks.registerAfterSuccessHook(payrollResponseFixHook)
 
     if (headers) {
       const defaultHeaderHook: BeforeRequestHook = {
@@ -81,11 +106,10 @@ export function ApiProvider({
       return queryClientFromProps
     }
 
-    // Create and configure a new QueryClient for internal SDK use
     const client = new QueryClient()
 
     const onSuccess = async () => {
-      await client.invalidateQueries()
+      await client.invalidateQueries({ queryKey: ['@gusto/embedded-api'] })
     }
     client.setQueryDefaults(['@gusto/embedded-api'], { retry: false })
     client.setMutationDefaults(['@gusto/embedded-api'], { onSuccess, retry: false })
