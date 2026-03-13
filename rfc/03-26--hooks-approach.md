@@ -551,6 +551,7 @@ Errors today come from multiple sources with different shapes: API errors, SDK v
 - **React Hook Form dependency** — May be constraining for partners using a different form library (though it also saves us from version mismatches trying to have them use our schemas directly)
 - **Provider scoping** — Composed forms require each form's fields to live within their own `FormProvider`; fields from different forms cannot be freely intermixed in the same React subtree
 - **Field omission risks** — Omitting a required field whose default value is invalid will cause validation failures on submit (similar to why we have always advised against hiding fields)
+- **SDK fields only** — Partners cannot add their own custom fields into a hook's form. The schema and submission handler are defined by the hook, so only SDK-provided fields participate in validation and submission. Partners can render additional UI around the form, but custom inputs would need their own separate form state
 - **State tax complexity** — Mentioned above, dynamic, state-specific questions of varying types still require partners to handle rendering complexity
 - **Domain knowledge required** — Hooks like `usePayrollConfiguration` provide data but not UX context; partners need to understand the domain to compose meaningful interfaces
 - **Increased maintenance surface** — Each hook is a new public API contract that must stay in sync with both API changes and the component tier
@@ -561,7 +562,7 @@ Errors today come from multiple sources with different shapes: API errors, SDK v
 ## Recommendations
 
 1. **Update base component infrastructure** — Enable `BaseBoundaries` and `BaseLayout` to work without Suspense for hook-based usage (see corresponding PR)
-2. **Normalize error handling** — Standardize the `HookErrors` shape (`{ error, fieldErrors, setError }`) as the documented contract across all hooks
+2. **Normalize error handling** — Standardize the on an SDK Error shape as the documented contract across all hooks
 3. **Build hooks for payroll + select onboarding** — Prioritize where partner signal is strongest; export from `UNSTABLE_`
 4. **Create extensive documentation** — Hook API references, form composition patterns, field props/validation contracts, migration guides from component tier
 5. **Find partners to validate** — Identify 2-3 partners willing to build with hooks in a controlled setting for early adoption
