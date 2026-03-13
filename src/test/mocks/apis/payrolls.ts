@@ -45,13 +45,26 @@ const getHistoricalPayrolls = http.get<PathParams, GetV1CompaniesCompanyIdPayrol
   },
 )
 
+let payrollProcessingStatus: string | null = 'calculate_success'
+let lastCreatedOffCycleReason: string | null = null
+
 const getSinglePayroll = http.get<
   PathParams,
   GetV1CompaniesCompanyIdPayrollsPayrollIdRequest,
   GetV1CompaniesCompanyIdPayrollsPayrollIdResponse
 >(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id`, async ({ params }) => {
   const responseFixture = await getFixture('get-v1-companies-company_id-payrolls-payroll_id')
-  return HttpResponse.json(responseFixture)
+  const offCycleOverrides = lastCreatedOffCycleReason
+    ? { off_cycle: true, off_cycle_reason: lastCreatedOffCycleReason }
+    : {}
+  return HttpResponse.json({
+    ...responseFixture,
+    ...offCycleOverrides,
+    processed: payrollProcessingStatus === 'submit_success',
+    processing_request: payrollProcessingStatus
+      ? { status: payrollProcessingStatus, errors: [] }
+      : null,
+  })
 })
 
 export function handleGetPayrollBlockers(resolver: HttpResponseResolver) {
@@ -95,33 +108,24 @@ const preparePayroll = handlePayrollsPrepare(async ({ request }) => {
 
 const calculatePayroll = http.put(
   `${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`,
-  async () => {
-    const responseFixture = await getFixture('get-v1-companies-company_id-payrolls-payroll_id')
-    return HttpResponse.json({
-      ...responseFixture,
-      calculated_at: new Date().toISOString(),
-    })
+  () => {
+    payrollProcessingStatus = 'calculate_success'
+    return new HttpResponse(null, { status: 202 })
   },
 )
 
 const submitPayroll = http.put(
   `${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/submit`,
-  async () => {
-    const responseFixture = await getFixture('get-v1-companies-company_id-payrolls-payroll_id')
-    return HttpResponse.json({
-      ...responseFixture,
-      processed: true,
-      processing_request: {
-        status: 'submit_success',
-        errors: [],
-      },
-    })
+  () => {
+    payrollProcessingStatus = 'submit_success'
+    return new HttpResponse(null, { status: 202 })
   },
 )
 
 const cancelPayroll = http.put(
   `${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/cancel`,
   async () => {
+    payrollProcessingStatus = null
     const responseFixture = await getFixture('get-v1-companies-company_id-payrolls-payroll_id')
     return HttpResponse.json({
       ...responseFixture,
@@ -138,6 +142,36 @@ const updatePayroll = http.put(
   },
 )
 
+const createPayrollOffCycle = http.post(
+  `${API_BASE_URL}/v1/companies/:company_id/payrolls`,
+  async ({ request }) => {
+    const body = (await request.json()) as Record<string, unknown>
+    const isTransition =
+      body.off_cycle_reason === 'Transition from old pay schedule' ||
+      body.offCycleReason === 'Transition from old pay schedule'
+
+    const offCycleReason = (body.off_cycle_reason ?? body.offCycleReason ?? 'Bonus') as string
+
+    if (isTransition) {
+      lastCreatedOffCycleReason = offCycleReason
+      const responseFixture = await getFixture('post-v1-companies-company_id-payrolls-transition')
+      return HttpResponse.json(responseFixture)
+    }
+
+    lastCreatedOffCycleReason = offCycleReason
+    const responseFixture = await getFixture('get-v1-companies-company_id-payrolls-payroll_id')
+    return HttpResponse.json({
+      ...responseFixture,
+      off_cycle: true,
+      off_cycle_reason: offCycleReason,
+      payroll_uuid: 'off-cycle-payroll-uuid-1',
+      uuid: 'off-cycle-payroll-uuid-1',
+      processed: false,
+      calculated_at: null,
+    })
+  },
+)
+
 export default [
   getPayrollBlockers,
   getHistoricalPayrolls,
@@ -147,4 +181,5 @@ export default [
   submitPayroll,
   cancelPayroll,
   updatePayroll,
+  createPayrollOffCycle,
 ]

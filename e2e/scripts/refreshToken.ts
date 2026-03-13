@@ -40,7 +40,7 @@ async function extractTokenFromPage(): Promise<TokenInfo> {
     await page.goto(DEMO_URL, { waitUntil: 'networkidle' })
 
     const flowTypeSelect = page.locator('#demo_flow_type')
-    await flowTypeSelect.selectOption('react_sdk_demo')
+    await flowTypeSelect.selectOption('react_sdk_demo_company_onboarded')
 
     await page.waitForTimeout(500)
 

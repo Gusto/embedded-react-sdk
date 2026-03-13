@@ -116,6 +116,9 @@ interface E2EState {
   employeeId: string
   contractorId: string
   locationId: string
+  payScheduleUuid: string
+  transitionStartDate: string
+  transitionEndDate: string
 }
 
 interface Employee {
@@ -161,6 +164,139 @@ async function postToApi<T>(endpoint: string, data: Record<string, unknown>): Pr
     throw new Error(`API POST failed: ${response.status} ${response.statusText} - ${errorText}`)
   }
   return response.json()
+}
+
+async function putToApi<T>(endpoint: string, data: Record<string, unknown>): Promise<T> {
+  const response = await fetch(`${GWS_FLOWS_BASE}${endpoint}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  })
+  if (!response.ok) {
+    const errorText = await response.text()
+    throw new Error(`API PUT failed: ${response.status} ${response.statusText} - ${errorText}`)
+  }
+  return response.json()
+}
+
+interface PaySchedule {
+  uuid: string
+  frequency: string
+  version: string
+  anchor_pay_date: string
+  anchor_end_of_pay_period: string
+}
+
+interface PayPeriod {
+  start_date: string
+  end_date: string
+  pay_schedule_uuid: string
+}
+
+interface TransitionPeriodResult {
+  startDate: string
+  endDate: string
+}
+
+async function getOrCreatePaySchedule(flowToken: string, companyId: string): Promise<string> {
+  const endpoint = `/fe_sdk/${flowToken}/v1/companies/${companyId}/pay_schedules`
+  const paySchedules = await fetchFromApi<PaySchedule[]>(endpoint)
+
+  if (paySchedules.length > 0) {
+    console.log(`Found pay schedule: ${paySchedules[0].uuid} (${paySchedules[0].frequency})`)
+    return paySchedules[0].uuid
+  }
+
+  console.log('No pay schedules found, creating one...')
+  const today = new Date()
+  const anchorPayDate = new Date(today)
+  anchorPayDate.setDate(today.getDate() + 14)
+  const anchorEndOfPayPeriod = new Date(anchorPayDate)
+  anchorEndOfPayPeriod.setDate(anchorPayDate.getDate() - 1)
+
+  const newSchedule = await postToApi<PaySchedule>(endpoint, {
+    frequency: 'Every other week',
+    anchor_pay_date: anchorPayDate.toISOString().split('T')[0],
+    anchor_end_of_pay_period: anchorEndOfPayPeriod.toISOString().split('T')[0],
+  })
+  console.log(`Created pay schedule: ${newSchedule.uuid}`)
+  return newSchedule.uuid
+}
+
+function getTargetFrequencyConfig(currentFrequency: string) {
+  const SEMIMONTHLY = {
+    frequency: 'Twice per month',
+    getAnchorDates: () => {
+      const today = new Date()
+      const anchorPayDate = new Date(today.getFullYear(), today.getMonth() + 1, 15)
+      const anchorEndOfPayPeriod = new Date(anchorPayDate)
+      anchorEndOfPayPeriod.setDate(anchorPayDate.getDate() - 1)
+      return { anchorPayDate, anchorEndOfPayPeriod }
+    },
+    extraParams: { day_1: 15, day_2: 31 },
+  }
+
+  const BIWEEKLY = {
+    frequency: 'Every other week',
+    getAnchorDates: () => {
+      const today = new Date()
+      const anchorPayDate = new Date(today)
+      anchorPayDate.setDate(today.getDate() + 14)
+      const anchorEndOfPayPeriod = new Date(anchorPayDate)
+      anchorEndOfPayPeriod.setDate(anchorPayDate.getDate() - 1)
+      return { anchorPayDate, anchorEndOfPayPeriod }
+    },
+    extraParams: {},
+  }
+
+  return currentFrequency === SEMIMONTHLY.frequency ? BIWEEKLY : SEMIMONTHLY
+}
+
+async function createTransitionPeriod(
+  flowToken: string,
+  companyId: string,
+  payScheduleUuid: string,
+): Promise<TransitionPeriodResult | null> {
+  const scheduleEndpoint = `/fe_sdk/${flowToken}/v1/companies/${companyId}/pay_schedules/${payScheduleUuid}`
+  const schedule = await fetchFromApi<PaySchedule>(scheduleEndpoint)
+
+  const targetConfig = getTargetFrequencyConfig(schedule.frequency)
+  const { anchorPayDate, anchorEndOfPayPeriod } = targetConfig.getAnchorDates()
+
+  console.log(
+    `Changing pay schedule from "${schedule.frequency}" to "${targetConfig.frequency}"...`,
+  )
+
+  await putToApi<PaySchedule>(scheduleEndpoint, {
+    version: schedule.version,
+    frequency: targetConfig.frequency,
+    anchor_pay_date: anchorPayDate.toISOString().split('T')[0],
+    anchor_end_of_pay_period: anchorEndOfPayPeriod.toISOString().split('T')[0],
+    ...targetConfig.extraParams,
+  })
+  console.log('Pay schedule updated')
+
+  const today = new Date()
+  const startDate = new Date(today)
+  startDate.setMonth(today.getMonth() - 2)
+  const endDate = new Date(today)
+  endDate.setMonth(today.getMonth() + 2)
+
+  const periodsEndpoint =
+    `/fe_sdk/${flowToken}/v1/companies/${companyId}/pay_periods` +
+    `?start_date=${startDate.toISOString().split('T')[0]}` +
+    `&end_date=${endDate.toISOString().split('T')[0]}` +
+    `&payroll_types=transition`
+  const periods = await fetchFromApi<PayPeriod[]>(periodsEndpoint)
+
+  if (periods.length === 0) {
+    console.log('No transition pay periods found after schedule change')
+    return null
+  }
+
+  const period = periods[0]
+  console.log(`Found transition period: ${period.start_date} to ${period.end_date}`)
+  return { startDate: period.start_date, endDate: period.end_date }
 }
 
 async function getOrCreateLocation(flowToken: string, companyId: string): Promise<string> {
@@ -251,6 +387,7 @@ export default async function globalSetup() {
   let locationId = ''
   let employeeId = ''
   let contractorId = ''
+  let payScheduleUuid = ''
 
   try {
     locationId = await getOrCreateLocation(flowToken, companyId)
@@ -273,11 +410,37 @@ export default async function globalSetup() {
     console.warn('Tests requiring contractors may fail')
   }
 
+  try {
+    payScheduleUuid = await getOrCreatePaySchedule(flowToken, companyId)
+  } catch (error) {
+    console.warn(`Warning: Could not fetch pay schedule: ${error}`)
+    console.warn('Tests requiring pay schedules may fail')
+  }
+
+  let transitionStartDate = ''
+  let transitionEndDate = ''
+
+  if (payScheduleUuid) {
+    try {
+      const transitionPeriod = await createTransitionPeriod(flowToken, companyId, payScheduleUuid)
+      if (transitionPeriod) {
+        transitionStartDate = transitionPeriod.startDate
+        transitionEndDate = transitionPeriod.endDate
+      }
+    } catch (error) {
+      console.warn(`Warning: Could not create transition period: ${error}`)
+      console.warn('Transition payroll full flow test will use early return')
+    }
+  }
+
   const state: E2EState = {
     companyId,
     employeeId,
     contractorId,
     locationId,
+    payScheduleUuid,
+    transitionStartDate,
+    transitionEndDate,
   }
 
   const statePath = resolve(process.cwd(), 'e2e/.e2e-state.json')

@@ -966,9 +966,28 @@ describe('Payroll helpers', () => {
       expect(getPayrollTypeLabel(payroll)).toBe('External')
     })
 
-    it('returns the offCycleReason when payroll is off-cycle with a reason', () => {
+    it('returns the offCycleReason when payroll is off-cycle with a short reason', () => {
       const payroll = { external: false, offCycle: true, offCycleReason: 'Bonus' }
       expect(getPayrollTypeLabel(payroll)).toBe('Bonus')
+    })
+
+    it('returns Transition for transition payrolls', () => {
+      const payroll = {
+        external: false,
+        offCycle: true,
+        offCycleReason: 'Transition from old pay schedule',
+      }
+      expect(getPayrollTypeLabel(payroll)).toBe('Transition')
+    })
+
+    it('returns Dismissal for dismissed employee payrolls', () => {
+      const payroll = { external: false, offCycle: true, offCycleReason: 'Dismissed employee' }
+      expect(getPayrollTypeLabel(payroll)).toBe('Dismissal')
+    })
+
+    it('returns Correction for correction payrolls', () => {
+      const payroll = { external: false, offCycle: true, offCycleReason: 'Correction' }
+      expect(getPayrollTypeLabel(payroll)).toBe('Correction')
     })
 
     it('returns Off-Cycle when payroll is off-cycle without a reason', () => {

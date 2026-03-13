@@ -150,9 +150,9 @@
   "company_uuid": "625c7374-7f46-4348-bcb8-e39eff5893f0",
   "off_cycle": false,
   "auto_pilot": false,
-  "processed": true,
+  "processed": false,
   "processed_date": "2025-07-07",
-  "calculated_at": "2025-08-11",
+  "calculated_at": "2025-08-11T00:00:00.000Z",
   "pay_period": {
     "start_date": "2025-07-30",
     "end_date": "2025-08-13",
@@ -160,7 +160,7 @@
   },
   "check_date": "2025-08-15",
   "external": false,
-  "payroll_deadline": "2025-08-11",
+  "payroll_deadline": "2025-08-11T23:00:00.000Z",
   "totals": {
     "additional_earnings": "500.00",
     "benefits": "0.00",
@@ -186,8 +186,8 @@
     "tax_debit": "9834.65"
   },
   "processing_request": {
-    "status": "submit_success",
+    "status": "calculate_success",
     "errors": []
   },
-  "created_at": "2025-08-11"
+  "created_at": "2025-08-11T00:00:00.000Z"
 }
