@@ -56,11 +56,13 @@ function App() {
 
 ## Component Identification
 
-The SDK automatically identifies components in error reports and metrics using internal component names. Each SDK component reports its name in:
+SDK components report their name in error reports and metrics when available. Component names appear in:
 - Error context (`error.context.componentName`) - e.g., `"Contractor.Payments.CreatePayment"`
 - Metric tags (`metric.tags.component`) - e.g., `"Employee.Compensation"`
 
-This allows you to track which specific SDK components are experiencing errors or performance issues without any additional configuration.
+This allows you to track which specific SDK components are experiencing errors or performance issues.
+
+**Note:** Not all SDK components currently report their names. The SDK is progressively adding component identification. When a component name is not available, you can still use the `componentStack` field to identify the component hierarchy.
 
 **Example error with component identification:**
 
@@ -69,7 +71,7 @@ This allows you to track which specific SDK components are experiencing errors o
   type: 'boundary_error',
   message: 'Cannot read property of undefined',
   context: {
-    componentName: 'Employee.Compensation',
+    componentName: 'Employee.Compensation', // May be undefined if not yet implemented
     componentStack: '...'
   },
   timestamp: 1234567890
@@ -177,8 +179,8 @@ The SDK tracks the following performance metrics:
 
 | Metric Name | Description | Unit | Tags |
 |-------------|-------------|------|------|
-| `sdk.form.submit_duration` | Form submission time | ms | `status` (success/error), `component` (component name) |
-| `sdk.component.loading_duration` | Time spent in loading/suspense state | ms | `component` (component name) |
+| `sdk.form.submit_duration` | Form submission time | ms | `status` (success/error), `component` (when available) |
+| `sdk.component.loading_duration` | Time spent in loading/suspense state | ms | `component` (when available) |
 
 Additional metrics can be added by the SDK as needed.
 
