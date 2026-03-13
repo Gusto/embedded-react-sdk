@@ -159,6 +159,14 @@ const updatePayroll = http.put(
   },
 )
 
+const getPayrollReceipt = http.get(
+  `${API_BASE_URL}/v1/payrolls/:payroll_uuid/receipt`,
+  async () => {
+    const responseFixture = await getFixture('payroll-receipt-test-data')
+    return HttpResponse.json(responseFixture)
+  },
+)
+
 export default [
   getPayrollBlockers,
   getHistoricalPayrolls,
@@ -168,4 +176,5 @@ export default [
   submitPayroll,
   cancelPayroll,
   updatePayroll,
+  getPayrollReceipt,
 ]

@@ -759,7 +759,7 @@
         "wireInRequestUuid"
       ]
     },
-    "Payroll.Dismissal": {
+    "Payroll.DismissalFlow": {
       "endpoints": [
         {
           "method": "GET",
