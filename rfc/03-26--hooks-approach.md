@@ -597,7 +597,7 @@ Errors today come from multiple sources with different shapes: API errors, SDK v
 
 These hooks would be built in parallel with existing components in a sandbox fashion, exported from an `UNSTABLE_` import path and available for initial use independent of the rest of the SDK offering. The goal at this stage is partner signal — not full coverage.
 
-**Pending partner validation**, hooks would be rolled out across the library for each block component. This includes list-oriented components, which would wrap embedded API endpoints and format responses consistent with the hook return shape we've established (loading state, data, errors, mutations) for a consistent partner build experience.
+**Pending partner validation**, hooks would be rolled out across the library for each block component. This even includes list-oriented components, which would wrap embedded API endpoints and format responses consistent with the hook return shape we've established (loading state, data, errors, mutations) for a consistent partner build experience.
 
 ---
 
