@@ -1,6 +1,7 @@
 export {
   BaseComponent,
   BaseBoundaries,
+  BaseLayout,
   type BaseComponentInterface,
   type CommonComponentInterface,
 } from './Base'

@@ -1,0 +1,17 @@
+{
+  "formTitle": "Work address",
+  "description": "The primary location where the employee will be working.",
+  "location": "Work address",
+  "locationPlaceholder": "Select work address...",
+  "effectiveDate": "Start date",
+  "effectiveDateDescription": "The date the employee began working at this location.",
+  "submit": "Submit",
+  "fieldValidations": {
+    "location": {
+      "REQUIRED": "Please select a work address"
+    },
+    "effectiveDate": {
+      "REQUIRED": "Start date is required"
+    }
+  }
+}

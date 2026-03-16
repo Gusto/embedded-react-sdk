@@ -8,14 +8,11 @@ import type { KnownErrors } from './useBase'
 import { useAsyncError } from '@/hooks/useAsyncError'
 import { getFieldErrors } from '@/helpers/apiErrorToList'
 
-type SubmitHandler<T> = (data: T) => Promise<void>
-
 export const useBaseSubmit = () => {
   const [error, setError] = useState<KnownErrors | null>(null)
   const [fieldErrors, setFieldErrors] = useState<EntityErrorObject[] | null>(null)
   const throwError = useAsyncError()
 
-  // Enhanced setError that also clears fieldErrors when error is cleared
   const setErrorWithFieldsClear = useCallback((error: KnownErrors | null) => {
     setError(error)
     if (!error) {
@@ -45,11 +42,14 @@ export const useBaseSubmit = () => {
   }
 
   const baseSubmitHandler = useCallback(
-    async <T>(data: T, componentHandler: SubmitHandler<T>) => {
+    async <T, R = void>(
+      data: T,
+      componentHandler: (data: T) => Promise<R>,
+    ): Promise<R | undefined> => {
       setError(null)
       setFieldErrors(null)
       try {
-        await componentHandler(data)
+        return await componentHandler(data)
       } catch (err) {
         if (
           err instanceof APIError ||
@@ -58,7 +58,11 @@ export const useBaseSubmit = () => {
           err instanceof GustoEmbeddedError
         ) {
           processError(err)
-        } else throwError(err)
+          return undefined
+        } else {
+          throwError(err)
+          return undefined
+        }
       }
     },
     [setError, throwError],

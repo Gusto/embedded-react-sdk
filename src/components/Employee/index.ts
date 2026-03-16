@@ -17,3 +17,10 @@ export type { EmploymentEligibilityProps } from './DocumentSigner/EmploymentElig
 
 // TODO: Remove once we have migrated partners to use the new FederalTaxes and StateTaxes components
 export { Taxes } from './Taxes'
+
+export { ExampleHomeAddress } from '@/components/UNSTABLE_Hooks/examples/ExampleHomeAddress'
+export { ExampleEmployeeWorkAddress } from '@/components/UNSTABLE_Hooks/examples/ExampleEmployeeWorkAddress'
+export { ExampleEmployeeDetails } from '@/components/UNSTABLE_Hooks/examples/ExampleEmployeeDetails'
+export { ExampleEmployeeProfile } from '@/components/UNSTABLE_Hooks/examples/ExampleEmployeeProfile'
+export { ExampleCompensation } from '@/components/UNSTABLE_Hooks/examples/ExampleCompensation'
+export { ExampleStateTaxes } from '@/components/UNSTABLE_Hooks/examples/ExampleStateTaxes'

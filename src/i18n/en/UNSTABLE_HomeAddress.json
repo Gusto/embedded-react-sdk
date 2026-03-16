@@ -1,0 +1,34 @@
+{
+  "formTitle": "Home address",
+  "description": "Employee's home mailing address, within the United States.",
+  "street1": "Street 1",
+  "street2": "Street 2",
+  "city": "City",
+  "state": "State",
+  "statePlaceholder": "Select state...",
+  "zip": "Zip",
+  "courtesyWithholdingLabel": "Include courtesy withholding",
+  "courtesyWithholdingDescription": "Withhold and pay local income taxes for employees who live and work in different states.",
+  "submit": "Submit",
+  "errorTitle": "Something went wrong",
+  "errorDescription": "Please review the form and try again.",
+  "validations": {
+    "REQUIRED": "This field is required",
+    "INVALID_ZIP_FORMAT": "Must be a valid 5 or 9 digit zip code"
+  },
+  "fieldValidations": {
+    "street1": {
+      "REQUIRED": "Street address is required"
+    },
+    "city": {
+      "REQUIRED": "City is required"
+    },
+    "state": {
+      "REQUIRED": "Please select a state"
+    },
+    "zip": {
+      "REQUIRED": "Zip code is required",
+      "INVALID_ZIP_FORMAT": "Must be a valid 5 or 9 digit zip code"
+    }
+  }
+}

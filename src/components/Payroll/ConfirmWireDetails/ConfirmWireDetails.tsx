@@ -1,6 +1,6 @@
 import { createMachine } from 'robot3'
 import { useMachine } from 'react-robot'
-import { useMemo, useRef, useState } from 'react'
+import { Suspense, useMemo, useRef, useState } from 'react'
 import { useWireInRequestsListSuspense } from '@gusto/embedded-api/react-query/wireInRequestsList'
 import { ConfirmWireDetailsBanner } from './ConfirmWireDetailsBanner'
 import { confirmWireDetailsMachine } from './confirmWireDetailsStateMachine'
@@ -8,7 +8,7 @@ import { type ConfirmWireDetailsContextInterface } from './ConfirmWireDetailsCom
 import type { ConfirmWireDetailsProps } from './types'
 export type { ConfirmWireDetailsComponentType } from './types'
 import styles from './ConfirmWireDetails.module.scss'
-import { BaseComponent, BaseBoundaries, type BaseComponentInterface } from '@/components/Base'
+import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { FlowContext } from '@/components/Flow/useFlow'
 import { payrollWireEvents, type EventType } from '@/shared/constants'
@@ -115,15 +115,15 @@ function Root({ companyId, wireInId, onEvent = () => {} }: ConfirmWireDetailsInt
         containerRef={modalContainerRef}
         footer={
           Footer && (
-            <BaseBoundaries
-              LoaderComponent={() => (
+            <Suspense
+              fallback={
                 <div className={styles.footer}>
                   <LoadingSpinner size="sm" />
                 </div>
-              )}
+              }
             >
               <Footer onEvent={handleEvent} />
-            </BaseBoundaries>
+            </Suspense>
           )
         }
       >
