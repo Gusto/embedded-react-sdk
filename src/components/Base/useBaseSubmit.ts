@@ -26,48 +26,51 @@ export const useBaseSubmit = (componentName?: string) => {
     }
   }, [])
 
-  const processError = useCallback((error: KnownErrors) => {
-    setError(error)
+  const processError = useCallback(
+    (error: KnownErrors) => {
+      setError(error)
 
-    // Report error to observability
-    const observabilityError = createObservabilityError(error)
-    if (observabilityError) {
-      observability?.onError?.({
-        ...observabilityError,
-        context: {
-          ...observabilityError.context,
-          componentName,
-        },
-      })
-    }
+      // Report error to observability
+      const observabilityError = createObservabilityError(error)
+      if (observabilityError) {
+        observability?.onError?.({
+          ...observabilityError,
+          context: {
+            ...observabilityError.context,
+            componentName,
+          },
+        })
+      }
 
-    if (error instanceof UnprocessableEntityErrorObject && Array.isArray(error.errors)) {
-      const parsed = error.errors.flatMap(err => getFieldErrors(err))
-      if (parsed.length > 0) {
-        setFieldErrors(parsed)
-      } else {
-        const fallbackErrors: EntityErrorObject[] = error.errors
-          .filter(err => err.message)
-          .map(err => ({
-            errorKey: err.errorKey,
-            message: err.message ?? '',
-            category: err.category,
-          }))
-        if (fallbackErrors.length > 0) {
-          setFieldErrors(fallbackErrors)
+      if (error instanceof UnprocessableEntityErrorObject && Array.isArray(error.errors)) {
+        const parsed = error.errors.flatMap(err => getFieldErrors(err))
+        if (parsed.length > 0) {
+          setFieldErrors(parsed)
+        } else {
+          const fallbackErrors: EntityErrorObject[] = error.errors
+            .filter(err => err.message)
+            .map(err => ({
+              errorKey: err.errorKey,
+              message: err.message ?? '',
+              category: err.category,
+            }))
+          if (fallbackErrors.length > 0) {
+            setFieldErrors(fallbackErrors)
+          }
         }
       }
-    }
-  }, [observability, componentName])
+    },
+    [observability, componentName],
+  )
 
   const baseSubmitHandler = useCallback(
     async <T>(data: T, componentHandler: SubmitHandler<T>) => {
       const startTime = Date.now()
       setError(null)
       setFieldErrors(null)
-      
+
       let success = false
-      
+
       try {
         await componentHandler(data)
         success = true

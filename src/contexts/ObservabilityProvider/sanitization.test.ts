@@ -44,9 +44,9 @@ describe('sanitizeObject', () => {
       email: 'john@example.com',
       apiKey: 'abc123xyz',
     }
-    
+
     const result = sanitizeObject(obj)
-    
+
     expect(result).toEqual({
       name: 'John Doe',
       password: '[REDACTED]',
@@ -66,9 +66,9 @@ describe('sanitizeObject', () => {
         },
       },
     }
-    
+
     const result = sanitizeObject(obj)
-    
+
     expect(result).toEqual({
       user: {
         name: 'Jane',
@@ -88,9 +88,9 @@ describe('sanitizeObject', () => {
         { name: 'Bob', email: 'bob@example.com' },
       ],
     }
-    
+
     const result = sanitizeObject(obj)
-    
+
     expect(result).toEqual({
       users: [
         { name: 'Alice', email: '[EMAIL-REDACTED]' },
@@ -107,9 +107,9 @@ describe('sanitizeObject', () => {
       metadata: null,
       timestamp: undefined,
     }
-    
+
     const result = sanitizeObject(obj)
-    
+
     expect(result).toEqual({
       count: 42,
       enabled: true,
@@ -125,9 +125,9 @@ describe('sanitizeObject', () => {
       ApiKey: 'key123',
       SOCIAL_SECURITY_NUMBER: '123-45-6789',
     }
-    
+
     const result = sanitizeObject(obj)
-    
+
     expect(result).toEqual({
       PASSWORD: '[REDACTED]',
       ApiKey: '[REDACTED]',
@@ -154,7 +154,7 @@ describe('sanitizeError', () => {
 
   it('should sanitize error message and context by default', () => {
     const result = sanitizeError(mockError)
-    
+
     expect(result.message).toBe('Validation failed for email: [EMAIL-REDACTED]')
     expect(result.context.metadata).toEqual({
       email: '[EMAIL-REDACTED]',
@@ -165,13 +165,13 @@ describe('sanitizeError', () => {
 
   it('should include original error when configured', () => {
     const result = sanitizeError(mockError, { includeOriginalError: true })
-    
+
     expect(result.originalError).toBeDefined()
   })
 
   it('should not sanitize when disabled', () => {
     const result = sanitizeError(mockError, { enabled: false })
-    
+
     expect(result.message).toBe(mockError.message)
     expect(result.originalError).toBeUndefined()
   })
@@ -181,9 +181,9 @@ describe('sanitizeError', () => {
       ...error,
       message: 'CUSTOM',
     })
-    
+
     const result = sanitizeError(mockError, { customErrorSanitizer: customSanitizer })
-    
+
     expect(result.message).toBe('CUSTOM')
   })
 
@@ -197,11 +197,11 @@ describe('sanitizeError', () => {
         },
       },
     }
-    
+
     const result = sanitizeError(errorWithCustomFields, {
       additionalSensitiveFields: ['customerId', 'internalId'],
     })
-    
+
     expect(result.context.metadata).toEqual({
       customerId: '[REDACTED]',
       internalId: '[REDACTED]',
@@ -213,12 +213,12 @@ describe('sanitizeError', () => {
     sanitizeError(mockError, {
       additionalSensitiveFields: ['customField1', 'customField2'],
     })
-    
+
     // Call again with different fields
     sanitizeError(mockError, {
       additionalSensitiveFields: ['customField3', 'customField4'],
     })
-    
+
     // Verify the global array wasn't mutated by checking a new error without custom fields
     const errorWithPassword: ObservabilityError = {
       ...mockError,
@@ -229,9 +229,9 @@ describe('sanitizeError', () => {
         },
       },
     }
-    
+
     const result = sanitizeError(errorWithPassword, {})
-    
+
     // password should be redacted (it's in default list)
     expect(result.context.metadata).toHaveProperty('password', '[REDACTED]')
     // customField1 should NOT be redacted (not in default list)
@@ -245,22 +245,22 @@ describe('sanitizeError', () => {
         metadata: { myCustomField: 'value1' },
       },
     }
-    
+
     const error2: ObservabilityError = {
       ...mockError,
       context: {
         metadata: { myCustomField: 'value2' },
       },
     }
-    
+
     // First call with custom field
     const result1 = sanitizeError(error1, {
       additionalSensitiveFields: ['myCustomField'],
     })
-    
+
     // Second call without custom field
     const result2 = sanitizeError(error2, {})
-    
+
     // First should be redacted
     expect(result1.context.metadata).toHaveProperty('myCustomField', '[REDACTED]')
     // Second should NOT be redacted (config doesn't include it)
@@ -283,7 +283,7 @@ describe('sanitizeMetric', () => {
 
   it('should sanitize metric tags by default', () => {
     const result = sanitizeMetric(mockMetric)
-    
+
     expect(result.tags).toEqual({
       component: 'UserForm',
       email: '[EMAIL-REDACTED]',
@@ -293,7 +293,7 @@ describe('sanitizeMetric', () => {
 
   it('should not sanitize when disabled', () => {
     const result = sanitizeMetric(mockMetric, { enabled: false })
-    
+
     expect(result.tags).toEqual(mockMetric.tags)
   })
 
@@ -302,9 +302,9 @@ describe('sanitizeMetric', () => {
       ...metric,
       tags: { custom: 'tags' },
     })
-    
+
     const result = sanitizeMetric(mockMetric, { customMetricSanitizer: customSanitizer })
-    
+
     expect(result.tags).toEqual({ custom: 'tags' })
   })
 
@@ -315,9 +315,9 @@ describe('sanitizeMetric', () => {
       unit: 'ms',
       timestamp: Date.now(),
     }
-    
+
     const result = sanitizeMetric(metricWithoutTags)
-    
+
     expect(result).toEqual(metricWithoutTags)
   })
 
@@ -333,11 +333,11 @@ describe('sanitizeMetric', () => {
       },
       timestamp: Date.now(),
     }
-    
+
     const result = sanitizeMetric(metricWithCustomFields, {
       additionalSensitiveFields: ['customerId', 'internalId'],
     })
-    
+
     expect(result.tags).toEqual({
       component: 'MyComponent',
       customerId: '[REDACTED]',
@@ -356,11 +356,11 @@ describe('sanitizeMetric', () => {
       originalError: null,
       timestamp: Date.now(),
     }
-    
+
     sanitizeError(error, {
       additionalSensitiveFields: ['myField'],
     })
-    
+
     // Then sanitize a metric without specifying custom fields
     const metric: ObservabilityMetric = {
       name: 'test.metric',
@@ -368,9 +368,9 @@ describe('sanitizeMetric', () => {
       tags: { myField: 'value2' },
       timestamp: Date.now(),
     }
-    
+
     const result = sanitizeMetric(metric, {})
-    
+
     // myField should NOT be redacted in metric (wasn't in metric config)
     expect(result.tags).toHaveProperty('myField', 'value2')
   })

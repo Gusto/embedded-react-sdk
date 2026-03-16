@@ -5,6 +5,4 @@ export interface ObservabilityContextValue {
   observability: ObservabilityHook | undefined
 }
 
-export const ObservabilityContext = createContext<ObservabilityContextValue | undefined>(
-  undefined,
-)
+export const ObservabilityContext = createContext<ObservabilityContextValue | undefined>(undefined)

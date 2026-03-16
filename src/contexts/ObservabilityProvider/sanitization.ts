@@ -1,4 +1,8 @@
-import type { ObservabilityError, ObservabilityMetric, SanitizationConfig } from '@/types/observability'
+import type {
+  ObservabilityError,
+  ObservabilityMetric,
+  SanitizationConfig,
+} from '@/types/observability'
 
 /**
  * Common PII patterns to redact from strings
@@ -7,17 +11,20 @@ const PII_PATTERNS = [
   // SSN patterns (XXX-XX-XXXX, XXXXXXXXX)
   { pattern: /\b\d{3}-\d{2}-\d{4}\b/g, replacement: '[SSN-REDACTED]' },
   { pattern: /\b\d{9}\b/g, replacement: '[SSN-REDACTED]' },
-  
+
   // Email addresses
-  { pattern: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g, replacement: '[EMAIL-REDACTED]' },
-  
+  {
+    pattern: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g,
+    replacement: '[EMAIL-REDACTED]',
+  },
+
   // Phone numbers (various formats)
   { pattern: /\b\d{3}[-.\s]?\d{3}[-.\s]?\d{4}\b/g, replacement: '[PHONE-REDACTED]' },
   { pattern: /\(\d{3}\)\s*\d{3}[-.\s]?\d{4}/g, replacement: '[PHONE-REDACTED]' },
-  
+
   // Credit card numbers (basic pattern)
   { pattern: /\b\d{4}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}\b/g, replacement: '[CC-REDACTED]' },
-  
+
   // API keys and tokens (common patterns)
   { pattern: /\b[A-Za-z0-9_-]{32,}\b/g, replacement: '[TOKEN-REDACTED]' },
 ]
@@ -50,11 +57,11 @@ const SENSITIVE_FIELD_NAMES = [
  */
 export function sanitizeString(value: string): string {
   let sanitized = value
-  
+
   for (const { pattern, replacement } of PII_PATTERNS) {
     sanitized = sanitized.replace(pattern, replacement)
   }
-  
+
   return sanitized
 }
 
@@ -63,10 +70,7 @@ export function sanitizeString(value: string): string {
  * 1. Removing sensitive field names
  * 2. Redacting PII patterns in string values
  */
-export function sanitizeObject(
-  obj: unknown,
-  additionalSensitiveFields: string[] = [],
-): unknown {
+export function sanitizeObject(obj: unknown, additionalSensitiveFields: string[] = []): unknown {
   if (obj === null || obj === undefined) {
     return obj
   }
@@ -85,20 +89,20 @@ export function sanitizeObject(
 
   if (typeof obj === 'object') {
     const sanitized: Record<string, unknown> = {}
-    
+
     // Combine default and additional sensitive fields for this call only
     const allSensitiveFields = [...SENSITIVE_FIELD_NAMES, ...additionalSensitiveFields]
-    
+
     for (const [key, value] of Object.entries(obj)) {
       // Skip sensitive fields entirely
       if (allSensitiveFields.some(field => key.toLowerCase().includes(field.toLowerCase()))) {
         sanitized[key] = '[REDACTED]'
         continue
       }
-      
+
       sanitized[key] = sanitizeObject(value, additionalSensitiveFields)
     }
-    
+
     return sanitized
   }
 
@@ -134,7 +138,10 @@ export function sanitizeError(
     ...error,
     message: sanitizeString(error.message),
     stack: error.stack ? sanitizeString(error.stack) : undefined,
-    context: sanitizeObject(error.context, additionalSensitiveFields) as ObservabilityError['context'],
+    context: sanitizeObject(
+      error.context,
+      additionalSensitiveFields,
+    ) as ObservabilityError['context'],
     originalError: includeOriginalError ? error.originalError : undefined,
   }
 

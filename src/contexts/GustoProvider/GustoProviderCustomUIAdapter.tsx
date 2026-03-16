@@ -103,10 +103,7 @@ const GustoProviderCustomUIAdapter: React.FC<GustoProviderCustomUIAdapterProps> 
       }
 
       // Apply sanitization with the same config used for other errors
-      const sanitizedError = sanitizeError(
-        unsanitizedError,
-        config.observability.sanitization,
-      )
+      const sanitizedError = sanitizeError(unsanitizedError, config.observability.sanitization)
 
       config.observability.onError(sanitizedError)
     }
