@@ -559,6 +559,38 @@ Errors today come from multiple sources with different shapes: API errors, SDK v
 
 ---
 
+## Alternatives Considered
+
+### Alternatives to Hooks
+
+**Instance-level adapter IDs** — We considered assigning IDs to every adapter instance at the block level (e.g., Employee Profile) and to components within that block. Partners could then override adapters for specific instances, and we'd expose layout components that could be rearranged by adapter ID. We moved away from this because:
+- The ID contract would be brittle for partners to maintain — any internal restructuring would break their overrides
+- Override code became messy (large switch statements to apply one-off customizations)
+- Layout components couldn't accommodate the full range of customization partners expected
+- Customization was restricted to our component hierarchy — a button inside a table could be swapped to a different control, but it still had to live inside the table
+- The approach was difficult to maintain and didn't solve the whole problem
+
+**Hide buttons and headers via props** — A deliberately lower-ambition approach: add props to hide actions and headers, getting partners part of the way there without a major investment. We moved away from this because:
+- Not all components have clear actions and headers, so the props would need to be inconsistently applied or custom per complex component
+- Hiding actions and externalizing them was challenging — we could expose them via render props, but that restricts actions to living inside the component tree. Partners want to place actions in page-level sticky footers or external navigation bars
+- Working around that (e.g., imperative refs to trigger actions outside the component) required the component to communicate state upward, leading to React anti-patterns
+
+### Alternative Hooks Approaches
+
+**Provider-based hooks (prototyped in [PR #769](https://github.com/Gusto/embedded-react-sdk/pull/769))** — The initial approach from the [previous RFC](./11-25--ui-flexibility-exploration.md). Providers handled data fetching and passed values through context; child components consumed them via hooks. This was more compatible with existing infrastructure (suspense queries, `BaseBoundaries`), but we moved away from it because:
+- Hooks are more flexible when they can be used in isolation without requiring a parent provider
+- The provider included a suspense boundary, meaning the entire subtree would suspend — partners who wanted to place the hook higher in their React tree and render loading states more conditionally couldn't do so easily
+- The approach required more boilerplate; self-contained hooks are simpler for partners to adopt
+
+**Schema-only / form-library-agnostic hooks (prototyped in [PR #1209](https://github.com/Gusto/embedded-react-sdk/pull/1209))** — This approach exported schemas and field metadata as plain objects (with attributes like `isRequired`, `type`, `options`) so partners could compose them with their own form infrastructure. The intent was to avoid shipping react-hook-form as a dependency. We moved away from this for several reasons:
+- Business logic in the SDK is not restricted to form setup and submission — field values can depend on other field values dynamically as the user interacts. Without access to the form infrastructure, we can't help manage that complexity, and partners would need to re-implement it. Compensation is a clear example where this falls apart (FLSA status drives rate, payment unit, and minimum wage field behavior in real time)
+- Error handling can be complex depending on the situation. State taxes and company pay schedules both return server-side errors with implications for rendered fields. Partners would need to parse those errors and map them to field-level messages themselves
+- Concerns around tech and version compatibility — Zod is well supported, but partners stuck on v3 while we run v4 would face friction
+- Concerns around schema readiness for export — our schemas contain complex `superRefine` logic driven by the dynamic form behavior described above. We'd need a simplification pass before feeling confident exporting them
+- We can still selectively export schemas and field metadata from the current approach if partners demonstrate a need for that level of flexibility. The current approach gives us a cleanly encapsulated API as a first pass, with the option to progressively expose lower-level primitives based on partner signal
+
+---
+
 ## Recommendations
 
 1. **Update base component infrastructure** — Enable `BaseBoundaries` and `BaseLayout` to work without Suspense for hook-based usage (see corresponding PR)
