@@ -1,0 +1,133 @@
+---
+alwaysApply: false
+globs: src/**
+---
+
+# SDK Architecture
+
+## ComponentsContext Pattern
+
+All UI rendering goes through the ComponentsContext adapter. **Never import UI primitives directly** -- always use the context:
+
+```tsx
+const Components = useComponentContext()
+return <Components.TextInput {...props} />
+```
+
+`ComponentsProvider` supplies the full component map (Button, TextInput, Select, Alert, Badge, Heading, Text, etc.). `GustoProvider` accepts `Partial<ComponentsContextType>` and fills in defaults, allowing partners to override UI components with their own design system.
+
+## Field Components for react-hook-form
+
+When rendering inputs inside a react-hook-form `FormProvider`, use the Field components from `src/components/Common/Fields/`:
+
+- `TextInputField`, `TextAreaField`, `NumberInputField`, `DatePickerField`
+- `SelectField`, `ComboBoxField`, `MultiSelectComboBoxField`
+- `CheckboxField`, `CheckboxGroupField`, `RadioGroupField`, `SwitchField`
+- `FileInputField`, `PercentageField`
+
+Field components use `useField()` internally, which connects to react-hook-form via `useController` + `useFormContext`. The parent component wraps children with `FormProvider` from `useForm()`, and Field components just need a `name` prop to register.
+
+For inputs outside of a react-hook-form context (e.g. controlling local state, filters, or standalone interactions), use the UI primitives from `useComponentContext()` directly instead (e.g. `Components.TextInput`, `Components.Select`).
+
+```tsx
+// Parent sets up the form
+const formMethods = useForm<MyInputs>({ ... })
+return (
+  <FormProvider {...formMethods}>
+    <MyFormContent />
+  </FormProvider>
+)
+
+// Child uses Field components
+<TextInputField name="firstName" label={t('firstNameLabel')} />
+<SelectField name="state" options={stateOptions} />
+```
+
+## Component Organization
+
+```
+src/components/
+├── Common/         # Shared UI primitives and Field components
+│   ├── Fields/     # Form-connected Field components (use these for forms)
+│   └── UI/         # Low-level UI components (accessed via ComponentsContext)
+├── Company/        # Company domain features
+├── Employee/       # Employee domain features
+├── Contractor/     # Contractor domain features
+├── Payroll/        # Payroll domain features
+└── Flow/           # Multi-step flow orchestration
+```
+
+## API Layer (`@gusto/embedded-api`)
+
+All API calls go through the `@gusto/embedded-api` package, which provides React Query hooks with Zod schema validation.
+
+### Import Paths
+
+```tsx
+import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
+import { usePayrollsUpdateMutation } from '@gusto/embedded-api/react-query/payrollsUpdate'
+import type { Employee } from '@gusto/embedded-api/models/components/employee'
+import type { APIError } from '@gusto/embedded-api/models/errors/apierror'
+```
+
+- `@gusto/embedded-api/react-query/<operation>` -- React Query hooks
+- `@gusto/embedded-api/models/components/<name>` -- Component/entity types
+- `@gusto/embedded-api/models/operations/<name>` -- Operation request/response types
+- `@gusto/embedded-api/models/errors/<name>` -- Error types (`APIError`, `SDKValidationError`, `UnprocessableEntityErrorObject`)
+
+### Hook Naming Convention
+
+- **Suspense queries**: `use<Resource><Action>Suspense` (e.g. `useEmployeesListSuspense`, `usePayrollsGetSuspense`)
+- **Regular queries**: `use<Resource><Action>` (e.g. `useEmployeesList`, `useBankAccountsGet`)
+- **Mutations**: `use<Resource><Action>Mutation` (e.g. `useContractorsCreateMutation`, `usePayrollsCalculateMutation`)
+
+### Error Handling
+
+Mutations are typically wrapped in `baseSubmitHandler` which handles API errors consistently:
+
+```tsx
+await baseSubmitHandler({}, async () => {
+  await updatePayroll({
+    request: { companyId, payrollId, payrollUpdate: { ... } },
+  })
+})
+```
+
+For query-specific error handling, use `throwOnError`:
+
+```tsx
+const { data } = useContractorPaymentsGetReceipt(
+  { contractorPaymentUuid: payment.uuid! },
+  {
+    throwOnError: (error: Error) => {
+      if (error instanceof APIError && error.httpMeta.response.status === 404) {
+        return false
+      }
+      return true
+    },
+  },
+)
+```
+
+### Wrapper Hooks
+
+Complex data-fetching scenarios are wrapped in custom hooks that combine multiple embedded-api hooks with pagination, retries, or form logic (e.g. `usePayrollConfigurationData`, `useContractorProfile`, `usePreparedPayrollData`).
+
+## Styling
+
+SCSS modules for component styles. The `@/styles/Helpers` module is globally available via Vite's preprocessor config -- never re-import it with `@use`.
+
+## i18n
+
+All user-facing text uses i18next. Translation types are generated via `npm run i18n:generate`. Use the `useTranslation` hook to access translations.
+
+## Provider Stack
+
+```
+GustoProvider
+  → ComponentsProvider (UI component map)
+  → ThemeProvider
+  → LocaleProvider / I18nextProvider
+  → ApiProvider (React Query + auth)
+  → {children}
+```
