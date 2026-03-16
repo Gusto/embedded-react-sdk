@@ -591,12 +591,28 @@ Errors today come from multiple sources with different shapes: API errors, SDK v
 
 ---
 
+## Rollout
+
+**Initial scope:** Build hooks for targeted components where we can get direct partner signal. The primary focus is the **run payroll domain**, with potential expansion into **company or employee onboarding** depending on where partners are actively building and where hooks would add the most value.
+
+These hooks would be built in parallel with existing components in a sandbox fashion, exported from an `UNSTABLE_` import path and available for initial use independent of the rest of the SDK offering. The goal at this stage is partner signal — not full coverage.
+
+**Pending partner validation**, hooks would be rolled out across the library for each block component. This includes list-oriented components, which would wrap embedded API endpoints and format responses consistent with the hook return shape we've established (loading state, data, errors, mutations) for a consistent partner build experience.
+
+---
+
 ## Recommendations
 
 1. **Update base component infrastructure** — Enable `BaseBoundaries` and `BaseLayout` to work without Suspense for hook-based usage (see corresponding PR)
-2. **Normalize error handling** — Standardize the on an SDK Error shape as the documented contract across all hooks
+2. **Normalize error handling** — Standardize on an SDK error shape as the documented contract across all hooks
 3. **Build hooks for payroll + select onboarding** — Prioritize where partner signal is strongest; export from `UNSTABLE_`
 4. **Create extensive documentation** — Hook API references, form composition patterns, field props/validation contracts, migration guides from component tier
 5. **Find partners to validate** — Identify 2-3 partners willing to build with hooks in a controlled setting for early adoption
 6. **Plan stabilization based on signal** — Move from `UNSTABLE_` to stable based on partner adoption, API stability, team review, and eng/product consensus
 7. **Build out E2E test suite** — Prepare to migrate internal component implementations to hooks with confidence
+
+---
+
+## Feedback Requested
+
+We are looking for reviewers to flag if this approach does not demonstrably address partner needs, or if there are major technical concerns that would preclude us from proceeding to the prototyping phase.
