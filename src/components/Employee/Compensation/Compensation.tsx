@@ -218,7 +218,7 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
         const { compensation } = await updateCompensationMutation.mutateAsync({
           request: {
             compensationId: updatedJobData.currentCompensationUuid!,
-            requestBody: {
+            compensationsUpdateRequestBody: {
               // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
               version: updatedJobData.compensations?.find(
                 comp => comp.uuid === updatedJobData.currentCompensationUuid,

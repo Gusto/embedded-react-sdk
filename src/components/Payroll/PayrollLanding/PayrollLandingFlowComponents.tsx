@@ -71,12 +71,14 @@ export function PayrollLandingTabsContextual() {
     companyUuid: ensureRequired(companyId),
   })
 
-  const payrollBlockerList = blockersData.payrollBlockerList ?? []
+  const payrollBlockerList = blockersData.payrollBlockers ?? []
 
-  const blockers: ApiPayrollBlocker[] = payrollBlockerList.map(blocker => ({
-    key: blocker.key ?? 'unknown',
-    message: blocker.message,
-  }))
+  const blockers: ApiPayrollBlocker[] = payrollBlockerList.map(
+    (blocker: { key?: string; message?: string }) => ({
+      key: blocker.key ?? 'unknown',
+      message: blocker.message,
+    }),
+  )
 
   const onViewBlockers = () => {
     onEvent(componentEvents.RUN_PAYROLL_BLOCKERS_VIEW_ALL)

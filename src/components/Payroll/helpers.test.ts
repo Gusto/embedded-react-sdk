@@ -30,8 +30,8 @@ import type { PayScheduleObject } from '@gusto/embedded-api/models/components/pa
 import type { TFunction } from 'i18next'
 import { Job } from '@gusto/embedded-api/models/components/job.js'
 import {
-  FixedCompensations,
-  HourlyCompensations,
+  type PayrollEmployeeCompensationsTypeFixedCompensations as FixedCompensations,
+  type PayrollEmployeeCompensationsTypeHourlyCompensations as HourlyCompensations,
 } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype.js'
 
 describe('Payroll helpers', () => {

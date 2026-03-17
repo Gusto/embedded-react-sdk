@@ -44,12 +44,14 @@ const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
     companyUuid: companyId,
   })
 
-  const payrollBlockerList = blockersData.payrollBlockerList ?? []
+  const payrollBlockerList = blockersData.payrollBlockers ?? []
 
-  const blockers: ApiPayrollBlocker[] = payrollBlockerList.map(blocker => ({
-    key: blocker.key ?? 'unknown',
-    message: blocker.message,
-  }))
+  const blockers: ApiPayrollBlocker[] = payrollBlockerList.map(
+    (blocker: { key?: string; message?: string }) => ({
+      key: blocker.key ?? 'unknown',
+      message: blocker.message,
+    }),
+  )
 
   const { data: wireInRequestsData } = useWireInRequestsListSuspense({
     companyUuid: companyId,

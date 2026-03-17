@@ -39,7 +39,7 @@ function Root({ companyId, signatoryId, className, children, dictionary }: Docum
   const companyForms = formList!
 
   const {
-    data: { signatoryList },
+    data: { signatories: signatoryList },
   } = useSignatoriesListSuspense({
     companyUuid: companyId,
   })

@@ -3,6 +3,7 @@ import { FormProvider, useForm, type SubmitHandler } from 'react-hook-form'
 import { useEffect } from 'react'
 import { useEmployeeTaxSetupGetFederalTaxesSuspense } from '@gusto/embedded-api/react-query/employeeTaxSetupGetFederalTaxes'
 import { useEmployeeTaxSetupUpdateFederalTaxesMutation } from '@gusto/embedded-api/react-query/employeeTaxSetupUpdateFederalTaxes'
+import type { PutV1EmployeesEmployeeIdFederalTaxesRequestBody } from '@gusto/embedded-api/models/operations/putv1employeesemployeeidfederaltaxes'
 import { FederalForm } from './FederalForm'
 import { FederalFormSchema, type FederalFormInputs, type FederalFormPayload } from './FederalForm'
 import { Head } from './Head'
@@ -48,9 +49,8 @@ const Root = (props: FederalTaxesProps) => {
 
   const isRev2020 = employeeFederalTax.w4DataType === 'rev_2020_w4'
 
-  const defaultValues: FederalFormInputs = isRev2020
+  const defaultValues = isRev2020
     ? {
-        w4DataType: 'rev_2020_w4',
         filingStatus: employeeFederalTax.filingStatus ?? '',
         twoJobs: employeeFederalTax.twoJobs ? 'true' : 'false',
         deductions: employeeFederalTax.deductions ? Number(employeeFederalTax.deductions) : 0,
@@ -63,10 +63,12 @@ const Root = (props: FederalTaxesProps) => {
           : 0,
       }
     : {
-        w4DataType: 'pre_2020_w4',
-        filingStatus: employeeFederalTax.filingStatus ?? '',
-        federalWithholdingAllowance: employeeFederalTax.federalWithholdingAllowance ?? 0,
-        additionalWithholding: employeeFederalTax.additionalWithholding,
+        filingStatus: '',
+        twoJobs: 'false',
+        deductions: 0,
+        dependentsAmount: 0,
+        otherIncome: 0,
+        extraWithholding: 0,
       }
 
   const formMethods = useForm<FederalFormInputs, unknown, FederalFormPayload>({
@@ -86,25 +88,17 @@ const Root = (props: FederalTaxesProps) => {
 
   const onSubmit: SubmitHandler<FederalFormPayload> = async data => {
     await baseSubmitHandler(data, async payload => {
-      const requestBody =
-        payload.w4DataType === 'rev_2020_w4'
-          ? {
-              filingStatus: payload.filingStatus,
-              twoJobs: payload.twoJobs === 'true',
-              dependentsAmount: payload.dependentsAmount,
-              otherIncome: payload.otherIncome,
-              deductions: payload.deductions,
-              extraWithholding: payload.extraWithholding,
-              w4DataType: payload.w4DataType,
-              version: employeeFederalTax.version,
-            }
-          : {
-              filingStatus: payload.filingStatus,
-              federalWithholdingAllowance: payload.federalWithholdingAllowance,
-              additionalWithholding: payload.additionalWithholding,
-              w4DataType: payload.w4DataType,
-              version: employeeFederalTax.version,
-            }
+      const requestBody: PutV1EmployeesEmployeeIdFederalTaxesRequestBody = {
+        filingStatus:
+          payload.filingStatus as PutV1EmployeesEmployeeIdFederalTaxesRequestBody['filingStatus'],
+        twoJobs: payload.twoJobs === 'true',
+        dependentsAmount: Number(payload.dependentsAmount),
+        otherIncome: Number(payload.otherIncome),
+        deductions: Number(payload.deductions),
+        extraWithholding: Number(payload.extraWithholding),
+        w4DataType: 'rev_2020_w4',
+        version: employeeFederalTax.version,
+      }
 
       const federalTaxesResponse = await updateFederalTaxes({
         request: {
