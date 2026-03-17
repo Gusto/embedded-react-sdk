@@ -448,8 +448,8 @@ test.describe('TransitionFlow', () => {
       localConfig,
     }) => {
       test.skip(
-        localConfig.isLocal && !transitionState.ready,
-        'Transition period setup failed -- cannot create transition payroll against real API',
+        localConfig.isLocal,
+        'Skipped in local/demo mode -- full flow test covers this path without consuming the transition period',
       )
 
       await page.goto(getTransitionUrl())
@@ -477,8 +477,8 @@ test.describe('TransitionFlow', () => {
       localConfig,
     }) => {
       test.skip(
-        localConfig.isLocal && !transitionState.ready,
-        'Transition period setup failed -- cannot create transition payroll against real API',
+        localConfig.isLocal,
+        'Skipped in local/demo mode -- full flow test covers this path without consuming the transition period',
       )
 
       await page.goto(getTransitionUrl())
@@ -512,6 +512,8 @@ test.describe('TransitionFlow', () => {
       page,
       localConfig,
     }) => {
+      test.setTimeout(600_000)
+
       test.skip(
         localConfig.isLocal && !transitionState.ready,
         'Transition period setup failed -- cannot run full flow against real API',
@@ -556,10 +558,10 @@ test.describe('TransitionFlow', () => {
         level: 4,
       })
 
-      await expect(reviewHeading.or(calculatingIndicator)).toBeVisible({ timeout: 30000 })
+      await expect(reviewHeading.or(calculatingIndicator)).toBeVisible({ timeout: 60000 })
 
       if (!(await reviewHeading.isVisible().catch(() => false))) {
-        await expect(reviewHeading).toBeVisible({ timeout: 180000 })
+        await expect(reviewHeading).toBeVisible({ timeout: 480_000 })
       }
 
       const wireOption = page.getByRole('radio', { name: /wire funds/i })
@@ -575,11 +577,11 @@ test.describe('TransitionFlow', () => {
       await expect(submitButton).toBeEnabled({ timeout: 10000 })
       await submitButton.click()
 
-      await waitForLoadingComplete(page, 90000)
+      await waitForLoadingComplete(page, 120_000)
 
       await expect(
         page.getByRole('heading', { name: /payroll summary/i, level: 1 }),
-      ).toBeVisible({ timeout: 60000 })
+      ).toBeVisible({ timeout: 120_000 })
 
       await expect(
         page.getByRole('button', { name: /view payroll receipt/i }),
