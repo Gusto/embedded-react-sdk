@@ -244,7 +244,7 @@ async function createTransitionPeriodViaScheduleChange(
 function getCheckDate(transitionEndDate?: string): { month: number; day: number; year: number } {
   const today = new Date()
   const minDate = new Date(today)
-  minDate.setDate(today.getDate() + 7)
+  minDate.setDate(today.getDate() + 30)
 
   let targetDate = minDate
 
