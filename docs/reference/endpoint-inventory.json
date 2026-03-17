@@ -1023,7 +1023,19 @@
         "recoveryCaseUuid"
       ]
     },
-    "Payroll.TransitionCreation": {
+    "Payroll.TransitionFlow": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/payrolls/:payrollId"
+        }
+      ],
+      "variables": [
+        "companyId",
+        "payrollId"
+      ]
+    },
+    "Payroll.Transition": {
       "endpoints": [
         {
           "method": "POST",
