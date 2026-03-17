@@ -13,22 +13,6 @@ interface TokenInfo {
   companyId: string
 }
 
-function extractFlowTokenFromContent(pageContent: string): string {
-  const iframeMatch = pageContent.match(/src="[^"]*\/app\/([a-zA-Z0-9_-]+)\/react_sdk/)
-  if (iframeMatch) return iframeMatch[1]
-
-  const appLinkMatch = pageContent.match(/\/app\/([a-zA-Z0-9_-]+)\/react_sdk/)
-  if (appLinkMatch) return appLinkMatch[1]
-
-  const feSdkMatch = pageContent.match(/fe_sdk\/([a-zA-Z0-9_-]{20,})/)
-  if (feSdkMatch) return feSdkMatch[1]
-
-  const flowsPathMatch = pageContent.match(/\/flows\/([a-zA-Z0-9_-]{20,})/)
-  if (flowsPathMatch) return flowsPathMatch[1]
-
-  return ''
-}
-
 async function extractTokenFromPage(): Promise<TokenInfo> {
   console.log('🔄 Launching browser to get fresh token from GWS-Flows...')
 
@@ -58,35 +42,28 @@ async function extractTokenFromPage(): Promise<TokenInfo> {
 
     const maxAttempts = 40
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-      const pageContent = await page.content()
-      flowToken = extractFlowTokenFromContent(pageContent)
-      if (flowToken) {
-        console.log('  Found token via browser')
-        break
-      }
+      const readyHeading = page.getByRole('heading', { name: /your demo is ready/i })
+      const isReady = await readyHeading.isVisible().catch(() => false)
 
-      try {
-        const response = await fetch(demoPageUrl, {
-          headers: { Accept: 'text/html' },
-          signal: AbortSignal.timeout(10000),
-        })
-        if (response.ok) {
-          const html = await response.text()
-          flowToken = extractFlowTokenFromContent(html)
-          if (flowToken) {
-            console.log('  Found token via fetch')
+      if (isReady) {
+        const flowLink = page.locator('a[href*="/flows/"]').first()
+        const href = await flowLink.getAttribute('href')
+        if (href) {
+          const match = href.match(/\/flows\/([a-zA-Z0-9_-]+)/)
+          if (match) {
+            flowToken = match[1]
+            console.log('  Found token from demo result link')
             break
           }
         }
-      } catch {
-        // retry on network errors
       }
 
       if (attempt % 4 === 0) {
         console.log(`  Still waiting... (${attempt * 5}s)`)
       }
 
-      await page.waitForTimeout(5000)
+      await page.reload({ waitUntil: 'networkidle' }).catch(() => {})
+      await page.waitForTimeout(3000)
     }
 
     if (!flowToken) {
