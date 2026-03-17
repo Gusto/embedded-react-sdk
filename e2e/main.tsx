@@ -6,6 +6,7 @@ import { SelfOnboardingFlow } from '@/components/Employee/SelfOnboardingFlow/Sel
 import { OnboardingFlow as CompanyOnboardingFlow } from '@/components/Company/OnboardingFlow/OnboardingFlow'
 import { OnboardingFlow as ContractorOnboardingFlow } from '@/components/Contractor/OnboardingFlow/OnboardingFlow'
 import { PayrollFlow } from '@/components/Payroll/PayrollFlow/PayrollFlow'
+import { TransitionFlow } from '@/components/Payroll/Transition/TransitionFlow'
 import { PaymentFlow } from '@/components/Contractor/Payments/PaymentFlow/PaymentFlow'
 import { DismissalFlow } from '@/components/Payroll/Dismissal/DismissalFlow'
 import '@/styles/sdk.scss'
@@ -18,6 +19,7 @@ type FlowType =
   | 'company-onboarding'
   | 'contractor-onboarding'
   | 'payroll'
+  | 'transition'
   | 'contractor-payment'
   | 'dismissal'
 
@@ -27,6 +29,9 @@ interface E2EConfig {
   employeeId: string
   baseUrl: string
   isLocal: boolean
+  startDate: string
+  endDate: string
+  payScheduleUuid: string
 }
 
 function getConfigFromUrl(): E2EConfig {
@@ -45,11 +50,14 @@ function getConfigFromUrl(): E2EConfig {
     employeeId: params.get('employeeId') || '456',
     baseUrl,
     isLocal,
+    startDate: params.get('startDate') || '2025-08-14',
+    endDate: params.get('endDate') || '2025-08-27',
+    payScheduleUuid: params.get('payScheduleUuid') || '1478a82e-b45c-4980-843a-6ddc3b78268e',
   }
 }
 
 function FlowRenderer({ config }: { config: E2EConfig }) {
-  const { flow, companyId, employeeId } = config
+  const { flow, companyId, employeeId, startDate, endDate, payScheduleUuid } = config
   const handleEvent = () => {}
 
   switch (flow) {
@@ -65,6 +73,16 @@ function FlowRenderer({ config }: { config: E2EConfig }) {
       return <ContractorOnboardingFlow companyId={companyId} onEvent={handleEvent} />
     case 'payroll':
       return <PayrollFlow companyId={companyId} onEvent={handleEvent} />
+    case 'transition':
+      return (
+        <TransitionFlow
+          companyId={companyId}
+          startDate={startDate}
+          endDate={endDate}
+          payScheduleUuid={payScheduleUuid}
+          onEvent={handleEvent}
+        />
+      )
     case 'contractor-payment':
       return <PaymentFlow companyId={companyId} onEvent={handleEvent} />
     case 'dismissal':

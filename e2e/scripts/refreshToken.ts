@@ -62,35 +62,28 @@ async function extractTokenFromPage(flowType: string = 'react_sdk_demo'): Promis
 
     const maxAttempts = 40
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-      const pageContent = await page.content()
-      flowToken = extractFlowTokenFromContent(pageContent)
-      if (flowToken) {
-        console.log('  Found token via browser')
-        break
-      }
+      const readyHeading = page.getByRole('heading', { name: /your demo is ready/i })
+      const isReady = await readyHeading.isVisible().catch(() => false)
 
-      try {
-        const response = await fetch(demoPageUrl, {
-          headers: { Accept: 'text/html' },
-          signal: AbortSignal.timeout(10000),
-        })
-        if (response.ok) {
-          const html = await response.text()
-          flowToken = extractFlowTokenFromContent(html)
-          if (flowToken) {
-            console.log('  Found token via fetch')
+      if (isReady) {
+        const flowLink = page.locator('a[href*="/flows/"]').first()
+        const href = await flowLink.getAttribute('href')
+        if (href) {
+          const match = href.match(/\/flows\/([a-zA-Z0-9_-]+)/)
+          if (match) {
+            flowToken = match[1]
+            console.log('  Found token from demo result link')
             break
           }
         }
-      } catch {
-        // retry on network errors
       }
 
       if (attempt % 4 === 0) {
         console.log(`  Still waiting... (${attempt * 5}s)`)
       }
 
-      await page.waitForTimeout(5000)
+      await page.reload({ waitUntil: 'networkidle' }).catch(() => {})
+      await page.waitForTimeout(3000)
     }
 
     if (!flowToken) {

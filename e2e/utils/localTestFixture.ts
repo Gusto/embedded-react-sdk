@@ -10,6 +10,7 @@ interface E2EState {
   dismissalCompanyId: string
   dismissalFlowToken: string
   terminatedEmployeeId: string
+  payScheduleUuid: string
 }
 
 interface LocalConfig {
@@ -22,6 +23,7 @@ interface LocalConfig {
   dismissalCompanyId: string
   dismissalFlowToken: string
   terminatedEmployeeId: string
+  payScheduleUuid: string
 }
 
 function loadDynamicState(): Partial<E2EState> {
@@ -36,9 +38,8 @@ function loadDynamicState(): Partial<E2EState> {
 export const test = base.extend<{ localConfig: LocalConfig }>({
   localConfig: [
     async ({}, use) => {
-      const dynamicState = loadDynamicState()
-
       const isLocal = process.env.E2E_LOCAL === 'true'
+      const dynamicState = isLocal ? loadDynamicState() : {}
 
       const config: LocalConfig = {
         isLocal,
@@ -52,6 +53,7 @@ export const test = base.extend<{ localConfig: LocalConfig }>({
         terminatedEmployeeId: isLocal
           ? dynamicState.terminatedEmployeeId || ''
           : 'dismissal-test-employee',
+        payScheduleUuid: dynamicState.payScheduleUuid || '',
       }
 
       await use(config)
@@ -94,6 +96,9 @@ export const test = base.extend<{ localConfig: LocalConfig }>({
       }
       if (!params.has('contractorId') || params.get('contractorId') === '789') {
         params.set('contractorId', localConfig.contractorId)
+      }
+      if (localConfig.payScheduleUuid && params.has('payScheduleUuid')) {
+        params.set('payScheduleUuid', localConfig.payScheduleUuid)
       }
 
       const newUrl = `${parsedUrl.pathname}?${params.toString()}`
