@@ -55,6 +55,7 @@ src/components/
 All API calls go through `@gusto/embedded-api` with React Query hooks and Zod schema validation.
 
 Import paths:
+
 - `@gusto/embedded-api/react-query/<operation>` — React Query hooks
 - `@gusto/embedded-api/models/components/<name>` — Entity types
 - `@gusto/embedded-api/models/operations/<name>` — Request/response types
