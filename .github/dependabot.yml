@@ -13,6 +13,8 @@ updates:
       # === Production breaking dependencies ===
       # SDK-261: Must stay pinned to 1.13.0, upgrades cause production issues
       - dependency-name: 'react-aria-components'
+      # react-aria upgrades are known to break things; dedicated ticket for upgrade
+      - dependency-name: 'react-aria'
       # SDK-248: Major version bumps cause issues
       - dependency-name: 'vite'
         update-types: ['version-update:semver-major']
