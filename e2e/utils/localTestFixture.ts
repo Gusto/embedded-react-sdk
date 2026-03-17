@@ -8,8 +8,6 @@ interface E2EState {
   contractorId: string
   locationId: string
   payScheduleUuid: string
-  transitionStartDate: string
-  transitionEndDate: string
 }
 
 interface LocalConfig {
@@ -20,8 +18,6 @@ interface LocalConfig {
   contractorId: string
   locationId: string
   payScheduleUuid: string
-  transitionStartDate: string
-  transitionEndDate: string
 }
 
 function loadDynamicState(): Partial<E2EState> {
@@ -47,8 +43,6 @@ export const test = base.extend<{ localConfig: LocalConfig }>({
         contractorId: dynamicState.contractorId || '789',
         locationId: dynamicState.locationId || '',
         payScheduleUuid: dynamicState.payScheduleUuid || '',
-        transitionStartDate: dynamicState.transitionStartDate || '',
-        transitionEndDate: dynamicState.transitionEndDate || '',
       }
 
       await use(config)
@@ -79,20 +73,6 @@ export const test = base.extend<{ localConfig: LocalConfig }>({
       }
       if (localConfig.payScheduleUuid && params.has('payScheduleUuid')) {
         params.set('payScheduleUuid', localConfig.payScheduleUuid)
-      }
-      if (localConfig.isLocal && params.has('startDate') && params.has('endDate')) {
-        if (localConfig.transitionStartDate && localConfig.transitionEndDate) {
-          params.set('startDate', localConfig.transitionStartDate)
-          params.set('endDate', localConfig.transitionEndDate)
-        } else {
-          const today = new Date()
-          const startDate = new Date(today)
-          startDate.setDate(today.getDate() - 7)
-          const endDate = new Date(today)
-          endDate.setDate(today.getDate() + 7)
-          params.set('startDate', startDate.toISOString().split('T')[0])
-          params.set('endDate', endDate.toISOString().split('T')[0])
-        }
       }
 
       const newUrl = `${parsedUrl.pathname}?${params.toString()}`

@@ -126,7 +126,8 @@ function Root({
         },
       })
 
-      const payrollUuid = response.payrollPrepared?.payrollUuid ?? response.payrollPrepared?.uuid
+      const payrollUuid =
+        response.payrollUnprocessed?.payrollUuid ?? response.payrollUnprocessed?.uuid
 
       if (!payrollUuid) {
         throw new Error(t('errors.missingPayrollId'))
