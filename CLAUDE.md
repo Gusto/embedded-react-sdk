@@ -6,7 +6,7 @@ React component library for Gusto's Embedded Payroll product. Built with TypeScr
 
 ```bash
 npm run build          # Build the SDK
-npm run test -- --run  # Run tests once (NEVER use `npm run test` alone — it hangs in watch mode)
+npm run test -- --run  # Run tests once and exit (omitting --run starts watch mode, which won't exit)
 npm run storybook      # Start Storybook on port 6006
 npm run e2e:serve      # Start E2E test app
 npm run test:e2e       # Run E2E tests (requires gws-flows + ZenPayroll running)
