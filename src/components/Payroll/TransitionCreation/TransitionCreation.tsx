@@ -1,13 +1,17 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useTranslation } from 'react-i18next'
 import { usePayrollsCreateOffCycleMutation } from '@gusto/embedded-api/react-query/payrollsCreateOffCycle'
-import { OffCycleReason } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
+import {
+  OffCycleReason,
+  WithholdingPayPeriod,
+} from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
 import { useOffCyclePayPeriodDateValidation } from '../OffCyclePayPeriodDateForm/useOffCyclePayPeriodDateValidation'
+import type { OffCycleTaxWithholdingConfig } from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
 import type { TransitionCreationProps, TransitionCreationFormData } from './TransitionCreationTypes'
 import { TransitionCreationPresentation } from './TransitionCreationPresentation'
 import { BaseComponent } from '@/components/Base/Base'
@@ -33,6 +37,8 @@ function Root({
 }: TransitionCreationProps) {
   useComponentDictionary('Payroll.TransitionCreation', dictionary)
   useI18n('Payroll.TransitionCreation')
+  useI18n('Payroll.OffCycleDeductionsSetting')
+  useI18n('Payroll.OffCycleTaxWithholding')
 
   const { t } = useTranslation('Payroll.TransitionCreation')
   const { onEvent, baseSubmitHandler } = useBase()
@@ -41,6 +47,25 @@ function Root({
   const { mutateAsync: createTransitionPayroll, isPending } = usePayrollsCreateOffCycleMutation()
 
   const { data: paySchedulesData } = usePaySchedulesGetAllSuspense({ companyId })
+
+  const [taxWithholdingConfig, setTaxWithholdingConfig] = useState<OffCycleTaxWithholdingConfig>({
+    withholdingPayPeriod: WithholdingPayPeriod.EveryOtherWeek,
+    withholdingRate: 'regular',
+  })
+  const [isTaxWithholdingModalOpen, setIsTaxWithholdingModalOpen] = useState(false)
+
+  const handleTaxWithholdingEditClick = useCallback(() => {
+    setIsTaxWithholdingModalOpen(true)
+  }, [])
+
+  const handleTaxWithholdingModalDone = useCallback((config: OffCycleTaxWithholdingConfig) => {
+    setTaxWithholdingConfig(config)
+    setIsTaxWithholdingModalOpen(false)
+  }, [])
+
+  const handleTaxWithholdingModalCancel = useCallback(() => {
+    setIsTaxWithholdingModalOpen(false)
+  }, [])
 
   const payScheduleName = useMemo(() => {
     const schedules = paySchedulesData.payScheduleList ?? []
@@ -67,6 +92,7 @@ function Root({
             },
             { message: t('errors.checkDateAchLeadTime') },
           ),
+        skipRegularDeductions: z.boolean(),
       }),
     [t, minCheckDate],
   )
@@ -75,6 +101,7 @@ function Root({
     resolver: zodResolver(schema),
     defaultValues: {
       checkDate: null,
+      skipRegularDeductions: false,
     },
   })
 
@@ -92,6 +119,9 @@ function Root({
             endDate: new RFCDate(endDate),
             checkDate: new RFCDate(checkDate),
             payScheduleUuid,
+            skipRegularDeductions: data.skipRegularDeductions,
+            withholdingPayPeriod: taxWithholdingConfig.withholdingPayPeriod,
+            fixedWithholdingRate: taxWithholdingConfig.withholdingRate === 'supplemental',
           },
         },
       })
@@ -114,6 +144,11 @@ function Root({
           endDate={endDate}
           payScheduleName={payScheduleName}
           isPending={isPending}
+          taxWithholdingConfig={taxWithholdingConfig}
+          isTaxWithholdingModalOpen={isTaxWithholdingModalOpen}
+          onTaxWithholdingEditClick={handleTaxWithholdingEditClick}
+          onTaxWithholdingModalDone={handleTaxWithholdingModalDone}
+          onTaxWithholdingModalCancel={handleTaxWithholdingModalCancel}
         />
       </Form>
     </FormProvider>

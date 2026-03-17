@@ -1,3 +1,4 @@
+import type { OffCycleTaxWithholdingConfig } from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 
 export interface TransitionCreationProps extends BaseComponentInterface<'Payroll.TransitionCreation'> {
@@ -9,6 +10,7 @@ export interface TransitionCreationProps extends BaseComponentInterface<'Payroll
 
 export interface TransitionCreationFormData {
   checkDate: Date | null
+  skipRegularDeductions: boolean
 }
 
 export interface TransitionCreationPresentationProps {
@@ -16,4 +18,9 @@ export interface TransitionCreationPresentationProps {
   endDate: string
   payScheduleName: string | null
   isPending?: boolean
+  taxWithholdingConfig: OffCycleTaxWithholdingConfig
+  isTaxWithholdingModalOpen: boolean
+  onTaxWithholdingEditClick: () => void
+  onTaxWithholdingModalDone: (config: OffCycleTaxWithholdingConfig) => void
+  onTaxWithholdingModalCancel: () => void
 }

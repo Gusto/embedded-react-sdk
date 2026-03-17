@@ -98,6 +98,39 @@ test.describe('TransitionFlow', () => {
     await expect(executionContent.first()).toBeVisible({ timeout: 60000 })
   })
 
+  test('displays deductions and contributions radio group', async ({ page }) => {
+    await page.goto(TRANSITION_URL)
+    await waitForLoadingComplete(page)
+
+    await expect(page.getByRole('heading', { name: /transition payroll/i, level: 2 })).toBeVisible({
+      timeout: 30000,
+    })
+
+    await expect(
+      page.getByLabel(/make all the regular deductions and contributions/i),
+    ).toBeVisible()
+    await expect(page.getByLabel(/block all deductions and contributions/i)).toBeVisible()
+
+    await expect(
+      page.getByLabel(/make all the regular deductions and contributions/i),
+    ).toBeChecked()
+  })
+
+  test('displays tax withholding rates table with edit button', async ({ page }) => {
+    await page.goto(TRANSITION_URL)
+    await waitForLoadingComplete(page)
+
+    await expect(page.getByRole('heading', { name: /transition payroll/i, level: 2 })).toBeVisible({
+      timeout: 30000,
+    })
+
+    await expect(page.getByRole('heading', { name: /tax withholding rates/i })).toBeVisible()
+    await expect(page.getByRole('button', { name: /edit/i })).toBeVisible()
+    await expect(page.getByText(/regular hours, regular wages, tips/i)).toBeVisible()
+    await expect(page.getByText(/supplemental wages, bonus wages, commission/i)).toBeVisible()
+    await expect(page.getByText(/reimbursements/i)).toBeVisible()
+  })
+
   test('displays transition details section with dates', async ({ page }) => {
     await page.goto(TRANSITION_URL)
     await waitForLoadingComplete(page)
