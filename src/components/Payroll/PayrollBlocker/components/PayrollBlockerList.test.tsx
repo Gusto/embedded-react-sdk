@@ -45,7 +45,7 @@ function renderPayrollBlockerList(props: { companyId: string; className?: string
 const mockCompanyId = 'company-123'
 
 const createMockBlocker = (overrides: Record<string, unknown> = {}) => ({
-  key: 'missing_tax_info',
+  key: 'missing_federal_tax_setup',
   message: 'Please complete your tax setup before running payroll.',
   ...overrides,
 })

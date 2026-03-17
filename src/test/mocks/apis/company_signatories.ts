@@ -1,9 +1,9 @@
 import type { HttpResponseResolver, PathParams } from 'msw'
 import { http, HttpResponse } from 'msw'
 import type { GetV1CompaniesCompanyUuidSignatoriesRequest } from '@gusto/embedded-api/models/operations/getv1companiescompanyuuidsignatories'
-import type { PostV1CompanySignatoriesRequestBody } from '@gusto/embedded-api/models/operations/postv1companysignatories'
-import type { PutV1CompaniesCompanyUuidSignatoriesSignatoryUuidRequestBody } from '@gusto/embedded-api/models/operations/putv1companiescompanyuuidsignatoriessignatoryuuid'
-import type { PostV1CompaniesCompanyUuidSignatoriesInviteRequestBody } from '@gusto/embedded-api/models/operations/postv1companiescompanyuuidsignatoriesinvite'
+import type { SignatoryCreateRequest } from '@gusto/embedded-api/models/components/signatorycreaterequest'
+import type { SignatoryUpdateRequest } from '@gusto/embedded-api/models/components/signatoryupdaterequest'
+import type { SignatoryInviteRequest } from '@gusto/embedded-api/models/components/signatoryinviterequest'
 import type {
   DeleteV1CompaniesCompanyUuidSignatoriesSignatoryUuidRequest,
   DeleteV1CompaniesCompanyUuidSignatoriesSignatoryUuidResponse,
@@ -19,6 +19,7 @@ const basicSignatory = {
   has_ssn: false,
   phone: '(555) 123-4567',
   birthday: '1980-01-01',
+  version: 'abc123',
   home_address: {
     street_1: '123 Main St',
     street_2: 'Apt 4B',
@@ -36,16 +37,13 @@ export function handleGetAllSignatories(
 }
 
 export function handleCreateSignatory(
-  resolver: HttpResponseResolver<PathParams, PostV1CompanySignatoriesRequestBody>,
+  resolver: HttpResponseResolver<PathParams, SignatoryCreateRequest>,
 ) {
   return http.post(`${API_BASE_URL}/v1/companies/:company_uuid/signatories`, resolver)
 }
 
 export function handleUpdateSignatory(
-  resolver: HttpResponseResolver<
-    PathParams,
-    PutV1CompaniesCompanyUuidSignatoriesSignatoryUuidRequestBody
-  >,
+  resolver: HttpResponseResolver<PathParams, SignatoryUpdateRequest>,
 ) {
   return http.put(
     `${API_BASE_URL}/v1/companies/:company_uuid/signatories/:signatory_uuid`,
@@ -56,7 +54,7 @@ export function handleUpdateSignatory(
 export function handleInviteSignatory(
   resolver: HttpResponseResolver<
     PathParams<'post-v1-companies-company_uuid-signatories-invite'>,
-    PostV1CompaniesCompanyUuidSignatoriesInviteRequestBody
+    SignatoryInviteRequest
   >,
 ) {
   return http.post(`${API_BASE_URL}/v1/companies/:company_id/signatories/invite`, resolver)
