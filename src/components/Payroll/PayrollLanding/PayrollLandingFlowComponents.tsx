@@ -12,6 +12,7 @@ import {
 } from '../ConfirmWireDetails/ConfirmWireDetails'
 import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { PayrollBlockerAlerts } from '../PayrollBlocker/components/PayrollBlockerAlerts'
+import { TransitionPayrollAlert } from '../TransitionPayrollAlert'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { useFlow } from '@/components/Flow/useFlow'
 import { useI18n } from '@/i18n'
@@ -109,6 +110,7 @@ export function PayrollLandingTabsContextual() {
       {hasActiveWireInRequests && (
         <ConfirmWireDetailsComponent companyId={ensureRequired(companyId)} onEvent={onEvent} />
       )}
+      <TransitionPayrollAlert companyId={ensureRequired(companyId)} onEvent={onEvent} />
       <PayrollBlockerAlerts blockers={blockers} onViewBlockersClick={onViewBlockers} />
       <Tabs
         tabs={tabs}
