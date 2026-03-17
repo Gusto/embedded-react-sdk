@@ -71,6 +71,7 @@ export const Root = ({
   } = usePayrollConfigurationData({
     companyId,
     payrollId,
+    isCalculating: isPolling,
   })
 
   const { data: payrollData } = usePayrollsGetSuspense(
@@ -224,16 +225,21 @@ export const Root = ({
 
   const onCalculatePayroll = async () => {
     setPayrollBlockers([])
+    setIsPolling(true)
 
     await baseSubmitHandler({}, async () => {
       const result = await payrollSubmitHandler(async () => {
-        await calculatePayroll({
-          request: {
-            companyId,
-            payrollId,
-          },
-        })
-        setIsPolling(true)
+        try {
+          await calculatePayroll({
+            request: {
+              companyId,
+              payrollId,
+            },
+          })
+        } catch (error) {
+          setIsPolling(false)
+          throw error
+        }
       })
 
       if (!result.success && result.blockers.length > 0) {

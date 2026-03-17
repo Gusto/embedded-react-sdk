@@ -4,6 +4,7 @@ import { GustoEmbeddedCore } from '@gusto/embedded-api/core'
 import { SDKHooks as NativeSDKHooks } from '@gusto/embedded-api/hooks/hooks'
 import { useMemo } from 'react'
 import { apiVersionHook } from './apiVersionHook'
+import { payrollResponseFixHook } from './payrollResponseFixHook'
 import type { SDKHooks, BeforeRequestHook } from '@/types/hooks'
 
 export interface ApiProviderProps {
@@ -29,6 +30,7 @@ export function ApiProvider({
     const sdkHooks = client._options.hooks || new NativeSDKHooks()
 
     sdkHooks.registerBeforeRequestHook(apiVersionHook)
+    sdkHooks.registerAfterSuccessHook(payrollResponseFixHook)
 
     if (headers) {
       const defaultHeaderHook: BeforeRequestHook = {
