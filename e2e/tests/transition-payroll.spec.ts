@@ -111,15 +111,93 @@ async function fetchUnprocessedTransitionPeriods(
   return periods.filter(p => !p.payroll?.processed)
 }
 
+async function ensureProcessedPayroll(
+  flowToken: string,
+  companyId: string,
+): Promise<boolean> {
+  const today = new Date()
+  const rangeStart = new Date(today)
+  rangeStart.setMonth(today.getMonth() - 3)
+  const rangeEnd = new Date(today)
+  rangeEnd.setDate(today.getDate() + 30)
+
+  const endpoint =
+    `/fe_sdk/${flowToken}/v1/companies/${companyId}/pay_periods` +
+    `?start_date=${rangeStart.toISOString().split('T')[0]}` +
+    `&end_date=${rangeEnd.toISOString().split('T')[0]}`
+  const periods = await fetchApi<PayPeriod[]>(endpoint)
+
+  const hasProcessed = periods.some(p => p.payroll?.processed)
+  if (hasProcessed) {
+    console.log('[transition-setup] Company has processed payroll history')
+    return true
+  }
+
+  const unprocessedPast = periods.find(
+    p => !p.payroll?.processed && p.payroll?.payroll_type === 'regular' && p.end_date <= today.toISOString().split('T')[0],
+  )
+  if (!unprocessedPast) {
+    console.log('[transition-setup] No past unprocessed regular payroll available to process')
+    return false
+  }
+
+  const payrollUuid = unprocessedPast.payroll.payroll_uuid
+  console.log(`[transition-setup] Processing payroll ${payrollUuid} (${unprocessedPast.start_date} to ${unprocessedPast.end_date})...`)
+
+  const prepareEndpoint = `/fe_sdk/${flowToken}/v1/companies/${companyId}/payrolls/${payrollUuid}/prepare`
+  await putApi(prepareEndpoint, {})
+
+  const calculateEndpoint = `/fe_sdk/${flowToken}/v1/companies/${companyId}/payrolls/${payrollUuid}/calculate`
+  await putApi(calculateEndpoint, {})
+
+  const maxPollAttempts = 20
+  for (let i = 0; i < maxPollAttempts; i++) {
+    await new Promise(r => setTimeout(r, 3000))
+    const payroll = await fetchApi<{ processed: boolean; processing_request?: { status: string } }>(
+      `/fe_sdk/${flowToken}/v1/companies/${companyId}/payrolls/${payrollUuid}`,
+    )
+    if (payroll.processing_request?.status === 'calculate_success') {
+      console.log('[transition-setup] Payroll calculated, submitting...')
+      const submitEndpoint = `/fe_sdk/${flowToken}/v1/companies/${companyId}/payrolls/${payrollUuid}/submit`
+      await putApi(submitEndpoint, {})
+      break
+    }
+    if (payroll.processing_request?.status === 'calculate_failed') {
+      console.log('[transition-setup] Payroll calculation failed')
+      return false
+    }
+  }
+
+  for (let i = 0; i < maxPollAttempts; i++) {
+    await new Promise(r => setTimeout(r, 3000))
+    const payroll = await fetchApi<{ processed: boolean }>(
+      `/fe_sdk/${flowToken}/v1/companies/${companyId}/payrolls/${payrollUuid}`,
+    )
+    if (payroll.processed) {
+      console.log('[transition-setup] Payroll processed successfully')
+      return true
+    }
+  }
+
+  console.log('[transition-setup] Payroll processing timed out')
+  return false
+}
+
 async function createTransitionPeriodViaScheduleChange(
   flowToken: string,
   companyId: string,
   payScheduleUuid: string,
 ): Promise<{ startDate: string; endDate: string } | null> {
+  const hasHistory = await ensureProcessedPayroll(flowToken, companyId)
+  if (!hasHistory) {
+    console.log('[transition-setup] Cannot create transition period without processed payroll history')
+    return null
+  }
+
   const scheduleEndpoint = `/fe_sdk/${flowToken}/v1/companies/${companyId}/pay_schedules/${payScheduleUuid}`
   const schedule = await fetchApi<PaySchedule>(scheduleEndpoint)
 
-  console.log(`[transition-setup] Current schedule: frequency="${schedule.frequency}", version="${schedule.version}", anchor_pay_date="${schedule.anchor_pay_date}", anchor_end="${schedule.anchor_end_of_pay_period}"`)
+  console.log(`[transition-setup] Current schedule: frequency="${schedule.frequency}", version="${schedule.version}"`)
 
   const targetConfig = getTargetFrequencyConfig(schedule.frequency)
   const { anchorPayDate, anchorEndOfPayPeriod } = targetConfig.getAnchorDates()
