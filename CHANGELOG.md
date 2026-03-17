@@ -1,5 +1,32 @@
 # Changelog
 
+## 0.36.0
+
+### Features & Enhancements
+
+- Add observability hooks with PII protection
+
+### Fixes
+
+- Revert react-aria upgrade and block in dependabot
+
+### Chores & Maintenance
+
+- Update embedded api to 0.12.4
+- Convert Cursor commands to Claude Code skills
+- Bump typescript-eslint from 8.57.0 to 8.57.1
+- Bump @storybook/addon-docs from 10.2.17 to 10.2.19
+- Bump msw from 2.12.11 to 2.12.12
+- Bump @storybook/addon-a11y from 10.2.17 to 10.2.19
+- Bump @storybook/addon-onboarding from 10.2.17 to 10.2.19
+- Bump @commitlint/cli from 20.4.4 to 20.5.0
+- Bump eslint-plugin-storybook from 10.2.17 to 10.2.19
+- Bump @storybook/react-vite from 10.2.17 to 10.2.19
+- Bump msw from 2.12.10 to 2.12.11
+- Bump lint-staged from 16.3.3 to 16.4.0
+- Bump storybook from 10.2.17 to 10.2.19
+- Bump @commitlint/config-conventional from 20.4.4 to 20.5.0
+
 ## 0.35.0
 
 ### Features & Enhancements
