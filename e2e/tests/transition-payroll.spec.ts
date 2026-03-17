@@ -42,6 +42,8 @@ function getGWSFlowsBase(): string {
 async function fetchApi<T>(endpoint: string): Promise<T> {
   const response = await fetch(`${getGWSFlowsBase()}${endpoint}`)
   if (!response.ok) {
+    const errorBody = await response.text().catch(() => '')
+    console.log(`[transition-setup] GET ${endpoint} failed (${response.status}): ${errorBody}`)
     throw new Error(`API request failed: ${response.status} ${response.statusText}`)
   }
   return response.json()
@@ -55,6 +57,7 @@ async function putApi<T>(endpoint: string, data: Record<string, unknown>): Promi
   })
   if (!response.ok) {
     const errorText = await response.text()
+    console.log(`[transition-setup] PUT ${endpoint} failed (${response.status}): ${errorText}`)
     throw new Error(`API PUT failed: ${response.status} - ${errorText}`)
   }
   return response.json()
@@ -97,7 +100,7 @@ async function fetchUnprocessedTransitionPeriods(
   const rangeStart = new Date(today)
   rangeStart.setMonth(today.getMonth() - 2)
   const rangeEnd = new Date(today)
-  rangeEnd.setMonth(today.getMonth() + 3)
+  rangeEnd.setDate(today.getDate() + 89)
 
   const endpoint =
     `/fe_sdk/${flowToken}/v1/companies/${companyId}/pay_periods` +
@@ -115,6 +118,8 @@ async function createTransitionPeriodViaScheduleChange(
 ): Promise<{ startDate: string; endDate: string } | null> {
   const scheduleEndpoint = `/fe_sdk/${flowToken}/v1/companies/${companyId}/pay_schedules/${payScheduleUuid}`
   const schedule = await fetchApi<PaySchedule>(scheduleEndpoint)
+
+  console.log(`[transition-setup] Current schedule: frequency="${schedule.frequency}", version="${schedule.version}", anchor_pay_date="${schedule.anchor_pay_date}", anchor_end="${schedule.anchor_end_of_pay_period}"`)
 
   const targetConfig = getTargetFrequencyConfig(schedule.frequency)
   const { anchorPayDate, anchorEndOfPayPeriod } = targetConfig.getAnchorDates()
