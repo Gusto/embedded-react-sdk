@@ -76,4 +76,4 @@ ZenPayroll: ✅ Updated and setup complete / ❌ Failed at [step]
 gws-flows:  ✅ Updated and setup complete / ❌ Failed at [step]
 ```
 
-If both succeeded, suggest running the `start-servers` command to bring the servers up.
+If both succeeded, suggest running the `/start-servers` command to bring the servers up.

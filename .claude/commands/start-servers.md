@@ -76,6 +76,6 @@ ZenPayroll (port 8888): ✅ Running / ❌ Not responding
 gws-flows (port 7777):  ✅ Running / ❌ Not responding
 ```
 
-If either server failed to start, suggest running the `update-servers` command to pull latest code and re-run setup, then retrying this command.
+If either server failed to start, suggest running the `/update-servers` command to pull latest code and re-run setup, then retrying this command.
 
 If both are healthy, confirm: "Local API backend is ready. Demo available at http://localhost:7777/demos?react_sdk=true"

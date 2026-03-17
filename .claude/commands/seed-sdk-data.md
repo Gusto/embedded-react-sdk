@@ -33,7 +33,7 @@ Available categories:
 bundle exec rails runner "puts Partner.find_by(uuid: '8612f14a-ee59-4fe5-90f0-fb2b8431325a')&.name || 'NOT_FOUND'"
 ```
 
-If it prints `NOT_FOUND`, tell the user to run the `full-dev-reset` command first and stop.
+If it prints `NOT_FOUND`, tell the user to run the `/full-dev-reset` command first and stop.
 
 ## Step 3 — Resolve category dependencies
 
