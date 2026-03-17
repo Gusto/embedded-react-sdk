@@ -3,6 +3,10 @@ import { FormProvider, useForm, type SubmitHandler } from 'react-hook-form'
 import { useEffect } from 'react'
 import { useEmployeeTaxSetupGetFederalTaxesSuspense } from '@gusto/embedded-api/react-query/employeeTaxSetupGetFederalTaxes'
 import { useEmployeeTaxSetupUpdateFederalTaxesMutation } from '@gusto/embedded-api/react-query/employeeTaxSetupUpdateFederalTaxes'
+import type {
+  FilingStatus,
+  PutV1EmployeesEmployeeIdFederalTaxesRequestBody,
+} from '@gusto/embedded-api/models/operations/putv1employeesemployeeidfederaltaxes'
 import { FederalForm } from './FederalForm'
 import { FederalFormSchema, type FederalFormInputs, type FederalFormPayload } from './FederalForm'
 import { Head } from './Head'
@@ -86,10 +90,10 @@ const Root = (props: FederalTaxesProps) => {
 
   const onSubmit: SubmitHandler<FederalFormPayload> = async data => {
     await baseSubmitHandler(data, async payload => {
-      const requestBody =
+      const requestBody = (
         payload.w4DataType === 'rev_2020_w4'
           ? {
-              filingStatus: payload.filingStatus,
+              filingStatus: payload.filingStatus as FilingStatus,
               twoJobs: payload.twoJobs === 'true',
               dependentsAmount: payload.dependentsAmount,
               otherIncome: payload.otherIncome,
@@ -99,12 +103,13 @@ const Root = (props: FederalTaxesProps) => {
               version: employeeFederalTax.version,
             }
           : {
-              filingStatus: payload.filingStatus,
+              filingStatus: payload.filingStatus as FilingStatus,
               federalWithholdingAllowance: payload.federalWithholdingAllowance,
-              additionalWithholding: payload.additionalWithholding,
-              w4DataType: payload.w4DataType,
+              additionalWithholding: Number(payload.additionalWithholding),
+              w4DataType: 'rev_2020_w4' as const,
               version: employeeFederalTax.version,
             }
+      ) as PutV1EmployeesEmployeeIdFederalTaxesRequestBody
 
       const federalTaxesResponse = await updateFederalTaxes({
         request: {

@@ -8,10 +8,10 @@ const Rev2020Schema = z.object({
   w4DataType: z.literal('rev_2020_w4'),
   filingStatus: z.string().min(1),
   twoJobs: z.string().min(1),
-  dependentsAmount: z.number().transform(String),
-  otherIncome: z.number().transform(String),
-  deductions: z.number().transform(String),
-  extraWithholding: z.number().transform(String),
+  dependentsAmount: z.number(),
+  otherIncome: z.number(),
+  deductions: z.number(),
+  extraWithholding: z.number(),
 })
 
 const Pre2020Schema = z.object({

@@ -180,7 +180,8 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
         },
       })
 
-      const payrollUuid = response.payrollPrepared?.payrollUuid ?? response.payrollPrepared?.uuid
+      const payrollUuid =
+        response.payrollUnprocessed?.payrollUuid ?? response.payrollUnprocessed?.uuid
 
       if (!payrollUuid) {
         throw new Error(tCreation('errors.missingPayrollId'))

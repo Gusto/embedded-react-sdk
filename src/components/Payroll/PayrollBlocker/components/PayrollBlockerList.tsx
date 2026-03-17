@@ -108,9 +108,8 @@ function Root({ className, companyId, dictionary, onEvent }: PayrollBlockerListP
     companyUuid: companyId,
   })
 
-  const payrollBlockerList = blockersData.payrollBlockerList ?? []
-  const blockers: PayrollBlocker[] = payrollBlockerList.map(blocker => {
-    const blockerKey = blocker.key ?? 'unknown'
+  const blockers: PayrollBlocker[] = (blockersData.payrollBlockers || []).map(blocker => {
+    const blockerKey = blocker.key
     const translationKeys = getBlockerTranslationKeys(blockerKey)
 
     const title = t(translationKeys.titleKey, {

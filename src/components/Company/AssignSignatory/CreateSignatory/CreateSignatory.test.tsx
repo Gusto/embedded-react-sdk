@@ -95,6 +95,7 @@ describe('CreateSignatory', () => {
     beforeEach(() => {
       const testSignatory = {
         uuid: 'signatory-123',
+        version: 'db0edd04aaac4506f7edab03a855523b',
         first_name: 'John',
         last_name: 'Doe',
         email: 'john.doe@example.com',
@@ -155,6 +156,7 @@ describe('CreateSignatory', () => {
       await waitFor(() => {
         expect(mockOnEvent).toHaveBeenCalledWith(companyEvents.COMPANY_SIGNATORY_UPDATED, {
           uuid: 'signatory-123',
+          version: 'db0edd04aaac4506f7edab03a855523b',
           firstName: 'John',
           lastName: 'Doe',
           email: 'john.doe@example.com',

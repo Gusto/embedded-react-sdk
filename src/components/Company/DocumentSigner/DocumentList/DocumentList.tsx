@@ -39,11 +39,11 @@ function Root({ companyId, signatoryId, className, children, dictionary }: Docum
   const companyForms = formList!
 
   const {
-    data: { signatoryList },
+    data: { signatories: signatoriesList },
   } = useSignatoriesListSuspense({
     companyUuid: companyId,
   })
-  const signatories = signatoryList!
+  const signatories = signatoriesList!
 
   // For now, this will only ever have one entry for the current signatory since companies can
   // only have one signatory. If that changes in the future, this UX will need to be revisited.

@@ -213,12 +213,12 @@ export const Root = ({
     companyUuid: companyId,
   })
 
-  const payrollBlockerList = blockersData.payrollBlockerList ?? []
-
-  const blockersFromApi: ApiPayrollBlocker[] = payrollBlockerList.map(blocker => ({
-    key: blocker.key ?? 'unknown',
-    message: blocker.message,
-  }))
+  const blockersFromApi: ApiPayrollBlocker[] = (blockersData.payrollBlockers || []).map(
+    blocker => ({
+      key: blocker.key,
+      message: blocker.message,
+    }),
+  )
 
   const [payrollBlockers, setPayrollBlockers] = useState<ApiPayrollBlocker[]>(blockersFromApi)
 

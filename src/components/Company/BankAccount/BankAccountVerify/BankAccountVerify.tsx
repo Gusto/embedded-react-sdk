@@ -39,7 +39,11 @@ function Root({ companyId, bankAccountId, className, children }: BankAccountVeri
   const onSubmit = async (data: BankAccountVerifyInputs) => {
     await baseSubmitHandler(data, async payload => {
       const { companyBankAccount } = await verifyBankAccount({
-        request: { companyId, bankAccountUuid: bankAccountId, requestBody: payload },
+        request: {
+          companyId,
+          bankAccountUuid: bankAccountId,
+          companyBankAccountVerifyRequest: payload,
+        },
       })
       onEvent(componentEvents.COMPANY_BANK_ACCOUNT_VERIFIED, companyBankAccount)
     })

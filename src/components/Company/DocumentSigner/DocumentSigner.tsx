@@ -16,11 +16,11 @@ export interface DocumentSignerProps extends BaseComponentInterface<'Company.Doc
 function DocumentSignerFlow({ companyId, signatoryId, onEvent, dictionary }: DocumentSignerProps) {
   useComponentDictionary('Company.DocumentList', dictionary)
   const {
-    data: { signatoryList },
+    data: { signatories: signatoriesList },
   } = useSignatoriesListSuspense({
     companyUuid: companyId,
   })
-  const signatories = signatoryList!
+  const signatories = signatoriesList!
   const doesSignatoryExist = signatories.length > 0
 
   const documentSigner = useMemo(

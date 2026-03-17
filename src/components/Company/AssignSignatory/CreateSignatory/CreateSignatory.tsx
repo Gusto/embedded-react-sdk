@@ -5,6 +5,7 @@ import { useSignatoriesListSuspense } from '@gusto/embedded-api/react-query/sign
 import { useSignatoriesCreateMutation } from '@gusto/embedded-api/react-query/signatoriesCreate'
 import { useSignatoriesUpdateMutation } from '@gusto/embedded-api/react-query/signatoriesUpdate'
 import { useSignatoriesDeleteMutation } from '@gusto/embedded-api/react-query/signatoriesDelete'
+import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { type CreateSignatoryInputs } from './CreateSignatoryForm'
 import { CreateSignatoryForm } from './CreateSignatoryForm'
 import { Actions } from './Actions'
@@ -51,11 +52,11 @@ function Root({
   const transformPhone = useMaskedTransform(commonMasks.phoneMask)
 
   const {
-    data: { signatoryList },
+    data: { signatories: signatoriesList },
   } = useSignatoriesListSuspense({
     companyUuid: companyId,
   })
-  const signatories = signatoryList!
+  const signatories = signatoriesList!
 
   const currentSignatory = signatories.find(signatory => signatory.uuid === signatoryId)
 
@@ -89,27 +90,23 @@ function Root({
     await baseSubmitHandler(data, async payload => {
       const { street1, street2, city, state, zip, birthday, email, ssn, ...signatoryData } = payload
 
-      const commonData = {
-        ...signatoryData,
-        birthday: formatDateToStringDate(birthday) || '',
-        homeAddress: {
-          street1,
-          street2,
-          city,
-          state,
-          zip,
-        },
-      }
+      const birthdayString = formatDateToStringDate(birthday)
+      const homeAddress = { street1, street2, city, state, zip }
 
       if (currentSignatory) {
+        if (!currentSignatory.version) {
+          throw new Error('Signatory version is required for update')
+        }
+
         const updateSignatoryResponse = await updateSignatoryMutation.mutateAsync({
           request: {
             companyUuid: companyId,
             signatoryUuid: currentSignatory.uuid,
-            requestBody: {
+            signatoryUpdateRequest: {
               version: currentSignatory.version,
-              ...(ssn ? { ssn } : {}),
-              ...commonData,
+              ...signatoryData,
+              ...(birthdayString ? { birthday: new RFCDate(birthdayString) } : {}),
+              homeAddress,
             },
           },
         })
@@ -127,11 +124,15 @@ function Root({
         const createSignatoryResponse = await createSignatoryMutation.mutateAsync({
           request: {
             companyUuid: companyId,
-            requestBody: {
+            signatoryCreateRequest: {
               email,
-              ssn: ssn || '',
-              ...commonData,
-            },
+              ...(ssn ? { ssn } : {}),
+              ...signatoryData,
+              birthday: new RFCDate(birthdayString!),
+              homeAddress,
+            } as Parameters<
+              typeof createSignatoryMutation.mutateAsync
+            >[0]['request']['signatoryCreateRequest'],
           },
         })
         onEvent(companyEvents.COMPANY_SIGNATORY_CREATED, createSignatoryResponse.signatory)
