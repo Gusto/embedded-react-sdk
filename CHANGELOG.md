@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.35.0
+## 0.36.0
 
 ### Features & Enhancements
 
@@ -41,6 +41,10 @@
 - Bump eslint from 9.39.3 to 9.39.4
 - Bump @commitlint/cli from 20.4.3 to 20.5.0
 - Bump @commitlint/config-conventional from 20.4.3 to 20.5.0
+
+## 0.35.0 (unpublished)
+
+> This version was unpublished from NPM due to a critical bug caused by a react-aria upgrade that required a rollback. All changes are included in 0.36.0.
 
 ## 0.34.0
 
