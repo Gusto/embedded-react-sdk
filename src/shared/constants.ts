@@ -129,6 +129,19 @@ export const contractorPaymentEvents = {
   CONTRACTOR_PAYMENT_RFI_RESPOND: 'contractor/payments/rfi/respond',
 } as const
 
+export const terminationEvents = {
+  EMPLOYEE_TERMINATION_CREATED: 'employee/termination/created',
+  EMPLOYEE_TERMINATION_UPDATED: 'employee/termination/updated',
+  EMPLOYEE_TERMINATION_PAYROLL_CREATED: 'employee/termination/payroll/created',
+  EMPLOYEE_TERMINATION_PAYROLL_FAILED: 'employee/termination/payroll/failed',
+  EMPLOYEE_TERMINATION_DONE: 'employee/termination/done',
+  EMPLOYEE_TERMINATION_CANCELLED: 'employee/termination/cancelled',
+  EMPLOYEE_TERMINATION_EDIT: 'employee/termination/edit',
+  EMPLOYEE_TERMINATION_RUN_PAYROLL: 'employee/termination/runPayroll',
+  EMPLOYEE_TERMINATION_RUN_OFF_CYCLE_PAYROLL: 'employee/termination/runOffCyclePayroll',
+  EMPLOYEE_TERMINATION_VIEW_SUMMARY: 'employee/termination/viewSummary',
+} as const
+
 export const payScheduleEvents = {
   PAY_SCHEDULE_CREATE: 'paySchedule/create',
   PAY_SCHEDULE_CREATED: 'paySchedule/created',
@@ -212,6 +225,7 @@ export const componentEvents = {
   ...recoveryCasesEvents,
   ...contractorPaymentEvents,
   ...offCycleEvents,
+  ...terminationEvents,
 } as const
 
 export type EventType = (typeof componentEvents)[keyof typeof componentEvents]
