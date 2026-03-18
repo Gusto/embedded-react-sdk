@@ -13,16 +13,24 @@ import { ensureRequired } from '@/helpers/ensureRequired'
 export interface OffCycleFlowContextInterface extends FlowContextInterface {
   companyId: string
   payrollUuid?: string
+  defaultSelectedEmployeeIds?: string[]
 }
 
 export interface OffCycleFlowProps {
   companyId: string
   onEvent: OnEventType<EventType, unknown>
+  defaultSelectedEmployeeIds?: string[]
 }
 
 export function OffCycleCreationContextual() {
-  const { companyId, onEvent } = useFlow<OffCycleFlowContextInterface>()
-  return <OffCycleCreation companyId={ensureRequired(companyId)} onEvent={onEvent} />
+  const { companyId, onEvent, defaultSelectedEmployeeIds } = useFlow<OffCycleFlowContextInterface>()
+  return (
+    <OffCycleCreation
+      companyId={ensureRequired(companyId)}
+      onEvent={onEvent}
+      defaultSelectedEmployeeIds={defaultSelectedEmployeeIds}
+    />
+  )
 }
 
 export function OffCycleExecutionContextual() {

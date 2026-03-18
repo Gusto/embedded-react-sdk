@@ -248,6 +248,74 @@ describe('OffCycleCreation', () => {
       expect(screen.getByRole('switch', { name: /include all employees/i })).toBeChecked()
     })
 
+    it('pre-selects employees and unchecks "all" when defaultSelectedEmployeeIds is provided', async () => {
+      renderComponent({ defaultSelectedEmployeeIds: ['emp-1'] })
+
+      await waitFor(() => {
+        expect(screen.getByRole('switch', { name: /include all employees/i })).not.toBeChecked()
+      })
+
+      expect(screen.getByRole('combobox')).toBeInTheDocument()
+      expect(screen.getByText('Jane Doe')).toBeInTheDocument()
+    })
+
+    it('pre-selects multiple employees when defaultSelectedEmployeeIds has multiple values', async () => {
+      renderComponent({ defaultSelectedEmployeeIds: ['emp-1', 'emp-2'] })
+
+      await waitFor(() => {
+        expect(screen.getByRole('switch', { name: /include all employees/i })).not.toBeChecked()
+      })
+
+      expect(screen.getByText('Jane Doe')).toBeInTheDocument()
+      expect(screen.getByText('John Smith')).toBeInTheDocument()
+    })
+
+    it('defaults to all employees when defaultSelectedEmployeeIds is an empty array', async () => {
+      renderComponent({ defaultSelectedEmployeeIds: [] })
+
+      await waitFor(() => {
+        expect(screen.getByRole('switch', { name: /include all employees/i })).toBeChecked()
+      })
+
+      expect(screen.queryByRole('combobox')).not.toBeInTheDocument()
+    })
+
+    it('filters out invalid employee IDs that do not match loaded employees', async () => {
+      renderComponent({ defaultSelectedEmployeeIds: ['emp-1', 'nonexistent-id'] })
+
+      await waitFor(() => {
+        expect(screen.getByRole('switch', { name: /include all employees/i })).not.toBeChecked()
+      })
+
+      expect(screen.getByText('Jane Doe')).toBeInTheDocument()
+      expect(screen.queryByText('nonexistent-id')).not.toBeInTheDocument()
+    })
+
+    it('defaults to all employees when all provided IDs are invalid', async () => {
+      renderComponent({ defaultSelectedEmployeeIds: ['nonexistent-1', 'nonexistent-2'] })
+
+      await waitFor(() => {
+        expect(screen.getByRole('switch', { name: /include all employees/i })).toBeChecked()
+      })
+
+      expect(screen.queryByRole('combobox')).not.toBeInTheDocument()
+    })
+
+    it('allows toggling back to all employees after pre-selection', async () => {
+      const user = userEvent.setup()
+      renderComponent({ defaultSelectedEmployeeIds: ['emp-1'] })
+
+      await waitFor(() => {
+        expect(screen.getByRole('switch', { name: /include all employees/i })).not.toBeChecked()
+      })
+
+      await user.click(screen.getByRole('switch', { name: /include all employees/i }))
+
+      await waitFor(() => {
+        expect(screen.queryByRole('combobox')).not.toBeInTheDocument()
+      })
+    })
+
     it('shows the employee picker when include all is toggled off', async () => {
       const user = userEvent.setup()
       renderComponent()

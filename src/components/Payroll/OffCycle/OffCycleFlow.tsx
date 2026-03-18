@@ -9,7 +9,11 @@ import {
 import { Flow } from '@/components/Flow/Flow'
 import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 
-export function OffCycleFlow({ companyId, onEvent }: OffCycleFlowProps) {
+export function OffCycleFlow({
+  companyId,
+  onEvent,
+  defaultSelectedEmployeeIds,
+}: OffCycleFlowProps) {
   const offCycleFlowMachine = useMemo(
     () =>
       createMachine(
@@ -19,12 +23,13 @@ export function OffCycleFlow({ companyId, onEvent }: OffCycleFlowProps) {
           ...initialContext,
           component: OffCycleCreationContextual,
           companyId,
+          defaultSelectedEmployeeIds,
           breadcrumbs: buildBreadcrumbs(offCycleBreadcrumbsNodes),
           currentBreadcrumbId: 'createOffCyclePayroll',
           progressBarType: 'breadcrumbs' as const,
         }),
       ),
-    [companyId],
+    [companyId, defaultSelectedEmployeeIds],
   )
 
   return <Flow machine={offCycleFlowMachine} onEvent={onEvent} />

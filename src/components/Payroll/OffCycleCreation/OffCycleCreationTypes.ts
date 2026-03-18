@@ -9,6 +9,7 @@ import type { BaseComponentInterface } from '@/components/Base/Base'
 export interface OffCycleCreationProps extends BaseComponentInterface<'Payroll.OffCycleCreation'> {
   companyId: string
   payrollType?: OffCyclePayrollDateType
+  defaultSelectedEmployeeIds?: string[]
 }
 
 export interface OffCycleCreationFormData extends OffCyclePayPeriodDateFormData {

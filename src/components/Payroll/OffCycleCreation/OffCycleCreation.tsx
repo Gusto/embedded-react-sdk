@@ -35,7 +35,12 @@ export function OffCycleCreation(props: OffCycleCreationProps) {
   )
 }
 
-function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreationProps) {
+function Root({
+  dictionary,
+  companyId,
+  payrollType = 'bonus',
+  defaultSelectedEmployeeIds,
+}: OffCycleCreationProps) {
   useComponentDictionary('Payroll.OffCycleCreation', dictionary)
   useI18n('Payroll.OffCycleCreation')
   useI18n('Payroll.OffCycleReasonSelection')
@@ -101,6 +106,14 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
     return zodResolver(schema)(values, context, options)
   }
 
+  const validDefaultEmployeeIds = useMemo(() => {
+    if (!defaultSelectedEmployeeIds?.length) return []
+    const employeeUuidSet = new Set(employees.map(e => e.value))
+    return defaultSelectedEmployeeIds.filter(id => employeeUuidSet.has(id))
+  }, [defaultSelectedEmployeeIds, employees])
+
+  const hasPreselectedEmployees = validDefaultEmployeeIds.length > 0
+
   const methods = useForm<OffCycleCreationFormData>({
     resolver: dynamicResolver,
     defaultValues: {
@@ -110,8 +123,8 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
       endDate: null,
       checkDate: null,
       skipRegularDeductions: OFF_CYCLE_REASON_DEFAULTS[payrollType].skipDeductions,
-      includeAllEmployees: true,
-      selectedEmployeeUuids: [],
+      includeAllEmployees: !hasPreselectedEmployees,
+      selectedEmployeeUuids: validDefaultEmployeeIds,
     },
   })
 
