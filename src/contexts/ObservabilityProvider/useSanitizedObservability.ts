@@ -6,9 +6,6 @@ import type {
   ObservabilityHook,
 } from '@/types/observability'
 
-/**
- * Wraps an ObservabilityHook to apply sanitization before calling the callbacks
- */
 export function useSanitizedObservability(observability?: ObservabilityHook) {
   const sanitizationConfig = observability?.sanitization
 

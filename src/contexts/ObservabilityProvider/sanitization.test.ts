@@ -138,42 +138,42 @@ describe('sanitizeObject', () => {
 
 describe('sanitizeError', () => {
   const mockError: ObservabilityError = {
-    type: 'validation_error',
+    category: 'api_error',
     message: 'Validation failed for email: john@example.com',
-    stack: 'Error: Validation failed\n  at validate (user.ts:123)',
-    context: {
-      componentName: 'UserForm',
-      metadata: {
-        email: 'john@example.com',
-        password: 'secret123',
+    httpStatus: 422,
+    fieldErrors: [
+      {
+        field: 'email',
+        category: 'invalid_attribute_value',
+        message: 'john@example.com is not a valid email',
+        metadata: { password: 'secret123' },
       },
-    },
-    originalError: new Error('Original'),
+    ],
+    raw: new Error('Original'),
     timestamp: Date.now(),
+    componentName: 'UserForm',
   }
 
-  it('should sanitize error message and context by default', () => {
+  it('should sanitize error message and field error messages by default', () => {
     const result = sanitizeError(mockError)
 
     expect(result.message).toBe('Validation failed for email: [EMAIL-REDACTED]')
-    expect(result.context.metadata).toEqual({
-      email: '[EMAIL-REDACTED]',
-      password: '[REDACTED]',
-    })
-    expect(result.originalError).toBeUndefined()
+    expect(result.fieldErrors[0]!.message).toBe('[EMAIL-REDACTED] is not a valid email')
+    expect(result.fieldErrors[0]!.metadata).toEqual({ password: '[REDACTED]' })
+    expect(result.raw).toBeUndefined()
   })
 
-  it('should include original error when configured', () => {
-    const result = sanitizeError(mockError, { includeOriginalError: true })
+  it('should include raw error when includeRawError is true', () => {
+    const result = sanitizeError(mockError, { includeRawError: true })
 
-    expect(result.originalError).toBeDefined()
+    expect(result.raw).toBeDefined()
   })
 
   it('should not sanitize when disabled', () => {
     const result = sanitizeError(mockError, { enabled: false })
 
     expect(result.message).toBe(mockError.message)
-    expect(result.originalError).toBeUndefined()
+    expect(result.raw).toBeUndefined()
   })
 
   it('should use custom sanitizer when provided', () => {
@@ -187,84 +187,89 @@ describe('sanitizeError', () => {
     expect(result.message).toBe('CUSTOM')
   })
 
-  it('should add additional sensitive fields', () => {
+  it('should add additional sensitive fields to metadata sanitization', () => {
     const errorWithCustomFields: ObservabilityError = {
       ...mockError,
-      context: {
-        metadata: {
-          customerId: '12345',
-          internalId: 'abc-xyz',
+      fieldErrors: [
+        {
+          field: 'test',
+          category: 'invalid_attribute_value',
+          message: 'Error',
+          metadata: { customerId: '12345', internalId: 'abc-xyz' },
         },
-      },
+      ],
     }
 
     const result = sanitizeError(errorWithCustomFields, {
       additionalSensitiveFields: ['customerId', 'internalId'],
     })
 
-    expect(result.context.metadata).toEqual({
+    expect(result.fieldErrors[0]!.metadata).toEqual({
       customerId: '[REDACTED]',
       internalId: '[REDACTED]',
     })
   })
 
   it('should not mutate global SENSITIVE_FIELD_NAMES array', () => {
-    // Call sanitizeError with additional fields
     sanitizeError(mockError, {
       additionalSensitiveFields: ['customField1', 'customField2'],
     })
 
-    // Call again with different fields
     sanitizeError(mockError, {
       additionalSensitiveFields: ['customField3', 'customField4'],
     })
 
-    // Verify the global array wasn't mutated by checking a new error without custom fields
     const errorWithPassword: ObservabilityError = {
       ...mockError,
-      context: {
-        metadata: {
-          password: 'secret',
-          customField1: 'should not be redacted',
+      fieldErrors: [
+        {
+          field: 'test',
+          category: 'invalid_attribute_value',
+          message: 'Error',
+          metadata: { password: 'secret', customField1: 'should not be redacted' },
         },
-      },
+      ],
     }
 
     const result = sanitizeError(errorWithPassword, {})
 
-    // password should be redacted (it's in default list)
-    expect(result.context.metadata).toHaveProperty('password', '[REDACTED]')
-    // customField1 should NOT be redacted (not in default list)
-    expect(result.context.metadata).toHaveProperty('customField1', 'should not be redacted')
+    expect(result.fieldErrors[0]!.metadata).toHaveProperty('password', '[REDACTED]')
+    expect(result.fieldErrors[0]!.metadata).toHaveProperty('customField1', 'should not be redacted')
   })
 
   it('should apply additionalSensitiveFields consistently across multiple calls', () => {
     const error1: ObservabilityError = {
       ...mockError,
-      context: {
-        metadata: { myCustomField: 'value1' },
-      },
+      fieldErrors: [
+        {
+          field: 'test',
+          category: 'invalid_attribute_value',
+          message: 'Error',
+          metadata: { myCustomField: 'value1' },
+        },
+      ],
     }
 
     const error2: ObservabilityError = {
       ...mockError,
-      context: {
-        metadata: { myCustomField: 'value2' },
-      },
+      fieldErrors: [
+        {
+          field: 'test',
+          category: 'invalid_attribute_value',
+          message: 'Error',
+          metadata: { myCustomField: 'value2' },
+        },
+      ],
     }
 
-    // First call with custom field
     const result1 = sanitizeError(error1, {
       additionalSensitiveFields: ['myCustomField'],
     })
 
-    // Second call without custom field
     const result2 = sanitizeError(error2, {})
 
-    // First should be redacted
-    expect(result1.context.metadata).toHaveProperty('myCustomField', '[REDACTED]')
-    // Second should NOT be redacted (config doesn't include it)
-    expect(result2.context.metadata).toHaveProperty('myCustomField', 'value2')
+    expect(result1.fieldErrors[0]!.metadata).toHaveProperty('myCustomField', '[REDACTED]')
+    expect(result2.fieldErrors[0]!.metadata).toHaveProperty('myCustomField', 'value2')
   })
 })
 
@@ -346,14 +351,18 @@ describe('sanitizeMetric', () => {
   })
 
   it('should not leak additionalSensitiveFields between error and metric calls', () => {
-    // First sanitize an error with custom fields
     const error: ObservabilityError = {
-      type: 'api_error',
+      category: 'api_error',
       message: 'Error',
-      context: {
-        metadata: { myField: 'value1' },
-      },
-      originalError: null,
+      fieldErrors: [
+        {
+          field: 'test',
+          category: 'invalid_attribute_value',
+          message: 'Error',
+          metadata: { myField: 'value1' },
+        },
+      ],
+      raw: null,
       timestamp: Date.now(),
     }
 
@@ -361,7 +370,6 @@ describe('sanitizeMetric', () => {
       additionalSensitiveFields: ['myField'],
     })
 
-    // Then sanitize a metric without specifying custom fields
     const metric: ObservabilityMetric = {
       name: 'test.metric',
       value: 1,
@@ -371,7 +379,6 @@ describe('sanitizeMetric', () => {
 
     const result = sanitizeMetric(metric, {})
 
-    // myField should NOT be redacted in metric (wasn't in metric config)
     expect(result.tags).toHaveProperty('myField', 'value2')
   })
 })

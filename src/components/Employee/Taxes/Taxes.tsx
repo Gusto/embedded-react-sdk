@@ -53,7 +53,7 @@ export function Taxes(props: TaxesProps & BaseComponentInterface) {
 
 const Root = (props: TaxesProps) => {
   const { employeeId, className, children, isAdmin = false, dictionary } = props
-  const { onEvent, fieldErrors, baseSubmitHandler } = useBase()
+  const { onEvent, error, baseSubmitHandler } = useBase()
   useI18n('Employee.Taxes')
   useComponentDictionary('Employee.Taxes', dictionary)
 
@@ -120,11 +120,12 @@ const Root = (props: TaxesProps) => {
   })
   const { handleSubmit, setError: _setError } = formMethods
 
+  const fieldErrors = error?.fieldErrors
   useEffect(() => {
     if (fieldErrors && fieldErrors.length > 0) {
-      fieldErrors.forEach(msgObject => {
-        const key = normalizeErrorKeyForForm(msgObject.errorKey)
-        _setError(key as keyof FederalFormInputs, { type: 'custom', message: msgObject.message })
+      fieldErrors.forEach(fieldError => {
+        const key = normalizeErrorKeyForForm(fieldError.field)
+        _setError(key as keyof FederalFormInputs, { type: 'custom', message: fieldError.message })
       })
     }
   }, [fieldErrors, _setError])

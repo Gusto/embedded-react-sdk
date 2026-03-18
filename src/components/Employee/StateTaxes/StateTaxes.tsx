@@ -36,7 +36,7 @@ export function StateTaxes(props: StateTaxesProps & BaseComponentInterface) {
 
 const Root = (props: StateTaxesProps) => {
   const { employeeId, className, children, isAdmin = false, dictionary } = props
-  const { onEvent, fieldErrors, baseSubmitHandler } = useBase()
+  const { onEvent, error, baseSubmitHandler } = useBase()
   useI18n('Employee.StateTaxes')
   useComponentDictionary('Employee.StateTaxes', dictionary)
 
@@ -75,12 +75,12 @@ const Root = (props: StateTaxesProps) => {
   })
   const { handleSubmit, setError: _setError } = formMethods
 
+  const fieldErrors = error?.fieldErrors
   useEffect(() => {
     if (fieldErrors && fieldErrors.length > 0) {
-      fieldErrors.forEach(msgObject => {
-        const key = normalizeErrorKeyForForm(msgObject.errorKey)
-        const message = typeof msgObject.message === 'string' ? msgObject.message : 'Unknown error'
-        _setError(key, { type: 'custom', message })
+      fieldErrors.forEach(fieldError => {
+        const key = normalizeErrorKeyForForm(fieldError.field)
+        _setError(key, { type: 'custom', message: fieldError.message })
       })
     }
   }, [fieldErrors, _setError])

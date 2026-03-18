@@ -19,6 +19,7 @@ import type { GustoSDKTheme } from '@/contexts/ThemeProvider/theme'
 import type { ResourceDictionary, SupportedLanguages } from '@/types/Helpers'
 import type { SDKHooks } from '@/types/hooks'
 import type { ObservabilityHook } from '@/types/observability'
+import { normalizeToSDKError } from '@/types/sdkError'
 
 export interface APIConfig {
   baseUrl: string
@@ -60,12 +61,10 @@ const GustoProviderCustomUIAdapter: React.FC<GustoProviderCustomUIAdapterProps> 
     queryClient,
   } = props
 
-  // Handle dictionary resources
   if (dictionary) {
     for (const language in dictionary) {
       const lang = language as SupportedLanguages
       for (const ns in dictionary[lang]) {
-        // Adding resources overrides to i18next instance - initial load will override common namespace and add component specific dictionaries provided by partners
         SDKI18next.addResourceBundle(
           lang,
           ns,
@@ -77,33 +76,27 @@ const GustoProviderCustomUIAdapter: React.FC<GustoProviderCustomUIAdapterProps> 
     }
   }
 
-  // Handle language change
   useEffect(() => {
     void (async () => {
       await SDKI18next.changeLanguage(lng)
     })()
   }, [lng])
 
-  // Create sanitized error handler that respects sanitization config
   const handleTopLevelError = useMemo(() => {
     if (!config.observability?.onError) return undefined
 
     return (error: unknown, errorInfo: ErrorInfo) => {
       if (!config.observability?.onError) return
 
-      const unsanitizedError = {
-        type: 'internal_error' as const,
-        message: error instanceof Error ? error.message : 'Unknown error',
-        stack: error instanceof Error ? error.stack : undefined,
-        context: {
-          componentStack: errorInfo.componentStack ?? undefined,
-        },
-        originalError: error,
+      const sdkError = normalizeToSDKError(error)
+
+      const observabilityError = {
+        ...sdkError,
         timestamp: Date.now(),
+        componentStack: errorInfo.componentStack ?? undefined,
       }
 
-      // Apply sanitization with the same config used for other errors
-      const sanitizedError = sanitizeError(unsanitizedError, config.observability.sanitization)
+      const sanitizedError = sanitizeError(observabilityError, config.observability.sanitization)
 
       config.observability.onError(sanitizedError)
     }

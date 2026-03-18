@@ -1,6 +1,6 @@
-# Observability Hook Implementation Example
+# Observability Hook Examples
 
-This example demonstrates how to integrate the observability hook with common monitoring services.
+Practical examples for integrating the observability hook with common monitoring services.
 
 ## Basic Console Logging (Development)
 
@@ -10,17 +10,20 @@ import type { ObservabilityHook } from '@gusto/embedded-react-sdk'
 
 const observability: ObservabilityHook = {
   onError: error => {
-    console.group(`[SDK Error] ${error.type}`)
+    console.group(`[SDK Error] ${error.category}`)
     console.error('Message:', error.message)
-    console.error('Component:', error.context.componentName)
-    console.error('Stack:', error.stack)
-    if (error.context.statusCode) {
-      console.error('Status:', error.context.statusCode)
+    console.error('Component:', error.componentName)
+    console.error('HTTP Status:', error.httpStatus)
+    if (error.fieldErrors.length > 0) {
+      console.error('Field Errors:', error.fieldErrors)
+    }
+    if (error.componentStack) {
+      console.error('Component Stack:', error.componentStack)
     }
     console.groupEnd()
   },
   onMetric: metric => {
-    console.log(`[Metric] ${metric.name}: ${metric.value}${metric.unit || ''}`, metric.tags)
+    console.log(`[Metric] ${metric.name}: ${metric.value}${metric.unit ?? ''}`, metric.tags)
   },
 }
 
@@ -35,8 +38,6 @@ function App() {
 
 ## Sentry Integration
 
-**Recommended: Using sanitized error data**
-
 ```tsx
 import * as Sentry from '@sentry/react'
 import { GustoProvider } from '@gusto/embedded-react-sdk'
@@ -49,34 +50,28 @@ Sentry.init({
 
 const observability: ObservabilityHook = {
   onError: error => {
-    // Create a new Error from sanitized data since originalError is excluded by default
-    const sentryError = new Error(error.message)
-    sentryError.name = error.type
-    if (error.stack) {
-      sentryError.stack = error.stack
-    }
-
-    Sentry.captureException(sentryError, {
-      level: error.type === 'validation_error' ? 'warning' : 'error',
+    Sentry.captureException(error.raw ?? new Error(error.message), {
+      level: error.category === 'validation_error' ? 'warning' : 'error',
       tags: {
-        error_type: error.type,
-        component: error.context.componentName || 'unknown',
+        error_category: error.category,
+        component: error.componentName ?? 'unknown',
+        http_status: String(error.httpStatus ?? ''),
       },
       contexts: {
         sdk_error: {
-          type: error.type,
+          category: error.category,
           message: error.message,
-          status_code: error.context.statusCode,
+          http_status: error.httpStatus,
+          field_error_count: error.fieldErrors.length,
         },
       },
-      fingerprint: ['gusto-sdk', error.type, error.context.componentName || 'unknown'],
+      fingerprint: ['gusto-sdk', error.category, error.componentName ?? 'unknown'],
     })
   },
   onMetric: metric => {
-    // Send as breadcrumb to provide context for errors
     Sentry.addBreadcrumb({
       category: 'performance',
-      message: `${metric.name}: ${metric.value}${metric.unit || ''}`,
+      message: `${metric.name}: ${metric.value}${metric.unit ?? ''}`,
       level: 'info',
       data: metric.tags,
     })
@@ -92,37 +87,7 @@ function App() {
 }
 ```
 
-**Alternative: Include original error (requires explicit opt-in)**
-
-```tsx
-const observability: ObservabilityHook = {
-  onError: error => {
-    // originalError will be available but may contain PII
-    Sentry.captureException(error.originalError || new Error(error.message), {
-      level: error.type === 'validation_error' ? 'warning' : 'error',
-      tags: {
-        error_type: error.type,
-        component: error.context.componentName || 'unknown',
-      },
-    })
-  },
-  onMetric: metric => {
-    Sentry.addBreadcrumb({
-      category: 'performance',
-      message: `${metric.name}: ${metric.value}${metric.unit || ''}`,
-      level: 'info',
-      data: metric.tags,
-    })
-  },
-  sanitization: {
-    includeOriginalError: true, // ⚠️ WARNING: originalError may contain PII from form data/API responses
-  },
-}
-```
-
 ## Datadog RUM Integration
-
-**Recommended: Using sanitized error data**
 
 ```tsx
 import { datadogRum } from '@datadog/browser-rum'
@@ -139,25 +104,19 @@ datadogRum.init({
 
 const observability: ObservabilityHook = {
   onError: error => {
-    // Create a new Error from sanitized data since originalError is excluded by default
     const datadogError = new Error(error.message)
-    datadogError.name = error.type
-    if (error.stack) {
-      datadogError.stack = error.stack
-    }
+    datadogError.name = error.category
 
     datadogRum.addError(datadogError, {
-      type: error.type,
-      component: error.context.componentName,
-      statusCode: error.context.statusCode,
+      category: error.category,
+      component: error.componentName,
+      httpStatus: error.httpStatus,
     })
   },
   onMetric: metric => {
     if (metric.unit === 'ms') {
-      // Track timing metrics
       datadogRum.addTiming(metric.name, metric.value)
     } else {
-      // Track other metrics as actions
       datadogRum.addAction(metric.name, {
         value: metric.value,
         unit: metric.unit,
@@ -176,40 +135,15 @@ function App() {
 }
 ```
 
-**Alternative: Include original error (requires explicit opt-in)**
-
-```tsx
-const observability: ObservabilityHook = {
-  onError: error => {
-    datadogRum.addError(error.originalError || new Error(error.message), {
-      type: error.type,
-      component: error.context.componentName,
-      statusCode: error.context.statusCode,
-      message: error.message,
-    })
-  },
-  onMetric: metric => {
-    if (metric.unit === 'ms') {
-      datadogRum.addTiming(metric.name, metric.value)
-    } else {
-      datadogRum.addAction(metric.name, {
-        value: metric.value,
-        unit: metric.unit,
-        ...metric.tags,
-      })
-    }
-  },
-  sanitization: {
-    includeOriginalError: true, // ⚠️ WARNING: originalError may contain PII from form data/API responses
-  },
-}
-```
-
 ## Custom Analytics Service
 
 ```tsx
 import { GustoProvider } from '@gusto/embedded-react-sdk'
-import type { ObservabilityHook } from '@gusto/embedded-react-sdk'
+import type {
+  ObservabilityHook,
+  ObservabilityError,
+  ObservabilityMetric,
+} from '@gusto/embedded-react-sdk'
 
 class CustomAnalytics {
   async trackError(error: ObservabilityError) {
@@ -217,9 +151,11 @@ class CustomAnalytics {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        type: error.type,
+        category: error.category,
         message: error.message,
-        component: error.context.componentName,
+        httpStatus: error.httpStatus,
+        fieldErrors: error.fieldErrors,
+        component: error.componentName,
         timestamp: error.timestamp,
       }),
     })
@@ -253,68 +189,43 @@ function App() {
 ## Sampling for High-Traffic Applications
 
 ```tsx
-import { GustoProvider } from '@gusto/embedded-react-sdk'
 import type { ObservabilityHook, ObservabilityMetric } from '@gusto/embedded-react-sdk'
 
 const observability: ObservabilityHook = {
   onError: error => {
-    // Always track errors
     yourErrorTracker.captureError(error)
   },
   onMetric: (metric: ObservabilityMetric) => {
-    // Sample metrics at different rates based on name
     const sampleRates: Record<string, number> = {
-      'sdk.form.submit_duration': 0.1, // 10% of form submissions
-      'sdk.component.loading_duration': 0.05, // 5% of component loading events
+      'sdk.form.submit_duration': 0.1,
+      'sdk.component.loading_duration': 0.05,
     }
 
-    const sampleRate = sampleRates[metric.name] || 1.0
+    const sampleRate = sampleRates[metric.name] ?? 1.0
 
     if (Math.random() < sampleRate) {
       yourMetricsService.track(metric)
     }
   },
 }
-
-function App() {
-  return (
-    <GustoProvider config={{ baseUrl: '/api/', observability }} components={components}>
-      <YourApp />
-    </GustoProvider>
-  )
-}
 ```
 
 ## Built-in PII Protection
 
-The SDK automatically sanitizes error and metric data to prevent PII leakage. See the main observability guide for details on:
-
-- What data is automatically sanitized
-- How to configure sanitization options
-- Custom sanitization hooks
+The SDK automatically sanitizes error and metric data to prevent PII leakage. See the [main observability guide](./observability.md) for full details.
 
 ```tsx
-import { GustoProvider } from '@gusto/embedded-react-sdk'
-import type { ObservabilityHook } from '@gusto/embedded-react-sdk'
-
 const observability: ObservabilityHook = {
   onError: error => {
-    // error.message, error.stack, and error.context are already sanitized
+    // error.message and error.fieldErrors are already sanitized
+    // error.raw is excluded by default
     yourErrorTracker.captureError(error)
   },
   sanitization: {
-    enabled: true, // Default: true
-    includeOriginalError: false, // Default: false - excludes originalError to prevent PII leakage
-    additionalSensitiveFields: ['customField', 'internalId'], // Optional: add custom field names to redact
+    enabled: true,
+    includeRawError: false,
+    additionalSensitiveFields: ['customField', 'internalId'],
   },
-}
-
-function App() {
-  return (
-    <GustoProvider config={{ baseUrl: '/api/', observability }} components={components}>
-      <YourApp />
-    </GustoProvider>
-  )
 }
 ```
 
@@ -326,9 +237,11 @@ All types are exported from the main SDK package:
 import type {
   ObservabilityHook,
   ObservabilityError,
-  ObservabilityErrorType,
-  ObservabilityErrorContext,
   ObservabilityMetric,
   ObservabilityMetricUnit,
+  SanitizationConfig,
+  SDKError,
+  SDKErrorCategory,
+  SDKFieldError,
 } from '@gusto/embedded-react-sdk'
 ```

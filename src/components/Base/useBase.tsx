@@ -1,18 +1,13 @@
 import { createContext, useContext } from 'react'
-import type { GustoEmbeddedError } from '@gusto/embedded-api/models/errors/gustoembeddederror'
-import type { SDKValidationError } from '@gusto/embedded-api/models/errors/sdkvalidationerror'
-import type { EntityErrorObject } from '@gusto/embedded-api/models/components/entityerrorobject'
 import { type EventType } from '@/shared/constants'
 import type { LoadingIndicatorContextProps } from '@/contexts/LoadingIndicatorProvider/useLoadingIndicator'
+import type { SDKError } from '@/types/sdkError'
 
 export type OnEventType<K, T> = (type: K, data?: T) => void
 
-export type KnownErrors = GustoEmbeddedError | SDKValidationError
-
 interface BaseContextProps {
-  error: KnownErrors | null
-  fieldErrors: Array<EntityErrorObject> | null
-  setError: (err: KnownErrors | null) => void
+  error: SDKError | null
+  setError: (err: SDKError | null) => void
   onEvent: OnEventType<EventType, unknown>
   baseSubmitHandler: <T>(
     formData: T,

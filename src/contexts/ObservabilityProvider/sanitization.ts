@@ -4,34 +4,19 @@ import type {
   SanitizationConfig,
 } from '@/types/observability'
 
-/**
- * Common PII patterns to redact from strings
- */
 const PII_PATTERNS = [
-  // SSN patterns (XXX-XX-XXXX, XXXXXXXXX)
   { pattern: /\b\d{3}-\d{2}-\d{4}\b/g, replacement: '[SSN-REDACTED]' },
   { pattern: /\b\d{9}\b/g, replacement: '[SSN-REDACTED]' },
-
-  // Email addresses
   {
     pattern: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g,
     replacement: '[EMAIL-REDACTED]',
   },
-
-  // Phone numbers (various formats)
   { pattern: /\b\d{3}[-.\s]?\d{3}[-.\s]?\d{4}\b/g, replacement: '[PHONE-REDACTED]' },
   { pattern: /\(\d{3}\)\s*\d{3}[-.\s]?\d{4}/g, replacement: '[PHONE-REDACTED]' },
-
-  // Credit card numbers (basic pattern)
   { pattern: /\b\d{4}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}\b/g, replacement: '[CC-REDACTED]' },
-
-  // API keys and tokens (common patterns)
   { pattern: /\b[A-Za-z0-9_-]{32,}\b/g, replacement: '[TOKEN-REDACTED]' },
 ]
 
-/**
- * Fields that commonly contain sensitive data and should be removed
- */
 const SENSITIVE_FIELD_NAMES = [
   'password',
   'token',
@@ -52,9 +37,6 @@ const SENSITIVE_FIELD_NAMES = [
   'account_number',
 ]
 
-/**
- * Sanitizes a string by replacing PII patterns with redacted placeholders
- */
 export function sanitizeString(value: string): string {
   let sanitized = value
 
@@ -65,11 +47,6 @@ export function sanitizeString(value: string): string {
   return sanitized
 }
 
-/**
- * Recursively sanitizes an object by:
- * 1. Removing sensitive field names
- * 2. Redacting PII patterns in string values
- */
 export function sanitizeObject(obj: unknown, additionalSensitiveFields: string[] = []): unknown {
   if (obj === null || obj === undefined) {
     return obj
@@ -90,11 +67,9 @@ export function sanitizeObject(obj: unknown, additionalSensitiveFields: string[]
   if (typeof obj === 'object') {
     const sanitized: Record<string, unknown> = {}
 
-    // Combine default and additional sensitive fields for this call only
     const allSensitiveFields = [...SENSITIVE_FIELD_NAMES, ...additionalSensitiveFields]
 
     for (const [key, value] of Object.entries(obj)) {
-      // Skip sensitive fields entirely
       if (allSensitiveFields.some(field => key.toLowerCase().includes(field.toLowerCase()))) {
         sanitized[key] = '[REDACTED]'
         continue
@@ -109,71 +84,59 @@ export function sanitizeObject(obj: unknown, additionalSensitiveFields: string[]
   return obj
 }
 
-/**
- * Sanitizes an ObservabilityError to remove PII
- */
 export function sanitizeError(
   error: ObservabilityError,
   config: SanitizationConfig = {},
 ): ObservabilityError {
   const {
     enabled = true,
-    includeOriginalError = false,
+    includeRawError = false,
     customErrorSanitizer,
     additionalSensitiveFields = [],
   } = config
 
-  // If custom sanitizer is provided, use it
   if (customErrorSanitizer) {
     return customErrorSanitizer(error)
   }
 
-  // If sanitization is disabled, return as-is but still respect includeOriginalError
   if (!enabled) {
-    return includeOriginalError ? error : { ...error, originalError: undefined }
+    return includeRawError ? error : { ...error, raw: undefined }
   }
 
-  // Sanitize the error, passing additionalSensitiveFields to sanitizeObject
-  const sanitized: ObservabilityError = {
+  const sanitizedFieldErrors = error.fieldErrors.map(fe => ({
+    ...fe,
+    message: sanitizeString(fe.message),
+    metadata: fe.metadata
+      ? (sanitizeObject(fe.metadata, additionalSensitiveFields) as Record<string, unknown>)
+      : undefined,
+  }))
+
+  return {
     ...error,
     message: sanitizeString(error.message),
-    stack: error.stack ? sanitizeString(error.stack) : undefined,
-    context: sanitizeObject(
-      error.context,
-      additionalSensitiveFields,
-    ) as ObservabilityError['context'],
-    originalError: includeOriginalError ? error.originalError : undefined,
+    fieldErrors: sanitizedFieldErrors,
+    raw: includeRawError ? error.raw : undefined,
   }
-
-  return sanitized
 }
 
-/**
- * Sanitizes an ObservabilityMetric to remove PII
- */
 export function sanitizeMetric(
   metric: ObservabilityMetric,
   config: SanitizationConfig = {},
 ): ObservabilityMetric {
   const { enabled = true, customMetricSanitizer, additionalSensitiveFields = [] } = config
 
-  // If custom sanitizer is provided, use it
   if (customMetricSanitizer) {
     return customMetricSanitizer(metric)
   }
 
-  // If sanitization is disabled, return as-is
   if (!enabled) {
     return metric
   }
 
-  // Sanitize metric tags (in case they contain dynamic values), passing additionalSensitiveFields
-  const sanitized: ObservabilityMetric = {
+  return {
     ...metric,
     tags: metric.tags
       ? (sanitizeObject(metric.tags, additionalSensitiveFields) as Record<string, string>)
       : undefined,
   }
-
-  return sanitized
 }
