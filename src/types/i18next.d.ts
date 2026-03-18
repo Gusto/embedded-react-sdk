@@ -1428,6 +1428,8 @@ export interface EmployeeTerminationsTerminationSummary{
 };
 };
 "dates":{
+"today":string;
+"dismissed":string;
 "lastDayOfWork":string;
 "lastPayDay":string;
 };
