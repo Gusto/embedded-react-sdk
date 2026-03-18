@@ -154,10 +154,10 @@ describe('TerminationSummary', () => {
       expect(screen.queryByRole('button', { name: 'Edit termination' })).not.toBeInTheDocument()
     })
 
-    it('hides cancel and edit buttons for regular payroll terminations', async () => {
+    it('shows cancel and edit buttons for regular payroll terminations', async () => {
       server.use(
         http.get(`${API_BASE_URL}/v1/employees/:employee_id`, () => {
-          return HttpResponse.json(mockTerminatedEmployee)
+          return HttpResponse.json(mockEmployee)
         }),
         http.get(`${API_BASE_URL}/v1/employees/:employee_id/terminations`, () => {
           return HttpResponse.json([mockTerminationRegularPayroll])
@@ -170,8 +170,9 @@ describe('TerminationSummary', () => {
         expect(screen.getByText('John Doe has been successfully terminated')).toBeInTheDocument()
       })
 
-      expect(screen.queryByRole('button', { name: 'Cancel termination' })).not.toBeInTheDocument()
-      expect(screen.queryByRole('button', { name: 'Edit termination' })).not.toBeInTheDocument()
+      expect(screen.getByRole('button', { name: 'Cancel termination' })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: 'Edit termination' })).toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: 'Run termination payroll' })).not.toBeInTheDocument()
     })
 
     it('shows run payroll button when dismissal payroll was selected', async () => {

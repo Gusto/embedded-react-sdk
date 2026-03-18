@@ -56,7 +56,7 @@ export const mockTerminationRegularPayroll = {
   effective_date: getFutureDate(),
   run_termination_payroll: false,
   active: true,
-  cancelable: false,
+  cancelable: true,
 }
 
 export const mockTerminationPast = {
