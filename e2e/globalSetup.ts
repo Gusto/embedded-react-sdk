@@ -2,7 +2,7 @@ import { resolve } from 'path'
 import { resolve as dnsResolve } from 'dns/promises'
 import { existsSync, writeFileSync } from 'fs'
 import * as dotenv from 'dotenv'
-import { refreshTokenIfNeeded } from './scripts/refreshToken'
+import { refreshTokenIfNeeded, createFreshDemo } from './scripts/refreshToken'
 
 const localEnvPath = resolve(process.cwd(), 'e2e/local.config.env')
 if (existsSync(localEnvPath)) {
@@ -116,6 +116,8 @@ interface E2EState {
   employeeId: string
   contractorId: string
   locationId: string
+  dismissalCompanyId: string
+  dismissalFlowToken: string
   terminatedEmployeeId: string
 }
 
@@ -921,13 +923,12 @@ export default async function globalSetup() {
   const flowToken = tokenInfo.flowToken
   const companyId = tokenInfo.companyId
 
-  console.log(`Company ID: ${companyId}`)
-  console.log(`Flow Token: ${flowToken.slice(0, 10)}...`)
+  console.log(`Primary Company ID: ${companyId}`)
+  console.log(`Primary Flow Token: ${flowToken.slice(0, 10)}...`)
 
   let locationId = ''
   let employeeId = ''
   let contractorId = ''
-  let terminatedEmployeeId = ''
 
   try {
     locationId = await getOrCreateLocation(flowToken, companyId)
@@ -950,15 +951,38 @@ export default async function globalSetup() {
     console.warn('Tests requiring contractors may fail')
   }
 
+  let dismissalCompanyId = ''
+  let dismissalFlowToken = ''
+  let terminatedEmployeeId = ''
+
   try {
-    await setupCompanyForPayroll(flowToken, companyId)
-    if (employeeId) {
-      await onboardEmployee(flowToken, employeeId)
+    console.log('\n=== Setting up separate company for dismissal tests ===')
+    const dismissalDemo = await createFreshDemo()
+    dismissalFlowToken = dismissalDemo.flowToken
+    dismissalCompanyId = dismissalDemo.companyId
+    console.log(`Dismissal Company ID: ${dismissalCompanyId}`)
+    console.log(`Dismissal Flow Token: ${dismissalFlowToken.slice(0, 10)}...`)
+
+    const dismissalLocationId = await getOrCreateLocation(dismissalFlowToken, dismissalCompanyId)
+    const dismissalEmployeeId = await getOrCreateEmployee(
+      dismissalFlowToken,
+      dismissalCompanyId,
+      dismissalLocationId,
+    )
+
+    await setupCompanyForPayroll(dismissalFlowToken, dismissalCompanyId)
+    if (dismissalEmployeeId) {
+      await onboardEmployee(dismissalFlowToken, dismissalEmployeeId)
     }
-    terminatedEmployeeId = await createTerminatedEmployee(flowToken, companyId, locationId)
-    await logRemainingBlockers(flowToken, companyId)
+    terminatedEmployeeId = await createTerminatedEmployee(
+      dismissalFlowToken,
+      dismissalCompanyId,
+      dismissalLocationId,
+    )
+    await logRemainingBlockers(dismissalFlowToken, dismissalCompanyId)
+    console.log('=== Dismissal company setup complete ===\n')
   } catch (error) {
-    console.warn(`Warning: Could not create terminated employee: ${error}`)
+    console.warn(`Warning: Dismissal company setup failed: ${error}`)
     console.warn('Dismissal tests may fail')
   }
 
@@ -967,6 +991,8 @@ export default async function globalSetup() {
     employeeId,
     contractorId,
     locationId,
+    dismissalCompanyId,
+    dismissalFlowToken,
     terminatedEmployeeId,
   }
 

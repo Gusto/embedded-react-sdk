@@ -7,6 +7,8 @@ interface E2EState {
   employeeId: string
   contractorId: string
   locationId: string
+  dismissalCompanyId: string
+  dismissalFlowToken: string
   terminatedEmployeeId: string
 }
 
@@ -17,6 +19,8 @@ interface LocalConfig {
   employeeId: string
   contractorId: string
   locationId: string
+  dismissalCompanyId: string
+  dismissalFlowToken: string
   terminatedEmployeeId: string
 }
 
@@ -43,6 +47,8 @@ export const test = base.extend<{ localConfig: LocalConfig }>({
         employeeId: dynamicState.employeeId || process.env.E2E_EMPLOYEE_ID || '456',
         contractorId: dynamicState.contractorId || '789',
         locationId: dynamicState.locationId || '',
+        dismissalCompanyId: isLocal ? dynamicState.dismissalCompanyId || '' : '123',
+        dismissalFlowToken: isLocal ? dynamicState.dismissalFlowToken || '' : '',
         terminatedEmployeeId: isLocal
           ? dynamicState.terminatedEmployeeId || ''
           : 'dismissal-test-employee',
@@ -60,13 +66,26 @@ export const test = base.extend<{ localConfig: LocalConfig }>({
       const parsedUrl = new URL(url, 'http://localhost:5173')
       const params = parsedUrl.searchParams
 
-      if (localConfig.isLocal && localConfig.flowToken) {
-        params.set('local', 'true')
-        params.set('flowToken', localConfig.flowToken)
+      const isDismissalFlow = params.get('flow') === 'dismissal'
+      const hasDismissalCompany = localConfig.dismissalCompanyId && localConfig.dismissalFlowToken
+
+      if (localConfig.isLocal) {
+        const flowToken =
+          isDismissalFlow && hasDismissalCompany
+            ? localConfig.dismissalFlowToken
+            : localConfig.flowToken
+        if (flowToken) {
+          params.set('local', 'true')
+          params.set('flowToken', flowToken)
+        }
       }
 
       if (!params.has('companyId') || params.get('companyId') === '123') {
-        params.set('companyId', localConfig.companyId)
+        const companyId =
+          isDismissalFlow && hasDismissalCompany
+            ? localConfig.dismissalCompanyId
+            : localConfig.companyId
+        params.set('companyId', companyId)
       }
       if (!params.has('employeeId') || params.get('employeeId') === '456') {
         params.set('employeeId', localConfig.employeeId)

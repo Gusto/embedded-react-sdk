@@ -29,6 +29,10 @@ function extractFlowTokenFromContent(pageContent: string): string {
   return ''
 }
 
+export async function createFreshDemo(): Promise<TokenInfo> {
+  return extractTokenFromPage()
+}
+
 async function extractTokenFromPage(): Promise<TokenInfo> {
   console.log('🔄 Launching browser to get fresh token from GWS-Flows...')
 

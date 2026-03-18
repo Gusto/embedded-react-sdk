@@ -101,7 +101,10 @@ test.describe('DismissalFlow', () => {
       const stepTimeout = isRealApi ? 300_000 : 30_000
 
       if (isRealApi) {
-        await skipPendingPayrolls(localConfig)
+        await skipPendingPayrolls({
+          flowToken: localConfig.dismissalFlowToken || localConfig.flowToken,
+          companyId: localConfig.dismissalCompanyId || localConfig.companyId,
+        })
       }
 
       await page.goto(
