@@ -151,7 +151,6 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | POST | `/v1/companies/:companyId/payrolls` |
 |  | GET | `/v1/companies/:companyId/pay_periods/unprocessed_termination_pay_periods` |
 |  | GET | `/v1/companies/:companyId/payrolls` |
-|  | GET | `/v1/companies/:companyId/payrolls/:payrollId` |
 |  | DELETE | `/v1/employees/:employeeId/terminations` |
 |  | GET | `/v1/companies/:companyId/employees` |
 

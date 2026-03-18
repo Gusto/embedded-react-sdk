@@ -34,7 +34,7 @@ export const terminationBreadcrumbNodes: BreadcrumbNodes = {
     item: {
       id: 'form',
       label: 'breadcrumbs.form',
-      namespace: 'Terminations.TerminationFlow',
+      namespace: 'Employee.Terminations.TerminationFlow',
       onNavigate: ((ctx: TerminationFlowContextInterface) => ({
         ...ctx,
         component: TerminateEmployeeContextual,
@@ -48,7 +48,7 @@ export const terminationBreadcrumbNodes: BreadcrumbNodes = {
     item: {
       id: 'summary',
       label: 'breadcrumbs.summary',
-      namespace: 'Terminations.TerminationFlow',
+      namespace: 'Employee.Terminations.TerminationFlow',
       onNavigate: ((ctx: TerminationFlowContextInterface) => ({
         ...ctx,
         component: TerminationSummaryContextual,

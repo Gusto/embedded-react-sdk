@@ -16,7 +16,7 @@ import { useBase } from '@/components/Base/useBase'
 import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary, useI18n } from '@/i18n'
 
-export interface TerminationSummaryProps extends BaseComponentInterface<'Terminations.TerminationSummary'> {
+export interface TerminationSummaryProps extends BaseComponentInterface<'Employee.Terminations.TerminationSummary'> {
   employeeId: string
   companyId: string
   payrollOption?: PayrollOption
@@ -38,8 +38,8 @@ const Root = ({
   payrollUuid,
   dictionary,
 }: TerminationSummaryProps) => {
-  useComponentDictionary('Terminations.TerminationSummary', dictionary)
-  useI18n('Terminations.TerminationSummary')
+  useComponentDictionary('Employee.Terminations.TerminationSummary', dictionary)
+  useI18n('Employee.Terminations.TerminationSummary')
 
   const queryClient = useQueryClient()
   const { onEvent, baseSubmitHandler } = useBase()
@@ -64,9 +64,8 @@ const Root = ({
   const canCancel = termination?.cancelable === true
   const effectiveDateLocal = normalizeToDate(effectiveDate)
   const todayMidnight = new Date(new Date().toDateString())
-  const canEdit = !employee?.terminated && effectiveDateLocal
-    ? effectiveDateLocal >= todayMidnight
-    : false
+  const canEdit =
+    !employee?.terminated && effectiveDateLocal ? effectiveDateLocal >= todayMidnight : false
 
   const showRunOffCyclePayroll = payrollOption === 'anotherWay'
   const showRunPayroll =

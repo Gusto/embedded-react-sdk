@@ -749,10 +749,6 @@
           "path": "/v1/companies/:companyId/payrolls"
         },
         {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/payrolls/:payrollId"
-        },
-        {
           "method": "DELETE",
           "path": "/v1/employees/:employeeId/terminations"
         },
@@ -763,8 +759,7 @@
       ],
       "variables": [
         "companyId",
-        "employeeId",
-        "payrollId"
+        "employeeId"
       ]
     },
     "InformationRequests": {
