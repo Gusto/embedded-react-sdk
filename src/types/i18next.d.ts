@@ -1438,7 +1438,6 @@ export interface EmployeeTerminationsTerminationSummary{
 "runPayroll":{
 "title":string;
 "description":string;
-"linkText":string;
 };
 "taxForms":{
 "title":string;
