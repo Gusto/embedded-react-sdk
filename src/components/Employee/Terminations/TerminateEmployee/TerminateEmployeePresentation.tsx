@@ -33,8 +33,8 @@ export function TerminateEmployeePresentation({
   isLoading,
 }: TerminateEmployeePresentationProps) {
   const { Alert, Heading, Text, Button } = useComponentContext()
-  useI18n('Terminations.TerminateEmployee')
-  const { t } = useTranslation('Terminations.TerminateEmployee')
+  useI18n('Employee.Terminations.TerminateEmployee')
+  const { t } = useTranslation('Employee.Terminations.TerminateEmployee')
 
   const getPayrollOptionFromTermination = (termination: Termination): PayrollOption => {
     if (termination.runTerminationPayroll === true) {

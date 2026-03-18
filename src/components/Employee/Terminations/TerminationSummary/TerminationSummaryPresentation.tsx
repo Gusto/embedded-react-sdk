@@ -41,8 +41,8 @@ export function TerminationSummaryPresentation({
 }: TerminationSummaryPresentationProps) {
   const { Alert, Heading, Text, Button, DescriptionList, Dialog, Link } = useComponentContext()
   const { formatLongWithYear } = useDateFormatter()
-  useI18n('Terminations.TerminationSummary')
-  const { t } = useTranslation('Terminations.TerminationSummary')
+  useI18n('Employee.Terminations.TerminationSummary')
+  const { t } = useTranslation('Employee.Terminations.TerminationSummary')
 
   const formattedDate = formatLongWithYear(effectiveDate) || 'N/A'
 
@@ -78,15 +78,19 @@ export function TerminationSummaryPresentation({
           <Flex flexDirection="column" gap={8}>
             <Heading as="h4">{t('offboarding.runPayroll.title')}</Heading>
             <Text>
-              {t('offboarding.runPayroll.description', {
-                interpolation: { escapeValue: false },
-              }).split(t('offboarding.runPayroll.linkText'))[0]}
+              {
+                t('offboarding.runPayroll.description', {
+                  interpolation: { escapeValue: false },
+                }).split(t('offboarding.runPayroll.linkText'))[0]
+              }
               <Link href={STATE_REQUIREMENTS_URL} target="_blank">
                 {t('offboarding.runPayroll.linkText')}
               </Link>
-              {t('offboarding.runPayroll.description', {
-                interpolation: { escapeValue: false },
-              }).split(t('offboarding.runPayroll.linkText'))[1]}
+              {
+                t('offboarding.runPayroll.description', {
+                  interpolation: { escapeValue: false },
+                }).split(t('offboarding.runPayroll.linkText'))[1]
+              }
             </Text>
           </Flex>
 

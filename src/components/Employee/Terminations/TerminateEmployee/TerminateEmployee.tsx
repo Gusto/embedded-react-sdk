@@ -23,7 +23,7 @@ import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { firstLastName } from '@/helpers/formattedStrings'
 
-export interface TerminateEmployeeProps extends BaseComponentInterface<'Terminations.TerminateEmployee'> {
+export interface TerminateEmployeeProps extends BaseComponentInterface<'Employee.Terminations.TerminateEmployee'> {
   employeeId: string
   companyId: string
 }
@@ -42,8 +42,8 @@ export function TerminateEmployee(props: TerminateEmployeeProps) {
 }
 
 const Root = ({ employeeId, companyId, dictionary }: TerminateEmployeeProps) => {
-  useComponentDictionary('Terminations.TerminateEmployee', dictionary)
-  useI18n('Terminations.TerminateEmployee')
+  useComponentDictionary('Employee.Terminations.TerminateEmployee', dictionary)
+  useI18n('Employee.Terminations.TerminateEmployee')
 
   const queryClient = useQueryClient()
   const { onEvent, baseSubmitHandler } = useBase()

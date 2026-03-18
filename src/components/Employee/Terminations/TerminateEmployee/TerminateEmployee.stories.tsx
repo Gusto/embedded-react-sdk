@@ -5,12 +5,12 @@ import { TerminateEmployeePresentation } from './TerminateEmployeePresentation'
 import { useI18n } from '@/i18n'
 
 function I18nLoader({ children }: { children: React.ReactNode }) {
-  useI18n('Terminations.TerminateEmployee')
+  useI18n('Employee.Terminations.TerminateEmployee')
   return <>{children}</>
 }
 
 export default {
-  title: 'Domain/Terminations/TerminateEmployee',
+  title: 'Domain/Employee/Terminations/TerminateEmployee',
   decorators: [
     (Story: React.ComponentType) => (
       <Suspense fallback={<div>Loading translations...</div>}>

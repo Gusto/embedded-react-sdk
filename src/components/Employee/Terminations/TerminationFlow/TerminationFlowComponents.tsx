@@ -33,7 +33,7 @@ export interface TerminationFlowContextInterface extends FlowContextInterface {
 export function TerminateEmployeeContextual() {
   const { companyId, employeeId, onEvent, alerts } = useFlow<TerminationFlowContextInterface>()
   const { Alert } = useComponentContext()
-  useI18n('Terminations.TerminationFlow')
+  useI18n('Employee.Terminations.TerminationFlow')
 
   return (
     <Flex flexDirection="column" gap={8}>
@@ -54,8 +54,8 @@ export function TerminateEmployeeContextual() {
 export function TerminationSummaryContextual() {
   const { companyId, employeeId, payrollOption, payrollUuid, onEvent } =
     useFlow<TerminationFlowContextInterface>()
-  useI18n('Terminations.TerminationFlow')
-  const { t } = useTranslation('Terminations.TerminationFlow')
+  useI18n('Employee.Terminations.TerminationFlow')
+  const { t } = useTranslation('Employee.Terminations.TerminationFlow')
 
   const handleEvent = (event: EventType, data?: unknown) => {
     if (event === componentEvents.EMPLOYEE_TERMINATION_CANCELLED) {
