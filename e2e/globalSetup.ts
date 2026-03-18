@@ -774,7 +774,7 @@ async function skipPayrolls(
 ): Promise<number> {
   const skipEndpoint = `/fe_sdk/${flowToken}/v1/companies/${companyId}/payrolls/skip`
   let skippedCount = 0
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 30; i++) {
     try {
       await postToApi<unknown>(skipEndpoint, { payroll_type: payrollType })
       skippedCount++
@@ -846,9 +846,9 @@ async function createTerminatedEmployee(
   console.log(`Created: ${employee.first_name} ${employee.last_name} (${employee.uuid})`)
 
   console.log('Step 2/8: Creating work address...')
-  const oneYearAgo = new Date()
-  oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1)
-  const effectiveDateWorkAddress = oneYearAgo.toISOString().split('T')[0]
+  const fortyFiveDaysAgo = new Date()
+  fortyFiveDaysAgo.setDate(fortyFiveDaysAgo.getDate() - 45)
+  const effectiveDateWorkAddress = fortyFiveDaysAgo.toISOString().split('T')[0]
   await postToApi<unknown>(`${base}/employees/${employee.uuid}/work_addresses`, {
     location_uuid: locationId,
     effective_date: effectiveDateWorkAddress,
@@ -979,6 +979,25 @@ export default async function globalSetup() {
       dismissalCompanyId,
       dismissalLocationId,
     )
+
+    const postTerminationTransitionSkipped = await skipPayrolls(
+      dismissalFlowToken,
+      dismissalCompanyId,
+      'Transition from old pay schedule',
+    )
+    if (postTerminationTransitionSkipped > 0)
+      console.log(
+        `Skipped ${postTerminationTransitionSkipped} post-termination transition payroll(s)`,
+      )
+
+    const postTerminationRegularSkipped = await skipPayrolls(
+      dismissalFlowToken,
+      dismissalCompanyId,
+      'Regular',
+    )
+    if (postTerminationRegularSkipped > 0)
+      console.log(`Skipped ${postTerminationRegularSkipped} post-termination regular payroll(s)`)
+
     await logRemainingBlockers(dismissalFlowToken, dismissalCompanyId)
     console.log('=== Dismissal company setup complete ===\n')
   } catch (error) {

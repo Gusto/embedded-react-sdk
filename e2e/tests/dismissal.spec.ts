@@ -140,6 +140,13 @@ test.describe('DismissalFlow', () => {
       await page.getByRole('button', { name: /continue/i }).click()
       await waitForLoadingComplete(page)
 
+      const submissionError = page.getByRole('alert').filter({ hasText: /there was a problem/i })
+      const hasSubmissionError = await submissionError.isVisible().catch(() => false)
+      if (hasSubmissionError) {
+        const errorText = await submissionError.textContent()
+        throw new Error(`Off-cycle payroll creation failed: ${errorText}`)
+      }
+
       // Step 2: Edit Payroll (Configuration)
       await expect(page.getByRole('heading', { name: /edit payroll/i }).first()).toBeVisible({
         timeout: stepTimeout,
@@ -206,7 +213,7 @@ async function skipPendingPayrolls(localConfig: { flowToken: string; companyId: 
   const skipUrl = `${gwsFlowsHost}/fe_sdk/${localConfig.flowToken}/v1/companies/${localConfig.companyId}/payrolls/skip`
 
   for (const payrollType of ['Transition from old pay schedule', 'Regular']) {
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 30; i++) {
       try {
         const response = await fetch(skipUrl, {
           method: 'POST',
