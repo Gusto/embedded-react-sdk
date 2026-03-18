@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next'
+import { useTranslation, Trans } from 'react-i18next'
 import { ActionsLayout, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
@@ -65,8 +65,6 @@ export function TerminationSummaryPresentation({
 
   const hasActions = canCancel || canEdit || showRunPayroll || showRunOffCyclePayroll
 
-  const STATE_REQUIREMENTS_URL = 'https://support.gusto.com/article/100895878100000/Final-paychecks'
-
   return (
     <Flex flexDirection="column" gap={24}>
       <Flex flexDirection="column" gap={4}>
@@ -86,19 +84,13 @@ export function TerminationSummaryPresentation({
           <Flex flexDirection="column" gap={8}>
             <Heading as="h4">{t('offboarding.runPayroll.title')}</Heading>
             <Text>
-              {
-                t('offboarding.runPayroll.description', {
-                  interpolation: { escapeValue: false },
-                }).split(t('offboarding.runPayroll.linkText'))[0]
-              }
-              <Link href={STATE_REQUIREMENTS_URL} target="_blank">
-                {t('offboarding.runPayroll.linkText')}
-              </Link>
-              {
-                t('offboarding.runPayroll.description', {
-                  interpolation: { escapeValue: false },
-                }).split(t('offboarding.runPayroll.linkText'))[1]
-              }
+              <Trans
+                i18nKey="offboarding.runPayroll.description"
+                t={t}
+                components={{
+                  StateRequirementsLink: <Link />,
+                }}
+              />
             </Text>
           </Flex>
 

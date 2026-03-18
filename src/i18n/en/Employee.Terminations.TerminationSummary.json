@@ -16,8 +16,7 @@
     "title": "Offboarding checklist:",
     "runPayroll": {
       "title": "Run payroll",
-      "description": "We recommend running the payroll 2-4 days before the last day of employment so there's enough time for direct deposit to process. Make sure you meet your state's requirements about employees' final payment (deadline to pay, unused PTO, etc). If you're going to pay an employee outside of payroll (like via a physical check), make sure you record it for tax purposes.",
-      "linkText": "meet your state's requirements"
+      "description": "We recommend running the payroll 2-4 days before the last day of employment so there's enough time for direct deposit to process. Make sure you <StateRequirementsLink href=\"https://support.gusto.com/article/100895878100000/Final-paychecks\" target=\"_blank\">meet your state's requirements</StateRequirementsLink> about employees' final payment (deadline to pay, unused PTO, etc). If you're going to pay an employee outside of payroll (like via a physical check), make sure you record it for tax purposes."
     },
     "taxForms": {
       "title": "Tax forms and documents",
