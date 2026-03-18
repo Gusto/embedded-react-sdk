@@ -566,6 +566,79 @@ describe('PayrollEditEmployeePresentation', () => {
       expect(screen.queryByText('Time off')).not.toBeInTheDocument()
     })
 
+    it('renders unused time off payout section for final termination payrolls', async () => {
+      renderWithProviders(
+        <PayrollEditEmployeePresentation {...defaultProps} isFinalTerminationPayroll={true} />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText('Unused time off payout')).toBeInTheDocument()
+      })
+    })
+
+    it('does not render unused time off payout section when not a final termination payroll', async () => {
+      renderWithProviders(
+        <PayrollEditEmployeePresentation {...defaultProps} isFinalTerminationPayroll={false} />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText('Time off')).toBeInTheDocument()
+      })
+      expect(screen.queryByText('Unused time off payout')).not.toBeInTheDocument()
+    })
+
+    it('submits finalPayoutUnusedHoursInput when editing payout hours on a termination payroll', async () => {
+      const onSave = vi.fn()
+      const user = userEvent.setup()
+
+      const compensationWithPayout: PayrollEmployeeCompensationsType = {
+        ...mockEmployeeCompensation,
+        paidTimeOff: [
+          { name: 'Vacation Hours', hours: '8.0', finalPayoutUnusedHoursInput: '10' },
+          { name: 'Sick Hours', hours: '0.0', finalPayoutUnusedHoursInput: '0' },
+        ],
+      }
+
+      renderWithProviders(
+        <PayrollEditEmployeePresentation
+          {...defaultProps}
+          onSave={onSave}
+          isFinalTerminationPayroll={true}
+          employeeCompensation={compensationWithPayout}
+        />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText('Unused time off payout')).toBeInTheDocument()
+      })
+
+      const payoutInputs = screen.getAllByRole('spinbutton', { name: /Vacation Hours|Sick Hours/ })
+      const vacationPayoutInput = payoutInputs.find(
+        input =>
+          input.closest('[class*="fieldGroup"]')?.querySelector('h4')?.textContent ===
+          'Unused time off payout',
+      )
+
+      if (vacationPayoutInput) {
+        await user.clear(vacationPayoutInput)
+        await user.type(vacationPayoutInput, '20')
+      }
+
+      const saveButton = screen.getByText('Save')
+      await user.click(saveButton)
+
+      expect(onSave).toHaveBeenCalledWith(
+        expect.objectContaining({
+          paidTimeOff: expect.arrayContaining([
+            expect.objectContaining({
+              name: 'Vacation Hours',
+              finalPayoutUnusedHoursInput: expect.any(String),
+            }),
+          ]),
+        }),
+      )
+    })
+
     it('preserves existing time off data when updating other time off hours', async () => {
       const onSave = vi.fn()
       const user = userEvent.setup()
