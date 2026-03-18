@@ -28,7 +28,7 @@
           "hours": "40.000"
         }
       ],
-      "employee_uuid": "5def7cc1-bc3a-4bd7-bcb7-d479e2cd231a",
+      "employee_uuid": "some-unique-id",
       "version": "0516d8df93324512693dd42a35d99882",
       "paid_time_off": [
         {
@@ -152,7 +152,7 @@
   "auto_pilot": false,
   "processed": true,
   "processed_date": "2025-07-07",
-  "calculated_at": "2025-08-11",
+  "calculated_at": "2025-08-11T12:00:00-07:00",
   "pay_period": {
     "start_date": "2025-07-30",
     "end_date": "2025-08-13",
@@ -160,7 +160,7 @@
   },
   "check_date": "2025-08-15",
   "external": false,
-  "payroll_deadline": "2025-08-11",
+  "payroll_deadline": "2025-08-11T17:00:00-07:00",
   "totals": {
     "additional_earnings": "500.00",
     "benefits": "0.00",
@@ -189,5 +189,5 @@
     "status": "submit_success",
     "errors": []
   },
-  "created_at": "2025-08-11"
+  "created_at": "2025-08-11T10:00:00-07:00"
 }

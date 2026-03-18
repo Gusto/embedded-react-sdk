@@ -31,7 +31,7 @@
           "hours": "40.000"
         }
       ],
-      "employee_uuid": "emp-uuid-1",
+      "employee_uuid": "some-unique-id",
       "version": "v1",
       "paid_time_off": [
         {

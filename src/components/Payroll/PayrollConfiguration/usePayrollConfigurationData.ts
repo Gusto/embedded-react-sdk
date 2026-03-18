@@ -14,6 +14,7 @@ import { usePagination } from '@/hooks/usePagination/usePagination'
 interface UsePayrollConfigurationDataParams {
   companyId: string
   payrollId: string
+  isCalculating?: boolean
 }
 
 interface UsePayrollConfigurationDataReturn {
@@ -34,6 +35,7 @@ const FIVE_MINUTES = 5 * 60 * 1000
 export function usePayrollConfigurationData({
   companyId,
   payrollId,
+  isCalculating = false,
 }: UsePayrollConfigurationDataParams): UsePayrollConfigurationDataReturn {
   const gustoClient = useGustoEmbeddedContext()
   const queryClient = useQueryClient()
@@ -91,7 +93,7 @@ export function usePayrollConfigurationData({
 
       return result.value.payrollPrepared
     },
-    enabled: employeeUuids.length > 0,
+    enabled: employeeUuids.length > 0 && !isCalculating,
     staleTime: FIVE_MINUTES,
     placeholderData: keepPreviousData,
   })
@@ -103,6 +105,14 @@ export function usePayrollConfigurationData({
       })
     }
   }, [queryClient, payrollId])
+
+  useEffect(() => {
+    if (isCalculating) {
+      void queryClient.cancelQueries({
+        queryKey: [PREPARE_QUERY_KEY, payrollId],
+      })
+    }
+  }, [isCalculating, queryClient, payrollId])
 
   const syncData = useCallback(() => {
     const currentEmployeeData = employeeDataRef.current

@@ -85,7 +85,7 @@ export function ApiProvider({
     const client = new QueryClient()
 
     const onSuccess = async () => {
-      await client.invalidateQueries()
+      await client.invalidateQueries({ queryKey: ['@gusto/embedded-api'] })
     }
     client.setQueryDefaults(['@gusto/embedded-api'], { retry: false })
     client.setMutationDefaults(['@gusto/embedded-api'], { onSuccess, retry: false })

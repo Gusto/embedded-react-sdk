@@ -1,9 +1,10 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
-import { usePayrollsCalculateMutation } from '@gusto/embedded-api/react-query/payrollsCalculate'
-import type { Employee } from '@gusto/embedded-api/models/components/employee'
+import { payrollsCalculate } from '@gusto/embedded-api/funcs/payrollsCalculate'
+import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
 import type { PayrollProcessingRequest } from '@gusto/embedded-api/models/components/payrollprocessingrequest'
 import { PayrollProcessingRequestStatus } from '@gusto/embedded-api/models/components/payrollprocessingrequest'
+import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import { useTranslation } from 'react-i18next'
 import { usePayrollsUpdateMutation } from '@gusto/embedded-api/react-query/payrollsUpdate'
 import { usePayrollsCalculateGrossUpMutation } from '@gusto/embedded-api/react-query/payrollsCalculateGrossUp'
@@ -22,10 +23,15 @@ import { useComponentDictionary, useI18n } from '@/i18n'
 import { useBase } from '@/components/Base'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 
-const isCalculating = (processingRequest?: PayrollProcessingRequest | null) =>
+const isCalculatingStatus = (processingRequest?: PayrollProcessingRequest | null) =>
   processingRequest?.status === PayrollProcessingRequestStatus.Calculating
-const isCalculated = (processingRequest?: PayrollProcessingRequest | null) =>
-  processingRequest?.status === PayrollProcessingRequestStatus.CalculateSuccess
+
+const isCalculatedStatus = (
+  processingRequest?: PayrollProcessingRequest | null,
+  calculatedAt?: Date | null,
+) =>
+  processingRequest?.status === PayrollProcessingRequestStatus.CalculateSuccess ||
+  (processingRequest == null && calculatedAt != null)
 
 interface PayrollConfigurationProps extends BaseComponentInterface<'Payroll.PayrollConfiguration'> {
   companyId: string
@@ -57,6 +63,8 @@ export const Root = ({
   const dateFormatter = useDateFormatter()
 
   const [isPolling, setIsPolling] = useState(false)
+  const [isCalculatingPayroll, setIsCalculatingPayroll] = useState(false)
+  const gustoClient = useGustoEmbeddedContext()
 
   const {
     employeeDetails,
@@ -71,6 +79,7 @@ export const Root = ({
   } = usePayrollConfigurationData({
     companyId,
     payrollId,
+    isCalculating: isPolling || isCalculatingPayroll,
   })
 
   const { data: payrollData } = usePayrollsGetSuspense(
@@ -81,9 +90,6 @@ export const Root = ({
     },
     { refetchInterval: isPolling ? 5_000 : false },
   )
-
-  const { mutateAsync: calculatePayroll, isPending: isCalculatingPayroll } =
-    usePayrollsCalculateMutation()
 
   const { mutateAsync: updatePayroll, isPending: isUpdatingPayroll } = usePayrollsUpdateMutation()
 
@@ -227,13 +233,19 @@ export const Root = ({
 
     await baseSubmitHandler({}, async () => {
       const result = await payrollSubmitHandler(async () => {
-        await calculatePayroll({
-          request: {
+        setIsCalculatingPayroll(true)
+        try {
+          const calcResult = await payrollsCalculate(gustoClient, {
             companyId,
             payrollId,
-          },
-        })
-        setIsPolling(true)
+          })
+          if (!calcResult.ok) {
+            throw calcResult.error
+          }
+          setIsPolling(true)
+        } finally {
+          setIsCalculatingPayroll(false)
+        }
       })
 
       if (!result.success && result.blockers.length > 0) {
@@ -291,10 +303,16 @@ export const Root = ({
   }
 
   useEffect(() => {
-    if (isCalculating(payrollData.payrollShow?.processingRequest) && !isPolling) {
+    if (isCalculatingStatus(payrollData.payrollShow?.processingRequest) && !isPolling) {
       setIsPolling(true)
     }
-    if (isPolling && isCalculated(payrollData.payrollShow?.processingRequest)) {
+    if (
+      isPolling &&
+      isCalculatedStatus(
+        payrollData.payrollShow?.processingRequest,
+        payrollData.payrollShow?.calculatedAt,
+      )
+    ) {
       onEvent(componentEvents.RUN_PAYROLL_CALCULATED, {
         payrollId,
         alert: {
@@ -315,7 +333,28 @@ export const Root = ({
       onEvent(componentEvents.RUN_PAYROLL_PROCESSING_FAILED)
       setIsPolling(false)
     }
-  }, [payrollData.payrollShow?.processingRequest, isPolling, onEvent, t, payrollId])
+  }, [
+    payrollData.payrollShow?.processingRequest?.status,
+    payrollData.payrollShow?.calculatedAt,
+    isPolling,
+    onEvent,
+    t,
+    payrollId,
+  ])
+
+  useEffect(() => {
+    if (!isPolling) return
+
+    const POLLING_TIMEOUT_MS = 3 * 60 * 1000
+    const timeoutId = setTimeout(() => {
+      onEvent(componentEvents.RUN_PAYROLL_PROCESSING_FAILED)
+      setIsPolling(false)
+    }, POLLING_TIMEOUT_MS)
+
+    return () => {
+      clearTimeout(timeoutId)
+    }
+  }, [isPolling, onEvent])
 
   const payrollAlert =
     payrollData.payrollShow?.payrollStatusMeta?.payrollLate &&
