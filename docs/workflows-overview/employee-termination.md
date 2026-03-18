@@ -7,6 +7,8 @@ order: 4
 
 The Employee Termination workflow provides a complete experience for terminating employees. It guides users through selecting a termination date, choosing how to process final payroll, reviewing termination details, and managing the offboarding process.
 
+> **Important**: Make sure employees are paid on time by checking your [state's requirement guide](https://support.gusto.com/article/100895878100000/Final-paychecks). Some states require employees to receive their final wages within 24 hours (unless they consent otherwise), in which case running a dismissal payroll may be the only option.
+
 ### Implementation
 
 ```jsx
@@ -49,11 +51,27 @@ function MyApp() {
 
 #### Payroll Options
 
-The workflow supports three payroll processing options:
+The workflow supports three payroll processing options for the employee's final paycheck:
 
-- **`dismissalPayroll`**: Run a dismissal payroll (off-cycle payroll with termination reason)
+- **`dismissalPayroll`**: Run a dismissal payroll (most guided option)
+  - Automatically determines the pay period using the employee's last regular pay period as the start date and termination date as the end date
+  - Makes default PTO payout recommendations based on the employee's assigned PTO policy
+  - If selected, the employee's last regular payroll will be swapped into a dismissal payroll with the termination date as the pay period end date
+  - See the [Termination Payroll Flow guide](https://docs.gusto.com/embedded-payroll/docs/create-a-termination-payroll-flow) for details on how dismissal payrolls are calculated
+
 - **`regularPayroll`**: Process final pay in the employee's regular payroll
-- **`anotherWay`**: Handle final pay outside of Gusto (triggers off-cycle payroll creation flow)
+  - Defers payroll action until the next scheduled regular payroll
+  - Allows the employer to handle final payment as part of their normal payroll process
+  - Termination can be cancelled if this option was selected
+
+- **`anotherWay`**: Handle final pay outside of Gusto
+  - Triggers the off-cycle payroll creation flow
+  - Provides flexibility to decide whether to continue contribution and deductions within the period
+  - Requires employers to manually enter the employee's work period and check date
+  - Requires employers to specify PTO hours payout manually
+  - Removes the employee from unprocessed future payrolls
+  - Termination can be cancelled if this option was selected
+  - Use this option if you intend to manage final payment outside of Gusto (though you'll still need to record an external payroll to ensure accuracy of tax reporting)
 
 ## Using Termination Subcomponents
 
@@ -102,7 +120,12 @@ function MyComponent() {
 
 #### Form Fields
 
-- **Last day of work**: The effective date for the termination (must be on or after the employee's start date)
+- **Last day of work**: The effective date for the termination
+  - Can be in the past or the future
+  - A scheduled effective date takes effect at 12:00 AM PT
+  - Must be on or after the employee's hire date
+  - If the last day of employment is in the past, the date must be after the last non-zero regular pay period's start date (e.g., if an employee had a regular payroll for $2000 for 11/1-11/15 and $0 for 11/15-11/30, the termination date cannot precede 11/1)
+  
 - **Payroll option**: How to process the employee's final pay
   - Run a dismissal payroll
   - Include in their regular payroll
@@ -151,10 +174,22 @@ function MyComponent() {
 
 The summary displays different action buttons based on the termination state:
 
-- **Edit termination**: Available when the termination date is in the future and the employee is not yet terminated
-- **Cancel termination**: Available when the termination is cancelable (before processing)
-- **Run termination payroll**: Shown for dismissal payroll option
-- **Run off-cycle payroll**: Shown when user selected "I'll handle it another way"
+- **Edit termination**: 
+  - Available when the termination date is in the future and the employee is not yet terminated
+  - Cannot edit the effective date if it is in the past
+  
+- **Cancel termination**: 
+  - Available when the termination is cancelable (before processing)
+  - Can cancel if "Include in regular payroll" or "I'll handle it another way" was selected
+  - Cannot cancel if "Run a dismissal payroll" was selected
+  
+- **Run termination payroll**: 
+  - Shown for dismissal payroll option
+  - Navigates to the dismissal payroll processing flow
+  
+- **Run off-cycle payroll**: 
+  - Shown when user selected "I'll handle it another way"
+  - Navigates to the off-cycle payroll creation flow
 
 #### Offboarding Checklist
 
@@ -200,3 +235,18 @@ When the user selects "I'll handle it another way" or clicks "Run off-cycle payr
 - The `EMPLOYEE_TERMINATION_RUN_OFF_CYCLE_PAYROLL` event is emitted
 - The flow transitions to the off-cycle payroll creation flow
 - Upon successful off-cycle payroll creation, the flow returns to the termination summary
+
+## API Reference
+
+For direct API integration without using the React SDK workflow, see the [Terminate a W2 Employee API guide](https://docs.gusto.com/embedded-payroll/docs/terminate-a-w2-employee).
+
+### Related API Endpoints
+
+- **Create termination**: `POST /v1/employees/{employee_uuid}/terminations`
+- **Get terminations**: `GET /v1/employees/{employee_uuid}/terminations`
+- **Update termination**: `PUT /v1/employees/{employee_uuid}/terminations`
+- **Delete termination**: `DELETE /v1/employees/{employee_uuid}/terminations`
+
+### Skipping Dismissal Payroll
+
+If someone accidentally selects dismissal payroll as the final paycheck option and doesn't want to run a dismissal payroll, they can use the [Skip a payroll endpoint](https://docs.gusto.com/embedded-payroll/reference/put-v1-companies-company_id-payrolls-payroll_id-skip) to bypass the requirement that blocks them from changing pay schedules.
