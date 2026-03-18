@@ -50,12 +50,16 @@ export function TerminationSummaryPresentation({
 
   const dateItems = [
     {
-      term: t('dates.lastDayOfWork'),
-      description: formattedDate,
+      term: t('dates.today'),
+      description: t('dates.dismissed', { employeeName }),
     },
     {
-      term: t('dates.lastPayDay'),
-      description: formattedDate,
+      term: formattedDate,
+      description: t('dates.lastDayOfWork'),
+    },
+    {
+      term: formattedDate,
+      description: t('dates.lastPayDay'),
     },
   ]
 
