@@ -8,7 +8,7 @@ import { OnboardingFlow as ContractorOnboardingFlow } from '@/components/Contrac
 import { PayrollFlow } from '@/components/Payroll/PayrollFlow/PayrollFlow'
 import { TransitionFlow } from '@/components/Payroll/Transition/TransitionFlow'
 import { PaymentFlow } from '@/components/Contractor/Payments/PaymentFlow/PaymentFlow'
-import { TerminationFlow } from '@/components/Terminations/TerminationFlow/TerminationFlow'
+import { TerminationFlow } from '@/components/Employee/Terminations/TerminationFlow/TerminationFlow'
 import '@/styles/sdk.scss'
 
 const DEFAULT_API_BASE_URL = 'https://api.gusto.com'

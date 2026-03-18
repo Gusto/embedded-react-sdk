@@ -1,6 +1,11 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
+import {
+  useEmployeeEmploymentsGetTerminationsSuspense,
+  invalidateAllEmployeeEmploymentsGetTerminations,
+} from '@gusto/embedded-api/react-query/employeeEmploymentsGetTerminations'
 import { useEmployeeEmploymentsCreateTerminationMutation } from '@gusto/embedded-api/react-query/employeeEmploymentsCreateTermination'
+import { useEmployeeEmploymentsUpdateTerminationMutation } from '@gusto/embedded-api/react-query/employeeEmploymentsUpdateTermination'
 import { usePayrollsCreateOffCycleMutation } from '@gusto/embedded-api/react-query/payrollsCreateOffCycle'
 import {
   usePaySchedulesGetUnprocessedTerminationPeriods,
@@ -16,6 +21,7 @@ import { BaseComponent } from '@/components/Base/Base'
 import { useBase } from '@/components/Base/useBase'
 import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary, useI18n } from '@/i18n'
+import { firstLastName } from '@/helpers/formattedStrings'
 
 export interface TerminateEmployeeProps extends BaseComponentInterface<'Terminations.TerminateEmployee'> {
   employeeId: string
@@ -46,8 +52,13 @@ const Root = ({ employeeId, companyId, dictionary }: TerminateEmployeeProps) => 
     data: { employee },
   } = useEmployeesGetSuspense({ employeeId })
 
+  const { data: terminationsData } = useEmployeeEmploymentsGetTerminationsSuspense({ employeeId })
+
   const { mutateAsync: createTermination, isPending: isCreatingTermination } =
     useEmployeeEmploymentsCreateTerminationMutation()
+
+  const { mutateAsync: updateTermination, isPending: isUpdatingTermination } =
+    useEmployeeEmploymentsUpdateTerminationMutation()
 
   const { mutateAsync: createOffCyclePayroll, isPending: isCreatingPayroll } =
     usePayrollsCreateOffCycleMutation()
@@ -57,7 +68,12 @@ const Root = ({ employeeId, companyId, dictionary }: TerminateEmployeeProps) => 
     { enabled: false },
   )
 
-  const employeeName = [employee?.firstName, employee?.lastName].filter(Boolean).join(' ')
+  const employeeName = firstLastName({
+    first_name: employee?.firstName,
+    last_name: employee?.lastName,
+  })
+
+  const existingTermination = terminationsData.terminationList?.[0]
 
   const handleSubmit = async (formData: TerminateEmployeeFormData) => {
     const { lastDayOfWork, payrollOption } = formData
@@ -66,15 +82,28 @@ const Root = ({ employeeId, companyId, dictionary }: TerminateEmployeeProps) => 
     await baseSubmitHandler({ effectiveDate, payrollOption }, async () => {
       const runTerminationPayroll = payrollOption === 'dismissalPayroll'
 
-      const result = await createTermination({
-        request: {
-          employeeId,
-          requestBody: {
-            effectiveDate,
-            runTerminationPayroll,
-          },
-        },
-      })
+      const result = existingTermination
+        ? await updateTermination({
+            request: {
+              employeeId,
+              requestBody: {
+                version: existingTermination.version!,
+                effectiveDate,
+                runTerminationPayroll,
+              },
+            },
+          })
+        : await createTermination({
+            request: {
+              employeeId,
+              requestBody: {
+                effectiveDate,
+                runTerminationPayroll,
+              },
+            },
+          })
+
+      await invalidateAllEmployeeEmploymentsGetTerminations(queryClient)
 
       let firstPayrollUuid: string | undefined
 
@@ -129,7 +158,11 @@ const Root = ({ employeeId, companyId, dictionary }: TerminateEmployeeProps) => 
         }
       }
 
-      onEvent(componentEvents.EMPLOYEE_TERMINATION_CREATED, {
+      const eventType = existingTermination
+        ? componentEvents.EMPLOYEE_TERMINATION_UPDATED
+        : componentEvents.EMPLOYEE_TERMINATION_CREATED
+
+      onEvent(eventType, {
         termination: result.termination,
         payrollOption,
         runTerminationPayroll,
@@ -150,11 +183,12 @@ const Root = ({ employeeId, companyId, dictionary }: TerminateEmployeeProps) => 
     onEvent(componentEvents.CANCEL)
   }
 
-  const isPending = isCreatingTermination || isCreatingPayroll
+  const isPending = isCreatingTermination || isUpdatingTermination || isCreatingPayroll
 
   return (
     <TerminateEmployeePresentation
       employeeName={employeeName}
+      existingTermination={existingTermination}
       onSubmit={handleSubmit}
       onCancel={handleCancel}
       isLoading={isPending}

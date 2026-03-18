@@ -10,6 +10,22 @@
     "lastDayOfWork": "Last day of work",
     "lastPayDay": "Last pay day"
   },
+  "offboarding": {
+    "title": "Offboarding checklist:",
+    "runPayroll": {
+      "title": "Run payroll",
+      "description": "We recommend running the payroll 2-4 days before the last day of employment so there's enough time for direct deposit to process. Make sure you meet your state's requirements about employees' final payment (deadline to pay, unused PTO, etc). If you're going to pay an employee outside of payroll (like via a physical check), make sure you record it for tax purposes.",
+      "linkText": "meet your state's requirements"
+    },
+    "taxForms": {
+      "title": "Tax forms and documents",
+      "description": "Ensure that former employees have a way to access their paystubs and tax documents."
+    },
+    "disconnectAccounts": {
+      "title": "Disconnect accounts and services",
+      "description": "If there are any company email addresses or other accounts associated with the dismissed employees, we recommend disconnecting those before the employees' last day."
+    }
+  },
   "actions": {
     "cancelTermination": "Cancel termination",
     "editDismissal": "Edit termination",

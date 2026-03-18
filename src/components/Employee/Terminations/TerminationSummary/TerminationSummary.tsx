@@ -64,7 +64,9 @@ const Root = ({
   const canCancel = termination?.cancelable === true
   const effectiveDateLocal = normalizeToDate(effectiveDate)
   const todayMidnight = new Date(new Date().toDateString())
-  const canEdit = effectiveDateLocal ? effectiveDateLocal >= todayMidnight : false
+  const canEdit = !employee?.terminated && effectiveDateLocal
+    ? effectiveDateLocal >= todayMidnight
+    : false
 
   const showRunOffCyclePayroll = payrollOption === 'anotherWay'
   const showRunPayroll =

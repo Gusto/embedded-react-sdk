@@ -7,8 +7,6 @@ import type {
 import {
   TerminateEmployeeContextual,
   TerminationSummaryContextual,
-  TerminationPayrollExecutionContextual,
-  TerminationOffCycleCreationContextual,
 } from './TerminationFlowComponents'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
@@ -27,15 +25,6 @@ type EventPayloads = {
   [componentEvents.EMPLOYEE_TERMINATION_CANCELLED]: {
     employeeId: string
     alert?: TerminationFlowAlert
-  }
-  [componentEvents.EMPLOYEE_TERMINATION_RUN_PAYROLL]: {
-    employeeId: string
-    companyId: string
-    payrollUuid?: string
-  }
-  [componentEvents.EMPLOYEE_TERMINATION_RUN_OFF_CYCLE_PAYROLL]: {
-    employeeId: string
-    companyId: string
   }
 }
 
@@ -79,15 +68,6 @@ function toFormReducer(ctx: TerminationFlowContextInterface): TerminationFlowCon
   }
 }
 
-function toSummaryReducer(ctx: TerminationFlowContextInterface): TerminationFlowContextInterface {
-  return {
-    ...ctx,
-    component: TerminationSummaryContextual,
-    currentBreadcrumbId: 'summary',
-    progressBarType: 'breadcrumbs',
-  }
-}
-
 const formBreadcrumbTransition = transition(
   componentEvents.BREADCRUMB_NAVIGATE,
   'form',
@@ -96,16 +76,6 @@ const formBreadcrumbTransition = transition(
       ev.payload.key === 'form',
   ),
   reduce(toFormReducer),
-)
-
-const summaryBreadcrumbTransition = transition(
-  componentEvents.BREADCRUMB_NAVIGATE,
-  'summary',
-  guard(
-    (_ctx: TerminationFlowContextInterface, ev: { payload: { key: string } }) =>
-      ev.payload.key === 'summary',
-  ),
-  reduce(toSummaryReducer),
 )
 
 export const terminationMachine = {
@@ -164,60 +134,6 @@ export const terminationMachine = {
         },
       ),
     ),
-    transition(
-      componentEvents.EMPLOYEE_TERMINATION_RUN_PAYROLL,
-      'execution',
-      reduce(
-        (
-          ctx: TerminationFlowContextInterface,
-          ev: MachineEventType<
-            EventPayloads,
-            typeof componentEvents.EMPLOYEE_TERMINATION_RUN_PAYROLL
-          >,
-        ): TerminationFlowContextInterface => ({
-          ...ctx,
-          payrollUuid: ev.payload.payrollUuid ?? ctx.payrollUuid,
-          component: TerminationPayrollExecutionContextual,
-          progressBarType: null,
-        }),
-      ),
-    ),
-    transition(
-      componentEvents.EMPLOYEE_TERMINATION_RUN_OFF_CYCLE_PAYROLL,
-      'createOffCyclePayroll',
-      reduce(
-        (ctx: TerminationFlowContextInterface): TerminationFlowContextInterface => ({
-          ...ctx,
-          component: TerminationOffCycleCreationContextual,
-          progressBarType: null,
-        }),
-      ),
-    ),
-    formBreadcrumbTransition,
-  ),
-  createOffCyclePayroll: state<MachineTransition>(
-    transition(
-      componentEvents.OFF_CYCLE_CREATED,
-      'execution',
-      reduce(
-        (
-          ctx: TerminationFlowContextInterface,
-          ev: { payload?: { payrollUuid?: string } },
-        ): TerminationFlowContextInterface => ({
-          ...ctx,
-          payrollUuid: ev.payload?.payrollUuid,
-          component: TerminationPayrollExecutionContextual,
-          progressBarType: null,
-        }),
-      ),
-    ),
-    summaryBreadcrumbTransition,
-    formBreadcrumbTransition,
-  ),
-  execution: state<MachineTransition>(
-    transition(componentEvents.RUN_PAYROLL_SUBMITTED, 'summary', reduce(toSummaryReducer)),
-    transition(componentEvents.RUN_PAYROLL_PROCESSED, 'summary', reduce(toSummaryReducer)),
-    summaryBreadcrumbTransition,
     formBreadcrumbTransition,
   ),
 }

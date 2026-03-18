@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import z from 'zod'
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import type { Termination } from '@gusto/embedded-api/models/components/termination'
 import type { PayrollOption } from '../types'
 import type { TerminateEmployeeFormData } from './TerminateEmployee'
 import { Flex, ActionsLayout, DatePickerField, RadioGroupField } from '@/components/Common'
@@ -11,6 +12,7 @@ import { useI18n } from '@/i18n'
 
 interface TerminateEmployeePresentationProps {
   employeeName: string
+  existingTermination?: Termination
   onSubmit: (data: TerminateEmployeeFormData) => void
   onCancel: () => void
   isLoading: boolean
@@ -25,6 +27,7 @@ const terminateEmployeeSchema = z.object({
 
 export function TerminateEmployeePresentation({
   employeeName,
+  existingTermination,
   onSubmit,
   onCancel,
   isLoading,
@@ -33,11 +36,24 @@ export function TerminateEmployeePresentation({
   useI18n('Terminations.TerminateEmployee')
   const { t } = useTranslation('Terminations.TerminateEmployee')
 
+  const getPayrollOptionFromTermination = (termination: Termination): PayrollOption => {
+    if (termination.runTerminationPayroll === true) {
+      return 'dismissalPayroll'
+    }
+    return 'regularPayroll'
+  }
+
+  const initialValues: Partial<TerminateEmployeeFormData> = {
+    lastDayOfWork: existingTermination?.effectiveDate
+      ? new Date(existingTermination.effectiveDate)
+      : undefined,
+    payrollOption: existingTermination
+      ? getPayrollOptionFromTermination(existingTermination)
+      : 'dismissalPayroll',
+  }
   const formMethods = useForm<TerminateEmployeeFormData>({
     resolver: zodResolver(terminateEmployeeSchema),
-    defaultValues: {
-      payrollOption: 'dismissalPayroll',
-    },
+    defaultValues: initialValues,
   })
 
   const selectedPayrollOption = formMethods.watch('payrollOption')

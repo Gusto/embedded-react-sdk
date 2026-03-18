@@ -9,9 +9,11 @@ import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { API_BASE_URL } from '@/test/constants'
 import {
+  mockEmployee,
   mockTerminatedEmployee,
   mockTerminationCancelable,
   mockTerminationWithPayroll,
+  mockTerminationRegularPayroll,
   mockTerminationPast,
 } from '@/test/mocks/apis/terminations'
 
@@ -102,6 +104,9 @@ describe('TerminationSummary', () => {
 
     it('shows edit button when effective date is in the future', async () => {
       server.use(
+        http.get(`${API_BASE_URL}/v1/employees/:employee_id`, () => {
+          return HttpResponse.json(mockEmployee)
+        }),
         http.get(`${API_BASE_URL}/v1/employees/:employee_id/terminations`, () => {
           return HttpResponse.json([mockTerminationCancelable])
         }),
@@ -127,6 +132,45 @@ describe('TerminationSummary', () => {
         expect(screen.getByText('John Doe has been successfully terminated')).toBeInTheDocument()
       })
 
+      expect(screen.queryByRole('button', { name: 'Edit termination' })).not.toBeInTheDocument()
+    })
+
+    it('hides edit button when employee is terminated', async () => {
+      server.use(
+        http.get(`${API_BASE_URL}/v1/employees/:employee_id`, () => {
+          return HttpResponse.json(mockTerminatedEmployee)
+        }),
+        http.get(`${API_BASE_URL}/v1/employees/:employee_id/terminations`, () => {
+          return HttpResponse.json([mockTerminationCancelable])
+        }),
+      )
+
+      renderWithProviders(<TerminationSummary {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('John Doe has been successfully terminated')).toBeInTheDocument()
+      })
+
+      expect(screen.queryByRole('button', { name: 'Edit termination' })).not.toBeInTheDocument()
+    })
+
+    it('hides cancel and edit buttons for regular payroll terminations', async () => {
+      server.use(
+        http.get(`${API_BASE_URL}/v1/employees/:employee_id`, () => {
+          return HttpResponse.json(mockTerminatedEmployee)
+        }),
+        http.get(`${API_BASE_URL}/v1/employees/:employee_id/terminations`, () => {
+          return HttpResponse.json([mockTerminationRegularPayroll])
+        }),
+      )
+
+      renderWithProviders(<TerminationSummary {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('John Doe has been successfully terminated')).toBeInTheDocument()
+      })
+
+      expect(screen.queryByRole('button', { name: 'Cancel termination' })).not.toBeInTheDocument()
       expect(screen.queryByRole('button', { name: 'Edit termination' })).not.toBeInTheDocument()
     })
 
@@ -214,6 +258,9 @@ describe('TerminationSummary', () => {
 
     it('emits EMPLOYEE_TERMINATION_EDIT event when edit button is clicked', async () => {
       server.use(
+        http.get(`${API_BASE_URL}/v1/employees/:employee_id`, () => {
+          return HttpResponse.json(mockEmployee)
+        }),
         http.get(`${API_BASE_URL}/v1/employees/:employee_id/terminations`, () => {
           return HttpResponse.json([mockTerminationCancelable])
         }),

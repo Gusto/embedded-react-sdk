@@ -31,6 +31,7 @@ const getPastDate = () => {
 
 export const mockTerminationCancelable = {
   uuid: 'termination-123',
+  version: '1',
   employee_uuid: 'employee-123',
   effective_date: getFutureDate(),
   run_termination_payroll: false,
@@ -40,6 +41,7 @@ export const mockTerminationCancelable = {
 
 export const mockTerminationWithPayroll = {
   uuid: 'termination-456',
+  version: '1',
   employee_uuid: 'employee-123',
   effective_date: getFutureDate(),
   run_termination_payroll: true,
@@ -47,8 +49,19 @@ export const mockTerminationWithPayroll = {
   cancelable: false,
 }
 
+export const mockTerminationRegularPayroll = {
+  uuid: 'termination-regular',
+  version: '1',
+  employee_uuid: 'employee-123',
+  effective_date: getFutureDate(),
+  run_termination_payroll: false,
+  active: true,
+  cancelable: false,
+}
+
 export const mockTerminationPast = {
   uuid: 'termination-789',
+  version: '1',
   employee_uuid: 'employee-123',
   effective_date: getPastDate(),
   run_termination_payroll: false,
@@ -82,6 +95,10 @@ export function handleCreateTermination(resolver: HttpResponseResolver) {
   return http.post(`${API_BASE_URL}/v1/employees/:employee_id/terminations`, resolver)
 }
 
+export function handleUpdateTermination(resolver: HttpResponseResolver) {
+  return http.put(`${API_BASE_URL}/v1/terminations/:employee_id`, resolver)
+}
+
 export function handleGetTerminations(resolver: HttpResponseResolver) {
   return http.get(`${API_BASE_URL}/v1/employees/:employee_id/terminations`, resolver)
 }
@@ -107,7 +124,11 @@ const createTermination = handleCreateTermination(() =>
   HttpResponse.json(mockTerminationCancelable, { status: 201 }),
 )
 
-const getTerminations = handleGetTerminations(() => HttpResponse.json([mockTerminationCancelable]))
+const updateTermination = handleUpdateTermination(() =>
+  HttpResponse.json(mockTerminationCancelable, { status: 200 }),
+)
+
+const getTerminations = handleGetTerminations(() => HttpResponse.json([]))
 
 const deleteTermination = handleDeleteTermination(() => new HttpResponse(null, { status: 204 }))
 
@@ -122,6 +143,7 @@ const createOffCyclePayroll = handleCreateOffCyclePayroll(() =>
 export default [
   getEmployee,
   createTermination,
+  updateTermination,
   getTerminations,
   deleteTermination,
   getUnprocessedTerminationPeriods,
