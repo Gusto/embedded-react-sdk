@@ -1,13 +1,16 @@
 import type React from 'react'
+import type { ErrorInfo } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import { I18nextProvider } from 'react-i18next'
 import type { QueryClient } from '@tanstack/react-query'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { ComponentsProvider } from '../ComponentAdapter/ComponentsProvider'
 import type { ComponentsContextType } from '../ComponentAdapter/useComponentContext'
 import { ApiProvider } from '../ApiProvider/ApiProvider'
 import { LoadingIndicatorProvider } from '../LoadingIndicatorProvider/LoadingIndicatorProvider'
 import type { LoadingIndicatorContextProps } from '../LoadingIndicatorProvider/useLoadingIndicator'
+import { ObservabilityProvider } from '../ObservabilityProvider'
+import { sanitizeError } from '../ObservabilityProvider/sanitization'
 import { SDKI18next } from './SDKI18next'
 import { InternalError } from '@/components/Common'
 import { LocaleProvider } from '@/contexts/LocaleProvider'
@@ -15,11 +18,13 @@ import { ThemeProvider } from '@/contexts/ThemeProvider'
 import type { GustoSDKTheme } from '@/contexts/ThemeProvider/theme'
 import type { ResourceDictionary, SupportedLanguages } from '@/types/Helpers'
 import type { SDKHooks } from '@/types/hooks'
+import type { ObservabilityHook } from '@/types/observability'
 
 export interface APIConfig {
   baseUrl: string
   headers?: HeadersInit
   hooks?: SDKHooks
+  observability?: ObservabilityHook
 }
 
 export interface GustoProviderProps {
@@ -79,25 +84,51 @@ const GustoProviderCustomUIAdapter: React.FC<GustoProviderCustomUIAdapterProps> 
     })()
   }, [lng])
 
+  // Create sanitized error handler that respects sanitization config
+  const handleTopLevelError = useMemo(() => {
+    if (!config.observability?.onError) return undefined
+
+    return (error: unknown, errorInfo: ErrorInfo) => {
+      if (!config.observability?.onError) return
+
+      const unsanitizedError = {
+        type: 'internal_error' as const,
+        message: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined,
+        context: {
+          componentStack: errorInfo.componentStack ?? undefined,
+        },
+        originalError: error,
+        timestamp: Date.now(),
+      }
+
+      // Apply sanitization with the same config used for other errors
+      const sanitizedError = sanitizeError(unsanitizedError, config.observability.sanitization)
+
+      config.observability.onError(sanitizedError)
+    }
+  }, [config.observability])
   return (
     <ComponentsProvider value={components}>
       <LoadingIndicatorProvider value={LoaderComponent}>
-        <ErrorBoundary FallbackComponent={InternalError}>
-          <ThemeProvider theme={theme}>
-            <LocaleProvider locale={locale} currency={currency}>
-              <I18nextProvider i18n={SDKI18next} key={lng}>
-                <ApiProvider
-                  url={config.baseUrl}
-                  headers={config.headers}
-                  hooks={config.hooks}
-                  queryClient={queryClient}
-                >
-                  {children}
-                </ApiProvider>
-              </I18nextProvider>
-            </LocaleProvider>
-          </ThemeProvider>
-        </ErrorBoundary>
+        <ObservabilityProvider observability={config.observability}>
+          <ErrorBoundary FallbackComponent={InternalError} onError={handleTopLevelError}>
+            <ThemeProvider theme={theme}>
+              <LocaleProvider locale={locale} currency={currency}>
+                <I18nextProvider i18n={SDKI18next} key={lng}>
+                  <ApiProvider
+                    url={config.baseUrl}
+                    headers={config.headers}
+                    hooks={config.hooks}
+                    queryClient={queryClient}
+                  >
+                    {children}
+                  </ApiProvider>
+                </I18nextProvider>
+              </LocaleProvider>
+            </ThemeProvider>
+          </ErrorBoundary>
+        </ObservabilityProvider>
       </LoadingIndicatorProvider>
     </ComponentsProvider>
   )

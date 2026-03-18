@@ -213,10 +213,10 @@ export const Root = ({
     companyUuid: companyId,
   })
 
-  const payrollBlockerList = blockersData.payrollBlockerList ?? []
+  const payrollBlockerList = blockersData.payrollBlockers ?? []
 
   const blockersFromApi: ApiPayrollBlocker[] = payrollBlockerList.map(blocker => ({
-    key: blocker.key ?? 'unknown',
+    key: blocker.key,
     message: blocker.message,
   }))
 

@@ -2,7 +2,7 @@ import type { HttpResponseResolver } from 'msw'
 import { http, HttpResponse, type PathParams } from 'msw'
 import type { GetV1CompaniesCompanyIdBankAccountsRequest } from '@gusto/embedded-api/models/operations/getv1companiescompanyidbankaccounts'
 import type { PostV1CompaniesCompanyIdBankAccountsRequest } from '@gusto/embedded-api/models/operations/postv1companiescompanyidbankaccounts'
-import type { PutV1CompaniesCompanyIdBankAccountsVerifyRequestBody } from '@gusto/embedded-api/models/operations/putv1companiescompanyidbankaccountsverify'
+import type { CompanyBankAccountVerifyRequest } from '@gusto/embedded-api/models/components/companybankaccountverifyrequest'
 import { getFixture } from '../fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
 
@@ -32,7 +32,7 @@ export const postCompanyBankAccount = handlePostCompanyBankAccount(async () => {
 })
 
 export function handlePutCompanyBankAccountVerify(
-  resolver: HttpResponseResolver<PathParams, PutV1CompaniesCompanyIdBankAccountsVerifyRequestBody>,
+  resolver: HttpResponseResolver<PathParams, CompanyBankAccountVerifyRequest>,
 ) {
   return http.put(
     `${API_BASE_URL}/v1/companies/:company_id/bank_accounts/:bank_account_uuid/verify`,

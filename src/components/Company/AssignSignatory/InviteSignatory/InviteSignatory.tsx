@@ -39,7 +39,7 @@ function Root({ companyId, defaultValues, className, children }: InviteSignatory
   const { onEvent, baseSubmitHandler } = useBase()
 
   const {
-    data: { signatoryList },
+    data: { signatories: signatoryList },
   } = useSignatoriesListSuspense({
     companyUuid: companyId,
   })
@@ -76,7 +76,7 @@ function Root({ companyId, defaultValues, className, children }: InviteSignatory
       const inviteSignatoryResponse = await inviteSignatoryMutation.mutateAsync({
         request: {
           companyUuid: companyId,
-          requestBody: signatoryData,
+          signatoryInviteRequest: signatoryData,
         },
       })
 

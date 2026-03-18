@@ -155,7 +155,7 @@ export function TerminationOffCycleCreationContextual() {
           })
 
           if (!firstPayrollUuid) {
-            firstPayrollUuid = payrollResult.payrollPrepared?.payrollUuid
+            firstPayrollUuid = payrollResult.payrollUnprocessed?.payrollUuid
           }
         }
       }

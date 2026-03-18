@@ -38,7 +38,7 @@ interface CreatePaymentProps extends BaseComponentInterface<'Contractor.Payments
 
 export function CreatePayment(props: CreatePaymentProps) {
   return (
-    <BaseComponent {...props}>
+    <BaseComponent {...props} componentName="Contractor.Payments.CreatePayment">
       <Root {...props}>{props.children}</Root>
     </BaseComponent>
   )

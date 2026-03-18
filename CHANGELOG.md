@@ -1,5 +1,51 @@
 # Changelog
 
+## 0.36.0
+
+### Features & Enhancements
+
+- Integrate tax withholding config into off-cycle payroll creation
+- Add gross up modal to PayrollConfiguration kebab menu
+- Add observability hooks with PII protection
+
+### Fixes
+
+- Update payroll deadline time from 1PM to 4PM Pacific in calendar preview
+- Adjust minimum wage controls for states without tip credits
+- Updated to use correct translation keys
+- Handle date field serialization in state taxes form
+- Preset payment date based on company payment speed
+- Revert react-aria upgrade and block in dependabot
+
+### Chores & Maintenance
+
+- Update embedded api to 0.12.4
+- Convert Cursor commands to Claude Code skills
+- Add comprehensive tests for rem conversion utilities
+- Improve Cursor configuration for team productivity
+- Upgrade vitest to v4, coverage-v8 to v4, and plugin-react-swc to v4
+- Bump react-i18next from 16.5.4 to 16.5.8
+- Bump i18next from 25.8.13 to 25.8.18
+- Bump dompurify from 3.3.2 to 3.3.3
+- Bump react-aria from 3.45.0 to 3.47.0
+- Bump sass-embedded from 1.97.3 to 1.98.0
+- Bump typescript-eslint from 8.56.1 to 8.57.1
+- Bump eslint-plugin-storybook from 10.2.15 to 10.2.19
+- Bump @storybook/react-vite from 10.2.15 to 10.2.19
+- Bump @storybook/addon-docs from 10.2.14 to 10.2.19
+- Bump @storybook/addon-a11y from 10.2.16 to 10.2.19
+- Bump @storybook/addon-onboarding from 10.2.15 to 10.2.19
+- Bump storybook from 10.2.16 to 10.2.19
+- Bump lint-staged from 16.3.2 to 16.4.0
+- Bump msw from 2.12.10 to 2.12.12
+- Bump eslint from 9.39.3 to 9.39.4
+- Bump @commitlint/cli from 20.4.3 to 20.5.0
+- Bump @commitlint/config-conventional from 20.4.3 to 20.5.0
+
+## 0.35.0 (unpublished)
+
+> This version was unpublished from NPM due to a critical bug caused by a react-aria upgrade that required a rollback. All changes are included in 0.36.0.
+
 ## 0.34.0
 
 ### Features & Enhancements

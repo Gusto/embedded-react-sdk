@@ -102,6 +102,7 @@ describe('CreateSignatory', () => {
         has_ssn: true,
         phone: '(555) 123-4567',
         birthday: '1980-01-01',
+        version: 'abc123',
         home_address: {
           street_1: '123 Main St',
           street_2: 'Apt 4B',
@@ -162,6 +163,7 @@ describe('CreateSignatory', () => {
           hasSsn: true,
           phone: '(555) 123-4567',
           birthday: '1980-01-01',
+          version: 'abc123',
           homeAddress: {
             street1: '123 Main St',
             street2: 'Apt 4B',

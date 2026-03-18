@@ -1,5 +1,5 @@
 import type { ReactNode, JSX, ErrorInfo } from 'react'
-import { Suspense } from 'react'
+import { Suspense, useEffect, useRef } from 'react'
 import type { FallbackProps } from 'react-error-boundary'
 import { ErrorBoundary } from 'react-error-boundary'
 import { useTranslation } from 'react-i18next'
@@ -16,6 +16,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import type { ResourceDictionary, Resources } from '@/types/Helpers'
 import { useLoadingIndicator } from '@/contexts/LoadingIndicatorProvider/useLoadingIndicator'
 import type { LoadingIndicatorContextProps } from '@/contexts/LoadingIndicatorProvider/useLoadingIndicator'
+import { useObservability } from '@/contexts/ObservabilityProvider/useObservability'
 import { renderErrorList } from '@/helpers/apiErrorToList'
 
 export interface CommonComponentInterface<TResourceKey extends keyof Resources = keyof Resources> {
@@ -34,19 +35,38 @@ export interface BaseComponentInterface<
   onEvent: OnEventType<EventType, unknown>
 }
 
+// Internal prop for SDK components to set their component name
+interface InternalBaseComponentProps {
+  componentName?: string
+}
+
 export const BaseComponent = <TResourceKey extends keyof Resources = keyof Resources>({
   children,
   FallbackComponent = InternalError,
   LoaderComponent: LoadingIndicatorFromProps,
   onEvent,
-}: BaseComponentInterface<TResourceKey>) => {
-  const { error, fieldErrors, baseSubmitHandler, setError } = useBaseSubmit()
+  componentName,
+}: BaseComponentInterface<TResourceKey> & InternalBaseComponentProps) => {
+  const { error, fieldErrors, baseSubmitHandler, setError } = useBaseSubmit(componentName)
+  const { observability } = useObservability()
 
   const { LoadingIndicator: LoadingIndicatorFromContext } = useLoadingIndicator()
   const LoaderComponent = LoadingIndicatorFromProps ?? LoadingIndicatorFromContext
 
-  const onErrorBoundaryError = (error: unknown) => {
+  const onErrorBoundaryError = (error: unknown, errorInfo: ErrorInfo) => {
     onEvent(componentEvents.ERROR, error)
+
+    observability?.onError?.({
+      type: 'boundary_error',
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+      context: {
+        componentName,
+        componentStack: errorInfo.componentStack ?? undefined,
+      },
+      originalError: error,
+      timestamp: Date.now(),
+    })
   }
 
   return (
@@ -58,12 +78,14 @@ export const BaseComponent = <TResourceKey extends keyof Resources = keyof Resou
         onEvent,
         baseSubmitHandler,
         LoadingIndicator: LoaderComponent,
+        componentName,
       }}
     >
       <BaseBoundaries
         FallbackComponent={FallbackComponent}
         LoaderComponent={LoaderComponent}
         onErrorBoundaryError={onErrorBoundaryError}
+        componentName={componentName}
       >
         <BaseLayout error={error} fieldErrors={fieldErrors}>
           {children}
@@ -104,11 +126,48 @@ export const BaseLayout = ({ children, error, fieldErrors }: BaseLayoutProps) =>
   )
 }
 
+interface LoaderWithMetricsProps {
+  LoaderComponent: LoadingIndicatorContextProps['LoadingIndicator']
+  observability: ReturnType<typeof useObservability>['observability']
+  componentName?: string
+}
+
+const LoaderWithMetrics = ({
+  LoaderComponent,
+  observability,
+  componentName,
+}: LoaderWithMetricsProps) => {
+  const loadingStartTime = useRef(Date.now())
+  const observabilityRef = useRef(observability)
+  const componentNameRef = useRef(componentName)
+
+  useEffect(() => {
+    observabilityRef.current = observability
+    componentNameRef.current = componentName
+  }, [observability, componentName])
+
+  useEffect(() => {
+    return () => {
+      const duration = Date.now() - loadingStartTime.current
+      observabilityRef.current?.onMetric?.({
+        name: 'sdk.component.loading_duration',
+        value: duration,
+        unit: 'ms',
+        tags: componentNameRef.current ? { component: componentNameRef.current } : undefined,
+        timestamp: Date.now(),
+      })
+    }
+  }, [])
+
+  return <LoaderComponent />
+}
+
 export interface BaseBoundariesProps {
   children?: ReactNode
   FallbackComponent?: (props: FallbackProps) => JSX.Element
   LoaderComponent?: LoadingIndicatorContextProps['LoadingIndicator']
   onErrorBoundaryError?: (error: unknown, info: ErrorInfo) => void
+  componentName?: string
 }
 
 export const BaseBoundaries = ({
@@ -116,9 +175,11 @@ export const BaseBoundaries = ({
   FallbackComponent = InternalError,
   LoaderComponent: LoadingIndicatorFromProps,
   onErrorBoundaryError,
+  componentName,
 }: BaseBoundariesProps) => {
   const { LoadingIndicator: LoadingIndicatorFromContext } = useLoadingIndicator()
   const LoaderComponent = LoadingIndicatorFromProps ?? LoadingIndicatorFromContext
+  const { observability } = useObservability()
 
   return (
     <QueryErrorResetBoundary>
@@ -128,7 +189,17 @@ export const BaseBoundaries = ({
           onReset={resetQueries}
           onError={onErrorBoundaryError}
         >
-          <Suspense fallback={<LoaderComponent />}>{children}</Suspense>
+          <Suspense
+            fallback={
+              <LoaderWithMetrics
+                LoaderComponent={LoaderComponent}
+                observability={observability}
+                componentName={componentName}
+              />
+            }
+          >
+            {children}
+          </Suspense>
         </ErrorBoundary>
       )}
     </QueryErrorResetBoundary>

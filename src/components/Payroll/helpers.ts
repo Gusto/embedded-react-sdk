@@ -1,6 +1,6 @@
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollShowFixedCompensations } from '@gusto/embedded-api/models/components/payroll'
-import type { FixedCompensations } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
+import type { PayrollEmployeeCompensationsTypeFixedCompensations as FixedCompensations } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api/models/components/payrollfixedcompensationtypestype'
 import { useCallback } from 'react'
 import type { TFunction } from 'i18next'

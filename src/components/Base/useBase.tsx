@@ -19,6 +19,7 @@ interface BaseContextProps {
     componentHandler: (payload: T) => Promise<void>,
   ) => Promise<void>
   LoadingIndicator: LoadingIndicatorContextProps['LoadingIndicator']
+  componentName?: string
 }
 
 export const BaseContext = createContext<BaseContextProps | undefined>(undefined)

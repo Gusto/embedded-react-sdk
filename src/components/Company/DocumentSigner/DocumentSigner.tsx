@@ -16,7 +16,7 @@ export interface DocumentSignerProps extends BaseComponentInterface<'Company.Doc
 function DocumentSignerFlow({ companyId, signatoryId, onEvent, dictionary }: DocumentSignerProps) {
   useComponentDictionary('Company.DocumentList', dictionary)
   const {
-    data: { signatoryList },
+    data: { signatories: signatoryList },
   } = useSignatoriesListSuspense({
     companyUuid: companyId,
   })

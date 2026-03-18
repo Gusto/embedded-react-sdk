@@ -31,10 +31,9 @@ mcp_glean_default_search({ query: "test", app: "confluence" })
 
 To use this command, you need to set up the JIRA MCP server:
 
-1. Open Cursor Settings → MCP Servers
-2. Add the Atlassian JIRA MCP server
-3. Authenticate with your Atlassian account
-4. Ensure you have access to the SDK project
+1. Configure the Atlassian JIRA MCP server in your MCP settings
+2. Authenticate with your Atlassian account
+3. Ensure you have access to the SDK project
 
 Once configured, run this command again.
 ```
@@ -47,8 +46,8 @@ Once configured, run this command again.
 To use this command, you need to set up the Glean MCP server:
 
 1. Go to https://app.glean.com/settings/mcp
-2. Follow the instructions to add Glean MCP to Cursor
-3. Restart Cursor after configuration
+2. Follow the instructions to add Glean MCP to your configuration
+3. Restart your session after configuration
 
 Without Glean:
 
@@ -482,20 +481,6 @@ Use the Glean research to populate TECH_SPEC.md with:
 - [ ] Create implementation tickets from finalized scope
 - [ ] Identify ticket dependencies to discuss parallelization in grooming
 ```
-
-### Step 8: Open Spec Repo in Cursor
-
-Launch a new Cursor instance at the spec repo so the user can start working directly:
-
-```bash
-cursor ~/workspace/{slug}-spec
-```
-
-This opens the new spec repo in a fresh Cursor window where the user can:
-
-- Continue prompting to flesh out the tech spec
-- Run zod validation tests
-- Update report files
 
 ---
 

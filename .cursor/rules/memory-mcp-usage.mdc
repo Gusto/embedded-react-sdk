@@ -1,0 +1,41 @@
+---
+alwaysApply: true
+---
+
+# Memory MCP: Persist Research and Findings
+
+Use the Memory MCP server to build a persistent knowledge graph across sessions. This prevents repeated research and keeps context alive between conversations.
+
+## When Starting a Task
+
+Search memory for prior context before diving in:
+
+```
+memory.search_nodes({ query: "relevant topic or feature name" })
+```
+
+Check if previous sessions discovered relevant information, made architectural decisions, or found gotchas.
+
+## What to Store
+
+Save findings whenever you discover something non-obvious:
+
+- **Bug investigations**: root cause, fix, and any related issues
+- **Architectural decisions**: why a particular approach was chosen
+- **API discoveries**: response shapes, undocumented behavior, schema mismatches
+- **Environment gotchas**: setup quirks, version incompatibilities, workarounds
+- **Feature context**: PRD links, Figma references, JIRA tickets, implementation notes
+
+## Entity Naming Convention
+
+Use structured, namespaced names for easy retrieval:
+
+- `EmbeddedSDK:Feature:{FeatureName}` -- feature-level context
+- `EmbeddedSDK:Bug:{Description}` -- bug investigations
+- `EmbeddedSDK:API:{EndpointOrDomain}` -- API behavior notes
+- `EmbeddedSDK:Architecture:{Decision}` -- architectural decisions
+- `EmbeddedSDK:Environment:{Topic}` -- dev environment notes
+
+## After Investigations
+
+Always save conclusions at the end of a research or debugging session so future sessions start with full context instead of re-discovering the same information.

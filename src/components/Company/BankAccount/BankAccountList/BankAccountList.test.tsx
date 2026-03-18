@@ -29,16 +29,20 @@ describe('BankAccounts', () => {
   beforeEach(() => {
     setupApiTestMocks()
     server.use(getCompanyBankAccounts)
-    renderWithProviders(<BankAccountList companyId="company-123" onEvent={onEvent} />)
   })
+
+  const renderBankAccountList = () =>
+    renderWithProviders(<BankAccountList companyId="company-123" onEvent={onEvent} />)
 
   it('renders empty list of bank accounts', async () => {
     server.use(getEmptyCompanyBankAccounts)
+    renderBankAccountList()
     await waitFor(() => {
       expect(screen.getByTestId('internal-error-card')).toBeInTheDocument()
     })
   })
   it('renders a list of bank accounts', async () => {
+    renderBankAccountList()
     await waitFor(() => {
       expect(screen.getByText('851070439')).toBeInTheDocument()
     })
@@ -46,6 +50,7 @@ describe('BankAccounts', () => {
 
   it('renders verification pending alert', async () => {
     server.use(handleGetCompanyBankAccounts(() => HttpResponse.json([mockAccount])))
+    renderBankAccountList()
     await waitFor(async () => {
       expect(screen.getByText('Verification pending')).toBeInTheDocument()
       const verifyButton = await screen.findByRole('button', { name: 'Verify bank account' })
@@ -58,6 +63,7 @@ describe('BankAccounts', () => {
         HttpResponse.json([{ ...mockAccount, verification_status: 'ready_for_verification' }]),
       ),
     )
+    renderBankAccountList()
     await waitFor(async () => {
       expect(screen.getByText('Verify your bank account')).toBeInTheDocument()
       const verifyButton = await screen.findByRole('button', { name: 'Verify bank account' })
@@ -71,12 +77,14 @@ describe('BankAccounts', () => {
   })
 
   it('fires continue event when "continue" is clicked', async () => {
+    renderBankAccountList()
     const continueButton = await screen.findByRole('button', { name: 'Continue' })
     await user.click(continueButton)
 
     expect(onEvent).toHaveBeenCalledWith(companyEvents.COMPANY_BANK_ACCOUNT_DONE)
   })
   it('fires change bank account event when "change bank account" is clicked', async () => {
+    renderBankAccountList()
     const changeButton = await screen.findByRole('button', { name: 'Change bank account' })
     await user.click(changeButton)
 

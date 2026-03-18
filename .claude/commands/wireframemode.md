@@ -36,4 +36,4 @@ Switch into wireframe prototyping mode for rough UI exploration. This mode helps
 
 ## Exiting wireframe mode
 
-Say `/normalmode` or explicitly ask to exit wireframe mode to return to normal coding behavior.
+Say "exit wireframe mode" or explicitly ask to return to normal coding behavior.

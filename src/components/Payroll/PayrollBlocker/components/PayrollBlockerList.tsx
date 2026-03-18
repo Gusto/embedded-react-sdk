@@ -108,13 +108,15 @@ function Root({ className, companyId, dictionary, onEvent }: PayrollBlockerListP
     companyUuid: companyId,
   })
 
-  const payrollBlockerList = blockersData.payrollBlockerList ?? []
+  const payrollBlockerList = blockersData.payrollBlockers ?? []
   const blockers: PayrollBlocker[] = payrollBlockerList.map(blocker => {
-    const blockerKey = blocker.key ?? 'unknown'
+    const blockerKey = blocker.key
     const translationKeys = getBlockerTranslationKeys(blockerKey)
 
     const title = t(translationKeys.titleKey, {
-      defaultValue: blockerKey.replace(/_/g, ' ').replace(/\b\w/g, letter => letter.toUpperCase()),
+      defaultValue: blockerKey
+        .replace(/_/g, ' ')
+        .replace(/\b\w/g, (letter: string) => letter.toUpperCase()),
     })
 
     const description = t(translationKeys.descriptionKey, {

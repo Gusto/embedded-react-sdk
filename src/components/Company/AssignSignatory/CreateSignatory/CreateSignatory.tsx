@@ -1,6 +1,7 @@
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import classNames from 'classnames'
+import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { useSignatoriesListSuspense } from '@gusto/embedded-api/react-query/signatoriesList'
 import { useSignatoriesCreateMutation } from '@gusto/embedded-api/react-query/signatoriesCreate'
 import { useSignatoriesUpdateMutation } from '@gusto/embedded-api/react-query/signatoriesUpdate'
@@ -51,7 +52,7 @@ function Root({
   const transformPhone = useMaskedTransform(commonMasks.phoneMask)
 
   const {
-    data: { signatoryList },
+    data: { signatories: signatoryList },
   } = useSignatoriesListSuspense({
     companyUuid: companyId,
   })
@@ -89,9 +90,10 @@ function Root({
     await baseSubmitHandler(data, async payload => {
       const { street1, street2, city, state, zip, birthday, email, ssn, ...signatoryData } = payload
 
+      const birthdayString = formatDateToStringDate(birthday) || ''
       const commonData = {
         ...signatoryData,
-        birthday: formatDateToStringDate(birthday) || '',
+        birthday: new RFCDate(birthdayString),
         homeAddress: {
           street1,
           street2,
@@ -106,8 +108,8 @@ function Root({
           request: {
             companyUuid: companyId,
             signatoryUuid: currentSignatory.uuid,
-            requestBody: {
-              version: currentSignatory.version,
+            signatoryUpdateRequest: {
+              version: currentSignatory.version!,
               ...(ssn ? { ssn } : {}),
               ...commonData,
             },
@@ -127,7 +129,7 @@ function Root({
         const createSignatoryResponse = await createSignatoryMutation.mutateAsync({
           request: {
             companyUuid: companyId,
-            requestBody: {
+            signatoryCreateRequest: {
               email,
               ssn: ssn || '',
               ...commonData,
