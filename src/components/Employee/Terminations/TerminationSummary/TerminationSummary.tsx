@@ -64,14 +64,17 @@ const Root = ({
   const canCancel = termination?.cancelable === true
   const effectiveDateLocal = normalizeToDate(effectiveDate)
   const todayMidnight = new Date(new Date().toDateString())
-  const canEdit = !employee?.terminated && effectiveDateLocal
-    ? effectiveDateLocal >= todayMidnight
-    : false
+  const canEdit =
+    !employee?.terminated && effectiveDateLocal ? effectiveDateLocal >= todayMidnight : false
 
   const showRunOffCyclePayroll = payrollOption === 'anotherWay'
   const showRunPayroll =
     !showRunOffCyclePayroll &&
     (termination?.runTerminationPayroll === true || payrollOption === 'dismissalPayroll')
+
+  // Only show success alert if payrollOption is provided (meaning we just completed the termination)
+  // Don't show it if we're just viewing an existing termination (employee already terminated)
+  const showSuccessAlert = payrollOption !== undefined
 
   const handleCancelClick = () => {
     setIsCancelDialogOpen(true)
@@ -139,6 +142,7 @@ const Root = ({
       canEdit={canEdit}
       showRunPayroll={showRunPayroll}
       showRunOffCyclePayroll={showRunOffCyclePayroll}
+      showSuccessAlert={showSuccessAlert}
       onCancelClick={handleCancelClick}
       onEditDismissal={handleEditDismissal}
       onRunDismissalPayroll={handleRunDismissalPayroll}

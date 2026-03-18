@@ -44,6 +44,7 @@ export const WithCancelAndEdit = () => (
     canEdit={true}
     showRunPayroll={false}
     showRunOffCyclePayroll={false}
+    showSuccessAlert={true}
   />
 )
 
@@ -54,6 +55,7 @@ export const WithRunPayroll = () => (
     canEdit={true}
     showRunPayroll={true}
     showRunOffCyclePayroll={false}
+    showSuccessAlert={true}
   />
 )
 
@@ -64,6 +66,7 @@ export const WithRunOffCyclePayroll = () => (
     canEdit={true}
     showRunPayroll={false}
     showRunOffCyclePayroll={true}
+    showSuccessAlert={true}
   />
 )
 
@@ -75,6 +78,7 @@ export const PastTermination = () => (
     canEdit={false}
     showRunPayroll={false}
     showRunOffCyclePayroll={false}
+    showSuccessAlert={false}
   />
 )
 
@@ -85,6 +89,7 @@ export const NonCancelable = () => (
     canEdit={true}
     showRunPayroll={true}
     showRunOffCyclePayroll={false}
+    showSuccessAlert={true}
   />
 )
 
@@ -96,5 +101,6 @@ export const CancelDialogOpen = () => (
     showRunPayroll={false}
     showRunOffCyclePayroll={false}
     isCancelDialogOpen={true}
+    showSuccessAlert={true}
   />
 )

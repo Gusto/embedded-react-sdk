@@ -19,12 +19,21 @@ type EventPayloads = {
     payrollOption: PayrollOption
     payrollUuid?: string
   }
+  [componentEvents.EMPLOYEE_TERMINATION_VIEW_SUMMARY]: {
+    employeeId: string
+    effectiveDate: string
+    payrollOption?: PayrollOption
+  }
   [componentEvents.EMPLOYEE_TERMINATION_EDIT]: {
     employeeId: string
   }
   [componentEvents.EMPLOYEE_TERMINATION_CANCELLED]: {
     employeeId: string
     alert?: TerminationFlowAlert
+  }
+  [componentEvents.EMPLOYEE_TERMINATION_RUN_OFF_CYCLE_PAYROLL]: {
+    employeeId: string
+    companyId: string
   }
 }
 
@@ -93,6 +102,26 @@ export const terminationMachine = {
             component: TerminationSummaryContextual,
             payrollOption: ev.payload.payrollOption,
             payrollUuid: ev.payload.payrollUuid,
+            alerts: undefined,
+            currentBreadcrumbId: 'summary',
+          }
+        },
+      ),
+    ),
+    transition(
+      componentEvents.EMPLOYEE_TERMINATION_VIEW_SUMMARY,
+      'summary',
+      reduce(
+        (
+          ctx: TerminationFlowContextInterface,
+          ev: MachineEventType<
+            EventPayloads,
+            typeof componentEvents.EMPLOYEE_TERMINATION_VIEW_SUMMARY
+          >,
+        ): TerminationFlowContextInterface => {
+          return {
+            ...ctx,
+            component: TerminationSummaryContextual,
             alerts: undefined,
             currentBreadcrumbId: 'summary',
           }

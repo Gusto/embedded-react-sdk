@@ -11,6 +11,7 @@ interface TerminationSummaryPresentationProps {
   canEdit: boolean
   showRunPayroll: boolean
   showRunOffCyclePayroll: boolean
+  showSuccessAlert: boolean
   onCancelClick: () => void
   onEditDismissal: () => void
   onRunDismissalPayroll: () => void
@@ -29,6 +30,7 @@ export function TerminationSummaryPresentation({
   canEdit,
   showRunPayroll,
   showRunOffCyclePayroll,
+  showSuccessAlert,
   onCancelClick,
   onEditDismissal,
   onRunDismissalPayroll,
@@ -64,7 +66,9 @@ export function TerminationSummaryPresentation({
   return (
     <Flex flexDirection="column" gap={24}>
       <Flex flexDirection="column" gap={4}>
-        <Alert status="success" label={t('alert.success.label', { employeeName })} />
+        {showSuccessAlert && (
+          <Alert status="success" label={t('alert.success.label', { employeeName })} />
+        )}
         <Heading as="h2">{t('title')}</Heading>
         <Text variant="supporting">{t('subtitle')}</Text>
       </Flex>

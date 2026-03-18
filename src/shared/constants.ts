@@ -139,6 +139,7 @@ export const terminationEvents = {
   EMPLOYEE_TERMINATION_EDIT: 'employee/termination/edit',
   EMPLOYEE_TERMINATION_RUN_PAYROLL: 'employee/termination/runPayroll',
   EMPLOYEE_TERMINATION_RUN_OFF_CYCLE_PAYROLL: 'employee/termination/runOffCyclePayroll',
+  EMPLOYEE_TERMINATION_VIEW_SUMMARY: 'employee/termination/viewSummary',
 } as const
 
 export const payScheduleEvents = {
