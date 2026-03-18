@@ -9,6 +9,17 @@ import type { PutV1CompaniesCompanyIdPayrollsPayrollIdPrepareRequestBody } from 
 import { getFixture } from '../fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
 
+type PayrollPhase = 'initial' | 'calculated' | 'submitted'
+let currentPayrollPhase: PayrollPhase = 'initial'
+
+export function setPayrollPhase(phase: PayrollPhase) {
+  currentPayrollPhase = phase
+}
+
+export function resetPayrollPhase() {
+  currentPayrollPhase = 'initial'
+}
+
 export const createPayroll = (
   overrides: Record<string, unknown> = {},
 ): Record<string, unknown> => ({
@@ -49,8 +60,28 @@ const getSinglePayroll = http.get<
   PathParams,
   GetV1CompaniesCompanyIdPayrollsPayrollIdRequest,
   GetV1CompaniesCompanyIdPayrollsPayrollIdResponse
->(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id`, async ({ params }) => {
+>(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id`, async () => {
   const responseFixture = await getFixture('get-v1-companies-company_id-payrolls-payroll_id')
+
+  if (currentPayrollPhase === 'submitted') {
+    return HttpResponse.json({
+      ...responseFixture,
+      processed: true,
+      submission_blockers: [],
+      processing_request: { status: 'submit_success', errors: [] },
+    })
+  }
+
+  if (currentPayrollPhase === 'calculated') {
+    return HttpResponse.json({
+      ...responseFixture,
+      processed: false,
+      submission_blockers: [],
+      calculated_at: new Date().toISOString(),
+      processing_request: { status: 'calculate_success', errors: [] },
+    })
+  }
+
   return HttpResponse.json(responseFixture)
 })
 
@@ -95,27 +126,17 @@ const preparePayroll = handlePayrollsPrepare(async ({ request }) => {
 
 const calculatePayroll = http.put(
   `${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`,
-  async () => {
-    const responseFixture = await getFixture('get-v1-companies-company_id-payrolls-payroll_id')
-    return HttpResponse.json({
-      ...responseFixture,
-      calculated_at: new Date().toISOString(),
-    })
+  () => {
+    currentPayrollPhase = 'calculated'
+    return new HttpResponse(null, { status: 202 })
   },
 )
 
 const submitPayroll = http.put(
   `${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/submit`,
-  async () => {
-    const responseFixture = await getFixture('get-v1-companies-company_id-payrolls-payroll_id')
-    return HttpResponse.json({
-      ...responseFixture,
-      processed: true,
-      processing_request: {
-        status: 'submit_success',
-        errors: [],
-      },
-    })
+  () => {
+    currentPayrollPhase = 'submitted'
+    return new HttpResponse(null, { status: 202 })
   },
 )
 

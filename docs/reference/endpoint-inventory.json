@@ -813,10 +813,6 @@
         },
         {
           "method": "PUT",
-          "path": "/v1/companies/:companyId/payrolls/:payrollId/calculate"
-        },
-        {
-          "method": "PUT",
           "path": "/v1/companies/:companyId/payrolls/:payrollId"
         },
         {
@@ -826,6 +822,10 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/payrolls/blockers"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/companies/:companyId/payrolls/:payrollId/calculate"
         },
         {
           "method": "GET",
@@ -1650,15 +1650,15 @@
         },
         {
           "method": "PUT",
-          "path": "/v1/companies/:companyId/payrolls/:payrollId/calculate"
-        },
-        {
-          "method": "PUT",
           "path": "/v1/companies/:companyId/payrolls/:payrollId"
         },
         {
           "method": "POST",
           "path": "/v1/payrolls/:payrollUuid/gross_up"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/companies/:companyId/payrolls/:payrollId/calculate"
         },
         {
           "method": "GET",

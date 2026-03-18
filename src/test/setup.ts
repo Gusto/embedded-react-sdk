@@ -4,6 +4,7 @@ import { expect } from 'vitest'
 import { toHaveNoViolations } from 'jest-axe'
 import { mockResizeObserver } from 'jsdom-testing-mocks'
 import { server } from './mocks/server'
+import { resetPayrollPhase } from './mocks/apis/payrolls'
 import {
   runAxe as _runAxe,
   expectNoAxeViolations as _expectNoAxeViolations,
@@ -30,6 +31,7 @@ export { mockUseContainerBreakpoints }
 beforeEach(() => {
   mockUseContainerBreakpoints.mockClear()
   mockResizeObserver()
+  resetPayrollPhase()
 })
 
 beforeAll(() => {
