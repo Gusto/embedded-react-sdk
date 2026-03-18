@@ -9,15 +9,15 @@ import type { PutV1CompaniesCompanyIdPayrollsPayrollIdPrepareRequestBody } from 
 import { getFixture } from '../fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
 
-type PayrollPhase = 'initial' | 'calculated' | 'submitted'
-let currentPayrollPhase: PayrollPhase = 'initial'
+type PayrollState = 'initial' | 'calculated' | 'submitted'
+let currentPayrollState: PayrollState = 'initial'
 
-export function setPayrollPhase(phase: PayrollPhase) {
-  currentPayrollPhase = phase
+export function setPayrollState(state: PayrollState) {
+  currentPayrollState = state
 }
 
-export function resetPayrollPhase() {
-  currentPayrollPhase = 'initial'
+export function resetPayrollState() {
+  currentPayrollState = 'initial'
 }
 
 export const createPayroll = (
@@ -63,7 +63,7 @@ const getSinglePayroll = http.get<
 >(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id`, async () => {
   const responseFixture = await getFixture('get-v1-companies-company_id-payrolls-payroll_id')
 
-  if (currentPayrollPhase === 'submitted') {
+  if (currentPayrollState === 'submitted') {
     return HttpResponse.json({
       ...responseFixture,
       processed: true,
@@ -72,7 +72,7 @@ const getSinglePayroll = http.get<
     })
   }
 
-  if (currentPayrollPhase === 'calculated') {
+  if (currentPayrollState === 'calculated') {
     return HttpResponse.json({
       ...responseFixture,
       processed: false,
@@ -127,7 +127,7 @@ const preparePayroll = handlePayrollsPrepare(async ({ request }) => {
 const calculatePayroll = http.put(
   `${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`,
   () => {
-    currentPayrollPhase = 'calculated'
+    currentPayrollState = 'calculated'
     return new HttpResponse(null, { status: 202 })
   },
 )
@@ -135,7 +135,7 @@ const calculatePayroll = http.put(
 const submitPayroll = http.put(
   `${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/submit`,
   () => {
-    currentPayrollPhase = 'submitted'
+    currentPayrollState = 'submitted'
     return new HttpResponse(null, { status: 202 })
   },
 )
