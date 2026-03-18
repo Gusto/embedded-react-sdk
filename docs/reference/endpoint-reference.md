@@ -144,6 +144,16 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | `/v1/employees/:employeeUuid/federal_taxes` |
 |  | GET | `/v1/employees/:employeeUuid/state_taxes` |
 |  | PUT | `/v1/employees/:employeeUuid/state_taxes` |
+| **Employee.TerminationFlow** | GET | `/v1/employees/:employeeId` |
+|  | GET | `/v1/employees/:employeeId/terminations` |
+|  | POST | `/v1/employees/:employeeId/terminations` |
+|  | PUT | `/v1/terminations/:employeeId` |
+|  | POST | `/v1/companies/:companyId/payrolls` |
+|  | GET | `/v1/companies/:companyId/pay_periods/unprocessed_termination_pay_periods` |
+|  | GET | `/v1/companies/:companyId/payrolls` |
+|  | GET | `/v1/companies/:companyId/payrolls/:payrollId` |
+|  | DELETE | `/v1/employees/:employeeId/terminations` |
+|  | GET | `/v1/companies/:companyId/employees` |
 
 ## InformationRequests components
 
@@ -200,20 +210,6 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | `/v1/recovery_cases/:recoveryCaseUuid/redebit` |
 | **Payroll.UNSTABLE_PayrollHooks** | GET | `/v1/companies/:companyId/payrolls/:payrollId` |
 
-## Terminations components
-
-| Component | Method | Path |
-| --- | --- | --- |
-| **Terminations.TerminateEmployee** | GET | `/v1/employees/:employeeId` |
-|  | POST | `/v1/employees/:employeeId/terminations` |
-|  | POST | `/v1/companies/:companyId/payrolls` |
-|  | GET | `/v1/companies/:companyId/pay_periods/unprocessed_termination_pay_periods` |
-|  | GET | `/v1/companies/:companyId/payrolls` |
-| **Terminations.TerminationSummary** | GET | `/v1/employees/:employeeId` |
-|  | GET | `/v1/employees/:employeeId/terminations` |
-|  | DELETE | `/v1/employees/:employeeId/terminations` |
-|  | GET | `/v1/companies/:companyId/employees` |
-
 ## Flows
 
 Flows compose multiple blocks into a single workflow. The endpoint list for a flow is the union of all its block endpoints.
@@ -227,4 +223,3 @@ Flows compose multiple blocks into a single workflow. The endpoint list for a fl
 | **Employee.SelfOnboardingFlow** | Employee.EmploymentEligibility, Employee.FederalTaxes, Employee.Landing, Employee.OnboardingSummary, Employee.PaymentMethod, Employee.Profile, Employee.StateTaxes |
 | **Payroll.PayrollExecutionFlow** | Payroll.ConfirmWireDetails |
 | **Payroll.PayrollFlow** | Payroll.ConfirmWireDetails, Payroll.PayrollBlocker, Payroll.PayrollConfiguration, Payroll.PayrollEditEmployee, Payroll.PayrollLanding, Payroll.PayrollOverview, Payroll.PayrollReceipts |
-| **Terminations.TerminationFlow** | Terminations.TerminateEmployee, Terminations.TerminationSummary |

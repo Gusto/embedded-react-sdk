@@ -32,6 +32,9 @@ describe('TerminateEmployee', () => {
       http.get(`${API_BASE_URL}/v1/employees/:employee_id`, () => {
         return HttpResponse.json(mockEmployee)
       }),
+      http.get(`${API_BASE_URL}/v1/employees/:employee_id/terminations`, () => {
+        return HttpResponse.json([])
+      }),
       http.post(`${API_BASE_URL}/v1/employees/:employee_id/terminations`, () => {
         return HttpResponse.json(mockTerminationCancelable)
       }),

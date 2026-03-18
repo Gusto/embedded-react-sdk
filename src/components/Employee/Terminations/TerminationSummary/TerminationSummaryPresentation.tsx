@@ -39,7 +39,7 @@ export function TerminationSummaryPresentation({
   onDialogConfirm,
   isCancelling,
 }: TerminationSummaryPresentationProps) {
-  const { Alert, Heading, Text, Button, DescriptionList, Dialog } = useComponentContext()
+  const { Alert, Heading, Text, Button, DescriptionList, Dialog, Link } = useComponentContext()
   const { formatLongWithYear } = useDateFormatter()
   useI18n('Terminations.TerminationSummary')
   const { t } = useTranslation('Terminations.TerminationSummary')
@@ -59,6 +59,8 @@ export function TerminationSummaryPresentation({
 
   const hasActions = canCancel || canEdit || showRunPayroll || showRunOffCyclePayroll
 
+  const STATE_REQUIREMENTS_URL = 'https://support.gusto.com/article/100895878100000/Final-paychecks'
+
   return (
     <Flex flexDirection="column" gap={24}>
       <Flex flexDirection="column" gap={4}>
@@ -68,6 +70,37 @@ export function TerminationSummaryPresentation({
       </Flex>
 
       <DescriptionList items={dateItems} />
+
+      <Flex flexDirection="column" gap={16}>
+        <Heading as="h3">{t('offboarding.title')}</Heading>
+
+        <Flex flexDirection="column" gap={16}>
+          <Flex flexDirection="column" gap={8}>
+            <Heading as="h4">{t('offboarding.runPayroll.title')}</Heading>
+            <Text>
+              {t('offboarding.runPayroll.description', {
+                interpolation: { escapeValue: false },
+              }).split(t('offboarding.runPayroll.linkText'))[0]}
+              <Link href={STATE_REQUIREMENTS_URL} target="_blank">
+                {t('offboarding.runPayroll.linkText')}
+              </Link>
+              {t('offboarding.runPayroll.description', {
+                interpolation: { escapeValue: false },
+              }).split(t('offboarding.runPayroll.linkText'))[1]}
+            </Text>
+          </Flex>
+
+          <Flex flexDirection="column" gap={8}>
+            <Heading as="h4">{t('offboarding.taxForms.title')}</Heading>
+            <Text>{t('offboarding.taxForms.description')}</Text>
+          </Flex>
+
+          <Flex flexDirection="column" gap={8}>
+            <Heading as="h4">{t('offboarding.disconnectAccounts.title')}</Heading>
+            <Text>{t('offboarding.disconnectAccounts.description')}</Text>
+          </Flex>
+        </Flex>
+      </Flex>
 
       {hasActions && (
         <ActionsLayout>
