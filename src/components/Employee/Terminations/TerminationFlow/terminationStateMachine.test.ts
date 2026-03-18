@@ -66,6 +66,20 @@ describe('terminationStateMachine', () => {
       expect(service.context.currentBreadcrumbId).toBe('summary')
       expect(service.context.alerts).toBeUndefined()
     })
+
+    it('transitions to summary on EMPLOYEE_TERMINATION_VIEW_SUMMARY', () => {
+      const service = createService()
+
+      send(service, componentEvents.EMPLOYEE_TERMINATION_VIEW_SUMMARY, {
+        employeeId: 'employee-123',
+        effectiveDate: '2026-03-15',
+      })
+
+      expect(service.machine.current).toBe('summary')
+      expect(service.context.payrollOption).toBeUndefined()
+      expect(service.context.currentBreadcrumbId).toBe('summary')
+      expect(service.context.alerts).toBeUndefined()
+    })
   })
 
   describe('summary state', () => {

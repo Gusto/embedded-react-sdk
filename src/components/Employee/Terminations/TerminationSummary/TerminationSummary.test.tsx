@@ -38,7 +38,21 @@ describe('TerminationSummary', () => {
   })
 
   describe('rendering', () => {
-    it('renders success alert with employee name', async () => {
+    it('renders success alert with employee name when payrollOption is provided', async () => {
+      server.use(
+        http.get(`${API_BASE_URL}/v1/employees/:employee_id/terminations`, () => {
+          return HttpResponse.json([mockTerminationCancelable])
+        }),
+      )
+
+      renderWithProviders(<TerminationSummary {...defaultProps} payrollOption="regularPayroll" />)
+
+      await waitFor(() => {
+        expect(screen.getByText('John Doe has been successfully terminated')).toBeInTheDocument()
+      })
+    })
+
+    it('does not render success alert when viewing existing termination', async () => {
       server.use(
         http.get(`${API_BASE_URL}/v1/employees/:employee_id/terminations`, () => {
           return HttpResponse.json([mockTerminationCancelable])
@@ -48,8 +62,12 @@ describe('TerminationSummary', () => {
       renderWithProviders(<TerminationSummary {...defaultProps} />)
 
       await waitFor(() => {
-        expect(screen.getByText('John Doe has been successfully terminated')).toBeInTheDocument()
+        expect(screen.getByText('Termination summary')).toBeInTheDocument()
       })
+
+      expect(
+        screen.queryByText('John Doe has been successfully terminated'),
+      ).not.toBeInTheDocument()
     })
 
     it('displays termination dates correctly', async () => {
@@ -77,7 +95,9 @@ describe('TerminationSummary', () => {
         }),
       )
 
-      const { container } = renderWithProviders(<TerminationSummary {...defaultProps} />)
+      const { container } = renderWithProviders(
+        <TerminationSummary {...defaultProps} payrollOption="regularPayroll" />,
+      )
 
       await waitFor(() => {
         expect(screen.getByText('John Doe has been successfully terminated')).toBeInTheDocument()
@@ -126,7 +146,7 @@ describe('TerminationSummary', () => {
         }),
       )
 
-      renderWithProviders(<TerminationSummary {...defaultProps} />)
+      renderWithProviders(<TerminationSummary {...defaultProps} payrollOption="regularPayroll" />)
 
       await waitFor(() => {
         expect(screen.getByText('John Doe has been successfully terminated')).toBeInTheDocument()
@@ -148,7 +168,7 @@ describe('TerminationSummary', () => {
       renderWithProviders(<TerminationSummary {...defaultProps} />)
 
       await waitFor(() => {
-        expect(screen.getByText('John Doe has been successfully terminated')).toBeInTheDocument()
+        expect(screen.getByText('Termination summary')).toBeInTheDocument()
       })
 
       expect(screen.queryByRole('button', { name: 'Edit termination' })).not.toBeInTheDocument()
@@ -164,7 +184,7 @@ describe('TerminationSummary', () => {
         }),
       )
 
-      renderWithProviders(<TerminationSummary {...defaultProps} />)
+      renderWithProviders(<TerminationSummary {...defaultProps} payrollOption="regularPayroll" />)
 
       await waitFor(() => {
         expect(screen.getByText('John Doe has been successfully terminated')).toBeInTheDocument()
@@ -172,7 +192,9 @@ describe('TerminationSummary', () => {
 
       expect(screen.getByRole('button', { name: 'Cancel termination' })).toBeInTheDocument()
       expect(screen.getByRole('button', { name: 'Edit termination' })).toBeInTheDocument()
-      expect(screen.queryByRole('button', { name: 'Run termination payroll' })).not.toBeInTheDocument()
+      expect(
+        screen.queryByRole('button', { name: 'Run termination payroll' }),
+      ).not.toBeInTheDocument()
     })
 
     it('shows run payroll button when dismissal payroll was selected', async () => {
@@ -213,7 +235,7 @@ describe('TerminationSummary', () => {
       renderWithProviders(<TerminationSummary {...defaultProps} />)
 
       await waitFor(() => {
-        expect(screen.getByText('John Doe has been successfully terminated')).toBeInTheDocument()
+        expect(screen.getByText('Termination summary')).toBeInTheDocument()
       })
 
       expect(

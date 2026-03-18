@@ -54,6 +54,17 @@ const Root = ({ employeeId, companyId, dictionary }: TerminateEmployeeProps) => 
 
   const { data: terminationsData } = useEmployeeEmploymentsGetTerminationsSuspense({ employeeId })
 
+  // If employee is already terminated, redirect to summary with existing termination data
+  // Don't pass payrollOption to avoid showing the success alert
+  if (employee?.terminated && terminationsData.terminationList?.[0]) {
+    onEvent(componentEvents.EMPLOYEE_TERMINATION_VIEW_SUMMARY, {
+      employeeId,
+      effectiveDate: terminationsData.terminationList[0].effectiveDate!,
+      termination: terminationsData.terminationList[0],
+    })
+    return null
+  }
+
   const { mutateAsync: createTermination, isPending: isCreatingTermination } =
     useEmployeeEmploymentsCreateTerminationMutation()
 
