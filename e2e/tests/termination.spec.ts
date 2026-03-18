@@ -215,4 +215,89 @@ test.describe('TerminationFlow', () => {
       page.getByText(/after submitting, you won't be able to undo this dismissal/i),
     ).toBeVisible()
   })
+
+  test('displays termination summary details correctly', async ({ page }) => {
+    await page.goto(TERMINATION_URL)
+    await waitForTerminationForm(page)
+
+    await submitTerminationForm(page, 'regularPayroll')
+    await waitForSummary(page)
+
+    // Check for "Today / You dismissed [name]" section
+    await expect(page.getByText(/today/i)).toBeVisible()
+    await expect(page.getByText(/you dismissed/i)).toBeVisible()
+
+    // Check for date labels
+    await expect(page.getByText(/last day of work/i)).toBeVisible()
+    await expect(page.getByText(/last pay day/i)).toBeVisible()
+
+    // Check for offboarding checklist
+    await expect(page.getByRole('heading', { name: /offboarding checklist/i })).toBeVisible()
+    await expect(page.getByRole('heading', { name: /run payroll/i })).toBeVisible()
+    await expect(page.getByRole('heading', { name: /tax forms and documents/i })).toBeVisible()
+    await expect(
+      page.getByRole('heading', { name: /disconnect accounts and services/i }),
+    ).toBeVisible()
+
+    // Check for state requirements link
+    await expect(page.getByRole('link', { name: /meet your state's requirements/i })).toBeVisible()
+  })
+
+  test('navigates via breadcrumbs', async ({ page }) => {
+    await page.goto(TERMINATION_URL)
+    await waitForTerminationForm(page)
+
+    await submitTerminationForm(page, 'regularPayroll')
+    await waitForSummary(page)
+
+    // Click on "Terminate employee" breadcrumb to go back to form
+    await page
+      .getByRole('button', { name: /terminate employee/i })
+      .first()
+      .click()
+    await waitForTerminationForm(page)
+
+    // Verify we're back on the form with pre-populated data
+    const monthInput = page.getByRole('spinbutton', { name: /^month,/i })
+    await expect(monthInput).not.toHaveValue('')
+
+    // Navigate back to summary via breadcrumb
+    await page
+      .getByRole('button', { name: /summary/i })
+      .first()
+      .click()
+    await waitForSummary(page)
+    await expect(page.getByRole('heading', { name: /termination summary/i })).toBeVisible()
+  })
+
+  test('does not show success alert when viewing existing termination', async ({
+    page,
+    localConfig,
+  }) => {
+    // First, create a termination
+    await page.goto(TERMINATION_URL)
+    await waitForTerminationForm(page)
+    await submitTerminationForm(page, 'regularPayroll')
+    await waitForSummary(page)
+
+    // Verify success alert is shown initially
+    await expect(page.getByText(/has been successfully terminated/i)).toBeVisible()
+
+    // Navigate away and come back (simulating viewing existing termination)
+    const currentEmployeeId = localConfig.employeeId || '456'
+    const currentCompanyId = localConfig.companyId || '123'
+
+    // Go to form page (which will redirect to summary for existing termination)
+    await page.goto(
+      `/?flow=termination&companyId=${currentCompanyId}&employeeId=${currentEmployeeId}`,
+    )
+    await waitForSummary(page)
+
+    // Success alert should NOT be visible when viewing existing termination
+    await expect(page.getByText(/has been successfully terminated/i)).not.toBeVisible()
+
+    // But the summary content should still be there
+    await expect(page.getByRole('heading', { name: /termination summary/i })).toBeVisible()
+    await expect(page.getByText(/you dismissed/i)).toBeVisible()
+  })
 })
