@@ -106,6 +106,14 @@ export function usePayrollConfigurationData({
     }
   }, [queryClient, payrollId])
 
+  useEffect(() => {
+    if (isCalculating) {
+      void queryClient.cancelQueries({
+        queryKey: [PREPARE_QUERY_KEY, payrollId],
+      })
+    }
+  }, [isCalculating, queryClient, payrollId])
+
   const syncData = useCallback(() => {
     const currentEmployeeData = employeeDataRef.current
     if (!currentEmployeeData?.showEmployees || !prepareData?.employeeCompensations) {

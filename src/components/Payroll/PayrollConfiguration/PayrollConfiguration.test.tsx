@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { screen, waitFor } from '@testing-library/react'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { act, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { http, HttpResponse } from 'msw'
 import { PayrollConfiguration } from './PayrollConfiguration'
@@ -83,7 +83,7 @@ const mockPayrollData = {
   check_date: '2025-08-15',
   external: false,
   payroll_deadline: '2025-08-11T17:00:00-07:00',
-  calculated_at: '2025-08-10T12:00:00Z',
+  calculated_at: '2025-08-10T12:00:00Z' as string | null,
   pay_period: {
     start_date: '2025-07-30',
     end_date: '2025-08-13',
@@ -121,7 +121,7 @@ const mockPayrollData = {
     expected_debit_time: '2025-08-11T17:00:00-07:00',
     initial_debit_cutoff_time: '2025-08-11T17:00:00-07:00',
   },
-  processing_request: null,
+  processing_request: null as { status: string; errors: unknown[] } | null,
 }
 
 const mockPaySchedule = {
@@ -371,6 +371,208 @@ describe('PayrollConfiguration', () => {
       expect(
         screen.queryByText(/To pay your employees with direct deposit by/i),
       ).not.toBeInTheDocument()
+    })
+  })
+
+  describe('calculate and polling', () => {
+    beforeEach(() => {
+      vi.useFakeTimers({ shouldAdvanceTime: true })
+      currentPayrollData = {
+        ...mockPayrollData,
+        calculated_at: null,
+        processing_request: null,
+      }
+    })
+
+    afterEach(() => {
+      vi.useRealTimers()
+    })
+
+    it('fires RUN_PAYROLL_CALCULATED when polling detects calculate_success', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+
+      server.use(
+        http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`, () => {
+          currentPayrollData = {
+            ...mockPayrollData,
+            calculated_at: new Date().toISOString(),
+            processing_request: { status: 'calculate_success', errors: [] },
+          }
+          return new HttpResponse(null, { status: 202 })
+        }),
+      )
+
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
+      })
+
+      const calculateButton = screen.getByRole('button', { name: /calculate/i })
+      await user.click(calculateButton)
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(6_000)
+      })
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(
+          'runPayroll/calculated',
+          expect.objectContaining({ payrollId: 'payroll-uuid-1' }),
+        )
+      })
+    })
+
+    it('fires RUN_PAYROLL_CALCULATED when calculatedAt is set with null processingRequest', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+
+      server.use(
+        http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`, () => {
+          currentPayrollData = {
+            ...mockPayrollData,
+            calculated_at: new Date().toISOString(),
+            processing_request: null,
+          }
+          return new HttpResponse(null, { status: 202 })
+        }),
+      )
+
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
+      })
+
+      const calculateButton = screen.getByRole('button', { name: /calculate/i })
+      await user.click(calculateButton)
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(6_000)
+      })
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(
+          'runPayroll/calculated',
+          expect.objectContaining({ payrollId: 'payroll-uuid-1' }),
+        )
+      })
+    })
+
+    it('fires RUN_PAYROLL_PROCESSING_FAILED when polling detects processing_failed', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+
+      server.use(
+        http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`, () => {
+          currentPayrollData = {
+            ...mockPayrollData,
+            calculated_at: null,
+            processing_request: { status: 'processing_failed', errors: [] },
+          }
+          return new HttpResponse(null, { status: 202 })
+        }),
+      )
+
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
+      })
+
+      const calculateButton = screen.getByRole('button', { name: /calculate/i })
+      await user.click(calculateButton)
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(6_000)
+      })
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith('runPayroll/processingFailed')
+      })
+    })
+
+    it('fires RUN_PAYROLL_PROCESSING_FAILED on polling timeout', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+
+      server.use(
+        http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`, () => {
+          currentPayrollData = {
+            ...mockPayrollData,
+            calculated_at: null,
+            processing_request: { status: 'calculating', errors: [] },
+          }
+          return new HttpResponse(null, { status: 202 })
+        }),
+      )
+
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
+      })
+
+      const calculateButton = screen.getByRole('button', { name: /calculate/i })
+      await user.click(calculateButton)
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(3 * 60 * 1000 + 1_000)
+      })
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith('runPayroll/processingFailed')
+      })
+    })
+
+    it('does not make prepare calls while polling', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+      let prepareCallCount = 0
+
+      server.use(
+        http.put(
+          `${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/prepare`,
+          async ({ request }) => {
+            prepareCallCount++
+            const body = (await request.json()) as { employee_uuids?: string[] } | null
+            const employeeUuids = body?.employee_uuids
+
+            if (employeeUuids && employeeUuids.length > 0) {
+              const filteredCompensations = allCompensations.filter(comp =>
+                employeeUuids.includes(comp.employee_uuid),
+              )
+              return HttpResponse.json({
+                ...currentPayrollData,
+                employee_compensations: filteredCompensations,
+              })
+            }
+
+            return HttpResponse.json(currentPayrollData)
+          },
+        ),
+        http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`, () => {
+          currentPayrollData = {
+            ...mockPayrollData,
+            calculated_at: null,
+            processing_request: { status: 'calculating', errors: [] },
+          }
+          return new HttpResponse(null, { status: 202 })
+        }),
+      )
+
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
+      })
+
+      const prepareCountBeforeCalculate = prepareCallCount
+
+      const calculateButton = screen.getByRole('button', { name: /calculate/i })
+      await user.click(calculateButton)
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(15_000)
+      })
+
+      expect(prepareCallCount).toBe(prepareCountBeforeCalculate)
     })
   })
 })
