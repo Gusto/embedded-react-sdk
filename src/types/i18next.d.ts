@@ -1839,6 +1839,7 @@ export interface PayrollPayrollEditEmployee{
 "doubleOvertime":string;
 };
 "timeOffTitle":string;
+"finalPayoutTitle":string;
 "timeOffBalance":{
 "remaining":string;
 };

@@ -13,6 +13,7 @@
     "doubleOvertime": "Double overtime"
   },
   "timeOffTitle": "Time off",
+  "finalPayoutTitle": "Unused time off payout",
   "timeOffBalance": {
     "remaining": "{{balance}} remaining"
   },
