@@ -4,12 +4,13 @@ import { usePayrollsCreateOffCycleMutation } from '@gusto/embedded-api/react-que
 import type { UnprocessedTerminationPayPeriod } from '@gusto/embedded-api/models/components/unprocessedterminationpayperiod'
 import { OffCycleReason } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
+import { useTranslation } from 'react-i18next'
 import { DismissalPayPeriodSelectionPresentation } from './DismissalPayPeriodSelectionPresentation'
 import { BaseComponent } from '@/components/Base/Base'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { useBase } from '@/components/Base/useBase'
 import { componentEvents } from '@/shared/constants'
-import { useComponentDictionary } from '@/i18n'
+import { useComponentDictionary, useI18n } from '@/i18n'
 import { formatPayPeriodRange } from '@/helpers/dateFormatting'
 import type { SelectOption } from '@/components/Common/UI/Select/SelectTypes'
 
@@ -31,6 +32,8 @@ type RequiredPayPeriod = UnprocessedTerminationPayPeriod &
 
 function Root({ companyId, employeeId, dictionary }: DismissalPayPeriodSelectionProps) {
   useComponentDictionary('Payroll.DismissalPayPeriodSelection', dictionary)
+  useI18n('Payroll.DismissalPayPeriodSelection')
+  const { t } = useTranslation('Payroll.DismissalPayPeriodSelection')
   const { onEvent, baseSubmitHandler } = useBase()
 
   const { data } = usePaySchedulesGetUnprocessedTerminationPeriodsSuspense({ companyId })
@@ -87,7 +90,7 @@ function Root({ companyId, employeeId, dictionary }: DismissalPayPeriodSelection
         response.payrollUnprocessed?.payrollUuid ?? response.payrollUnprocessed?.uuid
 
       if (!payrollUuid) {
-        throw new Error('Failed to create dismissal payroll: missing payroll ID')
+        throw new Error(t('errors.missingPayrollId'))
       }
 
       onEvent(componentEvents.DISMISSAL_PAY_PERIOD_SELECTED, { payrollUuid })

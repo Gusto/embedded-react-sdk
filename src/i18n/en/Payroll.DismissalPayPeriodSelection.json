@@ -4,5 +4,8 @@
   "selectLabel": "Pay period",
   "selectPlaceholder": "Select a pay period",
   "continueCta": "Continue",
-  "emptyState": "There are no unprocessed termination pay periods available."
+  "emptyState": "There are no unprocessed termination pay periods available.",
+  "errors": {
+    "missingPayrollId": "Dismissal payroll was created but no payroll ID was returned"
+  }
 }

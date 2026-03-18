@@ -1500,6 +1500,9 @@ export interface PayrollDismissalPayPeriodSelection{
 "selectPlaceholder":string;
 "continueCta":string;
 "emptyState":string;
+"errors":{
+"missingPayrollId":string;
+};
 };
 export interface PayrollEmployeeSelection{
 "sectionTitle":string;
