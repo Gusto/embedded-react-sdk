@@ -798,11 +798,11 @@ async function ensurePaySchedule(flowToken: string, companyId: string): Promise<
     console.log(`Found existing pay schedule: ${schedules[0].uuid}`)
   } else {
     const anchorEnd = new Date()
-    anchorEnd.setDate(anchorEnd.getDate() - 3)
+    anchorEnd.setDate(anchorEnd.getDate() - 1)
     const anchorEndOfPayPeriod = anchorEnd.toISOString().split('T')[0]
 
     const payDate = new Date()
-    payDate.setDate(payDate.getDate() + 25)
+    payDate.setDate(payDate.getDate() + 15)
     const anchorPayDate = payDate.toISOString().split('T')[0]
 
     console.log(
