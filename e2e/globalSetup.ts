@@ -294,9 +294,9 @@ async function getOrCreateEmployee(
   })
   console.log(`Created employee: ${newEmployee.first_name} ${newEmployee.last_name}`)
 
-  const thirtyDaysAgo = new Date()
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
-  const hireDate = thirtyDaysAgo.toISOString().split('T')[0]
+  const threeDaysAgo = new Date()
+  threeDaysAgo.setDate(threeDaysAgo.getDate() - 3)
+  const hireDate = threeDaysAgo.toISOString().split('T')[0]
 
   const base = `/fe_sdk/${flowToken}/v1`
   try {
@@ -778,7 +778,12 @@ async function skipPayrolls(
     try {
       await postToApi<unknown>(skipEndpoint, { payroll_type: payrollType })
       skippedCount++
-    } catch {
+    } catch (error) {
+      if (skippedCount === 0 && i === 0) {
+        console.log(
+          `  Skip "${payrollType}" not available: ${error instanceof Error ? error.message : 'unknown error'}`,
+        )
+      }
       break
     }
   }
@@ -793,11 +798,11 @@ async function ensurePaySchedule(flowToken: string, companyId: string): Promise<
     console.log(`Found existing pay schedule: ${schedules[0].uuid}`)
   } else {
     const anchorEnd = new Date()
-    anchorEnd.setDate(anchorEnd.getDate() - 30)
+    anchorEnd.setDate(anchorEnd.getDate() - 3)
     const anchorEndOfPayPeriod = anchorEnd.toISOString().split('T')[0]
 
     const payDate = new Date()
-    payDate.setDate(payDate.getDate() - 25)
+    payDate.setDate(payDate.getDate() + 25)
     const anchorPayDate = payDate.toISOString().split('T')[0]
 
     console.log(
@@ -846,9 +851,9 @@ async function createTerminatedEmployee(
   console.log(`Created: ${employee.first_name} ${employee.last_name} (${employee.uuid})`)
 
   console.log('Step 2/8: Creating work address...')
-  const fortyFiveDaysAgo = new Date()
-  fortyFiveDaysAgo.setDate(fortyFiveDaysAgo.getDate() - 45)
-  const effectiveDateWorkAddress = fortyFiveDaysAgo.toISOString().split('T')[0]
+  const recentHireDate = new Date()
+  recentHireDate.setDate(recentHireDate.getDate() - 3)
+  const effectiveDateWorkAddress = recentHireDate.toISOString().split('T')[0]
   await postToApi<unknown>(`${base}/employees/${employee.uuid}/work_addresses`, {
     location_uuid: locationId,
     effective_date: effectiveDateWorkAddress,
