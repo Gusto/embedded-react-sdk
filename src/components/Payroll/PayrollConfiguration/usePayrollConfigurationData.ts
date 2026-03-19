@@ -8,7 +8,7 @@ import type { EmployeeCompensations } from '@gusto/embedded-api/models/component
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
 import type { PayScheduleObject } from '@gusto/embedded-api/models/components/payscheduleobject'
-import type { PayrollCategory} from '../payrollTypes';
+import type { PayrollCategory } from '../payrollTypes'
 import { derivePayrollCategory } from '../payrollTypes'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 import { usePagination } from '@/hooks/usePagination/usePagination'
