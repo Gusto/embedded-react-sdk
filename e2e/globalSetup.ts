@@ -767,29 +767,6 @@ async function setupCompanyForPayroll(flowToken: string, companyId: string): Pro
   console.log('--- Company setup complete ---\n')
 }
 
-async function skipPayrolls(
-  flowToken: string,
-  companyId: string,
-  payrollType: string,
-): Promise<number> {
-  const skipEndpoint = `/fe_sdk/${flowToken}/v1/companies/${companyId}/payrolls/skip`
-  let skippedCount = 0
-  for (let i = 0; i < 30; i++) {
-    try {
-      await postToApi<unknown>(skipEndpoint, { payroll_type: payrollType })
-      skippedCount++
-    } catch (error) {
-      if (skippedCount === 0 && i === 0) {
-        console.log(
-          `  Skip "${payrollType}" not available: ${error instanceof Error ? error.message : 'unknown error'}`,
-        )
-      }
-      break
-    }
-  }
-  return skippedCount
-}
-
 async function ensurePaySchedule(flowToken: string, companyId: string): Promise<void> {
   const endpoint = `/fe_sdk/${flowToken}/v1/companies/${companyId}/pay_schedules`
   const schedules = await fetchFromApi<PaySchedule[]>(endpoint)
@@ -798,11 +775,11 @@ async function ensurePaySchedule(flowToken: string, companyId: string): Promise<
     console.log(`Found existing pay schedule: ${schedules[0].uuid}`)
   } else {
     const anchorEnd = new Date()
-    anchorEnd.setDate(anchorEnd.getDate() - 1)
+    anchorEnd.setDate(anchorEnd.getDate() + 14)
     const anchorEndOfPayPeriod = anchorEnd.toISOString().split('T')[0]
 
     const payDate = new Date()
-    payDate.setDate(payDate.getDate() + 15)
+    payDate.setDate(payDate.getDate() + 19)
     const anchorPayDate = payDate.toISOString().split('T')[0]
 
     console.log(
@@ -815,16 +792,6 @@ async function ensurePaySchedule(flowToken: string, companyId: string): Promise<
     })
     console.log('Pay schedule created and auto-assigned to all employees')
   }
-
-  const transitionSkipped = await skipPayrolls(
-    flowToken,
-    companyId,
-    'Transition from old pay schedule',
-  )
-  if (transitionSkipped > 0) console.log(`Skipped ${transitionSkipped} transition payroll(s)`)
-
-  const regularSkipped = await skipPayrolls(flowToken, companyId, 'Regular')
-  if (regularSkipped > 0) console.log(`Skipped ${regularSkipped} regular payroll(s)`)
 }
 
 async function createTerminatedEmployee(
@@ -961,47 +928,53 @@ export default async function globalSetup() {
   let terminatedEmployeeId = ''
 
   try {
-    console.log('\n=== Setting up separate company for dismissal tests ===')
-    const dismissalDemo = await createFreshDemo()
+    console.log('\n=== Setting up dismissal company via onboarded demo ===')
+    const dismissalDemo = await createFreshDemo('react_sdk_demo_company_onboarded')
     dismissalFlowToken = dismissalDemo.flowToken
     dismissalCompanyId = dismissalDemo.companyId
     console.log(`Dismissal Company ID: ${dismissalCompanyId}`)
     console.log(`Dismissal Flow Token: ${dismissalFlowToken.slice(0, 10)}...`)
 
-    const dismissalLocationId = await getOrCreateLocation(dismissalFlowToken, dismissalCompanyId)
-    const dismissalEmployeeId = await getOrCreateEmployee(
-      dismissalFlowToken,
-      dismissalCompanyId,
-      dismissalLocationId,
-    )
+    const base = `/fe_sdk/${dismissalFlowToken}/v1`
 
-    await setupCompanyForPayroll(dismissalFlowToken, dismissalCompanyId)
-    if (dismissalEmployeeId) {
-      await onboardEmployee(dismissalFlowToken, dismissalEmployeeId)
+    console.log('Waiting for demo employee to be ready...')
+    let employees: Employee[] = []
+    for (let attempt = 1; attempt <= 24; attempt++) {
+      try {
+        employees = await fetchFromApi<Employee[]>(
+          `${base}/companies/${dismissalCompanyId}/employees`,
+        )
+        if (employees.length > 0) break
+      } catch {
+        // endpoint may not be ready yet
+      }
+      if (attempt % 4 === 0) console.log(`  Still waiting for employees... (${attempt * 5}s)`)
+      await new Promise(r => setTimeout(r, 5000))
     }
-    terminatedEmployeeId = await createTerminatedEmployee(
-      dismissalFlowToken,
-      dismissalCompanyId,
-      dismissalLocationId,
+
+    if (employees.length === 0) {
+      throw new Error('No employees found in onboarded demo company')
+    }
+
+    console.log(
+      `Found ${employees.length} employee(s): ${employees.map(e => `${e.first_name} ${e.last_name}`).join(', ')}`,
     )
 
-    const postTerminationTransitionSkipped = await skipPayrolls(
-      dismissalFlowToken,
-      dismissalCompanyId,
-      'Transition from old pay schedule',
+    const employeeToTerminate = employees[0]
+    console.log(
+      `Terminating employee: ${employeeToTerminate.first_name} ${employeeToTerminate.last_name} (${employeeToTerminate.uuid})`,
     )
-    if (postTerminationTransitionSkipped > 0)
-      console.log(
-        `Skipped ${postTerminationTransitionSkipped} post-termination transition payroll(s)`,
-      )
 
-    const postTerminationRegularSkipped = await skipPayrolls(
-      dismissalFlowToken,
-      dismissalCompanyId,
-      'Regular',
-    )
-    if (postTerminationRegularSkipped > 0)
-      console.log(`Skipped ${postTerminationRegularSkipped} post-termination regular payroll(s)`)
+    const oneMonthFromNow = new Date()
+    oneMonthFromNow.setMonth(oneMonthFromNow.getMonth() + 1)
+    const terminationDate = oneMonthFromNow.toISOString().split('T')[0]
+
+    await postToApi<Termination>(`${base}/employees/${employeeToTerminate.uuid}/terminations`, {
+      effective_date: terminationDate,
+      run_termination_payroll: true,
+    })
+    terminatedEmployeeId = employeeToTerminate.uuid
+    console.log(`Terminated employee (effective: ${terminationDate})`)
 
     await logRemainingBlockers(dismissalFlowToken, dismissalCompanyId)
     console.log('=== Dismissal company setup complete ===\n')

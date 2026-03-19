@@ -29,11 +29,11 @@ function extractFlowTokenFromContent(pageContent: string): string {
   return ''
 }
 
-export async function createFreshDemo(): Promise<TokenInfo> {
-  return extractTokenFromPage()
+export async function createFreshDemo(flowType: string = 'react_sdk_demo'): Promise<TokenInfo> {
+  return extractTokenFromPage(flowType)
 }
 
-async function extractTokenFromPage(): Promise<TokenInfo> {
+async function extractTokenFromPage(flowType: string = 'react_sdk_demo'): Promise<TokenInfo> {
   console.log('🔄 Launching browser to get fresh token from GWS-Flows...')
 
   const browser = await chromium.launch({ headless: true })
@@ -44,7 +44,7 @@ async function extractTokenFromPage(): Promise<TokenInfo> {
     await page.goto(DEMO_URL, { waitUntil: 'networkidle' })
 
     const flowTypeSelect = page.locator('#demo_flow_type')
-    await flowTypeSelect.selectOption('react_sdk_demo')
+    await flowTypeSelect.selectOption(flowType)
 
     await page.waitForTimeout(500)
 
