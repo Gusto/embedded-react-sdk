@@ -453,8 +453,8 @@ test.describe('TransitionFlow', () => {
       localConfig,
     }) => {
       test.skip(
-        localConfig.isLocal,
-        'Skipped in local/demo mode -- full flow test covers this path without consuming the transition period',
+        !localConfig.isLocal,
+        'Requires real API -- MSW mocks do not support the full execution flow',
       )
 
       await page.goto(getTransitionUrl())
@@ -482,8 +482,8 @@ test.describe('TransitionFlow', () => {
       localConfig,
     }) => {
       test.skip(
-        localConfig.isLocal,
-        'Skipped in local/demo mode -- full flow test covers this path without consuming the transition period',
+        !localConfig.isLocal,
+        'Requires real API -- MSW mocks do not support the full execution flow',
       )
 
       await page.goto(getTransitionUrl())
@@ -518,8 +518,8 @@ test.describe('TransitionFlow', () => {
       test.setTimeout(600_000)
 
       test.skip(
-        localConfig.isLocal && !transitionState.ready,
-        'Transition period setup failed -- cannot run full flow against real API',
+        !localConfig.isLocal || !transitionState.ready,
+        'Requires real API with a prepared transition period',
       )
 
       await page.goto(getTransitionUrl())
