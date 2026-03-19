@@ -255,6 +255,10 @@ function getTransitionUrl(): string {
 }
 
 test.describe('TransitionFlow', () => {
+  test.beforeEach(({ localConfig }) => {
+    test.skip(!localConfig.isLocal, 'Transition tests require real API -- skipped in MSW mode')
+  })
+
   test.beforeAll(async () => {
     const isLocal = process.env.E2E_LOCAL === 'true'
     if (!isLocal) return
