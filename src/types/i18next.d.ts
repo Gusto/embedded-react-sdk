@@ -2286,6 +2286,7 @@ export interface common{
 "loadingOptions":string;
 "requiredField":string;
 "errorEncountered":string;
+"multipleErrorsEncountered":string;
 };
 "optionalLabel":string;
 "progressBarLabel":string;

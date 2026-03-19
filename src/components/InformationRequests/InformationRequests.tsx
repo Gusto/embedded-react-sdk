@@ -139,8 +139,10 @@ export function InformationRequestsFlow({
           onClose={handleCloseModal}
           footer={
             Footer && (
-              <BaseBoundaries LoaderComponent={() => <LoadingSpinner size="sm" />}>
-                <Footer onEvent={handleEvent} />
+              <BaseBoundaries>
+                <Suspense fallback={<LoadingSpinner size="sm" />}>
+                  <Footer onEvent={handleEvent} />
+                </Suspense>
               </BaseBoundaries>
             )
           }

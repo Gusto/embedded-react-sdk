@@ -27,7 +27,7 @@ export interface BaseComponentInterface<
   TResourceKey extends keyof Resources = keyof Resources,
 > extends CommonComponentInterface<TResourceKey> {
   FallbackComponent?: BaseBoundariesProps['FallbackComponent']
-  LoaderComponent?: BaseBoundariesProps['LoaderComponent']
+  LoaderComponent?: LoadingIndicatorContextProps['LoadingIndicator']
   onEvent: OnEventType<EventType, unknown>
 }
 
@@ -74,54 +74,111 @@ export const BaseComponent = <TResourceKey extends keyof Resources = keyof Resou
     >
       <BaseBoundaries
         FallbackComponent={FallbackComponent}
-        LoaderComponent={LoaderComponent}
         onErrorBoundaryError={onErrorBoundaryError}
-        componentName={componentName}
       >
-        <BaseLayout error={error}>{children}</BaseLayout>
+        <Suspense
+          fallback={
+            <LoaderWithMetrics
+              LoaderComponent={LoaderComponent}
+              observability={observability}
+              componentName={componentName}
+            />
+          }
+        >
+          <BaseLayout error={error}>{children}</BaseLayout>
+        </Suspense>
       </BaseBoundaries>
     </BaseContext.Provider>
   )
 }
 
-interface BaseLayoutProps {
+export interface BaseLayoutProps {
   children?: ReactNode
-  error: SDKError | null
+  error?: SDKError | SDKError[] | null
+  isLoading?: boolean
 }
 
-export const BaseLayout = ({ children, error }: BaseLayoutProps) => {
+function SingleErrorContent({ error }: { error: SDKError }) {
   const Components = useComponentContext()
   const { t } = useTranslation()
-  const hasFieldErrors = error !== null && error.fieldErrors.length > 0
+  const hasFieldErrors = error.fieldErrors.length > 0
+
+  return (
+    <Components.Alert label={t('status.errorEncountered')} status="error">
+      {hasFieldErrors && (
+        <Components.UnorderedList
+          items={error.fieldErrors
+            .filter(fe => fe.message)
+            .map(fe => (
+              <span key={fe.field}>{fe.message}</span>
+            ))}
+        />
+      )}
+      {!hasFieldErrors && error.category === 'validation_error' && (
+        <Components.Text as="pre">
+          {error.raw &&
+          typeof error.raw === 'object' &&
+          'pretty' in error.raw &&
+          typeof (error.raw as { pretty: unknown }).pretty === 'function'
+            ? (error.raw as { pretty: () => string }).pretty()
+            : error.message}
+        </Components.Text>
+      )}
+      {!hasFieldErrors && error.category !== 'validation_error' && (
+        <Components.Text>{error.message || t('errors.unknownError')}</Components.Text>
+      )}
+    </Components.Alert>
+  )
+}
+
+function MultipleErrorsContent({ errors }: { errors: SDKError[] }) {
+  const Components = useComponentContext()
+  const { t } = useTranslation()
+
+  return (
+    <Components.Alert label={t('status.multipleErrorsEncountered')} status="error">
+      <Components.UnorderedList
+        items={errors
+          .filter(err => err.message || err.fieldErrors.length > 0)
+          .map((err, index) => {
+            const visibleFieldErrors = err.fieldErrors.filter(fe => fe.message)
+
+            if (visibleFieldErrors.length === 0) {
+              return <span key={index}>{err.message || t('errors.unknownError')}</span>
+            }
+
+            return (
+              <span key={index}>
+                {err.message || t('errors.unknownError')}
+                <Components.UnorderedList
+                  items={visibleFieldErrors.map(fe => (
+                    <span key={fe.field}>{fe.message}</span>
+                  ))}
+                />
+              </span>
+            )
+          })}
+      />
+    </Components.Alert>
+  )
+}
+
+export const BaseLayout = ({ children, error, isLoading }: BaseLayoutProps) => {
+  const { LoadingIndicator } = useLoadingIndicator()
+
+  const errors = Array.isArray(error) ? error : error ? [error] : []
+  const hasErrors = errors.length > 0
+
+  if (isLoading && !hasErrors) {
+    return <LoadingIndicator />
+  }
+
+  const [firstError] = errors
 
   return (
     <FadeIn>
-      {error && (
-        <Components.Alert label={t('status.errorEncountered')} status="error">
-          {hasFieldErrors && (
-            <Components.UnorderedList
-              items={error.fieldErrors
-                .filter(fe => fe.message)
-                .map(fe => (
-                  <span key={fe.field}>{fe.message}</span>
-                ))}
-            />
-          )}
-          {!hasFieldErrors && error.category === 'validation_error' && (
-            <Components.Text as="pre">
-              {error.raw &&
-              typeof error.raw === 'object' &&
-              'pretty' in error.raw &&
-              typeof (error.raw as { pretty: unknown }).pretty === 'function'
-                ? (error.raw as { pretty: () => string }).pretty()
-                : error.message}
-            </Components.Text>
-          )}
-          {!hasFieldErrors && error.category !== 'validation_error' && (
-            <Components.Text>{error.message || t('errors.unknownError')}</Components.Text>
-          )}
-        </Components.Alert>
-      )}
+      {errors.length > 1 && <MultipleErrorsContent errors={errors} />}
+      {errors.length === 1 && firstError && <SingleErrorContent error={firstError} />}
       {children}
     </FadeIn>
   )
@@ -166,22 +223,14 @@ const LoaderWithMetrics = ({
 export interface BaseBoundariesProps {
   children?: ReactNode
   FallbackComponent?: (props: FallbackProps) => JSX.Element
-  LoaderComponent?: LoadingIndicatorContextProps['LoadingIndicator']
   onErrorBoundaryError?: (error: unknown, info: ErrorInfo) => void
-  componentName?: string
 }
 
 export const BaseBoundaries = ({
   children,
   FallbackComponent = InternalError,
-  LoaderComponent: LoadingIndicatorFromProps,
   onErrorBoundaryError,
-  componentName,
 }: BaseBoundariesProps) => {
-  const { LoadingIndicator: LoadingIndicatorFromContext } = useLoadingIndicator()
-  const LoaderComponent = LoadingIndicatorFromProps ?? LoadingIndicatorFromContext
-  const { observability } = useObservability()
-
   return (
     <QueryErrorResetBoundary>
       {({ reset: resetQueries }) => (
@@ -190,17 +239,7 @@ export const BaseBoundaries = ({
           onReset={resetQueries}
           onError={onErrorBoundaryError}
         >
-          <Suspense
-            fallback={
-              <LoaderWithMetrics
-                LoaderComponent={LoaderComponent}
-                observability={observability}
-                componentName={componentName}
-              />
-            }
-          >
-            {children}
-          </Suspense>
+          {children}
         </ErrorBoundary>
       )}
     </QueryErrorResetBoundary>

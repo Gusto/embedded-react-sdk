@@ -1,6 +1,6 @@
 import { createMachine } from 'robot3'
 import { useMachine } from 'react-robot'
-import { useMemo, useRef, useState } from 'react'
+import { Suspense, useMemo, useRef, useState } from 'react'
 import { useWireInRequestsListSuspense } from '@gusto/embedded-api/react-query/wireInRequestsList'
 import { ConfirmWireDetailsBanner } from './ConfirmWireDetailsBanner'
 import { confirmWireDetailsMachine } from './confirmWireDetailsStateMachine'
@@ -115,14 +115,16 @@ function Root({ companyId, wireInId, onEvent = () => {} }: ConfirmWireDetailsInt
         containerRef={modalContainerRef}
         footer={
           Footer && (
-            <BaseBoundaries
-              LoaderComponent={() => (
-                <div className={styles.footer}>
-                  <LoadingSpinner size="sm" />
-                </div>
-              )}
-            >
-              <Footer onEvent={handleEvent} />
+            <BaseBoundaries>
+              <Suspense
+                fallback={
+                  <div className={styles.footer}>
+                    <LoadingSpinner size="sm" />
+                  </div>
+                }
+              >
+                <Footer onEvent={handleEvent} />
+              </Suspense>
             </BaseBoundaries>
           )
         }

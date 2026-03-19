@@ -3,7 +3,8 @@
     "loading": "Loading component...",
     "loadingOptions": "Loading options...",
     "requiredField": "is a required field",
-    "errorEncountered": "There was a problem with your submission"
+    "errorEncountered": "There was a problem with your submission",
+    "multipleErrorsEncountered": "There were multiple problems with your submission"
   },
   "optionalLabel": "(optional)",
   "progressBarLabel": "You are on step {{currentStep}} of {{totalSteps}}",
