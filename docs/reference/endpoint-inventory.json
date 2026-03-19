@@ -1050,6 +1050,26 @@
         "companyId"
       ]
     },
+    "Payroll.TransitionPayrollAlert": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/pay_periods"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/pay_schedules"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyUuid/payrolls/skip"
+        }
+      ],
+      "variables": [
+        "companyId",
+        "companyUuid"
+      ]
+    },
     "Payroll.UNSTABLE_PayrollHooks": {
       "endpoints": [
         {

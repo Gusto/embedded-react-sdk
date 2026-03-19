@@ -197,6 +197,8 @@ export const offCycleEvents = {
   OFF_CYCLE_CREATED: 'offCycle/created',
   DISMISSAL_PAY_PERIOD_SELECTED: 'dismissal/payPeriod/selected',
   TRANSITION_CREATED: 'transition/created',
+  RUN_TRANSITION_PAYROLL: 'transition/runPayroll',
+  TRANSITION_PAYROLL_SKIPPED: 'transition/payrollSkipped',
 } as const
 
 export const componentEvents = {
