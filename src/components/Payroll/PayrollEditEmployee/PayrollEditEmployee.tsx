@@ -5,6 +5,7 @@ import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/model
 import type { PayrollUpdateEmployeeCompensations } from '@gusto/embedded-api/models/components/payrollupdate'
 import { useMemo } from 'react'
 import { usePreparedPayrollData } from '../usePreparedPayrollData'
+import { derivePayrollCategory } from '../payrollTypes'
 import { PayrollEditEmployeePresentation } from './PayrollEditEmployeePresentation'
 import { componentEvents } from '@/shared/constants'
 import type { BaseComponentInterface } from '@/components/Base/Base'
@@ -107,8 +108,7 @@ export const Root = ({
       fixedCompensationTypes={preparedPayroll?.fixedCompensationTypes || []}
       payPeriodStartDate={preparedPayroll?.payPeriod?.startDate}
       paySchedule={paySchedule}
-      isOffCycle={preparedPayroll?.offCycle}
-      isFinalTerminationPayroll={preparedPayroll?.finalTerminationPayroll ?? false}
+      payrollCategory={derivePayrollCategory(preparedPayroll ?? {})}
       withReimbursements={withReimbursements}
       hasDirectDepositSetup={hasDirectDepositSetup}
     />

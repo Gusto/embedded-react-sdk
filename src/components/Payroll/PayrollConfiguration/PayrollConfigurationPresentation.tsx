@@ -15,8 +15,8 @@ import {
   getReimbursements,
   formatHoursDisplay,
   calculateGrossPay,
-  getPayrollTypeLabel,
 } from '../helpers'
+import { PayrollCategory } from '../payrollTypes'
 import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { PayrollBlockerAlerts } from '../PayrollBlocker/components/PayrollBlockerAlerts'
 import styles from './PayrollConfigurationPresentation.module.scss'
@@ -42,8 +42,7 @@ interface PayrollConfigurationPresentationProps {
   onEdit: (employee: Employee) => void
   onToggleExclude: (employeeCompensation: PayrollEmployeeCompensationsType) => void
   onViewBlockers: () => void
-  isOffCycle?: boolean
-  offCycleReason?: string | null
+  payrollCategory?: PayrollCategory
   alerts?: ReactNode
   payrollAlert?: {
     label: string
@@ -79,8 +78,7 @@ export const PayrollConfigurationPresentation = ({
   onToggleExclude,
   onCalculatePayroll,
   onViewBlockers,
-  isOffCycle = false,
-  offCycleReason,
+  payrollCategory = PayrollCategory.Regular,
   alerts,
   payrollAlert,
   isPending,
@@ -129,7 +127,7 @@ export const PayrollConfigurationPresentation = ({
                   components={{ dateWrapper: <Text weight="bold" as="span" /> }}
                   values={{
                     ...getPayrollConfigurationTitle(payPeriod, dateFormatter),
-                    payrollType: getPayrollTypeLabel({ offCycle: isOffCycle, offCycleReason }),
+                    payrollType: payrollCategory,
                   }}
                 />
               </Text>
@@ -252,7 +250,7 @@ export const PayrollConfigurationPresentation = ({
                             employee,
                             payPeriod?.startDate,
                             paySchedule,
-                            isOffCycle,
+                            payrollCategory,
                           )
                         : 0
                       return formatNumberAsCurrency(calculatedGrossPay)

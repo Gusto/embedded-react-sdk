@@ -8,6 +8,8 @@ import type { EmployeeCompensations } from '@gusto/embedded-api/models/component
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
 import type { PayScheduleObject } from '@gusto/embedded-api/models/components/payscheduleobject'
+import type { PayrollCategory } from '../payrollTypes'
+import { derivePayrollCategory } from '../payrollTypes'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 import { usePagination } from '@/hooks/usePagination/usePagination'
 
@@ -22,8 +24,7 @@ interface UsePayrollConfigurationDataReturn {
   employeeDetails: Employee[]
   payPeriod: PayrollPayPeriodType | undefined
   paySchedule: PayScheduleObject | undefined
-  isOffCycle: boolean
-  offCycleReason: string | null
+  payrollCategory: PayrollCategory
   pagination: PaginationControlProps
   isLoading: boolean
   refetch: () => Promise<void>
@@ -168,8 +169,7 @@ export function usePayrollConfigurationData({
     employeeDetails: displayedEmployees,
     payPeriod: prepareData?.payPeriod,
     paySchedule: payScheduleData?.payScheduleObject,
-    isOffCycle: prepareData?.offCycle ?? false,
-    offCycleReason: prepareData?.offCycleReason ?? null,
+    payrollCategory: derivePayrollCategory(prepareData ?? {}),
     pagination,
     isLoading,
     refetch: handleRefetch,

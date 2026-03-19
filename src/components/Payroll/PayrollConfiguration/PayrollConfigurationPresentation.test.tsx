@@ -8,6 +8,7 @@ import {
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
 import userEvent from '@testing-library/user-event'
 import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
+import { PayrollCategory } from '../payrollTypes'
 import { PayrollConfigurationPresentation } from './PayrollConfigurationPresentation'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
@@ -104,25 +105,16 @@ describe('PayrollConfigurationPresentation', () => {
     expect(screen.getByText(/Regular payroll for/)).toBeInTheDocument()
   })
 
-  it('displays the off-cycle reason in the description when isOffCycle with a reason', async () => {
+  it('displays the payroll category in the description for bonus payrolls', async () => {
     renderWithProviders(
       <PayrollConfigurationPresentation
         {...defaultProps}
-        isOffCycle={true}
-        offCycleReason="Bonus"
+        payrollCategory={PayrollCategory.Bonus}
       />,
     )
 
     await waitFor(() => {
       expect(screen.getByText(/Bonus payroll for/)).toBeInTheDocument()
-    })
-  })
-
-  it('displays Off-Cycle in the description when isOffCycle without a reason', async () => {
-    renderWithProviders(<PayrollConfigurationPresentation {...defaultProps} isOffCycle={true} />)
-
-    await waitFor(() => {
-      expect(screen.getByText(/Off-Cycle payroll for/)).toBeInTheDocument()
     })
   })
 

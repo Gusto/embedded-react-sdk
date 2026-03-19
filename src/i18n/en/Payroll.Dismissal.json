@@ -1,0 +1,14 @@
+{
+  "breadcrumbLabel": "Pay Period",
+  "pageTitle": "Run dismissal payroll",
+  "pageDescription": "Select the pay period for the terminated employee's final payroll.",
+  "selectLabel": "Pay period",
+  "selectPlaceholder": "Select a pay period",
+  "continueCta": "Continue",
+  "emptyState": "There are no unprocessed termination pay periods available.",
+  "errors": {
+    "missingPayrollId": "Dismissal payroll was created but no payroll ID was returned",
+    "noPayPeriodSelected": "Please select a pay period before continuing",
+    "invalidPayPeriod": "The selected pay period is no longer available"
+  }
+}

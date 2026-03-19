@@ -1,0 +1,18 @@
+[
+  {
+    "start_date": "2025-07-30",
+    "end_date": "2025-08-13",
+    "check_date": "2025-08-15",
+    "employee_uuid": "dismissal-test-employee",
+    "employee_name": "Jane Doe",
+    "pay_schedule_uuid": "1478a82e-b45c-4980-843a-6ddc3b78268e"
+  },
+  {
+    "start_date": "2025-08-14",
+    "end_date": "2025-08-27",
+    "check_date": "2025-08-29",
+    "employee_uuid": "dismissal-test-employee",
+    "employee_name": "Jane Doe",
+    "pay_schedule_uuid": "1478a82e-b45c-4980-843a-6ddc3b78268e"
+  }
+]

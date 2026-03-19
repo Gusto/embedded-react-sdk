@@ -13,6 +13,7 @@ import {
   getReimbursementCompensation,
   canCancelPayroll,
 } from './helpers'
+import { PayrollCategory } from './payrollTypes'
 import {
   type Employee,
   EmployeePaymentMethod1,
@@ -397,7 +398,7 @@ describe('Payroll helpers', () => {
           employee,
           compensationEffectiveDate,
           paySchedule,
-          true,
+          PayrollCategory.Bonus,
         )
         expect(result).toBe(5683.33)
       })
@@ -684,7 +685,7 @@ describe('Payroll helpers', () => {
           employee,
           compensationEffectiveDate,
           paySchedule,
-          true,
+          PayrollCategory.Bonus,
         )
         expect(result).toBe(4000.0 + 333.33 + 8 * 100)
       })

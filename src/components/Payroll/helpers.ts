@@ -10,6 +10,7 @@ import type { Compensation, MinimumWages } from '@gusto/embedded-api/models/comp
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
 import type { PayrollType } from './PayrollList/types'
+import { PayrollCategory, isOffCyclePayroll } from './payrollTypes'
 import { formatPayRate } from '@/helpers/formattedStrings'
 import { useLocale } from '@/contexts/LocaleProvider/useLocale'
 import { COMPENSATION_NAME_REIMBURSEMENT, FlsaStatus } from '@/shared/constants'
@@ -426,7 +427,7 @@ export const calculateGrossPay = (
   employee: Employee,
   compensationEffectiveDateString?: string,
   paySchedule?: PayScheduleObject,
-  isOffCycle: boolean = false,
+  payrollCategory: PayrollCategory = PayrollCategory.Regular,
 ): number => {
   if (compensation.excluded) {
     return 0
@@ -459,11 +460,13 @@ export const calculateGrossPay = (
     hoursInPayPeriod,
   )
 
+  const offCycle = isOffCyclePayroll(payrollCategory)
+
   const ptoHours = getPtoHours(
     compensation,
     isSalariedWithExpectedHours,
     hoursInPayPeriod,
-    isOffCycle,
+    offCycle,
   )
 
   const regularPlusOvertimePay = calculateRegularPlusOvertimePay(
@@ -473,7 +476,7 @@ export const calculateGrossPay = (
     isSalariedWithExpectedHours,
     hoursInPayPeriod,
     ptoHours,
-    isOffCycle,
+    offCycle,
   )
 
   const fixedPay = getAdditionalEarnings(compensation)
@@ -483,7 +486,7 @@ export const calculateGrossPay = (
     compensationEffectiveDate,
     isSalariedWithExpectedHours,
     hoursInPayPeriod,
-    isOffCycle,
+    offCycle,
   )
   const minimumWageAdjustment = calculateMinimumWageAdjustment(
     primaryCompensation,
