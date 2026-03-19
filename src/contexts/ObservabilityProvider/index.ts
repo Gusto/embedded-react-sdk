@@ -1,4 +1,4 @@
 export { ObservabilityProvider } from './ObservabilityProvider'
 export { useObservability } from './useObservability'
-export { createObservabilityError } from './observabilityUtils'
+export { normalizeToSDKError } from '@/types/sdkError'
 export type { ObservabilityProviderProps } from './ObservabilityProvider'

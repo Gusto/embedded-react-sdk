@@ -23,6 +23,7 @@ import { BaseComponent } from '@/components/Base/Base'
 import { useBase } from '@/components/Base/useBase'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
+import { SDKInternalError } from '@/types/sdkError'
 import { Form } from '@/components/Common/Form'
 import type { MultiSelectComboBoxOption } from '@/components/Common/UI/MultiSelectComboBox/MultiSelectComboBoxTypes'
 
@@ -184,7 +185,7 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
         response.payrollUnprocessed?.payrollUuid ?? response.payrollUnprocessed?.uuid
 
       if (!payrollUuid) {
-        throw new Error(tCreation('errors.missingPayrollId'))
+        throw new SDKInternalError(tCreation('errors.missingPayrollId'))
       }
 
       onEvent(componentEvents.OFF_CYCLE_CREATED, { payrollUuid })

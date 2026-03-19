@@ -48,7 +48,7 @@ export const PaySchedule = ({
 }
 
 const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
-  const { baseSubmitHandler, onEvent, fieldErrors, setError: setBaseError } = useBase()
+  const { baseSubmitHandler, onEvent, error, setError: setBaseError } = useBase()
 
   const { data: paySchedules } = usePaySchedulesGetAllSuspense({
     companyId,
@@ -79,11 +79,12 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
   })
   const { watch, setValue, reset, clearErrors, setError } = formMethods
 
+  const fieldErrors = error?.fieldErrors
   useEffect(() => {
-    if (fieldErrors) {
-      fieldErrors.forEach(error => {
-        const key = normalizeErrorKeyForForm(error.errorKey)
-        setError(key as keyof PayScheduleInputs, { message: error.message })
+    if (fieldErrors && fieldErrors.length > 0) {
+      fieldErrors.forEach(fieldError => {
+        const key = normalizeErrorKeyForForm(fieldError.field)
+        setError(key as keyof PayScheduleInputs, { message: fieldError.message })
       })
     }
   }, [setError, fieldErrors])

@@ -3,12 +3,9 @@ import { Suspense, useEffect, useRef } from 'react'
 import type { FallbackProps } from 'react-error-boundary'
 import { ErrorBoundary } from 'react-error-boundary'
 import { useTranslation } from 'react-i18next'
-import { GustoEmbeddedError } from '@gusto/embedded-api/models/errors/gustoembeddederror'
-import { SDKValidationError } from '@gusto/embedded-api/models/errors/sdkvalidationerror'
 import { QueryErrorResetBoundary } from '@tanstack/react-query'
-import type { EntityErrorObject } from '@gusto/embedded-api/models/components/entityerrorobject'
 import { FadeIn } from '../Common/FadeIn/FadeIn'
-import { BaseContext, type KnownErrors, type OnEventType } from './useBase'
+import { BaseContext, type OnEventType } from './useBase'
 import { useBaseSubmit } from './useBaseSubmit'
 import { componentEvents, type EventType } from '@/shared/constants'
 import { InternalError } from '@/components/Common'
@@ -17,7 +14,7 @@ import type { ResourceDictionary, Resources } from '@/types/Helpers'
 import { useLoadingIndicator } from '@/contexts/LoadingIndicatorProvider/useLoadingIndicator'
 import type { LoadingIndicatorContextProps } from '@/contexts/LoadingIndicatorProvider/useLoadingIndicator'
 import { useObservability } from '@/contexts/ObservabilityProvider/useObservability'
-import { renderErrorList } from '@/helpers/apiErrorToList'
+import { normalizeToSDKError, type SDKError } from '@/types/sdkError'
 
 export interface CommonComponentInterface<TResourceKey extends keyof Resources = keyof Resources> {
   children?: ReactNode
@@ -26,7 +23,6 @@ export interface CommonComponentInterface<TResourceKey extends keyof Resources =
   dictionary?: ResourceDictionary<TResourceKey>
 }
 
-// Base component wrapper with error and suspense handling
 export interface BaseComponentInterface<
   TResourceKey extends keyof Resources = keyof Resources,
 > extends CommonComponentInterface<TResourceKey> {
@@ -35,7 +31,6 @@ export interface BaseComponentInterface<
   onEvent: OnEventType<EventType, unknown>
 }
 
-// Internal prop for SDK components to set their component name
 interface InternalBaseComponentProps {
   componentName?: string
 }
@@ -47,25 +42,22 @@ export const BaseComponent = <TResourceKey extends keyof Resources = keyof Resou
   onEvent,
   componentName,
 }: BaseComponentInterface<TResourceKey> & InternalBaseComponentProps) => {
-  const { error, fieldErrors, baseSubmitHandler, setError } = useBaseSubmit(componentName)
+  const { error, baseSubmitHandler, setError } = useBaseSubmit(componentName)
   const { observability } = useObservability()
 
   const { LoadingIndicator: LoadingIndicatorFromContext } = useLoadingIndicator()
   const LoaderComponent = LoadingIndicatorFromProps ?? LoadingIndicatorFromContext
 
-  const onErrorBoundaryError = (error: unknown, errorInfo: ErrorInfo) => {
-    onEvent(componentEvents.ERROR, error)
+  const onErrorBoundaryError = (boundaryError: unknown, errorInfo: ErrorInfo) => {
+    onEvent(componentEvents.ERROR, boundaryError)
+
+    const sdkError = normalizeToSDKError(boundaryError)
 
     observability?.onError?.({
-      type: 'boundary_error',
-      message: error instanceof Error ? error.message : 'Unknown error',
-      stack: error instanceof Error ? error.stack : undefined,
-      context: {
-        componentName,
-        componentStack: errorInfo.componentStack ?? undefined,
-      },
-      originalError: error,
+      ...sdkError,
       timestamp: Date.now(),
+      componentName,
+      componentStack: errorInfo.componentStack ?? undefined,
     })
   }
 
@@ -73,7 +65,6 @@ export const BaseComponent = <TResourceKey extends keyof Resources = keyof Resou
     <BaseContext.Provider
       value={{
         error,
-        fieldErrors,
         setError,
         onEvent,
         baseSubmitHandler,
@@ -87,9 +78,7 @@ export const BaseComponent = <TResourceKey extends keyof Resources = keyof Resou
         onErrorBoundaryError={onErrorBoundaryError}
         componentName={componentName}
       >
-        <BaseLayout error={error} fieldErrors={fieldErrors}>
-          {children}
-        </BaseLayout>
+        <BaseLayout error={error}>{children}</BaseLayout>
       </BaseBoundaries>
     </BaseContext.Provider>
   )
@@ -97,27 +86,39 @@ export const BaseComponent = <TResourceKey extends keyof Resources = keyof Resou
 
 interface BaseLayoutProps {
   children?: ReactNode
-  error: KnownErrors | null
-  fieldErrors: Array<EntityErrorObject> | null
+  error: SDKError | null
 }
 
-export const BaseLayout = ({ children, error, fieldErrors }: BaseLayoutProps) => {
+export const BaseLayout = ({ children, error }: BaseLayoutProps) => {
   const Components = useComponentContext()
   const { t } = useTranslation()
-  const hasDisplayableFieldErrors = Boolean(fieldErrors?.length)
+  const hasFieldErrors = error !== null && error.fieldErrors.length > 0
 
   return (
     <FadeIn>
-      {(error || fieldErrors) && (
+      {error && (
         <Components.Alert label={t('status.errorEncountered')} status="error">
-          {hasDisplayableFieldErrors && (
-            <Components.UnorderedList items={renderErrorList(fieldErrors!)} />
+          {hasFieldErrors && (
+            <Components.UnorderedList
+              items={error.fieldErrors
+                .filter(fe => fe.message)
+                .map(fe => (
+                  <span key={fe.field}>{fe.message}</span>
+                ))}
+            />
           )}
-          {!hasDisplayableFieldErrors && error instanceof GustoEmbeddedError && (
-            <Components.Text>{t('errors.unknownError')}</Components.Text>
+          {!hasFieldErrors && error.category === 'validation_error' && (
+            <Components.Text as="pre">
+              {error.raw &&
+              typeof error.raw === 'object' &&
+              'pretty' in error.raw &&
+              typeof (error.raw as { pretty: unknown }).pretty === 'function'
+                ? (error.raw as { pretty: () => string }).pretty()
+                : error.message}
+            </Components.Text>
           )}
-          {!hasDisplayableFieldErrors && error instanceof SDKValidationError && (
-            <Components.Text as="pre">{error.pretty()}</Components.Text>
+          {!hasFieldErrors && error.category !== 'validation_error' && (
+            <Components.Text>{error.message || t('errors.unknownError')}</Components.Text>
           )}
         </Components.Alert>
       )}

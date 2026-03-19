@@ -54,6 +54,7 @@ import type { RequireAtLeastOne, WithRequired } from '@/types/Helpers'
 import { useFlow } from '@/components/Flow/useFlow'
 import { ensureRequired } from '@/helpers/ensureRequired'
 import { useComponentDictionary } from '@/i18n/I18n'
+import { SDKInternalError } from '@/types/sdkError'
 
 export type ProfileDefaultValues = RequireAtLeastOne<{
   employee?: RequireAtLeastOne<{
@@ -327,7 +328,7 @@ const Root = ({
         onEvent(componentEvents.EMPLOYEE_UPDATED, employeeData)
       }
       if (typeof mergedData.current.employee?.uuid !== 'string') {
-        throw new Error('Employee id is not available')
+        throw new SDKInternalError('Employee id is not available')
       }
 
       const hasCompletedSelfOnboarding = checkHasCompletedSelfOnboarding(

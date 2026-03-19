@@ -10,7 +10,7 @@ vi.mock('@/components/Base', () => ({
     baseSubmitHandler: vi.fn((data: unknown, callback: (data: unknown) => Promise<void>) =>
       callback(data),
     ),
-    fieldErrors: [],
+    error: null,
     setError: vi.fn(),
   }),
 }))

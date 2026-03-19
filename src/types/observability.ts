@@ -1,65 +1,29 @@
 /**
  * Observability hook types for error tracking and performance metrics
  */
-
-export type ObservabilityErrorType =
-  | 'boundary_error'
-  | 'validation_error'
-  | 'internal_error'
-  | 'api_error'
+import type { SDKError } from './sdkError'
 
 export type ObservabilityMetricUnit = 'ms' | 'count' | 'bytes' | 'percent'
 
-export interface ObservabilityErrorContext {
-  /** Name of the component where error occurred */
-  componentName?: string
-
-  /** Props passed to the component (sanitized, no sensitive data) */
-  componentProps?: Record<string, unknown>
-
-  /** For validation errors, the schema that failed */
-  validationSchema?: string
-
-  /** React component stack trace */
-  componentStack?: string
-
-  /** Operation ID for API-related errors */
-  operationId?: string
-
-  /** HTTP status code for API errors */
-  statusCode?: number
-
-  /** Request details for API errors */
-  request?: {
-    url: string
-    method: string
-  }
-
-  /** Any additional context */
-  metadata?: Record<string, unknown>
-}
-
-export interface ObservabilityError {
-  /** Type of error that occurred */
-  type: ObservabilityErrorType
-
-  /** Human-readable error message */
-  message: string
-
-  /** Error stack trace if available */
-  stack?: string
-
-  /** Context about where/how the error occurred */
-  context: ObservabilityErrorContext
-
-  /**
-   * The original error object (may be undefined when sanitization.includeOriginalError is false)
-   * Default sanitization removes this to prevent PII leakage
-   */
-  originalError?: unknown
-
+/**
+ * An `SDKError` enriched with internal component context for observability telemetry.
+ *
+ * Partners receive this type through `ObservabilityHook.onError`. It extends the
+ * core `SDKError` with `timestamp`, `componentName`, and `componentStack` so that
+ * error-tracking tools (e.g. Sentry) can correlate and group errors.
+ *
+ * The base `SDKError` (without these fields) is the type used in partner-facing
+ * hooks like `useEmployeeForm`, keeping the public API clean.
+ */
+export interface ObservabilityError extends SDKError {
   /** When the error occurred (Unix timestamp in milliseconds) */
   timestamp: number
+
+  /** SDK component where the error occurred (e.g. "Employee.Profile") */
+  componentName?: string
+
+  /** React component stack trace (present only for errors caught by ErrorBoundary) */
+  componentStack?: string
 }
 
 export interface ObservabilityMetric {
@@ -89,10 +53,10 @@ export interface SanitizationConfig {
   enabled?: boolean
 
   /**
-   * Whether to include the original error object. Default: false
-   * WARNING: Original errors may contain sensitive data from form inputs or API responses
+   * Whether to include the raw error object on SDKError. Default: false
+   * WARNING: Raw errors may contain sensitive data from form inputs or API responses
    */
-  includeOriginalError?: boolean
+  includeRawError?: boolean
 
   /**
    * Custom sanitization function for errors
@@ -113,10 +77,6 @@ export interface SanitizationConfig {
 /**
  * Observability hook interface for SDK consumers to implement
  *
- * This hook enables error tracking and performance monitoring for the SDK.
- * Errors caught by error boundaries and validation failures will be reported through onError.
- * Performance metrics for forms, components, and flows will be reported through onMetric.
- *
  * @example
  * ```tsx
  * import * as Sentry from '@sentry/react'
@@ -126,29 +86,22 @@ export interface SanitizationConfig {
  *   config={{
  *     baseUrl: '/api/',
  *     observability: {
- *       onError: (error) => {
- *         // Create Error from sanitized data (originalError is undefined by default)
- *         const sentryError = new Error(error.message)
- *         sentryError.name = error.type
- *         if (error.stack) {
- *           sentryError.stack = error.stack
- *         }
- *
- *         Sentry.captureException(sentryError, {
- *           level: error.type === 'validation_error' ? 'warning' : 'error',
+ *       onError: (error: ObservabilityError) => {
+ *         Sentry.captureException(error.raw, {
+ *           level: error.category === 'validation_error' ? 'warning' : 'error',
  *           tags: {
- *             error_type: error.type,
- *             component: error.context.componentName,
+ *             error_category: error.category,
+ *             component: error.componentName ?? 'unknown',
+ *             http_status: String(error.httpStatus ?? ''),
  *           },
  *         })
  *       },
  *       onMetric: (metric) => {
- *         // Send to your metrics service
  *         console.log(`[Metric] ${metric.name}: ${metric.value}${metric.unit}`)
  *       },
  *       sanitization: {
  *         enabled: true,
- *         includeOriginalError: false, // Default: originalError will be undefined
+ *         includeRawError: false,
  *       }
  *     }
  *   }}
@@ -159,20 +112,20 @@ export interface SanitizationConfig {
  */
 export interface ObservabilityHook {
   /**
-   * Called when an error is caught by error boundaries or validation fails
-   * These are errors that prevent a component from rendering or operating correctly
+   * Called when an error is caught by error boundaries or form submission fails.
+   * Receives an `ObservabilityError` — an `SDKError` enriched with `componentName`
+   * and (for boundary errors) `componentStack`.
    */
   onError?: (error: ObservabilityError) => void
 
   /**
-   * Called to track performance metrics for component operations
-   * Optional - can be used for tracking render times, flow completions, etc.
+   * Called to track performance metrics for component operations.
    */
   onMetric?: (metric: ObservabilityMetric) => void
 
   /**
-   * Configuration for sanitizing data before sending to observability tools
-   * Default: { enabled: true, includeOriginalError: false }
+   * Configuration for sanitizing data before sending to observability tools.
+   * Default: { enabled: true, includeRawError: false }
    */
   sanitization?: SanitizationConfig
 }
