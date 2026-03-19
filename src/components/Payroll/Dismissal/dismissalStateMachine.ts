@@ -13,7 +13,7 @@ export const dismissalBreadcrumbsNodes: BreadcrumbNodes = {
     parent: null,
     item: {
       id: 'payPeriodSelection',
-      label: 'payPeriodSelection.breadcrumbLabel',
+      label: 'breadcrumbLabel',
       namespace: 'Payroll.Dismissal',
       onNavigate: ((ctx: DismissalFlowContextInterface) => ({
         ...ctx,

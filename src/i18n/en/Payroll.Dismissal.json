@@ -1,4 +1,5 @@
 {
+  "breadcrumbLabel": "Pay Period",
   "pageTitle": "Run dismissal payroll",
   "pageDescription": "Select the pay period for the terminated employee's final payroll.",
   "selectLabel": "Pay period",

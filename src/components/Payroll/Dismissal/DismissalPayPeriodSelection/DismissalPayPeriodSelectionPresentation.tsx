@@ -19,8 +19,8 @@ export function DismissalPayPeriodSelectionPresentation({
   onSubmit,
   isPending,
 }: DismissalPayPeriodSelectionPresentationProps) {
-  useI18n('Payroll.DismissalPayPeriodSelection')
-  const { t } = useTranslation('Payroll.DismissalPayPeriodSelection')
+  useI18n('Payroll.Dismissal')
+  const { t } = useTranslation('Payroll.Dismissal')
   const { Heading, Text, Select, Button, Alert } = useComponentContext()
 
   const hasNoPayPeriods = payPeriodOptions.length === 0

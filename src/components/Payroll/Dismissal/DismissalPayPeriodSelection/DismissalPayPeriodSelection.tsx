@@ -14,7 +14,7 @@ import { useComponentDictionary, useI18n } from '@/i18n'
 import { formatPayPeriodRange } from '@/helpers/dateFormatting'
 import type { SelectOption } from '@/components/Common/UI/Select/SelectTypes'
 
-export interface DismissalPayPeriodSelectionProps extends BaseComponentInterface<'Payroll.DismissalPayPeriodSelection'> {
+export interface DismissalPayPeriodSelectionProps extends BaseComponentInterface<'Payroll.Dismissal'> {
   companyId: string
   employeeId: string
 }
@@ -31,9 +31,9 @@ type RequiredPayPeriod = UnprocessedTerminationPayPeriod &
   Required<Pick<UnprocessedTerminationPayPeriod, 'startDate' | 'endDate' | 'employeeUuid'>>
 
 function Root({ companyId, employeeId, dictionary }: DismissalPayPeriodSelectionProps) {
-  useComponentDictionary('Payroll.DismissalPayPeriodSelection', dictionary)
-  useI18n('Payroll.DismissalPayPeriodSelection')
-  const { t } = useTranslation('Payroll.DismissalPayPeriodSelection')
+  useComponentDictionary('Payroll.Dismissal', dictionary)
+  useI18n('Payroll.Dismissal')
+  const { t } = useTranslation('Payroll.Dismissal')
   const { onEvent, baseSubmitHandler } = useBase()
 
   const { data } = usePaySchedulesGetUnprocessedTerminationPeriodsSuspense({ companyId })
