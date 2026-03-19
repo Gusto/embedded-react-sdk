@@ -174,19 +174,12 @@ function tryExtractFieldErrorsFromBody(body: string | undefined): SDKFieldError[
 }
 
 function buildApiErrorMessage(fieldErrors: SDKFieldError[], fallbackMessage: string): string {
-  if (fieldErrors.length === 1) {
-    const first = fieldErrors[0]
-    if (first && first.message) {
-      return first.message
-    }
+  if (fieldErrors.length === 0) {
+    return fallbackMessage
   }
-  if (fieldErrors.length > 1) {
-    const firstWithMessage = fieldErrors.find(e => e.message)
-    if (firstWithMessage) {
-      return firstWithMessage.message
-    }
-  }
-  return fallbackMessage
+  return fieldErrors.length === 1
+    ? '1 field has issues'
+    : `${fieldErrors.length} fields have issues`
 }
 
 /**

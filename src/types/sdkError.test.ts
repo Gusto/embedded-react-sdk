@@ -63,7 +63,7 @@ describe('normalizeToSDKError', () => {
 
       expect(result.category).toBe('api_error')
       expect(result.httpStatus).toBe(422)
-      expect(result.message).toBe('First name is required')
+      expect(result.message).toBe('1 field has issues')
       expect(result.fieldErrors).toEqual([
         {
           field: 'firstName',
@@ -97,10 +97,10 @@ describe('normalizeToSDKError', () => {
         category: 'invalid_attribute_value',
         message: 'Email is already taken',
       })
-      expect(result.message).toBe('Email is already taken')
+      expect(result.message).toBe('1 field has issues')
     })
 
-    it('parses multiple field errors from body and uses first message', () => {
+    it('parses multiple field errors from body and uses count message', () => {
       const body = JSON.stringify({
         errors: [
           {
@@ -119,7 +119,7 @@ describe('normalizeToSDKError', () => {
       const result = normalizeToSDKError(error)
 
       expect(result.fieldErrors).toHaveLength(2)
-      expect(result.message).toBe('First name is required')
+      expect(result.message).toBe('2 fields have issues')
     })
 
     it('falls back to the raw message when body is not valid JSON', () => {
@@ -165,7 +165,7 @@ describe('normalizeToSDKError', () => {
 
       expect(result.fieldErrors).toHaveLength(1)
       expect(result.fieldErrors[0]?.field).toBe('email')
-      expect(result.message).toBe('Email is invalid')
+      expect(result.message).toBe('1 field has issues')
     })
   })
 
