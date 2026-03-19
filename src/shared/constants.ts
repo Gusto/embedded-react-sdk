@@ -198,10 +198,6 @@ export const offCycleEvents = {
   DISMISSAL_PAY_PERIOD_SELECTED: 'dismissal/payPeriod/selected',
 } as const
 
-export const dismissalEvents = {
-  DISMISSAL_PAY_PERIOD_SELECTED: 'dismissal/payPeriod/selected',
-} as const
-
 export const componentEvents = {
   ROBOT_MACHINE_DONE: 'done', //This is internal Robot event thrown when machine transitions to final state
   ERROR: 'ERROR',
@@ -217,7 +213,6 @@ export const componentEvents = {
   ...recoveryCasesEvents,
   ...contractorPaymentEvents,
   ...offCycleEvents,
-  ...dismissalEvents,
 } as const
 
 export type EventType = (typeof componentEvents)[keyof typeof componentEvents]
