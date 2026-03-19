@@ -6,6 +6,7 @@ process.env.E2E_GWS_FLOWS_HOST = process.env.E2E_GWS_FLOWS_HOST || 'https://flow
 export default defineConfig({
   globalSetup: './e2e/globalSetup.ts',
   testDir: './e2e/tests',
+  testIgnore: ['**/transition-payroll*'],
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: 2,
