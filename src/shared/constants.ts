@@ -196,6 +196,7 @@ export const recoveryCasesEvents = {
 export const offCycleEvents = {
   OFF_CYCLE_CREATED: 'offCycle/created',
   DISMISSAL_PAY_PERIOD_SELECTED: 'dismissal/payPeriod/selected',
+  TRANSITION_CREATED: 'transition/created',
 } as const
 
 export const componentEvents = {
