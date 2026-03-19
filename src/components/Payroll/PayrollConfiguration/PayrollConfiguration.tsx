@@ -22,6 +22,7 @@ import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { useBase } from '@/components/Base'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
+import { SDKInternalError } from '@/types/sdkError'
 
 const isCalculatingStatus = (processingRequest?: PayrollProcessingRequest | null) =>
   processingRequest?.status === PayrollProcessingRequestStatus.Calculating
@@ -138,12 +139,14 @@ export const Root = ({
 
   const onGrossUpApply = async (grossAmount: string) => {
     if (!grossUpEmployeeUuid || !grossUpTargetCompensation) {
-      throw new Error('Unable to apply gross-up: missing employee or target compensation.')
+      throw new SDKInternalError(
+        'Unable to apply gross-up: missing employee or target compensation.',
+      )
     }
 
     const employeeComp = employeeCompensations.find(ec => ec.employeeUuid === grossUpEmployeeUuid)
     if (!employeeComp) {
-      throw new Error('Unable to apply gross-up: employee compensation not found.')
+      throw new SDKInternalError('Unable to apply gross-up: employee compensation not found.')
     }
 
     const existingFixed = employeeComp.fixedCompensations ?? []

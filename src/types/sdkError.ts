@@ -15,6 +15,33 @@ import { getFieldErrors } from '@/helpers/apiErrorToList'
 export type SDKErrorCategory = 'api_error' | 'validation_error' | 'network_error' | 'internal_error'
 
 /**
+ * An error thrown by internal SDK logic that should be caught and normalized
+ * by `baseSubmitHandler` rather than propagating to the ErrorBoundary.
+ *
+ * Use this for guard clauses and data integrity checks inside submit handler
+ * callbacks where the error should surface as an inline banner, not a crash.
+ *
+ * @example
+ * ```typescript
+ * await baseSubmitHandler(data, async () => {
+ *   const response = await createPayroll({ ... })
+ *   if (!response.payrollId) {
+ *     throw new SDKInternalError('Missing payroll ID in response')
+ *   }
+ * })
+ * ```
+ */
+export class SDKInternalError extends Error {
+  readonly category: SDKErrorCategory
+
+  constructor(message: string, category: SDKErrorCategory = 'internal_error') {
+    super(message)
+    this.name = 'SDKInternalError'
+    this.category = category
+  }
+}
+
+/**
  * A flattened, field-level error extracted from an API response.
  *
  * For API errors with `errors[]`, nested structures are recursively flattened
@@ -107,6 +134,45 @@ function extractFieldErrors(errors: EntityErrorObject[]): SDKFieldError[] {
   return errors.filter(err => err.message).map(toSDKFieldError)
 }
 
+interface RawAPIFieldError {
+  error_key?: string
+  errorKey?: string
+  category: string
+  message?: string
+  metadata?: Record<string, unknown>
+}
+
+function rawToEntityError(raw: RawAPIFieldError): EntityErrorObject {
+  return {
+    errorKey: raw.errorKey ?? raw.error_key ?? '',
+    category: raw.category,
+    message: raw.message,
+    metadata: raw.metadata,
+  }
+}
+
+function tryExtractFieldErrorsFromBody(body: string | undefined): SDKFieldError[] {
+  if (!body) return []
+  try {
+    const parsed: unknown = JSON.parse(body)
+    if (
+      parsed !== null &&
+      typeof parsed === 'object' &&
+      'errors' in parsed &&
+      Array.isArray((parsed as { errors: unknown }).errors)
+    ) {
+      const errors = (parsed as { errors: RawAPIFieldError[] }).errors
+      return errors
+        .filter(err => err.message)
+        .map(rawToEntityError)
+        .map(toSDKFieldError)
+    }
+  } catch {
+    // Body isn't valid JSON
+  }
+  return []
+}
+
 function buildApiErrorMessage(fieldErrors: SDKFieldError[], fallbackMessage: string): string {
   if (fieldErrors.length === 1) {
     const first = fieldErrors[0]
@@ -127,12 +193,22 @@ function buildApiErrorMessage(fieldErrors: SDKFieldError[], fallbackMessage: str
  * Normalizes any caught error into a unified `SDKError`.
  *
  * Classification is based purely on the error type:
+ * - `SDKInternalError` → uses the error's own `category` (default: `internal_error`)
  * - `GustoEmbeddedError` subclasses → `api_error`
  * - `SDKValidationError` → `validation_error`
  * - `HTTPClientError` subclasses → `network_error`
  * - Everything else → `internal_error`
  */
 export function normalizeToSDKError(error: unknown): SDKError {
+  if (error instanceof SDKInternalError) {
+    return {
+      category: error.category,
+      message: error.message,
+      fieldErrors: [],
+      raw: error,
+    }
+  }
+
   if (error instanceof SDKValidationError) {
     return {
       category: 'validation_error',
@@ -153,7 +229,9 @@ export function normalizeToSDKError(error: unknown): SDKError {
 
   if (error instanceof GustoEmbeddedError) {
     const httpStatus = error.httpMeta.response.status
-    const fieldErrors = hasErrorsArray(error) ? extractFieldErrors(error.errors) : []
+    const fieldErrors = hasErrorsArray(error)
+      ? extractFieldErrors(error.errors)
+      : tryExtractFieldErrorsFromBody(error.httpMeta.body)
 
     return {
       category: 'api_error',

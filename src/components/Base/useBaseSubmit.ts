@@ -5,7 +5,7 @@ import { SDKValidationError } from '@gusto/embedded-api/models/errors/sdkvalidat
 import { UnprocessableEntityErrorObject } from '@gusto/embedded-api/models/errors/unprocessableentityerrorobject'
 import { useAsyncError } from '@/hooks/useAsyncError'
 import { useObservability } from '@/contexts/ObservabilityProvider/useObservability'
-import { type SDKError, normalizeToSDKError } from '@/types/sdkError'
+import { type SDKError, SDKInternalError, normalizeToSDKError } from '@/types/sdkError'
 
 type SubmitHandler<T> = (data: T) => Promise<void>
 
@@ -15,7 +15,7 @@ export const useBaseSubmit = (componentName?: string) => {
   const { observability } = useObservability()
 
   const processError = useCallback(
-    (caughtError: GustoEmbeddedError | SDKValidationError) => {
+    (caughtError: GustoEmbeddedError | SDKValidationError | SDKInternalError) => {
       const sdkError = normalizeToSDKError(caughtError)
 
       setError(sdkError)
@@ -40,7 +40,8 @@ export const useBaseSubmit = (componentName?: string) => {
           err instanceof APIError ||
           err instanceof SDKValidationError ||
           err instanceof UnprocessableEntityErrorObject ||
-          err instanceof GustoEmbeddedError
+          err instanceof GustoEmbeddedError ||
+          err instanceof SDKInternalError
         ) {
           processError(err)
         } else throwError(err)

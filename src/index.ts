@@ -13,7 +13,7 @@ export type {
   SDKHooks,
 } from '@/types/hooks'
 export type { SDKError, SDKErrorCategory, SDKFieldError } from '@/types/sdkError'
-export { normalizeToSDKError } from '@/types/sdkError'
+export { normalizeToSDKError, SDKInternalError } from '@/types/sdkError'
 export type {
   ObservabilityHook,
   ObservabilityError,

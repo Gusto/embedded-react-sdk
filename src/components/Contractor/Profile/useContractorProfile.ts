@@ -24,6 +24,7 @@ import { SSN_REGEX, NAME_REGEX } from '@/helpers/validations'
 import { removeNonDigits } from '@/helpers/formattedStrings'
 import { formatDateToStringDate } from '@/helpers/dateFormatting'
 import { normalizeEin } from '@/helpers/federalEin'
+import { SDKInternalError } from '@/types/sdkError'
 
 // Re-export the API types for convenience
 export const WageType = ApiWageType
@@ -287,7 +288,7 @@ export function useContractorProfile({
       if (existingContractor) {
         // Update existing contractor
         if (!existingContractor.version) {
-          throw new Error('Contractor version is required for updates')
+          throw new SDKInternalError('Contractor version is required for updates')
         }
         const version = existingContractor.version
         const apiPayload = transformFormDataToUpdatePayload(payload, version)
