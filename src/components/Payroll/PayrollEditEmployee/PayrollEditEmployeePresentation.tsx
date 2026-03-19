@@ -24,6 +24,7 @@ import {
   getReimbursementCompensation,
   calculateGrossPay,
 } from '@/components/Payroll/helpers'
+import { PayrollCategory } from '@/components/Payroll/payrollTypes'
 import {
   COMPENSATION_NAME_DOUBLE_OVERTIME,
   COMPENSATION_NAME_OVERTIME,
@@ -48,8 +49,7 @@ interface PayrollEditEmployeeProps {
   fixedCompensationTypes: PayrollFixedCompensationTypesType[]
   payPeriodStartDate?: string
   paySchedule?: PayScheduleObject
-  isOffCycle?: boolean
-  isFinalTerminationPayroll?: boolean
+  payrollCategory?: PayrollCategory
   withReimbursements?: boolean
   hasDirectDepositSetup?: boolean
 }
@@ -141,8 +141,7 @@ export const PayrollEditEmployeePresentation = ({
   fixedCompensationTypes,
   payPeriodStartDate,
   paySchedule,
-  isOffCycle = false,
-  isFinalTerminationPayroll = false,
+  payrollCategory = PayrollCategory.Regular,
   withReimbursements = true,
   hasDirectDepositSetup = true,
 }: PayrollEditEmployeeProps) => {
@@ -331,7 +330,7 @@ export const PayrollEditEmployeePresentation = ({
         employee,
         payPeriodStartDate,
         paySchedule,
-        isOffCycle,
+        payrollCategory,
       )
     } catch {
       return employeeCompensation
@@ -340,7 +339,7 @@ export const PayrollEditEmployeePresentation = ({
             employee,
             payPeriodStartDate,
             paySchedule,
-            isOffCycle,
+            payrollCategory,
           )
         : 0
     }
@@ -351,7 +350,7 @@ export const PayrollEditEmployeePresentation = ({
     employee,
     payPeriodStartDate,
     paySchedule,
-    isOffCycle,
+    payrollCategory,
   ])
 
   const employeeName = firstLastName({
@@ -464,7 +463,7 @@ export const PayrollEditEmployeePresentation = ({
               </Grid>
             </div>
           )}
-          {isFinalTerminationPayroll && timeOff.length > 0 && (
+          {payrollCategory === PayrollCategory.Dismissal && timeOff.length > 0 && (
             <div className={styles.fieldGroup}>
               <Heading as="h4">{t('finalPayoutTitle')}</Heading>
               <Grid gridTemplateColumns={{ base: '1fr', small: [320, 320] }} gap={20}>

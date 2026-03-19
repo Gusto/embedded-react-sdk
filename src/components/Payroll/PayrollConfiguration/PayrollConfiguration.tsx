@@ -71,8 +71,7 @@ export const Root = ({
     employeeCompensations,
     paySchedule,
     payPeriod,
-    isOffCycle,
-    offCycleReason,
+    payrollCategory,
     pagination,
     isLoading,
     refetch,
@@ -99,8 +98,8 @@ export const Root = ({
   const [grossUpEmployeeUuid, setGrossUpEmployeeUuid] = useState<string | null>(null)
   const [isGrossUpModalOpen, setIsGrossUpModalOpen] = useState(false)
 
-  const grossUpEnabled = isGrossUpEligible(isOffCycle, offCycleReason)
-  const grossUpTargetCompensation = getGrossUpTargetCompensationName(offCycleReason)
+  const grossUpEnabled = isGrossUpEligible(payrollCategory)
+  const grossUpTargetCompensation = getGrossUpTargetCompensationName(payrollCategory)
 
   const onGrossUpSelect = (employeeUuid: string) => {
     setGrossUpEmployeeUuid(employeeUuid)
@@ -400,8 +399,7 @@ export const Root = ({
         employeeDetails={employeeDetails}
         payPeriod={payPeriod}
         paySchedule={paySchedule}
-        isOffCycle={isOffCycle}
-        offCycleReason={offCycleReason}
+        payrollCategory={payrollCategory}
         alerts={alerts}
         payrollAlert={payrollAlert}
         isPending={isPolling || isLoading || isUpdatingPayroll || isCalculatingPayroll}

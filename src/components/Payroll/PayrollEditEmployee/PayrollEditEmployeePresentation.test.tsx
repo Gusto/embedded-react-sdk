@@ -9,6 +9,7 @@ import { PayrollEmployeeCompensationsTypePaymentMethod as PaymentMethods } from 
 import { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
 import userEvent from '@testing-library/user-event'
 import { PayrollEditEmployeePresentation } from './PayrollEditEmployeePresentation'
+import { PayrollCategory } from '@/components/Payroll/payrollTypes'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 const mockEmployee: Employee = {
@@ -216,7 +217,6 @@ const defaultProps = {
     anchorEndOfPayPeriod: '2022-01-07',
     version: '2024-04-01',
   },
-  isOffCycle: false,
 }
 
 describe('PayrollEditEmployeePresentation', () => {
@@ -566,9 +566,12 @@ describe('PayrollEditEmployeePresentation', () => {
       expect(screen.queryByText('Time off')).not.toBeInTheDocument()
     })
 
-    it('renders unused time off payout section for final termination payrolls', async () => {
+    it('renders unused time off payout section for dismissal payrolls', async () => {
       renderWithProviders(
-        <PayrollEditEmployeePresentation {...defaultProps} isFinalTerminationPayroll={true} />,
+        <PayrollEditEmployeePresentation
+          {...defaultProps}
+          payrollCategory={PayrollCategory.Dismissal}
+        />,
       )
 
       await waitFor(() => {
@@ -576,9 +579,12 @@ describe('PayrollEditEmployeePresentation', () => {
       })
     })
 
-    it('does not render unused time off payout section when not a final termination payroll', async () => {
+    it('does not render unused time off payout section for regular payrolls', async () => {
       renderWithProviders(
-        <PayrollEditEmployeePresentation {...defaultProps} isFinalTerminationPayroll={false} />,
+        <PayrollEditEmployeePresentation
+          {...defaultProps}
+          payrollCategory={PayrollCategory.Regular}
+        />,
       )
 
       await waitFor(() => {
@@ -603,7 +609,7 @@ describe('PayrollEditEmployeePresentation', () => {
         <PayrollEditEmployeePresentation
           {...defaultProps}
           onSave={onSave}
-          isFinalTerminationPayroll={true}
+          payrollCategory={PayrollCategory.Dismissal}
           employeeCompensation={compensationWithPayout}
         />,
       )
