@@ -508,6 +508,11 @@ export const getPayrollType = (payroll: {
   return 'Regular'
 }
 
+const OFF_CYCLE_REASON_LABELS: Record<string, string> = {
+  'Transition from old pay schedule': 'Transition',
+  'Dismissed employee': 'Dismissal',
+}
+
 export const getPayrollTypeLabel = (payroll: {
   external?: boolean
   offCycle?: boolean
@@ -515,7 +520,7 @@ export const getPayrollTypeLabel = (payroll: {
 }): string => {
   if (payroll.external) return 'External'
   if (payroll.offCycle && payroll.offCycleReason) {
-    return payroll.offCycleReason
+    return OFF_CYCLE_REASON_LABELS[payroll.offCycleReason] ?? payroll.offCycleReason
   }
   if (payroll.offCycle) return 'Off-Cycle'
   return 'Regular'
