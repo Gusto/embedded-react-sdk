@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { screen, waitFor } from '@testing-library/react'
+import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { TransitionCreation } from './TransitionCreation'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
@@ -194,6 +194,31 @@ describe('TransitionCreation', () => {
 
       await waitFor(() => {
         expect(screen.getByText(/check date is required/i)).toBeInTheDocument()
+      })
+    })
+  })
+
+  describe('submission', () => {
+    it('creates a transition payroll and emits the transition/created event on success', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(<TransitionCreation {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /continue/i })).toBeInTheDocument()
+      })
+
+      const checkDateGroup = screen.getByRole('group', { name: /check date/i })
+      await user.type(within(checkDateGroup).getByRole('spinbutton', { name: /month/i }), '12')
+      await user.type(within(checkDateGroup).getByRole('spinbutton', { name: /day/i }), '15')
+      await user.type(within(checkDateGroup).getByRole('spinbutton', { name: /year/i }), '2026')
+
+      await user.click(screen.getByRole('button', { name: /continue/i }))
+
+      await waitFor(() => {
+        expect(defaultProps.onEvent).toHaveBeenCalledWith(
+          'transition/created',
+          expect.objectContaining({ payrollUuid: 'transition-payroll-uuid-1' }),
+        )
       })
     })
   })

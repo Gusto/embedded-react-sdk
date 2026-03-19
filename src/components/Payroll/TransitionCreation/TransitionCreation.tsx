@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
 import { useTranslation } from 'react-i18next'
 import { usePayrollsCreateOffCycleMutation } from '@gusto/embedded-api/react-query/payrollsCreateOffCycle'
 import {
@@ -10,9 +9,10 @@ import {
 } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
-import { useOffCyclePayPeriodDateValidation } from '../../OffCyclePayPeriodDateForm/useOffCyclePayPeriodDateValidation'
-import type { OffCycleTaxWithholdingConfig } from '../../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
+import { useOffCyclePayPeriodDateValidation } from '../OffCyclePayPeriodDateForm/useOffCyclePayPeriodDateValidation'
+import type { OffCycleTaxWithholdingConfig } from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
 import type { TransitionCreationProps, TransitionCreationFormData } from './TransitionCreationTypes'
+import { createTransitionCreationSchema } from './TransitionCreationTypes'
 import { TransitionCreationPresentation } from './TransitionCreationPresentation'
 import { BaseComponent } from '@/components/Base/Base'
 import { useBase } from '@/components/Base/useBase'
@@ -35,12 +35,12 @@ function Root({
   endDate,
   payScheduleUuid,
 }: TransitionCreationProps) {
-  useComponentDictionary('Payroll.Transition', dictionary)
-  useI18n('Payroll.Transition')
+  useComponentDictionary('Payroll.TransitionCreation', dictionary)
+  useI18n('Payroll.TransitionCreation')
   useI18n('Payroll.OffCycleDeductionsSetting')
   useI18n('Payroll.OffCycleTaxWithholding')
 
-  const { t } = useTranslation('Payroll.Transition')
+  const { t } = useTranslation('Payroll.TransitionCreation')
   const { onEvent, baseSubmitHandler } = useBase()
 
   const { minCheckDate } = useOffCyclePayPeriodDateValidation()
@@ -73,27 +73,11 @@ function Root({
     return match?.name ?? match?.customName ?? null
   }, [paySchedulesData, payScheduleUuid])
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const translateValidation = (key: string): string => t(key as any) as string
+
   const schema = useMemo(
-    () =>
-      z.object({
-        checkDate: z
-          .date()
-          .nullable()
-          .refine((val): val is Date => val !== null, {
-            message: t('errors.checkDateRequired'),
-          })
-          .refine(
-            val => {
-              const normalized = new Date(val)
-              normalized.setHours(0, 0, 0, 0)
-              const min = new Date(minCheckDate)
-              min.setHours(0, 0, 0, 0)
-              return normalized >= min
-            },
-            { message: t('errors.checkDateAchLeadTime') },
-          ),
-        skipRegularDeductions: z.boolean(),
-      }),
+    () => createTransitionCreationSchema(translateValidation, minCheckDate),
     [t, minCheckDate],
   )
 
@@ -106,7 +90,7 @@ function Root({
   })
 
   const onSubmit = async (data: TransitionCreationFormData) => {
-    const checkDate = data.checkDate!
+    if (!data.checkDate) return
 
     await baseSubmitHandler(data, async () => {
       const response = await createTransitionPayroll({
@@ -117,7 +101,7 @@ function Root({
             offCycleReason: OffCycleReason.TransitionFromOldPaySchedule,
             startDate: new RFCDate(startDate),
             endDate: new RFCDate(endDate),
-            checkDate: new RFCDate(checkDate),
+            checkDate: new RFCDate(data.checkDate!),
             payScheduleUuid,
             skipRegularDeductions: data.skipRegularDeductions,
             withholdingPayPeriod: taxWithholdingConfig.withholdingPayPeriod,

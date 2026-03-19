@@ -6,6 +6,7 @@ import type {
   GetV1CompaniesCompanyIdPayrollsPayrollIdResponse,
 } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrollspayrollid'
 import type { PutV1CompaniesCompanyIdPayrollsPayrollIdPrepareRequestBody } from '@gusto/embedded-api/models/operations/putv1companiescompanyidpayrollspayrollidprepare'
+import { OffCycleReason } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
 import { getFixture } from '../fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
 
@@ -18,6 +19,7 @@ export function setPayrollPhase(phase: PayrollPhase) {
 
 export function resetPayrollPhase() {
   currentPayrollPhase = 'initial'
+  lastCreatedOffCycleReason = null
 }
 
 export const createPayroll = (
@@ -153,7 +155,7 @@ const submitPayroll = http.put(
 const cancelPayroll = http.put(
   `${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/cancel`,
   async () => {
-    currentPayrollState = 'initial'
+    currentPayrollPhase = 'initial'
     const responseFixture = await getFixture('get-v1-companies-company_id-payrolls-payroll_id')
     return HttpResponse.json({
       ...responseFixture,
@@ -182,19 +184,16 @@ const createPayrollOffCycle = http.post(
   `${API_BASE_URL}/v1/companies/:company_id/payrolls`,
   async ({ request }) => {
     const body = (await request.json()) as Record<string, unknown>
-    const isTransition =
-      body.off_cycle_reason === 'Transition from old pay schedule' ||
-      body.offCycleReason === 'Transition from old pay schedule'
-
     const offCycleReason = (body.off_cycle_reason ?? body.offCycleReason ?? 'Bonus') as string
+    const isTransition = offCycleReason === OffCycleReason.TransitionFromOldPaySchedule
+
+    lastCreatedOffCycleReason = offCycleReason
 
     if (isTransition) {
-      lastCreatedOffCycleReason = offCycleReason
       const responseFixture = await getFixture('post-v1-companies-company_id-payrolls-transition')
       return HttpResponse.json(responseFixture)
     }
 
-    lastCreatedOffCycleReason = offCycleReason
     const responseFixture = await getFixture('get-v1-companies-company_id-payrolls-payroll_id')
     return HttpResponse.json({
       ...responseFixture,

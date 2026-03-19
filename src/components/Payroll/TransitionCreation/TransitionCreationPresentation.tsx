@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { OffCycleTaxWithholdingTable } from '../../OffCycleTaxWithholdingTable'
-import { OffCycleTaxWithholdingModal } from '../../OffCycleTaxWithholdingModal'
+import { OffCycleTaxWithholdingTable } from '../OffCycleTaxWithholdingTable'
+import { OffCycleTaxWithholdingModal } from '../OffCycleTaxWithholdingModal'
 import {
   WAGE_TYPE_CATEGORIES,
   type WageTypeGroup,
-} from '../../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
+} from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
 import type { TransitionCreationPresentationProps } from './TransitionCreationTypes'
 import { useI18n } from '@/i18n'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -23,10 +23,10 @@ export function TransitionCreationPresentation({
   onTaxWithholdingModalDone,
   onTaxWithholdingModalCancel,
 }: TransitionCreationPresentationProps) {
-  useI18n('Payroll.Transition')
+  useI18n('Payroll.TransitionCreation')
   useI18n('Payroll.OffCycleDeductionsSetting')
   useI18n('Payroll.OffCycleTaxWithholding')
-  const { t } = useTranslation('Payroll.Transition')
+  const { t } = useTranslation('Payroll.TransitionCreation')
   const { t: tDeductions } = useTranslation('Payroll.OffCycleDeductionsSetting')
   const { t: tWithholding } = useTranslation('Payroll.OffCycleTaxWithholding')
   const { Heading, Text, Alert, Button } = useComponentContext()
@@ -35,16 +35,19 @@ export function TransitionCreationPresentation({
   const formattedStartDate = dateFormatter.formatShortWithYear(startDate)
   const formattedEndDate = dateFormatter.formatShortWithYear(endDate)
 
-  const deductionsOptions = [
-    {
-      value: false,
-      label: tDeductions('options.include.label'),
-    },
-    {
-      value: true,
-      label: tDeductions('options.skip.label'),
-    },
-  ]
+  const deductionsOptions = useMemo(
+    () => [
+      {
+        value: false,
+        label: tDeductions('options.include.label'),
+      },
+      {
+        value: true,
+        label: tDeductions('options.skip.label'),
+      },
+    ],
+    [tDeductions],
+  )
 
   const wageTypeGroups: WageTypeGroup[] = useMemo(
     () =>
