@@ -1,5 +1,6 @@
 import { test, expect } from '../utils/localTestFixture'
 import { waitForLoadingComplete, fillDate } from '../utils/helpers'
+import { fetchApi, putApi } from '../utils/api'
 import { existsSync, readFileSync } from 'fs'
 import { resolve } from 'path'
 
@@ -32,35 +33,11 @@ interface PayPeriod {
   start_date: string
   end_date: string
   pay_schedule_uuid: string
-  payroll: { processed: boolean }
-}
-
-function getGWSFlowsBase(): string {
-  return process.env.E2E_GWS_FLOWS_HOST || 'https://flows.gusto-demo.com'
-}
-
-async function fetchApi<T>(endpoint: string): Promise<T> {
-  const response = await fetch(`${getGWSFlowsBase()}${endpoint}`)
-  if (!response.ok) {
-    const errorBody = await response.text().catch(() => '')
-    console.log(`[transition-setup] GET ${endpoint} failed (${response.status}): ${errorBody}`)
-    throw new Error(`API request failed: ${response.status} ${response.statusText}`)
+  payroll: {
+    processed: boolean
+    payroll_uuid: string
+    payroll_type?: string
   }
-  return response.json()
-}
-
-async function putApi<T>(endpoint: string, data: Record<string, unknown>): Promise<T> {
-  const response = await fetch(`${getGWSFlowsBase()}${endpoint}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
-  })
-  if (!response.ok) {
-    const errorText = await response.text()
-    console.log(`[transition-setup] PUT ${endpoint} failed (${response.status}): ${errorText}`)
-    throw new Error(`API PUT failed: ${response.status} - ${errorText}`)
-  }
-  return response.json()
 }
 
 function getTargetFrequencyConfig(currentFrequency: string) {
