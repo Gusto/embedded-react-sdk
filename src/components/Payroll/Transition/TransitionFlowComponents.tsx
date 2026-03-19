@@ -1,11 +1,12 @@
-import { Suspense, useMemo } from 'react'
+import { useMemo } from 'react'
 import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
 import {
   PayrollExecutionFlow,
   type PayrollExecutionFlowProps,
 } from '../PayrollExecutionFlow/PayrollExecutionFlow'
-import { TransitionCreation } from './TransitionCreation'
+import { TransitionCreation } from '../TransitionCreation'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
+import { BaseComponent } from '@/components/Base/Base'
 import type { OnEventType } from '@/components/Base/useBase'
 import type { EventType } from '@/shared/constants'
 import { ensureRequired } from '@/helpers/ensureRequired'
@@ -52,14 +53,14 @@ export function TransitionExecutionContextual() {
   const resolvedPayrollId = ensureRequired(payrollUuid)
 
   return (
-    <Suspense>
+    <BaseComponent onEvent={onEvent}>
       <TransitionExecutionWithData
         companyId={resolvedCompanyId}
         payrollId={resolvedPayrollId}
         onEvent={onEvent}
         prefixBreadcrumbs={prefixBreadcrumbs}
       />
-    </Suspense>
+    </BaseComponent>
   )
 }
 
