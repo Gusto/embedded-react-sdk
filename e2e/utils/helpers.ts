@@ -59,6 +59,42 @@ export async function waitForLoadingComplete(page: Page, timeout = 60000) {
   throw new Error(`Loading did not complete within ${timeout}ms`)
 }
 
+export async function skipPendingPayrolls(config: { flowToken: string; companyId: string }) {
+  const gwsFlowsHost = process.env.E2E_GWS_FLOWS_HOST || 'https://flows.gusto-demo.com'
+  const base = `${gwsFlowsHost}/fe_sdk/${config.flowToken}/v1`
+
+  let payrolls: Array<{
+    pay_period: { start_date: string; end_date: string; pay_schedule_uuid: string }
+    payroll_type?: string
+  }>
+  try {
+    const listResponse = await fetch(
+      `${base}/companies/${config.companyId}/payrolls?processing_statuses=unprocessed`,
+    )
+    if (!listResponse.ok) return
+    payrolls = await listResponse.json()
+  } catch {
+    return
+  }
+
+  for (const payroll of payrolls) {
+    try {
+      await fetch(`${base}/companies/${config.companyId}/payrolls/skip`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          payroll_type: payroll.payroll_type ?? 'Regular',
+          start_date: payroll.pay_period.start_date,
+          end_date: payroll.pay_period.end_date,
+          pay_schedule_uuid: payroll.pay_period.pay_schedule_uuid,
+        }),
+      })
+    } catch {
+      // continue skipping remaining payrolls
+    }
+  }
+}
+
 export async function waitForContentOrLoading(
   page: Page,
   contentLocator: ReturnType<Page['getByRole']>,

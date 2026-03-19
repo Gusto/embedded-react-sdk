@@ -1,14 +1,22 @@
 import { test, expect } from '../utils/localTestFixture'
-import { waitForLoadingComplete } from '../utils/helpers'
+import { waitForLoadingComplete, skipPendingPayrolls } from '../utils/helpers'
 
 test.describe('DismissalFlow', () => {
+  test.beforeEach(({ localConfig }) => {
+    test.skip(
+      localConfig.isLocal && !localConfig.terminatedEmployeeId,
+      'Dismissal setup failed — no terminated employee available',
+    )
+  })
+
   test.describe('pay period selection', () => {
     test('displays the pay period selection page with options and breadcrumb', async ({
       page,
       localConfig,
     }) => {
+      const companyId = localConfig.isLocal ? localConfig.dismissalCompanyId : '123'
       await page.goto(
-        `/?flow=dismissal&companyId=123&employeeId=${localConfig.terminatedEmployeeId}`,
+        `/?flow=dismissal&companyId=${companyId}&employeeId=${localConfig.terminatedEmployeeId}`,
       )
 
       await waitForLoadingComplete(page)
@@ -29,8 +37,9 @@ test.describe('DismissalFlow', () => {
     })
 
     test('continue button enables after selecting a pay period', async ({ page, localConfig }) => {
+      const companyId = localConfig.isLocal ? localConfig.dismissalCompanyId : '123'
       await page.goto(
-        `/?flow=dismissal&companyId=123&employeeId=${localConfig.terminatedEmployeeId}`,
+        `/?flow=dismissal&companyId=${companyId}&employeeId=${localConfig.terminatedEmployeeId}`,
       )
 
       await waitForLoadingComplete(page)
@@ -48,8 +57,9 @@ test.describe('DismissalFlow', () => {
     })
 
     test('pay period dropdown contains date ranges', async ({ page, localConfig }) => {
+      const companyId = localConfig.isLocal ? localConfig.dismissalCompanyId : '123'
       await page.goto(
-        `/?flow=dismissal&companyId=123&employeeId=${localConfig.terminatedEmployeeId}`,
+        `/?flow=dismissal&companyId=${companyId}&employeeId=${localConfig.terminatedEmployeeId}`,
       )
 
       await waitForLoadingComplete(page)
@@ -73,11 +83,17 @@ test.describe('DismissalFlow', () => {
       page,
       localConfig,
     }) => {
+      const companyId = localConfig.isLocal ? localConfig.dismissalCompanyId : '123'
+      // For real API: uses an employee from the primary company who has no termination pay
+      // periods in the dismissal company, producing an empty filtered result.
+      // For mocks: uses a nonexistent ID so the mock returns no matching periods.
       const nonTerminatedEmployeeId = localConfig.isLocal
         ? localConfig.employeeId
         : 'non-existent-employee'
 
-      await page.goto(`/?flow=dismissal&companyId=123&employeeId=${nonTerminatedEmployeeId}`)
+      await page.goto(
+        `/?flow=dismissal&companyId=${companyId}&employeeId=${nonTerminatedEmployeeId}`,
+      )
 
       await waitForLoadingComplete(page)
 
@@ -97,6 +113,7 @@ test.describe('DismissalFlow', () => {
       const isRealApi = localConfig.isLocal
       test.setTimeout(isRealApi ? 600_000 : 120_000)
       const stepTimeout = isRealApi ? 300_000 : 30_000
+      const companyId = isRealApi ? localConfig.dismissalCompanyId : '123'
 
       if (isRealApi) {
         await skipPendingPayrolls({
@@ -106,7 +123,7 @@ test.describe('DismissalFlow', () => {
       }
 
       await page.goto(
-        `/?flow=dismissal&companyId=123&employeeId=${localConfig.terminatedEmployeeId}`,
+        `/?flow=dismissal&companyId=${companyId}&employeeId=${localConfig.terminatedEmployeeId}`,
       )
       await waitForLoadingComplete(page)
 
@@ -185,6 +202,7 @@ test.describe('DismissalFlow', () => {
       await page.goto(
         `/?flow=dismissal&companyId=123&employeeId=${localConfig.terminatedEmployeeId}`,
       )
+      // This test is skipped for real API, so companyId=123 is fine (MSW only)
       await waitForLoadingComplete(page)
 
       await expect(page.getByRole('heading', { name: /run dismissal payroll/i })).toBeVisible({
@@ -205,39 +223,3 @@ test.describe('DismissalFlow', () => {
     })
   })
 })
-
-async function skipPendingPayrolls(localConfig: { flowToken: string; companyId: string }) {
-  const gwsFlowsHost = process.env.E2E_GWS_FLOWS_HOST || 'https://flows.gusto-demo.com'
-  const base = `${gwsFlowsHost}/fe_sdk/${localConfig.flowToken}/v1`
-
-  let payrolls: Array<{
-    pay_period: { start_date: string; end_date: string; pay_schedule_uuid: string }
-    payroll_type?: string
-  }>
-  try {
-    const listResponse = await fetch(
-      `${base}/companies/${localConfig.companyId}/payrolls?processing_statuses=unprocessed`,
-    )
-    if (!listResponse.ok) return
-    payrolls = await listResponse.json()
-  } catch {
-    return
-  }
-
-  for (const payroll of payrolls) {
-    try {
-      await fetch(`${base}/companies/${localConfig.companyId}/payrolls/skip`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          payroll_type: payroll.payroll_type ?? 'Regular',
-          start_date: payroll.pay_period.start_date,
-          end_date: payroll.pay_period.end_date,
-          pay_schedule_uuid: payroll.pay_period.pay_schedule_uuid,
-        }),
-      })
-    } catch {
-      // continue skipping remaining payrolls
-    }
-  }
-}

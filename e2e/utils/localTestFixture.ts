@@ -67,7 +67,9 @@ export const test = base.extend<{ localConfig: LocalConfig }>({
       const params = parsedUrl.searchParams
 
       const isDismissalFlow = params.get('flow') === 'dismissal'
-      const hasDismissalCompany = localConfig.dismissalCompanyId && localConfig.dismissalFlowToken
+      const hasDismissalCompany = Boolean(
+        localConfig.dismissalCompanyId && localConfig.dismissalFlowToken,
+      )
 
       if (localConfig.isLocal) {
         const flowToken =
