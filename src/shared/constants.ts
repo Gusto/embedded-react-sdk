@@ -195,9 +195,6 @@ export const recoveryCasesEvents = {
 
 export const offCycleEvents = {
   OFF_CYCLE_CREATED: 'offCycle/created',
-} as const
-
-export const dismissalEvents = {
   DISMISSAL_PAY_PERIOD_SELECTED: 'dismissal/payPeriod/selected',
 } as const
 
@@ -216,7 +213,6 @@ export const componentEvents = {
   ...recoveryCasesEvents,
   ...contractorPaymentEvents,
   ...offCycleEvents,
-  ...dismissalEvents,
 } as const
 
 export type EventType = (typeof componentEvents)[keyof typeof componentEvents]
