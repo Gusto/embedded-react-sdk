@@ -118,7 +118,7 @@ export const BaseLayout = ({ children, error }: BaseLayoutProps) => {
             </Components.Text>
           )}
           {!hasFieldErrors && error.category !== 'validation_error' && (
-            <Components.Text>{t('errors.unknownError')}</Components.Text>
+            <Components.Text>{error.message || t('errors.unknownError')}</Components.Text>
           )}
         </Components.Alert>
       )}
