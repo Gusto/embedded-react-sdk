@@ -1,7 +1,7 @@
-import type { OffCycleTaxWithholdingConfig } from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
+import type { OffCycleTaxWithholdingConfig } from '../../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 
-export interface TransitionCreationProps extends BaseComponentInterface<'Payroll.TransitionCreation'> {
+export interface TransitionCreationProps extends BaseComponentInterface<'Payroll.Transition'> {
   companyId: string
   startDate: string
   endDate: string

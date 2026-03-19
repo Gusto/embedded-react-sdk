@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { OffCycleTaxWithholdingTable } from '../OffCycleTaxWithholdingTable'
-import { OffCycleTaxWithholdingModal } from '../OffCycleTaxWithholdingModal'
+import { OffCycleTaxWithholdingTable } from '../../OffCycleTaxWithholdingTable'
+import { OffCycleTaxWithholdingModal } from '../../OffCycleTaxWithholdingModal'
 import {
   WAGE_TYPE_CATEGORIES,
   type WageTypeGroup,
-} from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
+} from '../../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
 import type { TransitionCreationPresentationProps } from './TransitionCreationTypes'
 import { useI18n } from '@/i18n'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -23,10 +23,10 @@ export function TransitionCreationPresentation({
   onTaxWithholdingModalDone,
   onTaxWithholdingModalCancel,
 }: TransitionCreationPresentationProps) {
-  useI18n('Payroll.TransitionCreation')
+  useI18n('Payroll.Transition')
   useI18n('Payroll.OffCycleDeductionsSetting')
   useI18n('Payroll.OffCycleTaxWithholding')
-  const { t } = useTranslation('Payroll.TransitionCreation')
+  const { t } = useTranslation('Payroll.Transition')
   const { t: tDeductions } = useTranslation('Payroll.OffCycleDeductionsSetting')
   const { t: tWithholding } = useTranslation('Payroll.OffCycleTaxWithholding')
   const { Heading, Text, Alert, Button } = useComponentContext()

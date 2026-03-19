@@ -10,8 +10,8 @@ import {
 } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
-import { useOffCyclePayPeriodDateValidation } from '../OffCyclePayPeriodDateForm/useOffCyclePayPeriodDateValidation'
-import type { OffCycleTaxWithholdingConfig } from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
+import { useOffCyclePayPeriodDateValidation } from '../../OffCyclePayPeriodDateForm/useOffCyclePayPeriodDateValidation'
+import type { OffCycleTaxWithholdingConfig } from '../../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
 import type { TransitionCreationProps, TransitionCreationFormData } from './TransitionCreationTypes'
 import { TransitionCreationPresentation } from './TransitionCreationPresentation'
 import { BaseComponent } from '@/components/Base/Base'
@@ -35,12 +35,12 @@ function Root({
   endDate,
   payScheduleUuid,
 }: TransitionCreationProps) {
-  useComponentDictionary('Payroll.TransitionCreation', dictionary)
-  useI18n('Payroll.TransitionCreation')
+  useComponentDictionary('Payroll.Transition', dictionary)
+  useI18n('Payroll.Transition')
   useI18n('Payroll.OffCycleDeductionsSetting')
   useI18n('Payroll.OffCycleTaxWithholding')
 
-  const { t } = useTranslation('Payroll.TransitionCreation')
+  const { t } = useTranslation('Payroll.Transition')
   const { onEvent, baseSubmitHandler } = useBase()
 
   const { minCheckDate } = useOffCyclePayPeriodDateValidation()
