@@ -106,7 +106,7 @@ describe('TransitionPayrollAlertPresentation', () => {
       await screen.findByText('Transition payroll')
       expect(screen.queryByText('Weekly Schedule')).not.toBeInTheDocument()
 
-      const showButton = screen.getByRole('button', { name: 'Show payrolls' })
+      const showButton = screen.getByRole('button', { name: /show payrolls/i })
       await user.click(showButton)
 
       expect(screen.getByText('Weekly Schedule')).toBeInTheDocument()
@@ -128,7 +128,7 @@ describe('TransitionPayrollAlertPresentation', () => {
 
       await screen.findByText('Transition payroll')
 
-      const showButton = screen.getByRole('button', { name: 'Show payrolls' })
+      const showButton = screen.getByRole('button', { name: /show payrolls/i })
       await user.click(showButton)
 
       expect(screen.getByText('Weekly Schedule')).toBeInTheDocument()
@@ -154,7 +154,7 @@ describe('TransitionPayrollAlertPresentation', () => {
 
       await screen.findByText('Transition payroll')
 
-      const showButton = screen.getByRole('button', { name: 'Show payrolls' })
+      const showButton = screen.getByRole('button', { name: /show payrolls/i })
       await user.click(showButton)
 
       const runButton = screen.getByRole('button', { name: /Run.*payroll/i })
@@ -179,10 +179,10 @@ describe('TransitionPayrollAlertPresentation', () => {
 
       await screen.findByText('Transition payroll')
 
-      const showButton = screen.getByRole('button', { name: 'Show payrolls' })
+      const showButton = screen.getByRole('button', { name: /show payrolls/i })
       await user.click(showButton)
 
-      expect(screen.getByRole('button', { name: 'Skip this payroll' })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /skip this payroll/i })).toBeInTheDocument()
     })
   })
 

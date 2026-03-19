@@ -1,5 +1,5 @@
 import { useMemo, useState, useCallback } from 'react'
-import { usePaySchedulesGetPayPeriods } from '@gusto/embedded-api/react-query/paySchedulesGetPayPeriods'
+import { usePaySchedulesGetPayPeriodsSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetPayPeriods'
 import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
 import { usePayrollsSkipMutation } from '@gusto/embedded-api/react-query/payrollsSkip'
 import { PayrollType } from '@gusto/embedded-api/models/operations/postcompaniespayrollskipcompanyuuid'
@@ -7,6 +7,8 @@ import { PayrollTypes } from '@gusto/embedded-api/models/operations/getv1compani
 import type { PayPeriod } from '@gusto/embedded-api/models/components/payperiod'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { TransitionPayrollAlertPresentation } from './TransitionPayrollAlertPresentation'
+import { BaseComponent } from '@/components/Base/Base'
+import { useBase } from '@/components/Base/useBase'
 import type { OnEventType } from '@/components/Base/useBase'
 import type { EventType } from '@/shared/constants'
 import { componentEvents } from '@/shared/constants'
@@ -18,20 +20,30 @@ interface TransitionPayrollAlertProps {
 
 const LOOK_AHEAD_DAYS = 90
 
-function getEndDate(): RFCDate {
+const lookAheadEndDate = (() => {
   const date = new Date()
   date.setDate(date.getDate() + LOOK_AHEAD_DAYS)
   return new RFCDate(date)
+})()
+
+export function TransitionPayrollAlert(props: TransitionPayrollAlertProps) {
+  return (
+    <BaseComponent onEvent={props.onEvent}>
+      <Root {...props} />
+    </BaseComponent>
+  )
 }
 
-export function TransitionPayrollAlert({ companyId, onEvent }: TransitionPayrollAlertProps) {
+function Root({ companyId }: TransitionPayrollAlertProps) {
+  const { onEvent, baseSubmitHandler } = useBase()
+
   const [showSkipSuccessAlert, setShowSkipSuccessAlert] = useState(false)
   const [skippingPayPeriod, setSkippingPayPeriod] = useState<PayPeriod | null>(null)
 
-  const { data: payPeriodsData } = usePaySchedulesGetPayPeriods({
+  const { data: payPeriodsData } = usePaySchedulesGetPayPeriodsSuspense({
     companyId,
     payrollTypes: PayrollTypes.Transition,
-    endDate: getEndDate(),
+    endDate: lookAheadEndDate,
   })
 
   const { data: paySchedulesData } = usePaySchedulesGetAllSuspense({ companyId })
@@ -40,7 +52,7 @@ export function TransitionPayrollAlert({ companyId, onEvent }: TransitionPayroll
   const { mutateAsync: skipPayroll } = usePayrollsSkipMutation()
 
   const unprocessedTransitionPeriods = useMemo(() => {
-    const periods = payPeriodsData?.payPeriods ?? []
+    const periods = payPeriodsData.payPeriods ?? []
     return periods.filter((pp: PayPeriod) => !pp.payroll?.processed)
   }, [payPeriodsData])
 
@@ -76,7 +88,7 @@ export function TransitionPayrollAlert({ companyId, onEvent }: TransitionPayroll
   const handleSkipPayroll = useCallback(
     async (payPeriod: PayPeriod) => {
       setSkippingPayPeriod(payPeriod)
-      try {
+      await baseSubmitHandler({}, async () => {
         await skipPayroll({
           request: {
             companyUuid: companyId,
@@ -94,12 +106,15 @@ export function TransitionPayrollAlert({ companyId, onEvent }: TransitionPayroll
           endDate: payPeriod.endDate,
           payScheduleUuid: payPeriod.payScheduleUuid,
         })
-      } finally {
-        setSkippingPayPeriod(null)
-      }
+      })
+      setSkippingPayPeriod(null)
     },
-    [companyId, skipPayroll, onEvent],
+    [companyId, skipPayroll, onEvent, baseSubmitHandler],
   )
+
+  const handleDismissSkipSuccessAlert = useCallback(() => {
+    setShowSkipSuccessAlert(false)
+  }, [])
 
   if (groupedPayPeriods.length === 0) {
     return null
@@ -111,9 +126,7 @@ export function TransitionPayrollAlert({ companyId, onEvent }: TransitionPayroll
       onRunPayroll={handleRunPayroll}
       onSkipPayroll={handleSkipPayroll}
       showSkipSuccessAlert={showSkipSuccessAlert}
-      onDismissSkipSuccessAlert={() => {
-        setShowSkipSuccessAlert(false)
-      }}
+      onDismissSkipSuccessAlert={handleDismissSkipSuccessAlert}
       skippingPayPeriod={skippingPayPeriod}
     />
   )

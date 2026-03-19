@@ -66,18 +66,20 @@ export function TransitionPayrollAlertPresentation({
               setIsExpanded(prev => !prev)
             }}
           >
-            {t('showPayrolls')}
+            {isExpanded ? t('hidePayrolls') : t('showPayrolls')}
           </Button>
           {isExpanded && (
             <Flex flexDirection="column" gap={16}>
-              {groupedPayPeriods.map(group => (
-                <Flex key={group.payScheduleUuid} flexDirection="column" gap={8}>
+              {groupedPayPeriods.map((group, groupIndex) => (
+                <Flex
+                  key={group.payScheduleUuid || `group-${groupIndex}`}
+                  flexDirection="column"
+                  gap={8}
+                >
                   <Text weight="semibold">{group.payScheduleName}</Text>
                   {group.payPeriods.map(payPeriod => {
                     const dateRange = formatDateRange(payPeriod)
-                    const isSkipping =
-                      skippingPayPeriod?.startDate === payPeriod.startDate &&
-                      skippingPayPeriod?.payScheduleUuid === payPeriod.payScheduleUuid
+                    const isSkipping = skippingPayPeriod === payPeriod
 
                     return (
                       <Flex

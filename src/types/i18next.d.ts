@@ -2232,6 +2232,7 @@ export interface PayrollTransitionPayrollAlert{
 "alertTitle":string;
 "alertDescription":string;
 "showPayrolls":string;
+"hidePayrolls":string;
 "runPayroll":string;
 "skipPayroll":string;
 "skipSuccessAlert":string;
