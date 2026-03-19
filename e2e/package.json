@@ -1,0 +1,8 @@
+{
+  "name": "embedded-react-sdk-e2e",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@gusto/embedded-react-sdk": "file:gusto-embedded-react-sdk-0.36.0.tgz"
+  }
+}

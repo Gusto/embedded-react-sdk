@@ -1,4 +1,4 @@
 export const getFixture = async (path: string) => {
-  const module = await import(`./${path}.json`)
+  const module = await import(`./data/${path}.json`)
   return module.default
 }

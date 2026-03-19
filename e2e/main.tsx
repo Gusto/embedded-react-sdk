@@ -1,13 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { GustoProvider } from '@/contexts'
-import { OnboardingFlow } from '@/components/Employee/OnboardingFlow/OnboardingFlow'
-import { SelfOnboardingFlow } from '@/components/Employee/SelfOnboardingFlow/SelfOnboardingFlow'
-import { OnboardingFlow as CompanyOnboardingFlow } from '@/components/Company/OnboardingFlow/OnboardingFlow'
-import { OnboardingFlow as ContractorOnboardingFlow } from '@/components/Contractor/OnboardingFlow/OnboardingFlow'
-import { PayrollFlow } from '@/components/Payroll/PayrollFlow/PayrollFlow'
-import { PaymentFlow } from '@/components/Contractor/Payments/PaymentFlow/PaymentFlow'
-import '@/styles/sdk.scss'
+import { GustoProvider, Employee, Company, Contractor, Payroll } from '@gusto/embedded-react-sdk'
+import '@gusto/embedded-react-sdk/style.css'
 
 const DEFAULT_API_BASE_URL = 'https://api.gusto.com'
 
@@ -52,19 +46,23 @@ function FlowRenderer({ config }: { config: E2EConfig }) {
 
   switch (flow) {
     case 'employee-onboarding':
-      return <OnboardingFlow companyId={companyId} onEvent={handleEvent} />
+      return <Employee.OnboardingFlow companyId={companyId} onEvent={handleEvent} />
     case 'employee-self-onboarding':
       return (
-        <SelfOnboardingFlow companyId={companyId} employeeId={employeeId} onEvent={handleEvent} />
+        <Employee.SelfOnboardingFlow
+          companyId={companyId}
+          employeeId={employeeId}
+          onEvent={handleEvent}
+        />
       )
     case 'company-onboarding':
-      return <CompanyOnboardingFlow companyId={companyId} onEvent={handleEvent} />
+      return <Company.OnboardingFlow companyId={companyId} onEvent={handleEvent} />
     case 'contractor-onboarding':
-      return <ContractorOnboardingFlow companyId={companyId} onEvent={handleEvent} />
+      return <Contractor.OnboardingFlow companyId={companyId} onEvent={handleEvent} />
     case 'payroll':
-      return <PayrollFlow companyId={companyId} onEvent={handleEvent} />
+      return <Payroll.PayrollFlow companyId={companyId} onEvent={handleEvent} />
     case 'contractor-payment':
-      return <PaymentFlow companyId={companyId} onEvent={handleEvent} />
+      return <Contractor.PaymentFlow companyId={companyId} onEvent={handleEvent} />
     default:
       return <div>Unknown flow: {flow}</div>
   }

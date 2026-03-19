@@ -197,6 +197,9 @@ test-results/
 # E2E local testing
 e2e/.e2e-state.json
 e2e/local.config.env
+e2e/node_modules/
+e2e/package-lock.json
+e2e/*.tgz
 
 # MSW generated service worker
 mockServiceWorker.js

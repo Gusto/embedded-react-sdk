@@ -172,12 +172,11 @@ jobs:
       - name: Test with coverage
         run: npm run test:ci
 
-  # E2E job: Run Playwright e2e tests (parallel with other checks)
+  # E2E job: Run Playwright e2e tests against a production build (parallel with other checks)
   e2e:
     needs: setup
     runs-on:
       group: gusto-ubuntu-default
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
 
@@ -208,8 +207,17 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps chromium
 
+      - name: Build SDK
+        run: npm run i18n:generate && npx vite build
+
+      - name: Install SDK into e2e
+        run: npm run e2e:install-sdk
+
       - name: Initialize MSW
         run: npx msw init e2e/public --save=false
+
+      - name: Build e2e app
+        run: npm run e2e:build
 
       - name: Run e2e tests
         run: npm run test:e2e
@@ -227,7 +235,6 @@ jobs:
     needs: setup
     runs-on:
       group: gusto-ubuntu-default
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
 
@@ -257,6 +264,15 @@ jobs:
       - name: Install Playwright system dependencies only
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps chromium
+
+      - name: Build SDK
+        run: npm run i18n:generate && npx vite build
+
+      - name: Install SDK into e2e
+        run: npm run e2e:install-sdk
+
+      - name: Build e2e app
+        run: npm run e2e:build
 
       - name: Run e2e tests against demo environment
         run: npm run test:e2e:demo
