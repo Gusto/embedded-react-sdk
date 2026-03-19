@@ -1503,6 +1503,8 @@ export interface PayrollDismissal{
 "emptyState":string;
 "errors":{
 "missingPayrollId":string;
+"noPayPeriodSelected":string;
+"invalidPayPeriod":string;
 };
 };
 export interface PayrollEmployeeSelection{

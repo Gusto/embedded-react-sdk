@@ -17,13 +17,21 @@ export const PayrollCategory = {
 
 export type PayrollCategory = (typeof PayrollCategory)[keyof typeof PayrollCategory]
 
+const VALID_PAYROLL_CATEGORIES = new Set<string>(Object.values(PayrollCategory))
+
 export function derivePayrollCategory(payroll: {
   offCycle?: boolean
   offCycleReason?: string | null
   external?: boolean
 }): PayrollCategory {
   if (payroll.external) return PayrollCategory.External
-  if (payroll.offCycle && payroll.offCycleReason) return payroll.offCycleReason as PayrollCategory
+  if (
+    payroll.offCycle &&
+    payroll.offCycleReason &&
+    VALID_PAYROLL_CATEGORIES.has(payroll.offCycleReason)
+  ) {
+    return payroll.offCycleReason as PayrollCategory
+  }
   return PayrollCategory.Regular
 }
 

@@ -1,4 +1,4 @@
-import { Suspense, useMemo } from 'react'
+import { useMemo } from 'react'
 import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
 import {
   PayrollExecutionFlow,
@@ -9,6 +9,7 @@ import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { OnEventType } from '@/components/Base/useBase'
 import type { EventType } from '@/shared/constants'
 import { ensureRequired } from '@/helpers/ensureRequired'
+import { BaseComponent } from '@/components/Base/Base'
 
 export interface DismissalFlowContextInterface extends FlowContextInterface {
   companyId: string
@@ -46,14 +47,14 @@ export function DismissalExecutionContextual() {
   const resolvedPayrollId = ensureRequired(payrollUuid)
 
   return (
-    <Suspense>
+    <BaseComponent onEvent={onEvent}>
       <DismissalExecutionWithData
         companyId={resolvedCompanyId}
         payrollId={resolvedPayrollId}
         onEvent={onEvent}
         prefixBreadcrumbs={prefixBreadcrumbs}
       />
-    </Suspense>
+    </BaseComponent>
   )
 }
 

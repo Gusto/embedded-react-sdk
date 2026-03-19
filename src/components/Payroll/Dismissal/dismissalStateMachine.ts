@@ -8,24 +8,6 @@ import { componentEvents } from '@/shared/constants'
 import type { MachineTransition } from '@/types/Helpers'
 import type { BreadcrumbNodes } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
 
-export const dismissalBreadcrumbsNodes: BreadcrumbNodes = {
-  payPeriodSelection: {
-    parent: null,
-    item: {
-      id: 'payPeriodSelection',
-      label: 'breadcrumbLabel',
-      namespace: 'Payroll.Dismissal',
-      onNavigate: ((ctx: DismissalFlowContextInterface) => ({
-        ...ctx,
-        component: DismissalPayPeriodSelectionContextual,
-        payrollUuid: undefined,
-        currentBreadcrumbId: 'payPeriodSelection',
-        progressBarType: 'breadcrumbs',
-      })) as (context: unknown) => unknown,
-    },
-  },
-}
-
 function toPayPeriodSelectionReducer(
   ctx: DismissalFlowContextInterface,
 ): DismissalFlowContextInterface {
@@ -36,6 +18,18 @@ function toPayPeriodSelectionReducer(
     currentBreadcrumbId: 'payPeriodSelection',
     progressBarType: 'breadcrumbs',
   }
+}
+
+export const dismissalBreadcrumbsNodes: BreadcrumbNodes = {
+  payPeriodSelection: {
+    parent: null,
+    item: {
+      id: 'payPeriodSelection',
+      label: 'breadcrumbLabel',
+      namespace: 'Payroll.Dismissal',
+      onNavigate: toPayPeriodSelectionReducer as (context: unknown) => unknown,
+    },
+  },
 }
 
 const payPeriodSelectionBreadcrumbTransition = transition(

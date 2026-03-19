@@ -66,12 +66,16 @@ function Root({ companyId, employeeId, dictionary }: DismissalPayPeriodSelection
   )
 
   const handleSubmit = async () => {
-    if (selectedPeriodIndex === undefined) return
-
-    const period = employeePayPeriods[Number(selectedPeriodIndex)]
-    if (!period) return
-
     await baseSubmitHandler({ selectedPeriodIndex }, async () => {
+      if (selectedPeriodIndex === undefined) {
+        throw new Error(t('errors.noPayPeriodSelected'))
+      }
+
+      const period = employeePayPeriods[Number(selectedPeriodIndex)]
+      if (!period) {
+        throw new Error(t('errors.invalidPayPeriod'))
+      }
+
       const response = await createOffCyclePayroll({
         request: {
           companyId,
