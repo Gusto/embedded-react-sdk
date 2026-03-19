@@ -1023,19 +1023,7 @@
         "recoveryCaseUuid"
       ]
     },
-    "Payroll.TransitionFlow": {
-      "endpoints": [
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/payrolls/:payrollId"
-        }
-      ],
-      "variables": [
-        "companyId",
-        "payrollId"
-      ]
-    },
-    "Payroll.Transition": {
+    "Payroll.TransitionCreation": {
       "endpoints": [
         {
           "method": "POST",
@@ -1044,10 +1032,15 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/pay_schedules"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/payrolls/:payrollId"
         }
       ],
       "variables": [
-        "companyId"
+        "companyId",
+        "payrollId"
       ]
     },
     "Payroll.UNSTABLE_PayrollHooks": {

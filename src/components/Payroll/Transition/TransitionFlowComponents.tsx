@@ -1,10 +1,10 @@
 import { Suspense, useMemo } from 'react'
 import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
-import { TransitionCreation } from './TransitionCreation'
 import {
   PayrollExecutionFlow,
   type PayrollExecutionFlowProps,
 } from '../PayrollExecutionFlow/PayrollExecutionFlow'
+import { TransitionCreation } from './TransitionCreation'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { OnEventType } from '@/components/Base/useBase'
 import type { EventType } from '@/shared/constants'
