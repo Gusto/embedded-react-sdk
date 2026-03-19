@@ -29,7 +29,11 @@ function extractFlowTokenFromContent(pageContent: string): string {
   return ''
 }
 
-async function extractTokenFromPage(): Promise<TokenInfo> {
+export async function createFreshDemo(flowType: string = 'react_sdk_demo'): Promise<TokenInfo> {
+  return extractTokenFromPage(flowType)
+}
+
+async function extractTokenFromPage(flowType: string = 'react_sdk_demo'): Promise<TokenInfo> {
   console.log('🔄 Launching browser to get fresh token from GWS-Flows...')
 
   const browser = await chromium.launch({ headless: true })
@@ -40,7 +44,7 @@ async function extractTokenFromPage(): Promise<TokenInfo> {
     await page.goto(DEMO_URL, { waitUntil: 'networkidle' })
 
     const flowTypeSelect = page.locator('#demo_flow_type')
-    await flowTypeSelect.selectOption('react_sdk_demo')
+    await flowTypeSelect.selectOption(flowType)
 
     await page.waitForTimeout(500)
 
@@ -160,7 +164,6 @@ async function extractTokenFromPage(): Promise<TokenInfo> {
       throw new Error(`Could not find company ID from ${GWS_FLOWS_BASE}`)
     }
 
-    console.log(`✅ Got flow token: ${flowToken.slice(0, 15)}...`)
     console.log(`✅ Got company ID: ${companyId}`)
 
     return { flowToken, companyId }

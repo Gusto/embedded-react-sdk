@@ -2,7 +2,7 @@ import { resolve } from 'path'
 import { resolve as dnsResolve } from 'dns/promises'
 import { existsSync, writeFileSync } from 'fs'
 import * as dotenv from 'dotenv'
-import { refreshTokenIfNeeded } from './scripts/refreshToken'
+import { refreshTokenIfNeeded, createFreshDemo } from './scripts/refreshToken'
 
 const localEnvPath = resolve(process.cwd(), 'e2e/local.config.env')
 if (existsSync(localEnvPath)) {
@@ -116,6 +116,9 @@ interface E2EState {
   employeeId: string
   contractorId: string
   locationId: string
+  dismissalCompanyId: string
+  dismissalFlowToken: string
+  terminatedEmployeeId: string
 }
 
 interface Employee {
@@ -123,6 +126,8 @@ interface Employee {
   first_name: string
   last_name: string
   email?: string
+  version?: string
+  date_of_birth?: string | null
 }
 
 interface Contractor {
@@ -136,10 +141,30 @@ interface Location {
   street_1: string
   city: string
   state: string
+  filing_address?: boolean
+  mailing_address?: boolean
+  version?: string
 }
 
-interface ApiError {
-  errors?: Array<{ message: string }>
+interface Compensation {
+  uuid: string
+  version: string
+  rate: string
+  payment_unit: string
+}
+
+interface Job {
+  uuid: string
+  title: string
+  hire_date: string
+  compensations: Compensation[]
+}
+
+interface Termination {
+  uuid: string
+  employee_uuid: string
+  effective_date: string
+  run_termination_payroll: boolean
 }
 
 async function fetchFromApi<T>(endpoint: string): Promise<T> {
@@ -159,6 +184,19 @@ async function postToApi<T>(endpoint: string, data: Record<string, unknown>): Pr
   if (!response.ok) {
     const errorText = await response.text()
     throw new Error(`API POST failed: ${response.status} ${response.statusText} - ${errorText}`)
+  }
+  return response.json()
+}
+
+async function putToApi<T>(endpoint: string, data: Record<string, unknown>): Promise<T> {
+  const response = await fetch(`${GWS_FLOWS_BASE}${endpoint}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  })
+  if (!response.ok) {
+    const errorText = await response.text()
+    throw new Error(`API PUT failed: ${response.status} ${response.statusText} - ${errorText}`)
   }
   return response.json()
 }
@@ -184,7 +222,11 @@ async function getOrCreateLocation(flowToken: string, companyId: string): Promis
   return newLocation.uuid
 }
 
-async function getOrCreateEmployee(flowToken: string, companyId: string): Promise<string> {
+async function getOrCreateEmployee(
+  flowToken: string,
+  companyId: string,
+  locationId?: string,
+): Promise<string> {
   const endpoint = `/fe_sdk/${flowToken}/v1/companies/${companyId}/employees`
   const employees = await fetchFromApi<Employee[]>(endpoint)
 
@@ -201,6 +243,60 @@ async function getOrCreateEmployee(flowToken: string, companyId: string): Promis
     email: `e2e.test.${timestamp}@example.com`,
   })
   console.log(`Created employee: ${newEmployee.first_name} ${newEmployee.last_name}`)
+
+  const threeDaysAgo = new Date()
+  threeDaysAgo.setDate(threeDaysAgo.getDate() - 3)
+  const hireDate = threeDaysAgo.toISOString().split('T')[0]
+
+  const base = `/fe_sdk/${flowToken}/v1`
+  try {
+    console.log(`Setting up employee job (hire date: ${hireDate})...`)
+    const job = await postToApi<Job>(`${base}/employees/${newEmployee.uuid}/jobs`, {
+      title: 'E2E Test Position',
+      hire_date: hireDate,
+    })
+
+    if (job.compensations?.length > 0) {
+      const comp = job.compensations[0]
+      await putToApi<Compensation>(`${base}/compensations/${comp.uuid}`, {
+        version: comp.version,
+        rate: '60000.00',
+        payment_unit: 'Year',
+        flsa_status: 'Exempt',
+      })
+    }
+  } catch (error) {
+    console.log(`Employee job setup: ${error instanceof Error ? error.message : 'failed'}`)
+  }
+
+  try {
+    console.log('Setting up employee personal details...')
+    const empDetail = await fetchFromApi<Employee>(`${base}/employees/${newEmployee.uuid}`)
+
+    await putToApi<unknown>(`${base}/employees/${newEmployee.uuid}`, {
+      version: empDetail.version,
+      date_of_birth: '1990-05-15',
+      ssn: '123-45-6789',
+    })
+
+    await postToApi<unknown>(`${base}/employees/${newEmployee.uuid}/home_addresses`, {
+      street_1: '525 20th Street',
+      city: 'San Francisco',
+      state: 'CA',
+      zip: '94107',
+    })
+
+    if (locationId) {
+      await postToApi<unknown>(`${base}/employees/${newEmployee.uuid}/work_addresses`, {
+        location_uuid: locationId,
+      })
+    }
+
+    console.log('Employee personal details configured')
+  } catch (error) {
+    console.log(`Employee details setup: ${error instanceof Error ? error.message : 'failed'}`)
+  }
+
   return newEmployee.uuid
 }
 
@@ -228,6 +324,23 @@ async function getOrCreateContractor(flowToken: string, companyId: string): Prom
   return newContractor.uuid
 }
 
+async function logRemainingBlockers(flowToken: string, companyId: string): Promise<void> {
+  const base = `/fe_sdk/${flowToken}/v1`
+  try {
+    const blockers = await fetchFromApi<Array<{ key: string; message: string }>>(
+      `${base}/companies/${companyId}/payrolls/blockers`,
+    )
+    if (blockers.length > 0) {
+      console.log(`Remaining payroll blockers (${blockers.length}):`)
+      blockers.forEach(b => console.log(`  - ${b.key}: ${b.message}`))
+    } else {
+      console.log('No payroll blockers remaining')
+    }
+  } catch {
+    console.log('Could not check payroll blockers')
+  }
+}
+
 export default async function globalSetup() {
   const isRealApi = process.env.E2E_LOCAL === 'true'
 
@@ -245,8 +358,8 @@ export default async function globalSetup() {
   const flowToken = tokenInfo.flowToken
   const companyId = tokenInfo.companyId
 
-  console.log(`Company ID: ${companyId}`)
-  console.log(`Flow Token: ${flowToken.slice(0, 10)}...`)
+  console.log(`Primary Company ID: ${companyId}`)
+  console.log(`Primary Flow Token: ${flowToken.slice(0, 10)}...`)
 
   let locationId = ''
   let employeeId = ''
@@ -260,7 +373,7 @@ export default async function globalSetup() {
   }
 
   try {
-    employeeId = await getOrCreateEmployee(flowToken, companyId)
+    employeeId = await getOrCreateEmployee(flowToken, companyId, locationId)
   } catch (error) {
     console.warn(`Warning: Could not fetch/create employee: ${error}`)
     console.warn('Tests requiring employees may fail')
@@ -273,11 +386,73 @@ export default async function globalSetup() {
     console.warn('Tests requiring contractors may fail')
   }
 
+  let dismissalCompanyId = ''
+  let dismissalFlowToken = ''
+  let terminatedEmployeeId = ''
+
+  try {
+    console.log('\n=== Setting up dismissal company via onboarded demo ===')
+    const dismissalDemo = await createFreshDemo('react_sdk_demo_company_onboarded')
+    dismissalFlowToken = dismissalDemo.flowToken
+    dismissalCompanyId = dismissalDemo.companyId
+    console.log(`Dismissal Company ID: ${dismissalCompanyId}`)
+    console.log(`Dismissal Flow Token: ${dismissalFlowToken.slice(0, 10)}...`)
+
+    const base = `/fe_sdk/${dismissalFlowToken}/v1`
+
+    console.log('Waiting for demo employee to be ready...')
+    let employees: Employee[] = []
+    for (let attempt = 1; attempt <= 24; attempt++) {
+      try {
+        employees = await fetchFromApi<Employee[]>(
+          `${base}/companies/${dismissalCompanyId}/employees`,
+        )
+        if (employees.length > 0) break
+      } catch {
+        // endpoint may not be ready yet
+      }
+      if (attempt % 4 === 0) console.log(`  Still waiting for employees... (${attempt * 5}s)`)
+      await new Promise(r => setTimeout(r, 5000))
+    }
+
+    if (employees.length === 0) {
+      throw new Error('No employees found in onboarded demo company')
+    }
+
+    console.log(
+      `Found ${employees.length} employee(s): ${employees.map(e => `${e.first_name} ${e.last_name}`).join(', ')}`,
+    )
+
+    const employeeToTerminate = employees[0]
+    console.log(
+      `Terminating employee: ${employeeToTerminate.first_name} ${employeeToTerminate.last_name} (${employeeToTerminate.uuid})`,
+    )
+
+    const oneMonthFromNow = new Date()
+    oneMonthFromNow.setMonth(oneMonthFromNow.getMonth() + 1)
+    const terminationDate = oneMonthFromNow.toISOString().split('T')[0]
+
+    await postToApi<Termination>(`${base}/employees/${employeeToTerminate.uuid}/terminations`, {
+      effective_date: terminationDate,
+      run_termination_payroll: true,
+    })
+    terminatedEmployeeId = employeeToTerminate.uuid
+    console.log(`Terminated employee (effective: ${terminationDate})`)
+
+    await logRemainingBlockers(dismissalFlowToken, dismissalCompanyId)
+    console.log('=== Dismissal company setup complete ===\n')
+  } catch (error) {
+    throw new Error(`Dismissal company setup failed: ${error}`)
+  }
+
   const state: E2EState = {
     companyId,
     employeeId,
     contractorId,
     locationId,
+    dismissalCompanyId,
+    dismissalFlowToken,
+    terminatedEmployeeId,
   }
 
   const statePath = resolve(process.cwd(), 'e2e/.e2e-state.json')
