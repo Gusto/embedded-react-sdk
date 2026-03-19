@@ -10,6 +10,7 @@ import { BaseComponent } from '@/components/Base/Base'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { useBase } from '@/components/Base/useBase'
 import { componentEvents } from '@/shared/constants'
+import { SDKInternalError } from '@/types/sdkError'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { formatPayPeriodRange } from '@/helpers/dateFormatting'
 import type { SelectOption } from '@/components/Common/UI/Select/SelectTypes'
@@ -68,12 +69,12 @@ function Root({ companyId, employeeId, dictionary }: DismissalPayPeriodSelection
   const handleSubmit = async () => {
     await baseSubmitHandler({ selectedPeriodIndex }, async () => {
       if (selectedPeriodIndex === undefined) {
-        throw new Error(t('errors.noPayPeriodSelected'))
+        throw new SDKInternalError(t('errors.noPayPeriodSelected'))
       }
 
       const period = employeePayPeriods[Number(selectedPeriodIndex)]
       if (!period) {
-        throw new Error(t('errors.invalidPayPeriod'))
+        throw new SDKInternalError(t('errors.invalidPayPeriod'))
       }
 
       const response = await createOffCyclePayroll({
@@ -94,7 +95,7 @@ function Root({ companyId, employeeId, dictionary }: DismissalPayPeriodSelection
         response.payrollUnprocessed?.payrollUuid ?? response.payrollUnprocessed?.uuid
 
       if (!payrollUuid) {
-        throw new Error(t('errors.missingPayrollId'))
+        throw new SDKInternalError(t('errors.missingPayrollId'))
       }
 
       onEvent(componentEvents.DISMISSAL_PAY_PERIOD_SELECTED, { payrollUuid })

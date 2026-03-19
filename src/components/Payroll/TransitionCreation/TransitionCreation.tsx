@@ -18,6 +18,7 @@ import { BaseComponent } from '@/components/Base/Base'
 import { useBase } from '@/components/Base/useBase'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
+import { SDKInternalError } from '@/types/sdkError'
 import { Form } from '@/components/Common/Form'
 
 export function TransitionCreation(props: TransitionCreationProps) {
@@ -114,7 +115,7 @@ function Root({
         response.payrollUnprocessed?.payrollUuid ?? response.payrollUnprocessed?.uuid
 
       if (!payrollUuid) {
-        throw new Error(t('errors.missingPayrollId'))
+        throw new SDKInternalError(t('errors.missingPayrollId'))
       }
 
       onEvent(componentEvents.TRANSITION_CREATED, { payrollUuid })
