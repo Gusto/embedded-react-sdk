@@ -21,7 +21,7 @@ test.describe('DismissalFlow', () => {
         page.getByText(/select the pay period for the terminated employee/i),
       ).toBeVisible()
 
-      await expect(page.getByText(/select pay period/i)).toBeVisible()
+      await expect(page.getByText(/select a pay period/i)).toBeVisible()
 
       const payPeriodSelect = page.getByRole('button', { name: /pay period/i })
       await expect(payPeriodSelect).toBeVisible()
