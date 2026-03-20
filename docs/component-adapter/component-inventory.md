@@ -263,24 +263,27 @@
 
 ## DatePickerProps
 
-| Prop                        | Type                            | Required | Description                                                            |
-| --------------------------- | ------------------------------- | -------- | ---------------------------------------------------------------------- |
-| **inputRef**                | `Ref<HTMLInputElement \| null>` | No       | React ref for the date input element                                   |
-| **isDisabled**              | `boolean`                       | No       | Disables the date picker and prevents interaction                      |
-| **isInvalid**               | `boolean`                       | No       | Indicates that the field has an error                                  |
-| **onChange**                | `(value: Date \| null) => void` | No       | Callback when selected date changes                                    |
-| **onBlur**                  | `() => void`                    | No       | Handler for blur events                                                |
-| **label**                   | `string`                        | Yes      | Label text for the date picker field                                   |
-| **value**                   | `null \| Date`                  | No       | Currently selected date value                                          |
-| **placeholder**             | `string`                        | No       | Placeholder text when no date is selected                              |
-| **portalContainer**         | `HTMLElement`                   | No       | Element to use as the portal container                                 |
-| **description**             | `React.ReactNode`               | No       | Optional description text for the field                                |
-| **errorMessage**            | `string`                        | No       | Error message to display when the field is invalid                     |
-| **isRequired**              | `boolean`                       | No       | Indicates if the field is required                                     |
-| **shouldVisuallyHideLabel** | `boolean`                       | No       | Hides the label visually while keeping it accessible to screen readers |
-| **className**               | `string`                        | No       | -                                                                      |
-| **id**                      | `string`                        | No       | -                                                                      |
-| **name**                    | `string`                        | No       | -                                                                      |
+| Prop                        | Type                            | Required | Description                                                                                   |
+| --------------------------- | ------------------------------- | -------- | --------------------------------------------------------------------------------------------- |
+| **inputRef**                | `Ref<HTMLInputElement \| null>` | No       | React ref for the date input element                                                          |
+| **isDisabled**              | `boolean`                       | No       | Disables the date picker and prevents interaction                                             |
+| **isInvalid**               | `boolean`                       | No       | Indicates that the field has an error                                                         |
+| **onChange**                | `(value: Date \| null) => void` | No       | Callback when selected date changes                                                           |
+| **onBlur**                  | `() => void`                    | No       | Handler for blur events                                                                       |
+| **label**                   | `string`                        | Yes      | Label text for the date picker field                                                          |
+| **value**                   | `null \| Date`                  | No       | Currently selected date value                                                                 |
+| **placeholder**             | `string`                        | No       | Placeholder text when no date is selected                                                     |
+| **portalContainer**         | `HTMLElement`                   | No       | Element to use as the portal container                                                        |
+| **minDate**                 | `Date`                          | No       | Minimum selectable date. Dates before this will be disabled.                                  |
+| **maxDate**                 | `Date`                          | No       | Maximum selectable date. Dates after this will be disabled.                                   |
+| **isDateDisabled**          | `(date: Date) => boolean`       | No       | Callback to determine if a specific date should be disabled. Return true to disable the date. |
+| **description**             | `React.ReactNode`               | No       | Optional description text for the field                                                       |
+| **errorMessage**            | `string`                        | No       | Error message to display when the field is invalid                                            |
+| **isRequired**              | `boolean`                       | No       | Indicates if the field is required                                                            |
+| **shouldVisuallyHideLabel** | `boolean`                       | No       | Hides the label visually while keeping it accessible to screen readers                        |
+| **className**               | `string`                        | No       | -                                                                                             |
+| **id**                      | `string`                        | No       | -                                                                                             |
+| **name**                    | `string`                        | No       | -                                                                                             |
 
 ## DescriptionListProps
 
