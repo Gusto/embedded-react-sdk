@@ -28,7 +28,7 @@ const defaultFormValues = {
   endDate: null,
   checkDate: null,
   skipRegularDeductions: false,
-  includeAllEmployees: true,
+  includeAllEmployees: false,
   selectedEmployeeUuids: [] as string[],
 }
 
