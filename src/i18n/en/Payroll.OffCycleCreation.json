@@ -1,6 +1,8 @@
 {
   "pageTitle": "New Off-Cycle Payroll",
   "pageDescription": "Configure your off-cycle payroll details below.",
+  "payPeriodSectionTitle": "Pay period and payment date",
+  "payPeriodSectionDescription": "Enter a work period to show on your employees' pay stubs.",
   "continueCta": "Continue",
   "includeAllEmployeesLabel": "Include all employees in this payroll",
   "errors": {

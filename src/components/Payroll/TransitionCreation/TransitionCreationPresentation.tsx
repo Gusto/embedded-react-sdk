@@ -7,6 +7,7 @@ import {
   type WageTypeGroup,
 } from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
 import type { TransitionCreationPresentationProps } from './TransitionCreationTypes'
+import styles from './TransitionCreationPresentation.module.scss'
 import { useI18n } from '@/i18n'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Flex, DatePickerField, RadioGroupField } from '@/components/Common'
@@ -73,6 +74,8 @@ export function TransitionCreationPresentation({
 
       <Alert status="info" label={t('transitionExplanation')} />
 
+      <hr className={styles.divider} />
+
       <Flex flexDirection="column" gap={16}>
         <Heading as="h3">{t('detailsHeading')}</Heading>
 
@@ -93,9 +96,13 @@ export function TransitionCreationPresentation({
         </Flex>
       </Flex>
 
+      <hr className={styles.divider} />
+
       <Flex flexDirection="column" gap={20}>
         <DatePickerField name="checkDate" label={t('checkDateLabel')} isRequired />
       </Flex>
+
+      <hr className={styles.divider} />
 
       <Flex flexDirection="column" gap={20}>
         <RadioGroupField<boolean>
@@ -106,6 +113,8 @@ export function TransitionCreationPresentation({
           convertValueToString={value => String(value)}
         />
       </Flex>
+
+      <hr className={styles.divider} />
 
       <OffCycleTaxWithholdingTable
         wageTypeGroups={wageTypeGroups}

@@ -134,7 +134,7 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
       endDate: null,
       checkDate: null,
       skipRegularDeductions: OFF_CYCLE_REASON_DEFAULTS[payrollType].skipDeductions,
-      includeAllEmployees: true,
+      includeAllEmployees: false,
       selectedEmployeeUuids: [],
     },
   })
