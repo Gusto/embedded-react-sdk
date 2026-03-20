@@ -246,17 +246,18 @@ describe('OffCycleCreation', () => {
   })
 
   describe('employee selection', () => {
-    it('renders the include all employees switch defaulted to on', async () => {
+    it('renders the include all employees switch defaulted to off with picker visible', async () => {
       renderComponent()
 
       await waitFor(() => {
         expect(screen.getByRole('switch', { name: /include all employees/i })).toBeInTheDocument()
       })
 
-      expect(screen.getByRole('switch', { name: /include all employees/i })).toBeChecked()
+      expect(screen.getByRole('switch', { name: /include all employees/i })).not.toBeChecked()
+      expect(screen.getByRole('combobox')).toBeInTheDocument()
     })
 
-    it('shows the employee picker when include all is toggled off', async () => {
+    it('hides the employee picker when include all is toggled on', async () => {
       const user = userEvent.setup()
       renderComponent()
 
@@ -264,16 +265,16 @@ describe('OffCycleCreation', () => {
         expect(screen.getByRole('switch', { name: /include all employees/i })).toBeInTheDocument()
       })
 
-      expect(screen.queryByRole('combobox')).not.toBeInTheDocument()
+      expect(screen.getByRole('combobox')).toBeInTheDocument()
 
       await user.click(screen.getByRole('switch', { name: /include all employees/i }))
 
       await waitFor(() => {
-        expect(screen.getByRole('combobox')).toBeInTheDocument()
+        expect(screen.queryByRole('combobox')).not.toBeInTheDocument()
       })
     })
 
-    it('hides the employee picker when include all is toggled back on', async () => {
+    it('shows the employee picker when include all is toggled back off', async () => {
       const user = userEvent.setup()
       renderComponent()
 
@@ -285,24 +286,18 @@ describe('OffCycleCreation', () => {
 
       await user.click(toggle)
       await waitFor(() => {
-        expect(screen.getByRole('combobox')).toBeInTheDocument()
+        expect(screen.queryByRole('combobox')).not.toBeInTheDocument()
       })
 
       await user.click(toggle)
       await waitFor(() => {
-        expect(screen.queryByRole('combobox')).not.toBeInTheDocument()
+        expect(screen.getByRole('combobox')).toBeInTheDocument()
       })
     })
 
     it('shows validation error when submitting with no employees selected', async () => {
       const user = userEvent.setup()
       renderComponent()
-
-      await waitFor(() => {
-        expect(screen.getByRole('switch', { name: /include all employees/i })).toBeInTheDocument()
-      })
-
-      await user.click(screen.getByRole('switch', { name: /include all employees/i }))
 
       await waitFor(() => {
         expect(screen.getByRole('combobox')).toBeInTheDocument()
