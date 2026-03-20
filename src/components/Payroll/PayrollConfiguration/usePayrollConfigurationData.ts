@@ -30,7 +30,7 @@ interface UsePayrollConfigurationDataReturn {
   refetch: () => Promise<void>
 }
 
-const PREPARE_QUERY_KEY = 'payroll-prepare'
+export const PREPARE_QUERY_KEY = 'payroll-prepare'
 const FIVE_MINUTES = 5 * 60 * 1000
 
 export function usePayrollConfigurationData({

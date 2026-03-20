@@ -4,7 +4,9 @@ import { usePayrollsUpdateMutation } from '@gusto/embedded-api/react-query/payro
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import type { PayrollUpdateEmployeeCompensations } from '@gusto/embedded-api/models/components/payrollupdate'
 import { useMemo } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { usePreparedPayrollData } from '../usePreparedPayrollData'
+import { PREPARE_QUERY_KEY } from '../PayrollConfiguration/usePayrollConfigurationData'
 import { derivePayrollCategory } from '../payrollTypes'
 import { PayrollEditEmployeePresentation } from './PayrollEditEmployeePresentation'
 import { componentEvents } from '@/shared/constants'
@@ -38,6 +40,7 @@ export const Root = ({
 }: PayrollEditEmployeeProps) => {
   useComponentDictionary('Payroll.PayrollEditEmployee', dictionary)
 
+  const queryClient = useQueryClient()
   const { LoadingIndicator, baseSubmitHandler } = useBase()
 
   const { data: employeeData } = useEmployeesGetSuspense({ employeeId })
@@ -81,6 +84,10 @@ export const Root = ({
             employeeCompensations: [transformedCompensation],
           },
         },
+      })
+
+      await queryClient.invalidateQueries({
+        queryKey: [PREPARE_QUERY_KEY, payrollId],
       })
 
       onEvent(componentEvents.RUN_PAYROLL_EMPLOYEE_SAVED, {
