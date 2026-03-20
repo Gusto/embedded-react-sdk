@@ -9,7 +9,7 @@ export type {
 
 export {
   useCompensationForm,
-  type UseCompensationFormParams,
+  type UseCompensationFormProps,
   type UseCompensationFormResult,
   type UseCompensationFormReady,
 } from './hooks/useCompensation'

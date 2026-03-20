@@ -1,6 +1,6 @@
 export { useCompensationForm } from './useCompensationForm'
 export type {
-  UseCompensationFormParams,
+  UseCompensationFormProps,
   UseCompensationFormResult,
   UseCompensationFormReady,
 } from './useCompensationForm'

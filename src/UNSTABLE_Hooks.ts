@@ -1,6 +1,6 @@
 export {
   useCompensationForm,
-  type UseCompensationFormParams,
+  type UseCompensationFormProps,
   type UseCompensationFormResult,
   type UseCompensationFormReady,
   type HookFormInternals,
