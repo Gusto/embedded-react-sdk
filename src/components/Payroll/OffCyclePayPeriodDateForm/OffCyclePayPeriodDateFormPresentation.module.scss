@@ -15,5 +15,5 @@
 }
 
 .checkDateField {
-  max-width: toRem(320);
+  width: calc(50% - toRem(10));
 }

@@ -1538,6 +1538,8 @@ export interface PayrollOffCycle{
 export interface PayrollOffCycleCreation{
 "pageTitle":string;
 "pageDescription":string;
+"payPeriodSectionTitle":string;
+"payPeriodSectionDescription":string;
 "continueCta":string;
 "includeAllEmployeesLabel":string;
 "errors":{

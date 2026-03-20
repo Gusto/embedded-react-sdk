@@ -13,6 +13,7 @@ import type {
   OffCycleCreationFormData,
   OffCycleCreationPresentationProps,
 } from './OffCycleCreationTypes'
+import styles from './OffCycleCreationPresentation.module.scss'
 import { useI18n } from '@/i18n'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Flex, RadioGroupField, SwitchField, MultiSelectComboBoxField } from '@/components/Common'
@@ -83,12 +84,20 @@ export function OffCycleCreationPresentation({
       </Flex>
 
       <Flex flexDirection="column" gap={20}>
+        <Flex flexDirection="column" gap={4}>
+          <Heading as="h3">{t('payPeriodSectionTitle')}</Heading>
+          <Text variant="supporting">{t('payPeriodSectionDescription')}</Text>
+        </Flex>
         <OffCyclePayPeriodDateFormPresentation />
       </Flex>
+
+      <hr className={styles.divider} />
 
       <Flex flexDirection="column" gap={20}>
         <OffCycleReasonSelectionPresentation name="reason" />
       </Flex>
+
+      <hr className={styles.divider} />
 
       <Flex flexDirection="column" gap={12}>
         <Heading as="h3">{tEmployees('sectionTitle')}</Heading>
@@ -109,6 +118,8 @@ export function OffCycleCreationPresentation({
         )}
       </Flex>
 
+      <hr className={styles.divider} />
+
       <Flex flexDirection="column" gap={20}>
         <RadioGroupField<boolean>
           name="skipRegularDeductions"
@@ -118,6 +129,8 @@ export function OffCycleCreationPresentation({
           convertValueToString={value => String(value)}
         />
       </Flex>
+
+      <hr className={styles.divider} />
 
       <OffCycleTaxWithholdingTable
         wageTypeGroups={wageTypeGroups}
