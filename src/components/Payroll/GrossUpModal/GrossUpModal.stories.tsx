@@ -1,4 +1,5 @@
 import { Suspense, useState } from 'react'
+import { MockBaseProvider } from '../../../../.storybook/helpers/MockBaseProvider'
 import { GrossUpModal } from './GrossUpModal'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
@@ -14,7 +15,9 @@ export default {
     (Story: React.ComponentType) => (
       <Suspense fallback={<div>Loading translations...</div>}>
         <I18nLoader>
-          <Story />
+          <MockBaseProvider>
+            <Story />
+          </MockBaseProvider>
         </I18nLoader>
       </Suspense>
     ),
