@@ -1,15 +1,18 @@
-import type { ReactNode } from 'react'
+import { Suspense, type ReactNode } from 'react'
 import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
 import {
   PayrollConfigurationContext,
   type PayrollConfigurationContextValue,
 } from './PayrollConfigurationContext'
 import { BaseBoundaries, type BaseBoundariesProps } from '@/components/Base/Base'
+import { useLoadingIndicator } from '@/contexts/LoadingIndicatorProvider/useLoadingIndicator'
+import type { LoadingIndicatorContextProps } from '@/contexts/LoadingIndicatorProvider/useLoadingIndicator'
 
 export interface PayrollConfigurationProviderProps extends BaseBoundariesProps {
   companyId: string
   payrollId: string
   children: ReactNode
+  LoaderComponent?: LoadingIndicatorContextProps['LoadingIndicator']
 }
 
 function PayrollConfigurationProvider({
@@ -39,18 +42,22 @@ function ComposedPayrollConfigurationProvider({
   payrollId,
   children,
   FallbackComponent,
-  LoaderComponent,
+  LoaderComponent: LoaderComponentFromProps,
   onErrorBoundaryError,
 }: PayrollConfigurationProviderProps) {
+  const { LoadingIndicator: LoaderComponentFromContext } = useLoadingIndicator()
+  const LoaderComponent = LoaderComponentFromProps ?? LoaderComponentFromContext
+
   return (
     <BaseBoundaries
       FallbackComponent={FallbackComponent}
-      LoaderComponent={LoaderComponent}
       onErrorBoundaryError={onErrorBoundaryError}
     >
-      <PayrollConfigurationProvider companyId={companyId} payrollId={payrollId}>
-        {children}
-      </PayrollConfigurationProvider>
+      <Suspense fallback={<LoaderComponent />}>
+        <PayrollConfigurationProvider companyId={companyId} payrollId={payrollId}>
+          {children}
+        </PayrollConfigurationProvider>
+      </Suspense>
     </BaseBoundaries>
   )
 }
