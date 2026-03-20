@@ -1,5 +1,7 @@
 # UI Flexibility Exploration for the React SDK
 
+> **Update (March 2026):** After prototyping, we moved forward with a hooks-based approach. See [03-26--hooks-approach](./03-26--hooks-approach.md) for the concrete proposal with working implementations.
+
 This document proposes a high-level solution that fits the updated partner requirements for SDK UI flexibility. This solution is inspired by composition patterns found in other SDKs that have successfully made their core functionalities available in flexible, UI-agnostic ways. It also leverages and enhances React SDK patterns we are already familiar with.
 
 The proposed solution still needs stress testing and rigor that will come from prototyping. The purpose of presenting this document at this time is to gather initial feedback to determine if we should pursue this solution more in depth (via prototyping) _or_ if we have yet to find a solution that is a good candidate and need to continue iterating.
