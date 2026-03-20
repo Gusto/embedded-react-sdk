@@ -13,6 +13,6 @@ export interface UseCompensationFormReady extends BaseFormHookReady {
 
 export type UseCompensationFormResult = HookLoadingResult | UseCompensationFormReady
 
-export function useCompensationForm(_props: UseCompensationFormProps): UseCompensationFormResult {
+export function useCompensationForm(props: UseCompensationFormProps): UseCompensationFormResult {
   throw new Error('useCompensationForm is not yet implemented')
 }
