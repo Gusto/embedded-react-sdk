@@ -31,7 +31,7 @@ export interface BaseHookReady {
   errors: HookErrors
 }
 
-/** Base shape for form hooks. Individual hooks override `data` and `actions`. */
+/** Base shape for form hooks. Individual hooks override `data`, `actions`, and `form`. */
 export interface BaseFormHookReady {
   isLoading: false
   data: Record<string, unknown>
@@ -39,6 +39,8 @@ export interface BaseFormHookReady {
   actions: Record<string, unknown>
   errors: HookErrors
   form: {
+    Fields: Record<string, unknown>
+    fieldsMetadata: Record<string, unknown>
     hookFormInternals: HookFormInternals
   }
 }
