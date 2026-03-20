@@ -207,7 +207,6 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 | **Payroll.TransitionPayrollAlert** | GET | `/v1/companies/:companyId/pay_periods` |
 |  | GET | `/v1/companies/:companyId/pay_schedules` |
 |  | POST | `/v1/companies/:companyUuid/payrolls/skip` |
-| **Payroll.UNSTABLE_PayrollHooks** | GET | `/v1/companies/:companyId/payrolls/:payrollId` |
 
 ## Flows
 
