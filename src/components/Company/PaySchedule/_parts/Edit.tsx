@@ -75,6 +75,7 @@ export const Edit = () => {
               label={t('labels.firstPayDate')}
               description={t('descriptions.anchorPayDateDescription')}
               isRequired
+              minDate={new Date()}
             />
             <DatePickerField
               name="anchorEndOfPayPeriod"
