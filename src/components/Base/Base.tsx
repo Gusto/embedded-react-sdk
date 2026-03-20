@@ -108,9 +108,9 @@ function SingleErrorContent({ error }: { error: SDKError }) {
       {hasFieldErrors && (
         <Components.UnorderedList
           items={error.fieldErrors
-            .filter(fe => fe.message)
-            .map(fe => (
-              <span key={fe.field}>{fe.message}</span>
+            .filter(fieldError => fieldError.message)
+            .map(fieldError => (
+              <span key={fieldError.field}>{fieldError.message}</span>
             ))}
         />
       )}
@@ -139,20 +139,20 @@ function MultipleErrorsContent({ errors }: { errors: SDKError[] }) {
     <Components.Alert label={t('status.multipleErrorsEncountered')} status="error">
       <Components.UnorderedList
         items={errors
-          .filter(err => err.message || err.fieldErrors.length > 0)
-          .map((err, index) => {
-            const visibleFieldErrors = err.fieldErrors.filter(fe => fe.message)
+          .filter(error => error.message || error.fieldErrors.length > 0)
+          .map((error, index) => {
+            const visibleFieldErrors = error.fieldErrors.filter(fieldError => fieldError.message)
 
             if (visibleFieldErrors.length === 0) {
-              return <span key={index}>{err.message || t('errors.unknownError')}</span>
+              return <span key={index}>{error.message || t('errors.unknownError')}</span>
             }
 
             return (
               <span key={index}>
-                {err.message || t('errors.unknownError')}
+                {error.message || t('errors.unknownError')}
                 <Components.UnorderedList
-                  items={visibleFieldErrors.map(fe => (
-                    <span key={fe.field}>{fe.message}</span>
+                  items={visibleFieldErrors.map(fieldError => (
+                    <span key={fieldError.field}>{fieldError.message}</span>
                   ))}
                 />
               </span>
