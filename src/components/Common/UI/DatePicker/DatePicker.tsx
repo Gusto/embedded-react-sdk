@@ -27,9 +27,9 @@ import AlertCircle from '@/assets/icons/alert-circle.svg?react'
 import { formatDateToStringDate } from '@/helpers/dateFormatting'
 
 function dateToCalendarDate(date: Date): CalendarDate {
-  return parseDate(
-    `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`,
-  )
+  const dateString = formatDateToStringDate(date)
+  if (!dateString) throw new Error('Invalid date provided to dateToCalendarDate')
+  return parseDate(dateString)
 }
 
 function calendarDateValueToDate(dateValue: DateValue | null): Date | null {
