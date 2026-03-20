@@ -27,17 +27,7 @@ type PayScheduleContextType = {
 
 export const PayScheduleSchema = z.object({
   frequency: z.enum(['Every week', 'Every other week', 'Twice per month', 'Monthly']),
-  anchorPayDate: z
-    .date()
-    .refine(
-      date => {
-        const today = new Date()
-        today.setHours(0, 0, 0, 0)
-        return date >= today
-      },
-      { message: 'First pay date cannot be in the past' },
-    )
-    .optional(),
+  anchorPayDate: z.date().optional(),
   anchorEndOfPayPeriod: z.date().optional(),
   day1: z.number().min(1).max(31).optional(),
   day2: z.number().min(1).max(31).optional(),
