@@ -12,4 +12,4 @@ export {
   type UseCompensationFormProps,
   type UseCompensationFormResult,
   type UseCompensationFormReady,
-} from './hooks/useCompensation'
+} from './hooks/useCompensationForm'
