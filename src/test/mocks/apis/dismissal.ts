@@ -1,6 +1,5 @@
 import { http, HttpResponse } from 'msw'
 import { getFixture } from '../fixtures/getFixture'
-import { setPayrollPhase } from './payrolls'
 import { API_BASE_URL } from '@/test/constants'
 
 const getUnprocessedTerminationPayPeriods = http.get(
@@ -13,13 +12,4 @@ const getUnprocessedTerminationPayPeriods = http.get(
   },
 )
 
-const createOffCyclePayroll = http.post(
-  `${API_BASE_URL}/v1/companies/:company_id/payrolls`,
-  async () => {
-    setPayrollPhase('initial')
-    const responseFixture = await getFixture('post-v1-companies-company_id-payrolls')
-    return HttpResponse.json(responseFixture)
-  },
-)
-
-export default [getUnprocessedTerminationPayPeriods, createOffCyclePayroll]
+export default [getUnprocessedTerminationPayPeriods]

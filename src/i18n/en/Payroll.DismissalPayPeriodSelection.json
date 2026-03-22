@@ -1,8 +1,0 @@
-{
-  "pageTitle": "Run dismissal payroll",
-  "pageDescription": "Select the pay period for the terminated employee's final payroll.",
-  "selectLabel": "Pay period",
-  "selectPlaceholder": "Select a pay period",
-  "continueCta": "Continue",
-  "emptyState": "There are no unprocessed termination pay periods available."
-}

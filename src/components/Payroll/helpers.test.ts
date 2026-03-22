@@ -1015,6 +1015,26 @@ describe('Payroll helpers', () => {
       const payroll = {}
       expect(getPayrollTypeLabel(payroll)).toBe('Regular')
     })
+
+    it('returns friendly labels for all off-cycle reason types', () => {
+      const reasonToLabel: Record<string, string> = {
+        Bonus: 'Bonus',
+        Correction: 'Correction',
+        'Transition from old pay schedule': 'Transition',
+        'Dismissed employee': 'Dismissal',
+        'Hired employee': 'New Hire',
+        'Benefit reversal': 'Benefit Reversal',
+        'Wage correction': 'Wage Correction',
+        'Tax reconciliation': 'Tax Reconciliation',
+        Reversal: 'Reversal',
+        'Disability insurance distribution': 'Disability Insurance',
+      }
+
+      for (const [reason, expectedLabel] of Object.entries(reasonToLabel)) {
+        const payroll = { offCycle: true, offCycleReason: reason }
+        expect(getPayrollTypeLabel(payroll)).toBe(expectedLabel)
+      }
+    })
   })
 
   describe('getAdditionalEarningsCompensations', () => {
