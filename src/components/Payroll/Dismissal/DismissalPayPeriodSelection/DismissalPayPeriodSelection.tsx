@@ -32,6 +32,8 @@ export function DismissalPayPeriodSelection(props: DismissalPayPeriodSelectionPr
 type RequiredPayPeriod = UnprocessedTerminationPayPeriod &
   Required<Pick<UnprocessedTerminationPayPeriod, 'startDate' | 'endDate' | 'employeeUuid'>>
 
+const payPeriodKey = (period: RequiredPayPeriod) => `${period.startDate}__${period.endDate}`
+
 function Root({ companyId, employeeId, dictionary }: DismissalPayPeriodSelectionProps) {
   useComponentDictionary('Payroll.Dismissal', dictionary)
   useI18n('Payroll.Dismissal')
@@ -50,8 +52,6 @@ function Root({ companyId, employeeId, dictionary }: DismissalPayPeriodSelection
           Boolean(period.startDate) && Boolean(period.endDate) && Boolean(period.employeeUuid),
       )
   }, [data, employeeId])
-
-  const payPeriodKey = (period: RequiredPayPeriod) => `${period.startDate}__${period.endDate}`
 
   const payPeriodOptions: SelectOption[] = useMemo(() => {
     return employeePayPeriods.map(period => {
@@ -110,7 +110,7 @@ function Root({ companyId, employeeId, dictionary }: DismissalPayPeriodSelection
   return (
     <DismissalPayPeriodSelectionPresentation
       payPeriodOptions={payPeriodOptions}
-      selectedPeriodIndex={selectedPeriodKey}
+      selectedPeriodKey={selectedPeriodKey}
       onSelectPeriod={setSelectedPeriodKey}
       onSubmit={handleSubmit}
       isPending={isPending}

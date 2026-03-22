@@ -32,7 +32,7 @@ export const Default = () => {
   return (
     <DismissalPayPeriodSelectionPresentation
       payPeriodOptions={payPeriodOptions}
-      selectedPeriodIndex={selectedPeriodIndex}
+      selectedPeriodKey={selectedPeriodIndex}
       onSelectPeriod={setSelectedPeriodIndex}
       onSubmit={onSubmit}
       isPending={false}
@@ -47,7 +47,7 @@ export const WithSelection = () => {
   return (
     <DismissalPayPeriodSelectionPresentation
       payPeriodOptions={payPeriodOptions}
-      selectedPeriodIndex={selectedPeriodIndex}
+      selectedPeriodKey={selectedPeriodIndex}
       onSelectPeriod={setSelectedPeriodIndex}
       onSubmit={onSubmit}
       isPending={false}
@@ -58,7 +58,7 @@ export const WithSelection = () => {
 export const Submitting = () => (
   <DismissalPayPeriodSelectionPresentation
     payPeriodOptions={payPeriodOptions}
-    selectedPeriodIndex="0"
+    selectedPeriodKey="0"
     onSelectPeriod={() => {}}
     onSubmit={() => {}}
     isPending={true}
@@ -68,7 +68,7 @@ export const Submitting = () => (
 export const EmptyState = () => (
   <DismissalPayPeriodSelectionPresentation
     payPeriodOptions={[]}
-    selectedPeriodIndex={undefined}
+    selectedPeriodKey={undefined}
     onSelectPeriod={() => {}}
     onSubmit={() => {}}
     isPending={false}

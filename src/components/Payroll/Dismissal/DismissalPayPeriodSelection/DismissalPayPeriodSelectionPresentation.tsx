@@ -6,7 +6,7 @@ import type { SelectOption } from '@/components/Common/UI/Select/SelectTypes'
 
 export interface DismissalPayPeriodSelectionPresentationProps {
   payPeriodOptions: SelectOption[]
-  selectedPeriodIndex: string | undefined
+  selectedPeriodKey: string | undefined
   onSelectPeriod: (value: string) => void
   onSubmit: () => void
   isPending: boolean
@@ -14,7 +14,7 @@ export interface DismissalPayPeriodSelectionPresentationProps {
 
 export function DismissalPayPeriodSelectionPresentation({
   payPeriodOptions,
-  selectedPeriodIndex,
+  selectedPeriodKey,
   onSelectPeriod,
   onSubmit,
   isPending,
@@ -46,7 +46,7 @@ export function DismissalPayPeriodSelectionPresentation({
       <Select
         label={t('selectLabel')}
         options={payPeriodOptions}
-        value={selectedPeriodIndex}
+        value={selectedPeriodKey}
         onChange={onSelectPeriod}
         placeholder={t('selectPlaceholder')}
         isRequired
@@ -57,7 +57,7 @@ export function DismissalPayPeriodSelectionPresentation({
           variant="primary"
           onClick={onSubmit}
           isLoading={isPending}
-          isDisabled={isPending || selectedPeriodIndex === undefined}
+          isDisabled={isPending || selectedPeriodKey === undefined}
         >
           {t('continueCta')}
         </Button>
