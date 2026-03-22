@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { addBusinessDays } from '@/helpers/dateFormatting'
 
-const ACH_LEAD_TIME_BUSINESS_DAYS = 2
+export const ACH_LEAD_TIME_BUSINESS_DAYS = 2
 
 export function useOffCyclePayPeriodDateValidation() {
   const today = useMemo(() => {

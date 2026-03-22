@@ -21,7 +21,6 @@ export interface OffCycleCreationFormData extends OffCyclePayPeriodDateFormData 
 
 export interface OffCycleCreationPresentationProps {
   employees: MultiSelectComboBoxOption[]
-  isLoadingEmployees: boolean
   isPending?: boolean
   taxWithholdingConfig: OffCycleTaxWithholdingConfig
   isTaxWithholdingModalOpen: boolean

@@ -20,7 +20,6 @@ import { Flex, RadioGroupField, SwitchField, MultiSelectComboBoxField } from '@/
 
 export function OffCycleCreationPresentation({
   employees,
-  isLoadingEmployees,
   isPending,
   taxWithholdingConfig,
   isTaxWithholdingModalOpen,
@@ -113,7 +112,6 @@ export function OffCycleCreationPresentation({
             shouldVisuallyHideLabel
             placeholder={tEmployees('searchPlaceholder')}
             options={employees}
-            isLoading={isLoadingEmployees}
           />
         )}
       </Flex>

@@ -12,7 +12,8 @@ import { useBase } from '@/components/Base/useBase'
 import { componentEvents } from '@/shared/constants'
 import { SDKInternalError } from '@/types/sdkError'
 import { useComponentDictionary, useI18n } from '@/i18n'
-import { formatPayPeriodRange } from '@/helpers/dateFormatting'
+import { addBusinessDays, formatPayPeriodRange } from '@/helpers/dateFormatting'
+import { ACH_LEAD_TIME_BUSINESS_DAYS } from '@/components/Payroll/OffCyclePayPeriodDateForm/useOffCyclePayPeriodDateValidation'
 import type { SelectOption } from '@/components/Common/UI/Select/SelectTypes'
 
 export interface DismissalPayPeriodSelectionProps extends BaseComponentInterface<'Payroll.Dismissal'> {
@@ -50,32 +51,36 @@ function Root({ companyId, employeeId, dictionary }: DismissalPayPeriodSelection
       )
   }, [data, employeeId])
 
+  const payPeriodKey = (period: RequiredPayPeriod) => `${period.startDate}__${period.endDate}`
+
   const payPeriodOptions: SelectOption[] = useMemo(() => {
-    return employeePayPeriods.map((period, index) => {
+    return employeePayPeriods.map(period => {
       const dateRange = formatPayPeriodRange(period.startDate, period.endDate)
       const label = period.employeeName ? `${dateRange} (${period.employeeName})` : dateRange
       return {
-        value: String(index),
+        value: payPeriodKey(period),
         label,
       }
     })
   }, [employeePayPeriods])
 
-  const initialSelection = payPeriodOptions.length === 1 ? '0' : undefined
-  const [selectedPeriodIndex, setSelectedPeriodIndex] = useState<string | undefined>(
-    initialSelection,
-  )
+  const initialSelection = payPeriodOptions.length === 1 ? payPeriodOptions[0]!.value : undefined
+  const [selectedPeriodKey, setSelectedPeriodKey] = useState<string | undefined>(initialSelection)
 
   const handleSubmit = async () => {
-    await baseSubmitHandler({ selectedPeriodIndex }, async () => {
-      if (selectedPeriodIndex === undefined) {
+    await baseSubmitHandler({ selectedPeriodKey }, async () => {
+      if (selectedPeriodKey === undefined) {
         throw new SDKInternalError(t('errors.noPayPeriodSelected'))
       }
 
-      const period = employeePayPeriods[Number(selectedPeriodIndex)]
+      const period = employeePayPeriods.find(p => payPeriodKey(p) === selectedPeriodKey)
       if (!period) {
         throw new SDKInternalError(t('errors.invalidPayPeriod'))
       }
+
+      const checkDate = period.checkDate
+        ? new RFCDate(period.checkDate)
+        : new RFCDate(addBusinessDays(new Date(), ACH_LEAD_TIME_BUSINESS_DAYS))
 
       const response = await createOffCyclePayroll({
         request: {
@@ -86,7 +91,7 @@ function Root({ companyId, employeeId, dictionary }: DismissalPayPeriodSelection
             startDate: new RFCDate(period.startDate),
             endDate: new RFCDate(period.endDate),
             employeeUuids: [employeeId],
-            checkDate: period.checkDate ? new RFCDate(period.checkDate) : undefined,
+            checkDate,
           },
         },
       })
@@ -105,8 +110,8 @@ function Root({ companyId, employeeId, dictionary }: DismissalPayPeriodSelection
   return (
     <DismissalPayPeriodSelectionPresentation
       payPeriodOptions={payPeriodOptions}
-      selectedPeriodIndex={selectedPeriodIndex}
-      onSelectPeriod={setSelectedPeriodIndex}
+      selectedPeriodIndex={selectedPeriodKey}
+      onSelectPeriod={setSelectedPeriodKey}
       onSubmit={handleSubmit}
       isPending={isPending}
     />

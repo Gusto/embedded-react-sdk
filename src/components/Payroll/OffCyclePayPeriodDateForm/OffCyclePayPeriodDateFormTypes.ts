@@ -66,7 +66,7 @@ export const createOffCyclePayPeriodDateFormSchema = (
           path: ['checkDate'],
           message: t('validations.checkDateRequired'),
         })
-      } else if (!data.isCheckOnly) {
+      } else {
         const checkDateNormalized = new Date(data.checkDate)
         checkDateNormalized.setHours(0, 0, 0, 0)
         const minCheckDateNormalized = new Date(minCheckDate)
@@ -76,7 +76,9 @@ export const createOffCyclePayPeriodDateFormSchema = (
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             path: ['checkDate'],
-            message: t('validations.checkDateAchLeadTime'),
+            message: data.isCheckOnly
+              ? t('validations.checkDateNotPast')
+              : t('validations.checkDateAchLeadTime'),
           })
         }
       }

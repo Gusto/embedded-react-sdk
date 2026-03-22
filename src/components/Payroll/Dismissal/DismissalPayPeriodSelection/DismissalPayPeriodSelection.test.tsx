@@ -156,5 +156,82 @@ describe('DismissalPayPeriodSelection', () => {
         )
       })
     })
+
+    it('sends the period checkDate when available', async () => {
+      const user = userEvent.setup()
+      mockCreateOffCyclePayroll.mockResolvedValueOnce({
+        payrollUnprocessed: { payrollUuid: 'new-payroll-123' },
+      })
+
+      renderComponent()
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /continue/i })).toBeInTheDocument()
+      })
+
+      const selectTrigger = screen.getByLabelText(/pay period/i)
+      await user.click(selectTrigger)
+      const options = await screen.findAllByRole('option')
+      await user.click(options[0]!)
+
+      await user.click(screen.getByRole('button', { name: /continue/i }))
+
+      await waitFor(() => {
+        expect(mockCreateOffCyclePayroll).toHaveBeenCalled()
+      })
+
+      const call = mockCreateOffCyclePayroll.mock.calls[0]![0]
+      expect(call.request.requestBody.checkDate).toBeDefined()
+    })
+  })
+
+  describe('payroll creation with missing checkDate', () => {
+    beforeEach(() => {
+      vi.doMock(
+        '@gusto/embedded-api/react-query/paySchedulesGetUnprocessedTerminationPeriods',
+        () => ({
+          usePaySchedulesGetUnprocessedTerminationPeriodsSuspense: () => ({
+            data: {
+              unprocessedTerminationPayPeriodList: [
+                {
+                  startDate: '2024-12-01',
+                  endDate: '2024-12-14',
+                  employeeUuid: 'emp-1',
+                  employeeName: 'Jane Doe',
+                  payScheduleUuid: 'ps-1',
+                },
+              ],
+            },
+          }),
+        }),
+      )
+    })
+
+    it('computes a fallback checkDate when period has no checkDate', async () => {
+      const user = userEvent.setup()
+      mockCreateOffCyclePayroll.mockResolvedValueOnce({
+        payrollUnprocessed: { payrollUuid: 'new-payroll-456' },
+      })
+
+      renderComponent()
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /continue/i })).toBeInTheDocument()
+      })
+
+      const selectTrigger = screen.getByLabelText(/pay period/i)
+      await user.click(selectTrigger)
+      const options = await screen.findAllByRole('option')
+      await user.click(options[0]!)
+
+      await user.click(screen.getByRole('button', { name: /continue/i }))
+
+      await waitFor(() => {
+        expect(mockCreateOffCyclePayroll).toHaveBeenCalled()
+      })
+
+      const call = mockCreateOffCyclePayroll.mock.calls[0]![0]
+      expect(call.request.requestBody.checkDate).toBeDefined()
+    })
   })
 })
