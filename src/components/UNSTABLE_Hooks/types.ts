@@ -1,4 +1,5 @@
 import type { UseFormReturn, FieldValues } from 'react-hook-form'
+import type { FieldsMetadata } from './form/types'
 import type { SDKError } from '@/types/sdkError'
 
 /** Exposes react-hook-form internals for SDK utilities and advanced partner use cases. */
@@ -32,7 +33,7 @@ export interface BaseHookReady {
 }
 
 /** Base shape for form hooks. Individual hooks override `data`, `actions`, and `form`. */
-export interface BaseFormHookReady {
+export interface BaseFormHookReady<TFieldsMetadata extends FieldsMetadata = FieldsMetadata> {
   isLoading: false
   data: Record<string, unknown>
   status: { isPending: boolean; mode: 'create' | 'update' }
@@ -40,7 +41,7 @@ export interface BaseFormHookReady {
   errors: HookErrors
   form: {
     Fields: Record<string, unknown>
-    fieldsMetadata: Record<string, unknown>
+    fieldsMetadata: TFieldsMetadata
     hookFormInternals: HookFormInternals
   }
 }

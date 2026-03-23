@@ -7,6 +7,21 @@ export type {
   BaseFormHookReady,
 } from './types'
 
+export type {
+  FieldMetadata,
+  FieldMetadataWithOptions,
+  FieldsMetadata,
+  FormFieldsMetadataContextValue,
+} from './form'
+export {
+  withOptions,
+  FormFieldsMetadataProvider,
+  SDKFormProvider,
+  useFieldsMetadata,
+  useFieldErrorMessage,
+  deriveFieldsMetadata,
+} from './form'
+
 export {
   useCompensationForm,
   type UseCompensationFormProps,
