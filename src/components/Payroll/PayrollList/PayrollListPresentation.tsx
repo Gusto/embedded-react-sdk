@@ -5,7 +5,7 @@ import { useState, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { PayrollStatusBadges } from '../PayrollStatusBadges'
-import { getPayrollType } from '../helpers'
+import { getPayrollTypeLabel } from '../helpers'
 import styles from './PayrollListPresentation.module.scss'
 import { DataView, Flex, HamburgerMenu } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -180,7 +180,7 @@ export const PayrollListPresentation = ({
               title: t('tableHeaders.0'),
             },
             {
-              render: payroll => <Text>{t(`type.${getPayrollType(payroll)}`)}</Text>,
+              render: payroll => <Text>{getPayrollTypeLabel(payroll)}</Text>,
               title: t('tableHeaders.1'),
             },
             {
