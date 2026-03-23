@@ -134,14 +134,19 @@ export const generateHomeAddressSchema = () =>
 **react-hook-form** — The hook initializes react-hook-form with the Zod resolver, wires up API data fetching, and returns `Fields`, `onSubmit`, and `hookFormInternals` for the partner. A stripped-down version of the hook internals:
 
 ```typescript
-function useHomeAddressForm({ employeeId }: UseHomeAddressParams): UseHomeAddressFormResult {
+function useHomeAddressForm({
+  employeeId,
+  defaultValues,
+  validationMode = 'onSubmit',
+}: UseHomeAddressParams): UseHomeAddressFormResult {
   const { data, isLoading } = useEmployeeAddressesGet({ employeeId })
   const schema = useMemo(() => generateHomeAddressSchema(), [])
   const currentAddress = getActiveHomeAddress(data?.employeeAddressList)
 
   const formMethods = useForm<HomeAddressFormData>({
     resolver: zodResolver(schema),
-    defaultValues: { street1: '', street2: '', city: '', state: undefined, zip: '', courtesyWithholding: false },
+    mode: validationMode,
+    defaultValues: defaultValues ?? { street1: '', street2: '', city: '', state: undefined, zip: '', courtesyWithholding: false },
   })
 
   const hasInitializedForm = useRef(false)
@@ -174,6 +179,11 @@ function useHomeAddressForm({ employeeId }: UseHomeAddressParams): UseHomeAddres
 ```
 
 The key pattern: `useForm` is called inside the hook with the Zod resolver, default values are set for a clean initial render, and the form resets exactly once when API data arrives. Partners never call `useForm` themselves — they receive `Fields` to render and `onSubmit` to wire up.
+
+Two hook parameters give partners control over form initialization:
+
+- **`defaultValues`** — Optional initial values for the form. When provided, these are used instead of the hook's built-in defaults. This is useful when a partner wants to pre-populate fields from their own data source (e.g., values collected in a previous step of their onboarding flow). Once API data loads, the form still resets to the server values.
+- **`validationMode`** — Controls when validation fires. Defaults to `'onSubmit'` but partners can pass `'onBlur'`, `'onChange'`, or `'onTouched'` to match their UX preferences. This maps directly to react-hook-form's [`mode` option](https://react-hook-form.com/docs/useform#mode).
 
 **Field Components** — Each field is a standalone component accepting `label`, `description`, `validationMessages`, and an optional `FieldComponent` prop to swap the underlying control. See the next section for how validation messages work end-to-end.
 
