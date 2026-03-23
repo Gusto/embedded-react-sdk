@@ -1,5 +1,5 @@
 export type { FieldMetadata, FieldMetadataWithOptions, FieldsMetadata } from './types'
-export { hasOptions, withOptions } from './types'
+export { withOptions } from './withOptions'
 export type { FormFieldsMetadataContextValue } from './FormFieldsMetadataContext'
 export { FormFieldsMetadataProvider } from './FormFieldsMetadataProvider'
 export { SDKFormProvider } from './SDKFormProvider'

@@ -1,22 +1,38 @@
 import { type ReactNode, useEffect } from 'react'
-import type { FieldValues, UseFormSetError } from 'react-hook-form'
+import type { FieldPath, FieldValues } from 'react-hook-form'
 import { FormProvider } from 'react-hook-form'
 import type { HookFormInternals, HookErrors } from '../types'
 import { FormFieldsMetadataProvider } from './FormFieldsMetadataProvider'
 import type { FieldMetadata, FieldMetadataWithOptions } from './types'
 import type { SDKFieldError } from '@/types/sdkError'
 
-function useSyncFieldErrors(
+function useSyncFieldErrors<
+  TFormData extends FieldValues,
+  TFieldsMetadata extends {
+    [K in keyof TFieldsMetadata]: FieldMetadata | FieldMetadataWithOptions
+  },
+>(
   fieldErrors: SDKFieldError[] | undefined,
-  setError: UseFormSetError<FieldValues>,
+  form: {
+    fieldsMetadata: TFieldsMetadata
+    hookFormInternals: HookFormInternals<TFormData>
+  },
 ) {
+  const { fieldsMetadata } = form
+  const { setError } = form.hookFormInternals.formMethods
+
   useEffect(() => {
-    if (fieldErrors && fieldErrors.length > 0) {
-      fieldErrors.forEach(fieldError => {
-        setError(fieldError.field, { type: 'custom', message: fieldError.message })
-      })
+    if (!fieldErrors?.length) return
+    const knownFields = new Set(Object.keys(fieldsMetadata))
+    for (const fieldError of fieldErrors) {
+      if (knownFields.has(fieldError.field)) {
+        setError(fieldError.field as FieldPath<TFormData>, {
+          type: 'custom',
+          message: fieldError.message,
+        })
+      }
     }
-  }, [fieldErrors, setError])
+  }, [fieldErrors, setError, fieldsMetadata])
 }
 
 interface SDKFormProviderProps<
@@ -39,10 +55,7 @@ export function SDKFormProvider<
     [K in keyof TFieldsMetadata]: FieldMetadata | FieldMetadataWithOptions
   } = Record<string, FieldMetadata | FieldMetadataWithOptions>,
 >({ errors, form, children }: SDKFormProviderProps<TFormData, TFieldsMetadata>) {
-  useSyncFieldErrors(
-    errors.error?.fieldErrors,
-    form.hookFormInternals.formMethods.setError as UseFormSetError<FieldValues>,
-  )
+  useSyncFieldErrors(errors.error?.fieldErrors, form)
 
   return (
     <FormFieldsMetadataProvider metadata={form.fieldsMetadata} error={errors.error}>

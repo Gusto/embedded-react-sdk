@@ -14,7 +14,6 @@ export type {
   FormFieldsMetadataContextValue,
 } from './form'
 export {
-  hasOptions,
   withOptions,
   FormFieldsMetadataProvider,
   SDKFormProvider,
