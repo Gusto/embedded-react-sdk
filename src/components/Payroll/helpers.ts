@@ -509,8 +509,16 @@ export const getPayrollType = (payroll: {
 }
 
 const OFF_CYCLE_REASON_LABELS: Record<string, string> = {
+  Bonus: 'Bonus',
+  Correction: 'Correction',
   'Transition from old pay schedule': 'Transition',
   'Dismissed employee': 'Dismissal',
+  'Hired employee': 'New Hire',
+  'Benefit reversal': 'Benefit Reversal',
+  'Wage correction': 'Wage Correction',
+  'Tax reconciliation': 'Tax Reconciliation',
+  Reversal: 'Reversal',
+  'Disability insurance distribution': 'Disability Insurance',
 }
 
 export const getPayrollTypeLabel = (payroll: {
