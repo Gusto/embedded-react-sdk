@@ -1411,7 +1411,6 @@ export interface EmployeeTerminationsTerminationFlow{
 "breadcrumbs":{
 "form":string;
 "summary":string;
-"dismissalPayroll":string;
 };
 "offCycleCreation":{
 "loading":string;

@@ -72,14 +72,6 @@ export const terminationBreadcrumbNodes: BreadcrumbNodes = {
       })) as (context: unknown) => unknown,
     },
   },
-  dismissalPayroll: {
-    parent: 'summary',
-    item: {
-      id: 'dismissalPayroll',
-      label: 'breadcrumbs.dismissalPayroll',
-      namespace: 'Employee.Terminations.TerminationFlow',
-    },
-  },
 }
 
 function toFormReducer(ctx: TerminationFlowContextInterface): TerminationFlowContextInterface {

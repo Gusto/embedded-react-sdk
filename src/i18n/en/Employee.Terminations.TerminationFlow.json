@@ -2,8 +2,7 @@
   "cancelSuccess": "Termination has been cancelled successfully",
   "breadcrumbs": {
     "form": "Terminate employee",
-    "summary": "Summary",
-    "dismissalPayroll": "Run payroll"
+    "summary": "Summary"
   },
   "offCycleCreation": {
     "loading": "Creating off-cycle payroll…",
