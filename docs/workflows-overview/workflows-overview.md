@@ -13,6 +13,9 @@ Workflows are pre-built UI experiences you can use to quickly and easily incorpo
 - Employee Onboarding
 - Employee Self Onboarding
 - Payroll Processing
+- Off-Cycle Payroll (Bonus & Correction)
+- Dismissal Payroll
+- Transition Payroll
 - Contractor Onboarding
 - Contractor Payments
 - Employee Termination
