@@ -78,6 +78,22 @@ export const mockTerminationPayPeriods = [
     check_date: '2025-01-20',
     pay_schedule_uuid: 'pay-schedule-123',
   },
+  {
+    employee_uuid: 'dismissal-test-employee',
+    employee_name: 'Jane Doe',
+    start_date: '2025-07-30',
+    end_date: '2025-08-13',
+    check_date: '2025-08-15',
+    pay_schedule_uuid: '1478a82e-b45c-4980-843a-6ddc3b78268e',
+  },
+  {
+    employee_uuid: 'dismissal-test-employee',
+    employee_name: 'Jane Doe',
+    start_date: '2025-08-14',
+    end_date: '2025-08-27',
+    check_date: '2025-08-29',
+    pay_schedule_uuid: '1478a82e-b45c-4980-843a-6ddc3b78268e',
+  },
 ]
 
 export const mockPayrollPrepared = {
