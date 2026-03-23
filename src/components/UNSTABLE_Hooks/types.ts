@@ -33,7 +33,7 @@ export interface BaseHookReady {
 }
 
 /** Base shape for form hooks. Individual hooks override `data`, `actions`, and `form`. */
-export interface BaseFormHookReady {
+export interface BaseFormHookReady<TFieldsMetadata extends FieldsMetadata = FieldsMetadata> {
   isLoading: false
   data: Record<string, unknown>
   status: { isPending: boolean; mode: 'create' | 'update' }
@@ -41,7 +41,7 @@ export interface BaseFormHookReady {
   errors: HookErrors
   form: {
     Fields: Record<string, unknown>
-    fieldsMetadata: FieldsMetadata
+    fieldsMetadata: TFieldsMetadata
     hookFormInternals: HookFormInternals
   }
 }

@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react'
-import type { FieldsMetadata } from './types'
+import type { FieldMetadata, FieldMetadataWithOptions } from './types'
 import { FormFieldsMetadataContext } from './FormFieldsMetadataContext'
 import type { SDKError } from '@/types/sdkError'
 
 interface FormFieldsMetadataProviderProps {
-  metadata: FieldsMetadata
+  metadata: Record<string, FieldMetadata | FieldMetadataWithOptions>
   error: SDKError | null
   children: ReactNode
 }

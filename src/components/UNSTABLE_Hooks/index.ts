@@ -7,11 +7,18 @@ export type {
   BaseFormHookReady,
 } from './types'
 
-export type { FieldMetadata, FieldsMetadata, FormFieldsMetadataContextValue } from './form'
+export type {
+  FieldMetadata,
+  FieldMetadataWithOptions,
+  FieldsMetadata,
+  FormFieldsMetadataContextValue,
+} from './form'
 export {
+  hasOptions,
+  withOptions,
   FormFieldsMetadataProvider,
   SDKFormProvider,
-  useFieldMetadata,
+  useFieldsMetadata,
   useFieldErrorMessage,
   deriveFieldsMetadata,
 } from './form'

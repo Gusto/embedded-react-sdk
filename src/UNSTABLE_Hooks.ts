@@ -6,6 +6,8 @@ export {
   type HookLoadingResult,
   type HookErrors,
   type FieldMetadata,
-  useFieldMetadata,
+  type FieldMetadataWithOptions,
+  hasOptions,
+  useFieldsMetadata,
   useFieldErrorMessage,
 } from '@/components/UNSTABLE_Hooks'
