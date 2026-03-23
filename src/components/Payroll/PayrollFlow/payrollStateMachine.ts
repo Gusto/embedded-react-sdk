@@ -9,6 +9,7 @@ import {
   type PayrollFlowContextInterface,
 } from './PayrollFlowComponents'
 import { PayrollExecutionFlowContextual } from './PayrollExecutionFlowContextual'
+import { TransitionFlowContextual } from './TransitionFlowContextual'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 import { updateBreadcrumbs } from '@/helpers/breadcrumbHelpers'
@@ -24,6 +25,11 @@ type PayrollFlowEventPayloads = {
   }
   [componentEvents.RUN_PAYROLL_PROCESSED]: {
     payPeriod?: PayrollPayPeriodType
+  }
+  [componentEvents.RUN_TRANSITION_PAYROLL]: {
+    startDate: string
+    endDate: string
+    payScheduleUuid: string
   }
 }
 
@@ -177,6 +183,27 @@ export const payrollFlowMachine = {
         }),
       ),
     ),
+    transition(
+      componentEvents.RUN_TRANSITION_PAYROLL,
+      'transition',
+      reduce(
+        (
+          ctx: PayrollFlowContextInterface,
+          ev: MachineEventType<
+            PayrollFlowEventPayloads,
+            typeof componentEvents.RUN_TRANSITION_PAYROLL
+          >,
+        ): PayrollFlowContextInterface => ({
+          ...ctx,
+          component: TransitionFlowContextual,
+          transitionStartDate: ev.payload.startDate,
+          transitionEndDate: ev.payload.endDate,
+          transitionPayScheduleUuid: ev.payload.payScheduleUuid,
+          showPayrollCancelledAlert: false,
+          progressBarType: null,
+        }),
+      ),
+    ),
   ),
   execution: state<MachineTransition>(
     landingBreadcrumbNavigateTransition,
@@ -241,4 +268,5 @@ export const payrollFlowMachine = {
     breadcrumbNavigateTransition('landing'),
     exitFlowTransition,
   ),
+  transition: state<MachineTransition>(landingBreadcrumbNavigateTransition, exitFlowTransition),
 }

@@ -43,6 +43,9 @@ export interface PayrollFlowContextInterface extends FlowContextInterface {
   ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType
   showPayrollCancelledAlert?: boolean
   executionInitialState?: 'configuration' | 'overview'
+  transitionStartDate?: string
+  transitionEndDate?: string
+  transitionPayScheduleUuid?: string
 }
 
 export function PayrollLandingContextual() {

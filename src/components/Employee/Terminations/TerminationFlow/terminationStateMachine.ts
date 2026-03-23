@@ -32,14 +32,14 @@ type EventPayloads = {
     employeeId: string
     alert?: TerminationFlowAlert
   }
+  [componentEvents.EMPLOYEE_TERMINATION_RUN_OFF_CYCLE_PAYROLL]: {
+    employeeId: string
+    companyId: string
+  }
   [componentEvents.EMPLOYEE_TERMINATION_RUN_PAYROLL]: {
     employeeId: string
     companyId: string
     payrollUuid?: string
-  }
-  [componentEvents.EMPLOYEE_TERMINATION_RUN_OFF_CYCLE_PAYROLL]: {
-    employeeId: string
-    companyId: string
   }
 }
 
@@ -69,6 +69,20 @@ export const terminationBreadcrumbNodes: BreadcrumbNodes = {
         component: TerminationSummaryContextual,
         currentBreadcrumbId: 'summary',
         progressBarType: 'breadcrumbs',
+      })) as (context: unknown) => unknown,
+    },
+  },
+  dismissal: {
+    parent: 'summary',
+    item: {
+      id: 'dismissal',
+      label: 'breadcrumbs.dismissal',
+      namespace: 'Employee.Terminations.TerminationFlow',
+      onNavigate: ((ctx: TerminationFlowContextInterface) => ({
+        ...ctx,
+        component: DismissalFlowContextual,
+        currentBreadcrumbId: 'dismissal',
+        progressBarType: null,
       })) as (context: unknown) => unknown,
     },
   },

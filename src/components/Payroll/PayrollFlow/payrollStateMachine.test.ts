@@ -222,4 +222,59 @@ describe('payrollFlowMachine', () => {
       expect(service.machine.current).toBe('landing')
     })
   })
+
+  describe('transition state', () => {
+    function toTransition(service: ReturnType<typeof createService>) {
+      send(service, componentEvents.RUN_TRANSITION_PAYROLL, {
+        startDate: '2026-03-01',
+        endDate: '2026-03-15',
+        payScheduleUuid: 'ps-123',
+      })
+      expect(service.machine.current).toBe('transition')
+    }
+
+    it('transitions from landing on RUN_TRANSITION_PAYROLL with context fields', () => {
+      const service = createService()
+
+      send(service, componentEvents.RUN_TRANSITION_PAYROLL, {
+        startDate: '2026-03-01',
+        endDate: '2026-03-15',
+        payScheduleUuid: 'ps-123',
+      })
+
+      expect(service.machine.current).toBe('transition')
+      expect(service.context.transitionStartDate).toBe('2026-03-01')
+      expect(service.context.transitionEndDate).toBe('2026-03-15')
+      expect(service.context.transitionPayScheduleUuid).toBe('ps-123')
+      expect(service.context.showPayrollCancelledAlert).toBe(false)
+      expect(service.context.progressBarType).toBeNull()
+    })
+
+    it('transitions to landing on BREADCRUMB_NAVIGATE with landing key', () => {
+      const service = createService()
+      toTransition(service)
+
+      send(service, componentEvents.BREADCRUMB_NAVIGATE, { key: 'landing' })
+
+      expect(service.machine.current).toBe('landing')
+    })
+
+    it('transitions to landing on PAYROLL_EXIT_FLOW', () => {
+      const service = createService()
+      toTransition(service)
+
+      send(service, componentEvents.PAYROLL_EXIT_FLOW)
+
+      expect(service.machine.current).toBe('landing')
+    })
+
+    it('ignores BREADCRUMB_NAVIGATE with non-landing key', () => {
+      const service = createService()
+      toTransition(service)
+
+      send(service, componentEvents.BREADCRUMB_NAVIGATE, { key: 'configuration' })
+
+      expect(service.machine.current).toBe('transition')
+    })
+  })
 })
