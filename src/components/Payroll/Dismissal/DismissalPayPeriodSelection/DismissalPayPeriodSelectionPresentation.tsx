@@ -49,6 +49,7 @@ export function DismissalPayPeriodSelectionPresentation({
         value={selectedPeriodIndex}
         onChange={onSelectPeriod}
         placeholder={t('selectPlaceholder')}
+        isRequired
       />
 
       <ActionsLayout>

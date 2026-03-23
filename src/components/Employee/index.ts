@@ -15,5 +15,13 @@ export { EmployeeDocuments } from './EmployeeDocuments'
 export { EmploymentEligibility } from './DocumentSigner/EmploymentEligibility'
 export type { EmploymentEligibilityProps } from './DocumentSigner/EmploymentEligibility'
 
+export { TerminateEmployee } from './Terminations/TerminateEmployee/TerminateEmployee'
+export type { TerminateEmployeeProps } from './Terminations/TerminateEmployee/TerminateEmployee'
+export { TerminationSummary } from './Terminations/TerminationSummary/TerminationSummary'
+export type { TerminationSummaryProps } from './Terminations/TerminationSummary/TerminationSummary'
+export { TerminationFlow } from './Terminations/TerminationFlow/TerminationFlow'
+export type { TerminationFlowProps } from './Terminations/TerminationFlow/TerminationFlowComponents'
+export type { PayrollOption } from './Terminations/types'
+
 // TODO: Remove once we have migrated partners to use the new FederalTaxes and StateTaxes components
 export { Taxes } from './Taxes'
