@@ -69,7 +69,7 @@ export const Root = ({ onEvent, companyId, dictionary }: PayrollHistoryProps) =>
 
   const { data: payrollsData } = usePayrollsListSuspense({
     companyId,
-    processingStatuses: [ProcessingStatuses.Processed, ProcessingStatuses.Unprocessed],
+    processingStatuses: [ProcessingStatuses.Processed],
     payrollTypes: [
       QueryParamPayrollTypes.Regular,
       QueryParamPayrollTypes.OffCycle,
