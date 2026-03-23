@@ -72,24 +72,12 @@ export default {
 
 export const Default = () => {
   const taxWithholding = useTaxWithholdingState()
-  return (
-    <OffCycleCreationPresentation
-      employees={mockEmployees}
-      isLoadingEmployees={false}
-      {...taxWithholding}
-    />
-  )
+  return <OffCycleCreationPresentation employees={mockEmployees} {...taxWithholding} />
 }
 
 export const CorrectionSelected = () => {
   const taxWithholding = useTaxWithholdingState('regular')
-  return (
-    <OffCycleCreationPresentation
-      employees={mockEmployees}
-      isLoadingEmployees={false}
-      {...taxWithholding}
-    />
-  )
+  return <OffCycleCreationPresentation employees={mockEmployees} {...taxWithholding} />
 }
 CorrectionSelected.decorators = [
   (Story: React.ComponentType) => (
@@ -103,13 +91,7 @@ CorrectionSelected.decorators = [
 
 export const CheckOnlyMode = () => {
   const taxWithholding = useTaxWithholdingState()
-  return (
-    <OffCycleCreationPresentation
-      employees={mockEmployees}
-      isLoadingEmployees={false}
-      {...taxWithholding}
-    />
-  )
+  return <OffCycleCreationPresentation employees={mockEmployees} {...taxWithholding} />
 }
 CheckOnlyMode.decorators = [
   (Story: React.ComponentType) => (

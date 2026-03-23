@@ -71,7 +71,7 @@ function Root({
   const payScheduleName = useMemo(() => {
     const schedules = paySchedulesData.payScheduleList ?? []
     const match = schedules.find(s => s.uuid === payScheduleUuid)
-    return match?.name ?? match?.customName ?? null
+    return match?.customName ?? match?.name ?? null
   }, [paySchedulesData, payScheduleUuid])
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

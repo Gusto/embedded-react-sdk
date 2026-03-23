@@ -1,28 +1,38 @@
-import { Suspense, useMemo } from 'react'
+import { useMemo } from 'react'
 import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
 import { OffCycleCreation } from '../OffCycleCreation'
 import {
   PayrollExecutionFlow,
   type PayrollExecutionFlowProps,
 } from '../PayrollExecutionFlow/PayrollExecutionFlow'
+import type { OffCycleReason } from '../OffCycleReasonSelection'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { OnEventType } from '@/components/Base/useBase'
 import type { EventType } from '@/shared/constants'
 import { ensureRequired } from '@/helpers/ensureRequired'
+import { BaseComponent } from '@/components/Base/Base'
 
 export interface OffCycleFlowContextInterface extends FlowContextInterface {
   companyId: string
   payrollUuid?: string
+  payrollType?: OffCycleReason
 }
 
 export interface OffCycleFlowProps {
   companyId: string
+  payrollType?: OffCycleReason
   onEvent: OnEventType<EventType, unknown>
 }
 
 export function OffCycleCreationContextual() {
-  const { companyId, onEvent } = useFlow<OffCycleFlowContextInterface>()
-  return <OffCycleCreation companyId={ensureRequired(companyId)} onEvent={onEvent} />
+  const { companyId, payrollType, onEvent } = useFlow<OffCycleFlowContextInterface>()
+  return (
+    <OffCycleCreation
+      companyId={ensureRequired(companyId)}
+      payrollType={payrollType}
+      onEvent={onEvent}
+    />
+  )
 }
 
 export function OffCycleExecutionContextual() {
@@ -37,14 +47,14 @@ export function OffCycleExecutionContextual() {
   const resolvedPayrollId = ensureRequired(payrollUuid)
 
   return (
-    <Suspense>
+    <BaseComponent onEvent={onEvent}>
       <OffCycleExecutionWithData
         companyId={resolvedCompanyId}
         payrollId={resolvedPayrollId}
         onEvent={onEvent}
         prefixBreadcrumbs={prefixBreadcrumbs}
       />
-    </Suspense>
+    </BaseComponent>
   )
 }
 

@@ -7,35 +7,41 @@ import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 const mockCreateOffCyclePayroll = vi.fn()
 
+const defaultPayPeriods = [
+  {
+    startDate: '2024-12-01',
+    endDate: '2024-12-14',
+    checkDate: '2024-12-17',
+    employeeUuid: 'emp-1',
+    employeeName: 'Jane Doe',
+    payScheduleUuid: 'ps-1',
+  },
+  {
+    startDate: '2024-12-15',
+    endDate: '2024-12-28',
+    checkDate: '2024-12-31',
+    employeeUuid: 'emp-1',
+    employeeName: 'Jane Doe',
+    payScheduleUuid: 'ps-1',
+  },
+  {
+    startDate: '2024-12-01',
+    endDate: '2024-12-14',
+    checkDate: '2024-12-17',
+    employeeUuid: 'emp-2',
+    employeeName: 'John Smith',
+    payScheduleUuid: 'ps-2',
+  },
+]
+
+let mockPayPeriods:
+  | typeof defaultPayPeriods
+  | Array<Omit<(typeof defaultPayPeriods)[0], 'checkDate'>> = defaultPayPeriods
+
 vi.mock('@gusto/embedded-api/react-query/paySchedulesGetUnprocessedTerminationPeriods', () => ({
   usePaySchedulesGetUnprocessedTerminationPeriodsSuspense: () => ({
     data: {
-      unprocessedTerminationPayPeriodList: [
-        {
-          startDate: '2024-12-01',
-          endDate: '2024-12-14',
-          checkDate: '2024-12-17',
-          employeeUuid: 'emp-1',
-          employeeName: 'Jane Doe',
-          payScheduleUuid: 'ps-1',
-        },
-        {
-          startDate: '2024-12-15',
-          endDate: '2024-12-28',
-          checkDate: '2024-12-31',
-          employeeUuid: 'emp-1',
-          employeeName: 'Jane Doe',
-          payScheduleUuid: 'ps-1',
-        },
-        {
-          startDate: '2024-12-01',
-          endDate: '2024-12-14',
-          checkDate: '2024-12-17',
-          employeeUuid: 'emp-2',
-          employeeName: 'John Smith',
-          payScheduleUuid: 'ps-2',
-        },
-      ],
+      unprocessedTerminationPayPeriodList: mockPayPeriods,
     },
   }),
 }))
@@ -60,6 +66,7 @@ function renderComponent(props = {}) {
 describe('DismissalPayPeriodSelection', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockPayPeriods = defaultPayPeriods
   })
 
   describe('rendering', () => {
@@ -155,6 +162,69 @@ describe('DismissalPayPeriodSelection', () => {
           { payrollUuid: 'new-payroll-123' },
         )
       })
+    })
+
+    it('sends the period checkDate when available', async () => {
+      const user = userEvent.setup()
+      mockCreateOffCyclePayroll.mockResolvedValueOnce({
+        payrollUnprocessed: { payrollUuid: 'new-payroll-123' },
+      })
+
+      renderComponent()
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /continue/i })).toBeInTheDocument()
+      })
+
+      const selectTrigger = screen.getByLabelText(/pay period/i)
+      await user.click(selectTrigger)
+      const options = await screen.findAllByRole('option')
+      await user.click(options[0]!)
+
+      await user.click(screen.getByRole('button', { name: /continue/i }))
+
+      await waitFor(() => {
+        expect(mockCreateOffCyclePayroll).toHaveBeenCalled()
+      })
+
+      const call = mockCreateOffCyclePayroll.mock.calls[0]![0]
+      expect(call.request.requestBody.checkDate).toBeDefined()
+    })
+  })
+
+  describe('payroll creation with missing checkDate', () => {
+    it('computes a fallback checkDate when period has no checkDate', async () => {
+      mockPayPeriods = [
+        {
+          startDate: '2024-12-01',
+          endDate: '2024-12-14',
+          employeeUuid: 'emp-1',
+          employeeName: 'Jane Doe',
+          payScheduleUuid: 'ps-1',
+        },
+      ]
+
+      const user = userEvent.setup()
+      mockCreateOffCyclePayroll.mockResolvedValueOnce({
+        payrollUnprocessed: { payrollUuid: 'new-payroll-456' },
+      })
+
+      renderComponent()
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /continue/i })).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: /continue/i }))
+
+      await waitFor(() => {
+        expect(mockCreateOffCyclePayroll).toHaveBeenCalled()
+      })
+
+      const call = mockCreateOffCyclePayroll.mock.calls[0]![0]
+      const sentCheckDate = call.request.requestBody.checkDate
+      expect(sentCheckDate).toBeDefined()
+      expect(sentCheckDate).not.toBe('2024-12-17')
     })
   })
 })

@@ -20,12 +20,6 @@ interface TransitionPayrollAlertProps {
 
 const LOOK_AHEAD_DAYS = 90
 
-const lookAheadEndDate = (() => {
-  const date = new Date()
-  date.setDate(date.getDate() + LOOK_AHEAD_DAYS)
-  return new RFCDate(date)
-})()
-
 export function TransitionPayrollAlert(props: TransitionPayrollAlertProps) {
   return (
     <BaseComponent onEvent={props.onEvent}>
@@ -39,6 +33,12 @@ function Root({ companyId }: TransitionPayrollAlertProps) {
 
   const [showSkipSuccessAlert, setShowSkipSuccessAlert] = useState(false)
   const [skippingPayPeriod, setSkippingPayPeriod] = useState<PayPeriod | null>(null)
+
+  const lookAheadEndDate = useMemo(() => {
+    const date = new Date()
+    date.setDate(date.getDate() + LOOK_AHEAD_DAYS)
+    return new RFCDate(date)
+  }, [])
 
   const { data: payPeriodsData } = usePaySchedulesGetPayPeriodsSuspense({
     companyId,

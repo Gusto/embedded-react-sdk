@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { createOffCyclePayPeriodDateFormSchema } from '../OffCyclePayPeriodDateForm/OffCyclePayPeriodDateFormTypes'
 import { OffCycleCreation } from './OffCycleCreation'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
@@ -225,6 +226,29 @@ describe('OffCycleCreation', () => {
       await waitFor(() => {
         expect(screen.getByText(/payment date is required/i)).toBeInTheDocument()
       })
+    })
+
+    it('validates that check-only payrolls cannot have a past payment date (schema)', () => {
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
+
+      const pastDate = new Date('2020-01-01')
+      const schema = createOffCyclePayPeriodDateFormSchema((key: string) => key, 'bonus', today)
+
+      const result = schema.safeParse({
+        isCheckOnly: true,
+        startDate: null,
+        endDate: null,
+        checkDate: pastDate,
+      })
+
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        const checkDateErrors = result.error.issues.filter(issue =>
+          issue.path.includes('checkDate'),
+        )
+        expect(checkDateErrors.length).toBeGreaterThan(0)
+      }
     })
 
     it('does not emit an event when form has validation errors', async () => {

@@ -74,7 +74,7 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
     setIsTaxWithholdingModalOpen(false)
   }, [])
 
-  const { data: employeesData, isLoading: isLoadingEmployees } = useEmployeesListSuspense({
+  const { data: employeesData } = useEmployeesListSuspense({
     companyId,
     onboardedActive: true,
   })
@@ -197,7 +197,6 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
       <Form onSubmit={methods.handleSubmit(onSubmit)}>
         <OffCycleCreationPresentation
           employees={employees}
-          isLoadingEmployees={isLoadingEmployees}
           isPending={isPending}
           taxWithholdingConfig={taxWithholdingConfig}
           isTaxWithholdingModalOpen={isTaxWithholdingModalOpen}

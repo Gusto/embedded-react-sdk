@@ -9,7 +9,7 @@ const defaultProps = {
     { value: '0', label: 'Dec 1, 2024 – Dec 14, 2024 (Jane Doe)' },
     { value: '1', label: 'Dec 15, 2024 – Dec 28, 2024 (Jane Doe)' },
   ],
-  selectedPeriodIndex: undefined as string | undefined,
+  selectedPeriodKey: undefined as string | undefined,
   onSelectPeriod: vi.fn(),
   onSubmit: vi.fn(),
   isPending: false,
@@ -58,7 +58,7 @@ describe('DismissalPayPeriodSelectionPresentation', () => {
 
   it('enables continue button when a period is selected', async () => {
     renderWithProviders(
-      <DismissalPayPeriodSelectionPresentation {...defaultProps} selectedPeriodIndex="0" />,
+      <DismissalPayPeriodSelectionPresentation {...defaultProps} selectedPeriodKey="0" />,
     )
 
     await waitFor(() => {
@@ -72,7 +72,7 @@ describe('DismissalPayPeriodSelectionPresentation', () => {
     renderWithProviders(
       <DismissalPayPeriodSelectionPresentation
         {...defaultProps}
-        selectedPeriodIndex="0"
+        selectedPeriodKey="0"
         onSubmit={onSubmit}
       />,
     )
@@ -86,7 +86,7 @@ describe('DismissalPayPeriodSelectionPresentation', () => {
     renderWithProviders(
       <DismissalPayPeriodSelectionPresentation
         {...defaultProps}
-        selectedPeriodIndex="0"
+        selectedPeriodKey="0"
         isPending={true}
       />,
     )
