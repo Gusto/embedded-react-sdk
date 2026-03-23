@@ -12,6 +12,14 @@ export type {
   FieldMetadataWithOptions,
   FieldsMetadata,
   FormFieldsMetadataContextValue,
+  ValidationMessages,
+  BaseFieldProps,
+  TextInputHookFieldProps,
+  SelectHookFieldProps,
+  CheckboxHookFieldProps,
+  NumberInputHookFieldProps,
+  DatePickerHookFieldProps,
+  RadioGroupHookFieldProps,
 } from './form'
 export {
   withOptions,
@@ -20,6 +28,12 @@ export {
   useFieldsMetadata,
   useFieldErrorMessage,
   deriveFieldsMetadata,
+  TextInputHookField,
+  SelectHookField,
+  CheckboxHookField,
+  NumberInputHookField,
+  DatePickerHookField,
+  RadioGroupHookField,
 } from './form'
 
 export {
