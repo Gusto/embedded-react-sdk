@@ -72,6 +72,9 @@ const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
   const onRunPayroll = ({ payrollUuid, payPeriod }: Pick<Payroll, 'payrollUuid' | 'payPeriod'>) => {
     onEvent(componentEvents.RUN_PAYROLL_SELECTED, { payrollUuid, payPeriod })
   }
+  const onRunOffCyclePayroll = () => {
+    onEvent(componentEvents.RUN_OFF_CYCLE_PAYROLL)
+  }
   const onSubmitPayroll = ({
     payrollUuid,
     payPeriod,
@@ -109,6 +112,7 @@ const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
       onRunPayroll={onRunPayroll}
       onSubmitPayroll={onSubmitPayroll}
       onSkipPayroll={onSkipPayroll}
+      onRunOffCyclePayroll={onRunOffCyclePayroll}
       showSkipSuccessAlert={showSkipSuccessAlert}
       onDismissSkipSuccessAlert={() => {
         setShowSkipSuccessAlert(false)

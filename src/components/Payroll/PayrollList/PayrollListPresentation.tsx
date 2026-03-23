@@ -19,6 +19,7 @@ interface PayrollListPresentationProps {
   onRunPayroll: ({ payrollUuid, payPeriod }: Pick<Payroll, 'payrollUuid' | 'payPeriod'>) => void
   onSubmitPayroll: ({ payrollUuid, payPeriod }: Pick<Payroll, 'payrollUuid' | 'payPeriod'>) => void
   onSkipPayroll: ({ payrollUuid }: Pick<Payroll, 'payrollUuid'>) => void
+  onRunOffCyclePayroll: () => void
   payrolls: Payroll[]
   paySchedules: PayScheduleList[]
   showSkipSuccessAlert: boolean
@@ -32,6 +33,7 @@ export const PayrollListPresentation = ({
   onRunPayroll,
   onSubmitPayroll,
   onSkipPayroll,
+  onRunOffCyclePayroll,
   payrolls,
   paySchedules,
   showSkipSuccessAlert,
@@ -40,7 +42,7 @@ export const PayrollListPresentation = ({
   blockers,
   wireInRequests,
 }: PayrollListPresentationProps) => {
-  const { Button, Dialog, Heading, Text, Alert } = useComponentContext()
+  const { Box, Button, Dialog, Heading, Text, Alert } = useComponentContext()
   useI18n('Payroll.PayrollList')
   const { t } = useTranslation('Payroll.PayrollList')
   const dateFormatter = useDateFormatter()
@@ -283,6 +285,26 @@ export const PayrollListPresentation = ({
         >
           {t('skipPayrollDialog.body')}
         </Dialog>
+        <Box className={styles.offCycleCta}>
+          <Flex
+            flexDirection={{ base: 'column', medium: 'row' }}
+            justifyContent="space-between"
+            alignItems={{ base: 'stretch', medium: 'center' }}
+            gap={16}
+          >
+            <Flex flexDirection="column" gap={4}>
+              <Text weight="bold">{t('offCycleCta.title')}</Text>
+              <Text variant="supporting" size="sm">
+                {t('offCycleCta.description')}
+              </Text>
+            </Flex>
+            <div className={styles.offCycleCtaButton}>
+              <Button variant="secondary" onClick={onRunOffCyclePayroll}>
+                {t('offCycleCta.button')}
+              </Button>
+            </div>
+          </Flex>
+        </Box>
       </Flex>
     </div>
   )
