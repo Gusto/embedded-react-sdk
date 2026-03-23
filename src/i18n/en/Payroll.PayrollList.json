@@ -18,5 +18,10 @@
     "Off-Cycle": "Off-Cycle",
     "Regular": "Regular"
   },
-  "tableHeaders": ["Pay period", "Type", "Pay date", "Run by", "Status"]
+  "tableHeaders": ["Pay period", "Type", "Pay date", "Run by", "Status"],
+  "offCycleCta": {
+    "title": "Run an off-cycle payroll",
+    "description": "You can pay an employee outside of your normal payroll schedule by running an off-cycle payroll.",
+    "button": "Run off-cycle payroll"
+  }
 }

@@ -2074,6 +2074,11 @@ export interface PayrollPayrollList{
 "3":string;
 "4":string;
 };
+"offCycleCta":{
+"title":string;
+"description":string;
+"button":string;
+};
 };
 export interface PayrollPayrollOverview{
 "breadcrumbLabel":string;

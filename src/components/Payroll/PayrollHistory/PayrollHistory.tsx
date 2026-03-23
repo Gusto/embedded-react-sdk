@@ -2,7 +2,10 @@ import { useState, useMemo } from 'react'
 import { usePayrollsListSuspense } from '@gusto/embedded-api/react-query/payrollsList'
 import { usePayrollsCancelMutation } from '@gusto/embedded-api/react-query/payrollsCancel'
 import { useWireInRequestsListSuspense } from '@gusto/embedded-api/react-query/wireInRequestsList'
-import { ProcessingStatuses } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrolls'
+import {
+  ProcessingStatuses,
+  QueryParamPayrollTypes,
+} from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrolls'
 import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
 import { PayrollHistoryPresentation } from './PayrollHistoryPresentation'
 import type { BaseComponentInterface } from '@/components/Base/Base'
@@ -62,6 +65,11 @@ export const Root = ({ onEvent, companyId, dictionary }: PayrollHistoryProps) =>
   const { data: payrollsData } = usePayrollsListSuspense({
     companyId,
     processingStatuses: [ProcessingStatuses.Processed],
+    payrollTypes: [
+      QueryParamPayrollTypes.Regular,
+      QueryParamPayrollTypes.OffCycle,
+      QueryParamPayrollTypes.External,
+    ],
     startDate: dateRange.startDate,
     endDate: dateRange.endDate,
     include: ['totals'],

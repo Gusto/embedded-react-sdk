@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
 import type { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest'
 import { PayrollStatusBadges } from '../PayrollStatusBadges'
-import { getPayrollType, calculateTotalPayroll, canCancelPayroll } from '../helpers'
+import { getPayrollTypeLabel, calculateTotalPayroll, canCancelPayroll } from '../helpers'
 import type { TimeFilterOption } from './PayrollHistory'
 import styles from './PayrollHistoryPresentation.module.scss'
 import type { MenuItem } from '@/components/Common/UI/Menu/MenuTypes'
@@ -171,7 +171,7 @@ export const PayrollHistoryPresentation = ({
           },
           {
             title: t('columns.type'),
-            render: (item: Payroll) => getPayrollType(item),
+            render: (item: Payroll) => getPayrollTypeLabel(item),
           },
           {
             title: t('columns.payDate'),

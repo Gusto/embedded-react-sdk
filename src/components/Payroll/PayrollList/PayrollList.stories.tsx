@@ -8,6 +8,7 @@ export default {
 const runPayrollAction = fn().mockName('run_payroll')
 const submitPayrollAction = fn().mockName('submit_payroll')
 const skipPayrollAction = fn().mockName('skip_payroll')
+const runOffCyclePayrollAction = fn().mockName('run_off_cycle_payroll')
 const dismissAlertAction = fn().mockName('dismiss_alert')
 
 export const PayrollListStory = () => {
@@ -25,6 +26,7 @@ export const PayrollListStory = () => {
       onRunPayroll={runPayrollAction}
       onSubmitPayroll={submitPayrollAction}
       onSkipPayroll={skipPayrollAction}
+      onRunOffCyclePayroll={runOffCyclePayrollAction}
       showSkipSuccessAlert={false}
       onDismissSkipSuccessAlert={dismissAlertAction}
       blockers={[]}
@@ -42,6 +44,7 @@ export const EmptyPayrollListStory = () => {
       onRunPayroll={runPayrollAction}
       onSubmitPayroll={submitPayrollAction}
       onSkipPayroll={skipPayrollAction}
+      onRunOffCyclePayroll={runOffCyclePayrollAction}
       showSkipSuccessAlert={false}
       onDismissSkipSuccessAlert={dismissAlertAction}
       blockers={[]}
@@ -66,6 +69,7 @@ export const PayrollListWithSkipAlertStory = () => {
       onRunPayroll={runPayrollAction}
       onSubmitPayroll={submitPayrollAction}
       onSkipPayroll={skipPayrollAction}
+      onRunOffCyclePayroll={runOffCyclePayrollAction}
       showSkipSuccessAlert={true}
       onDismissSkipSuccessAlert={dismissAlertAction}
       blockers={[]}
@@ -90,6 +94,7 @@ export const PayrollListSkippingStory = () => {
       onRunPayroll={runPayrollAction}
       onSubmitPayroll={submitPayrollAction}
       onSkipPayroll={skipPayrollAction}
+      onRunOffCyclePayroll={runOffCyclePayrollAction}
       showSkipSuccessAlert={false}
       onDismissSkipSuccessAlert={dismissAlertAction}
       blockers={[]}
@@ -114,6 +119,7 @@ export const PayrollListWithBlockersStory = () => {
       onRunPayroll={runPayrollAction}
       onSubmitPayroll={submitPayrollAction}
       onSkipPayroll={skipPayrollAction}
+      onRunOffCyclePayroll={runOffCyclePayrollAction}
       showSkipSuccessAlert={false}
       onDismissSkipSuccessAlert={dismissAlertAction}
       blockers={[{ key: 'signatory_required', message: 'Signatory required' }]}
@@ -164,6 +170,7 @@ export const PayrollListWithWireInStatusesStory = () => {
       onRunPayroll={runPayrollAction}
       onSubmitPayroll={submitPayrollAction}
       onSkipPayroll={skipPayrollAction}
+      onRunOffCyclePayroll={runOffCyclePayrollAction}
       showSkipSuccessAlert={false}
       onDismissSkipSuccessAlert={dismissAlertAction}
       blockers={[]}
@@ -182,6 +189,56 @@ export const PayrollListWithWireInStatusesStory = () => {
           wireInDeadline: futureDeadline.toISOString(),
         },
       ]}
+    />
+  )
+}
+
+export const PayrollListWithMixedTypesStory = () => {
+  return (
+    <PayrollListPresentation
+      payrolls={[
+        {
+          checkDate: '2025-08-24',
+          payrollDeadline: new Date(Date.now() + 16 * 60 * 60 * 1000),
+          payrollUuid: 'regular-1',
+          payPeriod: {
+            payScheduleUuid: '1234',
+            startDate: '2025-08-13',
+            endDate: '2025-08-27',
+          },
+        },
+        {
+          checkDate: '2025-09-08',
+          payrollDeadline: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
+          payrollUuid: 'regular-2',
+          payPeriod: {
+            payScheduleUuid: '1234',
+            startDate: '2025-08-27',
+            endDate: '2025-09-10',
+          },
+        },
+        {
+          checkDate: '2025-08-20',
+          payrollDeadline: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+          payrollUuid: 'offcycle-1',
+          offCycle: true,
+          payPeriod: {
+            payScheduleUuid: '1234',
+            startDate: '2025-08-15',
+            endDate: '2025-08-20',
+          },
+        },
+      ]}
+      paySchedules={[{ uuid: '1234', version: '1', customName: 'Engineering staff' }]}
+      onRunPayroll={runPayrollAction}
+      onSubmitPayroll={submitPayrollAction}
+      onSkipPayroll={skipPayrollAction}
+      onRunOffCyclePayroll={runOffCyclePayrollAction}
+      showSkipSuccessAlert={false}
+      onDismissSkipSuccessAlert={dismissAlertAction}
+      blockers={[]}
+      skippingPayrollId={null}
+      wireInRequests={[]}
     />
   )
 }

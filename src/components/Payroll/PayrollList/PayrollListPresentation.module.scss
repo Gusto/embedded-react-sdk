@@ -19,3 +19,12 @@
   flex-direction: column;
   white-space: nowrap;
 }
+
+.offCycleCta[data-testid] {
+  background-color: var(--g-colorBodyAccent);
+}
+
+.offCycleCtaButton {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
