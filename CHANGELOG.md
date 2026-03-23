@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.37.0
+
+### Features & Enhancements
+
+- Add termination, dismissal, and transition payroll flows
+- Add UNSTABLE_Hooks with form hook infrastructure
+- Introduce unified SDKError type and ObservabilityError extension
+- Add section dividers and headings to off-cycle and transition creation
+
+### Fixes
+
+- Fix off-cycle, dismissal, and transition payroll bugs
+- Fix PayrollConfiguration calculate/polling flow
+- Fix hourly inputs visibility and payroll cache invalidation
+- Include off-cycle and external payrolls in list and history views
+
+### Chores & Maintenance
+
+- Add E2E tests for dismissal and transition payroll flows
+- Fix minimatch ReDoS vulnerability (CVE-2026-27903)
+- Dependency bumps (storybook 10.3.1, i18next, react-i18next, msw, and more)
+
 ## 0.36.0
 
 ### Features & Enhancements
