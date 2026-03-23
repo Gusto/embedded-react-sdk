@@ -77,6 +77,7 @@ describe('PayrollListPresentation', () => {
           onRunPayroll={() => {}}
           onSubmitPayroll={() => {}}
           onSkipPayroll={() => {}}
+          onRunOffCyclePayroll={() => {}}
           payrolls={[mockUnprocessedPayroll]}
           paySchedules={mockPaySchedules}
           showSkipSuccessAlert={false}
@@ -97,6 +98,7 @@ describe('PayrollListPresentation', () => {
           onRunPayroll={() => {}}
           onSubmitPayroll={() => {}}
           onSkipPayroll={() => {}}
+          onRunOffCyclePayroll={() => {}}
           payrolls={[mockUnprocessedPayroll]}
           paySchedules={mockPaySchedules}
           showSkipSuccessAlert={false}
@@ -119,6 +121,7 @@ describe('PayrollListPresentation', () => {
           onRunPayroll={() => {}}
           onSubmitPayroll={() => {}}
           onSkipPayroll={() => {}}
+          onRunOffCyclePayroll={() => {}}
           payrolls={[mockUnprocessedPayroll]}
           paySchedules={mockPaySchedules}
           showSkipSuccessAlert={false}
@@ -140,6 +143,7 @@ describe('PayrollListPresentation', () => {
           onRunPayroll={() => {}}
           onSubmitPayroll={() => {}}
           onSkipPayroll={() => {}}
+          onRunOffCyclePayroll={() => {}}
           payrolls={[mockUnprocessedPayroll]}
           paySchedules={mockPaySchedules}
           showSkipSuccessAlert={false}
@@ -174,6 +178,7 @@ describe('PayrollListPresentation', () => {
           onRunPayroll={() => {}}
           onSubmitPayroll={() => {}}
           onSkipPayroll={() => {}}
+          onRunOffCyclePayroll={() => {}}
           payrolls={[futurePayroll]}
           paySchedules={mockPaySchedules}
           showSkipSuccessAlert={false}
@@ -207,6 +212,7 @@ describe('PayrollListPresentation', () => {
           onRunPayroll={() => {}}
           onSubmitPayroll={() => {}}
           onSkipPayroll={() => {}}
+          onRunOffCyclePayroll={() => {}}
           payrolls={[todayPayroll]}
           paySchedules={mockPaySchedules}
           showSkipSuccessAlert={false}
@@ -241,6 +247,7 @@ describe('PayrollListPresentation', () => {
           onRunPayroll={() => {}}
           onSubmitPayroll={() => {}}
           onSkipPayroll={() => {}}
+          onRunOffCyclePayroll={() => {}}
           payrolls={[pastPayroll]}
           paySchedules={mockPaySchedules}
           showSkipSuccessAlert={false}
@@ -267,6 +274,7 @@ describe('PayrollListPresentation', () => {
           onRunPayroll={() => {}}
           onSubmitPayroll={() => {}}
           onSkipPayroll={() => {}}
+          onRunOffCyclePayroll={() => {}}
           payrolls={[processedPayroll]}
           paySchedules={mockPaySchedules}
           showSkipSuccessAlert={false}
@@ -293,6 +301,7 @@ describe('PayrollListPresentation', () => {
           onRunPayroll={onRunPayroll}
           onSubmitPayroll={() => {}}
           onSkipPayroll={() => {}}
+          onRunOffCyclePayroll={() => {}}
           payrolls={[mockUnprocessedPayroll]}
           paySchedules={mockPaySchedules}
           showSkipSuccessAlert={false}
@@ -326,6 +335,7 @@ describe('PayrollListPresentation', () => {
           onRunPayroll={() => {}}
           onSubmitPayroll={onSubmitPayroll}
           onSkipPayroll={() => {}}
+          onRunOffCyclePayroll={() => {}}
           payrolls={[mockCalculatedPayroll]}
           paySchedules={mockPaySchedules}
           showSkipSuccessAlert={false}
@@ -358,6 +368,7 @@ describe('PayrollListPresentation', () => {
           onRunPayroll={() => {}}
           onSubmitPayroll={() => {}}
           onSkipPayroll={() => {}}
+          onRunOffCyclePayroll={() => {}}
           payrolls={[mockUnprocessedPayroll]}
           paySchedules={mockPaySchedules}
           showSkipSuccessAlert={true}
@@ -378,6 +389,7 @@ describe('PayrollListPresentation', () => {
           onRunPayroll={() => {}}
           onSubmitPayroll={() => {}}
           onSkipPayroll={() => {}}
+          onRunOffCyclePayroll={() => {}}
           payrolls={[mockUnprocessedPayroll]}
           paySchedules={mockPaySchedules}
           showSkipSuccessAlert={false}
@@ -401,6 +413,7 @@ describe('PayrollListPresentation', () => {
           onRunPayroll={() => {}}
           onSubmitPayroll={() => {}}
           onSkipPayroll={() => {}}
+          onRunOffCyclePayroll={() => {}}
           payrolls={[mockUnprocessedPayroll]}
           paySchedules={mockPaySchedules}
           showSkipSuccessAlert={true}
