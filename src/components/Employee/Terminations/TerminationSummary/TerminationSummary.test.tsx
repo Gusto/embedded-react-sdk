@@ -329,6 +329,58 @@ describe('TerminationSummary', () => {
       )
     })
 
+    it('includes payrollUuid in EMPLOYEE_TERMINATION_RUN_PAYROLL event when provided', async () => {
+      server.use(
+        http.get(`${API_BASE_URL}/v1/employees/:employee_id/terminations`, () => {
+          return HttpResponse.json([mockTerminationWithPayroll])
+        }),
+      )
+
+      renderWithProviders(<TerminationSummary {...defaultProps} payrollUuid="payroll-456" />)
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Run termination payroll' })).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: 'Run termination payroll' }))
+
+      expect(onEvent).toHaveBeenCalledWith(
+        componentEvents.EMPLOYEE_TERMINATION_RUN_PAYROLL,
+        expect.objectContaining({
+          employeeId: 'employee-123',
+          companyId: 'company-123',
+          payrollUuid: 'payroll-456',
+        }),
+      )
+    })
+
+    it('emits EMPLOYEE_TERMINATION_RUN_PAYROLL with undefined payrollUuid when not provided', async () => {
+      server.use(
+        http.get(`${API_BASE_URL}/v1/employees/:employee_id/terminations`, () => {
+          return HttpResponse.json([mockTerminationWithPayroll])
+        }),
+      )
+
+      renderWithProviders(<TerminationSummary {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Run termination payroll' })).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: 'Run termination payroll' }))
+
+      const runPayrollCall = onEvent.mock.calls.find(
+        (call: unknown[]) => call[0] === componentEvents.EMPLOYEE_TERMINATION_RUN_PAYROLL,
+      )
+
+      expect(runPayrollCall).toBeDefined()
+      expect(runPayrollCall![1]).toEqual(
+        expect.objectContaining({
+          payrollUuid: undefined,
+        }),
+      )
+    })
+
     it('emits EMPLOYEE_TERMINATION_RUN_OFF_CYCLE_PAYROLL event when off-cycle button is clicked', async () => {
       server.use(
         http.get(`${API_BASE_URL}/v1/employees/:employee_id/terminations`, () => {

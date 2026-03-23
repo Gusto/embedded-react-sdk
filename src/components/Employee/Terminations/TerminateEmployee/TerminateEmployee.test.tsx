@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { screen, waitFor } from '@testing-library/react'
+import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { http, HttpResponse } from 'msw'
 import { TerminateEmployee } from './TerminateEmployee'
@@ -12,8 +12,8 @@ import {
   mockEmployee,
   mockTerminationCancelable,
   mockTerminationPayPeriods,
-  mockPayrollPrepared,
 } from '@/test/mocks/apis/terminations'
+import payrollFixture from '@/test/mocks/fixtures/post-v1-companies-company_id-payrolls.json'
 
 describe('TerminateEmployee', () => {
   const onEvent = vi.fn()
@@ -36,7 +36,7 @@ describe('TerminateEmployee', () => {
         return HttpResponse.json([])
       }),
       http.post(`${API_BASE_URL}/v1/employees/:employee_id/terminations`, () => {
-        return HttpResponse.json(mockTerminationCancelable)
+        return HttpResponse.json(mockTerminationCancelable, { status: 201 })
       }),
       http.get(
         `${API_BASE_URL}/v1/companies/:company_id/pay_periods/unprocessed_termination_pay_periods`,
@@ -45,7 +45,7 @@ describe('TerminateEmployee', () => {
         },
       ),
       http.post(`${API_BASE_URL}/v1/companies/:company_id/payrolls`, () => {
-        return HttpResponse.json(mockPayrollPrepared)
+        return HttpResponse.json(payrollFixture)
       }),
     )
   })
@@ -199,6 +199,97 @@ describe('TerminateEmployee', () => {
       expect(
         screen.getByText(/You can run an off-cycle payroll to manually calculate/),
       ).toBeInTheDocument()
+    })
+  })
+
+  describe('successful submission', () => {
+    async function fillDateAndSubmit() {
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: 'Terminate John Doe' })).toBeInTheDocument()
+      })
+
+      const dateInput = screen.getByRole('group', { name: /last day of work/i })
+      await user.type(within(dateInput).getByRole('spinbutton', { name: /^month/i }), '06')
+      await user.type(within(dateInput).getByRole('spinbutton', { name: /^day/i }), '15')
+      await user.type(within(dateInput).getByRole('spinbutton', { name: /^year/i }), '2026')
+
+      await user.click(screen.getByRole('button', { name: 'Terminate employee' }))
+    }
+
+    it('emits EMPLOYEE_TERMINATION_DONE with payrollUuid when dismissal payroll is selected', async () => {
+      renderWithProviders(<TerminateEmployee {...defaultProps} />)
+
+      await fillDateAndSubmit()
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(
+          componentEvents.EMPLOYEE_TERMINATION_DONE,
+          expect.objectContaining({
+            employeeId: 'employee-123',
+            payrollOption: 'dismissalPayroll',
+            payrollUuid: expect.any(String),
+          }),
+        )
+      })
+    })
+
+    it('emits EMPLOYEE_TERMINATION_PAYROLL_CREATED when off-cycle payroll is created', async () => {
+      renderWithProviders(<TerminateEmployee {...defaultProps} />)
+
+      await fillDateAndSubmit()
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(
+          componentEvents.EMPLOYEE_TERMINATION_PAYROLL_CREATED,
+          expect.objectContaining({
+            payrolls: expect.any(Array),
+          }),
+        )
+      })
+    })
+
+    it('emits EMPLOYEE_TERMINATION_CREATED for new terminations', async () => {
+      renderWithProviders(<TerminateEmployee {...defaultProps} />)
+
+      await fillDateAndSubmit()
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(
+          componentEvents.EMPLOYEE_TERMINATION_CREATED,
+          expect.objectContaining({
+            payrollOption: 'dismissalPayroll',
+            runTerminationPayroll: true,
+          }),
+        )
+      })
+    })
+
+    it('emits EMPLOYEE_TERMINATION_DONE without payrollUuid when regular payroll is selected', async () => {
+      renderWithProviders(<TerminateEmployee {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByLabelText('Regular payroll')).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByLabelText('Regular payroll'))
+
+      const dateInput = screen.getByRole('group', { name: /last day of work/i })
+      await user.type(within(dateInput).getByRole('spinbutton', { name: /^month/i }), '06')
+      await user.type(within(dateInput).getByRole('spinbutton', { name: /^day/i }), '15')
+      await user.type(within(dateInput).getByRole('spinbutton', { name: /^year/i }), '2026')
+
+      await user.click(screen.getByRole('button', { name: 'Terminate employee' }))
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(
+          componentEvents.EMPLOYEE_TERMINATION_DONE,
+          expect.objectContaining({
+            employeeId: 'employee-123',
+            payrollOption: 'regularPayroll',
+            payrollUuid: undefined,
+          }),
+        )
+      })
     })
   })
 

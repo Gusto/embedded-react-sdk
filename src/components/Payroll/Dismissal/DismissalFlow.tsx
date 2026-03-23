@@ -8,6 +8,7 @@ import {
   type DismissalFlowProps,
 } from './DismissalFlowComponents'
 import { Flow } from '@/components/Flow/Flow'
+import { BaseComponent } from '@/components/Base/Base'
 import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 
 export function DismissalFlow({ companyId, employeeId, onEvent, payrollId }: DismissalFlowProps) {
@@ -34,5 +35,9 @@ export function DismissalFlow({ companyId, employeeId, onEvent, payrollId }: Dis
     )
   }, [companyId, employeeId, payrollId])
 
-  return <Flow machine={dismissalFlowMachine} onEvent={onEvent} />
+  return (
+    <BaseComponent onEvent={onEvent}>
+      <Flow machine={dismissalFlowMachine} onEvent={onEvent} />
+    </BaseComponent>
+  )
 }

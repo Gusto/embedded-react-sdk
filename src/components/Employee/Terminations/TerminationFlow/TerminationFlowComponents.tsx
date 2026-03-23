@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { TerminateEmployee } from '../TerminateEmployee/TerminateEmployee'
 import { TerminationSummary } from '../TerminationSummary/TerminationSummary'
 import type { PayrollOption } from '../types'
+import { DismissalFlow } from '@/components/Payroll/Dismissal'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { BaseComponentInterface } from '@/components/Base'
 import { Flex } from '@/components/Common'
@@ -78,6 +79,19 @@ export function TerminationSummaryContextual() {
       employeeId={ensureRequired(employeeId)}
       payrollOption={payrollOption}
       payrollUuid={payrollUuid}
+    />
+  )
+}
+
+export function DismissalFlowContextual() {
+  const { companyId, employeeId, payrollUuid, onEvent } = useFlow<TerminationFlowContextInterface>()
+
+  return (
+    <DismissalFlow
+      companyId={ensureRequired(companyId)}
+      employeeId={ensureRequired(employeeId)}
+      payrollId={payrollUuid}
+      onEvent={onEvent}
     />
   )
 }

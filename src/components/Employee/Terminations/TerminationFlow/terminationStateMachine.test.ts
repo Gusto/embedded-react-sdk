@@ -5,7 +5,7 @@ import type { TerminationFlowContextInterface } from './TerminationFlowComponent
 import { componentEvents } from '@/shared/constants'
 import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 
-type TerminationState = 'form' | 'summary'
+type TerminationState = 'form' | 'summary' | 'dismissalPayroll'
 
 function createTestMachine(initialState: TerminationState = 'form') {
   return createMachine(
@@ -41,6 +41,16 @@ function toSummary(service: ReturnType<typeof createService>) {
     payrollUuid: 'payroll-123',
   })
   expect(service.machine.current).toBe('summary')
+}
+
+function toDismissalPayroll(service: ReturnType<typeof createService>) {
+  toSummary(service)
+  send(service, componentEvents.EMPLOYEE_TERMINATION_RUN_PAYROLL, {
+    employeeId: 'employee-123',
+    companyId: 'company-123',
+    payrollUuid: 'payroll-123',
+  })
+  expect(service.machine.current).toBe('dismissalPayroll')
 }
 
 describe('terminationStateMachine', () => {
@@ -111,9 +121,72 @@ describe('terminationStateMachine', () => {
       expect(service.context.alerts).toEqual([{ type: 'success', title: 'Cancelled' }])
     })
 
+    it('transitions to dismissalPayroll on EMPLOYEE_TERMINATION_RUN_PAYROLL', () => {
+      const service = createService()
+      toSummary(service)
+
+      send(service, componentEvents.EMPLOYEE_TERMINATION_RUN_PAYROLL, {
+        employeeId: 'employee-123',
+        companyId: 'company-123',
+        payrollUuid: 'payroll-456',
+      })
+
+      expect(service.machine.current).toBe('dismissalPayroll')
+      expect(service.context.payrollUuid).toBe('payroll-456')
+      expect(service.context.progressBarType).toBeNull()
+    })
+
+    it('uses existing payrollUuid when event payload has none', () => {
+      const service = createService()
+      toSummary(service)
+
+      send(service, componentEvents.EMPLOYEE_TERMINATION_RUN_PAYROLL, {
+        employeeId: 'employee-123',
+        companyId: 'company-123',
+      })
+
+      expect(service.machine.current).toBe('dismissalPayroll')
+      expect(service.context.payrollUuid).toBe('payroll-123')
+    })
+
     it('navigates to form via breadcrumb', () => {
       const service = createService()
       toSummary(service)
+
+      send(service, componentEvents.BREADCRUMB_NAVIGATE, { key: 'form' })
+
+      expect(service.machine.current).toBe('form')
+      expect(service.context.currentBreadcrumbId).toBe('form')
+      expect(service.context.progressBarType).toBe('breadcrumbs')
+    })
+  })
+
+  describe('dismissalPayroll state', () => {
+    it('transitions to summary on PAYROLL_EXIT_FLOW', () => {
+      const service = createService()
+      toDismissalPayroll(service)
+
+      send(service, componentEvents.PAYROLL_EXIT_FLOW)
+
+      expect(service.machine.current).toBe('summary')
+      expect(service.context.currentBreadcrumbId).toBe('summary')
+      expect(service.context.progressBarType).toBe('breadcrumbs')
+    })
+
+    it('navigates to summary via breadcrumb', () => {
+      const service = createService()
+      toDismissalPayroll(service)
+
+      send(service, componentEvents.BREADCRUMB_NAVIGATE, { key: 'summary' })
+
+      expect(service.machine.current).toBe('summary')
+      expect(service.context.currentBreadcrumbId).toBe('summary')
+      expect(service.context.progressBarType).toBe('breadcrumbs')
+    })
+
+    it('navigates to form via breadcrumb', () => {
+      const service = createService()
+      toDismissalPayroll(service)
 
       send(service, componentEvents.BREADCRUMB_NAVIGATE, { key: 'form' })
 
@@ -146,6 +219,29 @@ describe('terminationStateMachine', () => {
       })
       expect(service.machine.current).toBe('summary')
       expect(service.context.payrollOption).toBe('regularPayroll')
+    })
+
+    it('supports form -> summary -> dismissalPayroll -> save and exit -> summary', () => {
+      const service = createService()
+
+      send(service, componentEvents.EMPLOYEE_TERMINATION_DONE, {
+        employeeId: 'employee-123',
+        effectiveDate: '2026-03-15',
+        payrollOption: 'dismissalPayroll',
+        payrollUuid: 'payroll-123',
+      })
+      expect(service.machine.current).toBe('summary')
+
+      send(service, componentEvents.EMPLOYEE_TERMINATION_RUN_PAYROLL, {
+        employeeId: 'employee-123',
+        companyId: 'company-123',
+        payrollUuid: 'payroll-123',
+      })
+      expect(service.machine.current).toBe('dismissalPayroll')
+
+      send(service, componentEvents.PAYROLL_EXIT_FLOW)
+      expect(service.machine.current).toBe('summary')
+      expect(service.context.progressBarType).toBe('breadcrumbs')
     })
 
     it('supports form -> summary -> cancel -> form with alert', () => {
