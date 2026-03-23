@@ -1,6 +1,16 @@
 .root {
   width: 100%;
 
+  dt {
+    font-weight: var(--g-fontWeightMedium);
+    color: var(--g-colorBodyContent);
+  }
+
+  dd {
+    font-weight: var(--g-fontWeightRegular);
+    color: var(--g-colorBodySubContent);
+  }
+
   .item {
     &:not(:last-child) {
       padding-bottom: toRem(20);

@@ -12,6 +12,10 @@ Workflows are pre-built UI experiences you can use to quickly and easily incorpo
 - Company Onboarding
 - Employee Onboarding
 - Employee Self Onboarding
+- Payroll Processing
+- Contractor Onboarding
+- Contractor Payments
+- Employee Termination
 
 ### Why should I use a Workflow?
 

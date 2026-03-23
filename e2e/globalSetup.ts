@@ -222,16 +222,35 @@ async function getOrCreateLocation(flowToken: string, companyId: string): Promis
   return newLocation.uuid
 }
 
+async function ensureEmployeeHasJob(
+  flowToken: string,
+  employeeId: string,
+  locationId: string,
+): Promise<void> {
+  const endpoint = `/fe_sdk/${flowToken}/v1/employees/${employeeId}/jobs`
+  const jobs = await fetchFromApi<Array<{ uuid: string; hire_date: string }>>(endpoint)
+
+  if (jobs.length > 0 && jobs[0].hire_date) return
+
+  console.log('  Creating job with hire date for employee...')
+  await postToApi(endpoint, {
+    title: 'E2E Test Role',
+    hire_date: '2024-01-15',
+    location_uuid: locationId,
+  })
+}
+
 async function getOrCreateEmployee(
   flowToken: string,
   companyId: string,
-  locationId?: string,
+  locationId: string,
 ): Promise<string> {
   const endpoint = `/fe_sdk/${flowToken}/v1/companies/${companyId}/employees`
   const employees = await fetchFromApi<Employee[]>(endpoint)
 
   if (employees.length > 0) {
     console.log(`Found existing employee: ${employees[0].first_name} ${employees[0].last_name}`)
+    await ensureEmployeeHasJob(flowToken, employees[0].uuid, locationId)
     return employees[0].uuid
   }
 
@@ -243,60 +262,7 @@ async function getOrCreateEmployee(
     email: `e2e.test.${timestamp}@example.com`,
   })
   console.log(`Created employee: ${newEmployee.first_name} ${newEmployee.last_name}`)
-
-  const threeDaysAgo = new Date()
-  threeDaysAgo.setDate(threeDaysAgo.getDate() - 3)
-  const hireDate = threeDaysAgo.toISOString().split('T')[0]
-
-  const base = `/fe_sdk/${flowToken}/v1`
-  try {
-    console.log(`Setting up employee job (hire date: ${hireDate})...`)
-    const job = await postToApi<Job>(`${base}/employees/${newEmployee.uuid}/jobs`, {
-      title: 'E2E Test Position',
-      hire_date: hireDate,
-    })
-
-    if (job.compensations?.length > 0) {
-      const comp = job.compensations[0]
-      await putToApi<Compensation>(`${base}/compensations/${comp.uuid}`, {
-        version: comp.version,
-        rate: '60000.00',
-        payment_unit: 'Year',
-        flsa_status: 'Exempt',
-      })
-    }
-  } catch (error) {
-    console.log(`Employee job setup: ${error instanceof Error ? error.message : 'failed'}`)
-  }
-
-  try {
-    console.log('Setting up employee personal details...')
-    const empDetail = await fetchFromApi<Employee>(`${base}/employees/${newEmployee.uuid}`)
-
-    await putToApi<unknown>(`${base}/employees/${newEmployee.uuid}`, {
-      version: empDetail.version,
-      date_of_birth: '1990-05-15',
-      ssn: '123-45-6789',
-    })
-
-    await postToApi<unknown>(`${base}/employees/${newEmployee.uuid}/home_addresses`, {
-      street_1: '525 20th Street',
-      city: 'San Francisco',
-      state: 'CA',
-      zip: '94107',
-    })
-
-    if (locationId) {
-      await postToApi<unknown>(`${base}/employees/${newEmployee.uuid}/work_addresses`, {
-        location_uuid: locationId,
-      })
-    }
-
-    console.log('Employee personal details configured')
-  } catch (error) {
-    console.log(`Employee details setup: ${error instanceof Error ? error.message : 'failed'}`)
-  }
-
+  await ensureEmployeeHasJob(flowToken, newEmployee.uuid, locationId)
   return newEmployee.uuid
 }
 

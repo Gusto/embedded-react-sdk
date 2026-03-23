@@ -8,7 +8,8 @@ import { OnboardingFlow as ContractorOnboardingFlow } from '@/components/Contrac
 import { PayrollFlow } from '@/components/Payroll/PayrollFlow/PayrollFlow'
 import { TransitionFlow } from '@/components/Payroll/Transition/TransitionFlow'
 import { PaymentFlow } from '@/components/Contractor/Payments/PaymentFlow/PaymentFlow'
-import { DismissalFlow } from '@/components/Payroll/Dismissal/DismissalFlow'
+import { TerminationFlow } from '@/components/Employee/Terminations/TerminationFlow/TerminationFlow'
+import { DismissalFlow } from '@/components/Payroll/Dismissal'
 import '@/styles/sdk.scss'
 
 const DEFAULT_API_BASE_URL = 'https://api.gusto.com'
@@ -21,6 +22,7 @@ type FlowType =
   | 'payroll'
   | 'transition'
   | 'contractor-payment'
+  | 'termination'
   | 'dismissal'
 
 interface E2EConfig {
@@ -85,6 +87,8 @@ function FlowRenderer({ config }: { config: E2EConfig }) {
       )
     case 'contractor-payment':
       return <PaymentFlow companyId={companyId} onEvent={handleEvent} />
+    case 'termination':
+      return <TerminationFlow companyId={companyId} employeeId={employeeId} onEvent={handleEvent} />
     case 'dismissal':
       return <DismissalFlow companyId={companyId} employeeId={employeeId} onEvent={handleEvent} />
     default:
