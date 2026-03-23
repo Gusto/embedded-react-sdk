@@ -89,9 +89,7 @@ describe('TransitionPayrollAlertPresentation', () => {
       expect(screen.getByText(/you changed your pay schedule/i)).toBeInTheDocument()
     })
 
-    it('shows pay periods after expanding', async () => {
-      const user = userEvent.setup()
-
+    it('shows run action directly without schedule name for single group', async () => {
       renderWithSuspense(
         <TransitionPayrollAlertPresentation
           groupedPayPeriods={mockGroupedPayPeriods}
@@ -105,16 +103,10 @@ describe('TransitionPayrollAlertPresentation', () => {
 
       await screen.findByText('Transition payroll')
       expect(screen.queryByText('Weekly Schedule')).not.toBeInTheDocument()
-
-      const showButton = screen.getByRole('button', { name: /show payrolls/i })
-      await user.click(showButton)
-
-      expect(screen.getByText('Weekly Schedule')).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /run transition payroll/i })).toBeInTheDocument()
     })
 
-    it('renders multiple pay schedule groups after expanding', async () => {
-      const user = userEvent.setup()
-
+    it('renders multiple pay schedule groups with headers', async () => {
       renderWithSuspense(
         <TransitionPayrollAlertPresentation
           groupedPayPeriods={mockMultipleGroupedPayPeriods}
@@ -127,17 +119,13 @@ describe('TransitionPayrollAlertPresentation', () => {
       )
 
       await screen.findByText('Transition payroll')
-
-      const showButton = screen.getByRole('button', { name: /show payrolls/i })
-      await user.click(showButton)
-
       expect(screen.getByText('Weekly Schedule')).toBeInTheDocument()
       expect(screen.getByText('Monthly Schedule')).toBeInTheDocument()
     })
   })
 
   describe('actions', () => {
-    it('calls onRunPayroll when run payroll button is clicked', async () => {
+    it('calls onRunPayroll when run transition payroll button is clicked', async () => {
       const user = userEvent.setup()
       const onRunPayroll = vi.fn()
 
@@ -154,18 +142,13 @@ describe('TransitionPayrollAlertPresentation', () => {
 
       await screen.findByText('Transition payroll')
 
-      const showButton = screen.getByRole('button', { name: /show payrolls/i })
-      await user.click(showButton)
-
-      const runButton = screen.getByRole('button', { name: /Run.*payroll/i })
+      const runButton = screen.getByRole('button', { name: /run transition payroll/i })
       await user.click(runButton)
 
       expect(onRunPayroll).toHaveBeenCalledWith(mockPayPeriod)
     })
 
     it('renders skip button for each pay period', async () => {
-      const user = userEvent.setup()
-
       renderWithSuspense(
         <TransitionPayrollAlertPresentation
           groupedPayPeriods={mockGroupedPayPeriods}
@@ -178,10 +161,6 @@ describe('TransitionPayrollAlertPresentation', () => {
       )
 
       await screen.findByText('Transition payroll')
-
-      const showButton = screen.getByRole('button', { name: /show payrolls/i })
-      await user.click(showButton)
-
       expect(screen.getByRole('button', { name: /skip this payroll/i })).toBeInTheDocument()
     })
   })
