@@ -143,49 +143,56 @@ function OffCycleFlowInExecutionState({ onEvent }: { onEvent: () => void }) {
   return <Flow machine={offCycleFlowMachine} onEvent={onEvent} />
 }
 
+function setupMswHandlers(options?: { onPrepare?: () => void }) {
+  server.use(
+    http.get(`${API_BASE_URL}/v1/companies/:company_uuid/payrolls/blockers`, () => {
+      return HttpResponse.json([])
+    }),
+
+    http.get(`${API_BASE_URL}/v1/companies/:company_id/employees`, () => {
+      return HttpResponse.json([mockEmployee], {
+        headers: {
+          'x-total-pages': '1',
+          'x-total-count': '1',
+          'x-page': '1',
+          'x-per-page': '10',
+        },
+      })
+    }),
+
+    http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id`, () => {
+      return HttpResponse.json(mockPayrollData)
+    }),
+
+    http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/prepare`, () => {
+      options?.onPrepare?.()
+      return HttpResponse.json(mockPayrollData)
+    }),
+
+    http.get(`${API_BASE_URL}/v1/companies/:company_id/pay_schedules/:pay_schedule_id`, () => {
+      return HttpResponse.json(mockPaySchedule)
+    }),
+
+    http.get(`${API_BASE_URL}/v1/employees/:employee_id`, () => {
+      return HttpResponse.json(mockEmployee)
+    }),
+
+    http.get(`${API_BASE_URL}/v1/employees/:employee_id/bank_accounts`, () => {
+      return HttpResponse.json([])
+    }),
+  )
+}
+
 describe('OffCycleExecution - prepare call stability', () => {
   let prepareCallCount: number
 
   beforeEach(() => {
     prepareCallCount = 0
-
-    server.use(
-      http.get(`${API_BASE_URL}/v1/companies/:company_uuid/payrolls/blockers`, () => {
-        return HttpResponse.json([])
-      }),
-
-      http.get(`${API_BASE_URL}/v1/companies/:company_id/employees`, () => {
-        return HttpResponse.json([mockEmployee], {
-          headers: {
-            'x-total-pages': '1',
-            'x-total-count': '1',
-            'x-page': '1',
-            'x-per-page': '10',
-          },
-        })
-      }),
-
-      http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id`, () => {
-        return HttpResponse.json(mockPayrollData)
-      }),
-
-      http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/prepare`, () => {
+    setupMswHandlers({
+      onPrepare: () => {
         prepareCallCount++
-        return HttpResponse.json(mockPayrollData)
-      }),
-
-      http.get(`${API_BASE_URL}/v1/companies/:company_id/pay_schedules/:pay_schedule_id`, () => {
-        return HttpResponse.json(mockPaySchedule)
-      }),
-
-      http.get(`${API_BASE_URL}/v1/employees/:employee_id`, () => {
-        return HttpResponse.json(mockEmployee)
-      }),
-
-      http.get(`${API_BASE_URL}/v1/employees/:employee_id/bank_accounts`, () => {
-        return HttpResponse.json([])
-      }),
-    )
+      },
+    })
   })
 
   it('calls prepare only once when transitioning to edit employee in off-cycle flow', async () => {
@@ -214,5 +221,90 @@ describe('OffCycleExecution - prepare call stability', () => {
     const editEmployeePrepareCount = prepareCallCount - configurationPrepareCount
 
     expect(editEmployeePrepareCount).toBe(1)
+  })
+})
+
+describe('OffCycleExecution - edit employee hours round-trip', () => {
+  const UPDATED_HOURS = '20.000'
+
+  beforeEach(() => {
+    let hoursAfterUpdate = '40.000'
+
+    setupMswHandlers()
+
+    server.use(
+      http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/prepare`, () => {
+        return HttpResponse.json({
+          ...mockPayrollData,
+          employee_compensations: [
+            {
+              ...mockPayrollData.employee_compensations[0],
+              hourly_compensations: [
+                {
+                  ...mockPayrollData.employee_compensations[0]!.hourly_compensations[0],
+                  hours: hoursAfterUpdate,
+                },
+              ],
+            },
+          ],
+        })
+      }),
+
+      http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id`, () => {
+        hoursAfterUpdate = UPDATED_HOURS
+        return HttpResponse.json({
+          ...mockPayrollData,
+          employee_compensations: [
+            {
+              ...mockPayrollData.employee_compensations[0],
+              hourly_compensations: [
+                {
+                  ...mockPayrollData.employee_compensations[0]!.hourly_compensations[0],
+                  hours: UPDATED_HOURS,
+                },
+              ],
+            },
+          ],
+        })
+      }),
+    )
+  })
+
+  it('shows updated hours on configuration after editing and saving employee', async () => {
+    const user = userEvent.setup()
+    const onEvent = vi.fn()
+
+    renderWithProviders(<OffCycleFlowInExecutionState onEvent={onEvent} />)
+
+    await waitFor(() => {
+      expect(screen.getByText('Jane Doe')).toBeInTheDocument()
+    })
+    expect(screen.getByText('40.0')).toBeInTheDocument()
+
+    const editButton = await screen.findByRole('button', { name: 'Edit' })
+    await user.click(editButton)
+    const editMenuItem = await screen.findByRole('menuitem', { name: 'Edit' })
+    await user.click(editMenuItem)
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', { name: /edit payroll for jane doe/i }),
+      ).toBeInTheDocument()
+    })
+
+    const regularHoursInput = await screen.findByLabelText('Regular Hours')
+    await user.clear(regularHoursInput)
+    await user.type(regularHoursInput, '20')
+
+    const saveButton = screen.getByRole('button', { name: 'Save' })
+    await user.click(saveButton)
+
+    await waitFor(() => {
+      expect(screen.getByText('Jane Doe')).toBeInTheDocument()
+    })
+
+    await waitFor(() => {
+      expect(screen.getByText('20.0')).toBeInTheDocument()
+    })
   })
 })
