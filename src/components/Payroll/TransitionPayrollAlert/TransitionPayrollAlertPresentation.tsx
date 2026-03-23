@@ -33,7 +33,6 @@ export function TransitionPayrollAlertPresentation({
   const { t } = useTranslation('Payroll.TransitionPayrollAlert')
   const { Alert, Button, Text, Dialog } = useComponentContext()
   const dateFormatter = useDateFormatter()
-  const [isExpanded, setIsExpanded] = useState(false)
   const [skipDialogPayPeriod, setSkipDialogPayPeriod] = useState<PayPeriod | null>(null)
 
   if (groupedPayPeriods.length === 0) {
@@ -52,65 +51,60 @@ export function TransitionPayrollAlertPresentation({
     }
   }
 
+  const hasMultipleGroups = groupedPayPeriods.length > 1
+
   return (
     <Flex flexDirection="column" gap={16}>
       {showSkipSuccessAlert && (
         <Alert status="info" label={t('skipSuccessAlert')} onDismiss={onDismissSkipSuccessAlert} />
       )}
       <Alert status="warning" label={t('alertTitle')}>
-        <Flex flexDirection="column" gap={12}>
+        <Flex flexDirection="column" gap={16}>
           <Text>{t('alertDescription')}</Text>
-          <Button
-            variant="tertiary"
-            onClick={() => {
-              setIsExpanded(prev => !prev)
-            }}
-          >
-            {isExpanded ? t('hidePayrolls') : t('showPayrolls')}
-          </Button>
-          {isExpanded && (
-            <Flex flexDirection="column" gap={16}>
-              {groupedPayPeriods.map((group, groupIndex) => (
-                <Flex
-                  key={group.payScheduleUuid || `group-${groupIndex}`}
-                  flexDirection="column"
-                  gap={8}
-                >
-                  <Text weight="semibold">{group.payScheduleName}</Text>
-                  {group.payPeriods.map(payPeriod => {
-                    const dateRange = formatDateRange(payPeriod)
-                    const isSkipping = skippingPayPeriod === payPeriod
+          {groupedPayPeriods.map((group, groupIndex) => (
+            <Flex
+              key={group.payScheduleUuid || `group-${groupIndex}`}
+              flexDirection="column"
+              gap={8}
+            >
+              {hasMultipleGroups && <Text weight="semibold">{group.payScheduleName}</Text>}
+              {group.payPeriods.map(payPeriod => {
+                const dateRange = formatDateRange(payPeriod)
+                const isSkipping = skippingPayPeriod === payPeriod
 
-                    return (
-                      <Flex
-                        key={`${payPeriod.payScheduleUuid}-${payPeriod.startDate}`}
-                        gap={12}
-                        alignItems="center"
-                      >
+                return (
+                  <Flex
+                    key={`${payPeriod.payScheduleUuid}-${payPeriod.startDate}`}
+                    flexDirection="column"
+                    gap={8}
+                  >
+                    <Text>{dateRange}</Text>
+                    <Flex gap={12} alignItems="center">
+                      <div>
                         <Button
-                          variant="tertiary"
+                          variant="secondary"
                           onClick={() => {
                             onRunPayroll(payPeriod)
                           }}
                         >
-                          {t('runPayroll', { dateRange })}
+                          {t('runPayroll')}
                         </Button>
-                        <Button
-                          variant="tertiary"
-                          onClick={() => {
-                            setSkipDialogPayPeriod(payPeriod)
-                          }}
-                          isLoading={isSkipping}
-                        >
-                          {t('skipPayroll')}
-                        </Button>
-                      </Flex>
-                    )
-                  })}
-                </Flex>
-              ))}
+                      </div>
+                      <Button
+                        variant="tertiary"
+                        onClick={() => {
+                          setSkipDialogPayPeriod(payPeriod)
+                        }}
+                        isLoading={isSkipping}
+                      >
+                        {t('skipPayroll')}
+                      </Button>
+                    </Flex>
+                  </Flex>
+                )
+              })}
             </Flex>
-          )}
+          ))}
         </Flex>
       </Alert>
       <Dialog
