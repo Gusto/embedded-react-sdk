@@ -1,4 +1,5 @@
 import type { UseFormReturn, FieldValues } from 'react-hook-form'
+import type { FieldsMetadata } from './form/types'
 import type { SDKError } from '@/types/sdkError'
 
 /** Exposes react-hook-form internals for SDK utilities and advanced partner use cases. */
@@ -40,7 +41,7 @@ export interface BaseFormHookReady {
   errors: HookErrors
   form: {
     Fields: Record<string, unknown>
-    fieldsMetadata: Record<string, unknown>
+    fieldsMetadata: FieldsMetadata
     hookFormInternals: HookFormInternals
   }
 }
