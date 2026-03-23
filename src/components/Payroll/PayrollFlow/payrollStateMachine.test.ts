@@ -223,6 +223,50 @@ describe('payrollFlowMachine', () => {
     })
   })
 
+  describe('offCycle state', () => {
+    function toOffCycle(service: ReturnType<typeof createService>) {
+      send(service, componentEvents.RUN_OFF_CYCLE_PAYROLL)
+      expect(service.machine.current).toBe('offCycle')
+    }
+
+    it('transitions from landing on RUN_OFF_CYCLE_PAYROLL', () => {
+      const service = createService()
+
+      send(service, componentEvents.RUN_OFF_CYCLE_PAYROLL)
+
+      expect(service.machine.current).toBe('offCycle')
+      expect(service.context.showPayrollCancelledAlert).toBe(false)
+      expect(service.context.progressBarType).toBeNull()
+    })
+
+    it('transitions to landing on BREADCRUMB_NAVIGATE with landing key', () => {
+      const service = createService()
+      toOffCycle(service)
+
+      send(service, componentEvents.BREADCRUMB_NAVIGATE, { key: 'landing' })
+
+      expect(service.machine.current).toBe('landing')
+    })
+
+    it('transitions to landing on PAYROLL_EXIT_FLOW', () => {
+      const service = createService()
+      toOffCycle(service)
+
+      send(service, componentEvents.PAYROLL_EXIT_FLOW)
+
+      expect(service.machine.current).toBe('landing')
+    })
+
+    it('ignores BREADCRUMB_NAVIGATE with non-landing key', () => {
+      const service = createService()
+      toOffCycle(service)
+
+      send(service, componentEvents.BREADCRUMB_NAVIGATE, { key: 'configuration' })
+
+      expect(service.machine.current).toBe('offCycle')
+    })
+  })
+
   describe('transition state', () => {
     function toTransition(service: ReturnType<typeof createService>) {
       send(service, componentEvents.RUN_TRANSITION_PAYROLL, {
