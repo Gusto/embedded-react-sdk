@@ -125,7 +125,6 @@ function MyComponent() {
   - A scheduled effective date takes effect at 12:00 AM PT
   - Must be on or after the employee's hire date
   - If the last day of employment is in the past, the date must be after the last non-zero regular pay period's start date (e.g., if an employee had a regular payroll for $2000 for 11/1-11/15 and $0 for 11/15-11/30, the termination date cannot precede 11/1)
-  
 - **Payroll option**: How to process the employee's final pay
   - Run a dismissal payroll
   - Include in their regular payroll
@@ -174,20 +173,17 @@ function MyComponent() {
 
 The summary displays different action buttons based on the termination state:
 
-- **Edit termination**: 
+- **Edit termination**:
   - Available when the termination date is in the future and the employee is not yet terminated
   - Cannot edit the effective date if it is in the past
-  
-- **Cancel termination**: 
+- **Cancel termination**:
   - Available when the termination is cancelable (before processing)
   - Can cancel if "Include in regular payroll" or "I'll handle it another way" was selected
   - Cannot cancel if "Run a dismissal payroll" was selected
-  
-- **Run termination payroll**: 
+- **Run termination payroll**:
   - Shown for dismissal payroll option
   - Navigates to the dismissal payroll processing flow
-  
-- **Run off-cycle payroll**: 
+- **Run off-cycle payroll**:
   - Shown when user selected "I'll handle it another way"
   - Navigates to the off-cycle payroll creation flow
 
