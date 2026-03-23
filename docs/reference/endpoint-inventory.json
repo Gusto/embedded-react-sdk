@@ -1717,7 +1717,8 @@
         "Payroll.PayrollEditEmployee",
         "Payroll.PayrollLanding",
         "Payroll.PayrollOverview",
-        "Payroll.PayrollReceipts"
+        "Payroll.PayrollReceipts",
+        "Payroll.TransitionFlow"
       ],
       "endpoints": [
         {
