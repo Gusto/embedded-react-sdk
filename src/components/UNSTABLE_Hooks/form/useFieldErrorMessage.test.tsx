@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { renderHook } from '@testing-library/react'
+import { renderHook, waitFor } from '@testing-library/react'
 import { FormProvider, useForm } from 'react-hook-form'
-import type { ReactNode } from 'react'
+import { type ReactNode, useEffect } from 'react'
 import { FormFieldsMetadataProvider } from './FormFieldsMetadataProvider'
 import { useFieldErrorMessage } from './useFieldErrorMessage'
 import type { SDKError } from '@/types/sdkError'
@@ -21,9 +21,11 @@ function createWrapper({
       defaultValues: { street1: '', zip: '' },
     })
 
-    for (const [field, err] of Object.entries(formErrors)) {
-      formMethods.setError(field as TestFieldName, err)
-    }
+    useEffect(() => {
+      for (const [field, err] of Object.entries(formErrors)) {
+        formMethods.setError(field as TestFieldName, err)
+      }
+    }, [formMethods, formErrors])
 
     return (
       <FormFieldsMetadataProvider metadata={{}} error={error}>
@@ -34,7 +36,7 @@ function createWrapper({
 }
 
 describe('useFieldErrorMessage', () => {
-  it('returns partner validation message when RHF error code matches', () => {
+  it('returns partner validation message when RHF error code matches', async () => {
     const wrapper = createWrapper({
       formErrors: { street1: { message: 'REQUIRED' } },
     })
@@ -44,7 +46,9 @@ describe('useFieldErrorMessage', () => {
       { wrapper },
     )
 
-    expect(result.current).toBe('Street address is required')
+    await waitFor(() => {
+      expect(result.current).toBe('Street address is required')
+    })
   })
 
   it('returns undefined when no error exists', () => {
@@ -79,7 +83,7 @@ describe('useFieldErrorMessage', () => {
     expect(result.current).toBe('Street address cannot be empty')
   })
 
-  it('prioritizes partner validation message over API field error', () => {
+  it('prioritizes partner validation message over API field error', async () => {
     const sdkError: SDKError = {
       category: 'api_error',
       message: '1 field has issues',
@@ -103,10 +107,12 @@ describe('useFieldErrorMessage', () => {
       { wrapper },
     )
 
-    expect(result.current).toBe('Partner error message')
+    await waitFor(() => {
+      expect(result.current).toBe('Partner error message')
+    })
   })
 
-  it('falls back to API field error when error code exists but no matching validation message', () => {
+  it('falls back to API field error when error code exists but no matching validation message', async () => {
     const sdkError: SDKError = {
       category: 'api_error',
       message: '1 field has issues',
@@ -133,7 +139,9 @@ describe('useFieldErrorMessage', () => {
       { wrapper },
     )
 
-    expect(result.current).toBe('Zip code is invalid')
+    await waitFor(() => {
+      expect(result.current).toBe('Zip code is invalid')
+    })
   })
 
   it('returns undefined when field has no errors from either source', () => {
