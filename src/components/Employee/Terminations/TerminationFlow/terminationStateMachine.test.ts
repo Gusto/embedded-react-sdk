@@ -149,6 +149,20 @@ describe('terminationStateMachine', () => {
       expect(service.context.payrollUuid).toBe('payroll-123')
     })
 
+    it('transitions to dismissalPayroll on EMPLOYEE_TERMINATION_RUN_OFF_CYCLE_PAYROLL', () => {
+      const service = createService()
+      toSummary(service)
+
+      send(service, componentEvents.EMPLOYEE_TERMINATION_RUN_OFF_CYCLE_PAYROLL, {
+        employeeId: 'employee-123',
+        companyId: 'company-123',
+      })
+
+      expect(service.machine.current).toBe('dismissalPayroll')
+      expect(service.context.payrollUuid).toBeUndefined()
+      expect(service.context.progressBarType).toBeNull()
+    })
+
     it('navigates to form via breadcrumb', () => {
       const service = createService()
       toSummary(service)
@@ -238,6 +252,29 @@ describe('terminationStateMachine', () => {
         payrollUuid: 'payroll-123',
       })
       expect(service.machine.current).toBe('dismissalPayroll')
+
+      send(service, componentEvents.PAYROLL_EXIT_FLOW)
+      expect(service.machine.current).toBe('summary')
+      expect(service.context.progressBarType).toBe('breadcrumbs')
+    })
+
+    it('supports form -> summary -> off-cycle payroll -> save and exit -> summary', () => {
+      const service = createService()
+
+      send(service, componentEvents.EMPLOYEE_TERMINATION_DONE, {
+        employeeId: 'employee-123',
+        effectiveDate: '2026-03-15',
+        payrollOption: 'anotherWay',
+        payrollUuid: 'payroll-123',
+      })
+      expect(service.machine.current).toBe('summary')
+
+      send(service, componentEvents.EMPLOYEE_TERMINATION_RUN_OFF_CYCLE_PAYROLL, {
+        employeeId: 'employee-123',
+        companyId: 'company-123',
+      })
+      expect(service.machine.current).toBe('dismissalPayroll')
+      expect(service.context.payrollUuid).toBeUndefined()
 
       send(service, componentEvents.PAYROLL_EXIT_FLOW)
       expect(service.machine.current).toBe('summary')

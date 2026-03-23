@@ -28,11 +28,16 @@ export function PayrollHistory(props: PayrollHistoryProps) {
   )
 }
 
+const FUTURE_LOOKAHEAD_DAYS = 28
+
 const getDateRangeForFilter = (
   filter: TimeFilterOption,
 ): { startDate: string; endDate: string } => {
   const now = new Date()
   const startDate = new Date()
+  const endDate = new Date()
+
+  endDate.setDate(now.getDate() + FUTURE_LOOKAHEAD_DAYS)
 
   switch (filter) {
     case '3months':
@@ -48,7 +53,7 @@ const getDateRangeForFilter = (
 
   return {
     startDate: startDate.toISOString().split('T')[0] || '',
-    endDate: now.toISOString().split('T')[0] || '',
+    endDate: endDate.toISOString().split('T')[0] || '',
   }
 }
 
@@ -64,15 +69,16 @@ export const Root = ({ onEvent, companyId, dictionary }: PayrollHistoryProps) =>
 
   const { data: payrollsData } = usePayrollsListSuspense({
     companyId,
-    processingStatuses: [ProcessingStatuses.Processed],
+    processingStatuses: [ProcessingStatuses.Processed, ProcessingStatuses.Unprocessed],
     payrollTypes: [
       QueryParamPayrollTypes.Regular,
       QueryParamPayrollTypes.OffCycle,
       QueryParamPayrollTypes.External,
     ],
+    includeOffCycle: true,
     startDate: dateRange.startDate,
     endDate: dateRange.endDate,
-    include: ['totals'],
+    include: ['totals', 'payroll_status_meta'],
   })
 
   const { data: wireInRequestsData } = useWireInRequestsListSuspense({

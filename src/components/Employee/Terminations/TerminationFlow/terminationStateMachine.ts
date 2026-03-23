@@ -222,6 +222,18 @@ export const terminationMachine = {
         },
       ),
     ),
+    transition(
+      componentEvents.EMPLOYEE_TERMINATION_RUN_OFF_CYCLE_PAYROLL,
+      'dismissalPayroll',
+      reduce((ctx: TerminationFlowContextInterface): TerminationFlowContextInterface => {
+        return {
+          ...ctx,
+          component: DismissalFlowContextual,
+          payrollUuid: undefined,
+          progressBarType: null,
+        }
+      }),
+    ),
     formBreadcrumbTransition,
   ),
   dismissalPayroll: state<MachineTransition>(

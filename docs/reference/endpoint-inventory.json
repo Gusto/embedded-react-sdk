@@ -1712,6 +1712,7 @@
     "Payroll.PayrollFlow": {
       "blocks": [
         "Payroll.ConfirmWireDetails",
+        "Payroll.OffCycleFlow",
         "Payroll.PayrollBlocker",
         "Payroll.PayrollConfiguration",
         "Payroll.PayrollEditEmployee",
@@ -1739,6 +1740,10 @@
         },
         {
           "method": "GET",
+          "path": "/v1/companies/:companyId/payrolls/:payrollId"
+        },
+        {
+          "method": "GET",
           "path": "/v1/companies/:companyUuid/payrolls/blockers"
         },
         {
@@ -1748,10 +1753,6 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/information_requests"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/payrolls/:payrollId"
         },
         {
           "method": "PUT",

@@ -10,6 +10,7 @@ import {
 } from './PayrollFlowComponents'
 import { PayrollExecutionFlowContextual } from './PayrollExecutionFlowContextual'
 import { TransitionFlowContextual } from './TransitionFlowContextual'
+import { OffCycleFlowContextual } from './OffCycleFlowContextual'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 import { updateBreadcrumbs } from '@/helpers/breadcrumbHelpers'
@@ -204,6 +205,18 @@ export const payrollFlowMachine = {
         }),
       ),
     ),
+    transition(
+      componentEvents.RUN_OFF_CYCLE_PAYROLL,
+      'offCycle',
+      reduce(
+        (ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
+          ...ctx,
+          component: OffCycleFlowContextual,
+          showPayrollCancelledAlert: false,
+          progressBarType: null,
+        }),
+      ),
+    ),
   ),
   execution: state<MachineTransition>(
     landingBreadcrumbNavigateTransition,
@@ -269,4 +282,5 @@ export const payrollFlowMachine = {
     exitFlowTransition,
   ),
   transition: state<MachineTransition>(landingBreadcrumbNavigateTransition, exitFlowTransition),
+  offCycle: state<MachineTransition>(landingBreadcrumbNavigateTransition, exitFlowTransition),
 }
