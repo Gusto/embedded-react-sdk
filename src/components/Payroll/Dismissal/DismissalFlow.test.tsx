@@ -1,4 +1,3 @@
-import { Suspense } from 'react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import { DismissalFlow } from './DismissalFlow'
@@ -12,11 +11,7 @@ vi.mock('./DismissalFlowComponents', () => ({
 }))
 
 function renderDismissalFlow(props: Parameters<typeof DismissalFlow>[0]) {
-  return renderWithProviders(
-    <Suspense fallback={<div>Loading translations...</div>}>
-      <DismissalFlow {...props} />
-    </Suspense>,
-  )
+  return renderWithProviders(<DismissalFlow {...props} />)
 }
 
 describe('DismissalFlow', () => {
