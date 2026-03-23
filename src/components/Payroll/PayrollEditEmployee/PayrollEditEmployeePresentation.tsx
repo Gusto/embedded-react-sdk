@@ -151,7 +151,10 @@ export const PayrollEditEmployeePresentation = ({
   useI18n('Payroll.PayrollEditEmployee')
 
   const primaryJob = employee.jobs?.find(job => job.primary)
-  const hourlyJobs = primaryJob ? [primaryJob] : []
+  const primaryJobHasHourlyCompensations = employeeCompensation?.hourlyCompensations?.some(
+    c => c.jobUuid === primaryJob?.uuid,
+  )
+  const hourlyJobs = primaryJob && primaryJobHasHourlyCompensations ? [primaryJob] : []
 
   const containerRef = useRef<HTMLDivElement>(null)
   const breakpoints = useContainerBreakpoints({
