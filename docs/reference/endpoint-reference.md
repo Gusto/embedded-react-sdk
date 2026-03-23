@@ -153,6 +153,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | `/v1/companies/:companyId/payrolls` |
 |  | DELETE | `/v1/employees/:employeeId/terminations` |
 |  | GET | `/v1/companies/:companyId/employees` |
+|  | PUT | `/v1/companies/:companyId/payrolls/:payrollId/prepare` |
 
 ## InformationRequests components
 

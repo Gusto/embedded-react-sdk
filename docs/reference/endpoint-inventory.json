@@ -755,11 +755,16 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/employees"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/companies/:companyId/payrolls/:payrollId/prepare"
         }
       ],
       "variables": [
         "companyId",
-        "employeeId"
+        "employeeId",
+        "payrollId"
       ]
     },
     "InformationRequests": {

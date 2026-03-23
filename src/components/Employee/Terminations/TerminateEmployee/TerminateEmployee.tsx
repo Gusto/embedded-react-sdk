@@ -147,7 +147,7 @@ const Root = ({ employeeId, companyId, dictionary }: TerminateEmployeeProps) => 
                 },
               })
 
-              createdPayrolls.push(payrollResult.payrollPrepared)
+              createdPayrolls.push(payrollResult.payrollUnprocessed)
             }
           }
 

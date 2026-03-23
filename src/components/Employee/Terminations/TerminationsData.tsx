@@ -10,7 +10,7 @@ import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_contex
 import { payrollsPrepare } from '@gusto/embedded-api/funcs/payrollsPrepare'
 import {
   ProcessingStatuses,
-  PayrollTypes,
+  QueryParamPayrollTypes,
 } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrolls'
 // @ts-expect-error — module path may not exist in all API package versions
 import { OffCycleReasonType } from '@gusto/embedded-api/models/components/offcyclereasontype'
@@ -1120,7 +1120,7 @@ function TerminationsDataContent({ companyId, useMockData }: TerminationsDataPro
   const { data: payrollsData, refetch: refetchPayrolls } = usePayrollsListSuspense({
     companyId,
     processingStatuses: [ProcessingStatuses.Unprocessed],
-    payrollTypes: [PayrollTypes.Regular, PayrollTypes.OffCycle],
+    payrollTypes: [QueryParamPayrollTypes.Regular, QueryParamPayrollTypes.OffCycle],
     includeOffCycle: true,
     startDate: formatDate(threeMonthsAgo),
     endDate: formatDate(threeMonthsFromNow),
