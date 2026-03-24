@@ -462,7 +462,11 @@ export const PayrollEditEmployeePresentation = ({
           )}
           {timeOff.length > 0 && (
             <div className={styles.fieldGroup}>
-              <Heading as="h4">{t('timeOffTitle')}</Heading>
+              <Heading as="h4">
+                {payrollCategory === PayrollCategory.Dismissal
+                  ? t('timeOffTitleDismissal')
+                  : t('timeOffTitle')}
+              </Heading>
               <Grid gridTemplateColumns={{ base: '1fr', small: [320, 320] }} gap={20}>
                 {timeOff.map(timeOffEntry => (
                   <TimeOffField
@@ -477,6 +481,7 @@ export const PayrollEditEmployeePresentation = ({
           {payrollCategory === PayrollCategory.Dismissal && timeOff.length > 0 && (
             <div className={styles.fieldGroup}>
               <Heading as="h4">{t('finalPayoutTitle')}</Heading>
+              <Text variant="supporting">{t('finalPayoutDescription')}</Text>
               <Grid gridTemplateColumns={{ base: '1fr', small: [320, 320] }} gap={20}>
                 {timeOff.map(timeOffEntry => (
                   <TextInputField
@@ -485,7 +490,6 @@ export const PayrollEditEmployeePresentation = ({
                     type="number"
                     min={0}
                     adornmentEnd={t('hoursUnit')}
-                    isRequired
                     label={timeOffEntry.name}
                   />
                 ))}

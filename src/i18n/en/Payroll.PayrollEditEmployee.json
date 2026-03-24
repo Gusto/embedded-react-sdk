@@ -13,7 +13,9 @@
     "doubleOvertime": "Double overtime"
   },
   "timeOffTitle": "Time off",
+  "timeOffTitleDismissal": "Time off hours used this pay period",
   "finalPayoutTitle": "Unused time off payout",
+  "finalPayoutDescription": "Enter the unused hours to pay out on the final paycheck. This is separate from time off hours used during the pay period.",
   "timeOffBalance": {
     "remaining": "{{balance}} remaining"
   },
