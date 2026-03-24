@@ -1,0 +1,186 @@
+---
+description: Guide for implementing new UNSTABLE_Hooks form hooks (e.g. useEmployeeForm, useBankAccountForm). Covers file structure, schema, fields, data sync, exports, and the FieldComponent pattern.
+globs: src/components/UNSTABLE_Hooks/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Implementing UNSTABLE_Hooks Form Hooks
+
+Use `useCompensationForm` as the canonical reference implementation at `src/components/UNSTABLE_Hooks/hooks/useCompensationForm/`.
+
+## File Structure
+
+Each hook lives in its own folder under `src/components/UNSTABLE_Hooks/hooks/`:
+
+```
+hooks/use{Domain}Form/
+├── use{Domain}Form.tsx      # Main hook: data fetching, form setup, return shape
+├── {domain}Schema.ts        # Zod schema, error codes, form data/output types
+├── fields.tsx               # Domain field components + exported field prop types
+├── {Domain}Form.tsx         # Optional prebuilt component wrapping the hook
+└── index.ts                 # Barrel file re-exporting everything
+```
+
+## 1. Schema (`{domain}Schema.ts`)
+
+- Define error codes as a `const` object, then derive the union type from it
+- Define an `ObjectSchema` (plain `z.object`) for `deriveFieldsMetadata` and a refined `Schema` (with `superRefine`) for validation
+- Export `{Domain}FormData` (input) and `{Domain}FormOutputs` (output) via `z.input` / `z.output`
+
+```typescript
+export const ErrorCodes = { REQUIRED: 'REQUIRED' /* ... */ } as const
+export type ErrorCode = (typeof ErrorCodes)[keyof typeof ErrorCodes]
+
+export const ObjectSchema = z.object({
+  /* field-level validation only */
+})
+export const Schema = ObjectSchema.superRefine((data, ctx) => {
+  /* cross-field rules */
+})
+
+export type FormData = z.input<typeof Schema>
+export type FormOutputs = z.output<typeof Schema>
+```
+
+## 2. Fields (`fields.tsx`)
+
+- Each field is a thin wrapper around a generic `*HookField` component that binds `name`
+- Export a `*FieldProps` type using `HookFieldProps<*HookFieldProps<TErrorCode, TEntry>>` which strips `name`
+- Derive validation type aliases from the schema's error codes constant so they stay in sync — never hardcode string unions
+
+```typescript
+// Derive validation types from the error codes constant — not hardcoded strings
+export type RequiredValidation = typeof ErrorCodes.REQUIRED
+export type RateValidation = (typeof ErrorCodes)['REQUIRED' | 'RATE_MINIMUM' | 'RATE_EXEMPT_THRESHOLD']
+
+// Field prop types strip `name` via HookFieldProps, parameterized by the relevant validation type
+export type JobTitleFieldProps = HookFieldProps<TextInputHookFieldProps<RequiredValidation>>
+export type RateFieldProps = HookFieldProps<NumberInputHookFieldProps<RateValidation>>
+
+export function JobTitleField(props: JobTitleFieldProps) {
+  return <TextInputHookField {...props} name="jobTitle" />
+}
+```
+
+## 3. Main Hook (`use{Domain}Form.tsx`)
+
+### Data Fetching
+
+- Use `@gusto/embedded-api/react-query/*` hooks for all API calls
+- Gate dependent queries with `enabled: !!dependency`
+- Collect errors with `collectErrors(queries, submitError)`
+
+### Form Defaults and Data Sync
+
+- Build `resolvedDefaults` from server data, falling back to `partnerDefaults`, then hardcoded defaults
+- Use `values` + `resetOptions: { keepDirtyValues: true }` on `useForm` — NOT manual `useEffect` + `reset()`
+- This lets react-hook-form deep-compare and sync when server data changes while preserving user edits
+
+```typescript
+const formMethods = useForm<FormData, unknown, FormOutputs>({
+  resolver: zodResolver(Schema),
+  defaultValues: resolvedDefaults,
+  values: resolvedDefaults,
+  resetOptions: { keepDirtyValues: true },
+})
+```
+
+### Fields Metadata
+
+- Derive base metadata from the object schema: `deriveFieldsMetadata(ObjectSchema)`
+- Enhance select/radio fields with `withOptions<TEntry>(baseMetadata.field, options, entries)`
+- Override `isRequired`/`isDisabled` based on business logic
+
+### Conditional Fields
+
+- Return `undefined` for fields that shouldn't render: `FlsaStatus: isEnabled ? FlsaStatusField : undefined`
+- Partners check truthiness: `{Fields.FlsaStatus && <Fields.FlsaStatus ... />}`
+
+### Return Shape (discriminated union)
+
+```typescript
+// Loading state
+if (isDataLoading || !requiredData) {
+  return { isLoading: true as const }
+}
+
+// Ready state
+return {
+  isLoading: false as const,
+  data: {
+    /* domain entities */
+  },
+  status: { isPending, mode: isCreateMode ? 'create' : 'update' },
+  actions: { onSubmit },
+  errors,
+  clearSubmitError,
+  form: {
+    Fields: {
+      /* field components, some possibly undefined */
+    },
+    fieldsMetadata,
+    hookFormInternals: { formMethods },
+  },
+}
+```
+
+### Submit Handler
+
+- Use `formMethods.handleSubmit` inside a `Promise` wrapper so `onSubmit` is async/awaitable
+- Delegate to `baseSubmitHandler` for error boundary integration
+- Accept callbacks for each mutation step so the prebuilt component can fire `onEvent`
+- Return `HookSubmitResult<TEntity>` where `TEntity` is the primary domain entity the form manages (e.g. `Compensation`). This gives partners direct access to the saved entity without needing to wire up callbacks for simple use cases
+
+## 4. Prebuilt Component (`{Domain}Form.tsx`)
+
+- Props extend `Use{Domain}FormProps` and `Omit<BaseComponentInterface, 'defaultValues'>`
+- Split into `{Domain}FormRoot` (renders form) and `{Domain}Form` (wraps in `BaseBoundaries`)
+- Use `SDKFormProvider` to connect react-hook-form + field metadata + server error syncing
+- Use i18n: `useI18n(namespace)`, `useComponentDictionary(namespace, dictionary)`, `useTranslation(namespace)`
+- Add translation file at `src/i18n/en/UNSTABLE.{Domain}Form.json`
+
+## 5. FieldComponent Pattern
+
+Partners can inject custom UI via `FieldComponent` prop on any field:
+
+- `FieldComponent` is typed with UI-level props (`TextInputProps`, `SelectProps`, etc.) — NOT internal field props
+- The `*HookField` resolves metadata/errors and renders the SDK's `*Field` component
+- The `*Field` component handles react-hook-form via `useField` and renders `FieldComponent ?? Components.Default`
+- Partners never need react-hook-form knowledge; they receive `value`, `onChange`, `onBlur`, etc.
+
+## 6. Exports Checklist
+
+Wire through three barrel files in order:
+
+1. `hooks/use{Domain}Form/index.ts` — re-export everything from the hook folder
+2. `src/components/UNSTABLE_Hooks/index.ts` — re-export from the hook barrel
+3. `src/UNSTABLE_Hooks.ts` — public-facing barrel, re-export from UNSTABLE_Hooks index
+
+### What partners actually need (keep the public surface minimal)
+
+Reference `gws-flows/app/frontend/react_sdk/CustomCompensationForm.tsx` as the real-world partner usage. A partner building a custom form imports only:
+
+| Category           | Examples                                                     | Why                                                                                                                |
+| ------------------ | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
+| Hook               | `useCompensationForm`                                        | Core entry point for partners                                                                                      |
+| Prebuilt component | `CompensationForm`                                           | Exported but primarily for internal use — regression testing that the hook matches the existing prebuilt component |
+| Form provider      | `SDKFormProvider`                                            | Wraps custom form for metadata + error syncing                                                                     |
+| Domain types       | `UseCompensationFormReady`, `CompensationSubmitCallbacks`    | Type-narrowing ready state, typed submit callbacks                                                                 |
+| Field prop types   | `FlsaStatusFieldProps`, `PaymentUnitFieldProps`, etc.        | Typing `getOptionLabel` callbacks — lets partners derive API entity types without us exporting them                |
+| Validation types   | `ValidationMessages`, `RateValidation`, `RequiredValidation` | Typing `validationMessages` props                                                                                  |
+| UI prop types      | `TextInputProps`, `SelectProps`, etc.                        | Typing custom `FieldComponent` implementations                                                                     |
+
+### What stays internal (export from inner barrels but NOT from `UNSTABLE_Hooks.ts` unless needed)
+
+Infrastructure utilities like `deriveFieldsMetadata`, `withOptions`, `FormFieldsMetadataProvider`, `collectErrors`, generic `*HookField` components, and base types like `HookFormInternals`, `BaseFormHookReady` are used by the SDK to build hooks — not by partners. Only promote to the public barrel if a partner use case demands it.
+
+Do NOT re-export `@gusto/embedded-api` entity types directly — partners derive them from field prop generics (e.g. `NonNullable<FlsaStatusFieldProps['getOptionLabel']>` infers the entity type).
+
+## 7. Parity Reference
+
+Compare against the existing prebuilt component in `src/components/Employee/Compensation/` (or the relevant domain under `src/components/`). Use `../gws-flows` for current API behavior and response shapes. The hook should support every field and business rule the prebuilt component handles.
+
+## 8. Testing
+
+- Run `npm run test -- --run` (never `npm run test` — it hangs in watch mode)
+- Run `npm run build` after changes to regenerate `.d.ts` files for gws-flows consumption
