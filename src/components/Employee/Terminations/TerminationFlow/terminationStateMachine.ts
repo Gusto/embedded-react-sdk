@@ -237,7 +237,16 @@ export const terminationMachine = {
     formBreadcrumbTransition,
   ),
   dismissalPayroll: state<MachineTransition>(
-    transition(componentEvents.PAYROLL_EXIT_FLOW, 'summary', reduce(toSummaryReducer)),
+    transition(
+      componentEvents.PAYROLL_EXIT_FLOW,
+      'summary',
+      reduce(
+        (ctx: TerminationFlowContextInterface): TerminationFlowContextInterface => ({
+          ...toSummaryReducer(ctx),
+          dismissalPayrollCompleted: true,
+        }),
+      ),
+    ),
     summaryBreadcrumbTransition,
     formBreadcrumbTransition,
   ),

@@ -176,15 +176,18 @@ describe('terminationStateMachine', () => {
   })
 
   describe('dismissalPayroll state', () => {
-    it('transitions to summary on PAYROLL_EXIT_FLOW', () => {
+    it('transitions to summary on PAYROLL_EXIT_FLOW with dismissalPayrollCompleted flag', () => {
       const service = createService()
       toDismissalPayroll(service)
+
+      expect(service.context.dismissalPayrollCompleted).toBeFalsy()
 
       send(service, componentEvents.PAYROLL_EXIT_FLOW)
 
       expect(service.machine.current).toBe('summary')
       expect(service.context.currentBreadcrumbId).toBe('summary')
       expect(service.context.progressBarType).toBe('breadcrumbs')
+      expect(service.context.dismissalPayrollCompleted).toBe(true)
     })
 
     it('navigates to summary via breadcrumb', () => {

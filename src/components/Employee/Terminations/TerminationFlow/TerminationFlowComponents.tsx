@@ -29,6 +29,7 @@ export interface TerminationFlowContextInterface extends FlowContextInterface {
   payrollOption?: PayrollOption
   payrollUuid?: string
   alerts?: TerminationFlowAlert[]
+  dismissalPayrollCompleted?: boolean
 }
 
 export function TerminateEmployeeContextual() {
@@ -53,7 +54,7 @@ export function TerminateEmployeeContextual() {
 }
 
 export function TerminationSummaryContextual() {
-  const { companyId, employeeId, payrollOption, payrollUuid, onEvent } =
+  const { companyId, employeeId, payrollOption, payrollUuid, dismissalPayrollCompleted, onEvent } =
     useFlow<TerminationFlowContextInterface>()
   useI18n('Employee.Terminations.TerminationFlow')
   const { t } = useTranslation('Employee.Terminations.TerminationFlow')
@@ -77,7 +78,7 @@ export function TerminationSummaryContextual() {
       onEvent={handleEvent}
       companyId={ensureRequired(companyId)}
       employeeId={ensureRequired(employeeId)}
-      payrollOption={payrollOption}
+      payrollOption={dismissalPayrollCompleted ? undefined : payrollOption}
       payrollUuid={payrollUuid}
     />
   )
