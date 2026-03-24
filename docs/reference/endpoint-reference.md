@@ -218,6 +218,19 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | `/v1/companies/:companyId/pay_schedules` |
 |  | POST | `/v1/companies/:companyUuid/payrolls/skip` |
 
+## UNSTABLE_Hooks components
+
+| Component | Method | Path |
+| --- | --- | --- |
+| **UNSTABLE_Hooks.hooks.useCompensationForm** | GET | `/v1/employees/:employeeId/jobs` |
+|  | POST | `/v1/employees/:employeeId/jobs` |
+|  | PUT | `/v1/jobs/:jobId` |
+|  | PUT | `/v1/compensations/:compensationId` |
+|  | GET | `/v1/locations/:locationUuid/minimum_wages` |
+|  | GET | `/v1/employees/:employeeId/work_addresses` |
+|  | GET | `/v1/employees/:employeeId` |
+|  | GET | `/v1/companies/:companyId/federal_tax_details` |
+
 ## Flows
 
 Flows compose multiple blocks into a single workflow. The endpoint list for a flow is the union of all its block endpoints.

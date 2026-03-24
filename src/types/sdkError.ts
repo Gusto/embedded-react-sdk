@@ -12,7 +12,14 @@ import { getFieldErrors } from '@/helpers/apiErrorToList'
  * - `network_error` — Network connectivity failure (connection refused, timeout, abort)
  * - `internal_error` — Unexpected runtime error (unhandled exception, initialization failure)
  */
-export type SDKErrorCategory = 'api_error' | 'validation_error' | 'network_error' | 'internal_error'
+export const SDKErrorCategories = {
+  API_ERROR: 'api_error',
+  VALIDATION_ERROR: 'validation_error',
+  NETWORK_ERROR: 'network_error',
+  INTERNAL_ERROR: 'internal_error',
+} as const
+
+export type SDKErrorCategory = (typeof SDKErrorCategories)[keyof typeof SDKErrorCategories]
 
 /**
  * An error thrown by internal SDK logic that should be caught and normalized

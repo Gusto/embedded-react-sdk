@@ -29,7 +29,7 @@ function TestWrapper({
   }, [formMethods, formErrors])
 
   return (
-    <FormFieldsMetadataProvider metadata={metadata} error={null}>
+    <FormFieldsMetadataProvider metadata={metadata} errors={[]}>
       <FormProvider {...formMethods}>{children}</FormProvider>
     </FormFieldsMetadataProvider>
   )

@@ -21,7 +21,17 @@ export type {
   NumberInputHookFieldProps,
   DatePickerHookFieldProps,
   RadioGroupHookFieldProps,
+  TextInputProps,
+  SelectProps,
+  SelectOption,
+  CheckboxProps,
+  NumberInputProps,
+  DatePickerProps,
+  RadioGroupProps,
+  RadioGroupOption,
 } from './form'
+export { collectErrors } from './collectErrors'
+
 export {
   withOptions,
   FormFieldsMetadataProvider,
@@ -40,7 +50,27 @@ export {
 
 export {
   useCompensationForm,
+  CompensationForm,
+  CompensationErrorCodes,
+  type CompensationFormProps,
+  type CompensationSubmitCallbacks,
   type UseCompensationFormProps,
   type UseCompensationFormResult,
   type UseCompensationFormReady,
+  type CompensationFieldsMetadata,
+  type CompensationFormFields,
+  type CompensationErrorCode,
+  type CompensationFormData,
+  type CompensationFormOutputs,
+  type RequiredValidation,
+  type RateValidation,
+  type JobTitleFieldProps,
+  type FlsaStatusFieldProps,
+  type RateFieldProps,
+  type PaymentUnitFieldProps,
+  type AdjustForMinimumWageFieldProps,
+  type MinimumWageIdFieldProps,
+  type TwoPercentShareholderFieldProps,
+  type StateWcCoveredFieldProps,
+  type StateWcClassCodeFieldProps,
 } from './hooks/useCompensationForm'

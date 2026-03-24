@@ -10,10 +10,10 @@ type TestFormValues = { street1: string; zip: string }
 type TestFieldName = keyof TestFormValues
 
 function createWrapper({
-  error = null,
+  errors = [],
   formErrors = {},
 }: {
-  error?: SDKError | null
+  errors?: SDKError[]
   formErrors?: Partial<Record<TestFieldName, { message: string }>>
 }) {
   return function Wrapper({ children }: { children: ReactNode }) {
@@ -28,7 +28,7 @@ function createWrapper({
     }, [formMethods, formErrors])
 
     return (
-      <FormFieldsMetadataProvider metadata={{}} error={error}>
+      <FormFieldsMetadataProvider metadata={{}} errors={errors}>
         <FormProvider {...formMethods}>{children}</FormProvider>
       </FormFieldsMetadataProvider>
     )
@@ -76,7 +76,7 @@ describe('useFieldErrorMessage', () => {
       ],
     }
 
-    const wrapper = createWrapper({ error: sdkError })
+    const wrapper = createWrapper({ errors: [sdkError] })
 
     const { result } = renderHook(() => useFieldErrorMessage('street1'), { wrapper })
 
@@ -98,7 +98,7 @@ describe('useFieldErrorMessage', () => {
     }
 
     const wrapper = createWrapper({
-      error: sdkError,
+      errors: [sdkError],
       formErrors: { street1: { message: 'REQUIRED' } },
     })
 
@@ -127,7 +127,7 @@ describe('useFieldErrorMessage', () => {
     }
 
     const wrapper = createWrapper({
-      error: sdkError,
+      errors: [sdkError],
       formErrors: { zip: { message: 'SOME_UNHANDLED_CODE' } },
     })
 
@@ -158,7 +158,7 @@ describe('useFieldErrorMessage', () => {
       ],
     }
 
-    const wrapper = createWrapper({ error: sdkError })
+    const wrapper = createWrapper({ errors: [sdkError] })
 
     const { result } = renderHook(
       () => useFieldErrorMessage('zip', { REQUIRED: 'Zip is required' }),

@@ -4,7 +4,7 @@ import { useFieldsMetadata } from '../useFieldsMetadata'
 import { useFieldErrorMessage } from '../useFieldErrorMessage'
 import { getFieldWithOptions } from '../getFieldWithOptions'
 import { SelectField } from '@/components/Common'
-import type { SelectFieldProps as BaseSelectFieldProps } from '@/components/Common/Fields/SelectField'
+import type { SelectProps } from '@/components/Common/UI/Select/SelectTypes'
 
 export interface SelectHookFieldProps<
   TErrorCode extends string = never,
@@ -13,7 +13,7 @@ export interface SelectHookFieldProps<
   name: string
   validationMessages?: ValidationMessages<TErrorCode>
   getOptionLabel?: (entry: TEntry) => string
-  FieldComponent?: ComponentType<BaseSelectFieldProps<string>>
+  FieldComponent?: ComponentType<SelectProps>
 }
 
 export function SelectHookField<TErrorCode extends string, TEntry = unknown>({
@@ -22,7 +22,7 @@ export function SelectHookField<TErrorCode extends string, TEntry = unknown>({
   description,
   validationMessages,
   getOptionLabel,
-  FieldComponent = SelectField,
+  FieldComponent,
 }: SelectHookFieldProps<TErrorCode, TEntry>) {
   const metadata = useFieldsMetadata()
   const fieldMetadata = getFieldWithOptions<TEntry>(metadata, name)
@@ -38,7 +38,7 @@ export function SelectHookField<TErrorCode extends string, TEntry = unknown>({
       : defaultOptions
 
   return (
-    <FieldComponent
+    <SelectField
       name={name}
       label={label}
       description={description}
@@ -46,6 +46,7 @@ export function SelectHookField<TErrorCode extends string, TEntry = unknown>({
       isRequired={fieldMetadata?.isRequired}
       isDisabled={fieldMetadata?.isDisabled}
       options={options}
+      FieldComponent={FieldComponent}
     />
   )
 }

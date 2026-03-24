@@ -4,7 +4,7 @@ import { useFieldsMetadata } from '../useFieldsMetadata'
 import { useFieldErrorMessage } from '../useFieldErrorMessage'
 import { getFieldWithOptions } from '../getFieldWithOptions'
 import { RadioGroupField } from '@/components/Common'
-import type { RadioGroupFieldProps as BaseRadioGroupFieldProps } from '@/components/Common/Fields/RadioGroupField'
+import type { RadioGroupProps } from '@/components/Common/UI/RadioGroup/RadioGroupTypes'
 
 export interface RadioGroupHookFieldProps<
   TErrorCode extends string = never,
@@ -13,7 +13,7 @@ export interface RadioGroupHookFieldProps<
   name: string
   validationMessages?: ValidationMessages<TErrorCode>
   getOptionLabel?: (entry: TEntry) => string
-  FieldComponent?: ComponentType<BaseRadioGroupFieldProps<string>>
+  FieldComponent?: ComponentType<RadioGroupProps>
 }
 
 export function RadioGroupHookField<TErrorCode extends string, TEntry = unknown>({
@@ -22,7 +22,7 @@ export function RadioGroupHookField<TErrorCode extends string, TEntry = unknown>
   description,
   validationMessages,
   getOptionLabel,
-  FieldComponent = RadioGroupField,
+  FieldComponent,
 }: RadioGroupHookFieldProps<TErrorCode, TEntry>) {
   const metadata = useFieldsMetadata()
   const fieldMetadata = getFieldWithOptions<TEntry>(metadata, name)
@@ -38,7 +38,7 @@ export function RadioGroupHookField<TErrorCode extends string, TEntry = unknown>
       : defaultOptions
 
   return (
-    <FieldComponent
+    <RadioGroupField
       name={name}
       label={label}
       description={description}
@@ -46,6 +46,7 @@ export function RadioGroupHookField<TErrorCode extends string, TEntry = unknown>
       isRequired={fieldMetadata?.isRequired}
       isDisabled={fieldMetadata?.isDisabled}
       options={options}
+      FieldComponent={FieldComponent}
     />
   )
 }

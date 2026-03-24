@@ -18,10 +18,10 @@ export interface HookSubmitResult<T> {
   data: T
 }
 
-/** Error state managed by a hook. Auto-cleared on submit; `clearError` for manual dismissal. */
+/** Flat error state for hooks. `errors` combines query and submit errors. `clearSubmitError` clears the stateful submit error. */
 export interface HookErrors {
-  error: SDKError | null
-  clearError: () => void
+  errors: SDKError[]
+  clearSubmitError: () => void
 }
 
 /** Base shape for non-form hooks. Individual hooks override `data`. */
@@ -29,7 +29,8 @@ export interface BaseHookReady {
   isLoading: false
   data: Record<string, unknown>
   status: { isPending: boolean }
-  errors: HookErrors
+  errors: SDKError[]
+  clearSubmitError: () => void
 }
 
 /** Base shape for form hooks. Individual hooks override `data`, `actions`, and `form`. */
@@ -38,7 +39,8 @@ export interface BaseFormHookReady<TFieldsMetadata extends FieldsMetadata = Fiel
   data: Record<string, unknown>
   status: { isPending: boolean; mode: 'create' | 'update' }
   actions: Record<string, unknown>
-  errors: HookErrors
+  errors: SDKError[]
+  clearSubmitError: () => void
   form: {
     Fields: Record<string, unknown>
     fieldsMetadata: TFieldsMetadata

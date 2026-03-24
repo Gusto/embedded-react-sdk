@@ -4,7 +4,7 @@ import type { SDKError } from '@/types/sdkError'
 
 export interface FormFieldsMetadataContextValue {
   metadata: FieldsMetadata
-  error: SDKError | null
+  errors: SDKError[]
 }
 
 export const FormFieldsMetadataContext = createContext<FormFieldsMetadataContextValue | null>(null)

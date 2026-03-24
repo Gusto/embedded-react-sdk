@@ -1,3 +1,5 @@
+import type React from 'react'
+
 export interface FieldMetadata {
   name: string
   isRequired?: boolean
@@ -16,7 +18,7 @@ export type ValidationMessages<TErrorCode extends string> = Record<TErrorCode, s
 
 export interface BaseFieldProps {
   label: string
-  description?: string
+  description?: React.ReactNode
 }
 
 /** Strips `name` from a HookField props type for domain-specific field components that bind `name` internally. */

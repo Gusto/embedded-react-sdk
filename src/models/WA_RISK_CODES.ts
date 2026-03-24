@@ -1,4 +1,6 @@
-export const WA_RISK_CLASS_CODES = [
+export type WARiskClassCode = { code: string; description: string }
+
+export const WA_RISK_CLASS_CODES: WARiskClassCode[] = [
   {
     code: '010102',
     description:
