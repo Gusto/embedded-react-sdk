@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
 import { OffCycleCreation } from '../OffCycleCreation'
 import {
@@ -36,12 +35,7 @@ export function OffCycleCreationContextual() {
 }
 
 export function OffCycleExecutionContextual() {
-  const { companyId, payrollUuid, onEvent, breadcrumbs } = useFlow<OffCycleFlowContextInterface>()
-
-  const offCycleCreationBreadcrumb = breadcrumbs?.['createOffCyclePayroll']?.[0]
-  const prefixBreadcrumbs = useMemo(() => {
-    return offCycleCreationBreadcrumb ? [offCycleCreationBreadcrumb] : undefined
-  }, [offCycleCreationBreadcrumb])
+  const { companyId, payrollUuid, onEvent } = useFlow<OffCycleFlowContextInterface>()
 
   const resolvedCompanyId = ensureRequired(companyId)
   const resolvedPayrollId = ensureRequired(payrollUuid)
@@ -52,7 +46,6 @@ export function OffCycleExecutionContextual() {
         companyId={resolvedCompanyId}
         payrollId={resolvedPayrollId}
         onEvent={onEvent}
-        prefixBreadcrumbs={prefixBreadcrumbs}
       />
     </BaseComponent>
   )
