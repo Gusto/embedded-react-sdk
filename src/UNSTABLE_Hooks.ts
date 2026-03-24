@@ -7,6 +7,8 @@ export {
   type HookErrors,
   type FieldMetadata,
   type FieldMetadataWithOptions,
+  type ComposableFormHookResult,
+  composeSubmitHandler,
   useFieldsMetadata,
   useFieldErrorMessage,
 } from '@/components/UNSTABLE_Hooks'
