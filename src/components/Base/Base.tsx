@@ -75,18 +75,9 @@ export const BaseComponent = <TResourceKey extends keyof Resources = keyof Resou
       <BaseBoundaries
         FallbackComponent={FallbackComponent}
         onErrorBoundaryError={onErrorBoundaryError}
+        componentName={componentName}
       >
-        <Suspense
-          fallback={
-            <LoaderWithMetrics
-              LoaderComponent={LoaderComponent}
-              observability={observability}
-              componentName={componentName}
-            />
-          }
-        >
-          <BaseLayout error={error}>{children}</BaseLayout>
-        </Suspense>
+        <BaseLayout error={error}>{children}</BaseLayout>
       </BaseBoundaries>
     </BaseContext.Provider>
   )
@@ -220,16 +211,30 @@ const LoaderWithMetrics = ({
   return <LoaderComponent />
 }
 
+function SuspenseFallback({ componentName }: { componentName?: string }) {
+  const { LoadingIndicator } = useLoadingIndicator()
+  const { observability } = useObservability()
+  return (
+    <LoaderWithMetrics
+      LoaderComponent={LoadingIndicator}
+      observability={observability}
+      componentName={componentName}
+    />
+  )
+}
+
 export interface BaseBoundariesProps {
   children?: ReactNode
   FallbackComponent?: (props: FallbackProps) => JSX.Element
   onErrorBoundaryError?: (error: unknown, info: ErrorInfo) => void
+  componentName?: string
 }
 
 export const BaseBoundaries = ({
   children,
   FallbackComponent = InternalError,
   onErrorBoundaryError,
+  componentName,
 }: BaseBoundariesProps) => {
   return (
     <QueryErrorResetBoundary>
@@ -239,7 +244,9 @@ export const BaseBoundaries = ({
           onReset={resetQueries}
           onError={onErrorBoundaryError}
         >
-          <Suspense fallback={<BaseLayout isLoading />}>{children}</Suspense>
+          <Suspense fallback={<SuspenseFallback componentName={componentName} />}>
+            {children}
+          </Suspense>
         </ErrorBoundary>
       )}
     </QueryErrorResetBoundary>

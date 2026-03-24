@@ -41,10 +41,12 @@ interface SDKFormProviderProps<
     [K in keyof TFieldsMetadata]: FieldMetadata | FieldMetadataWithOptions
   } = Record<string, FieldMetadata | FieldMetadataWithOptions>,
 > {
-  errors: SDKError[]
-  form: {
-    fieldsMetadata: TFieldsMetadata
-    hookFormInternals: HookFormInternals<TFormData>
+  formHookResult: {
+    errors: SDKError[]
+    form: {
+      fieldsMetadata: TFieldsMetadata
+      hookFormInternals: HookFormInternals<TFormData>
+    }
   }
   children: ReactNode
 }
@@ -54,7 +56,8 @@ export function SDKFormProvider<
   TFieldsMetadata extends {
     [K in keyof TFieldsMetadata]: FieldMetadata | FieldMetadataWithOptions
   } = Record<string, FieldMetadata | FieldMetadataWithOptions>,
->({ errors, form, children }: SDKFormProviderProps<TFormData, TFieldsMetadata>) {
+>({ formHookResult, children }: SDKFormProviderProps<TFormData, TFieldsMetadata>) {
+  const { errors, form } = formHookResult
   const allFieldErrors = errors.flatMap(e => e.fieldErrors)
   useSyncFieldErrors(allFieldErrors, form)
 

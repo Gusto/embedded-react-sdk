@@ -3,45 +3,50 @@ import { SDKFormProvider } from '../../form/SDKFormProvider'
 import { useCompensationForm } from './useCompensationForm'
 import type { UseCompensationFormProps } from './useCompensationForm'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { BaseBoundaries, BaseLayout } from '@/components/Base'
+import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/components/Base'
 import { Form } from '@/components/Common/Form'
 import { ActionsLayout } from '@/components/Common'
 import { componentEvents, FLSA_OVERTIME_SALARY_LIMIT } from '@/shared/constants'
-import { useI18n } from '@/i18n'
+import { useComponentDictionary, useI18n } from '@/i18n'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 
-export interface CompensationFormProps extends UseCompensationFormProps {
-  onEvent?: (event: string, data?: unknown) => void
-}
+export interface CompensationFormProps
+  extends UseCompensationFormProps, Omit<BaseComponentInterface, 'defaultValues'> {}
 
-function CompensationFormRoot({ onEvent, ...hookProps }: CompensationFormProps) {
+function CompensationFormRoot({ onEvent, dictionary, ...hookProps }: CompensationFormProps) {
   useI18n('UNSTABLE.CompensationForm')
+  useComponentDictionary('UNSTABLE.CompensationForm', dictionary)
   const { t } = useTranslation('UNSTABLE.CompensationForm')
   const Components = useComponentContext()
   const formatCurrency = useNumberFormatter('currency')
-  const comp = useCompensationForm(hookProps)
+  const compensation = useCompensationForm(hookProps)
 
-  if (comp.isLoading) {
+  if (compensation.isLoading) {
     return <BaseLayout isLoading />
   }
 
-  const { Fields } = comp.form
+  const { Fields } = compensation.form
 
   const handleSubmit = async () => {
-    const result = await comp.actions.onSubmit({
-      onJobCreated: job => onEvent?.(componentEvents.EMPLOYEE_JOB_CREATED, job),
-      onJobUpdated: job => onEvent?.(componentEvents.EMPLOYEE_JOB_UPDATED, job),
-      onCompensationUpdated: compensation =>
-        onEvent?.(componentEvents.EMPLOYEE_COMPENSATION_UPDATED, compensation),
+    const result = await compensation.actions.onSubmit({
+      onJobCreated: job => {
+        onEvent(componentEvents.EMPLOYEE_JOB_CREATED, job)
+      },
+      onJobUpdated: job => {
+        onEvent(componentEvents.EMPLOYEE_JOB_UPDATED, job)
+      },
+      onCompensationUpdated: comp => {
+        onEvent(componentEvents.EMPLOYEE_COMPENSATION_UPDATED, comp)
+      },
     })
-    if (result && onEvent) {
-      onEvent(componentEvents.EMPLOYEE_COMPENSATION_DONE)
+    if (result) {
+      onEvent(componentEvents.EMPLOYEE_COMPENSATION_DONE, result.data)
     }
   }
 
   return (
-    <BaseLayout error={comp.errors}>
-      <SDKFormProvider errors={comp.errors} form={comp.form}>
+    <BaseLayout error={compensation.errors}>
+      <SDKFormProvider formHookResult={compensation}>
         <Form
           onSubmit={e => {
             e.preventDefault()
@@ -49,7 +54,7 @@ function CompensationFormRoot({ onEvent, ...hookProps }: CompensationFormProps) 
           }}
         >
           <Components.Heading as="h2">
-            {comp.status.mode === 'create' ? t('addTitle') : t('editTitle')}
+            {compensation.status.mode === 'create' ? t('addTitle') : t('editTitle')}
           </Components.Heading>
 
           <Fields.JobTitle
@@ -140,7 +145,7 @@ function CompensationFormRoot({ onEvent, ...hookProps }: CompensationFormProps) 
           )}
 
           <ActionsLayout>
-            <Components.Button type="submit" isLoading={comp.status.isPending}>
+            <Components.Button type="submit" isLoading={compensation.status.isPending}>
               {t('saveNewJobCta')}
             </Components.Button>
           </ActionsLayout>
@@ -150,9 +155,9 @@ function CompensationFormRoot({ onEvent, ...hookProps }: CompensationFormProps) 
   )
 }
 
-export function CompensationForm(props: CompensationFormProps) {
+export function CompensationForm({ FallbackComponent, ...props }: CompensationFormProps) {
   return (
-    <BaseBoundaries>
+    <BaseBoundaries componentName="UNSTABLE.CompensationForm" FallbackComponent={FallbackComponent}>
       <CompensationFormRoot {...props} />
     </BaseBoundaries>
   )
