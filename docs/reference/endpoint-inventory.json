@@ -1118,6 +1118,49 @@
         "companyId",
         "companyUuid"
       ]
+    },
+    "UNSTABLE_Hooks.hooks.useCompensationForm": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/jobs"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/employees/:employeeId/jobs"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/jobs/:jobId"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/compensations/:compensationId"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/locations/:locationUuid/minimum_wages"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/work_addresses"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/federal_tax_details"
+        }
+      ],
+      "variables": [
+        "companyId",
+        "compensationId",
+        "employeeId",
+        "jobId",
+        "locationUuid"
+      ]
     }
   },
   "flows": {

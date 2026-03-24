@@ -1,10 +1,10 @@
 import { type ReactNode, useEffect } from 'react'
 import type { FieldPath, FieldValues } from 'react-hook-form'
 import { FormProvider } from 'react-hook-form'
-import type { HookFormInternals, HookErrors } from '../types'
+import type { HookFormInternals } from '../types'
 import { FormFieldsMetadataProvider } from './FormFieldsMetadataProvider'
 import type { FieldMetadata, FieldMetadataWithOptions } from './types'
-import type { SDKFieldError } from '@/types/sdkError'
+import type { SDKError, SDKFieldError } from '@/types/sdkError'
 
 function useSyncFieldErrors<
   TFormData extends FieldValues,
@@ -12,7 +12,7 @@ function useSyncFieldErrors<
     [K in keyof TFieldsMetadata]: FieldMetadata | FieldMetadataWithOptions
   },
 >(
-  fieldErrors: SDKFieldError[] | undefined,
+  fieldErrors: SDKFieldError[],
   form: {
     fieldsMetadata: TFieldsMetadata
     hookFormInternals: HookFormInternals<TFormData>
@@ -22,7 +22,7 @@ function useSyncFieldErrors<
   const { setError } = form.hookFormInternals.formMethods
 
   useEffect(() => {
-    if (!fieldErrors?.length) return
+    if (!fieldErrors.length) return
     const knownFields = new Set(Object.keys(fieldsMetadata))
     for (const fieldError of fieldErrors) {
       if (knownFields.has(fieldError.field)) {
@@ -41,7 +41,7 @@ interface SDKFormProviderProps<
     [K in keyof TFieldsMetadata]: FieldMetadata | FieldMetadataWithOptions
   } = Record<string, FieldMetadata | FieldMetadataWithOptions>,
 > {
-  errors: HookErrors
+  errors: SDKError[]
   form: {
     fieldsMetadata: TFieldsMetadata
     hookFormInternals: HookFormInternals<TFormData>
@@ -55,10 +55,11 @@ export function SDKFormProvider<
     [K in keyof TFieldsMetadata]: FieldMetadata | FieldMetadataWithOptions
   } = Record<string, FieldMetadata | FieldMetadataWithOptions>,
 >({ errors, form, children }: SDKFormProviderProps<TFormData, TFieldsMetadata>) {
-  useSyncFieldErrors(errors.error?.fieldErrors, form)
+  const allFieldErrors = errors.flatMap(e => e.fieldErrors)
+  useSyncFieldErrors(allFieldErrors, form)
 
   return (
-    <FormFieldsMetadataProvider metadata={form.fieldsMetadata} error={errors.error}>
+    <FormFieldsMetadataProvider metadata={form.fieldsMetadata} errors={errors}>
       <FormProvider {...form.hookFormInternals.formMethods}>{children}</FormProvider>
     </FormFieldsMetadataProvider>
   )

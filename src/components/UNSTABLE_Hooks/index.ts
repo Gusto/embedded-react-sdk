@@ -22,6 +22,8 @@ export type {
   DatePickerHookFieldProps,
   RadioGroupHookFieldProps,
 } from './form'
+export { collectErrors } from './collectErrors'
+
 export {
   withOptions,
   FormFieldsMetadataProvider,
@@ -40,7 +42,13 @@ export {
 
 export {
   useCompensationForm,
+  CompensationForm,
+  CompensationErrorCodes,
   type UseCompensationFormProps,
   type UseCompensationFormResult,
   type UseCompensationFormReady,
+  type CompensationFieldsMetadata,
+  type CompensationFormFields,
+  type CompensationErrorCode,
+  type CompensationFormData,
 } from './hooks/useCompensationForm'

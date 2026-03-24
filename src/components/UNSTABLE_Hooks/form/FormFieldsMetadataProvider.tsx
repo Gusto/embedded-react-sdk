@@ -5,17 +5,17 @@ import type { SDKError } from '@/types/sdkError'
 
 interface FormFieldsMetadataProviderProps {
   metadata: Record<string, FieldMetadata | FieldMetadataWithOptions>
-  error: SDKError | null
+  errors: SDKError[]
   children: ReactNode
 }
 
 export function FormFieldsMetadataProvider({
   metadata,
-  error,
+  errors,
   children,
 }: FormFieldsMetadataProviderProps) {
   return (
-    <FormFieldsMetadataContext.Provider value={{ metadata, error }}>
+    <FormFieldsMetadataContext.Provider value={{ metadata, errors }}>
       {children}
     </FormFieldsMetadataContext.Provider>
   )
