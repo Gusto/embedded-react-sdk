@@ -575,4 +575,45 @@ describe('PayrollConfiguration', () => {
       expect(prepareCallCount).toBe(prepareCountBeforeCalculate)
     })
   })
+
+  describe('payroll update payload', () => {
+    it('does not include pay period dates when updating employee compensation', async () => {
+      const user = userEvent.setup()
+      let capturedUpdatePayload: Record<string, unknown> | null = null
+
+      server.use(
+        http.put(
+          `${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id`,
+          async ({ request }) => {
+            capturedUpdatePayload = (await request.json()) as Record<string, unknown>
+            return HttpResponse.json(currentPayrollData)
+          },
+        ),
+      )
+
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
+      })
+
+      const firstRow = screen.getByText('Alice Anderson').closest('tr')
+      const menuButton = firstRow?.querySelector('[data-testid="hamburger-menu-trigger"]')
+      if (menuButton) {
+        await user.click(menuButton)
+        const skipItem = await screen.findByRole('menuitem', { name: /skip/i })
+        await user.click(skipItem)
+
+        await waitFor(() => {
+          expect(capturedUpdatePayload).not.toBeNull()
+        })
+
+        expect(capturedUpdatePayload).not.toHaveProperty('start_date')
+        expect(capturedUpdatePayload).not.toHaveProperty('end_date')
+        expect(capturedUpdatePayload).not.toHaveProperty('check_date')
+        expect(capturedUpdatePayload).not.toHaveProperty('pay_period')
+        expect(capturedUpdatePayload).toHaveProperty('employee_compensations')
+      }
+    })
+  })
 })
