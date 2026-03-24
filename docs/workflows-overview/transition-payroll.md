@@ -7,10 +7,10 @@ order: 7
 
 The Transition Payroll workflow handles payrolls that cover gaps between old and new pay schedules. When a company changes its pay schedule, there may be workdays that fall between the end of the old schedule and the start of the new one. Transition payrolls ensure employees are paid for those days.
 
-The SDK provides two components for transition payrolls:
+The SDK provides a flow component and an integrated alert for transition payrolls:
 
 - **`Payroll.TransitionFlow`**: A full creation-to-execution flow for running a specific transition payroll
-- **`TransitionPayrollAlert`**: An alert component (rendered on the Payroll Landing page) that surfaces upcoming transition pay periods and allows users to run or skip them
+- **Transition Payroll Alert**: An alert automatically rendered within `Payroll.PayrollLanding` when there are unprocessed transition pay periods. It surfaces upcoming transition periods and allows users to run or skip them. This is not a standalone export — it is built into the landing page.
 
 ### Implementation
 
@@ -110,18 +110,18 @@ function MyComponent() {
 
 ## Transition Payroll Alert
 
-The `TransitionPayrollAlert` component is automatically rendered on the `Payroll.PayrollLanding` page when there are unprocessed transition pay periods. It looks ahead 90 days for upcoming transition periods, groups them by pay schedule, and presents options to run or skip each one.
+The transition payroll alert is automatically rendered within `Payroll.PayrollLanding` when there are unprocessed transition pay periods. It looks ahead 90 days for upcoming transition periods, groups them by pay schedule, and presents options to run or skip each one.
 
 The alert explains why transition payrolls are needed and warns that skipping means employees will not be paid for the transition period.
 
-> **Important**: Transition pay periods must be resolved (either run or skipped) before the company can run regular payrolls again. Pay period selection and regular payroll processing are disabled until all transition pay periods are resolved.
+> **Important**: Transition pay periods should be resolved (either run or skipped) before the company runs regular payrolls. The Gusto API may enforce this requirement by returning errors when attempting to process regular payrolls while unresolved transition periods exist.
 
 ### Alert Events
 
-| Event type                 | Description                                         | Data                                                            |
-| -------------------------- | --------------------------------------------------- | --------------------------------------------------------------- |
-| RUN_TRANSITION_PAYROLL     | Fired when user chooses to run a transition payroll | { startDate: string, endDate: string, payScheduleUuid: string } |
-| TRANSITION_PAYROLL_SKIPPED | Fired when a transition payroll is skipped          | { startDate: string, endDate: string, payScheduleUuid: string } |
+| Event type                 | Description                                         | Data                                                                         |
+| -------------------------- | --------------------------------------------------- | ---------------------------------------------------------------------------- |
+| RUN_TRANSITION_PAYROLL     | Fired when user chooses to run a transition payroll | { startDate: string, endDate: string, payScheduleUuid: string \| undefined } |
+| TRANSITION_PAYROLL_SKIPPED | Fired when a transition payroll is skipped          | { startDate: string, endDate: string, payScheduleUuid: string \| undefined } |
 
 ### Handling the Run Transition Event
 
@@ -135,7 +135,7 @@ function PayrollPage({ companyId }) {
   const [transitionData, setTransitionData] = useState(null)
 
   const handleEvent = (eventType, data) => {
-    if (eventType === componentEvents.RUN_TRANSITION_PAYROLL) {
+    if (eventType === componentEvents.RUN_TRANSITION_PAYROLL && data.payScheduleUuid) {
       setTransitionData(data)
     }
   }

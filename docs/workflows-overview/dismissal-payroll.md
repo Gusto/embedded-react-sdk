@@ -7,7 +7,7 @@ order: 6
 
 The Dismissal Payroll workflow provides a guided experience for running a terminated employee's final payroll. It presents unprocessed termination pay periods for the employee, creates an off-cycle payroll for the selected period, and then transitions into the standard payroll execution flow for configuration, review, and submission.
 
-This workflow is typically launched from the [Employee Termination](./employee-termination.md) flow when the user selects "Run a dismissal payroll" as the final paycheck option.
+This workflow is typically launched from the [Employee Termination](./employee-termination.md) flow when the user selects the "Dismissal payroll" option for the employee's final paycheck.
 
 > **Important**: Make sure employees are paid on time by checking your [state's requirement guide](https://support.gusto.com/article/100895878100000/Final-paychecks). Some states require employees to receive their final wages within 24 hours (unless they consent otherwise), in which case running a dismissal payroll may be the only option.
 
@@ -63,7 +63,7 @@ The flow adapts based on whether a `payrollId` is provided:
 
 The dismissal payroll flow integrates with the [Employee Termination workflow](./employee-termination.md):
 
-- When the user selects "Run a dismissal payroll" during termination, the `EMPLOYEE_TERMINATION_RUN_PAYROLL` event is emitted with `{ employeeId, companyId, payrollUuid, termination }`
+- When the user selects the "Dismissal payroll" option during termination, the `EMPLOYEE_TERMINATION_RUN_PAYROLL` event is emitted with `{ employeeId, companyId, payrollUuid, termination }`
 - Your application should handle this event by rendering `Payroll.DismissalFlow` with the appropriate `companyId` and `employeeId`
 - The dismissal flow fetches the employee's unprocessed termination pay periods and guides the user through the final payroll
 
@@ -72,17 +72,22 @@ import { useState } from 'react'
 import { Employee, Payroll, componentEvents } from '@gusto/embedded-react-sdk'
 
 function TerminationPage({ companyId, employeeId }) {
-  const [showDismissalPayroll, setShowDismissalPayroll] = useState(false)
+  const [dismissalPayrollData, setDismissalPayrollData] = useState(null)
 
   const handleEvent = (eventType, data) => {
     if (eventType === componentEvents.EMPLOYEE_TERMINATION_RUN_PAYROLL) {
-      setShowDismissalPayroll(true)
+      setDismissalPayrollData(data)
     }
   }
 
-  if (showDismissalPayroll) {
+  if (dismissalPayrollData) {
     return (
-      <Payroll.DismissalFlow companyId={companyId} employeeId={employeeId} onEvent={() => {}} />
+      <Payroll.DismissalFlow
+        companyId={companyId}
+        employeeId={employeeId}
+        payrollId={dismissalPayrollData.payrollUuid}
+        onEvent={() => {}}
+      />
     )
   }
 

@@ -19,6 +19,7 @@ Workflows are pre-built UI experiences you can use to quickly and easily incorpo
 - Contractor Onboarding
 - Contractor Payments
 - Employee Termination
+- Information Requests
 
 ### Why should I use a Workflow?
 
@@ -29,20 +30,19 @@ Workflows are incredibly simple to add to your application. A single React compo
 In this example we incorporate the entire employee onboarding flow in our application. This component represents multiple steps including inputting profile details, taxes, and payment info. It can be implemented as follows:
 
 ```jsx
-import { EmployeeOnboardingFlow } from '@gusto/embedded-react-sdk';
+import { Employee, GustoProvider } from '@gusto/embedded-react-sdk'
 
 function MyApp({ companyId }) {
-  return(
+  return (
     <GustoProvider
       config={{
         baseUrl: `/myapp/`,
       }}
     >
-      <EmployeeOnboardingFlow companyId={companyId} onEvent={() => {...}} />
+      <Employee.OnboardingFlow companyId={companyId} onEvent={() => {...}} />
     </GustoProvider>
-  );
+  )
 }
-
 ```
 
 This example renders a fully functional flow with the following steps:

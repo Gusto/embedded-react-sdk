@@ -21,20 +21,21 @@ function MyApp() {
 
 #### Props
 
-| Name               | Type     | Description                                                     |
-| ------------------ | -------- | --------------------------------------------------------------- |
-| companyId Required | string   | The associated company identifier.                              |
-| onEvent Required   | function | See events table for each subcomponent to see available events. |
+| Name               | Type                        | Description                                                                                                |
+| ------------------ | --------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| companyId Required | string                      | The associated company identifier.                                                                         |
+| onEvent Required   | function                    | See events table for each subcomponent to see available events.                                            |
+| payrollType        | `'bonus'` \| `'correction'` | Optional pre-selected off-cycle reason. When provided, the creation form starts with this reason selected. |
 
 #### Events
 
 Events emitted during the creation phase:
 
-| Event type                  | Description                                 | Data                                                  |
-| --------------------------- | ------------------------------------------- | ----------------------------------------------------- |
-| OFF_CYCLE_CREATED           | Fired when the off-cycle payroll is created | { payrollUuid: string }                               |
-| OFF_CYCLE_SELECT_REASON     | Fired when user selects a reason            | { reason: 'bonus' \| 'correction', defaults: object } |
-| OFF_CYCLE_DEDUCTIONS_CHANGE | Fired when deduction preference changes     | { skipRegularDeductions: boolean }                    |
+| Event type        | Description                                 | Data                    |
+| ----------------- | ------------------------------------------- | ----------------------- |
+| OFF_CYCLE_CREATED | Fired when the off-cycle payroll is created | { payrollUuid: string } |
+
+Additional events are available when using the standalone subcomponents (`Payroll.OffCycleReasonSelection` and `Payroll.OffCycleDeductionsSetting`) — see their individual event tables below.
 
 Once the payroll is created and the flow transitions to execution, all standard [run payroll events](./run-payroll.md) are emitted (e.g. `RUN_PAYROLL_CALCULATED`, `RUN_PAYROLL_SUBMITTED`, `RUN_PAYROLL_PROCESSED`).
 
