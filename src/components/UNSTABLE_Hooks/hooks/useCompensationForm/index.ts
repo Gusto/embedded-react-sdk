@@ -8,9 +8,22 @@ export type {
   CompensationFormFields,
 } from './useCompensationForm'
 export { CompensationForm } from './CompensationForm'
+export type { CompensationFormProps } from './CompensationForm'
 export {
   CompensationSchema,
   CompensationErrorCodes,
   type CompensationErrorCode,
   type CompensationFormData,
+  type CompensationFormOutputs,
 } from './compensationSchema'
+export type {
+  JobTitleFieldProps,
+  FlsaStatusFieldProps,
+  RateFieldProps,
+  PaymentUnitFieldProps,
+  AdjustForMinimumWageFieldProps,
+  MinimumWageIdFieldProps,
+  TwoPercentShareholderFieldProps,
+  StateWcCoveredFieldProps,
+  StateWcClassCodeFieldProps,
+} from './fields'

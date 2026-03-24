@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus } from '@/shared/constants'
+import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus, PAY_PERIODS } from '@/shared/constants'
 import { yearlyRate } from '@/helpers/payRateCalculator'
 
 export const CompensationErrorCodes = {
@@ -29,7 +29,13 @@ export const CompensationObjectSchema = z.object({
     FlsaStatus.COMMISSION_ONLY_EXEMPT,
     FlsaStatus.COMMISSION_ONLY_NONEXEMPT,
   ]),
-  paymentUnit: z.enum(['Hour', 'Week', 'Month', 'Year', 'Paycheck']),
+  paymentUnit: z.enum([
+    PAY_PERIODS.HOUR,
+    PAY_PERIODS.WEEK,
+    PAY_PERIODS.MONTH,
+    PAY_PERIODS.YEAR,
+    PAY_PERIODS.PAYCHECK,
+  ]),
   rate: z.number().or(z.nan()).optional(),
 })
 
@@ -87,7 +93,7 @@ export const CompensationSchema = CompensationObjectSchema.superRefine((data, ct
       })
     }
   } else if (flsaStatus === FlsaStatus.OWNER) {
-    if (paymentUnit !== 'Paycheck') {
+    if (paymentUnit !== PAY_PERIODS.PAYCHECK) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['paymentUnit'],
@@ -110,7 +116,7 @@ export const CompensationSchema = CompensationObjectSchema.superRefine((data, ct
   } else if (
     [FlsaStatus.COMMISSION_ONLY_EXEMPT, FlsaStatus.COMMISSION_ONLY_NONEXEMPT].includes(flsaStatus)
   ) {
-    if (paymentUnit !== 'Year') {
+    if (paymentUnit !== PAY_PERIODS.YEAR) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['paymentUnit'],

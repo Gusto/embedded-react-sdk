@@ -2,8 +2,9 @@ import { useEffect, useMemo, useRef } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { Compensation } from '@gusto/embedded-api/models/components/compensation'
+import type { Compensation, PaymentUnit } from '@gusto/embedded-api/models/components/compensation'
 import type { Job } from '@gusto/embedded-api/models/components/job'
+import type { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
 import type { MinimumWage } from '@gusto/embedded-api/models/components/minimumwage'
 import { useJobsAndCompensationsGetJobs } from '@gusto/embedded-api/react-query/jobsAndCompensationsGetJobs'
 import { useJobsAndCompensationsCreateJobMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsCreateJob'
@@ -69,16 +70,16 @@ function derivePrimaryFlsaStatus(jobs: Job[]): FlsaStatusValue | undefined {
   }, undefined)
 }
 
-const flsaStatusEntries = (Object.keys(FlsaStatus) as Array<keyof typeof FlsaStatus>).map(
-  key => FlsaStatus[key],
-)
+const flsaStatusEntries: FlsaStatusType[] = (
+  Object.keys(FlsaStatus) as Array<keyof typeof FlsaStatus>
+).map(key => FlsaStatus[key])
 
 const flsaOptions = flsaStatusEntries.map(status => ({
   value: status,
   label: status,
 }))
 
-const paymentUnitEntries = [
+const paymentUnitEntries: PaymentUnit[] = [
   PAY_PERIODS.HOUR,
   PAY_PERIODS.WEEK,
   PAY_PERIODS.MONTH,
@@ -154,7 +155,8 @@ export function useCompensationForm({
     rate: Number(currentCompensation?.rate ?? partnerDefaults?.rate ?? 0),
     adjustForMinimumWage: currentCompensation?.adjustForMinimumWage ?? false,
     minimumWageId: currentCompensation?.minimumWages?.[0]?.uuid ?? '',
-    paymentUnit: currentCompensation?.paymentUnit ?? partnerDefaults?.paymentUnit ?? 'Hour',
+    paymentUnit:
+      currentCompensation?.paymentUnit ?? partnerDefaults?.paymentUnit ?? PAY_PERIODS.HOUR,
     stateWcCovered: currentJob?.stateWcCovered ?? false,
     stateWcClassCode: currentJob?.stateWcClassCode ?? '',
     twoPercentShareholder: currentJob?.twoPercentShareholder ?? false,
@@ -190,12 +192,12 @@ export function useCompensationForm({
 
   useEffect(() => {
     if (watchedFlsaStatus === FlsaStatus.OWNER) {
-      formMethods.setValue('paymentUnit', 'Paycheck')
+      formMethods.setValue('paymentUnit', PAY_PERIODS.PAYCHECK)
     } else if (
       watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_NONEXEMPT ||
       watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT
     ) {
-      formMethods.setValue('paymentUnit', 'Year')
+      formMethods.setValue('paymentUnit', PAY_PERIODS.YEAR)
       formMethods.setValue('rate', 0)
     } else {
       formMethods.setValue('paymentUnit', resolvedDefaults.paymentUnit)
@@ -245,9 +247,13 @@ export function useCompensationForm({
 
   const fieldsMetadata = {
     jobTitle: baseMetadata.jobTitle,
-    flsaStatus: withOptions<string>(baseMetadata.flsaStatus, flsaOptions, flsaStatusEntries),
+    flsaStatus: withOptions<FlsaStatusType>(
+      baseMetadata.flsaStatus,
+      flsaOptions,
+      flsaStatusEntries,
+    ),
     rate: { ...baseMetadata.rate, isRequired: true, isDisabled: isCommissionOnly },
-    paymentUnit: withOptions<string>(
+    paymentUnit: withOptions<PaymentUnit>(
       { ...baseMetadata.paymentUnit, isDisabled: isOwner || isCommissionOnly },
       paymentUnitOptions,
       paymentUnitEntries,
