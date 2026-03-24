@@ -49,11 +49,14 @@ export {
   DatePickerHookField,
   RadioGroupHookField,
 
+  // Error handling
+  useErrorHandling,
+
   // Hook + form base types
   type HookFormInternals,
   type HookLoadingResult,
   type HookSubmitResult,
-  type HookErrors,
+  type HookErrorHandling,
   type BaseHookReady,
   type BaseFormHookReady,
 
