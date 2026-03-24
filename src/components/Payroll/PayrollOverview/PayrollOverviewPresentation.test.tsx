@@ -428,5 +428,21 @@ describe('PayrollOverviewPresentation', () => {
 
       expect(await screen.findByRole('button', { name: /Cancel payroll/i })).toBeInTheDocument()
     })
+
+    it('hides Edit and Submit buttons when payroll is processed', async () => {
+      renderWithProviders(<PayrollOverviewPresentation {...defaultProps} isProcessed={true} />)
+
+      await screen.findByRole('button', { name: /View payroll receipt/i })
+
+      expect(screen.queryByRole('button', { name: /^Edit$/i })).not.toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: /^Submit$/i })).not.toBeInTheDocument()
+    })
+
+    it('shows Edit and Submit buttons when payroll is not processed', async () => {
+      renderWithProviders(<PayrollOverviewPresentation {...defaultProps} isProcessed={false} />)
+
+      expect(await screen.findByRole('button', { name: /^Edit$/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /^Submit$/i })).toBeInTheDocument()
+    })
   })
 })
