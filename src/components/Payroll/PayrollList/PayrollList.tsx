@@ -28,6 +28,14 @@ export function PayrollList(props: PayrollListBlockProps) {
   )
 }
 
+const FUTURE_LOOKAHEAD_DAYS = 28
+
+const getFutureEndDate = (): string => {
+  const endDate = new Date()
+  endDate.setDate(endDate.getDate() + FUTURE_LOOKAHEAD_DAYS)
+  return endDate.toISOString().split('T')[0]!
+}
+
 const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
   const { baseSubmitHandler } = useBase()
   const [showSkipSuccessAlert, setShowSkipSuccessAlert] = useState(false)
@@ -36,6 +44,7 @@ const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
   const { data: payrollsData } = usePayrollsListSuspense({
     companyId,
     processingStatuses: [ProcessingStatuses.Unprocessed],
+    endDate: getFutureEndDate(),
     payrollTypes: [
       QueryParamPayrollTypes.Regular,
       QueryParamPayrollTypes.OffCycle,
