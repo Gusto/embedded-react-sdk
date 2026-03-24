@@ -1,4 +1,3 @@
-import { Suspense } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { SDKFormProvider } from '../../form/SDKFormProvider'
 import { useCompensationForm } from './useCompensationForm'
@@ -13,10 +12,6 @@ import useNumberFormatter from '@/hooks/useNumberFormatter'
 
 export interface CompensationFormProps extends UseCompensationFormProps {
   onEvent?: (event: string, data?: unknown) => void
-}
-
-function LoadingFallback() {
-  return <BaseLayout isLoading />
 }
 
 function CompensationFormRoot({ onEvent, ...hookProps }: CompensationFormProps) {
@@ -158,9 +153,7 @@ function CompensationFormRoot({ onEvent, ...hookProps }: CompensationFormProps) 
 export function CompensationForm(props: CompensationFormProps) {
   return (
     <BaseBoundaries>
-      <Suspense fallback={<LoadingFallback />}>
-        <CompensationFormRoot {...props} />
-      </Suspense>
+      <CompensationFormRoot {...props} />
     </BaseBoundaries>
   )
 }

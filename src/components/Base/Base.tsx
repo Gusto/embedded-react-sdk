@@ -239,7 +239,7 @@ export const BaseBoundaries = ({
           onReset={resetQueries}
           onError={onErrorBoundaryError}
         >
-          {children}
+          <Suspense fallback={<BaseLayout isLoading />}>{children}</Suspense>
         </ErrorBoundary>
       )}
     </QueryErrorResetBoundary>
