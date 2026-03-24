@@ -46,7 +46,6 @@ export function usePayrollConfigurationData({
   })
   const [displayedEmployees, setDisplayedEmployees] = useState<Employee[]>([])
   const [isDataInSync, setIsDataInSync] = useState(false)
-  const hasInitialDataRef = useRef(false)
 
   const { data: employeeData, isFetching: isFetchingEmployeeData } = useEmployeesList(
     {
@@ -129,7 +128,6 @@ export function usePayrollConfigurationData({
     if (inSync) {
       setDisplayedEmployees(currentEmployeeData.showEmployees)
       setIsDataInSync(true)
-      hasInitialDataRef.current = true
     } else {
       setIsDataInSync(false)
     }
@@ -155,8 +153,9 @@ export function usePayrollConfigurationData({
     })
   }, [queryClient, payrollId])
 
-  const isInitialLoading = isPrepareLoading && !hasInitialDataRef.current
-  const isPaginating = isPrepareFetching && hasInitialDataRef.current
+  const prepareHasNoData = !prepareData?.employeeCompensations?.length
+  const isInitialLoading = isPrepareLoading || (isPrepareFetching && prepareHasNoData)
+  const isPaginating = isPrepareFetching && !isPrepareLoading && !prepareHasNoData
   const isPaginationFetching = isFetchingEmployeeData || isPaginating || !isDataInSync
   const isLoading =
     isInitialLoading || isPayScheduleLoading || (!employeeData && isFetchingEmployeeData)

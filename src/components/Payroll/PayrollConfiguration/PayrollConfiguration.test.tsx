@@ -314,6 +314,56 @@ describe('PayrollConfiguration', () => {
     })
   })
 
+  describe('loading state', () => {
+    it('shows preparing state while prepare is in flight', async () => {
+      server.use(
+        http.put(
+          `${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/prepare`,
+          async () => {
+            await new Promise(() => {})
+          },
+        ),
+      )
+
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Preparing payroll...')).toBeInTheDocument()
+      })
+
+      expect(screen.queryByText('Alice Anderson')).not.toBeInTheDocument()
+    })
+
+    it('shows preparing state when prepare returns empty compensations and is refetching', async () => {
+      let callCount = 0
+
+      server.use(
+        http.put(
+          `${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/prepare`,
+          async () => {
+            callCount++
+            if (callCount === 1) {
+              return HttpResponse.json({
+                ...mockPayrollData,
+                employee_compensations: [],
+              })
+            }
+            await new Promise(() => {})
+            return HttpResponse.json(mockPayrollData)
+          },
+        ),
+      )
+
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Preparing payroll...')).toBeInTheDocument()
+      })
+
+      expect(screen.queryByText('Alice Anderson')).not.toBeInTheDocument()
+    })
+  })
+
   describe('late payroll banner', () => {
     it('shows late payroll warning banner when payroll is late', async () => {
       currentPayrollData = {
