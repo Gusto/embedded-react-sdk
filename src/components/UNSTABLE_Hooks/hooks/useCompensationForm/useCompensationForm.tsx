@@ -15,9 +15,9 @@ import { useEmployeeAddressesGetWorkAddresses } from '@gusto/embedded-api/react-
 import { useEmployeesGet } from '@gusto/embedded-api/react-query/employeesGet'
 import { useFederalTaxDetailsGet } from '@gusto/embedded-api/react-query/federalTaxDetailsGet'
 import type { HookSubmitResult } from '../../types'
+import { useErrorHandling } from '../../useErrorHandling'
 import { withOptions } from '../../form/withOptions'
 import { deriveFieldsMetadata } from '../../form/deriveFieldsMetadata'
-import { collectErrors } from '../../collectErrors'
 import {
   CompensationSchema,
   CompensationObjectSchema,
@@ -208,9 +208,9 @@ export function useCompensationForm({
     updateJobMutation.isPending
 
   const { baseSubmitHandler, error: submitError, setError } = useBaseSubmit('CompensationForm')
-  const clearSubmitError = () => {
-    setError(null)
-  }
+
+  const queries = [jobsQuery, addressesQuery, employeeQuery, minWagesQuery, taxQuery]
+  const errorHandling = useErrorHandling(queries, { error: submitError, setError })
 
   const isCommissionOnly =
     watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_NONEXEMPT ||
@@ -364,11 +364,6 @@ export function useCompensationForm({
     return submitResult
   }
 
-  const errors = collectErrors(
-    [jobsQuery, addressesQuery, employeeQuery, minWagesQuery, taxQuery],
-    submitError,
-  )
-
   const isDataLoading =
     jobsQuery.isLoading ||
     addressesQuery.isLoading ||
@@ -385,7 +380,7 @@ export function useCompensationForm({
     !companyUuid ||
     !federalTaxDetails
   ) {
-    return { isLoading: true as const }
+    return { isLoading: true as const, errorHandling }
   }
 
   return {
@@ -401,8 +396,7 @@ export function useCompensationForm({
       mode: isCreateMode ? 'create' : 'update',
     },
     actions: { onSubmit },
-    errors,
-    clearSubmitError,
+    errorHandling,
     form: {
       Fields: {
         JobTitle: JobTitleField,

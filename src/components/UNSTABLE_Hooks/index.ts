@@ -2,10 +2,12 @@ export type {
   HookFormInternals,
   HookLoadingResult,
   HookSubmitResult,
-  HookErrors,
+  HookErrorHandling,
   BaseHookReady,
   BaseFormHookReady,
 } from './types'
+
+export { useErrorHandling } from './useErrorHandling'
 
 export type {
   FieldMetadata,

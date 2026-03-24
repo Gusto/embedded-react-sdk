@@ -68,7 +68,7 @@ export function JobTitleField(props: JobTitleFieldProps) {
 
 - Use `@gusto/embedded-api/react-query/*` hooks for all API calls
 - Gate dependent queries with `enabled: !!dependency`
-- Collect errors with `collectErrors(queries, submitError)`
+- Use `useErrorHandling` to build the `errorHandling` bag (see Error Handling section below)
 
 ### Form Defaults and Data Sync
 
@@ -96,12 +96,31 @@ const formMethods = useForm<FormData, unknown, FormOutputs>({
 - Return `undefined` for fields that shouldn't render: `FlsaStatus: isEnabled ? FlsaStatusField : undefined`
 - Partners check truthiness: `{Fields.FlsaStatus && <Fields.FlsaStatus ... />}`
 
-### Return Shape (discriminated union)
+### Error Handling
+
+Use `useErrorHandling` to build the `errorHandling` bag from queries and submit state. This provides partners with a unified interface for errors, query retries, and submit error clearing:
 
 ```typescript
-// Loading state
+const { baseSubmitHandler, error: submitError, setError } = useBaseSubmit('{Domain}Form')
+
+const queries = [queryA, queryB, queryC]
+const errorHandling = useErrorHandling(queries, { error: submitError, setError })
+```
+
+`useErrorHandling` returns `HookErrorHandling`:
+
+- `errors: SDKError[]` — combined query + submit errors
+- `retryQueries: () => void` — retries all failed data-fetching queries (dependent queries auto-trigger via `enabled`)
+- `clearSubmitError: () => void` — clears the stateful mutation error
+
+### Return Shape (discriminated union)
+
+The `errorHandling` bag is available in both loading and ready states so partners can always display errors and retry. This is critical because failed queries produce no data, so the hook stays in the loading branch — but `errorHandling.errors` will be populated, letting partners show error UI with a retry button instead of an infinite spinner:
+
+```typescript
+// Loading state — errorHandling still available for error display + retry
 if (isDataLoading || !requiredData) {
-  return { isLoading: true as const }
+  return { isLoading: true as const, errorHandling }
 }
 
 // Ready state
@@ -112,8 +131,7 @@ return {
   },
   status: { isPending, mode: isCreateMode ? 'create' : 'update' },
   actions: { onSubmit },
-  errors,
-  clearSubmitError,
+  errorHandling,
   form: {
     Fields: {
       /* field components, some possibly undefined */
@@ -172,7 +190,7 @@ Reference `gws-flows/app/frontend/react_sdk/CustomCompensationForm.tsx` as the r
 
 ### What stays internal (export from inner barrels but NOT from `UNSTABLE_Hooks.ts` unless needed)
 
-Infrastructure utilities like `deriveFieldsMetadata`, `withOptions`, `FormFieldsMetadataProvider`, `collectErrors`, generic `*HookField` components, and base types like `HookFormInternals`, `BaseFormHookReady` are used by the SDK to build hooks — not by partners. Only promote to the public barrel if a partner use case demands it.
+Infrastructure utilities like `deriveFieldsMetadata`, `withOptions`, `FormFieldsMetadataProvider`, `useErrorHandling`, `collectErrors`, generic `*HookField` components, and base types like `HookFormInternals`, `BaseFormHookReady` are used by the SDK to build hooks — not by partners. Only promote to the public barrel if a partner use case demands it.
 
 Do NOT re-export `@gusto/embedded-api` entity types directly — partners derive them from field prop generics (e.g. `NonNullable<FlsaStatusFieldProps['getOptionLabel']>` infers the entity type).
 

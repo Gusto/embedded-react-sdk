@@ -22,7 +22,7 @@ function CompensationFormRoot({ onEvent, dictionary, ...hookProps }: Compensatio
   const compensation = useCompensationForm(hookProps)
 
   if (compensation.isLoading) {
-    return <BaseLayout isLoading />
+    return <BaseLayout isLoading error={compensation.errorHandling.errors} />
   }
 
   const { Fields } = compensation.form
@@ -45,7 +45,7 @@ function CompensationFormRoot({ onEvent, dictionary, ...hookProps }: Compensatio
   }
 
   return (
-    <BaseLayout error={compensation.errors}>
+    <BaseLayout error={compensation.errorHandling.errors}>
       <SDKFormProvider formHookResult={compensation}>
         <Form
           onSubmit={e => {

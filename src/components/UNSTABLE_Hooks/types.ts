@@ -10,6 +10,7 @@ export interface HookFormInternals<TFormData extends FieldValues = FieldValues> 
 /** Discriminated union member returned while async data is being fetched. */
 export interface HookLoadingResult {
   isLoading: true
+  errorHandling: HookErrorHandling
 }
 
 /** Result shape returned by a successful form submission. */
@@ -18,9 +19,10 @@ export interface HookSubmitResult<T> {
   data: T
 }
 
-/** Flat error state for hooks. `errors` combines query and submit errors. `clearSubmitError` clears the stateful submit error. */
-export interface HookErrors {
+/** Error state and recovery actions returned by all hooks. */
+export interface HookErrorHandling {
   errors: SDKError[]
+  retryQueries: () => void
   clearSubmitError: () => void
 }
 
@@ -29,8 +31,7 @@ export interface BaseHookReady {
   isLoading: false
   data: Record<string, unknown>
   status: { isPending: boolean }
-  errors: SDKError[]
-  clearSubmitError: () => void
+  errorHandling: HookErrorHandling
 }
 
 /** Base shape for form hooks. Individual hooks override `data`, `actions`, and `form`. */
@@ -39,8 +40,7 @@ export interface BaseFormHookReady<TFieldsMetadata extends FieldsMetadata = Fiel
   data: Record<string, unknown>
   status: { isPending: boolean; mode: 'create' | 'update' }
   actions: Record<string, unknown>
-  errors: SDKError[]
-  clearSubmitError: () => void
+  errorHandling: HookErrorHandling
   form: {
     Fields: Record<string, unknown>
     fieldsMetadata: TFieldsMetadata
