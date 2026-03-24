@@ -1,3 +1,4 @@
+import type { ComponentType } from 'react'
 import { useField, type UseFieldProps } from '@/components/Common/Fields/hooks/useField'
 import type { SelectOption, SelectProps } from '@/components/Common/UI/Select/SelectTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -14,6 +15,7 @@ export interface SelectFieldProps<TValue>
     UseFieldProps<TValue, HTMLButtonElement> {
   options: GenericSelectOption<TValue>[]
   convertValueToString?: (value: TValue) => string
+  FieldComponent?: ComponentType<SelectProps>
 }
 
 export const SelectField = <TValue = string,>({
@@ -29,6 +31,7 @@ export const SelectField = <TValue = string,>({
   description,
   onBlur,
   inputRef,
+  FieldComponent,
   ...selectProps
 }: SelectFieldProps<TValue>) => {
   const Components = useComponentContext()
@@ -52,5 +55,6 @@ export const SelectField = <TValue = string,>({
     convertValueToString,
   })
 
-  return <Components.Select {...selectProps} {...fieldProps} {...stringFieldProps} />
+  const RenderComponent = FieldComponent ?? Components.Select
+  return <RenderComponent {...selectProps} {...fieldProps} {...stringFieldProps} />
 }

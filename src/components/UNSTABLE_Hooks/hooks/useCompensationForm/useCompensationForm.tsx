@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -167,15 +167,9 @@ export function useCompensationForm({
     mode: validationMode,
     shouldFocusError,
     defaultValues: resolvedDefaults,
+    values: resolvedDefaults,
+    resetOptions: { keepDirtyValues: true },
   })
-
-  const hasInitializedFromServer = useRef(false)
-  useEffect(() => {
-    if (!hasInitializedFromServer.current && currentJob) {
-      hasInitializedFromServer.current = true
-      formMethods.reset(resolvedDefaults)
-    }
-  }, [currentJob, resolvedDefaults, formMethods.reset])
 
   const watchedFlsaStatus = useWatch({
     control: formMethods.control,

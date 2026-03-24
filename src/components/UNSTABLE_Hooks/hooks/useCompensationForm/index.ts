@@ -17,6 +17,8 @@ export {
   type CompensationFormOutputs,
 } from './compensationSchema'
 export type {
+  RequiredValidation,
+  RateValidation,
   JobTitleFieldProps,
   FlsaStatusFieldProps,
   RateFieldProps,

@@ -17,8 +17,8 @@ import {
 import type { CompensationErrorCodes } from './compensationSchema'
 import type { WARiskClassCode } from '@/models/WA_RISK_CODES'
 
-type RequiredValidation = typeof CompensationErrorCodes.REQUIRED
-type RateValidation = (typeof CompensationErrorCodes)[
+export type RequiredValidation = typeof CompensationErrorCodes.REQUIRED
+export type RateValidation = (typeof CompensationErrorCodes)[
   | 'REQUIRED'
   | 'RATE_MINIMUM'
   | 'RATE_EXEMPT_THRESHOLD']

@@ -3,12 +3,12 @@ import type { BaseFieldProps, ValidationMessages } from '../types'
 import { useFieldsMetadata } from '../useFieldsMetadata'
 import { useFieldErrorMessage } from '../useFieldErrorMessage'
 import { CheckboxField } from '@/components/Common'
-import type { CheckboxFieldProps } from '@/components/Common/Fields/CheckboxField'
+import type { CheckboxProps } from '@/components/Common/UI/Checkbox/CheckboxTypes'
 
 export interface CheckboxHookFieldProps<TErrorCode extends string = never> extends BaseFieldProps {
   name: string
   validationMessages?: ValidationMessages<TErrorCode>
-  FieldComponent?: ComponentType<CheckboxFieldProps>
+  FieldComponent?: ComponentType<CheckboxProps>
 }
 
 export function CheckboxHookField<TErrorCode extends string>({
@@ -16,20 +16,21 @@ export function CheckboxHookField<TErrorCode extends string>({
   label,
   description,
   validationMessages,
-  FieldComponent = CheckboxField,
+  FieldComponent,
 }: CheckboxHookFieldProps<TErrorCode>) {
   const metadata = useFieldsMetadata()
   const fieldMetadata = metadata[name]
   const errorMessage = useFieldErrorMessage(name, validationMessages)
 
   return (
-    <FieldComponent
+    <CheckboxField
       name={name}
       label={label}
       description={description}
       errorMessage={errorMessage}
       isRequired={fieldMetadata?.isRequired}
       isDisabled={fieldMetadata?.isDisabled}
+      FieldComponent={FieldComponent}
     />
   )
 }

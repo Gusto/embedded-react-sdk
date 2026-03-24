@@ -3,7 +3,6 @@ import type { BaseFieldProps, ValidationMessages } from '../types'
 import { useFieldsMetadata } from '../useFieldsMetadata'
 import { useFieldErrorMessage } from '../useFieldErrorMessage'
 import { NumberInputField } from '@/components/Common'
-import type { NumberInputFieldProps } from '@/components/Common/Fields/NumberInputField'
 import type { NumberInputProps } from '@/components/Common/UI/NumberInput/NumberInputTypes'
 
 export interface NumberInputHookFieldProps<
@@ -14,7 +13,7 @@ export interface NumberInputHookFieldProps<
   min?: NumberInputProps['min']
   max?: NumberInputProps['max']
   validationMessages?: ValidationMessages<TErrorCode>
-  FieldComponent?: ComponentType<NumberInputFieldProps>
+  FieldComponent?: ComponentType<NumberInputProps>
 }
 
 export function NumberInputHookField<TErrorCode extends string>({
@@ -25,14 +24,14 @@ export function NumberInputHookField<TErrorCode extends string>({
   min,
   max,
   validationMessages,
-  FieldComponent = NumberInputField,
+  FieldComponent,
 }: NumberInputHookFieldProps<TErrorCode>) {
   const metadata = useFieldsMetadata()
   const fieldMetadata = metadata[name]
   const errorMessage = useFieldErrorMessage(name, validationMessages)
 
   return (
-    <FieldComponent
+    <NumberInputField
       name={name}
       label={label}
       description={description}
@@ -42,6 +41,7 @@ export function NumberInputHookField<TErrorCode extends string>({
       format={format}
       min={min}
       max={max}
+      FieldComponent={FieldComponent}
     />
   )
 }

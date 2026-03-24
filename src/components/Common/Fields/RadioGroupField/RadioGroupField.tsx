@@ -1,3 +1,4 @@
+import type { ComponentType } from 'react'
 import { useField, type UseFieldProps } from '@/components/Common/Fields/hooks/useField'
 import type {
   RadioGroupProps,
@@ -17,6 +18,7 @@ export interface RadioGroupFieldProps<TValue>
     UseFieldProps<TValue> {
   options: GenericRadioGroupOption<TValue>[]
   convertValueToString?: (value: TValue) => string
+  FieldComponent?: ComponentType<RadioGroupProps>
 }
 
 export const RadioGroupField = <TValue = string,>({
@@ -32,6 +34,7 @@ export const RadioGroupField = <TValue = string,>({
   description,
   onBlur,
   inputRef,
+  FieldComponent,
   ...radioGroupProps
 }: RadioGroupFieldProps<TValue>) => {
   const Components = useComponentContext()
@@ -55,5 +58,6 @@ export const RadioGroupField = <TValue = string,>({
     convertValueToString,
   })
 
-  return <Components.RadioGroup {...radioGroupProps} {...fieldProps} {...stringFieldProps} />
+  const RenderComponent = FieldComponent ?? Components.RadioGroup
+  return <RenderComponent {...radioGroupProps} {...fieldProps} {...stringFieldProps} />
 }
