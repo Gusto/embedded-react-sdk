@@ -1,0 +1,33 @@
+{
+  "title": "Choose your company holidays",
+  "description": "Choose which holidays your company observes and we'll automatically add those hours when you run payroll.",
+  "continueCta": "Continue",
+  "tableHeaders": {
+    "holidayName": "Holiday name",
+    "observedDate": "Observed date"
+  },
+  "selected": "selected",
+  "selectAllEmployees": "Select all employees",
+  "selectAll": "Select all",
+  "clearAriaLabel": "Clear selected employees",
+  "clear": "Clear",
+  "editEmployees": {
+    "title": "Add employees to your policy"
+  },
+  "show": {
+    "title": "Holiday pay policy",
+    "holidaySchedule": "Holiday schedule"
+  },
+  "holidayScheduleTable": {
+    "title": "Holiday schedule",
+    "editCta": "Edit"
+  },
+  "flash": {
+    "deleted": "Holiday pay policy deleted successfully",
+    "employeesAdded_one": "{{count}} employee has been added to this policy.",
+    "employeesAdded_other": "{{count}} employees have been added to this policy.",
+    "employeeRemoved": "{{name}} has been removed from the policy.",
+    "employeesRemoved_one": "{{count}} employee has been removed from the policy.",
+    "employeesRemoved_other": "{{count}} employees have been removed from the policy."
+  }
+}

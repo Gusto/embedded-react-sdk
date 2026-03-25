@@ -1,0 +1,44 @@
+{
+  "pageTitle": "Time off policies",
+  "addPolicyButton": "Add policy",
+  "tableHeaders": {
+    "name": "Name",
+    "enrolled": "Enrolled",
+    "actions": "Actions"
+  },
+  "actions": {
+    "viewPolicy": "View policy",
+    "editPolicy": "Edit policy",
+    "deletePolicy": "Delete policy"
+  },
+  "employeeCount_one": "{{count}} employee",
+  "employeeCount_other": "{{count}} employees",
+  "incompleteBadge": "Incomplete",
+  "holidayPayPolicy": "Holiday pay policy",
+  "deleteConfirmation": "Are you sure you want to delete the policy \"{{name}}\"?",
+  "deleteDescription": "This will delete the policy \"{{name}}\" and all associated time off requests.",
+  "deleteHolidayConfirmation": "Are you sure you want to delete the company holiday pay policy?",
+  "deleteHolidayDescription": "This will delete the company holiday pay policy.",
+  "emptyState": {
+    "heading": "You haven't added any time off policies yet",
+    "body": "Time off policies help you track and approve employee leave."
+  },
+  "selectPolicyType": {
+    "title": "Select policy type",
+    "policyTypeLabel": "Policy type",
+    "policyTypeHint": "Select the type of time off policy you want to set up for your team.",
+    "holidayLabel": "Holiday pay",
+    "holidayHint": "Give employees time off for company holidays. Choose which holidays to observe.",
+    "timeOffLabel": "Time off",
+    "timeOffHint": "Use for paid leave or combine vacation and sick time into one PTO policy.",
+    "sickLeaveLabel": "Sick leave",
+    "sickLeaveHint": "Paid time employees can use when they're sick or caring for their health.",
+    "continueCta": "Continue",
+    "cancelCta": "Cancel"
+  },
+  "flash": {
+    "policyDeleted": "Policy \"{{name}}\" deleted successfully",
+    "holidayDeleted": "Holiday pay policy deleted successfully",
+    "invalidPolicyType": "Please select a valid policy type."
+  }
+}
