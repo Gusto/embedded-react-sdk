@@ -13,9 +13,9 @@ import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 
 export function DismissalFlow({ companyId, employeeId, onEvent, payrollId }: DismissalFlowProps) {
   const dismissalFlowMachine = useMemo(() => {
-    const hasPayroll = Boolean(payrollId)
-    const initialState = hasPayroll ? 'execution' : 'payPeriodSelection'
-    const initialComponent = hasPayroll
+    const shouldAutoAdvance = Boolean(payrollId) && Boolean(employeeId)
+    const initialState = shouldAutoAdvance ? 'execution' : 'payPeriodSelection'
+    const initialComponent = shouldAutoAdvance
       ? DismissalExecutionContextual
       : DismissalPayPeriodSelectionContextual
 
@@ -29,8 +29,8 @@ export function DismissalFlow({ companyId, employeeId, onEvent, payrollId }: Dis
         employeeId,
         payrollUuid: payrollId,
         breadcrumbs: buildBreadcrumbs(dismissalBreadcrumbsNodes),
-        currentBreadcrumbId: hasPayroll ? undefined : 'payPeriodSelection',
-        progressBarType: hasPayroll ? null : ('breadcrumbs' as const),
+        currentBreadcrumbId: shouldAutoAdvance ? undefined : 'payPeriodSelection',
+        progressBarType: shouldAutoAdvance ? null : ('breadcrumbs' as const),
       }),
     )
   }, [companyId, employeeId, payrollId])

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { usePaySchedulesGetUnprocessedTerminationPeriodsSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetUnprocessedTerminationPeriods'
 import { usePayrollsCreateOffCycleMutation } from '@gusto/embedded-api/react-query/payrollsCreateOffCycle'
 import type { UnprocessedTerminationPayPeriod } from '@gusto/embedded-api/models/components/unprocessedterminationpayperiod'
@@ -18,7 +18,8 @@ import type { SelectOption } from '@/components/Common/UI/Select/SelectTypes'
 
 export interface DismissalPayPeriodSelectionProps extends BaseComponentInterface<'Payroll.Dismissal'> {
   companyId: string
-  employeeId: string
+  employeeId?: string
+  payrollId?: string
 }
 
 export function DismissalPayPeriodSelection(props: DismissalPayPeriodSelectionProps) {
@@ -34,7 +35,7 @@ type RequiredPayPeriod = UnprocessedTerminationPayPeriod &
 
 const payPeriodKey = (period: RequiredPayPeriod) => `${period.startDate}__${period.endDate}`
 
-function Root({ companyId, employeeId, dictionary }: DismissalPayPeriodSelectionProps) {
+function Root({ companyId, employeeId, payrollId, dictionary }: DismissalPayPeriodSelectionProps) {
   useComponentDictionary('Payroll.Dismissal', dictionary)
   useI18n('Payroll.Dismissal')
   const { t } = useTranslation('Payroll.Dismissal')
@@ -43,10 +44,18 @@ function Root({ companyId, employeeId, dictionary }: DismissalPayPeriodSelection
   const { data } = usePaySchedulesGetUnprocessedTerminationPeriodsSuspense({ companyId })
   const { mutateAsync: createOffCyclePayroll, isPending } = usePayrollsCreateOffCycleMutation()
 
+  const shouldAutoAdvance = Boolean(payrollId) && Boolean(employeeId)
+
+  useEffect(() => {
+    if (payrollId && employeeId) {
+      onEvent(componentEvents.DISMISSAL_PAY_PERIOD_SELECTED, { payrollUuid: payrollId })
+    }
+  }, [payrollId, employeeId, onEvent])
+
   const employeePayPeriods: RequiredPayPeriod[] = useMemo(() => {
     const allPeriods = data.unprocessedTerminationPayPeriodList ?? []
     return allPeriods
-      .filter(period => period.employeeUuid === employeeId)
+      .filter(period => !employeeId || period.employeeUuid === employeeId)
       .filter(
         (period): period is RequiredPayPeriod =>
           Boolean(period.startDate) && Boolean(period.endDate) && Boolean(period.employeeUuid),
@@ -78,6 +87,8 @@ function Root({ companyId, employeeId, dictionary }: DismissalPayPeriodSelection
         throw new SDKInternalError(t('errors.invalidPayPeriod'))
       }
 
+      const resolvedEmployeeId = employeeId ?? period.employeeUuid
+
       const checkDate = period.checkDate
         ? new RFCDate(period.checkDate)
         : new RFCDate(addBusinessDays(new Date(), ACH_LEAD_TIME_BUSINESS_DAYS))
@@ -90,7 +101,7 @@ function Root({ companyId, employeeId, dictionary }: DismissalPayPeriodSelection
             offCycleReason: OffCycleReason.DismissedEmployee,
             startDate: new RFCDate(period.startDate),
             endDate: new RFCDate(period.endDate),
-            employeeUuids: [employeeId],
+            employeeUuids: [resolvedEmployeeId],
             checkDate,
           },
         },
@@ -105,6 +116,10 @@ function Root({ companyId, employeeId, dictionary }: DismissalPayPeriodSelection
 
       onEvent(componentEvents.DISMISSAL_PAY_PERIOD_SELECTED, { payrollUuid })
     })
+  }
+
+  if (shouldAutoAdvance) {
+    return null
   }
 
   return (

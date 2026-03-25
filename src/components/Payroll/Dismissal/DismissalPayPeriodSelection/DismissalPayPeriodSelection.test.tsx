@@ -192,6 +192,48 @@ describe('DismissalPayPeriodSelection', () => {
     })
   })
 
+  describe('auto-selection behavior', () => {
+    it('shows selection UI with employee pre-selected when only one dismissal exists and no employeeId', async () => {
+      mockPayPeriods = [
+        {
+          startDate: '2024-12-01',
+          endDate: '2024-12-14',
+          checkDate: '2024-12-17',
+          employeeUuid: 'emp-1',
+          employeeName: 'Jane Doe',
+          payScheduleUuid: 'ps-1',
+        },
+      ]
+
+      renderComponent({ employeeId: undefined })
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('heading', { name: /run dismissal payroll/i }),
+        ).toBeInTheDocument()
+      })
+
+      expect(screen.getByLabelText(/pay period/i)).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /continue/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /continue/i })).not.toBeDisabled()
+    })
+
+    it('auto-advances when both payrollId and employeeId are passed', async () => {
+      renderComponent({ employeeId: 'emp-1', payrollId: 'payroll-123' })
+
+      await waitFor(() => {
+        expect(defaultProps.onEvent).toHaveBeenCalledWith(
+          componentEvents.DISMISSAL_PAY_PERIOD_SELECTED,
+          { payrollUuid: 'payroll-123' },
+        )
+      })
+
+      expect(
+        screen.queryByRole('heading', { name: /run dismissal payroll/i }),
+      ).not.toBeInTheDocument()
+    })
+  })
+
   describe('payroll creation with missing checkDate', () => {
     it('computes a fallback checkDate when period has no checkDate', async () => {
       mockPayPeriods = [
