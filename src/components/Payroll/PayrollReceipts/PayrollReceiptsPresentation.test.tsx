@@ -72,7 +72,7 @@ describe('PayrollReceiptsPresentation', () => {
       })
 
       const allDataCards = screen.getAllByTestId('data-cards')
-      const employeeDataCards = allDataCards.find(el => el.textContent?.includes('Hannah Arendt'))
+      const employeeDataCards = allDataCards.find(el => el.textContent.includes('Hannah Arendt'))
 
       const footerItems = employeeDataCards?.querySelectorAll('[role="listitem"]') ?? []
       const footerCard = footerItems[footerItems.length - 1]
@@ -106,7 +106,7 @@ describe('PayrollReceiptsPresentation', () => {
       })
 
       const allDataCards = screen.getAllByTestId('data-cards')
-      const employeeDataCards = allDataCards.find(el => el.textContent?.includes('Hannah Arendt'))
+      const employeeDataCards = allDataCards.find(el => el.textContent.includes('Hannah Arendt'))
 
       const footerItems = employeeDataCards?.querySelectorAll('[role="listitem"]') ?? []
       const footerCard = footerItems[footerItems.length - 1]
