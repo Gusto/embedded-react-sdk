@@ -208,9 +208,7 @@ describe('DismissalPayPeriodSelection', () => {
       renderComponent({ employeeId: undefined })
 
       await waitFor(() => {
-        expect(
-          screen.getByRole('heading', { name: /run dismissal payroll/i }),
-        ).toBeInTheDocument()
+        expect(screen.getByRole('heading', { name: /run dismissal payroll/i })).toBeInTheDocument()
       })
 
       expect(screen.getByLabelText(/pay period/i)).toBeInTheDocument()
