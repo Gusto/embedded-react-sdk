@@ -1,4 +1,6 @@
 import { z } from 'zod'
+import { composeFormSchema } from '../../form/composeFormSchema'
+import { filterRequiredFields, type RequiredFields } from '../../form/resolveRequiredFields'
 import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus, PAY_PERIODS } from '@/shared/constants'
 import { yearlyRate } from '@/helpers/payRateCalculator'
 
@@ -16,11 +18,6 @@ export type CompensationErrorCode =
 
 const fieldValidators = {
   jobTitle: z.string().min(1, { message: CompensationErrorCodes.REQUIRED }),
-  adjustForMinimumWage: z.boolean(),
-  minimumWageId: z.string().optional(),
-  stateWcCovered: z.boolean().optional(),
-  stateWcClassCode: z.string().optional(),
-  twoPercentShareholder: z.boolean().optional(),
   flsaStatus: z.enum([
     FlsaStatus.EXEMPT,
     FlsaStatus.SALARIED_NONEXEMPT,
@@ -38,40 +35,62 @@ const fieldValidators = {
   ]),
   rate: z.number().optional(),
   startDate: z.iso.date().nullable().optional(),
+  adjustForMinimumWage: z.boolean(),
+  minimumWageId: z.string().optional(),
+  stateWcCovered: z.boolean().optional(),
+  stateWcClassCode: z.string().optional(),
+  twoPercentShareholder: z.boolean().optional(),
 }
+
+const FIXED_FIELDS = new Set([
+  'adjustForMinimumWage',
+  'minimumWageId',
+  'stateWcCovered',
+  'stateWcClassCode',
+  'twoPercentShareholder',
+])
+
+export type CompensationField = Exclude<
+  keyof typeof fieldValidators,
+  | 'adjustForMinimumWage'
+  | 'minimumWageId'
+  | 'stateWcCovered'
+  | 'stateWcClassCode'
+  | 'twoPercentShareholder'
+>
 
 export type CompensationFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
 }
 export type CompensationFormOutputs = CompensationFormData
 
-export const CompensationObjectSchema = z.object({
+const runtimeFieldValidators = {
   ...fieldValidators,
+  rate: z.preprocess(val => (Number.isNaN(val) ? undefined : val), z.number().optional()),
+  startDate: z.preprocess(
+    val => (val instanceof Date ? val.toISOString().split('T')[0] : val),
+    z.iso.date().nullable().optional(),
+  ),
   stateWcCovered: z
     .preprocess(val => (typeof val === 'string' ? val === 'true' : val), z.boolean())
     .optional(),
-  rate: z.preprocess(val => (Number.isNaN(val) ? undefined : val), z.number().optional()),
-  startDate: z
-    .preprocess(
-      val => (val instanceof Date ? val.toISOString().split('T')[0] : val),
-      z.iso.date().nullable().optional(),
-    )
-    .optional(),
-})
+}
 
-function compensationSuperRefine(
-  requireStartDate: boolean,
-  data: CompensationFormData,
-  ctx: z.RefinementCtx,
-) {
-  if (requireStartDate && !data.startDate) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      path: ['startDate'],
-      message: CompensationErrorCodes.REQUIRED,
-    })
-  }
+const REQUIRED_ON_CREATE = new Set<CompensationField>([
+  'jobTitle',
+  'flsaStatus',
+  'rate',
+  'paymentUnit',
+])
+const REQUIRED_ON_UPDATE = new Set<CompensationField>([])
 
+interface CompensationSchemaOptions {
+  mode?: 'create' | 'update'
+  requiredFields?: RequiredFields<CompensationField>
+  withStartDateField?: boolean
+}
+
+function compensationSuperRefine(data: CompensationFormData, ctx: z.RefinementCtx) {
   if (data.adjustForMinimumWage && (!data.minimumWageId || data.minimumWageId.trim() === '')) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
@@ -164,9 +183,29 @@ function compensationSuperRefine(
   }
 }
 
-export function createCompensationSchema({ requireStartDate = false } = {}) {
-  return CompensationObjectSchema.superRefine((data, ctx) => {
-    compensationSuperRefine(requireStartDate, data as CompensationFormData, ctx)
+export function createCompensationSchema(options: CompensationSchemaOptions = {}) {
+  const { mode = 'create', requiredFields, withStartDateField = true } = options
+
+  const effectiveRequiredFields = withStartDateField
+    ? requiredFields
+    : filterRequiredFields(requiredFields, 'startDate')
+
+  const effectiveRequiredOnCreate = new Set(REQUIRED_ON_CREATE)
+  if (withStartDateField) {
+    effectiveRequiredOnCreate.add('startDate')
+  }
+
+  const baseSchema = composeFormSchema({
+    fieldValidators: runtimeFieldValidators,
+    fixedFields: FIXED_FIELDS,
+    requiredOnCreate: effectiveRequiredOnCreate,
+    requiredOnUpdate: REQUIRED_ON_UPDATE,
+    mode,
+    requiredFields: effectiveRequiredFields,
+  })
+
+  return baseSchema.superRefine((data, ctx) => {
+    compensationSuperRefine(data as CompensationFormData, ctx)
   })
 }
 

@@ -10,7 +10,8 @@ import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import type { HookSubmitResult } from '../../types'
 import { useErrorHandling } from '../../useErrorHandling'
 import { deriveFieldsMetadata } from '../../form/deriveFieldsMetadata'
-import { resolveRequiredFields, type RequiredFieldsInput } from '../../form/resolveRequiredFields'
+import { createGetFormSubmissionValues } from '../../form/getFormSubmissionValues'
+import type { RequiredFields } from '../../form/resolveRequiredFields'
 import {
   createEmployeeDetailsSchema,
   type EmployeeDetailsFormData,
@@ -31,7 +32,7 @@ import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { SDKInternalError } from '@/types/sdkError'
 import { removeNonDigits } from '@/helpers/formattedStrings'
 
-export type EmployeeDetailsRequiredFields = RequiredFieldsInput<EmployeeDetailsField>
+export type EmployeeDetailsRequiredFields = RequiredFields<EmployeeDetailsField>
 
 export interface EmployeeDetailsSubmitCallbacks {
   onEmployeeCreated?: (employee: Employee) => void
@@ -87,11 +88,10 @@ export function useEmployeeDetailsForm({
   const isSelfOnboardingToggleable = canToggleSelfOnboarding(employee)
 
   const mode = isCreateMode ? 'create' : 'update'
-  const modeRequiredFields = resolveRequiredFields(requiredFields, mode)
 
   const schema = createEmployeeDetailsSchema({
     mode,
-    requiredFields: modeRequiredFields,
+    requiredFields,
     hasSsn: employee?.hasSsn,
   })
 
@@ -262,6 +262,7 @@ export function useEmployeeDetailsForm({
       },
       fieldsMetadata,
       hookFormInternals: { formMethods },
+      getFormSubmissionValues: createGetFormSubmissionValues(formMethods, schema),
     },
   }
 }

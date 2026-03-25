@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { composeFormSchema } from '../../form/composeFormSchema'
+import { filterRequiredFields, type RequiredFields } from '../../form/resolveRequiredFields'
 import { SSN_REGEX } from '@/helpers/validations'
 
 export const EmployeeDetailsErrorCodes = {
@@ -43,14 +44,16 @@ const REQUIRED_ON_CREATE = new Set<EmployeeDetailsField>(['firstName', 'lastName
 
 interface EmployeeDetailsSchemaOptions {
   mode?: 'create' | 'update'
-  requiredFields?: EmployeeDetailsField[]
+  requiredFields?: RequiredFields<EmployeeDetailsField>
   hasSsn?: boolean
 }
 
 export function createEmployeeDetailsSchema(options: EmployeeDetailsSchemaOptions = {}) {
-  const { mode = 'create', requiredFields = [], hasSsn = false } = options
+  const { mode = 'create', requiredFields, hasSsn = false } = options
 
-  const effectiveRequiredFields = requiredFields.filter(field => !(field === 'ssn' && hasSsn))
+  const effectiveRequiredFields = hasSsn
+    ? filterRequiredFields(requiredFields, 'ssn')
+    : requiredFields
 
   const baseSchema = composeFormSchema({
     fieldValidators,
