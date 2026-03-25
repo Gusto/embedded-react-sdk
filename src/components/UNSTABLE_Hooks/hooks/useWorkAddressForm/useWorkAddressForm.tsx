@@ -11,6 +11,7 @@ import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import type { HookSubmitResult } from '../../types'
 import { useErrorHandling } from '../../useErrorHandling'
 import { deriveFieldsMetadata } from '../../form/deriveFieldsMetadata'
+import { createGetFormSubmissionValues } from '../../form/getFormSubmissionValues'
 import { withOptions } from '../../form/withOptions'
 import { resolveRequiredFields, type RequiredFieldsInput } from '../../form/resolveRequiredFields'
 import {
@@ -209,6 +210,7 @@ export function useWorkAddressForm({
       },
       fieldsMetadata,
       hookFormInternals: { formMethods },
+      getFormSubmissionValues: createGetFormSubmissionValues(formMethods, schema),
     },
   }
 }
