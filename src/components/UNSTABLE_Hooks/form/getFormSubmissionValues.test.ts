@@ -61,7 +61,7 @@ describe('createGetFormSubmissionValues', () => {
     expect(getFormSubmissionValues()).toEqual({ name: 'Bob' })
   })
 
-  it('throws ZodError when the form data is invalid', () => {
+  it('returns undefined when the form data is invalid', () => {
     const schema = z.object({
       email: z.string().email(),
     })
@@ -70,6 +70,32 @@ describe('createGetFormSubmissionValues', () => {
 
     const getFormSubmissionValues = createGetFormSubmissionValues(formMethods, schema)
 
-    expect(() => getFormSubmissionValues()).toThrow()
+    expect(getFormSubmissionValues()).toBeUndefined()
+  })
+
+  it('returns undefined for empty required fields', () => {
+    const schema = z.object({
+      name: z.string().min(1),
+    })
+
+    const formMethods = createMockFormMethods({ name: '' })
+
+    const getFormSubmissionValues = createGetFormSubmissionValues(formMethods, schema)
+
+    expect(getFormSubmissionValues()).toBeUndefined()
+  })
+
+  it('never throws regardless of input', () => {
+    const schema = z.object({
+      count: z.number(),
+      required: z.string().min(1),
+    })
+
+    const formMethods = createMockFormMethods({ count: 'not-a-number', required: '' })
+
+    const getFormSubmissionValues = createGetFormSubmissionValues(formMethods, schema)
+
+    expect(() => getFormSubmissionValues()).not.toThrow()
+    expect(getFormSubmissionValues()).toBeUndefined()
   })
 })

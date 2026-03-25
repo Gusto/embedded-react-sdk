@@ -7,19 +7,21 @@ import type { ZodTypeAny } from 'zod'
  * valid callback — all preprocessing transforms (e.g. string→boolean coercion)
  * are applied.
  *
- * **When to call:** After validation has succeeded (e.g. inside
- * `composeSubmitHandler`'s `onAllValid`, or after `trigger()` returns `true`).
- * Calling on unvalidated form state will throw a `ZodError` if the data is invalid.
+ * Returns `undefined` when the current form state does not satisfy the schema
+ * (e.g. required fields are empty, cross-field rules fail). This is safe to call
+ * at any time — it never throws.
  *
  * **Side effects:** None. `getValues()` is a synchronous read from react-hook-form's
- * internal store — it does not trigger re-renders or mutate form state. `schema.parse()`
- * is a pure validation/transform — it creates a new object without mutating the input.
- * The only exceptional behavior is that `parse` throws `ZodError` when the data
- * does not satisfy the schema.
+ * internal store — it does not trigger re-renders, mutate form state, or update
+ * validation errors. `safeParse()` is a pure validation/transform that creates
+ * a new object without mutating the input.
  */
 export function createGetFormSubmissionValues<TFormData extends FieldValues, TFormOutputs>(
   formMethods: UseFormReturn<TFormData, unknown, TFormOutputs>,
   schema: ZodTypeAny,
-): () => TFormOutputs {
-  return () => schema.parse(formMethods.getValues()) as TFormOutputs
+): () => TFormOutputs | undefined {
+  return () => {
+    const result = schema.safeParse(formMethods.getValues())
+    return result.success ? (result.data as TFormOutputs) : undefined
+  }
 }
