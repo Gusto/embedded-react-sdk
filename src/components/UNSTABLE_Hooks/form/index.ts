@@ -14,7 +14,11 @@ export { useFieldsMetadata } from './useFieldsMetadata'
 export { useFieldErrorMessage } from './useFieldErrorMessage'
 export { deriveFieldsMetadata } from './deriveFieldsMetadata'
 export { composeFormSchema } from './composeFormSchema'
-export { resolveRequiredFields, type RequiredFieldsInput } from './resolveRequiredFields'
+export {
+  resolveRequiredFields,
+  filterRequiredFields,
+  type RequiredFields,
+} from './resolveRequiredFields'
 export { composeSubmitHandler, type ComposableFormHookResult } from './composeSubmitHandler'
 export { createGetFormSubmissionValues } from './getFormSubmissionValues'
 export {
