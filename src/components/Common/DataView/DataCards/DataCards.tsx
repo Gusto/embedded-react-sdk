@@ -89,11 +89,22 @@ export const DataCards = <T,>({
             {(() => {
               const footerContent = footer()
 
-              return Object.entries(footerContent).map(([key, content]) => (
-                <div key={key} className={styles.footerItem}>
-                  {content}
-                </div>
-              ))
+              return Object.entries(footerContent).map(([key, content]) => {
+                const columnIndex = key.startsWith('column-')
+                  ? parseInt(key.replace('column-', ''), 10)
+                  : -1
+                const columnTitle =
+                  columnIndex >= 0 ? columns[columnIndex]?.title : undefined
+
+                return (
+                  <Flex key={key} flexDirection="column" gap={0}>
+                    {columnTitle && (
+                      <h5 className={styles.columnTitle}>{columnTitle}</h5>
+                    )}
+                    <div className={styles.footerItem}>{content}</div>
+                  </Flex>
+                )
+              })
             })()}
           </Components.Card>
         </div>
