@@ -21,11 +21,11 @@ Hooks give you full control over form rendering while the SDK manages data fetch
 
 ## Getting Started
 
-All hooks are exported from the `@gusto/embedded-react-sdk/unstable` entry point. Your app must be wrapped in `GustoProvider`.
+All hooks are exported from the `@gusto/embedded-react-sdk/UNSTABLE_Hooks` entry point. Your app must be wrapped in `GustoProvider`.
 
 ```tsx
 import { GustoProvider } from '@gusto/embedded-react-sdk'
-import { useEmployeeDetailsForm, SDKFormProvider } from '@gusto/embedded-react-sdk/unstable'
+import { useEmployeeDetailsForm, SDKFormProvider } from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'
 
 function App() {
   return (
@@ -86,7 +86,7 @@ If you need a specific field to render differently without changing your global 
 The `FieldComponent` receives the same props the underlying UI primitive expects (`TextInputProps`, `SelectProps`, `NumberInputProps`, etc.) -- including `value`, `onChange`, `onBlur`, error state, and accessibility attributes. You don't need any react-hook-form knowledge; the hook field handles all form binding and passes clean UI props to your component.
 
 ```tsx
-import type { TextInputProps } from '@gusto/embedded-react-sdk/unstable'
+import type { TextInputProps } from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'
 
 function MyCustomTextInput(props: TextInputProps) {
   return (
@@ -333,7 +333,7 @@ Use `status.isPending` to disable the submit button while mutations are in fligh
 Each field component accepts a `validationMessages` prop that maps error codes to human-readable strings. Error codes are defined as typed constants, and TypeScript enforces that you provide a message for every code the field can produce.
 
 ```tsx
-import { EmployeeDetailsErrorCodes } from '@gusto/embedded-react-sdk/unstable'
+import { EmployeeDetailsErrorCodes } from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'
 ;<Fields.Email
   label="Email"
   validationMessages={{
@@ -370,7 +370,7 @@ import {
   useCompensationForm,
   composeSubmitHandler,
   SDKFormProvider,
-} from '@gusto/embedded-react-sdk/unstable'
+} from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'
 
 function OnboardingPage({ companyId, employeeId }: { companyId: string; employeeId: string }) {
   const employeeDetails = useEmployeeDetailsForm({

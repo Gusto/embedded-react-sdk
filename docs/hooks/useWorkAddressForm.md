@@ -8,7 +8,7 @@ order: 4
 Creates or updates an employee's work address — selecting a company location and an effective date.
 
 ```tsx
-import { useWorkAddressForm, SDKFormProvider } from '@gusto/embedded-react-sdk/unstable'
+import { useWorkAddressForm, SDKFormProvider } from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'
 ```
 
 ---
@@ -226,7 +226,7 @@ import {
   useWorkAddressForm,
   SDKFormProvider,
   type UseWorkAddressFormReady,
-} from '@gusto/embedded-react-sdk/unstable'
+} from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'
 
 function WorkAddressPage({ companyId, employeeId }: { companyId: string; employeeId: string }) {
   const workAddress = useWorkAddressForm({ companyId, employeeId })
