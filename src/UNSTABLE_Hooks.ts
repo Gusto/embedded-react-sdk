@@ -121,4 +121,31 @@ export {
   type DateOfBirthFieldProps,
   type SsnFieldProps,
   type SelfOnboardingFieldProps,
+
+  // Work address hook + component
+  useWorkAddressForm,
+  WorkAddressForm,
+  WorkAddressErrorCodes,
+
+  // Work address types
+  type WorkAddressFormProps,
+  type WorkAddressSubmitCallbacks,
+  type WorkAddressSubmitOptions,
+  type WorkAddressRequiredFields,
+  type UseWorkAddressFormProps,
+  type UseWorkAddressFormResult,
+  type UseWorkAddressFormReady,
+  type WorkAddressFieldsMetadata,
+  type WorkAddressFormFields,
+  type WorkAddressErrorCode,
+  type WorkAddressFormData,
+  type WorkAddressFormOutputs,
+  type WorkAddressField,
+
+  // Work address validation code types
+  type WorkAddressRequiredValidation,
+
+  // Work address field prop types
+  type LocationFieldProps,
+  type EffectiveDateFieldProps,
 } from '@/components/UNSTABLE_Hooks'

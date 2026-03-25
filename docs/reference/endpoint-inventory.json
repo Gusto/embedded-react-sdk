@@ -1185,6 +1185,31 @@
         "companyId",
         "employeeId"
       ]
+    },
+    "UNSTABLE_Hooks.hooks.useWorkAddressForm": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/locations"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/work_addresses"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/employees/:employeeId/work_addresses"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/work_addresses/:workAddressUuid"
+        }
+      ],
+      "variables": [
+        "companyId",
+        "employeeId",
+        "workAddressUuid"
+      ]
     }
   },
   "flows": {
