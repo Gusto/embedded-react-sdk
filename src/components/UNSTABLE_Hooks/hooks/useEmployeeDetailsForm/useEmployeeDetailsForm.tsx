@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form'
-import type { UseFormProps, Resolver } from 'react-hook-form'
+import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import { useEmployeesGet } from '@gusto/embedded-api/react-query/employeesGet'
@@ -109,7 +109,7 @@ export function useEmployeeDetailsForm({
   }
 
   const formMethods = useForm<EmployeeDetailsFormData, unknown, EmployeeDetailsFormOutputs>({
-    resolver: zodResolver(schema) as unknown as Resolver<EmployeeDetailsFormData>,
+    resolver: zodResolver(schema),
     mode: validationMode,
     shouldFocusError,
     defaultValues: resolvedDefaults,
@@ -131,10 +131,7 @@ export function useEmployeeDetailsForm({
   const queries = employeeId ? [employeeQuery] : []
   const errorHandling = useErrorHandling(queries, { error: submitError, setError })
 
-  const baseMetadata = deriveFieldsMetadata(schema) as Record<
-    keyof EmployeeDetailsFormData,
-    FieldMetadata
-  >
+  const baseMetadata = deriveFieldsMetadata(schema)
   const fieldsMetadata = {
     ...baseMetadata,
     ssn: { ...baseMetadata.ssn, hasRedactedValue: employee?.hasSsn ?? false },
