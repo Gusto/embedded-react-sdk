@@ -69,6 +69,7 @@ const buildCompensationFromFormData = (
   employeeCompensation: PayrollEmployeeCompensationsType | undefined,
   timeOff: PayrollEmployeeCompensationsTypePaidTimeOff[],
   primaryJobUuid?: string,
+  payrollCategory: PayrollCategory = PayrollCategory.Regular,
 ): PayrollEmployeeCompensationsType => {
   const updatedCompensation = {
     ...employeeCompensation,
@@ -91,13 +92,23 @@ const buildCompensationFromFormData = (
   )
 
   updatedCompensation.paidTimeOff = timeOff.map(timeOffEntry => {
-    const finalPayout =
-      formData.finalPayoutCompensations[timeOffEntry.name!] ??
-      timeOffEntry.finalPayoutUnusedHoursInput
+    const isDismissal = payrollCategory === PayrollCategory.Dismissal
+    const { finalPayoutUnusedHoursInput: _, ...timeOffWithoutPayout } = timeOffEntry
+
+    if (isDismissal) {
+      const finalPayout =
+        formData.finalPayoutCompensations[timeOffEntry.name!] ??
+        timeOffEntry.finalPayoutUnusedHoursInput
+      return {
+        ...timeOffEntry,
+        hours: formData.timeOffCompensations[timeOffEntry.name!],
+        ...(finalPayout != null ? { finalPayoutUnusedHoursInput: finalPayout } : {}),
+      }
+    }
+
     return {
-      ...timeOffEntry,
+      ...timeOffWithoutPayout,
       hours: formData.timeOffCompensations[timeOffEntry.name!],
-      ...(finalPayout != null ? { finalPayoutUnusedHoursInput: finalPayout } : {}),
     }
   })
 
@@ -326,6 +337,7 @@ export const PayrollEditEmployeePresentation = ({
         employeeCompensation,
         (employeeCompensation?.paidTimeOff || []).filter(entry => entry.name),
         primaryJob?.uuid,
+        payrollCategory,
       )
 
       return calculateGrossPay(
@@ -367,6 +379,7 @@ export const PayrollEditEmployeePresentation = ({
       employeeCompensation,
       timeOff,
       primaryJob?.uuid,
+      payrollCategory,
     )
     onSave(updatedCompensation)
   }
