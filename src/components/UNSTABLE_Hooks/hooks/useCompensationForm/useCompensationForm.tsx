@@ -19,7 +19,7 @@ import { useErrorHandling } from '../../useErrorHandling'
 import { withOptions } from '../../form/withOptions'
 import { deriveFieldsMetadata } from '../../form/deriveFieldsMetadata'
 import {
-  CompensationSchema,
+  createCompensationSchema,
   CompensationObjectSchema,
   type CompensationFormData,
   type CompensationFormOutputs,
@@ -34,9 +34,11 @@ import {
   TwoPercentShareholderField,
   StateWcCoveredField,
   StateWcClassCodeField,
+  StartDateField,
 } from './fields'
 import { FlsaStatus, PAY_PERIODS, TIP_CREDITS_UNSUPPORTED_STATES } from '@/shared/constants'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
+import { SDKInternalError } from '@/types/sdkError'
 import { WA_RISK_CLASS_CODES, type WARiskClassCode } from '@/models/WA_RISK_CODES'
 
 export interface CompensationSubmitCallbacks {
@@ -45,9 +47,13 @@ export interface CompensationSubmitCallbacks {
   onCompensationUpdated?: (compensation: Compensation | undefined) => void
 }
 
+export interface CompensationSubmitOptions {
+  startDate?: string
+}
+
 export interface UseCompensationFormProps {
   employeeId: string
-  startDate: string
+  withStartDateField?: boolean
   jobId?: string
   defaultValues?: Partial<CompensationFormData>
   validationMode?: UseFormProps['mode']
@@ -96,12 +102,16 @@ const baseMetadata = deriveFieldsMetadata(CompensationObjectSchema)
 
 export function useCompensationForm({
   employeeId,
-  startDate,
+  withStartDateField = false,
   jobId,
   defaultValues: partnerDefaults,
   validationMode = 'onSubmit',
   shouldFocusError = true,
 }: UseCompensationFormProps) {
+  const schema = useMemo(
+    () => createCompensationSchema({ requireStartDate: withStartDateField }),
+    [withStartDateField],
+  )
   const jobsQuery = useJobsAndCompensationsGetJobs({ employeeId })
   const addressesQuery = useEmployeeAddressesGetWorkAddresses({ employeeId })
   const employeeQuery = useEmployeesGet({ employeeId })
@@ -145,6 +155,7 @@ export function useCompensationForm({
   const isCreateMode = !currentJob
   const state = currentWorkAddress?.state
 
+  const hireDate = currentJob?.hireDate
   const resolvedDefaults: CompensationFormData = {
     jobTitle: currentJob?.title || partnerDefaults?.jobTitle || '',
     flsaStatus:
@@ -160,10 +171,11 @@ export function useCompensationForm({
     stateWcCovered: currentJob?.stateWcCovered ?? false,
     stateWcClassCode: currentJob?.stateWcClassCode ?? '',
     twoPercentShareholder: currentJob?.twoPercentShareholder ?? false,
+    startDate: hireDate ? new Date(hireDate) : (partnerDefaults?.startDate ?? null),
   }
 
   const formMethods = useForm<CompensationFormData, unknown, CompensationFormOutputs>({
-    resolver: zodResolver(CompensationSchema),
+    resolver: zodResolver(schema),
     mode: validationMode,
     shouldFocusError,
     defaultValues: resolvedDefaults,
@@ -240,6 +252,7 @@ export function useCompensationForm({
   }))
 
   const fieldsMetadata = {
+    startDate: { ...baseMetadata.startDate, isRequired: withStartDateField },
     jobTitle: baseMetadata.jobTitle,
     flsaStatus: withOptions<FlsaStatusType>(
       baseMetadata.flsaStatus,
@@ -282,6 +295,7 @@ export function useCompensationForm({
 
   const onSubmit = async (
     callbacks?: CompensationSubmitCallbacks,
+    options?: CompensationSubmitOptions,
   ): Promise<HookSubmitResult<Compensation | undefined> | undefined> => {
     let submitResult: HookSubmitResult<Compensation | undefined> | undefined
 
@@ -289,16 +303,31 @@ export function useCompensationForm({
       void formMethods.handleSubmit(
         async (data: CompensationFormOutputs) => {
           await baseSubmitHandler(data, async payload => {
-            const { jobTitle, twoPercentShareholder, ...compensationData } = payload
+            const {
+              jobTitle,
+              twoPercentShareholder,
+              startDate: formStartDate,
+              ...compensationData
+            } = payload
+
+            const resolvedHireDate =
+              withStartDateField && formStartDate
+                ? formStartDate.toISOString().split('T')[0]
+                : options?.startDate
+
             let updatedJobData: Job
 
             if (!currentJob) {
+              if (!resolvedHireDate) {
+                throw new SDKInternalError('Start date is required')
+              }
+
               const result = await createJobMutation.mutateAsync({
                 request: {
                   employeeId,
                   requestBody: {
                     title: jobTitle,
-                    hireDate: startDate,
+                    hireDate: resolvedHireDate,
                     stateWcCovered: compensationData.stateWcCovered,
                     stateWcClassCode: compensationData.stateWcCovered
                       ? compensationData.stateWcClassCode
@@ -316,7 +345,7 @@ export function useCompensationForm({
                   requestBody: {
                     title: jobTitle,
                     version: currentJob.version as string,
-                    hireDate: startDate,
+                    hireDate: resolvedHireDate,
                     stateWcClassCode: compensationData.stateWcCovered
                       ? compensationData.stateWcClassCode
                       : null,
@@ -399,6 +428,7 @@ export function useCompensationForm({
     errorHandling,
     form: {
       Fields: {
+        StartDate: withStartDateField ? StartDateField : undefined,
         JobTitle: JobTitleField,
         FlsaStatus: isFlsaSelectionEnabled ? FlsaStatusField : undefined,
         Rate: RateField,

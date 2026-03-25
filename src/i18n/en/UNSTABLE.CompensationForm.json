@@ -36,7 +36,11 @@
     "Week": "Week",
     "Year": "Year"
   },
+  "startDateLabel": "Start date",
   "fieldValidations": {
+    "startDate": {
+      "REQUIRED": "Start date is required"
+    },
     "jobTitle": {
       "REQUIRED": "Job title is required"
     },

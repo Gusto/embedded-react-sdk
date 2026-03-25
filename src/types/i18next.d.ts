@@ -2425,7 +2425,11 @@ export interface UNSTABLECompensationForm{
 "Week":string;
 "Year":string;
 };
+"startDateLabel":string;
 "fieldValidations":{
+"startDate":{
+"REQUIRED":string;
+};
 "jobTitle":{
 "REQUIRED":string;
 };

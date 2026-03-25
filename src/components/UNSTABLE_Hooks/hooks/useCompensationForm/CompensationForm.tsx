@@ -19,7 +19,7 @@ function CompensationFormRoot({ onEvent, dictionary, ...hookProps }: Compensatio
   const { t } = useTranslation('UNSTABLE.CompensationForm')
   const Components = useComponentContext()
   const formatCurrency = useNumberFormatter('currency')
-  const compensation = useCompensationForm(hookProps)
+  const compensation = useCompensationForm({ ...hookProps, withStartDateField: true })
 
   if (compensation.isLoading) {
     return <BaseLayout isLoading error={compensation.errorHandling.errors} />
@@ -56,6 +56,15 @@ function CompensationFormRoot({ onEvent, dictionary, ...hookProps }: Compensatio
           <Components.Heading as="h2">
             {compensation.status.mode === 'create' ? t('addTitle') : t('editTitle')}
           </Components.Heading>
+
+          {Fields.StartDate && (
+            <Fields.StartDate
+              label={t('startDateLabel')}
+              validationMessages={{
+                REQUIRED: t('fieldValidations.startDate.REQUIRED'),
+              }}
+            />
+          )}
 
           <Fields.JobTitle
             label={t('jobTitle')}

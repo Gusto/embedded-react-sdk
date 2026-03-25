@@ -7,12 +7,14 @@ import type { SelectHookFieldProps } from '../../form/fields/SelectHookField'
 import type { NumberInputHookFieldProps } from '../../form/fields/NumberInputHookField'
 import type { CheckboxHookFieldProps } from '../../form/fields/CheckboxHookField'
 import type { RadioGroupHookFieldProps } from '../../form/fields/RadioGroupHookField'
+import type { DatePickerHookFieldProps } from '../../form/fields/DatePickerHookField'
 import {
   TextInputHookField,
   SelectHookField,
   NumberInputHookField,
   CheckboxHookField,
   RadioGroupHookField,
+  DatePickerHookField,
 } from '../../form/fields'
 import type { CompensationErrorCodes } from './compensationSchema'
 import type { WARiskClassCode } from '@/models/WA_RISK_CODES'
@@ -83,4 +85,12 @@ export type StateWcClassCodeFieldProps = HookFieldProps<
 
 export function StateWcClassCodeField(props: StateWcClassCodeFieldProps) {
   return <SelectHookField {...props} name="stateWcClassCode" />
+}
+
+export type StartDateFieldProps = HookFieldProps<
+  DatePickerHookFieldProps<typeof CompensationErrorCodes.REQUIRED>
+>
+
+export function StartDateField(props: StartDateFieldProps) {
+  return <DatePickerHookField {...props} name="startDate" />
 }
