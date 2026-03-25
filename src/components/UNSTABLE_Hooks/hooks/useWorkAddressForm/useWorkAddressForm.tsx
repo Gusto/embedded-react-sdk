@@ -12,6 +12,7 @@ import type { HookSubmitResult } from '../../types'
 import { useErrorHandling } from '../../useErrorHandling'
 import { deriveFieldsMetadata } from '../../form/deriveFieldsMetadata'
 import { withOptions } from '../../form/withOptions'
+import { resolveRequiredFields, type RequiredFieldsInput } from '../../form/resolveRequiredFields'
 import {
   createWorkAddressSchema,
   type WorkAddressFormData,
@@ -23,10 +24,7 @@ import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { SDKInternalError } from '@/types/sdkError'
 import { addressInline } from '@/helpers/formattedStrings'
 
-export interface WorkAddressRequiredFields {
-  create?: WorkAddressField[]
-  update?: WorkAddressField[]
-}
+export type WorkAddressRequiredFields = RequiredFieldsInput<WorkAddressField>
 
 export interface WorkAddressSubmitCallbacks {
   onWorkAddressCreated?: (workAddress: EmployeeWorkAddress) => void
@@ -65,7 +63,7 @@ export function useWorkAddressForm({
 
   const isCreateMode = !currentWorkAddress
   const mode = isCreateMode ? 'create' : 'update'
-  const modeRequiredFields = isCreateMode ? requiredFields?.create : requiredFields?.update
+  const modeRequiredFields = resolveRequiredFields(requiredFields, mode)
 
   const schema = createWorkAddressSchema({
     mode,
