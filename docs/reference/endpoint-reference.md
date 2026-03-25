@@ -230,6 +230,10 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | `/v1/employees/:employeeId/work_addresses` |
 |  | GET | `/v1/employees/:employeeId` |
 |  | GET | `/v1/companies/:companyId/federal_tax_details` |
+| **UNSTABLE_Hooks.hooks.useEmployeeDetailsForm** | GET | `/v1/employees/:employeeId` |
+|  | POST | `/v1/companies/:companyId/employees` |
+|  | PUT | `/v1/employees/:employeeId` |
+|  | PUT | `/v1/employees/:employeeId/onboarding_status` |
 
 ## Flows
 

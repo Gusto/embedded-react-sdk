@@ -107,7 +107,7 @@ describe('useCompensationForm start date handling', () => {
           withStartDateField: true,
           defaultValues: {
             ...VALID_DEFAULTS,
-            startDate: new Date('2024-03-20'),
+            startDate: '2024-03-20',
           },
         }),
       { wrapper: GustoTestProvider },
@@ -137,7 +137,7 @@ describe('useCompensationForm start date handling', () => {
           withStartDateField: true,
           defaultValues: {
             ...VALID_DEFAULTS,
-            startDate: new Date('2024-03-20'),
+            startDate: '2024-03-20',
           },
         }),
       { wrapper: GustoTestProvider },

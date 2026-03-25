@@ -88,4 +88,37 @@ export {
   type DatePickerProps,
   type RadioGroupProps,
   type RadioGroupOption,
+
+  // Employee details hook + component
+  useEmployeeDetailsForm,
+  EmployeeDetailsForm,
+  EmployeeDetailsErrorCodes,
+
+  // Employee details types
+  type EmployeeDetailsFormProps,
+  type EmployeeDetailsSubmitCallbacks,
+  type EmployeeDetailsRequiredFields,
+  type UseEmployeeDetailsFormProps,
+  type UseEmployeeDetailsFormResult,
+  type UseEmployeeDetailsFormReady,
+  type EmployeeDetailsFieldsMetadata,
+  type EmployeeDetailsFormFields,
+  type EmployeeDetailsErrorCode,
+  type EmployeeDetailsFormData,
+  type EmployeeDetailsFormOutputs,
+  type EmployeeDetailsField,
+
+  // Employee details validation code types
+  type EmployeeDetailsRequiredValidation,
+  type EmailValidation,
+  type SsnValidation,
+
+  // Employee details field prop types
+  type FirstNameFieldProps,
+  type MiddleInitialFieldProps,
+  type LastNameFieldProps,
+  type EmailFieldProps,
+  type DateOfBirthFieldProps,
+  type SsnFieldProps,
+  type SelfOnboardingFieldProps,
 } from '@/components/UNSTABLE_Hooks'

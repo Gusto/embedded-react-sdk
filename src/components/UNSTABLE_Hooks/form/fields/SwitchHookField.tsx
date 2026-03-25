@@ -1,42 +1,31 @@
-import type { ComponentType } from 'react'
 import type { BaseFieldProps, ValidationMessages } from '../types'
 import { useFieldsMetadata } from '../useFieldsMetadata'
 import { useFieldErrorMessage } from '../useFieldErrorMessage'
-import { TextInputField } from '@/components/Common'
-import type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputTypes'
+import { SwitchField } from '@/components/Common'
 
-export interface TextInputHookFieldProps<TErrorCode extends string = never> extends BaseFieldProps {
+export interface SwitchHookFieldProps<TErrorCode extends string = never> extends BaseFieldProps {
   name: string
   validationMessages?: ValidationMessages<TErrorCode>
-  transform?: (value: string) => string
-  placeholder?: string
-  FieldComponent?: ComponentType<TextInputProps>
 }
 
-export function TextInputHookField<TErrorCode extends string>({
+export function SwitchHookField<TErrorCode extends string>({
   name,
   label,
   description,
   validationMessages,
-  transform,
-  placeholder,
-  FieldComponent,
-}: TextInputHookFieldProps<TErrorCode>) {
+}: SwitchHookFieldProps<TErrorCode>) {
   const metadata = useFieldsMetadata()
   const fieldMetadata = metadata[name]
   const errorMessage = useFieldErrorMessage(name, validationMessages)
 
   return (
-    <TextInputField
+    <SwitchField
       name={name}
       label={label}
       description={description}
       errorMessage={errorMessage}
       isRequired={fieldMetadata?.isRequired}
       isDisabled={fieldMetadata?.isDisabled}
-      transform={transform}
-      placeholder={placeholder}
-      FieldComponent={FieldComponent}
     />
   )
 }

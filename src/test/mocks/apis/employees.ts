@@ -50,29 +50,38 @@ export const getCompanyEmployees = (companyId?: string) =>
     ? http.get(`${API_BASE_URL}/v1/companies/${companyId}/employees`, employeesListResponse)
     : handleGetCompanyEmployees(employeesListResponse)
 
-export const getEmployee = http.get<PathParams, GetV1EmployeesRequest>(
-  `${API_BASE_URL}/v1/employees/:employee_id`,
-  async () => {
-    const responseFixture = await getFixture('get-v1-employees')
-    return HttpResponse.json(responseFixture)
-  },
-)
+export function handleGetEmployee(
+  resolver: HttpResponseResolver<PathParams, GetV1EmployeesRequest>,
+) {
+  return http.get(`${API_BASE_URL}/v1/employees/:employee_id`, resolver)
+}
 
-export const createEmployee = http.post<PathParams, PostV1EmployeesRequestBody>(
-  `${API_BASE_URL}/v1/companies/:company_id/employees`,
-  async () => {
-    const responseFixture = await getFixture('get-v1-employees')
-    return HttpResponse.json(responseFixture, { status: 201 })
-  },
-)
+export const getEmployee = handleGetEmployee(async () => {
+  const responseFixture = await getFixture('get-v1-employees')
+  return HttpResponse.json(responseFixture)
+})
 
-export const updateEmployee = http.put<PathParams, PutV1EmployeesRequestBody>(
-  `${API_BASE_URL}/v1/employees/:employee_id`,
-  async () => {
-    const responseFixture = await getFixture('get-v1-employees')
-    return HttpResponse.json(responseFixture)
-  },
-)
+export function handleCreateEmployee(
+  resolver: HttpResponseResolver<PathParams, PostV1EmployeesRequestBody>,
+) {
+  return http.post(`${API_BASE_URL}/v1/companies/:company_id/employees`, resolver)
+}
+
+export const createEmployee = handleCreateEmployee(async () => {
+  const responseFixture = await getFixture('get-v1-employees')
+  return HttpResponse.json(responseFixture, { status: 201 })
+})
+
+export function handleUpdateEmployee(
+  resolver: HttpResponseResolver<PathParams, PutV1EmployeesRequestBody>,
+) {
+  return http.put(`${API_BASE_URL}/v1/employees/:employee_id`, resolver)
+}
+
+export const updateEmployee = handleUpdateEmployee(async () => {
+  const responseFixture = await getFixture('get-v1-employees')
+  return HttpResponse.json(responseFixture)
+})
 
 export const deleteEmployee = http.delete<
   PathParams,
@@ -92,10 +101,13 @@ export const getEmployeeOnboardingStatus = http.get<
   const responseFixture = await getFixture('get-v1-employees-employee_id-onboarding_status')
   return HttpResponse.json(responseFixture)
 })
-export const updateEmployeeOnboardingStatus = http.put<
-  PathParams,
-  PutV1EmployeesEmployeeIdOnboardingStatusRequestBody
->(`${API_BASE_URL}/v1/employees/:employee_id/onboarding_status`, async () => {
+export function handleUpdateEmployeeOnboardingStatus(
+  resolver: HttpResponseResolver<PathParams, PutV1EmployeesEmployeeIdOnboardingStatusRequestBody>,
+) {
+  return http.put(`${API_BASE_URL}/v1/employees/:employee_id/onboarding_status`, resolver)
+}
+
+export const updateEmployeeOnboardingStatus = handleUpdateEmployeeOnboardingStatus(async () => {
   const responseFixture = await getFixture('get-v1-employees-employee_id-onboarding_status')
   return HttpResponse.json(responseFixture)
 })
