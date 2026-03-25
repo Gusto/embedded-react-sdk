@@ -1,5 +1,7 @@
 # 🦎 Gusto Embedded React SDK
 
+[![CI](https://github.com/Gusto/embedded-react-sdk/actions/workflows/ci.yaml/badge.svg)](https://github.com/Gusto/embedded-react-sdk/actions/workflows/ci.yaml)
+
 To install:
 
 ```
