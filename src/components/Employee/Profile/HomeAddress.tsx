@@ -12,7 +12,7 @@ const HomeAddressFieldsSchema = z.object({
   city: z.string().min(1),
   state: z.string().min(1),
   zip: z.string().refine(zip => /(^\d{5}$)|(^\d{5}-\d{4}$)/.test(zip)),
-  courtesyWithholding: z.boolean(),
+  courtesyWithholding: z.boolean().optional(),
 })
 
 export const HomeAddressSchema = z.union([
@@ -95,26 +95,30 @@ export const HomeAddress = () => {
           errorMessage={t('validations.zip')}
         />
       </Grid>
-      <CheckboxField
-        name="courtesyWithholding"
-        label={t('courtesyWithholdingLabel')}
-        description={
-          <>
-            {t('courtesyWithholdingDescription')}
-            <Trans
-              t={t}
-              i18nKey="learnMoreCta"
-              components={{
-                LearnMoreLink: <Components.Link />,
-              }}
-            />
-          </>
-        }
-      />
-      {watchedCourtesyWithholding && (
-        <Components.Alert label={t('withholdingTitle')} status="warning">
-          <Trans t={t} i18nKey="withholdingNote" />
-        </Components.Alert>
+      {isAdmin && (
+        <>
+          <CheckboxField
+            name="courtesyWithholding"
+            label={t('courtesyWithholdingLabel')}
+            description={
+              <>
+                {t('courtesyWithholdingDescription')}
+                <Trans
+                  t={t}
+                  i18nKey="learnMoreCta"
+                  components={{
+                    LearnMoreLink: <Components.Link />,
+                  }}
+                />
+              </>
+            }
+          />
+          {watchedCourtesyWithholding && (
+            <Components.Alert label={t('withholdingTitle')} status="warning">
+              <Trans t={t} i18nKey="withholdingNote" />
+            </Components.Alert>
+          )}
+        </>
       )}
     </>
   )
