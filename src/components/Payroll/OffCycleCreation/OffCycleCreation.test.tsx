@@ -9,8 +9,10 @@ vi.mock('@gusto/embedded-api/react-query/employeesList', () => ({
   useEmployeesListSuspense: () => ({
     data: {
       showEmployees: [
-        { uuid: 'emp-1', firstName: 'Jane', lastName: 'Doe', department: 'Engineering' },
-        { uuid: 'emp-2', firstName: 'John', lastName: 'Smith', department: 'Sales' },
+        { uuid: 'emp-1', firstName: 'John', lastName: 'Smith', department: 'Sales' },
+        { uuid: 'emp-2', firstName: 'Jane', lastName: 'Doe', department: 'Engineering' },
+        { uuid: 'emp-3', firstName: 'Alice', lastName: 'Smith', department: 'Marketing' },
+        { uuid: 'emp-4', firstName: 'Bob', lastName: 'Adams', department: 'Engineering' },
       ],
     },
     isLoading: false,
@@ -243,6 +245,27 @@ describe('OffCycleCreation', () => {
   })
 
   describe('employee selection', () => {
+    it('sorts employee dropdown options alphabetically by last name, then first name', async () => {
+      const user = userEvent.setup()
+      renderComponent()
+
+      await waitFor(() => {
+        expect(screen.getByRole('combobox')).toBeInTheDocument()
+      })
+
+      const combobox = screen.getByRole('combobox')
+      await user.click(combobox)
+
+      await waitFor(() => {
+        expect(screen.getByRole('listbox')).toBeInTheDocument()
+      })
+
+      const options = screen.getAllByRole('option')
+      const optionLabels = options.map(option => option.textContent)
+
+      expect(optionLabels).toEqual(['Bob Adams', 'Jane Doe', 'Alice Smith', 'John Smith'])
+    })
+
     it('renders the include all employees switch defaulted to off with picker visible', async () => {
       renderComponent()
 
