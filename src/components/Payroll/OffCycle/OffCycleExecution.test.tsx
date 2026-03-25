@@ -121,7 +121,13 @@ const mockPaySchedule = {
   version: 'v1',
 }
 
-function OffCycleFlowInExecutionState({ onEvent }: { onEvent: () => void }) {
+function OffCycleFlowInExecutionState({
+  onEvent,
+  withReimbursements,
+}: {
+  onEvent: () => void
+  withReimbursements?: boolean
+}) {
   const offCycleFlowMachine = useMemo(
     () =>
       createMachine(
@@ -135,9 +141,10 @@ function OffCycleFlowInExecutionState({ onEvent }: { onEvent: () => void }) {
           breadcrumbs: buildBreadcrumbs(offCycleBreadcrumbsNodes),
           currentBreadcrumbId: 'createOffCyclePayroll',
           progressBarType: null,
+          withReimbursements,
         }),
       ),
-    [],
+    [withReimbursements],
   )
 
   return <Flow machine={offCycleFlowMachine} onEvent={onEvent} />
@@ -198,6 +205,40 @@ describe('OffCycleExecution - breadcrumb safety', () => {
     })
 
     expect(screen.queryByText('New Off-Cycle Payroll')).not.toBeInTheDocument()
+  })
+})
+
+describe('OffCycleExecution - withReimbursements', () => {
+  beforeEach(() => {
+    setupMswHandlers()
+  })
+
+  it('hides Reimbursements column when withReimbursements is false', async () => {
+    const onEvent = vi.fn()
+
+    renderWithProviders(
+      <OffCycleFlowInExecutionState onEvent={onEvent} withReimbursements={false} />,
+    )
+
+    await waitFor(() => {
+      expect(screen.getByText('Jane Doe')).toBeInTheDocument()
+    })
+
+    expect(screen.queryByText('Reimbursements')).not.toBeInTheDocument()
+  })
+
+  it('shows Reimbursements column when withReimbursements is true', async () => {
+    const onEvent = vi.fn()
+
+    renderWithProviders(
+      <OffCycleFlowInExecutionState onEvent={onEvent} withReimbursements={true} />,
+    )
+
+    await waitFor(() => {
+      expect(screen.getByText('Jane Doe')).toBeInTheDocument()
+    })
+
+    expect(screen.getByText('Reimbursements')).toBeInTheDocument()
   })
 })
 

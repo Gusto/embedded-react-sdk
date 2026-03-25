@@ -15,12 +15,14 @@ export interface OffCycleFlowContextInterface extends FlowContextInterface {
   companyId: string
   payrollUuid?: string
   payrollType?: OffCycleReason
+  withReimbursements?: boolean
 }
 
 export interface OffCycleFlowProps {
   companyId: string
   payrollType?: OffCycleReason
   onEvent: OnEventType<EventType, unknown>
+  withReimbursements?: boolean
 }
 
 export function OffCycleCreationContextual() {
@@ -35,7 +37,8 @@ export function OffCycleCreationContextual() {
 }
 
 export function OffCycleExecutionContextual() {
-  const { companyId, payrollUuid, onEvent } = useFlow<OffCycleFlowContextInterface>()
+  const { companyId, payrollUuid, onEvent, withReimbursements } =
+    useFlow<OffCycleFlowContextInterface>()
 
   const resolvedCompanyId = ensureRequired(companyId)
   const resolvedPayrollId = ensureRequired(payrollUuid)
@@ -46,6 +49,7 @@ export function OffCycleExecutionContextual() {
         companyId={resolvedCompanyId}
         payrollId={resolvedPayrollId}
         onEvent={onEvent}
+        withReimbursements={withReimbursements}
       />
     </BaseComponent>
   )
@@ -53,7 +57,7 @@ export function OffCycleExecutionContextual() {
 
 type OffCycleExecutionWithDataProps = Pick<
   PayrollExecutionFlowProps,
-  'companyId' | 'payrollId' | 'onEvent' | 'prefixBreadcrumbs'
+  'companyId' | 'payrollId' | 'onEvent' | 'prefixBreadcrumbs' | 'withReimbursements'
 >
 
 function OffCycleExecutionWithData({
