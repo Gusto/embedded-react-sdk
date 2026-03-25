@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MultiSelectComboBox } from './MultiSelectComboBox'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
@@ -134,18 +134,26 @@ describe('MultiSelectComboBox', () => {
     })
   })
 
-  describe('dropdown flicker prevention', () => {
-    it('cancels pending close when input regains focus quickly', async () => {
-      const user = userEvent.setup()
-      renderComponent()
-
-      const combobox = screen.getByRole('combobox')
-
-      await user.click(combobox)
-      expect(screen.getByRole('listbox')).toBeInTheDocument()
-
+  describe('blur debounce', () => {
+    it('cancels pending onBlur when input regains focus quickly', async () => {
       vi.useFakeTimers()
+      const onBlur = vi.fn()
+
       try {
+        render(
+          <GustoTestProvider>
+            <MultiSelectComboBox
+              label="Test"
+              options={mockOptions}
+              value={[]}
+              onChange={vi.fn()}
+              onBlur={onBlur}
+            />
+          </GustoTestProvider>,
+        )
+
+        const combobox = screen.getByRole('combobox')
+
         act(() => {
           fireEvent.blur(combobox)
         })
@@ -158,32 +166,42 @@ describe('MultiSelectComboBox', () => {
           vi.advanceTimersByTime(60)
         })
 
-        expect(screen.getByRole('listbox')).toBeInTheDocument()
+        expect(onBlur).not.toHaveBeenCalled()
       } finally {
         vi.useRealTimers()
       }
     })
 
-    it('closes dropdown after blur when input is not re-focused', async () => {
-      const user = userEvent.setup()
-      renderComponent()
-
-      const combobox = screen.getByRole('combobox')
-
-      await user.click(combobox)
-      expect(screen.getByRole('listbox')).toBeInTheDocument()
-
+    it('calls onBlur after debounce when input is not re-focused', async () => {
       vi.useFakeTimers()
+      const onBlur = vi.fn()
+
       try {
+        render(
+          <GustoTestProvider>
+            <MultiSelectComboBox
+              label="Test"
+              options={mockOptions}
+              value={[]}
+              onChange={vi.fn()}
+              onBlur={onBlur}
+            />
+          </GustoTestProvider>,
+        )
+
+        const combobox = screen.getByRole('combobox')
+
         act(() => {
           fireEvent.blur(combobox)
         })
+
+        expect(onBlur).not.toHaveBeenCalled()
 
         act(() => {
           vi.advanceTimersByTime(60)
         })
 
-        expect(screen.queryByRole('listbox')).not.toBeInTheDocument()
+        expect(onBlur).toHaveBeenCalledTimes(1)
       } finally {
         vi.useRealTimers()
       }
