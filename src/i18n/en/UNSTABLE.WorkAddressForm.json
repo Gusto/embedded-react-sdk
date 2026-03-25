@@ -1,0 +1,18 @@
+{
+  "addTitle": "Add work address",
+  "editTitle": "Edit work address",
+  "locationLabel": "Work address",
+  "locationDescription": "The primary location where the employee will be working.",
+  "effectiveDateLabel": "Effective date",
+  "effectiveDateDescription": "The date this work address takes effect.",
+  "createCta": "Save work address",
+  "updateCta": "Save changes",
+  "fieldValidations": {
+    "locationUuid": {
+      "REQUIRED": "Work address is required"
+    },
+    "effectiveDate": {
+      "REQUIRED": "Effective date is required"
+    }
+  }
+}

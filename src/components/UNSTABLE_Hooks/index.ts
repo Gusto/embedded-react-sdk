@@ -108,3 +108,25 @@ export {
   type SsnFieldProps,
   type SelfOnboardingFieldProps,
 } from './hooks/useEmployeeDetailsForm'
+
+export {
+  useWorkAddressForm,
+  WorkAddressForm,
+  WorkAddressErrorCodes,
+  createWorkAddressSchema,
+  type WorkAddressFormProps,
+  type WorkAddressSubmitCallbacks,
+  type WorkAddressRequiredFields,
+  type UseWorkAddressFormProps,
+  type UseWorkAddressFormResult,
+  type UseWorkAddressFormReady,
+  type WorkAddressFieldsMetadata,
+  type WorkAddressFormFields,
+  type WorkAddressErrorCode,
+  type WorkAddressFormData,
+  type WorkAddressFormOutputs,
+  type WorkAddressField,
+  type WorkAddressRequiredValidation,
+  type LocationFieldProps,
+  type EffectiveDateFieldProps,
+} from './hooks/useWorkAddressForm'
