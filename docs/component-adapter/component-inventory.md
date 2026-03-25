@@ -129,6 +129,7 @@
 | **variant**          | `"error" \| "primary" \| "secondary" \| "tertiary"` | No       | Visual style variant of the button                                    |
 | **isLoading**        | `boolean`                                           | No       | Shows a loading spinner and disables the button                       |
 | **isDisabled**       | `boolean`                                           | No       | Disables the button and prevents interaction                          |
+| **icon**             | `React.ReactNode`                                   | No       | Optional leading icon rendered before children                        |
 | **children**         | `React.ReactNode`                                   | No       | Content to be rendered inside the button                              |
 | **onBlur**           | `(e: React.FocusEvent<Element, Element>) => void`   | No       | Handler for blur events                                               |
 | **onFocus**          | `(e: React.FocusEvent<Element, Element>) => void`   | No       | Handler for focus events                                              |
@@ -154,6 +155,7 @@
 | **variant**          | `"error" \| "primary" \| "secondary" \| "tertiary"` | No       | Visual style variant of the button                                    |
 | **isLoading**        | `boolean`                                           | No       | Shows a loading spinner and disables the button                       |
 | **isDisabled**       | `boolean`                                           | No       | Disables the button and prevents interaction                          |
+| **icon**             | `React.ReactNode`                                   | No       | Optional leading icon rendered before children                        |
 | **children**         | `React.ReactNode`                                   | No       | Content to be rendered inside the button                              |
 | **onBlur**           | `(e: React.FocusEvent<Element, Element>) => void`   | No       | Handler for blur events                                               |
 | **onFocus**          | `(e: React.FocusEvent<Element, Element>) => void`   | No       | Handler for focus events                                              |

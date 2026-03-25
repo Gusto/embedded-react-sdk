@@ -35,11 +35,26 @@ describe('Button', () => {
     expect(button).toHaveAttribute('data-loading', 'true')
   })
 
+  it('renders icon when provided', () => {
+    render(<Button icon={<svg data-testid="test-icon" />}>Icon Button</Button>)
+    expect(screen.getByTestId('test-icon')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Icon Button' })).toBeInTheDocument()
+  })
+
+  it('does not render icon wrapper when icon is not provided', () => {
+    const { container } = render(<Button>No Icon</Button>)
+    expect(container.querySelector('span')).not.toBeInTheDocument()
+  })
+
   describe('Accessibility', () => {
     const testCases = [
       { name: 'default', props: { children: 'Default Button' } },
       { name: 'disabled', props: { isDisabled: true, children: 'Disabled Button' } },
       { name: 'loading', props: { isLoading: true, children: 'Loading Button' } },
+      {
+        name: 'with icon',
+        props: { icon: <svg aria-hidden="true" />, children: 'Icon Button' },
+      },
     ]
 
     it.each(testCases)(

@@ -33,6 +33,10 @@ export interface ButtonProps extends Pick<
    */
   isDisabled?: boolean
   /**
+   * Optional leading icon rendered before children
+   */
+  icon?: ReactNode
+  /**
    * Content to be rendered inside the button
    */
   children?: ReactNode
