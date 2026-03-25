@@ -8,8 +8,7 @@ permissions:
 jobs:
   # Setup job: Install dependencies and cache them for parallel jobs
   setup:
-    runs-on:
-      group: gusto-ubuntu-default
+    runs-on: ubuntu-latest
     outputs:
       cache-key: ${{ steps.cache-key.outputs.key }}
     steps:
@@ -37,8 +36,7 @@ jobs:
   # Build job: Build the project and cache artifacts
   build:
     needs: setup
-    runs-on:
-      group: gusto-ubuntu-default
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -70,8 +68,7 @@ jobs:
   # Lint job: Run ESLint (parallel with other checks)
   lint:
     needs: setup
-    runs-on:
-      group: gusto-ubuntu-default
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -91,8 +88,7 @@ jobs:
   # Format job: Run Prettier check (parallel with other checks)
   format:
     needs: setup
-    runs-on:
-      group: gusto-ubuntu-default
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -112,8 +108,7 @@ jobs:
   # TypeScript job: Run type checking (parallel with other checks)
   typecheck:
     needs: setup
-    runs-on:
-      group: gusto-ubuntu-default
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -133,8 +128,7 @@ jobs:
   # Endpoint inventory job: Verify derived inventory is up to date (parallel with other checks)
   endpoints:
     needs: setup
-    runs-on:
-      group: gusto-ubuntu-default
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -154,8 +148,7 @@ jobs:
   # Test job: Run tests with coverage (parallel with other checks)
   test:
     needs: setup
-    runs-on:
-      group: gusto-ubuntu-default
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
