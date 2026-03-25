@@ -144,15 +144,24 @@ describe('MultiSelectComboBox', () => {
       await user.click(combobox)
       expect(screen.getByRole('listbox')).toBeInTheDocument()
 
-      act(() => {
-        fireEvent.blur(combobox)
-      })
+      vi.useFakeTimers()
+      try {
+        act(() => {
+          fireEvent.blur(combobox)
+        })
 
-      act(() => {
-        fireEvent.focus(combobox)
-      })
+        act(() => {
+          fireEvent.focus(combobox)
+        })
 
-      expect(screen.getByRole('listbox')).toBeInTheDocument()
+        act(() => {
+          vi.advanceTimersByTime(60)
+        })
+
+        expect(screen.getByRole('listbox')).toBeInTheDocument()
+      } finally {
+        vi.useRealTimers()
+      }
     })
 
     it('closes dropdown after blur when input is not re-focused', async () => {
@@ -164,13 +173,20 @@ describe('MultiSelectComboBox', () => {
       await user.click(combobox)
       expect(screen.getByRole('listbox')).toBeInTheDocument()
 
-      act(() => {
-        fireEvent.blur(combobox)
-      })
+      vi.useFakeTimers()
+      try {
+        act(() => {
+          fireEvent.blur(combobox)
+        })
 
-      await waitFor(() => {
+        act(() => {
+          vi.advanceTimersByTime(60)
+        })
+
         expect(screen.queryByRole('listbox')).not.toBeInTheDocument()
-      })
+      } finally {
+        vi.useRealTimers()
+      }
     })
   })
 })
