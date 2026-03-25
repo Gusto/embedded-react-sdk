@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { Key } from 'react-aria-components'
 import {
   ComboBox as AriaComboBox,
@@ -21,6 +21,8 @@ import { useTheme } from '@/contexts/ThemeProvider'
 import { useForkRef } from '@/hooks/useForkRef/useForkRef'
 import AlertCircle from '@/assets/icons/alert-circle.svg?react'
 import CaretDown from '@/assets/icons/caret-down.svg?react'
+
+const CLOSE_DEBOUNCE_MS = 50
 
 export function MultiSelectComboBox({
   className,
@@ -45,8 +47,34 @@ export function MultiSelectComboBox({
   const { t } = useTranslation('common')
   const { container } = useTheme()
   const [inputValue, setInputValue] = useState('')
+  const [isOpen, setIsOpen] = useState(false)
+  const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const internalInputRef = useRef<HTMLInputElement>(null)
   const inputRef = useForkRef(inputRefFromProps, internalInputRef)
+
+  const handleOpenChange = useCallback((open: boolean) => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current)
+      closeTimeoutRef.current = null
+    }
+
+    if (open) {
+      setIsOpen(true)
+    } else {
+      closeTimeoutRef.current = setTimeout(() => {
+        setIsOpen(false)
+        closeTimeoutRef.current = null
+      }, CLOSE_DEBOUNCE_MS)
+    }
+  }, [])
+
+  useEffect(() => {
+    return () => {
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current)
+      }
+    }
+  }, [])
 
   const selectedSet = useMemo(() => new Set(selectedValues), [selectedValues])
 
@@ -118,6 +146,8 @@ export function MultiSelectComboBox({
           isDisabled={isDisabled}
           isInvalid={isInvalid}
           menuTrigger="focus"
+          isOpen={isOpen}
+          onOpenChange={handleOpenChange}
           inputValue={inputValue}
           onInputChange={setInputValue}
           selectedKey={null}

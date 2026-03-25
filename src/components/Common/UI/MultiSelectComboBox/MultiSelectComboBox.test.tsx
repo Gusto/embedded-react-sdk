@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MultiSelectComboBox } from './MultiSelectComboBox'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
@@ -131,6 +131,46 @@ describe('MultiSelectComboBox', () => {
     it('disables chip remove buttons when isDisabled is true', () => {
       renderComponent({ isDisabled: true, value: ['1'] })
       expect(screen.getByLabelText('Remove Alice Johnson')).toBeDisabled()
+    })
+  })
+
+  describe('dropdown flicker prevention', () => {
+    it('cancels pending close when input regains focus quickly', async () => {
+      const user = userEvent.setup()
+      renderComponent()
+
+      const combobox = screen.getByRole('combobox')
+
+      await user.click(combobox)
+      expect(screen.getByRole('listbox')).toBeInTheDocument()
+
+      act(() => {
+        fireEvent.blur(combobox)
+      })
+
+      act(() => {
+        fireEvent.focus(combobox)
+      })
+
+      expect(screen.getByRole('listbox')).toBeInTheDocument()
+    })
+
+    it('closes dropdown after blur when input is not re-focused', async () => {
+      const user = userEvent.setup()
+      renderComponent()
+
+      const combobox = screen.getByRole('combobox')
+
+      await user.click(combobox)
+      expect(screen.getByRole('listbox')).toBeInTheDocument()
+
+      act(() => {
+        fireEvent.blur(combobox)
+      })
+
+      await waitFor(() => {
+        expect(screen.queryByRole('listbox')).not.toBeInTheDocument()
+      })
     })
   })
 })
