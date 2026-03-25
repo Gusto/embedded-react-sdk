@@ -93,14 +93,11 @@ export const DataCards = <T,>({
                 const columnIndex = key.startsWith('column-')
                   ? parseInt(key.replace('column-', ''), 10)
                   : -1
-                const columnTitle =
-                  columnIndex >= 0 ? columns[columnIndex]?.title : undefined
+                const columnTitle = columnIndex >= 0 ? columns[columnIndex]?.title : undefined
 
                 return (
                   <Flex key={key} flexDirection="column" gap={0}>
-                    {columnTitle && (
-                      <h5 className={styles.columnTitle}>{columnTitle}</h5>
-                    )}
+                    {columnTitle && <h5 className={styles.columnTitle}>{columnTitle}</h5>}
                     <div className={styles.footerItem}>{content}</div>
                   </Flex>
                 )

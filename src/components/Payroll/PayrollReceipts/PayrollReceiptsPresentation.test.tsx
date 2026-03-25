@@ -72,17 +72,14 @@ describe('PayrollReceiptsPresentation', () => {
       })
 
       const allDataCards = screen.getAllByTestId('data-cards')
-      const employeeDataCards = allDataCards.find((el) =>
-        el.textContent!.includes('Hannah Arendt'),
-      )!
+      const employeeDataCards = allDataCards.find(el => el.textContent?.includes('Hannah Arendt'))
 
-      const footerItems =
-        employeeDataCards.querySelectorAll('[role="listitem"]')
-      const footerCard = footerItems[footerItems.length - 1]!
+      const footerItems = employeeDataCards?.querySelectorAll('[role="listitem"]') ?? []
+      const footerCard = footerItems[footerItems.length - 1]
 
-      expect(footerCard.textContent).toContain('Child support')
-      expect(footerCard.textContent).toContain('Total taxes')
-      expect(footerCard.textContent).toContain('Net pay')
+      expect(footerCard?.textContent).toContain('Child support')
+      expect(footerCard?.textContent).toContain('Total taxes')
+      expect(footerCard?.textContent).toContain('Net pay')
     })
 
     it('renders employee breakdown footer with reimbursement label when enabled', async () => {
@@ -92,15 +89,12 @@ describe('PayrollReceiptsPresentation', () => {
             receiptData={{
               ...sampleReceiptData,
               totals: {
-                ...sampleReceiptData.totals!,
+                ...sampleReceiptData.totals,
                 reimbursementDebit: '500.00',
               },
-              employeeCompensations:
-                sampleReceiptData.employeeCompensations!.map((emp, index) =>
-                  index === 0
-                    ? { ...emp, totalReimbursement: '500.00' }
-                    : emp,
-                ),
+              employeeCompensations: sampleReceiptData.employeeCompensations?.map((emp, index) =>
+                index === 0 ? { ...emp, totalReimbursement: '500.00' } : emp,
+              ),
             }}
             withReimbursements={true}
           />
@@ -112,18 +106,15 @@ describe('PayrollReceiptsPresentation', () => {
       })
 
       const allDataCards = screen.getAllByTestId('data-cards')
-      const employeeDataCards = allDataCards.find((el) =>
-        el.textContent!.includes('Hannah Arendt'),
-      )!
+      const employeeDataCards = allDataCards.find(el => el.textContent?.includes('Hannah Arendt'))
 
-      const footerItems =
-        employeeDataCards.querySelectorAll('[role="listitem"]')
-      const footerCard = footerItems[footerItems.length - 1]!
+      const footerItems = employeeDataCards?.querySelectorAll('[role="listitem"]') ?? []
+      const footerCard = footerItems[footerItems.length - 1]
 
-      expect(footerCard.textContent).toContain('Reimbursement')
-      expect(footerCard.textContent).toContain('Child support')
-      expect(footerCard.textContent).toContain('Total taxes')
-      expect(footerCard.textContent).toContain('Net pay')
+      expect(footerCard?.textContent).toContain('Reimbursement')
+      expect(footerCard?.textContent).toContain('Child support')
+      expect(footerCard?.textContent).toContain('Total taxes')
+      expect(footerCard?.textContent).toContain('Net pay')
     })
   })
 })
