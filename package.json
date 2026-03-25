@@ -132,7 +132,7 @@
     "vite-plugin-externalize-deps": "^0.10.0",
     "vite-plugin-stylelint": "^6.1.0",
     "vite-plugin-svgr": "^4.3.0",
-    "vitest": "^4.1.0"
+    "vitest": "^4.1.1"
   },
   "peerDependencies": {
     "@tanstack/react-query": "^5",
