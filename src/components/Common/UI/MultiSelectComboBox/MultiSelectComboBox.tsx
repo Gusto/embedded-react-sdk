@@ -140,7 +140,12 @@ export function MultiSelectComboBox({
           id={inputId}
           name={name}
         >
-          <Input ref={inputRef} placeholder={placeholder} onBlur={handleInputBlur} onFocus={handleInputFocus} />
+          <Input
+            ref={inputRef}
+            placeholder={placeholder}
+            onBlur={handleInputBlur}
+            onFocus={handleInputFocus}
+          />
           <Button>
             <div aria-hidden="true" className={styles.icons}>
               {isInvalid && <AlertCircle fontSize={16} />}

@@ -135,7 +135,7 @@ describe('MultiSelectComboBox', () => {
   })
 
   describe('blur debounce', () => {
-    it('cancels pending onBlur when input regains focus quickly', async () => {
+    it('cancels pending onBlur when input regains focus quickly', () => {
       vi.useFakeTimers()
       const onBlur = vi.fn()
 
@@ -172,7 +172,7 @@ describe('MultiSelectComboBox', () => {
       }
     })
 
-    it('calls onBlur after debounce when input is not re-focused', async () => {
+    it('calls onBlur after debounce when input is not re-focused', () => {
       vi.useFakeTimers()
       const onBlur = vi.fn()
 
