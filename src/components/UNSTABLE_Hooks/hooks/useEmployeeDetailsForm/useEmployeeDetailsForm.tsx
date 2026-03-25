@@ -11,7 +11,7 @@ import type { HookSubmitResult } from '../../types'
 import { useErrorHandling } from '../../useErrorHandling'
 import { deriveFieldsMetadata } from '../../form/deriveFieldsMetadata'
 import { createGetFormSubmissionValues } from '../../form/getFormSubmissionValues'
-import { resolveRequiredFields, type RequiredFieldsInput } from '../../form/resolveRequiredFields'
+import type { RequiredFields } from '../../form/resolveRequiredFields'
 import {
   createEmployeeDetailsSchema,
   type EmployeeDetailsFormData,
@@ -32,7 +32,7 @@ import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { SDKInternalError } from '@/types/sdkError'
 import { removeNonDigits } from '@/helpers/formattedStrings'
 
-export type EmployeeDetailsRequiredFields = RequiredFieldsInput<EmployeeDetailsField>
+export type EmployeeDetailsRequiredFields = RequiredFields<EmployeeDetailsField>
 
 export interface EmployeeDetailsSubmitCallbacks {
   onEmployeeCreated?: (employee: Employee) => void
@@ -88,11 +88,10 @@ export function useEmployeeDetailsForm({
   const isSelfOnboardingToggleable = canToggleSelfOnboarding(employee)
 
   const mode = isCreateMode ? 'create' : 'update'
-  const modeRequiredFields = resolveRequiredFields(requiredFields, mode)
 
   const schema = createEmployeeDetailsSchema({
     mode,
-    requiredFields: modeRequiredFields,
+    requiredFields,
     hasSsn: employee?.hasSsn,
   })
 

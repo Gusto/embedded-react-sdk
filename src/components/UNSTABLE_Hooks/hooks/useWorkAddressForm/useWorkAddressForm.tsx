@@ -13,7 +13,7 @@ import { useErrorHandling } from '../../useErrorHandling'
 import { deriveFieldsMetadata } from '../../form/deriveFieldsMetadata'
 import { createGetFormSubmissionValues } from '../../form/getFormSubmissionValues'
 import { withOptions } from '../../form/withOptions'
-import { resolveRequiredFields, type RequiredFieldsInput } from '../../form/resolveRequiredFields'
+import type { RequiredFields } from '../../form/resolveRequiredFields'
 import {
   createWorkAddressSchema,
   type WorkAddressFormData,
@@ -25,7 +25,7 @@ import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { SDKInternalError } from '@/types/sdkError'
 import { addressInline } from '@/helpers/formattedStrings'
 
-export type WorkAddressRequiredFields = RequiredFieldsInput<WorkAddressField>
+export type WorkAddressRequiredFields = RequiredFields<WorkAddressField>
 
 export interface WorkAddressSubmitCallbacks {
   onWorkAddressCreated?: (workAddress: EmployeeWorkAddress) => void
@@ -64,11 +64,10 @@ export function useWorkAddressForm({
 
   const isCreateMode = !currentWorkAddress
   const mode = isCreateMode ? 'create' : 'update'
-  const modeRequiredFields = resolveRequiredFields(requiredFields, mode)
 
   const schema = createWorkAddressSchema({
     mode,
-    requiredFields: modeRequiredFields,
+    requiredFields,
     withEffectiveDateField,
   })
 

@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { composeFormSchema } from '../../form/composeFormSchema'
-import { filterRequiredFields, type RequiredFieldsInput } from '../../form/resolveRequiredFields'
+import { filterRequiredFields, type RequiredFields } from '../../form/resolveRequiredFields'
 import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus, PAY_PERIODS } from '@/shared/constants'
 import { yearlyRate } from '@/helpers/payRateCalculator'
 
@@ -86,7 +86,7 @@ const REQUIRED_ON_UPDATE = new Set<CompensationField>([])
 
 interface CompensationSchemaOptions {
   mode?: 'create' | 'update'
-  requiredFields?: RequiredFieldsInput<CompensationField>
+  requiredFields?: RequiredFields<CompensationField>
   withStartDateField?: boolean
 }
 

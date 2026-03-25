@@ -19,7 +19,7 @@ import { useErrorHandling } from '../../useErrorHandling'
 import { withOptions } from '../../form/withOptions'
 import { deriveFieldsMetadata } from '../../form/deriveFieldsMetadata'
 import { createGetFormSubmissionValues } from '../../form/getFormSubmissionValues'
-import type { RequiredFieldsInput } from '../../form/resolveRequiredFields'
+import type { RequiredFields } from '../../form/resolveRequiredFields'
 import {
   createCompensationSchema,
   type CompensationField,
@@ -53,7 +53,7 @@ export interface CompensationSubmitOptions {
   startDate?: string
 }
 
-export type CompensationRequiredFields = RequiredFieldsInput<CompensationField>
+export type CompensationRequiredFields = RequiredFields<CompensationField>
 
 export interface UseCompensationFormProps {
   employeeId: string

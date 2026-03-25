@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { resolveRequiredFields, type RequiredFields } from './resolveRequiredFields'
 import { requiredIf } from '@/helpers/requiredIf'
 
 interface ComposeFormSchemaOptions<T extends Record<string, z.ZodType>> {
@@ -7,7 +8,7 @@ interface ComposeFormSchemaOptions<T extends Record<string, z.ZodType>> {
   requiredOnCreate?: Set<string>
   requiredOnUpdate?: Set<string>
   mode: 'create' | 'update'
-  requiredFields?: string[]
+  requiredFields?: RequiredFields<string>
 }
 
 /**
@@ -30,9 +31,9 @@ export function composeFormSchema<T extends Record<string, z.ZodType>>({
   requiredOnCreate = new Set(),
   requiredOnUpdate = new Set(),
   mode,
-  requiredFields = [],
+  requiredFields,
 }: ComposeFormSchemaOptions<T>) {
-  const required = new Set(requiredFields)
+  const required = new Set(resolveRequiredFields(requiredFields, mode))
   const modeDefaults = mode === 'create' ? requiredOnCreate : requiredOnUpdate
 
   const shape = Object.fromEntries(

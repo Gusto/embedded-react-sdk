@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { composeFormSchema } from '../../form/composeFormSchema'
+import { filterRequiredFields, type RequiredFields } from '../../form/resolveRequiredFields'
 
 export const WorkAddressErrorCodes = {
   REQUIRED: 'REQUIRED',
@@ -25,16 +26,16 @@ const REQUIRED_ON_UPDATE = new Set<WorkAddressField>(['locationUuid'])
 
 interface WorkAddressSchemaOptions {
   mode?: 'create' | 'update'
-  requiredFields?: WorkAddressField[]
+  requiredFields?: RequiredFields<WorkAddressField>
   withEffectiveDateField?: boolean
 }
 
 export function createWorkAddressSchema(options: WorkAddressSchemaOptions = {}) {
-  const { mode = 'create', requiredFields = [], withEffectiveDateField = true } = options
+  const { mode = 'create', requiredFields, withEffectiveDateField = true } = options
 
-  const effectiveRequiredFields = requiredFields.filter(
-    field => !(field === 'effectiveDate' && !withEffectiveDateField),
-  )
+  const effectiveRequiredFields = withEffectiveDateField
+    ? requiredFields
+    : filterRequiredFields(requiredFields, 'effectiveDate')
 
   return composeFormSchema({
     fieldValidators,
