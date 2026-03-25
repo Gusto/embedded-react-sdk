@@ -7,6 +7,7 @@ export {
   // Compensation types
   type CompensationFormProps,
   type CompensationSubmitCallbacks,
+  type CompensationSubmitOptions,
   type UseCompensationFormProps,
   type UseCompensationFormResult,
   type UseCompensationFormReady,
@@ -21,6 +22,7 @@ export {
   type RateValidation,
 
   // Compensation field prop types
+  type StartDateFieldProps,
   type JobTitleFieldProps,
   type FlsaStatusFieldProps,
   type RateFieldProps,

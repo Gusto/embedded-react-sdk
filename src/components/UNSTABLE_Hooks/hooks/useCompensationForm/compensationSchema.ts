@@ -37,9 +37,22 @@ export const CompensationObjectSchema = z.object({
     PAY_PERIODS.PAYCHECK,
   ]),
   rate: z.number().or(z.nan()).optional(),
+  startDate: z.date().nullable().optional(),
 })
 
-export const CompensationSchema = CompensationObjectSchema.superRefine((data, ctx) => {
+function compensationSuperRefine(
+  requireStartDate: boolean,
+  data: z.input<typeof CompensationObjectSchema>,
+  ctx: z.RefinementCtx,
+) {
+  if (requireStartDate && !data.startDate) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['startDate'],
+      message: CompensationErrorCodes.REQUIRED,
+    })
+  }
+
   if (data.adjustForMinimumWage && (!data.minimumWageId || data.minimumWageId.trim() === '')) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
@@ -131,7 +144,15 @@ export const CompensationSchema = CompensationObjectSchema.superRefine((data, ct
       })
     }
   }
-})
+}
+
+export function createCompensationSchema({ requireStartDate = false } = {}) {
+  return CompensationObjectSchema.superRefine((data, ctx) => {
+    compensationSuperRefine(requireStartDate, data, ctx)
+  })
+}
+
+export const CompensationSchema = createCompensationSchema()
 
 export type CompensationFormData = z.input<typeof CompensationSchema>
 export type CompensationFormOutputs = z.output<typeof CompensationSchema>
