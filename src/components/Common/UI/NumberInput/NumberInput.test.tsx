@@ -1,8 +1,23 @@
+import { useState } from 'react'
 import { describe, expect, it, vi } from 'vitest'
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { NumberInput } from './NumberInput'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+
+function ControlledNumberInput(props: React.ComponentProps<typeof NumberInput>) {
+  const [value, setValue] = useState(props.value ?? NaN)
+  return (
+    <NumberInput
+      {...props}
+      value={value}
+      onChange={v => {
+        setValue(v)
+        props.onChange?.(v)
+      }}
+    />
+  )
+}
 
 describe('NumberInput', () => {
   const defaultProps = {
@@ -115,6 +130,66 @@ describe('NumberInput', () => {
 
     const input = screen.getByRole('textbox')
     expect(input).toHaveAttribute('placeholder', 'Enter a number')
+  })
+
+  describe('leading zeros', () => {
+    it('strips leading zeros from input on blur', async () => {
+      const onChange = vi.fn()
+      const user = userEvent.setup()
+      renderWithProviders(<NumberInput label="Amount" onChange={onChange} />)
+
+      const input = screen.getByRole('textbox')
+      await user.clear(input)
+      await user.type(input, '020')
+      await user.tab()
+
+      expect(input).toHaveDisplayValue('20')
+    })
+
+    it('strips leading zeros from currency input on blur', async () => {
+      const onChange = vi.fn()
+      const user = userEvent.setup()
+      renderWithProviders(<NumberInput label="Price" format="currency" onChange={onChange} />)
+
+      const input = screen.getByRole('textbox')
+      await user.clear(input)
+      await user.type(input, '0042')
+      await user.tab()
+
+      expect(input).toHaveDisplayValue('42.00')
+    })
+
+    it('strips leading zeros from controlled input with onBlur handler', async () => {
+      const onChange = vi.fn()
+      const onBlur = vi.fn()
+      const user = userEvent.setup()
+      renderWithProviders(
+        <ControlledNumberInput label="Hours" value={0} onChange={onChange} onBlur={onBlur} />,
+      )
+
+      const input = screen.getByRole('textbox')
+      await user.clear(input)
+      await user.type(input, '020')
+      await user.tab()
+
+      expect(input).toHaveDisplayValue('20')
+      expect(onBlur).toHaveBeenCalled()
+    })
+
+    it('reformats when re-entering same value with leading zeros', async () => {
+      const onBlur = vi.fn()
+      const user = userEvent.setup()
+      renderWithProviders(<ControlledNumberInput label="Quantity" value={20} onBlur={onBlur} />)
+
+      const input = screen.getByRole('textbox')
+      expect(input).toHaveDisplayValue('20')
+
+      await user.clear(input)
+      await user.type(input, '020')
+      await user.tab()
+
+      expect(input).toHaveDisplayValue('20')
+    })
   })
 
   describe('Accessibility', () => {
