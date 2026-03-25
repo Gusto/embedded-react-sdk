@@ -33,9 +33,14 @@ export interface WorkAddressSubmitCallbacks {
   onWorkAddressUpdated?: (workAddress: EmployeeWorkAddress) => void
 }
 
+export interface WorkAddressSubmitOptions {
+  effectiveDate?: string
+}
+
 export interface UseWorkAddressFormProps {
   companyId: string
   employeeId: string
+  withEffectiveDateField?: boolean
   requiredFields?: WorkAddressRequiredFields
   defaultValues?: Partial<WorkAddressFormData>
   validationMode?: UseFormProps['mode']
@@ -45,6 +50,7 @@ export interface UseWorkAddressFormProps {
 export function useWorkAddressForm({
   companyId,
   employeeId,
+  withEffectiveDateField = true,
   requiredFields,
   defaultValues: partnerDefaults,
   validationMode = 'onSubmit',
@@ -64,6 +70,7 @@ export function useWorkAddressForm({
   const schema = createWorkAddressSchema({
     mode,
     requiredFields: modeRequiredFields,
+    withEffectiveDateField,
   })
 
   const resolvedDefaults: WorkAddressFormData = {
@@ -107,6 +114,7 @@ export function useWorkAddressForm({
 
   const onSubmit = async (
     callbacks?: WorkAddressSubmitCallbacks,
+    options?: WorkAddressSubmitOptions,
   ): Promise<HookSubmitResult<EmployeeWorkAddress> | undefined> => {
     let submitResult: HookSubmitResult<EmployeeWorkAddress> | undefined
 
@@ -117,12 +125,21 @@ export function useWorkAddressForm({
             let updatedWorkAddress: EmployeeWorkAddress
 
             if (isCreateMode) {
+              const resolvedEffectiveDate =
+                withEffectiveDateField && payload.effectiveDate
+                  ? payload.effectiveDate
+                  : options?.effectiveDate
+
+              if (!resolvedEffectiveDate) {
+                throw new SDKInternalError('Effective date is required')
+              }
+
               const result = await createWorkAddressMutation.mutateAsync({
                 request: {
                   employeeId,
                   requestBody: {
                     locationUuid: payload.locationUuid,
-                    effectiveDate: new RFCDate(new Date(payload.effectiveDate)),
+                    effectiveDate: new RFCDate(new Date(resolvedEffectiveDate)),
                   },
                 },
               })
@@ -178,6 +195,7 @@ export function useWorkAddressForm({
     isLoading: false as const,
     data: {
       workAddress: currentWorkAddress ?? null,
+      workAddresses,
       companyLocations,
     },
     status: {
@@ -189,7 +207,7 @@ export function useWorkAddressForm({
     form: {
       Fields: {
         Location: LocationField,
-        EffectiveDate: isCreateMode ? EffectiveDateField : undefined,
+        EffectiveDate: withEffectiveDateField && isCreateMode ? EffectiveDateField : undefined,
       },
       fieldsMetadata,
       hookFormInternals: { formMethods },

@@ -26,16 +26,21 @@ const REQUIRED_ON_UPDATE = new Set<WorkAddressField>(['locationUuid'])
 interface WorkAddressSchemaOptions {
   mode?: 'create' | 'update'
   requiredFields?: WorkAddressField[]
+  withEffectiveDateField?: boolean
 }
 
 export function createWorkAddressSchema(options: WorkAddressSchemaOptions = {}) {
-  const { mode = 'create', requiredFields = [] } = options
+  const { mode = 'create', requiredFields = [], withEffectiveDateField = true } = options
+
+  const effectiveRequiredFields = requiredFields.filter(
+    field => !(field === 'effectiveDate' && !withEffectiveDateField),
+  )
 
   return composeFormSchema({
     fieldValidators,
     requiredOnCreate: REQUIRED_ON_CREATE,
     requiredOnUpdate: REQUIRED_ON_UPDATE,
     mode,
-    requiredFields,
+    requiredFields: effectiveRequiredFields,
   })
 }

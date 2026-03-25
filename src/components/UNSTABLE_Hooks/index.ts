@@ -116,6 +116,7 @@ export {
   createWorkAddressSchema,
   type WorkAddressFormProps,
   type WorkAddressSubmitCallbacks,
+  type WorkAddressSubmitOptions,
   type WorkAddressRequiredFields,
   type UseWorkAddressFormProps,
   type UseWorkAddressFormResult,

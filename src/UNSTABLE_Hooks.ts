@@ -130,6 +130,7 @@ export {
   // Work address types
   type WorkAddressFormProps,
   type WorkAddressSubmitCallbacks,
+  type WorkAddressSubmitOptions,
   type WorkAddressRequiredFields,
   type UseWorkAddressFormProps,
   type UseWorkAddressFormResult,

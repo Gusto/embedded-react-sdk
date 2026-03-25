@@ -200,5 +200,8 @@ e2e/local.config.env
 e2e/recordings/
 e2e-recordings/
 
+# Playwright MCP artifacts
+.playwright-mcp/
+
 # MSW generated service worker
 mockServiceWorker.js

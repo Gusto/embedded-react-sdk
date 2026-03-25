@@ -1,6 +1,7 @@
 export { useWorkAddressForm } from './useWorkAddressForm'
 export type {
   WorkAddressSubmitCallbacks,
+  WorkAddressSubmitOptions,
   WorkAddressRequiredFields,
   UseWorkAddressFormProps,
   UseWorkAddressFormResult,
