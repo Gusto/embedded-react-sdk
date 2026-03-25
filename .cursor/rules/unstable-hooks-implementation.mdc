@@ -6,7 +6,9 @@ alwaysApply: false
 
 # Implementing UNSTABLE_Hooks Form Hooks
 
-Use `useCompensationForm` as the canonical reference implementation at `src/components/UNSTABLE_Hooks/hooks/useCompensationForm/`.
+Reference implementations:
+- **Schema pattern + configurable required fields**: `useEmployeeDetailsForm` at `src/components/UNSTABLE_Hooks/hooks/useEmployeeDetailsForm/`
+- **Complex cross-field validation + preprocess coercion**: `useCompensationForm` at `src/components/UNSTABLE_Hooks/hooks/useCompensationForm/`
 
 ## File Structure
 
@@ -23,23 +25,157 @@ hooks/use{Domain}Form/
 
 ## 1. Schema (`{domain}Schema.ts`)
 
-- Define error codes as a `const` object, then derive the union type from it
-- Define an `ObjectSchema` (plain `z.object`) for `deriveFieldsMetadata` and a refined `Schema` (with `superRefine`) for validation
-- Export `{Domain}FormData` (input) and `{Domain}FormOutputs` (output) via `z.input` / `z.output`
+### Single Source of Truth: `fieldValidators`
+
+Define all field validators once in a `fieldValidators` object. Derive types from it — never redeclare field names or types separately.
 
 ```typescript
 export const ErrorCodes = { REQUIRED: 'REQUIRED' /* ... */ } as const
 export type ErrorCode = (typeof ErrorCodes)[keyof typeof ErrorCodes]
 
-export const ObjectSchema = z.object({
-  /* field-level validation only */
-})
-export const Schema = ObjectSchema.superRefine((data, ctx) => {
-  /* cross-field rules */
-})
+const fieldValidators = {
+  firstName: z.string().min(1, { message: ErrorCodes.REQUIRED }),
+  email: z.email({ error: () => ErrorCodes.INVALID_EMAIL }),
+  selfOnboarding: z.boolean(),
+}
 
-export type FormData = z.input<typeof Schema>
-export type FormOutputs = z.output<typeof Schema>
+// Derive types from fieldValidators — never define these manually
+export type {Domain}Field = Exclude<keyof typeof fieldValidators, 'selfOnboarding'>
+export type {Domain}FormData = {
+  [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
+}
+export type {Domain}FormOutputs = {Domain}FormData
+```
+
+### Configurable Required Fields with `composeFormSchema`
+
+Use `composeFormSchema` to build schemas with mode-specific required fields. This applies `requiredIf` to make fields conditionally optional while keeping `fixedFields` (like boolean toggles) unchanged.
+
+**`requiredOnCreate` / `requiredOnUpdate` must align with API endpoint requirements.** Check the API docs for which fields each endpoint mandates — these are the defaults partners can add to but not remove.
+
+```typescript
+const FIXED_FIELDS = new Set(['selfOnboarding'])
+const REQUIRED_ON_CREATE = new Set<{Domain}Field>(['firstName', 'lastName'])
+const REQUIRED_ON_UPDATE = new Set<{Domain}Field>([])
+
+interface {Domain}SchemaOptions {
+  mode?: 'create' | 'update'
+  requiredFields?: {Domain}Field[]  // Partner overrides
+  hasSsn?: boolean                  // Static prop exceptions
+}
+
+export function create{Domain}Schema(options: {Domain}SchemaOptions = {}) {
+  const { mode = 'create', requiredFields = [], hasSsn = false } = options
+
+  // Static prop exceptions: filter before schema construction
+  const effectiveRequiredFields = requiredFields.filter(
+    field => !(field === 'ssn' && hasSsn),
+  )
+
+  const baseSchema = composeFormSchema({
+    fieldValidators,
+    fixedFields: FIXED_FIELDS,
+    requiredOnCreate: REQUIRED_ON_CREATE,
+    requiredOnUpdate: REQUIRED_ON_UPDATE,
+    mode,
+    requiredFields: effectiveRequiredFields,
+  })
+
+  // Cross-field validations that depend on runtime form values use superRefine
+  if (mode === 'create') {
+    return baseSchema.superRefine((data, ctx) => {
+      const { selfOnboarding, email } = data as {Domain}FormData
+      if (selfOnboarding && (!email || email.trim() === '')) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['email'], message: '...' })
+      }
+    })
+  }
+
+  return baseSchema
+}
+```
+
+### Partner API: `requiredFields`
+
+Partners pass `requiredFields: { create: ['email'], update: ['ssn'] }` to the hook. The hook resolves the correct array based on mode and passes it to the schema:
+
+```typescript
+const modeRequiredFields = isCreateMode ? requiredFields?.create : requiredFields?.update
+const schema = create{Domain}Schema({ mode, requiredFields: modeRequiredFields })
+```
+
+### When to Use `superRefine` vs. Schema Options vs. `requiredFields`
+
+| Technique | When to use | Example | `deriveFieldsMetadata` detects it? |
+|---|---|---|---|
+| `requiredOnCreate` / `requiredOnUpdate` | API-mandated defaults per endpoint | `firstName` required on create | Yes |
+| `requiredFields` (partner) | Partner wants additional fields required | `['ssn']` on update | Yes |
+| Schema options (e.g. `hasSsn`) | Static prop known at construction time | Skip SSN when already on file | Yes (filtered before schema build) |
+| `superRefine` | Cross-field deps on runtime form values | Email required when selfOnboarding is on | No — runtime only |
+
+### `toJSONSchema` Compatibility
+
+`deriveFieldsMetadata` uses `z.toJSONSchema()` to determine `isRequired` from the schema. This is a hard requirement — if any field in the schema uses an incompatible Zod type, `z.toJSONSchema()` throws at runtime with a clear error like "Transforms cannot be represented in JSON Schema".
+
+**Do NOT try to work around this by inspecting Zod internals** (`_zod.def`, `isOptional()`, etc.). That approach is brittle, breaks across Zod versions, and ultimately just reimplements what `toJSONSchema` already does. Keep schemas compatible instead.
+
+#### Restricted Zod types and their replacements
+
+| Restricted | Why it fails | Replacement |
+|---|---|---|
+| `z.transform()` | Transforms have no JSON Schema representation | `z.preprocess()` — runs coercion before validation instead of after |
+| `z.string().transform(fn)` | Same — any `.transform()` in a pipeline | `z.preprocess(fn, targetValidator)` |
+| `z.date()` | `Date` objects are not JSON-serializable | `z.iso.date()` — validates ISO 8601 date strings (`YYYY-MM-DD`) |
+| `z.nan()` / `z.number().or(z.nan())` | `NaN` has no JSON Schema type | `z.preprocess(val => Number.isNaN(val) ? undefined : val, z.number())` |
+| `z.union([z.boolean(), z.string().transform()])` | Transform inside union | `z.preprocess(val => typeof val === 'string' ? val === 'true' : val, z.boolean())` |
+
+#### `z.preprocess` trade-off: type inference
+
+`z.preprocess` solves the runtime compatibility but `z.input` infers `unknown` for preprocessed fields (because preprocess can accept any input). This breaks `useForm` generics and `superRefine` data typing.
+
+**Solution**: Define `fieldValidators` with clean types (no preprocess). Derive `FormData` from validators. Apply preprocess only when building the runtime schema:
+
+```typescript
+// fieldValidators define clean types — schema wraps with preprocess for runtime coercion
+const fieldValidators = {
+  rate: z.number().optional(),
+  startDate: z.iso.date().nullable().optional(),
+  stateWcCovered: z.boolean().optional(),
+}
+
+// Types derived from validators, not the schema
+export type FormData = { [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]> }
+
+// Schema spreads validators and overrides only fields needing runtime coercion
+export const ObjectSchema = z.object({
+  ...fieldValidators,
+  rate: z.preprocess(val => (Number.isNaN(val) ? undefined : val), z.number().optional()),
+  startDate: z.preprocess(
+    val => (val instanceof Date ? val.toISOString().split('T')[0] : val),
+    z.iso.date().nullable().optional(),
+  ),
+  stateWcCovered: z.preprocess(
+    val => (typeof val === 'string' ? val === 'true' : val),
+    z.boolean(),
+  ).optional(),
+})
+```
+
+Because `z.preprocess` breaks type inference, cast `zodResolver` and `deriveFieldsMetadata` in the hook:
+
+```typescript
+resolver: zodResolver(schema) as unknown as Resolver<FormData>,
+// ...
+const baseMetadata = deriveFieldsMetadata(schema) as Record<keyof FormData, FieldMetadata>
+```
+
+In `superRefine`, cast the data parameter:
+
+```typescript
+return baseSchema.superRefine((data, ctx) => {
+  const { rate, flsaStatus } = data as FormData
+  // ...
+})
 ```
 
 ## 2. Fields (`fields.tsx`)
@@ -77,8 +213,10 @@ export function JobTitleField(props: JobTitleFieldProps) {
 - This lets react-hook-form deep-compare and sync when server data changes while preserving user edits
 
 ```typescript
+const schema = create{Domain}Schema({ mode, requiredFields: modeRequiredFields })
+
 const formMethods = useForm<FormData, unknown, FormOutputs>({
-  resolver: zodResolver(Schema),
+  resolver: zodResolver(schema) as unknown as Resolver<FormData>,
   defaultValues: resolvedDefaults,
   values: resolvedDefaults,
   resetOptions: { keepDirtyValues: true },
@@ -87,9 +225,11 @@ const formMethods = useForm<FormData, unknown, FormOutputs>({
 
 ### Fields Metadata
 
-- Derive base metadata from the object schema: `deriveFieldsMetadata(ObjectSchema)`
+- Call `deriveFieldsMetadata(schema)` on the **composed** schema (after `composeFormSchema` / `requiredIf` is applied) — this uses `z.toJSONSchema()` to accurately detect `isRequired` for all fields including conditionally required ones
+- Cast the result when using dynamically constructed schemas: `deriveFieldsMetadata(schema) as Record<keyof FormData, FieldMetadata>`
 - Enhance select/radio fields with `withOptions<TEntry>(baseMetadata.field, options, entries)`
 - Override `isRequired`/`isDisabled` based on business logic
+- Use `hasRedactedValue` metadata for fields where the API returns a flag (e.g. `hasSsn`) but not the actual value — lets the UI show a masked placeholder
 
 ### Conditional Fields
 

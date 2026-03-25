@@ -19,9 +19,10 @@ import { useErrorHandling } from '../../useErrorHandling'
 import { withOptions } from '../../form/withOptions'
 import { deriveFieldsMetadata } from '../../form/deriveFieldsMetadata'
 import { createGetFormSubmissionValues } from '../../form/getFormSubmissionValues'
+import { resolveRequiredFields, type RequiredFieldsInput } from '../../form/resolveRequiredFields'
 import {
   createCompensationSchema,
-  CompensationObjectSchema,
+  type CompensationField,
   type CompensationFormData,
   type CompensationFormOutputs,
 } from './compensationSchema'
@@ -52,10 +53,13 @@ export interface CompensationSubmitOptions {
   startDate?: string
 }
 
+export type CompensationRequiredFields = RequiredFieldsInput<CompensationField>
+
 export interface UseCompensationFormProps {
   employeeId: string
   withStartDateField?: boolean
   jobId?: string
+  requiredFields?: CompensationRequiredFields
   defaultValues?: Partial<CompensationFormData>
   validationMode?: UseFormProps['mode']
   shouldFocusError?: boolean
@@ -99,20 +103,15 @@ const paymentUnitOptions = paymentUnitEntries.map(unit => ({
   label: unit,
 }))
 
-const baseMetadata = deriveFieldsMetadata(CompensationObjectSchema)
-
 export function useCompensationForm({
   employeeId,
-  withStartDateField = false,
+  withStartDateField = true,
   jobId,
+  requiredFields,
   defaultValues: partnerDefaults,
   validationMode = 'onSubmit',
   shouldFocusError = true,
 }: UseCompensationFormProps) {
-  const schema = useMemo(
-    () => createCompensationSchema({ requireStartDate: withStartDateField }),
-    [withStartDateField],
-  )
   const jobsQuery = useJobsAndCompensationsGetJobs({ employeeId })
   const addressesQuery = useEmployeeAddressesGetWorkAddresses({ employeeId })
   const employeeQuery = useEmployeesGet({ employeeId })
@@ -154,6 +153,15 @@ export function useCompensationForm({
   }, [employeeJobs])
 
   const isCreateMode = !currentJob
+  const mode = isCreateMode ? 'create' : 'update'
+  const modeRequiredFields = resolveRequiredFields(requiredFields, mode)
+
+  const schema = createCompensationSchema({
+    mode,
+    requiredFields: modeRequiredFields,
+    withStartDateField,
+  })
+
   const state = currentWorkAddress?.state
 
   const hireDate = currentJob?.hireDate
@@ -252,8 +260,9 @@ export function useCompensationForm({
     label: `${code}: ${description}`,
   }))
 
+  const baseMetadata = deriveFieldsMetadata(schema)
   const fieldsMetadata = {
-    startDate: { ...baseMetadata.startDate, isRequired: withStartDateField },
+    startDate: baseMetadata.startDate,
     jobTitle: baseMetadata.jobTitle,
     flsaStatus: withOptions<FlsaStatusType>(
       baseMetadata.flsaStatus,
