@@ -17,14 +17,15 @@ import { useWorkAddressForm, SDKFormProvider } from '@gusto/embedded-react-sdk/u
 
 `useWorkAddressForm` accepts a single options object:
 
-| Prop               | Type                                                           | Required | Default      | Description                                                                                     |
-| ------------------ | -------------------------------------------------------------- | -------- | ------------ | ----------------------------------------------------------------------------------------------- |
-| `companyId`        | `string`                                                       | Yes      | —            | The UUID of the company. Used to fetch available locations.                                     |
-| `employeeId`       | `string`                                                       | Yes      | —            | The UUID of the employee. Used to fetch existing work addresses.                                |
-| `requiredFields`   | `{ create?: WorkAddressField[], update?: WorkAddressField[] }` | No       | —            | Additional fields to make required beyond API defaults. Fields are applied per mode.            |
-| `defaultValues`    | `Partial<WorkAddressFormData>`                                 | No       | —            | Pre-fill form values. Server data takes precedence when editing an existing work address.       |
-| `validationMode`   | `'onSubmit' \| 'onBlur' \| 'onChange' \| 'onTouched' \| 'all'` | No       | `'onSubmit'` | When validation runs. Passed through to react-hook-form.                                        |
-| `shouldFocusError` | `boolean`                                                      | No       | `true`       | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`. |
+| Prop                     | Type                                                                                 | Required | Default      | Description                                                                                                                   |
+| ------------------------ | ------------------------------------------------------------------------------------ | -------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| `companyId`              | `string`                                                                             | Yes      | —            | The UUID of the company. Used to fetch available locations.                                                                   |
+| `employeeId`             | `string`                                                                             | Yes      | —            | The UUID of the employee. Used to fetch existing work addresses.                                                              |
+| `withEffectiveDateField` | `boolean`                                                                            | No       | `true`       | Whether to include the effective date field. When `false`, pass effective date via `onSubmit` options instead.                |
+| `requiredFields`         | `WorkAddressField[] \| { create?: WorkAddressField[], update?: WorkAddressField[] }` | No       | —            | Additional fields to make required beyond API defaults. A flat array applies to both modes; an object targets specific modes. |
+| `defaultValues`          | `Partial<WorkAddressFormData>`                                                       | No       | —            | Pre-fill form values. Server data takes precedence when editing an existing work address.                                     |
+| `validationMode`         | `'onSubmit' \| 'onBlur' \| 'onChange' \| 'onTouched' \| 'all'`                       | No       | `'onSubmit'` | When validation runs. Passed through to react-hook-form.                                                                      |
+| `shouldFocusError`       | `boolean`                                                                            | No       | `true`       | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`.                               |
 
 ### WorkAddressField
 
@@ -34,7 +35,17 @@ The `requiredFields` arrays accept these field names:
 type WorkAddressField = 'locationUuid' | 'effectiveDate'
 ```
 
-By default, both fields are required on create. On update, only `locationUuid` is required (the API does not accept effective date changes on existing work addresses).
+### Required Fields
+
+**Required by default on create:** `locationUuid`, `effectiveDate` (when `withEffectiveDateField` is `true`)
+**Required by default on update:** `locationUuid`
+
+All `WorkAddressField` values are available to require in either mode. Note that `effectiveDate` requirements are ignored when `withEffectiveDateField` is `false`. On update mode, the effective date field is always hidden (the API does not accept effective date changes on existing work addresses).
+
+```tsx
+// Flat array: require both fields in both modes
+useWorkAddressForm({ companyId, employeeId, requiredFields: ['locationUuid', 'effectiveDate'] })
+```
 
 ### WorkAddressFormData
 
@@ -69,6 +80,7 @@ The hook returns a discriminated union on `isLoading`.
   isLoading: false
   data: {
     workAddress: EmployeeWorkAddress | null
+    workAddresses: EmployeeWorkAddress[]
     companyLocations: Location[]
   }
   status: {
@@ -76,7 +88,10 @@ The hook returns a discriminated union on `isLoading`.
     mode: 'create' | 'update'
   }
   actions: {
-    onSubmit: (callbacks?: WorkAddressSubmitCallbacks) => Promise<HookSubmitResult<EmployeeWorkAddress> | undefined>
+    onSubmit: (
+      callbacks?: WorkAddressSubmitCallbacks,
+      options?: WorkAddressSubmitOptions,
+    ) => Promise<HookSubmitResult<EmployeeWorkAddress> | undefined>
   }
   errorHandling: HookErrorHandling
   form: {
@@ -101,6 +116,22 @@ interface WorkAddressSubmitCallbacks {
   onWorkAddressUpdated?: (workAddress: EmployeeWorkAddress) => void
 }
 ```
+
+### Submit options
+
+When `withEffectiveDateField` is `false`, you can pass the effective date programmatically via the second argument to `onSubmit`:
+
+```typescript
+interface WorkAddressSubmitOptions {
+  effectiveDate?: string // ISO date string (YYYY-MM-DD)
+}
+```
+
+```tsx
+await workAddress.actions.onSubmit(callbacks, { effectiveDate: '2025-06-01' })
+```
+
+If `withEffectiveDateField` is `true`, the effective date from the form field takes precedence over the submit option.
 
 ---
 
@@ -168,7 +199,7 @@ Date picker for when the work address takes effect.
 | `validationMessages` | `{ REQUIRED: string }`           | No       |
 | `FieldComponent`     | `ComponentType<DatePickerProps>` | No       |
 
-**Conditional availability:** This field is `undefined` in update mode. The API does not accept effective date changes on existing work addresses, so the field is only shown when creating a new work address.
+**Conditional availability:** This field is `undefined` in update mode or when `withEffectiveDateField` is `false`. The API does not accept effective date changes on existing work addresses, so the field is only shown when creating a new work address with `withEffectiveDateField` enabled.
 
 Always check for existence before rendering:
 

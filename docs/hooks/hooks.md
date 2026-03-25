@@ -115,6 +115,56 @@ This is useful when you want to use a third-party input library for one field, a
 
 ---
 
+## Data
+
+Every form hook returns a `data` object when ready. This contains the entities fetched by the hook — the primary entity being edited plus any supporting data needed for the form.
+
+```tsx
+if (!employeeDetails.isLoading) {
+  const { employee } = employeeDetails.data
+  // employee is the loaded Employee entity (or null in create mode)
+}
+```
+
+The shape of `data` varies by hook — see each hook's reference page for details:
+
+- `useEmployeeDetailsForm` — `{ employee }`
+- `useCompensationForm` — `{ compensation, jobs, currentJob, minimumWages }`
+- `useWorkAddressForm` — `{ workAddress, workAddresses, companyLocations }`
+
+---
+
+## Required Fields
+
+Hooks that support `requiredFields` let you declare which form fields are required beyond the API defaults. Each hook has built-in defaults based on what the API requires per mode (create vs. update), and `requiredFields` adds to those defaults.
+
+You can pass `requiredFields` as a flat array (applies to both modes) or as an object with per-mode arrays:
+
+```tsx
+// Flat array: same requirements for both create and update
+useEmployeeDetailsForm({
+  companyId,
+  requiredFields: ['email', 'dateOfBirth'],
+})
+
+// Per-mode object: different requirements per mode
+useEmployeeDetailsForm({
+  companyId,
+  requiredFields: {
+    create: ['email'],
+    update: ['ssn', 'dateOfBirth'],
+  },
+})
+```
+
+Each hook's reference page documents which fields are available to require and which are required by default in each mode. See:
+
+- [useEmployeeDetailsForm required fields](./useEmployeeDetailsForm.md#required-fields)
+- [useCompensationForm required fields](./useCompensationForm.md#required-fields)
+- [useWorkAddressForm required fields](./useWorkAddressForm.md#required-fields)
+
+---
+
 ## Loading States
 
 Every hook returns a discriminated union on `isLoading`. While server data is being fetched, only `isLoading` and `errorHandling` are available:

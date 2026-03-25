@@ -17,15 +17,15 @@ import { useEmployeeDetailsForm, SDKFormProvider } from '@gusto/embedded-react-s
 
 `useEmployeeDetailsForm` accepts a single options object:
 
-| Prop                      | Type                                                                   | Required | Default      | Description                                                                                     |
-| ------------------------- | ---------------------------------------------------------------------- | -------- | ------------ | ----------------------------------------------------------------------------------------------- |
-| `companyId`               | `string`                                                               | Yes      | —            | The UUID of the company the employee belongs to.                                                |
-| `employeeId`              | `string`                                                               | No       | —            | The UUID of an existing employee. Omit to create a new employee.                                |
-| `withSelfOnboardingField` | `boolean`                                                              | No       | `true`       | Whether to include the self-onboarding toggle field.                                            |
-| `requiredFields`          | `{ create?: EmployeeDetailsField[], update?: EmployeeDetailsField[] }` | No       | —            | Additional fields to make required beyond API defaults. Fields are applied per mode.            |
-| `defaultValues`           | `Partial<EmployeeDetailsFormData>`                                     | No       | —            | Pre-fill form values. Server data takes precedence when editing an existing employee.           |
-| `validationMode`          | `'onSubmit' \| 'onBlur' \| 'onChange' \| 'onTouched' \| 'all'`         | No       | `'onSubmit'` | When validation runs. Passed through to react-hook-form.                                        |
-| `shouldFocusError`        | `boolean`                                                              | No       | `true`       | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`. |
+| Prop                      | Type                                                                                             | Required | Default      | Description                                                                                                                   |
+| ------------------------- | ------------------------------------------------------------------------------------------------ | -------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| `companyId`               | `string`                                                                                         | Yes      | —            | The UUID of the company the employee belongs to.                                                                              |
+| `employeeId`              | `string`                                                                                         | No       | —            | The UUID of an existing employee. Omit to create a new employee.                                                              |
+| `withSelfOnboardingField` | `boolean`                                                                                        | No       | `true`       | Whether to include the self-onboarding toggle field.                                                                          |
+| `requiredFields`          | `EmployeeDetailsField[] \| { create?: EmployeeDetailsField[], update?: EmployeeDetailsField[] }` | No       | —            | Additional fields to make required beyond API defaults. A flat array applies to both modes; an object targets specific modes. |
+| `defaultValues`           | `Partial<EmployeeDetailsFormData>`                                                               | No       | —            | Pre-fill form values. Server data takes precedence when editing an existing employee.                                         |
+| `validationMode`          | `'onSubmit' \| 'onBlur' \| 'onChange' \| 'onTouched' \| 'all'`                                   | No       | `'onSubmit'` | When validation runs. Passed through to react-hook-form.                                                                      |
+| `shouldFocusError`        | `boolean`                                                                                        | No       | `true`       | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`.                               |
 
 ### EmployeeDetailsField
 
@@ -41,9 +41,21 @@ type EmployeeDetailsField =
   | 'ssn'
 ```
 
-By default, `firstName` and `lastName` are required on create. Partners can add additional requirements per mode:
+### Required Fields
+
+**Required by default on create:** `firstName`, `lastName`
+**Required by default on update:** (none)
+
+All `EmployeeDetailsField` values are available to require in either mode. Note that the `ssn` requirement is automatically waived when the employee already has an SSN on file.
 
 ```tsx
+// Flat array: require email in both modes
+useEmployeeDetailsForm({
+  companyId,
+  requiredFields: ['email'],
+})
+
+// Per-mode: different requirements per mode
 useEmployeeDetailsForm({
   companyId,
   requiredFields: {
@@ -307,7 +319,7 @@ No validation codes.
 **Conditional availability:** This field is `undefined` when:
 
 - `withSelfOnboardingField` is `false`
-- The employee's onboarding status does not allow toggling (e.g., self-onboarding is already in progress)
+- The employee's onboarding status does not allow toggling (e.g., self-onboarding is already in progress or has already been completed)
 
 Always check for existence before rendering:
 
