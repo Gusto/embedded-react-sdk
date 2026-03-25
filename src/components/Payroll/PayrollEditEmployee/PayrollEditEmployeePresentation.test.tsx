@@ -185,12 +185,10 @@ const expectedUpdatedCompensation = {
     {
       name: 'Vacation Hours',
       hours: '8',
-      finalPayoutUnusedHoursInput: '0',
     },
     {
       name: 'Sick Hours',
       hours: '0',
-      finalPayoutUnusedHoursInput: '0',
     },
   ],
 }
@@ -643,6 +641,36 @@ describe('PayrollEditEmployeePresentation', () => {
           ]),
         }),
       )
+    })
+
+    it('does not include finalPayoutUnusedHoursInput for non-dismissal payrolls', async () => {
+      const onSave = vi.fn()
+      const user = userEvent.setup()
+
+      const compensationWithPto: PayrollEmployeeCompensationsType = {
+        ...mockEmployeeCompensation,
+        paidTimeOff: [
+          { name: 'Vacation Hours', hours: '8.0', finalPayoutUnusedHoursInput: '10' },
+          { name: 'Sick Hours', hours: '0.0' },
+        ],
+      }
+
+      renderWithProviders(
+        <PayrollEditEmployeePresentation
+          {...defaultProps}
+          onSave={onSave}
+          payrollCategory={PayrollCategory.Bonus}
+          employeeCompensation={compensationWithPto}
+        />,
+      )
+
+      const saveButton = await screen.findByText('Save')
+      await user.click(saveButton)
+
+      const savedCompensation = onSave.mock.calls[0]![0] as PayrollEmployeeCompensationsType
+      for (const pto of savedCompensation.paidTimeOff ?? []) {
+        expect(pto).not.toHaveProperty('finalPayoutUnusedHoursInput')
+      }
     })
 
     it('preserves existing time off data when updating other time off hours', async () => {
