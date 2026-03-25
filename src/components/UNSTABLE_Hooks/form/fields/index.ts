@@ -4,6 +4,7 @@ export { CheckboxHookField, type CheckboxHookFieldProps } from './CheckboxHookFi
 export { NumberInputHookField, type NumberInputHookFieldProps } from './NumberInputHookField'
 export { DatePickerHookField, type DatePickerHookFieldProps } from './DatePickerHookField'
 export { RadioGroupHookField, type RadioGroupHookFieldProps } from './RadioGroupHookField'
+export { SwitchHookField, type SwitchHookFieldProps } from './SwitchHookField'
 
 export type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputTypes'
 export type { SelectProps, SelectOption } from '@/components/Common/UI/Select/SelectTypes'
@@ -14,3 +15,4 @@ export type {
   RadioGroupProps,
   RadioGroupOption,
 } from '@/components/Common/UI/RadioGroup/RadioGroupTypes'
+export type { SwitchProps } from '@/components/Common/UI/Switch/SwitchTypes'

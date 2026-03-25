@@ -13,6 +13,7 @@ export { SDKFormProvider } from './SDKFormProvider'
 export { useFieldsMetadata } from './useFieldsMetadata'
 export { useFieldErrorMessage } from './useFieldErrorMessage'
 export { deriveFieldsMetadata } from './deriveFieldsMetadata'
+export { composeFormSchema } from './composeFormSchema'
 export { composeSubmitHandler, type ComposableFormHookResult } from './composeSubmitHandler'
 export {
   TextInputHookField,

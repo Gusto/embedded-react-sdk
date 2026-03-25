@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
-import type { UseFormProps } from 'react-hook-form'
+import type { Resolver, UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { Compensation, PaymentUnit } from '@gusto/embedded-api/models/components/compensation'
 import type { Job } from '@gusto/embedded-api/models/components/job'
@@ -171,11 +171,11 @@ export function useCompensationForm({
     stateWcCovered: currentJob?.stateWcCovered ?? false,
     stateWcClassCode: currentJob?.stateWcClassCode ?? '',
     twoPercentShareholder: currentJob?.twoPercentShareholder ?? false,
-    startDate: hireDate ? new Date(hireDate) : (partnerDefaults?.startDate ?? null),
+    startDate: hireDate ?? partnerDefaults?.startDate ?? null,
   }
 
   const formMethods = useForm<CompensationFormData, unknown, CompensationFormOutputs>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(schema) as unknown as Resolver<CompensationFormData>,
     mode: validationMode,
     shouldFocusError,
     defaultValues: resolvedDefaults,
@@ -311,9 +311,7 @@ export function useCompensationForm({
             } = payload
 
             const resolvedHireDate =
-              withStartDateField && formStartDate
-                ? formStartDate.toISOString().split('T')[0]
-                : options?.startDate
+              withStartDateField && formStartDate ? formStartDate : options?.startDate
 
             let updatedJobData: Job
 

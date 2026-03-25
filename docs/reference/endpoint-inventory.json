@@ -1161,6 +1161,30 @@
         "jobId",
         "locationUuid"
       ]
+    },
+    "UNSTABLE_Hooks.hooks.useEmployeeDetailsForm": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyId/employees"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/employees/:employeeId"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/employees/:employeeId/onboarding_status"
+        }
+      ],
+      "variables": [
+        "companyId",
+        "employeeId"
+      ]
     }
   },
   "flows": {

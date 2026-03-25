@@ -3,14 +3,20 @@ import type { ComponentType } from 'react'
 import { useField, type UseFieldProps } from '@/components/Common/Fields/hooks/useField'
 import type { DatePickerProps } from '@/components/Common/UI/DatePicker/DatePickerTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { normalizeDateToLocal } from '@/helpers/dateFormatting'
+import {
+  normalizeDateToLocal,
+  normalizeToDate,
+  formatDateToStringDate,
+} from '@/helpers/dateFormatting'
 
-export interface DatePickerFieldProps
-  extends Omit<DatePickerProps, 'name' | 'onChange' | 'isInvalid'>, UseFieldProps<Date | null> {
+type DateFieldValue = string | Date | null
+
+export interface DatePickerFieldProps<TValue extends DateFieldValue = Date | null>
+  extends Omit<DatePickerProps, 'name' | 'onChange' | 'isInvalid'>, UseFieldProps<TValue> {
   FieldComponent?: ComponentType<DatePickerProps>
 }
 
-export const DatePickerField: React.FC<DatePickerFieldProps> = ({
+export const DatePickerField = <TValue extends DateFieldValue = Date | null>({
   rules,
   defaultValue,
   name,
@@ -23,9 +29,13 @@ export const DatePickerField: React.FC<DatePickerFieldProps> = ({
   inputRef,
   FieldComponent,
   ...datePickerProps
-}: DatePickerFieldProps) => {
+}: DatePickerFieldProps<TValue>) => {
   const Components = useComponentContext()
-  const fieldProps = useField({
+  const {
+    value: fieldValue,
+    onChange: fieldOnChange,
+    ...restFieldProps
+  } = useField<TValue>({
     name,
     rules,
     defaultValue,
@@ -38,16 +48,36 @@ export const DatePickerField: React.FC<DatePickerFieldProps> = ({
     inputRef,
   })
 
-  const handleTimezoneSafeChange = React.useCallback(
+  const isStringMode = typeof fieldValue === 'string'
+
+  const toDateValue = (): Date | null => {
+    if (fieldValue == null) return null
+    if (fieldValue instanceof Date) return fieldValue
+    if (typeof fieldValue === 'string' && fieldValue) return normalizeToDate(fieldValue)
+    return null
+  }
+
+  const handleChange = React.useCallback(
     (value: Date | null) => {
       const normalizedDate = normalizeDateToLocal(value)
-      fieldProps.onChange(normalizedDate)
+
+      if (isStringMode) {
+        const dateString = normalizedDate ? (formatDateToStringDate(normalizedDate) ?? '') : ''
+        fieldOnChange(dateString as TValue)
+      } else {
+        fieldOnChange(normalizedDate as TValue)
+      }
     },
-    [fieldProps],
+    [isStringMode, fieldOnChange],
   )
 
   const RenderComponent = FieldComponent ?? Components.DatePicker
   return (
-    <RenderComponent {...datePickerProps} {...fieldProps} onChange={handleTimezoneSafeChange} />
+    <RenderComponent
+      {...datePickerProps}
+      {...restFieldProps}
+      value={toDateValue()}
+      onChange={handleChange}
+    />
   )
 }

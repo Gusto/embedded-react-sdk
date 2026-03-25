@@ -14,11 +14,11 @@ export const CompensationErrorCodes = {
 export type CompensationErrorCode =
   (typeof CompensationErrorCodes)[keyof typeof CompensationErrorCodes]
 
-export const CompensationObjectSchema = z.object({
+const fieldValidators = {
   jobTitle: z.string().min(1, { message: CompensationErrorCodes.REQUIRED }),
   adjustForMinimumWage: z.boolean(),
   minimumWageId: z.string().optional(),
-  stateWcCovered: z.union([z.boolean(), z.string().transform(val => val === 'true')]).optional(),
+  stateWcCovered: z.boolean().optional(),
   stateWcClassCode: z.string().optional(),
   twoPercentShareholder: z.boolean().optional(),
   flsaStatus: z.enum([
@@ -36,13 +36,32 @@ export const CompensationObjectSchema = z.object({
     PAY_PERIODS.YEAR,
     PAY_PERIODS.PAYCHECK,
   ]),
-  rate: z.number().or(z.nan()).optional(),
-  startDate: z.date().nullable().optional(),
+  rate: z.number().optional(),
+  startDate: z.iso.date().nullable().optional(),
+}
+
+export type CompensationFormData = {
+  [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
+}
+export type CompensationFormOutputs = CompensationFormData
+
+export const CompensationObjectSchema = z.object({
+  ...fieldValidators,
+  stateWcCovered: z
+    .preprocess(val => (typeof val === 'string' ? val === 'true' : val), z.boolean())
+    .optional(),
+  rate: z.preprocess(val => (Number.isNaN(val) ? undefined : val), z.number().optional()),
+  startDate: z
+    .preprocess(
+      val => (val instanceof Date ? val.toISOString().split('T')[0] : val),
+      z.iso.date().nullable().optional(),
+    )
+    .optional(),
 })
 
 function compensationSuperRefine(
   requireStartDate: boolean,
-  data: z.input<typeof CompensationObjectSchema>,
+  data: CompensationFormData,
   ctx: z.RefinementCtx,
 ) {
   if (requireStartDate && !data.startDate) {
@@ -72,8 +91,7 @@ function compensationSuperRefine(
     })
   }
 
-  const { flsaStatus, paymentUnit } = data
-  const rate = Number.isNaN(data.rate) ? undefined : data.rate
+  const { flsaStatus, paymentUnit, rate } = data
 
   if (
     flsaStatus === FlsaStatus.EXEMPT ||
@@ -148,11 +166,8 @@ function compensationSuperRefine(
 
 export function createCompensationSchema({ requireStartDate = false } = {}) {
   return CompensationObjectSchema.superRefine((data, ctx) => {
-    compensationSuperRefine(requireStartDate, data, ctx)
+    compensationSuperRefine(requireStartDate, data as CompensationFormData, ctx)
   })
 }
 
 export const CompensationSchema = createCompensationSchema()
-
-export type CompensationFormData = z.input<typeof CompensationSchema>
-export type CompensationFormOutputs = z.output<typeof CompensationSchema>

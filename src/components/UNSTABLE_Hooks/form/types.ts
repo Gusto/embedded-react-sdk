@@ -4,6 +4,7 @@ export interface FieldMetadata {
   name: string
   isRequired?: boolean
   isDisabled?: boolean
+  hasRedactedValue?: boolean
 }
 
 export interface FieldMetadataWithOptions<TEntry = unknown> extends FieldMetadata {

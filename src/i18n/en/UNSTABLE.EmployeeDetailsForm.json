@@ -1,0 +1,31 @@
+{
+  "addTitle": "Add Employee",
+  "editTitle": "Edit Employee",
+  "firstNameLabel": "First name",
+  "middleInitialLabel": "Middle initial",
+  "lastNameLabel": "Last name",
+  "emailLabel": "Personal email",
+  "emailDescription": "Used for self-onboarding invitations and employee communications.",
+  "dateOfBirthLabel": "Date of birth",
+  "ssnLabel": "Social Security number",
+  "selfOnboardingLabel": "Invite employee to self-onboard",
+  "selfOnboardingDescription": "The employee will receive an email invitation to enter their own personal, tax, and banking details.",
+  "createCta": "Add employee",
+  "updateCta": "Save changes",
+  "fieldValidations": {
+    "firstName": {
+      "REQUIRED": "First name is required"
+    },
+    "lastName": {
+      "REQUIRED": "Last name is required"
+    },
+    "email": {
+      "REQUIRED": "Email is required",
+      "INVALID_EMAIL": "Enter a valid email address",
+      "EMAIL_REQUIRED_FOR_SELF_ONBOARDING": "Email is required when self-onboarding is enabled"
+    },
+    "ssn": {
+      "INVALID_SSN": "Enter a valid Social Security number"
+    }
+  }
+}
