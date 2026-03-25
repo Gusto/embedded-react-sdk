@@ -16,6 +16,7 @@ export { deriveFieldsMetadata } from './deriveFieldsMetadata'
 export { composeFormSchema } from './composeFormSchema'
 export { resolveRequiredFields, type RequiredFieldsInput } from './resolveRequiredFields'
 export { composeSubmitHandler, type ComposableFormHookResult } from './composeSubmitHandler'
+export { createGetFormSubmissionValues } from './getFormSubmissionValues'
 export {
   TextInputHookField,
   type TextInputHookFieldProps,

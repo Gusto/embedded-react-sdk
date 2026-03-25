@@ -10,6 +10,7 @@ import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import type { HookSubmitResult } from '../../types'
 import { useErrorHandling } from '../../useErrorHandling'
 import { deriveFieldsMetadata } from '../../form/deriveFieldsMetadata'
+import { createGetFormSubmissionValues } from '../../form/getFormSubmissionValues'
 import { resolveRequiredFields, type RequiredFieldsInput } from '../../form/resolveRequiredFields'
 import {
   createEmployeeDetailsSchema,
@@ -262,6 +263,7 @@ export function useEmployeeDetailsForm({
       },
       fieldsMetadata,
       hookFormInternals: { formMethods },
+      getFormSubmissionValues: createGetFormSubmissionValues(formMethods, schema),
     },
   }
 }

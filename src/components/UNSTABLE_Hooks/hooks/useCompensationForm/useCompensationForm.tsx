@@ -18,6 +18,7 @@ import type { HookSubmitResult } from '../../types'
 import { useErrorHandling } from '../../useErrorHandling'
 import { withOptions } from '../../form/withOptions'
 import { deriveFieldsMetadata } from '../../form/deriveFieldsMetadata'
+import { createGetFormSubmissionValues } from '../../form/getFormSubmissionValues'
 import {
   createCompensationSchema,
   CompensationObjectSchema,
@@ -442,6 +443,7 @@ export function useCompensationForm({
       },
       fieldsMetadata,
       hookFormInternals: { formMethods },
+      getFormSubmissionValues: createGetFormSubmissionValues(formMethods, schema),
     },
   }
 }
