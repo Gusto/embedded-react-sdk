@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { act, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { http, HttpResponse } from 'msw'
+import { delay, http, HttpResponse } from 'msw'
 import { PayrollConfiguration } from './PayrollConfiguration'
 import { server } from '@/test/mocks/server'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
@@ -320,7 +320,8 @@ describe('PayrollConfiguration', () => {
         http.put(
           `${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/prepare`,
           async () => {
-            await new Promise(() => {})
+            await delay('infinite')
+            return HttpResponse.json(mockPayrollData)
           },
         ),
       )
@@ -334,23 +335,13 @@ describe('PayrollConfiguration', () => {
       expect(screen.queryByText('Alice Anderson')).not.toBeInTheDocument()
     })
 
-    it('shows preparing state when prepare returns empty compensations and is refetching', async () => {
-      let callCount = 0
-
+    it('shows preparing state when prepare returns empty compensations', async () => {
       server.use(
-        http.put(
-          `${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/prepare`,
-          async () => {
-            callCount++
-            if (callCount === 1) {
-              return HttpResponse.json({
-                ...mockPayrollData,
-                employee_compensations: [],
-              })
-            }
-            await new Promise(() => {})
-            return HttpResponse.json(mockPayrollData)
-          },
+        http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/prepare`, () =>
+          HttpResponse.json({
+            ...mockPayrollData,
+            employee_compensations: [],
+          }),
         ),
       )
 
