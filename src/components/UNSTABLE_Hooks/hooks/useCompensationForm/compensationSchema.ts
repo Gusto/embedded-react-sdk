@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { composeFormSchema } from '../../form/composeFormSchema'
+import { filterRequiredFields, type RequiredFieldsInput } from '../../form/resolveRequiredFields'
 import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus, PAY_PERIODS } from '@/shared/constants'
 import { yearlyRate } from '@/helpers/payRateCalculator'
 
@@ -85,7 +86,7 @@ const REQUIRED_ON_UPDATE = new Set<CompensationField>([])
 
 interface CompensationSchemaOptions {
   mode?: 'create' | 'update'
-  requiredFields?: CompensationField[]
+  requiredFields?: RequiredFieldsInput<CompensationField>
   withStartDateField?: boolean
 }
 
@@ -183,11 +184,11 @@ function compensationSuperRefine(data: CompensationFormData, ctx: z.RefinementCt
 }
 
 export function createCompensationSchema(options: CompensationSchemaOptions = {}) {
-  const { mode = 'create', requiredFields = [], withStartDateField = true } = options
+  const { mode = 'create', requiredFields, withStartDateField = true } = options
 
-  const effectiveRequiredFields = requiredFields.filter(
-    field => !(field === 'startDate' && !withStartDateField),
-  )
+  const effectiveRequiredFields = withStartDateField
+    ? requiredFields
+    : filterRequiredFields(requiredFields, 'startDate')
 
   const effectiveRequiredOnCreate = new Set(REQUIRED_ON_CREATE)
   if (withStartDateField) {

@@ -19,7 +19,7 @@ import { useErrorHandling } from '../../useErrorHandling'
 import { withOptions } from '../../form/withOptions'
 import { deriveFieldsMetadata } from '../../form/deriveFieldsMetadata'
 import { createGetFormSubmissionValues } from '../../form/getFormSubmissionValues'
-import { resolveRequiredFields, type RequiredFieldsInput } from '../../form/resolveRequiredFields'
+import type { RequiredFieldsInput } from '../../form/resolveRequiredFields'
 import {
   createCompensationSchema,
   type CompensationField,
@@ -154,11 +154,10 @@ export function useCompensationForm({
 
   const isCreateMode = !currentJob
   const mode = isCreateMode ? 'create' : 'update'
-  const modeRequiredFields = resolveRequiredFields(requiredFields, mode)
 
   const schema = createCompensationSchema({
     mode,
-    requiredFields: modeRequiredFields,
+    requiredFields,
     withStartDateField,
   })
 
