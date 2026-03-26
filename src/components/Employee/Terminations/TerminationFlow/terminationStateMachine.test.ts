@@ -5,7 +5,7 @@ import type { TerminationFlowContextInterface } from './TerminationFlowComponent
 import { componentEvents } from '@/shared/constants'
 import { buildBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 
-type TerminationState = 'form' | 'summary' | 'dismissalPayroll'
+type TerminationState = 'form' | 'summary' | 'dismissalPayroll' | 'payrollLanding'
 
 function createTestMachine(initialState: TerminationState = 'form') {
   return createMachine(
@@ -176,15 +176,15 @@ describe('terminationStateMachine', () => {
   })
 
   describe('dismissalPayroll state', () => {
-    it('transitions to summary on PAYROLL_EXIT_FLOW', () => {
+    it('transitions to payrollLanding on PAYROLL_EXIT_FLOW', () => {
       const service = createService()
       toDismissalPayroll(service)
 
       send(service, componentEvents.PAYROLL_EXIT_FLOW)
 
-      expect(service.machine.current).toBe('summary')
-      expect(service.context.currentBreadcrumbId).toBe('summary')
-      expect(service.context.progressBarType).toBe('breadcrumbs')
+      expect(service.machine.current).toBe('payrollLanding')
+      expect(service.context.payrollOption).toBeUndefined()
+      expect(service.context.progressBarType).toBeNull()
     })
 
     it('navigates to summary via breadcrumb', () => {
@@ -201,6 +201,34 @@ describe('terminationStateMachine', () => {
     it('navigates to form via breadcrumb', () => {
       const service = createService()
       toDismissalPayroll(service)
+
+      send(service, componentEvents.BREADCRUMB_NAVIGATE, { key: 'form' })
+
+      expect(service.machine.current).toBe('form')
+      expect(service.context.currentBreadcrumbId).toBe('form')
+      expect(service.context.progressBarType).toBe('breadcrumbs')
+    })
+  })
+
+  describe('payrollLanding state', () => {
+    it('navigates to summary via breadcrumb', () => {
+      const service = createService()
+      toDismissalPayroll(service)
+      send(service, componentEvents.PAYROLL_EXIT_FLOW)
+      expect(service.machine.current).toBe('payrollLanding')
+
+      send(service, componentEvents.BREADCRUMB_NAVIGATE, { key: 'summary' })
+
+      expect(service.machine.current).toBe('summary')
+      expect(service.context.currentBreadcrumbId).toBe('summary')
+      expect(service.context.progressBarType).toBe('breadcrumbs')
+    })
+
+    it('navigates to form via breadcrumb', () => {
+      const service = createService()
+      toDismissalPayroll(service)
+      send(service, componentEvents.PAYROLL_EXIT_FLOW)
+      expect(service.machine.current).toBe('payrollLanding')
 
       send(service, componentEvents.BREADCRUMB_NAVIGATE, { key: 'form' })
 
@@ -235,7 +263,7 @@ describe('terminationStateMachine', () => {
       expect(service.context.payrollOption).toBe('regularPayroll')
     })
 
-    it('supports form -> summary -> dismissalPayroll -> save and exit -> summary', () => {
+    it('supports form -> summary -> dismissalPayroll -> save and exit -> payrollLanding', () => {
       const service = createService()
 
       send(service, componentEvents.EMPLOYEE_TERMINATION_DONE, {
@@ -254,11 +282,12 @@ describe('terminationStateMachine', () => {
       expect(service.machine.current).toBe('dismissalPayroll')
 
       send(service, componentEvents.PAYROLL_EXIT_FLOW)
-      expect(service.machine.current).toBe('summary')
-      expect(service.context.progressBarType).toBe('breadcrumbs')
+      expect(service.machine.current).toBe('payrollLanding')
+      expect(service.context.payrollOption).toBeUndefined()
+      expect(service.context.progressBarType).toBeNull()
     })
 
-    it('supports form -> summary -> off-cycle payroll -> save and exit -> summary', () => {
+    it('supports form -> summary -> off-cycle payroll -> save and exit -> payrollLanding', () => {
       const service = createService()
 
       send(service, componentEvents.EMPLOYEE_TERMINATION_DONE, {
@@ -277,8 +306,9 @@ describe('terminationStateMachine', () => {
       expect(service.context.payrollUuid).toBeUndefined()
 
       send(service, componentEvents.PAYROLL_EXIT_FLOW)
-      expect(service.machine.current).toBe('summary')
-      expect(service.context.progressBarType).toBe('breadcrumbs')
+      expect(service.machine.current).toBe('payrollLanding')
+      expect(service.context.payrollOption).toBeUndefined()
+      expect(service.context.progressBarType).toBeNull()
     })
 
     it('supports form -> summary -> cancel -> form with alert', () => {
