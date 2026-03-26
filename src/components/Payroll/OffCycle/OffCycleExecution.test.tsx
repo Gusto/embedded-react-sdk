@@ -183,6 +183,24 @@ function setupMswHandlers(options?: { onPrepare?: () => void }) {
   )
 }
 
+describe('OffCycleExecution - breadcrumb safety', () => {
+  beforeEach(() => {
+    setupMswHandlers()
+  })
+
+  it('does not render the creation breadcrumb during payroll execution', async () => {
+    const onEvent = vi.fn()
+
+    renderWithProviders(<OffCycleFlowInExecutionState onEvent={onEvent} />)
+
+    await waitFor(() => {
+      expect(screen.getByText('Jane Doe')).toBeInTheDocument()
+    })
+
+    expect(screen.queryByText('New Off-Cycle Payroll')).not.toBeInTheDocument()
+  })
+})
+
 describe('OffCycleExecution - prepare call stability', () => {
   let prepareCallCount: number
 
