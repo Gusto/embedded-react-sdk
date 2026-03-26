@@ -12,6 +12,7 @@ export const TextInputField: React.FC<TextInputFieldProps> = ({
   rules,
   defaultValue,
   name,
+  control,
   errorMessage,
   isRequired,
   onChange,
@@ -25,6 +26,7 @@ export const TextInputField: React.FC<TextInputFieldProps> = ({
   const Components = useComponentContext()
   const fieldProps = useField({
     name,
+    control,
     rules,
     defaultValue,
     errorMessage,

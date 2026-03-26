@@ -355,9 +355,11 @@ Always check for existence before rendering:
 
 ---
 
-## Usage Example
+## Usage Examples
 
-A complete example showing all fields, validation messages, and submit handling:
+### With `SDKFormProvider` (context)
+
+A complete example showing all fields, validation messages, and submit handling using the context-based approach:
 
 ```tsx
 import {
@@ -497,3 +499,114 @@ function EmployeeDetailsFormReady({
   )
 }
 ```
+
+### With `formHookResult` prop
+
+The same form using prop-based field connection. No `SDKFormProvider` wrapper needed — each field receives the hook result directly:
+
+```tsx
+import {
+  useEmployeeDetailsForm,
+  type UseEmployeeDetailsFormReady,
+} from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'
+
+function EmployeeDetailsPage({
+  companyId,
+  employeeId,
+}: {
+  companyId: string
+  employeeId?: string
+}) {
+  const employeeDetails = useEmployeeDetailsForm({ companyId, employeeId })
+
+  if (employeeDetails.isLoading) {
+    return <div>Loading...</div>
+  }
+
+  return <EmployeeDetailsFormReady employeeDetails={employeeDetails} />
+}
+
+function EmployeeDetailsFormReady({
+  employeeDetails,
+}: {
+  employeeDetails: UseEmployeeDetailsFormReady
+}) {
+  const { Fields } = employeeDetails.form
+
+  return (
+    <form
+      onSubmit={e => {
+        e.preventDefault()
+        void employeeDetails.actions.onSubmit()
+      }}
+    >
+      <h2>{employeeDetails.status.mode === 'create' ? 'Add Employee' : 'Edit Employee'}</h2>
+
+      {employeeDetails.errorHandling.errors.length > 0 && (
+        <div role="alert">
+          {employeeDetails.errorHandling.errors.map((error, i) => (
+            <p key={i}>{error.message}</p>
+          ))}
+        </div>
+      )}
+
+      <Fields.FirstName
+        label="First name"
+        formHookResult={employeeDetails}
+        validationMessages={{
+          REQUIRED: 'First name is required',
+          INVALID_NAME: 'Enter a valid first name',
+        }}
+      />
+
+      <Fields.MiddleInitial label="Middle initial" formHookResult={employeeDetails} />
+
+      <Fields.LastName
+        label="Last name"
+        formHookResult={employeeDetails}
+        validationMessages={{
+          REQUIRED: 'Last name is required',
+          INVALID_NAME: 'Enter a valid last name',
+        }}
+      />
+
+      <Fields.Email
+        label="Personal email"
+        formHookResult={employeeDetails}
+        description="Used for self-onboarding invitations and employee communications."
+        validationMessages={{
+          REQUIRED: 'Email is required',
+          INVALID_EMAIL: 'Enter a valid email address',
+          EMAIL_REQUIRED_FOR_SELF_ONBOARDING: 'Email is required when self-onboarding is enabled',
+        }}
+      />
+
+      {Fields.SelfOnboarding && (
+        <Fields.SelfOnboarding
+          label="Invite employee to self-onboard"
+          formHookResult={employeeDetails}
+          description="The employee will receive an email invitation to enter their own details."
+        />
+      )}
+
+      <Fields.DateOfBirth
+        label="Date of birth"
+        formHookResult={employeeDetails}
+        validationMessages={{ REQUIRED: 'Date of birth is required' }}
+      />
+
+      <Fields.Ssn
+        label="Social Security number"
+        formHookResult={employeeDetails}
+        validationMessages={{ INVALID_SSN: 'Enter a valid Social Security number' }}
+      />
+
+      <button type="submit" disabled={employeeDetails.status.isPending}>
+        {employeeDetails.status.mode === 'create' ? 'Add employee' : 'Save changes'}
+      </button>
+    </form>
+  )
+}
+```
+
+Both examples produce identical validation, error handling, and API behavior. The prop-based approach is particularly useful when embedding employee detail fields within a larger composed form — see [Composing Multiple Hooks](./hooks.md#composing-multiple-hooks).

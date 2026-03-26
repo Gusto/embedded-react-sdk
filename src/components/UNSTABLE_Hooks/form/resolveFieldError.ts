@@ -1,18 +1,14 @@
-import { useFormContext } from 'react-hook-form'
-import { useFormFieldsMetadataContext } from './FormFieldsMetadataContext'
+import type { FieldErrors } from 'react-hook-form'
 import type { ValidationMessages } from './types'
+import type { SDKError } from '@/types/sdkError'
 
-export function useFieldErrorMessage<TErrorCode extends string>(
+export function resolveFieldError<TErrorCode extends string>(
   fieldName: string,
+  formErrors: FieldErrors,
+  sdkErrors: SDKError[],
   validationMessages?: ValidationMessages<TErrorCode>,
 ): string | undefined {
-  const {
-    formState: { errors },
-  } = useFormContext()
-  const context = useFormFieldsMetadataContext()
-  const sdkErrors = context?.errors ?? []
-
-  const errorCode = errors[fieldName]?.message as TErrorCode | undefined
+  const errorCode = formErrors[fieldName]?.message as TErrorCode | undefined
   if (errorCode && validationMessages?.[errorCode]) {
     return validationMessages[errorCode]
   }

@@ -219,7 +219,9 @@ Always check for existence before rendering:
 
 ---
 
-## Usage Example
+## Usage Examples
+
+### With `SDKFormProvider` (context)
 
 A complete example showing both fields, `getOptionLabel` usage, and submit handling:
 
@@ -317,3 +319,69 @@ function WorkAddressFormReady({ workAddress }: { workAddress: UseWorkAddressForm
   )
 }
 ```
+
+### With `formHookResult` prop
+
+The same form using prop-based field connection. No `SDKFormProvider` wrapper needed:
+
+```tsx
+import {
+  useWorkAddressForm,
+  type UseWorkAddressFormReady,
+} from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'
+
+function WorkAddressPage({ companyId, employeeId }: { companyId: string; employeeId: string }) {
+  const workAddress = useWorkAddressForm({ companyId, employeeId })
+
+  if (workAddress.isLoading) {
+    return <div>Loading...</div>
+  }
+
+  return <WorkAddressFormReady workAddress={workAddress} />
+}
+
+function WorkAddressFormReady({ workAddress }: { workAddress: UseWorkAddressFormReady }) {
+  const { Fields } = workAddress.form
+
+  return (
+    <form
+      onSubmit={e => {
+        e.preventDefault()
+        void workAddress.actions.onSubmit()
+      }}
+    >
+      <h2>{workAddress.status.mode === 'create' ? 'Add Work Address' : 'Edit Work Address'}</h2>
+
+      {workAddress.errorHandling.errors.length > 0 && (
+        <div role="alert">
+          {workAddress.errorHandling.errors.map((error, i) => (
+            <p key={i}>{error.message}</p>
+          ))}
+        </div>
+      )}
+
+      <Fields.Location
+        label="Work address"
+        formHookResult={workAddress}
+        description="The primary location where the employee will be working."
+        validationMessages={{ REQUIRED: 'Work address is required' }}
+      />
+
+      {Fields.EffectiveDate && (
+        <Fields.EffectiveDate
+          label="Effective date"
+          formHookResult={workAddress}
+          description="The date this work address takes effect."
+          validationMessages={{ REQUIRED: 'Effective date is required' }}
+        />
+      )}
+
+      <button type="submit" disabled={workAddress.status.isPending}>
+        {workAddress.status.mode === 'create' ? 'Save work address' : 'Save changes'}
+      </button>
+    </form>
+  )
+}
+```
+
+Both examples produce identical validation, error handling, and API behavior. The prop-based approach is particularly useful when embedding work address fields within a larger composed form — see [Composing Multiple Hooks](./hooks.md#composing-multiple-hooks).

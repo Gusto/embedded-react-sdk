@@ -12,6 +12,8 @@ export { FormFieldsMetadataProvider } from './FormFieldsMetadataProvider'
 export { SDKFormProvider } from './SDKFormProvider'
 export { useFieldsMetadata } from './useFieldsMetadata'
 export { useFieldErrorMessage } from './useFieldErrorMessage'
+export { resolveFieldError } from './resolveFieldError'
+export { useHookFieldResolution } from './useHookFieldResolution'
 export { deriveFieldsMetadata } from './deriveFieldsMetadata'
 export { composeFormSchema } from './composeFormSchema'
 export {

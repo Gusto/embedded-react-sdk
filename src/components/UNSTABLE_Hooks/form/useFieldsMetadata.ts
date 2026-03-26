@@ -6,6 +6,6 @@ export function useFieldsMetadata<
     [K in keyof TFieldsMetadata]: FieldMetadata | FieldMetadataWithOptions
   } = FieldsMetadata,
 >(): TFieldsMetadata {
-  const { metadata } = useFormFieldsMetadataContext()
-  return metadata as TFieldsMetadata
+  const context = useFormFieldsMetadataContext()
+  return (context?.metadata ?? {}) as TFieldsMetadata
 }

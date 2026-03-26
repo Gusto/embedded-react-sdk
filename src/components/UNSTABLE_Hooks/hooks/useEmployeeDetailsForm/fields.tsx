@@ -3,7 +3,7 @@ import type { TextInputHookFieldProps } from '../../form/fields/TextInputHookFie
 import type { DatePickerHookFieldProps } from '../../form/fields/DatePickerHookField'
 import type { SwitchHookFieldProps } from '../../form/fields/SwitchHookField'
 import { TextInputHookField, DatePickerHookField, SwitchHookField } from '../../form/fields'
-import { useFieldsMetadata } from '../../form/useFieldsMetadata'
+import { useFormFieldsMetadataContext } from '../../form/FormFieldsMetadataContext'
 import type { EmployeeDetailsErrorCodes } from './employeeDetailsSchema'
 import { normalizeSSN, usePlaceholderSSN } from '@/helpers/ssn'
 
@@ -48,7 +48,8 @@ export function DateOfBirthField(props: DateOfBirthFieldProps) {
 export type SsnFieldProps = HookFieldProps<TextInputHookFieldProps<SsnValidation>>
 
 export function SsnField(props: SsnFieldProps) {
-  const metadata = useFieldsMetadata()
+  const metadataContext = useFormFieldsMetadataContext()
+  const metadata = props.formHookResult?.form.fieldsMetadata ?? metadataContext?.metadata ?? {}
   const placeholderSSN = usePlaceholderSSN(metadata.ssn?.hasRedactedValue)
   return (
     <TextInputHookField

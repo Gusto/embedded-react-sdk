@@ -9,10 +9,6 @@ export interface FormFieldsMetadataContextValue {
 
 export const FormFieldsMetadataContext = createContext<FormFieldsMetadataContextValue | null>(null)
 
-export function useFormFieldsMetadataContext(): FormFieldsMetadataContextValue {
-  const context = useContext(FormFieldsMetadataContext)
-  if (!context) {
-    throw new Error('useFormFieldsMetadataContext must be used within a FormFieldsMetadataProvider')
-  }
-  return context
+export function useFormFieldsMetadataContext(): FormFieldsMetadataContextValue | null {
+  return useContext(FormFieldsMetadataContext)
 }

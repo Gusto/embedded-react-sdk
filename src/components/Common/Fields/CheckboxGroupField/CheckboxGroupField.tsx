@@ -21,6 +21,7 @@ export const CheckboxGroupField = <TValue = string,>({
   rules,
   defaultValue,
   name,
+  control,
   errorMessage,
   isRequired,
   onChange: onChangeFromProps,
@@ -35,6 +36,7 @@ export const CheckboxGroupField = <TValue = string,>({
   const Components = useComponentContext()
   const { value, onChange, ...fieldProps } = useField({
     name,
+    control,
     rules,
     defaultValue,
     errorMessage,
