@@ -149,7 +149,7 @@ describe('OffCycleCreation', () => {
   })
 
   describe('check-only payroll toggle', () => {
-    it('hides start and end date fields when check-only is selected', async () => {
+    it('keeps start and end date fields visible when check-only is selected', async () => {
       const user = userEvent.setup()
       renderComponent()
 
@@ -160,33 +160,9 @@ describe('OffCycleCreation', () => {
       const checkOnlyCheckbox = screen.getByRole('checkbox', { name: /check-only payroll/i })
       await user.click(checkOnlyCheckbox)
 
-      await waitFor(() => {
-        expect(screen.queryByRole('group', { name: 'Start date' })).not.toBeInTheDocument()
-      })
-      expect(screen.queryByRole('group', { name: 'End date' })).not.toBeInTheDocument()
-      expect(screen.getByRole('group', { name: 'Payment date' })).toBeInTheDocument()
-    })
-
-    it('shows start and end date fields when check-only is deselected', async () => {
-      const user = userEvent.setup()
-      renderComponent()
-
-      await waitFor(() => {
-        expect(screen.getByRole('checkbox', { name: /check-only payroll/i })).toBeInTheDocument()
-      })
-
-      const checkOnlyCheckbox = screen.getByRole('checkbox', { name: /check-only payroll/i })
-
-      await user.click(checkOnlyCheckbox)
-      await waitFor(() => {
-        expect(screen.queryByRole('group', { name: 'Start date' })).not.toBeInTheDocument()
-      })
-
-      await user.click(checkOnlyCheckbox)
-      await waitFor(() => {
-        expect(screen.getByRole('group', { name: 'Start date' })).toBeInTheDocument()
-      })
+      expect(screen.getByRole('group', { name: 'Start date' })).toBeInTheDocument()
       expect(screen.getByRole('group', { name: 'End date' })).toBeInTheDocument()
+      expect(screen.getByRole('group', { name: 'Payment date' })).toBeInTheDocument()
     })
   })
 
@@ -206,7 +182,7 @@ describe('OffCycleCreation', () => {
       })
     })
 
-    it('shows payment date required error when submitting check-only without payment date', async () => {
+    it('shows date validation errors when submitting check-only without dates', async () => {
       const user = userEvent.setup()
       renderComponent()
 
@@ -217,15 +193,12 @@ describe('OffCycleCreation', () => {
       const checkOnlyCheckbox = screen.getByRole('checkbox', { name: /check-only payroll/i })
       await user.click(checkOnlyCheckbox)
 
-      await waitFor(() => {
-        expect(screen.queryByRole('group', { name: 'Start date' })).not.toBeInTheDocument()
-      })
-
       await user.click(screen.getByRole('button', { name: /continue/i }))
 
       await waitFor(() => {
-        expect(screen.getByText(/payment date is required/i)).toBeInTheDocument()
+        expect(screen.getByText(/start date is required/i)).toBeInTheDocument()
       })
+      expect(screen.getByText(/payment date is required/i)).toBeInTheDocument()
     })
 
     it('validates that check-only payrolls cannot have a past payment date (schema)', () => {

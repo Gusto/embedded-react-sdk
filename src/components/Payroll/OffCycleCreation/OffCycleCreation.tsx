@@ -155,8 +155,8 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
   const onSubmit = async (data: OffCycleCreationFormData) => {
     const reason = data.reason
     const checkDate = data.checkDate!
-    const startDate = data.isCheckOnly ? checkDate : data.startDate!
-    const endDate = data.isCheckOnly ? checkDate : data.endDate!
+    const startDate = data.startDate!
+    const endDate = data.endDate!
     const employeeUuids =
       !data.includeAllEmployees && data.selectedEmployeeUuids.length > 0
         ? data.selectedEmployeeUuids
