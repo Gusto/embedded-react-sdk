@@ -167,6 +167,40 @@ Each hook's reference page documents which fields are available to require and w
 
 ---
 
+## Default Values
+
+All form hooks accept a `defaultValues` prop to pre-fill the form. Pass a partial object matching the hook's form data shape — any fields you omit use built-in fallbacks (typically empty strings or `false`).
+
+```tsx
+useEmployeeDetailsForm({
+  companyId,
+  defaultValues: {
+    firstName: 'Jane',
+    email: 'jane@acme.com',
+  },
+})
+
+useCompensationForm({
+  defaultValues: {
+    jobTitle: 'Software Engineer',
+    rate: 85000,
+    paymentUnit: 'Year',
+  },
+})
+```
+
+### Resolution order
+
+In **create mode** (no existing entity), `defaultValues` populate the form directly. In **update mode**, server data always takes precedence — `defaultValues` only fill in fields the server doesn't provide.
+
+Each hook's reference page documents the full form data shape accepted by `defaultValues`:
+
+- [useEmployeeDetailsForm form data](./useEmployeeDetailsForm.md#employeedetailsformdata)
+- [useCompensationForm form data](./useCompensationForm.md#compensationformdata)
+- [useWorkAddressForm form data](./useWorkAddressForm.md#workaddressformdata)
+
+---
+
 ## Loading States
 
 Every hook returns a discriminated union on `isLoading`. While server data is being fetched, only `isLoading` and `errorHandling` are available:
@@ -318,15 +352,19 @@ if (result) {
 
 If validation fails, `onSubmit` returns `undefined` and the form fields display their error messages. If a mutation fails, the error is captured in `errorHandling.errors`.
 
-### Checking pending state
+### Checking pending state and mode
 
-Use `status.isPending` to disable the submit button while mutations are in flight:
+Use `status.isPending` to disable the submit button while mutations are in flight, and `status.mode` to adapt your UI based on whether the hook is creating or updating:
 
 ```tsx
+<h2>{employeeDetails.status.mode === 'create' ? 'Add Employee' : 'Edit Employee'}</h2>
+
 <button type="submit" disabled={employeeDetails.status.isPending}>
   {employeeDetails.status.isPending ? 'Saving...' : 'Save'}
 </button>
 ```
+
+`status.mode` is `'create'` when no existing entity was loaded (e.g., no `employeeId` was provided) and `'update'` when editing an existing record.
 
 ---
 
@@ -469,6 +507,101 @@ function CreateOnboardingPage({ companyId }: { companyId: string }) {
 ```
 
 When `employeeId` is omitted from props, the hooks skip data fetching and render in create mode with empty defaults. The ID is resolved at submit time, avoiding re-render cycles that would tear down the form UI.
+
+### Handling submission failures
+
+`composeSubmitHandler` takes care of client-side validation — your `onAllValid` callback only runs when every form passes. However, API mutations inside the callback can still fail. When they do, `onSubmit` returns `undefined` (it never throws) and the error is automatically captured in `errorHandling.errors` for display.
+
+Early return when a subsequent call depends on data from a prior call:
+
+```tsx
+const handleSubmit = composeSubmitHandler(
+  [employeeDetails, compensation, workAddress],
+  async () => {
+    const employeeResult = await employeeDetails.actions.onSubmit()
+    if (!employeeResult) return
+
+    const newEmployeeId = employeeResult.data.uuid
+
+    await compensation.actions.onSubmit(undefined, { employeeId: newEmployeeId })
+    await workAddress.actions.onSubmit(undefined, { employeeId: newEmployeeId })
+  },
+)
+```
+
+Here `compensation` and `workAddress` both need the employee ID, so if employee creation fails there's nothing to pass and no reason to continue. The user will see the error from `errorHandling.errors` and can retry.
+
+For independent submissions where one doesn't depend on the other's result, continuing after a failure is a valid choice — it depends on your product requirements.
+
+---
+
+## Reading Form Values
+
+Each hook exposes `form.getFormSubmissionValues()` — a synchronous function that returns the current form values parsed through the hook's Zod validation schema. The returned object matches exactly what `onSubmit` would receive: all preprocessing transforms (e.g., string-to-number coercion) are applied.
+
+Returns `undefined` when the current form state is invalid (empty required fields, failed cross-field rules, etc.). It never throws.
+
+```tsx
+const values = employeeDetails.form.getFormSubmissionValues()
+
+if (values) {
+  console.log(values.firstName, values.lastName)
+}
+```
+
+This is particularly useful when you need to share values across form submissions. For example, when the work address form captures an effective date that the compensation form needs as its start date, you can read the value from one form and pass it to the other's submit options:
+
+```tsx
+const workAddress = useWorkAddressForm({ companyId, shouldFocusError: false })
+const compensation = useCompensationForm({
+  withStartDateField: false,
+  shouldFocusError: false,
+})
+
+// ...loading checks...
+
+const handleSubmit = composeSubmitHandler(
+  [employeeDetails, workAddress, compensation],
+  async () => {
+    const employeeResult = await employeeDetails.actions.onSubmit()
+    if (!employeeResult) return
+
+    const newEmployeeId = employeeResult.data.uuid
+    const workAddressValues = workAddress.form.getFormSubmissionValues()
+
+    await workAddress.actions.onSubmit(undefined, { employeeId: newEmployeeId })
+    await compensation.actions.onSubmit(undefined, {
+      employeeId: newEmployeeId,
+      startDate: workAddressValues?.effectiveDate,
+    })
+  },
+)
+```
+
+`getFormSubmissionValues` has no side effects — it doesn't trigger re-renders, mutate form state, or update validation errors. It's a pure read from react-hook-form's internal store followed by Zod schema parsing.
+
+---
+
+## Advanced: Hook Form Internals
+
+Each hook exposes `form.hookFormInternals` which provides direct access to the underlying react-hook-form `formMethods` (`UseFormReturn`). This is an escape hatch for advanced use cases that aren't covered by the hook's built-in API.
+
+```tsx
+const { formMethods } = employeeDetails.form.hookFormInternals
+
+formMethods.watch('email')
+formMethods.setValue('firstName', 'Jane')
+formMethods.trigger('ssn')
+```
+
+Use this when you need to:
+
+- Watch specific fields for reactive UI updates outside of the SDK fields
+- Programmatically set or reset field values
+- Trigger validation on specific fields manually
+- Access form state like `isDirty`, `isValid`, or `dirtyFields`
+
+In most cases the built-in Fields, `onSubmit`, and `getFormSubmissionValues` are sufficient. Reach for `hookFormInternals` only when you need fine-grained form control that the hook doesn't expose directly.
 
 ---
 

@@ -119,6 +119,7 @@ The hook returns a discriminated union on `isLoading`.
     hookFormInternals: {
       formMethods: UseFormReturn
     }
+    getFormSubmissionValues: () => EmployeeDetailsFormOutputs | undefined
   }
 }
 ```

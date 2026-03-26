@@ -98,6 +98,7 @@ The hook returns a discriminated union on `isLoading`.
     Fields: WorkAddressFormFields
     fieldsMetadata: WorkAddressFieldsMetadata
     hookFormInternals: { formMethods: UseFormReturn }
+    getFormSubmissionValues: () => WorkAddressFormOutputs | undefined
   }
 }
 ```
