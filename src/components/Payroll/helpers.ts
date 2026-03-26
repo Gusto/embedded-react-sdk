@@ -604,6 +604,15 @@ export const getReimbursementCompensation = (
   return null
 }
 
+export const hasDirectDepositEmployees = (
+  employeeCompensations?: Array<{ paymentMethod?: string | null; excluded?: boolean }>,
+): boolean => {
+  if (!employeeCompensations || employeeCompensations.length === 0) return true
+  const activeCompensations = employeeCompensations.filter(comp => !comp.excluded)
+  if (activeCompensations.length === 0) return true
+  return activeCompensations.some(comp => comp.paymentMethod === 'Direct Deposit')
+}
+
 // Total Payroll = Gross Pay + Employer Taxes + Reimbursements + Benefits
 export const calculateTotalPayroll = (payrollData: Payroll) => {
   const totalPayroll = payrollData.totals

@@ -86,10 +86,10 @@ export const PlainComponentAdapter: ComponentsContextType = {
     isDisabled = false,
     buttonRef,
     onClick,
+    icon,
     children,
     ...props
   }: ButtonProps) => {
-    // Implement a simple button without the complex event translations
     return (
       <button
         ref={buttonRef}
@@ -98,6 +98,7 @@ export const PlainComponentAdapter: ComponentsContextType = {
         className={`button button-primary ${isLoading ? 'button-loading' : ''}`}
         {...props}
       >
+        {icon && <span className="button-icon">{icon}</span>}
         {isLoading ? <span className="button-loading-indicator">{children}</span> : children}
       </button>
     )

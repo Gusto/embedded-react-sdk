@@ -81,15 +81,26 @@ function ChildSupportForm({
       name: 'remittanceNumber',
       description: t('remittanceNumberDescription'),
     },
-  }
+  } as const
+
   const requiredSelectedAgencyAttributes =
-    selectedAgency?.requiredAttributes?.map(attr => {
-      return {
-        name: ATTR_KEY_TO_TEXT_FIELD_NAME_MAPPER[attr.key!].name,
-        label: attr.label as string,
-        description: ATTR_KEY_TO_TEXT_FIELD_NAME_MAPPER[attr.key!].description,
-      }
-    }) || []
+    selectedAgency?.requiredAttributes
+      ?.map(attr => {
+        if (!attr.key) {
+          return null
+        }
+        if (!Object.prototype.hasOwnProperty.call(ATTR_KEY_TO_TEXT_FIELD_NAME_MAPPER, attr.key)) {
+          return null
+        }
+        const key = attr.key as keyof typeof ATTR_KEY_TO_TEXT_FIELD_NAME_MAPPER
+        const mappedAttr = ATTR_KEY_TO_TEXT_FIELD_NAME_MAPPER[key]
+        return {
+          name: mappedAttr.name,
+          label: attr.label as string,
+          description: mappedAttr.description,
+        }
+      })
+      .filter((attr): attr is NonNullable<typeof attr> => attr !== null) || []
 
   const { mutateAsync: createDeduction, isPending: isPendingCreate } =
     useGarnishmentsCreateMutation()

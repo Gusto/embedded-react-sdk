@@ -96,14 +96,14 @@ export const Root = ({
   const { baseSubmitHandler } = useBase()
   const { t } = useTranslation('Payroll.PayrollOverview')
   const [isPolling, setIsPolling] = useState(false)
-  const [internalAlerts, setInternalAlerts] = useState<PayrollFlowAlert[]>(alerts || [])
+  const [internalAlerts, setInternalAlerts] = useState(alerts || [])
   const [selectedUnblockOptions, setSelectedUnblockOptions] = useState<Record<string, string>>({})
   const [showWireDetailsConfirmation, setShowWireDetailsConfirmation] = useState(false)
   const { showBoundary } = useErrorBoundary()
   const formatCurrency = useNumberFormatter('currency')
   const dateFormatter = useDateFormatter()
   const { Button, UnorderedList, Text } = useComponentContext()
-  const [status, setStatus] = useState<PayrollOverviewStatus>(PayrollOverviewStatus.Viewing)
+  const [status, setStatus] = useState(PayrollOverviewStatus.Viewing)
   const { data } = usePayrollsGetSuspense(
     {
       companyId,
@@ -174,10 +174,10 @@ export const Root = ({
     ) {
       setIsPolling(true)
     }
-    // Stop polling and emit event when payroll is processed successfully
     if (
       isPolling &&
-      payrollData.processingRequest?.status === PAYROLL_PROCESSING_STATUS.submit_success
+      (payrollData.processed === true ||
+        payrollData.processingRequest?.status === PAYROLL_PROCESSING_STATUS.submit_success)
     ) {
       onEvent(componentEvents.RUN_PAYROLL_PROCESSED, {
         payPeriod: payrollData.payPeriod,
@@ -222,12 +222,13 @@ export const Root = ({
     }
   }, [
     payrollData.processingRequest?.status,
+    payrollData.processed,
     isPolling,
     onEvent,
     t,
     dateFormatter,
     formatCurrency,
-    payrollData.totals?.netPayDebit,
+    payrollData.totals?.companyDebit,
     payrollData.payrollStatusMeta?.expectedDebitTime,
     payrollData.payrollDeadline,
   ])
@@ -349,6 +350,7 @@ export const Root = ({
       onPaystubDownload={onPaystubDownload}
       status={isPending || isPolling ? PayrollOverviewStatus.Submitting : status}
       isProcessed={
+        payrollData.processed === true ||
         payrollData.processingRequest?.status === PAYROLL_PROCESSING_STATUS.submit_success
       }
       canCancel={canCancelPayroll(payrollData)}

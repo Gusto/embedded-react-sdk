@@ -22,41 +22,39 @@ export const createOffCyclePayPeriodDateFormSchema = (
       checkDate: z.date().nullable(),
     })
     .superRefine((data, ctx) => {
-      if (!data.isCheckOnly) {
-        if (!data.startDate) {
+      if (!data.startDate) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['startDate'],
+          message: t('validations.startDateRequired'),
+        })
+      }
+
+      if (!data.endDate) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['endDate'],
+          message: t('validations.endDateRequired'),
+        })
+      }
+
+      if (data.startDate && data.endDate && data.endDate < data.startDate) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['endDate'],
+          message: t('validations.endDateAfterStart'),
+        })
+      }
+
+      if (payrollType === 'correction' && data.startDate) {
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+        if (data.startDate > today) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             path: ['startDate'],
-            message: t('validations.startDateRequired'),
+            message: t('validations.startDateNotFuture'),
           })
-        }
-
-        if (!data.endDate) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            path: ['endDate'],
-            message: t('validations.endDateRequired'),
-          })
-        }
-
-        if (data.startDate && data.endDate && data.endDate < data.startDate) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            path: ['endDate'],
-            message: t('validations.endDateAfterStart'),
-          })
-        }
-
-        if (payrollType === 'correction' && data.startDate) {
-          const today = new Date()
-          today.setHours(0, 0, 0, 0)
-          if (data.startDate > today) {
-            ctx.addIssue({
-              code: z.ZodIssueCode.custom,
-              path: ['startDate'],
-              message: t('validations.startDateNotFuture'),
-            })
-          }
         }
       }
 

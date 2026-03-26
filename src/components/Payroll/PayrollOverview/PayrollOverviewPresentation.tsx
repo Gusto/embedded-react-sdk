@@ -12,7 +12,7 @@ import type {
   UnblockOptions,
 } from '@gusto/embedded-api/models/components/payrollsubmissionblockertype'
 import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
-import { calculateTotalPayroll, getPayrollTypeLabel } from '../helpers'
+import { calculateTotalPayroll, getPayrollTypeLabel, hasDirectDepositEmployees } from '../helpers'
 import { PayrollOverviewStatus } from './PayrollOverviewTypes'
 import { FastAchSubmissionBlockerBanner, GenericBlocker } from './SubmissionBlockers'
 import styles from './PayrollOverviewPresentation.module.scss'
@@ -804,11 +804,13 @@ export const PayrollOverviewPresentation = ({
               >
                 <Flex gap={14} flexDirection="column">
                   <Text>{t('cancelDialogDescription')}</Text>
-                  <Text>
-                    {t('cancelDialogDescriptionDeadline', {
-                      deadline: dateFormatter.formatWithTime(payrollData.payrollDeadline).time,
-                    })}
-                  </Text>
+                  {hasDirectDepositEmployees(payrollData.employeeCompensations) && (
+                    <Text>
+                      {t('cancelDialogDescriptionDeadline', {
+                        deadline: dateFormatter.formatWithTime(payrollData.payrollDeadline).time,
+                      })}
+                    </Text>
+                  )}
                 </Flex>
               </Dialog>
             )}

@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import type { FieldMetadata } from './types'
 
-export function deriveFieldsMetadata<T extends z.ZodObject<z.ZodRawShape>>(
+export function deriveFieldsMetadata<T extends z.ZodObject>(
   schema: T,
 ): Record<keyof z.infer<T>, FieldMetadata> {
   const jsonSchema = z.toJSONSchema(schema)

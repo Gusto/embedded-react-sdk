@@ -2048,6 +2048,7 @@ export interface PayrollGrossUpModal{
 "warning":string;
 "netPayLabel":string;
 "calculateCta":string;
+"calculatingCta":string;
 "applyCta":string;
 "cancelCta":string;
 "grossPayResult":string;
@@ -2387,7 +2388,9 @@ export interface PayrollPayrollEditEmployee{
 "doubleOvertime":string;
 };
 "timeOffTitle":string;
+"timeOffTitleDismissal":string;
 "finalPayoutTitle":string;
+"finalPayoutDescription":string;
 "timeOffBalance":{
 "remaining":string;
 };
@@ -2894,9 +2897,11 @@ export interface UNSTABLEEmployeeDetailsForm{
 "fieldValidations":{
 "firstName":{
 "REQUIRED":string;
+"INVALID_NAME":string;
 };
 "lastName":{
 "REQUIRED":string;
+"INVALID_NAME":string;
 };
 "email":{
 "REQUIRED":string;

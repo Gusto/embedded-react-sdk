@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
 import { OffCycleCreation } from '../OffCycleCreation'
 import {
@@ -16,12 +15,14 @@ export interface OffCycleFlowContextInterface extends FlowContextInterface {
   companyId: string
   payrollUuid?: string
   payrollType?: OffCycleReason
+  withReimbursements?: boolean
 }
 
 export interface OffCycleFlowProps {
   companyId: string
   payrollType?: OffCycleReason
   onEvent: OnEventType<EventType, unknown>
+  withReimbursements?: boolean
 }
 
 export function OffCycleCreationContextual() {
@@ -36,12 +37,8 @@ export function OffCycleCreationContextual() {
 }
 
 export function OffCycleExecutionContextual() {
-  const { companyId, payrollUuid, onEvent, breadcrumbs } = useFlow<OffCycleFlowContextInterface>()
-
-  const offCycleCreationBreadcrumb = breadcrumbs?.['createOffCyclePayroll']?.[0]
-  const prefixBreadcrumbs = useMemo(() => {
-    return offCycleCreationBreadcrumb ? [offCycleCreationBreadcrumb] : undefined
-  }, [offCycleCreationBreadcrumb])
+  const { companyId, payrollUuid, onEvent, withReimbursements } =
+    useFlow<OffCycleFlowContextInterface>()
 
   const resolvedCompanyId = ensureRequired(companyId)
   const resolvedPayrollId = ensureRequired(payrollUuid)
@@ -52,7 +49,7 @@ export function OffCycleExecutionContextual() {
         companyId={resolvedCompanyId}
         payrollId={resolvedPayrollId}
         onEvent={onEvent}
-        prefixBreadcrumbs={prefixBreadcrumbs}
+        withReimbursements={withReimbursements}
       />
     </BaseComponent>
   )
@@ -60,7 +57,7 @@ export function OffCycleExecutionContextual() {
 
 type OffCycleExecutionWithDataProps = Pick<
   PayrollExecutionFlowProps,
-  'companyId' | 'payrollId' | 'onEvent' | 'prefixBreadcrumbs'
+  'companyId' | 'payrollId' | 'onEvent' | 'prefixBreadcrumbs' | 'withReimbursements'
 >
 
 function OffCycleExecutionWithData({

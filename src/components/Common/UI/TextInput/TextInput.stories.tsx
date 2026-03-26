@@ -5,11 +5,11 @@ export default {
   title: 'UI/Form/Inputs/TextInput', // Updated to be under UI/Form instead of top-level Form
 }
 export const Default = () => {
-  const { value, handleChange } = useStoryState<string>('TextInputChange', '')
+  const { value, handleChange } = useStoryState('TextInputChange', '')
   return <TextInput label="Email" name="email" type="email" value={value} onChange={handleChange} />
 }
 export const Description = () => {
-  const { value, handleChange } = useStoryState<string>('TextInputChange', '')
+  const { value, handleChange } = useStoryState('TextInputChange', '')
   return (
     <TextInput
       label="Email"
@@ -22,7 +22,7 @@ export const Description = () => {
   )
 }
 export const Error = () => {
-  const { value, handleChange } = useStoryState<string>('TextInputChange', '')
+  const { value, handleChange } = useStoryState('TextInputChange', '')
   return (
     <TextInput
       label="Email"
@@ -36,7 +36,7 @@ export const Error = () => {
   )
 }
 export const AdornmentStart = () => {
-  const { value, handleChange } = useStoryState<string>('TextInputChange', '')
+  const { value, handleChange } = useStoryState('TextInputChange', '')
   return (
     <TextInput
       label="Username"
@@ -49,7 +49,7 @@ export const AdornmentStart = () => {
   )
 }
 export const AdornmentEnd = () => {
-  const { value, handleChange } = useStoryState<string>('TextInputChange', '')
+  const { value, handleChange } = useStoryState('TextInputChange', '')
   return (
     <TextInput
       label="Website"
@@ -62,7 +62,7 @@ export const AdornmentEnd = () => {
   )
 }
 export const AdornmentStartAndEnd = () => {
-  const { value, handleChange } = useStoryState<string>('TextInputChange', '')
+  const { value, handleChange } = useStoryState('TextInputChange', '')
   return (
     <TextInput
       label="Search"

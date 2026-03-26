@@ -71,7 +71,7 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
     })) || []
 
   // if deduction exists check if it has a type, else if does not exist default to garnishment
-  const [isGarnishment, setIsGarnishment] = useState<boolean>(
+  const [isGarnishment, setIsGarnishment] = useState(
     (deductionType && SUPPORTED_GARNISHMENT_TYPES.includes(deductionType)) || !deduction,
   )
   const [selectedGarnishment, setSelectedGarnishment] = useState<GarnishmentType>(
@@ -101,7 +101,7 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
   // filter out specific fipsCodes/counties as mapped to selected state agency
   // some states only have 1 fips code/county to cover the entire state,
   // but the API will return a null label so we need to provide a default label
-  const [stateAgency, setStateAgency] = useState<string>(deduction?.childSupport?.state || '')
+  const [stateAgency, setStateAgency] = useState(deduction?.childSupport?.state || '')
   const handleStateAgencySelect = (stateAgency: string) => {
     setStateAgency(stateAgency)
   }

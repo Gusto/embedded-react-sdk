@@ -33,12 +33,13 @@ export interface WorkAddressSubmitCallbacks {
 }
 
 export interface WorkAddressSubmitOptions {
+  employeeId?: string
   effectiveDate?: string
 }
 
 export interface UseWorkAddressFormProps {
   companyId: string
-  employeeId: string
+  employeeId?: string
   withEffectiveDateField?: boolean
   requiredFields?: WorkAddressRequiredFields
   defaultValues?: Partial<WorkAddressFormData>
@@ -56,7 +57,10 @@ export function useWorkAddressForm({
   shouldFocusError = true,
 }: UseWorkAddressFormProps) {
   const locationsQuery = useLocationsGet({ companyId })
-  const workAddressesQuery = useEmployeeAddressesGetWorkAddresses({ employeeId })
+  const workAddressesQuery = useEmployeeAddressesGetWorkAddresses(
+    { employeeId: employeeId ?? '' },
+    { enabled: !!employeeId },
+  )
 
   const companyLocations = locationsQuery.data?.companyLocationsList
   const workAddresses = workAddressesQuery.data?.employeeWorkAddressesList
@@ -92,7 +96,7 @@ export function useWorkAddressForm({
 
   const { baseSubmitHandler, error: submitError, setError } = useBaseSubmit('WorkAddressForm')
 
-  const queries = [locationsQuery, workAddressesQuery]
+  const queries = employeeId ? [locationsQuery, workAddressesQuery] : [locationsQuery]
   const errorHandling = useErrorHandling(queries, { error: submitError, setError })
 
   const locationOptions = (companyLocations ?? []).map(location => ({
@@ -120,6 +124,12 @@ export function useWorkAddressForm({
       void formMethods.handleSubmit(
         async (data: WorkAddressFormOutputs) => {
           await baseSubmitHandler(data, async payload => {
+            const resolvedEmployeeId = options?.employeeId ?? employeeId
+
+            if (!resolvedEmployeeId) {
+              throw new SDKInternalError('employeeId is required to submit work address')
+            }
+
             let updatedWorkAddress: EmployeeWorkAddress
 
             if (isCreateMode) {
@@ -128,16 +138,14 @@ export function useWorkAddressForm({
                   ? payload.effectiveDate
                   : options?.effectiveDate
 
-              if (!resolvedEffectiveDate) {
-                throw new SDKInternalError('Effective date is required')
-              }
-
               const result = await createWorkAddressMutation.mutateAsync({
                 request: {
-                  employeeId,
+                  employeeId: resolvedEmployeeId,
                   requestBody: {
                     locationUuid: payload.locationUuid,
-                    effectiveDate: new RFCDate(new Date(resolvedEffectiveDate)),
+                    effectiveDate: resolvedEffectiveDate
+                      ? new RFCDate(new Date(resolvedEffectiveDate))
+                      : undefined,
                   },
                 },
               })
@@ -183,9 +191,10 @@ export function useWorkAddressForm({
     return submitResult
   }
 
-  const isDataLoading = locationsQuery.isLoading || workAddressesQuery.isLoading
+  const isDataLoading =
+    locationsQuery.isLoading || (employeeId ? workAddressesQuery.isLoading : false)
 
-  if (isDataLoading || !companyLocations || !workAddresses) {
+  if (isDataLoading || !companyLocations || (employeeId && !workAddresses)) {
     return { isLoading: true as const, errorHandling }
   }
 

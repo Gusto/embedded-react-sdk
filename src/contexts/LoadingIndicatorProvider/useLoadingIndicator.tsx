@@ -5,7 +5,7 @@ import { Loading } from '@/components/Common/Loading/Loading'
 export interface LoadingIndicatorContextProps {
   LoadingIndicator: ({ children }: { children?: React.ReactNode }) => JSX.Element
 }
-export const LoadingIndicatorContext = createContext<LoadingIndicatorContextProps>({
+export const LoadingIndicatorContext = createContext({
   LoadingIndicator: ({ children }: { children?: React.ReactNode }) => <Loading>{children}</Loading>,
 })
 

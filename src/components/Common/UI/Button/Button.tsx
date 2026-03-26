@@ -12,6 +12,7 @@ export function Button(rawProps: ButtonProps) {
     variant,
     buttonRef,
     className,
+    icon,
     children,
     onBlur,
     onFocus,
@@ -36,6 +37,7 @@ export function Button(rawProps: ButtonProps) {
       data-loading={isLoading || undefined}
       onPress={handlePress}
     >
+      {icon && <span className={styles.icon}>{icon}</span>}
       {children}
     </AriaButton>
   )

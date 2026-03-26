@@ -5,7 +5,7 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { GrossUpModalProps } from './GrossUpModalTypes'
 import styles from './GrossUpModal.module.scss'
-import { ActionsLayout, NumberInputField } from '@/components/Common'
+import { ActionsLayout, Flex, NumberInputField } from '@/components/Common'
 import { useBase } from '@/components/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
@@ -17,13 +17,7 @@ const GrossUpFormSchema = z.object({
 
 type GrossUpFormValues = z.infer<typeof GrossUpFormSchema>
 
-export function GrossUpModal({
-  isOpen,
-  onCalculateGrossUp,
-  isPending,
-  onApply,
-  onCancel,
-}: GrossUpModalProps) {
+export function GrossUpModal({ isOpen, onCalculateGrossUp, onApply, onCancel }: GrossUpModalProps) {
   useI18n('Payroll.GrossUpModal')
   const { t } = useTranslation('Payroll.GrossUpModal')
   const { Modal, Heading, Text, Button, Alert } = useComponentContext()
@@ -32,6 +26,7 @@ export function GrossUpModal({
 
   const [calculatedGrossUp, setCalculatedGrossUp] = useState<string | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [isCalculating, setIsCalculating] = useState(false)
   const [isApplying, setIsApplying] = useState(false)
 
   const formHandlers = useForm<GrossUpFormValues>({
@@ -50,14 +45,19 @@ export function GrossUpModal({
   const handleCalculate = async (data: GrossUpFormValues) => {
     setErrorMessage(null)
     setCalculatedGrossUp(null)
+    setIsCalculating(true)
 
     await baseSubmitHandler(null, async () => {
-      const result = await onCalculateGrossUp(data.netPay)
+      try {
+        const result = await onCalculateGrossUp(data.netPay)
 
-      if (result) {
-        setCalculatedGrossUp(result)
-      } else {
-        setErrorMessage(t('errorMessage'))
+        if (result) {
+          setCalculatedGrossUp(result)
+        } else {
+          setErrorMessage(t('errorMessage'))
+        }
+      } finally {
+        setIsCalculating(false)
       }
     })
   }
@@ -82,41 +82,42 @@ export function GrossUpModal({
       containerRef={modalContainerRef}
       footer={
         <ActionsLayout>
+          <Button
+            variant="primary"
+            isDisabled={!calculatedGrossUp}
+            onClick={handleApply}
+            isLoading={isApplying}
+          >
+            {t('applyCta')}
+          </Button>
           <Button variant="secondary" onClick={onCancel}>
             {t('cancelCta')}
           </Button>
-          {calculatedGrossUp ? (
-            <Button variant="primary" onClick={handleApply} isLoading={isApplying}>
-              {t('applyCta')}
-            </Button>
-          ) : (
-            <Button
-              variant="primary"
-              onClick={formHandlers.handleSubmit(handleCalculate)}
-              isLoading={isPending}
-            >
-              {t('calculateCta')}
-            </Button>
-          )}
         </ActionsLayout>
       }
     >
       <FormProvider {...formHandlers}>
-        <div className={styles.content}>
-          <div className={styles.header}>
-            <Heading as="h2" styledAs="h3">
-              {t('title')}
-            </Heading>
-            <Text>{t('description')}</Text>
-          </div>
+        <div className={styles.header}>
+          <Heading as="h2" styledAs="h3">
+            {t('title')}
+          </Heading>
+          <Text variant="supporting" as="p">
+            {t('description')}
+          </Text>
+        </div>
 
+        <div className={styles.content}>
           {errorMessage && (
             <div className={styles.alert}>
               <Alert label={errorMessage} status="error" disableScrollIntoView />
             </div>
           )}
 
-          <div className={styles.inputSection}>
+          <div className={styles.alert}>
+            <Alert label={t('warning')} status="warning" disableScrollIntoView />
+          </div>
+
+          <Flex flexDirection="row" gap={8}>
             <NumberInputField
               name="netPay"
               label={t('netPayLabel')}
@@ -124,18 +125,23 @@ export function GrossUpModal({
               min={0}
               isRequired
             />
-          </div>
+            <Button
+              variant="secondary"
+              className={styles.calculateButton}
+              isDisabled={isCalculating}
+              onClick={formHandlers.handleSubmit(handleCalculate)}
+            >
+              {isCalculating ? t('calculatingCta') : t('calculateCta')}
+            </Button>
+          </Flex>
 
           {calculatedGrossUp && (
             <>
-              <div className={styles.alert}>
-                <Alert label={t('warning')} status="warning" disableScrollIntoView />
-              </div>
               <div className={styles.result}>
-                <Text weight="semibold">{t('grossPayResult')}</Text>
-                <Heading as="h3" styledAs="h2">
-                  {formatNumberAsCurrency(parseFloat(calculatedGrossUp))}
-                </Heading>
+                <Text size="sm" variant="supporting" weight="semibold">
+                  {t('grossPayResult')}
+                </Text>
+                <Heading as="h3">{formatNumberAsCurrency(parseFloat(calculatedGrossUp))}</Heading>
               </div>
             </>
           )}

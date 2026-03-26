@@ -48,3 +48,7 @@ Live documentation is available at: https://docs.gusto.com/embedded-payroll/docs
   - [Employee Onboarding](docs/workflows-overview/employee-onboarding/employee-onboarding.md)
     - [Employee Self-Onboarding](docs/workflows-overview/employee-onboarding/employee-self-onboarding.md)
   - [Run Payroll](docs/workflows-overview/run-payroll.md)
+- [Hooks (Experimental)](docs/hooks/hooks.md)
+  - [useEmployeeDetailsForm](docs/hooks/useEmployeeDetailsForm.md)
+  - [useCompensationForm](docs/hooks/useCompensationForm.md)
+  - [useWorkAddressForm](docs/hooks/useWorkAddressForm.md)

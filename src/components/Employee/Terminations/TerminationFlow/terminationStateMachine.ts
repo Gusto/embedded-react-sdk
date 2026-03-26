@@ -8,6 +8,7 @@ import {
   TerminateEmployeeContextual,
   TerminationSummaryContextual,
   DismissalFlowContextual,
+  PayrollLandingContextual,
 } from './TerminationFlowComponents'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
@@ -237,8 +238,20 @@ export const terminationMachine = {
     formBreadcrumbTransition,
   ),
   dismissalPayroll: state<MachineTransition>(
-    transition(componentEvents.PAYROLL_EXIT_FLOW, 'summary', reduce(toSummaryReducer)),
+    transition(
+      componentEvents.PAYROLL_EXIT_FLOW,
+      'payrollLanding',
+      reduce(
+        (ctx: TerminationFlowContextInterface): TerminationFlowContextInterface => ({
+          ...ctx,
+          component: PayrollLandingContextual,
+          payrollOption: undefined,
+          progressBarType: null,
+        }),
+      ),
+    ),
     summaryBreadcrumbTransition,
     formBreadcrumbTransition,
   ),
+  payrollLanding: state<MachineTransition>(summaryBreadcrumbTransition, formBreadcrumbTransition),
 }

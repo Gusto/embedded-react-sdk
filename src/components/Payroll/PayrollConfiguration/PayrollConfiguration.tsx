@@ -31,8 +31,9 @@ const isCalculatedStatus = (
   processingRequest?: PayrollProcessingRequest | null,
   calculatedAt?: Date | null,
 ) =>
-  processingRequest?.status === PayrollProcessingRequestStatus.CalculateSuccess ||
-  (processingRequest == null && calculatedAt != null)
+  calculatedAt != null &&
+  (processingRequest?.status === PayrollProcessingRequestStatus.CalculateSuccess ||
+    processingRequest == null)
 
 interface PayrollConfigurationProps extends BaseComponentInterface<'Payroll.PayrollConfiguration'> {
   companyId: string
@@ -93,8 +94,7 @@ export const Root = ({
 
   const { mutateAsync: updatePayroll, isPending: isUpdatingPayroll } = usePayrollsUpdateMutation()
 
-  const { mutateAsync: calculateGrossUpMutation, isPending: isGrossUpPending } =
-    usePayrollsCalculateGrossUpMutation()
+  const { mutateAsync: calculateGrossUpMutation } = usePayrollsCalculateGrossUpMutation()
 
   const [grossUpEmployeeUuid, setGrossUpEmployeeUuid] = useState<string | null>(null)
   const [isGrossUpModalOpen, setIsGrossUpModalOpen] = useState(false)
@@ -228,7 +228,7 @@ export const Root = ({
     message: blocker.message,
   }))
 
-  const [payrollBlockers, setPayrollBlockers] = useState<ApiPayrollBlocker[]>(blockersFromApi)
+  const [payrollBlockers, setPayrollBlockers] = useState(blockersFromApi)
 
   const onCalculatePayroll = async () => {
     setPayrollBlockers([])
@@ -417,7 +417,6 @@ export const Root = ({
         <GrossUpModal
           isOpen={isGrossUpModalOpen}
           onCalculateGrossUp={onCalculateGrossUp}
-          isPending={isGrossUpPending}
           onApply={handleGrossUpApply}
           onCancel={() => {
             setIsGrossUpModalOpen(false)
