@@ -49,10 +49,7 @@ export function useField<TValue = string, TRef = HTMLInputElement>({
   const resolvedControl = controlProp ?? formContext?.control
 
   if (!resolvedControl) {
-    throw new Error(
-      'useField requires either a `control` prop or a FormProvider ancestor. ' +
-        'Pass control explicitly via formHookResult or wrap the field in SDKFormProvider.',
-    )
+    throw new Error('useField requires either a `control` prop or a FormProvider ancestor.')
   }
 
   const { field, fieldState } = useController({
