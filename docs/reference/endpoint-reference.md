@@ -252,3 +252,4 @@ Flows compose multiple blocks into a single workflow. The endpoint list for a fl
 | **Employee.SelfOnboardingFlow** | Employee.EmploymentEligibility, Employee.FederalTaxes, Employee.Landing, Employee.OnboardingSummary, Employee.PaymentMethod, Employee.Profile, Employee.StateTaxes |
 | **Payroll.PayrollExecutionFlow** | Payroll.ConfirmWireDetails |
 | **Payroll.PayrollFlow** | Payroll.ConfirmWireDetails, Payroll.OffCycleFlow, Payroll.PayrollBlocker, Payroll.PayrollConfiguration, Payroll.PayrollEditEmployee, Payroll.PayrollLanding, Payroll.PayrollOverview, Payroll.PayrollReceipts, Payroll.TransitionFlow |
+| **TimeOff.TimeOffFlow** | TimeOff.AddEmployeesHoliday, TimeOff.AddEmployeesToPolicy, TimeOff.HolidaySelectionForm, TimeOff.PolicyDetailsForm, TimeOff.PolicyList, TimeOff.PolicySettings, TimeOff.PolicyTypeSelector, TimeOff.ViewHolidayEmployees, TimeOff.ViewHolidaySchedule, TimeOff.ViewPolicyDetails, TimeOff.ViewPolicyEmployees |

@@ -215,6 +215,27 @@ export const offCycleEvents = {
   TRANSITION_PAYROLL_SKIPPED: 'transition/payrollSkipped',
 } as const
 
+export const timeOffEvents = {
+  TIME_OFF_CREATE_POLICY: 'timeOff/createPolicy',
+  TIME_OFF_VIEW_POLICY: 'timeOff/viewPolicy',
+  TIME_OFF_POLICY_TYPE_SELECTED: 'timeOff/policyTypeSelected',
+  TIME_OFF_POLICY_DETAILS_DONE: 'timeOff/policyDetails/done',
+  TIME_OFF_POLICY_SETTINGS_DONE: 'timeOff/policySettings/done',
+  TIME_OFF_ADD_EMPLOYEES_DONE: 'timeOff/addEmployees/done',
+  TIME_OFF_HOLIDAY_SELECTION_DONE: 'timeOff/holidaySelection/done',
+  TIME_OFF_HOLIDAY_ADD_EMPLOYEES_DONE: 'timeOff/holidayAddEmployees/done',
+  TIME_OFF_VIEW_POLICY_DETAILS: 'timeOff/viewPolicyDetails',
+  TIME_OFF_VIEW_POLICY_EMPLOYEES: 'timeOff/viewPolicyEmployees',
+  TIME_OFF_VIEW_HOLIDAY_EMPLOYEES: 'timeOff/viewHolidayEmployees',
+  TIME_OFF_VIEW_HOLIDAY_SCHEDULE: 'timeOff/viewHolidaySchedule',
+  TIME_OFF_BACK_TO_LIST: 'timeOff/backToList',
+  TIME_OFF_POLICY_CREATE_ERROR: 'timeOff/policyCreate/error',
+  TIME_OFF_POLICY_SETTINGS_ERROR: 'timeOff/policySettings/error',
+  TIME_OFF_ADD_EMPLOYEES_ERROR: 'timeOff/addEmployees/error',
+  TIME_OFF_HOLIDAY_CREATE_ERROR: 'timeOff/holidayCreate/error',
+  TIME_OFF_HOLIDAY_ADD_EMPLOYEES_ERROR: 'timeOff/holidayAddEmployees/error',
+} as const
+
 export const componentEvents = {
   ROBOT_MACHINE_DONE: 'done', //This is internal Robot event thrown when machine transitions to final state
   ERROR: 'ERROR',
@@ -231,6 +252,7 @@ export const componentEvents = {
   ...contractorPaymentEvents,
   ...offCycleEvents,
   ...terminationEvents,
+  ...timeOffEvents,
 } as const
 
 export type EventType = (typeof componentEvents)[keyof typeof componentEvents]
