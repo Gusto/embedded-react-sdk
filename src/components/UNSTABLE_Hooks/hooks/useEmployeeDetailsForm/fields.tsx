@@ -8,13 +8,14 @@ import type { EmployeeDetailsErrorCodes } from './employeeDetailsSchema'
 import { normalizeSSN, usePlaceholderSSN } from '@/helpers/ssn'
 
 export type RequiredValidation = typeof EmployeeDetailsErrorCodes.REQUIRED
+export type NameValidation = (typeof EmployeeDetailsErrorCodes)['REQUIRED' | 'INVALID_NAME']
 export type EmailValidation = (typeof EmployeeDetailsErrorCodes)[
   | 'REQUIRED'
   | 'INVALID_EMAIL'
   | 'EMAIL_REQUIRED_FOR_SELF_ONBOARDING']
 export type SsnValidation = typeof EmployeeDetailsErrorCodes.INVALID_SSN
 
-export type FirstNameFieldProps = HookFieldProps<TextInputHookFieldProps<RequiredValidation>>
+export type FirstNameFieldProps = HookFieldProps<TextInputHookFieldProps<NameValidation>>
 
 export function FirstNameField(props: FirstNameFieldProps) {
   return <TextInputHookField {...props} name="firstName" />
@@ -26,7 +27,7 @@ export function MiddleInitialField(props: MiddleInitialFieldProps) {
   return <TextInputHookField {...props} name="middleInitial" />
 }
 
-export type LastNameFieldProps = HookFieldProps<TextInputHookFieldProps<RequiredValidation>>
+export type LastNameFieldProps = HookFieldProps<TextInputHookFieldProps<NameValidation>>
 
 export function LastNameField(props: LastNameFieldProps) {
   return <TextInputHookField {...props} name="lastName" />

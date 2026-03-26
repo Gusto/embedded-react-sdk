@@ -2469,9 +2469,11 @@ export interface UNSTABLEEmployeeDetailsForm{
 "fieldValidations":{
 "firstName":{
 "REQUIRED":string;
+"INVALID_NAME":string;
 };
 "lastName":{
 "REQUIRED":string;
+"INVALID_NAME":string;
 };
 "email":{
 "REQUIRED":string;

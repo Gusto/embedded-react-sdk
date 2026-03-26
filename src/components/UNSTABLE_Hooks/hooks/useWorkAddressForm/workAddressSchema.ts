@@ -21,7 +21,7 @@ export type WorkAddressFormData = {
 }
 export type WorkAddressFormOutputs = WorkAddressFormData
 
-const REQUIRED_ON_CREATE = new Set<WorkAddressField>(['locationUuid', 'effectiveDate'])
+const REQUIRED_ON_CREATE = new Set<WorkAddressField>(['locationUuid'])
 const REQUIRED_ON_UPDATE = new Set<WorkAddressField>(['locationUuid'])
 
 interface WorkAddressSchemaOptions {
