@@ -37,7 +37,7 @@ const Root = ({
   const { t } = useTranslation('Payroll.ConfirmWireDetailsBanner')
   const { Alert, Banner, Button, UnorderedList, Text } = useComponentContext()
   const dateFormatter = useDateFormatter()
-  const [isConfirmationAlertDismissed, setIsConfirmationAlertDismissed] = useState<boolean>(false)
+  const [isConfirmationAlertDismissed, setIsConfirmationAlertDismissed] = useState(false)
   const currencyFormatter = useNumberFormatter('currency')
 
   useEffect(() => {

@@ -66,11 +66,12 @@ export type CompensationFormOutputs = CompensationFormData
 
 const runtimeFieldValidators = {
   ...fieldValidators,
-  rate: z.preprocess(val => (Number.isNaN(val) ? undefined : val), z.number().optional()),
-  startDate: z.preprocess(
-    val => (val instanceof Date ? val.toISOString().split('T')[0] : val),
-    z.iso.date().nullable().optional(),
-  ),
+  rate: z.preprocess(val => (Number.isNaN(val) ? undefined : val), z.number()),
+  startDate: z.preprocess(val => {
+    if (val instanceof Date) return val.toISOString().split('T')[0]
+    if (val === null || val === '') return undefined
+    return val
+  }, z.iso.date()),
   stateWcCovered: z
     .preprocess(val => (typeof val === 'string' ? val === 'true' : val), z.boolean())
     .optional(),

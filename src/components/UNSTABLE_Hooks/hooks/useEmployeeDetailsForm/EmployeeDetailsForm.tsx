@@ -62,6 +62,7 @@ function EmployeeDetailsFormRoot({ onEvent, dictionary, ...hookProps }: Employee
             label={t('firstNameLabel')}
             validationMessages={{
               REQUIRED: t('fieldValidations.firstName.REQUIRED'),
+              INVALID_NAME: t('fieldValidations.firstName.INVALID_NAME'),
             }}
           />
 
@@ -71,6 +72,7 @@ function EmployeeDetailsFormRoot({ onEvent, dictionary, ...hookProps }: Employee
             label={t('lastNameLabel')}
             validationMessages={{
               REQUIRED: t('fieldValidations.lastName.REQUIRED'),
+              INVALID_NAME: t('fieldValidations.lastName.INVALID_NAME'),
             }}
           />
 

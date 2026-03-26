@@ -45,8 +45,23 @@ export function MultiSelectComboBox({
   const { t } = useTranslation('common')
   const { container } = useTheme()
   const [inputValue, setInputValue] = useState('')
+  const blurTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const internalInputRef = useRef<HTMLInputElement>(null)
   const inputRef = useForkRef(inputRefFromProps, internalInputRef)
+
+  const handleInputBlur = useCallback(() => {
+    blurTimeoutRef.current = setTimeout(() => {
+      blurTimeoutRef.current = null
+      onBlur?.()
+    }, 50)
+  }, [onBlur])
+
+  const handleInputFocus = useCallback(() => {
+    if (blurTimeoutRef.current) {
+      clearTimeout(blurTimeoutRef.current)
+      blurTimeoutRef.current = null
+    }
+  }, [])
 
   const selectedSet = useMemo(() => new Set(selectedValues), [selectedValues])
 
@@ -125,7 +140,12 @@ export function MultiSelectComboBox({
           id={inputId}
           name={name}
         >
-          <Input ref={inputRef} placeholder={placeholder} onBlur={onBlur} />
+          <Input
+            ref={inputRef}
+            placeholder={placeholder}
+            onBlur={handleInputBlur}
+            onFocus={handleInputFocus}
+          />
           <Button>
             <div aria-hidden="true" className={styles.icons}>
               {isInvalid && <AlertCircle fontSize={16} />}

@@ -4,13 +4,13 @@ export default {
   title: 'UI/Form/Inputs/Radio',
 }
 export const Default = () => {
-  const { value, handleChange } = useStoryState<boolean>('RadioChange', false)
+  const { value, handleChange } = useStoryState('RadioChange', false)
   return (
     <Radio label="Select this option" name="radio-option" onChange={handleChange} value={value} />
   )
 }
 export const WithDescription = () => {
-  const { value, handleChange } = useStoryState<boolean>('RadioChange', false)
+  const { value, handleChange } = useStoryState('RadioChange', false)
   return (
     <Radio
       label="Subscribe to newsletter"
@@ -22,7 +22,7 @@ export const WithDescription = () => {
   )
 }
 export const WithError = () => {
-  const { value, handleChange } = useStoryState<boolean>('RadioChange', false)
+  const { value, handleChange } = useStoryState('RadioChange', false)
   return (
     <Radio
       label="Select this option"

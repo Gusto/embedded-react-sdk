@@ -42,7 +42,7 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
 
   // Schema and default value generation
   const { dynamicSchema, defaultValues } = useMemo(() => {
-    const schemaShape: Record<string, z.ZodObject<Record<string, z.ZodType>>> = {}
+    const schemaShape: Record<string, z.ZodObject> = {}
     const values: Partial<Record<string, Record<string, string | boolean | number | undefined>>> =
       {}
 
@@ -109,7 +109,7 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
   // Infer the type from the schema
   type InferredFormInputs = z.infer<typeof dynamicSchema>
 
-  const { control, ...methods } = useForm<InferredFormInputs>({
+  const { control, ...methods } = useForm({
     resolver: zodResolver(dynamicSchema),
     defaultValues,
   })
