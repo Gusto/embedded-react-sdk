@@ -113,6 +113,7 @@ The hook returns a discriminated union on `isLoading`.
     Fields: CompensationFormFields
     fieldsMetadata: CompensationFieldsMetadata
     hookFormInternals: { formMethods: UseFormReturn }
+    getFormSubmissionValues: () => CompensationFormOutputs | undefined
   }
 }
 ```
