@@ -13,13 +13,13 @@ import { BaseComponent } from '@/components/Base/Base'
 
 export interface DismissalFlowContextInterface extends FlowContextInterface {
   companyId: string
-  employeeId: string
+  employeeId?: string
   payrollUuid?: string
 }
 
 export interface DismissalFlowProps {
   companyId: string
-  employeeId: string
+  employeeId?: string
   onEvent: OnEventType<EventType, unknown>
   payrollId?: string
 }
@@ -29,7 +29,7 @@ export function DismissalPayPeriodSelectionContextual() {
   return (
     <DismissalPayPeriodSelection
       companyId={ensureRequired(companyId)}
-      employeeId={ensureRequired(employeeId)}
+      employeeId={employeeId}
       onEvent={onEvent}
     />
   )
