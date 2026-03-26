@@ -349,6 +349,7 @@ export const Root = ({
       onPaystubDownload={onPaystubDownload}
       status={isPending || isPolling ? PayrollOverviewStatus.Submitting : status}
       isProcessed={
+        payrollData.processed === true ||
         payrollData.processingRequest?.status === PAYROLL_PROCESSING_STATUS.submit_success
       }
       canCancel={canCancelPayroll(payrollData)}
