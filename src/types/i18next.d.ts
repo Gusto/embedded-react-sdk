@@ -1962,7 +1962,9 @@ export interface PayrollPayrollEditEmployee{
 "doubleOvertime":string;
 };
 "timeOffTitle":string;
+"timeOffTitleDismissal":string;
 "finalPayoutTitle":string;
+"finalPayoutDescription":string;
 "timeOffBalance":{
 "remaining":string;
 };
