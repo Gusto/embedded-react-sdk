@@ -1,5 +1,5 @@
-import type { Control, FieldErrors } from 'react-hook-form'
-import { useFormContext } from 'react-hook-form'
+import type { Control } from 'react-hook-form'
+import { useFormState } from 'react-hook-form'
 import type { BaseFormHookReady } from '../types'
 import { useFormFieldsMetadataContext } from './FormFieldsMetadataContext'
 import { resolveFieldError } from './resolveFieldError'
@@ -19,26 +19,23 @@ interface HookFieldResolution {
  * the prop — no context providers required. When absent, falls back to the
  * existing context-based path.
  *
- * This hook always calls context hooks unconditionally (they safely return null
- * outside their providers), so React's rules of hooks are satisfied regardless
- * of which path is active.
+ * Uses `useFormState` to establish a proper RHF subscription for error updates.
+ * When `control` is provided (prop path), useFormState subscribes directly via
+ * the control object. When absent (context path), it falls back to useFormContext
+ * internally. The `name` parameter scopes the subscription to this field.
  */
 export function useHookFieldResolution<TErrorCode extends string>(
   name: string,
   formHookResult: BaseFormHookReady | undefined,
   validationMessages?: ValidationMessages<TErrorCode>,
 ): HookFieldResolution {
-  // useFormContext returns null outside FormProvider in RHF v7.72
-  const formContext = useFormContext() as ReturnType<typeof useFormContext> | null
   const metadataContext = useFormFieldsMetadataContext()
 
   const metadata = formHookResult?.form.fieldsMetadata ?? metadataContext?.metadata ?? {}
 
   const control = formHookResult?.form.hookFormInternals.formMethods.control
 
-  const formErrors: FieldErrors = formHookResult
-    ? formHookResult.form.hookFormInternals.formMethods.formState.errors
-    : (formContext?.formState.errors ?? {})
+  const { errors: formErrors } = useFormState({ control, name })
 
   const sdkErrors = formHookResult
     ? formHookResult.errorHandling.errors
