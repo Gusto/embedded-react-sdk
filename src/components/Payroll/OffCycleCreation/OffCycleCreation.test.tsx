@@ -392,7 +392,7 @@ describe('OffCycleCreation', () => {
         expect(screen.getByRole('heading', { name: /tax withholding rates/i })).toBeInTheDocument()
       })
 
-      expect(screen.getByText('Regular hours, regular wages, tips')).toBeInTheDocument()
+      expect(screen.getByText('Regular hours, regular wages, and tips')).toBeInTheDocument()
       expect(screen.getByText('Supplemental wages, bonus wages, commission')).toBeInTheDocument()
       expect(screen.getByText('Reimbursements')).toBeInTheDocument()
     })

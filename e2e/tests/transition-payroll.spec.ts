@@ -402,7 +402,7 @@ test.describe('TransitionFlow', () => {
 
       await expect(page.getByRole('heading', { name: /tax withholding rates/i })).toBeVisible()
       await expect(page.getByRole('button', { name: /edit/i })).toBeVisible()
-      await expect(page.getByText(/regular hours, regular wages, tips/i)).toBeVisible()
+      await expect(page.getByText(/regular hours, regular wages, and tips/i)).toBeVisible()
       await expect(page.getByText(/supplemental wages, bonus wages, commission/i)).toBeVisible()
       await expect(page.getByText(/reimbursements/i)).toBeVisible()
     })
