@@ -31,8 +31,9 @@ const isCalculatedStatus = (
   processingRequest?: PayrollProcessingRequest | null,
   calculatedAt?: Date | null,
 ) =>
-  processingRequest?.status === PayrollProcessingRequestStatus.CalculateSuccess ||
-  (processingRequest == null && calculatedAt != null)
+  calculatedAt != null &&
+  (processingRequest?.status === PayrollProcessingRequestStatus.CalculateSuccess ||
+    processingRequest == null)
 
 interface PayrollConfigurationProps extends BaseComponentInterface<'Payroll.PayrollConfiguration'> {
   companyId: string
