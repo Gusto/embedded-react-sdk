@@ -1,9 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { screen, waitFor } from '@testing-library/react'
+import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { createOffCyclePayPeriodDateFormSchema } from '../OffCyclePayPeriodDateForm/OffCyclePayPeriodDateFormTypes'
 import { OffCycleCreation } from './OffCycleCreation'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+
+const mockCreateOffCyclePayroll = vi.fn()
 
 vi.mock('@gusto/embedded-api/react-query/employeesList', () => ({
   useEmployeesListSuspense: () => ({
@@ -16,6 +18,13 @@ vi.mock('@gusto/embedded-api/react-query/employeesList', () => ({
       ],
     },
     isLoading: false,
+  }),
+}))
+
+vi.mock('@gusto/embedded-api/react-query/payrollsCreateOffCycle', () => ({
+  usePayrollsCreateOffCycleMutation: () => ({
+    mutateAsync: mockCreateOffCyclePayroll,
+    isPending: false,
   }),
 }))
 
@@ -313,6 +322,38 @@ describe('OffCycleCreation', () => {
       await waitFor(() => {
         expect(screen.getByRole('combobox')).toBeInTheDocument()
       })
+    })
+
+    it('sends all employee UUIDs when include all employees is toggled on', async () => {
+      mockCreateOffCyclePayroll.mockResolvedValueOnce({
+        payrollUnprocessed: { payrollUuid: 'new-payroll-uuid' },
+      })
+
+      const user = userEvent.setup()
+      renderComponent()
+
+      await waitFor(() => {
+        expect(screen.getByRole('switch', { name: /include all employees/i })).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('switch', { name: /include all employees/i }))
+
+      const checkOnlyCheckbox = screen.getByRole('checkbox', { name: /check-only payroll/i })
+      await user.click(checkOnlyCheckbox)
+
+      const paymentDateGroup = screen.getByRole('group', { name: 'Payment date' })
+      await user.type(within(paymentDateGroup).getByRole('spinbutton', { name: /month/i }), '12')
+      await user.type(within(paymentDateGroup).getByRole('spinbutton', { name: /day/i }), '15')
+      await user.type(within(paymentDateGroup).getByRole('spinbutton', { name: /year/i }), '2026')
+
+      await user.click(screen.getByRole('button', { name: /continue/i }))
+
+      await waitFor(() => {
+        expect(mockCreateOffCyclePayroll).toHaveBeenCalled()
+      })
+
+      const callArgs = mockCreateOffCyclePayroll.mock.calls[0]![0]
+      expect(callArgs.request.requestBody.employeeUuids).toEqual(['emp-1', 'emp-2'])
     })
 
     it('shows validation error when submitting with no employees selected', async () => {

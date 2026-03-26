@@ -163,8 +163,9 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
     const checkDate = data.checkDate!
     const startDate = data.startDate!
     const endDate = data.endDate!
-    const employeeUuids =
-      !data.includeAllEmployees && data.selectedEmployeeUuids.length > 0
+    const employeeUuids = data.includeAllEmployees
+      ? employees.map(e => e.value)
+      : data.selectedEmployeeUuids.length > 0
         ? data.selectedEmployeeUuids
         : undefined
 
