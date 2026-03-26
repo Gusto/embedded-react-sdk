@@ -338,8 +338,15 @@ describe('OffCycleCreation', () => {
 
       await user.click(screen.getByRole('switch', { name: /include all employees/i }))
 
-      const checkOnlyCheckbox = screen.getByRole('checkbox', { name: /check-only payroll/i })
-      await user.click(checkOnlyCheckbox)
+      const startDateGroup = screen.getByRole('group', { name: 'Start date' })
+      await user.type(within(startDateGroup).getByRole('spinbutton', { name: /month/i }), '12')
+      await user.type(within(startDateGroup).getByRole('spinbutton', { name: /day/i }), '01')
+      await user.type(within(startDateGroup).getByRole('spinbutton', { name: /year/i }), '2026')
+
+      const endDateGroup = screen.getByRole('group', { name: 'End date' })
+      await user.type(within(endDateGroup).getByRole('spinbutton', { name: /month/i }), '12')
+      await user.type(within(endDateGroup).getByRole('spinbutton', { name: /day/i }), '15')
+      await user.type(within(endDateGroup).getByRole('spinbutton', { name: /year/i }), '2026')
 
       const paymentDateGroup = screen.getByRole('group', { name: 'Payment date' })
       await user.type(within(paymentDateGroup).getByRole('spinbutton', { name: /month/i }), '12')
@@ -353,7 +360,12 @@ describe('OffCycleCreation', () => {
       })
 
       const callArgs = mockCreateOffCyclePayroll.mock.calls[0]![0]
-      expect(callArgs.request.requestBody.employeeUuids).toEqual(['emp-1', 'emp-2'])
+      expect(callArgs.request.requestBody.employeeUuids).toEqual([
+        'emp-4',
+        'emp-2',
+        'emp-3',
+        'emp-1',
+      ])
     })
 
     it('shows validation error when submitting with no employees selected', async () => {

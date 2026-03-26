@@ -89,12 +89,7 @@ function ChildSupportForm({
         if (!attr.key) {
           return null
         }
-        if (
-          !Object.prototype.hasOwnProperty.call(
-            ATTR_KEY_TO_TEXT_FIELD_NAME_MAPPER,
-            attr.key,
-          )
-        ) {
+        if (!Object.prototype.hasOwnProperty.call(ATTR_KEY_TO_TEXT_FIELD_NAME_MAPPER, attr.key)) {
           return null
         }
         const key = attr.key as keyof typeof ATTR_KEY_TO_TEXT_FIELD_NAME_MAPPER
