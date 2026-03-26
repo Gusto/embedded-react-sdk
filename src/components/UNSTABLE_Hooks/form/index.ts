@@ -19,7 +19,7 @@ export {
   filterRequiredFields,
   type RequiredFields,
 } from './resolveRequiredFields'
-export { composeSubmitHandler, type ComposableFormHookResult } from './composeSubmitHandler'
+export { composeSubmitHandler } from './composeSubmitHandler'
 export { createGetFormSubmissionValues } from './getFormSubmissionValues'
 export {
   TextInputHookField,
@@ -42,4 +42,7 @@ export {
   type DatePickerProps,
   type RadioGroupProps,
   type RadioGroupOption,
+  SwitchHookField,
+  type SwitchHookFieldProps,
+  type SwitchProps,
 } from './fields'

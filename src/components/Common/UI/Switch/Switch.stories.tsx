@@ -5,7 +5,7 @@ export default {
   title: 'UI/Form/Inputs/Switch',
 }
 export const Default = () => {
-  const { value, handleChange } = useStoryState<boolean>('SwitchChange', false)
+  const { value, handleChange } = useStoryState('SwitchChange', false)
   return (
     <Switch
       label="Enable notifications"
@@ -16,7 +16,7 @@ export const Default = () => {
   )
 }
 export const WithDefaults = () => {
-  const { value, handleChange } = useStoryState<boolean>('SwitchDefaultOn', true)
+  const { value, handleChange } = useStoryState('SwitchDefaultOn', true)
   return (
     <Switch
       label="Feature enabled by default"
@@ -27,18 +27,12 @@ export const WithDefaults = () => {
   )
 }
 export const WithMultipleDefaults = () => {
-  const { value: darkMode, handleChange: handleDarkModeChange } = useStoryState<boolean>(
-    'DarkMode',
-    true,
-  )
-  const { value: notifications, handleChange: handleNotificationsChange } = useStoryState<boolean>(
+  const { value: darkMode, handleChange: handleDarkModeChange } = useStoryState('DarkMode', true)
+  const { value: notifications, handleChange: handleNotificationsChange } = useStoryState(
     'Notifications',
     false,
   )
-  const { value: marketing, handleChange: handleMarketingChange } = useStoryState<boolean>(
-    'Marketing',
-    true,
-  )
+  const { value: marketing, handleChange: handleMarketingChange } = useStoryState('Marketing', true)
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
       <Switch
@@ -63,7 +57,7 @@ export const WithMultipleDefaults = () => {
   )
 }
 export const WithDescription = () => {
-  const { value, handleChange } = useStoryState<boolean>('SwitchWithDescription', false)
+  const { value, handleChange } = useStoryState('SwitchWithDescription', false)
   return (
     <Switch
       label="Dark mode"
@@ -75,7 +69,7 @@ export const WithDescription = () => {
   )
 }
 export const WithError = () => {
-  const { value, handleChange } = useStoryState<boolean>('SwitchWithError', false)
+  const { value, handleChange } = useStoryState('SwitchWithError', false)
   return (
     <Switch
       label="Accept terms"

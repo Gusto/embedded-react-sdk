@@ -78,12 +78,7 @@ function StoryWrapper({
 }) {
   const [paymentDate, setPaymentDate] = useState(new Date().toISOString().split('T')[0] || '')
 
-  const totals = contractorPayments.reduce<{
-    wage: number
-    bonus: number
-    reimbursement: number
-    total: number
-  }>(
+  const totals = contractorPayments.reduce(
     (acc, payment) => {
       const contractor = contractors.find(c => c.uuid === payment.contractorUuid)
       const isHourly = contractor?.wageType === 'Hourly'

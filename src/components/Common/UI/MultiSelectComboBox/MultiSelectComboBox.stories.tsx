@@ -32,10 +32,7 @@ export const Default = () => {
 }
 
 export const WithPreselected = () => {
-  const { value, handleChange } = useStoryState<string[]>('MultiSelectComboBox onChange', [
-    '1',
-    '3',
-  ])
+  const { value, handleChange } = useStoryState('MultiSelectComboBox onChange', ['1', '3'])
   return (
     <MultiSelectComboBox
       label="Select employees"

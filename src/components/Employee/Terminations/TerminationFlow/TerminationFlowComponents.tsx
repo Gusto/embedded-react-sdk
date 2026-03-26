@@ -4,6 +4,7 @@ import { TerminateEmployee } from '../TerminateEmployee/TerminateEmployee'
 import { TerminationSummary } from '../TerminationSummary/TerminationSummary'
 import type { PayrollOption } from '../types'
 import { DismissalFlow } from '@/components/Payroll/Dismissal'
+import { PayrollLanding } from '@/components/Payroll/PayrollLanding/PayrollLanding'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { BaseComponentInterface } from '@/components/Base'
 import { Flex } from '@/components/Common'
@@ -94,4 +95,10 @@ export function DismissalFlowContextual() {
       onEvent={onEvent}
     />
   )
+}
+
+export function PayrollLandingContextual() {
+  const { companyId, onEvent } = useFlow<TerminationFlowContextInterface>()
+
+  return <PayrollLanding onEvent={onEvent} companyId={ensureRequired(companyId)} />
 }

@@ -100,7 +100,7 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
   const deleteEmployeeJobMutation = useJobsAndCompensationsDeleteMutation()
 
   //Job being edited/created
-  const [currentJob, setCurrentJob] = useState<Job | null>(
+  const [currentJob, setCurrentJob] = useState(
     employeeJobs.length === 1 ? (employeeJobs[0] ?? null) : null,
   )
 

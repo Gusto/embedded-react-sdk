@@ -46,7 +46,6 @@ export const Default = () => {
       <GrossUpModal
         isOpen={isOpen}
         onCalculateGrossUp={mockCalculateGrossUp}
-        isPending={false}
         onApply={() => {
           setIsOpen(false)
         }}
@@ -65,7 +64,6 @@ export const OpenByDefault = () => {
     <GrossUpModal
       isOpen={isOpen}
       onCalculateGrossUp={mockCalculateGrossUp}
-      isPending={false}
       onApply={() => {
         setIsOpen(false)
       }}

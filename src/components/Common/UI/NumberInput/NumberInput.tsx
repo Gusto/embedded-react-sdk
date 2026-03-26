@@ -79,6 +79,7 @@ export function NumberInput({
         isRequired={isRequired}
         validationBehavior="aria"
         onChange={onChange}
+        onBlur={onBlur}
         // This is a hack to silence an unnecessary react-aria warning. The FieldLayout component
         // already associates the label and input with htmlFor + ID. If we include a label id here,
         // the label will get read twice by assistive tech. This evaluates to an empty string which
@@ -94,7 +95,6 @@ export function NumberInput({
             adornmentEnd={adornmentEnd || (format === 'percent' ? '%' : null)}
             id={inputId}
             inputRef={inputRef}
-            onBlur={onBlur}
             placeholder={placeholder}
             aria-describedby={ariaDescribedBy}
             isDisabled={isDisabled}

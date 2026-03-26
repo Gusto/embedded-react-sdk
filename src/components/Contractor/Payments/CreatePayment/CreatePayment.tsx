@@ -88,7 +88,7 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
     return today.toISOString().split('T')[0] || ''
   }
 
-  const [paymentDate, setPaymentDate] = useState<string>(calculateInitialPaymentDate(paymentSpeed))
+  const [paymentDate, setPaymentDate] = useState(calculateInitialPaymentDate(paymentSpeed))
   const hasInitializedPaymentDateRef = useRef(false)
 
   useEffect(() => {
@@ -116,15 +116,10 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
     [contractors],
   )
   const [virtualContractorPayments, setVirtualContractorPayments] =
-    useState<(ContractorPayments & { isTouched: boolean })[]>(initialContractorPayments)
+    useState(initialContractorPayments)
   const totals = useMemo(
     () =>
-      virtualContractorPayments.reduce<{
-        wage: number
-        bonus: number
-        reimbursement: number
-        total: number
-      }>(
+      virtualContractorPayments.reduce(
         (acc, payment) => {
           const contractor = contractors.find(c => c.uuid === payment.contractorUuid)
           const isHourly = contractor?.wageType === 'Hourly'

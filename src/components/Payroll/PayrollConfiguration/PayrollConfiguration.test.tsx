@@ -522,6 +522,36 @@ describe('PayrollConfiguration', () => {
       })
     })
 
+    it('continues polling when calculate_success but calculatedAt is null (SDK-595)', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+
+      server.use(
+        http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`, () => {
+          currentPayrollData = {
+            ...mockPayrollData,
+            calculated_at: null,
+            processing_request: { status: 'calculate_success', errors: [] },
+          }
+          return new HttpResponse(null, { status: 202 })
+        }),
+      )
+
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
+      })
+
+      const calculateButton = screen.getByRole('button', { name: /calculate/i })
+      await user.click(calculateButton)
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(6_000)
+      })
+
+      expect(onEvent).not.toHaveBeenCalledWith('runPayroll/calculated', expect.anything())
+    })
+
     it('does not make prepare calls while polling', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
       let prepareCallCount = 0
