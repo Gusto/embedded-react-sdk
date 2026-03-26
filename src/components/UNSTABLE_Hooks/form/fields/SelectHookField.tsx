@@ -1,7 +1,6 @@
 import type { ComponentType } from 'react'
-import type { BaseFieldProps, ValidationMessages } from '../types'
-import { useFieldsMetadata } from '../useFieldsMetadata'
-import { useFieldErrorMessage } from '../useFieldErrorMessage'
+import type { BaseFieldProps, FormHookResultLike, ValidationMessages } from '../types'
+import { useHookFieldResolution } from '../useHookFieldResolution'
 import { getFieldWithOptions } from '../getFieldWithOptions'
 import { SelectField } from '@/components/Common'
 import type { SelectProps } from '@/components/Common/UI/Select/SelectTypes'
@@ -11,6 +10,7 @@ export interface SelectHookFieldProps<
   TEntry = unknown,
 > extends BaseFieldProps {
   name: string
+  formHookResult?: FormHookResultLike
   validationMessages?: ValidationMessages<TErrorCode>
   getOptionLabel?: (entry: TEntry) => string
   FieldComponent?: ComponentType<SelectProps>
@@ -18,15 +18,19 @@ export interface SelectHookFieldProps<
 
 export function SelectHookField<TErrorCode extends string, TEntry = unknown>({
   name,
+  formHookResult,
   label,
   description,
   validationMessages,
   getOptionLabel,
   FieldComponent,
 }: SelectHookFieldProps<TErrorCode, TEntry>) {
-  const metadata = useFieldsMetadata()
+  const { metadata, control, errorMessage } = useHookFieldResolution(
+    name,
+    formHookResult,
+    validationMessages,
+  )
   const fieldMetadata = getFieldWithOptions<TEntry>(metadata, name)
-  const errorMessage = useFieldErrorMessage(name, validationMessages)
 
   const defaultOptions = fieldMetadata?.options ?? []
   const options =
@@ -40,6 +44,7 @@ export function SelectHookField<TErrorCode extends string, TEntry = unknown>({
   return (
     <SelectField
       name={name}
+      control={control}
       label={label}
       description={description}
       errorMessage={errorMessage}
