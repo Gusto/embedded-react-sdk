@@ -69,6 +69,7 @@ export {
   type FieldMetadataWithOptions,
   type FieldsMetadata,
   type FormFieldsMetadataContextValue,
+  type FormHookResultLike,
   type ValidationMessages,
   type BaseFieldProps,
 
