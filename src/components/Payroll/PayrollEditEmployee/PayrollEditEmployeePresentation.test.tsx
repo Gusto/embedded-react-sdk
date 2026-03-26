@@ -167,17 +167,17 @@ const expectedUpdatedCompensation = {
   fixedCompensations: [
     {
       name: 'Bonus',
-      amount: '500',
+      amount: '500.00',
       jobUuid: 'job-1',
     },
     {
       name: 'Commission',
-      amount: '200',
+      amount: '200.00',
       jobUuid: 'job-1',
     },
     {
       name: 'Reimbursement',
-      amount: '100',
+      amount: '100.00',
       jobUuid: 'job-1',
     },
   ],
@@ -780,12 +780,12 @@ describe('PayrollEditEmployeePresentation', () => {
             }),
             expect.objectContaining({
               name: 'Commission',
-              amount: '200',
+              amount: '200.00',
               jobUuid: 'job-1',
             }),
             expect.objectContaining({
               name: 'Reimbursement',
-              amount: '100',
+              amount: '100.00',
               jobUuid: 'job-1',
             }),
           ]),
@@ -823,10 +823,10 @@ describe('PayrollEditEmployeePresentation', () => {
       expect(screen.getByText('Additional earnings')).toBeInTheDocument()
 
       const bonusInput = screen.getByLabelText('Bonus')
-      expect(bonusInput).toHaveValue('100.00')
+      expect(bonusInput).toHaveValue(100)
 
       const commissionInput = screen.getByLabelText('Commission')
-      expect(commissionInput).toHaveValue('50.00')
+      expect(commissionInput).toHaveValue(50)
     })
 
     it('renders reimbursement section separately when employee has reimbursement', () => {
@@ -837,7 +837,7 @@ describe('PayrollEditEmployeePresentation', () => {
       expect(screen.getByRole('heading', { name: 'Reimbursement' })).toBeInTheDocument()
 
       const reimbursementInput = screen.getByLabelText('Reimbursement')
-      expect(reimbursementInput).toHaveValue('25.00')
+      expect(reimbursementInput).toHaveValue(25)
     })
 
     it('renders reimbursement section when reimbursement is available in compensation types', () => {
@@ -862,7 +862,7 @@ describe('PayrollEditEmployeePresentation', () => {
       expect(screen.getByRole('heading', { name: 'Reimbursement' })).toBeInTheDocument()
 
       const reimbursementInput = screen.getByLabelText('Reimbursement')
-      expect(reimbursementInput).toHaveValue('0.00')
+      expect(reimbursementInput).toHaveValue(0)
     })
 
     it('does not render reimbursement section when employee has no reimbursement and it is not available', () => {
@@ -914,8 +914,8 @@ describe('PayrollEditEmployeePresentation', () => {
       expect(screen.getByLabelText('Bonus')).toBeInTheDocument()
       expect(screen.getByLabelText('Commission')).toBeInTheDocument()
 
-      expect(screen.getByLabelText('Bonus')).toHaveValue('0.00')
-      expect(screen.getByLabelText('Commission')).toHaveValue('0.00')
+      expect(screen.getByLabelText('Bonus')).toHaveValue(0)
+      expect(screen.getByLabelText('Commission')).toHaveValue(0)
     })
 
     it('does not create missing compensations for owner employees', () => {
@@ -982,7 +982,7 @@ describe('PayrollEditEmployeePresentation', () => {
 
       renderWithProviders(<PayrollEditEmployeePresentation {...propsForSubmitTest} />)
 
-      const commissionInput = screen.getByLabelText('Commission')
+      const commissionInput = await screen.findByLabelText('Commission')
       await user.clear(commissionInput)
       await user.type(commissionInput, '75.50')
 
@@ -1000,7 +1000,7 @@ describe('PayrollEditEmployeePresentation', () => {
       expect(onSave).toHaveBeenCalledWith(
         expect.objectContaining({
           fixedCompensations: expect.arrayContaining([
-            expect.objectContaining({ name: 'Bonus', amount: '100', jobUuid: 'job-1' }),
+            expect.objectContaining({ name: 'Bonus', amount: '100.00', jobUuid: 'job-1' }),
             expect.objectContaining({ name: 'Commission', amount: '75.5', jobUuid: 'job-1' }),
             expect.objectContaining({ name: 'Reimbursement', amount: '25', jobUuid: 'job-1' }),
           ]),
@@ -1030,8 +1030,8 @@ describe('PayrollEditEmployeePresentation', () => {
         expect.objectContaining({
           fixedCompensations: expect.arrayContaining([
             expect.objectContaining({ name: 'Bonus', amount: '0', jobUuid: 'job-1' }),
-            expect.objectContaining({ name: 'Commission', amount: '50', jobUuid: 'job-1' }),
-            expect.objectContaining({ name: 'Reimbursement', amount: '25', jobUuid: 'job-1' }),
+            expect.objectContaining({ name: 'Commission', amount: '50.00', jobUuid: 'job-1' }),
+            expect.objectContaining({ name: 'Reimbursement', amount: '25.00', jobUuid: 'job-1' }),
           ]),
         }),
       )
@@ -1184,6 +1184,61 @@ describe('PayrollEditEmployeePresentation', () => {
       await waitFor(() => {
         expect(
           screen.getByText('Gross pay: $200.00 (excluding reimbursements)'),
+        ).toBeInTheDocument()
+      })
+    })
+
+    it('includes bonus amount in gross pay for off-cycle bonus payroll', async () => {
+      const user = userEvent.setup()
+
+      const bonusEmployee: Employee = {
+        ...defaultProps.employee,
+        jobs: [
+          {
+            uuid: 'job-1',
+            title: 'Test Job',
+            primary: true,
+            compensations: [
+              {
+                uuid: 'comp-1',
+                rate: '25.00',
+                paymentUnit: 'Hour',
+                flsaStatus: 'Nonexempt',
+              },
+            ],
+          },
+        ],
+      }
+
+      const bonusCompensation: PayrollEmployeeCompensationsType = {
+        employeeUuid: 'emp-1',
+        hourlyCompensations: [],
+        fixedCompensations: [{ name: 'Bonus', amount: '0.00', jobUuid: 'job-1' }],
+        paidTimeOff: [],
+        paymentMethod: 'Direct Deposit',
+      }
+
+      renderWithProviders(
+        <PayrollEditEmployeePresentation
+          {...defaultProps}
+          employee={bonusEmployee}
+          employeeCompensation={bonusCompensation}
+          payrollCategory={PayrollCategory.Bonus}
+          fixedCompensationTypes={[{ name: 'Bonus' }]}
+        />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText('Gross pay: $0.00 (excluding reimbursements)')).toBeInTheDocument()
+      })
+
+      const bonusInput = await screen.findByLabelText('Bonus')
+      await user.clear(bonusInput)
+      await user.type(bonusInput, '500')
+
+      await waitFor(() => {
+        expect(
+          screen.getByText('Gross pay: $500.00 (excluding reimbursements)'),
         ).toBeInTheDocument()
       })
     })
