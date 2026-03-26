@@ -35,7 +35,7 @@ export const List = () => {
   const Components = useComponentContext()
 
   const { t } = useTranslation('Employee.EmployeeList')
-  const [deleting, setDeleting] = useState<Set<string>>(new Set())
+  const [deleting, setDeleting] = useState(new Set())
   const { ...dataViewProps } = useDataView({
     data: employees,
     columns: [

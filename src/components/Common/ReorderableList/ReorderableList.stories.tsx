@@ -79,7 +79,7 @@ export const Basic = () => {
   ]
 
   // State to track the current order
-  const [currentOrder, setCurrentOrder] = useState<number[]>([0, 1, 2, 3])
+  const [currentOrder, setCurrentOrder] = useState([0, 1, 2, 3])
 
   // Order control functions
   const resetOrder = () => {
@@ -189,7 +189,7 @@ export const KeyboardNavigation = () => {
     </div>,
   ]
 
-  const [order, setOrder] = useState<number[]>([0, 1, 2, 3])
+  const [order, setOrder] = useState([0, 1, 2, 3])
 
   return (
     <GustoMockProvider>

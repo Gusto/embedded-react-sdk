@@ -24,7 +24,7 @@ export const CombinedSchema = z.union([
       hasBankPayload: z.literal(false),
       splitBy: z.literal('Percentage'),
       splitAmount: z.record(z.string(), z.number().max(100).min(0)).superRefine((input, ctx) => {
-        const total = Object.values(input).reduce<number>((acc, curr) => acc + curr, 0)
+        const total = Object.values(input).reduce((acc, curr) => acc + curr, 0)
         if (total !== 100) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,

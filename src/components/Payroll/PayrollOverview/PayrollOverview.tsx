@@ -96,14 +96,14 @@ export const Root = ({
   const { baseSubmitHandler } = useBase()
   const { t } = useTranslation('Payroll.PayrollOverview')
   const [isPolling, setIsPolling] = useState(false)
-  const [internalAlerts, setInternalAlerts] = useState<PayrollFlowAlert[]>(alerts || [])
+  const [internalAlerts, setInternalAlerts] = useState(alerts || [])
   const [selectedUnblockOptions, setSelectedUnblockOptions] = useState<Record<string, string>>({})
   const [showWireDetailsConfirmation, setShowWireDetailsConfirmation] = useState(false)
   const { showBoundary } = useErrorBoundary()
   const formatCurrency = useNumberFormatter('currency')
   const dateFormatter = useDateFormatter()
   const { Button, UnorderedList, Text } = useComponentContext()
-  const [status, setStatus] = useState<PayrollOverviewStatus>(PayrollOverviewStatus.Viewing)
+  const [status, setStatus] = useState(PayrollOverviewStatus.Viewing)
   const { data } = usePayrollsGetSuspense(
     {
       companyId,

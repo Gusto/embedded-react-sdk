@@ -155,9 +155,7 @@ const Root = ({
     typeof AdminPersonalDetailsSchema | typeof AdminSelfOnboardingPersonalDetailsSchema
   >(AdminPersonalDetailsSchema)
 
-  const [AddressSchema, setAddressSchema] = useState<
-    typeof HomeAddressSchema | typeof HomeAddressSchemaWithCompletedOnboarding
-  >(HomeAddressSchema)
+  const [AddressSchema, setAddressSchema] = useState(HomeAddressSchema)
 
   const { data } = useLocationsGetSuspense({ companyId })
   const companyLocations = data.companyLocationsList!
