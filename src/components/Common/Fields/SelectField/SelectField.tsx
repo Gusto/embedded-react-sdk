@@ -22,6 +22,7 @@ export const SelectField = <TValue = string,>({
   rules,
   defaultValue,
   name,
+  control,
   errorMessage,
   isRequired,
   onChange: onChangeFromProps,
@@ -37,6 +38,7 @@ export const SelectField = <TValue = string,>({
   const Components = useComponentContext()
   const { value, onChange, ...fieldProps } = useField<TValue, HTMLButtonElement>({
     name,
+    control,
     rules,
     defaultValue,
     errorMessage,

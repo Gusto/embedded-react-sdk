@@ -35,12 +35,22 @@ describe('useField', () => {
     })
   })
 
-  test('should not return an error message if fieldState has no error', () => {
+  test('should show explicit errorMessage even without a fieldState error', () => {
     const { result } = renderHook(
       () => useField({ name: 'testField', errorMessage: 'test error message' }),
       { wrapper: FormWrapper },
     )
 
+    expect(result.current.isInvalid).toBe(true)
+    expect(result.current.errorMessage).toBe('test error message')
+  })
+
+  test('should not return an error message when neither fieldState nor errorMessage prop has an error', () => {
+    const { result } = renderHook(() => useField({ name: 'testField' }), {
+      wrapper: FormWrapper,
+    })
+
+    expect(result.current.isInvalid).toBe(false)
     expect(result.current.errorMessage).toBeUndefined()
   })
 

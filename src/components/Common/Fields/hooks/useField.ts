@@ -1,4 +1,4 @@
-import type { RegisterOptions } from 'react-hook-form'
+import type { Control, RegisterOptions } from 'react-hook-form'
 import { useController, useFormContext } from 'react-hook-form'
 import React, { useMemo, type Ref } from 'react'
 import { createMarkup } from '@/helpers/formattedStrings'
@@ -8,6 +8,7 @@ export type Transform<TValue> = (value: TValue) => TValue
 
 export interface UseFieldProps<TValue = string, TRef = HTMLInputElement> {
   name: string
+  control?: Control
   rules?: RegisterOptions
   defaultValue?: TValue
   errorMessage?: string
@@ -32,6 +33,7 @@ const processDescription = (description: React.ReactNode): React.ReactNode => {
 
 export function useField<TValue = string, TRef = HTMLInputElement>({
   name,
+  control: controlProp,
   rules = {},
   defaultValue,
   errorMessage,
@@ -42,10 +44,20 @@ export function useField<TValue = string, TRef = HTMLInputElement>({
   description,
   inputRef,
 }: UseFieldProps<TValue, TRef>) {
-  const { control } = useFormContext()
+  // useFormContext returns null outside FormProvider at runtime despite its non-null type signature
+  const formContext = useFormContext() as ReturnType<typeof useFormContext> | null
+  const resolvedControl = controlProp ?? formContext?.control
+
+  if (!resolvedControl) {
+    throw new Error(
+      'useField requires either a `control` prop or a FormProvider ancestor. ' +
+        'Pass control explicitly via formHookResult or wrap the field in SDKFormProvider.',
+    )
+  }
+
   const { field, fieldState } = useController({
     name,
-    control,
+    control: resolvedControl,
     rules: {
       required: isRequired,
       ...rules,
@@ -68,7 +80,7 @@ export function useField<TValue = string, TRef = HTMLInputElement>({
     onBlur?.()
   }
 
-  const isInvalid = !!fieldState.error
+  const hasError = !!fieldState.error || !!errorMessage
 
   const processedDescription = useMemo(() => processDescription(description), [description])
 
@@ -76,8 +88,8 @@ export function useField<TValue = string, TRef = HTMLInputElement>({
     name: field.name,
     value: value as TValue,
     inputRef: ref,
-    isInvalid,
-    errorMessage: isInvalid ? (errorMessage ?? fieldState.error?.message) : undefined,
+    isInvalid: hasError,
+    errorMessage: hasError ? (errorMessage ?? fieldState.error?.message) : undefined,
     onChange: handleChange,
     onBlur: handleBlur,
     isRequired,

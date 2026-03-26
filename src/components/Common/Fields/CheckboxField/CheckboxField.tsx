@@ -12,6 +12,7 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = ({
   rules,
   defaultValue,
   name,
+  control,
   errorMessage,
   isRequired,
   onChange,
@@ -25,6 +26,7 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = ({
   const Components = useComponentContext()
   const fieldProps = useField({
     name,
+    control,
     rules,
     defaultValue,
     errorMessage,
