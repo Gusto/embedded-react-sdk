@@ -9,12 +9,13 @@
   dd {
     font-weight: var(--g-fontWeightRegular);
     color: var(--g-colorBodySubContent);
+    margin-inline-start: 0;
   }
 
   .item {
     &:not(:last-child) {
-      padding-bottom: toRem(20);
-      margin-bottom: toRem(20);
+      padding-bottom: toRem(16);
+      margin-bottom: toRem(16);
       border-bottom: 1px solid var(--g-colorBorderSecondary);
     }
   }
