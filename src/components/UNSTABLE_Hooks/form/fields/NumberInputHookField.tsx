@@ -1,5 +1,6 @@
 import type { ComponentType } from 'react'
-import type { BaseFieldProps, FormHookResultLike, ValidationMessages } from '../types'
+import type { BaseFieldProps, ValidationMessages } from '../types'
+import type { BaseFormHookReady } from '../../types'
 import { useHookFieldResolution } from '../useHookFieldResolution'
 import { NumberInputField } from '@/components/Common'
 import type { NumberInputProps } from '@/components/Common/UI/NumberInput/NumberInputTypes'
@@ -8,7 +9,7 @@ export interface NumberInputHookFieldProps<
   TErrorCode extends string = never,
 > extends BaseFieldProps {
   name: string
-  formHookResult?: FormHookResultLike
+  formHookResult?: BaseFormHookReady
   format?: NumberInputProps['format']
   min?: NumberInputProps['min']
   max?: NumberInputProps['max']

@@ -9,7 +9,8 @@ export function useFieldErrorMessage<TErrorCode extends string>(
   const {
     formState: { errors },
   } = useFormContext()
-  const { errors: sdkErrors } = useFormFieldsMetadataContext()
+  const context = useFormFieldsMetadataContext()
+  const sdkErrors = context?.errors ?? []
 
   const errorCode = errors[fieldName]?.message as TErrorCode | undefined
   if (errorCode && validationMessages?.[errorCode]) {

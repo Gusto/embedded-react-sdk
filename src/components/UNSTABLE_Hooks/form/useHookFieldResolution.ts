@@ -1,8 +1,9 @@
 import type { Control, FieldErrors } from 'react-hook-form'
 import { useFormContext } from 'react-hook-form'
-import { useOptionalFormFieldsMetadataContext } from './FormFieldsMetadataContext'
+import type { BaseFormHookReady } from '../types'
+import { useFormFieldsMetadataContext } from './FormFieldsMetadataContext'
 import { resolveFieldError } from './resolveFieldError'
-import type { FieldsMetadata, FormHookResultLike, ValidationMessages } from './types'
+import type { FieldsMetadata, ValidationMessages } from './types'
 
 interface HookFieldResolution {
   metadata: FieldsMetadata
@@ -24,12 +25,12 @@ interface HookFieldResolution {
  */
 export function useHookFieldResolution<TErrorCode extends string>(
   name: string,
-  formHookResult: FormHookResultLike | undefined,
+  formHookResult: BaseFormHookReady | undefined,
   validationMessages?: ValidationMessages<TErrorCode>,
 ): HookFieldResolution {
   // useFormContext returns null outside FormProvider in RHF v7.72
   const formContext = useFormContext() as ReturnType<typeof useFormContext> | null
-  const metadataContext = useOptionalFormFieldsMetadataContext()
+  const metadataContext = useFormFieldsMetadataContext()
 
   const metadata = formHookResult?.form.fieldsMetadata ?? metadataContext?.metadata ?? {}
 

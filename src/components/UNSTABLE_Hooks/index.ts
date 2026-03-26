@@ -14,7 +14,6 @@ export type {
   FieldMetadataWithOptions,
   FieldsMetadata,
   FormFieldsMetadataContextValue,
-  FormHookResultLike,
   ValidationMessages,
   BaseFieldProps,
   TextInputHookFieldProps,

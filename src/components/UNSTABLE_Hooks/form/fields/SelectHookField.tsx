@@ -1,5 +1,6 @@
 import type { ComponentType } from 'react'
-import type { BaseFieldProps, FormHookResultLike, ValidationMessages } from '../types'
+import type { BaseFieldProps, ValidationMessages } from '../types'
+import type { BaseFormHookReady } from '../../types'
 import { useHookFieldResolution } from '../useHookFieldResolution'
 import { getFieldWithOptions } from '../getFieldWithOptions'
 import { SelectField } from '@/components/Common'
@@ -10,7 +11,7 @@ export interface SelectHookFieldProps<
   TEntry = unknown,
 > extends BaseFieldProps {
   name: string
-  formHookResult?: FormHookResultLike
+  formHookResult?: BaseFormHookReady
   validationMessages?: ValidationMessages<TErrorCode>
   getOptionLabel?: (entry: TEntry) => string
   FieldComponent?: ComponentType<SelectProps>

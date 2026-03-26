@@ -1,12 +1,13 @@
 import type { ComponentType } from 'react'
-import type { BaseFieldProps, FormHookResultLike, ValidationMessages } from '../types'
+import type { BaseFieldProps, ValidationMessages } from '../types'
+import type { BaseFormHookReady } from '../../types'
 import { useHookFieldResolution } from '../useHookFieldResolution'
 import { TextInputField } from '@/components/Common'
 import type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputTypes'
 
 export interface TextInputHookFieldProps<TErrorCode extends string = never> extends BaseFieldProps {
   name: string
-  formHookResult?: FormHookResultLike
+  formHookResult?: BaseFormHookReady
   validationMessages?: ValidationMessages<TErrorCode>
   transform?: (value: string) => string
   placeholder?: string

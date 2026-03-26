@@ -25,7 +25,7 @@ All hooks are exported from the `@gusto/embedded-react-sdk/UNSTABLE_Hooks` entry
 
 ```tsx
 import { GustoProvider } from '@gusto/embedded-react-sdk'
-import { useEmployeeDetailsForm, SDKFormProvider } from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'
+import { useEmployeeDetailsForm } from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'
 
 function App() {
   return (
@@ -45,18 +45,16 @@ function EmployeeForm({ companyId }: { companyId: string }) {
   const { Fields } = employeeDetails.form
 
   return (
-    <SDKFormProvider formHookResult={employeeDetails}>
-      <form
-        onSubmit={async e => {
-          e.preventDefault()
-          await employeeDetails.actions.onSubmit()
-        }}
-      >
-        <Fields.FirstName label="First name" />
-        <Fields.LastName label="Last name" />
-        <button type="submit">Save</button>
-      </form>
-    </SDKFormProvider>
+    <form
+      onSubmit={async e => {
+        e.preventDefault()
+        await employeeDetails.actions.onSubmit()
+      }}
+    >
+      <Fields.FirstName label="First name" formHookResult={employeeDetails} />
+      <Fields.LastName label="Last name" formHookResult={employeeDetails} />
+      <button type="submit">Save</button>
+    </form>
   )
 }
 ```
@@ -65,9 +63,57 @@ function EmployeeForm({ companyId }: { companyId: string }) {
 
 1. **Call the hook** with the required identifiers (`companyId`, `employeeId`, etc.)
 2. **Check `isLoading`** — the hook fetches server data before the form is ready
-3. **Wrap with `SDKFormProvider`** — this connects react-hook-form, field metadata, and server error syncing
+3. **Connect fields** — pass `formHookResult` as a prop to each field, or wrap fields in `SDKFormProvider` for context-based connection (see [Connecting Fields to the Form](#connecting-fields-to-the-form))
 4. **Render `Fields`** — each field is a pre-bound component that handles validation, error display, and metadata automatically
 5. **Call `onSubmit`** — the hook handles API mutations, error normalization, and returns the saved entity
+
+---
+
+## Connecting Fields to the Form
+
+Every Field component needs access to form state — react-hook-form's control, field metadata (required/disabled), and error messages. There are two ways to provide this connection:
+
+### Option A: `formHookResult` prop (explicit)
+
+Pass the hook result directly to each field. No wrapper component needed.
+
+```tsx
+const { Fields } = employeeDetails.form
+
+<Fields.FirstName label="First name" formHookResult={employeeDetails} />
+<Fields.LastName label="Last name" formHookResult={employeeDetails} />
+<Fields.Email label="Email" formHookResult={employeeDetails} />
+```
+
+Each field reads metadata, form control, and error state directly from the prop. This is the most flexible approach — fields can be placed anywhere in your component tree and interleaved freely with fields from other hooks.
+
+### Option B: `SDKFormProvider` (context)
+
+Wrap fields in `SDKFormProvider` and they pick up form state from context automatically.
+
+```tsx
+import { SDKFormProvider } from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'
+;<SDKFormProvider formHookResult={employeeDetails}>
+  <Fields.FirstName label="First name" />
+  <Fields.LastName label="Last name" />
+  <Fields.Email label="Email" />
+</SDKFormProvider>
+```
+
+Fields inside an `SDKFormProvider` don't need the `formHookResult` prop — the provider injects form state via React context. This is convenient when all fields from a single hook are grouped together.
+
+### Choosing an approach
+
+Both approaches produce identical validation, API payloads, and behavior. The difference is purely in how fields discover their form state.
+
+|                       | `formHookResult` prop                                               | `SDKFormProvider`                               |
+| --------------------- | ------------------------------------------------------------------- | ----------------------------------------------- |
+| **Best for**          | Interleaving fields from multiple hooks; maximum layout flexibility | Grouping fields from a single hook together     |
+| **Boilerplate**       | Each field receives the prop                                        | One wrapper, fields are clean                   |
+| **Interleaving**      | Fields from different hooks can be placed in any order              | Fields must stay within their provider boundary |
+| **API error syncing** | Handled automatically per-field                                     | Handled automatically via the provider          |
+
+You can mix both approaches in the same page — for example, use `SDKFormProvider` for one hook's fields that are grouped together, and `formHookResult` props for another hook's fields that are scattered across the layout. See [Composing Multiple Hooks](#composing-multiple-hooks) for examples.
 
 ---
 
@@ -314,7 +360,7 @@ const { errors, clearSubmitError } = employeeDetails.errorHandling
 }
 ```
 
-Field-level API errors (e.g., 422 responses with `fieldErrors`) are automatically synced to the corresponding form fields by `SDKFormProvider`, so they appear inline alongside client-side validation errors.
+Field-level API errors (e.g., 422 responses with `fieldErrors`) are automatically synced to the corresponding form fields so they appear inline alongside client-side validation errors. When using `SDKFormProvider`, the provider handles this syncing via context. When using the `formHookResult` prop, each field resolves errors directly from `formHookResult.errorHandling.errors` — no provider is needed.
 
 For a deeper look at the SDK's error architecture, see [Error Handling in the React SDK](../integration-guide/error-handling.md) and [Observability](../integration-guide/observability.md).
 
@@ -413,6 +459,12 @@ When you need multiple forms on the same page (e.g., employee details and compen
 
 Each hook must be initialized with `shouldFocusError: false` so that react-hook-form's per-form focus is disabled and `composeSubmitHandler` can manage cross-form focus instead.
 
+Both connection approaches work with composition. Choose the one that fits your layout.
+
+#### Grouped layout with `SDKFormProvider`
+
+When fields from each hook are grouped into their own sections, `SDKFormProvider` keeps things clean:
+
 ```tsx
 import {
   useEmployeeDetailsForm,
@@ -466,6 +518,78 @@ function OnboardingPage({ companyId, employeeId }: { companyId: string; employee
 ```
 
 Each `SDKFormProvider` scopes field metadata and error syncing to its respective hook. The outer `<form>` element uses the composed submit handler to coordinate everything.
+
+#### Interleaved layout with `formHookResult` prop
+
+When you want to mix fields from different hooks in any order — for example, placing job title next to first name, or grouping fields by theme rather than domain — use the `formHookResult` prop. There are no provider boundaries to manage, so fields can go anywhere:
+
+```tsx
+import {
+  useEmployeeDetailsForm,
+  useCompensationForm,
+  useWorkAddressForm,
+  composeSubmitHandler,
+} from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'
+
+function OnboardingPage({ companyId, employeeId }: { companyId: string; employeeId: string }) {
+  const employeeDetails = useEmployeeDetailsForm({
+    companyId,
+    employeeId,
+    shouldFocusError: false,
+  })
+
+  const compensation = useCompensationForm({
+    employeeId,
+    shouldFocusError: false,
+  })
+
+  const workAddress = useWorkAddressForm({
+    companyId,
+    employeeId,
+    shouldFocusError: false,
+  })
+
+  if (employeeDetails.isLoading || compensation.isLoading || workAddress.isLoading) {
+    return <LoadingSpinner />
+  }
+
+  const DetailsFields = employeeDetails.form.Fields
+  const CompFields = compensation.form.Fields
+  const AddressFields = workAddress.form.Fields
+
+  const handleSubmit = composeSubmitHandler(
+    [employeeDetails, compensation, workAddress],
+    async () => {
+      await employeeDetails.actions.onSubmit()
+      await compensation.actions.onSubmit()
+      await workAddress.actions.onSubmit()
+    },
+  )
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <section>
+        <h2>Who</h2>
+        <DetailsFields.FirstName label="First name" formHookResult={employeeDetails} />
+        <DetailsFields.LastName label="Last name" formHookResult={employeeDetails} />
+        <DetailsFields.Email label="Email" formHookResult={employeeDetails} />
+      </section>
+
+      <section>
+        <h2>Role and Location</h2>
+        <CompFields.JobTitle label="Job title" formHookResult={compensation} />
+        <AddressFields.Location label="Work address" formHookResult={workAddress} />
+        <CompFields.Rate label="Pay rate" formHookResult={compensation} />
+        <CompFields.PaymentUnit label="Pay frequency" formHookResult={compensation} />
+      </section>
+
+      <button type="submit">Save All</button>
+    </form>
+  )
+}
+```
+
+Fields from `employeeDetails`, `compensation`, and `workAddress` are freely interleaved — each field knows which hook it belongs to via its `formHookResult` prop. Validation, error handling, and submission all work identically to the provider-based approach.
 
 ### Submit-time entity ID resolution
 

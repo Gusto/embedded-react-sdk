@@ -1,6 +1,4 @@
 import type React from 'react'
-import type { UseFormReturn, FieldValues } from 'react-hook-form'
-import type { SDKError } from '@/types/sdkError'
 
 export interface FieldMetadata {
   name: string
@@ -26,27 +24,3 @@ export interface BaseFieldProps {
 
 /** Strips `name` from a HookField props type for domain-specific field components that bind `name` internally. */
 export type HookFieldProps<TProps extends { name: string }> = Omit<TProps, 'name'>
-
-/**
- * Minimal structural type representing the subset of any form hook's ready state
- * that HookField components need to render without context providers.
- *
- * Any hook returning `BaseFormHookReady` satisfies this interface via structural
- * typing — no casts needed. This is the same shape `SDKFormProvider` accepts.
- *
- * @example
- * ```tsx
- * const compensation = useCompensationForm({ employeeId })
- * if (compensation.isLoading) return <Loading />
- *
- * // Pass directly to fields — same object SDKFormProvider would receive
- * <Fields.JobTitle label="Job Title" formHookResult={compensation} />
- * ```
- */
-export interface FormHookResultLike<TFormData extends FieldValues = FieldValues> {
-  errorHandling: { errors: SDKError[] }
-  form: {
-    fieldsMetadata: FieldsMetadata
-    hookFormInternals: { formMethods: UseFormReturn<TFormData> }
-  }
-}

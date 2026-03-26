@@ -507,7 +507,9 @@ Select dropdown for Washington state workers' compensation risk class code.
 
 ---
 
-## Usage Example
+## Usage Examples
+
+### With `SDKFormProvider` (context)
 
 A complete example showing all fields, validation messages, `getOptionLabel` usage, and submit handling:
 
@@ -686,3 +688,91 @@ function CompensationFormReady({ compensation }: { compensation: UseCompensation
   )
 }
 ```
+
+### With `formHookResult` prop
+
+The same form using prop-based field connection. No `SDKFormProvider` wrapper needed:
+
+```tsx
+import {
+  useCompensationForm,
+  type UseCompensationFormReady,
+} from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'
+
+function CompensationPage({ employeeId }: { employeeId: string }) {
+  const compensation = useCompensationForm({ employeeId, withStartDateField: true })
+
+  if (compensation.isLoading) {
+    return <div>Loading...</div>
+  }
+
+  return <CompensationFormReady compensation={compensation} />
+}
+
+function CompensationFormReady({ compensation }: { compensation: UseCompensationFormReady }) {
+  const { Fields } = compensation.form
+
+  return (
+    <form
+      onSubmit={e => {
+        e.preventDefault()
+        void compensation.actions.onSubmit()
+      }}
+    >
+      <h2>{compensation.status.mode === 'create' ? 'Add Job' : 'Edit Job'}</h2>
+
+      {compensation.errorHandling.errors.length > 0 && (
+        <div role="alert">
+          {compensation.errorHandling.errors.map((error, i) => (
+            <p key={i}>{error.message}</p>
+          ))}
+        </div>
+      )}
+
+      {Fields.StartDate && (
+        <Fields.StartDate
+          label="Start date"
+          formHookResult={compensation}
+          validationMessages={{ REQUIRED: 'Start date is required' }}
+        />
+      )}
+
+      <Fields.JobTitle
+        label="Job title"
+        formHookResult={compensation}
+        validationMessages={{ REQUIRED: 'Job title is required' }}
+      />
+
+      {Fields.FlsaStatus && (
+        <Fields.FlsaStatus
+          label="Employee type"
+          formHookResult={compensation}
+          validationMessages={{ REQUIRED: 'Employee classification is required' }}
+        />
+      )}
+
+      <Fields.Rate
+        label="Compensation amount"
+        formHookResult={compensation}
+        validationMessages={{
+          REQUIRED: 'Amount is a required field',
+          RATE_MINIMUM: 'Amount must be at least $1.00',
+          RATE_EXEMPT_THRESHOLD: 'FLSA Exempt employees must meet salary threshold of $35,568/year',
+        }}
+      />
+
+      <Fields.PaymentUnit
+        label="Per"
+        formHookResult={compensation}
+        validationMessages={{ REQUIRED: 'Payment unit is required' }}
+      />
+
+      <button type="submit" disabled={compensation.status.isPending}>
+        {compensation.status.mode === 'create' ? 'Add job' : 'Save job'}
+      </button>
+    </form>
+  )
+}
+```
+
+Both examples produce identical validation, error handling, and API behavior. The prop-based approach is particularly useful when embedding compensation fields within a larger composed form — see [Composing Multiple Hooks](./hooks.md#composing-multiple-hooks).
