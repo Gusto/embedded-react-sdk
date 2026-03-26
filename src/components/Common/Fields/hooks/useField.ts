@@ -80,7 +80,11 @@ export function useField<TValue = string, TRef = HTMLInputElement>({
     onBlur?.()
   }
 
-  const hasError = !!fieldState.error || !!errorMessage
+  // When control is explicitly provided (UNSTABLE_Hooks prop-based path),
+  // errorMessage is a resolved error and is authoritative.
+  // When control comes from context (legacy pre-built path),
+  // errorMessage is a static i18n template — only display it when RHF has an error.
+  const isInvalid = controlProp ? !!fieldState.error || !!errorMessage : !!fieldState.error
 
   const processedDescription = useMemo(() => processDescription(description), [description])
 
@@ -88,8 +92,8 @@ export function useField<TValue = string, TRef = HTMLInputElement>({
     name: field.name,
     value: value as TValue,
     inputRef: ref,
-    isInvalid: hasError,
-    errorMessage: hasError ? (errorMessage ?? fieldState.error?.message) : undefined,
+    isInvalid,
+    errorMessage: isInvalid ? (errorMessage ?? fieldState.error?.message) : undefined,
     onChange: handleChange,
     onBlur: handleBlur,
     isRequired,
