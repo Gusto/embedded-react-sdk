@@ -16,7 +16,7 @@ function I18nLoader({ children }: { children: React.ReactNode }) {
 const DEFAULT_WAGE_TYPE_GROUPS: WageTypeGroup[] = [
   {
     category: 'regular',
-    label: 'Regular hours, regular wages, tips',
+    label: 'Regular hours, regular wages, and tips',
     description:
       "These earnings should be taxed at a rate that matches your employees' regular pay schedule.",
   },
