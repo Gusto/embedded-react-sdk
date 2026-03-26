@@ -1623,6 +1623,7 @@ export interface PayrollGrossUpModal{
 "warning":string;
 "netPayLabel":string;
 "calculateCta":string;
+"calculatingCta":string;
 "applyCta":string;
 "cancelCta":string;
 "grossPayResult":string;

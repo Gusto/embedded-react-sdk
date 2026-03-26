@@ -18,7 +18,6 @@ vi.mock('@/components/Base', () => ({
 const defaultProps = {
   isOpen: true,
   onCalculateGrossUp: vi.fn(),
-  isPending: false,
   onApply: vi.fn(),
   onCancel: vi.fn(),
 }

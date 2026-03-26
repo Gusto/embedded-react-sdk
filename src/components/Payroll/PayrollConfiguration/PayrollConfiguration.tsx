@@ -94,8 +94,7 @@ export const Root = ({
 
   const { mutateAsync: updatePayroll, isPending: isUpdatingPayroll } = usePayrollsUpdateMutation()
 
-  const { mutateAsync: calculateGrossUpMutation, isPending: isGrossUpPending } =
-    usePayrollsCalculateGrossUpMutation()
+  const { mutateAsync: calculateGrossUpMutation } = usePayrollsCalculateGrossUpMutation()
 
   const [grossUpEmployeeUuid, setGrossUpEmployeeUuid] = useState<string | null>(null)
   const [isGrossUpModalOpen, setIsGrossUpModalOpen] = useState(false)
@@ -418,7 +417,6 @@ export const Root = ({
         <GrossUpModal
           isOpen={isGrossUpModalOpen}
           onCalculateGrossUp={onCalculateGrossUp}
-          isPending={isGrossUpPending}
           onApply={handleGrossUpApply}
           onCancel={() => {
             setIsGrossUpModalOpen(false)
