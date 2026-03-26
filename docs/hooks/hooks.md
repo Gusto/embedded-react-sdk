@@ -113,7 +113,9 @@ Both approaches produce identical validation, API payloads, and behavior. The di
 | **Interleaving**      | Fields from different hooks can be placed in any order              | Fields must stay within their provider boundary |
 | **API error syncing** | Handled automatically per-field                                     | Handled automatically via the provider          |
 
-You can mix both approaches in the same page — for example, use `SDKFormProvider` for one hook's fields that are grouped together, and `formHookResult` props for another hook's fields that are scattered across the layout. See [Composing Multiple Hooks](#composing-multiple-hooks) for examples.
+You can use different approaches for different hooks on the same page — for example, `SDKFormProvider` for one hook's fields that are grouped together, and `formHookResult` props for another hook's fields that are scattered. See [Composing Multiple Hooks](#composing-multiple-hooks) for examples.
+
+> **Avoid passing `formHookResult` to fields via props that are already inside an `SDKFormProvider`.** When both are present on the same field, the prop takes precedence and the provider's context is ignored, which may lead to unexpected behavior.
 
 ---
 
@@ -489,8 +491,8 @@ function OnboardingPage({ companyId, employeeId }: { companyId: string; employee
     return <LoadingSpinner />
   }
 
-  const DetailsFields = employeeDetails.form.Fields
-  const CompFields = compensation.form.Fields
+  const EmployeeDetailsFields = employeeDetails.form.Fields
+  const CompensationFields = compensation.form.Fields
 
   const handleSubmit = composeSubmitHandler([employeeDetails, compensation], async () => {
     await employeeDetails.actions.onSubmit()
@@ -501,14 +503,14 @@ function OnboardingPage({ companyId, employeeId }: { companyId: string; employee
     <form onSubmit={handleSubmit}>
       <SDKFormProvider formHookResult={employeeDetails}>
         <h2>Employee Details</h2>
-        <DetailsFields.FirstName label="First name" />
-        <DetailsFields.LastName label="Last name" />
+        <EmployeeDetailsFields.FirstName label="First name" />
+        <EmployeeDetailsFields.LastName label="Last name" />
       </SDKFormProvider>
 
       <SDKFormProvider formHookResult={compensation}>
         <h2>Compensation</h2>
-        <CompFields.JobTitle label="Job title" />
-        <CompFields.Rate label="Pay rate" />
+        <CompensationFields.JobTitle label="Job title" />
+        <CompensationFields.Rate label="Pay rate" />
       </SDKFormProvider>
 
       <button type="submit">Save All</button>
@@ -553,9 +555,9 @@ function OnboardingPage({ companyId, employeeId }: { companyId: string; employee
     return <LoadingSpinner />
   }
 
-  const DetailsFields = employeeDetails.form.Fields
-  const CompFields = compensation.form.Fields
-  const AddressFields = workAddress.form.Fields
+  const EmployeeDetailsFields = employeeDetails.form.Fields
+  const CompensationFields = compensation.form.Fields
+  const WorkAddressFields = workAddress.form.Fields
 
   const handleSubmit = composeSubmitHandler(
     [employeeDetails, compensation, workAddress],
@@ -570,17 +572,18 @@ function OnboardingPage({ companyId, employeeId }: { companyId: string; employee
     <form onSubmit={handleSubmit}>
       <section>
         <h2>Who</h2>
-        <DetailsFields.FirstName label="First name" formHookResult={employeeDetails} />
-        <DetailsFields.LastName label="Last name" formHookResult={employeeDetails} />
-        <DetailsFields.Email label="Email" formHookResult={employeeDetails} />
+        <EmployeeDetailsFields.FirstName label="First name" formHookResult={employeeDetails} />
+        <EmployeeDetailsFields.LastName label="Last name" formHookResult={employeeDetails} />
+        <EmployeeDetailsFields.Email label="Email" formHookResult={employeeDetails} />
+        <CompensationFields.StartDate label="Start date" formHookResult={compensation} />
       </section>
 
       <section>
         <h2>Role and Location</h2>
-        <CompFields.JobTitle label="Job title" formHookResult={compensation} />
-        <AddressFields.Location label="Work address" formHookResult={workAddress} />
-        <CompFields.Rate label="Pay rate" formHookResult={compensation} />
-        <CompFields.PaymentUnit label="Pay frequency" formHookResult={compensation} />
+        <CompensationFields.JobTitle label="Job title" formHookResult={compensation} />
+        <WorkAddressFields.Location label="Work address" formHookResult={workAddress} />
+        <CompensationFields.Rate label="Pay rate" formHookResult={compensation} />
+        <CompensationFields.PaymentUnit label="Pay frequency" formHookResult={compensation} />
       </section>
 
       <button type="submit">Save All</button>
