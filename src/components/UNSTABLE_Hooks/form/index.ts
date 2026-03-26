@@ -5,6 +5,7 @@ export type {
   ValidationMessages,
   BaseFieldProps,
   HookFieldProps,
+  FormHookResultLike,
 } from './types'
 export { withOptions } from './withOptions'
 export type { FormFieldsMetadataContextValue } from './FormFieldsMetadataContext'
@@ -12,6 +13,8 @@ export { FormFieldsMetadataProvider } from './FormFieldsMetadataProvider'
 export { SDKFormProvider } from './SDKFormProvider'
 export { useFieldsMetadata } from './useFieldsMetadata'
 export { useFieldErrorMessage } from './useFieldErrorMessage'
+export { resolveFieldError } from './resolveFieldError'
+export { useOptionalFormFieldsMetadataContext } from './FormFieldsMetadataContext'
 export { deriveFieldsMetadata } from './deriveFieldsMetadata'
 export { composeFormSchema } from './composeFormSchema'
 export {

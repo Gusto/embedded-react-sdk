@@ -16,3 +16,7 @@ export function useFormFieldsMetadataContext(): FormFieldsMetadataContextValue {
   }
   return context
 }
+
+export function useOptionalFormFieldsMetadataContext(): FormFieldsMetadataContextValue | null {
+  return useContext(FormFieldsMetadataContext)
+}
