@@ -1,25 +1,28 @@
 .content {
   display: flex;
   flex-direction: column;
-  gap: toRem(16);
+  gap: toRem(20);
+  margin-top: toRem(24);
 }
 
 .header {
   display: flex;
   flex-direction: column;
-  gap: toRem(8);
-}
-
-.inputSection {
-  max-width: toRem(320);
+  gap: toRem(4);
 }
 
 .alert {
-  margin-top: toRem(4);
-
-  > * {
+  [role='alert'] {
     margin-bottom: 0;
   }
+}
+
+.calculateButton:global(.react-aria-Button) {
+  min-height: toRem(40);
+  padding-block: toRem(7);
+  flex-shrink: 0;
+  align-self: flex-start;
+  margin-top: calc(var(--g-inputLabelFontSize) * 1.3 + toRem(4));
 }
 
 .result {

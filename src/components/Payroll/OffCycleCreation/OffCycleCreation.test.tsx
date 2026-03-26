@@ -345,7 +345,7 @@ describe('OffCycleCreation', () => {
 
       const endDateGroup = screen.getByRole('group', { name: 'End date' })
       await user.type(within(endDateGroup).getByRole('spinbutton', { name: /month/i }), '12')
-      await user.type(within(endDateGroup).getByRole('spinbutton', { name: /day/i }), '15')
+      await user.type(within(endDateGroup).getByRole('spinbutton', { name: /day/i }), '14')
       await user.type(within(endDateGroup).getByRole('spinbutton', { name: /year/i }), '2026')
 
       const paymentDateGroup = screen.getByRole('group', { name: 'Payment date' })
