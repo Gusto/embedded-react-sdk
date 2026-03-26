@@ -6,7 +6,7 @@ export default {
   title: 'UI/Form/Inputs/NumberInput', // Updated to be under UI/Form instead of top-level Form
 }
 export const Default = () => {
-  const { value, handleChange } = useStoryState<number>('NumberInputChange', 0)
+  const { value, handleChange } = useStoryState('NumberInputChange', 0)
   return (
     <LocaleProvider locale="en-US" currency="USD">
       <NumberInput label="Amount" name="amount" value={value} onChange={handleChange} />
@@ -14,7 +14,7 @@ export const Default = () => {
   )
 }
 export const Currency = () => {
-  const { value, handleChange } = useStoryState<number>('NumberInputChange', 0)
+  const { value, handleChange } = useStoryState('NumberInputChange', 0)
   return (
     <LocaleProvider locale="en-US" currency="USD">
       <NumberInput
@@ -28,7 +28,7 @@ export const Currency = () => {
   )
 }
 export const Percent = () => {
-  const { value, handleChange } = useStoryState<number>('NumberInputChange', 0)
+  const { value, handleChange } = useStoryState('NumberInputChange', 0)
   return (
     <LocaleProvider locale="en-US" currency="USD">
       <NumberInput
@@ -43,7 +43,7 @@ export const Percent = () => {
   )
 }
 export const Decimal = () => {
-  const { value, handleChange } = useStoryState<number>('NumberInputChange', 0)
+  const { value, handleChange } = useStoryState('NumberInputChange', 0)
   return (
     <LocaleProvider locale="en-US" currency="USD">
       <NumberInput
@@ -57,7 +57,7 @@ export const Decimal = () => {
   )
 }
 export const WithDescription = () => {
-  const { value, handleChange } = useStoryState<number>('NumberInputChange', 0)
+  const { value, handleChange } = useStoryState('NumberInputChange', 0)
   return (
     <LocaleProvider locale="en-US" currency="USD">
       <NumberInput
@@ -71,7 +71,7 @@ export const WithDescription = () => {
   )
 }
 export const WithError = () => {
-  const { value, handleChange } = useStoryState<number>('NumberInputChange', 0)
+  const { value, handleChange } = useStoryState('NumberInputChange', 0)
   return (
     <LocaleProvider locale="en-US" currency="USD">
       <NumberInput
@@ -86,7 +86,7 @@ export const WithError = () => {
   )
 }
 export const WithAdornmentEnd = () => {
-  const { value, handleChange } = useStoryState<number>('NumberInputChange', 0)
+  const { value, handleChange } = useStoryState('NumberInputChange', 0)
   return (
     <LocaleProvider locale="en-US" currency="USD">
       <NumberInput

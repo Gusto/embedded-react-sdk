@@ -748,7 +748,7 @@ function TerminationModal({
   activeEmployees,
   onTerminationComplete,
 }: TerminationModalProps) {
-  const [selectedEmployeeId, setSelectedEmployeeId] = useState<string>('')
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState('')
 
   if (!isOpen) return null
 
@@ -978,7 +978,7 @@ function TerminationFlowModal({
   activeEmployees,
   onTerminationComplete,
 }: TerminationFlowModalProps) {
-  const [selectedEmployeeId, setSelectedEmployeeId] = useState<string>('')
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState('')
 
   if (!isOpen) return null
 

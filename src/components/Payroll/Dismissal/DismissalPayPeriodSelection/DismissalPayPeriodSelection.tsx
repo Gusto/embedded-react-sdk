@@ -65,7 +65,7 @@ function Root({ companyId, employeeId, dictionary }: DismissalPayPeriodSelection
   }, [employeePayPeriods])
 
   const initialSelection = payPeriodOptions.length === 1 ? payPeriodOptions[0]!.value : undefined
-  const [selectedPeriodKey, setSelectedPeriodKey] = useState<string | undefined>(initialSelection)
+  const [selectedPeriodKey, setSelectedPeriodKey] = useState(initialSelection)
 
   const handleSubmit = async () => {
     await baseSubmitHandler({ selectedPeriodKey }, async () => {

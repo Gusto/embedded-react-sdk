@@ -109,6 +109,7 @@ function Root({ companyId, requestId, dictionary }: InformationRequestFormProps)
     }
   })
 
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-arguments -- removing this breaks resolver type compatibility
   const formMethods = useForm<InformationRequestFormValues>({
     resolver: zodResolver(InformationRequestFormSchema),
     defaultValues,

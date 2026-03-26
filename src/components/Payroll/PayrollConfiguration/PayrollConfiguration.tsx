@@ -228,7 +228,7 @@ export const Root = ({
     message: blocker.message,
   }))
 
-  const [payrollBlockers, setPayrollBlockers] = useState<ApiPayrollBlocker[]>(blockersFromApi)
+  const [payrollBlockers, setPayrollBlockers] = useState(blockersFromApi)
 
   const onCalculatePayroll = async () => {
     setPayrollBlockers([])

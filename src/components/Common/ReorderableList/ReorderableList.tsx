@@ -109,7 +109,7 @@ export function ReorderableList({
   const [isDragging, setIsDragging] = useState(false)
   const [isReorderingActive, setIsReorderingActive] = useState(false)
   const [reorderingItemIndex, setReorderingItemIndex] = useState<number | null>(null)
-  const pendingReorderRef = useRef<boolean>(false)
+  const pendingReorderRef = useRef(false)
   const activeDropZonesRef = useRef<Record<number, boolean>>({})
 
   const mergedAnimationConfig = useMemo(

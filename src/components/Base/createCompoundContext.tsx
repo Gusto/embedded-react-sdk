@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react'
 
 export function createCompoundContext<T>(contextName: string, defaultValue: T | null = null) {
-  const context = createContext<T | null>(defaultValue)
+  const context = createContext(defaultValue)
 
   const useCompoundContext = () => {
     const ctx = useContext(context)
