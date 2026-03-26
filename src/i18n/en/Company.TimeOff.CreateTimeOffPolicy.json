@@ -1,0 +1,98 @@
+{
+  "policyDetails": {
+    "title": "Policy details",
+    "description": "Give your policy a name and choose how employees accrue time off.",
+    "policyNameLabel": "Policy name",
+    "accrualType": "Accrual type",
+    "accrualTypeHint": "Choose how employees receive time off.",
+    "perHourPaidLabel": "Based on hours worked",
+    "perHourPaidHint": "Employees earn time off based on hours worked (e.g., 1 hour for every 40 hours worked).",
+    "perYearLabel": "Fixed amount each year",
+    "perYearHint": "Employees earn a set amount of time off each year (e.g., 120 hours per year).",
+    "unlimitedLabel": "Unlimited",
+    "unlimitedHint": "Employees can take flexible time off with no set limit.",
+    "accrualRateTitle": "Accrual rate",
+    "accrualRateDescription": "Set the rate at which employees will accrue time off.",
+    "accrualRateAndUnitError": "You must provide a valid base rate.",
+    "baseRateLabel": "Base rate",
+    "baseRateHint": "This sets the base rate for accrued time off.",
+    "hoursUnit": "hours",
+    "hoursWorkedUnit": "hours worked",
+    "fixedAccrualRateLabel": "Total hours per year",
+    "fixedAccrualRateHint": "The total number of hours employees earn each year.",
+    "accrualMethodFixed": "Accrual rate",
+    "accrualMethodFixedHint": "The rate at which employees will accrue paid time off.",
+    "perPayPeriodLabel": "Each pay period",
+    "perPayPeriodHint": "Employees earn time off gradually with each paycheck.",
+    "allAtOnceLabel": "All at once",
+    "allAtOnceHint": "Employees receive their full annual time off balance upfront.",
+    "policyResetDateType": "Reset date",
+    "policyResetDateTypeHint": "The accrual period will reset on this date each year.",
+    "perAnniversaryYearLabel": "Each employee's start date",
+    "perCalendarYearLabel": "Custom date",
+    "monthLabel": "Month",
+    "dayLabel": "Day",
+    "includeOvertimeLabel": "Include overtime",
+    "allPaidHoursLabel": "All paid hours"
+  },
+  "policySettings": {
+    "title": "Policy settings",
+    "hoursUnit": "hours",
+    "daysUnit": "days",
+    "accrualMaximumLabel": "Accrual maximum",
+    "accrualMaximumHint": "Set the maximum balance an employee can accrue per period. Accrual will stop when this limit is reached.",
+    "balanceMaximumLabel": "Balance maximum",
+    "balanceMaximumHint": "Set the maximum balance an employee can hold at once. Accrual stops when this limit is reached.",
+    "carryOverLimitLabel": "Carry over limit",
+    "carryOverLimitHint": "Set the maximum hours allowed to carryover from one accrual period to the next.",
+    "waitingPeriodLabel": "Waiting period",
+    "waitingPeriodHint": "Set the number of days employees must work before they begin accruing time off.",
+    "paidOutOnTerminationLabel": "Payout on dismissal",
+    "paidOutOnTerminationHint": "Choose if unused time off is paid out when an employee leaves. Some states require it by law.",
+    "numberOfHoursPlaceholder": "Number of hours",
+    "numberOfDaysPlaceholder": "Number of days"
+  },
+  "addEmployees": {
+    "title": "Add employees to your policy",
+    "employeesMovedWarning": "Any employees currently assigned to another {{policyType}} policy will be moved to this policy.",
+    "createPolicyCta": "Create policy",
+    "policyType": {
+      "vacation": "paid time off",
+      "sick": "sick leave"
+    }
+  },
+  "startingBalances": {
+    "title": "Starting balances",
+    "description": "If your employees have an existing balance, please enter those hours here. Employees moving to this policy from another will carry over their accrued hours.",
+    "noEmployees": "You haven't added any employees to this policy yet, so there aren't any starting balances to add.",
+    "alertHeader": "The following employees' balances need review",
+    "createPolicyCta": "Create policy"
+  },
+  "employeeTable": {
+    "selected": "of {{numAll}} employees selected",
+    "selectAllEmployees": "Select all employees",
+    "selectAll": "Select all",
+    "clearAriaLabel": "Clear selected employees",
+    "clear": "Clear",
+    "name": "Name",
+    "jobTitle": "Job title"
+  },
+  "balanceTable": {
+    "name": "Name",
+    "jobTitle": "Job title",
+    "balance": "Balance (hrs)",
+    "employeeCount_one": "{{count}} employee",
+    "employeeCount_other": "{{count}} employees"
+  },
+  "continueCta": "Save & continue",
+  "backCta": "Back",
+  "cancelCta": "Cancel",
+  "flash": {
+    "policyUpdated": "Details for this policy have been updated.",
+    "policyActive": "Your time off policy is active.",
+    "employeesAdded_one": "{{count}} employee has been added to this policy.",
+    "employeesAdded_other": "{{count}} employees have been added to this policy.",
+    "balanceUpdated": "{{name}}'s time off balance has been updated.",
+    "settingsUpdated": "Details for this policy have been updated."
+  }
+}

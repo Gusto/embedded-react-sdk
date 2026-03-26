@@ -1,0 +1,115 @@
+{
+  "breadcrumb": "Time off policies",
+  "addEmployeeCta": "Add employee",
+  "tabs": {
+    "employees": "Employees",
+    "policyDetails": "Policy details"
+  },
+  "details": "Details",
+  "editPolicyCta": "Edit policy",
+  "policyType": {
+    "label": "Policy type",
+    "vacation": "Paid time off",
+    "sick": "Sick leave",
+    "custom": "Custom policy",
+    "parentalLeave": "Parental leave",
+    "weather": "Weather policy",
+    "volunteer": "Volunteer policy",
+    "personalDay": "Personal day",
+    "learningAndDevelopment": "Learning and development",
+    "juryDuty": "Jury duty",
+    "floatingHoliday": "Floating holiday",
+    "bereavement": "Bereavement"
+  },
+  "policyName": "Policy name",
+  "accrualRateTitle": "Accrual rate",
+  "accrualMethod": {
+    "label": "Accrual type",
+    "unlimited": "Unlimited",
+    "perPayPeriod": "Fixed",
+    "perCalendarYear": "Fixed",
+    "perAnniversaryYear": "Fixed",
+    "perHourWorked": "Based on hours worked",
+    "perHourWorkedNoOvertime": "Based on hours worked",
+    "perHourPaid": "Based on hours worked",
+    "perHourPaidNoOvertime": "Based on hours worked"
+  },
+  "accrualRate": {
+    "label": "Accrual rate",
+    "unlimited": "-",
+    "perPayPeriod": "{{accrualRate}} hour(s) per pay period",
+    "perCalendarYear": "{{accrualRate}} hour(s) per calendar year",
+    "perAnniversaryYear": "{{accrualRate}} hour(s) per anniversary year",
+    "perHourWorked": "{{accrualRate}} hour(s) for every {{accrualRateUnit}} hour(s) worked, including overtime",
+    "perHourWorkedNoOvertime": "{{accrualRate}} hour(s) for every {{accrualRateUnit}} hour(s) worked, excluding overtime",
+    "perHourPaid": "{{accrualRate}} hour(s) for every {{accrualRateUnit}} hour(s) including overtime and all paid hours",
+    "perHourPaidNoOvertime": "{{accrualRate}} hour(s) for every {{accrualRateUnit}} hour(s) worked and all paid hours, excluding overtime"
+  },
+  "resetDate": "Reset date",
+  "policySettingsTitle": "Policy settings",
+  "maxAccrualHoursPerYear": {
+    "label": "Accrual maximum",
+    "noMaximum": "No maximum",
+    "withMaximum": "{{count}} hour(s) per year"
+  },
+  "maxHours": {
+    "label": "Balance maximum",
+    "noMaximum": "No maximum",
+    "withMaximum": "{{count}} hour(s)"
+  },
+  "carryoverLimitHours": {
+    "label": "Carry over limit",
+    "noLimit": "No carry over limit",
+    "withLimit": "{{count}} hour(s)"
+  },
+  "accrualWaitingPeriodDays": {
+    "label": "Waiting period",
+    "noPeriod": "No waiting period",
+    "withPeriod": "{{count}} day(s)"
+  },
+  "paidOutOnTermination": {
+    "label": "Paid out on termination",
+    "yes": "Yes, remaining time off balances for this policy are paid out when an employee is dismissed.",
+    "no": "No, remaining time off balances for this policy are not paid out when an employee is dismissed."
+  },
+  "employeeTable": {
+    "selected": "of {{numAll}} employees selected",
+    "selectAllEmployees": "Select all employees",
+    "selectAll": "Select all",
+    "clearAriaLabel": "Clear selected employees",
+    "clear": "Clear",
+    "name": "Name",
+    "balance": "Balance (hrs)",
+    "actions": "Actions",
+    "editBalance": "Edit balance",
+    "removeEmployee": "Remove employee",
+    "removeEmployees": "Remove employees"
+  },
+  "addEmployeeModal": {
+    "title": "Add employee to this policy",
+    "description": "Select the employees to add to this policy. Employees not shown are either already included or not eligible."
+  },
+  "editBalanceModal": {
+    "title": "Edit {{name}} time off balance",
+    "currentBalance": "Current balance",
+    "hoursUnit": "hours"
+  },
+  "removeEmployeeModal": {
+    "title": "Remove {{name}} from policy?",
+    "alert": "When you remove an employee from a policy, any existing balance is removed.",
+    "removeCta": "Remove employee"
+  },
+  "removeEmployeesModal": {
+    "title": "Remove {{count}} employee(s) from policy?",
+    "alert": "When you remove an employee from a policy, any existing balance is removed.",
+    "removeCta": "Remove employees"
+  },
+  "flash": {
+    "employeeRemoved": "{{name}} has been removed from the policy.",
+    "employeesRemoved_one": "{{count}} employee has been removed from the policy.",
+    "employeesRemoved_other": "{{count}} employees have been removed from the policy.",
+    "employeesAdded_one": "{{count}} employee has been added to this policy.",
+    "employeesAdded_other": "{{count}} employees have been added to this policy.",
+    "balanceUpdated": "{{name}}'s time off balance has been updated."
+  }
+}
