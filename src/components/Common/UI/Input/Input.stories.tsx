@@ -5,7 +5,7 @@ export default {
   title: 'UI/Form/Inputs/Input',
 }
 export const Default = () => {
-  const { value, handleChange } = useStoryState<string>('InputChange', '')
+  const { value, handleChange } = useStoryState('InputChange', '')
   return (
     <Input
       placeholder="Enter text"
@@ -16,7 +16,7 @@ export const Default = () => {
   )
 }
 export const Leading = () => {
-  const { value, handleChange } = useStoryState<string>('InputLeadingChange', '')
+  const { value, handleChange } = useStoryState('InputLeadingChange', '')
   return (
     <Input
       placeholder="Enter amount"
@@ -27,7 +27,7 @@ export const Leading = () => {
   )
 }
 export const Trailing = () => {
-  const { value, handleChange } = useStoryState<string>('InputTrailingChange', '')
+  const { value, handleChange } = useStoryState('InputTrailingChange', '')
   return (
     <Input
       placeholder="Enter percentage"
@@ -38,7 +38,7 @@ export const Trailing = () => {
   )
 }
 export const LeadingAndTrailing = () => {
-  const { value, handleChange } = useStoryState<string>('InputBothChange', '')
+  const { value, handleChange } = useStoryState('InputBothChange', '')
   return (
     <Input
       placeholder="Enter rate"
@@ -61,7 +61,7 @@ export const Disabled = () => {
   )
 }
 export const Invalid = () => {
-  const { value, handleChange } = useStoryState<string>('InputInvalidChange', '24.00')
+  const { value, handleChange } = useStoryState('InputInvalidChange', '24.00')
   return (
     <Input
       placeholder="Enter rate"

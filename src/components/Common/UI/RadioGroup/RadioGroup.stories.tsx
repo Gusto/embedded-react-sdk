@@ -11,7 +11,7 @@ const options = [
   { label: 'Elderberry', value: 'elderberry' },
 ]
 function useRadioGroupState(initialValue?: string) {
-  const { value, handleChange } = useStoryState<string>('RadioGroupChange', initialValue || '')
+  const { value, handleChange } = useStoryState('RadioGroupChange', initialValue || '')
   return { value, handleChange }
 }
 export const Default = () => {
@@ -88,7 +88,7 @@ export const WithDisabledOptions = () => {
   )
 }
 export const WithPreselectedValue = () => {
-  const { value, handleChange } = useStoryState<string>('RadioGroupChange', 'apple')
+  const { value, handleChange } = useStoryState('RadioGroupChange', 'apple')
   return (
     <RadioGroup
       label="Select your favorite fruit"

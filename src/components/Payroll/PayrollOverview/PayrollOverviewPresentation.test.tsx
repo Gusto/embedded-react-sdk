@@ -411,6 +411,82 @@ describe('PayrollOverviewPresentation', () => {
     })
   })
 
+  describe('Cancel dialog content', () => {
+    it('hides ACH deadline message for check-only payrolls', async () => {
+      const user = userEvent.setup()
+      const checkOnlyPayroll: PayrollShow = {
+        ...mockPayrollData,
+        employeeCompensations: [
+          {
+            paymentMethod: 'Check',
+            excluded: false,
+            fixedCompensations: [],
+            hourlyCompensations: [],
+            paidTimeOff: [],
+            employeeUuid: 'emp-1',
+          },
+        ],
+      }
+
+      renderWithProviders(
+        <PayrollOverviewPresentation
+          {...defaultProps}
+          payrollData={checkOnlyPayroll}
+          isProcessed={true}
+          canCancel={true}
+        />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /Cancel payroll/i })).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: /Cancel payroll/i }))
+
+      await waitFor(() => {
+        expect(screen.getByText(/Any changes you have made/i)).toBeInTheDocument()
+      })
+
+      expect(screen.queryByText(/ensure your employees are paid on time/i)).not.toBeInTheDocument()
+    })
+
+    it('shows ACH deadline message for direct deposit payrolls', async () => {
+      const user = userEvent.setup()
+      const ddPayroll: PayrollShow = {
+        ...mockPayrollData,
+        employeeCompensations: [
+          {
+            paymentMethod: 'Direct Deposit',
+            excluded: false,
+            fixedCompensations: [],
+            hourlyCompensations: [],
+            paidTimeOff: [],
+            employeeUuid: 'emp-1',
+          },
+        ],
+      }
+
+      renderWithProviders(
+        <PayrollOverviewPresentation
+          {...defaultProps}
+          payrollData={ddPayroll}
+          isProcessed={true}
+          canCancel={true}
+        />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /Cancel payroll/i })).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: /Cancel payroll/i }))
+
+      await waitFor(() => {
+        expect(screen.getByText(/ensure your employees are paid on time/i)).toBeInTheDocument()
+      })
+    })
+  })
+
   describe('Cancel button visibility', () => {
     it('hides cancel button when canCancel is false on processed payroll', async () => {
       renderWithProviders(
@@ -427,6 +503,22 @@ describe('PayrollOverviewPresentation', () => {
       )
 
       expect(await screen.findByRole('button', { name: /Cancel payroll/i })).toBeInTheDocument()
+    })
+
+    it('hides Edit and Submit buttons when payroll is processed', async () => {
+      renderWithProviders(<PayrollOverviewPresentation {...defaultProps} isProcessed={true} />)
+
+      await screen.findByRole('button', { name: /View payroll receipt/i })
+
+      expect(screen.queryByRole('button', { name: /^Edit$/i })).not.toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: /^Submit$/i })).not.toBeInTheDocument()
+    })
+
+    it('shows Edit and Submit buttons when payroll is not processed', async () => {
+      renderWithProviders(<PayrollOverviewPresentation {...defaultProps} isProcessed={false} />)
+
+      expect(await screen.findByRole('button', { name: /^Edit$/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /^Submit$/i })).toBeInTheDocument()
     })
   })
 })

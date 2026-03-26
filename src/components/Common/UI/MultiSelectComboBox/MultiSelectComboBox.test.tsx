@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MultiSelectComboBox } from './MultiSelectComboBox'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
@@ -131,6 +131,80 @@ describe('MultiSelectComboBox', () => {
     it('disables chip remove buttons when isDisabled is true', () => {
       renderComponent({ isDisabled: true, value: ['1'] })
       expect(screen.getByLabelText('Remove Alice Johnson')).toBeDisabled()
+    })
+  })
+
+  describe('blur debounce', () => {
+    it('cancels pending onBlur when input regains focus quickly', () => {
+      vi.useFakeTimers()
+      const onBlur = vi.fn()
+
+      try {
+        render(
+          <GustoTestProvider>
+            <MultiSelectComboBox
+              label="Test"
+              options={mockOptions}
+              value={[]}
+              onChange={vi.fn()}
+              onBlur={onBlur}
+            />
+          </GustoTestProvider>,
+        )
+
+        const combobox = screen.getByRole('combobox')
+
+        act(() => {
+          fireEvent.blur(combobox)
+        })
+
+        act(() => {
+          fireEvent.focus(combobox)
+        })
+
+        act(() => {
+          vi.advanceTimersByTime(60)
+        })
+
+        expect(onBlur).not.toHaveBeenCalled()
+      } finally {
+        vi.useRealTimers()
+      }
+    })
+
+    it('calls onBlur after debounce when input is not re-focused', () => {
+      vi.useFakeTimers()
+      const onBlur = vi.fn()
+
+      try {
+        render(
+          <GustoTestProvider>
+            <MultiSelectComboBox
+              label="Test"
+              options={mockOptions}
+              value={[]}
+              onChange={vi.fn()}
+              onBlur={onBlur}
+            />
+          </GustoTestProvider>,
+        )
+
+        const combobox = screen.getByRole('combobox')
+
+        act(() => {
+          fireEvent.blur(combobox)
+        })
+
+        expect(onBlur).not.toHaveBeenCalled()
+
+        act(() => {
+          vi.advanceTimersByTime(60)
+        })
+
+        expect(onBlur).toHaveBeenCalledTimes(1)
+      } finally {
+        vi.useRealTimers()
+      }
     })
   })
 })

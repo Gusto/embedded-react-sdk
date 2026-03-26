@@ -46,7 +46,7 @@ describe('useCompensationForm start date handling', () => {
     )
   })
 
-  it('surfaces error through errorHandling when creating a job without any start date', async () => {
+  it('blocks submission when startDate is missing in create mode', async () => {
     const { result } = renderHook(
       () =>
         useCompensationForm({
@@ -60,24 +60,22 @@ describe('useCompensationForm start date handling', () => {
       expect(result.current.isLoading).toBe(false)
     })
 
-    const readyResult = result.current
-    assertReady(readyResult)
+    assertReady(result.current)
 
-    await act(async () => {
-      await readyResult.actions.onSubmit()
+    const submitResult = await act(async () => {
+      return (result.current as ReadyResult).actions.onSubmit()
     })
 
-    expect(result.current.errorHandling.errors).toHaveLength(1)
-    expect(result.current.errorHandling.errors[0]?.category).toBe('internal_error')
-    expect(result.current.errorHandling.errors[0]?.message).toBe('Start date is required')
+    expect(submitResult).toBeUndefined()
     expect(createJobRequestBody).toBeNull()
   })
 
-  it('creates a job with hireDate from options.startDate', async () => {
+  it('creates a job with hireDate from options.startDate when field is hidden', async () => {
     const { result } = renderHook(
       () =>
         useCompensationForm({
           employeeId: 'emp-1',
+          withStartDateField: false,
           defaultValues: VALID_DEFAULTS,
         }),
       { wrapper: GustoTestProvider },

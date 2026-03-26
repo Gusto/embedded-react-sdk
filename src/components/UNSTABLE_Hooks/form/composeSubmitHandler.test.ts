@@ -1,28 +1,39 @@
 import { describe, expect, it, vi, type Mock } from 'vitest'
-import type { ComposableFormHookResult } from './composeSubmitHandler'
 import { composeSubmitHandler } from './composeSubmitHandler'
 
+type ComposableForm = Parameters<typeof composeSubmitHandler>[0][number]
+
 interface MockFormMethods {
-  trigger: Mock
+  handleSubmit: Mock
   setFocus: Mock
   formState: { errors: Record<string, { message: string }> }
 }
 
 function createMockForm(
   overrides: {
-    triggerResult?: boolean
+    isValid?: boolean
     errorFields?: string[]
   } = {},
-): ComposableFormHookResult & { formMethods: MockFormMethods } {
-  const { triggerResult = true, errorFields = [] } = overrides
+): ComposableForm & { formMethods: MockFormMethods } {
+  const { isValid = true, errorFields = [] } = overrides
 
   const errors: Record<string, { message: string }> = {}
   for (const field of errorFields) {
     errors[field] = { message: 'validation_error' }
   }
 
+  const handleSubmit = vi.fn((onValid: () => void, onInvalid?: () => void) => {
+    return async () => {
+      if (isValid) {
+        onValid()
+      } else {
+        onInvalid?.()
+      }
+    }
+  })
+
   const formMethods: MockFormMethods = {
-    trigger: vi.fn().mockResolvedValue(triggerResult),
+    handleSubmit,
     setFocus: vi.fn(),
     formState: { errors },
   }
@@ -50,15 +61,15 @@ describe('composeSubmitHandler', () => {
   })
 
   it('calls onAllValid when all forms pass validation', async () => {
-    const form1 = createMockForm({ triggerResult: true })
-    const form2 = createMockForm({ triggerResult: true })
+    const form1 = createMockForm({ isValid: true })
+    const form2 = createMockForm({ isValid: true })
     const onAllValid = vi.fn()
 
     const handler = composeSubmitHandler([form1, form2], onAllValid)
     await handler(createMockEvent())
 
-    expect(form1.formMethods.trigger).toHaveBeenCalledOnce()
-    expect(form2.formMethods.trigger).toHaveBeenCalledOnce()
+    expect(form1.formMethods.handleSubmit).toHaveBeenCalledOnce()
+    expect(form2.formMethods.handleSubmit).toHaveBeenCalledOnce()
     expect(onAllValid).toHaveBeenCalledOnce()
     expect(form1.formMethods.setFocus).not.toHaveBeenCalled()
     expect(form2.formMethods.setFocus).not.toHaveBeenCalled()
@@ -72,17 +83,17 @@ describe('composeSubmitHandler', () => {
     const handler = composeSubmitHandler([form1, form2], onAllValid)
     await handler(createMockEvent())
 
-    const form1TriggerOrder = form1.formMethods.trigger.mock.invocationCallOrder[0]!
-    const form2TriggerOrder = form2.formMethods.trigger.mock.invocationCallOrder[0]!
-    expect(Math.abs(form1TriggerOrder - form2TriggerOrder)).toBeLessThanOrEqual(1)
+    const form1Order = form1.formMethods.handleSubmit.mock.invocationCallOrder[0]!
+    const form2Order = form2.formMethods.handleSubmit.mock.invocationCallOrder[0]!
+    expect(Math.abs(form1Order - form2Order)).toBeLessThanOrEqual(1)
   })
 
   it('focuses the first invalid field when the first form is invalid', async () => {
     const form1 = createMockForm({
-      triggerResult: false,
+      isValid: false,
       errorFields: ['street1', 'city'],
     })
-    const form2 = createMockForm({ triggerResult: true })
+    const form2 = createMockForm({ isValid: true })
     const onAllValid = vi.fn()
 
     const handler = composeSubmitHandler([form1, form2], onAllValid)
@@ -94,9 +105,9 @@ describe('composeSubmitHandler', () => {
   })
 
   it('focuses the first invalid field of the second form when only it is invalid', async () => {
-    const form1 = createMockForm({ triggerResult: true })
+    const form1 = createMockForm({ isValid: true })
     const form2 = createMockForm({
-      triggerResult: false,
+      isValid: false,
       errorFields: ['employeeId', 'startDate'],
     })
     const onAllValid = vi.fn()
@@ -111,11 +122,11 @@ describe('composeSubmitHandler', () => {
 
   it('focuses the first invalid field of the first form when multiple forms are invalid', async () => {
     const form1 = createMockForm({
-      triggerResult: false,
+      isValid: false,
       errorFields: ['firstName'],
     })
     const form2 = createMockForm({
-      triggerResult: false,
+      isValid: false,
       errorFields: ['street1'],
     })
     const onAllValid = vi.fn()
@@ -129,7 +140,7 @@ describe('composeSubmitHandler', () => {
   })
 
   it('does not call onAllValid when validation fails even with no focusable error fields', async () => {
-    const form1 = createMockForm({ triggerResult: false, errorFields: [] })
+    const form1 = createMockForm({ isValid: false, errorFields: [] })
     const onAllValid = vi.fn()
 
     const handler = composeSubmitHandler([form1], onAllValid)

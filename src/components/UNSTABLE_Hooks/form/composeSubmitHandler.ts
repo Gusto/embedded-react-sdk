@@ -1,21 +1,33 @@
 import type { SyntheticEvent } from 'react'
-import type { HookFormInternals } from '../types'
 
 /**
  * Minimal shape required for a form hook result to participate in `composeSubmitHandler`.
  * Any hook returning `BaseFormHookReady` satisfies this interface.
+ *
+ * Uses method syntax so TypeScript applies bivariant checking on parameter types,
+ * allowing hooks with specific form data generics to be passed without casts.
  */
-export interface ComposableFormHookResult {
+interface ComposableFormHookResult {
   form: {
-    hookFormInternals: HookFormInternals
+    hookFormInternals: {
+      formMethods: {
+        handleSubmit(onValid: () => void, onInvalid?: () => void): () => Promise<void>
+        setFocus(name: string): void
+        formState: { errors: Record<string, unknown> }
+      }
+    }
   }
 }
 
 /**
  * Coordinates validation and submission across multiple form hooks on the same page.
  *
- * Validates all forms simultaneously via `trigger()`, then focuses the first invalid
+ * Validates all forms simultaneously via `handleSubmit()`, then focuses the first invalid
  * field across all forms (in array order). Only calls `onAllValid` when every form passes.
+ *
+ * Uses `handleSubmit` rather than `trigger` so that react-hook-form sets
+ * `formState.isSubmitted = true`, which enables `reValidateMode` (default: `onChange`).
+ * Without this, errors set by manual `trigger()` calls would never clear as the user types.
  *
  * Each hook passed to `forms` should be initialized with `shouldFocusError: false` so that
  * react-hook-form's built-in per-form focus is disabled and `composeSubmitHandler` can manage
@@ -45,7 +57,19 @@ export function composeSubmitHandler(
     e.preventDefault()
 
     const validationResults = await Promise.all(
-      forms.map(form => form.form.hookFormInternals.formMethods.trigger()),
+      forms.map(
+        form =>
+          new Promise<boolean>(resolve => {
+            void form.form.hookFormInternals.formMethods.handleSubmit(
+              () => {
+                resolve(true)
+              },
+              () => {
+                resolve(false)
+              },
+            )()
+          }),
+      ),
     )
 
     const allValid = validationResults.every(Boolean)

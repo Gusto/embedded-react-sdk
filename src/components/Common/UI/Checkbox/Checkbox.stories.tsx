@@ -4,7 +4,7 @@ export default {
   title: 'UI/Form/Inputs/Checkbox',
 }
 export const Default = () => {
-  const { value, handleChange } = useStoryState<boolean>('CheckboxChange', false)
+  const { value, handleChange } = useStoryState('CheckboxChange', false)
   return (
     <Checkbox
       label="Accept terms and conditions"
@@ -15,7 +15,7 @@ export const Default = () => {
   )
 }
 export const WithDescription = () => {
-  const { value, handleChange } = useStoryState<boolean>('CheckboxChange', false)
+  const { value, handleChange } = useStoryState('CheckboxChange', false)
   return (
     <Checkbox
       label="Subscribe to newsletter"
@@ -27,7 +27,7 @@ export const WithDescription = () => {
   )
 }
 export const WithError = () => {
-  const { value, handleChange } = useStoryState<boolean>('CheckboxChange', false)
+  const { value, handleChange } = useStoryState('CheckboxChange', false)
   return (
     <Checkbox
       label="Accept terms and conditions"

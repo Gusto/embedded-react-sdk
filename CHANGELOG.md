@@ -1,5 +1,63 @@
 # Changelog
 
+## 0.37.0
+
+### Features & Enhancements
+
+- Add core terminations functionality with DismissalFlow, DismissalPayPeriodSelection, and unused time off payout UI
+- Add transition payroll support with TransitionCreation component, state machine, and landing page alert
+- Embed DismissalFlow within TerminationFlow and add dismissal/transition states to payroll flows
+- Show off-cycle payrolls in history tab and add off-cycle flow support with section dividers
+- Introduce unified SDKError type and ObservabilityError extension
+- Implement UNSTABLE_Hooks directory with uniform hook return types and form infrastructure
+- Add useEmployeeDetailsForm hook with configurable required fields and NAME_REGEX validation
+- Add useWorkAddressForm hook with prebuilt component
+- Implement CompensationForm with useCompensationForm hook, including start date field and composeFormSchema alignment
+- Add composeSubmitHandler for coordinated multi-form validation and cross-form focus management
+- Add error code infrastructure, HookField reference components, and errorHandling pattern with retryQueries
+- Add getFormSubmissionValues to form hooks
+- Allow requiredFields to accept flat array or per-mode object
+- Align hooks with stable component parity: optional employeeId with submit-time resolution, SwitchField FieldComponent support, requiredIf null coercion fix
+- Add partner-facing hooks documentation
+
+### Fixes
+
+- Hide courtesy withholding checkbox from employee view
+- Strip finalPayoutUnusedHoursInput from PTO on non-dismissal payrolls
+- Include off-cycle and external payrolls in list and history views
+- Only show hourly inputs for primary jobs with hourly compensations
+- Fix off-cycle, dismissal, and transition payroll bugs
+- Invalidate payroll-prepare cache after editing employee hours
+- Improve PayrollConfiguration calculate/polling flow
+- Mark dismissal pay period select as required
+- Default employee selection to select-employees mode
+- Convert throw sites in new components to SDKInternalError
+
+### Chores & Maintenance
+
+- Refactor Base infrastructure for hooks compatibility
+- Payroll test infrastructure and label cleanup
+- Add E2E tests for DismissalFlow and transition payroll
+- Add Storybook stories for offcycle components
+- Add workflow_dispatch trigger and CI badge to README
+- Disable e2e tests in GitHub Actions
+- Fix minimatch ReDoS vulnerability (CVE-2026-27903)
+- Upgrade react-robot from 1.2.0 to 1.2.1
+- Bump react-hook-form from 7.71.2 to 7.72.0
+- Bump react-i18next from 16.5.8 to 16.6.6
+- Bump i18next from 25.8.18 to 25.10.4
+- Bump @storybook/react-vite from 10.2.19 to 10.3.1
+- Bump @storybook/addon-docs from 10.2.19 to 10.3.3
+- Bump @storybook/addon-a11y from 10.2.19 to 10.3.3
+- Bump @storybook/addon-onboarding from 10.2.19 to 10.3.3
+- Bump storybook from 10.3.0 to 10.3.1
+- Bump eslint-plugin-storybook from 10.2.19 to 10.3.3
+- Bump @storybook/test-runner from 0.24.2 to 0.24.3
+- Bump @vitest/coverage-v8 from 4.1.0 to 4.1.1
+- Bump vite-plugin-stylelint from 6.0.4 to 6.1.0
+- Bump msw from 2.12.12 to 2.12.14
+- Bump flatted from 3.3.3 to 3.4.2
+
 ## 0.36.0
 
 ### Features & Enhancements

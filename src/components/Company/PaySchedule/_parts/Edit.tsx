@@ -22,7 +22,7 @@ export const Edit = () => {
   const dateFormatter = useDateFormatter()
   const { payPeriodPreview, mode, payPreviewLoading } = usePaySchedule()
   const { setValue } = useFormContext<PayScheduleInputs>()
-  const [selectedPayPeriodIndex, setSelectedPayPeriodIndex] = useState<number>(0)
+  const [selectedPayPeriodIndex, setSelectedPayPeriodIndex] = useState(0)
 
   const frequency = useWatch({ name: 'frequency' })
   const customTwicePerMonth = useWatch({ name: 'customTwicePerMonth' })

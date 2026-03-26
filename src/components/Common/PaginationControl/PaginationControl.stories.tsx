@@ -6,10 +6,7 @@ export default {
 }
 
 export const Default = () => {
-  const { value: page, handleChange: setCurrentPage } = useStoryState<number>(
-    'PaginationCurrentPage',
-    1,
-  )
+  const { value: page, handleChange: setCurrentPage } = useStoryState('PaginationCurrentPage', 1)
   const currentPage = page ?? 1
   const totalPages = 10
   const itemsPerPage = 5
@@ -31,10 +28,7 @@ export const Default = () => {
 }
 
 export const FirstPage = () => {
-  const { value: page, handleChange: setCurrentPage } = useStoryState<number>(
-    'PaginationFirstPage',
-    1,
-  )
+  const { value: page, handleChange: setCurrentPage } = useStoryState('PaginationFirstPage', 1)
   const currentPage = page ?? 1
   const totalPages = 10
   const itemsPerPage = 5
@@ -56,10 +50,7 @@ export const FirstPage = () => {
 }
 
 export const LastPage = () => {
-  const { value: page, handleChange: setCurrentPage } = useStoryState<number>(
-    'PaginationLastPage',
-    10,
-  )
+  const { value: page, handleChange: setCurrentPage } = useStoryState('PaginationLastPage', 10)
   const currentPage = page ?? 10
   const totalPages = 10
   const itemsPerPage = 5
@@ -81,10 +72,7 @@ export const LastPage = () => {
 }
 
 export const MiddlePage = () => {
-  const { value: page, handleChange: setCurrentPage } = useStoryState<number>(
-    'PaginationMiddlePage',
-    5,
-  )
+  const { value: page, handleChange: setCurrentPage } = useStoryState('PaginationMiddlePage', 5)
   const currentPage = page ?? 5
   const totalPages = 10
   const itemsPerPage = 5
