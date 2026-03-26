@@ -43,7 +43,7 @@ describe('GrossUpModal', () => {
 
     expect(screen.getByText(/net amount you want this employee/)).toBeInTheDocument()
     expect(screen.getByLabelText('Net amount')).toBeInTheDocument()
-    expect(screen.getByText('Calculate Gross from Net')).toBeInTheDocument()
+    expect(screen.getByText('Calculate')).toBeInTheDocument()
     expect(screen.getByText('Cancel')).toBeInTheDocument()
   })
 
@@ -80,7 +80,7 @@ describe('GrossUpModal', () => {
     await user.clear(netPayInput)
     await user.type(netPayInput, '3500')
 
-    await user.click(screen.getByText('Calculate Gross from Net'))
+    await user.click(screen.getByText('Calculate'))
 
     await waitFor(() => {
       expect(screen.getByText('Calculated gross pay')).toBeInTheDocument()
@@ -103,7 +103,7 @@ describe('GrossUpModal', () => {
     const netPayInput = screen.getByLabelText('Net amount')
     await user.clear(netPayInput)
     await user.type(netPayInput, '3500')
-    await user.click(screen.getByText('Calculate Gross from Net'))
+    await user.click(screen.getByText('Calculate'))
 
     await waitFor(() => {
       expect(screen.getByText('Apply')).toBeInTheDocument()
@@ -126,7 +126,7 @@ describe('GrossUpModal', () => {
     const netPayInput = screen.getByLabelText('Net amount')
     await user.clear(netPayInput)
     await user.type(netPayInput, '3500')
-    await user.click(screen.getByText('Calculate Gross from Net'))
+    await user.click(screen.getByText('Calculate'))
 
     await waitFor(() => {
       expect(
@@ -135,28 +135,15 @@ describe('GrossUpModal', () => {
     })
   })
 
-  it('displays warning banner only after calculation', async () => {
-    const onCalculateGrossUp = vi.fn().mockResolvedValue('5000.00')
-    const user = userEvent.setup()
-    renderWithProviders(<GrossUpModal {...defaultProps} onCalculateGrossUp={onCalculateGrossUp} />)
+  it('displays warning banner', async () => {
+    renderWithProviders(<GrossUpModal {...defaultProps} />)
 
     await waitFor(() => {
       expect(screen.getByLabelText('Net amount')).toBeInTheDocument()
     })
 
     expect(
-      screen.queryByText('This will override any previously entered amounts.'),
-    ).not.toBeInTheDocument()
-
-    const netPayInput = screen.getByLabelText('Net amount')
-    await user.clear(netPayInput)
-    await user.type(netPayInput, '3500')
-    await user.click(screen.getByText('Calculate Gross from Net'))
-
-    await waitFor(() => {
-      expect(
-        screen.getByText('This will override any previously entered amounts.'),
-      ).toBeInTheDocument()
-    })
+      screen.getByText('This will override any previously entered amounts.'),
+    ).toBeInTheDocument()
   })
 })
