@@ -1,6 +1,6 @@
 {
   "pageTitle": "Time off policies",
-  "addPolicyButton": "Add policy",
+  "addPolicyCta": "Add policy",
   "tableHeaders": {
     "name": "Name",
     "enrolled": "Enrolled",
@@ -15,10 +15,14 @@
   "employeeCount_other": "{{count}} employees",
   "incompleteBadge": "Incomplete",
   "holidayPayPolicy": "Holiday pay policy",
-  "deleteConfirmation": "Are you sure you want to delete the policy \"{{name}}\"?",
-  "deleteDescription": "This will delete the policy \"{{name}}\" and all associated time off requests.",
-  "deleteHolidayConfirmation": "Are you sure you want to delete the company holiday pay policy?",
-  "deleteHolidayDescription": "This will delete the company holiday pay policy.",
+  "deletePolicyDialog": {
+    "title": "Are you sure you want to delete the policy \"{{name}}\"?",
+    "description": "This will delete the policy \"{{name}}\" and all associated time off requests."
+  },
+  "deleteHolidayDialog": {
+    "title": "Are you sure you want to delete the company holiday pay policy?",
+    "description": "This will delete the company holiday pay policy."
+  },
   "emptyState": {
     "heading": "You haven't added any time off policies yet",
     "body": "Time off policies help you track and approve employee leave."

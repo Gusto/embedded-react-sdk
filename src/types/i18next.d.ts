@@ -452,11 +452,13 @@ export interface CompanyTimeOffHolidayPolicy{
 "holidayName":string;
 "observedDate":string;
 };
+"employeeTable":{
 "selected":string;
 "selectAllEmployees":string;
 "selectAll":string;
 "clearAriaLabel":string;
 "clear":string;
+};
 "editEmployees":{
 "title":string;
 };
@@ -479,7 +481,7 @@ export interface CompanyTimeOffHolidayPolicy{
 };
 export interface CompanyTimeOffTimeOffPolicies{
 "pageTitle":string;
-"addPolicyButton":string;
+"addPolicyCta":string;
 "tableHeaders":{
 "name":string;
 "enrolled":string;
@@ -494,10 +496,14 @@ export interface CompanyTimeOffTimeOffPolicies{
 "employeeCount_other":string;
 "incompleteBadge":string;
 "holidayPayPolicy":string;
-"deleteConfirmation":string;
-"deleteDescription":string;
-"deleteHolidayConfirmation":string;
-"deleteHolidayDescription":string;
+"deletePolicyDialog":{
+"title":string;
+"description":string;
+};
+"deleteHolidayDialog":{
+"title":string;
+"description":string;
+};
 "emptyState":{
 "heading":string;
 "body":string;
