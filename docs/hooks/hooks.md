@@ -113,6 +113,8 @@ function MyCustomTextInput(props: TextInputProps) {
 
 This is useful when you want to use a third-party input library for one field, add custom styling, or render a completely different control while still getting the hook's validation, error handling, and form binding for free.
 
+The `FieldComponent` prop is available on all field types: `TextInputProps`, `SelectProps`, `NumberInputProps`, `CheckboxProps`, `DatePickerProps`, `RadioGroupProps`, and `SwitchProps`. Import the corresponding prop type from `@gusto/embedded-react-sdk/UNSTABLE_Hooks` for type-safe implementations.
+
 ---
 
 ## Data
@@ -334,7 +336,16 @@ Each field component accepts a `validationMessages` prop that maps error codes t
 
 ```tsx
 import { EmployeeDetailsErrorCodes } from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'
-;<Fields.Email
+
+<Fields.FirstName
+  label="First name"
+  validationMessages={{
+    REQUIRED: 'First name is required',
+    INVALID_NAME: 'Enter a valid first name',
+  }}
+/>
+
+<Fields.Email
   label="Email"
   validationMessages={{
     REQUIRED: 'Email is required',
@@ -417,6 +428,47 @@ function OnboardingPage({ companyId, employeeId }: { companyId: string; employee
 ```
 
 Each `SDKFormProvider` scopes field metadata and error syncing to its respective hook. The outer `<form>` element uses the composed submit handler to coordinate everything.
+
+### Submit-time entity ID resolution
+
+In a create flow, the employee doesn't exist yet — so `useCompensationForm` and `useWorkAddressForm` can't receive an `employeeId` at init time. Both hooks accept `employeeId` as optional in their props and allow it to be provided at submit time via the `options` parameter:
+
+```tsx
+function CreateOnboardingPage({ companyId }: { companyId: string }) {
+  const employeeDetails = useEmployeeDetailsForm({
+    companyId,
+    shouldFocusError: false,
+  })
+
+  const compensation = useCompensationForm({
+    shouldFocusError: false,
+  })
+
+  const workAddress = useWorkAddressForm({
+    companyId,
+    shouldFocusError: false,
+  })
+
+  // ...loading checks...
+
+  const handleSubmit = composeSubmitHandler(
+    [employeeDetails, compensation, workAddress],
+    async () => {
+      const employeeResult = await employeeDetails.actions.onSubmit()
+      if (!employeeResult) return
+
+      const newEmployeeId = employeeResult.data.uuid
+
+      await compensation.actions.onSubmit(undefined, { employeeId: newEmployeeId })
+      await workAddress.actions.onSubmit(undefined, { employeeId: newEmployeeId })
+    },
+  )
+
+  // ...render forms...
+}
+```
+
+When `employeeId` is omitted from props, the hooks skip data fetching and render in create mode with empty defaults. The ID is resolved at submit time, avoiding re-render cycles that would tear down the form UI.
 
 ---
 

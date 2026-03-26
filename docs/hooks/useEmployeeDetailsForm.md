@@ -146,6 +146,7 @@ All fields accept `label` (required) and `description` (optional). Fields with v
 ```typescript
 const EmployeeDetailsErrorCodes = {
   REQUIRED: 'REQUIRED',
+  INVALID_NAME: 'INVALID_NAME',
   INVALID_EMAIL: 'INVALID_EMAIL',
   INVALID_SSN: 'INVALID_SSN',
   EMAIL_REQUIRED_FOR_SELF_ONBOARDING: 'EMAIL_REQUIRED_FOR_SELF_ONBOARDING',
@@ -156,14 +157,21 @@ const EmployeeDetailsErrorCodes = {
 
 ### Fields.FirstName
 
-Text input for the employee's first name.
+Text input for the employee's first name. Validates against `NAME_REGEX` to reject special characters.
 
-| Prop                 | Type                            | Required |
-| -------------------- | ------------------------------- | -------- |
-| `label`              | `string`                        | Yes      |
-| `description`        | `ReactNode`                     | No       |
-| `validationMessages` | `{ REQUIRED: string }`          | No       |
-| `FieldComponent`     | `ComponentType<TextInputProps>` | No       |
+| Prop                 | Type                                         | Required |
+| -------------------- | -------------------------------------------- | -------- |
+| `label`              | `string`                                     | Yes      |
+| `description`        | `ReactNode`                                  | No       |
+| `validationMessages` | `{ REQUIRED: string, INVALID_NAME: string }` | No       |
+| `FieldComponent`     | `ComponentType<TextInputProps>`              | No       |
+
+**Validation codes:**
+
+| Code           | When it triggers                                                     |
+| -------------- | -------------------------------------------------------------------- |
+| `REQUIRED`     | Field is empty and required (always required on create)              |
+| `INVALID_NAME` | Value contains characters not allowed by the name validation pattern |
 
 **Required by default on create.**
 
@@ -172,6 +180,7 @@ Text input for the employee's first name.
   label="First name"
   validationMessages={{
     REQUIRED: 'First name is required',
+    INVALID_NAME: 'Enter a valid first name',
   }}
 />
 ```
@@ -198,14 +207,21 @@ No validation codes — this field is always optional.
 
 ### Fields.LastName
 
-Text input for the employee's last name.
+Text input for the employee's last name. Validates against `NAME_REGEX` to reject special characters.
 
-| Prop                 | Type                            | Required |
-| -------------------- | ------------------------------- | -------- |
-| `label`              | `string`                        | Yes      |
-| `description`        | `ReactNode`                     | No       |
-| `validationMessages` | `{ REQUIRED: string }`          | No       |
-| `FieldComponent`     | `ComponentType<TextInputProps>` | No       |
+| Prop                 | Type                                         | Required |
+| -------------------- | -------------------------------------------- | -------- |
+| `label`              | `string`                                     | Yes      |
+| `description`        | `ReactNode`                                  | No       |
+| `validationMessages` | `{ REQUIRED: string, INVALID_NAME: string }` | No       |
+| `FieldComponent`     | `ComponentType<TextInputProps>`              | No       |
+
+**Validation codes:**
+
+| Code           | When it triggers                                                     |
+| -------------- | -------------------------------------------------------------------- |
+| `REQUIRED`     | Field is empty and required (always required on create)              |
+| `INVALID_NAME` | Value contains characters not allowed by the name validation pattern |
 
 **Required by default on create.**
 
@@ -214,6 +230,7 @@ Text input for the employee's last name.
   label="Last name"
   validationMessages={{
     REQUIRED: 'Last name is required',
+    INVALID_NAME: 'Enter a valid last name',
   }}
 />
 ```
@@ -309,10 +326,11 @@ The `fieldsMetadata.ssn.hasRedactedValue` flag indicates whether the employee al
 
 Switch toggle for inviting the employee to self-onboard. When enabled, the employee receives an email invitation to enter their own personal, tax, and banking details.
 
-| Prop          | Type        | Required |
-| ------------- | ----------- | -------- |
-| `label`       | `string`    | Yes      |
-| `description` | `ReactNode` | No       |
+| Prop             | Type                         | Required |
+| ---------------- | ---------------------------- | -------- |
+| `label`          | `string`                     | Yes      |
+| `description`    | `ReactNode`                  | No       |
+| `FieldComponent` | `ComponentType<SwitchProps>` | No       |
 
 No validation codes.
 
@@ -427,14 +445,20 @@ function EmployeeDetailsFormReady({
 
         <Fields.FirstName
           label="First name"
-          validationMessages={{ REQUIRED: 'First name is required' }}
+          validationMessages={{
+            REQUIRED: 'First name is required',
+            INVALID_NAME: 'Enter a valid first name',
+          }}
         />
 
         <Fields.MiddleInitial label="Middle initial" />
 
         <Fields.LastName
           label="Last name"
-          validationMessages={{ REQUIRED: 'Last name is required' }}
+          validationMessages={{
+            REQUIRED: 'Last name is required',
+            INVALID_NAME: 'Enter a valid last name',
+          }}
         />
 
         <Fields.Email

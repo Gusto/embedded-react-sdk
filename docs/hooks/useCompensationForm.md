@@ -17,15 +17,15 @@ import { useCompensationForm, SDKFormProvider } from '@gusto/embedded-react-sdk/
 
 `useCompensationForm` accepts a single options object:
 
-| Prop                 | Type                                                                                    | Required | Default      | Description                                                                                                                                                          |
-| -------------------- | --------------------------------------------------------------------------------------- | -------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `employeeId`         | `string`                                                                                | Yes      | —            | The UUID of the employee.                                                                                                                                            |
-| `jobId`              | `string`                                                                                | No       | —            | The UUID of a specific job to edit. If omitted and the employee has exactly one job, that job is used. If omitted and the employee has no jobs, create mode is used. |
-| `withStartDateField` | `boolean`                                                                               | No       | `true`       | Whether to include the start date field. When `false`, pass start date via `onSubmit` options instead.                                                               |
-| `requiredFields`     | `CompensationField[] \| { create?: CompensationField[], update?: CompensationField[] }` | No       | —            | Additional fields to make required beyond API defaults. A flat array applies to both modes; an object targets specific modes.                                        |
-| `defaultValues`      | `Partial<CompensationFormData>`                                                         | No       | —            | Pre-fill form values. Server data takes precedence when editing an existing job.                                                                                     |
-| `validationMode`     | `'onSubmit' \| 'onBlur' \| 'onChange' \| 'onTouched' \| 'all'`                          | No       | `'onSubmit'` | When validation runs. Passed through to react-hook-form.                                                                                                             |
-| `shouldFocusError`   | `boolean`                                                                               | No       | `true`       | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`.                                                                      |
+| Prop                 | Type                                                                                    | Required | Default      | Description                                                                                                                                                                                                    |
+| -------------------- | --------------------------------------------------------------------------------------- | -------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `employeeId`         | `string`                                                                                | No       | —            | The UUID of the employee. Optional for composed form scenarios where the ID isn't known until a prior form submits — pass it via `onSubmit` options instead. Required for update mode (fetches existing data). |
+| `jobId`              | `string`                                                                                | No       | —            | The UUID of a specific job to edit. If omitted and the employee has exactly one job, that job is used. If omitted and the employee has no jobs, create mode is used.                                           |
+| `withStartDateField` | `boolean`                                                                               | No       | `true`       | Whether to include the start date field. When `false`, pass start date via `onSubmit` options instead.                                                                                                         |
+| `requiredFields`     | `CompensationField[] \| { create?: CompensationField[], update?: CompensationField[] }` | No       | —            | Additional fields to make required beyond API defaults. A flat array applies to both modes; an object targets specific modes.                                                                                  |
+| `defaultValues`      | `Partial<CompensationFormData>`                                                         | No       | —            | Pre-fill form values. Server data takes precedence when editing an existing job.                                                                                                                               |
+| `validationMode`     | `'onSubmit' \| 'onBlur' \| 'onChange' \| 'onTouched' \| 'all'`                          | No       | `'onSubmit'` | When validation runs. Passed through to react-hook-form.                                                                                                                                                       |
+| `shouldFocusError`   | `boolean`                                                                               | No       | `true`       | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`.                                                                                                                |
 
 ### CompensationField
 
@@ -37,10 +37,10 @@ type CompensationField = 'jobTitle' | 'flsaStatus' | 'rate' | 'paymentUnit' | 's
 
 ### Required Fields
 
-**Required by default on create:** `jobTitle`, `flsaStatus`, `rate`, `paymentUnit` (plus `startDate` when `withStartDateField` is `true`)
+**Required by default on create:** `jobTitle`, `flsaStatus`, `rate`, `paymentUnit`
 **Required by default on update:** (none)
 
-All `CompensationField` values are available to require in either mode. Note that `startDate` requirements are ignored when `withStartDateField` is `false`.
+All `CompensationField` values are available to require in either mode. For example, pass `requiredFields: ['startDate']` to make the start date required on create. Note that `startDate` requirements are ignored when `withStartDateField` is `false`.
 
 Cross-field validations (e.g., `minimumWageId` required when `adjustForMinimumWage` is `true`, workers' comp fields required in WA) are always enforced by the schema regardless of `requiredFields`.
 
@@ -129,6 +129,7 @@ interface CompensationSubmitCallbacks {
 }
 
 interface CompensationSubmitOptions {
+  employeeId?: string // Provide at submit time for composed forms where employeeId is not in props
   startDate?: string // Pass a start date programmatically when withStartDateField is false
 }
 ```
