@@ -71,7 +71,6 @@ export {
   type FormFieldsMetadataContextValue,
   type ValidationMessages,
   type BaseFieldProps,
-  type ComposableFormHookResult,
 
   // Generic hook field prop types
   type TextInputHookFieldProps,

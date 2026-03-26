@@ -1,5 +1,5 @@
 ---
-description: Guide for implementing new UNSTABLE_Hooks form hooks (e.g. useEmployeeForm, useBankAccountForm). Covers file structure, schema, fields, data sync, exports, and the FieldComponent pattern.
+description: Guide for implementing new UNSTABLE_Hooks form hooks (e.g. useEmployeeForm, useBankAccountForm). Covers file structure, schema, fields, data sync, exports, FieldComponent pattern, validation parity, and regression testing.
 globs: src/components/UNSTABLE_Hooks/**/*.{ts,tsx}
 alwaysApply: false
 ---
@@ -7,8 +7,10 @@ alwaysApply: false
 # Implementing UNSTABLE_Hooks Form Hooks
 
 Reference implementations:
+
 - **Schema pattern + configurable required fields**: `useEmployeeDetailsForm` at `src/components/UNSTABLE_Hooks/hooks/useEmployeeDetailsForm/`
 - **Complex cross-field validation + preprocess coercion**: `useCompensationForm` at `src/components/UNSTABLE_Hooks/hooks/useCompensationForm/`
+- **Standalone form with optional entity ID**: `useWorkAddressForm` at `src/components/UNSTABLE_Hooks/hooks/useWorkAddressForm/`
 
 ## File Structure
 
@@ -95,6 +97,16 @@ export function create{Domain}Schema(options: {Domain}SchemaOptions = {}) {
 }
 ```
 
+### `requiredIf` and Null Coercion
+
+`requiredIf` (in `src/helpers/requiredIf.ts`) wraps optional fields with `z.preprocess` to convert empty values to `undefined`. This must handle **both** `''` (empty string from text inputs) and `null` (from DatePickers and Selects that return `null` on clear):
+
+```typescript
+z.preprocess(v => (v === '' || v === null ? undefined : v), validator.optional())
+```
+
+Missing `null` coercion causes Zod to fail validation on cleared optional Select/DatePicker fields because `null` doesn't match the field's type validator.
+
 ### Partner API: `requiredFields`
 
 Partners pass `requiredFields: { create: ['email'], update: ['ssn'] }` to the hook. The hook resolves the correct array based on mode and passes it to the schema:
@@ -104,14 +116,16 @@ const modeRequiredFields = isCreateMode ? requiredFields?.create : requiredField
 const schema = create{Domain}Schema({ mode, requiredFields: modeRequiredFields })
 ```
 
+**Prebuilt components can also set `requiredFields` internally.** For example, the prebuilt `EmployeeDetailsForm` passes `requiredFields: { update: ['ssn'] }` to make SSN required during update when the employee doesn't have one on file (`hasSsn: false`). This is separate from partner overrides — it encodes business logic that the prebuilt form enforces. The custom (partner) form does not inherit these unless the partner passes them explicitly.
+
 ### When to Use `superRefine` vs. Schema Options vs. `requiredFields`
 
-| Technique | When to use | Example | `deriveFieldsMetadata` detects it? |
-|---|---|---|---|
-| `requiredOnCreate` / `requiredOnUpdate` | API-mandated defaults per endpoint | `firstName` required on create | Yes |
-| `requiredFields` (partner) | Partner wants additional fields required | `['ssn']` on update | Yes |
-| Schema options (e.g. `hasSsn`) | Static prop known at construction time | Skip SSN when already on file | Yes (filtered before schema build) |
-| `superRefine` | Cross-field deps on runtime form values | Email required when selfOnboarding is on | No — runtime only |
+| Technique                               | When to use                              | Example                                  | `deriveFieldsMetadata` detects it? |
+| --------------------------------------- | ---------------------------------------- | ---------------------------------------- | ---------------------------------- |
+| `requiredOnCreate` / `requiredOnUpdate` | API-mandated defaults per endpoint       | `firstName` required on create           | Yes                                |
+| `requiredFields` (partner)              | Partner wants additional fields required | `['ssn']` on update                      | Yes                                |
+| Schema options (e.g. `hasSsn`)          | Static prop known at construction time   | Skip SSN when already on file            | Yes (filtered before schema build) |
+| `superRefine`                           | Cross-field deps on runtime form values  | Email required when selfOnboarding is on | No — runtime only                  |
 
 ### `toJSONSchema` Compatibility
 
@@ -121,13 +135,13 @@ const schema = create{Domain}Schema({ mode, requiredFields: modeRequiredFields }
 
 #### Restricted Zod types and their replacements
 
-| Restricted | Why it fails | Replacement |
-|---|---|---|
-| `z.transform()` | Transforms have no JSON Schema representation | `z.preprocess()` — runs coercion before validation instead of after |
-| `z.string().transform(fn)` | Same — any `.transform()` in a pipeline | `z.preprocess(fn, targetValidator)` |
-| `z.date()` | `Date` objects are not JSON-serializable | `z.iso.date()` — validates ISO 8601 date strings (`YYYY-MM-DD`) |
-| `z.nan()` / `z.number().or(z.nan())` | `NaN` has no JSON Schema type | `z.preprocess(val => Number.isNaN(val) ? undefined : val, z.number())` |
-| `z.union([z.boolean(), z.string().transform()])` | Transform inside union | `z.preprocess(val => typeof val === 'string' ? val === 'true' : val, z.boolean())` |
+| Restricted                                       | Why it fails                                  | Replacement                                                                        |
+| ------------------------------------------------ | --------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `z.transform()`                                  | Transforms have no JSON Schema representation | `z.preprocess()` — runs coercion before validation instead of after                |
+| `z.string().transform(fn)`                       | Same — any `.transform()` in a pipeline       | `z.preprocess(fn, targetValidator)`                                                |
+| `z.date()`                                       | `Date` objects are not JSON-serializable      | `z.iso.date()` — validates ISO 8601 date strings (`YYYY-MM-DD`)                    |
+| `z.nan()` / `z.number().or(z.nan())`             | `NaN` has no JSON Schema type                 | `z.preprocess(val => Number.isNaN(val) ? undefined : val, z.number())`             |
+| `z.union([z.boolean(), z.string().transform()])` | Transform inside union                        | `z.preprocess(val => typeof val === 'string' ? val === 'true' : val, z.boolean())` |
 
 #### `z.preprocess` trade-off: type inference
 
@@ -154,10 +168,9 @@ export const ObjectSchema = z.object({
     val => (val instanceof Date ? val.toISOString().split('T')[0] : val),
     z.iso.date().nullable().optional(),
   ),
-  stateWcCovered: z.preprocess(
-    val => (typeof val === 'string' ? val === 'true' : val),
-    z.boolean(),
-  ).optional(),
+  stateWcCovered: z
+    .preprocess(val => (typeof val === 'string' ? val === 'true' : val), z.boolean())
+    .optional(),
 })
 ```
 
@@ -205,6 +218,48 @@ export function JobTitleField(props: JobTitleFieldProps) {
 - Use `@gusto/embedded-api/react-query/*` hooks for all API calls
 - Gate dependent queries with `enabled: !!dependency`
 - Use `useErrorHandling` to build the `errorHandling` bag (see Error Handling section below)
+
+### Optional Entity IDs and Submit-Time Resolution
+
+When a hook depends on an entity ID (e.g. `employeeId`) for both **fetching** and **creating**, make it optional in props and accept it via submit options. This lets partners compose hooks without managing re-render cycles from prop changes.
+
+**Why**: In a composed form, creating an employee returns an ID that compensation and work address need. If that ID is passed as a prop, updating it triggers query refetching, which puts the hook back into its loading state and tears down the form UI. Passing the ID at submit time instead avoids this entirely — the form stays rendered and the ID is resolved when the mutation fires.
+
+**Pattern**:
+
+1. Make the ID optional in props: `employeeId?: string`
+2. Gate queries with `enabled`: `useGetJobs({ employeeId: employeeId ?? '' }, { enabled: !!employeeId })`
+3. Conditionally include queries in the error handling array: `const queries = employeeId ? [jobsQuery, ...] : []`
+4. Skip the loading guard when the ID is absent: `const isDataLoading = employeeId ? jobsQuery.isLoading : false`
+5. Add the ID to the submit options interface: `{ employeeId?: string; ... }`
+6. Resolve in the submit handler: `const resolvedId = options?.employeeId ?? employeeId`
+7. Guard before mutation: `if (!resolvedId) throw new SDKInternalError('employeeId is required to submit')`
+
+```typescript
+// Props — ID is optional
+interface UseCompensationFormProps {
+  employeeId?: string
+  // ...
+}
+
+// Submit options — ID can be provided at submit time
+interface CompensationSubmitOptions {
+  employeeId?: string
+  startDate?: string
+}
+
+// Inside the hook
+const jobsQuery = useGetJobs({ employeeId: employeeId ?? '' }, { enabled: !!employeeId })
+const queries = employeeId ? [jobsQuery, addressesQuery, employeeQuery] : []
+const isDataLoading = employeeId ? jobsQuery.isLoading || ... : false
+
+// Inside onSubmit
+const resolvedEmployeeId = options?.employeeId ?? employeeId
+if (!resolvedEmployeeId) throw new SDKInternalError('employeeId is required')
+await createJobMutation.mutateAsync({ request: { employeeId: resolvedEmployeeId, ... } })
+```
+
+**When to use this pattern**: When the entity ID is needed for a create mutation but the hook also uses it to fetch existing data. This is the common case for hooks that support both create and update modes. If the ID is only ever used for fetching (pure update-mode hooks), just keep it required.
 
 ### Form Defaults and Data Sync
 
@@ -334,11 +389,86 @@ Infrastructure utilities like `deriveFieldsMetadata`, `withOptions`, `FormFields
 
 Do NOT re-export `@gusto/embedded-api` entity types directly — partners derive them from field prop generics (e.g. `NonNullable<FlsaStatusFieldProps['getOptionLabel']>` infers the entity type).
 
-## 7. Parity Reference
+## 7. Validation Parity with Stable Components
 
-Compare against the existing prebuilt component in `src/components/Employee/Compensation/` (or the relevant domain under `src/components/`). Use `../gws-flows` for current API behavior and response shapes. The hook should support every field and business rule the prebuilt component handles.
+Hook schemas must match the validation rules of the existing stable components in `src/components/Employee/`, `src/components/Contractor/`, etc. Gaps found during QA:
 
-## 8. Testing
+### Known Validation Patterns to Carry Forward
+
+| Pattern | Where it lives | Hook must include |
+| --- | --- | --- |
+| `NAME_REGEX` on first/last name | `src/helpers/validations.ts` | `.regex(NAME_REGEX, { message: ErrorCodes.INVALID_NAME })` |
+| `SSN_REGEX` on SSN field | `src/helpers/validations.ts` | `.refine(v => SSN_REGEX.test(v.replace(/\D/g, '')), ...)` |
+| Exempt salary threshold | `Employee/Compensation/useCompensation.ts` | `superRefine` with `FLSA_OVERTIME_SALARY_LIMIT` check |
+| Commission-only rate = 0 | Same | `superRefine` enforcing `rate === 0` |
+| Owner payment unit = Paycheck | Same | `superRefine` enforcing `paymentUnit === 'Paycheck'` |
+
+When adding new hooks, check `src/helpers/validations.ts` for shared regex/validators and the stable component's schema for cross-field `superRefine` rules.
+
+### Payload Parity Checklist
+
+Before shipping a hook, verify the actual HTTP request bodies match the stable component for the same operation. Differences in field inclusion, key naming, or value formatting are regressions.
+
+Verified parity status:
+
+| Hook | PUT payload match | Validation match | Notes |
+| --- | --- | --- | --- |
+| `useCompensationForm` | Identical | All cross-field rules present | Hook uses typed error codes vs string literals (improvement) |
+| `useEmployeeDetailsForm` | Identical | `NAME_REGEX` added to close gap | Stable form sends compound (employee + home addr + work addr); hook sends employee only (by design) |
+| `useWorkAddressForm` | Identical | No gaps | Stable form embeds work address in Profile; hook is standalone |
+
+## 8. Regression Testing with gws-flows Comparison Pages
+
+The `gws-flows` repo has side-by-side comparison pages that render the stable component, the prebuilt hook component, and a custom partner-built form using the same hook — all against the same employee data. These are the primary tool for verifying parity.
+
+### Comparison Pages
+
+| Page | URL pattern | Columns |
+| --- | --- | --- |
+| Compensation | `/react_sdk/compensation-comparison/:employeeId` | `Employee.Compensation` / `CompensationForm` / Custom |
+| Employee Details | `/react_sdk/employee-details-comparison` (with Employee ID input) | `Employee.Profile` / `EmployeeDetailsForm` / Custom |
+| Work Address | `/react_sdk/work-address-comparison` (with Employee ID input) | `WorkAddressForm` / Custom |
+
+### Payload Comparison Technique
+
+Use Playwright's `page.route()` to intercept and capture PUT/POST request bodies from each form column, then diff them:
+
+1. Install route interception via `browser_run_code`:
+   ```javascript
+   page.__capturedBodies = [];
+   await page.route('**/fe_sdk/**', async (route) => {
+     const request = route.request();
+     if (['PUT', 'POST', 'PATCH'].includes(request.method())) {
+       page.__capturedBodies.push({
+         url: request.url(),
+         method: request.method(),
+         body: request.postDataJSON(),
+       });
+     }
+     await route.continue();
+   });
+   ```
+2. Submit each form column, reading captured bodies between submissions
+3. Compare request URLs, methods, and JSON bodies across columns
+
+### Bypassing React Aria Components
+
+React Aria's Select, DatePicker, and Switch components intercept pointer events and are difficult for Playwright to interact with directly. Two workarounds:
+
+1. **`FieldComponent` overrides in gws-flows**: The custom form column uses native HTML inputs (`<input>`, `<select>`, `<input type="date">`, `<input type="checkbox">`) via the `FieldComponent` prop, making Playwright interaction reliable.
+
+2. **API-first data setup**: Instead of fighting React Aria in the browser, use the Gusto Payroll MCP or direct `curl` calls to the local `fe_sdk` proxy to set up employee data (SSN, home address, start date, etc.), then reload the page. Both stable and hook forms pick up the data automatically — no need to interact with complex form controls.
+
+### What to Verify
+
+- **Field visibility**: Do the same fields appear in each column? Are optional/required markers consistent?
+- **Field values**: Are pre-populated values identical (formatting, defaults)?
+- **Validation behavior**: Do the same inputs trigger the same errors?
+- **Submit payloads**: Are the HTTP request bodies byte-identical for the same operation?
+- **Multi-request submissions**: Does the stable form send additional requests (e.g. home address, work address, onboarding status) that the hook intentionally omits? Document these as by-design differences.
+
+## 9. Unit Testing
 
 - Run `npm run test -- --run` (never `npm run test` — it hangs in watch mode)
 - Run `npm run build` after changes to regenerate `.d.ts` files for gws-flows consumption
+- Always run `npm run build` before considering a PR ready — TypeScript errors in prebuilt components (e.g. missing `validationMessages` keys) only surface during build, not in unit tests

@@ -1,10 +1,11 @@
 import { z } from 'zod'
 import { composeFormSchema } from '../../form/composeFormSchema'
 import { filterRequiredFields, type RequiredFields } from '../../form/resolveRequiredFields'
-import { SSN_REGEX } from '@/helpers/validations'
+import { SSN_REGEX, NAME_REGEX } from '@/helpers/validations'
 
 export const EmployeeDetailsErrorCodes = {
   REQUIRED: 'REQUIRED',
+  INVALID_NAME: 'INVALID_NAME',
   INVALID_EMAIL: 'INVALID_EMAIL',
   INVALID_SSN: 'INVALID_SSN',
   EMAIL_REQUIRED_FOR_SELF_ONBOARDING: 'EMAIL_REQUIRED_FOR_SELF_ONBOARDING',
@@ -14,9 +15,15 @@ export type EmployeeDetailsErrorCode =
   (typeof EmployeeDetailsErrorCodes)[keyof typeof EmployeeDetailsErrorCodes]
 
 const fieldValidators = {
-  firstName: z.string().min(1, { message: EmployeeDetailsErrorCodes.REQUIRED }),
+  firstName: z
+    .string()
+    .min(1, { message: EmployeeDetailsErrorCodes.REQUIRED })
+    .regex(NAME_REGEX, { message: EmployeeDetailsErrorCodes.INVALID_NAME }),
   middleInitial: z.string(),
-  lastName: z.string().min(1, { message: EmployeeDetailsErrorCodes.REQUIRED }),
+  lastName: z
+    .string()
+    .min(1, { message: EmployeeDetailsErrorCodes.REQUIRED })
+    .regex(NAME_REGEX, { message: EmployeeDetailsErrorCodes.INVALID_NAME }),
   email: z.email({
     error: issue =>
       typeof issue.input === 'string' && issue.input.length === 0

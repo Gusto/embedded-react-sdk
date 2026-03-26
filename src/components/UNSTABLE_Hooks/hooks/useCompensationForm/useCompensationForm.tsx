@@ -50,13 +50,14 @@ export interface CompensationSubmitCallbacks {
 }
 
 export interface CompensationSubmitOptions {
+  employeeId?: string
   startDate?: string
 }
 
 export type CompensationRequiredFields = RequiredFields<CompensationField>
 
 export interface UseCompensationFormProps {
-  employeeId: string
+  employeeId?: string
   withStartDateField?: boolean
   jobId?: string
   requiredFields?: CompensationRequiredFields
@@ -112,9 +113,15 @@ export function useCompensationForm({
   validationMode = 'onSubmit',
   shouldFocusError = true,
 }: UseCompensationFormProps) {
-  const jobsQuery = useJobsAndCompensationsGetJobs({ employeeId })
-  const addressesQuery = useEmployeeAddressesGetWorkAddresses({ employeeId })
-  const employeeQuery = useEmployeesGet({ employeeId })
+  const jobsQuery = useJobsAndCompensationsGetJobs(
+    { employeeId: employeeId ?? '' },
+    { enabled: !!employeeId },
+  )
+  const addressesQuery = useEmployeeAddressesGetWorkAddresses(
+    { employeeId: employeeId ?? '' },
+    { enabled: !!employeeId },
+  )
+  const employeeQuery = useEmployeesGet({ employeeId: employeeId ?? '' }, { enabled: !!employeeId })
 
   const employeeJobs = jobsQuery.data?.jobList
   const workAddresses = addressesQuery.data?.employeeWorkAddressesList
@@ -229,7 +236,9 @@ export function useCompensationForm({
 
   const { baseSubmitHandler, error: submitError, setError } = useBaseSubmit('CompensationForm')
 
-  const queries = [jobsQuery, addressesQuery, employeeQuery, minWagesQuery, taxQuery]
+  const queries = employeeId
+    ? [jobsQuery, addressesQuery, employeeQuery, minWagesQuery, taxQuery]
+    : []
   const errorHandling = useErrorHandling(queries, { error: submitError, setError })
 
   const isCommissionOnly =
@@ -268,7 +277,7 @@ export function useCompensationForm({
       flsaOptions,
       flsaStatusEntries,
     ),
-    rate: { ...baseMetadata.rate, isRequired: true, isDisabled: isCommissionOnly },
+    rate: { ...baseMetadata.rate, isDisabled: isCommissionOnly },
     paymentUnit: withOptions<PaymentUnit>(
       { ...baseMetadata.paymentUnit, isDisabled: isOwner || isCommissionOnly },
       paymentUnitOptions,
@@ -312,6 +321,12 @@ export function useCompensationForm({
       void formMethods.handleSubmit(
         async (data: CompensationFormOutputs) => {
           await baseSubmitHandler(data, async payload => {
+            const resolvedEmployeeId = options?.employeeId ?? employeeId
+
+            if (!resolvedEmployeeId) {
+              throw new SDKInternalError('employeeId is required to submit compensation')
+            }
+
             const {
               jobTitle,
               twoPercentShareholder,
@@ -331,7 +346,7 @@ export function useCompensationForm({
 
               const result = await createJobMutation.mutateAsync({
                 request: {
-                  employeeId,
+                  employeeId: resolvedEmployeeId,
                   requestBody: {
                     title: jobTitle,
                     hireDate: resolvedHireDate,
@@ -400,21 +415,23 @@ export function useCompensationForm({
     return submitResult
   }
 
-  const isDataLoading =
-    jobsQuery.isLoading ||
-    addressesQuery.isLoading ||
-    employeeQuery.isLoading ||
-    minWagesQuery.isLoading ||
-    taxQuery.isLoading
+  const isDataLoading = employeeId
+    ? jobsQuery.isLoading ||
+      addressesQuery.isLoading ||
+      employeeQuery.isLoading ||
+      minWagesQuery.isLoading ||
+      taxQuery.isLoading
+    : false
 
   if (
     isDataLoading ||
-    !employeeJobs ||
-    !workAddresses ||
-    !currentWorkAddress ||
-    !employee ||
-    !companyUuid ||
-    !federalTaxDetails
+    (employeeId &&
+      (!employeeJobs ||
+        !workAddresses ||
+        !currentWorkAddress ||
+        !employee ||
+        !companyUuid ||
+        !federalTaxDetails))
   ) {
     return { isLoading: true as const, errorHandling }
   }

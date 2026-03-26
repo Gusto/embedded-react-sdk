@@ -19,7 +19,7 @@ function CompensationFormRoot({ onEvent, dictionary, ...hookProps }: Compensatio
   const { t } = useTranslation('UNSTABLE.CompensationForm')
   const Components = useComponentContext()
   const formatCurrency = useNumberFormatter('currency')
-  const compensation = useCompensationForm(hookProps)
+  const compensation = useCompensationForm({ ...hookProps, requiredFields: ['startDate'] })
 
   if (compensation.isLoading) {
     return <BaseLayout isLoading error={compensation.errorHandling.errors} />

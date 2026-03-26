@@ -20,6 +20,7 @@ export {
 } from './employeeDetailsSchema'
 export type {
   RequiredValidation as EmployeeDetailsRequiredValidation,
+  NameValidation,
   EmailValidation,
   SsnValidation,
   FirstNameFieldProps,

@@ -14,10 +14,12 @@
   "updateCta": "Save changes",
   "fieldValidations": {
     "firstName": {
-      "REQUIRED": "First name is required"
+      "REQUIRED": "First name is required",
+      "INVALID_NAME": "Enter a valid first name"
     },
     "lastName": {
-      "REQUIRED": "Last name is required"
+      "REQUIRED": "Last name is required",
+      "INVALID_NAME": "Enter a valid last name"
     },
     "email": {
       "REQUIRED": "Email is required",

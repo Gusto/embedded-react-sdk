@@ -16,7 +16,6 @@ export type {
   FormFieldsMetadataContextValue,
   ValidationMessages,
   BaseFieldProps,
-  ComposableFormHookResult,
   TextInputHookFieldProps,
   SelectHookFieldProps,
   CheckboxHookFieldProps,
@@ -31,6 +30,8 @@ export type {
   DatePickerProps,
   RadioGroupProps,
   RadioGroupOption,
+  SwitchHookFieldProps,
+  SwitchProps,
 } from './form'
 export { collectErrors } from './collectErrors'
 
@@ -48,6 +49,7 @@ export {
   NumberInputHookField,
   DatePickerHookField,
   RadioGroupHookField,
+  SwitchHookField,
 } from './form'
 
 export {
@@ -100,6 +102,7 @@ export {
   type EmployeeDetailsFormOutputs,
   type EmployeeDetailsField,
   type EmployeeDetailsRequiredValidation,
+  type NameValidation,
   type EmailValidation,
   type SsnValidation,
   type FirstNameFieldProps,
