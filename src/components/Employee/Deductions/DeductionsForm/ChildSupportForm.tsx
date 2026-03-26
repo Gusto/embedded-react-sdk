@@ -86,10 +86,19 @@ function ChildSupportForm({
   const requiredSelectedAgencyAttributes =
     selectedAgency?.requiredAttributes
       ?.map(attr => {
-        if (!attr.key || !(attr.key in ATTR_KEY_TO_TEXT_FIELD_NAME_MAPPER)) {
+        if (!attr.key) {
           return null
         }
-        const mappedAttr = ATTR_KEY_TO_TEXT_FIELD_NAME_MAPPER[attr.key]
+        if (
+          !Object.prototype.hasOwnProperty.call(
+            ATTR_KEY_TO_TEXT_FIELD_NAME_MAPPER,
+            attr.key,
+          )
+        ) {
+          return null
+        }
+        const key = attr.key as keyof typeof ATTR_KEY_TO_TEXT_FIELD_NAME_MAPPER
+        const mappedAttr = ATTR_KEY_TO_TEXT_FIELD_NAME_MAPPER[key]
         return {
           name: mappedAttr.name,
           label: attr.label as string,
