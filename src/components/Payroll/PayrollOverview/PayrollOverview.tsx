@@ -174,10 +174,10 @@ export const Root = ({
     ) {
       setIsPolling(true)
     }
-    // Stop polling and emit event when payroll is processed successfully
     if (
       isPolling &&
-      payrollData.processingRequest?.status === PAYROLL_PROCESSING_STATUS.submit_success
+      (payrollData.processed === true ||
+        payrollData.processingRequest?.status === PAYROLL_PROCESSING_STATUS.submit_success)
     ) {
       onEvent(componentEvents.RUN_PAYROLL_PROCESSED, {
         payPeriod: payrollData.payPeriod,
@@ -222,12 +222,13 @@ export const Root = ({
     }
   }, [
     payrollData.processingRequest?.status,
+    payrollData.processed,
     isPolling,
     onEvent,
     t,
     dateFormatter,
     formatCurrency,
-    payrollData.totals?.netPayDebit,
+    payrollData.totals?.companyDebit,
     payrollData.payrollStatusMeta?.expectedDebitTime,
     payrollData.payrollDeadline,
   ])

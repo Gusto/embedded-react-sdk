@@ -1,5 +1,7 @@
 import React from 'react'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import UserIcon from '@/assets/icons/user-02.svg?react'
+import EditIcon from '@/assets/icons/edit-02.svg?react'
 
 export default {
   title: 'UI/Components/Button',
@@ -116,6 +118,77 @@ export const ButtonGrid = () => {
           </div>
         ))}
       </React.Fragment>
+    </div>
+  )
+}
+
+export const WithIcon = () => {
+  const Components = useComponentContext()
+  return (
+    <div style={{ display: 'flex', gap: '12px', padding: '24px' }}>
+      <Components.Button variant="secondary" icon={<UserIcon />} onClick={() => {}}>
+        Add employees
+      </Components.Button>
+      <Components.Button variant="secondary" icon={<EditIcon />} onClick={() => {}}>
+        Edit policy
+      </Components.Button>
+    </div>
+  )
+}
+
+export const WithIconGrid = () => {
+  const Components = useComponentContext()
+  const states = [
+    { label: 'Default', props: {} },
+    { label: 'Loading', props: { isLoading: true } },
+    { label: 'Disabled', props: { isDisabled: true } },
+  ]
+
+  const variants = [
+    { label: 'Primary', variant: 'primary' as const },
+    { label: 'Secondary', variant: 'secondary' as const },
+    { label: 'Tertiary', variant: 'tertiary' as const },
+    { label: 'Error', variant: 'error' as const },
+  ]
+
+  return (
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: `auto repeat(${states.length}, 1fr)`,
+        gap: '16px',
+        padding: '24px',
+        borderRadius: '8px',
+        margin: '24px 0',
+      }}
+    >
+      <div style={{ gridColumn: '1 / 1' }}></div>
+      {states.map((state, idx) => (
+        <div key={idx} style={{ textAlign: 'center', fontWeight: 'bold', paddingBottom: '16px' }}>
+          {state.label}
+        </div>
+      ))}
+
+      {variants.map(({ label, variant }) => (
+        <React.Fragment key={`row-${variant}`}>
+          <div style={{ fontWeight: 'bold', alignSelf: 'center' }}>{label}</div>
+          {states.map((state, stateIdx) => (
+            <div
+              key={`${variant}-${stateIdx}`}
+              style={{ display: 'flex', justifyContent: 'center', padding: '8px 0' }}
+            >
+              <Components.Button
+                variant={variant}
+                icon={<EditIcon />}
+                onClick={() => {}}
+                {...state.props}
+              >
+                {label}
+              </Components.Button>
+            </div>
+          ))}
+        </React.Fragment>
+      ))}
     </div>
   )
 }

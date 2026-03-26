@@ -23,6 +23,19 @@
     cursor: pointer;
     border: 1px solid var(--g-colorPrimary);
 
+    .icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      line-height: 0;
+
+      svg {
+        width: toRem(20);
+        height: toRem(20);
+      }
+    }
+
     &:hover:not([data-disabled]) {
       background: var(--g-colorPrimaryAccent);
       border-color: var(--g-colorPrimaryAccent);

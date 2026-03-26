@@ -13,7 +13,7 @@
   },
   "wageTypeGroups": {
     "regular": {
-      "label": "Regular hours, regular wages, tips",
+      "label": "Regular hours, regular wages, and tips",
       "description": "These earnings should be taxed at a rate that matches your employees' regular pay schedule."
     },
     "supplemental": {
@@ -28,7 +28,7 @@
     "title": "Tax withholding rates",
     "regularSection": {
       "title": "Rate for regular wages and earnings",
-      "subtitle": "For regular hours, regular wages, tips",
+      "subtitle": "Includes regular hours, regular wages, and tips",
       "rateLabel": "Rate is based on payment schedule of",
       "rateDescription": "Regular wages should be taxed at a rate matching your employees' regular pay schedule. Select the most accurate pay schedule."
     },
