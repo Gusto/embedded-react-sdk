@@ -89,6 +89,9 @@ export {
   type DatePickerProps,
   type RadioGroupProps,
   type RadioGroupOption,
+  SwitchHookField,
+  type SwitchHookFieldProps,
+  type SwitchProps,
 
   // Employee details hook + component
   useEmployeeDetailsForm,
@@ -111,6 +114,7 @@ export {
 
   // Employee details validation code types
   type EmployeeDetailsRequiredValidation,
+  type NameValidation,
   type EmailValidation,
   type SsnValidation,
 
