@@ -81,13 +81,19 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
 
   const employees: MultiSelectComboBoxOption[] = useMemo(() => {
     const employeeList = employeesData.showEmployees ?? []
-    return employeeList.map(employee => {
-      const fullName = [employee.firstName, employee.lastName].filter(Boolean).join(' ')
-      return {
-        label: fullName,
-        value: employee.uuid,
-      }
-    })
+    return [...employeeList]
+      .sort((a, b) => {
+        const lastNameComparison = a.lastName.localeCompare(b.lastName)
+        if (lastNameComparison !== 0) return lastNameComparison
+        return a.firstName.localeCompare(b.firstName)
+      })
+      .map(employee => {
+        const fullName = [employee.firstName, employee.lastName].filter(Boolean).join(' ')
+        return {
+          label: fullName,
+          value: employee.uuid,
+        }
+      })
   }, [employeesData])
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
