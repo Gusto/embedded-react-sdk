@@ -17,7 +17,6 @@ import { useFederalTaxDetailsGet } from '@gusto/embedded-api/react-query/federal
 import type { HookSubmitResult } from '../../types'
 import { useErrorHandling } from '../../useErrorHandling'
 import { withOptions } from '../../form/withOptions'
-import { deriveFieldsMetadata } from '../../form/deriveFieldsMetadata'
 import { createGetFormSubmissionValues } from '../../form/getFormSubmissionValues'
 import type { RequiredFields } from '../../form/resolveRequiredFields'
 import {
@@ -162,7 +161,7 @@ export function useCompensationForm({
   const isCreateMode = !currentJob
   const mode = isCreateMode ? 'create' : 'update'
 
-  const schema = createCompensationSchema({
+  const { schema, fieldsMetadata: baseMetadata } = createCompensationSchema({
     mode,
     requiredFields,
     withStartDateField,
@@ -268,7 +267,6 @@ export function useCompensationForm({
     label: `${code}: ${description}`,
   }))
 
-  const baseMetadata = deriveFieldsMetadata(schema)
   const fieldsMetadata = {
     startDate: baseMetadata.startDate,
     jobTitle: baseMetadata.jobTitle,

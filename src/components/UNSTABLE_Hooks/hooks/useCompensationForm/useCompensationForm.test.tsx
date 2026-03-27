@@ -172,7 +172,7 @@ const VALID_FORM_DATA = {
 }
 
 function getFieldErrors(
-  result: ReturnType<ReturnType<typeof createCompensationSchema>['safeParse']>,
+  result: ReturnType<ReturnType<typeof createCompensationSchema>['schema']['safeParse']>,
 ) {
   if (result.success) return {}
   const errors: Record<string, string[]> = {}
@@ -186,7 +186,7 @@ function getFieldErrors(
 
 describe('createCompensationSchema error codes', () => {
   it('produces REQUIRED for missing startDate when required', () => {
-    const schema = createCompensationSchema({ mode: 'create', withStartDateField: true })
+    const { schema } = createCompensationSchema({ mode: 'create', withStartDateField: true })
     const result = schema.safeParse({ ...VALID_FORM_DATA, startDate: null })
     const errors = getFieldErrors(result)
 
@@ -194,14 +194,14 @@ describe('createCompensationSchema error codes', () => {
   })
 
   it('does not error on startDate when not required', () => {
-    const schema = createCompensationSchema({ mode: 'create', withStartDateField: false })
+    const { schema } = createCompensationSchema({ mode: 'create', withStartDateField: false })
     const result = schema.safeParse({ ...VALID_FORM_DATA, startDate: null })
 
     expect(result.success).toBe(true)
   })
 
   it('produces RATE_MINIMUM for rate of 0', () => {
-    const schema = createCompensationSchema({ mode: 'create', withStartDateField: true })
+    const { schema } = createCompensationSchema({ mode: 'create', withStartDateField: true })
     const result = schema.safeParse({ ...VALID_FORM_DATA, rate: 0 })
     const errors = getFieldErrors(result)
 
@@ -209,7 +209,7 @@ describe('createCompensationSchema error codes', () => {
   })
 
   it('produces RATE_MINIMUM for NaN rate', () => {
-    const schema = createCompensationSchema({ mode: 'create', withStartDateField: true })
+    const { schema } = createCompensationSchema({ mode: 'create', withStartDateField: true })
     const result = schema.safeParse({ ...VALID_FORM_DATA, rate: NaN })
     const errors = getFieldErrors(result)
 
@@ -219,7 +219,7 @@ describe('createCompensationSchema error codes', () => {
 
 describe('createCompensationSchema superRefine unblocking', () => {
   it('reports rate errors even when startDate is missing', () => {
-    const schema = createCompensationSchema({ mode: 'create', withStartDateField: true })
+    const { schema } = createCompensationSchema({ mode: 'create', withStartDateField: true })
     const result = schema.safeParse({ ...VALID_FORM_DATA, startDate: null, rate: 0 })
     const errors = getFieldErrors(result)
 
@@ -228,7 +228,7 @@ describe('createCompensationSchema superRefine unblocking', () => {
   })
 
   it('reports payment unit errors even when startDate is missing', () => {
-    const schema = createCompensationSchema({ mode: 'create', withStartDateField: true })
+    const { schema } = createCompensationSchema({ mode: 'create', withStartDateField: true })
     const result = schema.safeParse({
       ...VALID_FORM_DATA,
       startDate: null,
@@ -242,7 +242,7 @@ describe('createCompensationSchema superRefine unblocking', () => {
   })
 
   it('reports RATE_MINIMUM before RATE_EXEMPT_THRESHOLD for low values', () => {
-    const schema = createCompensationSchema({ mode: 'create', withStartDateField: true })
+    const { schema } = createCompensationSchema({ mode: 'create', withStartDateField: true })
     const result = schema.safeParse({
       ...VALID_FORM_DATA,
       flsaStatus: 'Exempt' as const,

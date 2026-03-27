@@ -1,10 +1,10 @@
 import { z } from 'zod'
-import { composeFormSchema } from '../../form/composeFormSchema'
 import {
-  filterRequiredFields,
-  resolveRequiredFields,
-  type RequiredFields,
-} from '../../form/resolveRequiredFields'
+  createDomainSchema,
+  type DomainSchemaConfig,
+  type BusinessConstraint,
+} from '../../form/createDomainSchema'
+import { filterRequiredFields, type RequiredFields } from '../../form/resolveRequiredFields'
 import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus, PAY_PERIODS } from '@/shared/constants'
 import { yearlyRate } from '@/helpers/payRateCalculator'
 
@@ -20,8 +20,9 @@ export const CompensationErrorCodes = {
 export type CompensationErrorCode =
   (typeof CompensationErrorCodes)[keyof typeof CompensationErrorCodes]
 
-const fieldValidators = {
-  jobTitle: z.string().min(1, { message: CompensationErrorCodes.REQUIRED }),
+// Layer 1: Field definitions (pure types)
+const fieldDefinitions = {
+  jobTitle: z.string(),
   flsaStatus: z.enum([
     FlsaStatus.EXEMPT,
     FlsaStatus.SALARIED_NONEXEMPT,
@@ -37,25 +38,17 @@ const fieldValidators = {
     PAY_PERIODS.YEAR,
     PAY_PERIODS.PAYCHECK,
   ]),
-  rate: z.number().optional(),
-  startDate: z.iso.date().nullable().optional(),
+  rate: z.number(),
+  startDate: z.iso.date().nullable(),
   adjustForMinimumWage: z.boolean(),
-  minimumWageId: z.string().optional(),
+  minimumWageId: z.string(),
   stateWcCovered: z.boolean().optional(),
-  stateWcClassCode: z.string().optional(),
+  stateWcClassCode: z.string(),
   twoPercentShareholder: z.boolean().optional(),
 }
 
-const FIXED_FIELDS = new Set([
-  'adjustForMinimumWage',
-  'minimumWageId',
-  'stateWcCovered',
-  'stateWcClassCode',
-  'twoPercentShareholder',
-])
-
 export type CompensationField = Exclude<
-  keyof typeof fieldValidators,
+  keyof typeof fieldDefinitions,
   | 'adjustForMinimumWage'
   | 'minimumWageId'
   | 'stateWcCovered'
@@ -64,40 +57,77 @@ export type CompensationField = Exclude<
 >
 
 export type CompensationFormData = {
-  [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
+  [K in keyof typeof fieldDefinitions]: z.infer<(typeof fieldDefinitions)[K]>
 }
 export type CompensationFormOutputs = CompensationFormData
 
-const runtimeFieldValidators = {
-  ...fieldValidators,
-  rate: z.preprocess(
-    val => {
-      if (val === undefined || val === null || Number.isNaN(val)) return 0
-      return val
-    },
-    z.number({ error: () => CompensationErrorCodes.REQUIRED }),
-  ),
-  startDate: z.preprocess(
-    val => {
-      if (val instanceof Date) return val.toISOString().split('T')[0]
-      if (val === null || val === '' || val === undefined) return null
-      return val
-    },
-    z.iso.date({ error: () => CompensationErrorCodes.REQUIRED }).nullable(),
-  ),
-  stateWcCovered: z
-    .preprocess(val => (typeof val === 'string' ? val === 'true' : val), z.boolean())
-    .optional(),
+// Layer 5: Business constraints
+function validateRateAndPaymentUnit(
+  data: CompensationFormData,
+  ctx: z.RefinementCtx,
+) {
+  const { flsaStatus, paymentUnit, rate } = data
+
+  const isStandardFlsa =
+    flsaStatus === FlsaStatus.EXEMPT ||
+    flsaStatus === FlsaStatus.SALARIED_NONEXEMPT ||
+    flsaStatus === FlsaStatus.NONEXEMPT
+
+  if (isStandardFlsa) {
+    if (rate < 1) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['rate'],
+        message: CompensationErrorCodes.RATE_MINIMUM,
+      })
+    } else if (
+      flsaStatus === FlsaStatus.EXEMPT &&
+      yearlyRate(rate, paymentUnit) < FLSA_OVERTIME_SALARY_LIMIT
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['rate'],
+        message: CompensationErrorCodes.RATE_EXEMPT_THRESHOLD,
+      })
+    }
+    return
+  }
+
+  if (flsaStatus === FlsaStatus.OWNER) {
+    if (paymentUnit !== PAY_PERIODS.PAYCHECK) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['paymentUnit'],
+        message: CompensationErrorCodes.PAYMENT_UNIT_OWNER,
+      })
+    }
+    if (rate < 1) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['rate'],
+        message: CompensationErrorCodes.RATE_MINIMUM,
+      })
+    }
+    return
+  }
+
+  if (paymentUnit !== PAY_PERIODS.YEAR) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['paymentUnit'],
+      message: CompensationErrorCodes.PAYMENT_UNIT_COMMISSION,
+    })
+  }
+  if (rate !== 0) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['rate'],
+      message: CompensationErrorCodes.RATE_COMMISSION_ZERO,
+    })
+  }
 }
 
-const REQUIRED_ON_CREATE = new Set<CompensationField>([
-  'jobTitle',
-  'flsaStatus',
-  'rate',
-  'paymentUnit',
-])
-const REQUIRED_ON_UPDATE = new Set<CompensationField>([])
-
+// Schema factory
 interface CompensationSchemaOptions {
   mode?: 'create' | 'update'
   requiredFields?: RequiredFields<CompensationField>
@@ -111,110 +141,57 @@ export function createCompensationSchema(options: CompensationSchemaOptions = {}
     ? requiredFields
     : filterRequiredFields(requiredFields, 'startDate')
 
-  const effectiveRequiredOnCreate = new Set(REQUIRED_ON_CREATE)
+  const apiRequiredOnCreate: CompensationField[] = ['jobTitle', 'flsaStatus', 'rate', 'paymentUnit']
   if (withStartDateField) {
-    effectiveRequiredOnCreate.add('startDate')
+    apiRequiredOnCreate.push('startDate')
   }
 
-  const baseSchema = composeFormSchema({
-    fieldValidators: runtimeFieldValidators,
-    fixedFields: FIXED_FIELDS,
-    requiredOnCreate: effectiveRequiredOnCreate,
-    requiredOnUpdate: REQUIRED_ON_UPDATE,
-    mode,
-    requiredFields: effectiveRequiredFields,
-  })
+  const config: DomainSchemaConfig<typeof fieldDefinitions> = {
+    fieldDefinitions,
 
-  const modeDefaults = mode === 'create' ? effectiveRequiredOnCreate : REQUIRED_ON_UPDATE
-  const partnerRequired = new Set(resolveRequiredFields(effectiveRequiredFields, mode))
-  const isStartDateRequired = modeDefaults.has('startDate') || partnerRequired.has('startDate')
+    // Layer 2: Required fields configuration
+    requiredFieldsConfig: {
+      requiredMessageCode: CompensationErrorCodes.REQUIRED,
+      partnerConfigurableFields: ['jobTitle', 'flsaStatus', 'rate', 'paymentUnit', 'startDate'],
+      apiRequired: {
+        create: apiRequiredOnCreate,
+        update: [],
+      },
+    },
 
-  return baseSchema.superRefine((data, ctx) => {
-    if (isStartDateRequired && data.startDate == null) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['startDate'],
-        message: CompensationErrorCodes.REQUIRED,
-      })
-    }
+    // Layer 3: Field transforms
+    fieldTransforms: {
+      rate: val => {
+        if (val === undefined || val === null || Number.isNaN(val)) return 0
+        return val
+      },
+      startDate: val => {
+        if (val instanceof Date) return val.toISOString().split('T')[0]
+        if (val === null || val === '' || val === undefined) return null
+        return val
+      },
+      stateWcCovered: val => (typeof val === 'string' ? val === 'true' : val),
+    },
 
-    if (data.adjustForMinimumWage && (!data.minimumWageId || data.minimumWageId.trim() === '')) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['minimumWageId'],
-        message: CompensationErrorCodes.REQUIRED,
-      })
-    }
+    // Layer 4: Conditional requirements
+    conditionalRequirements: [
+      {
+        when: { field: 'adjustForMinimumWage', is: true },
+        then: { require: 'minimumWageId', message: CompensationErrorCodes.REQUIRED },
+      },
+      {
+        when: data => data.stateWcCovered === true,
+        then: { require: 'stateWcClassCode', message: CompensationErrorCodes.REQUIRED },
+      },
+    ],
 
-    if (
-      data.stateWcCovered === true &&
-      (!data.stateWcClassCode || data.stateWcClassCode.trim() === '')
-    ) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['stateWcClassCode'],
-        message: CompensationErrorCodes.REQUIRED,
-      })
-    }
+    // Layer 5: Business constraints
+    businessConstraints: [
+      validateRateAndPaymentUnit as BusinessConstraint<CompensationFormData>,
+    ],
+  }
 
-    const { flsaStatus, paymentUnit } = data
-    const rate = data.rate
-
-    if (
-      flsaStatus === FlsaStatus.EXEMPT ||
-      flsaStatus === FlsaStatus.SALARIED_NONEXEMPT ||
-      flsaStatus === FlsaStatus.NONEXEMPT
-    ) {
-      if (rate < 1) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ['rate'],
-          message: CompensationErrorCodes.RATE_MINIMUM,
-        })
-      } else if (
-        flsaStatus === FlsaStatus.EXEMPT &&
-        yearlyRate(rate, paymentUnit) < FLSA_OVERTIME_SALARY_LIMIT
-      ) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ['rate'],
-          message: CompensationErrorCodes.RATE_EXEMPT_THRESHOLD,
-        })
-      }
-    } else if (flsaStatus === FlsaStatus.OWNER) {
-      if (paymentUnit !== PAY_PERIODS.PAYCHECK) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ['paymentUnit'],
-          message: CompensationErrorCodes.PAYMENT_UNIT_OWNER,
-        })
-      }
-      if (rate < 1) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ['rate'],
-          message: CompensationErrorCodes.RATE_MINIMUM,
-        })
-      }
-    } else if (
-      [FlsaStatus.COMMISSION_ONLY_EXEMPT, FlsaStatus.COMMISSION_ONLY_NONEXEMPT].includes(flsaStatus)
-    ) {
-      if (paymentUnit !== PAY_PERIODS.YEAR) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ['paymentUnit'],
-          message: CompensationErrorCodes.PAYMENT_UNIT_COMMISSION,
-        })
-      }
-      if (rate !== 0) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ['rate'],
-          message: CompensationErrorCodes.RATE_COMMISSION_ZERO,
-        })
-      }
-    }
-  })
+  return createDomainSchema(config, { mode, requiredFields: effectiveRequiredFields })
 }
 
-export const CompensationSchema = createCompensationSchema()
+export const CompensationSchema = createCompensationSchema().schema
