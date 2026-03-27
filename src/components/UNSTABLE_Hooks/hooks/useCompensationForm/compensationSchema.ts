@@ -104,101 +104,6 @@ interface CompensationSchemaOptions {
   withStartDateField?: boolean
 }
 
-interface CompensationRefinementConfig {
-  isStartDateRequired: boolean
-}
-
-function compensationSuperRefine(
-  data: CompensationFormData,
-  ctx: z.RefinementCtx,
-  config: CompensationRefinementConfig,
-) {
-  if (config.isStartDateRequired && data.startDate == null) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      path: ['startDate'],
-      message: CompensationErrorCodes.REQUIRED,
-    })
-  }
-
-  if (data.adjustForMinimumWage && (!data.minimumWageId || data.minimumWageId.trim() === '')) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      path: ['minimumWageId'],
-      message: CompensationErrorCodes.REQUIRED,
-    })
-  }
-
-  if (
-    data.stateWcCovered === true &&
-    (!data.stateWcClassCode || data.stateWcClassCode.trim() === '')
-  ) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      path: ['stateWcClassCode'],
-      message: CompensationErrorCodes.REQUIRED,
-    })
-  }
-
-  const { flsaStatus, paymentUnit } = data
-  const rate = data.rate ?? 0
-
-  if (
-    flsaStatus === FlsaStatus.EXEMPT ||
-    flsaStatus === FlsaStatus.SALARIED_NONEXEMPT ||
-    flsaStatus === FlsaStatus.NONEXEMPT
-  ) {
-    if (rate < 1) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['rate'],
-        message: CompensationErrorCodes.RATE_MINIMUM,
-      })
-    } else if (
-      flsaStatus === FlsaStatus.EXEMPT &&
-      yearlyRate(rate, paymentUnit) < FLSA_OVERTIME_SALARY_LIMIT
-    ) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['rate'],
-        message: CompensationErrorCodes.RATE_EXEMPT_THRESHOLD,
-      })
-    }
-  } else if (flsaStatus === FlsaStatus.OWNER) {
-    if (paymentUnit !== PAY_PERIODS.PAYCHECK) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['paymentUnit'],
-        message: CompensationErrorCodes.PAYMENT_UNIT_OWNER,
-      })
-    }
-    if (rate < 1) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['rate'],
-        message: CompensationErrorCodes.RATE_MINIMUM,
-      })
-    }
-  } else if (
-    [FlsaStatus.COMMISSION_ONLY_EXEMPT, FlsaStatus.COMMISSION_ONLY_NONEXEMPT].includes(flsaStatus)
-  ) {
-    if (paymentUnit !== PAY_PERIODS.YEAR) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['paymentUnit'],
-        message: CompensationErrorCodes.PAYMENT_UNIT_COMMISSION,
-      })
-    }
-    if (rate !== 0) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['rate'],
-        message: CompensationErrorCodes.RATE_COMMISSION_ZERO,
-      })
-    }
-  }
-}
-
 export function createCompensationSchema(options: CompensationSchemaOptions = {}) {
   const { mode = 'create', requiredFields, withStartDateField = true } = options
 
@@ -225,7 +130,90 @@ export function createCompensationSchema(options: CompensationSchemaOptions = {}
   const isStartDateRequired = modeDefaults.has('startDate') || partnerRequired.has('startDate')
 
   return baseSchema.superRefine((data, ctx) => {
-    compensationSuperRefine(data as CompensationFormData, ctx, { isStartDateRequired })
+    if (isStartDateRequired && data.startDate == null) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['startDate'],
+        message: CompensationErrorCodes.REQUIRED,
+      })
+    }
+
+    if (data.adjustForMinimumWage && (!data.minimumWageId || data.minimumWageId.trim() === '')) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['minimumWageId'],
+        message: CompensationErrorCodes.REQUIRED,
+      })
+    }
+
+    if (
+      data.stateWcCovered === true &&
+      (!data.stateWcClassCode || data.stateWcClassCode.trim() === '')
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['stateWcClassCode'],
+        message: CompensationErrorCodes.REQUIRED,
+      })
+    }
+
+    const { flsaStatus, paymentUnit } = data
+    const rate = data.rate
+
+    if (
+      flsaStatus === FlsaStatus.EXEMPT ||
+      flsaStatus === FlsaStatus.SALARIED_NONEXEMPT ||
+      flsaStatus === FlsaStatus.NONEXEMPT
+    ) {
+      if (rate < 1) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['rate'],
+          message: CompensationErrorCodes.RATE_MINIMUM,
+        })
+      } else if (
+        flsaStatus === FlsaStatus.EXEMPT &&
+        yearlyRate(rate, paymentUnit) < FLSA_OVERTIME_SALARY_LIMIT
+      ) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['rate'],
+          message: CompensationErrorCodes.RATE_EXEMPT_THRESHOLD,
+        })
+      }
+    } else if (flsaStatus === FlsaStatus.OWNER) {
+      if (paymentUnit !== PAY_PERIODS.PAYCHECK) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['paymentUnit'],
+          message: CompensationErrorCodes.PAYMENT_UNIT_OWNER,
+        })
+      }
+      if (rate < 1) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['rate'],
+          message: CompensationErrorCodes.RATE_MINIMUM,
+        })
+      }
+    } else if (
+      [FlsaStatus.COMMISSION_ONLY_EXEMPT, FlsaStatus.COMMISSION_ONLY_NONEXEMPT].includes(flsaStatus)
+    ) {
+      if (paymentUnit !== PAY_PERIODS.YEAR) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['paymentUnit'],
+          message: CompensationErrorCodes.PAYMENT_UNIT_COMMISSION,
+        })
+      }
+      if (rate !== 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['rate'],
+          message: CompensationErrorCodes.RATE_COMMISSION_ZERO,
+        })
+      }
+    }
   })
 }
 
