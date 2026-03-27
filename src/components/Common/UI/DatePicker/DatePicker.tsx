@@ -26,9 +26,18 @@ import CaretLeft from '@/assets/icons/caret-left.svg?react'
 import AlertCircle from '@/assets/icons/alert-circle.svg?react'
 import { formatDateToStringDate } from '@/helpers/dateFormatting'
 
-function dateToCalendarDate(date: Date): CalendarDate {
-  const dateString = formatDateToStringDate(date)
-  if (!dateString) throw new Error('Invalid date provided to dateToCalendarDate')
+function dateToCalendarDate(date: Date): CalendarDate | undefined {
+  if (!(date instanceof Date) || isNaN(date.getTime())) {
+    return undefined
+  }
+
+  // Use local date parts to avoid UTC timezone shift from toISOString()
+  const dateString = [
+    String(date.getFullYear()).padStart(4, '0'),
+    String(date.getMonth() + 1).padStart(2, '0'),
+    String(date.getDate()).padStart(2, '0'),
+  ].join('-')
+
   return parseDate(dateString)
 }
 
