@@ -1,0 +1,32 @@
+---
+id: benefit-summary
+title: "Benefit-Summary"
+description: ""
+sidebar_label: "Benefit-Summary"
+hide_title: true
+hide_table_of_contents: true
+schema: true
+sample: {"start_date":"string","end_date":"string","description":"string","company_benefit_deduction":"string","company_benefit_contribution":"string","employees":{"uuid":"string","company_benefit_deduction":"string","company_benefit_contribution":"string","benefit_deduction":"string","benefit_contribution":"string","gross_pay":"string","imputed_pay":"string","payroll_benefits":{"payroll_uuid":"string","payroll_type":"string","check_date":"string","gross_pay":"string","imputed_pay":"string","company_benefit_deduction":"string","company_benefit_contribution":"string","pay_period":{"start_date":"string","end_date":"string"}}}}
+custom_edit_url: null
+---
+
+import Schema from "@theme/Schema";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Benefit-Summary"}
+>
+</Heading>
+
+
+
+
+
+<Schema
+  {...require("./benefit-summary.Schema.json")}
+>
+  
+</Schema>
+            

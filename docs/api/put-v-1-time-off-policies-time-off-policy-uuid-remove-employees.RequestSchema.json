@@ -1,0 +1,1 @@
+{"title":"Body","body":{"required":true,"content":{"application/json":{"schema":{"type":"object","required":["employees"],"properties":{"employees":{"type":"array","items":{"type":"object","required":["uuid"],"properties":{"uuid":{"type":"string","description":"The UUID of the employee"}}}}}}}}}}

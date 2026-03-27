@@ -1,0 +1,1 @@
+{"title":"Body","body":{"required":true,"content":{"application/json":{"schema":{"type":"object","properties":{"employee_id":{"type":"string","description":"The employee UUID."},"year":{"type":"integer","description":"Must be equal to or more recent than 2015. If not specified, defaults to the previous year.\n"}},"required":["employee_id"]}}}}}

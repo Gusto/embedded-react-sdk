@@ -3,8 +3,6 @@ title: Theme Variables
 order: 1
 ---
 
-# Theme Variables
-
 | Variable                         | Type     |
 | -------------------------------- | -------- |
 | **colorBody**                    | `string` |

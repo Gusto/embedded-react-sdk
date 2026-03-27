@@ -10,11 +10,11 @@ The Employee Onboarding workflow provides a complete experience for onboarding a
 ### Implementation
 
 ```jsx
-import { EmployeeOnboardingFlow } from '@gusto/embedded-react-sdk'
+import { Employee } from '@gusto/embedded-react-sdk'
 
 function MyApp() {
   return (
-    <EmployeeOnboardingFlow
+    <Employee.OnboardingFlow
       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
       withEmployeeI9
       onEvent={() => {}}
@@ -25,14 +25,14 @@ function MyApp() {
 
 #### Props
 
-| Name                    | Type    | Default | Description                                                                                                                                                          |
-| ----------------------- | ------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| employeeId              | string  |         | The associated employee identifier.                                                                                                                                  |
-| companyId Required      | string  |         | The associated company identifier.                                                                                                                                   |
-| defaultValues           | object  |         | Default values for individual flow step components                                                                                                                   |
-| onEvent Required        |         |         | See events table for each subcomponent to see available events.                                                                                                      |
-| isSelfOnboardingEnabled | boolean | true    | When true, presents the self-onboarding toggle allowing the admin to opt the employee into self-onboarding. When false, the option to self-onboard is not available. |
-| withEmployeeI9          | boolean | false   | When true, enables the Employee Documents step in the onboarding flow, allowing the admin to configure I-9 document requirements.                                    |
+| Name                        | Type     | Default | Description                                                                                                                                                          |
+| --------------------------- | -------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **employeeId**              | string   |         | The associated employee identifier.                                                                                                                                  |
+| **companyId** (Required)    | string   |         | The associated company identifier.                                                                                                                                   |
+| **defaultValues**           | object   |         | Default values for individual flow step components.                                                                                                                  |
+| **onEvent** (Required)      | function |         | See events table for each subcomponent to see available events.                                                                                                      |
+| **isSelfOnboardingEnabled** | boolean  | true    | When true, presents the self-onboarding toggle allowing the admin to opt the employee into self-onboarding. When false, the option to self-onboard is not available. |
+| **withEmployeeI9**          | boolean  | false   | When true, enables the Employee Documents step in the onboarding flow, allowing the admin to configure I-9 document requirements.                                    |
 
 ## Using Employee Subcomponents
 
@@ -66,16 +66,16 @@ function MyApp() {
 
 #### Props
 
-| Name               | Type   | Description                                  |
-| ------------------ | ------ | -------------------------------------------- |
-| companyId Required | string | The associated company identifier.           |
-| onEvent Required   |        | See events table below for available events. |
+| Name                     | Type     | Description                                  |
+| ------------------------ | -------- | -------------------------------------------- |
+| **companyId** (Required) | string   | The associated company identifier.           |
+| **onEvent** (Required)   | function | See events table below for available events. |
 
 #### Events
 
 | Event type       | Description                                                                                                  | Data                                                      |
 | ---------------- | ------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------- |
-| EMPLOYEE_CREATE  | Fired when user clicks "Add employee" button                                                                 | Undefined                                                 |
+| EMPLOYEE_CREATE  | Fired when user clicks "Add employee" button                                                                 | None                                                      |
 | EMPLOYEE_UPDATE  | Fired when user selects "Edit" from employee actions menu                                                    | { employeeId: string }                                    |
 | EMPLOYEE_DELETED | Fired after selecting delete from the employee actions menu and the deleting an employee operation completes | Response data from Delete an onboarding employee endpoint |
 
@@ -110,13 +110,13 @@ function MyComponent() {
 
 #### Props
 
-| Name               | Type                                                                                                                                                                                                             | Default   | Description                                                                                                                        |
-| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| companyId Required | string                                                                                                                                                                                                           |           | The associated company identifier.                                                                                                 |
-| employeeId         | string                                                                                                                                                                                                           | false     | The associated employee identifier.                                                                                                |
-| onEvent Required   |                                                                                                                                                                                                                  |           | See events table for available events.                                                                                             |
-| isAdmin            | boolean                                                                                                                                                                                                          | false     | If the onboarding is being performed by an admin. When false it is configured to be self onboarding.                               |
-| defaultValues      | { employee?: { firstName?: string middleInitial?: string lastName?: string email?: string dateOfBirth?: string } homeAddress?: { street1?: string street2?: string city?: string state?: string zip?: string } } | undefined | Default values for the employee profile form inputs. If employee data is available via the API, defaultValues will be overwritten. |
+| Name                     | Type                                                                                                                                                                                                             | Default   | Description                                                                                                                        |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| **companyId** (Required) | string                                                                                                                                                                                                           |           | The associated company identifier.                                                                                                 |
+| **employeeId**           | string                                                                                                                                                                                                           |           | The associated employee identifier.                                                                                                |
+| **onEvent** (Required)   | function                                                                                                                                                                                                         |           | See events table for available events.                                                                                             |
+| **isAdmin**              | boolean                                                                                                                                                                                                          | false     | If the onboarding is being performed by an admin. When false it is configured to be self onboarding.                               |
+| **defaultValues**        | { employee?: { firstName?: string middleInitial?: string lastName?: string email?: string dateOfBirth?: string } homeAddress?: { street1?: string street2?: string city?: string state?: string zip?: string } } | undefined | Default values for the employee profile form inputs. If employee data is available via the API, defaultValues will be overwritten. |
 
 #### Events
 
@@ -158,12 +158,12 @@ function MyComponent() {
 
 #### Props
 
-| Name                | Type                                                                                               | Description                            |
-| ------------------- | -------------------------------------------------------------------------------------------------- | -------------------------------------- | -------- | ----------- | ------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| employeeId Required | string                                                                                             | The associated employee identifier.    |
-| startDate Required  | string                                                                                             | The date the employee will start work. |
-| onEvent Required    |                                                                                                    | See events table for available events. |
-| defaultValues       | { title?: string \| null rate?: string paymentUnit?: string, flsaStatus?: 'Commission Only Exempt' | 'Commission Only Nonexempt'            | 'Exempt' | 'Nonexempt' | 'Owner' | 'Salaried Nonexempt' } | Default values for the employee profile form inputs. If employee data is available via the API, defaultValues will be overwritten. |
+| Name                     | Type   | Description                            |
+| ------------------------ | ------ | -------------------------------------- |
+| **employeeId** (Required) | string | The associated employee identifier.    |
+| **startDate** (Required)  | string | The date the employee will start work. |
+| **onEvent** (Required)    | function | See events table for available events. |
+| **defaultValues**         | object | Default values for the compensation form. Accepts `title`, `rate`, `paymentUnit`, and `flsaStatus` (`'Exempt'`, `'Nonexempt'`, `'Salaried Nonexempt'`, `'Commission Only Exempt'`, `'Commission Only Nonexempt'`, or `'Owner'`). If employee data is available via the API, defaultValues will be overwritten. |
 
 #### Events
 
@@ -191,10 +191,10 @@ function MyComponent() {
 
 #### Props
 
-| Name                | Type   | Description                            |
-| ------------------- | ------ | -------------------------------------- |
-| employeeId Required | string | The associated employee identifier.    |
-| onEvent Required    |        | See events table for available events. |
+| Name                        | Type     | Description                            |
+| --------------------------- | -------- | -------------------------------------- |
+| **employeeId** (Required)   | string   | The associated employee identifier.    |
+| **onEvent** (Required)      | function | See events table for available events. |
 
 #### Events
 
@@ -219,11 +219,11 @@ function MyComponent() {
 
 #### Props
 
-| Name                | Type    | Default | Description                                                                                          |
-| ------------------- | ------- | ------- | ---------------------------------------------------------------------------------------------------- |
-| employeeId Required | string  |         | The associated employee identifier.                                                                  |
-| onEvent Required    |         |         | See events table for available events.                                                               |
-| isAdmin             | boolean | false   | If the onboarding is being performed by an admin. When false it is configured to be self onboarding. |
+| Name                      | Type     | Default | Description                                                                                          |
+| ------------------------- | -------- | ------- | ---------------------------------------------------------------------------------------------------- |
+| **employeeId** (Required) | string   |         | The associated employee identifier.                                                                  |
+| **onEvent** (Required)    | function |         | See events table for available events.                                                               |
+| **isAdmin**               | boolean  | false   | If the onboarding is being performed by an admin. When false it is configured to be self onboarding. |
 
 #### Events
 
@@ -248,11 +248,11 @@ function MyComponent() {
 
 #### Props
 
-| Name                | Type   | Description                                                                                          |
-| ------------------- | ------ | ---------------------------------------------------------------------------------------------------- |
-| employeeId Required | string | The associated employee identifier.                                                                  |
-| onEvent Required    |        | See events table for available events.                                                               |
-| isAdmin             |        | If the onboarding is being performed by an admin. When false it is configured to be self onboarding. |
+| Name                      | Type     | Description                                                                                          |
+| ------------------------- | -------- | ---------------------------------------------------------------------------------------------------- |
+| **employeeId** (Required) | string   | The associated employee identifier.                                                                  |
+| **onEvent** (Required)    | function | See events table for available events.                                                               |
+| **isAdmin**               | boolean  | If the onboarding is being performed by an admin. When false it is configured to be self onboarding. |
 
 #### Events
 
@@ -279,10 +279,10 @@ function MyComponent() {
 
 #### Props
 
-| Name                | Type   | Description                            |
-| ------------------- | ------ | -------------------------------------- |
-| employeeId Required | string | The associated employee identifier.    |
-| onEvent Required    |        | See events table for available events. |
+| Name                      | Type     | Description                            |
+| ------------------------- | -------- | -------------------------------------- |
+| **employeeId** (Required) | string   | The associated employee identifier.    |
+| **onEvent** (Required)    | function | See events table for available events. |
 
 #### Events
 
@@ -298,7 +298,7 @@ function MyComponent() {
 
 Used during admin onboarding to configure which documents are included in the employee's self-onboarding experience. When the employee has been invited to self-onboard, this step allows the admin to enable or disable the I-9 (Employment Eligibility Verification) form. When the employee is not self-onboarding, this step displays a read-only summary of the documents that will be part of the onboarding process.
 
-This component is conditionally shown in the `EmployeeOnboardingFlow` when `withEmployeeI9` is set to `true`.
+This component is conditionally shown in the `Employee.OnboardingFlow` when `withEmployeeI9` is set to `true`.
 
 ```jsx
 import { Employee } from '@gusto/embedded-react-sdk'
@@ -315,10 +315,10 @@ function MyComponent() {
 
 #### Props
 
-| Name                | Type   | Default | Description                            |
-| ------------------- | ------ | ------- | -------------------------------------- |
-| employeeId Required | string |         | The associated employee identifier.    |
-| onEvent Required    |        |         | See events table for available events. |
+| Name                      | Type     | Default | Description                            |
+| ------------------------- | -------- | ------- | -------------------------------------- |
+| **employeeId** (Required) | string   |         | The associated employee identifier.    |
+| **onEvent** (Required)    | function |         | See events table for available events. |
 
 #### Events
 
@@ -347,11 +347,11 @@ function MyComponent() {
 
 #### Props
 
-| Name                | Type    | Default | Description                                                                                          |
-| ------------------- | ------- | ------- | ---------------------------------------------------------------------------------------------------- |
-| employeeId Required | string  |         | The associated employee identifier.                                                                  |
-| onEvent Required    |         |         | See events table for available events.                                                               |
-| isAdmin             | boolean | false   | If the onboarding is being performed by an admin. When false it is configured to be self onboarding. |
+| Name                      | Type     | Default | Description                                                                                          |
+| ------------------------- | -------- | ------- | ---------------------------------------------------------------------------------------------------- |
+| **employeeId** (Required) | string   |         | The associated employee identifier.                                                                  |
+| **onEvent** (Required)    | function |         | See events table for available events.                                                               |
+| **isAdmin**               | boolean  | false   | If the onboarding is being performed by an admin. When false it is configured to be self onboarding. |
 
 #### Events
 

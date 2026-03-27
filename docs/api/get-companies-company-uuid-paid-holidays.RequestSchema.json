@@ -1,0 +1,1 @@
+{"title":"Body","body":{"required":true,"content":{"application/json":{"schema":{"type":"object","properties":{"year":{"type":"string","description":"If a year is passed, paid holidays for that year will be returned. Otherwise, paid holidays for the next three years will be returned."}}},"examples":{"Example":{"value":{"year":"2023"}}}}}}}

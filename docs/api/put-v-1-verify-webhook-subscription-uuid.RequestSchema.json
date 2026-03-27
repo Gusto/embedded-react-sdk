@@ -1,0 +1,1 @@
+{"title":"Body","body":{"required":true,"content":{"application/json":{"schema":{"description":"","type":"object","properties":{"verification_token":{"type":"string","description":"The token POSTed to the Subscription URL."}},"required":["verification_token"]},"examples":{"Example":{"value":{"verification_token":"asefasedfe23e234easd"}}}}},"description":""}}

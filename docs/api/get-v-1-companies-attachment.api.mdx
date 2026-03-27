@@ -1,0 +1,71 @@
+---
+id: get-v-1-companies-attachment
+title: "Get Company Attachment Details"
+description: "Retrieve the detail of an attachment uploaded by the company."
+sidebar_label: "Get Company Attachment Details"
+hide_title: true
+hide_table_of_contents: true
+api: eJzdV21v2zYQ/isc96EtINqy6wSpPi1Y2iIftgZNug1LDJcWzzZbiWRJyrFh6L8PR0mR5Nhp94INWGAgFnW8e+743HP0jm7YsnBeM6k8LC33UivmtwZockshn4MQIOg0ohac0cqBo8mOjuMY/wlwqZUG99CEvt7w3GRAGksa0VQrD8qjLTcmk2nwP/zkcMOOunQFOX/s6WYFJNW54WpLuPc8XeXoJaIVMKrnnyDF5w2DKmhA5Yo0BedmznNfhJWikIImdDQ+fQkcTthkMhqxyZl4xebiVLDRGYhXL+OzMZye0IgqnqP3H6vIs/OHyLM3MoOBEQtMiXtYarulCV2CmSntZYqpFibTXMy8DD7G8XjC4ldsFN/Eo+Rkkozj32lZImLPlw6LW4chbRgss7HagPUSOvh3Td7OW6mWNNor14cPlxdEL4g/XLayyexrftCq8bOQGZAqJxDoos37a27C6dXWT8CKKKgix0r06oiWmeQqPGi/Akun5V55vwXB5fU7cnYajwhucZ7nBrHcr0ARrjo4yD13nUTLiHrpsw4P2HmvlF3C1YzHr2ueFfBfU27M4jGLRzdxnITPII4D7fAvopN48rjVftaevNGFEuROEXKnsHQWvhTgPAhsZV3YFIjQ4IjSnsBGOj8gP/HPQFxhIZyusXotBQgSmCgdWfNMisGdCvVEQoe+vxQhA8/WI1YRQoJjPUr0wb0HbyWsqyACPJcZHmL//JqzI/Ntl2qDO3WnXKoNJORjvTZrt7nEAhcfaUQNtzwHDxa7ctecSLNDChpRiWAM9yuKOvilkBYETbwtIOpoWJ+T5SFSHuhUWka7p5zs4WkzmAWmPQ3umxD0teKhAr+xt2EwnF9dsl/AOvRRR1sBF2B78RY8c48CXmBZc6nAVSfIPbA5dyDI+dUlWVdOCXdOp5Ij3+6lX5GtLmwwSHmWDcjlgiitAGnV8CyqbDoj5Zkjt7lUMi/yru/p85X3xiXDodCpG4RJN0h1PmwmGzN8a3WWhfdDbiSrd0q1/L52yDrLLxBG4UAM6PGjb5VtHI9PWHzKRieo7QIWvMh81avNellOI/r0TNgwZ4B/Bu62bGl1YVo+tIaO9g3xFJleg7VSQNV3F6GD0BA2HhTmU3H+M6C2HL0JRI26dW8EyJRm3z68hw2HYB7e2IfbOujAxkLl4Fe6lpHQu35FEzpcj4YPgjLctb1bDjsd377Ya6ISzxLsupGAwmZI8po53MiKOExAHtjzSKcuINd75a/8sTALcF9I+4jjgz6vrBZP+DT4GiviIC2s9NuAvObPebgHnRdYnNtp1+oaKVsNrwO2D0RGiA3B8XkO3IaG72NsJmQGa8gIL/wKlK87ErXreus85H8nQuXhSIAS5Wihg9d6ZgfJQgVACtWi1Wu3iKIkuXeLa7BrHKPtebTqwOe68MNgOBQYGkcYC89ML8I5VBO4D/ZXyFKdA/GaBBzPHHld9wu5qnQmiJPQaYHkC2l8V1+TeRquybX4XjRRyXvIgl1o25zLLBCqfvtDyx+shtHO51x1/LwFTx6LCmmVoJfBrr2w/zuztyaDh40fmozLwJrQJbu6t2/pelTfCkN304gmvdnMewqYHJuT04iutPPocLfDGfTBZmWJy18KwKvV7RRFx0o+RyLd7qiQDr8fmW3dUj1/X4/BF+TYkD+Sar1YWTSSR6NaHzt5onr8k4AO/qz6K9j261ziZb2+H/y5Kv7PLwsHa1zV8vBN66Hk7cBEJTW+8+7Rj+rejHz7+oaW5R+BeIMg
+sidebar_class_name: "get api-method"
+info_path: docs/api/gusto-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Get Company Attachment Details"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/v1/companies/{company_id}/attachments/{company_attachment_uuid}"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Retrieve the detail of an attachment uploaded by the company.
+
+scope: `company_attachments:read`
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  {...require("./get-v-1-companies-attachment.ParamsDetails.json")}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  {...require("./get-v-1-companies-attachment.RequestSchema.json")}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  {...require("./get-v-1-companies-attachment.StatusCodes.json")}
+>
+  
+</StatusCodes>
+
+
+      

@@ -1,0 +1,1 @@
+{"schema":{"description":"The representation of a flow in Gusto white-label UI.","type":"object","x-examples":{"success_status":{"url":"https://flows.gusto-demo.com/flows/lO2BHHAMCScPVV9G5WEURW0Im_nP9mGYloQgjUWbenQ"}},"title":"Flow","x-tags":["Flows"],"properties":{"url":{"type":"string"}}},"schemaType":"response"}

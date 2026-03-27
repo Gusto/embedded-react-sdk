@@ -69,6 +69,13 @@ Run payroll components can be used to compose your own workflow, or can be rende
 - [Payroll.PayrollReceipts](#payrollpayrollreceipts)
 - [Payroll.PayrollBlocker](#payrollpayrollblocker)
 - [Payroll.ConfirmWireDetails](#payrollconfirmwiredetails)
+- [Payroll.DismissalFlow](#payrolldismissalflow)
+- [Payroll.OffCycleFlow](#payrolloffcycleflow)
+- [Payroll.OffCycleCreation](#payrolloffcyclecreation)
+- [Payroll.TransitionFlow](#payrolltransitionflow)
+- [Payroll.TransitionCreation](#payrolltransitioncreation)
+- [Payroll.PayrollExecutionFlow](#payrollpayrollexecutionflow)
+- [Payroll.RecoveryCases](#payrollrecoverycases)
 
 ### Payroll.PayrollLanding
 
@@ -372,3 +379,216 @@ function MyComponent() {
 | PAYROLL_WIRE_INSTRUCTIONS_SELECT | Fired when user selects a wire-in request           | { selectedWireInId: string }                                                                                                                                        |
 | PAYROLL_WIRE_FORM_DONE           | Fired when user completes the wire confirmation     | { wireInRequest: [Response from the Submit wire-in request endpoint](https://docs.gusto.com/embedded-payroll/reference/put-wire_in_requests-wire_in_request_uuid) } |
 | PAYROLL_WIRE_FORM_CANCEL         | Fired when user cancels the wire confirmation form  | None                                                                                                                                                                |
+
+### Payroll.DismissalFlow
+
+Orchestrates the dismissal payroll workflow, which processes final pay for a terminated employee. The flow starts with pay period selection and then transitions to payroll execution. Used internally by `Employee.TerminationFlow` when the "Run a dismissal payroll" option is selected.
+
+```jsx
+import { Payroll } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return (
+    <Payroll.DismissalFlow
+      companyId="your-company-id"
+      employeeId="employee-id"
+      onEvent={() => {}}
+    />
+  )
+}
+```
+
+#### Props
+
+| Name                     | Type     | Description                                                                                        |
+| ------------------------ | -------- | -------------------------------------------------------------------------------------------------- |
+| **companyId** (Required) | string   | The associated company identifier.                                                                 |
+| **employeeId**           | string   | The employee being terminated. Used to scope the pay period selection.                              |
+| **payrollId**            | string   | When provided with `employeeId`, skips pay period selection and goes directly to payroll execution. |
+| **onEvent** (Required)   | function | See events table for available events.                                                             |
+
+#### Events
+
+| Event type                    | Description                                           | Data                     |
+| ----------------------------- | ----------------------------------------------------- | ------------------------ |
+| DISMISSAL_PAY_PERIOD_SELECTED | Fired when a pay period is selected for the dismissal | { payrollUuid?: string } |
+
+### Payroll.OffCycleFlow
+
+Orchestrates the off-cycle payroll workflow, including creation of the off-cycle payroll and subsequent payroll execution. Off-cycle payrolls are used for bonus payments, corrections, or other payments outside the regular payroll schedule.
+
+```jsx
+import { Payroll } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return <Payroll.OffCycleFlow companyId="your-company-id" onEvent={() => {}} />
+}
+```
+
+#### Props
+
+| Name                     | Type     | Description                                                            |
+| ------------------------ | -------- | ---------------------------------------------------------------------- |
+| **companyId** (Required) | string   | The associated company identifier.                                     |
+| **payrollType**          | string   | The off-cycle payroll reason (e.g., `'bonus'`). Defaults to `'bonus'`. |
+| **onEvent** (Required)   | function | See events table for available events.                                 |
+| **withReimbursements**   | boolean  | Optional flag to show/hide reimbursements fields. Defaults to true.    |
+
+#### Events
+
+| Event type        | Description                                | Data                     |
+| ----------------- | ------------------------------------------ | ------------------------ |
+| OFF_CYCLE_CREATED | Fired when an off-cycle payroll is created | { payrollUuid?: string } |
+
+### Payroll.OffCycleCreation
+
+A standalone form for creating an off-cycle payroll. This is the lower-level building block used internally by `Payroll.OffCycleFlow`. Use this component directly when you need custom control over the off-cycle creation step.
+
+```jsx
+import { Payroll } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return <Payroll.OffCycleCreation companyId="your-company-id" onEvent={() => {}} />
+}
+```
+
+#### Props
+
+| Name                     | Type     | Description                                                          |
+| ------------------------ | -------- | -------------------------------------------------------------------- |
+| **companyId** (Required) | string   | The associated company identifier.                                   |
+| **payrollType**          | string   | The off-cycle payroll type (e.g., `'bonus'`). Defaults to `'bonus'`. |
+| **onEvent** (Required)   | function | See events table for available events.                               |
+
+#### Events
+
+| Event type        | Description                                 | Data                    |
+| ----------------- | ------------------------------------------- | ----------------------- |
+| OFF_CYCLE_CREATED | Fired when the off-cycle payroll is created | { payrollUuid: string } |
+
+### Payroll.TransitionFlow
+
+Orchestrates the transition payroll workflow. Transition payrolls are used when a company changes pay schedules and needs to process payroll for the transitional pay period between the old and new schedules.
+
+```jsx
+import { Payroll } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return (
+    <Payroll.TransitionFlow
+      companyId="your-company-id"
+      startDate="2025-01-01"
+      endDate="2025-01-15"
+      payScheduleUuid="pay-schedule-uuid"
+      onEvent={() => {}}
+    />
+  )
+}
+```
+
+#### Props
+
+| Name                            | Type     | Description                                     |
+| ------------------------------- | -------- | ----------------------------------------------- |
+| **companyId** (Required)        | string   | The associated company identifier.              |
+| **startDate** (Required)        | string   | The start date of the transition pay period.    |
+| **endDate** (Required)          | string   | The end date of the transition pay period.      |
+| **payScheduleUuid** (Required)  | string   | The pay schedule identifier for the transition. |
+| **onEvent** (Required)          | function | See events table for available events.          |
+
+#### Events
+
+| Event type         | Description                                  | Data                     |
+| ------------------ | -------------------------------------------- | ------------------------ |
+| TRANSITION_CREATED | Fired when the transition payroll is created | { payrollUuid?: string } |
+
+### Payroll.TransitionCreation
+
+A standalone form for creating a transition payroll. This is the lower-level building block used internally by `Payroll.TransitionFlow`.
+
+```jsx
+import { Payroll } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return (
+    <Payroll.TransitionCreation
+      companyId="your-company-id"
+      startDate="2025-01-01"
+      endDate="2025-01-15"
+      payScheduleUuid="pay-schedule-uuid"
+      onEvent={() => {}}
+    />
+  )
+}
+```
+
+#### Props
+
+| Name                            | Type     | Description                                     |
+| ------------------------------- | -------- | ----------------------------------------------- |
+| **companyId** (Required)        | string   | The associated company identifier.              |
+| **startDate** (Required)        | string   | The start date of the transition pay period.    |
+| **endDate** (Required)          | string   | The end date of the transition pay period.      |
+| **payScheduleUuid** (Required)  | string   | The pay schedule identifier for the transition. |
+| **onEvent** (Required)          | function | See events table for available events.          |
+
+#### Events
+
+| Event type         | Description                                  | Data                    |
+| ------------------ | -------------------------------------------- | ----------------------- |
+| TRANSITION_CREATED | Fired when the transition payroll is created | { payrollUuid: string } |
+
+### Payroll.PayrollExecutionFlow
+
+Orchestrates the full payroll execution process from configuration through submission and processing. This component is used internally by `Payroll.PayrollFlow`, `Payroll.DismissalFlow`, `Payroll.OffCycleFlow`, and `Payroll.TransitionFlow`. Use it directly when you need to start the execution flow from a known payroll ID.
+
+```jsx
+import { Payroll } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return (
+    <Payroll.PayrollExecutionFlow
+      companyId="your-company-id"
+      payrollId="your-payroll-id"
+      onEvent={() => {}}
+    />
+  )
+}
+```
+
+#### Props
+
+| Name                            | Type                                     | Description                                                        |
+| ------------------------------- | ---------------------------------------- | ------------------------------------------------------------------ |
+| **companyId** (Required)        | string                                   | The associated company identifier.                                 |
+| **payrollId** (Required)        | string                                   | The associated payroll identifier.                                 |
+| **onEvent** (Required)          | function                                 | See events table for available events.                             |
+| **withReimbursements**          | boolean                                  | Optional flag to show/hide reimbursements fields. Defaults to true.|
+| **ConfirmWireDetailsComponent** | `ComponentType<ConfirmWireDetailsProps>` | Optional custom component to replace the default wire details UI.  |
+
+### Payroll.RecoveryCases
+
+Displays and manages recovery cases for a company. Recovery cases occur when a payroll debit fails (e.g., insufficient funds) and Gusto needs to recover the funds. The component allows users to view recovery case details and initiate re-debits.
+
+```jsx
+import { Payroll } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return <Payroll.RecoveryCases companyId="your-company-id" />
+}
+```
+
+#### Props
+
+| Name                     | Type     | Description                        |
+| ------------------------ | -------- | ---------------------------------- |
+| **companyId** (Required) | string   | The associated company identifier. |
+| **onEvent**              | function | Optional event handler.            |
+
+#### Events
+
+| Event type                    | Description                                         | Data                       |
+| ----------------------------- | --------------------------------------------------- | -------------------------- |
+| RECOVERY_CASE_RESOLVE         | Fired when user initiates resolving a recovery case | { recoveryCaseId: string } |
+| RECOVERY_CASE_RESUBMIT_DONE   | Fired when a re-debit is successfully submitted     | None                       |
+| RECOVERY_CASE_RESUBMIT_CANCEL | Fired when user cancels the re-debit process        | None                       |

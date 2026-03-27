@@ -1,0 +1,32 @@
+---
+id: contractor
+title: "Contractor"
+description: "The representation of a contractor (individual or business) in Gusto."
+sidebar_label: "Contractor"
+hide_title: true
+hide_table_of_contents: true
+schema: true
+sample: {"uuid":"string","company_uuid":"string","wage_type":"Fixed","is_active":true,"version":"string","type":"Individual","first_name":"string","last_name":"string","middle_initial":"string","business_name":"string","ein":"string","has_ein":true,"email":"string","start_date":"string","address":"Unknown Type: object,null","hourly_rate":"50.0","file_new_hire_report":true,"work_state":"string","onboarded":true,"onboarding_status":"admin_onboarding_incomplete","payment_method":"Direct Deposit","has_ssn":true,"department_uuid":"string","department":"string","department_title":"string","dismissal_date":"string","upcoming_employment":"Unknown Type: object,null","dismissal_cancellation_eligible":true,"rehire_cancellation_eligible":true}
+custom_edit_url: null
+---
+
+import Schema from "@theme/Schema";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Contractor"}
+>
+</Heading>
+
+
+
+The representation of a contractor (individual or business) in Gusto.
+
+<Schema
+  {...require("./contractor.Schema.json")}
+>
+  
+</Schema>
+            

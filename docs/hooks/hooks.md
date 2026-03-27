@@ -3,8 +3,6 @@ title: Hooks
 order: 1
 ---
 
-# Hooks
-
 Hooks give you full control over form rendering while the SDK manages data fetching, validation, submission, and error handling. Each hook returns pre-bound field components, metadata, and actions — you supply the layout and labels.
 
 > Hooks are an experimental feature. APIs may change between minor versions during 0.x.x releases.
@@ -29,7 +27,7 @@ import { useEmployeeDetailsForm, SDKFormProvider } from '@gusto/embedded-react-s
 
 function App() {
   return (
-    <GustoProvider config={{ apiToken: '...' }}>
+    <GustoProvider config={{ baseUrl: '/proxy-url/' }}>
       <EmployeeForm companyId="company-uuid" />
     </GustoProvider>
   )

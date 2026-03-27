@@ -1,0 +1,32 @@
+---
+id: pay-schedule
+title: "Pay Schedule"
+description: "The representation of a pay schedule."
+sidebar_label: "Pay Schedule"
+hide_title: true
+hide_table_of_contents: true
+schema: true
+sample: {"uuid":"string","frequency":"Every week","anchor_pay_date":"string","anchor_end_of_pay_period":"string","day_1":0,"day_2":0,"name":"string","custom_name":"string","auto_pilot":true,"active":true}
+custom_edit_url: null
+---
+
+import Schema from "@theme/Schema";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Pay Schedule"}
+>
+</Heading>
+
+
+
+The representation of a pay schedule.
+
+<Schema
+  {...require("./pay-schedule.Schema.json")}
+>
+  
+</Schema>
+            

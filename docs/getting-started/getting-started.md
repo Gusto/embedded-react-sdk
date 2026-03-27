@@ -13,7 +13,7 @@ To get started with the Gusto Embedded React SDK, first install it from NPM via 
 
 In this case, installing via NPM:
 
-```
+```bash
 npm i @gusto/embedded-react-sdk
 ```
 

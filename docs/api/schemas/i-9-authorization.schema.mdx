@@ -1,0 +1,32 @@
+---
+id: i-9-authorization
+title: "I9-Authorization"
+description: "An employee's I-9 authorization"
+sidebar_label: "I9-Authorization"
+hide_title: true
+hide_table_of_contents: true
+schema: true
+sample: {"uuid":"string","form_uuid":"string","version":"string","authorization_status":"citizen","document_type":"uscis_alien_registration_number","has_document_number":true,"expiration_date":"string","country":"string","employer_signed":true,"employee_signed":true,"additional_info":"string","alt_procedure":true}
+custom_edit_url: null
+---
+
+import Schema from "@theme/Schema";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"I9-Authorization"}
+>
+</Heading>
+
+
+
+An employee's I-9 authorization
+
+<Schema
+  {...require("./i-9-authorization.Schema.json")}
+>
+  
+</Schema>
+            

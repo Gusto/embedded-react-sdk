@@ -1,0 +1,32 @@
+---
+id: contractor-payment-group-with-blockers
+title: "Contractor-Payment-Group-With-Blockers"
+description: "Contractor payment group with submission and credit blockers, but without individual contractor payments."
+sidebar_label: "Contractor-Payment-Group-With-Blockers"
+hide_title: true
+hide_table_of_contents: true
+schema: true
+sample: {"uuid":"string","company_uuid":"string","check_date":"string","debit_date":"string","status":"Unfunded","creation_token":"string","partner_owned_disbursement":true,"submission_blockers":[{"blocker_type":"string","blocker_name":"string","unblock_options":[{"unblock_type":"string","check_date":"string","metadata":{}}],"selected_option":"string","status":"unresolved"}],"credit_blockers":[{"blocker_type":"string","blocker_name":"string","unblock_options":[{"unblock_type":"submit_wire","check_date":"string","metadata":{"wire_in_amount":"string","wire_in_deadline":"2024-07-29T15:51:28.071Z","wire_in_request_uuid":"string"}},{"unblock_type":"submit_bank_screenshot","check_date":"string","metadata":{"information_request_uuid":"string","bank_account_last_four_digits":"string"}},{"unblock_type":"respond_to_high_risk_fraud_rfi","check_date":"string","metadata":{"information_request_uuid":"string"}},{"unblock_type":"wait_for_reverse_wire","check_date":"string","metadata":{"reverse_wire_detail_id":0,"bank_account_last_four_digits":"string"}}],"selected_option":"string","status":"unresolved"}],"totals":{"amount":"string","debit_amount":"string","wage_amount":"string","reimbursement_amount":"string","check_amount":"string"}}
+custom_edit_url: null
+---
+
+import Schema from "@theme/Schema";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Contractor-Payment-Group-With-Blockers"}
+>
+</Heading>
+
+
+
+Contractor payment group with submission and credit blockers, but without individual contractor payments.
+
+<Schema
+  {...require("./contractor-payment-group-with-blockers.Schema.json")}
+>
+  
+</Schema>
+            

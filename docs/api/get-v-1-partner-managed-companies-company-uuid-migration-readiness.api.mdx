@@ -1,0 +1,71 @@
+---
+id: get-v-1-partner-managed-companies-company-uuid-migration-readiness
+title: "Check company migration readiness"
+description: "Check if an existing Gusto customer is ready to be migrated to embedded payroll. This endpoint returns blockers and warnings associated with migrating the company and is recommended to be called before attempting to migrate a company."
+sidebar_label: "Check company migration readiness"
+hide_title: true
+hide_table_of_contents: true
+api: eJztV0tvGzcQ/ivs9JAE2JXsIOlBp7qxG+iQxsijLWAJymg5khgvyQ3JVawI+9+L4XLllS05aXsoENQHWdqdN7+Z+biFm3xZ+2BzZQItHQZlTR42FcHoCkjPSUqSMM3AVtS+HUsYwZJCvj7NK3TBkMs1GlySzAurKzSKfPq2yetayVyrZHnmCKUy5D1kEHDp2cuLTondSPKFUxULwwherKi4Fmoh0Ai6UT4osxQvOV5R8KcmJ5QXbHUjghVzEq0vkvyzi19UuHG2LAfi3Up5QUZWVpkgHIXaGS/mpS2uyXmBRorP6IwySy/Qe1uoaOuzCqtkmSMIKxIpwagSQyis1mRk63lOosCyJCnmtLCOBIZAumq1bRekwM7MYGImxhe2opH4kKo6S1Wd7ao64kQ/QAYVOtQUyHEBt2BQE4wg2ZpxzSEDxRWsMKwgA0efauVIwii4mjLwxYo0wmgL7VmDD06ZJTR3T+DdisT79+NzYRf9tKHJdm7/zOOJ5GeX4/x3cp4Vk/cVoSS353+Bpae7Xs45F83AiE4kBsrn6EmKs8uxWLdG7x3IxtYuCnCpB2K8EMYa4tOonF0rSTJrZbCqSlVEBD7y4koro3St+7anj1chVH40HEpb+EFsiUFh9bCDUJ4gFN8PsVJ50lRm+WMymPceP+Ewak9yAMernQGZWnMPPD15+jw/+Sk/fd42wQLrMsCo/7xpplxHX1njybOxpycn/G+/lBc3qKuSRCcJGRTWBDKBZXuVGH70rLDtRbdvCTLAsny9iBBLgdv5RyoCI9DxQAiqjSQ24CzYWQJ2L9W5tSUhI2Lf+thIDoQ8t3e/oY7084CxuYfwA+W8j93OKmMYmoZhuy/0qptN3RQQYYWh/eF36rsJxnPrwVKQc9b5XnDoHG64IQLp/vOH9GfXtPl6fhcsKliUS4OBltZ9s9pOvslAk/e4pK+r/pJK1ClE3YASA349s2/K6awLTH1pTyXNHX33mDJBg+VATKADSBqTmwnwOfNfBkGFkvqHnKcM4CEgpA3QAkFa8sLYhIh/AIhun3ynkPgjFeu/hEQq8S0k0KmPNRqcOSojNua1j7TjYXCkXKCZthLPTp7dH4u/2SB+tbWRYmKEmBieMrzeyPNicuRt7Qq6xU3kLQPxCq9J+NpRjL1bUO1uVV6ssVRyMDHAfukmkOEt0q73WKXjRC2DNZb1HcLGy0JTWNnE1iJpCCsYwXB9OjzKMIbb/ohthoeZmye37rhH7Upe9Gl7YqXa5ZlL0nGD3jvOc9IWMrjJfUV4Teg3eWsv55kOrBe784jhgzYvnZUP2Kz4NVfEU1E7FTYx8pZ3bs6Kgrw/q7k4V9O+1FtejC1QD8juYMshdks+bjxCF0nPHS6bGHFJayoF1mFFJqRdzF3zduMD6X/jobVwxEHDlGxho9UE/JZIn12OGUKJuO1RjgyYlvnXi7fk1qqg3nncMiSc2zoMo+BQsmtu8Dz+zu0ingOr3psbVBZWE2/5GMcjLy46un7Zcq1I0KQtak0mxDR+SGwGi8hmEgE977yKN9zusW8yII2qjIBKb3++xQ9Xo7I+aDQ9O+1t496EF33o7yWxvaVW/19VjlxVEoQD3YRhVaKKWI+9vU0T6QrWp+2d5rApyGB052pzaCxNM1hZH9jedsuXh/eubBp+/KkmXoJXU56UTuGc0X+1Bak8fz9yKekf7uM36f7yRBy7EB3JtNv4USLNaWbW7UzfS6uZNll3Y/p74X3n16eDhW0LePjuuasz75FWkOdqFXrv7t2E9jbmy4t30DR/AVwYDuQ=
+sidebar_class_name: "get api-method"
+info_path: docs/api/gusto-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Check company migration readiness"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/v1/partner_managed_companies/{company_uuid}/migration_readiness"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Check if an existing Gusto customer is ready to be migrated to embedded payroll. This endpoint returns blockers and warnings associated with migrating the company and is recommended to be called before attempting to migrate a company.
+
+scope: `partner_managed_companies:read`
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  {...require("./get-v-1-partner-managed-companies-company-uuid-migration-readiness.ParamsDetails.json")}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  {...require("./get-v-1-partner-managed-companies-company-uuid-migration-readiness.RequestSchema.json")}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  {...require("./get-v-1-partner-managed-companies-company-uuid-migration-readiness.StatusCodes.json")}
+>
+  
+</StatusCodes>
+
+
+      

@@ -1,0 +1,1 @@
+{"title":"Body","body":{"required":true,"content":{"application/json":{"schema":{"type":"object","properties":{"name":{"type":"string","description":"The name of the custom earning type."}}},"examples":{"Example":{"value":{"name":"Gym Membership Stipend"}}}}}}}

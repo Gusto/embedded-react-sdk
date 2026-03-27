@@ -1,0 +1,144 @@
+.root {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: 3rem 2rem;
+}
+
+.container {
+  text-align: center;
+  max-width: 480px;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: #525860;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+[data-theme='dark'] .subtitle {
+  color: #9a9da3;
+}
+
+.links {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 2.5rem;
+}
+
+.homeLink {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.625rem 1.5rem;
+  background-color: #f45d48;
+  color: #ffffff;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: background-color 0.15s ease;
+}
+
+.homeLink:hover {
+  background-color: #d91f0c;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.docsLink {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.625rem 1.5rem;
+  background-color: transparent;
+  color: #1b1b1d;
+  border: 1px solid #d0d0d3;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.docsLink:hover {
+  border-color: #f45d48;
+  color: #f45d48;
+  text-decoration: none;
+}
+
+[data-theme='dark'] .docsLink {
+  color: #ffffff;
+  border-color: #4a4a4d;
+}
+
+[data-theme='dark'] .docsLink:hover {
+  border-color: #ff7a68;
+  color: #ff7a68;
+}
+
+.suggestions {
+  padding-top: 1.5rem;
+  border-top: 1px solid #ebedf0;
+}
+
+[data-theme='dark'] .suggestions {
+  border-top-color: #3a3a3d;
+}
+
+.suggestionsLabel {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+  color: #525860;
+  margin-bottom: 0.75rem;
+}
+
+[data-theme='dark'] .suggestionsLabel {
+  color: #9a9da3;
+}
+
+.suggestionsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.suggestionsList li a {
+  display: inline-block;
+  padding: 0.35rem 0.85rem;
+  background-color: #f5f6f7;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: #1b1b1d;
+  text-decoration: none;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.suggestionsList li a:hover {
+  background-color: rgba(244, 93, 72, 0.1);
+  color: #f45d48;
+  text-decoration: none;
+}
+
+[data-theme='dark'] .suggestionsList li a {
+  background-color: #2a2a2d;
+  color: #c0c0c3;
+}
+
+[data-theme='dark'] .suggestionsList li a:hover {
+  background-color: rgba(255, 122, 104, 0.12);
+  color: #ff7a68;
+}

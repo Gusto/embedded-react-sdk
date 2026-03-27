@@ -9,7 +9,7 @@ The Gusto Embedded React SDK can communicate events with the parent application.
 
 Each of our React SDK components ships with an `onEvent` property. This is a function callback that is supplied with the event type and data associated with the user action. It takes the form:
 
-```typescript typescript
+```typescript
 (eventType: EventType, data?: unknown) => void
 ```
 
@@ -19,7 +19,7 @@ The `data` argument can vary in shape and content. Some events will have no data
 
 You can supply a function to this callback and respond to events as needed. In the following example we set up an event handler for the `Employee.Profile` component and execute code based on the event type:
 
-```jsx jsx
+```jsx
 import { Employee, componentEvents } from '@gusto/embedded-react-sdk'
 
 const handleEvent = (eventType, data) => {

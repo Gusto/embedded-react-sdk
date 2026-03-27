@@ -3,8 +3,6 @@ title: Observability and Error Tracking
 order: 8
 ---
 
-# Observability and Error Tracking
-
 The Gusto Embedded React SDK provides built-in hooks for error tracking and performance monitoring. These hooks allow you to integrate with observability tools like Sentry, Datadog, New Relic, or your own custom monitoring solution.
 
 ---

@@ -1,0 +1,71 @@
+---
+id: get-v-1-employees-employee-id-federal-taxes
+title: "Get federal taxes for an employee"
+description: "Returns federal tax information for an employee. The response structure varies based on the w4_data_type (pre_2020_w4 or rev_2020_w4)."
+sidebar_label: "Get federal taxes for an employee"
+hide_title: true
+hide_table_of_contents: true
+api: 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
+sidebar_class_name: "get api-method"
+info_path: docs/api/gusto-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Get federal taxes for an employee"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/v1/employees/{employee_uuid}/federal_taxes"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Returns federal tax information for an employee. The response structure varies based on the w4_data_type (pre_2020_w4 or rev_2020_w4).
+
+scope: `employee_federal_taxes:read`
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  {...require("./get-v-1-employees-employee-id-federal-taxes.ParamsDetails.json")}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  {...require("./get-v-1-employees-employee-id-federal-taxes.RequestSchema.json")}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  {...require("./get-v-1-employees-employee-id-federal-taxes.StatusCodes.json")}
+>
+  
+</StatusCodes>
+
+
+      

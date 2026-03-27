@@ -21,22 +21,22 @@ function MyApp() {
 
 #### Props
 
-| Name               | Type   | Description                                                     |
-| ------------------ | ------ | --------------------------------------------------------------- |
-| companyId Required | string | The associated company identifier.                              |
-| defaultValues      | object | Default values for individual flow step components              |
-| onEvent Required   |        | See events table for each subcomponent to see available events. |
+| Name                     | Type     | Description                                                     |
+| ------------------------ | -------- | --------------------------------------------------------------- |
+| **companyId** (Required) | string   | The associated company identifier.                              |
+| **defaultValues**        | object   | Default values for individual flow step components.             |
+| **onEvent** (Required)   | function | See events table for each subcomponent to see available events. |
 
 ## Using Company Subcomponents
 
-Employee onboarding components can be used to compose your own workflow, or can be rendered in isolation. For guidance on creating a custom workflow, see [docs on composition](../integration-guide/composition.md).
+Company onboarding components can be used to compose your own workflow, or can be rendered in isolation. For guidance on creating a custom workflow, see [docs on composition](../integration-guide/composition.md).
 
 ### Available Subcomponents
 
 - Company.AssignSignatory
 - Company.CreateSignatory
 - Company.InviteSignatory
-- Company.IndustrySelect
+- Company.Industry
 - Company.DocumentSigner
 - Company.FederalTaxes
 - Company.PaySchedule
@@ -250,11 +250,11 @@ function MyComponent() {
 
 #### Props
 
-| Name                     | Type   | Description                            |
-| ------------------------ | ------ | -------------------------------------- |
-| **companyId** (Required) | string | The associated company identifier.     |
-| **defaultValues**        |        |                                        |
-| **onEvent** (Required)   |        | See events table for available events. |
+| Name                     | Type     | Description                            |
+| ------------------------ | -------- | -------------------------------------- |
+| **companyId** (Required) | string   | The associated company identifier.     |
+| **defaultValues**        | object   | Default values for location form fields. |
+| **onEvent** (Required)   | function | See events table for available events. |
 
 #### Events
 
@@ -280,11 +280,11 @@ function MyComponent() {
 
 #### Props
 
-| Name                     | Type   | Description                            |
-| ------------------------ | ------ | -------------------------------------- |
-| **companyId** (Required) | string | The associated company identifier.     |
-| **defaultValues**        |        |                                        |
-| **onEvent** (Required)   |        | See events table for available events. |
+| Name                     | Type     | Description                            |
+| ------------------------ | -------- | -------------------------------------- |
+| **companyId** (Required) | string   | The associated company identifier.     |
+| **defaultValues**        | object   | Default values for bank account form fields. |
+| **onEvent** (Required)   | function | See events table for available events. |
 
 #### Events
 

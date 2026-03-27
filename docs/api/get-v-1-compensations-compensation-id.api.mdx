@@ -1,0 +1,71 @@
+---
+id: get-v-1-compensations-compensation-id
+title: "Get a compensation"
+description: "Compensations contain information on how much is paid out for a job. Jobs may have many compensations, but only one that is active. The current compensation is the one with the most recent `effective_date`."
+sidebar_label: "Get a compensation"
+hide_title: true
+hide_table_of_contents: true
+api: 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
+sidebar_class_name: "get api-method"
+info_path: docs/api/gusto-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Get a compensation"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/v1/compensations/{compensation_id}"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Compensations contain information on how much is paid out for a job. Jobs may have many compensations, but only one that is active. The current compensation is the one with the most recent `effective_date`.
+
+scope: `compensations:read`
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  {...require("./get-v-1-compensations-compensation-id.ParamsDetails.json")}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  {...require("./get-v-1-compensations-compensation-id.RequestSchema.json")}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  {...require("./get-v-1-compensations-compensation-id.StatusCodes.json")}
+>
+  
+</StatusCodes>
+
+
+      

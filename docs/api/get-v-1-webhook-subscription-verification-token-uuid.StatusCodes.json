@@ -1,0 +1,1 @@
+{"responses":{"200":{"description":"No Content. The `verification_token` is POSTed to the Subscription URL."},"404":{"description":"Not Found \n  \nThe requested resource does not exist. Make sure the provided UUID is valid.\n"}}}

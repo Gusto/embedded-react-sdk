@@ -1,0 +1,32 @@
+---
+id: admin
+title: "Admin"
+description: "The representation of an admin user in Gusto."
+sidebar_label: "Admin"
+hide_title: true
+hide_table_of_contents: true
+schema: true
+sample: {"uuid":"string","email":"string","first_name":"string","last_name":"string","phone":"string"}
+custom_edit_url: null
+---
+
+import Schema from "@theme/Schema";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Admin"}
+>
+</Heading>
+
+
+
+The representation of an admin user in Gusto.
+
+<Schema
+  {...require("./admin.Schema.json")}
+>
+  
+</Schema>
+            

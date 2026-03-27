@@ -1,0 +1,74 @@
+---
+id: get-v-1-company-payment-configs
+title: "Get a company's payment configs"
+description: "Get payment speed configurations for the company: payment speed (1-day, 2-day, or 4-day ACH), fast payment limit, partner-owned disbursement setting, and earned fast ACH blockers when applicable. 1-day is only available to partners that opt in."
+sidebar_label: "Get a company's payment configs"
+hide_title: true
+hide_table_of_contents: true
+api: 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
+sidebar_class_name: "get api-method"
+info_path: docs/api/gusto-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Get a company's payment configs"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/v1/companies/{company_uuid}/payment_configs"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Get payment speed configurations for the company: payment speed (1-day, 2-day, or 4-day ACH), fast payment limit, partner-owned disbursement setting, and earned fast ACH blockers when applicable. 1-day is only available to partners that opt in.
+
+### Related guides
+- [Payroll Processing Speeds](doc:2-day-vs-4-day)
+
+scope: `company_payment_configs:read`
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  {...require("./get-v-1-company-payment-configs.ParamsDetails.json")}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  {...require("./get-v-1-company-payment-configs.RequestSchema.json")}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  {...require("./get-v-1-company-payment-configs.StatusCodes.json")}
+>
+  
+</StatusCodes>
+
+
+      

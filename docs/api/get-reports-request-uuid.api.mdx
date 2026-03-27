@@ -1,0 +1,73 @@
+---
+id: get-reports-request-uuid
+title: "Get a report"
+description: "Get a company's report given the `request_uuid`. The response will include the report request's status and, if complete, the report URL."
+sidebar_label: "Get a report"
+hide_title: true
+hide_table_of_contents: true
+api: eJztV21v2zYQ/is37oNbQLIdN20zf1rQZFmAbgvysg1IjIQWzzZbiWT44sYw9N+HIyVHTpwVwzBgGJYvkajj3cO757mj1+whnwfndS6Vx7nlXmqV+5VBNr5mWE1RCBQsY9yYroljk4xpg+ntVLAxm6PPLRptvcst3gd0/jYESZstOqOVQ8fGazYaDumfQFdYaWg7G7PjB16ZEqG1ZBkrtPKoPNlyY0pZxFCDT442rJkrFlhxekpomZ5+wsKzjBlLwLxM4bagPFo7b6Was+wJjkMISt4HBClQeTmTaEHPwC8IGp0NGn+szpjz3Af3dacfgrWoPCT7bX8ZGO2cnJYIS14GdMAtQs+FokAUKHoZ9AwqIdW8l4G20JtxWaLoEYDk4jbYsouCW8tXz0BcLhDiF4pPO8Br4EWBznXgsIxJj9WOQ9V1nbGHHFOhokHznO/FejTJYBvo7AnAa7bw3rjxYJCW+8GW/UJXRKXtKjFz8EYMC36Qvxf7e/n+iH+XH7zZX+XvxWjvAGfviuloyAiQl74kkOcJfZ2xLsCGVfQYk5v48A9CynaloY5/Gdsf7j8n/s/aww86KAE3CuBGXcZSxMgoSA462AJBaHSgtAd8kM734Sf+GcEFi7F2xuqlFCjg6ur0CKQjKknRv1ExR9sBT9ADh0JXhqtVz7W0nsslqujsrnvwuz4kREmW8EWWJUhVlEHgDlX0XEtyrkQGchYDlegx61pfnX/s36gblarmgKTOpZJqDmc/nkYFSJW4GZXxRfoF3DWYb5smM7bIxdhLtLejW63K1R0I7jm4Qhsk7/FhvHvfHfUJbnmFHi0RYc0Ur4hJT1qXpJwZ7hcsMUJaFGzsbcDseQtqpbJLe7E0G+nHGKTAOSpqoggchC5Chcr34aRdbJcAlTBaKk/18sEq6MKMUp4iBIci5YqCnBxfbryL5576rM42h/49P4lD4PDsNP8VrSPYzdkXyAXardPPeOnw6RmPKJOVVJjaieAe8yknRIdnp7BMToE7pwsZEUWgKx1sNCh4WfbhdAZKKyQKt5zOkk1nBPQcXFdSySpUXd+TV62WhS5cP0410vKgnWK54SuryzJ+H3Aj82anVPNvG4d5Z/k1waCc9tnLtc4YqlBRJxkNR2/z4bt87y11D4EzHkrPxt31up5kzPN57DwN+ckYHzwqF8cqMfEzrtj45cGctc3sKwOaglXoF7qZzpHyfsHGbLDcaxqeG6y7TKrppGiXrSaCLYkCTV65kSmtucAq5vbZlDnCSjOaE84g/4zcrfLkL49NlPZF3r3geKfPM6vFn/g09JnO6rAIVvpVRP4hif4wNpHDQMe+nnStLqigaUzssN2UmSC25af3KXIb5fBkxCcXeYlLLIEHv6DrQ+Ir9YOLlfNY/Z0IycMLAWoS60xHr81EjIImfRBfGklvkTFjJFj3y+wC7VIW2KnHo3b4VAc/iIYDQaHpapXH91zPYh1o61Owv2FZ6AqpL0UcPQfHDVXhLKkwSrftSvEY3zSXPl7ES1/Tmo7aqHCOZUPtjGHFZRkJ1Xz9/pE/lA2jna+46vhJc29zy9nCu368bP4/HzfzseGnxwc/MCWXkchRuOumkVyz5d7mlkdlGW9Nz0nGFtp5sluvaRZc2bKuafk+oCWdTqiXWcmnRNnrNRPS0fMLM6ZbplfnzTh6Df/O6fpC/to7ulo99nHGsqbnb6WvntRZO37/WnL+47N4Z2JTAndfZDZ5ptGTDKkVG9/59uw35tb4PDm+ZHX9B/LWV7w=
+sidebar_class_name: "get api-method"
+info_path: docs/api/gusto-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Get a report"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/v1/reports/{request_uuid}"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Get a company's report given the `request_uuid`. The response will include the report request's status and, if complete, the report URL.
+
+Reports containing PHI are inaccessible with `company_reports:read:tier_2_only` data scope
+
+scope: `company_reports:read`
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  {...require("./get-reports-request-uuid.ParamsDetails.json")}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  {...require("./get-reports-request-uuid.RequestSchema.json")}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  {...require("./get-reports-request-uuid.StatusCodes.json")}
+>
+  
+</StatusCodes>
+
+
+      

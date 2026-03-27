@@ -117,11 +117,10 @@ Once we have our wrapper components configured with the correct navigation, we c
 ```jsx
 import {
   Employee,
-  useGetEmployeesByCompany,
   componentEvents,
 } from '@gusto/embedded-react-sdk';
 import '@gusto/embedded-react-sdk/style.css';
-import React, { Suspense } from 'react';
+import React from 'react';
 import {
   createBrowserRouter,
   Link,

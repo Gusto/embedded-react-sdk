@@ -22,7 +22,7 @@ For example, take the payment details step from the Employee Onboarding Flow. In
 We can update any text on this page by overriding the text strings in the dictionary. Here is an example updating the title and CTA text.
 
 ```jsx
-import { EmployeeOnboardingFlow } from '@gusto/embedded-react-sdk';
+import { Employee } from '@gusto/embedded-react-sdk';
 
 function MyApp({ companyId }) {
   return(
@@ -39,7 +39,7 @@ function MyApp({ companyId }) {
         },
       }}
     >
-      <EmployeeOnboardingFlow companyId={companyId} onEvent={() => {...}} />
+      <Employee.OnboardingFlow companyId={companyId} onEvent={() => {...}} />
     </GustoProvider>
   );
 }

@@ -3,8 +3,6 @@ title: useCompensationForm
 order: 3
 ---
 
-# useCompensationForm
-
 Creates or updates job compensation for an employee — job title, FLSA classification, pay rate, payment unit, minimum wage adjustments, and Washington state workers' compensation fields.
 
 ```tsx

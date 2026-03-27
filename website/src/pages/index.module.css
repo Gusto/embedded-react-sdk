@@ -1,0 +1,344 @@
+/* ── Hero ── */
+
+.hero {
+  padding: 5rem 2rem 4rem;
+  text-align: center;
+  background: linear-gradient(180deg, #f5f3f1 0%, #ffffff 100%);
+  border-bottom: 1px solid #ebedf0;
+}
+
+[data-theme='dark'] .hero {
+  background: linear-gradient(180deg, #1b1b1d 0%, #242427 100%);
+  border-bottom-color: #3a3a3d;
+}
+
+.heroInner {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.heroBrand {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.heroLogo {
+  height: 36px;
+  width: auto;
+}
+
+.heroLogoDark {
+  display: block;
+}
+
+.heroLogoLight {
+  display: none;
+}
+
+[data-theme='dark'] .heroLogoDark {
+  display: none;
+}
+
+[data-theme='dark'] .heroLogoLight {
+  display: block;
+}
+
+.heroSdkLabel {
+  font-size: 1.6rem;
+  font-weight: 300;
+  letter-spacing: -0.01em;
+  color: #8a8a8d;
+  position: relative;
+  top: -2px;
+}
+
+[data-theme='dark'] .heroSdkLabel {
+  color: #6a6a6d;
+}
+
+.heroTagline {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  color: #525860;
+  margin-bottom: 2rem;
+  max-width: 560px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+[data-theme='dark'] .heroTagline {
+  color: #9a9da3;
+}
+
+.heroActions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.heroPrimary {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.75rem 2rem;
+  background-color: #f45d48;
+  color: #ffffff;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.heroPrimary:hover {
+  background-color: #d91f0c;
+  color: #ffffff;
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+.heroSecondary {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.75rem 2rem;
+  background-color: transparent;
+  color: #1b1b1d;
+  border: 1px solid #d0d0d3;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+
+.heroSecondary:hover {
+  border-color: #f45d48;
+  color: #f45d48;
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+[data-theme='dark'] .heroSecondary {
+  color: #ffffff;
+  border-color: #4a4a4d;
+}
+
+[data-theme='dark'] .heroSecondary:hover {
+  border-color: #ff7a68;
+  color: #ff7a68;
+}
+
+.heroInstall {
+  display: inline-block;
+}
+
+.heroInstall code {
+  display: inline-block;
+  padding: 0.5rem 1.25rem;
+  background-color: #1b1b1d;
+  border: 1px solid #1b1b1d;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: #e0e0e3;
+  user-select: all;
+}
+
+[data-theme='dark'] .heroInstall code {
+  background-color: #111113;
+  border-color: #3a3a3d;
+  color: #c0c0c3;
+}
+
+/* ── Features ── */
+
+.features {
+  padding: 4rem 2rem;
+  background-color: #ffffff;
+}
+
+[data-theme='dark'] .features {
+  background-color: #1b1b1d;
+}
+
+.featuresInner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.featuresGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+@media (max-width: 996px) {
+  .featuresGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .featuresGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .heroActions {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+.featureCard {
+  padding: 1.5rem;
+  background-color: #faf9f8;
+  border: 1px solid #dfe1e5;
+  border-radius: 12px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.featureCard:hover {
+  border-color: #f45d48;
+  box-shadow: 0 4px 16px rgba(244, 93, 72, 0.1);
+}
+
+[data-theme='dark'] .featureCard {
+  border-color: #3a3a3d;
+  background-color: #242427;
+}
+
+[data-theme='dark'] .featureCard:hover {
+  border-color: #ff7a68;
+  box-shadow: 0 4px 16px rgba(255, 122, 104, 0.08);
+}
+
+.featureIcon {
+  display: block;
+  margin-bottom: 0.75rem;
+  color: #f45d48;
+}
+
+[data-theme='dark'] .featureIcon {
+  color: #ff7a68;
+}
+
+.featureTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #1b1b1d;
+}
+
+[data-theme='dark'] .featureTitle {
+  color: #ffffff;
+}
+
+.featureDescription {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #525860;
+  margin: 0;
+}
+
+[data-theme='dark'] .featureDescription {
+  color: #9a9da3;
+}
+
+/* ── Quick links ── */
+
+.quickLinks {
+  padding: 4rem 2rem 5rem;
+  background-color: #f2f0ee;
+}
+
+[data-theme='dark'] .quickLinks {
+  background-color: #242427;
+}
+
+.quickLinksInner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.quickLinksTitle {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  color: #1b1b1d;
+}
+
+[data-theme='dark'] .quickLinksTitle {
+  color: #ffffff;
+}
+
+.quickLinksGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+}
+
+@media (max-width: 996px) {
+  .quickLinksGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .quickLinksGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.quickLinkCard {
+  display: block;
+  padding: 1.25rem 1.5rem;
+  background-color: #ffffff;
+  border: 1px solid #dfe1e5;
+  border-radius: 10px;
+  text-decoration: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+}
+
+.quickLinkCard:hover {
+  border-color: #f45d48;
+  box-shadow: 0 4px 14px rgba(244, 93, 72, 0.12);
+  text-decoration: none;
+  transform: translateY(-2px);
+}
+
+[data-theme='dark'] .quickLinkCard {
+  background-color: #1b1b1d;
+  border-color: #3a3a3d;
+}
+
+[data-theme='dark'] .quickLinkCard:hover {
+  border-color: #ff7a68;
+  box-shadow: 0 3px 12px rgba(255, 122, 104, 0.1);
+}
+
+.quickLinkCard h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+  color: #1b1b1d;
+}
+
+[data-theme='dark'] .quickLinkCard h3 {
+  color: #ffffff;
+}
+
+.quickLinkCard p {
+  font-size: 0.85rem;
+  color: #525860;
+  margin: 0;
+  line-height: 1.5;
+}
+
+[data-theme='dark'] .quickLinkCard p {
+  color: #9a9da3;
+}

@@ -1,0 +1,76 @@
+---
+id: get-v-1-jobs-job-id-compensations
+title: "Get compensations for a job"
+description: "Compensations contain information on how much is paid out for a job. Jobs may have many compensations, but only one that is active. The current compensation is the one with the most recent `effective_date`."
+sidebar_label: "Get compensations for a job"
+hide_title: true
+hide_table_of_contents: true
+api: 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
+sidebar_class_name: "get api-method"
+info_path: docs/api/gusto-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Get compensations for a job"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/v1/jobs/{job_id}/compensations"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Compensations contain information on how much is paid out for a job. Jobs may have many compensations, but only one that is active. The current compensation is the one with the most recent `effective_date`.
+
+*Note: Currently the API does not support creating multiple compensations per job - creating a compensation with the same job_uuid as another will fail with a relevant error.*
+
+Use `flsa_status` to determine if an employee is eligible for overtime
+By default the API returns only the current compensation - use the `include` parameter to return all compensations.
+
+scope: `compensations:read`
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  {...require("./get-v-1-jobs-job-id-compensations.ParamsDetails.json")}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  {...require("./get-v-1-jobs-job-id-compensations.RequestSchema.json")}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  {...require("./get-v-1-jobs-job-id-compensations.StatusCodes.json")}
+>
+  
+</StatusCodes>
+
+
+      

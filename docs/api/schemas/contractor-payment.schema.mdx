@@ -1,0 +1,32 @@
+---
+id: contractor-payment
+title: "Contractor Payment"
+description: "The representation of a single contractor payment."
+sidebar_label: "Contractor Payment"
+hide_title: true
+hide_table_of_contents: true
+schema: true
+sample: {"uuid":"string","contractor_uuid":"string","bonus":"string","date":"string","hours":"string","payment_method":"Direct Deposit","reimbursement":"string","status":"Funded","hourly_rate":"string","may_cancel":true,"wage":"string","wage_type":"Hourly","wage_total":"string"}
+custom_edit_url: null
+---
+
+import Schema from "@theme/Schema";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Contractor Payment"}
+>
+</Heading>
+
+
+
+The representation of a single contractor payment.
+
+<Schema
+  {...require("./contractor-payment.Schema.json")}
+>
+  
+</Schema>
+            

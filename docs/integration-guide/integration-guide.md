@@ -2,7 +2,7 @@
 title: Integration Guide
 ---
 
-The integration guide will provide general concepts for building with the Gusto Embedded React SDK. The intent of the SDK is to be flexible and customizable according to the needs of your application. The sections below detail how to accomplish some common use cases.
+The integration guide covers the key concepts for building with the Gusto Embedded React SDK. The SDK is designed to be flexible -- you can use workflow components as-is for a quick start, or customize every aspect of the experience to match your application. The sections below walk through each integration surface area, from versioning and event handling to theming and error tracking.
 
 | Section                                                 | Description                                                                                                                                                                                             |
 | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

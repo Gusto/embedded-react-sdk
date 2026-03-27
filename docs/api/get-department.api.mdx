@@ -1,0 +1,72 @@
+---
+id: get-department
+title: "Get a department"
+description: "Get a department given the UUID"
+sidebar_label: "Get a department"
+hide_title: true
+hide_table_of_contents: true
+api: eJzdV9ty2zYQ/RUUfUgyQ+hKXcineuo09UMTT5y0nbE1CUgsJSQkwACgYo2G/95ZkJIo2cql6VOfbJLAwdnFnt2jLb1ny8o6zaRysDTcSa2Y25RA41sKRQJCgKAB5WXZXWLpIqC6hObpStCYLsExASU3rgDlaEAdX1pEudy/9LsE2NTIEvfRmL4ARzg57CNLuQZF3ArI27dXl3fqTtlUlxCT94dFNjbAxfs7RQNacsMLcGDwrC1VvAAa08Pad1UlMQCJp5XcrWhADXyqpAFBY2cqCKhNV1BwGm9pEzm1zki1pPUp2zctLaIzT7ETbx3sD/+bvfApvbi+Yn+Csbi3JbACLsAcUch4buH0oEuMqJAKbHMOd8ASbkGQi+srsm5ACbdWp5I7EOSzdCuy0ZXxC1Ke5z1ylRGlFRBpSWn0WgoQQbOGl2UuU393Tyy5LaSSRVV0sRdPV86VNu73hU5tz9dIL9VFf1cTrOQbo/Pcf+/zUrJ2p1TLn1tA1nn9DGlUFkSPnk94QEFVBRbNaDCasMGUDSdNzWS8yh2Nu+/reoF5tKVWFiyCjQYD/HOayn1tvUo+QOrI83telDnQgKZaOby8eEs7Kel/sLhz+5Cm9gAohzx/lfmCO/1SGpSFkw2jNvjHIn1YWWllDNLcXW9bZA10j9wA+OfbQ6LJspICvvOupICi1A5UunlGMm2IVJk2hQ+daEVW+jNxGu+KuJW0JJOQix6t64A66XIMoq1qnuTgC//LSfAK/KYMnNUWTXVRcrV59++w2t30EMLXEF7yAh5nAkWZ6w00obUg3Bi+eYBxgW8RZL8FFSuXCgQm+BgaZSEdFB72W/JX13XdVLDhqdPmO/h0Nv3XjLwod2VyeZy4RnYeYCdBlAjPKziA0sl0NB0kY8HS8WzCwuEkZclsxtlsIqIomw1nw2hMTwuCzgbzGR/N52w+DiMWTscjlkQjYEkahVkyi7JRhILfMbtxfAnkd65wNOxFSkU0CMOBEOE0nA6GYpjOsxAiGIUDkSUzPqVH13+75xwOh1GEdHkURSwMhyGLsnDARJRkk2iaDMehoJiZo+s67B+H8/kkjDI2HUDIwijMGB+HnEVizrkYc55kE1ovmgQHNByED/vcS+3Ib7pSgtwpQu4UagCnDFicDwasrkwKRGiwRGlH4F5a1yN/8I9AbGWa3rKbE416pCVrnkvRu1Ne/vfMlsA/ArcbhrOO6TUYIwU04x+zc+9AWW8QMLyPsKHxeYsR7C7/K1YDW8wO6hyDPZZngrkuwK202FPzsz+m/fWw33ES/e2JVahxPIFZ7wxFZXKc222D5aVs+isTUPgm+0Bll1BoepyrBo/5q8Z9vmeeAX4U89po8QXMEj9jyBbSyki38cx/bRRykaZg7UWF0d8uuqtucLw1enxk7V7dSHE3s/E5AW68hznm2EKwHNaQE165FSjXTlSU/83GOih+5IQG4cwBNTqsTHvUVuTehaGpOdJ4x0EEFF2WfZXdgFnLFDr3cRiiPNGV6/uFfYFHYyNk/pnpzN8Dbj0l+xfkqS4A26rn8cSS522Nk+tmHHu/JXRaYfH5MH5qPQlPvSdp/eTl7lTyGvJWE9iIuMx9QbVffznUD2aj1NYVXHVwTr32KeftwQ/9uC9vr9bBveuXOZe+BnzNb1sp3tL10FM4/DwIaHzq3BcBXWnrcPl2ixb4rcnrGl9/qsBgpS9Q+kZ6M4J1L6TF/89Y626QT1+3LvwZ+YL7OBPLbtSqTaf30KBtVKdh1Is62Ln/7yP5P/8p8Ghumxw+/jtqn+rDVMCmUrrOtwdm/mgevHj+htb1PzboK88=
+sidebar_class_name: "get api-method"
+info_path: docs/api/gusto-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Get a department"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/v1/departments/{department_uuid}"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Get a department given the UUID
+
+scope: `departments:read`
+
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  {...require("./get-department.ParamsDetails.json")}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  {...require("./get-department.RequestSchema.json")}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  {...require("./get-department.StatusCodes.json")}
+>
+  
+</StatusCodes>
+
+
+      

@@ -41,7 +41,7 @@ Like Employee onboarding, self-onboarding components can be used to compose your
 
 Displays guidance on what to expect from the workflow and what information the employee will be required to have on hand and provide.
 
-```jsx jsx
+```jsx
 import { Employee } from '@gusto/embedded-react-sdk'
 
 function MyApp() {

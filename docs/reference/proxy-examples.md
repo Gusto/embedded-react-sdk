@@ -2,8 +2,6 @@
 title: 'Proxy Examples'
 ---
 
-# Proxy Examples
-
 Express.js examples for building endpoint allowlists. These examples assume a standard Express app with session-based authentication. For background, see the [Proxy Security: Partner Guidance](../getting-started/proxy-security-partner-guidance.md).
 
 ## Loading the endpoint inventory

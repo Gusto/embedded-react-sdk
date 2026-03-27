@@ -1,0 +1,71 @@
+---
+id: delete-v-1-recurring-reimbursements
+title: "Delete a recurring reimbursement"
+description: "Delete (soft delete) a recurring reimbursement for an employee."
+sidebar_label: "Delete a recurring reimbursement"
+hide_title: true
+hide_table_of_contents: true
+api: eJzdV99v2zYQ/lc47qEtINlN0e5BTwuWbAiwrUGTbgOcIKXFs8VGIlke6UQQ9L8XR8q21NgtigF7WF5iS3fHj9/9+M4dNxac8MroC8kLLqEGD/nmJHdQBueUXt85UM0yOIQGtEeecQlYOmXJiRf8LLqw52hWniX/F0ywnT+b+LOVcUxoBo2tTQswu9E3GktjoWAfpicVD055+MAz7sUaebHg76ZIbjP+mK8DepMr7WGd7pH71gJZQ7MEKUHyjAtrxybRFQmg8i0vFh3/xTRW6Pa0LAHxNPiKF4vb/jbjVjjRgAeH0U6LBnjB/8l/i8eeXl7kf4FDYiLjiuioQEhwPONYVtAIXnQ8AeLoiQ6ecdChIYCvXr56k7/8KT95Q3gkrESoPS/Gz/unbHtwjdKAzFfApPCQLwWCZKeXF2yTsDCBaEolPEj2oHzFWhNcNChFXc/YxYppo4EpZNaZjZIgs2QjrK1VGUl6hmzRKK2a0Ixj3z6vvLdYzOfSlDiL9M9K08y3dOdWtM7UdXw/F1blg6fS6x+HgPno8QuCERDkjPfZjmElt4Ra4asnRXddAXv//uKMmVXkYVI5POMOPgXlQPLCuwDHk9H3oyJy+CDWWw8HaI1GQHJ69fI1/ZtiwBCrZRVqStPrQyZ/Gs9+NUHTZUqjPYErOj5ief4RybIbITwSgt1oxm70dbztpwBI2XWAJrgSmDSATBvP4FGhn7E/xD0wDA4iPdsss4uzeaRNIduIWskZdVdixCw/QjnlbsHBOeNiu1hHk8KrRMjwfM+ncE60lDIPzfj58ah390AOpfCwNq49cka0OtBDU5KuLJRqpQDZQwXDnaM7M2UZHM7YdWsVFX/LfKWQ3UPLlATtkxfZC++dWgYP813PMwd1bCJv9iGpTPeovwMaRSBbqtkUiVEyt6G2ScIB+dqZYJVeIxNaslJotoTYJ4RmGVQtWUll2wz2ldCypnmrdOrl0cCLmBtAFGv4NuTLLRAJXqgamVia4Eek5mwNGtyeziH0FiUGtxJlQkqzXksCTszRHzUcPIrG1inP2vi7VWySUWEtJvnnQ8WP66UYOY4ux480yINI/REdZry/JSBe+RpSk+WxyfJzOjR/m6p2gAuPHjRG3SBcCdFR5cn4RtTh2wpEw24aKs2fnT/NIRpPDfjK7MWZZ2kkFny+OZkfk+l5p2RPKgRusxWv4GoSqGF8C6vS9M4lNHGEH5D2xnBKF1oQ9yCwzVO8XCU8jYkz+0jggzEvnZFfiWnpdT+S5yuai6lQDoj0rpTp8K3o0vclCBdleHr6ECKvYQM1E8FXNAPSKKYeuWrRQ/NvTkgRjhzQk6atTIw6lF5cJEhgKfHDKjFZATJOio9vV1fgNqqEEdN78Y0dOo+Gc0lH0yDN4/fcrCLD5Pol2L+hLk0D1KcRxzNk50PNsssk41H7pSkDlVW8xg+DmIkyitkg2GfbU9k7GpqxxjMOjVB1LJXh7c/7yiA2rEHfCD2JE9fJowvkl3fo9sL6n6yiqRg8PPq5rYWKVRPrvxvacsE3J1Hvju7PhZKkdpVBT+ZdRwvce1f3PT3+FICm2+KWBoFTYkllsui4VEifJS9Wokb4Cg3P3w1a+4J9a086eJ2tpOt2P4w4z4Zppag/+2y76H4ftP/1+nqEzkTb4Z8MO3b3akDDx/rRuyfb4kQUzs5/P78+J4WZjqvdeBo+UJ4OJrbrksW1uQfd97s8e/oedbL/DFTh+Ws=
+sidebar_class_name: "delete api-method"
+info_path: docs/api/gusto-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Delete a recurring reimbursement"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"delete"}
+  path={"/v1/recurring_reimbursements/{id}"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Delete (soft delete) a recurring reimbursement for an employee.
+
+scope: `reimbursements:write`
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  {...require("./delete-v-1-recurring-reimbursements.ParamsDetails.json")}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  {...require("./delete-v-1-recurring-reimbursements.RequestSchema.json")}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  {...require("./delete-v-1-recurring-reimbursements.StatusCodes.json")}
+>
+  
+</StatusCodes>
+
+
+      

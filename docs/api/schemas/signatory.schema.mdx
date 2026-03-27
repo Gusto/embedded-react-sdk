@@ -1,0 +1,32 @@
+---
+id: signatory
+title: "Signatory"
+description: "The representation of a company's signatory"
+sidebar_label: "Signatory"
+hide_title: true
+hide_table_of_contents: true
+schema: true
+sample: {"uuid":"string","first_name":"string","last_name":"string","title":"string","phone":"string","email":"string","birthday":"string","is_admin":true,"has_ssn":true,"version":"string","identity_verification_status":"Pass","home_address":"Unknown Type: object,null"}
+custom_edit_url: null
+---
+
+import Schema from "@theme/Schema";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Signatory"}
+>
+</Heading>
+
+
+
+The representation of a company's signatory
+
+<Schema
+  {...require("./signatory.Schema.json")}
+>
+  
+</Schema>
+            

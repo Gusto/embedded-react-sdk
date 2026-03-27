@@ -1,0 +1,76 @@
+---
+id: get-v-1-webhook-subscription-verification-token-uuid
+title: "Request the webhook subscription verification_token"
+description: "Request that the webhook subscription `verification_token` be POSTed to the Subscription URL."
+sidebar_label: "Request the webhook subscription verification_token"
+hide_title: true
+hide_table_of_contents: true
+api: eJztVk1v4zYQ/Ssse9gNINpJsNuDDoumm+02QNs1Yme3gG0ktDi2iEikwg+tXUO/opfe+hf7E4qhaEdO7AS59FD0ZFki3wxn3nvDNV2yhbdOM6kcLAx3UivmVhXQdEyhnIEQIGhCeVV1l1g6TagBW2llwdJ0TU+Pj/FHgM2MrHANTemvmrzXyoFyPTLKgdzUYORcZgHj2ulbUDdEWjL4NByBIE4TlwMZ+tkWhFxd/tyjTULfHL/Zh+/Ij9orQSaKkInCGAbuPFgHghiw2psMiNBgidKOwFJa1yO/8Fsg1hsI4SqjaylAkKuri3PMpuaFFL2Jok2TUF1Be+QLQVO6AMfqE/YVZrnWt8x2MmXds7FwNua9xOLtJn3ZJkhczl1IIKKRLtr+Us3guVJN1ES9I3//9cefZLiyDkpylmVgLTnzLgflIuBEvcN1o1xaAkpUWipHvAUbUMc/ADdgwh5isxxKIF+ly8NHG2BZATUUhLfgIT0iVVjw02g0CFu1kb+HaCQHLsBMX+fOVTbt94XObC/wrpfpsr/hGav4yuiiCN/7MVAb4iiczGa6gpTcxIpddytmUwNc3EwUTWjFDS/BgbE0Ha+p4iXQlO7bdR1bJLEzFXc5RV7feWlA0NQZDwkNFeDIvlYY1Doj1QJZudvZ0aFmIrOQxdtUfmMfg+rOBhfsMxiL+2MSba120pjzwsLDYOd4vlKq2DPBHbAZtyDI2eCC1C0o4dbqTHKUQ+jgSnsTFmS8KHrkYk6UVoCs38ggadfwqioiWV5ZMi6lkqUvu9gvbCevJIs7pVp8GwFZ5/URpuEtiB49XPSEgvIlutPp8elbdvwdO3mLZiRgzn3haNp93zTThFrIvJFuFajQiqLVBHKUpuMpLnJ8gVyhX9r2BX9bMlsBvwVuVwz7xnQNxkiB2USX+dwR6QhFgPktHSgbTBIj3sKKpodtNqE1L/zzdovk2UAdSmuLdTg9PGsJLtfRzYJYsAy0X5/09+qqvz4onKYfA10/divsIZh6o0FvCiR3ZAyvZEsYJqAMrHlkk+dQarrbhBaPScwd9wVFHQDeizkwWjyBWeHnLmWGwfvCfHuvy4qrVZc5W2pi8A1l8f8s2Oej6BFiY507hoxm8pibL40w3PHmBwEaNJi5DqjSFQgTTAg1jdSJNrQjoISiydhP8yGYWmbQqfS93vlMe9cPC/sCQ+PMZOE/0/NQYdz6MNkvUGS6BBxlIY9XlnyICiCD1jmC3Qid+RKUC8f4hiY008rxzOFBop2eb6KSSyiiYhIKJZdFoEr8+v09M7Aalbau5KqDcz+aDxj5XprvHGsd0gPl/p/0/8akj/pwsHT9quAyCClYwjoa25jWJzTZO/yRJOlTt4In3G2a0Fxbh/jrNc7dK1M0Db6+82Bw2EzRjo3kM5TaeE2FtPh8YJ53efP6Mo7+I/LMleJAAeJLrladmUCTOEAOn7iZNsnmAvKylP/jt5G9VW6ruf8qty36zsD9+GGEw33X27deHh+w8HsbuF63K8Ikb5ptP12c7E3T/AOzH+7f
+sidebar_class_name: "get api-method"
+info_path: docs/api/gusto-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Request the webhook subscription verification_token"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/v1/webhook_subscriptions/{webhook_subscription_uuid}/request_verification_token"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Request that the webhook subscription `verification_token` be POSTed to the Subscription URL.
+
+> 📘 System Access Authentication
+>
+> This endpoint uses the [Bearer Auth scheme with the system-level access token in the HTTP Authorization header](https://docs.gusto.com/embedded-payroll/docs/system-access).
+
+scope: `webhook_subscriptions:read`
+
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  {...require("./get-v-1-webhook-subscription-verification-token-uuid.ParamsDetails.json")}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  {...require("./get-v-1-webhook-subscription-verification-token-uuid.RequestSchema.json")}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  {...require("./get-v-1-webhook-subscription-verification-token-uuid.StatusCodes.json")}
+>
+  
+</StatusCodes>
+
+
+      
