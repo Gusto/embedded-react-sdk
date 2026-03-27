@@ -89,9 +89,13 @@ function Root({ companyId, employeeId, payrollId, dictionary }: DismissalPayPeri
 
       const resolvedEmployeeId = employeeId ?? period.employeeUuid
 
-      const checkDate = period.checkDate
-        ? new RFCDate(period.checkDate)
-        : new RFCDate(addBusinessDays(new Date(), ACH_LEAD_TIME_BUSINESS_DAYS))
+      const fallbackCheckDate = addBusinessDays(new Date(), ACH_LEAD_TIME_BUSINESS_DAYS)
+      const apiCheckDateIsInPast = period.checkDate && new Date(period.checkDate) < new Date()
+
+      const checkDate =
+        period.checkDate && !apiCheckDateIsInPast
+          ? new RFCDate(period.checkDate)
+          : new RFCDate(fallbackCheckDate)
 
       const response = await createOffCyclePayroll({
         request: {
