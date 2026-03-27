@@ -1,0 +1,47 @@
+:global(.GSDK) {
+  .root {
+    display: flex;
+    flex-direction: column;
+    gap: toRem(32);
+    width: 100%;
+  }
+
+  .backButton {
+    align-self: flex-start;
+  }
+
+  .backButtonIcon {
+    display: flex;
+    align-items: center;
+    width: toRem(20);
+    height: toRem(20);
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .pageHeader {
+    display: flex;
+    flex-wrap: wrap;
+    gap: toRem(16) toRem(20);
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .titleGroup {
+    display: flex;
+    flex-direction: column;
+    gap: toRem(4);
+    flex: 1 0 0;
+    min-width: toRem(320);
+  }
+
+  .actions {
+    display: flex;
+    gap: toRem(12);
+    align-items: center;
+    flex-shrink: 0;
+  }
+}
