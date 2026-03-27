@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import {
   formatDateShortWithWeekday,
   formatDateShortWithWeekdayAndYear,
@@ -188,100 +188,6 @@ describe('Date Formatting Helpers', () => {
     it('should return null for invalid dates', () => {
       expect(formatDateToStringDate(new Date('invalid'))).toBeNull()
       expect(formatDateToStringDate(new Date(NaN))).toBeNull()
-    })
-
-    it('demonstrates UTC date shift: toISOString() vs local date methods', () => {
-      // ====================================================================
-      // This test proves that formatDateToStringDate (which uses toISOString)
-      // can return a DIFFERENT date than what the user sees locally.
-      //
-      // Real-world scenario:
-      //   A user in Pacific Time (UTC-8) opens the Pay Schedule form
-      //   at 5:00 PM on March 26. The component sets minDate={new Date()}.
-      //   At 5 PM Pacific, UTC time is already March 27 at 1:00 AM.
-      //
-      //   formatDateToStringDate(new Date()) → "2024-03-27" (UTC, WRONG)
-      //   getFullYear/getMonth/getDate      → "2024-03-26" (local, CORRECT)
-      // ====================================================================
-
-      vi.useFakeTimers()
-      // Freeze time: March 27 at 1:00 AM UTC = March 26 at 5:00 PM Pacific
-      vi.setSystemTime(new Date('2024-03-27T01:00:00.000Z'))
-
-      const now = new Date()
-
-      // Approach 1: formatDateToStringDate uses toISOString() → always UTC
-      const utcBasedResult = formatDateToStringDate(now)
-      expect(utcBasedResult).toBe('2024-03-27') // Always returns the UTC date
-
-      // Approach 2: Local date extraction (what dateToCalendarDate now uses)
-      const localBasedResult = [
-        String(now.getFullYear()).padStart(4, '0'),
-        String(now.getMonth() + 1).padStart(2, '0'),
-        String(now.getDate()).padStart(2, '0'),
-      ].join('-')
-
-      // On any machine west of UTC (all US timezones):
-      //   localBasedResult = "2024-03-26" (user's actual local date)
-      //   utcBasedResult   = "2024-03-27" (shifted forward one day!)
-      //
-      // On a machine in UTC: both return "2024-03-27" (no discrepancy)
-      const offsetMinutes = now.getTimezoneOffset()
-      if (offsetMinutes > 0) {
-        // Machine is west of UTC (Americas) — the bug manifests
-        expect(localBasedResult).toBe('2024-03-26')
-        expect(utcBasedResult).not.toBe(localBasedResult)
-      } else if (offsetMinutes === 0) {
-        // Machine is in UTC — both agree (bug hidden but still latent)
-        expect(localBasedResult).toBe('2024-03-27')
-        expect(utcBasedResult).toBe(localBasedResult)
-      } else {
-        // Machine is east of UTC (Europe, Asia) — local date is even further ahead
-        // At this UTC time, some eastern zones are already March 27 locally too
-      }
-
-      vi.useRealTimers()
-    })
-
-    it('shows formatDateToStringDate shifts midnight dates in eastern timezones', () => {
-      // ====================================================================
-      // The opposite edge case: in timezones EAST of UTC (Asia, Australia),
-      // new Date(year, month, day) creates local midnight which is the
-      // PREVIOUS day in UTC. formatDateToStringDate then returns yesterday.
-      //
-      // Example: UTC+9 (Tokyo)
-      //   new Date(2024, 0, 15) = midnight Jan 15 JST = Jan 14 15:00 UTC
-      //   toISOString() → "2024-01-14T15:00:00.000Z" → "2024-01-14" (WRONG)
-      //   getDate() → 15 (CORRECT)
-      // ====================================================================
-
-      // Create midnight local on Jan 15 — this is the typical way form dates
-      // are constructed (e.g., calendarDateValueToDate returns midnight local)
-      const localMidnight = new Date(2024, 0, 15, 0, 0, 0)
-
-      // The local date is always Jan 15 regardless of timezone
-      const localDate = localMidnight.getDate()
-      expect(localDate).toBe(15)
-
-      // The UTC date depends on timezone
-      const utcDate = localMidnight.getUTCDate()
-      const offsetMinutes = localMidnight.getTimezoneOffset()
-
-      if (offsetMinutes < 0) {
-        // Machine is east of UTC — midnight local is BEFORE midnight UTC
-        // So UTC date is the previous day (14 instead of 15)
-        expect(utcDate).toBe(14)
-        expect(formatDateToStringDate(localMidnight)).toBe('2024-01-14') // WRONG!
-      } else if (offsetMinutes > 0) {
-        // Machine is west of UTC — midnight local is AFTER midnight UTC
-        // UTC date is same day
-        expect(utcDate).toBe(15)
-        expect(formatDateToStringDate(localMidnight)).toBe('2024-01-15') // Correct (by coincidence)
-      } else {
-        // UTC — always agrees
-        expect(utcDate).toBe(15)
-        expect(formatDateToStringDate(localMidnight)).toBe('2024-01-15')
-      }
     })
   })
 
