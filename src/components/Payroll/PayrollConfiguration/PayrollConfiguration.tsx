@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
 import { payrollsCalculate } from '@gusto/embedded-api/funcs/payrollsCalculate'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
@@ -66,6 +66,7 @@ export const Root = ({
 
   const [isPolling, setIsPolling] = useState(false)
   const [isCalculatingPayroll, setIsCalculatingPayroll] = useState(false)
+  const previousCalculatedAtRef = useRef<number | null>(null)
   const gustoClient = useGustoEmbeddedContext()
 
   const {
@@ -232,6 +233,7 @@ export const Root = ({
 
   const onCalculatePayroll = async () => {
     setPayrollBlockers([])
+    previousCalculatedAtRef.current = payrollData.payrollShow?.calculatedAt?.getTime() ?? null
 
     await baseSubmitHandler({}, async () => {
       const result = await payrollSubmitHandler(async () => {
@@ -306,14 +308,15 @@ export const Root = ({
 
   useEffect(() => {
     if (isCalculatingStatus(payrollData.payrollShow?.processingRequest) && !isPolling) {
+      previousCalculatedAtRef.current = payrollData.payrollShow?.calculatedAt?.getTime() ?? null
       setIsPolling(true)
     }
+    const currentCalculatedAt = payrollData.payrollShow?.calculatedAt
+    const isNewCalculation = currentCalculatedAt?.getTime() !== previousCalculatedAtRef.current
     if (
       isPolling &&
-      isCalculatedStatus(
-        payrollData.payrollShow?.processingRequest,
-        payrollData.payrollShow?.calculatedAt,
-      )
+      isNewCalculation &&
+      isCalculatedStatus(payrollData.payrollShow?.processingRequest, currentCalculatedAt)
     ) {
       onEvent(componentEvents.RUN_PAYROLL_CALCULATED, {
         payrollId,
