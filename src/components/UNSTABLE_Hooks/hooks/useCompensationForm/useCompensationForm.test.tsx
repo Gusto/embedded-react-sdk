@@ -3,6 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { HttpResponse } from 'msw'
 import { useCompensationForm } from './useCompensationForm'
 import type { UseCompensationFormResult } from './useCompensationForm'
+import { createCompensationSchema, CompensationErrorCodes } from './compensationSchema'
 import { server } from '@/test/mocks/server'
 import { handleGetEmployeeJobs, handleCreateEmployeeJob } from '@/test/mocks/apis/employees'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
@@ -154,5 +155,102 @@ describe('useCompensationForm start date handling', () => {
 
     expect(createJobRequestBody).not.toBeNull()
     expect(createJobRequestBody?.hire_date).toBe('2024-03-20')
+  })
+})
+
+const VALID_FORM_DATA = {
+  jobTitle: 'Software Engineer',
+  flsaStatus: 'Nonexempt' as const,
+  paymentUnit: 'Hour' as const,
+  rate: 50,
+  startDate: '2024-06-15',
+  adjustForMinimumWage: false,
+  minimumWageId: '',
+  stateWcCovered: false,
+  stateWcClassCode: '',
+  twoPercentShareholder: false,
+}
+
+function getFieldErrors(
+  result: ReturnType<ReturnType<typeof createCompensationSchema>['safeParse']>,
+) {
+  if (result.success) return {}
+  const errors: Record<string, string[]> = {}
+  for (const issue of result.error.issues) {
+    const path = issue.path.join('.')
+    if (!errors[path]) errors[path] = []
+    errors[path].push(issue.message)
+  }
+  return errors
+}
+
+describe('createCompensationSchema error codes', () => {
+  it('produces REQUIRED for missing startDate when required', () => {
+    const schema = createCompensationSchema({ mode: 'create', withStartDateField: true })
+    const result = schema.safeParse({ ...VALID_FORM_DATA, startDate: null })
+    const errors = getFieldErrors(result)
+
+    expect(errors.startDate).toContain(CompensationErrorCodes.REQUIRED)
+  })
+
+  it('does not error on startDate when not required', () => {
+    const schema = createCompensationSchema({ mode: 'create', withStartDateField: false })
+    const result = schema.safeParse({ ...VALID_FORM_DATA, startDate: null })
+
+    expect(result.success).toBe(true)
+  })
+
+  it('produces RATE_MINIMUM for rate of 0', () => {
+    const schema = createCompensationSchema({ mode: 'create', withStartDateField: true })
+    const result = schema.safeParse({ ...VALID_FORM_DATA, rate: 0 })
+    const errors = getFieldErrors(result)
+
+    expect(errors.rate).toContain(CompensationErrorCodes.RATE_MINIMUM)
+  })
+
+  it('produces RATE_MINIMUM for NaN rate', () => {
+    const schema = createCompensationSchema({ mode: 'create', withStartDateField: true })
+    const result = schema.safeParse({ ...VALID_FORM_DATA, rate: NaN })
+    const errors = getFieldErrors(result)
+
+    expect(errors.rate).toContain(CompensationErrorCodes.RATE_MINIMUM)
+  })
+})
+
+describe('createCompensationSchema superRefine unblocking', () => {
+  it('reports rate errors even when startDate is missing', () => {
+    const schema = createCompensationSchema({ mode: 'create', withStartDateField: true })
+    const result = schema.safeParse({ ...VALID_FORM_DATA, startDate: null, rate: 0 })
+    const errors = getFieldErrors(result)
+
+    expect(errors.startDate).toContain(CompensationErrorCodes.REQUIRED)
+    expect(errors.rate).toContain(CompensationErrorCodes.RATE_MINIMUM)
+  })
+
+  it('reports payment unit errors even when startDate is missing', () => {
+    const schema = createCompensationSchema({ mode: 'create', withStartDateField: true })
+    const result = schema.safeParse({
+      ...VALID_FORM_DATA,
+      startDate: null,
+      flsaStatus: 'Owner' as const,
+      paymentUnit: 'Hour' as const,
+    })
+    const errors = getFieldErrors(result)
+
+    expect(errors.startDate).toContain(CompensationErrorCodes.REQUIRED)
+    expect(errors.paymentUnit).toContain(CompensationErrorCodes.PAYMENT_UNIT_OWNER)
+  })
+
+  it('reports RATE_MINIMUM before RATE_EXEMPT_THRESHOLD for low values', () => {
+    const schema = createCompensationSchema({ mode: 'create', withStartDateField: true })
+    const result = schema.safeParse({
+      ...VALID_FORM_DATA,
+      flsaStatus: 'Exempt' as const,
+      rate: 0,
+    })
+    const errors = getFieldErrors(result)
+
+    expect(errors.rate).toContain(CompensationErrorCodes.RATE_MINIMUM)
+    expect(errors.rate).not.toContain(CompensationErrorCodes.RATE_EXEMPT_THRESHOLD)
   })
 })
