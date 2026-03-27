@@ -42,64 +42,70 @@ const breadcrumbNavigateTransition =
 
 type BreadcrumbNodeKeys = 'configuration' | 'overview' | 'editEmployee' | 'receipts' | 'blockers'
 
-export const payrollExecutionBreadcrumbsNodes: BreadcrumbNodes = {
-  configuration: {
-    parent: null,
-    item: {
-      id: 'configuration',
-      label: 'breadcrumbLabel',
-      namespace: 'Payroll.PayrollConfiguration',
-      onNavigate: ((ctx: PayrollFlowContextInterface) => ({
-        ...updateBreadcrumbs('configuration', ctx, {
-          startDate: ctx.payPeriod?.startDate ?? '',
-          endDate: ctx.payPeriod?.endDate ?? '',
-        }),
-        component: PayrollConfigurationContextual,
-        alerts: undefined,
-      })) as (context: unknown) => unknown,
+export const getPayrollExecutionBreadcrumbsNodes = (
+  isDismissal: boolean = false,
+): BreadcrumbNodes => {
+  const configLabel = isDismissal ? 'breadcrumbLabelDismissal' : 'breadcrumbLabel'
+
+  return {
+    configuration: {
+      parent: null,
+      item: {
+        id: 'configuration',
+        label: configLabel,
+        namespace: 'Payroll.PayrollConfiguration',
+        onNavigate: ((ctx: PayrollFlowContextInterface) => ({
+          ...updateBreadcrumbs('configuration', ctx, {
+            startDate: ctx.payPeriod?.startDate ?? '',
+            endDate: ctx.payPeriod?.endDate ?? '',
+          }),
+          component: PayrollConfigurationContextual,
+          alerts: undefined,
+        })) as (context: unknown) => unknown,
+      },
     },
-  },
-  overview: {
-    parent: 'configuration',
-    item: {
-      id: 'overview',
-      label: 'breadcrumbLabel',
-      namespace: 'Payroll.PayrollOverview',
-      onNavigate: ((ctx: PayrollFlowContextInterface) => ({
-        ...updateBreadcrumbs('overview', ctx, {
-          startDate: ctx.payPeriod?.startDate ?? '',
-          endDate: ctx.payPeriod?.endDate ?? '',
-        }),
-        component: PayrollOverviewContextual,
-        alerts: undefined,
-      })) as (context: unknown) => unknown,
+    overview: {
+      parent: 'configuration',
+      item: {
+        id: 'overview',
+        label: 'breadcrumbLabel',
+        namespace: 'Payroll.PayrollOverview',
+        onNavigate: ((ctx: PayrollFlowContextInterface) => ({
+          ...updateBreadcrumbs('overview', ctx, {
+            startDate: ctx.payPeriod?.startDate ?? '',
+            endDate: ctx.payPeriod?.endDate ?? '',
+          }),
+          component: PayrollOverviewContextual,
+          alerts: undefined,
+        })) as (context: unknown) => unknown,
+      },
     },
-  },
-  editEmployee: {
-    parent: 'configuration',
-    item: {
-      id: 'editEmployee',
-      label: 'breadcrumbLabel',
-      namespace: 'Payroll.PayrollEditEmployee',
+    editEmployee: {
+      parent: 'configuration',
+      item: {
+        id: 'editEmployee',
+        label: 'breadcrumbLabel',
+        namespace: 'Payroll.PayrollEditEmployee',
+      },
     },
-  },
-  receipts: {
-    parent: 'overview',
-    item: {
-      id: 'receipts',
-      label: 'breadcrumbLabel',
-      namespace: 'Payroll.PayrollReceipts',
+    receipts: {
+      parent: 'overview',
+      item: {
+        id: 'receipts',
+        label: 'breadcrumbLabel',
+        namespace: 'Payroll.PayrollReceipts',
+      },
     },
-  },
-  blockers: {
-    parent: 'configuration',
-    item: {
-      id: 'blockers',
-      label: 'breadcrumbLabel',
-      namespace: 'Payroll.PayrollBlocker',
+    blockers: {
+      parent: 'configuration',
+      item: {
+        id: 'blockers',
+        label: 'breadcrumbLabel',
+        namespace: 'Payroll.PayrollBlocker',
+      },
     },
-  },
-} satisfies Record<BreadcrumbNodeKeys, BreadcrumbNode>
+  } satisfies Record<BreadcrumbNodeKeys, BreadcrumbNode>
+}
 
 const calculatedTransition = transition(
   componentEvents.RUN_PAYROLL_CALCULATED,

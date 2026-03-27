@@ -5,6 +5,7 @@ import {
   type PayrollExecutionFlowProps,
 } from '../PayrollExecutionFlow/PayrollExecutionFlow'
 import type { OffCycleReason } from '../OffCycleReasonSelection'
+import { isDismissalPayroll } from '../helpers'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { OnEventType } from '@/components/Base/useBase'
 import type { EventType } from '@/shared/constants'
@@ -73,6 +74,7 @@ function OffCycleExecutionWithData({
       companyId={companyId}
       payrollId={payrollId}
       initialPayPeriod={initialPayPeriod}
+      isDismissalPayroll={isDismissalPayroll(data.payrollShow?.offCycleReason)}
       {...rest}
     />
   )
