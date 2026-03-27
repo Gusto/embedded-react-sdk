@@ -1,0 +1,31 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: toRem(16);
+
+  &:not([data-has-menu]) {
+    :global(.react-aria-Cell),
+    :global(.react-aria-Column) {
+      &:last-child {
+        text-align: left;
+      }
+    }
+  }
+}
+
+.searchContainer {
+  max-width: toRem(320);
+}
+
+.clearButton {
+  all: unset;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: toRem(2);
+}
+
+.balanceInput {
+  max-width: toRem(90);
+}

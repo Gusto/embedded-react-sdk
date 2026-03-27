@@ -68,18 +68,7 @@
     "alertHeader": "The following employees' balances need review",
     "createPolicyCta": "Create policy"
   },
-  "employeeTable": {
-    "selected": "of {{numAll}} employees selected",
-    "selectAllEmployees": "Select all employees",
-    "selectAll": "Select all",
-    "clearAriaLabel": "Clear selected employees",
-    "clear": "Clear",
-    "name": "Name",
-    "jobTitle": "Job title"
-  },
   "balanceTable": {
-    "name": "Name",
-    "jobTitle": "Job title",
     "balance": "Balance (hrs)",
     "employeeCount_one": "{{count}} employee",
     "employeeCount_other": "{{count}} employees"
