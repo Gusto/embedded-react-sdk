@@ -85,7 +85,7 @@ describe('TransitionPayrollAlertPresentation', () => {
         />,
       )
 
-      expect(await screen.findByText(/Transition payroll -/)).toBeInTheDocument()
+      expect(await screen.findByText(/Transition payroll - Dec 1/)).toBeInTheDocument()
       expect(screen.getByText(/you changed your pay schedule/i)).toBeInTheDocument()
     })
 
@@ -120,6 +120,9 @@ describe('TransitionPayrollAlertPresentation', () => {
 
       const alerts = await screen.findAllByText(/Transition payroll -/)
       expect(alerts).toHaveLength(3)
+      expect(alerts[0]).toHaveTextContent(/Dec 1.*Dec 15, 2024/)
+      expect(alerts[1]).toHaveTextContent(/Dec 16.*Dec 31, 2024/)
+      expect(alerts[2]).toHaveTextContent(/Dec 1.*Dec 31, 2024/)
       expect(screen.getByText('Weekly Schedule')).toBeInTheDocument()
       expect(screen.getByText('Monthly Schedule')).toBeInTheDocument()
     })
