@@ -218,6 +218,13 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | `/v1/companies/:companyId/pay_schedules` |
 |  | POST | `/v1/companies/:companyUuid/payrolls/skip` |
 
+## TimeOff components
+
+| Component | Method | Path |
+| --- | --- | --- |
+| **TimeOff.PolicyList** | GET | `/v1/companies/:companyUuid/time_off_policies` |
+|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/deactivate` |
+
 ## UNSTABLE_Hooks components
 
 | Component | Method | Path |

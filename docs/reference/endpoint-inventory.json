@@ -1119,6 +1119,22 @@
         "companyUuid"
       ]
     },
+    "TimeOff.PolicyList": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/time_off_policies"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/deactivate"
+        }
+      ],
+      "variables": [
+        "companyUuid",
+        "timeOffPolicyUuid"
+      ]
+    },
     "UNSTABLE_Hooks.hooks.useCompensationForm": {
       "endpoints": [
         {
@@ -1927,8 +1943,20 @@
         "TimeOff.ViewPolicyDetails",
         "TimeOff.ViewPolicyEmployees"
       ],
-      "endpoints": [],
-      "variables": []
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/time_off_policies"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/deactivate"
+        }
+      ],
+      "variables": [
+        "companyUuid",
+        "timeOffPolicyUuid"
+      ]
     }
   }
 }
