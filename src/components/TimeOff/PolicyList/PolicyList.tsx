@@ -94,7 +94,9 @@ function Root({ companyId }: PolicyListProps) {
       onFinishSetup={handleFinishSetup}
       onDeletePolicy={handleDeletePolicy}
       deleteSuccessAlert={deleteSuccessAlert}
-      onDismissDeleteAlert={() => { setDeleteSuccessAlert(null); }}
+      onDismissDeleteAlert={() => {
+        setDeleteSuccessAlert(null)
+      }}
       isDeletingPolicyId={isDeletingPolicyId}
     />
   )
