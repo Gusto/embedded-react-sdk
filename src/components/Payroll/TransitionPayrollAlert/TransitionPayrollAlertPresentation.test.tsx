@@ -70,7 +70,7 @@ describe('TransitionPayrollAlertPresentation', () => {
           skippingPayPeriod={null}
         />,
       )
-      expect(screen.queryByText('Transition payroll')).not.toBeInTheDocument()
+      expect(screen.queryByText(/Transition payroll -/)).not.toBeInTheDocument()
     })
 
     it('renders the warning alert with title and description', async () => {
@@ -85,7 +85,7 @@ describe('TransitionPayrollAlertPresentation', () => {
         />,
       )
 
-      expect(await screen.findByText('Transition payroll')).toBeInTheDocument()
+      expect(await screen.findByText(/Transition payroll -/)).toBeInTheDocument()
       expect(screen.getByText(/you changed your pay schedule/i)).toBeInTheDocument()
     })
 
@@ -101,7 +101,7 @@ describe('TransitionPayrollAlertPresentation', () => {
         />,
       )
 
-      await screen.findByText('Transition payroll')
+      await screen.findByText(/Transition payroll -/)
       expect(screen.queryByText('Weekly Schedule')).not.toBeInTheDocument()
       expect(screen.getByRole('button', { name: /run transition payroll/i })).toBeInTheDocument()
     })
@@ -118,7 +118,8 @@ describe('TransitionPayrollAlertPresentation', () => {
         />,
       )
 
-      await screen.findByText('Transition payroll')
+      const alerts = await screen.findAllByText(/Transition payroll -/)
+      expect(alerts).toHaveLength(3)
       expect(screen.getByText('Weekly Schedule')).toBeInTheDocument()
       expect(screen.getByText('Monthly Schedule')).toBeInTheDocument()
     })
@@ -140,7 +141,7 @@ describe('TransitionPayrollAlertPresentation', () => {
         />,
       )
 
-      await screen.findByText('Transition payroll')
+      await screen.findByText(/Transition payroll -/)
 
       const runButton = screen.getByRole('button', { name: /run transition payroll/i })
       await user.click(runButton)
@@ -160,7 +161,7 @@ describe('TransitionPayrollAlertPresentation', () => {
         />,
       )
 
-      await screen.findByText('Transition payroll')
+      await screen.findByText(/Transition payroll -/)
       expect(screen.getByRole('button', { name: /skip this payroll/i })).toBeInTheDocument()
     })
   })
@@ -193,7 +194,7 @@ describe('TransitionPayrollAlertPresentation', () => {
         />,
       )
 
-      await screen.findByText('Transition payroll')
+      await screen.findByText(/Transition payroll -/)
       expect(screen.queryByText('Transition payroll skipped')).not.toBeInTheDocument()
     })
 
