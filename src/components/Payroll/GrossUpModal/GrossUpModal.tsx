@@ -5,7 +5,7 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { GrossUpModalProps } from './GrossUpModalTypes'
 import styles from './GrossUpModal.module.scss'
-import { ActionsLayout, Flex, NumberInputField } from '@/components/Common'
+import { Flex, NumberInputField } from '@/components/Common'
 import { useBase } from '@/components/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
@@ -81,7 +81,7 @@ export function GrossUpModal({ isOpen, onCalculateGrossUp, onApply, onCancel }: 
       onClose={onCancel}
       containerRef={modalContainerRef}
       footer={
-        <ActionsLayout>
+        <Flex flexDirection="row" gap={12} justifyContent="flex-end">
           <Button
             variant="primary"
             isDisabled={!calculatedGrossUp}
@@ -93,7 +93,7 @@ export function GrossUpModal({ isOpen, onCalculateGrossUp, onApply, onCancel }: 
           <Button variant="secondary" onClick={onCancel}>
             {t('cancelCta')}
           </Button>
-        </ActionsLayout>
+        </Flex>
       }
     >
       <FormProvider {...formHandlers}>
