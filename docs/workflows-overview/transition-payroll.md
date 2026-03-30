@@ -156,6 +156,8 @@ function PayrollPage({ companyId }) {
 }
 ```
 
+> **Note**: The example guards on `data.payScheduleUuid` because `Payroll.TransitionFlow` requires it as a prop. In practice, `payScheduleUuid` is expected to be present for transition pay periods, but the event type allows `undefined`. If you need to handle the undefined case, add your own fallback logic (e.g. displaying an error or refetching pay schedule data).
+
 ### Skipping a Transition Payroll
 
 Users can skip transition payrolls directly from the alert. A confirmation dialog warns that skipping means employees will not be paid for the transition period and that it is the employer's responsibility to ensure proper payment. Upon confirmation, the payroll is skipped via the [Skip a payroll endpoint](https://docs.gusto.com/embedded-payroll/reference/post-companies-payroll-skip-company_uuid).
