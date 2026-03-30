@@ -11,33 +11,39 @@ export function PolicyTypeSelector(props: PolicyTypeSelectorProps) {
       <div>
         <p>Policy Type Selector (companyId: {props.companyId})</p>
         <button
-          onClick={() =>
-            { props.onEvent(componentEvents.TIME_OFF_POLICY_TYPE_SELECTED, {
+          onClick={() => {
+            props.onEvent(componentEvents.TIME_OFF_POLICY_TYPE_SELECTED, {
               policyType: 'sick',
-            }); }
-          }
+            })
+          }}
         >
           Sick
         </button>
         <button
-          onClick={() =>
-            { props.onEvent(componentEvents.TIME_OFF_POLICY_TYPE_SELECTED, {
+          onClick={() => {
+            props.onEvent(componentEvents.TIME_OFF_POLICY_TYPE_SELECTED, {
               policyType: 'vacation',
-            }); }
-          }
+            })
+          }}
         >
           Vacation
         </button>
         <button
-          onClick={() =>
-            { props.onEvent(componentEvents.TIME_OFF_POLICY_TYPE_SELECTED, {
+          onClick={() => {
+            props.onEvent(componentEvents.TIME_OFF_POLICY_TYPE_SELECTED, {
               policyType: 'holiday',
-            }); }
-          }
+            })
+          }}
         >
           Company Holiday
         </button>
-        <button onClick={() => { props.onEvent(componentEvents.CANCEL); }}>Cancel</button>
+        <button
+          onClick={() => {
+            props.onEvent(componentEvents.CANCEL)
+          }}
+        >
+          Cancel
+        </button>
       </div>
     </BaseComponent>
   )

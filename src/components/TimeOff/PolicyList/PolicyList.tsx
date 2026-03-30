@@ -10,26 +10,30 @@ export function PolicyList(props: PolicyListProps) {
     <BaseComponent {...props}>
       <div>
         <p>Policy List (companyId: {props.companyId})</p>
-        <button onClick={() => { props.onEvent(componentEvents.TIME_OFF_CREATE_POLICY); }}>
+        <button
+          onClick={() => {
+            props.onEvent(componentEvents.TIME_OFF_CREATE_POLICY)
+          }}
+        >
           Create Policy
         </button>
         <button
-          onClick={() =>
-            { props.onEvent(componentEvents.TIME_OFF_VIEW_POLICY, {
+          onClick={() => {
+            props.onEvent(componentEvents.TIME_OFF_VIEW_POLICY, {
               policyId: 'mock-policy-id',
               policyType: 'vacation',
-            }); }
-          }
+            })
+          }}
         >
           View Vacation Policy
         </button>
         <button
-          onClick={() =>
-            { props.onEvent(componentEvents.TIME_OFF_VIEW_POLICY, {
+          onClick={() => {
+            props.onEvent(componentEvents.TIME_OFF_VIEW_POLICY, {
               policyId: 'mock-policy-id',
               policyType: 'holiday',
-            }); }
-          }
+            })
+          }}
         >
           View Holiday Policy
         </button>

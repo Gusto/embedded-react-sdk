@@ -14,24 +14,30 @@ export function PolicyDetailsForm(props: PolicyDetailsFormProps) {
           Policy Details Form (type: {props.policyType}, companyId: {props.companyId})
         </p>
         <button
-          onClick={() =>
-            { props.onEvent(componentEvents.TIME_OFF_POLICY_DETAILS_DONE, {
+          onClick={() => {
+            props.onEvent(componentEvents.TIME_OFF_POLICY_DETAILS_DONE, {
               policyId: 'mock-policy-id',
-            }); }
-          }
+            })
+          }}
         >
           Done
         </button>
         <button
-          onClick={() =>
-            { props.onEvent(componentEvents.TIME_OFF_POLICY_CREATE_ERROR, {
+          onClick={() => {
+            props.onEvent(componentEvents.TIME_OFF_POLICY_CREATE_ERROR, {
               alert: { type: 'error', title: 'Failed to create policy' },
-            }); }
-          }
+            })
+          }}
         >
           Simulate Error
         </button>
-        <button onClick={() => { props.onEvent(componentEvents.CANCEL); }}>Cancel</button>
+        <button
+          onClick={() => {
+            props.onEvent(componentEvents.CANCEL)
+          }}
+        >
+          Cancel
+        </button>
       </div>
     </BaseComponent>
   )
