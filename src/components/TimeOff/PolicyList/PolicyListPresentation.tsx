@@ -70,7 +70,12 @@ export function PolicyListPresentation({
       return (
         <div className={styles.actionsCell}>
           {!policy.isComplete && (
-            <Button variant="secondary" onClick={() => { onFinishSetup(policy); }}>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                onFinishSetup(policy)
+              }}
+            >
               {t('finishSetupCta')}
             </Button>
           )}
@@ -80,11 +85,15 @@ export function PolicyListPresentation({
             items={[
               {
                 label: t('actions.editPolicy'),
-                onClick: () => { onEditPolicy(policy); },
+                onClick: () => {
+                  onEditPolicy(policy)
+                },
               },
               {
                 label: t('actions.deletePolicy'),
-                onClick: () => { handleOpenDeleteDialog(policy); },
+                onClick: () => {
+                  handleOpenDeleteDialog(policy)
+                },
               },
             ]}
           />
