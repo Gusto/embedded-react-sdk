@@ -122,7 +122,11 @@ export const PayrollConfigurationPresentation = ({
             {payPeriod && (
               <Text variant="supporting">
                 <Trans
-                  i18nKey="description"
+                  i18nKey={
+                    payrollCategory === PayrollCategory.Dismissal
+                      ? 'descriptionDismissal'
+                      : 'description'
+                  }
                   t={t}
                   components={{ dateWrapper: <Text weight="bold" as="span" /> }}
                   values={{

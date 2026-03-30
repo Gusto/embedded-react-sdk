@@ -1,5 +1,8 @@
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
-import type { PayrollShowFixedCompensations } from '@gusto/embedded-api/models/components/payroll'
+import {
+  type PayrollShowFixedCompensations,
+  OffCycleReasonType,
+} from '@gusto/embedded-api/models/components/payroll'
 import type { PayrollEmployeeCompensationsTypeFixedCompensations as FixedCompensations } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api/models/components/payrollfixedcompensationtypestype'
 import { useCallback } from 'react'
@@ -507,6 +510,9 @@ export const getPayrollType = (payroll: {
   if (payroll.offCycle) return 'Off-Cycle'
   return 'Regular'
 }
+
+export const isDismissalPayroll = (offCycleReason?: string | null): boolean =>
+  offCycleReason === OffCycleReasonType.DismissedEmployee
 
 const OFF_CYCLE_REASON_LABELS: Record<string, string> = {
   Bonus: 'Bonus',

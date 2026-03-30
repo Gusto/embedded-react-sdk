@@ -1,7 +1,9 @@
 {
   "pageTitle": "Edit Payroll",
   "description": "{{payrollType}} payroll for <dateWrapper>{{startDate}} - {{endDate}}</dateWrapper>",
+  "descriptionDismissal": "{{payrollType}} payroll",
   "breadcrumbLabel": "Edit Payroll for {{startDate}} - {{endDate}}",
+  "breadcrumbLabelDismissal": "Edit Payroll",
   "exitFlowCta": "Save and exit",
   "calculatePayroll": "Calculate and review",
   "calculatePayrollTitle": "Calculate and review",

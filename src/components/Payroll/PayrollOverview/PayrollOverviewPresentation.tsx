@@ -12,7 +12,12 @@ import type {
   UnblockOptions,
 } from '@gusto/embedded-api/models/components/payrollsubmissionblockertype'
 import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
-import { calculateTotalPayroll, getPayrollTypeLabel, hasDirectDepositEmployees } from '../helpers'
+import {
+  calculateTotalPayroll,
+  getPayrollTypeLabel,
+  hasDirectDepositEmployees,
+  isDismissalPayroll,
+} from '../helpers'
 import { PayrollOverviewStatus } from './PayrollOverviewTypes'
 import { FastAchSubmissionBlockerBanner, GenericBlocker } from './SubmissionBlockers'
 import styles from './PayrollOverviewPresentation.module.scss'
@@ -101,10 +106,12 @@ export const PayrollOverviewPresentation = ({
   const pageHeading = (
     <Heading as="h1">{isProcessed ? t('summaryTitle') : t('overviewTitle')}</Heading>
   )
+  const isDismissal = isDismissalPayroll(payrollData.offCycleReason)
+
   const pageSubtitle = (
     <Text>
       <Trans
-        i18nKey="pageSubtitle"
+        i18nKey={isDismissal ? 'pageSubtitleDismissal' : 'pageSubtitle'}
         t={t}
         components={{ dateWrapper: <Text weight="bold" as="span" /> }}
         values={{
@@ -797,7 +804,7 @@ export const PayrollOverviewPresentation = ({
                 primaryActionLabel={t('confirmCancelCta')}
                 isDestructive={true}
                 closeActionLabel={t('declineCancelCta')}
-                title={t('cancelDialogTitle', {
+                title={t(isDismissal ? 'cancelDialogTitleDismissal' : 'cancelDialogTitle', {
                   startDate: dateFormatter.formatLong(payrollData.payPeriod?.startDate),
                   endDate: dateFormatter.formatLongWithYear(payrollData.payPeriod?.endDate),
                 })}
