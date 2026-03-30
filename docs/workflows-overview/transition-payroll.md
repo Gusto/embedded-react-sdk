@@ -103,10 +103,10 @@ function MyComponent() {
 #### Form Fields
 
 - **Pay period** (read-only): Displays the transition pay period start and end dates
-- **Pay schedule** (read-only): Shows the name of the associated pay schedule
+- **Pay schedule** (read-only): Shows the name of the associated pay schedule, when available
 - **Check date**: The date employees will be paid (must be at least 2 business days from today for ACH processing)
 - **Deductions and contributions**: Include or skip regular deductions. Defaults to including deductions.
-- **Tax withholding rates**: Configure withholding pay period frequency and rate type (regular or supplemental). Defaults to regular withholding.
+- **Tax withholding rates**: Configure withholding pay period frequency and rate type (regular or supplemental). Defaults to regular rate with every-other-week frequency.
 
 ## Transition Payroll Alert
 

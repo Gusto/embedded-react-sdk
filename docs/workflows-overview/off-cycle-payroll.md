@@ -5,7 +5,7 @@ order: 5
 
 ## Overview
 
-The Off-Cycle Payroll workflow provides a complete experience for running payrolls outside of a company's regular pay schedule. It supports two off-cycle reasons: **Bonus** (paying a bonus, gift, or commission) and **Correction** (running a correction payment). The flow guides users through selecting a reason, configuring pay period dates, choosing employees, setting deduction and tax withholding preferences, and then executing the payroll.
+The Off-Cycle Payroll workflow provides a complete experience for running payrolls outside of a company's regular pay schedule. It supports two off-cycle reasons: **Bonus** (paying a bonus, gift, or commission) and **Correction** (running a correction payment). The flow guides users through configuring pay period dates, selecting a reason, choosing employees, setting deduction and tax withholding preferences, and then executing the payroll.
 
 After creation, the flow transitions into the standard payroll execution experience (configuration, overview, submission, and receipts).
 
@@ -41,7 +41,7 @@ Once the payroll is created and the flow transitions to execution, all standard 
 
 ## Workflow Steps
 
-1. **Creation**: User selects a reason (bonus or correction), configures pay period dates, selects employees, and sets deduction/withholding preferences
+1. **Creation**: User configures pay period dates, selects a reason (bonus or correction), chooses employees, and sets deduction/withholding preferences
 2. **Execution**: The standard payroll execution flow takes over — configure employee compensation, review, submit, and view receipts
 
 ## Off-Cycle Reasons
@@ -94,11 +94,11 @@ function MyComponent() {
 
 #### Form Fields
 
-- **Reason**: Bonus or Correction payment
 - **Check-only payroll**: Toggle for check-only payments — when enabled, all employees will be paid by check (not direct deposit), the check date can be set to today or any future date, and start/end dates are not required
 - **Start date**: Beginning of the pay period (required unless check-only; cannot be in the future for correction payrolls)
 - **End date**: End of the pay period (required unless check-only; must be on or after start date)
 - **Payment date (check date)**: The date employees will be paid (must be at least 2 business days from today for direct deposit, unless check-only)
+- **Reason**: Bonus or Correction payment
 - **Employee selection**: Include all employees or select specific employees
 - **Deductions and contributions**: Include or skip regular deductions (see [OffCycleDeductionsSetting](#payrolloffcycledeductionssetting))
 - **Tax withholding rates**: Configure withholding pay period and rate type (regular or supplemental)

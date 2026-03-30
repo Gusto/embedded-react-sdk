@@ -101,7 +101,7 @@ function TerminationPage({ companyId, employeeId }) {
 
 The pay period selection step fetches unprocessed termination pay periods for the employee and presents them as options. Each option shows the pay period date range. When only one pay period is available, it is automatically pre-selected.
 
-Upon selection and submission, the component creates an off-cycle payroll with the `DismissedEmployee` reason using the selected pay period's start and end dates.
+Upon selection and submission, the component creates an off-cycle payroll with the `"Dismissed employee"` off-cycle reason using the selected pay period's start and end dates.
 
 ## API Reference
 
