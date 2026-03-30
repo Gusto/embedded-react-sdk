@@ -319,6 +319,7 @@ export const Root = ({
     }
   }
   const onSubmit = async () => {
+    onEvent(componentEvents.RUN_PAYROLL_SUBMITTING)
     await baseSubmitHandler(data, async () => {
       const result = await submitPayroll({
         request: {

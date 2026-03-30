@@ -58,10 +58,11 @@ export function PayrollExecutionFlow({
   const executionFlowMachine = useMemo(() => {
     const breadcrumbNodes = getPayrollExecutionBreadcrumbsNodes(isDismissal)
     const baseBreadcrumbs = buildBreadcrumbs(breadcrumbNodes)
+    const displayOnlyPrefixes = prefixBreadcrumbs.map(({ onNavigate, ...rest }) => rest)
     const breadcrumbs = Object.fromEntries(
       Object.entries(baseBreadcrumbs).map(([stateKey, trail]) => [
         stateKey,
-        [...prefixBreadcrumbs, ...trail],
+        [...displayOnlyPrefixes, ...trail],
       ]),
     )
 

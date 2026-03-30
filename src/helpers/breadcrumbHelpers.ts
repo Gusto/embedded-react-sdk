@@ -60,6 +60,24 @@ export const resolveBreadcrumbVariables = (
 }
 
 /**
+ * Marks a breadcrumb as non-navigable across all trails in the context.
+ * Use this in state machine reducers to disable backward navigation to a specific step.
+ */
+export const lockBreadcrumb = <T extends { breadcrumbs?: BreadcrumbTrail }>(
+  breadcrumbId: string,
+  context: T,
+): T => {
+  const allBreadcrumbs = context.breadcrumbs ?? {}
+  const updatedBreadcrumbs = Object.fromEntries(
+    Object.entries(allBreadcrumbs).map(([stateKey, trail]) => [
+      stateKey,
+      trail.map(b => (b.id === breadcrumbId ? { ...b, isNavigable: false } : b)),
+    ]),
+  )
+  return { ...context, breadcrumbs: updatedBreadcrumbs }
+}
+
+/**
  * Updates the breadcrumb trail for a specific state with resolved variables.
  *
  * This function is typically used in state machine transitions to update breadcrumb

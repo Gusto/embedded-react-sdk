@@ -10,11 +10,14 @@ type BreadcrumbNavigateEvent<TContext> = {
 
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
 export const createBreadcrumbNavigateTransition = <TContext>() => {
-  return (targetState: string) =>
+  return (targetState: string, canNavigate?: (ctx: TContext) => boolean) =>
     transition(
       componentEvents.BREADCRUMB_NAVIGATE,
       targetState,
-      guard((ctx: TContext, ev: { payload: { key: string } }) => ev.payload.key === targetState),
+      guard(
+        (ctx: TContext, ev: { payload: { key: string } }) =>
+          ev.payload.key === targetState && (canNavigate?.(ctx) ?? true),
+      ),
       reduce(
         (ctx: TContext, ev: BreadcrumbNavigateEvent<TContext>): TContext =>
           ev.payload.onNavigate(ctx),

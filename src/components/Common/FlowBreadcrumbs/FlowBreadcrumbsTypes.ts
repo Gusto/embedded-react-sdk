@@ -22,6 +22,11 @@ export interface FlowBreadcrumb {
    * Event handler for breadcrumb navigation
    */
   onNavigate?: (context: unknown) => unknown
+  /**
+   * When false, the breadcrumb is rendered as non-clickable even if onNavigate is defined.
+   * Defaults to true when onNavigate is present, false otherwise.
+   */
+  isNavigable?: boolean
 }
 
 export interface BreadcrumbNode {

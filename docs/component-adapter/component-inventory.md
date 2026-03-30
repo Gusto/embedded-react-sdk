@@ -116,10 +116,11 @@
 
 ### Breadcrumb
 
-| Prop      | Type              | Required | Description |
-| --------- | ----------------- | -------- | ----------- |
-| **id**    | `string`          | Yes      | -           |
-| **label** | `React.ReactNode` | Yes      | -           |
+| Prop            | Type              | Required | Description                                                                                         |
+| --------------- | ----------------- | -------- | --------------------------------------------------------------------------------------------------- |
+| **id**          | `string`          | Yes      | -                                                                                                   |
+| **label**       | `React.ReactNode` | Yes      | -                                                                                                   |
+| **isClickable** | `boolean`         | No       | When false, the breadcrumb is rendered as plain text even if onClick is provided. Defaults to true. |
 
 ## ButtonIconProps
 

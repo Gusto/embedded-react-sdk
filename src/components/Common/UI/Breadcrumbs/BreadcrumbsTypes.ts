@@ -3,6 +3,11 @@ import type { ReactNode } from 'react'
 export interface Breadcrumb {
   id: string
   label: ReactNode
+  /**
+   * When false, the breadcrumb is rendered as plain text even if onClick is provided.
+   * Defaults to true.
+   */
+  isClickable?: boolean
 }
 export interface BreadcrumbsProps {
   /**

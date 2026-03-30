@@ -1,4 +1,4 @@
-import { transition, reduce, state } from 'robot3'
+import { transition, reduce, state, guard } from 'robot3'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
 import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
 import {
@@ -11,7 +11,7 @@ import {
 } from '../PayrollFlow/PayrollFlowComponents'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
-import { updateBreadcrumbs } from '@/helpers/breadcrumbHelpers'
+import { lockBreadcrumb, updateBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 import type {
   BreadcrumbNode,
   BreadcrumbNodes,
@@ -174,9 +174,12 @@ const blockersViewAllTransition = transition(
   }),
 )
 
+const notSubmitted = (ctx: PayrollFlowContextInterface) => !ctx.isPayrollSubmitted
+
 const editPayrollTransition = transition(
   componentEvents.RUN_PAYROLL_EDIT,
   'configuration',
+  guard(notSubmitted),
   reduce((ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => {
     return {
       ...updateBreadcrumbs('configuration', ctx, {
@@ -191,6 +194,17 @@ const editPayrollTransition = transition(
       },
     }
   }),
+)
+
+const payrollSubmittingTransition = transition(
+  componentEvents.RUN_PAYROLL_SUBMITTING,
+  'overview',
+  reduce(
+    (ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
+      ...lockBreadcrumb('configuration', ctx),
+      isPayrollSubmitted: true,
+    }),
+  ),
 )
 
 const receiptGetTransition = transition(
@@ -259,7 +273,8 @@ export const payrollExecutionMachine = {
     blockersViewAllTransition,
   ),
   overview: state<MachineTransition>(
-    breadcrumbNavigateTransition('configuration'),
+    breadcrumbNavigateTransition('configuration', notSubmitted),
+    payrollSubmittingTransition,
     editPayrollTransition,
     receiptGetTransition,
   ),
