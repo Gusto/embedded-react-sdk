@@ -9,7 +9,7 @@ The Transition Payroll workflow handles payrolls that cover gaps between old and
 
 The SDK provides a flow component and an integrated alert for transition payrolls:
 
-- **`Payroll.TransitionFlow`**: A full creation-to-execution flow for running a specific transition payroll
+- **`Payroll.TransitionFlow`**: A full creation-to-execution flow for running a specific transition payroll. After creation, the flow transitions into the standard [Payroll Processing](./run-payroll.md) execution experience — the same steps used by regular and other off-cycle payrolls.
 - **Transition Payroll Alert**: An alert automatically rendered within `Payroll.PayrollLanding` when there are unprocessed transition pay periods. It surfaces upcoming transition periods and allows users to run or skip them. This is not a standalone export — it is built into the landing page.
 
 ### Implementation

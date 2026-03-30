@@ -7,7 +7,7 @@ order: 5
 
 The Off-Cycle Payroll workflow provides a complete experience for running payrolls outside of a company's regular pay schedule. It supports two off-cycle reasons: **Bonus** (paying a bonus, gift, or commission) and **Correction** (running a correction payment). The flow guides users through configuring pay period dates, selecting a reason, choosing employees, setting deduction and tax withholding preferences, and then executing the payroll.
 
-After creation, the flow transitions into the standard payroll execution experience (configuration, overview, submission, and receipts).
+After creation, the flow transitions into the standard [Payroll Processing](./run-payroll.md) execution experience (configuration, overview, submission, and receipts). All off-cycle payroll types share the same execution steps as regular payrolls — the only difference is how the payroll is created.
 
 ### Implementation
 
