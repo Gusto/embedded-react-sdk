@@ -6,6 +6,11 @@
   border: 1px solid var(--g-colorBorderSecondary);
 }
 
+.boxHeader {
+  padding: toRem(20);
+  border-bottom: 1px solid var(--g-colorBorderSecondary);
+}
+
 .boxBody {
   padding: toRem(20);
 }

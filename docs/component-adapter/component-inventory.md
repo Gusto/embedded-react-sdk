@@ -100,6 +100,7 @@
 | Prop          | Type              | Required | Description                                                               |
 | ------------- | ----------------- | -------- | ------------------------------------------------------------------------- |
 | **children**  | `React.ReactNode` | Yes      | Content to be displayed inside the box                                    |
+| **header**    | `React.ReactNode` | No       | Content rendered at the top of the box with an edge-to-edge bottom border |
 | **footer**    | `React.ReactNode` | No       | Content rendered at the bottom of the box with an edge-to-edge top border |
 | **className** | `string`          | No       | CSS className to be applied                                               |
 

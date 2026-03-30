@@ -10,6 +10,18 @@ describe('Box Component', () => {
     expect(screen.getByText('Test Content')).toBeInTheDocument()
   })
 
+  test('renders header when provided', () => {
+    renderWithProviders(<Box header={<h2>Title</h2>}>Content</Box>)
+
+    expect(screen.getByText('Title')).toBeInTheDocument()
+  })
+
+  test('does not render header when omitted', () => {
+    renderWithProviders(<Box>Content</Box>)
+
+    expect(screen.queryByRole('heading')).not.toBeInTheDocument()
+  })
+
   test('renders footer when provided', () => {
     renderWithProviders(<Box footer={<button>Save</button>}>Content</Box>)
 
@@ -51,9 +63,24 @@ describe('Box Component', () => {
         },
       },
       {
+        name: 'box with header',
+        props: {
+          children: 'Main content',
+          header: <h2>Title</h2>,
+        },
+      },
+      {
         name: 'box with footer',
         props: {
           children: 'Main content',
+          footer: <button>Save</button>,
+        },
+      },
+      {
+        name: 'box with header and footer',
+        props: {
+          children: 'Main content',
+          header: <h2>Title</h2>,
           footer: <button>Save</button>,
         },
       },

@@ -6,6 +6,10 @@ export interface BoxProps {
    */
   children: ReactNode
   /**
+   * Content rendered at the top of the box with an edge-to-edge bottom border
+   */
+  header?: ReactNode
+  /**
    * Content rendered at the bottom of the box with an edge-to-edge top border
    */
   footer?: ReactNode
