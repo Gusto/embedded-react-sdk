@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useLocationsList } from './useLocationsList'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
-import { DataView, EmptyData, useDataView, VisuallyHidden } from '@/components/Common'
+import { DataView, useDataView, VisuallyHidden } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { getCityStateZip, getStreet } from '@/helpers/formattedStrings'
@@ -93,13 +93,11 @@ export const List = () => {
       totalCount,
       itemsPerPage,
     },
-    emptyState: () => (
-      <EmptyData title={t('emptyTableTitle')} description={t('emptyTableDescription')}>
-        <Components.Button variant="secondary" onClick={handleAddLocation}>
-          {t('addFirstLocationCta')}
-        </Components.Button>
-      </EmptyData>
-    ),
+    emptyState: {
+      title: t('emptyTableTitle'),
+      description: t('emptyTableDescription'),
+      action: { label: t('addFirstLocationCta'), onClick: handleAddLocation },
+    },
   })
   return <DataView label={t('locationListLabel')} {...dataViewProps} />
 }

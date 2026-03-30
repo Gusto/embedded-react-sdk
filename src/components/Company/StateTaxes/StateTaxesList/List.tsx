@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useStateTaxesList } from './context'
-import { DataView, EmptyData, useDataView } from '@/components/Common'
+import { DataView, useDataView } from '@/components/Common'
 import type { STATES_ABBR } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
@@ -48,9 +48,7 @@ export const List = () => {
       )
     },
 
-    emptyState: () => (
-      <EmptyData title={t('emptyTableTitle')} description={t('emptyTableDescription')} />
-    ),
+    emptyState: { title: t('emptyTableTitle'), description: t('emptyTableDescription') },
   })
   return <DataView label={t('requirementsListLabel')} {...dataViewProps} />
 }

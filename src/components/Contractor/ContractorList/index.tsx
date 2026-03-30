@@ -2,7 +2,7 @@ import { type Contractor } from '@gusto/embedded-api/models/components/contracto
 import { useTranslation } from 'react-i18next'
 import { useContractorsDeleteMutation } from '@gusto/embedded-api/react-query/contractorsDelete'
 import { useContractors } from './useContractorList'
-import { ActionsLayout, DataView, EmptyData, Flex, useDataView } from '@/components/Common'
+import { ActionsLayout, DataView, Flex, useDataView } from '@/components/Common'
 import { firstLastName } from '@/helpers/formattedStrings'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu/HamburgerMenu'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
@@ -39,22 +39,6 @@ export function Head({ count, handleAdd }: HeadProps) {
   )
 }
 
-export interface EmptyDataContractorsListProps {
-  handleAdd: () => void
-}
-export function EmptyDataContractorsList({ handleAdd }: EmptyDataContractorsListProps) {
-  const { Button } = useComponentContext()
-  const { t } = useTranslation('Contractor.ContractorList')
-
-  return (
-    <EmptyData title={t('emptyTableTitle')} description={t('emptyTableDescription')}>
-      <ActionsLayout justifyContent="center">
-        <Button onClick={handleAdd}>{t('addContractorCta')}</Button>
-      </ActionsLayout>
-    </EmptyData>
-  )
-}
-
 export interface ContractorListProps extends CommonComponentInterface<'Contractor.ContractorList'> {
   companyId: string
   successMessage?: string
@@ -87,6 +71,10 @@ function Root({ companyId, className, dictionary, successMessage }: ContractorLi
   } = useContractors({ companyUuid: companyId })
   const { mutateAsync: deleteContractorMutation, isPending: isPendingDelete } =
     useContractorsDeleteMutation()
+
+  const handleAdd = () => {
+    onEvent(componentEvents.CONTRACTOR_CREATE)
+  }
 
   const dataViewProps = useDataView<Contractor>({
     columns: [
@@ -130,7 +118,11 @@ function Root({ companyId, className, dictionary, successMessage }: ContractorLi
         isLoading={isPendingDelete}
       />
     ),
-    emptyState: () => <EmptyDataContractorsList handleAdd={handleAdd} />,
+    emptyState: {
+      title: t('emptyTableTitle'),
+      description: t('emptyTableDescription'),
+      action: { label: t('addContractorCta'), onClick: handleAdd },
+    },
     pagination: {
       handleNextPage,
       handleFirstPage,
@@ -143,10 +135,6 @@ function Root({ companyId, className, dictionary, successMessage }: ContractorLi
       itemsPerPage,
     },
   })
-
-  const handleAdd = () => {
-    onEvent(componentEvents.CONTRACTOR_CREATE)
-  }
 
   const handleEdit = (uuid: string) => {
     onEvent(componentEvents.CONTRACTOR_UPDATE, { contractorId: uuid })

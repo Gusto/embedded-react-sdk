@@ -17,6 +17,17 @@ type DataViewColumn<T> =
 
 type FooterKeys<T> = keyof T | string
 
+export type EmptyStateAction = {
+  label: string
+  onClick: () => void
+}
+
+export type EmptyStateConfig = {
+  title: string
+  description?: string
+  action?: EmptyStateAction
+}
+
 export type useDataViewProp<T> = {
   columns: DataViewColumn<T>[]
   data: T[]
@@ -24,7 +35,7 @@ export type useDataViewProp<T> = {
   itemMenu?: (item: T) => React.ReactNode
   onSelect?: (item: T, checked: boolean) => void
   isItemSelected?: (item: T, index: number) => boolean
-  emptyState?: () => React.ReactNode
+  emptyState?: EmptyStateConfig | (() => React.ReactNode)
   footer?: () => Partial<Record<FooterKeys<T>, React.ReactNode>>
   isFetching?: boolean
   selectionMode?: SelectionMode
@@ -37,7 +48,7 @@ export type useDataViewPropReturn<T> = {
   itemMenu?: (item: T) => React.ReactNode
   onSelect?: (item: T, checked: boolean) => void
   isItemSelected?: (item: T, index: number) => boolean
-  emptyState?: () => React.ReactNode
+  emptyState?: EmptyStateConfig | (() => React.ReactNode)
   footer?: () => Partial<Record<FooterKeys<T>, React.ReactNode>>
   isFetching?: boolean
   selectionMode?: SelectionMode

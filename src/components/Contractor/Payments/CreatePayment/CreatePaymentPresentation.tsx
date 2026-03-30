@@ -6,7 +6,7 @@ import type { InternalAlert } from '../types'
 import { getContractorDisplayName } from './helpers'
 import type { ApiPayrollBlocker } from '@/components/Payroll/PayrollBlocker/payrollHelpers'
 import { PayrollBlockerAlerts } from '@/components/Payroll/PayrollBlocker/components/PayrollBlockerAlerts'
-import { DataView, Flex, FlexItem, EmptyData } from '@/components/Common'
+import { DataView, Flex, FlexItem } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { useI18n } from '@/i18n'
@@ -201,9 +201,7 @@ export const CreatePaymentPresentation = ({
               triggerLabel={t('editContractor')}
             />
           )}
-          emptyState={() => (
-            <EmptyData title={t('emptyTableTitle')} description={t('emptyTableDescription')} />
-          )}
+          emptyState={{ title: t('emptyTableTitle'), description: t('emptyTableDescription') }}
         />
       </Flex>
     </Flex>
