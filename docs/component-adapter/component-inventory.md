@@ -244,7 +244,7 @@
 | **onChange**                | `(value: string) => void`           | No       | Callback when selection changes                                                                                                                |
 | **onBlur**                  | `() => void`                        | No       | Handler for blur events                                                                                                                        |
 | **options**                 | [ComboBoxOption](#comboboxoption)[] | Yes      | Array of options to display in the dropdown                                                                                                    |
-| **value**                   | `string`                            | No       | Currently selected value                                                                                                                       |
+| **value**                   | `null \| string`                    | No       | Currently selected value                                                                                                                       |
 | **inputRef**                | `Ref<HTMLInputElement \| null>`     | No       | React ref for the combo box input element                                                                                                      |
 | **allowsCustomValue**       | `boolean`                           | No       | Allows the user to type any value, not just options in the list. The options list becomes a suggestion helper rather than a strict constraint. |
 | **description**             | `React.ReactNode`                   | No       | Optional description text for the field                                                                                                        |
@@ -477,7 +477,7 @@ type PaginationItemsPerPage = 5 | 10 | 50
 | **isInvalid**               | `boolean`                               | No       | Indicates that the field has an error                                  |
 | **isDisabled**              | `boolean`                               | No       | Disables all radio options in the group                                |
 | **options**                 | [RadioGroupOption](#radiogroupoption)[] | Yes      | Array of radio options to display                                      |
-| **value**                   | `string`                                | No       | Currently selected value                                               |
+| **value**                   | `null \| string`                        | No       | Currently selected value                                               |
 | **defaultValue**            | `string`                                | No       | Initially selected value                                               |
 | **onChange**                | `(value: string) => void`               | No       | Callback when selection changes                                        |
 | **inputRef**                | `Ref<HTMLInputElement \| null>`         | No       | React ref for the first radio input element                            |
@@ -527,7 +527,7 @@ type PaginationItemsPerPage = 5 | 10 | 50
 | **onBlur**                  | `() => void`                     | No       | Handler for blur events                                                |
 | **options**                 | [SelectOption](#selectoption)[]  | Yes      | Array of options to display in the select dropdown                     |
 | **placeholder**             | `string`                         | No       | Placeholder text when no option is selected                            |
-| **value**                   | `string`                         | No       | Currently selected value                                               |
+| **value**                   | `null \| string`                 | No       | Currently selected value                                               |
 | **inputRef**                | `Ref<HTMLButtonElement \| null>` | No       | React ref for the select button element                                |
 | **portalContainer**         | `HTMLElement`                    | No       | Element to use as the portal container                                 |
 | **description**             | `React.ReactNode`                | No       | Optional description text for the field                                |

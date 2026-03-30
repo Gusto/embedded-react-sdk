@@ -37,7 +37,7 @@ export interface RadioGroupProps
   /**
    * Currently selected value
    */
-  value?: string
+  value?: string | null
   /**
    * Initially selected value
    */

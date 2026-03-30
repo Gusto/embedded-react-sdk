@@ -79,7 +79,7 @@ export const ComboBox = ({
               onInputChange: (inputVal: string) => onChange?.(inputVal),
             }
           : {
-              selectedKey: value ? (value as Key) : undefined,
+              selectedKey: value ? (value as Key) : null,
               onSelectionChange: (key: Key | null) => {
                 if (key) onChange?.(key.toString())
               },

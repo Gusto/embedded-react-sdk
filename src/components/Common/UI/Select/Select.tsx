@@ -75,7 +75,7 @@ export const Select = ({
         }}
         onBlur={onBlur}
         id={inputId}
-        selectedKey={value ? (value as Key) : undefined}
+        selectedKey={value ? (value as Key) : null}
         aria-describedby={ariaDescribedBy}
         name={name}
       >

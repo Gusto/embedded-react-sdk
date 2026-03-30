@@ -47,7 +47,7 @@ export interface SelectProps
   /**
    * Currently selected value
    */
-  value?: string
+  value?: string | null
   /**
    * React ref for the select button element
    */

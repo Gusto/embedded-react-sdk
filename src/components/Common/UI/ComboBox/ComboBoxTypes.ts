@@ -43,7 +43,7 @@ export interface ComboBoxProps
   /**
    * Currently selected value
    */
-  value?: string
+  value?: string | null
   /**
    * React ref for the combo box input element
    */
