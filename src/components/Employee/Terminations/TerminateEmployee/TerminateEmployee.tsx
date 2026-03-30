@@ -152,7 +152,7 @@ const Root = ({ employeeId, companyId, dictionary }: TerminateEmployeeProps) => 
           }
 
           if (createdPayrolls.length > 0) {
-            firstPayrollUuid = createdPayrolls[0]?.payrollUuid
+            firstPayrollUuid = createdPayrolls[0]?.payrollUuid ?? createdPayrolls[0]?.uuid
 
             await invalidateAllPayrollsList(queryClient)
             await invalidateAllPaySchedulesGetUnprocessedTerminationPeriods(queryClient)
