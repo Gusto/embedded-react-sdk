@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { createMachine, interpret, type SendFunction } from 'robot3'
 import {
   payrollExecutionMachine,
-  payrollExecutionBreadcrumbsNodes,
+  getPayrollExecutionBreadcrumbsNodes,
 } from './payrollExecutionMachine'
 import type { PayrollFlowContextInterface } from '../PayrollFlow/PayrollFlowComponents'
 import { componentEvents } from '@/shared/constants'
@@ -18,7 +18,7 @@ function createTestMachine(initialState: 'configuration' | 'overview' = 'configu
       companyId: 'test-company',
       payrollUuid: 'payroll-123',
       progressBarType: 'breadcrumbs' as const,
-      breadcrumbs: buildBreadcrumbs(payrollExecutionBreadcrumbsNodes),
+      breadcrumbs: buildBreadcrumbs(getPayrollExecutionBreadcrumbsNodes()),
       currentBreadcrumbId: initialState,
       progressBarCta: null,
       withReimbursements: true,
@@ -70,7 +70,7 @@ describe('payrollExecutionMachine', () => {
           companyId: 'test-company',
           payrollUuid: 'payroll-123',
           progressBarType: 'breadcrumbs' as const,
-          breadcrumbs: buildBreadcrumbs(payrollExecutionBreadcrumbsNodes),
+          breadcrumbs: buildBreadcrumbs(getPayrollExecutionBreadcrumbsNodes()),
           currentBreadcrumbId: 'configuration' as const,
           progressBarCta: null,
           withReimbursements: true,

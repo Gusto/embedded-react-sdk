@@ -2327,7 +2327,9 @@ export interface PayrollPayrollBlocker{
 export interface PayrollPayrollConfiguration{
 "pageTitle":string;
 "description":string;
+"descriptionDismissal":string;
 "breadcrumbLabel":string;
+"breadcrumbLabelDismissal":string;
 "exitFlowCta":string;
 "calculatePayroll":string;
 "calculatePayrollTitle":string;
@@ -2515,10 +2517,12 @@ export interface PayrollPayrollOverview{
 "overviewTitle":string;
 "summaryTitle":string;
 "pageSubtitle":string;
+"pageSubtitleDismissal":string;
 "submitCta":string;
 "editCta":string;
 "cancelCta":string;
 "cancelDialogTitle":string;
+"cancelDialogTitleDismissal":string;
 "cancelDialogDescription":string;
 "cancelDialogDescriptionDeadline":string;
 "confirmCancelCta":string;

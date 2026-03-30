@@ -552,6 +552,57 @@ describe('PayrollConfiguration', () => {
       expect(onEvent).not.toHaveBeenCalledWith('runPayroll/calculated', expect.anything())
     })
 
+    it('does not fire RUN_PAYROLL_CALCULATED with stale data when re-calculating a previously calculated payroll', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+
+      const firstCalculatedAt = '2025-08-10T12:00:00Z'
+      const newCalculatedAt = '2025-08-10T14:00:00Z'
+
+      currentPayrollData = {
+        ...mockPayrollData,
+        calculated_at: firstCalculatedAt,
+        processing_request: null,
+      }
+
+      server.use(
+        http.put(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/calculate`, () => {
+          return new HttpResponse(null, { status: 202 })
+        }),
+      )
+
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
+      })
+
+      const calculateButton = screen.getByRole('button', { name: /calculate/i })
+      await user.click(calculateButton)
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(6_000)
+      })
+
+      expect(onEvent).not.toHaveBeenCalledWith('runPayroll/calculated', expect.anything())
+
+      currentPayrollData = {
+        ...mockPayrollData,
+        calculated_at: newCalculatedAt,
+        processing_request: { status: 'calculate_success', errors: [] },
+      }
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(6_000)
+      })
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(
+          'runPayroll/calculated',
+          expect.objectContaining({ payrollId: 'payroll-uuid-1' }),
+        )
+      })
+    })
+
     it('does not make prepare calls while polling', async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
       let prepareCallCount = 0
