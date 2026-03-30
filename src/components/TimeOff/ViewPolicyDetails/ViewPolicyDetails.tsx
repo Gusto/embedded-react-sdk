@@ -10,10 +10,18 @@ export function ViewPolicyDetails(props: ViewPolicyDetailsProps) {
     <BaseComponent {...props}>
       <div>
         <p>View Policy Details (policyId: {props.policyId})</p>
-        <button onClick={() => { props.onEvent(componentEvents.TIME_OFF_VIEW_POLICY_EMPLOYEES); }}>
+        <button
+          onClick={() => {
+            props.onEvent(componentEvents.TIME_OFF_VIEW_POLICY_EMPLOYEES)
+          }}
+        >
           View Employees Tab
         </button>
-        <button onClick={() => { props.onEvent(componentEvents.TIME_OFF_BACK_TO_LIST); }}>
+        <button
+          onClick={() => {
+            props.onEvent(componentEvents.TIME_OFF_BACK_TO_LIST)
+          }}
+        >
           Back to List
         </button>
       </div>
