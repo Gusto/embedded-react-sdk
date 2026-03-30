@@ -10,10 +10,18 @@ export function ViewHolidayEmployees(props: ViewHolidayEmployeesProps) {
     <BaseComponent {...props}>
       <div>
         <p>View Holiday Employees (companyId: {props.companyId})</p>
-        <button onClick={() => { props.onEvent(componentEvents.TIME_OFF_VIEW_HOLIDAY_SCHEDULE); }}>
+        <button
+          onClick={() => {
+            props.onEvent(componentEvents.TIME_OFF_VIEW_HOLIDAY_SCHEDULE)
+          }}
+        >
           Holiday Schedule Tab
         </button>
-        <button onClick={() => { props.onEvent(componentEvents.TIME_OFF_BACK_TO_LIST); }}>
+        <button
+          onClick={() => {
+            props.onEvent(componentEvents.TIME_OFF_BACK_TO_LIST)
+          }}
+        >
           Back to List
         </button>
       </div>
