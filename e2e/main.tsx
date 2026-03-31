@@ -10,7 +10,7 @@ import { TransitionFlow } from '@/components/Payroll/Transition/TransitionFlow'
 import { PaymentFlow } from '@/components/Contractor/Payments/PaymentFlow/PaymentFlow'
 import { TerminationFlow } from '@/components/Employee/Terminations/TerminationFlow/TerminationFlow'
 import { DismissalFlow } from '@/components/Payroll/Dismissal'
-import { TimeOffFlow } from '@/components/TimeOff/TimeOffFlow/TimeOffFlow'
+import { TimeOffFlow } from '@/components/UNSTABLE_TimeOff/TimeOffFlow/TimeOffFlow'
 import '@/styles/sdk.scss'
 
 const DEFAULT_API_BASE_URL = 'https://api.gusto.com'
