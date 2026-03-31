@@ -41,4 +41,17 @@ export interface DatePickerProps
    * Element to use as the portal container
    */
   portalContainer?: HTMLElement
+  /**
+   * Minimum selectable date. Dates before this will be disabled.
+   */
+  minDate?: Date
+  /**
+   * Maximum selectable date. Dates after this will be disabled.
+   */
+  maxDate?: Date
+  /**
+   * Callback to determine if a specific date should be disabled.
+   * Return true to disable the date.
+   */
+  isDateDisabled?: (date: Date) => boolean
 }

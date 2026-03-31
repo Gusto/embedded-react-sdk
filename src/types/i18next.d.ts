@@ -278,7 +278,8 @@ export interface CompanyPaySchedule{
 "loading":string;
 "descriptions":{
 "frequencyOptionsDescription":string;
-"anchorPayDateDescription":string;
+"anchorPayDateDescription_one":string;
+"anchorPayDateDescription_other":string;
 "anchorEndOfPayPeriodDescription":string;
 };
 "payPreview":{

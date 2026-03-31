@@ -159,10 +159,15 @@
         {
           "method": "POST",
           "path": "/v1/companies/:companyId/pay_schedules"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/payment_configs"
         }
       ],
       "variables": [
         "companyId",
+        "companyUuid",
         "payScheduleId"
       ]
     },
@@ -1308,6 +1313,10 @@
         {
           "method": "POST",
           "path": "/v1/companies/:companyId/pay_schedules"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/payment_configs"
         },
         {
           "method": "PUT",

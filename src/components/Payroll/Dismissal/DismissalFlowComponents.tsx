@@ -76,6 +76,7 @@ function DismissalExecutionWithData({
       companyId={companyId}
       payrollId={payrollId}
       initialPayPeriod={initialPayPeriod}
+      isDismissalPayroll
       {...rest}
     />
   )

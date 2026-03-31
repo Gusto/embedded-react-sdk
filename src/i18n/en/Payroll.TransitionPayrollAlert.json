@@ -1,5 +1,5 @@
 {
-  "alertTitle": "Transition payroll",
+  "alertTitle": "Transition payroll - {{dateRange}}",
   "alertDescription": "Because you changed your pay schedule, you'll need to run some transition payrolls. Transition payrolls let you pay employees for any workdays during gaps between pay schedules. You may choose to skip them, but it is your responsibility to ensure employees are paid properly.",
   "runPayroll": "Run Transition Payroll",
   "skipPayroll": "Skip this payroll",

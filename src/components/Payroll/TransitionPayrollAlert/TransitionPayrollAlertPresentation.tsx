@@ -58,55 +58,48 @@ export function TransitionPayrollAlertPresentation({
       {showSkipSuccessAlert && (
         <Alert status="info" label={t('skipSuccessAlert')} onDismiss={onDismissSkipSuccessAlert} />
       )}
-      <Alert status="warning" label={t('alertTitle')}>
-        <Flex flexDirection="column" gap={16}>
-          <Text>{t('alertDescription')}</Text>
-          {groupedPayPeriods.map((group, groupIndex) => (
-            <Flex
-              key={group.payScheduleUuid || `group-${groupIndex}`}
-              flexDirection="column"
-              gap={8}
-            >
-              {hasMultipleGroups && <Text weight="semibold">{group.payScheduleName}</Text>}
-              {group.payPeriods.map(payPeriod => {
-                const dateRange = formatDateRange(payPeriod)
-                const isSkipping = skippingPayPeriod === payPeriod
+      {groupedPayPeriods.map((group, groupIndex) => (
+        <Flex key={group.payScheduleUuid || `group-${groupIndex}`} flexDirection="column" gap={16}>
+          {hasMultipleGroups && <Text weight="semibold">{group.payScheduleName}</Text>}
+          {group.payPeriods.map(payPeriod => {
+            const dateRange = formatDateRange(payPeriod)
+            const isSkipping = skippingPayPeriod === payPeriod
 
-                return (
-                  <Flex
-                    key={`${payPeriod.payScheduleUuid}-${payPeriod.startDate}`}
-                    flexDirection="column"
-                    gap={8}
-                  >
-                    <Text>{dateRange}</Text>
-                    <Flex gap={12} alignItems="center">
-                      <div>
-                        <Button
-                          variant="secondary"
-                          onClick={() => {
-                            onRunPayroll(payPeriod)
-                          }}
-                        >
-                          {t('runPayroll')}
-                        </Button>
-                      </div>
+            return (
+              <Alert
+                key={`${payPeriod.payScheduleUuid}-${payPeriod.startDate}`}
+                status="warning"
+                label={t('alertTitle', { dateRange })}
+              >
+                <Flex flexDirection="column" gap={16}>
+                  <Text>{t('alertDescription')}</Text>
+                  <Flex gap={12} alignItems="center">
+                    <div>
                       <Button
-                        variant="tertiary"
+                        variant="secondary"
                         onClick={() => {
-                          setSkipDialogPayPeriod(payPeriod)
+                          onRunPayroll(payPeriod)
                         }}
-                        isLoading={isSkipping}
                       >
-                        {t('skipPayroll')}
+                        {t('runPayroll')}
                       </Button>
-                    </Flex>
+                    </div>
+                    <Button
+                      variant="tertiary"
+                      onClick={() => {
+                        setSkipDialogPayPeriod(payPeriod)
+                      }}
+                      isLoading={isSkipping}
+                    >
+                      {t('skipPayroll')}
+                    </Button>
                   </Flex>
-                )
-              })}
-            </Flex>
-          ))}
+                </Flex>
+              </Alert>
+            )
+          })}
         </Flex>
-      </Alert>
+      ))}
       <Dialog
         isOpen={skipDialogPayPeriod !== null}
         onClose={() => {
