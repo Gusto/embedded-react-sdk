@@ -699,9 +699,7 @@ describe('Compensation', () => {
       )
 
       await waitFor(() => {
-        expect(
-          screen.getByLabelText('Select if employee is a 2% shareholder'),
-        ).toBeInTheDocument()
+        expect(screen.getByLabelText('Select if employee is a 2% shareholder')).toBeInTheDocument()
       })
     })
 
@@ -764,7 +762,6 @@ describe('Compensation', () => {
     })
   })
 
-
   describe('Two Percent Shareholder field', () => {
     beforeEach(() => {
       setupApiTestMocks()
@@ -821,9 +818,7 @@ describe('Compensation', () => {
       )
 
       await waitFor(() => {
-        expect(
-          screen.getByLabelText('Select if employee is a 2% shareholder'),
-        ).toBeInTheDocument()
+        expect(screen.getByLabelText('Select if employee is a 2% shareholder')).toBeInTheDocument()
       })
     })
 
