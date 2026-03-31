@@ -11,7 +11,7 @@ import {
 } from '../PayrollFlow/PayrollFlowComponents'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
-import { lockBreadcrumb, updateBreadcrumbs } from '@/helpers/breadcrumbHelpers'
+import { hideBreadcrumb, updateBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 import type {
   BreadcrumbNode,
   BreadcrumbNodes,
@@ -201,7 +201,7 @@ const payrollSubmittingTransition = transition(
   'overview',
   reduce(
     (ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
-      ...lockBreadcrumb('configuration', ctx),
+      ...hideBreadcrumb('configuration', ctx),
       isPayrollSubmitted: true,
     }),
   ),

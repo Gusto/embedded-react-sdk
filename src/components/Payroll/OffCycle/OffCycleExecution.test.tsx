@@ -190,12 +190,12 @@ function setupMswHandlers(options?: { onPrepare?: () => void }) {
   )
 }
 
-describe('OffCycleExecution - breadcrumb safety', () => {
+describe('OffCycleExecution - breadcrumb display', () => {
   beforeEach(() => {
     setupMswHandlers()
   })
 
-  it('does not render the creation breadcrumb during payroll execution', async () => {
+  it('renders the off-cycle payroll breadcrumb as non-clickable during payroll execution', async () => {
     const onEvent = vi.fn()
 
     renderWithProviders(<OffCycleFlowInExecutionState onEvent={onEvent} />)
@@ -204,7 +204,9 @@ describe('OffCycleExecution - breadcrumb safety', () => {
       expect(screen.getByText('Jane Doe')).toBeInTheDocument()
     })
 
-    expect(screen.queryByText('New Off-Cycle Payroll')).not.toBeInTheDocument()
+    const breadcrumb = screen.getByText('New Off-Cycle Payroll')
+    expect(breadcrumb).toBeInTheDocument()
+    expect(breadcrumb.closest('button')).toBeNull()
   })
 })
 

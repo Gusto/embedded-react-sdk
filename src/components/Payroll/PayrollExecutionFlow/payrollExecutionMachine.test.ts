@@ -220,7 +220,7 @@ describe('payrollExecutionMachine', () => {
       expect(service.machine.current).toBe('overview')
     })
 
-    it('marks configuration breadcrumb as non-navigable after RUN_PAYROLL_SUBMITTING', () => {
+    it('removes configuration breadcrumb from all trails after RUN_PAYROLL_SUBMITTING', () => {
       const service = createService()
       toOverview(service)
 
@@ -228,10 +228,7 @@ describe('payrollExecutionMachine', () => {
 
       const allBreadcrumbs = service.context.breadcrumbs ?? {}
       for (const trail of Object.values(allBreadcrumbs)) {
-        const configBreadcrumb = trail.find(b => b.id === 'configuration')
-        if (configBreadcrumb) {
-          expect(configBreadcrumb.isNavigable).toBe(false)
-        }
+        expect(trail.find(b => b.id === 'configuration')).toBeUndefined()
       }
     })
   })

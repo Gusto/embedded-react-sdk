@@ -60,6 +60,24 @@ export const resolveBreadcrumbVariables = (
 }
 
 /**
+ * Removes a breadcrumb from all trails in the context.
+ * Use this in state machine reducers to hide a step entirely (e.g. after payroll submission).
+ */
+export const hideBreadcrumb = <T extends { breadcrumbs?: BreadcrumbTrail }>(
+  breadcrumbId: string,
+  context: T,
+): T => {
+  const allBreadcrumbs = context.breadcrumbs ?? {}
+  const updatedBreadcrumbs = Object.fromEntries(
+    Object.entries(allBreadcrumbs).map(([stateKey, trail]) => [
+      stateKey,
+      trail.filter(b => b.id !== breadcrumbId),
+    ]),
+  )
+  return { ...context, breadcrumbs: updatedBreadcrumbs }
+}
+
+/**
  * Marks a breadcrumb as non-navigable across all trails in the context.
  * Use this in state machine reducers to disable backward navigation to a specific step.
  */
