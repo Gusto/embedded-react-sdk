@@ -145,25 +145,25 @@ export const SelectEmployees = () => {
   )
 }
 
+const BalanceInput = ({ employee }: { employee: StoryEmployee }) => {
+  const Components = useComponentContext()
+  const [value, setValue] = useState(employee.balance?.toString() ?? '')
+  return (
+    <div className={styles.balanceInput}>
+      <Components.TextInput
+        name={`balance-${employee.uuid}`}
+        label="Balance"
+        shouldVisuallyHideLabel
+        value={value}
+        onChange={setValue}
+        placeholder="0"
+      />
+    </div>
+  )
+}
+
 export const SetBalances = () => {
   const search = useSearchState()
-
-  const BalanceInput = ({ employee }: { employee: StoryEmployee }) => {
-    const Components = useComponentContext()
-    const [value, setValue] = useState(employee.balance?.toString() ?? '')
-    return (
-      <div className={styles.balanceInput}>
-        <Components.TextInput
-          name={`balance-${employee.uuid}`}
-          label="Balance"
-          shouldVisuallyHideLabel
-          value={value}
-          onChange={setValue}
-          placeholder="0"
-        />
-      </div>
-    )
-  }
 
   return (
     <EmployeeTable<StoryEmployee>

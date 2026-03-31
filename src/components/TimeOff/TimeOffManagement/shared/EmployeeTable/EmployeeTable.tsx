@@ -54,7 +54,7 @@ export function EmployeeTable<T extends EmployeeTableItem>({
   const columns = useMemo(
     () => [
       {
-        key: 'name' as keyof T,
+        key: 'name',
         title: t('name'),
         render: (item: T) =>
           firstLastName({
@@ -102,7 +102,7 @@ export function EmployeeTable<T extends EmployeeTableItem>({
                 type="button"
                 className={styles.clearButton}
                 onClick={onSearchClear}
-                aria-label={t('clearAriaLabel')}
+                aria-label={t('clearSearch')}
               >
                 <CloseIcon aria-hidden />
               </button>
