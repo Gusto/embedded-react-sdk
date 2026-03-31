@@ -161,17 +161,23 @@ const cancelPayroll = createMockPayroll('cancel-dialog', {
 })
 
 export const CancelDialog = () => {
+  const [payrolls, setPayrolls] = useState([cancelPayroll])
   const [dialogItem, setDialogItem] = useState<Payroll | null>(cancelPayroll)
+
+  const handleCancelPayroll = (item: Payroll) => {
+    setPayrolls(prev => prev.filter(p => p.payrollUuid !== item.payrollUuid))
+    setDialogItem(null)
+  }
 
   return (
     <PayrollHistoryPresentation
-      payrollHistory={[cancelPayroll]}
+      payrollHistory={payrolls}
       wireInRequests={[]}
       selectedTimeFilter="3months"
       onTimeFilterChange={fn().mockName('onTimeFilterChange')}
       onViewSummary={fn().mockName('onViewSummary')}
       onViewReceipt={fn().mockName('onViewReceipt')}
-      onCancelPayroll={fn().mockName('onCancelPayroll')}
+      onCancelPayroll={handleCancelPayroll}
       cancelDialogItem={dialogItem}
       onCancelDialogOpen={setDialogItem}
       onCancelDialogClose={() => {
