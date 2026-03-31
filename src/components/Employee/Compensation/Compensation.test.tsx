@@ -6,6 +6,7 @@ import { Compensation } from './Compensation'
 import { server } from '@/test/mocks/server'
 import { componentEvents } from '@/shared/constants'
 import { handleGetEmployeeJobs } from '@/test/mocks/apis/employees'
+import { handleGetCompanyFederalTaxes } from '@/test/mocks/apis/company_federal_taxes'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { getMinimumWages } from '@/test/mocks/apis/company_locations'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
@@ -639,6 +640,249 @@ describe('Compensation', () => {
       await waitFor(() => {
         expect(screen.getByTestId('data-view')).toBeInTheDocument()
       })
+    })
+  })
+
+  describe('Two Percent Shareholder field', () => {
+    beforeEach(() => {
+      setupApiTestMocks()
+      server.use(getMinimumWages)
+    })
+
+    it('shows the checkbox when company has taxableAsScorp true and FLSA is Owner', async () => {
+      server.use(
+        handleGetCompanyFederalTaxes(() =>
+          HttpResponse.json({
+            version: '36d35e28689e641e9e153f0324c2625a',
+            tax_payer_type: 'C-Corporation',
+            taxable_as_scorp: true,
+            filing_form: '944',
+            has_ein: true,
+            ein_verified: false,
+            legal_name: 'foobarbaz',
+          }),
+        ),
+      )
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json([
+            {
+              uuid: 'job-uuid',
+              version: 'job-version-scorp',
+              employee_uuid: 'employee-uuid',
+              current_compensation_uuid: 'compensation-uuid',
+              payment_unit: 'Paycheck',
+              primary: true,
+              two_percent_shareholder: false,
+              title: 'CEO',
+              compensations: [
+                {
+                  uuid: 'compensation-uuid',
+                  version: 'compensation-version-scorp',
+                  payment_unit: 'Paycheck',
+                  flsa_status: 'Owner',
+                  adjust_for_minimum_wage: false,
+                  job_uuid: 'job-uuid',
+                  effective_date: '2024-12-24',
+                  rate: '150000.00',
+                },
+              ],
+              rate: '150000.00',
+              hire_date: '2024-12-24',
+            },
+          ]),
+        ),
+      )
+
+      renderWithProviders(
+        <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={() => {}} />,
+      )
+
+      await waitFor(() => {
+        expect(
+          screen.getByLabelText('Select if employee is a 2% shareholder'),
+        ).toBeInTheDocument()
+      })
+    })
+
+    it('does not show the checkbox when taxableAsScorp is false', async () => {
+      server.use(
+        handleGetCompanyFederalTaxes(() =>
+          HttpResponse.json({
+            version: '36d35e28689e641e9e153f0324c2625a',
+            tax_payer_type: 'C-Corporation',
+            taxable_as_scorp: false,
+            filing_form: '944',
+            has_ein: true,
+            ein_verified: false,
+            legal_name: 'foobarbaz',
+          }),
+        ),
+      )
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json([
+            {
+              uuid: 'job-uuid',
+              version: 'job-version-scorp',
+              employee_uuid: 'employee-uuid',
+              current_compensation_uuid: 'compensation-uuid',
+              payment_unit: 'Paycheck',
+              primary: true,
+              two_percent_shareholder: false,
+              title: 'CEO',
+              compensations: [
+                {
+                  uuid: 'compensation-uuid',
+                  version: 'compensation-version-scorp',
+                  payment_unit: 'Paycheck',
+                  flsa_status: 'Owner',
+                  adjust_for_minimum_wage: false,
+                  job_uuid: 'job-uuid',
+                  effective_date: '2024-12-24',
+                  rate: '150000.00',
+                },
+              ],
+              rate: '150000.00',
+              hire_date: '2024-12-24',
+            },
+          ]),
+        ),
+      )
+
+      renderWithProviders(
+        <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={() => {}} />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText('Compensation')).toBeInTheDocument()
+      })
+
+      expect(
+        screen.queryByLabelText('Select if employee is a 2% shareholder'),
+      ).not.toBeInTheDocument()
+    })
+  })
+
+
+  describe('Two Percent Shareholder field', () => {
+    beforeEach(() => {
+      setupApiTestMocks()
+      server.use(getMinimumWages)
+    })
+
+    it('shows the checkbox when company has taxableAsScorp true and FLSA is Owner', async () => {
+      server.use(
+        handleGetCompanyFederalTaxes(() =>
+          HttpResponse.json({
+            version: '36d35e28689e641e9e153f0324c2625a',
+            tax_payer_type: 'C-Corporation',
+            taxable_as_scorp: true,
+            filing_form: '944',
+            has_ein: true,
+            ein_verified: false,
+            legal_name: 'foobarbaz',
+          }),
+        ),
+      )
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json([
+            {
+              uuid: 'job-uuid',
+              version: 'job-version-scorp',
+              employee_uuid: 'employee-uuid',
+              current_compensation_uuid: 'compensation-uuid',
+              payment_unit: 'Paycheck',
+              primary: true,
+              two_percent_shareholder: false,
+              title: 'CEO',
+              compensations: [
+                {
+                  uuid: 'compensation-uuid',
+                  version: 'compensation-version-scorp',
+                  payment_unit: 'Paycheck',
+                  flsa_status: 'Owner',
+                  adjust_for_minimum_wage: false,
+                  job_uuid: 'job-uuid',
+                  effective_date: '2024-12-24',
+                  rate: '150000.00',
+                },
+              ],
+              rate: '150000.00',
+              hire_date: '2024-12-24',
+            },
+          ]),
+        ),
+      )
+
+      renderWithProviders(
+        <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={() => {}} />,
+      )
+
+      await waitFor(() => {
+        expect(
+          screen.getByLabelText('Select if employee is a 2% shareholder'),
+        ).toBeInTheDocument()
+      })
+    })
+
+    it('does not show the checkbox when taxableAsScorp is false', async () => {
+      server.use(
+        handleGetCompanyFederalTaxes(() =>
+          HttpResponse.json({
+            version: '36d35e28689e641e9e153f0324c2625a',
+            tax_payer_type: 'C-Corporation',
+            taxable_as_scorp: false,
+            filing_form: '944',
+            has_ein: true,
+            ein_verified: false,
+            legal_name: 'foobarbaz',
+          }),
+        ),
+      )
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json([
+            {
+              uuid: 'job-uuid',
+              version: 'job-version-scorp',
+              employee_uuid: 'employee-uuid',
+              current_compensation_uuid: 'compensation-uuid',
+              payment_unit: 'Paycheck',
+              primary: true,
+              two_percent_shareholder: false,
+              title: 'CEO',
+              compensations: [
+                {
+                  uuid: 'compensation-uuid',
+                  version: 'compensation-version-scorp',
+                  payment_unit: 'Paycheck',
+                  flsa_status: 'Owner',
+                  adjust_for_minimum_wage: false,
+                  job_uuid: 'job-uuid',
+                  effective_date: '2024-12-24',
+                  rate: '150000.00',
+                },
+              ],
+              rate: '150000.00',
+              hire_date: '2024-12-24',
+            },
+          ]),
+        ),
+      )
+
+      renderWithProviders(
+        <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={() => {}} />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText('Compensation')).toBeInTheDocument()
+      })
+
+      expect(
+        screen.queryByLabelText('Select if employee is a 2% shareholder'),
+      ).not.toBeInTheDocument()
     })
   })
 
