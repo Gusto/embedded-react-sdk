@@ -410,6 +410,47 @@ export const MinimalWithComplexContent = () => {
   )
 }
 
+export const EmbeddedVariant = () => {
+  const { Table } = useComponentContext()
+
+  const headers: TableData[] = [
+    { key: 'name-header', content: 'Name' },
+    { key: 'email-header', content: 'Email' },
+    { key: 'role-header', content: 'Role' },
+  ]
+
+  const rows: TableRow[] = [
+    {
+      key: 'row-1',
+      data: [
+        { key: 'name-1', content: 'John Doe' },
+        { key: 'email-1', content: 'john@example.com' },
+        { key: 'role-1', content: 'Admin' },
+      ],
+    },
+    {
+      key: 'row-2',
+      data: [
+        { key: 'name-2', content: 'Jane Smith' },
+        { key: 'email-2', content: 'jane@example.com' },
+        { key: 'role-2', content: 'User' },
+      ],
+    },
+    {
+      key: 'row-3',
+      data: [
+        { key: 'name-3', content: 'Bob Johnson' },
+        { key: 'email-3', content: 'bob@example.com' },
+        { key: 'role-3', content: 'Editor' },
+      ],
+    },
+  ]
+
+  return (
+    <Table aria-label="Embedded table variant" headers={headers} rows={rows} variant="embedded" />
+  )
+}
+
 export const VariantComparison = () => {
   const { Table } = useComponentContext()
 
@@ -451,6 +492,17 @@ export const VariantComparison = () => {
           Minimal Variant
         </h3>
         <Table aria-label="Minimal table variant" headers={headers} rows={rows} variant="minimal" />
+      </div>
+      <div>
+        <h3 style={{ marginBottom: '16px', fontSize: '16px', fontWeight: 'bold' }}>
+          Embedded Variant
+        </h3>
+        <Table
+          aria-label="Embedded table variant"
+          headers={headers}
+          rows={rows}
+          variant="embedded"
+        />
       </div>
     </div>
   )
