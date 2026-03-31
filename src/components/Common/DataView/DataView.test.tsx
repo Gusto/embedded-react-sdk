@@ -159,9 +159,10 @@ describe('DataView Component', () => {
     )
 
     const checkboxes = screen.getAllByRole('checkbox')
-    expect(checkboxes).toHaveLength(2)
+    // +1 for the header select-all checkbox
+    expect(checkboxes).toHaveLength(testData.length + 1)
 
-    await userEvent.click(checkboxes[0] as Element)
+    await userEvent.click(checkboxes[1] as Element)
     expect(onSelectMock).toHaveBeenLastCalledWith(testData[0], true)
 
     rerender(
@@ -178,7 +179,7 @@ describe('DataView Component', () => {
       </ThemeProvider>,
     )
 
-    await userEvent.click(checkboxes[0] as Element)
+    await userEvent.click(checkboxes[1] as Element)
     expect(onSelectMock).toHaveBeenLastCalledWith(testData[0], false)
   })
 

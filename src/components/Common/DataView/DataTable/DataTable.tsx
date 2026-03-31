@@ -11,6 +11,8 @@ export type DataTableProps<T> = {
   data: useDataViewPropReturn<T>['data']
   itemMenu?: useDataViewPropReturn<T>['itemMenu']
   onSelect?: useDataViewPropReturn<T>['onSelect']
+  onSelectAll?: useDataViewPropReturn<T>['onSelectAll']
+  isItemSelected?: useDataViewPropReturn<T>['isItemSelected']
   emptyState?: useDataViewPropReturn<T>['emptyState']
   footer?: useDataViewPropReturn<T>['footer']
   variant?: TableProps['variant']
@@ -39,6 +41,8 @@ export const DataTable = <T,>({
   columns,
   itemMenu,
   onSelect,
+  onSelectAll,
+  isItemSelected,
   emptyState,
   footer,
   variant,
@@ -49,12 +53,26 @@ export const DataTable = <T,>({
   const radioGroupName = useId()
   const [selectedRadioIndex, setSelectedRadioIndex] = useState<number | null>(null)
 
+  const allSelected = data.length > 0 && data.every((item, i) => isItemSelected?.(item, i) ?? false)
+  const someSelected = data.some((item, i) => isItemSelected?.(item, i) ?? false)
+
   const headers: TableData[] = [
     ...(onSelect
       ? [
           {
             key: 'select-header',
-            content: <VisuallyHidden>{t('table.selectRowHeader')}</VisuallyHidden>,
+            content:
+              selectionMode === 'multiple' ? (
+                <Components.Checkbox
+                  value={allSelected}
+                  isIndeterminate={someSelected && !allSelected}
+                  onChange={(checked: boolean) => onSelectAll?.(checked)}
+                  label={t('table.selectAllRowsLabel')}
+                  shouldVisuallyHideLabel
+                />
+              ) : (
+                <VisuallyHidden>{t('table.selectRowHeader')}</VisuallyHidden>
+              ),
           },
         ]
       : []),
@@ -94,6 +112,7 @@ export const DataTable = <T,>({
 
     return (
       <Components.Checkbox
+        value={isItemSelected?.(item, rowIndex)}
         onChange={(checked: boolean) => {
           onSelect?.(item, checked)
         }}
