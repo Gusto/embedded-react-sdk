@@ -174,7 +174,9 @@ export const CancelDialog = () => {
       onCancelPayroll={fn().mockName('onCancelPayroll')}
       cancelDialogItem={dialogItem}
       onCancelDialogOpen={setDialogItem}
-      onCancelDialogClose={() => setDialogItem(null)}
+      onCancelDialogClose={() => {
+        setDialogItem(null)
+      }}
     />
   )
 }
