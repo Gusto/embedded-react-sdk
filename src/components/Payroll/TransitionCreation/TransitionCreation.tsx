@@ -9,6 +9,7 @@ import {
 } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
+import { usePaymentConfigsGet } from '@gusto/embedded-api/react-query/paymentConfigsGet'
 import { useOffCyclePayPeriodDateValidation } from '../OffCyclePayPeriodDateForm/useOffCyclePayPeriodDateValidation'
 import type { OffCycleTaxWithholdingConfig } from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
 import type { TransitionCreationProps, TransitionCreationFormData } from './TransitionCreationTypes'
@@ -44,7 +45,10 @@ function Root({
   const { t } = useTranslation('Payroll.TransitionCreation')
   const { onEvent, baseSubmitHandler } = useBase()
 
-  const { minCheckDate } = useOffCyclePayPeriodDateValidation()
+  const { data: paymentConfigs } = usePaymentConfigsGet({ companyUuid: companyId })
+  const paymentSpeed = paymentConfigs?.paymentConfigs?.paymentSpeed
+
+  const { minCheckDate, achLeadTimeBusinessDays } = useOffCyclePayPeriodDateValidation(paymentSpeed)
   const { mutateAsync: createTransitionPayroll, isPending } = usePayrollsCreateOffCycleMutation()
 
   const { data: paySchedulesData } = usePaySchedulesGetAllSuspense({ companyId })
@@ -78,8 +82,8 @@ function Root({
   const translateValidation = (key: string): string => t(key as any) as string
 
   const schema = useMemo(
-    () => createTransitionCreationSchema(translateValidation, minCheckDate),
-    [t, minCheckDate],
+    () => createTransitionCreationSchema(translateValidation, minCheckDate, achLeadTimeBusinessDays),
+    [t, minCheckDate, achLeadTimeBusinessDays],
   )
 
   const methods = useForm<TransitionCreationFormData>({

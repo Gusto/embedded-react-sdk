@@ -225,6 +225,8 @@ export function useContractorProfile({
   const formMethods = useForm<ContractorProfileFormData, unknown, ContractorProfileFormData>({
     resolver: zodResolver(validationSchema),
     defaultValues: formDefaultValues,
+    ...(existingContractor && { values: formDefaultValues }),
+    resetOptions: { keepDirtyValues: true },
   })
 
   const { handleSubmit, formState } = formMethods

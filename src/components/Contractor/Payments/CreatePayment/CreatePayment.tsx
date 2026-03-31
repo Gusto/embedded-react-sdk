@@ -371,6 +371,7 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
           payrollBlockers={payrollBlockers}
           onViewBlockers={onViewBlockers}
           isLoading={isCreatingContractorPaymentGroup || isPreviewingContractorPaymentGroup}
+          paymentSpeed={paymentSpeed}
         />
       )}
       <EditContractorPaymentPresentation

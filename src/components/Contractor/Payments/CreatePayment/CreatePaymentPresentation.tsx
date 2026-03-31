@@ -32,6 +32,7 @@ interface ContractorPaymentCreatePaymentPresentationProps {
   payrollBlockers?: ApiPayrollBlocker[]
   onViewBlockers?: () => void
   isLoading: boolean
+  paymentSpeed?: string
 }
 
 export const CreatePaymentPresentation = ({
@@ -46,6 +47,7 @@ export const CreatePaymentPresentation = ({
   payrollBlockers = [],
   onViewBlockers,
   isLoading,
+  paymentSpeed,
 }: ContractorPaymentCreatePaymentPresentationProps) => {
   const { Button, Text, Heading, TextInput, Alert } = useComponentContext()
   useI18n('Contractor.Payments.CreatePayment')
@@ -78,7 +80,11 @@ export const CreatePaymentPresentation = ({
       <Flex justifyContent="flex-end" gap={16}>
         <Flex flexDirection="column" gap={16}>
           <Heading as="h2">{t('title')}</Heading>
-          <Text variant="supporting">{t('paymentSpeedNotice')}</Text>
+          <Text variant="supporting">
+            {t('paymentSpeedNotice', {
+              count: paymentSpeed ? Number(paymentSpeed.split('-')[0]) : 2,
+            })}
+          </Text>
         </Flex>
         <FlexItem>
           <Button onClick={onSaveAndContinue} variant="primary" isLoading={isLoading}>

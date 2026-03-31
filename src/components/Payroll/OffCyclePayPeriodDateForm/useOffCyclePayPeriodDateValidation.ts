@@ -1,9 +1,17 @@
 import { useMemo } from 'react'
 import { addBusinessDays } from '@/helpers/dateFormatting'
 
-export const ACH_LEAD_TIME_BUSINESS_DAYS = 2
+export const DEFAULT_ACH_LEAD_TIME_BUSINESS_DAYS = 2
 
-export function useOffCyclePayPeriodDateValidation() {
+function parsePaymentSpeedDays(paymentSpeed?: string): number {
+  if (!paymentSpeed) return DEFAULT_ACH_LEAD_TIME_BUSINESS_DAYS
+  const parsed = Number(paymentSpeed.split('-')[0])
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : DEFAULT_ACH_LEAD_TIME_BUSINESS_DAYS
+}
+
+export function useOffCyclePayPeriodDateValidation(paymentSpeed?: string) {
+  const achLeadTimeBusinessDays = parsePaymentSpeedDays(paymentSpeed)
+
   const today = useMemo(() => {
     const now = new Date()
     now.setHours(0, 0, 0, 0)
@@ -11,12 +19,12 @@ export function useOffCyclePayPeriodDateValidation() {
   }, [])
 
   const minCheckDate = useMemo(() => {
-    return addBusinessDays(today, ACH_LEAD_TIME_BUSINESS_DAYS)
-  }, [today])
+    return addBusinessDays(today, achLeadTimeBusinessDays)
+  }, [today, achLeadTimeBusinessDays])
 
   return {
     today,
     minCheckDate,
-    achLeadTimeBusinessDays: ACH_LEAD_TIME_BUSINESS_DAYS,
+    achLeadTimeBusinessDays,
   }
 }
