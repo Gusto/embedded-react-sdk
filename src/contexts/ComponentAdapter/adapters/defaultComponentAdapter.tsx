@@ -34,7 +34,6 @@ import type { AlertProps } from '@/components/Common/UI/Alert/AlertTypes'
 import { Alert } from '@/components/Common/UI/Alert/Alert'
 import type { CardProps } from '@/components/Common/UI/Card/CardTypes'
 import { Card } from '@/components/Common/UI/Card/Card'
-import type { BoxProps } from '@/components/Common/UI/Box/BoxTypes'
 import { Box } from '@/components/Common/UI/Box/Box'
 import { Badge } from '@/components/Common/UI/Badge/Badge'
 import type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
@@ -78,7 +77,7 @@ export const defaultComponents: ComponentsContextType = {
   Button: (props: ButtonProps) => <Button {...props} />,
   ButtonIcon: (props: ButtonIconProps) => <ButtonIcon {...props} />,
   Card: (props: CardProps) => <Card {...props} />,
-  Box: (props: BoxProps) => <Box {...props} />,
+  Box: Box,
   TextInput: (props: TextInputProps) => <TextInput {...props} />,
   TextArea: (props: TextAreaProps) => <TextArea {...props} />,
   Checkbox: (props: CheckboxProps) => <Checkbox {...props} />,

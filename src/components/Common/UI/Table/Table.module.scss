@@ -229,4 +229,35 @@
       }
     }
   }
+
+  &[data-variant='embedded'] {
+    :global(.react-aria-Table) {
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
+      background: transparent;
+
+      :global(.react-aria-TableHeader) {
+        th {
+          &:first-child {
+            border-top-left-radius: 0;
+          }
+
+          &:last-child {
+            border-top-right-radius: 0;
+          }
+        }
+      }
+
+      :global(.react-aria-Row[data-footer='true'] .react-aria-Cell) {
+        &:first-child {
+          border-bottom-left-radius: 0;
+        }
+
+        &:last-child {
+          border-bottom-right-radius: 0;
+        }
+      }
+    }
+  }
 }

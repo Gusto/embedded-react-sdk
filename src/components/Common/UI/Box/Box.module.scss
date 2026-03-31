@@ -1,4 +1,4 @@
-.boxContainer {
+.root {
   width: 100%;
   background-color: var(--g-colorBody);
   box-shadow: var(--g-shadowResting);
@@ -6,11 +6,20 @@
   border: 1px solid var(--g-colorBorderSecondary);
 }
 
-.boxBody {
+.header {
+  padding: toRem(20);
+  border-bottom: 1px solid var(--g-colorBorderSecondary);
+}
+
+.content {
   padding: toRem(20);
 }
 
-.boxFooter {
+.contentFlush {
+  padding: 0;
+}
+
+.footer {
   padding: toRem(20);
   border-top: 1px solid var(--g-colorBorderSecondary);
 }

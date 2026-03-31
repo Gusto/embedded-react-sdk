@@ -4,26 +4,84 @@ import { Box } from './Box'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 describe('Box Component', () => {
-  test('renders children correctly', () => {
-    renderWithProviders(<Box>Test Content</Box>)
+  test('renders content correctly', () => {
+    renderWithProviders(
+      <Box>
+        <Box.Content>Test Content</Box.Content>
+      </Box>,
+    )
 
     expect(screen.getByText('Test Content')).toBeInTheDocument()
   })
 
+  test('renders header when provided', () => {
+    renderWithProviders(
+      <Box>
+        <Box.Header>Header Text</Box.Header>
+        <Box.Content>Content</Box.Content>
+      </Box>,
+    )
+
+    expect(screen.getByText('Header Text')).toBeInTheDocument()
+    expect(screen.getByText('Content')).toBeInTheDocument()
+  })
+
   test('renders footer when provided', () => {
-    renderWithProviders(<Box footer={<button>Save</button>}>Content</Box>)
+    renderWithProviders(
+      <Box>
+        <Box.Content>Content</Box.Content>
+        <Box.Footer>
+          <button>Save</button>
+        </Box.Footer>
+      </Box>,
+    )
 
     expect(screen.getByText('Save')).toBeInTheDocument()
   })
 
-  test('does not render footer when omitted', () => {
-    renderWithProviders(<Box>Content</Box>)
+  test('renders all sections together', () => {
+    renderWithProviders(
+      <Box>
+        <Box.Header>Header</Box.Header>
+        <Box.Content>Content</Box.Content>
+        <Box.Footer>Footer</Box.Footer>
+      </Box>,
+    )
 
-    expect(screen.queryByRole('button')).not.toBeInTheDocument()
+    expect(screen.getByText('Header')).toBeInTheDocument()
+    expect(screen.getByText('Content')).toBeInTheDocument()
+    expect(screen.getByText('Footer')).toBeInTheDocument()
+  })
+
+  test('renders flush content variant', () => {
+    renderWithProviders(
+      <Box>
+        <Box.Content variant="flush">Flush Content</Box.Content>
+      </Box>,
+    )
+
+    expect(screen.getByText('Flush Content')).toBeInTheDocument()
+  })
+
+  test('renders default and flush content with different classes', () => {
+    renderWithProviders(
+      <Box>
+        <Box.Content>Default Content</Box.Content>
+        <Box.Content variant="flush">Flush Content</Box.Content>
+      </Box>,
+    )
+
+    const defaultWrapper = screen.getByText('Default Content').closest('div')!
+    const flushWrapper = screen.getByText('Flush Content').closest('div')!
+    expect(defaultWrapper.className).not.toBe(flushWrapper.className)
   })
 
   test('applies custom className', () => {
-    renderWithProviders(<Box className="custom-style">Test Content</Box>)
+    renderWithProviders(
+      <Box className="custom-style">
+        <Box.Content>Test Content</Box.Content>
+      </Box>,
+    )
 
     expect(screen.getByTestId('data-box')).toHaveClass('custom-style')
   })
@@ -31,38 +89,53 @@ describe('Box Component', () => {
   describe('Accessibility', () => {
     const testCases = [
       {
-        name: 'basic box',
-        props: { children: 'Basic box content' },
+        name: 'box with content',
+        element: (
+          <Box>
+            <Box.Content>Basic box content</Box.Content>
+          </Box>
+        ),
       },
       {
         name: 'box with custom className',
-        props: { className: 'custom-style', children: 'Styled box' },
+        element: (
+          <Box className="custom-style">
+            <Box.Content>Styled box</Box.Content>
+          </Box>
+        ),
       },
       {
         name: 'box with complex content',
-        props: {
-          children: (
-            <div>
+        element: (
+          <Box>
+            <Box.Header>
               <h3>Box Title</h3>
+            </Box.Header>
+            <Box.Content>
               <p>Box description with multiple elements.</p>
               <button>Action Button</button>
-            </div>
-          ),
-        },
+            </Box.Content>
+          </Box>
+        ),
       },
       {
-        name: 'box with footer',
-        props: {
-          children: 'Main content',
-          footer: <button>Save</button>,
-        },
+        name: 'box with all sections',
+        element: (
+          <Box>
+            <Box.Header>Header</Box.Header>
+            <Box.Content>Main content</Box.Content>
+            <Box.Footer>
+              <button>Save</button>
+            </Box.Footer>
+          </Box>
+        ),
       },
     ]
 
     it.each(testCases)(
       'should not have any accessibility violations - $name',
-      async ({ props }) => {
-        const { container } = renderWithProviders(<Box {...props} />)
+      async ({ element }) => {
+        const { container } = renderWithProviders(element)
         await expectNoAxeViolations(container)
       },
     )

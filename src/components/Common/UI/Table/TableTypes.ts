@@ -45,7 +45,7 @@ export interface TableProps extends Pick<
   /**
    * Visual style variant of the table
    */
-  variant?: 'default' | 'minimal'
+  variant?: 'default' | 'minimal' | 'embedded'
   /**
    * Whether the first column contains checkboxes (affects which column gets leading variant)
    */

@@ -50,8 +50,28 @@ const Root = ({ employeeId, companyId, className }: SummaryProps) => {
 
   return (
     <section className={className}>
-      <Components.Box
-        footer={
+      <Components.Box>
+        <Components.Box.Content>
+          <Flex alignItems="center" flexDirection="column" gap={32}>
+            <Flex flexDirection="column" gap={4}>
+              <Components.Heading as="h2">
+                {t('landingSubtitle', {
+                  firstName: sanitizedFirstName,
+                  companyName: sanitizedCompanyName,
+                  interpolation: { escapeValue: false },
+                })}
+              </Components.Heading>
+              <Components.Text variant="supporting">{t('landingDescription')}</Components.Text>
+            </Flex>
+            <Flex flexDirection="column" gap={8}>
+              <Components.Heading as="h3">{t('stepsSubtitle')}</Components.Heading>
+              <Components.UnorderedList
+                items={[t('steps.personalInfo'), t('steps.taxInfo'), t('steps.bankInfo')]}
+              />
+            </Flex>
+          </Flex>
+        </Components.Box.Content>
+        <Components.Box.Footer>
           <ActionsLayout>
             <Components.Button
               variant="secondary"
@@ -63,26 +83,7 @@ const Root = ({ employeeId, companyId, className }: SummaryProps) => {
               <ArrowRightIcon aria-hidden />
             </Components.Button>
           </ActionsLayout>
-        }
-      >
-        <Flex alignItems="center" flexDirection="column" gap={32}>
-          <Flex flexDirection="column" gap={4}>
-            <Components.Heading as="h2">
-              {t('landingSubtitle', {
-                firstName: sanitizedFirstName,
-                companyName: sanitizedCompanyName,
-                interpolation: { escapeValue: false },
-              })}
-            </Components.Heading>
-            <Components.Text variant="supporting">{t('landingDescription')}</Components.Text>
-          </Flex>
-          <Flex flexDirection="column" gap={8}>
-            <Components.Heading as="h3">{t('stepsSubtitle')}</Components.Heading>
-            <Components.UnorderedList
-              items={[t('steps.personalInfo'), t('steps.taxInfo'), t('steps.bankInfo')]}
-            />
-          </Flex>
-        </Flex>
+        </Components.Box.Footer>
       </Components.Box>
     </section>
   )
