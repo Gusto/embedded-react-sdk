@@ -82,7 +82,8 @@ function Root({
   const translateValidation = (key: string): string => t(key as any) as string
 
   const schema = useMemo(
-    () => createTransitionCreationSchema(translateValidation, minCheckDate, achLeadTimeBusinessDays),
+    () =>
+      createTransitionCreationSchema(translateValidation, minCheckDate, achLeadTimeBusinessDays),
     [t, minCheckDate, achLeadTimeBusinessDays],
   )
 

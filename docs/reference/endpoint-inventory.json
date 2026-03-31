@@ -854,10 +854,15 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/employees"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/payment_configs"
         }
       ],
       "variables": [
-        "companyId"
+        "companyId",
+        "companyUuid"
       ]
     },
     "Payroll.PayrollBlocker": {
@@ -1098,10 +1103,15 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/pay_schedules"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/payment_configs"
         }
       ],
       "variables": [
-        "companyId"
+        "companyId",
+        "companyUuid"
       ]
     },
     "Payroll.TransitionPayrollAlert": {

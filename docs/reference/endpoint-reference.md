@@ -177,6 +177,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 | **Payroll.OffCycleFlow** | GET | `/v1/companies/:companyId/payrolls/:payrollId` |
 | **Payroll.OffCycleCreation** | POST | `/v1/companies/:companyId/payrolls` |
 |  | GET | `/v1/companies/:companyId/employees` |
+|  | GET | `/v1/companies/:companyUuid/payment_configs` |
 | **Payroll.PayrollBlocker** | GET | `/v1/companies/:companyUuid/payrolls/blockers` |
 |  | GET | `/v1/companies/:companyUuid/recovery_cases` |
 |  | GET | `/v1/companies/:companyUuid/information_requests` |
@@ -215,6 +216,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 | **Payroll.TransitionFlow** | GET | `/v1/companies/:companyId/payrolls/:payrollId` |
 | **Payroll.TransitionCreation** | POST | `/v1/companies/:companyId/payrolls` |
 |  | GET | `/v1/companies/:companyId/pay_schedules` |
+|  | GET | `/v1/companies/:companyUuid/payment_configs` |
 | **Payroll.TransitionPayrollAlert** | GET | `/v1/companies/:companyId/pay_periods` |
 |  | GET | `/v1/companies/:companyId/pay_schedules` |
 |  | POST | `/v1/companies/:companyUuid/payrolls/skip` |
