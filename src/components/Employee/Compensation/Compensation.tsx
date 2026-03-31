@@ -92,7 +92,7 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
   }
 
   const { data } = useFederalTaxDetailsGetSuspense({ companyId: employee.companyUuid! })
-  const showTwoPercentStakeholder = data.federalTaxDetails!.taxPayerType === 'S-Corporation'
+  const showTwoPercentStakeholder = data.federalTaxDetails!.taxableAsScorp === true
 
   const updateCompensationMutation = useJobsAndCompensationsUpdateCompensationMutation()
   const createEmployeeJobMutation = useJobsAndCompensationsCreateJobMutation()
