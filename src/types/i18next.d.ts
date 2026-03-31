@@ -3190,6 +3190,7 @@ export interface common{
 "table":{
 "selectRowHeader":string;
 "selectRowLabel":string;
+"selectAllRowsLabel":string;
 "actionsColumnHeader":string;
 };
 "card":{

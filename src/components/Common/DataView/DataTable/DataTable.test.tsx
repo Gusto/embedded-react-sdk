@@ -77,13 +77,14 @@ describe('DataTable Component', () => {
     })
 
     const checkboxes = screen.getAllByRole('checkbox')
-    expect(checkboxes).toHaveLength(testData.length)
+    // +1 for the header select-all checkbox
+    expect(checkboxes).toHaveLength(testData.length + 1)
 
-    const firstCheckbox = checkboxes.at(0)
-    expect(firstCheckbox).toBeDefined()
+    const firstRowCheckbox = checkboxes.at(1)
+    expect(firstRowCheckbox).toBeDefined()
 
-    if (firstCheckbox) {
-      await userEvent.click(firstCheckbox)
+    if (firstRowCheckbox) {
+      await userEvent.click(firstRowCheckbox)
       expect(onSelectMock).toHaveBeenCalledWith(testData[0], true)
     }
   })
@@ -135,8 +136,115 @@ describe('DataTable Component', () => {
       label: 'Test Table',
     })
 
-    expect(screen.getAllByRole('checkbox')).toHaveLength(testData.length)
+    // +1 for the header select-all checkbox
+    expect(screen.getAllByRole('checkbox')).toHaveLength(testData.length + 1)
     expect(screen.queryByRole('radio')).not.toBeInTheDocument()
+  })
+
+  describe('select-all header checkbox', () => {
+    test('renders a header checkbox when selectionMode is multiple and onSelect is set', () => {
+      renderTable<MockData>({
+        data: testData,
+        columns: testColumns,
+        onSelect: vi.fn(),
+        selectionMode: 'multiple',
+        label: 'Test Table',
+      })
+
+      const checkboxes = screen.getAllByRole('checkbox')
+      // First checkbox is the header select-all
+      expect(checkboxes).toHaveLength(testData.length + 1)
+      expect(checkboxes[0]).toHaveAccessibleName('table.selectAllRowsLabel')
+    })
+
+    test('header checkbox is checked when all rows are selected via isItemSelected', () => {
+      renderTable<MockData>({
+        data: testData,
+        columns: testColumns,
+        onSelect: vi.fn(),
+        isItemSelected: () => true,
+        selectionMode: 'multiple',
+        label: 'Test Table',
+      })
+
+      const headerCheckbox = screen.getAllByRole('checkbox')[0]
+      expect(headerCheckbox).toBeChecked()
+    })
+
+    test('header checkbox is unchecked when no rows are selected', () => {
+      renderTable<MockData>({
+        data: testData,
+        columns: testColumns,
+        onSelect: vi.fn(),
+        isItemSelected: () => false,
+        selectionMode: 'multiple',
+        label: 'Test Table',
+      })
+
+      const headerCheckbox = screen.getAllByRole('checkbox')[0]
+      expect(headerCheckbox).not.toBeChecked()
+    })
+
+    test('header checkbox is indeterminate when some but not all rows are selected', () => {
+      renderTable<MockData>({
+        data: testData,
+        columns: testColumns,
+        onSelect: vi.fn(),
+        isItemSelected: (_item, index) => index === 0,
+        selectionMode: 'multiple',
+        label: 'Test Table',
+      })
+
+      const headerCheckbox = screen.getAllByRole('checkbox')[0] as HTMLInputElement
+      expect(headerCheckbox.indeterminate).toBe(true)
+    })
+
+    test('clicking the header checkbox fires onSelectAll with checked=true when not all selected', async () => {
+      const onSelectAllMock = vi.fn()
+      renderTable<MockData>({
+        data: testData,
+        columns: testColumns,
+        onSelect: vi.fn(),
+        onSelectAll: onSelectAllMock,
+        isItemSelected: () => false,
+        selectionMode: 'multiple',
+        label: 'Test Table',
+      })
+
+      const headerCheckbox = screen.getAllByRole('checkbox')[0] as Element
+      await userEvent.click(headerCheckbox)
+      expect(onSelectAllMock).toHaveBeenCalledWith(true)
+    })
+
+    test('clicking the header checkbox fires onSelectAll with checked=false when all selected', async () => {
+      const onSelectAllMock = vi.fn()
+      renderTable<MockData>({
+        data: testData,
+        columns: testColumns,
+        onSelect: vi.fn(),
+        onSelectAll: onSelectAllMock,
+        isItemSelected: () => true,
+        selectionMode: 'multiple',
+        label: 'Test Table',
+      })
+
+      const headerCheckbox = screen.getAllByRole('checkbox')[0] as Element
+      await userEvent.click(headerCheckbox)
+      expect(onSelectAllMock).toHaveBeenCalledWith(false)
+    })
+
+    test('does not render a header checkbox for single selectionMode', () => {
+      renderTable<MockData>({
+        data: testData,
+        columns: testColumns,
+        onSelect: vi.fn(),
+        selectionMode: 'single',
+        label: 'Test Table',
+      })
+
+      expect(screen.queryByRole('checkbox')).not.toBeInTheDocument()
+      expect(screen.getAllByRole('radio')).toHaveLength(testData.length)
+    })
   })
 
   test('should render itemMenu when provided', () => {

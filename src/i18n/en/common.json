@@ -143,6 +143,7 @@
   "table": {
     "selectRowHeader": "Select row",
     "selectRowLabel": "Select row",
+    "selectAllRowsLabel": "Select all rows",
     "actionsColumnHeader": "Actions"
   },
   "card": {

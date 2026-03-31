@@ -15,6 +15,7 @@ export type DataViewProps<T> = {
   label: string
   itemMenu?: useDataViewPropReturn<T>['itemMenu']
   onSelect?: useDataViewPropReturn<T>['onSelect']
+  onSelectAll?: useDataViewPropReturn<T>['onSelectAll']
   isItemSelected?: useDataViewPropReturn<T>['isItemSelected']
   breakAt?: string
   breakpoints?: useContainerBreakpointsProps['breakpoints']

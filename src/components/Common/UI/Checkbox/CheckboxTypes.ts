@@ -10,6 +10,10 @@ export interface CheckboxProps
    */
   value?: boolean
   /**
+   * Renders the checkbox in an indeterminate state, used when some but not all items in a group are selected
+   */
+  isIndeterminate?: boolean
+  /**
    * Callback when checkbox state changes
    */
   onChange?: (value: boolean) => void

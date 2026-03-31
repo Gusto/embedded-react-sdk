@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { fn } from 'storybook/test'
 import { DataView } from '@/components/Common/DataView/DataView'
 import { useDataView } from '@/components/Common/DataView/useDataView'
@@ -153,6 +154,48 @@ export const DataViewSelectableCheckbox = () => {
   })
 
   return <DataView label="Data View Selectable (Checkbox - Multi-select)" {...dataProps} />
+}
+
+export const DataViewSelectableCheckboxControlled = () => {
+  const [selectedIndices, setSelectedIndices] = useState(new Set())
+
+  const { ...dataProps } = useDataView({
+    data: compensationData,
+    columns: [
+      { key: 'jobTitle', title: 'Job Title' },
+      { key: 'payType', title: 'Pay Type' },
+      { key: 'amount', title: 'Amount' },
+      { key: 'payTimePeriod', title: 'Pay Time Period' },
+    ],
+    selectionMode: 'multiple',
+    isItemSelected: (_item, index) => selectedIndices.has(index),
+    onSelect: (item, checked) => {
+      const index = compensationData.indexOf(item)
+      setSelectedIndices(prev => {
+        const next = new Set(prev)
+        if (checked) {
+          next.add(index)
+        } else {
+          next.delete(index)
+        }
+        return next
+      })
+    },
+    onSelectAll: checked => {
+      if (checked) {
+        setSelectedIndices(new Set(compensationData.map((_, i) => i)))
+      } else {
+        setSelectedIndices(new Set())
+      }
+    },
+  })
+
+  return (
+    <DataView
+      label="Data View Selectable (Controlled Multi-select with Select All)"
+      {...dataProps}
+    />
+  )
 }
 
 export const DataViewSelectableRadio = () => {
