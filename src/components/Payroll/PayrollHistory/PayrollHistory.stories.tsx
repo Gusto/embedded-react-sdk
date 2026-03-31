@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { fn } from 'storybook/test'
 import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
 import type { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest'
@@ -153,12 +154,14 @@ export const AllStatusesShowcase = () => {
   )
 }
 
+const cancelPayroll = createMockPayroll('cancel-dialog', {
+  processed: false,
+  payrollDeadline: new Date('2024-12-20T23:30:00Z'),
+  payPeriod: { startDate: '2024-12-01', endDate: '2024-12-15', payScheduleUuid: 'schedule-1' },
+})
+
 export const CancelDialog = () => {
-  const cancelPayroll = createMockPayroll('cancel-dialog', {
-    processed: false,
-    payrollDeadline: new Date('2024-12-20T23:30:00Z'),
-    payPeriod: { startDate: '2024-12-01', endDate: '2024-12-15', payScheduleUuid: 'schedule-1' },
-  })
+  const [dialogItem, setDialogItem] = useState<Payroll | null>(cancelPayroll)
 
   return (
     <PayrollHistoryPresentation
@@ -169,9 +172,9 @@ export const CancelDialog = () => {
       onViewSummary={fn().mockName('onViewSummary')}
       onViewReceipt={fn().mockName('onViewReceipt')}
       onCancelPayroll={fn().mockName('onCancelPayroll')}
-      cancelDialogItem={cancelPayroll}
-      onCancelDialogOpen={fn().mockName('onCancelDialogOpen')}
-      onCancelDialogClose={fn().mockName('onCancelDialogClose')}
+      cancelDialogItem={dialogItem}
+      onCancelDialogOpen={setDialogItem}
+      onCancelDialogClose={() => setDialogItem(null)}
     />
   )
 }
