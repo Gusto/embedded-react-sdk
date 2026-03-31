@@ -249,7 +249,7 @@
     forced-color-adjust: none;
 
     &[data-outside-month] {
-      display: none;
+      opacity: 0.4;
     }
 
     &[data-hovered] {
