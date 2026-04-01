@@ -10,6 +10,7 @@ import { TransitionFlow } from '@/components/Payroll/Transition/TransitionFlow'
 import { PaymentFlow } from '@/components/Contractor/Payments/PaymentFlow/PaymentFlow'
 import { TerminationFlow } from '@/components/Employee/Terminations/TerminationFlow/TerminationFlow'
 import { DismissalFlow } from '@/components/Payroll/Dismissal'
+import { TimeOffFlow } from '@/components/UNSTABLE_TimeOff/TimeOffFlow/TimeOffFlow'
 import '@/styles/sdk.scss'
 
 const DEFAULT_API_BASE_URL = 'https://api.gusto.com'
@@ -24,6 +25,7 @@ type FlowType =
   | 'contractor-payment'
   | 'termination'
   | 'dismissal'
+  | 'time-off'
 
 interface E2EConfig {
   flow: FlowType
@@ -91,14 +93,61 @@ function FlowRenderer({ config }: { config: E2EConfig }) {
       return <TerminationFlow companyId={companyId} employeeId={employeeId} onEvent={handleEvent} />
     case 'dismissal':
       return <DismissalFlow companyId={companyId} employeeId={employeeId} onEvent={handleEvent} />
+    case 'time-off':
+      return <TimeOffFlow companyId={companyId} onEvent={handleEvent} />
     default:
       return <div>Unknown flow: {flow}</div>
   }
 }
 
+const FLOW_OPTIONS: { value: FlowType; label: string }[] = [
+  { value: 'employee-onboarding', label: 'Employee Onboarding' },
+  { value: 'employee-self-onboarding', label: 'Employee Self-Onboarding' },
+  { value: 'company-onboarding', label: 'Company Onboarding' },
+  { value: 'contractor-onboarding', label: 'Contractor Onboarding' },
+  { value: 'payroll', label: 'Payroll' },
+  { value: 'transition', label: 'Transition' },
+  { value: 'contractor-payment', label: 'Contractor Payment' },
+  { value: 'termination', label: 'Termination' },
+  { value: 'dismissal', label: 'Dismissal' },
+  { value: 'time-off', label: 'Time Off Management' },
+]
+
+function FlowSelector({ currentFlow }: { currentFlow: FlowType }) {
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const params = new URLSearchParams(window.location.search)
+    params.set('flow', e.target.value)
+    window.location.search = params.toString()
+  }
+
+  return (
+    <div
+      style={{ padding: '8px 0', borderBottom: '1px solid #e5e7eb', marginBottom: 16 }}
+      aria-hidden="true"
+    >
+      <label htmlFor="flow-selector" style={{ marginRight: 8, fontSize: 14 }}>
+        Flow:
+      </label>
+      <select
+        id="flow-selector"
+        value={currentFlow}
+        onChange={handleChange}
+        style={{ fontSize: 14 }}
+      >
+        {FLOW_OPTIONS.map(opt => (
+          <option key={opt.value} value={opt.value}>
+            {opt.label}
+          </option>
+        ))}
+      </select>
+    </div>
+  )
+}
+
 function App({ config }: { config: E2EConfig }) {
   return (
     <StrictMode>
+      <FlowSelector currentFlow={config.flow} />
       <GustoProvider config={{ baseUrl: config.baseUrl }}>
         <FlowRenderer config={config} />
       </GustoProvider>
