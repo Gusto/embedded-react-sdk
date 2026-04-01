@@ -4,7 +4,7 @@ export interface BoxProps {
   children: ReactNode
   header?: ReactNode
   footer?: ReactNode
-  flush?: boolean
+  withPadding?: boolean
   className?: string
 }
 

@@ -136,10 +136,10 @@ export const PlainComponentAdapter: ComponentsContextType = {
     )
   },
 
-  Box: ({ children, header, footer, flush, className }: BoxProps) => (
+  Box: ({ children, header, footer, withPadding = true, className }: BoxProps) => (
     <div className={`box ${className || ''}`}>
       {header && <div className="box-header">{header}</div>}
-      <div className="box-body" style={flush ? { padding: 0 } : undefined}>
+      <div className="box-body" style={withPadding ? undefined : { padding: 0 }}>
         {children}
       </div>
       {footer && <div className="box-footer">{footer}</div>}
