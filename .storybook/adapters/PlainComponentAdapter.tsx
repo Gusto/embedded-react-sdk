@@ -3,7 +3,7 @@ import type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputT
 import type { TextAreaProps } from '@/components/Common/UI/TextArea/TextAreaTypes'
 import type { NumberInputProps } from '@/components/Common/UI/NumberInput/NumberInputTypes'
 import type { CardProps } from '@/components/Common/UI/Card/CardTypes'
-import type { BoxProps, BoxSectionProps } from '@/components/Common/UI/Box/BoxTypes'
+import type { BoxProps } from '@/components/Common/UI/Box/BoxTypes'
 import type { CheckboxGroupProps } from '@/components/Common/UI/CheckboxGroup/CheckboxGroupTypes'
 import type { ComboBoxProps } from '@/components/Common/UI/ComboBox/ComboBoxTypes'
 import type { MultiSelectComboBoxProps } from '@/components/Common/UI/MultiSelectComboBox/MultiSelectComboBoxTypes'
@@ -136,26 +136,14 @@ export const PlainComponentAdapter: ComponentsContextType = {
     )
   },
 
-  Box: Object.assign(
-    ({ children, className }: BoxProps) => (
-      <div className={`box ${className || ''}`}>{children}</div>
-    ),
-    {
-      Header: ({ children, className }: BoxSectionProps) => (
-        <div className={`box-header ${className || ''}`}>{children}</div>
-      ),
-      Content: ({ children, className, variant = 'default' }: BoxSectionProps) => (
-        <div
-          className={`box-body ${className || ''}`}
-          style={variant === 'flush' ? { padding: 0 } : undefined}
-        >
-          {children}
-        </div>
-      ),
-      Footer: ({ children, className }: BoxSectionProps) => (
-        <div className={`box-footer ${className || ''}`}>{children}</div>
-      ),
-    },
+  Box: ({ children, header, footer, contentVariant = 'default', className }: BoxProps) => (
+    <div className={`box ${className || ''}`}>
+      {header && <div className="box-header">{header}</div>}
+      <div className="box-body" style={contentVariant === 'flush' ? { padding: 0 } : undefined}>
+        {children}
+      </div>
+      {footer && <div className="box-footer">{footer}</div>}
+    </div>
   ),
 
   TextInput: ({

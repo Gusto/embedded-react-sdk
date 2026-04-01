@@ -17,36 +17,35 @@ export const MissingRequirements = () => {
   const isInitialSetup = !onboardingSteps?.some(step => step.required && step.completed)
 
   return (
-    <Components.Box>
-      <Components.Box.Content>
-        <Flex flexDirection="column" alignItems="flex-start" gap={32}>
-          <Flex flexDirection="column" gap={4}>
-            <Components.Heading as="h2">
-              {t(isInitialSetup ? 'initialSetupTitle' : 'missingRequirementsTitle')}
-            </Components.Heading>
-            <Components.Text variant="supporting">
-              {t(isInitialSetup ? 'initialSetupDescription' : 'missingRequirementsDescription')}
-            </Components.Text>
-          </Flex>
-          {onboardingSteps && (
-            <RequirementsList
-              requirements={onboardingSteps.map(step => ({
-                completed: step.completed!,
-                title: t(`stepTitles.${step.id!}`),
-                description: t(`stepDescriptions.${step.id!}`),
-              }))}
-            />
-          )}
-        </Flex>
-      </Components.Box.Content>
-      <Components.Box.Footer>
+    <Components.Box
+      footer={
         <ActionsLayout>
           <Components.Button variant="secondary" onClick={handleContinue}>
             {t(isInitialSetup ? 'initialSetupCta' : 'missingRequirementsCta')}
             <ArrowRightIcon aria-hidden />
           </Components.Button>
         </ActionsLayout>
-      </Components.Box.Footer>
+      }
+    >
+      <Flex flexDirection="column" alignItems="flex-start" gap={32}>
+        <Flex flexDirection="column" gap={4}>
+          <Components.Heading as="h2">
+            {t(isInitialSetup ? 'initialSetupTitle' : 'missingRequirementsTitle')}
+          </Components.Heading>
+          <Components.Text variant="supporting">
+            {t(isInitialSetup ? 'initialSetupDescription' : 'missingRequirementsDescription')}
+          </Components.Text>
+        </Flex>
+        {onboardingSteps && (
+          <RequirementsList
+            requirements={onboardingSteps.map(step => ({
+              completed: step.completed!,
+              title: t(`stepTitles.${step.id!}`),
+              description: t(`stepDescriptions.${step.id!}`),
+            }))}
+          />
+        )}
+      </Flex>
     </Components.Box>
   )
 }

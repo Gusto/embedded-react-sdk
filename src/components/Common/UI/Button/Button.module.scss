@@ -3,9 +3,10 @@
     position: relative;
     border: none;
     display: inline-flex;
+    flex-shrink: 0;
     align-items: center;
     justify-content: center;
-    gap: toRem(4);
+    gap: toRem(8);
     color: var(--g-colorPrimaryContent);
     background: var(--g-colorPrimary);
     border-radius: var(--g-buttonRadius);
