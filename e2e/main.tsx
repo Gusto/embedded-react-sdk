@@ -122,8 +122,8 @@ function FlowSelector({ currentFlow }: { currentFlow: FlowType }) {
 
   return (
     <div
-      style={{ padding: '8px 0', borderBottom: '1px solid #e5e7eb', marginBottom: 16 }}
       aria-hidden="true"
+      style={{ padding: '8px 0', borderBottom: '1px solid #e5e7eb', marginBottom: 16 }}
     >
       <label htmlFor="flow-selector" style={{ marginRight: 8, fontSize: 14 }}>
         Flow:
