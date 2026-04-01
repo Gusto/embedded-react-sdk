@@ -13,6 +13,14 @@
     "cancelCta": "No, go back"
   },
   "skipSuccessAlert": "Payroll skipped",
+  "deletePayrollCta": "Cancel payroll",
+  "deletePayrollDialog": {
+    "title": "Cancel {{payPeriod}} payroll?",
+    "body": "This will permanently remove this off-cycle payroll. Any changes you've made will be lost.",
+    "confirmCta": "Yes, cancel payroll",
+    "cancelCta": "No, go back"
+  },
+  "deleteSuccessAlert": "Payroll cancelled",
   "type": {
     "External": "External",
     "Off-Cycle": "Off-Cycle",

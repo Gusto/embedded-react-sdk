@@ -994,6 +994,10 @@
           "path": "/v1/companies/:companyUuid/payrolls/skip"
         },
         {
+          "method": "DELETE",
+          "path": "/v1/companies/:companyId/payrolls/:payrollId"
+        },
+        {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/payrolls/blockers"
         },
@@ -1004,7 +1008,8 @@
       ],
       "variables": [
         "companyId",
-        "companyUuid"
+        "companyUuid",
+        "payrollId"
       ]
     },
     "Payroll.PayrollOverview": {

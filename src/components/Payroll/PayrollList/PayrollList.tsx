@@ -1,7 +1,12 @@
 import { useState } from 'react'
-import { usePayrollsListSuspense } from '@gusto/embedded-api/react-query/payrollsList'
+import { useQueryClient } from '@tanstack/react-query'
+import {
+  usePayrollsListSuspense,
+  invalidateAllPayrollsList,
+} from '@gusto/embedded-api/react-query/payrollsList'
 import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
 import { usePayrollsSkipMutation } from '@gusto/embedded-api/react-query/payrollsSkip'
+import { usePayrollsDeleteMutation } from '@gusto/embedded-api/react-query/payrollsDelete'
 import { usePayrollsGetBlockersSuspense } from '@gusto/embedded-api/react-query/payrollsGetBlockers'
 import { useWireInRequestsListSuspense } from '@gusto/embedded-api/react-query/wireInRequestsList'
 import { PayrollType } from '@gusto/embedded-api/models/operations/postcompaniespayrollskipcompanyuuid'
@@ -39,9 +44,12 @@ const getFutureEndDate = (): string => {
 
 const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
   const { baseSubmitHandler } = useBase()
+  const queryClient = useQueryClient()
   const [showSkipSuccessAlert, setShowSkipSuccessAlert] = useState(false)
   const [skippingPayrollId, setSkippingPayrollId] = useState<string | null>(null)
   const { currentPage, itemsPerPage, getPaginationProps } = usePagination()
+  const [showDeleteSuccessAlert, setShowDeleteSuccessAlert] = useState(false)
+  const [deletingPayrollId, setDeletingPayrollId] = useState<string | null>(null)
 
   const { data: payrollsData } = usePayrollsListSuspense({
     companyId,
@@ -82,6 +90,7 @@ const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
   const wireInRequests = wireInRequestsData.wireInRequestList ?? []
 
   const { mutateAsync: skipPayroll } = usePayrollsSkipMutation()
+  const { mutateAsync: deletePayrollMutation } = usePayrollsDeleteMutation()
 
   const onRunPayroll = ({ payrollUuid, payPeriod }: Pick<Payroll, 'payrollUuid' | 'payPeriod'>) => {
     onEvent(componentEvents.RUN_PAYROLL_SELECTED, { payrollUuid, payPeriod })
@@ -100,12 +109,17 @@ const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
 
     if (payroll?.payPeriod) {
       setSkippingPayrollId(payrollUuid!)
+      const payrollType =
+        payroll.offCycleReason === 'Transition from old pay schedule'
+          ? PayrollType.TransitionFromOldPaySchedule
+          : PayrollType.Regular
+
       await baseSubmitHandler({}, async () => {
         await skipPayroll({
           request: {
             companyUuid: companyId,
             requestBody: {
-              payrollType: PayrollType.Regular,
+              payrollType,
               startDate: payroll.payPeriod?.startDate,
               endDate: payroll.payPeriod?.endDate,
               payScheduleUuid: payroll.payPeriod?.payScheduleUuid ?? undefined,
@@ -119,6 +133,22 @@ const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
       setSkippingPayrollId(null)
     }
   }
+
+  const onDeletePayroll = async ({ payrollUuid }: Pick<Payroll, 'payrollUuid'>) => {
+    if (payrollUuid) {
+      setDeletingPayrollId(payrollUuid)
+      await baseSubmitHandler({}, async () => {
+        await deletePayrollMutation({
+          request: { companyId, payrollId: payrollUuid },
+        })
+        await invalidateAllPayrollsList(queryClient)
+        setShowDeleteSuccessAlert(true)
+        onEvent(componentEvents.PAYROLL_DELETED, { payrollId: payrollUuid })
+      })
+      setDeletingPayrollId(null)
+    }
+  }
+
   return (
     <PayrollListPresentation
       payrolls={payrollList}
@@ -127,12 +157,18 @@ const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
       onRunPayroll={onRunPayroll}
       onSubmitPayroll={onSubmitPayroll}
       onSkipPayroll={onSkipPayroll}
+      onDeletePayroll={onDeletePayroll}
       onRunOffCyclePayroll={onRunOffCyclePayroll}
       showSkipSuccessAlert={showSkipSuccessAlert}
       onDismissSkipSuccessAlert={() => {
         setShowSkipSuccessAlert(false)
       }}
+      showDeleteSuccessAlert={showDeleteSuccessAlert}
+      onDismissDeleteSuccessAlert={() => {
+        setShowDeleteSuccessAlert(false)
+      }}
       skippingPayrollId={skippingPayrollId}
+      deletingPayrollId={deletingPayrollId}
       blockers={blockers}
       wireInRequests={wireInRequests}
     />
