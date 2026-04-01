@@ -3,6 +3,7 @@ import { createMachine } from 'robot3'
 import { transitionMachine, transitionBreadcrumbsNodes } from './transitionStateMachine'
 import {
   TransitionCreationContextual,
+  TransitionExecutionContextual,
   type TransitionFlowContextInterface,
   type TransitionFlowProps,
 } from './TransitionFlowComponents'
@@ -14,26 +15,34 @@ export function TransitionFlow({
   startDate,
   endDate,
   payScheduleUuid,
+  payrollUuid,
   onEvent,
 }: TransitionFlowProps) {
+  const hasExistingPayroll = Boolean(payrollUuid)
+  const initialState = hasExistingPayroll ? 'execution' : 'createTransitionPayroll'
+  const initialComponent = hasExistingPayroll
+    ? TransitionExecutionContextual
+    : TransitionCreationContextual
+
   const transitionFlowMachine = useMemo(
     () =>
       createMachine(
-        'createTransitionPayroll',
+        initialState,
         transitionMachine,
         (initialContext: TransitionFlowContextInterface) => ({
           ...initialContext,
-          component: TransitionCreationContextual,
+          component: initialComponent,
           companyId,
           startDate,
           endDate,
           payScheduleUuid,
+          payrollUuid,
           breadcrumbs: buildBreadcrumbs(transitionBreadcrumbsNodes),
-          currentBreadcrumbId: 'createTransitionPayroll',
-          progressBarType: 'breadcrumbs' as const,
+          currentBreadcrumbId: hasExistingPayroll ? undefined : 'createTransitionPayroll',
+          progressBarType: hasExistingPayroll ? null : ('breadcrumbs' as const),
         }),
       ),
-    [companyId, startDate, endDate, payScheduleUuid],
+    [companyId, startDate, endDate, payScheduleUuid, payrollUuid],
   )
 
   return <Flow machine={transitionFlowMachine} onEvent={onEvent} />
