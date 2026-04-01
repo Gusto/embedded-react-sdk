@@ -98,13 +98,13 @@
 
 ## BoxProps
 
-| Prop               | Type                   | Required | Description |
-| ------------------ | ---------------------- | -------- | ----------- |
-| **children**       | `React.ReactNode`      | Yes      | -           |
-| **header**         | `React.ReactNode`      | No       | -           |
-| **footer**         | `React.ReactNode`      | No       | -           |
-| **contentVariant** | `"default" \| "flush"` | No       | -           |
-| **className**      | `string`               | No       | -           |
+| Prop          | Type              | Required | Description |
+| ------------- | ----------------- | -------- | ----------- |
+| **children**  | `React.ReactNode` | Yes      | -           |
+| **header**    | `React.ReactNode` | No       | -           |
+| **footer**    | `React.ReactNode` | No       | -           |
+| **flush**     | `boolean`         | No       | -           |
+| **className** | `string`          | No       | -           |
 
 ## BoxSectionProps
 

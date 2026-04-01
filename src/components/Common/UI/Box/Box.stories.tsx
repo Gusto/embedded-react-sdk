@@ -104,7 +104,7 @@ export const FlushContent: Story = {
   render: () => {
     const Components = useComponentContext()
     return (
-      <Components.Box contentVariant="flush">
+      <Components.Box flush>
         <Components.Text>This content has no padding (flush variant).</Components.Text>
       </Components.Box>
     )
@@ -115,10 +115,7 @@ export const WithEmbeddedTable: Story = {
   render: () => {
     const Components = useComponentContext()
     return (
-      <Components.Box
-        header={<Components.Heading as="h3">Team Members</Components.Heading>}
-        contentVariant="flush"
-      >
+      <Components.Box header={<Components.Heading as="h3">Team Members</Components.Heading>} flush>
         <Components.Table
           aria-label="Team members"
           variant="embedded"
