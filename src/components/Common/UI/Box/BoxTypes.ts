@@ -4,7 +4,7 @@ export interface BoxProps {
   children: ReactNode
   header?: ReactNode
   footer?: ReactNode
-  contentVariant?: 'default' | 'flush'
+  flush?: boolean
   className?: string
 }
 

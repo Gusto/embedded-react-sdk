@@ -36,7 +36,7 @@ describe('Box Component', () => {
   })
 
   test('renders flush content variant', () => {
-    renderWithProviders(<Box contentVariant="flush">Flush Content</Box>)
+    renderWithProviders(<Box flush>Flush Content</Box>)
 
     expect(screen.getByText('Flush Content')).toBeInTheDocument()
   })
@@ -46,7 +46,7 @@ describe('Box Component', () => {
     const defaultWrapper = screen.getByText('Default Content').closest('div')!
     const defaultClassName = defaultWrapper.className
 
-    rerender(<Box contentVariant="flush">Flush Content</Box>)
+    rerender(<Box flush>Flush Content</Box>)
     const flushWrapper = screen.getByText('Flush Content').closest('div')!
     expect(defaultClassName).not.toBe(flushWrapper.className)
   })
