@@ -24,6 +24,7 @@ export interface TransitionFlowProps {
   startDate: string
   endDate: string
   payScheduleUuid: string
+  payrollUuid?: string
   onEvent: OnEventType<EventType, unknown>
 }
 
