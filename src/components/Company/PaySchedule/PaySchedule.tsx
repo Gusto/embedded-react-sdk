@@ -219,6 +219,7 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
         handleCancel,
         handleContinue,
         mode,
+        isPending: createPayScheduleMutation.isPending || updatePayScheduleMutation.isPending,
         paySchedules: paySchedules.payScheduleList,
         payPeriodPreview: payPreviewData?.object?.payPeriods,
         payPreviewLoading: isLoading,

@@ -5,7 +5,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 
 export const Actions = () => {
   const { t } = useTranslation('Company.PaySchedule')
-  const { mode, handleAdd, handleCancel, handleContinue } = usePaySchedule()
+  const { mode, handleAdd, handleCancel, handleContinue, isPending } = usePaySchedule()
   const Components = useComponentContext()
 
   return (
@@ -40,7 +40,9 @@ export const Actions = () => {
           >
             {t('actions.cancel')}
           </Components.Button>
-          <Components.Button type="submit">{t('actions.save')}</Components.Button>
+          <Components.Button type="submit" isLoading={isPending}>
+            {t('actions.save')}
+          </Components.Button>
         </ActionsLayout>
       )}
       {mode === 'EDIT_PAY_SCHEDULE' && (
@@ -53,7 +55,9 @@ export const Actions = () => {
           >
             {t('actions.cancel')}
           </Components.Button>
-          <Components.Button type="submit">{t('actions.save')}</Components.Button>
+          <Components.Button type="submit" isLoading={isPending}>
+            {t('actions.save')}
+          </Components.Button>
         </ActionsLayout>
       )}
     </>
