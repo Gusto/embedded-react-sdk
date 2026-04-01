@@ -2411,14 +2411,6 @@ export interface PayrollPayrollFlow{
 };
 export interface PayrollPayrollHistory{
 "title":string;
-"timeFilter":{
-"placeholder":string;
-"options":{
-"3months":string;
-"6months":string;
-"year":string;
-};
-};
 "dataView":{
 "label":string;
 };
