@@ -1,6 +1,6 @@
 import type { HTMLAttributes, ReactNode } from 'react'
 
-export interface HeadingProps extends Pick<HTMLAttributes<HTMLHeadingElement>, 'className'> {
+export interface HeadingProps extends Pick<HTMLAttributes<HTMLHeadingElement>, 'className' | 'id'> {
   /**
    * The HTML heading element to render (h1-h6)
    */

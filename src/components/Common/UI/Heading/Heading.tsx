@@ -8,11 +8,13 @@ export const Heading = ({
   textAlign,
   className,
   children,
+  id,
 }: HeadingProps) => {
   const levelStyles = styledAs ?? Component
 
   return (
     <Component
+      id={id}
       className={classNames(
         className,
         styles.root,

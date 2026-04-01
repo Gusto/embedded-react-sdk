@@ -343,6 +343,7 @@
 | **textAlign** | `"start" \| "center" \| "end"`                 | No       | Text alignment within the heading                                         |
 | **children**  | `React.ReactNode`                              | No       | Content to be displayed inside the heading                                |
 | **className** | `string`                                       | No       | -                                                                         |
+| **id**        | `string`                                       | No       | -                                                                         |
 
 ## LinkProps
 
