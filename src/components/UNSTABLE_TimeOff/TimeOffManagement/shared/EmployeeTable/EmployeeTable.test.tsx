@@ -119,14 +119,14 @@ describe('EmployeeTable', () => {
   test('does not show clear button when search is empty', () => {
     renderEmployeeTable({ searchValue: '' })
 
-    expect(screen.queryByLabelText('clearAriaLabel')).not.toBeInTheDocument()
+    expect(screen.queryByLabelText('clearSearch')).not.toBeInTheDocument()
   })
 
   test('shows clear button when search has value and fires onSearchClear', async () => {
     const onSearchClear = vi.fn()
     renderEmployeeTable({ searchValue: 'alice', onSearchClear })
 
-    const clearButton = screen.getByLabelText('clearAriaLabel')
+    const clearButton = screen.getByLabelText('clearSearch')
     expect(clearButton).toBeInTheDocument()
 
     await userEvent.click(clearButton)
