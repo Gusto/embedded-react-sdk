@@ -55,6 +55,7 @@ export type CombinedSchemaOutputs = z.output<typeof CombinedSchema>
 type PaymentMethodContextType = {
   bankAccounts: EmployeeBankAccount[]
   isPending: boolean
+  deletePendingBankAccountUuid?: string
   watchedType?: string
   mode: MODE
   paymentMethod: EmployeePaymentMethod
