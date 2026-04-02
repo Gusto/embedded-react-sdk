@@ -376,37 +376,13 @@ describe('PayrollConfiguration', () => {
 
   describe('direct deposit deadline banner', () => {
     it('hides direct deposit deadline banner when all employees are paid by check', async () => {
-      const checkOnlyCompensations = allCompensations.map(comp => ({
-        ...comp,
-        payment_method: 'Check',
-      }))
-
       currentPayrollData = {
         ...mockPayrollData,
-        employee_compensations: checkOnlyCompensations,
+        employee_compensations: allCompensations.map(comp => ({
+          ...comp,
+          payment_method: 'Check',
+        })),
       }
-
-      server.use(
-        http.put(
-          `${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/prepare`,
-          async ({ request }) => {
-            const body = (await request.json()) as { employee_uuids?: string[] } | null
-            const employeeUuids = body?.employee_uuids
-
-            if (employeeUuids && employeeUuids.length > 0) {
-              const filteredCompensations = checkOnlyCompensations.filter(comp =>
-                employeeUuids.includes(comp.employee_uuid),
-              )
-              return HttpResponse.json({
-                ...currentPayrollData,
-                employee_compensations: filteredCompensations,
-              })
-            }
-
-            return HttpResponse.json(currentPayrollData)
-          },
-        ),
-      )
 
       renderWithProviders(<PayrollConfiguration {...defaultProps} />)
 

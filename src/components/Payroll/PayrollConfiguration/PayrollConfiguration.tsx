@@ -387,11 +387,13 @@ export const Root = ({
 
     // Direct deposit deadline: only shown when at least one employee uses direct deposit
     const { payrollShow } = payrollData
+    const allCompensations = payrollShow?.employeeCompensations
 
     if (
       payrollShow &&
-      employeeCompensations.length > 0 &&
-      hasDirectDepositEmployees(employeeCompensations)
+      allCompensations &&
+      allCompensations.length > 0 &&
+      hasDirectDepositEmployees(allCompensations)
     ) {
       return {
         label: t('alerts.directDepositDeadline', {
