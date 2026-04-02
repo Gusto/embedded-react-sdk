@@ -2,6 +2,12 @@ import { defineConfig, mergeConfig } from 'vite'
 import { resolve } from 'path'
 import { existsSync, readFileSync, writeFileSync } from 'fs'
 import { createSharedConfig } from '../vite.config'
+import {
+  fetchEntityIds,
+  fetchCompanyId,
+  ENTITY_ID_KEYS,
+  entityIdToEnvVar,
+} from './src/entity-config'
 
 const SDK_APP_DEFAULT_PORT = 5200
 
@@ -166,51 +172,18 @@ export default defineConfig(() => {
                 return
               }
 
-              let companyId = ''
-              try {
-                const companiesRes = await fetch(`${host}/fe_sdk/${flowToken}/v1/companies`)
-                if (companiesRes.ok) {
-                  const companies = await companiesRes.json()
-                  if (Array.isArray(companies) && companies.length > 0) {
-                    companyId = companies[0].uuid
-                  }
-                }
-              } catch {
-                // Company fetch may fail, that's ok
-              }
+              const proxyBase = `${host}/fe_sdk/${flowToken}`
+              const companyId = await fetchCompanyId(proxyBase)
+              const entities = companyId ? await fetchEntityIds(proxyBase, companyId) : {}
 
-              const entities: Record<string, string> = {}
-              if (companyId) {
-                const entityEndpoints = [
-                  ['employeeId', 'employees'],
-                  ['contractorId', 'contractors'],
-                  ['payrollId', 'payrolls'],
-                ] as const
-
-                for (const [key, endpoint] of entityEndpoints) {
-                  try {
-                    const entRes = await fetch(
-                      `${host}/fe_sdk/${flowToken}/v1/companies/${companyId}/${endpoint}`,
-                    )
-                    if (entRes.ok) {
-                      const items = await entRes.json()
-                      if (Array.isArray(items) && items.length > 0) {
-                        entities[key] = items[0].uuid
-                      }
-                    }
-                  } catch {
-                    // Individual entity fetch failures are non-fatal
-                  }
-                }
-              }
-
+              const entityLines = ENTITY_ID_KEYS.map(
+                key => `${entityIdToEnvVar(key)}=${entities[key] || ''}`,
+              )
               const envContent = [
                 `GWS_FLOWS_HOST=${host}`,
                 `FLOW_TOKEN=${flowToken}`,
                 `VITE_COMPANY_ID=${companyId}`,
-                `VITE_EMPLOYEE_ID=${entities.employeeId || ''}`,
-                `VITE_CONTRACTOR_ID=${entities.contractorId || ''}`,
-                `VITE_PAYROLL_ID=${entities.payrollId || ''}`,
+                ...entityLines,
                 `VITE_REQUEST_ID=`,
                 `VITE_DEMO_TYPE=${flowType}`,
               ].join('\n')
@@ -221,9 +194,9 @@ export default defineConfig(() => {
               env.FLOW_TOKEN = flowToken
               env.GWS_FLOWS_HOST = host
               env.VITE_COMPANY_ID = companyId
-              if (entities.employeeId) env.VITE_EMPLOYEE_ID = entities.employeeId
-              if (entities.contractorId) env.VITE_CONTRACTOR_ID = entities.contractorId
-              if (entities.payrollId) env.VITE_PAYROLL_ID = entities.payrollId
+              for (const key of ENTITY_ID_KEYS) {
+                if (entities[key]) env[entityIdToEnvVar(key)] = entities[key]
+              }
 
               res.setHeader('Content-Type', 'application/json')
               res.end(
@@ -280,28 +253,7 @@ export default defineConfig(() => {
                 headers['X-Gusto-API-Version'] = '2025-11-15'
               }
 
-              const entities: Record<string, string> = {}
-              const entityEndpoints = [
-                ['employeeId', 'employees'],
-                ['contractorId', 'contractors'],
-                ['payrollId', 'payrolls'],
-              ] as const
-
-              for (const [key, endpoint] of entityEndpoints) {
-                try {
-                  const entRes = await fetch(`${baseUrl}/v1/companies/${companyId}/${endpoint}`, {
-                    headers,
-                  })
-                  if (entRes.ok) {
-                    const items = await entRes.json()
-                    if (Array.isArray(items) && items.length > 0) {
-                      entities[key] = items[0].uuid
-                    }
-                  }
-                } catch {
-                  // Non-fatal
-                }
-              }
+              const entities = await fetchEntityIds(baseUrl, companyId, { headers })
 
               res.setHeader('Content-Type', 'application/json')
               res.end(JSON.stringify(entities))

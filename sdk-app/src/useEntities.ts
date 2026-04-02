@@ -1,12 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
+import type { EntityIds } from './entity-config'
 
-export interface EntityIds {
-  companyId: string
-  employeeId: string
-  contractorId: string
-  payrollId: string
-  requestId: string
-}
+export type { EntityIds }
 
 const STORAGE_KEY = 'sdk-app-entity-ids'
 const STORAGE_ENV_COMPANY_KEY = 'sdk-app-env-company-id'
