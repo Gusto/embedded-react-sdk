@@ -14,8 +14,6 @@ import { useLocationsGetMinimumWages } from '@gusto/embedded-api/react-query/loc
 import { useEmployeeAddressesGetWorkAddresses } from '@gusto/embedded-api/react-query/employeeAddressesGetWorkAddresses'
 import { useEmployeesGet } from '@gusto/embedded-api/react-query/employeesGet'
 import { useFederalTaxDetailsGet } from '@gusto/embedded-api/react-query/federalTaxDetailsGet'
-import type { HookSubmitResult } from '@/types/sdkHooks'
-import { useErrorHandling } from '@/hooks/useErrorHandling'
 import { withOptions } from '../../form/withOptions'
 import { deriveFieldsMetadata } from '../../form/deriveFieldsMetadata'
 import { createGetFormSubmissionValues } from '../../form/getFormSubmissionValues'
@@ -38,6 +36,8 @@ import {
   StateWcClassCodeField,
   StartDateField,
 } from './fields'
+import { useErrorHandling } from '@/hooks/useErrorHandling'
+import type { HookSubmitResult } from '@/types/sdkHooks'
 import { FlsaStatus, PAY_PERIODS, TIP_CREDITS_UNSUPPORTED_STATES } from '@/shared/constants'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { SDKInternalError } from '@/types/sdkError'

@@ -8,8 +8,6 @@ import { useEmployeeAddressesGetWorkAddresses } from '@gusto/embedded-api/react-
 import { useEmployeeAddressesCreateWorkAddressMutation } from '@gusto/embedded-api/react-query/employeeAddressesCreateWorkAddress'
 import { useEmployeeAddressesUpdateWorkAddressMutation } from '@gusto/embedded-api/react-query/employeeAddressesUpdateWorkAddress'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
-import type { HookSubmitResult } from '@/types/sdkHooks'
-import { useErrorHandling } from '@/hooks/useErrorHandling'
 import { deriveFieldsMetadata } from '../../form/deriveFieldsMetadata'
 import { createGetFormSubmissionValues } from '../../form/getFormSubmissionValues'
 import { withOptions } from '../../form/withOptions'
@@ -21,6 +19,8 @@ import {
   type WorkAddressField,
 } from './workAddressSchema'
 import { LocationField, EffectiveDateField } from './fields'
+import { useErrorHandling } from '@/hooks/useErrorHandling'
+import type { HookSubmitResult } from '@/types/sdkHooks'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { SDKInternalError } from '@/types/sdkError'
 import { addressInline } from '@/helpers/formattedStrings'
