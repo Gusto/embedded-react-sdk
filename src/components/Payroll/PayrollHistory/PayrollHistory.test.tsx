@@ -685,6 +685,41 @@ describe('PayrollHistory', () => {
     })
   })
 
+  describe('date range filter', () => {
+    it('renders filter trigger and shows date range picker in popover', async () => {
+      renderWithProviders(<PayrollHistory {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Payroll history')).toBeInTheDocument()
+      })
+
+      const filterButton = screen.getByRole('button', { name: 'Filter by date' })
+      expect(filterButton).toBeInTheDocument()
+
+      await user.click(filterButton)
+
+      await waitFor(() => {
+        expect(screen.getByText('From')).toBeInTheDocument()
+        expect(screen.getByText('To')).toBeInTheDocument()
+        expect(screen.getByRole('group', { name: 'From – To' })).toBeInTheDocument()
+        expect(screen.getByRole('button', { name: 'Apply' })).toBeInTheDocument()
+        expect(screen.getByRole('button', { name: 'Reset' })).toBeInTheDocument()
+      })
+    })
+
+    it('does not pass date params to API by default', async () => {
+      renderWithProviders(<PayrollHistory {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(capturedPayrollListUrl).not.toBeNull()
+      })
+
+      expect(capturedPayrollListUrl!.searchParams.get('start_date')).toBeNull()
+      expect(capturedPayrollListUrl!.searchParams.get('end_date')).toBeNull()
+      expect(capturedPayrollListUrl!.searchParams.get('date_filter_by')).toBeNull()
+    })
+  })
+
   describe('pagination', () => {
     it('includes page, per, and sort_order params in the API request', async () => {
       renderWithProviders(<PayrollHistory {...defaultProps} />)

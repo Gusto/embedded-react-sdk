@@ -1,5 +1,7 @@
+import { useState, useCallback } from 'react'
 import { fn } from 'storybook/test'
 import { PayrollListPresentation } from './PayrollListPresentation'
+import type { UseDateRangeFilterResult } from '@/hooks/useDateRangeFilter/useDateRangeFilter'
 
 export default {
   title: 'Domain/Payroll/PayrollList',
@@ -11,6 +13,18 @@ const skipPayrollAction = fn().mockName('skip_payroll')
 const deletePayrollAction = fn().mockName('delete_payroll')
 const runOffCyclePayrollAction = fn().mockName('run_off_cycle_payroll')
 const dismissAlertAction = fn().mockName('dismiss_alert')
+
+const mockDateRangeFilter: UseDateRangeFilterResult = {
+  filterStartDate: null,
+  filterEndDate: null,
+  isFilterActive: false,
+  handleStartDateChange: fn().mockName('handleStartDateChange'),
+  handleEndDateChange: fn().mockName('handleEndDateChange'),
+  handleClearFilter: fn().mockName('handleClearFilter'),
+  getApiDateParams: () => ({}),
+  getMaxEndDate: () => undefined,
+  getMinStartDate: () => undefined,
+}
 
 export const PayrollListStory = () => {
   return (
@@ -37,6 +51,7 @@ export const PayrollListStory = () => {
       skippingPayrollId={null}
       deletingPayrollId={null}
       wireInRequests={[]}
+      dateRangeFilter={mockDateRangeFilter}
     />
   )
 }
@@ -59,6 +74,7 @@ export const EmptyPayrollListStory = () => {
       skippingPayrollId={null}
       deletingPayrollId={null}
       wireInRequests={[]}
+      dateRangeFilter={mockDateRangeFilter}
     />
   )
 }
@@ -88,6 +104,7 @@ export const PayrollListWithSkipAlertStory = () => {
       skippingPayrollId={null}
       deletingPayrollId={null}
       wireInRequests={[]}
+      dateRangeFilter={mockDateRangeFilter}
     />
   )
 }
@@ -117,6 +134,7 @@ export const PayrollListSkippingStory = () => {
       skippingPayrollId="abcd"
       deletingPayrollId={null}
       wireInRequests={[]}
+      dateRangeFilter={mockDateRangeFilter}
     />
   )
 }
@@ -146,6 +164,7 @@ export const PayrollListWithBlockersStory = () => {
       skippingPayrollId={null}
       deletingPayrollId={null}
       wireInRequests={[]}
+      dateRangeFilter={mockDateRangeFilter}
     />
   )
 }
@@ -214,6 +233,7 @@ export const PayrollListWithWireInStatusesStory = () => {
           wireInDeadline: futureDeadline.toISOString(),
         },
       ]}
+      dateRangeFilter={mockDateRangeFilter}
     />
   )
 }
@@ -268,6 +288,62 @@ export const PayrollListWithMixedTypesStory = () => {
       skippingPayrollId={null}
       deletingPayrollId={null}
       wireInRequests={[]}
+      dateRangeFilter={mockDateRangeFilter}
+    />
+  )
+}
+
+export const WithDateFilter = () => {
+  const [startDate, setStartDate] = useState<Date | null>(new Date('2025-01-01'))
+  const [endDate, setEndDate] = useState<Date | null>(new Date('2025-06-30'))
+
+  const handleClear = useCallback(() => {
+    setStartDate(null)
+    setEndDate(null)
+  }, [])
+
+  const activeDateRangeFilter: UseDateRangeFilterResult = {
+    filterStartDate: startDate,
+    filterEndDate: endDate,
+    isFilterActive: startDate !== null || endDate !== null,
+    handleStartDateChange: setStartDate,
+    handleEndDateChange: setEndDate,
+    handleClearFilter: handleClear,
+    getApiDateParams: () => ({
+      startDate: startDate?.toISOString().split('T')[0],
+      endDate: endDate?.toISOString().split('T')[0],
+    }),
+    getMaxEndDate: () =>
+      startDate ? new Date(new Date(startDate).setMonth(startDate.getMonth() + 12)) : undefined,
+    getMinStartDate: () =>
+      endDate ? new Date(new Date(endDate).setMonth(endDate.getMonth() - 12)) : undefined,
+  }
+
+  return (
+    <PayrollListPresentation
+      payrolls={[
+        {
+          checkDate: '2025-03-15',
+          payrollDeadline: new Date(),
+          payrollUuid: 'filtered-1',
+          payPeriod: { payScheduleUuid: '1234', startDate: '2025-03-01', endDate: '2025-03-14' },
+        },
+      ]}
+      paySchedules={[{ uuid: '1234', version: '1', customName: 'Bi-weekly' }]}
+      onRunPayroll={runPayrollAction}
+      onSubmitPayroll={submitPayrollAction}
+      onSkipPayroll={skipPayrollAction}
+      onDeletePayroll={deletePayrollAction}
+      onRunOffCyclePayroll={runOffCyclePayrollAction}
+      showSkipSuccessAlert={false}
+      onDismissSkipSuccessAlert={dismissAlertAction}
+      showDeleteSuccessAlert={false}
+      onDismissDeleteSuccessAlert={dismissAlertAction}
+      blockers={[]}
+      skippingPayrollId={null}
+      deletingPayrollId={null}
+      wireInRequests={[]}
+      dateRangeFilter={activeDateRangeFilter}
     />
   )
 }

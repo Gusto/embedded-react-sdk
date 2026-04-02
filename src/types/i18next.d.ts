@@ -2458,6 +2458,13 @@ export interface PayrollPayrollFlow{
 };
 export interface PayrollPayrollHistory{
 "title":string;
+"dateFilter":{
+"startDate":string;
+"endDate":string;
+"apply":string;
+"reset":string;
+"trigger":string;
+};
 "dataView":{
 "label":string;
 };
@@ -2511,6 +2518,13 @@ export interface PayrollPayrollLanding{
 export interface PayrollPayrollList{
 "emptyState":string;
 "title":string;
+"dateFilter":{
+"startDate":string;
+"endDate":string;
+"apply":string;
+"reset":string;
+"trigger":string;
+};
 "payrollsListLabel":string;
 "runPayrollTitle":string;
 "submitPayrollCta":string;
