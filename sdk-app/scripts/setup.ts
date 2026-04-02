@@ -10,6 +10,26 @@ const ENV_DEFAULTS: Record<string, string> = {
   localzp: 'http://localhost:7777',
 }
 
+const ALLOWED_HOSTS = new Set([
+  'https://flows.gusto-demo.com',
+  'https://flows.gusto-staging.com',
+  'http://localhost:7777',
+  'http://localhost:3000',
+])
+
+function validateHost(host: string): void {
+  try {
+    const url = new URL(host)
+    const origin = url.origin
+    if (!ALLOWED_HOSTS.has(origin) && !url.hostname.match(/^localhost$/)) {
+      throw new Error(`Disallowed host: ${host}. Allowed: ${[...ALLOWED_HOSTS].join(', ')}`)
+    }
+  } catch (e) {
+    if (e instanceof Error && e.message.startsWith('Disallowed')) throw e
+    throw new Error(`Invalid host URL: ${host}`)
+  }
+}
+
 function loadEnvFile(path: string): Record<string, string> {
   if (!existsSync(path)) return {}
   const content = readFileSync(path, 'utf-8')
@@ -28,6 +48,7 @@ async function createDemo(
   gwsFlowsHost: string,
   demoType: string,
 ): Promise<{ flowToken: string; demoId: string }> {
+  validateHost(gwsFlowsHost)
   console.log(`  Creating ${demoType} demo at ${gwsFlowsHost}...`)
 
   const formBody = new URLSearchParams({

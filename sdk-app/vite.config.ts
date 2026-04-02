@@ -5,6 +5,22 @@ import { createSharedConfig } from '../vite.config'
 
 const SDK_APP_DEFAULT_PORT = 5200
 
+const ALLOWED_HOST_ORIGINS = new Set([
+  'https://flows.gusto-demo.com',
+  'https://flows.gusto-staging.com',
+  'http://localhost:7777',
+  'http://localhost:3000',
+])
+
+function isAllowedHost(host: string): boolean {
+  try {
+    const url = new URL(host)
+    return ALLOWED_HOST_ORIGINS.has(url.origin) || url.hostname === 'localhost'
+  } catch {
+    return false
+  }
+}
+
 function loadEnvFile(envName: string): Record<string, string> {
   const envPath = resolve(__dirname, `env/.env.${envName}`)
   if (!existsSync(envPath)) return {}
@@ -94,6 +110,12 @@ export default defineConfig(() => {
               if (!host) {
                 res.statusCode = 400
                 res.end(JSON.stringify({ error: 'No GWS_FLOWS_HOST configured' }))
+                return
+              }
+
+              if (!isAllowedHost(host)) {
+                res.statusCode = 400
+                res.end(JSON.stringify({ error: `Disallowed host: ${host}` }))
                 return
               }
 
@@ -238,6 +260,11 @@ export default defineConfig(() => {
 
               let baseUrl: string
               if (proxyMode === 'flow-token') {
+                if (!env.GWS_FLOWS_HOST || !isAllowedHost(env.GWS_FLOWS_HOST)) {
+                  res.statusCode = 400
+                  res.end(JSON.stringify({ error: 'Invalid or disallowed GWS_FLOWS_HOST' }))
+                  return
+                }
                 baseUrl = `${env.GWS_FLOWS_HOST}/fe_sdk/${env.FLOW_TOKEN}`
               } else if (proxyMode === 'direct') {
                 baseUrl = env.ZP_API_URL!
@@ -291,6 +318,11 @@ export default defineConfig(() => {
               const headers: Record<string, string> = {}
 
               if (proxyMode === 'flow-token') {
+                if (!env.GWS_FLOWS_HOST || !isAllowedHost(env.GWS_FLOWS_HOST)) {
+                  res.setHeader('Content-Type', 'application/json')
+                  res.end(JSON.stringify({ valid: false, reason: 'Invalid host' }))
+                  return
+                }
                 testUrl = `${env.GWS_FLOWS_HOST}/fe_sdk/${env.FLOW_TOKEN}/v1/companies/${companyId}/locations`
               } else if (proxyMode === 'direct') {
                 testUrl = `${env.ZP_API_URL}/v1/companies/${companyId}/locations`
