@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useEmployeesList } from '@gusto/embedded-api/react-query/employeesList'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import { useEmployeesDeleteMutation } from '@gusto/embedded-api/react-query/employeesDelete'
@@ -10,8 +10,6 @@ import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { useErrorHandling } from '@/components/UNSTABLE_Hooks/useErrorHandling'
 import { EmployeeOnboardingStatus } from '@/shared/constants'
 
-export type EmployeeTab = 'active' | 'onboarding' | 'dismissed'
-
 export interface EmployeeActionCallbacks {
   onDelete?: (employeeId: string) => void
   onReview?: (employeeId: string) => void
@@ -20,23 +18,17 @@ export interface EmployeeActionCallbacks {
 
 export interface UseEmployeeListProps {
   companyId: string
-  isOnboarding?: boolean
-  initialTab?: EmployeeTab
+  getTerminatedEmployees?: boolean
 }
 
-interface UseEmployeeListBase {
-  isLoading: false
+export interface UseEmployeeListResult {
+  isLoading: boolean
   employees: Employee[]
   isFetching: boolean
   pagination: PaginationControlProps
   status: {
     isPending: boolean
   }
-  errorHandling: ReturnType<typeof useErrorHandling>
-}
-
-export interface UseEmployeeListOnboardingReady extends UseEmployeeListBase {
-  mode: 'onboarding'
   actions: {
     onDelete: (employeeId: string, callbacks?: EmployeeActionCallbacks) => Promise<void>
     onReview: (employeeId: string, callbacks?: EmployeeActionCallbacks) => Promise<void>
@@ -45,48 +37,21 @@ export interface UseEmployeeListOnboardingReady extends UseEmployeeListBase {
       callbacks?: EmployeeActionCallbacks,
     ) => Promise<void>
   }
-}
-
-export interface UseEmployeeListManagementReady extends UseEmployeeListBase {
-  mode: 'management'
-  selectedTab: EmployeeTab
-  onTabChange: (tab: EmployeeTab) => void
-  actions: {
-    onDelete: (employeeId: string, callbacks?: EmployeeActionCallbacks) => Promise<void>
-  }
-}
-
-interface UseEmployeeListLoading {
-  isLoading: true
   errorHandling: ReturnType<typeof useErrorHandling>
-}
-
-export type UseEmployeeListResult =
-  | UseEmployeeListOnboardingReady
-  | UseEmployeeListManagementReady
-  | UseEmployeeListLoading
-
-export interface UseEmployeeListProps {
-  companyId: string
-  isOnboarding?: boolean
-  initialTab?: EmployeeTab
 }
 
 export function useEmployeeList({
   companyId,
-  isOnboarding = false,
+  getTerminatedEmployees = false,
 }: UseEmployeeListProps): UseEmployeeListResult {
-  const [selectedTab, setSelectedTab] = useState<EmployeeTab>('active')
   const { currentPage, itemsPerPage, getPaginationProps } = usePagination()
-
-  const isTerminatedFilter = isOnboarding ? false : selectedTab === 'dismissed' ? true : false
 
   const employeesQuery = useEmployeesList(
     {
       companyId,
       page: currentPage,
       per: itemsPerPage,
-      terminated: isTerminatedFilter,
+      terminated: getTerminatedEmployees,
     },
     { placeholderData: keepPreviousData },
   )
@@ -103,28 +68,8 @@ export function useEmployeeList({
   const { data, isFetching } = employeesQuery
 
   const employees = useMemo(() => {
-    if (!data?.showEmployees) return []
-
-    const employeeList = data.showEmployees
-
-    if (isOnboarding) {
-      return employeeList
-    }
-
-    if (selectedTab === 'dismissed') {
-      return employeeList
-    }
-
-    if (selectedTab === 'active') {
-      return employeeList.filter((employee: Employee) => employee.onboarded === true)
-    }
-
-    return employeeList.filter((employee: Employee) => employee.onboarded === false)
-  }, [data?.showEmployees, selectedTab, isOnboarding])
-
-  const handleTabChange = (tab: EmployeeTab) => {
-    setSelectedTab(tab)
-  }
+    return data?.showEmployees ?? []
+  }, [data?.showEmployees])
 
   const paginationProps = data?.httpMeta.response.headers
     ? getPaginationProps(data.httpMeta.response.headers, isFetching)
@@ -180,33 +125,15 @@ export function useEmployeeList({
     })
   }
 
-  if (!data && isFetching) {
-    return { isLoading: true as const, errorHandling }
-  }
-
-  if (isOnboarding) {
-    return {
-      isLoading: false as const,
-      mode: 'onboarding' as const,
-      employees,
-      isFetching,
-      pagination: paginationProps,
-      status: { isPending },
-      actions: { onDelete, onReview, onCancelSelfOnboarding },
-      errorHandling,
-    }
-  }
+  const isLoading = !data && isFetching
 
   return {
-    isLoading: false as const,
-    mode: 'management' as const,
-    selectedTab,
-    onTabChange: handleTabChange,
+    isLoading,
     employees,
     isFetching,
     pagination: paginationProps,
     status: { isPending },
-    actions: { onDelete },
+    actions: { onDelete, onReview, onCancelSelfOnboarding },
     errorHandling,
   }
 }

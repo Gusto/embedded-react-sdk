@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
-import type { EmployeeTab } from './useEmployeeList'
 import { DataView, EmptyData, useDataView } from '@/components/Common'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -13,8 +12,9 @@ import { formatDateLongWithYear } from '@/helpers/dateFormatting'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
+type EmployeeTab = 'active' | 'onboarding' | 'dismissed'
+
 export interface ManagementEmployeeListViewProps {
-  mode: 'management'
   selectedTab: EmployeeTab
   onTabChange: (tab: EmployeeTab) => void
   employees: Employee[]

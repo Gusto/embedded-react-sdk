@@ -1,6 +1,7 @@
+import { useState, useMemo } from 'react'
 import { ManagementEmployeeListView } from './ManagementEmployeeListView'
 import { useEmployeeList } from './useEmployeeList'
-import type { EmployeeTab } from './useEmployeeList'
+import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import {
   BaseBoundaries,
   BaseLayout,
@@ -10,7 +11,10 @@ import {
 import { useI18n, useComponentDictionary } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 
-interface ManagementEmployeeListProps extends CommonComponentInterface<'Employee.ManagementEmployeeList'> {
+type EmployeeTab = 'active' | 'onboarding' | 'dismissed'
+
+interface ManagementEmployeeListProps
+  extends CommonComponentInterface<'Employee.ManagementEmployeeList'> {
   companyId: string
   initialTab?: EmployeeTab
   onEvent: BaseComponentInterface['onEvent']
@@ -18,25 +22,34 @@ interface ManagementEmployeeListProps extends CommonComponentInterface<'Employee
 
 function ManagementEmployeeListRoot({
   companyId,
-  initialTab,
+  initialTab = 'active',
   onEvent,
   dictionary,
 }: ManagementEmployeeListProps) {
   useI18n('Employee.ManagementEmployeeList')
   useComponentDictionary('Employee.ManagementEmployeeList', dictionary)
 
+  const [selectedTab, setSelectedTab] = useState<EmployeeTab>(initialTab)
+
   const employeeList = useEmployeeList({
     companyId,
-    isOnboarding: false,
-    initialTab,
+    getTerminatedEmployees: selectedTab === 'dismissed',
   })
+
+  const filteredEmployees = useMemo(() => {
+    if (selectedTab === 'dismissed') {
+      return employeeList.employees
+    }
+
+    if (selectedTab === 'active') {
+      return employeeList.employees.filter((employee: Employee) => employee.onboarded === true)
+    }
+
+    return employeeList.employees.filter((employee: Employee) => employee.onboarded === false)
+  }, [employeeList.employees, selectedTab])
 
   if (employeeList.isLoading) {
     return <BaseLayout isLoading error={employeeList.errorHandling.errors} />
-  }
-
-  if (employeeList.mode !== 'management') {
-    return null
   }
 
   const handleEdit = (employeeId: string) => {
@@ -51,13 +64,16 @@ function ManagementEmployeeListRoot({
     onEvent(componentEvents.EMPLOYEE_REHIRE, { employeeId })
   }
 
+  const handleTabChange = (tab: EmployeeTab) => {
+    setSelectedTab(tab)
+  }
+
   return (
     <BaseLayout error={employeeList.errorHandling.errors}>
       <ManagementEmployeeListView
-        mode={employeeList.mode}
-        selectedTab={employeeList.selectedTab}
-        onTabChange={employeeList.onTabChange}
-        employees={employeeList.employees}
+        selectedTab={selectedTab}
+        onTabChange={handleTabChange}
+        employees={filteredEmployees}
         isFetching={employeeList.isFetching}
         pagination={employeeList.pagination}
         status={employeeList.status}

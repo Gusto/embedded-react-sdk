@@ -23,15 +23,11 @@ function EmployeeListRoot({ companyId, onEvent, dictionary }: EmployeeListProps)
 
   const employeeList = useEmployeeList({
     companyId,
-    isOnboarding: true,
+    getTerminatedEmployees: false,
   })
 
   if (employeeList.isLoading) {
     return <BaseLayout isLoading error={employeeList.errorHandling.errors} />
-  }
-
-  if (employeeList.mode !== 'onboarding') {
-    return null
   }
 
   const handleEdit = (employeeId: string, onboardingStatus?: OnboardingStatus) => {
@@ -49,7 +45,6 @@ function EmployeeListRoot({ companyId, onEvent, dictionary }: EmployeeListProps)
   return (
     <BaseLayout error={employeeList.errorHandling.errors}>
       <EmployeeListView
-        mode="onboarding"
         employees={employeeList.employees}
         isFetching={employeeList.isFetching}
         pagination={employeeList.pagination}

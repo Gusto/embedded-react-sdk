@@ -13,7 +13,6 @@ import { firstLastName } from '@/helpers/formattedStrings'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
 export interface EmployeeListViewProps {
-  mode: 'onboarding'
   employees: Employee[]
   isFetching: boolean
   pagination: PaginationControlProps
