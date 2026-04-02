@@ -12,6 +12,7 @@ import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/model
 import type { PayrollUpdateEmployeeCompensations } from '@gusto/embedded-api/models/components/payrollupdate'
 import { usePayrollsGetBlockersSuspense } from '@gusto/embedded-api/react-query/payrollsGetBlockers'
 import { payrollSubmitHandler, type ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
+import { hasDirectDepositEmployees } from '../helpers'
 import { GrossUpModal } from '../GrossUpModal'
 import { PayrollConfigurationPresentation } from './PayrollConfigurationPresentation'
 import { usePayrollConfigurationData } from './usePayrollConfigurationData'
@@ -361,37 +362,49 @@ export const Root = ({
     }
   }, [isPolling, onEvent])
 
-  const payrollAlert =
-    payrollData.payrollShow?.payrollStatusMeta?.payrollLate &&
-    payrollData.payrollShow.payrollStatusMeta.initialCheckDate &&
-    payrollData.payrollShow.payrollStatusMeta.expectedDebitTime &&
-    payrollData.payrollShow.payrollStatusMeta.expectedCheckDate
-      ? {
-          label: t('alerts.payrollLate', {
-            initialCheckDate: dateFormatter.formatShortWithWeekday(
-              payrollData.payrollShow.payrollStatusMeta.initialCheckDate,
-            ),
-          }),
-          content: t('alerts.payrollLateText', {
-            ...dateFormatter.formatWithTime(
-              payrollData.payrollShow.payrollStatusMeta.expectedDebitTime,
-            ),
-            newCheckDate: dateFormatter.formatShortWithWeekday(
-              payrollData.payrollShow.payrollStatusMeta.expectedCheckDate,
-            ),
-          }),
-          variant: 'warning' as const,
-        }
-      : payrollData.payrollShow
-        ? {
-            label: t('alerts.directDepositDeadline', {
-              payDate: dateFormatter.formatShortWithWeekday(payrollData.payrollShow.checkDate),
-              ...dateFormatter.formatWithTime(payrollData.payrollShow.payrollDeadline),
-            }),
-            content: t('alerts.directDepositDeadlineText'),
-            variant: 'info' as const,
-          }
-        : undefined
+  const payrollAlert = (() => {
+    const statusMeta = payrollData.payrollShow?.payrollStatusMeta
+
+    // Late payroll warning: payroll was not submitted before the original deadline
+    const isLatePayroll =
+      statusMeta?.payrollLate &&
+      statusMeta.initialCheckDate &&
+      statusMeta.expectedDebitTime &&
+      statusMeta.expectedCheckDate
+
+    if (isLatePayroll) {
+      return {
+        label: t('alerts.payrollLate', {
+          initialCheckDate: dateFormatter.formatShortWithWeekday(statusMeta.initialCheckDate),
+        }),
+        content: t('alerts.payrollLateText', {
+          ...dateFormatter.formatWithTime(statusMeta.expectedDebitTime),
+          newCheckDate: dateFormatter.formatShortWithWeekday(statusMeta.expectedCheckDate),
+        }),
+        variant: 'warning' as const,
+      }
+    }
+
+    // Direct deposit deadline: only shown when at least one employee uses direct deposit
+    const { payrollShow } = payrollData
+
+    if (
+      payrollShow &&
+      employeeCompensations.length > 0 &&
+      hasDirectDepositEmployees(employeeCompensations)
+    ) {
+      return {
+        label: t('alerts.directDepositDeadline', {
+          payDate: dateFormatter.formatShortWithWeekday(payrollShow.checkDate),
+          ...dateFormatter.formatWithTime(payrollShow.payrollDeadline),
+        }),
+        content: t('alerts.directDepositDeadlineText'),
+        variant: 'info' as const,
+      }
+    }
+
+    return undefined
+  })()
 
   return (
     <>
