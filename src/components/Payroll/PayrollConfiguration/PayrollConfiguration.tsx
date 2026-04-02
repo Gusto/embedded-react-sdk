@@ -375,7 +375,6 @@ export const Root = ({
   const payrollAlert = (() => {
     const statusMeta = payrollData.payrollShow?.payrollStatusMeta
 
-    // Late payroll warning: payroll was not submitted before the original deadline
     const isLatePayroll =
       statusMeta?.payrollLate &&
       statusMeta.initialCheckDate &&
@@ -395,7 +394,6 @@ export const Root = ({
       }
     }
 
-    // Direct deposit deadline: only shown when at least one employee uses direct deposit
     const { payrollShow } = payrollData
     const allCompensations = payrollShow?.employeeCompensations
 
