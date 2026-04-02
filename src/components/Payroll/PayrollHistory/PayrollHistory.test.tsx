@@ -20,9 +20,12 @@ describe('PayrollHistory', () => {
     onEvent,
   }
 
+  let capturedPayrollListUrl: URL | null = null
+
   beforeEach(async () => {
     setupApiTestMocks()
     onEvent.mockClear()
+    capturedPayrollListUrl = null
 
     // Mock dialog methods since JSDOM doesn't support them
     HTMLDialogElement.prototype.showModal = vi.fn()
@@ -36,7 +39,8 @@ describe('PayrollHistory', () => {
     // Mock the payrolls list API with fixture data
     const mockPayrollData = await getFixture('payroll-history-test-data')
     server.use(
-      http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls`, () => {
+      http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls`, ({ request }) => {
+        capturedPayrollListUrl = new URL(request.url)
         return HttpResponse.json(mockPayrollData)
       }),
     )
@@ -678,6 +682,62 @@ describe('PayrollHistory', () => {
       })
 
       expect(screen.getByText('$1,234,567.89')).toBeInTheDocument()
+    })
+  })
+
+  describe('pagination', () => {
+    it('includes page and per params in the API request', async () => {
+      renderWithProviders(<PayrollHistory {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(capturedPayrollListUrl).not.toBeNull()
+      })
+
+      expect(capturedPayrollListUrl!.searchParams.get('page')).toBeTruthy()
+      expect(capturedPayrollListUrl!.searchParams.get('per')).toBeTruthy()
+    })
+
+    it('renders pagination controls when totalCount exceeds page size', async () => {
+      const mockPayrollData = await getFixture('payroll-history-test-data')
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls`, ({ request }) => {
+          capturedPayrollListUrl = new URL(request.url)
+          return HttpResponse.json(mockPayrollData, {
+            headers: {
+              'x-total-pages': '3',
+              'x-total-count': '15',
+            },
+          })
+        }),
+      )
+
+      renderWithProviders(<PayrollHistory {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByTestId('pagination-control')).toBeInTheDocument()
+      })
+    })
+
+    it('does not render pagination controls when totalCount is within a single page', async () => {
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls`, ({ request }) => {
+          capturedPayrollListUrl = new URL(request.url)
+          return HttpResponse.json(mockEmptyPayrollData, {
+            headers: {
+              'x-total-pages': '1',
+              'x-total-count': '3',
+            },
+          })
+        }),
+      )
+
+      renderWithProviders(<PayrollHistory {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('No payroll history')).toBeInTheDocument()
+      })
+
+      expect(screen.queryByTestId('pagination-control')).not.toBeInTheDocument()
     })
   })
 })

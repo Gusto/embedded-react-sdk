@@ -2476,6 +2476,14 @@ export interface PayrollPayrollList{
 "cancelCta":string;
 };
 "skipSuccessAlert":string;
+"deletePayrollCta":string;
+"deletePayrollDialog":{
+"title":string;
+"body":string;
+"confirmCta":string;
+"cancelCta":string;
+};
+"deleteSuccessAlert":string;
 "type":{
 "External":string;
 "Off-Cycle":string;

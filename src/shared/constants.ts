@@ -179,6 +179,7 @@ export const runPayrollEvents = {
   RUN_PAYROLL_DATES_CONFIGURED: 'runPayroll/dates/configured',
   REVIEW_PAYROLL: 'payroll/review',
   PAYROLL_SKIPPED: 'payroll/skipped',
+  PAYROLL_DELETED: 'payroll/deleted',
   PAYROLL_EXIT_FLOW: 'payroll/saveAndExit',
   RUN_PAYROLL_GROSS_UP_SELECTED: 'runPayroll/grossUp/selected',
   RUN_PAYROLL_GROSS_UP_CALCULATED: 'runPayroll/grossUp/calculated',
