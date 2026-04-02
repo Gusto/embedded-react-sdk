@@ -1,6 +1,6 @@
 import type { Control } from 'react-hook-form'
 import { useFormState } from 'react-hook-form'
-import type { BaseFormHookReady } from '../types'
+import type { BaseFormHookReady } from '@/types/sdkHooks'
 import { useFormFieldsMetadataContext } from './FormFieldsMetadataContext'
 import { resolveFieldError } from './resolveFieldError'
 import type { FieldsMetadata, ValidationMessages } from './types'

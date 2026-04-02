@@ -1,5 +1,5 @@
 import type { UseFormReturn, FieldValues } from 'react-hook-form'
-import type { FieldsMetadata } from './form/types'
+import type { FieldsMetadata } from '@/components/UNSTABLE_Hooks/form/types'
 import type { SDKError } from '@/types/sdkError'
 
 /** Exposes react-hook-form internals for SDK utilities and advanced partner use cases. */

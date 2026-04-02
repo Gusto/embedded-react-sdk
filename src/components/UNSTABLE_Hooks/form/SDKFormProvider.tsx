@@ -1,7 +1,7 @@
 import { type ReactNode, useEffect } from 'react'
 import type { FieldPath, FieldValues } from 'react-hook-form'
 import { FormProvider } from 'react-hook-form'
-import type { HookFormInternals } from '../types'
+import type { HookFormInternals } from '@/types/sdkHooks'
 import { FormFieldsMetadataProvider } from './FormFieldsMetadataProvider'
 import type { FieldMetadata, FieldMetadataWithOptions } from './types'
 import type { SDKError, SDKFieldError } from '@/types/sdkError'

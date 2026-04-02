@@ -7,8 +7,9 @@ import { keepPreviousData } from '@tanstack/react-query'
 import { usePagination } from '@/hooks/usePagination/usePagination'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
-import { useErrorHandling } from '@/components/UNSTABLE_Hooks/useErrorHandling'
+import { useErrorHandling } from '@/hooks/useErrorHandling'
 import { EmployeeOnboardingStatus } from '@/shared/constants'
+import type { HookLoadingResult, HookErrorHandling } from '@/types/sdkHooks'
 
 export interface EmployeeActionCallbacks {
   onDelete?: (employeeId: string) => void
@@ -21,8 +22,8 @@ export interface UseEmployeeListProps {
   getTerminatedEmployees?: boolean
 }
 
-export interface UseEmployeeListResult {
-  isLoading: boolean
+interface UseEmployeeListReady {
+  isLoading: false
   employees: Employee[]
   isFetching: boolean
   pagination: PaginationControlProps
@@ -37,8 +38,10 @@ export interface UseEmployeeListResult {
       callbacks?: EmployeeActionCallbacks,
     ) => Promise<void>
   }
-  errorHandling: ReturnType<typeof useErrorHandling>
+  errorHandling: HookErrorHandling
 }
+
+export type UseEmployeeListResult = HookLoadingResult | UseEmployeeListReady
 
 export function useEmployeeList({
   companyId,
@@ -127,8 +130,15 @@ export function useEmployeeList({
 
   const isLoading = !data && isFetching
 
+  if (isLoading) {
+    return {
+      isLoading: true,
+      errorHandling,
+    }
+  }
+
   return {
-    isLoading,
+    isLoading: false,
     employees,
     isFetching,
     pagination: paginationProps,

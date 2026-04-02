@@ -36,6 +36,10 @@ function ManagementEmployeeListRoot({
     getTerminatedEmployees: selectedTab === 'dismissed',
   })
 
+  if (employeeList.isLoading) {
+    return <BaseLayout isLoading error={employeeList.errorHandling.errors} />
+  }
+
   const filteredEmployees = useMemo(() => {
     if (selectedTab === 'dismissed') {
       return employeeList.employees
@@ -47,10 +51,6 @@ function ManagementEmployeeListRoot({
 
     return employeeList.employees.filter((employee: Employee) => employee.onboarded === false)
   }, [employeeList.employees, selectedTab])
-
-  if (employeeList.isLoading) {
-    return <BaseLayout isLoading error={employeeList.errorHandling.errors} />
-  }
 
   const handleEdit = (employeeId: string) => {
     onEvent(componentEvents.EMPLOYEE_UPDATE, { employeeId })

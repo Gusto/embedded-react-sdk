@@ -5,9 +5,9 @@ export type {
   HookErrorHandling,
   BaseHookReady,
   BaseFormHookReady,
-} from './types'
+} from '@/types/sdkHooks'
 
-export { useErrorHandling } from './useErrorHandling'
+export { useErrorHandling } from '@/hooks/useErrorHandling'
 
 export type {
   FieldMetadata,

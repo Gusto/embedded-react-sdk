@@ -1,6 +1,6 @@
 import type { ComponentType } from 'react'
 import type { BaseFieldProps, ValidationMessages } from '../types'
-import type { BaseFormHookReady } from '../../types'
+import type { BaseFormHookReady } from '@/types/sdkHooks'
 import { useHookFieldResolution } from '../useHookFieldResolution'
 import { DatePickerField } from '@/components/Common/Fields/DatePickerField'
 import type { DatePickerProps } from '@/components/Common/UI/DatePicker/DatePickerTypes'
