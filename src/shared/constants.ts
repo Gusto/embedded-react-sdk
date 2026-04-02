@@ -7,6 +7,7 @@ export const employeeEvents = {
   EMPLOYEE_UPDATE: 'employee/update',
   EMPLOYEE_UPDATED: 'employee/updated',
   EMPLOYEE_DELETED: 'employee/deleted',
+  EMPLOYEE_DISMISS: 'employee/dismiss',
   EMPLOYEE_ONBOARDING_DONE: 'employee/onboarding/done',
   EMPLOYEE_PROFILE_DONE: 'employee/profile/done',
   EMPLOYEE_HOME_ADDRESS: 'employee/addresses/home',

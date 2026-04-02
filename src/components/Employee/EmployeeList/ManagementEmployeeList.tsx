@@ -59,6 +59,10 @@ function ManagementEmployeeListRoot({
     onEvent(componentEvents.EMPLOYEE_CREATE)
   }
 
+  const handleDismiss = (employeeId: string) => {
+    onEvent(componentEvents.EMPLOYEE_DISMISS, { employeeId })
+  }
+
   const handleRehire = (employeeId: string) => {
     onEvent(componentEvents.EMPLOYEE_REHIRE, { employeeId })
   }
@@ -77,6 +81,7 @@ function ManagementEmployeeListRoot({
         pagination={employeeList.pagination}
         status={employeeList.status}
         onEdit={handleEdit}
+        onDismiss={handleDismiss}
         onDelete={async (employeeId: string) => {
           await employeeList.actions.onDelete(employeeId, {
             onDelete: (id: string) => {

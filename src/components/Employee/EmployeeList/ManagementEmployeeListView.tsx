@@ -8,6 +8,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { EmployeeOnboardingStatusBadge } from '@/components/Common/OnboardingStatusBadge'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
+import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import { firstLastName } from '@/helpers/formattedStrings'
 import { formatDateLongWithYear } from '@/helpers/dateFormatting'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
@@ -21,6 +22,7 @@ export interface ManagementEmployeeListViewProps extends Pick<
   selectedTab: EmployeeTab
   onTabChange: (tab: EmployeeTab) => void
   onEdit: (employeeId: string) => void
+  onDismiss: (employeeId: string) => void
   onDelete: (employeeId: string) => Promise<void>
   onRehire: (employeeId: string) => void
   onAddEmployee: () => void
@@ -33,6 +35,7 @@ export function ManagementEmployeeListView({
   isFetching,
   status,
   onEdit,
+  onDismiss,
   onDelete,
   onRehire,
   onAddEmployee,
@@ -151,6 +154,13 @@ export function ManagementEmployeeListView({
             onEdit(employee.uuid)
           },
           icon: <PencilSvg aria-hidden />,
+        })
+        menuItems.push({
+          label: t('dismissCta'),
+          onClick: () => {
+            onDismiss(employee.uuid)
+          },
+          icon: <TrashCanSvg aria-hidden />,
         })
       }
 

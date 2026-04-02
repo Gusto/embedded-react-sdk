@@ -1615,6 +1615,7 @@ export interface EmployeeManagementEmployeeList{
 "statusLabel":string;
 "lastDayLabel":string;
 "editCta":string;
+"dismissCta":string;
 "cancelCta":string;
 "rehireCta":string;
 "hamburgerTitle":string;
