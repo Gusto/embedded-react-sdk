@@ -1,7 +1,7 @@
 .root {
-  width: toRem(260);
+  width: 16.25rem;
   background: var(--color-bg-sidebar);
-  border-right: toRem(1) solid var(--color-border);
+  border-right: 0.0625rem solid var(--color-border);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -9,21 +9,21 @@
 }
 
 .search {
-  padding: toRem(12);
-  border-bottom: toRem(1) solid var(--color-border);
+  padding: 0.75rem;
+  border-bottom: 0.0625rem solid var(--color-border);
 
   input {
     width: 100%;
-    padding: toRem(8) toRem(12);
-    border: toRem(1) solid var(--color-border);
-    border-radius: toRem(6);
-    font-size: toRem(13);
+    padding: 0.5rem 0.75rem;
+    border: 0.0625rem solid var(--color-border);
+    border-radius: 0.375rem;
+    font-size: 0.8125rem;
     outline: none;
     background: #fff;
 
     &:focus {
       border-color: var(--color-active);
-      box-shadow: 0 0 0 toRem(2) rgba(13, 110, 253, 0.15);
+      box-shadow: 0 0 0 0.125rem rgba(13, 110, 253, 0.15);
     }
   }
 }
@@ -31,23 +31,23 @@
 .list {
   flex: 1;
   overflow-y: auto;
-  padding: toRem(8) 0;
+  padding: 0.5rem 0;
 }
 
 .category {
-  margin-bottom: toRem(4);
+  margin-bottom: 0.25rem;
 }
 
 .categoryHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: toRem(8) toRem(16);
+  padding: 0.5rem 1rem;
   cursor: pointer;
   font-weight: 600;
-  font-size: toRem(12);
+  font-size: 0.75rem;
   text-transform: uppercase;
-  letter-spacing: toRem(0.5);
+  letter-spacing: 0.03125rem;
   color: var(--color-text-muted);
   user-select: none;
 
@@ -58,16 +58,16 @@
 
 .categoryCount {
   background: var(--color-badge-bg);
-  padding: toRem(1) toRem(6);
-  border-radius: toRem(10);
-  font-size: toRem(11);
+  padding: 0.0625rem 0.375rem;
+  border-radius: 0.625rem;
+  font-size: 0.6875rem;
   font-weight: 500;
 }
 
 .categoryArrow {
-  font-size: toRem(10);
+  font-size: 0.625rem;
   transition: transform 0.15s;
-  margin-right: toRem(6);
+  margin-right: 0.375rem;
 }
 
 .categoryArrowCollapsed {
@@ -80,11 +80,11 @@
 
 .item a {
   display: block;
-  padding: toRem(6) toRem(16) toRem(6) toRem(28);
+  padding: 0.375rem 1rem 0.375rem 1.75rem;
   color: var(--color-text);
   text-decoration: none;
-  font-size: toRem(13);
-  border-left: toRem(3) solid transparent;
+  font-size: 0.8125rem;
+  border-left: 0.1875rem solid transparent;
   transition:
     background 0.1s,
     border-color 0.1s;
