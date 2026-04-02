@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { existsSync, readFileSync, writeFileSync } from 'fs'
+import { writeFileSync } from 'fs'
 import { resolve } from 'path'
 
 const ENV_DIR = resolve(import.meta.dirname, '../env')
@@ -28,20 +28,6 @@ function validateHost(host: string): void {
     if (e instanceof Error && e.message.startsWith('Disallowed')) throw e
     throw new Error(`Invalid host URL: ${host}`)
   }
-}
-
-function loadEnvFile(path: string): Record<string, string> {
-  if (!existsSync(path)) return {}
-  const content = readFileSync(path, 'utf-8')
-  const vars: Record<string, string> = {}
-  for (const line of content.split('\n')) {
-    const trimmed = line.trim()
-    if (!trimmed || trimmed.startsWith('#')) continue
-    const eqIndex = trimmed.indexOf('=')
-    if (eqIndex === -1) continue
-    vars[trimmed.slice(0, eqIndex).trim()] = trimmed.slice(eqIndex + 1).trim()
-  }
-  return vars
 }
 
 async function createDemo(
@@ -193,13 +179,11 @@ async function main() {
   const actualEnv = zpEnv === 'local' ? 'localzp' : zpEnv
 
   const envPath = resolve(ENV_DIR, `.env.${actualEnv}`)
-  const existingEnv = loadEnvFile(envPath)
-  const gwsFlowsHost = existingEnv.GWS_FLOWS_HOST || ENV_DEFAULTS[actualEnv]
+  const gwsFlowsHost = ENV_DEFAULTS[actualEnv]
 
   if (!gwsFlowsHost) {
-    console.error(`  Error: No GWS_FLOWS_HOST configured for environment "${zpEnv}"`)
-    console.error(`  Known environments: demo, staging, local`)
-    console.error(`  Set GWS_FLOWS_HOST in ${envPath}\n`)
+    console.error(`  Error: Unknown environment "${zpEnv}"`)
+    console.error(`  Known environments: ${Object.keys(ENV_DEFAULTS).join(', ')}\n`)
     process.exit(1)
   }
 
