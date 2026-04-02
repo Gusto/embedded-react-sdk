@@ -48,7 +48,9 @@ async function main() {
   }
 
   const result = await createDemoAndProvision(gwsFlowsHost, demoType, {
-    onProgress: msg => { console.log(`  ${msg}`); },
+    onProgress: msg => {
+      console.log(`  ${msg}`)
+    },
   })
 
   writeEnvFile(envPath, { ...result, gwsFlowsHost })
