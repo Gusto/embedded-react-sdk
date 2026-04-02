@@ -1,4 +1,6 @@
 export { EmployeeList } from './EmployeeList/EmployeeList'
+export { ManagementEmployeeList } from './ManagementEmployeeList'
+export type { EmployeeTab } from './ManagementEmployeeList'
 export { Deductions } from './Deductions'
 export { OnboardingSummary } from './OnboardingSummary'
 export { Profile } from './Profile'

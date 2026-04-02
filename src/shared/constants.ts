@@ -56,6 +56,7 @@ export const employeeEvents = {
   EMPLOYEE_CHANGE_ELIGIBILITY_STATUS: 'employee/employmentEligibility/change',
   EMPLOYEE_ONBOARDING_DOCUMENTS_CONFIG_UPDATED: 'employee/onboardingDocumentsConfig/updated',
   EMPLOYEE_DOCUMENTS_DONE: 'employee/documents/done',
+  EMPLOYEE_REHIRE: 'employee/rehire',
 } as const
 
 export const companyEvents = {
