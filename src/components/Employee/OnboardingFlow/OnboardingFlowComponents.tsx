@@ -3,6 +3,7 @@ import { FederalTaxes } from '../FederalTaxes/FederalTaxes'
 import { StateTaxes } from '../StateTaxes/StateTaxes'
 import type { ProfileDefaultValues } from '../Profile'
 import type { CompensationDefaultValues } from '../Compensation'
+import { EmployeeList } from '../EmployeeList'
 import { ensureRequired } from '@/helpers/ensureRequired'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { EmployeeOnboardingStatus } from '@/shared/constants'
@@ -33,4 +34,9 @@ export function FederalTaxesContextual() {
 export function StateTaxesContextual() {
   const { employeeId, onEvent, isAdmin } = useFlow<OnboardingContextInterface>()
   return <StateTaxes onEvent={onEvent} employeeId={ensureRequired(employeeId)} isAdmin={isAdmin} />
+}
+
+export const EmployeeListContextual = () => {
+  const { companyId, onEvent } = useFlow<OnboardingContextInterface>()
+  return <EmployeeList companyId={companyId} onEvent={onEvent} />
 }

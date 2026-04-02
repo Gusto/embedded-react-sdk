@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
-import type { EmployeeTab, UseManagementEmployeeListResult } from './useManagementEmployeeList'
+import type { EmployeeTab } from './useEmployeeList'
 import { DataView, EmptyData, useDataView } from '@/components/Common'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -11,13 +11,22 @@ import PencilSvg from '@/assets/icons/pencil.svg?react'
 import { firstLastName } from '@/helpers/formattedStrings'
 import { formatDateLongWithYear } from '@/helpers/dateFormatting'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
+import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
-export interface ManagementEmployeeListViewProps extends UseManagementEmployeeListResult {
+export interface ManagementEmployeeListViewProps {
+  mode: 'management'
+  selectedTab: EmployeeTab
+  onTabChange: (tab: EmployeeTab) => void
+  employees: Employee[]
+  isFetching: boolean
+  pagination: PaginationControlProps
+  status: {
+    isPending: boolean
+  }
   onEdit: (employeeId: string) => void
   onDelete: (employeeId: string) => Promise<void>
   onRehire: (employeeId: string) => void
   onAddEmployee: () => void
-  isDeleting: boolean
 }
 
 export function ManagementEmployeeListView({
@@ -25,11 +34,11 @@ export function ManagementEmployeeListView({
   onTabChange,
   employees,
   isFetching,
+  status,
   onEdit,
   onDelete,
   onRehire,
   onAddEmployee,
-  isDeleting,
   pagination,
 }: ManagementEmployeeListViewProps) {
   const { t } = useTranslation('Employee.ManagementEmployeeList')
@@ -184,16 +193,20 @@ export function ManagementEmployeeListView({
     },
     emptyState: () => {
       let title = ''
+      let description = ''
 
       if (selectedTab === 'active') {
         title = t('emptyState.active.title')
+        description = t('emptyState.active.description')
       } else if (selectedTab === 'onboarding') {
         title = t('emptyState.onboarding.title')
+        description = t('emptyState.onboarding.description')
       } else {
         title = t('emptyState.dismissed.title')
+        description = t('emptyState.dismissed.description')
       }
 
-      return <EmptyData title={title} />
+      return <EmptyData title={title} description={description} />
     },
   })
 
@@ -231,7 +244,7 @@ export function ManagementEmployeeListView({
             })
           }
         }}
-        isPrimaryActionLoading={isDeleting}
+        isPrimaryActionLoading={status.isPending}
         isDestructive
         title={t('deleteDialog.title')}
         primaryActionLabel={t('deleteDialog.confirmCta')}

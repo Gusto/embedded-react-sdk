@@ -1428,6 +1428,12 @@ export interface EmployeeEmployeeList{
 "nameLabel":string;
 "statusLabel":string;
 "title":string;
+"deleteDialog":{
+"title":string;
+"description":string;
+"confirmCta":string;
+"cancelCta":string;
+};
 };
 export interface EmployeeEmploymentEligibility{
 "title":string;

@@ -17,5 +17,11 @@
   "hamburgerTitle": "Employee actions menu",
   "nameLabel": "Employee name",
   "statusLabel": "Status",
-  "title": "Your employees"
+  "title": "Your employees",
+  "deleteDialog": {
+    "title": "Delete employee?",
+    "description": "This will permanently delete this employee from your account. This action cannot be undone.",
+    "confirmCta": "Delete employee",
+    "cancelCta": "Cancel"
+  }
 }
