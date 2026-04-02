@@ -1,9 +1,11 @@
+import styles from './Home.module.scss'
+
 export function Home() {
   const env = typeof __SDK_APP_ENV__ !== 'undefined' ? __SDK_APP_ENV__ : 'demo'
   const proxyMode = typeof __SDK_APP_PROXY_MODE__ !== 'undefined' ? __SDK_APP_PROXY_MODE__ : 'none'
 
   return (
-    <div className="home">
+    <div className={styles.root}>
       <h1>SDK Dev App</h1>
       <p>
         Select a component from the sidebar to render it with live API data. Use the Settings panel
@@ -11,7 +13,7 @@ export function Home() {
       </p>
 
       {proxyMode === 'none' && (
-        <div className="warning-card home__warning">
+        <div className={styles.warning}>
           <strong>No environment configured.</strong>
           <p>
             Run <code>npm run sdk-app:setup --env=demo</code> to set up the demo environment, or
@@ -21,7 +23,7 @@ export function Home() {
         </div>
       )}
 
-      <h3 className="home__section-title">Quick Info</h3>
+      <h3 className={styles.sectionTitle}>Quick Info</h3>
       <ul>
         <li>
           Environment: <code>{env}</code>

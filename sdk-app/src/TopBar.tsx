@@ -1,4 +1,5 @@
 import type { TokenStatus } from './useDemoManager'
+import styles from './TopBar.module.scss'
 
 interface TopBarProps {
   companyId: string
@@ -16,9 +17,16 @@ function TokenDot({ status }: { status: TokenStatus }) {
           ? 'Checking...'
           : 'Unknown'
 
+  const dotClass = {
+    valid: styles.tokenDotValid,
+    expired: styles.tokenDotExpired,
+    checking: styles.tokenDotChecking,
+    unknown: styles.tokenDotUnknown,
+  }[status]
+
   return (
-    <div className="topbar-token-status">
-      <div className={`topbar-token-dot topbar-token-dot--${status}`} />
+    <div className={styles.tokenStatus}>
+      <div className={`${styles.tokenDot} ${dotClass}`} />
       <span>{label}</span>
     </div>
   )
@@ -36,38 +44,41 @@ export function TopBar({ companyId, tokenStatus, onOpenSettings }: TopBarProps) 
   const demoType = import.meta.env.VITE_DEMO_TYPE || ''
   const demoTypeLabel = DEMO_TYPE_LABELS[demoType] || demoType
   return (
-    <header className="topbar">
-      <span className="topbar-title">SDK Dev App</span>
-      <div className="topbar-divider" />
+    <header className={styles.root}>
+      <span className={styles.title}>SDK Dev App</span>
+      <div className={styles.divider} />
       <span
-        className="topbar-badge topbar-badge--env"
+        className={`${styles.badge} ${styles.badgeEnv}`}
         title="ZenPayroll environment (demo, staging, or local)"
       >
-        <span className="topbar-badge-label">API</span>
+        <span className={styles.badgeLabel}>API</span>
         {displayEnv}
       </span>
       <span
-        className="topbar-badge topbar-badge--build"
+        className={`${styles.badge} ${styles.badgeBuild}`}
         title="SDK build mode (dev = live source with HMR, prod = built dist)"
       >
-        <span className="topbar-badge-label">SDK</span>
+        <span className={styles.badgeLabel}>SDK</span>
         {build}
       </span>
       {demoTypeLabel && (
-        <span className="topbar-badge topbar-badge--demo-type" title={`Demo type: ${demoType}`}>
+        <span
+          className={`${styles.badge} ${styles.badgeDemoType}`}
+          title={`Demo type: ${demoType}`}
+        >
           {demoTypeLabel}
         </span>
       )}
-      <div className="topbar-divider" />
+      <div className={styles.divider} />
       {companyId && (
-        <span className="topbar-company" title={companyId}>
-          <span className="topbar-badge-label">Company</span>
+        <span className={styles.company} title={companyId}>
+          <span className={styles.badgeLabel}>Company</span>
           {companyId}
         </span>
       )}
       <TokenDot status={tokenStatus} />
-      <div className="topbar-spacer" />
-      <button className="topbar-gear" onClick={onOpenSettings} type="button">
+      <div className={styles.spacer} />
+      <button className={styles.gear} onClick={onOpenSettings} type="button">
         Settings
       </button>
     </header>

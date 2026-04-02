@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 import { NavLink } from 'react-router-dom'
 import { categorizedRegistry, CATEGORIES, type Category } from './registry'
+import styles from './Sidebar.module.scss'
 
 interface SidebarProps {
   searchQuery: string
@@ -29,9 +30,9 @@ function CategorySection({
   const displayCategory = category === 'InformationRequests' ? 'Info Requests' : category
 
   return (
-    <div className="sidebar-category">
+    <div className={styles.category}>
       <div
-        className="sidebar-category-header"
+        className={styles.categoryHeader}
         onClick={() => {
           setCollapsed(!collapsed)
         }}
@@ -43,18 +44,18 @@ function CategorySection({
       >
         <span>
           <span
-            className={`sidebar-category-arrow ${collapsed ? 'sidebar-category-arrow--collapsed' : ''}`}
+            className={`${styles.categoryArrow} ${collapsed ? styles.categoryArrowCollapsed : ''}`}
           >
             ▾
           </span>
           {displayCategory}
         </span>
-        <span className="sidebar-category-count">{filteredItems.length}</span>
+        <span className={styles.categoryCount}>{filteredItems.length}</span>
       </div>
       {!collapsed && (
-        <ul className="sidebar-items">
+        <ul className={styles.items}>
           {filteredItems.map(item => (
-            <li key={item.name} className="sidebar-item">
+            <li key={item.name} className={styles.item}>
               <NavLink to={`/${category.toLowerCase()}/${item.name}`}>{item.name}</NavLink>
             </li>
           ))}
@@ -66,8 +67,8 @@ function CategorySection({
 
 export function Sidebar({ searchQuery, onSearchChange }: SidebarProps) {
   return (
-    <aside className="sidebar">
-      <div className="sidebar-search">
+    <aside className={styles.root}>
+      <div className={styles.search}>
         <input
           type="text"
           placeholder="Search components..."
@@ -77,7 +78,7 @@ export function Sidebar({ searchQuery, onSearchChange }: SidebarProps) {
           }}
         />
       </div>
-      <div className="sidebar-list">
+      <div className={styles.list}>
         {CATEGORIES.map(category => {
           const items = categorizedRegistry[category]
           return (

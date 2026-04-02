@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import type { EntityIds } from './useEntities'
 import type { TokenStatus } from './useDemoManager'
+import styles from './DemoSettingsPanel.module.scss'
 
 interface DemoSettingsPanelProps {
   isOpen: boolean
@@ -63,7 +64,7 @@ export function DemoSettingsPanel({
   return (
     <>
       <div
-        className="settings-overlay"
+        className={styles.overlay}
         onClick={onClose}
         onKeyDown={e => {
           if (e.key === 'Escape') onClose()
@@ -72,18 +73,18 @@ export function DemoSettingsPanel({
         tabIndex={-1}
         aria-label="Close settings"
       />
-      <div className="settings-panel">
-        <div className="settings-header">
+      <div className={styles.panel}>
+        <div className={styles.header}>
           <h2>Demo Settings</h2>
-          <button className="settings-close" onClick={onClose} type="button">
+          <button className={styles.close} onClick={onClose} type="button">
             &times;
           </button>
         </div>
 
         {isFlowTokenMode && (
-          <div className="settings-section">
+          <div className={styles.section}>
             <h3>Demo Management</h3>
-            <div className="settings-info settings-info--spaced">
+            <div className={`${styles.info} ${styles.infoSpaced}`}>
               Token status:{' '}
               <strong>
                 {tokenStatus === 'valid'
@@ -97,9 +98,9 @@ export function DemoSettingsPanel({
             </div>
 
             {tokenStatus === 'expired' && (
-              <div className="settings-refresh-wrapper">
+              <div className={styles.refreshWrapper}>
                 <button
-                  className="settings-btn settings-btn--primary"
+                  className={`${styles.btn} ${styles.btnPrimary}`}
                   onClick={() => onRefreshToken()}
                   disabled={isCreatingDemo}
                   type="button"
@@ -109,7 +110,7 @@ export function DemoSettingsPanel({
               </div>
             )}
 
-            <div className="settings-field">
+            <div className={styles.field}>
               <label htmlFor="demo-type-select">Demo Type</label>
               <select
                 id="demo-type-select"
@@ -124,7 +125,7 @@ export function DemoSettingsPanel({
             </div>
 
             <button
-              className="settings-btn settings-btn--primary"
+              className={`${styles.btn} ${styles.btnPrimary}`}
               onClick={() => onCreateNewDemo(selectedDemoType)}
               disabled={isCreatingDemo}
               type="button"
@@ -133,19 +134,19 @@ export function DemoSettingsPanel({
             </button>
 
             {isCreatingDemo && (
-              <div className="settings-info settings-creating-hint">
+              <div className={`${styles.info} ${styles.creatingHint}`}>
                 This may take a few minutes. The page will reload when ready.
               </div>
             )}
 
-            {demoError && <div className="settings-error">{demoError}</div>}
+            {demoError && <div className={styles.error}>{demoError}</div>}
           </div>
         )}
 
-        <div className="settings-section">
+        <div className={styles.section}>
           <h3>Entity IDs</h3>
           {ENTITY_FIELDS.map(({ key, label }) => (
-            <div key={key} className="settings-field">
+            <div key={key} className={styles.field}>
               <label>{label}</label>
               <input
                 type="text"
@@ -158,10 +159,10 @@ export function DemoSettingsPanel({
             </div>
           ))}
 
-          <div className="settings-actions">
+          <div className={styles.actions}>
             {hasChanges && (
               <button
-                className="settings-btn settings-btn--primary"
+                className={`${styles.btn} ${styles.btnPrimary}`}
                 onClick={() => {
                   confirmedSnapshot.current = { ...entities }
                   onClose()
@@ -171,15 +172,15 @@ export function DemoSettingsPanel({
                 Update
               </button>
             )}
-            <button className="settings-btn" onClick={onResetToDefaults} type="button">
+            <button className={styles.btn} onClick={onResetToDefaults} type="button">
               Restore Default IDs
             </button>
           </div>
         </div>
 
-        <div className="settings-section">
+        <div className={styles.section}>
           <h3>Environment</h3>
-          <div className="settings-info">
+          <div className={styles.info}>
             <p>
               API: <code>{displayEnv}</code>
             </p>

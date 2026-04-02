@@ -2,6 +2,7 @@ import { Suspense, useState, useCallback, useRef, Component, type ReactNode } fr
 import { useParams } from 'react-router-dom'
 import { findComponent, CATEGORIES } from './registry'
 import type { EntityIds } from './useEntities'
+import styles from './ComponentRenderer.module.scss'
 import { GustoProvider } from '@/contexts'
 import '@/styles/sdk.scss'
 
@@ -75,22 +76,22 @@ class ComponentErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundary
 
       if (validationIssues) {
         return (
-          <div className="content-body">
-            <div className="warning-card">
+          <div className={styles.contentBody}>
+            <div className={styles.warningCard}>
               <strong>Missing required props</strong>
               <p>
                 This component requires additional props that aren&apos;t set. These may need to be
                 provided manually via the Settings panel or are only available in specific contexts.
               </p>
-              <div className="warning-card__tags">
+              <div className={styles.warningTags}>
                 {validationIssues.map((issue, i) => (
-                  <span key={i} className="warning-card__tag">
+                  <span key={i} className={styles.warningTag}>
                     {issue.path}
                   </span>
                 ))}
               </div>
-              <div className="warning-card__actions">
-                <button onClick={this.handleReset} type="button" className="settings-btn">
+              <div className={styles.warningActions}>
+                <button onClick={this.handleReset} type="button" className={styles.retryBtn}>
                   Try again
                 </button>
               </div>
@@ -100,8 +101,8 @@ class ComponentErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundary
       }
 
       return (
-        <div className="content-error">
-          <div className="content-error-message">
+        <div className={styles.contentError}>
+          <div className={styles.contentErrorMessage}>
             <strong>Error</strong>
             <pre>{this.state.error.message}</pre>
           </div>
@@ -134,8 +135,8 @@ export function ComponentRenderer({ entities }: ComponentRendererProps) {
 
   if (!category || !componentName) {
     return (
-      <div className="content-body">
-        <p className="content-hint">Select a component from the sidebar.</p>
+      <div className={styles.contentBody}>
+        <p className={styles.contentHint}>Select a component from the sidebar.</p>
       </div>
     )
   }
@@ -145,9 +146,9 @@ export function ComponentRenderer({ entities }: ComponentRendererProps) {
 
   if (!entry) {
     return (
-      <div className="content-body">
-        <div className="content-error">
-          <div className="content-error-message">
+      <div className={styles.contentBody}>
+        <div className={styles.contentError}>
+          <div className={styles.contentErrorMessage}>
             Component not found: {category}/{componentName}
           </div>
         </div>
@@ -184,44 +185,44 @@ export function ComponentRenderer({ entities }: ComponentRendererProps) {
 
   return (
     <>
-      <div className="content-header">
+      <div className={styles.contentHeader}>
         {displayCategory} &rsaquo; <span>{entry.name}</span>
       </div>
       {missingIds.length > 0 || missingAdditionalProps.length > 0 ? (
-        <div className="content-body">
-          <div className="warning-card">
+        <div className={styles.contentBody}>
+          <div className={styles.warningCard}>
             <strong>
               {missingIds.length > 0 ? 'Missing required IDs' : 'Missing required props'}
             </strong>
             {missingIds.length > 0 && (
               <>
-                <div className="warning-card__tags">
+                <div className={styles.warningTags}>
                   {missingIds.map(id => (
-                    <span key={id} className="warning-card__tag">
+                    <span key={id} className={styles.warningTag}>
                       {id}
                     </span>
                   ))}
                 </div>
-                <div className="warning-card__description">
+                <div className={styles.warningDescription}>
                   Set these IDs in <strong>Settings</strong> (top right) or run{' '}
                   <code>npm run sdk-app:setup --env=demo</code>
                 </div>
               </>
             )}
             {missingAdditionalProps.length > 0 && (
-              <div className="warning-card__description">
+              <div className={styles.warningDescription}>
                 <div>
                   This component requires props that are not auto-provisioned. It typically needs
                   context from a parent flow (e.g. a form ID selected in a previous step).
                 </div>
-                <div className="warning-card__tags">
+                <div className={styles.warningTags}>
                   {missingAdditionalProps.map(prop => (
-                    <span key={prop} className="warning-card__tag warning-card__tag--alt">
+                    <span key={prop} className={`${styles.warningTag} ${styles.warningTagAlt}`}>
                       {prop}
                     </span>
                   ))}
                 </div>
-                <div className="warning-card__hint">
+                <div className={styles.warningHint}>
                   Try the parent flow component instead, or pass these props manually if testing.
                 </div>
               </div>
@@ -229,23 +230,23 @@ export function ComponentRenderer({ entities }: ComponentRendererProps) {
           </div>
         </div>
       ) : (
-        <div className="content-body">
+        <div className={styles.contentBody}>
           <ComponentErrorBoundary
             onReset={() => {
               resetKeyRef.current++
             }}
           >
             <GustoProvider config={{ baseUrl: `${window.location.origin}/api/` }} key={providerKey}>
-              <Suspense fallback={<div className="content-loading">Loading...</div>}>
+              <Suspense fallback={<div className={styles.contentLoading}>Loading...</div>}>
                 <SdkComponent {...componentProps} />
               </Suspense>
             </GustoProvider>
           </ComponentErrorBoundary>
         </div>
       )}
-      <div className="events-log">
+      <div className={styles.eventsLog}>
         <div
-          className="events-log-header"
+          className={styles.eventsLogHeader}
           onClick={() => {
             setEventsOpen(!eventsOpen)
           }}
@@ -260,10 +261,10 @@ export function ComponentRenderer({ entities }: ComponentRendererProps) {
         </div>
         {eventsOpen &&
           (events.length > 0 ? (
-            <div className="events-log-entries">
+            <div className={styles.eventsLogEntries}>
               {events.map((entry, i) => (
-                <div key={i} className="events-log-entry">
-                  <span className="events-log-timestamp">[{entry.timestamp}]</span>{' '}
+                <div key={i} className={styles.eventsLogEntry}>
+                  <span className={styles.eventsLogTimestamp}>[{entry.timestamp}]</span>{' '}
                   {typeof entry.event === 'object'
                     ? JSON.stringify(entry.event, null, 2)
                     : JSON.stringify(entry.event)}
@@ -271,7 +272,7 @@ export function ComponentRenderer({ entities }: ComponentRendererProps) {
               ))}
             </div>
           ) : (
-            <div className="events-log-empty">
+            <div className={styles.eventsLogEmpty}>
               No events yet. Interact with the component above.
             </div>
           ))}

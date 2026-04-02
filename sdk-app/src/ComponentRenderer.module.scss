@@ -1,0 +1,174 @@
+.contentHeader {
+  padding: toRem(16) toRem(24);
+  border-bottom: toRem(1) solid var(--color-border);
+  font-size: toRem(13);
+  color: var(--color-text-muted);
+
+  span {
+    color: var(--color-text);
+    font-weight: 500;
+  }
+}
+
+.contentBody {
+  flex: 1;
+  padding: toRem(24);
+  overflow-y: auto;
+}
+
+.contentError {
+  padding: toRem(24);
+  text-align: center;
+
+  pre {
+    text-align: left;
+    margin-top: toRem(8);
+    font-size: toRem(12);
+    white-space: pre-wrap;
+  }
+
+  button {
+    padding: toRem(8) toRem(16);
+    background: var(--color-active);
+    color: #fff;
+    border: none;
+    border-radius: toRem(6);
+    cursor: pointer;
+    font-size: toRem(13);
+  }
+}
+
+.contentErrorMessage {
+  color: var(--color-danger);
+  margin-bottom: toRem(16);
+}
+
+.contentHint {
+  color: var(--color-text-muted);
+}
+
+.contentLoading {
+  padding: toRem(24);
+  color: var(--color-text-muted);
+}
+
+// Warning card (shared between error boundary and missing props)
+.warningCard {
+  padding: toRem(20);
+  background: #fff3cd;
+  border: toRem(1) solid #ffc107;
+  border-radius: toRem(8);
+  font-size: toRem(13);
+  max-width: toRem(560);
+
+  strong {
+    font-size: toRem(15);
+  }
+
+  p {
+    margin-top: toRem(8);
+    color: #664d03;
+    line-height: 1.5;
+  }
+
+  code {
+    background: #fff8e1;
+    padding: toRem(1) toRem(6);
+    border-radius: toRem(3);
+  }
+}
+
+.warningTags {
+  margin-top: toRem(12);
+  display: flex;
+  flex-wrap: wrap;
+  gap: toRem(6);
+}
+
+.warningTag {
+  background: #664d03;
+  color: #fff;
+  padding: toRem(3) toRem(10);
+  border-radius: toRem(4);
+  font-family: monospace;
+  font-size: toRem(12);
+}
+
+.warningTagAlt {
+  background: #856404;
+}
+
+.warningDescription {
+  margin-top: toRem(12);
+  color: #664d03;
+  line-height: 1.6;
+}
+
+.warningHint {
+  margin-top: toRem(8);
+  color: #664d03;
+  font-size: toRem(12);
+}
+
+.warningActions {
+  margin-top: toRem(16);
+}
+
+.retryBtn {
+  padding: toRem(8) toRem(14);
+  border: toRem(1) solid var(--color-border);
+  border-radius: toRem(6);
+  background: #fff;
+  cursor: pointer;
+  font-size: toRem(13);
+  transition: background 0.15s;
+
+  &:hover {
+    background: var(--color-hover-bg);
+  }
+}
+
+// Events log
+.eventsLog {
+  border-top: toRem(1) solid var(--color-border);
+  max-height: toRem(200);
+  overflow-y: auto;
+}
+
+.eventsLogHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: toRem(8) toRem(24);
+  cursor: pointer;
+  font-size: toRem(12);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: toRem(0.5);
+  background: var(--color-bg-sidebar);
+  user-select: none;
+}
+
+.eventsLogEntries {
+  padding: toRem(8) toRem(24);
+  font-family: monospace;
+  font-size: toRem(12);
+  line-height: 1.6;
+}
+
+.eventsLogEntry {
+  padding: toRem(2) 0;
+  border-bottom: toRem(1) solid var(--color-border);
+}
+
+.eventsLogEmpty {
+  color: var(--color-text-muted);
+  font-style: italic;
+  padding: toRem(8) toRem(24);
+  font-size: toRem(12);
+}
+
+.eventsLogTimestamp {
+  color: var(--color-text-muted);
+}
