@@ -4,7 +4,7 @@ import { resolve } from 'path'
 import { existsSync, readFileSync } from 'fs'
 import { scssPreprocessorOptions, svgrPlugin } from '../vite.config'
 import { fetchEntityIds, ENTITY_ID_KEYS, entityIdToEnvVar } from './src/entity-config'
-import { createDemoAndProvision, writeEnvFile, isAllowedHost } from './scripts/demo-provisioner'
+import { createDemoAndProvision, writeEnvFile, validateHost } from './scripts/demo-provisioner'
 
 const SDK_APP_DEFAULT_PORT = 5200
 
@@ -82,7 +82,10 @@ export default defineConfig(() => {
                 return
               }
 
-              if (!isAllowedHost(host)) {
+              let safeHost: string
+              try {
+                safeHost = validateHost(host)
+              } catch {
                 res.statusCode = 400
                 res.end(JSON.stringify({ error: `Disallowed host: ${host}` }))
                 return
@@ -90,7 +93,7 @@ export default defineConfig(() => {
 
               const flowType = demoType || 'react_sdk_demo_company_onboarded'
 
-              const result = await createDemoAndProvision(host, flowType)
+              const result = await createDemoAndProvision(safeHost, flowType)
 
               const envFilePath = resolve(__dirname, `env/.env.${zpEnv}`)
               writeEnvFile(envFilePath, { ...result, gwsFlowsHost: host })
@@ -135,13 +138,16 @@ export default defineConfig(() => {
                 return
               }
 
-              if (!env.GWS_FLOWS_HOST || !isAllowedHost(env.GWS_FLOWS_HOST)) {
+              let safeHost: string
+              try {
+                safeHost = validateHost(env.GWS_FLOWS_HOST || '')
+              } catch {
                 res.statusCode = 400
                 res.end(JSON.stringify({ error: 'Invalid or missing GWS_FLOWS_HOST' }))
                 return
               }
 
-              const baseUrl = `${env.GWS_FLOWS_HOST}/fe_sdk/${env.FLOW_TOKEN}`
+              const baseUrl = `${safeHost}/fe_sdk/${env.FLOW_TOKEN}`
               const entities = await fetchEntityIds(baseUrl, companyId)
 
               res.setHeader('Content-Type', 'application/json')
@@ -154,14 +160,17 @@ export default defineConfig(() => {
 
           server.middlewares.use('/sdk-app/api/validate-token', async (_req, res) => {
             try {
-              if (!env.GWS_FLOWS_HOST || !isAllowedHost(env.GWS_FLOWS_HOST)) {
+              let safeHost: string
+              try {
+                safeHost = validateHost(env.GWS_FLOWS_HOST || '')
+              } catch {
                 res.setHeader('Content-Type', 'application/json')
                 res.end(JSON.stringify({ valid: false, reason: 'Invalid host' }))
                 return
               }
 
               const companyId = env.VITE_COMPANY_ID
-              const testUrl = `${env.GWS_FLOWS_HOST}/fe_sdk/${env.FLOW_TOKEN}/v1/companies/${companyId}/locations`
+              const testUrl = `${safeHost}/fe_sdk/${env.FLOW_TOKEN}/v1/companies/${companyId}/locations`
 
               const testRes = await fetch(testUrl, {
                 signal: AbortSignal.timeout(10000),

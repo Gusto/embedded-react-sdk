@@ -11,29 +11,40 @@ import {
   entityIdToEnvVar,
 } from '../src/entity-config'
 
-export const ALLOWED_HOSTS = new Set([
+const ALLOWED_ORIGINS = new Set([
   'https://flows.gusto-demo.com',
   'https://flows.gusto-staging.com',
   'http://localhost:7777',
   'http://localhost:3000',
 ])
 
-export function validateHost(host: string): void {
+/**
+ * Validates a host URL against the allowlist and returns the
+ * sanitized origin. Throws if the host is not allowed.
+ */
+export function validateHost(host: string): string {
+  let parsed: URL
   try {
-    const url = new URL(host)
-    if (!ALLOWED_HOSTS.has(url.origin) && url.hostname !== 'localhost') {
-      throw new Error(`Disallowed host: ${host}. Allowed: ${[...ALLOWED_HOSTS].join(', ')}`)
-    }
-  } catch (e) {
-    if (e instanceof Error && e.message.startsWith('Disallowed')) throw e
+    parsed = new URL(host)
+  } catch {
     throw new Error(`Invalid host URL: ${host}`)
   }
+
+  if (!['http:', 'https:'].includes(parsed.protocol)) {
+    throw new Error(`Only http/https protocols are allowed: ${host}`)
+  }
+
+  if (!ALLOWED_ORIGINS.has(parsed.origin) && parsed.hostname !== 'localhost') {
+    throw new Error(`Disallowed host: ${host}. Allowed: ${[...ALLOWED_ORIGINS].join(', ')}`)
+  }
+
+  return parsed.origin
 }
 
 export function isAllowedHost(host: string): boolean {
   try {
-    const url = new URL(host)
-    return ALLOWED_HOSTS.has(url.origin) || url.hostname === 'localhost'
+    validateHost(host)
+    return true
   } catch {
     return false
   }
@@ -53,8 +64,8 @@ export async function createDemoAndProvision(
 ): Promise<DemoResult> {
   const { maxPollAttempts = 60, onProgress } = options
 
-  validateHost(gwsFlowsHost)
-  onProgress?.(`Creating ${demoType} demo at ${gwsFlowsHost}...`)
+  const safeHost = validateHost(gwsFlowsHost)
+  onProgress?.(`Creating ${demoType} demo at ${safeHost}...`)
 
   const formBody = new URLSearchParams({
     'demo[flow_type]': demoType,
@@ -63,7 +74,7 @@ export async function createDemoAndProvision(
     'demo[company_name]': `SDK Dev ${new Date().toISOString().slice(0, 10)}`,
   })
 
-  const createRes = await fetch(`${gwsFlowsHost}/demos`, {
+  const createRes = await fetch(`${safeHost}/demos`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: formBody.toString(),
@@ -92,7 +103,7 @@ export async function createDemoAndProvision(
     await new Promise(r => setTimeout(r, 3000))
 
     try {
-      const pollRes = await fetch(`${gwsFlowsHost}/demos/${demoId}`, {
+      const pollRes = await fetch(`${safeHost}/demos/${demoId}`, {
         signal: AbortSignal.timeout(10000),
       })
       const html = await pollRes.text()
@@ -116,7 +127,7 @@ export async function createDemoAndProvision(
 
   onProgress?.(`Flow token: ${flowToken.slice(0, 15)}...`)
 
-  const proxyBase = `${gwsFlowsHost}/fe_sdk/${flowToken}`
+  const proxyBase = `${safeHost}/fe_sdk/${flowToken}`
   const companyId = await fetchCompanyId(proxyBase)
   if (companyId) {
     onProgress?.(`Company ID: ${companyId}`)
