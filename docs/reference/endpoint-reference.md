@@ -113,7 +113,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | `/v1/employees/:employeeId/forms/:formId` |
 | **Employee.EmployeeDocuments** | GET | `/v1/employees/:employeeId` |
 |  | PUT | `/v1/employees/:employeeId/onboarding_documents_config` |
-| **Employee.EmployeeList** | GET | `/v1/companies/:companyId/employees` |
+| **Employee.ManagementEmployeeList** | GET | `/v1/companies/:companyId/employees` |
 |  | DELETE | `/v1/employees/:employeeId` |
 |  | PUT | `/v1/employees/:employeeId/onboarding_status` |
 | **Employee.FederalTaxes** | GET | `/v1/employees/:employeeUuid/federal_taxes` |
@@ -199,6 +199,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 | **Payroll.PayrollList** | GET | `/v1/companies/:companyId/payrolls` |
 |  | GET | `/v1/companies/:companyId/pay_schedules` |
 |  | POST | `/v1/companies/:companyUuid/payrolls/skip` |
+|  | DELETE | `/v1/companies/:companyId/payrolls/:payrollId` |
 |  | GET | `/v1/companies/:companyUuid/payrolls/blockers` |
 |  | GET | `/v1/companies/:companyUuid/wire_in_requests` |
 | **Payroll.PayrollOverview** | PUT | `/v1/companies/:companyId/payrolls/:payrollId/submit` |
@@ -249,7 +250,8 @@ Flows compose multiple blocks into a single workflow. The endpoint list for a fl
 | **Company.OnboardingFlow** | Company.BankAccount, Company.DocumentSigner, Company.FederalTaxes, Company.Industry, Company.Locations, Company.OnboardingOverview, Company.PaySchedule, Company.StateTaxes |
 | **Contractor.OnboardingFlow** | Contractor.Address, Contractor.ContractorList, Contractor.ContractorProfile, Contractor.ContractorSubmit, Contractor.NewHireReport, Contractor.PaymentMethod |
 | **Contractor.Payments.PaymentFlow** | Contractor.Payments.CreatePayment, Contractor.Payments.PaymentHistory, Contractor.Payments.PaymentStatement, Contractor.Payments.PaymentSummary, Contractor.Payments.PaymentsList, InformationRequests |
-| **Employee.OnboardingFlow** | Employee.Compensation, Employee.Deductions, Employee.EmployeeDocuments, Employee.EmployeeList, Employee.FederalTaxes, Employee.OnboardingSummary, Employee.PaymentMethod, Employee.Profile, Employee.StateTaxes |
+| **Employee.OnboardingFlow** | Employee.Compensation, Employee.Deductions, Employee.EmployeeDocuments, Employee.FederalTaxes, Employee.ManagementEmployeeList, Employee.OnboardingSummary, Employee.PaymentMethod, Employee.Profile, Employee.StateTaxes |
 | **Employee.SelfOnboardingFlow** | Employee.EmploymentEligibility, Employee.FederalTaxes, Employee.Landing, Employee.OnboardingSummary, Employee.PaymentMethod, Employee.Profile, Employee.StateTaxes |
 | **Payroll.PayrollExecutionFlow** | Payroll.ConfirmWireDetails |
 | **Payroll.PayrollFlow** | Payroll.ConfirmWireDetails, Payroll.OffCycleFlow, Payroll.PayrollBlocker, Payroll.PayrollConfiguration, Payroll.PayrollEditEmployee, Payroll.PayrollLanding, Payroll.PayrollOverview, Payroll.PayrollReceipts, Payroll.TransitionFlow |
+| **UNSTABLE_TimeOff.TimeOffFlow** | UNSTABLE_TimeOff.AddEmployeesHoliday, UNSTABLE_TimeOff.AddEmployeesToPolicy, UNSTABLE_TimeOff.HolidaySelectionForm, UNSTABLE_TimeOff.PolicyDetailsForm, UNSTABLE_TimeOff.PolicyList, UNSTABLE_TimeOff.PolicySettings, UNSTABLE_TimeOff.PolicyTypeSelector, UNSTABLE_TimeOff.ViewHolidayEmployees, UNSTABLE_TimeOff.ViewHolidaySchedule, UNSTABLE_TimeOff.ViewPolicyDetails, UNSTABLE_TimeOff.ViewPolicyEmployees |

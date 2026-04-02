@@ -1,14 +1,16 @@
-import { renderHook } from '@testing-library/react'
+import { renderHook, waitFor } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { HttpResponse } from 'msw'
 import { useForm, FormProvider } from 'react-hook-form'
 import React from 'react'
+import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import {
   useContractorProfile,
   ContractorType,
   WageType,
   createContractorProfileValidationSchema,
 } from './useContractorProfile'
+import { ContractorOnboardingStatus } from '@/shared/constants'
 import { server } from '@/test/mocks/server'
 import {
   handleCreateContractor,
@@ -584,6 +586,89 @@ describe('useContractorProfile', () => {
 
       const errors = formMethods.formState.errors
       expect(errors.ssn).toBeUndefined()
+    })
+  })
+
+  describe('Self-Onboarding Toggle State from Onboarding Status', () => {
+    const baseContractor = {
+      uuid: 'test-contractor-123',
+      version: '1.0',
+      type: ContractorType.Individual,
+      firstName: 'Jane',
+      lastName: 'Smith',
+      hasSsn: true,
+      hasEin: false,
+      wageType: WageType.Fixed,
+      startDate: '2024-01-01',
+      isActive: true,
+    }
+
+    it('should default selfOnboarding to false when onboarding status is admin_onboarding_incomplete', () => {
+      const contractor = {
+        ...baseContractor,
+        onboardingStatus: ContractorOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE,
+      }
+      const { result } = renderHook(
+        () =>
+          useContractorProfile({
+            ...defaultProps,
+            contractorId: contractor.uuid,
+            existingContractor: contractor,
+          }),
+        { wrapper: ({ children }) => <TestWrapper>{children}</TestWrapper> },
+      )
+      expect(result.current.formMethods.getValues('selfOnboarding')).toBe(false)
+      expect(result.current.shouldShowEmailField).toBe(false)
+    })
+
+    it('should default selfOnboarding to true when onboarding status is self_onboarding_invited', () => {
+      const contractor = {
+        ...baseContractor,
+        onboardingStatus: ContractorOnboardingStatus.SELF_ONBOARDING_INVITED,
+      }
+      const { result } = renderHook(
+        () =>
+          useContractorProfile({
+            ...defaultProps,
+            contractorId: contractor.uuid,
+            existingContractor: contractor,
+          }),
+        { wrapper: ({ children }) => <TestWrapper>{children}</TestWrapper> },
+      )
+      expect(result.current.formMethods.getValues('selfOnboarding')).toBe(true)
+      expect(result.current.shouldShowEmailField).toBe(true)
+    })
+
+    it('should update selfOnboarding when contractor transitions from self_onboarding_invited to admin_onboarding_incomplete', async () => {
+      const selfOnboardingContractor = {
+        ...baseContractor,
+        onboardingStatus: ContractorOnboardingStatus.SELF_ONBOARDING_INVITED,
+      } as Contractor
+      const { result, rerender } = renderHook(
+        ({ existingContractor }) =>
+          useContractorProfile({
+            ...defaultProps,
+            contractorId: existingContractor.uuid,
+            existingContractor,
+          }),
+        {
+          initialProps: { existingContractor: selfOnboardingContractor },
+          wrapper: ({ children }) => <TestWrapper>{children}</TestWrapper>,
+        },
+      )
+      expect(result.current.formMethods.getValues('selfOnboarding')).toBe(true)
+      expect(result.current.shouldShowEmailField).toBe(true)
+
+      const adminOnboardingContractor = {
+        ...baseContractor,
+        onboardingStatus: ContractorOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE,
+        version: '2.0',
+      } as Contractor
+      rerender({ existingContractor: adminOnboardingContractor })
+      await waitFor(() => {
+        expect(result.current.formMethods.getValues('selfOnboarding')).toBe(false)
+      })
+      expect(result.current.shouldShowEmailField).toBe(false)
     })
   })
 })

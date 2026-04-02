@@ -73,7 +73,7 @@ test.describe('EmployeeSelfOnboardingFlow', () => {
         await streetField.fill('123 Test Street')
         await page.getByLabel(/city/i).fill('San Francisco')
         await page.getByRole('button', { name: /state/i }).click()
-        await page.getByRole('option').first().click()
+        await page.getByRole('listbox').getByRole('option').first().click()
         await page.getByLabel(/zip/i).fill('94105')
       }
     }

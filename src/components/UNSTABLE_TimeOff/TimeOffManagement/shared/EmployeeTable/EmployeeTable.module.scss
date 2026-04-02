@@ -1,0 +1,36 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: toRem(16);
+
+  &:not([data-has-menu]) {
+    :global(.react-aria-Cell),
+    :global(.react-aria-Column) {
+      &:last-child {
+        text-align: left;
+      }
+    }
+  }
+}
+
+.searchContainer {
+  max-width: toRem(320);
+}
+
+.clearButton {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: toRem(2);
+
+  &:focus-visible {
+    outline: 2px solid var(--gep-focus-ring-color, currentColor);
+    outline-offset: 2px;
+    border-radius: toRem(2);
+  }
+}
+
+.balanceInput {
+  max-width: toRem(90);
+}

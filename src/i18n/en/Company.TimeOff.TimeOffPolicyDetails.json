@@ -73,12 +73,6 @@
     "no": "No, remaining time off balances for this policy are not paid out when an employee is dismissed."
   },
   "employeeTable": {
-    "selected": "of {{numAll}} employees selected",
-    "selectAllEmployees": "Select all employees",
-    "selectAll": "Select all",
-    "clearAriaLabel": "Clear selected employees",
-    "clear": "Clear",
-    "name": "Name",
     "balance": "Balance (hrs)",
     "actions": "Actions",
     "editBalance": "Edit balance",

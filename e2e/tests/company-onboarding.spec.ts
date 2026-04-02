@@ -90,7 +90,7 @@ test.describe('CompanyOnboardingFlow', () => {
       const buttonText = await taxpayerButton.textContent()
       if (buttonText?.includes('Select')) {
         await taxpayerButton.click()
-        await page.getByRole('option').first().click()
+        await page.getByRole('listbox').getByRole('option').first().click()
       }
     }
 

@@ -8,6 +8,7 @@ export default {
 const runPayrollAction = fn().mockName('run_payroll')
 const submitPayrollAction = fn().mockName('submit_payroll')
 const skipPayrollAction = fn().mockName('skip_payroll')
+const deletePayrollAction = fn().mockName('delete_payroll')
 const runOffCyclePayrollAction = fn().mockName('run_off_cycle_payroll')
 const dismissAlertAction = fn().mockName('dismiss_alert')
 
@@ -26,11 +27,15 @@ export const PayrollListStory = () => {
       onRunPayroll={runPayrollAction}
       onSubmitPayroll={submitPayrollAction}
       onSkipPayroll={skipPayrollAction}
+      onDeletePayroll={deletePayrollAction}
       onRunOffCyclePayroll={runOffCyclePayrollAction}
       showSkipSuccessAlert={false}
       onDismissSkipSuccessAlert={dismissAlertAction}
+      showDeleteSuccessAlert={false}
+      onDismissDeleteSuccessAlert={dismissAlertAction}
       blockers={[]}
       skippingPayrollId={null}
+      deletingPayrollId={null}
       wireInRequests={[]}
     />
   )
@@ -44,11 +49,15 @@ export const EmptyPayrollListStory = () => {
       onRunPayroll={runPayrollAction}
       onSubmitPayroll={submitPayrollAction}
       onSkipPayroll={skipPayrollAction}
+      onDeletePayroll={deletePayrollAction}
       onRunOffCyclePayroll={runOffCyclePayrollAction}
       showSkipSuccessAlert={false}
       onDismissSkipSuccessAlert={dismissAlertAction}
+      showDeleteSuccessAlert={false}
+      onDismissDeleteSuccessAlert={dismissAlertAction}
       blockers={[]}
       skippingPayrollId={null}
+      deletingPayrollId={null}
       wireInRequests={[]}
     />
   )
@@ -69,11 +78,15 @@ export const PayrollListWithSkipAlertStory = () => {
       onRunPayroll={runPayrollAction}
       onSubmitPayroll={submitPayrollAction}
       onSkipPayroll={skipPayrollAction}
+      onDeletePayroll={deletePayrollAction}
       onRunOffCyclePayroll={runOffCyclePayrollAction}
       showSkipSuccessAlert={true}
       onDismissSkipSuccessAlert={dismissAlertAction}
+      showDeleteSuccessAlert={false}
+      onDismissDeleteSuccessAlert={dismissAlertAction}
       blockers={[]}
       skippingPayrollId={null}
+      deletingPayrollId={null}
       wireInRequests={[]}
     />
   )
@@ -94,11 +107,15 @@ export const PayrollListSkippingStory = () => {
       onRunPayroll={runPayrollAction}
       onSubmitPayroll={submitPayrollAction}
       onSkipPayroll={skipPayrollAction}
+      onDeletePayroll={deletePayrollAction}
       onRunOffCyclePayroll={runOffCyclePayrollAction}
       showSkipSuccessAlert={false}
       onDismissSkipSuccessAlert={dismissAlertAction}
+      showDeleteSuccessAlert={false}
+      onDismissDeleteSuccessAlert={dismissAlertAction}
       blockers={[]}
       skippingPayrollId="abcd"
+      deletingPayrollId={null}
       wireInRequests={[]}
     />
   )
@@ -119,11 +136,15 @@ export const PayrollListWithBlockersStory = () => {
       onRunPayroll={runPayrollAction}
       onSubmitPayroll={submitPayrollAction}
       onSkipPayroll={skipPayrollAction}
+      onDeletePayroll={deletePayrollAction}
       onRunOffCyclePayroll={runOffCyclePayrollAction}
       showSkipSuccessAlert={false}
       onDismissSkipSuccessAlert={dismissAlertAction}
+      showDeleteSuccessAlert={false}
+      onDismissDeleteSuccessAlert={dismissAlertAction}
       blockers={[{ key: 'signatory_required', message: 'Signatory required' }]}
       skippingPayrollId={null}
+      deletingPayrollId={null}
       wireInRequests={[]}
     />
   )
@@ -170,11 +191,15 @@ export const PayrollListWithWireInStatusesStory = () => {
       onRunPayroll={runPayrollAction}
       onSubmitPayroll={submitPayrollAction}
       onSkipPayroll={skipPayrollAction}
+      onDeletePayroll={deletePayrollAction}
       onRunOffCyclePayroll={runOffCyclePayrollAction}
       showSkipSuccessAlert={false}
       onDismissSkipSuccessAlert={dismissAlertAction}
+      showDeleteSuccessAlert={false}
+      onDismissDeleteSuccessAlert={dismissAlertAction}
       blockers={[]}
       skippingPayrollId={null}
+      deletingPayrollId={null}
       wireInRequests={[
         {
           uuid: 'wire-req-1',
@@ -233,11 +258,15 @@ export const PayrollListWithMixedTypesStory = () => {
       onRunPayroll={runPayrollAction}
       onSubmitPayroll={submitPayrollAction}
       onSkipPayroll={skipPayrollAction}
+      onDeletePayroll={deletePayrollAction}
       onRunOffCyclePayroll={runOffCyclePayrollAction}
       showSkipSuccessAlert={false}
       onDismissSkipSuccessAlert={dismissAlertAction}
+      showDeleteSuccessAlert={false}
+      onDismissDeleteSuccessAlert={dismissAlertAction}
       blockers={[]}
       skippingPayrollId={null}
+      deletingPayrollId={null}
       wireInRequests={[]}
     />
   )

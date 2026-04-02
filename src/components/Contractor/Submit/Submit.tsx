@@ -5,7 +5,7 @@ import { useContractorsGetSuspense } from '@gusto/embedded-api/react-query/contr
 import { SubmitDone } from './SubmitDone'
 import { Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { useI18n } from '@/i18n'
+import { useI18n, useComponentDictionary } from '@/i18n'
 import {
   BaseComponent,
   useBase,
@@ -15,7 +15,7 @@ import {
 import { componentEvents, ContractorOnboardingStatus } from '@/shared/constants'
 import { firstLastName } from '@/helpers/formattedStrings'
 
-export interface ContractorSubmitProps extends CommonComponentInterface<'Contractor.ContractorList'> {
+export interface ContractorSubmitProps extends CommonComponentInterface<'Contractor.Submit'> {
   contractorId: string
   selfOnboarding?: boolean
 }
@@ -28,8 +28,9 @@ export function ContractorSubmit(props: ContractorSubmitProps & BaseComponentInt
   )
 }
 
-export const Root = ({ contractorId, selfOnboarding }: ContractorSubmitProps) => {
+export const Root = ({ contractorId, selfOnboarding, dictionary }: ContractorSubmitProps) => {
   useI18n('Contractor.Submit')
+  useComponentDictionary('Contractor.Submit', dictionary)
   const { Alert, Button, UnorderedList } = useComponentContext()
   const { t } = useTranslation('Contractor.Submit')
   const { onEvent, baseSubmitHandler } = useBase()

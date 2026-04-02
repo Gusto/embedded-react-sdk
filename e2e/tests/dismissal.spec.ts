@@ -50,7 +50,7 @@ test.describe('DismissalFlow', () => {
 
       const payPeriodSelect = page.getByRole('button', { name: /pay period/i })
       await payPeriodSelect.click()
-      await page.getByRole('option').first().click()
+      await page.getByRole('listbox').getByRole('option').first().click()
 
       const continueButton = page.getByRole('button', { name: /continue/i })
       await expect(continueButton).toBeEnabled()
@@ -71,7 +71,7 @@ test.describe('DismissalFlow', () => {
       const payPeriodSelect = page.getByRole('button', { name: /pay period/i })
       await payPeriodSelect.click()
 
-      const options = page.getByRole('option')
+      const options = page.getByRole('listbox').getByRole('option')
       const optionCount = await options.count()
       expect(optionCount).toBeGreaterThan(0)
 
@@ -150,7 +150,7 @@ test.describe('DismissalFlow', () => {
 
       const payPeriodSelect = page.getByRole('button', { name: /pay period/i })
       await payPeriodSelect.click()
-      await page.getByRole('option').first().click()
+      await page.getByRole('listbox').getByRole('option').first().click()
 
       await page.getByRole('button', { name: /continue/i }).click()
       await waitForLoadingComplete(page)
@@ -211,7 +211,7 @@ test.describe('DismissalFlow', () => {
 
       const payPeriodSelect = page.getByRole('button', { name: /pay period/i })
       await payPeriodSelect.click()
-      await page.getByRole('option').first().click()
+      await page.getByRole('listbox').getByRole('option').first().click()
 
       await page.getByRole('button', { name: /continue/i }).click()
       await waitForLoadingComplete(page)
