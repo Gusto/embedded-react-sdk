@@ -41,7 +41,7 @@ test.describe('EmployeeOnboardingFlow', () => {
     let hasWorkAddress = false
     if (await workAddressButton.isVisible().catch(() => false)) {
       await workAddressButton.click()
-      const firstOption = page.getByRole('option').first()
+      const firstOption = page.getByRole('listbox').getByRole('option').first()
       hasWorkAddress = await firstOption
         .waitFor({ timeout: 10000 })
         .then(() => true)
@@ -59,7 +59,7 @@ test.describe('EmployeeOnboardingFlow', () => {
     await page.getByLabel('Street 1').fill('123 Test St')
     await page.getByLabel(/city/i).fill('San Francisco')
     await page.getByLabel('State').click()
-    await page.getByRole('option', { name: 'California' }).click()
+    await page.getByRole('listbox').getByRole('option', { name: 'California' }).click()
     const zipField = page.getByLabel(/zip/i)
     await zipField.clear()
     await zipField.fill('94105')
@@ -98,8 +98,8 @@ test.describe('EmployeeOnboardingFlow', () => {
       const buttonText = await employeeTypeButton.textContent()
       if (buttonText?.includes('Select')) {
         await employeeTypeButton.click()
-        await page.getByRole('option').first().waitFor({ timeout: 5000 })
-        await page.getByRole('option').first().click()
+        await page.getByRole('listbox').getByRole('option').first().waitFor({ timeout: 5000 })
+        await page.getByRole('listbox').getByRole('option').first().click()
       }
     }
 
@@ -117,11 +117,11 @@ test.describe('EmployeeOnboardingFlow', () => {
       const buttonText = await perButton.textContent()
       if (!buttonText?.includes('Year')) {
         await perButton.click()
-        const yearOption = page.getByRole('option', { name: /year/i })
+        const yearOption = page.getByRole('listbox').getByRole('option', { name: /year/i })
         if (await yearOption.isVisible().catch(() => false)) {
           await yearOption.click()
         } else {
-          await page.getByRole('option').first().click()
+          await page.getByRole('listbox').getByRole('option').first().click()
         }
       }
     }
@@ -136,8 +136,8 @@ test.describe('EmployeeOnboardingFlow', () => {
       const buttonText = await filingStatusButton.textContent()
       if (buttonText?.includes('Select')) {
         await filingStatusButton.click()
-        await page.getByRole('option').first().waitFor({ timeout: 5000 })
-        await page.getByRole('option').first().click()
+        await page.getByRole('listbox').getByRole('option').first().waitFor({ timeout: 5000 })
+        await page.getByRole('listbox').getByRole('option').first().click()
       }
     }
 
@@ -152,8 +152,8 @@ test.describe('EmployeeOnboardingFlow', () => {
       const buttonText = await stateFilingStatus.textContent()
       if (buttonText?.includes('Select')) {
         await stateFilingStatus.click()
-        await page.getByRole('option').first().waitFor({ timeout: 5000 })
-        await page.getByRole('option').first().click()
+        await page.getByRole('listbox').getByRole('option').first().waitFor({ timeout: 5000 })
+        await page.getByRole('listbox').getByRole('option').first().click()
       }
     }
 
