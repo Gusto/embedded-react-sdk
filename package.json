@@ -74,7 +74,15 @@
     "e2e:refresh-token": "npx tsx e2e/scripts/refreshToken.ts",
     "tsc": "tsc --pretty",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "sdk-app": "npx tsx sdk-app/scripts/start.ts dev --env=demo",
+    "sdk-app-dev": "npx tsx sdk-app/scripts/start.ts dev --env=demo",
+    "sdk-app-dev:local": "npx tsx sdk-app/scripts/start.ts dev --env=local",
+    "sdk-app-dev:demo": "npx tsx sdk-app/scripts/start.ts dev --env=demo",
+    "sdk-app-dev:staging": "npx tsx sdk-app/scripts/start.ts dev --env=staging",
+    "sdk-app-prod": "npx tsx sdk-app/scripts/start.ts prod --env=staging",
+    "sdk-app:setup": "npx tsx sdk-app/scripts/setup.ts",
+    "sdk-app:generate-registry": "npx tsx sdk-app/scripts/generate-registry.ts"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.5.0",
@@ -94,6 +102,7 @@
     "@types/js-yaml": "^4.0.9",
     "@types/pngjs": "^6.0.5",
     "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react-swc": "^4.3.0",
     "@vitest/coverage-v8": "^4.1.2",
     "axe-core": "^4.11.2",
@@ -119,6 +128,7 @@
     "prettier": "^3.8.1",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
+    "react-router-dom": "^7.13.2",
     "sass-embedded": "^1.99.0",
     "storybook": "^10.3.4",
     "stylelint-config-standard": "^40.0.0",
