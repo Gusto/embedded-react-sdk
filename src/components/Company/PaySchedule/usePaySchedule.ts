@@ -19,6 +19,7 @@ type PayScheduleContextType = {
   handleCancel: () => void
   handleContinue: () => void
   mode: MODE
+  isPending: boolean
   paySchedules: PayScheduleList[] | undefined | null
   currentPaySchedule: PayScheduleType | undefined | null
   payPeriodPreview?: PayPeriods[]

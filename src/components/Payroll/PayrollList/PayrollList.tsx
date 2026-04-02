@@ -15,6 +15,7 @@ import { PayrollListPresentation } from './PayrollListPresentation'
 import type { BaseComponentInterface } from '@/components/Base'
 import { BaseComponent, useBase } from '@/components/Base'
 import { componentEvents } from '@/shared/constants'
+import { usePagination } from '@/hooks/usePagination/usePagination'
 
 interface PayrollListBlockProps extends BaseComponentInterface {
   companyId: string
@@ -40,6 +41,7 @@ const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
   const { baseSubmitHandler } = useBase()
   const [showSkipSuccessAlert, setShowSkipSuccessAlert] = useState(false)
   const [skippingPayrollId, setSkippingPayrollId] = useState<string | null>(null)
+  const { currentPage, itemsPerPage, getPaginationProps } = usePagination()
 
   const { data: payrollsData } = usePayrollsListSuspense({
     companyId,
@@ -50,8 +52,11 @@ const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
       QueryParamPayrollTypes.OffCycle,
       QueryParamPayrollTypes.External,
     ],
+    page: currentPage,
+    per: itemsPerPage,
   })
   const payrollList = payrollsData.payrollList!
+  const paginationProps = getPaginationProps(payrollsData.httpMeta.response.headers)
   const { data: paySchedulesData } = usePaySchedulesGetAllSuspense({
     companyId,
   })
@@ -117,6 +122,7 @@ const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
   return (
     <PayrollListPresentation
       payrolls={payrollList}
+      pagination={paginationProps}
       paySchedules={paySchedulesList}
       onRunPayroll={onRunPayroll}
       onSubmitPayroll={onSubmitPayroll}
