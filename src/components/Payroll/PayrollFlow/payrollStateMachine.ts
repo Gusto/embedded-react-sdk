@@ -281,6 +281,14 @@ export const payrollFlowMachine = {
     breadcrumbNavigateTransition('landing'),
     exitFlowTransition,
   ),
-  transition: state<MachineTransition>(landingBreadcrumbNavigateTransition, exitFlowTransition),
-  offCycle: state<MachineTransition>(landingBreadcrumbNavigateTransition, exitFlowTransition),
+  transition: state<MachineTransition>(
+    landingBreadcrumbNavigateTransition,
+    exitFlowTransition,
+    cancelledToLandingTransition,
+  ),
+  offCycle: state<MachineTransition>(
+    landingBreadcrumbNavigateTransition,
+    exitFlowTransition,
+    cancelledToLandingTransition,
+  ),
 }

@@ -265,6 +265,18 @@ describe('payrollFlowMachine', () => {
 
       expect(service.machine.current).toBe('offCycle')
     })
+
+    it('transitions to landing with alert on RUN_PAYROLL_CANCELLED', () => {
+      const service = createService()
+      toOffCycle(service)
+
+      send(service, componentEvents.RUN_PAYROLL_CANCELLED)
+
+      expect(service.machine.current).toBe('landing')
+      expect(service.context.showPayrollCancelledAlert).toBe(true)
+      expect(service.context.payrollUuid).toBeUndefined()
+      expect(service.context.executionInitialState).toBeUndefined()
+    })
   })
 
   describe('transition state', () => {
@@ -319,6 +331,18 @@ describe('payrollFlowMachine', () => {
       send(service, componentEvents.BREADCRUMB_NAVIGATE, { key: 'configuration' })
 
       expect(service.machine.current).toBe('transition')
+    })
+
+    it('transitions to landing with alert on RUN_PAYROLL_CANCELLED', () => {
+      const service = createService()
+      toTransition(service)
+
+      send(service, componentEvents.RUN_PAYROLL_CANCELLED)
+
+      expect(service.machine.current).toBe('landing')
+      expect(service.context.showPayrollCancelledAlert).toBe(true)
+      expect(service.context.payrollUuid).toBeUndefined()
+      expect(service.context.executionInitialState).toBeUndefined()
     })
   })
 })
