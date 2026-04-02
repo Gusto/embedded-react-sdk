@@ -75,10 +75,10 @@ async function main() {
   console.log(`  Build: ${sdkBuild} | Environment: ${zpEnvInput}\n`)
 
   try {
-    execSync('npx tsx sdk-app/scripts/generate-registry.ts', { cwd: ROOT_DIR, stdio: 'pipe' })
-    console.log(`  Registry data generated\n`)
+    execSync('npx tsx sdk-app/scripts/analyze-component-props.ts', { cwd: ROOT_DIR, stdio: 'pipe' })
+    console.log(`  Component props analyzed\n`)
   } catch {
-    console.warn(`  Warning: Registry generation failed. Using existing data.\n`)
+    console.warn(`  Warning: Component prop analysis failed. Using existing data.\n`)
   }
 
   const envPath = resolve(ENV_DIR, `.env.${zpEnv}`)

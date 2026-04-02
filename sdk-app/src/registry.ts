@@ -39,7 +39,7 @@ function buildRegistry(): ComponentEntry[] {
         // eslint-disable-next-line no-console
         console.warn(
           `[SDK Dev App] Component "${key}" is not in generated registry data. ` +
-            `Defaulting to ['companyId']. Run: npx tsx sdk-app/scripts/generate-registry.ts`,
+            `Defaulting to ['companyId']. Run: npx tsx sdk-app/scripts/analyze-component-props.ts`,
         )
       }
 

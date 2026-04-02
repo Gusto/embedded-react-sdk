@@ -82,7 +82,7 @@
     "sdk-app-dev:staging": "npx tsx sdk-app/scripts/start.ts dev --env=staging",
     "sdk-app-prod": "npx tsx sdk-app/scripts/start.ts prod --env=staging",
     "sdk-app:setup": "npx tsx sdk-app/scripts/setup.ts",
-    "sdk-app:generate-registry": "npx tsx sdk-app/scripts/generate-registry.ts"
+    "sdk-app:analyze-props": "npx tsx sdk-app/scripts/analyze-component-props.ts"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.5.0",
