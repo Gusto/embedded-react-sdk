@@ -2,7 +2,6 @@
 import react from '@vitejs/plugin-react-swc'
 import { resolve } from 'path'
 import { defineConfig } from 'vite'
-import type { UserConfig } from 'vite'
 import dts from 'vite-plugin-dts'
 import stylelint from 'vite-plugin-stylelint'
 import svgr from 'vite-plugin-svgr'
@@ -26,32 +25,17 @@ export const svgrPlugin = () =>
     include: ['**/*.svg?react', '**/*.svg'],
   })
 
-export function createSharedConfig(sdkSrcPath: string): UserConfig {
-  return {
-    plugins: [react(), svgrPlugin()],
-    resolve: {
-      alias: {
-        '@': sdkSrcPath,
-      },
-    },
-    css: {
-      preprocessorOptions: scssPreprocessorOptions,
-    },
-  }
-}
-
 /**
  * Current config is set to build sdk in library mode, retaining the original file structure and file names while also allowing for css modules and single css file output.
  * Development mode removes unnecessary plugins and configurations to speed up the build process.
  */
 export default defineConfig(({ mode }) => {
   const isDev = mode === 'development'
-  const shared = createSharedConfig(resolve(__dirname, './src'))
 
   return {
-    ...shared,
     plugins: [
-      ...(shared.plugins ?? []),
+      react(),
+      svgrPlugin(),
       externalizeDeps(),
       !isDev &&
         dts({
@@ -84,6 +68,14 @@ export default defineConfig(({ mode }) => {
           typescript: true,
         }),
     ],
+    resolve: {
+      alias: {
+        '@': resolve(__dirname, './src'),
+      },
+    },
+    css: {
+      preprocessorOptions: scssPreprocessorOptions,
+    },
     build: {
       lib: {
         fileName: 'index',

@@ -1,7 +1,8 @@
-import { defineConfig, mergeConfig } from 'vite'
+import react from '@vitejs/plugin-react-swc'
+import { defineConfig } from 'vite'
 import { resolve } from 'path'
 import { existsSync, readFileSync, writeFileSync } from 'fs'
-import { createSharedConfig } from '../vite.config'
+import { scssPreprocessorOptions, svgrPlugin } from '../vite.config'
 import {
   fetchEntityIds,
   fetchCompanyId,
@@ -86,17 +87,21 @@ export default defineConfig(() => {
         : undefined
 
   const sdkSrcPath = resolve(__dirname, '../src')
-  const shared = createSharedConfig(sdkSrcPath)
 
-  const prodAliases = isProd
-    ? { '@gusto/embedded-react-sdk': resolve(__dirname, '../dist/index.js') }
-    : {}
+  const aliases: Record<string, string> = {
+    '@': sdkSrcPath,
+  }
+  if (isProd) {
+    aliases['@gusto/embedded-react-sdk'] = resolve(__dirname, '../dist/index.js')
+  }
 
-  return mergeConfig(shared, {
+  return {
     root: resolve(__dirname),
     publicDir: resolve(__dirname, 'public'),
     envDir: resolve(__dirname, 'env'),
     plugins: [
+      react(),
+      svgrPlugin(),
       {
         name: 'sdk-app-server-api',
         configureServer(server) {
@@ -301,7 +306,10 @@ export default defineConfig(() => {
       },
     ],
     resolve: {
-      alias: prodAliases,
+      alias: aliases,
+    },
+    css: {
+      preprocessorOptions: scssPreprocessorOptions,
     },
     server: {
       port: SDK_APP_DEFAULT_PORT,
@@ -314,5 +322,5 @@ export default defineConfig(() => {
       __SDK_APP_BUILD__: JSON.stringify(sdkBuild),
       __SDK_APP_PROXY_MODE__: JSON.stringify(proxyMode || 'none'),
     },
-  })
+  }
 })
