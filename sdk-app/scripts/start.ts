@@ -21,30 +21,16 @@ function loadEnvFile(path: string): Record<string, string> {
 }
 
 function envIsUsable(env: Record<string, string>): boolean {
-  const hasFlowToken = !!(env.FLOW_TOKEN && env.GWS_FLOWS_HOST)
-  const hasDirect = !!(env.ACCESS_TOKEN && env.ZP_API_URL)
-  return (hasFlowToken || hasDirect) && !!env.VITE_COMPANY_ID
+  return !!(env.FLOW_TOKEN && env.GWS_FLOWS_HOST && env.VITE_COMPANY_ID)
 }
 
 async function validateToken(env: Record<string, string>): Promise<boolean> {
   const companyId = env.VITE_COMPANY_ID
-  if (!companyId) return false
+  if (!companyId || !env.FLOW_TOKEN || !env.GWS_FLOWS_HOST) return false
 
   try {
-    let url: string
-    const headers: Record<string, string> = {}
-
-    if (env.FLOW_TOKEN && env.GWS_FLOWS_HOST) {
-      url = `${env.GWS_FLOWS_HOST}/fe_sdk/${env.FLOW_TOKEN}/v1/companies/${companyId}/locations`
-    } else if (env.ACCESS_TOKEN && env.ZP_API_URL) {
-      url = `${env.ZP_API_URL}/v1/companies/${companyId}/locations`
-      headers['Authorization'] = `Bearer ${env.ACCESS_TOKEN}`
-      headers['X-Gusto-API-Version'] = '2025-11-15'
-    } else {
-      return false
-    }
-
-    const res = await fetch(url, { headers, signal: AbortSignal.timeout(10000) })
+    const url = `${env.GWS_FLOWS_HOST}/fe_sdk/${env.FLOW_TOKEN}/v1/companies/${companyId}/locations`
+    const res = await fetch(url, { signal: AbortSignal.timeout(10000) })
     return res.ok
   } catch {
     return false
@@ -95,22 +81,12 @@ async function main() {
 
   const env = loadEnvFile(envPath)
 
-  const isFlowToken = !!(env.FLOW_TOKEN && env.GWS_FLOWS_HOST)
-  const isDirect = !!(env.ACCESS_TOKEN && env.ZP_API_URL)
-
-  if (!isFlowToken && !isDirect) {
-    console.error(`  Error: Missing required env vars in ${envPath}`)
-    console.error(`  Need either FLOW_TOKEN + GWS_FLOWS_HOST, or ACCESS_TOKEN + ZP_API_URL\n`)
+  if (!env.FLOW_TOKEN || !env.GWS_FLOWS_HOST) {
+    console.error(`  Error: Missing FLOW_TOKEN or GWS_FLOWS_HOST in ${envPath}`)
     process.exit(1)
   }
 
-  const proxyMode = isFlowToken ? 'flow-token' : 'direct'
-  console.log(`  Proxy mode: ${proxyMode}`)
-  if (isFlowToken) {
-    console.log(`  Target: ${env.GWS_FLOWS_HOST}`)
-  } else {
-    console.log(`  Target: ${env.ZP_API_URL}`)
-  }
+  console.log(`  Target: ${env.GWS_FLOWS_HOST}`)
 
   console.log(`  Validating token...`)
   const isValid = await validateToken(env)

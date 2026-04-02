@@ -1,4 +1,4 @@
-import { Suspense, useState, useCallback, useRef, Component, type ReactNode } from 'react'
+import { Suspense, useState, useCallback, Component, type ReactNode } from 'react'
 import { useParams } from 'react-router-dom'
 import { findComponent, CATEGORIES } from './registry'
 import type { EntityIds } from './useEntities'
@@ -123,7 +123,7 @@ export function ComponentRenderer({ entities }: ComponentRendererProps) {
   }>()
   const [events, setEvents] = useState<EventLogEntry[]>([])
   const [eventsOpen, setEventsOpen] = useState(true)
-  const resetKeyRef = useRef(0)
+  const [resetKey, setResetKey] = useState(0)
 
   const handleEvent = useCallback((...args: unknown[]) => {
     const entry: EventLogEntry = {
@@ -181,7 +181,7 @@ export function ComponentRenderer({ entities }: ComponentRendererProps) {
       componentProps[prop] === '',
   )
 
-  const providerKey = `${category}/${componentName}/${entry.requiredEntityIds.map(id => entities[id as keyof EntityIds] || '').join('/')}/${resetKeyRef.current}`
+  const providerKey = `${category}/${componentName}/${entry.requiredEntityIds.map(id => entities[id as keyof EntityIds] || '').join('/')}/${resetKey}`
 
   return (
     <>
@@ -233,7 +233,7 @@ export function ComponentRenderer({ entities }: ComponentRendererProps) {
         <div className={styles.contentBody}>
           <ComponentErrorBoundary
             onReset={() => {
-              resetKeyRef.current++
+              setResetKey(k => k + 1)
             }}
           >
             <GustoProvider config={{ baseUrl: `${window.location.origin}/api/` }} key={providerKey}>

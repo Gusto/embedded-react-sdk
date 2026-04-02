@@ -1,32 +1,12 @@
 import react from '@vitejs/plugin-react-swc'
 import { defineConfig } from 'vite'
 import { resolve } from 'path'
-import { existsSync, readFileSync, writeFileSync } from 'fs'
+import { existsSync, readFileSync } from 'fs'
 import { scssPreprocessorOptions, svgrPlugin } from '../vite.config'
-import {
-  fetchEntityIds,
-  fetchCompanyId,
-  ENTITY_ID_KEYS,
-  entityIdToEnvVar,
-} from './src/entity-config'
+import { fetchEntityIds, ENTITY_ID_KEYS, entityIdToEnvVar } from './src/entity-config'
+import { createDemoAndProvision, writeEnvFile, isAllowedHost } from './scripts/demo-provisioner'
 
 const SDK_APP_DEFAULT_PORT = 5200
-
-const ALLOWED_HOST_ORIGINS = new Set([
-  'https://flows.gusto-demo.com',
-  'https://flows.gusto-staging.com',
-  'http://localhost:7777',
-  'http://localhost:3000',
-])
-
-function isAllowedHost(host: string): boolean {
-  try {
-    const url = new URL(host)
-    return ALLOWED_HOST_ORIGINS.has(url.origin) || url.hostname === 'localhost'
-  } catch {
-    return false
-  }
-}
 
 function loadEnvFile(envName: string): Record<string, string> {
   const envPath = resolve(__dirname, `env/.env.${envName}`)
@@ -39,17 +19,9 @@ function loadEnvFile(envName: string): Record<string, string> {
     if (!trimmed || trimmed.startsWith('#')) continue
     const eqIndex = trimmed.indexOf('=')
     if (eqIndex === -1) continue
-    const key = trimmed.slice(0, eqIndex).trim()
-    const value = trimmed.slice(eqIndex + 1).trim()
-    vars[key] = value
+    vars[trimmed.slice(0, eqIndex).trim()] = trimmed.slice(eqIndex + 1).trim()
   }
   return vars
-}
-
-function detectProxyMode(env: Record<string, string>) {
-  if (env.ACCESS_TOKEN && env.ZP_API_URL) return 'direct' as const
-  if (env.FLOW_TOKEN && env.GWS_FLOWS_HOST) return 'flow-token' as const
-  return null
 }
 
 export default defineConfig(() => {
@@ -57,34 +29,20 @@ export default defineConfig(() => {
   const sdkBuild = process.env.SDK_BUILD || 'dev'
   const isProd = sdkBuild === 'prod'
   const env = loadEnvFile(zpEnv)
-  const proxyMode = detectProxyMode(env)
 
-  const proxyConfig =
-    proxyMode === 'direct'
-      ? {
-          '/api': {
-            target: env.ZP_API_URL,
-            changeOrigin: true,
-            secure: false,
-            rewrite: (path: string) => path.replace(/^\/api/, ''),
-            configure: (proxy: { on: Function }) => {
-              proxy.on('proxyReq', (proxyReq: { setHeader: (k: string, v: string) => void }) => {
-                proxyReq.setHeader('Authorization', `Bearer ${env.ACCESS_TOKEN}`)
-                proxyReq.setHeader('X-Gusto-API-Version', '2025-11-15')
-              })
-            },
-          },
-        }
-      : proxyMode === 'flow-token'
-        ? {
-            '/api': {
-              target: env.GWS_FLOWS_HOST,
-              changeOrigin: true,
-              secure: !env.GWS_FLOWS_HOST?.includes('localhost'),
-              rewrite: (path: string) => path.replace(/^\/api/, `/fe_sdk/${env.FLOW_TOKEN}`),
-            },
-          }
-        : undefined
+  const hasFlowToken = !!(env.FLOW_TOKEN && env.GWS_FLOWS_HOST)
+  const proxyMode = hasFlowToken ? 'flow-token' : null
+
+  const proxyConfig = hasFlowToken
+    ? {
+        '/api': {
+          target: env.GWS_FLOWS_HOST,
+          changeOrigin: true,
+          secure: !env.GWS_FLOWS_HOST?.includes('localhost'),
+          rewrite: (path: string) => path.replace(/^\/api/, `/fe_sdk/${env.FLOW_TOKEN}`),
+        },
+      }
+    : undefined
 
   const sdkSrcPath = resolve(__dirname, '../src')
 
@@ -131,84 +89,25 @@ export default defineConfig(() => {
               }
 
               const flowType = demoType || 'react_sdk_demo_company_onboarded'
-              const formBody = new URLSearchParams({
-                'demo[flow_type]': flowType,
-                'demo[admin_name]': 'SDK Dev',
-                'demo[email]': 'sdk-dev@example.com',
-                'demo[company_name]': `SDK Dev ${Date.now()}`,
-              })
 
-              const createRes = await fetch(`${host}/demos`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: formBody.toString(),
-                redirect: 'follow',
-              })
-
-              const demoUrl = createRes.url
-              const demoIdMatch = demoUrl.match(/\/demos\/([a-f0-9-]+)/)
-              if (!demoIdMatch) {
-                res.statusCode = 500
-                res.end(JSON.stringify({ error: 'Could not extract demo ID from response' }))
-                return
-              }
-
-              const demoId = demoIdMatch[1]
-              let flowToken = ''
-              let attempts = 0
-              const maxAttempts = 60
-
-              while (!flowToken && attempts < maxAttempts) {
-                attempts++
-                await new Promise(r => setTimeout(r, 3000))
-
-                const pollRes = await fetch(`${host}/demos/${demoId}`)
-                const html = await pollRes.text()
-
-                const linkMatch = html.match(/https?:\/\/[^"]*\/flows\/([a-zA-Z0-9_-]{20,})/)
-                if (linkMatch) {
-                  flowToken = linkMatch[1]
-                }
-              }
-
-              if (!flowToken) {
-                res.statusCode = 504
-                res.end(JSON.stringify({ error: 'Demo creation timed out' }))
-                return
-              }
-
-              const proxyBase = `${host}/fe_sdk/${flowToken}`
-              const companyId = await fetchCompanyId(proxyBase)
-              const entities = companyId ? await fetchEntityIds(proxyBase, companyId) : {}
-
-              const entityLines = ENTITY_ID_KEYS.map(
-                key => `${entityIdToEnvVar(key)}=${entities[key] || ''}`,
-              )
-              const envContent = [
-                `GWS_FLOWS_HOST=${host}`,
-                `FLOW_TOKEN=${flowToken}`,
-                `VITE_COMPANY_ID=${companyId}`,
-                ...entityLines,
-                `VITE_REQUEST_ID=`,
-                `VITE_DEMO_TYPE=${flowType}`,
-              ].join('\n')
+              const result = await createDemoAndProvision(host, flowType)
 
               const envFilePath = resolve(__dirname, `env/.env.${zpEnv}`)
-              writeFileSync(envFilePath, envContent + '\n')
+              writeEnvFile(envFilePath, { ...result, gwsFlowsHost: host })
 
-              env.FLOW_TOKEN = flowToken
+              env.FLOW_TOKEN = result.flowToken
               env.GWS_FLOWS_HOST = host
-              env.VITE_COMPANY_ID = companyId
+              env.VITE_COMPANY_ID = result.companyId
               for (const key of ENTITY_ID_KEYS) {
-                if (entities[key]) env[entityIdToEnvVar(key)] = entities[key]
+                if (result.entities[key]) env[entityIdToEnvVar(key)] = result.entities[key]!
               }
 
               res.setHeader('Content-Type', 'application/json')
               res.end(
                 JSON.stringify({
-                  flowToken,
-                  companyId,
-                  entities,
+                  flowToken: result.flowToken,
+                  companyId: result.companyId,
+                  entities: result.entities,
                   demoType: flowType,
                 }),
               )
@@ -236,29 +135,14 @@ export default defineConfig(() => {
                 return
               }
 
-              let baseUrl: string
-              if (proxyMode === 'flow-token') {
-                if (!env.GWS_FLOWS_HOST || !isAllowedHost(env.GWS_FLOWS_HOST)) {
-                  res.statusCode = 400
-                  res.end(JSON.stringify({ error: 'Invalid or disallowed GWS_FLOWS_HOST' }))
-                  return
-                }
-                baseUrl = `${env.GWS_FLOWS_HOST}/fe_sdk/${env.FLOW_TOKEN}`
-              } else if (proxyMode === 'direct') {
-                baseUrl = env.ZP_API_URL!
-              } else {
+              if (!env.GWS_FLOWS_HOST || !isAllowedHost(env.GWS_FLOWS_HOST)) {
                 res.statusCode = 400
-                res.end(JSON.stringify({ error: 'No proxy configured' }))
+                res.end(JSON.stringify({ error: 'Invalid or missing GWS_FLOWS_HOST' }))
                 return
               }
 
-              const headers: Record<string, string> = {}
-              if (proxyMode === 'direct') {
-                headers['Authorization'] = `Bearer ${env.ACCESS_TOKEN}`
-                headers['X-Gusto-API-Version'] = '2025-11-15'
-              }
-
-              const entities = await fetchEntityIds(baseUrl, companyId, { headers })
+              const baseUrl = `${env.GWS_FLOWS_HOST}/fe_sdk/${env.FLOW_TOKEN}`
+              const entities = await fetchEntityIds(baseUrl, companyId)
 
               res.setHeader('Content-Type', 'application/json')
               res.end(JSON.stringify(entities))
@@ -270,29 +154,16 @@ export default defineConfig(() => {
 
           server.middlewares.use('/sdk-app/api/validate-token', async (_req, res) => {
             try {
-              let testUrl: string
-              const companyId = env.VITE_COMPANY_ID
-              const headers: Record<string, string> = {}
-
-              if (proxyMode === 'flow-token') {
-                if (!env.GWS_FLOWS_HOST || !isAllowedHost(env.GWS_FLOWS_HOST)) {
-                  res.setHeader('Content-Type', 'application/json')
-                  res.end(JSON.stringify({ valid: false, reason: 'Invalid host' }))
-                  return
-                }
-                testUrl = `${env.GWS_FLOWS_HOST}/fe_sdk/${env.FLOW_TOKEN}/v1/companies/${companyId}/locations`
-              } else if (proxyMode === 'direct') {
-                testUrl = `${env.ZP_API_URL}/v1/companies/${companyId}/locations`
-                headers['Authorization'] = `Bearer ${env.ACCESS_TOKEN}`
-                headers['X-Gusto-API-Version'] = '2025-11-15'
-              } else {
+              if (!env.GWS_FLOWS_HOST || !isAllowedHost(env.GWS_FLOWS_HOST)) {
                 res.setHeader('Content-Type', 'application/json')
-                res.end(JSON.stringify({ valid: false, reason: 'No proxy configured' }))
+                res.end(JSON.stringify({ valid: false, reason: 'Invalid host' }))
                 return
               }
 
+              const companyId = env.VITE_COMPANY_ID
+              const testUrl = `${env.GWS_FLOWS_HOST}/fe_sdk/${env.FLOW_TOKEN}/v1/companies/${companyId}/locations`
+
               const testRes = await fetch(testUrl, {
-                headers,
                 signal: AbortSignal.timeout(10000),
               })
               res.setHeader('Content-Type', 'application/json')

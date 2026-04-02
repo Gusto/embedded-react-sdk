@@ -11,6 +11,11 @@ export interface EntityIds extends Record<EntityIdKey, string> {
   requestId: string
 }
 
+/**
+ * Entity IDs that have list endpoints and can be auto-fetched.
+ * companyId and requestId are excluded -- companyId is fetched separately
+ * via /v1/companies, and requestId has no list endpoint.
+ */
 export const ENTITY_ID_KEYS = Object.keys(ENTITY_ENDPOINTS) as EntityIdKey[]
 
 export function entityIdToEnvVar(key: string): string {
