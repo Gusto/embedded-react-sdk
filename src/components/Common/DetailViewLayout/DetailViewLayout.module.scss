@@ -1,0 +1,26 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: toRem(32);
+  width: 100%;
+}
+
+.backButton {
+  align-self: flex-start;
+}
+
+.pageHeader {
+  display: flex;
+  flex-wrap: wrap;
+  gap: toRem(16) toRem(20);
+  align-items: flex-start;
+  width: 100%;
+}
+
+.titleGroup {
+  display: flex;
+  flex-direction: column;
+  gap: toRem(4);
+  flex: 1 0 0;
+  min-width: toRem(320);
+}

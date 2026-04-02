@@ -128,6 +128,41 @@ describe('TransitionPayrollAlertPresentation', () => {
     })
   })
 
+  describe('pre-existing payroll', () => {
+    it('shows "Run Transition Payroll" even when a payroll already exists for the period', async () => {
+      const periodWithPayroll: PayPeriod = {
+        startDate: '2024-12-01',
+        endDate: '2024-12-15',
+        payScheduleUuid: 'schedule-1',
+        payroll: {
+          payrollUuid: 'existing-123',
+          processed: false,
+          payrollType: 'transition',
+        },
+      }
+
+      renderWithSuspense(
+        <TransitionPayrollAlertPresentation
+          groupedPayPeriods={[
+            {
+              payScheduleUuid: 'schedule-1',
+              payScheduleName: 'Weekly Schedule',
+              payPeriods: [periodWithPayroll],
+            },
+          ]}
+          onRunPayroll={() => {}}
+          onSkipPayroll={() => {}}
+          showSkipSuccessAlert={false}
+          onDismissSkipSuccessAlert={() => {}}
+          skippingPayPeriod={null}
+        />,
+      )
+
+      await screen.findByText(/Transition payroll -/)
+      expect(screen.getByRole('button', { name: /run transition payroll/i })).toBeInTheDocument()
+    })
+  })
+
   describe('actions', () => {
     it('calls onRunPayroll when run transition payroll button is clicked', async () => {
       const user = userEvent.setup()
