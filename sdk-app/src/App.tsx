@@ -31,7 +31,9 @@ export function App() {
       <TopBar
         companyId={entities.companyId}
         tokenStatus={demoManager.tokenStatus}
-        onOpenSettings={() => { setSettingsOpen(true); }}
+        onOpenSettings={() => {
+          setSettingsOpen(true)
+        }}
       />
       <div className="app-body">
         <Sidebar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
@@ -41,7 +43,9 @@ export function App() {
       </div>
       <DemoSettingsPanel
         isOpen={settingsOpen}
-        onClose={() => { setSettingsOpen(false); }}
+        onClose={() => {
+          setSettingsOpen(false)
+        }}
         entities={entities}
         onUpdateEntity={updateEntity}
         onResetToDefaults={resetToDefaults}

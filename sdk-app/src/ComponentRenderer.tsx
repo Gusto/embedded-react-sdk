@@ -246,7 +246,9 @@ export function ComponentRenderer({ entities }: ComponentRendererProps) {
       <div className="events-log">
         <div
           className="events-log-header"
-          onClick={() => { setEventsOpen(!eventsOpen); }}
+          onClick={() => {
+            setEventsOpen(!eventsOpen)
+          }}
           role="button"
           tabIndex={0}
           onKeyDown={e => {

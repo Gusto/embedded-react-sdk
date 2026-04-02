@@ -114,7 +114,9 @@ export function DemoSettingsPanel({
               <select
                 id="demo-type-select"
                 value={selectedDemoType}
-                onChange={e => { setSelectedDemoType(e.target.value); }}
+                onChange={e => {
+                  setSelectedDemoType(e.target.value)
+                }}
               >
                 <option value="react_sdk_demo_company_onboarded">Onboarded Company</option>
                 <option value="react_sdk_demo">New Company</option>
@@ -148,7 +150,9 @@ export function DemoSettingsPanel({
               <input
                 type="text"
                 value={entities[key]}
-                onChange={e => { onUpdateEntity(key, e.target.value); }}
+                onChange={e => {
+                  onUpdateEntity(key, e.target.value)
+                }}
                 placeholder={`Enter ${label.toLowerCase()}...`}
               />
             </div>

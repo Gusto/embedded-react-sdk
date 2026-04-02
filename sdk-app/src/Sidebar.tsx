@@ -32,7 +32,9 @@ function CategorySection({
     <div className="sidebar-category">
       <div
         className="sidebar-category-header"
-        onClick={() => { setCollapsed(!collapsed); }}
+        onClick={() => {
+          setCollapsed(!collapsed)
+        }}
         role="button"
         tabIndex={0}
         onKeyDown={e => {
@@ -70,7 +72,9 @@ export function Sidebar({ searchQuery, onSearchChange }: SidebarProps) {
           type="text"
           placeholder="Search components..."
           value={searchQuery}
-          onChange={e => { onSearchChange(e.target.value); }}
+          onChange={e => {
+            onSearchChange(e.target.value)
+          }}
         />
       </div>
       <div className="sidebar-list">

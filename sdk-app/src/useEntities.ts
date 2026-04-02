@@ -115,9 +115,8 @@ export function useEntities() {
     if (hasAutoFetched.current) return
     if (!entities.companyId) return
 
-    const proxyMode = (
+    const proxyMode =
       typeof __SDK_APP_PROXY_MODE__ !== 'undefined' ? __SDK_APP_PROXY_MODE__ : 'none'
-    )
     if (proxyMode === 'none') return
 
     if (hasMissingEntities(entities)) {
