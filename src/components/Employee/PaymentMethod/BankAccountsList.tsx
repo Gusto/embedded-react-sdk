@@ -8,7 +8,8 @@ import { SPLIT_BY } from '@/shared/constants'
 import { centsToDollars } from '@/helpers/currencyHelpers'
 
 export function BankAccountsList() {
-  const { bankAccounts, paymentMethod, mode, handleDelete, isPending } = usePaymentMethod()
+  const { bankAccounts, paymentMethod, mode, handleDelete, deletePendingBankAccountUuid } =
+    usePaymentMethod()
   const { t } = useTranslation('Employee.PaymentMethod')
   const format = useNumberFormatter(paymentMethod.splitBy === 'Amount' ? 'currency' : 'percent')
 
@@ -45,7 +46,7 @@ export function BankAccountsList() {
             },
           ]}
           triggerLabel={t('hamburgerTitle')}
-          isLoading={isPending}
+          isLoading={deletePendingBankAccountUuid === bankAccount.uuid}
         />
       )
     },

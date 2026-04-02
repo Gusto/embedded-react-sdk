@@ -244,6 +244,9 @@ const Root = ({ employeeId, className, dictionary, isAdmin = false }: PaymentMet
             paymentMethodMutation.isPending ||
             addBankAccountMutation.isPending ||
             updateBankAccountMutation.isPending,
+          deletePendingBankAccountUuid: deleteBankAccountMutation.isPending
+            ? deleteBankAccountMutation.variables.request.bankAccountUuid
+            : undefined,
           watchedType,
           mode,
           paymentMethod,
