@@ -3,8 +3,6 @@ import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
 import type { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest'
 import { PayrollStatusBadges } from '../PayrollStatusBadges'
 import { getPayrollTypeLabel, calculateTotalPayroll, canCancelPayroll } from '../helpers'
-import type { TimeFilterOption } from './PayrollHistory'
-import styles from './PayrollHistoryPresentation.module.scss'
 import type { MenuItem } from '@/components/Common/UI/Menu/MenuTypes'
 import { DataView, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -12,6 +10,7 @@ import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { formatNumberAsCurrency } from '@/helpers/formattedStrings'
 import { useI18n } from '@/i18n'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
+import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 import TrashcanIcon from '@/assets/icons/trashcan.svg?react'
 import FileIcon from '@/assets/icons/icon-file-outline.svg?react'
 import ReceiptIcon from '@/assets/icons/icon-receipt-outline.svg?react'
@@ -19,8 +18,7 @@ import ReceiptIcon from '@/assets/icons/icon-receipt-outline.svg?react'
 interface PayrollHistoryPresentationProps {
   payrollHistory: Payroll[]
   wireInRequests: WireInRequest[]
-  selectedTimeFilter: TimeFilterOption
-  onTimeFilterChange: (value: TimeFilterOption) => void
+  pagination: PaginationControlProps
   onViewSummary: (payrollId: string, startDate?: string, endDate?: string) => void
   onViewReceipt: (payrollId: string, startDate?: string, endDate?: string) => void
   onCancelPayroll: (item: Payroll) => void
@@ -33,8 +31,7 @@ interface PayrollHistoryPresentationProps {
 export const PayrollHistoryPresentation = ({
   payrollHistory,
   wireInRequests,
-  selectedTimeFilter,
-  onTimeFilterChange,
+  pagination,
   onViewSummary,
   onViewReceipt,
   onCancelPayroll,
@@ -43,16 +40,10 @@ export const PayrollHistoryPresentation = ({
   onCancelDialogClose,
   isLoading = false,
 }: PayrollHistoryPresentationProps) => {
-  const { Heading, Text, Select, Dialog } = useComponentContext()
+  const { Heading, Text, Dialog } = useComponentContext()
   useI18n('Payroll.PayrollHistory')
   const { t } = useTranslation('Payroll.PayrollHistory')
   const dateFormatter = useDateFormatter()
-
-  const timeFilterOptions = [
-    { value: '3months', label: t('timeFilter.options.3months') },
-    { value: '6months', label: t('timeFilter.options.6months') },
-    { value: 'year', label: t('timeFilter.options.year') },
-  ]
 
   const formatDeadlineForDialog = (item: Payroll): string => {
     const deadline = item.payrollDeadline
@@ -135,31 +126,11 @@ export const PayrollHistoryPresentation = ({
 
   return (
     <Flex flexDirection="column" gap={16}>
-      <Flex
-        flexDirection={{ base: 'column', medium: 'row' }}
-        justifyContent="space-between"
-        alignItems="flex-start"
-        gap={{ base: 12, medium: 24 }}
-      >
-        <Flex>
-          <Heading as="h2">{t('title')}</Heading>
-        </Flex>
-        <div className={styles.timeFilterContainer}>
-          <Select
-            value={selectedTimeFilter}
-            onChange={(value: string) => {
-              onTimeFilterChange(value as TimeFilterOption)
-            }}
-            options={timeFilterOptions}
-            label={t('timeFilter.placeholder')}
-            shouldVisuallyHideLabel
-            isRequired
-          />
-        </div>
-      </Flex>
+      <Heading as="h2">{t('title')}</Heading>
 
       <DataView
         label={t('dataView.label')}
+        pagination={pagination}
         columns={[
           {
             title: t('columns.payPeriod'),

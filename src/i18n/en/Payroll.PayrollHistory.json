@@ -1,13 +1,5 @@
 {
   "title": "Payroll history",
-  "timeFilter": {
-    "placeholder": "Last 3 months",
-    "options": {
-      "3months": "3 months",
-      "6months": "6 months",
-      "year": "Year"
-    }
-  },
   "dataView": {
     "label": "Payroll history"
   },

@@ -3,6 +3,7 @@ import { fn } from 'storybook/test'
 import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
 import type { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest'
 import { PayrollHistoryPresentation } from './PayrollHistoryPresentation'
+import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
 export default {
   title: 'Domain/Payroll/PayrollHistory',
@@ -35,6 +36,18 @@ const createMockPayroll = (id: string, overrides: Partial<Payroll> = {}): Payrol
   ...overrides,
 })
 
+const createMockPagination = (totalCount: number): PaginationControlProps => ({
+  currentPage: 1,
+  totalPages: Math.max(1, Math.ceil(totalCount / 5)),
+  totalCount,
+  itemsPerPage: 5,
+  handleFirstPage: fn().mockName('handleFirstPage'),
+  handlePreviousPage: fn().mockName('handlePreviousPage'),
+  handleNextPage: fn().mockName('handleNextPage'),
+  handleLastPage: fn().mockName('handleLastPage'),
+  handleItemsPerPageChange: fn().mockName('handleItemsPerPageChange'),
+})
+
 const mockPayrollHistory: Payroll[] = [
   createMockPayroll('1', {
     processed: true,
@@ -61,8 +74,7 @@ export const PayrollHistoryStory = () => {
     <PayrollHistoryPresentation
       payrollHistory={mockPayrollHistory}
       wireInRequests={mockWireInRequests}
-      selectedTimeFilter="3months"
-      onTimeFilterChange={fn().mockName('onTimeFilterChange')}
+      pagination={createMockPagination(mockPayrollHistory.length)}
       onViewSummary={fn().mockName('onViewSummary')}
       onViewReceipt={fn().mockName('onViewReceipt')}
       onCancelPayroll={fn().mockName('onCancelPayroll')}
@@ -142,8 +154,7 @@ export const AllStatusesShowcase = () => {
     <PayrollHistoryPresentation
       payrollHistory={showcasePayrolls}
       wireInRequests={showcaseWireInRequests}
-      selectedTimeFilter="3months"
-      onTimeFilterChange={fn().mockName('onTimeFilterChange')}
+      pagination={createMockPagination(showcasePayrolls.length)}
       onViewSummary={fn().mockName('onViewSummary')}
       onViewReceipt={fn().mockName('onViewReceipt')}
       onCancelPayroll={fn().mockName('onCancelPayroll')}
@@ -173,8 +184,7 @@ export const CancelDialog = () => {
     <PayrollHistoryPresentation
       payrollHistory={payrolls}
       wireInRequests={[]}
-      selectedTimeFilter="3months"
-      onTimeFilterChange={fn().mockName('onTimeFilterChange')}
+      pagination={createMockPagination(1)}
       onViewSummary={fn().mockName('onViewSummary')}
       onViewReceipt={fn().mockName('onViewReceipt')}
       onCancelPayroll={handleCancelPayroll}
@@ -192,8 +202,7 @@ export const EmptyState = () => {
     <PayrollHistoryPresentation
       payrollHistory={[]}
       wireInRequests={[]}
-      selectedTimeFilter="3months"
-      onTimeFilterChange={fn().mockName('onTimeFilterChange')}
+      pagination={createMockPagination(0)}
       onViewSummary={fn().mockName('onViewSummary')}
       onViewReceipt={fn().mockName('onViewReceipt')}
       onCancelPayroll={fn().mockName('onCancelPayroll')}

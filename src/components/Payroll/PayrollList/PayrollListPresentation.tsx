@@ -7,6 +7,7 @@ import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { PayrollStatusBadges } from '../PayrollStatusBadges'
 import { getPayrollTypeLabel } from '../helpers'
 import styles from './PayrollListPresentation.module.scss'
+import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 import { DataView, Flex, HamburgerMenu } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
@@ -21,6 +22,7 @@ interface PayrollListPresentationProps {
   onSkipPayroll: ({ payrollUuid }: Pick<Payroll, 'payrollUuid'>) => void
   onRunOffCyclePayroll: () => void
   payrolls: Payroll[]
+  pagination?: PaginationControlProps
   paySchedules: PayScheduleList[]
   showSkipSuccessAlert: boolean
   onDismissSkipSuccessAlert: () => void
@@ -35,6 +37,7 @@ export const PayrollListPresentation = ({
   onSkipPayroll,
   onRunOffCyclePayroll,
   payrolls,
+  pagination,
   paySchedules,
   showSkipSuccessAlert,
   onDismissSkipSuccessAlert,
@@ -152,6 +155,7 @@ export const PayrollListPresentation = ({
 
         <DataView
           breakAt="large"
+          pagination={pagination}
           emptyState={() => (
             <Flex flexDirection="column" alignItems="center" gap={24}>
               <FeatureIconCheck />
