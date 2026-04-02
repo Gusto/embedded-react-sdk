@@ -11,6 +11,7 @@ import PencilSvg from '@/assets/icons/pencil.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import { EmployeeOnboardingStatus, EmployeeSelfOnboardingStatuses } from '@/shared/constants'
 import { firstLastName } from '@/helpers/formattedStrings'
+import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 
 export interface EmployeeListViewProps extends Pick<
   Extract<UseEmployeeListResult, { isLoading: false }>,
@@ -129,7 +130,7 @@ export function EmployeeListView({
           <Components.Button variant="secondary" onClick={onSkip}>
             {t('skipCta')}
           </Components.Button>
-          <Components.Button variant="primary" onClick={onAddEmployee}>
+          <Components.Button variant="primary" onClick={onAddEmployee} icon={<PlusCircleIcon />}>
             {t('addEmployeeCta')}
           </Components.Button>
         </ActionsLayout>
@@ -140,15 +141,19 @@ export function EmployeeListView({
   return (
     <>
       <Flex flexDirection="column" gap={24}>
-        <Components.Heading as="h2">{t('title')}</Components.Heading>
+        <Flex justifyContent="space-between" alignItems="center">
+          <Components.Heading as="h2">{t('title')}</Components.Heading>
 
-        {employees.length > 0 && (
-          <ActionsLayout>
-            <Components.Button variant="secondary" onClick={onAddEmployee}>
+          {employees.length > 0 && (
+            <Components.Button
+              variant="secondary"
+              onClick={onAddEmployee}
+              icon={<PlusCircleIcon />}
+            >
               {t('addAnotherCta')}
             </Components.Button>
-          </ActionsLayout>
-        )}
+          )}
+        </Flex>
 
         <DataView label={t('employeeListLabel')} {...dataViewProps} />
 

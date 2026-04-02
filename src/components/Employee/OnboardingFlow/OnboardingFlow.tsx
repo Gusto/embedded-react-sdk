@@ -1,10 +1,10 @@
 import { createMachine } from 'robot3'
 import { useMemo } from 'react'
-import { EmployeeListContextual } from '../EmployeeList/EmployeeList'
 import { employeeOnboardingMachine } from './onboardingStateMachine'
-import type {
-  OnboardingDefaultValues,
-  OnboardingContextInterface,
+import {
+  type OnboardingDefaultValues,
+  type OnboardingContextInterface,
+  EmployeeListContextual,
 } from './OnboardingFlowComponents'
 import { Flow } from '@/components/Flow/Flow'
 import type { BaseComponentInterface } from '@/components/Base'
