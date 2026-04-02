@@ -27,11 +27,20 @@ interface FetchEntityIdsOptions {
   signal?: AbortSignal
 }
 
+function assertSafeUrl(url: string): void {
+  const parsed = new URL(url)
+  if (!['http:', 'https:'].includes(parsed.protocol)) {
+    throw new Error(`Only http/https URLs are allowed: ${url}`)
+  }
+}
+
 export async function fetchEntityIds(
   proxyBase: string,
   companyId: string,
   options: FetchEntityIdsOptions = {},
 ): Promise<Partial<EntityIds>> {
+  assertSafeUrl(proxyBase)
+
   const results = await Promise.allSettled(
     Object.entries(ENTITY_ENDPOINTS).map(async ([key, endpoint]) => {
       const res = await fetch(`${proxyBase}/v1/companies/${companyId}/${endpoint}`, {
@@ -58,6 +67,8 @@ export async function fetchCompanyId(
   proxyBase: string,
   options: FetchEntityIdsOptions = {},
 ): Promise<string> {
+  assertSafeUrl(proxyBase)
+
   try {
     const res = await fetch(`${proxyBase}/v1/companies`, {
       headers: options.headers,

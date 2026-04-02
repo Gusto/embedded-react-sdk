@@ -170,11 +170,11 @@ export default defineConfig(() => {
               }
 
               const companyId = env.VITE_COMPANY_ID
-              const testUrl = `${safeHost}/fe_sdk/${env.FLOW_TOKEN}/v1/companies/${companyId}/locations`
 
-              const testRes = await fetch(testUrl, {
-                signal: AbortSignal.timeout(10000),
-              })
+              const testRes = await fetch(
+                `${safeHost}/fe_sdk/${env.FLOW_TOKEN}/v1/companies/${companyId}/locations`,
+                { signal: AbortSignal.timeout(10000) },
+              )
               res.setHeader('Content-Type', 'application/json')
               res.end(JSON.stringify({ valid: testRes.ok, status: testRes.status }))
             } catch (err) {
