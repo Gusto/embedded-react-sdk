@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react'
+import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import { ManagementEmployeeListView } from './ManagementEmployeeListView'
 import { useEmployeeList } from './useEmployeeList'
-import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import {
   BaseBoundaries,
   BaseLayout,
@@ -13,8 +13,7 @@ import { componentEvents } from '@/shared/constants'
 
 type EmployeeTab = 'active' | 'onboarding' | 'dismissed'
 
-interface ManagementEmployeeListProps
-  extends CommonComponentInterface<'Employee.ManagementEmployeeList'> {
+interface ManagementEmployeeListProps extends CommonComponentInterface<'Employee.ManagementEmployeeList'> {
   companyId: string
   initialTab?: EmployeeTab
   onEvent: BaseComponentInterface['onEvent']
@@ -80,7 +79,9 @@ function ManagementEmployeeListRoot({
         onEdit={handleEdit}
         onDelete={async (employeeId: string) => {
           await employeeList.actions.onDelete(employeeId, {
-            onDelete: (id: string) => onEvent(componentEvents.EMPLOYEE_DELETED, { employeeId: id }),
+            onDelete: (id: string) => {
+              onEvent(componentEvents.EMPLOYEE_DELETED, { employeeId: id })
+            },
           })
         }}
         onRehire={handleRehire}

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
+import type { UseEmployeeListResult } from './useEmployeeList'
 import { DataView, EmptyData, useDataView } from '@/components/Common'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -10,19 +11,15 @@ import PencilSvg from '@/assets/icons/pencil.svg?react'
 import { firstLastName } from '@/helpers/formattedStrings'
 import { formatDateLongWithYear } from '@/helpers/dateFormatting'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
-import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
 type EmployeeTab = 'active' | 'onboarding' | 'dismissed'
 
-export interface ManagementEmployeeListViewProps {
+export interface ManagementEmployeeListViewProps extends Pick<
+  Extract<UseEmployeeListResult, { isLoading: false }>,
+  'employees' | 'isFetching' | 'pagination' | 'status'
+> {
   selectedTab: EmployeeTab
   onTabChange: (tab: EmployeeTab) => void
-  employees: Employee[]
-  isFetching: boolean
-  pagination: PaginationControlProps
-  status: {
-    isPending: boolean
-  }
   onEdit: (employeeId: string) => void
   onDelete: (employeeId: string) => Promise<void>
   onRehire: (employeeId: string) => void

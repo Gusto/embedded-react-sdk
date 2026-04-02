@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { OnboardingStatus } from '@gusto/embedded-api/models/operations/putv1employeesemployeeidonboardingstatus'
+import type { Employee } from '@gusto/embedded-api/models/components/employee'
+import type { UseEmployeeListResult } from './useEmployeeList'
 import { DataView, EmptyData, ActionsLayout, useDataView, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
@@ -10,15 +11,11 @@ import PencilSvg from '@/assets/icons/pencil.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import { EmployeeOnboardingStatus, EmployeeSelfOnboardingStatuses } from '@/shared/constants'
 import { firstLastName } from '@/helpers/formattedStrings'
-import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
-export interface EmployeeListViewProps {
-  employees: Employee[]
-  isFetching: boolean
-  pagination: PaginationControlProps
-  status: {
-    isPending: boolean
-  }
+export interface EmployeeListViewProps extends Pick<
+  Extract<UseEmployeeListResult, { isLoading: false }>,
+  'employees' | 'isFetching' | 'pagination' | 'status'
+> {
   onEdit: (employeeId: string, onboardingStatus?: OnboardingStatus) => void
   onDelete: (employeeId: string) => Promise<void>
   onCancelSelfOnboarding: (employeeId: string) => Promise<void>

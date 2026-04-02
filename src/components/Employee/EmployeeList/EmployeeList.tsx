@@ -1,5 +1,4 @@
 import type { OnboardingStatus } from '@gusto/embedded-api/models/operations/putv1employeesemployeeidonboardingstatus'
-import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlowComponents'
 import { EmployeeListView } from './EmployeeListView'
 import { useEmployeeList } from './useEmployeeList'
 import {
@@ -10,7 +9,6 @@ import {
 } from '@/components/Base/Base'
 import { useI18n, useComponentDictionary } from '@/i18n'
 import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
-import { useFlow } from '@/components/Flow/useFlow'
 
 interface EmployeeListProps extends CommonComponentInterface<'Employee.EmployeeList'> {
   companyId: string
@@ -93,9 +91,4 @@ export function EmployeeList({
       <EmployeeListRoot {...props} />
     </BaseBoundaries>
   )
-}
-
-export function EmployeeListContextual() {
-  const { companyId, onEvent } = useFlow<OnboardingContextInterface>()
-  return <EmployeeList companyId={companyId} onEvent={onEvent} />
 }
