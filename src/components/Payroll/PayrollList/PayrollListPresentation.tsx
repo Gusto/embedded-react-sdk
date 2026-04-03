@@ -294,6 +294,7 @@ export const PayrollListPresentation = ({
               return (
                 <div className={styles.actionsContainer}>
                   <HamburgerMenu
+                    isLoading={isProcessingSkipPayroll || isProcessingDeletePayroll}
                     menuLabel={t('payrollMenuLabel')}
                     items={[
                       {
