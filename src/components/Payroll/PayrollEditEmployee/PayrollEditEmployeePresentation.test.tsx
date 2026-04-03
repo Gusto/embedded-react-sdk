@@ -691,6 +691,57 @@ describe('PayrollEditEmployeePresentation', () => {
       )
     })
 
+    it('coerces blank final payout values to zero on save for dismissal payrolls', async () => {
+      const onSave = vi.fn()
+      const user = userEvent.setup()
+
+      const compensationWithPayout: PayrollEmployeeCompensationsType = {
+        ...mockEmployeeCompensation,
+        paidTimeOff: [
+          { name: 'Vacation Hours', hours: '8.0', finalPayoutUnusedHoursInput: '10' },
+          { name: 'Sick Hours', hours: '0.0', finalPayoutUnusedHoursInput: '5' },
+        ],
+      }
+
+      renderWithProviders(
+        <PayrollEditEmployeePresentation
+          {...defaultProps}
+          onSave={onSave}
+          payrollCategory={PayrollCategory.Dismissal}
+          employeeCompensation={compensationWithPayout}
+        />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText('Unused time off payout')).toBeInTheDocument()
+      })
+
+      const payoutInputs = screen.getAllByRole('spinbutton', { name: /Vacation Hours|Sick Hours/ })
+      const vacationPayoutInput = payoutInputs.find(
+        input =>
+          input.closest('[class*="fieldGroup"]')?.querySelector('h4')?.textContent ===
+          'Unused time off payout',
+      )
+
+      if (vacationPayoutInput) {
+        await user.clear(vacationPayoutInput)
+      }
+
+      const saveButton = screen.getByText('Save')
+      await user.click(saveButton)
+
+      expect(onSave).toHaveBeenCalledWith(
+        expect.objectContaining({
+          paidTimeOff: expect.arrayContaining([
+            expect.objectContaining({
+              name: 'Vacation Hours',
+              finalPayoutUnusedHoursInput: '0',
+            }),
+          ]),
+        }),
+      )
+    })
+
     it('does not include finalPayoutUnusedHoursInput for non-dismissal payrolls', async () => {
       const onSave = vi.fn()
       const user = userEvent.setup()
