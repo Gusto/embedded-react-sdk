@@ -20,7 +20,7 @@ The app opens at `http://localhost:5200` (or the next available port).
 | `npm run sdk-app:demo`    | dev   | demo                     |
 | `npm run sdk-app:staging` | dev   | staging                  |
 | `npm run sdk-app:local`   | dev   | local ZenPayroll         |
-| `npm run sdk-app:prod`    | prod  | demo                     |
+| `npm run sdk-app-prod`    | prod  | demo                     |
 | `npm run sdk-app:setup`   | —     | Re-provision current env |
 
 ### Dev vs Prod Build
