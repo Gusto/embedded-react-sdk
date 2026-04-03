@@ -6,22 +6,22 @@ A standalone development application for building and testing SDK components wit
 
 ```bash
 npm run sdk-app              # Demo environment (default)
-npm run sdk-app-dev:local    # Local ZenPayroll
-npm run sdk-app-dev:staging  # Staging environment
+npm run sdk-app:local        # Local ZenPayroll
+npm run sdk-app:staging      # Staging environment
 ```
 
 The app opens at `http://localhost:5200` (or the next available port).
 
 ## Commands
 
-| Command                       | Build | Environment              |
-| ----------------------------- | ----- | ------------------------ |
-| `npm run sdk-app`             | dev   | demo (default)           |
-| `npm run sdk-app-dev:demo`    | dev   | demo                     |
-| `npm run sdk-app-dev:staging` | dev   | staging                  |
-| `npm run sdk-app-dev:local`   | dev   | local ZenPayroll         |
-| `npm run sdk-app-prod`        | prod  | demo                     |
-| `npm run sdk-app:setup`       | —     | Re-provision current env |
+| Command                   | Build | Environment              |
+| ------------------------- | ----- | ------------------------ |
+| `npm run sdk-app`         | dev   | demo (default)           |
+| `npm run sdk-app:demo`    | dev   | demo                     |
+| `npm run sdk-app:staging` | dev   | staging                  |
+| `npm run sdk-app:local`   | dev   | local ZenPayroll         |
+| `npm run sdk-app:prod`    | prod  | demo                     |
+| `npm run sdk-app:setup`   | —     | Re-provision current env |
 
 ### Dev vs Prod Build
 
@@ -53,7 +53,7 @@ Routes through a **local GWS-Flows instance** at `http://localhost:7777`. You ne
 #### Running
 
 ```bash
-npm run sdk-app-dev:local
+npm run sdk-app:local
 ```
 
 On first run, the setup script will create a demo through your local gws-flows, which in turn provisions a company with test entities on your local ZenPayroll.
