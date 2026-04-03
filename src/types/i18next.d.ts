@@ -2525,6 +2525,7 @@ export interface PayrollPayrollOverview{
 "loadingDescription":string;
 "cancellingTitle":string;
 "cancelledEmptyState":string;
+"skippedBadge":string;
 "alerts":{
 "payrollNotCalculated":string;
 "directDepositDeadline":string;

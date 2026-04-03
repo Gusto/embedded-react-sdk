@@ -401,6 +401,77 @@ describe('PayrollOverviewPresentation', () => {
     })
   })
 
+  it('shows Skipped badge when employee is excluded', async () => {
+    const payrollWithExcluded: PayrollShow = {
+      ...mockPayrollData,
+      employeeCompensations: [
+        {
+          employeeUuid: 'emp-1',
+          excluded: true,
+          fixedCompensations: [],
+          hourlyCompensations: [],
+          paidTimeOff: [],
+          grossPay: 0,
+          netPay: 0,
+          checkAmount: 0,
+          paymentMethod: 'Direct Deposit',
+          memo: null,
+        },
+        {
+          employeeUuid: 'emp-2',
+          excluded: false,
+          fixedCompensations: [],
+          hourlyCompensations: [],
+          paidTimeOff: [],
+          grossPay: 5000,
+          netPay: 4000,
+          checkAmount: 4000,
+          paymentMethod: 'Direct Deposit',
+          memo: null,
+        },
+      ],
+    }
+
+    renderWithProviders(
+      <PayrollOverviewPresentation
+        {...defaultProps}
+        payrollData={payrollWithExcluded}
+        employeeDetails={[
+          {
+            uuid: 'emp-1',
+            firstName: 'Jane',
+            lastName: 'Doe',
+            companyUuid: 'company-uuid',
+            version: 'v1',
+            onboarded: true,
+            onboardingStatus: 'onboarding_completed',
+            terminated: false,
+            twoPercentShareholder: false,
+            hasSsn: true,
+            historical: false,
+          } as never,
+          {
+            uuid: 'emp-2',
+            firstName: 'John',
+            lastName: 'Smith',
+            companyUuid: 'company-uuid',
+            version: 'v1',
+            onboarded: true,
+            onboardingStatus: 'onboarding_completed',
+            terminated: false,
+            twoPercentShareholder: false,
+            hasSsn: true,
+            historical: false,
+          } as never,
+        ]}
+      />,
+    )
+
+    await waitFor(() => {
+      expect(screen.getByText('Skipped')).toBeInTheDocument()
+    })
+  })
+
   describe('Cancelled status', () => {
     it('shows cancelled empty state', async () => {
       renderWithProviders(
