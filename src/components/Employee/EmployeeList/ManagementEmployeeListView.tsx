@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { Employee } from '@gusto/embedded-api/models/components/employee'
-import type { UseEmployeeListResult } from './useEmployeeList'
+import type { UseEmployeeListResult, EmployeeWithActions } from './useEmployeeList'
 import { DataView, EmptyData, useDataView } from '@/components/Common'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -15,9 +14,11 @@ import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 
 type EmployeeTab = 'active' | 'onboarding' | 'dismissed'
 
-export interface ManagementEmployeeListViewProps
-  extends Pick<Extract<UseEmployeeListResult, { isLoading: false }>, 'pagination' | 'status'> {
-  employees: Employee[]
+export interface ManagementEmployeeListViewProps extends Pick<
+  Extract<UseEmployeeListResult, { isLoading: false }>,
+  'pagination' | 'status'
+> {
+  employees: EmployeeWithActions[]
   isFetching: boolean
   selectedTab: EmployeeTab
   onTabChange: (tab: EmployeeTab) => void
@@ -79,7 +80,7 @@ export function ManagementEmployeeListView({
     const nameColumn = {
       key: 'name',
       title: t('nameLabel'),
-      render: (employee: Employee) => {
+      render: (employee: EmployeeWithActions) => {
         return firstLastName({
           first_name: employee.firstName,
           last_name: employee.lastName,
@@ -90,7 +91,7 @@ export function ManagementEmployeeListView({
     const jobTitleColumn = {
       key: 'jobTitle',
       title: t('jobTitleLabel'),
-      render: (employee: Employee) => {
+      render: (employee: EmployeeWithActions) => {
         const primaryJob = employee.jobs?.find(job => job.primary === true)
         return primaryJob?.title ?? '-'
       },
@@ -106,7 +107,7 @@ export function ManagementEmployeeListView({
         {
           key: 'startDate',
           title: t('startDateLabel'),
-          render: (employee: Employee) => {
+          render: (employee: EmployeeWithActions) => {
             const primaryJob = employee.jobs?.find(job => job.primary === true)
             const formattedDate = formatDateLongWithYear(primaryJob?.hireDate)
             return formattedDate || '-'
@@ -116,7 +117,7 @@ export function ManagementEmployeeListView({
         {
           key: 'status',
           title: t('statusLabel'),
-          render: (employee: Employee) => (
+          render: (employee: EmployeeWithActions) => (
             <EmployeeOnboardingStatusBadge
               onboarded={employee.onboarded}
               onboardingStatus={employee.onboardingStatus}
@@ -132,7 +133,7 @@ export function ManagementEmployeeListView({
       {
         key: 'lastDay',
         title: t('lastDayLabel'),
-        render: (employee: Employee) => {
+        render: (employee: EmployeeWithActions) => {
           const termination = employee.terminations?.[0]
           const formattedDate = formatDateLongWithYear(termination?.effectiveDate)
           return formattedDate || '-'
@@ -147,7 +148,7 @@ export function ManagementEmployeeListView({
     itemMenu: employee => {
       const menuItems = []
 
-      if (selectedTab === 'active') {
+      if (employee.allowedActions.includes('edit')) {
         menuItems.push({
           label: t('editCta'),
           onClick: () => {
@@ -155,6 +156,9 @@ export function ManagementEmployeeListView({
           },
           icon: <PencilSvg aria-hidden />,
         })
+      }
+
+      if (employee.allowedActions.includes('dismiss')) {
         menuItems.push({
           label: t('dismissCta'),
           onClick: () => {
@@ -164,7 +168,7 @@ export function ManagementEmployeeListView({
         })
       }
 
-      if (selectedTab === 'onboarding') {
+      if (employee.allowedActions.includes('delete')) {
         menuItems.push({
           label: t('cancelCta'),
           onClick: () => {
@@ -174,7 +178,7 @@ export function ManagementEmployeeListView({
         })
       }
 
-      if (selectedTab === 'dismissed') {
+      if (employee.allowedActions.includes('rehire')) {
         menuItems.push({
           label: t('rehireCta'),
           onClick: () => {

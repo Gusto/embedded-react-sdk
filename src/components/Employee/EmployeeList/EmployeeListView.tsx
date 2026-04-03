@@ -1,21 +1,21 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { OnboardingStatus } from '@gusto/embedded-api/models/operations/putv1employeesemployeeidonboardingstatus'
-import type { Employee } from '@gusto/embedded-api/models/components/employee'
-import type { UseEmployeeListResult } from './useEmployeeList'
+import type { UseEmployeeListResult, EmployeeWithActions } from './useEmployeeList'
 import { DataView, EmptyData, ActionsLayout, useDataView, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { EmployeeOnboardingStatusBadge } from '@/components/Common/OnboardingStatusBadge'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
-import { EmployeeOnboardingStatus, EmployeeSelfOnboardingStatuses } from '@/shared/constants'
 import { firstLastName } from '@/helpers/formattedStrings'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 
-export interface EmployeeListViewProps
-  extends Pick<Extract<UseEmployeeListResult, { isLoading: false }>, 'pagination' | 'status'> {
-  employees: Employee[]
+export interface EmployeeListViewProps extends Pick<
+  Extract<UseEmployeeListResult, { isLoading: false }>,
+  'pagination' | 'status'
+> {
+  employees: EmployeeWithActions[]
   isFetching: boolean
   onEdit: (employeeId: string, onboardingStatus?: OnboardingStatus) => void
   onDelete: (employeeId: string) => Promise<void>
@@ -47,7 +47,7 @@ export function EmployeeListView({
       {
         key: 'name',
         title: t('nameLabel'),
-        render: (employee: Employee) => {
+        render: (employee: EmployeeWithActions) => {
           return firstLastName({
             first_name: employee.firstName,
             last_name: employee.lastName,
@@ -57,7 +57,7 @@ export function EmployeeListView({
       {
         key: 'status',
         title: t('statusLabel'),
-        render: (employee: Employee) => (
+        render: (employee: EmployeeWithActions) => (
           <EmployeeOnboardingStatusBadge
             onboarded={employee.onboarded}
             onboardingStatus={employee.onboardingStatus}
@@ -68,13 +68,7 @@ export function EmployeeListView({
     itemMenu: employee => {
       const menuItems = []
 
-      if (
-        employee.onboardingStatus === EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE ||
-        employee.onboardingStatus === EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE ||
-        employee.onboardingStatus ===
-          EmployeeOnboardingStatus.SELF_ONBOARDING_AWAITING_ADMIN_REVIEW ||
-        employee.onboardingStatus === EmployeeOnboardingStatus.ONBOARDING_COMPLETED
-      ) {
+      if (employee.allowedActions.includes('edit')) {
         menuItems.push({
           label: t('editCta'),
           onClick: () => {
@@ -84,11 +78,7 @@ export function EmployeeListView({
         })
       }
 
-      if (
-        employee.onboardingStatus &&
-        // @ts-expect-error: onboardingStatus during runtime can be one of self onboarding statuses
-        EmployeeSelfOnboardingStatuses.has(employee.onboardingStatus)
-      ) {
+      if (employee.allowedActions.includes('cancel_self_onboarding')) {
         menuItems.push({
           label: t('cancelSelfOnboardingCta'),
           onClick: () => {
@@ -98,9 +88,7 @@ export function EmployeeListView({
         })
       }
 
-      if (
-        employee.onboardingStatus === EmployeeOnboardingStatus.SELF_ONBOARDING_COMPLETED_BY_EMPLOYEE
-      ) {
+      if (employee.allowedActions.includes('review')) {
         menuItems.push({
           label: t('reviewCta'),
           onClick: () => {
@@ -110,7 +98,7 @@ export function EmployeeListView({
         })
       }
 
-      if (!employee.onboarded) {
+      if (employee.allowedActions.includes('delete')) {
         menuItems.push({
           label: t('deleteCta'),
           onClick: () => {

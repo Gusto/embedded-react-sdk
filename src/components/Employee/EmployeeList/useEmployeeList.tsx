@@ -8,12 +8,20 @@ import { usePagination } from '@/hooks/usePagination/usePagination'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { useErrorHandling } from '@/hooks/useErrorHandling'
-import { EmployeeOnboardingStatus } from '@/shared/constants'
-import type {
-  HookLoadingResult,
-  HookSubmitResult,
-  BaseHookReady,
-} from '@/types/sdkHooks'
+import { EmployeeOnboardingStatus, EmployeeSelfOnboardingStatuses } from '@/shared/constants'
+import type { HookLoadingResult, HookSubmitResult, BaseHookReady } from '@/types/sdkHooks'
+
+export type EmployeeAction =
+  | 'edit'
+  | 'delete'
+  | 'cancel_self_onboarding'
+  | 'review'
+  | 'dismiss'
+  | 'rehire'
+
+export interface EmployeeWithActions extends Employee {
+  allowedActions: EmployeeAction[]
+}
 
 export interface EmployeeActionCallbacks {
   onDelete?: (employeeId: string) => void
@@ -30,7 +38,7 @@ export interface UseEmployeeListProps {
 
 interface UseEmployeeListReady extends Omit<BaseHookReady, 'data' | 'status'> {
   data: {
-    employees: Employee[]
+    employees: EmployeeWithActions[]
   }
   pagination: PaginationControlProps
   status: {
@@ -54,6 +62,54 @@ interface UseEmployeeListReady extends Omit<BaseHookReady, 'data' | 'status'> {
 }
 
 export type UseEmployeeListResult = HookLoadingResult | UseEmployeeListReady
+
+function deriveAllowedActions(employee: Employee, employeeType?: EmployeeType): EmployeeAction[] {
+  const actions: EmployeeAction[] = []
+
+  // Edit action - available for certain onboarding statuses, but not for terminated employees
+  if (
+    employeeType !== 'terminated' &&
+    (employee.onboardingStatus === EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE ||
+      employee.onboardingStatus === EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE ||
+      employee.onboardingStatus ===
+        EmployeeOnboardingStatus.SELF_ONBOARDING_AWAITING_ADMIN_REVIEW ||
+      employee.onboardingStatus === EmployeeOnboardingStatus.ONBOARDING_COMPLETED)
+  ) {
+    actions.push('edit')
+  }
+
+  // Cancel self onboarding - available for employees in self-onboarding flow
+  if (
+    employee.onboardingStatus &&
+    // @ts-expect-error: onboardingStatus during runtime can be one of self onboarding statuses
+    EmployeeSelfOnboardingStatuses.has(employee.onboardingStatus)
+  ) {
+    actions.push('cancel_self_onboarding')
+  }
+
+  // Review action - available when employee completed self-onboarding
+  if (
+    employee.onboardingStatus === EmployeeOnboardingStatus.SELF_ONBOARDING_COMPLETED_BY_EMPLOYEE
+  ) {
+    actions.push('review')
+  }
+
+  // Delete action - available for non-onboarded employees
+  if (!employee.onboarded) {
+    actions.push('delete')
+  }
+
+  // Tab-specific actions for ManagementEmployeeList
+  if (employeeType === 'active') {
+    actions.push('dismiss')
+  }
+
+  if (employeeType === 'terminated') {
+    actions.push('rehire')
+  }
+
+  return actions
+}
 
 export function useEmployeeList({
   companyId,
@@ -93,9 +149,12 @@ export function useEmployeeList({
 
   const { data, isFetching } = employeesQuery
 
-  const employees = useMemo(() => {
-    return data?.showEmployees ?? []
-  }, [data?.showEmployees])
+  const employees = useMemo<EmployeeWithActions[]>(() => {
+    return (data?.showEmployees ?? []).map(employee => ({
+      ...employee,
+      allowedActions: deriveAllowedActions(employee, employeeType),
+    }))
+  }, [data?.showEmployees, employeeType])
 
   const paginationProps = data?.httpMeta.response.headers
     ? getPaginationProps(data.httpMeta.response.headers, isFetching)
