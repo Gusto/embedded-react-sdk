@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { useEmployeesList } from '@gusto/embedded-api/react-query/employeesList'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
+import type { Job } from '@gusto/embedded-api/models/components/job'
 import { useEmployeesDeleteMutation } from '@gusto/embedded-api/react-query/employeesDelete'
 import { useEmployeesUpdateOnboardingStatusMutation } from '@gusto/embedded-api/react-query/employeesUpdateOnboardingStatus'
 import { keepPreviousData } from '@tanstack/react-query'
@@ -21,6 +22,7 @@ export type EmployeeAction =
 
 export interface EmployeeWithActions extends Employee {
   allowedActions: EmployeeAction[]
+  primaryJob?: Job
 }
 
 export interface EmployeeActionCallbacks {
@@ -150,10 +152,15 @@ export function useEmployeeList({
   const { data, isFetching } = employeesQuery
 
   const employees = useMemo<EmployeeWithActions[]>(() => {
-    return (data?.showEmployees ?? []).map(employee => ({
-      ...employee,
-      allowedActions: deriveAllowedActions(employee, employeeType),
-    }))
+    return (data?.showEmployees ?? []).map(employee => {
+      const primaryJob = employee.jobs?.find(job => job.primary === true)
+      
+      return {
+        ...employee,
+        allowedActions: deriveAllowedActions(employee, employeeType),
+        primaryJob,
+      }
+    })
   }, [data?.showEmployees, employeeType])
 
   const paginationProps = data?.httpMeta.response.headers

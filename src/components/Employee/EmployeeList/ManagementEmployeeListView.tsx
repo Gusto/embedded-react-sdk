@@ -92,8 +92,7 @@ export function ManagementEmployeeListView({
       key: 'jobTitle',
       title: t('jobTitleLabel'),
       render: (employee: EmployeeWithActions) => {
-        const primaryJob = employee.jobs?.find(job => job.primary === true)
-        return primaryJob?.title ?? '-'
+        return employee.primaryJob?.title ?? '-'
       },
     }
 
@@ -108,8 +107,7 @@ export function ManagementEmployeeListView({
           key: 'startDate',
           title: t('startDateLabel'),
           render: (employee: EmployeeWithActions) => {
-            const primaryJob = employee.jobs?.find(job => job.primary === true)
-            const formattedDate = formatDateLongWithYear(primaryJob?.hireDate)
+            const formattedDate = formatDateLongWithYear(employee.primaryJob?.hireDate)
             return formattedDate || '-'
           },
         },
