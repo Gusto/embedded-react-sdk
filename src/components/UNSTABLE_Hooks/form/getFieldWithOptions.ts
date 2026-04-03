@@ -1,4 +1,4 @@
-import type { FieldMetadataWithOptions, FieldsMetadata } from './types'
+import type { FieldMetadataWithOptions, FieldsMetadata } from '@/types/sdkHooks'
 
 export function getFieldWithOptions<TEntry = unknown>(
   metadata: FieldsMetadata,

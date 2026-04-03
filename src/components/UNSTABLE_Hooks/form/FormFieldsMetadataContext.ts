@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react'
-import type { FieldsMetadata } from './types'
+import type { FieldsMetadata } from '@/types/sdkHooks'
 import type { SDKError } from '@/types/sdkError'
 
 export interface FormFieldsMetadataContextValue {

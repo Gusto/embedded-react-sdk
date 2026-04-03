@@ -15,7 +15,7 @@ const MD_OUTPUT_PATH = join(ROOT, 'docs/reference/endpoint-reference.md')
 
 const isVerifyMode = process.argv.includes('--verify')
 
-const NON_DOMAIN_DIRS = new Set(['Base', 'Common', 'Flow'])
+// Removed NON_DOMAIN_DIRS - no longer needed with export-based discovery
 
 interface Endpoint {
   method: string
@@ -214,113 +214,93 @@ function normalizeEndpointPath(openApiPath: string, paramNameMap: Record<string,
   })
 }
 
-// --- Map directory structure to block names ---
+// --- Map export chain to block names ---
 
 interface BlockMapping {
   blockName: string
   componentDir: string
 }
 
-function discoverDomains(): string[] {
-  return readdirSync(COMPONENTS_DIR)
-    .filter(entry => {
-      const fullPath = join(COMPONENTS_DIR, entry)
-      return statSync(fullPath).isDirectory() && !NON_DOMAIN_DIRS.has(entry)
-    })
-    .sort()
-}
-
-function buildExportNameMap(domainDir: string): Map<string, string> {
-  const indexPath = join(domainDir, 'index.ts')
-  const exportMap = new Map<string, string>()
+function parseNamespaceExports(): Map<string, string> {
+  const indexPath = join(COMPONENTS_DIR, 'index.ts')
+  const namespaces = new Map<string, string>()
 
   try {
     const content = readFileSync(indexPath, 'utf-8')
-    const exportPattern = /export\s+\{\s*(\w+)(?:\s+as\s+\w+)?\s*\}\s+from\s+['"]\.\/([^'"\/]+)/g
-    for (const match of content.matchAll(exportPattern)) {
-      const exportedName = match[1]
-      const dirName = match[2]
-      exportMap.set(dirName, exportedName)
+    // Match: export * as Namespace from './DomainDir'
+    const namespacePattern = /export\s+\*\s+as\s+(\w+)\s+from\s+['"]\.\/([^'"]+)['"]/g
+    for (const match of content.matchAll(namespacePattern)) {
+      const namespaceName = match[1]
+      const domainDir = match[2]
+      namespaces.set(namespaceName, domainDir)
     }
-  } catch {
-    // no index.ts
+  } catch (err) {
+    console.error(`ERROR: Could not read ${indexPath}`)
+    throw err
   }
 
-  return exportMap
+  return namespaces
 }
 
-function isNamespaceDir(dir: string): boolean {
-  try {
-    const entries = readdirSync(dir)
-    const sourceFiles = entries.filter(e => /\.(ts|tsx)$/.test(e))
-    const hasOnlyTypeFiles =
-      sourceFiles.length === 0 || sourceFiles.every(f => /^types\.ts$|\.types\.ts$/.test(f))
-    if (!hasOnlyTypeFiles) return false
-    return entries.some(entry => {
-      const fullPath = join(dir, entry)
-      return statSync(fullPath).isDirectory() && !entry.endsWith('Flow')
-    })
-  } catch {
-    return false
+function parseComponentExports(domainDir: string): Map<string, string> {
+  const exports = new Map<string, string>()
+
+  // Try both .ts and .tsx extensions
+  const possibleBarrelFiles = [join(domainDir, 'index.ts'), join(domainDir, 'index.tsx')]
+
+  for (const barrelPath of possibleBarrelFiles) {
+    try {
+      const content = readFileSync(barrelPath, 'utf-8')
+      // Match: export { Component } from './SomeDir/Component'
+      // Or: export { Component } from './Component'
+      const exportPattern = /export\s+\{\s*(\w+).*?\}\s+from\s+['"](\.[^'"]+)['"]/g
+      for (const match of content.matchAll(exportPattern)) {
+        const componentName = match[1]
+        const importPath = match[2]
+        exports.set(componentName, importPath)
+      }
+      break // Found a barrel file, stop looking
+    } catch {
+      // barrel file doesn't exist, try next
+    }
   }
+
+  return exports
 }
 
-function isDomainWithSubBlocks(domainDir: string): boolean {
-  try {
-    const entries = readdirSync(domainDir)
-    const hasComponentFiles = entries.some(e => /\.tsx$/.test(e) && e !== 'index.tsx')
-    if (hasComponentFiles) return false
-    return entries.some(entry => {
-      const fullPath = join(domainDir, entry)
-      return statSync(fullPath).isDirectory()
-    })
-  } catch {
-    return false
+function resolveComponentDirectory(domainDir: string, importPath: string): string {
+  // importPath is like './ContractorList' or './Payments/PaymentFlow'
+  const resolved = resolve(domainDir, importPath)
+
+  // If it's a direct file import, get the directory
+  if (existsSync(resolved + '.tsx') || existsSync(resolved + '.ts')) {
+    return dirname(resolved)
   }
+
+  // If it's a directory with an index file, use the directory
+  if (existsSync(resolved) && statSync(resolved).isDirectory()) {
+    return resolved
+  }
+
+  // Fallback: assume it's the directory
+  return resolved
 }
 
 function discoverBlocks(): BlockMapping[] {
   const blocks: BlockMapping[] = []
-  const domains = discoverDomains()
+  const namespaces = parseNamespaceExports()
 
-  for (const domain of domains) {
-    const domainDir = join(COMPONENTS_DIR, domain)
+  for (const [namespaceName, domainDirName] of namespaces.entries()) {
+    const domainDir = join(COMPONENTS_DIR, domainDirName)
 
-    if (!isDomainWithSubBlocks(domainDir)) {
-      blocks.push({ blockName: domain, componentDir: domainDir })
-      continue
-    }
+    const componentExports = parseComponentExports(domainDir)
 
-    const exportNames = buildExportNameMap(domainDir)
-
-    try {
-      const entries = readdirSync(domainDir)
-      for (const entry of entries) {
-        const fullPath = join(domainDir, entry)
-        if (!statSync(fullPath).isDirectory()) continue
-        if (entry.endsWith('Flow')) continue
-
-        if (isNamespaceDir(fullPath)) {
-          const nestedEntries = readdirSync(fullPath)
-          for (const nestedEntry of nestedEntries) {
-            const nestedPath = join(fullPath, nestedEntry)
-            if (!statSync(nestedPath).isDirectory()) continue
-            if (nestedEntry.endsWith('Flow')) continue
-            blocks.push({
-              blockName: `${domain}.${entry}.${nestedEntry}`,
-              componentDir: nestedPath,
-            })
-          }
-        } else {
-          const resolvedName = exportNames.get(entry) ?? entry
-          blocks.push({
-            blockName: `${domain}.${resolvedName}`,
-            componentDir: fullPath,
-          })
-        }
-      }
-    } catch {
-      // domain dir doesn't exist
+    for (const [componentName, importPath] of componentExports.entries()) {
+      const componentDir = resolveComponentDirectory(domainDir, importPath)
+      blocks.push({
+        blockName: `${namespaceName}.${componentName}`,
+        componentDir,
+      })
     }
   }
 
@@ -336,58 +316,83 @@ interface FlowMapping {
 
 function discoverFlows(): FlowMapping[] {
   const flows: FlowMapping[] = []
-  const domains = discoverDomains()
+  const namespaces = parseNamespaceExports()
 
-  for (const domain of domains) {
-    const domainDir = join(COMPONENTS_DIR, domain)
-    try {
-      for (const entry of readdirSync(domainDir)) {
-        const fullPath = join(domainDir, entry)
-        if (!statSync(fullPath).isDirectory()) continue
-        if (!entry.endsWith('Flow')) continue
-        flows.push({ flowName: `${domain}.${entry}`, flowDir: fullPath })
-      }
-    } catch {
-      // domain dir doesn't exist
-      continue
-    }
+  for (const [namespaceName, domainDirName] of namespaces.entries()) {
+    const domainDir = join(COMPONENTS_DIR, domainDirName)
 
     try {
       const entries = readdirSync(domainDir)
+
+      // Look for direct Flow directories in the domain
+      for (const entry of entries) {
+        const fullPath = join(domainDir, entry)
+        if (!statSync(fullPath).isDirectory()) continue
+        if (!entry.endsWith('Flow')) continue
+        flows.push({ flowName: `${namespaceName}.${entry}`, flowDir: fullPath })
+      }
+
+      // Look for nested Flow directories (e.g., Contractor.Payments.PaymentFlow)
       for (const entry of entries) {
         const subDir = join(domainDir, entry)
         if (!statSync(subDir).isDirectory()) continue
         if (entry.endsWith('Flow')) continue
 
-        if (isNamespaceDir(subDir)) {
-          for (const nestedEntry of readdirSync(subDir)) {
+        try {
+          const nestedEntries = readdirSync(subDir)
+          for (const nestedEntry of nestedEntries) {
             const nestedPath = join(subDir, nestedEntry)
             if (!statSync(nestedPath).isDirectory()) continue
             if (!nestedEntry.endsWith('Flow')) continue
-            flows.push({ flowName: `${domain}.${entry}.${nestedEntry}`, flowDir: nestedPath })
+            flows.push({
+              flowName: `${namespaceName}.${entry}.${nestedEntry}`,
+              flowDir: nestedPath,
+            })
           }
+        } catch {
+          // nested dir doesn't exist or can't be read
         }
       }
     } catch {
-      // doesn't exist
+      // domain dir doesn't exist
+      continue
     }
   }
 
   return flows
 }
 
-function deriveFlowBlocks(flowDir: string, blockDirToName: Map<string, string>): string[] {
+function deriveFlowBlocks(
+  flowDir: string,
+  blockDirToName: Map<string, string>,
+  blockMappings: BlockMapping[],
+): string[] {
   const files = walkDir(flowDir)
   const blockNames = new Set<string>()
 
-  const absoluteImportPattern = /from\s+['"]@\/components\/([^'"]+)['"]/g
-  const relativeImportPattern = /from\s+['"](\.[^'"]+)['"]/g
+  // Build a map of component directory to all block names for that directory
+  const dirToBlocks = new Map<string, string[]>()
+  for (const mapping of blockMappings) {
+    if (!dirToBlocks.has(mapping.componentDir)) {
+      dirToBlocks.set(mapping.componentDir, [])
+    }
+    dirToBlocks.get(mapping.componentDir)!.push(mapping.blockName)
+  }
+
+  const absoluteImportPattern = /import\s+\{([^}]+)\}\s+from\s+['"]@\/components\/([^'"]+)['"]/g
+  const relativeImportPattern = /import\s+\{([^}]+)\}\s+from\s+['"](\.[^'"]+)['"]/g
 
   for (const filePath of files) {
     const content = readFileSync(filePath, 'utf-8')
 
     for (const match of content.matchAll(absoluteImportPattern)) {
-      const importPath = match[1]
+      const importedNames = match[1].split(',').map(name =>
+        name
+          .trim()
+          .split(/\s+as\s+/)[0]
+          .trim(),
+      )
+      const importPath = match[2]
       if (
         importPath.startsWith('Flow/') ||
         importPath.startsWith('Base') ||
@@ -400,13 +405,32 @@ function deriveFlowBlocks(flowDir: string, blockDirToName: Map<string, string>):
         join(COMPONENTS_DIR, segments[0], segments[1] ?? '', segments[2] ?? ''),
       ]
       for (const dir of candidateDirs) {
-        const name = blockDirToName.get(dir)
-        if (name) blockNames.add(name)
+        const blocks = dirToBlocks.get(dir)
+        if (blocks) {
+          if (blocks.length === 1) {
+            blockNames.add(blocks[0])
+          } else {
+            // Multiple blocks for this directory - match by component name
+            for (const blockName of blocks) {
+              const componentName = blockName.split('.').pop()
+              if (componentName && importedNames.includes(componentName)) {
+                blockNames.add(blockName)
+              }
+            }
+          }
+          break
+        }
       }
     }
 
     for (const match of content.matchAll(relativeImportPattern)) {
-      const importPath = match[1]
+      const importedNames = match[1].split(',').map(name =>
+        name
+          .trim()
+          .split(/\s+as\s+/)[0]
+          .trim(),
+      )
+      const importPath = match[2]
       if (importPath.includes('/Flow/') || importPath.includes('useFlow')) continue
       const resolved = resolve(dirname(filePath), importPath)
       const segments = relative(COMPONENTS_DIR, resolved).split('/')
@@ -415,8 +439,21 @@ function deriveFlowBlocks(flowDir: string, blockDirToName: Map<string, string>):
         join(COMPONENTS_DIR, segments[0], segments[1] ?? '', segments[2] ?? ''),
       ]
       for (const dir of candidateDirs) {
-        const name = blockDirToName.get(dir)
-        if (name) blockNames.add(name)
+        const blocks = dirToBlocks.get(dir)
+        if (blocks) {
+          if (blocks.length === 1) {
+            blockNames.add(blocks[0])
+          } else {
+            // Multiple blocks for this directory - match by component name
+            for (const blockName of blocks) {
+              const componentName = blockName.split('.').pop()
+              if (componentName && importedNames.includes(componentName)) {
+                blockNames.add(blockName)
+              }
+            }
+          }
+          break
+        }
       }
     }
   }
@@ -484,7 +521,7 @@ function deriveInventory(): DerivationResult {
   const flows: Record<string, FlowEntry> = {}
 
   for (const { flowName, flowDir } of flowMappings) {
-    const blockNames = deriveFlowBlocks(flowDir, blockDirToName)
+    const blockNames = deriveFlowBlocks(flowDir, blockDirToName, blockMappings)
 
     const endpoints: Endpoint[] = []
     for (const blockName of blockNames) {

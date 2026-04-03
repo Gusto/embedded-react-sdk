@@ -1,6 +1,6 @@
 import { useFormContext } from 'react-hook-form'
 import { useFormFieldsMetadataContext } from './FormFieldsMetadataContext'
-import type { ValidationMessages } from './types'
+import type { ValidationMessages } from '@/types/sdkHooks'
 
 export function useFieldErrorMessage<TErrorCode extends string>(
   fieldName: string,
