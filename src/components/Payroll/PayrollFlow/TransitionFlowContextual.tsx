@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useRef } from 'react'
 import { usePayrollsListSuspense } from '@gusto/embedded-api/react-query/payrollsList'
 import {
   ProcessingStatuses,
@@ -50,13 +50,18 @@ export function TransitionFlowContextual() {
     return match?.payrollUuid
   }, [payrollsData, startDate, endDate, payScheduleUuid])
 
+  const stablePayrollUuidRef = useRef(existingPayrollUuid)
+  if (existingPayrollUuid) {
+    stablePayrollUuidRef.current = existingPayrollUuid
+  }
+
   return (
     <TransitionFlow
       companyId={resolvedCompanyId}
       startDate={startDate}
       endDate={endDate}
       payScheduleUuid={payScheduleUuid}
-      payrollUuid={existingPayrollUuid}
+      payrollUuid={stablePayrollUuidRef.current}
       onEvent={onEvent}
     />
   )
