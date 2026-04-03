@@ -1,7 +1,7 @@
 import type { ComponentType } from 'react'
-import type { BaseFieldProps, ValidationMessages } from '../types'
 import { useHookFieldResolution } from '../useHookFieldResolution'
 import { getFieldWithOptions } from '../getFieldWithOptions'
+import type { BaseFieldProps, ValidationMessages } from '@/types/sdkHooks'
 import type { BaseFormHookReady } from '@/types/sdkHooks'
 import { RadioGroupField } from '@/components/Common'
 import type { RadioGroupProps } from '@/components/Common/UI/RadioGroup/RadioGroupTypes'

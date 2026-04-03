@@ -1,6 +1,6 @@
 import type { ComponentType } from 'react'
-import type { BaseFieldProps, ValidationMessages } from '../types'
 import { useHookFieldResolution } from '../useHookFieldResolution'
+import type { BaseFieldProps, ValidationMessages } from '@/types/sdkHooks'
 import type { BaseFormHookReady } from '@/types/sdkHooks'
 import { SwitchField } from '@/components/Common'
 import type { SwitchProps } from '@/components/Common/UI/Switch/SwitchTypes'
