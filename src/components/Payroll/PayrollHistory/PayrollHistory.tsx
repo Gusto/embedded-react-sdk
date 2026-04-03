@@ -5,6 +5,7 @@ import { useWireInRequestsListSuspense } from '@gusto/embedded-api/react-query/w
 import {
   ProcessingStatuses,
   QueryParamPayrollTypes,
+  SortOrder,
 } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrolls'
 import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
 import { PayrollHistoryPresentation } from './PayrollHistoryPresentation'
@@ -45,6 +46,7 @@ export const Root = ({ onEvent, companyId, dictionary }: PayrollHistoryProps) =>
     ],
     includeOffCycle: true,
     include: ['totals', 'payroll_status_meta'],
+    sortOrder: SortOrder.Desc,
     page: currentPage,
     per: itemsPerPage,
   })

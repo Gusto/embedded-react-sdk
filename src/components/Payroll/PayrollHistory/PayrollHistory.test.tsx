@@ -686,7 +686,7 @@ describe('PayrollHistory', () => {
   })
 
   describe('pagination', () => {
-    it('includes page and per params in the API request', async () => {
+    it('includes page, per, and sort_order params in the API request', async () => {
       renderWithProviders(<PayrollHistory {...defaultProps} />)
 
       await waitFor(() => {
@@ -695,6 +695,7 @@ describe('PayrollHistory', () => {
 
       expect(capturedPayrollListUrl!.searchParams.get('page')).toBeTruthy()
       expect(capturedPayrollListUrl!.searchParams.get('per')).toBeTruthy()
+      expect(capturedPayrollListUrl!.searchParams.get('sort_order')).toBe('desc')
     })
 
     it('renders pagination controls when totalCount exceeds page size', async () => {
