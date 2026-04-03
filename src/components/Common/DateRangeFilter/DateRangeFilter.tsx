@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from 'react'
-import { Popover } from 'react-aria-components'
+import { Dialog, Popover } from 'react-aria-components'
 import styles from './DateRangeFilter.module.scss'
 import type { DateRange } from '@/components/Common/UI/DateRangePicker/DateRangePickerTypes'
 import { Flex } from '@/components/Common/Flex/Flex'
@@ -59,9 +59,11 @@ export const DateRangeFilter = ({
     if (draftRange) {
       onStartDateChange(draftRange.start)
       onEndDateChange(draftRange.end)
+    } else {
+      onClear()
     }
     setIsOpen(false)
-  }, [draftRange, onStartDateChange, onEndDateChange])
+  }, [draftRange, onStartDateChange, onEndDateChange, onClear])
 
   const handleReset = useCallback(() => {
     onClear()
@@ -96,27 +98,28 @@ export const DateRangeFilter = ({
         offset={8}
         shouldUpdatePosition
       >
-        <div className={styles.popoverContent}>
-          <DateRangePicker
-            aria-label={`${startDateLabel} – ${endDateLabel}`}
-            value={draftRange}
-            onChange={handleRangeChange}
-            startDateLabel={startDateLabel}
-            endDateLabel={endDateLabel}
-            minValue={minStartDate}
-            maxValue={maxEndDate}
-            portalContainerRef={container}
-          />
+        <Dialog aria-label={`${startDateLabel} – ${endDateLabel}`}>
+          <div className={styles.popoverContent}>
+            <DateRangePicker
+              aria-label={`${startDateLabel} – ${endDateLabel}`}
+              value={draftRange}
+              onChange={handleRangeChange}
+              startDateLabel={startDateLabel}
+              endDateLabel={endDateLabel}
+              minValue={minStartDate}
+              maxValue={maxEndDate}
+            />
 
-          <Flex gap={8} justifyContent="flex-end">
-            <Button variant="tertiary" onClick={handleReset}>
-              {resetLabel}
-            </Button>
-            <Button variant="primary" onClick={handleApply}>
-              {applyLabel}
-            </Button>
-          </Flex>
-        </div>
+            <Flex gap={8} justifyContent="flex-end">
+              <Button variant="tertiary" onClick={handleReset}>
+                {resetLabel}
+              </Button>
+              <Button variant="primary" onClick={handleApply}>
+                {applyLabel}
+              </Button>
+            </Flex>
+          </div>
+        </Dialog>
       </Popover>
     </>
   )

@@ -1,5 +1,3 @@
-import type { RefObject } from 'react'
-
 export interface DateRange {
   start: Date
   end: Date
@@ -13,5 +11,4 @@ export interface DateRangePickerProps {
   endDateLabel: string
   minValue?: Date
   maxValue?: Date
-  portalContainerRef?: RefObject<HTMLElement | null>
 }
