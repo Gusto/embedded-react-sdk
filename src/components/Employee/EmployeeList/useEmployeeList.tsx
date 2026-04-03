@@ -20,6 +20,8 @@ export interface EmployeeActionCallbacks {
 export interface UseEmployeeListProps {
   companyId: string
   getTerminatedEmployees?: boolean
+  onboarded?: boolean
+  onboardedActive?: boolean
 }
 
 interface UseEmployeeListReady {
@@ -46,6 +48,8 @@ export type UseEmployeeListResult = HookLoadingResult | UseEmployeeListReady
 export function useEmployeeList({
   companyId,
   getTerminatedEmployees = false,
+  onboarded,
+  onboardedActive,
 }: UseEmployeeListProps): UseEmployeeListResult {
   const { currentPage, itemsPerPage, getPaginationProps } = usePagination()
 
@@ -55,6 +59,8 @@ export function useEmployeeList({
       page: currentPage,
       per: itemsPerPage,
       terminated: getTerminatedEmployees,
+      onboarded,
+      onboardedActive,
     },
     { placeholderData: keepPreviousData },
   )

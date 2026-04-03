@@ -1,5 +1,4 @@
-import { useState, useMemo } from 'react'
-import type { Employee } from '@gusto/embedded-api/models/components/employee'
+import { useState } from 'react'
 import { ManagementEmployeeListView } from './ManagementEmployeeListView'
 import { useEmployeeList } from './useEmployeeList'
 import {
@@ -33,23 +32,13 @@ function ManagementEmployeeListRoot({
   const employeeList = useEmployeeList({
     companyId,
     getTerminatedEmployees: selectedTab === 'dismissed',
+    onboardedActive: selectedTab === 'active' ? true : undefined,
+    onboarded: selectedTab === 'onboarding' ? false : undefined,
   })
 
   if (employeeList.isLoading) {
     return <BaseLayout isLoading error={employeeList.errorHandling.errors} />
   }
-
-  const filteredEmployees = useMemo(() => {
-    if (selectedTab === 'dismissed') {
-      return employeeList.employees
-    }
-
-    if (selectedTab === 'active') {
-      return employeeList.employees.filter((employee: Employee) => employee.onboarded === true)
-    }
-
-    return employeeList.employees.filter((employee: Employee) => employee.onboarded === false)
-  }, [employeeList.employees, selectedTab])
 
   const handleEdit = (employeeId: string) => {
     onEvent(componentEvents.EMPLOYEE_UPDATE, { employeeId })
@@ -76,7 +65,7 @@ function ManagementEmployeeListRoot({
       <ManagementEmployeeListView
         selectedTab={selectedTab}
         onTabChange={handleTabChange}
-        employees={filteredEmployees}
+        employees={employeeList.employees}
         isFetching={employeeList.isFetching}
         pagination={employeeList.pagination}
         status={employeeList.status}
