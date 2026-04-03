@@ -136,14 +136,15 @@ export const PlainComponentAdapter: ComponentsContextType = {
     )
   },
 
-  Box: ({ children, footer, className }: BoxProps) => {
-    return (
-      <div className={`box ${className || ''}`}>
-        <div className="box-body">{children}</div>
-        {footer && <div className="box-footer">{footer}</div>}
+  Box: ({ children, header, footer, withPadding = true, className }: BoxProps) => (
+    <div className={`box ${className || ''}`}>
+      {header && <div className="box-header">{header}</div>}
+      <div className="box-body" style={withPadding ? undefined : { padding: 0 }}>
+        {children}
       </div>
-    )
-  },
+      {footer && <div className="box-footer">{footer}</div>}
+    </div>
+  ),
 
   TextInput: ({
     label,
@@ -1117,10 +1118,15 @@ export const PlainComponentAdapter: ComponentsContextType = {
     className,
     'aria-label': ariaLabel,
     emptyState,
+    variant,
     ...props
   }: TableProps) => {
+    const embeddedStyles =
+      variant === 'embedded'
+        ? { border: 'none', borderRadius: 0, boxShadow: 'none', background: 'transparent' }
+        : undefined
     return (
-      <table className={className} aria-label={ariaLabel} {...props}>
+      <table className={className} aria-label={ariaLabel} style={embeddedStyles} {...props}>
         <thead>
           <tr>
             {headers.map((header: TableData) => (
