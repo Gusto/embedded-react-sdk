@@ -42,6 +42,7 @@ export interface PayrollFlowContextInterface extends FlowContextInterface {
   withReimbursements: boolean
   ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType
   showPayrollCancelledAlert?: boolean
+  isPayrollSubmitted?: boolean
   executionInitialState?: 'configuration' | 'overview'
   transitionStartDate?: string
   transitionEndDate?: string

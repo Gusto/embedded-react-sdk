@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest'
 import {
   buildBreadcrumbs,
+  hideBreadcrumb,
+  lockBreadcrumb,
   resolveBreadcrumbVariables,
   updateBreadcrumbs,
 } from './breadcrumbHelpers'
@@ -260,6 +262,133 @@ describe('buildBreadcrumbs', () => {
     buildBreadcrumbs(nodes)
 
     expect(originalItem).toEqual({ id: 'parent', label: 'Parent' })
+  })
+})
+
+describe('hideBreadcrumb', () => {
+  it('should remove the target breadcrumb from all trails', () => {
+    const context = {
+      breadcrumbs: {
+        configuration: [{ id: 'configuration', label: 'Config' } as FlowBreadcrumb],
+        overview: [
+          { id: 'configuration', label: 'Config' } as FlowBreadcrumb,
+          { id: 'overview', label: 'Overview' } as FlowBreadcrumb,
+        ],
+        receipts: [
+          { id: 'configuration', label: 'Config' } as FlowBreadcrumb,
+          { id: 'overview', label: 'Overview' } as FlowBreadcrumb,
+          { id: 'receipts', label: 'Receipts' } as FlowBreadcrumb,
+        ],
+      },
+    }
+
+    const result = hideBreadcrumb('configuration', context)
+
+    expect(result.breadcrumbs.configuration).toEqual([])
+    expect(result.breadcrumbs.overview).toEqual([{ id: 'overview', label: 'Overview' }])
+    expect(result.breadcrumbs.receipts).toEqual([
+      { id: 'overview', label: 'Overview' },
+      { id: 'receipts', label: 'Receipts' },
+    ])
+  })
+
+  it('should not modify breadcrumbs that do not match the target id', () => {
+    const context = {
+      breadcrumbs: {
+        overview: [
+          { id: 'configuration', label: 'Config' } as FlowBreadcrumb,
+          { id: 'overview', label: 'Overview' } as FlowBreadcrumb,
+        ],
+      },
+    }
+
+    const result = hideBreadcrumb('other', context)
+
+    expect(result.breadcrumbs.overview).toEqual([
+      { id: 'configuration', label: 'Config' },
+      { id: 'overview', label: 'Overview' },
+    ])
+  })
+
+  it('should preserve other context properties', () => {
+    const context = {
+      breadcrumbs: {
+        step: [{ id: 'step', label: 'Step' } as FlowBreadcrumb],
+      },
+      companyId: 'test-company',
+      payrollUuid: 'payroll-123',
+    }
+
+    const result = hideBreadcrumb('step', context)
+
+    expect(result.companyId).toBe('test-company')
+    expect(result.payrollUuid).toBe('payroll-123')
+  })
+
+  it('should handle empty breadcrumbs', () => {
+    const context = { breadcrumbs: {} }
+
+    const result = hideBreadcrumb('anything', context)
+
+    expect(result.breadcrumbs).toEqual({})
+  })
+})
+
+describe('lockBreadcrumb', () => {
+  it('should mark the target breadcrumb as non-navigable across all trails', () => {
+    const context = {
+      breadcrumbs: {
+        configuration: [{ id: 'configuration', label: 'Config' } as FlowBreadcrumb],
+        overview: [
+          { id: 'configuration', label: 'Config' } as FlowBreadcrumb,
+          { id: 'overview', label: 'Overview' } as FlowBreadcrumb,
+        ],
+      },
+    }
+
+    const result = lockBreadcrumb('configuration', context)
+
+    expect(result.breadcrumbs.configuration![0]!.isNavigable).toBe(false)
+    expect(result.breadcrumbs.overview![0]!.isNavigable).toBe(false)
+    expect(result.breadcrumbs.overview![1]!.isNavigable).toBeUndefined()
+  })
+
+  it('should not modify breadcrumbs that do not match the target id', () => {
+    const context = {
+      breadcrumbs: {
+        overview: [
+          { id: 'configuration', label: 'Config' } as FlowBreadcrumb,
+          { id: 'overview', label: 'Overview' } as FlowBreadcrumb,
+        ],
+      },
+    }
+
+    const result = lockBreadcrumb('configuration', context)
+
+    expect(result.breadcrumbs.overview![1]).toEqual({ id: 'overview', label: 'Overview' })
+  })
+
+  it('should preserve other context properties', () => {
+    const context = {
+      breadcrumbs: {
+        step: [{ id: 'step', label: 'Step' } as FlowBreadcrumb],
+      },
+      companyId: 'test-company',
+      payrollUuid: 'payroll-123',
+    }
+
+    const result = lockBreadcrumb('step', context)
+
+    expect(result.companyId).toBe('test-company')
+    expect(result.payrollUuid).toBe('payroll-123')
+  })
+
+  it('should handle empty breadcrumbs', () => {
+    const context = { breadcrumbs: {} }
+
+    const result = lockBreadcrumb('anything', context)
+
+    expect(result.breadcrumbs).toEqual({})
   })
 })
 

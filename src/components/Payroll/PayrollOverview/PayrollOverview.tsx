@@ -336,6 +336,7 @@ export const Root = ({
           },
         },
       })
+      onEvent(componentEvents.RUN_PAYROLL_SUBMITTING)
       onEvent(componentEvents.RUN_PAYROLL_SUBMITTED, result)
       setIsPolling(true)
     })
