@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import styles from './PayrollEditEmployeePresentation.module.scss'
-import { TimeOffField } from './TimeOffField'
+import { TimeOffField, PayoutTimeOffField } from './TimeOffField'
 import { Flex, Grid, TextInputField, RadioGroupField } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
@@ -101,14 +101,14 @@ const buildCompensationFromFormData = (
         timeOffEntry.finalPayoutUnusedHoursInput
       return {
         ...timeOffEntry,
-        hours: formData.timeOffCompensations[timeOffEntry.name!],
-        ...(finalPayout != null ? { finalPayoutUnusedHoursInput: finalPayout } : {}),
+        hours: formData.timeOffCompensations[timeOffEntry.name!] || '0',
+        ...(finalPayout != null ? { finalPayoutUnusedHoursInput: finalPayout || '0' } : {}),
       }
     }
 
     return {
       ...timeOffWithoutPayout,
-      hours: formData.timeOffCompensations[timeOffEntry.name!],
+      hours: formData.timeOffCompensations[timeOffEntry.name!] || '0',
     }
   })
 
@@ -480,17 +480,16 @@ export const PayrollEditEmployeePresentation = ({
           )}
           {payrollCategory === PayrollCategory.Dismissal && timeOff.length > 0 && (
             <div className={styles.fieldGroup}>
-              <Heading as="h4">{t('finalPayoutTitle')}</Heading>
-              <Text variant="supporting">{t('finalPayoutDescription')}</Text>
+              <Flex flexDirection="column" gap={4}>
+                <Heading as="h4">{t('finalPayoutTitle')}</Heading>
+                <Text variant="supporting">{t('finalPayoutDescription')}</Text>
+              </Flex>
               <Grid gridTemplateColumns={{ base: '1fr', small: [320, 320] }} gap={20}>
                 {timeOff.map(timeOffEntry => (
-                  <TextInputField
+                  <PayoutTimeOffField
                     key={`payout-${timeOffEntry.name}`}
-                    name={`finalPayoutCompensations.${timeOffEntry.name}`}
-                    type="number"
-                    min={0}
-                    adornmentEnd={t('hoursUnit')}
-                    label={timeOffEntry.name}
+                    timeOff={timeOffEntry}
+                    employee={employee}
                   />
                 ))}
               </Grid>

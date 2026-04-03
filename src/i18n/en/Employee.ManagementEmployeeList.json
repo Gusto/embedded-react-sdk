@@ -1,0 +1,41 @@
+{
+  "title": "Employees",
+  "addEmployeeCta": "Add employee",
+  "tabsLabel": "Employee status tabs",
+  "tabs": {
+    "active": "Active",
+    "onboarding": "Onboarding",
+    "dismissed": "Dismissed"
+  },
+  "nameLabel": "Employee name",
+  "jobTitleLabel": "Job title",
+  "startDateLabel": "Start date",
+  "statusLabel": "Status",
+  "lastDayLabel": "Last day",
+  "editCta": "Edit employee",
+  "dismissCta": "Dismiss employee",
+  "cancelCta": "Cancel onboarding",
+  "rehireCta": "Rehire employee",
+  "hamburgerTitle": "Employee actions menu",
+  "employeeListLabel": "List of employees",
+  "emptyState": {
+    "active": {
+      "title": "There are no active employees",
+      "description": "Employees who have completed onboarding will appear here"
+    },
+    "onboarding": {
+      "title": "There are no employees onboarding",
+      "description": "Employees currently being onboarded will appear here"
+    },
+    "dismissed": {
+      "title": "There are no dismissed employees",
+      "description": "Terminated employees will appear here"
+    }
+  },
+  "deleteDialog": {
+    "title": "Cancel employee onboarding?",
+    "description": "This will permanently delete this employee from your account. This action cannot be undone.",
+    "confirmCta": "Delete employee",
+    "cancelCta": "Cancel"
+  }
+}

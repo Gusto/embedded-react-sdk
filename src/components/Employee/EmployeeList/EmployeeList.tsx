@@ -1,147 +1,78 @@
-import { useEmployeesList } from '@gusto/embedded-api/react-query/employeesList'
 import type { OnboardingStatus } from '@gusto/embedded-api/models/operations/putv1employeesemployeeidonboardingstatus'
-import { useEmployeesDeleteMutation } from '@gusto/embedded-api/react-query/employeesDelete'
-import { useEmployeesUpdateOnboardingStatusMutation } from '@gusto/embedded-api/react-query/employeesUpdateOnboardingStatus'
-import { keepPreviousData } from '@tanstack/react-query'
-import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlowComponents'
-import { EmployeeListProvider } from './useEmployeeList'
-import { Actions } from './Actions'
+import { EmployeeListView } from './EmployeeListView'
+import { useEmployeeList } from './useEmployeeList'
 import {
-  BaseComponent,
+  BaseBoundaries,
+  BaseLayout,
   type BaseComponentInterface,
   type CommonComponentInterface,
 } from '@/components/Base/Base'
-import { useBase } from '@/components/Base/useBase'
-import { Flex, Loading } from '@/components/Common'
 import { useI18n, useComponentDictionary } from '@/i18n'
-import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
-import { Head } from '@/components/Employee/EmployeeList/Head'
-import { List } from '@/components/Employee/EmployeeList/List'
-import { useFlow } from '@/components/Flow/useFlow'
-import { usePagination } from '@/hooks/usePagination/usePagination'
+import { componentEvents } from '@/shared/constants'
 
-//Interface for component specific props
 interface EmployeeListProps extends CommonComponentInterface<'Employee.EmployeeList'> {
   companyId: string
+  onEvent: BaseComponentInterface['onEvent']
 }
 
-export function EmployeeList(props: EmployeeListProps & BaseComponentInterface) {
-  return (
-    <BaseComponent {...props}>
-      <Root {...props}>{props.children}</Root>
-    </BaseComponent>
-  )
-}
-function Root({ companyId, className, children, dictionary }: EmployeeListProps) {
-  //Using i18n hook to directly load necessary namespace
+function EmployeeListRoot({ companyId, onEvent, dictionary }: EmployeeListProps) {
   useI18n('Employee.EmployeeList')
   useComponentDictionary('Employee.EmployeeList', dictionary)
-  //Getting props from base context
-  const { onEvent, baseSubmitHandler } = useBase()
-  const { currentPage, itemsPerPage, getPaginationProps } = usePagination()
 
-  const { data, fetchStatus, isFetching } = useEmployeesList(
-    {
-      companyId,
-      page: currentPage,
-      per: itemsPerPage,
-    },
-    { placeholderData: keepPreviousData },
-  )
+  const employeeList = useEmployeeList({
+    companyId,
+  })
 
-  const { mutateAsync: deleteEmployeeMutation } = useEmployeesDeleteMutation()
-  const { mutateAsync: updateEmployeeOnboardingStatusMutation } =
-    useEmployeesUpdateOnboardingStatusMutation()
+  if (employeeList.isLoading) {
+    return <BaseLayout isLoading error={employeeList.errorHandling.errors} />
+  }
 
-  if (fetchStatus === 'fetching' && !data) {
-    return <Loading />
+  const handleEdit = (employeeId: string, onboardingStatus?: OnboardingStatus) => {
+    onEvent(componentEvents.EMPLOYEE_UPDATE, { employeeId, onboardingStatus })
   }
-  const { httpMeta, showEmployees: employeeList } = data!
-  const employees = employeeList!
 
-  const handleDelete = async (uuid: string) => {
-    await baseSubmitHandler(uuid, async payload => {
-      await deleteEmployeeMutation({
-        request: { employeeId: payload },
-      })
-
-      onEvent(componentEvents.EMPLOYEE_DELETED, { employeeId: payload })
-    })
-  }
-  /**Set onboarding status to self_onboarding_awaiting_admin_review and proceed to edit */
-  const handleReview = async (data: string) => {
-    await baseSubmitHandler(data, async employeeId => {
-      await updateOnboardingStatus({
-        employeeId,
-        status: EmployeeOnboardingStatus.SELF_ONBOARDING_AWAITING_ADMIN_REVIEW,
-      })
-      onEvent(componentEvents.EMPLOYEE_UPDATE, {
-        employeeId,
-        onboardingStatus: EmployeeOnboardingStatus.SELF_ONBOARDING_AWAITING_ADMIN_REVIEW,
-      })
-    })
-  }
-  /**Update employee onboarding status reverting it back to admin_onboarding_incomplete */
-  const handleCancelSelfOnboarding = async (data: string) => {
-    await baseSubmitHandler(data, async employeeId => {
-      await updateOnboardingStatus({
-        employeeId,
-        status: EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE,
-      })
-    })
-  }
-  const updateOnboardingStatus = async (data: { employeeId: string; status: OnboardingStatus }) => {
-    await baseSubmitHandler(data, async ({ employeeId, status }) => {
-      const { employeeOnboardingStatus: responseData } =
-        await updateEmployeeOnboardingStatusMutation({
-          request: { employeeId, requestBody: { onboardingStatus: status } },
-        })
-      onEvent(componentEvents.EMPLOYEE_ONBOARDING_STATUS_UPDATED, responseData)
-    })
-  }
-  const handleNew = () => {
+  const handleAddEmployee = () => {
     onEvent(componentEvents.EMPLOYEE_CREATE)
   }
+
   const handleSkip = () => {
     onEvent(componentEvents.EMPLOYEE_ONBOARDING_DONE)
   }
 
-  const handleEdit = (uuid: string, onboardingStatus?: OnboardingStatus) => {
-    onEvent(componentEvents.EMPLOYEE_UPDATE, { employeeId: uuid, onboardingStatus })
-  }
   return (
-    <section className={className}>
-      <EmployeeListProvider
-        value={{
-          ...getPaginationProps(httpMeta.response.headers, isFetching),
-          isFetching,
-          handleEdit,
-          handleNew,
-          handleReview,
-          handleDelete,
-          employees,
-          handleCancelSelfOnboarding,
-          handleSkip,
+    <BaseLayout error={employeeList.errorHandling.errors}>
+      <EmployeeListView
+        employees={employeeList.data.employees}
+        isFetching={employeeList.status.isFetching}
+        pagination={employeeList.pagination}
+        status={employeeList.status}
+        onEdit={handleEdit}
+        onDelete={async (employeeId: string) => {
+          await employeeList.actions.onDelete(employeeId)
+          onEvent(componentEvents.EMPLOYEE_DELETED, { employeeId })
         }}
-      >
-        {children ? (
-          children
-        ) : (
-          <Flex flexDirection="column">
-            <Head />
-            <List />
-            <Actions />
-          </Flex>
-        )}
-      </EmployeeListProvider>
-    </section>
+        onCancelSelfOnboarding={async (employeeId: string) => {
+          const result = await employeeList.actions.onCancelSelfOnboarding(employeeId)
+          onEvent(componentEvents.EMPLOYEE_ONBOARDING_STATUS_UPDATED, result)
+        }}
+        onReview={async (employeeId: string) => {
+          const result = await employeeList.actions.onReview(employeeId)
+          onEvent(componentEvents.EMPLOYEE_UPDATE, result)
+        }}
+        onAddEmployee={handleAddEmployee}
+        onSkip={handleSkip}
+      />
+    </BaseLayout>
   )
 }
 
-/**
- * Wrapper used inside Flows -> exposes flow context for required parameters
- */
-export const EmployeeListContextual = () => {
-  const { companyId, onEvent } = useFlow<OnboardingContextInterface>()
-  return <EmployeeList companyId={companyId} onEvent={onEvent} />
+export function EmployeeList({
+  FallbackComponent,
+  ...props
+}: EmployeeListProps & BaseComponentInterface) {
+  return (
+    <BaseBoundaries componentName="Employee.EmployeeList" FallbackComponent={FallbackComponent}>
+      <EmployeeListRoot {...props} />
+    </BaseBoundaries>
+  )
 }

@@ -1,7 +1,6 @@
 import type { MinimumWage } from '@gusto/embedded-api/models/components/minimumwage'
 import type { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
 import type { PaymentUnit } from '@gusto/embedded-api/models/components/compensation'
-import type { HookFieldProps } from '../../form/types'
 import type { TextInputHookFieldProps } from '../../form/fields/TextInputHookField'
 import type { SelectHookFieldProps } from '../../form/fields/SelectHookField'
 import type { NumberInputHookFieldProps } from '../../form/fields/NumberInputHookField'
@@ -17,6 +16,7 @@ import {
   DatePickerHookField,
 } from '../../form/fields'
 import type { CompensationErrorCodes } from './compensationSchema'
+import type { HookFieldProps } from '@/types/sdkHooks'
 import type { WARiskClassCode } from '@/models/WA_RISK_CODES'
 
 export type RequiredValidation = typeof CompensationErrorCodes.REQUIRED

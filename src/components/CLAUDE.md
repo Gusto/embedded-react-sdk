@@ -1,8 +1,3 @@
----
-alwaysApply: false
-globs: src/components/**
----
-
 # Storybook-First Development
 
 Build and test components in Storybook before integrating into flows.

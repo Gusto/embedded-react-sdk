@@ -374,6 +374,38 @@ describe('PayrollConfiguration', () => {
     })
   })
 
+  describe('direct deposit deadline banner', () => {
+    it('hides direct deposit deadline banner when all employees are paid by check', async () => {
+      currentPayrollData = {
+        ...mockPayrollData,
+        employee_compensations: allCompensations.map(comp => ({
+          ...comp,
+          payment_method: 'Check',
+        })),
+      }
+
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
+      })
+
+      expect(
+        screen.queryByText(/To pay your employees with direct deposit by/i),
+      ).not.toBeInTheDocument()
+    })
+
+    it('shows direct deposit deadline banner when at least one employee uses direct deposit', async () => {
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
+      })
+
+      expect(screen.getByText(/To pay your employees with direct deposit by/i)).toBeInTheDocument()
+    })
+  })
+
   describe('calculate and polling', () => {
     beforeEach(() => {
       vi.useFakeTimers({ shouldAdvanceTime: true })

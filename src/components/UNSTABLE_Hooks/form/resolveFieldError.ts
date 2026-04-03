@@ -1,5 +1,5 @@
 import type { FieldErrors } from 'react-hook-form'
-import type { ValidationMessages } from './types'
+import type { ValidationMessages } from '@/types/sdkHooks'
 import type { SDKError } from '@/types/sdkError'
 
 export function resolveFieldError<TErrorCode extends string>(

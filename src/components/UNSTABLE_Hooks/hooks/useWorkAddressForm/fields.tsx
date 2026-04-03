@@ -1,9 +1,9 @@
 import type { Location } from '@gusto/embedded-api/models/components/location'
-import type { HookFieldProps } from '../../form/types'
 import type { SelectHookFieldProps } from '../../form/fields/SelectHookField'
 import type { DatePickerHookFieldProps } from '../../form/fields/DatePickerHookField'
 import { SelectHookField, DatePickerHookField } from '../../form/fields'
 import type { WorkAddressErrorCodes } from './workAddressSchema'
+import type { HookFieldProps } from '@/types/sdkHooks'
 
 export type RequiredValidation = typeof WorkAddressErrorCodes.REQUIRED
 
