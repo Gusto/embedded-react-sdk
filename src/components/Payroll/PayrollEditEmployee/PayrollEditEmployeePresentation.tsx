@@ -101,14 +101,14 @@ const buildCompensationFromFormData = (
         timeOffEntry.finalPayoutUnusedHoursInput
       return {
         ...timeOffEntry,
-        hours: formData.timeOffCompensations[timeOffEntry.name!],
-        ...(finalPayout != null ? { finalPayoutUnusedHoursInput: finalPayout } : {}),
+        hours: formData.timeOffCompensations[timeOffEntry.name!] || '0',
+        ...(finalPayout != null ? { finalPayoutUnusedHoursInput: finalPayout || '0' } : {}),
       }
     }
 
     return {
       ...timeOffWithoutPayout,
-      hours: formData.timeOffCompensations[timeOffEntry.name!],
+      hours: formData.timeOffCompensations[timeOffEntry.name!] || '0',
     }
   })
 
