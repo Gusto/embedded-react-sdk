@@ -3,7 +3,8 @@
  * and the Vite dev server middleware. Centralizes the gws-flows
  * demo creation, flow token polling, and env file generation.
  */
-import { writeFileSync } from 'fs'
+import { mkdirSync, writeFileSync } from 'fs'
+import { dirname } from 'path'
 import {
   fetchEntityIds,
   fetchCompanyId,
@@ -159,5 +160,6 @@ export function writeEnvFile(envPath: string, result: DemoResult & { gwsFlowsHos
     '',
   ].join('\n')
 
+  mkdirSync(dirname(envPath), { recursive: true })
   writeFileSync(envPath, content)
 }
