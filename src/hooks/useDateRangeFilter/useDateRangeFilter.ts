@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useState } from 'react'
 
 const MAX_RANGE_MONTHS = 12
 
@@ -39,29 +39,23 @@ export function useDateRangeFilter(options?: UseDateRangeFilterOptions): UseDate
 
   const isFilterActive = filterStartDate !== null || filterEndDate !== null
 
-  const handleStartDateChange = useCallback(
-    (date: Date | null) => {
-      setFilterStartDate(date)
-      onFilterChange?.()
-    },
-    [onFilterChange],
-  )
+  const handleStartDateChange = (date: Date | null) => {
+    setFilterStartDate(date)
+    onFilterChange?.()
+  }
 
-  const handleEndDateChange = useCallback(
-    (date: Date | null) => {
-      setFilterEndDate(date)
-      onFilterChange?.()
-    },
-    [onFilterChange],
-  )
+  const handleEndDateChange = (date: Date | null) => {
+    setFilterEndDate(date)
+    onFilterChange?.()
+  }
 
-  const handleClearFilter = useCallback(() => {
+  const handleClearFilter = () => {
     setFilterStartDate(null)
     setFilterEndDate(null)
     onFilterChange?.()
-  }, [onFilterChange])
+  }
 
-  const getApiDateParams = useCallback((): DateRangeApiParams => {
+  const getApiDateParams = (): DateRangeApiParams => {
     const params: DateRangeApiParams = {}
     if (filterStartDate) {
       params.startDate = toISODateString(filterStartDate)
@@ -70,40 +64,27 @@ export function useDateRangeFilter(options?: UseDateRangeFilterOptions): UseDate
       params.endDate = toISODateString(filterEndDate)
     }
     return params
-  }, [filterStartDate, filterEndDate])
+  }
 
-  const getMaxEndDate = useCallback((): Date | undefined => {
+  const getMaxEndDate = (): Date | undefined => {
     if (!filterStartDate) return undefined
     return addMonths(filterStartDate, MAX_RANGE_MONTHS)
-  }, [filterStartDate])
+  }
 
-  const getMinStartDate = useCallback((): Date | undefined => {
+  const getMinStartDate = (): Date | undefined => {
     if (!filterEndDate) return undefined
     return addMonths(filterEndDate, -MAX_RANGE_MONTHS)
-  }, [filterEndDate])
+  }
 
-  return useMemo(
-    () => ({
-      filterStartDate,
-      filterEndDate,
-      isFilterActive,
-      handleStartDateChange,
-      handleEndDateChange,
-      handleClearFilter,
-      getApiDateParams,
-      getMaxEndDate,
-      getMinStartDate,
-    }),
-    [
-      filterStartDate,
-      filterEndDate,
-      isFilterActive,
-      handleStartDateChange,
-      handleEndDateChange,
-      handleClearFilter,
-      getApiDateParams,
-      getMaxEndDate,
-      getMinStartDate,
-    ],
-  )
+  return {
+    filterStartDate,
+    filterEndDate,
+    isFilterActive,
+    handleStartDateChange,
+    handleEndDateChange,
+    handleClearFilter,
+    getApiDateParams,
+    getMaxEndDate,
+    getMinStartDate,
+  }
 }
