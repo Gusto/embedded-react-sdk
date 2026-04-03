@@ -482,7 +482,7 @@
         "garnishmentId"
       ]
     },
-    "Employee.DocumentSigner": {
+    "Employee.EmploymentEligibility": {
       "endpoints": [
         {
           "method": "GET",
@@ -743,6 +743,55 @@
         "employeeUuid"
       ]
     },
+    "Employee.TerminationFlow": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/terminations"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/employees/:employeeId/terminations"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/terminations/:employeeId"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyId/payrolls"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/pay_periods/unprocessed_termination_pay_periods"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/payrolls"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/employees/:employeeId/terminations"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/employees"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/companies/:companyId/payrolls/:payrollId/prepare"
+        }
+      ],
+      "variables": [
+        "companyId",
+        "employeeId",
+        "payrollId"
+      ]
+    },
     "InformationRequests": {
       "endpoints": [
         {
@@ -764,10 +813,24 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/wire_in_requests"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/payrolls"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/wire_in_requests/:wireInRequestUuid"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/wire_in_requests/:wireInRequestUuid"
         }
       ],
       "variables": [
-        "companyUuid"
+        "companyId",
+        "companyUuid",
+        "wireInRequestUuid"
       ]
     },
     "Payroll.DismissalFlow": {
@@ -921,6 +984,21 @@
         "payrollId"
       ]
     },
+    "Payroll.PayrollLanding": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/wire_in_requests"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/payrolls/blockers"
+        }
+      ],
+      "variables": [
+        "companyUuid"
+      ]
+    },
     "Payroll.PayrollList": {
       "endpoints": [
         {
@@ -1006,6 +1084,22 @@
       ],
       "variables": [
         "payrollUuid"
+      ]
+    },
+    "Payroll.RecoveryCases": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/recovery_cases"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/recovery_cases/:recoveryCaseUuid/redebit"
+        }
+      ],
+      "variables": [
+        "companyUuid",
+        "recoveryCaseUuid"
       ]
     },
     "Payroll.TransitionFlow": {
@@ -1577,7 +1671,7 @@
     },
     "Employee.SelfOnboardingFlow": {
       "blocks": [
-        "Employee.DocumentSigner",
+        "Employee.EmploymentEligibility",
         "Employee.FederalTaxes",
         "Employee.Landing",
         "Employee.OnboardingSummary",
@@ -1714,100 +1808,9 @@
       ]
     },
     "Payroll.PayrollExecutionFlow": {
-      "blocks": [
-        "Payroll.PayrollBlocker",
-        "Payroll.PayrollConfiguration",
-        "Payroll.PayrollEditEmployee",
-        "Payroll.PayrollOverview",
-        "Payroll.PayrollReceipts"
-      ],
-      "endpoints": [
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyUuid/payrolls/blockers"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyUuid/recovery_cases"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyUuid/information_requests"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/payrolls/:payrollId"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyId/payrolls/:payrollId"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/payrolls/:payrollUuid/gross_up"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyId/payrolls/:payrollId/calculate"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/employees"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/pay_schedules/:payScheduleId"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyId/payrolls/:payrollId/prepare"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/bank_accounts"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyId/payrolls/:payrollId/submit"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyId/payrolls/:payrollId/cancel"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/bank_accounts"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/wire_in_requests/:wireInRequestUuid"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyUuid/payment_configs"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/payrolls/:payrollId/employees/:employeeId/pay_stub"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/payrolls/:payrollUuid/receipt"
-        }
-      ],
-      "variables": [
-        "companyId",
-        "companyUuid",
-        "employeeId",
-        "payScheduleId",
-        "payrollId",
-        "payrollUuid",
-        "wireInRequestUuid"
-      ]
+      "blocks": [],
+      "endpoints": [],
+      "variables": []
     },
     "Payroll.PayrollFlow": {
       "blocks": [
@@ -1868,6 +1871,10 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/bank_accounts"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/wire_in_requests"
         },
         {
           "method": "PUT",

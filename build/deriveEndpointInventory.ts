@@ -219,7 +219,6 @@ function normalizeEndpointPath(openApiPath: string, paramNameMap: Record<string,
 interface BlockMapping {
   blockName: string
   componentDir: string
-  componentFile?: string
 }
 
 function discoverDomains(): string[] {
@@ -231,37 +230,35 @@ function discoverDomains(): string[] {
     .sort()
 }
 
-interface ExportInfo {
-  exportedName: string
-  dirName: string
-  fileName?: string
-}
-
-function buildExportNameMap(domainDir: string): Map<string, ExportInfo[]> {
+function buildExportNameMap(domainDir: string): {
+  primaryExports: Map<string, string>
+  allExports: Map<string, string[]>
+} {
   const indexPath = join(domainDir, 'index.ts')
-  const exportMap = new Map<string, ExportInfo[]>()
+  const primaryExports = new Map<string, string>()
+  const allExports = new Map<string, string[]>()
 
   try {
     const content = readFileSync(indexPath, 'utf-8')
-    // Match exports like: export { ComponentName } from './DirName' or './DirName/FileName'
-    const exportPattern = /export\s+\{\s*(\w+)(?:\s+as\s+\w+)?\s*\}\s+from\s+['"]\.\/([^'"]+)['"]/g
+    const exportPattern = /export\s+\{\s*(\w+)(?:\s+as\s+\w+)?\s*\}\s+from\s+['"]\.\/([^'"\/]+)/g
     for (const match of content.matchAll(exportPattern)) {
       const exportedName = match[1]
-      const path = match[2]
-      const segments = path.split('/')
-      const dirName = segments[0]
-      const fileName = segments[1]
+      const dirName = match[2]
       
-      if (!exportMap.has(dirName)) {
-        exportMap.set(dirName, [])
+      // Keep last export as primary (original behavior)
+      primaryExports.set(dirName, exportedName)
+      
+      // Track all exports for special cases
+      if (!allExports.has(dirName)) {
+        allExports.set(dirName, [])
       }
-      exportMap.get(dirName)!.push({ exportedName, dirName, fileName })
+      allExports.get(dirName)!.push(exportedName)
     }
   } catch {
     // no index.ts
   }
 
-  return exportMap
+  return { primaryExports, allExports }
 }
 
 function isNamespaceDir(dir: string): boolean {
@@ -306,7 +303,7 @@ function discoverBlocks(): BlockMapping[] {
       continue
     }
 
-    const exportInfoMap = buildExportNameMap(domainDir)
+    const { primaryExports, allExports } = buildExportNameMap(domainDir)
 
     try {
       const entries = readdirSync(domainDir)
@@ -327,29 +324,22 @@ function discoverBlocks(): BlockMapping[] {
             })
           }
         } else {
-          const exportInfos = exportInfoMap.get(entry) || []
-          
-          if (exportInfos.length === 0) {
-            // No export info, use directory name
-            blocks.push({
-              blockName: `${domain}.${entry}`,
-              componentDir: fullPath,
-            })
-          } else if (exportInfos.length === 1 && !exportInfos[0].fileName) {
-            // Single export without specific file, use exported name
-            blocks.push({
-              blockName: `${domain}.${exportInfos[0].exportedName}`,
-              componentDir: fullPath,
-            })
-          } else {
-            // Multiple exports or specific files - create a block for each
-            for (const info of exportInfos) {
+          // Special case: EmployeeList directory exports both EmployeeList and ManagementEmployeeList
+          // which are sibling components, not parent-child - create separate blocks
+          if (entry === 'EmployeeList' && allExports.get(entry)?.length === 2) {
+            for (const name of allExports.get(entry)!) {
               blocks.push({
-                blockName: `${domain}.${info.exportedName}`,
+                blockName: `${domain}.${name}`,
                 componentDir: fullPath,
-                componentFile: info.fileName,
               })
             }
+          } else {
+            // Normal case - use primary (last) export or directory name
+            const resolvedName = primaryExports.get(entry) ?? entry
+            blocks.push({
+              blockName: `${domain}.${resolvedName}`,
+              componentDir: fullPath,
+            })
           }
         }
       }
@@ -417,23 +407,14 @@ function deriveFlowBlocks(
 ): string[] {
   const files = walkDir(flowDir)
   const blockNames = new Set<string>()
-  
-  // Build domain-specific map: domain -> component name -> block name
-  const domainComponentMap = new Map<string, Map<string, string>>()
+
+  // Build a map of component directory to all block names for that directory
+  const dirToBlocks = new Map<string, string[]>()
   for (const mapping of blockMappings) {
-    const domain = mapping.blockName.split('.')[0]
-    const componentName = mapping.blockName.split('.').pop()
-    
-    if (!domainComponentMap.has(domain)) {
-      domainComponentMap.set(domain, new Map())
+    if (!dirToBlocks.has(mapping.componentDir)) {
+      dirToBlocks.set(mapping.componentDir, [])
     }
-    
-    if (componentName) {
-      const domainMap = domainComponentMap.get(domain)!
-      domainMap.set(componentName, mapping.blockName)
-      // Also map the "Contextual" variant (e.g., ProfileContextual -> Profile)
-      domainMap.set(`${componentName}Contextual`, mapping.blockName)
-    }
+    dirToBlocks.get(mapping.componentDir)!.push(mapping.blockName)
   }
 
   const absoluteImportPattern = /import\s+\{([^}]+)\}\s+from\s+['"]@\/components\/([^'"]+)['"]/g
@@ -442,88 +423,68 @@ function deriveFlowBlocks(
   for (const filePath of files) {
     const content = readFileSync(filePath, 'utf-8')
 
-    // Handle absolute imports
     for (const match of content.matchAll(absoluteImportPattern)) {
-      const importedNames = match[1].split(',').map(name => name.trim().split(/\s+as\s+/)[0])
+      const importedNames = match[1]
+        .split(',')
+        .map(name => name.trim().split(/\s+as\s+/)[0].trim())
       const importPath = match[2]
-      
       if (
         importPath.startsWith('Flow/') ||
         importPath.startsWith('Base') ||
         importPath.startsWith('Common/')
       )
         continue
-      
-      // Determine the domain from the import path
       const segments = importPath.split('/')
-      const importDomain = segments[0]
-      const domainMap = domainComponentMap.get(importDomain)
-      
-      let foundByName = false
-      if (domainMap) {
-        // Try to match by component name within the correct domain
-        for (const name of importedNames) {
-          const blockName = domainMap.get(name)
-          if (blockName) {
-            blockNames.add(blockName)
-            foundByName = true
+      const candidateDirs = [
+        join(COMPONENTS_DIR, segments[0], segments[1] ?? ''),
+        join(COMPONENTS_DIR, segments[0], segments[1] ?? '', segments[2] ?? ''),
+      ]
+      for (const dir of candidateDirs) {
+        const blocks = dirToBlocks.get(dir)
+        if (blocks) {
+          if (blocks.length === 1) {
+            blockNames.add(blocks[0])
+          } else {
+            // Multiple blocks for this directory - match by component name
+            for (const blockName of blocks) {
+              const componentName = blockName.split('.').pop()
+              if (componentName && importedNames.includes(componentName)) {
+                blockNames.add(blockName)
+              }
+            }
           }
-        }
-      }
-      
-      // Only use directory-based lookup if we didn't find a specific component match
-      if (!foundByName) {
-        const candidateDirs = [
-          join(COMPONENTS_DIR, segments[0], segments[1] ?? ''),
-          join(COMPONENTS_DIR, segments[0], segments[1] ?? '', segments[2] ?? ''),
-        ]
-        for (const dir of candidateDirs) {
-          const name = blockDirToName.get(dir)
-          if (name) {
-            blockNames.add(name)
-            break
-          }
+          break
         }
       }
     }
 
-    // Handle relative imports - these stay within the same domain
     for (const match of content.matchAll(relativeImportPattern)) {
-      const importedNames = match[1].split(',').map(name => name.trim().split(/\s+as\s+/)[0])
+      const importedNames = match[1]
+        .split(',')
+        .map(name => name.trim().split(/\s+as\s+/)[0].trim())
       const importPath = match[2]
-      
       if (importPath.includes('/Flow/') || importPath.includes('useFlow')) continue
-      
-      // Resolve the relative import to determine the actual component directory
       const resolved = resolve(dirname(filePath), importPath)
       const segments = relative(COMPONENTS_DIR, resolved).split('/')
-      const importDomain = segments[0]
-      
-      // Use domain-aware matching for relative imports
-      let foundByName = false
-      const domainMap = domainComponentMap.get(importDomain)
-      if (domainMap) {
-        for (const name of importedNames) {
-          const blockName = domainMap.get(name)
-          if (blockName) {
-            blockNames.add(blockName)
-            foundByName = true
+      const candidateDirs = [
+        join(COMPONENTS_DIR, segments[0], segments[1] ?? ''),
+        join(COMPONENTS_DIR, segments[0], segments[1] ?? '', segments[2] ?? ''),
+      ]
+      for (const dir of candidateDirs) {
+        const blocks = dirToBlocks.get(dir)
+        if (blocks) {
+          if (blocks.length === 1) {
+            blockNames.add(blocks[0])
+          } else {
+            // Multiple blocks for this directory - match by component name
+            for (const blockName of blocks) {
+              const componentName = blockName.split('.').pop()
+              if (componentName && importedNames.includes(componentName)) {
+                blockNames.add(blockName)
+              }
+            }
           }
-        }
-      }
-      
-      // Only use directory-based lookup if we didn't find a specific component match
-      if (!foundByName) {
-        const candidateDirs = [
-          join(COMPONENTS_DIR, segments[0], segments[1] ?? ''),
-          join(COMPONENTS_DIR, segments[0], segments[1] ?? '', segments[2] ?? ''),
-        ]
-        for (const dir of candidateDirs) {
-          const name = blockDirToName.get(dir)
-          if (name) {
-            blockNames.add(name)
-            break
-          }
+          break
         }
       }
     }
@@ -567,43 +528,8 @@ function deriveInventory(): DerivationResult {
 
   const blocks: Record<string, BlockEntry> = {}
 
-  for (const { blockName, componentDir, componentFile } of blockMappings) {
-    let files: string[]
-    
-    if (componentFile) {
-      // If a specific component file is specified, scan only that file and related files
-      const baseName = componentFile.replace(/\.tsx?$/, '')
-      files = []
-      
-      // Main component file
-      const mainFile = join(componentDir, `${baseName}.tsx`)
-      if (existsSync(mainFile)) {
-        files.push(mainFile)
-      }
-      
-      // View file (if exists)
-      const viewFile = join(componentDir, `${baseName}View.tsx`)
-      if (existsSync(viewFile)) {
-        files.push(viewFile)
-      }
-      
-      // Hook file (shared by all components in the directory)
-      const hookPattern = /^use[A-Z]\w+\.tsx?$/
-      try {
-        const dirEntries = readdirSync(componentDir)
-        for (const entry of dirEntries) {
-          if (hookPattern.test(entry)) {
-            files.push(join(componentDir, entry))
-          }
-        }
-      } catch {
-        // ignore
-      }
-    } else {
-      // Scan all files in the directory
-      files = walkDir(componentDir)
-    }
-    
+  for (const { blockName, componentDir } of blockMappings) {
+    const files = walkDir(componentDir)
     const funcNames = extractApiImports(files)
 
     const endpoints: Endpoint[] = []
