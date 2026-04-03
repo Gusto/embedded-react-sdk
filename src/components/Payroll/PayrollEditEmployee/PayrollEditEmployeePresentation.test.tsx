@@ -577,6 +577,31 @@ describe('PayrollEditEmployeePresentation', () => {
       })
     })
 
+    it('shows remaining balance in unused time off payout section for dismissal payrolls', async () => {
+      const compensationWithPayout: PayrollEmployeeCompensationsType = {
+        ...mockEmployeeCompensation,
+        paidTimeOff: [
+          { name: 'Vacation Hours', hours: '8.0', finalPayoutUnusedHoursInput: '10' },
+          { name: 'Sick Hours', hours: '0.0', finalPayoutUnusedHoursInput: '0' },
+        ],
+      }
+
+      renderWithProviders(
+        <PayrollEditEmployeePresentation
+          {...defaultProps}
+          payrollCategory={PayrollCategory.Dismissal}
+          employeeCompensation={compensationWithPayout}
+        />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText('Unused time off payout')).toBeInTheDocument()
+      })
+
+      const remainingTexts = screen.getAllByText(/remaining/)
+      expect(remainingTexts.length).toBeGreaterThanOrEqual(2)
+    })
+
     it('does not render unused time off payout section for regular payrolls', async () => {
       renderWithProviders(
         <PayrollEditEmployeePresentation
