@@ -912,11 +912,16 @@
         {
           "method": "PUT",
           "path": "/v1/companies/:companyId/payrolls/:payrollId/prepare"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId"
         }
       ],
       "variables": [
         "companyId",
         "companyUuid",
+        "employeeId",
         "payScheduleId",
         "payrollId",
         "payrollUuid"
