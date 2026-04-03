@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
 import { payrollsCalculate } from '@gusto/embedded-api/funcs/payrollsCalculate'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
@@ -70,6 +70,24 @@ export const Root = ({
   const previousCalculatedAtRef = useRef<number | null>(null)
   const gustoClient = useGustoEmbeddedContext()
 
+  const { data: payrollData } = usePayrollsGetSuspense(
+    {
+      companyId,
+      payrollId,
+      include: ['taxes', 'benefits', 'deductions', 'payroll_status_meta'],
+    },
+    { refetchInterval: isPolling ? 5_000 : false },
+  )
+
+  const excludedEmployeeUuids = useMemo(
+    () =>
+      payrollData.payrollShow?.employeeCompensations
+        ?.filter(comp => comp.excluded)
+        .map(comp => comp.employeeUuid!)
+        .filter(Boolean) ?? [],
+    [payrollData.payrollShow?.employeeCompensations],
+  )
+
   const {
     employeeDetails,
     employeeCompensations,
@@ -83,16 +101,8 @@ export const Root = ({
     companyId,
     payrollId,
     isCalculating: isPolling || isCalculatingPayroll,
+    excludedEmployeeUuids,
   })
-
-  const { data: payrollData } = usePayrollsGetSuspense(
-    {
-      companyId,
-      payrollId,
-      include: ['taxes', 'benefits', 'deductions', 'payroll_status_meta'],
-    },
-    { refetchInterval: isPolling ? 5_000 : false },
-  )
 
   const { mutateAsync: updatePayroll, isPending: isUpdatingPayroll } = usePayrollsUpdateMutation()
 
