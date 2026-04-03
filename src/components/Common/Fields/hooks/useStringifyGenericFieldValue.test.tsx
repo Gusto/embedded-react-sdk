@@ -61,7 +61,7 @@ describe('useStringifyGenericFieldValue', () => {
       }),
     )
 
-    expect(result.current.value).toBeUndefined()
+    expect(result.current.value).toBeNull()
   })
 
   test('should use custom convertValueToString function', () => {
@@ -137,7 +137,7 @@ describe('useStringifyGenericFieldValueArray', () => {
       }),
     )
 
-    expect(result.current.value).toBeUndefined()
+    expect(result.current.value).toEqual([])
   })
 
   test('should use custom convertValueToString function with arrays', () => {
