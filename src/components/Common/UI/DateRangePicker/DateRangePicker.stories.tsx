@@ -12,7 +12,8 @@ function RangeStory({ label, initialRange }: { label: string; initialRange: Date
     <div>
       <h3 style={{ margin: '0 0 8px', fontSize: 14, fontWeight: 600 }}>{label}</h3>
       <DateRangePicker
-        aria-label={label}
+        label={label}
+        shouldVisuallyHideLabel
         value={value}
         onChange={setValue}
         startDateLabel="From"

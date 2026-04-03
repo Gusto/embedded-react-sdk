@@ -4,7 +4,8 @@ export interface DateRange {
 }
 
 export interface DateRangePickerProps {
-  'aria-label': string
+  label: string
+  shouldVisuallyHideLabel?: boolean
   value: DateRange | null
   onChange: (range: DateRange | null) => void
   startDateLabel: string

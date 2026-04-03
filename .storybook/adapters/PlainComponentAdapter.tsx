@@ -734,7 +734,8 @@ export const PlainComponentAdapter: ComponentsContextType = {
   },
 
   DateRangePicker: ({
-    'aria-label': ariaLabel,
+    label,
+    shouldVisuallyHideLabel,
     value,
     onChange,
     startDateLabel,
@@ -769,8 +770,12 @@ export const PlainComponentAdapter: ComponentsContextType = {
       onChange({ start, end })
     }
 
+    const ariaLabel = typeof label === 'string' ? label : undefined
+
     return (
       <fieldset aria-label={ariaLabel}>
+        {!shouldVisuallyHideLabel && <legend>{label}</legend>}
+        {shouldVisuallyHideLabel && <legend className="visually-hidden">{label}</legend>}
         <div className="field-layout">
           <label htmlFor="date-range-start">{startDateLabel}</label>
           <input

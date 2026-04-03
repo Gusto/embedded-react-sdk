@@ -126,7 +126,8 @@ export const DateRangeFilter = ({
         <Dialog aria-label={`${startDateLabel} – ${endDateLabel}`}>
           <div className={styles.popoverContent}>
             <DateRangePicker
-              aria-label={`${startDateLabel} – ${endDateLabel}`}
+              label={`${startDateLabel} – ${endDateLabel}`}
+              shouldVisuallyHideLabel
               value={draftRange}
               onChange={handleRangeChange}
               startDateLabel={startDateLabel}

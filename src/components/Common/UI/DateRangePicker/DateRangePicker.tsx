@@ -33,7 +33,7 @@ function calendarDateToJsDate(dateValue: DateValue): Date {
 }
 
 export const DateRangePicker = ({
-  'aria-label': ariaLabel,
+  label,
   value,
   onChange,
   startDateLabel,
@@ -67,7 +67,7 @@ export const DateRangePicker = ({
       onChange={handleRangeChange}
       minValue={minValue}
       maxValue={maxValue}
-      aria-label={ariaLabel}
+      aria-label={typeof label === 'string' ? label : undefined}
       className={styles.root}
     >
       <Group className={styles.dateInputGroup}>
