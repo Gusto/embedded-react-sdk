@@ -154,7 +154,7 @@ export function useEmployeeList({
   const employees = useMemo<EmployeeWithActions[]>(() => {
     return (data?.showEmployees ?? []).map(employee => {
       const primaryJob = employee.jobs?.find(job => job.primary === true)
-      
+
       return {
         ...employee,
         allowedActions: deriveAllowedActions(employee, employeeType),

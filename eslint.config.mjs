@@ -125,5 +125,11 @@ export default [
       'no-restricted-imports': 'off',
     },
   },
+  {
+    files: ['src/components/InformationRequests/InformationRequestForm/InformationRequestForm.tsx'],
+    rules: {
+      '@typescript-eslint/no-unnecessary-type-arguments': 'off',
+    },
+  },
   ...storybook.configs['flat/recommended'],
 ]
