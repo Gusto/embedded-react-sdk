@@ -6,6 +6,7 @@
   "submitPayrollCta": "Review and submit",
   "skipPayrollCta": "Skip payroll",
   "payrollMenuLabel": "Payroll actions",
+  "noActionsAvailable": "No actions available",
   "skipPayrollDialog": {
     "title": "Skip payroll for {{payPeriod}}?",
     "body": "Before skipping this payroll, check your state's pay frequency laws. If you don't pay the team on time, it could lead to penalties or fines.",
