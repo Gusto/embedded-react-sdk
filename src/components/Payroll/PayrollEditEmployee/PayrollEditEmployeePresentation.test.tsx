@@ -550,6 +550,29 @@ describe('PayrollEditEmployeePresentation', () => {
       })
     })
 
+    it('coerces blank time off values to zero on save', async () => {
+      const onSave = vi.fn()
+      const user = userEvent.setup()
+      renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} onSave={onSave} />)
+
+      const vacationInput = await screen.findByLabelText('Vacation Hours')
+      await user.clear(vacationInput)
+
+      const saveButton = screen.getByText('Save')
+      await user.click(saveButton)
+
+      expect(onSave).toHaveBeenCalledWith(
+        expect.objectContaining({
+          paidTimeOff: expect.arrayContaining([
+            expect.objectContaining({
+              name: 'Vacation Hours',
+              hours: '0',
+            }),
+          ]),
+        }),
+      )
+    })
+
     it('handles time off with no existing data', () => {
       const propsWithoutTimeOff = {
         ...defaultProps,
