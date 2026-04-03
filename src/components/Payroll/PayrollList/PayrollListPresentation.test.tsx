@@ -7,6 +7,7 @@ import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import type { PayrollType } from './types'
 import { PayrollListPresentation } from './PayrollListPresentation'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+import type { UseDateRangeFilterResult } from '@/hooks/useDateRangeFilter/useDateRangeFilter'
 
 interface PresentationPayroll extends Payroll {
   payrollType: PayrollType
@@ -69,6 +70,18 @@ const mockBlockers: ApiPayrollBlocker[] = [
   },
 ]
 
+const mockDateRangeFilter: UseDateRangeFilterResult = {
+  filterStartDate: null,
+  filterEndDate: null,
+  isFilterActive: false,
+  handleStartDateChange: vi.fn(),
+  handleEndDateChange: vi.fn(),
+  handleClearFilter: vi.fn(),
+  getApiDateParams: () => ({}),
+  getMaxEndDate: () => undefined,
+  getMinStartDate: () => undefined,
+}
+
 const defaultProps = {
   onRunPayroll: vi.fn(),
   onSubmitPayroll: vi.fn(),
@@ -85,6 +98,7 @@ const defaultProps = {
   deletingPayrollId: null,
   blockers: [] as ApiPayrollBlocker[],
   wireInRequests: [],
+  dateRangeFilter: mockDateRangeFilter,
 }
 
 describe('PayrollListPresentation', () => {

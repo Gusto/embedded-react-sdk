@@ -25,6 +25,7 @@ import type { HeadingProps } from '@/components/Common/UI/Heading/HeadingTypes'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 import type { TextProps } from '@/components/Common/UI/Text/TextTypes'
 import type { CalendarPreviewProps } from '@/components/Common/UI/CalendarPreview/CalendarPreviewTypes'
+import type { DateRangePickerProps } from '@/components/Common/UI/DateRangePicker/DateRangePickerTypes'
 import type { ProgressBarProps } from '@/components/Common/UI/ProgressBar/ProgressBarTypes'
 import type { BreadcrumbsProps } from '@/components/Common/UI/Breadcrumbs/BreadcrumbsTypes'
 import type { TabsProps } from '@/components/Common/UI/Tabs/TabsTypes'
@@ -49,6 +50,7 @@ export interface ComponentsContextType {
   ComboBox: (props: ComboBoxProps) => JSX.Element | null
   MultiSelectComboBox: (props: MultiSelectComboBoxProps) => JSX.Element | null
   DatePicker: (props: DatePickerProps) => JSX.Element | null
+  DateRangePicker: (props: DateRangePickerProps) => JSX.Element | null
   OrderedList: (props: OrderedListProps) => JSX.Element | null
   UnorderedList: (props: UnorderedListProps) => JSX.Element | null
   NumberInput: (props: NumberInputProps) => JSX.Element | null

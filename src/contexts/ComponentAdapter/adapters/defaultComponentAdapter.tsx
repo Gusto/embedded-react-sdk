@@ -19,6 +19,8 @@ import type { CheckboxProps } from '@/components/Common/UI/Checkbox/CheckboxType
 import { Checkbox } from '@/components/Common/UI/Checkbox'
 import type { DatePickerProps } from '@/components/Common/UI/DatePicker/DatePickerTypes'
 import { DatePicker } from '@/components/Common/UI/DatePicker'
+import type { DateRangePickerProps } from '@/components/Common/UI/DateRangePicker/DateRangePickerTypes'
+import { DateRangePicker } from '@/components/Common/UI/DateRangePicker'
 import type { RadioProps } from '@/components/Common/UI/Radio/RadioTypes'
 import { Radio } from '@/components/Common/UI/Radio'
 import type { RadioGroupProps } from '@/components/Common/UI/RadioGroup/RadioGroupTypes'
@@ -86,6 +88,7 @@ export const defaultComponents: ComponentsContextType = {
   ComboBox: (props: ComboBoxProps) => <ComboBox {...props} />,
   MultiSelectComboBox: (props: MultiSelectComboBoxProps) => <MultiSelectComboBox {...props} />,
   DatePicker: (props: DatePickerProps) => <DatePicker {...props} />,
+  DateRangePicker: (props: DateRangePickerProps) => <DateRangePicker {...props} />,
   OrderedList: (props: OrderedListProps) => <OrderedList {...props} />,
   UnorderedList: (props: UnorderedListProps) => <UnorderedList {...props} />,
   NumberInput: (props: NumberInputProps) => <NumberInput {...props} />,

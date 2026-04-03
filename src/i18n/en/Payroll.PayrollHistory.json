@@ -1,5 +1,12 @@
 {
   "title": "Payroll history",
+  "dateFilter": {
+    "startDate": "From",
+    "endDate": "To",
+    "apply": "Apply",
+    "reset": "Reset",
+    "trigger": "Filter by date"
+  },
   "dataView": {
     "label": "Payroll history"
   },

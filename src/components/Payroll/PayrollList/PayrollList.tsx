@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import {
   usePayrollsListSuspense,
@@ -21,6 +21,7 @@ import type { BaseComponentInterface } from '@/components/Base'
 import { BaseComponent, useBase } from '@/components/Base'
 import { componentEvents } from '@/shared/constants'
 import { usePagination } from '@/hooks/usePagination/usePagination'
+import { useDateRangeFilter } from '@/hooks/useDateRangeFilter/useDateRangeFilter'
 
 interface PayrollListBlockProps extends BaseComponentInterface {
   companyId: string
@@ -34,11 +35,11 @@ export function PayrollList(props: PayrollListBlockProps) {
   )
 }
 
-const FUTURE_LOOKAHEAD_DAYS = 28
+const FUTURE_LOOKAHEAD_MONTHS = 3
 
 const getFutureEndDate = (): string => {
   const endDate = new Date()
-  endDate.setDate(endDate.getDate() + FUTURE_LOOKAHEAD_DAYS)
+  endDate.setMonth(endDate.getMonth() + FUTURE_LOOKAHEAD_MONTHS)
   return endDate.toISOString().split('T')[0]!
 }
 
@@ -47,19 +48,28 @@ const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
   const queryClient = useQueryClient()
   const [showSkipSuccessAlert, setShowSkipSuccessAlert] = useState(false)
   const [skippingPayrollId, setSkippingPayrollId] = useState<string | null>(null)
-  const { currentPage, itemsPerPage, getPaginationProps } = usePagination()
+  const { currentPage, itemsPerPage, getPaginationProps, resetPage } = usePagination()
   const [showDeleteSuccessAlert, setShowDeleteSuccessAlert] = useState(false)
   const [deletingPayrollId, setDeletingPayrollId] = useState<string | null>(null)
+
+  const dateRangeFilter = useDateRangeFilter({
+    onFilterChange: useCallback(() => {
+      resetPage()
+    }, [resetPage]),
+  })
+  const dateFilterParams = dateRangeFilter.getApiDateParams()
 
   const { data: payrollsData } = usePayrollsListSuspense({
     companyId,
     processingStatuses: [ProcessingStatuses.Unprocessed],
-    endDate: getFutureEndDate(),
+    startDate: dateFilterParams.startDate,
+    endDate: dateFilterParams.endDate ?? getFutureEndDate(),
     payrollTypes: [
       QueryParamPayrollTypes.Regular,
       QueryParamPayrollTypes.OffCycle,
       QueryParamPayrollTypes.External,
     ],
+    includeOffCycle: true,
     page: currentPage,
     per: itemsPerPage,
   })
@@ -171,6 +181,7 @@ const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
       deletingPayrollId={deletingPayrollId}
       blockers={blockers}
       wireInRequests={wireInRequests}
+      dateRangeFilter={dateRangeFilter}
     />
   )
 }

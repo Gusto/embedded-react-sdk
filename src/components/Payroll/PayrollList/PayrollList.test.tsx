@@ -40,20 +40,40 @@ describe('PayrollList', () => {
     )
   })
 
-  it('includes future endDate in API query to show future-dated off-cycle payrolls', async () => {
+  it('includes off-cycle payrolls with a wide date window', async () => {
     renderWithProviders(<PayrollList {...defaultProps} />)
 
     await waitFor(() => {
       expect(capturedPayrollListUrl).not.toBeNull()
     })
 
+    expect(capturedPayrollListUrl!.searchParams.get('include_off_cycle')).toBe('true')
+
     const endDateParam = capturedPayrollListUrl!.searchParams.get('end_date')
     expect(endDateParam).toBeTruthy()
 
     const endDate = new Date(endDateParam!)
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    expect(endDate.getTime()).toBeGreaterThan(today.getTime())
+    const twoMonthsFromNow = new Date()
+    twoMonthsFromNow.setMonth(twoMonthsFromNow.getMonth() + 2)
+    expect(endDate.getTime()).toBeGreaterThan(twoMonthsFromNow.getTime())
+  })
+
+  it('renders the date filter trigger button', async () => {
+    renderWithProviders(<PayrollList {...defaultProps} />)
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Filter by date' })).toBeInTheDocument()
+    })
+  })
+
+  it('does not pass start_date to API by default', async () => {
+    renderWithProviders(<PayrollList {...defaultProps} />)
+
+    await waitFor(() => {
+      expect(capturedPayrollListUrl).not.toBeNull()
+    })
+
+    expect(capturedPayrollListUrl!.searchParams.get('start_date')).toBeNull()
   })
 
   it('includes page and per params in the API request', async () => {

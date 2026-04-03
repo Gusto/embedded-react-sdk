@@ -120,7 +120,10 @@ export default [
     },
   },
   {
-    files: ['src/components/Common/UI/**/*.{ts,tsx}'],
+    files: [
+      'src/components/Common/UI/**/*.{ts,tsx}',
+      'src/components/Common/DateRangeFilter/**/*.{ts,tsx}',
+    ],
     rules: {
       'no-restricted-imports': 'off',
     },

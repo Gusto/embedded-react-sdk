@@ -34,6 +34,7 @@ import type { ModalProps } from '@/components/Common/UI/Modal/ModalTypes'
 import type { LoadingSpinnerProps } from '@/components/Common/UI/LoadingSpinner/LoadingSpinnerTypes'
 import type { PaginationItemsPerPage } from '@/components/Common/PaginationControl/PaginationControlTypes'
 import type { DescriptionListProps } from '@/components/Common/UI/DescriptionList/DescriptionListTypes'
+import type { DateRangePickerProps } from '@/components/Common/UI/DateRangePicker/DateRangePickerTypes'
 import type { FileInputProps } from '@/components/Common/UI/FileInput/FileInputTypes'
 
 export const PlainComponentAdapter: ComponentsContextType = {
@@ -729,6 +730,75 @@ export const PlainComponentAdapter: ComponentsContextType = {
           </div>
         )}
       </div>
+    )
+  },
+
+  DateRangePicker: ({
+    label,
+    shouldVisuallyHideLabel,
+    value,
+    onChange,
+    startDateLabel,
+    endDateLabel,
+    minValue,
+    maxValue,
+  }: DateRangePickerProps) => {
+    const formatDate = (date?: Date | null) => {
+      if (!date) return ''
+      return date.toISOString().split('T')[0]
+    }
+
+    const handleStartChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const dateStr = e.target.value
+      if (!dateStr) {
+        onChange(null)
+        return
+      }
+      const start = new Date(dateStr + 'T00:00:00')
+      const end = value?.end ?? start
+      onChange({ start, end })
+    }
+
+    const handleEndChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const dateStr = e.target.value
+      if (!dateStr) {
+        onChange(null)
+        return
+      }
+      const end = new Date(dateStr + 'T00:00:00')
+      const start = value?.start ?? end
+      onChange({ start, end })
+    }
+
+    const ariaLabel = typeof label === 'string' ? label : undefined
+
+    return (
+      <fieldset aria-label={ariaLabel}>
+        {!shouldVisuallyHideLabel && <legend>{label}</legend>}
+        {shouldVisuallyHideLabel && <legend className="visually-hidden">{label}</legend>}
+        <div className="field-layout">
+          <label htmlFor="date-range-start">{startDateLabel}</label>
+          <input
+            type="date"
+            id="date-range-start"
+            value={formatDate(value?.start)}
+            min={formatDate(minValue)}
+            max={formatDate(maxValue)}
+            onChange={handleStartChange}
+          />
+        </div>
+        <div className="field-layout">
+          <label htmlFor="date-range-end">{endDateLabel}</label>
+          <input
+            type="date"
+            id="date-range-end"
+            value={formatDate(value?.end)}
+            min={formatDate(minValue)}
+            max={formatDate(maxValue)}
+            onChange={handleEndChange}
+          />
+        </div>
+      </fieldset>
     )
   },
 

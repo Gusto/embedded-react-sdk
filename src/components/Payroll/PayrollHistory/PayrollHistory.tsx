@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { usePayrollsListSuspense } from '@gusto/embedded-api/react-query/payrollsList'
 import { usePayrollsCancelMutation } from '@gusto/embedded-api/react-query/payrollsCancel'
 import { useWireInRequestsListSuspense } from '@gusto/embedded-api/react-query/wireInRequestsList'
 import {
+  DateFilterBy,
   ProcessingStatuses,
   QueryParamPayrollTypes,
   SortOrder,
@@ -15,6 +16,7 @@ import { useBase } from '@/components/Base/useBase'
 import { componentEvents } from '@/shared/constants'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { usePagination } from '@/hooks/usePagination/usePagination'
+import { useDateRangeFilter } from '@/hooks/useDateRangeFilter/useDateRangeFilter'
 
 export interface PayrollHistoryProps extends BaseComponentInterface<'Payroll.PayrollHistory'> {
   companyId: string
@@ -34,7 +36,14 @@ export const Root = ({ onEvent, companyId, dictionary }: PayrollHistoryProps) =>
 
   const [cancelDialogItem, setCancelDialogItem] = useState<Payroll | null>(null)
   const { baseSubmitHandler } = useBase()
-  const { currentPage, itemsPerPage, getPaginationProps } = usePagination()
+  const { currentPage, itemsPerPage, getPaginationProps, resetPage } = usePagination()
+
+  const dateRangeFilter = useDateRangeFilter({
+    onFilterChange: useCallback(() => {
+      resetPage()
+    }, [resetPage]),
+  })
+  const dateFilterParams = dateRangeFilter.getApiDateParams()
 
   const { data: payrollsData } = usePayrollsListSuspense({
     companyId,
@@ -47,6 +56,9 @@ export const Root = ({ onEvent, companyId, dictionary }: PayrollHistoryProps) =>
     includeOffCycle: true,
     include: ['totals', 'payroll_status_meta'],
     sortOrder: SortOrder.Desc,
+    startDate: dateFilterParams.startDate,
+    endDate: dateFilterParams.endDate,
+    dateFilterBy: dateRangeFilter.isFilterActive ? DateFilterBy.CheckDate : undefined,
     page: currentPage,
     per: itemsPerPage,
   })
@@ -102,6 +114,7 @@ export const Root = ({ onEvent, companyId, dictionary }: PayrollHistoryProps) =>
         setCancelDialogItem(null)
       }}
       isLoading={isCancelling}
+      dateRangeFilter={dateRangeFilter}
     />
   )
 }

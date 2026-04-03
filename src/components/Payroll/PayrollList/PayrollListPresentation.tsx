@@ -9,8 +9,9 @@ import { PayrollStatusBadges } from '../PayrollStatusBadges'
 import { getPayrollTypeLabel } from '../helpers'
 import styles from './PayrollListPresentation.module.scss'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
-import { DataView, Flex, HamburgerMenu } from '@/components/Common'
+import { DataView, Flex, HamburgerMenu, DateRangeFilter } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import type { UseDateRangeFilterResult } from '@/hooks/useDateRangeFilter/useDateRangeFilter'
 import { useI18n } from '@/i18n'
 import { formatDateToStringDate } from '@/helpers/dateFormatting'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
@@ -40,6 +41,7 @@ interface PayrollListPresentationProps {
   deletingPayrollId: string | null
   blockers: ApiPayrollBlocker[]
   wireInRequests: WireInRequest[]
+  dateRangeFilter: UseDateRangeFilterResult
 }
 
 export const PayrollListPresentation = ({
@@ -59,6 +61,7 @@ export const PayrollListPresentation = ({
   deletingPayrollId,
   blockers,
   wireInRequests,
+  dateRangeFilter,
 }: PayrollListPresentationProps) => {
   const { Box, Button, Dialog, Heading, Text, Alert } = useComponentContext()
   useI18n('Payroll.PayrollList')
@@ -199,15 +202,23 @@ export const PayrollListPresentation = ({
             />
           </div>
         )}
-        <Flex
-          flexDirection={{ base: 'column', medium: 'row' }}
-          justifyContent="space-between"
-          alignItems="flex-start"
-          gap={{ base: 12, medium: 24 }}
-        >
-          <Flex>
-            <Heading as="h2">{t('title')}</Heading>
-          </Flex>
+        <Flex justifyContent="space-between" alignItems="center">
+          <Heading as="h2">{t('title')}</Heading>
+          <DateRangeFilter
+            startDate={dateRangeFilter.filterStartDate}
+            endDate={dateRangeFilter.filterEndDate}
+            onStartDateChange={dateRangeFilter.handleStartDateChange}
+            onEndDateChange={dateRangeFilter.handleEndDateChange}
+            onClear={dateRangeFilter.handleClearFilter}
+            startDateLabel={t('dateFilter.startDate')}
+            endDateLabel={t('dateFilter.endDate')}
+            applyLabel={t('dateFilter.apply')}
+            resetLabel={t('dateFilter.reset')}
+            triggerLabel={t('dateFilter.trigger')}
+            isFilterActive={dateRangeFilter.isFilterActive}
+            maxEndDate={dateRangeFilter.getMaxEndDate()}
+            minStartDate={dateRangeFilter.getMinStartDate()}
+          />
         </Flex>
 
         <DataView

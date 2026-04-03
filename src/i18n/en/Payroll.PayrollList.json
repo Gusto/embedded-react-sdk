@@ -1,6 +1,13 @@
 {
   "emptyState": "All payrolls have been processed",
   "title": "Upcoming payroll",
+  "dateFilter": {
+    "startDate": "From",
+    "endDate": "To",
+    "apply": "Apply",
+    "reset": "Reset",
+    "trigger": "Filter by date"
+  },
   "payrollsListLabel": "Payrolls",
   "runPayrollTitle": "Run Payroll",
   "submitPayrollCta": "Review and submit",
