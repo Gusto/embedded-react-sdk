@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import styles from './PayrollEditEmployeePresentation.module.scss'
-import { TimeOffField } from './TimeOffField'
+import { TimeOffField, PayoutTimeOffField } from './TimeOffField'
 import { Flex, Grid, TextInputField, RadioGroupField } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
@@ -484,13 +484,10 @@ export const PayrollEditEmployeePresentation = ({
               <Text variant="supporting">{t('finalPayoutDescription')}</Text>
               <Grid gridTemplateColumns={{ base: '1fr', small: [320, 320] }} gap={20}>
                 {timeOff.map(timeOffEntry => (
-                  <TextInputField
+                  <PayoutTimeOffField
                     key={`payout-${timeOffEntry.name}`}
-                    name={`finalPayoutCompensations.${timeOffEntry.name}`}
-                    type="number"
-                    min={0}
-                    adornmentEnd={t('hoursUnit')}
-                    label={timeOffEntry.name}
+                    timeOff={timeOffEntry}
+                    employee={employee}
                   />
                 ))}
               </Grid>
