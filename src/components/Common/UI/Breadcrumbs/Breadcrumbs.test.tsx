@@ -176,6 +176,52 @@ describe('Breadcrumbs', () => {
     expect(buttons).toHaveLength(0)
   })
 
+  it('renders breadcrumb with isClickable false as plain text even when onClick is provided', () => {
+    const onClick = vi.fn()
+    const breadcrumbsWithNonClickable: Breadcrumb[] = [
+      { id: 'step-one', label: 'Step One', isClickable: false },
+      { id: 'step-two', label: 'Step Two' },
+      { id: 'step-three', label: 'Step Three' },
+    ]
+    renderWithProviders(
+      <Breadcrumbs
+        breadcrumbs={breadcrumbsWithNonClickable}
+        currentBreadcrumbId="step-three"
+        onClick={onClick}
+      />,
+    )
+
+    const buttons = screen.getAllByRole('button')
+    expect(buttons).toHaveLength(1)
+    expect(buttons[0]).toHaveTextContent('Step Two')
+    expect(screen.getByText('Step One').tagName).toBe('SPAN')
+  })
+
+  it('does not call onClick for breadcrumbs with isClickable false', async () => {
+    const user = userEvent.setup()
+    const onClick = vi.fn()
+    const breadcrumbsWithNonClickable: Breadcrumb[] = [
+      { id: 'step-one', label: 'Step One', isClickable: false },
+      { id: 'step-two', label: 'Step Two' },
+      { id: 'step-three', label: 'Step Three' },
+    ]
+    renderWithProviders(
+      <Breadcrumbs
+        breadcrumbs={breadcrumbsWithNonClickable}
+        currentBreadcrumbId="step-three"
+        onClick={onClick}
+      />,
+    )
+
+    const stepOneElement = screen.getByText('Step One')
+    await user.click(stepOneElement)
+    expect(onClick).not.toHaveBeenCalled()
+
+    const stepTwoButton = screen.getByRole('button')
+    await user.click(stepTwoButton)
+    expect(onClick).toHaveBeenCalledWith('step-two')
+  })
+
   describe('Small Container View', () => {
     it('renders small back button when isSmallContainer is true', () => {
       const onClick = vi.fn()
@@ -257,6 +303,25 @@ describe('Breadcrumbs', () => {
       const list = screen.getByRole('list')
       expect(list).toBeInTheDocument()
       expect(screen.queryByRole('button')).not.toBeInTheDocument()
+    })
+
+    it('does not render small back button when previous breadcrumb has isClickable false', () => {
+      const onClick = vi.fn()
+      const breadcrumbsWithNonClickable: Breadcrumb[] = [
+        { id: 'step-one', label: 'Step One', isClickable: false },
+        { id: 'step-two', label: 'Step Two' },
+      ]
+      renderWithProviders(
+        <Breadcrumbs
+          breadcrumbs={breadcrumbsWithNonClickable}
+          currentBreadcrumbId="step-two"
+          onClick={onClick}
+          isSmallContainer={true}
+        />,
+      )
+
+      const list = screen.getByRole('list')
+      expect(list).toBeInTheDocument()
     })
 
     it('renders full breadcrumb list when isSmallContainer is false', () => {

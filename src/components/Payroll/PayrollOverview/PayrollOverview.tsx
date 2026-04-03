@@ -181,6 +181,7 @@ export const Root = ({
     ) {
       onEvent(componentEvents.RUN_PAYROLL_PROCESSED, {
         payPeriod: payrollData.payPeriod,
+        payrollUuid: payrollId,
       })
       setInternalAlerts([
         {
@@ -336,6 +337,7 @@ export const Root = ({
           },
         },
       })
+      onEvent(componentEvents.RUN_PAYROLL_SUBMITTING)
       onEvent(componentEvents.RUN_PAYROLL_SUBMITTED, result)
       setIsPolling(true)
     })

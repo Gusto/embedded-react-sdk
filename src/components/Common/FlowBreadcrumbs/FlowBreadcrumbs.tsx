@@ -60,9 +60,13 @@ export function FlowBreadcrumbs({
               defaultValue: breadcrumb.label,
               ...formattedVariables,
             } as never) as unknown as string)
+        const isClickable =
+          breadcrumb.isNavigable !== undefined ? breadcrumb.isNavigable : !!breadcrumb.onNavigate
+
         return {
           id: breadcrumb.id,
           label: translatedLabel,
+          isClickable,
         }
       }),
     [breadcrumbs, t, locale],
@@ -70,7 +74,7 @@ export function FlowBreadcrumbs({
 
   const handleBreadcrumbClick = (breadcrumbId: string) => {
     const breadcrumb = breadcrumbs.find(breadcrumb => breadcrumb.id === breadcrumbId)
-    if (onEvent && breadcrumb) {
+    if (onEvent && breadcrumb?.onNavigate) {
       onEvent(componentEvents.BREADCRUMB_NAVIGATE, {
         key: breadcrumbId,
         onNavigate: breadcrumb.onNavigate,
