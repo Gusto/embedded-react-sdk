@@ -75,8 +75,11 @@ export function usePayrollConfigurationData({
   }, [excludedEmployeeUuids, listedEmployeeUuids])
 
   const employeeUuids = useMemo(() => {
-    return [...listedEmployeeUuids, ...missingExcludedUuids]
-  }, [listedEmployeeUuids, missingExcludedUuids])
+    if (currentPage === 1) {
+      return [...listedEmployeeUuids, ...missingExcludedUuids]
+    }
+    return listedEmployeeUuids
+  }, [listedEmployeeUuids, missingExcludedUuids, currentPage])
 
   const employeeUuidsKey = useMemo(() => employeeUuids.join(','), [employeeUuids])
 
@@ -135,9 +138,14 @@ export function usePayrollConfigurationData({
       const results = await Promise.all(
         missingExcludedUuids.map(uuid => employeesGet(gustoClient, { employeeId: uuid })),
       )
+      const failedResult = results.find(result => !result.ok)
+      if (failedResult) {
+        throw failedResult.error
+      }
+
       return results
-        .filter(r => r.ok)
-        .map(r => r.value.employee)
+        .filter(result => result.ok)
+        .map(result => result.value.employee)
         .filter((e): e is Employee => e != null)
     },
     enabled: missingExcludedUuids.length > 0 && !isCalculating,
@@ -158,7 +166,7 @@ export function usePayrollConfigurationData({
 
     if (allListedInSync) {
       const mergedEmployees = [...currentEmployeeData.showEmployees]
-      if (excludedEmployeeDetails?.length) {
+      if (currentPage === 1 && excludedEmployeeDetails?.length) {
         const listedSet = new Set(currentUuids)
         for (const employee of excludedEmployeeDetails) {
           if (!listedSet.has(employee.uuid)) {
@@ -172,7 +180,7 @@ export function usePayrollConfigurationData({
     } else {
       setIsDataInSync(false)
     }
-  }, [prepareData?.employeeCompensations, excludedEmployeeDetails])
+  }, [prepareData?.employeeCompensations, excludedEmployeeDetails, currentPage])
 
   useEffect(() => {
     syncData()
