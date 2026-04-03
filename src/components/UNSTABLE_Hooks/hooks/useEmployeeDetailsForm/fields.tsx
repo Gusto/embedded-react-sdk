@@ -1,10 +1,10 @@
-import type { HookFieldProps } from '../../form/types'
 import type { TextInputHookFieldProps } from '../../form/fields/TextInputHookField'
 import type { DatePickerHookFieldProps } from '../../form/fields/DatePickerHookField'
 import type { SwitchHookFieldProps } from '../../form/fields/SwitchHookField'
 import { TextInputHookField, DatePickerHookField, SwitchHookField } from '../../form/fields'
 import { useFormFieldsMetadataContext } from '../../form/FormFieldsMetadataContext'
 import type { EmployeeDetailsErrorCodes } from './employeeDetailsSchema'
+import type { HookFieldProps } from '@/types/sdkHooks'
 import { normalizeSSN, usePlaceholderSSN } from '@/helpers/ssn'
 
 export type RequiredValidation = typeof EmployeeDetailsErrorCodes.REQUIRED

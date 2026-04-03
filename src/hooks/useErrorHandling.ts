@@ -1,6 +1,6 @@
 import type { UseQueryResult } from '@tanstack/react-query'
-import { collectErrors } from './collectErrors'
-import type { HookErrorHandling } from './types'
+import { collectErrors } from '@/helpers/collectErrors'
+import type { HookErrorHandling } from '@/types/sdkHooks'
 import type { SDKError } from '@/types/sdkError'
 
 type QueryWithRefetch = Pick<UseQueryResult, 'error' | 'refetch'>

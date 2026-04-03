@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import type { FieldMetadata } from './types'
+import type { FieldMetadata } from '@/types/sdkHooks'
 
 export function deriveFieldsMetadata<T extends z.ZodObject>(
   schema: T,

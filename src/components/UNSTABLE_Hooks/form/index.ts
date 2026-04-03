@@ -5,7 +5,7 @@ export type {
   ValidationMessages,
   BaseFieldProps,
   HookFieldProps,
-} from './types'
+} from '@/types/sdkHooks'
 export { withOptions } from './withOptions'
 export type { FormFieldsMetadataContextValue } from './FormFieldsMetadataContext'
 export { FormFieldsMetadataProvider } from './FormFieldsMetadataProvider'

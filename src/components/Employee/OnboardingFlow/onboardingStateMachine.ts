@@ -3,6 +3,7 @@ import {
   FederalTaxesContextual,
   StateTaxesContextual,
   type OnboardingContextInterface,
+  EmployeeListContextual,
 } from './OnboardingFlowComponents'
 import {
   componentEvents,
@@ -13,7 +14,6 @@ import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 import { CompensationContextual } from '@/components/Employee/Compensation'
 import { DeductionsContextual } from '@/components/Employee/Deductions'
 import { EmployeeDocumentsContextual } from '@/components/Employee/EmployeeDocuments'
-import { EmployeeListContextual } from '@/components/Employee/EmployeeList/EmployeeList'
 import { PaymentMethodContextual } from '@/components/Employee/PaymentMethod'
 import { ProfileContextual } from '@/components/Employee/Profile'
 import { OnboardingSummaryContextual } from '@/components/Employee/OnboardingSummary'
