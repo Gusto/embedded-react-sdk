@@ -219,6 +219,7 @@ function normalizeEndpointPath(openApiPath: string, paramNameMap: Record<string,
 interface BlockMapping {
   blockName: string
   componentDir: string
+  componentFile?: string
 }
 
 function discoverDomains(): string[] {
@@ -230,17 +231,31 @@ function discoverDomains(): string[] {
     .sort()
 }
 
-function buildExportNameMap(domainDir: string): Map<string, string> {
+interface ExportInfo {
+  exportedName: string
+  dirName: string
+  fileName?: string
+}
+
+function buildExportNameMap(domainDir: string): Map<string, ExportInfo[]> {
   const indexPath = join(domainDir, 'index.ts')
-  const exportMap = new Map<string, string>()
+  const exportMap = new Map<string, ExportInfo[]>()
 
   try {
     const content = readFileSync(indexPath, 'utf-8')
-    const exportPattern = /export\s+\{\s*(\w+)(?:\s+as\s+\w+)?\s*\}\s+from\s+['"]\.\/([^'"\/]+)/g
+    // Match exports like: export { ComponentName } from './DirName' or './DirName/FileName'
+    const exportPattern = /export\s+\{\s*(\w+)(?:\s+as\s+\w+)?\s*\}\s+from\s+['"]\.\/([^'"]+)['"]/g
     for (const match of content.matchAll(exportPattern)) {
       const exportedName = match[1]
-      const dirName = match[2]
-      exportMap.set(dirName, exportedName)
+      const path = match[2]
+      const segments = path.split('/')
+      const dirName = segments[0]
+      const fileName = segments[1]
+      
+      if (!exportMap.has(dirName)) {
+        exportMap.set(dirName, [])
+      }
+      exportMap.get(dirName)!.push({ exportedName, dirName, fileName })
     }
   } catch {
     // no index.ts
@@ -291,7 +306,7 @@ function discoverBlocks(): BlockMapping[] {
       continue
     }
 
-    const exportNames = buildExportNameMap(domainDir)
+    const exportInfoMap = buildExportNameMap(domainDir)
 
     try {
       const entries = readdirSync(domainDir)
@@ -312,11 +327,30 @@ function discoverBlocks(): BlockMapping[] {
             })
           }
         } else {
-          const resolvedName = exportNames.get(entry) ?? entry
-          blocks.push({
-            blockName: `${domain}.${resolvedName}`,
-            componentDir: fullPath,
-          })
+          const exportInfos = exportInfoMap.get(entry) || []
+          
+          if (exportInfos.length === 0) {
+            // No export info, use directory name
+            blocks.push({
+              blockName: `${domain}.${entry}`,
+              componentDir: fullPath,
+            })
+          } else if (exportInfos.length === 1 && !exportInfos[0].fileName) {
+            // Single export without specific file, use exported name
+            blocks.push({
+              blockName: `${domain}.${exportInfos[0].exportedName}`,
+              componentDir: fullPath,
+            })
+          } else {
+            // Multiple exports or specific files - create a block for each
+            for (const info of exportInfos) {
+              blocks.push({
+                blockName: `${domain}.${info.exportedName}`,
+                componentDir: fullPath,
+                componentFile: info.fileName,
+              })
+            }
+          }
         }
       }
     } catch {
@@ -376,24 +410,52 @@ function discoverFlows(): FlowMapping[] {
   return flows
 }
 
-function deriveFlowBlocks(flowDir: string, blockDirToName: Map<string, string>): string[] {
+function deriveFlowBlocks(
+  flowDir: string,
+  blockDirToName: Map<string, string>,
+  blockMappings: BlockMapping[],
+): string[] {
   const files = walkDir(flowDir)
   const blockNames = new Set<string>()
+  
+  // Build a map of component name to block name
+  const componentNameToBlock = new Map<string, string>()
+  for (const mapping of blockMappings) {
+    const componentName = mapping.blockName.split('.').pop()
+    if (componentName) {
+      componentNameToBlock.set(componentName, mapping.blockName)
+      // Also map the "Contextual" variant (e.g., ProfileContextual -> Profile)
+      componentNameToBlock.set(`${componentName}Contextual`, mapping.blockName)
+    }
+  }
 
-  const absoluteImportPattern = /from\s+['"]@\/components\/([^'"]+)['"]/g
-  const relativeImportPattern = /from\s+['"](\.[^'"]+)['"]/g
+  const absoluteImportPattern = /import\s+\{([^}]+)\}\s+from\s+['"]@\/components\/([^'"]+)['"]/g
+  const relativeImportPattern = /import\s+\{([^}]+)\}\s+from\s+['"](\.[^'"]+)['"]/g
 
   for (const filePath of files) {
     const content = readFileSync(filePath, 'utf-8')
 
+    // Handle absolute imports
     for (const match of content.matchAll(absoluteImportPattern)) {
-      const importPath = match[1]
+      const importedNames = match[1].split(',').map(name => name.trim().split(/\s+as\s+/)[0])
+      const importPath = match[2]
+      
       if (
         importPath.startsWith('Flow/') ||
         importPath.startsWith('Base') ||
         importPath.startsWith('Common/')
       )
         continue
+      
+      // Try to match by component name first
+      for (const name of importedNames) {
+        const blockName = componentNameToBlock.get(name)
+        if (blockName) {
+          blockNames.add(blockName)
+        }
+      }
+      
+      // Fallback to directory-based lookup
       const segments = importPath.split('/')
       const candidateDirs = [
         join(COMPONENTS_DIR, segments[0], segments[1] ?? ''),
@@ -401,13 +463,28 @@ function deriveFlowBlocks(flowDir: string, blockDirToName: Map<string, string>):
       ]
       for (const dir of candidateDirs) {
         const name = blockDirToName.get(dir)
-        if (name) blockNames.add(name)
+        if (name && !componentNameToBlock.has(name.split('.').pop()!)) {
+          blockNames.add(name)
+        }
       }
     }
 
+    // Handle relative imports
     for (const match of content.matchAll(relativeImportPattern)) {
-      const importPath = match[1]
+      const importedNames = match[1].split(',').map(name => name.trim().split(/\s+as\s+/)[0])
+      const importPath = match[2]
+      
       if (importPath.includes('/Flow/') || importPath.includes('useFlow')) continue
+      
+      // Try to match by component name first
+      for (const name of importedNames) {
+        const blockName = componentNameToBlock.get(name)
+        if (blockName) {
+          blockNames.add(blockName)
+        }
+      }
+      
+      // Fallback to directory-based lookup
       const resolved = resolve(dirname(filePath), importPath)
       const segments = relative(COMPONENTS_DIR, resolved).split('/')
       const candidateDirs = [
@@ -416,7 +493,9 @@ function deriveFlowBlocks(flowDir: string, blockDirToName: Map<string, string>):
       ]
       for (const dir of candidateDirs) {
         const name = blockDirToName.get(dir)
-        if (name) blockNames.add(name)
+        if (name && !componentNameToBlock.has(name.split('.').pop()!)) {
+          blockNames.add(name)
+        }
       }
     }
   }
@@ -459,8 +538,43 @@ function deriveInventory(): DerivationResult {
 
   const blocks: Record<string, BlockEntry> = {}
 
-  for (const { blockName, componentDir } of blockMappings) {
-    const files = walkDir(componentDir)
+  for (const { blockName, componentDir, componentFile } of blockMappings) {
+    let files: string[]
+    
+    if (componentFile) {
+      // If a specific component file is specified, scan only that file and related files
+      const baseName = componentFile.replace(/\.tsx?$/, '')
+      files = []
+      
+      // Main component file
+      const mainFile = join(componentDir, `${baseName}.tsx`)
+      if (existsSync(mainFile)) {
+        files.push(mainFile)
+      }
+      
+      // View file (if exists)
+      const viewFile = join(componentDir, `${baseName}View.tsx`)
+      if (existsSync(viewFile)) {
+        files.push(viewFile)
+      }
+      
+      // Hook file (shared by all components in the directory)
+      const hookPattern = /^use[A-Z]\w+\.tsx?$/
+      try {
+        const dirEntries = readdirSync(componentDir)
+        for (const entry of dirEntries) {
+          if (hookPattern.test(entry)) {
+            files.push(join(componentDir, entry))
+          }
+        }
+      } catch {
+        // ignore
+      }
+    } else {
+      // Scan all files in the directory
+      files = walkDir(componentDir)
+    }
+    
     const funcNames = extractApiImports(files)
 
     const endpoints: Endpoint[] = []
@@ -484,7 +598,7 @@ function deriveInventory(): DerivationResult {
   const flows: Record<string, FlowEntry> = {}
 
   for (const { flowName, flowDir } of flowMappings) {
-    const blockNames = deriveFlowBlocks(flowDir, blockDirToName)
+    const blockNames = deriveFlowBlocks(flowDir, blockDirToName, blockMappings)
 
     const endpoints: Endpoint[] = []
     for (const blockName of blockNames) {
