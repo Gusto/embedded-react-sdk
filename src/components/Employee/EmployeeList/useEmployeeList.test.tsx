@@ -167,7 +167,7 @@ describe('useEmployeeList', () => {
       expect(requestUrl).toContain('terminated=true')
     })
 
-    it('should not include terminated parameter when getTerminatedEmployees is false', async () => {
+    it('should include terminated parameter as false when getTerminatedEmployees is false', async () => {
       let requestUrl = ''
       server.use(
         handleGetCompanyEmployees(({ request }) => {
