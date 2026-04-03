@@ -1152,13 +1152,13 @@
     "Company.OnboardingFlow": {
       "blocks": [
         "Company.BankAccount",
+        "Company.DocumentSigner",
+        "Company.FederalTaxes",
         "Company.Industry",
         "Company.Locations",
         "Company.OnboardingOverview",
         "Company.PaySchedule",
-        "Employee.DocumentSigner",
-        "Employee.FederalTaxes",
-        "Employee.StateTaxes"
+        "Company.StateTaxes"
       ],
       "endpoints": [
         {
@@ -1172,6 +1172,34 @@
         {
           "method": "PUT",
           "path": "/v1/companies/:companyId/bank_accounts/:bankAccountUuid/verify"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/forms"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/signatories"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/forms/:formId"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/forms/:formId/sign"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/forms/:formId/pdf"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/companies/:companyId/federal_tax_details"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/federal_tax_details"
         },
         {
           "method": "GET",
@@ -1222,59 +1250,26 @@
           "path": "/v1/companies/:companyUuid/payment_configs"
         },
         {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/forms"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/i9_authorization"
-        },
-        {
           "method": "PUT",
-          "path": "/v1/employees/:employeeId/i9_authorization"
+          "path": "/v1/companies/:companyUuid/tax_requirements/:state"
         },
         {
           "method": "GET",
-          "path": "/v1/employees/:employeeId/forms/:formId/pdf"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeId/forms/:formId/sign"
+          "path": "/v1/companies/:companyUuid/tax_requirements/:state"
         },
         {
           "method": "GET",
-          "path": "/v1/employees/:employeeId/forms/:formId"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeUuid/federal_taxes"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeUuid/federal_taxes"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeUuid/state_taxes"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeUuid/state_taxes"
+          "path": "/v1/companies/:companyUuid/tax_requirements"
         }
       ],
       "variables": [
         "bankAccountUuid",
         "companyId",
         "companyUuid",
-        "employeeId",
-        "employeeUuid",
         "formId",
         "locationId",
-        "payScheduleId"
+        "payScheduleId",
+        "state"
       ]
     },
     "Contractor.OnboardingFlow": {
@@ -1284,8 +1279,7 @@
         "Contractor.ContractorProfile",
         "Contractor.ContractorSubmit",
         "Contractor.NewHireReport",
-        "Employee.PaymentMethod",
-        "Employee.Profile"
+        "Contractor.PaymentMethod"
       ],
       "endpoints": [
         {
@@ -1325,82 +1319,25 @@
           "path": "/v1/contractors/:contractorUuid/onboarding_status"
         },
         {
-          "method": "POST",
-          "path": "/v1/employees/:employeeId/bank_accounts"
-        },
-        {
-          "method": "DELETE",
-          "path": "/v1/employees/:employeeId/bank_accounts/:bankAccountUuid"
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid/payment_method"
         },
         {
           "method": "GET",
-          "path": "/v1/employees/:employeeId/bank_accounts"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/payment_method"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeId/bank_accounts/:bankAccountUuid"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeId/payment_method"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/locations"
+          "path": "/v1/contractors/:contractorUuid/bank_accounts"
         },
         {
           "method": "POST",
-          "path": "/v1/companies/:companyId/employees"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/home_addresses"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/employees/:employeeId/home_addresses"
+          "path": "/v1/contractors/:contractorUuid/bank_accounts"
         },
         {
           "method": "PUT",
-          "path": "/v1/home_addresses/:homeAddressUuid"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/work_addresses/:workAddressUuid"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeId"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/work_addresses"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/employees/:employeeId/work_addresses"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeId/onboarding_status"
+          "path": "/v1/contractors/:contractorUuid/payment_method"
         }
       ],
       "variables": [
-        "bankAccountUuid",
-        "companyId",
         "companyUuid",
-        "contractorUuid",
-        "employeeId",
-        "homeAddressUuid",
-        "workAddressUuid"
+        "contractorUuid"
       ]
     },
     "Contractor.Payments.PaymentFlow": {

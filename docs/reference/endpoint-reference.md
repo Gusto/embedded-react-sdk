@@ -233,8 +233,8 @@ Flows compose multiple blocks into a single workflow. The endpoint list for a fl
 
 | Flow | Blocks included |
 | --- | --- |
-| **Company.OnboardingFlow** | Company.BankAccount, Company.Industry, Company.Locations, Company.OnboardingOverview, Company.PaySchedule, Employee.DocumentSigner, Employee.FederalTaxes, Employee.StateTaxes |
-| **Contractor.OnboardingFlow** | Contractor.Address, Contractor.ContractorList, Contractor.ContractorProfile, Contractor.ContractorSubmit, Contractor.NewHireReport, Employee.PaymentMethod, Employee.Profile |
+| **Company.OnboardingFlow** | Company.BankAccount, Company.DocumentSigner, Company.FederalTaxes, Company.Industry, Company.Locations, Company.OnboardingOverview, Company.PaySchedule, Company.StateTaxes |
+| **Contractor.OnboardingFlow** | Contractor.Address, Contractor.ContractorList, Contractor.ContractorProfile, Contractor.ContractorSubmit, Contractor.NewHireReport, Contractor.PaymentMethod |
 | **Contractor.Payments.PaymentFlow** | Contractor.Payments.CreatePayment, Contractor.Payments.PaymentHistory, Contractor.Payments.PaymentStatement, Contractor.Payments.PaymentSummary, Contractor.Payments.PaymentsList, InformationRequests |
 | **Employee.OnboardingFlow** | Employee.Compensation, Employee.Deductions, Employee.EmployeeDocuments, Employee.EmployeeList, Employee.FederalTaxes, Employee.OnboardingSummary, Employee.PaymentMethod, Employee.Profile, Employee.StateTaxes |
 | **Employee.SelfOnboardingFlow** | Employee.DocumentSigner, Employee.FederalTaxes, Employee.Landing, Employee.OnboardingSummary, Employee.PaymentMethod, Employee.Profile, Employee.StateTaxes |
