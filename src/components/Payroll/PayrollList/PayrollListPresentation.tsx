@@ -285,11 +285,28 @@ export const PayrollListPresentation = ({
           itemMenu={payroll => {
             const { payrollUuid, processed, payPeriod } = payroll
 
-            if (processed) {
-              return null
-            }
-
             const isProcessingSkipPayroll = skippingPayrollId === payrollUuid
+            const isProcessingDeletePayroll = deletingPayrollId === payrollUuid
+
+            const button = isDesktop ? renderActionButton(payroll) : null
+
+            if (processed) {
+              return (
+                <div className={styles.actionsContainer}>
+                  <HamburgerMenu
+                    isLoading={isProcessingSkipPayroll || isProcessingDeletePayroll}
+                    menuLabel={t('payrollMenuLabel')}
+                    items={[
+                      {
+                        label: t('noActionsAvailable'),
+                        onClick: () => {},
+                        isDisabled: true,
+                      },
+                    ]}
+                  />
+                </div>
+              )
+            }
 
             const { fullPeriod: payPeriodString } = formatPayPeriod(
               payPeriod?.startDate,
@@ -316,46 +333,46 @@ export const PayrollListPresentation = ({
               !!payroll.offCycleReason &&
               CANCELLABLE_OFF_CYCLE_REASONS.has(payroll.offCycleReason)
 
-            const button = isDesktop ? renderActionButton(payroll) : null
-
-            const isProcessingDeletePayroll = deletingPayrollId === payrollUuid
-
-            const hamburgerMenu = canSkipPayroll ? (
-              <HamburgerMenu
-                isLoading={isProcessingSkipPayroll}
-                menuLabel={t('payrollMenuLabel')}
-                items={[
+            const menuItems = canSkipPayroll
+              ? [
                   {
                     label: t('skipPayrollCta'),
                     onClick: () => {
                       handleOpenSkipDialog(payrollUuid!, payPeriodString)
                     },
                   },
-                ]}
-              />
-            ) : canDeletePayroll ? (
-              <HamburgerMenu
-                isLoading={isProcessingDeletePayroll}
-                menuLabel={t('payrollMenuLabel')}
-                items={[
-                  {
-                    label: t('deletePayrollCta'),
-                    onClick: () => {
-                      handleOpenDeleteDialog(payrollUuid!, payPeriodString)
+                ]
+              : canDeletePayroll
+                ? [
+                    {
+                      label: t('deletePayrollCta'),
+                      onClick: () => {
+                        handleOpenDeleteDialog(payrollUuid!, payPeriodString)
+                      },
                     },
-                  },
-                ]}
-              />
-            ) : null
+                  ]
+                : [
+                    {
+                      label: t('noActionsAvailable'),
+                      onClick: () => {},
+                      isDisabled: true,
+                    },
+                  ]
 
-            if (!button && !hamburgerMenu) {
-              return null
-            }
+            const isLoadingMenu = canSkipPayroll
+              ? isProcessingSkipPayroll
+              : canDeletePayroll
+                ? isProcessingDeletePayroll
+                : false
 
             return (
               <div className={styles.actionsContainer}>
                 {button}
-                {hamburgerMenu}
+                <HamburgerMenu
+                  isLoading={isLoadingMenu}
+                  menuLabel={t('payrollMenuLabel')}
+                  items={menuItems}
+                />
               </div>
             )
           }}
