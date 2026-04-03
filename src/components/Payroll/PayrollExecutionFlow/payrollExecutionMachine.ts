@@ -174,7 +174,7 @@ const blockersViewAllTransition = transition(
   }),
 )
 
-const notSubmitted = (ctx: PayrollFlowContextInterface) => !ctx.isPayrollSubmitted
+const notSubmitted = (ctx: PayrollFlowContextInterface) => !ctx.hasPayrollSubmissionStarted
 
 const editPayrollTransition = transition(
   componentEvents.RUN_PAYROLL_EDIT,
@@ -202,7 +202,7 @@ const payrollSubmittingTransition = transition(
   reduce(
     (ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
       ...hideBreadcrumb('configuration', ctx),
-      isPayrollSubmitted: true,
+      hasPayrollSubmissionStarted: true,
     }),
   ),
 )

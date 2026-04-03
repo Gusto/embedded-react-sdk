@@ -196,7 +196,7 @@ describe('payrollExecutionMachine', () => {
 
       send(service, componentEvents.RUN_PAYROLL_SUBMITTING)
       expect(service.machine.current).toBe('overview')
-      expect(service.context.isPayrollSubmitted).toBe(true)
+      expect(service.context.hasPayrollSubmissionStarted).toBe(true)
 
       send(service, componentEvents.BREADCRUMB_NAVIGATE, {
         key: 'configuration',

@@ -50,7 +50,14 @@ export function TransitionFlowContextual() {
     return match?.payrollUuid
   }, [payrollsData, startDate, endDate, payScheduleUuid])
 
+  const payrollLookupKey = `${resolvedCompanyId}:${startDate}:${endDate}:${payScheduleUuid}`
   const stablePayrollUuidRef = useRef(existingPayrollUuid)
+  const previousLookupKeyRef = useRef(payrollLookupKey)
+
+  if (previousLookupKeyRef.current !== payrollLookupKey) {
+    previousLookupKeyRef.current = payrollLookupKey
+    stablePayrollUuidRef.current = undefined
+  }
   if (existingPayrollUuid) {
     stablePayrollUuidRef.current = existingPayrollUuid
   }
