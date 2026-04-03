@@ -13,10 +13,10 @@ import { EmployeeOnboardingStatus, EmployeeSelfOnboardingStatuses } from '@/shar
 import { firstLastName } from '@/helpers/formattedStrings'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 
-export interface EmployeeListViewProps extends Pick<
-  Extract<UseEmployeeListResult, { isLoading: false }>,
-  'employees' | 'isFetching' | 'pagination' | 'status'
-> {
+export interface EmployeeListViewProps
+  extends Pick<Extract<UseEmployeeListResult, { isLoading: false }>, 'pagination' | 'status'> {
+  employees: Employee[]
+  isFetching: boolean
   onEdit: (employeeId: string, onboardingStatus?: OnboardingStatus) => void
   onDelete: (employeeId: string) => Promise<void>
   onCancelSelfOnboarding: (employeeId: string) => Promise<void>

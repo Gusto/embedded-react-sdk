@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { ManagementEmployeeListView } from './ManagementEmployeeListView'
-import { useEmployeeList } from './useEmployeeList'
+import { useEmployeeList, type EmployeeType } from './useEmployeeList'
 import {
   BaseBoundaries,
   BaseLayout,
@@ -18,6 +18,17 @@ interface ManagementEmployeeListProps extends CommonComponentInterface<'Employee
   onEvent: BaseComponentInterface['onEvent']
 }
 
+const mapTabToEmployeeType = (tab: EmployeeTab): EmployeeType => {
+  switch (tab) {
+    case 'active':
+      return 'active'
+    case 'onboarding':
+      return 'onboarding'
+    case 'dismissed':
+      return 'terminated'
+  }
+}
+
 function ManagementEmployeeListRoot({
   companyId,
   initialTab = 'active',
@@ -29,11 +40,11 @@ function ManagementEmployeeListRoot({
 
   const [selectedTab, setSelectedTab] = useState<EmployeeTab>(initialTab)
 
+  const employeeType = useMemo(() => mapTabToEmployeeType(selectedTab), [selectedTab])
+
   const employeeList = useEmployeeList({
     companyId,
-    getTerminatedEmployees: selectedTab === 'dismissed',
-    onboardedActive: selectedTab === 'active' ? true : undefined,
-    onboarded: selectedTab === 'onboarding' ? false : undefined,
+    employeeType,
   })
 
   if (employeeList.isLoading) {
@@ -65,8 +76,8 @@ function ManagementEmployeeListRoot({
       <ManagementEmployeeListView
         selectedTab={selectedTab}
         onTabChange={handleTabChange}
-        employees={employeeList.employees}
-        isFetching={employeeList.isFetching}
+        employees={employeeList.data.employees}
+        isFetching={employeeList.status.isFetching}
         pagination={employeeList.pagination}
         status={employeeList.status}
         onEdit={handleEdit}

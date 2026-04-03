@@ -9,7 +9,11 @@ import type { PaginationControlProps } from '@/components/Common/PaginationContr
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { useErrorHandling } from '@/hooks/useErrorHandling'
 import { EmployeeOnboardingStatus } from '@/shared/constants'
-import type { HookLoadingResult, HookErrorHandling, HookSubmitResult } from '@/types/sdkHooks'
+import type {
+  HookLoadingResult,
+  HookSubmitResult,
+  BaseHookReady,
+} from '@/types/sdkHooks'
 
 export interface EmployeeActionCallbacks {
   onDelete?: (employeeId: string) => void
@@ -17,19 +21,20 @@ export interface EmployeeActionCallbacks {
   onCancelSelfOnboarding?: (employeeId: string) => void
 }
 
+export type EmployeeType = 'active' | 'onboarding' | 'terminated'
+
 export interface UseEmployeeListProps {
   companyId: string
-  getTerminatedEmployees?: boolean
-  onboarded?: boolean
-  onboardedActive?: boolean
+  employeeType?: EmployeeType
 }
 
-interface UseEmployeeListReady {
-  isLoading: false
-  employees: Employee[]
-  isFetching: boolean
+interface UseEmployeeListReady extends Omit<BaseHookReady, 'data' | 'status'> {
+  data: {
+    employees: Employee[]
+  }
   pagination: PaginationControlProps
   status: {
+    isFetching: boolean
     isPending: boolean
   }
   actions: {
@@ -46,30 +51,36 @@ interface UseEmployeeListReady {
       callbacks?: EmployeeActionCallbacks,
     ) => Promise<HookSubmitResult<string> | undefined>
   }
-  errorHandling: HookErrorHandling
 }
 
 export type UseEmployeeListResult = HookLoadingResult | UseEmployeeListReady
 
 export function useEmployeeList({
   companyId,
-  getTerminatedEmployees = false,
-  onboarded,
-  onboardedActive,
+  employeeType,
 }: UseEmployeeListProps): UseEmployeeListResult {
   const { currentPage, itemsPerPage, getPaginationProps } = usePagination()
 
-  const employeesQuery = useEmployeesList(
-    {
+  const queryParams = useMemo(() => {
+    const baseParams = {
       companyId,
       page: currentPage,
       per: itemsPerPage,
-      terminated: getTerminatedEmployees,
-      onboarded,
-      onboardedActive,
-    },
-    { placeholderData: keepPreviousData },
-  )
+    }
+
+    switch (employeeType) {
+      case 'active':
+        return { ...baseParams, onboardedActive: true }
+      case 'onboarding':
+        return { ...baseParams, onboarded: false }
+      case 'terminated':
+        return { ...baseParams, terminated: true }
+      default:
+        return baseParams
+    }
+  }, [companyId, currentPage, itemsPerPage, employeeType])
+
+  const employeesQuery = useEmployeesList(queryParams, { placeholderData: keepPreviousData })
 
   const deleteEmployeeMutation = useEmployeesDeleteMutation()
   const updateOnboardingStatusMutation = useEmployeesUpdateOnboardingStatusMutation()
@@ -184,10 +195,11 @@ export function useEmployeeList({
 
   return {
     isLoading: false,
-    employees,
-    isFetching,
+    data: {
+      employees,
+    },
     pagination: paginationProps,
-    status: { isPending },
+    status: { isFetching, isPending },
     actions: { onDelete, onReview, onCancelSelfOnboarding },
     errorHandling,
   }

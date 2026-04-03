@@ -89,9 +89,9 @@ describe('useEmployeeList', () => {
       })
 
       if (!result.current.isLoading) {
-        expect(result.current.employees).toHaveLength(2)
-        expect(result.current.employees[0]?.uuid).toBe('employee-1')
-        expect(result.current.employees[1]?.uuid).toBe('employee-2')
+        expect(result.current.data.employees).toHaveLength(2)
+        expect(result.current.data.employees[0]?.uuid).toBe('employee-1')
+        expect(result.current.data.employees[1]?.uuid).toBe('employee-2')
       }
     })
 
@@ -127,8 +127,8 @@ describe('useEmployeeList', () => {
     })
   })
 
-  describe('Terminated Employees', () => {
-    it('should fetch terminated employees when getTerminatedEmployees is true', async () => {
+  describe('Employee Type Filtering', () => {
+    it('should fetch terminated employees when employeeType is terminated', async () => {
       let requestUrl = ''
       server.use(
         handleGetCompanyEmployees(({ request }) => {
@@ -145,7 +145,7 @@ describe('useEmployeeList', () => {
       )
 
       const { result } = renderHook(
-        () => useEmployeeList({ companyId: 'company-123', getTerminatedEmployees: true }),
+        () => useEmployeeList({ companyId: 'company-123', employeeType: 'terminated' }),
         {
           wrapper: TestWrapper,
         },
@@ -158,7 +158,7 @@ describe('useEmployeeList', () => {
       expect(requestUrl).toContain('terminated=true')
     })
 
-    it('should include terminated parameter as false when getTerminatedEmployees is false', async () => {
+    it('should fetch active employees when employeeType is active', async () => {
       let requestUrl = ''
       server.use(
         handleGetCompanyEmployees(({ request }) => {
@@ -175,7 +175,7 @@ describe('useEmployeeList', () => {
       )
 
       const { result } = renderHook(
-        () => useEmployeeList({ companyId: 'company-123', getTerminatedEmployees: false }),
+        () => useEmployeeList({ companyId: 'company-123', employeeType: 'active' }),
         {
           wrapper: TestWrapper,
         },
@@ -185,7 +185,37 @@ describe('useEmployeeList', () => {
         expect(result.current.isLoading).toBe(false)
       })
 
-      expect(requestUrl).toContain('terminated=false')
+      expect(requestUrl).toContain('onboarded_active=true')
+    })
+
+    it('should fetch onboarding employees when employeeType is onboarding', async () => {
+      let requestUrl = ''
+      server.use(
+        handleGetCompanyEmployees(({ request }) => {
+          requestUrl = request.url
+          return HttpResponse.json(mockEmployees, {
+            headers: {
+              'x-total-pages': '1',
+              'x-total-count': '2',
+              'x-page': '1',
+              'x-per-page': '25',
+            },
+          })
+        }),
+      )
+
+      const { result } = renderHook(
+        () => useEmployeeList({ companyId: 'company-123', employeeType: 'onboarding' }),
+        {
+          wrapper: TestWrapper,
+        },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      expect(requestUrl).toContain('onboarded=false')
     })
   })
 
@@ -307,7 +337,7 @@ describe('useEmployeeList', () => {
       })
 
       if (!result.current.isLoading) {
-        expect(result.current.isFetching).toBe(false)
+        expect(result.current.status.isFetching).toBe(false)
       }
     })
   })

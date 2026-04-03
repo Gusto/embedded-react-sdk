@@ -8,7 +8,7 @@ import {
   type CommonComponentInterface,
 } from '@/components/Base/Base'
 import { useI18n, useComponentDictionary } from '@/i18n'
-import { componentEvents, EmployeeOnboardingStatus } from '@/shared/constants'
+import { componentEvents } from '@/shared/constants'
 
 interface EmployeeListProps extends CommonComponentInterface<'Employee.EmployeeList'> {
   companyId: string
@@ -21,7 +21,6 @@ function EmployeeListRoot({ companyId, onEvent, dictionary }: EmployeeListProps)
 
   const employeeList = useEmployeeList({
     companyId,
-    getTerminatedEmployees: false,
   })
 
   if (employeeList.isLoading) {
@@ -43,37 +42,22 @@ function EmployeeListRoot({ companyId, onEvent, dictionary }: EmployeeListProps)
   return (
     <BaseLayout error={employeeList.errorHandling.errors}>
       <EmployeeListView
-        employees={employeeList.employees}
-        isFetching={employeeList.isFetching}
+        employees={employeeList.data.employees}
+        isFetching={employeeList.status.isFetching}
         pagination={employeeList.pagination}
         status={employeeList.status}
         onEdit={handleEdit}
         onDelete={async (employeeId: string) => {
-          await employeeList.actions.onDelete(employeeId, {
-            onDelete: (id: string) => {
-              onEvent(componentEvents.EMPLOYEE_DELETED, { employeeId: id })
-            },
-          })
+          await employeeList.actions.onDelete(employeeId)
+          onEvent(componentEvents.EMPLOYEE_DELETED, { employeeId })
         }}
         onCancelSelfOnboarding={async (employeeId: string) => {
-          await employeeList.actions.onCancelSelfOnboarding(employeeId, {
-            onCancelSelfOnboarding: (id: string) => {
-              onEvent(componentEvents.EMPLOYEE_ONBOARDING_STATUS_UPDATED, {
-                employeeId: id,
-                onboardingStatus: EmployeeOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE,
-              })
-            },
-          })
+          const result = await employeeList.actions.onCancelSelfOnboarding(employeeId)
+          onEvent(componentEvents.EMPLOYEE_ONBOARDING_STATUS_UPDATED, result)
         }}
         onReview={async (employeeId: string) => {
-          await employeeList.actions.onReview(employeeId, {
-            onReview: (id: string) => {
-              onEvent(componentEvents.EMPLOYEE_UPDATE, {
-                employeeId: id,
-                onboardingStatus: EmployeeOnboardingStatus.SELF_ONBOARDING_AWAITING_ADMIN_REVIEW,
-              })
-            },
-          })
+          const result = await employeeList.actions.onReview(employeeId)
+          onEvent(componentEvents.EMPLOYEE_UPDATE, result)
         }}
         onAddEmployee={handleAddEmployee}
         onSkip={handleSkip}

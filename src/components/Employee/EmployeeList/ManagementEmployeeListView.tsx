@@ -15,10 +15,10 @@ import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 
 type EmployeeTab = 'active' | 'onboarding' | 'dismissed'
 
-export interface ManagementEmployeeListViewProps extends Pick<
-  Extract<UseEmployeeListResult, { isLoading: false }>,
-  'employees' | 'isFetching' | 'pagination' | 'status'
-> {
+export interface ManagementEmployeeListViewProps
+  extends Pick<Extract<UseEmployeeListResult, { isLoading: false }>, 'pagination' | 'status'> {
+  employees: Employee[]
+  isFetching: boolean
   selectedTab: EmployeeTab
   onTabChange: (tab: EmployeeTab) => void
   onEdit: (employeeId: string) => void
