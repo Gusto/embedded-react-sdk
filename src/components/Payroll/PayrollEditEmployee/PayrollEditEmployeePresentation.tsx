@@ -480,8 +480,10 @@ export const PayrollEditEmployeePresentation = ({
           )}
           {payrollCategory === PayrollCategory.Dismissal && timeOff.length > 0 && (
             <div className={styles.fieldGroup}>
-              <Heading as="h4">{t('finalPayoutTitle')}</Heading>
-              <Text variant="supporting">{t('finalPayoutDescription')}</Text>
+              <Flex flexDirection="column" gap={4}>
+                <Heading as="h4">{t('finalPayoutTitle')}</Heading>
+                <Text variant="supporting">{t('finalPayoutDescription')}</Text>
+              </Flex>
               <Grid gridTemplateColumns={{ base: '1fr', small: [320, 320] }} gap={20}>
                 {timeOff.map(timeOffEntry => (
                   <PayoutTimeOffField
