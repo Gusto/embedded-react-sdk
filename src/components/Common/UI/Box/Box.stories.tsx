@@ -22,11 +22,40 @@ export const Default: Story = {
   args: {},
 }
 
+export const WithHeader: Story = {
+  render: () => {
+    const Components = useComponentContext()
+    return (
+      <Components.Box header={<Components.Heading as="h2">Section Title</Components.Heading>}>
+        <Components.Text>This is the main content area with padding.</Components.Text>
+      </Components.Box>
+    )
+  },
+}
+
 export const WithFooter: Story = {
   render: () => {
     const Components = useComponentContext()
     return (
       <Components.Box
+        footer={
+          <Components.Button variant="primary" onClick={() => {}}>
+            Save
+          </Components.Button>
+        }
+      >
+        <Components.Text>This is the main content area with padding.</Components.Text>
+      </Components.Box>
+    )
+  },
+}
+
+export const WithHeaderAndFooter: Story = {
+  render: () => {
+    const Components = useComponentContext()
+    return (
+      <Components.Box
+        header={<Components.Heading as="h2">Section Title</Components.Heading>}
         footer={
           <Components.Button variant="primary" onClick={() => {}}>
             Save
