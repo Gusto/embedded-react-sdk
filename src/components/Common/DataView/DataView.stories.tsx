@@ -224,7 +224,7 @@ export const DataViewSelectableWithMenu = () => {
   return <DataView label="Data View Selectable with Menu" {...dataProps} />
 }
 
-export const DataViewEmpty = () => {
+export const DataViewEmptyWithConfig = () => {
   const { ...dataProps } = useDataView({
     data: [] as typeof compensationData,
     columns: [
@@ -233,10 +233,49 @@ export const DataViewEmpty = () => {
       { key: 'amount', title: 'Amount' },
       { key: 'payTimePeriod', title: 'Pay Time Period' },
     ],
-    emptyState: () => <div style={{ textAlign: 'center', padding: '1rem' }}>No data available</div>,
+    emptyState: {
+      title: 'No compensation data',
+      description: 'Add compensation records to see them listed here.',
+    },
   })
 
-  return <DataView label="Data View Selectable with Menu" {...dataProps} />
+  return <DataView label="Data View Empty (Config)" {...dataProps} />
+}
+
+export const DataViewEmptyWithAction = () => {
+  const { ...dataProps } = useDataView({
+    data: [] as typeof compensationData,
+    columns: [
+      { key: 'jobTitle', title: 'Job Title' },
+      { key: 'payType', title: 'Pay Type' },
+      { key: 'amount', title: 'Amount' },
+      { key: 'payTimePeriod', title: 'Pay Time Period' },
+    ],
+    emptyState: {
+      title: 'No compensation data',
+      description: 'Add compensation records to get started.',
+      action: { label: 'Add compensation', onClick: () => {} },
+    },
+  })
+
+  return <DataView label="Data View Empty (Config with Action)" {...dataProps} />
+}
+
+export const DataViewEmptyCustom = () => {
+  const { ...dataProps } = useDataView({
+    data: [] as typeof compensationData,
+    columns: [
+      { key: 'jobTitle', title: 'Job Title' },
+      { key: 'payType', title: 'Pay Type' },
+      { key: 'amount', title: 'Amount' },
+      { key: 'payTimePeriod', title: 'Pay Time Period' },
+    ],
+    emptyState: () => (
+      <div style={{ textAlign: 'center', padding: '1rem' }}>Custom empty state via function</div>
+    ),
+  })
+
+  return <DataView label="Data View Empty (Custom Function)" {...dataProps} />
 }
 
 export const DataViewWithPagination = () => {

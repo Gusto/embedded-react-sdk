@@ -1,5 +1,6 @@
 export { TaxInputs } from './TaxInputs'
 export { DataView, DataCards, DataTable, useDataView } from './DataView'
+export type { EmptyStateConfig, EmptyStateAction } from './DataView'
 export { Flex, FlexItem } from './Flex/Flex'
 export { Grid } from './Grid/Grid'
 export { Toast } from './Toast/Toast'

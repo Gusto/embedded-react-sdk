@@ -11,7 +11,7 @@ export type DataCardsProps<T> = {
   itemMenu?: useDataViewPropReturn<T>['itemMenu']
   onSelect?: useDataViewPropReturn<T>['onSelect']
   isItemSelected?: useDataViewPropReturn<T>['isItemSelected']
-  emptyState?: useDataViewPropReturn<T>['emptyState']
+  emptyState?: () => React.ReactNode
   footer?: useDataViewPropReturn<T>['footer']
   selectionMode?: SelectionMode
 }

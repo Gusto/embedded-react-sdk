@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import type { ContractorPaymentGroupWithBlockers } from '@gusto/embedded-api/models/components/contractorpaymentgroupwithblockers'
 import type { InternalAlert } from '../types'
 import styles from './PaymentsListPresentation.module.scss'
-import { DataView, Flex, EmptyData, ActionsLayout, useDataView } from '@/components/Common'
+import { DataView, Flex, useDataView } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
@@ -80,15 +80,11 @@ export const PaymentsListPresentation = ({
         <EyeIcon aria-hidden />
       </ButtonIcon>
     ),
-    emptyState: () => (
-      <EmptyData title={t('noPaymentsFound')} description={t('noPaymentsDescription')}>
-        <ActionsLayout justifyContent="center">
-          <Button variant="primary" onClick={onCreatePayment}>
-            {t('createPaymentCta')}
-          </Button>
-        </ActionsLayout>
-      </EmptyData>
-    ),
+    emptyState: {
+      title: t('noPaymentsFound'),
+      description: t('noPaymentsDescription'),
+      action: { label: t('createPaymentCta'), onClick: onCreatePayment },
+    },
     pagination: paginationProps,
   })
 

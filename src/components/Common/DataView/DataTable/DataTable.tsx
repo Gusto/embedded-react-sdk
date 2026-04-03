@@ -11,7 +11,7 @@ export type DataTableProps<T> = {
   data: useDataViewPropReturn<T>['data']
   itemMenu?: useDataViewPropReturn<T>['itemMenu']
   onSelect?: useDataViewPropReturn<T>['onSelect']
-  emptyState?: useDataViewPropReturn<T>['emptyState']
+  emptyState?: () => React.ReactNode
   footer?: useDataViewPropReturn<T>['footer']
   variant?: TableProps['variant']
   selectionMode?: SelectionMode
