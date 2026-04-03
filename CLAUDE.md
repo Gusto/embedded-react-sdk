@@ -25,7 +25,7 @@ npm run sdk-app                # Dev build with HMR
 Or for a production SDK build:
 
 ```
-npm run sdk-app:prod           # Production build (uses built dist/)
+npm run sdk-app-prod           # Production build (uses built dist/)
 ```
 
 See [sdk-app/README.md](sdk-app/README.md) for all available commands and environment options.
