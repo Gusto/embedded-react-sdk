@@ -89,7 +89,7 @@ export const PayrollOverviewPresentation = ({
   withReimbursements = true,
   paymentSpeed,
 }: PayrollOverviewProps) => {
-  const { Alert, Button, ButtonIcon, Dialog, Heading, Text, Tabs } = useComponentContext()
+  const { Alert, Badge, Button, ButtonIcon, Dialog, Heading, Text, Tabs } = useComponentContext()
   useI18n('Payroll.PayrollOverview')
   const dateFormatter = useDateFormatter()
   const { t } = useTranslation('Payroll.PayrollOverview')
@@ -235,11 +235,15 @@ export const PayrollOverviewPresentation = ({
     {
       key: 'employeeName',
       title: t('tableHeaders.employees'),
-      render: (employeeCompensations: EmployeeCompensations) =>
-        firstLastName({
-          first_name: employeeMap.get(employeeCompensations.employeeUuid!)?.firstName,
-          last_name: employeeMap.get(employeeCompensations.employeeUuid!)?.lastName,
-        }),
+      render: (employeeCompensations: EmployeeCompensations) => (
+        <Flex flexDirection="column" gap={0}>
+          {firstLastName({
+            first_name: employeeMap.get(employeeCompensations.employeeUuid!)?.firstName,
+            last_name: employeeMap.get(employeeCompensations.employeeUuid!)?.lastName,
+          })}
+          {employeeCompensations.excluded && <Badge status="warning">{t('skippedBadge')}</Badge>}
+        </Flex>
+      ),
     },
     {
       key: 'grossPay',
@@ -356,11 +360,17 @@ export const PayrollOverviewPresentation = ({
           columns={[
             {
               title: t('tableHeaders.employees'),
-              render: (employeeCompensations: EmployeeCompensations) =>
-                firstLastName({
-                  first_name: employeeMap.get(employeeCompensations.employeeUuid!)?.firstName,
-                  last_name: employeeMap.get(employeeCompensations.employeeUuid!)?.lastName,
-                }),
+              render: (employeeCompensations: EmployeeCompensations) => (
+                <Flex flexDirection="column" gap={0}>
+                  {firstLastName({
+                    first_name: employeeMap.get(employeeCompensations.employeeUuid!)?.firstName,
+                    last_name: employeeMap.get(employeeCompensations.employeeUuid!)?.lastName,
+                  })}
+                  {employeeCompensations.excluded && (
+                    <Badge status="warning">{t('skippedBadge')}</Badge>
+                  )}
+                </Flex>
+              ),
             },
             {
               title: t('tableHeaders.compensationType'),
@@ -429,11 +439,17 @@ export const PayrollOverviewPresentation = ({
           columns={[
             {
               title: t('tableHeaders.employees'),
-              render: (employeeCompensations: EmployeeCompensations) =>
-                firstLastName({
-                  first_name: employeeMap.get(employeeCompensations.employeeUuid!)?.firstName,
-                  last_name: employeeMap.get(employeeCompensations.employeeUuid!)?.lastName,
-                }),
+              render: (employeeCompensations: EmployeeCompensations) => (
+                <Flex flexDirection="column" gap={0}>
+                  {firstLastName({
+                    first_name: employeeMap.get(employeeCompensations.employeeUuid!)?.firstName,
+                    last_name: employeeMap.get(employeeCompensations.employeeUuid!)?.lastName,
+                  })}
+                  {employeeCompensations.excluded && (
+                    <Badge status="warning">{t('skippedBadge')}</Badge>
+                  )}
+                </Flex>
+              ),
             },
             {
               title: t('tableHeaders.paymentType'),
