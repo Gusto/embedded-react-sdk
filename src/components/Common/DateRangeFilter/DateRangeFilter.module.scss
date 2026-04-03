@@ -1,6 +1,14 @@
+.triggerButton {
+  &:global(.react-aria-Button) {
+    white-space: nowrap;
+    font-size: var(--g-fontSizeSmall);
+  }
+}
+
 .popoverContent {
-  padding: toRem(16);
   display: flex;
   flex-direction: column;
   gap: toRem(16);
+  margin-left: toRem(-14);
+  margin-right: toRem(-14);
 }

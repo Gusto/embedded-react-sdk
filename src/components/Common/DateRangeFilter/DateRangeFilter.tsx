@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useMemo } from 'react'
 import { Dialog, Popover } from 'react-aria-components'
 import styles from './DateRangeFilter.module.scss'
 import type { DateRange } from '@/components/Common/UI/DateRangePicker/DateRangePickerTypes'
@@ -6,6 +6,9 @@ import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useTheme } from '@/contexts/ThemeProvider'
 import FilterFunnelIcon from '@/assets/icons/filter-funnel.svg?react'
+
+const formatFilterDate = (date: Date): string =>
+  date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 
 interface DateRangeFilterProps {
   startDate: Date | null
@@ -74,18 +77,40 @@ export const DateRangeFilter = ({
     setDraftRange(range)
   }, [])
 
+  const filterDateLabel = useMemo(() => {
+    if (!isFilterActive || !startDate || !endDate) return null
+    return `${formatFilterDate(startDate)} – ${formatFilterDate(endDate)}`
+  }, [isFilterActive, startDate, endDate])
+
+  const triggerButton = filterDateLabel ? (
+    <Button
+      buttonRef={triggerRef}
+      aria-label={triggerLabel}
+      aria-haspopup="dialog"
+      aria-expanded={isOpen}
+      onClick={handleOpen}
+      variant="secondary"
+      icon={<FilterFunnelIcon />}
+      className={styles.triggerButton}
+    >
+      {filterDateLabel}
+    </Button>
+  ) : (
+    <ButtonIcon
+      buttonRef={triggerRef}
+      aria-label={triggerLabel}
+      aria-haspopup="dialog"
+      aria-expanded={isOpen}
+      onClick={handleOpen}
+      variant="tertiary"
+    >
+      <FilterFunnelIcon />
+    </ButtonIcon>
+  )
+
   return (
     <>
-      <ButtonIcon
-        buttonRef={triggerRef}
-        aria-label={triggerLabel}
-        aria-haspopup="dialog"
-        aria-expanded={isOpen}
-        onClick={handleOpen}
-        variant={isFilterActive ? 'secondary' : 'tertiary'}
-      >
-        <FilterFunnelIcon />
-      </ButtonIcon>
+      {triggerButton}
 
       <Popover
         UNSTABLE_portalContainer={container.current}

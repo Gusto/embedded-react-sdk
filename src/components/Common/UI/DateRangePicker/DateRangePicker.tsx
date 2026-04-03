@@ -68,6 +68,7 @@ export const DateRangePicker = ({
       minValue={minValue}
       maxValue={maxValue}
       aria-label={ariaLabel}
+      className={styles.root}
     >
       <Group className={styles.dateInputGroup}>
         <div className={styles.dateInputWrapper}>

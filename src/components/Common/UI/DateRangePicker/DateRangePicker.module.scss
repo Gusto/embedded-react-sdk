@@ -1,3 +1,7 @@
+.root {
+  width: fit-content;
+}
+
 .dateInputGroup {
   display: flex;
   align-items: flex-end;
@@ -134,19 +138,36 @@
     height: toRem(44);
     padding: toRem(2) 0;
 
-    &:has([data-selected]),
-    &:has([data-in-range]) {
-      background: var(--g-colorPrimaryAccent);
+    &:has([data-selected]) {
+      background: var(--g-colorBorderSecondary);
     }
 
     &:has([data-selection-start]) {
-      border-radius: toRem(6) 0 0 toRem(6);
-      background: var(--g-colorPrimaryAccent);
+      background: linear-gradient(to left, var(--g-colorBorderSecondary) 50%, transparent 50%);
     }
 
     &:has([data-selection-end]) {
-      border-radius: 0 toRem(6) toRem(6) 0;
-      background: var(--g-colorPrimaryAccent);
+      background: linear-gradient(to right, var(--g-colorBorderSecondary) 50%, transparent 50%);
+    }
+
+    &:has([data-selection-start][data-selection-end]) {
+      background: transparent;
+    }
+
+    &:first-child:has([data-selected]) {
+      border-radius: 999px 0 0 999px;
+    }
+
+    &:last-child:has([data-selected]) {
+      border-radius: 0 999px 999px 0;
+    }
+
+    &:has([data-selected]:not([data-selection-end])) + td:has([data-outside-month]) {
+      background: linear-gradient(to right, var(--g-colorBorderSecondary), transparent);
+    }
+
+    &:has([data-outside-month]) + td:has([data-selected]:not([data-selection-start])) {
+      background: linear-gradient(to left, var(--g-colorBorderSecondary), transparent);
     }
   }
 }
@@ -164,9 +185,9 @@
   &[data-outside-month] {
     display: none;
 
-    &[data-in-range] {
+    &[data-selected] {
       display: block;
-      color: var(--g-colorPrimaryContent);
+      color: var(--g-colorBodySubContent);
       border-radius: 0;
       cursor: default;
     }
@@ -187,23 +208,33 @@
   }
 
   &[data-selected] {
-    color: var(--g-colorPrimaryContent);
+    color: var(--g-colorBodyContent);
     border-radius: 0;
   }
 
   &[data-selection-start] {
     background: var(--g-colorPrimary);
     color: var(--g-colorPrimaryContent);
-    border-radius: toRem(6);
+    border-radius: 999px;
+    line-height: toRem(44);
+    width: toRem(44);
+    margin: toRem(-2) toRem(-5);
+    position: relative;
+    z-index: 1;
   }
 
   &[data-selection-end] {
     background: var(--g-colorPrimary);
     color: var(--g-colorPrimaryContent);
-    border-radius: toRem(6);
+    border-radius: 999px;
+    line-height: toRem(44);
+    width: toRem(44);
+    margin: toRem(-2) toRem(-5);
+    position: relative;
+    z-index: 1;
   }
 
-  &[data-disabled] {
+  &[data-disabled]:not([data-outside-month]) {
     cursor: not-allowed;
     display: block;
     opacity: 0.5;

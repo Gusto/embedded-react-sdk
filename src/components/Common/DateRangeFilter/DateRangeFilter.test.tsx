@@ -65,11 +65,19 @@ describe('DateRangeFilter', () => {
     expect(onClear).toHaveBeenCalledOnce()
   })
 
-  it('uses secondary variant for trigger when filter is active', () => {
-    renderWithProviders(<DateRangeFilter {...defaultProps} isFilterActive={true} />)
+  it('uses secondary variant and shows date range for trigger when filter is active', () => {
+    renderWithProviders(
+      <DateRangeFilter
+        {...defaultProps}
+        isFilterActive={true}
+        startDate={new Date(2025, 2, 10)}
+        endDate={new Date(2025, 3, 16)}
+      />,
+    )
 
     const trigger = screen.getByRole('button', { name: 'Filter by date' })
     expect(trigger).toHaveAttribute('data-variant', 'secondary')
+    expect(trigger).toHaveTextContent('Mar 10 – Apr 16')
   })
 
   it('uses tertiary variant for trigger when filter is not active', () => {
