@@ -9,7 +9,7 @@ import type { PaginationControlProps } from '@/components/Common/PaginationContr
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { useErrorHandling } from '@/hooks/useErrorHandling'
 import { EmployeeOnboardingStatus } from '@/shared/constants'
-import type { HookLoadingResult, HookErrorHandling } from '@/types/sdkHooks'
+import type { HookLoadingResult, HookErrorHandling, HookSubmitResult } from '@/types/sdkHooks'
 
 export interface EmployeeActionCallbacks {
   onDelete?: (employeeId: string) => void
@@ -33,12 +33,18 @@ interface UseEmployeeListReady {
     isPending: boolean
   }
   actions: {
-    onDelete: (employeeId: string, callbacks?: EmployeeActionCallbacks) => Promise<void>
-    onReview: (employeeId: string, callbacks?: EmployeeActionCallbacks) => Promise<void>
+    onDelete: (
+      employeeId: string,
+      callbacks?: EmployeeActionCallbacks,
+    ) => Promise<HookSubmitResult<void> | undefined>
+    onReview: (
+      employeeId: string,
+      callbacks?: EmployeeActionCallbacks,
+    ) => Promise<HookSubmitResult<string> | undefined>
     onCancelSelfOnboarding: (
       employeeId: string,
       callbacks?: EmployeeActionCallbacks,
-    ) => Promise<void>
+    ) => Promise<HookSubmitResult<string> | undefined>
   }
   errorHandling: HookErrorHandling
 }
@@ -94,18 +100,35 @@ export function useEmployeeList({
         itemsPerPage: 5 as const,
       }
 
-  const onDelete = async (employeeId: string, callbacks?: EmployeeActionCallbacks) => {
+  const onDelete = async (
+    employeeId: string,
+    callbacks?: EmployeeActionCallbacks,
+  ): Promise<HookSubmitResult<void> | undefined> => {
+    let submitResult: HookSubmitResult<void> | undefined
+
     await baseSubmitHandler(employeeId, async id => {
       await deleteEmployeeMutation.mutateAsync({
         request: { employeeId: id },
       })
       callbacks?.onDelete?.(id)
+
+      submitResult = {
+        mode: 'update',
+        data: undefined,
+      }
     })
+
+    return submitResult
   }
 
-  const onReview = async (employeeId: string, callbacks?: EmployeeActionCallbacks) => {
+  const onReview = async (
+    employeeId: string,
+    callbacks?: EmployeeActionCallbacks,
+  ): Promise<HookSubmitResult<string> | undefined> => {
+    let submitResult: HookSubmitResult<string> | undefined
+
     await baseSubmitHandler(employeeId, async id => {
-      await updateOnboardingStatusMutation.mutateAsync({
+      const result = await updateOnboardingStatusMutation.mutateAsync({
         request: {
           employeeId: id,
           requestBody: {
@@ -114,15 +137,24 @@ export function useEmployeeList({
         },
       })
       callbacks?.onReview?.(id)
+
+      submitResult = {
+        mode: 'update',
+        data: result.employeeOnboardingStatus?.onboardingStatus ?? '',
+      }
     })
+
+    return submitResult
   }
 
   const onCancelSelfOnboarding = async (
     employeeId: string,
     callbacks?: EmployeeActionCallbacks,
-  ) => {
+  ): Promise<HookSubmitResult<string> | undefined> => {
+    let submitResult: HookSubmitResult<string> | undefined
+
     await baseSubmitHandler(employeeId, async id => {
-      await updateOnboardingStatusMutation.mutateAsync({
+      const result = await updateOnboardingStatusMutation.mutateAsync({
         request: {
           employeeId: id,
           requestBody: {
@@ -131,7 +163,14 @@ export function useEmployeeList({
         },
       })
       callbacks?.onCancelSelfOnboarding?.(id)
+
+      submitResult = {
+        mode: 'update',
+        data: result.employeeOnboardingStatus?.onboardingStatus ?? '',
+      }
     })
+
+    return submitResult
   }
 
   const isLoading = !data && isFetching
