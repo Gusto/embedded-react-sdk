@@ -1,4 +1,4 @@
-# E2E Testing
+# Playwright E2E Testing
 
 ## Running Tests
 
@@ -6,7 +6,7 @@
 npm run test:e2e
 ```
 
-Tests live in this directory and require both gws-flows and ZenPayroll running locally. Use the `/start-servers` command to get them running. See `local.config.example.env` for environment configuration.
+Tests live in the `e2e/` directory and require both gws-flows and ZenPayroll running locally. See `e2e/local.config.example.env` for environment configuration.
 
 ## Playwright MCP Server
 
@@ -22,10 +22,10 @@ E2E tests are a powerful way to validate that features work correctly end-to-end
 
 ## Test Patterns
 
-Follow existing patterns in this directory for consistency:
+Follow existing patterns in `e2e/` for consistency:
 
-- Use `globalSetup.ts` for shared setup logic (server health checks, token refresh)
-- Use `scripts/refreshToken.ts` for auth token management
+- Use `e2e/globalSetup.ts` for shared setup logic (server health checks, token refresh)
+- Use `e2e/scripts/refreshToken.ts` for auth token management
 - Place test fixtures and helpers alongside tests
 
 ## Serving the E2E App

@@ -1,9 +1,3 @@
----
-description: Guide for implementing new UNSTABLE_Hooks form hooks (e.g. useEmployeeForm, useBankAccountForm). Covers file structure, schema, fields, data sync, exports, FieldComponent pattern, validation parity, and regression testing.
-globs: src/components/UNSTABLE_Hooks/**/*.{ts,tsx}
-alwaysApply: false
----
-
 # Implementing UNSTABLE_Hooks Form Hooks
 
 Reference implementations:
@@ -395,13 +389,13 @@ Hook schemas must match the validation rules of the existing stable components i
 
 ### Known Validation Patterns to Carry Forward
 
-| Pattern | Where it lives | Hook must include |
-| --- | --- | --- |
-| `NAME_REGEX` on first/last name | `src/helpers/validations.ts` | `.regex(NAME_REGEX, { message: ErrorCodes.INVALID_NAME })` |
-| `SSN_REGEX` on SSN field | `src/helpers/validations.ts` | `.refine(v => SSN_REGEX.test(v.replace(/\D/g, '')), ...)` |
-| Exempt salary threshold | `Employee/Compensation/useCompensation.ts` | `superRefine` with `FLSA_OVERTIME_SALARY_LIMIT` check |
-| Commission-only rate = 0 | Same | `superRefine` enforcing `rate === 0` |
-| Owner payment unit = Paycheck | Same | `superRefine` enforcing `paymentUnit === 'Paycheck'` |
+| Pattern                         | Where it lives                             | Hook must include                                          |
+| ------------------------------- | ------------------------------------------ | ---------------------------------------------------------- |
+| `NAME_REGEX` on first/last name | `src/helpers/validations.ts`               | `.regex(NAME_REGEX, { message: ErrorCodes.INVALID_NAME })` |
+| `SSN_REGEX` on SSN field        | `src/helpers/validations.ts`               | `.refine(v => SSN_REGEX.test(v.replace(/\D/g, '')), ...)`  |
+| Exempt salary threshold         | `Employee/Compensation/useCompensation.ts` | `superRefine` with `FLSA_OVERTIME_SALARY_LIMIT` check      |
+| Commission-only rate = 0        | Same                                       | `superRefine` enforcing `rate === 0`                       |
+| Owner payment unit = Paycheck   | Same                                       | `superRefine` enforcing `paymentUnit === 'Paycheck'`       |
 
 When adding new hooks, check `src/helpers/validations.ts` for shared regex/validators and the stable component's schema for cross-field `superRefine` rules.
 
@@ -411,11 +405,11 @@ Before shipping a hook, verify the actual HTTP request bodies match the stable c
 
 Verified parity status:
 
-| Hook | PUT payload match | Validation match | Notes |
-| --- | --- | --- | --- |
-| `useCompensationForm` | Identical | All cross-field rules present | Hook uses typed error codes vs string literals (improvement) |
-| `useEmployeeDetailsForm` | Identical | `NAME_REGEX` added to close gap | Stable form sends compound (employee + home addr + work addr); hook sends employee only (by design) |
-| `useWorkAddressForm` | Identical | No gaps | Stable form embeds work address in Profile; hook is standalone |
+| Hook                     | PUT payload match | Validation match                | Notes                                                                                               |
+| ------------------------ | ----------------- | ------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `useCompensationForm`    | Identical         | All cross-field rules present   | Hook uses typed error codes vs string literals (improvement)                                        |
+| `useEmployeeDetailsForm` | Identical         | `NAME_REGEX` added to close gap | Stable form sends compound (employee + home addr + work addr); hook sends employee only (by design) |
+| `useWorkAddressForm`     | Identical         | No gaps                         | Stable form embeds work address in Profile; hook is standalone                                      |
 
 ## 8. Regression Testing with gws-flows Comparison Pages
 
@@ -423,11 +417,11 @@ The `gws-flows` repo has side-by-side comparison pages that render the stable co
 
 ### Comparison Pages
 
-| Page | URL pattern | Columns |
-| --- | --- | --- |
-| Compensation | `/react_sdk/compensation-comparison/:employeeId` | `Employee.Compensation` / `CompensationForm` / Custom |
-| Employee Details | `/react_sdk/employee-details-comparison` (with Employee ID input) | `Employee.Profile` / `EmployeeDetailsForm` / Custom |
-| Work Address | `/react_sdk/work-address-comparison` (with Employee ID input) | `WorkAddressForm` / Custom |
+| Page             | URL pattern                                                       | Columns                                               |
+| ---------------- | ----------------------------------------------------------------- | ----------------------------------------------------- |
+| Compensation     | `/react_sdk/compensation-comparison/:employeeId`                  | `Employee.Compensation` / `CompensationForm` / Custom |
+| Employee Details | `/react_sdk/employee-details-comparison` (with Employee ID input) | `Employee.Profile` / `EmployeeDetailsForm` / Custom   |
+| Work Address     | `/react_sdk/work-address-comparison` (with Employee ID input)     | `WorkAddressForm` / Custom                            |
 
 ### Payload Comparison Technique
 
@@ -435,18 +429,18 @@ Use Playwright's `page.route()` to intercept and capture PUT/POST request bodies
 
 1. Install route interception via `browser_run_code`:
    ```javascript
-   page.__capturedBodies = [];
-   await page.route('**/fe_sdk/**', async (route) => {
-     const request = route.request();
+   page.__capturedBodies = []
+   await page.route('**/fe_sdk/**', async route => {
+     const request = route.request()
      if (['PUT', 'POST', 'PATCH'].includes(request.method())) {
        page.__capturedBodies.push({
          url: request.url(),
          method: request.method(),
          body: request.postDataJSON(),
-       });
+       })
      }
-     await route.continue();
-   });
+     await route.continue()
+   })
    ```
 2. Submit each form column, reading captured bodies between submissions
 3. Compare request URLs, methods, and JSON bodies across columns
