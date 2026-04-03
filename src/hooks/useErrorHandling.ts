@@ -1,5 +1,5 @@
 import type { UseQueryResult } from '@tanstack/react-query'
-import { collectErrors } from '@/components/UNSTABLE_Hooks/collectErrors'
+import { collectErrors } from '@/helpers/collectErrors'
 import type { HookErrorHandling } from '@/types/sdkHooks'
 import type { SDKError } from '@/types/sdkError'
 

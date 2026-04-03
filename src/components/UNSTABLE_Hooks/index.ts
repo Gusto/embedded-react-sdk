@@ -33,7 +33,7 @@ export type {
   SwitchHookFieldProps,
   SwitchProps,
 } from './form'
-export { collectErrors } from './collectErrors'
+export { collectErrors } from '../../helpers/collectErrors'
 
 export {
   withOptions,
