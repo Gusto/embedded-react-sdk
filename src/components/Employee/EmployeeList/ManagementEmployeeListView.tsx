@@ -244,11 +244,14 @@ export function ManagementEmployeeListView({
         onClose={() => {
           setEmployeeToDelete(null)
         }}
-        onPrimaryActionClick={() => {
+        onPrimaryActionClick={async () => {
           if (employeeToDelete) {
-            void onDelete(employeeToDelete).then(() => {
+            try {
+              await onDelete(employeeToDelete)
               setEmployeeToDelete(null)
-            })
+            } catch {
+              // Keep dialog open on error
+            }
           }
         }}
         isPrimaryActionLoading={status.isPending}
