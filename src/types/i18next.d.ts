@@ -479,17 +479,19 @@ export interface CompanyTimeOffHolidayPolicy{
 };
 export interface CompanyTimeOffTimeOffPolicies{
 "pageTitle":string;
-"addPolicyCta":string;
+"createPolicyCta":string;
 "tableHeaders":{
 "name":string;
 "enrolled":string;
-"actions":string;
 };
+"tableLabel":string;
 "actions":{
-"viewPolicy":string;
 "editPolicy":string;
 "deletePolicy":string;
 };
+"finishSetupCta":string;
+"allEmployeesLabel":string;
+"enrolledDash":string;
 "employeeCount_one":string;
 "employeeCount_other":string;
 "incompleteBadge":string;
@@ -497,6 +499,8 @@ export interface CompanyTimeOffTimeOffPolicies{
 "deletePolicyDialog":{
 "title":string;
 "description":string;
+"confirmCta":string;
+"cancelCta":string;
 };
 "deleteHolidayDialog":{
 "title":string;
