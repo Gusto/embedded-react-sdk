@@ -109,7 +109,6 @@ function Root({ companyId, requestId, dictionary }: InformationRequestFormProps)
     }
   })
 
-   
   const formMethods = useForm<InformationRequestFormValues>({
     resolver: zodResolver(InformationRequestFormSchema),
     defaultValues,

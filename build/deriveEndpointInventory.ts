@@ -246,10 +246,7 @@ function parseComponentExports(domainDir: string): Map<string, string> {
   const exports = new Map<string, string>()
 
   // Try both .ts and .tsx extensions
-  const possibleBarrelFiles = [
-    join(domainDir, 'index.ts'),
-    join(domainDir, 'index.tsx'),
-  ]
+  const possibleBarrelFiles = [join(domainDir, 'index.ts'), join(domainDir, 'index.tsx')]
 
   for (const barrelPath of possibleBarrelFiles) {
     try {
@@ -274,17 +271,17 @@ function parseComponentExports(domainDir: string): Map<string, string> {
 function resolveComponentDirectory(domainDir: string, importPath: string): string {
   // importPath is like './ContractorList' or './Payments/PaymentFlow'
   const resolved = resolve(domainDir, importPath)
-  
+
   // If it's a direct file import, get the directory
   if (existsSync(resolved + '.tsx') || existsSync(resolved + '.ts')) {
     return dirname(resolved)
   }
-  
+
   // If it's a directory with an index file, use the directory
   if (existsSync(resolved) && statSync(resolved).isDirectory()) {
     return resolved
   }
-  
+
   // Fallback: assume it's the directory
   return resolved
 }
@@ -323,10 +320,10 @@ function discoverFlows(): FlowMapping[] {
 
   for (const [namespaceName, domainDirName] of namespaces.entries()) {
     const domainDir = join(COMPONENTS_DIR, domainDirName)
-    
+
     try {
       const entries = readdirSync(domainDir)
-      
+
       // Look for direct Flow directories in the domain
       for (const entry of entries) {
         const fullPath = join(domainDir, entry)
@@ -334,20 +331,23 @@ function discoverFlows(): FlowMapping[] {
         if (!entry.endsWith('Flow')) continue
         flows.push({ flowName: `${namespaceName}.${entry}`, flowDir: fullPath })
       }
-      
+
       // Look for nested Flow directories (e.g., Contractor.Payments.PaymentFlow)
       for (const entry of entries) {
         const subDir = join(domainDir, entry)
         if (!statSync(subDir).isDirectory()) continue
         if (entry.endsWith('Flow')) continue
-        
+
         try {
           const nestedEntries = readdirSync(subDir)
           for (const nestedEntry of nestedEntries) {
             const nestedPath = join(subDir, nestedEntry)
             if (!statSync(nestedPath).isDirectory()) continue
             if (!nestedEntry.endsWith('Flow')) continue
-            flows.push({ flowName: `${namespaceName}.${entry}.${nestedEntry}`, flowDir: nestedPath })
+            flows.push({
+              flowName: `${namespaceName}.${entry}.${nestedEntry}`,
+              flowDir: nestedPath,
+            })
           }
         } catch {
           // nested dir doesn't exist or can't be read
@@ -386,9 +386,12 @@ function deriveFlowBlocks(
     const content = readFileSync(filePath, 'utf-8')
 
     for (const match of content.matchAll(absoluteImportPattern)) {
-      const importedNames = match[1]
-        .split(',')
-        .map(name => name.trim().split(/\s+as\s+/)[0].trim())
+      const importedNames = match[1].split(',').map(name =>
+        name
+          .trim()
+          .split(/\s+as\s+/)[0]
+          .trim(),
+      )
       const importPath = match[2]
       if (
         importPath.startsWith('Flow/') ||
@@ -421,9 +424,12 @@ function deriveFlowBlocks(
     }
 
     for (const match of content.matchAll(relativeImportPattern)) {
-      const importedNames = match[1]
-        .split(',')
-        .map(name => name.trim().split(/\s+as\s+/)[0].trim())
+      const importedNames = match[1].split(',').map(name =>
+        name
+          .trim()
+          .split(/\s+as\s+/)[0]
+          .trim(),
+      )
       const importPath = match[2]
       if (importPath.includes('/Flow/') || importPath.includes('useFlow')) continue
       const resolved = resolve(dirname(filePath), importPath)

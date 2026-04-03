@@ -3,7 +3,10 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { HttpResponse } from 'msw'
 import { useEmployeeList } from './useEmployeeList'
 import { server } from '@/test/mocks/server'
-import { handleGetCompanyEmployees, handleUpdateEmployeeOnboardingStatus } from '@/test/mocks/apis/employees'
+import {
+  handleGetCompanyEmployees,
+  handleUpdateEmployeeOnboardingStatus,
+} from '@/test/mocks/apis/employees'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { EmployeeOnboardingStatus } from '@/shared/constants'
@@ -65,12 +68,9 @@ describe('useEmployeeList', () => {
 
   describe('Initial State', () => {
     it('should start in loading state', async () => {
-      const { result } = renderHook(
-        () => useEmployeeList({ companyId: 'company-123' }),
-        {
-          wrapper: TestWrapper,
-        },
-      )
+      const { result } = renderHook(() => useEmployeeList({ companyId: 'company-123' }), {
+        wrapper: TestWrapper,
+      })
 
       expect(result.current.isLoading).toBe(true)
 
@@ -80,12 +80,9 @@ describe('useEmployeeList', () => {
     })
 
     it('should fetch and return employees when loaded', async () => {
-      const { result } = renderHook(
-        () => useEmployeeList({ companyId: 'company-123' }),
-        {
-          wrapper: TestWrapper,
-        },
-      )
+      const { result } = renderHook(() => useEmployeeList({ companyId: 'company-123' }), {
+        wrapper: TestWrapper,
+      })
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false)
@@ -99,12 +96,9 @@ describe('useEmployeeList', () => {
     })
 
     it('should initialize pagination properties', async () => {
-      const { result } = renderHook(
-        () => useEmployeeList({ companyId: 'company-123' }),
-        {
-          wrapper: TestWrapper,
-        },
-      )
+      const { result } = renderHook(() => useEmployeeList({ companyId: 'company-123' }), {
+        wrapper: TestWrapper,
+      })
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false)
@@ -119,12 +113,9 @@ describe('useEmployeeList', () => {
     })
 
     it('should initialize status with isPending false', async () => {
-      const { result } = renderHook(
-        () => useEmployeeList({ companyId: 'company-123' }),
-        {
-          wrapper: TestWrapper,
-        },
-      )
+      const { result } = renderHook(() => useEmployeeList({ companyId: 'company-123' }), {
+        wrapper: TestWrapper,
+      })
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false)
@@ -201,12 +192,9 @@ describe('useEmployeeList', () => {
   describe('Actions', () => {
     describe('onDelete', () => {
       it('should delete an employee successfully', async () => {
-        const { result } = renderHook(
-          () => useEmployeeList({ companyId: 'company-123' }),
-          {
-            wrapper: TestWrapper,
-          },
-        )
+        const { result } = renderHook(() => useEmployeeList({ companyId: 'company-123' }), {
+          wrapper: TestWrapper,
+        })
 
         await waitFor(() => {
           expect(result.current.isLoading).toBe(false)
@@ -235,12 +223,9 @@ describe('useEmployeeList', () => {
           }),
         )
 
-        const { result } = renderHook(
-          () => useEmployeeList({ companyId: 'company-123' }),
-          {
-            wrapper: TestWrapper,
-          },
-        )
+        const { result } = renderHook(() => useEmployeeList({ companyId: 'company-123' }), {
+          wrapper: TestWrapper,
+        })
 
         await waitFor(() => {
           expect(result.current.isLoading).toBe(false)
@@ -272,12 +257,9 @@ describe('useEmployeeList', () => {
           }),
         )
 
-        const { result } = renderHook(
-          () => useEmployeeList({ companyId: 'company-123' }),
-          {
-            wrapper: TestWrapper,
-          },
-        )
+        const { result } = renderHook(() => useEmployeeList({ companyId: 'company-123' }), {
+          wrapper: TestWrapper,
+        })
 
         await waitFor(() => {
           expect(result.current.isLoading).toBe(false)
@@ -299,12 +281,9 @@ describe('useEmployeeList', () => {
 
   describe('Error Handling', () => {
     it('should provide error handling interface', async () => {
-      const { result } = renderHook(
-        () => useEmployeeList({ companyId: 'company-123' }),
-        {
-          wrapper: TestWrapper,
-        },
-      )
+      const { result } = renderHook(() => useEmployeeList({ companyId: 'company-123' }), {
+        wrapper: TestWrapper,
+      })
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false)
@@ -319,12 +298,9 @@ describe('useEmployeeList', () => {
 
   describe('isFetching', () => {
     it('should track fetching state independently from loading state', async () => {
-      const { result } = renderHook(
-        () => useEmployeeList({ companyId: 'company-123' }),
-        {
-          wrapper: TestWrapper,
-        },
-      )
+      const { result } = renderHook(() => useEmployeeList({ companyId: 'company-123' }), {
+        wrapper: TestWrapper,
+      })
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false)

@@ -22,7 +22,7 @@ This command creates a new translation file following the i18n guidelines from C
      - Custom (let user specify)
    - Generate appropriate keys based on selection
 
-3. **Follow naming conventions**:
+4. **Follow naming conventions**:
    - Use **camelCase** for all keys
    - Use standard suffixes:
      - `Cta` for buttons (e.g., `submitCta`, `continueCta`, `cancelCta`)
@@ -38,17 +38,17 @@ This command creates a new translation file following the i18n guidelines from C
      - `alerts` for notifications
      - `table` for table-related text
 
-4. **Create the file**:
+5. **Create the file**:
    - File path: `src/i18n/en/<ComponentNamespace>.json`
    - Format as pretty JSON with 2-space indentation
    - If Figma provided: Use actual copy from the design
    - If no Figma: Add placeholder text values that describe the key's purpose
 
-5. **Generate types**:
+6. **Generate types**:
    - Run `npm run i18n:generate` to generate TypeScript types
    - Verify no errors
 
-6. **Provide usage instructions**:
+7. **Provide usage instructions**:
    - Show example of `useI18n()` hook with the namespace
    - Show example of `useTranslation()` with the namespace
    - Remind to update translation values with actual copy
@@ -56,6 +56,7 @@ This command creates a new translation file following the i18n guidelines from C
 ## Standard Templates
 
 ### Form/Page Template
+
 ```json
 {
   "title": "Page or section title",
@@ -73,6 +74,7 @@ This command creates a new translation file following the i18n guidelines from C
 ```
 
 ### List/Table Template
+
 ```json
 {
   "title": "Section title",
@@ -89,6 +91,7 @@ This command creates a new translation file following the i18n guidelines from C
 ```
 
 ### Tabs Template
+
 ```json
 {
   "title": "Section title",
@@ -108,7 +111,8 @@ This command creates a new translation file following the i18n guidelines from C
 
 **User**: "Create translations for Employee.ProfileForm"
 
-**Assistant**: 
+**Assistant**:
+
 1. Asks: "Do you have a Figma URL for this component?"
 2. User provides: `https://www.figma.com/design/abc123...`
 3. Inspects Figma design to extract actual text content
@@ -121,7 +125,8 @@ This command creates a new translation file following the i18n guidelines from C
 
 **User**: "Create translations for Employee.ProfileForm"
 
-**Assistant**: 
+**Assistant**:
+
 1. Asks: "Do you have a Figma URL for this component?" (user says no)
 2. Asks: "What type of component is this?"
    - Form with fields and submit button

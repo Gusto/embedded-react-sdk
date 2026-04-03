@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
-import type { FieldMetadata, FieldMetadataWithOptions } from '@/types/sdkHooks'
 import { FormFieldsMetadataContext } from './FormFieldsMetadataContext'
+import type { FieldMetadata, FieldMetadataWithOptions } from '@/types/sdkHooks'
 import type { SDKError } from '@/types/sdkError'
 
 interface FormFieldsMetadataProviderProps {

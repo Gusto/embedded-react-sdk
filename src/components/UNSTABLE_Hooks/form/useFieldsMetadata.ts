@@ -1,5 +1,5 @@
-import type { FieldMetadata, FieldMetadataWithOptions, FieldsMetadata } from '@/types/sdkHooks'
 import { useFormFieldsMetadataContext } from './FormFieldsMetadataContext'
+import type { FieldMetadata, FieldMetadataWithOptions, FieldsMetadata } from '@/types/sdkHooks'
 
 export function useFieldsMetadata<
   TFieldsMetadata extends {
