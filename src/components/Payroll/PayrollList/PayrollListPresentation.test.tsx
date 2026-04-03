@@ -127,15 +127,19 @@ describe('PayrollListPresentation', () => {
       expect(hamburgerButton).toBeInTheDocument()
     })
 
-    it('does not show hamburger menu when there are blockers', async () => {
+    it('shows hamburger menu with no actions available when there are blockers', async () => {
+      const user = userEvent.setup()
       renderWithProviders(<PayrollListPresentation {...defaultProps} blockers={mockBlockers} />)
 
       await screen.findByRole('heading', { name: 'Upcoming payroll' })
-      const hamburgerButton = screen.queryByRole('button', { name: /open menu/i })
-      expect(hamburgerButton).not.toBeInTheDocument()
+      const hamburgerButton = screen.getByRole('button', { name: /open menu/i })
+      await user.click(hamburgerButton)
+
+      expect(screen.getByText('No actions available')).toBeInTheDocument()
     })
 
-    it('does not show hamburger menu when pay period starts tomorrow', async () => {
+    it('shows hamburger menu with no actions available when pay period starts tomorrow', async () => {
+      const user = userEvent.setup()
       const tomorrow = new Date()
       tomorrow.setDate(tomorrow.getDate() + 1)
       const tomorrowDate = tomorrow.toISOString().split('T')[0]
@@ -152,8 +156,10 @@ describe('PayrollListPresentation', () => {
       renderWithProviders(<PayrollListPresentation {...defaultProps} payrolls={[futurePayroll]} />)
 
       await screen.findByRole('heading', { name: 'Upcoming payroll' })
-      const hamburgerButton = screen.queryByRole('button', { name: /open menu/i })
-      expect(hamburgerButton).not.toBeInTheDocument()
+      const hamburgerButton = screen.getByRole('button', { name: /open menu/i })
+      await user.click(hamburgerButton)
+
+      expect(screen.getByText('No actions available')).toBeInTheDocument()
     })
 
     it('shows hamburger menu when pay period starts today', async () => {
@@ -216,7 +222,8 @@ describe('PayrollListPresentation', () => {
       expect(screen.getByText('Cancel payroll')).toBeInTheDocument()
     })
 
-    it('does not show hamburger menu for processed payrolls', async () => {
+    it('shows hamburger menu with no actions available for processed payrolls', async () => {
+      const user = userEvent.setup()
       const processedPayroll: PresentationPayroll = {
         ...mockUnprocessedPayroll,
         processed: true,
@@ -227,8 +234,10 @@ describe('PayrollListPresentation', () => {
       )
 
       await screen.findByRole('heading', { name: 'Upcoming payroll' })
-      const hamburgerButton = screen.queryByRole('button', { name: /open menu/i })
-      expect(hamburgerButton).not.toBeInTheDocument()
+      const hamburgerButton = screen.getByRole('button', { name: /open menu/i })
+      await user.click(hamburgerButton)
+
+      expect(screen.getByText('No actions available')).toBeInTheDocument()
     })
   })
 

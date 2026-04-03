@@ -2536,6 +2536,7 @@ export interface PayrollPayrollList{
 "submitPayrollCta":string;
 "skipPayrollCta":string;
 "payrollMenuLabel":string;
+"noActionsAvailable":string;
 "skipPayrollDialog":{
 "title":string;
 "body":string;
