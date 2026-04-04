@@ -3,7 +3,6 @@ import { resolveRequiredFields, type RequiredFields } from './resolveRequiredFie
 import {
   evaluateRequired,
   isFieldConfigurable,
-  isStaticRequired,
   type FieldDefs,
   type FormMode,
   type ConfigurableFieldName,
@@ -13,9 +12,12 @@ import type { FieldMetadata } from '@/types/sdkHooks'
 interface BuildFormSchemaOptions<T extends FieldDefs> {
   mode: FormMode
   requiredFields?: RequiredFields<ConfigurableFieldName<T>>
+  excludeFields?: Array<keyof T>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  superRefine?: (data: any, ctx: z.RefinementCtx) => void
 }
 
-interface BuildFormSchemaResult<T extends FieldDefs> {
+export interface BuildFormSchemaResult<T extends FieldDefs> {
   schema: z.ZodType
   getFieldsMetadata: (data?: Record<string, unknown>) => Record<keyof T, FieldMetadata>
 }
@@ -24,60 +26,56 @@ export function buildFormSchema<T extends FieldDefs>(
   fields: T,
   options: BuildFormSchemaOptions<T>,
 ): BuildFormSchemaResult<T> {
-  const { mode } = options
+  const { mode, excludeFields = [] } = options
+  const excluded = new Set(excludeFields.map(String))
   const partnerRequired = new Set(
     resolveRequiredFields(options.requiredFields as RequiredFields<string> | undefined, mode),
   )
 
   const shape: Record<string, z.ZodType> = {}
-  const staticRequiredSet = new Set<string>()
-  const dynamicRequiredFields: Array<{
+  const requiredFields: Array<{
     name: string
     predicate: (data: Record<string, unknown>, mode: FormMode) => boolean
     errorCode?: string
   }> = []
+  const includedFieldNames: string[] = []
 
   for (const [name, def] of Object.entries(fields)) {
-    let validator = def.schema
+    if (excluded.has(name)) continue
 
-    if (def.preprocess) {
-      const preprocessFn = def.preprocess
-      validator = z.preprocess(preprocessFn, validator)
-    }
+    includedFieldNames.push(name)
 
     if (!isFieldConfigurable(def)) {
-      shape[name] = validator
+      shape[name] = def.schema
       continue
     }
 
     const { required, errorCode } = def
     const isPartnerRequired = partnerRequired.has(name)
 
-    if (isStaticRequired(required)) {
-      const isRequired = evaluateRequired(required, mode) || isPartnerRequired
-      if (isRequired) {
-        staticRequiredSet.add(name)
-        shape[name] = validator
+    shape[name] = makeOptional(def.schema)
+
+    if (typeof required === 'function') {
+      if (isPartnerRequired) {
+        requiredFields.push({ name, predicate: () => true, errorCode })
       } else {
-        shape[name] = makeOptional(validator)
+        requiredFields.push({ name, predicate: required, errorCode })
       }
     } else {
-      shape[name] = makeOptional(validator)
-      if (isPartnerRequired) {
-        staticRequiredSet.add(name)
-        dynamicRequiredFields.push({ name, predicate: () => true, errorCode })
-      } else {
-        dynamicRequiredFields.push({ name, predicate: required, errorCode })
+      const isRequired = evaluateRequired(required, mode) || isPartnerRequired
+      if (isRequired) {
+        requiredFields.push({ name, predicate: () => true, errorCode })
       }
     }
   }
 
+  const hasSuperRefine = requiredFields.length > 0 || options.superRefine
   let schema: z.ZodType = z.object(shape)
 
-  if (dynamicRequiredFields.length > 0) {
+  if (hasSuperRefine) {
     schema = (schema as z.ZodObject).superRefine(
       (data: Record<string, unknown>, ctx: z.RefinementCtx) => {
-        for (const { name, predicate, errorCode } of dynamicRequiredFields) {
+        for (const { name, predicate, errorCode } of requiredFields) {
           if (predicate(data, mode) && isEmpty(data[name])) {
             ctx.addIssue({
               code: z.ZodIssueCode.custom,
@@ -86,6 +84,8 @@ export function buildFormSchema<T extends FieldDefs>(
             })
           }
         }
+
+        options.superRefine?.(data, ctx)
       },
     )
   }
@@ -93,7 +93,7 @@ export function buildFormSchema<T extends FieldDefs>(
   function getFieldsMetadata(data?: Record<string, unknown>) {
     const metadata: Record<string, FieldMetadata> = {}
 
-    for (const name of Object.keys(fields)) {
+    for (const name of includedFieldNames) {
       const def = fields[name]!
 
       if (!isFieldConfigurable(def)) {
@@ -116,7 +116,15 @@ export function buildFormSchema<T extends FieldDefs>(
   return { schema, getFieldsMetadata }
 }
 
+function hasPreprocess(validator: z.ZodType): boolean {
+  const def = validator._def as { type?: string }
+  return def.type === 'pipe'
+}
+
 function makeOptional(validator: z.ZodType): z.ZodType {
+  if (hasPreprocess(validator)) {
+    return validator
+  }
   return z.preprocess(v => (v === '' || v === null ? undefined : v), validator.optional())
 }
 

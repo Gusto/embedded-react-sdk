@@ -22,9 +22,9 @@ function getErrorMessages(
 describe('buildFormSchema', () => {
   describe('static required (string presets)', () => {
     const fields = {
-      firstName: field(z.string().min(1), { required: 'create', errorCode: 'REQUIRED' }),
-      lastName: field(z.string().min(1), { required: 'always', errorCode: 'REQUIRED' }),
-      nickname: field(z.string().min(1), { required: 'update' }),
+      firstName: field(z.string(), { required: 'create', errorCode: 'REQUIRED' }),
+      lastName: field(z.string(), { required: 'always', errorCode: 'REQUIRED' }),
+      nickname: field(z.string(), { required: 'update' }),
       active: field(z.boolean()),
     }
 
@@ -105,14 +105,28 @@ describe('buildFormSchema', () => {
         expect((result.data as Record<string, unknown>).nickname).toBeUndefined()
       }
     })
+
+    it('uses errorCode in validation messages', () => {
+      const { schema } = buildFormSchema(fields, { mode: 'create' })
+
+      const result = schema.safeParse({
+        firstName: '',
+        lastName: 'Lovelace',
+        nickname: '',
+        active: true,
+      })
+      expect(result.success).toBe(false)
+      const messages = getErrorMessages(result, 'firstName')
+      expect(messages).toContain('REQUIRED')
+    })
   })
 
   describe('static fields (no required)', () => {
     it('passes through validators unchanged', () => {
       const fields = {
-        name: field(z.string().min(1), { required: 'create' }),
+        name: field(z.string(), { required: 'create' }),
         toggle: field(z.boolean()),
-        notes: field(z.string().optional()),
+        notes: field(z.string()),
       }
 
       const { schema } = buildFormSchema(fields, { mode: 'create' })
@@ -128,7 +142,7 @@ describe('buildFormSchema', () => {
   describe('function required (predicates)', () => {
     const fields = {
       adjustForMinimumWage: field(z.boolean()),
-      minimumWageId: field(z.string().optional(), {
+      minimumWageId: field(z.string(), {
         required: (data: Record<string, unknown>) => Boolean(data.adjustForMinimumWage),
         errorCode: 'REQUIRED',
       }),
@@ -179,7 +193,7 @@ describe('buildFormSchema', () => {
   describe('mode-scoped function predicates', () => {
     const fields = {
       selfOnboarding: field(z.boolean()),
-      email: field(z.string().email().optional(), {
+      email: field(z.string().email(), {
         required: (data: Record<string, unknown>, mode: string) =>
           mode === 'create' && Boolean(data.selfOnboarding),
         errorCode: 'EMAIL_REQUIRED_FOR_SELF_ONBOARDING',
@@ -211,7 +225,7 @@ describe('buildFormSchema', () => {
 
   describe('partner requiredFields overrides', () => {
     const fields = {
-      firstName: field(z.string().min(1), { required: 'create', errorCode: 'REQUIRED' }),
+      firstName: field(z.string(), { required: 'create', errorCode: 'REQUIRED' }),
       email: field(z.string().email(), { required: 'create', errorCode: 'REQUIRED' }),
     }
 
@@ -244,7 +258,7 @@ describe('buildFormSchema', () => {
     it('partner override on a function-required field makes it always required', () => {
       const conditionalFields = {
         toggle: field(z.boolean()),
-        dependent: field(z.string().optional(), {
+        dependent: field(z.string(), {
           required: (data: Record<string, unknown>) => Boolean(data.toggle),
           errorCode: 'REQUIRED',
         }),
@@ -261,16 +275,90 @@ describe('buildFormSchema', () => {
     })
   })
 
-  describe('preprocess', () => {
-    it('applies preprocess before validation', () => {
+  describe('superRefine option', () => {
+    it('runs the provided superRefine callback', () => {
       const fields = {
-        rate: field(z.number(), {
+        rate: field(z.number(), { required: 'create' }),
+        flsaStatus: field(z.string(), { required: 'create' }),
+      }
+
+      const { schema } = buildFormSchema(fields, {
+        mode: 'create',
+        superRefine: (data: Record<string, unknown>, ctx: z.RefinementCtx) => {
+          if (data.flsaStatus === 'owner' && (data.rate as number) < 1) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              path: ['rate'],
+              message: 'RATE_MINIMUM',
+            })
+          }
+        },
+      })
+
+      const valid = schema.safeParse({ rate: 100, flsaStatus: 'owner' })
+      expect(valid.success).toBe(true)
+
+      const invalid = schema.safeParse({ rate: 0, flsaStatus: 'owner' })
+      expect(invalid.success).toBe(false)
+      expect(getErrorMessages(invalid, 'rate')).toContain('RATE_MINIMUM')
+    })
+
+    it('runs superRefine alongside dynamic required checks', () => {
+      const fields = {
+        toggle: field(z.boolean()),
+        dependent: field(z.string(), {
+          required: (data: Record<string, unknown>) => Boolean(data.toggle),
+          errorCode: 'REQUIRED',
+        }),
+        rate: field(z.number(), { required: 'create' }),
+      }
+
+      const { schema } = buildFormSchema(fields, {
+        mode: 'create',
+        superRefine: (data: Record<string, unknown>, ctx: z.RefinementCtx) => {
+          if ((data.rate as number) < 0) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              path: ['rate'],
+              message: 'RATE_NEGATIVE',
+            })
+          }
+        },
+      })
+
+      const result = schema.safeParse({ toggle: true, dependent: '', rate: -1 })
+      expect(result.success).toBe(false)
+      const errors = getErrorFields(result)
+      expect(errors).toContain('dependent')
+      expect(errors).toContain('rate')
+      expect(getErrorMessages(result, 'dependent')).toContain('REQUIRED')
+      expect(getErrorMessages(result, 'rate')).toContain('RATE_NEGATIVE')
+    })
+
+    it('does not add superRefine when not provided and no dynamic fields', () => {
+      const fields = {
+        name: field(z.string()),
+      }
+
+      const { schema } = buildFormSchema(fields, { mode: 'create' })
+
+      const result = schema.safeParse({ name: 'test' })
+      expect(result.success).toBe(true)
+    })
+  })
+
+  describe('z.preprocess on raw schemas', () => {
+    it('works with z.preprocess for coercion', () => {
+      const coerceNaN = (val: unknown) => {
+        if (val === undefined || val === null || (typeof val === 'number' && Number.isNaN(val)))
+          return 0
+        return val
+      }
+
+      const fields = {
+        rate: field(z.preprocess(coerceNaN, z.number()), {
           required: 'create',
           errorCode: 'REQUIRED',
-          preprocess: (val: unknown) => {
-            if (val === undefined || val === null || Number.isNaN(val)) return 0
-            return val
-          },
         }),
       }
 
@@ -283,30 +371,33 @@ describe('buildFormSchema', () => {
       }
     })
 
-    it('applies preprocess on static fields', () => {
+    it('works with z.preprocess for string-to-boolean coercion', () => {
       const fields = {
-        stateWcCovered: field(z.boolean().optional(), {
-          preprocess: (val: unknown) => (typeof val === 'string' ? val === 'true' : val),
-        }),
+        covered: field(
+          z.preprocess(
+            (val: unknown) => (typeof val === 'string' ? val === 'true' : val),
+            z.boolean(),
+          ),
+        ),
       }
 
       const { schema } = buildFormSchema(fields, { mode: 'create' })
 
-      const result = schema.safeParse({ stateWcCovered: 'true' })
+      const result = schema.safeParse({ covered: 'true' })
       expect(result.success).toBe(true)
       if (result.success) {
-        expect((result.data as Record<string, unknown>).stateWcCovered).toBe(true)
+        expect((result.data as Record<string, unknown>).covered).toBe(true)
       }
     })
   })
 
   describe('getFieldsMetadata', () => {
     const fields = {
-      firstName: field(z.string().min(1), { required: 'create', errorCode: 'REQUIRED' }),
-      lastName: field(z.string().min(1), { required: 'always' }),
-      nickname: field(z.string().min(1), { required: 'update' }),
+      firstName: field(z.string(), { required: 'create', errorCode: 'REQUIRED' }),
+      lastName: field(z.string(), { required: 'always' }),
+      nickname: field(z.string(), { required: 'update' }),
       active: field(z.boolean()),
-      minimumWageId: field(z.string().optional(), {
+      minimumWageId: field(z.string(), {
         required: (data: Record<string, unknown>) => Boolean(data.adjustForMinimumWage),
         errorCode: 'REQUIRED',
       }),
@@ -388,9 +479,9 @@ describe('buildFormSchema', () => {
 
   describe('combined: schema + metadata consistency', () => {
     const fields = {
-      title: field(z.string().min(1), { required: 'create', errorCode: 'REQUIRED' }),
+      title: field(z.string(), { required: 'create', errorCode: 'REQUIRED' }),
       toggle: field(z.boolean()),
-      dependent: field(z.string().optional(), {
+      dependent: field(z.string(), {
         required: (data: Record<string, unknown>) => Boolean(data.toggle),
         errorCode: 'DEP_REQUIRED',
       }),

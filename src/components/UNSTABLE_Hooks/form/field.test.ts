@@ -11,6 +11,7 @@ import {
   type InferFormData,
   type InferErrorCode,
   type FieldDefs,
+  type FieldConfig,
 } from './field'
 
 describe('field()', () => {
@@ -20,11 +21,10 @@ describe('field()', () => {
     expect(def.schema).toBeDefined()
     expect(def.required).toBeUndefined()
     expect(def.errorCode).toBeUndefined()
-    expect(def.preprocess).toBeUndefined()
   })
 
   it('creates a configurable field def with a static required preset', () => {
-    const def = field(z.string().min(1), {
+    const def = field(z.string(), {
       required: 'create',
       errorCode: 'REQUIRED',
     })
@@ -35,31 +35,13 @@ describe('field()', () => {
 
   it('creates a configurable field def with a function required predicate', () => {
     const predicate = (data: Record<string, unknown>) => Boolean(data.toggle)
-    const def = field(z.string().optional(), {
+    const def = field(z.string(), {
       required: predicate,
       errorCode: 'REQUIRED',
     })
 
     expect(def.required).toBe(predicate)
     expect(def.errorCode).toBe('REQUIRED')
-  })
-
-  it('preserves the preprocess function', () => {
-    const preprocessFn = (val: unknown) => (val == null ? 0 : val)
-    const def = field(z.number(), {
-      required: 'create',
-      preprocess: preprocessFn,
-    })
-
-    expect(def.preprocess).toBe(preprocessFn)
-  })
-
-  it('preserves preprocess on static fields', () => {
-    const preprocessFn = (val: unknown) => (typeof val === 'string' ? val === 'true' : val)
-    const def = field(z.boolean(), { preprocess: preprocessFn })
-
-    expect(def.required).toBeUndefined()
-    expect(def.preprocess).toBe(preprocessFn)
   })
 })
 
@@ -120,9 +102,9 @@ describe('evaluateRequired()', () => {
 
 describe('type utilities', () => {
   const testFields = {
-    firstName: field(z.string().min(1), { required: 'create', errorCode: 'REQUIRED' as const }),
-    lastName: field(z.string().min(1), { required: 'always', errorCode: 'REQUIRED' as const }),
-    email: field(z.string().email(), {
+    firstName: field(z.string(), { required: 'create', errorCode: 'REQUIRED' as const }),
+    lastName: field(z.string(), { required: 'always', errorCode: 'REQUIRED' as const }),
+    email: field(z.string(), {
       required: (data: Record<string, unknown>) => Boolean(data.selfOnboarding),
       errorCode: 'EMAIL_REQUIRED' as const,
     }),
@@ -156,5 +138,19 @@ describe('type utilities', () => {
 
     expectTypeOf(configurable).toMatchTypeOf<FieldDefWithRequired>()
     expectTypeOf(staticDef).toMatchTypeOf<FieldDefStatic>()
+  })
+
+  it('FieldConfig enforces alignment between schemas and fields', () => {
+    const schemas = {
+      name: z.string(),
+      active: z.boolean(),
+    }
+
+    const fields: FieldConfig<typeof schemas> = {
+      name: field(schemas.name, { required: 'create' }),
+      active: field(schemas.active),
+    }
+
+    expect(Object.keys(fields)).toEqual(['name', 'active'])
   })
 })

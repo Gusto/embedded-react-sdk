@@ -6,7 +6,8 @@ export type RequiredConfig =
   | 'create'
   | 'update'
   | 'always'
-  | ((data: Record<string, unknown>, mode: FormMode) => boolean)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  | ((data: any, mode: FormMode) => boolean)
 
 export interface FieldDefWithRequired<
   TSchema extends z.ZodType = z.ZodType,
@@ -15,14 +16,12 @@ export interface FieldDefWithRequired<
   schema: TSchema
   required: RequiredConfig
   errorCode?: TErrorCode
-  preprocess?: (val: unknown) => unknown
 }
 
 export interface FieldDefStatic<TSchema extends z.ZodType = z.ZodType> {
   schema: TSchema
   required?: undefined
   errorCode?: undefined
-  preprocess?: (val: unknown) => unknown
 }
 
 export type FieldDef<TSchema extends z.ZodType = z.ZodType, TErrorCode extends string = string> =
@@ -31,19 +30,17 @@ export type FieldDef<TSchema extends z.ZodType = z.ZodType, TErrorCode extends s
 
 export type FieldDefs = Record<string, FieldDef>
 
-export function field<TSchema extends z.ZodType>(schema: TSchema): FieldDefStatic<TSchema>
+export type FieldConfig<TSchemas extends Record<string, z.ZodType>> = {
+  [K in keyof TSchemas]: FieldDef<TSchemas[K]>
+}
 
-export function field<TSchema extends z.ZodType>(
-  schema: TSchema,
-  options: { preprocess: (val: unknown) => unknown },
-): FieldDefStatic<TSchema>
+export function field<TSchema extends z.ZodType>(schema: TSchema): FieldDefStatic<TSchema>
 
 export function field<TSchema extends z.ZodType, TErrorCode extends string>(
   schema: TSchema,
   options: {
     required: RequiredConfig
     errorCode?: TErrorCode
-    preprocess?: (val: unknown) => unknown
   },
 ): FieldDefWithRequired<TSchema, TErrorCode>
 
@@ -52,17 +49,15 @@ export function field<TSchema extends z.ZodType>(
   options?: {
     required?: RequiredConfig
     errorCode?: string
-    preprocess?: (val: unknown) => unknown
   },
 ): FieldDef<TSchema> {
   if (!options || options.required === undefined) {
-    return { schema, preprocess: options?.preprocess }
+    return { schema }
   }
   return {
     schema,
     required: options.required,
     errorCode: options.errorCode,
-    preprocess: options.preprocess,
   }
 }
 
