@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import type { Resolver, UseFormProps } from 'react-hook-form'
+import type { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { Compensation, PaymentUnit } from '@gusto/embedded-api/models/components/compensation'
 import type { Job } from '@gusto/embedded-api/models/components/job'
@@ -15,7 +16,6 @@ import { useEmployeeAddressesGetWorkAddresses } from '@gusto/embedded-api/react-
 import { useEmployeesGet } from '@gusto/embedded-api/react-query/employeesGet'
 import { useFederalTaxDetailsGet } from '@gusto/embedded-api/react-query/federalTaxDetailsGet'
 import { withOptions } from '../../form/withOptions'
-import { deriveFieldsMetadata } from '../../form/deriveFieldsMetadata'
 import { createGetFormSubmissionValues } from '../../form/getFormSubmissionValues'
 import type { RequiredFields } from '../../form/resolveRequiredFields'
 import {
@@ -162,7 +162,7 @@ export function useCompensationForm({
   const isCreateMode = !currentJob
   const mode = isCreateMode ? 'create' : 'update'
 
-  const schema = createCompensationSchema({
+  const { schema, getFieldsMetadata } = createCompensationSchema({
     mode,
     requiredFields,
     withStartDateField,
@@ -190,7 +190,7 @@ export function useCompensationForm({
   }
 
   const formMethods = useForm<CompensationFormData, unknown, CompensationFormOutputs>({
-    resolver: zodResolver(schema) as unknown as Resolver<CompensationFormData>,
+    resolver: zodResolver(schema as z.ZodObject) as unknown as Resolver<CompensationFormData>,
     mode: validationMode,
     shouldFocusError,
     defaultValues: resolvedDefaults,
@@ -268,7 +268,10 @@ export function useCompensationForm({
     label: `${code}: ${description}`,
   }))
 
-  const baseMetadata = deriveFieldsMetadata(schema)
+  const baseMetadata = getFieldsMetadata({
+    adjustForMinimumWage: watchedAdjustForMinimumWage,
+    stateWcCovered: watchedStateWcCovered,
+  })
   const fieldsMetadata = {
     startDate: baseMetadata.startDate,
     jobTitle: baseMetadata.jobTitle,
@@ -354,7 +357,7 @@ export function useCompensationForm({
                     stateWcClassCode: compensationData.stateWcCovered
                       ? compensationData.stateWcClassCode
                       : null,
-                    twoPercentShareholder: twoPercentShareholder ?? false,
+                    twoPercentShareholder,
                   },
                 },
               })
@@ -372,7 +375,7 @@ export function useCompensationForm({
                       ? compensationData.stateWcClassCode
                       : null,
                     stateWcCovered: compensationData.stateWcCovered,
-                    twoPercentShareholder: twoPercentShareholder ?? false,
+                    twoPercentShareholder,
                   },
                 },
               })
