@@ -139,7 +139,7 @@ export function useCompensationForm({
 
   const minimumWages = minWagesQuery.data?.minimumWageList ?? []
   const federalTaxDetails = taxQuery.data?.federalTaxDetails
-  const showTwoPercentStakeholder = federalTaxDetails?.taxPayerType === 'S-Corporation'
+  const showTwoPercentStakeholder = federalTaxDetails?.taxableAsScorp === true
 
   const currentJob = useMemo<Job | null>(() => {
     if (!employeeJobs) return null

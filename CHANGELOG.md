@@ -1,5 +1,50 @@
 # Changelog
 
+## 0.38.0
+
+### Features & Enhancements
+
+- Add date range filter to PayrollList and PayrollHistory
+- Add SDK Dev App for standalone component development
+- Add ManagementEmployeeList component and refactor EmployeeList
+- Add DetailViewLayout and EmployeeTable reusable components
+- Add icon prop to Button component
+- Update payroll breadcrumb labels
+- Disable past dates in Pay Schedule first pay date picker
+- Support prop-based field connection via formHookResult
+
+### Fixes
+
+- Fix breadcrumb navigation guards and post-submit flow
+- Fix off-cycle, dismissal, and transition payroll bugs (breadcrumb display, cancel transitions, date range handling, employee selection, PTO labeling)
+- Keep excluded employees visible in PayrollConfiguration after calculation
+- Fix gross-up modal layout and calculate button alignment
+- Fix payroll history sorting and pagination
+- Treat blank time off fields as zero to prevent raw API error
+- Hide direct deposit banner and ACH deadline messages for check-only payrolls
+- Keep start/end date fields visible for check-only payrolls
+- Sync contractor self-onboarding toggle with API status changes
+- Wire up missing dictionary overrides in Contractor components
+- Scope PaymentMethod loading spinner to the specific row being deleted
+- Respect withReimbursements prop in off-cycle payroll configuration
+- Update gross pay live when editing bonus and fixed compensation amounts
+- Prevent dropdown flicker on rapid blur-focus in MultiSelectComboBox
+- Fix NumberField onBlur value formatting
+- Fix compensation base validators and child support required attributes
+- Ensure all labels display in payroll receipt mobile layout
+- Reduce spacing between input section title and description
+- Clarify tax withholding rates copy
+
+### Chores & Maintenance
+
+- Add tests, Storybook stories, and documentation for new components
+- Add icon assets (umbrella, search-lg, user-02, edit-02)
+- Re-enable e2e tests on ubuntu-latest runners
+- Bump i18next from 25.10.4 to 26.0.3
+- Bump react-i18next from 16.6.6 to 17.0.2
+- Bump Storybook packages to 10.3.4
+- Bump various dev dependencies (sass-embedded, vite-plugin-svgr, @playwright/test, typescript-eslint, and others)
+
 ## 0.37.0
 
 ### Features & Enhancements
