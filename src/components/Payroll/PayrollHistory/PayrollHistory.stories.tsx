@@ -1,12 +1,25 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { fn } from 'storybook/test'
 import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
 import type { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest'
 import { PayrollHistoryPresentation } from './PayrollHistoryPresentation'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
+import type { UseDateRangeFilterResult } from '@/hooks/useDateRangeFilter/useDateRangeFilter'
 
 export default {
   title: 'Domain/Payroll/PayrollHistory',
+}
+
+const mockDateRangeFilter: UseDateRangeFilterResult = {
+  filterStartDate: null,
+  filterEndDate: null,
+  isFilterActive: false,
+  handleStartDateChange: fn().mockName('handleStartDateChange'),
+  handleEndDateChange: fn().mockName('handleEndDateChange'),
+  handleClearFilter: fn().mockName('handleClearFilter'),
+  getApiDateParams: () => ({}),
+  getMaxEndDate: () => undefined,
+  getMinStartDate: () => undefined,
 }
 
 const createMockPayroll = (id: string, overrides: Partial<Payroll> = {}): Payroll => ({
@@ -81,6 +94,7 @@ export const PayrollHistoryStory = () => {
       cancelDialogItem={null}
       onCancelDialogOpen={fn().mockName('onCancelDialogOpen')}
       onCancelDialogClose={fn().mockName('onCancelDialogClose')}
+      dateRangeFilter={mockDateRangeFilter}
     />
   )
 }
@@ -161,6 +175,7 @@ export const AllStatusesShowcase = () => {
       cancelDialogItem={null}
       onCancelDialogOpen={fn().mockName('onCancelDialogOpen')}
       onCancelDialogClose={fn().mockName('onCancelDialogClose')}
+      dateRangeFilter={mockDateRangeFilter}
     />
   )
 }
@@ -193,6 +208,7 @@ export const CancelDialog = () => {
       onCancelDialogClose={() => {
         setDialogItem(null)
       }}
+      dateRangeFilter={mockDateRangeFilter}
     />
   )
 }
@@ -209,6 +225,49 @@ export const EmptyState = () => {
       cancelDialogItem={null}
       onCancelDialogOpen={fn().mockName('onCancelDialogOpen')}
       onCancelDialogClose={fn().mockName('onCancelDialogClose')}
+      dateRangeFilter={mockDateRangeFilter}
+    />
+  )
+}
+
+export const WithDateFilter = () => {
+  const [startDate, setStartDate] = useState<Date | null>(new Date('2024-10-01'))
+  const [endDate, setEndDate] = useState<Date | null>(new Date('2025-03-31'))
+
+  const handleClear = useCallback(() => {
+    setStartDate(null)
+    setEndDate(null)
+  }, [])
+
+  const activeDateRangeFilter: UseDateRangeFilterResult = {
+    filterStartDate: startDate,
+    filterEndDate: endDate,
+    isFilterActive: startDate !== null || endDate !== null,
+    handleStartDateChange: setStartDate,
+    handleEndDateChange: setEndDate,
+    handleClearFilter: handleClear,
+    getApiDateParams: () => ({
+      startDate: startDate?.toISOString().split('T')[0],
+      endDate: endDate?.toISOString().split('T')[0],
+    }),
+    getMaxEndDate: () =>
+      startDate ? new Date(new Date(startDate).setMonth(startDate.getMonth() + 12)) : undefined,
+    getMinStartDate: () =>
+      endDate ? new Date(new Date(endDate).setMonth(endDate.getMonth() - 12)) : undefined,
+  }
+
+  return (
+    <PayrollHistoryPresentation
+      payrollHistory={mockPayrollHistory}
+      wireInRequests={mockWireInRequests}
+      pagination={createMockPagination(mockPayrollHistory.length)}
+      onViewSummary={fn().mockName('onViewSummary')}
+      onViewReceipt={fn().mockName('onViewReceipt')}
+      onCancelPayroll={fn().mockName('onCancelPayroll')}
+      cancelDialogItem={null}
+      onCancelDialogOpen={fn().mockName('onCancelDialogOpen')}
+      onCancelDialogClose={fn().mockName('onCancelDialogClose')}
+      dateRangeFilter={activeDateRangeFilter}
     />
   )
 }

@@ -14,6 +14,22 @@ npm run dev:setup      # Link SDK into gws-flows for local development
 npm run i18n:generate  # Generate translation types
 ```
 
+## SDK Dev App
+
+To get started, first run `npm install`, then for a dev SDK build:
+
+```bash
+npm run sdk-app                # Dev build with HMR
+```
+
+Or for a production SDK build:
+
+```
+npm run sdk-app-prod           # Production build (uses built dist/)
+```
+
+See [sdk-app/README.md](sdk-app/README.md) for all available commands and environment options.
+
 ## Code Style
 
 - Write self-explanatory code; avoid comments unless they are JSDoc for public APIs, TODO/FIXME for temporary workarounds, or legal notices

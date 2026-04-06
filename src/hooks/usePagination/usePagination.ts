@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import type {
   PaginationControlProps,
   PaginationItemsPerPage,
@@ -18,6 +18,8 @@ interface UsePaginationResult {
   itemsPerPage: PaginationItemsPerPage
   /** Build PaginationControlProps from API response headers */
   getPaginationProps: (headers: Headers, isFetching?: boolean) => PaginationProps
+  /** Reset to page 1 (e.g. when filters change) */
+  resetPage: () => void
 }
 
 export function usePagination(options?: UsePaginationOptions): UsePaginationResult {
@@ -59,9 +61,14 @@ export function usePagination(options?: UsePaginationOptions): UsePaginationResu
     }
   }
 
+  const resetPage = useCallback(() => {
+    setCurrentPage(1)
+  }, [])
+
   return {
     currentPage,
     itemsPerPage,
     getPaginationProps,
+    resetPage,
   }
 }

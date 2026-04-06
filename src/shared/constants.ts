@@ -7,6 +7,7 @@ export const employeeEvents = {
   EMPLOYEE_UPDATE: 'employee/update',
   EMPLOYEE_UPDATED: 'employee/updated',
   EMPLOYEE_DELETED: 'employee/deleted',
+  EMPLOYEE_DISMISS: 'employee/dismiss',
   EMPLOYEE_ONBOARDING_DONE: 'employee/onboarding/done',
   EMPLOYEE_PROFILE_DONE: 'employee/profile/done',
   EMPLOYEE_HOME_ADDRESS: 'employee/addresses/home',
@@ -56,6 +57,7 @@ export const employeeEvents = {
   EMPLOYEE_CHANGE_ELIGIBILITY_STATUS: 'employee/employmentEligibility/change',
   EMPLOYEE_ONBOARDING_DOCUMENTS_CONFIG_UPDATED: 'employee/onboardingDocumentsConfig/updated',
   EMPLOYEE_DOCUMENTS_DONE: 'employee/documents/done',
+  EMPLOYEE_REHIRE: 'employee/rehire',
 } as const
 
 export const companyEvents = {
@@ -167,6 +169,7 @@ export const runPayrollEvents = {
   OFF_CYCLE_SELECT_REASON: 'offCycle/selectReason',
   OFF_CYCLE_DEDUCTIONS_CHANGE: 'offCycle/deductionsChange',
   RUN_PAYROLL_SUBMITTED: 'runPayroll/submitted',
+  RUN_PAYROLL_SUBMITTING: 'runPayroll/submitting',
   RUN_PAYROLL_SUMMARY_VIEWED: 'runPayroll/summary/viewed',
   RUN_PAYROLL_RECEIPT_GET: 'runPayroll/receipt/get',
   RUN_PAYROLL_RECEIPT_VIEWED: 'runPayroll/receipt/viewed',
@@ -179,6 +182,7 @@ export const runPayrollEvents = {
   RUN_PAYROLL_DATES_CONFIGURED: 'runPayroll/dates/configured',
   REVIEW_PAYROLL: 'payroll/review',
   PAYROLL_SKIPPED: 'payroll/skipped',
+  PAYROLL_DELETED: 'payroll/deleted',
   PAYROLL_EXIT_FLOW: 'payroll/saveAndExit',
   RUN_PAYROLL_GROSS_UP_SELECTED: 'runPayroll/grossUp/selected',
   RUN_PAYROLL_GROSS_UP_CALCULATED: 'runPayroll/grossUp/calculated',

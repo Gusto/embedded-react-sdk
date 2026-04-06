@@ -26,6 +26,7 @@ type PayrollFlowEventPayloads = {
   }
   [componentEvents.RUN_PAYROLL_PROCESSED]: {
     payPeriod?: PayrollPayPeriodType
+    payrollUuid?: string
   }
   [componentEvents.RUN_TRANSITION_PAYROLL]: {
     startDate: string
@@ -133,6 +134,34 @@ const cancelledToLandingTransition = transition(
   ),
 )
 
+const processedToSubmittedOverviewTransition = transition(
+  componentEvents.RUN_PAYROLL_PROCESSED,
+  'submittedOverview',
+  reduce(
+    (
+      ctx: PayrollFlowContextInterface,
+      ev: MachineEventType<PayrollFlowEventPayloads, typeof componentEvents.RUN_PAYROLL_PROCESSED>,
+    ): PayrollFlowContextInterface => {
+      const payPeriod = ev.payload.payPeriod ?? ctx.payPeriod
+      return {
+        ...updateBreadcrumbs('submittedOverview', ctx, {
+          startDate: payPeriod?.startDate ?? '',
+          endDate: payPeriod?.endDate ?? '',
+        }),
+        component: PayrollOverviewContextual,
+        payrollUuid: ev.payload.payrollUuid ?? ctx.payrollUuid,
+        payPeriod,
+        progressBarType: 'breadcrumbs',
+        executionInitialState: undefined,
+        ctaConfig: {
+          labelKey: 'exitFlowCta',
+          namespace: 'Payroll.PayrollOverview',
+        },
+      }
+    },
+  ),
+)
+
 export const payrollFlowMachine = {
   landing: state<MachineTransition>(
     transition(
@@ -222,35 +251,7 @@ export const payrollFlowMachine = {
     landingBreadcrumbNavigateTransition,
     exitFlowTransition,
     cancelledToLandingTransition,
-    transition(
-      componentEvents.RUN_PAYROLL_PROCESSED,
-      'submittedOverview',
-      reduce(
-        (
-          ctx: PayrollFlowContextInterface,
-          ev: MachineEventType<
-            PayrollFlowEventPayloads,
-            typeof componentEvents.RUN_PAYROLL_PROCESSED
-          >,
-        ): PayrollFlowContextInterface => {
-          const payPeriod = ev.payload.payPeriod ?? ctx.payPeriod
-          return {
-            ...updateBreadcrumbs('submittedOverview', ctx, {
-              startDate: payPeriod?.startDate ?? '',
-              endDate: payPeriod?.endDate ?? '',
-            }),
-            component: PayrollOverviewContextual,
-            payPeriod,
-            progressBarType: 'breadcrumbs',
-            executionInitialState: undefined,
-            ctaConfig: {
-              labelKey: 'exitFlowCta',
-              namespace: 'Payroll.PayrollOverview',
-            },
-          }
-        },
-      ),
-    ),
+    processedToSubmittedOverviewTransition,
   ),
   blockers: state<MachineTransition>(breadcrumbNavigateTransition('landing'), exitFlowTransition),
   submittedOverview: state<MachineTransition>(
@@ -285,10 +286,12 @@ export const payrollFlowMachine = {
     landingBreadcrumbNavigateTransition,
     exitFlowTransition,
     cancelledToLandingTransition,
+    processedToSubmittedOverviewTransition,
   ),
   offCycle: state<MachineTransition>(
     landingBreadcrumbNavigateTransition,
     exitFlowTransition,
     cancelledToLandingTransition,
+    processedToSubmittedOverviewTransition,
   ),
 }

@@ -4,13 +4,14 @@ import type { WireInRequest } from '@gusto/embedded-api/models/components/wirein
 import { PayrollStatusBadges } from '../PayrollStatusBadges'
 import { getPayrollTypeLabel, calculateTotalPayroll, canCancelPayroll } from '../helpers'
 import type { MenuItem } from '@/components/Common/UI/Menu/MenuTypes'
-import { DataView, Flex } from '@/components/Common'
+import { DataView, Flex, DateRangeFilter } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { formatNumberAsCurrency } from '@/helpers/formattedStrings'
 import { useI18n } from '@/i18n'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
+import type { UseDateRangeFilterResult } from '@/hooks/useDateRangeFilter/useDateRangeFilter'
 import TrashcanIcon from '@/assets/icons/trashcan.svg?react'
 import FileIcon from '@/assets/icons/icon-file-outline.svg?react'
 import ReceiptIcon from '@/assets/icons/icon-receipt-outline.svg?react'
@@ -26,6 +27,7 @@ interface PayrollHistoryPresentationProps {
   onCancelDialogOpen: (item: Payroll) => void
   onCancelDialogClose: () => void
   isLoading?: boolean
+  dateRangeFilter: UseDateRangeFilterResult
 }
 
 export const PayrollHistoryPresentation = ({
@@ -39,6 +41,7 @@ export const PayrollHistoryPresentation = ({
   onCancelDialogOpen,
   onCancelDialogClose,
   isLoading = false,
+  dateRangeFilter,
 }: PayrollHistoryPresentationProps) => {
   const { Heading, Text, Dialog } = useComponentContext()
   useI18n('Payroll.PayrollHistory')
@@ -126,7 +129,24 @@ export const PayrollHistoryPresentation = ({
 
   return (
     <Flex flexDirection="column" gap={16}>
-      <Heading as="h2">{t('title')}</Heading>
+      <Flex justifyContent="space-between" alignItems="center">
+        <Heading as="h2">{t('title')}</Heading>
+        <DateRangeFilter
+          startDate={dateRangeFilter.filterStartDate}
+          endDate={dateRangeFilter.filterEndDate}
+          onStartDateChange={dateRangeFilter.handleStartDateChange}
+          onEndDateChange={dateRangeFilter.handleEndDateChange}
+          onClear={dateRangeFilter.handleClearFilter}
+          startDateLabel={t('dateFilter.startDate')}
+          endDateLabel={t('dateFilter.endDate')}
+          applyLabel={t('dateFilter.apply')}
+          resetLabel={t('dateFilter.reset')}
+          triggerLabel={t('dateFilter.trigger')}
+          isFilterActive={dateRangeFilter.isFilterActive}
+          maxEndDate={dateRangeFilter.getMaxEndDate()}
+          minStartDate={dateRangeFilter.getMinStartDate()}
+        />
+      </Flex>
 
       <DataView
         label={t('dataView.label')}

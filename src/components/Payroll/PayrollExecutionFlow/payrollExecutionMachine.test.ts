@@ -174,6 +174,63 @@ describe('payrollExecutionMachine', () => {
 
       expect(service.machine.current).toBe('overview')
     })
+
+    it('allows breadcrumb navigation to configuration before submission', () => {
+      const service = createService()
+      toOverview(service)
+
+      send(service, componentEvents.BREADCRUMB_NAVIGATE, {
+        key: 'configuration',
+        onNavigate: (ctx: PayrollFlowContextInterface) => ({
+          ...ctx,
+          currentBreadcrumbId: 'configuration',
+        }),
+      })
+
+      expect(service.machine.current).toBe('configuration')
+    })
+
+    it('blocks breadcrumb navigation to configuration after RUN_PAYROLL_SUBMITTING', () => {
+      const service = createService()
+      toOverview(service)
+
+      send(service, componentEvents.RUN_PAYROLL_SUBMITTING)
+      expect(service.machine.current).toBe('overview')
+      expect(service.context.hasPayrollSubmissionStarted).toBe(true)
+
+      send(service, componentEvents.BREADCRUMB_NAVIGATE, {
+        key: 'configuration',
+        onNavigate: (ctx: PayrollFlowContextInterface) => ({
+          ...ctx,
+          currentBreadcrumbId: 'configuration',
+        }),
+      })
+
+      expect(service.machine.current).toBe('overview')
+    })
+
+    it('blocks RUN_PAYROLL_EDIT after RUN_PAYROLL_SUBMITTING', () => {
+      const service = createService()
+      toOverview(service)
+
+      send(service, componentEvents.RUN_PAYROLL_SUBMITTING)
+
+      send(service, componentEvents.RUN_PAYROLL_EDIT)
+
+      expect(service.machine.current).toBe('overview')
+    })
+
+    it('removes configuration breadcrumb from all trails after RUN_PAYROLL_SUBMITTING', () => {
+      const service = createService()
+      toOverview(service)
+
+      send(service, componentEvents.RUN_PAYROLL_SUBMITTING)
+
+      const allBreadcrumbs = service.context.breadcrumbs ?? {}
+      for (const trail of Object.values(allBreadcrumbs)) {
+        expect(trail.find(b => b.id === 'configuration')).toBeUndefined()
+      }
+    })
   })
 
   describe('editEmployee state', () => {

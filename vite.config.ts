@@ -31,9 +31,11 @@ export const svgrPlugin = () =>
  */
 export default defineConfig(({ mode }) => {
   const isDev = mode === 'development'
+
   return {
     plugins: [
       react(),
+      svgrPlugin(),
       externalizeDeps(),
       !isDev &&
         dts({
@@ -60,7 +62,6 @@ export default defineConfig(({ mode }) => {
           },
         }),
       !isDev && stylelint({ fix: true }),
-      svgrPlugin(),
       !isDev && circularDependencyDetector(),
       !isDev &&
         checker({

@@ -5,9 +5,9 @@ export type {
   HookErrorHandling,
   BaseHookReady,
   BaseFormHookReady,
-} from './types'
+} from '@/types/sdkHooks'
 
-export { useErrorHandling } from './useErrorHandling'
+export { useErrorHandling } from '@/hooks/useErrorHandling'
 
 export type {
   FieldMetadata,
@@ -33,7 +33,7 @@ export type {
   SwitchHookFieldProps,
   SwitchProps,
 } from './form'
-export { collectErrors } from './collectErrors'
+export { collectErrors } from '../../helpers/collectErrors'
 
 export {
   withOptions,

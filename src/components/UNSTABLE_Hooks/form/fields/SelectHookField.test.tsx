@@ -3,8 +3,8 @@ import { screen } from '@testing-library/react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { type ReactNode, useEffect } from 'react'
 import { FormFieldsMetadataProvider } from '../FormFieldsMetadataProvider'
-import type { FieldMetadataWithOptions } from '../types'
 import { SelectHookField } from './SelectHookField'
+import type { FieldMetadataWithOptions } from '@/types/sdkHooks'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 type TestFormValues = { state: string }
