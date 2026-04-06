@@ -78,7 +78,14 @@ function StoryWrapper({
   contractorPayments: ContractorPayments[]
   paymentSpeedDays?: number
 }) {
-  const [paymentDate, setPaymentDate] = useState(new Date().toISOString().split('T')[0] || '')
+  const today = new Date()
+  const [paymentDate, setPaymentDate] = useState(
+    [
+      String(today.getFullYear()).padStart(4, '0'),
+      String(today.getMonth() + 1).padStart(2, '0'),
+      String(today.getDate()).padStart(2, '0'),
+    ].join('-'),
+  )
 
   const totals = contractorPayments.reduce(
     (acc, payment) => {
