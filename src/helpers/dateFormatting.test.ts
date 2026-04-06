@@ -11,6 +11,7 @@ import {
   formatPayPeriodRange,
   formatDateToStringDate,
   normalizeDateToLocal,
+  addBusinessDays,
 } from './dateFormatting'
 
 describe('Date Formatting Helpers', () => {
@@ -252,6 +253,42 @@ describe('Date Formatting Helpers', () => {
       expect(formatDateShortWithWeekday(dateString, locale)).toBe(
         formatDateShortWithWeekday(dateObject, locale),
       )
+    })
+  })
+
+  describe('addBusinessDays', () => {
+    it('should add business days within the same week', () => {
+      const monday = new Date(2024, 0, 8)
+      const result = addBusinessDays(monday, 2)
+      expect(result.getDay()).toBe(3)
+      expect(result.getDate()).toBe(10)
+    })
+
+    it('should skip weekends when adding business days', () => {
+      const friday = new Date(2024, 0, 5)
+      const result = addBusinessDays(friday, 1)
+      expect(result.getDay()).toBe(1)
+      expect(result.getDate()).toBe(8)
+    })
+
+    it('should handle spanning multiple weekends', () => {
+      const monday = new Date(2024, 0, 8)
+      const result = addBusinessDays(monday, 7)
+      expect(result.getDay()).toBe(3)
+      expect(result.getDate()).toBe(17)
+    })
+
+    it('should return the same date when adding 0 business days', () => {
+      const wednesday = new Date(2024, 0, 10)
+      const result = addBusinessDays(wednesday, 0)
+      expect(result.getDate()).toBe(10)
+    })
+
+    it('should add 4 business days correctly from Thursday', () => {
+      const thursday = new Date(2024, 0, 11)
+      const result = addBusinessDays(thursday, 4)
+      expect(result.getDay()).toBe(3)
+      expect(result.getDate()).toBe(17)
     })
   })
 })

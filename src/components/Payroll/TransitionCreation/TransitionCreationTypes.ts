@@ -14,7 +14,11 @@ export interface TransitionCreationFormData {
   skipRegularDeductions: boolean
 }
 
-export function createTransitionCreationSchema(t: (key: string) => string, minCheckDate: Date) {
+export function createTransitionCreationSchema(
+  t: (key: string, options?: Record<string, unknown>) => string,
+  minCheckDate: Date,
+  achLeadTimeBusinessDays?: number,
+) {
   return z.object({
     checkDate: z
       .date()
@@ -30,7 +34,7 @@ export function createTransitionCreationSchema(t: (key: string) => string, minCh
           min.setHours(0, 0, 0, 0)
           return normalized >= min
         },
-        { message: t('errors.checkDateAchLeadTime') },
+        { message: t('errors.checkDateAchLeadTime', { count: achLeadTimeBusinessDays ?? 2 }) },
       ),
     skipRegularDeductions: z.boolean(),
   })

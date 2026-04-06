@@ -10,6 +10,7 @@ import {
 } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
+import { useCompanyPaymentSpeed } from '@/hooks/useCompanyPaymentSpeed'
 import { OFF_CYCLE_REASON_DEFAULTS, type OffCycleReason } from '../OffCycleReasonSelection'
 import {
   createOffCyclePayPeriodDateFormSchema,
@@ -52,7 +53,10 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
   const { t: tCreation } = useTranslation('Payroll.OffCycleCreation')
   const { onEvent, baseSubmitHandler } = useBase()
 
-  const { minCheckDate, today } = useOffCyclePayPeriodDateValidation()
+  const { paymentSpeedDays } = useCompanyPaymentSpeed(companyId)
+
+  const { minCheckDate, today, achLeadTimeBusinessDays } =
+    useOffCyclePayPeriodDateValidation(paymentSpeedDays)
   const { mutateAsync: createOffCyclePayroll, isPending } = usePayrollsCreateOffCycleMutation()
 
   const [taxWithholdingConfig, setTaxWithholdingConfig] = useState<OffCycleTaxWithholdingConfig>({
@@ -109,6 +113,7 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
       translateValidation,
       resolvedPayrollType,
       isCheckOnly ? today : minCheckDate,
+      achLeadTimeBusinessDays,
     )
     const schema = z
       .object({

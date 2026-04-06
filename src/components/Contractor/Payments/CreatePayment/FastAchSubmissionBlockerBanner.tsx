@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import type { PayrollSubmissionBlockerType } from '@gusto/embedded-api/models/components/payrollsubmissionblockertype'
+import type { PaymentSpeed } from '@gusto/embedded-api/models/components/paymentconfigs'
 import { Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
@@ -11,7 +12,7 @@ interface FastAchSubmissionBlockerBannerProps {
   blocker: PayrollSubmissionBlockerType
   selectedValue?: string
   onUnblockOptionChange: (blockerType: string, value: string) => void
-  paymentSpeed?: string
+  paymentSpeed?: PaymentSpeed
 }
 
 export const FastAchSubmissionBlockerBanner = ({

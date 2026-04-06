@@ -4,6 +4,7 @@ import type { ContractorPaymentForGroupPreview } from '@gusto/embedded-api/model
 import { useMemo } from 'react'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import type { CompanyBankAccount } from '@gusto/embedded-api/models/components/companybankaccount'
+import type { PaymentSpeed } from '@gusto/embedded-api/models/components/paymentconfigs'
 import { getContractorDisplayName } from './helpers'
 import { FastAchSubmissionBlockerBanner } from './FastAchSubmissionBlockerBanner'
 import { GenericBlocker } from './GenericBlocker'
@@ -25,7 +26,7 @@ interface PreviewPresentationProps {
   bankAccount?: CompanyBankAccount
   selectedUnblockOptions?: Record<string, string>
   onUnblockOptionChange?: (blockerType: string, value: string) => void
-  paymentSpeed?: string
+  paymentSpeed?: PaymentSpeed
 }
 
 export const PreviewPresentation = ({

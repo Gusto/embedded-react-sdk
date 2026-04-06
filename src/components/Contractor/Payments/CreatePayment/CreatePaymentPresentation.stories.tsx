@@ -111,6 +111,7 @@ function StoryWrapper({
         totals={totals}
         alerts={{}}
         isLoading={false}
+        paymentSpeedDays={2}
       />
     </GustoTestProvider>
   )

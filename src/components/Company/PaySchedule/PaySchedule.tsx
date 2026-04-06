@@ -6,7 +6,7 @@ import { usePaySchedulesGetPreview } from '@gusto/embedded-api/react-query/paySc
 import { usePaySchedulesUpdateMutation } from '@gusto/embedded-api/react-query/paySchedulesUpdate'
 import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
 import { usePaySchedulesCreateMutation } from '@gusto/embedded-api/react-query/paySchedulesCreate'
-import { usePaymentConfigsGet } from '@gusto/embedded-api/react-query/paymentConfigsGet'
+import { useCompanyPaymentSpeed } from '@/hooks/useCompanyPaymentSpeed'
 import type { PayScheduleObject as PayScheduleType } from '@gusto/embedded-api/models/components/payscheduleobject'
 import type { Frequency } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayschedules'
 import type { MODE, PayScheduleInputs, PayScheduleOutputs } from './usePaySchedule'
@@ -55,8 +55,7 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
     companyId,
   })
 
-  const { data: paymentConfigs } = usePaymentConfigsGet({ companyUuid: companyId })
-  const paymentSpeed = paymentConfigs?.paymentConfigs?.paymentSpeed
+  const { paymentSpeedDays } = useCompanyPaymentSpeed(companyId)
 
   const [mode, setMode] = useState<MODE>(
     paySchedules.payScheduleList?.length === 0 ? 'ADD_PAY_SCHEDULE' : 'LIST_PAY_SCHEDULES',
@@ -224,7 +223,7 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
         payPeriodPreview: payPreviewData?.object?.payPeriods,
         payPreviewLoading: isLoading,
         currentPaySchedule,
-        paymentSpeed,
+        paymentSpeedDays,
       }}
     >
       <span data-testid="pay-schedule-edit-form">
