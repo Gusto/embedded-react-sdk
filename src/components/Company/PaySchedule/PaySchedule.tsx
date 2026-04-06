@@ -6,7 +6,6 @@ import { usePaySchedulesGetPreview } from '@gusto/embedded-api/react-query/paySc
 import { usePaySchedulesUpdateMutation } from '@gusto/embedded-api/react-query/paySchedulesUpdate'
 import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
 import { usePaySchedulesCreateMutation } from '@gusto/embedded-api/react-query/paySchedulesCreate'
-import { useCompanyPaymentSpeed } from '@/hooks/useCompanyPaymentSpeed'
 import type { PayScheduleObject as PayScheduleType } from '@gusto/embedded-api/models/components/payscheduleobject'
 import type { Frequency } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayschedules'
 import type { MODE, PayScheduleInputs, PayScheduleOutputs } from './usePaySchedule'
@@ -16,6 +15,7 @@ import {
   type PayScheduleDefaultValues,
 } from './usePaySchedule'
 import { Actions, Edit, Head, List } from './_parts'
+import { useCompanyPaymentSpeed } from '@/hooks/useCompanyPaymentSpeed'
 import { Form } from '@/components/Common/Form'
 import type { BaseComponentInterface, CommonComponentInterface } from '@/components/Base'
 import { BaseComponent, useBase } from '@/components/Base'

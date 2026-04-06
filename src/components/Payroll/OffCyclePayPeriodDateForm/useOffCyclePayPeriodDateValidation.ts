@@ -3,7 +3,9 @@ import { addBusinessDays } from '@/helpers/dateFormatting'
 
 export const DEFAULT_ACH_LEAD_TIME_BUSINESS_DAYS = 2
 
-export function useOffCyclePayPeriodDateValidation(paymentSpeedDays = DEFAULT_ACH_LEAD_TIME_BUSINESS_DAYS) {
+export function useOffCyclePayPeriodDateValidation(
+  paymentSpeedDays = DEFAULT_ACH_LEAD_TIME_BUSINESS_DAYS,
+) {
   const achLeadTimeBusinessDays = paymentSpeedDays
 
   const today = useMemo(() => {

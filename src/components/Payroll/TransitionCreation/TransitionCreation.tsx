@@ -9,12 +9,12 @@ import {
 } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
-import { useCompanyPaymentSpeed } from '@/hooks/useCompanyPaymentSpeed'
 import { useOffCyclePayPeriodDateValidation } from '../OffCyclePayPeriodDateForm/useOffCyclePayPeriodDateValidation'
 import type { OffCycleTaxWithholdingConfig } from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
 import type { TransitionCreationProps, TransitionCreationFormData } from './TransitionCreationTypes'
 import { createTransitionCreationSchema } from './TransitionCreationTypes'
 import { TransitionCreationPresentation } from './TransitionCreationPresentation'
+import { useCompanyPaymentSpeed } from '@/hooks/useCompanyPaymentSpeed'
 import { BaseComponent } from '@/components/Base/Base'
 import { useBase } from '@/components/Base/useBase'
 import { useComponentDictionary, useI18n } from '@/i18n'
@@ -47,7 +47,8 @@ function Root({
 
   const { paymentSpeedDays } = useCompanyPaymentSpeed(companyId)
 
-  const { minCheckDate, achLeadTimeBusinessDays } = useOffCyclePayPeriodDateValidation(paymentSpeedDays)
+  const { minCheckDate, achLeadTimeBusinessDays } =
+    useOffCyclePayPeriodDateValidation(paymentSpeedDays)
   const { mutateAsync: createTransitionPayroll, isPending } = usePayrollsCreateOffCycleMutation()
 
   const { data: paySchedulesData } = usePaySchedulesGetAllSuspense({ companyId })

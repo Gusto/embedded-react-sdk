@@ -100,7 +100,11 @@ vi.mock('@gusto/embedded-api/react-query/wireInRequestsGet', () => ({
 }))
 
 vi.mock('@/hooks/useCompanyPaymentSpeed', () => ({
-  useCompanyPaymentSpeed: () => ({ paymentSpeed: undefined, paymentSpeedDays: 2, isLoading: false }),
+  useCompanyPaymentSpeed: () => ({
+    paymentSpeed: undefined,
+    paymentSpeedDays: 2,
+    isLoading: false,
+  }),
 }))
 
 vi.mock('@gusto/embedded-api/react-query/_context', async importOriginal => {
