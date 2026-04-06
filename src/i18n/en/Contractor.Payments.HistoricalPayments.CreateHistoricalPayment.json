@@ -1,0 +1,102 @@
+{
+  "title": "Record historical contractor payment",
+  "description": "Record a past contractor payment that has already taken place outside the system.",
+  "emptyTableTitle": "No contractors available for payment",
+  "emptyTableDescription": "There are no active contractors with completed onboarding. Add and onboard contractors before creating payments.",
+  "breadcrumbLabel": "Record historical payment",
+  "dateLabel": "Payment date",
+  "dateHint": "Select the date the payment was originally made. Must be a past date.",
+  "hoursAndPaymentsLabel": "Hours and payments",
+  "contractorTableHeaders": {
+    "contractor": "Contractor",
+    "wageType": "Wage type",
+    "hours": "Hours",
+    "wage": "Wage",
+    "bonus": "Bonus",
+    "reimbursement": "Reimbursement",
+    "total": "Total"
+  },
+  "na": "N/A",
+  "totalsLabel": "Totals",
+  "backButton": "Back",
+  "continueCta": "Continue",
+  "editContractor": "Edit contractor payment",
+  "perHour": "/hr",
+  "wageTypes": {
+    "fixed": "Fixed",
+    "hourly": "Hourly"
+  },
+  "alerts": {
+    "contractorPaymentUpdated": "Pay updated for {{contractorName}}",
+    "noContractorPayments": "Please add at least one contractor payment to continue.",
+    "dateMustBeInPast": "Payment date must be in the past for historical payments."
+  },
+  "editContractorPayment": {
+    "title": "Edit contractor pay",
+    "subtitle": "Edit contractor's hours, additional earnings, and reimbursements. Inputs not applicable to this contractor are disabled. Please click \"Done\" to apply the change.",
+    "hoursSection": "Hours",
+    "hoursLabel": "Hours",
+    "hoursAdornment": "hrs",
+    "fixedPaySection": "Fixed pay",
+    "wageLabel": "Wage",
+    "additionalEarningsSection": "Additional earnings",
+    "bonusLabel": "Bonus",
+    "reimbursementLabel": "Reimbursement",
+    "totalPay": "Total pay",
+    "cancelCta": "Cancel",
+    "saveCta": "Done"
+  },
+  "previewPresentation": {
+    "breadcrumbLabel": "Submit",
+    "reviewAndSubmitTitle": "Review and submit",
+    "reviewSubtitle": "Recording historical contractor payment for {{checkDate}}",
+    "summaryTableHeaders": {
+      "totalAmount": "Total amount",
+      "contractorPayDate": "Payment date"
+    },
+    "paymentSummaryTitle": "Payment summary",
+    "contractorTableHeaders": {
+      "contractor": "Contractor",
+      "wageType": "Wage type",
+      "hours": "Hours",
+      "wage": "Wage",
+      "bonus": "Bonus",
+      "reimbursement": "Reimbursement",
+      "total": "Total"
+    },
+    "totalsLabel": "Totals",
+    "editButton": "Edit",
+    "submitButton": "Submit",
+    "perHour": "/hr",
+    "wageTypes": {
+      "fixed": "Fixed",
+      "hourly": "Hourly"
+    }
+  },
+  "successPresentation": {
+    "successTitle": "Historical payment recorded",
+    "successMessage": "Payment has been recorded for {{count}} contractor(s).",
+    "summaryTitle": "Payment summary",
+    "summarySubtitle": "Historical payment recorded for {{checkDate}}",
+    "doneCta": "Done",
+    "summaryTableHeaders": {
+      "totalAmount": "Total amount",
+      "contractorPayDate": "Payment date"
+    },
+    "contractorTableHeaders": {
+      "contractor": "Contractor",
+      "wageType": "Wage type",
+      "hours": "Hours",
+      "wage": "Wage",
+      "bonus": "Bonus",
+      "reimbursement": "Reimbursement",
+      "total": "Total"
+    },
+    "totalsLabel": "Totals",
+    "perHour": "/hr",
+    "wageTypes": {
+      "fixed": "Fixed",
+      "hourly": "Hourly"
+    }
+  }
+}

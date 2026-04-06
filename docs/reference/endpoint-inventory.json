@@ -517,6 +517,31 @@
         "contractorPaymentUuid"
       ]
     },
+    "Contractor.CreateHistoricalPayment": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/contractors"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyId/contractor_payment_groups"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyId/contractor_payment_groups/preview"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/contractor_payment_groups/:contractorPaymentGroupUuid"
+        }
+      ],
+      "variables": [
+        "companyId",
+        "companyUuid",
+        "contractorPaymentGroupUuid"
+      ]
+    },
     "Employee.EmployeeList": {
       "endpoints": [
         {

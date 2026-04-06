@@ -131,6 +131,16 @@ export const contractorPaymentEvents = {
   CONTRACTOR_PAYMENT_RFI_RESPOND: 'contractor/payments/rfi/respond',
 } as const
 
+export const contractorHistoricalPaymentEvents = {
+  CONTRACTOR_HISTORICAL_PAYMENT_CREATE: 'contractor/historicalPayments/create',
+  CONTRACTOR_HISTORICAL_PAYMENT_EDIT: 'contractor/historicalPayments/edit',
+  CONTRACTOR_HISTORICAL_PAYMENT_UPDATE: 'contractor/historicalPayments/update',
+  CONTRACTOR_HISTORICAL_PAYMENT_PREVIEW: 'contractor/historicalPayments/preview',
+  CONTRACTOR_HISTORICAL_PAYMENT_BACK_TO_EDIT: 'contractor/historicalPayments/backToEdit',
+  CONTRACTOR_HISTORICAL_PAYMENT_CREATED: 'contractor/historicalPayments/created',
+  CONTRACTOR_HISTORICAL_PAYMENT_EXIT: 'contractor/historicalPayments/exit',
+} as const
+
 export const terminationEvents = {
   EMPLOYEE_TERMINATION_CREATED: 'employee/termination/created',
   EMPLOYEE_TERMINATION_UPDATED: 'employee/termination/updated',
@@ -254,6 +264,7 @@ export const componentEvents = {
   ...informationRequestEvents,
   ...recoveryCasesEvents,
   ...contractorPaymentEvents,
+  ...contractorHistoricalPaymentEvents,
   ...offCycleEvents,
   ...terminationEvents,
   ...timeOffEvents,
