@@ -244,6 +244,14 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 | **Payroll.TransitionCreation** | POST | `/v1/companies/:companyId/payrolls` |
 |  | GET | `/v1/companies/:companyId/pay_schedules` |
 
+## UNSTABLE_TimeOff components
+
+| Component | Method | Path |
+| --- | --- | --- |
+| **UNSTABLE_TimeOff.PolicyList** | GET | `/v1/companies/:companyUuid/time_off_policies` |
+|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/deactivate` |
+|  | GET | `/v1/companies/:companyId/employees` |
+
 ## Flows
 
 Flows compose multiple blocks into a single workflow. The endpoint list for a flow is the union of all its block endpoints.
