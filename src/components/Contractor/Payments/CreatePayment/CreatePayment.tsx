@@ -33,6 +33,20 @@ import { BaseComponent, useBase, type BaseComponentInterface } from '@/component
 import { componentEvents, ContractorOnboardingStatus } from '@/shared/constants'
 import { firstLastName } from '@/helpers/formattedStrings'
 
+function formatLocalDate(date: Date): string {
+  return [
+    String(date.getFullYear()).padStart(4, '0'),
+    String(date.getMonth() + 1).padStart(2, '0'),
+    String(date.getDate()).padStart(2, '0'),
+  ].join('-')
+}
+
+function calculateInitialPaymentDate(speedDays: number): string {
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  return formatLocalDate(addBusinessDays(today, speedDays))
+}
+
 interface CreatePaymentProps extends BaseComponentInterface<'Contractor.Payments.CreatePayment'> {
   companyId: string
 }
@@ -71,17 +85,6 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
   const { data: bankAccounts } = useBankAccountsGet({ companyId })
   const { paymentSpeed, paymentSpeedDays } = useCompanyPaymentSpeed(companyId)
   const bankAccount = bankAccounts?.companyBankAccounts?.[0]
-
-  const calculateInitialPaymentDate = (speedDays: number): string => {
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    const targetDate = addBusinessDays(today, speedDays)
-    return [
-      String(targetDate.getFullYear()).padStart(4, '0'),
-      String(targetDate.getMonth() + 1).padStart(2, '0'),
-      String(targetDate.getDate()).padStart(2, '0'),
-    ].join('-')
-  }
 
   const [paymentDate, setPaymentDate] = useState(calculateInitialPaymentDate(paymentSpeedDays))
   const hasInitializedPaymentDateRef = useRef(false)

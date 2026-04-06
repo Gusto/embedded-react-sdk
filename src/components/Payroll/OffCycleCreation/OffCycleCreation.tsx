@@ -55,8 +55,7 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
 
   const { paymentSpeedDays } = useCompanyPaymentSpeed(companyId)
 
-  const { minCheckDate, today, achLeadTimeBusinessDays } =
-    useOffCyclePayPeriodDateValidation(paymentSpeedDays)
+  const { minCheckDate, today } = useOffCyclePayPeriodDateValidation(paymentSpeedDays)
   const { mutateAsync: createOffCyclePayroll, isPending } = usePayrollsCreateOffCycleMutation()
 
   const [taxWithholdingConfig, setTaxWithholdingConfig] = useState<OffCycleTaxWithholdingConfig>({
@@ -114,7 +113,7 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
       translateValidation,
       resolvedPayrollType,
       isCheckOnly ? today : minCheckDate,
-      achLeadTimeBusinessDays,
+      paymentSpeedDays,
     )
     const schema = z
       .object({

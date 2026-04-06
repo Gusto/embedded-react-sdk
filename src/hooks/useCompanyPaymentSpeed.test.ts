@@ -17,4 +17,19 @@ describe('parsePaymentSpeedDays', () => {
   it('should return default of 2 when undefined', () => {
     expect(parsePaymentSpeedDays(undefined)).toBe(2)
   })
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  it('should return default for invalid format', () => {
+    expect(parsePaymentSpeedDays('fast' as any)).toBe(2)
+  })
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  it('should return default for negative value', () => {
+    expect(parsePaymentSpeedDays('-1-day' as any)).toBe(2)
+  })
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  it('should return default for zero', () => {
+    expect(parsePaymentSpeedDays('0-day' as any)).toBe(2)
+  })
 })

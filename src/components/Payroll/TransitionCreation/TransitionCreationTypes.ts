@@ -17,7 +17,7 @@ export interface TransitionCreationFormData {
 export function createTransitionCreationSchema(
   t: (key: string, options?: Record<string, unknown>) => string,
   minCheckDate: Date,
-  achLeadTimeBusinessDays?: number,
+  paymentSpeedDays?: number,
 ) {
   return z.object({
     checkDate: z
@@ -34,7 +34,7 @@ export function createTransitionCreationSchema(
           min.setHours(0, 0, 0, 0)
           return normalized >= min
         },
-        { message: t('errors.checkDateAchLeadTime', { count: achLeadTimeBusinessDays ?? 2 }) },
+        { message: t('errors.checkDateAchLeadTime', { count: paymentSpeedDays ?? 2 }) },
       ),
     skipRegularDeductions: z.boolean(),
   })

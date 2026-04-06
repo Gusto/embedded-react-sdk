@@ -290,5 +290,12 @@ describe('Date Formatting Helpers', () => {
       expect(result.getDay()).toBe(3)
       expect(result.getDate()).toBe(17)
     })
+
+    it('should handle starting on a weekend', () => {
+      const saturday = new Date(2024, 0, 6)
+      const result = addBusinessDays(saturday, 1)
+      expect(result.getDay()).toBe(1)
+      expect(result.getDate()).toBe(8)
+    })
   })
 })

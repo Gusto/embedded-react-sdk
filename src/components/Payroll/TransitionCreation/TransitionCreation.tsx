@@ -47,8 +47,7 @@ function Root({
 
   const { paymentSpeedDays } = useCompanyPaymentSpeed(companyId)
 
-  const { minCheckDate, achLeadTimeBusinessDays } =
-    useOffCyclePayPeriodDateValidation(paymentSpeedDays)
+  const { minCheckDate } = useOffCyclePayPeriodDateValidation(paymentSpeedDays)
   const { mutateAsync: createTransitionPayroll, isPending } = usePayrollsCreateOffCycleMutation()
 
   const { data: paySchedulesData } = usePaySchedulesGetAllSuspense({ companyId })
@@ -83,9 +82,8 @@ function Root({
     t(key as any, options as any) as string
 
   const schema = useMemo(
-    () =>
-      createTransitionCreationSchema(translateValidation, minCheckDate, achLeadTimeBusinessDays),
-    [t, minCheckDate, achLeadTimeBusinessDays],
+    () => createTransitionCreationSchema(translateValidation, minCheckDate, paymentSpeedDays),
+    [t, minCheckDate, paymentSpeedDays],
   )
 
   const methods = useForm<TransitionCreationFormData>({

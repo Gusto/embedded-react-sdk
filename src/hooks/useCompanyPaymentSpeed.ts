@@ -10,13 +10,12 @@ export function parsePaymentSpeedDays(paymentSpeed?: PaymentSpeed): number {
 }
 
 export function useCompanyPaymentSpeed(companyUuid: string) {
-  const { data: paymentConfigsResponse, isLoading } = usePaymentConfigsGet({ companyUuid })
+  const { data: paymentConfigsResponse } = usePaymentConfigsGet({ companyUuid })
   const paymentSpeed = paymentConfigsResponse?.paymentConfigs?.paymentSpeed
   const paymentSpeedDays = parsePaymentSpeedDays(paymentSpeed)
 
   return {
     paymentSpeed,
     paymentSpeedDays,
-    isLoading,
   }
 }

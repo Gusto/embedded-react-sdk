@@ -6,8 +6,6 @@ export const DEFAULT_ACH_LEAD_TIME_BUSINESS_DAYS = 2
 export function useOffCyclePayPeriodDateValidation(
   paymentSpeedDays = DEFAULT_ACH_LEAD_TIME_BUSINESS_DAYS,
 ) {
-  const achLeadTimeBusinessDays = paymentSpeedDays
-
   const today = useMemo(() => {
     const now = new Date()
     now.setHours(0, 0, 0, 0)
@@ -15,12 +13,12 @@ export function useOffCyclePayPeriodDateValidation(
   }, [])
 
   const minCheckDate = useMemo(() => {
-    return addBusinessDays(today, achLeadTimeBusinessDays)
-  }, [today, achLeadTimeBusinessDays])
+    return addBusinessDays(today, paymentSpeedDays)
+  }, [today, paymentSpeedDays])
 
   return {
     today,
     minCheckDate,
-    achLeadTimeBusinessDays,
+    paymentSpeedDays,
   }
 }

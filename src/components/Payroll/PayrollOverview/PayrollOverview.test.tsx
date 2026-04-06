@@ -103,7 +103,6 @@ vi.mock('@/hooks/useCompanyPaymentSpeed', () => ({
   useCompanyPaymentSpeed: () => ({
     paymentSpeed: undefined,
     paymentSpeedDays: 2,
-    isLoading: false,
   }),
 }))
 

@@ -13,7 +13,7 @@ export const createOffCyclePayPeriodDateFormSchema = (
   t: (key: string, options?: Record<string, unknown>) => string,
   payrollType: OffCyclePayrollDateType,
   minCheckDate: Date,
-  achLeadTimeBusinessDays?: number,
+  paymentSpeedDays?: number,
 ) => {
   return z
     .object({
@@ -77,7 +77,7 @@ export const createOffCyclePayPeriodDateFormSchema = (
             path: ['checkDate'],
             message: data.isCheckOnly
               ? t('validations.checkDateNotPast')
-              : t('validations.checkDateAchLeadTime', { count: achLeadTimeBusinessDays ?? 2 }),
+              : t('validations.checkDateAchLeadTime', { count: paymentSpeedDays ?? 2 }),
           })
         }
       }
