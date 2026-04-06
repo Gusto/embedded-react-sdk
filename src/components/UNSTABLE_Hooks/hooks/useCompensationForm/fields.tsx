@@ -73,7 +73,7 @@ export function TwoPercentShareholderField(props: TwoPercentShareholderFieldProp
   return <CheckboxHookField {...props} name="twoPercentShareholder" />
 }
 
-export type StateWcCoveredFieldProps = HookFieldProps<RadioGroupHookFieldProps<never, string>>
+export type StateWcCoveredFieldProps = HookFieldProps<RadioGroupHookFieldProps<never, boolean>>
 
 export function StateWcCoveredField(props: StateWcCoveredFieldProps) {
   return <RadioGroupHookField {...props} name="stateWcCovered" />

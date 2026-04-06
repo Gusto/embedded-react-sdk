@@ -17,10 +17,9 @@ import { useEmployeesGet } from '@gusto/embedded-api/react-query/employeesGet'
 import { useFederalTaxDetailsGet } from '@gusto/embedded-api/react-query/federalTaxDetailsGet'
 import { withOptions } from '../../form/withOptions'
 import { createGetFormSubmissionValues } from '../../form/getFormSubmissionValues'
-import type { RequiredFields } from '../../form/resolveRequiredFields'
 import {
   createCompensationSchema,
-  type CompensationField,
+  type CompensationOptionalFieldsToRequire,
   type CompensationFormData,
   type CompensationFormOutputs,
 } from './compensationSchema'
@@ -54,13 +53,11 @@ export interface CompensationSubmitOptions {
   startDate?: string
 }
 
-export type CompensationRequiredFields = RequiredFields<CompensationField>
-
 export interface UseCompensationFormProps {
   employeeId?: string
   withStartDateField?: boolean
   jobId?: string
-  requiredFields?: CompensationRequiredFields
+  optionalFieldsToRequire?: CompensationOptionalFieldsToRequire
   defaultValues?: Partial<CompensationFormData>
   validationMode?: UseFormProps['mode']
   shouldFocusError?: boolean
@@ -108,7 +105,7 @@ export function useCompensationForm({
   employeeId,
   withStartDateField = true,
   jobId,
-  requiredFields,
+  optionalFieldsToRequire,
   defaultValues: partnerDefaults,
   validationMode = 'onSubmit',
   shouldFocusError = true,
@@ -164,7 +161,7 @@ export function useCompensationForm({
 
   const { schema, getFieldsMetadata } = createCompensationSchema({
     mode,
-    requiredFields,
+    optionalFieldsToRequire,
     withStartDateField,
   })
 
@@ -299,13 +296,13 @@ export function useCompensationForm({
       ...baseMetadata.twoPercentShareholder,
       isDisabled: !showTwoPercentStakeholder,
     },
-    stateWcCovered: withOptions<string>(
+    stateWcCovered: withOptions<boolean>(
       { ...baseMetadata.stateWcCovered, isDisabled: !isWaState },
       [
         { label: 'Yes', value: 'true' },
         { label: 'No', value: 'false' },
       ],
-      ['yes', 'no'],
+      [true, false],
     ),
     stateWcClassCode: withOptions<WARiskClassCode>(
       { ...baseMetadata.stateWcClassCode, isDisabled: !isWaState },

@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { z } from 'zod'
-import { buildFormSchema } from './buildFormSchema'
-import { field } from './field'
+import { buildFormSchema, type OptionalFieldsToRequire } from './buildFormSchema'
 
 function getErrorFields(result: {
   success: boolean
@@ -20,16 +19,25 @@ function getErrorMessages(
 }
 
 describe('buildFormSchema', () => {
-  describe('static required (string presets)', () => {
-    const fields = {
-      firstName: field(z.string(), { required: 'create', errorCode: 'REQUIRED' }),
-      lastName: field(z.string(), { required: 'always', errorCode: 'REQUIRED' }),
-      nickname: field(z.string(), { required: 'update' }),
-      active: field(z.boolean()),
+  describe('mode-scoped rules (create/update)', () => {
+    const fieldValidators = {
+      firstName: z.string(),
+      lastName: z.string(),
+      nickname: z.string(),
+      active: z.boolean(),
     }
 
+    const requiredFieldsConfig = {
+      firstName: 'create',
+      lastName: 'create',
+      nickname: 'update',
+    } as const
+
     it('makes fields required in create mode based on preset', () => {
-      const { schema } = buildFormSchema(fields, { mode: 'create' })
+      const { schema } = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        mode: 'create',
+      })
 
       const valid = schema.safeParse({
         firstName: 'Ada',
@@ -53,11 +61,14 @@ describe('buildFormSchema', () => {
     })
 
     it('makes fields required in update mode based on preset', () => {
-      const { schema } = buildFormSchema(fields, { mode: 'update' })
+      const { schema } = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        mode: 'update',
+      })
 
       const valid = schema.safeParse({
         firstName: '',
-        lastName: 'Lovelace',
+        lastName: '',
         nickname: 'Ada',
         active: true,
       })
@@ -72,12 +83,15 @@ describe('buildFormSchema', () => {
       expect(missing.success).toBe(false)
       const errors = getErrorFields(missing)
       expect(errors).not.toContain('firstName')
-      expect(errors).toContain('lastName')
+      expect(errors).not.toContain('lastName')
       expect(errors).toContain('nickname')
     })
 
     it('converts empty strings to undefined for optional fields', () => {
-      const { schema } = buildFormSchema(fields, { mode: 'create' })
+      const { schema } = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        mode: 'create',
+      })
 
       const result = schema.safeParse({
         firstName: 'Ada',
@@ -92,7 +106,10 @@ describe('buildFormSchema', () => {
     })
 
     it('converts null to undefined for optional fields', () => {
-      const { schema } = buildFormSchema(fields, { mode: 'create' })
+      const { schema } = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        mode: 'create',
+      })
 
       const result = schema.safeParse({
         firstName: 'Ada',
@@ -106,8 +123,29 @@ describe('buildFormSchema', () => {
       }
     })
 
-    it('uses errorCode in validation messages', () => {
-      const { schema } = buildFormSchema(fields, { mode: 'create' })
+    it('uses requiredErrorCode in validation messages', () => {
+      const { schema } = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        requiredErrorCode: 'REQUIRED',
+        mode: 'create',
+      })
+
+      const result = schema.safeParse({
+        firstName: '',
+        lastName: 'Lovelace',
+        nickname: '',
+        active: true,
+      })
+      expect(result.success).toBe(false)
+      const messages = getErrorMessages(result, 'firstName')
+      expect(messages).toContain('REQUIRED')
+    })
+
+    it('defaults requiredErrorCode to REQUIRED', () => {
+      const { schema } = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        mode: 'create',
+      })
 
       const result = schema.safeParse({
         firstName: '',
@@ -121,51 +159,184 @@ describe('buildFormSchema', () => {
     })
   })
 
-  describe('static fields (no required)', () => {
-    it('passes through validators unchanged', () => {
-      const fields = {
-        name: field(z.string(), { required: 'create' }),
-        toggle: field(z.boolean()),
-        notes: field(z.string()),
+  describe('always rule (explicit and default)', () => {
+    it('explicit always rule is required in both modes', () => {
+      const fieldValidators = {
+        name: z.string(),
+        toggle: z.boolean(),
       }
 
-      const { schema } = buildFormSchema(fields, { mode: 'create' })
+      const requiredFieldsConfig = { name: 'always' } as const
 
-      const valid = schema.safeParse({ name: 'test', toggle: true, notes: 'hello' })
-      expect(valid.success).toBe(true)
+      for (const mode of ['create', 'update'] as const) {
+        const { schema } = buildFormSchema(fieldValidators, {
+          requiredFieldsConfig,
+          mode,
+        })
+        const result = schema.safeParse({ name: '', toggle: true })
+        expect(result.success).toBe(false)
+        expect(getErrorFields(result)).toContain('name')
 
-      const missingToggle = schema.safeParse({ name: 'test', notes: 'hello' })
-      expect(missingToggle.success).toBe(false)
+        const valid = schema.safeParse({ name: 'test', toggle: true })
+        expect(valid.success).toBe(true)
+      }
+    })
+
+    it('unlisted fields default to always-required', () => {
+      const fieldValidators = {
+        name: z.string(),
+        notes: z.string(),
+      }
+
+      const { schema } = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig: { name: 'create' },
+        mode: 'update',
+      })
+
+      const result = schema.safeParse({ name: '', notes: '' })
+      expect(result.success).toBe(false)
+      const errors = getErrorFields(result)
+      expect(errors).toContain('notes')
+      expect(errors).not.toContain('name')
+    })
+
+    it('unlisted fields reject empty values in both modes', () => {
+      const fieldValidators = {
+        title: z.string(),
+      }
+
+      for (const mode of ['create', 'update'] as const) {
+        const { schema } = buildFormSchema(fieldValidators, { mode })
+        const result = schema.safeParse({ title: '' })
+        expect(result.success).toBe(false)
+        expect(getErrorFields(result)).toContain('title')
+      }
     })
   })
 
-  describe('function required (predicates)', () => {
-    const fields = {
-      adjustForMinimumWage: field(z.boolean()),
-      minimumWageId: field(z.string(), {
-        required: (data: Record<string, unknown>) => Boolean(data.adjustForMinimumWage),
-        errorCode: 'REQUIRED',
-      }),
+  describe('never rule (optional in both modes, partner-configurable)', () => {
+    const fieldValidators = {
+      name: z.string(),
+      notes: z.string(),
+      active: z.boolean(),
     }
 
+    const requiredFieldsConfig = {
+      name: 'create',
+      notes: 'never',
+    } as const
+
+    it('never rule is optional in both modes', () => {
+      for (const mode of ['create', 'update'] as const) {
+        const { schema } = buildFormSchema(fieldValidators, {
+          requiredFieldsConfig,
+          mode,
+        })
+        const result = schema.safeParse({
+          name: mode === 'create' ? 'test' : '',
+          notes: '',
+          active: true,
+        })
+        expect(result.success).toBe(true)
+      }
+    })
+
+    it('partner can require a never field on create', () => {
+      const { schema } = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        mode: 'create',
+        optionalFieldsToRequire: { create: ['notes'] },
+      })
+
+      const result = schema.safeParse({ name: 'test', notes: '', active: true })
+      expect(result.success).toBe(false)
+      expect(getErrorFields(result)).toContain('notes')
+    })
+
+    it('partner can require a never field on update', () => {
+      const { schema } = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        mode: 'update',
+        optionalFieldsToRequire: { update: ['notes'] },
+      })
+
+      const result = schema.safeParse({ name: '', notes: '', active: true })
+      expect(result.success).toBe(false)
+      const errors = getErrorFields(result)
+      expect(errors).toContain('notes')
+      expect(errors).not.toContain('name')
+    })
+
+    it('metadata shows isRequired: false for never fields without partner override', () => {
+      const { getFieldsMetadata } = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        mode: 'create',
+      })
+      const metadata = getFieldsMetadata()
+
+      expect(metadata.notes.isRequired).toBe(false)
+    })
+
+    it('metadata shows isRequired: true for never fields with partner override', () => {
+      const { getFieldsMetadata } = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        mode: 'update',
+        optionalFieldsToRequire: { update: ['notes'] },
+      })
+      const metadata = getFieldsMetadata()
+
+      expect(metadata.notes.isRequired).toBe(true)
+    })
+
+    it('excluded never field is not validated even with partner override', () => {
+      const { schema } = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        mode: 'create',
+        optionalFieldsToRequire: { create: ['notes'] },
+        excludeFields: ['notes'],
+      })
+
+      const result = schema.safeParse({ name: 'test', active: true })
+      expect(result.success).toBe(true)
+    })
+  })
+
+  describe('function rules (predicates)', () => {
+    const fieldValidators = {
+      adjustForMinimumWage: z.boolean(),
+      minimumWageId: z.string(),
+    }
+
+    const requiredFieldsConfig = {
+      minimumWageId: (data: Record<string, unknown>) => Boolean(data.adjustForMinimumWage),
+    } as const
+
     it('rejects empty dependent field when toggle is on', () => {
-      const { schema } = buildFormSchema(fields, { mode: 'create' })
+      const { schema } = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        mode: 'create',
+      })
 
       const result = schema.safeParse({ adjustForMinimumWage: true, minimumWageId: '' })
       expect(result.success).toBe(false)
-      const errors = getErrorFields(result)
-      expect(errors).toContain('minimumWageId')
+      expect(getErrorFields(result)).toContain('minimumWageId')
     })
 
     it('accepts empty dependent field when toggle is off', () => {
-      const { schema } = buildFormSchema(fields, { mode: 'create' })
+      const { schema } = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        mode: 'create',
+      })
 
       const result = schema.safeParse({ adjustForMinimumWage: false, minimumWageId: '' })
       expect(result.success).toBe(true)
     })
 
     it('accepts populated dependent field when toggle is on', () => {
-      const { schema } = buildFormSchema(fields, { mode: 'create' })
+      const { schema } = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        mode: 'create',
+      })
 
       const result = schema.safeParse({
         adjustForMinimumWage: true,
@@ -174,8 +345,12 @@ describe('buildFormSchema', () => {
       expect(result.success).toBe(true)
     })
 
-    it('uses the errorCode from the field definition', () => {
-      const { schema } = buildFormSchema(fields, { mode: 'create' })
+    it('uses the requiredErrorCode for empty required fields', () => {
+      const { schema } = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        requiredErrorCode: 'REQUIRED',
+        mode: 'create',
+      })
 
       const result = schema.safeParse({ adjustForMinimumWage: true, minimumWageId: '' })
       const messages = getErrorMessages(result, 'minimumWageId')
@@ -183,7 +358,10 @@ describe('buildFormSchema', () => {
     })
 
     it('treats whitespace-only strings as empty', () => {
-      const { schema } = buildFormSchema(fields, { mode: 'create' })
+      const { schema } = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        mode: 'create',
+      })
 
       const result = schema.safeParse({ adjustForMinimumWage: true, minimumWageId: '   ' })
       expect(result.success).toBe(false)
@@ -191,17 +369,22 @@ describe('buildFormSchema', () => {
   })
 
   describe('mode-scoped function predicates', () => {
-    const fields = {
-      selfOnboarding: field(z.boolean()),
-      email: field(z.string().email(), {
-        required: (data: Record<string, unknown>, mode: string) =>
-          mode === 'create' && Boolean(data.selfOnboarding),
-        errorCode: 'EMAIL_REQUIRED_FOR_SELF_ONBOARDING',
-      }),
+    const fieldValidators = {
+      selfOnboarding: z.boolean(),
+      email: z.string().email(),
     }
 
+    const requiredFieldsConfig = {
+      email: (data: Record<string, unknown>, mode: string) =>
+        mode === 'create' && Boolean(data.selfOnboarding),
+    } as const
+
     it('requires email when selfOnboarding is on in create mode', () => {
-      const { schema } = buildFormSchema(fields, { mode: 'create' })
+      const { schema } = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        requiredErrorCode: 'EMAIL_REQUIRED_FOR_SELF_ONBOARDING',
+        mode: 'create',
+      })
 
       const result = schema.safeParse({ selfOnboarding: true, email: '' })
       expect(result.success).toBe(false)
@@ -209,30 +392,42 @@ describe('buildFormSchema', () => {
     })
 
     it('does not require email when selfOnboarding is on in update mode', () => {
-      const { schema } = buildFormSchema(fields, { mode: 'update' })
+      const { schema } = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        mode: 'update',
+      })
 
       const result = schema.safeParse({ selfOnboarding: true, email: '' })
       expect(result.success).toBe(true)
     })
 
     it('does not require email when selfOnboarding is off in create mode', () => {
-      const { schema } = buildFormSchema(fields, { mode: 'create' })
+      const { schema } = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        mode: 'create',
+      })
 
       const result = schema.safeParse({ selfOnboarding: false, email: '' })
       expect(result.success).toBe(true)
     })
   })
 
-  describe('partner requiredFields overrides', () => {
-    const fields = {
-      firstName: field(z.string(), { required: 'create', errorCode: 'REQUIRED' }),
-      email: field(z.string().email(), { required: 'create', errorCode: 'REQUIRED' }),
+  describe('partner optionalFieldsToRequire overrides', () => {
+    const fieldValidators = {
+      firstName: z.string(),
+      email: z.string().email(),
     }
 
-    it('makes fields required via partner array override', () => {
-      const { schema } = buildFormSchema(fields, {
+    const requiredFieldsConfig = {
+      firstName: 'create',
+      email: 'create',
+    } as const
+
+    it('makes fields required via partner mode-specific override', () => {
+      const { schema } = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
         mode: 'update',
-        requiredFields: ['email'],
+        optionalFieldsToRequire: { update: ['email'] },
       })
 
       const result = schema.safeParse({ firstName: '', email: '' })
@@ -242,10 +437,11 @@ describe('buildFormSchema', () => {
       expect(errors).not.toContain('firstName')
     })
 
-    it('makes fields required via partner mode-specific override', () => {
-      const { schema } = buildFormSchema(fields, {
+    it('makes multiple fields required via partner override', () => {
+      const { schema } = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
         mode: 'update',
-        requiredFields: { update: ['firstName', 'email'] },
+        optionalFieldsToRequire: { update: ['firstName', 'email'] },
       })
 
       const result = schema.safeParse({ firstName: '', email: '' })
@@ -255,18 +451,46 @@ describe('buildFormSchema', () => {
       expect(errors).toContain('email')
     })
 
-    it('partner override on a function-required field makes it always required', () => {
-      const conditionalFields = {
-        toggle: field(z.boolean()),
-        dependent: field(z.string(), {
-          required: (data: Record<string, unknown>) => Boolean(data.toggle),
-          errorCode: 'REQUIRED',
-        }),
+    it('only applies overrides for the active mode', () => {
+      const fieldValidators = {
+        createField: z.string(),
+        updateField: z.string(),
       }
 
-      const { schema } = buildFormSchema(conditionalFields, {
+      const requiredFieldsConfig = {
+        createField: 'update',
+        updateField: 'create',
+      } as const
+
+      const { schema } = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        mode: 'update',
+        optionalFieldsToRequire: { update: ['updateField'] },
+      })
+
+      const result = schema.safeParse({ createField: '', updateField: '' })
+      expect(result.success).toBe(false)
+      const errors = getErrorFields(result)
+      expect(errors).toContain('updateField')
+      expect(errors).toContain('createField')
+    })
+
+    it('partner override on a function-required field makes it always required', () => {
+      const fieldValidators = {
+        toggle: z.boolean(),
+        dependent: z.string(),
+      }
+
+      const requiredFieldsConfig = {
+        dependent: (data: Record<string, unknown>) => Boolean(data.toggle),
+      } as const
+
+      const { schema } = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
         mode: 'create',
-        requiredFields: ['dependent'],
+        optionalFieldsToRequire: {
+          create: ['dependent'],
+        } as unknown as OptionalFieldsToRequire<typeof requiredFieldsConfig>,
       })
 
       const result = schema.safeParse({ toggle: false, dependent: '' })
@@ -277,12 +501,13 @@ describe('buildFormSchema', () => {
 
   describe('superRefine option', () => {
     it('runs the provided superRefine callback', () => {
-      const fields = {
-        rate: field(z.number(), { required: 'create' }),
-        flsaStatus: field(z.string(), { required: 'create' }),
+      const fieldValidators = {
+        rate: z.number(),
+        flsaStatus: z.string(),
       }
 
-      const { schema } = buildFormSchema(fields, {
+      const { schema } = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig: { rate: 'create', flsaStatus: 'create' },
         mode: 'create',
         superRefine: (data: Record<string, unknown>, ctx: z.RefinementCtx) => {
           if (data.flsaStatus === 'owner' && (data.rate as number) < 1) {
@@ -304,16 +529,17 @@ describe('buildFormSchema', () => {
     })
 
     it('runs superRefine alongside dynamic required checks', () => {
-      const fields = {
-        toggle: field(z.boolean()),
-        dependent: field(z.string(), {
-          required: (data: Record<string, unknown>) => Boolean(data.toggle),
-          errorCode: 'REQUIRED',
-        }),
-        rate: field(z.number(), { required: 'create' }),
+      const fieldValidators = {
+        toggle: z.boolean(),
+        dependent: z.string(),
+        rate: z.number(),
       }
 
-      const { schema } = buildFormSchema(fields, {
+      const { schema } = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig: {
+          dependent: (data: Record<string, unknown>) => Boolean(data.toggle),
+          rate: 'create',
+        },
         mode: 'create',
         superRefine: (data: Record<string, unknown>, ctx: z.RefinementCtx) => {
           if ((data.rate as number) < 0) {
@@ -335,77 +561,40 @@ describe('buildFormSchema', () => {
       expect(getErrorMessages(result, 'rate')).toContain('RATE_NEGATIVE')
     })
 
-    it('does not add superRefine when not provided and no dynamic fields', () => {
-      const fields = {
-        name: field(z.string()),
+    it('superRefine still runs when no requiredFieldsConfig is provided', () => {
+      const fieldValidators = {
+        name: z.string(),
       }
 
-      const { schema } = buildFormSchema(fields, { mode: 'create' })
+      const { schema } = buildFormSchema(fieldValidators, { mode: 'create' })
 
       const result = schema.safeParse({ name: 'test' })
       expect(result.success).toBe(true)
     })
   })
 
-  describe('z.preprocess on raw schemas', () => {
-    it('works with z.preprocess for coercion', () => {
-      const coerceNaN = (val: unknown) => {
-        if (val === undefined || val === null || (typeof val === 'number' && Number.isNaN(val)))
-          return 0
-        return val
-      }
-
-      const fields = {
-        rate: field(z.preprocess(coerceNaN, z.number()), {
-          required: 'create',
-          errorCode: 'REQUIRED',
-        }),
-      }
-
-      const { schema } = buildFormSchema(fields, { mode: 'create' })
-
-      const result = schema.safeParse({ rate: undefined })
-      expect(result.success).toBe(true)
-      if (result.success) {
-        expect((result.data as Record<string, unknown>).rate).toBe(0)
-      }
-    })
-
-    it('works with z.preprocess for string-to-boolean coercion', () => {
-      const fields = {
-        covered: field(
-          z.preprocess(
-            (val: unknown) => (typeof val === 'string' ? val === 'true' : val),
-            z.boolean(),
-          ),
-        ),
-      }
-
-      const { schema } = buildFormSchema(fields, { mode: 'create' })
-
-      const result = schema.safeParse({ covered: 'true' })
-      expect(result.success).toBe(true)
-      if (result.success) {
-        expect((result.data as Record<string, unknown>).covered).toBe(true)
-      }
-    })
-  })
-
   describe('getFieldsMetadata', () => {
-    const fields = {
-      firstName: field(z.string(), { required: 'create', errorCode: 'REQUIRED' }),
-      lastName: field(z.string(), { required: 'always' }),
-      nickname: field(z.string(), { required: 'update' }),
-      active: field(z.boolean()),
-      minimumWageId: field(z.string(), {
-        required: (data: Record<string, unknown>) => Boolean(data.adjustForMinimumWage),
-        errorCode: 'REQUIRED',
-      }),
-      adjustForMinimumWage: field(z.boolean()),
+    const fieldValidators = {
+      firstName: z.string(),
+      lastName: z.string(),
+      nickname: z.string(),
+      active: z.boolean(),
+      minimumWageId: z.string(),
+      adjustForMinimumWage: z.boolean(),
     }
 
-    it('returns static isRequired for string preset fields', () => {
-      const { getFieldsMetadata } = buildFormSchema(fields, { mode: 'create' })
+    const requiredFieldsConfig = {
+      firstName: 'create',
+      lastName: 'create',
+      nickname: 'update',
+      minimumWageId: (data: Record<string, unknown>) => Boolean(data.adjustForMinimumWage),
+    } as const
+
+    it('returns static isRequired for mode-scoped fields', () => {
+      const { getFieldsMetadata } = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        mode: 'create',
+      })
       const metadata = getFieldsMetadata()
 
       expect(metadata.firstName.isRequired).toBe(true)
@@ -414,24 +603,33 @@ describe('buildFormSchema', () => {
     })
 
     it('reflects mode in static metadata', () => {
-      const { getFieldsMetadata } = buildFormSchema(fields, { mode: 'update' })
+      const { getFieldsMetadata } = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        mode: 'update',
+      })
       const metadata = getFieldsMetadata()
 
       expect(metadata.firstName.isRequired).toBe(false)
-      expect(metadata.lastName.isRequired).toBe(true)
+      expect(metadata.lastName.isRequired).toBe(false)
       expect(metadata.nickname.isRequired).toBe(true)
     })
 
-    it('returns isRequired: false for static fields without required', () => {
-      const { getFieldsMetadata } = buildFormSchema(fields, { mode: 'create' })
+    it('returns isRequired: true for unlisted fields (default always)', () => {
+      const { getFieldsMetadata } = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        mode: 'create',
+      })
       const metadata = getFieldsMetadata()
 
-      expect(metadata.active.isRequired).toBe(false)
-      expect(metadata.adjustForMinimumWage.isRequired).toBe(false)
+      expect(metadata.active.isRequired).toBe(true)
+      expect(metadata.adjustForMinimumWage.isRequired).toBe(true)
     })
 
     it('evaluates function predicates when data is provided', () => {
-      const { getFieldsMetadata } = buildFormSchema(fields, { mode: 'create' })
+      const { getFieldsMetadata } = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        mode: 'create',
+      })
 
       const whenOn = getFieldsMetadata({ adjustForMinimumWage: true })
       expect(whenOn.minimumWageId.isRequired).toBe(true)
@@ -441,16 +639,20 @@ describe('buildFormSchema', () => {
     })
 
     it('returns isRequired: false for function predicates when no data is provided', () => {
-      const { getFieldsMetadata } = buildFormSchema(fields, { mode: 'create' })
+      const { getFieldsMetadata } = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        mode: 'create',
+      })
       const metadata = getFieldsMetadata()
 
       expect(metadata.minimumWageId.isRequired).toBe(false)
     })
 
     it('reflects partner overrides in metadata', () => {
-      const { getFieldsMetadata } = buildFormSchema(fields, {
+      const { getFieldsMetadata } = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
         mode: 'update',
-        requiredFields: ['firstName'],
+        optionalFieldsToRequire: { update: ['firstName'] },
       })
       const metadata = getFieldsMetadata()
 
@@ -458,9 +660,12 @@ describe('buildFormSchema', () => {
     })
 
     it('partner override on function-required field shows isRequired: true', () => {
-      const { getFieldsMetadata } = buildFormSchema(fields, {
+      const { getFieldsMetadata } = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
         mode: 'create',
-        requiredFields: ['minimumWageId'],
+        optionalFieldsToRequire: {
+          create: ['minimumWageId'],
+        } as unknown as OptionalFieldsToRequire<typeof requiredFieldsConfig>,
       })
       const metadata = getFieldsMetadata({ adjustForMinimumWage: false })
 
@@ -468,7 +673,10 @@ describe('buildFormSchema', () => {
     })
 
     it('includes name property matching the field key', () => {
-      const { getFieldsMetadata } = buildFormSchema(fields, { mode: 'create' })
+      const { getFieldsMetadata } = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        mode: 'create',
+      })
       const metadata = getFieldsMetadata()
 
       for (const [key, value] of Object.entries(metadata)) {
@@ -478,17 +686,23 @@ describe('buildFormSchema', () => {
   })
 
   describe('combined: schema + metadata consistency', () => {
-    const fields = {
-      title: field(z.string(), { required: 'create', errorCode: 'REQUIRED' }),
-      toggle: field(z.boolean()),
-      dependent: field(z.string(), {
-        required: (data: Record<string, unknown>) => Boolean(data.toggle),
-        errorCode: 'DEP_REQUIRED',
-      }),
+    const fieldValidators = {
+      title: z.string(),
+      toggle: z.boolean(),
+      dependent: z.string(),
     }
 
+    const requiredFieldsConfig = {
+      title: 'create',
+      dependent: (data: Record<string, unknown>) => Boolean(data.toggle),
+    } as const
+
     it('schema rejects and metadata agrees when conditional field is required', () => {
-      const { schema, getFieldsMetadata } = buildFormSchema(fields, { mode: 'create' })
+      const { schema, getFieldsMetadata } = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        requiredErrorCode: 'DEP_REQUIRED',
+        mode: 'create',
+      })
 
       const data = { title: 'test', toggle: true, dependent: '' }
       const result = schema.safeParse(data)
@@ -499,7 +713,10 @@ describe('buildFormSchema', () => {
     })
 
     it('schema accepts and metadata agrees when conditional field is not required', () => {
-      const { schema, getFieldsMetadata } = buildFormSchema(fields, { mode: 'create' })
+      const { schema, getFieldsMetadata } = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        mode: 'create',
+      })
 
       const data = { title: 'test', toggle: false, dependent: '' }
       const result = schema.safeParse(data)

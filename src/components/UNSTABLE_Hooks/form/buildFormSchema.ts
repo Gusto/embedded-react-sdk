@@ -1,91 +1,117 @@
 import { z } from 'zod'
-import { resolveRequiredFields, type RequiredFields } from './resolveRequiredFields'
-import {
-  evaluateRequired,
-  isFieldConfigurable,
-  type FieldDefs,
-  type FormMode,
-  type ConfigurableFieldName,
-} from './field'
 import type { FieldMetadata } from '@/types/sdkHooks'
 
-interface BuildFormSchemaOptions<T extends FieldDefs> {
-  mode: FormMode
-  requiredFields?: RequiredFields<ConfigurableFieldName<T>>
-  excludeFields?: Array<keyof T>
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  superRefine?: (data: any, ctx: z.RefinementCtx) => void
+// ── Types ────────────────────────────────────────────────────────────
+
+export type FormMode = 'create' | 'update'
+
+export type RequiredFieldRule<TData = Record<string, unknown>> =
+  | 'create'
+  | 'update'
+  | 'always'
+  | 'never'
+  | ((data: TData, mode: FormMode) => boolean)
+
+export type RequiredFieldConfig<TSchema extends Record<string, z.ZodType>> = Partial<{
+  [K in keyof TSchema & string]: RequiredFieldRule<{
+    [F in keyof TSchema]: z.infer<TSchema[F]>
+  }>
+}>
+
+type OptionalOnCreate<TConfig> = {
+  [K in keyof TConfig & string]: TConfig[K] extends 'update' | 'never' ? K : never
+}[keyof TConfig & string]
+
+type OptionalOnUpdate<TConfig> = {
+  [K in keyof TConfig & string]: TConfig[K] extends 'create' | 'never' ? K : never
+}[keyof TConfig & string]
+
+export type OptionalFieldsToRequire<TConfig> = {
+  create?: Array<OptionalOnCreate<TConfig>>
+  update?: Array<OptionalOnUpdate<TConfig>>
 }
 
-export interface BuildFormSchemaResult<T extends FieldDefs> {
+// ── buildFormSchema ──────────────────────────────────────────────────
+
+interface BuildFormSchemaOptions<
+  T extends Record<string, z.ZodType>,
+  TConfig extends RequiredFieldConfig<T>,
+> {
+  requiredFieldsConfig?: TConfig
+  requiredErrorCode?: string
+  mode: FormMode
+  optionalFieldsToRequire?: OptionalFieldsToRequire<TConfig>
+  excludeFields?: Array<keyof T & string>
+  superRefine?: (data: { [K in keyof T]: z.infer<T[K]> }, ctx: z.RefinementCtx) => void
+}
+
+export interface BuildFormSchemaResult<T extends Record<string, z.ZodType>> {
   schema: z.ZodType
   getFieldsMetadata: (data?: Record<string, unknown>) => Record<keyof T, FieldMetadata>
 }
 
-export function buildFormSchema<T extends FieldDefs>(
-  fields: T,
-  options: BuildFormSchemaOptions<T>,
-): BuildFormSchemaResult<T> {
-  const { mode, excludeFields = [] } = options
+export function buildFormSchema<
+  T extends Record<string, z.ZodType>,
+  TConfig extends RequiredFieldConfig<T>,
+>(fieldValidators: T, options: BuildFormSchemaOptions<T, TConfig>): BuildFormSchemaResult<T> {
+  const {
+    mode,
+    requiredFieldsConfig = {} as Record<string, RequiredFieldRule>,
+    requiredErrorCode = 'REQUIRED',
+    excludeFields = [],
+  } = options
   const excluded = new Set(excludeFields.map(String))
   const partnerRequired = new Set(
-    resolveRequiredFields(options.requiredFields as RequiredFields<string> | undefined, mode),
+    resolveOptionalFieldsToRequire(options.optionalFieldsToRequire, mode),
   )
 
   const shape: Record<string, z.ZodType> = {}
-  const requiredFields: Array<{
+  const dynamicRequired: Array<{
     name: string
     predicate: (data: Record<string, unknown>, mode: FormMode) => boolean
-    errorCode?: string
   }> = []
   const includedFieldNames: string[] = []
+  const config = requiredFieldsConfig as Record<string, RequiredFieldRule>
 
-  for (const [name, def] of Object.entries(fields)) {
+  for (const [name, validator] of Object.entries(fieldValidators)) {
     if (excluded.has(name)) continue
-
     includedFieldNames.push(name)
 
-    if (!isFieldConfigurable(def)) {
-      shape[name] = def.schema
-      continue
-    }
+    const effectiveRule = config[name] ?? 'always'
 
-    const { required, errorCode } = def
+    shape[name] = makeOptional(validator)
     const isPartnerRequired = partnerRequired.has(name)
 
-    shape[name] = makeOptional(def.schema)
-
-    if (typeof required === 'function') {
-      if (isPartnerRequired) {
-        requiredFields.push({ name, predicate: () => true, errorCode })
-      } else {
-        requiredFields.push({ name, predicate: required, errorCode })
-      }
+    if (typeof effectiveRule === 'function') {
+      dynamicRequired.push({
+        name,
+        predicate: isPartnerRequired ? () => true : effectiveRule,
+      })
     } else {
-      const isRequired = evaluateRequired(required, mode) || isPartnerRequired
+      const isRequired = effectiveRule === 'always' || effectiveRule === mode || isPartnerRequired
       if (isRequired) {
-        requiredFields.push({ name, predicate: () => true, errorCode })
+        dynamicRequired.push({ name, predicate: () => true })
       }
     }
   }
 
-  const hasSuperRefine = requiredFields.length > 0 || options.superRefine
+  const hasSuperRefine = dynamicRequired.length > 0 || options.superRefine
   let schema: z.ZodType = z.object(shape)
 
   if (hasSuperRefine) {
     schema = (schema as z.ZodObject).superRefine(
       (data: Record<string, unknown>, ctx: z.RefinementCtx) => {
-        for (const { name, predicate, errorCode } of requiredFields) {
+        for (const { name, predicate } of dynamicRequired) {
           if (predicate(data, mode) && isEmpty(data[name])) {
             ctx.addIssue({
               code: z.ZodIssueCode.custom,
               path: [name],
-              message: errorCode ?? 'REQUIRED',
+              message: requiredErrorCode,
             })
           }
         }
 
-        options.superRefine?.(data, ctx)
+        options.superRefine?.(data as { [K in keyof T]: z.infer<T[K]> }, ctx)
       },
     )
   }
@@ -94,20 +120,21 @@ export function buildFormSchema<T extends FieldDefs>(
     const metadata: Record<string, FieldMetadata> = {}
 
     for (const name of includedFieldNames) {
-      const def = fields[name]!
-
-      if (!isFieldConfigurable(def)) {
-        metadata[name] = { name, isRequired: false }
-        continue
-      }
+      const effectiveRule = config[name] ?? 'always'
 
       if (partnerRequired.has(name)) {
         metadata[name] = { name, isRequired: true }
         continue
       }
 
-      const isRequired = evaluateRequired(def.required, mode, data)
-      metadata[name] = { name, isRequired }
+      if (typeof effectiveRule === 'function') {
+        metadata[name] = { name, isRequired: data ? effectiveRule(data, mode) : false }
+      } else {
+        metadata[name] = {
+          name,
+          isRequired: effectiveRule === 'always' || effectiveRule === mode,
+        }
+      }
     }
 
     return metadata as Record<keyof T, FieldMetadata>
@@ -116,15 +143,17 @@ export function buildFormSchema<T extends FieldDefs>(
   return { schema, getFieldsMetadata }
 }
 
-function hasPreprocess(validator: z.ZodType): boolean {
-  const def = validator._def as { type?: string }
-  return def.type === 'pipe'
+// ── Internal helpers ─────────────────────────────────────────────────
+
+function resolveOptionalFieldsToRequire<TConfig>(
+  value: OptionalFieldsToRequire<TConfig> | undefined,
+  mode: FormMode,
+): string[] {
+  if (!value) return []
+  return ((mode === 'create' ? value.create : value.update) ?? []) as string[]
 }
 
 function makeOptional(validator: z.ZodType): z.ZodType {
-  if (hasPreprocess(validator)) {
-    return validator
-  }
   return z.preprocess(v => (v === '' || v === null ? undefined : v), validator.optional())
 }
 

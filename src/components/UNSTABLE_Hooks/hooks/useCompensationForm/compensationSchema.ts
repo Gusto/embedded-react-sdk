@@ -1,7 +1,9 @@
 import { z } from 'zod'
-import { field, type FieldConfig, type ConfigurableFieldName } from '../../form/field'
-import { buildFormSchema } from '../../form/buildFormSchema'
-import type { RequiredFields } from '../../form/resolveRequiredFields'
+import {
+  buildFormSchema,
+  type RequiredFieldConfig,
+  type OptionalFieldsToRequire,
+} from '../../form/buildFormSchema'
 import { coerceNaN, coerceToISODate, coerceStringBoolean } from '../../form/preprocessors'
 import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus, PAY_PERIODS } from '@/shared/constants'
 import { yearlyRate } from '@/helpers/payRateCalculator'
@@ -20,9 +22,7 @@ export const CompensationErrorCodes = {
 export type CompensationErrorCode =
   (typeof CompensationErrorCodes)[keyof typeof CompensationErrorCodes]
 
-// ── Field schemas (data shape + format validation) ─────────────────────
-
-const schemas = {
+const fieldValidators = {
   jobTitle: z.string(),
   flsaStatus: z.enum([
     FlsaStatus.EXEMPT,
@@ -48,39 +48,21 @@ const schemas = {
   twoPercentShareholder: z.boolean(),
 }
 
-export type CompensationFormData = { [K in keyof typeof schemas]: z.infer<(typeof schemas)[K]> }
-
-// ── Field config (requiredness, error codes) ───────────────────────────
-
-const compensationFields: FieldConfig<typeof schemas> = {
-  jobTitle: field(schemas.jobTitle, {
-    required: 'create',
-    errorCode: CompensationErrorCodes.REQUIRED,
-  }),
-  flsaStatus: field(schemas.flsaStatus, { required: 'create' }),
-  paymentUnit: field(schemas.paymentUnit, { required: 'create' }),
-  rate: field(schemas.rate, {
-    required: 'create',
-    errorCode: CompensationErrorCodes.REQUIRED,
-  }),
-  startDate: field(schemas.startDate, {
-    required: 'create',
-    errorCode: CompensationErrorCodes.REQUIRED,
-  }),
-  adjustForMinimumWage: field(schemas.adjustForMinimumWage),
-  minimumWageId: field(schemas.minimumWageId, {
-    required: (data: CompensationFormData) => data.adjustForMinimumWage,
-    errorCode: CompensationErrorCodes.REQUIRED,
-  }),
-  stateWcCovered: field(schemas.stateWcCovered),
-  stateWcClassCode: field(schemas.stateWcClassCode, {
-    required: (data: CompensationFormData) => data.stateWcCovered,
-    errorCode: CompensationErrorCodes.REQUIRED,
-  }),
-  twoPercentShareholder: field(schemas.twoPercentShareholder),
+export type CompensationFormData = {
+  [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
 }
 
-// ── Cross-field validation (FLSA business rules) ───────────────────────
+// ── Required fields config (requiredness rules per field) ────────────
+
+const requiredFieldsConfig = {
+  jobTitle: 'create',
+  flsaStatus: 'create',
+  paymentUnit: 'create',
+  rate: 'create',
+  startDate: 'create',
+  minimumWageId: data => data.adjustForMinimumWage,
+  stateWcClassCode: data => data.stateWcCovered,
+} satisfies RequiredFieldConfig<typeof fieldValidators>
 
 function validateFlsaRules(data: CompensationFormData, ctx: z.RefinementCtx) {
   const { flsaStatus, paymentUnit, rate } = data
@@ -139,26 +121,28 @@ function validateFlsaRules(data: CompensationFormData, ctx: z.RefinementCtx) {
   }
 }
 
-// ── Schema factory ─────────────────────────────────────────────────────
+// ── Schema factory ───────────────────────────────────────────────────
 
-export type CompensationField = ConfigurableFieldName<typeof compensationFields>
+export type CompensationOptionalFieldsToRequire = OptionalFieldsToRequire<
+  typeof requiredFieldsConfig
+>
 export type CompensationFormOutputs = CompensationFormData
 
 interface CompensationSchemaOptions {
   mode?: 'create' | 'update'
-  requiredFields?: RequiredFields<CompensationField>
+  optionalFieldsToRequire?: CompensationOptionalFieldsToRequire
   withStartDateField?: boolean
 }
 
 export function createCompensationSchema(options: CompensationSchemaOptions = {}) {
-  const { mode = 'create', requiredFields, withStartDateField = true } = options
+  const { mode = 'create', optionalFieldsToRequire, withStartDateField = true } = options
 
-  return buildFormSchema(compensationFields, {
+  return buildFormSchema(fieldValidators, {
+    requiredFieldsConfig,
+    requiredErrorCode: CompensationErrorCodes.REQUIRED,
     mode,
-    requiredFields,
+    optionalFieldsToRequire,
     excludeFields: withStartDateField ? [] : ['startDate'],
     superRefine: validateFlsaRules,
   })
 }
-
-export const CompensationSchema = createCompensationSchema()

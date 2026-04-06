@@ -21,6 +21,12 @@ export {
   filterRequiredFields,
   type RequiredFields,
 } from './resolveRequiredFields'
+export type {
+  FormMode,
+  RequiredFieldRule,
+  RequiredFieldConfig,
+  OptionalFieldsToRequire,
+} from './buildFormSchema'
 export { composeSubmitHandler } from './composeSubmitHandler'
 export { createGetFormSubmissionValues } from './getFormSubmissionValues'
 export {
