@@ -162,7 +162,7 @@
     "react-aria": "^3.44.0",
     "react-aria-components": "1.13.0",
     "react-error-boundary": "^6.1.1",
-    "react-hook-form": "^7.72.0",
+    "react-hook-form": "^7.72.1",
     "react-i18next": "^17.0.2",
     "react-robot": "^1.2.1",
     "robot3": "^1.2.0",
