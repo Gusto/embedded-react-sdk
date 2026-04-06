@@ -8,20 +8,25 @@ type EmptyDataProps = {
   title?: string
   description?: string
   children?: React.ReactNode
+  icon?: React.ReactNode
 }
-export function EmptyData({ title, description, children }: EmptyDataProps) {
+export function EmptyData({ title, description, children, icon }: EmptyDataProps) {
   const { t } = useTranslation()
   const { Text } = useComponentContext()
   return (
     <div className={styles.emptyData} data-testid="emptydata">
       <Flex flexDirection="column" alignItems="center">
-        <img src={magnifyingGlass} alt={t('icons.magnifyingGlass')} className={styles.image} />
-        {title && (
-          <Text weight="bold" className={styles.title}>
-            {title}
-          </Text>
+        {icon || (
+          <img src={magnifyingGlass} alt={t('icons.magnifyingGlass')} className={styles.image} />
         )}
-        {description && <Text>{description}</Text>}
+        <div className={styles.textContent}>
+          {title && (
+            <Text weight="bold" className={styles.title}>
+              {title}
+            </Text>
+          )}
+          {description && <Text>{description}</Text>}
+        </div>
         {children && children}
       </Flex>
     </div>
