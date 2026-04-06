@@ -277,6 +277,23 @@ describe('payrollFlowMachine', () => {
       expect(service.context.payrollUuid).toBeUndefined()
       expect(service.context.executionInitialState).toBeUndefined()
     })
+
+    it('transitions to submittedOverview on RUN_PAYROLL_PROCESSED', () => {
+      const service = createService()
+      toOffCycle(service)
+      const payPeriod = { startDate: '2026-01-01', endDate: '2026-01-15' }
+
+      send(service, componentEvents.RUN_PAYROLL_PROCESSED, {
+        payPeriod,
+        payrollUuid: 'payroll-789',
+      })
+
+      expect(service.machine.current).toBe('submittedOverview')
+      expect(service.context.payPeriod).toEqual(payPeriod)
+      expect(service.context.payrollUuid).toBe('payroll-789')
+      expect(service.context.executionInitialState).toBeUndefined()
+      expect(service.context.progressBarType).toBe('breadcrumbs')
+    })
   })
 
   describe('transition state', () => {
@@ -343,6 +360,23 @@ describe('payrollFlowMachine', () => {
       expect(service.context.showPayrollCancelledAlert).toBe(true)
       expect(service.context.payrollUuid).toBeUndefined()
       expect(service.context.executionInitialState).toBeUndefined()
+    })
+
+    it('transitions to submittedOverview on RUN_PAYROLL_PROCESSED', () => {
+      const service = createService()
+      toTransition(service)
+      const payPeriod = { startDate: '2026-01-01', endDate: '2026-01-15' }
+
+      send(service, componentEvents.RUN_PAYROLL_PROCESSED, {
+        payPeriod,
+        payrollUuid: 'payroll-789',
+      })
+
+      expect(service.machine.current).toBe('submittedOverview')
+      expect(service.context.payPeriod).toEqual(payPeriod)
+      expect(service.context.payrollUuid).toBe('payroll-789')
+      expect(service.context.executionInitialState).toBeUndefined()
+      expect(service.context.progressBarType).toBe('breadcrumbs')
     })
   })
 })

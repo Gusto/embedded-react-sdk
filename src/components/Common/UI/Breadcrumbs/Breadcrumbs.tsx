@@ -18,7 +18,9 @@ export function Breadcrumbs(rawProps: BreadcrumbsProps) {
   const currentIndex = breadcrumbs.findIndex(b => b.id === currentBreadcrumbId)
   const previousBreadcrumb = currentIndex > 0 ? breadcrumbs[currentIndex - 1] : null
 
-  if (isSmallContainer && previousBreadcrumb && onClick) {
+  const isPreviousBreadcrumbClickable = previousBreadcrumb?.isClickable !== false
+
+  if (isSmallContainer && previousBreadcrumb && onClick && isPreviousBreadcrumbClickable) {
     return (
       <Flex flexDirection="column">
         <nav aria-label={ariaLabel} className={className}>
@@ -42,7 +44,7 @@ export function Breadcrumbs(rawProps: BreadcrumbsProps) {
         <ol className={styles.list}>
           {breadcrumbs.map(breadcrumb => {
             const isCurrentbreadcrumb = breadcrumb.id === currentBreadcrumbId
-            const isClickable = !isCurrentbreadcrumb && onClick
+            const isClickable = breadcrumb.isClickable !== false && !isCurrentbreadcrumb && onClick
 
             return (
               <li

@@ -13,7 +13,7 @@ export interface TimeOffFieldProps {
   employee: Employee
 }
 
-const TimeOffBalance = ({
+export const TimeOffBalance = ({
   accrualBalance,
   accrualMethod,
   hoursUsed,
@@ -38,6 +38,53 @@ const TimeOffBalance = ({
     <Text size="sm" variant="supporting" aria-live="polite" aria-atomic={true} id={id}>
       {t('timeOffBalance.remaining', { balance: remainingBalance.toFixed(1) })}
     </Text>
+  )
+}
+
+export interface PayoutTimeOffFieldProps {
+  timeOff: PayrollEmployeeCompensationsTypePaidTimeOff
+  employee: Employee
+}
+
+export const PayoutTimeOffField = ({ timeOff, employee }: PayoutTimeOffFieldProps) => {
+  const { t } = useTranslation('Payroll.PayrollEditEmployee')
+  useI18n('Payroll.PayrollEditEmployee')
+
+  const { control } = useFormContext<PayrollEditEmployeeFormValues>()
+  const id = useId()
+
+  const hoursUsedThisPeriod = useWatch({
+    control,
+    name: `timeOffCompensations.${timeOff.name}`,
+  })
+
+  if (!timeOff.name) {
+    return null
+  }
+
+  const hoursUsed = parseFloat(hoursUsedThisPeriod || '0')
+  const eligiblePolicy = employee.eligiblePaidTimeOff?.find(policy => policy.name === timeOff.name)
+
+  return (
+    <Flex flexDirection="column" gap={4}>
+      <TextInputField
+        key={`payout-${timeOff.name}`}
+        name={`finalPayoutCompensations.${timeOff.name}`}
+        type="number"
+        min={0}
+        adornmentEnd={t('hoursUnit')}
+        label={timeOff.name}
+        aria-describedby={id}
+      />
+      {eligiblePolicy?.accrualBalance && (
+        <TimeOffBalance
+          accrualBalance={eligiblePolicy.accrualBalance}
+          accrualMethod={eligiblePolicy.accrualMethod ?? undefined}
+          hoursUsed={hoursUsed}
+          id={id}
+        />
+      )}
+    </Flex>
   )
 }
 

@@ -1,8 +1,8 @@
 import type { ComponentType } from 'react'
-import type { BaseFieldProps, ValidationMessages } from '../types'
-import type { BaseFormHookReady } from '../../types'
 import { useHookFieldResolution } from '../useHookFieldResolution'
 import { getFieldWithOptions } from '../getFieldWithOptions'
+import type { BaseFieldProps, ValidationMessages } from '@/types/sdkHooks'
+import type { BaseFormHookReady } from '@/types/sdkHooks'
 import { SelectField } from '@/components/Common'
 import type { SelectProps } from '@/components/Common/UI/Select/SelectTypes'
 

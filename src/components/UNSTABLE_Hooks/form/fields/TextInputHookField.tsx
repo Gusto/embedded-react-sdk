@@ -1,7 +1,7 @@
 import type { ComponentType } from 'react'
-import type { BaseFieldProps, ValidationMessages } from '../types'
-import type { BaseFormHookReady } from '../../types'
 import { useHookFieldResolution } from '../useHookFieldResolution'
+import type { BaseFieldProps, ValidationMessages } from '@/types/sdkHooks'
+import type { BaseFormHookReady } from '@/types/sdkHooks'
 import { TextInputField } from '@/components/Common'
 import type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputTypes'
 

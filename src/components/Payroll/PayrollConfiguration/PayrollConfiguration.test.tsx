@@ -374,6 +374,38 @@ describe('PayrollConfiguration', () => {
     })
   })
 
+  describe('direct deposit deadline banner', () => {
+    it('hides direct deposit deadline banner when all employees are paid by check', async () => {
+      currentPayrollData = {
+        ...mockPayrollData,
+        employee_compensations: allCompensations.map(comp => ({
+          ...comp,
+          payment_method: 'Check',
+        })),
+      }
+
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
+      })
+
+      expect(
+        screen.queryByText(/To pay your employees with direct deposit by/i),
+      ).not.toBeInTheDocument()
+    })
+
+    it('shows direct deposit deadline banner when at least one employee uses direct deposit', async () => {
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
+      })
+
+      expect(screen.getByText(/To pay your employees with direct deposit by/i)).toBeInTheDocument()
+    })
+  })
+
   describe('calculate and polling', () => {
     beforeEach(() => {
       vi.useFakeTimers({ shouldAdvanceTime: true })
@@ -654,6 +686,99 @@ describe('PayrollConfiguration', () => {
       })
 
       expect(prepareCallCount).toBe(prepareCountBeforeCalculate)
+    })
+  })
+
+  describe('excluded employees', () => {
+    it('shows excluded employees that are missing from the employee list API', async () => {
+      const excludedEmployee = createEmployee('emp-excluded', 'Skipped', 'Person')
+      const excludedCompensation = {
+        ...createCompensation('emp-excluded'),
+        excluded: true,
+        gross_pay: 0,
+        net_pay: 0,
+      }
+
+      const payrollDataWithExcluded = {
+        ...mockPayrollData,
+        employee_compensations: [...allCompensations, excludedCompensation],
+      }
+
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/employees`, ({ request }) => {
+          const url = new URL(request.url)
+
+          if (url.searchParams.has('payroll_uuid')) {
+            const page = parseInt(url.searchParams.get('page') || '1', 10)
+            const per = parseInt(url.searchParams.get('per') || '10', 10)
+            const totalCount = page1Employees.length
+            const totalPages = Math.ceil(totalCount / per)
+            const startIndex = (page - 1) * per
+            const pageEmployees = page1Employees.slice(startIndex, startIndex + per)
+
+            return HttpResponse.json(pageEmployees, {
+              headers: {
+                'x-total-pages': String(totalPages),
+                'x-total-count': String(totalCount),
+                'x-page': String(page),
+                'x-per-page': String(per),
+              },
+            })
+          }
+          return HttpResponse.json([])
+        }),
+
+        http.get(`${API_BASE_URL}/v1/employees/:employee_id`, ({ params }) => {
+          if (params.employee_id === 'emp-excluded') {
+            return HttpResponse.json(excludedEmployee)
+          }
+          return new HttpResponse(null, { status: 404 })
+        }),
+
+        http.get(`${API_BASE_URL}/v1/companies/:company_uuid/payrolls/blockers`, () => {
+          return HttpResponse.json([])
+        }),
+
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id`, () => {
+          return HttpResponse.json(payrollDataWithExcluded)
+        }),
+
+        http.put(
+          `${API_BASE_URL}/v1/companies/:company_id/payrolls/:payroll_id/prepare`,
+          async ({ request }) => {
+            const body = (await request.json()) as { employee_uuids?: string[] } | null
+            const employeeUuids = body?.employee_uuids
+            const allComps = [...allCompensations, excludedCompensation]
+
+            if (employeeUuids && employeeUuids.length > 0) {
+              const filteredCompensations = allComps.filter(comp =>
+                employeeUuids.includes(comp.employee_uuid),
+              )
+              return HttpResponse.json({
+                ...mockPayrollData,
+                employee_compensations: filteredCompensations,
+              })
+            }
+
+            return HttpResponse.json({
+              ...mockPayrollData,
+              employee_compensations: allComps,
+            })
+          },
+        ),
+      )
+
+      renderWithProviders(<PayrollConfiguration {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice Anderson')).toBeInTheDocument()
+      })
+
+      await waitFor(() => {
+        expect(screen.getByText('Skipped Person')).toBeInTheDocument()
+      })
+
+      expect(screen.getByText('Skipped')).toBeInTheDocument()
     })
   })
 })

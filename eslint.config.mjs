@@ -120,9 +120,18 @@ export default [
     },
   },
   {
-    files: ['src/components/Common/UI/**/*.{ts,tsx}'],
+    files: [
+      'src/components/Common/UI/**/*.{ts,tsx}',
+      'src/components/Common/DateRangeFilter/**/*.{ts,tsx}',
+    ],
     rules: {
       'no-restricted-imports': 'off',
+    },
+  },
+  {
+    files: ['src/components/InformationRequests/InformationRequestForm/InformationRequestForm.tsx'],
+    rules: {
+      '@typescript-eslint/no-unnecessary-type-arguments': 'off',
     },
   },
   ...storybook.configs['flat/recommended'],

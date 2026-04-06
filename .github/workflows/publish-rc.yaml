@@ -39,7 +39,7 @@ jobs:
             echo "ref_name=${{ github.event.inputs.branch }}" >> $GITHUB_OUTPUT
           fi
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           ref: ${{ steps.checkout-ref.outputs.ref }}
 
@@ -61,14 +61,14 @@ jobs:
             exit 1
           fi
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
           registry-url: 'https://registry.npmjs.org'
 
       - name: Restore node_modules cache
         id: cache-node-modules
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: node_modules
           key: node-modules-${{ hashFiles('package-lock.json') }}
@@ -79,14 +79,14 @@ jobs:
 
       - name: Save node_modules cache
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           path: node_modules
           key: node-modules-${{ hashFiles('package-lock.json') }}
 
       - name: Restore build cache
         id: cache-build
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: dist
           key: build-${{ github.sha }}
@@ -101,7 +101,7 @@ jobs:
 
       - name: Save build cache
         if: steps.cache-build.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           path: dist
           key: build-${{ github.sha }}
