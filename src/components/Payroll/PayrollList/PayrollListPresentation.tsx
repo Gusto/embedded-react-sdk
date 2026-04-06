@@ -63,7 +63,7 @@ export const PayrollListPresentation = ({
   wireInRequests,
   dateRangeFilter,
 }: PayrollListPresentationProps) => {
-  const { Box, Button, Dialog, Heading, Text, Alert } = useComponentContext()
+  const { Box, Button, ButtonIcon, Dialog, Heading, Text, Alert } = useComponentContext()
   useI18n('Payroll.PayrollList')
   const { t } = useTranslation('Payroll.PayrollList')
   const dateFormatter = useDateFormatter()
@@ -304,16 +304,12 @@ export const PayrollListPresentation = ({
             if (processed) {
               return (
                 <div className={styles.actionsContainer}>
-                  <HamburgerMenu
-                    isLoading={isProcessingSkipPayroll || isProcessingDeletePayroll}
-                    menuLabel={t('payrollMenuLabel')}
-                    items={[
-                      {
-                        label: t('noActionsAvailable'),
-                        onClick: () => {},
-                        isDisabled: true,
-                      },
-                    ]}
+                  <ButtonIcon
+                    aria-label=""
+                    aria-hidden={true}
+                    tabIndex={-1}
+                    isDisabled={true}
+                    className={styles.menuPlaceholder}
                   />
                 </div>
               )
@@ -362,28 +358,28 @@ export const PayrollListPresentation = ({
                       },
                     },
                   ]
-                : [
-                    {
-                      label: t('noActionsAvailable'),
-                      onClick: () => {},
-                      isDisabled: true,
-                    },
-                  ]
+                : null
 
-            const isLoadingMenu = canSkipPayroll
-              ? isProcessingSkipPayroll
-              : canDeletePayroll
-                ? isProcessingDeletePayroll
-                : false
+            const hasMenuActions = menuItems !== null
 
             return (
               <div className={styles.actionsContainer}>
                 {button}
-                <HamburgerMenu
-                  isLoading={isLoadingMenu}
-                  menuLabel={t('payrollMenuLabel')}
-                  items={menuItems}
-                />
+                {hasMenuActions ? (
+                  <HamburgerMenu
+                    isLoading={canSkipPayroll ? isProcessingSkipPayroll : isProcessingDeletePayroll}
+                    menuLabel={t('payrollMenuLabel')}
+                    items={menuItems}
+                  />
+                ) : (
+                  <ButtonIcon
+                    aria-label=""
+                    aria-hidden={true}
+                    tabIndex={-1}
+                    isDisabled={true}
+                    className={styles.menuPlaceholder}
+                  />
+                )}
               </div>
             )
           }}
