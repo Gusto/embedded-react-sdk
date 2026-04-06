@@ -100,8 +100,9 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
       })
   }, [employeesData])
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const translateValidation = (key: string): string => t(key as any) as string
+  const translateValidation = (key: string, options?: Record<string, unknown>): string =>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    t(key as any, options as any) as string
 
   const dynamicResolver: Resolver<OffCycleCreationFormData> = (values, context, options) => {
     const reason = values.reason

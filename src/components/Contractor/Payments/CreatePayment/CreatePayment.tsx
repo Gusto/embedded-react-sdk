@@ -76,7 +76,11 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
     const today = new Date()
     today.setHours(0, 0, 0, 0)
     const targetDate = addBusinessDays(today, speedDays)
-    return targetDate.toISOString().split('T')[0] || ''
+    return [
+      String(targetDate.getFullYear()).padStart(4, '0'),
+      String(targetDate.getMonth() + 1).padStart(2, '0'),
+      String(targetDate.getDate()).padStart(2, '0'),
+    ].join('-')
   }
 
   const [paymentDate, setPaymentDate] = useState(calculateInitialPaymentDate(paymentSpeedDays))

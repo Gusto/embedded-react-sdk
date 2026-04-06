@@ -78,8 +78,9 @@ function Root({
     return match?.customName ?? match?.name ?? null
   }, [paySchedulesData, payScheduleUuid])
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const translateValidation = (key: string): string => t(key as any) as string
+  const translateValidation = (key: string, options?: Record<string, unknown>): string =>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    t(key as any, options as any) as string
 
   const schema = useMemo(
     () =>
