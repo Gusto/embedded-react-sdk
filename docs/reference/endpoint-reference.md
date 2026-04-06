@@ -101,6 +101,10 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 | **Contractor.PaymentStatement** | GET | `/v1/contractor_payment_groups/:contractorPaymentGroupUuid` |
 |  | GET | `/v1/companies/:companyUuid/contractors` |
 |  | GET | `/v1/contractor_payments/:contractorPaymentUuid/receipt` |
+| **Contractor.CreateHistoricalPayment** | GET | `/v1/companies/:companyUuid/contractors` |
+|  | POST | `/v1/companies/:companyId/contractor_payment_groups` |
+|  | POST | `/v1/companies/:companyId/contractor_payment_groups/preview` |
+|  | GET | `/v1/contractor_payment_groups/:contractorPaymentGroupUuid` |
 
 ## Employee components
 
