@@ -31,19 +31,6 @@
     "heading": "You don't have any time off policies",
     "body": "Manage employee time off by creating a policy."
   },
-  "selectPolicyType": {
-    "title": "Select policy type",
-    "policyTypeLabel": "Policy type",
-    "policyTypeHint": "Select the type of time off policy you want to set up for your team.",
-    "holidayLabel": "Holiday pay",
-    "holidayHint": "Give employees time off for company holidays. Choose which holidays to observe.",
-    "timeOffLabel": "Time off",
-    "timeOffHint": "Use for paid leave or combine vacation and sick time into one PTO policy.",
-    "sickLeaveLabel": "Sick leave",
-    "sickLeaveHint": "Paid time employees can use when they're sick or caring for their health.",
-    "continueCta": "Continue",
-    "cancelCta": "Cancel"
-  },
   "flash": {
     "policyDeleted": "Policy \"{{name}}\" deleted successfully",
     "holidayDeleted": "Holiday pay policy deleted successfully",
