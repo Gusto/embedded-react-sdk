@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, test, expect, vi } from 'vitest'
@@ -276,6 +277,81 @@ describe('DataTable Component', () => {
 
     expect(screen.getByText('Total Records:')).toBeInTheDocument()
     expect(screen.getByText('55')).toBeInTheDocument()
+  })
+
+  describe('controlled select-all cycle', () => {
+    function ControlledSelectAllTable() {
+      const [selectedIndices, setSelectedIndices] = useState(new Set<number>())
+
+      return (
+        <ThemeProvider>
+          <ComponentsProvider value={defaultComponents}>
+            <DataTable<MockData>
+              label="Controlled Table"
+              data={testData}
+              columns={testColumns}
+              selectionMode="multiple"
+              isItemSelected={(_item, index) => selectedIndices.has(index)}
+              onSelect={(item, checked) => {
+                const index = testData.indexOf(item)
+                setSelectedIndices(prev => {
+                  const next = new Set(prev)
+                  if (checked) {
+                    next.add(index)
+                  } else {
+                    next.delete(index)
+                  }
+                  return next
+                })
+              }}
+              onSelectAll={checked => {
+                if (checked) {
+                  setSelectedIndices(new Set(testData.map((_, i) => i)))
+                } else {
+                  setSelectedIndices(new Set())
+                }
+              }}
+            />
+          </ComponentsProvider>
+        </ThemeProvider>
+      )
+    }
+
+    test('full select-all -> uncheck one -> re-select -> deselect cycle', async () => {
+      render(<ControlledSelectAllTable />)
+
+      const getHeaderCheckbox = () => screen.getAllByRole('checkbox')[0] as HTMLElement
+      const getFirstRowCheckbox = () => screen.getAllByRole('checkbox')[1] as HTMLElement
+
+      const getHeaderWrapper = () => getHeaderCheckbox().closest('[class*=checkboxWrapper]')
+
+      const getCheckedRowCount = () =>
+        screen
+          .getAllByRole('checkbox')
+          .slice(1)
+          .filter(cb => cb.closest('[class*=checkboxWrapper]')?.className.includes('checked'))
+          .length
+
+      expect(getHeaderWrapper()?.className).not.toContain('checked')
+      expect(getCheckedRowCount()).toBe(0)
+
+      await userEvent.click(getHeaderCheckbox())
+      expect(getHeaderWrapper()?.className).toContain('checked')
+      expect(getCheckedRowCount()).toBe(testData.length)
+
+      await userEvent.click(getFirstRowCheckbox())
+      expect(getHeaderWrapper()?.className).toContain('indeterminate')
+      expect(getCheckedRowCount()).toBe(testData.length - 1)
+
+      await userEvent.click(getHeaderCheckbox())
+      expect(getHeaderWrapper()?.className).toContain('checked')
+      expect(getCheckedRowCount()).toBe(testData.length)
+
+      await userEvent.click(getHeaderCheckbox())
+      expect(getHeaderWrapper()?.className).not.toContain('checked')
+      expect(getHeaderWrapper()?.className).not.toContain('indeterminate')
+      expect(getCheckedRowCount()).toBe(0)
+    })
   })
 
   describe('accessibility', () => {

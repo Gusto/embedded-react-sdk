@@ -147,7 +147,8 @@
     "actionsColumnHeader": "Actions"
   },
   "card": {
-    "selectRowLabel": "Select row"
+    "selectRowLabel": "Select row",
+    "selectAllRowsLabel": "Select all rows"
   },
   "signatoryTitles": {
     "owner": "Owner",
