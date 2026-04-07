@@ -15,6 +15,7 @@
     outline: none;
     max-width: 400px;
     padding: toRem(0);
+    overflow: hidden;
 
     .react-aria-OverlayArrow svg {
       display: block;
