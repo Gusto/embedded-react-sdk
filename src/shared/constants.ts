@@ -29,6 +29,7 @@ export const employeeEvents = {
   EMPLOYEE_DEDUCTION_INCLUDE_NO: 'employee/deductions/include/no',
   EMPLOYEE_COMPENSATION_CREATE: 'employee/compensations/create',
   EMPLOYEE_COMPENSATION_CREATED: 'employee/compensations/created',
+  EMPLOYEE_COMPENSATION_UPDATE: 'employee/compensations/update',
   EMPLOYEE_COMPENSATION_UPDATED: 'employee/compensations/updated',
   EMPLOYEE_COMPENSATION_DONE: 'employee/compensations/done',
   EMPLOYEE_PAYMENT_METHOD_UPDATED: 'employee/paymentMethod/updated',

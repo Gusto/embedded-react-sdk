@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
 import { useEmployeeAddressesGetSuspense } from '@gusto/embedded-api/react-query/employeeAddressesGet'
@@ -13,6 +13,7 @@ import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import type { BaseComponentInterface } from '@/components/Base'
 import { useComponentDictionary, useI18n } from '@/i18n'
+import { componentEvents } from '@/shared/constants'
 
 type DashboardTab = 'basicDetails' | 'jobAndPay' | 'taxes' | 'documents'
 
@@ -21,7 +22,7 @@ export interface DashboardViewProps extends BaseComponentInterface {
   employeeId: string
 }
 
-export function DashboardView({ companyId, employeeId, dictionary }: DashboardViewProps) {
+export function DashboardView({ companyId, employeeId, dictionary, onEvent }: DashboardViewProps) {
   useI18n('Employee.Dashboard')
   useComponentDictionary('Employee.Dashboard', dictionary)
   const { t } = useTranslation('Employee.Dashboard')
@@ -74,6 +75,30 @@ export function DashboardView({ companyId, employeeId, dictionary }: DashboardVi
   const bankAccounts = bankAccountsList.employeeBankAccountList || []
   const payStubs = payStubData.employeePayStubsList || []
 
+  const handleEditBasicDetails = useCallback(() => {
+    onEvent(componentEvents.EMPLOYEE_UPDATE, { employeeId })
+  }, [onEvent, employeeId])
+
+  const handleManageHomeAddress = useCallback(() => {
+    onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS, { employeeId })
+  }, [onEvent, employeeId])
+
+  const handleManageWorkAddress = useCallback(() => {
+    onEvent(componentEvents.EMPLOYEE_WORK_ADDRESS, { employeeId })
+  }, [onEvent, employeeId])
+
+  const handleEditCompensation = useCallback(() => {
+    onEvent(componentEvents.EMPLOYEE_COMPENSATION_UPDATE, { employeeId })
+  }, [onEvent, employeeId])
+
+  const handleAddBankAccount = useCallback(() => {
+    onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATE, { employeeId })
+  }, [onEvent, employeeId])
+
+  const handleAddDeduction = useCallback(() => {
+    onEvent(componentEvents.EMPLOYEE_DEDUCTION_ADD, { employeeId })
+  }, [onEvent, employeeId])
+
   const tabs = [
     {
       id: 'basicDetails' as const,
@@ -106,6 +131,9 @@ export function DashboardView({ companyId, employeeId, dictionary }: DashboardVi
             currentHomeAddress={currentHomeAddress}
             currentWorkAddress={currentWorkAddress}
             isLoading={isLoadingBasicDetails}
+            onEditBasicDetails={handleEditBasicDetails}
+            onManageHomeAddress={handleManageHomeAddress}
+            onManageWorkAddress={handleManageWorkAddress}
           />
         )
       case 'jobAndPay':
@@ -119,6 +147,9 @@ export function DashboardView({ companyId, employeeId, dictionary }: DashboardVi
             isFetchingGarnishments={isFetchingGarnishments}
             isFetchingPayStubs={isFetchingPayStubs}
             isLoading={isLoadingJobAndPay}
+            onEditCompensation={handleEditCompensation}
+            onAddBankAccount={handleAddBankAccount}
+            onAddDeduction={handleAddDeduction}
           />
         )
       case 'taxes':
@@ -148,6 +179,12 @@ export function DashboardView({ companyId, employeeId, dictionary }: DashboardVi
     isFetchingPayStubs,
     isLoadingBasicDetails,
     isLoadingJobAndPay,
+    handleEditBasicDetails,
+    handleManageHomeAddress,
+    handleManageWorkAddress,
+    handleEditCompensation,
+    handleAddBankAccount,
+    handleAddDeduction,
     t,
     companyId,
     employeeId,

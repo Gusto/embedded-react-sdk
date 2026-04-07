@@ -24,6 +24,9 @@ export interface JobAndPayViewProps {
   isFetchingGarnishments?: boolean
   isFetchingPayStubs?: boolean
   isLoading?: boolean
+  onEditCompensation?: () => void
+  onAddBankAccount?: () => void
+  onAddDeduction?: () => void
 }
 
 export function JobAndPayView({
@@ -35,6 +38,9 @@ export function JobAndPayView({
   isFetchingGarnishments = false,
   isFetchingPayStubs = false,
   isLoading = false,
+  onEditCompensation,
+  onAddBankAccount,
+  onAddDeduction,
 }: JobAndPayViewProps) {
   const { t } = useTranslation('Employee.Dashboard')
   const Components = useComponentContext()
@@ -163,7 +169,7 @@ export function JobAndPayView({
         <Flex flexDirection="column" gap={16}>
           <Flex justifyContent="space-between" alignItems="center">
             <Components.Heading as="h3">{t('jobAndPay.compensation.title')}</Components.Heading>
-            <Components.Button variant="secondary">
+            <Components.Button variant="secondary" onClick={onEditCompensation}>
               {t('jobAndPay.compensation.edit')}
             </Components.Button>
           </Flex>
@@ -214,7 +220,7 @@ export function JobAndPayView({
         <Flex flexDirection="column" gap={16}>
           <Flex justifyContent="space-between" alignItems="center">
             <Components.Heading as="h3">{t('jobAndPay.payment.title')}</Components.Heading>
-            <Components.Button variant="secondary">
+            <Components.Button variant="secondary" onClick={onAddBankAccount}>
               {t('jobAndPay.payment.addBankAccount')}
             </Components.Button>
           </Flex>
@@ -227,7 +233,7 @@ export function JobAndPayView({
         <Flex flexDirection="column" gap={16}>
           <Flex justifyContent="space-between" alignItems="center">
             <Components.Heading as="h3">{t('jobAndPay.deductions.title')}</Components.Heading>
-            <Components.Button variant="secondary">
+            <Components.Button variant="secondary" onClick={onAddDeduction}>
               {t('jobAndPay.deductions.addDeduction')}
             </Components.Button>
           </Flex>

@@ -13,6 +13,9 @@ export interface BasicDetailsViewProps {
   currentHomeAddress?: EmployeeAddress
   currentWorkAddress?: EmployeeWorkAddress
   isLoading?: boolean
+  onEditBasicDetails?: () => void
+  onManageHomeAddress?: () => void
+  onManageWorkAddress?: () => void
 }
 
 export function BasicDetailsView({
@@ -20,6 +23,9 @@ export function BasicDetailsView({
   currentHomeAddress,
   currentWorkAddress,
   isLoading = false,
+  onEditBasicDetails,
+  onManageHomeAddress,
+  onManageWorkAddress,
 }: BasicDetailsViewProps) {
   const { t } = useTranslation('Employee.Dashboard')
   const Components = useComponentContext()
@@ -42,7 +48,9 @@ export function BasicDetailsView({
         <Flex flexDirection="column" gap={16}>
           <Flex justifyContent="space-between" alignItems="center">
             <Components.Heading as="h3">{t('basicDetails.title')}</Components.Heading>
-            <Components.Button variant="secondary">{t('basicDetails.edit')}</Components.Button>
+            <Components.Button variant="secondary" onClick={onEditBasicDetails}>
+              {t('basicDetails.edit')}
+            </Components.Button>
           </Flex>
 
           <Flex flexDirection="column" gap={12}>
@@ -90,7 +98,9 @@ export function BasicDetailsView({
         <Flex flexDirection="column" gap={16}>
           <Flex justifyContent="space-between" alignItems="center">
             <Components.Heading as="h3">{t('homeAddress.title')}</Components.Heading>
-            <Components.Button variant="secondary">{t('homeAddress.manage')}</Components.Button>
+            <Components.Button variant="secondary" onClick={onManageHomeAddress}>
+              {t('homeAddress.manage')}
+            </Components.Button>
           </Flex>
 
           {currentHomeAddress ? (
@@ -109,7 +119,9 @@ export function BasicDetailsView({
         <Flex flexDirection="column" gap={16}>
           <Flex justifyContent="space-between" alignItems="center">
             <Components.Heading as="h3">{t('workAddress.title')}</Components.Heading>
-            <Components.Button variant="secondary">{t('workAddress.manage')}</Components.Button>
+            <Components.Button variant="secondary" onClick={onManageWorkAddress}>
+              {t('workAddress.manage')}
+            </Components.Button>
           </Flex>
 
           {currentWorkAddress ? (
