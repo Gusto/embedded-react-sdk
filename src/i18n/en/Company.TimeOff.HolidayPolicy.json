@@ -1,11 +1,14 @@
 {
   "title": "Choose your company holidays",
   "description": "Choose which holidays your company observes and we'll automatically add those hours when you run payroll.",
+  "backCta": "Back",
   "continueCta": "Continue",
   "tableHeaders": {
-    "holidayName": "Holiday name",
-    "observedDate": "Observed date"
+    "holidayName": "Holiday",
+    "observedDate": "Observed date",
+    "nextObservation": "Next observation"
   },
+  "tableLabel": "Company holidays",
   "editEmployees": {
     "title": "Add employees to your policy"
   },
