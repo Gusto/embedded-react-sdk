@@ -10,7 +10,7 @@ export { withOptions } from './withOptions'
 export type { FormFieldsMetadataContextValue } from './FormFieldsMetadataContext'
 export { FormFieldsMetadataProvider } from './FormFieldsMetadataProvider'
 export { SDKFormProvider } from './SDKFormProvider'
-export { useFieldsMetadata } from './useFieldsMetadata'
+export { useDeriveFieldsMetadata } from './useDeriveFieldsMetadata'
 export { useFieldErrorMessage } from './useFieldErrorMessage'
 export { resolveFieldError } from './resolveFieldError'
 export { useHookFieldResolution } from './useHookFieldResolution'
@@ -21,6 +21,14 @@ export {
   filterRequiredFields,
   type RequiredFields,
 } from './resolveRequiredFields'
+export type {
+  FormMode,
+  RequiredFieldRule,
+  RequiredFieldConfig,
+  OptionalFieldsToRequire,
+  FieldsMetadataConfig,
+  BuildFormSchemaResult,
+} from './buildFormSchema'
 export { composeSubmitHandler } from './composeSubmitHandler'
 export { createGetFormSubmissionValues } from './getFormSubmissionValues'
 export {

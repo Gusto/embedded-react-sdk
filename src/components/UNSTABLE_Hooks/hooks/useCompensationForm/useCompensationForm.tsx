@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
-import type { Resolver, UseFormProps } from 'react-hook-form'
+import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { Compensation, PaymentUnit } from '@gusto/embedded-api/models/components/compensation'
 import type { Job } from '@gusto/embedded-api/models/components/job'
@@ -15,12 +15,11 @@ import { useEmployeeAddressesGetWorkAddresses } from '@gusto/embedded-api/react-
 import { useEmployeesGet } from '@gusto/embedded-api/react-query/employeesGet'
 import { useFederalTaxDetailsGet } from '@gusto/embedded-api/react-query/federalTaxDetailsGet'
 import { withOptions } from '../../form/withOptions'
-import { deriveFieldsMetadata } from '../../form/deriveFieldsMetadata'
 import { createGetFormSubmissionValues } from '../../form/getFormSubmissionValues'
-import type { RequiredFields } from '../../form/resolveRequiredFields'
+import { useDeriveFieldsMetadata } from '../../form/useDeriveFieldsMetadata'
 import {
   createCompensationSchema,
-  type CompensationField,
+  type CompensationOptionalFieldsToRequire,
   type CompensationFormData,
   type CompensationFormOutputs,
 } from './compensationSchema'
@@ -54,13 +53,11 @@ export interface CompensationSubmitOptions {
   startDate?: string
 }
 
-export type CompensationRequiredFields = RequiredFields<CompensationField>
-
 export interface UseCompensationFormProps {
   employeeId?: string
   withStartDateField?: boolean
   jobId?: string
-  requiredFields?: CompensationRequiredFields
+  optionalFieldsToRequire?: CompensationOptionalFieldsToRequire
   defaultValues?: Partial<CompensationFormData>
   validationMode?: UseFormProps['mode']
   shouldFocusError?: boolean
@@ -108,7 +105,7 @@ export function useCompensationForm({
   employeeId,
   withStartDateField = true,
   jobId,
-  requiredFields,
+  optionalFieldsToRequire,
   defaultValues: partnerDefaults,
   validationMode = 'onSubmit',
   shouldFocusError = true,
@@ -162,11 +159,10 @@ export function useCompensationForm({
   const isCreateMode = !currentJob
   const mode = isCreateMode ? 'create' : 'update'
 
-  const schema = createCompensationSchema({
-    mode,
-    requiredFields,
-    withStartDateField,
-  })
+  const [schema, metadataConfig] = useMemo(
+    () => createCompensationSchema({ mode, optionalFieldsToRequire, withStartDateField }),
+    [mode, optionalFieldsToRequire, withStartDateField],
+  )
 
   const state = currentWorkAddress?.state
 
@@ -190,7 +186,7 @@ export function useCompensationForm({
   }
 
   const formMethods = useForm<CompensationFormData, unknown, CompensationFormOutputs>({
-    resolver: zodResolver(schema) as unknown as Resolver<CompensationFormData>,
+    resolver: zodResolver(schema),
     mode: validationMode,
     shouldFocusError,
     defaultValues: resolvedDefaults,
@@ -206,10 +202,11 @@ export function useCompensationForm({
     control: formMethods.control,
     name: 'adjustForMinimumWage',
   })
-  const watchedStateWcCovered = useWatch({
+  const rawStateWcCovered = useWatch({
     control: formMethods.control,
     name: 'stateWcCovered',
   })
+  const watchedStateWcCovered = String(rawStateWcCovered) === 'true'
 
   useEffect(() => {
     if (watchedFlsaStatus === FlsaStatus.OWNER) {
@@ -268,7 +265,7 @@ export function useCompensationForm({
     label: `${code}: ${description}`,
   }))
 
-  const baseMetadata = deriveFieldsMetadata(schema)
+  const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
   const fieldsMetadata = {
     startDate: baseMetadata.startDate,
     jobTitle: baseMetadata.jobTitle,
@@ -296,13 +293,13 @@ export function useCompensationForm({
       ...baseMetadata.twoPercentShareholder,
       isDisabled: !showTwoPercentStakeholder,
     },
-    stateWcCovered: withOptions<string>(
+    stateWcCovered: withOptions<boolean>(
       { ...baseMetadata.stateWcCovered, isDisabled: !isWaState },
       [
         { label: 'Yes', value: 'true' },
         { label: 'No', value: 'false' },
       ],
-      ['yes', 'no'],
+      [true, false],
     ),
     stateWcClassCode: withOptions<WARiskClassCode>(
       { ...baseMetadata.stateWcClassCode, isDisabled: !isWaState },
@@ -354,7 +351,7 @@ export function useCompensationForm({
                     stateWcClassCode: compensationData.stateWcCovered
                       ? compensationData.stateWcClassCode
                       : null,
-                    twoPercentShareholder: twoPercentShareholder ?? false,
+                    twoPercentShareholder,
                   },
                 },
               })
@@ -372,7 +369,7 @@ export function useCompensationForm({
                       ? compensationData.stateWcClassCode
                       : null,
                     stateWcCovered: compensationData.stateWcCovered,
-                    twoPercentShareholder: twoPercentShareholder ?? false,
+                    twoPercentShareholder,
                   },
                 },
               })
@@ -425,13 +422,7 @@ export function useCompensationForm({
 
   if (
     isDataLoading ||
-    (employeeId &&
-      (!employeeJobs ||
-        !workAddresses ||
-        !currentWorkAddress ||
-        !employee ||
-        !companyUuid ||
-        !federalTaxDetails))
+    (employeeId && (!employeeJobs || !employee || !companyUuid || !federalTaxDetails))
   ) {
     return { isLoading: true as const, errorHandling }
   }
