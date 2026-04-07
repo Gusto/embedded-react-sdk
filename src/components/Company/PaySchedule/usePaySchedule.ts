@@ -24,7 +24,7 @@ type PayScheduleContextType = {
   currentPaySchedule: PayScheduleType | undefined | null
   payPeriodPreview?: PayPeriods[]
   payPreviewLoading?: boolean
-  paymentSpeed?: string
+  paymentSpeedDays: number
 }
 
 export const PayScheduleSchema = z.object({
