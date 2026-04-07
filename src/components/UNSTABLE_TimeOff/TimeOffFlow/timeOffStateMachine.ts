@@ -1,7 +1,7 @@
 import { transition, reduce, state, guard } from 'robot3'
 import {
   PolicyListContextual,
-  PolicyTypeSelectorContextual,
+  SelectPolicyTypeContextual,
   PolicyDetailsFormContextual,
   PolicySettingsContextual,
   AddEmployeesToPolicyContextual,
@@ -73,7 +73,7 @@ export const timeOffMachine = {
       reduce(
         (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
           ...ctx,
-          component: PolicyTypeSelectorContextual,
+          component: SelectPolicyTypeContextual,
           alerts: undefined,
         }),
       ),
@@ -175,7 +175,7 @@ export const timeOffMachine = {
           ev: { payload: ErrorPayload },
         ): TimeOffFlowContextInterface => ({
           ...ctx,
-          component: PolicyTypeSelectorContextual,
+          component: SelectPolicyTypeContextual,
           alerts: ev.payload.alert ? [ev.payload.alert] : undefined,
         }),
       ),
@@ -290,7 +290,7 @@ export const timeOffMachine = {
           ev: { payload: ErrorPayload },
         ): TimeOffFlowContextInterface => ({
           ...ctx,
-          component: PolicyTypeSelectorContextual,
+          component: SelectPolicyTypeContextual,
           alerts: ev.payload.alert ? [ev.payload.alert] : undefined,
         }),
       ),
