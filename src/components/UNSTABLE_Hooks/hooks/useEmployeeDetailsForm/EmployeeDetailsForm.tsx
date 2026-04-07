@@ -19,7 +19,7 @@ function EmployeeDetailsFormRoot({ onEvent, dictionary, ...hookProps }: Employee
   const Components = useComponentContext()
   const employeeDetails = useEmployeeDetailsForm({
     ...hookProps,
-    requiredFields: { update: ['ssn'] },
+    optionalFieldsToRequire: { update: ['ssn'] },
   })
 
   if (employeeDetails.isLoading) {

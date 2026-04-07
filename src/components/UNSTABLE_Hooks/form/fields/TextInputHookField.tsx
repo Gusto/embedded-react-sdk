@@ -5,16 +5,22 @@ import type { BaseFormHookReady } from '@/types/sdkHooks'
 import { TextInputField } from '@/components/Common'
 import type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputTypes'
 
-export interface TextInputHookFieldProps<TErrorCode extends string = never> extends BaseFieldProps {
+export interface TextInputHookFieldProps<
+  TErrorCode extends string = never,
+  TOptionalErrorCode extends string = never,
+> extends BaseFieldProps {
   name: string
   formHookResult?: BaseFormHookReady
-  validationMessages?: ValidationMessages<TErrorCode>
+  validationMessages?: ValidationMessages<TErrorCode, TOptionalErrorCode>
   transform?: (value: string) => string
   placeholder?: string
   FieldComponent?: ComponentType<TextInputProps>
 }
 
-export function TextInputHookField<TErrorCode extends string>({
+export function TextInputHookField<
+  TErrorCode extends string,
+  TOptionalErrorCode extends string = never,
+>({
   name,
   formHookResult,
   label,
@@ -23,7 +29,7 @@ export function TextInputHookField<TErrorCode extends string>({
   transform,
   placeholder,
   FieldComponent,
-}: TextInputHookFieldProps<TErrorCode>) {
+}: TextInputHookFieldProps<TErrorCode, TOptionalErrorCode>) {
   const { metadata, control, errorMessage } = useHookFieldResolution(
     name,
     formHookResult,

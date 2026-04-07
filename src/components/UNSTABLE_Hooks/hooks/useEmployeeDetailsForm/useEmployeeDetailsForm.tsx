@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -7,14 +8,13 @@ import { useEmployeesCreateMutation } from '@gusto/embedded-api/react-query/empl
 import { useEmployeesUpdateMutation } from '@gusto/embedded-api/react-query/employeesUpdate'
 import { useEmployeesUpdateOnboardingStatusMutation } from '@gusto/embedded-api/react-query/employeesUpdateOnboardingStatus'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
-import { deriveFieldsMetadata } from '../../form/deriveFieldsMetadata'
+import { useDeriveFieldsMetadata } from '../../form/useDeriveFieldsMetadata'
 import { createGetFormSubmissionValues } from '../../form/getFormSubmissionValues'
-import type { RequiredFields } from '../../form/resolveRequiredFields'
 import {
   createEmployeeDetailsSchema,
+  type EmployeeDetailsOptionalFieldsToRequire,
   type EmployeeDetailsFormData,
   type EmployeeDetailsFormOutputs,
-  type EmployeeDetailsField,
 } from './employeeDetailsSchema'
 import {
   FirstNameField,
@@ -32,7 +32,7 @@ import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { SDKInternalError } from '@/types/sdkError'
 import { removeNonDigits } from '@/helpers/formattedStrings'
 
-export type EmployeeDetailsRequiredFields = RequiredFields<EmployeeDetailsField>
+export type { EmployeeDetailsOptionalFieldsToRequire } from './employeeDetailsSchema'
 
 export interface EmployeeDetailsSubmitCallbacks {
   onEmployeeCreated?: (employee: Employee) => void
@@ -44,7 +44,7 @@ export interface UseEmployeeDetailsFormProps {
   companyId: string
   employeeId?: string
   withSelfOnboardingField?: boolean
-  requiredFields?: EmployeeDetailsRequiredFields
+  optionalFieldsToRequire?: EmployeeDetailsOptionalFieldsToRequire
   defaultValues?: Partial<EmployeeDetailsFormData>
   validationMode?: UseFormProps['mode']
   shouldFocusError?: boolean
@@ -75,7 +75,7 @@ export function useEmployeeDetailsForm({
   companyId,
   employeeId,
   withSelfOnboardingField = true,
-  requiredFields,
+  optionalFieldsToRequire,
   defaultValues: partnerDefaults,
   validationMode = 'onSubmit',
   shouldFocusError = true,
@@ -89,11 +89,10 @@ export function useEmployeeDetailsForm({
 
   const mode = isCreateMode ? 'create' : 'update'
 
-  const schema = createEmployeeDetailsSchema({
-    mode,
-    requiredFields,
-    hasSsn: employee?.hasSsn,
-  })
+  const [schema, metadataConfig] = useMemo(
+    () => createEmployeeDetailsSchema({ mode, optionalFieldsToRequire, hasSsn: employee?.hasSsn }),
+    [mode, optionalFieldsToRequire, employee?.hasSsn],
+  )
 
   const resolvedDefaults: EmployeeDetailsFormData = {
     firstName: employee?.firstName ?? partnerDefaults?.firstName ?? '',
@@ -128,11 +127,7 @@ export function useEmployeeDetailsForm({
   const queries = employeeId ? [employeeQuery] : []
   const errorHandling = useErrorHandling(queries, { error: submitError, setError })
 
-  const baseMetadata = deriveFieldsMetadata(schema)
-  const fieldsMetadata = {
-    ...baseMetadata,
-    ssn: { ...baseMetadata.ssn, hasRedactedValue: employee?.hasSsn ?? false },
-  }
+  const fieldsMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
 
   const onSubmit = async (
     callbacks?: EmployeeDetailsSubmitCallbacks,

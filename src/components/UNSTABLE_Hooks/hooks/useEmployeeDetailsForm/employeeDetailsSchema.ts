@@ -1,7 +1,12 @@
 import { z } from 'zod'
-import { composeFormSchema } from '../../form/composeFormSchema'
-import { filterRequiredFields, type RequiredFields } from '../../form/resolveRequiredFields'
+import {
+  buildFormSchema,
+  type RequiredFieldConfig,
+  type OptionalFieldsToRequire,
+} from '../../form/buildFormSchema'
 import { SSN_REGEX, NAME_REGEX } from '@/helpers/validations'
+
+// ── Error codes ────────────────────────────────────────────────────────
 
 export const EmployeeDetailsErrorCodes = {
   REQUIRED: 'REQUIRED',
@@ -13,6 +18,8 @@ export const EmployeeDetailsErrorCodes = {
 
 export type EmployeeDetailsErrorCode =
   (typeof EmployeeDetailsErrorCodes)[keyof typeof EmployeeDetailsErrorCodes]
+
+// ── Field validators ───────────────────────────────────────────────────
 
 const fieldValidators = {
   firstName: z
@@ -46,42 +53,49 @@ export type EmployeeDetailsFormData = {
 }
 export type EmployeeDetailsFormOutputs = EmployeeDetailsFormData
 
-const FIXED_FIELDS = new Set(['selfOnboarding'])
-const REQUIRED_ON_CREATE = new Set<EmployeeDetailsField>(['firstName', 'lastName'])
+// ── Required fields config ─────────────────────────────────────────────
+
+const requiredFieldsConfig = {
+  firstName: 'create',
+  lastName: 'create',
+  middleInitial: 'never',
+  email: 'never',
+  dateOfBirth: 'never',
+  ssn: 'never',
+} satisfies RequiredFieldConfig<typeof fieldValidators>
+
+// ── Schema factory ─────────────────────────────────────────────────────
+
+export type EmployeeDetailsOptionalFieldsToRequire = OptionalFieldsToRequire<
+  typeof requiredFieldsConfig
+>
 
 interface EmployeeDetailsSchemaOptions {
   mode?: 'create' | 'update'
-  requiredFields?: RequiredFields<EmployeeDetailsField>
+  optionalFieldsToRequire?: EmployeeDetailsOptionalFieldsToRequire
   hasSsn?: boolean
 }
 
 export function createEmployeeDetailsSchema(options: EmployeeDetailsSchemaOptions = {}) {
-  const { mode = 'create', requiredFields, hasSsn = false } = options
+  const { mode = 'create', optionalFieldsToRequire, hasSsn = false } = options
 
-  const effectiveRequiredFields = hasSsn
-    ? filterRequiredFields(requiredFields, 'ssn')
-    : requiredFields
-
-  const baseSchema = composeFormSchema({
-    fieldValidators,
-    fixedFields: FIXED_FIELDS,
-    requiredOnCreate: REQUIRED_ON_CREATE,
+  return buildFormSchema(fieldValidators, {
+    requiredFieldsConfig,
+    requiredErrorCode: EmployeeDetailsErrorCodes.REQUIRED,
     mode,
-    requiredFields: effectiveRequiredFields,
+    optionalFieldsToRequire,
+    fieldsWithRedactedValues: hasSsn ? ['ssn'] : [],
+    superRefine:
+      mode === 'create'
+        ? (data, ctx) => {
+            if (data.selfOnboarding && (!data.email || data.email.trim() === '')) {
+              ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                path: ['email'],
+                message: EmployeeDetailsErrorCodes.EMAIL_REQUIRED_FOR_SELF_ONBOARDING,
+              })
+            }
+          }
+        : undefined,
   })
-
-  if (mode === 'create') {
-    return baseSchema.superRefine((data, ctx) => {
-      const { selfOnboarding, email } = data as EmployeeDetailsFormData
-      if (selfOnboarding && (!email || email.trim() === '')) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ['email'],
-          message: EmployeeDetailsErrorCodes.EMAIL_REQUIRED_FOR_SELF_ONBOARDING,
-        })
-      }
-    })
-  }
-
-  return baseSchema
 }
