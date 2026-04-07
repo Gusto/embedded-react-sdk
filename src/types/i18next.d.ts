@@ -842,7 +842,8 @@ export interface ContractorPaymentsCreatePayment{
 "emptyTableTitle":string;
 "emptyTableDescription":string;
 "breadcrumbLabel":string;
-"paymentSpeedNotice":string;
+"paymentSpeedNotice_one":string;
+"paymentSpeedNotice_other":string;
 "dateLabel":string;
 "hoursAndPaymentsLabel":string;
 "contractorTableHeaders":{
@@ -2138,7 +2139,8 @@ export interface PayrollOffCyclePayPeriodDateForm{
 "checkDateRequired":string;
 "endDateAfterStart":string;
 "startDateNotFuture":string;
-"checkDateAchLeadTime":string;
+"checkDateAchLeadTime_one":string;
+"checkDateAchLeadTime_other":string;
 "checkDateNotPast":string;
 };
 };
@@ -2824,7 +2826,8 @@ export interface PayrollTransitionCreation{
 "errors":{
 "missingPayrollId":string;
 "checkDateRequired":string;
-"checkDateAchLeadTime":string;
+"checkDateAchLeadTime_one":string;
+"checkDateAchLeadTime_other":string;
 };
 };
 export interface PayrollTransitionPayrollAlert{

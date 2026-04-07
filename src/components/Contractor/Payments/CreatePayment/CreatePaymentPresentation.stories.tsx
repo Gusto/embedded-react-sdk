@@ -72,11 +72,20 @@ const mockContractorPayments: ContractorPayments[] = [
 function StoryWrapper({
   contractors,
   contractorPayments,
+  paymentSpeedDays = 2,
 }: {
   contractors: Contractor[]
   contractorPayments: ContractorPayments[]
+  paymentSpeedDays?: number
 }) {
-  const [paymentDate, setPaymentDate] = useState(new Date().toISOString().split('T')[0] || '')
+  const today = new Date()
+  const [paymentDate, setPaymentDate] = useState(
+    [
+      String(today.getFullYear()).padStart(4, '0'),
+      String(today.getMonth() + 1).padStart(2, '0'),
+      String(today.getDate()).padStart(2, '0'),
+    ].join('-'),
+  )
 
   const totals = contractorPayments.reduce(
     (acc, payment) => {
@@ -111,6 +120,7 @@ function StoryWrapper({
         totals={totals}
         alerts={{}}
         isLoading={false}
+        paymentSpeedDays={paymentSpeedDays}
       />
     </GustoTestProvider>
   )
@@ -121,3 +131,19 @@ export const WithContractors = () => (
 )
 
 export const EmptyState = () => <StoryWrapper contractors={[]} contractorPayments={[]} />
+
+export const PaymentSpeed1Day = () => (
+  <StoryWrapper
+    paymentSpeedDays={1}
+    contractors={mockContractors}
+    contractorPayments={mockContractorPayments}
+  />
+)
+
+export const PaymentSpeed4Day = () => (
+  <StoryWrapper
+    paymentSpeedDays={4}
+    contractors={mockContractors}
+    contractorPayments={mockContractorPayments}
+  />
+)

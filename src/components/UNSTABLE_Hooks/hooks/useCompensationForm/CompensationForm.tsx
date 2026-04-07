@@ -137,9 +137,7 @@ function CompensationFormRoot({ onEvent, dictionary, ...hookProps }: Compensatio
             <Fields.StateWcCovered
               label={t('stateWcCoveredLabel')}
               description={t('stateWcCoveredDescription')}
-              getOptionLabel={key =>
-                key === 'yes' ? t('stateWcCoveredYes') : t('stateWcCoveredNo')
-              }
+              getOptionLabel={key => (key ? t('stateWcCoveredYes') : t('stateWcCoveredNo'))}
             />
           )}
 

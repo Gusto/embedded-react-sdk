@@ -20,7 +20,7 @@ export const Edit = () => {
   const Components = useComponentContext()
   const { t } = useTranslation('Company.PaySchedule')
   const dateFormatter = useDateFormatter()
-  const { payPeriodPreview, mode, payPreviewLoading, paymentSpeed } = usePaySchedule()
+  const { payPeriodPreview, mode, payPreviewLoading, paymentSpeedDays } = usePaySchedule()
   const { setValue } = useFormContext<PayScheduleInputs>()
   const [selectedPayPeriodIndex, setSelectedPayPeriodIndex] = useState(0)
 
@@ -74,7 +74,7 @@ export const Edit = () => {
               name="anchorPayDate"
               label={t('labels.firstPayDate')}
               description={t('descriptions.anchorPayDateDescription', {
-                count: paymentSpeed ? Number(paymentSpeed.split('-')[0]) : 2,
+                count: paymentSpeedDays,
               })}
               isRequired
               minDate={new Date()}
