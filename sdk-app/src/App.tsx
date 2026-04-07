@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom'
 import { TopBar } from './TopBar'
 import { Sidebar } from './Sidebar'
 import { DemoSettingsPanel } from './DemoSettingsPanel'
+import { TokenExpiredOverlay } from './TokenExpiredOverlay'
 import { useEntities } from './useEntities'
 import { useDemoManager } from './useDemoManager'
 
@@ -56,6 +57,13 @@ export function App() {
         onCreateNewDemo={handleCreateNewDemo}
         onRefreshToken={demoManager.refreshToken}
       />
+      {demoManager.tokenStatus === 'expired' && (
+        <TokenExpiredOverlay
+          onRefresh={demoManager.refreshToken}
+          isRefreshing={demoManager.isCreatingDemo}
+          error={demoManager.demoError}
+        />
+      )}
     </div>
   )
 }
