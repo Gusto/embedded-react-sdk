@@ -36,9 +36,7 @@ export {
 
   // Form infrastructure
   SDKFormProvider,
-  FormFieldsMetadataProvider,
   composeSubmitHandler,
-  useFieldsMetadata,
   useFieldErrorMessage,
   withOptions,
   deriveFieldsMetadata,

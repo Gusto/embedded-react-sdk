@@ -274,8 +274,26 @@ const formMethods = useForm<FormData, unknown, FormOutputs>({
 
 ### Fields Metadata
 
-- Call `deriveFieldsMetadata(schema)` on the **composed** schema (after `composeFormSchema` / `requiredIf` is applied) — this uses `z.toJSONSchema()` to accurately detect `isRequired` for all fields including conditionally required ones
-- Cast the result when using dynamically constructed schemas: `deriveFieldsMetadata(schema) as Record<keyof FormData, FieldMetadata>`
+For hooks using `buildFormSchema`, use `useDeriveFieldsMetadata` to auto-resolve metadata from the schema result. It watches all form values and evaluates predicate-based requiredness rules automatically — hook implementors never manually track which fields predicates depend on:
+
+```typescript
+const schemaResult = useMemo(
+  () => create{Domain}Schema({ mode, optionalFieldsToRequire }),
+  [mode, optionalFieldsToRequire],
+)
+const { schema } = schemaResult
+
+const formMethods = useForm({ resolver: zodResolver(schema), ... })
+
+const baseMetadata = useDeriveFieldsMetadata(schemaResult, formMethods.control)
+```
+
+The schema result must be wrapped in `useMemo` so that `useDeriveFieldsMetadata` doesn't re-compute on every render.
+
+For hooks still using `composeFormSchema`, use the legacy `deriveFieldsMetadata(schema)` which inspects `z.toJSONSchema()`.
+
+After resolving base metadata, enhance it for the return shape:
+
 - Enhance select/radio fields with `withOptions<TEntry>(baseMetadata.field, options, entries)`
 - Override `isRequired`/`isDisabled` based on business logic
 - Use `hasRedactedValue` metadata for fields where the API returns a flag (e.g. `hasSsn`) but not the actual value — lets the UI show a masked placeholder
@@ -379,7 +397,7 @@ Reference `gws-flows/app/frontend/react_sdk/CustomCompensationForm.tsx` as the r
 
 ### What stays internal (export from inner barrels but NOT from `UNSTABLE_Hooks.ts` unless needed)
 
-Infrastructure utilities like `deriveFieldsMetadata`, `withOptions`, `FormFieldsMetadataProvider`, `useErrorHandling`, `collectErrors`, generic `*HookField` components, and base types like `HookFormInternals`, `BaseFormHookReady` are used by the SDK to build hooks — not by partners. Only promote to the public barrel if a partner use case demands it.
+Infrastructure utilities like `useDeriveFieldsMetadata`, `deriveFieldsMetadata`, `withOptions`, `FormFieldsMetadataProvider`, `useErrorHandling`, `collectErrors`, generic `*HookField` components, and base types like `HookFormInternals`, `BaseFormHookReady` are used by the SDK to build hooks — not by partners. Only promote to the public barrel if a partner use case demands it.
 
 Do NOT re-export `@gusto/embedded-api` entity types directly — partners derive them from field prop generics (e.g. `NonNullable<FlsaStatusFieldProps['getOptionLabel']>` infers the entity type).
 

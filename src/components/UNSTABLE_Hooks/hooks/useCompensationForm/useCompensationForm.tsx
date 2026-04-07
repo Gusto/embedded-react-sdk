@@ -17,6 +17,7 @@ import { useEmployeesGet } from '@gusto/embedded-api/react-query/employeesGet'
 import { useFederalTaxDetailsGet } from '@gusto/embedded-api/react-query/federalTaxDetailsGet'
 import { withOptions } from '../../form/withOptions'
 import { createGetFormSubmissionValues } from '../../form/getFormSubmissionValues'
+import { useDeriveFieldsMetadata } from '../../form/useDeriveFieldsMetadata'
 import {
   createCompensationSchema,
   type CompensationOptionalFieldsToRequire,
@@ -159,11 +160,11 @@ export function useCompensationForm({
   const isCreateMode = !currentJob
   const mode = isCreateMode ? 'create' : 'update'
 
-  const { schema, getFieldsMetadata } = createCompensationSchema({
-    mode,
-    optionalFieldsToRequire,
-    withStartDateField,
-  })
+  const schemaResult = useMemo(
+    () => createCompensationSchema({ mode, optionalFieldsToRequire, withStartDateField }),
+    [mode, optionalFieldsToRequire, withStartDateField],
+  )
+  const { schema } = schemaResult
 
   const state = currentWorkAddress?.state
 
@@ -265,10 +266,7 @@ export function useCompensationForm({
     label: `${code}: ${description}`,
   }))
 
-  const baseMetadata = getFieldsMetadata({
-    adjustForMinimumWage: watchedAdjustForMinimumWage,
-    stateWcCovered: watchedStateWcCovered,
-  })
+  const baseMetadata = useDeriveFieldsMetadata(schemaResult, formMethods.control)
   const fieldsMetadata = {
     startDate: baseMetadata.startDate,
     jobTitle: baseMetadata.jobTitle,

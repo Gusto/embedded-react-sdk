@@ -39,7 +39,7 @@ export {
   withOptions,
   FormFieldsMetadataProvider,
   SDKFormProvider,
-  useFieldsMetadata,
+  useDeriveFieldsMetadata,
   useFieldErrorMessage,
   deriveFieldsMetadata,
   composeSubmitHandler,
