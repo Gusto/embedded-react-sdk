@@ -41,7 +41,6 @@ export {
   SDKFormProvider,
   useDeriveFieldsMetadata,
   useFieldErrorMessage,
-  deriveFieldsMetadata,
   composeSubmitHandler,
   TextInputHookField,
   SelectHookField,
