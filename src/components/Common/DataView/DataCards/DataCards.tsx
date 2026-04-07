@@ -68,7 +68,7 @@ export const DataCards = <T,>({
 
   return (
     <div data-testid="data-cards">
-      {onSelect && selectionMode === 'multiple' && data.length > 0 && (
+      {onSelect && isItemSelected && selectionMode === 'multiple' && data.length > 0 && (
         <div className={styles.selectAllRow}>
           <Components.Checkbox
             value={allSelected}

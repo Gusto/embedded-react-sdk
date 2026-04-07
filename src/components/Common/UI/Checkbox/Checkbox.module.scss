@@ -100,3 +100,13 @@
     opacity: 0.5;
   }
 }
+
+.disabled.indeterminate .checkbox {
+  background: var(--g-colorBodyAccent);
+
+  .indeterminateCheck {
+    color: var(--g-colorSecondaryContent);
+    fill: var(--g-colorSecondaryContent);
+    opacity: 0.5;
+  }
+}

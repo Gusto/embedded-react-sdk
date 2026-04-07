@@ -62,7 +62,7 @@ export const DataTable = <T,>({
           {
             key: 'select-header',
             content:
-              selectionMode === 'multiple' ? (
+              selectionMode === 'multiple' && isItemSelected ? (
                 <Components.Checkbox
                   value={allSelected}
                   isIndeterminate={someSelected && !allSelected}

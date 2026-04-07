@@ -1,5 +1,5 @@
 import type { MutableRefObject } from 'react'
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { useFieldIds } from '../hooks/useFieldIds'
 import styles from './Checkbox.module.scss'
 import type { CheckboxProps } from './CheckboxTypes'
@@ -43,14 +43,17 @@ export const Checkbox = (rawProps: CheckboxProps) => {
     }
   }, [isIndeterminate])
 
-  const mergedRef = (el: HTMLInputElement | null) => {
-    internalRef.current = el
-    if (typeof inputRef === 'function') {
-      inputRef(el)
-    } else if (inputRef) {
-      ;(inputRef as MutableRefObject<HTMLInputElement | null>).current = el
-    }
-  }
+  const mergedRef = useCallback(
+    (el: HTMLInputElement | null) => {
+      internalRef.current = el
+      if (typeof inputRef === 'function') {
+        inputRef(el)
+      } else if (inputRef) {
+        ;(inputRef as MutableRefObject<HTMLInputElement | null>).current = el
+      }
+    },
+    [inputRef],
+  )
 
   const handleClick = () => {
     if (isDisabled) return
