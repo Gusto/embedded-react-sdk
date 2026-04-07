@@ -34,7 +34,7 @@ function EmployeeListRoot({ companyId, onEvent, dictionary }: EmployeeListProps)
   }
 
   return (
-    <BaseLayout error={employeeList.errorHandling.errors}>
+    <BaseLayout error={employeeList.errorHandling?.errors}>
       <EmployeeListView
         employees={employeeList.data.employees}
         isFetching={employeeList.status.isFetching}

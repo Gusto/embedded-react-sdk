@@ -214,7 +214,7 @@ describe('Dashboard', () => {
 
     // Find the Edit button in Basic Details section
     const editButtons = screen.getAllByText('Edit')
-    await user.click(editButtons[0])
+    await user.click(editButtons[0]!)
 
     expect(onEvent).toHaveBeenCalledWith('EMPLOYEE_UPDATE', {
       employeeId: 'employee-123',
@@ -234,7 +234,7 @@ describe('Dashboard', () => {
 
     // Find the Manage button for home address
     const manageButtons = screen.getAllByText('Manage')
-    await user.click(manageButtons[0])
+    await user.click(manageButtons[0]!)
 
     expect(onEvent).toHaveBeenCalledWith('EMPLOYEE_HOME_ADDRESS', {
       employeeId: 'employee-123',
@@ -254,7 +254,7 @@ describe('Dashboard', () => {
 
     // Find the Manage button for work address
     const manageButtons = screen.getAllByText('Manage')
-    await user.click(manageButtons[1])
+    await user.click(manageButtons[1]!)
 
     expect(onEvent).toHaveBeenCalledWith('EMPLOYEE_WORK_ADDRESS', {
       employeeId: 'employee-123',

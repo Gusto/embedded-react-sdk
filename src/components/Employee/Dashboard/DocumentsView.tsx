@@ -6,17 +6,11 @@ import { DataView, useDataView, EmptyData, Loading } from '@/components/Common'
 
 export interface DocumentsViewProps {
   forms?: Form[]
-  isFetching?: boolean
   isLoading?: boolean
   onViewForm?: (formUuid: string) => void
 }
 
-export function DocumentsView({
-  forms = [],
-  isFetching = false,
-  isLoading = false,
-  onViewForm,
-}: DocumentsViewProps) {
+export function DocumentsView({ forms = [], isLoading = false, onViewForm }: DocumentsViewProps) {
   const { t } = useTranslation('Employee.Dashboard')
   const Components = useComponentContext()
 
@@ -71,7 +65,6 @@ export function DocumentsView({
   const formsDataView = useDataView({
     data: forms,
     columns: formsColumns,
-    isFetching,
     emptyState: () => (
       <EmptyData
         title={t('documents.emptyState.title')}

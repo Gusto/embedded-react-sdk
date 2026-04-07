@@ -21,8 +21,6 @@ export interface JobAndPayViewProps {
   bankAccounts?: EmployeeBankAccount[]
   garnishments?: Garnishment[]
   payStubs?: EmployeePayStub[]
-  isFetchingGarnishments?: boolean
-  isFetchingPayStubs?: boolean
   isLoading?: boolean
   onEditCompensation?: () => void
   onAddBankAccount?: () => void
@@ -35,8 +33,6 @@ export function JobAndPayView({
   bankAccounts = [],
   garnishments = [],
   payStubs = [],
-  isFetchingGarnishments = false,
-  isFetchingPayStubs = false,
   isLoading = false,
   onEditCompensation,
   onAddBankAccount,
@@ -138,7 +134,6 @@ export function JobAndPayView({
   const garnishmentsDataView = useDataView({
     data: garnishments,
     columns: garnishmentsColumns,
-    isFetching: isFetchingGarnishments,
     emptyState: () => (
       <EmptyData
         title={t('jobAndPay.deductions.emptyState.title')}
@@ -150,7 +145,6 @@ export function JobAndPayView({
   const payStubsDataView = useDataView({
     data: payStubs,
     columns: payStubsColumns,
-    isFetching: isFetchingPayStubs,
     emptyState: () => (
       <EmptyData
         title={t('jobAndPay.paystubs.emptyState.title')}

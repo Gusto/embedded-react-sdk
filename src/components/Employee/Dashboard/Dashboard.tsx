@@ -1,15 +1,6 @@
 import { useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
-import { useEmployeeAddressesGetSuspense } from '@gusto/embedded-api/react-query/employeeAddressesGet'
-import { useEmployeeAddressesGetWorkAddressesSuspense } from '@gusto/embedded-api/react-query/employeeAddressesGetWorkAddresses'
-import { useEmployeePaymentMethodGetSuspense } from '@gusto/embedded-api/react-query/employeePaymentMethodGet'
-import { useEmployeePaymentMethodsGetBankAccountsSuspense } from '@gusto/embedded-api/react-query/employeePaymentMethodsGetBankAccounts'
-import { useGarnishmentsListSuspense } from '@gusto/embedded-api/react-query/garnishmentsList'
-import { usePayrollsGetPayStubsSuspense } from '@gusto/embedded-api/react-query/payrollsGetPayStubs'
-import { useEmployeeTaxSetupGetFederalTaxesSuspense } from '@gusto/embedded-api/react-query/employeeTaxSetupGetFederalTaxes'
-import { useEmployeeTaxSetupGetStateTaxesSuspense } from '@gusto/embedded-api/react-query/employeeTaxSetupGetStateTaxes'
-import { useEmployeeFormsListSuspense } from '@gusto/embedded-api/react-query/employeeFormsList'
+import { useDashboard } from './useDashboard'
 import { BasicDetailsView } from './BasicDetailsView'
 import { JobAndPayView } from './JobAndPayView'
 import { TaxesView } from './TaxesView'
@@ -34,86 +25,48 @@ function DashboardRoot({ companyId, employeeId, dictionary, onEvent }: Dashboard
   const Components = useComponentContext()
   const [selectedTab, setSelectedTab] = useState<DashboardTab>('basicDetails')
 
-  const {
-    data: { employee },
-    isFetching: isFetchingEmployee,
-  } = useEmployeesGetSuspense({ employeeId })
+  const dashboard = useDashboard({ employeeId })
+
+  if (dashboard.isLoading) {
+    return <BaseLayout isLoading />
+  }
 
   const {
-    data: { employeeAddressList },
-    isFetching: isFetchingAddresses,
-  } = useEmployeeAddressesGetSuspense({ employeeId })
+    employee,
+    currentHomeAddress,
+    currentWorkAddress,
+    primaryJob,
+    employeePaymentMethod,
+    bankAccounts,
+    garnishmentList,
+    payStubs,
+    employeeFederalTax,
+    employeeStateTaxesList,
+    formList,
+  } = dashboard.data
 
   const {
-    data: { employeeWorkAddressesList },
-    isFetching: isFetchingWorkAddresses,
-  } = useEmployeeAddressesGetWorkAddressesSuspense({ employeeId })
-
-  const {
-    data: { employeePaymentMethod },
-    isFetching: isFetchingPaymentMethod,
-  } = useEmployeePaymentMethodGetSuspense({ employeeId })
-
-  const { data: bankAccountsList, isFetching: isFetchingBankAccounts } =
-    useEmployeePaymentMethodsGetBankAccountsSuspense({ employeeId })
-
-  const {
-    data: { garnishmentList },
-    isFetching: isFetchingGarnishments,
-  } = useGarnishmentsListSuspense({ employeeId })
-
-  const { data: payStubData, isFetching: isFetchingPayStubs } = usePayrollsGetPayStubsSuspense({
-    employeeId,
-  })
-
-  const {
-    data: { employeeFederalTax },
-    isFetching: isFetchingFederalTaxes,
-  } = useEmployeeTaxSetupGetFederalTaxesSuspense({ employeeUuid: employeeId })
-
-  const {
-    data: { employeeStateTaxesList },
-    isFetching: isFetchingStateTaxes,
-  } = useEmployeeTaxSetupGetStateTaxesSuspense({ employeeUuid: employeeId })
-
-  const {
-    data: { formList },
-    isFetching: isFetchingForms,
-  } = useEmployeeFormsListSuspense({
-    employeeId,
-  })
-
-  const isLoadingBasicDetails = isFetchingEmployee || isFetchingAddresses || isFetchingWorkAddresses
-  const isLoadingJobAndPay =
-    isFetchingEmployee ||
-    isFetchingPaymentMethod ||
-    isFetchingBankAccounts ||
-    isFetchingGarnishments ||
-    isFetchingPayStubs
-  const isLoadingTaxes = isFetchingFederalTaxes || isFetchingStateTaxes
-  const isLoadingDocuments = isFetchingForms
-
-  const currentHomeAddress = employeeAddressList?.find(address => address.active)
-  const currentWorkAddress = employeeWorkAddressesList?.find(address => address.active)
-  const primaryJob = employee?.jobs?.[0]
-  const bankAccounts = bankAccountsList.employeeBankAccountList || []
-  const payStubs = payStubData.employeePayStubsList || []
+    isLoadingBasicDetails,
+    isLoadingJobAndPay,
+    isLoadingTaxes,
+    isLoadingDocuments,
+  } = dashboard.status
 
   const handleEditBasicDetails = useCallback(() => {
     onEvent(componentEvents.EMPLOYEE_UPDATE, { employeeId })
   }, [onEvent, employeeId])
 
   const handleManageHomeAddress = useCallback(() => {
-    onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_UPDATE, { employeeId })
+    onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS, { employeeId })
   }, [onEvent, employeeId])
 
   const handleManageWorkAddress = useCallback(() => {
-    onEvent(componentEvents.EMPLOYEE_WORK_ADDRESS_UPDATE, { employeeId })
+    onEvent(componentEvents.EMPLOYEE_WORK_ADDRESS, { employeeId })
   }, [onEvent, employeeId])
 
   const handleEditCompensation = useCallback(() => {
-    onEvent(componentEvents.EMPLOYEE_COMPENSATION_UPDATE, { employeeId })
-  }, [onEvent, employeeId])
+    onEvent(componentEvents.EMPLOYEE_COMPENSATION_UPDATE, { employeeId, job: primaryJob })
+  }, [onEvent, employeeId, primaryJob])
 
   const handleAddBankAccount = useCallback(() => {
     onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATE, { employeeId })
@@ -124,14 +77,15 @@ function DashboardRoot({ companyId, employeeId, dictionary, onEvent }: Dashboard
   }, [onEvent, employeeId])
 
   const handleEditFederalTaxes = useCallback(() => {
-    onEvent(componentEvents.EMPLOYEE_FEDERAL_TAXES_EDIT, {
+    onEvent(componentEvents.EMPLOYEE_FEDERAL_TAXES_UPDATED, {
       employeeId,
+      federalTaxes: employeeFederalTax,
     })
-  }, [onEvent, employeeId])
+  }, [onEvent, employeeId, employeeFederalTax])
 
   const handleEditStateTaxes = useCallback(
     (state: string) => {
-      onEvent(componentEvents.EMPLOYEE_STATE_TAXES_EDIT, { employeeId, state })
+      onEvent(componentEvents.EMPLOYEE_STATE_TAXES_UPDATED, { employeeId, state })
     },
     [onEvent, employeeId],
   )
@@ -193,21 +147,19 @@ function DashboardRoot({ companyId, employeeId, dictionary, onEvent }: Dashboard
             />
           )}
 
-          {selectedTab === 'jobAndPay' && (
-            <JobAndPayView
-              job={primaryJob}
-              paymentMethod={employeePaymentMethod}
-              bankAccounts={bankAccounts}
-              garnishments={garnishmentList}
-              payStubs={payStubs}
-              isFetchingGarnishments={isFetchingGarnishments}
-              isFetchingPayStubs={isFetchingPayStubs}
-              isLoading={isLoadingJobAndPay}
-              onEditCompensation={handleEditCompensation}
-              onAddBankAccount={handleAddBankAccount}
-              onAddDeduction={handleAddDeduction}
-            />
-          )}
+                {selectedTab === 'jobAndPay' && (
+                  <JobAndPayView
+                    job={primaryJob}
+                    paymentMethod={employeePaymentMethod}
+                    bankAccounts={bankAccounts}
+                    garnishments={garnishmentList}
+                    payStubs={payStubs}
+                    isLoading={isLoadingJobAndPay}
+                    onEditCompensation={handleEditCompensation}
+                    onAddBankAccount={handleAddBankAccount}
+                    onAddDeduction={handleAddDeduction}
+                  />
+                )}
 
           {selectedTab === 'taxes' && (
             <TaxesView
@@ -219,14 +171,13 @@ function DashboardRoot({ companyId, employeeId, dictionary, onEvent }: Dashboard
             />
           )}
 
-          {selectedTab === 'documents' && (
-            <DocumentsView
-              forms={formList}
-              isFetching={isFetchingForms}
-              isLoading={isLoadingDocuments}
-              onViewForm={handleViewForm}
-            />
-          )}
+                {selectedTab === 'documents' && (
+                  <DocumentsView
+                    forms={formList}
+                    isLoading={isLoadingDocuments}
+                    onViewForm={handleViewForm}
+                  />
+                )}
         </Flex>
       </Flex>
     </BaseLayout>
