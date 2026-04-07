@@ -78,12 +78,124 @@ describe('DataCards', () => {
     )
 
     const checkboxes = screen.getAllByRole('checkbox')
-    expect(checkboxes).toHaveLength(2)
+    // +1 for the select-all checkbox
+    expect(checkboxes).toHaveLength(testData.length + 1)
 
-    if (checkboxes.length === 0) return
-
-    await userEvent.click(checkboxes[0] as HTMLElement)
+    const firstRowCheckbox = checkboxes[1]
+    await userEvent.click(firstRowCheckbox as HTMLElement)
     expect(onSelectMock).toHaveBeenCalledWith(testData[0], true)
+  })
+
+  describe('select-all checkbox', () => {
+    test('renders a select-all checkbox when selectionMode is multiple and onSelect is set', () => {
+      renderWithProviders(
+        <DataCards
+          data={testData}
+          columns={[...testColumns]}
+          onSelect={vi.fn()}
+          isItemSelected={() => false}
+          selectionMode="multiple"
+        />,
+      )
+
+      const checkboxes = screen.getAllByRole('checkbox')
+      expect(checkboxes).toHaveLength(testData.length + 1)
+      expect(screen.getByLabelText('Select all rows')).toBeInTheDocument()
+    })
+
+    test('does not render select-all checkbox for single selectionMode', () => {
+      renderWithProviders(
+        <DataCards
+          data={testData}
+          columns={[...testColumns]}
+          onSelect={vi.fn()}
+          selectionMode="single"
+        />,
+      )
+
+      expect(screen.queryByLabelText('Select all rows')).not.toBeInTheDocument()
+    })
+
+    test('does not render select-all checkbox when no data', () => {
+      renderWithProviders(
+        <DataCards
+          data={[]}
+          columns={[...testColumns]}
+          onSelect={vi.fn()}
+          selectionMode="multiple"
+        />,
+      )
+
+      expect(screen.queryByRole('checkbox')).not.toBeInTheDocument()
+    })
+
+    test('select-all checkbox is checked when all rows selected', () => {
+      renderWithProviders(
+        <DataCards
+          data={testData}
+          columns={[...testColumns]}
+          onSelect={vi.fn()}
+          isItemSelected={() => true}
+          selectionMode="multiple"
+        />,
+      )
+
+      const selectAllCheckbox = screen.getByLabelText('Select all rows')
+      const selectAllWrapper = selectAllCheckbox.closest('[class*=checkboxWrapper]')
+      expect(selectAllWrapper?.className).toContain('checked')
+    })
+
+    test('select-all checkbox is indeterminate when some rows selected', () => {
+      renderWithProviders(
+        <DataCards
+          data={testData}
+          columns={[...testColumns]}
+          onSelect={vi.fn()}
+          isItemSelected={(_item, index) => index === 0}
+          selectionMode="multiple"
+        />,
+      )
+
+      const selectAllCheckbox = screen.getByLabelText('Select all rows')
+      const selectAllWrapper = selectAllCheckbox.closest('[class*=checkboxWrapper]')
+      expect(selectAllWrapper?.className).toContain('indeterminate')
+    })
+
+    test('clicking select-all fires onSelectAll with true when not all selected', async () => {
+      const onSelectAllMock = vi.fn()
+      renderWithProviders(
+        <DataCards
+          data={testData}
+          columns={[...testColumns]}
+          onSelect={vi.fn()}
+          onSelectAll={onSelectAllMock}
+          isItemSelected={() => false}
+          selectionMode="multiple"
+        />,
+      )
+
+      const selectAllCheckbox = screen.getAllByRole('checkbox')[0]
+      await userEvent.click(selectAllCheckbox as HTMLElement)
+      expect(onSelectAllMock).toHaveBeenCalledWith(true)
+    })
+
+    test('clicking select-all fires onSelectAll with false when all selected', async () => {
+      const onSelectAllMock = vi.fn()
+      renderWithProviders(
+        <DataCards
+          data={testData}
+          columns={[...testColumns]}
+          onSelect={vi.fn()}
+          onSelectAll={onSelectAllMock}
+          isItemSelected={() => true}
+          selectionMode="multiple"
+        />,
+      )
+
+      const selectAllCheckbox = screen.getAllByRole('checkbox')[0]
+      await userEvent.click(selectAllCheckbox as HTMLElement)
+      expect(onSelectAllMock).toHaveBeenCalledWith(false)
+    })
   })
 
   test('should render empty state with proper accessibility structure when emptyState is provided', () => {

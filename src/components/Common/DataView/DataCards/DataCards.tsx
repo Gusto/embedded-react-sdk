@@ -10,6 +10,7 @@ export type DataCardsProps<T> = {
   data: useDataViewPropReturn<T>['data']
   itemMenu?: useDataViewPropReturn<T>['itemMenu']
   onSelect?: useDataViewPropReturn<T>['onSelect']
+  onSelectAll?: useDataViewPropReturn<T>['onSelectAll']
   isItemSelected?: useDataViewPropReturn<T>['isItemSelected']
   emptyState?: useDataViewPropReturn<T>['emptyState']
   footer?: useDataViewPropReturn<T>['footer']
@@ -21,6 +22,7 @@ export const DataCards = <T,>({
   columns,
   itemMenu,
   onSelect,
+  onSelectAll,
   isItemSelected,
   emptyState,
   footer,
@@ -29,6 +31,9 @@ export const DataCards = <T,>({
   const Components = useComponentContext()
   const { t } = useTranslation('common')
   const radioGroupName = useId()
+
+  const allSelected = data.length > 0 && data.every((item, i) => isItemSelected?.(item, i) ?? false)
+  const someSelected = data.some((item, i) => isItemSelected?.(item, i) ?? false)
 
   const renderAction = (item: T, index: number) => {
     if (!onSelect) return undefined
@@ -62,50 +67,62 @@ export const DataCards = <T,>({
   }
 
   return (
-    <div role="list" data-testid="data-cards">
-      {data.length === 0 && emptyState && (
-        <div role="listitem">
-          <Components.Card>{emptyState()}</Components.Card>
+    <div data-testid="data-cards">
+      {onSelect && selectionMode === 'multiple' && data.length > 0 && (
+        <div className={styles.selectAllRow}>
+          <Components.Checkbox
+            value={allSelected}
+            isIndeterminate={someSelected && !allSelected}
+            onChange={(checked: boolean) => onSelectAll?.(checked)}
+            label={t('card.selectAllRowsLabel')}
+          />
         </div>
       )}
-      {data.map((item, index) => (
-        <div role="listitem" key={index}>
-          <Components.Card menu={itemMenu && itemMenu(item)} action={renderAction(item, index)}>
-            {columns.map((column, colIndex) => (
-              <Flex key={colIndex} flexDirection="column" gap={0}>
-                {column.title && <h5 className={styles.columnTitle}>{column.title}</h5>}
-                <div className={styles.columnData}>
-                  {' '}
-                  {column.render ? column.render(item) : String(item[column.key as keyof T])}
-                </div>
-              </Flex>
-            ))}
-          </Components.Card>
-        </div>
-      ))}
-      {footer && (
-        <div role="listitem">
-          <Components.Card>
-            {(() => {
-              const footerContent = footer()
+      <div role="list">
+        {data.length === 0 && emptyState && (
+          <div role="listitem">
+            <Components.Card>{emptyState()}</Components.Card>
+          </div>
+        )}
+        {data.map((item, index) => (
+          <div role="listitem" key={index}>
+            <Components.Card menu={itemMenu && itemMenu(item)} action={renderAction(item, index)}>
+              {columns.map((column, colIndex) => (
+                <Flex key={colIndex} flexDirection="column" gap={0}>
+                  {column.title && <h5 className={styles.columnTitle}>{column.title}</h5>}
+                  <div className={styles.columnData}>
+                    {' '}
+                    {column.render ? column.render(item) : String(item[column.key as keyof T])}
+                  </div>
+                </Flex>
+              ))}
+            </Components.Card>
+          </div>
+        ))}
+        {footer && (
+          <div role="listitem">
+            <Components.Card>
+              {(() => {
+                const footerContent = footer()
 
-              return Object.entries(footerContent).map(([key, content]) => {
-                const columnIndex = key.startsWith('column-')
-                  ? parseInt(key.replace('column-', ''), 10)
-                  : -1
-                const columnTitle = columnIndex >= 0 ? columns[columnIndex]?.title : undefined
+                return Object.entries(footerContent).map(([key, content]) => {
+                  const columnIndex = key.startsWith('column-')
+                    ? parseInt(key.replace('column-', ''), 10)
+                    : -1
+                  const columnTitle = columnIndex >= 0 ? columns[columnIndex]?.title : undefined
 
-                return (
-                  <Flex key={key} flexDirection="column" gap={0}>
-                    {columnTitle && <h5 className={styles.columnTitle}>{columnTitle}</h5>}
-                    <div className={styles.footerItem}>{content}</div>
-                  </Flex>
-                )
-              })
-            })()}
-          </Components.Card>
-        </div>
-      )}
+                  return (
+                    <Flex key={key} flexDirection="column" gap={0}>
+                      {columnTitle && <h5 className={styles.columnTitle}>{columnTitle}</h5>}
+                      <div className={styles.footerItem}>{content}</div>
+                    </Flex>
+                  )
+                })
+              })()}
+            </Components.Card>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

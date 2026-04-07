@@ -35,6 +35,7 @@ export const DataView = <T,>({
   variant,
   emptyState,
   selectionMode,
+  onSelectAll,
   ...dataViewProps
 }: DataViewProps<T>) => {
   const containerRef = useRef<HTMLElement | null>(null)
@@ -62,6 +63,7 @@ export const DataView = <T,>({
       {isBreakpointsDetected && (
         <Component
           {...dataViewProps}
+          onSelectAll={onSelectAll}
           footer={footer}
           variant={variant}
           emptyState={emptyState}

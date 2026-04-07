@@ -1,4 +1,4 @@
-import type { ChangeEvent, MutableRefObject } from 'react'
+import type { MutableRefObject } from 'react'
 import { useEffect, useRef } from 'react'
 import { useFieldIds } from '../hooks/useFieldIds'
 import styles from './Checkbox.module.scss'
@@ -52,9 +52,19 @@ export const Checkbox = (rawProps: CheckboxProps) => {
     }
   }
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    onChange?.(event.target.checked)
+  const handleClick = () => {
+    if (isDisabled) return
+    onChange?.(!(value ?? false))
   }
+
+  const wrapperClassName = [
+    styles.checkboxWrapper,
+    value && styles.checked,
+    isIndeterminate && !value && styles.indeterminate,
+    isDisabled && styles.disabled,
+  ]
+    .filter(Boolean)
+    .join(' ')
 
   return (
     <HorizontalFieldLayout
@@ -69,7 +79,7 @@ export const Checkbox = (rawProps: CheckboxProps) => {
       className={className}
       {...otherProps}
     >
-      <div className={styles.checkboxWrapper}>
+      <div className={wrapperClassName}>
         <input
           type="checkbox"
           name={name}
@@ -80,7 +90,8 @@ export const Checkbox = (rawProps: CheckboxProps) => {
           id={inputId}
           ref={mergedRef}
           onBlur={onBlur}
-          onChange={handleChange}
+          onChange={() => {}}
+          onClick={handleClick}
           className={styles.checkboxInput}
         />
         <div className={styles.checkbox}>

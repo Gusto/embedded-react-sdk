@@ -93,32 +93,86 @@ describe('Checkbox', () => {
     expect(screen.getByText('This field is required')).toBeInTheDocument()
   })
 
-  describe('Accessibility', () => {
-    const testCases = [
-      { name: 'default', props: { label: 'Default Checkbox' } },
-      { name: 'checked', props: { label: 'Checked Checkbox', isSelected: true } },
-      { name: 'disabled', props: { label: 'Disabled Checkbox', isDisabled: true } },
-      { name: 'indeterminate', props: { label: 'Indeterminate Checkbox', isIndeterminate: true } },
-      {
-        name: 'with description',
-        props: { label: 'Checkbox with Description', description: 'Helpful text' },
-      },
-      {
-        name: 'with error',
-        props: { label: 'Error Checkbox', isInvalid: true, errorMessage: 'Required field' },
-      },
-    ]
+  describe('indeterminate state', () => {
+    it('sets indeterminate property on the DOM element', () => {
+      renderWithProviders(<Checkbox {...defaultProps} isIndeterminate />)
+      const input = screen.getByRole('checkbox')
+      expect(input.indeterminate).toBe(true)
+    })
 
-    it.each(testCases)(
-      'should not have any accessibility violations - $name',
-      async ({ props }) => {
-        const { container } = renderWithProviders(<Checkbox {...props} />)
-        await expectNoAxeViolations(container)
-      },
-    )
+    it('applies indeterminate class to wrapper when isIndeterminate is true and value is false', () => {
+      renderWithProviders(<Checkbox {...defaultProps} isIndeterminate value={false} />)
+      const input = screen.getByRole('checkbox')
+      const wrapper = input.closest('[class*=checkboxWrapper]')
+      expect(wrapper?.className).toContain('indeterminate')
+      expect(wrapper?.className).not.toContain('checked')
+    })
+
+    it('applies checked class instead of indeterminate when value is true', () => {
+      renderWithProviders(<Checkbox {...defaultProps} isIndeterminate value={true} />)
+      const input = screen.getByRole('checkbox')
+      const wrapper = input.closest('[class*=checkboxWrapper]')
+      expect(wrapper?.className).toContain('checked')
+      expect(wrapper?.className).not.toContain('indeterminate')
+    })
   })
 
-  describe('Accessibility', () => {
+  describe('controlled toggle', () => {
+    it('calls onChange with true when value is false and clicked', async () => {
+      const user = userEvent.setup()
+      const onChange = vi.fn()
+      renderWithProviders(<Checkbox label="Toggle" value={false} onChange={onChange} />)
+
+      await user.click(screen.getByRole('checkbox'))
+      expect(onChange).toHaveBeenCalledWith(true)
+    })
+
+    it('calls onChange with false when value is true and clicked', async () => {
+      const user = userEvent.setup()
+      const onChange = vi.fn()
+      renderWithProviders(<Checkbox label="Toggle" value={true} onChange={onChange} />)
+
+      await user.click(screen.getByRole('checkbox'))
+      expect(onChange).toHaveBeenCalledWith(false)
+    })
+  })
+
+  describe('disabled behavior', () => {
+    it('does not call onChange when disabled and clicked', async () => {
+      const user = userEvent.setup()
+      const onChange = vi.fn()
+      renderWithProviders(<Checkbox label="Disabled" isDisabled onChange={onChange} />)
+
+      await user.click(screen.getByRole('checkbox'))
+      expect(onChange).not.toHaveBeenCalled()
+    })
+
+    it('applies disabled class to wrapper', () => {
+      renderWithProviders(<Checkbox label="Disabled" isDisabled />)
+      const input = screen.getByRole('checkbox')
+      const wrapper = input.closest('[class*=checkboxWrapper]')
+      expect(wrapper?.className).toContain('disabled')
+    })
+  })
+
+  describe('class-based visual states', () => {
+    it('applies checked class when value is true', () => {
+      renderWithProviders(<Checkbox {...defaultProps} value={true} />)
+      const input = screen.getByRole('checkbox')
+      const wrapper = input.closest('[class*=checkboxWrapper]')
+      expect(wrapper?.className).toContain('checked')
+    })
+
+    it('does not apply checked or indeterminate class when unchecked', () => {
+      renderWithProviders(<Checkbox {...defaultProps} value={false} />)
+      const input = screen.getByRole('checkbox')
+      const wrapper = input.closest('[class*=checkboxWrapper]')
+      expect(wrapper?.className).not.toContain('checked')
+      expect(wrapper?.className).not.toContain('indeterminate')
+    })
+  })
+
+  describe('accessibility', () => {
     const testCases = [
       { name: 'default', props: { label: 'Default Checkbox' } },
       { name: 'checked', props: { label: 'Checked Checkbox', isSelected: true } },

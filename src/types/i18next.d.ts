@@ -3146,6 +3146,7 @@ export interface common{
 };
 "card":{
 "selectRowLabel":string;
+"selectAllRowsLabel":string;
 };
 "signatoryTitles":{
 "owner":string;

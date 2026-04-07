@@ -139,25 +139,7 @@ export const DataViewDefault = () => {
 }
 
 export const DataViewSelectableCheckbox = () => {
-  const { ...dataProps } = useDataView({
-    data: compensationData,
-    columns: [
-      { key: 'jobTitle', title: 'Job Title' },
-      { key: 'payType', title: 'Pay Type' },
-      { key: 'amount', title: 'Amount' },
-      { key: 'payTimePeriod', title: 'Pay Time Period' },
-    ],
-    onSelect: (item, checked) => {
-      onSelectAction({ item, checked })
-    },
-    selectionMode: 'multiple',
-  })
-
-  return <DataView label="Data View Selectable (Checkbox - Multi-select)" {...dataProps} />
-}
-
-export const DataViewSelectableCheckboxControlled = () => {
-  const [selectedIndices, setSelectedIndices] = useState(new Set())
+  const [selectedIndices, setSelectedIndices] = useState(new Set<number>())
 
   const { ...dataProps } = useDataView({
     data: compensationData,
@@ -190,12 +172,7 @@ export const DataViewSelectableCheckboxControlled = () => {
     },
   })
 
-  return (
-    <DataView
-      label="Data View Selectable (Controlled Multi-select with Select All)"
-      {...dataProps}
-    />
-  )
+  return <DataView label="Data View Selectable (Checkbox - Multi-select)" {...dataProps} />
 }
 
 export const DataViewSelectableRadio = () => {
@@ -241,6 +218,8 @@ export const DataViewWithMenu = () => {
 }
 
 export const DataViewSelectableWithMenu = () => {
+  const [selectedIndices, setSelectedIndices] = useState(new Set<number>())
+
   const { ...dataProps } = useDataView({
     data: compensationData,
     columns: [
@@ -259,8 +238,26 @@ export const DataViewSelectableWithMenu = () => {
         />
       )
     },
+    selectionMode: 'multiple',
+    isItemSelected: (_item, index) => selectedIndices.has(index),
     onSelect: (item, checked) => {
-      onSelectAction({ item, checked })
+      const index = compensationData.indexOf(item)
+      setSelectedIndices(prev => {
+        const next = new Set(prev)
+        if (checked) {
+          next.add(index)
+        } else {
+          next.delete(index)
+        }
+        return next
+      })
+    },
+    onSelectAll: checked => {
+      if (checked) {
+        setSelectedIndices(new Set(compensationData.map((_, i) => i)))
+      } else {
+        setSelectedIndices(new Set())
+      }
     },
   })
 
@@ -304,6 +301,70 @@ export const DataViewWithPagination = () => {
   })
 
   return <DataView label="Data View with Pagination" {...dataProps} />
+}
+
+export const DataViewSelectableWithPagination = () => {
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage, setItemsPerPage] = useState<5 | 10 | 50>(5)
+  const [selectedIndices, setSelectedIndices] = useState(new Set<number>())
+
+  const totalPages = Math.ceil(compensationData.length / itemsPerPage)
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const pageData = compensationData.slice(startIndex, startIndex + itemsPerPage)
+
+  const { ...dataProps } = useDataView({
+    data: pageData,
+    columns: [
+      { key: 'jobTitle', title: 'Job Title' },
+      { key: 'payType', title: 'Pay Type' },
+      { key: 'amount', title: 'Amount' },
+      { key: 'payTimePeriod', title: 'Pay Time Period' },
+    ],
+    selectionMode: 'multiple',
+    isItemSelected: (_item, index) => selectedIndices.has(startIndex + index),
+    onSelect: (_item, checked) => {
+      const globalIndex = startIndex + pageData.indexOf(_item)
+      setSelectedIndices(prev => {
+        const next = new Set(prev)
+        if (checked) {
+          next.add(globalIndex)
+        } else {
+          next.delete(globalIndex)
+        }
+        return next
+      })
+    },
+    onSelectAll: checked => {
+      if (checked) {
+        setSelectedIndices(new Set(compensationData.map((_, i) => i)))
+      } else {
+        setSelectedIndices(new Set())
+      }
+    },
+    pagination: {
+      currentPage,
+      totalPages,
+      itemsPerPage,
+      totalCount: compensationData.length,
+      handleFirstPage: () => { setCurrentPage(1); },
+      handlePreviousPage: () => { setCurrentPage(p => Math.max(1, p - 1)); },
+      handleNextPage: () => { setCurrentPage(p => Math.min(totalPages, p + 1)); },
+      handleLastPage: () => { setCurrentPage(totalPages); },
+      handleItemsPerPageChange: n => {
+        setItemsPerPage(n)
+        setCurrentPage(1)
+      },
+    },
+  })
+
+  return (
+    <div>
+      <div style={{ padding: '0.5rem 1rem', fontSize: '0.875rem', color: '#666' }}>
+        {selectedIndices.size} of {compensationData.length} selected (across all pages)
+      </div>
+      <DataView label="Data View Selectable with Pagination" {...dataProps} />
+    </div>
+  )
 }
 
 export const DataViewWithFooter = () => {
