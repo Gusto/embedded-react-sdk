@@ -52,7 +52,7 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'Employee.TerminationSummary': ['employeeId', 'companyId'],
   'Hooks.CompensationForm': ['companyId', 'employeeId'],
   'Hooks.EmployeeDetailsForm': ['companyId', 'employeeId'],
-  'Hooks.WorkAddressForm': ['companyId'],
+  'Hooks.WorkAddressForm': ['companyId', 'employeeId'],
   'InformationRequests.InformationRequestForm': ['companyId', 'requestId'],
   'InformationRequests.InformationRequestList': ['companyId'],
   'InformationRequests.InformationRequestsFlow': ['companyId'],

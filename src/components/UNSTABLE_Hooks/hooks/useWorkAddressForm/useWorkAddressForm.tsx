@@ -129,22 +129,24 @@ export function useWorkAddressForm({
               throw new SDKInternalError('employeeId is required to submit work address')
             }
 
+            const resolvedEffectiveDate =
+              withEffectiveDateField && payload.effectiveDate
+                ? payload.effectiveDate
+                : options?.effectiveDate
+
+            const effectiveDateParam = resolvedEffectiveDate
+              ? new RFCDate(new Date(resolvedEffectiveDate))
+              : undefined
+
             let updatedWorkAddress: EmployeeWorkAddress
 
             if (isCreateMode) {
-              const resolvedEffectiveDate =
-                withEffectiveDateField && payload.effectiveDate
-                  ? payload.effectiveDate
-                  : options?.effectiveDate
-
               const result = await createWorkAddressMutation.mutateAsync({
                 request: {
                   employeeId: resolvedEmployeeId,
                   requestBody: {
                     locationUuid: payload.locationUuid,
-                    effectiveDate: resolvedEffectiveDate
-                      ? new RFCDate(new Date(resolvedEffectiveDate))
-                      : undefined,
+                    effectiveDate: effectiveDateParam,
                   },
                 },
               })
@@ -162,6 +164,7 @@ export function useWorkAddressForm({
                   requestBody: {
                     version: currentWorkAddress.version,
                     locationUuid: payload.locationUuid,
+                    effectiveDate: effectiveDateParam,
                   },
                 },
               })
@@ -213,7 +216,7 @@ export function useWorkAddressForm({
     form: {
       Fields: {
         Location: LocationField,
-        EffectiveDate: withEffectiveDateField && isCreateMode ? EffectiveDateField : undefined,
+        EffectiveDate: withEffectiveDateField ? EffectiveDateField : undefined,
       },
       fieldsMetadata,
       hookFormInternals: { formMethods },
