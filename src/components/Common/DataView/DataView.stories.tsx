@@ -346,10 +346,18 @@ export const DataViewSelectableWithPagination = () => {
       totalPages,
       itemsPerPage,
       totalCount: compensationData.length,
-      handleFirstPage: () => { setCurrentPage(1); },
-      handlePreviousPage: () => { setCurrentPage(p => Math.max(1, p - 1)); },
-      handleNextPage: () => { setCurrentPage(p => Math.min(totalPages, p + 1)); },
-      handleLastPage: () => { setCurrentPage(totalPages); },
+      handleFirstPage: () => {
+        setCurrentPage(1)
+      },
+      handlePreviousPage: () => {
+        setCurrentPage(p => Math.max(1, p - 1))
+      },
+      handleNextPage: () => {
+        setCurrentPage(p => Math.min(totalPages, p + 1))
+      },
+      handleLastPage: () => {
+        setCurrentPage(totalPages)
+      },
       handleItemsPerPageChange: n => {
         setItemsPerPage(n)
         setCurrentPage(1)
