@@ -2,15 +2,17 @@ import { useId } from 'react'
 import { useTranslation } from 'react-i18next'
 import styles from './DataCards.module.scss'
 import type { useDataViewPropReturn, SelectionMode } from '@/components/Common/DataView/useDataView'
+import { useSelectionState } from '@/components/Common/DataView/useSelectionState'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export type DataCardsProps<T> = {
+  label: string
   columns: useDataViewPropReturn<T>['columns']
   data: useDataViewPropReturn<T>['data']
   itemMenu?: useDataViewPropReturn<T>['itemMenu']
-  onSelect?: useDataViewPropReturn<T>['onSelect']
-  onSelectAll?: useDataViewPropReturn<T>['onSelectAll']
+  onSelect?: (item: T, checked: boolean, index: number) => void
+  onSelectAll?: (checked: boolean, visibleData: T[]) => void
   isItemSelected?: useDataViewPropReturn<T>['isItemSelected']
   emptyState?: useDataViewPropReturn<T>['emptyState']
   footer?: useDataViewPropReturn<T>['footer']
@@ -18,6 +20,7 @@ export type DataCardsProps<T> = {
 }
 
 export const DataCards = <T,>({
+  label,
   data,
   columns,
   itemMenu,
@@ -31,9 +34,20 @@ export const DataCards = <T,>({
   const Components = useComponentContext()
   const { t } = useTranslation('common')
   const radioGroupName = useId()
+  const { allSelected, isIndeterminate } = useSelectionState(data, isItemSelected)
 
-  const allSelected = data.length > 0 && data.every((item, i) => isItemSelected?.(item, i) ?? false)
-  const someSelected = data.some((item, i) => isItemSelected?.(item, i) ?? false)
+  if (
+    process.env.NODE_ENV !== 'production' &&
+    onSelect &&
+    selectionMode === 'multiple' &&
+    !isItemSelected
+  ) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      'DataCards: onSelect with selectionMode="multiple" requires isItemSelected for the select-all checkbox to work. ' +
+        'Provide isItemSelected or set selectionMode="single".',
+    )
+  }
 
   const renderAction = (item: T, index: number) => {
     if (!onSelect) return undefined
@@ -46,7 +60,7 @@ export const DataCards = <T,>({
           name={radioGroupName}
           value={isSelected}
           onChange={() => {
-            onSelect(item, true)
+            onSelect(item, true, index)
           }}
           label={t('card.selectRowLabel')}
           shouldVisuallyHideLabel
@@ -58,7 +72,7 @@ export const DataCards = <T,>({
       <Components.Checkbox
         value={isSelected}
         onChange={(checked: boolean) => {
-          onSelect(item, checked)
+          onSelect(item, checked, index)
         }}
         label={t('card.selectRowLabel')}
         shouldVisuallyHideLabel
@@ -72,13 +86,13 @@ export const DataCards = <T,>({
         <div className={styles.selectAllRow}>
           <Components.Checkbox
             value={allSelected}
-            isIndeterminate={someSelected && !allSelected}
-            onChange={(checked: boolean) => onSelectAll?.(checked)}
+            isIndeterminate={isIndeterminate}
+            onChange={(checked: boolean) => onSelectAll?.(checked, data)}
             label={t('card.selectAllRowsLabel')}
           />
         </div>
       )}
-      <div role="list">
+      <div role="list" aria-label={label}>
         {data.length === 0 && emptyState && (
           <div role="listitem">
             <Components.Card>{emptyState()}</Components.Card>

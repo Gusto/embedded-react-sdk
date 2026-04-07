@@ -22,8 +22,14 @@ export type useDataViewProp<T> = {
   data: T[]
   pagination?: PaginationControlProps
   itemMenu?: (item: T) => React.ReactNode
-  onSelect?: (item: T, checked: boolean) => void
-  onSelectAll?: (checked: boolean) => void
+  onSelect?: (item: T, checked: boolean, index: number) => void
+  /**
+   * Called when the select-all checkbox is toggled.
+   * The header checkbox state reflects only the currently visible `data` array.
+   * With pagination, consumers decide whether to select all data or only the visible page.
+   * `visibleData` is the current page's data array for reference.
+   */
+  onSelectAll?: (checked: boolean, visibleData: T[]) => void
   isItemSelected?: (item: T, index: number) => boolean
   emptyState?: () => React.ReactNode
   footer?: () => Partial<Record<FooterKeys<T>, React.ReactNode>>
@@ -36,8 +42,8 @@ export type useDataViewPropReturn<T> = {
   data: T[]
   columns: DataViewColumn<T>[]
   itemMenu?: (item: T) => React.ReactNode
-  onSelect?: (item: T, checked: boolean) => void
-  onSelectAll?: (checked: boolean) => void
+  onSelect?: (item: T, checked: boolean, index: number) => void
+  onSelectAll?: (checked: boolean, visibleData: T[]) => void
   isItemSelected?: (item: T, index: number) => boolean
   emptyState?: () => React.ReactNode
   footer?: () => Partial<Record<FooterKeys<T>, React.ReactNode>>
