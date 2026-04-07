@@ -151,8 +151,7 @@ export const DataViewSelectableCheckbox = () => {
     ],
     selectionMode: 'multiple',
     isItemSelected: (_item, index) => selectedIndices.has(index),
-    onSelect: (item, checked) => {
-      const index = compensationData.indexOf(item)
+    onSelect: (_item, checked, index) => {
       setSelectedIndices(prev => {
         const next = new Set(prev)
         if (checked) {
@@ -240,8 +239,7 @@ export const DataViewSelectableWithMenu = () => {
     },
     selectionMode: 'multiple',
     isItemSelected: (_item, index) => selectedIndices.has(index),
-    onSelect: (item, checked) => {
-      const index = compensationData.indexOf(item)
+    onSelect: (_item, checked, index) => {
       setSelectedIndices(prev => {
         const next = new Set(prev)
         if (checked) {
@@ -322,8 +320,8 @@ export const DataViewSelectableWithPagination = () => {
     ],
     selectionMode: 'multiple',
     isItemSelected: (_item, index) => selectedIndices.has(startIndex + index),
-    onSelect: (_item, checked) => {
-      const globalIndex = startIndex + pageData.indexOf(_item)
+    onSelect: (_item, checked, index) => {
+      const globalIndex = startIndex + index
       setSelectedIndices(prev => {
         const next = new Set(prev)
         if (checked) {

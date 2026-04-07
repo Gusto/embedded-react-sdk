@@ -9,6 +9,8 @@ import { HorizontalFieldLayout } from '@/components/Common/HorizontalFieldLayout
 import IconChecked from '@/assets/icons/checkbox.svg?react'
 import IconIndeterminate from '@/assets/icons/checkbox_indeterminate.svg?react'
 
+const noop = () => {}
+
 export const Checkbox = (rawProps: CheckboxProps) => {
   const resolvedProps = applyMissingDefaults(rawProps, CheckboxDefaults)
   const {
@@ -81,7 +83,11 @@ export const Checkbox = (rawProps: CheckboxProps) => {
       className={className}
       {...otherProps}
     >
-      <div className={wrapperClassName}>
+      <div
+        className={wrapperClassName}
+        data-checked={value ?? false}
+        data-indeterminate={isIndeterminate ?? false}
+      >
         <input
           type="checkbox"
           name={name}
@@ -92,7 +98,7 @@ export const Checkbox = (rawProps: CheckboxProps) => {
           id={inputId}
           ref={mergedRef}
           onBlur={onBlur}
-          onChange={() => {}}
+          onChange={noop}
           onClick={handleClick}
           className={styles.checkboxInput}
         />

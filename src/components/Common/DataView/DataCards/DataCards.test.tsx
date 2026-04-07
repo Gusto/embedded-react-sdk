@@ -25,7 +25,7 @@ const testColumns = [
 
 describe('DataCards', () => {
   test('should render the component', () => {
-    renderWithProviders(<DataCards data={[]} columns={[]} />)
+    renderWithProviders(<DataCards data={[]} columns={[]} label="Test Cards" />)
 
     const list = screen.getByRole('list')
     expect(list).toBeInTheDocument()
@@ -33,7 +33,7 @@ describe('DataCards', () => {
   })
 
   test('should render the component with data', () => {
-    renderWithProviders(<DataCards data={testData} columns={[...testColumns]} />)
+    renderWithProviders(<DataCards data={testData} columns={[...testColumns]} label="Test Cards" />)
 
     expect(screen.getAllByRole('listitem')).toHaveLength(2)
     expect(screen.getByText('Alice')).toBeInTheDocument()
@@ -41,7 +41,7 @@ describe('DataCards', () => {
   })
 
   test('should render the component with column headers', () => {
-    renderWithProviders(<DataCards data={testData} columns={[...testColumns]} />)
+    renderWithProviders(<DataCards data={testData} columns={[...testColumns]} label="Test Cards" />)
 
     expect(screen.getAllByText('Name').length).toBe(testData.length)
     expect(screen.getAllByText('Age').length).toBe(testData.length)
@@ -51,6 +51,7 @@ describe('DataCards', () => {
     renderWithProviders(
       <DataCards
         data={testData}
+        label="Test Cards"
         columns={[
           {
             key: 'name',
@@ -72,6 +73,7 @@ describe('DataCards', () => {
       <DataCards
         data={testData}
         columns={[...testColumns]}
+        label="Test Cards"
         onSelect={onSelectMock}
         isItemSelected={() => false}
       />,
@@ -83,7 +85,7 @@ describe('DataCards', () => {
 
     const firstRowCheckbox = checkboxes[1]
     await userEvent.click(firstRowCheckbox as HTMLElement)
-    expect(onSelectMock).toHaveBeenCalledWith(testData[0], true)
+    expect(onSelectMock).toHaveBeenCalledWith(testData[0], true, 0)
   })
 
   describe('select-all checkbox', () => {
@@ -92,6 +94,7 @@ describe('DataCards', () => {
         <DataCards
           data={testData}
           columns={[...testColumns]}
+          label="Test Cards"
           onSelect={vi.fn()}
           isItemSelected={() => false}
           selectionMode="multiple"
@@ -108,6 +111,7 @@ describe('DataCards', () => {
         <DataCards
           data={testData}
           columns={[...testColumns]}
+          label="Test Cards"
           onSelect={vi.fn()}
           selectionMode="single"
         />,
@@ -121,6 +125,7 @@ describe('DataCards', () => {
         <DataCards
           data={[]}
           columns={[...testColumns]}
+          label="Test Cards"
           onSelect={vi.fn()}
           selectionMode="multiple"
         />,
@@ -134,6 +139,7 @@ describe('DataCards', () => {
         <DataCards
           data={testData}
           columns={[...testColumns]}
+          label="Test Cards"
           onSelect={vi.fn()}
           isItemSelected={() => true}
           selectionMode="multiple"
@@ -141,8 +147,8 @@ describe('DataCards', () => {
       )
 
       const selectAllCheckbox = screen.getByLabelText('Select all rows')
-      const selectAllWrapper = selectAllCheckbox.closest('[class*=checkboxWrapper]')
-      expect(selectAllWrapper?.className).toContain('checked')
+      const selectAllWrapper = selectAllCheckbox.closest('[data-checked]')
+      expect(selectAllWrapper).toHaveAttribute('data-checked', 'true')
     })
 
     test('select-all checkbox is indeterminate when some rows selected', () => {
@@ -150,6 +156,7 @@ describe('DataCards', () => {
         <DataCards
           data={testData}
           columns={[...testColumns]}
+          label="Test Cards"
           onSelect={vi.fn()}
           isItemSelected={(_item, index) => index === 0}
           selectionMode="multiple"
@@ -157,8 +164,8 @@ describe('DataCards', () => {
       )
 
       const selectAllCheckbox = screen.getByLabelText('Select all rows')
-      const selectAllWrapper = selectAllCheckbox.closest('[class*=checkboxWrapper]')
-      expect(selectAllWrapper?.className).toContain('indeterminate')
+      const selectAllWrapper = selectAllCheckbox.closest('[data-checked]')
+      expect(selectAllWrapper).toHaveAttribute('data-indeterminate', 'true')
     })
 
     test('clicking select-all fires onSelectAll with true when not all selected', async () => {
@@ -167,6 +174,7 @@ describe('DataCards', () => {
         <DataCards
           data={testData}
           columns={[...testColumns]}
+          label="Test Cards"
           onSelect={vi.fn()}
           onSelectAll={onSelectAllMock}
           isItemSelected={() => false}
@@ -176,7 +184,7 @@ describe('DataCards', () => {
 
       const selectAllCheckbox = screen.getAllByRole('checkbox')[0]
       await userEvent.click(selectAllCheckbox as HTMLElement)
-      expect(onSelectAllMock).toHaveBeenCalledWith(true)
+      expect(onSelectAllMock).toHaveBeenCalledWith(true, testData)
     })
 
     test('clicking select-all fires onSelectAll with false when all selected', async () => {
@@ -185,6 +193,7 @@ describe('DataCards', () => {
         <DataCards
           data={testData}
           columns={[...testColumns]}
+          label="Test Cards"
           onSelect={vi.fn()}
           onSelectAll={onSelectAllMock}
           isItemSelected={() => true}
@@ -194,13 +203,15 @@ describe('DataCards', () => {
 
       const selectAllCheckbox = screen.getAllByRole('checkbox')[0]
       await userEvent.click(selectAllCheckbox as HTMLElement)
-      expect(onSelectAllMock).toHaveBeenCalledWith(false)
+      expect(onSelectAllMock).toHaveBeenCalledWith(false, testData)
     })
   })
 
   test('should render empty state with proper accessibility structure when emptyState is provided', () => {
     const emptyState = () => <div>No data available</div>
-    renderWithProviders(<DataCards data={[]} columns={[]} emptyState={emptyState} />)
+    renderWithProviders(
+      <DataCards data={[]} columns={[]} label="Test Cards" emptyState={emptyState} />,
+    )
 
     const list = screen.getByRole('list')
     expect(list).toBeInTheDocument()
@@ -215,7 +226,9 @@ describe('DataCards', () => {
       age: <strong>55</strong>, // Different from Alice's age (25) and Bob's age (30)
     })
 
-    renderWithProviders(<DataCards data={testData} columns={[...testColumns]} footer={footer} />)
+    renderWithProviders(
+      <DataCards data={testData} columns={[...testColumns]} label="Test Cards" footer={footer} />,
+    )
 
     // Footer should render as an additional list item
     const listItems = screen.getAllByRole('listitem')

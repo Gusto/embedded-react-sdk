@@ -100,20 +100,19 @@ describe('Checkbox', () => {
       expect(input.indeterminate).toBe(true)
     })
 
-    it('applies indeterminate class to wrapper when isIndeterminate is true and value is false', () => {
+    it('marks wrapper as indeterminate when isIndeterminate is true and value is false', () => {
       renderWithProviders(<Checkbox {...defaultProps} isIndeterminate value={false} />)
       const input = screen.getByRole('checkbox')
-      const wrapper = input.closest('[class*=checkboxWrapper]')
-      expect(wrapper?.className).toContain('indeterminate')
-      expect(wrapper?.className).not.toContain('checked')
+      const wrapper = input.closest('[data-indeterminate]')
+      expect(wrapper).toHaveAttribute('data-indeterminate', 'true')
+      expect(wrapper).toHaveAttribute('data-checked', 'false')
     })
 
-    it('applies indeterminate class even when value is true (indeterminate takes precedence)', () => {
+    it('marks wrapper as indeterminate even when value is true (indeterminate takes precedence visually)', () => {
       renderWithProviders(<Checkbox {...defaultProps} isIndeterminate value={true} />)
       const input = screen.getByRole('checkbox')
-      const wrapper = input.closest('[class*=checkboxWrapper]')
-      expect(wrapper?.className).toContain('indeterminate')
-      expect(wrapper?.className).not.toContain('checked')
+      const wrapper = input.closest('[data-indeterminate]')
+      expect(wrapper).toHaveAttribute('data-indeterminate', 'true')
     })
   })
 
@@ -147,28 +146,27 @@ describe('Checkbox', () => {
       expect(onChange).not.toHaveBeenCalled()
     })
 
-    it('applies disabled class to wrapper', () => {
+    it('renders disabled state on input', () => {
       renderWithProviders(<Checkbox label="Disabled" isDisabled />)
       const input = screen.getByRole('checkbox')
-      const wrapper = input.closest('[class*=checkboxWrapper]')
-      expect(wrapper?.className).toContain('disabled')
+      expect(input).toBeDisabled()
     })
   })
 
-  describe('class-based visual states', () => {
-    it('applies checked class when value is true', () => {
+  describe('data attribute visual states', () => {
+    it('sets data-checked to true when value is true', () => {
       renderWithProviders(<Checkbox {...defaultProps} value={true} />)
       const input = screen.getByRole('checkbox')
-      const wrapper = input.closest('[class*=checkboxWrapper]')
-      expect(wrapper?.className).toContain('checked')
+      const wrapper = input.closest('[data-checked]')
+      expect(wrapper).toHaveAttribute('data-checked', 'true')
     })
 
-    it('does not apply checked or indeterminate class when unchecked', () => {
+    it('sets data-checked to false and data-indeterminate to false when unchecked', () => {
       renderWithProviders(<Checkbox {...defaultProps} value={false} />)
       const input = screen.getByRole('checkbox')
-      const wrapper = input.closest('[class*=checkboxWrapper]')
-      expect(wrapper?.className).not.toContain('checked')
-      expect(wrapper?.className).not.toContain('indeterminate')
+      const wrapper = input.closest('[data-checked]')
+      expect(wrapper).toHaveAttribute('data-checked', 'false')
+      expect(wrapper).toHaveAttribute('data-indeterminate', 'false')
     })
   })
 

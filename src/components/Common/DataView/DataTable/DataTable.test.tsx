@@ -85,7 +85,7 @@ describe('DataTable Component', () => {
 
     if (firstRowCheckbox) {
       await userEvent.click(firstRowCheckbox)
-      expect(onSelectMock).toHaveBeenCalledWith(testData[0], true)
+      expect(onSelectMock).toHaveBeenCalledWith(testData[0], true, 0)
     }
   })
 
@@ -107,7 +107,7 @@ describe('DataTable Component', () => {
 
     if (firstRadio) {
       await userEvent.click(firstRadio)
-      expect(onSelectMock).toHaveBeenCalledWith(testData[0], true)
+      expect(onSelectMock).toHaveBeenCalledWith(testData[0], true, 0)
     }
   })
 
@@ -225,7 +225,7 @@ describe('DataTable Component', () => {
 
       const headerCheckbox = screen.getAllByRole('checkbox')[0] as Element
       await userEvent.click(headerCheckbox)
-      expect(onSelectAllMock).toHaveBeenCalledWith(true)
+      expect(onSelectAllMock).toHaveBeenCalledWith(true, testData)
     })
 
     test('clicking the header checkbox fires onSelectAll with checked=false when all selected', async () => {
@@ -242,7 +242,7 @@ describe('DataTable Component', () => {
 
       const headerCheckbox = screen.getAllByRole('checkbox')[0] as Element
       await userEvent.click(headerCheckbox)
-      expect(onSelectAllMock).toHaveBeenCalledWith(false)
+      expect(onSelectAllMock).toHaveBeenCalledWith(false, testData)
     })
 
     test('does not render a header checkbox for single selectionMode', () => {
@@ -303,8 +303,7 @@ describe('DataTable Component', () => {
               columns={testColumns}
               selectionMode="multiple"
               isItemSelected={(_item, index) => selectedIndices.has(index)}
-              onSelect={(item, checked) => {
-                const index = testData.indexOf(item)
+              onSelect={(_item, checked, index) => {
                 setSelectedIndices(prev => {
                   const next = new Set(prev)
                   if (checked) {
@@ -334,33 +333,33 @@ describe('DataTable Component', () => {
       const getHeaderCheckbox = () => screen.getAllByRole('checkbox')[0] as HTMLElement
       const getFirstRowCheckbox = () => screen.getAllByRole('checkbox')[1] as HTMLElement
 
-      const getHeaderWrapper = () => getHeaderCheckbox().closest('[class*=checkboxWrapper]')
+      const getHeaderWrapper = () => getHeaderCheckbox().closest('[data-checked]')
 
       const getCheckedRowCount = () =>
         screen
           .getAllByRole('checkbox')
           .slice(1)
-          .filter(cb => cb.closest('[class*=checkboxWrapper]')?.className.includes('checked'))
+          .filter(cb => cb.closest('[data-checked]')?.getAttribute('data-checked') === 'true')
           .length
 
-      expect(getHeaderWrapper()?.className).not.toContain('checked')
+      expect(getHeaderWrapper()).toHaveAttribute('data-checked', 'false')
       expect(getCheckedRowCount()).toBe(0)
 
       await userEvent.click(getHeaderCheckbox())
-      expect(getHeaderWrapper()?.className).toContain('checked')
+      expect(getHeaderWrapper()).toHaveAttribute('data-checked', 'true')
       expect(getCheckedRowCount()).toBe(testData.length)
 
       await userEvent.click(getFirstRowCheckbox())
-      expect(getHeaderWrapper()?.className).toContain('indeterminate')
+      expect(getHeaderWrapper()).toHaveAttribute('data-indeterminate', 'true')
       expect(getCheckedRowCount()).toBe(testData.length - 1)
 
       await userEvent.click(getHeaderCheckbox())
-      expect(getHeaderWrapper()?.className).toContain('checked')
+      expect(getHeaderWrapper()).toHaveAttribute('data-checked', 'true')
       expect(getCheckedRowCount()).toBe(testData.length)
 
       await userEvent.click(getHeaderCheckbox())
-      expect(getHeaderWrapper()?.className).not.toContain('checked')
-      expect(getHeaderWrapper()?.className).not.toContain('indeterminate')
+      expect(getHeaderWrapper()).toHaveAttribute('data-checked', 'false')
+      expect(getHeaderWrapper()).toHaveAttribute('data-indeterminate', 'false')
       expect(getCheckedRowCount()).toBe(0)
     })
   })
