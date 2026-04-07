@@ -90,7 +90,7 @@ export {
   createEmployeeDetailsSchema,
   type EmployeeDetailsFormProps,
   type EmployeeDetailsSubmitCallbacks,
-  type EmployeeDetailsRequiredFields,
+  type EmployeeDetailsOptionalFieldsToRequire,
   type UseEmployeeDetailsFormProps,
   type UseEmployeeDetailsFormResult,
   type UseEmployeeDetailsFormReady,

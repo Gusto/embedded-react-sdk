@@ -824,6 +824,80 @@ describe('buildFormSchema', () => {
     })
   })
 
+  describe('fieldsWithRedactedValues', () => {
+    const fieldValidators = {
+      name: z.string(),
+      ssn: z.string().regex(/^\d{9}$/),
+    }
+
+    const requiredFieldsConfig = {
+      name: 'always',
+      ssn: 'never',
+    } as const
+
+    it('skips required validation for redacted fields', () => {
+      const [schema] = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        mode: 'update',
+        optionalFieldsToRequire: { update: ['ssn'] },
+        fieldsWithRedactedValues: ['ssn'],
+      })
+
+      const result = schema.safeParse({ name: 'Ada', ssn: '' })
+      expect(result.success).toBe(true)
+    })
+
+    it('still validates format when a new value is provided', () => {
+      const [schema] = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        mode: 'update',
+        fieldsWithRedactedValues: ['ssn'],
+      })
+
+      const invalid = schema.safeParse({ name: 'Ada', ssn: 'not-a-number' })
+      expect(invalid.success).toBe(false)
+
+      const valid = schema.safeParse({ name: 'Ada', ssn: '123456789' })
+      expect(valid.success).toBe(true)
+    })
+
+    it('sets hasRedactedValue: true in metadata', () => {
+      const [, { getFieldsMetadata }] = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        mode: 'update',
+        fieldsWithRedactedValues: ['ssn'],
+      })
+      const metadata = getFieldsMetadata()
+
+      expect(metadata.ssn.hasRedactedValue).toBe(true)
+      expect(metadata.name.hasRedactedValue).toBeUndefined()
+    })
+
+    it('preserves isRequired from optionalFieldsToRequire for redacted fields', () => {
+      const [, { getFieldsMetadata }] = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        mode: 'update',
+        optionalFieldsToRequire: { update: ['ssn'] },
+        fieldsWithRedactedValues: ['ssn'],
+      })
+      const metadata = getFieldsMetadata()
+
+      expect(metadata.ssn.isRequired).toBe(true)
+      expect(metadata.ssn.hasRedactedValue).toBe(true)
+    })
+
+    it('does not set hasRedactedValue for non-redacted fields', () => {
+      const [, { getFieldsMetadata }] = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig,
+        mode: 'update',
+        fieldsWithRedactedValues: ['ssn'],
+      })
+      const metadata = getFieldsMetadata()
+
+      expect(metadata.name.hasRedactedValue).toBeUndefined()
+    })
+  })
+
   describe('combined: schema + metadata consistency', () => {
     const fieldValidators = {
       title: z.string(),
