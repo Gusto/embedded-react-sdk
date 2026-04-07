@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { fn } from 'storybook/test'
 import { DataView } from '@/components/Common/DataView/DataView'
 import { useDataView } from '@/components/Common/DataView/useDataView'
+import type { useDataViewProp } from '@/components/Common/DataView/useDataView'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
@@ -11,6 +12,8 @@ export default {
 }
 
 const onSelectAction = fn().mockName('onSelect')
+
+type CompensationRow = (typeof compensationData)[number]
 
 const compensationData = [
   {
@@ -26,12 +29,7 @@ const compensationData = [
     amount: '$32.00',
     payTimePeriod: 'Annually',
   },
-  {
-    jobTitle: 'Key Holder',
-    payType: 'By the hour',
-    amount: '$20.00',
-    payTimePeriod: 'Annually',
-  },
+  { jobTitle: 'Key Holder', payType: 'By the hour', amount: '$20.00', payTimePeriod: 'Annually' },
   {
     jobTitle: 'Software Engineer',
     payType: 'By the hour',
@@ -44,12 +42,7 @@ const compensationData = [
     amount: '$50.00',
     payTimePeriod: 'Annually',
   },
-  {
-    jobTitle: 'Data Analyst',
-    payType: 'By the hour',
-    amount: '$38.00',
-    payTimePeriod: 'Annually',
-  },
+  { jobTitle: 'Data Analyst', payType: 'By the hour', amount: '$38.00', payTimePeriod: 'Annually' },
   {
     jobTitle: 'Sales Associate',
     payType: 'By the hour',
@@ -110,12 +103,7 @@ const compensationData = [
     amount: '$48.00',
     payTimePeriod: 'Annually',
   },
-  {
-    jobTitle: 'Accountant',
-    payType: 'By the hour',
-    amount: '$40.00',
-    payTimePeriod: 'Annually',
-  },
+  { jobTitle: 'Accountant', payType: 'By the hour', amount: '$40.00', payTimePeriod: 'Annually' },
   {
     jobTitle: 'Legal Advisor',
     payType: 'By the hour',
@@ -124,168 +112,102 @@ const compensationData = [
   },
 ]
 
-export const DataViewDefault = () => {
-  const { ...dataProps } = useDataView({
-    data: compensationData,
-    columns: [
-      { key: 'jobTitle', title: 'Job Title' },
-      { key: 'payType', title: 'Pay Type' },
-      { key: 'amount', title: 'Amount' },
-      { key: 'payTimePeriod', title: 'Pay Time Period' },
-    ],
-  })
+const compensationColumns: useDataViewProp<CompensationRow>['columns'] = [
+  { key: 'jobTitle', title: 'Job Title' },
+  { key: 'payType', title: 'Pay Type' },
+  { key: 'amount', title: 'Amount' },
+  { key: 'payTimePeriod', title: 'Pay Time Period' },
+]
 
+function useIndexSelection<T>(allData: T[]) {
+  const [selectedIndices, setSelectedIndices] = useState(new Set<number>())
+
+  return {
+    selectedIndices,
+    selectionProps: {
+      selectionMode: 'multiple' as const,
+      isItemSelected: (_item: T, index: number) => selectedIndices.has(index),
+      onSelect: (_item: T, checked: boolean, index: number) => {
+        setSelectedIndices(prev => {
+          const next = new Set(prev)
+          checked ? next.add(index) : next.delete(index)
+          return next
+        })
+      },
+      onSelectAll: (checked: boolean) => {
+        setSelectedIndices(checked ? new Set(allData.map((_, i) => i)) : new Set())
+      },
+    },
+  }
+}
+
+const renderItemMenu = () => (
+  <HamburgerMenu
+    items={[
+      { label: 'Edit', icon: <PencilSvg aria-hidden />, onClick: () => {} },
+      { label: 'Delete', icon: <TrashCanSvg aria-hidden />, onClick: () => {} },
+    ]}
+  />
+)
+
+export const DataViewDefault = () => {
+  const dataProps = useDataView({ data: compensationData, columns: compensationColumns })
   return <DataView label="Data View Default" {...dataProps} />
 }
 
 export const DataViewSelectableCheckbox = () => {
-  const [selectedIndices, setSelectedIndices] = useState(new Set<number>())
-
-  const { ...dataProps } = useDataView({
+  const { selectionProps } = useIndexSelection(compensationData)
+  const dataProps = useDataView({
     data: compensationData,
-    columns: [
-      { key: 'jobTitle', title: 'Job Title' },
-      { key: 'payType', title: 'Pay Type' },
-      { key: 'amount', title: 'Amount' },
-      { key: 'payTimePeriod', title: 'Pay Time Period' },
-    ],
-    selectionMode: 'multiple',
-    isItemSelected: (_item, index) => selectedIndices.has(index),
-    onSelect: (_item, checked, index) => {
-      setSelectedIndices(prev => {
-        const next = new Set(prev)
-        if (checked) {
-          next.add(index)
-        } else {
-          next.delete(index)
-        }
-        return next
-      })
-    },
-    onSelectAll: checked => {
-      if (checked) {
-        setSelectedIndices(new Set(compensationData.map((_, i) => i)))
-      } else {
-        setSelectedIndices(new Set())
-      }
-    },
+    columns: compensationColumns,
+    ...selectionProps,
   })
-
   return <DataView label="Data View Selectable (Checkbox - Multi-select)" {...dataProps} />
 }
 
 export const DataViewSelectableRadio = () => {
-  const { ...dataProps } = useDataView({
+  const dataProps = useDataView({
     data: compensationData,
-    columns: [
-      { key: 'jobTitle', title: 'Job Title' },
-      { key: 'payType', title: 'Pay Type' },
-      { key: 'amount', title: 'Amount' },
-      { key: 'payTimePeriod', title: 'Pay Time Period' },
-    ],
-    onSelect: (item, checked) => {
-      onSelectAction({ item, checked })
-    },
+    columns: compensationColumns,
+    onSelect: (item, checked) => onSelectAction({ item, checked }),
     selectionMode: 'single',
   })
-
   return <DataView label="Data View Selectable (Radio - Single-select)" {...dataProps} />
 }
 
 export const DataViewWithMenu = () => {
-  const { ...dataProps } = useDataView({
+  const dataProps = useDataView({
     data: compensationData,
-    columns: [
-      { key: 'jobTitle', title: 'Job Title' },
-      { key: 'payType', title: 'Pay Type' },
-      { key: 'amount', title: 'Amount' },
-      { key: 'payTimePeriod', title: 'Pay Time Period' },
-    ],
-    itemMenu: () => {
-      return (
-        <HamburgerMenu
-          items={[
-            { label: 'Edit', icon: <PencilSvg aria-hidden />, onClick: () => {} },
-            { label: 'Delete', icon: <TrashCanSvg aria-hidden />, onClick: () => {} },
-          ]}
-        />
-      )
-    },
+    columns: compensationColumns,
+    itemMenu: renderItemMenu,
   })
-
   return <DataView label="Data View with Menu" {...dataProps} />
 }
 
 export const DataViewSelectableWithMenu = () => {
-  const [selectedIndices, setSelectedIndices] = useState(new Set<number>())
-
-  const { ...dataProps } = useDataView({
+  const { selectionProps } = useIndexSelection(compensationData)
+  const dataProps = useDataView({
     data: compensationData,
-    columns: [
-      { key: 'jobTitle', title: 'Job Title' },
-      { key: 'payType', title: 'Pay Type' },
-      { key: 'amount', title: 'Amount' },
-      { key: 'payTimePeriod', title: 'Pay Time Period' },
-    ],
-    itemMenu: () => {
-      return (
-        <HamburgerMenu
-          items={[
-            { label: 'Edit', icon: <PencilSvg aria-hidden />, onClick: () => {} },
-            { label: 'Delete', icon: <TrashCanSvg aria-hidden />, onClick: () => {} },
-          ]}
-        />
-      )
-    },
-    selectionMode: 'multiple',
-    isItemSelected: (_item, index) => selectedIndices.has(index),
-    onSelect: (_item, checked, index) => {
-      setSelectedIndices(prev => {
-        const next = new Set(prev)
-        if (checked) {
-          next.add(index)
-        } else {
-          next.delete(index)
-        }
-        return next
-      })
-    },
-    onSelectAll: checked => {
-      if (checked) {
-        setSelectedIndices(new Set(compensationData.map((_, i) => i)))
-      } else {
-        setSelectedIndices(new Set())
-      }
-    },
+    columns: compensationColumns,
+    itemMenu: renderItemMenu,
+    ...selectionProps,
   })
-
   return <DataView label="Data View Selectable with Menu" {...dataProps} />
 }
 
 export const DataViewEmpty = () => {
-  const { ...dataProps } = useDataView({
+  const dataProps = useDataView({
     data: [] as typeof compensationData,
-    columns: [
-      { key: 'jobTitle', title: 'Job Title' },
-      { key: 'payType', title: 'Pay Type' },
-      { key: 'amount', title: 'Amount' },
-      { key: 'payTimePeriod', title: 'Pay Time Period' },
-    ],
+    columns: compensationColumns,
     emptyState: () => <div style={{ textAlign: 'center', padding: '1rem' }}>No data available</div>,
   })
-
-  return <DataView label="Data View Selectable with Menu" {...dataProps} />
+  return <DataView label="Data View Empty" {...dataProps} />
 }
 
 export const DataViewWithPagination = () => {
-  const { ...dataProps } = useDataView({
+  const dataProps = useDataView({
     data: compensationData,
-    columns: [
-      { key: 'jobTitle', title: 'Job Title' },
-      { key: 'payType', title: 'Pay Type' },
-      { key: 'amount', title: 'Amount' },
-      { key: 'payTimePeriod', title: 'Pay Time Period' },
-    ],
+    columns: compensationColumns,
     pagination: {
       currentPage: 1,
       totalPages: 10,
@@ -297,7 +219,6 @@ export const DataViewWithPagination = () => {
       handleItemsPerPageChange: () => {},
     },
   })
-
   return <DataView label="Data View with Pagination" {...dataProps} />
 }
 
@@ -310,34 +231,21 @@ export const DataViewSelectableWithPagination = () => {
   const startIndex = (currentPage - 1) * itemsPerPage
   const pageData = compensationData.slice(startIndex, startIndex + itemsPerPage)
 
-  const { ...dataProps } = useDataView({
+  const dataProps = useDataView({
     data: pageData,
-    columns: [
-      { key: 'jobTitle', title: 'Job Title' },
-      { key: 'payType', title: 'Pay Type' },
-      { key: 'amount', title: 'Amount' },
-      { key: 'payTimePeriod', title: 'Pay Time Period' },
-    ],
+    columns: compensationColumns,
     selectionMode: 'multiple',
     isItemSelected: (_item, index) => selectedIndices.has(startIndex + index),
-    onSelect: (_item, checked, index) => {
+    onSelect: (_item: (typeof compensationData)[number], checked: boolean, index: number) => {
       const globalIndex = startIndex + index
       setSelectedIndices(prev => {
         const next = new Set(prev)
-        if (checked) {
-          next.add(globalIndex)
-        } else {
-          next.delete(globalIndex)
-        }
+        checked ? next.add(globalIndex) : next.delete(globalIndex)
         return next
       })
     },
     onSelectAll: checked => {
-      if (checked) {
-        setSelectedIndices(new Set(compensationData.map((_, i) => i)))
-      } else {
-        setSelectedIndices(new Set())
-      }
+      setSelectedIndices(checked ? new Set(compensationData.map((_, i) => i)) : new Set())
     },
     pagination: {
       currentPage,
@@ -381,20 +289,13 @@ export const DataViewWithFooter = () => {
     { jobTitle: 'UX Designer', hourlyRate: 40, hoursWorked: 35 },
   ]
 
-  const { ...dataProps } = useDataView({
+  const dataProps = useDataView({
     data: sampleData,
     columns: [
       { key: 'jobTitle', title: 'Job Title' },
-      {
-        key: 'hourlyRate',
-        title: 'Hourly Rate',
-        render: item => `$${item.hourlyRate.toFixed(2)}`,
-      },
+      { key: 'hourlyRate', title: 'Hourly Rate', render: item => `$${item.hourlyRate.toFixed(2)}` },
       { key: 'hoursWorked', title: 'Hours Worked' },
-      {
-        title: 'Total Pay',
-        render: item => `$${(item.hourlyRate * item.hoursWorked).toFixed(2)}`,
-      },
+      { title: 'Total Pay', render: item => `$${(item.hourlyRate * item.hoursWorked).toFixed(2)}` },
     ],
     footer: () => ({
       jobTitle: 'Total',
