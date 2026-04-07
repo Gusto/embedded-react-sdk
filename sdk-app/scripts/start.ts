@@ -67,6 +67,14 @@ async function main() {
     console.warn(`  Warning: Component prop analysis failed. Using existing data.\n`)
   }
 
+  console.log(`  Generating i18n translations...`)
+  try {
+    execSync('npm run i18n:generate', { cwd: ROOT_DIR, stdio: 'pipe' })
+    console.log(`  i18n translations generated\n`)
+  } catch {
+    console.warn(`  Warning: i18n generation failed. Using existing translations.\n`)
+  }
+
   const envPath = resolve(ENV_DIR, `.env.${zpEnv}`)
 
   if (!existsSync(envPath) || !envIsUsable(loadEnvFile(envPath))) {
@@ -127,14 +135,48 @@ async function main() {
     SDK_BUILD: sdkBuild,
   }
 
-  const child = spawn('npx', viteArgs, {
+  // Start translation watcher in dev mode
+  let translationWatcher: ReturnType<typeof spawn> | null = null
+  if (sdkBuild === 'dev') {
+    console.log(`  Starting translation watcher...\n`)
+    translationWatcher = spawn('node', ['./build/translationWatcher.js'], {
+      stdio: 'inherit',
+      cwd: ROOT_DIR,
+    })
+
+    translationWatcher.on('exit', code => {
+      console.log(`  Translation watcher exited with code ${code}`)
+    })
+  }
+
+  const viteChild = spawn('npx', viteArgs, {
     stdio: 'inherit',
     cwd: ROOT_DIR,
     env: childEnv,
   })
 
-  child.on('exit', code => {
+  viteChild.on('exit', code => {
+    if (translationWatcher) {
+      translationWatcher.kill()
+    }
     process.exit(code ?? 0)
+  })
+
+  // Handle graceful shutdown
+  process.on('SIGINT', () => {
+    if (translationWatcher) {
+      translationWatcher.kill()
+    }
+    viteChild.kill()
+    process.exit(0)
+  })
+
+  process.on('SIGTERM', () => {
+    if (translationWatcher) {
+      translationWatcher.kill()
+    }
+    viteChild.kill()
+    process.exit(0)
   })
 }
 

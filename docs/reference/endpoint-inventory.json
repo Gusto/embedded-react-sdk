@@ -826,6 +826,41 @@
         "employeeId"
       ]
     },
+    "Employee.Dashboard": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/home_addresses"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/work_addresses"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/payment_method"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/bank_accounts"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/garnishments"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/pay_stubs"
+        }
+      ],
+      "variables": [
+        "employeeId"
+      ]
+    },
     "Employee.EmploymentEligibility": {
       "endpoints": [
         {

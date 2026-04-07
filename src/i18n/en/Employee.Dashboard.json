@@ -1,0 +1,83 @@
+{
+  "title": "Employee Dashboard",
+  "tabsLabel": "Employee dashboard tabs",
+  "tabs": {
+    "basicDetails": "Basic details",
+    "jobAndPay": "Job and pay",
+    "taxes": "Taxes",
+    "documents": "Documents"
+  },
+  "basicDetails": {
+    "title": "Basic details",
+    "edit": "Edit",
+    "legalName": "Legal name",
+    "startDate": "Start date",
+    "socialSecurityNumber": "Social security number",
+    "dateOfBirth": "Date of birth",
+    "personalEmail": "Personal email"
+  },
+  "homeAddress": {
+    "title": "Home address",
+    "manage": "Manage",
+    "currentAddress": "Current address",
+    "noAddress": "No home address on file"
+  },
+  "workAddress": {
+    "title": "Work address",
+    "manage": "Manage",
+    "currentAddress": "Current address",
+    "noAddress": "No work address on file"
+  },
+  "jobAndPay": {
+    "compensation": {
+      "title": "Compensation",
+      "edit": "Edit",
+      "jobTitle": "Job title",
+      "type": "Type",
+      "wage": "Wage",
+      "startDate": "Start date"
+    },
+    "payment": {
+      "title": "Payment",
+      "addBankAccount": "Add bank account",
+      "listLabel": "List of bank accounts",
+      "nickname": "Nickname",
+      "routingNumber": "Routing number",
+      "accountType": "Account type",
+      "noPaymentMethod": "No payment method on file",
+      "emptyState": {
+        "title": "No bank accounts",
+        "description": "Bank accounts will appear here once added"
+      }
+    },
+    "deductions": {
+      "title": "Deductions",
+      "addDeduction": "Add deduction",
+      "listLabel": "List of deductions",
+      "deduction": "Deduction",
+      "frequency": "Frequency",
+      "withhold": "Withhold",
+      "recurring": "Recurring",
+      "emptyState": {
+        "title": "No deductions",
+        "description": "Employee deductions will appear here"
+      }
+    },
+    "paystubs": {
+      "title": "Paystubs",
+      "listLabel": "List of paystubs",
+      "payday": "Payday",
+      "checkAmount": "Check amount",
+      "grossPay": "Gross pay",
+      "paymentMethod": "Payment method",
+      "emptyState": {
+        "title": "No paystubs",
+        "description": "Paystubs will appear here after payroll is run"
+      }
+    }
+  },
+  "placeholders": {
+    "taxes": "Taxes tab content for employee {{employeeId}} in company {{companyId}}",
+    "documents": "Documents tab content for employee {{employeeId}} in company {{companyId}}"
+  }
+}

@@ -12,6 +12,8 @@ export { DocumentSigner } from './DocumentSigner'
 export { OnboardingFlow } from './OnboardingFlow/OnboardingFlow'
 export { SelfOnboardingFlow } from './SelfOnboardingFlow/SelfOnboardingFlow'
 export { EmployeeDocuments } from './EmployeeDocuments'
+export { Dashboard } from './Dashboard'
+export type { DashboardProps } from './Dashboard'
 
 export { EmploymentEligibility } from './DocumentSigner/EmploymentEligibility'
 export type { EmploymentEligibilityProps } from './DocumentSigner/EmploymentEligibility'
