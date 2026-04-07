@@ -14,6 +14,7 @@ export type EmailValidation = (typeof EmployeeDetailsErrorCodes)[
   | 'INVALID_EMAIL'
   | 'EMAIL_REQUIRED_FOR_SELF_ONBOARDING']
 export type SsnValidation = typeof EmployeeDetailsErrorCodes.INVALID_SSN
+export type SsnRequiredValidation = typeof EmployeeDetailsErrorCodes.REQUIRED
 
 export type FirstNameFieldProps = HookFieldProps<TextInputHookFieldProps<NameValidation>>
 
@@ -21,7 +22,7 @@ export function FirstNameField(props: FirstNameFieldProps) {
   return <TextInputHookField {...props} name="firstName" />
 }
 
-export type MiddleInitialFieldProps = HookFieldProps<TextInputHookFieldProps>
+export type MiddleInitialFieldProps = HookFieldProps<TextInputHookFieldProps<RequiredValidation>>
 
 export function MiddleInitialField(props: MiddleInitialFieldProps) {
   return <TextInputHookField {...props} name="middleInitial" />
@@ -39,13 +40,15 @@ export function EmailField(props: EmailFieldProps) {
   return <TextInputHookField {...props} name="email" />
 }
 
-export type DateOfBirthFieldProps = HookFieldProps<DatePickerHookFieldProps>
+export type DateOfBirthFieldProps = HookFieldProps<DatePickerHookFieldProps<RequiredValidation>>
 
 export function DateOfBirthField(props: DateOfBirthFieldProps) {
   return <DatePickerHookField {...props} name="dateOfBirth" />
 }
 
-export type SsnFieldProps = HookFieldProps<TextInputHookFieldProps<SsnValidation>>
+export type SsnFieldProps = HookFieldProps<
+  TextInputHookFieldProps<SsnValidation, SsnRequiredValidation>
+>
 
 export function SsnField(props: SsnFieldProps) {
   const metadataContext = useFormFieldsMetadataContext()

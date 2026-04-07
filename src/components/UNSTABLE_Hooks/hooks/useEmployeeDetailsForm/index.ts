@@ -1,7 +1,7 @@
 export { useEmployeeDetailsForm } from './useEmployeeDetailsForm'
 export type {
   EmployeeDetailsSubmitCallbacks,
-  EmployeeDetailsRequiredFields,
+  EmployeeDetailsOptionalFieldsToRequire,
   UseEmployeeDetailsFormProps,
   UseEmployeeDetailsFormResult,
   UseEmployeeDetailsFormReady,

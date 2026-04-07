@@ -42,6 +42,11 @@ interface BuildFormSchemaOptions<
   mode: FormMode
   optionalFieldsToRequire?: OptionalFieldsToRequire<TConfig>
   excludeFields?: Array<keyof T & string>
+  /** Fields with existing server-side values that are redacted in the API response
+   *  (e.g. SSN, EIN). These fields remain in the schema for format validation and
+   *  appear in metadata (with `hasRedactedValue: true`) but are exempt from required
+   *  validation — an empty submission is valid because a value already exists. */
+  fieldsWithRedactedValues?: Array<keyof T & string>
   superRefine?: (data: { [K in keyof T]: z.infer<T[K]> }, ctx: z.RefinementCtx) => void
 }
 
@@ -71,6 +76,7 @@ export function buildFormSchema<
     excludeFields = [],
   } = options
   const excluded = new Set(excludeFields.map(String))
+  const redacted = new Set((options.fieldsWithRedactedValues ?? []).map(String))
   const partnerRequired = new Set(
     resolveOptionalFieldsToRequire(options.optionalFieldsToRequire, mode),
   )
@@ -90,17 +96,20 @@ export function buildFormSchema<
     const effectiveRule = config[name] ?? 'always'
 
     shape[name] = makeOptional(validator)
-    const isPartnerRequired = partnerRequired.has(name)
 
-    if (typeof effectiveRule === 'function') {
-      dynamicRequired.push({
-        name,
-        predicate: isPartnerRequired ? () => true : effectiveRule,
-      })
-    } else {
-      const isRequired = effectiveRule === 'always' || effectiveRule === mode || isPartnerRequired
-      if (isRequired) {
-        dynamicRequired.push({ name, predicate: () => true })
+    if (!redacted.has(name)) {
+      const isPartnerRequired = partnerRequired.has(name)
+
+      if (typeof effectiveRule === 'function') {
+        dynamicRequired.push({
+          name,
+          predicate: isPartnerRequired ? () => true : effectiveRule,
+        })
+      } else {
+        const isRequired = effectiveRule === 'always' || effectiveRule === mode || isPartnerRequired
+        if (isRequired) {
+          dynamicRequired.push({ name, predicate: () => true })
+        }
       }
     }
   }
@@ -136,16 +145,17 @@ export function buildFormSchema<
 
       if (partnerRequired.has(name)) {
         metadata[name] = { name, isRequired: true }
-        continue
-      }
-
-      if (typeof effectiveRule === 'function') {
+      } else if (typeof effectiveRule === 'function') {
         metadata[name] = { name, isRequired: data ? effectiveRule(data, mode) : false }
       } else {
         metadata[name] = {
           name,
           isRequired: effectiveRule === 'always' || effectiveRule === mode,
         }
+      }
+
+      if (redacted.has(name)) {
+        metadata[name].hasRedactedValue = true
       }
     }
 
