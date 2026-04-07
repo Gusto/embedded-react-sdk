@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next'
 import { useBankAccountsGetSuspense } from '@gusto/embedded-api/react-query/bankAccountsGet'
 import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
 import { useWireInRequestsGet } from '@gusto/embedded-api/react-query/wireInRequestsGet'
-import { usePaymentConfigsGet } from '@gusto/embedded-api/react-query/paymentConfigsGet'
 import { useEffect, useState } from 'react'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
 import { payrollsGetPayStub } from '@gusto/embedded-api/funcs/payrollsGetPayStub'
@@ -23,6 +22,7 @@ import {
 import { canCancelPayroll } from '../helpers'
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
 import { PayrollOverviewStatus } from './PayrollOverviewTypes'
+import { useCompanyPaymentSpeed } from '@/hooks/useCompanyPaymentSpeed'
 import {
   componentEvents,
   payrollWireEvents,
@@ -239,8 +239,7 @@ export const Root = ({
   })
   const bankAccount = bankAccountData.companyBankAccounts?.[0]
 
-  const { data: paymentConfigs } = usePaymentConfigsGet({ companyUuid: companyId })
-  const paymentSpeed = paymentConfigs?.paymentConfigs?.paymentSpeed
+  const { paymentSpeed } = useCompanyPaymentSpeed(companyId)
 
   const { data: employeeData } = useEmployeesListSuspense({
     companyId,

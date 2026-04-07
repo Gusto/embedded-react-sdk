@@ -51,7 +51,6 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | `/v1/companies/:companyId/pay_schedules/:payScheduleId` |
 |  | GET | `/v1/companies/:companyId/pay_schedules` |
 |  | POST | `/v1/companies/:companyId/pay_schedules` |
-|  | GET | `/v1/companies/:companyUuid/payment_configs` |
 | **Company.FederalTaxes** | PUT | `/v1/companies/:companyId/federal_tax_details` |
 |  | GET | `/v1/companies/:companyId/federal_tax_details` |
 | **Company.BankAccount** | GET | `/v1/companies/:companyId/bank_accounts` |
@@ -91,7 +90,6 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | POST | `/v1/companies/:companyId/contractor_payment_groups` |
 |  | POST | `/v1/companies/:companyId/contractor_payment_groups/preview` |
 |  | GET | `/v1/companies/:companyId/bank_accounts` |
-|  | GET | `/v1/companies/:companyUuid/payment_configs` |
 | **Contractor.PaymentHistory** | GET | `/v1/contractor_payment_groups/:contractorPaymentGroupUuid` |
 |  | GET | `/v1/companies/:companyUuid/contractors` |
 |  | DELETE | `/v1/companies/:companyId/contractor_payments/:contractorPaymentId` |
@@ -220,7 +218,6 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | `/v1/companies/:companyId/bank_accounts` |
 |  | GET | `/v1/companies/:companyId/employees` |
 |  | GET | `/v1/wire_in_requests/:wireInRequestUuid` |
-|  | GET | `/v1/companies/:companyUuid/payment_configs` |
 |  | GET | `/v1/payrolls/:payrollId/employees/:employeeId/pay_stub` |
 | **Payroll.PayrollFlow** | GET | `/v1/companies/:companyId/payrolls/:payrollId` |
 |  | GET | `/v1/companies/:companyId/payrolls` |
@@ -243,6 +240,14 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 | **Payroll.TransitionFlow** | GET | `/v1/companies/:companyId/payrolls/:payrollId` |
 | **Payroll.TransitionCreation** | POST | `/v1/companies/:companyId/payrolls` |
 |  | GET | `/v1/companies/:companyId/pay_schedules` |
+
+## UNSTABLE_TimeOff components
+
+| Component | Method | Path |
+| --- | --- | --- |
+| **UNSTABLE_TimeOff.PolicyList** | GET | `/v1/companies/:companyUuid/time_off_policies` |
+|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/deactivate` |
+|  | GET | `/v1/companies/:companyId/employees` |
 
 ## Flows
 

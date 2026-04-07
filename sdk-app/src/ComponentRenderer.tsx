@@ -1,6 +1,7 @@
 import { Suspense, useState, useCallback, Component, type ReactNode } from 'react'
 import { useParams } from 'react-router-dom'
 import { findComponent, CATEGORIES } from './registry'
+import { resolveDefaults } from './component-defaults'
 import type { EntityIds } from './useEntities'
 import styles from './ComponentRenderer.module.scss'
 import { GustoProvider } from '@/contexts'
@@ -160,8 +161,12 @@ export function ComponentRenderer({ entities }: ComponentRendererProps) {
   const displayCategory =
     entry.category === 'InformationRequests' ? 'Info Requests' : entry.category
 
+  const registryKey = `${entry.category}.${entry.name}`
+  const defaults = resolveDefaults(registryKey)
+
   const componentProps: Record<string, unknown> = {
     onEvent: handleEvent,
+    ...defaults,
   }
 
   const missingIds: string[] = []
