@@ -20,6 +20,22 @@
     "title": "Holiday schedule",
     "editCta": "Edit"
   },
+  "holidays": {
+    "newYearsDay": { "name": "New Year's Day", "observedDate": "January 1" },
+    "mlkDay": { "name": "Martin Luther King, Jr. Day", "observedDate": "Third Monday in January" },
+    "presidentsDay": { "name": "Presidents' Day", "observedDate": "Third Monday in February" },
+    "memorialDay": { "name": "Memorial Day", "observedDate": "Last Monday in May" },
+    "juneteenth": { "name": "Juneteenth", "observedDate": "June 19" },
+    "independenceDay": { "name": "Independence Day", "observedDate": "July 4" },
+    "laborDay": { "name": "Labor Day", "observedDate": "First Monday in September" },
+    "columbusDay": {
+      "name": "Columbus Day (Indigenous Peoples' Day)",
+      "observedDate": "Second Monday in October"
+    },
+    "veteransDay": { "name": "Veterans Day", "observedDate": "November 11" },
+    "thanksgiving": { "name": "Thanksgiving", "observedDate": "Fourth Thursday in November" },
+    "christmasDay": { "name": "Christmas Day", "observedDate": "December 25" }
+  },
   "flash": {
     "deleted": "Holiday pay policy deleted successfully",
     "employeesAdded_one": "{{count}} employee has been added to this policy.",
