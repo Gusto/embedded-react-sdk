@@ -85,7 +85,9 @@ describe('DataTable Component', () => {
     renderTable({ onSelect: vi.fn(), selectionMode: 'single' })
     const radios = screen.getAllByRole('radio')
     const firstName = radios[0]?.getAttribute('name')
-    radios.forEach(radio => { expect(radio.getAttribute('name')).toBe(firstName); })
+    radios.forEach(radio => {
+      expect(radio.getAttribute('name')).toBe(firstName)
+    })
   })
 
   test('should default to checkbox selectionMode when not specified', () => {
