@@ -59,13 +59,13 @@ export type {Domain}FormOutputs = {Domain}FormData
 
 `requiredFieldsConfig` declares the requiredness rule for each field. Fields **not listed** default to `'always'` required. Available rules:
 
-| Rule                      | Meaning                                             | Partner-configurable?                                                |
-| ------------------------- | --------------------------------------------------- | -------------------------------------------------------------------- |
-| `'always'`                | Required in both modes (default when omitted)       | No                                                                   |
-| `'create'`                | Required on create, optional on update              | Yes — partner can require it on update via `optionalFieldsToRequire` |
-| `'update'`                | Required on update, optional on create              | Yes — partner can require it on create                               |
-| `'never'`                 | Optional in both modes                              | Yes — partner can require it in either mode                          |
-| `(data, mode) => boolean` | Conditionally required based on runtime form values | No — not configurable by partner                                     |
+| Rule                      | Meaning                                             | Partner-configurable?                                                     |
+| ------------------------- | --------------------------------------------------- | ------------------------------------------------------------------------- |
+| `'always'`                | Required in both modes (default when omitted)       | No                                                                        |
+| `'create'`                | Required on create, optional on update              | Yes — partner can require it on update via `optionalFieldsToRequire`      |
+| `'update'`                | Required on update, optional on create              | Yes — partner can require it on create via `optionalFieldsToRequire`      |
+| `'never'`                 | Optional in both modes                              | Yes — partner can require it in either mode via `optionalFieldsToRequire` |
+| `(data, mode) => boolean` | Conditionally required based on runtime form values | No — not configurable by partner                                          |
 
 ```typescript
 import { type RequiredFieldConfig } from '../../form/buildFormSchema'
@@ -151,20 +151,18 @@ useCompensationForm({
 
 ### `z.preprocess` and Type Inference
 
-`z.preprocess` causes `z.input` to infer `unknown`, which breaks `useForm` generics. The solution: derive `FormData` from the clean `fieldValidators` (before `buildFormSchema` wraps them), then cast `zodResolver`:
+`z.preprocess` causes `z.input` to infer `unknown`, which would break `useForm`/`zodResolver` generics. `buildFormSchema` handles this internally by typing its return tuple's schema with the correct `FormData` type derived from the original `fieldValidators`. Hook authors don't need any casts — just use `zodResolver(schema)` directly:
 
 ```typescript
-resolver: zodResolver(schema) as unknown as Resolver<FormData>,
+const [schema, metadataConfig] = createDomainSchema({ mode })
+
+const formMethods = useForm<FormData, unknown, FormOutputs>({
+  resolver: zodResolver(schema),
+  // ...
+})
 ```
 
-In `superRefine`, cast the data parameter:
-
-```typescript
-superRefine: (data, ctx) => {
-  const { rate, flsaStatus } = data as FormData
-  // cross-field validation...
-}
-```
+The `superRefine` callback in `buildFormSchema` options is already typed with the form data type from `fieldValidators`, so no cast is needed there either.
 
 ## 2. Fields (`fields.tsx`)
 
@@ -249,7 +247,7 @@ const [schema, metadataConfig] = useMemo(
 )
 
 const formMethods = useForm<FormData, unknown, FormOutputs>({
-  resolver: zodResolver(schema) as unknown as Resolver<FormData>,
+  resolver: zodResolver(schema),
   defaultValues: resolvedDefaults,
   values: resolvedDefaults,
   resetOptions: { keepDirtyValues: true },

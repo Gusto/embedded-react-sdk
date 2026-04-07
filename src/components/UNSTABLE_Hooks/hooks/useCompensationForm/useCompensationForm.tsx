@@ -1,7 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
-import type { Resolver, UseFormProps } from 'react-hook-form'
-import type { z } from 'zod'
+import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { Compensation, PaymentUnit } from '@gusto/embedded-api/models/components/compensation'
 import type { Job } from '@gusto/embedded-api/models/components/job'
@@ -187,7 +186,7 @@ export function useCompensationForm({
   }
 
   const formMethods = useForm<CompensationFormData, unknown, CompensationFormOutputs>({
-    resolver: zodResolver(schema as z.ZodObject) as unknown as Resolver<CompensationFormData>,
+    resolver: zodResolver(schema),
     mode: validationMode,
     shouldFocusError,
     defaultValues: resolvedDefaults,

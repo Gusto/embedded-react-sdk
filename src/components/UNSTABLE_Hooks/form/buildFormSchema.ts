@@ -51,8 +51,12 @@ export interface FieldsMetadataConfig<T extends Record<string, z.ZodType>> {
   predicateDeps: string[]
 }
 
+type FormDataFromValidators<T extends Record<string, z.ZodType>> = {
+  [K in keyof T]: z.infer<T[K]>
+}
+
 export type BuildFormSchemaResult<T extends Record<string, z.ZodType>> = [
-  schema: z.ZodType,
+  schema: z.ZodType<FormDataFromValidators<T>, FormDataFromValidators<T>>,
   metadataConfig: FieldsMetadataConfig<T>,
 ]
 
@@ -148,7 +152,13 @@ export function buildFormSchema<
     return metadata as Record<keyof T, FieldMetadata>
   }
 
-  return [schema, { getFieldsMetadata, predicateDeps }]
+  // makeOptional wraps fields with z.preprocess, which causes z.input to infer
+  // `unknown`. Cast the schema to carry the original field types so zodResolver
+  // infers correct form data types — consumers don't need per-hook casts.
+  return [
+    schema as z.ZodType<FormDataFromValidators<T>, FormDataFromValidators<T>>,
+    { getFieldsMetadata, predicateDeps },
+  ]
 }
 
 // ── Internal helpers ─────────────────────────────────────────────────
