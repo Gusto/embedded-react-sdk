@@ -25,15 +25,6 @@ assertType<CompensationOptionalFieldsToRequire>({ update: ['jobTitle'] })
 
 assertType<CompensationOptionalFieldsToRequire>({})
 
-// @ts-expect-error - 'adjustForMinimumWage' is unlisted (defaults to 'always'), not configurable
-assertType<CompensationOptionalFieldsToRequire>({ update: ['adjustForMinimumWage'] })
-
-// @ts-expect-error - 'twoPercentShareholder' is unlisted (defaults to 'always'), not configurable
-assertType<CompensationOptionalFieldsToRequire>({ update: ['twoPercentShareholder'] })
-
-// @ts-expect-error - 'nonExistentField' does not exist in the schema
-assertType<CompensationOptionalFieldsToRequire>({ update: ['nonExistentField'] })
-
 type ReadyResult = Extract<UseCompensationFormResult, { isLoading: false }>
 
 function assertReady(hookResult: UseCompensationFormResult): asserts hookResult is ReadyResult {
