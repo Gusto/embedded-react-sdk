@@ -10,7 +10,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { DataView } from '@/components/Common/DataView/DataView'
 import { useDataView } from '@/components/Common/DataView/useDataView'
-import { EmptyData, Flex, FlexItem } from '@/components/Common'
+import { Flex, FlexItem } from '@/components/Common'
 import { informationRequestEvents } from '@/shared/constants'
 import type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
 
@@ -76,9 +76,7 @@ function Root({ companyId, dictionary, onEvent }: InformationRequestListProps) {
 
   const dataViewProps = useDataView({
     data: visibleRequests,
-    emptyState: () => (
-      <EmptyData title={t('emptyTableTitle')} description={t('emptyTableDescription')} />
-    ),
+    emptyState: { title: t('emptyTableTitle'), description: t('emptyTableDescription') },
     columns: [
       {
         key: 'type',

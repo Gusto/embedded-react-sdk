@@ -4,6 +4,7 @@ import type { TableProps } from '../UI/Table/TableTypes'
 import styles from './DataView.module.scss'
 import { DataTable } from './DataTable/DataTable'
 import type { useDataViewPropReturn, SelectionMode } from './useDataView'
+import { resolveEmptyState } from './resolveEmptyState'
 import { DataCards } from './DataCards/DataCards'
 import type { useContainerBreakpointsProps } from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
@@ -63,7 +64,7 @@ export const DataView = <T,>({
           {...dataViewProps}
           footer={footer}
           variant={variant}
-          emptyState={emptyState}
+          emptyState={resolveEmptyState(emptyState)}
           selectionMode={selectionMode}
         />
       )}
