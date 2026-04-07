@@ -126,3 +126,5 @@ export const AllSelected = () => <StoryWrapper initialSelected={allUuids} />
 export const PartialSelection = () => <StoryWrapper initialSelected={partialUuids} />
 
 export const EditMode = () => <StoryWrapper initialSelected={new Set()} />
+
+export const ViewMode = () => <SelectHolidaysPresentation mode="view" holidays={holidays} />

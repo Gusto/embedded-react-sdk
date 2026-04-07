@@ -109,9 +109,10 @@ export const DataTable = <T,>({
       )
     }
 
+    const isSelected = getIsItemSelected?.(item) ?? false
     return (
       <Components.Checkbox
-        value={getIsItemSelected?.(item)}
+        value={isSelected}
         onChange={(checked: boolean) => {
           onSelect?.(item, checked)
         }}

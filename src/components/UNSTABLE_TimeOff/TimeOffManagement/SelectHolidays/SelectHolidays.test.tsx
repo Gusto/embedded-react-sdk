@@ -168,4 +168,35 @@ describe('SelectHolidaysPresentation', () => {
       )
     })
   })
+
+  describe('view mode', () => {
+    it('renders holiday rows without checkboxes', async () => {
+      renderWithProviders(<SelectHolidaysPresentation mode="view" holidays={mockHolidays} />)
+
+      await waitFor(() => {
+        expect(screen.getByText("New Year's Day")).toBeInTheDocument()
+      })
+      expect(screen.getByText('Memorial Day')).toBeInTheDocument()
+      expect(screen.queryAllByRole('checkbox')).toHaveLength(0)
+    })
+
+    it('does not render heading or description', async () => {
+      renderWithProviders(<SelectHolidaysPresentation mode="view" holidays={mockHolidays} />)
+
+      await waitFor(() => {
+        expect(screen.getByText("New Year's Day")).toBeInTheDocument()
+      })
+      expect(screen.queryByText('Choose your company holidays')).not.toBeInTheDocument()
+    })
+
+    it('does not render Back or Continue buttons', async () => {
+      renderWithProviders(<SelectHolidaysPresentation mode="view" holidays={mockHolidays} />)
+
+      await waitFor(() => {
+        expect(screen.getByText("New Year's Day")).toBeInTheDocument()
+      })
+      expect(screen.queryByRole('button', { name: 'Back' })).not.toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: 'Continue' })).not.toBeInTheDocument()
+    })
+  })
 })
