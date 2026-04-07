@@ -62,7 +62,7 @@ const requiredFieldsConfig = {
   rate: 'create',
   startDate: 'create',
   minimumWageId: data => data.adjustForMinimumWage,
-  stateWcClassCode: data => data.stateWcCovered,
+  stateWcClassCode: data => String(data.stateWcCovered) === 'true',
 } satisfies RequiredFieldConfig<typeof fieldValidators>
 
 function validateFlsaRules(data: CompensationFormData, ctx: z.RefinementCtx) {

@@ -26,6 +26,7 @@ export type {
   RequiredFieldRule,
   RequiredFieldConfig,
   OptionalFieldsToRequire,
+  FieldsMetadataConfig,
   BuildFormSchemaResult,
 } from './buildFormSchema'
 export { composeSubmitHandler } from './composeSubmitHandler'

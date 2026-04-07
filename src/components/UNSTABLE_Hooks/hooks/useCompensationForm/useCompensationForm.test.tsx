@@ -187,7 +187,7 @@ const VALID_FORM_DATA = {
 }
 
 function getFieldErrors(
-  result: ReturnType<ReturnType<typeof createCompensationSchema>['schema']['safeParse']>,
+  result: ReturnType<ReturnType<typeof createCompensationSchema>[0]['safeParse']>,
 ) {
   if (result.success) return {}
   const errors: Record<string, string[]> = {}
@@ -201,7 +201,7 @@ function getFieldErrors(
 
 describe('createCompensationSchema error codes', () => {
   it('produces REQUIRED for missing startDate when required', () => {
-    const { schema } = createCompensationSchema({ mode: 'create', withStartDateField: true })
+    const [schema] = createCompensationSchema({ mode: 'create', withStartDateField: true })
     const result = schema.safeParse({ ...VALID_FORM_DATA, startDate: null })
     const errors = getFieldErrors(result)
 
@@ -209,14 +209,14 @@ describe('createCompensationSchema error codes', () => {
   })
 
   it('does not error on startDate when not required', () => {
-    const { schema } = createCompensationSchema({ mode: 'create', withStartDateField: false })
+    const [schema] = createCompensationSchema({ mode: 'create', withStartDateField: false })
     const result = schema.safeParse({ ...VALID_FORM_DATA, startDate: null })
 
     expect(result.success).toBe(true)
   })
 
   it('produces RATE_MINIMUM for rate of 0', () => {
-    const { schema } = createCompensationSchema({ mode: 'create', withStartDateField: true })
+    const [schema] = createCompensationSchema({ mode: 'create', withStartDateField: true })
     const result = schema.safeParse({ ...VALID_FORM_DATA, rate: 0 })
     const errors = getFieldErrors(result)
 
@@ -224,7 +224,7 @@ describe('createCompensationSchema error codes', () => {
   })
 
   it('produces RATE_MINIMUM for NaN rate', () => {
-    const { schema } = createCompensationSchema({ mode: 'create', withStartDateField: true })
+    const [schema] = createCompensationSchema({ mode: 'create', withStartDateField: true })
     const result = schema.safeParse({ ...VALID_FORM_DATA, rate: NaN })
     const errors = getFieldErrors(result)
 
@@ -234,7 +234,7 @@ describe('createCompensationSchema error codes', () => {
 
 describe('CompensationOptionalFieldsToRequire typing', () => {
   it('allows update-mode overrides for create-scoped fields', () => {
-    const { schema } = createCompensationSchema({
+    const [schema] = createCompensationSchema({
       mode: 'update',
       optionalFieldsToRequire: {
         update: ['jobTitle', 'flsaStatus', 'paymentUnit', 'rate', 'startDate'],
@@ -249,7 +249,7 @@ describe('CompensationOptionalFieldsToRequire typing', () => {
   })
 
   it('single field override makes only that field required on update', () => {
-    const { schema } = createCompensationSchema({
+    const [schema] = createCompensationSchema({
       mode: 'update',
       optionalFieldsToRequire: { update: ['jobTitle'] },
     })
@@ -264,14 +264,14 @@ describe('CompensationOptionalFieldsToRequire typing', () => {
   })
 
   it('update overrides do not alter create-mode metadata', () => {
-    const withOverride = createCompensationSchema({
+    const [, withOverrideMeta] = createCompensationSchema({
       mode: 'create',
       optionalFieldsToRequire: { update: ['jobTitle', 'rate', 'startDate'] },
     })
-    const without = createCompensationSchema({ mode: 'create' })
+    const [, withoutMeta] = createCompensationSchema({ mode: 'create' })
 
-    const metaWith = withOverride.getFieldsMetadata()
-    const metaWithout = without.getFieldsMetadata()
+    const metaWith = withOverrideMeta.getFieldsMetadata()
+    const metaWithout = withoutMeta.getFieldsMetadata()
 
     for (const key of Object.keys(metaWith) as Array<keyof typeof metaWith>) {
       expect(metaWith[key].isRequired).toBe(metaWithout[key].isRequired)
@@ -279,7 +279,7 @@ describe('CompensationOptionalFieldsToRequire typing', () => {
   })
 
   it('metadata reflects partner override in update mode', () => {
-    const { getFieldsMetadata } = createCompensationSchema({
+    const [, { getFieldsMetadata }] = createCompensationSchema({
       mode: 'update',
       optionalFieldsToRequire: { update: ['rate'] },
     })
@@ -291,7 +291,7 @@ describe('CompensationOptionalFieldsToRequire typing', () => {
   })
 
   it('metadata shows create-scoped fields as optional in update without overrides', () => {
-    const { getFieldsMetadata } = createCompensationSchema({
+    const [, { getFieldsMetadata }] = createCompensationSchema({
       mode: 'update',
     })
     const metadata = getFieldsMetadata()
@@ -304,7 +304,7 @@ describe('CompensationOptionalFieldsToRequire typing', () => {
   })
 
   it('metadata shows create-scoped fields as required in create mode', () => {
-    const { getFieldsMetadata } = createCompensationSchema({
+    const [, { getFieldsMetadata }] = createCompensationSchema({
       mode: 'create',
     })
     const metadata = getFieldsMetadata()
@@ -317,7 +317,7 @@ describe('CompensationOptionalFieldsToRequire typing', () => {
   })
 
   it('function-based fields reflect data in metadata', () => {
-    const { getFieldsMetadata } = createCompensationSchema({
+    const [, { getFieldsMetadata }] = createCompensationSchema({
       mode: 'create',
     })
     const withMinWage = getFieldsMetadata({ adjustForMinimumWage: true })
@@ -335,7 +335,7 @@ describe('CompensationOptionalFieldsToRequire typing', () => {
 
   it('unlisted fields (always-required) are required in both modes', () => {
     for (const mode of ['create', 'update'] as const) {
-      const { getFieldsMetadata } = createCompensationSchema({ mode })
+      const [, { getFieldsMetadata }] = createCompensationSchema({ mode })
       const metadata = getFieldsMetadata()
 
       expect(metadata.adjustForMinimumWage.isRequired).toBe(true)
@@ -345,7 +345,7 @@ describe('CompensationOptionalFieldsToRequire typing', () => {
   })
 
   it('excludeFields removes startDate from validation', () => {
-    const { schema } = createCompensationSchema({
+    const [schema] = createCompensationSchema({
       mode: 'create',
       withStartDateField: false,
     })
@@ -356,7 +356,7 @@ describe('CompensationOptionalFieldsToRequire typing', () => {
 
 describe('createCompensationSchema superRefine unblocking', () => {
   it('reports rate errors even when startDate is missing', () => {
-    const { schema } = createCompensationSchema({ mode: 'create', withStartDateField: true })
+    const [schema] = createCompensationSchema({ mode: 'create', withStartDateField: true })
     const result = schema.safeParse({ ...VALID_FORM_DATA, startDate: null, rate: 0 })
     const errors = getFieldErrors(result)
 
@@ -365,7 +365,7 @@ describe('createCompensationSchema superRefine unblocking', () => {
   })
 
   it('reports payment unit errors even when startDate is missing', () => {
-    const { schema } = createCompensationSchema({ mode: 'create', withStartDateField: true })
+    const [schema] = createCompensationSchema({ mode: 'create', withStartDateField: true })
     const result = schema.safeParse({
       ...VALID_FORM_DATA,
       startDate: null,
@@ -379,7 +379,7 @@ describe('createCompensationSchema superRefine unblocking', () => {
   })
 
   it('reports RATE_MINIMUM before RATE_EXEMPT_THRESHOLD for low values', () => {
-    const { schema } = createCompensationSchema({ mode: 'create', withStartDateField: true })
+    const [schema] = createCompensationSchema({ mode: 'create', withStartDateField: true })
     const result = schema.safeParse({
       ...VALID_FORM_DATA,
       flsaStatus: 'Exempt' as const,

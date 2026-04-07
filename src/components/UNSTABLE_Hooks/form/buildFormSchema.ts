@@ -45,10 +45,16 @@ interface BuildFormSchemaOptions<
   superRefine?: (data: { [K in keyof T]: z.infer<T[K]> }, ctx: z.RefinementCtx) => void
 }
 
-export interface BuildFormSchemaResult<T extends Record<string, z.ZodType>> {
-  schema: z.ZodType
+export interface FieldsMetadataConfig<T extends Record<string, z.ZodType>> {
   getFieldsMetadata: (data?: Record<string, unknown>) => Record<keyof T, FieldMetadata>
+  /** Form field names that predicate-based requiredness rules read at runtime. */
+  predicateDeps: string[]
 }
+
+export type BuildFormSchemaResult<T extends Record<string, z.ZodType>> = [
+  schema: z.ZodType,
+  metadataConfig: FieldsMetadataConfig<T>,
+]
 
 export function buildFormSchema<
   T extends Record<string, z.ZodType>,
@@ -116,6 +122,8 @@ export function buildFormSchema<
     )
   }
 
+  const predicateDeps = detectPredicateDeps(dynamicRequired, mode)
+
   function getFieldsMetadata(data?: Record<string, unknown>) {
     const metadata: Record<string, FieldMetadata> = {}
 
@@ -140,7 +148,7 @@ export function buildFormSchema<
     return metadata as Record<keyof T, FieldMetadata>
   }
 
-  return { schema, getFieldsMetadata }
+  return [schema, { getFieldsMetadata, predicateDeps }]
 }
 
 // ── Internal helpers ─────────────────────────────────────────────────
@@ -161,4 +169,76 @@ function isEmpty(value: unknown): boolean {
   if (value === undefined || value === null) return true
   if (typeof value === 'string' && value.trim() === '') return true
   return false
+}
+
+/**
+ * Determines which form field names are read by predicate-based requiredness
+ * rules. This enables `useDeriveFieldsMetadata` to watch only the specific
+ * fields that predicates depend on, rather than subscribing to every form
+ * value change (which defeats react-hook-form's per-field render optimization).
+ *
+ * Works by running each predicate against a recording Proxy. The Proxy
+ * intercepts property access and logs the keys, giving us the dependency list
+ * without requiring manual declaration.
+ *
+ * Limitation: JavaScript short-circuit evaluation (`a && b`) can prevent the
+ * Proxy from seeing later operands when earlier ones are falsy. In practice
+ * this is acceptable — our predicate rules read a single form value each
+ * (e.g. `data => data.adjustForMinimumWage`). Multi-field predicates with
+ * equality guards should be expressed as `superRefine` rules instead.
+ */
+function detectPredicateDeps(
+  dynamicRequired: Array<{
+    name: string
+    predicate: (data: Record<string, unknown>, mode: FormMode) => boolean
+  }>,
+  mode: FormMode,
+): string[] {
+  const deps = new Set<string>()
+
+  for (const { predicate } of dynamicRequired) {
+    if (isConstantPredicate(predicate)) continue
+
+    const accessed: string[] = []
+    const proxy = new Proxy({} as Record<string, unknown>, {
+      get(_target, prop) {
+        if (typeof prop === 'string') accessed.push(prop)
+        return undefined
+      },
+    })
+
+    try {
+      predicate(proxy, mode)
+    } catch {
+      /* Predicate may throw on undefined values — that's fine, we already captured the property accesses */
+    }
+
+    for (const key of accessed) deps.add(key)
+  }
+
+  return [...deps]
+}
+
+/**
+ * Static predicates (e.g. `() => true` from 'always' / mode rules / partner
+ * overrides) don't access form data, so we skip them during dependency
+ * detection. We identify them by running against an empty proxy and checking
+ * whether any properties were accessed.
+ */
+function isConstantPredicate(
+  predicate: (data: Record<string, unknown>, mode: FormMode) => boolean,
+): boolean {
+  const accessed: string[] = []
+  const proxy = new Proxy({} as Record<string, unknown>, {
+    get(_target, prop) {
+      if (typeof prop === 'string') accessed.push(prop)
+      return undefined
+    },
+  })
+  try {
+    predicate(proxy, 'create')
+  } catch {
+    /* ignore */
+  }
+  return accessed.length === 0
 }

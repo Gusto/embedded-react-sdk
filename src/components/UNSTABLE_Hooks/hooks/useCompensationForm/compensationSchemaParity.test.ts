@@ -15,7 +15,7 @@ import { CompensationSchema as EmployeeSchema } from '@/components/Employee/Comp
 import { createCompensationSchema } from './compensationSchema'
 import { FlsaStatus, PAY_PERIODS } from '@/shared/constants'
 
-const { schema: HookSchema } = createCompensationSchema({
+const [HookSchema] = createCompensationSchema({
   mode: 'create',
   withStartDateField: false,
 })

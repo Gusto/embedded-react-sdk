@@ -160,11 +160,10 @@ export function useCompensationForm({
   const isCreateMode = !currentJob
   const mode = isCreateMode ? 'create' : 'update'
 
-  const schemaResult = useMemo(
+  const [schema, metadataConfig] = useMemo(
     () => createCompensationSchema({ mode, optionalFieldsToRequire, withStartDateField }),
     [mode, optionalFieldsToRequire, withStartDateField],
   )
-  const { schema } = schemaResult
 
   const state = currentWorkAddress?.state
 
@@ -204,10 +203,11 @@ export function useCompensationForm({
     control: formMethods.control,
     name: 'adjustForMinimumWage',
   })
-  const watchedStateWcCovered = useWatch({
+  const rawStateWcCovered = useWatch({
     control: formMethods.control,
     name: 'stateWcCovered',
   })
+  const watchedStateWcCovered = String(rawStateWcCovered) === 'true'
 
   useEffect(() => {
     if (watchedFlsaStatus === FlsaStatus.OWNER) {
@@ -266,7 +266,7 @@ export function useCompensationForm({
     label: `${code}: ${description}`,
   }))
 
-  const baseMetadata = useDeriveFieldsMetadata(schemaResult, formMethods.control)
+  const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
   const fieldsMetadata = {
     startDate: baseMetadata.startDate,
     jobTitle: baseMetadata.jobTitle,
@@ -423,13 +423,7 @@ export function useCompensationForm({
 
   if (
     isDataLoading ||
-    (employeeId &&
-      (!employeeJobs ||
-        !workAddresses ||
-        !currentWorkAddress ||
-        !employee ||
-        !companyUuid ||
-        !federalTaxDetails))
+    (employeeId && (!employeeJobs || !employee || !companyUuid || !federalTaxDetails))
   ) {
     return { isLoading: true as const, errorHandling }
   }
