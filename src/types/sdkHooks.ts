@@ -17,7 +17,10 @@ export interface FieldMetadataWithOptions<TEntry = unknown> extends FieldMetadat
 export type FieldsMetadata = { [key: string]: FieldMetadata | FieldMetadataWithOptions }
 
 /** Maps every error code a schema field can produce to a partner-supplied display string. */
-export type ValidationMessages<TErrorCode extends string> = Record<TErrorCode, string>
+export type ValidationMessages<
+  TErrorCode extends string,
+  TOptionalErrorCode extends string = never,
+> = Record<TErrorCode, string> & Partial<Record<TOptionalErrorCode, string>>
 
 export interface BaseFieldProps {
   label: string

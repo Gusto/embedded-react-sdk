@@ -1,8 +1,10 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { SelectPolicyType } from './SelectPolicyType'
 import { SelectPolicyTypePresentation } from './SelectPolicyTypePresentation'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+import { componentEvents } from '@/shared/constants'
 
 describe('SelectPolicyTypePresentation', () => {
   const defaultProps = {
@@ -237,6 +239,106 @@ describe('SelectPolicyTypePresentation', () => {
 
       await user.keyboard('{ArrowDown}')
       expect(screen.getByLabelText('Sick leave')).toHaveFocus()
+    })
+  })
+})
+
+describe('SelectPolicyType', () => {
+  const onEvent = vi.fn()
+
+  beforeEach(() => {
+    onEvent.mockClear()
+  })
+
+  it('fires TIME_OFF_POLICY_TYPE_SELECTED with vacation on submit', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<SelectPolicyType onEvent={onEvent} companyId="company-123" />)
+
+    await waitFor(() => {
+      expect(screen.getByLabelText('Time off')).toBeInTheDocument()
+    })
+
+    await user.click(screen.getByLabelText('Time off'))
+    await user.click(screen.getByRole('button', { name: 'Continue' }))
+
+    await waitFor(() => {
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.TIME_OFF_POLICY_TYPE_SELECTED, {
+        policyType: 'vacation',
+      })
+    })
+  })
+
+  it('fires TIME_OFF_POLICY_TYPE_SELECTED with sick on submit', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<SelectPolicyType onEvent={onEvent} companyId="company-123" />)
+
+    await waitFor(() => {
+      expect(screen.getByLabelText('Sick leave')).toBeInTheDocument()
+    })
+
+    await user.click(screen.getByLabelText('Sick leave'))
+    await user.click(screen.getByRole('button', { name: 'Continue' }))
+
+    await waitFor(() => {
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.TIME_OFF_POLICY_TYPE_SELECTED, {
+        policyType: 'sick',
+      })
+    })
+  })
+
+  it('fires TIME_OFF_POLICY_TYPE_SELECTED with holiday on submit', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<SelectPolicyType onEvent={onEvent} companyId="company-123" />)
+
+    await waitFor(() => {
+      expect(screen.getByLabelText('Holiday pay')).toBeInTheDocument()
+    })
+
+    await user.click(screen.getByLabelText('Holiday pay'))
+    await user.click(screen.getByRole('button', { name: 'Continue' }))
+
+    await waitFor(() => {
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.TIME_OFF_POLICY_TYPE_SELECTED, {
+        policyType: 'holiday',
+      })
+    })
+  })
+
+  it('fires CANCEL when Cancel button is clicked', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<SelectPolicyType onEvent={onEvent} companyId="company-123" />)
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument()
+    })
+
+    await user.click(screen.getByRole('button', { name: 'Cancel' }))
+
+    expect(onEvent).toHaveBeenCalledWith(componentEvents.CANCEL)
+  })
+
+  it('pre-selects policy type when defaultPolicyType is provided', async () => {
+    renderWithProviders(
+      <SelectPolicyType onEvent={onEvent} companyId="company-123" defaultPolicyType="vacation" />,
+    )
+
+    await waitFor(() => {
+      expect(screen.getByLabelText('Time off')).toBeChecked()
+    })
+  })
+
+  it('does not fire onEvent when submitting without selection', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<SelectPolicyType onEvent={onEvent} companyId="company-123" />)
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Continue' })).toBeInTheDocument()
+    })
+
+    await user.click(screen.getByRole('button', { name: 'Continue' }))
+
+    await waitFor(() => {
+      expect(onEvent).not.toHaveBeenCalled()
     })
   })
 })
