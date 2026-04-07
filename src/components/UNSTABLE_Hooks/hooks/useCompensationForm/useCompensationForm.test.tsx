@@ -272,16 +272,19 @@ describe('CompensationOptionalFieldsToRequire typing', () => {
     expect(errors.flsaStatus).toBeUndefined()
   })
 
-  it('update overrides do not affect create mode', () => {
-    const { schema } = createCompensationSchema({
+  it('update overrides do not alter create-mode metadata', () => {
+    const withOverride = createCompensationSchema({
       mode: 'create',
-      optionalFieldsToRequire: {
-        update: ['jobTitle'],
-      },
+      optionalFieldsToRequire: { update: ['jobTitle', 'rate', 'startDate'] },
     })
-    const result = schema.safeParse({ ...VALID_FORM_DATA, jobTitle: '' })
-    const errors = getFieldErrors(result)
-    expect(errors.jobTitle).toContain(CompensationErrorCodes.REQUIRED)
+    const without = createCompensationSchema({ mode: 'create' })
+
+    const metaWith = withOverride.getFieldsMetadata()
+    const metaWithout = without.getFieldsMetadata()
+
+    for (const key of Object.keys(metaWith) as Array<keyof typeof metaWith>) {
+      expect(metaWith[key].isRequired).toBe(metaWithout[key].isRequired)
+    }
   })
 
   it('metadata reflects partner override in update mode', () => {

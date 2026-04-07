@@ -43,6 +43,7 @@ const fieldValidators = {
   startDate: z.preprocess(coerceToISODate, z.iso.date().nullable()),
   adjustForMinimumWage: z.boolean(),
   minimumWageId: z.string(),
+  // Radio group delivers 'true'/'false' strings; coerceStringBoolean converts to boolean
   stateWcCovered: z.preprocess(coerceStringBoolean, z.boolean()),
   stateWcClassCode: z.string(),
   twoPercentShareholder: z.boolean(),
@@ -103,7 +104,12 @@ function validateFlsaRules(data: CompensationFormData, ctx: z.RefinementCtx) {
         message: CompensationErrorCodes.RATE_MINIMUM,
       })
     }
-  } else {
+    /* eslint-disable @typescript-eslint/no-unnecessary-condition -- explicit match prevents a future FLSA status from silently falling into commission rules */
+  } else if (
+    flsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT ||
+    flsaStatus === FlsaStatus.COMMISSION_ONLY_NONEXEMPT
+  ) {
+    /* eslint-enable @typescript-eslint/no-unnecessary-condition */
     if (paymentUnit !== PAY_PERIODS.YEAR) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,

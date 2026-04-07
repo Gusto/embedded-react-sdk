@@ -186,9 +186,13 @@ The shape of `data` varies by hook — see each hook's reference page for detail
 
 ## Required Fields
 
-Hooks that support `requiredFields` let you declare which form fields are required beyond the API defaults. Each hook has built-in defaults based on what the API requires per mode (create vs. update), and `requiredFields` adds to those defaults.
+Hooks let you declare which form fields are required beyond the built-in defaults. Each hook has built-in requiredness rules based on the form mode (create vs. update), and you can override optional fields to be required.
 
-You can pass `requiredFields` as a flat array (applies to both modes) or as an object with per-mode arrays:
+The API varies by hook. Some hooks use `requiredFields` (flat array or per-mode object), while newer hooks use `optionalFieldsToRequire` with type-safe, mode-aware overrides derived from the schema configuration.
+
+### `requiredFields` (useEmployeeDetailsForm, useWorkAddressForm)
+
+Pass a flat array (applies to both modes) or an object with per-mode arrays:
 
 ```tsx
 // Flat array: same requirements for both create and update
@@ -207,10 +211,23 @@ useEmployeeDetailsForm({
 })
 ```
 
+### `optionalFieldsToRequire` (useCompensationForm)
+
+Override specific fields that are optional in a given mode to be required. The type constrains which fields can be listed per mode — only fields that are actually optional in that mode are allowed:
+
+```tsx
+useCompensationForm({
+  employeeId,
+  optionalFieldsToRequire: {
+    update: ['jobTitle', 'rate'],
+  },
+})
+```
+
 Each hook's reference page documents which fields are available to require and which are required by default in each mode. See:
 
 - [useEmployeeDetailsForm required fields](./useEmployeeDetailsForm.md#required-fields)
-- [useCompensationForm required fields](./useCompensationForm.md#required-fields)
+- [useCompensationForm configurable required fields](./useCompensationForm.md#configurable-required-fields)
 - [useWorkAddressForm required fields](./useWorkAddressForm.md#required-fields)
 
 ---
