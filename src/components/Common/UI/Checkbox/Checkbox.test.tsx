@@ -96,7 +96,7 @@ describe('Checkbox', () => {
   describe('indeterminate state', () => {
     it('sets indeterminate property on the DOM element', () => {
       renderWithProviders(<Checkbox {...defaultProps} isIndeterminate />)
-      const input = screen.getByRole('checkbox')
+      const input: HTMLInputElement = screen.getByRole('checkbox')
       expect(input.indeterminate).toBe(true)
     })
 
@@ -108,12 +108,12 @@ describe('Checkbox', () => {
       expect(wrapper?.className).not.toContain('checked')
     })
 
-    it('applies checked class instead of indeterminate when value is true', () => {
+    it('applies indeterminate class even when value is true (indeterminate takes precedence)', () => {
       renderWithProviders(<Checkbox {...defaultProps} isIndeterminate value={true} />)
       const input = screen.getByRole('checkbox')
       const wrapper = input.closest('[class*=checkboxWrapper]')
-      expect(wrapper?.className).toContain('checked')
-      expect(wrapper?.className).not.toContain('indeterminate')
+      expect(wrapper?.className).toContain('indeterminate')
+      expect(wrapper?.className).not.toContain('checked')
     })
   })
 

@@ -59,8 +59,7 @@ export const Checkbox = (rawProps: CheckboxProps) => {
 
   const wrapperClassName = [
     styles.checkboxWrapper,
-    value && styles.checked,
-    isIndeterminate && !value && styles.indeterminate,
+    isIndeterminate ? styles.indeterminate : value && styles.checked,
     isDisabled && styles.disabled,
   ]
     .filter(Boolean)
