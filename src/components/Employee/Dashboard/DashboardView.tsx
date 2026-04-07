@@ -7,8 +7,11 @@ import { useEmployeePaymentMethodGetSuspense } from '@gusto/embedded-api/react-q
 import { useEmployeePaymentMethodsGetBankAccountsSuspense } from '@gusto/embedded-api/react-query/employeePaymentMethodsGetBankAccounts'
 import { useGarnishmentsListSuspense } from '@gusto/embedded-api/react-query/garnishmentsList'
 import { usePayrollsGetPayStubsSuspense } from '@gusto/embedded-api/react-query/payrollsGetPayStubs'
+import { useEmployeeTaxSetupGetFederalTaxesSuspense } from '@gusto/embedded-api/react-query/employeeTaxSetupGetFederalTaxes'
+import { useEmployeeTaxSetupGetStateTaxesSuspense } from '@gusto/embedded-api/react-query/employeeTaxSetupGetStateTaxes'
 import { BasicDetailsView } from './BasicDetailsView'
 import { JobAndPayView } from './JobAndPayView'
+import { TaxesView } from './TaxesView'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import type { BaseComponentInterface } from '@/components/Base'
@@ -61,6 +64,16 @@ export function DashboardView({ companyId, employeeId, dictionary, onEvent }: Da
     employeeId,
   })
 
+  const {
+    data: { employeeFederalTax },
+    isFetching: isFetchingFederalTaxes,
+  } = useEmployeeTaxSetupGetFederalTaxesSuspense({ employeeUuid: employeeId })
+
+  const {
+    data: { employeeStateTaxesList },
+    isFetching: isFetchingStateTaxes,
+  } = useEmployeeTaxSetupGetStateTaxesSuspense({ employeeUuid: employeeId })
+
   const isLoadingBasicDetails = isFetchingEmployee || isFetchingAddresses || isFetchingWorkAddresses
   const isLoadingJobAndPay =
     isFetchingEmployee ||
@@ -68,6 +81,7 @@ export function DashboardView({ companyId, employeeId, dictionary, onEvent }: Da
     isFetchingBankAccounts ||
     isFetchingGarnishments ||
     isFetchingPayStubs
+  const isLoadingTaxes = isFetchingFederalTaxes || isFetchingStateTaxes
 
   const currentHomeAddress = employeeAddressList?.find(address => address.active)
   const currentWorkAddress = employeeWorkAddressesList?.find(address => address.active)
@@ -97,6 +111,16 @@ export function DashboardView({ companyId, employeeId, dictionary, onEvent }: Da
 
   const handleAddDeduction = useCallback(() => {
     onEvent(componentEvents.EMPLOYEE_DEDUCTION_ADD, { employeeId })
+  }, [onEvent, employeeId])
+
+  const handleEditFederalTaxes = useCallback(() => {
+    onEvent(componentEvents.EMPLOYEE_FEDERAL_TAXES_UPDATED, {
+      employeeId,
+    })
+  }, [onEvent, employeeId])
+
+  const handleEditStateTaxes = useCallback(() => {
+    onEvent(componentEvents.EMPLOYEE_STATE_TAXES_UPDATED, { employeeId })
   }, [onEvent, employeeId])
 
   const tabs = [
@@ -154,7 +178,13 @@ export function DashboardView({ companyId, employeeId, dictionary, onEvent }: Da
         )
       case 'taxes':
         return (
-          <Components.Text>{t('placeholders.taxes', { companyId, employeeId })}</Components.Text>
+          <TaxesView
+            federalTaxes={employeeFederalTax}
+            stateTaxes={employeeStateTaxesList}
+            isLoading={isLoadingTaxes}
+            onEditFederalTaxes={handleEditFederalTaxes}
+            onEditStateTaxes={handleEditStateTaxes}
+          />
         )
       case 'documents':
         return (
@@ -175,16 +205,21 @@ export function DashboardView({ companyId, employeeId, dictionary, onEvent }: Da
     bankAccounts,
     garnishmentList,
     payStubs,
+    employeeFederalTax,
+    employeeStateTaxesList,
     isFetchingGarnishments,
     isFetchingPayStubs,
     isLoadingBasicDetails,
     isLoadingJobAndPay,
+    isLoadingTaxes,
     handleEditBasicDetails,
     handleManageHomeAddress,
     handleManageWorkAddress,
     handleEditCompensation,
     handleAddBankAccount,
     handleAddDeduction,
+    handleEditFederalTaxes,
+    handleEditStateTaxes,
     t,
     companyId,
     employeeId,

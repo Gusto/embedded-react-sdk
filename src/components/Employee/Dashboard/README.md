@@ -1,151 +1,99 @@
 # Employee Dashboard Component
 
-A tabbed dashboard component for displaying employee information in the Embedded React SDK.
+Flow component for viewing employee information across multiple tabs.
 
 ## Structure
 
-```
-src/components/Employee/Dashboard/
-├── Dashboard.tsx                    # Main Flow component (entry point)
-├── DashboardComponents.tsx          # Contextual components that connect to Flow context
-├── DashboardView.tsx                # Main component with tabs UI and all data fetching
-├── BasicDetailsView.tsx             # Basic details tab view (3 boxes)
-├── JobAndPayView.tsx                # Job and pay tab view (4 boxes with DataView)
-├── Dashboard.stories.tsx            # Storybook stories
-├── dashboardStateMachine.ts         # FSM definition (currently just initial state)
-├── README.md                        # This file
-└── index.ts                         # Public exports
-```
+- **`Dashboard.tsx`** - Main Flow component with FSM (Finite State Machine)
+- **`dashboardStateMachine.ts`** - FSM configuration (currently has only 'index' state)
+- **`DashboardComponents.tsx`** - Context provider wrappers for Flow components
+- **`DashboardView.tsx`** - Main presentation component with tabs and data fetching
+- **`BasicDetailsView.tsx`** - View component for "Basic details" tab
+- **`JobAndPayView.tsx`** - View component for "Job and pay" tab
+- **`TaxesView.tsx`** - View component for "Taxes" tab
+
+## Tabs
+
+1. **Basic details** - Employee personal information, home address, and work address
+2. **Job and pay** - Compensation, payment methods, deductions, and paystubs
+3. **Taxes** - Federal and state tax information
+4. **Documents** - Placeholder for future implementation
+
+## Data Fetching
+
+All data fetching is performed in `DashboardView` using React Query hooks:
+
+### Basic Details Tab
+- `useEmployeesGetSuspense` - Employee details
+- `useEmployeeAddressesGetSuspense` - Home addresses
+- `useEmployeeAddressesGetWorkAddressesSuspense` - Work addresses
+
+### Job and Pay Tab
+- `useEmployeesGetSuspense` - Employee jobs
+- `useEmployeePaymentMethodGetSuspense` - Payment method
+- `useEmployeePaymentMethodsGetBankAccountsSuspense` - Bank accounts
+- `useGarnishmentsListSuspense` - Deductions/garnishments
+- `usePayrollsGetPayStubsSuspense` - Paystubs history
+
+### Taxes Tab
+- `useEmployeeTaxSetupGetFederalTaxesSuspense` - Federal tax information (W4 form data)
+- `useEmployeeTaxSetupGetStateTaxesSuspense` - State tax information (can have multiple states)
+
+## Event Handlers
+
+All CTAs emit events via `useBase().onEvent`:
+
+- **Basic Details**: `EMPLOYEE_UPDATE`, `EMPLOYEE_HOME_ADDRESS`, `EMPLOYEE_WORK_ADDRESS`
+- **Job and Pay**: `EMPLOYEE_COMPENSATION_CREATE`, `EMPLOYEE_BANK_ACCOUNT_CREATE`, `EMPLOYEE_DEDUCTION_ADD`
+- **Taxes**: `EMPLOYEE_FEDERAL_TAXES_UPDATED`, `EMPLOYEE_STATE_TAXES_UPDATED`
+
+## Tax Information
+
+The Taxes tab displays two types of tax information:
+
+### Federal Taxes
+Displays W4 form data including:
+- Filing status
+- Multiple jobs indicator
+- Dependents and other credits amount
+- Other income amount
+- Deductions amount
+- Extra withholding amount
+
+Note: The federal tax response structure varies based on the W4 version (pre-2020 vs. rev-2020). The component handles both versions using type guards.
+
+### State Taxes
+Displays state-specific tax withholding information. An employee can have multiple state tax records (e.g., home state and work state). Each state shows:
+- State name
+- State-specific tax questions and answers
+- File new hire report indicator
+
+The state tax questions and answers are dynamic based on the state's requirements.
 
 ## Usage
 
 ```tsx
-import { Dashboard } from '@/components/Employee/Dashboard'
+import { Dashboard } from '@/components/Employee'
 
-<Dashboard 
-  companyId="company-123" 
-  employeeId="employee-456" 
-  onEvent={(type, data) => console.log(type, data)} 
+<Dashboard
+  companyId="company-uuid"
+  employeeId="employee-uuid"
+  onEvent={(event, data) => {
+    // Handle events
+  }}
 />
 ```
 
-## Architecture
-
-### Flow Pattern
-
-The Dashboard follows the SDK's Flow architecture pattern:
-
-1. **Dashboard.tsx** - Creates and manages the state machine, wraps content in `<Flow>` component
-2. **dashboardStateMachine.ts** - Defines FSM states and transitions using robot3
-3. **DashboardComponents.tsx** - Provides contextual components that access Flow context via `useFlow()`
-4. **DashboardView.tsx** - Main presentation component with tab-based UI and data fetching
-5. **BasicDetailsView.tsx** - Extracted view component for Basic Details tab content
-
-### Component Hierarchy
-
-```
-Dashboard (Flow wrapper)
-  └─ DashboardView (tabs + all data fetching)
-       ├─ BasicDetailsView (3 boxes: Basic details, Home address, Work address)
-       └─ JobAndPayView (4 boxes: Compensation, Payment, Deductions, Paystubs)
-```
-
-### Tabs
-
-The dashboard has 4 tabs:
-
-- **Basic details** - Displays employee information in 3 boxes:
-  1. **Basic details box**: Legal name, start date, SSN (masked), date of birth, personal email + "Edit" button
-  2. **Home address box**: Current home address + "Manage" button
-  3. **Work address box**: Current work address + "Manage" button
-
-- **Job and pay** - Displays compensation and financial information in 4 boxes:
-  1. **Compensation box**: Job title, type (salary/hourly), wage, start date + "Edit" button
-  2. **Payment box**: List of bank accounts with routing number and account type + "Add bank account" button
-  3. **Deductions box**: DataView table showing deduction name, frequency, and withhold amount + "Add deduction" button
-  4. **Paystubs box**: DataView table showing payday, check amount, gross pay, and payment method
-
-- **Taxes** - Federal and state tax withholdings (placeholder)
-- **Documents** - Employee documents (placeholder)
-
-Each tab currently shows placeholder content. The next step is to replace these with actual components.
-
-## Data Fetching
-
-The `DashboardView` component fetches data from six Gusto API endpoints:
-
-### Basic Details Tab
-
-1. **Employee data**: `useEmployeesGetSuspense({ employeeId })`  
-   - Fetches basic employee information (name, email, date of birth, SSN status, jobs)
-   
-2. **Home addresses**: `useEmployeeAddressesGetSuspense({ employeeId })`  
-   - Fetches all home addresses for the employee
-   - Displays the active address
-   
-3. **Work addresses**: `useEmployeeAddressesGetWorkAddressesSuspense({ employeeId })`  
-   - Fetches all work addresses for the employee
-   - Displays the active address
-
-### Job and Pay Tab
-
-4. **Payment method**: `useEmployeePaymentMethodGetSuspense({ employeeId })`  
-   - Fetches employee payment method configuration
-
-5. **Bank accounts**: `useEmployeePaymentMethodsGetBankAccountsSuspense({ employeeId })`  
-   - Fetches list of employee bank accounts
-   - Used in Payment box
-
-6. **Garnishments/Deductions**: `useGarnishmentsListSuspense({ employeeId })`  
-   - Fetches all deductions/garnishments for the employee
-   - Displayed in DataView with pagination
-
-7. **Paystubs**: `usePayrollsGetPayStubsSuspense({ employeeId })`  
-   - Fetches paystub history for the employee
-   - Displayed in DataView with pagination
-
-All hooks use React Query with Suspense for automatic caching, refetching, and error handling. The parent Flow component handles loading states.
-
-Currently, the FSM has only an initial state (`index`). As the dashboard functionality is built out, additional states and transitions can be added to handle:
-
-- Loading states
-- Navigation between different views within tabs
-- Error states
-- Async operations
-
 ## Translations
 
-Translations are defined in `/src/i18n/en/Employee.Dashboard.json`:
-
-```json
-{
-  "title": "Employee Dashboard",
-  "tabsLabel": "Employee dashboard tabs",
-  "tabs": {
-    "basicDetails": "Basic details",
-    "jobAndPay": "Job and pay",
-    "taxes": "Taxes",
-    "documents": "Documents"
-  },
-  "placeholders": { ... }
-}
-```
-
-Run `npm run i18n:generate` after modifying translations to regenerate TypeScript types.
+Translations are defined in `/src/i18n/en/Employee.Dashboard.json`. Run `npm run i18n:generate` after modifying translations to regenerate TypeScript types.
 
 ## Storybook
 
 View component in isolation:
+
 ```bash
 npm run storybook
 ```
 
 Navigate to `Domain/Employee/Dashboard` in Storybook.
-
-## Next Steps
-
-1. Replace placeholder content with actual components for each tab
-2. Add data fetching hooks for employee information
-3. Extend FSM with additional states/transitions as needed
-4. Add more comprehensive tests for each tab's functionality
-5. Implement tab-specific actions and interactions

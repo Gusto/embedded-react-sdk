@@ -176,8 +176,8 @@ export function JobAndPayView({
 
           <Flex flexDirection="column" gap={12}>
             {job?.title && (
-              <Flex flexDirection="column" gap={4}>
-                <Components.Text weight="medium">
+              <Flex flexDirection="column" gap={0}>
+                <Components.Text variant="supporting">
                   {t('jobAndPay.compensation.jobTitle')}
                 </Components.Text>
                 <Components.Text>{job.title}</Components.Text>
@@ -185,8 +185,8 @@ export function JobAndPayView({
             )}
 
             {job?.paymentUnit && (
-              <Flex flexDirection="column" gap={4}>
-                <Components.Text weight="medium">
+              <Flex flexDirection="column" gap={0}>
+                <Components.Text variant="supporting">
                   {t('jobAndPay.compensation.type')}
                 </Components.Text>
                 <Components.Text>
@@ -196,8 +196,8 @@ export function JobAndPayView({
             )}
 
             {job?.rate && job.paymentUnit && typeof job.rate === 'number' && (
-              <Flex flexDirection="column" gap={4}>
-                <Components.Text weight="medium">
+              <Flex flexDirection="column" gap={0}>
+                <Components.Text variant="supporting">
                   {t('jobAndPay.compensation.wage')}
                 </Components.Text>
                 <Components.Text>{formatPayRate(job.rate, job.paymentUnit)}</Components.Text>
@@ -205,8 +205,8 @@ export function JobAndPayView({
             )}
 
             {job?.hireDate && (
-              <Flex flexDirection="column" gap={4}>
-                <Components.Text weight="medium">
+              <Flex flexDirection="column" gap={0}>
+                <Components.Text variant="supporting">
                   {t('jobAndPay.compensation.startDate')}
                 </Components.Text>
                 <Components.Text>{formatDateLongWithYear(job.hireDate)}</Components.Text>

@@ -55,22 +55,26 @@ export function BasicDetailsView({
 
           <Flex flexDirection="column" gap={12}>
             {legalName && (
-              <Flex flexDirection="column" gap={4}>
-                <Components.Text weight="medium">{t('basicDetails.legalName')}</Components.Text>
+              <Flex flexDirection="column" gap={0}>
+                <Components.Text variant="supporting" weight="medium">
+                  {t('basicDetails.legalName')}
+                </Components.Text>
                 <Components.Text>{legalName}</Components.Text>
               </Flex>
             )}
 
             {startDate && (
-              <Flex flexDirection="column" gap={4}>
-                <Components.Text weight="medium">{t('basicDetails.startDate')}</Components.Text>
+              <Flex flexDirection="column" gap={0}>
+                <Components.Text variant="supporting" weight="medium">
+                  {t('basicDetails.startDate')}
+                </Components.Text>
                 <Components.Text>{startDate}</Components.Text>
               </Flex>
             )}
 
             {maskedSsn && (
-              <Flex flexDirection="column" gap={4}>
-                <Components.Text weight="medium">
+              <Flex flexDirection="column" gap={0}>
+                <Components.Text variant="supporting" weight="medium">
                   {t('basicDetails.socialSecurityNumber')}
                 </Components.Text>
                 <Components.Text>{maskedSsn}</Components.Text>
@@ -78,15 +82,19 @@ export function BasicDetailsView({
             )}
 
             {dateOfBirth && (
-              <Flex flexDirection="column" gap={4}>
-                <Components.Text weight="medium">{t('basicDetails.dateOfBirth')}</Components.Text>
+              <Flex flexDirection="column" gap={0}>
+                <Components.Text variant="supporting" weight="medium">
+                  {t('basicDetails.dateOfBirth')}
+                </Components.Text>
                 <Components.Text>{dateOfBirth}</Components.Text>
               </Flex>
             )}
 
             {employee.email && (
-              <Flex flexDirection="column" gap={4}>
-                <Components.Text weight="medium">{t('basicDetails.personalEmail')}</Components.Text>
+              <Flex flexDirection="column" gap={0}>
+                <Components.Text variant="supporting" weight="medium">
+                  {t('basicDetails.personalEmail')}
+                </Components.Text>
                 <Components.Text>{employee.email}</Components.Text>
               </Flex>
             )}
@@ -104,8 +112,10 @@ export function BasicDetailsView({
           </Flex>
 
           {currentHomeAddress ? (
-            <Flex flexDirection="column" gap={4}>
-              <Components.Text weight="medium">{t('homeAddress.currentAddress')}</Components.Text>
+            <Flex flexDirection="column" gap={0}>
+              <Components.Text variant="supporting" weight="medium">
+                {t('homeAddress.currentAddress')}
+              </Components.Text>
               <Components.Text>{getStreet(currentHomeAddress).replace(',', '')}</Components.Text>
               <Components.Text>{getCityStateZip(currentHomeAddress)}</Components.Text>
             </Flex>
@@ -125,8 +135,10 @@ export function BasicDetailsView({
           </Flex>
 
           {currentWorkAddress ? (
-            <Flex flexDirection="column" gap={4}>
-              <Components.Text weight="medium">{t('workAddress.currentAddress')}</Components.Text>
+            <Flex flexDirection="column" gap={0}>
+              <Components.Text variant="supporting" weight="medium">
+                {t('workAddress.currentAddress')}
+              </Components.Text>
               <Components.Text>
                 {currentWorkAddress.street1}
                 {currentWorkAddress.street2 ? `, ${currentWorkAddress.street2}` : ''}

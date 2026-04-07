@@ -76,8 +76,28 @@
       }
     }
   },
+  "taxes": {
+    "federal": {
+      "title": "Federal taxes",
+      "edit": "Edit",
+      "filingStatus": "Filing status",
+      "multipleJobs": "Multiple jobs",
+      "dependentsAndOtherCredits": "Dependents and other credits",
+      "otherIncome": "Other income",
+      "deductions": "Deductions",
+      "extraWithholding": "Extra withholding"
+    },
+    "state": {
+      "title": "State taxes",
+      "edit": "Edit",
+      "noStateTaxes": "No state taxes on file"
+    }
+  },
+  "common": {
+    "yes": "Yes",
+    "no": "No"
+  },
   "placeholders": {
-    "taxes": "Taxes tab content for employee {{employeeId}} in company {{companyId}}",
     "documents": "Documents tab content for employee {{employeeId}} in company {{companyId}}"
   }
 }
