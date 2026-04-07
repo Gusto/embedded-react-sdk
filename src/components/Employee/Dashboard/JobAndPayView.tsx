@@ -2,20 +2,25 @@ import { useTranslation } from 'react-i18next'
 import type { Job } from '@gusto/embedded-api/models/components/job'
 import type { EmployeePaymentMethod } from '@gusto/embedded-api/models/components/employeepaymentmethod'
 import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
+import type { EmployeeBankAccount } from '@gusto/embedded-api/models/components/employeebankaccount'
+import type { GetV1EmployeesEmployeeUuidPayStubsResponse } from '@gusto/embedded-api/models/operations/getv1employeesemployeeuuidpaystubs'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { DataView, useDataView, EmptyData, Loading } from '@/components/Common'
 import { formatDateLongWithYear } from '@/helpers/dateFormatting'
 import { useFormatPayRate } from '@/helpers/formattedStrings'
-import { formatNumberAsCurrency } from '@/helpers/formattedStrings'
-import { useLocale } from '@/contexts/LocaleProvider/useLocale'
+import useNumberFormatter from '@/hooks/useNumberFormatter'
+
+type EmployeePayStub = NonNullable<
+  GetV1EmployeesEmployeeUuidPayStubsResponse['employeePayStubsList']
+>[number]
 
 export interface JobAndPayViewProps {
   job?: Job
   paymentMethod?: EmployeePaymentMethod
-  bankAccounts?: unknown[]
+  bankAccounts?: EmployeeBankAccount[]
   garnishments?: Garnishment[]
-  payStubs?: unknown[]
+  payStubs?: EmployeePayStub[]
   isFetchingGarnishments?: boolean
   isFetchingPayStubs?: boolean
   isLoading?: boolean
@@ -34,7 +39,7 @@ export function JobAndPayView({
   const { t } = useTranslation('Employee.Dashboard')
   const Components = useComponentContext()
   const formatPayRate = useFormatPayRate()
-  const { locale } = useLocale()
+  const formatCurrency = useNumberFormatter('currency')
 
   if (isLoading) {
     return <Loading />
@@ -44,17 +49,17 @@ export function JobAndPayView({
     {
       key: 'nickname',
       title: t('jobAndPay.payment.nickname'),
-      render: (bankAccount: any) => bankAccount.name || '-',
+      render: (bankAccount: EmployeeBankAccount) => bankAccount.name || '-',
     },
     {
       key: 'routingNumber',
       title: t('jobAndPay.payment.routingNumber'),
-      render: (bankAccount: any) => bankAccount.routingNumber || '-',
+      render: (bankAccount: EmployeeBankAccount) => bankAccount.routingNumber || '-',
     },
     {
       key: 'accountType',
       title: t('jobAndPay.payment.accountType'),
-      render: (bankAccount: any) => bankAccount.accountType || '-',
+      render: (bankAccount: EmployeeBankAccount) => bankAccount.accountType || '-',
     },
   ]
 
@@ -75,7 +80,7 @@ export function JobAndPayView({
       title: t('jobAndPay.deductions.withhold'),
       render: (garnishment: Garnishment) => {
         if (garnishment.amount && typeof garnishment.amount === 'number') {
-          return formatNumberAsCurrency(garnishment.amount, locale)
+          return formatCurrency(garnishment.amount)
         }
         if (garnishment.annualMaximum) {
           return `${garnishment.annualMaximum}% per paycheck`
@@ -89,23 +94,25 @@ export function JobAndPayView({
     {
       key: 'payday',
       title: t('jobAndPay.paystubs.payday'),
-      render: (payStub: any) => formatDateLongWithYear(payStub.payDate) || '-',
+      render: (payStub: EmployeePayStub) => formatDateLongWithYear(payStub.checkDate) || '-',
     },
     {
       key: 'checkAmount',
       title: t('jobAndPay.paystubs.checkAmount'),
-      render: (payStub: any) =>
-        payStub.employeeCompensation?.netPay && typeof payStub.employeeCompensation.netPay === 'number'
-          ? formatNumberAsCurrency(payStub.employeeCompensation.netPay, locale)
-          : '-',
+      render: (payStub: EmployeePayStub) => {
+        if (!payStub.netPay) return '-'
+        const amount = parseFloat(payStub.netPay)
+        return isNaN(amount) ? '-' : formatCurrency(amount)
+      },
     },
     {
       key: 'grossPay',
       title: t('jobAndPay.paystubs.grossPay'),
-      render: (payStub: any) =>
-        payStub.employeeCompensation?.grossPay && typeof payStub.employeeCompensation.grossPay === 'number'
-          ? formatNumberAsCurrency(payStub.employeeCompensation.grossPay, locale)
-          : '-',
+      render: (payStub: EmployeePayStub) => {
+        if (!payStub.grossPay) return '-'
+        const amount = parseFloat(payStub.grossPay)
+        return isNaN(amount) ? '-' : formatCurrency(amount)
+      },
     },
     {
       key: 'paymentMethod',
@@ -173,16 +180,20 @@ export function JobAndPayView({
 
             {job?.paymentUnit && (
               <Flex flexDirection="column" gap={4}>
-                <Components.Text weight="medium">{t('jobAndPay.compensation.type')}</Components.Text>
+                <Components.Text weight="medium">
+                  {t('jobAndPay.compensation.type')}
+                </Components.Text>
                 <Components.Text>
                   {job.paymentUnit === 'Hour' ? 'Salary/No overtime' : job.paymentUnit}
                 </Components.Text>
               </Flex>
             )}
 
-            {job?.rate && job?.paymentUnit && typeof job.rate === 'number' && (
+            {job?.rate && job.paymentUnit && typeof job.rate === 'number' && (
               <Flex flexDirection="column" gap={4}>
-                <Components.Text weight="medium">{t('jobAndPay.compensation.wage')}</Components.Text>
+                <Components.Text weight="medium">
+                  {t('jobAndPay.compensation.wage')}
+                </Components.Text>
                 <Components.Text>{formatPayRate(job.rate, job.paymentUnit)}</Components.Text>
               </Flex>
             )}

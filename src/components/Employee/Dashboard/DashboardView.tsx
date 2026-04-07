@@ -48,20 +48,17 @@ export function DashboardView({ companyId, employeeId, dictionary }: DashboardVi
     isFetching: isFetchingPaymentMethod,
   } = useEmployeePaymentMethodGetSuspense({ employeeId })
 
-  const {
-    data: bankAccountsList,
-    isFetching: isFetchingBankAccounts,
-  } = useEmployeePaymentMethodsGetBankAccountsSuspense({ employeeId })
+  const { data: bankAccountsList, isFetching: isFetchingBankAccounts } =
+    useEmployeePaymentMethodsGetBankAccountsSuspense({ employeeId })
 
   const {
     data: { garnishmentList },
     isFetching: isFetchingGarnishments,
   } = useGarnishmentsListSuspense({ employeeId })
 
-  const {
-    data: payStubData,
-    isFetching: isFetchingPayStubs,
-  } = usePayrollsGetPayStubsSuspense({ employeeId })
+  const { data: payStubData, isFetching: isFetchingPayStubs } = usePayrollsGetPayStubsSuspense({
+    employeeId,
+  })
 
   const isLoadingBasicDetails = isFetchingEmployee || isFetchingAddresses || isFetchingWorkAddresses
   const isLoadingJobAndPay =
@@ -74,9 +71,8 @@ export function DashboardView({ companyId, employeeId, dictionary }: DashboardVi
   const currentHomeAddress = employeeAddressList?.find(address => address.active)
   const currentWorkAddress = employeeWorkAddressesList?.find(address => address.active)
   const primaryJob = employee?.jobs?.[0]
-  const bankAccounts = bankAccountsList?.employeeBankAccountList || []
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const payStubs = (payStubData as any)?.payStubs || []
+  const bankAccounts = bankAccountsList.employeeBankAccountList || []
+  const payStubs = payStubData.employeePayStubsList || []
 
   const tabs = [
     {
