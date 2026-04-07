@@ -452,11 +452,14 @@ export interface CompanyTimeOffEmployeeTable{
 export interface CompanyTimeOffHolidayPolicy{
 "title":string;
 "description":string;
+"backCta":string;
 "continueCta":string;
 "tableHeaders":{
 "holidayName":string;
 "observedDate":string;
+"nextObservation":string;
 };
+"tableLabel":string;
 "editEmployees":{
 "title":string;
 };
