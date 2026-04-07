@@ -78,10 +78,9 @@ describe('DataTable Component', () => {
     })
 
     const checkboxes = screen.getAllByRole('checkbox')
-    // +1 for the header select-all checkbox
-    expect(checkboxes).toHaveLength(testData.length + 1)
+    expect(checkboxes).toHaveLength(testData.length)
 
-    const firstRowCheckbox = checkboxes.at(1)
+    const firstRowCheckbox = checkboxes.at(0)
     expect(firstRowCheckbox).toBeDefined()
 
     if (firstRowCheckbox) {
@@ -137,13 +136,27 @@ describe('DataTable Component', () => {
       label: 'Test Table',
     })
 
-    // +1 for the header select-all checkbox
-    expect(screen.getAllByRole('checkbox')).toHaveLength(testData.length + 1)
+    expect(screen.getAllByRole('checkbox')).toHaveLength(testData.length)
     expect(screen.queryByRole('radio')).not.toBeInTheDocument()
   })
 
   describe('select-all header checkbox', () => {
-    test('renders a header checkbox when selectionMode is multiple and onSelect is set', () => {
+    test('renders a header checkbox when selectionMode is multiple and isItemSelected is provided', () => {
+      renderTable<MockData>({
+        data: testData,
+        columns: testColumns,
+        onSelect: vi.fn(),
+        isItemSelected: () => false,
+        selectionMode: 'multiple',
+        label: 'Test Table',
+      })
+
+      const checkboxes = screen.getAllByRole('checkbox')
+      expect(checkboxes).toHaveLength(testData.length + 1)
+      expect(checkboxes[0]).toHaveAccessibleName('table.selectAllRowsLabel')
+    })
+
+    test('does not render header checkbox when isItemSelected is not provided', () => {
       renderTable<MockData>({
         data: testData,
         columns: testColumns,
@@ -153,9 +166,7 @@ describe('DataTable Component', () => {
       })
 
       const checkboxes = screen.getAllByRole('checkbox')
-      // First checkbox is the header select-all
-      expect(checkboxes).toHaveLength(testData.length + 1)
-      expect(checkboxes[0]).toHaveAccessibleName('table.selectAllRowsLabel')
+      expect(checkboxes).toHaveLength(testData.length)
     })
 
     test('header checkbox is checked when all rows are selected via isItemSelected', () => {
