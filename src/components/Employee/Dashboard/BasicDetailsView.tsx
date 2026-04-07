@@ -56,7 +56,7 @@ export function BasicDetailsView({
           <Flex flexDirection="column" gap={12}>
             {legalName && (
               <Flex flexDirection="column" gap={0}>
-                <Components.Text variant="supporting" weight="medium">
+                <Components.Text variant="supporting">
                   {t('basicDetails.legalName')}
                 </Components.Text>
                 <Components.Text>{legalName}</Components.Text>
@@ -65,7 +65,7 @@ export function BasicDetailsView({
 
             {startDate && (
               <Flex flexDirection="column" gap={0}>
-                <Components.Text variant="supporting" weight="medium">
+                <Components.Text variant="supporting">
                   {t('basicDetails.startDate')}
                 </Components.Text>
                 <Components.Text>{startDate}</Components.Text>
@@ -74,7 +74,7 @@ export function BasicDetailsView({
 
             {maskedSsn && (
               <Flex flexDirection="column" gap={0}>
-                <Components.Text variant="supporting" weight="medium">
+                <Components.Text variant="supporting">
                   {t('basicDetails.socialSecurityNumber')}
                 </Components.Text>
                 <Components.Text>{maskedSsn}</Components.Text>
@@ -83,7 +83,7 @@ export function BasicDetailsView({
 
             {dateOfBirth && (
               <Flex flexDirection="column" gap={0}>
-                <Components.Text variant="supporting" weight="medium">
+                <Components.Text variant="supporting">
                   {t('basicDetails.dateOfBirth')}
                 </Components.Text>
                 <Components.Text>{dateOfBirth}</Components.Text>
@@ -92,7 +92,7 @@ export function BasicDetailsView({
 
             {employee.email && (
               <Flex flexDirection="column" gap={0}>
-                <Components.Text variant="supporting" weight="medium">
+                <Components.Text variant="supporting">
                   {t('basicDetails.personalEmail')}
                 </Components.Text>
                 <Components.Text>{employee.email}</Components.Text>
@@ -113,7 +113,7 @@ export function BasicDetailsView({
 
           {currentHomeAddress ? (
             <Flex flexDirection="column" gap={0}>
-              <Components.Text variant="supporting" weight="medium">
+              <Components.Text variant="supporting">
                 {t('homeAddress.currentAddress')}
               </Components.Text>
               <Components.Text>{getStreet(currentHomeAddress).replace(',', '')}</Components.Text>
@@ -136,7 +136,7 @@ export function BasicDetailsView({
 
           {currentWorkAddress ? (
             <Flex flexDirection="column" gap={0}>
-              <Components.Text variant="supporting" weight="medium">
+              <Components.Text variant="supporting">
                 {t('workAddress.currentAddress')}
               </Components.Text>
               <Components.Text>
