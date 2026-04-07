@@ -121,7 +121,7 @@ export {
   type WorkAddressFormProps,
   type WorkAddressSubmitCallbacks,
   type WorkAddressSubmitOptions,
-  type WorkAddressRequiredFields,
+  type WorkAddressOptionalFieldsToRequire,
   type UseWorkAddressFormProps,
   type UseWorkAddressFormResult,
   type UseWorkAddressFormReady,

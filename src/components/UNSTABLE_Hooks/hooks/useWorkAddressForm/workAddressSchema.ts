@@ -1,6 +1,11 @@
 import { z } from 'zod'
-import { composeFormSchema } from '../../form/composeFormSchema'
-import { filterRequiredFields, type RequiredFields } from '../../form/resolveRequiredFields'
+import {
+  buildFormSchema,
+  type RequiredFieldConfig,
+  type OptionalFieldsToRequire,
+} from '../../form/buildFormSchema'
+
+// ── Error codes ────────────────────────────────────────────────────────
 
 export const WorkAddressErrorCodes = {
   REQUIRED: 'REQUIRED',
@@ -8,6 +13,8 @@ export const WorkAddressErrorCodes = {
 
 export type WorkAddressErrorCode =
   (typeof WorkAddressErrorCodes)[keyof typeof WorkAddressErrorCodes]
+
+// ── Field validators ───────────────────────────────────────────────────
 
 const fieldValidators = {
   locationUuid: z.string().min(1, { message: WorkAddressErrorCodes.REQUIRED }),
@@ -21,27 +28,32 @@ export type WorkAddressFormData = {
 }
 export type WorkAddressFormOutputs = WorkAddressFormData
 
-const REQUIRED_ON_CREATE = new Set<WorkAddressField>(['locationUuid'])
-const REQUIRED_ON_UPDATE = new Set<WorkAddressField>(['locationUuid'])
+// ── Required fields config ─────────────────────────────────────────────
+
+const requiredFieldsConfig = {
+  effectiveDate: 'never',
+} satisfies RequiredFieldConfig<typeof fieldValidators>
+
+// ── Schema factory ─────────────────────────────────────────────────────
+
+export type WorkAddressOptionalFieldsToRequire = OptionalFieldsToRequire<
+  typeof requiredFieldsConfig
+>
 
 interface WorkAddressSchemaOptions {
   mode?: 'create' | 'update'
-  requiredFields?: RequiredFields<WorkAddressField>
+  optionalFieldsToRequire?: WorkAddressOptionalFieldsToRequire
   withEffectiveDateField?: boolean
 }
 
 export function createWorkAddressSchema(options: WorkAddressSchemaOptions = {}) {
-  const { mode = 'create', requiredFields, withEffectiveDateField = true } = options
+  const { mode = 'create', optionalFieldsToRequire, withEffectiveDateField = true } = options
 
-  const effectiveRequiredFields = withEffectiveDateField
-    ? requiredFields
-    : filterRequiredFields(requiredFields, 'effectiveDate')
-
-  return composeFormSchema({
-    fieldValidators,
-    requiredOnCreate: REQUIRED_ON_CREATE,
-    requiredOnUpdate: REQUIRED_ON_UPDATE,
+  return buildFormSchema(fieldValidators, {
+    requiredFieldsConfig,
+    requiredErrorCode: WorkAddressErrorCodes.REQUIRED,
     mode,
-    requiredFields: effectiveRequiredFields,
+    optionalFieldsToRequire,
+    excludeFields: withEffectiveDateField ? [] : ['effectiveDate'],
   })
 }
