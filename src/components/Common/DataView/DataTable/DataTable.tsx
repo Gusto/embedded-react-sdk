@@ -11,6 +11,7 @@ export type DataTableProps<T> = {
   data: useDataViewPropReturn<T>['data']
   itemMenu?: useDataViewPropReturn<T>['itemMenu']
   onSelect?: useDataViewPropReturn<T>['onSelect']
+  isItemSelected?: useDataViewPropReturn<T>['isItemSelected']
   emptyState?: useDataViewPropReturn<T>['emptyState']
   footer?: useDataViewPropReturn<T>['footer']
   variant?: TableProps['variant']
@@ -39,6 +40,7 @@ export const DataTable = <T,>({
   columns,
   itemMenu,
   onSelect,
+  isItemSelected,
   emptyState,
   footer,
   variant,
@@ -79,10 +81,11 @@ export const DataTable = <T,>({
 
   const renderSelectionControl = (item: T, rowIndex: number) => {
     if (selectionMode === 'single') {
+      const isSelected = isItemSelected?.(item, rowIndex) ?? selectedRadioIndex === rowIndex
       return (
         <Components.Radio
           name={radioGroupName}
-          value={selectedRadioIndex === rowIndex}
+          value={isSelected}
           onChange={() => {
             handleRadioSelect(item, rowIndex)
           }}
@@ -92,8 +95,10 @@ export const DataTable = <T,>({
       )
     }
 
+    const isSelected = isItemSelected?.(item, rowIndex) ?? false
     return (
       <Components.Checkbox
+        value={isSelected}
         onChange={(checked: boolean) => {
           onSelect?.(item, checked)
         }}

@@ -5,16 +5,13 @@ import { DataView, Flex, ActionsLayout, useDataView } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 
-export function SelectHolidaysPresentation({
-  holidays,
-  selectedHolidayUuids,
-  onSelectionChange,
-  onContinue,
-  onBack,
-}: SelectHolidaysPresentationProps) {
+export function SelectHolidaysPresentation(props: SelectHolidaysPresentationProps) {
   useI18n('Company.TimeOff.HolidayPolicy')
   const { t } = useTranslation('Company.TimeOff.HolidayPolicy')
   const { Heading, Text, Button } = useComponentContext()
+
+  const { holidays } = props
+  const isViewMode = props.mode === 'view'
 
   const columns = useMemo(
     () => [
@@ -37,31 +34,41 @@ export function SelectHolidaysPresentation({
     [t, Text],
   )
 
+  const selectionProps = !isViewMode
+    ? {
+        selectionMode: 'multiple' as const,
+        onSelect: props.onSelectionChange,
+        isItemSelected: (item: HolidayItem) => props.selectedHolidayUuids.has(item.uuid),
+      }
+    : {}
+
   const dataViewProps = useDataView<HolidayItem>({
     data: holidays,
     columns,
-    selectionMode: 'multiple',
-    onSelect: onSelectionChange,
-    isItemSelected: (item: HolidayItem) => selectedHolidayUuids.has(item.uuid),
+    ...selectionProps,
   })
 
   return (
     <Flex flexDirection="column" gap={32}>
-      <Flex flexDirection="column" gap={4}>
-        <Heading as="h2">{t('title')}</Heading>
-        <Text variant="supporting">{t('description')}</Text>
-      </Flex>
+      {!isViewMode && (
+        <Flex flexDirection="column" gap={4}>
+          <Heading as="h2">{t('title')}</Heading>
+          <Text variant="supporting">{t('description')}</Text>
+        </Flex>
+      )}
 
       <DataView label={t('tableLabel')} {...dataViewProps} />
 
-      <ActionsLayout>
-        <Button variant="secondary" onClick={onBack}>
-          {t('backCta')}
-        </Button>
-        <Button variant="primary" onClick={onContinue}>
-          {t('continueCta')}
-        </Button>
-      </ActionsLayout>
+      {!isViewMode && (
+        <ActionsLayout>
+          <Button variant="secondary" onClick={props.onBack}>
+            {t('backCta')}
+          </Button>
+          <Button variant="primary" onClick={props.onContinue}>
+            {t('continueCta')}
+          </Button>
+        </ActionsLayout>
+      )}
     </Flex>
   )
 }
