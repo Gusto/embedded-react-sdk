@@ -47,10 +47,6 @@ export function JobAndPayView({
   const formatPayRate = useFormatPayRate()
   const formatCurrency = useNumberFormatter('currency')
 
-  if (isLoading) {
-    return <Loading />
-  }
-
   const bankAccountsColumns = [
     {
       key: 'nickname',
@@ -162,7 +158,9 @@ export function JobAndPayView({
       />
     ),
   })
-
+  if (isLoading) {
+    return <Loading />
+  }
   return (
     <Flex flexDirection="column" gap={24}>
       <Components.Box>

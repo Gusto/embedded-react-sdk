@@ -32,7 +32,7 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'Contractor.PaymentSummary': ['companyId'],
   'Contractor.PaymentsList': ['companyId'],
   'Employee.Compensation': ['employeeId'],
-  'Employee.Dashboard': ['companyId', 'employeeId'],
+  'Employee.DashboardFlow': ['companyId', 'employeeId'],
   'Employee.Deductions': ['employeeId'],
   'Employee.DocumentSigner': ['employeeId'],
   'Employee.EmployeeDocuments': ['employeeId'],

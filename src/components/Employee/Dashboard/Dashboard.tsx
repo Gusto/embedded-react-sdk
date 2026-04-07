@@ -1,30 +1,245 @@
-import { createMachine } from 'robot3'
-import { useMemo } from 'react'
-import { dashboardStateMachine } from './dashboardStateMachine'
-import { type DashboardContextInterface, DashboardViewContextual } from './DashboardComponents'
-import { Flow } from '@/components/Flow/Flow'
-import type { BaseComponentInterface } from '@/components/Base'
+import { useState, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
+import { useEmployeeAddressesGetSuspense } from '@gusto/embedded-api/react-query/employeeAddressesGet'
+import { useEmployeeAddressesGetWorkAddressesSuspense } from '@gusto/embedded-api/react-query/employeeAddressesGetWorkAddresses'
+import { useEmployeePaymentMethodGetSuspense } from '@gusto/embedded-api/react-query/employeePaymentMethodGet'
+import { useEmployeePaymentMethodsGetBankAccountsSuspense } from '@gusto/embedded-api/react-query/employeePaymentMethodsGetBankAccounts'
+import { useGarnishmentsListSuspense } from '@gusto/embedded-api/react-query/garnishmentsList'
+import { usePayrollsGetPayStubsSuspense } from '@gusto/embedded-api/react-query/payrollsGetPayStubs'
+import { useEmployeeTaxSetupGetFederalTaxesSuspense } from '@gusto/embedded-api/react-query/employeeTaxSetupGetFederalTaxes'
+import { useEmployeeTaxSetupGetStateTaxesSuspense } from '@gusto/embedded-api/react-query/employeeTaxSetupGetStateTaxes'
+import { useEmployeeFormsListSuspense } from '@gusto/embedded-api/react-query/employeeFormsList'
+import { BasicDetailsView } from './BasicDetailsView'
+import { JobAndPayView } from './JobAndPayView'
+import { TaxesView } from './TaxesView'
+import { DocumentsView } from './DocumentsView'
+import { Flex } from '@/components/Common/Flex/Flex'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/components/Base/Base'
+import { useComponentDictionary, useI18n } from '@/i18n'
+import { componentEvents } from '@/shared/constants'
 
-export interface DashboardProps extends BaseComponentInterface {
+type DashboardTab = 'basicDetails' | 'jobAndPay' | 'taxes' | 'documents'
+
+export interface DashboardProps extends BaseComponentInterface<'Employee.Dashboard'> {
   companyId: string
   employeeId: string
 }
 
-export const Dashboard = ({ companyId, employeeId, onEvent }: DashboardProps) => {
-  const dashboardMachine = useMemo(
-    () =>
-      createMachine(
-        'index',
-        dashboardStateMachine,
-        (initialContext: DashboardContextInterface) => ({
-          ...initialContext,
-          component: DashboardViewContextual,
-          companyId,
-          employeeId,
-        }),
-      ),
-    [companyId, employeeId],
+function DashboardRoot({ companyId, employeeId, dictionary, onEvent }: DashboardProps) {
+  useI18n('Employee.Dashboard')
+  useComponentDictionary('Employee.Dashboard', dictionary)
+  const { t } = useTranslation('Employee.Dashboard')
+  const Components = useComponentContext()
+  const [selectedTab, setSelectedTab] = useState<DashboardTab>('basicDetails')
+
+  const {
+    data: { employee },
+    isFetching: isFetchingEmployee,
+  } = useEmployeesGetSuspense({ employeeId })
+
+  const {
+    data: { employeeAddressList },
+    isFetching: isFetchingAddresses,
+  } = useEmployeeAddressesGetSuspense({ employeeId })
+
+  const {
+    data: { employeeWorkAddressesList },
+    isFetching: isFetchingWorkAddresses,
+  } = useEmployeeAddressesGetWorkAddressesSuspense({ employeeId })
+
+  const {
+    data: { employeePaymentMethod },
+    isFetching: isFetchingPaymentMethod,
+  } = useEmployeePaymentMethodGetSuspense({ employeeId })
+
+  const { data: bankAccountsList, isFetching: isFetchingBankAccounts } =
+    useEmployeePaymentMethodsGetBankAccountsSuspense({ employeeId })
+
+  const {
+    data: { garnishmentList },
+    isFetching: isFetchingGarnishments,
+  } = useGarnishmentsListSuspense({ employeeId })
+
+  const { data: payStubData, isFetching: isFetchingPayStubs } = usePayrollsGetPayStubsSuspense({
+    employeeId,
+  })
+
+  const {
+    data: { employeeFederalTax },
+    isFetching: isFetchingFederalTaxes,
+  } = useEmployeeTaxSetupGetFederalTaxesSuspense({ employeeUuid: employeeId })
+
+  const {
+    data: { employeeStateTaxesList },
+    isFetching: isFetchingStateTaxes,
+  } = useEmployeeTaxSetupGetStateTaxesSuspense({ employeeUuid: employeeId })
+
+  const {
+    data: { formList },
+    isFetching: isFetchingForms,
+  } = useEmployeeFormsListSuspense({
+    employeeId,
+  })
+
+  const isLoadingBasicDetails = isFetchingEmployee || isFetchingAddresses || isFetchingWorkAddresses
+  const isLoadingJobAndPay =
+    isFetchingEmployee ||
+    isFetchingPaymentMethod ||
+    isFetchingBankAccounts ||
+    isFetchingGarnishments ||
+    isFetchingPayStubs
+  const isLoadingTaxes = isFetchingFederalTaxes || isFetchingStateTaxes
+  const isLoadingDocuments = isFetchingForms
+
+  const currentHomeAddress = employeeAddressList?.find(address => address.active)
+  const currentWorkAddress = employeeWorkAddressesList?.find(address => address.active)
+  const primaryJob = employee?.jobs?.[0]
+  const bankAccounts = bankAccountsList.employeeBankAccountList || []
+  const payStubs = payStubData.employeePayStubsList || []
+
+  const handleEditBasicDetails = useCallback(() => {
+    onEvent(componentEvents.EMPLOYEE_UPDATE, { employeeId })
+  }, [onEvent, employeeId])
+
+  const handleManageHomeAddress = useCallback(() => {
+    onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_UPDATE, { employeeId })
+  }, [onEvent, employeeId])
+
+  const handleManageWorkAddress = useCallback(() => {
+    onEvent(componentEvents.EMPLOYEE_WORK_ADDRESS_UPDATE, { employeeId })
+  }, [onEvent, employeeId])
+
+  const handleEditCompensation = useCallback(() => {
+    onEvent(componentEvents.EMPLOYEE_COMPENSATION_UPDATE, { employeeId })
+  }, [onEvent, employeeId])
+
+  const handleAddBankAccount = useCallback(() => {
+    onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATE, { employeeId })
+  }, [onEvent, employeeId])
+
+  const handleAddDeduction = useCallback(() => {
+    onEvent(componentEvents.EMPLOYEE_DEDUCTION_ADD, { employeeId })
+  }, [onEvent, employeeId])
+
+  const handleEditFederalTaxes = useCallback(() => {
+    onEvent(componentEvents.EMPLOYEE_FEDERAL_TAXES_EDIT, {
+      employeeId,
+    })
+  }, [onEvent, employeeId])
+
+  const handleEditStateTaxes = useCallback(
+    (state: string) => {
+      onEvent(componentEvents.EMPLOYEE_STATE_TAXES_EDIT, { employeeId, state })
+    },
+    [onEvent, employeeId],
   )
 
-  return <Flow machine={dashboardMachine} onEvent={onEvent} />
+  const handleViewForm = useCallback(
+    (formUuid: string) => {
+      onEvent(componentEvents.EMPLOYEE_VIEW_FORM_TO_SIGN, { employeeId, formUuid })
+    },
+    [onEvent, employeeId],
+  )
+
+  const tabs = [
+    {
+      id: 'basicDetails' as const,
+      label: t('tabs.basicDetails'),
+      content: null,
+    },
+    {
+      id: 'jobAndPay' as const,
+      label: t('tabs.jobAndPay'),
+      content: null,
+    },
+    {
+      id: 'taxes' as const,
+      label: t('tabs.taxes'),
+      content: null,
+    },
+    {
+      id: 'documents' as const,
+      label: t('tabs.documents'),
+      content: null,
+    },
+  ]
+
+  return (
+    <BaseLayout>
+      <Flex flexDirection="column" gap={32}>
+        <Components.Heading as="h2">{t('title')}</Components.Heading>
+
+        <Components.Tabs
+          tabs={tabs}
+          selectedId={selectedTab}
+          onSelectionChange={id => {
+            setSelectedTab(id as DashboardTab)
+          }}
+          aria-label={t('tabsLabel')}
+        />
+
+        <Flex flexDirection="column" gap={24}>
+          {selectedTab === 'basicDetails' && (
+            <BasicDetailsView
+              employee={employee}
+              currentHomeAddress={currentHomeAddress}
+              currentWorkAddress={currentWorkAddress}
+              isLoading={isLoadingBasicDetails}
+              onEditBasicDetails={handleEditBasicDetails}
+              onManageHomeAddress={handleManageHomeAddress}
+              onManageWorkAddress={handleManageWorkAddress}
+            />
+          )}
+
+          {selectedTab === 'jobAndPay' && (
+            <JobAndPayView
+              job={primaryJob}
+              paymentMethod={employeePaymentMethod}
+              bankAccounts={bankAccounts}
+              garnishments={garnishmentList}
+              payStubs={payStubs}
+              isFetchingGarnishments={isFetchingGarnishments}
+              isFetchingPayStubs={isFetchingPayStubs}
+              isLoading={isLoadingJobAndPay}
+              onEditCompensation={handleEditCompensation}
+              onAddBankAccount={handleAddBankAccount}
+              onAddDeduction={handleAddDeduction}
+            />
+          )}
+
+          {selectedTab === 'taxes' && (
+            <TaxesView
+              federalTaxes={employeeFederalTax}
+              stateTaxes={employeeStateTaxesList}
+              isLoading={isLoadingTaxes}
+              onEditFederalTaxes={handleEditFederalTaxes}
+              onEditStateTaxes={handleEditStateTaxes}
+            />
+          )}
+
+          {selectedTab === 'documents' && (
+            <DocumentsView
+              forms={formList}
+              isFetching={isFetchingForms}
+              isLoading={isLoadingDocuments}
+              onViewForm={handleViewForm}
+            />
+          )}
+        </Flex>
+      </Flex>
+    </BaseLayout>
+  )
+}
+
+export function Dashboard({
+  FallbackComponent,
+  ...props
+}: DashboardProps & BaseComponentInterface) {
+  return (
+    <BaseBoundaries componentName="Employee.Dashboard" FallbackComponent={FallbackComponent}>
+      <DashboardRoot {...props} />
+    </BaseBoundaries>
+  )
 }

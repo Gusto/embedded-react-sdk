@@ -1,18 +1,12 @@
 import type { OnboardingStatus } from '@gusto/embedded-api/models/operations/putv1employeesemployeeidonboardingstatus'
 import { EmployeeListView } from './EmployeeListView'
 import { useEmployeeList } from './useEmployeeList'
-import {
-  BaseBoundaries,
-  BaseLayout,
-  type BaseComponentInterface,
-  type CommonComponentInterface,
-} from '@/components/Base/Base'
+import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/components/Base/Base'
 import { useI18n, useComponentDictionary } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 
-interface EmployeeListProps extends CommonComponentInterface<'Employee.EmployeeList'> {
+interface EmployeeListProps extends BaseComponentInterface<'Employee.EmployeeList'> {
   companyId: string
-  onEvent: BaseComponentInterface['onEvent']
 }
 
 function EmployeeListRoot({ companyId, onEvent, dictionary }: EmployeeListProps) {
