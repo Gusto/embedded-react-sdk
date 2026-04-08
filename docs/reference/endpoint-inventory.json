@@ -2087,7 +2087,7 @@
         "UNSTABLE_TimeOff.PolicyDetailsForm",
         "UNSTABLE_TimeOff.PolicyList",
         "UNSTABLE_TimeOff.PolicySettings",
-        "UNSTABLE_TimeOff.SelectPolicyType",
+        "UNSTABLE_TimeOff.PolicyTypeSelector",
         "UNSTABLE_TimeOff.TimeOffFlow",
         "UNSTABLE_TimeOff.ViewHolidayEmployees",
         "UNSTABLE_TimeOff.ViewHolidaySchedule",
