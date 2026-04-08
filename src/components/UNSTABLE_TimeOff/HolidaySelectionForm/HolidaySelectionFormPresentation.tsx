@@ -1,11 +1,14 @@
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { HolidayItem, SelectHolidaysPresentationProps } from './SelectHolidaysTypes'
+import type {
+  HolidayItem,
+  HolidaySelectionFormPresentationProps,
+} from './HolidaySelectionFormTypes'
 import { DataView, Flex, ActionsLayout, useDataView } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 
-export function SelectHolidaysPresentation(props: SelectHolidaysPresentationProps) {
+export function HolidaySelectionFormPresentation(props: HolidaySelectionFormPresentationProps) {
   useI18n('Company.TimeOff.HolidayPolicy')
   const { t } = useTranslation('Company.TimeOff.HolidayPolicy')
   const { Heading, Text, Button } = useComponentContext()
