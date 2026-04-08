@@ -95,7 +95,7 @@ export const DataTable = <T,>({
 
   const renderSelectionControl = (item: T, rowIndex: number) => {
     if (selectionMode === 'single') {
-      const isSelected = isItemSelected?.(item, rowIndex) ?? selectedRadioIndex === rowIndex
+      const isSelected = getIsItemSelected?.(item) ?? selectedRadioIndex === rowIndex
       return (
         <Components.Radio
           name={radioGroupName}
@@ -109,7 +109,6 @@ export const DataTable = <T,>({
       )
     }
 
-    const isSelected = isItemSelected?.(item, rowIndex) ?? false
     return (
       <Components.Checkbox
         value={getIsItemSelected?.(item)}
