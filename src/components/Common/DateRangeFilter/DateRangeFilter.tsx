@@ -73,9 +73,8 @@ export const DateRangeFilter = ({
   }, [draftRange, onStartDateChange, onEndDateChange, onClear])
 
   const handleReset = useCallback(() => {
-    onClear()
-    setIsOpen(false)
-  }, [onClear])
+    setDraftRange(null)
+  }, [])
 
   const handleRangeChange = useCallback((range: DateRange | null) => {
     setDraftRange(range)

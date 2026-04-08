@@ -52,9 +52,8 @@ describe('DateRangeFilter', () => {
     })
   })
 
-  it('calls onClear and closes popover when Reset is clicked', async () => {
-    const onClear = vi.fn()
-    renderWithProviders(<DateRangeFilter {...defaultProps} onClear={onClear} />)
+  it('clears draft selection but keeps popover open when Reset is clicked', async () => {
+    renderWithProviders(<DateRangeFilter {...defaultProps} />)
 
     await user.click(screen.getByRole('button', { name: 'Filter by date' }))
 
@@ -64,7 +63,7 @@ describe('DateRangeFilter', () => {
 
     await user.click(screen.getByRole('button', { name: 'Reset' }))
 
-    expect(onClear).toHaveBeenCalledOnce()
+    expect(screen.getByRole('button', { name: 'Apply' })).toBeInTheDocument()
   })
 
   it('uses secondary variant and shows date range for trigger when filter is active', () => {
@@ -82,10 +81,10 @@ describe('DateRangeFilter', () => {
     expect(trigger).toHaveTextContent('Mar 10 – Apr 16')
   })
 
-  it('uses tertiary variant for trigger when filter is not active', () => {
+  it('uses secondary variant for trigger when filter is not active', () => {
     renderWithProviders(<DateRangeFilter {...defaultProps} isFilterActive={false} />)
 
     const trigger = screen.getByRole('button', { name: 'Filter by date' })
-    expect(trigger).toHaveAttribute('data-variant', 'tertiary')
+    expect(trigger).toHaveAttribute('data-variant', 'secondary')
   })
 })
