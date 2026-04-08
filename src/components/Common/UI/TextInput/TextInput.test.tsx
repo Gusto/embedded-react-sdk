@@ -52,6 +52,17 @@ describe('TextInput', () => {
     expect(input).toHaveAttribute('max', '100')
   })
 
+  it('defaults to empty string when value is undefined to stay controlled', () => {
+    const { rerender } = renderWithProviders(
+      <TextInput {...defaultProps} value={undefined} onChange={() => {}} />,
+    )
+    const input = screen.getByRole('textbox')
+    expect(input).toHaveValue('')
+
+    rerender(<TextInput {...defaultProps} value="hello" onChange={() => {}} />)
+    expect(input).toHaveValue('hello')
+  })
+
   describe('Accessibility', () => {
     const testCases = [
       {

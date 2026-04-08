@@ -15,12 +15,8 @@ export function Input(rawProps: InputProps) {
     inputRef,
     isDisabled,
     'aria-invalid': ariaInvalid,
-    value,
     ...otherProps
   } = resolvedProps
-
-  const isControlled = 'value' in rawProps
-  const ariaInputProps = isControlled ? { ...otherProps, value: value ?? '' } : otherProps
 
   return (
     <div
@@ -40,7 +36,7 @@ export function Input(rawProps: InputProps) {
           ref={inputRef}
           disabled={isDisabled}
           aria-invalid={ariaInvalid}
-          {...ariaInputProps}
+          {...otherProps}
         />
         <div className={styles.invalidIcon}>
           <AlertCircle fontSize={16} />
