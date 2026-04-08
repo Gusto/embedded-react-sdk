@@ -83,7 +83,7 @@ export const DateRangePicker = ({
         <Group className={styles.dateInputGroup}>
           <div className={styles.dateInputWrapper}>
             <span className={styles.dateInputLabel}>{startDateLabel}</span>
-            <DateInput slot="start" className={styles.dateInput}>
+            <DateInput slot="start" className={styles.dateInput} aria-label={startDateLabel}>
               {segment => <DateSegment segment={segment} />}
             </DateInput>
           </div>
@@ -92,7 +92,7 @@ export const DateRangePicker = ({
           </span>
           <div className={styles.dateInputWrapper}>
             <span className={styles.dateInputLabel}>{endDateLabel}</span>
-            <DateInput slot="end" className={styles.dateInput}>
+            <DateInput slot="end" className={styles.dateInput} aria-label={endDateLabel}>
               {segment => <DateSegment segment={segment} />}
             </DateInput>
           </div>
