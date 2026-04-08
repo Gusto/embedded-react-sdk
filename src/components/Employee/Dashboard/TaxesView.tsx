@@ -54,9 +54,12 @@ export function TaxesView({
       }
     }
 
-    // For currency values
+    // For numeric values, only format as currency for Currency questions
     if (typeof answer === 'number') {
-      return formatCurrency(answer)
+      if (question.inputQuestionFormat.type === 'Currency') {
+        return formatCurrency(answer)
+      }
+      return answer
     }
 
     // For string currency values (like "0.0")

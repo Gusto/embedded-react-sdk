@@ -118,7 +118,7 @@ export function JobAndPayView({
     {
       key: 'paymentMethod',
       title: t('jobAndPay.paystubs.paymentMethod'),
-      render: () => 'Direct deposit',
+      render: () => paymentMethod?.type || t('common.notAvailable'),
     },
   ]
 
