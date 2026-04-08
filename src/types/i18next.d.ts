@@ -1337,6 +1337,7 @@ export interface EmployeeDashboard{
 "checkAmount":string;
 "grossPay":string;
 "paymentMethod":string;
+"noPaymentMethod":string;
 "emptyState":{
 "title":string;
 "description":string;

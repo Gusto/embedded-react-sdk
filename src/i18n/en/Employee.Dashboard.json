@@ -73,6 +73,7 @@
       "checkAmount": "Check amount",
       "grossPay": "Gross pay",
       "paymentMethod": "Payment method",
+      "noPaymentMethod": "Not available",
       "emptyState": {
         "title": "No paystubs",
         "description": "Paystubs will appear here after payroll is run"

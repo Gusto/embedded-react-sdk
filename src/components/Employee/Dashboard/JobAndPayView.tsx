@@ -118,7 +118,7 @@ export function JobAndPayView({
     {
       key: 'paymentMethod',
       title: t('jobAndPay.paystubs.paymentMethod'),
-      render: () => paymentMethod?.type || t('common.notAvailable'),
+      render: () => paymentMethod?.type || t('jobAndPay.paystubs.noPaymentMethod'),
     },
   ]
 
