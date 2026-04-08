@@ -130,22 +130,6 @@ describe('Checkbox', () => {
     })
   })
 
-  describe('data attribute visual states', () => {
-    it('sets data-checked to true when value is true', () => {
-      renderWithProviders(<Checkbox {...defaultProps} value={true} />)
-      const input = screen.getByRole('checkbox')
-      const wrapper = input.closest('[data-checked]')
-      expect(wrapper).toHaveAttribute('data-checked', 'true')
-    })
-
-    it('sets data-checked to false when unchecked', () => {
-      renderWithProviders(<Checkbox {...defaultProps} value={false} />)
-      const input = screen.getByRole('checkbox')
-      const wrapper = input.closest('[data-checked]')
-      expect(wrapper).toHaveAttribute('data-checked', 'false')
-    })
-  })
-
   describe('accessibility', () => {
     const testCases = [
       { name: 'default', props: { label: 'Default Checkbox' } },

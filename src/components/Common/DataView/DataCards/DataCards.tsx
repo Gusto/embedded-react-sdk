@@ -11,9 +11,9 @@ export type DataCardsProps<T> = {
   columns: useDataViewPropReturn<T>['columns']
   data: useDataViewPropReturn<T>['data']
   itemMenu?: useDataViewPropReturn<T>['itemMenu']
-  onSelect?: (item: T, checked: boolean, index: number) => void
+  onSelect?: (item: T, checked: boolean) => void
   onSelectAll?: (checked: boolean, visibleData: T[]) => void
-  isItemSelected?: useDataViewPropReturn<T>['isItemSelected']
+  getIsItemSelected?: (item: T) => boolean
   emptyState?: useDataViewPropReturn<T>['emptyState']
   footer?: useDataViewPropReturn<T>['footer']
   selectionMode?: SelectionMode
@@ -26,7 +26,7 @@ export const DataCards = <T,>({
   itemMenu,
   onSelect,
   onSelectAll,
-  isItemSelected,
+  getIsItemSelected,
   emptyState,
   footer,
   selectionMode = 'multiple',
@@ -34,25 +34,12 @@ export const DataCards = <T,>({
   const Components = useComponentContext()
   const { t } = useTranslation('common')
   const radioGroupName = useId()
-  const { allSelected } = useSelectionState(data, isItemSelected)
-
-  if (
-    process.env.NODE_ENV !== 'production' &&
-    onSelect &&
-    selectionMode === 'multiple' &&
-    !isItemSelected
-  ) {
-    // eslint-disable-next-line no-console
-    console.warn(
-      'DataCards: onSelect with selectionMode="multiple" requires isItemSelected for the select-all checkbox to work. ' +
-        'Provide isItemSelected or set selectionMode="single".',
-    )
-  }
+  const { allSelected } = useSelectionState(data, getIsItemSelected)
 
   const renderAction = (item: T, index: number) => {
     if (!onSelect) return undefined
 
-    const isSelected = isItemSelected?.(item, index) ?? false
+    const isSelected = getIsItemSelected?.(item) ?? false
 
     if (selectionMode === 'single') {
       return (
@@ -60,7 +47,7 @@ export const DataCards = <T,>({
           name={radioGroupName}
           value={isSelected}
           onChange={() => {
-            onSelect(item, true, index)
+            onSelect(item, true)
           }}
           label={t('card.selectRowLabel')}
           shouldVisuallyHideLabel
@@ -72,7 +59,7 @@ export const DataCards = <T,>({
       <Components.Checkbox
         value={isSelected}
         onChange={(checked: boolean) => {
-          onSelect(item, checked, index)
+          onSelect(item, checked)
         }}
         label={t('card.selectRowLabel')}
         shouldVisuallyHideLabel
@@ -82,7 +69,7 @@ export const DataCards = <T,>({
 
   return (
     <div data-testid="data-cards">
-      {onSelect && isItemSelected && selectionMode === 'multiple' && data.length > 0 && (
+      {onSelect && getIsItemSelected && selectionMode === 'multiple' && data.length > 0 && (
         <div className={styles.selectAllRow}>
           <Components.Checkbox
             value={allSelected}

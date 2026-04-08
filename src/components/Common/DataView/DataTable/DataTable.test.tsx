@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, test, expect, vi } from 'vitest'
@@ -30,7 +29,7 @@ const baseProps: DataTableProps<MockData> = {
 const selectableProps: DataTableProps<MockData> = {
   ...baseProps,
   onSelect: vi.fn(),
-  isItemSelected: () => false,
+  getIsItemSelected: () => false,
   selectionMode: 'multiple',
 }
 
@@ -67,7 +66,7 @@ describe('DataTable Component', () => {
     expect(checkboxes).toHaveLength(testData.length)
 
     await userEvent.click(checkboxes[0] as HTMLElement)
-    expect(onSelectMock).toHaveBeenCalledWith(testData[0], true, 0)
+    expect(onSelectMock).toHaveBeenCalledWith(testData[0], true)
   })
 
   test('should render radio buttons when selectionMode is single', async () => {
@@ -78,7 +77,7 @@ describe('DataTable Component', () => {
     expect(radios).toHaveLength(testData.length)
 
     await userEvent.click(radios[0] as HTMLElement)
-    expect(onSelectMock).toHaveBeenCalledWith(testData[0], true, 0)
+    expect(onSelectMock).toHaveBeenCalledWith(testData[0], true)
   })
 
   test('radio buttons should share the same name for single selection', () => {
@@ -97,20 +96,20 @@ describe('DataTable Component', () => {
   })
 
   describe('select-all header checkbox', () => {
-    test('renders a header checkbox when selectionMode is multiple and isItemSelected is provided', () => {
+    test('renders a header checkbox when selectionMode is multiple and getIsItemSelected is provided', () => {
       renderTable(selectableProps)
       const checkboxes = screen.getAllByRole('checkbox')
       expect(checkboxes).toHaveLength(testData.length + 1)
       expect(checkboxes[0]).toHaveAccessibleName('table.selectAllRowsLabel')
     })
 
-    test('does not render header checkbox when isItemSelected is not provided', () => {
+    test('does not render header checkbox when getIsItemSelected is not provided', () => {
       renderTable({ onSelect: vi.fn(), selectionMode: 'multiple' })
       expect(screen.getAllByRole('checkbox')).toHaveLength(testData.length)
     })
 
     test('header checkbox is checked when all rows are selected', () => {
-      renderTable({ ...selectableProps, isItemSelected: () => true })
+      renderTable({ ...selectableProps, getIsItemSelected: () => true })
       expect(screen.getAllByRole('checkbox')[0]).toBeChecked()
     })
 
@@ -128,7 +127,11 @@ describe('DataTable Component', () => {
 
     test('clicking the header checkbox fires onSelectAll with checked=false when all selected', async () => {
       const onSelectAllMock = vi.fn()
-      renderTable({ ...selectableProps, onSelectAll: onSelectAllMock, isItemSelected: () => true })
+      renderTable({
+        ...selectableProps,
+        onSelectAll: onSelectAllMock,
+        getIsItemSelected: () => true,
+      })
       await userEvent.click(screen.getAllByRole('checkbox')[0] as Element)
       expect(onSelectAllMock).toHaveBeenCalledWith(false, testData)
     })
@@ -155,63 +158,30 @@ describe('DataTable Component', () => {
     expect(screen.getByText('55')).toBeInTheDocument()
   })
 
-  describe('controlled select-all cycle', () => {
-    function ControlledSelectAllTable() {
-      const [selectedIndices, setSelectedIndices] = useState(new Set<number>())
-      return (
-        <ThemeProvider>
-          <ComponentsProvider value={defaultComponents}>
-            <DataTable<MockData>
-              {...baseProps}
-              selectionMode="multiple"
-              isItemSelected={(_item, index) => selectedIndices.has(index)}
-              onSelect={(_item, checked, index) => {
-                setSelectedIndices(prev => {
-                  const next = new Set(prev)
-                  checked ? next.add(index) : next.delete(index)
-                  return next
-                })
-              }}
-              onSelectAll={checked => {
-                setSelectedIndices(checked ? new Set(testData.map((_, i) => i)) : new Set())
-              }}
-            />
-          </ComponentsProvider>
-        </ThemeProvider>
-      )
-    }
+  describe('select-all callback behavior', () => {
+    test('clicking select-all when none selected fires onSelectAll with true', async () => {
+      const onSelectAllMock = vi.fn()
+      renderTable({ ...selectableProps, onSelectAll: onSelectAllMock })
+      await userEvent.click(screen.getAllByRole('checkbox')[0] as HTMLElement)
+      expect(onSelectAllMock).toHaveBeenCalledWith(true, testData)
+    })
 
-    test('full select-all -> uncheck one -> re-select -> deselect cycle', async () => {
-      render(<ControlledSelectAllTable />)
+    test('clicking select-all when all selected fires onSelectAll with false', async () => {
+      const onSelectAllMock = vi.fn()
+      renderTable({
+        ...selectableProps,
+        getIsItemSelected: () => true,
+        onSelectAll: onSelectAllMock,
+      })
+      await userEvent.click(screen.getAllByRole('checkbox')[0] as HTMLElement)
+      expect(onSelectAllMock).toHaveBeenCalledWith(false, testData)
+    })
 
-      const getHeaderCheckbox = () => screen.getAllByRole('checkbox')[0] as HTMLElement
-      const getFirstRowCheckbox = () => screen.getAllByRole('checkbox')[1] as HTMLElement
-      const getHeaderWrapper = () => getHeaderCheckbox().closest('[data-checked]')
-      const getCheckedRowCount = () =>
-        screen
-          .getAllByRole('checkbox')
-          .slice(1)
-          .filter(cb => cb.closest('[data-checked]')?.getAttribute('data-checked') === 'true')
-          .length
-
-      expect(getHeaderWrapper()).toHaveAttribute('data-checked', 'false')
-      expect(getCheckedRowCount()).toBe(0)
-
-      await userEvent.click(getHeaderCheckbox())
-      expect(getHeaderWrapper()).toHaveAttribute('data-checked', 'true')
-      expect(getCheckedRowCount()).toBe(testData.length)
-
-      await userEvent.click(getFirstRowCheckbox())
-      expect(getHeaderWrapper()).toHaveAttribute('data-checked', 'false')
-      expect(getCheckedRowCount()).toBe(testData.length - 1)
-
-      await userEvent.click(getHeaderCheckbox())
-      expect(getHeaderWrapper()).toHaveAttribute('data-checked', 'true')
-      expect(getCheckedRowCount()).toBe(testData.length)
-
-      await userEvent.click(getHeaderCheckbox())
-      expect(getHeaderWrapper()).toHaveAttribute('data-checked', 'false')
-      expect(getCheckedRowCount()).toBe(0)
+    test('clicking a row checkbox fires onSelect with the item', async () => {
+      const onSelectMock = vi.fn()
+      renderTable({ ...selectableProps, onSelect: onSelectMock })
+      await userEvent.click(screen.getAllByRole('checkbox')[1] as HTMLElement)
+      expect(onSelectMock).toHaveBeenCalledWith(testData[0], true)
     })
   })
 

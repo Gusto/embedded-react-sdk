@@ -139,7 +139,7 @@ export const SelectEmployees = () => {
           return next
         })
       }}
-      isItemSelected={item => selected.has(item.uuid)}
+      getIsItemSelected={item => selected.has(item.uuid)}
       additionalColumns={[{ key: 'department' as keyof StoryEmployee, title: 'Department' }]}
     />
   )

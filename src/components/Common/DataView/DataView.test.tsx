@@ -151,7 +151,7 @@ describe('DataView Component', () => {
             data={testData}
             columns={[...testColumns]}
             onSelect={onSelectMock}
-            isItemSelected={(item: MockData) => selectedIds.has(item.id)}
+            getIsItemSelected={(item: MockData) => selectedIds.has(item.id)}
             label="Test View"
           />
         </ComponentsProvider>
@@ -163,7 +163,7 @@ describe('DataView Component', () => {
     expect(checkboxes).toHaveLength(testData.length + 1)
 
     await userEvent.click(checkboxes[1] as Element)
-    expect(onSelectMock).toHaveBeenLastCalledWith(testData[0], true, 0)
+    expect(onSelectMock).toHaveBeenLastCalledWith(testData[0], true)
 
     rerender(
       <ThemeProvider>
@@ -172,7 +172,7 @@ describe('DataView Component', () => {
             data={testData}
             columns={[...testColumns]}
             onSelect={onSelectMock}
-            isItemSelected={(item: MockData) => selectedIds.has(item.id)}
+            getIsItemSelected={(item: MockData) => selectedIds.has(item.id)}
             label="Test View"
           />
         </ComponentsProvider>
@@ -180,7 +180,7 @@ describe('DataView Component', () => {
     )
 
     await userEvent.click(checkboxes[1] as Element)
-    expect(onSelectMock).toHaveBeenLastCalledWith(testData[0], false, 0)
+    expect(onSelectMock).toHaveBeenLastCalledWith(testData[0], false)
   })
 
   test('should render itemMenu when provided', () => {

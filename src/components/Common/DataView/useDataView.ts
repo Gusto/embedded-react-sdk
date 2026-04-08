@@ -17,12 +17,33 @@ type DataViewColumn<T> =
 
 type FooterKeys<T> = keyof T | string
 
-export type useDataViewProp<T> = {
+type BaseDataViewProps<T> = {
   columns: DataViewColumn<T>[]
   data: T[]
   pagination?: PaginationControlProps
   itemMenu?: (item: T) => React.ReactNode
-  onSelect?: (item: T, checked: boolean, index: number) => void
+  emptyState?: () => React.ReactNode
+  footer?: () => Partial<Record<FooterKeys<T>, React.ReactNode>>
+  isFetching?: boolean
+}
+
+type NoSelectionProps = {
+  onSelect?: undefined
+  onSelectAll?: undefined
+  getIsItemSelected?: undefined
+  selectionMode?: undefined
+}
+
+type SingleSelectionProps<T> = {
+  selectionMode: 'single'
+  onSelect: (item: T, checked: boolean) => void
+  onSelectAll?: undefined
+  getIsItemSelected?: (item: T) => boolean
+}
+
+type MultipleSelectionProps<T> = {
+  selectionMode?: 'multiple'
+  onSelect: (item: T, checked: boolean) => void
   /**
    * Called when the select-all checkbox is toggled.
    * The header checkbox state reflects only the currently visible `data` array.
@@ -30,21 +51,24 @@ export type useDataViewProp<T> = {
    * `visibleData` is the current page's data array for reference.
    */
   onSelectAll?: (checked: boolean, visibleData: T[]) => void
-  isItemSelected?: (item: T, index: number) => boolean
-  emptyState?: () => React.ReactNode
-  footer?: () => Partial<Record<FooterKeys<T>, React.ReactNode>>
-  isFetching?: boolean
-  selectionMode?: SelectionMode
+  /**
+   * Required for multi-select. Returns whether a given item is currently selected.
+   * Use a stable identifier from the item (e.g. item.id) rather than array index.
+   */
+  getIsItemSelected: (item: T) => boolean
 }
+
+export type useDataViewProp<T> = BaseDataViewProps<T> &
+  (NoSelectionProps | SingleSelectionProps<T> | MultipleSelectionProps<T>)
 
 export type useDataViewPropReturn<T> = {
   pagination?: PaginationControlProps
   data: T[]
   columns: DataViewColumn<T>[]
   itemMenu?: (item: T) => React.ReactNode
-  onSelect?: (item: T, checked: boolean, index: number) => void
+  onSelect?: (item: T, checked: boolean) => void
   onSelectAll?: (checked: boolean, visibleData: T[]) => void
-  isItemSelected?: (item: T, index: number) => boolean
+  getIsItemSelected?: (item: T) => boolean
   emptyState?: () => React.ReactNode
   footer?: () => Partial<Record<FooterKeys<T>, React.ReactNode>>
   isFetching?: boolean
@@ -57,7 +81,7 @@ export const useDataView = <T>({
   itemMenu,
   onSelect,
   onSelectAll,
-  isItemSelected,
+  getIsItemSelected,
   pagination,
   emptyState,
   footer,
@@ -72,7 +96,7 @@ export const useDataView = <T>({
       itemMenu,
       onSelect,
       onSelectAll,
-      isItemSelected,
+      getIsItemSelected,
       emptyState,
       footer,
       isFetching,
@@ -85,7 +109,7 @@ export const useDataView = <T>({
     itemMenu,
     onSelect,
     onSelectAll,
-    isItemSelected,
+    getIsItemSelected,
     emptyState,
     footer,
     isFetching,

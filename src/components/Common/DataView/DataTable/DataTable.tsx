@@ -13,7 +13,7 @@ export type DataTableProps<T> = {
   itemMenu?: useDataViewPropReturn<T>['itemMenu']
   onSelect?: useDataViewPropReturn<T>['onSelect']
   onSelectAll?: (checked: boolean, visibleData: T[]) => void
-  isItemSelected?: useDataViewPropReturn<T>['isItemSelected']
+  getIsItemSelected?: (item: T) => boolean
   emptyState?: useDataViewPropReturn<T>['emptyState']
   footer?: useDataViewPropReturn<T>['footer']
   variant?: TableProps['variant']
@@ -43,7 +43,7 @@ export const DataTable = <T,>({
   itemMenu,
   onSelect,
   onSelectAll,
-  isItemSelected,
+  getIsItemSelected,
   emptyState,
   footer,
   variant,
@@ -53,20 +53,7 @@ export const DataTable = <T,>({
   const { t } = useTranslation('common')
   const radioGroupName = useId()
   const [selectedRadioIndex, setSelectedRadioIndex] = useState<number | null>(null)
-  const { allSelected } = useSelectionState(data, isItemSelected)
-
-  if (
-    process.env.NODE_ENV !== 'production' &&
-    onSelect &&
-    selectionMode === 'multiple' &&
-    !isItemSelected
-  ) {
-    // eslint-disable-next-line no-console
-    console.warn(
-      'DataTable: onSelect with selectionMode="multiple" requires isItemSelected for the select-all header checkbox to work. ' +
-        'Provide isItemSelected or set selectionMode="single".',
-    )
-  }
+  const { allSelected } = useSelectionState(data, getIsItemSelected)
 
   const headers: TableData[] = [
     ...(onSelect
@@ -74,7 +61,7 @@ export const DataTable = <T,>({
           {
             key: 'select-header',
             content:
-              selectionMode === 'multiple' && isItemSelected ? (
+              selectionMode === 'multiple' && getIsItemSelected ? (
                 <Components.Checkbox
                   value={allSelected}
                   onChange={(checked: boolean) => onSelectAll?.(checked, data)}
@@ -103,7 +90,7 @@ export const DataTable = <T,>({
 
   const handleRadioSelect = (item: T, rowIndex: number) => {
     setSelectedRadioIndex(rowIndex)
-    onSelect?.(item, true, rowIndex)
+    onSelect?.(item, true)
   }
 
   const renderSelectionControl = (item: T, rowIndex: number) => {
@@ -125,9 +112,9 @@ export const DataTable = <T,>({
     const isSelected = isItemSelected?.(item, rowIndex) ?? false
     return (
       <Components.Checkbox
-        value={isItemSelected?.(item, rowIndex)}
+        value={getIsItemSelected?.(item)}
         onChange={(checked: boolean) => {
-          onSelect?.(item, checked, rowIndex)
+          onSelect?.(item, checked)
         }}
         label={t('table.selectRowLabel')}
         shouldVisuallyHideLabel

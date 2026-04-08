@@ -183,7 +183,7 @@ describe('EmployeeTable', () => {
     const checkboxes = screen.getAllByRole('checkbox')
     await userEvent.click(checkboxes[0] as Element)
 
-    expect(onSelect).toHaveBeenCalledWith(testEmployees[0], true, 0)
+    expect(onSelect).toHaveBeenCalledWith(testEmployees[0], true)
   })
 
   test('renders item menu for each row when itemMenu is provided', () => {

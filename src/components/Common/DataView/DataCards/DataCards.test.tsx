@@ -26,7 +26,7 @@ const baseProps: DataCardsProps<MockData> = {
 const selectableProps: DataCardsProps<MockData> = {
   ...baseProps,
   onSelect: vi.fn(),
-  isItemSelected: () => false,
+  getIsItemSelected: () => false,
   selectionMode: 'multiple',
 }
 
@@ -72,7 +72,7 @@ describe('DataCards', () => {
     expect(checkboxes).toHaveLength(testData.length + 1)
 
     await userEvent.click(checkboxes[1] as HTMLElement)
-    expect(onSelectMock).toHaveBeenCalledWith(testData[0], true, 0)
+    expect(onSelectMock).toHaveBeenCalledWith(testData[0], true)
   })
 
   describe('select-all checkbox', () => {
@@ -93,9 +93,8 @@ describe('DataCards', () => {
     })
 
     test('select-all checkbox is checked when all rows selected', () => {
-      renderCards({ ...selectableProps, isItemSelected: () => true })
-      const wrapper = screen.getByLabelText('Select all rows').closest('[data-checked]')
-      expect(wrapper).toHaveAttribute('data-checked', 'true')
+      renderCards({ ...selectableProps, getIsItemSelected: () => true })
+      expect(screen.getByLabelText('Select all rows')).toBeChecked()
     })
 
     test('clicking select-all fires onSelectAll with true when not all selected', async () => {
@@ -107,7 +106,11 @@ describe('DataCards', () => {
 
     test('clicking select-all fires onSelectAll with false when all selected', async () => {
       const onSelectAllMock = vi.fn()
-      renderCards({ ...selectableProps, onSelectAll: onSelectAllMock, isItemSelected: () => true })
+      renderCards({
+        ...selectableProps,
+        onSelectAll: onSelectAllMock,
+        getIsItemSelected: () => true,
+      })
       await userEvent.click(screen.getAllByRole('checkbox')[0] as HTMLElement)
       expect(onSelectAllMock).toHaveBeenCalledWith(false, testData)
     })

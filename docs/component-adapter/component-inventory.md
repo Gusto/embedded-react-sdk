@@ -218,22 +218,22 @@
 
 ## CheckboxProps
 
-| Prop                        | Type                            | Required | Description                                                                                                                                                                                                          |
-| --------------------------- | ------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **value**                   | `boolean`                       | No       | Current checked state of the checkbox                                                                                                                                                                                |
-| **onChange**                | `(value: boolean) => void`      | No       | Callback when checkbox state changes. Receives the next boolean value (toggled from current). Internally triggered via click rather than native change event to ensure reliable behavior with controlled components. |
-| **inputRef**                | `Ref<HTMLInputElement \| null>` | No       | React ref for the checkbox input element                                                                                                                                                                             |
-| **isInvalid**               | `boolean`                       | No       | Indicates if the checkbox is in an invalid state                                                                                                                                                                     |
-| **isDisabled**              | `boolean`                       | No       | Disables the checkbox and prevents interaction                                                                                                                                                                       |
-| **onBlur**                  | `() => void`                    | No       | Handler for blur events                                                                                                                                                                                              |
-| **description**             | `React.ReactNode`               | No       | Optional description text for the field                                                                                                                                                                              |
-| **errorMessage**            | `string`                        | No       | Error message to display when the field is invalid                                                                                                                                                                   |
-| **isRequired**              | `boolean`                       | No       | Indicates if the field is required                                                                                                                                                                                   |
-| **label**                   | `React.ReactNode`               | Yes      | Label text for the field                                                                                                                                                                                             |
-| **shouldVisuallyHideLabel** | `boolean`                       | No       | Hides the label visually while keeping it accessible to screen readers                                                                                                                                               |
-| **className**               | `string`                        | No       | -                                                                                                                                                                                                                    |
-| **id**                      | `string`                        | No       | -                                                                                                                                                                                                                    |
-| **name**                    | `string`                        | No       | -                                                                                                                                                                                                                    |
+| Prop                        | Type                            | Required | Description                                                            |
+| --------------------------- | ------------------------------- | -------- | ---------------------------------------------------------------------- |
+| **value**                   | `boolean`                       | No       | Current checked state of the checkbox                                  |
+| **onChange**                | `(value: boolean) => void`      | No       | Callback when checkbox state changes                                   |
+| **inputRef**                | `Ref<HTMLInputElement \| null>` | No       | React ref for the checkbox input element                               |
+| **isInvalid**               | `boolean`                       | No       | Indicates if the checkbox is in an invalid state                       |
+| **isDisabled**              | `boolean`                       | No       | Disables the checkbox and prevents interaction                         |
+| **onBlur**                  | `() => void`                    | No       | Handler for blur events                                                |
+| **description**             | `React.ReactNode`               | No       | Optional description text for the field                                |
+| **errorMessage**            | `string`                        | No       | Error message to display when the field is invalid                     |
+| **isRequired**              | `boolean`                       | No       | Indicates if the field is required                                     |
+| **label**                   | `React.ReactNode`               | Yes      | Label text for the field                                               |
+| **shouldVisuallyHideLabel** | `boolean`                       | No       | Hides the label visually while keeping it accessible to screen readers |
+| **className**               | `string`                        | No       | -                                                                      |
+| **id**                      | `string`                        | No       | -                                                                      |
+| **name**                    | `string`                        | No       | -                                                                      |
 
 ## ComboBoxProps
 

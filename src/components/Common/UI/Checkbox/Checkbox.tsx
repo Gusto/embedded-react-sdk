@@ -1,3 +1,5 @@
+import type { ChangeEvent } from 'react'
+import classNames from 'classnames'
 import { useFieldIds } from '../hooks/useFieldIds'
 import styles from './Checkbox.module.scss'
 import type { CheckboxProps } from './CheckboxTypes'
@@ -5,8 +7,6 @@ import { CheckboxDefaults } from './CheckboxTypes'
 import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 import { HorizontalFieldLayout } from '@/components/Common/HorizontalFieldLayout'
 import IconChecked from '@/assets/icons/checkbox.svg?react'
-
-const noop = () => {}
 
 export const Checkbox = (rawProps: CheckboxProps) => {
   const resolvedProps = applyMissingDefaults(rawProps, CheckboxDefaults)
@@ -33,18 +33,9 @@ export const Checkbox = (rawProps: CheckboxProps) => {
     description,
   })
 
-  const handleClick = () => {
-    if (isDisabled) return
-    onChange?.(!(value ?? false))
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    onChange?.(event.target.checked)
   }
-
-  const wrapperClassName = [
-    styles.checkboxWrapper,
-    value && styles.checked,
-    isDisabled && styles.disabled,
-  ]
-    .filter(Boolean)
-    .join(' ')
 
   return (
     <HorizontalFieldLayout
@@ -59,7 +50,13 @@ export const Checkbox = (rawProps: CheckboxProps) => {
       className={className}
       {...otherProps}
     >
-      <div className={wrapperClassName} data-checked={value ?? false}>
+      <div
+        className={classNames(
+          styles.checkboxWrapper,
+          value && styles.checked,
+          isDisabled && styles.disabled,
+        )}
+      >
         <input
           type="checkbox"
           name={name}
@@ -70,8 +67,7 @@ export const Checkbox = (rawProps: CheckboxProps) => {
           id={inputId}
           ref={inputRef}
           onBlur={onBlur}
-          onChange={noop}
-          onClick={handleClick}
+          onChange={handleChange}
           className={styles.checkboxInput}
         />
         <div className={styles.checkbox}>

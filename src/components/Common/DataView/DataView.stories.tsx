@@ -17,94 +17,133 @@ type CompensationRow = (typeof compensationData)[number]
 
 const compensationData = [
   {
+    id: '1',
     jobTitle: 'Administrator',
     payType: 'By the hour',
     amount: '$32.00',
     payTimePeriod: 'Annually',
   },
-  { jobTitle: 'Key Holder', payType: 'By the hour', amount: '$20.00', payTimePeriod: 'Annually' },
   {
+    id: '2',
+    jobTitle: 'Key Holder',
+    payType: 'By the hour',
+    amount: '$20.00',
+    payTimePeriod: 'Annually',
+  },
+  {
+    id: '3',
     jobTitle: 'Administrator',
     payType: 'By the hour',
     amount: '$32.00',
     payTimePeriod: 'Annually',
   },
-  { jobTitle: 'Key Holder', payType: 'By the hour', amount: '$20.00', payTimePeriod: 'Annually' },
   {
+    id: '4',
+    jobTitle: 'Key Holder',
+    payType: 'By the hour',
+    amount: '$20.00',
+    payTimePeriod: 'Annually',
+  },
+  {
+    id: '5',
     jobTitle: 'Software Engineer',
     payType: 'By the hour',
     amount: '$45.00',
     payTimePeriod: 'Annually',
   },
   {
+    id: '6',
     jobTitle: 'Project Manager',
     payType: 'By the hour',
     amount: '$50.00',
     payTimePeriod: 'Annually',
   },
-  { jobTitle: 'Data Analyst', payType: 'By the hour', amount: '$38.00', payTimePeriod: 'Annually' },
   {
+    id: '7',
+    jobTitle: 'Data Analyst',
+    payType: 'By the hour',
+    amount: '$38.00',
+    payTimePeriod: 'Annually',
+  },
+  {
+    id: '8',
     jobTitle: 'Sales Associate',
     payType: 'By the hour',
     amount: '$15.00',
     payTimePeriod: 'Annually',
   },
   {
+    id: '9',
     jobTitle: 'Graphic Designer',
     payType: 'By the project',
     amount: '$2,000.00',
     payTimePeriod: 'Per project',
   },
   {
+    id: '10',
     jobTitle: 'Marketing Specialist',
     payType: 'By the hour',
     amount: '$35.00',
     payTimePeriod: 'Annually',
   },
   {
+    id: '11',
     jobTitle: 'Customer Service Representative',
     payType: 'By the hour',
     amount: '$18.00',
     payTimePeriod: 'Annually',
   },
   {
+    id: '12',
     jobTitle: 'UX/UI Designer',
     payType: 'By the hour',
     amount: '$40.00',
     payTimePeriod: 'Annually',
   },
   {
+    id: '13',
     jobTitle: 'Network Administrator',
     payType: 'By the hour',
     amount: '$42.00',
     payTimePeriod: 'Annually',
   },
   {
+    id: '14',
     jobTitle: 'Content Writer',
     payType: 'By the word',
     amount: '$0.15',
     payTimePeriod: 'Per word',
   },
   {
+    id: '15',
     jobTitle: 'Data Scientist',
     payType: 'By the hour',
     amount: '$55.00',
     payTimePeriod: 'Annually',
   },
   {
+    id: '16',
     jobTitle: 'Web Developer',
     payType: 'By the project',
     amount: '$3,500.00',
     payTimePeriod: 'Per project',
   },
   {
+    id: '17',
     jobTitle: 'Human Resources Manager',
     payType: 'By the hour',
     amount: '$48.00',
     payTimePeriod: 'Annually',
   },
-  { jobTitle: 'Accountant', payType: 'By the hour', amount: '$40.00', payTimePeriod: 'Annually' },
   {
+    id: '18',
+    jobTitle: 'Accountant',
+    payType: 'By the hour',
+    amount: '$40.00',
+    payTimePeriod: 'Annually',
+  },
+  {
+    id: '19',
     jobTitle: 'Legal Advisor',
     payType: 'By the hour',
     amount: '$100.00',
@@ -119,23 +158,23 @@ const compensationColumns: useDataViewProp<CompensationRow>['columns'] = [
   { key: 'payTimePeriod', title: 'Pay Time Period' },
 ]
 
-function useIndexSelection<T>(allData: T[]) {
-  const [selectedIndices, setSelectedIndices] = useState(new Set<number>())
+function useIdSelection<T extends { id: string }>(allData: T[]) {
+  const [selectedIds, setSelectedIds] = useState(new Set<string>())
 
   return {
-    selectedIndices,
+    selectedIds,
     selectionProps: {
       selectionMode: 'multiple' as const,
-      isItemSelected: (_item: T, index: number) => selectedIndices.has(index),
-      onSelect: (_item: T, checked: boolean, index: number) => {
-        setSelectedIndices(prev => {
+      getIsItemSelected: (item: T) => selectedIds.has(item.id),
+      onSelect: (item: T, checked: boolean) => {
+        setSelectedIds(prev => {
           const next = new Set(prev)
-          checked ? next.add(index) : next.delete(index)
+          checked ? next.add(item.id) : next.delete(item.id)
           return next
         })
       },
       onSelectAll: (checked: boolean) => {
-        setSelectedIndices(checked ? new Set(allData.map((_, i) => i)) : new Set())
+        setSelectedIds(checked ? new Set(allData.map(item => item.id)) : new Set())
       },
     },
   }
@@ -156,7 +195,7 @@ export const DataViewDefault = () => {
 }
 
 export const DataViewSelectableCheckbox = () => {
-  const { selectionProps } = useIndexSelection(compensationData)
+  const { selectionProps } = useIdSelection(compensationData)
   const dataProps = useDataView({
     data: compensationData,
     columns: compensationColumns,
@@ -185,7 +224,7 @@ export const DataViewWithMenu = () => {
 }
 
 export const DataViewSelectableWithMenu = () => {
-  const { selectionProps } = useIndexSelection(compensationData)
+  const { selectionProps } = useIdSelection(compensationData)
   const dataProps = useDataView({
     data: compensationData,
     columns: compensationColumns,
@@ -225,7 +264,7 @@ export const DataViewWithPagination = () => {
 export const DataViewSelectableWithPagination = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState<5 | 10 | 50>(5)
-  const [selectedIndices, setSelectedIndices] = useState(new Set<number>())
+  const [selectedIds, setSelectedIds] = useState(new Set<string>())
 
   const totalPages = Math.ceil(compensationData.length / itemsPerPage)
   const startIndex = (currentPage - 1) * itemsPerPage
@@ -235,17 +274,16 @@ export const DataViewSelectableWithPagination = () => {
     data: pageData,
     columns: compensationColumns,
     selectionMode: 'multiple',
-    isItemSelected: (_item, index) => selectedIndices.has(startIndex + index),
-    onSelect: (_item: (typeof compensationData)[number], checked: boolean, index: number) => {
-      const globalIndex = startIndex + index
-      setSelectedIndices(prev => {
+    getIsItemSelected: item => selectedIds.has(item.id),
+    onSelect: (item: CompensationRow, checked: boolean) => {
+      setSelectedIds(prev => {
         const next = new Set(prev)
-        checked ? next.add(globalIndex) : next.delete(globalIndex)
+        checked ? next.add(item.id) : next.delete(item.id)
         return next
       })
     },
     onSelectAll: checked => {
-      setSelectedIndices(checked ? new Set(compensationData.map((_, i) => i)) : new Set())
+      setSelectedIds(checked ? new Set(compensationData.map(item => item.id)) : new Set())
     },
     pagination: {
       currentPage,
@@ -274,7 +312,7 @@ export const DataViewSelectableWithPagination = () => {
   return (
     <div>
       <div style={{ padding: '0.5rem 1rem', fontSize: '0.875rem', color: '#666' }}>
-        {selectedIndices.size} of {compensationData.length} selected (across all pages)
+        {selectedIds.size} of {compensationData.length} selected (across all pages)
       </div>
       <DataView label="Data View Selectable with Pagination" {...dataProps} />
     </div>

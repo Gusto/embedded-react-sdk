@@ -10,11 +10,7 @@ export interface CheckboxProps
    */
   value?: boolean
   /**
-   * Callback when checkbox state changes.
-   *
-   * Receives the next boolean value (toggled from current).
-   * Internally triggered via click rather than native change event
-   * to ensure reliable behavior with controlled components.
+   * Callback when checkbox state changes
    */
   onChange?: (value: boolean) => void
   /**
