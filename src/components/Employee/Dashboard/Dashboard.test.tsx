@@ -1,94 +1,14 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { http, HttpResponse } from 'msw'
 import { Dashboard } from './Dashboard'
-import { server } from '@/test/mocks/server'
-import { API_BASE_URL } from '@/test/constants'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
-
-const mockEmployee = {
-  uuid: 'employee-123',
-  first_name: 'John',
-  last_name: 'Doe',
-  date_of_birth: '1990-01-15',
-  ssn: '123-45-6789',
-  email: 'john.doe@example.com',
-  jobs: [
-    {
-      uuid: 'job-123',
-      title: 'Software Engineer',
-      hire_date: '2020-01-01',
-      rate: '100000',
-      payment_unit: 'Year',
-    },
-  ],
-}
-
-const mockHomeAddress = {
-  uuid: 'home-address-123',
-  street_1: '123 Main St',
-  street_2: 'Apt 4B',
-  city: 'San Francisco',
-  state: 'CA',
-  zip: '94102',
-}
-
-const mockWorkAddress = {
-  uuid: 'work-address-123',
-  street_1: '456 Office Blvd',
-  city: 'San Francisco',
-  state: 'CA',
-  zip: '94103',
-}
 
 describe('Dashboard', () => {
   const onEvent = vi.fn()
 
   beforeEach(() => {
     onEvent.mockClear()
-
-    server.use(
-      http.get(`${API_BASE_URL}/v1/employees/:employee_id`, () =>
-        HttpResponse.json({ employee: mockEmployee }),
-      ),
-      http.get(`${API_BASE_URL}/v1/employees/:employee_id/home_addresses`, () =>
-        HttpResponse.json({ employee_address_list: [mockHomeAddress] }),
-      ),
-      http.get(`${API_BASE_URL}/v1/employees/:employee_id/work_addresses`, () =>
-        HttpResponse.json({ employee_work_addresses_list: [mockWorkAddress] }),
-      ),
-      http.get(`${API_BASE_URL}/v1/employees/:employee_id/payment_method`, () =>
-        HttpResponse.json({ employee_payment_method: null }),
-      ),
-      http.get(`${API_BASE_URL}/v1/employees/:employee_id/bank_accounts`, () =>
-        HttpResponse.json({ bank_accounts: [] }),
-      ),
-      http.get(`${API_BASE_URL}/v1/employees/:employee_id/garnishments`, () =>
-        HttpResponse.json({ garnishment_list: [] }),
-      ),
-      http.get(`${API_BASE_URL}/v1/employees/:employee_uuid/pay_stubs`, () =>
-        HttpResponse.json({ employee_pay_stubs_list: [] }),
-      ),
-      http.get(`${API_BASE_URL}/v1/employees/:employee_id/federal_taxes`, () =>
-        HttpResponse.json({
-          employee_federal_tax: {
-            filing_status: 'Married',
-            two_jobs: false,
-            dependents_amount: '4000',
-            other_income: '0',
-            deductions: '0',
-            extra_withholding: '0',
-          },
-        }),
-      ),
-      http.get(`${API_BASE_URL}/v1/employees/:employee_id/state_taxes`, () =>
-        HttpResponse.json({ employee_state_taxes_list: [] }),
-      ),
-      http.get(`${API_BASE_URL}/v1/employees/:employee_id/forms`, () =>
-        HttpResponse.json({ form_list: [] }),
-      ),
-    )
   })
 
   it('renders dashboard with title and tabs', async () => {

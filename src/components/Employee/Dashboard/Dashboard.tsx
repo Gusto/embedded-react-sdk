@@ -46,6 +46,9 @@ function DashboardRoot({ companyId, employeeId, dictionary, onEvent }: Dashboard
   const { employeeFederalTax, employeeStateTaxesList } = taxes.data
   const { formList } = forms.data
 
+  // Pagination props
+  const payStubsPagination = compensation.pagination.payStubs
+
   // Tab-specific loading states based on isPending
   const isLoadingBasicDetails = basicDetails.status.isPending
   const isLoadingJobAndPay = compensation.status.isPending
@@ -77,7 +80,7 @@ function DashboardRoot({ companyId, employeeId, dictionary, onEvent }: Dashboard
   }, [onEvent, employeeId])
 
   const handleEditFederalTaxes = useCallback(() => {
-    onEvent(componentEvents.EMPLOYEE_FEDERAL_TAXES_UPDATED, {
+    onEvent(componentEvents.EMPLOYEE_FEDERAL_TAXES_EDIT, {
       employeeId,
       federalTaxes: employeeFederalTax,
     })
@@ -85,7 +88,7 @@ function DashboardRoot({ companyId, employeeId, dictionary, onEvent }: Dashboard
 
   const handleEditStateTaxes = useCallback(
     (state: string) => {
-      onEvent(componentEvents.EMPLOYEE_STATE_TAXES_UPDATED, { employeeId, state })
+      onEvent(componentEvents.EMPLOYEE_STATE_TAXES_EDIT, { employeeId, state })
     },
     [onEvent, employeeId],
   )
@@ -152,6 +155,7 @@ function DashboardRoot({ companyId, employeeId, dictionary, onEvent }: Dashboard
               bankAccounts={bankAccounts}
               garnishments={garnishmentList}
               payStubs={payStubs}
+              payStubsPagination={payStubsPagination}
               isLoading={isLoadingJobAndPay}
               onEditCompensation={handleEditCompensation}
               onAddBankAccount={handleAddBankAccount}

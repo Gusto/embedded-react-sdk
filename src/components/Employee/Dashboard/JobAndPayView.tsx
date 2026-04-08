@@ -4,6 +4,7 @@ import type { EmployeePaymentMethod } from '@gusto/embedded-api/models/component
 import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
 import type { EmployeeBankAccount } from '@gusto/embedded-api/models/components/employeebankaccount'
 import type { GetV1EmployeesEmployeeUuidPayStubsResponse } from '@gusto/embedded-api/models/operations/getv1employeesemployeeuuidpaystubs'
+import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { DataView, useDataView, EmptyData, Loading } from '@/components/Common'
@@ -21,6 +22,7 @@ export interface JobAndPayViewProps {
   bankAccounts?: EmployeeBankAccount[]
   garnishments?: Garnishment[]
   payStubs?: EmployeePayStub[]
+  payStubsPagination?: PaginationControlProps
   isLoading?: boolean
   onEditCompensation?: () => void
   onAddBankAccount?: () => void
@@ -33,6 +35,7 @@ export function JobAndPayView({
   bankAccounts = [],
   garnishments = [],
   payStubs = [],
+  payStubsPagination,
   isLoading = false,
   onEditCompensation,
   onAddBankAccount,
@@ -145,6 +148,7 @@ export function JobAndPayView({
   const payStubsDataView = useDataView({
     data: payStubs,
     columns: payStubsColumns,
+    pagination: payStubsPagination,
     emptyState: () => (
       <EmptyData
         title={t('jobAndPay.paystubs.emptyState.title')}

@@ -10,7 +10,9 @@ import type { GetV1EmployeesEmployeeIdPaymentMethodResponse } from '@gusto/embed
 import type { GetV1EmployeesEmployeeIdBankAccountsResponse } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidbankaccounts'
 import type { GetV1EmployeesEmployeeUuidPayStubsResponse } from '@gusto/embedded-api/models/operations/getv1employeesemployeeuuidpaystubs'
 import { buildQueryErrorHandling } from '@/helpers/buildQueryErrorHandling'
+import { usePagination } from '@/hooks/usePagination/usePagination'
 import type { HookLoadingResult, BaseHookReady } from '@/types/sdkHooks'
+import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
 // Derive types from operations responses
 type EmployeeBankAccount = NonNullable<
@@ -37,6 +39,9 @@ interface UseEmployeeCompensationReady extends Omit<BaseHookReady, 'data' | 'sta
   status: {
     isPending: boolean
   }
+  pagination: {
+    payStubs?: PaginationControlProps
+  }
 }
 
 export type UseEmployeeCompensationResult = HookLoadingResult | UseEmployeeCompensationReady
@@ -44,11 +49,19 @@ export type UseEmployeeCompensationResult = HookLoadingResult | UseEmployeeCompe
 export function useEmployeeCompensation({
   employeeId,
 }: UseEmployeeCompensationProps): UseEmployeeCompensationResult {
+  const { currentPage, itemsPerPage, getPaginationProps } = usePagination({
+    defaultItemsPerPage: 10,
+  })
+
   const employeeQuery = useEmployeesGetSuspense({ employeeId })
   const paymentMethodQuery = useEmployeePaymentMethodGetSuspense({ employeeId })
   const bankAccountsQuery = useEmployeePaymentMethodsGetBankAccountsSuspense({ employeeId })
   const garnishmentsQuery = useGarnishmentsListSuspense({ employeeId })
-  const payStubsQuery = usePayrollsGetPayStubsSuspense({ employeeId })
+  const payStubsQuery = usePayrollsGetPayStubsSuspense({
+    employeeId,
+    page: currentPage,
+    per: itemsPerPage,
+  })
 
   const employee = employeeQuery.data.employee
   const employeePaymentMethod = paymentMethodQuery.data.employeePaymentMethod
@@ -66,15 +79,14 @@ export function useEmployeeCompensation({
     return bankAccountsData.employeeBankAccountList || []
   }, [bankAccountsData])
 
-  // Derive and sort paystubs by check date descending
-  const payStubs = useMemo(() => {
-    const stubs = payStubsData.employeePayStubsList || []
-    return stubs.sort((a, b) => {
-      const dateA = a.checkDate ? new Date(a.checkDate).getTime() : 0
-      const dateB = b.checkDate ? new Date(b.checkDate).getTime() : 0
-      return dateB - dateA
-    })
-  }, [payStubsData])
+  // Extract paystubs from response
+  const payStubs = payStubsData.employeePayStubsList || []
+
+  // Extract pagination from API response headers
+  const payStubsPagination = useMemo(() => {
+    const headers = payStubsData.httpMeta.response.headers
+    return getPaginationProps(headers, payStubsQuery.isFetching)
+  }, [payStubsData.httpMeta.response.headers, payStubsQuery.isFetching, getPaginationProps])
 
   const isPending =
     employeeQuery.isFetching ||
@@ -111,6 +123,9 @@ export function useEmployeeCompensation({
     },
     status: {
       isPending,
+    },
+    pagination: {
+      payStubs: payStubsPagination,
     },
     errorHandling,
   }
