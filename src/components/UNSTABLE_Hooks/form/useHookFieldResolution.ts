@@ -23,10 +23,13 @@ interface HookFieldResolution {
  * the control object. When absent (context path), it falls back to useFormContext
  * internally. The `name` parameter scopes the subscription to this field.
  */
-export function useHookFieldResolution<TErrorCode extends string>(
+export function useHookFieldResolution<
+  TErrorCode extends string,
+  TOptionalErrorCode extends string = never,
+>(
   name: string,
   formHookResult: BaseFormHookReady | undefined,
-  validationMessages?: ValidationMessages<TErrorCode>,
+  validationMessages?: ValidationMessages<TErrorCode, TOptionalErrorCode>,
 ): HookFieldResolution {
   const metadataContext = useFormFieldsMetadataContext()
 

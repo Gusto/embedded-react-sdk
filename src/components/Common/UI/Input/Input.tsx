@@ -17,6 +17,7 @@ export function Input(rawProps: InputProps) {
     'aria-invalid': ariaInvalid,
     ...otherProps
   } = resolvedProps
+
   return (
     <div
       className={classNames(

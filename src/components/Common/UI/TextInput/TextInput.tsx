@@ -63,7 +63,7 @@ export function TextInput(rawProps: TextInputProps) {
         inputRef={inputRef}
         name={name}
         type={type}
-        value={value}
+        value={value ?? ''}
         placeholder={placeholder}
         onChange={handleChange}
         onBlur={onBlur}

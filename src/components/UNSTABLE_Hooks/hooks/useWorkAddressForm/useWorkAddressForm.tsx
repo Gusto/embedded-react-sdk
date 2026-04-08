@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -8,15 +9,14 @@ import { useEmployeeAddressesGetWorkAddresses } from '@gusto/embedded-api/react-
 import { useEmployeeAddressesCreateWorkAddressMutation } from '@gusto/embedded-api/react-query/employeeAddressesCreateWorkAddress'
 import { useEmployeeAddressesUpdateWorkAddressMutation } from '@gusto/embedded-api/react-query/employeeAddressesUpdateWorkAddress'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
-import { deriveFieldsMetadata } from '../../form/deriveFieldsMetadata'
+import { useDeriveFieldsMetadata } from '../../form/useDeriveFieldsMetadata'
 import { createGetFormSubmissionValues } from '../../form/getFormSubmissionValues'
 import { withOptions } from '../../form/withOptions'
-import type { RequiredFields } from '../../form/resolveRequiredFields'
 import {
   createWorkAddressSchema,
+  type WorkAddressOptionalFieldsToRequire,
   type WorkAddressFormData,
   type WorkAddressFormOutputs,
-  type WorkAddressField,
 } from './workAddressSchema'
 import { LocationField, EffectiveDateField } from './fields'
 import { useErrorHandling } from '@/hooks/useErrorHandling'
@@ -25,7 +25,7 @@ import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { SDKInternalError } from '@/types/sdkError'
 import { addressInline } from '@/helpers/formattedStrings'
 
-export type WorkAddressRequiredFields = RequiredFields<WorkAddressField>
+export type { WorkAddressOptionalFieldsToRequire } from './workAddressSchema'
 
 export interface WorkAddressSubmitCallbacks {
   onWorkAddressCreated?: (workAddress: EmployeeWorkAddress) => void
@@ -41,7 +41,7 @@ export interface UseWorkAddressFormProps {
   companyId: string
   employeeId?: string
   withEffectiveDateField?: boolean
-  requiredFields?: WorkAddressRequiredFields
+  optionalFieldsToRequire?: WorkAddressOptionalFieldsToRequire
   defaultValues?: Partial<WorkAddressFormData>
   validationMode?: UseFormProps['mode']
   shouldFocusError?: boolean
@@ -51,7 +51,7 @@ export function useWorkAddressForm({
   companyId,
   employeeId,
   withEffectiveDateField = true,
-  requiredFields,
+  optionalFieldsToRequire,
   defaultValues: partnerDefaults,
   validationMode = 'onSubmit',
   shouldFocusError = true,
@@ -69,11 +69,10 @@ export function useWorkAddressForm({
   const isCreateMode = !currentWorkAddress
   const mode = isCreateMode ? 'create' : 'update'
 
-  const schema = createWorkAddressSchema({
-    mode,
-    requiredFields,
-    withEffectiveDateField,
-  })
+  const [schema, metadataConfig] = useMemo(
+    () => createWorkAddressSchema({ mode, optionalFieldsToRequire, withEffectiveDateField }),
+    [mode, optionalFieldsToRequire, withEffectiveDateField],
+  )
 
   const resolvedDefaults: WorkAddressFormData = {
     locationUuid: currentWorkAddress?.locationUuid ?? partnerDefaults?.locationUuid ?? '',
@@ -104,7 +103,7 @@ export function useWorkAddressForm({
     label: addressInline(location),
   }))
 
-  const baseMetadata = deriveFieldsMetadata(schema)
+  const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
   const fieldsMetadata = {
     locationUuid: withOptions<Location>(
       baseMetadata.locationUuid,
@@ -130,22 +129,24 @@ export function useWorkAddressForm({
               throw new SDKInternalError('employeeId is required to submit work address')
             }
 
+            const resolvedEffectiveDate =
+              withEffectiveDateField && payload.effectiveDate
+                ? payload.effectiveDate
+                : options?.effectiveDate
+
+            const effectiveDateParam = resolvedEffectiveDate
+              ? new RFCDate(new Date(resolvedEffectiveDate))
+              : undefined
+
             let updatedWorkAddress: EmployeeWorkAddress
 
             if (isCreateMode) {
-              const resolvedEffectiveDate =
-                withEffectiveDateField && payload.effectiveDate
-                  ? payload.effectiveDate
-                  : options?.effectiveDate
-
               const result = await createWorkAddressMutation.mutateAsync({
                 request: {
                   employeeId: resolvedEmployeeId,
                   requestBody: {
                     locationUuid: payload.locationUuid,
-                    effectiveDate: resolvedEffectiveDate
-                      ? new RFCDate(new Date(resolvedEffectiveDate))
-                      : undefined,
+                    effectiveDate: effectiveDateParam,
                   },
                 },
               })
@@ -163,6 +164,7 @@ export function useWorkAddressForm({
                   requestBody: {
                     version: currentWorkAddress.version,
                     locationUuid: payload.locationUuid,
+                    effectiveDate: effectiveDateParam,
                   },
                 },
               })
@@ -214,7 +216,7 @@ export function useWorkAddressForm({
     form: {
       Fields: {
         Location: LocationField,
-        EffectiveDate: withEffectiveDateField && isCreateMode ? EffectiveDateField : undefined,
+        EffectiveDate: withEffectiveDateField ? EffectiveDateField : undefined,
       },
       fieldsMetadata,
       hookFormInternals: { formMethods },

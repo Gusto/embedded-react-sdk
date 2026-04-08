@@ -145,7 +145,7 @@ export function createSchema(options: SchemaOptions = {}) {
     requiredErrorCode: ErrorCodes.REQUIRED,
     mode,
     optionalFieldsToRequire,
-    excludeFields: hasSsn ? ['ssn'] : [],
+    fieldsWithRedactedValues: hasSsn ? ['ssn'] : [],
     superRefine: mode === 'create'
       ? (data, ctx) => { /* cross-field validation... */ }
       : undefined,
@@ -157,8 +157,9 @@ Key changes:
 
 - Factory now returns `[schema, metadataConfig]` tuple (the `BuildFormSchemaResult` type)
 - `superRefine` is an option, not chained after
-- `hasSsn` / similar filters become `excludeFields` entries
+- Fields with redacted server-side values (e.g. SSN when `hasSsn` is true) use `fieldsWithRedactedValues` — this keeps the field in the schema for format validation, skips required validation (value exists server-side), and auto-sets `hasRedactedValue: true` in metadata
 - `requiredFields` → `optionalFieldsToRequire` (type-safe: only allows fields that are actually optional in the given mode)
+- Use `excludeFields` only when a field should be completely absent from both schema and metadata (e.g. conditionally hidden fields like `startDate`)
 
 ### Step 3: Migrate the hook file (`use{Domain}Form.tsx`)
 
@@ -217,10 +218,12 @@ const baseMetadata = deriveFieldsMetadata(schema)
 **After:**
 
 ```typescript
-const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
+const fieldsMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
 ```
 
 This makes metadata reactive — if predicate-based rules exist, metadata updates as the user types (e.g. a field becomes required when a checkbox is toggled).
+
+If the old hook manually patched `hasRedactedValue` onto metadata (e.g. `ssn: { ...baseMetadata.ssn, hasRedactedValue: employee?.hasSsn ?? false }`), remove that patching — `fieldsWithRedactedValues` in the schema factory now auto-populates `hasRedactedValue: true` in metadata.
 
 #### 3e: Remove any zodResolver casts
 

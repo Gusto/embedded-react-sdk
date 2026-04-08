@@ -1,6 +1,8 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 
 export type TokenStatus = 'unknown' | 'checking' | 'valid' | 'expired'
+
+const TOKEN_POLL_INTERVAL_MS = 60_000
 
 interface DemoManagerState {
   tokenStatus: TokenStatus
@@ -14,11 +16,15 @@ export function useDemoManager() {
     isCreatingDemo: false,
     demoError: null,
   })
+  const pollRef = useRef<ReturnType<typeof setInterval>>()
 
   const proxyMode = typeof __SDK_APP_PROXY_MODE__ !== 'undefined' ? __SDK_APP_PROXY_MODE__ : 'none'
 
   const checkTokenHealth = useCallback(async () => {
-    setState(prev => ({ ...prev, tokenStatus: 'checking' }))
+    setState(prev => {
+      if (prev.tokenStatus === 'expired') return prev
+      return { ...prev, tokenStatus: 'checking' }
+    })
 
     try {
       const res = await fetch('/sdk-app/api/validate-token')
@@ -37,8 +43,16 @@ export function useDemoManager() {
   }, [])
 
   useEffect(() => {
-    if (proxyMode !== 'none') {
+    if (proxyMode === 'none') return
+
+    void checkTokenHealth()
+
+    pollRef.current = setInterval(() => {
       void checkTokenHealth()
+    }, TOKEN_POLL_INTERVAL_MS)
+
+    return () => {
+      clearInterval(pollRef.current)
     }
   }, [proxyMode, checkTokenHealth])
 

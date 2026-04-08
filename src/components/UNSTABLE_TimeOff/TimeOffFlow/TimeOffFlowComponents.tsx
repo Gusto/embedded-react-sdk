@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { PolicyList } from '../PolicyList/PolicyList'
-import { PolicyTypeSelector } from '../PolicyTypeSelector/PolicyTypeSelector'
+import { SelectPolicyType } from '../TimeOffManagement/SelectPolicyType'
 import { PolicyDetailsForm } from '../PolicyDetailsForm/PolicyDetailsForm'
 import { PolicySettings } from '../PolicySettings/PolicySettings'
 import { AddEmployeesToPolicy } from '../AddEmployeesToPolicy/AddEmployeesToPolicy'
@@ -51,8 +51,8 @@ export function PolicyListContextual() {
   )
 }
 
-export function PolicyTypeSelectorContextual() {
-  const { onEvent, companyId, alerts } = useFlow<TimeOffFlowContextInterface>()
+export function SelectPolicyTypeContextual() {
+  const { onEvent, companyId, policyType, alerts } = useFlow<TimeOffFlowContextInterface>()
   const { Alert } = useComponentContext()
 
   return (
@@ -62,7 +62,11 @@ export function PolicyTypeSelectorContextual() {
           {alert.content}
         </Alert>
       ))}
-      <PolicyTypeSelector onEvent={onEvent} companyId={ensureRequired(companyId)} />
+      <SelectPolicyType
+        onEvent={onEvent}
+        companyId={ensureRequired(companyId)}
+        defaultPolicyType={policyType}
+      />
     </Flex>
   )
 }

@@ -164,7 +164,7 @@ describe('useEmployeeDetailsForm', () => {
         () =>
           useEmployeeDetailsForm({
             companyId: 'company-1',
-            requiredFields: { create: ['email'] },
+            optionalFieldsToRequire: { create: ['email'] },
             defaultValues: {
               firstName: 'Jane',
               lastName: 'Doe',
@@ -193,7 +193,7 @@ describe('useEmployeeDetailsForm', () => {
         () =>
           useEmployeeDetailsForm({
             companyId: 'company-1',
-            requiredFields: { create: ['email'] },
+            optionalFieldsToRequire: { create: ['email'] },
             defaultValues: {
               firstName: 'Jane',
               lastName: 'Doe',
@@ -223,7 +223,7 @@ describe('useEmployeeDetailsForm', () => {
         () =>
           useEmployeeDetailsForm({
             companyId: 'company-1',
-            requiredFields: { create: ['email', 'ssn'] },
+            optionalFieldsToRequire: { create: ['email', 'ssn'] },
           }),
         { wrapper: GustoTestProvider },
       )
@@ -245,7 +245,7 @@ describe('useEmployeeDetailsForm', () => {
         () =>
           useEmployeeDetailsForm({
             companyId: 'company-1',
-            requiredFields: { create: ['email'] },
+            optionalFieldsToRequire: { create: ['email'] },
           }),
         { wrapper: GustoTestProvider },
       )
@@ -369,7 +369,7 @@ describe('useEmployeeDetailsForm', () => {
           useEmployeeDetailsForm({
             companyId: 'company-1',
             employeeId: 'emp-1',
-            requiredFields: {
+            optionalFieldsToRequire: {
               create: ['email'],
               update: ['ssn'],
             },
@@ -387,6 +387,77 @@ describe('useEmployeeDetailsForm', () => {
       expect(readyResult.form.fieldsMetadata.email.isRequired).toBe(false)
       expect(readyResult.form.fieldsMetadata.ssn.isRequired).toBe(true)
       expect(readyResult.form.fieldsMetadata.firstName.isRequired).toBe(false)
+    })
+
+    it('reports ssn as required in metadata even when has_ssn is true', async () => {
+      server.use(
+        handleGetEmployee(async () => {
+          const fixture = await getFixture('get-v1-employees')
+          return HttpResponse.json({
+            ...fixture,
+            has_ssn: true,
+            onboarding_status: 'admin_onboarding_incomplete',
+            onboarded: false,
+          })
+        }),
+      )
+
+      const { result } = renderHook(
+        () =>
+          useEmployeeDetailsForm({
+            companyId: 'company-1',
+            employeeId: 'emp-1',
+            optionalFieldsToRequire: { update: ['ssn'] },
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      const readyResult = result.current
+      assertReady(readyResult)
+
+      expect(readyResult.form.fieldsMetadata.ssn.isRequired).toBe(true)
+      expect(readyResult.form.fieldsMetadata.ssn.hasRedactedValue).toBe(true)
+    })
+
+    it('allows empty ssn submission when has_ssn is true despite optionalFieldsToRequire', async () => {
+      server.use(
+        handleGetEmployee(async () => {
+          const fixture = await getFixture('get-v1-employees')
+          return HttpResponse.json({
+            ...fixture,
+            has_ssn: true,
+            onboarding_status: 'admin_onboarding_incomplete',
+            onboarded: false,
+          })
+        }),
+      )
+
+      const { result } = renderHook(
+        () =>
+          useEmployeeDetailsForm({
+            companyId: 'company-1',
+            employeeId: 'emp-1',
+            optionalFieldsToRequire: { update: ['ssn'] },
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      const readyResult = result.current
+      assertReady(readyResult)
+
+      await act(async () => {
+        await readyResult.actions.onSubmit()
+      })
+
+      expect(updateRequestBody).not.toBeNull()
     })
   })
 })
