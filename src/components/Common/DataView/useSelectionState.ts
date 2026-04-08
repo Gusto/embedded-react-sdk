@@ -2,7 +2,6 @@ import { useMemo } from 'react'
 
 type SelectionState = {
   allSelected: boolean
-  someSelected: boolean
 }
 
 export function useSelectionState<T>(
@@ -11,17 +10,11 @@ export function useSelectionState<T>(
 ): SelectionState {
   return useMemo(() => {
     if (data.length === 0 || !getIsItemSelected) {
-      return { allSelected: false, someSelected: false }
+      return { allSelected: false }
     }
 
-    let selectedCount = 0
-    data.forEach(item => {
-      if (getIsItemSelected(item)) selectedCount++
-    })
+    const allSelected = data.every(getIsItemSelected)
 
-    return {
-      allSelected: selectedCount === data.length,
-      someSelected: selectedCount > 0,
-    }
+    return { allSelected }
   }, [data, getIsItemSelected])
 }
