@@ -35,15 +35,15 @@ function MyApp() {
 
 | Event type                        | Description                                         | Data                                                    |
 | --------------------------------- | --------------------------------------------------- | ------------------------------------------------------- |
-| EMPLOYEE_UPDATE                   | Fired when editing basic details                    | { employeeId: string }                                  |
-| EMPLOYEE_HOME_ADDRESS             | Fired when managing home address                    | { employeeId: string }                                  |
-| EMPLOYEE_WORK_ADDRESS             | Fired when managing work address                    | { employeeId: string }                                  |
-| EMPLOYEE_COMPENSATION_UPDATE      | Fired when editing compensation                     | { employeeId: string, job: Job }                        |
-| EMPLOYEE_BANK_ACCOUNT_CREATE      | Fired when adding a bank account                    | { employeeId: string }                                  |
-| EMPLOYEE_DEDUCTION_ADD            | Fired when adding a deduction                       | { employeeId: string }                                  |
-| EMPLOYEE_FEDERAL_TAXES_UPDATED    | Fired when editing federal taxes                    | { employeeId: string, federalTaxes: EmployeeFederalTax }|
-| EMPLOYEE_STATE_TAXES_UPDATED      | Fired when editing state taxes                      | { employeeId: string, state: string }                   |
-| EMPLOYEE_VIEW_FORM_TO_SIGN        | Fired when viewing a form                           | { employeeId: string, formUuid: string }                |
+| `employee/update`                 | Fired when editing basic details                    | { employeeId: string }                                  |
+| `employee/addresses/home`         | Fired when managing home address                    | { employeeId: string }                                  |
+| `employee/addresses/work`         | Fired when managing work address                    | { employeeId: string }                                  |
+| `employee/compensations/update`   | Fired when editing compensation                     | { employeeId: string, job: Job }                        |
+| `employee/bankAccount/create`     | Fired when adding a bank account                    | { employeeId: string }                                  |
+| `employee/deductions/add`         | Fired when adding a deduction                       | { employeeId: string }                                  |
+| `employee/federalTaxes/edit`      | Fired when editing federal taxes                    | { employeeId: string, federalTaxes: EmployeeFederalTax }|
+| `employee/stateTaxes/edit`        | Fired when editing state taxes                      | { employeeId: string, state: string }                   |
+| `employee/forms/view`             | Fired when viewing a form                           | { employeeId: string, formUuid: string }                |
 
 ## Dashboard Tabs
 
@@ -211,6 +211,28 @@ To provide a custom error fallback:
 ### Event Handling
 
 All interactive elements emit events through the `onEvent` callback. Use these events to navigate to editing flows or trigger other actions in your application:
+
+```jsx
+<Employee.DashboardFlow
+  employeeId="employee-id"
+  onEvent={(eventType, data) => {
+    switch (eventType) {
+      case 'employee/update':
+        // Navigate to employee edit form
+        break
+      case 'employee/bankAccount/create':
+        // Show bank account creation flow
+        break
+      case 'employee/forms/view':
+        // Open form viewer/signer
+        break
+      // Handle other events...
+    }
+  }}
+/>
+```
+
+Alternatively, you can import and use the `componentEvents` constants for type safety:
 
 ```jsx
 import { componentEvents } from '@gusto/embedded-react-sdk'
