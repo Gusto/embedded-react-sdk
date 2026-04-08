@@ -1,6 +1,11 @@
 import { useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useDashboard } from './useDashboard'
+import {
+  useEmployeeBasicDetails,
+  useEmployeeCompensation,
+  useEmployeeTaxes,
+  useEmployeeForms,
+} from './hooks'
 import { BasicDetailsView } from './BasicDetailsView'
 import { JobAndPayView } from './JobAndPayView'
 import { TaxesView } from './TaxesView'
@@ -25,28 +30,27 @@ function DashboardRoot({ companyId, employeeId, dictionary, onEvent }: Dashboard
   const Components = useComponentContext()
   const [selectedTab, setSelectedTab] = useState<DashboardTab>('basicDetails')
 
-  const dashboard = useDashboard({ employeeId })
+  const basicDetails = useEmployeeBasicDetails({ employeeId })
+  const compensation = useEmployeeCompensation({ employeeId })
+  const taxes = useEmployeeTaxes({ employeeId })
+  const forms = useEmployeeForms({ employeeId })
 
-  if (dashboard.isLoading) {
+  // Show loading for initial data fetch
+  if (basicDetails.isLoading || compensation.isLoading || taxes.isLoading || forms.isLoading) {
     return <BaseLayout isLoading />
   }
 
-  const {
-    employee,
-    currentHomeAddress,
-    currentWorkAddress,
-    primaryJob,
-    employeePaymentMethod,
-    bankAccounts,
-    garnishmentList,
-    payStubs,
-    employeeFederalTax,
-    employeeStateTaxesList,
-    formList,
-  } = dashboard.data
+  const { employee, currentHomeAddress, currentWorkAddress } = basicDetails.data
+  const { primaryJob, employeePaymentMethod, bankAccounts, garnishmentList, payStubs } =
+    compensation.data
+  const { employeeFederalTax, employeeStateTaxesList } = taxes.data
+  const { formList } = forms.data
 
-  const { isLoadingBasicDetails, isLoadingJobAndPay, isLoadingTaxes, isLoadingDocuments } =
-    dashboard.status
+  // Tab-specific loading states based on isPending
+  const isLoadingBasicDetails = basicDetails.status.isPending
+  const isLoadingJobAndPay = compensation.status.isPending
+  const isLoadingTaxes = taxes.status.isPending
+  const isLoadingDocuments = forms.status.isPending
 
   const handleEditBasicDetails = useCallback(() => {
     onEvent(componentEvents.EMPLOYEE_UPDATE, { employeeId })

@@ -858,15 +858,15 @@
         },
         {
           "method": "GET",
+          "path": "/v1/employees/:employeeId/forms"
+        },
+        {
+          "method": "GET",
           "path": "/v1/employees/:employeeUuid/federal_taxes"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeUuid/state_taxes"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/forms"
         }
       ],
       "variables": [
