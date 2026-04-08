@@ -28,6 +28,13 @@ vi.mock('@gusto/embedded-api/react-query/payrollsCreateOffCycle', () => ({
   }),
 }))
 
+vi.mock('@/hooks/useCompanyPaymentSpeed', () => ({
+  useCompanyPaymentSpeed: () => ({
+    paymentSpeed: undefined,
+    paymentSpeedDays: 2,
+  }),
+}))
+
 const defaultProps = {
   companyId: 'company-123',
   onEvent: vi.fn(),
