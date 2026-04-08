@@ -2,7 +2,6 @@ export { useCompensationForm } from './useCompensationForm'
 export type {
   CompensationSubmitCallbacks,
   CompensationSubmitOptions,
-  CompensationRequiredFields,
   UseCompensationFormProps,
   UseCompensationFormResult,
   UseCompensationFormReady,
@@ -12,11 +11,10 @@ export type {
 export { CompensationForm } from './CompensationForm'
 export type { CompensationFormProps } from './CompensationForm'
 export {
-  CompensationSchema,
   createCompensationSchema,
   CompensationErrorCodes,
   type CompensationErrorCode,
-  type CompensationField,
+  type CompensationOptionalFieldsToRequire,
   type CompensationFormData,
   type CompensationFormOutputs,
 } from './compensationSchema'

@@ -19,6 +19,7 @@ import { useOffCyclePayPeriodDateValidation } from '../OffCyclePayPeriodDateForm
 import type { OffCycleTaxWithholdingConfig } from '../OffCycleTaxWithholdingTable/OffCycleTaxWithholdingTableTypes'
 import type { OffCycleCreationFormData, OffCycleCreationProps } from './OffCycleCreationTypes'
 import { OffCycleCreationPresentation } from './OffCycleCreationPresentation'
+import { useCompanyPaymentSpeed } from '@/hooks/useCompanyPaymentSpeed'
 import { BaseComponent } from '@/components/Base/Base'
 import { useBase } from '@/components/Base/useBase'
 import { useComponentDictionary, useI18n } from '@/i18n'
@@ -52,7 +53,9 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
   const { t: tCreation } = useTranslation('Payroll.OffCycleCreation')
   const { onEvent, baseSubmitHandler } = useBase()
 
-  const { minCheckDate, today } = useOffCyclePayPeriodDateValidation()
+  const { paymentSpeedDays } = useCompanyPaymentSpeed(companyId)
+
+  const { minCheckDate, today } = useOffCyclePayPeriodDateValidation(paymentSpeedDays)
   const { mutateAsync: createOffCyclePayroll, isPending } = usePayrollsCreateOffCycleMutation()
 
   const [taxWithholdingConfig, setTaxWithholdingConfig] = useState<OffCycleTaxWithholdingConfig>({
@@ -96,8 +99,9 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
       })
   }, [employeesData])
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const translateValidation = (key: string): string => t(key as any) as string
+  const translateValidation = (key: string, options?: Record<string, unknown>): string =>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    t(key as any, options as any) as string
 
   const dynamicResolver: Resolver<OffCycleCreationFormData> = (values, context, options) => {
     const reason = values.reason
@@ -109,6 +113,7 @@ function Root({ dictionary, companyId, payrollType = 'bonus' }: OffCycleCreation
       translateValidation,
       resolvedPayrollType,
       isCheckOnly ? today : minCheckDate,
+      paymentSpeedDays,
     )
     const schema = z
       .object({

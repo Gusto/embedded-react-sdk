@@ -14,7 +14,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslation } from 'react-i18next'
 import type { ContractorPaymentGroupPreview } from '@gusto/embedded-api/models/components/contractorpaymentgrouppreview'
 import { useBankAccountsGet } from '@gusto/embedded-api/react-query/bankAccountsGet'
-import { usePaymentConfigsGet } from '@gusto/embedded-api/react-query/paymentConfigsGet'
 import type { InternalAlert } from '../types'
 import { CreatePaymentPresentation } from './CreatePaymentPresentation'
 import { EditContractorPaymentPresentation } from './EditContractorPaymentPresentation'
@@ -23,6 +22,8 @@ import {
   type EditContractorPaymentFormValues,
 } from './EditContractorPaymentFormSchema'
 import { PreviewPresentation } from './PreviewPresentation'
+import { addBusinessDays } from '@/helpers/dateFormatting'
+import { useCompanyPaymentSpeed } from '@/hooks/useCompanyPaymentSpeed'
 import {
   payrollSubmitHandler,
   type ApiPayrollBlocker,
@@ -31,6 +32,20 @@ import { useComponentDictionary } from '@/i18n'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import { componentEvents, ContractorOnboardingStatus } from '@/shared/constants'
 import { firstLastName } from '@/helpers/formattedStrings'
+
+function formatLocalDate(date: Date): string {
+  return [
+    String(date.getFullYear()).padStart(4, '0'),
+    String(date.getMonth() + 1).padStart(2, '0'),
+    String(date.getDate()).padStart(2, '0'),
+  ].join('-')
+}
+
+function calculateInitialPaymentDate(speedDays: number): string {
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  return formatLocalDate(addBusinessDays(today, speedDays))
+}
 
 interface CreatePaymentProps extends BaseComponentInterface<'Contractor.Payments.CreatePayment'> {
   companyId: string
@@ -68,35 +83,18 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
       contractor.onboardingStatus === ContractorOnboardingStatus.ONBOARDING_COMPLETED,
   )
   const { data: bankAccounts } = useBankAccountsGet({ companyId })
-  const { data: paymentConfigs } = usePaymentConfigsGet({ companyUuid: companyId })
+  const { paymentSpeed, paymentSpeedDays } = useCompanyPaymentSpeed(companyId)
   const bankAccount = bankAccounts?.companyBankAccounts?.[0]
-  const paymentSpeed = paymentConfigs?.paymentConfigs?.paymentSpeed
 
-  const calculateInitialPaymentDate = (speed: string | undefined): string => {
-    const today = new Date()
-    let daysToAdd = 0
-
-    if (speed === '1-day') {
-      daysToAdd = 1
-    } else if (speed === '2-day') {
-      daysToAdd = 2
-    } else if (speed === '4-day') {
-      daysToAdd = 4
-    }
-
-    today.setDate(today.getDate() + daysToAdd)
-    return today.toISOString().split('T')[0] || ''
-  }
-
-  const [paymentDate, setPaymentDate] = useState(calculateInitialPaymentDate(paymentSpeed))
+  const [paymentDate, setPaymentDate] = useState(calculateInitialPaymentDate(paymentSpeedDays))
   const hasInitializedPaymentDateRef = useRef(false)
 
   useEffect(() => {
     if (paymentSpeed && !hasInitializedPaymentDateRef.current) {
-      setPaymentDate(calculateInitialPaymentDate(paymentSpeed))
+      setPaymentDate(calculateInitialPaymentDate(paymentSpeedDays))
       hasInitializedPaymentDateRef.current = true
     }
-  }, [paymentSpeed])
+  }, [paymentSpeed, paymentSpeedDays])
 
   const initialContractorPayments: (ContractorPayments & { isTouched: boolean })[] = useMemo(
     () =>
@@ -371,6 +369,7 @@ export const Root = ({ companyId, dictionary, onEvent }: CreatePaymentProps) => 
           payrollBlockers={payrollBlockers}
           onViewBlockers={onViewBlockers}
           isLoading={isCreatingContractorPaymentGroup || isPreviewingContractorPaymentGroup}
+          paymentSpeedDays={paymentSpeedDays}
         />
       )}
       <EditContractorPaymentPresentation

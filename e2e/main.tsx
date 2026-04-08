@@ -114,33 +114,42 @@ const FLOW_OPTIONS: { value: FlowType; label: string }[] = [
 ]
 
 function FlowSelector({ currentFlow }: { currentFlow: FlowType }) {
-  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const params = new URLSearchParams(window.location.search)
-    params.set('flow', e.target.value)
-    window.location.search = params.toString()
-  }
-
   return (
-    <div
-      aria-hidden="true"
-      style={{ padding: '8px 0', borderBottom: '1px solid #e5e7eb', marginBottom: 16 }}
+    <nav
+      aria-label="Flow selector"
+      style={{
+        padding: '8px 0',
+        borderBottom: '1px solid #e5e7eb',
+        marginBottom: 16,
+        display: 'flex',
+        gap: 8,
+        flexWrap: 'wrap',
+        alignItems: 'center',
+        fontSize: 13,
+      }}
     >
-      <label htmlFor="flow-selector" style={{ marginRight: 8, fontSize: 14 }}>
-        Flow:
-      </label>
-      <select
-        id="flow-selector"
-        value={currentFlow}
-        onChange={handleChange}
-        style={{ fontSize: 14 }}
-      >
-        {FLOW_OPTIONS.map(opt => (
-          <option key={opt.value} value={opt.value}>
-            {opt.label}
-          </option>
-        ))}
-      </select>
-    </div>
+      <span style={{ fontWeight: 600 }}>Flow:</span>
+      {FLOW_OPTIONS.map((opt, i) => {
+        const params = new URLSearchParams(window.location.search)
+        params.set('flow', opt.value)
+        const isActive = opt.value === currentFlow
+        return (
+          <span key={opt.value}>
+            {i > 0 && <span style={{ color: '#d1d5db' }}>|</span>}
+            <a
+              href={`?${params.toString()}`}
+              style={{
+                fontWeight: isActive ? 600 : 400,
+                color: isActive ? '#111827' : '#6b7280',
+                textDecoration: isActive ? 'none' : 'underline',
+              }}
+            >
+              {opt.label}
+            </a>
+          </span>
+        )
+      })}
+    </nav>
   )
 }
 

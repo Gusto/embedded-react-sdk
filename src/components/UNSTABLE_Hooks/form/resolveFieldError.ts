@@ -2,11 +2,14 @@ import type { FieldErrors } from 'react-hook-form'
 import type { ValidationMessages } from '@/types/sdkHooks'
 import type { SDKError } from '@/types/sdkError'
 
-export function resolveFieldError<TErrorCode extends string>(
+export function resolveFieldError<
+  TErrorCode extends string,
+  TOptionalErrorCode extends string = never,
+>(
   fieldName: string,
   formErrors: FieldErrors,
   sdkErrors: SDKError[],
-  validationMessages?: ValidationMessages<TErrorCode>,
+  validationMessages?: ValidationMessages<TErrorCode, TOptionalErrorCode>,
 ): string | undefined {
   const errorCode = formErrors[fieldName]?.message as TErrorCode | undefined
   if (errorCode && validationMessages?.[errorCode]) {

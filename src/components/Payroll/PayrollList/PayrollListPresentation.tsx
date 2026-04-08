@@ -2,7 +2,7 @@ import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
 import { OffCycleReasonType } from '@gusto/embedded-api/models/components/payroll'
 import type { PayScheduleList } from '@gusto/embedded-api/models/components/payschedulelist'
 import type { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest'
-import { useState, useRef } from 'react'
+import { useState, useRef, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { PayrollStatusBadges } from '../PayrollStatusBadges'
@@ -23,6 +23,35 @@ const CANCELLABLE_OFF_CYCLE_REASONS = new Set<string>([
   OffCycleReasonType.Correction,
   OffCycleReasonType.DismissedEmployee,
 ])
+
+function hasKebabActions(
+  payroll: Payroll,
+  blockers: ApiPayrollBlocker[],
+  todayAtMidnight: Date | null,
+): boolean {
+  if (payroll.processed) return false
+
+  const payPeriodStartDate = payroll.payPeriod?.startDate
+    ? new Date(payroll.payPeriod.startDate)
+    : null
+
+  const isSkippablePayroll =
+    !payroll.offCycle || payroll.offCycleReason === OffCycleReasonType.TransitionFromOldPaySchedule
+
+  const canSkipPayroll =
+    blockers.length === 0 &&
+    isSkippablePayroll &&
+    todayAtMidnight &&
+    payPeriodStartDate &&
+    todayAtMidnight >= payPeriodStartDate
+
+  const canDeletePayroll =
+    payroll.offCycle &&
+    !!payroll.offCycleReason &&
+    CANCELLABLE_OFF_CYCLE_REASONS.has(payroll.offCycleReason)
+
+  return !!(canSkipPayroll || canDeletePayroll)
+}
 
 interface PayrollListPresentationProps {
   onRunPayroll: ({ payrollUuid, payPeriod }: Pick<Payroll, 'payrollUuid' | 'payPeriod'>) => void
@@ -63,13 +92,24 @@ export const PayrollListPresentation = ({
   wireInRequests,
   dateRangeFilter,
 }: PayrollListPresentationProps) => {
-  const { Box, Button, Dialog, Heading, Text, Alert } = useComponentContext()
+  const { Box, Button, ButtonIcon, Dialog, Heading, Text, Alert } = useComponentContext()
   useI18n('Payroll.PayrollList')
   const { t } = useTranslation('Payroll.PayrollList')
   const dateFormatter = useDateFormatter()
   const containerRef = useRef<HTMLDivElement>(null)
   const breakpoints = useContainerBreakpoints({ ref: containerRef })
   const isDesktop = breakpoints.includes('large')
+
+  const todayAtMidnight = useMemo(() => {
+    const todayDateString = formatDateToStringDate(new Date())
+    return todayDateString ? new Date(todayDateString) : null
+  }, [])
+
+  const anyPayrollHasKebabActions = useMemo(
+    () => payrolls.some(payroll => hasKebabActions(payroll, blockers, todayAtMidnight)),
+    [payrolls, blockers, todayAtMidnight],
+  )
+
   const [skipPayrollDialogState, setSkipPayrollDialogState] = useState<{
     isOpen: boolean
     payrollId: string | null
@@ -296,19 +336,32 @@ export const PayrollListPresentation = ({
           itemMenu={payroll => {
             const { payrollUuid, processed, payPeriod } = payroll
 
-            if (processed) {
-              return null
-            }
-
             const isProcessingSkipPayroll = skippingPayrollId === payrollUuid
+            const isProcessingDeletePayroll = deletingPayrollId === payrollUuid
+
+            const button = isDesktop ? renderActionButton(payroll) : null
+
+            if (processed) {
+              return (
+                <div className={styles.actionsContainer}>
+                  {anyPayrollHasKebabActions && (
+                    <ButtonIcon
+                      aria-label=""
+                      aria-hidden={true}
+                      tabIndex={-1}
+                      isDisabled={true}
+                      className={styles.menuPlaceholder}
+                    />
+                  )}
+                </div>
+              )
+            }
 
             const { fullPeriod: payPeriodString } = formatPayPeriod(
               payPeriod?.startDate,
               payPeriod?.endDate,
             )
 
-            const todayDateString = formatDateToStringDate(new Date())
-            const todayAtMidnight = todayDateString ? new Date(todayDateString) : null
             const payPeriodStartDate = payPeriod?.startDate ? new Date(payPeriod.startDate) : null
 
             const isSkippablePayroll =
@@ -327,46 +380,48 @@ export const PayrollListPresentation = ({
               !!payroll.offCycleReason &&
               CANCELLABLE_OFF_CYCLE_REASONS.has(payroll.offCycleReason)
 
-            const button = isDesktop ? renderActionButton(payroll) : null
-
-            const isProcessingDeletePayroll = deletingPayrollId === payrollUuid
-
-            const hamburgerMenu = canSkipPayroll ? (
-              <HamburgerMenu
-                isLoading={isProcessingSkipPayroll}
-                menuLabel={t('payrollMenuLabel')}
-                items={[
+            const menuItems = canSkipPayroll
+              ? [
                   {
                     label: t('skipPayrollCta'),
                     onClick: () => {
                       handleOpenSkipDialog(payrollUuid!, payPeriodString)
                     },
                   },
-                ]}
-              />
-            ) : canDeletePayroll ? (
-              <HamburgerMenu
-                isLoading={isProcessingDeletePayroll}
-                menuLabel={t('payrollMenuLabel')}
-                items={[
-                  {
-                    label: t('deletePayrollCta'),
-                    onClick: () => {
-                      handleOpenDeleteDialog(payrollUuid!, payPeriodString)
+                ]
+              : canDeletePayroll
+                ? [
+                    {
+                      label: t('deletePayrollCta'),
+                      onClick: () => {
+                        handleOpenDeleteDialog(payrollUuid!, payPeriodString)
+                      },
                     },
-                  },
-                ]}
-              />
-            ) : null
+                  ]
+                : null
 
-            if (!button && !hamburgerMenu) {
-              return null
-            }
+            const hasMenuActions = menuItems !== null
 
             return (
               <div className={styles.actionsContainer}>
                 {button}
-                {hamburgerMenu}
+                {hasMenuActions ? (
+                  <HamburgerMenu
+                    isLoading={canSkipPayroll ? isProcessingSkipPayroll : isProcessingDeletePayroll}
+                    menuLabel={t('payrollMenuLabel')}
+                    items={menuItems}
+                  />
+                ) : (
+                  anyPayrollHasKebabActions && (
+                    <ButtonIcon
+                      aria-label=""
+                      aria-hidden={true}
+                      tabIndex={-1}
+                      isDisabled={true}
+                      className={styles.menuPlaceholder}
+                    />
+                  )
+                )}
               </div>
             )
           }}

@@ -452,11 +452,14 @@ export interface CompanyTimeOffEmployeeTable{
 export interface CompanyTimeOffHolidayPolicy{
 "title":string;
 "description":string;
+"backCta":string;
 "continueCta":string;
 "tableHeaders":{
 "holidayName":string;
 "observedDate":string;
+"nextObservation":string;
 };
+"tableLabel":string;
 "editEmployees":{
 "title":string;
 };
@@ -477,36 +480,7 @@ export interface CompanyTimeOffHolidayPolicy{
 "employeesRemoved_other":string;
 };
 };
-export interface CompanyTimeOffTimeOffPolicies{
-"pageTitle":string;
-"addPolicyCta":string;
-"tableHeaders":{
-"name":string;
-"enrolled":string;
-"actions":string;
-};
-"actions":{
-"viewPolicy":string;
-"editPolicy":string;
-"deletePolicy":string;
-};
-"employeeCount_one":string;
-"employeeCount_other":string;
-"incompleteBadge":string;
-"holidayPayPolicy":string;
-"deletePolicyDialog":{
-"title":string;
-"description":string;
-};
-"deleteHolidayDialog":{
-"title":string;
-"description":string;
-};
-"emptyState":{
-"heading":string;
-"body":string;
-};
-"selectPolicyType":{
+export interface CompanyTimeOffSelectPolicyType{
 "title":string;
 "policyTypeLabel":string;
 "policyTypeHint":string;
@@ -518,6 +492,39 @@ export interface CompanyTimeOffTimeOffPolicies{
 "sickLeaveHint":string;
 "continueCta":string;
 "cancelCta":string;
+};
+export interface CompanyTimeOffTimeOffPolicies{
+"pageTitle":string;
+"createPolicyCta":string;
+"tableHeaders":{
+"name":string;
+"enrolled":string;
+};
+"tableLabel":string;
+"actions":{
+"editPolicy":string;
+"deletePolicy":string;
+};
+"finishSetupCta":string;
+"allEmployeesLabel":string;
+"enrolledDash":string;
+"employeeCount_one":string;
+"employeeCount_other":string;
+"incompleteBadge":string;
+"holidayPayPolicy":string;
+"deletePolicyDialog":{
+"title":string;
+"description":string;
+"confirmCta":string;
+"cancelCta":string;
+};
+"deleteHolidayDialog":{
+"title":string;
+"description":string;
+};
+"emptyState":{
+"heading":string;
+"body":string;
 };
 "flash":{
 "policyDeleted":string;
@@ -838,7 +845,8 @@ export interface ContractorPaymentsCreatePayment{
 "emptyTableTitle":string;
 "emptyTableDescription":string;
 "breadcrumbLabel":string;
-"paymentSpeedNotice":string;
+"paymentSpeedNotice_one":string;
+"paymentSpeedNotice_other":string;
 "dateLabel":string;
 "hoursAndPaymentsLabel":string;
 "contractorTableHeaders":{
@@ -2253,7 +2261,8 @@ export interface PayrollOffCyclePayPeriodDateForm{
 "checkDateRequired":string;
 "endDateAfterStart":string;
 "startDateNotFuture":string;
-"checkDateAchLeadTime":string;
+"checkDateAchLeadTime_one":string;
+"checkDateAchLeadTime_other":string;
 "checkDateNotPast":string;
 };
 };
@@ -2939,7 +2948,8 @@ export interface PayrollTransitionCreation{
 "errors":{
 "missingPayrollId":string;
 "checkDateRequired":string;
-"checkDateAchLeadTime":string;
+"checkDateAchLeadTime_one":string;
+"checkDateAchLeadTime_other":string;
 };
 };
 export interface PayrollTransitionPayrollAlert{
@@ -3294,6 +3304,6 @@ export interface common{
 
     interface CustomTypeOptions {
         defaultNS: 'common';
-        resources: { 'Company.Addresses': CompanyAddresses, 'Company.AssignSignatory': CompanyAssignSignatory, 'Company.BankAccount': CompanyBankAccount, 'Company.DocumentList': CompanyDocumentList, 'Company.FederalTaxes': CompanyFederalTaxes, 'Company.Industry': CompanyIndustry, 'Company.Locations': CompanyLocations, 'Company.OnboardingOverview': CompanyOnboardingOverview, 'Company.PaySchedule': CompanyPaySchedule, 'Company.SignatureForm': CompanySignatureForm, 'Company.StateTaxes': CompanyStateTaxes, 'Company.TimeOff.CreateTimeOffPolicy': CompanyTimeOffCreateTimeOffPolicy, 'Company.TimeOff.EmployeeTable': CompanyTimeOffEmployeeTable, 'Company.TimeOff.HolidayPolicy': CompanyTimeOffHolidayPolicy, 'Company.TimeOff.TimeOffPolicies': CompanyTimeOffTimeOffPolicies, 'Company.TimeOff.TimeOffPolicyDetails': CompanyTimeOffTimeOffPolicyDetails, 'Company.TimeOff.TimeOffRequests': CompanyTimeOffTimeOffRequests, 'Contractor.Address': ContractorAddress, 'Contractor.ContractorList': ContractorContractorList, 'Contractor.NewHireReport': ContractorNewHireReport, 'Contractor.PaymentMethod': ContractorPaymentMethod, 'Contractor.Payments.CreatePayment': ContractorPaymentsCreatePayment, 'Contractor.Payments.PaymentHistory': ContractorPaymentsPaymentHistory, 'Contractor.Payments.PaymentStatement': ContractorPaymentsPaymentStatement, 'Contractor.Payments.PaymentSummary': ContractorPaymentsPaymentSummary, 'Contractor.Payments.PaymentsList': ContractorPaymentsPaymentsList, 'Contractor.Profile': ContractorProfile, 'Contractor.Submit': ContractorSubmit, 'Employee.BankAccount': EmployeeBankAccount, 'Employee.Compensation': EmployeeCompensation, 'Employee.Dashboard': EmployeeDashboard, 'Employee.Deductions': EmployeeDeductions, 'Employee.DocumentSigner': EmployeeDocumentSigner, 'Employee.EmployeeDocuments': EmployeeEmployeeDocuments, 'Employee.EmployeeList': EmployeeEmployeeList, 'Employee.EmploymentEligibility': EmployeeEmploymentEligibility, 'Employee.FederalTaxes': EmployeeFederalTaxes, 'Employee.HomeAddress': EmployeeHomeAddress, 'Employee.I9SignatureForm': EmployeeI9SignatureForm, 'Employee.Landing': EmployeeLanding, 'Employee.ManagementEmployeeList': EmployeeManagementEmployeeList, 'Employee.OnboardingSummary': EmployeeOnboardingSummary, 'Employee.PaySchedules': EmployeePaySchedules, 'Employee.PaymentMethod': EmployeePaymentMethod, 'Employee.Profile': EmployeeProfile, 'Employee.SplitPaycheck': EmployeeSplitPaycheck, 'Employee.StateTaxes': EmployeeStateTaxes, 'Employee.Taxes': EmployeeTaxes, 'Employee.Terminations.TerminateEmployee': EmployeeTerminationsTerminateEmployee, 'Employee.Terminations.TerminationFlow': EmployeeTerminationsTerminationFlow, 'Employee.Terminations.TerminationSummary': EmployeeTerminationsTerminationSummary, 'InformationRequests.InformationRequestForm': InformationRequestsInformationRequestForm, 'InformationRequests.InformationRequestList': InformationRequestsInformationRequestList, 'InformationRequests': InformationRequests, 'Payroll.Common': PayrollCommon, 'Payroll.ConfirmWireDetailsBanner': PayrollConfirmWireDetailsBanner, 'Payroll.ConfirmWireDetailsForm': PayrollConfirmWireDetailsForm, 'Payroll.Dismissal': PayrollDismissal, 'Payroll.EmployeeSelection': PayrollEmployeeSelection, 'Payroll.GrossUpModal': PayrollGrossUpModal, 'Payroll.OffCycle': PayrollOffCycle, 'Payroll.OffCycleCreation': PayrollOffCycleCreation, 'Payroll.OffCycleDeductionsSetting': PayrollOffCycleDeductionsSetting, 'Payroll.OffCyclePayPeriodDateForm': PayrollOffCyclePayPeriodDateForm, 'Payroll.OffCycleReasonSelection': PayrollOffCycleReasonSelection, 'Payroll.OffCycleTaxWithholding': PayrollOffCycleTaxWithholding, 'Payroll.PayrollBlocker': PayrollPayrollBlocker, 'Payroll.PayrollConfiguration': PayrollPayrollConfiguration, 'Payroll.PayrollEditEmployee': PayrollPayrollEditEmployee, 'Payroll.PayrollFlow': PayrollPayrollFlow, 'Payroll.PayrollHistory': PayrollPayrollHistory, 'Payroll.PayrollLanding': PayrollPayrollLanding, 'Payroll.PayrollList': PayrollPayrollList, 'Payroll.PayrollOverview': PayrollPayrollOverview, 'Payroll.PayrollReceipts': PayrollPayrollReceipts, 'Payroll.RecoveryCasesList': PayrollRecoveryCasesList, 'Payroll.RecoveryCasesResubmit': PayrollRecoveryCasesResubmit, 'Payroll.Transition': PayrollTransition, 'Payroll.TransitionCreation': PayrollTransitionCreation, 'Payroll.TransitionPayrollAlert': PayrollTransitionPayrollAlert, 'Payroll.WireInstructions': PayrollWireInstructions, 'UNSTABLE.CompensationForm': UNSTABLECompensationForm, 'UNSTABLE.EmployeeDetailsForm': UNSTABLEEmployeeDetailsForm, 'UNSTABLE.WorkAddressForm': UNSTABLEWorkAddressForm, 'common': common,  }
+        resources: { 'Company.Addresses': CompanyAddresses, 'Company.AssignSignatory': CompanyAssignSignatory, 'Company.BankAccount': CompanyBankAccount, 'Company.DocumentList': CompanyDocumentList, 'Company.FederalTaxes': CompanyFederalTaxes, 'Company.Industry': CompanyIndustry, 'Company.Locations': CompanyLocations, 'Company.OnboardingOverview': CompanyOnboardingOverview, 'Company.PaySchedule': CompanyPaySchedule, 'Company.SignatureForm': CompanySignatureForm, 'Company.StateTaxes': CompanyStateTaxes, 'Company.TimeOff.CreateTimeOffPolicy': CompanyTimeOffCreateTimeOffPolicy, 'Company.TimeOff.EmployeeTable': CompanyTimeOffEmployeeTable, 'Company.TimeOff.HolidayPolicy': CompanyTimeOffHolidayPolicy, 'Company.TimeOff.SelectPolicyType': CompanyTimeOffSelectPolicyType, 'Company.TimeOff.TimeOffPolicies': CompanyTimeOffTimeOffPolicies, 'Company.TimeOff.TimeOffPolicyDetails': CompanyTimeOffTimeOffPolicyDetails, 'Company.TimeOff.TimeOffRequests': CompanyTimeOffTimeOffRequests, 'Contractor.Address': ContractorAddress, 'Contractor.ContractorList': ContractorContractorList, 'Contractor.NewHireReport': ContractorNewHireReport, 'Contractor.PaymentMethod': ContractorPaymentMethod, 'Contractor.Payments.CreatePayment': ContractorPaymentsCreatePayment, 'Contractor.Payments.PaymentHistory': ContractorPaymentsPaymentHistory, 'Contractor.Payments.PaymentStatement': ContractorPaymentsPaymentStatement, 'Contractor.Payments.PaymentSummary': ContractorPaymentsPaymentSummary, 'Contractor.Payments.PaymentsList': ContractorPaymentsPaymentsList, 'Contractor.Profile': ContractorProfile, 'Contractor.Submit': ContractorSubmit, 'Employee.BankAccount': EmployeeBankAccount, 'Employee.Compensation': EmployeeCompensation, 'Employee.Dashboard': EmployeeDashboard, 'Employee.Deductions': EmployeeDeductions, 'Employee.DocumentSigner': EmployeeDocumentSigner, 'Employee.EmployeeDocuments': EmployeeEmployeeDocuments, 'Employee.EmployeeList': EmployeeEmployeeList, 'Employee.EmploymentEligibility': EmployeeEmploymentEligibility, 'Employee.FederalTaxes': EmployeeFederalTaxes, 'Employee.HomeAddress': EmployeeHomeAddress, 'Employee.I9SignatureForm': EmployeeI9SignatureForm, 'Employee.Landing': EmployeeLanding, 'Employee.ManagementEmployeeList': EmployeeManagementEmployeeList, 'Employee.OnboardingSummary': EmployeeOnboardingSummary, 'Employee.PaySchedules': EmployeePaySchedules, 'Employee.PaymentMethod': EmployeePaymentMethod, 'Employee.Profile': EmployeeProfile, 'Employee.SplitPaycheck': EmployeeSplitPaycheck, 'Employee.StateTaxes': EmployeeStateTaxes, 'Employee.Taxes': EmployeeTaxes, 'Employee.Terminations.TerminateEmployee': EmployeeTerminationsTerminateEmployee, 'Employee.Terminations.TerminationFlow': EmployeeTerminationsTerminationFlow, 'Employee.Terminations.TerminationSummary': EmployeeTerminationsTerminationSummary, 'InformationRequests.InformationRequestForm': InformationRequestsInformationRequestForm, 'InformationRequests.InformationRequestList': InformationRequestsInformationRequestList, 'InformationRequests': InformationRequests, 'Payroll.Common': PayrollCommon, 'Payroll.ConfirmWireDetailsBanner': PayrollConfirmWireDetailsBanner, 'Payroll.ConfirmWireDetailsForm': PayrollConfirmWireDetailsForm, 'Payroll.Dismissal': PayrollDismissal, 'Payroll.EmployeeSelection': PayrollEmployeeSelection, 'Payroll.GrossUpModal': PayrollGrossUpModal, 'Payroll.OffCycle': PayrollOffCycle, 'Payroll.OffCycleCreation': PayrollOffCycleCreation, 'Payroll.OffCycleDeductionsSetting': PayrollOffCycleDeductionsSetting, 'Payroll.OffCyclePayPeriodDateForm': PayrollOffCyclePayPeriodDateForm, 'Payroll.OffCycleReasonSelection': PayrollOffCycleReasonSelection, 'Payroll.OffCycleTaxWithholding': PayrollOffCycleTaxWithholding, 'Payroll.PayrollBlocker': PayrollPayrollBlocker, 'Payroll.PayrollConfiguration': PayrollPayrollConfiguration, 'Payroll.PayrollEditEmployee': PayrollPayrollEditEmployee, 'Payroll.PayrollFlow': PayrollPayrollFlow, 'Payroll.PayrollHistory': PayrollPayrollHistory, 'Payroll.PayrollLanding': PayrollPayrollLanding, 'Payroll.PayrollList': PayrollPayrollList, 'Payroll.PayrollOverview': PayrollPayrollOverview, 'Payroll.PayrollReceipts': PayrollPayrollReceipts, 'Payroll.RecoveryCasesList': PayrollRecoveryCasesList, 'Payroll.RecoveryCasesResubmit': PayrollRecoveryCasesResubmit, 'Payroll.Transition': PayrollTransition, 'Payroll.TransitionCreation': PayrollTransitionCreation, 'Payroll.TransitionPayrollAlert': PayrollTransitionPayrollAlert, 'Payroll.WireInstructions': PayrollWireInstructions, 'UNSTABLE.CompensationForm': UNSTABLECompensationForm, 'UNSTABLE.EmployeeDetailsForm': UNSTABLEEmployeeDetailsForm, 'UNSTABLE.WorkAddressForm': UNSTABLEWorkAddressForm, 'common': common,  }
     };
 }

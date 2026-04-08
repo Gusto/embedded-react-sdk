@@ -8,14 +8,13 @@ export {
   type CompensationFormProps,
   type CompensationSubmitCallbacks,
   type CompensationSubmitOptions,
-  type CompensationRequiredFields,
   type UseCompensationFormProps,
   type UseCompensationFormResult,
   type UseCompensationFormReady,
   type CompensationFieldsMetadata,
   type CompensationFormFields,
   type CompensationErrorCode,
-  type CompensationField,
+  type CompensationOptionalFieldsToRequire,
   type CompensationFormData,
   type CompensationFormOutputs,
 
@@ -37,12 +36,9 @@ export {
 
   // Form infrastructure
   SDKFormProvider,
-  FormFieldsMetadataProvider,
   composeSubmitHandler,
-  useFieldsMetadata,
   useFieldErrorMessage,
   withOptions,
-  deriveFieldsMetadata,
   collectErrors,
 
   // Generic hook field components
@@ -101,7 +97,7 @@ export {
   // Employee details types
   type EmployeeDetailsFormProps,
   type EmployeeDetailsSubmitCallbacks,
-  type EmployeeDetailsRequiredFields,
+  type EmployeeDetailsOptionalFieldsToRequire,
   type UseEmployeeDetailsFormProps,
   type UseEmployeeDetailsFormResult,
   type UseEmployeeDetailsFormReady,
@@ -136,7 +132,7 @@ export {
   type WorkAddressFormProps,
   type WorkAddressSubmitCallbacks,
   type WorkAddressSubmitOptions,
-  type WorkAddressRequiredFields,
+  type WorkAddressOptionalFieldsToRequire,
   type UseWorkAddressFormProps,
   type UseWorkAddressFormResult,
   type UseWorkAddressFormReady,

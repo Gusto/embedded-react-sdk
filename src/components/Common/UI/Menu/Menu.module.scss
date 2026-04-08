@@ -1,30 +1,36 @@
 .root {
   max-height: inherit;
   box-sizing: border-box;
-  overflow: hidden;
   outline: none;
   width: max-content;
-  min-width: toRem(100);
-  max-width: toRem(250);
   background-color: var(--g-colorBody);
-  border-radius: toRem(6);
+  padding: toRem(6);
 }
 
 .menuItem {
-  padding: toRem(10) toRem(16);
+  padding: toRem(8) toRem(10);
   outline: none;
   cursor: pointer;
   color: var(--g-colorBodyContent);
+  font-size: var(--g-fontSizeSmall);
+  font-weight: var(--g-fontWeightSemibold);
   position: relative;
   display: flex;
   align-items: center;
   gap: toRem(16);
   forced-color-adjust: none;
+  border-radius: toRem(6);
+  min-width: toRem(200);
+  max-width: toRem(280);
 
   &:has(svg) {
     display: flex;
-    gap: toRem(16);
+    gap: toRem(8);
     align-items: center;
+
+    svg {
+      color: var(--g-colorSecondaryContent);
+    }
   }
 
   &[data-focused] {
@@ -65,11 +71,11 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: toRem(20);
-  height: toRem(20);
+  width: toRem(16);
+  height: toRem(16);
 
   svg {
-    width: toRem(20);
-    height: toRem(20);
+    width: toRem(16);
+    height: toRem(16);
   }
 }

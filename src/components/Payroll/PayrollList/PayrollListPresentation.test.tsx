@@ -131,8 +131,7 @@ describe('PayrollListPresentation', () => {
       renderWithProviders(<PayrollListPresentation {...defaultProps} blockers={mockBlockers} />)
 
       await screen.findByRole('heading', { name: 'Upcoming payroll' })
-      const hamburgerButton = screen.queryByRole('button', { name: /open menu/i })
-      expect(hamburgerButton).not.toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: /open menu/i })).not.toBeInTheDocument()
     })
 
     it('does not show hamburger menu when pay period starts tomorrow', async () => {
@@ -152,8 +151,7 @@ describe('PayrollListPresentation', () => {
       renderWithProviders(<PayrollListPresentation {...defaultProps} payrolls={[futurePayroll]} />)
 
       await screen.findByRole('heading', { name: 'Upcoming payroll' })
-      const hamburgerButton = screen.queryByRole('button', { name: /open menu/i })
-      expect(hamburgerButton).not.toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: /open menu/i })).not.toBeInTheDocument()
     })
 
     it('shows hamburger menu when pay period starts today', async () => {
@@ -227,8 +225,7 @@ describe('PayrollListPresentation', () => {
       )
 
       await screen.findByRole('heading', { name: 'Upcoming payroll' })
-      const hamburgerButton = screen.queryByRole('button', { name: /open menu/i })
-      expect(hamburgerButton).not.toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: /open menu/i })).not.toBeInTheDocument()
     })
   })
 

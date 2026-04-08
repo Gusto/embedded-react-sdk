@@ -169,6 +169,76 @@ export const PayrollListWithBlockersStory = () => {
   )
 }
 
+export const NoKebabActionsAvailable = () => {
+  const tomorrow = new Date()
+  tomorrow.setDate(tomorrow.getDate() + 7)
+  const futureStartDate = tomorrow.toISOString().split('T')[0]
+
+  return (
+    <PayrollListPresentation
+      payrolls={[
+        {
+          checkDate: '2025-12-12',
+          payrollDeadline: new Date(),
+          payrollUuid: 'no-skip-1',
+          payPeriod: {
+            payScheduleUuid: '1234',
+            startDate: futureStartDate,
+            endDate: '2025-12-31',
+          },
+        },
+        {
+          checkDate: '2025-12-20',
+          payrollDeadline: new Date(),
+          payrollUuid: 'no-skip-future-2',
+          payPeriod: {
+            payScheduleUuid: '1234',
+            startDate: futureStartDate,
+            endDate: '2025-12-31',
+          },
+        },
+        {
+          checkDate: '2025-12-25',
+          payrollDeadline: new Date(),
+          payrollUuid: 'no-skip-2',
+          offCycle: true,
+          payPeriod: {
+            payScheduleUuid: '1234',
+            startDate: futureStartDate,
+            endDate: '2025-12-31',
+          },
+        },
+        {
+          checkDate: '2025-12-30',
+          payrollDeadline: new Date(),
+          payrollUuid: 'processed-1',
+          processed: true,
+          payPeriod: {
+            payScheduleUuid: '1234',
+            startDate: '2025-01-01',
+            endDate: '2025-01-13',
+          },
+        },
+      ]}
+      paySchedules={[{ uuid: '1234', version: '1', customName: 'Bi-weekly' }]}
+      onRunPayroll={runPayrollAction}
+      onSubmitPayroll={submitPayrollAction}
+      onSkipPayroll={skipPayrollAction}
+      onDeletePayroll={deletePayrollAction}
+      onRunOffCyclePayroll={runOffCyclePayrollAction}
+      showSkipSuccessAlert={false}
+      onDismissSkipSuccessAlert={dismissAlertAction}
+      showDeleteSuccessAlert={false}
+      onDismissDeleteSuccessAlert={dismissAlertAction}
+      blockers={[]}
+      skippingPayrollId={null}
+      deletingPayrollId={null}
+      wireInRequests={[]}
+      dateRangeFilter={mockDateRangeFilter}
+    />
+  )
+}
+
 export const PayrollListWithWireInStatusesStory = () => {
   const futureDeadline = new Date(Date.now() + 12 * 60 * 60 * 1000)
   const nearDeadline = new Date(Date.now() + 2 * 60 * 60 * 1000)

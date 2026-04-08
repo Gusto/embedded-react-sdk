@@ -11,6 +11,7 @@ import type {
   PayrollSubmissionBlockerType,
   UnblockOptions,
 } from '@gusto/embedded-api/models/components/payrollsubmissionblockertype'
+import type { PaymentSpeed } from '@gusto/embedded-api/models/components/paymentconfigs'
 import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
 import {
   calculateTotalPayroll,
@@ -55,7 +56,7 @@ interface PayrollOverviewProps {
   onPaystubDownload: (employeeId: string) => void
   onUnblockOptionChange?: (blockerType: string, value: string) => void
   withReimbursements?: boolean
-  paymentSpeed?: string
+  paymentSpeed?: PaymentSpeed
 }
 
 const getPayrollOverviewTitle = (
