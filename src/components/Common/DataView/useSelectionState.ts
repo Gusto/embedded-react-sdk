@@ -3,7 +3,6 @@ import { useMemo } from 'react'
 type SelectionState = {
   allSelected: boolean
   someSelected: boolean
-  isIndeterminate: boolean
 }
 
 export function useSelectionState<T>(
@@ -12,7 +11,7 @@ export function useSelectionState<T>(
 ): SelectionState {
   return useMemo(() => {
     if (data.length === 0 || !isItemSelected) {
-      return { allSelected: false, someSelected: false, isIndeterminate: false }
+      return { allSelected: false, someSelected: false }
     }
 
     let selectedCount = 0
@@ -20,13 +19,9 @@ export function useSelectionState<T>(
       if (isItemSelected(item, i)) selectedCount++
     })
 
-    const allSelected = selectedCount === data.length
-    const someSelected = selectedCount > 0
-
     return {
-      allSelected,
-      someSelected,
-      isIndeterminate: someSelected && !allSelected,
+      allSelected: selectedCount === data.length,
+      someSelected: selectedCount > 0,
     }
   }, [data, isItemSelected])
 }
