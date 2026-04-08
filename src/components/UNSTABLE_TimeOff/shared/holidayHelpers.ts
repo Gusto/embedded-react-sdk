@@ -1,5 +1,5 @@
 import type { TFunction } from 'i18next'
-import type { HolidayItem } from '../TimeOffManagement/SelectHolidays/SelectHolidaysTypes'
+import type { HolidayItem } from '../HolidaySelectionForm/HolidaySelectionFormTypes'
 
 type HolidayDateRule =
   | { type: 'fixed'; month: number; day: number }

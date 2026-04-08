@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { fn } from 'storybook/test'
-import { SelectHolidaysPresentation } from './SelectHolidaysPresentation'
-import type { HolidayItem } from './SelectHolidaysTypes'
+import { HolidaySelectionFormPresentation } from './HolidaySelectionFormPresentation'
+import type { HolidayItem } from './HolidaySelectionFormTypes'
 import { useI18n } from '@/i18n'
 
 function I18nLoader({ children }: { children: React.ReactNode }) {
@@ -10,7 +10,7 @@ function I18nLoader({ children }: { children: React.ReactNode }) {
 }
 
 export default {
-  title: 'TimeOff/SelectHolidays',
+  title: 'TimeOff/HolidaySelectionForm',
   decorators: [
     (Story: React.ComponentType) => (
       <I18nLoader>
@@ -111,7 +111,7 @@ function StoryWrapper({ initialSelected }: { initialSelected: Set<string> }) {
   }
 
   return (
-    <SelectHolidaysPresentation
+    <HolidaySelectionFormPresentation
       holidays={holidays}
       selectedHolidayUuids={selectedUuids}
       onSelectionChange={handleSelectionChange}
@@ -127,4 +127,4 @@ export const PartialSelection = () => <StoryWrapper initialSelected={partialUuid
 
 export const EditMode = () => <StoryWrapper initialSelected={new Set()} />
 
-export const ViewMode = () => <SelectHolidaysPresentation mode="view" holidays={holidays} />
+export const ViewMode = () => <HolidaySelectionFormPresentation mode="view" holidays={holidays} />

@@ -1315,6 +1315,17 @@
         "companyUuid",
         "timeOffPolicyUuid"
       ]
+    },
+    "UNSTABLE_TimeOff.HolidaySelectionForm": {
+      "endpoints": [
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
+        }
+      ],
+      "variables": [
+        "companyUuid"
+      ]
     }
   },
   "flows": {
@@ -2084,6 +2095,10 @@
         "UNSTABLE_TimeOff.ViewPolicyEmployees"
       ],
       "endpoints": [
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
+        },
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/time_off_policies"
