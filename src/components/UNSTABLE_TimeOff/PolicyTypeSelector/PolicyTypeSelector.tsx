@@ -4,8 +4,7 @@ import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useBase } from '@/components/Base/useBase'
 import { componentEvents } from '@/shared/constants'
 
-export interface PolicyTypeSelectorProps
-  extends BaseComponentInterface<'Company.TimeOff.SelectPolicyType'> {
+export interface PolicyTypeSelectorProps extends BaseComponentInterface<'Company.TimeOff.SelectPolicyType'> {
   companyId: string
   defaultPolicyType?: PolicyType
 }
