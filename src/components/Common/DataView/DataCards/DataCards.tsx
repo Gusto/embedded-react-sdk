@@ -34,7 +34,7 @@ export const DataCards = <T,>({
   const Components = useComponentContext()
   const { t } = useTranslation('common')
   const radioGroupName = useId()
-  const { allSelected } = useSelectionState(data, isItemSelected)
+  const { allSelected, isIndeterminate } = useSelectionState(data, isItemSelected)
 
   if (
     process.env.NODE_ENV !== 'production' &&
@@ -86,6 +86,7 @@ export const DataCards = <T,>({
         <div className={styles.selectAllRow}>
           <Components.Checkbox
             value={allSelected}
+            isIndeterminate={isIndeterminate}
             onChange={(checked: boolean) => onSelectAll?.(checked, data)}
             label={t('card.selectAllRowsLabel')}
           />

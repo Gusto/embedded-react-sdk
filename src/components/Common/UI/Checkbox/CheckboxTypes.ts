@@ -10,11 +10,17 @@ export interface CheckboxProps
    */
   value?: boolean
   /**
+   * Renders the checkbox in an indeterminate state, used when some but not all items in a group are selected
+   */
+  isIndeterminate?: boolean
+  /**
    * Callback when checkbox state changes.
    *
    * Receives the next boolean value (toggled from current).
    * Internally triggered via click rather than native change event
-   * to ensure reliable behavior with controlled components.
+   * to avoid a controlled-input race condition with the `indeterminate` DOM property.
+   * Custom adapter implementations should call this with the intended boolean value
+   * rather than reading `event.target.checked`.
    */
   onChange?: (value: boolean) => void
   /**

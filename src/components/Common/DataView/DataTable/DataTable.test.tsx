@@ -119,6 +119,12 @@ describe('DataTable Component', () => {
       expect(screen.getAllByRole('checkbox')[0]).not.toBeChecked()
     })
 
+    test('header checkbox is indeterminate when some but not all rows are selected', () => {
+      renderTable({ ...selectableProps, isItemSelected: (_item, index) => index === 0 })
+      const headerCheckbox = screen.getAllByRole('checkbox')[0] as HTMLInputElement
+      expect(headerCheckbox.indeterminate).toBe(true)
+    })
+
     test('clicking the header checkbox fires onSelectAll with checked=true when not all selected', async () => {
       const onSelectAllMock = vi.fn()
       renderTable({ ...selectableProps, onSelectAll: onSelectAllMock })
@@ -202,7 +208,7 @@ describe('DataTable Component', () => {
       expect(getCheckedRowCount()).toBe(testData.length)
 
       await userEvent.click(getFirstRowCheckbox())
-      expect(getHeaderWrapper()).toHaveAttribute('data-checked', 'false')
+      expect(getHeaderWrapper()).toHaveAttribute('data-indeterminate', 'true')
       expect(getCheckedRowCount()).toBe(testData.length - 1)
 
       await userEvent.click(getHeaderCheckbox())
@@ -211,6 +217,7 @@ describe('DataTable Component', () => {
 
       await userEvent.click(getHeaderCheckbox())
       expect(getHeaderWrapper()).toHaveAttribute('data-checked', 'false')
+      expect(getHeaderWrapper()).toHaveAttribute('data-indeterminate', 'false')
       expect(getCheckedRowCount()).toBe(0)
     })
   })
