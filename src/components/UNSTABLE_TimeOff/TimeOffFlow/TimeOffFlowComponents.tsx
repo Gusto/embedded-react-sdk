@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { PolicyList } from '../PolicyList/PolicyList'
 import { PolicyTypeSelector } from '../PolicyTypeSelector/PolicyTypeSelector'
-import { PolicyDetailsForm } from '../PolicyDetailsForm/PolicyDetailsForm'
+import { PolicyConfigurationForm } from '../TimeOffManagement/PolicyConfigurationForm'
 import { PolicySettings } from '../PolicySettings/PolicySettings'
 import { AddEmployeesToPolicy } from '../AddEmployeesToPolicy/AddEmployeesToPolicy'
 import { ViewPolicyDetails } from '../ViewPolicyDetails/ViewPolicyDetails'
@@ -82,7 +82,7 @@ export function PolicyDetailsFormContextual() {
           {alert.content}
         </Alert>
       ))}
-      <PolicyDetailsForm
+      <PolicyConfigurationForm
         onEvent={onEvent}
         companyId={ensureRequired(companyId)}
         policyType={ensureRequired(policyType) as 'sick' | 'vacation'}
