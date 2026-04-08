@@ -52,10 +52,7 @@ export function DocumentsView({ forms = [], isLoading = false, onViewForm }: Doc
       key: 'actions',
       title: t('documents.columns.actions'),
       render: (form: Form) => (
-        <Components.Button
-          variant="tertiary"
-          onClick={() => onViewForm?.(form.uuid)}
-        >
+        <Components.Button variant="tertiary" onClick={() => onViewForm?.(form.uuid)}>
           {t('documents.viewCta')}
         </Components.Button>
       ),

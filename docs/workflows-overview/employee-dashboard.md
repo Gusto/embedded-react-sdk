@@ -13,37 +13,32 @@ The Employee Dashboard provides a comprehensive view of employee information org
 import { Employee } from '@gusto/embedded-react-sdk'
 
 function MyApp() {
-  return (
-    <Employee.DashboardFlow
-      employeeId="employee-id"
-      onEvent={() => {}}
-    />
-  )
+  return <Employee.DashboardFlow employeeId="employee-id" onEvent={() => {}} />
 }
 ```
 
 #### Props
 
-| Name                | Type     | Description                                                     |
-| ------------------- | -------- | --------------------------------------------------------------- |
-| employeeId Required | string   | The employee identifier.                                        |
-| onEvent Required    | function | See events table for each subcomponent to see available events. |
-| dictionary          | object   | Optional translations for component text.                       |
-| FallbackComponent   | React.ComponentType | Optional custom error fallback component. |
+| Name                | Type                | Description                                                     |
+| ------------------- | ------------------- | --------------------------------------------------------------- |
+| employeeId Required | string              | The employee identifier.                                        |
+| onEvent Required    | function            | See events table for each subcomponent to see available events. |
+| dictionary          | object              | Optional translations for component text.                       |
+| FallbackComponent   | React.ComponentType | Optional custom error fallback component.                       |
 
 #### Events
 
-| Event type                        | Description                                         | Data                                                    |
-| --------------------------------- | --------------------------------------------------- | ------------------------------------------------------- |
-| `employee/update`                 | Fired when editing basic details                    | { employeeId: string }                                  |
-| `employee/addresses/home`         | Fired when managing home address                    | { employeeId: string }                                  |
-| `employee/addresses/work`         | Fired when managing work address                    | { employeeId: string }                                  |
-| `employee/compensations/update`   | Fired when editing compensation                     | { employeeId: string, job: Job }                        |
-| `employee/bankAccount/create`     | Fired when adding a bank account                    | { employeeId: string }                                  |
-| `employee/deductions/add`         | Fired when adding a deduction                       | { employeeId: string }                                  |
-| `employee/federalTaxes/edit`      | Fired when editing federal taxes                    | { employeeId: string, federalTaxes: EmployeeFederalTax }|
-| `employee/stateTaxes/edit`        | Fired when editing state taxes                      | { employeeId: string, state: string }                   |
-| `employee/forms/view`             | Fired when viewing a form                           | { employeeId: string, formUuid: string }                |
+| Event type                      | Description                      | Data                                                     |
+| ------------------------------- | -------------------------------- | -------------------------------------------------------- |
+| `employee/update`               | Fired when editing basic details | { employeeId: string }                                   |
+| `employee/addresses/home`       | Fired when managing home address | { employeeId: string }                                   |
+| `employee/addresses/work`       | Fired when managing work address | { employeeId: string }                                   |
+| `employee/compensations/update` | Fired when editing compensation  | { employeeId: string, job: Job }                         |
+| `employee/bankAccount/create`   | Fired when adding a bank account | { employeeId: string }                                   |
+| `employee/deductions/add`       | Fired when adding a deduction    | { employeeId: string }                                   |
+| `employee/federalTaxes/edit`    | Fired when editing federal taxes | { employeeId: string, federalTaxes: EmployeeFederalTax } |
+| `employee/stateTaxes/edit`      | Fired when editing state taxes   | { employeeId: string, state: string }                    |
+| `employee/forms/view`           | Fired when viewing a form        | { employeeId: string, formUuid: string }                 |
 
 ## Dashboard Tabs
 
@@ -58,6 +53,7 @@ Displays core employee information:
 - **Personal email**: Employee's personal email address
 
 **Address Information:**
+
 - **Home address**: Current home address with "Manage" action
 - **Work address**: Current work location with "Manage" action
 
@@ -68,6 +64,7 @@ All fields are read-only with "Edit" or "Manage" CTAs to navigate to editing flo
 Displays employment and payment information organized into four sections:
 
 **Compensation:**
+
 - Job title
 - Employment type (Salaried, Hourly, etc.)
 - Wage/salary
@@ -75,18 +72,21 @@ Displays employment and payment information organized into four sections:
 - "Edit" CTA to modify compensation
 
 **Payment:**
+
 - Bank accounts list (if any)
 - Routing number, account type, and nickname for each account
 - "Add bank account" CTA
 - Supports pagination for multiple accounts
 
 **Deductions:**
+
 - List of active garnishments and deductions
 - Deduction name, amount to withhold, frequency, and recurring status
 - "Add deduction" CTA
 - Supports pagination for multiple deductions
 
 **Paystubs:**
+
 - Historical paystub records
 - Pay date, check amount, and gross pay for each paystub
 - Supports pagination for paystub history
@@ -96,6 +96,7 @@ Displays employment and payment information organized into four sections:
 Displays tax withholding information in two sections:
 
 **Federal Taxes:**
+
 - Filing status
 - Multiple jobs indicator (Yes/No)
 - Dependents and other credits amount
@@ -107,6 +108,7 @@ Displays tax withholding information in two sections:
 > **Note**: The dashboard supports both pre-2020 and Rev 2020 W4 versions. Fields displayed vary based on the W4 version on file.
 
 **State Taxes:**
+
 - Multiple state tax records (if applicable)
 - State-specific tax questions and answers
 - Dynamic questions based on state requirements
@@ -132,12 +134,7 @@ The Dashboard component can be used directly without the Flow wrapper for embedd
 import { Employee } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return (
-    <Employee.Dashboard
-      employeeId="employee-id"
-      onEvent={() => {}}
-    />
-  )
+  return <Employee.Dashboard employeeId="employee-id" onEvent={() => {}} />
 }
 ```
 
@@ -169,11 +166,13 @@ Each section gracefully handles missing data:
 The Dashboard component uses the following Gusto API endpoints:
 
 ### Basic Details
+
 - `GET /v1/employees/{employee_id}` - Employee information
 - `GET /v1/employees/{employee_id}/home_addresses` - Home address
 - `GET /v1/employees/{employee_id}/work_addresses` - Work address
 
 ### Job and Pay
+
 - `GET /v1/employees/{employee_id}/jobs` - Job information
 - `GET /v1/employees/{employee_id}/payment_method` - Payment method
 - `GET /v1/employees/{employee_id}/bank_accounts` - Bank accounts
@@ -181,10 +180,12 @@ The Dashboard component uses the following Gusto API endpoints:
 - `GET /v1/employees/{employeeUuid}/pay_stubs` - Paystubs
 
 ### Taxes
+
 - `GET /v1/employees/{employeeUuid}/federal_taxes` - Federal tax withholding
 - `GET /v1/employees/{employeeUuid}/state_taxes` - State tax withholding
 
 ### Documents
+
 - `GET /v1/employees/{employee_id}/forms` - Employee forms
 
 For detailed API documentation, see the [Gusto API Reference](https://docs.gusto.com/embedded-payroll/reference).
@@ -194,6 +195,7 @@ For detailed API documentation, see the [Gusto API Reference](https://docs.gusto
 ### Error Handling
 
 The Dashboard component is wrapped with `BaseBoundaries` which provides:
+
 - React Error Boundary for runtime errors
 - Suspense boundary for async data loading
 - Consistent error display with optional custom fallback
@@ -237,7 +239,7 @@ Alternatively, you can import and use the `componentEvents` constants for type s
 ```jsx
 import { componentEvents } from '@gusto/embedded-react-sdk'
 
-<Employee.DashboardFlow
+;<Employee.DashboardFlow
   employeeId="employee-id"
   onEvent={(eventType, data) => {
     switch (eventType) {
@@ -281,7 +283,7 @@ The Dashboard uses the `ComponentsContext` pattern, allowing partners to overrid
 ```jsx
 import { GustoProvider } from '@gusto/embedded-react-sdk'
 
-<GustoProvider
+;<GustoProvider
   config={config}
   components={{
     Heading: MyCustomHeading,

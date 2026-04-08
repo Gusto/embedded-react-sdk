@@ -22,9 +22,7 @@ type QueryWithRefetch = Pick<UseQueryResult, 'error' | 'refetch'>
  * ```
  */
 export function buildQueryErrorHandling(queries: QueryWithRefetch[]): HookErrorHandling {
-  const errors = queries
-    .filter(q => q.error != null)
-    .map(q => normalizeToSDKError(q.error))
+  const errors = queries.filter(q => q.error != null).map(q => normalizeToSDKError(q.error))
 
   const retryQueries = () => {
     queries.filter(q => q.error != null).forEach(q => void q.refetch())

@@ -49,11 +49,7 @@ export function useEmployeeBasicDetails({
     employeeQuery.isFetching || addressesQuery.isFetching || workAddressesQuery.isFetching
   const isLoading = !employee && isPending
 
-  const errorHandling = buildQueryErrorHandling([
-    employeeQuery,
-    addressesQuery,
-    workAddressesQuery,
-  ])
+  const errorHandling = buildQueryErrorHandling([employeeQuery, addressesQuery, workAddressesQuery])
 
   if (isLoading) {
     return {

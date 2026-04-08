@@ -321,9 +321,9 @@ describe('useEmployeeList', () => {
 
       if (!result.current.isLoading) {
         expect(result.current.errorHandling).toBeDefined()
-        expect(result.current.errorHandling?.errors).toEqual([])
-        expect(result.current.errorHandling?.retryQueries).toBeDefined()
-        expect(result.current.errorHandling?.clearSubmitError).toBeDefined()
+        expect(result.current.errorHandling.errors).toEqual([])
+        expect(result.current.errorHandling.retryQueries).toBeDefined()
+        expect(result.current.errorHandling.clearSubmitError).toBeDefined()
       }
     })
   })
