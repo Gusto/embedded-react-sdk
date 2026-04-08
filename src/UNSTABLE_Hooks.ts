@@ -39,7 +39,6 @@ export {
   composeSubmitHandler,
   useFieldErrorMessage,
   withOptions,
-  deriveFieldsMetadata,
   collectErrors,
 
   // Generic hook field components
