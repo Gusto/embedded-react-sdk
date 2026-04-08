@@ -33,11 +33,16 @@ export function handleSignEmployeeForm(resolver: HttpResponseResolver) {
   return http.put(`${API_BASE_URL}/v1/employees/:employee_id/forms/:form_id/sign`, resolver)
 }
 
+export function handleGetEmployeeForms(resolver: HttpResponseResolver) {
+  return http.get(`${API_BASE_URL}/v1/employees/:employee_id/forms`, resolver)
+}
+
 const getEmployeeForm = handleGetEmployeeForm(() => HttpResponse.json(i9Form))
 const getEmployeeFormPdf = handleGetEmployeeFormPdf(() => HttpResponse.json(i9FormPdf))
 const signEmployeeForm = handleSignEmployeeForm(() =>
   HttpResponse.json({ ...i9Form, requires_signing: false }),
 )
+const getEmployeeForms = handleGetEmployeeForms(() => HttpResponse.json([]))
 
 export { i9Form, i9FormPdf }
-export default [getEmployeeForm, getEmployeeFormPdf, signEmployeeForm]
+export default [getEmployeeForm, getEmployeeFormPdf, signEmployeeForm, getEmployeeForms]
