@@ -49,7 +49,7 @@ export function BasicDetailsView({
           <Flex justifyContent="space-between" alignItems="center">
             <Components.Heading as="h3">{t('basicDetails.title')}</Components.Heading>
             <Components.Button variant="secondary" onClick={onEditBasicDetails}>
-              {t('basicDetails.edit')}
+              {t('basicDetails.editCta')}
             </Components.Button>
           </Flex>
 
@@ -107,7 +107,7 @@ export function BasicDetailsView({
           <Flex justifyContent="space-between" alignItems="center">
             <Components.Heading as="h3">{t('homeAddress.title')}</Components.Heading>
             <Components.Button variant="secondary" onClick={onManageHomeAddress}>
-              {t('homeAddress.manage')}
+              {t('homeAddress.manageCta')}
             </Components.Button>
           </Flex>
 
@@ -130,7 +130,7 @@ export function BasicDetailsView({
           <Flex justifyContent="space-between" alignItems="center">
             <Components.Heading as="h3">{t('workAddress.title')}</Components.Heading>
             <Components.Button variant="secondary" onClick={onManageWorkAddress}>
-              {t('workAddress.manage')}
+              {t('workAddress.manageCta')}
             </Components.Button>
           </Flex>
 

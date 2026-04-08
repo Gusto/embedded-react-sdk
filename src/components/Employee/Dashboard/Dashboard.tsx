@@ -45,12 +45,8 @@ function DashboardRoot({ companyId, employeeId, dictionary, onEvent }: Dashboard
     formList,
   } = dashboard.data
 
-  const {
-    isLoadingBasicDetails,
-    isLoadingJobAndPay,
-    isLoadingTaxes,
-    isLoadingDocuments,
-  } = dashboard.status
+  const { isLoadingBasicDetails, isLoadingJobAndPay, isLoadingTaxes, isLoadingDocuments } =
+    dashboard.status
 
   const handleEditBasicDetails = useCallback(() => {
     onEvent(componentEvents.EMPLOYEE_UPDATE, { employeeId })
@@ -123,8 +119,6 @@ function DashboardRoot({ companyId, employeeId, dictionary, onEvent }: Dashboard
   return (
     <BaseLayout>
       <Flex flexDirection="column" gap={32}>
-        <Components.Heading as="h2">{t('title')}</Components.Heading>
-
         <Components.Tabs
           tabs={tabs}
           selectedId={selectedTab}
@@ -147,19 +141,19 @@ function DashboardRoot({ companyId, employeeId, dictionary, onEvent }: Dashboard
             />
           )}
 
-                {selectedTab === 'jobAndPay' && (
-                  <JobAndPayView
-                    job={primaryJob}
-                    paymentMethod={employeePaymentMethod}
-                    bankAccounts={bankAccounts}
-                    garnishments={garnishmentList}
-                    payStubs={payStubs}
-                    isLoading={isLoadingJobAndPay}
-                    onEditCompensation={handleEditCompensation}
-                    onAddBankAccount={handleAddBankAccount}
-                    onAddDeduction={handleAddDeduction}
-                  />
-                )}
+          {selectedTab === 'jobAndPay' && (
+            <JobAndPayView
+              job={primaryJob}
+              paymentMethod={employeePaymentMethod}
+              bankAccounts={bankAccounts}
+              garnishments={garnishmentList}
+              payStubs={payStubs}
+              isLoading={isLoadingJobAndPay}
+              onEditCompensation={handleEditCompensation}
+              onAddBankAccount={handleAddBankAccount}
+              onAddDeduction={handleAddDeduction}
+            />
+          )}
 
           {selectedTab === 'taxes' && (
             <TaxesView
@@ -171,13 +165,13 @@ function DashboardRoot({ companyId, employeeId, dictionary, onEvent }: Dashboard
             />
           )}
 
-                {selectedTab === 'documents' && (
-                  <DocumentsView
-                    forms={formList}
-                    isLoading={isLoadingDocuments}
-                    onViewForm={handleViewForm}
-                  />
-                )}
+          {selectedTab === 'documents' && (
+            <DocumentsView
+              forms={formList}
+              isLoading={isLoadingDocuments}
+              onViewForm={handleViewForm}
+            />
+          )}
         </Flex>
       </Flex>
     </BaseLayout>

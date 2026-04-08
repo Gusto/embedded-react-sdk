@@ -72,7 +72,7 @@ function ManagementEmployeeListRoot({
   }
 
   return (
-    <BaseLayout error={employeeList.errorHandling.errors}>
+    <BaseLayout error={employeeList.errorHandling?.errors}>
       <ManagementEmployeeListView
         selectedTab={selectedTab}
         onTabChange={handleTabChange}

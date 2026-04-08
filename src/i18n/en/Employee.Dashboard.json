@@ -9,7 +9,7 @@
   },
   "basicDetails": {
     "title": "Basic details",
-    "edit": "Edit",
+    "editCta": "Edit",
     "legalName": "Legal name",
     "startDate": "Start date",
     "socialSecurityNumber": "Social security number",
@@ -18,20 +18,20 @@
   },
   "homeAddress": {
     "title": "Home address",
-    "manage": "Manage",
+    "manageCta": "Manage",
     "currentAddress": "Current address",
     "noAddress": "No home address on file"
   },
   "workAddress": {
     "title": "Work address",
-    "manage": "Manage",
+    "manageCta": "Manage",
     "currentAddress": "Current address",
     "noAddress": "No work address on file"
   },
   "jobAndPay": {
     "compensation": {
       "title": "Compensation",
-      "edit": "Edit",
+      "editCta": "Edit",
       "jobTitle": "Job title",
       "type": "Type",
       "wage": "Wage",
@@ -39,12 +39,11 @@
     },
     "payment": {
       "title": "Payment",
-      "addBankAccount": "Add bank account",
+      "addBankAccountCta": "Add bank account",
       "listLabel": "List of bank accounts",
       "nickname": "Nickname",
       "routingNumber": "Routing number",
       "accountType": "Account type",
-      "noPaymentMethod": "No payment method on file",
       "emptyState": {
         "title": "No bank accounts",
         "description": "Bank accounts will appear here once added"
@@ -52,7 +51,7 @@
     },
     "deductions": {
       "title": "Deductions",
-      "addDeduction": "Add deduction",
+      "addDeductionCta": "Add deduction",
       "listLabel": "List of deductions",
       "deduction": "Deduction",
       "frequency": "Frequency",
@@ -79,7 +78,7 @@
   "taxes": {
     "federal": {
       "title": "Federal taxes",
-      "edit": "Edit",
+      "editCta": "Edit",
       "filingStatus": "Filing status",
       "multipleJobs": "Multiple jobs",
       "dependentsAndOtherCredits": "Dependents and other credits",
@@ -89,14 +88,14 @@
     },
     "state": {
       "title": "State taxes",
-      "edit": "Edit",
+      "editCta": "Edit",
       "noStateTaxes": "No state taxes on file"
     }
   },
   "documents": {
     "title": "Forms",
     "listLabel": "List of employee forms",
-    "view": "View",
+    "viewCta": "View",
     "columns": {
       "title": "Form",
       "year": "Year",

@@ -56,7 +56,7 @@ export function DocumentsView({ forms = [], isLoading = false, onViewForm }: Doc
           variant="tertiary"
           onClick={() => onViewForm?.(form.uuid)}
         >
-          {t('documents.view')}
+          {t('documents.viewCta')}
         </Components.Button>
       ),
     },

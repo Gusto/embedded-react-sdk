@@ -86,7 +86,7 @@ export function TaxesView({
           <Flex justifyContent="space-between" alignItems="center">
             <Components.Heading as="h3">{t('taxes.federal.title')}</Components.Heading>
             <Components.Button variant="secondary" onClick={onEditFederalTaxes}>
-              {t('taxes.federal.edit')}
+              {t('taxes.federal.editCta')}
             </Components.Button>
           </Flex>
 
@@ -176,7 +176,7 @@ export function TaxesView({
                       variant="secondary"
                       onClick={() => onEditStateTaxes?.(stateTax.state || '')}
                     >
-                      {t('taxes.state.edit')}
+                      {t('taxes.state.editCta')}
                     </Components.Button>
                   </Flex>
 

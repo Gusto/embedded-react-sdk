@@ -162,7 +162,7 @@ export function JobAndPayView({
           <Flex justifyContent="space-between" alignItems="center">
             <Components.Heading as="h3">{t('jobAndPay.compensation.title')}</Components.Heading>
             <Components.Button variant="secondary" onClick={onEditCompensation}>
-              {t('jobAndPay.compensation.edit')}
+              {t('jobAndPay.compensation.editCta')}
             </Components.Button>
           </Flex>
 
@@ -213,7 +213,7 @@ export function JobAndPayView({
           <Flex justifyContent="space-between" alignItems="center">
             <Components.Heading as="h3">{t('jobAndPay.payment.title')}</Components.Heading>
             <Components.Button variant="secondary" onClick={onAddBankAccount}>
-              {t('jobAndPay.payment.addBankAccount')}
+              {t('jobAndPay.payment.addBankAccountCta')}
             </Components.Button>
           </Flex>
 
@@ -226,7 +226,7 @@ export function JobAndPayView({
           <Flex justifyContent="space-between" alignItems="center">
             <Components.Heading as="h3">{t('jobAndPay.deductions.title')}</Components.Heading>
             <Components.Button variant="secondary" onClick={onAddDeduction}>
-              {t('jobAndPay.deductions.addDeduction')}
+              {t('jobAndPay.deductions.addDeductionCta')}
             </Components.Button>
           </Flex>
 
