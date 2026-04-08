@@ -2,26 +2,31 @@ import { useId } from 'react'
 import { useTranslation } from 'react-i18next'
 import styles from './DataCards.module.scss'
 import type { useDataViewPropReturn, SelectionMode } from '@/components/Common/DataView/useDataView'
+import { useSelectionState } from '@/components/Common/DataView/useSelectionState'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export type DataCardsProps<T> = {
+  label: string
   columns: useDataViewPropReturn<T>['columns']
   data: useDataViewPropReturn<T>['data']
   itemMenu?: useDataViewPropReturn<T>['itemMenu']
-  onSelect?: useDataViewPropReturn<T>['onSelect']
-  isItemSelected?: useDataViewPropReturn<T>['isItemSelected']
+  onSelect?: (item: T, checked: boolean) => void
+  onSelectAll?: (checked: boolean, visibleData: T[]) => void
+  getIsItemSelected?: (item: T) => boolean
   emptyState?: useDataViewPropReturn<T>['emptyState']
   footer?: useDataViewPropReturn<T>['footer']
   selectionMode?: SelectionMode
 }
 
 export const DataCards = <T,>({
+  label,
   data,
   columns,
   itemMenu,
   onSelect,
-  isItemSelected,
+  onSelectAll,
+  getIsItemSelected,
   emptyState,
   footer,
   selectionMode = 'multiple',
@@ -29,11 +34,12 @@ export const DataCards = <T,>({
   const Components = useComponentContext()
   const { t } = useTranslation('common')
   const radioGroupName = useId()
+  const { allSelected } = useSelectionState(data, getIsItemSelected)
 
   const renderAction = (item: T, index: number) => {
     if (!onSelect) return undefined
 
-    const isSelected = isItemSelected?.(item, index) ?? false
+    const isSelected = getIsItemSelected?.(item) ?? false
 
     if (selectionMode === 'single') {
       return (
@@ -62,50 +68,61 @@ export const DataCards = <T,>({
   }
 
   return (
-    <div role="list" data-testid="data-cards">
-      {data.length === 0 && emptyState && (
-        <div role="listitem">
-          <Components.Card>{emptyState()}</Components.Card>
+    <div data-testid="data-cards">
+      {onSelect && getIsItemSelected && selectionMode === 'multiple' && data.length > 0 && (
+        <div className={styles.selectAllRow}>
+          <Components.Checkbox
+            value={allSelected}
+            onChange={(checked: boolean) => onSelectAll?.(checked, data)}
+            label={t('card.selectAllRowsLabel')}
+          />
         </div>
       )}
-      {data.map((item, index) => (
-        <div role="listitem" key={index}>
-          <Components.Card menu={itemMenu && itemMenu(item)} action={renderAction(item, index)}>
-            {columns.map((column, colIndex) => (
-              <Flex key={colIndex} flexDirection="column" gap={0}>
-                {column.title && <h5 className={styles.columnTitle}>{column.title}</h5>}
-                <div className={styles.columnData}>
-                  {' '}
-                  {column.render ? column.render(item) : String(item[column.key as keyof T])}
-                </div>
-              </Flex>
-            ))}
-          </Components.Card>
-        </div>
-      ))}
-      {footer && (
-        <div role="listitem">
-          <Components.Card>
-            {(() => {
-              const footerContent = footer()
+      <div role="list" aria-label={label}>
+        {data.length === 0 && emptyState && (
+          <div role="listitem">
+            <Components.Card>{emptyState()}</Components.Card>
+          </div>
+        )}
+        {data.map((item, index) => (
+          <div role="listitem" key={index}>
+            <Components.Card menu={itemMenu && itemMenu(item)} action={renderAction(item, index)}>
+              {columns.map((column, colIndex) => (
+                <Flex key={colIndex} flexDirection="column" gap={0}>
+                  {column.title && <h5 className={styles.columnTitle}>{column.title}</h5>}
+                  <div className={styles.columnData}>
+                    {' '}
+                    {column.render ? column.render(item) : String(item[column.key as keyof T])}
+                  </div>
+                </Flex>
+              ))}
+            </Components.Card>
+          </div>
+        ))}
+        {footer && (
+          <div role="listitem">
+            <Components.Card>
+              {(() => {
+                const footerContent = footer()
 
-              return Object.entries(footerContent).map(([key, content]) => {
-                const columnIndex = key.startsWith('column-')
-                  ? parseInt(key.replace('column-', ''), 10)
-                  : -1
-                const columnTitle = columnIndex >= 0 ? columns[columnIndex]?.title : undefined
+                return Object.entries(footerContent).map(([key, content]) => {
+                  const columnIndex = key.startsWith('column-')
+                    ? parseInt(key.replace('column-', ''), 10)
+                    : -1
+                  const columnTitle = columnIndex >= 0 ? columns[columnIndex]?.title : undefined
 
-                return (
-                  <Flex key={key} flexDirection="column" gap={0}>
-                    {columnTitle && <h5 className={styles.columnTitle}>{columnTitle}</h5>}
-                    <div className={styles.footerItem}>{content}</div>
-                  </Flex>
-                )
-              })
-            })()}
-          </Components.Card>
-        </div>
-      )}
+                  return (
+                    <Flex key={key} flexDirection="column" gap={0}>
+                      {columnTitle && <h5 className={styles.columnTitle}>{columnTitle}</h5>}
+                      <div className={styles.footerItem}>{content}</div>
+                    </Flex>
+                  )
+                })
+              })()}
+            </Components.Card>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

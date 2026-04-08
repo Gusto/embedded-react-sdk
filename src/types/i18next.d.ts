@@ -3190,10 +3190,12 @@ export interface common{
 "table":{
 "selectRowHeader":string;
 "selectRowLabel":string;
+"selectAllRowsLabel":string;
 "actionsColumnHeader":string;
 };
 "card":{
 "selectRowLabel":string;
+"selectAllRowsLabel":string;
 };
 "signatoryTitles":{
 "owner":string;

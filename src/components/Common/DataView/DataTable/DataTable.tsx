@@ -1,6 +1,7 @@
 import { useId, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { useDataViewPropReturn, SelectionMode } from '../useDataView'
+import { useSelectionState } from '../useSelectionState'
 import type { TableData, TableRow, TableProps } from '../../UI/Table/TableTypes'
 import { VisuallyHidden } from '../../VisuallyHidden'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -11,7 +12,8 @@ export type DataTableProps<T> = {
   data: useDataViewPropReturn<T>['data']
   itemMenu?: useDataViewPropReturn<T>['itemMenu']
   onSelect?: useDataViewPropReturn<T>['onSelect']
-  isItemSelected?: useDataViewPropReturn<T>['isItemSelected']
+  onSelectAll?: (checked: boolean, visibleData: T[]) => void
+  getIsItemSelected?: (item: T) => boolean
   emptyState?: useDataViewPropReturn<T>['emptyState']
   footer?: useDataViewPropReturn<T>['footer']
   variant?: TableProps['variant']
@@ -40,7 +42,8 @@ export const DataTable = <T,>({
   columns,
   itemMenu,
   onSelect,
-  isItemSelected,
+  onSelectAll,
+  getIsItemSelected,
   emptyState,
   footer,
   variant,
@@ -50,13 +53,24 @@ export const DataTable = <T,>({
   const { t } = useTranslation('common')
   const radioGroupName = useId()
   const [selectedRadioIndex, setSelectedRadioIndex] = useState<number | null>(null)
+  const { allSelected } = useSelectionState(data, getIsItemSelected)
 
   const headers: TableData[] = [
     ...(onSelect
       ? [
           {
             key: 'select-header',
-            content: <VisuallyHidden>{t('table.selectRowHeader')}</VisuallyHidden>,
+            content:
+              selectionMode === 'multiple' && getIsItemSelected ? (
+                <Components.Checkbox
+                  value={allSelected}
+                  onChange={(checked: boolean) => onSelectAll?.(checked, data)}
+                  label={t('table.selectAllRowsLabel')}
+                  shouldVisuallyHideLabel
+                />
+              ) : (
+                <VisuallyHidden>{t('table.selectRowHeader')}</VisuallyHidden>
+              ),
           },
         ]
       : []),
@@ -81,7 +95,7 @@ export const DataTable = <T,>({
 
   const renderSelectionControl = (item: T, rowIndex: number) => {
     if (selectionMode === 'single') {
-      const isSelected = isItemSelected?.(item, rowIndex) ?? selectedRadioIndex === rowIndex
+      const isSelected = getIsItemSelected?.(item) ?? selectedRadioIndex === rowIndex
       return (
         <Components.Radio
           name={radioGroupName}
@@ -95,10 +109,9 @@ export const DataTable = <T,>({
       )
     }
 
-    const isSelected = isItemSelected?.(item, rowIndex) ?? false
     return (
       <Components.Checkbox
-        value={isSelected}
+        value={getIsItemSelected?.(item)}
         onChange={(checked: boolean) => {
           onSelect?.(item, checked)
         }}

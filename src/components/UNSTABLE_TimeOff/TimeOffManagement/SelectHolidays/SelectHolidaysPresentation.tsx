@@ -38,7 +38,7 @@ export function SelectHolidaysPresentation(props: SelectHolidaysPresentationProp
     ? {
         selectionMode: 'multiple' as const,
         onSelect: props.onSelectionChange,
-        isItemSelected: (item: HolidayItem) => props.selectedHolidayUuids.has(item.uuid),
+        getIsItemSelected: (item: HolidayItem) => props.selectedHolidayUuids.has(item.uuid),
       }
     : {}
 

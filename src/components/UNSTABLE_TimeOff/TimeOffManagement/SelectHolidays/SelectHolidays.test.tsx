@@ -158,8 +158,8 @@ describe('SelectHolidaysPresentation', () => {
       })
 
       const checkboxes = screen.getAllByRole('checkbox')
-      const firstCheckbox = checkboxes[0]!
-      await user.click(firstCheckbox)
+      const firstRowCheckbox = checkboxes[1]!
+      await user.click(firstRowCheckbox)
 
       expect(defaultProps.onSelectionChange).toHaveBeenCalledOnce()
       expect(defaultProps.onSelectionChange).toHaveBeenCalledWith(

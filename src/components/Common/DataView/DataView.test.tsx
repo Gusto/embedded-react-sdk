@@ -151,7 +151,7 @@ describe('DataView Component', () => {
             data={testData}
             columns={[...testColumns]}
             onSelect={onSelectMock}
-            isItemSelected={(item: MockData) => selectedIds.has(item.id)}
+            getIsItemSelected={(item: MockData) => selectedIds.has(item.id)}
             label="Test View"
           />
         </ComponentsProvider>
@@ -159,9 +159,10 @@ describe('DataView Component', () => {
     )
 
     const checkboxes = screen.getAllByRole('checkbox')
-    expect(checkboxes).toHaveLength(2)
+    // +1 for the header select-all checkbox
+    expect(checkboxes).toHaveLength(testData.length + 1)
 
-    await userEvent.click(checkboxes[0] as Element)
+    await userEvent.click(checkboxes[1] as Element)
     expect(onSelectMock).toHaveBeenLastCalledWith(testData[0], true)
 
     rerender(
@@ -171,14 +172,14 @@ describe('DataView Component', () => {
             data={testData}
             columns={[...testColumns]}
             onSelect={onSelectMock}
-            isItemSelected={(item: MockData) => selectedIds.has(item.id)}
+            getIsItemSelected={(item: MockData) => selectedIds.has(item.id)}
             label="Test View"
           />
         </ComponentsProvider>
       </ThemeProvider>,
     )
 
-    await userEvent.click(checkboxes[0] as Element)
+    await userEvent.click(checkboxes[1] as Element)
     expect(onSelectMock).toHaveBeenLastCalledWith(testData[0], false)
   })
 
