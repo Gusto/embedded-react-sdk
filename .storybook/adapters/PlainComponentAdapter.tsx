@@ -4,6 +4,7 @@ import type { TextAreaProps } from '@/components/Common/UI/TextArea/TextAreaType
 import type { NumberInputProps } from '@/components/Common/UI/NumberInput/NumberInputTypes'
 import type { CardProps } from '@/components/Common/UI/Card/CardTypes'
 import type { BoxProps } from '@/components/Common/UI/Box/BoxTypes'
+import type { BoxHeaderProps } from '@/components/Common/UI/BoxHeader/BoxHeaderTypes'
 import type { CheckboxGroupProps } from '@/components/Common/UI/CheckboxGroup/CheckboxGroupTypes'
 import type { ComboBoxProps } from '@/components/Common/UI/ComboBox/ComboBoxTypes'
 import type { MultiSelectComboBoxProps } from '@/components/Common/UI/MultiSelectComboBox/MultiSelectComboBoxTypes'
@@ -146,6 +147,26 @@ export const PlainComponentAdapter: ComponentsContextType = {
       {footer && <div className="box-footer">{footer}</div>}
     </div>
   ),
+
+  BoxHeader: ({ title, description, action, headingLevel = 'h3' }: BoxHeaderProps) => {
+    const HeadingTag = headingLevel
+    return (
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          gap: '16px',
+        }}
+      >
+        <div>
+          <HeadingTag>{title}</HeadingTag>
+          {description && <div>{description}</div>}
+        </div>
+        {action && <div>{action}</div>}
+      </div>
+    )
+  },
 
   TextInput: ({
     label,
@@ -1188,15 +1209,14 @@ export const PlainComponentAdapter: ComponentsContextType = {
     className,
     'aria-label': ariaLabel,
     emptyState,
-    variant,
+    isWithinBox,
     ...props
   }: TableProps) => {
-    const embeddedStyles =
-      variant === 'embedded'
-        ? { border: 'none', borderRadius: 0, boxShadow: 'none', background: 'transparent' }
-        : undefined
+    const withinBoxStyles: React.CSSProperties | undefined = isWithinBox
+      ? { border: 'none', borderRadius: 0, boxShadow: 'none', background: 'transparent' }
+      : undefined
     return (
-      <table className={className} aria-label={ariaLabel} style={embeddedStyles} {...props}>
+      <table className={className} aria-label={ariaLabel} style={withinBoxStyles} {...props}>
         <thead>
           <tr>
             {headers.map((header: TableData) => (
@@ -1740,7 +1760,12 @@ export const PlainComponentAdapter: ComponentsContextType = {
       </div>
     )
   },
-  DescriptionList: ({ items, className }: DescriptionListProps) => {
+  DescriptionList: ({
+    items,
+    layout = 'stacked',
+    showSeparators = true,
+    className,
+  }: DescriptionListProps) => {
     const renderTerms = (term: React.ReactNode | React.ReactNode[]) => {
       const terms = Array.isArray(term) ? term : [term]
       return terms.map((t, i) => <dt key={i}>{t}</dt>)
@@ -1751,10 +1776,25 @@ export const PlainComponentAdapter: ComponentsContextType = {
       return descriptions.map((d, i) => <dd key={i}>{d}</dd>)
     }
 
+    const itemStyle: React.CSSProperties =
+      layout === 'horizontal'
+        ? { display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: '16px' }
+        : {}
+
+    const separatorStyle: React.CSSProperties = showSeparators
+      ? { paddingBottom: '16px', marginBottom: '16px', borderBottom: '1px solid #e5e7eb' }
+      : {}
+
     return (
       <dl className={className}>
         {items.map((item, index) => (
-          <div key={index}>
+          <div
+            key={index}
+            style={{
+              ...itemStyle,
+              ...(index < items.length - 1 ? separatorStyle : {}),
+            }}
+          >
             {renderTerms(item.term)}
             {renderDescriptions(item.description)}
           </div>

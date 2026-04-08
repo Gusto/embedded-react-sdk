@@ -7,10 +7,3 @@ export interface BoxProps {
   withPadding?: boolean
   className?: string
 }
-
-/** @deprecated Use BoxProps with header/footer/children instead of compound subcomponents */
-export interface BoxSectionProps {
-  children: ReactNode
-  className?: string
-  variant?: 'default' | 'flush'
-}

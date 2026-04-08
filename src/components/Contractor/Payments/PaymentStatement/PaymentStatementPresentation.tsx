@@ -6,6 +6,7 @@ import type { ContractorPaymentReceipt } from '@gusto/embedded-api/models/compon
 import { getContractorDisplayName } from '../CreatePayment/helpers'
 import styles from './PaymentStatementPresentation.module.scss'
 import { DataView, Flex } from '@/components/Common'
+import type { DescriptionListItem } from '@/components/Common/UI/DescriptionList/DescriptionListTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 import { formatHoursDisplay } from '@/components/Payroll/helpers'
@@ -32,12 +33,12 @@ export const PaymentStatementPresentation = ({
   checkDate,
   paymentReceipt,
 }: PaymentStatementPresentationProps) => {
-  const { Text, Heading } = useComponentContext()
+  const Components = useComponentContext()
+  const { Text, Heading, Link } = Components
   useI18n('Contractor.Payments.PaymentStatement')
   const { t } = useTranslation('Contractor.Payments.PaymentStatement')
   const currencyFormatter = useNumberFormatter('currency')
   const { formatLongWithYear } = useDateFormatter()
-  const { Link } = useComponentContext()
 
   const contractorName = getContractorDisplayName(contractor)
   const isHourly = payment.wageType === 'Hourly'
@@ -146,34 +147,20 @@ export const PaymentStatementPresentation = ({
               </Flex>
             </Flex>
 
-            <div className={styles.receiptDetailsTable}>
-              <DataView
-                label={t('receipt.detailsLabel')}
-                variant="minimal"
-                breakAt="small"
-                breakpoints={{
-                  base: '0rem',
-                  small: '22rem',
-                }}
-                columns={[
-                  {
-                    title: '',
-                    render: (item: { label: string; value: string }) => (
-                      <Text size="sm" variant="supporting">
-                        {item.label}
-                      </Text>
-                    ),
-                  },
-                  {
-                    title: '',
-                    render: (item: { label: string; value: string }) => (
-                      <Text size="sm">{item.value}</Text>
-                    ),
-                  },
-                ]}
-                data={receiptDetailsConfig}
-              />
-            </div>
+            <Components.DescriptionList
+              layout="horizontal"
+              showSeparators={false}
+              items={receiptDetailsConfig.map(
+                ({ label, value }): DescriptionListItem => ({
+                  term: (
+                    <Text size="sm" variant="supporting">
+                      {label}
+                    </Text>
+                  ),
+                  description: <Text size="sm">{value}</Text>,
+                }),
+              )}
+            />
             <hr />
             <Flex flexDirection="column" alignItems="center" gap={12}>
               <Text size="sm" variant="supporting" className={styles.disclaimer}>

@@ -6,7 +6,7 @@ import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 
 export function DescriptionList(rawProps: DescriptionListProps) {
   const resolvedProps = applyMissingDefaults(rawProps, DescriptionListDefaults)
-  const { items, className } = resolvedProps
+  const { items, layout, showSeparators, className } = resolvedProps
 
   const renderTerms = (term: ReactNode | ReactNode[]) => {
     const terms = Array.isArray(term) ? term : [term]
@@ -19,7 +19,10 @@ export function DescriptionList(rawProps: DescriptionListProps) {
   }
 
   return (
-    <dl className={classNames(styles.root, className)}>
+    <dl
+      className={classNames(styles.root, showSeparators && styles.withSeparators, className)}
+      data-layout={layout}
+    >
       {items.map((item, index) => (
         <div key={index} className={styles.item}>
           {renderTerms(item.term)}

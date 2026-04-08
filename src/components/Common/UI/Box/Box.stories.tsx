@@ -1,7 +1,7 @@
 import type { StoryObj } from '@storybook/react-vite'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { Flex } from '@/components/Common/Flex'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
+import { Flex } from '@/components/Common/Flex'
 
 const BoxWrapper = () => {
   const Components = useComponentContext()
@@ -25,8 +25,40 @@ export const WithHeader: Story = {
   render: () => {
     const Components = useComponentContext()
     return (
-      <Components.Box header={<Components.Heading as="h3">Box Header</Components.Heading>}>
+      <Components.Box
+        header={
+          <Components.BoxHeader
+            title="Hello World"
+            description="This is a description of the box header."
+            action={
+              <Components.Button variant="secondary" onClick={() => {}}>
+                Do a thing
+              </Components.Button>
+            }
+          />
+        }
+      >
         <Components.Text>This is the main content area with padding.</Components.Text>
+      </Components.Box>
+    )
+  },
+}
+
+export const WithCustomHeader: Story = {
+  render: () => {
+    const Components = useComponentContext()
+    return (
+      <Components.Box
+        header={
+          <Flex flexDirection="column" gap={16}>
+            <Components.Heading as="h3">Hello world</Components.Heading>
+            <Components.Button variant="secondary" onClick={() => {}}>
+              Do a thing
+            </Components.Button>
+          </Flex>
+        }
+      >
+        This is content inside a box.
       </Components.Box>
     )
   },
@@ -55,18 +87,16 @@ export const WithAllSections: Story = {
     return (
       <Components.Box
         header={
-          <Flex flexDirection="row" gap={16} justifyContent="space-between" alignItems="center">
-            <Flex flexDirection="column" gap={4}>
-              <Components.Heading as="h3">Box Header</Components.Heading>
-              <Components.Text variant="supporting">
-                This is a super cool description of the box header.
-              </Components.Text>
-            </Flex>
-            <Components.Button variant="secondary" onClick={() => {}}>
-              <PlusCircleIcon />
-              Do a thing
-            </Components.Button>
-          </Flex>
+          <Components.BoxHeader
+            title="Box Header"
+            description="This is a super cool description of the box header."
+            action={
+              <Components.Button variant="secondary" onClick={() => {}}>
+                <PlusCircleIcon />
+                Do a thing
+              </Components.Button>
+            }
+          />
         }
         footer={
           <Components.Button variant="secondary" onClick={() => {}}>
@@ -121,7 +151,7 @@ export const WithEmbeddedTable: Story = {
       >
         <Components.Table
           aria-label="Team members"
-          variant="embedded"
+          isWithinBox
           headers={[
             { key: 'name', content: 'Name' },
             { key: 'role', content: 'Role' },

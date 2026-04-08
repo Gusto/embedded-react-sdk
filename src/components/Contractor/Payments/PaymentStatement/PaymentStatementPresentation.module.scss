@@ -31,37 +31,6 @@
   color: var(--g-colorBodyContent);
 }
 
-.receiptDetailsTable {
-  width: 100%;
-
-  :global([data-testid='data-view']) {
-    :global(thead) {
-      display: none;
-    }
-
-    :global(tbody tr) {
-      border-bottom: 1px solid var(--g-colorBodyAccent);
-
-      &:last-child {
-        border-bottom: none;
-      }
-    }
-
-    :global(td) {
-      padding: toRem(8) 0;
-
-      &:first-child {
-        width: 30%;
-        text-align: left;
-      }
-
-      &:last-child {
-        width: 70%;
-        text-align: right;
-      }
-    }
-  }
-}
 
 .disclaimer {
   text-align: left;
