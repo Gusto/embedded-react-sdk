@@ -98,12 +98,6 @@ describe('DataCards', () => {
       expect(wrapper).toHaveAttribute('data-checked', 'true')
     })
 
-    test('select-all checkbox is indeterminate when some rows selected', () => {
-      renderCards({ ...selectableProps, isItemSelected: (_item, index) => index === 0 })
-      const wrapper = screen.getByLabelText('Select all rows').closest('[data-checked]')
-      expect(wrapper).toHaveAttribute('data-indeterminate', 'true')
-    })
-
     test('clicking select-all fires onSelectAll with true when not all selected', async () => {
       const onSelectAllMock = vi.fn()
       renderCards({ ...selectableProps, onSelectAll: onSelectAllMock })

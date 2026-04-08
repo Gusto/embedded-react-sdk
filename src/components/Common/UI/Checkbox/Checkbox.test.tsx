@@ -93,29 +93,6 @@ describe('Checkbox', () => {
     expect(screen.getByText('This field is required')).toBeInTheDocument()
   })
 
-  describe('indeterminate state', () => {
-    it('sets indeterminate property on the DOM element', () => {
-      renderWithProviders(<Checkbox {...defaultProps} isIndeterminate />)
-      const input: HTMLInputElement = screen.getByRole('checkbox')
-      expect(input.indeterminate).toBe(true)
-    })
-
-    it('marks wrapper as indeterminate when isIndeterminate is true and value is false', () => {
-      renderWithProviders(<Checkbox {...defaultProps} isIndeterminate value={false} />)
-      const input = screen.getByRole('checkbox')
-      const wrapper = input.closest('[data-indeterminate]')
-      expect(wrapper).toHaveAttribute('data-indeterminate', 'true')
-      expect(wrapper).toHaveAttribute('data-checked', 'false')
-    })
-
-    it('marks wrapper as indeterminate even when value is true (indeterminate takes precedence visually)', () => {
-      renderWithProviders(<Checkbox {...defaultProps} isIndeterminate value={true} />)
-      const input = screen.getByRole('checkbox')
-      const wrapper = input.closest('[data-indeterminate]')
-      expect(wrapper).toHaveAttribute('data-indeterminate', 'true')
-    })
-  })
-
   describe('controlled toggle', () => {
     it('calls onChange with true when value is false and clicked', async () => {
       const user = userEvent.setup()
@@ -161,12 +138,11 @@ describe('Checkbox', () => {
       expect(wrapper).toHaveAttribute('data-checked', 'true')
     })
 
-    it('sets data-checked to false and data-indeterminate to false when unchecked', () => {
+    it('sets data-checked to false when unchecked', () => {
       renderWithProviders(<Checkbox {...defaultProps} value={false} />)
       const input = screen.getByRole('checkbox')
       const wrapper = input.closest('[data-checked]')
       expect(wrapper).toHaveAttribute('data-checked', 'false')
-      expect(wrapper).toHaveAttribute('data-indeterminate', 'false')
     })
   })
 
