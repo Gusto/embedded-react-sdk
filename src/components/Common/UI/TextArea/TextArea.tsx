@@ -63,7 +63,7 @@ export function TextArea(rawProps: TextAreaProps) {
             id={inputId}
             ref={inputRef}
             name={name}
-            value={value}
+            value={value ?? ''}
             placeholder={placeholder}
             rows={rows}
             cols={cols}
