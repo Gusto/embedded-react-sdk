@@ -53,7 +53,7 @@ export const DataTable = <T,>({
   const { t } = useTranslation('common')
   const radioGroupName = useId()
   const [selectedRadioIndex, setSelectedRadioIndex] = useState<number | null>(null)
-  const { allSelected, isIndeterminate } = useSelectionState(data, isItemSelected)
+  const { allSelected } = useSelectionState(data, isItemSelected)
 
   if (
     process.env.NODE_ENV !== 'production' &&
@@ -77,7 +77,6 @@ export const DataTable = <T,>({
               selectionMode === 'multiple' && isItemSelected ? (
                 <Components.Checkbox
                   value={allSelected}
-                  isIndeterminate={isIndeterminate}
                   onChange={(checked: boolean) => onSelectAll?.(checked, data)}
                   label={t('table.selectAllRowsLabel')}
                   shouldVisuallyHideLabel

@@ -8,7 +8,6 @@
 }
 
 .checkbox {
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -25,17 +24,6 @@
   fill: currentColor;
   transition: all var(--g-transitionDuration);
   opacity: 0;
-}
-
-.indeterminateCheck {
-  color: var(--g-colorPrimaryContent);
-  fill: currentColor;
-  transition: all var(--g-transitionDuration);
-  opacity: 0;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 }
 
 .checkboxInput {
@@ -64,22 +52,12 @@
   }
 }
 
-.indeterminate .checkbox {
-  border-color: var(--g-colorPrimary);
-  background: var(--g-colorPrimary);
-
-  .indeterminateCheck {
-    opacity: 1;
-  }
-}
-
 .checkboxInput:hover:not(:disabled) + .checkbox {
-  .checkboxWrapper:not(.checked):not(.indeterminate) & {
+  .checkboxWrapper:not(.checked) & {
     border-color: var(--g-colorBodyContent);
   }
 
-  .checked &,
-  .indeterminate & {
+  .checked & {
     background: var(--g-colorPrimaryAccent);
     border-color: var(--g-colorPrimaryAccent);
   }
@@ -101,12 +79,3 @@
   }
 }
 
-.disabled.indeterminate .checkbox {
-  background: var(--g-colorBodyAccent);
-
-  .indeterminateCheck {
-    color: var(--g-colorSecondaryContent);
-    fill: var(--g-colorSecondaryContent);
-    opacity: 0.5;
-  }
-}
