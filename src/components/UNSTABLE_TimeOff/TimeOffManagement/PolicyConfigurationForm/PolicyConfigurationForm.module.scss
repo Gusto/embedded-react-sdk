@@ -1,0 +1,13 @@
+.divider {
+  border: none;
+  border-top: 1px solid var(--g-inputBorderColor);
+  margin: toRem(4) 0;
+}
+
+.narrowInput {
+  max-width: toRem(320);
+}
+
+.dateSelect {
+  max-width: toRem(120);
+}
