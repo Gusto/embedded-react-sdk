@@ -1,5 +1,5 @@
 import { fn } from 'storybook/test'
-import { SelectPolicyTypePresentation } from './SelectPolicyTypePresentation'
+import { PolicyTypeSelectorPresentation } from './PolicyTypeSelectorPresentation'
 import { useI18n } from '@/i18n'
 
 function I18nLoader({ children }: { children: React.ReactNode }) {
@@ -11,7 +11,7 @@ const onContinue = fn().mockName('onContinue')
 const onCancel = fn().mockName('onCancel')
 
 export default {
-  title: 'TimeOff/SelectPolicyType',
+  title: 'TimeOff/PolicyTypeSelector',
   decorators: [
     (Story: React.ComponentType) => (
       <I18nLoader>
@@ -22,11 +22,11 @@ export default {
 }
 
 export const Default = () => (
-  <SelectPolicyTypePresentation onContinue={onContinue} onCancel={onCancel} />
+  <PolicyTypeSelectorPresentation onContinue={onContinue} onCancel={onCancel} />
 )
 
 export const HolidayPaySelected = () => (
-  <SelectPolicyTypePresentation
+  <PolicyTypeSelectorPresentation
     onContinue={onContinue}
     onCancel={onCancel}
     defaultPolicyType="holiday"
@@ -34,7 +34,7 @@ export const HolidayPaySelected = () => (
 )
 
 export const TimeOffSelected = () => (
-  <SelectPolicyTypePresentation
+  <PolicyTypeSelectorPresentation
     onContinue={onContinue}
     onCancel={onCancel}
     defaultPolicyType="vacation"
@@ -42,7 +42,7 @@ export const TimeOffSelected = () => (
 )
 
 export const SickLeaveSelected = () => (
-  <SelectPolicyTypePresentation
+  <PolicyTypeSelectorPresentation
     onContinue={onContinue}
     onCancel={onCancel}
     defaultPolicyType="sick"
