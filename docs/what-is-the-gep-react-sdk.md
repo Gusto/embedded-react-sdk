@@ -1,6 +1,6 @@
 ---
 title: What is the GEP React SDK?
-order: 0
+sidebar_position: 0
 ---
 
 ## Introduction
@@ -25,9 +25,9 @@ import { Employee } from '@gusto/embedded-react-sdk'
 
 Unlike iframes, the SDK renders native React components inside your application. You control the look and feel through:
 
-- **[Theming](./theming/theming.md)** -- override CSS variables for colors, typography, spacing, and more
-- **[Component Adapters](./component-adapter/component-adapter.md)** -- swap SDK primitives for your own design system components
-- **[Composition](./integration-guide/composition.md)** -- rearrange, add, or remove sections within any workflow
+- **[Theming](./concepts/theming-and-customization.md)** -- override CSS variables for colors, typography, spacing, and more
+- **[Component Adapters](./guides/component-adapter.md)** -- swap SDK primitives for your own design system components
+- **[Composition](./concepts/composition.md)** -- rearrange, add, or remove sections within any workflow
 
 ### Event-driven integration
 
@@ -56,10 +56,8 @@ The SDK manages API calls, form validation, error handling, and state transition
 | **Business logic** | Included | Included | You implement |
 | **Framework** | React required | Any (iframe) | Any |
 
-For a deeper comparison, see [Build Pathways: SDK, Flows, and API](./deciding-to-build-with-the-sdk/build-pathways-sdk-flows-api.md).
-
 ## Next steps
 
-- **[Getting Started](./getting-started/getting-started.md)** -- install the SDK, configure the provider, and set up your proxy
-- **[Workflows Overview](./workflows-overview/workflows-overview.md)** -- see the available pre-built workflows
-- **[Integration Guide](./integration-guide/integration-guide.md)** -- learn about events, composition, theming, and more
+- **[Quickstart](./quickstart/quickstart.md)** -- install the SDK, configure the provider, and set up your proxy
+- **[Components Overview](./components/components.md)** -- see the available pre-built flows and blocks
+- **[Concepts](./concepts/concepts.md)** -- learn about events, composition, theming, and more

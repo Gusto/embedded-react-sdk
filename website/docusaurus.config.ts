@@ -105,7 +105,7 @@ const config: Config = {
           type: 'docSidebar',
           sidebarId: 'docs',
           position: 'left',
-          label: 'Guides',
+          label: 'Docs',
         },
         {
           type: 'docSidebar',
@@ -124,19 +124,20 @@ const config: Config = {
       style: 'dark',
       links: [
         {
-          title: 'Guides',
+          title: 'Get Started',
           items: [
             { label: 'What is the SDK?', to: '/docs/what-is-the-gep-react-sdk' },
-            { label: 'Getting Started', to: '/docs/getting-started/getting-started' },
-            { label: 'Integration Guide', to: '/docs/integration-guide/integration-guide' },
-            { label: 'Workflows', to: '/docs/workflows-overview/workflows-overview' },
+            { label: 'Quickstart', to: '/docs/quickstart/quickstart' },
+            { label: 'Concepts', to: '/docs/concepts/concepts' },
+            { label: 'Components', to: '/docs/components/components' },
           ],
         },
         {
-          title: 'Customization',
+          title: 'Guides',
           items: [
-            { label: 'Theming', to: '/docs/theming/theming' },
-            { label: 'Component Adapter', to: '/docs/component-adapter/component-adapter' },
+            { label: 'Theming', to: '/docs/concepts/theming-and-customization' },
+            { label: 'Component Adapter', to: '/docs/guides/component-adapter' },
+            { label: 'Observability', to: '/docs/guides/observability' },
             { label: 'Hooks (Experimental)', to: '/docs/hooks/hooks' },
           ],
         },

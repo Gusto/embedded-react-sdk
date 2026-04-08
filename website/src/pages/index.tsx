@@ -25,7 +25,7 @@ function PaletteIcon({ className }: { className?: string }) {
       <rect x="7" y="7" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.5" />
       <rect x="7" y="16" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.5" />
       <rect x="16" y="7" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.5" />
-      <rect x="16" y="16" width="5" height="5" rx="1" fill="currentColor" rx="1" />
+      <rect x="16" y="16" width="5" height="5" rx="1" fill="currentColor" />
     </svg>
   );
 }
@@ -108,7 +108,7 @@ function HeroSection() {
           top of the Gusto Embedded API.
         </p>
         <div className={styles.heroActions}>
-          <Link className={styles.heroPrimary} to="/docs/getting-started/getting-started">
+          <Link className={styles.heroPrimary} to="/docs/quickstart/quickstart">
             Get Started
           </Link>
           <Link className={styles.heroSecondary} to="/docs/what-is-the-gep-react-sdk">
@@ -147,16 +147,16 @@ function QuickLinksSection() {
       <div className={styles.quickLinksInner}>
         <h2 className={styles.quickLinksTitle}>Explore the SDK</h2>
         <div className={styles.quickLinksGrid}>
-          <Link to="/docs/workflows-overview/workflows-overview" className={styles.quickLinkCard}>
-            <h3>Workflows</h3>
+          <Link to="/docs/components/components" className={styles.quickLinkCard}>
+            <h3>Components</h3>
             <p>
-              Employee onboarding, payroll, contractor payments, and more.
+              Flows and blocks for onboarding, payroll, contractors, and more.
             </p>
           </Link>
-          <Link to="/docs/integration-guide/integration-guide" className={styles.quickLinkCard}>
-            <h3>Integration Guide</h3>
+          <Link to="/docs/concepts/concepts" className={styles.quickLinkCard}>
+            <h3>Concepts</h3>
             <p>
-              Events, composition, theming, routing, and error handling.
+              Events, composition, theming, authentication, and error handling.
             </p>
           </Link>
           <Link to="/docs/api/companies" className={styles.quickLinkCard}>
