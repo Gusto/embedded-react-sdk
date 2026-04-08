@@ -1,4 +1,5 @@
 import type { ChangeEvent } from 'react'
+import classNames from 'classnames'
 import { useFieldIds } from '../hooks/useFieldIds'
 import styles from './Checkbox.module.scss'
 import type { CheckboxProps } from './CheckboxTypes'
@@ -49,7 +50,13 @@ export const Checkbox = (rawProps: CheckboxProps) => {
       className={className}
       {...otherProps}
     >
-      <div className={styles.checkboxWrapper}>
+      <div
+        className={classNames(
+          styles.checkboxWrapper,
+          value && styles.checked,
+          isDisabled && styles.disabled,
+        )}
+      >
         <input
           type="checkbox"
           name={name}

@@ -20,7 +20,7 @@ export interface EmployeeTableProps<T extends EmployeeTableItem> {
 
   selectionMode?: SelectionMode
   onSelect?: (item: T, checked: boolean) => void
-  isItemSelected?: (item: T, index: number) => boolean
+  getIsItemSelected?: (item: T) => boolean
 
   itemMenu?: (item: T) => ReactNode
 

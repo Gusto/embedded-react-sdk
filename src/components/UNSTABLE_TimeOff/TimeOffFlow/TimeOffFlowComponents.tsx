@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { PolicyList } from '../PolicyList/PolicyList'
-import { SelectPolicyType } from '../TimeOffManagement/SelectPolicyType'
+import { PolicyTypeSelector } from '../PolicyTypeSelector/PolicyTypeSelector'
 import { PolicyDetailsForm } from '../PolicyDetailsForm/PolicyDetailsForm'
 import { PolicySettings } from '../PolicySettings/PolicySettings'
 import { AddEmployeesToPolicy } from '../AddEmployeesToPolicy/AddEmployeesToPolicy'
@@ -62,7 +62,7 @@ export function SelectPolicyTypeContextual() {
           {alert.content}
         </Alert>
       ))}
-      <SelectPolicyType
+      <PolicyTypeSelector
         onEvent={onEvent}
         companyId={ensureRequired(companyId)}
         defaultPolicyType={policyType}

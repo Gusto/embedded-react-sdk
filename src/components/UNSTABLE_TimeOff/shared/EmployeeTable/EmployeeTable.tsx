@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import type { EmployeeTableItem, EmployeeTableProps } from './EmployeeTableTypes'
 import styles from './EmployeeTable.module.scss'
 import { DataView, useDataView } from '@/components/Common'
+import type { useDataViewProp } from '@/components/Common/DataView/useDataView'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n/I18n'
 import { firstLastName } from '@/helpers/formattedStrings'
@@ -19,7 +20,7 @@ export function EmployeeTable<T extends EmployeeTableItem>({
   searchPlaceholder,
   selectionMode,
   onSelect,
-  isItemSelected,
+  getIsItemSelected,
   itemMenu,
   pagination,
   isFetching,
@@ -75,15 +76,13 @@ export function EmployeeTable<T extends EmployeeTableItem>({
   const dataViewProps = useDataView<T>({
     data,
     columns,
-    selectionMode,
-    onSelect,
-    isItemSelected,
     itemMenu,
     pagination,
     isFetching,
     emptyState: resolvedEmptyState,
     footer,
-  })
+    ...(onSelect && { selectionMode, onSelect, getIsItemSelected }),
+  } as useDataViewProp<T>)
 
   return (
     <div className={styles.root} data-has-menu={itemMenu ? true : undefined}>
