@@ -8,17 +8,17 @@ export default {
 const mockOnEvent = fn().mockName('onEvent')
 
 export const BasicDetails = () => (
-  <Dashboard companyId="test-company-123" employeeId="test-employee-456" onEvent={mockOnEvent} />
+  <Dashboard employeeId="test-employee-456" onEvent={mockOnEvent} />
 )
 
 export const JobAndPay = () => (
-  <Dashboard companyId="test-company-123" employeeId="test-employee-456" onEvent={mockOnEvent} />
+  <Dashboard employeeId="test-employee-456" onEvent={mockOnEvent} />
 )
 
 export const Taxes = () => (
-  <Dashboard companyId="test-company-123" employeeId="test-employee-456" onEvent={mockOnEvent} />
+  <Dashboard employeeId="test-employee-456" onEvent={mockOnEvent} />
 )
 
 export const Documents = () => (
-  <Dashboard companyId="test-company-123" employeeId="test-employee-456" onEvent={mockOnEvent} />
+  <Dashboard employeeId="test-employee-456" onEvent={mockOnEvent} />
 )

@@ -186,7 +186,11 @@ export function JobAndPayView({
                   {t('jobAndPay.compensation.type')}
                 </Components.Text>
                 <Components.Text>
-                  {job.paymentUnit === 'Hour' ? 'Salary/No overtime' : job.paymentUnit}
+                  {job.paymentUnit === 'Hour'
+                    ? t('jobAndPay.compensation.types.hourly')
+                    : job.paymentUnit === 'Salary' || job.paymentUnit === 'Year'
+                      ? t('jobAndPay.compensation.types.salary')
+                      : job.paymentUnit}
                 </Components.Text>
               </Flex>
             )}

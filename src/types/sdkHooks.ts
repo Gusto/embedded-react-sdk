@@ -59,7 +59,7 @@ export interface BaseHookReady {
   isLoading: false
   data: Record<string, unknown>
   status: Record<string, unknown>
-  errorHandling?: HookErrorHandling
+  errorHandling: HookErrorHandling
 }
 
 /** Base shape for form hooks. Individual hooks override `data`, `actions`, and `form`. */

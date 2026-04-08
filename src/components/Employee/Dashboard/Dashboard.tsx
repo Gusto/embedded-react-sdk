@@ -19,11 +19,10 @@ import { componentEvents } from '@/shared/constants'
 type DashboardTab = 'basicDetails' | 'jobAndPay' | 'taxes' | 'documents'
 
 export interface DashboardProps extends BaseComponentInterface<'Employee.Dashboard'> {
-  companyId: string
   employeeId: string
 }
 
-function DashboardRoot({ companyId, employeeId, dictionary, onEvent }: DashboardProps) {
+function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
   useI18n('Employee.Dashboard')
   useComponentDictionary('Employee.Dashboard', dictionary)
   const { t } = useTranslation('Employee.Dashboard')
@@ -35,9 +34,17 @@ function DashboardRoot({ companyId, employeeId, dictionary, onEvent }: Dashboard
   const taxes = useEmployeeTaxes({ employeeId })
   const forms = useEmployeeForms({ employeeId })
 
+  // Collect all errors from hooks
+  const allErrors = [
+    ...basicDetails.errorHandling.errors,
+    ...compensation.errorHandling.errors,
+    ...taxes.errorHandling.errors,
+    ...forms.errorHandling.errors,
+  ]
+
   // Show loading for initial data fetch
   if (basicDetails.isLoading || compensation.isLoading || taxes.isLoading || forms.isLoading) {
-    return <BaseLayout isLoading />
+    return <BaseLayout isLoading error={allErrors} />
   }
 
   const { employee, currentHomeAddress, currentWorkAddress } = basicDetails.data
@@ -124,7 +131,7 @@ function DashboardRoot({ companyId, employeeId, dictionary, onEvent }: Dashboard
   ]
 
   return (
-    <BaseLayout>
+    <BaseLayout error={allErrors}>
       <Flex flexDirection="column" gap={32}>
         <Components.Tabs
           tabs={tabs}

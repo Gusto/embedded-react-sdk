@@ -34,6 +34,10 @@
       "editCta": "Edit",
       "jobTitle": "Job title",
       "type": "Type",
+      "types": {
+        "hourly": "Hourly/Overtime eligible",
+        "salary": "Salary/No overtime"
+      },
       "wage": "Wage",
       "startDate": "Start date"
     },

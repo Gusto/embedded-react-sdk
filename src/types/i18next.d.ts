@@ -1298,6 +1298,10 @@ export interface EmployeeDashboard{
 "editCta":string;
 "jobTitle":string;
 "type":string;
+"types":{
+"hourly":string;
+"salary":string;
+};
 "wage":string;
 "startDate":string;
 };

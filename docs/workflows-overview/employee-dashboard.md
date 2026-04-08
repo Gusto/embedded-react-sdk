@@ -15,7 +15,6 @@ import { Employee } from '@gusto/embedded-react-sdk'
 function MyApp() {
   return (
     <Employee.DashboardFlow
-      companyId="your-company-id"
       employeeId="employee-id"
       onEvent={() => {}}
     />
@@ -27,7 +26,6 @@ function MyApp() {
 
 | Name                | Type     | Description                                                     |
 | ------------------- | -------- | --------------------------------------------------------------- |
-| companyId Required  | string   | The associated company identifier.                              |
 | employeeId Required | string   | The employee identifier.                                        |
 | onEvent Required    | function | See events table for each subcomponent to see available events. |
 | dictionary          | object   | Optional translations for component text.                       |
@@ -136,7 +134,6 @@ import { Employee } from '@gusto/embedded-react-sdk'
 function MyComponent() {
   return (
     <Employee.Dashboard
-      companyId="your-company-id"
       employeeId="employee-id"
       onEvent={() => {}}
     />
@@ -173,19 +170,19 @@ The Dashboard component uses the following Gusto API endpoints:
 
 ### Basic Details
 - `GET /v1/employees/{employee_id}` - Employee information
-- `GET /v1/employees/{employee_id}/home_address` - Home address
-- `GET /v1/employees/{employee_id}/work_address` - Work address
+- `GET /v1/employees/{employee_id}/home_addresses` - Home address
+- `GET /v1/employees/{employee_id}/work_addresses` - Work address
 
 ### Job and Pay
 - `GET /v1/employees/{employee_id}/jobs` - Job information
 - `GET /v1/employees/{employee_id}/payment_method` - Payment method
 - `GET /v1/employees/{employee_id}/bank_accounts` - Bank accounts
 - `GET /v1/employees/{employee_id}/garnishments` - Garnishments/deductions
-- `GET /v1/employees/{employee_uuid}/pay_stubs` - Paystubs
+- `GET /v1/employees/{employeeUuid}/pay_stubs` - Paystubs
 
 ### Taxes
-- `GET /v1/employees/{employee_id}/federal_taxes` - Federal tax withholding
-- `GET /v1/employees/{employee_id}/state_taxes` - State tax withholding
+- `GET /v1/employees/{employeeUuid}/federal_taxes` - Federal tax withholding
+- `GET /v1/employees/{employeeUuid}/state_taxes` - State tax withholding
 
 ### Documents
 - `GET /v1/employees/{employee_id}/forms` - Employee forms
@@ -205,7 +202,6 @@ To provide a custom error fallback:
 
 ```jsx
 <Employee.DashboardFlow
-  companyId="company-id"
   employeeId="employee-id"
   onEvent={() => {}}
   FallbackComponent={MyCustomErrorComponent}
@@ -217,18 +213,19 @@ To provide a custom error fallback:
 All interactive elements emit events through the `onEvent` callback. Use these events to navigate to editing flows or trigger other actions in your application:
 
 ```jsx
+import { componentEvents } from '@gusto/embedded-react-sdk'
+
 <Employee.DashboardFlow
-  companyId="company-id"
   employeeId="employee-id"
   onEvent={(eventType, data) => {
     switch (eventType) {
-      case 'EMPLOYEE_UPDATE':
+      case componentEvents.EMPLOYEE_UPDATE:
         // Navigate to employee edit form
         break
-      case 'EMPLOYEE_BANK_ACCOUNT_CREATE':
+      case componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATE:
         // Show bank account creation flow
         break
-      case 'EMPLOYEE_VIEW_FORM_TO_SIGN':
+      case componentEvents.EMPLOYEE_VIEW_FORM_TO_SIGN:
         // Open form viewer/signer
         break
       // Handle other events...
@@ -243,7 +240,6 @@ The Dashboard supports custom translations through the `dictionary` prop. Defaul
 
 ```jsx
 <Employee.DashboardFlow
-  companyId="company-id"
   employeeId="employee-id"
   onEvent={() => {}}
   dictionary={{
