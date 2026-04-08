@@ -20,22 +20,8 @@ import {
 } from '@/components/Common'
 import { Form as HtmlForm } from '@/components/Common/Form'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { useLocale } from '@/contexts/LocaleProvider/useLocale'
 import { useI18n } from '@/i18n'
-
-const MONTH_OPTIONS = [
-  { value: 1, label: 'January' },
-  { value: 2, label: 'February' },
-  { value: 3, label: 'March' },
-  { value: 4, label: 'April' },
-  { value: 5, label: 'May' },
-  { value: 6, label: 'June' },
-  { value: 7, label: 'July' },
-  { value: 8, label: 'August' },
-  { value: 9, label: 'September' },
-  { value: 10, label: 'October' },
-  { value: 11, label: 'November' },
-  { value: 12, label: 'December' },
-]
 
 const DAY_OPTIONS = Array.from({ length: 31 }, (_, i) => ({
   value: i + 1,
@@ -50,6 +36,15 @@ export function PolicyConfigurationFormPresentation({
   useI18n('Company.TimeOff.CreateTimeOffPolicy')
   const { t } = useTranslation('Company.TimeOff.CreateTimeOffPolicy')
   const { Heading, Text, Button } = useComponentContext()
+  const { locale } = useLocale()
+
+  const monthOptions = useMemo(() => {
+    const formatter = new Intl.DateTimeFormat(locale, { month: 'long' })
+    return Array.from({ length: 12 }, (_, i) => ({
+      value: i + 1,
+      label: formatter.format(new Date(2024, i)),
+    }))
+  }, [locale])
 
   const formMethods = useForm<PolicyConfigurationFormData>({
     defaultValues: {
@@ -216,7 +211,7 @@ export function PolicyConfigurationFormPresentation({
                       className={styles.dateSelect}
                       name="resetMonth"
                       label={t('policyDetails.monthLabel')}
-                      options={MONTH_OPTIONS}
+                      options={monthOptions}
                     />
                     <SelectField<number>
                       className={styles.dateSelect}
