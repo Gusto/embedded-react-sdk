@@ -70,24 +70,6 @@ export const DateRangePicker = ({
       aria-label={typeof label === 'string' ? label : undefined}
       className={styles.root}
     >
-      <Group className={styles.dateInputGroup}>
-        <div className={styles.dateInputWrapper}>
-          <span className={styles.dateInputLabel}>{startDateLabel}</span>
-          <DateInput slot="start" className={styles.dateInput}>
-            {segment => <DateSegment segment={segment} />}
-          </DateInput>
-        </div>
-        <span className={styles.rangeSeparator} aria-hidden="true">
-          –
-        </span>
-        <div className={styles.dateInputWrapper}>
-          <span className={styles.dateInputLabel}>{endDateLabel}</span>
-          <DateInput slot="end" className={styles.dateInput}>
-            {segment => <DateSegment segment={segment} />}
-          </DateInput>
-        </div>
-      </Group>
-
       <RangeCalendar className={styles.rangeCalendar}>
         <header className={styles.calendarHeader}>
           <AriaButton slot="previous" className={styles.calendarNavButton}>
@@ -98,6 +80,23 @@ export const DateRangePicker = ({
             <CaretRight aria-hidden />
           </AriaButton>
         </header>
+        <Group className={styles.dateInputGroup}>
+          <div className={styles.dateInputWrapper}>
+            <span className={styles.dateInputLabel}>{startDateLabel}</span>
+            <DateInput slot="start" className={styles.dateInput}>
+              {segment => <DateSegment segment={segment} />}
+            </DateInput>
+          </div>
+          <span className={styles.rangeSeparator} aria-hidden="true">
+            –
+          </span>
+          <div className={styles.dateInputWrapper}>
+            <span className={styles.dateInputLabel}>{endDateLabel}</span>
+            <DateInput slot="end" className={styles.dateInput}>
+              {segment => <DateSegment segment={segment} />}
+            </DateInput>
+          </div>
+        </Group>
         <CalendarGrid className={styles.calendarGrid}>
           {date => <CalendarCell date={date} className={styles.calendarCell} />}
         </CalendarGrid>

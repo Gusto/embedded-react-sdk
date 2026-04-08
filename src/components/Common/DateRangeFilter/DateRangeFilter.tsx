@@ -19,7 +19,9 @@ interface DateRangeFilterProps {
   startDateLabel: string
   endDateLabel: string
   applyLabel: string
+  cancelLabel: string
   resetLabel: string
+  selectDatesLabel: string
   triggerLabel: string
   isFilterActive: boolean
   maxEndDate?: Date
@@ -35,13 +37,15 @@ export const DateRangeFilter = ({
   startDateLabel,
   endDateLabel,
   applyLabel,
+  cancelLabel,
   resetLabel,
+  selectDatesLabel,
   triggerLabel,
   isFilterActive,
   maxEndDate,
   minStartDate,
 }: DateRangeFilterProps) => {
-  const { Button, ButtonIcon, DateRangePicker } = useComponentContext()
+  const { Button, DateRangePicker } = useComponentContext()
   const { container } = useTheme()
 
   const [isOpen, setIsOpen] = useState(false)
@@ -82,7 +86,7 @@ export const DateRangeFilter = ({
     return `${formatFilterDate(startDate)} – ${formatFilterDate(endDate)}`
   }, [isFilterActive, startDate, endDate])
 
-  const triggerButton = filterDateLabel ? (
+  const triggerButton = (
     <Button
       buttonRef={triggerRef}
       aria-label={triggerLabel}
@@ -93,19 +97,8 @@ export const DateRangeFilter = ({
       icon={<FilterFunnelIcon />}
       className={styles.triggerButton}
     >
-      {filterDateLabel}
+      {filterDateLabel ?? selectDatesLabel}
     </Button>
-  ) : (
-    <ButtonIcon
-      buttonRef={triggerRef}
-      aria-label={triggerLabel}
-      aria-haspopup="dialog"
-      aria-expanded={isOpen}
-      onClick={handleOpen}
-      variant="tertiary"
-    >
-      <FilterFunnelIcon />
-    </ButtonIcon>
   )
 
   return (
@@ -123,7 +116,7 @@ export const DateRangeFilter = ({
         offset={8}
         shouldUpdatePosition
       >
-        <Dialog aria-label={`${startDateLabel} – ${endDateLabel}`}>
+        <Dialog className={styles.dialog} aria-label={`${startDateLabel} – ${endDateLabel}`}>
           <div className={styles.popoverContent}>
             <DateRangePicker
               label={`${startDateLabel} – ${endDateLabel}`}
@@ -135,14 +128,21 @@ export const DateRangeFilter = ({
               minValue={minStartDate}
               maxValue={maxEndDate}
             />
+          </div>
 
-            <Flex gap={8} justifyContent="flex-end">
+          <div className={styles.popoverFooter}>
+            <Flex gap={8} justifyContent="space-between">
               <Button variant="tertiary" onClick={handleReset}>
                 {resetLabel}
               </Button>
-              <Button variant="primary" onClick={handleApply}>
-                {applyLabel}
-              </Button>
+              <Flex gap={8} justifyContent="flex-end">
+                <Button variant="secondary" onClick={handleClose}>
+                  {cancelLabel}
+                </Button>
+                <Button variant="primary" onClick={handleApply}>
+                  {applyLabel}
+                </Button>
+              </Flex>
             </Flex>
           </div>
         </Dialog>

@@ -13,7 +13,9 @@ const defaultProps = {
   startDateLabel: 'From',
   endDateLabel: 'To',
   applyLabel: 'Apply',
+  cancelLabel: 'Cancel',
   resetLabel: 'Reset',
+  selectDatesLabel: 'Select dates',
   triggerLabel: 'Filter by date',
   isFilterActive: false,
 }

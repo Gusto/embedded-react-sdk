@@ -5,10 +5,17 @@
   }
 }
 
+.dialog {
+  padding: 0;
+}
+
 .popoverContent {
   display: flex;
   flex-direction: column;
   gap: toRem(16);
-  margin-left: toRem(-14);
-  margin-right: toRem(-14);
+}
+
+.popoverFooter {
+  border-top: 1px solid var(--g-colorBorderSecondary);
+  padding: toRem(16);
 }
