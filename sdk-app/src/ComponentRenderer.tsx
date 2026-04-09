@@ -179,6 +179,15 @@ export function ComponentRenderer({ entities }: ComponentRendererProps) {
     }
   }
 
+  for (const prop of entry.additionalRequiredProps) {
+    if (!(prop in componentProps)) {
+      const entityValue = entities[prop as keyof EntityIds]
+      if (entityValue) {
+        componentProps[prop] = entityValue
+      }
+    }
+  }
+
   const missingAdditionalProps = entry.additionalRequiredProps.filter(
     prop =>
       !(prop in componentProps) ||

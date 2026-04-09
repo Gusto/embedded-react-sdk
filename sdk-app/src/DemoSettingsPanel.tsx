@@ -23,6 +23,7 @@ const ENTITY_FIELDS: { key: keyof EntityIds; label: string }[] = [
   { key: 'contractorId', label: 'Contractor ID' },
   { key: 'payrollId', label: 'Payroll ID' },
   { key: 'requestId', label: 'Request ID' },
+  { key: 'formId', label: 'Form ID' },
 ]
 
 export function DemoSettingsPanel({

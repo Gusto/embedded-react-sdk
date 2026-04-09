@@ -162,3 +162,25 @@ export {
   type Day1FieldProps,
   type Day2FieldProps,
 } from './hooks/usePayScheduleForm'
+
+export {
+  useSignCompanyForm,
+  SignCompanyForm,
+  SignCompanyFormErrorCodes,
+  createSignCompanyFormSchema,
+  type SignCompanyFormProps,
+  type SignCompanyFormSubmitCallbacks,
+  type SignCompanyFormOptionalFieldsToRequire,
+  type UseSignCompanyFormProps,
+  type UseSignCompanyFormResult,
+  type UseSignCompanyFormReady,
+  type SignCompanyFormFieldsMetadata,
+  type SignCompanyFormFields,
+  type SignCompanyFormErrorCode,
+  type SignCompanyFormData,
+  type SignCompanyFormOutputs,
+  type SignCompanyFormField,
+  type SignCompanyFormRequiredValidation,
+  type SignatureFieldProps,
+  type ConfirmSignatureFieldProps,
+} from './hooks/useSignCompanyForm'
