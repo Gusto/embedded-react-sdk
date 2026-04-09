@@ -21,7 +21,7 @@ export type DataViewProps<T> = {
   breakpoints?: useContainerBreakpointsProps['breakpoints']
   footer?: useDataViewPropReturn<T>['footer']
   isFetching?: boolean
-  variant?: TableProps['variant']
+  isWithinBox?: TableProps['isWithinBox']
   emptyState?: useDataViewPropReturn<T>['emptyState']
   selectionMode?: SelectionMode
 }
@@ -32,7 +32,7 @@ export const DataView = <T,>({
   breakAt = 'small',
   breakpoints: customBreakpoints,
   footer,
-  variant,
+  isWithinBox,
   emptyState,
   selectionMode,
   onSelectAll,
@@ -65,7 +65,7 @@ export const DataView = <T,>({
           {...dataViewProps}
           onSelectAll={onSelectAll}
           footer={footer}
-          variant={variant}
+          isWithinBox={isWithinBox}
           emptyState={emptyState}
           selectionMode={selectionMode}
         />

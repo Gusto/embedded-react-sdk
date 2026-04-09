@@ -43,9 +43,9 @@ export interface TableProps extends Pick<
    */
   emptyState?: ReactNode
   /**
-   * Visual style variant of the table
+   * Removes borders and background for use inside a Box component
    */
-  variant?: 'default' | 'minimal'
+  isWithinBox?: boolean
   /**
    * Whether the first column contains checkboxes (affects which column gets leading variant)
    */
@@ -56,6 +56,6 @@ export interface TableProps extends Pick<
  * Default prop values for Table component.
  */
 export const TableDefaults = {
-  variant: 'default',
+  isWithinBox: false,
   hasCheckboxColumn: false,
 } as const satisfies Partial<TableProps>

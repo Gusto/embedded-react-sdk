@@ -16,6 +16,7 @@ Hooks give you full control over form rendering while the SDK manages data fetch
 | `useEmployeeDetailsForm` | Create or update employee profile fields (name, email, SSN, date of birth, self-onboarding)                  | [useEmployeeDetailsForm](./useEmployeeDetailsForm.md) |
 | `useCompensationForm`    | Create or update job compensation (job title, FLSA status, pay rate, payment unit, minimum wage adjustments) | [useCompensationForm](./useCompensationForm.md)       |
 | `useWorkAddressForm`     | Create or update an employee's work address (company location select, effective date)                        | [useWorkAddressForm](./useWorkAddressForm.md)         |
+| `usePayScheduleForm`     | Create or update a company pay schedule (frequency, pay dates, pay period calendar preview)                  | [usePayScheduleForm](./usePayScheduleForm.md)         |
 
 ---
 
@@ -181,6 +182,7 @@ The shape of `data` varies by hook — see each hook's reference page for detail
 - `useEmployeeDetailsForm` — `{ employee }`
 - `useCompensationForm` — `{ compensation, jobs, currentJob, minimumWages }`
 - `useWorkAddressForm` — `{ workAddress, workAddresses, companyLocations }`
+- `usePayScheduleForm` — `{ paySchedule, payPeriodPreview, payPreviewLoading, paymentSpeedDays }`
 
 ---
 
@@ -229,6 +231,7 @@ Each hook's reference page documents which fields are available to require and w
 - [useEmployeeDetailsForm required fields](./useEmployeeDetailsForm.md#required-fields)
 - [useCompensationForm configurable required fields](./useCompensationForm.md#configurable-required-fields)
 - [useWorkAddressForm required fields](./useWorkAddressForm.md#required-fields)
+- [usePayScheduleForm configurable required fields](./usePayScheduleForm.md#configurable-required-fields)
 
 ---
 
@@ -263,6 +266,7 @@ Each hook's reference page documents the full form data shape accepted by `defau
 - [useEmployeeDetailsForm form data](./useEmployeeDetailsForm.md#employeedetailsformdata)
 - [useCompensationForm form data](./useCompensationForm.md#compensationformdata)
 - [useWorkAddressForm form data](./useWorkAddressForm.md#workaddressformdata)
+- [usePayScheduleForm form data](./usePayScheduleForm.md#payscheduleformdata)
 
 ---
 
@@ -465,6 +469,7 @@ Error codes for each hook are exported alongside the hook:
 - `EmployeeDetailsErrorCodes` — see [useEmployeeDetailsForm field reference](./useEmployeeDetailsForm.md#fields-reference)
 - `CompensationErrorCodes` — see [useCompensationForm field reference](./useCompensationForm.md#fields-reference)
 - `WorkAddressErrorCodes` — see [useWorkAddressForm field reference](./useWorkAddressForm.md#fields-reference)
+- `PayScheduleErrorCodes` — see [usePayScheduleForm field reference](./usePayScheduleForm.md#fields-reference)
 
 ---
 

@@ -459,12 +459,12 @@ export const PayrollListPresentation = ({
             alignItems={{ base: 'stretch', medium: 'center' }}
             gap={16}
           >
-            <div className={styles.offCycleCtaText}>
+            <Flex flexDirection="column" gap={4}>
               <Text weight="bold">{t('offCycleCta.title')}</Text>
               <Text variant="supporting" size="sm">
                 {t('offCycleCta.description')}
               </Text>
-            </div>
+            </Flex>
             <div className={styles.offCycleCtaButton}>
               <Button variant="secondary" onClick={onRunOffCyclePayroll}>
                 {t('offCycleCta.button')}

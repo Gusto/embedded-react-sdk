@@ -4,6 +4,7 @@
 - [BadgeProps](#badgeprops)
 - [BannerProps](#bannerprops)
 - [BaseListProps](#baselistprops)
+- [BoxHeaderProps](#boxheaderprops)
 - [BoxProps](#boxprops)
 - [BreadcrumbsProps](#breadcrumbsprops)
   - [Breadcrumb](#breadcrumb)
@@ -95,13 +96,24 @@
 | **aria-labelledby**  | `string`            | No       | ID of an element that labels this list    |
 | **aria-describedby** | `string`            | No       | ID of an element that describes this list |
 
+## BoxHeaderProps
+
+| Prop             | Type                                           | Required | Description |
+| ---------------- | ---------------------------------------------- | -------- | ----------- |
+| **title**        | `React.ReactNode`                              | Yes      | -           |
+| **description**  | `React.ReactNode`                              | No       | -           |
+| **action**       | `React.ReactNode`                              | No       | -           |
+| **headingLevel** | `"h1" \| "h2" \| "h3" \| "h4" \| "h5" \| "h6"` | No       | -           |
+
 ## BoxProps
 
-| Prop          | Type              | Required | Description                                                               |
-| ------------- | ----------------- | -------- | ------------------------------------------------------------------------- |
-| **children**  | `React.ReactNode` | Yes      | Content to be displayed inside the box                                    |
-| **footer**    | `React.ReactNode` | No       | Content rendered at the bottom of the box with an edge-to-edge top border |
-| **className** | `string`          | No       | CSS className to be applied                                               |
+| Prop            | Type              | Required | Description |
+| --------------- | ----------------- | -------- | ----------- |
+| **children**    | `React.ReactNode` | Yes      | -           |
+| **header**      | `React.ReactNode` | No       | -           |
+| **footer**      | `React.ReactNode` | No       | -           |
+| **withPadding** | `boolean`         | No       | -           |
+| **className**   | `string`          | No       | -           |
 
 ## BreadcrumbsProps
 
@@ -290,10 +302,12 @@
 
 ## DescriptionListProps
 
-| Prop          | Type                                          | Required | Description |
-| ------------- | --------------------------------------------- | -------- | ----------- |
-| **items**     | [DescriptionListItem](#descriptionlistitem)[] | Yes      | -           |
-| **className** | `string`                                      | No       | -           |
+| Prop               | Type                                          | Required | Description |
+| ------------------ | --------------------------------------------- | -------- | ----------- |
+| **items**          | [DescriptionListItem](#descriptionlistitem)[] | Yes      | -           |
+| **layout**         | `"stacked" \| "horizontal"`                   | No       | -           |
+| **showSeparators** | `boolean`                                     | No       | -           |
+| **className**      | `string`                                      | No       | -           |
 
 ### DescriptionListItem
 
@@ -577,7 +591,7 @@ type PaginationItemsPerPage = 5 | 10 | 50
 | **rows**              | [TableRow](#tablerow)[]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | Yes      | Array of rows to be displayed in the table                                               |
 | **footer**            | [TableData](#tabledata)[]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | No       | Array of footer cells for the table                                                      |
 | **emptyState**        | `React.ReactNode`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | No       | Content to display when the table has no rows                                            |
-| **variant**           | `"default" \| "minimal"`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | No       | Visual style variant of the table                                                        |
+| **isWithinBox**       | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | No       | Removes borders and background for use inside a Box component                            |
 | **hasCheckboxColumn** | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | No       | Whether the first column contains checkboxes (affects which column gets leading variant) |
 | **className**         | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | No       | -                                                                                        |
 | **id**                | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | No       | -                                                                                        |

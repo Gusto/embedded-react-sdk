@@ -38,6 +38,8 @@ import type { CardProps } from '@/components/Common/UI/Card/CardTypes'
 import { Card } from '@/components/Common/UI/Card/Card'
 import type { BoxProps } from '@/components/Common/UI/Box/BoxTypes'
 import { Box } from '@/components/Common/UI/Box/Box'
+import type { BoxHeaderProps } from '@/components/Common/UI/BoxHeader/BoxHeaderTypes'
+import { BoxHeader } from '@/components/Common/UI/BoxHeader'
 import { Badge } from '@/components/Common/UI/Badge/Badge'
 import type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
 import { Banner } from '@/components/Common/UI/Banner/Banner'
@@ -81,6 +83,7 @@ export const defaultComponents: ComponentsContextType = {
   ButtonIcon: (props: ButtonIconProps) => <ButtonIcon {...props} />,
   Card: (props: CardProps) => <Card {...props} />,
   Box: (props: BoxProps) => <Box {...props} />,
+  BoxHeader: (props: BoxHeaderProps) => <BoxHeader {...props} />,
   TextInput: (props: TextInputProps) => <TextInput {...props} />,
   TextArea: (props: TextAreaProps) => <TextArea {...props} />,
   Checkbox: (props: CheckboxProps) => <Checkbox {...props} />,
