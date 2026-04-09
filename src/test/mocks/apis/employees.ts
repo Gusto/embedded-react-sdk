@@ -13,7 +13,7 @@ import type { PutV1EmployeesEmployeeIdOnboardingStatusRequestBody } from '@gusto
 import type { GetV1EmployeesEmployeeIdJobsRequest } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidjobs'
 import type { PostV1JobsJobIdRequestBody } from '@gusto/embedded-api/models/operations/postv1jobsjobid'
 import type { CompensationsUpdateRequestBody } from '@gusto/embedded-api/models/components/compensationsupdaterequestbody'
-import type { PutV1JobsJobIdRequestBody } from '@gusto/embedded-api/models/operations/putv1jobsjobid'
+import type { JobsUpdateRequestBody } from '@gusto/embedded-api/models/components/jobsupdaterequestbody'
 import type {
   DeleteV1JobsJobIdRequest,
   DeleteV1JobsJobIdResponse,
@@ -161,7 +161,7 @@ export const updateEmployeeCompensation = handleUpdateEmployeeCompensation(async
 })
 
 export function handleUpdateEmployeeJob(
-  resolver: HttpResponseResolver<PathParams, PutV1JobsJobIdRequestBody>,
+  resolver: HttpResponseResolver<PathParams, JobsUpdateRequestBody>,
 ) {
   return http.put(`${API_BASE_URL}/v1/jobs/:job_id`, resolver)
 }

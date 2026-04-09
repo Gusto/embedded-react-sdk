@@ -8,6 +8,7 @@ import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/model
 import { PayrollEmployeeCompensationsTypePaymentMethod as PaymentMethods } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
 import userEvent from '@testing-library/user-event'
+import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { PayrollEditEmployeePresentation } from './PayrollEditEmployeePresentation'
 import { PayrollCategory } from '@/components/Payroll/payrollTypes'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
@@ -211,8 +212,8 @@ const defaultProps = {
   paySchedule: {
     uuid: 'pay-schedule-123',
     frequency: 'Every week' as const,
-    anchorPayDate: '2022-01-01',
-    anchorEndOfPayPeriod: '2022-01-07',
+    anchorPayDate: new RFCDate('2022-01-01'),
+    anchorEndOfPayPeriod: new RFCDate('2022-01-07'),
     version: '2024-04-01',
   },
 }

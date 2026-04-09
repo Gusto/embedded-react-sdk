@@ -69,7 +69,7 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
   const { baseSubmitHandler, onEvent } = useBase()
 
   const { data: jobsData } = useJobsAndCompensationsGetJobsSuspense({ employeeId })
-  const employeeJobs = jobsData.jobList!
+  const employeeJobs = jobsData.jobs!
 
   const { data: addressesData } = useEmployeeAddressesGetWorkAddressesSuspense({ employeeId })
   const workAddresses = addressesData.employeeWorkAddressesList!
@@ -182,7 +182,7 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
           const data = await createEmployeeJobMutation.mutateAsync({
             request: {
               employeeId,
-              requestBody: {
+              jobsCreateRequestBody: {
                 title: jobTitle,
                 hireDate: startDate,
                 stateWcCovered: compensationData.stateWcCovered,
@@ -199,7 +199,7 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
           const data = await updateEmployeeJobMutation.mutateAsync({
             request: {
               jobId: currentJob.uuid,
-              requestBody: {
+              jobsUpdateRequestBody: {
                 title: jobTitle,
                 version: currentJob.version as string,
                 hireDate: startDate,

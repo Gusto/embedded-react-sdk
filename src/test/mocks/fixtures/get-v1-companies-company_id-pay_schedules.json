@@ -1,6 +1,6 @@
 {
   "version": "56a489ce86ed6c1b0f0cecc4050a0b01",
-  "payScheduleList": [
+  "paySchedules": [
     {
       "uuid": "schedule-1",
       "frequency": "Every week",

@@ -6,8 +6,8 @@ import { usePaySchedulesGetPreview } from '@gusto/embedded-api/react-query/paySc
 import { usePaySchedulesUpdateMutation } from '@gusto/embedded-api/react-query/paySchedulesUpdate'
 import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
 import { usePaySchedulesCreateMutation } from '@gusto/embedded-api/react-query/paySchedulesCreate'
-import type { PayScheduleObject as PayScheduleType } from '@gusto/embedded-api/models/components/payscheduleobject'
-import type { Frequency } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayschedules'
+import type { PaySchedule as PayScheduleType } from '@gusto/embedded-api/models/components/payschedule'
+import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import type { MODE, PayScheduleInputs, PayScheduleOutputs } from './usePaySchedule'
 import {
   PayScheduleProvider,
@@ -58,7 +58,7 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
   const { paymentSpeedDays } = useCompanyPaymentSpeed(companyId)
 
   const [mode, setMode] = useState<MODE>(
-    paySchedules.payScheduleList?.length === 0 ? 'ADD_PAY_SCHEDULE' : 'LIST_PAY_SCHEDULES',
+    paySchedules.paySchedules?.length === 0 ? 'ADD_PAY_SCHEDULE' : 'LIST_PAY_SCHEDULES',
   )
   const [currentPaySchedule, setCurrentPaySchedule] = useState<PayScheduleType | null>(null)
   const transformedDefaultValues: PayScheduleInputs = {
@@ -105,8 +105,8 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
     {
       companyId,
       frequency: allValues.frequency,
-      anchorPayDate: formattedAnchorPayDate,
-      anchorEndOfPayPeriod: formattedAnchorEndOfPayPeriod,
+      anchorPayDate: new RFCDate(formattedAnchorPayDate || '1970-01-01'),
+      anchorEndOfPayPeriod: new RFCDate(formattedAnchorEndOfPayPeriod || '1970-01-01'),
       day1: allValues.day1 ?? undefined,
       day2: allValues.day2 ?? undefined,
     },
@@ -148,10 +148,12 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
   }
   const handleEdit = (schedule: PayScheduleType) => {
     reset({
-      frequency: schedule.frequency as Frequency,
-      anchorPayDate: schedule.anchorPayDate ? new Date(schedule.anchorPayDate) : undefined,
+      frequency: schedule.frequency as PayScheduleInputs['frequency'],
+      anchorPayDate: schedule.anchorPayDate
+        ? new Date(schedule.anchorPayDate.toString())
+        : undefined,
       anchorEndOfPayPeriod: schedule.anchorEndOfPayPeriod
-        ? new Date(schedule.anchorEndOfPayPeriod)
+        ? new Date(schedule.anchorEndOfPayPeriod.toString())
         : undefined,
       day1: schedule.day1 ?? undefined,
       day2: schedule.day2 ?? undefined,
@@ -173,10 +175,10 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
         const createPayScheduleResponse = await createPayScheduleMutation.mutateAsync({
           request: {
             companyId,
-            requestBody: {
+            payScheduleCreateRequest: {
               frequency: payload.frequency,
-              anchorPayDate: formatPayloadDate(payload.anchorPayDate),
-              anchorEndOfPayPeriod: formatPayloadDate(payload.anchorEndOfPayPeriod),
+              anchorPayDate: new RFCDate(formatPayloadDate(payload.anchorPayDate)),
+              anchorEndOfPayPeriod: new RFCDate(formatPayloadDate(payload.anchorEndOfPayPeriod)),
               customName: payload.customName,
               day1: payload.day1,
               day2: payload.day2,
@@ -191,10 +193,10 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
           request: {
             payScheduleId: currentPaySchedule?.uuid as string,
             companyId,
-            requestBody: {
+            payScheduleUpdateRequest: {
               frequency: payload.frequency,
-              anchorPayDate: formatPayloadDate(payload.anchorPayDate),
-              anchorEndOfPayPeriod: formatPayloadDate(payload.anchorEndOfPayPeriod),
+              anchorPayDate: new RFCDate(formatPayloadDate(payload.anchorPayDate)),
+              anchorEndOfPayPeriod: new RFCDate(formatPayloadDate(payload.anchorEndOfPayPeriod)),
               customName: payload.customName,
               day1: payload.day1,
               day2: payload.day2,
@@ -219,8 +221,8 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
         handleContinue,
         mode,
         isPending: createPayScheduleMutation.isPending || updatePayScheduleMutation.isPending,
-        paySchedules: paySchedules.payScheduleList,
-        payPeriodPreview: payPreviewData?.object?.payPeriods,
+        paySchedules: paySchedules.paySchedules,
+        payPeriodPreview: payPreviewData?.paySchedulePreview?.payPeriods,
         payPreviewLoading: isLoading,
         currentPaySchedule,
         paymentSpeedDays,

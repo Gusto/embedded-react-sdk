@@ -2,13 +2,14 @@ import { useEffect, useMemo } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { PayScheduleCreateUpdate } from '@gusto/embedded-api/models/components/payschedulecreateupdate'
-import type { PayPeriods } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayschedulespreview'
+import type { PaySchedule } from '@gusto/embedded-api/models/components/payschedule'
+import type { PaySchedulePreviewPayPeriod } from '@gusto/embedded-api/models/components/payschedulepreviewpayperiod'
 import { usePaySchedulesGet } from '@gusto/embedded-api/react-query/paySchedulesGet'
 import { usePaySchedulesGetPreview } from '@gusto/embedded-api/react-query/paySchedulesGetPreview'
 import { usePaySchedulesCreateMutation } from '@gusto/embedded-api/react-query/paySchedulesCreate'
 import { usePaySchedulesUpdateMutation } from '@gusto/embedded-api/react-query/paySchedulesUpdate'
 import { usePaymentConfigsGet } from '@gusto/embedded-api/react-query/paymentConfigsGet'
+import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import { useDeriveFieldsMetadata } from '../../form/useDeriveFieldsMetadata'
 import { createGetFormSubmissionValues } from '../../form/getFormSubmissionValues'
 import { withOptions } from '../../form/withOptions'
@@ -92,7 +93,7 @@ export function usePayScheduleForm({
 
   const paymentConfigsQuery = usePaymentConfigsGet({ companyUuid: companyId })
 
-  const currentPaySchedule = payScheduleQuery.data?.payScheduleObject ?? null
+  const currentPaySchedule = payScheduleQuery.data?.paySchedule ?? null
   const paymentSpeed = paymentConfigsQuery.data?.paymentConfigs?.paymentSpeed
   const paymentSpeedDays = parsePaymentSpeedDays(paymentSpeed)
 
@@ -114,9 +115,12 @@ export function usePayScheduleForm({
       currentPaySchedule?.day1 ?? partnerDefaults?.day1 ?? undefined,
       currentPaySchedule?.day2 ?? partnerDefaults?.day2 ?? undefined,
     ),
-    anchorPayDate: currentPaySchedule?.anchorPayDate ?? partnerDefaults?.anchorPayDate ?? null,
+    anchorPayDate:
+      currentPaySchedule?.anchorPayDate?.toString() ?? partnerDefaults?.anchorPayDate ?? null,
     anchorEndOfPayPeriod:
-      currentPaySchedule?.anchorEndOfPayPeriod ?? partnerDefaults?.anchorEndOfPayPeriod ?? null,
+      currentPaySchedule?.anchorEndOfPayPeriod?.toString() ??
+      partnerDefaults?.anchorEndOfPayPeriod ??
+      null,
     day1: currentPaySchedule?.day1 ?? partnerDefaults?.day1 ?? NaN,
     day2: currentPaySchedule?.day2 ?? partnerDefaults?.day2 ?? NaN,
   }
@@ -159,15 +163,16 @@ export function usePayScheduleForm({
     {
       companyId,
       frequency: watchedFrequency,
-      anchorPayDate: formattedAnchorPayDate,
-      anchorEndOfPayPeriod: formattedAnchorEndOfPayPeriod,
+      anchorPayDate: new RFCDate(formattedAnchorPayDate || '1970-01-01'),
+      anchorEndOfPayPeriod: new RFCDate(formattedAnchorEndOfPayPeriod || '1970-01-01'),
       day1: watchedDay1 || undefined,
       day2: watchedDay2 || undefined,
     },
     { enabled: previewEnabled },
   )
 
-  const payPeriodPreview: PayPeriods[] | undefined = previewQuery.data?.object?.payPeriods
+  const payPeriodPreview: PaySchedulePreviewPayPeriod[] | undefined =
+    previewQuery.data?.paySchedulePreview?.payPeriods
   const payPreviewLoading = previewQuery.isLoading && previewEnabled
 
   const createPayScheduleMutation = usePaySchedulesCreateMutation()
@@ -205,8 +210,8 @@ export function usePayScheduleForm({
     day2: baseMetadata.day2,
   }
 
-  const onSubmit = async (): Promise<HookSubmitResult<PayScheduleCreateUpdate> | undefined> => {
-    let submitResult: HookSubmitResult<PayScheduleCreateUpdate> | undefined
+  const onSubmit = async (): Promise<HookSubmitResult<PaySchedule> | undefined> => {
+    let submitResult: HookSubmitResult<PaySchedule> | undefined
 
     await new Promise<void>(resolve => {
       void formMethods.handleSubmit(
@@ -219,10 +224,10 @@ export function usePayScheduleForm({
               const result = await createPayScheduleMutation.mutateAsync({
                 request: {
                   companyId,
-                  requestBody: {
+                  payScheduleCreateRequest: {
                     frequency: payload.frequency,
-                    anchorPayDate,
-                    anchorEndOfPayPeriod,
+                    anchorPayDate: new RFCDate(anchorPayDate),
+                    anchorEndOfPayPeriod: new RFCDate(anchorEndOfPayPeriod),
                     customName: payload.customName,
                     day1: payload.day1 || undefined,
                     day2: payload.day2 || undefined,
@@ -230,25 +235,25 @@ export function usePayScheduleForm({
                 },
               })
 
-              submitResult = { mode: 'create', data: result.payScheduleCreateUpdate! }
+              submitResult = { mode: 'create', data: result.paySchedule! }
             } else {
               const result = await updatePayScheduleMutation.mutateAsync({
                 request: {
                   payScheduleId: currentPaySchedule.uuid,
                   companyId,
-                  requestBody: {
+                  payScheduleUpdateRequest: {
                     frequency: payload.frequency,
-                    anchorPayDate,
-                    anchorEndOfPayPeriod,
+                    anchorPayDate: new RFCDate(anchorPayDate),
+                    anchorEndOfPayPeriod: new RFCDate(anchorEndOfPayPeriod),
                     customName: payload.customName,
                     day1: payload.day1 || undefined,
                     day2: payload.day2 || undefined,
-                    version: currentPaySchedule.version,
+                    version: currentPaySchedule.version!,
                   },
                 },
               })
 
-              submitResult = { mode: 'update', data: result.payScheduleCreateUpdate! }
+              submitResult = { mode: 'update', data: result.paySchedule! }
             }
           })
           resolve()

@@ -52,7 +52,7 @@ const Root = ({ employeeId, dictionary }: EmploymentEligibilityProps) => {
       const result = await updateI9Authorization({
         request: {
           employeeId,
-          requestBody: {
+          i9AuthorizationRequestBody: {
             authorizationStatus,
             version: existingAuth?.version,
             ...(authorizationStatus === 'permanent_resident' &&
