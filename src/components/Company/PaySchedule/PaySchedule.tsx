@@ -105,8 +105,12 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
     {
       companyId,
       frequency: allValues.frequency,
-      anchorPayDate: new RFCDate(formattedAnchorPayDate || '1970-01-01'),
-      anchorEndOfPayPeriod: new RFCDate(formattedAnchorEndOfPayPeriod || '1970-01-01'),
+      anchorPayDate: formattedAnchorPayDate
+        ? new RFCDate(formattedAnchorPayDate)
+        : (undefined as unknown as RFCDate),
+      anchorEndOfPayPeriod: formattedAnchorEndOfPayPeriod
+        ? new RFCDate(formattedAnchorEndOfPayPeriod)
+        : (undefined as unknown as RFCDate),
       day1: allValues.day1 ?? undefined,
       day2: allValues.day2 ?? undefined,
     },

@@ -163,8 +163,12 @@ export function usePayScheduleForm({
     {
       companyId,
       frequency: watchedFrequency,
-      anchorPayDate: new RFCDate(formattedAnchorPayDate || '1970-01-01'),
-      anchorEndOfPayPeriod: new RFCDate(formattedAnchorEndOfPayPeriod || '1970-01-01'),
+      anchorPayDate: formattedAnchorPayDate
+        ? new RFCDate(formattedAnchorPayDate)
+        : (undefined as unknown as RFCDate),
+      anchorEndOfPayPeriod: formattedAnchorEndOfPayPeriod
+        ? new RFCDate(formattedAnchorEndOfPayPeriod)
+        : (undefined as unknown as RFCDate),
       day1: watchedDay1 || undefined,
       day2: watchedDay2 || undefined,
     },
