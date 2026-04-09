@@ -219,3 +219,18 @@ export default [
   getPayrollReceipt,
   createPayrollOffCycle,
 ]
+
+const getEmployeePayStubs = http.get(
+  `${API_BASE_URL}/v1/employees/:employee_uuid/pay_stubs`,
+  () => {
+    return HttpResponse.json([], {
+      headers: {
+        'x-total-count': '0',
+        'x-total-pages': '1',
+        'x-page': '1',
+      },
+    })
+  },
+)
+
+export { getEmployeePayStubs }

@@ -157,6 +157,16 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | `/v1/employees/:employeeId/forms/:formId` |
 | **Employee.EmployeeDocuments** | GET | `/v1/employees/:employeeId` |
 |  | PUT | `/v1/employees/:employeeId/onboarding_documents_config` |
+| **Employee.DashboardFlow** | GET | `/v1/employees/:employeeId` |
+|  | GET | `/v1/employees/:employeeId/home_addresses` |
+|  | GET | `/v1/employees/:employeeId/work_addresses` |
+|  | GET | `/v1/employees/:employeeId/payment_method` |
+|  | GET | `/v1/employees/:employeeId/bank_accounts` |
+|  | GET | `/v1/employees/:employeeId/garnishments` |
+|  | GET | `/v1/employees/:employeeId/pay_stubs` |
+|  | GET | `/v1/employees/:employeeId/forms` |
+|  | GET | `/v1/employees/:employeeUuid/federal_taxes` |
+|  | GET | `/v1/employees/:employeeUuid/state_taxes` |
 | **Employee.EmploymentEligibility** | GET | `/v1/employees/:employeeId/i9_authorization` |
 |  | PUT | `/v1/employees/:employeeId/i9_authorization` |
 | **Employee.TerminateEmployee** | GET | `/v1/employees/:employeeId` |
