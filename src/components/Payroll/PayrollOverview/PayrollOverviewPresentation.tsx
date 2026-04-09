@@ -331,9 +331,7 @@ export const PayrollOverviewPresentation = ({
           footer={() => ({
             employeeName: (
               <>
-                <Text weight="semibold" size="sm">
-                  {t('tableHeaders.footerTotalsLabel')}
-                </Text>
+                {t('tableHeaders.footerTotalsLabel')}
                 <Text variant="supporting" size="sm">
                   {t('tableHeaders.footerTotalsDescription')}
                 </Text>

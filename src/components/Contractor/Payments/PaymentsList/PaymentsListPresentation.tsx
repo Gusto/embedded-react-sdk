@@ -37,7 +37,7 @@ export const PaymentsListPresentation = ({
   onEvent,
   paginationProps,
 }: ContractorPaymentPaymentsListPresentationProps) => {
-  const { Button, Text, Heading, Select, ButtonIcon, Alert } = useComponentContext()
+  const { Button, Heading, Select, ButtonIcon, Alert } = useComponentContext()
   useI18n('Contractor.Payments.PaymentsList')
   const { t } = useTranslation('Contractor.Payments.PaymentsList')
   const currencyFormatter = useNumberFormatter('currency')
@@ -52,21 +52,15 @@ export const PaymentsListPresentation = ({
     columns: [
       {
         title: t('paymentDateColumnLabel'),
-        render: ({ checkDate }) => (
-          <Text weight="semibold" variant="supporting">
-            {formatLongWithYear(checkDate) || 'N/A'}
-          </Text>
-        ),
+        render: ({ checkDate }) => formatLongWithYear(checkDate) || 'N/A',
       },
       {
         title: t('wageTotalColumnLabel'),
-        render: ({ totals }) => <Text>{currencyFormatter(Number(totals?.wageAmount || 0))}</Text>,
+        render: ({ totals }) => currencyFormatter(Number(totals?.wageAmount || 0)),
       },
       {
         title: t('reimbursementTotalColumnLabel'),
-        render: ({ totals }) => (
-          <Text>{currencyFormatter(Number(totals?.reimbursementAmount) || 0)}</Text>
-        ),
+        render: ({ totals }) => currencyFormatter(Number(totals?.reimbursementAmount) || 0),
       },
     ],
     itemMenu: ({ uuid }) => (

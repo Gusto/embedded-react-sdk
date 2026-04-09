@@ -296,7 +296,7 @@ export const PayrollListPresentation = ({
               title: t('tableHeaders.0'),
             },
             {
-              render: payroll => <Text>{getPayrollTypeLabel(payroll)}</Text>,
+              render: payroll => getPayrollTypeLabel(payroll),
               title: t('tableHeaders.1'),
             },
             {
