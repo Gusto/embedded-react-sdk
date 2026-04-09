@@ -246,3 +246,9 @@ export const addBusinessDays = (startDate: Date, businessDays: number): Date => 
 
   return currentDate
 }
+
+/** Formats numeric month and day as a zero-padded `MM-DD` string. */
+export function formatMonthDay(month?: number, day?: number): string | undefined {
+  if (month == null || day == null) return undefined
+  return `${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+}
