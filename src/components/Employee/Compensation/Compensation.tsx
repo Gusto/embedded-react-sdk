@@ -74,12 +74,16 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
   const { data: addressesData } = useEmployeeAddressesGetWorkAddressesSuspense({ employeeId })
   const workAddresses = addressesData.employeeWorkAddressesList!
 
-  const currentWorkAddress = workAddresses.find(address => address.active)!
+  const currentWorkAddress = workAddresses.find(address => address.active) ?? workAddresses[0]
+
+  if (!currentWorkAddress?.locationUuid) {
+    throw new Error('No active work address with a location found for this employee')
+  }
 
   const {
     data: { minimumWageList },
   } = useLocationsGetMinimumWagesSuspense({
-    locationUuid: currentWorkAddress.locationUuid!,
+    locationUuid: currentWorkAddress.locationUuid,
   })
   const minimumWages = minimumWageList!
 
