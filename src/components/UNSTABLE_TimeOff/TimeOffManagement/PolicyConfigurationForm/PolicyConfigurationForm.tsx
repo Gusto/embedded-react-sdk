@@ -6,6 +6,7 @@ import type { PolicyConfigurationFormData } from './PolicyConfigurationFormTypes
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useBase } from '@/components/Base/useBase'
 import { componentEvents } from '@/shared/constants'
+import { formatMonthDay } from '@/helpers/dateFormatting'
 
 export interface PolicyConfigurationFormProps extends BaseComponentInterface<'Company.TimeOff.CreateTimeOffPolicy'> {
   companyId: string
@@ -48,11 +49,6 @@ function resolveApiAccrualMethod(
   }
 }
 
-function formatPolicyResetDate(month?: number, day?: number): string | undefined {
-  if (month == null || day == null) return undefined
-  return `${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
-}
-
 function buildCreateRequestBody(
   data: PolicyConfigurationFormData,
   policyType: 'sick' | 'vacation',
@@ -73,7 +69,7 @@ function buildCreateRequestBody(
 
   const policyResetDate =
     data.resetDateType === 'per_calendar_year'
-      ? formatPolicyResetDate(data.resetMonth, data.resetDay)
+      ? formatMonthDay(data.resetMonth, data.resetDay)
       : undefined
 
   if (isHourly) {
