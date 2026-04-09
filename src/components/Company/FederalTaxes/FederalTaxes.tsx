@@ -52,10 +52,10 @@ function Root({ companyId, children, className, defaultValues, dictionary }: Fed
     defaultValues: {
       federalEin: federalTaxDetails.hasEin ? undefined : '',
       taxPayerType: federalTaxDetails.taxPayerType
-        ? (federalTaxDetails.taxPayerType)
+        ? federalTaxDetails.taxPayerType
         : defaultValues?.taxPayerType,
       filingForm: federalTaxDetails.filingForm
-        ? (federalTaxDetails.filingForm)
+        ? federalTaxDetails.filingForm
         : defaultValues?.filingForm,
       legalName: federalTaxDetails.legalName ?? defaultValues?.legalName,
     },
