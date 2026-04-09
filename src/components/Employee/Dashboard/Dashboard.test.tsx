@@ -6,6 +6,10 @@ import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { componentEvents } from '@/shared/constants'
 
+vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', () => ({
+  useContainerBreakpoints: () => ['small', 'medium', 'large'],
+}))
+
 describe('Dashboard', () => {
   const onEvent = vi.fn()
 
@@ -93,5 +97,30 @@ describe('Dashboard', () => {
     expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_WORK_ADDRESS, {
       employeeId: 'employee-123',
     })
+  })
+
+  it('emits EMPLOYEE_STATE_TAXES_EDIT with only employeeId when clicking state taxes edit', async () => {
+    const user = userEvent.setup()
+
+    renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
+
+    await waitFor(() => {
+      expect(screen.getByText('Legal name')).toBeTruthy()
+    })
+
+    await user.click(screen.getByRole('tab', { name: 'Taxes' }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: 'State taxes' })).toBeInTheDocument()
+    })
+
+    const editButtons = screen.getAllByRole('button', { name: 'Edit' })
+    expect(editButtons.length).toBeGreaterThanOrEqual(2)
+    await user.click(editButtons[1]!)
+
+    expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_STATE_TAXES_EDIT, {
+      employeeId: 'employee-123',
+    })
+    expect(onEvent.mock.calls.at(-1)?.[1]).toEqual({ employeeId: 'employee-123' })
   })
 })

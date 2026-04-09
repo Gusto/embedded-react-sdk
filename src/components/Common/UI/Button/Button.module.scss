@@ -37,6 +37,10 @@
       }
     }
 
+    svg {
+      color: var(--g-colorButtonIcon);
+    }
+
     &:hover:not([data-disabled]) {
       background: var(--g-colorPrimaryAccent);
       border-color: var(--g-colorPrimaryAccent);
