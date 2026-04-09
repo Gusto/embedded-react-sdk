@@ -3,3 +3,5 @@ export { EmployeeDetailsForm } from '@/components/UNSTABLE_Hooks/hooks/useEmploy
 export { WorkAddressForm } from '@/components/UNSTABLE_Hooks/hooks/useWorkAddressForm'
 export { PayScheduleForm } from '@/components/UNSTABLE_Hooks/hooks/usePayScheduleForm'
 export { SignCompanyForm } from '@/components/UNSTABLE_Hooks/hooks/useSignCompanyForm'
+export { SignEmployeeForm } from '@/components/UNSTABLE_Hooks/hooks/useSignEmployeeForm'
+export { SignEmployeeI9Form } from '@/components/UNSTABLE_Hooks/hooks/useSignEmployeeForm'
