@@ -238,7 +238,6 @@ Alternatively, you can import and use the `componentEvents` constants for type s
 
 ```jsx
 import { componentEvents } from '@gusto/embedded-react-sdk'
-
 ;<Employee.DashboardFlow
   employeeId="employee-id"
   onEvent={(eventType, data) => {
@@ -282,7 +281,6 @@ The Dashboard uses the `ComponentsContext` pattern, allowing partners to overrid
 
 ```jsx
 import { GustoProvider } from '@gusto/embedded-react-sdk'
-
 ;<GustoProvider
   config={config}
   components={{
