@@ -11,6 +11,8 @@ import { DataView, useDataView, EmptyData, Loading } from '@/components/Common'
 import { formatDateLongWithYear } from '@/helpers/dateFormatting'
 import { useFormatPayRate } from '@/helpers/formattedStrings'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
+import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
+import PercentCircleIcon from '@/assets/icons/percent-circle.svg?react'
 
 type EmployeePayStub = NonNullable<
   GetV1EmployeesEmployeeUuidPayStubsResponse['employeePayStubsList']
@@ -25,6 +27,7 @@ export interface JobAndPayViewProps {
   payStubsPagination?: PaginationControlProps
   isLoading?: boolean
   onEditCompensation?: () => void
+  onSplitPaycheck?: () => void
   onAddBankAccount?: () => void
   onAddDeduction?: () => void
 }
@@ -38,6 +41,7 @@ export function JobAndPayView({
   payStubsPagination,
   isLoading = false,
   onEditCompensation,
+  onSplitPaycheck,
   onAddBankAccount,
   onAddDeduction,
 }: JobAndPayViewProps) {
@@ -163,12 +167,14 @@ export function JobAndPayView({
     <Flex flexDirection="column" gap={24}>
       <Components.Box
         header={
-          <Flex justifyContent="space-between" alignItems="center">
-            <Components.Heading as="h3">{t('jobAndPay.compensation.title')}</Components.Heading>
-            <Components.Button variant="secondary" onClick={onEditCompensation}>
-              {t('jobAndPay.compensation.editCta')}
-            </Components.Button>
-          </Flex>
+          <Components.BoxHeader
+            title={t('jobAndPay.compensation.title')}
+            action={
+              <Components.Button variant="secondary" onClick={onEditCompensation}>
+                {t('jobAndPay.compensation.editCta')}
+              </Components.Button>
+            }
+          />
         }
       >
         <Flex flexDirection="column" gap={16}>
@@ -220,12 +226,27 @@ export function JobAndPayView({
 
       <Components.Box
         header={
-          <Flex justifyContent="space-between" alignItems="center">
-            <Components.Heading as="h3">{t('jobAndPay.payment.title')}</Components.Heading>
-            <Components.Button variant="secondary" onClick={onAddBankAccount}>
-              {t('jobAndPay.payment.addBankAccountCta')}
-            </Components.Button>
-          </Flex>
+          <Components.BoxHeader
+            title={t('jobAndPay.payment.title')}
+            action={
+              <Flex gap={8} alignItems="flex-end">
+                <Components.Button
+                  variant="secondary"
+                  onClick={onSplitPaycheck}
+                  icon={<PercentCircleIcon />}
+                >
+                  {t('jobAndPay.payment.splitPaycheckCta')}
+                </Components.Button>
+                <Components.Button
+                  variant="secondary"
+                  onClick={onAddBankAccount}
+                  icon={<PlusCircleIcon />}
+                >
+                  {t('jobAndPay.payment.addBankAccountCta')}
+                </Components.Button>
+              </Flex>
+            }
+          />
         }
       >
         <Flex flexDirection="column" gap={16}>
@@ -235,12 +256,18 @@ export function JobAndPayView({
 
       <Components.Box
         header={
-          <Flex justifyContent="space-between" alignItems="center">
-            <Components.Heading as="h3">{t('jobAndPay.deductions.title')}</Components.Heading>
-            <Components.Button variant="secondary" onClick={onAddDeduction}>
-              {t('jobAndPay.deductions.addDeductionCta')}
-            </Components.Button>
-          </Flex>
+          <Components.BoxHeader
+            title={t('jobAndPay.deductions.title')}
+            action={
+              <Components.Button
+                variant="secondary"
+                onClick={onAddDeduction}
+                icon={<PlusCircleIcon />}
+              >
+                {t('jobAndPay.deductions.addDeductionCta')}
+              </Components.Button>
+            }
+          />
         }
       >
         <Flex flexDirection="column" gap={16}>
@@ -248,9 +275,7 @@ export function JobAndPayView({
         </Flex>
       </Components.Box>
 
-      <Components.Box
-        header={<Components.Heading as="h3">{t('jobAndPay.paystubs.title')}</Components.Heading>}
-      >
+      <Components.Box header={<Components.BoxHeader title={t('jobAndPay.paystubs.title')} />}>
         <Flex flexDirection="column" gap={16}>
           <DataView label={t('jobAndPay.paystubs.listLabel')} {...payStubsDataView} />
         </Flex>

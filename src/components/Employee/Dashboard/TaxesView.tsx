@@ -86,12 +86,14 @@ export function TaxesView({
     <Flex flexDirection="column" gap={24}>
       <Components.Box
         header={
-          <Flex justifyContent="space-between" alignItems="center">
-            <Components.Heading as="h3">{t('taxes.federal.title')}</Components.Heading>
-            <Components.Button variant="secondary" onClick={onEditFederalTaxes}>
-              {t('taxes.federal.editCta')}
-            </Components.Button>
-          </Flex>
+          <Components.BoxHeader
+            title={t('taxes.federal.title')}
+            action={
+              <Components.Button variant="secondary" onClick={onEditFederalTaxes}>
+                {t('taxes.federal.editCta')}
+              </Components.Button>
+            }
+          />
         }
       >
         <Flex flexDirection="column" gap={16}>
@@ -167,12 +169,14 @@ export function TaxesView({
 
       <Components.Box
         header={
-          <Flex justifyContent="space-between" alignItems="center">
-            <Components.Heading as="h3">{t('taxes.state.title')}</Components.Heading>{' '}
-            <Components.Button variant="secondary" onClick={onEditStateTaxes}>
-              {t('taxes.state.editCta')}
-            </Components.Button>
-          </Flex>
+          <Components.BoxHeader
+            title={t('taxes.state.title')}
+            action={
+              <Components.Button variant="secondary" onClick={onEditStateTaxes}>
+                {t('taxes.state.editCta')}
+              </Components.Button>
+            }
+          />
         }
       >
         <Flex flexDirection="column" gap={16}>

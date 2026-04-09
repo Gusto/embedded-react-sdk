@@ -1351,6 +1351,7 @@ export interface EmployeeDashboard{
 };
 "payment":{
 "title":string;
+"splitPaycheckCta":string;
 "addBankAccountCta":string;
 "listLabel":string;
 "nickname":string;

@@ -68,9 +68,7 @@ export function DocumentsView({ forms = [], isLoading = false, onViewForm }: Doc
 
   return (
     <Flex flexDirection="column" gap={24}>
-      <Components.Box
-        header={<Components.Heading as="h3">{t('documents.title')}</Components.Heading>}
-      >
+      <Components.Box header={<Components.BoxHeader title={t('documents.title')} />}>
         <Flex flexDirection="column" gap={16}>
           <DataView label={t('documents.listLabel')} {...formsDataView} />
         </Flex>

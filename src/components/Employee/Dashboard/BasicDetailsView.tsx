@@ -46,12 +46,14 @@ export function BasicDetailsView({
     <Flex flexDirection="column" gap={24}>
       <Components.Box
         header={
-          <Flex justifyContent="space-between" alignItems="center">
-            <Components.Heading as="h3">{t('basicDetails.title')}</Components.Heading>
-            <Components.Button variant="secondary" onClick={onEditBasicDetails}>
-              {t('basicDetails.editCta')}
-            </Components.Button>
-          </Flex>
+          <Components.BoxHeader
+            title={t('basicDetails.title')}
+            action={
+              <Components.Button variant="secondary" onClick={onEditBasicDetails}>
+                {t('basicDetails.editCta')}
+              </Components.Button>
+            }
+          />
         }
       >
         <Flex flexDirection="column" gap={16}>
@@ -106,12 +108,14 @@ export function BasicDetailsView({
 
       <Components.Box
         header={
-          <Flex justifyContent="space-between" alignItems="center">
-            <Components.Heading as="h3">{t('homeAddress.title')}</Components.Heading>
-            <Components.Button variant="secondary" onClick={onManageHomeAddress}>
-              {t('homeAddress.manageCta')}
-            </Components.Button>
-          </Flex>
+          <Components.BoxHeader
+            title={t('homeAddress.title')}
+            action={
+              <Components.Button variant="secondary" onClick={onManageHomeAddress}>
+                {t('homeAddress.manageCta')}
+              </Components.Button>
+            }
+          />
         }
       >
         <Flex flexDirection="column" gap={16}>
@@ -131,12 +135,14 @@ export function BasicDetailsView({
 
       <Components.Box
         header={
-          <Flex justifyContent="space-between" alignItems="center">
-            <Components.Heading as="h3">{t('workAddress.title')}</Components.Heading>
-            <Components.Button variant="secondary" onClick={onManageWorkAddress}>
-              {t('workAddress.manageCta')}
-            </Components.Button>
-          </Flex>
+          <Components.BoxHeader
+            title={t('workAddress.title')}
+            action={
+              <Components.Button variant="secondary" onClick={onManageWorkAddress}>
+                {t('workAddress.manageCta')}
+              </Components.Button>
+            }
+          />
         }
       >
         <Flex flexDirection="column" gap={16}>
