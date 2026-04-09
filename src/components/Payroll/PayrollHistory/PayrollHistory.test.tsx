@@ -91,6 +91,8 @@ describe('PayrollHistory', () => {
       expect(
         screen.getByText("When you run payrolls, they'll appear here for easy reference."),
       ).toBeInTheDocument()
+
+      expect(screen.getByRole('button', { name: 'Filter by date' })).toBeInTheDocument()
     })
   })
 

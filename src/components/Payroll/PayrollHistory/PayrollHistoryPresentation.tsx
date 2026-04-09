@@ -15,6 +15,7 @@ import type { UseDateRangeFilterResult } from '@/hooks/useDateRangeFilter/useDat
 import TrashcanIcon from '@/assets/icons/trashcan.svg?react'
 import FileIcon from '@/assets/icons/icon-file-outline.svg?react'
 import ReceiptIcon from '@/assets/icons/icon-receipt-outline.svg?react'
+import { EmptyData } from '@/components/Common/'
 
 interface PayrollHistoryPresentationProps {
   payrollHistory: Payroll[]
@@ -118,15 +119,6 @@ export const PayrollHistoryPresentation = ({
     return items
   }
 
-  if (payrollHistory.length === 0) {
-    return (
-      <Flex flexDirection="column" alignItems="center" gap={24}>
-        <Heading as="h3">{t('emptyState.title')}</Heading>
-        <Text>{t('emptyState.description')}</Text>
-      </Flex>
-    )
-  }
-
   return (
     <Flex flexDirection="column" gap={16}>
       <Flex justifyContent="space-between" alignItems="center">
@@ -153,6 +145,9 @@ export const PayrollHistoryPresentation = ({
       <DataView
         label={t('dataView.label')}
         pagination={pagination}
+        emptyState={() => (
+          <EmptyData title={t('emptyState.title')} description={t('emptyState.description')} />
+        )}
         columns={[
           {
             title: t('columns.payPeriod'),
