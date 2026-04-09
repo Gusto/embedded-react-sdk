@@ -7,6 +7,11 @@ import {
 } from '@gusto/embedded-api/react-query/timeOffPoliciesGetAll'
 import { useTimeOffPoliciesDeactivateMutation } from '@gusto/embedded-api/react-query/timeOffPoliciesDeactivate'
 import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
+import {
+  useHolidayPayPoliciesGet,
+  invalidateAllHolidayPayPoliciesGet,
+} from '@gusto/embedded-api/react-query/holidayPayPoliciesGet'
+import { useHolidayPayPoliciesDeleteMutation } from '@gusto/embedded-api/react-query/holidayPayPoliciesDelete'
 import type { TimeOffPolicy } from '@gusto/embedded-api/models/components/timeoffpolicy'
 import { PolicyListPresentation } from './PolicyListPresentation'
 import type { PolicyListItem } from './PolicyListTypes'
@@ -41,6 +46,12 @@ function Root({ companyId }: PolicyListProps) {
   })
   const timeOffPolicies = policiesData.timeOffPolicies ?? []
 
+  const { data: holidayData } = useHolidayPayPoliciesGet(
+    { companyUuid: companyId },
+    { throwOnError: () => false },
+  )
+  const holidayPayPolicy = holidayData?.holidayPayPolicy
+
   const { data: employeesData } = useEmployeesListSuspense({
     companyId,
     terminated: false,
@@ -48,27 +59,35 @@ function Root({ companyId }: PolicyListProps) {
   const totalActiveEmployees = employeesData.showEmployees?.length ?? 0
 
   const { mutateAsync: deactivatePolicy } = useTimeOffPoliciesDeactivateMutation()
+  const { mutateAsync: deleteHolidayPolicy } = useHolidayPayPoliciesDeleteMutation()
 
-  const policies: PolicyListItem[] = timeOffPolicies.map((policy: TimeOffPolicy) => {
-    const enrolledCount = policy.employees.length
-    let enrolledDisplay: string
-
+  const getEnrolledDisplay = (enrolledCount: number) => {
     if (enrolledCount > 0 && enrolledCount === totalActiveEmployees) {
-      enrolledDisplay = t('allEmployeesLabel')
+      return t('allEmployeesLabel')
     } else if (enrolledCount > 0) {
-      enrolledDisplay = t('employeeCount', { count: enrolledCount })
-    } else {
-      enrolledDisplay = t('enrolledDash')
+      return t('employeeCount', { count: enrolledCount })
     }
+    return t('enrolledDash')
+  }
 
-    return {
-      uuid: policy.uuid,
-      name: policy.name,
-      policyType: policy.policyType,
-      isComplete: policy.complete ?? false,
-      enrolledDisplay,
-    }
-  })
+  const policies: PolicyListItem[] = timeOffPolicies.map((policy: TimeOffPolicy) => ({
+    uuid: policy.uuid,
+    name: policy.name,
+    policyType: policy.policyType,
+    isComplete: policy.complete ?? false,
+    enrolledDisplay: getEnrolledDisplay(policy.employees.length),
+  }))
+
+  if (holidayPayPolicy) {
+    policies.push({
+      uuid: holidayPayPolicy.companyUuid,
+      name: t('holidayPayPolicy'),
+      policyType: 'holiday',
+      isComplete: true,
+      enrolledDisplay: getEnrolledDisplay(holidayPayPolicy.employees.length),
+      isHoliday: true,
+    })
+  }
 
   const handleCreatePolicy = () => {
     onEvent(componentEvents.TIME_OFF_CREATE_POLICY)
@@ -91,14 +110,19 @@ function Root({ companyId }: PolicyListProps) {
   const handleDeletePolicy = async (policy: PolicyListItem) => {
     setIsDeletingPolicyId(policy.uuid)
     await baseSubmitHandler({}, async () => {
-      await deactivatePolicy({
-        request: {
-          timeOffPolicyUuid: policy.uuid,
-        },
-      })
-
-      await invalidateAllTimeOffPoliciesGetAll(queryClient)
-      setDeleteSuccessAlert(t('flash.policyDeleted', { name: policy.name }))
+      if (policy.isHoliday) {
+        await deleteHolidayPolicy({
+          request: { companyUuid: companyId },
+        })
+        await invalidateAllHolidayPayPoliciesGet(queryClient)
+        setDeleteSuccessAlert(t('flash.holidayDeleted'))
+      } else {
+        await deactivatePolicy({
+          request: { timeOffPolicyUuid: policy.uuid },
+        })
+        await invalidateAllTimeOffPoliciesGetAll(queryClient)
+        setDeleteSuccessAlert(t('flash.policyDeleted', { name: policy.name }))
+      }
     })
     setIsDeletingPolicyId(null)
   }

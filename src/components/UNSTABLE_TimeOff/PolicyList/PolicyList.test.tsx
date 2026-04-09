@@ -70,6 +70,21 @@ const mockEmployees = [
   },
 ]
 
+const mockHolidayPayPolicy = {
+  version: '1b37938b017c7fd7116bada007072290',
+  company_uuid: 'company-123',
+  federal_holidays: {
+    new_years_day: { selected: true, name: "New Year's Day", date: 'January 1' },
+    mlk_day: {
+      selected: true,
+      name: 'Martin Luther King, Jr. Day',
+      date: 'Third Monday in January',
+    },
+    christmas_day: { selected: true, name: 'Christmas Day', date: 'December 25' },
+  },
+  employees: [{ uuid: 'emp-1' }, { uuid: 'emp-2' }],
+}
+
 describe('PolicyList', () => {
   const onEvent = vi.fn()
   const user = userEvent.setup()
@@ -88,6 +103,9 @@ describe('PolicyList', () => {
       }),
       http.get(`${API_BASE_URL}/v1/companies/:companyId/employees`, () => {
         return HttpResponse.json(mockEmployees)
+      }),
+      http.get(`${API_BASE_URL}/v1/companies/:companyUuid/holiday_pay_policy`, () => {
+        return new HttpResponse(null, { status: 204 })
       }),
     )
   })
@@ -329,6 +347,136 @@ describe('PolicyList', () => {
 
       await waitFor(() => {
         expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+      })
+    })
+  })
+
+  describe('holiday pay policy', () => {
+    it('renders holiday pay policy in the list when one exists', async () => {
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:companyUuid/holiday_pay_policy`, () => {
+          return HttpResponse.json(mockHolidayPayPolicy)
+        }),
+      )
+
+      renderWithProviders(<PolicyList {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Holiday pay policy')).toBeInTheDocument()
+      })
+    })
+
+    it('renders enrolled count for holiday pay policy', async () => {
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:companyUuid/holiday_pay_policy`, () => {
+          return HttpResponse.json({
+            ...mockHolidayPayPolicy,
+            employees: [{ uuid: 'emp-1' }],
+          })
+        }),
+      )
+
+      renderWithProviders(<PolicyList {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Holiday pay policy')).toBeInTheDocument()
+      })
+      expect(screen.getByText('1 employee')).toBeInTheDocument()
+    })
+
+    it('does not render holiday pay policy when API returns 204', async () => {
+      renderWithProviders(<PolicyList {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Vacation')).toBeInTheDocument()
+      })
+      expect(screen.queryByText('Holiday pay policy')).not.toBeInTheDocument()
+    })
+
+    it('does not error when holiday pay policy API returns 404', async () => {
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:companyUuid/holiday_pay_policy`, () => {
+          return HttpResponse.json(
+            { errors: [{ error_key: 'request', category: 'not_found', message: 'Not found' }] },
+            { status: 404 },
+          )
+        }),
+      )
+
+      renderWithProviders(<PolicyList {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Vacation')).toBeInTheDocument()
+      })
+      expect(screen.queryByText('Holiday pay policy')).not.toBeInTheDocument()
+    })
+
+    it('emits TIME_OFF_VIEW_POLICY with holiday type when edit is clicked', async () => {
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:companyUuid/holiday_pay_policy`, () => {
+          return HttpResponse.json(mockHolidayPayPolicy)
+        }),
+      )
+
+      renderWithProviders(<PolicyList {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Holiday pay policy')).toBeInTheDocument()
+      })
+
+      const menuButtons = screen.getAllByRole('button', { name: 'Open menu' })
+      const holidayMenuButton = menuButtons[menuButtons.length - 1]!
+      await user.click(holidayMenuButton)
+
+      await waitFor(() => {
+        expect(screen.getByText('Edit policy')).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByText('Edit policy'))
+
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.TIME_OFF_VIEW_POLICY, {
+        policyId: 'company-123',
+        policyType: 'holiday',
+      })
+    })
+
+    it('shows holiday-specific delete dialog and calls delete API', async () => {
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:companyUuid/holiday_pay_policy`, () => {
+          return HttpResponse.json(mockHolidayPayPolicy)
+        }),
+        http.delete(`${API_BASE_URL}/v1/companies/:companyUuid/holiday_pay_policy`, () => {
+          return new HttpResponse(null, { status: 204 })
+        }),
+      )
+
+      renderWithProviders(<PolicyList {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Holiday pay policy')).toBeInTheDocument()
+      })
+
+      const menuButtons = screen.getAllByRole('button', { name: 'Open menu' })
+      const holidayMenuButton = menuButtons[menuButtons.length - 1]!
+      await user.click(holidayMenuButton)
+
+      await waitFor(() => {
+        expect(screen.getByRole('menuitem', { name: 'Delete policy' })).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('menuitem', { name: 'Delete policy' }))
+
+      await waitFor(() => {
+        expect(
+          screen.getByText('Are you sure you want to delete the company holiday pay policy?'),
+        ).toBeInTheDocument()
+      })
+
+      const dialog = screen.getByRole('dialog')
+      await user.click(within(dialog).getByRole('button', { name: 'Delete policy' }))
+
+      await waitFor(() => {
+        expect(screen.getByText('Holiday pay policy deleted successfully')).toBeInTheDocument()
       })
     })
   })
