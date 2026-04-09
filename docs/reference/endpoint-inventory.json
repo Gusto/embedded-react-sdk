@@ -1364,6 +1364,17 @@
         "timeOffPolicyUuid"
       ]
     },
+    "UNSTABLE_TimeOff.PolicyConfigurationForm": {
+      "endpoints": [
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyUuid/time_off_policies"
+        }
+      ],
+      "variables": [
+        "companyUuid"
+      ]
+    },
     "UNSTABLE_TimeOff.HolidaySelectionForm": {
       "endpoints": [
         {
@@ -2132,7 +2143,7 @@
         "UNSTABLE_TimeOff.AddEmployeesHoliday",
         "UNSTABLE_TimeOff.AddEmployeesToPolicy",
         "UNSTABLE_TimeOff.HolidaySelectionForm",
-        "UNSTABLE_TimeOff.PolicyDetailsForm",
+        "UNSTABLE_TimeOff.PolicyConfigurationForm",
         "UNSTABLE_TimeOff.PolicyList",
         "UNSTABLE_TimeOff.PolicySettings",
         "UNSTABLE_TimeOff.PolicyTypeSelector",
@@ -2146,6 +2157,10 @@
         {
           "method": "POST",
           "path": "/v1/companies/:companyUuid/holiday_pay_policy"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyUuid/time_off_policies"
         },
         {
           "method": "GET",
