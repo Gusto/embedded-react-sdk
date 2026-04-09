@@ -6,6 +6,8 @@
   display: flex;
   align-items: flex-end;
   gap: toRem(8);
+  margin-top: toRem(16);
+  margin-bottom: toRem(16);
 }
 
 .dateInputWrapper {
@@ -19,6 +21,7 @@
   font-size: var(--g-fontSizeExtraSmall);
   color: var(--g-colorBodyContent);
   font-weight: 500;
+  display: none;
 }
 
 .dateInput {
@@ -32,6 +35,7 @@
   border-radius: var(--g-inputRadius);
   background-color: var(--g-inputBackgroundColor);
   color: var(--g-inputContentColor);
+  box-shadow: var(--g-shadowResting);
 
   &[data-focus-within] {
     outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
@@ -79,12 +83,12 @@
   font-weight: 400;
   font-size: var(--g-fontSizeSmall);
   overflow-x: hidden;
+  padding: toRem(16);
 }
 
 .calendarHeader {
   display: flex;
   align-items: center;
-  padding: toRem(8);
 }
 
 .calendarHeading {
@@ -92,11 +96,12 @@
   margin: 0;
   text-align: center;
   font-size: var(--g-fontSizeSmall);
+  color: var(--g-colorBodySubContent);
 }
 
 .calendarNavButton {
-  width: toRem(36);
-  height: toRem(36);
+  width: toRem(32);
+  height: toRem(32);
   padding: 0;
   border-radius: 999px;
   background-color: unset;
@@ -106,6 +111,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
+  svg {
+    width: toRem(20);
+    height: toRem(20);
+  }
 
   &[data-focus-visible] {
     outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
@@ -118,7 +128,6 @@
 }
 
 .calendarGrid {
-  margin: 0 toRem(8) toRem(8) toRem(8);
   border-collapse: separate;
   border-spacing: 0 toRem(3);
   width: toRem(286);
@@ -129,14 +138,13 @@
     th {
       padding-bottom: toRem(8);
       text-align: center;
-      color: var(--g-colorBodyContent);
-      font-weight: 400;
+      color: var(--g-colorBodySubContent);
+      font-weight: var(--g-fontWeightSemibold);
     }
   }
 
   td {
-    height: toRem(44);
-    padding: toRem(2) 0;
+    height: toRem(40);
 
     &:has([data-selected]) {
       background: var(--g-colorBorderSecondary);
@@ -173,13 +181,12 @@
 }
 
 .calendarCell {
-  width: toRem(32);
-  line-height: toRem(32);
+  width: toRem(40);
+  line-height: toRem(40);
   text-align: center;
-  border-radius: toRem(6);
+  border-radius: toRem(999);
   cursor: pointer;
   outline: none;
-  margin: 1px;
   forced-color-adjust: none;
 
   &[data-outside-month] {
@@ -216,9 +223,8 @@
     background: var(--g-colorPrimary);
     color: var(--g-colorPrimaryContent);
     border-radius: 999px;
-    line-height: toRem(44);
-    width: toRem(44);
-    margin: toRem(-2) toRem(-5);
+    line-height: toRem(40);
+    width: toRem(40);
     position: relative;
     z-index: 1;
   }
@@ -227,9 +233,9 @@
     background: var(--g-colorPrimary);
     color: var(--g-colorPrimaryContent);
     border-radius: 999px;
-    line-height: toRem(44);
-    width: toRem(44);
-    margin: toRem(-2) toRem(-5);
+    line-height: toRem(40);
+    width: toRem(40);
+
     position: relative;
     z-index: 1;
   }

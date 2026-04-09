@@ -2639,7 +2639,9 @@ export interface PayrollPayrollHistory{
 "startDate":string;
 "endDate":string;
 "apply":string;
+"cancel":string;
 "reset":string;
+"selectDates":string;
 "trigger":string;
 };
 "dataView":{
@@ -2699,7 +2701,9 @@ export interface PayrollPayrollList{
 "startDate":string;
 "endDate":string;
 "apply":string;
+"cancel":string;
 "reset":string;
+"selectDates":string;
 "trigger":string;
 };
 "payrollsListLabel":string;
