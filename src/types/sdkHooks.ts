@@ -58,7 +58,7 @@ export interface HookErrorHandling {
 export interface BaseHookReady {
   isLoading: false
   data: Record<string, unknown>
-  status: { isPending: boolean }
+  status: Record<string, unknown>
   errorHandling: HookErrorHandling
 }
 

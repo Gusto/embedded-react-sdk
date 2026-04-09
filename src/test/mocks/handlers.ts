@@ -11,7 +11,7 @@ import CompanyFederalTaxHandlers from './apis/company_federal_taxes'
 import TokenHandlers from './apis/tokens'
 import CompensationHandlers from './apis/compensations'
 import EmployeeBankAccountsHandlers from './apis/employeesBankAccounts'
-import PayrollsHandler from './apis/payrolls'
+import PayrollsHandler, { getEmployeePayStubs } from './apis/payrolls'
 import CompanySignatoryHandlers from './apis/company_signatories'
 import CompanyForms from './apis/company_forms'
 import PayScheduleHandlers from './apis/payschedule'
@@ -58,6 +58,7 @@ export const handlers = [
   getEmployeeStateTaxes,
   updateEmployeeStateTaxes,
   ...PayrollsHandler,
+  getEmployeePayStubs,
   ...CompanySignatoryHandlers,
   ...CompanyForms,
   ...PayScheduleHandlers,
