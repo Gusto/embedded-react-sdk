@@ -158,3 +158,77 @@ export const SingleItem = () => {
     />
   )
 }
+
+export const Horizontal = () => {
+  const Components = useComponentContext()
+  return (
+    <Components.DescriptionList
+      layout="horizontal"
+      items={[
+        {
+          term: <Components.Text>From</Components.Text>,
+          description: <Components.Text>Company Checking ****1234</Components.Text>,
+        },
+        {
+          term: <Components.Text>To</Components.Text>,
+          description: <Components.Text>Employee Savings ****5678</Components.Text>,
+        },
+        {
+          term: <Components.Text>Debit Date</Components.Text>,
+          description: <Components.Text>March 15, 2026</Components.Text>,
+        },
+      ]}
+    />
+  )
+}
+
+export const NoSeparators = () => {
+  const Components = useComponentContext()
+  return (
+    <Components.DescriptionList
+      showSeparators={false}
+      items={[
+        {
+          term: <Components.Text>First Term</Components.Text>,
+          description: <Components.Text>First description</Components.Text>,
+        },
+        {
+          term: <Components.Text>Second Term</Components.Text>,
+          description: <Components.Text>Second description</Components.Text>,
+        },
+        {
+          term: <Components.Text>Third Term</Components.Text>,
+          description: <Components.Text>Third description</Components.Text>,
+        },
+      ]}
+    />
+  )
+}
+
+export const HorizontalNoSeparators = () => {
+  const Components = useComponentContext()
+  return (
+    <Components.DescriptionList
+      layout="horizontal"
+      showSeparators={false}
+      items={[
+        {
+          term: <Components.Text>Receipt ID</Components.Text>,
+          description: <Components.Text>RCP-2026-001234</Components.Text>,
+        },
+        {
+          term: <Components.Text>From</Components.Text>,
+          description: <Components.Text>Company Checking ****1234</Components.Text>,
+        },
+        {
+          term: <Components.Text>To</Components.Text>,
+          description: <Components.Text>Employee Savings ****5678</Components.Text>,
+        },
+        {
+          term: <Components.Text>Debit Date</Components.Text>,
+          description: <Components.Text>March 15, 2026</Components.Text>,
+        },
+      ]}
+    />
+  )
+}

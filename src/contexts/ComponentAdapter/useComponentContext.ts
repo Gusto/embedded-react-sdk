@@ -34,6 +34,7 @@ import type { ModalProps } from '@/components/Common/UI/Modal/ModalTypes'
 import type { LoadingSpinnerProps } from '@/components/Common/UI/LoadingSpinner/LoadingSpinnerTypes'
 import type { DescriptionListProps } from '@/components/Common/UI/DescriptionList/DescriptionListTypes'
 import type { FileInputProps } from '@/components/Common/UI/FileInput/FileInputTypes'
+import type { BoxHeaderProps } from '@/components/Common/UI/BoxHeader/BoxHeaderTypes'
 import type { MultiSelectComboBoxProps } from '@/components/Common/UI/MultiSelectComboBox/MultiSelectComboBoxTypes'
 import type { PayrollLoadingProps } from '@/components/Common/PayrollLoading/PayrollLoadingTypes'
 
@@ -45,6 +46,7 @@ export interface ComponentsContextType {
   ButtonIcon: (props: ButtonIconProps) => JSX.Element | null
   Card: (props: CardProps) => JSX.Element | null
   Box: (props: BoxProps) => JSX.Element | null
+  BoxHeader: (props: BoxHeaderProps) => JSX.Element | null
   Checkbox: (props: CheckboxProps) => JSX.Element | null
   CheckboxGroup: (props: CheckboxGroupProps) => JSX.Element | null
   ComboBox: (props: ComboBoxProps) => JSX.Element | null

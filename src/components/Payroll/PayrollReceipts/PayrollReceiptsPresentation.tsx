@@ -8,6 +8,7 @@ import type {
 } from '@gusto/embedded-api/models/components/payrollreceipt'
 import styles from './PayrollReceiptsPresentation.module.scss'
 import { DataView, DataTable, Flex } from '@/components/Common'
+import type { DescriptionListItem } from '@/components/Common/UI/DescriptionList/DescriptionListTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { formatNumberAsCurrency } from '@/helpers/formattedStrings'
 import { useI18n } from '@/i18n'
@@ -23,7 +24,8 @@ export const PayrollReceiptsPresentation = ({
   receiptData,
   withReimbursements = true,
 }: PayrollReceiptsPresentationProps) => {
-  const { Heading, Text } = useComponentContext()
+  const Components = useComponentContext()
+  const { Heading, Text } = Components
   useI18n('Payroll.PayrollReceipts')
   const { t } = useTranslation('Payroll.PayrollReceipts')
 
@@ -116,34 +118,20 @@ export const PayrollReceiptsPresentation = ({
           </Flex>
         </Flex>
 
-        <div className={styles.receiptDetailsTable}>
-          <DataView
-            label={t('receipt.detailsLabel')}
-            variant="minimal"
-            breakAt="small"
-            breakpoints={{
-              base: '0rem',
-              small: '22rem',
-            }}
-            columns={[
-              {
-                title: '',
-                render: (item: { label: string; value: string }) => (
-                  <Text size="sm" variant="supporting">
-                    {item.label}
-                  </Text>
-                ),
-              },
-              {
-                title: '',
-                render: (item: { label: string; value: string }) => (
-                  <Text size="sm">{item.value}</Text>
-                ),
-              },
-            ]}
-            data={receiptDetailsConfig}
-          />
-        </div>
+        <Components.DescriptionList
+          layout="horizontal"
+          showSeparators={false}
+          items={receiptDetailsConfig.map(
+            ({ label, value }): DescriptionListItem => ({
+              term: (
+                <Text size="sm" variant="supporting">
+                  {label}
+                </Text>
+              ),
+              description: <Text size="sm">{value}</Text>,
+            }),
+          )}
+        />
 
         <Flex flexDirection="column" alignItems="center" gap={12}>
           <Text

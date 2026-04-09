@@ -35,6 +35,10 @@ import type { LoadingSpinnerProps } from '@/components/Common/UI/LoadingSpinner/
 import { LoadingSpinnerDefaults } from '@/components/Common/UI/LoadingSpinner/LoadingSpinnerTypes'
 import type { FileInputProps } from '@/components/Common/UI/FileInput/FileInputTypes'
 import { FileInputDefaults } from '@/components/Common/UI/FileInput/FileInputTypes'
+import type { BoxHeaderProps } from '@/components/Common/UI/BoxHeader/BoxHeaderTypes'
+import { BoxHeaderDefaults } from '@/components/Common/UI/BoxHeader/BoxHeaderTypes'
+import type { DescriptionListProps } from '@/components/Common/UI/DescriptionList/DescriptionListTypes'
+import { DescriptionListDefaults } from '@/components/Common/UI/DescriptionList/DescriptionListTypes'
 
 function composeWithDefaults<TProps>(defaults: Partial<TProps>, componentName: string) {
   return (customComponent: (props: TProps) => React.ReactElement | null) => {
@@ -69,6 +73,11 @@ export const componentCreators = {
     'LoadingSpinner',
   ),
   FileInput: composeWithDefaults<FileInputProps>(FileInputDefaults, 'FileInput'),
+  BoxHeader: composeWithDefaults<BoxHeaderProps>(BoxHeaderDefaults, 'BoxHeader'),
+  DescriptionList: composeWithDefaults<DescriptionListProps>(
+    DescriptionListDefaults,
+    'DescriptionList',
+  ),
 } as const
 
 /**

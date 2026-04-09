@@ -16,7 +16,7 @@ export type DataTableProps<T> = {
   getIsItemSelected?: (item: T) => boolean
   emptyState?: useDataViewPropReturn<T>['emptyState']
   footer?: useDataViewPropReturn<T>['footer']
-  variant?: TableProps['variant']
+  isWithinBox?: TableProps['isWithinBox']
   selectionMode?: SelectionMode
 }
 
@@ -46,7 +46,7 @@ export const DataTable = <T,>({
   getIsItemSelected,
   emptyState,
   footer,
-  variant,
+  isWithinBox,
   selectionMode = 'multiple',
 }: DataTableProps<T>) => {
   const Components = useComponentContext()
@@ -198,7 +198,7 @@ export const DataTable = <T,>({
       rows={rows}
       footer={footerData}
       emptyState={emptyState ? emptyState() : undefined}
-      variant={variant}
+      isWithinBox={isWithinBox}
       hasCheckboxColumn={!!onSelect}
     />
   )
