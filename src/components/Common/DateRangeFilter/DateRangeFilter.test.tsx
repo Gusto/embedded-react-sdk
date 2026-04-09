@@ -13,7 +13,9 @@ const defaultProps = {
   startDateLabel: 'From',
   endDateLabel: 'To',
   applyLabel: 'Apply',
+  cancelLabel: 'Cancel',
   resetLabel: 'Reset',
+  selectDatesLabel: 'Select dates',
   triggerLabel: 'Filter by date',
   isFilterActive: false,
 }
@@ -50,9 +52,21 @@ describe('DateRangeFilter', () => {
     })
   })
 
-  it('calls onClear and closes popover when Reset is clicked', async () => {
+  it('clears draft selection and calls onClear on Apply after Reset', async () => {
     const onClear = vi.fn()
-    renderWithProviders(<DateRangeFilter {...defaultProps} onClear={onClear} />)
+    const onStartDateChange = vi.fn()
+    const onEndDateChange = vi.fn()
+    renderWithProviders(
+      <DateRangeFilter
+        {...defaultProps}
+        isFilterActive={true}
+        startDate={new Date(2025, 2, 10)}
+        endDate={new Date(2025, 3, 16)}
+        onClear={onClear}
+        onStartDateChange={onStartDateChange}
+        onEndDateChange={onEndDateChange}
+      />,
+    )
 
     await user.click(screen.getByRole('button', { name: 'Filter by date' }))
 
@@ -62,7 +76,41 @@ describe('DateRangeFilter', () => {
 
     await user.click(screen.getByRole('button', { name: 'Reset' }))
 
+    // Popover stays open
+    expect(screen.getByRole('button', { name: 'Apply' })).toBeInTheDocument()
+
+    // Apply after Reset calls onClear since draft was cleared
+    await user.click(screen.getByRole('button', { name: 'Apply' }))
+
     expect(onClear).toHaveBeenCalledOnce()
+    expect(onStartDateChange).not.toHaveBeenCalled()
+    expect(onEndDateChange).not.toHaveBeenCalled()
+  })
+
+  it('closes popover without applying changes when Cancel is clicked', async () => {
+    const onStartDateChange = vi.fn()
+    const onEndDateChange = vi.fn()
+    const onClear = vi.fn()
+    renderWithProviders(
+      <DateRangeFilter
+        {...defaultProps}
+        onStartDateChange={onStartDateChange}
+        onEndDateChange={onEndDateChange}
+        onClear={onClear}
+      />,
+    )
+
+    await user.click(screen.getByRole('button', { name: 'Filter by date' }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument()
+    })
+
+    await user.click(screen.getByRole('button', { name: 'Cancel' }))
+
+    expect(onStartDateChange).not.toHaveBeenCalled()
+    expect(onEndDateChange).not.toHaveBeenCalled()
+    expect(onClear).not.toHaveBeenCalled()
   })
 
   it('uses secondary variant and shows date range for trigger when filter is active', () => {
@@ -80,10 +128,10 @@ describe('DateRangeFilter', () => {
     expect(trigger).toHaveTextContent('Mar 10 – Apr 16')
   })
 
-  it('uses tertiary variant for trigger when filter is not active', () => {
+  it('uses secondary variant for trigger when filter is not active', () => {
     renderWithProviders(<DateRangeFilter {...defaultProps} isFilterActive={false} />)
 
     const trigger = screen.getByRole('button', { name: 'Filter by date' })
-    expect(trigger).toHaveAttribute('data-variant', 'tertiary')
+    expect(trigger).toHaveAttribute('data-variant', 'secondary')
   })
 })

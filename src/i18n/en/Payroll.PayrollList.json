@@ -5,7 +5,9 @@
     "startDate": "From",
     "endDate": "To",
     "apply": "Apply",
+    "cancel": "Cancel",
     "reset": "Reset",
+    "selectDates": "Select dates",
     "trigger": "Filter by date"
   },
   "payrollsListLabel": "Payrolls",
