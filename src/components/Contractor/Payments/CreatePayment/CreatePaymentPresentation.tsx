@@ -124,29 +124,23 @@ export const CreatePaymentPresentation = ({
           columns={[
             {
               title: t('contractorTableHeaders.contractor'),
-              render: paymentData => (
-                <Text>{getContractorDisplayName(paymentData.contractorDetails)}</Text>
-              ),
+              render: paymentData => getContractorDisplayName(paymentData.contractorDetails),
             },
             {
               title: t('contractorTableHeaders.wageType'),
-              render: paymentData => <Text>{formatWageType(paymentData.contractorDetails)}</Text>,
+              render: paymentData => formatWageType(paymentData.contractorDetails),
             },
             {
               title: t('contractorTableHeaders.paymentMethod'),
-              render: paymentData => <Text>{paymentData.paymentMethod || t('na')}</Text>,
+              render: paymentData => paymentData.paymentMethod || t('na'),
             },
             {
               title: t('contractorTableHeaders.hours'),
               render: paymentData => {
                 const hours = Number(paymentData.hours || '0')
-                return (
-                  <Text>
-                    {paymentData.contractorDetails?.wageType === 'Hourly' && hours
-                      ? formatHoursDisplay(hours)
-                      : ZERO_HOURS_DISPLAY}
-                  </Text>
-                )
+                return paymentData.contractorDetails?.wageType === 'Hourly' && hours
+                  ? formatHoursDisplay(hours)
+                  : ZERO_HOURS_DISPLAY
               },
             },
             {
@@ -156,20 +150,16 @@ export const CreatePaymentPresentation = ({
                   paymentData.contractorDetails?.wageType === 'Fixed' && paymentData.wage
                     ? Number(paymentData.wage || '0')
                     : 0
-                return <Text>{currencyFormatter(amount)}</Text>
+                return currencyFormatter(amount)
               },
             },
             {
               title: t('contractorTableHeaders.bonus'),
-              render: paymentData => (
-                <Text>{currencyFormatter(Number(paymentData.bonus || '0'))}</Text>
-              ),
+              render: paymentData => currencyFormatter(Number(paymentData.bonus || '0')),
             },
             {
               title: t('contractorTableHeaders.reimbursement'),
-              render: paymentData => (
-                <Text>{currencyFormatter(Number(paymentData.reimbursement || '0'))}</Text>
-              ),
+              render: paymentData => currencyFormatter(Number(paymentData.reimbursement || '0')),
             },
             {
               title: t('contractorTableHeaders.total'),
@@ -181,18 +171,22 @@ export const CreatePaymentPresentation = ({
                   (contractorDetails?.wageType === 'Hourly' && hours
                     ? Number(hours || '0') * Number(contractorDetails.hourlyRate || '0')
                     : 0)
-                return <Text>{currencyFormatter(totalAmount)}</Text>
+                return currencyFormatter(totalAmount)
               },
             },
           ]}
           data={tableData}
-          footer={() => ({
-            'column-0': <Text weight="bold">{t('totalsLabel')}</Text>,
-            'column-4': <Text>{currencyFormatter(totals.wage)}</Text>,
-            'column-5': <Text>{currencyFormatter(totals.bonus)}</Text>,
-            'column-6': <Text>{currencyFormatter(totals.reimbursement)}</Text>,
-            'column-7': <Text>{currencyFormatter(totals.total)}</Text>,
-          })}
+          footer={
+            tableData.length > 0
+              ? () => ({
+                  'column-0': t('totalsLabel'),
+                  'column-4': currencyFormatter(totals.wage),
+                  'column-5': currencyFormatter(totals.bonus),
+                  'column-6': currencyFormatter(totals.reimbursement),
+                  'column-7': currencyFormatter(totals.total),
+                })
+              : undefined
+          }
           label={t('hoursAndPaymentsLabel')}
           itemMenu={paymentData => (
             <HamburgerMenu
