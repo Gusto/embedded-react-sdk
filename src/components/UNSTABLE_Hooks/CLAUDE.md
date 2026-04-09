@@ -340,8 +340,31 @@ return {
 
 - Use `formMethods.handleSubmit` inside a `Promise` wrapper so `onSubmit` is async/awaitable
 - Delegate to `baseSubmitHandler` for error boundary integration
-- Accept callbacks for each mutation step so the prebuilt component can fire `onEvent`
-- Return `HookSubmitResult<TEntity>` where `TEntity` is the primary domain entity the form manages (e.g. `Compensation`). This gives partners direct access to the saved entity without needing to wire up callbacks for simple use cases
+- Return `HookSubmitResult<TEntity>` where `TEntity` is the primary domain entity the form manages (e.g. `Compensation`). The prebuilt component uses the return value to fire `onEvent`
+
+#### Callbacks vs Return Value
+
+Use **return value only** (no callbacks) when `onSubmit` makes a single create-or-update API call. The caller inspects the returned `HookSubmitResult` to determine what happened:
+
+```typescript
+// Simple create/update — return result, no callbacks
+const onSubmit = async (): Promise<HookSubmitResult<PaySchedule> | undefined> => { ... }
+
+// Prebuilt component usage
+const result = await hook.actions.onSubmit()
+if (result) {
+  onEvent(result.mode === 'create' ? CREATED_EVENT : UPDATED_EVENT, result.data)
+}
+```
+
+Use **callbacks** only when `onSubmit` orchestrates **multiple sequential API calls** where the caller needs to react after each step (e.g. `useCompensationForm` creates/updates a Job then updates a Compensation — the caller may want `onJobCreated` and `onCompensationUpdated` as separate events). Even with callbacks, still return the final `HookSubmitResult` so the caller has a unified await point.
+
+```typescript
+// Multi-step — callbacks for intermediate steps, result for final outcome
+const onSubmit = async (
+  callbacks?: CompensationSubmitCallbacks,
+): Promise<HookSubmitResult<Compensation> | undefined> => { ... }
+```
 
 ## 4. Prebuilt Component (`{Domain}Form.tsx`)
 

@@ -149,4 +149,36 @@ export {
   // Work address field prop types
   type LocationFieldProps,
   type EffectiveDateFieldProps,
+
+  // Pay schedule hook + component
+  usePayScheduleForm,
+  PayScheduleForm,
+  PayScheduleErrorCodes,
+
+  // Pay schedule types
+  type PayScheduleFormProps,
+  type PayScheduleOptionalFieldsToRequire,
+  type UsePayScheduleFormProps,
+  type UsePayScheduleFormResult,
+  type UsePayScheduleFormReady,
+  type PayScheduleFieldsMetadata,
+  type PayScheduleFormFields,
+  type PayScheduleErrorCode,
+  type PayScheduleFormData,
+  type PayScheduleFormOutputs,
+  type PayScheduleField,
+  type PayScheduleFrequency,
+
+  // Pay schedule validation code types
+  type PayScheduleRequiredValidation,
+  type DayValidation,
+
+  // Pay schedule field prop types
+  type CustomNameFieldProps,
+  type FrequencyFieldProps,
+  type CustomTwicePerMonthFieldProps,
+  type AnchorPayDateFieldProps,
+  type AnchorEndOfPayPeriodFieldProps,
+  type Day1FieldProps,
+  type Day2FieldProps,
 } from '@/components/UNSTABLE_Hooks'
