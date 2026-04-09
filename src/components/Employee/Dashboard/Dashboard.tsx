@@ -93,12 +93,9 @@ function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
     })
   }, [onEvent, employeeId, employeeFederalTax])
 
-  const handleEditStateTaxes = useCallback(
-    (state: string) => {
-      onEvent(componentEvents.EMPLOYEE_STATE_TAXES_EDIT, { employeeId, state })
-    },
-    [onEvent, employeeId],
-  )
+  const handleEditStateTaxes = useCallback(() => {
+    onEvent(componentEvents.EMPLOYEE_STATE_TAXES_EDIT, { employeeId })
+  }, [onEvent, employeeId])
 
   const handleViewForm = useCallback(
     (formUuid: string) => {

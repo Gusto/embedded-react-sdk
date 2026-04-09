@@ -19,7 +19,7 @@ export interface TaxesViewProps {
   stateTaxes?: EmployeeStateTax[]
   isLoading?: boolean
   onEditFederalTaxes?: () => void
-  onEditStateTaxes?: (state: string) => void
+  onEditStateTaxes?: () => void
 }
 
 export function TaxesView({
@@ -84,15 +84,17 @@ export function TaxesView({
 
   return (
     <Flex flexDirection="column" gap={24}>
-      <Components.Box>
-        <Flex flexDirection="column" gap={16}>
+      <Components.Box
+        header={
           <Flex justifyContent="space-between" alignItems="center">
             <Components.Heading as="h3">{t('taxes.federal.title')}</Components.Heading>
             <Components.Button variant="secondary" onClick={onEditFederalTaxes}>
               {t('taxes.federal.editCta')}
             </Components.Button>
           </Flex>
-
+        }
+      >
+        <Flex flexDirection="column" gap={16}>
           {federalTaxes && (
             <Flex flexDirection="column" gap={12}>
               {federalTaxes.filingStatus && (
@@ -163,25 +165,22 @@ export function TaxesView({
         </Flex>
       </Components.Box>
 
-      <Components.Box>
-        <Flex flexDirection="column" gap={16}>
+      <Components.Box
+        header={
           <Flex justifyContent="space-between" alignItems="center">
-            <Components.Heading as="h3">{t('taxes.state.title')}</Components.Heading>
+            <Components.Heading as="h3">{t('taxes.state.title')}</Components.Heading>{' '}
+            <Components.Button variant="secondary" onClick={onEditStateTaxes}>
+              {t('taxes.state.editCta')}
+            </Components.Button>
           </Flex>
-
+        }
+      >
+        <Flex flexDirection="column" gap={16}>
           {stateTaxes && stateTaxes.length > 0 ? (
             <Flex flexDirection="column" gap={24}>
               {stateTaxes.map((stateTax, index) => (
                 <Flex key={stateTax.state || index} flexDirection="column" gap={16}>
-                  <Flex justifyContent="space-between" alignItems="center">
-                    <Components.Heading as="h4">{stateTax.state}</Components.Heading>
-                    <Components.Button
-                      variant="secondary"
-                      onClick={() => onEditStateTaxes?.(stateTax.state || '')}
-                    >
-                      {t('taxes.state.editCta')}
-                    </Components.Button>
-                  </Flex>
+                  <Components.Heading as="h4">{stateTax.state}</Components.Heading>
 
                   {stateTax.questions && stateTax.questions.length > 0 && (
                     <Flex flexDirection="column" gap={12}>

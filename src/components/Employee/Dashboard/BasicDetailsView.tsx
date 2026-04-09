@@ -44,15 +44,17 @@ export function BasicDetailsView({
 
   return (
     <Flex flexDirection="column" gap={24}>
-      <Components.Box>
-        <Flex flexDirection="column" gap={16}>
+      <Components.Box
+        header={
           <Flex justifyContent="space-between" alignItems="center">
             <Components.Heading as="h3">{t('basicDetails.title')}</Components.Heading>
             <Components.Button variant="secondary" onClick={onEditBasicDetails}>
               {t('basicDetails.editCta')}
             </Components.Button>
           </Flex>
-
+        }
+      >
+        <Flex flexDirection="column" gap={16}>
           <Flex flexDirection="column" gap={12}>
             {legalName && (
               <Flex flexDirection="column" gap={0}>
@@ -102,15 +104,17 @@ export function BasicDetailsView({
         </Flex>
       </Components.Box>
 
-      <Components.Box>
-        <Flex flexDirection="column" gap={16}>
+      <Components.Box
+        header={
           <Flex justifyContent="space-between" alignItems="center">
             <Components.Heading as="h3">{t('homeAddress.title')}</Components.Heading>
             <Components.Button variant="secondary" onClick={onManageHomeAddress}>
               {t('homeAddress.manageCta')}
             </Components.Button>
           </Flex>
-
+        }
+      >
+        <Flex flexDirection="column" gap={16}>
           {currentHomeAddress ? (
             <Flex flexDirection="column" gap={0}>
               <Components.Text variant="supporting">
@@ -125,15 +129,17 @@ export function BasicDetailsView({
         </Flex>
       </Components.Box>
 
-      <Components.Box>
-        <Flex flexDirection="column" gap={16}>
+      <Components.Box
+        header={
           <Flex justifyContent="space-between" alignItems="center">
             <Components.Heading as="h3">{t('workAddress.title')}</Components.Heading>
             <Components.Button variant="secondary" onClick={onManageWorkAddress}>
               {t('workAddress.manageCta')}
             </Components.Button>
           </Flex>
-
+        }
+      >
+        <Flex flexDirection="column" gap={16}>
           {currentWorkAddress ? (
             <Flex flexDirection="column" gap={0}>
               <Components.Text variant="supporting">
