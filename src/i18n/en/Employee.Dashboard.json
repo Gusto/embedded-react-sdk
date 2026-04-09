@@ -43,6 +43,7 @@
     },
     "payment": {
       "title": "Payment",
+      "splitPaycheckCta": "Split paycheck",
       "addBankAccountCta": "Add bank account",
       "listLabel": "List of bank accounts",
       "nickname": "Nickname",

@@ -48,20 +48,16 @@ export function DocumentsView({ forms = [], isLoading = false, onViewForm }: Doc
         return t('common.no')
       },
     },
-    {
-      key: 'actions',
-      title: t('documents.columns.actions'),
-      render: (form: Form) => (
-        <Components.Button variant="tertiary" onClick={() => onViewForm?.(form.uuid)}>
-          {t('documents.viewCta')}
-        </Components.Button>
-      ),
-    },
   ]
 
   const formsDataView = useDataView({
     data: forms,
     columns: formsColumns,
+    itemMenu: (form: Form) => (
+      <Components.Button variant="secondary" onClick={() => onViewForm?.(form.uuid)}>
+        {t('documents.viewCta')}
+      </Components.Button>
+    ),
     emptyState: () => (
       <EmptyData
         title={t('documents.emptyState.title')}
@@ -72,10 +68,8 @@ export function DocumentsView({ forms = [], isLoading = false, onViewForm }: Doc
 
   return (
     <Flex flexDirection="column" gap={24}>
-      <Components.Box>
+      <Components.Box header={<Components.BoxHeader title={t('documents.title')} />}>
         <Flex flexDirection="column" gap={16}>
-          <Components.Heading as="h3">{t('documents.title')}</Components.Heading>
-
           <DataView label={t('documents.listLabel')} {...formsDataView} />
         </Flex>
       </Components.Box>

@@ -78,6 +78,10 @@ function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
     onEvent(componentEvents.EMPLOYEE_COMPENSATION_UPDATE, { employeeId, job: primaryJob })
   }, [onEvent, employeeId, primaryJob])
 
+  const handleSplitPaycheck = useCallback(() => {
+    onEvent(componentEvents.EMPLOYEE_SPLIT_PAYCHECK, { employeeId })
+  }, [onEvent, employeeId])
+
   const handleAddBankAccount = useCallback(() => {
     onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATE, { employeeId })
   }, [onEvent, employeeId])
@@ -93,12 +97,9 @@ function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
     })
   }, [onEvent, employeeId, employeeFederalTax])
 
-  const handleEditStateTaxes = useCallback(
-    (state: string) => {
-      onEvent(componentEvents.EMPLOYEE_STATE_TAXES_EDIT, { employeeId, state })
-    },
-    [onEvent, employeeId],
-  )
+  const handleEditStateTaxes = useCallback(() => {
+    onEvent(componentEvents.EMPLOYEE_STATE_TAXES_EDIT, { employeeId })
+  }, [onEvent, employeeId])
 
   const handleViewForm = useCallback(
     (formUuid: string) => {
@@ -165,6 +166,7 @@ function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
               payStubsPagination={payStubsPagination}
               isLoading={isLoadingJobAndPay}
               onEditCompensation={handleEditCompensation}
+              onSplitPaycheck={handleSplitPaycheck}
               onAddBankAccount={handleAddBankAccount}
               onAddDeduction={handleAddDeduction}
             />
