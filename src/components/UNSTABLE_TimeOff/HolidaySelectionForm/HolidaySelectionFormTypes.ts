@@ -5,11 +5,11 @@ export interface HolidayItem {
   nextObservation: string
 }
 
-interface SelectHolidaysBaseProps {
+interface HolidaySelectionFormBaseProps {
   holidays: HolidayItem[]
 }
 
-interface SelectHolidaysSelectModeProps extends SelectHolidaysBaseProps {
+interface HolidaySelectionFormSelectModeProps extends HolidaySelectionFormBaseProps {
   mode?: 'select'
   selectedHolidayUuids: Set<string>
   onSelectionChange: (item: HolidayItem, selected: boolean) => void
@@ -17,7 +17,7 @@ interface SelectHolidaysSelectModeProps extends SelectHolidaysBaseProps {
   onBack: () => void
 }
 
-interface SelectHolidaysViewModeProps extends SelectHolidaysBaseProps {
+interface HolidaySelectionFormViewModeProps extends HolidaySelectionFormBaseProps {
   mode: 'view'
   selectedHolidayUuids?: never
   onSelectionChange?: never
@@ -25,6 +25,6 @@ interface SelectHolidaysViewModeProps extends SelectHolidaysBaseProps {
   onBack?: never
 }
 
-export type SelectHolidaysPresentationProps =
-  | SelectHolidaysSelectModeProps
-  | SelectHolidaysViewModeProps
+export type HolidaySelectionFormPresentationProps =
+  | HolidaySelectionFormSelectModeProps
+  | HolidaySelectionFormViewModeProps

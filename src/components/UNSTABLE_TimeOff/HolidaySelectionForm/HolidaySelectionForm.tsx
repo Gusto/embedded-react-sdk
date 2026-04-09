@@ -1,9 +1,17 @@
-import { useCallback, useState } from 'react'
-import { SelectHolidaysPresentation } from '../TimeOffManagement/SelectHolidays/SelectHolidaysPresentation'
-import type { HolidayItem } from '../TimeOffManagement/SelectHolidays/SelectHolidaysTypes'
+import { useCallback, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useHolidayPayPoliciesCreateMutation } from '@gusto/embedded-api/react-query/holidayPayPoliciesCreate'
+import {
+  getDefaultHolidayItems,
+  buildFederalHolidaysPayload,
+  FEDERAL_HOLIDAY_KEYS,
+} from '../shared/holidayHelpers'
+import { HolidaySelectionFormPresentation } from './HolidaySelectionFormPresentation'
+import type { HolidayItem } from './HolidaySelectionFormTypes'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useBase } from '@/components/Base/useBase'
 import { componentEvents } from '@/shared/constants'
+import { useI18n } from '@/i18n'
 
 export interface HolidaySelectionFormProps extends BaseComponentInterface {
   companyId: string
@@ -12,70 +20,21 @@ export interface HolidaySelectionFormProps extends BaseComponentInterface {
 export function HolidaySelectionForm(props: HolidaySelectionFormProps) {
   return (
     <BaseComponent {...props}>
-      <Root />
+      <Root companyId={props.companyId} />
     </BaseComponent>
   )
 }
 
-const DEFAULT_HOLIDAYS: HolidayItem[] = [
-  { uuid: 'new-years', name: "New Year's Day", observedDate: 'January 1', nextObservation: '' },
-  {
-    uuid: 'mlk',
-    name: 'Martin Luther King, Jr. Day',
-    observedDate: 'Third Monday in January',
-    nextObservation: '',
-  },
-  {
-    uuid: 'presidents',
-    name: "Presidents' Day",
-    observedDate: 'Third Monday in February',
-    nextObservation: '',
-  },
-  {
-    uuid: 'memorial',
-    name: 'Memorial Day',
-    observedDate: 'Last Monday in May',
-    nextObservation: '',
-  },
-  { uuid: 'juneteenth', name: 'Juneteenth', observedDate: 'June 19', nextObservation: '' },
-  {
-    uuid: 'independence',
-    name: 'Independence Day',
-    observedDate: 'July 4',
-    nextObservation: '',
-  },
-  {
-    uuid: 'labor',
-    name: 'Labor Day',
-    observedDate: 'First Monday in September',
-    nextObservation: '',
-  },
-  {
-    uuid: 'columbus',
-    name: "Columbus Day (Indigenous Peoples' Day)",
-    observedDate: 'Second Monday in October',
-    nextObservation: '',
-  },
-  { uuid: 'veterans', name: 'Veterans Day', observedDate: 'November 11', nextObservation: '' },
-  {
-    uuid: 'thanksgiving',
-    name: 'Thanksgiving',
-    observedDate: 'Fourth Thursday in November',
-    nextObservation: '',
-  },
-  {
-    uuid: 'christmas',
-    name: 'Christmas Day',
-    observedDate: 'December 25',
-    nextObservation: '',
-  },
-]
+function Root({ companyId }: { companyId: string }) {
+  useI18n('Company.TimeOff.HolidayPolicy')
+  const { t } = useTranslation('Company.TimeOff.HolidayPolicy')
+  const { onEvent, baseSubmitHandler } = useBase()
 
-const ALL_HOLIDAY_UUIDS = new Set(DEFAULT_HOLIDAYS.map(h => h.uuid))
+  const holidays = useMemo(() => getDefaultHolidayItems(t), [t])
+  const allKeys = useMemo(() => new Set(FEDERAL_HOLIDAY_KEYS), [])
+  const [selectedUuids, setSelectedUuids] = useState(allKeys)
 
-function Root() {
-  const { onEvent } = useBase()
-  const [selectedUuids, setSelectedUuids] = useState(ALL_HOLIDAY_UUIDS)
+  const { mutateAsync: createPolicy } = useHolidayPayPoliciesCreateMutation()
 
   const handleSelectionChange = useCallback((item: HolidayItem, selected: boolean) => {
     setSelectedUuids(prev => {
@@ -89,17 +48,27 @@ function Root() {
     })
   }, [])
 
-  const handleContinue = useCallback(() => {
-    onEvent(componentEvents.TIME_OFF_HOLIDAY_SELECTION_DONE)
-  }, [onEvent])
+  const handleContinue = useCallback(async () => {
+    await baseSubmitHandler({}, async () => {
+      await createPolicy({
+        request: {
+          companyUuid: companyId,
+          holidayPayPolicyRequest: {
+            federalHolidays: buildFederalHolidaysPayload(selectedUuids),
+          },
+        },
+      })
+      onEvent(componentEvents.TIME_OFF_HOLIDAY_SELECTION_DONE)
+    })
+  }, [baseSubmitHandler, createPolicy, companyId, selectedUuids, onEvent])
 
   const handleBack = useCallback(() => {
     onEvent(componentEvents.CANCEL)
   }, [onEvent])
 
   return (
-    <SelectHolidaysPresentation
-      holidays={DEFAULT_HOLIDAYS}
+    <HolidaySelectionFormPresentation
+      holidays={holidays}
       selectedHolidayUuids={selectedUuids}
       onSelectionChange={handleSelectionChange}
       onContinue={handleContinue}

@@ -65,6 +65,7 @@ describe('useDataView Hook', () => {
       return <div>Menu for {item.name}</div>
     })
     const onSelectMock = vi.fn()
+    const getIsItemSelectedMock = vi.fn(() => false)
 
     const { result } = renderHook(() =>
       useDataView({
@@ -72,6 +73,7 @@ describe('useDataView Hook', () => {
         columns: [...testColumns],
         itemMenu: itemMenuMock,
         onSelect: onSelectMock,
+        getIsItemSelected: getIsItemSelectedMock,
       }),
     )
 

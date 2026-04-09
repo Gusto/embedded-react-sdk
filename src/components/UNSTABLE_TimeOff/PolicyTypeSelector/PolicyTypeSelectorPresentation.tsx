@@ -1,45 +1,45 @@
 import { useMemo } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import type { SelectPolicyType, SelectPolicyTypePresentationProps } from './SelectPolicyTypeTypes'
+import type { PolicyType, PolicyTypeSelectorPresentationProps } from './PolicyTypeSelectorTypes'
 import { Flex, ActionsLayout, RadioGroupField } from '@/components/Common'
 import { Form as HtmlForm } from '@/components/Common/Form'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 
-interface SelectPolicyTypeFormData {
-  policyType: SelectPolicyType
+interface PolicyTypeSelectorFormData {
+  policyType: PolicyType
 }
 
-export function SelectPolicyTypePresentation({
+export function PolicyTypeSelectorPresentation({
   onContinue,
   onCancel,
   defaultPolicyType,
-}: SelectPolicyTypePresentationProps) {
+}: PolicyTypeSelectorPresentationProps) {
   useI18n('Company.TimeOff.SelectPolicyType')
   const { t } = useTranslation('Company.TimeOff.SelectPolicyType')
   const { Heading, Text, Button } = useComponentContext()
 
-  const formMethods = useForm<SelectPolicyTypeFormData>({
+  const formMethods = useForm<PolicyTypeSelectorFormData>({
     defaultValues: {
-      policyType: defaultPolicyType as SelectPolicyType,
+      policyType: defaultPolicyType as PolicyType,
     },
   })
 
   const policyTypeOptions = useMemo(
     () => [
       {
-        value: 'holiday' as SelectPolicyType,
+        value: 'holiday' as PolicyType,
         label: t('holidayLabel'),
         description: t('holidayHint'),
       },
       {
-        value: 'vacation' as SelectPolicyType,
+        value: 'vacation' as PolicyType,
         label: t('timeOffLabel'),
         description: t('timeOffHint'),
       },
       {
-        value: 'sick' as SelectPolicyType,
+        value: 'sick' as PolicyType,
         label: t('sickLeaveLabel'),
         description: t('sickLeaveHint'),
       },
@@ -47,7 +47,7 @@ export function SelectPolicyTypePresentation({
     [t],
   )
 
-  const handleSubmit = (data: SelectPolicyTypeFormData) => {
+  const handleSubmit = (data: PolicyTypeSelectorFormData) => {
     onContinue(data.policyType)
   }
 
@@ -60,7 +60,7 @@ export function SelectPolicyTypePresentation({
             <Text variant="supporting">{t('policyTypeHint')}</Text>
           </Flex>
 
-          <RadioGroupField<SelectPolicyType>
+          <RadioGroupField<PolicyType>
             name="policyType"
             label={t('policyTypeLabel')}
             options={policyTypeOptions}

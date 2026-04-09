@@ -1,12 +1,12 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { SelectPolicyType } from './SelectPolicyType'
-import { SelectPolicyTypePresentation } from './SelectPolicyTypePresentation'
+import { PolicyTypeSelector } from './PolicyTypeSelector'
+import { PolicyTypeSelectorPresentation } from './PolicyTypeSelectorPresentation'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { componentEvents } from '@/shared/constants'
 
-describe('SelectPolicyTypePresentation', () => {
+describe('PolicyTypeSelectorPresentation', () => {
   const defaultProps = {
     onContinue: vi.fn(),
     onCancel: vi.fn(),
@@ -19,7 +19,7 @@ describe('SelectPolicyTypePresentation', () => {
 
   describe('rendering', () => {
     it('renders the heading', async () => {
-      renderWithProviders(<SelectPolicyTypePresentation {...defaultProps} />)
+      renderWithProviders(<PolicyTypeSelectorPresentation {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByText('Select policy type')).toBeInTheDocument()
@@ -27,7 +27,7 @@ describe('SelectPolicyTypePresentation', () => {
     })
 
     it('renders the description', async () => {
-      renderWithProviders(<SelectPolicyTypePresentation {...defaultProps} />)
+      renderWithProviders(<PolicyTypeSelectorPresentation {...defaultProps} />)
 
       await waitFor(() => {
         expect(
@@ -37,7 +37,7 @@ describe('SelectPolicyTypePresentation', () => {
     })
 
     it('renders all three radio options with labels', async () => {
-      renderWithProviders(<SelectPolicyTypePresentation {...defaultProps} />)
+      renderWithProviders(<PolicyTypeSelectorPresentation {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByText('Holiday pay')).toBeInTheDocument()
@@ -47,7 +47,7 @@ describe('SelectPolicyTypePresentation', () => {
     })
 
     it('renders descriptions for each option', async () => {
-      renderWithProviders(<SelectPolicyTypePresentation {...defaultProps} />)
+      renderWithProviders(<PolicyTypeSelectorPresentation {...defaultProps} />)
 
       await waitFor(() => {
         expect(
@@ -69,7 +69,7 @@ describe('SelectPolicyTypePresentation', () => {
     })
 
     it('has no option selected by default', async () => {
-      renderWithProviders(<SelectPolicyTypePresentation {...defaultProps} />)
+      renderWithProviders(<PolicyTypeSelectorPresentation {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getAllByRole('radio')).toHaveLength(3)
@@ -82,7 +82,7 @@ describe('SelectPolicyTypePresentation', () => {
     })
 
     it('renders Cancel and Continue buttons', async () => {
-      renderWithProviders(<SelectPolicyTypePresentation {...defaultProps} />)
+      renderWithProviders(<PolicyTypeSelectorPresentation {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument()
@@ -94,7 +94,7 @@ describe('SelectPolicyTypePresentation', () => {
   describe('pre-selected state', () => {
     it('renders with holiday pre-selected', async () => {
       renderWithProviders(
-        <SelectPolicyTypePresentation {...defaultProps} defaultPolicyType="holiday" />,
+        <PolicyTypeSelectorPresentation {...defaultProps} defaultPolicyType="holiday" />,
       )
 
       await waitFor(() => {
@@ -104,7 +104,7 @@ describe('SelectPolicyTypePresentation', () => {
 
     it('renders with vacation pre-selected', async () => {
       renderWithProviders(
-        <SelectPolicyTypePresentation {...defaultProps} defaultPolicyType="vacation" />,
+        <PolicyTypeSelectorPresentation {...defaultProps} defaultPolicyType="vacation" />,
       )
 
       await waitFor(() => {
@@ -114,7 +114,7 @@ describe('SelectPolicyTypePresentation', () => {
 
     it('renders with sick pre-selected', async () => {
       renderWithProviders(
-        <SelectPolicyTypePresentation {...defaultProps} defaultPolicyType="sick" />,
+        <PolicyTypeSelectorPresentation {...defaultProps} defaultPolicyType="sick" />,
       )
 
       await waitFor(() => {
@@ -126,7 +126,7 @@ describe('SelectPolicyTypePresentation', () => {
   describe('selection behavior', () => {
     it('selects an option when clicked', async () => {
       const user = userEvent.setup()
-      renderWithProviders(<SelectPolicyTypePresentation {...defaultProps} />)
+      renderWithProviders(<PolicyTypeSelectorPresentation {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByLabelText('Holiday pay')).toBeInTheDocument()
@@ -138,7 +138,7 @@ describe('SelectPolicyTypePresentation', () => {
 
     it('allows changing selection between options', async () => {
       const user = userEvent.setup()
-      renderWithProviders(<SelectPolicyTypePresentation {...defaultProps} />)
+      renderWithProviders(<PolicyTypeSelectorPresentation {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByLabelText('Holiday pay')).toBeInTheDocument()
@@ -156,7 +156,7 @@ describe('SelectPolicyTypePresentation', () => {
   describe('actions', () => {
     it('calls onContinue with selected policy type on submit', async () => {
       const user = userEvent.setup()
-      renderWithProviders(<SelectPolicyTypePresentation {...defaultProps} />)
+      renderWithProviders(<PolicyTypeSelectorPresentation {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByLabelText('Time off')).toBeInTheDocument()
@@ -172,7 +172,7 @@ describe('SelectPolicyTypePresentation', () => {
 
     it('calls onContinue with holiday when holiday is selected', async () => {
       const user = userEvent.setup()
-      renderWithProviders(<SelectPolicyTypePresentation {...defaultProps} />)
+      renderWithProviders(<PolicyTypeSelectorPresentation {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByLabelText('Holiday pay')).toBeInTheDocument()
@@ -188,7 +188,7 @@ describe('SelectPolicyTypePresentation', () => {
 
     it('calls onCancel when Cancel button is clicked', async () => {
       const user = userEvent.setup()
-      renderWithProviders(<SelectPolicyTypePresentation {...defaultProps} />)
+      renderWithProviders(<PolicyTypeSelectorPresentation {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument()
@@ -200,7 +200,7 @@ describe('SelectPolicyTypePresentation', () => {
 
     it('does not call onContinue when submitting without selection', async () => {
       const user = userEvent.setup()
-      renderWithProviders(<SelectPolicyTypePresentation {...defaultProps} />)
+      renderWithProviders(<PolicyTypeSelectorPresentation {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByRole('button', { name: 'Continue' })).toBeInTheDocument()
@@ -216,7 +216,7 @@ describe('SelectPolicyTypePresentation', () => {
 
   describe('accessibility', () => {
     it('has a radio group with correct role', async () => {
-      renderWithProviders(<SelectPolicyTypePresentation {...defaultProps} />)
+      renderWithProviders(<PolicyTypeSelectorPresentation {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByRole('radiogroup')).toBeInTheDocument()
@@ -225,7 +225,7 @@ describe('SelectPolicyTypePresentation', () => {
 
     it('supports keyboard navigation between options', async () => {
       const user = userEvent.setup()
-      renderWithProviders(<SelectPolicyTypePresentation {...defaultProps} />)
+      renderWithProviders(<PolicyTypeSelectorPresentation {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByLabelText('Holiday pay')).toBeInTheDocument()
@@ -243,7 +243,7 @@ describe('SelectPolicyTypePresentation', () => {
   })
 })
 
-describe('SelectPolicyType', () => {
+describe('PolicyTypeSelector', () => {
   const onEvent = vi.fn()
 
   beforeEach(() => {
@@ -252,7 +252,7 @@ describe('SelectPolicyType', () => {
 
   it('fires TIME_OFF_POLICY_TYPE_SELECTED with vacation on submit', async () => {
     const user = userEvent.setup()
-    renderWithProviders(<SelectPolicyType onEvent={onEvent} companyId="company-123" />)
+    renderWithProviders(<PolicyTypeSelector onEvent={onEvent} companyId="company-123" />)
 
     await waitFor(() => {
       expect(screen.getByLabelText('Time off')).toBeInTheDocument()
@@ -270,7 +270,7 @@ describe('SelectPolicyType', () => {
 
   it('fires TIME_OFF_POLICY_TYPE_SELECTED with sick on submit', async () => {
     const user = userEvent.setup()
-    renderWithProviders(<SelectPolicyType onEvent={onEvent} companyId="company-123" />)
+    renderWithProviders(<PolicyTypeSelector onEvent={onEvent} companyId="company-123" />)
 
     await waitFor(() => {
       expect(screen.getByLabelText('Sick leave')).toBeInTheDocument()
@@ -288,7 +288,7 @@ describe('SelectPolicyType', () => {
 
   it('fires TIME_OFF_POLICY_TYPE_SELECTED with holiday on submit', async () => {
     const user = userEvent.setup()
-    renderWithProviders(<SelectPolicyType onEvent={onEvent} companyId="company-123" />)
+    renderWithProviders(<PolicyTypeSelector onEvent={onEvent} companyId="company-123" />)
 
     await waitFor(() => {
       expect(screen.getByLabelText('Holiday pay')).toBeInTheDocument()
@@ -306,7 +306,7 @@ describe('SelectPolicyType', () => {
 
   it('fires CANCEL when Cancel button is clicked', async () => {
     const user = userEvent.setup()
-    renderWithProviders(<SelectPolicyType onEvent={onEvent} companyId="company-123" />)
+    renderWithProviders(<PolicyTypeSelector onEvent={onEvent} companyId="company-123" />)
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument()
@@ -319,7 +319,7 @@ describe('SelectPolicyType', () => {
 
   it('pre-selects policy type when defaultPolicyType is provided', async () => {
     renderWithProviders(
-      <SelectPolicyType onEvent={onEvent} companyId="company-123" defaultPolicyType="vacation" />,
+      <PolicyTypeSelector onEvent={onEvent} companyId="company-123" defaultPolicyType="vacation" />,
     )
 
     await waitFor(() => {
@@ -329,7 +329,7 @@ describe('SelectPolicyType', () => {
 
   it('does not fire onEvent when submitting without selection', async () => {
     const user = userEvent.setup()
-    renderWithProviders(<SelectPolicyType onEvent={onEvent} companyId="company-123" />)
+    renderWithProviders(<PolicyTypeSelector onEvent={onEvent} companyId="company-123" />)
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Continue' })).toBeInTheDocument()
