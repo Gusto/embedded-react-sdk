@@ -9,7 +9,10 @@
   @container (max-width: 480px) {
     flex-wrap: wrap;
     width: 100%;
-    justify-content: flex-end;
+
+    > * {
+      flex: 1 1 100%;
+    }
   }
 }
 
