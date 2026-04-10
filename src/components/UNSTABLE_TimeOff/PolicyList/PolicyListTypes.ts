@@ -16,4 +16,5 @@ export interface PolicyListPresentationProps {
   deleteSuccessAlert?: string | null
   onDismissDeleteAlert?: () => void
   isDeletingPolicyId?: string | null
+  isHolidayLoading?: boolean
 }
