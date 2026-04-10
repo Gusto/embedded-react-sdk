@@ -130,11 +130,7 @@ function PayScheduleFormRoot({ onEvent, dictionary, ...hookProps }: PayScheduleF
               </div>
 
               <Flex flexDirection="column" gap={4} justifyContent="center" alignItems="center">
-                {payPeriodPreview &&
-                selectedPeriod?.startDate &&
-                selectedPeriod.endDate &&
-                selectedPeriod.checkDate &&
-                selectedPeriod.runPayrollBy ? (
+                {payPeriodPreview && selectedPeriod ? (
                   <div className={style.calendarContainer}>
                     {!payPreviewLoading && (
                       <Components.Select
@@ -143,8 +139,8 @@ function PayScheduleFormRoot({ onEvent, dictionary, ...hookProps }: PayScheduleF
                         options={payPeriodPreview.map((period, index) => ({
                           value: String(index),
                           label: dateFormatter.formatPayPeriodRange(
-                            period.startDate,
-                            period.endDate,
+                            period.startDate.toString(),
+                            period.endDate.toString(),
                           ),
                         }))}
                         value={String(selectedPayPeriodIndex)}
@@ -159,18 +155,18 @@ function PayScheduleFormRoot({ onEvent, dictionary, ...hookProps }: PayScheduleF
                     <Components.CalendarPreview
                       key={selectedPayPeriodIndex}
                       dateRange={{
-                        start: new Date(selectedPeriod.startDate),
-                        end: new Date(selectedPeriod.endDate),
+                        start: new Date(selectedPeriod.startDate.toString()),
+                        end: new Date(selectedPeriod.endDate.toString()),
                         label: t('payPreview.payPeriod'),
                       }}
                       highlightDates={[
                         {
-                          date: new Date(selectedPeriod.checkDate),
+                          date: new Date(selectedPeriod.checkDate.toString()),
                           highlightColor: 'primary',
                           label: t('payPreview.payday'),
                         },
                         {
-                          date: new Date(selectedPeriod.runPayrollBy),
+                          date: new Date(selectedPeriod.runPayrollBy.toString()),
                           highlightColor: 'secondary',
                           label: t('payPreview.payrollDeadline'),
                         },

@@ -1,6 +1,6 @@
 import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
 import { OffCycleReasonType } from '@gusto/embedded-api/models/components/payroll'
-import type { PayScheduleList } from '@gusto/embedded-api/models/components/payschedulelist'
+import type { PaySchedule } from '@gusto/embedded-api/models/components/payschedule'
 import type { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest'
 import { useState, useRef, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -61,7 +61,7 @@ interface PayrollListPresentationProps {
   onRunOffCyclePayroll: () => void
   payrolls: Payroll[]
   pagination?: PaginationControlProps
-  paySchedules: PayScheduleList[]
+  paySchedules: PaySchedule[]
   showSkipSuccessAlert: boolean
   onDismissSkipSuccessAlert: () => void
   showDeleteSuccessAlert: boolean

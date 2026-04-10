@@ -244,7 +244,7 @@ describe('usePayScheduleForm', () => {
           `${API_BASE_URL}/v1/companies/:company_id/pay_schedules/:pay_schedule_id`,
           async () => {
             const fixture = await getFixture('get-v1-companies-company_id-pay_schedules')
-            return HttpResponse.json(fixture.payScheduleList[0])
+            return HttpResponse.json(fixture.paySchedules[0])
           },
         ),
         http.put(

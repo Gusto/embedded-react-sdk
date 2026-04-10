@@ -78,7 +78,7 @@ const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
   const { data: paySchedulesData } = usePaySchedulesGetAllSuspense({
     companyId,
   })
-  const paySchedulesList = paySchedulesData.payScheduleList!
+  const paySchedulesList = paySchedulesData.paySchedules!
 
   const { data: blockersData } = usePayrollsGetBlockersSuspense({
     companyUuid: companyId,

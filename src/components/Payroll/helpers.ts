@@ -8,7 +8,7 @@ import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api/mode
 import { useCallback } from 'react'
 import type { TFunction } from 'i18next'
 import { useTranslation } from 'react-i18next'
-import type { PayScheduleObject } from '@gusto/embedded-api/models/components/payscheduleobject'
+import type { PaySchedule as PayScheduleObject } from '@gusto/embedded-api/models/components/payschedule'
 import type { Compensation, MinimumWages } from '@gusto/embedded-api/models/components/compensation'
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import type { Payroll } from '@gusto/embedded-api/models/components/payroll'

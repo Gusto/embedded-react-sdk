@@ -47,7 +47,7 @@ function Root({ companyId }: TransitionPayrollAlertProps) {
   })
 
   const { data: paySchedulesData } = usePaySchedulesGetAllSuspense({ companyId })
-  const paySchedules = paySchedulesData.payScheduleList ?? []
+  const paySchedules = paySchedulesData.paySchedules ?? []
 
   const { mutateAsync: skipPayroll } = usePayrollsSkipMutation()
 

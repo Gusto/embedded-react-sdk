@@ -72,7 +72,7 @@ function Root({
   }, [])
 
   const payScheduleName = useMemo(() => {
-    const schedules = paySchedulesData.payScheduleList ?? []
+    const schedules = paySchedulesData.paySchedules ?? []
     const match = schedules.find(s => s.uuid === payScheduleUuid)
     return match?.customName ?? match?.name ?? null
   }, [paySchedulesData, payScheduleUuid])
