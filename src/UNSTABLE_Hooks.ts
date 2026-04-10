@@ -207,4 +207,41 @@ export {
   // Sign company form field prop types
   type SignatureFieldProps,
   type ConfirmSignatureFieldProps,
+
+  // Sign employee form hook + components
+  useSignEmployeeForm,
+  SignEmployeeForm,
+  SignEmployeeI9Form,
+  SignEmployeeFormErrorCodes,
+  createSignEmployeeFormSchema,
+  MAX_PREPARERS,
+  PREPARER_FIELDS_BY_INDEX,
+  preparerFieldName,
+
+  // Sign employee form types
+  type SignEmployeeFormProps,
+  type SignEmployeeI9FormProps,
+  type UseSignEmployeeFormProps,
+  type UseSignEmployeeFormResult,
+  type UseSignEmployeeFormReady,
+  type SignEmployeeFormFieldsMetadata,
+  type SignEmployeeFormFields,
+  type PreparerFieldGroup,
+  type SignEmployeeFormErrorCode,
+  type SignEmployeeFormData,
+  type SignEmployeeFormOutputs,
+  type SignEmployeeFormField,
+  type PreparerIndex,
+  type PreparerFieldSuffix,
+
+  // Sign employee form validation code types
+  type SignEmployeeFormRequiredValidation,
+  type SignEmployeeFormConfirmationValidation,
+
+  // Sign employee form field prop types
+  type SignatureFieldProps as SignEmployeeFormSignatureFieldProps,
+  type ConfirmSignatureFieldProps as SignEmployeeFormConfirmSignatureFieldProps,
+  type UsedPreparerFieldProps,
+  type PreparerTextFieldProps,
+  type PreparerCheckboxFieldProps,
 } from '@/components/UNSTABLE_Hooks'

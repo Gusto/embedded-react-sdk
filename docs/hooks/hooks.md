@@ -18,6 +18,7 @@ Hooks give you full control over form rendering while the SDK manages data fetch
 | `useWorkAddressForm`     | Create or update an employee's work address (company location select, effective date)                        | [useWorkAddressForm](./useWorkAddressForm.md)         |
 | `usePayScheduleForm`     | Create or update a company pay schedule (frequency, pay dates, pay period calendar preview)                  | [usePayScheduleForm](./usePayScheduleForm.md)         |
 | `useSignCompanyForm`     | Sign a company form (PDF viewer, typed signature, confirmation checkbox)                                     | [useSignCompanyForm](./useSignCompanyForm.md)         |
+| `useSignEmployeeForm`    | Sign an employee form (signature, confirmation, I-9 preparer/translator sections)                            | [useSignEmployeeForm](./useSignEmployeeForm.md)       |
 
 ---
 

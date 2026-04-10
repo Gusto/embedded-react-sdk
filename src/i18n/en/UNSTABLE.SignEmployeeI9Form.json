@@ -1,0 +1,42 @@
+{
+  "title": "Sign I-9 document",
+  "downloadInstructions": "Download document",
+  "viewDocumentCta": "View document",
+  "signatureLabel": "Signature",
+  "signatureDescription": "Type your full, legal name.",
+  "confirmSignatureLabel": "I agree to electronically sign this form and confirm all information entered is correct to the best of my knowledge. I am aware that federal law provides for imprisonment and/or fines for false statements or use of false documents in connection with the completion of this form.",
+  "signCta": "Sign",
+  "preparerQuestion": "Did you use a preparer/translator?",
+  "preparerNo": "No, I completed this myself",
+  "preparerYes": "Yes, I used a preparer/translator",
+  "preparerSectionTitle": "Preparer and/or translator certification",
+  "preparerFirstNameLabel": "First name",
+  "preparerFirstNameError": "First name is required",
+  "preparerLastNameLabel": "Last name",
+  "preparerLastNameError": "Last name is required",
+  "preparerStreet1Label": "Street 1",
+  "preparerStreet1Error": "Street address is required",
+  "preparerStreet2Label": "Street 2 (optional)",
+  "preparerCityLabel": "City",
+  "preparerCityError": "City is required",
+  "preparerStateLabel": "State",
+  "preparerStateError": "State is required",
+  "preparerZipLabel": "Zip",
+  "preparerZipError": "Zip is required",
+  "preparerSignatureLabel": "Signature",
+  "preparerSignatureDescription": "Type your full, legal name.",
+  "preparerSignatureError": "Signature is required",
+  "preparerConfirmationLabel": "I agree to electronically sign this form and confirm all information entered is correct to the best of my knowledge. I am aware that federal law provides for imprisonment and/or fines for false statements or use of false documents in connection with the completion of this form.",
+  "preparerConfirmationError": "You must agree to sign electronically",
+  "addPreparerCta": "Add preparer",
+  "removePreparerCta": "Remove preparer",
+  "fieldValidations": {
+    "signature": {
+      "REQUIRED": "Signature is required"
+    },
+    "confirmSignature": {
+      "REQUIRED": "You must agree to sign electronically",
+      "CONFIRMATION_REQUIRED": "You must agree to sign electronically"
+    }
+  }
+}
