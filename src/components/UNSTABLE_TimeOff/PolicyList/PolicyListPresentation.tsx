@@ -138,15 +138,21 @@ export function PolicyListPresentation({
         onClose={handleCloseDeleteDialog}
         onPrimaryActionClick={handleConfirmDelete}
         isDestructive
-        title={t('deletePolicyDialog.title', {
-          name: deletePolicyDialogState.policy?.name ?? '',
-        })}
+        title={
+          deletePolicyDialogState.policy?.isHoliday
+            ? t('deleteHolidayDialog.title')
+            : t('deletePolicyDialog.title', {
+                name: deletePolicyDialogState.policy?.name ?? '',
+              })
+        }
         primaryActionLabel={t('deletePolicyDialog.confirmCta')}
         closeActionLabel={t('deletePolicyDialog.cancelCta')}
       >
-        {t('deletePolicyDialog.description', {
-          name: deletePolicyDialogState.policy?.name ?? '',
-        })}
+        {deletePolicyDialogState.policy?.isHoliday
+          ? t('deleteHolidayDialog.description')
+          : t('deletePolicyDialog.description', {
+              name: deletePolicyDialogState.policy?.name ?? '',
+            })}
       </Dialog>
     </Flex>
   )

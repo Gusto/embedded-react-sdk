@@ -4,6 +4,7 @@ export interface PolicyListItem {
   policyType: string
   isComplete: boolean
   enrolledDisplay: string
+  isHoliday?: boolean
 }
 
 export interface PolicyListPresentationProps {
@@ -15,4 +16,5 @@ export interface PolicyListPresentationProps {
   deleteSuccessAlert?: string | null
   onDismissDeleteAlert?: () => void
   isDeletingPolicyId?: string | null
+  isHolidayLoading?: boolean
 }
