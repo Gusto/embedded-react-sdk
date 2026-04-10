@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { usePayrollsPrepareMutation } from '@gusto/embedded-api/react-query/payrollsPrepare'
 import { usePaySchedulesGet } from '@gusto/embedded-api/react-query/paySchedulesGet'
 import type { PayrollPrepared } from '@gusto/embedded-api/models/components/payroll'
-import type { PayScheduleObject } from '@gusto/embedded-api/models/components/payscheduleobject'
+import type { PaySchedule } from '@gusto/embedded-api/models/components/payschedule'
 import type { QueryParamSortBy } from '@gusto/embedded-api/models/operations/putv1companiescompanyidpayrollspayrollidprepare'
 import { UnprocessableEntityErrorObject } from '@gusto/embedded-api/models/errors/unprocessableentityerrorobject'
 import { useBase } from '../Base'
@@ -19,7 +19,7 @@ interface UsePreparedPayrollDataParams {
 interface UsePreparedPayrollDataReturn {
   handlePreparePayroll: () => Promise<void>
   preparedPayroll: PayrollPrepared | undefined
-  paySchedule: PayScheduleObject | undefined
+  paySchedule: PaySchedule | undefined
   isLoading: boolean
   isPaginating: boolean
   hasInitialData: boolean
@@ -100,7 +100,7 @@ export const usePreparedPayrollData = ({
   return {
     handlePreparePayroll,
     preparedPayroll,
-    paySchedule: payScheduleData?.payScheduleObject,
+    paySchedule: payScheduleData?.paySchedule,
     isLoading,
     isPaginating,
     hasInitialData: hasInitialDataRef.current,

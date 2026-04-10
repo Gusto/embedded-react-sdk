@@ -3,7 +3,7 @@ import { useFederalTaxDetailsGetSuspense } from '@gusto/embedded-api/react-query
 import type {
   FilingForm,
   TaxPayerType,
-} from '@gusto/embedded-api/models/operations/putv1companiescompanyidfederaltaxdetails'
+} from '@gusto/embedded-api/models/components/federaltaxdetails'
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
@@ -52,10 +52,10 @@ function Root({ companyId, children, className, defaultValues, dictionary }: Fed
     defaultValues: {
       federalEin: federalTaxDetails.hasEin ? undefined : '',
       taxPayerType: federalTaxDetails.taxPayerType
-        ? (federalTaxDetails.taxPayerType as TaxPayerType)
+        ? federalTaxDetails.taxPayerType
         : defaultValues?.taxPayerType,
       filingForm: federalTaxDetails.filingForm
-        ? (federalTaxDetails.filingForm as FilingForm)
+        ? federalTaxDetails.filingForm
         : defaultValues?.filingForm,
       legalName: federalTaxDetails.legalName ?? defaultValues?.legalName,
     },
@@ -66,7 +66,7 @@ function Root({ companyId, children, className, defaultValues, dictionary }: Fed
       const updateFederalTaxDetailsResponse = await updateFederalTaxDetails({
         request: {
           companyId: companyId,
-          requestBody: {
+          federalTaxDetailsUpdate: {
             ein: payload.federalEin,
             taxPayerType: payload.taxPayerType as TaxPayerType | undefined,
             filingForm: payload.filingForm as FilingForm | undefined,

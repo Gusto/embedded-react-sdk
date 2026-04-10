@@ -1,7 +1,7 @@
 import type { HttpResponseResolver, PathParams } from 'msw'
 import { http, HttpResponse } from 'msw'
 import type { GetV1CompaniesCompanyIdFederalTaxDetailsRequest } from '@gusto/embedded-api/models/operations/getv1companiescompanyidfederaltaxdetails'
-import type { PutV1CompaniesCompanyIdFederalTaxDetailsRequestBody } from '@gusto/embedded-api/models/operations/putv1companiescompanyidfederaltaxdetails'
+import type { FederalTaxDetailsUpdate } from '@gusto/embedded-api/models/components/federaltaxdetailsupdate'
 import { getFixture } from '../fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
 
@@ -17,7 +17,7 @@ export const getCompanyFederalTaxes = handleGetCompanyFederalTaxes(async () => {
 })
 
 export function handleUpdateCompanyFederalTaxes(
-  resolver: HttpResponseResolver<PathParams, PutV1CompaniesCompanyIdFederalTaxDetailsRequestBody>,
+  resolver: HttpResponseResolver<PathParams, FederalTaxDetailsUpdate>,
 ) {
   return http.put(`${API_BASE_URL}/v1/companies/:company_id/federal_tax_details`, resolver)
 }

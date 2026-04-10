@@ -123,7 +123,7 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
           const payloadSet = payload[requirementSetKey] as Record<string, unknown>
 
           return {
-            state: requirementSet.state,
+            state,
             key: requirementSetKey,
             effectiveFrom: requirementSet.effectiveFrom,
             requirements: Object.entries(payloadSet).map(([reqKey, value]) => ({

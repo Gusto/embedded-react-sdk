@@ -120,7 +120,7 @@ export function useCompensationForm({
   )
   const employeeQuery = useEmployeesGet({ employeeId: employeeId ?? '' }, { enabled: !!employeeId })
 
-  const employeeJobs = jobsQuery.data?.jobList
+  const employeeJobs = jobsQuery.data?.jobs
   const workAddresses = addressesQuery.data?.employeeWorkAddressesList
   const currentWorkAddress = workAddresses?.find(address => address.active)
   const locationUuid = currentWorkAddress?.locationUuid
@@ -344,7 +344,7 @@ export function useCompensationForm({
               const result = await createJobMutation.mutateAsync({
                 request: {
                   employeeId: resolvedEmployeeId,
-                  requestBody: {
+                  jobsCreateRequestBody: {
                     title: jobTitle,
                     hireDate: resolvedHireDate,
                     stateWcCovered: compensationData.stateWcCovered,
@@ -361,7 +361,7 @@ export function useCompensationForm({
               const result = await updateJobMutation.mutateAsync({
                 request: {
                   jobId: currentJob.uuid,
-                  requestBody: {
+                  jobsUpdateRequestBody: {
                     title: jobTitle,
                     version: currentJob.version as string,
                     hireDate: resolvedHireDate,

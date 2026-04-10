@@ -2,7 +2,8 @@ import { describe, expect, it, vi } from 'vitest'
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
-import type { PayScheduleList } from '@gusto/embedded-api/models/components/payschedulelist'
+import type { PaySchedule } from '@gusto/embedded-api/models/components/payschedule'
+import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import type { PayrollType } from './types'
 import { PayrollListPresentation } from './PayrollListPresentation'
@@ -13,12 +14,12 @@ interface PresentationPayroll extends Payroll {
   payrollType: PayrollType
 }
 
-const mockPaySchedules: PayScheduleList[] = [
+const mockPaySchedules: PaySchedule[] = [
   {
     uuid: 'schedule-1',
     frequency: 'Every week',
-    anchorPayDate: '2024-01-01',
-    anchorEndOfPayPeriod: '2024-01-07',
+    anchorPayDate: new RFCDate('2024-01-01'),
+    anchorEndOfPayPeriod: new RFCDate('2024-01-07'),
     customName: 'Weekly Schedule',
     active: true,
     version: '56a489ce86ed6c1b0f0cecc4050a0b01',

@@ -1,7 +1,9 @@
 import type { PayScheduleCreateUpdate } from '@gusto/embedded-api/models/components/payschedulecreateupdate'
-import type { PayScheduleList } from '@gusto/embedded-api/models/components/payschedulelist'
-import type { PayScheduleObject as PayScheduleType } from '@gusto/embedded-api/models/components/payscheduleobject'
-import type { PayPeriods } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayschedulespreview'
+import type {
+  PaySchedule,
+  PaySchedule as PayScheduleType,
+} from '@gusto/embedded-api/models/components/payschedule'
+import type { PaySchedulePreviewPayPeriod } from '@gusto/embedded-api/models/components/payschedulepreviewpayperiod'
 import { z } from 'zod'
 import type { RequireAtLeastOne } from '@/types/Helpers'
 import { createCompoundContext } from '@/components/Base'
@@ -20,9 +22,9 @@ type PayScheduleContextType = {
   handleContinue: () => void
   mode: MODE
   isPending: boolean
-  paySchedules: PayScheduleList[] | undefined | null
+  paySchedules: PaySchedule[] | undefined | null
   currentPaySchedule: PayScheduleType | undefined | null
-  payPeriodPreview?: PayPeriods[]
+  payPeriodPreview?: PaySchedulePreviewPayPeriod[]
   payPreviewLoading?: boolean
   paymentSpeedDays: number
 }

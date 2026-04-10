@@ -69,17 +69,21 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
   const { baseSubmitHandler, onEvent } = useBase()
 
   const { data: jobsData } = useJobsAndCompensationsGetJobsSuspense({ employeeId })
-  const employeeJobs = jobsData.jobList!
+  const employeeJobs = jobsData.jobs!
 
   const { data: addressesData } = useEmployeeAddressesGetWorkAddressesSuspense({ employeeId })
   const workAddresses = addressesData.employeeWorkAddressesList!
 
-  const currentWorkAddress = workAddresses.find(address => address.active)!
+  const currentWorkAddress = workAddresses.find(address => address.active) ?? workAddresses[0]
+
+  if (!currentWorkAddress?.locationUuid) {
+    throw new Error('No active work address with a location found for this employee')
+  }
 
   const {
     data: { minimumWageList },
   } = useLocationsGetMinimumWagesSuspense({
-    locationUuid: currentWorkAddress.locationUuid!,
+    locationUuid: currentWorkAddress.locationUuid,
   })
   const minimumWages = minimumWageList!
 
@@ -182,7 +186,7 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
           const data = await createEmployeeJobMutation.mutateAsync({
             request: {
               employeeId,
-              requestBody: {
+              jobsCreateRequestBody: {
                 title: jobTitle,
                 hireDate: startDate,
                 stateWcCovered: compensationData.stateWcCovered,
@@ -199,7 +203,7 @@ const Root = ({ employeeId, startDate, className, children, ...props }: Compensa
           const data = await updateEmployeeJobMutation.mutateAsync({
             request: {
               jobId: currentJob.uuid,
-              requestBody: {
+              jobsUpdateRequestBody: {
                 title: jobTitle,
                 version: currentJob.version as string,
                 hireDate: startDate,

@@ -103,7 +103,10 @@ export const Edit = () => {
                   options={payPeriodPreview.map((period, index) => {
                     return {
                       value: String(index),
-                      label: dateFormatter.formatPayPeriodRange(period.startDate, period.endDate),
+                      label: dateFormatter.formatPayPeriodRange(
+                        period.startDate.toString(),
+                        period.endDate.toString(),
+                      ),
                     }
                   })}
                   value={String(selectedPayPeriodIndex)}
@@ -118,18 +121,20 @@ export const Edit = () => {
               <Components.CalendarPreview
                 key={selectedPayPeriodIndex}
                 dateRange={{
-                  start: new Date(payPeriodPreview[selectedPayPeriodIndex].startDate as string),
-                  end: new Date(payPeriodPreview[selectedPayPeriodIndex].endDate as string),
+                  start: new Date(payPeriodPreview[selectedPayPeriodIndex].startDate.toString()),
+                  end: new Date(payPeriodPreview[selectedPayPeriodIndex].endDate.toString()),
                   label: t('payPreview.payPeriod') || 'Pay Period',
                 }}
                 highlightDates={[
                   {
-                    date: new Date(payPeriodPreview[selectedPayPeriodIndex].checkDate as string),
+                    date: new Date(payPeriodPreview[selectedPayPeriodIndex].checkDate.toString()),
                     highlightColor: 'primary',
                     label: t('payPreview.payday') || 'Payday',
                   },
                   {
-                    date: new Date(payPeriodPreview[selectedPayPeriodIndex].runPayrollBy as string),
+                    date: new Date(
+                      payPeriodPreview[selectedPayPeriodIndex].runPayrollBy.toString(),
+                    ),
                     highlightColor: 'secondary',
                     label: t('payPreview.payrollDeadline') || 'Payroll Deadline',
                   },

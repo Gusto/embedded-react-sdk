@@ -1,4 +1,4 @@
-import { APIError } from '@gusto/embedded-api/models/errors/apierror'
+import { GustoEmbeddedError } from '@gusto/embedded-api/models/errors/gustoembeddederror'
 import { useI9VerificationGetAuthorization } from '@gusto/embedded-api/react-query/i9VerificationGetAuthorization'
 import { useI9VerificationUpdateMutation } from '@gusto/embedded-api/react-query/i9VerificationUpdate'
 import { EmploymentEligibilityPresentation } from './EmploymentEligibilityPresentation'
@@ -34,7 +34,7 @@ const Root = ({ employeeId, dictionary }: EmploymentEligibilityProps) => {
     {
       retry: false,
       throwOnError: (error: Error) => {
-        return !(error instanceof APIError && error.httpMeta.response.status === 404)
+        return !(error instanceof GustoEmbeddedError && error.httpMeta.response.status === 404)
       },
     },
   )
@@ -52,7 +52,7 @@ const Root = ({ employeeId, dictionary }: EmploymentEligibilityProps) => {
       const result = await updateI9Authorization({
         request: {
           employeeId,
-          requestBody: {
+          i9AuthorizationRequestBody: {
             authorizationStatus,
             version: existingAuth?.version,
             ...(authorizationStatus === 'permanent_resident' &&
