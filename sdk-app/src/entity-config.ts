@@ -2,6 +2,7 @@ const ENTITY_ENDPOINTS = {
   employeeId: 'employees',
   contractorId: 'contractors',
   payrollId: 'payrolls',
+  formId: 'forms',
 } as const
 
 type EntityIdKey = keyof typeof ENTITY_ENDPOINTS

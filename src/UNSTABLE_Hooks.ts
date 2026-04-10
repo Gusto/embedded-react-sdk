@@ -181,4 +181,30 @@ export {
   type AnchorEndOfPayPeriodFieldProps,
   type Day1FieldProps,
   type Day2FieldProps,
+
+  // Sign company form hook + component
+  useSignCompanyForm,
+  SignCompanyForm,
+  SignCompanyFormErrorCodes,
+
+  // Sign company form types
+  type SignCompanyFormProps,
+  type SignCompanyFormSubmitCallbacks,
+  type UseSignCompanyFormProps,
+  type UseSignCompanyFormResult,
+  type UseSignCompanyFormReady,
+  type SignCompanyFormFieldsMetadata,
+  type SignCompanyFormFields,
+  type SignCompanyFormErrorCode,
+  type SignCompanyFormOptionalFieldsToRequire,
+  type SignCompanyFormData,
+  type SignCompanyFormOutputs,
+  type SignCompanyFormField,
+
+  // Sign company form validation code types
+  type SignCompanyFormRequiredValidation,
+
+  // Sign company form field prop types
+  type SignatureFieldProps,
+  type ConfirmSignatureFieldProps,
 } from '@/components/UNSTABLE_Hooks'

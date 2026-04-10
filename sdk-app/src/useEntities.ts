@@ -13,6 +13,7 @@ function getEnvDefaults(): EntityIds {
     contractorId: import.meta.env.VITE_CONTRACTOR_ID || '',
     payrollId: import.meta.env.VITE_PAYROLL_ID || '',
     requestId: import.meta.env.VITE_REQUEST_ID || '',
+    formId: import.meta.env.VITE_FORM_ID || '',
   }
 }
 
@@ -45,7 +46,7 @@ function saveToStorage(ids: EntityIds) {
 }
 
 function hasMissingEntities(ids: EntityIds): boolean {
-  return !ids.employeeId || !ids.contractorId || !ids.payrollId
+  return !ids.employeeId || !ids.contractorId || !ids.payrollId || !ids.formId
 }
 
 export function useEntities() {
@@ -58,6 +59,7 @@ export function useEntities() {
       contractorId: stored.contractorId || defaults.contractorId,
       payrollId: stored.payrollId || defaults.payrollId,
       requestId: stored.requestId || defaults.requestId,
+      formId: stored.formId || defaults.formId,
     }
   })
 
@@ -95,6 +97,7 @@ export function useEntities() {
             payrollId: overwrite
               ? data.payrollId || prev.payrollId
               : prev.payrollId || data.payrollId || '',
+            formId: overwrite ? data.formId || prev.formId : prev.formId || data.formId || '',
           }))
         }
       } catch {
