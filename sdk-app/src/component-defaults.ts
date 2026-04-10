@@ -18,6 +18,12 @@ export const DEFAULT_COMPONENT_PROPS: Record<string, Record<string, PropValueOrF
   'Hooks.CompensationForm': {
     withStartDateField: true,
   },
+  'Hooks.SignEmployeeForm': {
+    formId: '',
+  },
+  'Hooks.SignEmployeeI9Form': {
+    formId: '',
+  },
 }
 
 export function resolveDefaults(key: string): Record<string, PropValue> {
