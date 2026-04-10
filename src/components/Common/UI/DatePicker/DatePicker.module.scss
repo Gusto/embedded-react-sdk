@@ -133,15 +133,13 @@
     border-radius: toRem(4);
   }
 
-  :global(.calendar-header) {
-    padding: 1rem;
-    border-bottom: toRem(1) solid var(--g-colorBorderSecondary);
+  :global(.react-aria-Calendar header) {
+    padding-bottom: toRem(8);
   }
 
   :global(table.react-aria-CalendarGrid) {
-    margin: 0 toRem(8) toRem(8) toRem(8);
-    border-collapse: collapse;
-    border-spacing: 0;
+    border-collapse: separate;
+    border-spacing: 0 toRem(3);
     width: toRem(286);
 
     tr {
@@ -173,8 +171,7 @@
       }
 
       td {
-        height: toRem(44);
-        padding: toRem(2) 0;
+        height: toRem(40);
       }
     }
   }
@@ -184,9 +181,9 @@
     margin: 0;
     text-align: center;
     font-size: var(--g-fontSizeSmall);
+    color: var(--g-colorBodySubContent);
   }
 
-  // Calendar and Range Calendar commons tyles
   :global(.react-aria-Calendar) {
     width: fit-content;
     max-width: 100%;
@@ -194,25 +191,31 @@
     font-weight: 400;
     font-size: var(--g-fontSizeSmall);
     overflow-x: hidden;
+    padding: toRem(16);
 
     header {
       display: flex;
       align-items: center;
-      padding: 8px;
-
-      button {
-        color: var(--g-colorBodyContent) !important;
-      }
     }
   }
 
   :global(.react-aria-Button) {
-    width: 36px;
-    height: 36px;
+    width: toRem(32);
+    height: toRem(32);
     padding: 0;
     border-radius: 999px;
     background-color: unset;
     border: none;
+    color: var(--g-colorBodyContent);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+      width: toRem(20);
+      height: toRem(20);
+    }
 
     &[data-focus-visible] {
       outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
@@ -225,27 +228,21 @@
   }
 
   :global(.react-aria-CalendarGridHeader) {
-    border-bottom: 1px solid var(--g-colorBorderSecondary);
-
     th {
-      padding-bottom: 8px;
+      padding-bottom: toRem(8);
+      text-align: center;
+      color: var(--g-colorBodySubContent);
+      font-weight: var(--g-fontWeightSemibold);
     }
   }
 
-  :global(.react-aria-CalendarHeaderCell) {
-    text-align: center;
-    color: var(--g-colorBodyContent);
-    font-weight: 400;
-  }
-
   :global(.react-aria-CalendarCell) {
-    width: toRem(32);
-    line-height: toRem(32);
+    width: toRem(40);
+    line-height: toRem(40);
     text-align: center;
-    border-radius: toRem(6);
+    border-radius: toRem(999);
     cursor: pointer;
     outline: none;
-    margin: 1px;
     forced-color-adjust: none;
 
     &[data-outside-month] {
@@ -272,14 +269,14 @@
     }
 
     &[data-disabled] {
-      cursor: not-allowed;
+      cursor: default;
       display: block;
       opacity: 0.5;
     }
   }
 
   :global(.react-aria-Dialog) {
-    padding: 0 !important;
+    padding: 0;
   }
 }
 
