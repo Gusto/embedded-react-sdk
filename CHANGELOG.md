@@ -50,7 +50,7 @@ BoxHeader: ({ title, description, action, headingLevel = 'h3' }) => {
 
 #### Table `variant` prop replaced with `isWithinBox`
 
-The Table component's `variant` prop has been replaced with `isWithinBox`. If you supply a custom **Table** via the component adapter, update your implementation:
+The Table component's `variant` prop has been replaced with `isWithinBox`. The SDK sets `isWithinBox={true}` on tables that are rendered inside a `Box` layout element, so your adapter can remove redundant borders, shadows, or background colors to avoid visual doubling. If you supply a custom **Table** via the component adapter, update your implementation:
 
 ```tsx
 // Before: variant?: 'default' | 'minimal'
@@ -58,9 +58,16 @@ Table: ({ variant = 'default', ...props }) => (
   <table style={variant === 'minimal' ? { border: 'none' } : undefined} {...props} />
 )
 
-// After: isWithinBox?: boolean
+// After: isWithinBox?: boolean — true when the table is inside a Box
 Table: ({ isWithinBox = false, ...props }) => (
-  <table style={isWithinBox ? { border: 'none', boxShadow: 'none' } : undefined} {...props} />
+  <table
+    style={
+      isWithinBox
+        ? { border: 'none', borderRadius: 0, boxShadow: 'none', background: 'transparent' }
+        : undefined
+    }
+    {...props}
+  />
 )
 ```
 
@@ -85,11 +92,13 @@ The `DescriptionList` component now accepts `layout` (`'stacked' | 'horizontal'`
 
 - Fix table text styles in contractors and payroll
 - Fix date picker style improvements
+- Align datepicker styles with date range picker styles
 - Fix uncontrolled to controlled input warning
 - Fix minor style updates to popover and menu UI
 - Always show kebab menu in payroll list for consistent alignment
 - Dynamic payment processing copy based on company ACH speed
 - Use taxableAsScorp for Two Percent Shareholder visibility
+- Add spacing to file input wrapper for error message
 
 ### Chores & Maintenance
 
@@ -104,7 +113,7 @@ The `DescriptionList` component now accepts `layout` (`'stacked' | 'horizontal'`
 - Upgrade GitHub Actions to Node.js 24-compatible versions
 - Bump i18next from 26.0.3 to 26.0.4
 - Bump Storybook packages to 10.3.5
-- Bump various dev dependencies (vitest, msw, axios, typescript-eslint, dotenv, and others)
+- Bump various dev dependencies (vitest, msw, axios, typescript-eslint, ts-morph, prettier, dotenv, globals, and others)
 
 ## 0.38.0
 
