@@ -136,6 +136,34 @@ export {
 } from './hooks/useWorkAddressForm'
 
 export {
+  useHomeAddressForm,
+  HomeAddressForm,
+  HomeAddressErrorCodes,
+  createHomeAddressSchema,
+  type HomeAddressFormProps,
+  type HomeAddressSubmitOptions,
+  type HomeAddressOptionalFieldsToRequire,
+  type UseHomeAddressFormProps,
+  type UseHomeAddressFormResult,
+  type UseHomeAddressFormReady,
+  type HomeAddressFieldsMetadata,
+  type HomeAddressFormFields,
+  type HomeAddressErrorCode,
+  type HomeAddressFormData,
+  type HomeAddressFormOutputs,
+  type HomeAddressField,
+  type HomeAddressRequiredValidation,
+  type ZipValidation,
+  type Street1FieldProps,
+  type Street2FieldProps,
+  type CityFieldProps,
+  type StateFieldProps,
+  type ZipFieldProps,
+  type CourtesyWithholdingFieldProps,
+  type HomeAddressEffectiveDateFieldProps,
+} from './hooks/useHomeAddressForm'
+
+export {
   usePayScheduleForm,
   PayScheduleForm,
   PayScheduleErrorCodes,

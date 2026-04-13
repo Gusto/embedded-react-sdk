@@ -150,6 +150,38 @@ export {
   type LocationFieldProps,
   type EffectiveDateFieldProps,
 
+  // Home address hook + component
+  useHomeAddressForm,
+  HomeAddressForm,
+  HomeAddressErrorCodes,
+
+  // Home address types
+  type HomeAddressFormProps,
+  type HomeAddressSubmitOptions,
+  type HomeAddressOptionalFieldsToRequire,
+  type UseHomeAddressFormProps,
+  type UseHomeAddressFormResult,
+  type UseHomeAddressFormReady,
+  type HomeAddressFieldsMetadata,
+  type HomeAddressFormFields,
+  type HomeAddressErrorCode,
+  type HomeAddressFormData,
+  type HomeAddressFormOutputs,
+  type HomeAddressField,
+
+  // Home address validation code types
+  type HomeAddressRequiredValidation,
+  type ZipValidation,
+
+  // Home address field prop types
+  type Street1FieldProps,
+  type Street2FieldProps,
+  type CityFieldProps,
+  type StateFieldProps,
+  type ZipFieldProps,
+  type CourtesyWithholdingFieldProps,
+  type HomeAddressEffectiveDateFieldProps,
+
   // Pay schedule hook + component
   usePayScheduleForm,
   PayScheduleForm,
