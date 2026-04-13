@@ -85,7 +85,7 @@ export const Root = ({ contractorId, selfOnboarding, dictionary }: ContractorSub
   return (
     <Flex flexDirection="column" gap={24}>
       <FlexItem>
-        <Heading as="h2">Submit contractor</Heading>
+        <Heading as="h2">{t('heading')}</Heading>
       </FlexItem>
 
       <Box
@@ -106,15 +106,16 @@ export const Root = ({ contractorId, selfOnboarding, dictionary }: ContractorSub
           <Alert status="info" label={t('documentRequirements.alertLabel')}></Alert>
         </Flex>
       </Box>
-
-      <Alert status="warning" label={t('title')}>
-        <UnorderedList items={items} />
-      </Alert>
-      <ActionsLayout justifyContent="end">
-        <Button title={t('submitCta')} onClick={onSubmit}>
-          {t('submitCta')}
-        </Button>
-      </ActionsLayout>
+      <Flex flexDirection="column" gap={8}>
+        <Alert status="warning" label={t('title')}>
+          <UnorderedList items={items} />
+        </Alert>
+        <ActionsLayout justifyContent="end">
+          <Button title={t('submitCta')} onClick={onSubmit}>
+            {t('submitCta')}
+          </Button>
+        </ActionsLayout>
+      </Flex>
     </Flex>
   )
 }

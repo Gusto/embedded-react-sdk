@@ -1201,6 +1201,7 @@ export interface ContractorProfile{
 };
 };
 export interface ContractorSubmit{
+"heading":string;
 "doneTitle":string;
 "doneDescription":string;
 "doneCta":string;
