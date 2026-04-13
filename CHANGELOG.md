@@ -1,5 +1,120 @@
 # Changelog
 
+## 0.39.0
+
+### Breaking Changes
+
+#### Box component adapter (`header`, `withPadding` props)
+
+The `Box` component now accepts a `header` prop (used for section titles and actions) and a `withPadding` prop. If you supply a custom **Box** via the [component adapter](./docs/component-adapter/component-adapter.md), update it to handle the new props:
+
+```tsx
+// Before
+Box: ({ children, footer, className }) => (
+  <div className={className}>
+    <div className="box-body">{children}</div>
+    {footer && <div className="box-footer">{footer}</div>}
+  </div>
+)
+
+// After
+Box: ({ children, header, footer, withPadding = true, className }) => (
+  <div className={className}>
+    {header && <div className="box-header">{header}</div>}
+    <div className="box-body" style={withPadding ? undefined : { padding: 0 }}>
+      {children}
+    </div>
+    {footer && <div className="box-footer">{footer}</div>}
+  </div>
+)
+```
+
+#### New `BoxHeader` component adapter
+
+A new **BoxHeader** component has been added to the component adapter. It renders a title, optional description, and optional action (e.g. an "Edit" button) inside `Box` headers. If you provide a custom component adapter, add a `BoxHeader` implementation:
+
+```tsx
+BoxHeader: ({ title, description, action, headingLevel = 'h3' }) => {
+  const Heading = headingLevel
+  return (
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div>
+        <Heading>{title}</Heading>
+        {description && <p>{description}</p>}
+      </div>
+      {action && <div>{action}</div>}
+    </div>
+  )
+}
+```
+
+#### Table `variant` prop replaced with `isWithinBox`
+
+The Table component's `variant` prop has been replaced with `isWithinBox`. The SDK sets `isWithinBox={true}` on tables that are rendered inside a `Box` layout element, so your adapter can remove redundant borders, shadows, or background colors to avoid visual doubling. If you supply a custom **Table** via the component adapter, update your implementation:
+
+```tsx
+// Before: variant?: 'default' | 'minimal'
+Table: ({ variant = 'default', ...props }) => (
+  <table style={variant === 'minimal' ? { border: 'none' } : undefined} {...props} />
+)
+
+// After: isWithinBox?: boolean — true when the table is inside a Box
+Table: ({ isWithinBox = false, ...props }) => (
+  <table
+    style={
+      isWithinBox
+        ? { border: 'none', borderRadius: 0, boxShadow: 'none', background: 'transparent' }
+        : undefined
+    }
+    {...props}
+  />
+)
+```
+
+#### DescriptionList new `layout` and `showSeparators` props
+
+The `DescriptionList` component now accepts `layout` (`'stacked' | 'horizontal'`) and `showSeparators` (boolean) props. If you supply a custom **DescriptionList**, update it to handle these props for proper rendering in the Employee Dashboard and other views.
+
+### Features & Enhancements
+
+- Add Employee Dashboard component
+- Add Time Off policy management: PolicyList, SelectPolicyType, SelectHolidays, and PolicyConfigurationForm (presentation and functional components)
+- Wire PolicyConfigurationForm into TimeOff state machine
+- Add usePayScheduleForm unstable hook
+- Add useSignCompanyForm unstable hook
+- Add useSignEmployeeForm hook with I-9 preparer support
+- Add select-all header checkbox to DataView
+- Streamline schema composition with unified buildFormSchema pattern
+- Add holiday data helpers and i18n translations
+- Add full-screen token expired overlay with periodic health polling (SDK App)
+
+### Fixes
+
+- Fix table text styles in contractors and payroll
+- Fix date picker style improvements
+- Align datepicker styles with date range picker styles
+- Fix uncontrolled to controlled input warning
+- Fix minor style updates to popover and menu UI
+- Always show kebab menu in payroll list for consistent alignment
+- Dynamic payment processing copy based on company ACH speed
+- Use taxableAsScorp for Two Percent Shareholder visibility
+- Add spacing to file input wrapper for error message
+
+### Chores & Maintenance
+
+- Refactor Box to expose Header, Footer, Content as subcomponents
+- Migrate useWorkAddressForm and useEmployeeDetailsForm to buildFormSchema pattern
+- Move EmployeeTable to UNSTABLE_TimeOff/shared and remove TimeOffManagement
+- Remove legacy composeFormSchema, resolveRequiredFields, and deriveFieldsMetadata
+- Add tests and Storybook stories for PolicyList, SelectPolicyType, and PolicyConfigurationForm
+- Add component naming and organization RFC
+- Upgrade @gusto/embedded-api from 0.12.4 to 0.12.5
+- Upgrade react-aria-components from 1.13.0 to 1.16.0
+- Upgrade GitHub Actions to Node.js 24-compatible versions
+- Bump i18next from 26.0.3 to 26.0.4
+- Bump Storybook packages to 10.3.5
+- Bump various dev dependencies (vitest, msw, axios, typescript-eslint, ts-morph, prettier, dotenv, globals, and others)
+
 ## 0.38.0
 
 ### Features & Enhancements
