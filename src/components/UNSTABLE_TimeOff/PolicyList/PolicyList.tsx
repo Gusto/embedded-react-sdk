@@ -16,8 +16,9 @@ import { GustoEmbeddedError } from '@gusto/embedded-api/models/errors/gustoembed
 import type { TimeOffPolicy } from '@gusto/embedded-api/models/components/timeoffpolicy'
 import { PolicyListPresentation } from './PolicyListPresentation'
 import type { PolicyListItem } from './PolicyListTypes'
-import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
-import { useBase } from '@/components/Base/useBase'
+import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/components/Base'
+import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
+import { useErrorHandling } from '@/hooks/useErrorHandling'
 import { componentEvents } from '@/shared/constants'
 import { useI18n } from '@/i18n'
 
@@ -25,19 +26,27 @@ export interface PolicyListProps extends BaseComponentInterface<'Company.TimeOff
   companyId: string
 }
 
-export function PolicyList(props: PolicyListProps) {
+export function PolicyList({ FallbackComponent, ...props }: PolicyListProps) {
   return (
-    <BaseComponent {...props}>
+    <BaseBoundaries
+      componentName="Company.TimeOff.TimeOffPolicies"
+      FallbackComponent={FallbackComponent}
+    >
       <Root {...props} />
-    </BaseComponent>
+    </BaseBoundaries>
   )
 }
 
-function Root({ companyId }: PolicyListProps) {
+function Root({ companyId, onEvent }: PolicyListProps) {
   useI18n('Company.TimeOff.TimeOffPolicies')
   const { t } = useTranslation('Company.TimeOff.TimeOffPolicies')
-  const { onEvent, baseSubmitHandler } = useBase()
   const queryClient = useQueryClient()
+
+  const {
+    baseSubmitHandler,
+    error: submitError,
+    setError,
+  } = useBaseSubmit('Company.TimeOff.TimeOffPolicies')
 
   const [deleteSuccessAlert, setDeleteSuccessAlert] = useState<string | null>(null)
   const [isDeletingPolicyId, setIsDeletingPolicyId] = useState<string | null>(null)
@@ -47,7 +56,7 @@ function Root({ companyId }: PolicyListProps) {
   })
   const timeOffPolicies = policiesData.timeOffPolicies ?? []
 
-  const { data: holidayData, isLoading: isHolidayLoading } = useHolidayPayPoliciesGet(
+  const holidayQuery = useHolidayPayPoliciesGet(
     { companyUuid: companyId },
     {
       throwOnError: (error: Error) => {
@@ -61,7 +70,7 @@ function Root({ companyId }: PolicyListProps) {
       },
     },
   )
-  const holidayPayPolicy = holidayData?.holidayPayPolicy
+  const holidayPayPolicy = holidayQuery.data?.holidayPayPolicy
 
   const { data: employeesData } = useEmployeesListSuspense({
     companyId,
@@ -69,8 +78,11 @@ function Root({ companyId }: PolicyListProps) {
   })
   const totalActiveEmployees = employeesData.showEmployees?.length ?? 0
 
-  const { mutateAsync: deactivatePolicy } = useTimeOffPoliciesDeactivateMutation()
-  const { mutateAsync: deleteHolidayPolicy } = useHolidayPayPoliciesDeleteMutation()
+  const deactivatePolicyMutation = useTimeOffPoliciesDeactivateMutation()
+  const deleteHolidayMutation = useHolidayPayPoliciesDeleteMutation()
+
+  const errorHandling = useErrorHandling([holidayQuery], { error: submitError, setError })
+  const isPending = deactivatePolicyMutation.isPending || deleteHolidayMutation.isPending
 
   const getEnrolledDisplay = (enrolledCount: number) => {
     if (enrolledCount > 0 && enrolledCount === totalActiveEmployees) {
@@ -122,13 +134,13 @@ function Root({ companyId }: PolicyListProps) {
     setIsDeletingPolicyId(policy.uuid)
     await baseSubmitHandler({}, async () => {
       if (policy.isHoliday) {
-        await deleteHolidayPolicy({
+        await deleteHolidayMutation.mutateAsync({
           request: { companyUuid: companyId },
         })
         await invalidateAllHolidayPayPoliciesGet(queryClient)
         setDeleteSuccessAlert(t('flash.holidayDeleted'))
       } else {
-        await deactivatePolicy({
+        await deactivatePolicyMutation.mutateAsync({
           request: { timeOffPolicyUuid: policy.uuid },
         })
         await invalidateAllTimeOffPoliciesGetAll(queryClient)
@@ -139,18 +151,20 @@ function Root({ companyId }: PolicyListProps) {
   }
 
   return (
-    <PolicyListPresentation
-      policies={policies}
-      onCreatePolicy={handleCreatePolicy}
-      onEditPolicy={handleEditPolicy}
-      onFinishSetup={handleFinishSetup}
-      onDeletePolicy={handleDeletePolicy}
-      deleteSuccessAlert={deleteSuccessAlert}
-      onDismissDeleteAlert={() => {
-        setDeleteSuccessAlert(null)
-      }}
-      isDeletingPolicyId={isDeletingPolicyId}
-      isHolidayLoading={isHolidayLoading}
-    />
+    <BaseLayout error={errorHandling.errors}>
+      <PolicyListPresentation
+        policies={policies}
+        onCreatePolicy={handleCreatePolicy}
+        onEditPolicy={handleEditPolicy}
+        onFinishSetup={handleFinishSetup}
+        onDeletePolicy={handleDeletePolicy}
+        deleteSuccessAlert={deleteSuccessAlert}
+        onDismissDeleteAlert={() => {
+          setDeleteSuccessAlert(null)
+        }}
+        isDeletingPolicyId={isDeletingPolicyId}
+        isPending={isPending}
+      />
+    </BaseLayout>
   )
 }
