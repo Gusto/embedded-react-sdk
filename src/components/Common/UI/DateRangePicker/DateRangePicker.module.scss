@@ -133,8 +133,6 @@
   width: toRem(286);
 
   :global(.react-aria-CalendarGridHeader) {
-    border-bottom: 1px solid var(--g-colorBorderSecondary);
-
     th {
       padding-bottom: toRem(8);
       text-align: center;
