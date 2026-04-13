@@ -1,6 +1,10 @@
 .root {
   width: 100%;
 
+  .item:not(:last-child) {
+    margin-bottom: toRem(16);
+  }
+
   dt {
     font-weight: var(--g-fontWeightMedium);
     color: var(--g-colorBodyContent);
