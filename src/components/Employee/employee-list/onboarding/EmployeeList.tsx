@@ -1,6 +1,6 @@
 import type { OnboardingStatus } from '@gusto/embedded-api/models/operations/putv1employeesemployeeidonboardingstatus'
+import { useEmployeeList } from '../shared/useEmployeeList'
 import { EmployeeListView } from './EmployeeListView'
-import { useEmployeeList } from './useEmployeeList'
 import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/components/Base/Base'
 import { useI18n, useComponentDictionary } from '@/i18n'
 import { componentEvents } from '@/shared/constants'

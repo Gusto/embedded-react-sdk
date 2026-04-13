@@ -1,5 +1,60 @@
 # Changelog
 
+## Unreleased
+
+### Features & Enhancements
+
+#### Journey-based export namespaces
+
+Components are now organized into **journey-based namespaces** that group everything a partner needs for a specific integration use case. Three new namespaces are available:
+
+- **`EmployeeOnboarding`** -- all components for onboarding employees (flows, employee list, profile, compensation, taxes, payment method, deductions, documents, etc.)
+- **`EmployeeManagement`** -- components for steady-state employee management (management employee list, dashboard, terminations, employee documents)
+- **`CompanyOnboarding`** -- all components for onboarding a company (flow, overview, document signing, bank account, locations, pay schedule, taxes, signatory management)
+- **`ContractorOnboarding`** -- all components for onboarding contractors (flow, contractor list, profile, address, payment method, new hire report, submit)
+
+```tsx
+// Recommended (journey namespace)
+import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
+;<EmployeeOnboarding.OnboardingFlow companyId={companyId} onEvent={handleEvent} />
+
+// Also works (journey namespace, management)
+import { EmployeeManagement } from '@gusto/embedded-react-sdk'
+;<EmployeeManagement.DashboardFlow employeeId={employeeId} onEvent={handleEvent} />
+
+// Also works (journey namespace, company)
+import { CompanyOnboarding } from '@gusto/embedded-react-sdk'
+;<CompanyOnboarding.OnboardingFlow companyId={companyId} onEvent={handleEvent} />
+
+// Also works (journey namespace, contractor)
+import { ContractorOnboarding } from '@gusto/embedded-react-sdk'
+;<ContractorOnboarding.OnboardingFlow companyId={companyId} onEvent={handleEvent} />
+```
+
+Each journey namespace is self-contained -- partners should not need to import from multiple namespaces to complete a single integration.
+
+### Deprecations
+
+#### `Employee.*`, `Company.*`, and `Contractor.*` umbrella namespaces
+
+The flat `Employee`, `Company`, and `Contractor` namespace exports are now **deprecated** in favor of the journey-based namespaces above. Existing imports continue to work without changes, but partners should migrate at their convenience:
+
+```tsx
+// Deprecated (still works)
+import { Employee } from '@gusto/embedded-react-sdk'
+;<Employee.OnboardingFlow companyId={companyId} onEvent={handleEvent} />
+
+// Recommended
+import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
+;<EmployeeOnboarding.OnboardingFlow companyId={companyId} onEvent={handleEvent} />
+```
+
+The `Employee`, `Company`, and `Contractor` umbrella namespaces will be removed in a future major version. The `Payroll` and `InformationRequests` namespaces are unaffected and remain the primary import path for those domains.
+
+#### Internal restructuring: `EmployeeList` feature module
+
+The `Employee/EmployeeList/` directory has been restructured into a feature module layout (`Employee/employee-list/`) with `shared/`, `onboarding/`, and `management/` subdirectories. This is an internal change -- all public exports remain the same and no partner action is required.
+
 ## 0.39.0
 
 ### Breaking Changes

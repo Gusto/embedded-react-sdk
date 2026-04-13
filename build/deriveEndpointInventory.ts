@@ -274,7 +274,17 @@ function resolveComponentDirectory(domainDir: string, importPath: string): strin
 
   // If it's a direct file import, get the directory
   if (existsSync(resolved + '.tsx') || existsSync(resolved + '.ts')) {
-    return dirname(resolved)
+    const dir = dirname(resolved)
+    // Feature module pattern: if a sibling shared/ directory exists, use the
+    // parent (feature module root) so walkDir picks up shared hooks with API imports
+    const parentDir = dirname(dir)
+    if (
+      existsSync(join(parentDir, 'shared')) &&
+      statSync(join(parentDir, 'shared')).isDirectory()
+    ) {
+      return parentDir
+    }
+    return dir
   }
 
   // If it's a directory with an index file, use the directory

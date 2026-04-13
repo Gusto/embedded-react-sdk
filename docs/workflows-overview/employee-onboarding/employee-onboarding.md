@@ -10,11 +10,11 @@ The Employee Onboarding workflow provides a complete experience for onboarding a
 ### Implementation
 
 ```jsx
-import { EmployeeOnboardingFlow } from '@gusto/embedded-react-sdk'
+import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyApp() {
   return (
-    <EmployeeOnboardingFlow
+    <EmployeeOnboarding.OnboardingFlow
       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
       withEmployeeI9
       onEvent={() => {}}
@@ -40,26 +40,31 @@ Employee onboarding components can be used to compose your own workflow, or can 
 
 ### Available Subcomponents
 
-- Employee.EmployeeList
-- Employee.Profile
-- Employee.Compensation
-- Employee.FederalTaxes
-- Employee.StateTaxes
-- Employee.PaymentMethod
-- Employee.Deductions
-- Employee.EmployeeDocuments
-- Employee.OnboardingSummary
+- EmployeeOnboarding.EmployeeList
+- EmployeeOnboarding.Profile
+- EmployeeOnboarding.Compensation
+- EmployeeOnboarding.FederalTaxes
+- EmployeeOnboarding.StateTaxes
+- EmployeeOnboarding.PaymentMethod
+- EmployeeOnboarding.Deductions
+- EmployeeOnboarding.EmployeeDocuments
+- EmployeeOnboarding.OnboardingSummary
+
+> Legacy imports via `Employee.*` (e.g. `Employee.EmployeeList`) continue to work.
 
 ### Employee.List
 
 Displays a list of employees containing their full name, and their current onboarding status. An onboarding status. This list also contains actions that allow for the editing or removal of an employee.
 
 ```jsx
-import { Employee } from '@gusto/embedded-react-sdk'
+import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyApp() {
   return (
-    <Employee.EmployeeList companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
+    <EmployeeOnboarding.EmployeeList
+      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+      onEvent={() => {}}
+    />
   )
 }
 ```
