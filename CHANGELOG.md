@@ -4,7 +4,69 @@
 
 ### Breaking Changes
 
-- Refactor Employee Dashboard to use Box headers and consolidate state tax edit into a single view
+#### Box component adapter (`header`, `withPadding` props)
+
+The `Box` component now accepts a `header` prop (used for section titles and actions) and a `withPadding` prop. If you supply a custom **Box** via the [component adapter](./docs/component-adapter/component-adapter.md), update it to handle the new props:
+
+```tsx
+// Before
+Box: ({ children, footer, className }) => (
+  <div className={className}>
+    <div className="box-body">{children}</div>
+    {footer && <div className="box-footer">{footer}</div>}
+  </div>
+)
+
+// After
+Box: ({ children, header, footer, withPadding = true, className }) => (
+  <div className={className}>
+    {header && <div className="box-header">{header}</div>}
+    <div className="box-body" style={withPadding ? undefined : { padding: 0 }}>
+      {children}
+    </div>
+    {footer && <div className="box-footer">{footer}</div>}
+  </div>
+)
+```
+
+#### New `BoxHeader` component adapter
+
+A new **BoxHeader** component has been added to the component adapter. It renders a title, optional description, and optional action (e.g. an "Edit" button) inside `Box` headers. If you provide a custom component adapter, add a `BoxHeader` implementation:
+
+```tsx
+BoxHeader: ({ title, description, action, headingLevel = 'h3' }) => {
+  const Heading = headingLevel
+  return (
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div>
+        <Heading>{title}</Heading>
+        {description && <p>{description}</p>}
+      </div>
+      {action && <div>{action}</div>}
+    </div>
+  )
+}
+```
+
+#### Table `variant` prop replaced with `isWithinBox`
+
+The Table component's `variant` prop has been replaced with `isWithinBox`. If you supply a custom **Table** via the component adapter, update your implementation:
+
+```tsx
+// Before: variant?: 'default' | 'minimal'
+Table: ({ variant = 'default', ...props }) => (
+  <table style={variant === 'minimal' ? { border: 'none' } : undefined} {...props} />
+)
+
+// After: isWithinBox?: boolean
+Table: ({ isWithinBox = false, ...props }) => (
+  <table style={isWithinBox ? { border: 'none', boxShadow: 'none' } : undefined} {...props} />
+)
+```
+
+#### DescriptionList new `layout` and `showSeparators` props
+
+The `DescriptionList` component now accepts `layout` (`'stacked' | 'horizontal'`) and `showSeparators` (boolean) props. If you supply a custom **DescriptionList**, update it to handle these props for proper rendering in the Employee Dashboard and other views.
 
 ### Features & Enhancements
 
