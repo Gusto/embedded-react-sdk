@@ -22,10 +22,6 @@
     align-items: baseline;
     gap: toRem(16);
 
-    &:not(:last-child) {
-      margin-bottom: toRem(16);
-    }
-
     dt {
       flex-shrink: 0;
     }
