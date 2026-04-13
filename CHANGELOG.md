@@ -1,5 +1,49 @@
 # Changelog
 
+## 0.39.0
+
+### Breaking Changes
+
+- Refactor Employee Dashboard to use Box headers and consolidate state tax edit into a single view
+
+### Features & Enhancements
+
+- Add Employee Dashboard component
+- Add Time Off policy management: PolicyList, SelectPolicyType, SelectHolidays, and PolicyConfigurationForm (presentation and functional components)
+- Wire PolicyConfigurationForm into TimeOff state machine
+- Add usePayScheduleForm unstable hook
+- Add useSignCompanyForm unstable hook
+- Add useSignEmployeeForm hook with I-9 preparer support
+- Add select-all header checkbox to DataView
+- Streamline schema composition with unified buildFormSchema pattern
+- Add holiday data helpers and i18n translations
+- Add full-screen token expired overlay with periodic health polling (SDK App)
+
+### Fixes
+
+- Fix table text styles in contractors and payroll
+- Fix date picker style improvements
+- Fix uncontrolled to controlled input warning
+- Fix minor style updates to popover and menu UI
+- Always show kebab menu in payroll list for consistent alignment
+- Dynamic payment processing copy based on company ACH speed
+- Use taxableAsScorp for Two Percent Shareholder visibility
+
+### Chores & Maintenance
+
+- Refactor Box to expose Header, Footer, Content as subcomponents
+- Migrate useWorkAddressForm and useEmployeeDetailsForm to buildFormSchema pattern
+- Move EmployeeTable to UNSTABLE_TimeOff/shared and remove TimeOffManagement
+- Remove legacy composeFormSchema, resolveRequiredFields, and deriveFieldsMetadata
+- Add tests and Storybook stories for PolicyList, SelectPolicyType, and PolicyConfigurationForm
+- Add component naming and organization RFC
+- Upgrade @gusto/embedded-api from 0.12.4 to 0.12.5
+- Upgrade react-aria-components from 1.13.0 to 1.16.0
+- Upgrade GitHub Actions to Node.js 24-compatible versions
+- Bump i18next from 26.0.3 to 26.0.4
+- Bump Storybook packages to 10.3.5
+- Bump various dev dependencies (vitest, msw, axios, typescript-eslint, dotenv, and others)
+
 ## 0.38.0
 
 ### Features & Enhancements
