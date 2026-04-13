@@ -3,7 +3,7 @@ import { useContractorsUpdateOnboardingStatusMutation } from '@gusto/embedded-ap
 import { useContractorsGetOnboardingStatusSuspense } from '@gusto/embedded-api/react-query/contractorsGetOnboardingStatus'
 import { useContractorsGetSuspense } from '@gusto/embedded-api/react-query/contractorsGet'
 import { SubmitDone } from './SubmitDone'
-import { Flex } from '@/components/Common'
+import { ActionsLayout, Flex, FlexItem } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n, useComponentDictionary } from '@/i18n'
 import {
@@ -31,7 +31,7 @@ export function ContractorSubmit(props: ContractorSubmitProps & BaseComponentInt
 export const Root = ({ contractorId, selfOnboarding, dictionary }: ContractorSubmitProps) => {
   useI18n('Contractor.Submit')
   useComponentDictionary('Contractor.Submit', dictionary)
-  const { Alert, Button, UnorderedList } = useComponentContext()
+  const { Alert, Box, BoxHeader, Button, Text, Heading, UnorderedList } = useComponentContext()
   const { t } = useTranslation('Contractor.Submit')
   const { onEvent, baseSubmitHandler } = useBase()
   const items = Object.values(t('warningItems', { returnObjects: true }))
@@ -83,16 +83,39 @@ export const Root = ({ contractorId, selfOnboarding, dictionary }: ContractorSub
   }
 
   return (
-    <>
-      <Alert label={t('title')} status="warning">
+    <Flex flexDirection="column" gap={24}>
+      <FlexItem>
+        <Heading as="h2">Submit contractor</Heading>
+      </FlexItem>
+
+      <Box
+        header={
+          <BoxHeader
+            title={t('documentRequirements.title')}
+            description={t('documentRequirements.description')}
+          />
+        }
+      >
+        <Flex flexDirection="column" gap={16}>
+          {Object.values(t('documentRequirements.items', { returnObjects: true })).map(item => (
+            <div key={item.title}>
+              <Text weight="medium">{item.title}</Text>
+              <Text variant="supporting">{item.description}</Text>
+            </div>
+          ))}
+          <Alert status="info" label={t('documentRequirements.alertLabel')}></Alert>
+        </Flex>
+      </Box>
+
+      <Alert status="warning" label={t('title')}>
         <UnorderedList items={items} />
       </Alert>
-      <Flex flexDirection="column" alignItems="flex-end">
+      <ActionsLayout justifyContent="end">
         <Button title={t('submitCta')} onClick={onSubmit}>
           {t('submitCta')}
         </Button>
-      </Flex>
-    </>
+      </ActionsLayout>
+    </Flex>
   )
 }
 
