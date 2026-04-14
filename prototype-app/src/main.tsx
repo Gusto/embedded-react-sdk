@@ -7,7 +7,6 @@ import { ComponentShowcase } from './prototypes/component-showcase'
 import { SampleFlowLayout } from './prototypes/sample-flow'
 import { StepOne } from './prototypes/sample-flow/StepOne'
 import { StepTwo } from './prototypes/sample-flow/StepTwo'
-import '@/styles/sdk.scss'
 
 const router = createBrowserRouter([
   {
