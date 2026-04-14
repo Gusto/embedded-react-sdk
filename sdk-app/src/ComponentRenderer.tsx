@@ -32,7 +32,7 @@ interface ValidationIssue {
 
 function parseValidationError(error: Error): ValidationIssue[] | null {
   const cause = (error as { cause?: { issues?: { path?: string[]; message?: string }[] } }).cause
-  if (cause?.issues && Array.isArray(cause.issues)) {
+  if (cause?.issues) {
     return cause.issues.map(issue => ({
       path: issue.path?.join('.') || 'unknown',
       message: issue.message || 'Required',
