@@ -6,7 +6,6 @@ import type { MODE } from './usePaySchedule'
 import { PayScheduleProvider, type PayScheduleDefaultValues } from './usePaySchedule'
 import { Actions, Edit, Head, List } from './_parts'
 import { usePayScheduleForm } from './shared/usePayScheduleForm'
-import type { PayScheduleFrequency } from './shared/usePayScheduleForm/payScheduleSchema'
 import { Form } from '@/components/Common/Form'
 import type { BaseComponentInterface, CommonComponentInterface } from '@/components/Base'
 import { BaseComponent, useBase } from '@/components/Base'
@@ -55,7 +54,7 @@ const Root = ({ companyId, children, defaultValues }: PayScheduleProps) => {
     defaultValues: defaultValues
       ? {
           customName: defaultValues.customName ?? '',
-          frequency: defaultValues.frequency as PayScheduleFrequency | undefined,
+          frequency: defaultValues.frequency,
           anchorPayDate: defaultValues.anchorPayDate?.toString(),
           anchorEndOfPayPeriod: defaultValues.anchorEndOfPayPeriod?.toString(),
           day1: defaultValues.day1 ?? undefined,
