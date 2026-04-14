@@ -1,0 +1,21 @@
+.policySettings {
+  --g-inputLabelColor: #414651;
+  --g-inputLabelFontSize: #{toRem(14)};
+  --g-inputDescriptionColor: #535862;
+  color: #181d27;
+  width: 100%;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid var(--g-inputBorderColor);
+  margin: toRem(4) 0;
+}
+
+.settingField :global(.react-aria-NumberField) {
+  max-width: toRem(200);
+}
+
+.disabledField {
+  opacity: 0.5;
+}
