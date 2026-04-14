@@ -4,7 +4,7 @@ import styles from './SampleFlow.module.scss'
 const STEPS = [
   { path: '/sample-flow/step-one', label: 'Step 1: Employee Info' },
   { path: '/sample-flow/step-two', label: 'Step 2: Review' },
-]
+] as const
 
 export function SampleFlowLayout() {
   const location = useLocation()
