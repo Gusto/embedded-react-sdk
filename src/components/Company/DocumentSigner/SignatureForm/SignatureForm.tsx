@@ -24,7 +24,7 @@ export function SignatureForm(props: SignatureFormProps) {
   )
 }
 
-export function Root({ formId, children, dictionary }: SignatureFormProps) {
+function Root({ formId, children, dictionary }: SignatureFormProps) {
   useComponentDictionary('Company.SignatureForm', dictionary)
   useI18n('Company.SignatureForm')
   const { t } = useTranslation('Company.SignatureForm')
