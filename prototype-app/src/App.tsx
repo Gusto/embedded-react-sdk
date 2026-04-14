@@ -12,7 +12,7 @@ export function App() {
       <div className={styles.layout}>
         <nav className={styles.nav}>
           <Link to="/" className={styles.title}>
-            Prototype App
+            Embedded React SDK<span>/ Design</span>
           </Link>
         </nav>
         <div className={styles.body}>
