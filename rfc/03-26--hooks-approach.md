@@ -1,8 +1,8 @@
 # RFC: React Hooks for Embedded SDK Partner Flexibility
 
-**Status:** Draft  |  **Authors:** SDK Team  |  **Date:** March 2026
+**Status:** Implemented (UNSTABLE)  |  **Authors:** SDK Team  |  **Date:** March 2026 (updated April 2026)
 
-> This RFC is a follow-up to [11-25--ui-flexibility-exploration](./11-25--ui-flexibility-exploration.md), which proposed a Provider + hooks approach and identified a pure hooks alternative. After prototyping, we moved forward with hooks. This document concretely proposes the approach based on working implementations. See [PR #1239](https://github.com/Gusto/embedded-react-sdk/pull/1239) for the full implementation.
+> This RFC is a follow-up to [11-25--ui-flexibility-exploration](./11-25--ui-flexibility-exploration.md), which proposed a Provider + hooks approach and identified a pure hooks alternative. After prototyping, we moved forward with hooks. This document describes the approach based on working implementations that are currently shipping under the `UNSTABLE_` namespace. See [PR #1239](https://github.com/Gusto/embedded-react-sdk/pull/1239) for the original implementation; subsequent PRs have expanded the hook inventory and refined the shared infrastructure.
 
 ---
 
@@ -39,6 +39,20 @@ Export **React hooks** from the SDK's `UNSTABLE_` namespace that decouple data-f
 
 Each hook bundles: **data** (query results, derived state, loading/error), **mutations** (wrapped API calls), **form support** (Zod schemas, react-hook-form, field components), and **business logic** (conditional visibility, workflow guards).
 
+### Current Hook Inventory
+
+| Hook | Domain | Type |
+|---|---|---|
+| `useCompensationForm` | Employee compensation (job, FLSA, rate, pay unit) | Form |
+| `useEmployeeDetailsForm` | Employee profile (name, email, SSN, DOB) | Form |
+| `useWorkAddressForm` | Employee work address (location, effective date) | Form |
+| `useHomeAddressForm` | Employee home address (street, city, state, zip) | Form |
+| `usePayScheduleForm` | Company pay schedule (frequency, anchor dates) | Form |
+| `useSignCompanyForm` | Company signatory forms (signature, confirmation) | Form |
+| `useSignEmployeeForm` | Employee signatory forms + I-9 preparer support | Form |
+
+All hooks are exported from `import { ... } from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'`.
+
 ### Division of Responsibilities
 
 | Concern | SDK (hooks) | Partner |
@@ -46,11 +60,12 @@ Each hook bundles: **data** (query results, derived state, loading/error), **mut
 | API calls & orchestration | Owned by hooks | — |
 | Domain logic & business rules | Owned by hooks (conditional fields, derived state, calculations) | — |
 | Form validation schemas | Owned by hooks (Zod schemas, error codes) | — |
-| Form state management | Owned by hooks (react-hook-form initialization, default values, reset) | — |
+| Form state management | Owned by hooks (react-hook-form initialization, default values, sync) | — |
 | Field components | Provided by hooks as composable building blocks | Partner renders them in any order/layout |
+| Field requiredness configuration | SDK provides defaults per mode; partners can promote optional fields to required via `optionalFieldsToRequire` | Partner configures per their product requirements |
 | Translations & copy | — | Fully partner-owned; hooks emit error codes, not strings; `getOptionLabel` lets partners customize labels for enumerated values |
 | Layout & styling | — | Fully partner-owned |
-| Loading & error UX | Base utilities available (`BaseLayout`, `BaseBoundaries`) | Partner chooses how to present them |
+| Loading & error UX | `errorHandling` bag available in both loading and ready states | Partner chooses how to present errors and loading states |
 | Navigation & flow orchestration | — | Partner manages routing between steps |
 
 The guiding principle: hooks should never contain user-facing strings or layout opinions. Where we do provide UI helpers (field components, form providers), every piece should be fully customizable. Partners should never need to replicate complex API orchestration, validation rules, domain calculations, or business logic like conditional field visibility — that complexity is absorbed by the hook so partners can focus on their UI.
@@ -115,194 +130,311 @@ function PayrollConfigPage({ companyId, payrollId }: Props) {
 
 ### 2. Form Hook Anatomy
 
-Form hooks manage schema-driven validation, form state, field components, and API submission. Using `useHomeAddressForm` as the illustration:
+Form hooks manage schema-driven validation, form state, field components, and API submission. Every form hook follows a consistent 4-file structure:
 
-**Schema** — Zod schemas emit error *codes* (not messages), keeping validation translation-agnostic. Partners map codes to their own strings.
-
-```typescript
-export const generateHomeAddressSchema = () =>
-  z.object({
-    street1: z.string().min(1, { message: 'REQUIRED' }),
-    street2: z.string().optional(),
-    city: z.string().min(1, { message: 'REQUIRED' }),
-    state: z.enum(STATES_ABBR, 'REQUIRED'),
-    zip: z.string().superRefine(/* REQUIRED + INVALID_ZIP_FORMAT */),
-    courtesyWithholding: z.boolean(),
-  })
+```
+hooks/use{Domain}Form/
+├── use{Domain}Form.tsx      # Main hook: data fetching, form setup, return shape
+├── {domain}Schema.ts        # Zod schema, error codes, form data/output types
+├── fields.tsx               # Domain field components + exported field prop types
+├── {Domain}Form.tsx          # Prebuilt component wrapping the hook (for convenience + regression testing)
+└── index.ts                 # Barrel file
 ```
 
-**react-hook-form** — The hook initializes react-hook-form with the Zod resolver, wires up API data fetching, and returns `Fields`, `onSubmit`, and `hookFormInternals` for the partner. A stripped-down version of the hook internals:
+#### Schema — `buildFormSchema` Pattern
+
+Each schema follows a 4-part structure: **error codes → field validators → required fields config → schema factory**. The `buildFormSchema` utility handles the mechanics of wrapping fields with optional/required logic, deriving metadata, and composing cross-field validation.
+
+**Error codes** — Zod schemas emit error *codes* (not messages), keeping validation translation-agnostic:
 
 ```typescript
-function useHomeAddressForm({
+export const CompensationErrorCodes = {
+  REQUIRED: 'REQUIRED',
+  RATE_MINIMUM: 'RATE_MINIMUM',
+  RATE_EXEMPT_THRESHOLD: 'RATE_EXEMPT_THRESHOLD',
+  PAYMENT_UNIT_OWNER: 'PAYMENT_UNIT_OWNER',
+  PAYMENT_UNIT_COMMISSION: 'PAYMENT_UNIT_COMMISSION',
+  RATE_COMMISSION_ZERO: 'RATE_COMMISSION_ZERO',
+} as const
+
+export type CompensationErrorCode =
+  (typeof CompensationErrorCodes)[keyof typeof CompensationErrorCodes]
+```
+
+**Field validators** — Define all field validators once. Fields that need runtime coercion (e.g., number inputs that produce `NaN`, radio groups that deliver `'true'`/`'false'` strings) use `z.preprocess`:
+
+```typescript
+const fieldValidators = {
+  jobTitle: z.string(),
+  flsaStatus: z.enum([FlsaStatus.EXEMPT, FlsaStatus.NONEXEMPT, /* ... */]),
+  rate: z.preprocess(coerceNaN(0), z.number()),
+  startDate: z.preprocess(coerceToISODate, z.iso.date().nullable()),
+  stateWcCovered: z.preprocess(coerceStringBoolean, z.boolean()),
+  adjustForMinimumWage: z.boolean(),
+  // ...
+}
+
+export type CompensationFormData = {
+  [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
+}
+```
+
+**Required fields config** — Declares requiredness rules per field. Fields not listed default to `'always'` required:
+
+| Rule | Meaning | Partner-configurable? |
+|---|---|---|
+| `'always'` | Required in both modes (default when omitted) | No |
+| `'create'` | Required on create, optional on update | Yes — via `optionalFieldsToRequire` |
+| `'update'` | Required on update, optional on create | Yes — via `optionalFieldsToRequire` |
+| `'never'` | Optional in both modes | Yes — via `optionalFieldsToRequire` |
+| `(data, mode) => boolean` | Conditionally required based on runtime form values | No |
+
+```typescript
+const requiredFieldsConfig = {
+  jobTitle: 'create',
+  rate: 'create',
+  startDate: 'create',
+  minimumWageId: data => data.adjustForMinimumWage,
+  stateWcClassCode: data => String(data.stateWcCovered) === 'true',
+} satisfies RequiredFieldConfig<typeof fieldValidators>
+```
+
+**Schema factory** — Returns a `[schema, metadataConfig]` tuple. The schema goes to `zodResolver`; `metadataConfig` feeds `useDeriveFieldsMetadata` to reactively derive `isRequired` from form state:
+
+```typescript
+export type CompensationOptionalFieldsToRequire = OptionalFieldsToRequire<
+  typeof requiredFieldsConfig
+>
+
+export function createCompensationSchema(options: CompensationSchemaOptions = {}) {
+  const { mode = 'create', optionalFieldsToRequire, withStartDateField = true } = options
+
+  return buildFormSchema(fieldValidators, {
+    requiredFieldsConfig,
+    requiredErrorCode: CompensationErrorCodes.REQUIRED,
+    mode,
+    optionalFieldsToRequire,
+    excludeFields: withStartDateField ? [] : ['startDate'],
+    superRefine: validateFlsaRules,
+  })
+}
+```
+
+#### react-hook-form — `values` + `resetOptions` Pattern
+
+The hook initializes react-hook-form with the Zod resolver and uses `values` + `resetOptions: { keepDirtyValues: true }` to sync server data — react-hook-form deep-compares and updates when data changes while preserving user edits. This replaces the earlier manual `useEffect` + `reset()` pattern:
+
+```typescript
+const [schema, metadataConfig] = useMemo(
+  () => createCompensationSchema({ mode, optionalFieldsToRequire, withStartDateField }),
+  [mode, optionalFieldsToRequire, withStartDateField],
+)
+
+const formMethods = useForm<CompensationFormData, unknown, CompensationFormOutputs>({
+  resolver: zodResolver(schema),
+  mode: validationMode,
+  shouldFocusError,
+  defaultValues: resolvedDefaults,
+  values: resolvedDefaults,
+  resetOptions: { keepDirtyValues: true },
+})
+```
+
+Partners never call `useForm` themselves — they receive `Fields` to render and `onSubmit` to wire up.
+
+Three hook parameters give partners control over form behavior:
+
+- **`defaultValues`** — Optional initial values for the form. When provided, these are merged with the hook's built-in defaults. Useful when a partner wants to pre-populate fields from their own data source (e.g., values collected in a previous step of their onboarding flow). Once API data loads, the form syncs to the server values while preserving user edits to dirty fields.
+- **`validationMode`** — Controls when validation fires. Defaults to `'onSubmit'` but partners can pass `'onBlur'`, `'onChange'`, or `'onTouched'` to match their UX preferences.
+- **`optionalFieldsToRequire`** — Promotes optional fields to required on a per-mode basis. Only fields with `'create'`, `'update'`, or `'never'` rules are configurable — fields with `'always'` or function predicates are not offered:
+
+```typescript
+useCompensationForm({
   employeeId,
-  defaultValues,
-  validationMode = 'onSubmit',
-}: UseHomeAddressParams): UseHomeAddressFormResult {
-  const { data, isLoading } = useEmployeeAddressesGet({ employeeId })
-  const schema = useMemo(() => generateHomeAddressSchema(), [])
-  const currentAddress = getActiveHomeAddress(data?.employeeAddressList)
+  optionalFieldsToRequire: {
+    create: ['jobTitle', 'rate'],
+    update: ['jobTitle'],
+  },
+})
+```
 
-  const formMethods = useForm<HomeAddressFormData>({
-    resolver: zodResolver(schema),
-    mode: validationMode,
-    defaultValues: defaultValues ?? { street1: '', street2: '', city: '', state: undefined, zip: '', courtesyWithholding: false },
-  })
+#### Field Components
 
-  const hasInitializedForm = useRef(false)
-  useEffect(() => {
-    if (currentAddress && !hasInitializedForm.current) {
-      hasInitializedForm.current = true
-      formMethods.reset({
-        street1: currentAddress.street1 ?? '',
-        street2: currentAddress.street2 ?? '',
-        city: currentAddress.city ?? '',
-        state: currentAddress.state,
-        zip: currentAddress.zip ?? '',
-        courtesyWithholding: currentAddress.courtesyWithholding ?? false,
-      })
-    }
-  }, [currentAddress, formMethods.reset])
+Each field is a thin wrapper that binds a `name` to a generic `*HookField` component (`TextInputHookField`, `SelectHookField`, `CheckboxHookField`, `NumberInputHookField`, `DatePickerHookField`, `RadioGroupHookField`, `SwitchHookField`). Fields accept `label`, `description`, `validationMessages`, and an optional `FieldComponent` prop to swap the underlying control:
 
-  if (isLoading) return { isLoading: true }
-
-  return {
-    isLoading: false,
-    mode: currentAddress ? 'update' : 'create',
-    Fields: HomeAddressFields,       // standalone field components
-    hookFormInternals: { formMethods }, // escape hatch for advanced usage
-    fieldsMetadata: {},
-    onSubmit: async () => { /* validates via formMethods.handleSubmit, then calls create or update mutation */ },
-    // ...errors, isPending, data
-  }
+```tsx
+export function JobTitleField(props: JobTitleFieldProps) {
+  return <TextInputHookField {...props} name="jobTitle" />
 }
 ```
 
-The key pattern: `useForm` is called inside the hook with the Zod resolver, default values are set for a clean initial render, and the form resets exactly once when API data arrives. Partners never call `useForm` themselves — they receive `Fields` to render and `onSubmit` to wire up.
-
-Two hook parameters give partners control over form initialization:
-
-- **`defaultValues`** — Optional initial values for the form. When provided, these are used instead of the hook's built-in defaults. This is useful when a partner wants to pre-populate fields from their own data source (e.g., values collected in a previous step of their onboarding flow). Once API data loads, the form still resets to the server values.
-- **`validationMode`** — Controls when validation fires. Defaults to `'onSubmit'` but partners can pass `'onBlur'`, `'onChange'`, or `'onTouched'` to match their UX preferences. This maps directly to react-hook-form's [`mode` option](https://react-hook-form.com/docs/useform#mode).
-
-**Field Components** — Each field is a standalone component accepting `label`, `description`, `validationMessages`, and an optional `FieldComponent` prop to swap the underlying control. See the next section for how validation messages work end-to-end.
+The `FieldComponent` prop is typed to the underlying control's props (e.g., `ComponentType<TextInputProps>` for text fields, `ComponentType<SelectProps>` for selects). By default, fields render using the SDK's built-in controls (which respect the component adapter). But if a partner needs a one-off customization — say, an autocomplete input instead of a plain text input — they can swap it without rebuilding the entire form:
 
 ```tsx
-export function Street1({ label, validationMessages, FieldComponent }: Street1FieldProps) {
-  const errorMessage = useFieldErrorMessage('street1', validationMessages)
-  return (
-    <TextInputField name="street1" isRequired label={label}
-      errorMessage={errorMessage} FieldComponent={FieldComponent} />
-  )
-}
-```
-
-The `FieldComponent` prop is typed to the underlying control's props (e.g., `ComponentType<TextInputProps>` for text fields, `ComponentType<SelectProps>` for selects). By default, fields render using the SDK's built-in controls (which respect the component adapter). But if a partner needs a one-off customization — say, an autocomplete input instead of a plain text input for the street field — they can swap it without rebuilding the entire form:
-
-```tsx
-import { MyAutocompleteInput } from './MyAutocompleteInput'
-
-<Fields.Street1
-  label={t('street1')}
-  validationMessages={{ REQUIRED: t('required') }}
+<Fields.JobTitle
+  label="Job Title"
+  validationMessages={{ REQUIRED: 'Please enter a job title' }}
   FieldComponent={MyAutocompleteInput}
 />
 ```
 
-The partner's component receives the same props the default control would (`value`, `onChange`, `onBlur`, `errorMessage`, etc.), so it plugs in seamlessly. Every other field on the form continues using the defaults.
+The partner's component receives the same props the default control would (`value`, `onChange`, `onBlur`, `errorMessage`, etc.), so it plugs in seamlessly.
 
-**Additional form context** — In addition to React Hook Form context, we maintain our own form context called `FormFieldsMetadataProvider`. Field components often need data that only the hook has access to. For example, `useWorkAddressForm` fetches a list of company locations from the API — the `Location` select field needs those options to render its dropdown. Similarly, a field might need to know whether it's required or disabled based on hook state.
+#### Fields Metadata and `useDeriveFieldsMetadata`
 
-Rather than forcing partners to pass all of this through field props, we provide our own form context alongside react-hook-form's. The hook populates a `fieldsMetadata` object keyed by field name:
+Field components need data that only the hook has access to — select options from API responses, whether a field is required or disabled based on hook state, or whether a field has a redacted server-side value (e.g., SSN). Rather than forcing partners to pass all of this through field props, we provide form context alongside react-hook-form's.
+
+The `useDeriveFieldsMetadata` hook takes the `metadataConfig` returned by the schema factory and the form's `control`, and reactively resolves `isRequired` for predicate-based rules by watching only the specific form fields that predicates read (auto-detected via a recording Proxy). The hook then enhances select/radio fields with `withOptions`:
 
 ```typescript
-// Inside useWorkAddressForm — after fetching company locations from the API
-fieldsMetadata: {
-  locationUuid: {
-    isRequired: true,
-    options: companyLocations.map(loc => ({ label: addressInline(loc), value: loc.uuid })),
-    entries: companyLocations,  // raw API objects, useful for partner custom rendering
-  },
-  effectiveDate: {
-    isRequired: true,
-  },
-}
-```
-(We can also derive things like isRequired for the fields from the zod schema, and this will allow us to communicate those)
-
-Each hook's exported `FormProvider` wraps children with both react-hook-form's context and our metadata context:
-
-```tsx
-export function WorkAddressFormProvider({ form, children }) {
-  return (
-    <FormFieldsMetadataProvider metadata={form.fieldsMetadata}>
-      <FormProvider {...form.hookFormInternals.formMethods}>{children}</FormProvider>
-    </FormFieldsMetadataProvider>
-  )
+const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
+const fieldsMetadata = {
+  jobTitle: baseMetadata.jobTitle,
+  flsaStatus: withOptions<FlsaStatusType>(baseMetadata.flsaStatus, flsaOptions, flsaStatusEntries),
+  rate: { ...baseMetadata.rate, isDisabled: isCommissionOnly },
+  paymentUnit: withOptions<PaymentUnit>(
+    { ...baseMetadata.paymentUnit, isDisabled: isOwner || isCommissionOnly },
+    paymentUnitOptions, paymentUnitEntries,
+  ),
+  // ...
 }
 ```
 
-Field components then consume the metadata via `useFieldMetadata`:
+For fields with select options, the `entries` array carries raw API objects so that `getOptionLabel` callbacks have full context:
 
 ```tsx
-export function Location({ label, validationMessages, getOptionLabel }: LocationFieldProps) {
-  const { options = [], entries = [], isRequired, isDisabled } = useFieldMetadata('locationUuid')
-  const errorMessage = useFieldErrorMessage('locationUuid', validationMessages)
-
-  // Partners can override how options are labeled via getOptionLabel
-  const resolvedOptions = getOptionLabel
-    ? entries.map(loc => ({ label: getOptionLabel(loc), value: loc.uuid }))
-    : options
-
-  return (
-    <SelectField name="locationUuid" label={label} isRequired={isRequired}
-      isDisabled={isDisabled} options={resolvedOptions} errorMessage={errorMessage} />
-  )
-}
-```
-
-This pattern keeps fields self-contained while giving the hook control over what data and constraints they operate with. It also positions us to eventually derive `isRequired` directly from the Zod schema rather than setting it manually.
-
-Notice the `getOptionLabel` prop above — it receives the raw API entry (the full location object) and returns a string. By default the field uses the pre-formatted `options` from the hook, but the partner can override labeling without losing access to the underlying data:
-
-```tsx
-<Fields.Location
-  label="Work location"
-  validationMessages={{ REQUIRED: 'Please select a location' }}
-  getOptionLabel={(location) => `${location.streetAddress}, ${location.city} ${location.state}`}
+<Fields.FlsaStatus
+  label="FLSA Status"
+  validationMessages={{ REQUIRED: 'Required' }}
+  getOptionLabel={(status) => myCustomFlsaLabels[status]}
 />
 ```
 
-The `entries` array in the metadata is the key — it carries the raw API objects so that `getOptionLabel` has full context. Without this, the partner would only have pre-formatted label strings and no way to customize them.
+#### `SDKFormProvider`
 
-**Partner usage** — Full control over ordering, layout, and labels:
+`SDKFormProvider` is a shared component that wraps children with both react-hook-form's `FormProvider` and our `FormFieldsMetadataProvider`. It also runs `useSyncFieldErrors` to map server-side errors from the `errorHandling` bag onto react-hook-form field errors automatically:
 
 ```tsx
-<HomeAddressFormProvider form={form}>
-  <section>
-    <h3>Street Address</h3>
-    <Fields.Street1 label={t('street1')} validationMessages={{ REQUIRED: t('required') }} />
-    <Fields.Street2 label={t('street2')} />
-  </section>
+<SDKFormProvider formHookResult={form}>
+  <Fields.JobTitle label="Job Title" validationMessages={{ REQUIRED: 'Required' }} />
+  <Fields.Rate label="Rate" validationMessages={{ REQUIRED: 'Required', RATE_MINIMUM: '...' }} />
+  <button type="submit">Save</button>
+</SDKFormProvider>
+```
 
-  <Divider />
+This replaces the earlier per-hook `*FormProvider` pattern — all hooks use the same `SDKFormProvider`.
 
-  <section>
-    <h3>City, State & Zip</h3>
-    <Grid gridTemplateColumns={['2fr', '1fr', '1fr']}>
-      <Fields.City label={t('city')} validationMessages={{ REQUIRED: t('required') }} />
-      <Fields.State label={t('state')} validationMessages={{ REQUIRED: t('required') }} />
-      <Fields.Zip label={t('zip')} validationMessages={{ REQUIRED: t('required'), INVALID_ZIP_FORMAT: t('badZip') }} />
-    </Grid>
-  </section>
+#### Return Shape (Discriminated Union)
 
-  <Divider />
+Every form hook returns a discriminated union with a structured, nested shape. The `errorHandling` bag is available in **both** loading and ready states — this is critical because failed queries produce no data, so the hook stays in the loading branch, but `errorHandling.errors` will be populated, letting partners show error UI with a retry button instead of an infinite spinner:
 
-  <section>
-    <h3>Tax Withholding</h3>
-    <Fields.CourtesyWithholding label={t('courtesyWithholding')} />
-  </section>
-</HomeAddressFormProvider>
+```typescript
+// Loading state
+if (isDataLoading || !requiredData) {
+  return { isLoading: true as const, errorHandling }
+}
+
+// Ready state
+return {
+  isLoading: false as const,
+  data: { compensation, jobs, currentJob, minimumWages },
+  status: { isPending, mode: 'create' | 'update' },
+  actions: { onSubmit },
+  errorHandling,
+  form: {
+    Fields: { JobTitle, FlsaStatus, Rate, /* some may be undefined */ },
+    fieldsMetadata,
+    hookFormInternals: { formMethods },
+    getFormSubmissionValues,
+  },
+}
+```
+
+The `errorHandling` bag provides:
+- `errors: SDKError[]` — combined query + submit errors, normalized into a consistent shape
+- `retryQueries: () => void` — retries all failed data-fetching queries
+- `clearSubmitError: () => void` — clears the stateful mutation error
+
+#### Submit Handler
+
+Submit handlers use `formMethods.handleSubmit` inside a `Promise` wrapper so `onSubmit` is async/awaitable, and delegate to `baseSubmitHandler` for error boundary integration. Each returns `HookSubmitResult<TEntity>`:
+
+```typescript
+const onSubmit = async (
+  callbacks?: CompensationSubmitCallbacks,
+  options?: CompensationSubmitOptions,
+): Promise<HookSubmitResult<Compensation | undefined> | undefined> => { /* ... */ }
+```
+
+Simple hooks return the result only. Hooks that orchestrate multiple sequential API calls (e.g., `useCompensationForm` creates/updates a Job then updates a Compensation) accept optional **callbacks** for intermediate steps (`onJobCreated`, `onCompensationUpdated`) while still returning the final result.
+
+#### Optional Entity IDs and Submit-Time Resolution
+
+When a hook depends on an entity ID for both fetching and creating, the ID is optional in props and can be provided at submit time. This lets partners compose hooks without managing re-render cycles from prop changes:
+
+```typescript
+// Props — ID is optional
+interface UseCompensationFormProps {
+  employeeId?: string
+  // ...
+}
+
+// Queries gated with enabled
+const jobsQuery = useJobsAndCompensationsGetJobs(
+  { employeeId: employeeId ?? '' },
+  { enabled: !!employeeId },
+)
+
+// ID resolved at submit time
+const resolvedEmployeeId = options?.employeeId ?? employeeId
+```
+
+In a composed form, creating an employee returns an ID that compensation and work address need. Passing the ID at submit time avoids triggering query refetching and tearing down the form UI.
+
+#### Partner Usage
+
+Full control over ordering, layout, and labels:
+
+```tsx
+function CustomCompensationPage({ employeeId }: Props) {
+  const form = useCompensationForm({ employeeId })
+
+  if (form.isLoading) return <MyLoadingState />
+  const { Fields } = form.form
+
+  return (
+    <SDKFormProvider formHookResult={form}>
+      <section>
+        <h3>Position</h3>
+        <Fields.JobTitle label="Job Title" validationMessages={{ REQUIRED: 'Required' }} />
+        {Fields.FlsaStatus && (
+          <Fields.FlsaStatus label="FLSA Status" validationMessages={{ REQUIRED: 'Required' }} />
+        )}
+        {Fields.StartDate && (
+          <Fields.StartDate label="Start Date" validationMessages={{ REQUIRED: 'Required' }} />
+        )}
+      </section>
+
+      <section>
+        <h3>Compensation</h3>
+        <Fields.Rate label="Pay Rate" validationMessages={{
+          REQUIRED: 'Required',
+          RATE_MINIMUM: 'Must be at least $1',
+          RATE_EXEMPT_THRESHOLD: 'Below exempt salary threshold',
+        }} />
+        <Fields.PaymentUnit label="Per" validationMessages={{
+          REQUIRED: 'Required',
+          PAYMENT_UNIT_OWNER: 'Owners must use Paycheck',
+          PAYMENT_UNIT_COMMISSION: 'Commission-only must use Year',
+        }} />
+      </section>
+
+      <button onClick={() => form.actions.onSubmit()} disabled={form.status.isPending}>
+        Save
+      </button>
+    </SDKFormProvider>
+  )
+}
 ```
 
 Fields can be grouped, reordered, wrapped in partner markup, or placed in any layout — the hook doesn't care where they end up in the DOM.
@@ -316,74 +448,49 @@ The schema, field components, and partner code work together through a shared se
 Each schema declares its possible error codes as a typed constant. These codes are what Zod emits as `message` values on validation failure — they are not user-facing strings.
 
 ```typescript
-export const homeAddressErrorCodes = {
+export const CompensationErrorCodes = {
   REQUIRED: 'REQUIRED',
-  INVALID_ZIP_FORMAT: 'INVALID_ZIP_FORMAT',
+  RATE_MINIMUM: 'RATE_MINIMUM',
+  RATE_EXEMPT_THRESHOLD: 'RATE_EXEMPT_THRESHOLD',
 } as const
-
-export type HomeAddressErrorCode = (typeof homeAddressErrorCodes)[keyof typeof homeAddressErrorCodes]
-
-export const generateHomeAddressSchema = () =>
-  z.object({
-    street1: z.string().min(1, { message: homeAddressErrorCodes.REQUIRED }),
-    zip: z.string().superRefine((value, ctx) => {
-      if (!value) ctx.addIssue({ code: 'custom', message: homeAddressErrorCodes.REQUIRED })
-      else if (!/(^\d{5}$)|(^\d{5}-\d{4}$)/.test(value))
-        ctx.addIssue({ code: 'custom', message: homeAddressErrorCodes.INVALID_ZIP_FORMAT })
-    }),
-    // ...
-  })
 ```
 
 **Step 2: Field component props are typed to require exactly the right codes**
 
-Each field declares which error codes it can produce. TypeScript enforces that the partner supplies a translation for every possible code — no more, no less.
+Validation type aliases are derived from the error codes constant — never hardcoded:
 
 ```typescript
-type Street1ValidationCodes = 'REQUIRED'
-type ZipValidationCodes = 'REQUIRED' | 'INVALID_ZIP_FORMAT'
+export type RequiredValidation = typeof CompensationErrorCodes.REQUIRED
+export type RateValidation = (typeof CompensationErrorCodes)['REQUIRED' | 'RATE_MINIMUM' | 'RATE_EXEMPT_THRESHOLD']
 
-type Street1FieldProps = FieldProps & {
-  validationMessages: Record<Street1ValidationCodes, string>
-}
-
-type ZipFieldProps = FieldProps & {
-  validationMessages: Record<ZipValidationCodes, string>
-}
+export type JobTitleFieldProps = HookFieldProps<TextInputHookFieldProps<RequiredValidation>>
+export type RateFieldProps = HookFieldProps<NumberInputHookFieldProps<RateValidation>>
 ```
+
+TypeScript enforces that the partner supplies a translation for every possible code — no more, no less.
 
 **Step 3: Field component resolves the current error code to the partner's string**
 
-The `useFieldErrorMessage` helper reads the error code from react-hook-form state and maps it to the partner-provided message:
-
-```typescript
-function useFieldErrorMessage<TKeys extends string>(
-  fieldName: keyof HomeAddressFormData,
-  validationMessages: Record<TKeys, string>,
-): string | undefined {
-  const { formState: { errors } } = useFormContext<HomeAddressFormData>()
-  const errorCode = errors[fieldName]?.message as TKeys | undefined
-  return errorCode ? validationMessages[errorCode] : undefined
-}
-```
+The `useFieldErrorMessage` helper reads the error code from react-hook-form state and maps it to the partner-provided message. This is handled internally by the generic `*HookField` components.
 
 **Step 4: Partner supplies translated strings at render time**
 
 ```tsx
-<Fields.Street1
-  label={t('street1')}
-  validationMessages={{ REQUIRED: t('fieldValidations.street1.REQUIRED') }}
-/>
-<Fields.Zip
-  label={t('zip')}
+<Fields.Rate
+  label={t('rate')}
   validationMessages={{
-    REQUIRED: t('fieldValidations.zip.REQUIRED'),
-    INVALID_ZIP_FORMAT: t('fieldValidations.zip.INVALID_ZIP_FORMAT'),
+    REQUIRED: t('validation.required'),
+    RATE_MINIMUM: t('validation.rateMinimum'),
+    RATE_EXEMPT_THRESHOLD: t('validation.exemptThreshold'),
   }}
 />
 ```
 
 If a partner omits a required code, TypeScript catches it at build time. If they provide their own i18n framework, it slots in naturally. The SDK never ships user-facing error strings.
+
+#### Error Normalization
+
+Errors come from multiple sources with different shapes: API errors, SDK validation errors, field-level validation errors from 422 responses, and unrecoverable errors. The `useErrorHandling` hook normalizes all of these into a single `SDKError[]` array via `collectErrors`. `SDKFormProvider` also runs `useSyncFieldErrors`, which maps server-side field errors from the `errorHandling` bag onto react-hook-form's field-level error state automatically — so partners who render fields get inline error messages without manual wiring.
 
 ### 4. Composing Multiple Forms
 
@@ -391,66 +498,77 @@ When a partner composes multiple forms, they need a single submit handler that c
 
 ```tsx
 function EmployeeProfile({ employeeId, companyId }: Props) {
-  // Each hook passes shouldFocusError: false — we disable react-hook-form's
-  // built-in focus behavior because composeSubmitHandler handles focusing
-  // the first invalid field across ALL forms, not just within one.
-  const detailsForm = useEmployeeDetailsForm({ employeeId, shouldFocusError: false })
-  const addressForm = useHomeAddressForm({ employeeId, shouldFocusError: false })
-  const workForm = useWorkAddressForm({ employeeId, companyId, shouldFocusError: false })
+  const detailsForm = useEmployeeDetailsForm({ companyId, shouldFocusError: false })
+  const addressForm = useHomeAddressForm({ shouldFocusError: false })
+  const workForm = useWorkAddressForm({ companyId, employeeId, shouldFocusError: false })
 
   const isLoading = detailsForm.isLoading || addressForm.isLoading || workForm.isLoading
-  if (isLoading) return <BaseLayout isLoading />
+  if (isLoading) return <MyLoadingSkeleton />
 
-  const isPending = detailsForm.isPending || addressForm.isPending || workForm.isPending
+  const isPending = detailsForm.status.isPending || addressForm.status.isPending || workForm.status.isPending
 
   const handleSubmit = composeSubmitHandler(
     [detailsForm, addressForm, workForm],
     async () => {
-      const detailsResult = await detailsForm.onSubmit()
+      const detailsResult = await detailsForm.actions.onSubmit()
       const resolvedId = detailsResult?.data.uuid ?? employeeId
-      await addressForm.onSubmit(resolvedId)
-      await workForm.onSubmit(resolvedId)
+      await addressForm.actions.onSubmit({ employeeId: resolvedId })
+      await workForm.actions.onSubmit({ employeeId: resolvedId })
     },
   )
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <EmployeeDetailsFormProvider form={detailsForm}>
-        <EmployeeDetailsFormFields form={detailsForm} />
-      </EmployeeDetailsFormProvider>
-      <HomeAddressFormProvider form={addressForm}>
-        <HomeAddressFormFields form={addressForm} />
-      </HomeAddressFormProvider>
-      <WorkAddressFormProvider form={workForm}>
-        <WorkAddressFormFields form={workForm} />
-      </WorkAddressFormProvider>
-      <Button type="submit" isLoading={isPending}>Save All</Button>
-    </Form>
+    <form onSubmit={handleSubmit}>
+      <SDKFormProvider formHookResult={detailsForm}>
+        {/* Employee details fields */}
+      </SDKFormProvider>
+      <SDKFormProvider formHookResult={addressForm}>
+        {/* Home address fields */}
+      </SDKFormProvider>
+      <SDKFormProvider formHookResult={workForm}>
+        {/* Work address fields */}
+      </SDKFormProvider>
+      <button type="submit" disabled={isPending}>Save All</button>
+    </form>
   )
 }
 ```
 
-The `HomeAddressFormFields` component used standalone can be reused verbatim in the composed page — enabling both full-control and convenience paths.
-
 ### 5. Conditional Field Rendering
 
-Hooks return `undefined` for fields that shouldn't render based on form state or API data:
+Hooks return `undefined` for fields that shouldn't render based on form state or API data. The schema is also updated via `excludeFields` so hidden fields don't participate in validation:
 
 ```typescript
-const Fields = {
-  FirstName: EmployeeDetailsFields.FirstName,
-  DateOfBirth: showDateOfBirth ? EmployeeDetailsFields.DateOfBirth : undefined,
-  SelfOnboarding: isSelfOnboardingVisible ? EmployeeDetailsFields.SelfOnboarding : undefined,
+form: {
+  Fields: {
+    StartDate: withStartDateField ? StartDateField : undefined,
+    FlsaStatus: isFlsaSelectionEnabled ? FlsaStatusField : undefined,
+    AdjustForMinimumWage: isAdjustMinimumWageEnabled ? AdjustForMinimumWageField : undefined,
+    MinimumWageId: isAdjustMinimumWageEnabled && watchedAdjustForMinimumWage
+      ? MinimumWageIdField : undefined,
+    TwoPercentShareholder: showTwoPercentStakeholder ? TwoPercentShareholderField : undefined,
+    StateWcCovered: isWaState ? StateWcCoveredField : undefined,
+    StateWcClassCode: isWaState && watchedStateWcCovered ? StateWcClassCodeField : undefined,
+  },
 }
 ```
 
 ```tsx
-{Fields.DateOfBirth && <Fields.DateOfBirth label={t('dateOfBirth')} validationMessages={...} />}
+{Fields.FlsaStatus && <Fields.FlsaStatus label={t('flsaStatus')} validationMessages={...} />}
 ```
 
 The hook owns the business logic for visibility; the partner just checks existence.
 
-### 6. State Taxes — Predictably difficult
+### 6. Prebuilt Components
+
+Each hook ships a prebuilt component (`CompensationForm`, `EmployeeDetailsForm`, `WorkAddressForm`, etc.) that wraps the hook with SDK-provided labels, translations, and layout. These serve two purposes:
+
+1. **Convenience** — Partners who don't need custom layouts can drop in the prebuilt component directly
+2. **Regression testing** — The prebuilt component validates that the hook produces the same behavior as the stable component tier
+
+Prebuilt components use `SDKFormProvider`, i18n translations, and fire `onEvent` callbacks based on the `HookSubmitResult`.
+
+### 7. State Taxes — Predictably difficult
 
 State taxes follow the same hook pattern syntactically, but the underlying API is fundamentally different. For other forms (home address, employee details, compensation), we know every field at build time — the schema is static and the field components are pre-defined. State taxes are **API-driven**: the fields, their types, their labels, their options, and even which states appear are all determined by the API response at runtime.
 
@@ -465,16 +583,13 @@ const stateTaxesSchema = z.object({
 Field components are generated dynamically from the API response. Each question from the API includes a type (select, radio, number, currency, percent, date, text) and the hook creates the appropriate field component:
 
 ```typescript
-// Fields are keyed by state, then by question key
-// Fields['CA']['FilingStatus'] → a SelectField component
-// Fields['CA']['WithholdingAllowance'] → a NumberInputField component
 type StateTaxesFieldComponents = Record<string, Record<string, ComponentType<StateTaxFieldProps>>>
 ```
 
 Because the API supplies labels and descriptions for each question, state tax fields default to using those values — unlike other forms where the partner must supply every label. Partners can still override them:
 
 ```tsx
-<StateTaxesFormProvider form={form}>
+<SDKFormProvider formHookResult={form}>
   {data.employeeStateTaxes.map(stateData => {
     const stateFields = Fields[stateData.state]
     if (!stateFields) return null
@@ -483,65 +598,27 @@ Because the API supplies labels and descriptions for each question, state tax fi
       <section key={stateData.state}>
         <h2>{stateNames[stateData.state]}</h2>
         {Object.entries(stateFields).map(([key, FieldComponent]) => (
-          // Label/description default to API values; partner can override
           <FieldComponent key={key} />
         ))}
       </section>
     )
   })}
-</StateTaxesFormProvider>
+</SDKFormProvider>
 ```
 
-State taxes use the same hook API surface (Fields, onSubmit, FormProvider), but partners should expect a more dynamic rendering pattern. Reordering or selectively hiding state tax fields is possible but requires knowledge of the API's question keys.
+State taxes use the same hook API surface (Fields, onSubmit, `SDKFormProvider`), but partners should expect a more dynamic rendering pattern. Reordering or selectively hiding state tax fields is possible but requires knowledge of the API's question keys.
 
 If we had a way of getting a stable shape of the state by state field response, there might be ways we could type this strongly. That would be the missing piece to enable custom label/descriptions, providing FieldComponent props etc.
 
-### 7. Base Infrastructure Changes
+### 8. Base Infrastructure Changes
 
-To support hooks without breaking existing components, we will refactor `BaseBoundaries` to remove `Suspense` from its internals and instead add `Suspense` at the few component call sites that need it. This means `BaseBoundaries` now only provides the error boundary and query error reset, which hooks can use directly:
+To support hooks without breaking existing components, `BaseBoundaries` was refactored to remove `Suspense` from its internals. `Suspense` is added at the few component call sites that need it. `BaseBoundaries` now only provides the error boundary and query error reset, which hooks can use directly.
 
-```tsx
-// Before: Suspense was baked into BaseBoundaries
-export const BaseBoundaries = ({ children, FallbackComponent, LoaderComponent }) => (
-  <QueryErrorResetBoundary>
-    {({ reset }) => (
-      <ErrorBoundary FallbackComponent={FallbackComponent} onReset={reset}>
-        <Suspense fallback={<LoaderComponent />}>{children}</Suspense>
-      </ErrorBoundary>
-    )}
-  </QueryErrorResetBoundary>
-)
-
-// After: Suspense removed — added at call sites that need it
-export const BaseBoundaries = ({ children, FallbackComponent }) => (
-  <QueryErrorResetBoundary>
-    {({ reset }) => (
-      <ErrorBoundary FallbackComponent={FallbackComponent} onReset={reset}>
-        {children}
-      </ErrorBoundary>
-    )}
-  </QueryErrorResetBoundary>
-)
-```
-
-Not a huge deal, but keeps us from using suspense unnecessarily. We will move suspense into the Base component usage directly so existing SDK components can continue to work without issue.
-
-We also added an `isLoading` prop to `BaseLayout` so hooks can use it for a simple loading state without Suspense:
+`BaseLayout` also accepts an `isLoading` prop so hooks can use it for a simple loading state without Suspense:
 
 ```tsx
-// Hook-based component can use BaseLayout directly
 if (form.isLoading) return <BaseLayout isLoading />
-
-return (
-  <BaseLayout error={errors.error} fieldErrors={errors.fieldErrors}>
-    {/* form content */}
-  </BaseLayout>
-)
 ```
-
-### 8. Error Normalization
-
-Errors today come from multiple sources with different shapes: API errors, SDK validation errors, field-level validation errors from 422 responses, and unrecoverable errors. For hooks to be partner-facing, we need to normalize these into a single, parseable array of errors that partners can iterate over and display consistently. Additional work will be needed on this front to define the final shape and ensure it covers all error scenarios cleanly.
 
 ---
 
@@ -549,23 +626,25 @@ Errors today come from multiple sources with different shapes: API errors, SDK v
 
 - **Full UI control** — Partners can completely customize the UI of any SDK block to match their design system, rearranging fields, controlling layout, and building interactions that the component adapter system cannot support
 - **Composability** — Standalone forms compose into larger pages; `composeSubmitHandler` bridges validation across them
-- **Adapter compatible** — Field components use `useComponentContext()` internally; existing adapter setups carry forward while still providing an escape hatch for one offs if the partner supplies a different component
+- **Configurable field requirements** — Partners can promote optional fields to required via `optionalFieldsToRequire` without modifying the schema
+- **Adapter compatible** — Field components use `useComponentContext()` internally; existing adapter setups carry forward while still providing an escape hatch for one-offs if the partner supplies a different `FieldComponent`
 - **Partner translations** — Schema emits error codes, not messages; partners supply all user-facing strings
 - **Reduced partner risk** — Compared to raw API, hooks still provide validation, domain calculations, error handling, and API orchestration
 - **Addresses documented pain points** — Field reordering, section hiding, custom tables, external action buttons, and layout control all become possible
+- **Consistent error surface** — `errorHandling` bag available in both loading and ready states with normalized `SDKError[]`, automatic server-error-to-field syncing via `SDKFormProvider`
 
 ---
 
 ## Limitations
 
 - **React Hook Form dependency** — May be constraining for partners using a different form library (though it also saves us from version mismatches trying to have them use our schemas directly)
-- **Provider scoping** — Composed forms require each form's fields to live within their own `FormProvider`; fields from different forms cannot be freely intermixed in the same React subtree
+- **Provider scoping** — Composed forms require each form's fields to live within their own `SDKFormProvider`; fields from different forms cannot be freely intermixed in the same React subtree
 - **Field omission risks** — Omitting a required field whose default value is invalid will cause validation failures on submit (similar to why we have always advised against hiding fields)
 - **SDK fields only** — Partners cannot add their own custom fields into a hook's form. The schema and submission handler are defined by the hook, so only SDK-provided fields participate in validation and submission. Partners can render additional UI around the form, but custom inputs would need their own separate form state
 - **State tax complexity** — Mentioned above, dynamic, state-specific questions of varying types still require partners to handle rendering complexity
 - **Domain knowledge required** — Hooks like `usePayrollConfiguration` provide data but not UX context; partners need to understand the domain to compose meaningful interfaces
 - **Increased maintenance surface** — Each hook is a new public API contract that must stay in sync with both API changes and the component tier
-- **Flow orchestration** — Hooks are a very block oriented way of building with the SDK, there are still opportunties at the macro level for making it easier to orchestrate components together
+- **Flow orchestration** — Hooks are a very block-oriented way of building with the SDK; there are still opportunities at the macro level for making it easier to orchestrate components together
 
 ---
 
@@ -603,26 +682,33 @@ Errors today come from multiple sources with different shapes: API errors, SDK v
 
 ## Rollout
 
-**Initial scope:** Build hooks for targeted components where we can get direct partner signal. The primary focus is the **run payroll domain**, with potential expansion into **company or employee onboarding** depending on where partners are actively building and where hooks would add the most value.
+**Completed so far:** Seven form hooks have been built and are shipping under the `UNSTABLE_` namespace: compensation, employee details, work address, home address, pay schedule, sign company forms, and sign employee forms. The shared infrastructure (`buildFormSchema`, `useDeriveFieldsMetadata`, `SDKFormProvider`, `useErrorHandling`, field components) has stabilized through iteration across these hooks.
 
-These hooks would be built in parallel with existing components in a sandbox fashion, exported from an `UNSTABLE_` import path and available for initial use independent of the rest of the SDK offering. The goal at this stage is partner signal — not full coverage.
+Each hook includes a prebuilt component that validates parity with the existing stable component tier. Schema validation and HTTP payload parity have been verified against stable components via side-by-side comparison pages in `gws-flows`.
 
-**Pending partner validation**, hooks would be rolled out across the library for each block component. This even includes list-oriented components, which would wrap embedded API endpoints and format responses consistent with the hook return shape we've established (loading state, data, errors, mutations) for a consistent partner build experience.
+**Next steps:**
+- **Partner validation** — Ship hooks to 2-3 partners building in areas where hooks add the most value. Gather signal on the API surface, pain points, and missing capabilities.
+- **Expand coverage** — Build hooks for remaining form components (federal taxes, state taxes, contractor payments) and data-only components (payroll configuration, employee lists). List-oriented hooks would wrap embedded API endpoints and format responses consistent with the established hook return shape.
+- **Stabilize** — Move from `UNSTABLE_` to stable based on partner adoption, API stability, team review, and eng/product consensus.
 
 ---
 
 ## Recommendations
 
-1. **Update base component infrastructure** — Enable `BaseBoundaries` and `BaseLayout` to work without Suspense for hook-based usage (see corresponding PR)
-2. **Normalize error handling** — Standardize on an SDK error shape as the documented contract across all hooks
-3. **Build hooks for payroll + select onboarding** — Prioritize where partner signal is strongest; export from `UNSTABLE_`
+1. ~~**Update base component infrastructure**~~ — Done. `BaseBoundaries` and `BaseLayout` work without Suspense for hook-based usage.
+2. ~~**Normalize error handling**~~ — Done. `SDKError` shape is the documented contract; `useErrorHandling` + `collectErrors` normalize all error sources; `SDKFormProvider` auto-syncs server errors to field state.
+3. ~~**Build hooks for payroll + select onboarding**~~ — Done. Seven hooks shipped covering employee onboarding and company setup domains.
 4. **Create extensive documentation** — Hook API references, form composition patterns, field props/validation contracts, migration guides from component tier
 5. **Find partners to validate** — Identify 2-3 partners willing to build with hooks in a controlled setting for early adoption
 6. **Plan stabilization based on signal** — Move from `UNSTABLE_` to stable based on partner adoption, API stability, team review, and eng/product consensus
-7. **Build out E2E test suite** — Prepare to migrate internal component implementations to hooks with confidence
+7. **Expand to remaining domains** — Build hooks for state taxes, federal taxes, contractor payments, payroll configuration, and list components
 
 ---
 
 ## Feedback Requested
 
-We are looking for reviewers to flag if this approach does not demonstrably address partner needs, or if there are major technical concerns that would preclude us from proceeding to the prototyping phase.
+The hooks approach has moved past the prototyping phase into working, tested implementations. We are looking for reviewers to assess:
+
+1. Whether the current API surface (return shape, field composition model, `optionalFieldsToRequire`, error handling) is sound for stabilization
+2. Whether there are gaps in the hook inventory that should be prioritized based on partner needs
+3. Any concerns about the `buildFormSchema` / `useDeriveFieldsMetadata` infrastructure that could affect long-term maintainability
