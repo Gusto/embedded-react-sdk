@@ -196,6 +196,17 @@ export const timeOffMachine = {
       ),
     ),
     transition(
+      componentEvents.TIME_OFF_POLICY_SETTINGS_BACK,
+      'policyDetailsForm',
+      reduce(
+        (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: PolicyDetailsFormContextual,
+          alerts: undefined,
+        }),
+      ),
+    ),
+    transition(
       componentEvents.TIME_OFF_POLICY_SETTINGS_ERROR,
       'policyDetailsForm',
       reduce(
