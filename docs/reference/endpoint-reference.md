@@ -148,9 +148,9 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | `/v1/employees/:employeeId` |
 |  | GET | `/v1/employees/:employeeId/i9_authorization` |
 |  | PUT | `/v1/employees/:employeeId/i9_authorization` |
+|  | GET | `/v1/employees/:employeeId/forms/:formId` |
 |  | GET | `/v1/employees/:employeeId/forms/:formId/pdf` |
 |  | PUT | `/v1/employees/:employeeId/forms/:formId/sign` |
-|  | GET | `/v1/employees/:employeeId/forms/:formId` |
 | **Employee.EmployeeDocuments** | GET | `/v1/employees/:employeeId` |
 |  | PUT | `/v1/employees/:employeeId/onboarding_documents_config` |
 | **Employee.DashboardFlow** | GET | `/v1/employees/:employeeId` |
