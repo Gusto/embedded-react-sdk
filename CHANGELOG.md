@@ -9,7 +9,7 @@
 Components are now organized into **journey-based namespaces** that group everything a partner needs for a specific integration use case. Three new namespaces are available:
 
 - **`EmployeeOnboarding`** -- all components for onboarding employees (flows, employee list, profile, compensation, taxes, payment method, deductions, documents, etc.)
-- **`EmployeeManagement`** -- components for steady-state employee management (management employee list, dashboard, terminations, employee documents)
+- **`EmployeeManagement`** -- components for steady-state employee management (employee list, dashboard, terminations, employee documents)
 - **`CompanyOnboarding`** -- all components for onboarding a company (flow, overview, document signing, bank account, locations, pay schedule, taxes, signatory management)
 - **`ContractorOnboarding`** -- all components for onboarding contractors (flow, contractor list, profile, address, payment method, new hire report, submit)
 
@@ -50,6 +50,20 @@ import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 ```
 
 The `Employee`, `Company`, and `Contractor` umbrella namespaces will be removed in a future major version. The `Payroll` and `InformationRequests` namespaces are unaffected and remain the primary import path for those domains.
+
+#### `Employee.ManagementEmployeeList` removed
+
+`ManagementEmployeeList` is no longer exported from the `Employee` umbrella namespace. Use `EmployeeManagement.EmployeeList` instead:
+
+```tsx
+// Before
+import { Employee } from '@gusto/embedded-react-sdk'
+;<Employee.ManagementEmployeeList companyId={companyId} onEvent={handleEvent} />
+
+// After
+import { EmployeeManagement } from '@gusto/embedded-react-sdk'
+;<EmployeeManagement.EmployeeList companyId={companyId} onEvent={handleEvent} />
+```
 
 #### Internal restructuring: `EmployeeList` feature module
 

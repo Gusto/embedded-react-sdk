@@ -107,9 +107,6 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 | **Employee.EmployeeList** | GET | `/v1/companies/:companyId/employees` |
 |  | DELETE | `/v1/employees/:employeeId` |
 |  | PUT | `/v1/employees/:employeeId/onboarding_status` |
-| **Employee.ManagementEmployeeList** | GET | `/v1/companies/:companyId/employees` |
-|  | DELETE | `/v1/employees/:employeeId` |
-|  | PUT | `/v1/employees/:employeeId/onboarding_status` |
 | **Employee.Deductions** | GET | `/v1/employees/:employeeId/garnishments` |
 |  | POST | `/v1/employees/:employeeId/garnishments` |
 |  | PUT | `/v1/garnishments/:garnishmentId` |

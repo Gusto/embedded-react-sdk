@@ -528,26 +528,6 @@
         "employeeId"
       ]
     },
-    "Employee.ManagementEmployeeList": {
-      "endpoints": [
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/employees"
-        },
-        {
-          "method": "DELETE",
-          "path": "/v1/employees/:employeeId"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeId/onboarding_status"
-        }
-      ],
-      "variables": [
-        "companyId",
-        "employeeId"
-      ]
-    },
     "Employee.Deductions": {
       "endpoints": [
         {

@@ -1,5 +1,4 @@
 export { EmployeeList } from './employee-list/onboarding/EmployeeList'
-export { ManagementEmployeeList } from './employee-list/management/ManagementEmployeeList'
 export { Deductions } from './Deductions'
 export { OnboardingSummary } from './OnboardingSummary'
 export { Profile } from './Profile'
