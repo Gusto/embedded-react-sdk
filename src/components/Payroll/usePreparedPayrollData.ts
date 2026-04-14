@@ -30,7 +30,7 @@ const PREPARE_RETRY_DELAY_MS = 1500
 
 const isPayrollBeingProcessedError = (error: unknown): boolean => {
   if (!(error instanceof UnprocessableEntityErrorObject)) return false
-  return Array.isArray(error.errors) && error.errors.some(e => e.category === 'invalid_operation')
+  return error.errors.some(e => e.category === 'invalid_operation')
 }
 
 export const usePreparedPayrollData = ({

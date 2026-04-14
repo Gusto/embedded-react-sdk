@@ -40,7 +40,7 @@ export function useDeriveFieldsMetadata<
 
     const data: Record<string, unknown> = {}
     for (let i = 0; i < predicateDeps.length; i++) {
-      data[predicateDeps[i]!] = Array.isArray(watchedValues) ? watchedValues[i] : watchedValues
+      data[predicateDeps[i]!] = (watchedValues as unknown[])[i]
     }
     return metadataConfig.getFieldsMetadata(data)
   }, [metadataConfig, hasDeps, predicateDeps, watchedValues])
