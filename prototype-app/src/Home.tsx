@@ -1,8 +1,12 @@
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { CATEGORIES, categorizedRegistry } from './registry'
 import styles from './Home.module.scss'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export function Home() {
+  const Components = useComponentContext()
+  const navigate = useNavigate()
+
   return (
     <div className={styles.root}>
       <h1>Embeddedd React SDK Design Sandbox</h1>
@@ -15,10 +19,19 @@ export function Home() {
       <div className={styles.grid}>
         {CATEGORIES.flatMap(category =>
           categorizedRegistry[category].map(({ name, path, description }) => (
-            <Link key={path} to={path} className={styles.card}>
-              <h3>{name}</h3>
-              <p>{description}</p>
-            </Link>
+            <Components.Box
+              key={path}
+              header={<Components.BoxHeader title={name} />}
+              footer={
+                <Components.Button variant="secondary" onClick={() => navigate(path)}>
+                  Open
+                </Components.Button>
+              }
+            >
+              <Components.Text size="sm" variant="supporting">
+                {description}
+              </Components.Text>
+            </Components.Box>
           )),
         )}
       </div>
