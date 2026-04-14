@@ -95,7 +95,6 @@ Wrap fields in `SDKFormProvider` and they pick up form state from context automa
 
 ```tsx
 import { SDKFormProvider } from '@gusto/embedded-react-sdk'
-
 ;<SDKFormProvider formHookResult={employeeDetails}>
   <Fields.FirstName label="First name" />
   <Fields.LastName label="Last name" />
