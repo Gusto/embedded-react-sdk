@@ -81,6 +81,8 @@ const requiredFieldsConfig = {
 } satisfies RequiredFieldConfig<typeof fieldValidators>
 ```
 
+**Boolean fields and requiredness**: Boolean fields (`z.boolean()`) are inherently always present — they are either `true` or `false`, so the concept of "required vs optional" does not apply. Do **not** add boolean fields to `requiredFieldsConfig`, `excludeFields`, or gate them with a `with*Field` prop. Omit them from `requiredFieldsConfig` (they default to `'always'`, which is correct for booleans since they always have a value). Always include them in the schema, always render their field component, and always submit their value.
+
 ### Part 4: Schema Factory
 
 The factory calls `buildFormSchema` and returns a `[schema, metadataConfig]` tuple. The schema goes to `zodResolver`; `metadataConfig` goes to `useDeriveFieldsMetadata`.
