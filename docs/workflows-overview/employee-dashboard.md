@@ -10,12 +10,14 @@ The Employee Dashboard provides a comprehensive view of employee information org
 ### Implementation
 
 ```jsx
-import { Employee } from '@gusto/embedded-react-sdk'
+import { EmployeeManagement } from '@gusto/embedded-react-sdk'
 
 function MyApp() {
-  return <Employee.DashboardFlow employeeId="employee-id" onEvent={() => {}} />
+  return <EmployeeManagement.DashboardFlow employeeId="employee-id" onEvent={() => {}} />
 }
 ```
+
+> Legacy import via `Employee.DashboardFlow` continues to work.
 
 #### Props
 
