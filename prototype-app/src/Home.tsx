@@ -5,7 +5,7 @@ import styles from './Home.module.scss'
 export function Home() {
   return (
     <div className={styles.root}>
-      <h1>Prototype App</h1>
+      <h1>Embeddedd React SDK Design Sandbox</h1>
       <p>
         A lightweight environment for designing and prototyping new UI components using the SDK
         component library.
