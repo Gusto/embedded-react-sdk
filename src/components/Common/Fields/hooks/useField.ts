@@ -77,7 +77,7 @@ export function useField<TValue = string, TRef = HTMLInputElement>({
     onBlur?.()
   }
 
-  // When control is explicitly provided (UNSTABLE_Hooks prop-based path),
+  // When control is explicitly provided (hook-based path),
   // errorMessage is a resolved error and is authoritative.
   // When control comes from context (legacy pre-built path),
   // errorMessage is a static i18n template — only display it when RHF has an error.

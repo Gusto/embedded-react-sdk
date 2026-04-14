@@ -2,6 +2,31 @@
 
 ## Unreleased
 
+### Breaking Changes
+
+#### Hooks now exported from main entry point
+
+All form hooks have graduated from experimental to stable. They are now available
+directly from the main package entry:
+
+- **Before**: `import { useCompensationForm } from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'`
+- **After**: `import { useCompensationForm } from '@gusto/embedded-react-sdk'`
+
+The `@gusto/embedded-react-sdk/UNSTABLE_Hooks` entry point has been removed. All hook
+exports are now available from the main package entry.
+
+**Find and replace**: Search your codebase for
+`from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'`
+and replace with `from '@gusto/embedded-react-sdk'`.
+
+#### Prebuilt hook form components removed
+
+The following prebuilt components have been removed: `CompensationForm`,
+`EmployeeDetailsForm`, `WorkAddressForm`, `HomeAddressForm`, `PayScheduleForm`,
+`SignCompanyForm`, `SignEmployeeForm`, `SignEmployeeI9Form`. These were internal
+testing artifacts. Use the corresponding hooks directly (e.g., `useCompensationForm`)
+to build custom form UI.
+
 ### Features & Enhancements
 
 #### Journey-based export namespaces

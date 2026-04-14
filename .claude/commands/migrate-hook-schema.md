@@ -1,6 +1,6 @@
 # Migrate Hook Schema to buildFormSchema
 
-Migrate an UNSTABLE_Hooks form hook from the legacy `composeFormSchema` pattern to the `buildFormSchema` pattern. This gives the hook declarative requiredness rules, reactive metadata via `useDeriveFieldsMetadata`, typed `zodResolver` without casts, and field exclusion support.
+Migrate a form hook from the legacy `composeFormSchema` pattern to the `buildFormSchema` pattern. This gives the hook declarative requiredness rules, reactive metadata via `useDeriveFieldsMetadata`, typed `zodResolver` without casts, and field exclusion support.
 
 ## Input
 
@@ -8,8 +8,8 @@ The user provides the hook name (e.g. `useEmployeeDetailsForm`, `useWorkAddressF
 
 ## Reference implementations
 
-- **Target pattern (buildFormSchema):** `useCompensationForm` at `src/components/UNSTABLE_Hooks/hooks/useCompensationForm/`
-- **Legacy pattern (composeFormSchema):** `useEmployeeDetailsForm` and `useWorkAddressForm`
+- **Target pattern (buildFormSchema):** `useCompensationForm` at `src/components/Employee/Compensation/shared/useCompensationForm/`
+- **Legacy pattern (composeFormSchema):** hooks that still use `composeFormSchema` / `resolveRequiredFields`
 
 ## Migration Steps
 
@@ -17,11 +17,11 @@ The user provides the hook name (e.g. `useEmployeeDetailsForm`, `useWorkAddressF
 
 Read all files in the hook's folder and its schema file. Also read the reference implementation for comparison:
 
-- `src/components/UNSTABLE_Hooks/hooks/use{Domain}Form/{domain}Schema.ts`
-- `src/components/UNSTABLE_Hooks/hooks/use{Domain}Form/use{Domain}Form.tsx`
-- `src/components/UNSTABLE_Hooks/hooks/useCompensationForm/compensationSchema.ts` (reference)
-- `src/components/UNSTABLE_Hooks/hooks/useCompensationForm/useCompensationForm.tsx` (reference)
-- `src/components/UNSTABLE_Hooks/form/buildFormSchema.ts` (the target API)
+- `src/components/{Domain}/{Feature}/shared/use{Name}Form/{domain}Schema.ts`
+- `src/components/{Domain}/{Feature}/shared/use{Name}Form/use{Name}Form.tsx`
+- `src/components/Employee/Compensation/shared/useCompensationForm/compensationSchema.ts` (reference)
+- `src/components/Employee/Compensation/shared/useCompensationForm/useCompensationForm.tsx` (reference)
+- `src/partner-hook-utils/form/buildFormSchema.ts` (the target API)
 
 ### Step 2: Migrate the schema file (`{domain}Schema.ts`)
 
@@ -41,10 +41,10 @@ import {
   buildFormSchema,
   type RequiredFieldConfig,
   type OptionalFieldsToRequire,
-} from '../../form/buildFormSchema'
+} from '@/partner-hook-utils/form/buildFormSchema'
 ```
 
-Also import any preprocessors needed from `../../form/preprocessors` if any fields use `z.preprocess`.
+Also import any preprocessors needed from `@/partner-hook-utils/form/preprocessors` if any fields use `z.preprocess`.
 
 #### 2b: Convert requiredness declarations
 
@@ -168,14 +168,14 @@ Key changes:
 Replace:
 
 ```typescript
-import { deriveFieldsMetadata } from '../../form/deriveFieldsMetadata'
-import type { RequiredFields } from '../../form/resolveRequiredFields'
+import { deriveFieldsMetadata } from '@/partner-hook-utils/form/deriveFieldsMetadata'
+import type { RequiredFields } from '@/partner-hook-utils/form/resolveRequiredFields'
 ```
 
 With:
 
 ```typescript
-import { useDeriveFieldsMetadata } from '../../form/useDeriveFieldsMetadata'
+import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 ```
 
 Also import `useMemo` from React if not already present.
@@ -229,31 +229,26 @@ If the old hook manually patched `hasRedactedValue` onto metadata (e.g. `ssn: { 
 
 If the hook has `zodResolver(schema as z.ZodObject) as unknown as Resolver<FormData>`, simplify to `zodResolver(schema)`. The `buildFormSchema` return type carries the correct generics. Remove unused `Resolver` and `z` type imports.
 
-### Step 4: Update the prebuilt component (`{Domain}Form.tsx`)
-
-If the prebuilt component passes `requiredFields` to the hook, update it to pass `optionalFieldsToRequire` instead.
-
-### Step 5: Update exports
+### Step 4: Update exports
 
 Check the barrel files for any exported `RequiredFields` type alias and update to the new `OptionalFieldsToRequire` type:
 
-1. `hooks/use{Domain}Form/index.ts`
-2. `src/components/UNSTABLE_Hooks/index.ts`
-3. `src/UNSTABLE_Hooks.ts`
+1. `src/components/{Domain}/{Feature}/shared/use{Name}Form/index.ts`
+2. `src/index.ts`
 
-### Step 6: Update tests
+### Step 5: Update tests
 
 - Update test files that construct schemas directly — they now return `[schema, metadataConfig]` tuples
 - Update any test that passes `requiredFields` to the hook — rename to `optionalFieldsToRequire`
-- Run `npm run test -- --run src/components/UNSTABLE_Hooks/hooks/use{Domain}Form/` to verify
+- Run `npm run test -- --run src/components/{Domain}/{Feature}/shared/use{Name}Form/` to verify
 
-### Step 7: Verify
+### Step 6: Verify
 
 Run all three checks:
 
 ```bash
 npx tsc --noEmit                                                           # types
-npm run test -- --run src/components/UNSTABLE_Hooks/                        # all hook tests
+npm run test -- --run                                                      # all tests
 npm run build                                                              # full build (catches .d.ts issues)
 ```
 

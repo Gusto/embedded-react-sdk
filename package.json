@@ -18,10 +18,6 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
-    "./UNSTABLE_Hooks": {
-      "types": "./dist/UNSTABLE_Hooks.d.ts",
-      "default": "./dist/UNSTABLE_Hooks.js"
-    },
     "./*.css": {
       "import": "./dist/*.css",
       "require": "./dist/*.css"
