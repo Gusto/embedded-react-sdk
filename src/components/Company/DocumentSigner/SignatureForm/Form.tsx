@@ -1,16 +1,24 @@
 import { useTranslation } from 'react-i18next'
-import { SignatureFormFields } from '@/components/Common/SignatureForm'
+import { TextInputField, CheckboxField } from '@/components/Common'
 
 export function Form() {
   const { t } = useTranslation('Company.SignatureForm')
 
   return (
-    <SignatureFormFields
-      signatureLabel={t('signatureLabel')}
-      signatureDescription={t('signatureDescription')}
-      signatureError={t('signatureError')}
-      confirmationLabel={t('confirmationLabel')}
-      confirmationError={t('confirmationError')}
-    />
+    <>
+      <TextInputField
+        name="signature"
+        label={t('signatureLabel')}
+        description={t('signatureDescription')}
+        errorMessage={t('signatureError')}
+        isRequired
+      />
+      <CheckboxField
+        name="confirmSignature"
+        isRequired
+        label={t('confirmationLabel')}
+        errorMessage={t('confirmationError')}
+      />
+    </>
   )
 }
