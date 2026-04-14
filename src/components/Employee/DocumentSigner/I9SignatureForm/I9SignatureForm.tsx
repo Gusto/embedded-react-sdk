@@ -268,7 +268,9 @@ function PreparerSection({
               <PreparerFields
                 preparer={preparer}
                 index={index}
-                onRemove={() => { onRemovePreparer(index); }}
+                onRemove={() => {
+                  onRemovePreparer(index)
+                }}
                 showRemoveButton={index !== 0}
                 showAddButton={canAddPreparer && index === preparerCount - 1}
                 onAdd={onAddPreparer}
