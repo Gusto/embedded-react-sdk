@@ -1,12 +1,9 @@
-import { z } from 'zod'
-import { FormProvider, useFieldArray, useForm, useFormContext } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslation, Trans } from 'react-i18next'
-import { useEmployeeFormsGetPdfSuspense } from '@gusto/embedded-api/react-query/employeeFormsGetPdf'
-import { useEmployeeFormsSignMutation } from '@gusto/embedded-api/react-query/employeeFormsSign'
-import { useEmployeeFormsGetSuspense } from '@gusto/embedded-api/react-query/employeeFormsGet'
-import { useI9VerificationGetAuthorization } from '@gusto/embedded-api/react-query/i9VerificationGetAuthorization'
+import { FormProvider } from 'react-hook-form'
 import type { AuthorizationStatus } from '@gusto/embedded-api/models/components/i9authorization'
+import { useI9VerificationGetAuthorization } from '@gusto/embedded-api/react-query/i9VerificationGetAuthorization'
+import { useSignEmployeeForm } from '../shared/useSignEmployeeForm'
+import { PREPARERS_BY_INDEX } from '../shared/useSignEmployeeForm/signEmployeeFormSchema'
 import styles from './I9SignatureForm.module.scss'
 import {
   BaseComponent,
@@ -28,31 +25,6 @@ import { DocumentViewer } from '@/components/Common/DocumentViewer'
 import { Form } from '@/components/Common/Form'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
-const MAX_PREPARERS = 4
-
-const preparerSchema = z.object({
-  firstName: z.string().min(1),
-  lastName: z.string().min(1),
-  street1: z.string().min(1),
-  street2: z.string().optional(),
-  city: z.string().min(1),
-  state: z.string().min(1),
-  zip: z.string().min(1),
-  signature: z.string().min(1),
-  agree: z.boolean().refine(val => val),
-})
-
-export type PreparerInputs = z.infer<typeof preparerSchema>
-
-const i9SignatureFormSchema = z.object({
-  signature: z.string().min(1),
-  agree: z.literal(true),
-  usedPreparer: z.enum(['yes', 'no']),
-  preparers: z.array(preparerSchema),
-})
-
-export type I9SignatureFormInputs = z.infer<typeof i9SignatureFormSchema>
-
 interface I9SignatureFormProps extends CommonComponentInterface {
   employeeId: string
   formId: string
@@ -69,30 +41,23 @@ export function I9SignatureForm(props: I9SignatureFormProps & BaseComponentInter
 function Root({ employeeId, formId, className }: I9SignatureFormProps) {
   useI18n('Employee.I9SignatureForm')
   const { t } = useTranslation('Employee.I9SignatureForm')
-  const { onEvent, baseSubmitHandler } = useBase()
+  const { onEvent } = useBase()
   const Components = useComponentContext()
 
-  const { data: formData } = useEmployeeFormsGetSuspense({ employeeId, formId })
-  const form = formData.form!
-
-  const {
-    data: { formPdf },
-  } = useEmployeeFormsGetPdfSuspense({ employeeId, formId: form.uuid })
-  const pdfUrl = formPdf?.documentUrl
+  const hookResult = useSignEmployeeForm({ employeeId, formId })
 
   const { data: i9AuthData } = useI9VerificationGetAuthorization({ employeeId })
   const authorizationStatus = i9AuthData?.i9Authorization?.authorizationStatus
 
-  const { mutateAsync: signForm, isPending } = useEmployeeFormsSignMutation()
+  if (hookResult.isLoading) {
+    return null
+  }
 
-  const methods = useForm<I9SignatureFormInputs>({
-    resolver: zodResolver(i9SignatureFormSchema),
-    defaultValues: {
-      signature: '',
-      usedPreparer: 'no',
-      preparers: [],
-    },
-  })
+  const { form, pdfUrl } = hookResult.data
+  const { isPending } = hookResult.status
+  const { formMethods } = hookResult.form.hookFormInternals
+  const preparerCount = hookResult.form.preparers?.count ?? 0
+  const canAddPreparer = hookResult.form.preparers?.canAdd ?? false
 
   const handleBack = () => {
     onEvent(componentEvents.CANCEL)
@@ -102,28 +67,39 @@ function Root({ employeeId, formId, className }: I9SignatureFormProps) {
     onEvent(componentEvents.EMPLOYEE_CHANGE_ELIGIBILITY_STATUS)
   }
 
-  const handleSubmit = async (data: I9SignatureFormInputs) => {
-    await baseSubmitHandler(data, async payload => {
-      const preparerPayload = buildPreparerPayload(payload)
-      const { form: signFormResult } = await signForm({
-        request: {
-          employeeId,
-          formId: form.uuid,
-          requestBody: {
-            signatureText: payload.signature,
-            agree: payload.agree,
-            ...preparerPayload,
-          },
-        },
-      })
-      onEvent(componentEvents.EMPLOYEE_SIGN_FORM, signFormResult)
-    })
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const result = await hookResult.actions.onSubmit()
+    if (result) {
+      onEvent(componentEvents.EMPLOYEE_SIGN_FORM, result.data)
+    }
   }
+
+  const handlePreparerChange = (value: string) => {
+    if (value === 'yes' && preparerCount === 0) {
+      hookResult.actions.addPreparer?.()
+    }
+    if (value === 'no' && preparerCount > 0) {
+      for (let i = preparerCount; i > 0; i--) {
+        hookResult.actions.removePreparer?.()
+      }
+    }
+  }
+
+  const handleAddPreparer = () => {
+    hookResult.actions.addPreparer?.()
+  }
+
+  const handleRemovePreparer = (index: number) => {
+    hookResult.actions.removePreparer?.()
+  }
+
+  const usedPreparer = formMethods.watch('usedPreparer')
 
   return (
     <section className={className}>
-      <FormProvider {...methods}>
-        <Form onSubmit={methods.handleSubmit(handleSubmit)}>
+      <FormProvider {...formMethods}>
+        <Form onSubmit={handleFormSubmit}>
           <Flex flexDirection="column" gap={20}>
             <section>
               <Components.Heading as="h2">{t('title')}</Components.Heading>
@@ -170,14 +146,21 @@ function Root({ employeeId, formId, className }: I9SignatureFormProps) {
                 isRequired
               />
               <CheckboxField
-                name="agree"
+                name="confirmSignature"
                 isRequired
                 label={t('confirmationLabel')}
                 errorMessage={t('confirmationError')}
               />
             </Flex>
 
-            <PreparerSection />
+            <PreparerSection
+              usedPreparer={usedPreparer}
+              preparerCount={preparerCount}
+              canAddPreparer={canAddPreparer}
+              onPreparerChange={handlePreparerChange}
+              onAddPreparer={handleAddPreparer}
+              onRemovePreparer={handleRemovePreparer}
+            />
 
             <ActionsLayout>
               <Components.Button variant="secondary" type="button" onClick={handleBack}>
@@ -238,41 +221,27 @@ function EligibilityStatusAlert({
   )
 }
 
-const emptyPreparer = {
-  firstName: '',
-  lastName: '',
-  street1: '',
-  street2: '',
-  city: '',
-  state: '',
-  zip: '',
-  signature: '',
-  agree: false,
+interface PreparerSectionProps {
+  usedPreparer: string | undefined
+  preparerCount: number
+  canAddPreparer: boolean
+  onPreparerChange: (value: string) => void
+  onAddPreparer: () => void
+  onRemovePreparer: (index: number) => void
 }
 
-function PreparerSection() {
+function PreparerSection({
+  usedPreparer,
+  preparerCount,
+  canAddPreparer,
+  onPreparerChange,
+  onAddPreparer,
+  onRemovePreparer,
+}: PreparerSectionProps) {
   const { t } = useTranslation('Employee.I9SignatureForm')
   const Components = useComponentContext()
-  const { watch, control } = useFormContext<I9SignatureFormInputs>()
-  const { fields, append, remove } = useFieldArray({ control, name: 'preparers' })
 
-  const usedPreparer = watch('usedPreparer')
-  const canAddPreparer = fields.length < MAX_PREPARERS
-
-  const handlePreparerChange = (value: string) => {
-    if (value === 'yes' && fields.length === 0) {
-      append(emptyPreparer)
-    }
-    if (value === 'no' && fields.length > 0) {
-      remove()
-    }
-  }
-
-  const handleAddPreparer = () => {
-    if (canAddPreparer) {
-      append(emptyPreparer)
-    }
-  }
+  const stateOptions = STATES_ABBR.map(abbr => ({ label: abbr, value: abbr }))
 
   return (
     <Flex flexDirection="column" gap={20}>
@@ -284,82 +253,86 @@ function PreparerSection() {
           { label: t('preparerNo'), value: 'no' },
           { label: t('preparerYes'), value: 'yes' },
         ]}
-        onChange={handlePreparerChange}
+        onChange={onPreparerChange}
       />
 
       {usedPreparer === 'yes' &&
-        fields.map((field, index) => (
-          <Flex flexDirection="column" gap={0} key={field.id}>
-            <div className={styles.preparerAlert}>
-              <Components.Alert label={t('preparerNote')} status="info" disableScrollIntoView />
-            </div>
-            <PreparerFields
-              index={index}
-              onRemove={() => {
-                remove(index)
-              }}
-              showRemoveButton={index !== 0}
-              showAddButton={canAddPreparer && index === fields.length - 1}
-              onAdd={handleAddPreparer}
-            />
-          </Flex>
-        ))}
+        Array.from({ length: preparerCount }, (_, index) => {
+          const preparer = PREPARERS_BY_INDEX[index]
+          if (!preparer) return null
+          return (
+            <Flex flexDirection="column" gap={0} key={index}>
+              <div className={styles.preparerAlert}>
+                <Components.Alert label={t('preparerNote')} status="info" disableScrollIntoView />
+              </div>
+              <PreparerFields
+                preparer={preparer}
+                index={index}
+                onRemove={() => { onRemovePreparer(index); }}
+                showRemoveButton={index !== 0}
+                showAddButton={canAddPreparer && index === preparerCount - 1}
+                onAdd={onAddPreparer}
+                stateOptions={stateOptions}
+              />
+            </Flex>
+          )
+        })}
     </Flex>
   )
 }
 
 interface PreparerFieldsProps {
+  preparer: (typeof PREPARERS_BY_INDEX)[number]
   index: number
   onRemove: () => void
   showRemoveButton: boolean
   showAddButton: boolean
   onAdd: () => void
+  stateOptions: Array<{ label: string; value: string }>
 }
 
 function PreparerFields({
-  index,
+  preparer,
   onRemove,
   showRemoveButton,
   showAddButton,
   onAdd,
+  stateOptions,
 }: PreparerFieldsProps) {
   const { t } = useTranslation('Employee.I9SignatureForm')
   const Components = useComponentContext()
-
-  const stateOptions = STATES_ABBR.map(abbr => ({ label: abbr, value: abbr }))
-  const fieldId = `preparers.${index}`
 
   return (
     <Flex flexDirection="column" gap={12}>
       <Components.Heading as="h3">{t('preparerSectionTitle')}</Components.Heading>
 
       <TextInputField
-        name={`${fieldId}.firstName`}
+        name={preparer.firstName}
         label={t('preparerFirstNameLabel')}
         errorMessage={t('preparerFirstNameError')}
         isRequired
       />
       <TextInputField
-        name={`${fieldId}.lastName`}
+        name={preparer.lastName}
         label={t('preparerLastNameLabel')}
         errorMessage={t('preparerLastNameError')}
         isRequired
       />
       <TextInputField
-        name={`${fieldId}.street1`}
+        name={preparer.street1}
         label={t('preparerStreet1Label')}
         errorMessage={t('preparerStreet1Error')}
         isRequired
       />
-      <TextInputField name={`${fieldId}.street2`} label={t('preparerStreet2Label')} />
+      <TextInputField name={preparer.street2} label={t('preparerStreet2Label')} />
       <TextInputField
-        name={`${fieldId}.city`}
+        name={preparer.city}
         label={t('preparerCityLabel')}
         errorMessage={t('preparerCityError')}
         isRequired
       />
       <SelectField
-        name={`${fieldId}.state`}
+        name={preparer.state}
         label={t('preparerStateLabel')}
         errorMessage={t('preparerStateError')}
         isRequired
@@ -367,20 +340,20 @@ function PreparerFields({
         placeholder="Select a state..."
       />
       <TextInputField
-        name={`${fieldId}.zip`}
+        name={preparer.zip}
         label={t('preparerZipLabel')}
         errorMessage={t('preparerZipError')}
         isRequired
       />
       <TextInputField
-        name={`${fieldId}.signature`}
+        name={preparer.signature}
         label={t('preparerSignatureLabel')}
         description={t('preparerSignatureDescription')}
         errorMessage={t('preparerSignatureError')}
         isRequired
       />
       <CheckboxField
-        name={`${fieldId}.agree`}
+        name={preparer.agree}
         isRequired
         label={t('preparerConfirmationLabel')}
         errorMessage={t('preparerConfirmationError')}
@@ -402,29 +375,4 @@ function PreparerFields({
       )}
     </Flex>
   )
-}
-
-function buildPreparerPayload(payload: I9SignatureFormInputs) {
-  if (payload.usedPreparer !== 'yes' || payload.preparers.length === 0) {
-    return { preparer: false }
-  }
-
-  const result: Record<string, unknown> = { preparer: true }
-
-  payload.preparers.forEach((preparer, index) => {
-    const prefix = index === 0 ? 'preparer' : `preparer${index + 1}`
-    if (index > 0) {
-      result[`preparer${index + 1}`] = true
-    }
-    result[`${prefix}FirstName`] = preparer.firstName
-    result[`${prefix}LastName`] = preparer.lastName
-    result[`${prefix}Street1`] = preparer.street1
-    if (preparer.street2) result[`${prefix}Street2`] = preparer.street2
-    result[`${prefix}City`] = preparer.city
-    result[`${prefix}State`] = preparer.state
-    result[`${prefix}Zip`] = preparer.zip
-    result[`${prefix}Agree`] = 'true'
-  })
-
-  return result
 }

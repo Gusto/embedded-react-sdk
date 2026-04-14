@@ -756,15 +756,15 @@
         },
         {
           "method": "GET",
+          "path": "/v1/employees/:employeeId/forms/:formId"
+        },
+        {
+          "method": "GET",
           "path": "/v1/employees/:employeeId/forms/:formId/pdf"
         },
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeId/forms/:formId/sign"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/forms/:formId"
         }
       ],
       "variables": [
@@ -2231,15 +2231,15 @@
         },
         {
           "method": "GET",
+          "path": "/v1/employees/:employeeId/forms/:formId"
+        },
+        {
+          "method": "GET",
           "path": "/v1/employees/:employeeId/forms/:formId/pdf"
         },
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeId/forms/:formId/sign"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/forms/:formId"
         },
         {
           "method": "GET",
