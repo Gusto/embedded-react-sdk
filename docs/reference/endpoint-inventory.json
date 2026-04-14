@@ -1342,6 +1342,14 @@
           "path": "/v1/companies/:companyId/employees"
         },
         {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
+        },
+        {
           "method": "POST",
           "path": "/v1/companies/:companyUuid/time_off_policies"
         }
@@ -1369,6 +1377,14 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/employees"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
         },
         {
           "method": "POST",
@@ -1411,6 +1427,14 @@
           "path": "/v1/companies/:companyId/employees"
         },
         {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
+        },
+        {
           "method": "POST",
           "path": "/v1/companies/:companyUuid/time_off_policies"
         }
@@ -1438,6 +1462,14 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/employees"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
         },
         {
           "method": "POST",
@@ -1469,6 +1501,14 @@
           "path": "/v1/companies/:companyId/employees"
         },
         {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
+        },
+        {
           "method": "POST",
           "path": "/v1/companies/:companyUuid/time_off_policies"
         }
@@ -1496,6 +1536,14 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/employees"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
         },
         {
           "method": "POST",
@@ -1527,6 +1575,14 @@
           "path": "/v1/companies/:companyId/employees"
         },
         {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
+        },
+        {
           "method": "POST",
           "path": "/v1/companies/:companyUuid/time_off_policies"
         }
@@ -1554,6 +1610,14 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/employees"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
         },
         {
           "method": "POST",
@@ -1585,6 +1649,14 @@
           "path": "/v1/companies/:companyId/employees"
         },
         {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
+        },
+        {
           "method": "POST",
           "path": "/v1/companies/:companyUuid/time_off_policies"
         }
@@ -1614,6 +1686,14 @@
           "path": "/v1/companies/:companyId/employees"
         },
         {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
+        },
+        {
           "method": "POST",
           "path": "/v1/companies/:companyUuid/time_off_policies"
         }
@@ -1641,6 +1721,14 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/employees"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
         },
         {
           "method": "POST",
