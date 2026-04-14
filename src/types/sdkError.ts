@@ -113,7 +113,7 @@ function hasErrorsArray(error: unknown): error is ErrorWithErrors {
     error !== null &&
     typeof error === 'object' &&
     'errors' in error &&
-    Array.isArray((error as ErrorWithErrors).errors)
+    Array.isArray((error as { errors: unknown }).errors)
   )
 }
 
