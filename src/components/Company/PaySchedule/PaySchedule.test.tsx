@@ -370,6 +370,301 @@ describe('PaySchedule', () => {
     })
   })
 
+  describe('event callbacks', () => {
+    beforeEach(() => {
+      server.use(getPaySchedules, getPaySchedulePreview, createPaySchedule, updatePaySchedule)
+    })
+
+    it('fires PAY_SCHEDULE_DONE when continue is clicked', async () => {
+      const user = userEvent.setup()
+      const onEvent = vi.fn()
+
+      render(
+        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
+          <PaySchedule companyId="123" onEvent={onEvent} />
+        </GustoApiProvider>,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /continue/i })).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: /continue/i }))
+
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.PAY_SCHEDULE_DONE)
+    })
+
+    it('does not fire events when cancel is clicked', async () => {
+      const user = userEvent.setup()
+      const onEvent = vi.fn()
+
+      render(
+        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
+          <PaySchedule companyId="123" onEvent={onEvent} />
+        </GustoApiProvider>,
+      )
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('button', { name: /add another pay schedule/i }),
+        ).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: /add another pay schedule/i }))
+      await user.click(screen.getByRole('button', { name: /cancel/i }))
+
+      expect(onEvent).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('frequency-dependent field visibility', () => {
+    beforeEach(() => {
+      server.use(getPaySchedules, getPaySchedulePreview, createPaySchedule, updatePaySchedule)
+    })
+
+    it('shows frequency options radio group only for "Twice per month"', async () => {
+      const user = userEvent.setup()
+
+      render(
+        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
+          <PaySchedule companyId="123" onEvent={() => {}} />
+        </GustoApiProvider>,
+      )
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('button', { name: /add another pay schedule/i }),
+        ).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: /add another pay schedule/i }))
+
+      expect(screen.queryByText(/frequency options/i)).not.toBeInTheDocument()
+
+      const frequencySelect = screen.getByRole('button', { name: /frequency/i })
+      await user.click(frequencySelect)
+      await user.click(screen.getByRole('option', { name: /twice per month/i }))
+
+      expect(screen.getByText(/frequency options/i)).toBeInTheDocument()
+      expect(screen.getByText(/15th and last day of the month/i)).toBeInTheDocument()
+      expect(screen.getByText(/custom/i)).toBeInTheDocument()
+    })
+
+    it('hides frequency options radio group for "Every week"', async () => {
+      const user = userEvent.setup()
+
+      render(
+        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
+          <PaySchedule companyId="123" onEvent={() => {}} />
+        </GustoApiProvider>,
+      )
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('button', { name: /add another pay schedule/i }),
+        ).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: /add another pay schedule/i }))
+
+      const frequencySelect = screen.getByRole('button', { name: /frequency/i })
+      await user.click(frequencySelect)
+      await user.click(screen.getByRole('option', { name: /every week/i }))
+
+      expect(screen.queryByText(/frequency options/i)).not.toBeInTheDocument()
+    })
+
+    it('hides frequency options radio group for "Monthly"', async () => {
+      const user = userEvent.setup()
+
+      render(
+        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
+          <PaySchedule companyId="123" onEvent={() => {}} />
+        </GustoApiProvider>,
+      )
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('button', { name: /add another pay schedule/i }),
+        ).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: /add another pay schedule/i }))
+
+      const frequencySelect = screen.getByRole('button', { name: /frequency/i })
+      await user.click(frequencySelect)
+      await user.click(screen.getByRole('option', { name: /monthly/i }))
+
+      expect(screen.queryByText(/frequency options/i)).not.toBeInTheDocument()
+    })
+  })
+
+  describe('form field rendering', () => {
+    it('renders all form fields in ADD mode', async () => {
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/pay_schedules`, () =>
+          HttpResponse.json([]),
+        ),
+        getPaySchedulePreview,
+        createPaySchedule,
+      )
+
+      render(
+        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
+          <PaySchedule companyId="123" onEvent={() => {}} />
+        </GustoApiProvider>,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: /add pay schedule/i })).toBeInTheDocument()
+      })
+
+      expect(screen.getByLabelText(/name/i)).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /frequency/i })).toBeInTheDocument()
+      expect(screen.getByRole('group', { name: /first pay date/i })).toBeInTheDocument()
+      expect(screen.getByRole('group', { name: /first pay period end date/i })).toBeInTheDocument()
+
+      expect(screen.getByRole('button', { name: /save/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /cancel/i })).toBeInTheDocument()
+    })
+
+    it('renders edit form with existing schedule data populated', async () => {
+      const user = userEvent.setup()
+      server.use(getPaySchedules, getPaySchedulePreview, createPaySchedule, updatePaySchedule)
+
+      render(
+        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
+          <PaySchedule companyId="123" onEvent={() => {}} />
+        </GustoApiProvider>,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /actions/i })).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: /actions/i }))
+      await user.click(screen.getByRole('menuitem', { name: /edit/i }))
+
+      expect(screen.getByDisplayValue('Weekly Schedule')).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /every week/i })).toBeInTheDocument()
+
+      const payDateInput = screen.getByRole('group', { name: 'First pay date' })
+      expect(within(payDateInput).getByRole('spinbutton', { name: /year/i })).toHaveValue(2024)
+      expect(within(payDateInput).getByRole('spinbutton', { name: /month/i })).toHaveValue(1)
+      expect(within(payDateInput).getByRole('spinbutton', { name: /day/i })).toHaveValue(1)
+
+      const endDateInput = screen.getByRole('group', { name: 'First pay period end date' })
+      expect(within(endDateInput).getByRole('spinbutton', { name: /year/i })).toHaveValue(2024)
+      expect(within(endDateInput).getByRole('spinbutton', { name: /month/i })).toHaveValue(1)
+      expect(within(endDateInput).getByRole('spinbutton', { name: /day/i })).toHaveValue(7)
+    })
+
+    it('shows preview placeholder alert when no dates are set', async () => {
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/pay_schedules`, () =>
+          HttpResponse.json([]),
+        ),
+        getPaySchedulePreview,
+        createPaySchedule,
+      )
+
+      render(
+        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
+          <PaySchedule companyId="123" onEvent={() => {}} />
+        </GustoApiProvider>,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: /add pay schedule/i })).toBeInTheDocument()
+      })
+
+      expect(screen.getByText(/pay schedule preview/i)).toBeInTheDocument()
+      expect(screen.getByText(/complete all the required fields/i)).toBeInTheDocument()
+    })
+  })
+
+  describe('submission behavior', () => {
+    it('returns to list mode after successful create', async () => {
+      const user = userEvent.setup()
+      const onEvent = vi.fn()
+
+      server.use(getPaySchedules, getPaySchedulePreview, createPaySchedule, updatePaySchedule)
+
+      render(
+        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
+          <PaySchedule companyId="123" onEvent={onEvent} />
+        </GustoApiProvider>,
+      )
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('button', { name: /add another pay schedule/i }),
+        ).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: /add another pay schedule/i }))
+
+      await user.type(screen.getByLabelText(/name/i), 'New Schedule')
+
+      const payDateInput = screen.getByRole('group', { name: 'First pay date' })
+      await user.type(within(payDateInput).getByRole('spinbutton', { name: /month/i }), '01')
+      await user.type(within(payDateInput).getByRole('spinbutton', { name: /day/i }), '01')
+      await user.type(within(payDateInput).getByRole('spinbutton', { name: /year/i }), '2025')
+
+      const endDateInput = screen.getByRole('group', { name: 'First pay period end date' })
+      await user.type(within(endDateInput).getByRole('spinbutton', { name: /month/i }), '01')
+      await user.type(within(endDateInput).getByRole('spinbutton', { name: /day/i }), '07')
+      await user.type(within(endDateInput).getByRole('spinbutton', { name: /year/i }), '2025')
+
+      await user.click(screen.getByRole('button', { name: /save/i }))
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(
+          componentEvents.PAY_SCHEDULE_CREATED,
+          expect.any(Object),
+        )
+      })
+
+      await waitFor(() => {
+        expect(screen.getByText('Weekly Schedule')).toBeInTheDocument()
+      })
+    }, 15000)
+
+    it('returns to list mode after successful update', async () => {
+      const user = userEvent.setup()
+      const onEvent = vi.fn()
+
+      server.use(getPaySchedules, getPaySchedulePreview, createPaySchedule, updatePaySchedule)
+
+      render(
+        <GustoApiProvider config={{ baseUrl: API_BASE_URL }}>
+          <PaySchedule companyId="123" onEvent={onEvent} />
+        </GustoApiProvider>,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /actions/i })).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: /actions/i }))
+      await user.click(screen.getByRole('menuitem', { name: /edit/i }))
+
+      await user.type(screen.getByLabelText(/name/i), ' Updated')
+      await user.click(screen.getByRole('button', { name: /save/i }))
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(
+          componentEvents.PAY_SCHEDULE_UPDATED,
+          expect.any(Object),
+        )
+      })
+
+      await waitFor(() => {
+        expect(screen.getByText('Weekly Schedule')).toBeInTheDocument()
+      })
+    })
+  })
+
   describe('pay schedule preview functionality', () => {
     beforeEach(() => {
       server.use(getPaySchedules, getPaySchedulePreview, createPaySchedule, updatePaySchedule)
