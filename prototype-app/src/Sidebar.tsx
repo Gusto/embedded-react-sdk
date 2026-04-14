@@ -31,6 +31,7 @@ function CategorySection({
     <div className={styles.category}>
       <div
         className={styles.categoryHeader}
+        aria-label={`${category} (${filteredItems.length})`}
         onClick={() => {
           setCollapsed(!collapsed)
         }}
@@ -53,7 +54,7 @@ function CategorySection({
       {!collapsed && (
         <ul className={styles.items}>
           {filteredItems.map(item => (
-            <li key={item.name} className={styles.item}>
+            <li key={item.path} className={styles.item}>
               <NavLink to={item.path}>{item.name}</NavLink>
             </li>
           ))}
@@ -69,6 +70,7 @@ export function Sidebar({ searchQuery, onSearchChange }: SidebarProps) {
       <div className={styles.search}>
         <input
           type="text"
+          aria-label="Search prototypes"
           placeholder="Search prototypes..."
           value={searchQuery}
           onChange={e => {

@@ -1,21 +1,6 @@
 import { Link } from 'react-router-dom'
+import { CATEGORIES, categorizedRegistry } from './registry'
 import styles from './Home.module.scss'
-
-const PROTOTYPES = [
-  {
-    path: '/component-showcase',
-    title: 'Component Showcase',
-    description:
-      'A single page demonstrating SDK components like Button, TextInput, Select, Alert, and more.',
-  },
-  {
-    path: '/sample-flow',
-    title: 'Sample Flow',
-    description:
-      'A multi-page prototype showing how to build a step-by-step flow with sub-navigation.',
-  },
-  // Add new prototypes here
-]
 
 export function Home() {
   return (
@@ -28,12 +13,14 @@ export function Home() {
 
       <h2>Prototypes</h2>
       <div className={styles.grid}>
-        {PROTOTYPES.map(({ path, title, description }) => (
-          <Link key={path} to={path} className={styles.card}>
-            <h3>{title}</h3>
-            <p>{description}</p>
-          </Link>
-        ))}
+        {CATEGORIES.flatMap(category =>
+          categorizedRegistry[category].map(({ name, path, description }) => (
+            <Link key={path} to={path} className={styles.card}>
+              <h3>{name}</h3>
+              <p>{description}</p>
+            </Link>
+          )),
+        )}
       </div>
 
       <h2>How to add a new prototype</h2>
@@ -52,7 +39,8 @@ export function Home() {
           Register routes in <code>prototype-app/src/main.tsx</code>
         </li>
         <li>
-          Add an entry to <code>PROTOTYPES</code> in <code>prototype-app/src/Home.tsx</code>
+          Add an entry to <code>categorizedRegistry</code> in{' '}
+          <code>prototype-app/src/registry.ts</code>
         </li>
       </ol>
 
