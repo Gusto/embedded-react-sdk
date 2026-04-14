@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { OnboardingStatus } from '@gusto/embedded-api/models/operations/putv1employeesemployeeidonboardingstatus'
-import type { UseEmployeeListResult, EmployeeWithActions } from './useEmployeeList'
+import type { UseEmployeeListResult, EmployeeWithActions } from '../shared/useEmployeeList'
 import { DataView, EmptyData, ActionsLayout, useDataView, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'

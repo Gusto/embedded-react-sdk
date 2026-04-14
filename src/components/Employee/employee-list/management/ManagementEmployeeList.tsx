@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
+import { useEmployeeList, type EmployeeType } from '../shared/useEmployeeList'
 import { ManagementEmployeeListView } from './ManagementEmployeeListView'
-import { useEmployeeList, type EmployeeType } from './useEmployeeList'
 import {
   BaseBoundaries,
   BaseLayout,

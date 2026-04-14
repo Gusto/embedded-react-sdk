@@ -34,7 +34,7 @@ The benefits of this approach are simplicity and ease of development. Many times
 Continuing with the previous example, say we wanted to render employee compensation UI (which is a step in the employee onboarding flow) in isolation. We could import that directly as follows:
 
 ```jsx
-import { Employee } from '@gusto/embedded-react-sdk';
+import { EmployeeOnboarding } from '@gusto/embedded-react-sdk';
 
 function MyApp({ employeeId, startDate }) {
   return(
@@ -43,7 +43,7 @@ function MyApp({ employeeId, startDate }) {
         baseUrl: `/myapp/`,
       }}
     >
-      <Employee.Compensation
+      <EmployeeOnboarding.Compensation
         employeeId={employeeId}
         startDate={startDate}
         onEvent={() => {...}}

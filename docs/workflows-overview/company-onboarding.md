@@ -10,11 +10,14 @@ The Company Onboarding workflow provides components for managing company-related
 ### Implementation
 
 ```jsx
-import { Company } from '@gusto/embedded-react-sdk'
+import { CompanyOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyApp() {
   return (
-    <Company.OnboardingFlow companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
+    <CompanyOnboarding.OnboardingFlow
+      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+      onEvent={() => {}}
+    />
   )
 }
 ```
@@ -33,19 +36,19 @@ Employee onboarding components can be used to compose your own workflow, or can 
 
 ### Available Subcomponents
 
-- Company.AssignSignatory
-- Company.CreateSignatory
-- Company.InviteSignatory
-- Company.IndustrySelect
-- Company.DocumentSigner
-- Company.FederalTaxes
-- Company.PaySchedule
-- Company.Locations
-- Company.BankAccount
-- Company.StateTaxes
-- Company.StateTaxesList
-- Company.StateTaxesForm
-- Company.OnboardingOverview
+- CompanyOnboarding.AssignSignatory
+- CompanyOnboarding.CreateSignatory
+- CompanyOnboarding.InviteSignatory
+- CompanyOnboarding.Industry
+- CompanyOnboarding.DocumentSigner
+- CompanyOnboarding.FederalTaxes
+- CompanyOnboarding.PaySchedule
+- CompanyOnboarding.Locations
+- CompanyOnboarding.BankAccount
+- CompanyOnboarding.StateTaxes
+- CompanyOnboarding.OnboardingOverview
+
+> Legacy imports via `Company.*` (e.g. `Company.OnboardingFlow`) continue to work.
 
 ### Company.AssignSignatory
 

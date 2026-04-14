@@ -25,7 +25,6 @@ export function isUnprocessableEntityWithPayrollBlockers(
 ): error is UnprocessableEntityErrorObject1 {
   return (
     error instanceof UnprocessableEntityErrorObject1 &&
-    Array.isArray(error.errors) &&
     error.errors.some(err => err.category === 'payroll_blocker')
   )
 }
@@ -35,7 +34,6 @@ function isUnprocessableEntityWithPayrollBlockersAlt(
 ): error is UnprocessableEntityErrorObject {
   return (
     error instanceof UnprocessableEntityErrorObject &&
-    Array.isArray(error.errors) &&
     error.errors.some(err => err.category === 'payroll_blocker')
   )
 }
@@ -95,14 +93,10 @@ const hasPayrollBlockers = (error: unknown): error is PayrollBlockerError => {
     return true
   }
   if (error instanceof UnprocessableEntityErrorObject1) {
-    return (
-      Array.isArray(error.errors) && error.errors.some(err => err.category === 'payroll_blocker')
-    )
+    return error.errors.some(err => err.category === 'payroll_blocker')
   }
   if (error instanceof UnprocessableEntityErrorObject) {
-    return (
-      Array.isArray(error.errors) && error.errors.some(err => err.category === 'payroll_blocker')
-    )
+    return error.errors.some(err => err.category === 'payroll_blocker')
   }
   return false
 }

@@ -10,11 +10,11 @@ In the case an employer elects to allow the employee to self-onboard, they can b
 ### Implementation
 
 ```jsx
-import { Employee } from '@gusto/embedded-react-sdk'
+import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyApp() {
   return (
-    <Employee.SelfOnboardingFlow
+    <EmployeeOnboarding.SelfOnboardingFlow
       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
       employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
       withEmployeeI9
@@ -37,16 +37,16 @@ function MyApp() {
 
 Like Employee onboarding, self-onboarding components can be used to compose your own workflow, or be rendered in isolation. Many of these components are the same as the ones used for general employee onboarding, however some fields are hidden and shown based on the current user type. For guidance on creating a custom workflow, see [docs on composition](../../integration-guide/composition.md).
 
-### Employee.Landing
+### EmployeeOnboarding.Landing
 
 Displays guidance on what to expect from the workflow and what information the employee will be required to have on hand and provide.
 
-```jsx jsx
-import { Employee } from '@gusto/embedded-react-sdk'
+```jsx
+import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyApp() {
   return (
-    <Employee.Landing
+    <EmployeeOnboarding.Landing
       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
       employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
       onEvent={() => {}}
@@ -69,7 +69,7 @@ function MyApp() {
 | ------------------------------ | --------------------------------------------------------------------------------------------- | ---- |
 | EMPLOYEE_SELF_ONBOARDING_START | Fired when the employee selects the get started CTA and is ready to navigate to the next step | None |
 
-### Employee.Profile
+### EmployeeOnboarding.Profile
 
 _See component documentation in the Employee Onboarding section for a complete list of props and events since this component is used in both employee onboarding and employee self onboarding._
 
@@ -84,11 +84,11 @@ When used in self onboarding, used to collect basic information about the employ
 For self onboarding, you need to be sure to set the `employeeId` property. The `isAdmin` property should be left out or set to false (which is the setting by default). The following example has the Profile component configured for self onboarding:
 
 ```jsx
-import { Employee } from '@gusto/embedded-react-sdk'
+import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyApp() {
   return (
-    <Employee.Profile
+    <EmployeeOnboarding.Profile
       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
       employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
       onEvent={() => {}}
@@ -97,64 +97,73 @@ function MyApp() {
 }
 ```
 
-### Employee.FederalTaxes
+### EmployeeOnboarding.FederalTaxes
 
 _See component documentation in the Employee Onboarding section for a complete list of props and events since this component is used in both employee onboarding and employee self onboarding._
 
 Provides required form inputs for employee federal tax configuration.
 
 ```jsx
-import { Employee } from '@gusto/embedded-react-sdk'
+import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Employee.FederalTaxes employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e" onEvent={() => {}} />
+    <EmployeeOnboarding.FederalTaxes
+      employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
+      onEvent={() => {}}
+    />
   )
 }
 ```
 
-### Employee.StateTaxes
+### EmployeeOnboarding.StateTaxes
 
 _See component documentation in the Employee Onboarding section for a complete list of props and events since this component is used in both employee onboarding and employee self onboarding._
 
 Provides required form inputs for employee state tax configuration.
 
 ```jsx
-import { Employee } from '@gusto/embedded-react-sdk'
+import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Employee.StateTaxes employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e" onEvent={() => {}} />
+    <EmployeeOnboarding.StateTaxes
+      employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
+      onEvent={() => {}}
+    />
   )
 }
 ```
 
-### Employee.PaymentMethod
+### EmployeeOnboarding.PaymentMethod
 
 _See component documentation in the Employee Onboarding section for a complete list of props and events since this component is used in both employee onboarding and employee self onboarding._
 
 Used for configuring employee bank account(s). Bank accounts created with this component will be used to pay the employee when payroll is run. Payments can be split across multiple accounts.
 
 ```jsx
-import { Employee } from '@gusto/embedded-react-sdk'
+import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Employee.PaymentMethod employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e" onEvent={() => {}} />
+    <EmployeeOnboarding.PaymentMethod
+      employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
+      onEvent={() => {}}
+    />
   )
 }
 ```
 
-### Employee.DocumentSigner
+### EmployeeOnboarding.DocumentSigner
 
 Provides the employee with an interface to read and sign required employment documents. When `withEmployeeI9` is enabled and the employee has I-9 configured, the Document Signer will first route the employee through the Employment Eligibility step and then present the I-9 form for signature alongside other required documents.
 
 ```jsx
-import { Employee } from '@gusto/embedded-react-sdk'
+import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Employee.DocumentSigner
+    <EmployeeOnboarding.DocumentSigner
       employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
       withEmployeeI9
       onEvent={() => {}}
@@ -189,11 +198,11 @@ Displays the current state of employee onboarding.
 The `isAdmin` property should be left out or set to false (which is the setting by default). The following example has the OnboardingSummary component configured for self onboarding:
 
 ```jsx
-import { Employee } from '@gusto/embedded-react-sdk'
+import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
   return (
-    <Employee.OnboardingSummary
+    <EmployeeOnboarding.OnboardingSummary
       employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
       onEvent={() => {}}
     />
