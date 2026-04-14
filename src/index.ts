@@ -143,7 +143,7 @@ export {
   useWorkAddressForm,
   WorkAddressErrorCodes,
   createWorkAddressSchema,
-} from '@/components/Employee/work-address/shared/useWorkAddressForm'
+} from '@/components/Employee/Profile/shared/useWorkAddressForm'
 export type {
   WorkAddressSubmitCallbacks,
   WorkAddressSubmitOptions,
@@ -160,13 +160,13 @@ export type {
   WorkAddressRequiredValidation,
   LocationFieldProps,
   EffectiveDateFieldProps,
-} from '@/components/Employee/work-address/shared/useWorkAddressForm'
+} from '@/components/Employee/Profile/shared/useWorkAddressForm'
 
 export {
   useHomeAddressForm,
   HomeAddressErrorCodes,
   createHomeAddressSchema,
-} from '@/components/Employee/home-address/shared/useHomeAddressForm'
+} from '@/components/Employee/Profile/shared/useHomeAddressForm'
 export type {
   HomeAddressSubmitOptions,
   HomeAddressOptionalFieldsToRequire,
@@ -188,7 +188,7 @@ export type {
   ZipFieldProps,
   CourtesyWithholdingFieldProps,
   HomeAddressEffectiveDateFieldProps,
-} from '@/components/Employee/home-address/shared/useHomeAddressForm'
+} from '@/components/Employee/Profile/shared/useHomeAddressForm'
 
 export {
   useSignEmployeeForm,

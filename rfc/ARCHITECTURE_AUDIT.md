@@ -698,8 +698,8 @@ Partner-facing form hooks (`useEmployeeDetailsForm`, `useCompensationForm`, `use
 - **Domain hooks** live beside their features, for example:
   - `src/components/Employee/Compensation/shared/useCompensationForm/`
   - `src/components/Employee/Profile/shared/useEmployeeDetailsForm/`
-  - `src/components/Employee/work-address/shared/useWorkAddressForm/`
-  - `src/components/Employee/home-address/shared/useHomeAddressForm/`
+  - `src/components/Employee/Profile/shared/useWorkAddressForm/`
+  - `src/components/Employee/Profile/shared/useHomeAddressForm/`
   - `src/components/Employee/DocumentSigner/shared/useSignEmployeeForm/`
   - `src/components/Company/PaySchedule/shared/usePayScheduleForm/`
   - `src/components/Company/DocumentSigner/shared/useSignCompanyForm/`

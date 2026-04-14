@@ -3,7 +3,7 @@
 Reference implementations:
 
 - **Schema pattern + configurable required fields**: `useCompensationForm` at `src/components/Employee/Compensation/shared/useCompensationForm/`
-- **Standalone form with optional entity ID**: `useWorkAddressForm` at `src/components/Employee/work-address/shared/useWorkAddressForm/`
+- **Standalone form with optional entity ID**: `useWorkAddressForm` at `src/components/Employee/Profile/shared/useWorkAddressForm/`
 
 ## File Structure
 
