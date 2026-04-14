@@ -74,10 +74,18 @@ export function ComponentShowcase() {
       <section style={{ marginTop: '2rem' }}>
         <Components.Heading as="h2">Alerts</Components.Heading>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-          <Components.Alert status="info" label="This is an info alert" />
-          <Components.Alert status="success" label="This is a success alert" />
-          <Components.Alert status="warning" label="This is a warning alert" />
-          <Components.Alert status="error" label="This is an error alert" />
+          <Components.Alert status="info" label="This is an info alert" disableScrollIntoView />
+          <Components.Alert
+            status="success"
+            label="This is a success alert"
+            disableScrollIntoView
+          />
+          <Components.Alert
+            status="warning"
+            label="This is a warning alert"
+            disableScrollIntoView
+          />
+          <Components.Alert status="error" label="This is an error alert" disableScrollIntoView />
         </div>
       </section>
 
