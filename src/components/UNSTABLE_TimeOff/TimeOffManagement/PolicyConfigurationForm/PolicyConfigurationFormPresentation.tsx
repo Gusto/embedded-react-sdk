@@ -126,7 +126,12 @@ export function PolicyConfigurationFormPresentation({
           <Heading as="h2">{t('policyDetails.title')}</Heading>
 
           <Flex flexDirection="column" gap={20}>
-            <TextInputField name="name" label={t('policyDetails.policyNameLabel')} isRequired />
+            <TextInputField
+              name="name"
+              label={t('policyDetails.policyNameLabel')}
+              isRequired
+              errorMessage={t('policyDetails.validations.policyName')}
+            />
 
             <RadioGroupField<AccrualMethod>
               name="accrualMethod"
@@ -134,6 +139,7 @@ export function PolicyConfigurationFormPresentation({
               description={t('policyDetails.accrualMethodHint')}
               options={accrualMethodOptions}
               isRequired
+              errorMessage={t('policyDetails.validations.accrualMethod')}
             />
 
             {isHourlyMethod && (
@@ -146,6 +152,7 @@ export function PolicyConfigurationFormPresentation({
                   label={t('policyDetails.employeesWillAccrueLabel')}
                   adornmentEnd={t('policyDetails.hoursUnit')}
                   isRequired
+                  errorMessage={t('policyDetails.validations.accrualRate')}
                   min={0}
                 />
 
@@ -155,6 +162,7 @@ export function PolicyConfigurationFormPresentation({
                   label={t('policyDetails.forEveryLabel')}
                   adornmentEnd={t('policyDetails.hoursWorkedUnit')}
                   isRequired
+                  errorMessage={t('policyDetails.validations.accrualRateUnit')}
                   min={1}
                 />
 
@@ -180,6 +188,7 @@ export function PolicyConfigurationFormPresentation({
                   description={t('policyDetails.fixedAccrualRateHint')}
                   adornmentEnd={t('policyDetails.hoursUnit')}
                   isRequired
+                  errorMessage={t('policyDetails.validations.accrualRate')}
                   min={0}
                 />
 
@@ -189,6 +198,7 @@ export function PolicyConfigurationFormPresentation({
                   description={t('policyDetails.accrualMethodFixedHint')}
                   options={accrualMethodFixedOptions}
                   isRequired
+                  errorMessage={t('policyDetails.validations.accrualMethodFixed')}
                 />
               </>
             )}
@@ -203,6 +213,7 @@ export function PolicyConfigurationFormPresentation({
                   description={t('policyDetails.policyResetDateTypeHint')}
                   options={resetDateTypeOptions}
                   isRequired
+                  errorMessage={t('policyDetails.validations.resetDateType')}
                 />
 
                 {showCustomDateFields && (

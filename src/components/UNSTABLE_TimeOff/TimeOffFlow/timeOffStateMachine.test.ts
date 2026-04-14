@@ -186,6 +186,16 @@ describe('timeOffStateMachine', () => {
       expect(service.context.alerts).toBeUndefined()
     })
 
+    it('transitions policySettings -> policyDetailsForm on POLICY_SETTINGS_BACK', () => {
+      const service = createService()
+      toPolicySettings(service)
+
+      send(service, componentEvents.TIME_OFF_POLICY_SETTINGS_BACK)
+
+      expect(service.machine.current).toBe('policyDetailsForm')
+      expect(service.context.alerts).toBeUndefined()
+    })
+
     it('transitions addEmployeesToPolicy -> viewPolicyDetails on ADD_EMPLOYEES_DONE', () => {
       const service = createService()
       toAddEmployeesToPolicy(service)
