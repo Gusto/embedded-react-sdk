@@ -259,6 +259,10 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/deactivate` |
 |  | GET | `/v1/companies/:companyId/employees` |
 | **UNSTABLE_TimeOff.PolicyConfigurationForm** | POST | `/v1/companies/:companyUuid/time_off_policies` |
+| **UNSTABLE_TimeOff.PolicySettings** | GET | `/v1/time_off_policies/:timeOffPolicyUuid` |
+|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid` |
+| **UNSTABLE_TimeOff.PolicySettingsPresentation** | GET | `/v1/time_off_policies/:timeOffPolicyUuid` |
+|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid` |
 | **UNSTABLE_TimeOff.HolidaySelectionForm** | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
 
 ## Flows

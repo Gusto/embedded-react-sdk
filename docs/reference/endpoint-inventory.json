@@ -1375,6 +1375,36 @@
         "companyUuid"
       ]
     },
+    "UNSTABLE_TimeOff.PolicySettings": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
+        }
+      ],
+      "variables": [
+        "timeOffPolicyUuid"
+      ]
+    },
+    "UNSTABLE_TimeOff.PolicySettingsPresentation": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
+        }
+      ],
+      "variables": [
+        "timeOffPolicyUuid"
+      ]
+    },
     "UNSTABLE_TimeOff.HolidaySelectionForm": {
       "endpoints": [
         {
@@ -2173,6 +2203,14 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/employees"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
         }
       ],
       "variables": [
