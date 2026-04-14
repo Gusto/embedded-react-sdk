@@ -30,7 +30,11 @@ const observability: ObservabilityHook = {
 function App() {
   return (
     <GustoProvider config={{ baseUrl: '/api/', observability }} components={components}>
-      <Employee.Profile companyId={companyId} employeeId={employeeId} onEvent={handleEvent} />
+      <EmployeeOnboarding.Profile
+        companyId={companyId}
+        employeeId={employeeId}
+        onEvent={handleEvent}
+      />
     </GustoProvider>
   )
 }

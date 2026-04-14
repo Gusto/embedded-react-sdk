@@ -1201,15 +1201,26 @@ export interface ContractorProfile{
 };
 };
 export interface ContractorSubmit{
+"heading":string;
 "doneTitle":string;
 "doneDescription":string;
 "doneCta":string;
 "submitCta":string;
 "title":string;
+"documentRequirements":{
+"title":string;
+"description":string;
+"items":{
+"0":{
+"title":string;
+"description":string;
+};
+};
+"alertLabel":string;
+};
 "warningItems":{
 "0":string;
 "1":string;
-"2":string;
 };
 "inviteContractor":{
 "title":string;
