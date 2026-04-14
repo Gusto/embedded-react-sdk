@@ -10,17 +10,19 @@ The Contractor Onboarding workflow provides components for managing contractor-r
 ### Implementation
 
 ```jsx
-import { Contractor } from '@gusto/embedded-react-sdk'
+import { ContractorOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyApp() {
   return (
-    <Contractor.OnboardingFlow
+    <ContractorOnboarding.OnboardingFlow
       companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
       onEvent={() => {}}
     />
   )
 }
 ```
+
+> Legacy imports via `Contractor.*` (e.g. `Contractor.OnboardingFlow`) continue to work.
 
 #### Props
 

@@ -69,7 +69,7 @@ The dismissal payroll flow integrates with the [Employee Termination workflow](.
 
 ```jsx
 import { useState } from 'react'
-import { Employee, Payroll, componentEvents } from '@gusto/embedded-react-sdk'
+import { EmployeeManagement, Payroll, componentEvents } from '@gusto/embedded-react-sdk'
 
 function TerminationPage({ companyId, employeeId }) {
   const [dismissalPayrollData, setDismissalPayrollData] = useState(null)
@@ -92,7 +92,11 @@ function TerminationPage({ companyId, employeeId }) {
   }
 
   return (
-    <Employee.TerminationFlow companyId={companyId} employeeId={employeeId} onEvent={handleEvent} />
+    <EmployeeManagement.TerminationFlow
+      companyId={companyId}
+      employeeId={employeeId}
+      onEvent={handleEvent}
+    />
   )
 }
 ```

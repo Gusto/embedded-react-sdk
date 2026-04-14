@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { UseEmployeeListResult, EmployeeWithActions } from './useEmployeeList'
+import type { UseEmployeeListResult, EmployeeWithActions } from '../shared/useEmployeeList'
 import { DataView, EmptyData, useDataView } from '@/components/Common'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'

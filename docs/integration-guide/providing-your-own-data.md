@@ -9,10 +9,10 @@ Where possible, the Gusto Embedded React SDK allows for providing your own data 
 
 If an SDK component contains a form and has a `defaultValues` property, the `defaultValues` can be set with values from your own data if needed. `defaultValues` is an object with keys corresponding to each of the form fields.
 
-For example, if we are rendering the `Employee.Compensation` component (which contains a basic form) we can supply default values as follows:
+For example, if we are rendering the `EmployeeOnboarding.Compensation` component (which contains a basic form) we can supply default values as follows:
 
 ```jsx
-import { Employee } from '@gusto/embedded-react-sdk';
+import { EmployeeOnboarding } from '@gusto/embedded-react-sdk';
 
 function MyApp({ employeeId, startDate }) {
   // Hard coded here but could be from an API response or however your app data is stored
@@ -28,7 +28,7 @@ function MyApp({ employeeId, startDate }) {
         baseUrl: `/myapp/`,
       }}
     >
-      <Employee.Compensation
+      <EmployeeOnboarding.Compensation
         employeeId={employeeId}
         startDate={startDate}
         onEvent={() => {...}}

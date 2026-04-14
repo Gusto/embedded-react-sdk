@@ -12,11 +12,11 @@ The Employee Termination workflow provides a complete experience for terminating
 ### Implementation
 
 ```jsx
-import { Employee } from '@gusto/embedded-react-sdk'
+import { EmployeeManagement } from '@gusto/embedded-react-sdk'
 
 function MyApp() {
   return (
-    <Employee.TerminationFlow
+    <EmployeeManagement.TerminationFlow
       companyId="your-company-id"
       employeeId="employee-id"
       onEvent={() => {}}
@@ -24,6 +24,8 @@ function MyApp() {
   )
 }
 ```
+
+> Legacy import via `Employee.TerminationFlow` continues to work.
 
 #### Props
 
