@@ -271,12 +271,12 @@ describe('PaySchedule', () => {
       await user.type(screen.getByLabelText(/name/i), ' Updated')
       await user.click(screen.getByRole('button', { name: /save/i }))
 
+      // Wait for mode to transition back to list (confirms mutation completed)
       await waitFor(() => {
-        expect(onEvent).toHaveBeenCalledWith(
-          componentEvents.PAY_SCHEDULE_UPDATED,
-          expect.any(Object),
-        )
+        expect(screen.getByText('Weekly Schedule')).toBeInTheDocument()
       })
+
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.PAY_SCHEDULE_UPDATED, expect.any(Object))
     })
   })
 
@@ -321,13 +321,13 @@ describe('PaySchedule', () => {
       // Submit form
       await user.click(screen.getByRole('button', { name: /save/i }))
 
+      // Wait for mode to transition back to list (confirms mutation completed)
       await waitFor(() => {
-        expect(onEvent).toHaveBeenCalledOnce()
-        expect(onEvent).toHaveBeenCalledWith(
-          componentEvents.PAY_SCHEDULE_CREATED,
-          expect.any(Object),
-        )
+        expect(screen.getByText('Weekly Schedule')).toBeInTheDocument()
       })
+
+      expect(onEvent).toHaveBeenCalledOnce()
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.PAY_SCHEDULE_CREATED, expect.any(Object))
     }, 10000)
   })
 
