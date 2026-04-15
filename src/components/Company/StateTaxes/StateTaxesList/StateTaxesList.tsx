@@ -1,12 +1,8 @@
 import { useTaxRequirementsGetAllSuspense } from '@gusto/embedded-api/react-query/taxRequirementsGetAll'
-import { Head } from './Head'
-import { StateTaxesListProvider } from './context'
-import { Actions } from './Actions'
-import { List } from './List'
+import { StateTaxesListPresentation } from './StateTaxesListPresentation'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
 import { useI18n } from '@/i18n/I18n'
-import { Flex } from '@/components/Common/Flex/Flex'
 import { componentEvents } from '@/shared/constants'
 import { useBase } from '@/components/Base'
 
@@ -22,7 +18,7 @@ export function StateTaxesList(props: StateTaxesListProps) {
   )
 }
 
-function Root({ className, children, companyId }: StateTaxesListProps) {
+function Root({ companyId }: StateTaxesListProps) {
   useI18n('Company.StateTaxes')
   const { onEvent } = useBase()
   const { data } = useTaxRequirementsGetAllSuspense({ companyUuid: companyId })
@@ -37,27 +33,10 @@ function Root({ className, children, companyId }: StateTaxesListProps) {
   }
 
   return (
-    <section className={className}>
-      <StateTaxesListProvider
-        value={{
-          isPending: false,
-          stateTaxRequirements,
-          handleContinue,
-          handleChange,
-        }}
-      >
-        <Flex flexDirection="column" gap={32}>
-          {children ? (
-            children
-          ) : (
-            <>
-              <Head />
-              <List />
-              <Actions />
-            </>
-          )}
-        </Flex>
-      </StateTaxesListProvider>
-    </section>
+    <StateTaxesListPresentation
+      stateTaxRequirements={stateTaxRequirements}
+      handleContinue={handleContinue}
+      handleChange={handleChange}
+    />
   )
 }
