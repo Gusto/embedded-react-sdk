@@ -2,6 +2,8 @@ import { useState, useMemo } from 'react'
 import { NavLink } from 'react-router-dom'
 import { categorizedRegistry, CATEGORIES, type Category } from './registry'
 import styles from './Sidebar.module.scss'
+import CaretRightIcon from '@/assets/icons/caret-right.svg?react'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 interface SidebarProps {
   searchQuery: string
@@ -45,7 +47,7 @@ function CategorySection({
           <span
             className={`${styles.categoryArrow} ${collapsed ? styles.categoryArrowCollapsed : ''}`}
           >
-            ▾
+            <CaretRightIcon />
           </span>
           {category}
         </span>
@@ -65,17 +67,17 @@ function CategorySection({
 }
 
 export function Sidebar({ searchQuery, onSearchChange }: SidebarProps) {
+  const Components = useComponentContext()
+
   return (
     <aside className={styles.root}>
       <div className={styles.search}>
-        <input
-          type="text"
-          aria-label="Search prototypes"
+        <Components.TextInput
+          label="Search prototypes"
+          shouldVisuallyHideLabel
           placeholder="Search prototypes..."
           value={searchQuery}
-          onChange={e => {
-            onSearchChange(e.target.value)
-          }}
+          onChange={onSearchChange}
         />
       </div>
       <div className={styles.list}>
