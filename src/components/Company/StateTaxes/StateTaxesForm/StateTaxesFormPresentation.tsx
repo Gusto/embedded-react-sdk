@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next'
-import { Fragment } from 'react/jsx-runtime'
 import type { TaxRequirementsState } from '@gusto/embedded-api/models/components/taxrequirementsstate'
 import { QuestionInput } from '@/components/Common/TaxInputs/TaxInputs'
 import { useLocaleDateFormatter } from '@/contexts/LocaleProvider/useLocale'
@@ -29,7 +28,7 @@ export const StateTaxesFormPresentation = ({
   const Components = useComponentContext()
 
   return (
-    <Flex flexDirection="column" gap={32}>
+    <Flex flexDirection="column" gap={20}>
       <header>
         <Components.Heading as="h2">
           {t('title', { state: statesHash(state as (typeof STATES_ABBR)[number]) })}
@@ -37,28 +36,36 @@ export const StateTaxesFormPresentation = ({
       </header>
 
       {stateTaxRequirements.requirementSets?.map(({ requirements, label, effectiveFrom, key }) => (
-        <Fragment key={key}>
-          <div>
-            <Components.Heading as="h3">{label}</Components.Heading>
-            {effectiveFrom && (
-              <Components.Text size="sm">
-                {t('effectiveFromLabel', { date: dateFormatter.format(new Date(effectiveFrom)) })}
-              </Components.Text>
-            )}
-          </div>
-          {requirements?.map(requirement => {
-            return (
-              <QuestionInput
-                requirement={{
-                  ...requirement,
-                  key: `${key}.${requirement.key as string}`,
-                }}
-                questionType={requirement.metadata?.type ?? 'Text'}
-                key={requirement.key}
-              />
-            )
-          })}
-        </Fragment>
+        <Components.Box
+          key={key}
+          header={
+            <Components.BoxHeader
+              title={label}
+              description={
+                effectiveFrom
+                  ? t('effectiveFromLabel', {
+                      date: dateFormatter.format(new Date(effectiveFrom)),
+                    })
+                  : undefined
+              }
+            />
+          }
+        >
+          <Flex flexDirection="column" gap={20}>
+            {requirements?.map(requirement => {
+              return (
+                <QuestionInput
+                  requirement={{
+                    ...requirement,
+                    key: `${key}.${requirement.key as string}`,
+                  }}
+                  questionType={requirement.metadata?.type ?? 'Text'}
+                  key={requirement.key}
+                />
+              )
+            })}
+          </Flex>
+        </Components.Box>
       ))}
 
       <ActionsLayout>
