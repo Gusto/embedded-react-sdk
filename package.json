@@ -18,10 +18,6 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
-    "./UNSTABLE_Hooks": {
-      "types": "./dist/UNSTABLE_Hooks.d.ts",
-      "default": "./dist/UNSTABLE_Hooks.js"
-    },
     "./*.css": {
       "import": "./dist/*.css",
       "require": "./dist/*.css"
@@ -81,7 +77,8 @@
     "sdk-app:local": "npx tsx sdk-app/scripts/start.ts dev --env=local",
     "sdk-app-prod": "npx tsx sdk-app/scripts/start.ts prod --env=demo",
     "sdk-app:setup": "npx tsx sdk-app/scripts/setup.ts",
-    "sdk-app:analyze-props": "npx tsx sdk-app/scripts/analyze-component-props.ts"
+    "sdk-app:analyze-props": "npx tsx sdk-app/scripts/analyze-component-props.ts",
+    "prototype-app": "vite --config prototype-app/vite.config.ts"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.5.0",
@@ -120,11 +117,11 @@
     "jsdom": "^26.1.0",
     "jsdom-testing-mocks": "^1.16.0",
     "lint-staged": "^16.4.0",
-    "msw": "^2.13.2",
+    "msw": "^2.13.3",
     "npm-run-all": "^4.1.5",
     "pixelmatch": "^7.1.0",
     "pngjs": "^7.0.0",
-    "prettier": "^3.8.2",
+    "prettier": "^3.8.3",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "react-router-dom": "^7.14.1",
@@ -153,8 +150,8 @@
     "@gusto/embedded-api": "0.12.5",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^5.2.2",
-    "@internationalized/date": "^3.12.0",
-    "@internationalized/number": "^3.6.5",
+    "@internationalized/date": "^3.12.1",
+    "@internationalized/number": "^3.6.6",
     "classnames": "^2.5.1",
     "deepmerge": "^4.3.1",
     "dompurify": "^3.3.3",
@@ -163,7 +160,7 @@
     "react-aria-components": "1.16.0",
     "react-error-boundary": "^6.1.1",
     "react-hook-form": "^7.72.1",
-    "react-i18next": "^17.0.2",
+    "react-i18next": "^17.0.3",
     "react-robot": "^1.2.1",
     "robot3": "^1.2.0",
     "zod": "^4.3.6"

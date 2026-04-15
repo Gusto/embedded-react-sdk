@@ -89,7 +89,6 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         input: {
           index: resolve(__dirname, 'src/index.ts'),
-          UNSTABLE_Hooks: resolve(__dirname, 'src/UNSTABLE_Hooks.ts'),
         },
         output: {
           preserveModules: !isDev,

@@ -8,9 +8,9 @@ import { keepPreviousData } from '@tanstack/react-query'
 import { usePagination } from '@/hooks/usePagination/usePagination'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
-import { useErrorHandling } from '@/hooks/useErrorHandling'
+import { useErrorHandling } from '@/partner-hook-utils/useErrorHandling'
 import { EmployeeOnboardingStatus, EmployeeSelfOnboardingStatuses } from '@/shared/constants'
-import type { HookLoadingResult, HookSubmitResult, BaseHookReady } from '@/types/sdkHooks'
+import type { HookLoadingResult, HookSubmitResult, BaseHookReady } from '@/partner-hook-utils/types'
 
 export type EmployeeAction =
   | 'edit'

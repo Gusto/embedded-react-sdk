@@ -8,7 +8,7 @@ order: 5
 Signs an employee form — captures a typed signature, electronic consent, and (for I-9 forms) preparer/translator certification with address fields. The hook fetches the form metadata and PDF, manages preparer sections dynamically, and submits the signature to the Gusto API.
 
 ```tsx
-import { useSignEmployeeForm, SDKFormProvider } from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'
+import { useSignEmployeeForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
 ```
 
 > This hook is form-type aware. When the form being signed is an I-9, additional fields and actions for preparer/translator certification are automatically available. For non-I-9 forms, only the signature and confirmation fields are exposed.
@@ -333,7 +333,7 @@ All preparer text fields use `PreparerTextFieldProps`, the state select uses `Pr
 ### Basic form signing (non-I-9)
 
 ```tsx
-import { useSignEmployeeForm, SDKFormProvider } from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'
+import { useSignEmployeeForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
 
 function SignFormPage({ employeeId, formId }: { employeeId: string; formId: string }) {
   const signForm = useSignEmployeeForm({ employeeId, formId })
@@ -425,7 +425,7 @@ import {
   useSignEmployeeForm,
   SDKFormProvider,
   type UseSignEmployeeFormReady,
-} from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'
+} from '@gusto/embedded-react-sdk'
 
 function SignI9Page({ employeeId, formId }: { employeeId: string; formId: string }) {
   const signForm = useSignEmployeeForm({ employeeId, formId })
@@ -591,7 +591,7 @@ function PreparerSection({ signForm }: { signForm: UseSignEmployeeFormReady }) {
 Since the hook adapts its return shape based on the form type, you can build one component that handles both cases by checking for the I-9-specific fields:
 
 ```tsx
-import { useSignEmployeeForm, SDKFormProvider } from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'
+import { useSignEmployeeForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
 
 function SignAnyFormPage({ employeeId, formId }: { employeeId: string; formId: string }) {
   const signForm = useSignEmployeeForm({ employeeId, formId })
@@ -650,7 +650,7 @@ The `PreparerSection` component from the I-9 example above renders the preparer 
 The same basic signing form using prop-based field connection instead of `SDKFormProvider`:
 
 ```tsx
-import { useSignEmployeeForm } from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'
+import { useSignEmployeeForm } from '@gusto/embedded-react-sdk'
 
 function SignFormPage({ employeeId, formId }: { employeeId: string; formId: string }) {
   const signForm = useSignEmployeeForm({ employeeId, formId })
@@ -715,7 +715,7 @@ This hook differs from the CRUD-oriented form hooks (`useEmployeeDetailsForm`, `
 
 ## Exported Types
 
-Key types available from `@gusto/embedded-react-sdk/UNSTABLE_Hooks`:
+Key types available from `@gusto/embedded-react-sdk`:
 
 | Type                                     | Description                                               |
 | ---------------------------------------- | --------------------------------------------------------- |
