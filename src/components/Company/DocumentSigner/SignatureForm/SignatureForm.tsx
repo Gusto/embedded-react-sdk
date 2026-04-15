@@ -1,6 +1,5 @@
-import { useCompanyFormsGetSuspense } from '@gusto/embedded-api/react-query/companyFormsGet'
-import { useCompanyFormsSignMutation } from '@gusto/embedded-api/react-query/companyFormsSign'
-import { useCompanyFormsGetPdfSuspense } from '@gusto/embedded-api/react-query/companyFormsGetPdf'
+import { FormProvider } from 'react-hook-form'
+import { useSignCompanyForm } from '../shared/useSignCompanyForm'
 import { Head } from './Head'
 import { Preview } from './Preview'
 import { Form } from './Form'
@@ -10,10 +9,6 @@ import { useI18n, useComponentDictionary } from '@/i18n'
 import type { BaseComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
 import { useBase } from '@/components/Base/useBase'
-import {
-  SignatureForm as SharedSignatureForm,
-  type SignatureFormInputs,
-} from '@/components/Common/SignatureForm'
 import { Flex } from '@/components/Common'
 import { companyEvents } from '@/shared/constants'
 
@@ -33,40 +28,30 @@ export function SignatureForm(props: SignatureFormProps) {
 export function Root({ formId, children, dictionary }: SignatureFormProps) {
   useComponentDictionary('Company.SignatureForm', dictionary)
   useI18n('Company.SignatureForm')
-  const { onEvent, baseSubmitHandler } = useBase()
+  const { onEvent } = useBase()
 
-  const {
-    data: { form: formNullable },
-  } = useCompanyFormsGetSuspense({
-    formId,
-  })
-  const form = formNullable!
+  const hookResult = useSignCompanyForm({ formId })
 
-  const { isPending, mutateAsync: signForm } = useCompanyFormsSignMutation()
+  if (hookResult.isLoading) {
+    return null
+  }
 
-  const {
-    data: { formPdf },
-  } = useCompanyFormsGetPdfSuspense({
-    formId,
-  })
-  const pdfUrl = formPdf!.documentUrl!
+  const { companyForm: form, pdfUrl } = hookResult.data
+  const { isPending } = hookResult.status
+  const { formMethods } = hookResult.form.hookFormInternals
 
-  const handleSubmit = async (data: SignatureFormInputs) => {
-    await baseSubmitHandler(data, async payload => {
-      const signFormResponse = await signForm({
-        request: {
-          formId,
-          requestBody: {
-            signatureText: payload.signature,
-            agree: payload.confirmSignature,
-          },
-        },
-      })
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
 
-      onEvent(companyEvents.COMPANY_SIGN_FORM, signFormResponse.form)
-
-      onEvent(companyEvents.COMPANY_SIGN_FORM_DONE)
+    const result = await hookResult.actions.onSubmit({
+      onFormSigned: signedForm => {
+        onEvent(companyEvents.COMPANY_SIGN_FORM, signedForm)
+      },
     })
+
+    if (result) {
+      onEvent(companyEvents.COMPANY_SIGN_FORM_DONE)
+    }
   }
 
   const handleBack = () => {
@@ -82,20 +67,22 @@ export function Root({ formId, children, dictionary }: SignatureFormProps) {
         onBack: handleBack,
       }}
     >
-      <SharedSignatureForm onSubmit={handleSubmit}>
-        <Flex flexDirection="column" gap={32}>
-          {children ? (
-            children
-          ) : (
-            <>
-              <Head />
-              <Preview />
-              <Form />
-              <Actions />
-            </>
-          )}
-        </Flex>
-      </SharedSignatureForm>
+      <FormProvider {...formMethods}>
+        <form onSubmit={handleFormSubmit}>
+          <Flex flexDirection="column" gap={32}>
+            {children ? (
+              children
+            ) : (
+              <>
+                <Head />
+                <Preview />
+                <Form />
+                <Actions />
+              </>
+            )}
+          </Flex>
+        </form>
+      </FormProvider>
     </SignatureFormProvider>
   )
 }
