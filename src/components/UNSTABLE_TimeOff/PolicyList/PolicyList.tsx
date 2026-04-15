@@ -18,7 +18,7 @@ import { PolicyListPresentation } from './PolicyListPresentation'
 import type { PolicyListItem } from './PolicyListTypes'
 import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/components/Base'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
-import { useErrorHandling } from '@/hooks/useErrorHandling'
+import { useErrorHandling } from '@/partner-hook-utils/useErrorHandling'
 import { componentEvents } from '@/shared/constants'
 import { useI18n } from '@/i18n'
 

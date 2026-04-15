@@ -2,8 +2,8 @@ import { useEmployeeTaxSetupGetFederalTaxesSuspense } from '@gusto/embedded-api/
 import { useEmployeeTaxSetupGetStateTaxesSuspense } from '@gusto/embedded-api/react-query/employeeTaxSetupGetStateTaxes'
 import type { GetV1EmployeesEmployeeIdFederalTaxesResponse } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidfederaltaxes'
 import type { GetV1EmployeesEmployeeIdStateTaxesResponse } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidstatetaxes'
-import { buildQueryErrorHandling } from '@/helpers/buildQueryErrorHandling'
-import type { HookLoadingResult, BaseHookReady } from '@/types/sdkHooks'
+import { buildQueryErrorHandling } from '@/partner-hook-utils/buildQueryErrorHandling'
+import type { HookLoadingResult, BaseHookReady } from '@/partner-hook-utils/types'
 
 // Derive types from operations responses
 type EmployeeFederalTax = NonNullable<

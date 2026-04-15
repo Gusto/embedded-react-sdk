@@ -5,8 +5,8 @@ import { useEmployeeAddressesGetWorkAddressesSuspense } from '@gusto/embedded-ap
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { EmployeeAddress } from '@gusto/embedded-api/models/components/employeeaddress'
 import type { EmployeeWorkAddress } from '@gusto/embedded-api/models/components/employeeworkaddress'
-import { buildQueryErrorHandling } from '@/helpers/buildQueryErrorHandling'
-import type { HookLoadingResult, BaseHookReady } from '@/types/sdkHooks'
+import { buildQueryErrorHandling } from '@/partner-hook-utils/buildQueryErrorHandling'
+import type { HookLoadingResult, BaseHookReady } from '@/partner-hook-utils/types'
 
 export interface UseEmployeeBasicDetailsProps {
   employeeId: string

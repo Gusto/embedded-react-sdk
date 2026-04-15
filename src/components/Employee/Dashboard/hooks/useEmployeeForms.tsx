@@ -1,7 +1,7 @@
 import { useEmployeeFormsListSuspense } from '@gusto/embedded-api/react-query/employeeFormsList'
 import type { Form } from '@gusto/embedded-api/models/components/form'
-import { buildQueryErrorHandling } from '@/helpers/buildQueryErrorHandling'
-import type { HookLoadingResult, BaseHookReady } from '@/types/sdkHooks'
+import { buildQueryErrorHandling } from '@/partner-hook-utils/buildQueryErrorHandling'
+import type { HookLoadingResult, BaseHookReady } from '@/partner-hook-utils/types'
 
 export interface UseEmployeeFormsProps {
   employeeId: string

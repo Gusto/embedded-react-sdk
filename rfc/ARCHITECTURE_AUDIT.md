@@ -685,17 +685,29 @@ const hooks: SDKHooks = {
 - ✅ **Standard Pattern:** Follows fetch interceptor patterns
 - 💡 **Recommendation:** Document common use cases with examples
 
-### 7.2 UNSTABLE_Hooks Export
+### 7.2 Partner form hooks
 
-**Location:** `src/UNSTABLE_Hooks.ts`
+**Public API:** `import { … } from '@gusto/embedded-react-sdk'`
 
 **Description:**  
-Separate entry point for experimental APIs (PayrollConfiguration).
+Partner-facing form hooks (`useEmployeeDetailsForm`, `useCompensationForm`, `useWorkAddressForm`, `useHomeAddressForm`, `usePayScheduleForm`, `useSignCompanyForm`, `useSignEmployeeForm`), shared form utilities (`SDKFormProvider`, `composeSubmitHandler`, hook field components), and related types ship from the main package entry.
+
+**Implementation layout:**
+
+- **Shared infrastructure:** `src/partner-hook-utils/` — `form/` (schema builders, field components), `useErrorHandling.ts`, `buildQueryErrorHandling.ts`, `collectErrors.ts`, `types.ts` (partner hook types; formerly `src/types/sdkHooks.ts`)
+- **Domain hooks** live beside their features, for example:
+  - `src/components/Employee/Compensation/shared/useCompensationForm/`
+  - `src/components/Employee/Profile/shared/useEmployeeDetailsForm/`
+  - `src/components/Employee/Profile/shared/useWorkAddressForm/`
+  - `src/components/Employee/Profile/shared/useHomeAddressForm/`
+  - `src/components/Employee/DocumentSigner/shared/useSignEmployeeForm/`
+  - `src/components/Company/PaySchedule/shared/usePayScheduleForm/`
+  - `src/components/Company/DocumentSigner/shared/useSignCompanyForm/`
 
 **Assessment:**
 
-- ✅ **Good Practice:** Clear API stability signaling
-- 💡 **Recommendation:** Establish graduation criteria for unstable APIs
+- ✅ **Good Practice:** Clear domain ownership and a single supported public import path
+- ✅ **Good Practice:** No legacy entry points -- all hooks export from the main package entry
 
 ---
 
@@ -832,10 +844,8 @@ Transforms API field errors into displayable list items.
 
 ```
 dist/
-├── index.js (main entry)
+├── index.js (main entry; includes partner form hooks and `partner-hook-utils` exports)
 ├── index.d.ts (type definitions)
-├── UNSTABLE_Hooks.js (experimental APIs)
-├── UNSTABLE_Hooks.d.ts
 ├── style.css (all styles)
 └── [preserved module structure]
 ```

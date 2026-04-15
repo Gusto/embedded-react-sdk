@@ -51,6 +51,8 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | `/v1/companies/:companyId/pay_schedules/:payScheduleId` |
 |  | GET | `/v1/companies/:companyId/pay_schedules` |
 |  | POST | `/v1/companies/:companyId/pay_schedules` |
+|  | GET | `/v1/companies/:companyId/pay_schedules/:payScheduleId` |
+|  | GET | `/v1/companies/:companyUuid/payment_configs` |
 | **Company.FederalTaxes** | PUT | `/v1/companies/:companyId/federal_tax_details` |
 |  | GET | `/v1/companies/:companyId/federal_tax_details` |
 | **Company.BankAccount** | GET | `/v1/companies/:companyId/bank_accounts` |
