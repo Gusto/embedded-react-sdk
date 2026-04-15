@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { Flex, Grid } from '@/components/Common'
 
 export function ComponentShowcase() {
   const Components = useComponentContext()
@@ -7,17 +8,18 @@ export function ComponentShowcase() {
   const [selectValue, setSelectValue] = useState('')
 
   return (
-    <div style={{ maxWidth: '48rem' }}>
-      <Components.Heading as="h1">Component Showcase</Components.Heading>
-      <Components.Text>
-        A single-page prototype demonstrating the SDK component library. Use this as a reference for
-        available components and their props.
-      </Components.Text>
+    <Grid gap={32}>
+      <Flex flexDirection="column" gap={4}>
+        <Components.Heading as="h1">Component Showcase</Components.Heading>
+        <Components.Text variant="supporting">
+          A single-page prototype demonstrating the SDK component library. Use this as a reference
+          for available components and their props.
+        </Components.Text>
+      </Flex>
 
-      {/* Buttons */}
-      <section style={{ marginTop: '2rem' }}>
+      <Flex flexDirection="column" gap={12}>
         <Components.Heading as="h2">Buttons</Components.Heading>
-        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+        <Flex gap={8} alignItems="center">
           <Components.Button variant="primary">Primary</Components.Button>
           <Components.Button variant="secondary">Secondary</Components.Button>
           <Components.Button variant="tertiary">Tertiary</Components.Button>
@@ -28,13 +30,12 @@ export function ComponentShowcase() {
           <Components.Button variant="primary" isLoading>
             Loading
           </Components.Button>
-        </div>
-      </section>
+        </Flex>
+      </Flex>
 
-      {/* Text Input */}
-      <section style={{ marginTop: '2rem' }}>
+      <Flex flexDirection="column" gap={12}>
         <Components.Heading as="h2">Text Input</Components.Heading>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '24rem' }}>
+        <Flex flexDirection="column" gap={16}>
           <Components.TextInput
             label="Full name"
             placeholder="Jane Doe"
@@ -48,13 +49,12 @@ export function ComponentShowcase() {
             value="Cannot edit"
             onChange={() => {}}
           />
-        </div>
-      </section>
+        </Flex>
+      </Flex>
 
-      {/* Select */}
-      <section style={{ marginTop: '2rem' }}>
+      <Flex flexDirection="column" gap={12}>
         <Components.Heading as="h2">Select</Components.Heading>
-        <div style={{ maxWidth: '24rem' }}>
+        <Flex flexDirection="column" gap={8}>
           <Components.Select
             label="Department"
             options={[
@@ -67,13 +67,12 @@ export function ComponentShowcase() {
             onChange={setSelectValue}
           />
           {selectValue && <Components.Text size="sm">Selected: {selectValue}</Components.Text>}
-        </div>
-      </section>
+        </Flex>
+      </Flex>
 
-      {/* Alerts */}
-      <section style={{ marginTop: '2rem' }}>
+      <Flex flexDirection="column" gap={12}>
         <Components.Heading as="h2">Alerts</Components.Heading>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+        <Flex flexDirection="column" gap={12}>
           <Components.Alert status="info" label="This is an info alert" disableScrollIntoView />
           <Components.Alert
             status="success"
@@ -86,22 +85,20 @@ export function ComponentShowcase() {
             disableScrollIntoView
           />
           <Components.Alert status="error" label="This is an error alert" disableScrollIntoView />
-        </div>
-      </section>
+        </Flex>
+      </Flex>
 
-      {/* Badges */}
-      <section style={{ marginTop: '2rem' }}>
+      <Flex flexDirection="column" gap={12}>
         <Components.Heading as="h2">Badges</Components.Heading>
-        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+        <Flex gap={8} alignItems="center">
           <Components.Badge status="info">Info</Components.Badge>
           <Components.Badge status="success">Success</Components.Badge>
           <Components.Badge status="warning">Warning</Components.Badge>
           <Components.Badge status="error">Error</Components.Badge>
-        </div>
-      </section>
+        </Flex>
+      </Flex>
 
-      {/* Typography */}
-      <section style={{ marginTop: '2rem' }}>
+      <Flex flexDirection="column" gap={4}>
         <Components.Heading as="h2">Typography</Components.Heading>
         <Components.Heading as="h1">Heading 1</Components.Heading>
         <Components.Heading as="h2">Heading 2</Components.Heading>
@@ -111,7 +108,7 @@ export function ComponentShowcase() {
         <Components.Text size="md">Text — Medium</Components.Text>
         <Components.Text size="sm">Text — Small</Components.Text>
         <Components.Text size="xs">Text — Extra Small</Components.Text>
-      </section>
-    </div>
+      </Flex>
+    </Grid>
   )
 }
