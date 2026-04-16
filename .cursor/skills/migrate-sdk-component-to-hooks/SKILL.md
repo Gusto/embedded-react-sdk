@@ -10,10 +10,7 @@ description: >-
 
 # Migrating SDK Components to Hook-Based Architecture
 
-Reference implementations:
-
-- **Single hook, single form** (recommended default): `PayScheduleForm` — see PR #1545 or branch `sdk-774-pay-schedule-hook`. Clean illustration of the `BaseBoundaries` + `Root` + single-hook shape.
-- **Multiple composed hooks with admin/self-service variants**: `Employee.Profile` (`Profile.tsx`, `AdminProfile.tsx`, `EmployeeProfile.tsx`) — PR #1570 or branch `sdk-777-profile-hook-migration`. Useful when composing hooks and aggregating errors, but its internal fork is a product-specific compromise, not the default model.
+Reference implementation: `PayScheduleForm` — PR #1545 or branch `sdk-774-pay-schedule-hook`. For hook composition, error aggregation, and `composeSubmitHandler` patterns, `AdminProfile` / `EmployeeProfile` on PR #1570 / branch `sdk-777-profile-hook-migration` are also useful.
 
 Hooks reference: `.claude/hooks-implementation.md` — covers schema, fields, hook internals, error handling, and exports in detail. Read it before starting a migration.
 
@@ -21,9 +18,7 @@ Hooks reference: `.claude/hooks-implementation.md` — covers schema, fields, ho
 
 ### Entry Point
 
-The public component wraps `BaseBoundaries` and delegates to a single `Root` component that initializes the hook(s) and renders the form. `onEvent` is passed as a prop — do NOT use `BaseComponent` or `useBase()`.
-
-Reference: `PayScheduleForm` on branch `sdk-774-pay-schedule-hook` (PR #1545) is a clean example of the simple single-hook shape.
+The public component wraps `BaseBoundaries` and delegates to a single `Root` component that initializes the hook(s) and renders the form. `onEvent` is passed as a prop — do NOT use `BaseComponent` or `useBase()`. When admin and self-service flows diverge, create two separate public components rather than forking internally.
 
 ```tsx
 interface MyComponentProps extends UseMyFormProps {
@@ -59,12 +54,6 @@ Unlike `BaseComponent`, `BaseBoundaries` does NOT provide `BaseContext`. This me
 ### Suspense Boundary
 
 `BaseBoundaries` provides a `Suspense` boundary. This is needed for `useI18n` / `useTranslation` and similar hooks that suspend. Prefer non-suspense queries for data fetching — the form hooks use regular queries internally and manage their own loading states via `isLoading`.
-
-### When to Split Into Multiple Components
-
-Default to a single `Root`. Split only when two flows genuinely share very little — for example admin vs self-service variants with substantially different fields, validation, and submit sequences. In that case prefer **two separate public components** (`AdminFoo`, `EmployeeFoo`) over a single entry that forks internally.
-
-`Employee.Profile` forks internally (`AdminProfile` / `EmployeeProfile`) to preserve a single public `Profile` surface for partners; that is a product-specific compromise, not the recommended default.
 
 ## 2. Hook Initialization
 
@@ -370,7 +359,7 @@ After migration, remove dead code from the component directory:
 
 ## 10. Migration Checklist
 
-- [ ] Public component wraps `BaseBoundaries` (not `BaseComponent`) and delegates to a single `Root` (split only when flows truly diverge)
+- [ ] Public component wraps `BaseBoundaries` (not `BaseComponent`) and delegates to a single `Root`
 - [ ] All hooks initialized with `shouldFocusError: false`
 - [ ] Errors composed via `composeSubmitHandler` (multi-form) and/or `composeErrorHandler` (extra queries / submit state) rather than manual array spreading
 - [ ] Loading state uses `<BaseLayout isLoading error={errorHandling.errors} />`
