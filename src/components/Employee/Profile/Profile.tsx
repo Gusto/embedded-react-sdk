@@ -5,7 +5,7 @@ import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlo
 import { AdminProfile } from './AdminProfile'
 import { EmployeeProfile } from './EmployeeProfile'
 import {
-  BaseComponent,
+  BaseBoundaries,
   type BaseComponentInterface,
   type CommonComponentInterface,
 } from '@/components/Base'
@@ -37,17 +37,18 @@ export interface ProfileProps extends CommonComponentInterface<'Employee.Profile
   defaultValues?: ProfileDefaultValues
   isAdmin?: boolean
   isSelfOnboardingEnabled?: boolean
+  onEvent: BaseComponentInterface['onEvent']
 }
 
-export function Profile(props: ProfileProps & BaseComponentInterface) {
+export function Profile({ FallbackComponent, ...props }: ProfileProps & BaseComponentInterface) {
   return (
-    <BaseComponent {...props}>
+    <BaseBoundaries componentName="Employee.Profile" FallbackComponent={FallbackComponent}>
       {props.employeeId ? (
         <RootWithEmployee {...props} employeeId={props.employeeId} />
       ) : (
         <Root {...props} />
       )}
-    </BaseComponent>
+    </BaseBoundaries>
   )
 }
 

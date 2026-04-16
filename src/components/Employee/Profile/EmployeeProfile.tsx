@@ -12,7 +12,7 @@ import { SelectField } from '@/components/Common'
 import { Grid } from '@/components/Common/Grid/Grid'
 import { ActionsLayout } from '@/components/Common'
 import { Form } from '@/components/Common/Form'
-import { useBase, BaseLayout } from '@/components/Base'
+import { BaseLayout } from '@/components/Base'
 import { useI18n } from '@/i18n'
 import { componentEvents, STATES_ABBR } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -30,6 +30,7 @@ export function EmployeeProfile({
   defaultValues,
   className = '',
   dictionary,
+  onEvent,
 }: ProfileProps) {
   useI18n('Employee.Profile')
   useI18n('Employee.HomeAddress')
@@ -37,7 +38,6 @@ export function EmployeeProfile({
   const { t } = useTranslation('Employee.Profile')
   const { t: tHome } = useTranslation('Employee.HomeAddress')
   const Components = useComponentContext()
-  const { onEvent } = useBase()
 
   const [resolvedEmployeeId, setResolvedEmployeeId] = useState(employeeId)
 
