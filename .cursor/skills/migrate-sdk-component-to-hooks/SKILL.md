@@ -10,7 +10,7 @@ description: >-
 
 # Migrating SDK Components to Hook-Based Architecture
 
-Reference implementation: `Employee.Profile` — see `AdminProfile.tsx`, `EmployeeProfile.tsx`, and `Profile.tsx`.
+Reference implementation: `Employee.Profile` — see `AdminProfile.tsx`, `EmployeeProfile.tsx`, and `Profile.tsx`. If the Profile migration has not been merged to main yet, reference PR #1570 or branch `sdk-777-profile-hook-migration`.
 
 Hooks reference: `.claude/hooks-implementation.md` — covers schema, fields, hook internals, error handling, and exports in detail. Read it before starting a migration.
 
