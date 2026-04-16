@@ -19,7 +19,7 @@ import { LocationField, EffectiveDateField } from './fields'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
 import { withOptions } from '@/partner-hook-utils/form/withOptions'
-import { useErrorHandling } from '@/partner-hook-utils/useErrorHandling'
+import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type {
   BaseFormHookReady,
   FieldsMetadata,
@@ -116,10 +116,14 @@ export function useWorkAddressForm({
 
   const isPending = createWorkAddressMutation.isPending || updateWorkAddressMutation.isPending
 
-  const { baseSubmitHandler, error: submitError, setError } = useBaseSubmit('WorkAddressForm')
+  const {
+    baseSubmitHandler,
+    error: submitError,
+    setError: setSubmitError,
+  } = useBaseSubmit('WorkAddressForm')
 
   const queries = employeeId ? [locationsQuery, workAddressesQuery] : [locationsQuery]
-  const errorHandling = useErrorHandling(queries, { error: submitError, setError })
+  const errorHandling = composeErrorHandler(queries, { submitError, setSubmitError })
 
   const locationOptions = (companyLocations ?? []).map(location => ({
     value: location.uuid,

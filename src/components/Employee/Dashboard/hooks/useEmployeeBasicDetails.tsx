@@ -5,7 +5,7 @@ import { useEmployeeAddressesGetWorkAddressesSuspense } from '@gusto/embedded-ap
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { EmployeeAddress } from '@gusto/embedded-api/models/components/employeeaddress'
 import type { EmployeeWorkAddress } from '@gusto/embedded-api/models/components/employeeworkaddress'
-import { buildQueryErrorHandling } from '@/partner-hook-utils/buildQueryErrorHandling'
+import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type { HookLoadingResult, BaseHookReady } from '@/partner-hook-utils/types'
 
 export interface UseEmployeeBasicDetailsProps {
@@ -47,7 +47,7 @@ export function useEmployeeBasicDetails({
     employeeQuery.isFetching || addressesQuery.isFetching || workAddressesQuery.isFetching
   const isLoading = !employee && isPending
 
-  const errorHandling = buildQueryErrorHandling([employeeQuery, addressesQuery, workAddressesQuery])
+  const errorHandling = composeErrorHandler([employeeQuery, addressesQuery, workAddressesQuery])
 
   if (isLoading) {
     return {

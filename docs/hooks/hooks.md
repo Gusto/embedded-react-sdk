@@ -305,6 +305,40 @@ interface HookErrorHandling {
 }
 ```
 
+### `composeErrorHandler` (building a combined error bag)
+
+Each SDK hook **internally** uses **`composeErrorHandler`** to normalize React Query failures and submit errors from **`useBaseSubmit`** into a single `HookErrorHandling` object. You typically consume the **`errorHandling`** property returned by the hook rather than calling `composeErrorHandler` yourself.
+
+Use **`composeErrorHandler` directly** when you combine **multiple hooks**, **extra** `@gusto/embedded-api` queries, and/or **screen-level** submit state into **one** banner and one retry/dismiss story:
+
+```tsx
+import {
+  composeErrorHandler,
+  composeSubmitHandler,
+  useEmployeeDetailsForm,
+  useHomeAddressForm,
+} from '@gusto/embedded-react-sdk'
+import { useEmployeesGet } from '@gusto/embedded-api/react-query/employeesGet'
+
+const details = useEmployeeDetailsForm({ companyId, employeeId, shouldFocusError: false })
+const address = useHomeAddressForm({ employeeId, shouldFocusError: false })
+const extraQuery = useEmployeesGet({ employeeId: otherEmployeeId }, { enabled: !!otherEmployeeId })
+
+const errorHandling = composeErrorHandler([details, address, extraQuery])
+
+const handleSubmit = composeSubmitHandler([details, address], async () => {
+  await details.actions.onSubmit()
+  await address.actions.onSubmit({ employeeId })
+})
+```
+
+- **`composeErrorHandler`** merges **`errors`**, composes **`retryQueries`** (nested hook retries + refetch on failed standalone queries), and chains **`clearSubmitError`** across nested hooks and optional outer submit state (`submitError` / `setSubmitError`; from `useBaseSubmit`, destructure `error` / `setError` as `submitError` / `setSubmitError`).
+- **`composeSubmitHandler`** coordinates **react-hook-form validation** and the **ordered submit callback** only. It does **not** merge API errors; keep using **`errorHandling`** from `composeErrorHandler` (or from each hook) for fetch/submit failure UI.
+
+Prefer **`errorHandling.errors.length > 0`** before showing a loading spinner when the hook is still in its loading branch. See [Loading States](#loading-states).
+
+For Suspense-based queries, an **initial** fetch failure may surface through a **Suspense / error boundary** instead of `errorHandling` until queries are migrated off Suspense in a given surface.
+
 ### SDKError shape
 
 ```typescript
@@ -337,6 +371,8 @@ interface SDKFieldError {
 
 - **`retryQueries()`** — Retries all failed data-fetching queries. Dependent queries automatically re-trigger when their dependencies resolve.
 - **`clearSubmitError()`** — Clears the most recent form submission error from state.
+
+Explicit **`query` vs `submit` labels** on each `SDKError` are not part of the type today; infer recovery from **`retryQueries`** (fetch) vs **`clearSubmitError`** (submit). A future revision may add structured discrimination.
 
 ### Example: error display with retry
 

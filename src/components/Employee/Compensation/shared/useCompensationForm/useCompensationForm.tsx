@@ -35,7 +35,7 @@ import {
 import { withOptions } from '@/partner-hook-utils/form/withOptions'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
-import { useErrorHandling } from '@/partner-hook-utils/useErrorHandling'
+import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type {
   BaseFormHookReady,
   FieldsMetadata,
@@ -255,12 +255,16 @@ export function useCompensationForm({
     createJobMutation.isPending ||
     updateJobMutation.isPending
 
-  const { baseSubmitHandler, error: submitError, setError } = useBaseSubmit('CompensationForm')
+  const {
+    baseSubmitHandler,
+    error: submitError,
+    setError: setSubmitError,
+  } = useBaseSubmit('CompensationForm')
 
   const queries = employeeId
     ? [jobsQuery, addressesQuery, employeeQuery, minWagesQuery, taxQuery]
     : []
-  const errorHandling = useErrorHandling(queries, { error: submitError, setError })
+  const errorHandling = composeErrorHandler(queries, { submitError, setSubmitError })
 
   const isCommissionOnly =
     watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_NONEXEMPT ||

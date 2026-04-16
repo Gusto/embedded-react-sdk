@@ -111,7 +111,7 @@ Follow the main hook pattern: data fetching → form setup → return discrimina
 Key imports:
 
 - `import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'`
-- `import { useErrorHandling } from '@/partner-hook-utils/useErrorHandling'`
+- `import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'`
 - `import type { BaseFormHookReady, FieldsMetadata, HookLoadingResult, HookSubmitResult } from '@/partner-hook-utils/types'`
 - `import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'`
 - `import { composeSubmitHandler } from '@/partner-hook-utils/form/composeSubmitHandler'`

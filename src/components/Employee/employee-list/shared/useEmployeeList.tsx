@@ -8,7 +8,7 @@ import { keepPreviousData } from '@tanstack/react-query'
 import { usePagination } from '@/hooks/usePagination/usePagination'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
-import { useErrorHandling } from '@/partner-hook-utils/useErrorHandling'
+import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { EmployeeOnboardingStatus, EmployeeSelfOnboardingStatuses } from '@/shared/constants'
 import type { HookLoadingResult, HookSubmitResult, BaseHookReady } from '@/partner-hook-utils/types'
 
@@ -139,9 +139,13 @@ export function useEmployeeList({
   const deleteEmployeeMutation = useEmployeesDeleteMutation()
   const updateOnboardingStatusMutation = useEmployeesUpdateOnboardingStatusMutation()
 
-  const { baseSubmitHandler, error: submitError, setError } = useBaseSubmit('EmployeeList')
+  const {
+    baseSubmitHandler,
+    error: submitError,
+    setError: setSubmitError,
+  } = useBaseSubmit('EmployeeList')
 
-  const errorHandling = useErrorHandling([employeesQuery], { error: submitError, setError })
+  const errorHandling = composeErrorHandler([employeesQuery], { submitError, setSubmitError })
 
   const isPending = deleteEmployeeMutation.isPending || updateOnboardingStatusMutation.isPending
 

@@ -1,6 +1,6 @@
 import { useEmployeeFormsListSuspense } from '@gusto/embedded-api/react-query/employeeFormsList'
 import type { Form } from '@gusto/embedded-api/models/components/form'
-import { buildQueryErrorHandling } from '@/partner-hook-utils/buildQueryErrorHandling'
+import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type { HookLoadingResult, BaseHookReady } from '@/partner-hook-utils/types'
 
 export interface UseEmployeeFormsProps {
@@ -19,7 +19,7 @@ export function useEmployeeForms({ employeeId }: UseEmployeeFormsProps): UseEmpl
   const isPending = formsQuery.isFetching
   const isLoading = !formList && isPending
 
-  const errorHandling = buildQueryErrorHandling([formsQuery])
+  const errorHandling = composeErrorHandler([formsQuery])
 
   if (isLoading) {
     return {

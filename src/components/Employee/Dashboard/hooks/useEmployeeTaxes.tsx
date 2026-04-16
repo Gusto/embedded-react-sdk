@@ -2,7 +2,7 @@ import { useEmployeeTaxSetupGetFederalTaxesSuspense } from '@gusto/embedded-api/
 import { useEmployeeTaxSetupGetStateTaxesSuspense } from '@gusto/embedded-api/react-query/employeeTaxSetupGetStateTaxes'
 import type { GetV1EmployeesEmployeeIdFederalTaxesResponse } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidfederaltaxes'
 import type { GetV1EmployeesEmployeeIdStateTaxesResponse } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidstatetaxes'
-import { buildQueryErrorHandling } from '@/partner-hook-utils/buildQueryErrorHandling'
+import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type { HookLoadingResult, BaseHookReady } from '@/partner-hook-utils/types'
 
 // Derive types from operations responses
@@ -37,7 +37,7 @@ export function useEmployeeTaxes({ employeeId }: UseEmployeeTaxesProps): UseEmpl
   const isPending = federalTaxesQuery.isFetching || stateTaxesQuery.isFetching
   const isLoading = !employeeFederalTax && isPending
 
-  const errorHandling = buildQueryErrorHandling([federalTaxesQuery, stateTaxesQuery])
+  const errorHandling = composeErrorHandler([federalTaxesQuery, stateTaxesQuery])
 
   if (isLoading) {
     return {

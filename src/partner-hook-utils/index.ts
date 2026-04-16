@@ -1,5 +1,8 @@
 export * from './types'
-export { useErrorHandling } from './useErrorHandling'
-export { buildQueryErrorHandling } from './buildQueryErrorHandling'
+export {
+  composeErrorHandler,
+  type MixedErrorSource,
+  type SubmitStateForErrorHandling,
+} from './composeErrorHandler'
 export { collectErrors } from './collectErrors'
 export * from './form'

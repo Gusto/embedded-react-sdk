@@ -694,7 +694,7 @@ Partner-facing form hooks (`useEmployeeDetailsForm`, `useCompensationForm`, `use
 
 **Implementation layout:**
 
-- **Shared infrastructure:** `src/partner-hook-utils/` — `form/` (schema builders, field components), `useErrorHandling.ts`, `buildQueryErrorHandling.ts`, `collectErrors.ts`, `types.ts` (partner hook types; formerly `src/types/sdkHooks.ts`)
+- **Shared infrastructure:** `src/partner-hook-utils/` — `form/` (schema builders, field components), `composeErrorHandler.ts`, `collectErrors.ts`, `types.ts` (partner hook types; formerly `src/types/sdkHooks.ts`)
 - **Domain hooks** live beside their features, for example:
   - `src/components/Employee/Compensation/shared/useCompensationForm/`
   - `src/components/Employee/Profile/shared/useEmployeeDetailsForm/`

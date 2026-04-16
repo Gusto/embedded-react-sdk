@@ -15,7 +15,7 @@ import {
 import { SignatureField, ConfirmSignatureField } from './fields'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
-import { useErrorHandling } from '@/partner-hook-utils/useErrorHandling'
+import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type {
   BaseFormHookReady,
   FieldsMetadata,
@@ -95,10 +95,14 @@ export function useSignCompanyForm({
   const signFormMutation = useCompanyFormsSignMutation()
   const isPending = signFormMutation.isPending
 
-  const { baseSubmitHandler, error: submitError, setError } = useBaseSubmit('SignCompanyForm')
+  const {
+    baseSubmitHandler,
+    error: submitError,
+    setError: setSubmitError,
+  } = useBaseSubmit('SignCompanyForm')
 
   const queries = [formQuery, pdfQuery]
-  const errorHandling = useErrorHandling(queries, { error: submitError, setError })
+  const errorHandling = composeErrorHandler(queries, { submitError, setSubmitError })
 
   const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
   const fieldsMetadata = {
