@@ -1,6 +1,10 @@
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { EmployeeAddress } from '@gusto/embedded-api/models/components/employeeaddress'
+import {
+  formatPendingHomeAddressLine,
+  getPendingFutureHomeAddress,
+} from './getPendingFutureHomeAddress'
 import HouseIcon from '@/assets/icons/house.svg?react'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
@@ -16,14 +20,18 @@ import { addDays, formatDateLongWithYear, normalizeToDate } from '@/helpers/date
 import { getCityStateZip, getStreet } from '@/helpers/formattedStrings'
 
 export interface HomeAddressViewProps {
-  homeAddressForm: UseHomeAddressFormReady
+  editHomeAddressForm: UseHomeAddressFormReady
+  createHomeAddressForm: UseHomeAddressFormReady
+  employeeDisplayName: string
   onSaved: (result: HookSubmitResult<EmployeeAddress>) => void
   onHistoryRowEdit: (address: EmployeeAddress) => void
   onHistoryRowDelete: (address: EmployeeAddress) => void
 }
 
 export function HomeAddressView({
-  homeAddressForm,
+  editHomeAddressForm,
+  createHomeAddressForm,
+  employeeDisplayName,
   onSaved,
   onHistoryRowEdit,
   onHistoryRowDelete,
@@ -31,39 +39,56 @@ export function HomeAddressView({
   const { t } = useTranslation('Employee.HomeAddress.Management')
   const { t: tHa } = useTranslation('Employee.HomeAddress')
   const Components = useComponentContext()
-  const [isChangeModalOpen, setIsChangeModalOpen] = useState(false)
-  const changeAddressModalContainerRef = useRef<HTMLDivElement>(null)
-  const [changeAddressModalPortal, setChangeAddressModalPortal] = useState<HTMLElement | undefined>(
-    undefined,
-  )
+  const [addressModal, setAddressModal] = useState<'edit' | 'create' | null>(null)
+  const addressModalContainerRef = useRef<HTMLDivElement>(null)
+  const [addressModalPortal, setAddressModalPortal] = useState<HTMLElement | undefined>(undefined)
 
   useLayoutEffect(() => {
-    if (!isChangeModalOpen) {
-      setChangeAddressModalPortal(undefined)
+    if (!addressModal) {
+      setAddressModalPortal(undefined)
       return
     }
     const syncPortal = () => {
-      setChangeAddressModalPortal(changeAddressModalContainerRef.current ?? undefined)
+      setAddressModalPortal(addressModalContainerRef.current ?? undefined)
     }
     syncPortal()
-    if (changeAddressModalContainerRef.current == null) {
+    if (addressModalContainerRef.current == null) {
       const id = requestAnimationFrame(syncPortal)
       return () => {
         cancelAnimationFrame(id)
       }
     }
-  }, [isChangeModalOpen])
+  }, [addressModal])
 
   const {
     data: { homeAddress, homeAddresses },
-    status,
-    actions,
-    form,
-  } = homeAddressForm
+    status: editStatus,
+    actions: editActions,
+    form: editForm,
+  } = editHomeAddressForm
+
+  const { status: createStatus, actions: createActions, form: createForm } = createHomeAddressForm
 
   const {
-    Fields: { Street1, Street2, City, State, Zip, EffectiveDate },
-  } = form
+    Fields: {
+      Street1: EditStreet1,
+      Street2: EditStreet2,
+      City: EditCity,
+      State: EditState,
+      Zip: EditZip,
+    },
+  } = editForm
+
+  const {
+    Fields: {
+      Street1: CreateStreet1,
+      Street2: CreateStreet2,
+      City: CreateCity,
+      State: CreateState,
+      Zip: CreateZip,
+      EffectiveDate: CreateEffectiveDate,
+    },
+  } = createForm
 
   const zipValidation = {
     [HomeAddressErrorCodes.REQUIRED]: tHa('validations.zip'),
@@ -73,6 +98,16 @@ export function HomeAddressView({
   const startDateValidation = {
     [HomeAddressErrorCodes.REQUIRED]: t('form.startDateRequired'),
   }
+
+  const pendingFutureAddress = useMemo(
+    () => getPendingFutureHomeAddress(homeAddresses),
+    [homeAddresses],
+  )
+
+  const changePendingPossessiveLabel = useMemo(() => {
+    const trimmed = employeeDisplayName.trim()
+    return trimmed ? `${trimmed}'s` : t('changePendingPossessiveFallback')
+  }, [employeeDisplayName, t])
 
   const chronologicalAsc = [...(homeAddresses ?? [])].sort((a, b) => {
     const aDate = a.effectiveDate?.toString() ?? ''
@@ -155,12 +190,22 @@ export function HomeAddressView({
   })
 
   const handleSave = async () => {
-    const submitResult = await actions.onSubmit()
+    if (!addressModal) {
+      return
+    }
+    const submitResult =
+      addressModal === 'edit'
+        ? await editActions.onSubmit({
+            effectiveDate: homeAddress?.effectiveDate?.toString(),
+          })
+        : await createActions.onSubmit()
     if (submitResult) {
       onSaved(submitResult)
-      setIsChangeModalOpen(false)
+      setAddressModal(null)
     }
   }
+
+  const modalPending = addressModal === 'edit' ? editStatus.isPending : createStatus.isPending
 
   return (
     <Flex flexDirection="column" gap={24}>
@@ -170,20 +215,37 @@ export function HomeAddressView({
       </Flex>
 
       <Components.Box
+        header={
+          <Components.BoxHeader
+            title={t('currentSectionTitle')}
+            action={
+              homeAddress ? (
+                <Components.Button
+                  variant="secondary"
+                  onClick={() => {
+                    setAddressModal('edit')
+                  }}
+                  isLoading={editStatus.isPending}
+                >
+                  {t('editCta')}
+                </Components.Button>
+              ) : undefined
+            }
+          />
+        }
         footer={
           <Components.Button
             variant="secondary"
             onClick={() => {
-              setIsChangeModalOpen(true)
+              setAddressModal('create')
             }}
-            isLoading={status.isPending}
+            isLoading={createStatus.isPending}
           >
             {t('changeCta')}
           </Components.Button>
         }
       >
         <Flex flexDirection="column" gap={16}>
-          <Components.Heading as="h2">{t('currentSectionTitle')}</Components.Heading>
           {homeAddress ? (
             <Flex flexDirection="column" gap={4}>
               <FlexItem>
@@ -203,6 +265,20 @@ export function HomeAddressView({
           ) : (
             <Components.Text>{tHa('formTitle')}</Components.Text>
           )}
+          {pendingFutureAddress ? (
+            <Components.Alert status="warning" label={t('changePendingTitle')}>
+              <Components.Text variant="supporting">
+                {t('changePendingDescription', {
+                  possessiveLabel: changePendingPossessiveLabel,
+                  newAddress: formatPendingHomeAddressLine(pendingFutureAddress),
+                  effectiveDate: pendingFutureAddress.effectiveDate
+                    ? formatDateLongWithYear(pendingFutureAddress.effectiveDate.toString())
+                    : '—',
+                  interpolation: { escapeValue: false },
+                })}
+              </Components.Text>
+            </Components.Alert>
+          ) : null}
         </Flex>
       </Components.Box>
 
@@ -212,18 +288,18 @@ export function HomeAddressView({
       </Flex>
 
       <Components.Modal
-        isOpen={isChangeModalOpen}
+        isOpen={addressModal !== null}
         onClose={() => {
-          setIsChangeModalOpen(false)
+          setAddressModal(null)
         }}
         shouldCloseOnBackdropClick={false}
-        containerRef={changeAddressModalContainerRef}
+        containerRef={addressModalContainerRef}
         footer={
           <Flex flexDirection="row" gap={12} justifyContent="flex-end">
             <Components.Button
               variant="secondary"
               onClick={() => {
-                setIsChangeModalOpen(false)
+                setAddressModal(null)
               }}
             >
               {t('cancelCta')}
@@ -233,7 +309,7 @@ export function HomeAddressView({
               onClick={() => {
                 void handleSave()
               }}
-              isLoading={status.isPending}
+              isLoading={modalPending}
             >
               {t('submitCta')}
             </Components.Button>
@@ -241,52 +317,96 @@ export function HomeAddressView({
         }
       >
         <Flex flexDirection="column" gap={16}>
-          <Components.Heading as="h2">{t('changeModalTitle')}</Components.Heading>
-          <Components.Text variant="supporting">{t('changeModalDescription')}</Components.Text>
-          <SDKFormProvider formHookResult={homeAddressForm}>
-            <Grid
-              gridTemplateColumns={{
-                base: '1fr',
-                small: '1fr',
-              }}
-              gap={20}
-            >
-              {EffectiveDate ? (
-                <EffectiveDate
-                  label={t('columns.startDate')}
-                  description={t('startDateHelper')}
-                  validationMessages={startDateValidation}
-                  portalContainer={changeAddressModalPortal}
+          <Components.Heading as="h2">
+            {addressModal === 'edit' ? t('editModalTitle') : t('createModalTitle')}
+          </Components.Heading>
+          <Components.Text variant="supporting">
+            {addressModal === 'edit' ? t('editModalDescription') : t('createModalDescription')}
+          </Components.Text>
+          {addressModal === 'edit' ? (
+            <SDKFormProvider formHookResult={editHomeAddressForm}>
+              <Grid
+                gridTemplateColumns={{
+                  base: '1fr',
+                  small: '1fr',
+                }}
+                gap={20}
+              >
+                <EditStreet1
+                  label={tHa('street1')}
+                  validationMessages={{
+                    [HomeAddressErrorCodes.REQUIRED]: tHa('validations.street1'),
+                  }}
                 />
-              ) : null}
-              <Street1
-                label={tHa('street1')}
-                validationMessages={{
-                  [HomeAddressErrorCodes.REQUIRED]: tHa('validations.street1'),
+                <EditStreet2
+                  label={tHa('street2')}
+                  validationMessages={{
+                    [HomeAddressErrorCodes.REQUIRED]: tHa('validations.street1'),
+                  }}
+                />
+                <EditCity
+                  label={tHa('city')}
+                  validationMessages={{
+                    [HomeAddressErrorCodes.REQUIRED]: tHa('validations.city'),
+                  }}
+                />
+                <EditState
+                  label={tHa('state')}
+                  validationMessages={{
+                    [HomeAddressErrorCodes.REQUIRED]: tHa('validations.state'),
+                  }}
+                  portalContainer={addressModalPortal}
+                />
+                <EditZip label={tHa('zip')} validationMessages={zipValidation} />
+              </Grid>
+            </SDKFormProvider>
+          ) : null}
+          {addressModal === 'create' ? (
+            <SDKFormProvider formHookResult={createHomeAddressForm}>
+              <Grid
+                gridTemplateColumns={{
+                  base: '1fr',
+                  small: '1fr',
                 }}
-              />
-              <Street2
-                label={tHa('street2')}
-                validationMessages={{
-                  [HomeAddressErrorCodes.REQUIRED]: tHa('validations.street1'),
-                }}
-              />
-              <City
-                label={tHa('city')}
-                validationMessages={{
-                  [HomeAddressErrorCodes.REQUIRED]: tHa('validations.city'),
-                }}
-              />
-              <State
-                label={tHa('state')}
-                validationMessages={{
-                  [HomeAddressErrorCodes.REQUIRED]: tHa('validations.state'),
-                }}
-                portalContainer={changeAddressModalPortal}
-              />
-              <Zip label={tHa('zip')} validationMessages={zipValidation} />
-            </Grid>
-          </SDKFormProvider>
+                gap={20}
+              >
+                {CreateEffectiveDate ? (
+                  <CreateEffectiveDate
+                    label={t('columns.startDate')}
+                    description={t('startDateHelper')}
+                    validationMessages={startDateValidation}
+                    portalContainer={addressModalPortal}
+                  />
+                ) : null}
+                <CreateStreet1
+                  label={tHa('street1')}
+                  validationMessages={{
+                    [HomeAddressErrorCodes.REQUIRED]: tHa('validations.street1'),
+                  }}
+                />
+                <CreateStreet2
+                  label={tHa('street2')}
+                  validationMessages={{
+                    [HomeAddressErrorCodes.REQUIRED]: tHa('validations.street1'),
+                  }}
+                />
+                <CreateCity
+                  label={tHa('city')}
+                  validationMessages={{
+                    [HomeAddressErrorCodes.REQUIRED]: tHa('validations.city'),
+                  }}
+                />
+                <CreateState
+                  label={tHa('state')}
+                  validationMessages={{
+                    [HomeAddressErrorCodes.REQUIRED]: tHa('validations.state'),
+                  }}
+                  portalContainer={addressModalPortal}
+                />
+                <CreateZip label={tHa('zip')} validationMessages={zipValidation} />
+              </Grid>
+            </SDKFormProvider>
+          ) : null}
         </Flex>
       </Components.Modal>
     </Flex>

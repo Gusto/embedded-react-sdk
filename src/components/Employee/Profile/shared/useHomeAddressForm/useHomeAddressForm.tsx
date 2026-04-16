@@ -45,6 +45,17 @@ export interface UseHomeAddressFormProps {
   defaultValues?: Partial<HomeAddressFormData>
   validationMode?: UseFormProps['mode']
   shouldFocusError?: boolean
+  /**
+   * How to choose create (POST) vs update (PUT) when the employee may already have a current address.
+   * - `auto`: create only if there is no current address; otherwise update (default).
+   * - `alwaysCreate`: always POST a new home address (e.g. add a future-dated address).
+   * - `alwaysUpdate`: always PUT the current active address (e.g. edit in place).
+   */
+  submissionMode?: 'auto' | 'alwaysCreate' | 'alwaysUpdate'
+  /**
+   * `current` fills the form from the active address; `empty` clears fields for add-new flows even when a current address exists.
+   */
+  defaultValuesStrategy?: 'current' | 'empty'
 }
 
 const getActiveHomeAddress = (addresses?: EmployeeAddress[]) => {
@@ -59,6 +70,8 @@ export function useHomeAddressForm({
   defaultValues: partnerDefaults,
   validationMode = 'onSubmit',
   shouldFocusError = true,
+  submissionMode = 'auto',
+  defaultValuesStrategy = 'current',
 }: UseHomeAddressFormProps) {
   const homeAddressesQuery = useEmployeeAddressesGet(
     { employeeId: employeeId ?? '' },
@@ -68,30 +81,49 @@ export function useHomeAddressForm({
   const homeAddresses = homeAddressesQuery.data?.employeeAddressList
   const currentHomeAddress = getActiveHomeAddress(homeAddresses)
 
-  const isCreateMode = !currentHomeAddress
-  const mode = isCreateMode ? 'create' : 'update'
+  const isCreateMode =
+    submissionMode === 'alwaysCreate'
+      ? true
+      : submissionMode === 'alwaysUpdate'
+        ? false
+        : !currentHomeAddress
+
+  const schemaMode = isCreateMode ? 'create' : 'update'
 
   const [schema, metadataConfig] = useMemo(
     () =>
       createHomeAddressSchema({
-        mode,
+        mode: schemaMode,
         optionalFieldsToRequire,
         withEffectiveDateField,
       }),
-    [mode, optionalFieldsToRequire, withEffectiveDateField],
+    [schemaMode, optionalFieldsToRequire, withEffectiveDateField],
   )
 
-  const resolvedDefaults: HomeAddressFormData = {
-    street1: currentHomeAddress?.street1 ?? partnerDefaults?.street1 ?? '',
-    street2: currentHomeAddress?.street2 ?? partnerDefaults?.street2 ?? '',
-    city: currentHomeAddress?.city ?? partnerDefaults?.city ?? '',
-    state: currentHomeAddress?.state ?? partnerDefaults?.state ?? '',
-    zip: currentHomeAddress?.zip ?? partnerDefaults?.zip ?? '',
-    courtesyWithholding:
-      currentHomeAddress?.courtesyWithholding ?? partnerDefaults?.courtesyWithholding ?? false,
-    effectiveDate:
-      currentHomeAddress?.effectiveDate?.toString() ?? partnerDefaults?.effectiveDate ?? '',
-  }
+  const resolvedDefaults: HomeAddressFormData = useMemo(() => {
+    if (defaultValuesStrategy === 'empty') {
+      return {
+        street1: partnerDefaults?.street1 ?? '',
+        street2: partnerDefaults?.street2 ?? '',
+        city: partnerDefaults?.city ?? '',
+        state: partnerDefaults?.state ?? '',
+        zip: partnerDefaults?.zip ?? '',
+        courtesyWithholding: partnerDefaults?.courtesyWithholding ?? false,
+        effectiveDate: partnerDefaults?.effectiveDate ?? '',
+      }
+    }
+    return {
+      street1: currentHomeAddress?.street1 ?? partnerDefaults?.street1 ?? '',
+      street2: currentHomeAddress?.street2 ?? partnerDefaults?.street2 ?? '',
+      city: currentHomeAddress?.city ?? partnerDefaults?.city ?? '',
+      state: currentHomeAddress?.state ?? partnerDefaults?.state ?? '',
+      zip: currentHomeAddress?.zip ?? partnerDefaults?.zip ?? '',
+      courtesyWithholding:
+        currentHomeAddress?.courtesyWithholding ?? partnerDefaults?.courtesyWithholding ?? false,
+      effectiveDate:
+        currentHomeAddress?.effectiveDate?.toString() ?? partnerDefaults?.effectiveDate ?? '',
+    }
+  }, [defaultValuesStrategy, currentHomeAddress, partnerDefaults])
 
   const formMethods = useForm<HomeAddressFormData, unknown, HomeAddressFormOutputs>({
     resolver: zodResolver(schema),
@@ -176,6 +208,10 @@ export function useHomeAddressForm({
 
               updatedHomeAddress = result.employeeAddress
             } else {
+              if (!currentHomeAddress) {
+                throw new SDKInternalError('Cannot update home address: no current address on file')
+              }
+
               const result = await updateHomeAddressMutation.mutateAsync({
                 request: {
                   homeAddressUuid: currentHomeAddress.uuid,

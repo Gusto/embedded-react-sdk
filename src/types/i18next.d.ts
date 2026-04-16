@@ -1705,7 +1705,11 @@ export interface EmployeeHomeAddressManagement{
 "rowDelete":string;
 "currentSectionTitle":string;
 "currentSince":string;
+"editCta":string;
 "changeCta":string;
+"changePendingTitle":string;
+"changePendingPossessiveFallback":string;
+"changePendingDescription":string;
 "historySectionTitle":string;
 "historyEmptyTitle":string;
 "historyEmptyDescription":string;
@@ -1714,8 +1718,10 @@ export interface EmployeeHomeAddressManagement{
 "startDate":string;
 "endDate":string;
 };
-"changeModalTitle":string;
-"changeModalDescription":string;
+"editModalTitle":string;
+"editModalDescription":string;
+"createModalTitle":string;
+"createModalDescription":string;
 "startDateHelper":string;
 "submitCta":string;
 "cancelCta":string;
