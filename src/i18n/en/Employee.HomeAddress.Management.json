@@ -1,21 +1,20 @@
 {
-  "title": "Home address",
-  "backCta": "Back",
-  "currentSectionTitle": "Current address",
-  "changeCta": "Change home address",
-  "historySectionTitle": "Address history",
-  "historyEmpty": "No previous addresses",
+  "title": "Manage home address",
+  "description": "An employee's home address is used to calculate their taxes and determine eligibility for certain benefits. Make sure to keep it up-to-date.",
+  "rowMenuAriaLabel": "Open address row actions",
+  "rowEdit": "Edit",
+  "rowDelete": "Delete",
+  "currentSectionTitle": "Current home address",
+  "currentSince": "Since {{date}}",
+  "changeCta": "Change address",
+  "historySectionTitle": "Home address history",
+  "historyEmpty": "No address history",
   "columns": {
     "address": "Address",
-    "location": "City, state, ZIP",
-    "effectiveDate": "Effective date",
-    "status": "Status"
+    "startDate": "Start date",
+    "endDate": "End date"
   },
-  "status": {
-    "active": "Active",
-    "inactive": "Inactive"
-  },
-  "changeModalTitle": "Change home address",
+  "changeModalTitle": "Change address",
   "submitCta": "Save",
   "cancelCta": "Cancel",
   "form": {

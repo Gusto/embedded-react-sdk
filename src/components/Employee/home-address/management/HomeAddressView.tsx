@@ -5,20 +5,28 @@ import { HomeAddressErrorCodes } from '@/components/Employee/Profile/shared/useH
 import type { UseHomeAddressFormReady } from '@/components/Employee/Profile/shared/useHomeAddressForm'
 import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import type { HookSubmitResult } from '@/partner-hook-utils/types'
-import { DataView, useDataView } from '@/components/Common'
-import { Flex } from '@/components/Common/Flex/Flex'
+import { DataView, HamburgerMenu, useDataView } from '@/components/Common'
+import { Flex, FlexItem } from '@/components/Common/Flex/Flex'
 import { Grid } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { formatDateLongWithYear } from '@/helpers/dateFormatting'
+import { addDays, formatDateLongWithYear, normalizeToDate } from '@/helpers/dateFormatting'
 import { getCityStateZip, getStreet } from '@/helpers/formattedStrings'
+import PencilSvg from '@/assets/icons/pencil.svg?react'
+import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 
 export interface HomeAddressViewProps {
   homeAddressForm: UseHomeAddressFormReady
-  onBack: () => void
   onSaved: (result: HookSubmitResult<EmployeeAddress>) => void
+  onHistoryRowEdit: (address: EmployeeAddress) => void
+  onHistoryRowDelete: (address: EmployeeAddress) => void
 }
 
-export function HomeAddressView({ homeAddressForm, onBack, onSaved }: HomeAddressViewProps) {
+export function HomeAddressView({
+  homeAddressForm,
+  onSaved,
+  onHistoryRowEdit,
+  onHistoryRowDelete,
+}: HomeAddressViewProps) {
   const { t } = useTranslation('Employee.HomeAddress.Management')
   const { t: tHa } = useTranslation('Employee.HomeAddress')
   const Components = useComponentContext()
@@ -44,37 +52,74 @@ export function HomeAddressView({ homeAddressForm, onBack, onSaved }: HomeAddres
     [HomeAddressErrorCodes.REQUIRED]: t('form.effectiveDateRequired'),
   }
 
-  const sortedHistory = [...(homeAddresses ?? [])].sort((a, b) => {
+  const chronologicalAsc = [...(homeAddresses ?? [])].sort((a, b) => {
     const aDate = a.effectiveDate?.toString() ?? ''
     const bDate = b.effectiveDate?.toString() ?? ''
-    return bDate.localeCompare(aDate)
+    if (!aDate && !bDate) return 0
+    if (!aDate) return 1
+    if (!bDate) return -1
+    return aDate.localeCompare(bDate)
   })
+
+  const sortedHistory = [...chronologicalAsc].reverse()
+
+  const historyEndDate = (row: EmployeeAddress) => {
+    const idx = chronologicalAsc.findIndex(a => a.uuid === row.uuid)
+    if (idx === -1 || idx >= chronologicalAsc.length - 1) return '—'
+    const nextStart = chronologicalAsc[idx + 1]?.effectiveDate
+    if (!nextStart) return '—'
+    const nextDate = normalizeToDate(nextStart.toString())
+    if (!nextDate) return '—'
+    const endDate = addDays(nextDate, -1)
+    const y = endDate.getFullYear()
+    const m = String(endDate.getMonth() + 1).padStart(2, '0')
+    const d = String(endDate.getDate()).padStart(2, '0')
+    return formatDateLongWithYear(`${y}-${m}-${d}`)
+  }
 
   const historyDataView = useDataView({
     data: sortedHistory,
     columns: [
       {
         title: t('columns.address'),
-        render: (row: EmployeeAddress) => getStreet(row).replace(',', ''),
+        render: (row: EmployeeAddress) => (
+          <Flex flexDirection="column" gap={0}>
+            <Components.Text weight="medium">{getStreet(row).replace(',', '')}</Components.Text>
+            <Components.Text variant="supporting">{getCityStateZip(row)}</Components.Text>
+          </Flex>
+        ),
       },
       {
-        title: t('columns.location'),
-        render: (row: EmployeeAddress) => getCityStateZip(row),
-      },
-      {
-        title: t('columns.effectiveDate'),
+        title: t('columns.startDate'),
         render: (row: EmployeeAddress) =>
           row.effectiveDate ? formatDateLongWithYear(row.effectiveDate.toString()) : '—',
       },
       {
-        title: t('columns.status'),
-        render: (row: EmployeeAddress) => (
-          <Components.Badge status={row.active ? 'success' : 'info'}>
-            {row.active ? t('status.active') : t('status.inactive')}
-          </Components.Badge>
-        ),
+        title: t('columns.endDate'),
+        render: (row: EmployeeAddress) => historyEndDate(row),
       },
     ],
+    itemMenu: (row: EmployeeAddress) => (
+      <HamburgerMenu
+        triggerLabel={t('rowMenuAriaLabel')}
+        items={[
+          {
+            label: t('rowEdit'),
+            onClick: () => {
+              onHistoryRowEdit(row)
+            },
+            icon: <PencilSvg aria-hidden />,
+          },
+          {
+            label: t('rowDelete'),
+            onClick: () => {
+              onHistoryRowDelete(row)
+            },
+            icon: <TrashCanSvg aria-hidden />,
+          },
+        ]}
+      />
+    ),
     emptyState: () => <Components.Text>{t('historyEmpty')}</Components.Text>,
   })
 
@@ -89,25 +134,14 @@ export function HomeAddressView({ homeAddressForm, onBack, onSaved }: HomeAddres
   return (
     <Flex flexDirection="column" gap={24}>
       <Flex flexDirection="column" gap={8} alignItems="flex-start">
-        <Components.Button variant="secondary" onClick={onBack}>
-          {t('backCta')}
-        </Components.Button>
         <Components.Heading as="h1">{t('title')}</Components.Heading>
+        <Components.Text variant="supporting">{t('description')}</Components.Text>
       </Flex>
 
-      <Components.Box header={<Components.BoxHeader title={t('currentSectionTitle')} />}>
-        <Flex flexDirection="column" gap={16}>
-          {homeAddress ? (
-            <Flex flexDirection="column" gap={0}>
-              <Components.Text variant="supporting">{tHa('street1')}</Components.Text>
-              <Components.Text>{getStreet(homeAddress).replace(',', '')}</Components.Text>
-              <Components.Text>{getCityStateZip(homeAddress)}</Components.Text>
-            </Flex>
-          ) : (
-            <Components.Text>{tHa('formTitle')}</Components.Text>
-          )}
+      <Components.Box
+        footer={
           <Components.Button
-            variant="primary"
+            variant="secondary"
             onClick={() => {
               setIsChangeModalOpen(true)
             }}
@@ -115,12 +149,36 @@ export function HomeAddressView({ homeAddressForm, onBack, onSaved }: HomeAddres
           >
             {t('changeCta')}
           </Components.Button>
+        }
+      >
+        <Flex flexDirection="column" gap={16}>
+          <Components.Heading as="h2">{t('currentSectionTitle')}</Components.Heading>
+          {homeAddress ? (
+            <Flex flexDirection="column" gap={4}>
+              <FlexItem>
+                <Components.Text weight="medium">
+                  {getStreet(homeAddress).replace(',', '')}
+                </Components.Text>
+                <Components.Text weight="medium">{getCityStateZip(homeAddress)}</Components.Text>
+              </FlexItem>
+              {homeAddress.effectiveDate ? (
+                <Components.Text variant="supporting">
+                  {t('currentSince', {
+                    date: formatDateLongWithYear(homeAddress.effectiveDate.toString()),
+                  })}
+                </Components.Text>
+              ) : null}
+            </Flex>
+          ) : (
+            <Components.Text>{tHa('formTitle')}</Components.Text>
+          )}
         </Flex>
       </Components.Box>
 
-      <Components.Box header={<Components.BoxHeader title={t('historySectionTitle')} />}>
-        <DataView label={t('historySectionTitle')} isWithinBox {...historyDataView} />
-      </Components.Box>
+      <Flex flexDirection="column" gap={12}>
+        <Components.Heading as="h2">{t('historySectionTitle')}</Components.Heading>
+        <DataView label={t('historySectionTitle')} {...historyDataView} />
+      </Flex>
 
       <Components.Modal
         isOpen={isChangeModalOpen}

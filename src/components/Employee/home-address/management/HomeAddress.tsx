@@ -37,10 +37,13 @@ function HomeAddressRoot({ employeeId, onEvent, dictionary }: HomeAddressProps) 
     <BaseLayout error={homeAddressForm.errorHandling.errors}>
       <HomeAddressView
         homeAddressForm={homeAddressForm}
-        onBack={() => {
-          onEvent(componentEvents.CANCEL)
-        }}
         onSaved={handleSaved}
+        onHistoryRowEdit={address => {
+          onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_HISTORY_EDIT, address)
+        }}
+        onHistoryRowDelete={address => {
+          onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_HISTORY_DELETE, address)
+        }}
       />
     </BaseLayout>
   )
