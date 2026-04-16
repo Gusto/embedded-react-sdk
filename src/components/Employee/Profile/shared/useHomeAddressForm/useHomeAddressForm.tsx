@@ -6,6 +6,7 @@ import type { EmployeeAddress } from '@gusto/embedded-api/models/components/empl
 import { useEmployeeAddressesGet } from '@gusto/embedded-api/react-query/employeeAddressesGet'
 import { useEmployeeAddressesCreateMutation } from '@gusto/embedded-api/react-query/employeeAddressesCreate'
 import { useEmployeeAddressesUpdateMutation } from '@gusto/embedded-api/react-query/employeeAddressesUpdate'
+import { useEmployeeAddressesDeleteMutation } from '@gusto/embedded-api/react-query/employeeAddressesDelete'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import {
   createHomeAddressSchema,
@@ -154,8 +155,12 @@ export function useHomeAddressForm({
 
   const createHomeAddressMutation = useEmployeeAddressesCreateMutation()
   const updateHomeAddressMutation = useEmployeeAddressesUpdateMutation()
+  const deleteHomeAddressMutation = useEmployeeAddressesDeleteMutation()
 
-  const isPending = createHomeAddressMutation.isPending || updateHomeAddressMutation.isPending
+  const isPending =
+    createHomeAddressMutation.isPending ||
+    updateHomeAddressMutation.isPending ||
+    deleteHomeAddressMutation.isPending
 
   const { baseSubmitHandler, error: submitError, setError } = useBaseSubmit('HomeAddressForm')
 
@@ -274,6 +279,27 @@ export function useHomeAddressForm({
     return submitResult
   }
 
+  const deleteHomeAddress = async (homeAddressUuid: string): Promise<boolean> => {
+    let deleted = false
+    await baseSubmitHandler(homeAddressUuid, async uuid => {
+      const target = homeAddresses?.find(a => a.uuid === uuid)
+      if (!target) {
+        throw new SDKInternalError('Home address not found')
+      }
+      if (target.active === true) {
+        throw new SDKInternalError('Cannot delete the active home address')
+      }
+
+      await deleteHomeAddressMutation.mutateAsync({
+        request: { homeAddressUuid: uuid },
+      })
+      deleted = true
+
+      await homeAddressesQuery.refetch()
+    })
+    return deleted
+  }
+
   const isDataLoading = employeeId ? homeAddressesQuery.isLoading : false
 
   if (isDataLoading || (employeeId && !homeAddresses)) {
@@ -290,7 +316,7 @@ export function useHomeAddressForm({
       isPending,
       mode: isCreateMode ? ('create' as const) : ('update' as const),
     },
-    actions: { onSubmit },
+    actions: { onSubmit, deleteHomeAddress },
     errorHandling,
     form: {
       Fields: {

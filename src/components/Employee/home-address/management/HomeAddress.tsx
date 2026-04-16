@@ -61,6 +61,16 @@ function HomeAddressRoot({ employeeId, onEvent, dictionary }: HomeAddressProps) 
     }
   }
 
+  const handleConfirmDelete = async (homeAddressUuid: string): Promise<boolean> => {
+    const snapshot =
+      editHomeAddressForm.data.homeAddresses?.find(a => a.uuid === homeAddressUuid) ?? null
+    const deleted = await editHomeAddressForm.actions.deleteHomeAddress(homeAddressUuid)
+    if (deleted && snapshot) {
+      onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_DELETED, snapshot)
+    }
+    return deleted
+  }
+
   return (
     <BaseLayout error={editHomeAddressForm.errorHandling.errors}>
       <HomeAddressView
@@ -70,9 +80,7 @@ function HomeAddressRoot({ employeeId, onEvent, dictionary }: HomeAddressProps) 
         editTargetUuid={editTargetUuid}
         onEditTargetUuidChange={setEditTargetUuid}
         onSaved={handleSaved}
-        onHistoryRowDelete={address => {
-          onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_HISTORY_DELETE, address)
-        }}
+        onConfirmDelete={handleConfirmDelete}
       />
     </BaseLayout>
   )

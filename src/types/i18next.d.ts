@@ -1725,6 +1725,9 @@ export interface EmployeeHomeAddressManagement{
 "startDateHelper":string;
 "submitCta":string;
 "cancelCta":string;
+"deleteModalTitle":string;
+"deleteModalDescription":string;
+"deleteModalConfirmCta":string;
 "form":{
 "startDateRequired":string;
 };

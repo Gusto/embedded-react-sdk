@@ -1,5 +1,5 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import type { EmployeeAddress } from '@gusto/embedded-api/models/components/employeeaddress'
 import {
   formatPendingHomeAddressLine,
@@ -26,7 +26,7 @@ export interface HomeAddressViewProps {
   editTargetUuid: string | undefined
   onEditTargetUuidChange: (uuid: string | undefined) => void
   onSaved: (result: HookSubmitResult<EmployeeAddress>) => void
-  onHistoryRowDelete: (address: EmployeeAddress) => void
+  onConfirmDelete: (homeAddressUuid: string) => Promise<boolean>
 }
 
 export function HomeAddressView({
@@ -36,12 +36,13 @@ export function HomeAddressView({
   editTargetUuid,
   onEditTargetUuidChange,
   onSaved,
-  onHistoryRowDelete,
+  onConfirmDelete,
 }: HomeAddressViewProps) {
   const { t } = useTranslation('Employee.HomeAddress.Management')
   const { t: tHa } = useTranslation('Employee.HomeAddress')
   const Components = useComponentContext()
   const [addressModal, setAddressModal] = useState<'edit' | 'create' | null>(null)
+  const [deleteConfirmUuid, setDeleteConfirmUuid] = useState<string | null>(null)
   const addressModalContainerRef = useRef<HTMLDivElement>(null)
   const [addressModalPortal, setAddressModalPortal] = useState<HTMLElement | undefined>(undefined)
 
@@ -65,7 +66,7 @@ export function HomeAddressView({
   const {
     data: { homeAddress, homeAddresses },
     status: editStatus,
-    actions: editActions,
+    actions: { onSubmit: editOnSubmit },
     form: editForm,
   } = editHomeAddressForm
 
@@ -105,6 +106,13 @@ export function HomeAddressView({
     () => getPendingFutureHomeAddress(homeAddresses),
     [homeAddresses],
   )
+
+  const addressForDeleteModal = useMemo(() => {
+    if (!deleteConfirmUuid || !homeAddresses) {
+      return undefined
+    }
+    return homeAddresses.find(a => a.uuid === deleteConfirmUuid)
+  }, [deleteConfirmUuid, homeAddresses])
 
   const changePendingPossessiveLabel = useMemo(() => {
     const trimmed = employeeDisplayName.trim()
@@ -174,7 +182,10 @@ export function HomeAddressView({
           {
             label: t('rowDelete'),
             onClick: () => {
-              onHistoryRowDelete(row)
+              if (row.active === true) {
+                return
+              }
+              setDeleteConfirmUuid(row.uuid)
             },
             icon: <TrashCanSvg aria-hidden />,
           },
@@ -197,6 +208,16 @@ export function HomeAddressView({
     onEditTargetUuidChange(undefined)
   }
 
+  const handleDeleteModalConfirm = async () => {
+    if (!deleteConfirmUuid) {
+      return
+    }
+    const deleted = await onConfirmDelete(deleteConfirmUuid)
+    if (deleted) {
+      setDeleteConfirmUuid(null)
+    }
+  }
+
   const handleSave = async () => {
     if (!addressModal) {
       return
@@ -208,7 +229,7 @@ export function HomeAddressView({
 
     const submitResult =
       addressModal === 'edit'
-        ? await editActions.onSubmit({
+        ? await editOnSubmit({
             effectiveDate: addressBeingEdited?.effectiveDate?.toString(),
           })
         : await createActions.onSubmit()
@@ -420,6 +441,54 @@ export function HomeAddressView({
               </Grid>
             </SDKFormProvider>
           ) : null}
+        </Flex>
+      </Components.Modal>
+
+      <Components.Modal
+        isOpen={deleteConfirmUuid !== null}
+        onClose={() => {
+          setDeleteConfirmUuid(null)
+        }}
+        shouldCloseOnBackdropClick={false}
+        footer={
+          <Flex flexDirection="row" gap={12} justifyContent="flex-end">
+            <Components.Button
+              variant="secondary"
+              onClick={() => {
+                setDeleteConfirmUuid(null)
+              }}
+            >
+              {t('cancelCta')}
+            </Components.Button>
+            <Components.Button
+              variant="error"
+              onClick={() => {
+                void handleDeleteModalConfirm()
+              }}
+              isLoading={editStatus.isPending && deleteConfirmUuid !== null}
+            >
+              {t('deleteModalConfirmCta')}
+            </Components.Button>
+          </Flex>
+        }
+      >
+        <Flex flexDirection="column" gap={16}>
+          <Components.Heading as="h2">{t('deleteModalTitle')}</Components.Heading>
+          <Components.Text variant="supporting">
+            {addressForDeleteModal ? (
+              <Trans
+                t={t}
+                i18nKey="deleteModalDescription"
+                values={{
+                  address: formatPendingHomeAddressLine(addressForDeleteModal),
+                }}
+                components={{
+                  strong: <Components.Text weight="medium" as="span" />,
+                }}
+                tOptions={{ interpolation: { escapeValue: false } }}
+              />
+            ) : null}
+          </Components.Text>
         </Flex>
       </Components.Modal>
     </Flex>
