@@ -238,19 +238,55 @@ Fields that may not exist are `undefined` — guard with truthiness checks:
 
 ### Validation Messages
 
-Every field has typed error codes. Provide `validationMessages` to map codes to localized strings. Without it, the raw error code string (e.g. "REQUIRED") is displayed to the user.
+Every field has typed error codes defined in its `fields.tsx`. Without `validationMessages`, the raw error code string (e.g. "REQUIRED") is displayed to the user.
+
+#### How error code typing works
+
+Field components have two generic parameters: `TErrorCode` (required keys) and `TOptionalErrorCode` (optional keys). The `ValidationMessages` type requires all `TErrorCode` keys and allows `TOptionalErrorCode` keys:
+
+```typescript
+// In fields.tsx — error codes derived from the schema's error codes constant
+export type SsnValidation = typeof ErrorCodes.INVALID_SSN // required key
+export type SsnRequiredValidation = typeof ErrorCodes.REQUIRED // optional key
+
+export type SsnFieldProps = HookFieldProps<
+  TextInputHookFieldProps<SsnValidation, SsnRequiredValidation>
+  //                        ^required       ^optional
+>
+```
+
+TypeScript enforces that all required keys are present. Optional keys are allowed but not enforced — provide them for any code that can realistically fire.
+
+#### Wiring up validationMessages
+
+Every field rendered in the component should have `validationMessages` covering all error codes that can fire. Check the field's type definition in `fields.tsx` to see which codes are required vs optional, then provide localized translations for each:
 
 ```tsx
+<EmployeeFields.FirstName
+  label={t('firstName')}
+  validationMessages={{
+    REQUIRED: t('validations.firstName'),      // required key — TypeScript enforces this
+    INVALID_NAME: t('validations.firstName'),   // required key — TypeScript enforces this
+  }}
+/>
+
 <EmployeeFields.Ssn
   label={t('ssnLabel')}
   validationMessages={{
-    INVALID_SSN: t('validations.ssn', { ns: 'common' }),
-    REQUIRED: t('validations.ssnRequired', { ns: 'common' }),
+    INVALID_SSN: t('validations.ssn', { ns: 'common' }),        // required key
+    REQUIRED: t('validations.ssnRequired', { ns: 'common' }),   // optional key — but fires when field is required
   }}
 />
 ```
 
-TypeScript enforces required error codes. Optional error codes (second generic parameter) are allowed but not required — provide them for any code that can realistically fire.
+#### Translation placement
+
+Validation translations should live in the component's translation namespace (e.g. `Employee.Profile.json`) or the `common.json` namespace for messages shared across components (e.g. SSN format, date of birth required). When migrating, check the existing component's translations and keep them consistent to avoid breaking changes.
+
+#### When validationMessages can be omitted
+
+- Fields whose error codes can never fire (e.g. `MiddleInitial` with `requiredFieldsConfig: 'never'` and no format validator)
+- Boolean fields (checkbox/switch) — always have a value so `REQUIRED` never fires
 
 ### Watching Form Values
 
