@@ -25,7 +25,7 @@ import {
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
 import { withOptions } from '@/partner-hook-utils/form/withOptions'
-import { useErrorHandling } from '@/partner-hook-utils/useErrorHandling'
+import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type {
   BaseFormHookReady,
   FieldsMetadata,
@@ -128,10 +128,14 @@ export function useHomeAddressForm({
 
   const isPending = createHomeAddressMutation.isPending || updateHomeAddressMutation.isPending
 
-  const { baseSubmitHandler, error: submitError, setError } = useBaseSubmit('HomeAddressForm')
+  const {
+    baseSubmitHandler,
+    error: submitError,
+    setError: setSubmitError,
+  } = useBaseSubmit('HomeAddressForm')
 
   const queries = employeeId ? [homeAddressesQuery] : []
-  const errorHandling = useErrorHandling(queries, { error: submitError, setError })
+  const errorHandling = composeErrorHandler(queries, { submitError, setSubmitError })
 
   const stateOptions = STATES_ABBR.map(abbr => ({
     value: abbr,

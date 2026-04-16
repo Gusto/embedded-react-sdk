@@ -1,5 +1,8 @@
 import { describe, expect, it, vi, type Mock } from 'vitest'
 import { composeSubmitHandler } from './composeSubmitHandler'
+import { composeErrorHandler } from '../composeErrorHandler'
+import type { HookErrorHandling } from '../types'
+import type { SDKError } from '@/types/sdkError'
 
 type ComposableForm = Parameters<typeof composeSubmitHandler>[0][number]
 
@@ -9,12 +12,34 @@ interface MockFormMethods {
   formState: { errors: Record<string, { message: string }> }
 }
 
+function createMockError(message: string): SDKError {
+  return {
+    message,
+    category: 'internal_error',
+    fieldErrors: [],
+  }
+}
+
+function createMockErrorHandling(
+  overrides: Partial<HookErrorHandling> = {},
+): HookErrorHandling & { retryQueries: Mock; clearSubmitError: Mock } {
+  return {
+    errors: overrides.errors ?? [],
+    retryQueries: vi.fn(),
+    clearSubmitError: vi.fn(),
+  }
+}
+
 function createMockForm(
   overrides: {
     isValid?: boolean
     errorFields?: string[]
+    errorHandling?: HookErrorHandling
   } = {},
-): ComposableForm & { formMethods: MockFormMethods } {
+): ComposableForm & {
+  formMethods: MockFormMethods
+  errorHandling: HookErrorHandling & { retryQueries: Mock; clearSubmitError: Mock }
+} {
   const { isValid = true, errorFields = [] } = overrides
 
   const errors: Record<string, { message: string }> = {}
@@ -38,8 +63,14 @@ function createMockForm(
     formState: { errors },
   }
 
+  const errorHandling =
+    (overrides.errorHandling as
+      | (HookErrorHandling & { retryQueries: Mock; clearSubmitError: Mock })
+      | undefined) ?? createMockErrorHandling()
+
   return {
     form: { hookFormInternals: { formMethods: formMethods as never } },
+    errorHandling,
     formMethods,
   }
 }
@@ -54,8 +85,8 @@ describe('composeSubmitHandler', () => {
     const onAllValid = vi.fn()
     const event = createMockEvent()
 
-    const handler = composeSubmitHandler([form], onAllValid)
-    await handler(event)
+    const { handleSubmit } = composeSubmitHandler([form], onAllValid)
+    await handleSubmit(event)
 
     expect(event.preventDefault).toHaveBeenCalledOnce()
   })
@@ -65,8 +96,8 @@ describe('composeSubmitHandler', () => {
     const form2 = createMockForm({ isValid: true })
     const onAllValid = vi.fn()
 
-    const handler = composeSubmitHandler([form1, form2], onAllValid)
-    await handler(createMockEvent())
+    const { handleSubmit } = composeSubmitHandler([form1, form2], onAllValid)
+    await handleSubmit(createMockEvent())
 
     expect(form1.formMethods.handleSubmit).toHaveBeenCalledOnce()
     expect(form2.formMethods.handleSubmit).toHaveBeenCalledOnce()
@@ -80,8 +111,8 @@ describe('composeSubmitHandler', () => {
     const form2 = createMockForm()
     const onAllValid = vi.fn()
 
-    const handler = composeSubmitHandler([form1, form2], onAllValid)
-    await handler(createMockEvent())
+    const { handleSubmit } = composeSubmitHandler([form1, form2], onAllValid)
+    await handleSubmit(createMockEvent())
 
     const form1Order = form1.formMethods.handleSubmit.mock.invocationCallOrder[0]!
     const form2Order = form2.formMethods.handleSubmit.mock.invocationCallOrder[0]!
@@ -96,8 +127,8 @@ describe('composeSubmitHandler', () => {
     const form2 = createMockForm({ isValid: true })
     const onAllValid = vi.fn()
 
-    const handler = composeSubmitHandler([form1, form2], onAllValid)
-    await handler(createMockEvent())
+    const { handleSubmit } = composeSubmitHandler([form1, form2], onAllValid)
+    await handleSubmit(createMockEvent())
 
     expect(onAllValid).not.toHaveBeenCalled()
     expect(form1.formMethods.setFocus).toHaveBeenCalledWith('street1')
@@ -112,8 +143,8 @@ describe('composeSubmitHandler', () => {
     })
     const onAllValid = vi.fn()
 
-    const handler = composeSubmitHandler([form1, form2], onAllValid)
-    await handler(createMockEvent())
+    const { handleSubmit } = composeSubmitHandler([form1, form2], onAllValid)
+    await handleSubmit(createMockEvent())
 
     expect(onAllValid).not.toHaveBeenCalled()
     expect(form1.formMethods.setFocus).not.toHaveBeenCalled()
@@ -131,8 +162,8 @@ describe('composeSubmitHandler', () => {
     })
     const onAllValid = vi.fn()
 
-    const handler = composeSubmitHandler([form1, form2], onAllValid)
-    await handler(createMockEvent())
+    const { handleSubmit } = composeSubmitHandler([form1, form2], onAllValid)
+    await handleSubmit(createMockEvent())
 
     expect(onAllValid).not.toHaveBeenCalled()
     expect(form1.formMethods.setFocus).toHaveBeenCalledWith('firstName')
@@ -143,9 +174,87 @@ describe('composeSubmitHandler', () => {
     const form1 = createMockForm({ isValid: false, errorFields: [] })
     const onAllValid = vi.fn()
 
-    const handler = composeSubmitHandler([form1], onAllValid)
-    await handler(createMockEvent())
+    const { handleSubmit } = composeSubmitHandler([form1], onAllValid)
+    await handleSubmit(createMockEvent())
 
     expect(onAllValid).not.toHaveBeenCalled()
+  })
+
+  describe('aggregated errorHandling', () => {
+    it('aggregates errors across all forms', () => {
+      const error1 = createMockError('Details fetch failed')
+      const error2 = createMockError('Address fetch failed')
+
+      const form1 = createMockForm({
+        errorHandling: createMockErrorHandling({ errors: [error1] }),
+      })
+      const form2 = createMockForm({
+        errorHandling: createMockErrorHandling({ errors: [error2] }),
+      })
+
+      const { errorHandling } = composeSubmitHandler([form1, form2], vi.fn())
+
+      expect(errorHandling.errors.map(e => e.message)).toEqual([
+        'Details fetch failed',
+        'Address fetch failed',
+      ])
+    })
+
+    it('calls retryQueries on every form when errorHandling.retryQueries is invoked', () => {
+      const form1 = createMockForm()
+      const form2 = createMockForm()
+
+      const { errorHandling } = composeSubmitHandler([form1, form2], vi.fn())
+      errorHandling.retryQueries()
+
+      expect(form1.errorHandling.retryQueries).toHaveBeenCalledOnce()
+      expect(form2.errorHandling.retryQueries).toHaveBeenCalledOnce()
+    })
+
+    it('calls clearSubmitError on every form when errorHandling.clearSubmitError is invoked', () => {
+      const form1 = createMockForm()
+      const form2 = createMockForm()
+
+      const { errorHandling } = composeSubmitHandler([form1, form2], vi.fn())
+      errorHandling.clearSubmitError()
+
+      expect(form1.errorHandling.clearSubmitError).toHaveBeenCalledOnce()
+      expect(form2.errorHandling.clearSubmitError).toHaveBeenCalledOnce()
+    })
+
+    it('returned result plugs back into composeErrorHandler with extras', () => {
+      const formError = createMockError('Form-level error')
+      const queryError = new Error('Extra query failed')
+      const submitError = createMockError('Submit failed')
+
+      const form = createMockForm({
+        errorHandling: createMockErrorHandling({ errors: [formError] }),
+      })
+
+      const submitResult = composeSubmitHandler([form], vi.fn())
+
+      const extraRefetch = vi.fn().mockResolvedValue({})
+      const extraQuery = { error: queryError, refetch: extraRefetch }
+      const setSubmitError = vi.fn()
+
+      const combined = composeErrorHandler([submitResult, extraQuery], {
+        submitError,
+        setSubmitError,
+      })
+
+      expect(combined.errors.map(e => e.message)).toEqual([
+        'Form-level error',
+        'Extra query failed',
+        'Submit failed',
+      ])
+
+      combined.retryQueries()
+      expect(form.errorHandling.retryQueries).toHaveBeenCalledOnce()
+      expect(extraRefetch).toHaveBeenCalledOnce()
+
+      combined.clearSubmitError()
+      expect(form.errorHandling.clearSubmitError).toHaveBeenCalledOnce()
+      expect(setSubmitError).toHaveBeenCalledWith(null)
+    })
   })
 })

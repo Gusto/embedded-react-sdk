@@ -25,7 +25,7 @@ import {
 } from './fields'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
-import { useErrorHandling } from '@/partner-hook-utils/useErrorHandling'
+import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type {
   BaseFormHookReady,
   FieldsMetadata,
@@ -142,10 +142,14 @@ export function useEmployeeDetailsForm({
     updateEmployeeMutation.isPending ||
     updateOnboardingStatusMutation.isPending
 
-  const { baseSubmitHandler, error: submitError, setError } = useBaseSubmit('EmployeeDetailsForm')
+  const {
+    baseSubmitHandler,
+    error: submitError,
+    setError: setSubmitError,
+  } = useBaseSubmit('EmployeeDetailsForm')
 
   const queries = employeeId ? [employeeQuery] : []
-  const errorHandling = useErrorHandling(queries, { error: submitError, setError })
+  const errorHandling = composeErrorHandler(queries, { submitError, setSubmitError })
 
   const fieldsMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
 

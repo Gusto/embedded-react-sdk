@@ -9,7 +9,7 @@ import type { Garnishment } from '@gusto/embedded-api/models/components/garnishm
 import type { GetV1EmployeesEmployeeIdPaymentMethodResponse } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidpaymentmethod'
 import type { GetV1EmployeesEmployeeIdBankAccountsResponse } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidbankaccounts'
 import type { GetV1EmployeesEmployeeUuidPayStubsResponse } from '@gusto/embedded-api/models/operations/getv1employeesemployeeuuidpaystubs'
-import { buildQueryErrorHandling } from '@/partner-hook-utils/buildQueryErrorHandling'
+import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { usePagination } from '@/hooks/usePagination/usePagination'
 import type { HookLoadingResult, BaseHookReady } from '@/partner-hook-utils/types'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
@@ -96,7 +96,7 @@ export function useEmployeeCompensation({
 
   const isLoading = !employee && isPending
 
-  const errorHandling = buildQueryErrorHandling([
+  const errorHandling = composeErrorHandler([
     employeeQuery,
     paymentMethodQuery,
     bankAccountsQuery,

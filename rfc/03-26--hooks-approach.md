@@ -490,7 +490,7 @@ If a partner omits a required code, TypeScript catches it at build time. If they
 
 #### Error Normalization
 
-Errors come from multiple sources with different shapes: API errors, SDK validation errors, field-level validation errors from 422 responses, and unrecoverable errors. The `useErrorHandling` hook normalizes all of these into a single `SDKError[]` array via `collectErrors`. `SDKFormProvider` also runs `useSyncFieldErrors`, which maps server-side field errors from the `errorHandling` bag onto react-hook-form's field-level error state automatically — so partners who render fields get inline error messages without manual wiring.
+Errors come from multiple sources with different shapes: API errors, SDK validation errors, field-level validation errors from 422 responses, and unrecoverable errors. The `composeErrorHandler` utility normalizes all of these into a single `SDKError[]` array via `collectErrors`. `SDKFormProvider` also runs `useSyncFieldErrors`, which maps server-side field errors from the `errorHandling` bag onto react-hook-form's field-level error state automatically — so partners who render fields get inline error messages without manual wiring.
 
 ### 4. Composing Multiple Forms
 
@@ -507,7 +507,7 @@ function EmployeeProfile({ employeeId, companyId }: Props) {
 
   const isPending = detailsForm.status.isPending || addressForm.status.isPending || workForm.status.isPending
 
-  const handleSubmit = composeSubmitHandler(
+  const { handleSubmit } = composeSubmitHandler(
     [detailsForm, addressForm, workForm],
     async () => {
       const detailsResult = await detailsForm.actions.onSubmit()
@@ -682,7 +682,7 @@ if (form.isLoading) return <BaseLayout isLoading />
 
 ## Rollout
 
-**Completed so far:** Seven form hooks have been built and are shipping under the `UNSTABLE_` namespace: compensation, employee details, work address, home address, pay schedule, sign company forms, and sign employee forms. The shared infrastructure (`buildFormSchema`, `useDeriveFieldsMetadata`, `SDKFormProvider`, `useErrorHandling`, field components) has stabilized through iteration across these hooks.
+**Completed so far:** Seven form hooks have been built and are shipping under the `UNSTABLE_` namespace: compensation, employee details, work address, home address, pay schedule, sign company forms, and sign employee forms. The shared infrastructure (`buildFormSchema`, `useDeriveFieldsMetadata`, `SDKFormProvider`, `composeErrorHandler`, field components) has stabilized through iteration across these hooks.
 
 Each hook includes a prebuilt component that validates parity with the existing stable component tier. Schema validation and HTTP payload parity have been verified against stable components via side-by-side comparison pages in `gws-flows`.
 
@@ -696,7 +696,7 @@ Each hook includes a prebuilt component that validates parity with the existing 
 ## Recommendations
 
 1. ~~**Update base component infrastructure**~~ — Done. `BaseBoundaries` and `BaseLayout` work without Suspense for hook-based usage.
-2. ~~**Normalize error handling**~~ — Done. `SDKError` shape is the documented contract; `useErrorHandling` + `collectErrors` normalize all error sources; `SDKFormProvider` auto-syncs server errors to field state.
+2. ~~**Normalize error handling**~~ — Done. `SDKError` shape is the documented contract; `composeErrorHandler` + `collectErrors` normalize all error sources; `SDKFormProvider` auto-syncs server errors to field state.
 3. ~~**Build hooks for payroll + select onboarding**~~ — Done. Seven hooks shipped covering employee onboarding and company setup domains.
 4. **Create extensive documentation** — Hook API references, form composition patterns, field props/validation contracts, migration guides from component tier
 5. **Find partners to validate** — Identify 2-3 partners willing to build with hooks in a controlled setting for early adoption

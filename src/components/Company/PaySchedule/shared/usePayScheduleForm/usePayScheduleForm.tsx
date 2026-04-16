@@ -29,7 +29,7 @@ import {
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
 import { withOptions } from '@/partner-hook-utils/form/withOptions'
-import { useErrorHandling } from '@/partner-hook-utils/useErrorHandling'
+import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type {
   BaseFormHookReady,
   FieldsMetadata,
@@ -203,10 +203,14 @@ export function usePayScheduleForm({
 
   const isPending = createPayScheduleMutation.isPending || updatePayScheduleMutation.isPending
 
-  const { baseSubmitHandler, error: submitError, setError } = useBaseSubmit('PayScheduleForm')
+  const {
+    baseSubmitHandler,
+    error: submitError,
+    setError: setSubmitError,
+  } = useBaseSubmit('PayScheduleForm')
 
   const queries = payScheduleId ? [payScheduleQuery, paymentConfigsQuery] : [paymentConfigsQuery]
-  const errorHandling = useErrorHandling(queries, { error: submitError, setError })
+  const errorHandling = composeErrorHandler(queries, { submitError, setSubmitError })
 
   const showCustomTwicePerMonth = watchedFrequency === 'Twice per month'
   const showDay1 =
