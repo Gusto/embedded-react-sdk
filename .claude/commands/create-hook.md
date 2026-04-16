@@ -112,9 +112,11 @@ Key imports:
 
 - `import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'`
 - `import { useErrorHandling } from '@/partner-hook-utils/useErrorHandling'`
-- `import type { HookSubmitResult } from '@/partner-hook-utils/types'`
+- `import type { BaseFormHookReady, FieldsMetadata, HookLoadingResult, HookSubmitResult } from '@/partner-hook-utils/types'`
 - `import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'`
 - `import { composeSubmitHandler } from '@/partner-hook-utils/form/composeSubmitHandler'`
+
+**Typing:** Declare a ready-state interface that extends `BaseFormHookReady<FieldsMetadata, {Name}FormData>`, narrow `data`, `status`, and `actions` as needed, and annotate the hook with `HookLoadingResult | Use{Name}Ready`. Export `Use{Name}Result` as `HookLoadingResult | Use{Name}Ready`. Document-sign hooks always set `status.mode` to `'create'` on the ready branch (see JSDoc on `BaseFormHookReady` in `src/partner-hook-utils/types.ts`). Non-form hooks use `BaseHookReady<TData, TStatus>` instead of `Omit<BaseHookReady, …>`.
 
 #### `index.ts`
 

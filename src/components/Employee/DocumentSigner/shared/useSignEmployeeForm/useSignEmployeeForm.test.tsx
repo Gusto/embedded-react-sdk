@@ -14,6 +14,7 @@ import {
 } from '@/test/mocks/apis/employee_forms'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
+import { fieldsMetadataEntry } from '@/test/fieldsMetadata'
 import type { FieldMetadataWithOptions } from '@/partner-hook-utils/types'
 
 type ReadyResult = Extract<UseSignEmployeeFormResult, { isLoading: false }>
@@ -237,8 +238,12 @@ describe('useSignEmployeeForm', () => {
       const readyResult = result.current
       assertReady(readyResult)
 
-      expect(readyResult.form.fieldsMetadata.signature.isRequired).toBe(true)
-      expect(readyResult.form.fieldsMetadata.confirmSignature.isRequired).toBe(true)
+      expect(fieldsMetadataEntry(readyResult.form.fieldsMetadata, 'signature').isRequired).toBe(
+        true,
+      )
+      expect(
+        fieldsMetadataEntry(readyResult.form.fieldsMetadata, 'confirmSignature').isRequired,
+      ).toBe(true)
     })
   })
 
@@ -350,15 +355,16 @@ describe('useSignEmployeeForm', () => {
       expect(readyResult.form.preparers!.canAdd).toBe(true)
       expect(readyResult.form.preparers!.canRemove).toBe(true)
       expect(readyResult.form.Fields.Preparer1).toBeDefined()
-      expect(readyResult.form.Fields.Preparer1!.FirstName).toBeDefined()
-      expect(readyResult.form.Fields.Preparer1!.LastName).toBeDefined()
-      expect(readyResult.form.Fields.Preparer1!.Street1).toBeDefined()
-      expect(readyResult.form.Fields.Preparer1!.Street2).toBeDefined()
-      expect(readyResult.form.Fields.Preparer1!.City).toBeDefined()
-      expect(readyResult.form.Fields.Preparer1!.State).toBeDefined()
-      expect(readyResult.form.Fields.Preparer1!.Zip).toBeDefined()
-      expect(readyResult.form.Fields.Preparer1!.Signature).toBeDefined()
-      expect(readyResult.form.Fields.Preparer1!.ConfirmSignature).toBeDefined()
+      const preparer1 = readyResult.form.Fields.Preparer1 as Record<string, unknown>
+      expect(preparer1.FirstName).toBeDefined()
+      expect(preparer1.LastName).toBeDefined()
+      expect(preparer1.Street1).toBeDefined()
+      expect(preparer1.Street2).toBeDefined()
+      expect(preparer1.City).toBeDefined()
+      expect(preparer1.State).toBeDefined()
+      expect(preparer1.Zip).toBeDefined()
+      expect(preparer1.Signature).toBeDefined()
+      expect(preparer1.ConfirmSignature).toBeDefined()
       expect(readyResult.form.Fields.Preparer2).toBeUndefined()
     })
 
@@ -875,9 +881,10 @@ describe('useSignEmployeeForm', () => {
         expect((result.current as ReadyResult).form.preparers!.count).toBe(1)
       })
 
-      expect((result.current as ReadyResult).form.fieldsMetadata.preparerStreet2.isRequired).toBe(
-        false,
-      )
+      expect(
+        fieldsMetadataEntry((result.current as ReadyResult).form.fieldsMetadata, 'preparerStreet2')
+          .isRequired,
+      ).toBe(false)
     })
   })
 

@@ -38,15 +38,11 @@ export interface UseEmployeeListProps {
   employeeType?: EmployeeType
 }
 
-interface UseEmployeeListReady extends Omit<BaseHookReady, 'data' | 'status'> {
-  data: {
-    employees: EmployeeWithActions[]
-  }
+interface UseEmployeeListReady extends BaseHookReady<
+  { employees: EmployeeWithActions[] },
+  { isFetching: boolean; isPending: boolean }
+> {
   pagination: PaginationControlProps
-  status: {
-    isFetching: boolean
-    isPending: boolean
-  }
   actions: {
     onDelete: (
       employeeId: string,

@@ -20,7 +20,12 @@ import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFiel
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
 import { withOptions } from '@/partner-hook-utils/form/withOptions'
 import { useErrorHandling } from '@/partner-hook-utils/useErrorHandling'
-import type { HookSubmitResult } from '@/partner-hook-utils/types'
+import type {
+  BaseFormHookReady,
+  FieldsMetadata,
+  HookLoadingResult,
+  HookSubmitResult,
+} from '@/partner-hook-utils/types'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { SDKInternalError } from '@/types/sdkError'
 import { addressInline } from '@/helpers/formattedStrings'
@@ -47,6 +52,24 @@ export interface UseWorkAddressFormProps {
   shouldFocusError?: boolean
 }
 
+export interface UseWorkAddressFormReady extends BaseFormHookReady<
+  FieldsMetadata,
+  WorkAddressFormData
+> {
+  data: {
+    workAddress: EmployeeWorkAddress | null
+    workAddresses: EmployeeWorkAddress[] | undefined
+    companyLocations: Location[] | undefined
+  }
+  status: { isPending: boolean; mode: 'create' | 'update' }
+  actions: {
+    onSubmit: (
+      callbacks?: WorkAddressSubmitCallbacks,
+      options?: WorkAddressSubmitOptions,
+    ) => Promise<HookSubmitResult<EmployeeWorkAddress> | undefined>
+  }
+}
+
 export function useWorkAddressForm({
   companyId,
   employeeId,
@@ -55,7 +78,7 @@ export function useWorkAddressForm({
   defaultValues: partnerDefaults,
   validationMode = 'onSubmit',
   shouldFocusError = true,
-}: UseWorkAddressFormProps) {
+}: UseWorkAddressFormProps): HookLoadingResult | UseWorkAddressFormReady {
   const locationsQuery = useLocationsGet({ companyId })
   const workAddressesQuery = useEmployeeAddressesGetWorkAddresses(
     { employeeId: employeeId ?? '' },
@@ -225,7 +248,6 @@ export function useWorkAddressForm({
   }
 }
 
-export type UseWorkAddressFormResult = ReturnType<typeof useWorkAddressForm>
-export type UseWorkAddressFormReady = Extract<UseWorkAddressFormResult, { data: object }>
+export type UseWorkAddressFormResult = HookLoadingResult | UseWorkAddressFormReady
 export type WorkAddressFieldsMetadata = UseWorkAddressFormReady['form']['fieldsMetadata']
 export type WorkAddressFormFields = UseWorkAddressFormReady['form']['Fields']
