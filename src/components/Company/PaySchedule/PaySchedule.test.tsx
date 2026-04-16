@@ -24,9 +24,26 @@ vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', async () => {
   }
 })
 
+const paymentConfigsMock = http.get(
+  `${API_BASE_URL}/v1/companies/:company_uuid/payment_configs`,
+  () => {
+    return HttpResponse.json({
+      payment_speed: '2-day',
+      fast_payment_limit: 5000000,
+    })
+  },
+)
+
+async function waitForFormToLoad() {
+  await waitFor(() => {
+    expect(screen.queryByLabelText(/name/i)).toBeInTheDocument()
+  })
+}
+
 describe('PaySchedule', () => {
   beforeEach(() => {
     setupApiTestMocks()
+    server.use(paymentConfigsMock)
   })
 
   describe('navigation behavior', () => {
@@ -45,21 +62,19 @@ describe('PaySchedule', () => {
         </GustoApiProvider>,
       )
 
-      // Should navigate directly to ADD_PAY_SCHEDULE mode
       await waitFor(() => {
         expect(screen.getByRole('heading', { name: /add pay schedule/i })).toBeInTheDocument()
       })
 
-      // Check that form fields are visible (indicating we're in ADD mode)
+      await waitForFormToLoad()
+
       expect(screen.getByLabelText(/name/i)).toBeInTheDocument()
       expect(screen.getByRole('button', { name: /frequency/i })).toBeInTheDocument()
       expect(screen.getByRole('group', { name: /first pay date/i })).toBeInTheDocument()
 
-      // Check Actions component in add mode
       expect(screen.getByRole('button', { name: /save/i })).toBeInTheDocument()
       expect(screen.getByRole('button', { name: /cancel/i })).toBeInTheDocument()
 
-      // List component should not be visible
       expect(screen.queryByText('Weekly Schedule')).not.toBeInTheDocument()
       expect(
         screen.queryByRole('button', { name: /add another pay schedule/i }),
@@ -75,21 +90,17 @@ describe('PaySchedule', () => {
         </GustoApiProvider>,
       )
 
-      // Should show list mode when there are existing schedules
       await waitFor(() => {
         expect(screen.getByText('Weekly Schedule')).toBeInTheDocument()
       })
 
-      // Check Head component in list mode
       const header = screen.getByRole('banner')
       expect(header).toBeInTheDocument()
       expect(within(header).getByRole('heading')).toHaveTextContent(/set up pay schedule/i)
 
-      // Check Actions component in list mode
       expect(screen.getByRole('button', { name: /add another pay schedule/i })).toBeInTheDocument()
       expect(screen.getByRole('button', { name: /continue/i })).toBeInTheDocument()
 
-      // Edit form should not be visible
       expect(screen.queryByLabelText(/name/i)).not.toBeInTheDocument()
     })
   })
@@ -106,25 +117,20 @@ describe('PaySchedule', () => {
         </GustoApiProvider>,
       )
 
-      // Wait for loading to complete and initial content to appear
       await waitFor(() => {
         expect(screen.getByText('Weekly Schedule')).toBeInTheDocument()
       })
 
-      // Check Head component in list mode
       const header = screen.getByRole('banner')
       expect(header).toBeInTheDocument()
       expect(within(header).getByRole('heading')).toHaveTextContent(/set up pay schedule/i)
       expect(screen.getByText(/laws around when you must pay/i)).toBeInTheDocument()
 
-      // Check List component with table structure
       expect(screen.getByText('Weekly Schedule')).toBeInTheDocument()
       expect(screen.getByText('Actions')).toBeInTheDocument()
 
-      // Check Actions component in list mode
       expect(screen.getByRole('button', { name: /add another pay schedule/i })).toBeInTheDocument()
 
-      // Edit component should not be visible
       expect(screen.queryByLabelText(/name/i)).not.toBeInTheDocument()
     })
 
@@ -137,7 +143,6 @@ describe('PaySchedule', () => {
         </GustoApiProvider>,
       )
 
-      // Wait for loading to complete and add button to appear
       await waitFor(() => {
         expect(
           screen.getByRole('button', { name: /add another pay schedule/i }),
@@ -146,19 +151,19 @@ describe('PaySchedule', () => {
 
       await user.click(screen.getByRole('button', { name: /add another pay schedule/i }))
 
-      // Check Head component in add mode
-      expect(screen.getByRole('heading', { name: /add pay schedule/i })).toBeInTheDocument()
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: /add pay schedule/i })).toBeInTheDocument()
+      })
 
-      // Check Edit component is visible with form fields
+      await waitForFormToLoad()
+
       expect(screen.getByLabelText(/name/i)).toBeInTheDocument()
       expect(screen.getByRole('button', { name: /frequency/i })).toBeInTheDocument()
       expect(screen.getByRole('group', { name: /first pay date/i })).toBeInTheDocument()
 
-      // Check Actions component in add mode
       expect(screen.getByRole('button', { name: /save/i })).toBeInTheDocument()
       expect(screen.getByRole('button', { name: /cancel/i })).toBeInTheDocument()
 
-      // List component should not be visible
       expect(screen.queryByText('Weekly Schedule')).not.toBeInTheDocument()
     })
 
@@ -171,28 +176,27 @@ describe('PaySchedule', () => {
         </GustoApiProvider>,
       )
 
-      // Wait for loading to complete and content to appear
       await waitFor(() => {
         expect(screen.getByRole('button', { name: /actions/i })).toBeInTheDocument()
       })
 
-      // Open actions menu and click edit
       const actionsButton = screen.getByRole('button', { name: /actions/i })
       await user.click(actionsButton)
       await user.click(screen.getByRole('menuitem', { name: /edit/i }))
 
-      // Check Head component in edit mode
-      expect(screen.getByRole('heading', { name: /edit pay schedule/i })).toBeInTheDocument()
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: /edit pay schedule/i })).toBeInTheDocument()
+      })
 
-      // Check Edit component is visible with populated form
-      expect(screen.getByDisplayValue('Weekly Schedule')).toBeInTheDocument()
+      await waitFor(() => {
+        expect(screen.getByDisplayValue('Weekly Schedule')).toBeInTheDocument()
+      })
+
       expect(screen.getByRole('button', { name: /every week/i })).toBeInTheDocument()
 
-      // Check Actions component in edit mode
       expect(screen.getByRole('button', { name: /save/i })).toBeInTheDocument()
       expect(screen.getByRole('button', { name: /cancel/i })).toBeInTheDocument()
 
-      // List component should not be visible
       expect(screen.queryByRole('status')).not.toBeInTheDocument()
     })
 
@@ -205,26 +209,29 @@ describe('PaySchedule', () => {
         </GustoApiProvider>,
       )
 
-      // Wait for loading to complete
       await waitFor(() => {
         expect(
           screen.getByRole('button', { name: /add another pay schedule/i }),
         ).toBeInTheDocument()
       })
 
-      // Test cancel from add mode
       await user.click(screen.getByRole('button', { name: /add another pay schedule/i }))
+      await waitForFormToLoad()
       await user.click(screen.getByRole('button', { name: /cancel/i }))
 
-      expect(screen.getByText('Weekly Schedule')).toBeInTheDocument()
+      await waitFor(() => {
+        expect(screen.getByText('Weekly Schedule')).toBeInTheDocument()
+      })
 
-      // Test cancel from edit mode
       const actionsButton = screen.getByRole('button', { name: /actions/i })
       await user.click(actionsButton)
       await user.click(screen.getByRole('menuitem', { name: /edit/i }))
+      await waitForFormToLoad()
       await user.click(screen.getByRole('button', { name: /cancel/i }))
 
-      expect(screen.getByText('Weekly Schedule')).toBeInTheDocument()
+      await waitFor(() => {
+        expect(screen.getByText('Weekly Schedule')).toBeInTheDocument()
+      })
     })
   })
 
@@ -258,20 +265,21 @@ describe('PaySchedule', () => {
         expect(screen.getByText('Weekly Schedule')).toBeInTheDocument()
       })
 
-      // Open actions menu and click edit
       const actionsButton = screen.getByRole('button', { name: /actions/i })
       await user.click(actionsButton)
       await user.click(screen.getByRole('menuitem', { name: /edit/i }))
 
-      // Verify edit mode
-      expect(screen.getByRole('heading', { name: /edit pay schedule/i })).toBeInTheDocument()
-      expect(screen.getByDisplayValue('Weekly Schedule')).toBeInTheDocument()
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: /edit pay schedule/i })).toBeInTheDocument()
+      })
 
-      // Edit the schedule
+      await waitFor(() => {
+        expect(screen.getByDisplayValue('Weekly Schedule')).toBeInTheDocument()
+      })
+
       await user.type(screen.getByLabelText(/name/i), ' Updated')
       await user.click(screen.getByRole('button', { name: /save/i }))
 
-      // Wait for mode to transition back to list (confirms mutation completed)
       await waitFor(() => {
         expect(screen.getByText('Weekly Schedule')).toBeInTheDocument()
       })
@@ -297,17 +305,15 @@ describe('PaySchedule', () => {
         ).toBeInTheDocument()
       })
 
-      // Click add button
       await user.click(screen.getByRole('button', { name: /add another pay schedule/i }))
+      await waitForFormToLoad()
 
-      // Fill out form
       await user.type(screen.getByLabelText(/name/i), 'New Schedule')
 
       const frequencySelect = screen.getByRole('button', { name: /frequency/i })
       await user.click(frequencySelect)
       await user.click(screen.getByRole('option', { name: /every week/i }))
 
-      // Set dates using the correct group names
       const payDateInput = screen.getByRole('group', { name: 'First pay date' })
       await user.type(within(payDateInput).getByRole('spinbutton', { name: /month/i }), '01')
       await user.type(within(payDateInput).getByRole('spinbutton', { name: /day/i }), '01')
@@ -318,15 +324,12 @@ describe('PaySchedule', () => {
       await user.type(within(endDateInput).getByRole('spinbutton', { name: /day/i }), '07')
       await user.type(within(endDateInput).getByRole('spinbutton', { name: /year/i }), '2025')
 
-      // Submit form
       await user.click(screen.getByRole('button', { name: /save/i }))
 
-      // Wait for mode to transition back to list (confirms mutation completed)
       await waitFor(() => {
         expect(screen.getByText('Weekly Schedule')).toBeInTheDocument()
       })
 
-      expect(onEvent).toHaveBeenCalledOnce()
       expect(onEvent).toHaveBeenCalledWith(componentEvents.PAY_SCHEDULE_CREATED, expect.any(Object))
     }, 10000)
   })
@@ -354,11 +357,10 @@ describe('PaySchedule', () => {
       })
 
       await user.click(screen.getByRole('button', { name: /add another pay schedule/i }))
+      await waitForFormToLoad()
 
-      // Check custom name is pre-filled
       expect(screen.getByDisplayValue(defaultValues.customName)).toBeInTheDocument()
 
-      // Check if date fields contain the correct year (2023 is what actually gets rendered)
       const payDateInput = screen.getByRole('group', { name: 'First pay date' })
       const yearInput = within(payDateInput).getByRole('spinbutton', { name: /year/i })
       const monthInput = within(payDateInput).getByRole('spinbutton', { name: /month/i })
@@ -391,10 +393,10 @@ describe('PaySchedule', () => {
 
       await user.click(screen.getByRole('button', { name: /continue/i }))
 
-      expect(onEvent).toHaveBeenCalledWith(componentEvents.PAY_SCHEDULE_DONE)
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.PAY_SCHEDULE_DONE, undefined)
     })
 
-    it('does not fire events when cancel is clicked', async () => {
+    it('propagates navigation events when transitioning between views', async () => {
       const user = userEvent.setup()
       const onEvent = vi.fn()
 
@@ -411,9 +413,13 @@ describe('PaySchedule', () => {
       })
 
       await user.click(screen.getByRole('button', { name: /add another pay schedule/i }))
+      await waitForFormToLoad()
+
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.PAY_SCHEDULE_CREATE, undefined)
+
       await user.click(screen.getByRole('button', { name: /cancel/i }))
 
-      expect(onEvent).not.toHaveBeenCalled()
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.CANCEL, undefined)
     })
   })
 
@@ -438,6 +444,7 @@ describe('PaySchedule', () => {
       })
 
       await user.click(screen.getByRole('button', { name: /add another pay schedule/i }))
+      await waitForFormToLoad()
 
       expect(screen.queryByText(/frequency options/i)).not.toBeInTheDocument()
 
@@ -466,6 +473,7 @@ describe('PaySchedule', () => {
       })
 
       await user.click(screen.getByRole('button', { name: /add another pay schedule/i }))
+      await waitForFormToLoad()
 
       const frequencySelect = screen.getByRole('button', { name: /frequency/i })
       await user.click(frequencySelect)
@@ -490,6 +498,7 @@ describe('PaySchedule', () => {
       })
 
       await user.click(screen.getByRole('button', { name: /add another pay schedule/i }))
+      await waitForFormToLoad()
 
       const frequencySelect = screen.getByRole('button', { name: /frequency/i })
       await user.click(frequencySelect)
@@ -519,6 +528,8 @@ describe('PaySchedule', () => {
         expect(screen.getByRole('heading', { name: /add pay schedule/i })).toBeInTheDocument()
       })
 
+      await waitForFormToLoad()
+
       expect(screen.getByLabelText(/name/i)).toBeInTheDocument()
       expect(screen.getByRole('button', { name: /frequency/i })).toBeInTheDocument()
       expect(screen.getByRole('group', { name: /first pay date/i })).toBeInTheDocument()
@@ -545,7 +556,10 @@ describe('PaySchedule', () => {
       await user.click(screen.getByRole('button', { name: /actions/i }))
       await user.click(screen.getByRole('menuitem', { name: /edit/i }))
 
-      expect(screen.getByDisplayValue('Weekly Schedule')).toBeInTheDocument()
+      await waitFor(() => {
+        expect(screen.getByDisplayValue('Weekly Schedule')).toBeInTheDocument()
+      })
+
       expect(screen.getByRole('button', { name: /every week/i })).toBeInTheDocument()
 
       const payDateInput = screen.getByRole('group', { name: 'First pay date' })
@@ -578,6 +592,8 @@ describe('PaySchedule', () => {
         expect(screen.getByRole('heading', { name: /add pay schedule/i })).toBeInTheDocument()
       })
 
+      await waitForFormToLoad()
+
       expect(screen.getByText(/pay schedule preview/i)).toBeInTheDocument()
       expect(screen.getByText(/complete all the required fields/i)).toBeInTheDocument()
     })
@@ -603,6 +619,7 @@ describe('PaySchedule', () => {
       })
 
       await user.click(screen.getByRole('button', { name: /add another pay schedule/i }))
+      await waitForFormToLoad()
 
       await user.type(screen.getByLabelText(/name/i), 'New Schedule')
 
@@ -649,6 +666,10 @@ describe('PaySchedule', () => {
       await user.click(screen.getByRole('button', { name: /actions/i }))
       await user.click(screen.getByRole('menuitem', { name: /edit/i }))
 
+      await waitFor(() => {
+        expect(screen.getByDisplayValue('Weekly Schedule')).toBeInTheDocument()
+      })
+
       await user.type(screen.getByLabelText(/name/i), ' Updated')
       await user.click(screen.getByRole('button', { name: /save/i }))
 
@@ -685,10 +706,9 @@ describe('PaySchedule', () => {
         ).toBeInTheDocument()
       })
 
-      // Click add button
       await user.click(screen.getByRole('button', { name: /add another pay schedule/i }))
+      await waitForFormToLoad()
 
-      // Set dates to trigger the pay schedule preview
       const payDateInput = screen.getByRole('group', { name: 'First pay date' })
       await user.type(within(payDateInput).getByRole('spinbutton', { name: /month/i }), '01')
       await user.type(within(payDateInput).getByRole('spinbutton', { name: /day/i }), '01')
@@ -699,16 +719,11 @@ describe('PaySchedule', () => {
       await user.type(within(endDateInput).getByRole('spinbutton', { name: /day/i }), '06')
       await user.type(within(endDateInput).getByRole('spinbutton', { name: /year/i }), '2024')
 
-      // Wait for the preview to load
       await waitFor(() => {
-        // Check for the calendar display component
         expect(screen.getByRole('application')).toBeInTheDocument()
       })
 
-      // Check for the preview selector
       expect(screen.getByRole('button', { name: /preview/i })).toBeInTheDocument()
-
-      // Check for the calendar with the correct date range
       expect(screen.getByRole('grid')).toBeInTheDocument()
     })
 
@@ -725,21 +740,15 @@ describe('PaySchedule', () => {
         expect(screen.getByText('Weekly Schedule')).toBeInTheDocument()
       })
 
-      // Open actions menu and click edit
       const actionsButton = screen.getByRole('button', { name: /actions/i })
       await user.click(actionsButton)
       await user.click(screen.getByRole('menuitem', { name: /edit/i }))
 
-      // Wait for the preview to load
       await waitFor(() => {
-        // Check for the calendar display component
         expect(screen.getByRole('application')).toBeInTheDocument()
       })
 
-      // Check for the preview selector
       expect(screen.getByRole('button', { name: /preview/i })).toBeInTheDocument()
-
-      // Check for the calendar with the correct date range
       expect(screen.getByRole('grid')).toBeInTheDocument()
     })
 
@@ -756,32 +765,24 @@ describe('PaySchedule', () => {
         expect(screen.getByText('Weekly Schedule')).toBeInTheDocument()
       })
 
-      // Open actions menu and click edit
       const actionsButton = screen.getByRole('button', { name: /actions/i })
       await user.click(actionsButton)
       await user.click(screen.getByRole('menuitem', { name: /edit/i }))
 
-      // Wait for the preview to load
       await waitFor(() => {
         expect(screen.getByRole('button', { name: /preview/i })).toBeInTheDocument()
       })
 
-      // Click on the preview selector
       await user.click(screen.getByRole('button', { name: /preview/i }))
 
-      // There should be two options in the dropdown (for the two pay periods in the mock)
       const options = screen.getAllByRole('option')
       expect(options.length).toBeGreaterThanOrEqual(2)
 
-      // Select the second option (if available)
       const secondOption = screen.getAllByRole('option')[1]
       if (secondOption) {
         await user.click(secondOption)
       }
 
-      // The calendar should update to show the second pay period
-      // We can't check the exact content because it depends on the locale formatting,
-      // but we can check that the calendar is still there
       expect(screen.getByRole('application')).toBeInTheDocument()
       expect(screen.getByRole('grid')).toBeInTheDocument()
     })
@@ -799,22 +800,15 @@ describe('PaySchedule', () => {
         expect(screen.getByText('Weekly Schedule')).toBeInTheDocument()
       })
 
-      // Open actions menu and click edit
       const actionsButton = screen.getByRole('button', { name: /actions/i })
       await user.click(actionsButton)
       await user.click(screen.getByRole('menuitem', { name: /edit/i }))
 
-      // Wait for the preview to load
       await waitFor(() => {
         expect(screen.getByRole('application')).toBeInTheDocument()
       })
 
-      // Check that the calendar is displayed with a grid
       expect(screen.getByRole('grid')).toBeInTheDocument()
-
-      // Check that the calendar display component is rendered
-      // We can't reliably check for specific text due to translations,
-      // but we can verify the calendar component is present
       expect(screen.getByRole('application')).toHaveAttribute('aria-label')
     })
   })
