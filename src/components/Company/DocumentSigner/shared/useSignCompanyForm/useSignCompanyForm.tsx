@@ -16,7 +16,12 @@ import { SignatureField, ConfirmSignatureField } from './fields'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
 import { useErrorHandling } from '@/partner-hook-utils/useErrorHandling'
-import type { HookSubmitResult } from '@/partner-hook-utils/types'
+import type {
+  BaseFormHookReady,
+  FieldsMetadata,
+  HookLoadingResult,
+  HookSubmitResult,
+} from '@/partner-hook-utils/types'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { SDKInternalError } from '@/types/sdkError'
 
@@ -34,6 +39,22 @@ export interface UseSignCompanyFormProps {
   shouldFocusError?: boolean
 }
 
+export interface UseSignCompanyFormReady extends BaseFormHookReady<
+  FieldsMetadata,
+  SignCompanyFormData
+> {
+  data: {
+    companyForm: Form
+    pdfUrl: string | null
+  }
+  status: { isPending: boolean; mode: 'create' }
+  actions: {
+    onSubmit: (
+      callbacks?: SignCompanyFormSubmitCallbacks,
+    ) => Promise<HookSubmitResult<Form> | undefined>
+  }
+}
+
 const HARDCODED_DEFAULTS: SignCompanyFormData = {
   signature: '',
   confirmSignature: false,
@@ -45,7 +66,7 @@ export function useSignCompanyForm({
   defaultValues: partnerDefaults,
   validationMode = 'onSubmit',
   shouldFocusError = true,
-}: UseSignCompanyFormProps) {
+}: UseSignCompanyFormProps): HookLoadingResult | UseSignCompanyFormReady {
   const formQuery = useCompanyFormsGet({ formId })
   const pdfQuery = useCompanyFormsGetPdf({ formId })
 
@@ -149,6 +170,7 @@ export function useSignCompanyForm({
     },
     status: {
       isPending,
+      mode: 'create' as const,
     },
     actions: { onSubmit },
     errorHandling,
@@ -164,7 +186,6 @@ export function useSignCompanyForm({
   }
 }
 
-export type UseSignCompanyFormResult = ReturnType<typeof useSignCompanyForm>
-export type UseSignCompanyFormReady = Extract<UseSignCompanyFormResult, { data: object }>
+export type UseSignCompanyFormResult = HookLoadingResult | UseSignCompanyFormReady
 export type SignCompanyFormFieldsMetadata = UseSignCompanyFormReady['form']['fieldsMetadata']
 export type SignCompanyFormFields = UseSignCompanyFormReady['form']['Fields']

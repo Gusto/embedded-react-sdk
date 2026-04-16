@@ -17,15 +17,13 @@ export interface UseEmployeeTaxesProps {
   employeeId: string
 }
 
-interface UseEmployeeTaxesReady extends Omit<BaseHookReady, 'data' | 'status'> {
-  data: {
+type UseEmployeeTaxesReady = BaseHookReady<
+  {
     employeeFederalTax?: EmployeeFederalTax
     employeeStateTaxesList: EmployeeStateTax[]
-  }
-  status: {
-    isPending: boolean
-  }
-}
+  },
+  { isPending: boolean }
+>
 
 export type UseEmployeeTaxesResult = HookLoadingResult | UseEmployeeTaxesReady
 

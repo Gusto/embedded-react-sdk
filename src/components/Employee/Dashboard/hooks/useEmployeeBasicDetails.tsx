@@ -12,16 +12,14 @@ export interface UseEmployeeBasicDetailsProps {
   employeeId: string
 }
 
-interface UseEmployeeBasicDetailsReady extends Omit<BaseHookReady, 'data' | 'status'> {
-  data: {
+type UseEmployeeBasicDetailsReady = BaseHookReady<
+  {
     employee: Employee
     currentHomeAddress?: EmployeeAddress
     currentWorkAddress?: EmployeeWorkAddress
-  }
-  status: {
-    isPending: boolean
-  }
-}
+  },
+  { isPending: boolean }
+>
 
 export type UseEmployeeBasicDetailsResult = HookLoadingResult | UseEmployeeBasicDetailsReady
 

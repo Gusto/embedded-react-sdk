@@ -54,16 +54,32 @@ export interface HookErrorHandling {
   clearSubmitError: () => void
 }
 
-/** Base shape for non-form hooks. Individual hooks override `data`. */
-export interface BaseHookReady {
+/**
+ * Base shape for non-form hooks in the ready (loaded) state.
+ * Pass `TData` / `TStatus` so each hook narrows payload and status without `Omit` + rewrite.
+ */
+export interface BaseHookReady<
+  TData extends Record<string, unknown> = Record<string, unknown>,
+  TStatus extends Record<string, unknown> = Record<string, unknown>,
+> {
   isLoading: false
-  data: Record<string, unknown>
-  status: Record<string, unknown>
+  data: TData
+  status: TStatus
   errorHandling: HookErrorHandling
 }
 
-/** Base shape for form hooks. Individual hooks override `data`, `actions`, and `form`. */
-export interface BaseFormHookReady<TFieldsMetadata extends FieldsMetadata = FieldsMetadata> {
+/**
+ * Base shape for form hooks in the ready state.
+ * Individual hooks override `data`, `actions`, and `form`.
+ *
+ * `status.mode` matches {@link HookSubmitResult} (`create` | `update`). Document-sign hooks
+ * surface `mode: 'create'` only — that reflects the submit/API contract, not “create entity”
+ * in the domain sense.
+ */
+export interface BaseFormHookReady<
+  TFieldsMetadata extends FieldsMetadata = FieldsMetadata,
+  TFormData extends FieldValues = FieldValues,
+> {
   isLoading: false
   data: Record<string, unknown>
   status: { isPending: boolean; mode: 'create' | 'update' }
@@ -72,7 +88,7 @@ export interface BaseFormHookReady<TFieldsMetadata extends FieldsMetadata = Fiel
   form: {
     Fields: Record<string, unknown>
     fieldsMetadata: TFieldsMetadata
-    hookFormInternals: HookFormInternals
+    hookFormInternals: HookFormInternals<TFormData>
     getFormSubmissionValues: () => Record<string, unknown> | undefined
   }
 }

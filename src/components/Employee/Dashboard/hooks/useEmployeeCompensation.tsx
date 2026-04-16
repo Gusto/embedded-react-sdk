@@ -26,8 +26,8 @@ export interface UseEmployeeCompensationProps {
   employeeId: string
 }
 
-interface UseEmployeeCompensationReady extends Omit<BaseHookReady, 'data' | 'status'> {
-  data: {
+interface UseEmployeeCompensationReady extends BaseHookReady<
+  {
     primaryJob?: Job
     employeePaymentMethod?: NonNullable<
       GetV1EmployeesEmployeeIdPaymentMethodResponse['employeePaymentMethod']
@@ -35,10 +35,9 @@ interface UseEmployeeCompensationReady extends Omit<BaseHookReady, 'data' | 'sta
     bankAccounts: EmployeeBankAccount[]
     garnishmentList: Garnishment[]
     payStubs: EmployeePayStub[]
-  }
-  status: {
-    isPending: boolean
-  }
+  },
+  { isPending: boolean }
+> {
   pagination: {
     payStubs?: PaginationControlProps
   }

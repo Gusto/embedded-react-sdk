@@ -7,14 +7,7 @@ export interface UseEmployeeFormsProps {
   employeeId: string
 }
 
-interface UseEmployeeFormsReady extends Omit<BaseHookReady, 'data' | 'status'> {
-  data: {
-    formList: Form[]
-  }
-  status: {
-    isPending: boolean
-  }
-}
+type UseEmployeeFormsReady = BaseHookReady<{ formList: Form[] }, { isPending: boolean }>
 
 export type UseEmployeeFormsResult = HookLoadingResult | UseEmployeeFormsReady
 

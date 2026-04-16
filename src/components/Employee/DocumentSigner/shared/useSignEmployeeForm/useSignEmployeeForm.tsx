@@ -58,7 +58,12 @@ import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFiel
 import { withOptions } from '@/partner-hook-utils/form/withOptions'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
 import { useErrorHandling } from '@/partner-hook-utils/useErrorHandling'
-import type { HookSubmitResult } from '@/partner-hook-utils/types'
+import type {
+  BaseFormHookReady,
+  FieldsMetadata,
+  HookLoadingResult,
+  HookSubmitResult,
+} from '@/partner-hook-utils/types'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { I9_FORM_NAME, STATES_ABBR } from '@/shared/constants'
 
@@ -123,9 +128,31 @@ export interface UseSignEmployeeFormProps {
   formId: string
 }
 
+export interface UseSignEmployeeFormReady extends BaseFormHookReady<
+  FieldsMetadata,
+  SignEmployeeFormData
+> {
+  data: {
+    form: Form
+    pdfUrl: string | null | undefined
+  }
+  status: { isPending: boolean; mode: 'create' }
+  actions: {
+    onSubmit: () => Promise<HookSubmitResult<Form> | undefined>
+    addPreparer?: () => void
+    removePreparer?: () => void
+  }
+  form: BaseFormHookReady<FieldsMetadata, SignEmployeeFormData>['form'] & {
+    preparers?: { count: number; canAdd: boolean; canRemove: boolean }
+  }
+}
+
 // ── Hook ───────────────────────────────────────────────────────────────
 
-export function useSignEmployeeForm({ employeeId, formId }: UseSignEmployeeFormProps) {
+export function useSignEmployeeForm({
+  employeeId,
+  formId,
+}: UseSignEmployeeFormProps): HookLoadingResult | UseSignEmployeeFormReady {
   const formQuery = useEmployeeFormsGet({ employeeId, formId })
   const pdfQuery = useEmployeeFormsGetPdf({ employeeId, formId })
 
@@ -259,7 +286,7 @@ export function useSignEmployeeForm({ employeeId, formId }: UseSignEmployeeFormP
   return {
     isLoading: false as const,
     data: { form, pdfUrl },
-    status: { isPending },
+    status: { isPending, mode: 'create' as const },
     actions: {
       onSubmit,
       ...(isI9 ? { addPreparer, removePreparer } : {}),
@@ -324,7 +351,6 @@ function buildPreparerPayload(payload: SignEmployeeFormOutputs, count: number) {
   return result
 }
 
-export type UseSignEmployeeFormResult = ReturnType<typeof useSignEmployeeForm>
-export type UseSignEmployeeFormReady = Extract<UseSignEmployeeFormResult, { data: object }>
+export type UseSignEmployeeFormResult = HookLoadingResult | UseSignEmployeeFormReady
 export type SignEmployeeFormFieldsMetadata = UseSignEmployeeFormReady['form']['fieldsMetadata']
 export type SignEmployeeFormFields = UseSignEmployeeFormReady['form']['Fields']

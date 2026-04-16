@@ -30,7 +30,12 @@ import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFiel
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
 import { withOptions } from '@/partner-hook-utils/form/withOptions'
 import { useErrorHandling } from '@/partner-hook-utils/useErrorHandling'
-import type { HookSubmitResult } from '@/partner-hook-utils/types'
+import type {
+  BaseFormHookReady,
+  FieldsMetadata,
+  HookLoadingResult,
+  HookSubmitResult,
+} from '@/partner-hook-utils/types'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { parsePaymentSpeedDays } from '@/hooks/useCompanyPaymentSpeed'
 import { formatDateToStringDate } from '@/helpers/dateFormatting'
@@ -44,6 +49,22 @@ export interface UsePayScheduleFormProps {
   defaultValues?: Partial<PayScheduleFormData>
   validationMode?: UseFormProps['mode']
   shouldFocusError?: boolean
+}
+
+export interface UsePayScheduleFormReady extends BaseFormHookReady<
+  FieldsMetadata,
+  PayScheduleFormData
+> {
+  data: {
+    paySchedule: PaySchedule | null
+    payPeriodPreview: PaySchedulePreviewPayPeriod[] | null
+    payPreviewLoading: boolean
+    paymentSpeedDays: number | null
+  }
+  status: { isPending: boolean; mode: 'create' | 'update' }
+  actions: {
+    onSubmit: () => Promise<HookSubmitResult<PaySchedule> | undefined>
+  }
 }
 
 const FREQUENCY_OPTIONS: Array<{ value: PayScheduleFrequency; label: string }> = [
@@ -85,7 +106,7 @@ export function usePayScheduleForm({
   defaultValues: partnerDefaults,
   validationMode = 'onSubmit',
   shouldFocusError = true,
-}: UsePayScheduleFormProps) {
+}: UsePayScheduleFormProps): HookLoadingResult | UsePayScheduleFormReady {
   const payScheduleQuery = usePaySchedulesGet(
     { companyId, payScheduleId: payScheduleId ?? '' },
     { enabled: !!payScheduleId },
@@ -307,7 +328,6 @@ export function usePayScheduleForm({
   }
 }
 
-export type UsePayScheduleFormResult = ReturnType<typeof usePayScheduleForm>
-export type UsePayScheduleFormReady = Extract<UsePayScheduleFormResult, { data: object }>
+export type UsePayScheduleFormResult = HookLoadingResult | UsePayScheduleFormReady
 export type PayScheduleFieldsMetadata = UsePayScheduleFormReady['form']['fieldsMetadata']
 export type PayScheduleFormFields = UsePayScheduleFormReady['form']['Fields']
