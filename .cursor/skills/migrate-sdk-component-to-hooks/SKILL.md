@@ -4,7 +4,7 @@ description: >-
   Migrate existing SDK components to the hook-based architecture. Use when
   refactoring a component to use form hooks (useEmployeeDetailsForm,
   useHomeAddressForm, useWorkAddressForm, useCompensationForm, etc.),
-  composing multiple hooks in a single component, or wiring up BaseComponent,
+  composing multiple hooks in a single component, or wiring up BaseBoundaries,
   BaseLayout, SDKFormProvider, and composeSubmitHandler.
 ---
 
@@ -18,23 +18,36 @@ Hooks reference: `.claude/hooks-implementation.md` — covers schema, fields, ho
 
 ### Entry Point
 
-The public component wraps `BaseComponent` and forks to inner components as needed:
+The public component wraps `BaseBoundaries` and forks to inner components as needed. `onEvent` is passed as a prop — do NOT use `BaseComponent` or `useBase()`.
 
 ```tsx
-export function MyComponent(props: MyComponentProps & BaseComponentInterface) {
+export function MyComponent({
+  FallbackComponent,
+  ...props
+}: MyComponentProps & BaseComponentInterface) {
   return (
-    <BaseComponent {...props}>
-      <Root {...props} />
-    </BaseComponent>
+    <BaseBoundaries componentName="Domain.MyComponent" FallbackComponent={FallbackComponent}>
+      {props.employeeId ? (
+        <RootWithEmployee {...props} employeeId={props.employeeId} />
+      ) : (
+        <Root {...props} />
+      )}
+    </BaseBoundaries>
   )
 }
 ```
 
-`BaseComponent` provides:
+`BaseBoundaries` provides:
 
-- `BaseContext` (access via `useBase()`) — gives `onEvent`, `baseSubmitHandler`, error state
-- `BaseBoundaries` — `QueryErrorResetBoundary` + `ErrorBoundary` + `Suspense`
-- Top-level `BaseLayout` — renders generic errors from `useBaseSubmit`
+- `QueryErrorResetBoundary` — resets React Query errors on retry
+- `ErrorBoundary` — catches render errors, shows `FallbackComponent`
+- `Suspense` — shows loading indicator while suspense queries resolve
+
+Unlike `BaseComponent`, `BaseBoundaries` does NOT provide `BaseContext`. This means:
+
+- `onEvent` is passed as a prop through to inner components, not accessed via `useBase()`
+- Error state is managed by the hooks' `errorHandling` bags, not `BaseContext`
+- `BaseLayout` is used explicitly inside the inner component for loading/error display
 
 ### Suspense Data Priming
 
@@ -48,7 +61,7 @@ function RootWithEmployee({ employeeId, ...props }) {
 }
 ```
 
-Do NOT use suspense queries inside the inner component — hooks use regular queries internally. The suspense wrapper exists only to warm the cache within the `Suspense` boundary that `BaseComponent` provides.
+Do NOT use suspense queries inside the inner component — hooks use regular queries internally. The suspense wrapper exists only to warm the cache within the `Suspense` boundary that `BaseBoundaries` provides.
 
 ### Inner Component Split
 
@@ -265,12 +278,13 @@ const startDate = workAddress.form.getFormSubmissionValues()?.effectiveDate
 
 ## 8. Events
 
-Use `onEvent` from `useBase()` to emit component events:
+`onEvent` is received as a prop and threaded through to inner components — do NOT use `useBase()`:
 
 ```tsx
-const { onEvent } = useBase()
-// ...
-onEvent(componentEvents.EMPLOYEE_PROFILE_DONE, { ...data })
+function Root({ onEvent, ...props }: MyComponentProps) {
+  // ...
+  onEvent(componentEvents.EMPLOYEE_PROFILE_DONE, { ...data })
+}
 ```
 
 ## 9. Cleanup Checklist
@@ -286,7 +300,7 @@ After migration, remove dead code from the component directory:
 
 ## 10. Migration Checklist
 
-- [ ] Entry point wraps `BaseComponent` and forks to inner component(s)
+- [ ] Entry point wraps `BaseBoundaries` (not `BaseComponent`) and forks to inner component(s)
 - [ ] Suspense queries primed in wrapper above Root (if entity ID provided)
 - [ ] All hooks initialized with `shouldFocusError: false`
 - [ ] Errors aggregated from all hooks into single array
@@ -296,7 +310,7 @@ After migration, remove dead code from the component directory:
 - [ ] `composeSubmitHandler` used for multi-hook forms, not memoized
 - [ ] Partial update recovery handled for create mode
 - [ ] All field error codes have `validationMessages` for codes that can realistically fire
-- [ ] Events emitted via `onEvent` from `useBase()`
+- [ ] `onEvent` passed as prop (not via `useBase()`)
 - [ ] i18n namespaces loaded and translations consistent with prior component
 - [ ] Dead code from old implementation removed
 - [ ] All existing tests pass (`npm run test -- --run`)
