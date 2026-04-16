@@ -580,11 +580,7 @@
       "endpoints": [
         {
           "method": "GET",
-          "path": "/v1/companies/:companyId/locations"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/companies/:companyId/employees"
+          "path": "/v1/employees/:employeeId/work_addresses"
         },
         {
           "method": "GET",
@@ -593,6 +589,18 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/home_addresses"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyId/employees"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/employees/:employeeId"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/employees/:employeeId/onboarding_status"
         },
         {
           "method": "POST",
@@ -603,16 +611,8 @@
           "path": "/v1/home_addresses/:homeAddressUuid"
         },
         {
-          "method": "PUT",
-          "path": "/v1/work_addresses/:workAddressUuid"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeId"
-        },
-        {
           "method": "GET",
-          "path": "/v1/employees/:employeeId/work_addresses"
+          "path": "/v1/companies/:companyId/locations"
         },
         {
           "method": "POST",
@@ -620,7 +620,7 @@
         },
         {
           "method": "PUT",
-          "path": "/v1/employees/:employeeId/onboarding_status"
+          "path": "/v1/work_addresses/:workAddressUuid"
         }
       ],
       "variables": [
@@ -2131,15 +2131,15 @@
         },
         {
           "method": "GET",
-          "path": "/v1/companies/:companyId/locations"
+          "path": "/v1/employees/:employeeId/home_addresses"
         },
         {
           "method": "POST",
           "path": "/v1/companies/:companyId/employees"
         },
         {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/home_addresses"
+          "method": "PUT",
+          "path": "/v1/employees/:employeeId"
         },
         {
           "method": "POST",
@@ -2150,16 +2150,16 @@
           "path": "/v1/home_addresses/:homeAddressUuid"
         },
         {
-          "method": "PUT",
-          "path": "/v1/work_addresses/:workAddressUuid"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeId"
+          "method": "GET",
+          "path": "/v1/companies/:companyId/locations"
         },
         {
           "method": "POST",
           "path": "/v1/employees/:employeeId/work_addresses"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/work_addresses/:workAddressUuid"
         },
         {
           "method": "GET",
@@ -2265,15 +2265,23 @@
         },
         {
           "method": "GET",
-          "path": "/v1/companies/:companyId/locations"
+          "path": "/v1/employees/:employeeId/work_addresses"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/home_addresses"
         },
         {
           "method": "POST",
           "path": "/v1/companies/:companyId/employees"
         },
         {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/home_addresses"
+          "method": "PUT",
+          "path": "/v1/employees/:employeeId"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/employees/:employeeId/onboarding_status"
         },
         {
           "method": "POST",
@@ -2284,16 +2292,8 @@
           "path": "/v1/home_addresses/:homeAddressUuid"
         },
         {
-          "method": "PUT",
-          "path": "/v1/work_addresses/:workAddressUuid"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeId"
-        },
-        {
           "method": "GET",
-          "path": "/v1/employees/:employeeId/work_addresses"
+          "path": "/v1/companies/:companyId/locations"
         },
         {
           "method": "POST",
@@ -2301,7 +2301,7 @@
         },
         {
           "method": "PUT",
-          "path": "/v1/employees/:employeeId/onboarding_status"
+          "path": "/v1/work_addresses/:workAddressUuid"
         },
         {
           "method": "GET",

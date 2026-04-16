@@ -92,3 +92,20 @@ export interface BaseFormHookReady<
     getFormSubmissionValues: () => Record<string, unknown> | undefined
   }
 }
+
+/**
+ * Narrowed shape for `formHookResult` props on HookField components.
+ *
+ * Derived from {@link BaseFormHookReady} so `errorHandling` and `fieldsMetadata`
+ * stay in sync with hook return types. `control` is typed as `unknown` because
+ * react-hook-form's `Control<T>` is invariant on `T` — the single `as Control`
+ * cast lives in {@link useHookFieldResolution}, the only consumer.
+ */
+export type FormHookResult = {
+  errorHandling: Pick<BaseFormHookReady['errorHandling'], 'errors'>
+  form: Pick<BaseFormHookReady['form'], 'fieldsMetadata'> & {
+    hookFormInternals: {
+      formMethods: { control: unknown }
+    }
+  }
+}
