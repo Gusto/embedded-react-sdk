@@ -78,7 +78,10 @@
     "sdk-app-prod": "npx tsx sdk-app/scripts/start.ts prod --env=demo",
     "sdk-app:setup": "npx tsx sdk-app/scripts/setup.ts",
     "sdk-app:analyze-props": "npx tsx sdk-app/scripts/analyze-component-props.ts",
-    "prototype-app": "vite --config prototype-app/vite.config.ts"
+    "prototype-app": "npx tsx prototype-app/scripts/start.ts --env=demo",
+    "prototype-app:demo": "npx tsx prototype-app/scripts/start.ts --env=demo",
+    "prototype-app:staging": "npx tsx prototype-app/scripts/start.ts --env=staging",
+    "prototype-app:local": "npx tsx prototype-app/scripts/start.ts --env=local"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.5.0",
