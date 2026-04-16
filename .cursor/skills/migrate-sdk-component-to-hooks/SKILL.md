@@ -75,13 +75,40 @@ const homeAddress = useHomeAddressForm({
 
 ### Partial Update Recovery (Create Mode)
 
-When composing hooks that create entities sequentially (e.g. create employee → create home address → create work address), track the created ID in state so that if a later step fails, retrying doesn't re-create the first entity:
+When composing hooks that create entities sequentially (e.g. create employee → create home address → create work address), a mid-sequence failure can leave the first entity created and the downstream ones not. Without recovery, a retry would create a second root entity.
+
+Three rules keep this correct and non-disruptive:
+
+**1. Prefer the onSubmit escape hatch over component state.** Hooks typically accept an entity id as an `onSubmit` argument so a downstream hook can target a just-created parent without the component having to thread it through props. Use that first:
+
+```tsx
+const employeeResult = await employeeDetails.actions.onSubmit()
+if (!employeeResult) return
+await homeAddress.actions.onSubmit({ employeeId: employeeResult.data.uuid })
+```
+
+**2. Defer to the partner for id updates on success.** When creation succeeds, emit the created entity via `onEvent` and let the partner decide what to do — usually navigate away or pass the new id back through props. Do **not** stash the id in component state on success. Storing it triggers a re-render mid-submission, which can flip the hook back into loading state and unmount the form under the user.
+
+**3. Only flip to update mode internally on failure.** If a create partially fails (root created, child errored), then — and only then — capture the created id in state so a retry targets the existing root instead of creating a duplicate:
 
 ```tsx
 const [resolvedEmployeeId, setResolvedEmployeeId] = useState(employeeId)
+
+// In the composed submit handler:
+const employeeResult = await employeeDetails.actions.onSubmit()
+if (!employeeResult) return
+
+const newId = employeeResult.data.uuid
+
+const homeResult = await homeAddress.actions.onSubmit({ employeeId: newId })
+if (!homeResult) {
+  if (!employeeId) setResolvedEmployeeId(newId) // recovery only
+  return
+}
+// success path: no setState — partner navigates / re-renders via onEvent
 ```
 
-Pass `resolvedEmployeeId` to downstream hooks. Update it in the submit handler after a successful create.
+Pass `resolvedEmployeeId` to downstream hooks so retries reuse the created root. `Employee.Profile` is the reference for this pattern.
 
 ## 3. Loading and Error States with BaseLayout
 
