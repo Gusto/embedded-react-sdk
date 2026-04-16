@@ -127,16 +127,15 @@ const { handleSubmit, errorHandling } = composeSubmitHandler(
 )
 ```
 
-**For plain React Query fetches alongside hooks**, use `composeErrorHandler` to merge query errors, nested hook errors, and optional submit state from `useBaseSubmit`:
+**For plain React Query fetches alongside hooks**, use `composeErrorHandler` to merge query errors and nested hook errors:
 
 ```tsx
-const errorHandling = composeErrorHandler(
-  [workAddressesQuery, employeeDetails, homeAddress], // mix of queries and hook results
-  { submitError, setSubmitError }, // optional — from useBaseSubmit
-)
+const errorHandling = composeErrorHandler([workAddressesQuery, employeeDetails, homeAddress]) // mix of queries and hook results
 ```
 
 The returned bag has `{ errors, retryQueries, clearSubmitError }`. Since the shape matches a hook's `errorHandling`, you can nest further by feeding a composed bag back in via `{ errorHandling }`.
+
+The second argument — `{ submitError, setSubmitError }` from `useBaseSubmit` — is only relevant when the component itself runs a submit via `useBaseSubmit`. In a fully hook-driven migration the form hooks own their own submit state, so this can be omitted. Include it only if you have a screen-level submit outside the form hooks that needs to surface errors through the same `BaseLayout`.
 
 ### Loading Gate
 
@@ -245,9 +244,9 @@ Key points:
 - Update `resolvedEmployeeId` on partial failure in create mode
 - Pass `errorHandling.errors` to `BaseLayout` for a unified error surface across all forms
 
-### Adding Extra Queries or Submit State
+### Adding Extra Queries
 
-If the component has React Query fetches outside the form hooks (e.g. a read-only lookup) or screen-level submit state from `useBaseSubmit`, feed them through `composeErrorHandler` alongside the composed submit result:
+If the component has React Query fetches outside the form hooks (e.g. a read-only lookup), feed them through `composeErrorHandler` alongside the composed submit result:
 
 ```tsx
 const { handleSubmit, errorHandling: formsErrorHandling } = composeSubmitHandler(
@@ -257,13 +256,15 @@ const { handleSubmit, errorHandling: formsErrorHandling } = composeSubmitHandler
   },
 )
 
-const errorHandling = composeErrorHandler(
-  [workAddressesQuery, { errorHandling: formsErrorHandling }],
-  { submitError, setSubmitError }, // optional
-)
+const errorHandling = composeErrorHandler([
+  workAddressesQuery,
+  { errorHandling: formsErrorHandling },
+])
 
 return <BaseLayout error={errorHandling.errors}>{/* ... */}</BaseLayout>
 ```
+
+Pass `{ submitError, setSubmitError }` from `useBaseSubmit` as the second argument only if the component runs its own screen-level submit outside the form hooks. Most hook-driven migrations won't need it — the form hooks manage their own submit state.
 
 ## 6. Field Rendering
 
