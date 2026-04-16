@@ -13,6 +13,8 @@ export { SelfOnboardingFlow } from './SelfOnboardingFlow/SelfOnboardingFlow'
 export { EmployeeDocuments } from './EmployeeDocuments'
 export { DashboardFlow } from './Dashboard'
 export type { DashboardFlowProps } from './Dashboard'
+export { HomeAddress } from './home-address/management/HomeAddress'
+export type { HomeAddressProps } from './home-address/management/HomeAddress'
 
 export { EmploymentEligibility } from './DocumentSigner/EmploymentEligibility'
 export type { EmploymentEligibilityProps } from './DocumentSigner/EmploymentEligibility'

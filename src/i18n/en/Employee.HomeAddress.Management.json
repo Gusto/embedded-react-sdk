@@ -1,0 +1,24 @@
+{
+  "title": "Home address",
+  "backCta": "Back",
+  "currentSectionTitle": "Current address",
+  "changeCta": "Change home address",
+  "historySectionTitle": "Address history",
+  "historyEmpty": "No previous addresses",
+  "columns": {
+    "address": "Address",
+    "location": "City, state, ZIP",
+    "effectiveDate": "Effective date",
+    "status": "Status"
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "changeModalTitle": "Change home address",
+  "submitCta": "Save",
+  "cancelCta": "Cancel",
+  "form": {
+    "effectiveDateRequired": "Effective date is required"
+  }
+}

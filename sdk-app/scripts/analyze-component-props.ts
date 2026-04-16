@@ -16,7 +16,7 @@
  * Run: npx tsx sdk-app/scripts/analyze-component-props.ts
  */
 import { resolve } from 'path'
-import { writeFileSync } from 'fs'
+import { existsSync, writeFileSync } from 'fs'
 import { Project, SyntaxKind, type Type } from 'ts-morph'
 
 const ROOT = resolve(import.meta.dirname, '../..')
@@ -87,6 +87,11 @@ function analyzeComponents(): Record<string, ComponentData> {
 
   for (const [namespace, indexPath] of Object.entries(NAMESPACES)) {
     const fullPath = resolve(ROOT, indexPath)
+    if (!existsSync(fullPath)) {
+      // eslint-disable-next-line no-console
+      console.warn(`  Skipping missing namespace file: ${indexPath}`)
+      continue
+    }
     const sourceFile = project.addSourceFileAtPath(fullPath)
 
     for (const exportDecl of sourceFile.getExportDeclarations()) {
