@@ -5,14 +5,10 @@ import { useTaxRequirementsGetSuspense } from '@gusto/embedded-api/react-query/t
 import { z } from 'zod'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Head } from './Head'
-import { StateTaxesFormProvider } from './context'
-import { Form } from './Form'
-import { Actions } from './Actions'
+import { StateTaxesFormPresentation } from './StateTaxesFormPresentation'
 import type { BaseComponentInterface, CommonComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
 import { useI18n } from '@/i18n/I18n'
-import { Flex } from '@/components/Common/Flex/Flex'
 import { Form as HtmlForm } from '@/components/Common/Form'
 import { componentEvents } from '@/shared/constants'
 import { useBase } from '@/components/Base'
@@ -30,7 +26,7 @@ export function StateTaxesForm(props: StateTaxesFormProps & BaseComponentInterfa
   )
 }
 
-function Root({ companyId, state, className, children }: StateTaxesFormProps) {
+function Root({ companyId, state }: StateTaxesFormProps) {
   useI18n('Company.StateTaxes')
   const { onEvent, baseSubmitHandler } = useBase()
   const { t } = useTranslation('Company.StateTaxes', { keyPrefix: 'form' })
@@ -40,13 +36,11 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
   const { mutateAsync: updateStateTax, isPending: isPendingUpdate } =
     useTaxRequirementsUpdateStateMutation()
 
-  // Schema and default value generation
   const { dynamicSchema, defaultValues } = useMemo(() => {
     const schemaShape: Record<string, z.ZodObject> = {}
     const values: Partial<Record<string, Record<string, string | boolean | number | undefined>>> =
       {}
 
-    //Looping through each requirement set
     stateTaxRequirements.requirementSets?.forEach(requirementSet => {
       if (!requirementSet.key) return
 
@@ -88,7 +82,6 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
           fieldSchema = z.boolean().optional()
         }
         requirementShape[requirementKey] = fieldSchema
-        // --- End Schema Logic ---
       })
 
       if (Object.keys(requirementShape).length > 0) {
@@ -99,14 +92,12 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
 
     const finalSchema = z.object(schemaShape)
 
-    // Return both the schema and the default values
     return {
       dynamicSchema: finalSchema,
       defaultValues: values as z.infer<typeof finalSchema>,
     }
   }, [stateTaxRequirements, t])
 
-  // Infer the type from the schema
   type InferredFormInputs = z.infer<typeof dynamicSchema>
 
   const { control, ...methods } = useForm({
@@ -148,26 +139,15 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
   }
 
   return (
-    <section className={className}>
-      <FormProvider {...methods} control={control}>
-        <HtmlForm onSubmit={methods.handleSubmit(onSubmit)}>
-          <StateTaxesFormProvider
-            value={{ stateTaxRequirements, isPending: isPendingUpdate, state, handleCancel }}
-          >
-            <Flex flexDirection="column" gap={32}>
-              {children ? (
-                children
-              ) : (
-                <>
-                  <Head />
-                  <Form />
-                  <Actions />
-                </>
-              )}
-            </Flex>
-          </StateTaxesFormProvider>
-        </HtmlForm>
-      </FormProvider>
-    </section>
+    <FormProvider {...methods} control={control}>
+      <HtmlForm onSubmit={methods.handleSubmit(onSubmit)}>
+        <StateTaxesFormPresentation
+          stateTaxRequirements={stateTaxRequirements}
+          isPending={isPendingUpdate}
+          state={state}
+          handleCancel={handleCancel}
+        />
+      </HtmlForm>
+    </FormProvider>
   )
 }
