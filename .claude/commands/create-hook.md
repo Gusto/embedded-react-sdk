@@ -118,6 +118,8 @@ Key imports:
 
 **Typing:** Declare a ready-state interface that extends `BaseFormHookReady<FieldsMetadata, {Name}FormData>`, narrow `data`, `status`, and `actions` as needed, and annotate the hook with `HookLoadingResult | Use{Name}Ready`. Export `Use{Name}Result` as `HookLoadingResult | Use{Name}Ready`. Document-sign hooks always set `status.mode` to `'create'` on the ready branch (see JSDoc on `BaseFormHookReady` in `src/partner-hook-utils/types.ts`). Non-form hooks use `BaseHookReady<TData, TStatus>` instead of `Omit<BaseHookReady, …>`.
 
+**Partner composition:** Each hook returns its own `errorHandling`. For multi-form screens, partners call `composeSubmitHandler(forms, onAllValid)` which returns `{ handleSubmit, errorHandling }` aggregated across the passed forms. The result is a valid `composeErrorHandler` input, so screens that need extra `@gusto/embedded-api` queries or screen-level submit state feed it into `composeErrorHandler([submitResult, ...extras], submitState)`.
+
 #### `index.ts`
 
 Barrel file re-exporting everything from the hook, schema, and fields.

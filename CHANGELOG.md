@@ -4,6 +4,26 @@
 
 ### Breaking Changes
 
+#### `composeSubmitHandler` now returns `{ handleSubmit, errorHandling }`
+
+`composeSubmitHandler` now returns an object with both the submit event handler
+and an aggregated `errorHandling` bag built from the forms it receives, instead
+of returning the submit handler directly. Partners who only need one shared error
+surface across multiple forms no longer have to call `composeErrorHandler`
+themselves.
+
+- **Before**: `const handleSubmit = composeSubmitHandler([formA, formB], onAllValid)`
+- **After**: `const { handleSubmit, errorHandling } = composeSubmitHandler([formA, formB], onAllValid)`
+
+For screens that also need to combine extra `@gusto/embedded-api` queries into
+the same error surface, pass the `composeSubmitHandler` result into
+`composeErrorHandler` alongside those queries:
+
+```tsx
+const submitResult = composeSubmitHandler([formA, formB], onAllValid)
+const errorHandling = composeErrorHandler([submitResult, extraQuery])
+```
+
 #### Hooks now exported from main entry point
 
 All form hooks have graduated from experimental to stable. They are now available

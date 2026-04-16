@@ -308,7 +308,7 @@ const errorHandling = composeErrorHandler(queries, { submitError, setSubmitError
 
 You can pass **nested SDK hook results** (objects with `errorHandling`) plus extra React Query results in the first array — see `composeErrorHandler` in `src/partner-hook-utils/composeErrorHandler.ts`.
 
-**Multi-form screens:** `composeSubmitHandler` only validates and runs the submit chain; it does **not** merge API errors. Partners that want one combined error surface should use **`composeErrorHandler([hookA, hookB, ...extraQueries], optionalScreenSubmit)`** alongside `composeSubmitHandler`.
+**Multi-form screens:** `composeSubmitHandler` coordinates validation + ordered submits **and** returns `{ handleSubmit, errorHandling }` aggregated across the forms it receives. Partners that want to combine in extra `@gusto/embedded-api` queries or screen-level submit state feed the result into **`composeErrorHandler([submitResult, ...extraQueries], optionalScreenSubmit)`**.
 
 `composeErrorHandler` returns `HookErrorHandling`:
 

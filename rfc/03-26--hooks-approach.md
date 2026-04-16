@@ -507,7 +507,7 @@ function EmployeeProfile({ employeeId, companyId }: Props) {
 
   const isPending = detailsForm.status.isPending || addressForm.status.isPending || workForm.status.isPending
 
-  const handleSubmit = composeSubmitHandler(
+  const { handleSubmit } = composeSubmitHandler(
     [detailsForm, addressForm, workForm],
     async () => {
       const detailsResult = await detailsForm.actions.onSubmit()
