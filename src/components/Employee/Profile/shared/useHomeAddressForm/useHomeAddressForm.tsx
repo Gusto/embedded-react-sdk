@@ -52,9 +52,20 @@ export interface UseHomeAddressFormProps {
   shouldFocusError?: boolean
 }
 
+export interface HomeAddressFields {
+  Street1: typeof Street1Field
+  Street2: typeof Street2Field
+  City: typeof CityField
+  State: typeof StateField
+  Zip: typeof ZipField
+  CourtesyWithholding: typeof CourtesyWithholdingField
+  EffectiveDate: typeof EffectiveDateField | undefined
+}
+
 export interface UseHomeAddressFormReady extends BaseFormHookReady<
   FieldsMetadata,
-  HomeAddressFormData
+  HomeAddressFormData,
+  HomeAddressFields
 > {
   data: {
     homeAddress: EmployeeAddress | null
