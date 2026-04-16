@@ -49,19 +49,9 @@ Unlike `BaseComponent`, `BaseBoundaries` does NOT provide `BaseContext`. This me
 - Error state is managed by the hooks' `errorHandling` bags, not `BaseContext`
 - `BaseLayout` is used explicitly inside the inner component for loading/error display
 
-### Suspense Data Priming
+### Suspense Boundary
 
-If the component receives an entity ID, prime suspense queries in a wrapper above `Root` so data is cached before hooks run:
-
-```tsx
-function RootWithEmployee({ employeeId, ...props }) {
-  useEmployeesGetSuspense({ employeeId })
-  useEmployeeAddressesGetSuspense({ employeeId })
-  return <Root {...props} employeeId={employeeId} />
-}
-```
-
-Do NOT use suspense queries inside the inner component — hooks use regular queries internally. The suspense wrapper exists only to warm the cache within the `Suspense` boundary that `BaseBoundaries` provides.
+`BaseBoundaries` provides a `Suspense` boundary. This is needed for `useI18n` / `useTranslation` and similar hooks that suspend. Prefer non-suspense queries for data fetching — the form hooks use regular queries internally and manage their own loading states via `isLoading`.
 
 ### Inner Component Split
 
