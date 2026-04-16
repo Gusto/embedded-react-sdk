@@ -78,7 +78,12 @@ function PayScheduleFormRoot({ onEvent, ...hookProps }: PayScheduleFormProps) {
               <Grid gap={32} gridTemplateColumns={{ base: '1fr', small: '1fr 1fr' }}>
                 <div className={style.payScheduleForm}>
                   <Flex flexDirection="column">
-                    <TextInputField name="customName" label={t('labels.name')} isRequired />
+                    <TextInputField
+                      name="customName"
+                      label={t('labels.name')}
+                      isRequired
+                      errorMessage={t('validations.name')}
+                    />
                     <SelectField
                       name="frequency"
                       label={t('labels.frequency')}
@@ -89,6 +94,7 @@ function PayScheduleFormRoot({ onEvent, ...hookProps }: PayScheduleFormProps) {
                         { value: 'Monthly', label: t('frequencies.monthly') },
                       ]}
                       isRequired
+                      errorMessage={t('validations.frequency')}
                     />
                     {Fields.CustomTwicePerMonth !== undefined && (
                       <RadioGroupField
@@ -108,6 +114,7 @@ function PayScheduleFormRoot({ onEvent, ...hookProps }: PayScheduleFormProps) {
                         count: paymentSpeedDays,
                       })}
                       isRequired
+                      errorMessage={t('validations.firstPayDate')}
                       minDate={new Date()}
                     />
                     <DatePickerField
@@ -115,12 +122,14 @@ function PayScheduleFormRoot({ onEvent, ...hookProps }: PayScheduleFormProps) {
                       label={t('labels.firstPayPeriodEndDate')}
                       description={t('descriptions.anchorEndOfPayPeriodDescription')}
                       isRequired
+                      errorMessage={t('validations.firstPayPeriodEndDate')}
                     />
                     <div className={Fields.Day1 !== undefined ? '' : style.visuallyHidden}>
                       <NumberInputField
                         name="day1"
                         label={t('labels.firstPayDayOfTheMonth')}
                         isRequired
+                        errorMessage={t('validations.firstPayDayOfTheMonth')}
                       />
                     </div>
                     <div className={Fields.Day2 !== undefined ? '' : style.visuallyHidden}>
@@ -128,6 +137,7 @@ function PayScheduleFormRoot({ onEvent, ...hookProps }: PayScheduleFormProps) {
                         name="day2"
                         label={t('labels.lastPayDayOfTheMonth')}
                         isRequired
+                        errorMessage={t('validations.lastPayDayOfTheMonth')}
                       />
                     </div>
                   </Flex>
