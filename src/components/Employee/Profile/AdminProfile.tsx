@@ -333,7 +333,10 @@ function AdminProfileReady({
                 <EmployeeFields.Ssn
                   label={t('ssnLabel')}
                   formHookResult={employeeDetails}
-                  validationMessages={{ INVALID_SSN: t('validations.ssn', { ns: 'common' }) }}
+                  validationMessages={{
+                    INVALID_SSN: t('validations.ssn', { ns: 'common' }),
+                    REQUIRED: t('validations.ssnRequired', { ns: 'common' }),
+                  }}
                 />
                 <EmployeeFields.DateOfBirth
                   label={t('dobLabel')}

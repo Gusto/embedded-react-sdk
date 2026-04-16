@@ -145,7 +145,10 @@ export function EmployeeProfile({
               />
               <EmpFields.Ssn
                 label={t('ssnLabel')}
-                validationMessages={{ INVALID_SSN: t('validations.ssn', { ns: 'common' }) }}
+                validationMessages={{
+                  INVALID_SSN: t('validations.ssn', { ns: 'common' }),
+                  REQUIRED: t('validations.ssnRequired', { ns: 'common' }),
+                }}
               />
               <EmpFields.DateOfBirth
                 label={t('dobLabel')}
