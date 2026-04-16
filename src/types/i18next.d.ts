@@ -1707,17 +1707,20 @@ export interface EmployeeHomeAddressManagement{
 "currentSince":string;
 "changeCta":string;
 "historySectionTitle":string;
-"historyEmpty":string;
+"historyEmptyTitle":string;
+"historyEmptyDescription":string;
 "columns":{
 "address":string;
 "startDate":string;
 "endDate":string;
 };
 "changeModalTitle":string;
+"changeModalDescription":string;
+"startDateHelper":string;
 "submitCta":string;
 "cancelCta":string;
 "form":{
-"effectiveDateRequired":string;
+"startDateRequired":string;
 };
 };
 export interface EmployeeHomeAddress{

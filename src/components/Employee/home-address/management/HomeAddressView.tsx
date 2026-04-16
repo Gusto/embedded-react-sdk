@@ -1,18 +1,19 @@
-import { useState } from 'react'
-import { Trans, useTranslation } from 'react-i18next'
+import { useLayoutEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { EmployeeAddress } from '@gusto/embedded-api/models/components/employeeaddress'
+import HouseIcon from '@/assets/icons/house.svg?react'
+import PencilSvg from '@/assets/icons/pencil.svg?react'
+import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import { HomeAddressErrorCodes } from '@/components/Employee/Profile/shared/useHomeAddressForm/homeAddressSchema'
 import type { UseHomeAddressFormReady } from '@/components/Employee/Profile/shared/useHomeAddressForm'
 import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import type { HookSubmitResult } from '@/partner-hook-utils/types'
-import { DataView, HamburgerMenu, useDataView } from '@/components/Common'
+import { DataView, EmptyData, HamburgerMenu, useDataView } from '@/components/Common'
 import { Flex, FlexItem } from '@/components/Common/Flex/Flex'
 import { Grid } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { addDays, formatDateLongWithYear, normalizeToDate } from '@/helpers/dateFormatting'
 import { getCityStateZip, getStreet } from '@/helpers/formattedStrings'
-import PencilSvg from '@/assets/icons/pencil.svg?react'
-import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 
 export interface HomeAddressViewProps {
   homeAddressForm: UseHomeAddressFormReady
@@ -31,6 +32,27 @@ export function HomeAddressView({
   const { t: tHa } = useTranslation('Employee.HomeAddress')
   const Components = useComponentContext()
   const [isChangeModalOpen, setIsChangeModalOpen] = useState(false)
+  const changeAddressModalContainerRef = useRef<HTMLDivElement>(null)
+  const [changeAddressModalPortal, setChangeAddressModalPortal] = useState<HTMLElement | undefined>(
+    undefined,
+  )
+
+  useLayoutEffect(() => {
+    if (!isChangeModalOpen) {
+      setChangeAddressModalPortal(undefined)
+      return
+    }
+    const syncPortal = () => {
+      setChangeAddressModalPortal(changeAddressModalContainerRef.current ?? undefined)
+    }
+    syncPortal()
+    if (changeAddressModalContainerRef.current == null) {
+      const id = requestAnimationFrame(syncPortal)
+      return () => {
+        cancelAnimationFrame(id)
+      }
+    }
+  }, [isChangeModalOpen])
 
   const {
     data: { homeAddress, homeAddresses },
@@ -40,7 +62,7 @@ export function HomeAddressView({
   } = homeAddressForm
 
   const {
-    Fields: { Street1, Street2, City, State, Zip, CourtesyWithholding, EffectiveDate },
+    Fields: { Street1, Street2, City, State, Zip, EffectiveDate },
   } = form
 
   const zipValidation = {
@@ -48,8 +70,8 @@ export function HomeAddressView({
     [HomeAddressErrorCodes.INVALID_ZIP]: tHa('validations.zip'),
   }
 
-  const effectiveDateValidation = {
-    [HomeAddressErrorCodes.REQUIRED]: t('form.effectiveDateRequired'),
+  const startDateValidation = {
+    [HomeAddressErrorCodes.REQUIRED]: t('form.startDateRequired'),
   }
 
   const chronologicalAsc = [...(homeAddresses ?? [])].sort((a, b) => {
@@ -61,7 +83,8 @@ export function HomeAddressView({
     return aDate.localeCompare(bDate)
   })
 
-  const sortedHistory = [...chronologicalAsc].reverse()
+  const historyAddresses = chronologicalAsc.filter(address => address.active !== true)
+  const sortedHistory = [...historyAddresses].reverse()
 
   const historyEndDate = (row: EmployeeAddress) => {
     const idx = chronologicalAsc.findIndex(a => a.uuid === row.uuid)
@@ -120,7 +143,15 @@ export function HomeAddressView({
         ]}
       />
     ),
-    emptyState: () => <Components.Text>{t('historyEmpty')}</Components.Text>,
+    emptyState: () => (
+      <div data-testid="home-address-history-empty">
+        <EmptyData
+          icon={<HouseIcon aria-hidden />}
+          title={t('historyEmptyTitle')}
+          description={t('historyEmptyDescription')}
+        />
+      </div>
+    ),
   })
 
   const handleSave = async () => {
@@ -186,6 +217,7 @@ export function HomeAddressView({
           setIsChangeModalOpen(false)
         }}
         shouldCloseOnBackdropClick={false}
+        containerRef={changeAddressModalContainerRef}
         footer={
           <Flex flexDirection="row" gap={12} justifyContent="flex-end">
             <Components.Button
@@ -210,15 +242,23 @@ export function HomeAddressView({
       >
         <Flex flexDirection="column" gap={16}>
           <Components.Heading as="h2">{t('changeModalTitle')}</Components.Heading>
-          <Components.Text>{tHa('desc')}</Components.Text>
+          <Components.Text variant="supporting">{t('changeModalDescription')}</Components.Text>
           <SDKFormProvider formHookResult={homeAddressForm}>
             <Grid
               gridTemplateColumns={{
                 base: '1fr',
-                small: ['1fr', '1fr'],
+                small: '1fr',
               }}
               gap={20}
             >
+              {EffectiveDate ? (
+                <EffectiveDate
+                  label={t('columns.startDate')}
+                  description={t('startDateHelper')}
+                  validationMessages={startDateValidation}
+                  portalContainer={changeAddressModalPortal}
+                />
+              ) : null}
               <Street1
                 label={tHa('street1')}
                 validationMessages={{
@@ -242,32 +282,9 @@ export function HomeAddressView({
                 validationMessages={{
                   [HomeAddressErrorCodes.REQUIRED]: tHa('validations.state'),
                 }}
+                portalContainer={changeAddressModalPortal}
               />
               <Zip label={tHa('zip')} validationMessages={zipValidation} />
-              <CourtesyWithholding
-                label={tHa('courtesyWithholdingLabel')}
-                description={
-                  <>
-                    {tHa('courtesyWithholdingDescription')}
-                    <Trans
-                      t={tHa}
-                      i18nKey="learnMoreCta"
-                      components={{
-                        LearnMoreLink: <Components.Link />,
-                      }}
-                    />
-                  </>
-                }
-                validationMessages={{
-                  [HomeAddressErrorCodes.REQUIRED]: tHa('validations.street1'),
-                }}
-              />
-              {EffectiveDate ? (
-                <EffectiveDate
-                  label={tHa('effectiveDate')}
-                  validationMessages={effectiveDateValidation}
-                />
-              ) : null}
             </Grid>
           </SDKFormProvider>
         </Flex>

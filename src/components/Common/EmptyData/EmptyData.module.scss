@@ -20,3 +20,16 @@
   max-width: 100%;
   display: block;
 }
+
+.iconSlot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--g-colorBodySubContent);
+
+  :global(svg) {
+    display: block;
+    width: toRem(48);
+    height: toRem(48);
+  }
+}

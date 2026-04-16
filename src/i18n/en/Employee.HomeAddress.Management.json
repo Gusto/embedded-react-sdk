@@ -8,16 +8,19 @@
   "currentSince": "Since {{date}}",
   "changeCta": "Change address",
   "historySectionTitle": "Home address history",
-  "historyEmpty": "No address history",
+  "historyEmptyTitle": "No address history yet",
+  "historyEmptyDescription": "Once this employee has had more than one home address, their previous addresses will appear in this list.",
   "columns": {
     "address": "Address",
     "startDate": "Start date",
     "endDate": "End date"
   },
-  "changeModalTitle": "Change address",
+  "changeModalTitle": "Update home address",
+  "changeModalDescription": "This information is used for payroll, benefits, and HR, so please make sure it's accurate.",
+  "startDateHelper": "The date the employee started living at this address.",
   "submitCta": "Save",
   "cancelCta": "Cancel",
   "form": {
-    "effectiveDateRequired": "Effective date is required"
+    "startDateRequired": "Start date is required"
   }
 }
