@@ -79,6 +79,7 @@ export interface BaseHookReady<
 export interface BaseFormHookReady<
   TFieldsMetadata extends FieldsMetadata = FieldsMetadata,
   TFormData extends FieldValues = FieldValues,
+  TFields extends object = Record<string, unknown>,
 > {
   isLoading: false
   data: Record<string, unknown>
@@ -86,7 +87,7 @@ export interface BaseFormHookReady<
   actions: Record<string, unknown>
   errorHandling: HookErrorHandling
   form: {
-    Fields: Record<string, unknown>
+    Fields: TFields
     fieldsMetadata: TFieldsMetadata
     hookFormInternals: HookFormInternals<TFormData>
     getFormSubmissionValues: () => Record<string, unknown> | undefined

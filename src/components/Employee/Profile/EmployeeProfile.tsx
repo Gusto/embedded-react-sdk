@@ -8,6 +8,7 @@ import type { EmployeeDetailsOptionalFieldsToRequire } from './shared/useEmploye
 import { useHomeAddressForm } from './shared/useHomeAddressForm'
 import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { composeSubmitHandler } from '@/partner-hook-utils/form/composeSubmitHandler'
+import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { SelectField } from '@/components/Common'
 import { Grid } from '@/components/Common/Grid/Grid'
 import { ActionsLayout } from '@/components/Common'
@@ -70,18 +71,19 @@ export function EmployeeProfile({
   const workAddresses = workAddressesQuery.data?.employeeWorkAddressesList
   const activeWorkAddress = workAddresses?.find(address => address.active)
 
-  const allErrors = [...employeeDetails.errorHandling.errors, ...homeAddress.errorHandling.errors]
-
   if (employeeDetails.isLoading || homeAddress.isLoading || workAddressesQuery.isLoading) {
-    return <BaseLayout isLoading error={allErrors} />
+    const loadingErrorHandling = composeErrorHandler([
+      employeeDetails,
+      homeAddress,
+      workAddressesQuery,
+    ])
+    return <BaseLayout isLoading error={loadingErrorHandling.errors} />
   }
 
   const EmpFields = employeeDetails.form.Fields
   const HomeFields = homeAddress.form.Fields
 
-  const activeForms = [employeeDetails, homeAddress] as const
-
-  const composedHandler = composeSubmitHandler([...activeForms], async () => {
+  const submitResult = composeSubmitHandler([employeeDetails, homeAddress], async () => {
     const employeeResult = await employeeDetails.actions.onSubmit({
       onEmployeeCreated: emp => {
         onEvent(componentEvents.EMPLOYEE_CREATED, emp)
@@ -110,12 +112,14 @@ export function EmployeeProfile({
     onEvent(componentEvents.EMPLOYEE_PROFILE_DONE, employeeResult.data)
   })
 
+  const errorHandling = composeErrorHandler([submitResult, workAddressesQuery])
+
   const isPending = employeeDetails.status.isPending || homeAddress.status.isPending
 
   return (
     <section className={className}>
-      <BaseLayout error={allErrors}>
-        <Form onSubmit={composedHandler}>
+      <BaseLayout error={errorHandling.errors}>
+        <Form onSubmit={submitResult.handleSubmit}>
           <Grid gridTemplateColumns="1fr" gap={24}>
             <div>
               <Components.Heading as="h2">{t('title')}</Components.Heading>

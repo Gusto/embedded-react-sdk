@@ -55,9 +55,20 @@ export interface UseEmployeeDetailsFormProps {
   shouldFocusError?: boolean
 }
 
+export interface EmployeeDetailsFields {
+  FirstName: typeof FirstNameField
+  MiddleInitial: typeof MiddleInitialField
+  LastName: typeof LastNameField
+  Email: typeof EmailField
+  DateOfBirth: typeof DateOfBirthField
+  Ssn: typeof SsnField
+  SelfOnboarding: typeof SelfOnboardingField | undefined
+}
+
 export interface UseEmployeeDetailsFormReady extends BaseFormHookReady<
   FieldsMetadata,
-  EmployeeDetailsFormData
+  EmployeeDetailsFormData,
+  EmployeeDetailsFields
 > {
   data: {
     employee: Employee | null
