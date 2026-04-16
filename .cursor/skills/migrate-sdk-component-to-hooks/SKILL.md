@@ -89,35 +89,49 @@ Pass `resolvedEmployeeId` to downstream hooks. Update it in the submit handler a
 
 ### Error Aggregation
 
-Aggregate errors from all hooks into a single array:
+Prefer `composeErrorHandler` / `composeSubmitHandler` over manual array spreading. These helpers produce a single `HookErrorHandling` bag — the same shape every SDK hook returns — that drives `BaseLayout`'s error alert, retry, and clear-submit-error behavior.
+
+**For multiple form hooks composed on a page**, use `composeSubmitHandler` — it returns both the submit handler and an aggregated `errorHandling` covering every form passed in:
 
 ```tsx
-const allErrors = [
-  ...employeeDetails.errorHandling.errors,
-  ...homeAddress.errorHandling.errors,
-  ...workAddress.errorHandling.errors,
-]
+const { handleSubmit, errorHandling } = composeSubmitHandler(
+  [employeeDetails, homeAddress, workAddress],
+  async () => {
+    /* submit sequence */
+  },
+)
 ```
+
+**For plain React Query fetches alongside hooks**, use `composeErrorHandler` to merge query errors, nested hook errors, and optional submit state from `useBaseSubmit`:
+
+```tsx
+const errorHandling = composeErrorHandler(
+  [workAddressesQuery, employeeDetails, homeAddress], // mix of queries and hook results
+  { submitError, setSubmitError }, // optional — from useBaseSubmit
+)
+```
+
+The returned bag has `{ errors, retryQueries, clearSubmitError }`. Since the shape matches a hook's `errorHandling`, you can nest further by feeding a composed bag back in via `{ errorHandling }`.
 
 ### Loading Gate
 
-When any hook is loading, render `BaseLayout` with `isLoading` and errors. This shows a loading indicator, or errors if a query failed (so users see a retry option instead of an infinite spinner):
+When any hook is loading, render `BaseLayout` with `isLoading` and the composed errors. This shows a loading indicator, or errors if a query failed (so users see a retry option instead of an infinite spinner):
 
 ```tsx
 if (employeeDetails.isLoading || homeAddress.isLoading || workAddress.isLoading) {
-  return <BaseLayout isLoading error={allErrors} />
+  return <BaseLayout isLoading error={errorHandling.errors} />
 }
 ```
 
 ### Ready State
 
-Wrap the form content in `BaseLayout` with errors to display error alerts above the form:
+Wrap the form content in `BaseLayout` with the composed errors to display error alerts above the form:
 
 ```tsx
 return (
   <section className={className}>
-    <BaseLayout error={allErrors}>
-      <Form onSubmit={composedHandler}>{/* form content */}</Form>
+    <BaseLayout error={errorHandling.errors}>
+      <Form onSubmit={handleSubmit}>{/* form content */}</Form>
     </BaseLayout>
   </section>
 )
@@ -168,12 +182,12 @@ When a hook's fields are split across the layout, use `formHookResult` prop on *
 
 ## 5. Composing Submissions with composeSubmitHandler
 
-`composeSubmitHandler` validates all forms simultaneously, focuses the first invalid field across forms, and only calls `onAllValid` when every form passes.
+`composeSubmitHandler` validates all forms simultaneously, focuses the first invalid field across forms, and only calls `onAllValid` when every form passes. It returns `{ handleSubmit, errorHandling }` — the `errorHandling` aggregates every form's error state so you can drive a single `BaseLayout` from it.
 
 ```tsx
 const activeForms = [employeeDetails, ...(showHomeAddress ? [homeAddress] : []), workAddress]
 
-const composedHandler = composeSubmitHandler(activeForms, async () => {
+const { handleSubmit, errorHandling } = composeSubmitHandler(activeForms, async () => {
   const employeeResult = await employeeDetails.actions.onSubmit({
     /* callbacks */
   })
@@ -200,10 +214,31 @@ const composedHandler = composeSubmitHandler(activeForms, async () => {
 
 Key points:
 
-- `activeForms` array determines which forms are validated — conditionally exclude forms whose sections are hidden
-- Do NOT memoize `activeForms` or `composedHandler` — hook return values are not stable references
+- `activeForms` array determines which forms are validated and contributes to `errorHandling` — conditionally exclude forms whose sections are hidden
+- Do NOT memoize `activeForms` or the `composeSubmitHandler` result — hook return values are not stable references
 - Submit sequentially, checking each result — return early on failure to prevent cascading errors
 - Update `resolvedEmployeeId` on partial failure in create mode
+- Pass `errorHandling.errors` to `BaseLayout` for a unified error surface across all forms
+
+### Adding Extra Queries or Submit State
+
+If the component has React Query fetches outside the form hooks (e.g. a read-only lookup) or screen-level submit state from `useBaseSubmit`, feed them through `composeErrorHandler` alongside the composed submit result:
+
+```tsx
+const { handleSubmit, errorHandling: formsErrorHandling } = composeSubmitHandler(
+  [employeeDetails, homeAddress],
+  async () => {
+    /* ... */
+  },
+)
+
+const errorHandling = composeErrorHandler(
+  [workAddressesQuery, { errorHandling: formsErrorHandling }],
+  { submitError, setSubmitError }, // optional
+)
+
+return <BaseLayout error={errorHandling.errors}>{/* ... */}</BaseLayout>
+```
 
 ## 6. Field Rendering
 
@@ -327,11 +362,10 @@ After migration, remove dead code from the component directory:
 ## 10. Migration Checklist
 
 - [ ] Entry point wraps `BaseBoundaries` (not `BaseComponent`) and forks to inner component(s)
-- [ ] Suspense queries primed in wrapper above Root (if entity ID provided)
 - [ ] All hooks initialized with `shouldFocusError: false`
-- [ ] Errors aggregated from all hooks into single array
-- [ ] Loading state uses `<BaseLayout isLoading error={allErrors} />`
-- [ ] Ready state wraps content in `<BaseLayout error={allErrors}>`
+- [ ] Errors composed via `composeSubmitHandler` (multi-form) and/or `composeErrorHandler` (extra queries / submit state) rather than manual array spreading
+- [ ] Loading state uses `<BaseLayout isLoading error={errorHandling.errors} />`
+- [ ] Ready state wraps content in `<BaseLayout error={errorHandling.errors}>`
 - [ ] SDKFormProvider rules followed (no nesting, no mixing, no cross-hook fields)
 - [ ] `composeSubmitHandler` used for multi-hook forms, not memoized
 - [ ] Partial update recovery handled for create mode
