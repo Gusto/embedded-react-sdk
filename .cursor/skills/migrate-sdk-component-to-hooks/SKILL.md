@@ -14,6 +14,19 @@ Reference implementation: `PayScheduleForm` — PR #1545 or branch `sdk-774-pay-
 
 Hooks reference: `.claude/hooks-implementation.md` — covers schema, fields, hook internals, error handling, and exports in detail. Read it before starting a migration.
 
+## Core Principle: The Hook Owns the Business Logic
+
+Before writing any logic in the component, read the hook. Hooks encapsulate field visibility, conditional requiredness, derived data, loading states, and submit behavior. The component is a thin rendering layer around whatever the hook already exposes.
+
+Common anti-patterns to avoid:
+
+- Reaching for `useWatch` to gate field visibility when the hook already returns the field as `undefined` when it shouldn't be shown
+- Duplicating the hook's requiredness logic via component-level conditionals
+- Querying an entity in the component when the hook is already fetching and exposing it via `data` or `status`
+- Computing derived values (e.g. "is this schedule in create vs edit mode") in the component when the hook surfaces them
+
+**Rule of thumb**: if you're writing business logic in the component that every partner using the hook would also need, that logic belongs in the hook. Stop, move it into the hook, and re-export it via the hook's return shape. The SDK component and partner code should look identical in terms of which fields are shown and when.
+
 ## 1. Component Structure
 
 ### Entry Point
@@ -279,13 +292,15 @@ const HomeAddressFields = homeAddress.form.Fields
 
 ### Conditional Fields
 
-Fields that may not exist are `undefined` — guard with truthiness checks:
+**The hook controls field visibility.** When a field shouldn't be shown, the hook returns it as `undefined` on `form.Fields`. Guard with a truthiness check and render — do **not** use `useWatch` or component-level state to decide whether a field should appear:
 
 ```tsx
 {
   WorkAddressFields.EffectiveDate && <WorkAddressFields.EffectiveDate label={t('startDate')} />
 }
 ```
+
+If you find yourself manually gating visibility based on another field's value, that logic almost certainly belongs inside the hook's schema or `Fields` selection. Move it there instead of reproducing it per-component.
 
 ### Validation Messages
 
@@ -341,7 +356,9 @@ Validation translations should live in the component's translation namespace (e.
 
 ### Watching Form Values
 
-When the component needs to react to field values (e.g. toggling sections based on a checkbox), use `useWatch` with the hook's `control`:
+`useWatch` is a last resort — reach for it only when the reactive behavior is genuinely presentational and has no business meaning (e.g. showing a non-functional preview panel). Anything that affects which fields render, which are required, or which get submitted belongs in the hook.
+
+When `useWatch` is the right tool, use it with the hook's `control`:
 
 ```tsx
 const watchedValue = useWatch({
@@ -350,7 +367,7 @@ const watchedValue = useWatch({
 })
 ```
 
-For read-only access without re-renders on every change (e.g. reading at submit time), use `getFormSubmissionValues()`:
+For read-only access at submit time (no re-renders on change), use `getFormSubmissionValues()`:
 
 ```tsx
 const startDate = workAddress.form.getFormSubmissionValues()?.effectiveDate
