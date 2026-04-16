@@ -16,7 +16,7 @@ import { composeSubmitHandler } from '@/partner-hook-utils/form/composeSubmitHan
 import { Grid } from '@/components/Common/Grid/Grid'
 import { ActionsLayout } from '@/components/Common'
 import { Form } from '@/components/Common/Form'
-import { useBase, BaseLayout } from '@/components/Base'
+import { BaseLayout } from '@/components/Base'
 import { SelectField } from '@/components/Common'
 import { useI18n } from '@/i18n'
 import {
@@ -59,11 +59,11 @@ export function AdminProfile({
   isSelfOnboardingEnabled = true,
   className = '',
   dictionary,
+  onEvent,
 }: ProfileProps) {
   useI18n('Employee.Profile')
   useI18n('Employee.HomeAddress')
   useComponentDictionary('Employee.Profile', dictionary)
-  const { onEvent } = useBase()
 
   const [resolvedEmployeeId, setResolvedEmployeeId] = useState(employeeId)
   const isCreateMode = !resolvedEmployeeId
