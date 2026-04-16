@@ -413,6 +413,42 @@
         "contractorUuid"
       ]
     },
+    "Contractor.Landing": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId"
+        }
+      ],
+      "variables": [
+        "companyId",
+        "contractorUuid"
+      ]
+    },
+    "Contractor.DocumentSigner": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid/documents"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/documents/:documentUuid/pdf"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/documents/:documentUuid/sign"
+        }
+      ],
+      "variables": [
+        "contractorUuid",
+        "documentUuid"
+      ]
+    },
     "Contractor.PaymentsList": {
       "endpoints": [
         {
@@ -1948,6 +1984,77 @@
       "variables": [
         "companyUuid",
         "contractorUuid"
+      ]
+    },
+    "Contractor.SelfOnboardingFlow": {
+      "blocks": [
+        "Contractor.Address",
+        "Contractor.ContractorProfile",
+        "Contractor.DocumentSigner",
+        "Contractor.Landing",
+        "Contractor.PaymentMethod",
+        "Contractor.SelfOnboardingFlow",
+        "Contractor.SelfOnboardingSummary"
+      ],
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid/address"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/contractors/:contractorUuid/address"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyUuid/contractors"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/contractors/:contractorUuid"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid/documents"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/documents/:documentUuid/pdf"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/documents/:documentUuid/sign"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid/payment_method"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid/bank_accounts"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/contractors/:contractorUuid/bank_accounts"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/contractors/:contractorUuid/payment_method"
+        }
+      ],
+      "variables": [
+        "companyId",
+        "companyUuid",
+        "contractorUuid",
+        "documentUuid"
       ]
     },
     "Contractor.Payments.PaymentFlow": {

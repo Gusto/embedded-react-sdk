@@ -27,15 +27,20 @@ export function ContractorProfileForm({
   formMethods,
   handleSubmit,
   formState,
+  shouldShowSelfOnboardingToggle,
   shouldShowEmailField,
   shouldShowBusinessFields,
   shouldShowIndividualFields,
+  shouldShowContractorType,
+  shouldShowWageSection,
+  shouldShowStartDate,
   shouldShowHourlyRate,
   shouldShowSsnField,
   shouldShowEinField,
   contractorTypeOptions,
   wageTypeOptions,
   isEditing,
+  isAdmin,
   className,
   existingContractor,
 }: ContractorProfileFormProps) {
@@ -51,44 +56,52 @@ export function ContractorProfileForm({
         <Form onSubmit={handleSubmit}>
           <Grid gridTemplateColumns="1fr" gap={24} className="mb-8">
             <header>
-              <Components.Heading as="h2">{t('title')}</Components.Heading>
-              <Components.Text>{t('subtitle')}</Components.Text>
+              <Components.Heading as="h2">
+                {isAdmin ? t('title') : t('selfOnboardingTitle')}
+              </Components.Heading>
+              <Components.Text>
+                {isAdmin ? t('subtitle') : t('selfOnboardingSubtitle')}
+              </Components.Text>
             </header>
 
             {/* Invite Contractor Card */}
-            <div className={styles.switchFieldContainer}>
-              <Grid gap={16}>
-                {/* Invite Contractor Toggle */}
-                <SwitchField
-                  name="selfOnboarding"
-                  label={t('fields.selfOnboarding.label')}
-                  description={t('fields.selfOnboarding.description')}
-                  isDisabled={
-                    existingContractor &&
-                    existingContractor.onboardingStatus !==
-                      ContractorOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE
-                  }
-                />
-
-                {/* Email Field - shown when inviting contractor */}
-                {shouldShowEmailField && (
-                  <TextInputField
-                    name="email"
-                    label={t('fields.email.label')}
-                    isRequired
-                    type="email"
+            {shouldShowSelfOnboardingToggle && (
+              <div className={styles.switchFieldContainer}>
+                <Grid gap={16}>
+                  {/* Invite Contractor Toggle */}
+                  <SwitchField
+                    name="selfOnboarding"
+                    label={t('fields.selfOnboarding.label')}
+                    description={t('fields.selfOnboarding.description')}
+                    isDisabled={
+                      existingContractor &&
+                      existingContractor.onboardingStatus !==
+                        ContractorOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE
+                    }
                   />
-                )}
-              </Grid>
-            </div>
+
+                  {/* Email Field - shown when inviting contractor */}
+                  {shouldShowEmailField && (
+                    <TextInputField
+                      name="email"
+                      label={t('fields.email.label')}
+                      isRequired
+                      type="email"
+                    />
+                  )}
+                </Grid>
+              </div>
+            )}
 
             {/* Contractor Type */}
-            <RadioGroupField
-              name="contractorType"
-              isRequired
-              label={t('fields.contractorType.label')}
-              options={contractorTypeOptions}
-            />
+            {shouldShowContractorType && (
+              <RadioGroupField
+                name="contractorType"
+                isRequired
+                label={t('fields.contractorType.label')}
+                options={contractorTypeOptions}
+              />
+            )}
 
             {/* Individual Contractor Fields */}
             {shouldShowIndividualFields && (
@@ -131,12 +144,14 @@ export function ContractorProfileForm({
             )}
 
             {/* Wage Type */}
-            <RadioGroupField
-              name="wageType"
-              isRequired
-              label={t('fields.wageType.label')}
-              options={wageTypeOptions}
-            />
+            {shouldShowWageSection && (
+              <RadioGroupField
+                name="wageType"
+                isRequired
+                label={t('fields.wageType.label')}
+                options={wageTypeOptions}
+              />
+            )}
 
             {/* Hourly Rate - shown for hourly contractors */}
             {shouldShowHourlyRate && (
@@ -150,24 +165,30 @@ export function ContractorProfileForm({
             )}
 
             {/* Start Date */}
-            <DatePickerField
-              name="startDate"
-              label={t('fields.startDate.label')}
-              description={t('fields.startDate.description')}
-              isRequired
-            />
+            {shouldShowStartDate && (
+              <DatePickerField
+                name="startDate"
+                label={t('fields.startDate.label')}
+                description={t('fields.startDate.description')}
+                isRequired
+              />
+            )}
           </Grid>
 
           {/* Actions */}
           <Flex gap={12} justifyContent="flex-end">
             <Components.Button type="submit" variant="primary" isDisabled={formState.isSubmitting}>
-              {formState.isSubmitting
-                ? isEditing
-                  ? t('buttons.updating')
-                  : t('buttons.creating')
-                : isEditing
-                  ? t('buttons.update')
-                  : t('buttons.create')}
+              {!isAdmin
+                ? formState.isSubmitting
+                  ? t('buttons.saving')
+                  : t('buttons.continue')
+                : formState.isSubmitting
+                  ? isEditing
+                    ? t('buttons.updating')
+                    : t('buttons.creating')
+                  : isEditing
+                    ? t('buttons.update')
+                    : t('buttons.create')}
             </Components.Button>
           </Flex>
         </Form>

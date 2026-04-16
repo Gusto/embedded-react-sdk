@@ -16,6 +16,7 @@ interface ContractorProfileProps extends CommonComponentInterface<'Contractor.Pr
   companyId: string
   contractorId?: string
   defaultValues?: UseContractorProfileProps['defaultValues']
+  isAdmin?: boolean
 }
 
 interface ContractorProfileConditionalProps {
@@ -52,12 +53,14 @@ function Root({
   defaultValues,
   existingContractor,
   className,
+  isAdmin,
 }: ContractorProfileProps & ContractorProfileConditionalProps) {
   const hookData = useContractorProfile({
     companyId,
     contractorId,
     defaultValues,
     existingContractor,
+    isAdmin,
   })
   return (
     <ContractorProfileForm
