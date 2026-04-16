@@ -10,7 +10,10 @@ description: >-
 
 # Migrating SDK Components to Hook-Based Architecture
 
-Reference implementation: `Employee.Profile` — see `AdminProfile.tsx`, `EmployeeProfile.tsx`, and `Profile.tsx`. If the Profile migration has not been merged to main yet, reference PR #1570 or branch `sdk-777-profile-hook-migration`.
+Reference implementations:
+
+- **Single hook, single form** (recommended default): `PayScheduleForm` — see PR #1545 or branch `sdk-774-pay-schedule-hook`. Clean illustration of the `BaseBoundaries` + `Root` + single-hook shape.
+- **Multiple composed hooks with admin/self-service variants**: `Employee.Profile` (`Profile.tsx`, `AdminProfile.tsx`, `EmployeeProfile.tsx`) — PR #1570 or branch `sdk-777-profile-hook-migration`. Useful when composing hooks and aggregating errors, but its internal fork is a product-specific compromise, not the default model.
 
 Hooks reference: `.claude/hooks-implementation.md` — covers schema, fields, hook internals, error handling, and exports in detail. Read it before starting a migration.
 
@@ -18,48 +21,54 @@ Hooks reference: `.claude/hooks-implementation.md` — covers schema, fields, ho
 
 ### Entry Point
 
-The public component wraps `BaseBoundaries` and forks to inner components as needed. `onEvent` is passed as a prop — do NOT use `BaseComponent` or `useBase()`.
+The public component wraps `BaseBoundaries` and delegates to a single `Root` component that initializes the hook(s) and renders the form. `onEvent` is passed as a prop — do NOT use `BaseComponent` or `useBase()`.
+
+Reference: `PayScheduleForm` on branch `sdk-774-pay-schedule-hook` (PR #1545) is a clean example of the simple single-hook shape.
 
 ```tsx
-export function MyComponent({
-  FallbackComponent,
-  ...props
-}: MyComponentProps & BaseComponentInterface) {
+interface MyComponentProps extends UseMyFormProps {
+  onEvent: OnEventType<EventType, unknown>
+}
+
+export function MyComponent({ onEvent, ...hookProps }: MyComponentProps) {
   return (
-    <BaseBoundaries componentName="Domain.MyComponent" FallbackComponent={FallbackComponent}>
-      {props.employeeId ? (
-        <RootWithEmployee {...props} employeeId={props.employeeId} />
-      ) : (
-        <Root {...props} />
-      )}
+    <BaseBoundaries componentName="Domain.MyComponent">
+      <MyComponentRoot onEvent={onEvent} {...hookProps} />
     </BaseBoundaries>
   )
+}
+
+function MyComponentRoot({ onEvent, ...hookProps }: MyComponentProps) {
+  const form = useMyForm(hookProps)
+  // ...loading gate, handlers, render
 }
 ```
 
 `BaseBoundaries` provides:
 
 - `QueryErrorResetBoundary` — resets React Query errors on retry
-- `ErrorBoundary` — catches render errors, shows `FallbackComponent`
-- `Suspense` — shows loading indicator while suspense queries resolve
+- `ErrorBoundary` — catches render errors, shows `FallbackComponent` if supplied
+- `Suspense` — shows a loading indicator while suspense hooks (like `useI18n` / `useTranslation`) resolve
 
 Unlike `BaseComponent`, `BaseBoundaries` does NOT provide `BaseContext`. This means:
 
-- `onEvent` is passed as a prop through to inner components, not accessed via `useBase()`
+- `onEvent` is passed as a prop through to the `Root` component, not accessed via `useBase()`
 - Error state is managed by the hooks' `errorHandling` bags, not `BaseContext`
-- `BaseLayout` is used explicitly inside the inner component for loading/error display
+- `BaseLayout` is used explicitly inside `Root` for loading/error display
 
 ### Suspense Boundary
 
 `BaseBoundaries` provides a `Suspense` boundary. This is needed for `useI18n` / `useTranslation` and similar hooks that suspend. Prefer non-suspense queries for data fetching — the form hooks use regular queries internally and manage their own loading states via `isLoading`.
 
-### Inner Component Split
+### When to Split Into Multiple Components
 
-When admin and self-service flows have significantly different field visibility, validation, or submission logic, split into separate components (e.g. `AdminProfile` / `EmployeeProfile`) rather than a single component with many conditionals.
+Default to a single `Root`. Split only when two flows genuinely share very little — for example admin vs self-service variants with substantially different fields, validation, and submit sequences. In that case prefer **two separate public components** (`AdminFoo`, `EmployeeFoo`) over a single entry that forks internally.
+
+`Employee.Profile` forks internally (`AdminProfile` / `EmployeeProfile`) to preserve a single public `Profile` surface for partners; that is a product-specific compromise, not the recommended default.
 
 ## 2. Hook Initialization
 
-Initialize all hooks at the top of the inner component. Pass `shouldFocusError: false` to every hook — `composeSubmitHandler` manages cross-form focus.
+Initialize the hook(s) at the top of `Root`. When composing multiple form hooks, pass `shouldFocusError: false` to every hook so `composeSubmitHandler` manages cross-form focus instead of each hook competing for it.
 
 ```tsx
 const employeeDetails = useEmployeeDetailsForm({
@@ -339,7 +348,7 @@ const startDate = workAddress.form.getFormSubmissionValues()?.effectiveDate
 
 ## 8. Events
 
-`onEvent` is received as a prop and threaded through to inner components — do NOT use `useBase()`:
+`onEvent` is received as a prop on the public component and passed through to `Root` — do NOT use `useBase()`:
 
 ```tsx
 function Root({ onEvent, ...props }: MyComponentProps) {
@@ -361,7 +370,7 @@ After migration, remove dead code from the component directory:
 
 ## 10. Migration Checklist
 
-- [ ] Entry point wraps `BaseBoundaries` (not `BaseComponent`) and forks to inner component(s)
+- [ ] Public component wraps `BaseBoundaries` (not `BaseComponent`) and delegates to a single `Root` (split only when flows truly diverge)
 - [ ] All hooks initialized with `shouldFocusError: false`
 - [ ] Errors composed via `composeSubmitHandler` (multi-form) and/or `composeErrorHandler` (extra queries / submit state) rather than manual array spreading
 - [ ] Loading state uses `<BaseLayout isLoading error={errorHandling.errors} />`
