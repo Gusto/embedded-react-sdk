@@ -32,7 +32,32 @@ function ContractorProfileContent() {
               </Flex>
             }
           >
-            Content
+            <Components.DescriptionList
+              items={[
+                {
+                  term: <Components.Text weight="medium">Legal name</Components.Text>,
+                  description: (
+                    <Components.Text>
+                      {contractor.firstName} {contractor.lastName}
+                    </Components.Text>
+                  ),
+                },
+                {
+                  term: <Components.Text>Start date</Components.Text>,
+                  description: <Components.Text>{contractor.startDate}</Components.Text>,
+                },
+                {
+                  term: <Components.Text>Social security number</Components.Text>,
+                  description: (
+                    <Components.Text>{contractor.hasSsn ? 'XXX-XX-XXXX' : '–'}</Components.Text>
+                  ),
+                },
+                {
+                  term: <Components.Text>Email address</Components.Text>,
+                  description: <Components.Text>{contractor.email}</Components.Text>,
+                },
+              ]}
+            />
           </Components.Box>
           <Flex flexDirection="column" gap={32}>
             <Components.Box
@@ -44,7 +69,19 @@ function ContractorProfileContent() {
                 </Flex>
               }
             >
-              Content
+              {contractor.address ? (
+                <Flex flexDirection="column" gap={0}>
+                  <Components.Text weight="medium">{contractor.address.street1}</Components.Text>
+                  {contractor.address.street2 && (
+                    <Components.Text>{contractor.address.street2}</Components.Text>
+                  )}
+                  <Components.Text>
+                    {contractor.address.city}, {contractor.address.state} {contractor.address.zip}
+                  </Components.Text>
+                </Flex>
+              ) : (
+                <Components.Text>–</Components.Text>
+              )}
             </Components.Box>
           </Flex>
         </Flex>
