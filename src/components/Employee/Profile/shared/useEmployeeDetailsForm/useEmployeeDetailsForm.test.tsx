@@ -12,6 +12,7 @@ import {
 } from '@/test/mocks/apis/employees'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
+import { fieldsMetadataEntry } from '@/test/fieldsMetadata'
 import { getFixture } from '@/test/mocks/fixtures/getFixture'
 
 type ReadyResult = Extract<UseEmployeeDetailsFormResult, { isLoading: false }>
@@ -235,9 +236,11 @@ describe('useEmployeeDetailsForm', () => {
       const readyResult = result.current
       assertReady(readyResult)
 
-      expect(readyResult.form.fieldsMetadata.email.isRequired).toBe(true)
-      expect(readyResult.form.fieldsMetadata.ssn.isRequired).toBe(true)
-      expect(readyResult.form.fieldsMetadata.dateOfBirth.isRequired).toBe(false)
+      expect(fieldsMetadataEntry(readyResult.form.fieldsMetadata, 'email').isRequired).toBe(true)
+      expect(fieldsMetadataEntry(readyResult.form.fieldsMetadata, 'ssn').isRequired).toBe(true)
+      expect(fieldsMetadataEntry(readyResult.form.fieldsMetadata, 'dateOfBirth').isRequired).toBe(
+        false,
+      )
     })
 
     it('always includes API-required fields on create', async () => {
@@ -257,9 +260,11 @@ describe('useEmployeeDetailsForm', () => {
       const readyResult = result.current
       assertReady(readyResult)
 
-      expect(readyResult.form.fieldsMetadata.firstName.isRequired).toBe(true)
-      expect(readyResult.form.fieldsMetadata.lastName.isRequired).toBe(true)
-      expect(readyResult.form.fieldsMetadata.email.isRequired).toBe(true)
+      expect(fieldsMetadataEntry(readyResult.form.fieldsMetadata, 'firstName').isRequired).toBe(
+        true,
+      )
+      expect(fieldsMetadataEntry(readyResult.form.fieldsMetadata, 'lastName').isRequired).toBe(true)
+      expect(fieldsMetadataEntry(readyResult.form.fieldsMetadata, 'email').isRequired).toBe(true)
     })
   })
 
@@ -384,9 +389,11 @@ describe('useEmployeeDetailsForm', () => {
       const readyResult = result.current
       assertReady(readyResult)
 
-      expect(readyResult.form.fieldsMetadata.email.isRequired).toBe(false)
-      expect(readyResult.form.fieldsMetadata.ssn.isRequired).toBe(true)
-      expect(readyResult.form.fieldsMetadata.firstName.isRequired).toBe(false)
+      expect(fieldsMetadataEntry(readyResult.form.fieldsMetadata, 'email').isRequired).toBe(false)
+      expect(fieldsMetadataEntry(readyResult.form.fieldsMetadata, 'ssn').isRequired).toBe(true)
+      expect(fieldsMetadataEntry(readyResult.form.fieldsMetadata, 'firstName').isRequired).toBe(
+        false,
+      )
     })
 
     it('reports ssn as required in metadata even when has_ssn is true', async () => {
@@ -419,8 +426,9 @@ describe('useEmployeeDetailsForm', () => {
       const readyResult = result.current
       assertReady(readyResult)
 
-      expect(readyResult.form.fieldsMetadata.ssn.isRequired).toBe(true)
-      expect(readyResult.form.fieldsMetadata.ssn.hasRedactedValue).toBe(true)
+      const ssnMeta = fieldsMetadataEntry(readyResult.form.fieldsMetadata, 'ssn')
+      expect(ssnMeta.isRequired).toBe(true)
+      expect(ssnMeta.hasRedactedValue).toBe(true)
     })
 
     it('allows empty ssn submission when has_ssn is true despite optionalFieldsToRequire', async () => {

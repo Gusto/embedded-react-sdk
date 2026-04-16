@@ -26,8 +26,13 @@ import {
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
 import { withOptions } from '@/partner-hook-utils/form/withOptions'
-import { useErrorHandling } from '@/partner-hook-utils/useErrorHandling'
-import type { HookSubmitResult } from '@/partner-hook-utils/types'
+import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
+import type {
+  BaseFormHookReady,
+  FieldsMetadata,
+  HookLoadingResult,
+  HookSubmitResult,
+} from '@/partner-hook-utils/types'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { SDKInternalError } from '@/types/sdkError'
 import { STATES_ABBR } from '@/shared/constants'
@@ -64,6 +69,38 @@ export interface UseHomeAddressFormProps {
   updateTargetUuid?: string
 }
 
+export type HomeAddressFormFields = {
+  Street1: typeof Street1Field
+  Street2: typeof Street2Field
+  City: typeof CityField
+  State: typeof StateField
+  Zip: typeof ZipField
+  CourtesyWithholding: typeof CourtesyWithholdingField
+  EffectiveDate: typeof EffectiveDateField | undefined
+}
+
+type HomeAddressFormApi = BaseFormHookReady<FieldsMetadata, HomeAddressFormData>['form']
+
+export interface UseHomeAddressFormReady extends Omit<
+  BaseFormHookReady<FieldsMetadata, HomeAddressFormData>,
+  'data' | 'status' | 'actions' | 'form'
+> {
+  data: {
+    homeAddress: EmployeeAddress | null
+    homeAddresses: EmployeeAddress[] | undefined
+  }
+  status: { isPending: boolean; mode: 'create' | 'update' }
+  actions: {
+    onSubmit: (
+      options?: HomeAddressSubmitOptions,
+    ) => Promise<HookSubmitResult<EmployeeAddress> | undefined>
+    deleteHomeAddress: (homeAddressUuid: string) => Promise<boolean>
+  }
+  form: Omit<HomeAddressFormApi, 'Fields'> & {
+    Fields: HomeAddressFormFields
+  }
+}
+
 const getActiveHomeAddress = (addresses?: EmployeeAddress[]) => {
   if (!addresses || addresses.length === 0) return undefined
   return addresses.find(address => address.active) ?? addresses[0]
@@ -79,7 +116,7 @@ export function useHomeAddressForm({
   submissionMode = 'auto',
   defaultValuesStrategy = 'current',
   updateTargetUuid,
-}: UseHomeAddressFormProps) {
+}: UseHomeAddressFormProps): HookLoadingResult | UseHomeAddressFormReady {
   const homeAddressesQuery = useEmployeeAddressesGet(
     { employeeId: employeeId ?? '' },
     { enabled: !!employeeId },
@@ -164,10 +201,14 @@ export function useHomeAddressForm({
     updateHomeAddressMutation.isPending ||
     deleteHomeAddressMutation.isPending
 
-  const { baseSubmitHandler, error: submitError, setError } = useBaseSubmit('HomeAddressForm')
+  const {
+    baseSubmitHandler,
+    error: submitError,
+    setError: setSubmitError,
+  } = useBaseSubmit('HomeAddressForm')
 
   const queries = employeeId ? [homeAddressesQuery] : []
-  const errorHandling = useErrorHandling(queries, { error: submitError, setError })
+  const errorHandling = composeErrorHandler(queries, { submitError, setSubmitError })
 
   const stateOptions = STATES_ABBR.map(abbr => ({
     value: abbr,
@@ -339,7 +380,5 @@ export function useHomeAddressForm({
   }
 }
 
-export type UseHomeAddressFormResult = ReturnType<typeof useHomeAddressForm>
-export type UseHomeAddressFormReady = Extract<UseHomeAddressFormResult, { data: object }>
+export type UseHomeAddressFormResult = HookLoadingResult | UseHomeAddressFormReady
 export type HomeAddressFieldsMetadata = UseHomeAddressFormReady['form']['fieldsMetadata']
-export type HomeAddressFormFields = UseHomeAddressFormReady['form']['Fields']

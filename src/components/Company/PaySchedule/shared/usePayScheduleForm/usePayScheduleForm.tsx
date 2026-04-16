@@ -29,8 +29,13 @@ import {
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
 import { withOptions } from '@/partner-hook-utils/form/withOptions'
-import { useErrorHandling } from '@/partner-hook-utils/useErrorHandling'
-import type { HookSubmitResult } from '@/partner-hook-utils/types'
+import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
+import type {
+  BaseFormHookReady,
+  FieldsMetadata,
+  HookLoadingResult,
+  HookSubmitResult,
+} from '@/partner-hook-utils/types'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { parsePaymentSpeedDays } from '@/hooks/useCompanyPaymentSpeed'
 import { formatDateToStringDate } from '@/helpers/dateFormatting'
@@ -44,6 +49,22 @@ export interface UsePayScheduleFormProps {
   defaultValues?: Partial<PayScheduleFormData>
   validationMode?: UseFormProps['mode']
   shouldFocusError?: boolean
+}
+
+export interface UsePayScheduleFormReady extends BaseFormHookReady<
+  FieldsMetadata,
+  PayScheduleFormData
+> {
+  data: {
+    paySchedule: PaySchedule | null
+    payPeriodPreview: PaySchedulePreviewPayPeriod[] | null
+    payPreviewLoading: boolean
+    paymentSpeedDays: number | null
+  }
+  status: { isPending: boolean; mode: 'create' | 'update' }
+  actions: {
+    onSubmit: () => Promise<HookSubmitResult<PaySchedule> | undefined>
+  }
 }
 
 const FREQUENCY_OPTIONS: Array<{ value: PayScheduleFrequency; label: string }> = [
@@ -85,7 +106,7 @@ export function usePayScheduleForm({
   defaultValues: partnerDefaults,
   validationMode = 'onSubmit',
   shouldFocusError = true,
-}: UsePayScheduleFormProps) {
+}: UsePayScheduleFormProps): HookLoadingResult | UsePayScheduleFormReady {
   const payScheduleQuery = usePaySchedulesGet(
     { companyId, payScheduleId: payScheduleId ?? '' },
     { enabled: !!payScheduleId },
@@ -182,10 +203,14 @@ export function usePayScheduleForm({
 
   const isPending = createPayScheduleMutation.isPending || updatePayScheduleMutation.isPending
 
-  const { baseSubmitHandler, error: submitError, setError } = useBaseSubmit('PayScheduleForm')
+  const {
+    baseSubmitHandler,
+    error: submitError,
+    setError: setSubmitError,
+  } = useBaseSubmit('PayScheduleForm')
 
   const queries = payScheduleId ? [payScheduleQuery, paymentConfigsQuery] : [paymentConfigsQuery]
-  const errorHandling = useErrorHandling(queries, { error: submitError, setError })
+  const errorHandling = composeErrorHandler(queries, { submitError, setSubmitError })
 
   const showCustomTwicePerMonth = watchedFrequency === 'Twice per month'
   const showDay1 =
@@ -307,7 +332,6 @@ export function usePayScheduleForm({
   }
 }
 
-export type UsePayScheduleFormResult = ReturnType<typeof usePayScheduleForm>
-export type UsePayScheduleFormReady = Extract<UsePayScheduleFormResult, { data: object }>
+export type UsePayScheduleFormResult = HookLoadingResult | UsePayScheduleFormReady
 export type PayScheduleFieldsMetadata = UsePayScheduleFormReady['form']['fieldsMetadata']
 export type PayScheduleFormFields = UsePayScheduleFormReady['form']['Fields']
