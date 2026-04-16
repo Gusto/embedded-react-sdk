@@ -3151,6 +3151,7 @@ export interface common{
 "routingNumber":string;
 "accountNumber":string;
 "ssn":string;
+"ssnRequired":string;
 "location":string;
 "dob":string;
 "percentageMin":string;
