@@ -190,22 +190,22 @@
       "endpoints": [
         {
           "method": "GET",
-          "path": "/v1/companies/:companyId/pay_schedules/preview"
+          "path": "/v1/companies/:companyId/pay_schedules"
         },
         {
-          "method": "PUT",
+          "method": "GET",
           "path": "/v1/companies/:companyId/pay_schedules/:payScheduleId"
         },
         {
           "method": "GET",
-          "path": "/v1/companies/:companyId/pay_schedules"
+          "path": "/v1/companies/:companyId/pay_schedules/preview"
         },
         {
           "method": "POST",
           "path": "/v1/companies/:companyId/pay_schedules"
         },
         {
-          "method": "GET",
+          "method": "PUT",
           "path": "/v1/companies/:companyId/pay_schedules/:payScheduleId"
         },
         {
@@ -1836,22 +1836,22 @@
         },
         {
           "method": "GET",
-          "path": "/v1/companies/:companyId/pay_schedules/preview"
+          "path": "/v1/companies/:companyId/pay_schedules"
         },
         {
-          "method": "PUT",
+          "method": "GET",
           "path": "/v1/companies/:companyId/pay_schedules/:payScheduleId"
         },
         {
           "method": "GET",
-          "path": "/v1/companies/:companyId/pay_schedules"
+          "path": "/v1/companies/:companyId/pay_schedules/preview"
         },
         {
           "method": "POST",
           "path": "/v1/companies/:companyId/pay_schedules"
         },
         {
-          "method": "GET",
+          "method": "PUT",
           "path": "/v1/companies/:companyId/pay_schedules/:payScheduleId"
         },
         {
