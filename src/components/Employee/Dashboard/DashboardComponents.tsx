@@ -1,5 +1,5 @@
 import { Dashboard } from './Dashboard'
-import { HomeAddress } from '@/components/Employee/home-address/management/HomeAddress'
+import { HomeAddress } from '@/components/Employee/HomeAddress/management/HomeAddress'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { ensureRequired } from '@/helpers/ensureRequired'
 
