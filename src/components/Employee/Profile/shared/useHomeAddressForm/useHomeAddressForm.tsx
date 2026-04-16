@@ -56,6 +56,11 @@ export interface UseHomeAddressFormProps {
    * `current` fills the form from the active address; `empty` clears fields for add-new flows even when a current address exists.
    */
   defaultValuesStrategy?: 'current' | 'empty'
+  /**
+   * When set with `submissionMode: 'alwaysUpdate'`, the form defaults and PUT target the home address with this UUID
+   * (e.g. editing a row from address history). When omitted, the active address is used.
+   */
+  updateTargetUuid?: string
 }
 
 const getActiveHomeAddress = (addresses?: EmployeeAddress[]) => {
@@ -72,6 +77,7 @@ export function useHomeAddressForm({
   shouldFocusError = true,
   submissionMode = 'auto',
   defaultValuesStrategy = 'current',
+  updateTargetUuid,
 }: UseHomeAddressFormProps) {
   const homeAddressesQuery = useEmployeeAddressesGet(
     { employeeId: employeeId ?? '' },
@@ -80,6 +86,18 @@ export function useHomeAddressForm({
 
   const homeAddresses = homeAddressesQuery.data?.employeeAddressList
   const currentHomeAddress = getActiveHomeAddress(homeAddresses)
+
+  const sourceAddressForDefaults = useMemo(() => {
+    if (
+      submissionMode === 'alwaysUpdate' &&
+      updateTargetUuid &&
+      homeAddresses &&
+      homeAddresses.length > 0
+    ) {
+      return homeAddresses.find(a => a.uuid === updateTargetUuid) ?? currentHomeAddress
+    }
+    return currentHomeAddress
+  }, [submissionMode, updateTargetUuid, homeAddresses, currentHomeAddress])
 
   const isCreateMode =
     submissionMode === 'alwaysCreate'
@@ -113,17 +131,17 @@ export function useHomeAddressForm({
       }
     }
     return {
-      street1: currentHomeAddress?.street1 ?? partnerDefaults?.street1 ?? '',
-      street2: currentHomeAddress?.street2 ?? partnerDefaults?.street2 ?? '',
-      city: currentHomeAddress?.city ?? partnerDefaults?.city ?? '',
-      state: currentHomeAddress?.state ?? partnerDefaults?.state ?? '',
-      zip: currentHomeAddress?.zip ?? partnerDefaults?.zip ?? '',
+      street1: sourceAddressForDefaults?.street1 ?? partnerDefaults?.street1 ?? '',
+      street2: sourceAddressForDefaults?.street2 ?? partnerDefaults?.street2 ?? '',
+      city: sourceAddressForDefaults?.city ?? partnerDefaults?.city ?? '',
+      state: sourceAddressForDefaults?.state ?? partnerDefaults?.state ?? '',
+      zip: sourceAddressForDefaults?.zip ?? partnerDefaults?.zip ?? '',
       courtesyWithholding:
-        currentHomeAddress?.courtesyWithholding ?? partnerDefaults?.courtesyWithholding ?? false,
+        sourceAddressForDefaults?.courtesyWithholding ?? partnerDefaults?.courtesyWithholding ?? false,
       effectiveDate:
-        currentHomeAddress?.effectiveDate?.toString() ?? partnerDefaults?.effectiveDate ?? '',
+        sourceAddressForDefaults?.effectiveDate?.toString() ?? partnerDefaults?.effectiveDate ?? '',
     }
-  }, [defaultValuesStrategy, currentHomeAddress, partnerDefaults])
+  }, [defaultValuesStrategy, sourceAddressForDefaults, partnerDefaults])
 
   const formMethods = useForm<HomeAddressFormData, unknown, HomeAddressFormOutputs>({
     resolver: zodResolver(schema),
@@ -208,15 +226,20 @@ export function useHomeAddressForm({
 
               updatedHomeAddress = result.employeeAddress
             } else {
-              if (!currentHomeAddress) {
-                throw new SDKInternalError('Cannot update home address: no current address on file')
+              const addressToUpdate =
+                submissionMode === 'alwaysUpdate' && updateTargetUuid
+                  ? homeAddresses?.find(a => a.uuid === updateTargetUuid)
+                  : currentHomeAddress
+
+              if (!addressToUpdate) {
+                throw new SDKInternalError('Cannot update home address: no matching address on file')
               }
 
               const result = await updateHomeAddressMutation.mutateAsync({
                 request: {
-                  homeAddressUuid: currentHomeAddress.uuid,
+                  homeAddressUuid: addressToUpdate.uuid,
                   requestBody: {
-                    version: currentHomeAddress.version,
+                    version: addressToUpdate.version,
                     street1: payload.street1,
                     street2: payload.street2 || undefined,
                     city: payload.city,

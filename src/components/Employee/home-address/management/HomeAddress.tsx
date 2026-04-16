@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import type { EmployeeAddress } from '@gusto/embedded-api/models/components/employeeaddress'
 import { useEmployeesGet } from '@gusto/embedded-api/react-query/employeesGet'
 import { HomeAddressView } from './HomeAddressView'
@@ -22,11 +22,13 @@ export interface HomeAddressProps extends CommonComponentInterface<'Employee.Hom
 function HomeAddressRoot({ employeeId, onEvent, dictionary }: HomeAddressProps) {
   useI18n(['Employee.HomeAddress.Management', 'Employee.HomeAddress'])
   useComponentDictionary('Employee.HomeAddress.Management', dictionary)
+  const [editTargetUuid, setEditTargetUuid] = useState<string | undefined>(undefined)
   const editHomeAddressForm = useHomeAddressForm({
     employeeId,
     submissionMode: 'alwaysUpdate',
     withEffectiveDateField: false,
     defaultValuesStrategy: 'current',
+    updateTargetUuid: editTargetUuid,
   })
   const createHomeAddressForm = useHomeAddressForm({
     employeeId,
@@ -65,10 +67,9 @@ function HomeAddressRoot({ employeeId, onEvent, dictionary }: HomeAddressProps) 
         editHomeAddressForm={editHomeAddressForm}
         createHomeAddressForm={createHomeAddressForm}
         employeeDisplayName={employeeDisplayName}
+        editTargetUuid={editTargetUuid}
+        onEditTargetUuidChange={setEditTargetUuid}
         onSaved={handleSaved}
-        onHistoryRowEdit={address => {
-          onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_HISTORY_EDIT, address)
-        }}
         onHistoryRowDelete={address => {
           onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_HISTORY_DELETE, address)
         }}

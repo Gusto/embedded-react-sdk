@@ -23,8 +23,9 @@ export interface HomeAddressViewProps {
   editHomeAddressForm: UseHomeAddressFormReady
   createHomeAddressForm: UseHomeAddressFormReady
   employeeDisplayName: string
+  editTargetUuid: string | undefined
+  onEditTargetUuidChange: (uuid: string | undefined) => void
   onSaved: (result: HookSubmitResult<EmployeeAddress>) => void
-  onHistoryRowEdit: (address: EmployeeAddress) => void
   onHistoryRowDelete: (address: EmployeeAddress) => void
 }
 
@@ -32,8 +33,9 @@ export function HomeAddressView({
   editHomeAddressForm,
   createHomeAddressForm,
   employeeDisplayName,
+  editTargetUuid,
+  onEditTargetUuidChange,
   onSaved,
-  onHistoryRowEdit,
   onHistoryRowDelete,
 }: HomeAddressViewProps) {
   const { t } = useTranslation('Employee.HomeAddress.Management')
@@ -164,7 +166,8 @@ export function HomeAddressView({
           {
             label: t('rowEdit'),
             onClick: () => {
-              onHistoryRowEdit(row)
+              onEditTargetUuidChange(row.uuid)
+              setAddressModal('edit')
             },
             icon: <PencilSvg aria-hidden />,
           },
@@ -189,19 +192,29 @@ export function HomeAddressView({
     ),
   })
 
+  const closeAddressModal = () => {
+    setAddressModal(null)
+    onEditTargetUuidChange(undefined)
+  }
+
   const handleSave = async () => {
     if (!addressModal) {
       return
     }
+    const addressBeingEdited =
+      editTargetUuid && homeAddresses
+        ? homeAddresses.find(a => a.uuid === editTargetUuid)
+        : homeAddress
+
     const submitResult =
       addressModal === 'edit'
         ? await editActions.onSubmit({
-            effectiveDate: homeAddress?.effectiveDate?.toString(),
+            effectiveDate: addressBeingEdited?.effectiveDate?.toString(),
           })
         : await createActions.onSubmit()
     if (submitResult) {
       onSaved(submitResult)
-      setAddressModal(null)
+      closeAddressModal()
     }
   }
 
@@ -223,6 +236,7 @@ export function HomeAddressView({
                 <Components.Button
                   variant="secondary"
                   onClick={() => {
+                    onEditTargetUuidChange(undefined)
                     setAddressModal('edit')
                   }}
                   isLoading={editStatus.isPending}
@@ -237,6 +251,7 @@ export function HomeAddressView({
           <Components.Button
             variant="secondary"
             onClick={() => {
+              onEditTargetUuidChange(undefined)
               setAddressModal('create')
             }}
             isLoading={createStatus.isPending}
@@ -289,9 +304,7 @@ export function HomeAddressView({
 
       <Components.Modal
         isOpen={addressModal !== null}
-        onClose={() => {
-          setAddressModal(null)
-        }}
+        onClose={closeAddressModal}
         shouldCloseOnBackdropClick={false}
         containerRef={addressModalContainerRef}
         footer={
@@ -299,7 +312,7 @@ export function HomeAddressView({
             <Components.Button
               variant="secondary"
               onClick={() => {
-                setAddressModal(null)
+                closeAddressModal()
               }}
             >
               {t('cancelCta')}
