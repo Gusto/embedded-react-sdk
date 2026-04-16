@@ -58,9 +58,9 @@ function formatCountryForDisplay(country: string | null | undefined): string {
 /** Single-line address for pending-change copy (matches product mock: street, city, ST zip, country). */
 export function formatPendingHomeAddressLine(address: EmployeeAddress): string {
   const streetLine = [address.street1, address.street2].filter(Boolean).join(', ')
-  const cityStateZip = [address.city, [address.state, address.zip].filter(Boolean).join(' ')].filter(
-    Boolean,
-  ).join(', ')
+  const cityStateZip = [address.city, [address.state, address.zip].filter(Boolean).join(' ')]
+    .filter(Boolean)
+    .join(', ')
   const country = formatCountryForDisplay(address.country)
 
   return [streetLine, cityStateZip, country].filter(Boolean).join(', ')

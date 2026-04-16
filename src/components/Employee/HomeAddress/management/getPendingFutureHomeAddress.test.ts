@@ -76,8 +76,6 @@ describe('formatPendingHomeAddressLine', () => {
         country: 'USA',
       }),
     )
-    expect(line).toBe(
-      '1815 John F Kennedy Blvd, Apt 1604, Philadelphia, PA 19103, United States',
-    )
+    expect(line).toBe('1815 John F Kennedy Blvd, Apt 1604, Philadelphia, PA 19103, United States')
   })
 })

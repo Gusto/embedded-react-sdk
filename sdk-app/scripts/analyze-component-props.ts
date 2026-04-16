@@ -88,7 +88,6 @@ function analyzeComponents(): Record<string, ComponentData> {
   for (const [namespace, indexPath] of Object.entries(NAMESPACES)) {
     const fullPath = resolve(ROOT, indexPath)
     if (!existsSync(fullPath)) {
-      // eslint-disable-next-line no-console
       console.warn(`  Skipping missing namespace file: ${indexPath}`)
       continue
     }

@@ -138,7 +138,9 @@ export function useHomeAddressForm({
       state: sourceAddressForDefaults?.state ?? partnerDefaults?.state ?? '',
       zip: sourceAddressForDefaults?.zip ?? partnerDefaults?.zip ?? '',
       courtesyWithholding:
-        sourceAddressForDefaults?.courtesyWithholding ?? partnerDefaults?.courtesyWithholding ?? false,
+        sourceAddressForDefaults?.courtesyWithholding ??
+        partnerDefaults?.courtesyWithholding ??
+        false,
       effectiveDate:
         sourceAddressForDefaults?.effectiveDate?.toString() ?? partnerDefaults?.effectiveDate ?? '',
     }
@@ -237,7 +239,9 @@ export function useHomeAddressForm({
                   : currentHomeAddress
 
               if (!addressToUpdate) {
-                throw new SDKInternalError('Cannot update home address: no matching address on file')
+                throw new SDKInternalError(
+                  'Cannot update home address: no matching address on file',
+                )
               }
 
               const result = await updateHomeAddressMutation.mutateAsync({
