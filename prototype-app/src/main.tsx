@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { App } from './App'
 import { Home } from './Home'
 import { ComponentShowcase } from './prototypes/component-showcase'
+import { ContractorProfile } from './prototypes/contractor-management/contractorProfile'
 import { SampleFlowLayout } from './prototypes/sample-flow'
 import { StepOne } from './prototypes/sample-flow/StepOne'
 import { StepTwo } from './prototypes/sample-flow/StepTwo'
@@ -24,6 +25,11 @@ const router = createBrowserRouter([
           { path: 'step-one', element: <StepOne /> },
           { path: 'step-two', element: <StepTwo /> },
         ],
+      },
+      {
+        path: 'contractor-profile',
+        index: true,
+        element: <ContractorProfile />,
       },
       // Add new prototype routes here
     ],
