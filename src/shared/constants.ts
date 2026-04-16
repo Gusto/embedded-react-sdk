@@ -119,6 +119,10 @@ export const contractorEvents = {
   CONTRACTOR_ONBOARDING_STATUS_UPDATED: 'contractor/onboardingStatus/updated',
   CONTRACTOR_INVITE_CONTRACTOR: 'contractor/invite/selfOnboarding',
   CONTRACTOR_ONBOARDING_CONTINUE: 'contractor/onboarding/continue',
+  CONTRACTOR_SELF_ONBOARDING_START: 'contractor/selfOnboarding/start',
+  CONTRACTOR_VIEW_DOCUMENT_TO_SIGN: 'contractor/documents/view',
+  CONTRACTOR_SIGN_DOCUMENT: 'contractor/documents/sign',
+  CONTRACTOR_DOCUMENTS_DONE: 'contractor/documents/done',
 } as const
 
 export const contractorPaymentEvents = {

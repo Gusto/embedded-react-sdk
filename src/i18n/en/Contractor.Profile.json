@@ -57,6 +57,10 @@
     "create": "Create Contractor",
     "update": "Update Contractor",
     "creating": "Creating...",
-    "updating": "Updating..."
-  }
+    "updating": "Updating...",
+    "continue": "Continue",
+    "saving": "Saving..."
+  },
+  "selfOnboardingTitle": "Your information",
+  "selfOnboardingSubtitle": "Please verify your information and fill in any missing details."
 }

@@ -62,11 +62,12 @@ export const createContractorProfileValidationSchema = (
   t: (key: string) => string,
   hasSsn: boolean,
   hasEin: boolean,
+  isAdmin: boolean = true,
 ) => {
   return ContractorProfileSchema.superRefine(
     (data: ContractorProfileFormData, ctx: z.RefinementCtx) => {
-      // Email validation for contractor invitation
-      if (data.selfOnboarding && !data.email) {
+      // Email validation for contractor invitation (admin only)
+      if (isAdmin && data.selfOnboarding && !data.email) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           path: ['email'],
@@ -93,7 +94,9 @@ export const createContractorProfileValidationSchema = (
         }
 
         if (!data.ssn) {
-          if (!hasSsn && !data.selfOnboarding) {
+          // When isAdmin=false (self-onboarding), SSN is always required
+          // When isAdmin=true, SSN is only required if contractor doesn't already have one and self-onboarding is off
+          if (!hasSsn && (!isAdmin || !data.selfOnboarding)) {
             ctx.addIssue({
               code: z.ZodIssueCode.custom,
               path: ['ssn'],
@@ -124,7 +127,9 @@ export const createContractorProfileValidationSchema = (
         }
 
         if (!data.ein) {
-          if (!hasEin && !data.selfOnboarding) {
+          // When isAdmin=false (self-onboarding), EIN is always required
+          // When isAdmin=true, EIN is only required if contractor doesn't already have one and self-onboarding is off
+          if (!hasEin && (!isAdmin || !data.selfOnboarding)) {
             ctx.addIssue({
               code: z.ZodIssueCode.custom,
               path: ['ein'],
@@ -144,8 +149,8 @@ export const createContractorProfileValidationSchema = (
         }
       }
 
-      // Hourly rate validation for hourly contractors
-      if (data.wageType === WageType.Hourly) {
+      // Hourly rate validation for hourly contractors (admin only)
+      if (isAdmin && data.wageType === WageType.Hourly) {
         if (data.hourlyRate === undefined || data.hourlyRate < 0) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
@@ -163,6 +168,7 @@ export interface UseContractorProfileProps {
   contractorId?: string
   defaultValues?: Partial<ContractorProfileFormData>
   existingContractor?: Contractor
+  isAdmin?: boolean
 }
 
 export function useContractorProfile({
@@ -170,6 +176,7 @@ export function useContractorProfile({
   contractorId,
   defaultValues,
   existingContractor,
+  isAdmin = true,
 }: UseContractorProfileProps) {
   useI18n('Contractor.Profile')
   const { t } = useTranslation('Contractor.Profile')
@@ -180,6 +187,7 @@ export function useContractorProfile({
     t as (key: string) => string,
     existingContractor?.hasSsn ?? false,
     existingContractor?.hasEin ?? false,
+    isAdmin,
   )
 
   // API mutations
@@ -329,13 +337,21 @@ export function useContractorProfile({
   }
 
   // Conditional rendering helpers
+  const shouldShowSelfOnboardingToggle = isAdmin
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-conversion
-  const shouldShowEmailField = !!watchedSelfOnboarding
+  const shouldShowEmailField = isAdmin && !!watchedSelfOnboarding
   const shouldShowBusinessFields = watchedType === ContractorType.Business
   const shouldShowIndividualFields = watchedType === ContractorType.Individual
-  const shouldShowHourlyRate = watchedWageType === WageType.Hourly
-  const shouldShowSsnField = watchedType === ContractorType.Individual && !watchedSelfOnboarding
-  const shouldShowEinField = watchedType === ContractorType.Business && !watchedSelfOnboarding
+  const shouldShowContractorType = isAdmin
+  const shouldShowWageSection = isAdmin
+  const shouldShowStartDate = isAdmin
+  const shouldShowHourlyRate = isAdmin && watchedWageType === WageType.Hourly
+  // When isAdmin=false (self-onboarding), SSN/EIN are always shown (contractor must provide them)
+  // When isAdmin=true, they're hidden when selfOnboarding toggle is on (contractor will provide them later)
+  const shouldShowSsnField =
+    watchedType === ContractorType.Individual && (!isAdmin || !watchedSelfOnboarding)
+  const shouldShowEinField =
+    watchedType === ContractorType.Business && (!isAdmin || !watchedSelfOnboarding)
 
   // Form field options
   const contractorTypeOptions = [
@@ -361,9 +377,13 @@ export function useContractorProfile({
     },
 
     // Conditional rendering flags
+    shouldShowSelfOnboardingToggle,
     shouldShowEmailField,
     shouldShowBusinessFields,
     shouldShowIndividualFields,
+    shouldShowContractorType,
+    shouldShowWageSection,
+    shouldShowStartDate,
     shouldShowHourlyRate,
     shouldShowSsnField,
     shouldShowEinField,
@@ -374,5 +394,6 @@ export function useContractorProfile({
 
     // Component state
     isEditing: !!contractorId,
+    isAdmin,
   }
 }

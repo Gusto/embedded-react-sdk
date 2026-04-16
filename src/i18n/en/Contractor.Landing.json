@@ -1,0 +1,12 @@
+{
+  "landingSubtitle": "Hi {{name}}, let's get you set up at {{companyName}}!",
+  "landingDescription": "We just need a few pieces of information from you. This usually takes about 5 minutes.",
+  "stepsSubtitle": "What you'll need:",
+  "steps": {
+    "personalInfo": "Your personal information",
+    "addressInfo": "Your mailing address",
+    "bankInfo": "Your bank account information",
+    "documents": "Sign required documents"
+  },
+  "getStartedCta": "Let's get started"
+}

@@ -1,0 +1,15 @@
+import { useTranslation } from 'react-i18next'
+import { SignatureFormFields } from '@/components/Common/SignatureForm'
+
+export function Form() {
+  const { t } = useTranslation('Contractor.DocumentSigner')
+  return (
+    <SignatureFormFields
+      signatureLabel={t('signatureFieldLabel')}
+      signatureDescription={t('signatureFieldDescription')}
+      signatureError={t('signatureFieldError')}
+      confirmationLabel={t('confirmSignatureCheckboxLabel')}
+      confirmationError={t('confirmSignatureError')}
+    />
+  )
+}

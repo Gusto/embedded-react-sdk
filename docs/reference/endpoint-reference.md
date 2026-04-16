@@ -86,6 +86,11 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 | **Contractor.ContractorProfile** | GET | `/v1/contractors/:contractorUuid` |
 |  | POST | `/v1/companies/:companyUuid/contractors` |
 |  | PUT | `/v1/contractors/:contractorUuid` |
+| **Contractor.Landing** | GET | `/v1/contractors/:contractorUuid` |
+|  | GET | `/v1/companies/:companyId` |
+| **Contractor.DocumentSigner** | GET | `/v1/contractors/:contractorUuid/documents` |
+|  | GET | `/v1/documents/:documentUuid/pdf` |
+|  | PUT | `/v1/documents/:documentUuid/sign` |
 | **Contractor.PaymentsList** | GET | `/v1/companies/:companyId/contractor_payment_groups` |
 |  | GET | `/v1/companies/:companyUuid/information_requests` |
 | **Contractor.CreatePayment** | GET | `/v1/companies/:companyUuid/contractors` |
@@ -341,6 +346,7 @@ Flows compose multiple blocks into a single workflow. The endpoint list for a fl
 | --- | --- |
 | **Company.OnboardingFlow** | Company.BankAccount, Company.DocumentSigner, Company.FederalTaxes, Company.Industry, Company.Locations, Company.OnboardingFlow, Company.OnboardingOverview, Company.PaySchedule, Company.StateTaxes, Employee.OnboardingFlow |
 | **Contractor.OnboardingFlow** | Contractor.Address, Contractor.ContractorList, Contractor.ContractorProfile, Contractor.ContractorSubmit, Contractor.NewHireReport, Contractor.OnboardingFlow, Contractor.PaymentMethod |
+| **Contractor.SelfOnboardingFlow** | Contractor.Address, Contractor.ContractorProfile, Contractor.DocumentSigner, Contractor.Landing, Contractor.PaymentMethod, Contractor.SelfOnboardingFlow, Contractor.SelfOnboardingSummary |
 | **Contractor.Payments.PaymentFlow** | Contractor.CreatePayment, Contractor.PaymentFlow, Contractor.PaymentHistory, Contractor.PaymentStatement, Contractor.PaymentSummary, Contractor.PaymentsList, InformationRequests.InformationRequestsFlow |
 | **Employee.OnboardingFlow** | Employee.Compensation, Employee.Deductions, Employee.EmployeeDocuments, Employee.EmployeeList, Employee.FederalTaxes, Employee.OnboardingFlow, Employee.OnboardingSummary, Employee.PaymentMethod, Employee.Profile, Employee.StateTaxes |
 | **Employee.SelfOnboardingFlow** | Employee.DocumentSigner, Employee.FederalTaxes, Employee.Landing, Employee.OnboardingSummary, Employee.PaymentMethod, Employee.Profile, Employee.SelfOnboardingFlow, Employee.StateTaxes |
