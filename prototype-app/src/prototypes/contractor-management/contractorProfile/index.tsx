@@ -1,12 +1,20 @@
-import { useState } from 'react'
-import { contractorData } from '../contractorData'
+import { Suspense, useState } from 'react'
+import { useContractorsListSuspense } from '@gusto/embedded-api/react-query/contractorsList'
 import { Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
-export function ContractorProfile() {
+function ContractorProfileContent() {
   const Components = useComponentContext()
-  const contractor = contractorData[0]
+  const companyId = String(import.meta.env.VITE_COMPANY_ID || '')
+
+  const { data } = useContractorsListSuspense({ companyUuid: companyId })
+  const contractor = data.contractors?.[0]
+
   const [selectedTab, setSelectedTab] = useState('basic-details')
+
+  if (!contractor) {
+    return <Components.Text>No contractors found for this company.</Components.Text>
+  }
 
   const tabs = [
     {
@@ -56,11 +64,21 @@ export function ContractorProfile() {
     <Flex flexDirection="column" gap={24}>
       <Flex flexDirection="column" gap={4}>
         <Components.Heading as="h1" styledAs="h2">
-          {contractor.first_name} {contractor.last_name}
+          {contractor.firstName} {contractor.lastName}
         </Components.Heading>
-        <Components.Text variant="supporting">{contractor.start_date}</Components.Text>
+        <Components.Text variant="supporting">{contractor.startDate}</Components.Text>
       </Flex>
       <Components.Tabs onSelectionChange={setSelectedTab} tabs={tabs} selectedId={selectedTab} />
     </Flex>
+  )
+}
+
+export function ContractorProfile() {
+  const Components = useComponentContext()
+
+  return (
+    <Suspense fallback={<Components.Text>Loading contractor...</Components.Text>}>
+      <ContractorProfileContent />
+    </Suspense>
   )
 }
