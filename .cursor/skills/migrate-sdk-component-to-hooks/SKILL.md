@@ -391,13 +391,22 @@ function Root({ onEvent, ...props }: MyComponentProps) {
 }
 ```
 
-## 9. Cleanup Checklist
+## 9. Cleanup: Legacy Patterns to Remove
 
-After migration, remove dead code from the component directory:
+The pre-hook components were built around a pattern that split a single screen into inline sub-components (`Head`, `Actions`, specific field groups like `WorkAddress`, `HomeAddress`, `PersonalDetails`) backed by a domain context (e.g. `ProfileContext`) to thread form state, handlers, and flags between them. A thin monolithic file then wired everything together.
+
+The hook + `Root` shape replaces that entirely:
+
+- The hook owns state, validation, and submit logic
+- `Root` is the view layer that composes the hook and renders fields inline
+
+There's no longer a reason to split a single screen into `Head` / `Actions` / per-section files, and no reason for a sibling context to share form state — the hook result is the shared state. Keep `Root` as a flat, readable component. Only extract presentational fragments when they're genuinely reused or independently testable, not as a reflex.
+
+After migration, remove:
 
 - [ ] Old monolithic form component files
-- [ ] Old context providers (e.g. `ProfileContext`)
-- [ ] Inline sub-components (e.g. `Head`, `Actions`, `WorkAddress`)
+- [ ] Inline sub-components (`Head`, `Actions`, per-section field groupings) — their contents move into `Root`
+- [ ] Domain context providers (e.g. `ProfileContext`) that existed to share form state across those sub-components
 - [ ] Helper utilities only used by the old implementation
 - [ ] Tests for deleted helpers
 - [ ] Unused imports in barrel files
