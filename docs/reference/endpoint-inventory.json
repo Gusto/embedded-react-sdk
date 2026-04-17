@@ -929,6 +929,26 @@
         "employeeId"
       ]
     },
+    "Employee.WorkAddress": {
+      "endpoints": [
+        {
+          "method": "DELETE",
+          "path": "/v1/work_addresses/:workAddressUuid"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/work_addresses"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId"
+        }
+      ],
+      "variables": [
+        "employeeId",
+        "workAddressUuid"
+      ]
+    },
     "Employee.Taxes": {
       "endpoints": [
         {

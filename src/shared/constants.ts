@@ -18,6 +18,7 @@ export const employeeEvents = {
   EMPLOYEE_WORK_ADDRESS_UPDATE: 'employee/addresses/work/update',
   EMPLOYEE_WORK_ADDRESS_CREATED: 'employee/addresses/work/created',
   EMPLOYEE_WORK_ADDRESS_UPDATED: 'employee/addresses/work/updated',
+  EMPLOYEE_WORK_ADDRESS_DELETED: 'employee/addresses/work/deleted',
   EMPLOYEE_DEDUCTION_ADD: 'employee/deductions/add',
   EMPLOYEE_DEDUCTION_CREATED: 'employee/deductions/created',
   EMPLOYEE_DEDUCTION_UPDATED: 'employee/deductions/updated',
