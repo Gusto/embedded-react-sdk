@@ -1,20 +1,29 @@
 .root {
   display: inline-flex;
-  border: 1px solid var(--color-border);
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.08);
   border-radius: 0.375rem;
-  overflow: hidden;
 }
 
 .option {
-  padding: 0.25rem 0.75rem;
-  font-size: 0.75rem;
-  font-weight: 500;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
   text-decoration: none;
-  color: var(--color-text-muted);
-  background: transparent;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
   transition:
     background 0.15s,
     color 0.15s;
+
+  &:first-child {
+    border-radius: 0.375rem 0 0 0.375rem;
+  }
+
+  &:last-child {
+    border-radius: 0 0.375rem 0.375rem 0;
+    margin-left: -1px;
+  }
 
   &:hover {
     background: var(--color-hover-bg);
@@ -25,6 +34,8 @@
 .active {
   background: var(--color-active);
   color: #fff;
+  border-color: var(--color-active);
+  z-index: 1;
 
   &:hover {
     background: var(--color-active);
