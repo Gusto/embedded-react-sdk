@@ -4,6 +4,10 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { App } from './App'
 import { Home } from './Home'
 import { RoutedComponentRenderer } from './RoutedComponentRenderer'
+import { DesignLayout } from './design/DesignLayout'
+import { DesignHome } from './design/DesignHome'
+import { ComponentShowcase } from './design/prototypes/component-showcase'
+import { ContractorProfile } from './design/prototypes/contractor-management/contractorProfile'
 import './app.scss'
 
 const router = createBrowserRouter([
@@ -13,6 +17,15 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
       { path: ':category/:component', element: <RoutedComponentRenderer /> },
+      {
+        path: 'design',
+        element: <DesignLayout />,
+        children: [
+          { index: true, element: <DesignHome /> },
+          { path: 'component-showcase', element: <ComponentShowcase /> },
+          { path: 'contractor-profile', element: <ContractorProfile /> },
+        ],
+      },
     ],
   },
 ])

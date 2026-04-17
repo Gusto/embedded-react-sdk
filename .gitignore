@@ -211,8 +211,3 @@ sdk-app/dist/
 sdk-app/env/.env.demo
 sdk-app/env/.env.staging
 sdk-app/env/.env.localzp
-
-# Prototype App
-prototype-app/env/.env.demo
-prototype-app/env/.env.staging
-prototype-app/env/.env.localzp

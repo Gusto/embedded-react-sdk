@@ -14,24 +14,16 @@ export const categorizedRegistry: CategorizedRegistry = {
   Examples: [
     {
       name: 'Component Showcase',
-      path: '/component-showcase',
+      path: '/design/component-showcase',
       description:
         'A single page demonstrating SDK components like Button, TextInput, Select, Alert, and more.',
-    },
-    {
-      name: 'Sample Flow',
-      path: '/sample-flow',
-      description:
-        'A multi-page prototype showing how to build a step-by-step flow with sub-navigation.',
     },
   ],
   'Contractor Management': [
     {
       name: 'Contractor Profile',
-      path: '/contractor-profile',
+      path: '/design/contractor-profile',
       description: 'A prototype for managing contractor profiles.',
     },
   ],
-
-  // Add new categories and prototypes here
 }
