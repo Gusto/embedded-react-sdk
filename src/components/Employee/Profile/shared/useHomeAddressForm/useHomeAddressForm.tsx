@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -50,11 +50,44 @@ export interface UseHomeAddressFormProps {
   defaultValues?: Partial<HomeAddressFormData>
   validationMode?: UseFormProps['mode']
   shouldFocusError?: boolean
+  /**
+   * How to choose create (POST) vs update (PUT) when the employee may already have a current address.
+   * - `auto`: create only if there is no current address; otherwise update (default).
+   * - `alwaysCreate`: always POST a new home address (e.g. add a future-dated address).
+   * - `alwaysUpdate`: always PUT the current active address (e.g. edit in place).
+   */
+  submissionMode?: 'auto' | 'alwaysCreate' | 'alwaysUpdate'
+  /**
+   * `current` fills the form from the active address; `empty` clears fields for add-new flows even when a current address exists.
+   */
+  defaultValuesStrategy?: 'current' | 'empty'
+  /**
+   * When set with `submissionMode: 'alwaysUpdate'`, the form defaults and PUT target the home address with this UUID
+   * (e.g. editing a row from address history). When omitted, the active address is used.
+   */
+  updateTargetUuid?: string
+  /**
+   * Increment when opening a create/edit modal so the form resets even when the target address and
+   * default field values match the previous open (e.g. reopening the same row after cancel).
+   */
+  formSessionId?: number
 }
 
-export interface UseHomeAddressFormReady extends BaseFormHookReady<
-  FieldsMetadata,
-  HomeAddressFormData
+export type HomeAddressFormFields = {
+  Street1: typeof Street1Field
+  Street2: typeof Street2Field
+  City: typeof CityField
+  State: typeof StateField
+  Zip: typeof ZipField
+  CourtesyWithholding: typeof CourtesyWithholdingField
+  EffectiveDate: typeof EffectiveDateField | undefined
+}
+
+type HomeAddressFormApi = BaseFormHookReady<FieldsMetadata, HomeAddressFormData>['form']
+
+export interface UseHomeAddressFormReady extends Omit<
+  BaseFormHookReady<FieldsMetadata, HomeAddressFormData>,
+  'data' | 'status' | 'actions' | 'form'
 > {
   data: {
     homeAddress: EmployeeAddress | null
@@ -65,6 +98,9 @@ export interface UseHomeAddressFormReady extends BaseFormHookReady<
     onSubmit: (
       options?: HomeAddressSubmitOptions,
     ) => Promise<HookSubmitResult<EmployeeAddress> | undefined>
+  }
+  form: Omit<HomeAddressFormApi, 'Fields'> & {
+    Fields: HomeAddressFormFields
   }
 }
 
@@ -80,6 +116,10 @@ export function useHomeAddressForm({
   defaultValues: partnerDefaults,
   validationMode = 'onSubmit',
   shouldFocusError = true,
+  submissionMode = 'auto',
+  defaultValuesStrategy = 'current',
+  updateTargetUuid,
+  formSessionId = 0,
 }: UseHomeAddressFormProps): HookLoadingResult | UseHomeAddressFormReady {
   const homeAddressesQuery = useEmployeeAddressesGet(
     { employeeId: employeeId ?? '' },
@@ -89,30 +129,63 @@ export function useHomeAddressForm({
   const homeAddresses = homeAddressesQuery.data?.employeeAddressList
   const currentHomeAddress = getActiveHomeAddress(homeAddresses)
 
-  const isCreateMode = !currentHomeAddress
-  const mode = isCreateMode ? 'create' : 'update'
+  const sourceAddressForDefaults = useMemo(() => {
+    if (
+      submissionMode === 'alwaysUpdate' &&
+      updateTargetUuid &&
+      homeAddresses &&
+      homeAddresses.length > 0
+    ) {
+      return homeAddresses.find(a => a.uuid === updateTargetUuid) ?? currentHomeAddress
+    }
+    return currentHomeAddress
+  }, [submissionMode, updateTargetUuid, homeAddresses, currentHomeAddress])
+
+  const isCreateMode =
+    submissionMode === 'alwaysCreate'
+      ? true
+      : submissionMode === 'alwaysUpdate'
+        ? false
+        : !currentHomeAddress
+
+  const schemaMode = isCreateMode ? 'create' : 'update'
 
   const [schema, metadataConfig] = useMemo(
     () =>
       createHomeAddressSchema({
-        mode,
+        mode: schemaMode,
         optionalFieldsToRequire,
         withEffectiveDateField,
       }),
-    [mode, optionalFieldsToRequire, withEffectiveDateField],
+    [schemaMode, optionalFieldsToRequire, withEffectiveDateField],
   )
 
-  const resolvedDefaults: HomeAddressFormData = {
-    street1: currentHomeAddress?.street1 ?? partnerDefaults?.street1 ?? '',
-    street2: currentHomeAddress?.street2 ?? partnerDefaults?.street2 ?? '',
-    city: currentHomeAddress?.city ?? partnerDefaults?.city ?? '',
-    state: currentHomeAddress?.state ?? partnerDefaults?.state ?? '',
-    zip: currentHomeAddress?.zip ?? partnerDefaults?.zip ?? '',
-    courtesyWithholding:
-      currentHomeAddress?.courtesyWithholding ?? partnerDefaults?.courtesyWithholding ?? false,
-    effectiveDate:
-      currentHomeAddress?.effectiveDate?.toString() ?? partnerDefaults?.effectiveDate ?? '',
-  }
+  const resolvedDefaults: HomeAddressFormData = useMemo(() => {
+    if (defaultValuesStrategy === 'empty') {
+      return {
+        street1: partnerDefaults?.street1 ?? '',
+        street2: partnerDefaults?.street2 ?? '',
+        city: partnerDefaults?.city ?? '',
+        state: partnerDefaults?.state ?? '',
+        zip: partnerDefaults?.zip ?? '',
+        courtesyWithholding: partnerDefaults?.courtesyWithholding ?? false,
+        effectiveDate: partnerDefaults?.effectiveDate ?? '',
+      }
+    }
+    return {
+      street1: sourceAddressForDefaults?.street1 ?? partnerDefaults?.street1 ?? '',
+      street2: sourceAddressForDefaults?.street2 ?? partnerDefaults?.street2 ?? '',
+      city: sourceAddressForDefaults?.city ?? partnerDefaults?.city ?? '',
+      state: sourceAddressForDefaults?.state ?? partnerDefaults?.state ?? '',
+      zip: sourceAddressForDefaults?.zip ?? partnerDefaults?.zip ?? '',
+      courtesyWithholding:
+        sourceAddressForDefaults?.courtesyWithholding ??
+        partnerDefaults?.courtesyWithholding ??
+        false,
+      effectiveDate:
+        sourceAddressForDefaults?.effectiveDate?.toString() ?? partnerDefaults?.effectiveDate ?? '',
+    }
+  }, [defaultValuesStrategy, sourceAddressForDefaults, partnerDefaults])
 
   const formMethods = useForm<HomeAddressFormData, unknown, HomeAddressFormOutputs>({
     resolver: zodResolver(schema),
@@ -120,8 +193,25 @@ export function useHomeAddressForm({
     shouldFocusError,
     defaultValues: resolvedDefaults,
     values: resolvedDefaults,
-    resetOptions: { keepDirtyValues: true },
+    resetOptions: { keepDirtyValues: false },
   })
+
+  useEffect(() => {
+    formMethods.reset(resolvedDefaults)
+  }, [
+    formSessionId,
+    updateTargetUuid,
+    sourceAddressForDefaults?.uuid,
+    defaultValuesStrategy,
+    resolvedDefaults.street1,
+    resolvedDefaults.street2,
+    resolvedDefaults.city,
+    resolvedDefaults.state,
+    resolvedDefaults.zip,
+    resolvedDefaults.courtesyWithholding,
+    resolvedDefaults.effectiveDate,
+    formMethods,
+  ])
 
   const createHomeAddressMutation = useEmployeeAddressesCreateMutation()
   const updateHomeAddressMutation = useEmployeeAddressesUpdateMutation()
@@ -201,11 +291,22 @@ export function useHomeAddressForm({
 
               updatedHomeAddress = result.employeeAddress
             } else {
+              const addressToUpdate =
+                submissionMode === 'alwaysUpdate' && updateTargetUuid
+                  ? homeAddresses?.find(a => a.uuid === updateTargetUuid)
+                  : currentHomeAddress
+
+              if (!addressToUpdate) {
+                throw new SDKInternalError(
+                  'Cannot update home address: no matching address on file',
+                )
+              }
+
               const result = await updateHomeAddressMutation.mutateAsync({
                 request: {
-                  homeAddressUuid: currentHomeAddress.uuid,
+                  homeAddressUuid: addressToUpdate.uuid,
                   requestBody: {
-                    version: currentHomeAddress.version,
+                    version: addressToUpdate.version,
                     street1: payload.street1,
                     street2: payload.street2 || undefined,
                     city: payload.city,
@@ -277,4 +378,3 @@ export function useHomeAddressForm({
 
 export type UseHomeAddressFormResult = HookLoadingResult | UseHomeAddressFormReady
 export type HomeAddressFieldsMetadata = UseHomeAddressFormReady['form']['fieldsMetadata']
-export type HomeAddressFormFields = UseHomeAddressFormReady['form']['Fields']

@@ -6,6 +6,8 @@ import styles from './Sidebar.module.scss'
 interface SidebarProps {
   searchQuery: string
   onSearchChange: (query: string) => void
+  isOpen: boolean
+  onToggle: () => void
 }
 
 function CategorySection({
@@ -65,18 +67,45 @@ function CategorySection({
   )
 }
 
-export function Sidebar({ searchQuery, onSearchChange }: SidebarProps) {
+export function Sidebar({ searchQuery, onSearchChange, isOpen, onToggle }: SidebarProps) {
+  if (!isOpen) {
+    return (
+      <aside className={styles.rootCollapsed}>
+        <button
+          type="button"
+          className={styles.collapsedHeader}
+          onClick={onToggle}
+          aria-label="Show components sidebar"
+          title="Show components sidebar"
+        >
+          <span>▸</span>
+        </button>
+      </aside>
+    )
+  }
+
   return (
     <aside className={styles.root}>
       <div className={styles.search}>
-        <input
-          type="text"
-          placeholder="Search components..."
-          value={searchQuery}
-          onChange={e => {
-            onSearchChange(e.target.value)
-          }}
-        />
+        <div className={styles.searchRow}>
+          <input
+            type="text"
+            placeholder="Search components..."
+            value={searchQuery}
+            onChange={e => {
+              onSearchChange(e.target.value)
+            }}
+          />
+          <button
+            type="button"
+            className={styles.sidebarToggle}
+            onClick={onToggle}
+            aria-label="Hide sidebar"
+            title="Hide sidebar"
+          >
+            <span>◂</span>
+          </button>
+        </div>
       </div>
       <div className={styles.list}>
         {CATEGORIES.map(category => {

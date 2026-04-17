@@ -9,6 +9,7 @@ import { useDemoManager } from './useDemoManager'
 
 export function App() {
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   const { entities, updateEntity, replaceEntities, resetToDefaults } = useEntities()
   const demoManager = useDemoManager()
@@ -37,7 +38,14 @@ export function App() {
         }}
       />
       <div className="app-body">
-        <Sidebar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
+        <Sidebar
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          isOpen={sidebarOpen}
+          onToggle={() => {
+            setSidebarOpen(open => !open)
+          }}
+        />
         <main className="main-content">
           <Outlet context={{ entities }} />
         </main>

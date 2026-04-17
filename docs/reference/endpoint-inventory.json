@@ -621,6 +621,10 @@
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeId/onboarding_status"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/home_addresses/:homeAddressUuid"
         }
       ],
       "variables": [
@@ -852,6 +856,17 @@
       "variables": [
         "employeeId",
         "employeeUuid"
+      ]
+    },
+    "Employee.HomeAddress": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId"
+        }
+      ],
+      "variables": [
+        "employeeId"
       ]
     },
     "Employee.EmploymentEligibility": {
@@ -2162,6 +2177,10 @@
           "path": "/v1/employees/:employeeId/work_addresses"
         },
         {
+          "method": "DELETE",
+          "path": "/v1/home_addresses/:homeAddressUuid"
+        },
+        {
           "method": "GET",
           "path": "/v1/employees/:employeeUuid/state_taxes"
         },
@@ -2302,6 +2321,10 @@
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeId/onboarding_status"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/home_addresses/:homeAddressUuid"
         },
         {
           "method": "GET",

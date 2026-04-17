@@ -126,6 +126,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | `/v1/employees/:employeeId/work_addresses` |
 |  | POST | `/v1/employees/:employeeId/work_addresses` |
 |  | PUT | `/v1/employees/:employeeId/onboarding_status` |
+|  | DELETE | `/v1/home_addresses/:homeAddressUuid` |
 | **Employee.Compensation** | GET | `/v1/employees/:employeeId/jobs` |
 |  | POST | `/v1/employees/:employeeId/jobs` |
 |  | PUT | `/v1/jobs/:jobId` |
@@ -166,6 +167,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | `/v1/employees/:employeeId/forms` |
 |  | GET | `/v1/employees/:employeeUuid/federal_taxes` |
 |  | GET | `/v1/employees/:employeeUuid/state_taxes` |
+| **Employee.HomeAddress** | GET | `/v1/employees/:employeeId` |
 | **Employee.EmploymentEligibility** | GET | `/v1/employees/:employeeId/i9_authorization` |
 |  | PUT | `/v1/employees/:employeeId/i9_authorization` |
 | **Employee.TerminateEmployee** | GET | `/v1/employees/:employeeId` |
