@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { CATEGORIES, categorizedRegistry } from './registry'
-import styles from './DesignHome.module.scss'
+import './DesignHome.module.scss'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Flex, Grid } from '@/components/Common'
 import ArrowRightIcon from '@/assets/icons/icon-arrow-right.svg?react'
@@ -10,7 +10,7 @@ export function DesignHome() {
   const navigate = useNavigate()
 
   return (
-    <div className={styles.root}>
+    <div>
       <Grid gap={32}>
         <Flex flexDirection="column" gap={4}>
           <Components.Heading as="h1">Design Sandbox</Components.Heading>

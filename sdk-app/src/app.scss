@@ -43,7 +43,9 @@ body {
 
 .main-content {
   flex: 1;
-  overflow-y: auto;
+  min-height: 0;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  overflow: auto;
 }
