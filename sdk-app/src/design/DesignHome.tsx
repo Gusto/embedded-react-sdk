@@ -20,7 +20,7 @@ export function DesignHome() {
           </Components.Text>
         </Flex>
 
-        <Grid gap={16} gridTemplateColumns="repeat(auto-fill, minmax(256px, 1fr))">
+        <Grid gap={16} gridTemplateColumns="repeat(auto-fit, minmax(256px, 1fr))">
           {CATEGORIES.flatMap(category =>
             categorizedRegistry[category].map(({ name, path, description }) => (
               <Components.Box
