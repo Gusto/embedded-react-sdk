@@ -1,26 +1,26 @@
 import { useNavigate } from 'react-router-dom'
 import { CATEGORIES, categorizedRegistry } from './registry'
-import styles from './Home.module.scss'
+import './DesignHome.module.scss'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Flex, Grid } from '@/components/Common'
 import ArrowRightIcon from '@/assets/icons/icon-arrow-right.svg?react'
 
-export function Home() {
+export function DesignHome() {
   const Components = useComponentContext()
   const navigate = useNavigate()
 
   return (
-    <div className={styles.root}>
+    <div>
       <Grid gap={32}>
         <Flex flexDirection="column" gap={4}>
-          <Components.Heading as="h1">Embeddedd React SDK Design Sandbox</Components.Heading>
+          <Components.Heading as="h1">Design Sandbox</Components.Heading>
           <Components.Text variant="supporting">
             A lightweight environment for designing and prototyping new UI components using the SDK
             component library.
           </Components.Text>
         </Flex>
 
-        <Grid gap={16} gridTemplateColumns="repeat(auto-fill, minmax(256px, 1fr))">
+        <Grid gap={16} gridTemplateColumns="repeat(auto-fit, minmax(256px, 1fr))">
           {CATEGORIES.flatMap(category =>
             categorizedRegistry[category].map(({ name, path, description }) => (
               <Components.Box
@@ -54,21 +54,19 @@ export function Home() {
           </Components.Heading>
           <Flex flexDirection="column" gap={4}>
             <Components.Text>
-              1. Create a directory in <code>prototype-app/src/prototypes/your-feature/</code>
+              1. Create a directory in <code>sdk-app/src/design/prototypes/your-feature/</code>
             </Components.Text>
             <Components.Text>
-              2. Add an <code>index.tsx</code> — for single-page prototypes this is all you need
+              2. Add an <code>index.tsx</code> file.
+            </Components.Text>
+
+            <Components.Text>
+              3. Register routes in <code>sdk-app/src/main.tsx</code> under the <code>/design</code>{' '}
+              path
             </Components.Text>
             <Components.Text>
-              3. For multi-page prototypes, add an <code>{'<Outlet />'}</code> in your index and
-              create sub-page components
-            </Components.Text>
-            <Components.Text>
-              4. Register routes in <code>prototype-app/src/main.tsx</code>
-            </Components.Text>
-            <Components.Text>
-              5. Add an entry to <code>categorizedRegistry</code> in{' '}
-              <code>prototype-app/src/registry.ts</code>
+              4. Add an entry to <code>categorizedRegistry</code> in{' '}
+              <code>sdk-app/src/design/registry.ts</code>
             </Components.Text>
           </Flex>
         </Flex>
