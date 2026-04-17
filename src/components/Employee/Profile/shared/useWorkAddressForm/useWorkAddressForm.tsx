@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -68,6 +68,11 @@ export interface UseWorkAddressFormProps {
    * When omitted, the active work address is used.
    */
   updateTargetUuid?: string
+  /**
+   * Increment when opening a create/edit modal so the form resets even when the target address and
+   * default field values match the previous open (e.g. reopening the same row after cancel).
+   */
+  formSessionId?: number
 }
 
 export interface UseWorkAddressFormReady extends BaseFormHookReady<
@@ -99,11 +104,9 @@ export function useWorkAddressForm({
   submissionMode = 'auto',
   defaultValuesStrategy = 'current',
   updateTargetUuid,
+  formSessionId = 0,
 }: UseWorkAddressFormProps): HookLoadingResult | UseWorkAddressFormReady {
-  const locationsQuery = useLocationsGet(
-    { companyId: companyId ?? '' },
-    { enabled: !!companyId },
-  )
+  const locationsQuery = useLocationsGet({ companyId: companyId ?? '' }, { enabled: !!companyId })
   const workAddressesQuery = useEmployeeAddressesGetWorkAddresses(
     { employeeId: employeeId ?? '' },
     { enabled: !!employeeId },
@@ -164,8 +167,20 @@ export function useWorkAddressForm({
     shouldFocusError,
     defaultValues: resolvedDefaults,
     values: resolvedDefaults,
-    resetOptions: { keepDirtyValues: true },
+    resetOptions: { keepDirtyValues: false },
   })
+
+  useEffect(() => {
+    formMethods.reset(resolvedDefaults)
+  }, [
+    formSessionId,
+    updateTargetUuid,
+    sourceAddressForDefaults?.uuid,
+    defaultValuesStrategy,
+    resolvedDefaults.locationUuid,
+    resolvedDefaults.effectiveDate,
+    formMethods,
+  ])
 
   const createWorkAddressMutation = useEmployeeAddressesCreateWorkAddressMutation()
   const updateWorkAddressMutation = useEmployeeAddressesUpdateWorkAddressMutation()
@@ -288,12 +303,7 @@ export function useWorkAddressForm({
   const isDataLoading =
     (!!companyId && locationsQuery.isLoading) || (employeeId ? workAddressesQuery.isLoading : false)
 
-  if (
-    !companyId ||
-    isDataLoading ||
-    !companyLocations ||
-    (employeeId && !workAddresses)
-  ) {
+  if (!companyId || isDataLoading || !companyLocations || (employeeId && !workAddresses)) {
     return { isLoading: true as const, errorHandling }
   }
 

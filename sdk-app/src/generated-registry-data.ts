@@ -51,6 +51,7 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'Employee.TerminateEmployee': ['employeeId', 'companyId'],
   'Employee.TerminationFlow': ['companyId', 'employeeId'],
   'Employee.TerminationSummary': ['employeeId', 'companyId'],
+  'Employee.WorkAddress': ['employeeId'],
   'Hooks.CompensationForm': ['companyId'],
   'Hooks.EmployeeDetailsForm': ['companyId'],
   'Hooks.HomeAddressForm': ['employeeId'],

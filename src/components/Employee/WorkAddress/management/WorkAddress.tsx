@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import type { EmployeeWorkAddress } from '@gusto/embedded-api/models/components/employeeworkaddress'
 import { useEmployeeAddressesDeleteWorkAddressMutation } from '@gusto/embedded-api/react-query/employeeAddressesDeleteWorkAddress'
 import { useEmployeeAddressesGetWorkAddresses } from '@gusto/embedded-api/react-query/employeeAddressesGetWorkAddresses'
@@ -35,6 +35,10 @@ function WorkAddressRoot({ employeeId, dictionary, onEvent }: WorkAddressProps) 
   } = useBaseSubmit('Employee.WorkAddress.Management')
   const deleteWorkAddressMutation = useEmployeeAddressesDeleteWorkAddressMutation()
   const [editTargetUuid, setEditTargetUuid] = useState<string | undefined>(undefined)
+  const [formSessionId, setFormSessionId] = useState(0)
+  const beginAddressModalSession = useCallback(() => {
+    setFormSessionId(n => n + 1)
+  }, [])
 
   const employeeQuery = useEmployeesGet({ employeeId }, { enabled: !!employeeId })
   const companyId = employeeQuery.data?.employee?.companyUuid
@@ -71,6 +75,7 @@ function WorkAddressRoot({ employeeId, dictionary, onEvent }: WorkAddressProps) 
     submissionMode: 'alwaysUpdate',
     defaultValuesStrategy: 'current',
     updateTargetUuid: editTargetUuid,
+    formSessionId,
   })
 
   const changeWorkAddressForm = useWorkAddressForm({
@@ -79,6 +84,7 @@ function WorkAddressRoot({ employeeId, dictionary, onEvent }: WorkAddressProps) 
     withEffectiveDateField: true,
     submissionMode: 'alwaysCreate',
     defaultValuesStrategy: 'empty',
+    formSessionId,
   })
 
   const errorHandling = composeErrorHandler(
@@ -103,15 +109,18 @@ function WorkAddressRoot({ employeeId, dictionary, onEvent }: WorkAddressProps) 
       changeWorkAddressForm.data.workAddresses?.find(w => w.uuid === workAddressUuid)
 
     let succeeded = false
-    await baseSubmitHandler({ workAddressUuid, snapshot }, async ({ workAddressUuid: uuid, snapshot: snap }) => {
-      await deleteWorkAddressMutation.mutateAsync({
-        request: { workAddressUuid: uuid },
-      })
-      succeeded = true
-      if (snap) {
-        onEvent(componentEvents.EMPLOYEE_WORK_ADDRESS_DELETED, snap)
-      }
-    })
+    await baseSubmitHandler(
+      { workAddressUuid, snapshot },
+      async ({ workAddressUuid: uuid, snapshot: snap }) => {
+        await deleteWorkAddressMutation.mutateAsync({
+          request: { workAddressUuid: uuid },
+        })
+        succeeded = true
+        if (snap) {
+          onEvent(componentEvents.EMPLOYEE_WORK_ADDRESS_DELETED, snap)
+        }
+      },
+    )
     return succeeded
   }
 
@@ -146,6 +155,7 @@ function WorkAddressRoot({ employeeId, dictionary, onEvent }: WorkAddressProps) 
         changeWorkAddressForm={changeWorkAddressForm}
         editTargetUuid={editTargetUuid}
         onEditTargetUuidChange={setEditTargetUuid}
+        onBeginAddressModalSession={beginAddressModalSession}
         employeeDisplayName={employeeDisplayName}
         onConfirmDelete={handleConfirmDelete}
         onWorkAddressSaved={handleWorkAddressSaved}

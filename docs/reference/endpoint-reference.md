@@ -179,6 +179,9 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | `/v1/employees/:employeeId/terminations` |
 |  | DELETE | `/v1/employees/:employeeId/terminations` |
 |  | GET | `/v1/companies/:companyId/employees` |
+| **Employee.WorkAddress** | DELETE | `/v1/work_addresses/:workAddressUuid` |
+|  | GET | `/v1/employees/:employeeId/work_addresses` |
+|  | GET | `/v1/employees/:employeeId` |
 | **Employee.Taxes** | GET | `/v1/employees/:employeeUuid/federal_taxes` |
 |  | PUT | `/v1/employees/:employeeUuid/federal_taxes` |
 |  | GET | `/v1/employees/:employeeUuid/state_taxes` |
