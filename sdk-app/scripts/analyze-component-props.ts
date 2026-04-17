@@ -30,7 +30,7 @@ const NAMESPACES: Record<string, string> = {
   Contractor: 'src/components/Contractor/index.ts',
   Payroll: 'src/components/Payroll/index.ts',
   InformationRequests: 'src/components/InformationRequests/index.ts',
-  Hooks: 'sdk-app/src/components/Hooks.ts',
+  Hooks: 'src/partner-hook-utils/index.ts',
 }
 
 interface ComponentData {
