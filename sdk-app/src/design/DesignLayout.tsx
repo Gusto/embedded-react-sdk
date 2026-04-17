@@ -4,10 +4,10 @@ import { GustoProvider } from '@/contexts/GustoProvider/GustoProvider'
 
 export function DesignLayout() {
   return (
-    <GustoProvider config={{ baseUrl: `${window.location.origin}/api/` }}>
-      <div className={styles.root}>
+    <div className={styles.bodyContent}>
+      <GustoProvider config={{ baseUrl: `${window.location.origin}/api/` }}>
         <Outlet />
-      </div>
-    </GustoProvider>
+      </GustoProvider>
+    </div>
   )
 }

@@ -8,7 +8,7 @@ export function ModeSwitcher() {
   return (
     <div className={styles.root}>
       <Link to="/" className={`${styles.option} ${mode === 'preview' ? styles.active : ''}`}>
-        Preview
+        Development
       </Link>
       <Link to="/design" className={`${styles.option} ${mode === 'design' ? styles.active : ''}`}>
         Design
