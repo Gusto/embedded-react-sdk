@@ -1,0 +1,15 @@
+{
+  "title": "Work address",
+  "description": "An employee's work address is the primary location where they perform their job. Keep it accurate for payroll and tax purposes.",
+  "currentSectionTitle": "Current work address",
+  "currentSince": "Since {{date}}",
+  "currentEmpty": "No work address on file.",
+  "historySectionTitle": "Work address history",
+  "historyEmptyTitle": "No address history yet",
+  "historyEmptyDescription": "When this employee has more than one work address on record, previous locations will appear here.",
+  "columns": {
+    "location": "Location",
+    "startDate": "Start date",
+    "endDate": "End date"
+  }
+}

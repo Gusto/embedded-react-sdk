@@ -43,7 +43,8 @@ export interface WorkAddressSubmitOptions {
 }
 
 export interface UseWorkAddressFormProps {
-  companyId: string
+  /** Company UUID for locations; omit or leave unset while resolving from the employee record. */
+  companyId?: string
   employeeId?: string
   withEffectiveDateField?: boolean
   optionalFieldsToRequire?: WorkAddressOptionalFieldsToRequire
@@ -79,7 +80,10 @@ export function useWorkAddressForm({
   validationMode = 'onSubmit',
   shouldFocusError = true,
 }: UseWorkAddressFormProps): HookLoadingResult | UseWorkAddressFormReady {
-  const locationsQuery = useLocationsGet({ companyId })
+  const locationsQuery = useLocationsGet(
+    { companyId: companyId ?? '' },
+    { enabled: !!companyId },
+  )
   const workAddressesQuery = useEmployeeAddressesGetWorkAddresses(
     { employeeId: employeeId ?? '' },
     { enabled: !!employeeId },
@@ -221,9 +225,14 @@ export function useWorkAddressForm({
   }
 
   const isDataLoading =
-    locationsQuery.isLoading || (employeeId ? workAddressesQuery.isLoading : false)
+    (!!companyId && locationsQuery.isLoading) || (employeeId ? workAddressesQuery.isLoading : false)
 
-  if (isDataLoading || !companyLocations || (employeeId && !workAddresses)) {
+  if (
+    !companyId ||
+    isDataLoading ||
+    !companyLocations ||
+    (employeeId && !workAddresses)
+  ) {
     return { isLoading: true as const, errorHandling }
   }
 
