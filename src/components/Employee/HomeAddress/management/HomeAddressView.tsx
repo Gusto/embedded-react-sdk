@@ -17,7 +17,7 @@ import { Flex, FlexItem } from '@/components/Common/Flex/Flex'
 import { Grid } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { addDays, formatDateLongWithYear, normalizeToDate } from '@/helpers/dateFormatting'
-import { getCityStateZip, getStreet } from '@/helpers/formattedStrings'
+import { formatStreetForDisplay, getCityStateZip } from '@/helpers/formattedStrings'
 
 export interface HomeAddressViewProps {
   editHomeAddressForm: UseHomeAddressFormReady
@@ -152,7 +152,7 @@ export function HomeAddressView({
         title: t('columns.address'),
         render: (row: EmployeeAddress) => (
           <Flex flexDirection="column" gap={0}>
-            <Components.Text weight="medium">{getStreet(row).replace(',', '')}</Components.Text>
+            <Components.Text weight="medium">{formatStreetForDisplay(row)}</Components.Text>
             <Components.Text variant="supporting">{getCityStateZip(row)}</Components.Text>
           </Flex>
         ),
@@ -286,7 +286,7 @@ export function HomeAddressView({
             <Flex flexDirection="column" gap={4}>
               <FlexItem>
                 <Components.Text weight="medium">
-                  {getStreet(homeAddress).replace(',', '')}
+                  {formatStreetForDisplay(homeAddress)}
                 </Components.Text>
                 <Components.Text weight="medium">{getCityStateZip(homeAddress)}</Components.Text>
               </FlexItem>

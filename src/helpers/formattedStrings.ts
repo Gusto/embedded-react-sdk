@@ -28,6 +28,14 @@ export const getStreet = (address: EmployeeAddress | Location) => {
   return `${street1},${street2}`
 }
 
+/** Joins street lines with a comma for display (avoids getStreet’s leading-space/comma quirks). */
+export const formatStreetForDisplay = (address: EmployeeAddress | Location) => {
+  const parts = [address.street1?.trim(), address.street2?.trim()].filter(
+    (part): part is string => Boolean(part),
+  )
+  return parts.join(', ')
+}
+
 export const getCityStateZip = (address: EmployeeAddress | Location) =>
   `${maybeString(address.city)}, ${maybeString(address.state)} ${maybeString(address.zip)}`
 

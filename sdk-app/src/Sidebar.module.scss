@@ -21,8 +21,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
   padding: 0.75rem 0.25rem;
+  border: none;
   cursor: pointer;
+  font: inherit;
   font-size: 0.75rem;
   font-weight: 600;
   color: var(--color-text-muted);

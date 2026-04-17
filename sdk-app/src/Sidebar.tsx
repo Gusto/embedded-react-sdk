@@ -71,18 +71,15 @@ export function Sidebar({ searchQuery, onSearchChange, isOpen, onToggle }: Sideb
   if (!isOpen) {
     return (
       <aside className={styles.rootCollapsed}>
-        <div
+        <button
+          type="button"
           className={styles.collapsedHeader}
           onClick={onToggle}
-          role="button"
-          tabIndex={0}
-          onKeyDown={e => {
-            if (e.key === 'Enter' || e.key === ' ') onToggle()
-          }}
+          aria-label="Show components sidebar"
           title="Show components sidebar"
         >
           <span>▸</span>
-        </div>
+        </button>
       </aside>
     )
   }
@@ -99,18 +96,15 @@ export function Sidebar({ searchQuery, onSearchChange, isOpen, onToggle }: Sideb
               onSearchChange(e.target.value)
             }}
           />
-          <div
+          <button
+            type="button"
             className={styles.sidebarToggle}
             onClick={onToggle}
-            role="button"
-            tabIndex={0}
-            onKeyDown={e => {
-              if (e.key === 'Enter' || e.key === ' ') onToggle()
-            }}
+            aria-label="Hide sidebar"
             title="Hide sidebar"
           >
             <span>◂</span>
-          </div>
+          </button>
         </div>
       </div>
       <div className={styles.list}>

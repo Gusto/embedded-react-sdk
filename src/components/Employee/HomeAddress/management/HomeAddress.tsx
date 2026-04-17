@@ -49,8 +49,16 @@ function HomeAddressRoot({ employeeId, onEvent, dictionary }: HomeAddressProps) 
     }).trim()
   }, [employeeQuery.data?.employee])
 
+  const combinedFormErrors = useMemo(
+    () => [
+      ...editHomeAddressForm.errorHandling.errors,
+      ...createHomeAddressForm.errorHandling.errors,
+    ],
+    [editHomeAddressForm.errorHandling.errors, createHomeAddressForm.errorHandling.errors],
+  )
+
   if (editHomeAddressForm.isLoading || createHomeAddressForm.isLoading) {
-    return <BaseLayout isLoading error={editHomeAddressForm.errorHandling.errors} />
+    return <BaseLayout isLoading error={combinedFormErrors} />
   }
 
   const handleSaved = (result: HookSubmitResult<EmployeeAddress>) => {
@@ -72,7 +80,7 @@ function HomeAddressRoot({ employeeId, onEvent, dictionary }: HomeAddressProps) 
   }
 
   return (
-    <BaseLayout error={editHomeAddressForm.errorHandling.errors}>
+    <BaseLayout error={combinedFormErrors}>
       <HomeAddressView
         editHomeAddressForm={editHomeAddressForm}
         createHomeAddressForm={createHomeAddressForm}
