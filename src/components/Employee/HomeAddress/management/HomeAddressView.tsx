@@ -1,6 +1,8 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
+import { useWatch } from 'react-hook-form'
 import type { EmployeeAddress } from '@gusto/embedded-api/models/components/employeeaddress'
+import type { TFunction } from 'i18next'
 import {
   formatPendingHomeAddressLine,
   getPendingFutureHomeAddress,
@@ -19,14 +21,56 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { addDays, formatDateLongWithYear, normalizeToDate } from '@/helpers/dateFormatting'
 import { formatStreetForDisplay, getCityStateZip } from '@/helpers/formattedStrings'
 
+function HomeAddressCourtesyWithholdingBlock({
+  CourtesyWithholding,
+  formHook,
+  tHa,
+}: {
+  CourtesyWithholding: UseHomeAddressFormReady['form']['Fields']['CourtesyWithholding']
+  formHook: UseHomeAddressFormReady
+  tHa: TFunction<'Employee.HomeAddress'>
+}) {
+  const Components = useComponentContext()
+  const { control } = formHook.form.hookFormInternals.formMethods
+  const courtesyWithholdingEnabled = useWatch({ control, name: 'courtesyWithholding' })
+
+  return (
+    <>
+      <CourtesyWithholding
+        label={tHa('courtesyWithholdingLabel')}
+        description={
+          <>
+            {tHa('courtesyWithholdingDescription')}
+            <Trans
+              t={tHa}
+              i18nKey="learnMoreCta"
+              components={{
+                LearnMoreLink: <Components.Link />,
+              }}
+            />
+          </>
+        }
+      />
+      {courtesyWithholdingEnabled ? (
+        <Components.Alert label={tHa('withholdingTitle')} status="warning">
+          <Trans t={tHa} i18nKey="withholdingNote" />
+        </Components.Alert>
+      ) : null}
+    </>
+  )
+}
+
 export interface HomeAddressViewProps {
   editHomeAddressForm: UseHomeAddressFormReady
   createHomeAddressForm: UseHomeAddressFormReady
   employeeDisplayName: string
   editTargetUuid: string | undefined
   onEditTargetUuidChange: (uuid: string | undefined) => void
+  /** Call before opening the create or edit modal so form state matches the newly selected address. */
+  onBeginAddressModalSession: () => void
   onSaved: (result: HookSubmitResult<EmployeeAddress>) => void
   onConfirmDelete: (homeAddressUuid: string) => Promise<boolean>
+  isDeletePending?: boolean
 }
 
 export function HomeAddressView({
@@ -35,8 +79,10 @@ export function HomeAddressView({
   employeeDisplayName,
   editTargetUuid,
   onEditTargetUuidChange,
+  onBeginAddressModalSession,
   onSaved,
   onConfirmDelete,
+  isDeletePending = false,
 }: HomeAddressViewProps) {
   const { t } = useTranslation('Employee.HomeAddress.Management')
   const { t: tHa } = useTranslation('Employee.HomeAddress')
@@ -79,6 +125,7 @@ export function HomeAddressView({
       City: EditCity,
       State: EditState,
       Zip: EditZip,
+      CourtesyWithholding: EditCourtesyWithholding,
     },
   } = editForm
 
@@ -89,6 +136,7 @@ export function HomeAddressView({
       City: CreateCity,
       State: CreateState,
       Zip: CreateZip,
+      CourtesyWithholding: CreateCourtesyWithholding,
       EffectiveDate: CreateEffectiveDate,
     },
   } = createForm
@@ -174,6 +222,7 @@ export function HomeAddressView({
           {
             label: t('rowEdit'),
             onClick: () => {
+              onBeginAddressModalSession()
               onEditTargetUuidChange(row.uuid)
               setAddressModal('edit')
             },
@@ -257,6 +306,7 @@ export function HomeAddressView({
                 <Components.Button
                   variant="secondary"
                   onClick={() => {
+                    onBeginAddressModalSession()
                     onEditTargetUuidChange(undefined)
                     setAddressModal('edit')
                   }}
@@ -272,6 +322,7 @@ export function HomeAddressView({
           <Components.Button
             variant="secondary"
             onClick={() => {
+              onBeginAddressModalSession()
               onEditTargetUuidChange(undefined)
               setAddressModal('create')
             }}
@@ -392,6 +443,11 @@ export function HomeAddressView({
                   portalContainer={addressModalPortal}
                 />
                 <EditZip label={tHa('zip')} validationMessages={zipValidation} />
+                <HomeAddressCourtesyWithholdingBlock
+                  CourtesyWithholding={EditCourtesyWithholding}
+                  formHook={editHomeAddressForm}
+                  tHa={tHa}
+                />
               </Grid>
             </SDKFormProvider>
           ) : null}
@@ -438,6 +494,11 @@ export function HomeAddressView({
                   portalContainer={addressModalPortal}
                 />
                 <CreateZip label={tHa('zip')} validationMessages={zipValidation} />
+                <HomeAddressCourtesyWithholdingBlock
+                  CourtesyWithholding={CreateCourtesyWithholding}
+                  formHook={createHomeAddressForm}
+                  tHa={tHa}
+                />
               </Grid>
             </SDKFormProvider>
           ) : null}
@@ -465,7 +526,7 @@ export function HomeAddressView({
               onClick={() => {
                 void handleDeleteModalConfirm()
               }}
-              isLoading={editStatus.isPending && deleteConfirmUuid !== null}
+              isLoading={isDeletePending}
             >
               {t('deleteModalConfirmCta')}
             </Components.Button>

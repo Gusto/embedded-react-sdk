@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -6,7 +6,6 @@ import type { EmployeeAddress } from '@gusto/embedded-api/models/components/empl
 import { useEmployeeAddressesGet } from '@gusto/embedded-api/react-query/employeeAddressesGet'
 import { useEmployeeAddressesCreateMutation } from '@gusto/embedded-api/react-query/employeeAddressesCreate'
 import { useEmployeeAddressesUpdateMutation } from '@gusto/embedded-api/react-query/employeeAddressesUpdate'
-import { useEmployeeAddressesDeleteMutation } from '@gusto/embedded-api/react-query/employeeAddressesDelete'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import {
   createHomeAddressSchema,
@@ -67,6 +66,11 @@ export interface UseHomeAddressFormProps {
    * (e.g. editing a row from address history). When omitted, the active address is used.
    */
   updateTargetUuid?: string
+  /**
+   * Increment when opening a create/edit modal so the form resets even when the target address and
+   * default field values match the previous open (e.g. reopening the same row after cancel).
+   */
+  formSessionId?: number
 }
 
 export type HomeAddressFormFields = {
@@ -94,7 +98,6 @@ export interface UseHomeAddressFormReady extends Omit<
     onSubmit: (
       options?: HomeAddressSubmitOptions,
     ) => Promise<HookSubmitResult<EmployeeAddress> | undefined>
-    deleteHomeAddress: (homeAddressUuid: string) => Promise<boolean>
   }
   form: Omit<HomeAddressFormApi, 'Fields'> & {
     Fields: HomeAddressFormFields
@@ -116,6 +119,7 @@ export function useHomeAddressForm({
   submissionMode = 'auto',
   defaultValuesStrategy = 'current',
   updateTargetUuid,
+  formSessionId = 0,
 }: UseHomeAddressFormProps): HookLoadingResult | UseHomeAddressFormReady {
   const homeAddressesQuery = useEmployeeAddressesGet(
     { employeeId: employeeId ?? '' },
@@ -189,17 +193,30 @@ export function useHomeAddressForm({
     shouldFocusError,
     defaultValues: resolvedDefaults,
     values: resolvedDefaults,
-    resetOptions: { keepDirtyValues: true },
+    resetOptions: { keepDirtyValues: false },
   })
+
+  useEffect(() => {
+    formMethods.reset(resolvedDefaults)
+  }, [
+    formSessionId,
+    updateTargetUuid,
+    sourceAddressForDefaults?.uuid,
+    defaultValuesStrategy,
+    resolvedDefaults.street1,
+    resolvedDefaults.street2,
+    resolvedDefaults.city,
+    resolvedDefaults.state,
+    resolvedDefaults.zip,
+    resolvedDefaults.courtesyWithholding,
+    resolvedDefaults.effectiveDate,
+    formMethods,
+  ])
 
   const createHomeAddressMutation = useEmployeeAddressesCreateMutation()
   const updateHomeAddressMutation = useEmployeeAddressesUpdateMutation()
-  const deleteHomeAddressMutation = useEmployeeAddressesDeleteMutation()
 
-  const isPending =
-    createHomeAddressMutation.isPending ||
-    updateHomeAddressMutation.isPending ||
-    deleteHomeAddressMutation.isPending
+  const isPending = createHomeAddressMutation.isPending || updateHomeAddressMutation.isPending
 
   const {
     baseSubmitHandler,
@@ -324,27 +341,6 @@ export function useHomeAddressForm({
     return submitResult
   }
 
-  const deleteHomeAddress = async (homeAddressUuid: string): Promise<boolean> => {
-    let deleted = false
-    await baseSubmitHandler(homeAddressUuid, async uuid => {
-      const target = homeAddresses?.find(a => a.uuid === uuid)
-      if (!target) {
-        throw new SDKInternalError('Home address not found')
-      }
-      if (target.active === true) {
-        throw new SDKInternalError('Cannot delete the active home address')
-      }
-
-      await deleteHomeAddressMutation.mutateAsync({
-        request: { homeAddressUuid: uuid },
-      })
-      deleted = true
-
-      await homeAddressesQuery.refetch()
-    })
-    return deleted
-  }
-
   const isDataLoading = employeeId ? homeAddressesQuery.isLoading : false
 
   if (isDataLoading || (employeeId && !homeAddresses)) {
@@ -361,7 +357,7 @@ export function useHomeAddressForm({
       isPending,
       mode: isCreateMode ? ('create' as const) : ('update' as const),
     },
-    actions: { onSubmit, deleteHomeAddress },
+    actions: { onSubmit },
     errorHandling,
     form: {
       Fields: {
