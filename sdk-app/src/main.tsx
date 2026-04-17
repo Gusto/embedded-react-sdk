@@ -9,6 +9,7 @@ import { DesignHome } from './design/DesignHome'
 import { ComponentShowcase } from './design/prototypes/component-showcase'
 import { ContractorProfile } from './design/prototypes/contractor-management/contractorProfile'
 import './app.scss'
+import '@/styles/sdk.scss'
 
 const router = createBrowserRouter([
   {

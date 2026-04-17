@@ -5,7 +5,6 @@ import { resolveDefaults } from './component-defaults'
 import type { EntityIds } from './useEntities'
 import styles from './ComponentRenderer.module.scss'
 import { GustoProvider } from '@/contexts'
-import '@/styles/sdk.scss'
 
 interface ComponentRendererProps {
   entities: EntityIds

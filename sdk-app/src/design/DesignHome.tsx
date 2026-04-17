@@ -57,18 +57,15 @@ export function DesignHome() {
               1. Create a directory in <code>sdk-app/src/design/prototypes/your-feature/</code>
             </Components.Text>
             <Components.Text>
-              2. Add an <code>index.tsx</code> — for single-page prototypes this is all you need
+              2. Add an <code>index.tsx</code> file.
             </Components.Text>
+
             <Components.Text>
-              3. For multi-page prototypes, add an <code>{'<Outlet />'}</code> in your index and
-              create sub-page components
-            </Components.Text>
-            <Components.Text>
-              4. Register routes in <code>sdk-app/src/main.tsx</code> under the <code>/design</code>{' '}
+              3. Register routes in <code>sdk-app/src/main.tsx</code> under the <code>/design</code>{' '}
               path
             </Components.Text>
             <Components.Text>
-              5. Add an entry to <code>categorizedRegistry</code> in{' '}
+              4. Add an entry to <code>categorizedRegistry</code> in{' '}
               <code>sdk-app/src/design/registry.ts</code>
             </Components.Text>
           </Flex>
