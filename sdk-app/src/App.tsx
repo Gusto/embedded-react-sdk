@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import { TopBar } from './TopBar'
-import { Footer } from './Footer'
 import { Sidebar } from './Sidebar'
 import { DemoSettingsPanel } from './DemoSettingsPanel'
 import { TokenExpiredOverlay } from './TokenExpiredOverlay'
@@ -32,20 +31,19 @@ export function App() {
 
   return (
     <div className="app-layout">
-      <TopBar />
-      <div className="app-body">
-        <Sidebar mode={mode} searchQuery={searchQuery} onSearchChange={setSearchQuery} />
-        <main className="main-content">
-          <Outlet context={{ entities }} />
-        </main>
-      </div>
-      <Footer
+      <TopBar
         companyId={entities.companyId}
         tokenStatus={demoManager.tokenStatus}
         onOpenSettings={() => {
           setSettingsOpen(true)
         }}
       />
+      <div className="app-body">
+        <Sidebar mode={mode} searchQuery={searchQuery} onSearchChange={setSearchQuery} />
+        <main className="main-content">
+          <Outlet context={{ entities }} />
+        </main>
+      </div>
       <DemoSettingsPanel
         isOpen={settingsOpen}
         onClose={() => {

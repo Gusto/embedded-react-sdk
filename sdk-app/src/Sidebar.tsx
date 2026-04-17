@@ -55,14 +55,13 @@ function CategorySection({
           if (e.key === 'Enter' || e.key === ' ') setCollapsed(!collapsed)
         }}
       >
-        <span>
-          <span
+        <div className={styles.categoryTitle}>
+          <CaretRightIcon
             className={`${styles.categoryArrow} ${collapsed ? styles.categoryArrowCollapsed : ''}`}
-          >
-            <CaretRightIcon />
-          </span>
+          />
           {displayCategory}
-        </span>
+        </div>
+
         <span className={styles.categoryCount}>{filteredItems.length}</span>
       </div>
       {!collapsed && (
