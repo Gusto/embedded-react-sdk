@@ -1,17 +1,37 @@
-import { useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { Trans, useTranslation } from 'react-i18next'
 import type { Location } from '@gusto/embedded-api/models/components/location'
 import type { EmployeeWorkAddress } from '@gusto/embedded-api/models/components/employeeworkaddress'
+import {
+  formatPendingWorkAddressLine,
+  getPendingFutureWorkAddress,
+} from './getPendingFutureWorkAddress'
 import ListIcon from '@/assets/icons/list.svg?react'
-import { DataView, EmptyData, useDataView } from '@/components/Common'
+import PencilSvg from '@/assets/icons/pencil.svg?react'
+import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
+import { DataView, EmptyData, Grid, HamburgerMenu, useDataView } from '@/components/Common'
 import { Flex, FlexItem } from '@/components/Common/Flex/Flex'
+import {
+  LocationField,
+  EffectiveDateField,
+} from '@/components/Employee/Profile/shared/useWorkAddressForm/fields'
+import { WorkAddressErrorCodes } from '@/components/Employee/Profile/shared/useWorkAddressForm/workAddressSchema'
 import type { UseWorkAddressFormReady } from '@/components/Employee/Profile/shared/useWorkAddressForm'
+import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
+import type { HookSubmitResult } from '@/partner-hook-utils/types'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { addDays, formatDateLongWithYear, normalizeToDate } from '@/helpers/dateFormatting'
-import { addressInline, getCityStateZip, getStreet } from '@/helpers/formattedStrings'
+import { getCityStateZip, getStreet } from '@/helpers/formattedStrings'
 
 export interface WorkAddressViewProps {
-  workAddressForm: UseWorkAddressFormReady
+  editWorkAddressForm: UseWorkAddressFormReady
+  changeWorkAddressForm: UseWorkAddressFormReady
+  editTargetUuid: string | undefined
+  onEditTargetUuidChange: (uuid: string | undefined) => void
+  employeeDisplayName: string
+  onConfirmDelete: (workAddressUuid: string) => Promise<boolean>
+  onWorkAddressSaved: (result: HookSubmitResult<EmployeeWorkAddress>) => void
+  isDeletePending?: boolean
 }
 
 function resolveLocation(
@@ -39,13 +59,74 @@ function formatWorkAddressLines(
   return { primary: street, secondary: locality }
 }
 
-export function WorkAddressView({ workAddressForm }: WorkAddressViewProps) {
+export function WorkAddressView({
+  editWorkAddressForm,
+  changeWorkAddressForm,
+  editTargetUuid,
+  onEditTargetUuidChange,
+  employeeDisplayName,
+  onConfirmDelete,
+  onWorkAddressSaved,
+  isDeletePending = false,
+}: WorkAddressViewProps) {
   const { t } = useTranslation('Employee.WorkAddress.Management')
   const Components = useComponentContext()
+  const [addressModal, setAddressModal] = useState<'edit' | 'create' | null>(null)
+  const [deleteConfirmUuid, setDeleteConfirmUuid] = useState<string | null>(null)
+  const addressModalContainerRef = useRef<HTMLDivElement>(null)
+  const [addressModalPortal, setAddressModalPortal] = useState<HTMLElement | undefined>(undefined)
+
+  useLayoutEffect(() => {
+    if (!addressModal) {
+      setAddressModalPortal(undefined)
+      return
+    }
+    const syncPortal = () => {
+      setAddressModalPortal(addressModalContainerRef.current ?? undefined)
+    }
+    syncPortal()
+    if (addressModalContainerRef.current == null) {
+      const id = requestAnimationFrame(syncPortal)
+      return () => {
+        cancelAnimationFrame(id)
+      }
+    }
+  }, [addressModal])
 
   const {
     data: { workAddress, workAddresses, companyLocations },
-  } = workAddressForm
+    status: editStatus,
+    form: { Fields: editFormFields },
+  } = editWorkAddressForm
+
+  const editShowsEffectiveDateField = editFormFields.EffectiveDate != null
+
+  const { status: createStatus } = changeWorkAddressForm
+
+  const locationValidation = {
+    [WorkAddressErrorCodes.REQUIRED]: t('form.locationRequired'),
+  }
+
+  const startDateValidation = {
+    [WorkAddressErrorCodes.REQUIRED]: t('form.startDateRequired'),
+  }
+
+  const pendingFutureAddress = useMemo(
+    () => getPendingFutureWorkAddress(workAddresses),
+    [workAddresses],
+  )
+
+  const addressForDeleteModal = useMemo(() => {
+    if (!deleteConfirmUuid || !workAddresses) {
+      return undefined
+    }
+    return workAddresses.find(a => a.uuid === deleteConfirmUuid)
+  }, [deleteConfirmUuid, workAddresses])
+
+  const changePendingPossessiveLabel = useMemo(() => {
+    const trimmed = employeeDisplayName.trim()
+    return trimmed ? `${trimmed}'s` : t('changePendingPossessiveFallback')
+  }, [employeeDisplayName, t])
 
   const chronologicalAsc = useMemo(() => {
     return [...(workAddresses ?? [])].sort((a, b) => {
@@ -85,16 +166,11 @@ export function WorkAddressView({ workAddressForm }: WorkAddressViewProps) {
       {
         title: t('columns.location'),
         render: (row: EmployeeWorkAddress) => {
-          const location = resolveLocation(row, companyLocations)
           const lines = formatWorkAddressLines(row, companyLocations)
           return (
             <Flex flexDirection="column" gap={0}>
-              <Components.Text weight="medium">
-                {location ? addressInline(location) : lines.primary}
-              </Components.Text>
-              {!location && lines.secondary ? (
-                <Components.Text variant="supporting">{lines.secondary}</Components.Text>
-              ) : null}
+              <Components.Text weight="medium">{lines.primary}</Components.Text>
+              <Components.Text variant="supporting">{lines.secondary}</Components.Text>
             </Flex>
           )
         },
@@ -109,6 +185,31 @@ export function WorkAddressView({ workAddressForm }: WorkAddressViewProps) {
         render: (row: EmployeeWorkAddress) => historyEndDate(row),
       },
     ],
+    itemMenu: (row: EmployeeWorkAddress) => (
+      <HamburgerMenu
+        triggerLabel={t('rowMenuAriaLabel')}
+        items={[
+          {
+            label: t('rowEdit'),
+            onClick: () => {
+              onEditTargetUuidChange(row.uuid)
+              setAddressModal('edit')
+            },
+            icon: <PencilSvg aria-hidden />,
+          },
+          {
+            label: t('rowDelete'),
+            onClick: () => {
+              if (row.active === true) {
+                return
+              }
+              setDeleteConfirmUuid(row.uuid)
+            },
+            icon: <TrashCanSvg aria-hidden />,
+          },
+        ]}
+      />
+    ),
     emptyState: () => (
       <div data-testid="work-address-history-empty">
         <EmptyData
@@ -120,9 +221,54 @@ export function WorkAddressView({ workAddressForm }: WorkAddressViewProps) {
     ),
   })
 
-  const currentLines = workAddress
-    ? formatWorkAddressLines(workAddress, companyLocations)
-    : null
+  const closeAddressModal = () => {
+    setAddressModal(null)
+    onEditTargetUuidChange(undefined)
+  }
+
+  const handleDeleteModalConfirm = async () => {
+    if (!deleteConfirmUuid) {
+      return
+    }
+    const deleted = await onConfirmDelete(deleteConfirmUuid)
+    if (deleted) {
+      setDeleteConfirmUuid(null)
+    }
+  }
+
+  const handleSave = async () => {
+    if (!addressModal) {
+      return
+    }
+    const addressBeingEdited =
+      editTargetUuid && workAddresses
+        ? workAddresses.find(a => a.uuid === editTargetUuid)
+        : workAddress
+
+    if (addressModal === 'edit') {
+      const result = await editWorkAddressForm.actions.onSubmit(
+        undefined,
+        editShowsEffectiveDateField
+          ? undefined
+          : { effectiveDate: addressBeingEdited?.effectiveDate },
+      )
+      if (result) {
+        onWorkAddressSaved(result)
+        closeAddressModal()
+      }
+      return
+    }
+
+    const result = await changeWorkAddressForm.actions.onSubmit()
+    if (result) {
+      onWorkAddressSaved(result)
+      closeAddressModal()
+    }
+  }
+
+  const modalPending = addressModal === 'edit' ? editStatus.isPending : createStatus.isPending
+
+  const currentLines = workAddress ? formatWorkAddressLines(workAddress, companyLocations) : null
   const currentLocation =
     workAddress && companyLocations ? resolveLocation(workAddress, companyLocations) : undefined
 
@@ -134,14 +280,51 @@ export function WorkAddressView({ workAddressForm }: WorkAddressViewProps) {
       </Flex>
 
       <Components.Box
-        header={<Components.BoxHeader title={t('currentSectionTitle')} />}
+        header={
+          <Components.BoxHeader
+            title={t('currentSectionTitle')}
+            action={
+              workAddress ? (
+                <Components.Button
+                  variant="secondary"
+                  onClick={() => {
+                    onEditTargetUuidChange(undefined)
+                    setAddressModal('edit')
+                  }}
+                  isLoading={editStatus.isPending}
+                >
+                  {t('editCta')}
+                </Components.Button>
+              ) : undefined
+            }
+          />
+        }
+        footer={
+          <Components.Button
+            variant="secondary"
+            onClick={() => {
+              onEditTargetUuidChange(undefined)
+              setAddressModal('create')
+            }}
+            isLoading={createStatus.isPending}
+          >
+            {t('changeCta')}
+          </Components.Button>
+        }
       >
         <Flex flexDirection="column" gap={16}>
           {workAddress && currentLines ? (
             <Flex flexDirection="column" gap={4}>
               <FlexItem>
                 {currentLocation ? (
-                  <Components.Text weight="medium">{addressInline(currentLocation)}</Components.Text>
+                  <>
+                    <Components.Text weight="medium">
+                      {getStreet(currentLocation).trim()}
+                    </Components.Text>
+                    <Components.Text weight="medium">
+                      {getCityStateZip(currentLocation)}
+                    </Components.Text>
+                  </>
                 ) : (
                   <>
                     <Components.Text weight="medium">{currentLines.primary}</Components.Text>
@@ -160,6 +343,20 @@ export function WorkAddressView({ workAddressForm }: WorkAddressViewProps) {
           ) : (
             <Components.Text>{t('currentEmpty')}</Components.Text>
           )}
+          {pendingFutureAddress ? (
+            <Components.Alert status="warning" label={t('changePendingTitle')}>
+              <Components.Text variant="supporting">
+                {t('changePendingDescription', {
+                  possessiveLabel: changePendingPossessiveLabel,
+                  newAddress: formatPendingWorkAddressLine(pendingFutureAddress, companyLocations),
+                  effectiveDate: pendingFutureAddress.effectiveDate
+                    ? formatDateLongWithYear(pendingFutureAddress.effectiveDate)
+                    : '—',
+                  interpolation: { escapeValue: false },
+                })}
+              </Components.Text>
+            </Components.Alert>
+          ) : null}
         </Flex>
       </Components.Box>
 
@@ -167,6 +364,143 @@ export function WorkAddressView({ workAddressForm }: WorkAddressViewProps) {
         <Components.Heading as="h2">{t('historySectionTitle')}</Components.Heading>
         <DataView label={t('historySectionTitle')} {...historyDataView} />
       </Flex>
+
+      <Components.Modal
+        isOpen={addressModal !== null}
+        onClose={closeAddressModal}
+        shouldCloseOnBackdropClick={false}
+        containerRef={addressModalContainerRef}
+        footer={
+          <Flex flexDirection="row" gap={12} justifyContent="flex-end">
+            <Components.Button variant="secondary" onClick={closeAddressModal}>
+              {t('cancelCta')}
+            </Components.Button>
+            <Components.Button
+              variant="primary"
+              onClick={() => {
+                void handleSave()
+              }}
+              isLoading={modalPending}
+            >
+              {t('submitCta')}
+            </Components.Button>
+          </Flex>
+        }
+      >
+        <Flex flexDirection="column" gap={16}>
+          <Components.Heading as="h2">
+            {addressModal === 'edit' ? t('editModalTitle') : t('changeModalTitle')}
+          </Components.Heading>
+          <Components.Text variant="supporting">
+            {addressModal === 'edit' ? t('editModalDescription') : t('changeModalDescription')}
+          </Components.Text>
+          {addressModal === 'edit' && editShowsEffectiveDateField ? (
+            <Components.Alert status="warning" label={t('editPastAddressAlertTitle')} />
+          ) : null}
+          {addressModal === 'edit' ? (
+            <SDKFormProvider formHookResult={editWorkAddressForm}>
+              <Grid
+                gridTemplateColumns={{
+                  base: '1fr',
+                  small: '1fr',
+                }}
+                gap={20}
+              >
+                <LocationField
+                  label={
+                    editShowsEffectiveDateField
+                      ? t('form.editInactiveLocationLabel')
+                      : t('form.editLocationLabel')
+                  }
+                  description={t('form.editLocationDescription')}
+                  validationMessages={locationValidation}
+                  portalContainer={addressModalPortal}
+                />
+                {editShowsEffectiveDateField ? (
+                  <EffectiveDateField
+                    label={t('form.startDateLabel')}
+                    description={t('form.editInactiveStartDateDescription')}
+                    validationMessages={startDateValidation}
+                    portalContainer={addressModalPortal}
+                  />
+                ) : null}
+              </Grid>
+            </SDKFormProvider>
+          ) : null}
+          {addressModal === 'create' ? (
+            <SDKFormProvider formHookResult={changeWorkAddressForm}>
+              <Grid
+                gridTemplateColumns={{
+                  base: '1fr',
+                  small: '1fr',
+                }}
+                gap={20}
+              >
+                <LocationField
+                  label={t('form.newWorkAddressLabel')}
+                  description={t('form.newWorkAddressDescription')}
+                  validationMessages={locationValidation}
+                  portalContainer={addressModalPortal}
+                />
+                <EffectiveDateField
+                  label={t('form.startDateLabel')}
+                  description={t('form.startDateDescription')}
+                  validationMessages={startDateValidation}
+                  portalContainer={addressModalPortal}
+                />
+              </Grid>
+            </SDKFormProvider>
+          ) : null}
+        </Flex>
+      </Components.Modal>
+
+      <Components.Modal
+        isOpen={deleteConfirmUuid !== null}
+        onClose={() => {
+          setDeleteConfirmUuid(null)
+        }}
+        shouldCloseOnBackdropClick={false}
+        footer={
+          <Flex flexDirection="row" gap={12} justifyContent="flex-end">
+            <Components.Button
+              variant="secondary"
+              onClick={() => {
+                setDeleteConfirmUuid(null)
+              }}
+            >
+              {t('cancelCta')}
+            </Components.Button>
+            <Components.Button
+              variant="error"
+              onClick={() => {
+                void handleDeleteModalConfirm()
+              }}
+              isLoading={isDeletePending && deleteConfirmUuid !== null}
+            >
+              {t('deleteModalConfirmCta')}
+            </Components.Button>
+          </Flex>
+        }
+      >
+        <Flex flexDirection="column" gap={16}>
+          <Components.Heading as="h2">{t('deleteModalTitle')}</Components.Heading>
+          <Components.Text variant="supporting">
+            {addressForDeleteModal ? (
+              <Trans
+                t={t}
+                i18nKey="deleteModalDescription"
+                values={{
+                  address: formatPendingWorkAddressLine(addressForDeleteModal, companyLocations),
+                }}
+                components={{
+                  strong: <Components.Text weight="medium" as="span" />,
+                }}
+                tOptions={{ interpolation: { escapeValue: false } }}
+              />
+            ) : null}
+          </Components.Text>
+        </Flex>
+      </Components.Modal>
     </Flex>
   )
 }

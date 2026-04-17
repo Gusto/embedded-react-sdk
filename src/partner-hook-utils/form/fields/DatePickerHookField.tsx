@@ -6,7 +6,8 @@ import type { DatePickerProps } from '@/components/Common/UI/DatePicker/DatePick
 
 export interface DatePickerHookFieldProps<
   TErrorCode extends string = never,
-> extends BaseFieldProps {
+> extends BaseFieldProps,
+    Pick<DatePickerProps, 'portalContainer'> {
   name: string
   formHookResult?: BaseFormHookReady
   validationMessages?: ValidationMessages<TErrorCode>
@@ -20,6 +21,7 @@ export function DatePickerHookField<TErrorCode extends string>({
   description,
   validationMessages,
   FieldComponent,
+  portalContainer,
 }: DatePickerHookFieldProps<TErrorCode>) {
   const { metadata, control, errorMessage } = useHookFieldResolution(
     name,
@@ -38,6 +40,7 @@ export function DatePickerHookField<TErrorCode extends string>({
       isRequired={fieldMetadata?.isRequired}
       isDisabled={fieldMetadata?.isDisabled}
       FieldComponent={FieldComponent}
+      portalContainer={portalContainer}
     />
   )
 }

@@ -8,7 +8,8 @@ import type { SelectProps } from '@/components/Common/UI/Select/SelectTypes'
 export interface SelectHookFieldProps<
   TErrorCode extends string = never,
   TEntry = unknown,
-> extends BaseFieldProps {
+> extends BaseFieldProps,
+    Pick<SelectProps, 'portalContainer'> {
   name: string
   formHookResult?: BaseFormHookReady
   validationMessages?: ValidationMessages<TErrorCode>
@@ -24,6 +25,7 @@ export function SelectHookField<TErrorCode extends string, TEntry = unknown>({
   validationMessages,
   getOptionLabel,
   FieldComponent,
+  portalContainer,
 }: SelectHookFieldProps<TErrorCode, TEntry>) {
   const { metadata, control, errorMessage } = useHookFieldResolution(
     name,
@@ -52,6 +54,7 @@ export function SelectHookField<TErrorCode extends string, TEntry = unknown>({
       isDisabled={fieldMetadata?.isDisabled}
       options={options}
       FieldComponent={FieldComponent}
+      portalContainer={portalContainer}
     />
   )
 }
