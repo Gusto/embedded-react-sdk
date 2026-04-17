@@ -2139,7 +2139,6 @@ export interface EmployeeWorkAddressManagement{
 "editModalDescription":string;
 "changeModalDescription":string;
 "editPastAddressAlertTitle":string;
-"editPastAddressAlertDescription":string;
 "editModalTitle":string;
 "changeModalTitle":string;
 "form":{
