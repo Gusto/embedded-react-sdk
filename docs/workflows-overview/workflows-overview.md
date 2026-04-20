@@ -30,7 +30,7 @@ Workflows are incredibly simple to add to your application. A single React compo
 In this example we incorporate the entire employee onboarding flow in our application. This component represents multiple steps including inputting profile details, taxes, and payment info. It can be implemented as follows:
 
 ```jsx
-import { Employee, GustoProvider } from '@gusto/embedded-react-sdk'
+import { EmployeeOnboarding, GustoProvider } from '@gusto/embedded-react-sdk'
 
 function MyApp({ companyId }) {
   return (
@@ -39,7 +39,7 @@ function MyApp({ companyId }) {
         baseUrl: `/myapp/`,
       }}
     >
-      <Employee.OnboardingFlow companyId={companyId} onEvent={() => {...}} />
+      <EmployeeOnboarding.OnboardingFlow companyId={companyId} onEvent={() => {...}} />
     </GustoProvider>
   )
 }

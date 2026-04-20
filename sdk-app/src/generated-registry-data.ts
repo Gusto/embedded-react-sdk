@@ -53,6 +53,7 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'Employee.TerminationSummary': ['employeeId', 'companyId'],
   'Hooks.CompensationForm': ['companyId'],
   'Hooks.EmployeeDetailsForm': ['companyId'],
+  'Hooks.HomeAddressForm': ['employeeId'],
   'Hooks.PayScheduleForm': ['companyId'],
   'Hooks.SignCompanyForm': ['companyId'],
   'Hooks.SignEmployeeForm': ['employeeId'],

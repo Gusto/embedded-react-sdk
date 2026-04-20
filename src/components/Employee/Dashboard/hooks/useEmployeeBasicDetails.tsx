@@ -5,23 +5,21 @@ import { useEmployeeAddressesGetWorkAddressesSuspense } from '@gusto/embedded-ap
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { EmployeeAddress } from '@gusto/embedded-api/models/components/employeeaddress'
 import type { EmployeeWorkAddress } from '@gusto/embedded-api/models/components/employeeworkaddress'
-import { buildQueryErrorHandling } from '@/helpers/buildQueryErrorHandling'
-import type { HookLoadingResult, BaseHookReady } from '@/types/sdkHooks'
+import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
+import type { HookLoadingResult, BaseHookReady } from '@/partner-hook-utils/types'
 
 export interface UseEmployeeBasicDetailsProps {
   employeeId: string
 }
 
-interface UseEmployeeBasicDetailsReady extends Omit<BaseHookReady, 'data' | 'status'> {
-  data: {
+type UseEmployeeBasicDetailsReady = BaseHookReady<
+  {
     employee: Employee
     currentHomeAddress?: EmployeeAddress
     currentWorkAddress?: EmployeeWorkAddress
-  }
-  status: {
-    isPending: boolean
-  }
-}
+  },
+  { isPending: boolean }
+>
 
 export type UseEmployeeBasicDetailsResult = HookLoadingResult | UseEmployeeBasicDetailsReady
 
@@ -49,7 +47,7 @@ export function useEmployeeBasicDetails({
     employeeQuery.isFetching || addressesQuery.isFetching || workAddressesQuery.isFetching
   const isLoading = !employee && isPending
 
-  const errorHandling = buildQueryErrorHandling([employeeQuery, addressesQuery, workAddressesQuery])
+  const errorHandling = composeErrorHandler([employeeQuery, addressesQuery, workAddressesQuery])
 
   if (isLoading) {
     return {

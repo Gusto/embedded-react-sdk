@@ -8,7 +8,7 @@ order: 3
 Creates or updates job compensation for an employee — job title, FLSA classification, pay rate, payment unit, minimum wage adjustments, and Washington state workers' compensation fields.
 
 ```tsx
-import { useCompensationForm, SDKFormProvider } from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'
+import { useCompensationForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
 ```
 
 ---
@@ -533,7 +533,7 @@ import {
   useCompensationForm,
   SDKFormProvider,
   type UseCompensationFormReady,
-} from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'
+} from '@gusto/embedded-react-sdk'
 
 function CompensationPage({ employeeId }: { employeeId: string }) {
   const compensation = useCompensationForm({
@@ -709,10 +709,7 @@ function CompensationFormReady({ compensation }: { compensation: UseCompensation
 The same form using prop-based field connection. No `SDKFormProvider` wrapper needed:
 
 ```tsx
-import {
-  useCompensationForm,
-  type UseCompensationFormReady,
-} from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'
+import { useCompensationForm, type UseCompensationFormReady } from '@gusto/embedded-react-sdk'
 
 function CompensationPage({ employeeId }: { employeeId: string }) {
   const compensation = useCompensationForm({ employeeId, withStartDateField: true })
