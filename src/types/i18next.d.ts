@@ -398,6 +398,7 @@ export interface CompanyTimeOffCreateTimeOffPolicy{
 "paidOutOnTerminationHint":string;
 "numberOfHoursPlaceholder":string;
 "numberOfDaysPlaceholder":string;
+"continueCta":string;
 };
 "addEmployees":{
 "title":string;
