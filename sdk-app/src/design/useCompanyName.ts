@@ -4,6 +4,7 @@ export function useCompanyName(companyId: string) {
   const [name, setName] = useState<string>('')
 
   useEffect(() => {
+    setName('')
     if (!companyId) return
 
     fetch(`/api/v1/companies/${companyId}`, { signal: AbortSignal.timeout(10000) })
