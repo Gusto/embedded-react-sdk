@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from 'react'
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
+import classNames from 'classnames'
 import { type Employee } from '@gusto/embedded-api/models/components/employee'
 import type { ProfileProps } from './Profile'
 import styles from './AdminProfile.module.scss'
@@ -265,7 +266,7 @@ function AdminProfileReady({
     homeAddress.form.hookFormInternals.formMethods.watch('courtesyWithholding')
 
   return (
-    <section className={className}>
+    <section className={classNames(styles.container, className)}>
       <BaseLayout error={errorHandling.errors}>
         <Form onSubmit={handleSubmit}>
           <Grid gridTemplateColumns="1fr" gap={24}>

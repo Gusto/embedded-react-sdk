@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import classNames from 'classnames'
 import { useEmployeeAddressesGetWorkAddresses } from '@gusto/embedded-api/react-query/employeeAddressesGetWorkAddresses'
 import type { ProfileProps } from './Profile'
 import styles from './EmployeeProfile.module.scss'
@@ -117,7 +118,7 @@ export function EmployeeProfile({
   const isPending = employeeDetails.status.isPending || homeAddress.status.isPending
 
   return (
-    <section className={className}>
+    <section className={classNames(styles.container, className)}>
       <BaseLayout error={errorHandling.errors}>
         <Form onSubmit={submitResult.handleSubmit}>
           <Grid gridTemplateColumns="1fr" gap={24}>
