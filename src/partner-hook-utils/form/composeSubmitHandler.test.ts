@@ -1,4 +1,5 @@
 import { describe, expect, it, vi, type Mock } from 'vitest'
+import type { UseFormReturn } from 'react-hook-form'
 import { composeSubmitHandler } from './composeSubmitHandler'
 import { composeErrorHandler } from '../composeErrorHandler'
 import type { HookErrorHandling } from '../types'
@@ -255,6 +256,116 @@ describe('composeSubmitHandler', () => {
       combined.clearSubmitError()
       expect(form.errorHandling.clearSubmitError).toHaveBeenCalledOnce()
       expect(setSubmitError).toHaveBeenCalledWith(null)
+    })
+  })
+
+  describe('raw UseFormReturn slots', () => {
+    function createMockRawForm(
+      overrides: { isValid?: boolean; errorFields?: string[] } = {},
+    ): UseFormReturn<{ startDate: string }> & {
+      handleSubmit: Mock
+      setFocus: Mock
+    } {
+      const { isValid = true, errorFields = [] } = overrides
+
+      const errors: Record<string, { message: string }> = {}
+      for (const field of errorFields) {
+        errors[field] = { message: 'validation_error' }
+      }
+
+      const handleSubmit = vi.fn((onValid: () => void, onInvalid?: () => void) => {
+        return async () => {
+          if (isValid) {
+            onValid()
+          } else {
+            onInvalid?.()
+          }
+        }
+      })
+
+      const mock = {
+        handleSubmit,
+        setFocus: vi.fn(),
+        formState: { errors },
+      } as unknown as UseFormReturn<{ startDate: string }> & {
+        handleSubmit: Mock
+        setFocus: Mock
+      }
+
+      return mock
+    }
+
+    it('calls onAllValid when a raw form and an SDK form are both valid', async () => {
+      const sdkForm = createMockForm({ isValid: true })
+      const rawForm = createMockRawForm({ isValid: true })
+      const onAllValid = vi.fn()
+
+      const { handleSubmit } = composeSubmitHandler([sdkForm, rawForm], onAllValid)
+      await handleSubmit(createMockEvent())
+
+      expect(sdkForm.formMethods.handleSubmit).toHaveBeenCalledOnce()
+      expect(rawForm.handleSubmit).toHaveBeenCalledOnce()
+      expect(onAllValid).toHaveBeenCalledOnce()
+    })
+
+    it('focuses the first invalid field on a raw form when it fails validation', async () => {
+      const sdkForm = createMockForm({ isValid: true })
+      const rawForm = createMockRawForm({
+        isValid: false,
+        errorFields: ['startDate'],
+      })
+      const onAllValid = vi.fn()
+
+      const { handleSubmit } = composeSubmitHandler([sdkForm, rawForm], onAllValid)
+      await handleSubmit(createMockEvent())
+
+      expect(onAllValid).not.toHaveBeenCalled()
+      expect(rawForm.setFocus).toHaveBeenCalledWith('startDate')
+      expect(sdkForm.formMethods.setFocus).not.toHaveBeenCalled()
+    })
+
+    it('prefers focusing the earliest invalid slot across mixed form types', async () => {
+      const rawForm = createMockRawForm({
+        isValid: false,
+        errorFields: ['startDate'],
+      })
+      const sdkForm = createMockForm({
+        isValid: false,
+        errorFields: ['firstName'],
+      })
+      const onAllValid = vi.fn()
+
+      const { handleSubmit } = composeSubmitHandler([rawForm, sdkForm], onAllValid)
+      await handleSubmit(createMockEvent())
+
+      expect(onAllValid).not.toHaveBeenCalled()
+      expect(rawForm.setFocus).toHaveBeenCalledWith('startDate')
+      expect(sdkForm.formMethods.setFocus).not.toHaveBeenCalled()
+    })
+
+    it('does not include raw forms in aggregated errorHandling', () => {
+      const sdkError = createMockError('SDK hook error')
+      const sdkForm = createMockForm({
+        errorHandling: createMockErrorHandling({ errors: [sdkError] }),
+      })
+      const rawForm = createMockRawForm()
+
+      const { errorHandling } = composeSubmitHandler([sdkForm, rawForm], vi.fn())
+
+      expect(errorHandling.errors.map(e => e.message)).toEqual(['SDK hook error'])
+    })
+
+    it('retryQueries and clearSubmitError skip raw forms (no synthesized errorHandling)', () => {
+      const sdkForm = createMockForm()
+      const rawForm = createMockRawForm()
+
+      const { errorHandling } = composeSubmitHandler([sdkForm, rawForm], vi.fn())
+
+      errorHandling.retryQueries()
+      errorHandling.clearSubmitError()
+
+      expect(sdkForm.errorHandling.retryQueries).toHaveBeenCalledOnce()
+      expect(sdkForm.errorHandling.clearSubmitError).toHaveBeenCalledOnce()
     })
   })
 })

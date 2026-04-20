@@ -1,4 +1,5 @@
 import type { SyntheticEvent } from 'react'
+import type { FieldValues, UseFormReturn } from 'react-hook-form'
 import { composeErrorHandler } from '../composeErrorHandler'
 import type { HookErrorHandling } from '../types'
 
@@ -22,9 +23,34 @@ interface ComposableFormHookResult {
   errorHandling: HookErrorHandling
 }
 
+/**
+ * Accepted input for a single slot of `composeSubmitHandler`'s `forms` array.
+ *
+ * - SDK form hook results (anything matching `ComposableFormHookResult`) are composed directly.
+ * - A raw `react-hook-form` `UseFormReturn<T>` is supported for screen-local auxiliary forms
+ *   that don't warrant a dedicated SDK hook. Raw forms contribute validation/focus behavior
+ *   but no `errorHandling` (fields surface their own inline errors via react-hook-form).
+ */
+export type ComposeSubmitInput<T extends FieldValues = FieldValues> =
+  | ComposableFormHookResult
+  | UseFormReturn<T>
+
 export interface ComposeSubmitHandlerResult {
   handleSubmit: (e: SyntheticEvent) => Promise<void>
   errorHandling: HookErrorHandling
+}
+
+type FormMethods = ComposableFormHookResult['form']['hookFormInternals']['formMethods']
+
+function isRawUseForm<T extends FieldValues>(
+  input: ComposeSubmitInput<T>,
+): input is UseFormReturn<T> {
+  return 'handleSubmit' in input && typeof input.handleSubmit === 'function'
+}
+
+function extractFormMethods<T extends FieldValues>(input: ComposeSubmitInput<T>): FormMethods {
+  if (isRawUseForm(input)) return input as unknown as FormMethods
+  return input.form.hookFormInternals.formMethods
 }
 
 /**
@@ -65,18 +91,21 @@ export interface ComposeSubmitHandlerResult {
  * return <form onSubmit={handleSubmit}>...</form>
  * ```
  */
-export function composeSubmitHandler(
-  forms: ComposableFormHookResult[],
+export function composeSubmitHandler<TForms extends readonly FieldValues[]>(
+  forms: readonly [...{ [K in keyof TForms]: ComposeSubmitInput<TForms[K]> }],
   onAllValid: () => Promise<void>,
 ): ComposeSubmitHandlerResult {
+  const formMethodsList = forms.map(extractFormMethods)
+  const errorSources = forms.filter((form): form is ComposableFormHookResult => !isRawUseForm(form))
+
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault()
 
     const validationResults = await Promise.all(
-      forms.map(
-        form =>
+      formMethodsList.map(
+        methods =>
           new Promise<boolean>(resolve => {
-            void form.form.hookFormInternals.formMethods.handleSubmit(
+            void methods.handleSubmit(
               () => {
                 resolve(true)
               },
@@ -91,12 +120,10 @@ export function composeSubmitHandler(
     const allValid = validationResults.every(Boolean)
 
     if (!allValid) {
-      for (const form of forms) {
-        const firstErrorField = Object.keys(
-          form.form.hookFormInternals.formMethods.formState.errors,
-        )[0]
+      for (const methods of formMethodsList) {
+        const firstErrorField = Object.keys(methods.formState.errors)[0]
         if (firstErrorField) {
-          form.form.hookFormInternals.formMethods.setFocus(firstErrorField)
+          methods.setFocus(firstErrorField)
           return
         }
       }
@@ -106,7 +133,7 @@ export function composeSubmitHandler(
     await onAllValid()
   }
 
-  const errorHandling = composeErrorHandler(forms)
+  const errorHandling = composeErrorHandler(errorSources)
 
   return { handleSubmit, errorHandling }
 }
