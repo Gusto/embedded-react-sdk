@@ -6,6 +6,8 @@ export { PolicyConfigurationForm } from './TimeOffManagement/PolicyConfiguration
 export type { PolicyConfigurationFormProps } from './TimeOffManagement/PolicyConfigurationForm'
 export { PolicySettings } from './PolicySettings/PolicySettings'
 export type { PolicySettingsProps } from './PolicySettings/PolicySettings'
+export { PolicySettingsPresentation } from './PolicySettings/PolicySettingsPresentation'
+export type { PolicySettingsPresentationProps } from './PolicySettings/PolicySettingsTypes'
 export { AddEmployeesToPolicy } from './AddEmployeesToPolicy/AddEmployeesToPolicy'
 export type { AddEmployeesToPolicyProps } from './AddEmployeesToPolicy/AddEmployeesToPolicy'
 export { ViewPolicyDetails } from './ViewPolicyDetails/ViewPolicyDetails'
