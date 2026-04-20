@@ -12,8 +12,20 @@
   margin: toRem(4) 0;
 }
 
-.settingField {
+.settingRow {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: toRem(20);
+  align-items: start;
+  width: 100%;
+}
+
+.settingField > :nth-child(2) {
   max-width: toRem(200);
+}
+
+.toggleCell {
+  padding-top: toRem(2);
 }
 
 .disabledField {
