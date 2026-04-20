@@ -1,9 +1,19 @@
 import { useState, useMemo } from 'react'
 import { NavLink } from 'react-router-dom'
-import { categorizedRegistry, CATEGORIES, type Category } from './registry'
+import {
+  categorizedRegistry as previewRegistry,
+  CATEGORIES as PREVIEW_CATEGORIES,
+} from './registry'
+import {
+  categorizedRegistry as designRegistry,
+  CATEGORIES as DESIGN_CATEGORIES,
+} from './design/registry'
+import type { AppMode } from './useAppMode'
 import styles from './Sidebar.module.scss'
+import CaretRightIcon from '@/assets/icons/caret-right.svg?react'
 
 interface SidebarProps {
+  mode: AppMode
   searchQuery: string
   onSearchChange: (query: string) => void
 }
@@ -12,10 +22,12 @@ function CategorySection({
   category,
   items,
   searchQuery,
+  mode,
 }: {
-  category: Category
-  items: { name: string }[]
+  category: string
+  items: { name: string; path?: string }[]
   searchQuery: string
+  mode: AppMode
 }) {
   const [collapsed, setCollapsed] = useState(false)
 
@@ -27,7 +39,8 @@ function CategorySection({
 
   if (filteredItems.length === 0) return null
 
-  const displayCategory = category === 'InformationRequests' ? 'Info Requests' : category
+  const displayCategory =
+    mode === 'preview' && category === 'InformationRequests' ? 'Info Requests' : category
 
   return (
     <div className={styles.category}>
@@ -42,36 +55,41 @@ function CategorySection({
           if (e.key === 'Enter' || e.key === ' ') setCollapsed(!collapsed)
         }}
       >
-        <span>
-          <span
+        <div className={styles.categoryTitle}>
+          <CaretRightIcon
             className={`${styles.categoryArrow} ${collapsed ? styles.categoryArrowCollapsed : ''}`}
-          >
-            ▾
-          </span>
+          />
           {displayCategory}
-        </span>
+        </div>
+
         <span className={styles.categoryCount}>{filteredItems.length}</span>
       </div>
       {!collapsed && (
         <ul className={styles.items}>
-          {filteredItems.map(item => (
-            <li key={item.name} className={styles.item}>
-              <NavLink to={`/${category.toLowerCase()}/${item.name}`}>{item.name}</NavLink>
-            </li>
-          ))}
+          {filteredItems.map(item => {
+            const to =
+              mode === 'design' && item.path ? item.path : `/${category.toLowerCase()}/${item.name}`
+            return (
+              <li key={item.name} className={styles.item}>
+                <NavLink to={to}>{item.name}</NavLink>
+              </li>
+            )
+          })}
         </ul>
       )}
     </div>
   )
 }
 
-export function Sidebar({ searchQuery, onSearchChange }: SidebarProps) {
+export function Sidebar({ mode, searchQuery, onSearchChange }: SidebarProps) {
+  const placeholder = mode === 'design' ? 'Search prototypes...' : 'Search components...'
+
   return (
     <aside className={styles.root}>
       <div className={styles.search}>
         <input
           type="text"
-          placeholder="Search components..."
+          placeholder={placeholder}
           value={searchQuery}
           onChange={e => {
             onSearchChange(e.target.value)
@@ -79,17 +97,31 @@ export function Sidebar({ searchQuery, onSearchChange }: SidebarProps) {
         />
       </div>
       <div className={styles.list}>
-        {CATEGORIES.map(category => {
-          const items = categorizedRegistry[category]
-          return (
-            <CategorySection
-              key={category}
-              category={category}
-              items={items}
-              searchQuery={searchQuery}
-            />
-          )
-        })}
+        {mode === 'preview'
+          ? PREVIEW_CATEGORIES.map(category => {
+              const items = previewRegistry[category]
+              return (
+                <CategorySection
+                  key={category}
+                  category={category}
+                  items={items}
+                  searchQuery={searchQuery}
+                  mode={mode}
+                />
+              )
+            })
+          : DESIGN_CATEGORIES.map(category => {
+              const items = designRegistry[category]
+              return (
+                <CategorySection
+                  key={category}
+                  category={category}
+                  items={items}
+                  searchQuery={searchQuery}
+                  mode={mode}
+                />
+              )
+            })}
       </div>
     </aside>
   )

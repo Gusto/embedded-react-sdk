@@ -7,11 +7,18 @@ import {
 } from '@gusto/embedded-api/react-query/timeOffPoliciesGetAll'
 import { useTimeOffPoliciesDeactivateMutation } from '@gusto/embedded-api/react-query/timeOffPoliciesDeactivate'
 import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
+import {
+  useHolidayPayPoliciesGet,
+  invalidateAllHolidayPayPoliciesGet,
+} from '@gusto/embedded-api/react-query/holidayPayPoliciesGet'
+import { useHolidayPayPoliciesDeleteMutation } from '@gusto/embedded-api/react-query/holidayPayPoliciesDelete'
+import { GustoEmbeddedError } from '@gusto/embedded-api/models/errors/gustoembeddederror'
 import type { TimeOffPolicy } from '@gusto/embedded-api/models/components/timeoffpolicy'
 import { PolicyListPresentation } from './PolicyListPresentation'
 import type { PolicyListItem } from './PolicyListTypes'
-import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
-import { useBase } from '@/components/Base/useBase'
+import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/components/Base'
+import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
+import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { componentEvents } from '@/shared/constants'
 import { useI18n } from '@/i18n'
 
@@ -19,19 +26,27 @@ export interface PolicyListProps extends BaseComponentInterface<'Company.TimeOff
   companyId: string
 }
 
-export function PolicyList(props: PolicyListProps) {
+export function PolicyList({ FallbackComponent, ...props }: PolicyListProps) {
   return (
-    <BaseComponent {...props}>
+    <BaseBoundaries
+      componentName="Company.TimeOff.TimeOffPolicies"
+      FallbackComponent={FallbackComponent}
+    >
       <Root {...props} />
-    </BaseComponent>
+    </BaseBoundaries>
   )
 }
 
-function Root({ companyId }: PolicyListProps) {
+function Root({ companyId, onEvent }: PolicyListProps) {
   useI18n('Company.TimeOff.TimeOffPolicies')
   const { t } = useTranslation('Company.TimeOff.TimeOffPolicies')
-  const { onEvent, baseSubmitHandler } = useBase()
   const queryClient = useQueryClient()
+
+  const {
+    baseSubmitHandler,
+    error: submitError,
+    setError: setSubmitError,
+  } = useBaseSubmit('Company.TimeOff.TimeOffPolicies')
 
   const [deleteSuccessAlert, setDeleteSuccessAlert] = useState<string | null>(null)
   const [isDeletingPolicyId, setIsDeletingPolicyId] = useState<string | null>(null)
@@ -41,34 +56,61 @@ function Root({ companyId }: PolicyListProps) {
   })
   const timeOffPolicies = policiesData.timeOffPolicies ?? []
 
+  const holidayQuery = useHolidayPayPoliciesGet(
+    { companyUuid: companyId },
+    {
+      throwOnError: (error: Error) => {
+        if (error instanceof GustoEmbeddedError) {
+          const status = error.httpMeta.response.status
+          if (status === 204 || status === 404) {
+            return false
+          }
+        }
+        return true
+      },
+    },
+  )
+  const holidayPayPolicy = holidayQuery.data?.holidayPayPolicy
+
   const { data: employeesData } = useEmployeesListSuspense({
     companyId,
     terminated: false,
   })
   const totalActiveEmployees = employeesData.showEmployees?.length ?? 0
 
-  const { mutateAsync: deactivatePolicy } = useTimeOffPoliciesDeactivateMutation()
+  const deactivatePolicyMutation = useTimeOffPoliciesDeactivateMutation()
+  const deleteHolidayMutation = useHolidayPayPoliciesDeleteMutation()
 
-  const policies: PolicyListItem[] = timeOffPolicies.map((policy: TimeOffPolicy) => {
-    const enrolledCount = policy.employees.length
-    let enrolledDisplay: string
+  const errorHandling = composeErrorHandler([holidayQuery], { submitError, setSubmitError })
+  const isPending = deactivatePolicyMutation.isPending || deleteHolidayMutation.isPending
 
+  const getEnrolledDisplay = (enrolledCount: number) => {
     if (enrolledCount > 0 && enrolledCount === totalActiveEmployees) {
-      enrolledDisplay = t('allEmployeesLabel')
+      return t('allEmployeesLabel')
     } else if (enrolledCount > 0) {
-      enrolledDisplay = t('employeeCount', { count: enrolledCount })
-    } else {
-      enrolledDisplay = t('enrolledDash')
+      return t('employeeCount', { count: enrolledCount })
     }
+    return t('enrolledDash')
+  }
 
-    return {
-      uuid: policy.uuid,
-      name: policy.name,
-      policyType: policy.policyType,
-      isComplete: policy.complete ?? false,
-      enrolledDisplay,
-    }
-  })
+  const policies: PolicyListItem[] = timeOffPolicies.map((policy: TimeOffPolicy) => ({
+    uuid: policy.uuid,
+    name: policy.name,
+    policyType: policy.policyType,
+    isComplete: policy.complete ?? false,
+    enrolledDisplay: getEnrolledDisplay(policy.employees.length),
+  }))
+
+  if (holidayPayPolicy) {
+    policies.push({
+      uuid: holidayPayPolicy.companyUuid,
+      name: t('holidayPayPolicy'),
+      policyType: 'holiday',
+      isComplete: true,
+      enrolledDisplay: getEnrolledDisplay(holidayPayPolicy.employees.length),
+      isHoliday: true,
+    })
+  }
 
   const handleCreatePolicy = () => {
     onEvent(componentEvents.TIME_OFF_CREATE_POLICY)
@@ -91,30 +133,38 @@ function Root({ companyId }: PolicyListProps) {
   const handleDeletePolicy = async (policy: PolicyListItem) => {
     setIsDeletingPolicyId(policy.uuid)
     await baseSubmitHandler({}, async () => {
-      await deactivatePolicy({
-        request: {
-          timeOffPolicyUuid: policy.uuid,
-        },
-      })
-
-      await invalidateAllTimeOffPoliciesGetAll(queryClient)
-      setDeleteSuccessAlert(t('flash.policyDeleted', { name: policy.name }))
+      if (policy.isHoliday) {
+        await deleteHolidayMutation.mutateAsync({
+          request: { companyUuid: companyId },
+        })
+        await invalidateAllHolidayPayPoliciesGet(queryClient)
+        setDeleteSuccessAlert(t('flash.holidayDeleted'))
+      } else {
+        await deactivatePolicyMutation.mutateAsync({
+          request: { timeOffPolicyUuid: policy.uuid },
+        })
+        await invalidateAllTimeOffPoliciesGetAll(queryClient)
+        setDeleteSuccessAlert(t('flash.policyDeleted', { name: policy.name }))
+      }
     })
     setIsDeletingPolicyId(null)
   }
 
   return (
-    <PolicyListPresentation
-      policies={policies}
-      onCreatePolicy={handleCreatePolicy}
-      onEditPolicy={handleEditPolicy}
-      onFinishSetup={handleFinishSetup}
-      onDeletePolicy={handleDeletePolicy}
-      deleteSuccessAlert={deleteSuccessAlert}
-      onDismissDeleteAlert={() => {
-        setDeleteSuccessAlert(null)
-      }}
-      isDeletingPolicyId={isDeletingPolicyId}
-    />
+    <BaseLayout error={errorHandling.errors}>
+      <PolicyListPresentation
+        policies={policies}
+        onCreatePolicy={handleCreatePolicy}
+        onEditPolicy={handleEditPolicy}
+        onFinishSetup={handleFinishSetup}
+        onDeletePolicy={handleDeletePolicy}
+        deleteSuccessAlert={deleteSuccessAlert}
+        onDismissDeleteAlert={() => {
+          setDeleteSuccessAlert(null)
+        }}
+        isDeletingPolicyId={isDeletingPolicyId}
+        isPending={isPending}
+      />
+    </BaseLayout>
   )
 }

@@ -14,10 +14,6 @@ export function DocumentsView({ forms = [], isLoading = false, onViewForm }: Doc
   const { t } = useTranslation('Employee.Dashboard')
   const Components = useComponentContext()
 
-  if (isLoading) {
-    return <Loading />
-  }
-
   const formsColumns = [
     {
       key: 'title',
@@ -65,6 +61,10 @@ export function DocumentsView({ forms = [], isLoading = false, onViewForm }: Doc
       />
     ),
   })
+
+  if (isLoading) {
+    return <Loading />
+  }
 
   return (
     <Flex flexDirection="column" gap={24}>

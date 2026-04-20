@@ -1,5 +1,119 @@
 # Changelog
 
+## Unreleased
+
+### Breaking Changes
+
+#### `composeSubmitHandler` now returns `{ handleSubmit, errorHandling }`
+
+`composeSubmitHandler` now returns an object with both the submit event handler
+and an aggregated `errorHandling` bag built from the forms it receives, instead
+of returning the submit handler directly. Partners who only need one shared error
+surface across multiple forms no longer have to call `composeErrorHandler`
+themselves.
+
+- **Before**: `const handleSubmit = composeSubmitHandler([formA, formB], onAllValid)`
+- **After**: `const { handleSubmit, errorHandling } = composeSubmitHandler([formA, formB], onAllValid)`
+
+For screens that also need to combine extra `@gusto/embedded-api` queries into
+the same error surface, pass the `composeSubmitHandler` result into
+`composeErrorHandler` alongside those queries:
+
+```tsx
+const submitResult = composeSubmitHandler([formA, formB], onAllValid)
+const errorHandling = composeErrorHandler([submitResult, extraQuery])
+```
+
+#### Hooks now exported from main entry point
+
+All form hooks have graduated from experimental to stable. They are now available
+directly from the main package entry:
+
+- **Before**: `import { useCompensationForm } from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'`
+- **After**: `import { useCompensationForm } from '@gusto/embedded-react-sdk'`
+
+The `@gusto/embedded-react-sdk/UNSTABLE_Hooks` entry point has been removed. All hook
+exports are now available from the main package entry.
+
+**Find and replace**: Search your codebase for
+`from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'`
+and replace with `from '@gusto/embedded-react-sdk'`.
+
+#### Prebuilt hook form components removed
+
+The following prebuilt components have been removed: `CompensationForm`,
+`EmployeeDetailsForm`, `WorkAddressForm`, `HomeAddressForm`, `PayScheduleForm`,
+`SignCompanyForm`, `SignEmployeeForm`, `SignEmployeeI9Form`. These were internal
+testing artifacts. Use the corresponding hooks directly (e.g., `useCompensationForm`)
+to build custom form UI.
+
+### Features & Enhancements
+
+#### Journey-based export namespaces
+
+Components are now organized into **journey-based namespaces** that group everything a partner needs for a specific integration use case. Three new namespaces are available:
+
+- **`EmployeeOnboarding`** -- all components for onboarding employees (flows, employee list, profile, compensation, taxes, payment method, deductions, documents, etc.)
+- **`EmployeeManagement`** -- components for steady-state employee management (employee list, dashboard, terminations, employee documents)
+- **`CompanyOnboarding`** -- all components for onboarding a company (flow, overview, document signing, bank account, locations, pay schedule, taxes, signatory management)
+- **`ContractorOnboarding`** -- all components for onboarding contractors (flow, contractor list, profile, address, payment method, new hire report, submit)
+
+```tsx
+// Recommended (journey namespace)
+import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
+;<EmployeeOnboarding.OnboardingFlow companyId={companyId} onEvent={handleEvent} />
+
+// Also works (journey namespace, management)
+import { EmployeeManagement } from '@gusto/embedded-react-sdk'
+;<EmployeeManagement.DashboardFlow employeeId={employeeId} onEvent={handleEvent} />
+
+// Also works (journey namespace, company)
+import { CompanyOnboarding } from '@gusto/embedded-react-sdk'
+;<CompanyOnboarding.OnboardingFlow companyId={companyId} onEvent={handleEvent} />
+
+// Also works (journey namespace, contractor)
+import { ContractorOnboarding } from '@gusto/embedded-react-sdk'
+;<ContractorOnboarding.OnboardingFlow companyId={companyId} onEvent={handleEvent} />
+```
+
+Each journey namespace is self-contained -- partners should not need to import from multiple namespaces to complete a single integration.
+
+### Deprecations
+
+#### `Employee.*`, `Company.*`, and `Contractor.*` umbrella namespaces
+
+The flat `Employee`, `Company`, and `Contractor` namespace exports are now **deprecated** in favor of the journey-based namespaces above. Existing imports continue to work without changes, but partners should migrate at their convenience:
+
+```tsx
+// Deprecated (still works)
+import { Employee } from '@gusto/embedded-react-sdk'
+;<Employee.OnboardingFlow companyId={companyId} onEvent={handleEvent} />
+
+// Recommended
+import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
+;<EmployeeOnboarding.OnboardingFlow companyId={companyId} onEvent={handleEvent} />
+```
+
+The `Employee`, `Company`, and `Contractor` umbrella namespaces will be removed in a future major version. The `Payroll` and `InformationRequests` namespaces are unaffected and remain the primary import path for those domains.
+
+#### `Employee.ManagementEmployeeList` removed
+
+`ManagementEmployeeList` is no longer exported from the `Employee` umbrella namespace. Use `EmployeeManagement.EmployeeList` instead:
+
+```tsx
+// Before
+import { Employee } from '@gusto/embedded-react-sdk'
+;<Employee.ManagementEmployeeList companyId={companyId} onEvent={handleEvent} />
+
+// After
+import { EmployeeManagement } from '@gusto/embedded-react-sdk'
+;<EmployeeManagement.EmployeeList companyId={companyId} onEvent={handleEvent} />
+```
+
+#### Internal restructuring: `EmployeeList` feature module
+
+The `Employee/EmployeeList/` directory has been restructured into a feature module layout (`Employee/employee-list/`) with `shared/`, `onboarding/`, and `management/` subdirectories. This is an internal change -- all public exports remain the same and no partner action is required.
+
 ## 0.39.0
 
 ### Breaking Changes

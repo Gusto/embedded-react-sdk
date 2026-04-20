@@ -89,6 +89,10 @@ GustoProvider → ComponentsProvider → ThemeProvider → LocaleProvider / I18n
 
 All user-facing text uses i18next. Run `npm run i18n:generate` after changing translations. Use the `useTranslation` hook.
 
+### Partner hooks (`composeErrorHandler` / `composeSubmitHandler`)
+
+Exported headless hooks build `errorHandling` with **`composeErrorHandler`** (not a React hook). For multi-form screens, **`composeSubmitHandler`** coordinates validation + ordered submits and returns `{ handleSubmit, errorHandling }` aggregated across those forms. The result plugs back into `composeErrorHandler` when partners need extra `@gusto/embedded-api` queries or screen-level submit state in the same error surface — see [docs/hooks/hooks.md](docs/hooks/hooks.md).
+
 ## PR and Commit Conventions
 
 - Follow conventional commits: `feat:`, `fix:`, `chore:`, `docs:`, `refactor:`, `test:`, `ci:`, etc.

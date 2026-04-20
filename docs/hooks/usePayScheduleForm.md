@@ -8,7 +8,7 @@ order: 5
 Creates or updates a company pay schedule — configuring frequency, pay dates, and previewing the resulting pay period calendar.
 
 ```tsx
-import { usePayScheduleForm, SDKFormProvider } from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'
+import { usePayScheduleForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
 ```
 
 ---
@@ -340,7 +340,7 @@ import {
   usePayScheduleForm,
   SDKFormProvider,
   type UsePayScheduleFormReady,
-} from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'
+} from '@gusto/embedded-react-sdk'
 
 function PaySchedulePage({ companyId }: { companyId: string }) {
   const paySchedule = usePayScheduleForm({ companyId })
@@ -471,10 +471,7 @@ const paySchedule = usePayScheduleForm({
 The same form using prop-based field connection. No `SDKFormProvider` wrapper needed:
 
 ```tsx
-import {
-  usePayScheduleForm,
-  type UsePayScheduleFormReady,
-} from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'
+import { usePayScheduleForm, type UsePayScheduleFormReady } from '@gusto/embedded-react-sdk'
 
 function PayScheduleFormReady({ paySchedule }: { paySchedule: UsePayScheduleFormReady }) {
   const { Fields } = paySchedule.form

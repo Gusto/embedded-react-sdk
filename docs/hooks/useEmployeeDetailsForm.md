@@ -8,7 +8,7 @@ order: 2
 Creates or updates an employee's profile information — name, email, SSN, date of birth, and self-onboarding preference.
 
 ```tsx
-import { useEmployeeDetailsForm, SDKFormProvider } from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'
+import { useEmployeeDetailsForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
 ```
 
 ---
@@ -366,7 +366,7 @@ import {
   useEmployeeDetailsForm,
   SDKFormProvider,
   type UseEmployeeDetailsFormReady,
-} from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'
+} from '@gusto/embedded-react-sdk'
 
 function EmployeeDetailsPage({
   companyId,
@@ -505,10 +505,7 @@ function EmployeeDetailsFormReady({
 The same form using prop-based field connection. No `SDKFormProvider` wrapper needed — each field receives the hook result directly:
 
 ```tsx
-import {
-  useEmployeeDetailsForm,
-  type UseEmployeeDetailsFormReady,
-} from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'
+import { useEmployeeDetailsForm, type UseEmployeeDetailsFormReady } from '@gusto/embedded-react-sdk'
 
 function EmployeeDetailsPage({
   companyId,

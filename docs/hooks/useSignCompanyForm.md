@@ -8,7 +8,7 @@ order: 5
 Signs a company form — displays the form PDF and collects a typed signature with confirmation.
 
 ```tsx
-import { useSignCompanyForm, SDKFormProvider } from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'
+import { useSignCompanyForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
 ```
 
 ---
@@ -165,7 +165,7 @@ import {
   useSignCompanyForm,
   SDKFormProvider,
   type UseSignCompanyFormReady,
-} from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'
+} from '@gusto/embedded-react-sdk'
 
 function SignFormPage({ formId }: { formId: string }) {
   const signForm = useSignCompanyForm({ formId })
@@ -257,10 +257,7 @@ function SignFormReady({ signForm }: { signForm: UseSignCompanyFormReady }) {
 The same form using prop-based field connection. No `SDKFormProvider` wrapper needed:
 
 ```tsx
-import {
-  useSignCompanyForm,
-  type UseSignCompanyFormReady,
-} from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'
+import { useSignCompanyForm, type UseSignCompanyFormReady } from '@gusto/embedded-react-sdk'
 
 function SignFormPage({ formId }: { formId: string }) {
   const signForm = useSignCompanyForm({ formId })
