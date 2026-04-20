@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react'
-import { useWatch } from 'react-hook-form'
+import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import { type Employee } from '@gusto/embedded-api/models/components/employee'
 import type { ProfileProps } from './Profile'
@@ -15,7 +15,7 @@ import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { composeSubmitHandler } from '@/partner-hook-utils/form/composeSubmitHandler'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { Grid } from '@/components/Common/Grid/Grid'
-import { ActionsLayout } from '@/components/Common'
+import { ActionsLayout, DatePickerField } from '@/components/Common'
 import { Form } from '@/components/Common/Form'
 import { BaseLayout } from '@/components/Base'
 import { SelectField } from '@/components/Common'
@@ -112,7 +112,13 @@ export function AdminProfile({
   const workAddress = useWorkAddressForm({
     companyId,
     employeeId: resolvedEmployeeId,
-    withEffectiveDateField: true,
+    withEffectiveDateField: false,
+    shouldFocusError: false,
+  })
+
+  const startDateForm = useForm<{ startDate: string }>({
+    defaultValues: { startDate: '' },
+    mode: 'onSubmit',
     shouldFocusError: false,
   })
 
@@ -126,7 +132,9 @@ export function AdminProfile({
       employeeDetails={employeeDetails}
       homeAddress={homeAddress}
       workAddress={workAddress}
+      startDateForm={startDateForm}
       isSelfOnboardingEnabled={isSelfOnboardingEnabled}
+      isCreateMode={isCreateMode}
       employeeId={employeeId}
       setResolvedEmployeeId={setResolvedEmployeeId}
       setSelfOnboardingActive={setSelfOnboardingActive}
@@ -140,7 +148,9 @@ interface AdminProfileReadyProps {
   employeeDetails: UseEmployeeDetailsFormReady
   homeAddress: UseHomeAddressFormReady
   workAddress: UseWorkAddressFormReady
+  startDateForm: ReturnType<typeof useForm<{ startDate: string }>>
   isSelfOnboardingEnabled: boolean
+  isCreateMode: boolean
   employeeId?: string
   setResolvedEmployeeId: (id: string) => void
   setSelfOnboardingActive: (active: boolean) => void
@@ -152,7 +162,9 @@ function AdminProfileReady({
   employeeDetails,
   homeAddress,
   workAddress,
+  startDateForm,
   isSelfOnboardingEnabled,
+  isCreateMode,
   employeeId,
   setResolvedEmployeeId,
   setSelfOnboardingActive,
@@ -182,10 +194,11 @@ function AdminProfileReady({
   const shouldShowHomeAddress = !watchedSelfOnboarding || completedSelfOnboarding
   const shouldShowSsnDob = !watchedSelfOnboarding || completedSelfOnboarding
 
-  const activeForms: Array<typeof employeeDetails | typeof homeAddress | typeof workAddress> = [
+  const activeForms = [
     employeeDetails,
     ...(shouldShowHomeAddress ? [homeAddress] : []),
     workAddress,
+    startDateForm,
   ]
 
   const { handleSubmit, errorHandling } = composeSubmitHandler(activeForms, async () => {
@@ -203,6 +216,7 @@ function AdminProfileReady({
     if (!employeeResult) return
 
     const newEmployeeId = employeeResult.data.uuid
+    const enteredStartDate = startDateForm.getValues('startDate')
 
     if (shouldShowHomeAddress) {
       const homeResult = await homeAddress.actions.onSubmit({
@@ -228,7 +242,10 @@ function AdminProfileReady({
           onEvent(componentEvents.EMPLOYEE_WORK_ADDRESS_UPDATED, wa)
         },
       },
-      { employeeId: newEmployeeId },
+      {
+        employeeId: newEmployeeId,
+        effectiveDate: isCreateMode ? enteredStartDate || undefined : undefined,
+      },
     )
     if (!workResult) {
       if (!employeeId) setResolvedEmployeeId(newEmployeeId)
@@ -237,7 +254,7 @@ function AdminProfileReady({
 
     onEvent(componentEvents.EMPLOYEE_PROFILE_DONE, {
       ...employeeResult.data,
-      startDate: workAddress.form.getFormSubmissionValues()?.effectiveDate,
+      startDate: enteredStartDate,
     })
   })
 
@@ -298,14 +315,17 @@ function AdminProfileReady({
                 description={t('workAddressDescription')}
                 validationMessages={{ REQUIRED: t('validations.location', { ns: 'common' }) }}
               />
-              {WorkAddressFields.EffectiveDate && (
-                <WorkAddressFields.EffectiveDate
-                  label={t('startDateLabel')}
-                  description={t('startDateDescription')}
-                  validationMessages={{ REQUIRED: t('validations.startDate') }}
-                />
-              )}
             </SDKFormProvider>
+
+            <FormProvider {...startDateForm}>
+              <DatePickerField
+                name="startDate"
+                label={t('startDateLabel')}
+                description={t('startDateDescription')}
+                isRequired
+                errorMessage={t('validations.startDate')}
+              />
+            </FormProvider>
 
             <EmployeeFields.Email
               label={t('email')}
