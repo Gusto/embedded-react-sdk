@@ -12,6 +12,7 @@ import {
 } from '@/test/mocks/apis/company_forms'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
+import { fieldsMetadataEntry } from '@/test/fieldsMetadata'
 
 type ReadyResult = Extract<UseSignCompanyFormResult, { isLoading: false }>
 
@@ -287,8 +288,10 @@ describe('useSignCompanyForm', () => {
     const readyResult = result.current
     assertReady(readyResult)
 
-    expect(readyResult.form.fieldsMetadata.signature.isRequired).toBe(true)
-    expect(readyResult.form.fieldsMetadata.confirmSignature.isRequired).toBe(true)
+    expect(fieldsMetadataEntry(readyResult.form.fieldsMetadata, 'signature').isRequired).toBe(true)
+    expect(
+      fieldsMetadataEntry(readyResult.form.fieldsMetadata, 'confirmSignature').isRequired,
+    ).toBe(true)
   })
 
   it('provides errorHandling in loading state', () => {

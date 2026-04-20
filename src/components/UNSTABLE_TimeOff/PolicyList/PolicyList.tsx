@@ -18,7 +18,7 @@ import { PolicyListPresentation } from './PolicyListPresentation'
 import type { PolicyListItem } from './PolicyListTypes'
 import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/components/Base'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
-import { useErrorHandling } from '@/partner-hook-utils/useErrorHandling'
+import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { componentEvents } from '@/shared/constants'
 import { useI18n } from '@/i18n'
 
@@ -45,7 +45,7 @@ function Root({ companyId, onEvent }: PolicyListProps) {
   const {
     baseSubmitHandler,
     error: submitError,
-    setError,
+    setError: setSubmitError,
   } = useBaseSubmit('Company.TimeOff.TimeOffPolicies')
 
   const [deleteSuccessAlert, setDeleteSuccessAlert] = useState<string | null>(null)
@@ -81,7 +81,7 @@ function Root({ companyId, onEvent }: PolicyListProps) {
   const deactivatePolicyMutation = useTimeOffPoliciesDeactivateMutation()
   const deleteHolidayMutation = useHolidayPayPoliciesDeleteMutation()
 
-  const errorHandling = useErrorHandling([holidayQuery], { error: submitError, setError })
+  const errorHandling = composeErrorHandler([holidayQuery], { submitError, setSubmitError })
   const isPending = deactivatePolicyMutation.isPending || deleteHolidayMutation.isPending
 
   const getEnrolledDisplay = (enrolledCount: number) => {

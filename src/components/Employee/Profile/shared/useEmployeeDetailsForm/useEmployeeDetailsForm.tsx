@@ -25,8 +25,13 @@ import {
 } from './fields'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
-import { useErrorHandling } from '@/partner-hook-utils/useErrorHandling'
-import type { HookSubmitResult } from '@/partner-hook-utils/types'
+import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
+import type {
+  BaseFormHookReady,
+  FieldsMetadata,
+  HookLoadingResult,
+  HookSubmitResult,
+} from '@/partner-hook-utils/types'
 import { EmployeeOnboardingStatus } from '@/shared/constants'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { SDKInternalError } from '@/types/sdkError'
@@ -48,6 +53,21 @@ export interface UseEmployeeDetailsFormProps {
   defaultValues?: Partial<EmployeeDetailsFormData>
   validationMode?: UseFormProps['mode']
   shouldFocusError?: boolean
+}
+
+export interface UseEmployeeDetailsFormReady extends BaseFormHookReady<
+  FieldsMetadata,
+  EmployeeDetailsFormData
+> {
+  data: {
+    employee: Employee | null
+  }
+  status: { isPending: boolean; mode: 'create' | 'update' }
+  actions: {
+    onSubmit: (
+      callbacks?: EmployeeDetailsSubmitCallbacks,
+    ) => Promise<HookSubmitResult<Employee> | undefined>
+  }
 }
 
 const isCurrentlySelfOnboarding = (employee?: Employee) => {
@@ -79,7 +99,7 @@ export function useEmployeeDetailsForm({
   defaultValues: partnerDefaults,
   validationMode = 'onSubmit',
   shouldFocusError = true,
-}: UseEmployeeDetailsFormProps) {
+}: UseEmployeeDetailsFormProps): HookLoadingResult | UseEmployeeDetailsFormReady {
   const employeeQuery = useEmployeesGet({ employeeId: employeeId ?? '' }, { enabled: !!employeeId })
 
   const employee = employeeQuery.data?.employee
@@ -122,10 +142,14 @@ export function useEmployeeDetailsForm({
     updateEmployeeMutation.isPending ||
     updateOnboardingStatusMutation.isPending
 
-  const { baseSubmitHandler, error: submitError, setError } = useBaseSubmit('EmployeeDetailsForm')
+  const {
+    baseSubmitHandler,
+    error: submitError,
+    setError: setSubmitError,
+  } = useBaseSubmit('EmployeeDetailsForm')
 
   const queries = employeeId ? [employeeQuery] : []
-  const errorHandling = useErrorHandling(queries, { error: submitError, setError })
+  const errorHandling = composeErrorHandler(queries, { submitError, setSubmitError })
 
   const fieldsMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
 
@@ -262,7 +286,6 @@ export function useEmployeeDetailsForm({
   }
 }
 
-export type UseEmployeeDetailsFormResult = ReturnType<typeof useEmployeeDetailsForm>
-export type UseEmployeeDetailsFormReady = Extract<UseEmployeeDetailsFormResult, { data: object }>
+export type UseEmployeeDetailsFormResult = HookLoadingResult | UseEmployeeDetailsFormReady
 export type EmployeeDetailsFieldsMetadata = UseEmployeeDetailsFormReady['form']['fieldsMetadata']
 export type EmployeeDetailsFormFields = UseEmployeeDetailsFormReady['form']['Fields']
