@@ -34,33 +34,11 @@ function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
   const taxes = useEmployeeTaxes({ employeeId })
   const forms = useEmployeeForms({ employeeId })
 
-  // Collect all errors from hooks
-  const allErrors = [
-    ...basicDetails.errorHandling.errors,
-    ...compensation.errorHandling.errors,
-    ...taxes.errorHandling.errors,
-    ...forms.errorHandling.errors,
-  ]
-
-  // Show loading for initial data fetch
-  if (basicDetails.isLoading || compensation.isLoading || taxes.isLoading || forms.isLoading) {
-    return <BaseLayout isLoading error={allErrors} />
-  }
-
-  const { employee, currentHomeAddress, currentWorkAddress } = basicDetails.data
-  const { primaryJob, employeePaymentMethod, bankAccounts, garnishmentList, payStubs } =
-    compensation.data
-  const { employeeFederalTax, employeeStateTaxesList } = taxes.data
-  const { formList } = forms.data
-
-  // Pagination props
-  const payStubsPagination = compensation.pagination.payStubs
-
-  // Tab-specific loading states based on isPending
-  const isLoadingBasicDetails = basicDetails.status.isPending
-  const isLoadingJobAndPay = compensation.status.isPending
-  const isLoadingTaxes = taxes.status.isPending
-  const isLoadingDocuments = forms.status.isPending
+  // Derive the inputs these callbacks depend on up here so all hooks are
+  // declared before the early-return below (rules-of-hooks). The data fields
+  // are only present on the non-loading variants of each hook result.
+  const primaryJob = !compensation.isLoading ? compensation.data.primaryJob : undefined
+  const employeeFederalTax = !taxes.isLoading ? taxes.data.employeeFederalTax : undefined
 
   const handleEditBasicDetails = useCallback(() => {
     onEvent(componentEvents.EMPLOYEE_UPDATE, { employeeId })
@@ -107,6 +85,33 @@ function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
     },
     [onEvent, employeeId],
   )
+
+  // Collect all errors from hooks
+  const allErrors = [
+    ...basicDetails.errorHandling.errors,
+    ...compensation.errorHandling.errors,
+    ...taxes.errorHandling.errors,
+    ...forms.errorHandling.errors,
+  ]
+
+  // Show loading for initial data fetch
+  if (basicDetails.isLoading || compensation.isLoading || taxes.isLoading || forms.isLoading) {
+    return <BaseLayout isLoading error={allErrors} />
+  }
+
+  const { employee, currentHomeAddress, currentWorkAddress } = basicDetails.data
+  const { employeePaymentMethod, bankAccounts, garnishmentList, payStubs } = compensation.data
+  const { employeeStateTaxesList } = taxes.data
+  const { formList } = forms.data
+
+  // Pagination props
+  const payStubsPagination = compensation.pagination.payStubs
+
+  // Tab-specific loading states based on isPending
+  const isLoadingBasicDetails = basicDetails.status.isPending
+  const isLoadingJobAndPay = compensation.status.isPending
+  const isLoadingTaxes = taxes.status.isPending
+  const isLoadingDocuments = forms.status.isPending
 
   const tabs = [
     {

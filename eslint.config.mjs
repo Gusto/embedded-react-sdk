@@ -39,8 +39,15 @@ export default [
       ],
       // Enable error for unused imports (and variables)
       '@typescript-eslint/no-unused-vars': ['error'],
-      // Retain the react-hooks recommended rules
-      ...pluginReactHooks.configs.recommended.rules,
+      // Pin to the rules enforced by eslint-plugin-react-hooks < v7.
+      // v7's "recommended" preset additionally turns on React Compiler rules
+      // (refs, purity, set-state-in-effect, immutability, preserve-manual-memoization,
+      // static-components, globals, incompatible-library, etc.) which flag 170+
+      // pre-existing sites across the SDK. We intentionally keep the scope of this
+      // upgrade limited to avoid regressions; the new compiler rules can be
+      // adopted incrementally in follow-up PRs.
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
     },
   },
   {
