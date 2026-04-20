@@ -1,6 +1,3 @@
-import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
-import { useEmployeeAddressesGetSuspense } from '@gusto/embedded-api/react-query/employeeAddressesGet'
-import { useEmployeeAddressesGetWorkAddressesSuspense } from '@gusto/embedded-api/react-query/employeeAddressesGetWorkAddresses'
 import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlowComponents'
 import { AdminProfile } from './AdminProfile'
 import { EmployeeProfile } from './EmployeeProfile'
@@ -9,7 +6,7 @@ import {
   type BaseComponentInterface,
   type CommonComponentInterface,
 } from '@/components/Base'
-import type { RequireAtLeastOne, WithRequired } from '@/types/Helpers'
+import type { RequireAtLeastOne } from '@/types/Helpers'
 import { useFlow } from '@/components/Flow/useFlow'
 import { ensureRequired } from '@/helpers/ensureRequired'
 
@@ -40,30 +37,16 @@ export interface ProfileProps extends CommonComponentInterface<'Employee.Profile
   onEvent: BaseComponentInterface['onEvent']
 }
 
-export function Profile({ FallbackComponent, ...props }: ProfileProps & BaseComponentInterface) {
+export function Profile({
+  FallbackComponent,
+  isAdmin = false,
+  ...props
+}: ProfileProps & BaseComponentInterface) {
   return (
     <BaseBoundaries componentName="Employee.Profile" FallbackComponent={FallbackComponent}>
-      {props.employeeId ? (
-        <RootWithEmployee {...props} employeeId={props.employeeId} />
-      ) : (
-        <Root {...props} />
-      )}
+      {isAdmin ? <AdminProfile {...props} isAdmin /> : <EmployeeProfile {...props} />}
     </BaseBoundaries>
   )
-}
-
-function RootWithEmployee({ employeeId, ...props }: WithRequired<ProfileProps, 'employeeId'>) {
-  useEmployeesGetSuspense({ employeeId })
-  useEmployeeAddressesGetSuspense({ employeeId })
-  useEmployeeAddressesGetWorkAddressesSuspense({ employeeId })
-  return <Root {...props} employeeId={employeeId} />
-}
-
-function Root({ isAdmin = false, ...props }: ProfileProps) {
-  if (isAdmin) {
-    return <AdminProfile {...props} isAdmin />
-  }
-  return <EmployeeProfile {...props} />
 }
 
 export const ProfileContextual = () => {
