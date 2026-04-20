@@ -43,17 +43,17 @@ function ContractorProfileContent() {
                   ),
                 },
                 {
-                  term: <Components.Text>Start date</Components.Text>,
+                  term: <Components.Text weight="medium">Start date</Components.Text>,
                   description: <Components.Text>{contractor.startDate}</Components.Text>,
                 },
                 {
-                  term: <Components.Text>Social security number</Components.Text>,
+                  term: <Components.Text weight="medium">Social security number</Components.Text>,
                   description: (
                     <Components.Text>{contractor.hasSsn ? 'XXX-XX-XXXX' : '–'}</Components.Text>
                   ),
                 },
                 {
-                  term: <Components.Text>Email address</Components.Text>,
+                  term: <Components.Text weight="medium">Email address</Components.Text>,
                   description: <Components.Text>{contractor.email}</Components.Text>,
                 },
               ]}
@@ -88,8 +88,8 @@ function ContractorProfileContent() {
       ),
     },
     {
-      id: 'not-profile',
-      label: `Not Profile`,
+      id: 'pay',
+      label: `Pay`,
       content: (
         <Flex flexDirection="column" gap={32}>
           gwegwwegw
@@ -103,7 +103,7 @@ function ContractorProfileContent() {
         <Components.Heading as="h1" styledAs="h2">
           {contractor.firstName} {contractor.lastName}
         </Components.Heading>
-        <Components.Text variant="supporting">{contractor.startDate}</Components.Text>
+        <Components.Text variant="supporting">Contractor</Components.Text>
       </Flex>
       <Components.Tabs onSelectionChange={setSelectedTab} tabs={tabs} selectedId={selectedTab} />
     </Flex>
