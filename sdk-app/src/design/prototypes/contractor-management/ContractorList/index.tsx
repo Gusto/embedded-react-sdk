@@ -1,8 +1,7 @@
 import { useMemo, useState } from 'react'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import { useContractorsList } from '@gusto/embedded-api/react-query/contractorsList'
-import { keepPreviousData } from '@tanstack/react-query'
-import { DataView, EmptyData, Flex, useDataView } from '@/components/Common'
+import { DataView, EmptyData, Flex, Loading, useDataView } from '@/components/Common'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu/HamburgerMenu'
 import { ContractorOnboardingStatusBadge } from '@/components/Common/OnboardingStatusBadge'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -154,9 +153,7 @@ function ContractorListContent() {
     }
   }, [companyId, selectedTab])
 
-  const { data, isFetching } = useContractorsList(queryParams, {
-    placeholderData: keepPreviousData,
-  })
+  const { data, isFetching } = useContractorsList(queryParams)
   const contractors = data?.contractors ?? []
 
   const tabs = [
@@ -188,10 +185,6 @@ function ContractorListContent() {
     }
   }
 
-  if (!data && isFetching) {
-    return <Components.Text>Loading contractors...</Components.Text>
-  }
-
   return (
     <Flex flexDirection="column" gap={24}>
       <Flex justifyContent="space-between" alignItems="center">
@@ -202,8 +195,10 @@ function ContractorListContent() {
           Add contractor
         </Components.Button>
       </Flex>
-      <Components.Tabs onSelectionChange={setSelectedTab} tabs={tabs} selectedId={selectedTab} />
-      {renderTable()}
+      <Flex flexDirection="column" gap={0}>
+        <Components.Tabs onSelectionChange={setSelectedTab} tabs={tabs} selectedId={selectedTab} />
+        {isFetching ? <Loading /> : renderTable()}
+      </Flex>
     </Flex>
   )
 }
