@@ -422,7 +422,7 @@ describe('PolicyConfigurationForm', () => {
     expect(onEvent).toHaveBeenCalledWith(componentEvents.CANCEL)
   })
 
-  it('calls the create API with unlimited accrual method and fires DONE', async () => {
+  it('calls the create API with unlimited accrual method and complete: true, and fires DONE', async () => {
     const user = userEvent.setup()
     renderComponent()
 
@@ -442,6 +442,7 @@ describe('PolicyConfigurationForm', () => {
             name: 'My Unlimited PTO',
             policyType: 'vacation',
             accrualMethod: 'unlimited',
+            complete: true,
           }),
         },
       })
@@ -450,6 +451,7 @@ describe('PolicyConfigurationForm', () => {
     await waitFor(() => {
       expect(onEvent).toHaveBeenCalledWith(componentEvents.TIME_OFF_POLICY_DETAILS_DONE, {
         policyId: 'policy-uuid-123',
+        accrualMethod: 'unlimited',
       })
     })
   })

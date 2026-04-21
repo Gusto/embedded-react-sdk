@@ -169,9 +169,26 @@ describe('timeOffStateMachine', () => {
       const service = createService()
       toPolicyDetailsForm(service)
 
-      send(service, componentEvents.TIME_OFF_POLICY_DETAILS_DONE, { policyId: 'policy-123' })
+      send(service, componentEvents.TIME_OFF_POLICY_DETAILS_DONE, {
+        policyId: 'policy-123',
+        accrualMethod: 'per_hour_worked',
+      })
 
       expect(service.machine.current).toBe('policySettings')
+      expect(service.context.policyId).toBe('policy-123')
+      expect(service.context.alerts).toBeUndefined()
+    })
+
+    it('skips policySettings and goes to addEmployeesToPolicy for unlimited policies', () => {
+      const service = createService()
+      toPolicyDetailsForm(service)
+
+      send(service, componentEvents.TIME_OFF_POLICY_DETAILS_DONE, {
+        policyId: 'policy-123',
+        accrualMethod: 'unlimited',
+      })
+
+      expect(service.machine.current).toBe('addEmployeesToPolicy')
       expect(service.context.policyId).toBe('policy-123')
       expect(service.context.alerts).toBeUndefined()
     })

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback } from 'react'
 import { useTimeOffPoliciesGetSuspense } from '@gusto/embedded-api/react-query/timeOffPoliciesGet'
 import { useTimeOffPoliciesUpdateMutation } from '@gusto/embedded-api/react-query/timeOffPoliciesUpdate'
 import type { PutV1TimeOffPoliciesTimeOffPolicyUuidRequestBody } from '@gusto/embedded-api/models/operations/putv1timeoffpoliciestimeoffpolicyuuid'
@@ -28,10 +28,7 @@ const HOURLY_ACCRUAL_METHODS = [
   'per_hour_paid_no_overtime',
 ]
 
-function deriveAccrualMethodCategory(
-  apiAccrualMethod: string,
-): PolicySettingsAccrualMethod | 'unlimited' {
-  if (apiAccrualMethod === 'unlimited') return 'unlimited'
+function deriveAccrualMethodCategory(apiAccrualMethod: string): PolicySettingsAccrualMethod {
   if (HOURLY_ACCRUAL_METHODS.includes(apiAccrualMethod)) return 'hours_worked'
   return 'fixed'
 }
@@ -104,22 +101,6 @@ function Root({ policyId }: PolicySettingsProps) {
   const accrualCategory = deriveAccrualMethodCategory(policy.accrualMethod)
   const version = policy.version!
 
-  const hasSkipped = useRef(false)
-
-  useEffect(() => {
-    if (accrualCategory !== 'unlimited' || hasSkipped.current) return
-    hasSkipped.current = true
-
-    void updateTimeOffPolicy({
-      request: {
-        timeOffPolicyUuid: policyId,
-        requestBody: { complete: true, version },
-      },
-    }).then(() => {
-      onEvent(componentEvents.TIME_OFF_POLICY_SETTINGS_DONE)
-    })
-  }, [accrualCategory, onEvent, policyId, updateTimeOffPolicy, version])
-
   const handleContinue = useCallback(
     async (data: PolicySettingsFormData) => {
       await baseSubmitHandler(data, async () => {
@@ -139,8 +120,6 @@ function Root({ policyId }: PolicySettingsProps) {
   const handleBack = useCallback(() => {
     onEvent(componentEvents.TIME_OFF_POLICY_SETTINGS_BACK)
   }, [onEvent])
-
-  if (accrualCategory === 'unlimited') return null
 
   return (
     <PolicySettingsPresentation

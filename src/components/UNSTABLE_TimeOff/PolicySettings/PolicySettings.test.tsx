@@ -125,37 +125,6 @@ describe('PolicySettings container', () => {
     })
   })
 
-  describe('unlimited skip', () => {
-    it('does not render any UI for unlimited accrual method', async () => {
-      mockPolicyData = { ...basePolicyData, accrualMethod: 'unlimited' }
-      renderComponent()
-
-      await waitFor(() => {
-        expect(mockUpdateTimeOffPolicy).toHaveBeenCalled()
-      })
-
-      expect(screen.queryByText('Policy settings')).not.toBeInTheDocument()
-    })
-
-    it('updates the policy with complete: true and emits DONE', async () => {
-      mockPolicyData = { ...basePolicyData, accrualMethod: 'unlimited' }
-      renderComponent()
-
-      await waitFor(() => {
-        expect(mockUpdateTimeOffPolicy).toHaveBeenCalledWith({
-          request: {
-            timeOffPolicyUuid: 'policy-123',
-            requestBody: { complete: true, version: 'version-abc' },
-          },
-        })
-      })
-
-      await waitFor(() => {
-        expect(onEvent).toHaveBeenCalledWith(componentEvents.TIME_OFF_POLICY_SETTINGS_DONE)
-      })
-    })
-  })
-
   describe('default values from API', () => {
     it('maps API fields to form default values', async () => {
       mockPolicyData = {
