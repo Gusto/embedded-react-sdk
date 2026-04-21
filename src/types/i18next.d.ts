@@ -407,6 +407,7 @@ export interface CompanyTimeOffCreateTimeOffPolicy{
 "paidOutOnTerminationHint":string;
 "numberOfHoursPlaceholder":string;
 "numberOfDaysPlaceholder":string;
+"continueCta":string;
 };
 "addEmployees":{
 "title":string;
@@ -3160,6 +3161,7 @@ export interface common{
 "routingNumber":string;
 "accountNumber":string;
 "ssn":string;
+"ssnRequired":string;
 "location":string;
 "dob":string;
 "percentageMin":string;

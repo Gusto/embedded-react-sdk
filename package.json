@@ -1,6 +1,6 @@
 {
   "name": "@gusto/embedded-react-sdk",
-  "version": "0.39.0",
+  "version": "0.40.0",
   "homepage": "https://github.com/Gusto/embedded-react-sdk",
   "bugs": {
     "url": "https://github.com/Gusto/embedded-react-sdk/issues"
@@ -77,8 +77,7 @@
     "sdk-app:local": "npx tsx sdk-app/scripts/start.ts dev --env=local",
     "sdk-app-prod": "npx tsx sdk-app/scripts/start.ts prod --env=demo",
     "sdk-app:setup": "npx tsx sdk-app/scripts/setup.ts",
-    "sdk-app:analyze-props": "npx tsx sdk-app/scripts/analyze-component-props.ts",
-    "prototype-app": "vite --config prototype-app/vite.config.ts"
+    "sdk-app:analyze-props": "npx tsx sdk-app/scripts/analyze-component-props.ts"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.5.0",
@@ -107,7 +106,7 @@
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^6.1.1",
+    "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.4.24",
     "eslint-plugin-storybook": "^10.3.5",
     "globals": "^17.5.0",
@@ -117,7 +116,7 @@
     "jsdom": "^26.1.0",
     "jsdom-testing-mocks": "^1.16.0",
     "lint-staged": "^16.4.0",
-    "msw": "^2.13.3",
+    "msw": "^2.13.4",
     "npm-run-all": "^4.1.5",
     "pixelmatch": "^7.1.0",
     "pngjs": "^7.0.0",
@@ -155,12 +154,12 @@
     "classnames": "^2.5.1",
     "deepmerge": "^4.3.1",
     "dompurify": "^3.4.0",
-    "i18next": "^26.0.5",
+    "i18next": "^26.0.6",
     "react-aria": "^3.47.0",
     "react-aria-components": "1.16.0",
     "react-error-boundary": "^6.1.1",
     "react-hook-form": "^7.72.1",
-    "react-i18next": "^17.0.3",
+    "react-i18next": "^17.0.4",
     "react-robot": "^1.2.1",
     "robot3": "^1.2.0",
     "zod": "^4.3.6"

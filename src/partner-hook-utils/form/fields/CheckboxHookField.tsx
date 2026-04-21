@@ -1,12 +1,12 @@
 import type { ComponentType } from 'react'
 import { useHookFieldResolution } from '../useHookFieldResolution'
-import type { BaseFieldProps, ValidationMessages, BaseFormHookReady } from '../../types'
+import type { BaseFieldProps, ValidationMessages, FormHookResult } from '../../types'
 import { CheckboxField } from '@/components/Common'
 import type { CheckboxProps } from '@/components/Common/UI/Checkbox/CheckboxTypes'
 
 export interface CheckboxHookFieldProps<TErrorCode extends string = never> extends BaseFieldProps {
   name: string
-  formHookResult?: BaseFormHookReady
+  formHookResult?: FormHookResult
   validationMessages?: ValidationMessages<TErrorCode>
   FieldComponent?: ComponentType<CheckboxProps>
 }

@@ -38,17 +38,18 @@
     "hoursUnit": "hours",
     "daysUnit": "days",
     "accrualMaximumLabel": "Accrual maximum",
-    "accrualMaximumHint": "Set the maximum balance an employee can accrue per period. Accrual will stop when this limit is reached.",
+    "accrualMaximumHint": "The maximum balance an employee can accrue per period. Accrual will stop when this limit is reached.",
     "balanceMaximumLabel": "Balance maximum",
-    "balanceMaximumHint": "Set the maximum balance an employee can hold at once. Accrual stops when this limit is reached.",
+    "balanceMaximumHint": "The maximum balance an employee can hold at once. Accrual stops when this limit is reached.",
     "carryOverLimitLabel": "Carry over limit",
-    "carryOverLimitHint": "Set the maximum hours allowed to carryover from one accrual period to the next.",
+    "carryOverLimitHint": "The maximum hours allowed to carryover from one accrual period to the next.",
     "waitingPeriodLabel": "Waiting period",
-    "waitingPeriodHint": "Set the number of days employees must work before they begin accruing time off.",
+    "waitingPeriodHint": "The number of days employees must work before they begin accruing time off.",
     "paidOutOnTerminationLabel": "Payout on dismissal",
     "paidOutOnTerminationHint": "Choose if unused time off is paid out when an employee leaves. Some states require it by law.",
     "numberOfHoursPlaceholder": "Number of hours",
-    "numberOfDaysPlaceholder": "Number of days"
+    "numberOfDaysPlaceholder": "Number of days",
+    "continueCta": "Save"
   },
   "addEmployees": {
     "title": "Add employees to your policy",

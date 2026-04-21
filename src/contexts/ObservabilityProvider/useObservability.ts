@@ -5,11 +5,11 @@ import { useSanitizedObservability } from './useSanitizedObservability'
 
 export const useObservability = (): ObservabilityContextValue => {
   const context = useContext(ObservabilityContext)
+  const sanitizedObservability = useSanitizedObservability(context?.observability)
+
   if (context === undefined) {
     return { observability: undefined }
   }
-
-  const sanitizedObservability = useSanitizedObservability(context.observability)
 
   return { observability: sanitizedObservability }
 }

@@ -115,17 +115,17 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | `/v1/garnishments/child_support` |
 | **Employee.OnboardingSummary** | GET | `/v1/employees/:employeeId` |
 |  | GET | `/v1/employees/:employeeId/onboarding_status` |
-| **Employee.Profile** | GET | `/v1/companies/:companyId/locations` |
-|  | POST | `/v1/companies/:companyId/employees` |
+| **Employee.Profile** | GET | `/v1/employees/:employeeId/work_addresses` |
 |  | GET | `/v1/employees/:employeeId` |
+|  | POST | `/v1/companies/:companyId/employees` |
+|  | PUT | `/v1/employees/:employeeId` |
+|  | PUT | `/v1/employees/:employeeId/onboarding_status` |
 |  | GET | `/v1/employees/:employeeId/home_addresses` |
 |  | POST | `/v1/employees/:employeeId/home_addresses` |
 |  | PUT | `/v1/home_addresses/:homeAddressUuid` |
-|  | PUT | `/v1/work_addresses/:workAddressUuid` |
-|  | PUT | `/v1/employees/:employeeId` |
-|  | GET | `/v1/employees/:employeeId/work_addresses` |
+|  | GET | `/v1/companies/:companyId/locations` |
 |  | POST | `/v1/employees/:employeeId/work_addresses` |
-|  | PUT | `/v1/employees/:employeeId/onboarding_status` |
+|  | PUT | `/v1/work_addresses/:workAddressUuid` |
 | **Employee.Compensation** | GET | `/v1/employees/:employeeId/jobs` |
 |  | POST | `/v1/employees/:employeeId/jobs` |
 |  | PUT | `/v1/jobs/:jobId` |
@@ -270,6 +270,13 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | POST | `/v1/companies/:companyUuid/time_off_policies` |
 | **UNSTABLE_TimeOff.PolicyConfigurationForm** | POST | `/v1/companies/:companyUuid/time_off_policies` |
 | **UNSTABLE_TimeOff.PolicySettings** | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
+|  | GET | `/v1/companies/:companyUuid/time_off_policies` |
+|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/deactivate` |
+|  | GET | `/v1/companies/:companyId/employees` |
+|  | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
+|  | DELETE | `/v1/companies/:companyUuid/holiday_pay_policy` |
+|  | POST | `/v1/companies/:companyUuid/time_off_policies` |
+| **UNSTABLE_TimeOff.PolicySettingsPresentation** | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
 |  | GET | `/v1/companies/:companyUuid/time_off_policies` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/deactivate` |
 |  | GET | `/v1/companies/:companyId/employees` |
