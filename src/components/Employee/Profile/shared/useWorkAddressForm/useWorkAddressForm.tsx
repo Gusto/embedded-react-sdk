@@ -75,9 +75,15 @@ export interface UseWorkAddressFormProps {
   formSessionId?: number
 }
 
+export interface WorkAddressFields {
+  Location: typeof LocationField
+  EffectiveDate: typeof EffectiveDateField | undefined
+}
+
 export interface UseWorkAddressFormReady extends BaseFormHookReady<
   FieldsMetadata,
-  WorkAddressFormData
+  WorkAddressFormData,
+  WorkAddressFields
 > {
   data: {
     workAddress: EmployeeWorkAddress | null

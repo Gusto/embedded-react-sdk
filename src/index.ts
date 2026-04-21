@@ -53,6 +53,7 @@ export type {
   HookErrorHandling,
   BaseHookReady,
   BaseFormHookReady,
+  FormHookResult,
   FieldMetadata,
   FieldMetadataWithOptions,
   FieldsMetadata,

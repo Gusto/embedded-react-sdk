@@ -1,6 +1,6 @@
 import type { Control } from 'react-hook-form'
 import { useFormState } from 'react-hook-form'
-import type { FieldsMetadata, ValidationMessages, BaseFormHookReady } from '../types'
+import type { FieldsMetadata, ValidationMessages, FormHookResult } from '../types'
 import { useFormFieldsMetadataContext } from './FormFieldsMetadataContext'
 import { resolveFieldError } from './resolveFieldError'
 
@@ -28,14 +28,14 @@ export function useHookFieldResolution<
   TOptionalErrorCode extends string = never,
 >(
   name: string,
-  formHookResult: BaseFormHookReady | undefined,
+  formHookResult: FormHookResult | undefined,
   validationMessages?: ValidationMessages<TErrorCode, TOptionalErrorCode>,
 ): HookFieldResolution {
   const metadataContext = useFormFieldsMetadataContext()
 
   const metadata = formHookResult?.form.fieldsMetadata ?? metadataContext?.metadata ?? {}
 
-  const control = formHookResult?.form.hookFormInternals.formMethods.control
+  const control = formHookResult?.form.hookFormInternals.formMethods.control as Control | undefined
 
   const { errors: formErrors } = useFormState({ control, name })
 

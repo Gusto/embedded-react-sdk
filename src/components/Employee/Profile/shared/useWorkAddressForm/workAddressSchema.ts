@@ -30,9 +30,7 @@ export type WorkAddressFormOutputs = WorkAddressFormData
 
 // ── Required fields config ─────────────────────────────────────────────
 
-const requiredFieldsConfig = {
-  effectiveDate: 'never',
-} satisfies RequiredFieldConfig<typeof fieldValidators>
+const requiredFieldsConfig = {} satisfies RequiredFieldConfig<typeof fieldValidators>
 
 // ── Schema factory ─────────────────────────────────────────────────────
 

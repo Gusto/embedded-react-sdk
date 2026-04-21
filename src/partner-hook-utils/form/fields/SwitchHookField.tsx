@@ -1,12 +1,12 @@
 import type { ComponentType } from 'react'
 import { useHookFieldResolution } from '../useHookFieldResolution'
-import type { BaseFieldProps, ValidationMessages, BaseFormHookReady } from '../../types'
+import type { BaseFieldProps, ValidationMessages, FormHookResult } from '../../types'
 import { SwitchField } from '@/components/Common'
 import type { SwitchProps } from '@/components/Common/UI/Switch/SwitchTypes'
 
 export interface SwitchHookFieldProps<TErrorCode extends string = never> extends BaseFieldProps {
   name: string
-  formHookResult?: BaseFormHookReady
+  formHookResult?: FormHookResult
   validationMessages?: ValidationMessages<TErrorCode>
   FieldComponent?: ComponentType<SwitchProps>
 }
