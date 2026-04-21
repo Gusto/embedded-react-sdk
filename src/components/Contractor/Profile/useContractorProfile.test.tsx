@@ -639,6 +639,24 @@ describe('useContractorProfile', () => {
       expect(result.current.shouldShowEmailField).toBe(true)
     })
 
+    it('should default selfOnboarding to false when onboarding status is admin_onboarding_review', () => {
+      const contractor = {
+        ...baseContractor,
+        onboardingStatus: ContractorOnboardingStatus.ADMIN_ONBOARDING_REVIEW,
+      }
+      const { result } = renderHook(
+        () =>
+          useContractorProfile({
+            ...defaultProps,
+            contractorId: contractor.uuid,
+            existingContractor: contractor,
+          }),
+        { wrapper: ({ children }) => <TestWrapper>{children}</TestWrapper> },
+      )
+      expect(result.current.formMethods.getValues('selfOnboarding')).toBe(false)
+      expect(result.current.shouldShowEmailField).toBe(false)
+    })
+
     it('should update selfOnboarding when contractor transitions from self_onboarding_invited to admin_onboarding_incomplete', async () => {
       const selfOnboardingContractor = {
         ...baseContractor,

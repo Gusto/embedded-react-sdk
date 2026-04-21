@@ -82,6 +82,7 @@
     "routingNumber": "Routing number should be a number (9 digits)",
     "accountNumber": "Account number is a required field",
     "ssn": "The SSN must be exactly 9 digits long, cannot contain all zeros in any group, and the first three digits cannot be '666' or in the range 900–999.",
+    "ssnRequired": "Social Security Number is required",
     "location": "Location is not valid",
     "dob": "Date of birth is required",
     "percentageMin": "Minimum value is {{min}}%",

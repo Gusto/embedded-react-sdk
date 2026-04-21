@@ -62,7 +62,7 @@ export interface UseHomeAddressFormProps {
   formSessionId?: number
 }
 
-export type HomeAddressFormFields = {
+export interface HomeAddressFields {
   Street1: typeof Street1Field
   Street2: typeof Street2Field
   City: typeof CityField
@@ -72,11 +72,10 @@ export type HomeAddressFormFields = {
   EffectiveDate: typeof EffectiveDateField | undefined
 }
 
-type HomeAddressFormApi = BaseFormHookReady<FieldsMetadata, HomeAddressFormData>['form']
-
-export interface UseHomeAddressFormReady extends Omit<
-  BaseFormHookReady<FieldsMetadata, HomeAddressFormData>,
-  'data' | 'status' | 'actions' | 'form'
+export interface UseHomeAddressFormReady extends BaseFormHookReady<
+  FieldsMetadata,
+  HomeAddressFormData,
+  HomeAddressFields
 > {
   data: {
     homeAddress: EmployeeAddress | null
@@ -87,9 +86,6 @@ export interface UseHomeAddressFormReady extends Omit<
     onSubmit: (
       options?: HomeAddressSubmitOptions,
     ) => Promise<HookSubmitResult<EmployeeAddress> | undefined>
-  }
-  form: Omit<HomeAddressFormApi, 'Fields'> & {
-    Fields: HomeAddressFormFields
   }
 }
 
@@ -175,6 +171,7 @@ export function useHomeAddressForm({
     resetOptions: { keepDirtyValues: false },
   })
 
+  /* eslint-disable react-hooks/exhaustive-deps -- reset uses primitive deps to mirror resolvedDefaults without object-identity churn */
   useEffect(() => {
     formMethods.reset(resolvedDefaults)
   }, [
@@ -190,6 +187,7 @@ export function useHomeAddressForm({
     resolvedDefaults.effectiveDate,
     formMethods,
   ])
+  /* eslint-enable react-hooks/exhaustive-deps */
 
   const createHomeAddressMutation = useEmployeeAddressesCreateMutation()
   const updateHomeAddressMutation = useEmployeeAddressesUpdateMutation()
@@ -355,3 +353,4 @@ export function useHomeAddressForm({
 
 export type UseHomeAddressFormResult = HookLoadingResult | UseHomeAddressFormReady
 export type HomeAddressFieldsMetadata = UseHomeAddressFormReady['form']['fieldsMetadata']
+export type HomeAddressFormFields = UseHomeAddressFormReady['form']['Fields']

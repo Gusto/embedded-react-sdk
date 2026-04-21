@@ -299,7 +299,6 @@ export const ContractorSelfOnboardingStatuses = new Set([
   ContractorOnboardingStatus.SELF_ONBOARDING_INVITED,
   ContractorOnboardingStatus.SELF_ONBOARDING_STARTED,
   ContractorOnboardingStatus.SELF_ONBOARDING_REVIEW,
-  ContractorOnboardingStatus.ADMIN_ONBOARDING_REVIEW,
 ])
 
 /**Map of API response flsa statuses */

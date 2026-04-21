@@ -1,7 +1,7 @@
 import type { ComponentType } from 'react'
 import { useHookFieldResolution } from '../useHookFieldResolution'
 import { getFieldWithOptions } from '../getFieldWithOptions'
-import type { BaseFieldProps, ValidationMessages, BaseFormHookReady } from '../../types'
+import type { BaseFieldProps, ValidationMessages, FormHookResult } from '../../types'
 import { RadioGroupField } from '@/components/Common'
 import type { RadioGroupProps } from '@/components/Common/UI/RadioGroup/RadioGroupTypes'
 
@@ -10,7 +10,7 @@ export interface RadioGroupHookFieldProps<
   TEntry = unknown,
 > extends BaseFieldProps {
   name: string
-  formHookResult?: BaseFormHookReady
+  formHookResult?: FormHookResult
   validationMessages?: ValidationMessages<TErrorCode>
   getOptionLabel?: (entry: TEntry) => string
   FieldComponent?: ComponentType<RadioGroupProps>

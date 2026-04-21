@@ -6,6 +6,7 @@ import { DemoSettingsPanel } from './DemoSettingsPanel'
 import { TokenExpiredOverlay } from './TokenExpiredOverlay'
 import { useEntities } from './useEntities'
 import { useDemoManager } from './useDemoManager'
+import { useAppMode } from './useAppMode'
 
 export function App() {
   const [settingsOpen, setSettingsOpen] = useState(false)
@@ -13,6 +14,7 @@ export function App() {
   const [searchQuery, setSearchQuery] = useState('')
   const { entities, updateEntity, replaceEntities, resetToDefaults } = useEntities()
   const demoManager = useDemoManager()
+  const mode = useAppMode()
 
   const handleCreateNewDemo = async (demoType: string) => {
     const result = await demoManager.createNewDemo(demoType)
@@ -39,6 +41,7 @@ export function App() {
       />
       <div className="app-body">
         <Sidebar
+          mode={mode}
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
           isOpen={sidebarOpen}

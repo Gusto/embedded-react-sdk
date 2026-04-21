@@ -356,6 +356,22 @@ return {
 
 Prebuilt `{Domain}Form` components were removed. Partners use the hooks directly to build custom form UI (with `SDKFormProvider`, field components, and i18n as needed for their integration).
 
+## 4a. SDKFormProvider and formHookResult Prop
+
+Hook fields need form context. Two ways to provide it:
+
+**`SDKFormProvider`** — wraps a contiguous group of fields from one hook. Provides `FormProvider` + `FormFieldsMetadataProvider` context and syncs API field errors via `useSyncFieldErrors`.
+
+**`formHookResult` prop** — pass the hook result directly to each field. Use when fields are scattered across the layout. `FormHookResult` types `control` as `unknown` so any hook result is assignable without casts or generics; `useHookFieldResolution` handles the single `as Control` cast internally.
+
+**Rules:**
+
+1. Do NOT nest `SDKFormProvider`s — use sibling providers for different hooks
+2. Do NOT use `SDKFormProvider` and `formHookResult` prop for the same hook result — pick one approach per hook
+3. Do NOT render fields from a different hook inside an `SDKFormProvider`
+
+When a hook's fields are split across the layout, use `formHookResult` prop on all of that hook's fields instead of `SDKFormProvider`.
+
 ## 5. FieldComponent Pattern
 
 Partners can inject custom UI via `FieldComponent` prop on any field:
