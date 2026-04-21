@@ -89,6 +89,7 @@ export default [
       '@typescript-eslint/restrict-template-expressions': 'off',
       '@typescript-eslint/no-unused-vars': 'off',
       '@typescript-eslint/no-unnecessary-condition': ['error', { checkTypePredicates: true }],
+      '@typescript-eslint/no-unnecessary-type-assertion': 'off', // TODO: fix instances; auto-fix in typescript-eslint 8.59 removes `as` casts that tsc still requires
       '@typescript-eslint/no-deprecated': 'off', // TODO: fix instances
       '@typescript-eslint/no-misused-promises': 'off', // TODO: fix instances
       '@typescript-eslint/no-non-null-assertion': 'off', // TODO: fix instances
