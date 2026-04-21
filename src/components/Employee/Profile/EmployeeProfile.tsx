@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
+import { useEmployeeAddressesGet } from '@gusto/embedded-api/react-query/employeeAddressesGet'
 import { useEmployeeAddressesGetWorkAddresses } from '@gusto/embedded-api/react-query/employeeAddressesGetWorkAddresses'
 import type { ProfileProps } from './Profile'
 import styles from './EmployeeProfile.module.scss'
@@ -52,8 +53,22 @@ export function EmployeeProfile({
     shouldFocusError: false,
   })
 
+  const homeAddressesQuery = useEmployeeAddressesGet(
+    { employeeId: resolvedEmployeeId ?? '' },
+    { enabled: !!resolvedEmployeeId },
+  )
+
+  const activeHomeAddressUuid = useMemo(() => {
+    const list = homeAddressesQuery.data?.employeeAddressList
+    if (!list?.length) {
+      return undefined
+    }
+    return list.find(a => a.active)?.uuid ?? list[0]?.uuid
+  }, [homeAddressesQuery.data?.employeeAddressList])
+
   const homeAddress = useHomeAddressForm({
     employeeId: resolvedEmployeeId,
+    homeAddressUuid: activeHomeAddressUuid,
     withEffectiveDateField: false,
     defaultValues: {
       street1: defaultValues?.homeAddress?.street1,
@@ -113,7 +128,7 @@ export function EmployeeProfile({
     onEvent(componentEvents.EMPLOYEE_PROFILE_DONE, employeeResult.data)
   })
 
-  const errorHandling = composeErrorHandler([submitResult, workAddressesQuery])
+  const errorHandling = composeErrorHandler([submitResult, homeAddressesQuery, workAddressesQuery])
 
   const isPending = employeeDetails.status.isPending || homeAddress.status.isPending
 
