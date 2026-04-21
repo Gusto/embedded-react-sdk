@@ -45,27 +45,16 @@ export interface HomeAddressSubmitOptions {
 
 export interface UseHomeAddressFormProps {
   employeeId?: string
+  /**
+   * When set, the form updates that home address (PUT). When omitted, creates a new home address (POST).
+   * Defaults are loaded from this row when updating.
+   */
+  homeAddressUuid?: string
   withEffectiveDateField?: boolean
   optionalFieldsToRequire?: HomeAddressOptionalFieldsToRequire
   defaultValues?: Partial<HomeAddressFormData>
   validationMode?: UseFormProps['mode']
   shouldFocusError?: boolean
-  /**
-   * How to choose create (POST) vs update (PUT) when the employee may already have a current address.
-   * - `auto`: create only if there is no current address; otherwise update (default).
-   * - `alwaysCreate`: always POST a new home address (e.g. add a future-dated address).
-   * - `alwaysUpdate`: always PUT the current active address (e.g. edit in place).
-   */
-  submissionMode?: 'auto' | 'alwaysCreate' | 'alwaysUpdate'
-  /**
-   * `current` fills the form from the active address; `empty` clears fields for add-new flows even when a current address exists.
-   */
-  defaultValuesStrategy?: 'current' | 'empty'
-  /**
-   * When set with `submissionMode: 'alwaysUpdate'`, the form defaults and PUT target the home address with this UUID
-   * (e.g. editing a row from address history). When omitted, the active address is used.
-   */
-  updateTargetUuid?: string
   /**
    * Increment when opening a create/edit modal so the form resets even when the target address and
    * default field values match the previous open (e.g. reopening the same row after cancel).
@@ -111,14 +100,12 @@ const getActiveHomeAddress = (addresses?: EmployeeAddress[]) => {
 
 export function useHomeAddressForm({
   employeeId,
+  homeAddressUuid,
   withEffectiveDateField = true,
   optionalFieldsToRequire,
   defaultValues: partnerDefaults,
   validationMode = 'onSubmit',
   shouldFocusError = true,
-  submissionMode = 'auto',
-  defaultValuesStrategy = 'current',
-  updateTargetUuid,
   formSessionId = 0,
 }: UseHomeAddressFormProps): HookLoadingResult | UseHomeAddressFormReady {
   const homeAddressesQuery = useEmployeeAddressesGet(
@@ -129,24 +116,16 @@ export function useHomeAddressForm({
   const homeAddresses = homeAddressesQuery.data?.employeeAddressList
   const currentHomeAddress = getActiveHomeAddress(homeAddresses)
 
-  const sourceAddressForDefaults = useMemo(() => {
-    if (
-      submissionMode === 'alwaysUpdate' &&
-      updateTargetUuid &&
-      homeAddresses &&
-      homeAddresses.length > 0
-    ) {
-      return homeAddresses.find(a => a.uuid === updateTargetUuid) ?? currentHomeAddress
-    }
-    return currentHomeAddress
-  }, [submissionMode, updateTargetUuid, homeAddresses, currentHomeAddress])
+  const isCreateMode = !homeAddressUuid
 
-  const isCreateMode =
-    submissionMode === 'alwaysCreate'
-      ? true
-      : submissionMode === 'alwaysUpdate'
-        ? false
-        : !currentHomeAddress
+  const addressForUpdate = useMemo(() => {
+    if (!homeAddressUuid || !homeAddresses?.length) {
+      return undefined
+    }
+    return homeAddresses.find(a => a.uuid === homeAddressUuid)
+  }, [homeAddressUuid, homeAddresses])
+
+  const sourceAddressForDefaults = isCreateMode ? undefined : addressForUpdate
 
   const schemaMode = isCreateMode ? 'create' : 'update'
 
@@ -161,7 +140,7 @@ export function useHomeAddressForm({
   )
 
   const resolvedDefaults: HomeAddressFormData = useMemo(() => {
-    if (defaultValuesStrategy === 'empty') {
+    if (isCreateMode) {
       return {
         street1: partnerDefaults?.street1 ?? '',
         street2: partnerDefaults?.street2 ?? '',
@@ -185,7 +164,7 @@ export function useHomeAddressForm({
       effectiveDate:
         sourceAddressForDefaults?.effectiveDate?.toString() ?? partnerDefaults?.effectiveDate ?? '',
     }
-  }, [defaultValuesStrategy, sourceAddressForDefaults, partnerDefaults])
+  }, [isCreateMode, sourceAddressForDefaults, partnerDefaults])
 
   const formMethods = useForm<HomeAddressFormData, unknown, HomeAddressFormOutputs>({
     resolver: zodResolver(schema),
@@ -200,9 +179,8 @@ export function useHomeAddressForm({
     formMethods.reset(resolvedDefaults)
   }, [
     formSessionId,
-    updateTargetUuid,
+    homeAddressUuid,
     sourceAddressForDefaults?.uuid,
-    defaultValuesStrategy,
     resolvedDefaults.street1,
     resolvedDefaults.street2,
     resolvedDefaults.city,
@@ -291,10 +269,9 @@ export function useHomeAddressForm({
 
               updatedHomeAddress = result.employeeAddress
             } else {
-              const addressToUpdate =
-                submissionMode === 'alwaysUpdate' && updateTargetUuid
-                  ? homeAddresses?.find(a => a.uuid === updateTargetUuid)
-                  : currentHomeAddress
+              const addressToUpdate = homeAddressUuid
+                ? homeAddresses?.find(a => a.uuid === homeAddressUuid)
+                : undefined
 
               if (!addressToUpdate) {
                 throw new SDKInternalError(

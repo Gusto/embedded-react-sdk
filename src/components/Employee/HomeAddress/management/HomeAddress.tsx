@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
 import type { EmployeeAddress } from '@gusto/embedded-api/models/components/employeeaddress'
 import { useEmployeeAddressesDeleteMutation } from '@gusto/embedded-api/react-query/employeeAddressesDelete'
+import { useEmployeeAddressesGet } from '@gusto/embedded-api/react-query/employeeAddressesGet'
 import { useEmployeesGet } from '@gusto/embedded-api/react-query/employeesGet'
 import { HomeAddressView } from './HomeAddressView'
 import { useHomeAddressForm } from '@/components/Employee/Profile/shared/useHomeAddressForm'
@@ -40,19 +41,26 @@ function HomeAddressRoot({ employeeId, onEvent, dictionary }: HomeAddressProps) 
     setFormSessionId(n => n + 1)
   }, [])
 
+  const homeAddressesQuery = useEmployeeAddressesGet({ employeeId }, { enabled: !!employeeId })
+  const activeHomeAddressUuid = useMemo(() => {
+    const list = homeAddressesQuery.data?.employeeAddressList
+    if (!list?.length) {
+      return undefined
+    }
+    return list.find(a => a.active)?.uuid ?? list[0]?.uuid
+  }, [homeAddressesQuery.data?.employeeAddressList])
+
+  const homeAddressUuidForEdit = editTargetUuid ?? activeHomeAddressUuid
+
   const editHomeAddressForm = useHomeAddressForm({
     employeeId,
-    submissionMode: 'alwaysUpdate',
+    homeAddressUuid: homeAddressUuidForEdit,
     withEffectiveDateField: false,
-    defaultValuesStrategy: 'current',
-    updateTargetUuid: editTargetUuid,
     formSessionId,
   })
   const createHomeAddressForm = useHomeAddressForm({
     employeeId,
-    submissionMode: 'alwaysCreate',
     withEffectiveDateField: true,
-    defaultValuesStrategy: 'empty',
     formSessionId,
   })
 
@@ -69,7 +77,7 @@ function HomeAddressRoot({ employeeId, onEvent, dictionary }: HomeAddressProps) 
   }, [employeeQuery.data?.employee])
 
   const errorHandling = composeErrorHandler(
-    [employeeQuery, editHomeAddressForm, createHomeAddressForm],
+    [employeeQuery, homeAddressesQuery, editHomeAddressForm, createHomeAddressForm],
     { submitError: rootSubmitError, setSubmitError: setRootSubmitError },
   )
 
