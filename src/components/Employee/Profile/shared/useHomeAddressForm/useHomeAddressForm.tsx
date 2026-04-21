@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -45,11 +45,21 @@ export interface HomeAddressSubmitOptions {
 
 export interface UseHomeAddressFormProps {
   employeeId?: string
+  /**
+   * When set, the form updates that home address (PUT). When omitted, creates a new home address (POST).
+   * Defaults are loaded from this row when updating.
+   */
+  homeAddressUuid?: string
   withEffectiveDateField?: boolean
   optionalFieldsToRequire?: HomeAddressOptionalFieldsToRequire
   defaultValues?: Partial<HomeAddressFormData>
   validationMode?: UseFormProps['mode']
   shouldFocusError?: boolean
+  /**
+   * Increment when opening a create/edit modal so the form resets even when the target address and
+   * default field values match the previous open (e.g. reopening the same row after cancel).
+   */
+  formSessionId?: number
 }
 
 export interface HomeAddressFields {
@@ -86,11 +96,13 @@ const getActiveHomeAddress = (addresses?: EmployeeAddress[]) => {
 
 export function useHomeAddressForm({
   employeeId,
+  homeAddressUuid,
   withEffectiveDateField = true,
   optionalFieldsToRequire,
   defaultValues: partnerDefaults,
   validationMode = 'onSubmit',
   shouldFocusError = true,
+  formSessionId = 0,
 }: UseHomeAddressFormProps): HookLoadingResult | UseHomeAddressFormReady {
   const homeAddressesQuery = useEmployeeAddressesGet(
     { employeeId: employeeId ?? '' },
@@ -100,30 +112,55 @@ export function useHomeAddressForm({
   const homeAddresses = homeAddressesQuery.data?.employeeAddressList
   const currentHomeAddress = getActiveHomeAddress(homeAddresses)
 
-  const isCreateMode = !currentHomeAddress
-  const mode = isCreateMode ? 'create' : 'update'
+  const isCreateMode = !homeAddressUuid
+
+  const addressForUpdate = useMemo(() => {
+    if (!homeAddressUuid || !homeAddresses?.length) {
+      return undefined
+    }
+    return homeAddresses.find(a => a.uuid === homeAddressUuid)
+  }, [homeAddressUuid, homeAddresses])
+
+  const sourceAddressForDefaults = isCreateMode ? undefined : addressForUpdate
+
+  const schemaMode = isCreateMode ? 'create' : 'update'
 
   const [schema, metadataConfig] = useMemo(
     () =>
       createHomeAddressSchema({
-        mode,
+        mode: schemaMode,
         optionalFieldsToRequire,
         withEffectiveDateField,
       }),
-    [mode, optionalFieldsToRequire, withEffectiveDateField],
+    [schemaMode, optionalFieldsToRequire, withEffectiveDateField],
   )
 
-  const resolvedDefaults: HomeAddressFormData = {
-    street1: currentHomeAddress?.street1 ?? partnerDefaults?.street1 ?? '',
-    street2: currentHomeAddress?.street2 ?? partnerDefaults?.street2 ?? '',
-    city: currentHomeAddress?.city ?? partnerDefaults?.city ?? '',
-    state: currentHomeAddress?.state ?? partnerDefaults?.state ?? '',
-    zip: currentHomeAddress?.zip ?? partnerDefaults?.zip ?? '',
-    courtesyWithholding:
-      currentHomeAddress?.courtesyWithholding ?? partnerDefaults?.courtesyWithholding ?? false,
-    effectiveDate:
-      currentHomeAddress?.effectiveDate?.toString() ?? partnerDefaults?.effectiveDate ?? '',
-  }
+  const resolvedDefaults: HomeAddressFormData = useMemo(() => {
+    if (isCreateMode) {
+      return {
+        street1: partnerDefaults?.street1 ?? '',
+        street2: partnerDefaults?.street2 ?? '',
+        city: partnerDefaults?.city ?? '',
+        state: partnerDefaults?.state ?? '',
+        zip: partnerDefaults?.zip ?? '',
+        courtesyWithholding: partnerDefaults?.courtesyWithholding ?? false,
+        effectiveDate: partnerDefaults?.effectiveDate ?? '',
+      }
+    }
+    return {
+      street1: sourceAddressForDefaults?.street1 ?? partnerDefaults?.street1 ?? '',
+      street2: sourceAddressForDefaults?.street2 ?? partnerDefaults?.street2 ?? '',
+      city: sourceAddressForDefaults?.city ?? partnerDefaults?.city ?? '',
+      state: sourceAddressForDefaults?.state ?? partnerDefaults?.state ?? '',
+      zip: sourceAddressForDefaults?.zip ?? partnerDefaults?.zip ?? '',
+      courtesyWithholding:
+        sourceAddressForDefaults?.courtesyWithholding ??
+        partnerDefaults?.courtesyWithholding ??
+        false,
+      effectiveDate:
+        sourceAddressForDefaults?.effectiveDate?.toString() ?? partnerDefaults?.effectiveDate ?? '',
+    }
+  }, [isCreateMode, sourceAddressForDefaults, partnerDefaults])
 
   const formMethods = useForm<HomeAddressFormData, unknown, HomeAddressFormOutputs>({
     resolver: zodResolver(schema),
@@ -131,8 +168,26 @@ export function useHomeAddressForm({
     shouldFocusError,
     defaultValues: resolvedDefaults,
     values: resolvedDefaults,
-    resetOptions: { keepDirtyValues: true },
+    resetOptions: { keepDirtyValues: false },
   })
+
+  /* eslint-disable react-hooks/exhaustive-deps -- reset uses primitive deps to mirror resolvedDefaults without object-identity churn */
+  useEffect(() => {
+    formMethods.reset(resolvedDefaults)
+  }, [
+    formSessionId,
+    homeAddressUuid,
+    sourceAddressForDefaults?.uuid,
+    resolvedDefaults.street1,
+    resolvedDefaults.street2,
+    resolvedDefaults.city,
+    resolvedDefaults.state,
+    resolvedDefaults.zip,
+    resolvedDefaults.courtesyWithholding,
+    resolvedDefaults.effectiveDate,
+    formMethods,
+  ])
+  /* eslint-enable react-hooks/exhaustive-deps */
 
   const createHomeAddressMutation = useEmployeeAddressesCreateMutation()
   const updateHomeAddressMutation = useEmployeeAddressesUpdateMutation()
@@ -212,11 +267,21 @@ export function useHomeAddressForm({
 
               updatedHomeAddress = result.employeeAddress
             } else {
+              const addressToUpdate = homeAddressUuid
+                ? homeAddresses?.find(a => a.uuid === homeAddressUuid)
+                : undefined
+
+              if (!addressToUpdate) {
+                throw new SDKInternalError(
+                  'Cannot update home address: no matching address on file',
+                )
+              }
+
               const result = await updateHomeAddressMutation.mutateAsync({
                 request: {
-                  homeAddressUuid: currentHomeAddress.uuid,
+                  homeAddressUuid: addressToUpdate.uuid,
                   requestBody: {
-                    version: currentHomeAddress.version,
+                    version: addressToUpdate.version,
                     street1: payload.street1,
                     street2: payload.street2 || undefined,
                     city: payload.city,

@@ -358,7 +358,6 @@ export function WorkAddressView({
                   effectiveDate: pendingFutureAddress.effectiveDate
                     ? formatDateLongWithYear(pendingFutureAddress.effectiveDate)
                     : '—',
-                  interpolation: { escapeValue: false },
                 })}
               </Components.Text>
             </Components.Alert>
@@ -501,7 +500,6 @@ export function WorkAddressView({
                 components={{
                   strong: <Components.Text weight="medium" as="span" />,
                 }}
-                tOptions={{ interpolation: { escapeValue: false } }}
               />
             ) : null}
           </Components.Text>

@@ -3,6 +3,8 @@ import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import { type Employee } from '@gusto/embedded-api/models/components/employee'
+import { useEmployeeAddressesGet } from '@gusto/embedded-api/react-query/employeeAddressesGet'
+import { useEmployeeAddressesGetWorkAddresses } from '@gusto/embedded-api/react-query/employeeAddressesGetWorkAddresses'
 import type { ProfileProps } from './Profile'
 import styles from './AdminProfile.module.scss'
 import { useEmployeeDetailsForm } from './shared/useEmployeeDetailsForm'
@@ -88,6 +90,31 @@ export function AdminProfile({
     [defaultValues, isCreateMode, createModeSelfOnboarding],
   )
 
+  const homeAddressesQuery = useEmployeeAddressesGet(
+    { employeeId: resolvedEmployeeId ?? '' },
+    { enabled: !!resolvedEmployeeId },
+  )
+  const workAddressesQuery = useEmployeeAddressesGetWorkAddresses(
+    { employeeId: resolvedEmployeeId ?? '' },
+    { enabled: !!resolvedEmployeeId },
+  )
+
+  const activeHomeAddressUuid = useMemo(() => {
+    const list = homeAddressesQuery.data?.employeeAddressList
+    if (!list?.length) {
+      return undefined
+    }
+    return list.find(a => a.active)?.uuid ?? list[0]?.uuid
+  }, [homeAddressesQuery.data?.employeeAddressList])
+
+  const activeWorkAddressUuid = useMemo(() => {
+    const list = workAddressesQuery.data?.employeeWorkAddressesList
+    if (!list?.length) {
+      return undefined
+    }
+    return list.find(w => w.active)?.uuid ?? list[0]?.uuid
+  }, [workAddressesQuery.data?.employeeWorkAddressesList])
+
   const employeeDetails = useEmployeeDetailsForm({
     companyId,
     employeeId: resolvedEmployeeId,
@@ -99,6 +126,7 @@ export function AdminProfile({
 
   const homeAddress = useHomeAddressForm({
     employeeId: resolvedEmployeeId,
+    homeAddressUuid: activeHomeAddressUuid,
     withEffectiveDateField: false,
     defaultValues: {
       street1: defaultValues?.homeAddress?.street1,
@@ -113,6 +141,7 @@ export function AdminProfile({
   const workAddress = useWorkAddressForm({
     companyId,
     employeeId: resolvedEmployeeId,
+    workAddressUuid: activeWorkAddressUuid,
     withEffectiveDateField: false,
     shouldFocusError: false,
   })

@@ -48,6 +48,16 @@ function WorkAddressRoot({ employeeId, dictionary, onEvent }: WorkAddressProps) 
     { enabled: !!employeeId && !!companyId },
   )
 
+  const activeWorkAddressUuid = useMemo(() => {
+    const list = workAddressesQuery.data?.employeeWorkAddressesList
+    if (!list?.length) {
+      return undefined
+    }
+    return list.find(w => w.active)?.uuid ?? list[0]?.uuid
+  }, [workAddressesQuery.data?.employeeWorkAddressesList])
+
+  const workAddressUuidForEdit = editTargetUuid ?? activeWorkAddressUuid
+
   const editInactiveRow = useMemo(() => {
     if (!editTargetUuid || !workAddressesQuery.data?.employeeWorkAddressesList) {
       return undefined
@@ -71,10 +81,8 @@ function WorkAddressRoot({ employeeId, dictionary, onEvent }: WorkAddressProps) 
   const editWorkAddressForm = useWorkAddressForm({
     companyId,
     employeeId,
+    workAddressUuid: workAddressUuidForEdit,
     withEffectiveDateField: withEffectiveDateOnEdit,
-    submissionMode: 'alwaysUpdate',
-    defaultValuesStrategy: 'current',
-    updateTargetUuid: editTargetUuid,
     formSessionId,
   })
 
@@ -82,13 +90,11 @@ function WorkAddressRoot({ employeeId, dictionary, onEvent }: WorkAddressProps) 
     companyId,
     employeeId,
     withEffectiveDateField: true,
-    submissionMode: 'alwaysCreate',
-    defaultValuesStrategy: 'empty',
     formSessionId,
   })
 
   const errorHandling = composeErrorHandler(
-    [employeeQuery, editWorkAddressForm, changeWorkAddressForm],
+    [employeeQuery, workAddressesQuery, editWorkAddressForm, changeWorkAddressForm],
     { submitError: rootSubmitError, setSubmitError: setRootSubmitError },
   )
 

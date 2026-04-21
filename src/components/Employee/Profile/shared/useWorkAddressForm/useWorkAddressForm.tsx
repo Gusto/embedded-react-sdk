@@ -46,28 +46,16 @@ export interface UseWorkAddressFormProps {
   /** Company UUID for locations; omit or leave unset while resolving from the employee record. */
   companyId?: string
   employeeId?: string
+  /**
+   * When set, the form updates that work address (PUT). When omitted, creates a new work address (POST).
+   * Defaults are loaded from this row when updating.
+   */
+  workAddressUuid?: string
   withEffectiveDateField?: boolean
   optionalFieldsToRequire?: WorkAddressOptionalFieldsToRequire
   defaultValues?: Partial<WorkAddressFormData>
   validationMode?: UseFormProps['mode']
   shouldFocusError?: boolean
-  /**
-   * How to choose create (POST) vs update (PUT) when the employee may already have a current work address.
-   * - `auto`: create only if there is no current address; otherwise update (default).
-   * - `alwaysCreate`: always POST a new work address (e.g. change with a new effective date).
-   * - `alwaysUpdate`: always PUT an existing work address (edit current or a row when `updateTargetUuid` is set).
-   */
-  submissionMode?: 'auto' | 'alwaysCreate' | 'alwaysUpdate'
-  /**
-   * `current` fills the form from the active address (or `updateTargetUuid` when updating);
-   * `empty` clears fields for add-new flows even when a current address exists.
-   */
-  defaultValuesStrategy?: 'current' | 'empty'
-  /**
-   * When set with `submissionMode: 'alwaysUpdate'`, defaults and PUT target the work address with this UUID.
-   * When omitted, the active work address is used.
-   */
-  updateTargetUuid?: string
   /**
    * Increment when opening a create/edit modal so the form resets even when the target address and
    * default field values match the previous open (e.g. reopening the same row after cancel).
@@ -99,17 +87,20 @@ export interface UseWorkAddressFormReady extends BaseFormHookReady<
   }
 }
 
+const getActiveWorkAddress = (addresses?: EmployeeWorkAddress[]) => {
+  if (!addresses || addresses.length === 0) return undefined
+  return addresses.find(address => address.active) ?? addresses[0]
+}
+
 export function useWorkAddressForm({
   companyId,
   employeeId,
+  workAddressUuid,
   withEffectiveDateField = true,
   optionalFieldsToRequire,
   defaultValues: partnerDefaults,
   validationMode = 'onSubmit',
   shouldFocusError = true,
-  submissionMode = 'auto',
-  defaultValuesStrategy = 'current',
-  updateTargetUuid,
   formSessionId = 0,
 }: UseWorkAddressFormProps): HookLoadingResult | UseWorkAddressFormReady {
   const locationsQuery = useLocationsGet({ companyId: companyId ?? '' }, { enabled: !!companyId })
@@ -120,26 +111,18 @@ export function useWorkAddressForm({
 
   const companyLocations = locationsQuery.data?.companyLocationsList
   const workAddresses = workAddressesQuery.data?.employeeWorkAddressesList
-  const currentWorkAddress = workAddresses?.find(address => address.active)
+  const currentWorkAddress = getActiveWorkAddress(workAddresses)
 
-  const sourceAddressForDefaults = useMemo(() => {
-    if (
-      submissionMode === 'alwaysUpdate' &&
-      updateTargetUuid &&
-      workAddresses &&
-      workAddresses.length > 0
-    ) {
-      return workAddresses.find(a => a.uuid === updateTargetUuid) ?? currentWorkAddress
+  const isCreateMode = !workAddressUuid
+
+  const addressForUpdate = useMemo(() => {
+    if (!workAddressUuid || !workAddresses?.length) {
+      return undefined
     }
-    return currentWorkAddress
-  }, [submissionMode, updateTargetUuid, workAddresses, currentWorkAddress])
+    return workAddresses.find(a => a.uuid === workAddressUuid)
+  }, [workAddressUuid, workAddresses])
 
-  const isCreateMode =
-    submissionMode === 'alwaysCreate'
-      ? true
-      : submissionMode === 'alwaysUpdate'
-        ? false
-        : !currentWorkAddress
+  const sourceAddressForDefaults = isCreateMode ? undefined : addressForUpdate
 
   const schemaMode = isCreateMode ? 'create' : 'update'
 
@@ -154,7 +137,7 @@ export function useWorkAddressForm({
   )
 
   const resolvedDefaults: WorkAddressFormData = useMemo(() => {
-    if (defaultValuesStrategy === 'empty') {
+    if (isCreateMode) {
       return {
         locationUuid: partnerDefaults?.locationUuid ?? '',
         effectiveDate: partnerDefaults?.effectiveDate ?? '',
@@ -165,7 +148,7 @@ export function useWorkAddressForm({
       effectiveDate:
         sourceAddressForDefaults?.effectiveDate ?? partnerDefaults?.effectiveDate ?? '',
     }
-  }, [defaultValuesStrategy, sourceAddressForDefaults, partnerDefaults])
+  }, [isCreateMode, sourceAddressForDefaults, partnerDefaults])
 
   const formMethods = useForm<WorkAddressFormData, unknown, WorkAddressFormOutputs>({
     resolver: zodResolver(schema),
@@ -173,20 +156,21 @@ export function useWorkAddressForm({
     shouldFocusError,
     defaultValues: resolvedDefaults,
     values: resolvedDefaults,
-    resetOptions: { keepDirtyValues: false },
+    resetOptions: { keepDirtyValues: true },
   })
 
+  /* eslint-disable react-hooks/exhaustive-deps -- reset uses primitive deps to mirror resolvedDefaults without object-identity churn */
   useEffect(() => {
-    formMethods.reset(resolvedDefaults)
+    formMethods.reset(resolvedDefaults, { keepDirtyValues: false })
   }, [
     formSessionId,
-    updateTargetUuid,
+    workAddressUuid,
     sourceAddressForDefaults?.uuid,
-    defaultValuesStrategy,
     resolvedDefaults.locationUuid,
     resolvedDefaults.effectiveDate,
     formMethods,
   ])
+  /* eslint-enable react-hooks/exhaustive-deps */
 
   const createWorkAddressMutation = useEmployeeAddressesCreateWorkAddressMutation()
   const updateWorkAddressMutation = useEmployeeAddressesUpdateWorkAddressMutation()
@@ -244,11 +228,6 @@ export function useWorkAddressForm({
 
             let updatedWorkAddress: EmployeeWorkAddress
 
-            const addressToUpdate =
-              submissionMode === 'alwaysUpdate' && updateTargetUuid
-                ? workAddresses?.find(a => a.uuid === updateTargetUuid)
-                : currentWorkAddress
-
             if (isCreateMode) {
               const result = await createWorkAddressMutation.mutateAsync({
                 request: {
@@ -267,8 +246,12 @@ export function useWorkAddressForm({
               updatedWorkAddress = result.employeeWorkAddress
               callbacks?.onWorkAddressCreated?.(updatedWorkAddress)
             } else {
+              const addressToUpdate = workAddressUuid
+                ? workAddresses?.find(a => a.uuid === workAddressUuid)
+                : undefined
+
               if (!addressToUpdate) {
-                throw new SDKInternalError('No work address available to update')
+                throw new SDKInternalError('Cannot update work address: no matching address on file')
               }
 
               const result = await updateWorkAddressMutation.mutateAsync({
