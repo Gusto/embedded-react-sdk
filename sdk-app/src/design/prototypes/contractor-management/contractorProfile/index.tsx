@@ -4,6 +4,7 @@ import { useContractorPaymentMethodGetBankAccountsSuspense } from '@gusto/embedd
 import { ContractorAddress } from './components/ContractorAddress'
 import { ContractorDetails } from './components/ContractorDetails'
 import { ContractorPaymentMethod } from './components/ContractorPaymentMethod'
+import { ContractorPay } from './components/ContractorPay'
 import { Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
@@ -41,6 +42,7 @@ function ContractorProfileContent() {
       content: (
         <Flex flexDirection="column" gap={24}>
           <ContractorPaymentMethod bankAccounts={bankAccounts} />
+          <ContractorPay contractor={contractor} />
         </Flex>
       ),
     },
