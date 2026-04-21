@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.40.0
 
 ### Breaking Changes
 
@@ -113,6 +113,10 @@ import { EmployeeManagement } from '@gusto/embedded-react-sdk'
 #### Internal restructuring: `EmployeeList` feature module
 
 The `Employee/EmployeeList/` directory has been restructured into a feature module layout (`Employee/employee-list/`) with `shared/`, `onboarding/`, and `management/` subdirectories. This is an internal change -- all public exports remain the same and no partner action is required.
+
+### Chores & Maintenance
+
+- Migrate Employee Profile to hook-based architecture
 
 ## 0.39.0
 
