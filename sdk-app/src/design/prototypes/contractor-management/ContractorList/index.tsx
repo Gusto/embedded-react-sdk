@@ -1,6 +1,7 @@
-import { Suspense, useState } from 'react'
+import { useMemo, useState } from 'react'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
-import { useContractorsListSuspense } from '@gusto/embedded-api/react-query/contractorsList'
+import { useContractorsList } from '@gusto/embedded-api/react-query/contractorsList'
+import { keepPreviousData } from '@tanstack/react-query'
 import { DataView, EmptyData, Flex, useDataView } from '@/components/Common'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu/HamburgerMenu'
 import { ContractorOnboardingStatusBadge } from '@/components/Common/OnboardingStatusBadge'
@@ -140,69 +141,73 @@ function ContractorListContent() {
   const companyId = String(import.meta.env.VITE_COMPANY_ID || '')
   const [selectedTab, setSelectedTab] = useState('active')
 
-  const { data: activeData } = useContractorsListSuspense({
-    companyUuid: companyId,
-    onboardedActive: true,
-  })
+  const queryParams = useMemo(() => {
+    switch (selectedTab) {
+      case 'active':
+        return { companyUuid: companyId, onboardedActive: true }
+      case 'onboarding':
+        return { companyUuid: companyId, onboardedActive: false }
+      case 'dismissed':
+        return { companyUuid: companyId, terminatedToday: true }
+      default:
+        return { companyUuid: companyId, onboardedActive: true }
+    }
+  }, [companyId, selectedTab])
 
-  const { data: onboardingData } = useContractorsListSuspense({
-    companyUuid: companyId,
-    onboardedActive: false,
+  const { data, isFetching } = useContractorsList(queryParams, {
+    placeholderData: keepPreviousData,
   })
-
-  const { data: dismissedData } = useContractorsListSuspense({
-    companyUuid: companyId,
-    terminatedToday: true,
-  })
-
-  const totalContractors =
-    (activeData.contractors?.length ?? 0) +
-    (onboardingData.contractors?.length ?? 0) +
-    (dismissedData.contractors?.length ?? 0)
+  const contractors = data?.contractors ?? []
 
   const tabs = [
     {
       id: 'active',
       label: 'Active',
-      content: <ActiveContractorsTable contractors={activeData.contractors ?? []} />,
+      content: null,
     },
     {
       id: 'onboarding',
       label: 'Onboarding',
-      content: <OnboardingContractorsTable contractors={onboardingData.contractors ?? []} />,
+      content: null,
     },
     {
       id: 'dismissed',
       label: 'Dismissed',
-      content: <DismissedContractorsTable contractors={dismissedData.contractors ?? []} />,
+      content: null,
     },
   ]
+
+  const renderTable = () => {
+    switch (selectedTab) {
+      case 'active':
+        return <ActiveContractorsTable contractors={contractors} />
+      case 'onboarding':
+        return <OnboardingContractorsTable contractors={contractors} />
+      case 'dismissed':
+        return <DismissedContractorsTable contractors={contractors} />
+    }
+  }
+
+  if (!data && isFetching) {
+    return <Components.Text>Loading contractors...</Components.Text>
+  }
 
   return (
     <Flex flexDirection="column" gap={24}>
       <Flex justifyContent="space-between" alignItems="center">
-        <Flex flexDirection="column" gap={4}>
-          <Components.Heading as="h1" styledAs="h2">
-            Contractors
-          </Components.Heading>
-          <Components.Text variant="supporting">{totalContractors} contractors</Components.Text>
-        </Flex>
-
+        <Components.Heading as="h1" styledAs="h2">
+          Contractors
+        </Components.Heading>
         <Components.Button variant="primary" onClick={() => {}}>
           Add contractor
         </Components.Button>
       </Flex>
       <Components.Tabs onSelectionChange={setSelectedTab} tabs={tabs} selectedId={selectedTab} />
+      {renderTable()}
     </Flex>
   )
 }
 
 export default function ContractorList() {
-  const Components = useComponentContext()
-
-  return (
-    <Suspense fallback={<Components.Text>Loading contractors...</Components.Text>}>
-      <ContractorListContent />
-    </Suspense>
-  )
+  return <ContractorListContent />
 }
