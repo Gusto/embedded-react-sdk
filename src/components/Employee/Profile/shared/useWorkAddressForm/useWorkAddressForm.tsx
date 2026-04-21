@@ -251,7 +251,9 @@ export function useWorkAddressForm({
                 : undefined
 
               if (!addressToUpdate) {
-                throw new SDKInternalError('Cannot update work address: no matching address on file')
+                throw new SDKInternalError(
+                  'Cannot update work address: no matching address on file',
+                )
               }
 
               const result = await updateWorkAddressMutation.mutateAsync({

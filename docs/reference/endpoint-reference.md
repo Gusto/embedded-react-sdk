@@ -115,12 +115,12 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | `/v1/garnishments/child_support` |
 | **Employee.OnboardingSummary** | GET | `/v1/employees/:employeeId` |
 |  | GET | `/v1/employees/:employeeId/onboarding_status` |
-| **Employee.Profile** | GET | `/v1/employees/:employeeId/work_addresses` |
+| **Employee.Profile** | GET | `/v1/employees/:employeeId/home_addresses` |
+|  | GET | `/v1/employees/:employeeId/work_addresses` |
 |  | GET | `/v1/employees/:employeeId` |
 |  | POST | `/v1/companies/:companyId/employees` |
 |  | PUT | `/v1/employees/:employeeId` |
 |  | PUT | `/v1/employees/:employeeId/onboarding_status` |
-|  | GET | `/v1/employees/:employeeId/home_addresses` |
 |  | POST | `/v1/employees/:employeeId/home_addresses` |
 |  | PUT | `/v1/home_addresses/:homeAddressUuid` |
 |  | GET | `/v1/companies/:companyId/locations` |

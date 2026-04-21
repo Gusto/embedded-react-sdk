@@ -5,11 +5,8 @@ import type { BaseFieldProps, ValidationMessages, FormHookResult } from '../../t
 import { SelectField } from '@/components/Common'
 import type { SelectProps } from '@/components/Common/UI/Select/SelectTypes'
 
-export interface SelectHookFieldProps<
-  TErrorCode extends string = never,
-  TEntry = unknown,
-> extends BaseFieldProps,
-    Pick<SelectProps, 'portalContainer'> {
+export interface SelectHookFieldProps<TErrorCode extends string = never, TEntry = unknown>
+  extends BaseFieldProps, Pick<SelectProps, 'portalContainer'> {
   name: string
   formHookResult?: FormHookResult
   validationMessages?: ValidationMessages<TErrorCode>
