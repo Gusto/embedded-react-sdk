@@ -56,6 +56,15 @@
     "15thAndLast": "15th and Last day of the month",
     "custom": "Custom"
   },
+  "validations": {
+    "name": "Pay schedule name is required",
+    "frequency": "Pay frequency is required",
+    "firstPayDate": "First pay date is required",
+    "firstPayPeriodEndDate": "First pay period end date is required",
+    "firstPayDayOfTheMonth": "First pay day of the month is required",
+    "lastPayDayOfTheMonth": "Last pay day of the month is required",
+    "dayRange": "Must be between 1 and 31"
+  },
   "previewAlert": {
     "title": "Pay Schedule Preview",
     "description": "Complete all the required fields to see a preview of your pay schedule."

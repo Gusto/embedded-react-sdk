@@ -47,11 +47,11 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | `/v1/locations/:locationId` |
 |  | POST | `/v1/companies/:companyId/locations` |
 |  | GET | `/v1/companies/:companyId/locations` |
-| **Company.PaySchedule** | GET | `/v1/companies/:companyId/pay_schedules/preview` |
-|  | PUT | `/v1/companies/:companyId/pay_schedules/:payScheduleId` |
-|  | GET | `/v1/companies/:companyId/pay_schedules` |
-|  | POST | `/v1/companies/:companyId/pay_schedules` |
+| **Company.PaySchedule** | GET | `/v1/companies/:companyId/pay_schedules` |
 |  | GET | `/v1/companies/:companyId/pay_schedules/:payScheduleId` |
+|  | GET | `/v1/companies/:companyId/pay_schedules/preview` |
+|  | POST | `/v1/companies/:companyId/pay_schedules` |
+|  | PUT | `/v1/companies/:companyId/pay_schedules/:payScheduleId` |
 |  | GET | `/v1/companies/:companyUuid/payment_configs` |
 | **Company.FederalTaxes** | PUT | `/v1/companies/:companyId/federal_tax_details` |
 |  | GET | `/v1/companies/:companyId/federal_tax_details` |
