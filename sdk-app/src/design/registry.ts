@@ -25,5 +25,10 @@ export const categorizedRegistry: CategorizedRegistry = {
       path: '/design/contractor-profile',
       description: 'A prototype for managing contractor profiles.',
     },
+    {
+      name: 'Contractor List',
+      path: '/design/contractor-list',
+      description: 'A prototype for managing contractor lists.',
+    },
   ],
 }
