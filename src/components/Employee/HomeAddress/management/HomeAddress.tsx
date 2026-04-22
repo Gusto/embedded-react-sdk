@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import type { EmployeeAddress } from '@gusto/embedded-api/models/components/employeeaddress'
 import { useEmployeeAddressesDeleteMutation } from '@gusto/embedded-api/react-query/employeeAddressesDelete'
 import { useEmployeeAddressesGet } from '@gusto/embedded-api/react-query/employeeAddressesGet'
@@ -36,10 +36,6 @@ function HomeAddressRoot({ employeeId, onEvent, dictionary }: HomeAddressProps) 
   const deleteHomeAddressMutation = useEmployeeAddressesDeleteMutation()
 
   const [editTargetUuid, setEditTargetUuid] = useState<string | undefined>(undefined)
-  const [formSessionId, setFormSessionId] = useState(0)
-  const beginAddressModalSession = useCallback(() => {
-    setFormSessionId(n => n + 1)
-  }, [])
 
   const homeAddressesQuery = useEmployeeAddressesGet({ employeeId }, { enabled: !!employeeId })
   const activeHomeAddressUuid = useMemo(() => {
@@ -56,12 +52,11 @@ function HomeAddressRoot({ employeeId, onEvent, dictionary }: HomeAddressProps) 
     employeeId,
     homeAddressUuid: homeAddressUuidForEdit,
     withEffectiveDateField: false,
-    formSessionId,
   })
   const createHomeAddressForm = useHomeAddressForm({
     employeeId,
+    homeAddressUuid: undefined,
     withEffectiveDateField: true,
-    formSessionId,
   })
 
   const employeeQuery = useEmployeesGet({ employeeId }, { enabled: !!employeeId })
@@ -135,9 +130,8 @@ function HomeAddressRoot({ employeeId, onEvent, dictionary }: HomeAddressProps) 
         editHomeAddressForm={editHomeAddressForm}
         createHomeAddressForm={createHomeAddressForm}
         employeeDisplayName={employeeDisplayName}
-        editTargetUuid={editTargetUuid}
-        onEditTargetUuidChange={setEditTargetUuid}
-        onBeginAddressModalSession={beginAddressModalSession}
+        editingHomeAddressUuid={homeAddressUuidForEdit}
+        onEditAddressTargetChange={setEditTargetUuid}
         onSaved={handleSaved}
         onConfirmDelete={handleConfirmDelete}
         isDeletePending={deleteHomeAddressMutation.isPending}

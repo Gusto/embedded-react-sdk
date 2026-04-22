@@ -40,6 +40,7 @@ export type { HomeAddressOptionalFieldsToRequire } from './homeAddressSchema'
 
 export interface HomeAddressSubmitOptions {
   employeeId?: string
+  /** When omitted on update without an effective-date field, the row’s `effectiveDate` from `homeAddressUuid` is used. */
   effectiveDate?: string
 }
 
@@ -55,11 +56,6 @@ export interface UseHomeAddressFormProps {
   defaultValues?: Partial<HomeAddressFormData>
   validationMode?: UseFormProps['mode']
   shouldFocusError?: boolean
-  /**
-   * Increment when opening a create/edit modal so the form resets even when the target address and
-   * default field values match the previous open (e.g. reopening the same row after cancel).
-   */
-  formSessionId?: number
 }
 
 export interface HomeAddressFields {
@@ -102,7 +98,6 @@ export function useHomeAddressForm({
   defaultValues: partnerDefaults,
   validationMode = 'onSubmit',
   shouldFocusError = true,
-  formSessionId = 0,
 }: UseHomeAddressFormProps): HookLoadingResult | UseHomeAddressFormReady {
   const homeAddressesQuery = useEmployeeAddressesGet(
     { employeeId: employeeId ?? '' },
@@ -175,7 +170,6 @@ export function useHomeAddressForm({
   useEffect(() => {
     formMethods.reset(resolvedDefaults)
   }, [
-    formSessionId,
     homeAddressUuid,
     sourceAddressForDefaults?.uuid,
     resolvedDefaults.street1,
@@ -237,7 +231,10 @@ export function useHomeAddressForm({
             const resolvedEffectiveDate =
               withEffectiveDateField && payload.effectiveDate
                 ? payload.effectiveDate
-                : options?.effectiveDate
+                : (options?.effectiveDate ??
+                  (!withEffectiveDateField && !isCreateMode
+                    ? addressForUpdate?.effectiveDate?.toString()
+                    : undefined))
 
             const effectiveDateParam = resolvedEffectiveDate
               ? new RFCDate(new Date(resolvedEffectiveDate))

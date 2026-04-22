@@ -64,10 +64,10 @@ export interface HomeAddressViewProps {
   editHomeAddressForm: UseHomeAddressFormReady
   createHomeAddressForm: UseHomeAddressFormReady
   employeeDisplayName: string
-  editTargetUuid: string | undefined
-  onEditTargetUuidChange: (uuid: string | undefined) => void
-  /** Call before opening the create or edit modal so form state matches the newly selected address. */
-  onBeginAddressModalSession: () => void
+  /** Resolved UUID passed to the edit form (`homeAddressUuid`); active row when not editing history. */
+  editingHomeAddressUuid: string | undefined
+  /** `undefined` = edit active/current address; otherwise set to a history row’s UUID. */
+  onEditAddressTargetChange: (homeAddressUuid: string | undefined) => void
   onSaved: (result: HookSubmitResult<EmployeeAddress>) => void
   onConfirmDelete: (homeAddressUuid: string) => Promise<boolean>
   isDeletePending?: boolean
@@ -77,9 +77,8 @@ export function HomeAddressView({
   editHomeAddressForm,
   createHomeAddressForm,
   employeeDisplayName,
-  editTargetUuid,
-  onEditTargetUuidChange,
-  onBeginAddressModalSession,
+  editingHomeAddressUuid,
+  onEditAddressTargetChange,
   onSaved,
   onConfirmDelete,
   isDeletePending = false,
@@ -116,7 +115,11 @@ export function HomeAddressView({
     form: editForm,
   } = editHomeAddressForm
 
-  const { status: createStatus, actions: createActions, form: createForm } = createHomeAddressForm
+  const {
+    status: createStatus,
+    actions: { onSubmit: createOnSubmit },
+    form: createForm,
+  } = createHomeAddressForm
 
   const {
     Fields: {
@@ -222,8 +225,7 @@ export function HomeAddressView({
           {
             label: t('rowEdit'),
             onClick: () => {
-              onBeginAddressModalSession()
-              onEditTargetUuidChange(row.uuid)
+              onEditAddressTargetChange(row.uuid)
               setAddressModal('edit')
             },
             icon: <PencilSvg aria-hidden />,
@@ -254,7 +256,7 @@ export function HomeAddressView({
 
   const closeAddressModal = () => {
     setAddressModal(null)
-    onEditTargetUuidChange(undefined)
+    onEditAddressTargetChange(undefined)
   }
 
   const handleDeleteModalConfirm = async () => {
@@ -267,28 +269,39 @@ export function HomeAddressView({
     }
   }
 
+  const addressModalSession =
+    addressModal === 'edit'
+      ? {
+          onSubmit: editOnSubmit,
+          formMethods: editHomeAddressForm.form.hookFormInternals.formMethods,
+          isPending: editStatus.isPending,
+        }
+      : addressModal === 'create'
+        ? {
+            onSubmit: createOnSubmit,
+            formMethods: createHomeAddressForm.form.hookFormInternals.formMethods,
+            isPending: createStatus.isPending,
+          }
+        : null
+
   const handleSave = async () => {
-    if (!addressModal) {
+    if (!addressModalSession) {
       return
     }
-    const addressBeingEdited =
-      editTargetUuid && homeAddresses
-        ? homeAddresses.find(a => a.uuid === editTargetUuid)
-        : homeAddress
 
-    const submitResult =
-      addressModal === 'edit'
-        ? await editOnSubmit({
-            effectiveDate: addressBeingEdited?.effectiveDate?.toString(),
-          })
-        : await createActions.onSubmit()
+    const submitResult = await addressModalSession.onSubmit()
+
     if (submitResult) {
       onSaved(submitResult)
+    }
+
+    const hasFieldErrors = Object.keys(addressModalSession.formMethods.formState.errors).length > 0
+    if (submitResult || !hasFieldErrors) {
       closeAddressModal()
     }
   }
 
-  const modalPending = addressModal === 'edit' ? editStatus.isPending : createStatus.isPending
+  const modalPending = addressModalSession?.isPending ?? false
 
   return (
     <Flex flexDirection="column" gap={24}>
@@ -306,8 +319,7 @@ export function HomeAddressView({
                 <Components.Button
                   variant="secondary"
                   onClick={() => {
-                    onBeginAddressModalSession()
-                    onEditTargetUuidChange(undefined)
+                    onEditAddressTargetChange(undefined)
                     setAddressModal('edit')
                   }}
                   isLoading={editStatus.isPending}
@@ -322,8 +334,7 @@ export function HomeAddressView({
           <Components.Button
             variant="secondary"
             onClick={() => {
-              onBeginAddressModalSession()
-              onEditTargetUuidChange(undefined)
+              onEditAddressTargetChange(undefined)
               setAddressModal('create')
             }}
             isLoading={createStatus.isPending}
