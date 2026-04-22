@@ -1,28 +1,21 @@
 import { useTranslation, Trans } from 'react-i18next'
-import { FormProvider } from 'react-hook-form'
 import type { AuthorizationStatus } from '@gusto/embedded-api/models/components/i9authorization'
 import { useI9VerificationGetAuthorization } from '@gusto/embedded-api/react-query/i9VerificationGetAuthorization'
-import { useSignEmployeeForm } from '../shared/useSignEmployeeForm'
-import { PREPARERS_BY_INDEX } from '../shared/useSignEmployeeForm/signEmployeeFormSchema'
+import { useSignEmployeeForm, type PreparerFieldGroup } from '../shared/useSignEmployeeForm'
 import styles from './I9SignatureForm.module.scss'
 import {
   BaseComponent,
   type BaseComponentInterface,
   type CommonComponentInterface,
 } from '@/components/Base/Base'
+import { BaseLayout } from '@/components/Base'
 import { useBase } from '@/components/Base/useBase'
 import { useI18n } from '@/i18n'
-import { componentEvents, STATES_ABBR } from '@/shared/constants'
-import {
-  ActionsLayout,
-  CheckboxField,
-  Flex,
-  RadioGroupField,
-  SelectField,
-  TextInputField,
-} from '@/components/Common'
+import { componentEvents } from '@/shared/constants'
+import { ActionsLayout, Flex } from '@/components/Common'
 import { DocumentViewer } from '@/components/Common/DocumentViewer'
 import { Form } from '@/components/Common/Form'
+import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 interface I9SignatureFormProps extends CommonComponentInterface {
@@ -50,14 +43,15 @@ function Root({ employeeId, formId, className }: I9SignatureFormProps) {
   const authorizationStatus = i9AuthData?.i9Authorization?.authorizationStatus
 
   if (hookResult.isLoading) {
-    return null
+    return <BaseLayout isLoading error={hookResult.errorHandling.errors} />
   }
 
   const { form, pdfUrl } = hookResult.data
   const { isPending } = hookResult.status
-  const { formMethods } = hookResult.form.hookFormInternals
+  const { Fields } = hookResult.form
   const preparerCount = hookResult.form.preparers?.count ?? 0
   const canAddPreparer = hookResult.form.preparers?.canAdd ?? false
+  const usedPreparer = hookResult.form.hookFormInternals.formMethods.watch('usedPreparer')
 
   const handleBack = () => {
     onEvent(componentEvents.CANCEL)
@@ -67,22 +61,10 @@ function Root({ employeeId, formId, className }: I9SignatureFormProps) {
     onEvent(componentEvents.EMPLOYEE_CHANGE_ELIGIBILITY_STATUS)
   }
 
-  const handleFormSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSubmit = async () => {
     const result = await hookResult.actions.onSubmit()
     if (result) {
       onEvent(componentEvents.EMPLOYEE_SIGN_FORM, result.data)
-    }
-  }
-
-  const handlePreparerChange = (value: string) => {
-    if (value === 'yes' && preparerCount === 0) {
-      hookResult.actions.addPreparer?.()
-    }
-    if (value === 'no' && preparerCount > 0) {
-      for (let i = preparerCount; i > 0; i--) {
-        hookResult.actions.removePreparer?.()
-      }
     }
   }
 
@@ -90,89 +72,119 @@ function Root({ employeeId, formId, className }: I9SignatureFormProps) {
     hookResult.actions.addPreparer?.()
   }
 
-  const handleRemovePreparer = (index: number) => {
+  const handleRemovePreparer = () => {
     hookResult.actions.removePreparer?.()
   }
 
-  const usedPreparer = formMethods.watch('usedPreparer')
+  const preparerFieldGroups = [
+    Fields.Preparer1,
+    Fields.Preparer2,
+    Fields.Preparer3,
+    Fields.Preparer4,
+  ]
 
   return (
     <section className={className}>
-      <FormProvider {...formMethods}>
-        <Form onSubmit={handleFormSubmit}>
-          <Flex flexDirection="column" gap={20}>
-            <section>
-              <Components.Heading as="h2">{t('title')}</Components.Heading>
-              <Components.Text>
-                <Trans
-                  i18nKey="description"
-                  t={t}
-                  components={{
-                    viewFormLink: pdfUrl ? (
-                      <Components.Link
-                        href={pdfUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        download={`${form.title || 'form'}.pdf`}
-                      />
-                    ) : (
-                      <span />
-                    ),
+      <BaseLayout error={hookResult.errorHandling.errors}>
+        <SDKFormProvider formHookResult={hookResult}>
+          <Form onSubmit={() => void handleSubmit()}>
+            <Flex flexDirection="column" gap={20}>
+              <section>
+                <Components.Heading as="h2">{t('title')}</Components.Heading>
+                <Components.Text>
+                  <Trans
+                    i18nKey="description"
+                    t={t}
+                    components={{
+                      viewFormLink: pdfUrl ? (
+                        <Components.Link
+                          href={pdfUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          download={`${form.title || 'form'}.pdf`}
+                        />
+                      ) : (
+                        <span />
+                      ),
+                    }}
+                  />
+                </Components.Text>
+              </section>
+
+              {authorizationStatus && (
+                <EligibilityStatusAlert
+                  authorizationStatus={authorizationStatus}
+                  onChangeStatus={handleChangeEligibility}
+                />
+              )}
+
+              <DocumentViewer
+                url={pdfUrl}
+                title={form.title}
+                downloadInstructions={t('downloadInstructions')}
+                viewDocumentLabel={t('viewDocumentCta')}
+              />
+
+              <Flex flexDirection="column" gap={12}>
+                <Fields.Signature
+                  label={t('signatureLabel')}
+                  description={t('signatureDescription')}
+                  validationMessages={{ REQUIRED: t('signatureError') }}
+                />
+                <Fields.ConfirmSignature
+                  label={t('confirmationLabel')}
+                  validationMessages={{
+                    REQUIRED: t('confirmationError'),
+                    CONFIRMATION_REQUIRED: t('confirmationError'),
                   }}
                 />
-              </Components.Text>
-            </section>
+              </Flex>
 
-            {authorizationStatus && (
-              <EligibilityStatusAlert
-                authorizationStatus={authorizationStatus}
-                onChangeStatus={handleChangeEligibility}
-              />
-            )}
+              {Fields.UsedPreparer && (
+                <Flex flexDirection="column" gap={20}>
+                  <Fields.UsedPreparer
+                    label={t('preparerQuestion')}
+                    validationMessages={{ REQUIRED: t('preparerQuestion') }}
+                  />
 
-            <DocumentViewer
-              url={pdfUrl}
-              title={form.title}
-              downloadInstructions={t('downloadInstructions')}
-              viewDocumentLabel={t('viewDocumentCta')}
-            />
+                  {usedPreparer === 'yes' &&
+                    preparerFieldGroups.map((PreparerFields, index) => {
+                      if (!PreparerFields) return null
+                      const isLast = index === preparerCount - 1
+                      return (
+                        <Flex flexDirection="column" gap={0} key={index}>
+                          <div className={styles.preparerAlert}>
+                            <Components.Alert
+                              label={t('preparerNote')}
+                              status="info"
+                              disableScrollIntoView
+                            />
+                          </div>
+                          <PreparerSection
+                            PreparerFields={PreparerFields}
+                            showRemoveButton={index !== 0}
+                            showAddButton={canAddPreparer && isLast}
+                            onAdd={handleAddPreparer}
+                            onRemove={handleRemovePreparer}
+                          />
+                        </Flex>
+                      )
+                    })}
+                </Flex>
+              )}
 
-            <Flex flexDirection="column" gap={12}>
-              <TextInputField
-                name="signature"
-                label={t('signatureLabel')}
-                description={t('signatureDescription')}
-                errorMessage={t('signatureError')}
-                isRequired
-              />
-              <CheckboxField
-                name="confirmSignature"
-                isRequired
-                label={t('confirmationLabel')}
-                errorMessage={t('confirmationError')}
-              />
+              <ActionsLayout>
+                <Components.Button variant="secondary" type="button" onClick={handleBack}>
+                  {t('cancelCta')}
+                </Components.Button>
+                <Components.Button type="submit" isLoading={isPending}>
+                  {t('signCta')}
+                </Components.Button>
+              </ActionsLayout>
             </Flex>
-
-            <PreparerSection
-              usedPreparer={usedPreparer}
-              preparerCount={preparerCount}
-              canAddPreparer={canAddPreparer}
-              onPreparerChange={handlePreparerChange}
-              onAddPreparer={handleAddPreparer}
-              onRemovePreparer={handleRemovePreparer}
-            />
-
-            <ActionsLayout>
-              <Components.Button variant="secondary" type="button" onClick={handleBack}>
-                {t('cancelCta')}
-              </Components.Button>
-              <Components.Button type="submit" isLoading={isPending}>
-                {t('signCta')}
-              </Components.Button>
-            </ActionsLayout>
-          </Flex>
-        </Form>
-      </FormProvider>
+          </Form>
+        </SDKFormProvider>
+      </BaseLayout>
     </section>
   )
 }
@@ -222,85 +234,20 @@ function EligibilityStatusAlert({
 }
 
 interface PreparerSectionProps {
-  usedPreparer: string | undefined
-  preparerCount: number
-  canAddPreparer: boolean
-  onPreparerChange: (value: string) => void
-  onAddPreparer: () => void
-  onRemovePreparer: (index: number) => void
-}
-
-function PreparerSection({
-  usedPreparer,
-  preparerCount,
-  canAddPreparer,
-  onPreparerChange,
-  onAddPreparer,
-  onRemovePreparer,
-}: PreparerSectionProps) {
-  const { t } = useTranslation('Employee.I9SignatureForm')
-  const Components = useComponentContext()
-
-  const stateOptions = STATES_ABBR.map(abbr => ({ label: abbr, value: abbr }))
-
-  return (
-    <Flex flexDirection="column" gap={20}>
-      <RadioGroupField
-        name="usedPreparer"
-        label={t('preparerQuestion')}
-        isRequired
-        options={[
-          { label: t('preparerNo'), value: 'no' },
-          { label: t('preparerYes'), value: 'yes' },
-        ]}
-        onChange={onPreparerChange}
-      />
-
-      {usedPreparer === 'yes' &&
-        Array.from({ length: preparerCount }, (_, index) => {
-          const preparer = PREPARERS_BY_INDEX[index]
-          if (!preparer) return null
-          return (
-            <Flex flexDirection="column" gap={0} key={index}>
-              <div className={styles.preparerAlert}>
-                <Components.Alert label={t('preparerNote')} status="info" disableScrollIntoView />
-              </div>
-              <PreparerFields
-                preparer={preparer}
-                index={index}
-                onRemove={() => {
-                  onRemovePreparer(index)
-                }}
-                showRemoveButton={index !== 0}
-                showAddButton={canAddPreparer && index === preparerCount - 1}
-                onAdd={onAddPreparer}
-                stateOptions={stateOptions}
-              />
-            </Flex>
-          )
-        })}
-    </Flex>
-  )
-}
-
-interface PreparerFieldsProps {
-  preparer: (typeof PREPARERS_BY_INDEX)[number]
-  index: number
-  onRemove: () => void
+  PreparerFields: PreparerFieldGroup
   showRemoveButton: boolean
   showAddButton: boolean
   onAdd: () => void
-  stateOptions: Array<{ label: string; value: string }>
+  onRemove: () => void
 }
 
-function PreparerFields({
-  preparer,
-  onRemove,
+function PreparerSection({
+  PreparerFields,
   showRemoveButton,
   showAddButton,
   onAdd,
-  stateOptions,
-}: PreparerFieldsProps) {
+  onRemove,
+}: PreparerSectionProps) {
   const { t } = useTranslation('Employee.I9SignatureForm')
   const Components = useComponentContext()
 
@@ -308,57 +255,43 @@ function PreparerFields({
     <Flex flexDirection="column" gap={12}>
       <Components.Heading as="h3">{t('preparerSectionTitle')}</Components.Heading>
 
-      <TextInputField
-        name={preparer.firstName}
+      <PreparerFields.FirstName
         label={t('preparerFirstNameLabel')}
-        errorMessage={t('preparerFirstNameError')}
-        isRequired
+        validationMessages={{ REQUIRED: t('preparerFirstNameError') }}
       />
-      <TextInputField
-        name={preparer.lastName}
+      <PreparerFields.LastName
         label={t('preparerLastNameLabel')}
-        errorMessage={t('preparerLastNameError')}
-        isRequired
+        validationMessages={{ REQUIRED: t('preparerLastNameError') }}
       />
-      <TextInputField
-        name={preparer.street1}
+      <PreparerFields.Street1
         label={t('preparerStreet1Label')}
-        errorMessage={t('preparerStreet1Error')}
-        isRequired
+        validationMessages={{ REQUIRED: t('preparerStreet1Error') }}
       />
-      <TextInputField name={preparer.street2} label={t('preparerStreet2Label')} />
-      <TextInputField
-        name={preparer.city}
+      <PreparerFields.Street2 label={t('preparerStreet2Label')} />
+      <PreparerFields.City
         label={t('preparerCityLabel')}
-        errorMessage={t('preparerCityError')}
-        isRequired
+        validationMessages={{ REQUIRED: t('preparerCityError') }}
       />
-      <SelectField
-        name={preparer.state}
+      <PreparerFields.State
         label={t('preparerStateLabel')}
-        errorMessage={t('preparerStateError')}
-        isRequired
-        options={stateOptions}
-        placeholder="Select a state..."
+        placeholder={t('preparerStatePlaceholder')}
+        validationMessages={{ REQUIRED: t('preparerStateError') }}
       />
-      <TextInputField
-        name={preparer.zip}
+      <PreparerFields.Zip
         label={t('preparerZipLabel')}
-        errorMessage={t('preparerZipError')}
-        isRequired
+        validationMessages={{ REQUIRED: t('preparerZipError') }}
       />
-      <TextInputField
-        name={preparer.signature}
+      <PreparerFields.Signature
         label={t('preparerSignatureLabel')}
         description={t('preparerSignatureDescription')}
-        errorMessage={t('preparerSignatureError')}
-        isRequired
+        validationMessages={{ REQUIRED: t('preparerSignatureError') }}
       />
-      <CheckboxField
-        name={preparer.agree}
-        isRequired
+      <PreparerFields.ConfirmSignature
         label={t('preparerConfirmationLabel')}
-        errorMessage={t('preparerConfirmationError')}
+        validationMessages={{
+          REQUIRED: t('preparerConfirmationError'),
+          CONFIRMATION_REQUIRED: t('preparerConfirmationError'),
+        }}
       />
 
       {(showAddButton || showRemoveButton) && (

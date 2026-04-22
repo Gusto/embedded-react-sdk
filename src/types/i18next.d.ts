@@ -1756,6 +1756,7 @@ export interface EmployeeI9SignatureForm{
 "preparerCityLabel":string;
 "preparerCityError":string;
 "preparerStateLabel":string;
+"preparerStatePlaceholder":string;
 "preparerStateError":string;
 "preparerZipLabel":string;
 "preparerZipError":string;

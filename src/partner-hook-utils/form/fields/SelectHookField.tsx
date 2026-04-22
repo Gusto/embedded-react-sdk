@@ -13,6 +13,7 @@ export interface SelectHookFieldProps<
   formHookResult?: FormHookResult
   validationMessages?: ValidationMessages<TErrorCode>
   getOptionLabel?: (entry: TEntry) => string
+  placeholder?: string
   FieldComponent?: ComponentType<SelectProps>
 }
 
@@ -23,6 +24,7 @@ export function SelectHookField<TErrorCode extends string, TEntry = unknown>({
   description,
   validationMessages,
   getOptionLabel,
+  placeholder,
   FieldComponent,
 }: SelectHookFieldProps<TErrorCode, TEntry>) {
   const { metadata, control, errorMessage } = useHookFieldResolution(
@@ -51,6 +53,7 @@ export function SelectHookField<TErrorCode extends string, TEntry = unknown>({
       isRequired={fieldMetadata?.isRequired}
       isDisabled={fieldMetadata?.isDisabled}
       options={options}
+      placeholder={placeholder}
       FieldComponent={FieldComponent}
     />
   )

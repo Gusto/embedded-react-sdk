@@ -23,6 +23,7 @@
   "preparerCityLabel": "City",
   "preparerCityError": "City is required",
   "preparerStateLabel": "State",
+  "preparerStatePlaceholder": "Select a state...",
   "preparerStateError": "State is required",
   "preparerZipLabel": "Zip",
   "preparerZipError": "Zip is required",
