@@ -56,11 +56,6 @@ export interface UseWorkAddressFormProps {
   defaultValues?: Partial<WorkAddressFormData>
   validationMode?: UseFormProps['mode']
   shouldFocusError?: boolean
-  /**
-   * Increment when opening a create/edit modal so the form resets even when the target address and
-   * default field values match the previous open (e.g. reopening the same row after cancel).
-   */
-  formSessionId?: number
 }
 
 export interface WorkAddressFields {
@@ -101,7 +96,6 @@ export function useWorkAddressForm({
   defaultValues: partnerDefaults,
   validationMode = 'onSubmit',
   shouldFocusError = true,
-  formSessionId = 0,
 }: UseWorkAddressFormProps): HookLoadingResult | UseWorkAddressFormReady {
   const locationsQuery = useLocationsGet({ companyId: companyId ?? '' }, { enabled: !!companyId })
   const workAddressesQuery = useEmployeeAddressesGetWorkAddresses(
@@ -163,9 +157,9 @@ export function useWorkAddressForm({
   useEffect(() => {
     formMethods.reset(resolvedDefaults, { keepDirtyValues: false })
   }, [
-    formSessionId,
     workAddressUuid,
     sourceAddressForDefaults?.uuid,
+    sourceAddressForDefaults?.version,
     resolvedDefaults.locationUuid,
     resolvedDefaults.effectiveDate,
     formMethods,

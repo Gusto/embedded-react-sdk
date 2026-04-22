@@ -28,8 +28,6 @@ export interface WorkAddressViewProps {
   changeWorkAddressForm: UseWorkAddressFormReady
   editTargetUuid: string | undefined
   onEditTargetUuidChange: (uuid: string | undefined) => void
-  /** Call before opening the create or edit modal so form state matches the newly selected address. */
-  onBeginAddressModalSession: () => void
   employeeDisplayName: string
   onConfirmDelete: (workAddressUuid: string) => Promise<boolean>
   onWorkAddressSaved: (result: HookSubmitResult<EmployeeWorkAddress>) => void
@@ -66,7 +64,6 @@ export function WorkAddressView({
   changeWorkAddressForm,
   editTargetUuid,
   onEditTargetUuidChange,
-  onBeginAddressModalSession,
   employeeDisplayName,
   onConfirmDelete,
   onWorkAddressSaved,
@@ -195,7 +192,6 @@ export function WorkAddressView({
           {
             label: t('rowEdit'),
             onClick: () => {
-              onBeginAddressModalSession()
               onEditTargetUuidChange(row.uuid)
               setAddressModal('edit')
             },
@@ -292,7 +288,6 @@ export function WorkAddressView({
                 <Components.Button
                   variant="secondary"
                   onClick={() => {
-                    onBeginAddressModalSession()
                     onEditTargetUuidChange(undefined)
                     setAddressModal('edit')
                   }}
@@ -308,7 +303,6 @@ export function WorkAddressView({
           <Components.Button
             variant="secondary"
             onClick={() => {
-              onBeginAddressModalSession()
               onEditTargetUuidChange(undefined)
               setAddressModal('create')
             }}

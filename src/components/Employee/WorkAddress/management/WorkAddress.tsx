@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import type { EmployeeWorkAddress } from '@gusto/embedded-api/models/components/employeeworkaddress'
 import { useEmployeeAddressesDeleteWorkAddressMutation } from '@gusto/embedded-api/react-query/employeeAddressesDeleteWorkAddress'
 import { useEmployeeAddressesGetWorkAddresses } from '@gusto/embedded-api/react-query/employeeAddressesGetWorkAddresses'
@@ -35,10 +35,6 @@ function WorkAddressRoot({ employeeId, dictionary, onEvent }: WorkAddressProps) 
   } = useBaseSubmit('Employee.WorkAddress.Management')
   const deleteWorkAddressMutation = useEmployeeAddressesDeleteWorkAddressMutation()
   const [editTargetUuid, setEditTargetUuid] = useState<string | undefined>(undefined)
-  const [formSessionId, setFormSessionId] = useState(0)
-  const beginAddressModalSession = useCallback(() => {
-    setFormSessionId(n => n + 1)
-  }, [])
 
   const employeeQuery = useEmployeesGet({ employeeId }, { enabled: !!employeeId })
   const companyId = employeeQuery.data?.employee?.companyUuid
@@ -83,14 +79,12 @@ function WorkAddressRoot({ employeeId, dictionary, onEvent }: WorkAddressProps) 
     employeeId,
     workAddressUuid: workAddressUuidForEdit,
     withEffectiveDateField: withEffectiveDateOnEdit,
-    formSessionId,
   })
 
   const changeWorkAddressForm = useWorkAddressForm({
     companyId,
     employeeId,
     withEffectiveDateField: true,
-    formSessionId,
   })
 
   const errorHandling = composeErrorHandler(
@@ -161,7 +155,6 @@ function WorkAddressRoot({ employeeId, dictionary, onEvent }: WorkAddressProps) 
         changeWorkAddressForm={changeWorkAddressForm}
         editTargetUuid={editTargetUuid}
         onEditTargetUuidChange={setEditTargetUuid}
-        onBeginAddressModalSession={beginAddressModalSession}
         employeeDisplayName={employeeDisplayName}
         onConfirmDelete={handleConfirmDelete}
         onWorkAddressSaved={handleWorkAddressSaved}
