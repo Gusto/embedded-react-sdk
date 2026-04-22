@@ -20,6 +20,7 @@ import { ContractorPaymentMethodForm } from './components/ContractorPaymentMetho
 import { ContractorPay } from './components/ContractorPay'
 import { Flex } from '@/components/Common'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
+import { BaseComponent } from '@/components/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { componentEvents, type EventType } from '@/shared/constants'
 
@@ -147,7 +148,7 @@ export function ProfileViewContextual() {
   )
 }
 
-export function EditAddressContextual() {
+function EditAddressContent() {
   const { companyId, onEvent } = useFlow<ContractorProfileContextInterface>()
 
   const contractor = useContractorData(companyId)
@@ -200,7 +201,15 @@ export function EditAddressContextual() {
   )
 }
 
-export function AddPaymentMethodContextual() {
+export function EditAddressContextual() {
+  return (
+    <BaseComponent onEvent={() => {}}>
+      <EditAddressContent />
+    </BaseComponent>
+  )
+}
+
+function AddPaymentMethodContent() {
   const { companyId, onEvent } = useFlow<ContractorProfileContextInterface>()
 
   const contractor = useContractorData(companyId)
@@ -273,7 +282,15 @@ export function AddPaymentMethodContextual() {
   )
 }
 
-export function EditPaymentMethodContextual() {
+export function AddPaymentMethodContextual() {
+  return (
+    <BaseComponent onEvent={() => {}}>
+      <AddPaymentMethodContent />
+    </BaseComponent>
+  )
+}
+
+function EditPaymentMethodContent() {
   const { companyId, onEvent } = useFlow<ContractorProfileContextInterface>()
 
   const contractor = useContractorData(companyId)
@@ -349,5 +366,13 @@ export function EditPaymentMethodContextual() {
       }}
       onSave={handleSave}
     />
+  )
+}
+
+export function EditPaymentMethodContextual() {
+  return (
+    <BaseComponent onEvent={() => {}}>
+      <EditPaymentMethodContent />
+    </BaseComponent>
   )
 }
