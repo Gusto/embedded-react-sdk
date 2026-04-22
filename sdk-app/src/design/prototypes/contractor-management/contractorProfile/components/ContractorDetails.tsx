@@ -30,7 +30,9 @@ export function ContractorDetails({
             term: <Components.Text weight="medium">Legal name</Components.Text>,
             description: (
               <Components.Text>
-                {contractor.firstName} {contractor.lastName}
+                {[contractor.firstName, contractor.middleInitial, contractor.lastName]
+                  .filter(Boolean)
+                  .join(' ')}
               </Components.Text>
             ),
           },

@@ -164,7 +164,9 @@ export function ProfileViewContextual() {
       )}
       <Flex flexDirection="column" gap={4}>
         <Components.Heading as="h1" styledAs="h2">
-          {contractor.firstName} {contractor.lastName}
+          {[contractor.firstName, contractor.middleInitial, contractor.lastName]
+            .filter(Boolean)
+            .join(' ')}
         </Components.Heading>
         <Components.Text variant="supporting">Contractor</Components.Text>
       </Flex>

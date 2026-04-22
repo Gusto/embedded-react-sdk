@@ -88,7 +88,8 @@ export function ContractorPayForm({
               name="hourlyRate"
               label="Hourly rate"
               isRequired
-              description="Enter the amount per hour (e.g. 50.00)"
+              adornmentStart="$"
+              adornmentEnd="per hour"
               errorMessage="Enter a valid hourly rate"
             />
           )}
