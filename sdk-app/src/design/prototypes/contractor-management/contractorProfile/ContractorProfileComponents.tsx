@@ -52,10 +52,10 @@ function ProfileSkeleton() {
         <Skeleton width={80} height={18} />
       </Flex>
       <Flex flexDirection="column" gap={24}>
-        <Components.Box header={<Skeleton width={120} height={42} />}>
+        <Components.Box header={<Skeleton width={120} height={32} />}>
           <Skeleton width="100%" height={331} />
         </Components.Box>
-        <Components.Box header={<Skeleton width={120} height={42} />}>
+        <Components.Box header={<Skeleton width={120} height={32} />}>
           <Skeleton width="100%" height={88} />
         </Components.Box>
       </Flex>

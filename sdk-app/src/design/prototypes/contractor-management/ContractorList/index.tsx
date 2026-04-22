@@ -3,7 +3,8 @@ import { useOutletContext } from 'react-router-dom'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import { useContractorsList } from '@gusto/embedded-api/react-query/contractorsList'
 import type { EntityIds } from '../../../../useEntities'
-import { DataView, EmptyData, Flex, Loading, useDataView } from '@/components/Common'
+import { SkeletonDataView } from './SkeletonDataView'
+import { EmptyData, Flex } from '@/components/Common'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu/HamburgerMenu'
 import { ContractorOnboardingStatusBadge } from '@/components/Common/OnboardingStatusBadge'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -17,44 +18,6 @@ function formatRate(contractor: Contractor) {
   return contractor.wageType ?? '–'
 }
 
-function ActiveContractorsTable({ contractors }: { contractors: Contractor[] }) {
-  const dataViewProps = useDataView<Contractor>({
-    data: contractors,
-    columns: [
-      {
-        title: 'Name',
-        render: contractor => contractorName(contractor),
-      },
-      {
-        title: 'Type',
-        render: contractor => contractor.type ?? '–',
-      },
-      {
-        title: 'Rate',
-        render: contractor => formatRate(contractor),
-      },
-    ],
-    itemMenu: () => (
-      <HamburgerMenu
-        items={[
-          {
-            label: 'View details',
-            onClick: () => {},
-          },
-          {
-            label: 'Dismiss contractor',
-            onClick: () => {},
-          },
-        ]}
-        triggerLabel="Actions"
-      />
-    ),
-    emptyState: () => <EmptyData title="No active contractors found." />,
-  })
-
-  return <DataView label="Active contractors" {...dataViewProps} />
-}
-
 function contractorName(contractor: Contractor) {
   return contractor.type === CONTRACTOR_TYPE.BUSINESS
     ? contractor.businessName
@@ -64,77 +27,123 @@ function contractorName(contractor: Contractor) {
       })
 }
 
-function OnboardingContractorsTable({ contractors }: { contractors: Contractor[] }) {
-  const dataViewProps = useDataView<Contractor>({
-    data: contractors,
-    columns: [
-      {
-        title: 'Name',
-        render: contractor => contractorName(contractor),
-      },
-      {
-        title: 'Type',
-        render: contractor => contractor.type ?? '–',
-      },
-      {
-        title: 'Onboarding status',
-        render: contractor => (
-          <ContractorOnboardingStatusBadge
-            onboarded={contractor.onboarded}
-            onboardingStatus={contractor.onboardingStatus}
-          />
-        ),
-      },
-    ],
-    itemMenu: () => (
-      <HamburgerMenu
-        items={[
-          {
-            label: 'View details',
-            onClick: () => {},
-          },
-        ]}
-        triggerLabel="Actions"
-      />
-    ),
-    emptyState: () => <EmptyData title="No contractors currently onboarding." />,
-  })
-
-  return <DataView label="Onboarding contractors" {...dataViewProps} />
+function contractorMenu(actions: { label: string; onClick: () => void }[]) {
+  return function ContractorMenu() {
+    return <HamburgerMenu items={actions} triggerLabel="Actions" />
+  }
 }
 
-function DismissedContractorsTable({ contractors }: { contractors: Contractor[] }) {
-  const dataViewProps = useDataView<Contractor>({
-    data: contractors,
-    columns: [
-      {
-        title: 'Name',
-        render: contractor => contractorName(contractor),
-      },
-      {
-        title: 'Type',
-        render: contractor => contractor.type ?? '–',
-      },
-      {
-        title: 'Dismissal date',
-        render: contractor => contractor.dismissalDate ?? '–',
-      },
-    ],
-    itemMenu: () => (
-      <HamburgerMenu
-        items={[
-          {
-            label: 'View details',
-            onClick: () => {},
-          },
-        ]}
-        triggerLabel="Actions"
-      />
-    ),
-    emptyState: () => <EmptyData title="No dismissed contractors found." />,
-  })
+function ActiveContractorsTable({
+  contractors,
+  isFetching,
+}: {
+  contractors: Contractor[]
+  isFetching: boolean
+}) {
+  return (
+    <SkeletonDataView
+      label="Active contractors"
+      data={contractors}
+      isFetching={isFetching}
+      columns={[
+        {
+          title: 'Name',
+          render: contractor => contractorName(contractor),
+          skeletonWidth: 120,
+        },
+        {
+          title: 'Type',
+          render: contractor => contractor.type ?? '–',
+          skeletonWidth: 80,
+        },
+        {
+          title: 'Rate',
+          render: contractor => formatRate(contractor),
+          skeletonWidth: 100,
+        },
+      ]}
+      itemMenu={contractorMenu([
+        { label: 'View details', onClick: () => {} },
+        { label: 'Dismiss contractor', onClick: () => {} },
+      ])}
+      emptyState={() => <EmptyData title="No active contractors found." />}
+    />
+  )
+}
 
-  return <DataView label="Dismissed contractors" {...dataViewProps} />
+function OnboardingContractorsTable({
+  contractors,
+  isFetching,
+}: {
+  contractors: Contractor[]
+  isFetching: boolean
+}) {
+  return (
+    <SkeletonDataView
+      label="Onboarding contractors"
+      data={contractors}
+      isFetching={isFetching}
+      columns={[
+        {
+          title: 'Name',
+          render: contractor => contractorName(contractor),
+          skeletonWidth: 120,
+        },
+        {
+          title: 'Type',
+          render: contractor => contractor.type ?? '–',
+          skeletonWidth: 80,
+        },
+        {
+          title: 'Onboarding status',
+          render: contractor => (
+            <ContractorOnboardingStatusBadge
+              onboarded={contractor.onboarded}
+              onboardingStatus={contractor.onboardingStatus}
+            />
+          ),
+          skeletonWidth: 90,
+        },
+      ]}
+      itemMenu={contractorMenu([{ label: 'View details', onClick: () => {} }])}
+      emptyState={() => <EmptyData title="No contractors currently onboarding." />}
+    />
+  )
+}
+
+function DismissedContractorsTable({
+  contractors,
+  isFetching,
+}: {
+  contractors: Contractor[]
+  isFetching: boolean
+}) {
+  return (
+    <SkeletonDataView
+      label="Dismissed contractors"
+      data={contractors}
+      isFetching={isFetching}
+      columns={[
+        {
+          title: 'Name',
+          render: contractor => contractorName(contractor),
+          skeletonWidth: 120,
+        },
+        {
+          title: 'Type',
+          render: contractor => contractor.type ?? '–',
+          skeletonWidth: 80,
+        },
+        {
+          title: 'Dismissal date',
+          render: contractor => contractor.dismissalDate ?? '–',
+          skeletonWidth: 80,
+        },
+      ]}
+      itemMenu={contractorMenu([{ label: 'View details', onClick: () => {} }])}
+      emptyState={() => <EmptyData title="No dismissed contractors found." />}
+    />
+  )
 }
 
 function ContractorListContent() {
@@ -180,11 +189,11 @@ function ContractorListContent() {
   const renderTable = () => {
     switch (selectedTab) {
       case 'active':
-        return <ActiveContractorsTable contractors={contractors} />
+        return <ActiveContractorsTable contractors={contractors} isFetching={isFetching} />
       case 'onboarding':
-        return <OnboardingContractorsTable contractors={contractors} />
+        return <OnboardingContractorsTable contractors={contractors} isFetching={isFetching} />
       case 'dismissed':
-        return <DismissedContractorsTable contractors={contractors} />
+        return <DismissedContractorsTable contractors={contractors} isFetching={isFetching} />
     }
   }
 
@@ -200,7 +209,7 @@ function ContractorListContent() {
       </Flex>
       <Flex flexDirection="column" gap={0}>
         <Components.Tabs onSelectionChange={setSelectedTab} tabs={tabs} selectedId={selectedTab} />
-        {isFetching ? <Loading /> : renderTable()}
+        {renderTable()}
       </Flex>
     </Flex>
   )
