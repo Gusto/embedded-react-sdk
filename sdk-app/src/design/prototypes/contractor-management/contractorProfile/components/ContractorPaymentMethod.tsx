@@ -1,13 +1,23 @@
 import type { ContractorBankAccount } from '@gusto/embedded-api/models/components/contractorbankaccount'
-import { DataView, Flex, useDataView } from '@/components/Common'
+import { DataView, Flex, Loading, useDataView } from '@/components/Common'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu/HamburgerMenu'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import CirlcePlus from '@/assets/icons/plus-circle.svg?react'
 
 export function ContractorPaymentMethod({
+  paymentMethodType,
   bankAccounts,
+  onAddPaymentMethod,
+  onEditPaymentMethod,
+  onRemoveAccount,
+  isRemovingAccount,
 }: {
+  paymentMethodType: 'Check' | 'Direct Deposit'
   bankAccounts: ContractorBankAccount[]
+  onAddPaymentMethod: () => void
+  onEditPaymentMethod: () => void
+  onRemoveAccount: () => void
+  isRemovingAccount: boolean
 }) {
   const Components = useComponentContext()
 
@@ -36,11 +46,11 @@ export function ContractorPaymentMethod({
         items={[
           {
             label: 'Edit',
-            onClick: () => {},
+            onClick: onEditPaymentMethod,
           },
           {
             label: 'Remove account',
-            onClick: () => {},
+            onClick: onRemoveAccount,
           },
         ]}
         triggerLabel="Actions"
@@ -48,7 +58,11 @@ export function ContractorPaymentMethod({
     ),
   })
 
-  if (bankAccounts.length === 0) {
+  if (isRemovingAccount) {
+    return <Loading />
+  }
+
+  if (paymentMethodType === 'Check') {
     return (
       <Components.Box
         header={
@@ -56,7 +70,7 @@ export function ContractorPaymentMethod({
             <Components.Heading as="h3" styledAs="h4">
               Payment
             </Components.Heading>
-            <Components.Button variant="secondary">
+            <Components.Button variant="secondary" onClick={onAddPaymentMethod}>
               <CirlcePlus />
               Add bank account
             </Components.Button>
@@ -83,10 +97,6 @@ export function ContractorPaymentMethod({
           <Components.Heading as="h3" styledAs="h4">
             Payment
           </Components.Heading>
-          <Components.Button variant="secondary">
-            <CirlcePlus />
-            Add bank account
-          </Components.Button>
         </Flex>
       }
     >
