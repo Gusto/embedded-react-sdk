@@ -1,4 +1,3 @@
-import { useCallback } from 'react'
 import { useTimeOffPoliciesGetSuspense } from '@gusto/embedded-api/react-query/timeOffPoliciesGet'
 import { useTimeOffPoliciesUpdateMutation } from '@gusto/embedded-api/react-query/timeOffPoliciesUpdate'
 import type { PutV1TimeOffPoliciesTimeOffPolicyUuidRequestBody } from '@gusto/embedded-api/models/operations/putv1timeoffpoliciestimeoffpolicyuuid'
@@ -97,29 +96,28 @@ function Root({ policyId }: PolicySettingsProps) {
 
   const { mutateAsync: updateTimeOffPolicy } = useTimeOffPoliciesUpdateMutation()
 
-  const policy = policyResponse.timeOffPolicy!
+  const policy = policyResponse.timeOffPolicy
+  if (!policy) throw new Error('Unexpected response: missing timeOffPolicy')
+
   const accrualCategory = deriveAccrualMethodCategory(policy.accrualMethod)
-  const version = policy.version!
+  const version = policy.version ?? ''
 
-  const handleContinue = useCallback(
-    async (data: PolicySettingsFormData) => {
-      await baseSubmitHandler(data, async () => {
-        await updateTimeOffPolicy({
-          request: {
-            timeOffPolicyUuid: policyId,
-            requestBody: buildUpdateRequestBody(data, version),
-          },
-        })
-
-        onEvent(componentEvents.TIME_OFF_POLICY_SETTINGS_DONE)
+  const handleContinue = async (data: PolicySettingsFormData) => {
+    await baseSubmitHandler(data, async () => {
+      const { timeOffPolicy } = await updateTimeOffPolicy({
+        request: {
+          timeOffPolicyUuid: policyId,
+          requestBody: buildUpdateRequestBody(data, version),
+        },
       })
-    },
-    [baseSubmitHandler, onEvent, policyId, updateTimeOffPolicy, version],
-  )
 
-  const handleBack = useCallback(() => {
+      onEvent(componentEvents.TIME_OFF_POLICY_SETTINGS_DONE, timeOffPolicy)
+    })
+  }
+
+  const handleBack = () => {
     onEvent(componentEvents.TIME_OFF_POLICY_SETTINGS_BACK)
-  }, [onEvent])
+  }
 
   return (
     <PolicySettingsPresentation

@@ -206,7 +206,10 @@ describe('PolicySettings container', () => {
       })
 
       await waitFor(() => {
-        expect(onEvent).toHaveBeenCalledWith(componentEvents.TIME_OFF_POLICY_SETTINGS_DONE)
+        expect(onEvent).toHaveBeenCalledWith(
+          componentEvents.TIME_OFF_POLICY_SETTINGS_DONE,
+          expect.objectContaining({ complete: true }),
+        )
       })
     })
   })
