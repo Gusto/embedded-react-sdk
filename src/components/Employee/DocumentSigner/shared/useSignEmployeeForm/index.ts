@@ -22,7 +22,6 @@ export {
 } from './signEmployeeFormSchema'
 export type {
   RequiredValidation as SignEmployeeFormRequiredValidation,
-  ConfirmationValidation as SignEmployeeFormConfirmationValidation,
   SignatureFieldProps,
   ConfirmSignatureFieldProps,
   UsedPreparerFieldProps,

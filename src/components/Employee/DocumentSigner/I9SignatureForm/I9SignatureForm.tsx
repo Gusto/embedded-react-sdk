@@ -133,10 +133,7 @@ function Root({ employeeId, formId, className }: I9SignatureFormProps) {
                 />
                 <Fields.ConfirmSignature
                   label={t('confirmationLabel')}
-                  validationMessages={{
-                    REQUIRED: t('confirmationError'),
-                    CONFIRMATION_REQUIRED: t('confirmationError'),
-                  }}
+                  validationMessages={{ REQUIRED: t('confirmationError') }}
                 />
               </Flex>
 
@@ -288,10 +285,7 @@ function PreparerSection({
       />
       <PreparerFields.ConfirmSignature
         label={t('preparerConfirmationLabel')}
-        validationMessages={{
-          REQUIRED: t('preparerConfirmationError'),
-          CONFIRMATION_REQUIRED: t('preparerConfirmationError'),
-        }}
+        validationMessages={{ REQUIRED: t('preparerConfirmationError') }}
       />
 
       {(showAddButton || showRemoveButton) && (

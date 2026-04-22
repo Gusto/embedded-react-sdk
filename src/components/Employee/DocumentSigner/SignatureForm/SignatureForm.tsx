@@ -101,10 +101,7 @@ function Root({ employeeId, formId, className }: SignatureFormProps) {
                 />
                 <Fields.ConfirmSignature
                   label={t('confirmSignatureCheckboxLabel')}
-                  validationMessages={{
-                    REQUIRED: t('confirmSignatureError'),
-                    CONFIRMATION_REQUIRED: t('confirmSignatureError'),
-                  }}
+                  validationMessages={{ REQUIRED: t('confirmSignatureError') }}
                 />
               </Flex>
 

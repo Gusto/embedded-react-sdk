@@ -214,7 +214,6 @@ export type {
   PreparerIndex,
   PreparerFieldSuffix,
   SignEmployeeFormRequiredValidation,
-  SignEmployeeFormConfirmationValidation,
   SignatureFieldProps as SignEmployeeFormSignatureFieldProps,
   ConfirmSignatureFieldProps as SignEmployeeFormConfirmSignatureFieldProps,
   UsedPreparerFieldProps,
