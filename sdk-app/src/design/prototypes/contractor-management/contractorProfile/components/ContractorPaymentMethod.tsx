@@ -2,7 +2,7 @@ import type { ContractorBankAccount } from '@gusto/embedded-api/models/component
 import { DataView, Flex, Loading, useDataView } from '@/components/Common'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu/HamburgerMenu'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import CirlcePlus from '@/assets/icons/plus-circle.svg?react'
+import CirclePlus from '@/assets/icons/plus-circle.svg?react'
 
 export function ContractorPaymentMethod({
   paymentMethodType,
@@ -71,7 +71,7 @@ export function ContractorPaymentMethod({
               Payment
             </Components.Heading>
             <Components.Button variant="secondary" onClick={onAddPaymentMethod}>
-              <CirlcePlus />
+              <CirclePlus />
               Add bank account
             </Components.Button>
           </Flex>

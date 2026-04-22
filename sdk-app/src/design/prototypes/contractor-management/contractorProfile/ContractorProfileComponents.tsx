@@ -43,40 +43,46 @@ function useContractorData(companyId: string) {
 }
 
 export function ProfileViewContextual() {
-  const { companyId, onEvent, successMessage, selectedTab } =
-    useFlow<ContractorProfileContextInterface>()
+  const { companyId } = useFlow<ContractorProfileContextInterface>()
+  const Components = useComponentContext()
+
+  const contractor = useContractorData(companyId)
+
+  if (!contractor) {
+    return <Components.Text>No contractors found for this company.</Components.Text>
+  }
+
+  return <ProfileViewContent contractor={contractor} />
+}
+
+function ProfileViewContent({ contractor }: { contractor: Contractor }) {
+  const { onEvent, successMessage, selectedTab } = useFlow<ContractorProfileContextInterface>()
   const Components = useComponentContext()
   const [localTab, setLocalTab] = useState(selectedTab)
   const [isDismissed, setIsDismissed] = useState(false)
 
-  const contractor = useContractorData(companyId)
-
   const { data: bankAccountsData } = useContractorPaymentMethodGetBankAccountsSuspense({
-    contractorUuid: contractor?.uuid ?? '',
+    contractorUuid: contractor.uuid,
   })
   const bankAccounts = bankAccountsData.contractorBankAccountList ?? []
 
   const { data: paymentMethodData } = useContractorPaymentMethodGetSuspense({
-    contractorUuid: contractor?.uuid ?? '',
+    contractorUuid: contractor.uuid,
   })
   const paymentMethod = paymentMethodData.contractorPaymentMethod
 
   const { data: addressData } = useContractorsGetAddressSuspense({
-    contractorUuid: contractor?.uuid ?? '',
+    contractorUuid: contractor.uuid,
   })
   const address = addressData.contractorAddress
 
   const { data: documentsData } = useContractorDocumentsGetAllSuspense({
-    contractorUuid: contractor?.uuid ?? '',
+    contractorUuid: contractor.uuid,
   })
   const documents = documentsData.documents ?? []
 
   const { mutateAsync: updatePaymentMethod, isPending: isPaymentMethodPending } =
     useContractorPaymentMethodUpdateMutation()
-
-  if (!contractor) {
-    return <Components.Text>No contractors found for this company.</Components.Text>
-  }
 
   const contractorWithAddress = {
     ...contractor,
