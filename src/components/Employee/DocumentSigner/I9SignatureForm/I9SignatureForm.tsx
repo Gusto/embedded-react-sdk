@@ -48,9 +48,7 @@ function Root({ employeeId, formId, className }: I9SignatureFormProps) {
 
   const { form, pdfUrl } = hookResult.data
   const { isPending } = hookResult.status
-  const { Fields } = hookResult.form
-  const canAddPreparer = hookResult.form.preparers?.canAdd ?? false
-  const usedPreparer = hookResult.form.hookFormInternals.formMethods.watch('usedPreparer')
+  const { Fields, preparers } = hookResult.form
 
   const handleBack = () => {
     onEvent(componentEvents.CANCEL)
@@ -80,7 +78,7 @@ function Root({ employeeId, formId, className }: I9SignatureFormProps) {
     Fields.Preparer2,
     Fields.Preparer3,
     Fields.Preparer4,
-  ].filter((Group): Group is PreparerFieldGroup => Group !== undefined)
+  ].filter(Group => Group !== undefined)
 
   return (
     <section className={className}>
@@ -143,28 +141,31 @@ function Root({ employeeId, formId, className }: I9SignatureFormProps) {
                     validationMessages={{ REQUIRED: t('preparerQuestion') }}
                   />
 
-                  {usedPreparer === 'yes' &&
-                    preparerFieldGroups.map((PreparerFields, index) => {
-                      const isLast = index === preparerFieldGroups.length - 1
-                      return (
-                        <Flex flexDirection="column" gap={0} key={index}>
-                          <div className={styles.preparerAlert}>
-                            <Components.Alert
-                              label={t('preparerNote')}
-                              status="info"
-                              disableScrollIntoView
-                            />
-                          </div>
-                          <PreparerSection
-                            PreparerFields={PreparerFields}
-                            showRemoveButton={index !== 0}
-                            showAddButton={canAddPreparer && isLast}
-                            onAdd={handleAddPreparer}
-                            onRemove={handleRemovePreparer}
+                  {preparerFieldGroups.map((PreparerFields, index) => {
+                    const isLast = index === preparerFieldGroups.length - 1
+                    return (
+                      <Flex flexDirection="column" gap={0} key={index}>
+                        <div className={styles.preparerAlert}>
+                          <Components.Alert
+                            label={t('preparerNote')}
+                            status="info"
+                            disableScrollIntoView
                           />
-                        </Flex>
-                      )
-                    })}
+                        </div>
+                        <PreparerSection
+                          PreparerFields={PreparerFields}
+                          showAddButton={isLast && (preparers?.canAdd ?? false)}
+                          showRemoveButton={
+                            isLast &&
+                            (preparers?.canRemove ?? false) &&
+                            preparerFieldGroups.length > 1
+                          }
+                          onAdd={handleAddPreparer}
+                          onRemove={handleRemovePreparer}
+                        />
+                      </Flex>
+                    )
+                  })}
                 </Flex>
               )}
 
