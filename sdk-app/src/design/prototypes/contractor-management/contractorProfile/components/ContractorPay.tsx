@@ -2,7 +2,13 @@ import type { Contractor } from '@gusto/embedded-api/models/components/contracto
 import { Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
-export function ContractorPay({ contractor }: { contractor: Contractor }) {
+export function ContractorPay({
+  contractor,
+  onEdit,
+}: {
+  contractor: Contractor
+  onEdit?: () => void
+}) {
   const Components = useComponentContext()
 
   const items = [
@@ -27,7 +33,9 @@ export function ContractorPay({ contractor }: { contractor: Contractor }) {
           <Components.Heading as="h3" styledAs="h4">
             Compensation
           </Components.Heading>
-          <Components.Button variant="secondary">Edit</Components.Button>
+          <Components.Button variant="secondary" onClick={onEdit}>
+            Edit
+          </Components.Button>
         </Flex>
       }
     >

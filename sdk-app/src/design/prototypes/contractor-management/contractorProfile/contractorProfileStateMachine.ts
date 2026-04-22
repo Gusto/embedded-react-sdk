@@ -6,6 +6,8 @@ import {
   EditAddressContextual,
   AddPaymentMethodContextual,
   EditPaymentMethodContextual,
+  EditCompensationContextual,
+  EditBasicDetailsContextual,
 } from './ContractorProfileComponents'
 import { componentEvents } from '@/shared/constants'
 import type { MachineTransition } from '@/types/Helpers'
@@ -86,6 +88,28 @@ export const contractorProfileStateMachine = {
       'profile',
       toProfilePayWithMessage('Payment method updated to Check'),
     ),
+    transition(
+      'contractor/details/edit',
+      'editBasicDetails',
+      reduce(
+        (ctx: ContractorProfileContextInterface): ContractorProfileContextInterface => ({
+          ...ctx,
+          component: EditBasicDetailsContextual as ComponentType,
+          successMessage: undefined,
+        }),
+      ),
+    ),
+    transition(
+      'contractor/compensation/edit',
+      'editCompensation',
+      reduce(
+        (ctx: ContractorProfileContextInterface): ContractorProfileContextInterface => ({
+          ...ctx,
+          component: EditCompensationContextual as ComponentType,
+          successMessage: undefined,
+        }),
+      ),
+    ),
   ),
   editAddress: state<MachineTransition>(
     transition(
@@ -108,6 +132,22 @@ export const contractorProfileStateMachine = {
       componentEvents.CONTRACTOR_PAYMENT_METHOD_UPDATED,
       'profile',
       toProfilePayWithMessage('Payment method updated successfully'),
+    ),
+    transition(componentEvents.CANCEL, 'profile', toProfilePay),
+  ),
+  editBasicDetails: state<MachineTransition>(
+    transition(
+      componentEvents.CONTRACTOR_UPDATED,
+      'profile',
+      toProfileWithMessage('Contractor details updated successfully'),
+    ),
+    transition(componentEvents.CANCEL, 'profile', toProfile),
+  ),
+  editCompensation: state<MachineTransition>(
+    transition(
+      componentEvents.CONTRACTOR_UPDATED,
+      'profile',
+      toProfilePayWithMessage('Compensation updated successfully'),
     ),
     transition(componentEvents.CANCEL, 'profile', toProfilePay),
   ),
