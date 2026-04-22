@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import { useContractorsGetSuspense } from '@gusto/embedded-api/react-query/contractorsGet'
 import { useContractorPaymentMethodGetBankAccountsSuspense } from '@gusto/embedded-api/react-query/contractorPaymentMethodGetBankAccounts'
@@ -23,6 +23,7 @@ import { ContractorDocuments } from './components/ContractorDocuments'
 import { ContractorPay } from './components/ContractorPay'
 import { ContractorPayForm } from './components/ContractorPayForm'
 import { ContractorDetailsForm } from './components/ContractorDetailsForm'
+import { Skeleton } from './components/Skeleton'
 import { Flex } from '@/components/Common'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { BaseComponent } from '@/components/Base'
@@ -41,7 +42,28 @@ function useContractorData(contractorId: string) {
   return data.contractor
 }
 
-export function ProfileViewContextual() {
+function ProfileSkeleton() {
+  const Components = useComponentContext()
+
+  return (
+    <Flex flexDirection="column" gap={24}>
+      <Flex flexDirection="column" gap={4}>
+        <Skeleton width={200} height={28} />
+        <Skeleton width={80} height={18} />
+      </Flex>
+      <Flex flexDirection="column" gap={24}>
+        <Components.Box header={<Skeleton width={120} height={42} />}>
+          <Skeleton width="100%" height={331} />
+        </Components.Box>
+        <Components.Box header={<Skeleton width={120} height={42} />}>
+          <Skeleton width="100%" height={88} />
+        </Components.Box>
+      </Flex>
+    </Flex>
+  )
+}
+
+function ProfileViewData() {
   const { contractorId } = useFlow<ContractorProfileContextInterface>()
   const Components = useComponentContext()
 
@@ -52,6 +74,14 @@ export function ProfileViewContextual() {
   }
 
   return <ProfileViewContent contractor={contractor} />
+}
+
+export function ProfileViewContextual() {
+  return (
+    <Suspense fallback={<ProfileSkeleton />}>
+      <ProfileViewData />
+    </Suspense>
+  )
 }
 
 function ProfileViewContent({ contractor }: { contractor: Contractor }) {
