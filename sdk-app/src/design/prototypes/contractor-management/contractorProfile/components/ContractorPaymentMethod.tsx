@@ -58,11 +58,7 @@ export function ContractorPaymentMethod({
     ),
   })
 
-  if (isRemovingAccount) {
-    return <Loading />
-  }
-
-  if (paymentMethodType === 'Check') {
+  if (paymentMethodType === 'Check' && !isRemovingAccount) {
     return (
       <Components.Box
         header={
@@ -100,7 +96,11 @@ export function ContractorPaymentMethod({
         </Flex>
       }
     >
-      <DataView isWithinBox label="Bank accounts" {...dataViewProps} />
+      {isRemovingAccount ? (
+        <Loading />
+      ) : (
+        <DataView isWithinBox label="Bank accounts" {...dataViewProps} />
+      )}
     </Components.Box>
   )
 }
