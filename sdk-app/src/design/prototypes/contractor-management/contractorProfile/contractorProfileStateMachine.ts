@@ -27,6 +27,25 @@ const toProfileWithMessage = (message: string) =>
     }),
   )
 
+const toProfilePay = reduce(
+  (ctx: ContractorProfileContextInterface): ContractorProfileContextInterface => ({
+    ...ctx,
+    component: ProfileViewContextual as ComponentType,
+    successMessage: undefined,
+    selectedTab: 'pay',
+  }),
+)
+
+const toProfilePayWithMessage = (message: string) =>
+  reduce(
+    (ctx: ContractorProfileContextInterface): ContractorProfileContextInterface => ({
+      ...ctx,
+      component: ProfileViewContextual as ComponentType,
+      successMessage: message,
+      selectedTab: 'pay',
+    }),
+  )
+
 export const contractorProfileStateMachine = {
   profile: state<MachineTransition>(
     transition(
@@ -65,7 +84,7 @@ export const contractorProfileStateMachine = {
     transition(
       'contractor/paymentMethod/removed',
       'profile',
-      toProfileWithMessage('Payment method updated to Check'),
+      toProfilePayWithMessage('Payment method updated to Check'),
     ),
   ),
   editAddress: state<MachineTransition>(
@@ -80,16 +99,16 @@ export const contractorProfileStateMachine = {
     transition(
       componentEvents.CONTRACTOR_PAYMENT_METHOD_UPDATED,
       'profile',
-      toProfileWithMessage('Payment method updated successfully'),
+      toProfilePayWithMessage('Payment method updated successfully'),
     ),
-    transition(componentEvents.CANCEL, 'profile', toProfile),
+    transition(componentEvents.CANCEL, 'profile', toProfilePay),
   ),
   editPaymentMethod: state<MachineTransition>(
     transition(
       componentEvents.CONTRACTOR_PAYMENT_METHOD_UPDATED,
       'profile',
-      toProfileWithMessage('Payment method updated successfully'),
+      toProfilePayWithMessage('Payment method updated successfully'),
     ),
-    transition(componentEvents.CANCEL, 'profile', toProfile),
+    transition(componentEvents.CANCEL, 'profile', toProfilePay),
   ),
 }

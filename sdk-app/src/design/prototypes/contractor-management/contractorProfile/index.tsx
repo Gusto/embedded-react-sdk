@@ -19,6 +19,7 @@ function ContractorProfileRoot() {
           ...initialContext,
           component: ProfileViewContextual,
           companyId,
+          selectedTab: 'basic-details',
         }),
       ),
     [companyId],

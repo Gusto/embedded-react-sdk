@@ -26,6 +26,7 @@ import { componentEvents, type EventType } from '@/shared/constants'
 export interface ContractorProfileContextInterface extends FlowContextInterface {
   companyId: string
   successMessage?: string
+  selectedTab: string
   component: React.ComponentType | null
 }
 
@@ -36,9 +37,10 @@ function useContractorData(companyId: string) {
 }
 
 export function ProfileViewContextual() {
-  const { companyId, onEvent, successMessage } = useFlow<ContractorProfileContextInterface>()
+  const { companyId, onEvent, successMessage, selectedTab } =
+    useFlow<ContractorProfileContextInterface>()
   const Components = useComponentContext()
-  const [selectedTab, setSelectedTab] = useState('basic-details')
+  const [localTab, setLocalTab] = useState(selectedTab)
   const [isDismissed, setIsDismissed] = useState(false)
 
   const contractor = useContractorData(companyId)
@@ -140,7 +142,7 @@ export function ProfileViewContextual() {
         </Components.Heading>
         <Components.Text variant="supporting">Contractor</Components.Text>
       </Flex>
-      <Components.Tabs onSelectionChange={setSelectedTab} tabs={tabs} selectedId={selectedTab} />
+      <Components.Tabs onSelectionChange={setLocalTab} tabs={tabs} selectedId={localTab} />
     </Flex>
   )
 }
