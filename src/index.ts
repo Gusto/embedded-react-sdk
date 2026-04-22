@@ -257,7 +257,6 @@ export {
   createSignCompanyFormSchema,
 } from '@/components/Company/DocumentSigner/shared/useSignCompanyForm'
 export type {
-  SignCompanyFormSubmitCallbacks,
   SignCompanyFormOptionalFieldsToRequire,
   UseSignCompanyFormProps,
   UseSignCompanyFormResult,

@@ -164,48 +164,6 @@ describe('useSignCompanyForm', () => {
     expect(submitResult?.data).toEqual(expect.objectContaining({ uuid: 'form-123' }))
   })
 
-  it('invokes onFormSigned callback on successful submission', async () => {
-    const signedForm = {
-      uuid: 'form-123',
-      name: 'Test Form',
-      status: 'signed',
-      form_type: 'company',
-      created_at: '2024-05-29T12:00:00Z',
-      updated_at: '2024-05-29T13:00:00Z',
-      requires_signing: false,
-    }
-
-    server.use(handleSignCompanyForm(() => HttpResponse.json(signedForm)))
-
-    const onFormSigned = vi.fn()
-
-    const { result } = renderHook(
-      () =>
-        useSignCompanyForm({
-          formId: 'form-123',
-          defaultValues: {
-            signature: 'John Doe',
-            confirmSignature: true,
-          },
-        }),
-      { wrapper: GustoTestProvider },
-    )
-
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(false)
-    })
-
-    const readyResult = result.current
-    assertReady(readyResult)
-
-    await act(async () => {
-      await readyResult.actions.onSubmit({ onFormSigned })
-    })
-
-    expect(onFormSigned).toHaveBeenCalledOnce()
-    expect(onFormSigned).toHaveBeenCalledWith(expect.objectContaining({ uuid: 'form-123' }))
-  })
-
   it('blocks submission when signature is empty', async () => {
     server.use(
       handleSignCompanyForm(async ({ request }) => {

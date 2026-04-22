@@ -1,6 +1,5 @@
 export { useSignCompanyForm } from './useSignCompanyForm'
 export type {
-  SignCompanyFormSubmitCallbacks,
   SignCompanyFormOptionalFieldsToRequire,
   UseSignCompanyFormProps,
   UseSignCompanyFormResult,
