@@ -141,20 +141,47 @@ Callbacks on `onSubmit` are only appropriate when a hook makes **multiple sequen
 
 Rule of thumb: if the hook's `onSubmit` wraps a single mutation, drop the callbacks interface entirely — `result.data` already carries everything the consumer needs.
 
-**2. Emit a single `_DONE` event carrying the entity.** Pass `result.data` as the payload of the component's `_DONE` event. Don't split the success signal across two events (one with data, one marking completion):
+**2. Event shape mirrors the submit shape.** How many events a component emits should match how many API calls it made — not be padded with a redundant completion-only event.
+
+_Single API call_ — emit one `_DONE` event carrying `result.data`. No separate "entity created" event:
 
 ```tsx
-// Correct — single event, data as payload
-onEvent(componentEvents.EMPLOYEE_PROFILE_DONE, employeeResult.data)
+// Single mutation: one event delivers both completion and the resulting entity
+onEvent(companyEvents.COMPANY_SIGN_FORM_DONE, result.data)
 onEvent(componentEvents.EMPLOYEE_EMPLOYMENT_ELIGIBILITY_DONE, result.i9Authorization)
 onEvent(informationRequestEvents.INFORMATION_REQUEST_FORM_DONE, response.informationRequest)
 
-// Incorrect — two events where one will do
+// Anti-pattern: splitting the single mutation across two events
 onEvent(events.SOMETHING, result.data)
-onEvent(events.SOMETHING_DONE)
+onEvent(events.SOMETHING_DONE) // redundant
 ```
 
-Partners subscribe to the `_DONE` event to know when to navigate away and what entity the component just produced; one event delivers both. Reserve additional intermediate events for genuinely distinct user-facing milestones (e.g. `COMPANY_VIEW_FORM_TO_SIGN` fires when a form is opened, not when it's submitted). `EmployeeProfile`, `EmploymentEligibility`, and `InformationRequestForm` are the reference cases.
+_Multiple API calls_ — emit one intermediate event per call (from the hook callbacks or from each hook's `result.data`), then a final `_DONE` for overall completion. The `_DONE` payload is whatever the partner needs at that boundary — typically the root entity, or a merged shape if other values are needed alongside it:
+
+```tsx
+// AdminProfile reference: employee + addresses + start date
+const employeeResult = await employeeDetails.actions.onSubmit({
+  onEmployeeCreated: emp => onEvent(componentEvents.EMPLOYEE_CREATED, emp),
+  onEmployeeUpdated: emp => onEvent(componentEvents.EMPLOYEE_UPDATED, emp),
+  onOnboardingStatusUpdated: s => onEvent(componentEvents.EMPLOYEE_ONBOARDING_STATUS_UPDATED, s),
+})
+if (!employeeResult) return
+
+const homeResult = await homeAddress.actions.onSubmit({ employeeId: newEmployeeId })
+if (!homeResult) return
+onEvent(
+  homeResult.mode === 'create'
+    ? componentEvents.EMPLOYEE_HOME_ADDRESS_CREATED
+    : componentEvents.EMPLOYEE_HOME_ADDRESS_UPDATED,
+  homeResult.data,
+)
+
+// ...work address submits with its own callbacks...
+
+onEvent(componentEvents.EMPLOYEE_PROFILE_DONE, { ...employeeResult.data, startDate })
+```
+
+Rule of thumb: **one API call = one event (the `_DONE`, carrying the entity). Multiple API calls = one event per call + a terminal `_DONE`.** Reserve additional events for genuinely distinct user-facing milestones that aren't tied to a submission (e.g. `COMPANY_VIEW_FORM_TO_SIGN` fires when a form is opened, not when it's submitted). `EmployeeProfile` and `AdminProfile` are the reference cases for multi-call event shape; `SignatureForm`, `EmploymentEligibility`, and `InformationRequestForm` are the reference cases for single-call event shape.
 
 ## 3. Loading and Error States with BaseLayout
 
