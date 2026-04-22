@@ -35,8 +35,13 @@ import {
 import { withOptions } from '@/partner-hook-utils/form/withOptions'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
-import { useErrorHandling } from '@/partner-hook-utils/useErrorHandling'
-import type { HookSubmitResult } from '@/partner-hook-utils/types'
+import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
+import type {
+  BaseFormHookReady,
+  FieldsMetadata,
+  HookLoadingResult,
+  HookSubmitResult,
+} from '@/partner-hook-utils/types'
 import { FlsaStatus, PAY_PERIODS, TIP_CREDITS_UNSUPPORTED_STATES } from '@/shared/constants'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { SDKInternalError } from '@/types/sdkError'
@@ -61,6 +66,25 @@ export interface UseCompensationFormProps {
   defaultValues?: Partial<CompensationFormData>
   validationMode?: UseFormProps['mode']
   shouldFocusError?: boolean
+}
+
+export interface UseCompensationFormReady extends BaseFormHookReady<
+  FieldsMetadata,
+  CompensationFormData
+> {
+  data: {
+    compensation: Compensation | null
+    jobs: Job[] | undefined
+    currentJob: Job | null
+    minimumWages: MinimumWage[]
+  }
+  status: { isPending: boolean; mode: 'create' | 'update' }
+  actions: {
+    onSubmit: (
+      callbacks?: CompensationSubmitCallbacks,
+      options?: CompensationSubmitOptions,
+    ) => Promise<HookSubmitResult<Compensation | undefined> | undefined>
+  }
 }
 
 function findCurrentCompensation(job?: Job | null): Compensation | undefined {
@@ -109,7 +133,7 @@ export function useCompensationForm({
   defaultValues: partnerDefaults,
   validationMode = 'onSubmit',
   shouldFocusError = true,
-}: UseCompensationFormProps) {
+}: UseCompensationFormProps): HookLoadingResult | UseCompensationFormReady {
   const jobsQuery = useJobsAndCompensationsGetJobs(
     { employeeId: employeeId ?? '' },
     { enabled: !!employeeId },
@@ -231,12 +255,16 @@ export function useCompensationForm({
     createJobMutation.isPending ||
     updateJobMutation.isPending
 
-  const { baseSubmitHandler, error: submitError, setError } = useBaseSubmit('CompensationForm')
+  const {
+    baseSubmitHandler,
+    error: submitError,
+    setError: setSubmitError,
+  } = useBaseSubmit('CompensationForm')
 
   const queries = employeeId
     ? [jobsQuery, addressesQuery, employeeQuery, minWagesQuery, taxQuery]
     : []
-  const errorHandling = useErrorHandling(queries, { error: submitError, setError })
+  const errorHandling = composeErrorHandler(queries, { submitError, setSubmitError })
 
   const isCommissionOnly =
     watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_NONEXEMPT ||
@@ -464,7 +492,6 @@ export function useCompensationForm({
   }
 }
 
-export type UseCompensationFormResult = ReturnType<typeof useCompensationForm>
-export type UseCompensationFormReady = Extract<UseCompensationFormResult, { data: object }>
+export type UseCompensationFormResult = HookLoadingResult | UseCompensationFormReady
 export type CompensationFieldsMetadata = UseCompensationFormReady['form']['fieldsMetadata']
 export type CompensationFormFields = UseCompensationFormReady['form']['Fields']

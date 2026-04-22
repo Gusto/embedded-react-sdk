@@ -28,8 +28,7 @@ export type {
 
 // Partner hook infrastructure
 export {
-  useErrorHandling,
-  buildQueryErrorHandling,
+  composeErrorHandler,
   collectErrors,
   SDKFormProvider,
   composeSubmitHandler,
@@ -46,12 +45,15 @@ export {
   SwitchHookField,
 } from '@/partner-hook-utils'
 export type {
+  MixedErrorSource,
+  SubmitStateForErrorHandling,
   HookFormInternals,
   HookLoadingResult,
   HookSubmitResult,
   HookErrorHandling,
   BaseHookReady,
   BaseFormHookReady,
+  FormHookResult,
   FieldMetadata,
   FieldMetadataWithOptions,
   FieldsMetadata,

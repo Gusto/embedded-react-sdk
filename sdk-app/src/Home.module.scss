@@ -1,8 +1,4 @@
 .root {
-  max-width: 40rem;
-  margin: 2.5rem auto;
-  padding: 0 1.5rem;
-
   h1 {
     font-size: 1.5rem;
     font-weight: 600;
@@ -37,6 +33,12 @@
       border-bottom: none;
     }
   }
+}
+
+.bodyContent {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 2rem;
 }
 
 .sectionTitle {

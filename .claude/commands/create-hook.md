@@ -111,10 +111,14 @@ Follow the main hook pattern: data fetching → form setup → return discrimina
 Key imports:
 
 - `import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'`
-- `import { useErrorHandling } from '@/partner-hook-utils/useErrorHandling'`
-- `import type { HookSubmitResult } from '@/partner-hook-utils/types'`
+- `import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'`
+- `import type { BaseFormHookReady, FieldsMetadata, HookLoadingResult, HookSubmitResult } from '@/partner-hook-utils/types'`
 - `import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'`
 - `import { composeSubmitHandler } from '@/partner-hook-utils/form/composeSubmitHandler'`
+
+**Typing:** Declare a ready-state interface that extends `BaseFormHookReady<FieldsMetadata, {Name}FormData>`, narrow `data`, `status`, and `actions` as needed, and annotate the hook with `HookLoadingResult | Use{Name}Ready`. Export `Use{Name}Result` as `HookLoadingResult | Use{Name}Ready`. Document-sign hooks always set `status.mode` to `'create'` on the ready branch (see JSDoc on `BaseFormHookReady` in `src/partner-hook-utils/types.ts`). Non-form hooks use `BaseHookReady<TData, TStatus>` instead of `Omit<BaseHookReady, …>`.
+
+**Partner composition:** Each hook returns its own `errorHandling`. For multi-form screens, partners call `composeSubmitHandler(forms, onAllValid)` which returns `{ handleSubmit, errorHandling }` aggregated across the passed forms. The result is a valid `composeErrorHandler` input, so screens that need extra `@gusto/embedded-api` queries or screen-level submit state feed it into `composeErrorHandler([submitResult, ...extras], submitState)`.
 
 #### `index.ts`
 

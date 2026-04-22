@@ -22,7 +22,7 @@ export type {
   FieldsMetadataConfig,
   BuildFormSchemaResult,
 } from './buildFormSchema'
-export { composeSubmitHandler } from './composeSubmitHandler'
+export { composeSubmitHandler, type ComposeSubmitHandlerResult } from './composeSubmitHandler'
 export { createGetFormSubmissionValues } from './getFormSubmissionValues'
 export {
   TextInputHookField,

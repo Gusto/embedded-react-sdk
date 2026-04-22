@@ -1,6 +1,6 @@
 import type { ComponentType } from 'react'
 import { useHookFieldResolution } from '../useHookFieldResolution'
-import type { BaseFieldProps, ValidationMessages, BaseFormHookReady } from '../../types'
+import type { BaseFieldProps, ValidationMessages, FormHookResult } from '../../types'
 import { TextInputField } from '@/components/Common'
 import type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputTypes'
 
@@ -9,7 +9,7 @@ export interface TextInputHookFieldProps<
   TOptionalErrorCode extends string = never,
 > extends BaseFieldProps {
   name: string
-  formHookResult?: BaseFormHookReady
+  formHookResult?: FormHookResult
   validationMessages?: ValidationMessages<TErrorCode, TOptionalErrorCode>
   transform?: (value: string) => string
   placeholder?: string

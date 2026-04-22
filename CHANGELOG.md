@@ -1,8 +1,28 @@
 # Changelog
 
-## Unreleased
+## 0.40.0
 
 ### Breaking Changes
+
+#### `composeSubmitHandler` now returns `{ handleSubmit, errorHandling }`
+
+`composeSubmitHandler` now returns an object with both the submit event handler
+and an aggregated `errorHandling` bag built from the forms it receives, instead
+of returning the submit handler directly. Partners who only need one shared error
+surface across multiple forms no longer have to call `composeErrorHandler`
+themselves.
+
+- **Before**: `const handleSubmit = composeSubmitHandler([formA, formB], onAllValid)`
+- **After**: `const { handleSubmit, errorHandling } = composeSubmitHandler([formA, formB], onAllValid)`
+
+For screens that also need to combine extra `@gusto/embedded-api` queries into
+the same error surface, pass the `composeSubmitHandler` result into
+`composeErrorHandler` alongside those queries:
+
+```tsx
+const submitResult = composeSubmitHandler([formA, formB], onAllValid)
+const errorHandling = composeErrorHandler([submitResult, extraQuery])
+```
 
 #### Hooks now exported from main entry point
 
@@ -27,55 +47,6 @@ The following prebuilt components have been removed: `CompensationForm`,
 testing artifacts. Use the corresponding hooks directly (e.g., `useCompensationForm`)
 to build custom form UI.
 
-### Features & Enhancements
-
-#### Journey-based export namespaces
-
-Components are now organized into **journey-based namespaces** that group everything a partner needs for a specific integration use case. Three new namespaces are available:
-
-- **`EmployeeOnboarding`** -- all components for onboarding employees (flows, employee list, profile, compensation, taxes, payment method, deductions, documents, etc.)
-- **`EmployeeManagement`** -- components for steady-state employee management (employee list, dashboard, terminations, employee documents)
-- **`CompanyOnboarding`** -- all components for onboarding a company (flow, overview, document signing, bank account, locations, pay schedule, taxes, signatory management)
-- **`ContractorOnboarding`** -- all components for onboarding contractors (flow, contractor list, profile, address, payment method, new hire report, submit)
-
-```tsx
-// Recommended (journey namespace)
-import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
-;<EmployeeOnboarding.OnboardingFlow companyId={companyId} onEvent={handleEvent} />
-
-// Also works (journey namespace, management)
-import { EmployeeManagement } from '@gusto/embedded-react-sdk'
-;<EmployeeManagement.DashboardFlow employeeId={employeeId} onEvent={handleEvent} />
-
-// Also works (journey namespace, company)
-import { CompanyOnboarding } from '@gusto/embedded-react-sdk'
-;<CompanyOnboarding.OnboardingFlow companyId={companyId} onEvent={handleEvent} />
-
-// Also works (journey namespace, contractor)
-import { ContractorOnboarding } from '@gusto/embedded-react-sdk'
-;<ContractorOnboarding.OnboardingFlow companyId={companyId} onEvent={handleEvent} />
-```
-
-Each journey namespace is self-contained -- partners should not need to import from multiple namespaces to complete a single integration.
-
-### Deprecations
-
-#### `Employee.*`, `Company.*`, and `Contractor.*` umbrella namespaces
-
-The flat `Employee`, `Company`, and `Contractor` namespace exports are now **deprecated** in favor of the journey-based namespaces above. Existing imports continue to work without changes, but partners should migrate at their convenience:
-
-```tsx
-// Deprecated (still works)
-import { Employee } from '@gusto/embedded-react-sdk'
-;<Employee.OnboardingFlow companyId={companyId} onEvent={handleEvent} />
-
-// Recommended
-import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
-;<EmployeeOnboarding.OnboardingFlow companyId={companyId} onEvent={handleEvent} />
-```
-
-The `Employee`, `Company`, and `Contractor` umbrella namespaces will be removed in a future major version. The `Payroll` and `InformationRequests` namespaces are unaffected and remain the primary import path for those domains.
-
 #### `Employee.ManagementEmployeeList` removed
 
 `ManagementEmployeeList` is no longer exported from the `Employee` umbrella namespace. Use `EmployeeManagement.EmployeeList` instead:
@@ -90,9 +61,52 @@ import { EmployeeManagement } from '@gusto/embedded-react-sdk'
 ;<EmployeeManagement.EmployeeList companyId={companyId} onEvent={handleEvent} />
 ```
 
-#### Internal restructuring: `EmployeeList` feature module
+#### `Employee.*`, `Company.*`, and `Contractor.*` umbrella namespaces deprecated
 
-The `Employee/EmployeeList/` directory has been restructured into a feature module layout (`Employee/employee-list/`) with `shared/`, `onboarding/`, and `management/` subdirectories. This is an internal change -- all public exports remain the same and no partner action is required.
+The flat `Employee`, `Company`, and `Contractor` namespace exports are now **deprecated** in favor of the new journey-based namespaces (`EmployeeOnboarding`, `EmployeeManagement`, `CompanyOnboarding`, `ContractorOnboarding`). Existing imports continue to work without changes, but partners should migrate at their convenience:
+
+```tsx
+// Deprecated (still works)
+import { Employee } from '@gusto/embedded-react-sdk'
+;<Employee.OnboardingFlow companyId={companyId} onEvent={handleEvent} />
+
+// Recommended
+import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
+;<EmployeeOnboarding.OnboardingFlow companyId={companyId} onEvent={handleEvent} />
+```
+
+The `Employee`, `Company`, and `Contractor` umbrella namespaces will be removed in a future major version. The `Payroll` and `InformationRequests` namespaces are unaffected and remain the primary import path for those domains.
+
+### Features & Enhancements
+
+- Add journey-based export namespaces (`EmployeeOnboarding`, `EmployeeManagement`, `CompanyOnboarding`, `ContractorOnboarding`) grouping flows and components by integration use case
+- Add PolicySettings presentation component for time-off policy creation
+- Fetch and display holiday pay policy in PolicyList
+- Add `useHomeAddressForm` unstable hook
+- Merge `sdk-app` and `prototype-app` into a unified development environment
+
+### Fixes
+
+- Exclude `admin_onboarding_review` from contractor self-onboarding statuses
+- Add flex properties to Box so content fills remaining space in parent
+- Remove scroll-into-view behavior on alerts
+- Remove overriding text instances in payroll receipt data views
+- Add spacing between description list items when rendered without dividing lines
+- Make PaySchedule create/edit tests more robust
+
+### Chores & Maintenance
+
+- Migrate Employee Profile to hook-based architecture
+- Replace error-handling helpers with `composeErrorHandler`
+- Partner hooks `BaseHookReady` typing (SDK-778)
+- Restructure `EmployeeList` into a feature module layout (internal, no public API change)
+- Update prototype app to use SDK components
+- Add document requirements list to contractor submit view
+- Add comprehensive Employee Profile component tests
+- Add Cursor skill for migrating SDK components to hooks
+- Add prototype-app design prototyping environment
+- Add RFC for SDK hooks approach for partner flexibility
+- Bump various dependencies (i18next, react-i18next, dompurify, @internationalized/date, @internationalized/number, eslint-plugin-react-hooks, msw, vite-plugin-checker, prettier, typescript-eslint, follow-redirects, react-router-dom, axe-core)
 
 ## 0.39.0
 

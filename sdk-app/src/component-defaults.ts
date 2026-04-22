@@ -12,6 +12,9 @@ type PropValue = string | number | boolean | null
 type PropValueOrFactory = PropValue | (() => PropValue)
 
 export const DEFAULT_COMPONENT_PROPS: Record<string, Record<string, PropValueOrFactory>> = {
+  'Employee.Profile': {
+    isAdmin: true,
+  },
   'Employee.Compensation': {
     startDate: () => new Date().toISOString().slice(0, 10),
   },

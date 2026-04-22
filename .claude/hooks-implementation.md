@@ -196,7 +196,7 @@ export function JobTitleField(props: JobTitleFieldProps) {
 
 - Use `@gusto/embedded-api/react-query/*` hooks for all API calls
 - Gate dependent queries with `enabled: !!dependency`
-- Use `useErrorHandling` to build the `errorHandling` bag (see Error Handling section below)
+- Use `composeErrorHandler` to build the `errorHandling` bag (see Error Handling section below)
 
 ### Optional Entity IDs and Submit-Time Resolution
 
@@ -293,16 +293,24 @@ No manual metadata patching is needed in the hook — `buildFormSchema` handles 
 
 ### Error Handling
 
-Use `useErrorHandling` to build the `errorHandling` bag from queries and submit state. This provides partners with a unified interface for errors, query retries, and submit error clearing:
+Use **`composeErrorHandler`** (not a React hook — same `compose` prefix as **`composeSubmitHandler`**) to build the `errorHandling` bag from queries and submit state.
 
 ```typescript
-const { baseSubmitHandler, error: submitError, setError } = useBaseSubmit('{Domain}Form')
+const {
+  baseSubmitHandler,
+  error: submitError,
+  setError: setSubmitError,
+} = useBaseSubmit('{Domain}Form')
 
 const queries = [queryA, queryB, queryC]
-const errorHandling = useErrorHandling(queries, { error: submitError, setError })
+const errorHandling = composeErrorHandler(queries, { submitError, setSubmitError })
 ```
 
-`useErrorHandling` returns `HookErrorHandling`:
+You can pass **nested SDK hook results** (objects with `errorHandling`) plus extra React Query results in the first array — see `composeErrorHandler` in `src/partner-hook-utils/composeErrorHandler.ts`.
+
+**Multi-form screens:** `composeSubmitHandler` coordinates validation + ordered submits **and** returns `{ handleSubmit, errorHandling }` aggregated across the forms it receives. Partners that want to combine in extra `@gusto/embedded-api` queries or screen-level submit state feed the result into **`composeErrorHandler([submitResult, ...extraQueries], optionalScreenSubmit)`**.
+
+`composeErrorHandler` returns `HookErrorHandling`:
 
 - `errors: SDKError[]` — combined query + submit errors
 - `retryQueries: () => void` — retries all failed data-fetching queries (dependent queries auto-trigger via `enabled`)
@@ -348,6 +356,22 @@ return {
 
 Prebuilt `{Domain}Form` components were removed. Partners use the hooks directly to build custom form UI (with `SDKFormProvider`, field components, and i18n as needed for their integration).
 
+## 4a. SDKFormProvider and formHookResult Prop
+
+Hook fields need form context. Two ways to provide it:
+
+**`SDKFormProvider`** — wraps a contiguous group of fields from one hook. Provides `FormProvider` + `FormFieldsMetadataProvider` context and syncs API field errors via `useSyncFieldErrors`.
+
+**`formHookResult` prop** — pass the hook result directly to each field. Use when fields are scattered across the layout. `FormHookResult` types `control` as `unknown` so any hook result is assignable without casts or generics; `useHookFieldResolution` handles the single `as Control` cast internally.
+
+**Rules:**
+
+1. Do NOT nest `SDKFormProvider`s — use sibling providers for different hooks
+2. Do NOT use `SDKFormProvider` and `formHookResult` prop for the same hook result — pick one approach per hook
+3. Do NOT render fields from a different hook inside an `SDKFormProvider`
+
+When a hook's fields are split across the layout, use `formHookResult` prop on all of that hook's fields instead of `SDKFormProvider`.
+
 ## 5. FieldComponent Pattern
 
 Partners can inject custom UI via `FieldComponent` prop on any field:
@@ -380,7 +404,7 @@ Reference `gws-flows/app/frontend/react_sdk/CustomCompensationForm.tsx` as the r
 
 ### What stays internal (export from inner barrels but NOT from `src/index.ts` unless needed)
 
-Infrastructure utilities like `buildFormSchema`, `useDeriveFieldsMetadata`, `deriveFieldsMetadata`, `withOptions`, `FormFieldsMetadataProvider`, `useErrorHandling`, `collectErrors`, generic `*HookField` components, and base types like `HookFormInternals`, `BaseFormHookReady` are used by the SDK to build hooks — not by partners. Only promote to the public barrel if a partner use case demands it.
+Infrastructure utilities like `buildFormSchema`, `useDeriveFieldsMetadata`, `deriveFieldsMetadata`, `withOptions`, `FormFieldsMetadataProvider`, `composeErrorHandler`, `collectErrors`, generic `*HookField` components, and base types like `HookFormInternals`, `BaseFormHookReady` are used by the SDK to build hooks — not by partners. Only promote to the public barrel if a partner use case demands it.
 
 Do NOT re-export `@gusto/embedded-api` entity types directly — partners derive them from field prop generics (e.g. `NonNullable<FlsaStatusFieldProps['getOptionLabel']>` infers the entity type).
 

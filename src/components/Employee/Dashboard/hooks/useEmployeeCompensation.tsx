@@ -9,7 +9,7 @@ import type { Garnishment } from '@gusto/embedded-api/models/components/garnishm
 import type { GetV1EmployeesEmployeeIdPaymentMethodResponse } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidpaymentmethod'
 import type { GetV1EmployeesEmployeeIdBankAccountsResponse } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidbankaccounts'
 import type { GetV1EmployeesEmployeeUuidPayStubsResponse } from '@gusto/embedded-api/models/operations/getv1employeesemployeeuuidpaystubs'
-import { buildQueryErrorHandling } from '@/partner-hook-utils/buildQueryErrorHandling'
+import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { usePagination } from '@/hooks/usePagination/usePagination'
 import type { HookLoadingResult, BaseHookReady } from '@/partner-hook-utils/types'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
@@ -26,8 +26,8 @@ export interface UseEmployeeCompensationProps {
   employeeId: string
 }
 
-interface UseEmployeeCompensationReady extends Omit<BaseHookReady, 'data' | 'status'> {
-  data: {
+interface UseEmployeeCompensationReady extends BaseHookReady<
+  {
     primaryJob?: Job
     employeePaymentMethod?: NonNullable<
       GetV1EmployeesEmployeeIdPaymentMethodResponse['employeePaymentMethod']
@@ -35,10 +35,9 @@ interface UseEmployeeCompensationReady extends Omit<BaseHookReady, 'data' | 'sta
     bankAccounts: EmployeeBankAccount[]
     garnishmentList: Garnishment[]
     payStubs: EmployeePayStub[]
-  }
-  status: {
-    isPending: boolean
-  }
+  },
+  { isPending: boolean }
+> {
   pagination: {
     payStubs?: PaginationControlProps
   }
@@ -97,7 +96,7 @@ export function useEmployeeCompensation({
 
   const isLoading = !employee && isPending
 
-  const errorHandling = buildQueryErrorHandling([
+  const errorHandling = composeErrorHandler([
     employeeQuery,
     paymentMethodQuery,
     bankAccountsQuery,
