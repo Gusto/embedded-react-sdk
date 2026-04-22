@@ -37,7 +37,9 @@ export function useThemeMode() {
       setSystemPrefersDark(e.matches)
     }
     mediaQuery.addEventListener('change', handler)
-    return () => { mediaQuery.removeEventListener('change', handler); }
+    return () => {
+      mediaQuery.removeEventListener('change', handler)
+    }
   }, [])
 
   const resolvedTheme: ResolvedTheme =

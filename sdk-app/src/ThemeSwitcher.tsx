@@ -22,7 +22,9 @@ export function ThemeSwitcher() {
           key={optionMode}
           type="button"
           className={`${styles.option} ${mode === optionMode ? styles.active : ''}`}
-          onClick={() => { setMode(optionMode); }}
+          onClick={() => {
+            setMode(optionMode)
+          }}
           title={label}
         >
           <Icon />
