@@ -39,9 +39,15 @@ export interface UseSignCompanyFormProps {
   shouldFocusError?: boolean
 }
 
+export interface SignCompanyFormFields {
+  Signature: typeof SignatureField
+  ConfirmSignature: typeof ConfirmSignatureField
+}
+
 export interface UseSignCompanyFormReady extends BaseFormHookReady<
   FieldsMetadata,
-  SignCompanyFormData
+  SignCompanyFormData,
+  SignCompanyFormFields
 > {
   data: {
     companyForm: Form
@@ -192,4 +198,3 @@ export function useSignCompanyForm({
 
 export type UseSignCompanyFormResult = HookLoadingResult | UseSignCompanyFormReady
 export type SignCompanyFormFieldsMetadata = UseSignCompanyFormReady['form']['fieldsMetadata']
-export type SignCompanyFormFields = UseSignCompanyFormReady['form']['Fields']

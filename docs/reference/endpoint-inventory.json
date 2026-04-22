@@ -103,25 +103,6 @@
         "companyUuid"
       ]
     },
-    "Company.SignatureForm": {
-      "endpoints": [
-        {
-          "method": "GET",
-          "path": "/v1/forms/:formId"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/forms/:formId/sign"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/forms/:formId/pdf"
-        }
-      ],
-      "variables": [
-        "formId"
-      ]
-    },
     "Company.DocumentSigner": {
       "endpoints": [
         {
@@ -137,12 +118,12 @@
           "path": "/v1/forms/:formId"
         },
         {
-          "method": "PUT",
-          "path": "/v1/forms/:formId/sign"
-        },
-        {
           "method": "GET",
           "path": "/v1/forms/:formId/pdf"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/forms/:formId/sign"
         }
       ],
       "variables": [
@@ -1828,12 +1809,12 @@
           "path": "/v1/forms/:formId"
         },
         {
-          "method": "PUT",
-          "path": "/v1/forms/:formId/sign"
-        },
-        {
           "method": "GET",
           "path": "/v1/forms/:formId/pdf"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/forms/:formId/sign"
         },
         {
           "method": "PUT",
