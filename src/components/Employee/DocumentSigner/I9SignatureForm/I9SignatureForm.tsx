@@ -49,7 +49,6 @@ function Root({ employeeId, formId, className }: I9SignatureFormProps) {
   const { form, pdfUrl } = hookResult.data
   const { isPending } = hookResult.status
   const { Fields } = hookResult.form
-  const preparerCount = hookResult.form.preparers?.count ?? 0
   const canAddPreparer = hookResult.form.preparers?.canAdd ?? false
   const usedPreparer = hookResult.form.hookFormInternals.formMethods.watch('usedPreparer')
 
@@ -81,7 +80,7 @@ function Root({ employeeId, formId, className }: I9SignatureFormProps) {
     Fields.Preparer2,
     Fields.Preparer3,
     Fields.Preparer4,
-  ]
+  ].filter((Group): Group is PreparerFieldGroup => Group !== undefined)
 
   return (
     <section className={className}>
@@ -146,8 +145,7 @@ function Root({ employeeId, formId, className }: I9SignatureFormProps) {
 
                   {usedPreparer === 'yes' &&
                     preparerFieldGroups.map((PreparerFields, index) => {
-                      if (!PreparerFields) return null
-                      const isLast = index === preparerCount - 1
+                      const isLast = index === preparerFieldGroups.length - 1
                       return (
                         <Flex flexDirection="column" gap={0} key={index}>
                           <div className={styles.preparerAlert}>
