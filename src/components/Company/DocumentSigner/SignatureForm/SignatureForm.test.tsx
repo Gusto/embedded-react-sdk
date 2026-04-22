@@ -114,11 +114,12 @@ describe('SignatureForm', () => {
 
       await waitFor(() => {
         expect(mockOnEvent).toHaveBeenCalledWith(
-          companyEvents.COMPANY_SIGN_FORM_DONE,
+          companyEvents.COMPANY_SIGN_FORM,
           expect.objectContaining({
             uuid: testForm.uuid,
           }),
         )
+        expect(mockOnEvent).toHaveBeenCalledWith(companyEvents.COMPANY_SIGN_FORM_DONE)
       })
     })
 
@@ -142,7 +143,7 @@ describe('SignatureForm', () => {
 
       await waitFor(() => {
         expect(mockOnEvent).not.toHaveBeenCalledWith(
-          companyEvents.COMPANY_SIGN_FORM_DONE,
+          companyEvents.COMPANY_SIGN_FORM,
           expect.anything(),
         )
       })
@@ -165,7 +166,7 @@ describe('SignatureForm', () => {
 
       await waitFor(() => {
         expect(mockOnEvent).not.toHaveBeenCalledWith(
-          companyEvents.COMPANY_SIGN_FORM_DONE,
+          companyEvents.COMPANY_SIGN_FORM,
           expect.anything(),
         )
       })

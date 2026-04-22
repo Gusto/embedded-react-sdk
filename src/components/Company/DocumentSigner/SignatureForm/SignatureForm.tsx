@@ -44,7 +44,8 @@ export function Root({ formId, children, dictionary }: SignatureFormProps) {
   const handleFormSubmit = async () => {
     const result = await hookResult.actions.onSubmit()
     if (result) {
-      onEvent(companyEvents.COMPANY_SIGN_FORM_DONE, result.data)
+      onEvent(companyEvents.COMPANY_SIGN_FORM, result.data)
+      onEvent(companyEvents.COMPANY_SIGN_FORM_DONE)
     }
   }
 

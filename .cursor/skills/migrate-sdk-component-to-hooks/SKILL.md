@@ -141,47 +141,45 @@ Callbacks on `onSubmit` are only appropriate when a hook makes **multiple sequen
 
 Rule of thumb: if the hook's `onSubmit` wraps a single mutation, drop the callbacks interface entirely — `result.data` already carries everything the consumer needs.
 
-**2. Event shape mirrors the submit shape.** How many events a component emits should match how many API calls it made — not be padded with a redundant completion-only event.
-
-_Single API call_ — emit one `_DONE` event carrying `result.data`. No separate "entity created" event:
+**2. Preserve the existing event surface when migrating.** The set of `onEvent` types a component emits — and their payloads — is the component's public contract with partners. A migration refactor must not add, remove, rename, or change the payload of any existing event. Before rewriting the submit handler, enumerate the events the pre-migration component emits (search `onEvent(` in the current file and any subcomponents it delegates to) and make sure every one still fires in the refactor, with the same payload shape, regardless of how the hook's `onSubmit` surfaces the data:
 
 ```tsx
-// Single mutation: one event delivers both completion and the resulting entity
-onEvent(companyEvents.COMPANY_SIGN_FORM_DONE, result.data)
-onEvent(componentEvents.EMPLOYEE_EMPLOYMENT_ELIGIBILITY_DONE, result.i9Authorization)
-onEvent(informationRequestEvents.INFORMATION_REQUEST_FORM_DONE, response.informationRequest)
-
-// Anti-pattern: splitting the single mutation across two events
-onEvent(events.SOMETHING, result.data)
-onEvent(events.SOMETHING_DONE) // redundant
+// SignatureForm migration — pre-existing contract emits both events
+const result = await signForm.actions.onSubmit()
+if (result) {
+  onEvent(companyEvents.COMPANY_SIGN_FORM, result.data) // preserve
+  onEvent(companyEvents.COMPANY_SIGN_FORM_DONE) // preserve
+}
 ```
 
-_Multiple API calls_ — emit one intermediate event per call (from the hook callbacks or from each hook's `result.data`), then a final `_DONE` for overall completion. The `_DONE` payload is whatever the partner needs at that boundary — typically the root entity, or a merged shape if other values are needed alongside it:
+Removing a documented event (or changing its payload) is a breaking change for partners and requires an explicit `feat!:` / `refactor!:` commit coordinated separately — it's not something a hook migration should quietly do.
 
-```tsx
-// AdminProfile reference: employee + addresses + start date
-const employeeResult = await employeeDetails.actions.onSubmit({
-  onEmployeeCreated: emp => onEvent(componentEvents.EMPLOYEE_CREATED, emp),
-  onEmployeeUpdated: emp => onEvent(componentEvents.EMPLOYEE_UPDATED, emp),
-  onOnboardingStatusUpdated: s => onEvent(componentEvents.EMPLOYEE_ONBOARDING_STATUS_UPDATED, s),
-})
-if (!employeeResult) return
+**Shape conventions for new events.** When the component emits an event that didn't exist before (for example because the migration exposes a new intermediate entity), follow the conventions already used in the codebase:
 
-const homeResult = await homeAddress.actions.onSubmit({ employeeId: newEmployeeId })
-if (!homeResult) return
-onEvent(
-  homeResult.mode === 'create'
-    ? componentEvents.EMPLOYEE_HOME_ADDRESS_CREATED
-    : componentEvents.EMPLOYEE_HOME_ADDRESS_UPDATED,
-  homeResult.data,
-)
+- _New single-call component_ — emit one `_DONE` event carrying `result.data`. No separate "entity created" event. `EmploymentEligibility` (`EMPLOYEE_EMPLOYMENT_ELIGIBILITY_DONE, result.i9Authorization`) and `InformationRequestForm` (`INFORMATION_REQUEST_FORM_DONE, response.informationRequest`) are the reference cases.
+- _New multi-call component_ — emit one intermediate event per API call (from hook callbacks or per-hook `result.data`) plus a terminal `_DONE` carrying whatever the partner needs at that boundary. `EmployeeProfile` and `AdminProfile` are the reference cases:
 
-// ...work address submits with its own callbacks...
+  ```tsx
+  const employeeResult = await employeeDetails.actions.onSubmit({
+    onEmployeeCreated: emp => onEvent(componentEvents.EMPLOYEE_CREATED, emp),
+    onEmployeeUpdated: emp => onEvent(componentEvents.EMPLOYEE_UPDATED, emp),
+    onOnboardingStatusUpdated: s => onEvent(componentEvents.EMPLOYEE_ONBOARDING_STATUS_UPDATED, s),
+  })
+  if (!employeeResult) return
 
-onEvent(componentEvents.EMPLOYEE_PROFILE_DONE, { ...employeeResult.data, startDate })
-```
+  const homeResult = await homeAddress.actions.onSubmit({ employeeId: newEmployeeId })
+  if (!homeResult) return
+  onEvent(
+    homeResult.mode === 'create'
+      ? componentEvents.EMPLOYEE_HOME_ADDRESS_CREATED
+      : componentEvents.EMPLOYEE_HOME_ADDRESS_UPDATED,
+    homeResult.data,
+  )
 
-Rule of thumb: **one API call = one event (the `_DONE`, carrying the entity). Multiple API calls = one event per call + a terminal `_DONE`.** Reserve additional events for genuinely distinct user-facing milestones that aren't tied to a submission (e.g. `COMPANY_VIEW_FORM_TO_SIGN` fires when a form is opened, not when it's submitted). `EmployeeProfile` and `AdminProfile` are the reference cases for multi-call event shape; `SignatureForm`, `EmploymentEligibility`, and `InformationRequestForm` are the reference cases for single-call event shape.
+  onEvent(componentEvents.EMPLOYEE_PROFILE_DONE, { ...employeeResult.data, startDate })
+  ```
+
+These shape conventions govern **new** events added during a migration. They never override rule 2's parity requirement — when in doubt, match the existing event surface and leave shape-cleanup for a dedicated breaking-change PR.
 
 ## 3. Loading and Error States with BaseLayout
 

@@ -80,6 +80,7 @@ export const companyEvents = {
   COMPANY_FORM_EDIT_SIGNATORY: 'company/forms/editSignatory',
   COMPANY_FORMS_DONE: 'company/forms/done',
   COMPANY_VIEW_FORM_TO_SIGN: 'company/forms/view',
+  COMPANY_SIGN_FORM: 'company/forms/sign/signForm',
   COMPANY_SIGN_FORM_DONE: 'company/forms/sign/done',
   COMPANY_SIGN_FORM_BACK: 'company/forms/sign/back',
   COMPANY_LOCATION_CREATE: 'company/location/add',
