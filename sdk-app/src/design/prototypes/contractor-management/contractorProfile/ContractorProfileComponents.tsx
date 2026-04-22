@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
-import { useContractorsListSuspense } from '@gusto/embedded-api/react-query/contractorsList'
+import { useContractorsGetSuspense } from '@gusto/embedded-api/react-query/contractorsGet'
 import { useContractorPaymentMethodGetBankAccountsSuspense } from '@gusto/embedded-api/react-query/contractorPaymentMethodGetBankAccounts'
 import {
   useContractorPaymentMethodGetSuspense,
@@ -30,23 +30,22 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { componentEvents, type EventType } from '@/shared/constants'
 
 export interface ContractorProfileContextInterface extends FlowContextInterface {
-  companyId: string
+  contractorId: string
   successMessage?: string
   selectedTab: string
   component: React.ComponentType | null
 }
 
-function useContractorData(companyId: string) {
-  const { data } = useContractorsListSuspense({ companyUuid: companyId })
-  const contractor = data.contractors?.[0]
-  return contractor
+function useContractorData(contractorId: string) {
+  const { data } = useContractorsGetSuspense({ contractorUuid: contractorId })
+  return data.contractor
 }
 
 export function ProfileViewContextual() {
-  const { companyId } = useFlow<ContractorProfileContextInterface>()
+  const { contractorId } = useFlow<ContractorProfileContextInterface>()
   const Components = useComponentContext()
 
-  const contractor = useContractorData(companyId)
+  const contractor = useContractorData(contractorId)
 
   if (!contractor) {
     return <Components.Text>No contractors found for this company.</Components.Text>
@@ -182,9 +181,9 @@ function ProfileViewContent({ contractor }: { contractor: Contractor }) {
 }
 
 function EditAddressContent() {
-  const { companyId, onEvent } = useFlow<ContractorProfileContextInterface>()
+  const { contractorId, onEvent } = useFlow<ContractorProfileContextInterface>()
 
-  const contractor = useContractorData(companyId)
+  const contractor = useContractorData(contractorId)
   const { data: addressData } = useContractorsGetAddressSuspense({
     contractorUuid: contractor?.uuid ?? '',
   })
@@ -243,9 +242,9 @@ export function EditAddressContextual() {
 }
 
 function AddPaymentMethodContent() {
-  const { companyId, onEvent } = useFlow<ContractorProfileContextInterface>()
+  const { contractorId, onEvent } = useFlow<ContractorProfileContextInterface>()
 
-  const contractor = useContractorData(companyId)
+  const contractor = useContractorData(contractorId)
   const { data: paymentMethodData } = useContractorPaymentMethodGetSuspense({
     contractorUuid: contractor?.uuid ?? '',
   })
@@ -324,9 +323,9 @@ export function AddPaymentMethodContextual() {
 }
 
 function EditPaymentMethodContent() {
-  const { companyId, onEvent } = useFlow<ContractorProfileContextInterface>()
+  const { contractorId, onEvent } = useFlow<ContractorProfileContextInterface>()
 
-  const contractor = useContractorData(companyId)
+  const contractor = useContractorData(contractorId)
   const { data: bankAccountsData } = useContractorPaymentMethodGetBankAccountsSuspense({
     contractorUuid: contractor?.uuid ?? '',
   })
@@ -411,9 +410,9 @@ export function EditPaymentMethodContextual() {
 }
 
 function EditCompensationContent() {
-  const { companyId, onEvent } = useFlow<ContractorProfileContextInterface>()
+  const { contractorId, onEvent } = useFlow<ContractorProfileContextInterface>()
 
-  const contractor = useContractorData(companyId)
+  const contractor = useContractorData(contractorId)
   const { mutateAsync: updateContractor, isPending } = useContractorsUpdateMutation()
 
   if (!contractor) return null
@@ -453,9 +452,9 @@ export function EditCompensationContextual() {
 }
 
 function EditBasicDetailsContent() {
-  const { companyId, onEvent } = useFlow<ContractorProfileContextInterface>()
+  const { contractorId, onEvent } = useFlow<ContractorProfileContextInterface>()
 
-  const contractor = useContractorData(companyId)
+  const contractor = useContractorData(contractorId)
   const { mutateAsync: updateContractor, isPending } = useContractorsUpdateMutation()
 
   if (!contractor) return null

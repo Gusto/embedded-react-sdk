@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react'
+import { useOutletContext } from 'react-router-dom'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import { useContractorsList } from '@gusto/embedded-api/react-query/contractorsList'
+import type { EntityIds } from '../../../../useEntities'
 import { DataView, EmptyData, Flex, Loading, useDataView } from '@/components/Common'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu/HamburgerMenu'
 import { ContractorOnboardingStatusBadge } from '@/components/Common/OnboardingStatusBadge'
@@ -137,7 +139,8 @@ function DismissedContractorsTable({ contractors }: { contractors: Contractor[] 
 
 function ContractorListContent() {
   const Components = useComponentContext()
-  const companyId = String(import.meta.env.VITE_COMPANY_ID || '')
+  const { entities } = useOutletContext<{ entities: EntityIds }>()
+  const companyId = entities.companyId
   const [selectedTab, setSelectedTab] = useState('active')
 
   const queryParams = useMemo(() => {
