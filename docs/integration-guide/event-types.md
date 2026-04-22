@@ -32,7 +32,6 @@ All of the events emitted by sdk components are listed in the following table:
 | COMPANY_LOCATION_UPDATED              | company/location/edit/done                    |
 | COMPANY_OVERVIEW_CONTINUE             | company/overview/continue                     |
 | COMPANY_OVERVIEW_DONE                 | company/overview/done                         |
-| COMPANY_SIGN_FORM                     | company/forms/sign/signForm                   |
 | COMPANY_SIGN_FORM_BACK                | company/forms/sign/back                       |
 | COMPANY_SIGN_FORM_DONE                | company/forms/sign/done                       |
 | COMPANY_SIGNATORY_CREATED             | company/signatory/created                     |
