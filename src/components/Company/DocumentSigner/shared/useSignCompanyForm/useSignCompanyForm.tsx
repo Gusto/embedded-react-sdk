@@ -27,10 +27,6 @@ import { SDKInternalError } from '@/types/sdkError'
 
 export type { SignCompanyFormOptionalFieldsToRequire } from './signCompanyFormSchema'
 
-export interface SignCompanyFormSubmitCallbacks {
-  onFormSigned?: (form: Form) => void
-}
-
 export interface UseSignCompanyFormProps {
   formId: string
   optionalFieldsToRequire?: SignCompanyFormOptionalFieldsToRequire
@@ -55,9 +51,7 @@ export interface UseSignCompanyFormReady extends BaseFormHookReady<
   }
   status: { isPending: boolean; mode: 'create' }
   actions: {
-    onSubmit: (
-      callbacks?: SignCompanyFormSubmitCallbacks,
-    ) => Promise<HookSubmitResult<Form> | undefined>
+    onSubmit: () => Promise<HookSubmitResult<Form> | undefined>
   }
 }
 
@@ -116,9 +110,7 @@ export function useSignCompanyForm({
     confirmSignature: baseMetadata.confirmSignature,
   }
 
-  const onSubmit = async (
-    callbacks?: SignCompanyFormSubmitCallbacks,
-  ): Promise<HookSubmitResult<Form> | undefined> => {
+  const onSubmit = async (): Promise<HookSubmitResult<Form> | undefined> => {
     let submitResult: HookSubmitResult<Form> | undefined
 
     await new Promise<void>(resolve => {
@@ -145,8 +137,6 @@ export function useSignCompanyForm({
             if (!signedForm) {
               throw new SDKInternalError('Company form signing failed')
             }
-
-            callbacks?.onFormSigned?.(signedForm)
 
             submitResult = {
               mode: 'create',

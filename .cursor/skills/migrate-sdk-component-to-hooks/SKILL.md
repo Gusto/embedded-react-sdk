@@ -123,6 +123,23 @@ if (!homeResult) {
 
 Pass `resolvedEmployeeId` to downstream hooks so retries reuse the created root. `Employee.Profile` is the reference for this pattern.
 
+### Submit Callbacks vs. Return Value
+
+Hook `onSubmit` actions return a `HookSubmitResult<Entity>` with the created/updated entity in `result.data`. Use that return value for post-submit side effects — do **not** add a callback argument for the sole purpose of exposing the final result:
+
+```tsx
+// Correct: single API call — read result.data and emit the event from the component
+const result = await signForm.actions.onSubmit()
+if (result) {
+  onEvent(companyEvents.COMPANY_SIGN_FORM, result.data)
+  onEvent(companyEvents.COMPANY_SIGN_FORM_DONE)
+}
+```
+
+Callbacks on `onSubmit` are only appropriate when a hook makes **multiple sequential API calls** and partners need access to the intermediate results that aren't otherwise surfaced in the final return value. `useEmployeeDetailsForm` and `useCompensationForm` are reference cases — they expose `onEmployeeCreated` / `onJobCreated` etc. so a partner can react between the create-employee and update-onboarding-status calls, or between job and compensation updates.
+
+Rule of thumb: if the hook's `onSubmit` wraps a single mutation (one API call), drop the callbacks interface entirely — `result.data` already carries everything the consumer needs. Reserve callbacks for the multi-call case where intermediate entities wouldn't otherwise be observable.
+
 ## 3. Loading and Error States with BaseLayout
 
 ### Error Aggregation
