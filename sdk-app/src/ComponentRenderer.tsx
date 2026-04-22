@@ -2,6 +2,8 @@ import { Suspense, useState, useCallback, Component, type ReactNode } from 'reac
 import { useParams } from 'react-router-dom'
 import { findComponent, CATEGORIES } from './registry'
 import { resolveDefaults } from './component-defaults'
+import { useResolvedTheme } from './useThemeModeContext'
+import { darkTheme } from './darkTheme'
 import type { EntityIds } from './useEntities'
 import styles from './ComponentRenderer.module.scss'
 import { GustoProvider } from '@/contexts'
@@ -121,6 +123,7 @@ export function ComponentRenderer({ entities }: ComponentRendererProps) {
     category: string
     component: string
   }>()
+  const resolvedTheme = useResolvedTheme()
   const [events, setEvents] = useState<EventLogEntry[]>([])
   const [eventsOpen, setEventsOpen] = useState(true)
   const [resetKey, setResetKey] = useState(0)
@@ -254,6 +257,7 @@ export function ComponentRenderer({ entities }: ComponentRendererProps) {
             >
               <GustoProvider
                 config={{ baseUrl: `${window.location.origin}/api/` }}
+                theme={resolvedTheme === 'dark' ? darkTheme : undefined}
                 key={providerKey}
               >
                 <Suspense fallback={<div className={styles.contentLoading}>Loading...</div>}>
