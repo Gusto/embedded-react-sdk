@@ -245,10 +245,6 @@ function AddPaymentMethodContent() {
   const { contractorId, onEvent } = useFlow<ContractorProfileContextInterface>()
 
   const contractor = useContractorData(contractorId)
-  const { data: paymentMethodData } = useContractorPaymentMethodGetSuspense({
-    contractorUuid: contractor?.uuid ?? '',
-  })
-  const paymentMethod = paymentMethodData.contractorPaymentMethod
 
   const queryClient = useQueryClient()
   const gustoClient = useGustoEmbeddedContext()
@@ -260,40 +256,35 @@ function AddPaymentMethodContent() {
   if (!contractor) return null
 
   const handleSave = async (data: {
-    type: 'Check' | 'Direct Deposit'
-    name?: string
-    routingNumber?: string
-    accountNumber?: string
-    accountType?: 'Checking' | 'Savings'
+    name: string
+    routingNumber: string
+    accountNumber: string
+    accountType: 'Checking' | 'Savings'
   }) => {
-    let version = paymentMethod?.version as string
-
-    if (data.type === 'Direct Deposit') {
-      await createBankAccount({
-        request: {
-          contractorUuid: contractor.uuid,
-          requestBody: {
-            name: data.name!,
-            routingNumber: data.routingNumber!,
-            accountNumber: data.accountNumber!,
-            accountType: data.accountType!,
-          },
-        },
-      })
-
-      const getPaymentMethodQuery = buildContractorPaymentMethodGetQuery(gustoClient, {
+    await createBankAccount({
+      request: {
         contractorUuid: contractor.uuid,
-      })
-      const updatedPaymentMethod = await queryClient.fetchQuery(getPaymentMethodQuery)
-      version = updatedPaymentMethod.contractorPaymentMethod?.version as string
-    }
+        requestBody: {
+          name: data.name,
+          routingNumber: data.routingNumber,
+          accountNumber: data.accountNumber,
+          accountType: data.accountType,
+        },
+      },
+    })
+
+    const getPaymentMethodQuery = buildContractorPaymentMethodGetQuery(gustoClient, {
+      contractorUuid: contractor.uuid,
+    })
+    const updatedPaymentMethod = await queryClient.fetchQuery(getPaymentMethodQuery)
+    const version = updatedPaymentMethod.contractorPaymentMethod?.version as string
 
     await updatePaymentMethod({
       request: {
         contractorUuid: contractor.uuid,
         requestBody: {
           version,
-          type: data.type,
+          type: 'Direct Deposit',
         },
       },
     })
@@ -304,7 +295,6 @@ function AddPaymentMethodContent() {
   return (
     <ContractorPaymentMethodForm
       variant="add"
-      paymentMethodType={paymentMethod?.type ?? 'Check'}
       isPending={isPaymentMethodPending || isBankAccountPending}
       onCancel={() => {
         onEvent(componentEvents.CANCEL)
@@ -331,11 +321,6 @@ function EditPaymentMethodContent() {
   })
   const bankAccounts = bankAccountsData.contractorBankAccountList ?? []
 
-  const { data: paymentMethodData } = useContractorPaymentMethodGetSuspense({
-    contractorUuid: contractor?.uuid ?? '',
-  })
-  const paymentMethod = paymentMethodData.contractorPaymentMethod
-
   const queryClient = useQueryClient()
   const gustoClient = useGustoEmbeddedContext()
   const { mutateAsync: updatePaymentMethod, isPending: isPaymentMethodPending } =
@@ -346,40 +331,35 @@ function EditPaymentMethodContent() {
   if (!contractor) return null
 
   const handleSave = async (data: {
-    type: 'Check' | 'Direct Deposit'
-    name?: string
-    routingNumber?: string
-    accountNumber?: string
-    accountType?: 'Checking' | 'Savings'
+    name: string
+    routingNumber: string
+    accountNumber: string
+    accountType: 'Checking' | 'Savings'
   }) => {
-    let version = paymentMethod?.version as string
-
-    if (data.type === 'Direct Deposit') {
-      await createBankAccount({
-        request: {
-          contractorUuid: contractor.uuid,
-          requestBody: {
-            name: data.name!,
-            routingNumber: data.routingNumber!,
-            accountNumber: data.accountNumber!,
-            accountType: data.accountType!,
-          },
-        },
-      })
-
-      const getPaymentMethodQuery = buildContractorPaymentMethodGetQuery(gustoClient, {
+    await createBankAccount({
+      request: {
         contractorUuid: contractor.uuid,
-      })
-      const updatedPaymentMethod = await queryClient.fetchQuery(getPaymentMethodQuery)
-      version = updatedPaymentMethod.contractorPaymentMethod?.version as string
-    }
+        requestBody: {
+          name: data.name,
+          routingNumber: data.routingNumber,
+          accountNumber: data.accountNumber,
+          accountType: data.accountType,
+        },
+      },
+    })
+
+    const getPaymentMethodQuery = buildContractorPaymentMethodGetQuery(gustoClient, {
+      contractorUuid: contractor.uuid,
+    })
+    const updatedPaymentMethod = await queryClient.fetchQuery(getPaymentMethodQuery)
+    const version = updatedPaymentMethod.contractorPaymentMethod?.version as string
 
     await updatePaymentMethod({
       request: {
         contractorUuid: contractor.uuid,
         requestBody: {
           version,
-          type: data.type,
+          type: 'Direct Deposit',
         },
       },
     })
@@ -391,7 +371,6 @@ function EditPaymentMethodContent() {
     <ContractorPaymentMethodForm
       variant="edit"
       bankAccount={bankAccounts[0]}
-      paymentMethodType={paymentMethod?.type ?? 'Check'}
       isPending={isPaymentMethodPending || isBankAccountPending}
       onCancel={() => {
         onEvent(componentEvents.CANCEL)

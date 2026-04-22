@@ -1,5 +1,5 @@
 import type { ContractorBankAccount } from '@gusto/embedded-api/models/components/contractorbankaccount'
-import { FormProvider, useForm, useWatch } from 'react-hook-form'
+import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { TextInputField, RadioGroupField, Flex } from '@/components/Common'
@@ -9,34 +9,26 @@ import { Form as HtmlForm } from '@/components/Common/Form/Form'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { accountNumberValidation, routingNumberValidation } from '@/helpers/validations'
 
-const PaymentMethodFormSchema = z.discriminatedUnion('type', [
-  z.object({
-    type: z.literal('Direct Deposit'),
-    name: z.string().min(1),
-    routingNumber: routingNumberValidation,
-    accountNumber: z.any(),
-    accountType: z.enum(['Checking', 'Savings']),
-  }),
-  z.object({
-    type: z.literal('Check'),
-  }),
-])
+const BankAccountFormSchema = z.object({
+  name: z.string().min(1),
+  routingNumber: routingNumberValidation,
+  accountNumber: z.any(),
+  accountType: z.enum(['Checking', 'Savings']),
+})
 
-type PaymentMethodFormValues = z.input<typeof PaymentMethodFormSchema>
+type BankAccountFormValues = z.input<typeof BankAccountFormSchema>
 
 interface ContractorPaymentMethodFormProps {
   variant: 'add' | 'edit'
   bankAccount?: ContractorBankAccount
-  paymentMethodType: 'Check' | 'Direct Deposit'
   isPending?: boolean
   onCancel?: () => void
-  onSave?: (data: PaymentMethodFormValues) => void | Promise<void>
+  onSave?: (data: BankAccountFormValues) => void | Promise<void>
 }
 
 export function ContractorPaymentMethodForm({
   variant,
   bankAccount,
-  paymentMethodType,
   isPending,
   onCancel,
   onSave,
@@ -44,10 +36,9 @@ export function ContractorPaymentMethodForm({
   const Components = useComponentContext()
   const { baseSubmitHandler } = useBase()
 
-  const formMethods = useForm<PaymentMethodFormValues>({
-    resolver: zodResolver(PaymentMethodFormSchema),
+  const formMethods = useForm<BankAccountFormValues>({
+    resolver: zodResolver(BankAccountFormSchema),
     defaultValues: {
-      type: paymentMethodType,
       name: bankAccount?.name ?? '',
       routingNumber: bankAccount?.routingNumber ?? '',
       accountNumber: bankAccount?.hiddenAccountNumber ?? '',
@@ -55,24 +46,19 @@ export function ContractorPaymentMethodForm({
     },
   })
 
-  const watchedType = useWatch({ control: formMethods.control, name: 'type' })
-
-  const handleSubmit = async (data: PaymentMethodFormValues) => {
+  const handleSubmit = async (data: BankAccountFormValues) => {
     await baseSubmitHandler(data, async payload => {
-      if (payload.type === 'Direct Deposit') {
-        const { name, accountNumber, routingNumber, accountType } = payload
-        const hasChanged =
-          !bankAccount ||
-          name !== bankAccount.name ||
-          routingNumber !== bankAccount.routingNumber ||
-          accountType !== bankAccount.accountType ||
-          accountNumber !== bankAccount.hiddenAccountNumber
-        if (hasChanged) {
-          const result = accountNumberValidation.safeParse(accountNumber)
-          if (!result.success) {
-            formMethods.setError('accountNumber', { type: 'validate' })
-            return
-          }
+      const hasChanged =
+        !bankAccount ||
+        payload.name !== bankAccount.name ||
+        payload.routingNumber !== bankAccount.routingNumber ||
+        payload.accountType !== bankAccount.accountType ||
+        payload.accountNumber !== bankAccount.hiddenAccountNumber
+      if (hasChanged) {
+        const result = accountNumberValidation.safeParse(payload.accountNumber)
+        if (!result.success) {
+          formMethods.setError('accountNumber', { type: 'validate' })
+          return
         }
       }
       await onSave?.(payload)
@@ -85,65 +71,43 @@ export function ContractorPaymentMethodForm({
         <Flex flexDirection="column" gap={24}>
           <Flex flexDirection="column" gap={4}>
             <Components.Heading as="h2">
-              {variant === 'add'
-                ? 'Add contractor payment method'
-                : 'Edit contractor payment method'}
+              {variant === 'add' ? 'Add bank account' : 'Edit bank account'}
             </Components.Heading>
             <Components.Text variant="supporting">
-              Choose how this contractor gets paid.
+              Enter the bank account details for direct deposit.
             </Components.Text>
           </Flex>
 
-          <RadioGroupField
-            name="type"
-            label="Payment method"
-            shouldVisuallyHideLabel
-            options={[
-              {
-                value: 'Direct Deposit',
-                label: 'Direct deposit',
-                description: 'Deposit the payment directly into their bank account.',
-              },
-              {
-                value: 'Check',
-                label: 'Check',
-                description: 'Pay by physical check.',
-              },
-            ]}
-          />
-
-          {watchedType === 'Direct Deposit' && (
-            <Flex flexDirection="column" gap={20}>
-              <TextInputField
-                name="name"
-                label="Account nickname"
-                isRequired
-                errorMessage="Account nickname is required"
-              />
-              <TextInputField
-                name="routingNumber"
-                label="Routing number"
-                isRequired
-                description="9 digits, on the bottom left of a check"
-                errorMessage="Enter a valid 9-digit routing number"
-              />
-              <TextInputField
-                name="accountNumber"
-                label="Account number"
-                isRequired
-                errorMessage="Enter a valid account number"
-              />
-              <RadioGroupField
-                name="accountType"
-                label="Account type"
-                isRequired
-                options={[
-                  { value: 'Checking', label: 'Checking' },
-                  { value: 'Savings', label: 'Savings' },
-                ]}
-              />
-            </Flex>
-          )}
+          <Flex flexDirection="column" gap={20}>
+            <TextInputField
+              name="name"
+              label="Account nickname"
+              isRequired
+              errorMessage="Account nickname is required"
+            />
+            <TextInputField
+              name="routingNumber"
+              label="Routing number"
+              isRequired
+              description="9 digits, on the bottom left of a check"
+              errorMessage="Enter a valid 9-digit routing number"
+            />
+            <TextInputField
+              name="accountNumber"
+              label="Account number"
+              isRequired
+              errorMessage="Enter a valid account number"
+            />
+            <RadioGroupField
+              name="accountType"
+              label="Account type"
+              isRequired
+              options={[
+                { value: 'Checking', label: 'Checking' },
+                { value: 'Savings', label: 'Savings' },
+              ]}
+            />
+          </Flex>
 
           <ActionsLayout>
             <Components.Button variant="secondary" onClick={onCancel}>
