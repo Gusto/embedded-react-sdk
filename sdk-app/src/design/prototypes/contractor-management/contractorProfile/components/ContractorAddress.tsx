@@ -2,16 +2,26 @@ import type { Contractor } from '@gusto/embedded-api/models/components/contracto
 import { Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
-export function ContractorAddress({ contractor }: { contractor: Contractor }) {
+interface ContractorAddressProps {
+  contractor: Contractor
+  onEdit?: () => void
+}
+
+export function ContractorAddress({ contractor, onEdit }: ContractorAddressProps) {
   const Components = useComponentContext()
 
   return (
     <Components.Box
       header={
-        <Flex flexDirection="column" gap={4}>
+        <Flex flexDirection="row" justifyContent="space-between" alignItems="center">
           <Components.Heading as="h3" styledAs="h4">
             Address
           </Components.Heading>
+          {onEdit && (
+            <Components.Button variant="secondary" onClick={onEdit}>
+              Edit
+            </Components.Button>
+          )}
         </Flex>
       }
     >
