@@ -107,6 +107,18 @@ describe('DeductionsForm', () => {
       })
     })
 
+    it('does not show a form until a deduction type is selected', async () => {
+      renderDeductionsForm()
+
+      await waitFor(() => {
+        expect(screen.getByText('Add Deduction')).toBeInTheDocument()
+      })
+
+      expect(screen.queryByText('Garnishment type')).not.toBeInTheDocument()
+      expect(screen.queryByText('Description')).not.toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: 'Cancel' })).not.toBeInTheDocument()
+    })
+
     it('can switch between garnishment or custom deduction', async () => {
       renderDeductionsForm()
 
@@ -151,6 +163,11 @@ describe('DeductionsForm', () => {
     it('can go back to empty state when canceling with no deductions', async () => {
       renderDeductionsForm()
 
+      const garnishmentRadio = await screen.findByLabelText(
+        'Garnishment (a court-ordered deduction)',
+      )
+      await user.click(garnishmentRadio)
+
       await waitFor(() => {
         expect(screen.getByLabelText('Agency')).toBeInTheDocument()
       })
@@ -179,6 +196,11 @@ describe('DeductionsForm', () => {
         ],
         null,
       )
+
+      const garnishmentRadio = await screen.findByLabelText(
+        'Garnishment (a court-ordered deduction)',
+      )
+      await user.click(garnishmentRadio)
 
       await waitFor(() => {
         expect(screen.getByLabelText('Agency')).toBeInTheDocument()
