@@ -70,7 +70,7 @@ function ProfileViewData() {
   const contractor = useContractorData(contractorId)
 
   if (!contractor) {
-    return <Components.Text>No contractors found for this company.</Components.Text>
+    return <Components.Text>No contractor found for this contractor ID.</Components.Text>
   }
 
   return <ProfileViewContent contractor={contractor} />
@@ -215,7 +215,7 @@ function EditAddressContent() {
 
   const contractor = useContractorData(contractorId)
   const { data: addressData } = useContractorsGetAddressSuspense({
-    contractorUuid: contractor?.uuid ?? '',
+    contractorUuid: contractorId,
   })
   const address = addressData.contractorAddress
 
@@ -347,7 +347,7 @@ function EditPaymentMethodContent() {
 
   const contractor = useContractorData(contractorId)
   const { data: bankAccountsData } = useContractorPaymentMethodGetBankAccountsSuspense({
-    contractorUuid: contractor?.uuid ?? '',
+    contractorUuid: contractorId,
   })
   const bankAccounts = bankAccountsData.contractorBankAccountList ?? []
 

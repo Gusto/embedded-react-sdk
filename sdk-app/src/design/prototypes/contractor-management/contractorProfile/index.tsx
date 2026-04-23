@@ -5,6 +5,7 @@ import type { EntityIds } from '../../../../useEntities'
 import { contractorProfileStateMachine } from './contractorProfileStateMachine'
 import type { ContractorProfileContextInterface } from './ContractorProfileComponents'
 import { ProfileViewContextual } from './ContractorProfileComponents'
+import { EmptyData } from '@/components/Common'
 import { Flow } from '@/components/Flow/Flow'
 import { BaseComponent, useBase } from '@/components/Base'
 
@@ -26,6 +27,10 @@ function ContractorProfileRoot() {
       ),
     [entities.contractorId],
   )
+
+  if (!entities.contractorId) {
+    return <EmptyData title="No contractor selected. Set a Contractor ID in the settings panel." />
+  }
 
   return <Flow machine={machine} onEvent={onEvent} />
 }
