@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.41.0
+
+### Features & Enhancements
+
+- Add contractor profile design prototype with payment method management
+- Add Contractor List design prototype
+- Add theme switcher (system/light/dark) to sdk-app
+
+### Fixes
+
+- Seed Start date from employee hire date in edit mode
+
+### Chores & Maintenance
+
+- Integrate useSignCompanyForm hook into Company DocumentSigner
+- Migrate PaySchedule to usePayScheduleForm + Flow state machine (SDK-774)
+- Add unit tests for PolicySettings presentation component
+- Bump various dependencies (typescript-eslint, react-router-dom, @vitest/coverage-v8, dompurify, react-hook-form)
+
 ## 0.40.0
 
 ### Breaking Changes
