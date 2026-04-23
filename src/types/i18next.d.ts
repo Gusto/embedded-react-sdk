@@ -1742,6 +1742,7 @@ export interface EmployeeI9SignatureForm{
 "confirmationLabel":string;
 "confirmationError":string;
 "preparerQuestion":string;
+"preparerQuestionError":string;
 "preparerNo":string;
 "preparerYes":string;
 "preparerNote":string;
@@ -1756,6 +1757,7 @@ export interface EmployeeI9SignatureForm{
 "preparerCityLabel":string;
 "preparerCityError":string;
 "preparerStateLabel":string;
+"preparerStatePlaceholder":string;
 "preparerStateError":string;
 "preparerZipLabel":string;
 "preparerZipError":string;
