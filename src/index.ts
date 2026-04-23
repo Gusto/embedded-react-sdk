@@ -204,6 +204,7 @@ export type {
   UseSignEmployeeFormProps,
   UseSignEmployeeFormResult,
   UseSignEmployeeFormReady,
+  SignEmployeeFormFieldComponents,
   SignEmployeeFormFieldsMetadata,
   SignEmployeeFormFields,
   PreparerFieldGroup,

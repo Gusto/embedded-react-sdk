@@ -65,14 +65,6 @@ function Root({ employeeId, formId, className }: I9SignatureFormProps) {
     }
   }
 
-  const handleAddPreparer = () => {
-    hookResult.actions.addPreparer?.()
-  }
-
-  const handleRemovePreparer = () => {
-    hookResult.actions.removePreparer?.()
-  }
-
   const preparerFieldGroups = [
     Fields.Preparer1,
     Fields.Preparer2,
@@ -160,8 +152,8 @@ function Root({ employeeId, formId, className }: I9SignatureFormProps) {
                             (preparers?.canRemove ?? false) &&
                             preparerFieldGroups.length > 1
                           }
-                          onAdd={handleAddPreparer}
-                          onRemove={handleRemovePreparer}
+                          onAdd={() => hookResult.actions.addPreparer?.()}
+                          onRemove={() => hookResult.actions.removePreparer?.()}
                         />
                       </Flex>
                     )
