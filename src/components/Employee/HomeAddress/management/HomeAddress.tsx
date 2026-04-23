@@ -37,17 +37,12 @@ function HomeAddressRoot({ employeeId, onEvent, dictionary }: HomeAddressProps) 
 
   const [editTargetUuid, setEditTargetUuid] = useState<string | undefined>(undefined)
 
-  const homeAddressesQuery = useEmployeeAddressesGet({ employeeId }, { enabled: !!employeeId })
+  const homeAddressesQuery = useEmployeeAddressesGet({ employeeId })
   const employeeHomeAddresses = homeAddressesQuery.data?.employeeAddressList
+  const currentHomeAddress =
+    employeeHomeAddresses?.find(a => a.active) ?? employeeHomeAddresses?.[0]
 
-  const activeHomeAddressUuid = useMemo(() => {
-    if (!employeeHomeAddresses?.length) {
-      return undefined
-    }
-    return employeeHomeAddresses.find(a => a.active)?.uuid ?? employeeHomeAddresses[0]?.uuid
-  }, [employeeHomeAddresses])
-
-  const homeAddressUuidForEdit = editTargetUuid ?? activeHomeAddressUuid
+  const homeAddressUuidForEdit = editTargetUuid ?? currentHomeAddress?.uuid
 
   const editHomeAddressForm = useHomeAddressForm({
     employeeId,
