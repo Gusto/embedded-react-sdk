@@ -138,7 +138,7 @@ function Root({ employeeId, formId, className }: I9SignatureFormProps) {
                 <Flex flexDirection="column" gap={20}>
                   <Fields.UsedPreparer
                     label={t('preparerQuestion')}
-                    validationMessages={{ REQUIRED: t('preparerQuestion') }}
+                    validationMessages={{ REQUIRED: t('preparerQuestionError') }}
                   />
 
                   {preparerFieldGroups.map((PreparerFields, index) => {
