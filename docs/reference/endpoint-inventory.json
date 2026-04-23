@@ -603,6 +603,10 @@
           "path": "/v1/employees/:employeeId/home_addresses"
         },
         {
+          "method": "GET",
+          "path": "/v1/home_addresses/:homeAddressUuid"
+        },
+        {
           "method": "POST",
           "path": "/v1/employees/:employeeId/home_addresses"
         },
@@ -2199,6 +2203,10 @@
           "path": "/v1/employees/:employeeId/home_addresses"
         },
         {
+          "method": "GET",
+          "path": "/v1/home_addresses/:homeAddressUuid"
+        },
+        {
           "method": "POST",
           "path": "/v1/employees/:employeeId/home_addresses"
         },
@@ -2339,6 +2347,10 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/home_addresses"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/home_addresses/:homeAddressUuid"
         },
         {
           "method": "POST",

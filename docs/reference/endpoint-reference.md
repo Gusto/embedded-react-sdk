@@ -121,6 +121,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | `/v1/employees/:employeeId` |
 |  | PUT | `/v1/employees/:employeeId/onboarding_status` |
 |  | GET | `/v1/employees/:employeeId/home_addresses` |
+|  | GET | `/v1/home_addresses/:homeAddressUuid` |
 |  | POST | `/v1/employees/:employeeId/home_addresses` |
 |  | PUT | `/v1/home_addresses/:homeAddressUuid` |
 |  | GET | `/v1/companies/:companyId/locations` |

@@ -38,13 +38,14 @@ function HomeAddressRoot({ employeeId, onEvent, dictionary }: HomeAddressProps) 
   const [editTargetUuid, setEditTargetUuid] = useState<string | undefined>(undefined)
 
   const homeAddressesQuery = useEmployeeAddressesGet({ employeeId }, { enabled: !!employeeId })
+  const employeeHomeAddresses = homeAddressesQuery.data?.employeeAddressList
+
   const activeHomeAddressUuid = useMemo(() => {
-    const list = homeAddressesQuery.data?.employeeAddressList
-    if (!list?.length) {
+    if (!employeeHomeAddresses?.length) {
       return undefined
     }
-    return list.find(a => a.active)?.uuid ?? list[0]?.uuid
-  }, [homeAddressesQuery.data?.employeeAddressList])
+    return employeeHomeAddresses.find(a => a.active)?.uuid ?? employeeHomeAddresses[0]?.uuid
+  }, [employeeHomeAddresses])
 
   const homeAddressUuidForEdit = editTargetUuid ?? activeHomeAddressUuid
 
@@ -97,14 +98,13 @@ function HomeAddressRoot({ employeeId, onEvent, dictionary }: HomeAddressProps) 
   }
 
   const handleConfirmDelete = async (homeAddressUuid: string): Promise<boolean> => {
-    const snapshot =
-      editHomeAddressForm.data.homeAddresses?.find(a => a.uuid === homeAddressUuid) ?? null
+    const snapshot = employeeHomeAddresses?.find(a => a.uuid === homeAddressUuid) ?? null
 
     let succeeded = false
     await baseSubmitHandler(
       { homeAddressUuid, snapshot },
       async ({ homeAddressUuid: uuid, snapshot: snap }) => {
-        const target = editHomeAddressForm.data.homeAddresses?.find(a => a.uuid === uuid)
+        const target = employeeHomeAddresses?.find(a => a.uuid === uuid)
         if (!target) {
           throw new SDKInternalError('Home address not found')
         }
@@ -129,6 +129,7 @@ function HomeAddressRoot({ employeeId, onEvent, dictionary }: HomeAddressProps) 
       <HomeAddressView
         editHomeAddressForm={editHomeAddressForm}
         createHomeAddressForm={createHomeAddressForm}
+        employeeHomeAddresses={employeeHomeAddresses}
         employeeDisplayName={employeeDisplayName}
         editingHomeAddressUuid={homeAddressUuidForEdit}
         onEditAddressTargetChange={setEditTargetUuid}

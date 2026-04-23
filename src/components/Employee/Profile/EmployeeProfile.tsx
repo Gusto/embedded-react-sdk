@@ -6,7 +6,7 @@ import type { ProfileProps } from './Profile'
 import styles from './EmployeeProfile.module.scss'
 import { useEmployeeDetailsForm } from './shared/useEmployeeDetailsForm'
 import type { EmployeeDetailsOptionalFieldsToRequire } from './shared/useEmployeeDetailsForm'
-import { useHomeAddressForm } from './shared/useHomeAddressForm'
+import { useCurrentHomeAddressForm } from './shared/useHomeAddressForm'
 import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { composeSubmitHandler } from '@/partner-hook-utils/form/composeSubmitHandler'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
@@ -52,8 +52,8 @@ export function EmployeeProfile({
     shouldFocusError: false,
   })
 
-  const homeAddress = useHomeAddressForm({
-    employeeId: resolvedEmployeeId,
+  const homeAddress = useCurrentHomeAddressForm({
+    employeeId: resolvedEmployeeId ?? '',
     withEffectiveDateField: false,
     defaultValues: {
       street1: defaultValues?.homeAddress?.street1,

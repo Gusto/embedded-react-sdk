@@ -63,6 +63,8 @@ function HomeAddressCourtesyWithholdingBlock({
 export interface HomeAddressViewProps {
   editHomeAddressForm: UseHomeAddressFormReady
   createHomeAddressForm: UseHomeAddressFormReady
+  /** Full list for history, pending future row, and delete confirmation (from management list query). */
+  employeeHomeAddresses: EmployeeAddress[] | undefined
   employeeDisplayName: string
   /** Resolved UUID passed to the edit form (`homeAddressUuid`); active row when not editing history. */
   editingHomeAddressUuid: string | undefined
@@ -76,6 +78,7 @@ export interface HomeAddressViewProps {
 export function HomeAddressView({
   editHomeAddressForm,
   createHomeAddressForm,
+  employeeHomeAddresses,
   employeeDisplayName,
   editingHomeAddressUuid,
   onEditAddressTargetChange,
@@ -109,11 +112,13 @@ export function HomeAddressView({
   }, [addressModal])
 
   const {
-    data: { homeAddress, homeAddresses },
+    data: { homeAddress },
     status: editStatus,
     actions: { onSubmit: editOnSubmit },
     form: editForm,
   } = editHomeAddressForm
+
+  const homeAddresses = employeeHomeAddresses
 
   const {
     status: createStatus,

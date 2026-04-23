@@ -166,6 +166,7 @@ export type {
 
 export {
   useHomeAddressForm,
+  useCurrentHomeAddressForm,
   HomeAddressErrorCodes,
   createHomeAddressSchema,
 } from '@/components/Employee/Profile/shared/useHomeAddressForm'
@@ -173,6 +174,7 @@ export type {
   HomeAddressSubmitOptions,
   HomeAddressOptionalFieldsToRequire,
   UseHomeAddressFormProps,
+  UseCurrentHomeAddressFormProps,
   UseHomeAddressFormResult,
   UseHomeAddressFormReady,
   HomeAddressFieldsMetadata,
