@@ -33,14 +33,10 @@ export const List = () => {
         title: t('locationListCol1'),
         render: location => {
           return (
-            <>
-              <address>
-                <Components.Text as="div">{getStreet(location)}</Components.Text>
-                <Components.Text as="div" size="sm">
-                  {getCityStateZip(location)}
-                </Components.Text>
-              </address>
-            </>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+              <Components.Text as="div">{getStreet(location)}</Components.Text>
+              <Components.Text as="div">{getCityStateZip(location)}</Components.Text>
+            </div>
           )
         },
       },
