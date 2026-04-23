@@ -2,10 +2,11 @@ import { Suspense, useState, useCallback, Component, type ReactNode } from 'reac
 import { useParams } from 'react-router-dom'
 import { findComponent, CATEGORIES } from './registry'
 import { resolveDefaults } from './component-defaults'
+import { useResolvedTheme } from './useThemeModeContext'
+import { darkTheme } from './darkTheme'
 import type { EntityIds } from './useEntities'
 import styles from './ComponentRenderer.module.scss'
 import { GustoProvider } from '@/contexts'
-import '@/styles/sdk.scss'
 
 interface ComponentRendererProps {
   entities: EntityIds
@@ -122,6 +123,7 @@ export function ComponentRenderer({ entities }: ComponentRendererProps) {
     category: string
     component: string
   }>()
+  const resolvedTheme = useResolvedTheme()
   const [events, setEvents] = useState<EventLogEntry[]>([])
   const [eventsOpen, setEventsOpen] = useState(true)
   const [resetKey, setResetKey] = useState(0)
@@ -203,59 +205,67 @@ export function ComponentRenderer({ entities }: ComponentRendererProps) {
         {displayCategory} &rsaquo; <span>{entry.name}</span>
       </div>
       {missingIds.length > 0 || missingAdditionalProps.length > 0 ? (
-        <div className={styles.contentBody}>
-          <div className={styles.warningCard}>
-            <strong>
-              {missingIds.length > 0 ? 'Missing required IDs' : 'Missing required props'}
-            </strong>
-            {missingIds.length > 0 && (
-              <>
-                <div className={styles.warningTags}>
-                  {missingIds.map(id => (
-                    <span key={id} className={styles.warningTag}>
-                      {id}
-                    </span>
-                  ))}
-                </div>
+        <div className={styles.componentContainer}>
+          <div className={styles.contentBody}>
+            <div className={styles.warningCard}>
+              <strong>
+                {missingIds.length > 0 ? 'Missing required IDs' : 'Missing required props'}
+              </strong>
+              {missingIds.length > 0 && (
+                <>
+                  <div className={styles.warningTags}>
+                    {missingIds.map(id => (
+                      <span key={id} className={styles.warningTag}>
+                        {id}
+                      </span>
+                    ))}
+                  </div>
+                  <div className={styles.warningDescription}>
+                    Set these IDs in <strong>Settings</strong> (top right) or run{' '}
+                    <code>npm run sdk-app:setup --env=demo</code>
+                  </div>
+                </>
+              )}
+              {missingAdditionalProps.length > 0 && (
                 <div className={styles.warningDescription}>
-                  Set these IDs in <strong>Settings</strong> (top right) or run{' '}
-                  <code>npm run sdk-app:setup --env=demo</code>
+                  <div>
+                    This component requires props that are not auto-provisioned. It typically needs
+                    context from a parent flow (e.g. a form ID selected in a previous step).
+                  </div>
+                  <div className={styles.warningTags}>
+                    {missingAdditionalProps.map(prop => (
+                      <span key={prop} className={`${styles.warningTag} ${styles.warningTagAlt}`}>
+                        {prop}
+                      </span>
+                    ))}
+                  </div>
+                  <div className={styles.warningHint}>
+                    Try the parent flow component instead, or pass these props manually if testing.
+                  </div>
                 </div>
-              </>
-            )}
-            {missingAdditionalProps.length > 0 && (
-              <div className={styles.warningDescription}>
-                <div>
-                  This component requires props that are not auto-provisioned. It typically needs
-                  context from a parent flow (e.g. a form ID selected in a previous step).
-                </div>
-                <div className={styles.warningTags}>
-                  {missingAdditionalProps.map(prop => (
-                    <span key={prop} className={`${styles.warningTag} ${styles.warningTagAlt}`}>
-                      {prop}
-                    </span>
-                  ))}
-                </div>
-                <div className={styles.warningHint}>
-                  Try the parent flow component instead, or pass these props manually if testing.
-                </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
       ) : (
-        <div className={styles.contentBody}>
-          <ComponentErrorBoundary
-            onReset={() => {
-              setResetKey(k => k + 1)
-            }}
-          >
-            <GustoProvider config={{ baseUrl: `${window.location.origin}/api/` }} key={providerKey}>
-              <Suspense fallback={<div className={styles.contentLoading}>Loading...</div>}>
-                <SdkComponent {...componentProps} />
-              </Suspense>
-            </GustoProvider>
-          </ComponentErrorBoundary>
+        <div className={styles.componentContainer}>
+          <div className={styles.contentBody}>
+            <ComponentErrorBoundary
+              onReset={() => {
+                setResetKey(k => k + 1)
+              }}
+            >
+              <GustoProvider
+                config={{ baseUrl: `${window.location.origin}/api/` }}
+                theme={resolvedTheme === 'dark' ? darkTheme : undefined}
+                key={providerKey}
+              >
+                <Suspense fallback={<div className={styles.contentLoading}>Loading...</div>}>
+                  <SdkComponent {...componentProps} />
+                </Suspense>
+              </GustoProvider>
+            </ComponentErrorBoundary>
+          </div>
         </div>
       )}
       <div className={styles.eventsLog}>

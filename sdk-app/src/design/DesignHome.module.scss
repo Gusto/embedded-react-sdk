@@ -1,0 +1,9 @@
+code {
+  background: var(--color-badge-bg);
+  padding: toRem(2) toRem(6);
+  border-radius: toRem(4);
+  font-family: monospace;
+  font-size: toRem(13);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}

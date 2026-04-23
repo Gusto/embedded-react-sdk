@@ -1,18 +1,73 @@
 :root {
   --color-bg: #ffffff;
   --color-bg-sidebar: #f8f9fa;
-  --color-bg-topbar: #1a1a2e;
+  --color-bg-topbar: #ffffff;
   --color-text: #1a1a2e;
-  --color-text-topbar: #e0e0e0;
+  --color-text-topbar: #1a1a2e;
   --color-text-muted: #6c757d;
   --color-border: #dee2e6;
   --color-active: #0d6efd;
   --color-active-bg: #e7f1ff;
+  --color-active-hover: #0b5ed7;
   --color-hover-bg: #f0f0f0;
   --color-success: #198754;
   --color-warning: #ffc107;
   --color-danger: #dc3545;
   --color-badge-bg: #e9ecef;
+  --color-focus-ring: rgba(13, 110, 253, 0.15);
+  --color-danger-hover-bg: #fce4ec;
+  --color-warning-bg: #fff3cd;
+  --color-warning-border: #ffc107;
+  --color-warning-text: #664d03;
+  --color-warning-code-bg: #fff8e1;
+  --color-warning-tag-bg: #664d03;
+  --color-warning-tag-alt-bg: #856404;
+  --color-badge-env-bg: rgba(13, 110, 253, 0.1);
+  --color-badge-env-text: #0d6efd;
+  --color-badge-build-bg: rgba(25, 135, 84, 0.1);
+  --color-badge-build-text: #198754;
+  --color-badge-demo-bg: rgba(255, 193, 7, 0.15);
+  --color-badge-demo-text: #997404;
+  --color-overlay-bg: rgba(26, 26, 46, 0.85);
+  --color-danger-icon-bg: rgba(220, 53, 69, 0.1);
+  --color-danger-error-bg: rgba(220, 53, 69, 0.08);
+  --color-spinner-border: rgba(255, 255, 255, 0.3);
+}
+
+[data-theme='dark'] {
+  --color-bg: #1a1d23;
+  --color-bg-sidebar: #15171c;
+  --color-bg-topbar: #1e2126;
+  --color-text: #e4e5e7;
+  --color-text-topbar: #e4e5e7;
+  --color-text-muted: #8b8f98;
+  --color-border: #2e3238;
+  --color-active: #3b82f6;
+  --color-active-bg: rgba(59, 130, 246, 0.15);
+  --color-active-hover: #2563eb;
+  --color-hover-bg: #23272e;
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --color-badge-bg: #2a2e36;
+  --color-focus-ring: rgba(59, 130, 246, 0.2);
+  --color-danger-hover-bg: #3b1c1c;
+  --color-warning-bg: #332b00;
+  --color-warning-border: #665500;
+  --color-warning-text: #fcd34d;
+  --color-warning-code-bg: #3d3200;
+  --color-warning-tag-bg: #78650d;
+  --color-warning-tag-alt-bg: #99800f;
+  --color-badge-env-bg: rgba(59, 130, 246, 0.15);
+  --color-badge-env-text: #60a5fa;
+  --color-badge-build-bg: rgba(34, 197, 94, 0.15);
+  --color-badge-build-text: #4ade80;
+  --color-badge-demo-bg: rgba(245, 158, 11, 0.15);
+  --color-badge-demo-text: #fbbf24;
+  --color-overlay-bg: rgba(0, 0, 0, 0.85);
+  --color-danger-icon-bg: rgba(239, 68, 68, 0.15);
+  --color-danger-error-bg: rgba(239, 68, 68, 0.1);
+  --color-spinner-border: rgba(255, 255, 255, 0.3);
 }
 
 * {
@@ -42,8 +97,8 @@ body {
 }
 
 .main-content {
-  flex: 1;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  overflow: auto;
 }

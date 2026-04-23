@@ -53,6 +53,7 @@ export type {
   HookErrorHandling,
   BaseHookReady,
   BaseFormHookReady,
+  FormHookResult,
   FieldMetadata,
   FieldMetadataWithOptions,
   FieldsMetadata,
@@ -256,7 +257,6 @@ export {
   createSignCompanyFormSchema,
 } from '@/components/Company/DocumentSigner/shared/useSignCompanyForm'
 export type {
-  SignCompanyFormSubmitCallbacks,
   SignCompanyFormOptionalFieldsToRequire,
   UseSignCompanyFormProps,
   UseSignCompanyFormResult,
