@@ -15,6 +15,8 @@ export interface SelectHookFieldProps<
   getOptionLabel?: (entry: TEntry) => string
   placeholder?: string
   FieldComponent?: ComponentType<SelectProps>
+  /** When used inside a modal, pass the modal backdrop ref’s element so the listbox stacks correctly. */
+  portalContainer?: SelectProps['portalContainer']
 }
 
 export function SelectHookField<TErrorCode extends string, TEntry = unknown>({
@@ -26,6 +28,7 @@ export function SelectHookField<TErrorCode extends string, TEntry = unknown>({
   getOptionLabel,
   placeholder,
   FieldComponent,
+  portalContainer,
 }: SelectHookFieldProps<TErrorCode, TEntry>) {
   const { metadata, control, errorMessage } = useHookFieldResolution(
     name,
@@ -55,6 +58,7 @@ export function SelectHookField<TErrorCode extends string, TEntry = unknown>({
       options={options}
       placeholder={placeholder}
       FieldComponent={FieldComponent}
+      portalContainer={portalContainer}
     />
   )
 }

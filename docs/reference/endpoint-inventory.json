@@ -584,6 +584,10 @@
           "path": "/v1/employees/:employeeId/home_addresses"
         },
         {
+          "method": "GET",
+          "path": "/v1/home_addresses/:homeAddressUuid"
+        },
+        {
           "method": "POST",
           "path": "/v1/employees/:employeeId/home_addresses"
         },
@@ -833,6 +837,26 @@
       "variables": [
         "employeeId",
         "employeeUuid"
+      ]
+    },
+    "Employee.HomeAddress": {
+      "endpoints": [
+        {
+          "method": "DELETE",
+          "path": "/v1/home_addresses/:homeAddressUuid"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/home_addresses"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId"
+        }
+      ],
+      "variables": [
+        "employeeId",
+        "homeAddressUuid"
       ]
     },
     "Employee.EmploymentEligibility": {
@@ -2160,6 +2184,10 @@
           "path": "/v1/employees/:employeeId/home_addresses"
         },
         {
+          "method": "GET",
+          "path": "/v1/home_addresses/:homeAddressUuid"
+        },
+        {
           "method": "POST",
           "path": "/v1/employees/:employeeId/home_addresses"
         },
@@ -2300,6 +2328,10 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/home_addresses"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/home_addresses/:homeAddressUuid"
         },
         {
           "method": "POST",

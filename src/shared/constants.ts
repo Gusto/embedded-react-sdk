@@ -14,6 +14,7 @@ export const employeeEvents = {
   EMPLOYEE_HOME_ADDRESS_UPDATE: 'employee/addresses/home/update',
   EMPLOYEE_HOME_ADDRESS_CREATED: 'employee/addresses/home/created',
   EMPLOYEE_HOME_ADDRESS_UPDATED: 'employee/addresses/home/updated',
+  EMPLOYEE_HOME_ADDRESS_DELETED: 'employee/addresses/home/deleted',
   EMPLOYEE_WORK_ADDRESS: 'employee/addresses/work',
   EMPLOYEE_WORK_ADDRESS_UPDATE: 'employee/addresses/work/update',
   EMPLOYEE_WORK_ADDRESS_CREATED: 'employee/addresses/work/created',

@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { EmployeeAddress } from '@gusto/embedded-api/models/components/employeeaddress'
-import { useEmployeeAddressesGet } from '@gusto/embedded-api/react-query/employeeAddressesGet'
+import { useEmployeeAddressesRetrieveHomeAddress } from '@gusto/embedded-api/react-query/employeeAddressesRetrieveHomeAddress'
 import { useEmployeeAddressesCreateMutation } from '@gusto/embedded-api/react-query/employeeAddressesCreate'
 import { useEmployeeAddressesUpdateMutation } from '@gusto/embedded-api/react-query/employeeAddressesUpdate'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
@@ -40,11 +40,17 @@ export type { HomeAddressOptionalFieldsToRequire } from './homeAddressSchema'
 
 export interface HomeAddressSubmitOptions {
   employeeId?: string
+  /** When omitted on update without an effective-date field, the row’s `effectiveDate` from the fetched address is used. */
   effectiveDate?: string
 }
 
 export interface UseHomeAddressFormProps {
-  employeeId?: string
+  employeeId: string
+  /**
+   * When set, loads that home address via GET `/v1/home_addresses/{uuid}` and updates it (PUT).
+   * When omitted, the form is in create mode (POST).
+   */
+  homeAddressUuid?: string
   withEffectiveDateField?: boolean
   optionalFieldsToRequire?: HomeAddressOptionalFieldsToRequire
   defaultValues?: Partial<HomeAddressFormData>
@@ -68,8 +74,8 @@ export interface UseHomeAddressFormReady extends BaseFormHookReady<
   HomeAddressFields
 > {
   data: {
+    /** The address row loaded for update; `null` in create mode. */
     homeAddress: EmployeeAddress | null
-    homeAddresses: EmployeeAddress[] | undefined
   }
   status: { isPending: boolean; mode: 'create' | 'update' }
   actions: {
@@ -79,51 +85,52 @@ export interface UseHomeAddressFormReady extends BaseFormHookReady<
   }
 }
 
-const getActiveHomeAddress = (addresses?: EmployeeAddress[]) => {
-  if (!addresses || addresses.length === 0) return undefined
-  return addresses.find(address => address.active) ?? addresses[0]
-}
-
 export function useHomeAddressForm({
   employeeId,
+  homeAddressUuid,
   withEffectiveDateField = true,
   optionalFieldsToRequire,
   defaultValues: partnerDefaults,
   validationMode = 'onSubmit',
   shouldFocusError = true,
 }: UseHomeAddressFormProps): HookLoadingResult | UseHomeAddressFormReady {
-  const homeAddressesQuery = useEmployeeAddressesGet(
-    { employeeId: employeeId ?? '' },
-    { enabled: !!employeeId },
+  const retrieveHomeAddressQuery = useEmployeeAddressesRetrieveHomeAddress(
+    { homeAddressUuid: homeAddressUuid ?? '' },
+    { enabled: !!homeAddressUuid },
   )
 
-  const homeAddresses = homeAddressesQuery.data?.employeeAddressList
-  const currentHomeAddress = getActiveHomeAddress(homeAddresses)
+  const isCreateMode = !homeAddressUuid
 
-  const isCreateMode = !currentHomeAddress
-  const mode = isCreateMode ? 'create' : 'update'
+  const fetchedHomeAddress = homeAddressUuid
+    ? retrieveHomeAddressQuery.data?.employeeAddress
+    : undefined
+
+  const schemaMode = isCreateMode ? 'create' : 'update'
 
   const [schema, metadataConfig] = useMemo(
     () =>
       createHomeAddressSchema({
-        mode,
+        mode: schemaMode,
         optionalFieldsToRequire,
         withEffectiveDateField,
       }),
-    [mode, optionalFieldsToRequire, withEffectiveDateField],
+    [schemaMode, optionalFieldsToRequire, withEffectiveDateField],
   )
 
-  const resolvedDefaults: HomeAddressFormData = {
-    street1: currentHomeAddress?.street1 ?? partnerDefaults?.street1 ?? '',
-    street2: currentHomeAddress?.street2 ?? partnerDefaults?.street2 ?? '',
-    city: currentHomeAddress?.city ?? partnerDefaults?.city ?? '',
-    state: currentHomeAddress?.state ?? partnerDefaults?.state ?? '',
-    zip: currentHomeAddress?.zip ?? partnerDefaults?.zip ?? '',
-    courtesyWithholding:
-      currentHomeAddress?.courtesyWithholding ?? partnerDefaults?.courtesyWithholding ?? false,
-    effectiveDate:
-      currentHomeAddress?.effectiveDate?.toString() ?? partnerDefaults?.effectiveDate ?? '',
-  }
+  const resolvedDefaults: HomeAddressFormData = useMemo(
+    () => ({
+      street1: fetchedHomeAddress?.street1 ?? partnerDefaults?.street1 ?? '',
+      street2: fetchedHomeAddress?.street2 ?? partnerDefaults?.street2 ?? '',
+      city: fetchedHomeAddress?.city ?? partnerDefaults?.city ?? '',
+      state: fetchedHomeAddress?.state ?? partnerDefaults?.state ?? '',
+      zip: fetchedHomeAddress?.zip ?? partnerDefaults?.zip ?? '',
+      courtesyWithholding:
+        fetchedHomeAddress?.courtesyWithholding ?? partnerDefaults?.courtesyWithholding ?? false,
+      effectiveDate:
+        fetchedHomeAddress?.effectiveDate?.toString() ?? partnerDefaults?.effectiveDate ?? '',
+    }),
+    [fetchedHomeAddress, partnerDefaults],
+  )
 
   const formMethods = useForm<HomeAddressFormData, unknown, HomeAddressFormOutputs>({
     resolver: zodResolver(schema),
@@ -145,8 +152,8 @@ export function useHomeAddressForm({
     setError: setSubmitError,
   } = useBaseSubmit('HomeAddressForm')
 
-  const queries = employeeId ? [homeAddressesQuery] : []
-  const errorHandling = composeErrorHandler(queries, { submitError, setSubmitError })
+  const queriesForErrors = homeAddressUuid ? [retrieveHomeAddressQuery] : []
+  const errorHandling = composeErrorHandler(queriesForErrors, { submitError, setSubmitError })
 
   const stateOptions = STATES_ABBR.map(abbr => ({
     value: abbr,
@@ -175,14 +182,13 @@ export function useHomeAddressForm({
           await baseSubmitHandler(data, async payload => {
             const resolvedEmployeeId = options?.employeeId ?? employeeId
 
-            if (!resolvedEmployeeId) {
-              throw new SDKInternalError('employeeId is required to submit home address')
-            }
-
             const resolvedEffectiveDate =
               withEffectiveDateField && payload.effectiveDate
                 ? payload.effectiveDate
-                : options?.effectiveDate
+                : (options?.effectiveDate ??
+                  (!withEffectiveDateField && !isCreateMode
+                    ? fetchedHomeAddress?.effectiveDate?.toString()
+                    : undefined))
 
             const effectiveDateParam = resolvedEffectiveDate
               ? new RFCDate(new Date(resolvedEffectiveDate))
@@ -212,11 +218,17 @@ export function useHomeAddressForm({
 
               updatedHomeAddress = result.employeeAddress
             } else {
+              if (!fetchedHomeAddress || !homeAddressUuid) {
+                throw new SDKInternalError(
+                  'Cannot update home address: no matching address on file',
+                )
+              }
+
               const result = await updateHomeAddressMutation.mutateAsync({
                 request: {
-                  homeAddressUuid: currentHomeAddress.uuid,
+                  homeAddressUuid: fetchedHomeAddress.uuid,
                   requestBody: {
-                    version: currentHomeAddress.version,
+                    version: fetchedHomeAddress.version,
                     street1: payload.street1,
                     street2: payload.street2 || undefined,
                     city: payload.city,
@@ -251,17 +263,14 @@ export function useHomeAddressForm({
     return submitResult
   }
 
-  const isDataLoading = employeeId ? homeAddressesQuery.isLoading : false
-
-  if (isDataLoading || (employeeId && !homeAddresses)) {
+  if (homeAddressUuid && !fetchedHomeAddress) {
     return { isLoading: true as const, errorHandling }
   }
 
   return {
     isLoading: false as const,
     data: {
-      homeAddress: currentHomeAddress ?? null,
-      homeAddresses,
+      homeAddress: fetchedHomeAddress ?? null,
     },
     status: {
       isPending,
