@@ -1,5 +1,6 @@
 import type { ContractorBankAccount } from '@gusto/embedded-api/models/components/contractorbankaccount'
-import { DataView, Flex, Loading, useDataView } from '@/components/Common'
+import { Skeleton } from './Skeleton'
+import { DataView, Flex, useDataView } from '@/components/Common'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu/HamburgerMenu'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import CirclePlus from '@/assets/icons/plus-circle.svg?react'
@@ -58,11 +59,7 @@ export function ContractorPaymentMethod({
     ),
   })
 
-  if (isRemovingAccount) {
-    return <Loading />
-  }
-
-  if (paymentMethodType === 'Check') {
+  if (paymentMethodType === 'Check' && !isRemovingAccount) {
     return (
       <Components.Box
         header={
@@ -100,7 +97,11 @@ export function ContractorPaymentMethod({
         </Flex>
       }
     >
-      <DataView isWithinBox label="Bank accounts" {...dataViewProps} />
+      {isRemovingAccount ? (
+        <Skeleton width="100%" height={48} />
+      ) : (
+        <DataView isWithinBox label="Bank accounts" {...dataViewProps} />
+      )}
     </Components.Box>
   )
 }

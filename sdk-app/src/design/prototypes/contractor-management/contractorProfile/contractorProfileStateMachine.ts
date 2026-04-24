@@ -29,22 +29,13 @@ const toProfileWithMessage = (message: string) =>
     }),
   )
 
-const toProfilePay = reduce(
-  (ctx: ContractorProfileContextInterface): ContractorProfileContextInterface => ({
-    ...ctx,
-    component: ProfileViewContextual as ComponentType,
-    successMessage: undefined,
-    selectedTab: 'pay',
-  }),
-)
-
-const toProfilePayWithMessage = (message: string) =>
+const toEditWithTab = (component: ComponentType, selectedTab: string) =>
   reduce(
     (ctx: ContractorProfileContextInterface): ContractorProfileContextInterface => ({
       ...ctx,
-      component: ProfileViewContextual as ComponentType,
-      successMessage: message,
-      selectedTab: 'pay',
+      component,
+      successMessage: undefined,
+      selectedTab,
     }),
   )
 
@@ -53,62 +44,32 @@ export const contractorProfileStateMachine = {
     transition(
       'contractor/address/edit',
       'editAddress',
-      reduce(
-        (ctx: ContractorProfileContextInterface): ContractorProfileContextInterface => ({
-          ...ctx,
-          component: EditAddressContextual as ComponentType,
-          successMessage: undefined,
-        }),
-      ),
+      toEditWithTab(EditAddressContextual, 'basic-details'),
     ),
     transition(
       'contractor/paymentMethod/add',
       'addPaymentMethod',
-      reduce(
-        (ctx: ContractorProfileContextInterface): ContractorProfileContextInterface => ({
-          ...ctx,
-          component: AddPaymentMethodContextual as ComponentType,
-          successMessage: undefined,
-        }),
-      ),
+      toEditWithTab(AddPaymentMethodContextual, 'pay'),
     ),
     transition(
       'contractor/paymentMethod/edit',
       'editPaymentMethod',
-      reduce(
-        (ctx: ContractorProfileContextInterface): ContractorProfileContextInterface => ({
-          ...ctx,
-          component: EditPaymentMethodContextual as ComponentType,
-          successMessage: undefined,
-        }),
-      ),
+      toEditWithTab(EditPaymentMethodContextual, 'pay'),
     ),
     transition(
       'contractor/paymentMethod/removed',
       'profile',
-      toProfilePayWithMessage('Payment method updated to Check'),
+      toProfileWithMessage('Payment method updated to Check'),
     ),
     transition(
       'contractor/details/edit',
       'editBasicDetails',
-      reduce(
-        (ctx: ContractorProfileContextInterface): ContractorProfileContextInterface => ({
-          ...ctx,
-          component: EditBasicDetailsContextual as ComponentType,
-          successMessage: undefined,
-        }),
-      ),
+      toEditWithTab(EditBasicDetailsContextual, 'basic-details'),
     ),
     transition(
       'contractor/compensation/edit',
       'editCompensation',
-      reduce(
-        (ctx: ContractorProfileContextInterface): ContractorProfileContextInterface => ({
-          ...ctx,
-          component: EditCompensationContextual as ComponentType,
-          successMessage: undefined,
-        }),
-      ),
+      toEditWithTab(EditCompensationContextual, 'pay'),
     ),
   ),
   editAddress: state<MachineTransition>(
@@ -123,17 +84,17 @@ export const contractorProfileStateMachine = {
     transition(
       componentEvents.CONTRACTOR_PAYMENT_METHOD_UPDATED,
       'profile',
-      toProfilePayWithMessage('Payment method updated successfully'),
+      toProfileWithMessage('Payment method updated successfully'),
     ),
-    transition(componentEvents.CANCEL, 'profile', toProfilePay),
+    transition(componentEvents.CANCEL, 'profile', toProfile),
   ),
   editPaymentMethod: state<MachineTransition>(
     transition(
       componentEvents.CONTRACTOR_PAYMENT_METHOD_UPDATED,
       'profile',
-      toProfilePayWithMessage('Payment method updated successfully'),
+      toProfileWithMessage('Payment method updated successfully'),
     ),
-    transition(componentEvents.CANCEL, 'profile', toProfilePay),
+    transition(componentEvents.CANCEL, 'profile', toProfile),
   ),
   editBasicDetails: state<MachineTransition>(
     transition(
@@ -147,8 +108,8 @@ export const contractorProfileStateMachine = {
     transition(
       componentEvents.CONTRACTOR_UPDATED,
       'profile',
-      toProfilePayWithMessage('Compensation updated successfully'),
+      toProfileWithMessage('Compensation updated successfully'),
     ),
-    transition(componentEvents.CANCEL, 'profile', toProfilePay),
+    transition(componentEvents.CANCEL, 'profile', toProfile),
   ),
 }
