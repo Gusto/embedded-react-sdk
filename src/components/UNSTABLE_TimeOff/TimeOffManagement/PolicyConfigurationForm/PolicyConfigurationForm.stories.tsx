@@ -11,7 +11,7 @@ const onContinue = fn().mockName('onContinue')
 const onCancel = fn().mockName('onCancel')
 
 export default {
-  title: 'TimeOff/PolicyConfigurationForm',
+  title: 'Domain/TimeOff/PolicyConfigurationForm',
   decorators: [
     (Story: React.ComponentType) => (
       <I18nLoader>
