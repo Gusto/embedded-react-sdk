@@ -3,7 +3,6 @@ import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import { type Employee } from '@gusto/embedded-api/models/components/employee'
-import { useEmployeeAddressesGet } from '@gusto/embedded-api/react-query/employeeAddressesGet'
 import { useEmployeeAddressesGetWorkAddresses } from '@gusto/embedded-api/react-query/employeeAddressesGetWorkAddresses'
 import type { ProfileProps } from './Profile'
 import styles from './AdminProfile.module.scss'
@@ -90,22 +89,10 @@ export function AdminProfile({
     [defaultValues, isCreateMode, createModeSelfOnboarding],
   )
 
-  const homeAddressesQuery = useEmployeeAddressesGet(
-    { employeeId: resolvedEmployeeId ?? '' },
-    { enabled: !!resolvedEmployeeId },
-  )
   const workAddressesQuery = useEmployeeAddressesGetWorkAddresses(
     { employeeId: resolvedEmployeeId ?? '' },
     { enabled: !!resolvedEmployeeId },
   )
-
-  const activeHomeAddressUuid = useMemo(() => {
-    const list = homeAddressesQuery.data?.employeeAddressList
-    if (!list?.length) {
-      return undefined
-    }
-    return list.find(a => a.active)?.uuid ?? list[0]?.uuid
-  }, [homeAddressesQuery.data?.employeeAddressList])
 
   const activeWorkAddressUuid = useMemo(() => {
     const list = workAddressesQuery.data?.employeeWorkAddressesList

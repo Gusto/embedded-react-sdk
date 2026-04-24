@@ -561,10 +561,6 @@
       "endpoints": [
         {
           "method": "GET",
-          "path": "/v1/employees/:employeeId/home_addresses"
-        },
-        {
-          "method": "GET",
           "path": "/v1/employees/:employeeId/work_addresses"
         },
         {
@@ -2196,10 +2192,6 @@
           "path": "/v1/employees/:employeeId/payment_method"
         },
         {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/home_addresses"
-        },
-        {
           "method": "POST",
           "path": "/v1/companies/:companyId/employees"
         },
@@ -2336,10 +2328,6 @@
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeId/payment_method"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/home_addresses"
         },
         {
           "method": "GET",

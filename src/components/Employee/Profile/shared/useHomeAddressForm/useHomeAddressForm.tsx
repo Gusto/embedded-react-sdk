@@ -153,7 +153,7 @@ export function useHomeAddressForm({
   }, [
     formSessionId,
     homeAddressUuid,
-    sourceAddressForDefaults?.uuid,
+    fetchedHomeAddress?.uuid,
     resolvedDefaults.street1,
     resolvedDefaults.street2,
     resolvedDefaults.city,

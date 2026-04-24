@@ -1,9 +1,23 @@
+/// <reference types="vite/client" />
 import { useTranslation } from 'react-i18next'
 import type { CustomTypeOptions } from 'i18next'
 import { LRUCache } from '@/helpers/LRUCache'
 import type { ResourceDictionary, Resources } from '@/types/Helpers'
 
 export const defaultNS = 'common'
+
+const translationLoaders = import.meta.glob<Record<string, string>>('./*/*.json', {
+  import: 'default',
+})
+
+function resolveTranslationLoader(lng: string | undefined, ns: string) {
+  const language = lng ?? 'en'
+  const primaryPath = `./${language}/${ns}.json`
+  const load =
+    translationLoaders[primaryPath as keyof typeof translationLoaders] ??
+    translationLoaders[`./en/${ns}.json` as keyof typeof translationLoaders]
+  return load
+}
 
 //LRU cache holding requested resources
 const resourceCache = new LRUCache(50)
@@ -20,11 +34,15 @@ const loadResource = ({ lng = 'en', ns }: { ns: string; lng?: string }) => {
 
   const importResources = async () => {
     try {
-      const module = await import(`@/i18n/${lng}/${ns}.json`)
-
-      resource = module.default
+      const load = resolveTranslationLoader(lng, ns)
+      if (!load) {
+        isError = true
+        isLoading = false
+        return
+      }
+      resource = await load()
       isLoading = false
-    } catch (err) {
+    } catch {
       isError = true
       isLoading = false
     }
