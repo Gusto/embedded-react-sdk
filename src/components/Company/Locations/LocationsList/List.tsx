@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useLocationsList } from './useLocationsList'
+import styles from './List.module.scss'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import { DataView, EmptyData, useDataView, VisuallyHidden } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -33,7 +34,7 @@ export const List = () => {
         title: t('locationListCol1'),
         render: location => {
           return (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            <div className={styles.addressCell}>
               <Components.Text as="div">{getStreet(location)}</Components.Text>
               <Components.Text as="div">{getCityStateZip(location)}</Components.Text>
             </div>
