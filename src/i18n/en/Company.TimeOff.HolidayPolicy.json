@@ -14,7 +14,12 @@
   },
   "show": {
     "title": "Holiday pay policy",
-    "holidaySchedule": "Holiday schedule"
+    "holidaySchedule": "Holiday schedule",
+    "addEmployeesCta": "Add employees",
+    "editPolicyCta": "Edit policy"
+  },
+  "tabs": {
+    "holidays": "Holidays"
   },
   "holidayScheduleTable": {
     "title": "Holiday schedule",
