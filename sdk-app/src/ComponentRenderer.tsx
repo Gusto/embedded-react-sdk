@@ -6,6 +6,7 @@ import { useResolvedTheme } from './useThemeModeContext'
 import { darkTheme } from './darkTheme'
 import type { EntityIds } from './useEntities'
 import styles from './ComponentRenderer.module.scss'
+import { useAdapterComponents } from './useAdapterModeContext'
 import { GustoProvider } from '@/contexts'
 
 interface ComponentRendererProps {
@@ -124,6 +125,7 @@ export function ComponentRenderer({ entities }: ComponentRendererProps) {
     component: string
   }>()
   const resolvedTheme = useResolvedTheme()
+  const adapterComponents = useAdapterComponents()
   const [events, setEvents] = useState<EventLogEntry[]>([])
   const [eventsOpen, setEventsOpen] = useState(true)
   const [resetKey, setResetKey] = useState(0)
@@ -258,6 +260,7 @@ export function ComponentRenderer({ entities }: ComponentRendererProps) {
               <GustoProvider
                 config={{ baseUrl: `${window.location.origin}/api/` }}
                 theme={resolvedTheme === 'dark' ? darkTheme : undefined}
+                components={adapterComponents}
                 key={providerKey}
               >
                 <Suspense fallback={<div className={styles.contentLoading}>Loading...</div>}>

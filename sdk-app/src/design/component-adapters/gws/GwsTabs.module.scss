@@ -1,0 +1,28 @@
+.navHighlights {
+  border-bottom: 1px solid var(--bs-border-color);
+
+  :global(.nav-item) {
+    padding-bottom: 0.5rem;
+    font-size: 16px;
+    font-weight: 500;
+
+    &:hover {
+      :global(.nav-link:not(.active)) {
+        color: var(--bs-primary);
+      }
+      border-bottom: 3px solid var(--bs-border-color);
+    }
+
+    &:has(:global(.active)) {
+      border-bottom: 3px solid var(--bs-primary);
+    }
+  }
+
+  :global(.nav-link) {
+    color: var(--bs-primary);
+  }
+
+  :global(.active) {
+    color: var(--bs-primary);
+  }
+}

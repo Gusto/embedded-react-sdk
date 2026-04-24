@@ -1,0 +1,103 @@
+$gws-primary: #343a40;
+$gws-gray-100: #f8f9fa;
+$gws-gray-600: #6c757d;
+$gws-gray-800: #343a40;
+
+:root {
+  --bs-body-font-family: var(--font_family, var(--bs-font-sans-serif));
+  --bs-primary: #{$gws-primary};
+  --bs-secondary: #{$gws-primary};
+}
+
+// Focus ring — matches gws-flows application.scss
+.btn,
+.btn-close,
+.dropdown-toggle,
+.dropdown-item,
+.nav-link,
+.selectable-item {
+  &:focus-visible {
+    outline: 2px solid $gws-gray-800;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 3px #fff0;
+  }
+}
+
+.btn {
+  --bs-btn-disabled-opacity: 1;
+  --bs-btn-font-weight: 400;
+  --bs-btn-border-radius: var(--bs-border-radius);
+
+  &:hover {
+    filter: brightness(95%);
+  }
+}
+
+.btn-primary {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: #{$gws-primary};
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #{$gws-primary};
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #{$gws-primary};
+  --bs-btn-border-color: #{$gws-primary};
+  --bs-btn-hover-border-color: #{$gws-primary};
+  --bs-btn-active-border-color: #{$gws-primary};
+  --bs-btn-disabled-bg: #{$gws-gray-600};
+  --bs-btn-disabled-border-color: #{$gws-gray-600};
+  --bs-btn-disabled-color: #fff;
+}
+
+@mixin gws-outline-variant($color) {
+  --bs-btn-color: #{$color};
+  --bs-btn-border-color: #{$color};
+  --bs-btn-hover-color: #{$color};
+  --bs-btn-hover-border-color: #{$color};
+  --bs-btn-active-color: #{$color};
+  --bs-btn-active-border-color: #{$color};
+  --bs-btn-hover-bg: #{$gws-gray-100};
+  --bs-btn-active-bg: transparent;
+  --bs-btn-disabled-color: #{$color};
+  --bs-btn-disabled-border-color: #{$color};
+}
+
+.btn-outline-primary {
+  @include gws-outline-variant($gws-primary);
+}
+
+.btn-outline-secondary {
+  @include gws-outline-variant($gws-primary);
+  --bs-btn-disabled-color: #{$gws-gray-600};
+  --bs-btn-disabled-border-color: #{$gws-gray-600};
+}
+
+.btn-outline-danger {
+  @include gws-outline-variant(var(--bs-danger));
+}
+
+// Secondary/outline button hover and focus backgrounds — matches gws-flows application.scss
+.btn-outline-primary,
+.btn-outline-secondary {
+  &:not(:active):not(:disabled) {
+    &:hover {
+      background-color: $gws-gray-100;
+    }
+
+    &:focus-visible {
+      background-color: white;
+    }
+  }
+}
+
+// Link-style button (tertiary) — strip decoration and match gws-flows btn-link behavior
+.btn-link {
+  --bs-btn-color: #{$gws-primary};
+  --bs-btn-hover-color: #{$gws-primary};
+  --bs-btn-active-color: #{$gws-primary};
+  --bs-btn-disabled-color: #{$gws-gray-600};
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
