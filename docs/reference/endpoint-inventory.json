@@ -600,6 +600,10 @@
           "path": "/v1/companies/:companyId/locations"
         },
         {
+          "method": "GET",
+          "path": "/v1/work_addresses/:workAddressUuid"
+        },
+        {
           "method": "POST",
           "path": "/v1/employees/:employeeId/work_addresses"
         },
@@ -932,6 +936,26 @@
       "variables": [
         "companyId",
         "employeeId"
+      ]
+    },
+    "Employee.WorkAddress": {
+      "endpoints": [
+        {
+          "method": "DELETE",
+          "path": "/v1/work_addresses/:workAddressUuid"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/work_addresses"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId"
+        }
+      ],
+      "variables": [
+        "employeeId",
+        "workAddressUuid"
       ]
     },
     "Employee.Taxes": {
@@ -2200,6 +2224,10 @@
           "path": "/v1/companies/:companyId/locations"
         },
         {
+          "method": "GET",
+          "path": "/v1/work_addresses/:workAddressUuid"
+        },
+        {
           "method": "POST",
           "path": "/v1/employees/:employeeId/work_addresses"
         },
@@ -2344,6 +2372,10 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/locations"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/work_addresses/:workAddressUuid"
         },
         {
           "method": "POST",

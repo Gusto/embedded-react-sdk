@@ -143,6 +143,7 @@ export type {
 
 export {
   useWorkAddressForm,
+  useCurrentWorkAddressForm,
   WorkAddressErrorCodes,
   createWorkAddressSchema,
 } from '@/components/Employee/Profile/shared/useWorkAddressForm'
@@ -150,6 +151,7 @@ export type {
   WorkAddressSubmitCallbacks,
   WorkAddressSubmitOptions,
   WorkAddressOptionalFieldsToRequire,
+  UseCurrentWorkAddressFormProps,
   UseWorkAddressFormProps,
   UseWorkAddressFormResult,
   UseWorkAddressFormReady,

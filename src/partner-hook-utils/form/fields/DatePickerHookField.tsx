@@ -4,9 +4,8 @@ import type { BaseFieldProps, ValidationMessages, FormHookResult } from '../../t
 import { DatePickerField } from '@/components/Common/Fields/DatePickerField'
 import type { DatePickerProps } from '@/components/Common/UI/DatePicker/DatePickerTypes'
 
-export interface DatePickerHookFieldProps<
-  TErrorCode extends string = never,
-> extends BaseFieldProps {
+export interface DatePickerHookFieldProps<TErrorCode extends string = never>
+  extends BaseFieldProps, Pick<DatePickerProps, 'portalContainer'> {
   name: string
   formHookResult?: FormHookResult
   validationMessages?: ValidationMessages<TErrorCode>

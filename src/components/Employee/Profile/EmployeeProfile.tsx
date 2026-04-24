@@ -113,7 +113,11 @@ export function EmployeeProfile({
     onEvent(componentEvents.EMPLOYEE_PROFILE_DONE, employeeResult.data)
   })
 
-  const errorHandling = composeErrorHandler([submitResult, workAddressesQuery])
+  const errorHandling = composeErrorHandler([
+    submitResult,
+    { errorHandling: homeAddress.errorHandling },
+    workAddressesQuery,
+  ])
 
   const isPending = employeeDetails.status.isPending || homeAddress.status.isPending
 

@@ -122,6 +122,14 @@ function setupEmployeeHandlers({
     http.get(`${API_BASE_URL}/v1/employees/:employee_id/work_addresses`, () =>
       HttpResponse.json(workAddresses),
     ),
+    http.get(`${API_BASE_URL}/v1/work_addresses/:work_address_uuid`, ({ params }) => {
+      const uuid = String(params.work_address_uuid)
+      const row = workAddresses.find(a => String(a.uuid) === uuid)
+      if (!row) {
+        return new HttpResponse(null, { status: 404 })
+      }
+      return HttpResponse.json(row)
+    }),
   )
 }
 
