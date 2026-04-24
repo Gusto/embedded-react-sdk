@@ -1,7 +1,6 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
-import { useEmployeeAddressesGet } from '@gusto/embedded-api/react-query/employeeAddressesGet'
 import { useEmployeeAddressesGetWorkAddresses } from '@gusto/embedded-api/react-query/employeeAddressesGetWorkAddresses'
 import type { ProfileProps } from './Profile'
 import styles from './EmployeeProfile.module.scss'
@@ -114,7 +113,11 @@ export function EmployeeProfile({
     onEvent(componentEvents.EMPLOYEE_PROFILE_DONE, employeeResult.data)
   })
 
-  const errorHandling = composeErrorHandler([submitResult, homeAddressesQuery, workAddressesQuery])
+  const errorHandling = composeErrorHandler([
+    submitResult,
+    { errorHandling: homeAddress.errorHandling },
+    workAddressesQuery,
+  ])
 
   const isPending = employeeDetails.status.isPending || homeAddress.status.isPending
 
