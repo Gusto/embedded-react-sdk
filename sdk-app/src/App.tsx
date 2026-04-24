@@ -9,6 +9,8 @@ import { useDemoManager } from './useDemoManager'
 import { useAppMode } from './useAppMode'
 import { useThemeMode } from './useThemeMode'
 import { ThemeModeProvider } from './ThemeModeContext'
+import { useAdapterMode } from './useAdapterMode'
+import { AdapterModeProvider } from './AdapterModeContext'
 
 export function App() {
   const [settingsOpen, setSettingsOpen] = useState(false)
@@ -17,6 +19,7 @@ export function App() {
   const demoManager = useDemoManager()
   const mode = useAppMode()
   const themeMode = useThemeMode()
+  const adapterMode = useAdapterMode()
 
   const handleCreateNewDemo = async (demoType: string) => {
     const result = await demoManager.createNewDemo(demoType)
@@ -34,43 +37,45 @@ export function App() {
 
   return (
     <ThemeModeProvider value={themeMode}>
-      <div className="app-layout">
-        <TopBar
-          companyId={entities.companyId}
-          tokenStatus={demoManager.tokenStatus}
-          onOpenSettings={() => {
-            setSettingsOpen(true)
-          }}
-        />
-        <div className="app-body">
-          <Sidebar mode={mode} searchQuery={searchQuery} onSearchChange={setSearchQuery} />
-          <main className="main-content">
-            <Outlet context={{ entities }} />
-          </main>
-        </div>
-        <DemoSettingsPanel
-          isOpen={settingsOpen}
-          onClose={() => {
-            setSettingsOpen(false)
-          }}
-          entities={entities}
-          onUpdateEntity={updateEntity}
-          onResetToDefaults={resetToDefaults}
-          tokenStatus={demoManager.tokenStatus}
-          isCreatingDemo={demoManager.isCreatingDemo}
-          demoError={demoManager.demoError}
-          proxyMode={demoManager.proxyMode}
-          onCreateNewDemo={handleCreateNewDemo}
-          onRefreshToken={demoManager.refreshToken}
-        />
-        {demoManager.tokenStatus === 'expired' && (
-          <TokenExpiredOverlay
-            onRefresh={demoManager.refreshToken}
-            isRefreshing={demoManager.isCreatingDemo}
-            error={demoManager.demoError}
+      <AdapterModeProvider value={adapterMode}>
+        <div className="app-layout">
+          <TopBar
+            companyId={entities.companyId}
+            tokenStatus={demoManager.tokenStatus}
+            onOpenSettings={() => {
+              setSettingsOpen(true)
+            }}
           />
-        )}
-      </div>
+          <div className="app-body">
+            <Sidebar mode={mode} searchQuery={searchQuery} onSearchChange={setSearchQuery} />
+            <main className="main-content">
+              <Outlet context={{ entities }} />
+            </main>
+          </div>
+          <DemoSettingsPanel
+            isOpen={settingsOpen}
+            onClose={() => {
+              setSettingsOpen(false)
+            }}
+            entities={entities}
+            onUpdateEntity={updateEntity}
+            onResetToDefaults={resetToDefaults}
+            tokenStatus={demoManager.tokenStatus}
+            isCreatingDemo={demoManager.isCreatingDemo}
+            demoError={demoManager.demoError}
+            proxyMode={demoManager.proxyMode}
+            onCreateNewDemo={handleCreateNewDemo}
+            onRefreshToken={demoManager.refreshToken}
+          />
+          {demoManager.tokenStatus === 'expired' && (
+            <TokenExpiredOverlay
+              onRefresh={demoManager.refreshToken}
+              isRefreshing={demoManager.isCreatingDemo}
+              error={demoManager.demoError}
+            />
+          )}
+        </div>
+      </AdapterModeProvider>
     </ThemeModeProvider>
   )
 }

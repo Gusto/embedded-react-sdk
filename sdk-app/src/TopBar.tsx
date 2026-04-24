@@ -1,3 +1,4 @@
+import { AdapterSwitcher } from './AdapterSwitcher'
 import { ModeSwitcher } from './ModeSwitcher'
 import { ThemeSwitcher } from './ThemeSwitcher'
 import { useAppMode } from './useAppMode'
@@ -100,6 +101,7 @@ export function TopBar({ companyId, tokenStatus, onOpenSettings }: TopBarProps) 
         <div className={styles.actions}>
           <ThemeSwitcher />
           <ModeSwitcher />
+          <AdapterSwitcher />
           <button className={styles.settingsBtn} onClick={onOpenSettings} type="button">
             <SettingsIcon />
             Settings

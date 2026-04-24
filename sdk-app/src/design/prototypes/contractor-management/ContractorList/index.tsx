@@ -16,20 +16,21 @@ function formatRate(contractor: Contractor) {
 }
 
 function ActiveContractorsTable({ contractors }: { contractors: Contractor[] }) {
+  const Components = useComponentContext()
   const dataViewProps = useDataView<Contractor>({
     data: contractors,
     columns: [
       {
         title: 'Name',
-        render: contractor => contractorName(contractor),
+        render: contractor => <Components.Text>{contractorName(contractor)}</Components.Text>,
       },
       {
         title: 'Type',
-        render: contractor => contractor.type ?? '–',
+        render: contractor => <Components.Text>{contractor.type ?? '–'}</Components.Text>,
       },
       {
         title: 'Rate',
-        render: contractor => formatRate(contractor),
+        render: contractor => <Components.Text>{formatRate(contractor)}</Components.Text>,
       },
     ],
     itemMenu: () => (
@@ -153,7 +154,7 @@ function ContractorListContent() {
     }
   }, [companyId, selectedTab])
 
-  const { data, isFetching } = useContractorsList(queryParams)
+  const { data, isPending } = useContractorsList(queryParams)
   const contractors = data?.contractors ?? []
 
   const tabs = [
@@ -197,7 +198,7 @@ function ContractorListContent() {
       </Flex>
       <Flex flexDirection="column" gap={0}>
         <Components.Tabs onSelectionChange={setSelectedTab} tabs={tabs} selectedId={selectedTab} />
-        {isFetching ? <Loading /> : renderTable()}
+        {isPending ? <Loading /> : renderTable()}
       </Flex>
     </Flex>
   )
