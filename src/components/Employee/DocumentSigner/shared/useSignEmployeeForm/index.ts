@@ -3,6 +3,7 @@ export type {
   UseSignEmployeeFormProps,
   UseSignEmployeeFormResult,
   UseSignEmployeeFormReady,
+  SignEmployeeFormFieldComponents,
   SignEmployeeFormFieldsMetadata,
   SignEmployeeFormFields,
   PreparerFieldGroup,
@@ -22,7 +23,6 @@ export {
 } from './signEmployeeFormSchema'
 export type {
   RequiredValidation as SignEmployeeFormRequiredValidation,
-  ConfirmationValidation as SignEmployeeFormConfirmationValidation,
   SignatureFieldProps,
   ConfirmSignatureFieldProps,
   UsedPreparerFieldProps,

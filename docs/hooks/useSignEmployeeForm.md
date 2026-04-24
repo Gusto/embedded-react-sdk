@@ -158,7 +158,6 @@ All fields accept `label` (required) and `description` (optional). Fields with v
 ```typescript
 const SignEmployeeFormErrorCodes = {
   REQUIRED: 'REQUIRED',
-  CONFIRMATION_REQUIRED: 'CONFIRMATION_REQUIRED',
 } as const
 ```
 
@@ -191,29 +190,25 @@ Text input for the employee's typed signature. Always present.
 
 Checkbox for electronic signature consent. Always present.
 
-| Prop                 | Type                                                  | Required |
-| -------------------- | ----------------------------------------------------- | -------- |
-| `label`              | `string`                                              | Yes      |
-| `description`        | `ReactNode`                                           | No       |
-| `validationMessages` | `{ REQUIRED: string, CONFIRMATION_REQUIRED: string }` | No       |
-| `FieldComponent`     | `ComponentType<CheckboxProps>`                        | No       |
+| Prop                 | Type                           | Required |
+| -------------------- | ------------------------------ | -------- |
+| `label`              | `string`                       | Yes      |
+| `description`        | `ReactNode`                    | No       |
+| `validationMessages` | `{ REQUIRED: string }`         | No       |
+| `FieldComponent`     | `ComponentType<CheckboxProps>` | No       |
 
 **Validation codes:**
 
-| Code                    | When it triggers                           |
-| ----------------------- | ------------------------------------------ |
-| `REQUIRED`              | Checkbox is not checked and field is empty |
-| `CONFIRMATION_REQUIRED` | The checkbox must be checked to submit     |
+| Code       | When it triggers                       |
+| ---------- | -------------------------------------- |
+| `REQUIRED` | The checkbox must be checked to submit |
 
 **Always required.**
 
 ```tsx
 <Fields.ConfirmSignature
   label="I agree to sign electronically"
-  validationMessages={{
-    REQUIRED: 'You must agree to sign electronically',
-    CONFIRMATION_REQUIRED: 'You must agree to sign electronically',
-  }}
+  validationMessages={{ REQUIRED: 'You must agree to sign electronically' }}
 />
 ```
 
@@ -279,10 +274,9 @@ All preparer text fields use `PreparerTextFieldProps`, the state select uses `Pr
 
 **Validation codes for preparer fields:**
 
-| Code                    | Fields                  | When it triggers                     |
-| ----------------------- | ----------------------- | ------------------------------------ |
-| `REQUIRED`              | All required fields     | Field is empty                       |
-| `CONFIRMATION_REQUIRED` | `ConfirmSignature` only | The consent checkbox must be checked |
+| Code       | Fields              | When it triggers                                                  |
+| ---------- | ------------------- | ----------------------------------------------------------------- |
+| `REQUIRED` | All required fields | Field is empty, or (for `ConfirmSignature`) checkbox is unchecked |
 
 ```tsx
 {
@@ -316,10 +310,7 @@ All preparer text fields use `PreparerTextFieldProps`, the state select uses `Pr
       />
       <Fields.Preparer1.ConfirmSignature
         label="I confirm all information is correct"
-        validationMessages={{
-          REQUIRED: 'You must agree to sign electronically',
-          CONFIRMATION_REQUIRED: 'You must agree to sign electronically',
-        }}
+        validationMessages={{ REQUIRED: 'You must agree to sign electronically' }}
       />
     </div>
   )
@@ -399,10 +390,7 @@ function SignFormPage({ employeeId, formId }: { employeeId: string; formId: stri
 
         <Fields.ConfirmSignature
           label="I am the employee and I agree to sign electronically"
-          validationMessages={{
-            REQUIRED: 'You must agree to sign electronically',
-            CONFIRMATION_REQUIRED: 'You must agree to sign electronically',
-          }}
+          validationMessages={{ REQUIRED: 'You must agree to sign electronically' }}
         />
 
         <button type="submit" disabled={signForm.status.isPending}>
@@ -495,10 +483,7 @@ function SignI9FormReady({ signForm }: { signForm: UseSignEmployeeFormReady }) {
 
         <Fields.ConfirmSignature
           label="I agree to electronically sign this form"
-          validationMessages={{
-            REQUIRED: 'You must agree to sign electronically',
-            CONFIRMATION_REQUIRED: 'You must agree to sign electronically',
-          }}
+          validationMessages={{ REQUIRED: 'You must agree to sign electronically' }}
         />
 
         {Fields.UsedPreparer && <PreparerSection signForm={signForm} />}
@@ -522,46 +507,43 @@ function PreparerSection({ signForm }: { signForm: UseSignEmployeeFormReady }) {
     Fields.Preparer2,
     Fields.Preparer3,
     Fields.Preparer4,
-  ].filter(g => g !== undefined)
+  ].filter(Group => Group !== undefined)
 
   return (
     <div>
       <Fields.UsedPreparer label="Did you use a preparer/translator?" />
 
-      {preparerGroups.map((group, index) => {
+      {preparerGroups.map((Group, index) => {
         const isLast = index === preparerGroups.length - 1
 
         return (
           <div key={index}>
             <h3>Preparer/translator certification</h3>
 
-            <group.FirstName
+            <Group.FirstName
               label="First name"
               validationMessages={{ REQUIRED: 'First name is required' }}
             />
-            <group.LastName
+            <Group.LastName
               label="Last name"
               validationMessages={{ REQUIRED: 'Last name is required' }}
             />
-            <group.Street1
+            <Group.Street1
               label="Street 1"
               validationMessages={{ REQUIRED: 'Street address is required' }}
             />
-            <group.Street2 label="Street 2 (optional)" />
-            <group.City label="City" validationMessages={{ REQUIRED: 'City is required' }} />
-            <group.State label="State" validationMessages={{ REQUIRED: 'State is required' }} />
-            <group.Zip label="Zip" validationMessages={{ REQUIRED: 'Zip is required' }} />
-            <group.Signature
+            <Group.Street2 label="Street 2 (optional)" />
+            <Group.City label="City" validationMessages={{ REQUIRED: 'City is required' }} />
+            <Group.State label="State" validationMessages={{ REQUIRED: 'State is required' }} />
+            <Group.Zip label="Zip" validationMessages={{ REQUIRED: 'Zip is required' }} />
+            <Group.Signature
               label="Signature"
               description="Type your full, legal name."
               validationMessages={{ REQUIRED: 'Signature is required' }}
             />
-            <group.ConfirmSignature
+            <Group.ConfirmSignature
               label="I confirm all information is correct"
-              validationMessages={{
-                REQUIRED: 'You must agree to sign electronically',
-                CONFIRMATION_REQUIRED: 'You must agree to sign electronically',
-              }}
+              validationMessages={{ REQUIRED: 'You must agree to sign electronically' }}
             />
 
             {isLast && (
@@ -625,10 +607,7 @@ function SignAnyFormPage({ employeeId, formId }: { employeeId: string; formId: s
               ? 'I agree to electronically sign this form and confirm all information is correct'
               : 'I am the employee and I agree to sign electronically'
           }
-          validationMessages={{
-            REQUIRED: 'You must agree to sign electronically',
-            CONFIRMATION_REQUIRED: 'You must agree to sign electronically',
-          }}
+          validationMessages={{ REQUIRED: 'You must agree to sign electronically' }}
         />
 
         {/* I-9 preparer section — only rendered when the form is an I-9 */}
@@ -680,10 +659,7 @@ function SignFormPage({ employeeId, formId }: { employeeId: string; formId: stri
       <Fields.ConfirmSignature
         label="I agree to sign electronically"
         formHookResult={signForm}
-        validationMessages={{
-          REQUIRED: 'You must agree to sign electronically',
-          CONFIRMATION_REQUIRED: 'You must agree to sign electronically',
-        }}
+        validationMessages={{ REQUIRED: 'You must agree to sign electronically' }}
       />
 
       <button type="submit" disabled={signForm.status.isPending}>
@@ -717,21 +693,20 @@ This hook differs from the CRUD-oriented form hooks (`useEmployeeDetailsForm`, `
 
 Key types available from `@gusto/embedded-react-sdk`:
 
-| Type                                     | Description                                               |
-| ---------------------------------------- | --------------------------------------------------------- |
-| `UseSignEmployeeFormProps`               | Props accepted by the hook                                |
-| `UseSignEmployeeFormResult`              | Full return type (loading or ready)                       |
-| `UseSignEmployeeFormReady`               | Narrowed ready state (use after `isLoading` check)        |
-| `SignEmployeeFormFields`                 | Shape of `form.Fields`                                    |
-| `SignEmployeeFormFieldsMetadata`         | Shape of `form.fieldsMetadata`                            |
-| `PreparerFieldGroup`                     | Shape of a single preparer's field group                  |
-| `SignEmployeeFormData`                   | Form input data shape                                     |
-| `SignEmployeeFormOutputs`                | Validated output data shape                               |
-| `SignEmployeeFormErrorCode`              | Union of error code string literals                       |
-| `SignEmployeeFormRequiredValidation`     | `'REQUIRED'` validation type                              |
-| `SignEmployeeFormConfirmationValidation` | `'REQUIRED' \| 'CONFIRMATION_REQUIRED'` validation type   |
-| `SignatureFieldProps`                    | Props for the `Signature` field                           |
-| `ConfirmSignatureFieldProps`             | Props for the `ConfirmSignature` field                    |
-| `UsedPreparerFieldProps`                 | Props for the `UsedPreparer` field                        |
-| `PreparerTextFieldProps`                 | Props for preparer text fields (name, address, signature) |
-| `PreparerCheckboxFieldProps`             | Props for preparer confirmation checkbox fields           |
+| Type                                 | Description                                               |
+| ------------------------------------ | --------------------------------------------------------- |
+| `UseSignEmployeeFormProps`           | Props accepted by the hook                                |
+| `UseSignEmployeeFormResult`          | Full return type (loading or ready)                       |
+| `UseSignEmployeeFormReady`           | Narrowed ready state (use after `isLoading` check)        |
+| `SignEmployeeFormFields`             | Shape of `form.Fields`                                    |
+| `SignEmployeeFormFieldsMetadata`     | Shape of `form.fieldsMetadata`                            |
+| `PreparerFieldGroup`                 | Shape of a single preparer's field group                  |
+| `SignEmployeeFormData`               | Form input data shape                                     |
+| `SignEmployeeFormOutputs`            | Validated output data shape                               |
+| `SignEmployeeFormErrorCode`          | Union of error code string literals                       |
+| `SignEmployeeFormRequiredValidation` | `'REQUIRED'` validation type                              |
+| `SignatureFieldProps`                | Props for the `Signature` field                           |
+| `ConfirmSignatureFieldProps`         | Props for the `ConfirmSignature` field                    |
+| `UsedPreparerFieldProps`             | Props for the `UsedPreparer` field                        |
+| `PreparerTextFieldProps`             | Props for preparer text fields (name, address, signature) |
+| `PreparerCheckboxFieldProps`         | Props for preparer confirmation checkbox fields           |

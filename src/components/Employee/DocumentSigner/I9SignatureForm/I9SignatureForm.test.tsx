@@ -7,6 +7,7 @@ import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { componentEvents } from '@/shared/constants'
 import { server } from '@/test/mocks/server'
 import { handleSignEmployeeForm, i9Form } from '@/test/mocks/apis/employee_forms'
+import { getI9Authorization } from '@/test/mocks/apis/i9_authorization'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 describe('I9SignatureForm', () => {
@@ -132,5 +133,58 @@ describe('I9SignatureForm', () => {
     await user.click(screen.getByRole('button', { name: 'Cancel' }))
 
     expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.CANCEL)
+  })
+
+  it('fires the sign event on successful submission with a preparer', async () => {
+    const user = userEvent.setup()
+    const signedForm = { ...i9Form, requires_signing: false }
+    server.use(handleSignEmployeeForm(() => HttpResponse.json(signedForm)))
+
+    renderWithProviders(<I9SignatureForm {...defaultProps} />)
+
+    await screen.findByRole('heading', { name: 'Sign I-9 document' })
+    await user.type(screen.getByLabelText('Signature'), 'Test User')
+    await user.click(screen.getByRole('checkbox', { name: /I agree to electronically sign/i }))
+    await user.click(screen.getByRole('radio', { name: 'Yes, I used a preparer/translator' }))
+    await screen.findByRole('heading', { name: 'Preparer and/or translator certification' })
+
+    await user.type(screen.getByLabelText('First name'), 'Jane')
+    await user.type(screen.getByLabelText('Last name'), 'Prep')
+    await user.type(screen.getByLabelText('Street 1'), '123 Main St')
+    await user.type(screen.getByLabelText('City'), 'Anytown')
+    await user.type(screen.getByLabelText('Zip'), '90210')
+    // Both the employee and preparer sections have a "Signature" label — target the second one
+    await user.type(screen.getAllByLabelText('Signature')[1]!, 'Jane Prep')
+    await user.click(
+      screen.getAllByRole('checkbox', { name: /I agree to electronically sign/i })[1]!,
+    )
+
+    // State uses a react-aria Select — the trigger button's text is the placeholder until a value is chosen
+    await user.click(screen.getByRole('button', { name: /Select a state/i }))
+    await user.click(await screen.findByRole('option', { name: 'CA' }))
+
+    await user.click(screen.getByRole('button', { name: 'Sign' }))
+
+    await waitFor(() => {
+      expect(mockOnEvent).toHaveBeenCalledWith(
+        componentEvents.EMPLOYEE_SIGN_FORM,
+        expect.objectContaining({ uuid: i9Form.uuid }),
+      )
+    })
+  })
+
+  it('renders the eligibility status alert with change-status button when i9_authorization is present', async () => {
+    const user = userEvent.setup()
+    server.use(getI9Authorization)
+
+    renderWithProviders(<I9SignatureForm {...defaultProps} />)
+
+    await screen.findByRole('heading', { name: 'Sign I-9 document' })
+
+    const changeButton = await screen.findByRole('button', { name: 'Change eligibility status' })
+    expect(changeButton).toBeInTheDocument()
+
+    await user.click(changeButton)
+    expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_CHANGE_ELIGIBILITY_STATUS)
   })
 })

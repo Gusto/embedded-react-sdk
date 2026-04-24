@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #ffffff;
+  background: var(--color-bg-topbar);
   color: var(--color-text);
   padding: 0.75rem 1rem;
   gap: 1rem;
@@ -64,18 +64,18 @@
 }
 
 .badgeEnv {
-  background: rgba(13, 110, 253, 0.1);
-  color: #0d6efd;
+  background: var(--color-badge-env-bg);
+  color: var(--color-badge-env-text);
 }
 
 .badgeBuild {
-  background: rgba(25, 135, 84, 0.1);
-  color: #198754;
+  background: var(--color-badge-build-bg);
+  color: var(--color-badge-build-text);
 }
 
 .badgeDemoType {
-  background: rgba(255, 193, 7, 0.15);
-  color: #997404;
+  background: var(--color-badge-demo-bg);
+  color: var(--color-badge-demo-text);
 }
 
 .divider {

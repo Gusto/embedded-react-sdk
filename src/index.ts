@@ -206,6 +206,7 @@ export type {
   UseSignEmployeeFormProps,
   UseSignEmployeeFormResult,
   UseSignEmployeeFormReady,
+  SignEmployeeFormFieldComponents,
   SignEmployeeFormFieldsMetadata,
   SignEmployeeFormFields,
   PreparerFieldGroup,
@@ -216,7 +217,6 @@ export type {
   PreparerIndex,
   PreparerFieldSuffix,
   SignEmployeeFormRequiredValidation,
-  SignEmployeeFormConfirmationValidation,
   SignatureFieldProps as SignEmployeeFormSignatureFieldProps,
   ConfirmSignatureFieldProps as SignEmployeeFormConfirmSignatureFieldProps,
   UsedPreparerFieldProps,
@@ -259,7 +259,6 @@ export {
   createSignCompanyFormSchema,
 } from '@/components/Company/DocumentSigner/shared/useSignCompanyForm'
 export type {
-  SignCompanyFormSubmitCallbacks,
   SignCompanyFormOptionalFieldsToRequire,
   UseSignCompanyFormProps,
   UseSignCompanyFormResult,
