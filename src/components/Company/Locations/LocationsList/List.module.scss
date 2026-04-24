@@ -1,6 +1,6 @@
 .addressCell {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: toRem(4);
   container-type: normal;
 }
