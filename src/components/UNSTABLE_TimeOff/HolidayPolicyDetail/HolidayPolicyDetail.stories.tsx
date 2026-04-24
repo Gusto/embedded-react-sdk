@@ -10,7 +10,7 @@ import EditIcon from '@/assets/icons/edit-02.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 
 export default {
-  title: 'TimeOff/HolidayPolicyDetail',
+  title: 'Domain/TimeOff/HolidayPolicyDetail',
   decorators: [
     (Story: React.ComponentType) => (
       <Suspense fallback={<div>Loading translations...</div>}>
@@ -115,7 +115,7 @@ function useSearchState() {
   }
 }
 
-function PolicyActions() {
+function usePolicyActions() {
   const { Button } = useComponentContext()
 
   return (
@@ -141,13 +141,14 @@ const closedRemoveDialog = {
 export const HolidaysTab = () => {
   const [selectedTabId, setSelectedTabId] = useState('holidays')
   const search = useSearchState()
+  const actions = usePolicyActions()
 
   return (
     <HolidayPolicyDetailPresentation
       title="Holiday pay policy"
       onBack={onBack}
       backLabel="Back to policies"
-      actions={<PolicyActions />}
+      actions={actions}
       holidays={mockHolidays}
       selectedTabId={selectedTabId}
       onTabChange={id => {
@@ -178,13 +179,14 @@ export const HolidaysTab = () => {
 export const EmployeesTab = () => {
   const [selectedTabId, setSelectedTabId] = useState('employees')
   const search = useSearchState()
+  const actions = usePolicyActions()
 
   return (
     <HolidayPolicyDetailPresentation
       title="Holiday pay policy"
       onBack={onBack}
       backLabel="Back to policies"
-      actions={<PolicyActions />}
+      actions={actions}
       holidays={mockHolidays}
       selectedTabId={selectedTabId}
       onTabChange={id => {
@@ -215,13 +217,14 @@ export const EmployeesTab = () => {
 export const WithSuccessAlert = () => {
   const [selectedTabId, setSelectedTabId] = useState('employees')
   const search = useSearchState()
+  const actions = usePolicyActions()
 
   return (
     <HolidayPolicyDetailPresentation
       title="Holiday pay policy"
       onBack={onBack}
       backLabel="Back to policies"
-      actions={<PolicyActions />}
+      actions={actions}
       holidays={mockHolidays}
       selectedTabId={selectedTabId}
       onTabChange={id => {
@@ -254,13 +257,14 @@ export const WithSuccessAlert = () => {
 export const RemoveDialogOpen = () => {
   const [selectedTabId, setSelectedTabId] = useState('employees')
   const search = useSearchState()
+  const actions = usePolicyActions()
 
   return (
     <HolidayPolicyDetailPresentation
       title="Holiday pay policy"
       onBack={onBack}
       backLabel="Back to policies"
-      actions={<PolicyActions />}
+      actions={actions}
       holidays={mockHolidays}
       selectedTabId={selectedTabId}
       onTabChange={id => {
@@ -297,13 +301,14 @@ export const RemoveDialogOpen = () => {
 export const EmptyEmployees = () => {
   const [selectedTabId, setSelectedTabId] = useState('employees')
   const search = useSearchState()
+  const actions = usePolicyActions()
 
   return (
     <HolidayPolicyDetailPresentation
       title="Holiday pay policy"
       onBack={onBack}
       backLabel="Back to policies"
-      actions={<PolicyActions />}
+      actions={actions}
       holidays={mockHolidays}
       selectedTabId={selectedTabId}
       onTabChange={id => {

@@ -42,7 +42,7 @@ function EmployeesTabContent() {
   )
 }
 
-function PolicyActions() {
+function usePolicyActions() {
   const Components = useComponentContext()
 
   return (
@@ -59,6 +59,7 @@ function PolicyActions() {
 
 export const Default = () => {
   const [selectedTabId, setSelectedTabId] = useState('details')
+  const actions = usePolicyActions()
 
   const tabs = [
     { id: 'details', label: 'Details', content: <DetailsTabContent /> },
@@ -71,7 +72,7 @@ export const Default = () => {
       subtitle="Paid time off policy"
       onBack={() => {}}
       backLabel="Time off policies"
-      actions={<PolicyActions />}
+      actions={actions}
       tabs={tabs}
       selectedTabId={selectedTabId}
       onTabChange={setSelectedTabId}
@@ -81,6 +82,7 @@ export const Default = () => {
 
 export const WithoutBackButton = () => {
   const [selectedTabId, setSelectedTabId] = useState('details')
+  const actions = usePolicyActions()
 
   const tabs = [
     { id: 'details', label: 'Details', content: <DetailsTabContent /> },
@@ -91,7 +93,7 @@ export const WithoutBackButton = () => {
     <DetailViewLayout
       title="Sick Leave"
       subtitle="Sick leave policy"
-      actions={<PolicyActions />}
+      actions={actions}
       tabs={tabs}
       selectedTabId={selectedTabId}
       onTabChange={setSelectedTabId}
