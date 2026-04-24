@@ -112,7 +112,7 @@ export function AdminProfile({
 
   const workAddress = useCurrentWorkAddressForm({
     companyId,
-    employeeId: resolvedEmployeeId,
+    employeeId: resolvedEmployeeId ?? '',
     withEffectiveDateField: false,
     shouldFocusError: false,
   })

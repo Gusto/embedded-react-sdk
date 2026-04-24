@@ -11,7 +11,7 @@ export function useCurrentWorkAddressForm(
   const { employeeId, ...rest } = props
 
   const listQuery = useEmployeeAddressesGetWorkAddresses(
-    { employeeId: employeeId ?? '' },
+    { employeeId },
     { enabled: !!employeeId },
   )
 

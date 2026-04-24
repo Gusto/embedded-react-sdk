@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import type { EmployeeWorkAddress } from '@gusto/embedded-api/models/components/employeeworkaddress'
 import { useEmployeeAddressesDeleteWorkAddressMutation } from '@gusto/embedded-api/react-query/employeeAddressesDeleteWorkAddress'
 import { useEmployeeAddressesGetWorkAddresses } from '@gusto/embedded-api/react-query/employeeAddressesGetWorkAddresses'
 import { useEmployeesGet } from '@gusto/embedded-api/react-query/employeesGet'
@@ -16,7 +17,7 @@ import type {
   HookLoadingResult,
 } from '@/partner-hook-utils/types'
 import { firstLastName } from '@/helpers/formattedStrings'
-import { SDKInternalError } from '@/types/sdkError'
+import { normalizeToSDKError, SDKInternalError } from '@/types/sdkError'
 import { componentEvents, type EventType } from '@/shared/constants'
 
 export interface UseWorkAddressManagementParams {
@@ -26,6 +27,7 @@ export interface UseWorkAddressManagementParams {
 
 export interface UseWorkAddressManagementDataPendingForms extends Record<string, unknown> {
   employeeDisplayName: string
+  employeeWorkAddresses: EmployeeWorkAddress[] | undefined
   editTargetUuid: string | undefined
   editWorkAddressForm: UseWorkAddressFormResult
   changeWorkAddressForm: UseWorkAddressFormResult
@@ -33,24 +35,20 @@ export interface UseWorkAddressManagementDataPendingForms extends Record<string,
 
 export interface UseWorkAddressManagementDataReady extends Record<string, unknown> {
   employeeDisplayName: string
+  employeeWorkAddresses: EmployeeWorkAddress[] | undefined
   editTargetUuid: string | undefined
   editWorkAddressForm: UseWorkAddressFormReady
   changeWorkAddressForm: UseWorkAddressFormReady
 }
 
 export interface UseWorkAddressManagementStatusEmployeeError extends Record<string, unknown> {
-  kind: 'employee_error'
   isDeletePending: boolean
-}
-
-export interface UseWorkAddressManagementStatusMissingCompany extends Record<string, unknown> {
-  kind: 'missing_company'
-  isDeletePending: boolean
+  isEmployeeError: true
 }
 
 export interface UseWorkAddressManagementStatusSuccess extends Record<string, unknown> {
-  kind: 'success'
   isDeletePending: boolean
+  isEmployeeError: false
 }
 
 export interface UseWorkAddressManagementActions {
@@ -58,30 +56,22 @@ export interface UseWorkAddressManagementActions {
   confirmDeleteWorkAddress: (workAddressUuid: string) => Promise<boolean>
 }
 
-export interface UseWorkAddressManagementReadyEmployeeError
-  extends BaseHookReady<
-    UseWorkAddressManagementDataPendingForms,
-    UseWorkAddressManagementStatusEmployeeError
-  > {
+export interface UseWorkAddressManagementReadyEmployeeError extends BaseHookReady<
+  UseWorkAddressManagementDataPendingForms,
+  UseWorkAddressManagementStatusEmployeeError
+> {
   actions: UseWorkAddressManagementActions
 }
 
-export interface UseWorkAddressManagementReadyMissingCompany
-  extends BaseHookReady<
-    UseWorkAddressManagementDataPendingForms,
-    UseWorkAddressManagementStatusMissingCompany
-  > {
-  actions: UseWorkAddressManagementActions
-}
-
-export interface UseWorkAddressManagementReadySuccess
-  extends BaseHookReady<UseWorkAddressManagementDataReady, UseWorkAddressManagementStatusSuccess> {
+export interface UseWorkAddressManagementReadySuccess extends BaseHookReady<
+  UseWorkAddressManagementDataReady,
+  UseWorkAddressManagementStatusSuccess
+> {
   actions: UseWorkAddressManagementActions
 }
 
 export type UseWorkAddressManagementReady =
   | UseWorkAddressManagementReadyEmployeeError
-  | UseWorkAddressManagementReadyMissingCompany
   | UseWorkAddressManagementReadySuccess
 
 export type UseWorkAddressManagementResult = HookLoadingResult | UseWorkAddressManagementReady
@@ -92,16 +82,7 @@ export function isUseWorkAddressManagementSuccess(
   if (value.isLoading) {
     return false
   }
-  return value.status.kind === 'success'
-}
-
-export function isUseWorkAddressManagementMissingCompany(
-  value: UseWorkAddressManagementResult,
-): value is UseWorkAddressManagementReadyMissingCompany {
-  if (value.isLoading) {
-    return false
-  }
-  return value.status.kind === 'missing_company'
+  return !value.status.isEmployeeError
 }
 
 function workAddressFormsReady(
@@ -142,14 +123,14 @@ export function useWorkAddressManagement({
 
   const employeeWorkAddresses = workAddressesQuery.data?.employeeWorkAddressesList
 
-  const activeWorkAddressUuid = useMemo(() => {
+  const currentWorkAddress = useMemo<EmployeeWorkAddress | null>(() => {
     if (!employeeWorkAddresses?.length) {
-      return undefined
+      return null
     }
-    return employeeWorkAddresses.find(w => w.active)?.uuid ?? employeeWorkAddresses[0]?.uuid
+    return employeeWorkAddresses.find(w => w.active) ?? employeeWorkAddresses[0] ?? null
   }, [employeeWorkAddresses])
 
-  const workAddressUuidForEdit = editTargetUuid ?? activeWorkAddressUuid
+  const workAddressUuidForEdit = editTargetUuid ?? currentWorkAddress?.uuid
 
   const editInactiveRow = useMemo(() => {
     if (!editTargetUuid || !employeeWorkAddresses) {
@@ -184,8 +165,32 @@ export function useWorkAddressManagement({
     }).trim()
   }, [employeeQuery.data?.employee])
 
+  const isMissingCompany = !!employeeQuery.data?.employee && !companyId
+
   const errorHandling: HookErrorHandling = composeErrorHandler(
-    [employeeQuery, workAddressesQuery, editWorkAddressForm, changeWorkAddressForm],
+    [
+      employeeQuery,
+      workAddressesQuery,
+      editWorkAddressForm,
+      changeWorkAddressForm,
+      ...(isMissingCompany
+        ? [
+            {
+              errorHandling: {
+                errors: [
+                  normalizeToSDKError(
+                    new SDKInternalError(
+                      'Employee record is missing companyUuid, which is required to load work address locations.',
+                    ),
+                  ),
+                ],
+                retryQueries: () => {},
+                clearSubmitError: () => {},
+              },
+            },
+          ]
+        : []),
+    ],
     { submitError: rootSubmitError, setSubmitError: setRootSubmitError },
   )
 
@@ -223,6 +228,7 @@ export function useWorkAddressManagement({
 
   const dataPayloadPendingForms: UseWorkAddressManagementDataPendingForms = {
     employeeDisplayName,
+    employeeWorkAddresses,
     editTargetUuid,
     editWorkAddressForm,
     changeWorkAddressForm,
@@ -232,30 +238,21 @@ export function useWorkAddressManagement({
     return { isLoading: true, errorHandling }
   }
 
-  if (employeeQuery.isError) {
+  if (employeeQuery.isError || isMissingCompany) {
     return {
       isLoading: false,
       data: dataPayloadPendingForms,
       status: {
-        kind: 'employee_error' as const,
         isDeletePending: deleteWorkAddressMutation.isPending,
+        isEmployeeError: true,
       },
       errorHandling,
       actions,
     }
   }
 
-  if (employeeQuery.data?.employee && !employeeQuery.data.employee.companyUuid) {
-    return {
-      isLoading: false,
-      data: dataPayloadPendingForms,
-      status: {
-        kind: 'missing_company' as const,
-        isDeletePending: deleteWorkAddressMutation.isPending,
-      },
-      errorHandling,
-      actions,
-    }
+  if (workAddressesQuery.isLoading) {
+    return { isLoading: true, errorHandling }
   }
 
   const isFormsLoading = editWorkAddressForm.isLoading || changeWorkAddressForm.isLoading
@@ -268,6 +265,7 @@ export function useWorkAddressManagement({
 
   const dataReady: UseWorkAddressManagementDataReady = {
     employeeDisplayName,
+    employeeWorkAddresses,
     editTargetUuid,
     editWorkAddressForm: editReady,
     changeWorkAddressForm: changeReady,
@@ -277,8 +275,8 @@ export function useWorkAddressManagement({
     isLoading: false,
     data: dataReady,
     status: {
-      kind: 'success' as const,
       isDeletePending: deleteWorkAddressMutation.isPending,
+      isEmployeeError: false,
     },
     errorHandling,
     actions,

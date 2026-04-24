@@ -5,7 +5,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import type { Location } from '@gusto/embedded-api/models/components/location'
 import type { EmployeeWorkAddress } from '@gusto/embedded-api/models/components/employeeworkaddress'
 import { useLocationsGet } from '@gusto/embedded-api/react-query/locationsGet'
-import { useEmployeeAddressesGetWorkAddresses } from '@gusto/embedded-api/react-query/employeeAddressesGetWorkAddresses'
 import { useEmployeeAddressesRetrieveWorkAddress } from '@gusto/embedded-api/react-query/employeeAddressesRetrieveWorkAddress'
 import { useEmployeeAddressesCreateWorkAddressMutation } from '@gusto/embedded-api/react-query/employeeAddressesCreateWorkAddress'
 import { useEmployeeAddressesUpdateWorkAddressMutation } from '@gusto/embedded-api/react-query/employeeAddressesUpdateWorkAddress'
@@ -46,7 +45,7 @@ export interface WorkAddressSubmitOptions {
 export interface UseWorkAddressFormProps {
   /** Company UUID for locations; omit or leave unset while resolving from the employee record. */
   companyId?: string
-  employeeId?: string
+  employeeId: string
   /**
    * When set, loads that work address via GET `/v1/work_addresses/{work_address_uuid}` and updates it (PUT).
    * When omitted, the form is in create mode (POST).
@@ -70,9 +69,8 @@ export interface UseWorkAddressFormReady extends BaseFormHookReady<
   WorkAddressFields
 > {
   data: {
-    /** Active work address on file from the list query (for display); not necessarily the row under edit. */
+    /** The address row loaded for update; `null` in create mode. */
     workAddress: EmployeeWorkAddress | null
-    workAddresses: EmployeeWorkAddress[] | undefined
     companyLocations: Location[] | undefined
   }
   status: { isPending: boolean; mode: 'create' | 'update' }
@@ -82,11 +80,6 @@ export interface UseWorkAddressFormReady extends BaseFormHookReady<
       options?: WorkAddressSubmitOptions,
     ) => Promise<HookSubmitResult<EmployeeWorkAddress> | undefined>
   }
-}
-
-const getActiveWorkAddress = (addresses?: EmployeeWorkAddress[]) => {
-  if (!addresses || addresses.length === 0) return undefined
-  return addresses.find(address => address.active) ?? addresses[0]
 }
 
 export function useWorkAddressForm({
@@ -100,10 +93,6 @@ export function useWorkAddressForm({
   shouldFocusError = true,
 }: UseWorkAddressFormProps): HookLoadingResult | UseWorkAddressFormReady {
   const locationsQuery = useLocationsGet({ companyId: companyId ?? '' }, { enabled: !!companyId })
-  const workAddressesQuery = useEmployeeAddressesGetWorkAddresses(
-    { employeeId: employeeId ?? '' },
-    { enabled: !!employeeId },
-  )
 
   const retrieveWorkAddressQuery = useEmployeeAddressesRetrieveWorkAddress(
     { workAddressUuid: workAddressUuid ?? '' },
@@ -111,8 +100,6 @@ export function useWorkAddressForm({
   )
 
   const companyLocations = locationsQuery.data?.companyLocationsList
-  const workAddresses = workAddressesQuery.data?.employeeWorkAddressesList
-  const currentWorkAddress = getActiveWorkAddress(workAddresses)
 
   const isCreateMode = !workAddressUuid
 
@@ -135,8 +122,7 @@ export function useWorkAddressForm({
   const resolvedDefaults: WorkAddressFormData = useMemo(
     () => ({
       locationUuid: fetchedWorkAddress?.locationUuid ?? partnerDefaults?.locationUuid ?? '',
-      effectiveDate:
-        fetchedWorkAddress?.effectiveDate ?? partnerDefaults?.effectiveDate ?? '',
+      effectiveDate: fetchedWorkAddress?.effectiveDate ?? partnerDefaults?.effectiveDate ?? '',
     }),
     [fetchedWorkAddress, partnerDefaults],
   )
@@ -163,7 +149,6 @@ export function useWorkAddressForm({
 
   const queriesForErrors = [
     locationsQuery,
-    ...(employeeId ? [workAddressesQuery] : []),
     ...(workAddressUuid ? [retrieveWorkAddressQuery] : []),
   ]
   const errorHandling = composeErrorHandler(queriesForErrors, { submitError, setSubmitError })
@@ -271,10 +256,9 @@ export function useWorkAddressForm({
 
   const isDataLoading =
     (!!companyId && locationsQuery.isLoading) ||
-    (employeeId ? workAddressesQuery.isLoading : false) ||
     (!!workAddressUuid && retrieveWorkAddressQuery.isLoading)
 
-  if (!companyId || isDataLoading || !companyLocations || (employeeId && !workAddresses)) {
+  if (!companyId || isDataLoading || !companyLocations) {
     return { isLoading: true as const, errorHandling }
   }
 
@@ -285,8 +269,7 @@ export function useWorkAddressForm({
   return {
     isLoading: false as const,
     data: {
-      workAddress: currentWorkAddress ?? null,
-      workAddresses,
+      workAddress: fetchedWorkAddress ?? null,
       companyLocations,
     },
     status: {

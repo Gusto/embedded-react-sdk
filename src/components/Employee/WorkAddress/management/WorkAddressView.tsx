@@ -26,6 +26,8 @@ import { getCityStateZip, getStreet } from '@/helpers/formattedStrings'
 export interface WorkAddressViewProps {
   editWorkAddressForm: UseWorkAddressFormReady
   changeWorkAddressForm: UseWorkAddressFormReady
+  /** Full list for history table, pending-future alert, and delete-confirmation lookup. */
+  workAddresses: EmployeeWorkAddress[] | undefined
   editTargetUuid: string | undefined
   onEditTargetUuidChange: (uuid: string | undefined) => void
   employeeDisplayName: string
@@ -62,6 +64,7 @@ function formatWorkAddressLines(
 export function WorkAddressView({
   editWorkAddressForm,
   changeWorkAddressForm,
+  workAddresses,
   editTargetUuid,
   onEditTargetUuidChange,
   employeeDisplayName,
@@ -94,7 +97,7 @@ export function WorkAddressView({
   }, [addressModal])
 
   const {
-    data: { workAddress, workAddresses, companyLocations },
+    data: { workAddress, companyLocations },
     status: editStatus,
     form: { Fields: editFormFields },
   } = editWorkAddressForm
@@ -240,17 +243,13 @@ export function WorkAddressView({
     if (!addressModal) {
       return
     }
-    const addressBeingEdited =
-      editTargetUuid && workAddresses
-        ? workAddresses.find(a => a.uuid === editTargetUuid)
-        : workAddress
 
     if (addressModal === 'edit') {
       const result = await editWorkAddressForm.actions.onSubmit(
         undefined,
         editShowsEffectiveDateField
           ? undefined
-          : { effectiveDate: addressBeingEdited?.effectiveDate },
+          : { effectiveDate: workAddress?.effectiveDate },
       )
       if (result) {
         onWorkAddressSaved(result)

@@ -1,7 +1,6 @@
 import type { EmployeeWorkAddress } from '@gusto/embedded-api/models/components/employeeworkaddress'
 import { WorkAddressView } from './WorkAddressView'
 import {
-  isUseWorkAddressManagementMissingCompany,
   isUseWorkAddressManagementSuccess,
   useWorkAddressManagement,
 } from './useWorkAddressManagement'
@@ -13,7 +12,6 @@ import {
 } from '@/components/Base/Base'
 import { useI18n, useComponentDictionary } from '@/i18n'
 import type { HookSubmitResult } from '@/partner-hook-utils/types'
-import { normalizeToSDKError, SDKInternalError } from '@/types/sdkError'
 import { componentEvents } from '@/shared/constants'
 
 export interface WorkAddressProps extends CommonComponentInterface<'Employee.WorkAddress.Management'> {
@@ -29,18 +27,6 @@ function WorkAddressRoot({ employeeId, dictionary, onEvent }: WorkAddressProps) 
 
   if (management.isLoading) {
     return <BaseLayout isLoading error={management.errorHandling.errors} />
-  }
-
-  if (isUseWorkAddressManagementMissingCompany(management)) {
-    return (
-      <BaseLayout
-        error={normalizeToSDKError(
-          new SDKInternalError(
-            'Employee record is missing companyUuid, which is required to load work address locations.',
-          ),
-        )}
-      />
-    )
   }
 
   if (!isUseWorkAddressManagementSuccess(management)) {
@@ -60,6 +46,7 @@ function WorkAddressRoot({ employeeId, dictionary, onEvent }: WorkAddressProps) 
       <WorkAddressView
         editWorkAddressForm={management.data.editWorkAddressForm}
         changeWorkAddressForm={management.data.changeWorkAddressForm}
+        workAddresses={management.data.employeeWorkAddresses}
         editTargetUuid={management.data.editTargetUuid}
         onEditTargetUuidChange={management.actions.setEditTargetUuid}
         employeeDisplayName={management.data.employeeDisplayName}
