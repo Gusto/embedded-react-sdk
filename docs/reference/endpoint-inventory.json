@@ -103,25 +103,6 @@
         "companyUuid"
       ]
     },
-    "Company.SignatureForm": {
-      "endpoints": [
-        {
-          "method": "GET",
-          "path": "/v1/forms/:formId"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/forms/:formId/sign"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/forms/:formId/pdf"
-        }
-      ],
-      "variables": [
-        "formId"
-      ]
-    },
     "Company.DocumentSigner": {
       "endpoints": [
         {
@@ -137,12 +118,12 @@
           "path": "/v1/forms/:formId"
         },
         {
-          "method": "PUT",
-          "path": "/v1/forms/:formId/sign"
-        },
-        {
           "method": "GET",
           "path": "/v1/forms/:formId/pdf"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/forms/:formId/sign"
         }
       ],
       "variables": [
@@ -603,6 +584,14 @@
           "path": "/v1/employees/:employeeId/onboarding_status"
         },
         {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/home_addresses"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/home_addresses/:homeAddressUuid"
+        },
+        {
           "method": "POST",
           "path": "/v1/employees/:employeeId/home_addresses"
         },
@@ -775,15 +764,15 @@
         },
         {
           "method": "GET",
+          "path": "/v1/employees/:employeeId/forms/:formId"
+        },
+        {
+          "method": "GET",
           "path": "/v1/employees/:employeeId/forms/:formId/pdf"
         },
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeId/forms/:formId/sign"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/forms/:formId"
         }
       ],
       "variables": [
@@ -852,6 +841,26 @@
       "variables": [
         "employeeId",
         "employeeUuid"
+      ]
+    },
+    "Employee.HomeAddress": {
+      "endpoints": [
+        {
+          "method": "DELETE",
+          "path": "/v1/home_addresses/:homeAddressUuid"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/home_addresses"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId"
+        }
+      ],
+      "variables": [
+        "employeeId",
+        "homeAddressUuid"
       ]
     },
     "Employee.EmploymentEligibility": {
@@ -1848,12 +1857,12 @@
           "path": "/v1/forms/:formId"
         },
         {
-          "method": "PUT",
-          "path": "/v1/forms/:formId/sign"
-        },
-        {
           "method": "GET",
           "path": "/v1/forms/:formId/pdf"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/forms/:formId/sign"
         },
         {
           "method": "PUT",
@@ -2199,6 +2208,14 @@
           "path": "/v1/employees/:employeeId"
         },
         {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/home_addresses"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/home_addresses/:homeAddressUuid"
+        },
+        {
           "method": "POST",
           "path": "/v1/employees/:employeeId/home_addresses"
         },
@@ -2270,15 +2287,15 @@
         },
         {
           "method": "GET",
+          "path": "/v1/employees/:employeeId/forms/:formId"
+        },
+        {
+          "method": "GET",
           "path": "/v1/employees/:employeeId/forms/:formId/pdf"
         },
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeId/forms/:formId/sign"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/forms/:formId"
         },
         {
           "method": "GET",
@@ -2339,6 +2356,14 @@
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeId/onboarding_status"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/home_addresses"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/home_addresses/:homeAddressUuid"
         },
         {
           "method": "POST",

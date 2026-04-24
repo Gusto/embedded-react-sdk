@@ -1,4 +1,4 @@
-export { ManagementEmployeeList as EmployeeList } from '../employee-list/management/ManagementEmployeeList'
+export { ManagementEmployeeList as EmployeeList } from '../EmployeeList/management/ManagementEmployeeList'
 export { EmployeeDocuments } from '../EmployeeDocuments'
 export { DashboardFlow } from '../Dashboard'
 export { WorkAddress } from '../WorkAddress/management/WorkAddress'

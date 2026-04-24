@@ -11,7 +11,10 @@ export interface SelectHookFieldProps<TErrorCode extends string = never, TEntry 
   formHookResult?: FormHookResult
   validationMessages?: ValidationMessages<TErrorCode>
   getOptionLabel?: (entry: TEntry) => string
+  placeholder?: string
   FieldComponent?: ComponentType<SelectProps>
+  /** When used inside a modal, pass the modal backdrop ref’s element so the listbox stacks correctly. */
+  portalContainer?: SelectProps['portalContainer']
 }
 
 export function SelectHookField<TErrorCode extends string, TEntry = unknown>({
@@ -21,6 +24,7 @@ export function SelectHookField<TErrorCode extends string, TEntry = unknown>({
   description,
   validationMessages,
   getOptionLabel,
+  placeholder,
   FieldComponent,
   portalContainer,
 }: SelectHookFieldProps<TErrorCode, TEntry>) {
@@ -50,6 +54,7 @@ export function SelectHookField<TErrorCode extends string, TEntry = unknown>({
       isRequired={fieldMetadata?.isRequired}
       isDisabled={fieldMetadata?.isDisabled}
       options={options}
+      placeholder={placeholder}
       FieldComponent={FieldComponent}
       portalContainer={portalContainer}
     />

@@ -11,7 +11,7 @@ const onContinue = fn().mockName('onContinue')
 const onBack = fn().mockName('onBack')
 
 export default {
-  title: 'TimeOff/PolicySettings',
+  title: 'Domain/TimeOff/PolicySettings',
   decorators: [
     (Story: React.ComponentType) => (
       <I18nLoader>

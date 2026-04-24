@@ -7,7 +7,8 @@ import { RoutedComponentRenderer } from './RoutedComponentRenderer'
 import { DesignLayout } from './design/DesignLayout'
 import { DesignHome } from './design/DesignHome'
 import { ComponentShowcase } from './design/prototypes/component-showcase'
-import { ContractorProfile } from './design/prototypes/contractor-management/contractorProfile'
+import { ContractorProfile } from './design/prototypes/contractor-management/ContractorProfile'
+import ContractorList from './design/prototypes/contractor-management/ContractorList'
 import './app.scss'
 import '@/styles/sdk.scss'
 
@@ -25,6 +26,7 @@ const router = createBrowserRouter([
           { index: true, element: <DesignHome /> },
           { path: 'component-showcase', element: <ComponentShowcase /> },
           { path: 'contractor-profile', element: <ContractorProfile /> },
+          { path: 'contractor-list', element: <ContractorList /> },
         ],
       },
     ],

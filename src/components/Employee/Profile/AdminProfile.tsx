@@ -9,7 +9,7 @@ import type { ProfileProps } from './Profile'
 import styles from './AdminProfile.module.scss'
 import { useEmployeeDetailsForm } from './shared/useEmployeeDetailsForm'
 import type { EmployeeDetailsOptionalFieldsToRequire } from './shared/useEmployeeDetailsForm'
-import { useHomeAddressForm } from './shared/useHomeAddressForm'
+import { useCurrentHomeAddressForm } from './shared/useHomeAddressForm'
 import { useWorkAddressForm } from './shared/useWorkAddressForm'
 import type { UseEmployeeDetailsFormReady } from './shared/useEmployeeDetailsForm'
 import type { UseHomeAddressFormReady } from './shared/useHomeAddressForm'
@@ -124,9 +124,8 @@ export function AdminProfile({
     shouldFocusError: false,
   })
 
-  const homeAddress = useHomeAddressForm({
-    employeeId: resolvedEmployeeId,
-    homeAddressUuid: activeHomeAddressUuid,
+  const homeAddress = useCurrentHomeAddressForm({
+    employeeId: resolvedEmployeeId ?? '',
     withEffectiveDateField: false,
     defaultValues: {
       street1: defaultValues?.homeAddress?.street1,
@@ -146,12 +145,6 @@ export function AdminProfile({
     shouldFocusError: false,
   })
 
-  const startDateForm = useForm<{ startDate: string }>({
-    defaultValues: { startDate: '' },
-    mode: 'onSubmit',
-    shouldFocusError: false,
-  })
-
   if (employeeDetails.isLoading || homeAddress.isLoading || workAddress.isLoading) {
     const loadingErrorHandling = composeErrorHandler([employeeDetails, homeAddress, workAddress])
     return <BaseLayout isLoading error={loadingErrorHandling.errors} />
@@ -162,7 +155,6 @@ export function AdminProfile({
       employeeDetails={employeeDetails}
       homeAddress={homeAddress}
       workAddress={workAddress}
-      startDateForm={startDateForm}
       isSelfOnboardingEnabled={isSelfOnboardingEnabled}
       isCreateMode={isCreateMode}
       employeeId={employeeId}
@@ -178,7 +170,6 @@ interface AdminProfileReadyProps {
   employeeDetails: UseEmployeeDetailsFormReady
   homeAddress: UseHomeAddressFormReady
   workAddress: UseWorkAddressFormReady
-  startDateForm: ReturnType<typeof useForm<{ startDate: string }>>
   isSelfOnboardingEnabled: boolean
   isCreateMode: boolean
   employeeId?: string
@@ -192,7 +183,6 @@ function AdminProfileReady({
   employeeDetails,
   homeAddress,
   workAddress,
-  startDateForm,
   isSelfOnboardingEnabled,
   isCreateMode,
   employeeId,
@@ -207,6 +197,12 @@ function AdminProfileReady({
 
   const employee = employeeDetails.data.employee ?? undefined
   const completedSelfOnboarding = checkHasCompletedSelfOnboarding(employee)
+
+  const startDateForm = useForm<{ startDate: string }>({
+    defaultValues: { startDate: employee?.jobs?.[0]?.hireDate ?? '' },
+    mode: 'onSubmit',
+    shouldFocusError: false,
+  })
 
   const EmployeeFields = employeeDetails.form.Fields
   const HomeAddressFields = homeAddress.form.Fields

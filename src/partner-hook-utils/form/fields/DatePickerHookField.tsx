@@ -10,6 +10,8 @@ export interface DatePickerHookFieldProps<TErrorCode extends string = never>
   formHookResult?: FormHookResult
   validationMessages?: ValidationMessages<TErrorCode>
   FieldComponent?: ComponentType<DatePickerProps>
+  /** When used inside a modal, pass the modal backdrop ref’s element so the calendar popover stacks correctly. */
+  portalContainer?: DatePickerProps['portalContainer']
 }
 
 export function DatePickerHookField<TErrorCode extends string>({

@@ -111,6 +111,14 @@ function setupEmployeeHandlers({
     http.get(`${API_BASE_URL}/v1/employees/:employee_id/home_addresses`, () =>
       HttpResponse.json(homeAddresses),
     ),
+    http.get(`${API_BASE_URL}/v1/home_addresses/:home_address_uuid`, ({ params }) => {
+      const uuid = String(params.home_address_uuid)
+      const row = homeAddresses.find(a => String(a.uuid) === uuid)
+      if (!row) {
+        return new HttpResponse(null, { status: 404 })
+      }
+      return HttpResponse.json(row)
+    }),
     http.get(`${API_BASE_URL}/v1/employees/:employee_id/work_addresses`, () =>
       HttpResponse.json(workAddresses),
     ),
@@ -1124,7 +1132,7 @@ describe('Employee Profile', () => {
       )
     })
 
-    it('does not send effective_date in work address update payload (parity with main)', async () => {
+    it('does not send effective_date in work address update payload', async () => {
       const capturedUpdateWorkAddress = vi.fn()
 
       setupEmployeeHandlers({
@@ -1175,7 +1183,7 @@ describe('Employee Profile', () => {
       expect(body).not.toHaveProperty('effective_date')
     })
 
-    it('renders Start date empty in update mode regardless of work address effective_date (parity with main)', async () => {
+    it('renders Start date empty in update mode when employee has no jobs (does not fall back to work address effective_date)', async () => {
       setupEmployeeHandlers({
         employee: createEmployeeFixture({
           onboarding_status: 'admin_onboarding_incomplete',
@@ -1205,6 +1213,94 @@ describe('Employee Profile', () => {
       const monthSpinbutton = within(startDateGroup).getByRole('spinbutton', { name: /month/i })
 
       expect(monthSpinbutton).not.toHaveAttribute('aria-valuenow')
+    })
+
+    it('pre-fills Start date from employee.jobs[0].hireDate in update mode', async () => {
+      setupEmployeeHandlers({
+        employee: createEmployeeFixture({
+          onboarding_status: 'admin_onboarding_incomplete',
+          jobs: [
+            {
+              ...baseEmployee.jobs[0],
+              hire_date: '2024-03-15',
+            },
+          ],
+        }),
+      })
+
+      renderWithProviders(
+        <Profile
+          companyId={COMPANY_ID}
+          employeeId={EMPLOYEE_ID}
+          isAdmin
+          isSelfOnboardingEnabled={false}
+          onEvent={mockOnEvent}
+        />,
+      )
+
+      await waitForProfileToLoad()
+
+      const startDateGroup = screen.getByRole('group', { name: /Start date/ })
+      const monthSpinbutton = within(startDateGroup).getByRole('spinbutton', { name: /month/i })
+      const daySpinbutton = within(startDateGroup).getByRole('spinbutton', { name: /day/i })
+      const yearSpinbutton = within(startDateGroup).getByRole('spinbutton', { name: /year/i })
+
+      expect(monthSpinbutton).toHaveAttribute('aria-valuenow', '3')
+      expect(daySpinbutton).toHaveAttribute('aria-valuenow', '15')
+      expect(yearSpinbutton).toHaveAttribute('aria-valuenow', '2024')
+    })
+
+    it('allows submit in update mode without re-entering Start date when jobs[0].hireDate is set', async () => {
+      setupEmployeeHandlers({
+        employee: createEmployeeFixture({
+          onboarding_status: 'admin_onboarding_incomplete',
+          has_ssn: true,
+          jobs: [
+            {
+              ...baseEmployee.jobs[0],
+              hire_date: '2024-03-15',
+            },
+          ],
+        }),
+      })
+
+      server.use(
+        handleUpdateEmployee(async () => {
+          const fixture = await import('@/test/mocks/fixtures/get-v1-employees.json')
+          return HttpResponse.json({ ...fixture.default, version: 'updated-version' })
+        }),
+        http.put(`${API_BASE_URL}/v1/home_addresses/:home_address_uuid`, async () => {
+          const fixture =
+            await import('@/test/mocks/fixtures/get-v1-home_addresses-home_address_uuid.json')
+          return HttpResponse.json(fixture.default)
+        }),
+        http.put(`${API_BASE_URL}/v1/work_addresses/:work_address_uuid`, async () => {
+          const fixture =
+            await import('@/test/mocks/fixtures/get-v1-work_addresses-work_address_uuid.json')
+          return HttpResponse.json(fixture.default)
+        }),
+      )
+
+      renderWithProviders(
+        <Profile
+          companyId={COMPANY_ID}
+          employeeId={EMPLOYEE_ID}
+          isAdmin
+          isSelfOnboardingEnabled={false}
+          onEvent={mockOnEvent}
+        />,
+      )
+
+      await waitForProfileToLoad()
+
+      await user.click(screen.getByRole('button', { name: /Continue/ }))
+
+      await waitFor(() => {
+        expect(mockOnEvent).toHaveBeenCalledWith(
+          'employee/profile/done',
+          expect.objectContaining({ startDate: '2024-03-15' }),
+        )
+      })
     })
 
     it('EMPLOYEE_PROFILE_DONE event includes startDate', async () => {
