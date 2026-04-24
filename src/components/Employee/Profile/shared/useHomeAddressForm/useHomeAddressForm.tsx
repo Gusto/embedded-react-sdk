@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -56,11 +56,6 @@ export interface UseHomeAddressFormProps {
   defaultValues?: Partial<HomeAddressFormData>
   validationMode?: UseFormProps['mode']
   shouldFocusError?: boolean
-  /**
-   * Increment when opening a create/edit modal so the form resets even when the target address and
-   * default field values match the previous open (e.g. reopening the same row after cancel).
-   */
-  formSessionId?: number
 }
 
 export interface HomeAddressFields {
@@ -98,7 +93,6 @@ export function useHomeAddressForm({
   defaultValues: partnerDefaults,
   validationMode = 'onSubmit',
   shouldFocusError = true,
-  formSessionId = 0,
 }: UseHomeAddressFormProps): HookLoadingResult | UseHomeAddressFormReady {
   const retrieveHomeAddressQuery = useEmployeeAddressesRetrieveHomeAddress(
     { homeAddressUuid: homeAddressUuid ?? '' },
@@ -144,26 +138,8 @@ export function useHomeAddressForm({
     shouldFocusError,
     defaultValues: resolvedDefaults,
     values: resolvedDefaults,
-    resetOptions: { keepDirtyValues: false },
+    resetOptions: { keepDirtyValues: true },
   })
-
-  /* eslint-disable react-hooks/exhaustive-deps -- reset uses primitive deps to mirror resolvedDefaults without object-identity churn */
-  useEffect(() => {
-    formMethods.reset(resolvedDefaults)
-  }, [
-    formSessionId,
-    homeAddressUuid,
-    fetchedHomeAddress?.uuid,
-    resolvedDefaults.street1,
-    resolvedDefaults.street2,
-    resolvedDefaults.city,
-    resolvedDefaults.state,
-    resolvedDefaults.zip,
-    resolvedDefaults.courtesyWithholding,
-    resolvedDefaults.effectiveDate,
-    formMethods,
-  ])
-  /* eslint-enable react-hooks/exhaustive-deps */
 
   const createHomeAddressMutation = useEmployeeAddressesCreateMutation()
   const updateHomeAddressMutation = useEmployeeAddressesUpdateMutation()
