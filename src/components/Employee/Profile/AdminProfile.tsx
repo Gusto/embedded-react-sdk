@@ -3,13 +3,12 @@ import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import { type Employee } from '@gusto/embedded-api/models/components/employee'
-import { useEmployeeAddressesGetWorkAddresses } from '@gusto/embedded-api/react-query/employeeAddressesGetWorkAddresses'
 import type { ProfileProps } from './Profile'
 import styles from './AdminProfile.module.scss'
 import { useEmployeeDetailsForm } from './shared/useEmployeeDetailsForm'
 import type { EmployeeDetailsOptionalFieldsToRequire } from './shared/useEmployeeDetailsForm'
 import { useCurrentHomeAddressForm } from './shared/useHomeAddressForm'
-import { useWorkAddressForm } from './shared/useWorkAddressForm'
+import { useCurrentWorkAddressForm } from './shared/useWorkAddressForm'
 import type { UseEmployeeDetailsFormReady } from './shared/useEmployeeDetailsForm'
 import type { UseHomeAddressFormReady } from './shared/useHomeAddressForm'
 import type { UseWorkAddressFormReady } from './shared/useWorkAddressForm'
@@ -89,19 +88,6 @@ export function AdminProfile({
     [defaultValues, isCreateMode, createModeSelfOnboarding],
   )
 
-  const workAddressesQuery = useEmployeeAddressesGetWorkAddresses(
-    { employeeId: resolvedEmployeeId ?? '' },
-    { enabled: !!resolvedEmployeeId },
-  )
-
-  const activeWorkAddressUuid = useMemo(() => {
-    const list = workAddressesQuery.data?.employeeWorkAddressesList
-    if (!list?.length) {
-      return undefined
-    }
-    return list.find(w => w.active)?.uuid ?? list[0]?.uuid
-  }, [workAddressesQuery.data?.employeeWorkAddressesList])
-
   const employeeDetails = useEmployeeDetailsForm({
     companyId,
     employeeId: resolvedEmployeeId,
@@ -124,10 +110,9 @@ export function AdminProfile({
     shouldFocusError: false,
   })
 
-  const workAddress = useWorkAddressForm({
+  const workAddress = useCurrentWorkAddressForm({
     companyId,
     employeeId: resolvedEmployeeId,
-    workAddressUuid: activeWorkAddressUuid,
     withEffectiveDateField: false,
     shouldFocusError: false,
   })
