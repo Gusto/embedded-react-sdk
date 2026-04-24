@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
-import { useContractorsListSuspense } from '@gusto/embedded-api/react-query/contractorsList'
+import { useContractorsGetSuspense } from '@gusto/embedded-api/react-query/contractorsGet'
 import { useContractorPaymentMethodGetBankAccountsSuspense } from '@gusto/embedded-api/react-query/contractorPaymentMethodGetBankAccounts'
 import {
   useContractorPaymentMethodGetSuspense,
@@ -23,6 +23,7 @@ import { ContractorDocuments } from './components/ContractorDocuments'
 import { ContractorPay } from './components/ContractorPay'
 import { ContractorPayForm } from './components/ContractorPayForm'
 import { ContractorDetailsForm } from './components/ContractorDetailsForm'
+import { Skeleton } from './components/Skeleton'
 import { Flex } from '@/components/Common'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { BaseComponent } from '@/components/Base'
@@ -30,29 +31,57 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { componentEvents, type EventType } from '@/shared/constants'
 
 export interface ContractorProfileContextInterface extends FlowContextInterface {
-  companyId: string
+  contractorId: string
   successMessage?: string
   selectedTab: string
   component: React.ComponentType | null
 }
 
-function useContractorData(companyId: string) {
-  const { data } = useContractorsListSuspense({ companyUuid: companyId })
-  const contractor = data.contractors?.[0]
-  return contractor
+function useContractorData(contractorId: string) {
+  const { data } = useContractorsGetSuspense({ contractorUuid: contractorId })
+  return data.contractor
 }
 
-export function ProfileViewContextual() {
-  const { companyId } = useFlow<ContractorProfileContextInterface>()
+function ProfileSkeleton() {
   const Components = useComponentContext()
 
-  const contractor = useContractorData(companyId)
+  return (
+    <Flex flexDirection="column" gap={24}>
+      <Flex flexDirection="column" gap={4}>
+        <Skeleton width={200} height={28} />
+        <Skeleton width={80} height={18} />
+      </Flex>
+      <Flex flexDirection="column" gap={24}>
+        <Components.Box header={<Skeleton width={120} height={32} />}>
+          <Skeleton width="100%" height={331} />
+        </Components.Box>
+        <Components.Box header={<Skeleton width={120} height={32} />}>
+          <Skeleton width="100%" height={88} />
+        </Components.Box>
+      </Flex>
+    </Flex>
+  )
+}
+
+function ProfileViewData() {
+  const { contractorId } = useFlow<ContractorProfileContextInterface>()
+  const Components = useComponentContext()
+
+  const contractor = useContractorData(contractorId)
 
   if (!contractor) {
-    return <Components.Text>No contractors found for this company.</Components.Text>
+    return <Components.Text>No contractor found for this contractor ID.</Components.Text>
   }
 
   return <ProfileViewContent contractor={contractor} />
+}
+
+export function ProfileViewContextual() {
+  return (
+    <Suspense fallback={<ProfileSkeleton />}>
+      <ProfileViewData />
+    </Suspense>
+  )
 }
 
 function ProfileViewContent({ contractor }: { contractor: Contractor }) {
@@ -182,11 +211,11 @@ function ProfileViewContent({ contractor }: { contractor: Contractor }) {
 }
 
 function EditAddressContent() {
-  const { companyId, onEvent } = useFlow<ContractorProfileContextInterface>()
+  const { contractorId, onEvent } = useFlow<ContractorProfileContextInterface>()
 
-  const contractor = useContractorData(companyId)
+  const contractor = useContractorData(contractorId)
   const { data: addressData } = useContractorsGetAddressSuspense({
-    contractorUuid: contractor?.uuid ?? '',
+    contractorUuid: contractorId,
   })
   const address = addressData.contractorAddress
 
@@ -243,13 +272,9 @@ export function EditAddressContextual() {
 }
 
 function AddPaymentMethodContent() {
-  const { companyId, onEvent } = useFlow<ContractorProfileContextInterface>()
+  const { contractorId, onEvent } = useFlow<ContractorProfileContextInterface>()
 
-  const contractor = useContractorData(companyId)
-  const { data: paymentMethodData } = useContractorPaymentMethodGetSuspense({
-    contractorUuid: contractor?.uuid ?? '',
-  })
-  const paymentMethod = paymentMethodData.contractorPaymentMethod
+  const contractor = useContractorData(contractorId)
 
   const queryClient = useQueryClient()
   const gustoClient = useGustoEmbeddedContext()
@@ -261,40 +286,35 @@ function AddPaymentMethodContent() {
   if (!contractor) return null
 
   const handleSave = async (data: {
-    type: 'Check' | 'Direct Deposit'
-    name?: string
-    routingNumber?: string
-    accountNumber?: string
-    accountType?: 'Checking' | 'Savings'
+    name: string
+    routingNumber: string
+    accountNumber: string
+    accountType: 'Checking' | 'Savings'
   }) => {
-    let version = paymentMethod?.version as string
-
-    if (data.type === 'Direct Deposit') {
-      await createBankAccount({
-        request: {
-          contractorUuid: contractor.uuid,
-          requestBody: {
-            name: data.name!,
-            routingNumber: data.routingNumber!,
-            accountNumber: data.accountNumber!,
-            accountType: data.accountType!,
-          },
-        },
-      })
-
-      const getPaymentMethodQuery = buildContractorPaymentMethodGetQuery(gustoClient, {
+    await createBankAccount({
+      request: {
         contractorUuid: contractor.uuid,
-      })
-      const updatedPaymentMethod = await queryClient.fetchQuery(getPaymentMethodQuery)
-      version = updatedPaymentMethod.contractorPaymentMethod?.version as string
-    }
+        requestBody: {
+          name: data.name,
+          routingNumber: data.routingNumber,
+          accountNumber: data.accountNumber,
+          accountType: data.accountType,
+        },
+      },
+    })
+
+    const getPaymentMethodQuery = buildContractorPaymentMethodGetQuery(gustoClient, {
+      contractorUuid: contractor.uuid,
+    })
+    const updatedPaymentMethod = await queryClient.fetchQuery(getPaymentMethodQuery)
+    const version = updatedPaymentMethod.contractorPaymentMethod?.version as string
 
     await updatePaymentMethod({
       request: {
         contractorUuid: contractor.uuid,
         requestBody: {
           version,
-          type: data.type,
+          type: 'Direct Deposit',
         },
       },
     })
@@ -305,7 +325,6 @@ function AddPaymentMethodContent() {
   return (
     <ContractorPaymentMethodForm
       variant="add"
-      paymentMethodType={paymentMethod?.type ?? 'Check'}
       isPending={isPaymentMethodPending || isBankAccountPending}
       onCancel={() => {
         onEvent(componentEvents.CANCEL)
@@ -324,18 +343,13 @@ export function AddPaymentMethodContextual() {
 }
 
 function EditPaymentMethodContent() {
-  const { companyId, onEvent } = useFlow<ContractorProfileContextInterface>()
+  const { contractorId, onEvent } = useFlow<ContractorProfileContextInterface>()
 
-  const contractor = useContractorData(companyId)
+  const contractor = useContractorData(contractorId)
   const { data: bankAccountsData } = useContractorPaymentMethodGetBankAccountsSuspense({
-    contractorUuid: contractor?.uuid ?? '',
+    contractorUuid: contractorId,
   })
   const bankAccounts = bankAccountsData.contractorBankAccountList ?? []
-
-  const { data: paymentMethodData } = useContractorPaymentMethodGetSuspense({
-    contractorUuid: contractor?.uuid ?? '',
-  })
-  const paymentMethod = paymentMethodData.contractorPaymentMethod
 
   const queryClient = useQueryClient()
   const gustoClient = useGustoEmbeddedContext()
@@ -347,40 +361,35 @@ function EditPaymentMethodContent() {
   if (!contractor) return null
 
   const handleSave = async (data: {
-    type: 'Check' | 'Direct Deposit'
-    name?: string
-    routingNumber?: string
-    accountNumber?: string
-    accountType?: 'Checking' | 'Savings'
+    name: string
+    routingNumber: string
+    accountNumber: string
+    accountType: 'Checking' | 'Savings'
   }) => {
-    let version = paymentMethod?.version as string
-
-    if (data.type === 'Direct Deposit') {
-      await createBankAccount({
-        request: {
-          contractorUuid: contractor.uuid,
-          requestBody: {
-            name: data.name!,
-            routingNumber: data.routingNumber!,
-            accountNumber: data.accountNumber!,
-            accountType: data.accountType!,
-          },
-        },
-      })
-
-      const getPaymentMethodQuery = buildContractorPaymentMethodGetQuery(gustoClient, {
+    await createBankAccount({
+      request: {
         contractorUuid: contractor.uuid,
-      })
-      const updatedPaymentMethod = await queryClient.fetchQuery(getPaymentMethodQuery)
-      version = updatedPaymentMethod.contractorPaymentMethod?.version as string
-    }
+        requestBody: {
+          name: data.name,
+          routingNumber: data.routingNumber,
+          accountNumber: data.accountNumber,
+          accountType: data.accountType,
+        },
+      },
+    })
+
+    const getPaymentMethodQuery = buildContractorPaymentMethodGetQuery(gustoClient, {
+      contractorUuid: contractor.uuid,
+    })
+    const updatedPaymentMethod = await queryClient.fetchQuery(getPaymentMethodQuery)
+    const version = updatedPaymentMethod.contractorPaymentMethod?.version as string
 
     await updatePaymentMethod({
       request: {
         contractorUuid: contractor.uuid,
         requestBody: {
           version,
-          type: data.type,
+          type: 'Direct Deposit',
         },
       },
     })
@@ -392,7 +401,6 @@ function EditPaymentMethodContent() {
     <ContractorPaymentMethodForm
       variant="edit"
       bankAccount={bankAccounts[0]}
-      paymentMethodType={paymentMethod?.type ?? 'Check'}
       isPending={isPaymentMethodPending || isBankAccountPending}
       onCancel={() => {
         onEvent(componentEvents.CANCEL)
@@ -411,9 +419,9 @@ export function EditPaymentMethodContextual() {
 }
 
 function EditCompensationContent() {
-  const { companyId, onEvent } = useFlow<ContractorProfileContextInterface>()
+  const { contractorId, onEvent } = useFlow<ContractorProfileContextInterface>()
 
-  const contractor = useContractorData(companyId)
+  const contractor = useContractorData(contractorId)
   const { mutateAsync: updateContractor, isPending } = useContractorsUpdateMutation()
 
   if (!contractor) return null
@@ -453,9 +461,9 @@ export function EditCompensationContextual() {
 }
 
 function EditBasicDetailsContent() {
-  const { companyId, onEvent } = useFlow<ContractorProfileContextInterface>()
+  const { contractorId, onEvent } = useFlow<ContractorProfileContextInterface>()
 
-  const contractor = useContractorData(companyId)
+  const contractor = useContractorData(contractorId)
   const { mutateAsync: updateContractor, isPending } = useContractorsUpdateMutation()
 
   if (!contractor) return null
