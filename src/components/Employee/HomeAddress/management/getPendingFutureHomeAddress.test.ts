@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { EmployeeAddress } from '@gusto/embedded-api/models/components/employeeaddress'
+import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import {
   formatPendingHomeAddressLine,
   getPendingFutureHomeAddress,
@@ -26,22 +27,22 @@ describe('getPendingFutureHomeAddress', () => {
     const past = base({
       uuid: '1',
       active: false,
-      effectiveDate: '2026-01-01' as unknown as EmployeeAddress['effectiveDate'],
+      effectiveDate: new RFCDate('2026-01-01'),
     })
     const futureA = base({
       uuid: '2',
       active: false,
-      effectiveDate: '2026-04-24' as unknown as EmployeeAddress['effectiveDate'],
+      effectiveDate: new RFCDate('2026-04-24'),
     })
     const futureB = base({
       uuid: '3',
       active: false,
-      effectiveDate: '2026-06-01' as unknown as EmployeeAddress['effectiveDate'],
+      effectiveDate: new RFCDate('2026-06-01'),
     })
     const active = base({
       uuid: '4',
       active: true,
-      effectiveDate: '2026-03-02' as unknown as EmployeeAddress['effectiveDate'],
+      effectiveDate: new RFCDate('2026-03-02'),
     })
 
     expect(getPendingFutureHomeAddress([past, futureB, futureA, active], now)).toEqual(futureA)
@@ -52,12 +53,12 @@ describe('getPendingFutureHomeAddress', () => {
     const past = base({
       uuid: '1',
       active: false,
-      effectiveDate: '2026-03-10' as unknown as EmployeeAddress['effectiveDate'],
+      effectiveDate: new RFCDate('2026-03-10'),
     })
     const today = base({
       uuid: '2',
       active: false,
-      effectiveDate: '2026-03-15' as unknown as EmployeeAddress['effectiveDate'],
+      effectiveDate: new RFCDate('2026-03-15'),
     })
 
     expect(getPendingFutureHomeAddress([past, today], now)).toBeUndefined()

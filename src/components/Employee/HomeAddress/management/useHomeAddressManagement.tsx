@@ -6,9 +6,16 @@ import { useEmployeesGet } from '@gusto/embedded-api/react-query/employeesGet'
 import type { OnEventType } from '@/components/Base/useBase'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { useHomeAddressForm } from '@/components/Employee/Profile/shared/useHomeAddressForm'
-import type { UseHomeAddressFormResult } from '@/components/Employee/Profile/shared/useHomeAddressForm'
+import type {
+  UseHomeAddressFormReady,
+  UseHomeAddressFormResult,
+} from '@/components/Employee/Profile/shared/useHomeAddressForm'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
-import type { HookErrorHandling } from '@/partner-hook-utils/types'
+import type {
+  BaseHookReady,
+  HookErrorHandling,
+  HookLoadingResult,
+} from '@/partner-hook-utils/types'
 import { firstLastName } from '@/helpers/formattedStrings'
 import { SDKInternalError } from '@/types/sdkError'
 import { componentEvents, type EventType } from '@/shared/constants'
@@ -18,19 +25,80 @@ export interface UseHomeAddressManagementParams {
   onEvent: OnEventType<EventType, unknown>
 }
 
-export interface UseHomeAddressManagementResult {
+export interface UseHomeAddressManagementDataPendingForms extends Record<string, unknown> {
   employeeDisplayName: string
   employeeHomeAddresses: EmployeeAddress[] | undefined
   editingHomeAddressUuid: string | undefined
   editHomeAddressForm: UseHomeAddressFormResult
   createHomeAddressForm: UseHomeAddressFormResult
-  errorHandling: HookErrorHandling
-  isEmployeeLoading: boolean
-  isEmployeeError: boolean
-  isFormsLoading: boolean
+}
+
+export interface UseHomeAddressManagementDataReady extends Record<string, unknown> {
+  employeeDisplayName: string
+  employeeHomeAddresses: EmployeeAddress[] | undefined
+  editingHomeAddressUuid: string | undefined
+  editHomeAddressForm: UseHomeAddressFormReady
+  createHomeAddressForm: UseHomeAddressFormReady
+}
+
+export interface UseHomeAddressManagementStatusEmployeeError extends Record<string, unknown> {
+  isDeletePending: boolean
+  isEmployeeError: true
+}
+
+export interface UseHomeAddressManagementStatusSuccess extends Record<string, unknown> {
+  isDeletePending: boolean
+  isEmployeeError: false
+}
+
+export interface UseHomeAddressManagementActions {
   setEditAddressTarget: (homeAddressUuid: string | undefined) => void
   confirmDeleteHomeAddress: (homeAddressUuid: string) => Promise<boolean>
-  isDeletePending: boolean
+}
+
+export interface UseHomeAddressManagementReadyEmployeeError extends BaseHookReady<
+  UseHomeAddressManagementDataPendingForms,
+  UseHomeAddressManagementStatusEmployeeError
+> {
+  actions: UseHomeAddressManagementActions
+}
+
+export interface UseHomeAddressManagementReadySuccess extends BaseHookReady<
+  UseHomeAddressManagementDataReady,
+  UseHomeAddressManagementStatusSuccess
+> {
+  actions: UseHomeAddressManagementActions
+}
+
+export type UseHomeAddressManagementReady =
+  | UseHomeAddressManagementReadyEmployeeError
+  | UseHomeAddressManagementReadySuccess
+
+export type UseHomeAddressManagementResult = HookLoadingResult | UseHomeAddressManagementReady
+
+export function isUseHomeAddressManagementSuccess(
+  value: UseHomeAddressManagementResult,
+): value is UseHomeAddressManagementReadySuccess {
+  if (value.isLoading) {
+    return false
+  }
+  return !value.status.isEmployeeError
+}
+
+function homeAddressFormsReady(
+  editHomeAddressForm: UseHomeAddressFormResult,
+  createHomeAddressForm: UseHomeAddressFormResult,
+): Pick<UseHomeAddressManagementDataReady, 'editHomeAddressForm' | 'createHomeAddressForm'> {
+  if (editHomeAddressForm.isLoading) {
+    throw new SDKInternalError('Edit home address form is still loading')
+  }
+  if (createHomeAddressForm.isLoading) {
+    throw new SDKInternalError('Create home address form is still loading')
+  }
+  return {
+    editHomeAddressForm,
+    createHomeAddressForm,
+  }
 }
 
 export function useHomeAddressManagement({
@@ -77,7 +145,7 @@ export function useHomeAddressManagement({
     }).trim()
   }, [employeeQuery.data?.employee])
 
-  const errorHandling = composeErrorHandler(
+  const errorHandling: HookErrorHandling = composeErrorHandler(
     [employeeQuery, homeAddressesQuery, editHomeAddressForm, createHomeAddressForm],
     { submitError: rootSubmitError, setSubmitError: setRootSubmitError },
   )
@@ -109,18 +177,60 @@ export function useHomeAddressManagement({
     return succeeded
   }
 
-  return {
+  const actions: UseHomeAddressManagementActions = {
+    setEditAddressTarget,
+    confirmDeleteHomeAddress,
+  }
+
+  const dataPayloadPendingForms: UseHomeAddressManagementDataPendingForms = {
     employeeDisplayName,
     employeeHomeAddresses,
     editingHomeAddressUuid,
     editHomeAddressForm,
     createHomeAddressForm,
+  }
+
+  if (employeeQuery.isLoading) {
+    return { isLoading: true, errorHandling }
+  }
+
+  if (employeeQuery.isError) {
+    return {
+      isLoading: false,
+      data: dataPayloadPendingForms,
+      status: {
+        isDeletePending: deleteHomeAddressMutation.isPending,
+        isEmployeeError: true,
+      },
+      errorHandling,
+      actions,
+    }
+  }
+
+  const isFormsLoading = editHomeAddressForm.isLoading || createHomeAddressForm.isLoading
+  if (isFormsLoading) {
+    return { isLoading: true, errorHandling }
+  }
+
+  const { editHomeAddressForm: editReady, createHomeAddressForm: createReady } =
+    homeAddressFormsReady(editHomeAddressForm, createHomeAddressForm)
+
+  const dataReady: UseHomeAddressManagementDataReady = {
+    employeeDisplayName,
+    employeeHomeAddresses,
+    editingHomeAddressUuid,
+    editHomeAddressForm: editReady,
+    createHomeAddressForm: createReady,
+  }
+
+  return {
+    isLoading: false,
+    data: dataReady,
+    status: {
+      isDeletePending: deleteHomeAddressMutation.isPending,
+      isEmployeeError: false,
+    },
     errorHandling,
-    isEmployeeLoading: employeeQuery.isLoading,
-    isEmployeeError: employeeQuery.isError,
-    isFormsLoading: editHomeAddressForm.isLoading || createHomeAddressForm.isLoading,
-    setEditAddressTarget,
-    confirmDeleteHomeAddress,
-    isDeletePending: deleteHomeAddressMutation.isPending,
+    actions,
   }
 }

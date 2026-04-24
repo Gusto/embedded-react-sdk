@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -117,19 +117,8 @@ export function useHomeAddressForm({
     [schemaMode, optionalFieldsToRequire, withEffectiveDateField],
   )
 
-  const resolvedDefaults: HomeAddressFormData = useMemo(() => {
-    if (isCreateMode) {
-      return {
-        street1: partnerDefaults?.street1 ?? '',
-        street2: partnerDefaults?.street2 ?? '',
-        city: partnerDefaults?.city ?? '',
-        state: partnerDefaults?.state ?? '',
-        zip: partnerDefaults?.zip ?? '',
-        courtesyWithholding: partnerDefaults?.courtesyWithholding ?? false,
-        effectiveDate: partnerDefaults?.effectiveDate ?? '',
-      }
-    }
-    return {
+  const resolvedDefaults: HomeAddressFormData = useMemo(
+    () => ({
       street1: fetchedHomeAddress?.street1 ?? partnerDefaults?.street1 ?? '',
       street2: fetchedHomeAddress?.street2 ?? partnerDefaults?.street2 ?? '',
       city: fetchedHomeAddress?.city ?? partnerDefaults?.city ?? '',
@@ -139,8 +128,9 @@ export function useHomeAddressForm({
         fetchedHomeAddress?.courtesyWithholding ?? partnerDefaults?.courtesyWithholding ?? false,
       effectiveDate:
         fetchedHomeAddress?.effectiveDate?.toString() ?? partnerDefaults?.effectiveDate ?? '',
-    }
-  }, [isCreateMode, fetchedHomeAddress, partnerDefaults])
+    }),
+    [fetchedHomeAddress, partnerDefaults],
+  )
 
   const formMethods = useForm<HomeAddressFormData, unknown, HomeAddressFormOutputs>({
     resolver: zodResolver(schema),
@@ -148,25 +138,8 @@ export function useHomeAddressForm({
     shouldFocusError,
     defaultValues: resolvedDefaults,
     values: resolvedDefaults,
-    resetOptions: { keepDirtyValues: false },
+    resetOptions: { keepDirtyValues: true },
   })
-
-  /* eslint-disable react-hooks/exhaustive-deps -- reset uses primitive deps to mirror resolvedDefaults without object-identity churn */
-  useEffect(() => {
-    formMethods.reset(resolvedDefaults)
-  }, [
-    homeAddressUuid,
-    fetchedHomeAddress?.uuid,
-    resolvedDefaults.street1,
-    resolvedDefaults.street2,
-    resolvedDefaults.city,
-    resolvedDefaults.state,
-    resolvedDefaults.zip,
-    resolvedDefaults.courtesyWithholding,
-    resolvedDefaults.effectiveDate,
-    formMethods,
-  ])
-  /* eslint-enable react-hooks/exhaustive-deps */
 
   const createHomeAddressMutation = useEmployeeAddressesCreateMutation()
   const updateHomeAddressMutation = useEmployeeAddressesUpdateMutation()

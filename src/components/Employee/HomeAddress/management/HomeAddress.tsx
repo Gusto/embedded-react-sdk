@@ -1,7 +1,9 @@
 import type { EmployeeAddress } from '@gusto/embedded-api/models/components/employeeaddress'
 import { HomeAddressView } from './HomeAddressView'
-import { useHomeAddressManagement } from './useHomeAddressManagement'
-import type { UseHomeAddressFormReady } from '@/components/Employee/Profile/shared/useHomeAddressForm'
+import {
+  isUseHomeAddressManagementSuccess,
+  useHomeAddressManagement,
+} from './useHomeAddressManagement'
 import {
   BaseBoundaries,
   BaseLayout,
@@ -23,20 +25,13 @@ function HomeAddressRoot({ employeeId, onEvent, dictionary }: HomeAddressProps) 
 
   const management = useHomeAddressManagement({ employeeId, onEvent })
 
-  if (management.isEmployeeLoading) {
+  if (management.isLoading) {
     return <BaseLayout isLoading error={management.errorHandling.errors} />
   }
 
-  if (management.isEmployeeError) {
+  if (!isUseHomeAddressManagementSuccess(management)) {
     return <BaseLayout error={management.errorHandling.errors} />
   }
-
-  if (management.isFormsLoading) {
-    return <BaseLayout isLoading error={management.errorHandling.errors} />
-  }
-
-  const editHomeAddressForm = management.editHomeAddressForm as UseHomeAddressFormReady
-  const createHomeAddressForm = management.createHomeAddressForm as UseHomeAddressFormReady
 
   const handleSaved = (result: HookSubmitResult<EmployeeAddress>) => {
     if (result.mode === 'create') {
@@ -49,15 +44,15 @@ function HomeAddressRoot({ employeeId, onEvent, dictionary }: HomeAddressProps) 
   return (
     <BaseLayout error={management.errorHandling.errors}>
       <HomeAddressView
-        editHomeAddressForm={editHomeAddressForm}
-        createHomeAddressForm={createHomeAddressForm}
-        employeeHomeAddresses={management.employeeHomeAddresses}
-        employeeDisplayName={management.employeeDisplayName}
-        editingHomeAddressUuid={management.editingHomeAddressUuid}
-        onEditAddressTargetChange={management.setEditAddressTarget}
+        editHomeAddressForm={management.data.editHomeAddressForm}
+        createHomeAddressForm={management.data.createHomeAddressForm}
+        employeeHomeAddresses={management.data.employeeHomeAddresses}
+        employeeDisplayName={management.data.employeeDisplayName}
+        editingHomeAddressUuid={management.data.editingHomeAddressUuid}
+        onEditAddressTargetChange={management.actions.setEditAddressTarget}
         onSaved={handleSaved}
-        onConfirmDelete={management.confirmDeleteHomeAddress}
-        isDeletePending={management.isDeletePending}
+        onConfirmDelete={management.actions.confirmDeleteHomeAddress}
+        isDeletePending={management.status.isDeletePending}
       />
     </BaseLayout>
   )
