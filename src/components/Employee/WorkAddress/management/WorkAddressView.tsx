@@ -247,9 +247,7 @@ export function WorkAddressView({
     if (addressModal === 'edit') {
       const result = await editWorkAddressForm.actions.onSubmit(
         undefined,
-        editShowsEffectiveDateField
-          ? undefined
-          : { effectiveDate: workAddress?.effectiveDate },
+        editShowsEffectiveDateField ? undefined : { effectiveDate: workAddress?.effectiveDate },
       )
       if (result) {
         onWorkAddressSaved(result)

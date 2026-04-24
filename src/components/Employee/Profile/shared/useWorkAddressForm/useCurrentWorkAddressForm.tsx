@@ -10,10 +10,7 @@ export function useCurrentWorkAddressForm(
 ): UseWorkAddressFormResult {
   const { employeeId, ...rest } = props
 
-  const listQuery = useEmployeeAddressesGetWorkAddresses(
-    { employeeId },
-    { enabled: !!employeeId },
-  )
+  const listQuery = useEmployeeAddressesGetWorkAddresses({ employeeId }, { enabled: !!employeeId })
 
   const workAddresses = listQuery.data?.employeeWorkAddressesList
   const currentWorkAddress = workAddresses?.find(w => w.active) ?? workAddresses?.[0]

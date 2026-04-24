@@ -147,10 +147,7 @@ export function useWorkAddressForm({
     setError: setSubmitError,
   } = useBaseSubmit('WorkAddressForm')
 
-  const queriesForErrors = [
-    locationsQuery,
-    ...(workAddressUuid ? [retrieveWorkAddressQuery] : []),
-  ]
+  const queriesForErrors = [locationsQuery, ...(workAddressUuid ? [retrieveWorkAddressQuery] : [])]
   const errorHandling = composeErrorHandler(queriesForErrors, { submitError, setSubmitError })
 
   const locationOptions = (companyLocations ?? []).map(location => ({
