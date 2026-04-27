@@ -57,7 +57,12 @@ export function ContractorRehireForm({
             </Components.Text>
           </Flex>
 
-          <DatePickerField<string> name="startDate" label="Start date" isRequired />
+          <DatePickerField<string>
+            name="startDate"
+            label="Start date"
+            isRequired
+            minDate={new Date()}
+          />
 
           <ActionsLayout>
             <Components.Button variant="secondary" onClick={onCancel}>

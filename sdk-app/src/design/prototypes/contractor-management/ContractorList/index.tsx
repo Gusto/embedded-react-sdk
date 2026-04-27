@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useOutletContext, useSearchParams } from 'react-router-dom'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import { useContractorsList } from '@gusto/embedded-api/react-query/contractorsList'
+import { useQueryClient } from '@tanstack/react-query'
 import type { EntityIds } from '../../../../useEntities'
 import { Skeleton } from '../components/Skeleton'
 import { SkeletonDataView } from './SkeletonDataView'
@@ -52,6 +53,13 @@ function ContractorStatusBadge({
 }) {
   const Components = useComponentContext()
   if (isLoading) return <Skeleton width={120} height={16} />
+  if (contractor.upcomingEmployment?.startDate) {
+    return (
+      <Components.Badge status="info">
+        Starts {formatDate(contractor.upcomingEmployment.startDate)}
+      </Components.Badge>
+    )
+  }
   if (contractor.dismissalDate) {
     return (
       <Components.Badge status="warning">
@@ -68,6 +76,7 @@ function activeContractorActions(
     onViewDetails: (contractor: Contractor) => void
     onDismiss: (contractor: Contractor) => void
     onCancelDismissal: (contractor: Contractor) => void
+    onCancelRehire: (contractor: Contractor) => void
   },
 ) {
   const actions: { label: string; onClick: () => void }[] = [
@@ -79,14 +88,21 @@ function activeContractorActions(
     },
   ]
 
-  if (contractor.dismissalDate && contractor.dismissalCancellationEligible) {
+  if (contractor.upcomingEmployment && contractor.rehireCancellationEligible) {
+    actions.push({
+      label: 'Cancel rehire',
+      onClick: () => {
+        callbacks.onCancelRehire(contractor)
+      },
+    })
+  } else if (contractor.dismissalDate && contractor.dismissalCancellationEligible) {
     actions.push({
       label: 'Cancel dismissal',
       onClick: () => {
         callbacks.onCancelDismissal(contractor)
       },
     })
-  } else if (!contractor.dismissalDate) {
+  } else if (!contractor.dismissalDate && !contractor.upcomingEmployment) {
     actions.push({
       label: 'Dismiss contractor',
       onClick: () => {
@@ -105,6 +121,7 @@ function ActiveContractorsTable({
   onViewDetails,
   onDismiss,
   onCancelDismissal,
+  onCancelRehire,
 }: {
   contractors: Contractor[]
   isFetching: boolean
@@ -112,6 +129,7 @@ function ActiveContractorsTable({
   onViewDetails: (contractor: Contractor) => void
   onDismiss: (contractor: Contractor) => void
   onCancelDismissal: (contractor: Contractor) => void
+  onCancelRehire: (contractor: Contractor) => void
 }) {
   return (
     <SkeletonDataView
@@ -151,6 +169,7 @@ function ActiveContractorsTable({
             onViewDetails,
             onDismiss,
             onCancelDismissal,
+            onCancelRehire,
           })}
           triggerLabel="Actions"
         />
@@ -289,6 +308,7 @@ function ContractorListContent() {
   const companyId = entities.companyId
   const [cancellingId, setCancellingId] = useState<string | null>(null)
   const [confirmCancelContractor, setConfirmCancelContractor] = useState<Contractor | null>(null)
+  const [confirmCancelType, setConfirmCancelType] = useState<'dismissal' | 'rehire'>('dismissal')
   const [isCancelPending, setIsCancelPending] = useState(false)
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
@@ -317,26 +337,56 @@ function ContractorListContent() {
     }
   }, [companyId, selectedTab])
 
-  const { data, isPending, refetch } = useContractorsList(queryParams)
-  const contractors = data?.contractors ?? []
+  const queryClient = useQueryClient()
+  const { data, isPending } = useContractorsList(queryParams)
 
-  const handleCancelDismissal = async () => {
+  const { data: dismissedData } = useContractorsList(
+    { companyUuid: companyId, terminatedToday: true },
+    { enabled: selectedTab === 'active' },
+  )
+  const pendingRehires = useMemo(
+    () =>
+      (dismissedData?.contractors ?? [])
+        .filter(c => c.upcomingEmployment?.startDate)
+        .sort((a, b) =>
+          (a.upcomingEmployment?.startDate ?? '').localeCompare(
+            b.upcomingEmployment?.startDate ?? '',
+          ),
+        ),
+    [dismissedData],
+  )
+
+  const activeContractors = useMemo(() => {
+    if (selectedTab !== 'active') return data?.contractors ?? []
+    return [...(data?.contractors ?? []), ...pendingRehires]
+  }, [data, pendingRehires, selectedTab])
+
+  const contractors = selectedTab === 'active' ? activeContractors : (data?.contractors ?? [])
+
+  const handleConfirmCancel = async () => {
     const contractor = confirmCancelContractor
     if (!contractor) return
     setIsCancelPending(true)
     setCancellingId(contractor.uuid)
+    const isRehire = confirmCancelType === 'rehire'
     try {
-      const res = await fetch(`/api/v1/contractors/${contractor.uuid}/termination`, {
-        method: 'DELETE',
-      })
+      const res = await fetch(
+        `/api/v1/contractors/${contractor.uuid}/${isRehire ? 'rehire' : 'termination'}`,
+        { method: 'DELETE' },
+      )
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}))
-        throw new Error(errorData.message || `Failed to cancel dismissal (${res.status})`)
+        throw new Error(
+          errorData.message ||
+            `Failed to cancel ${isRehire ? 'rehire' : 'dismissal'} (${res.status})`,
+        )
       }
-      setConfirmCancelContractor(null)
-      await refetch()
       const name = [contractor.firstName, contractor.lastName].filter(Boolean).join(' ')
-      setSuccessMessage(`Dismissal cancelled for ${name}`)
+      setConfirmCancelContractor(null)
+      setSuccessMessage(
+        isRehire ? `Rehire cancelled for ${name}` : `Dismissal cancelled for ${name}`,
+      )
+      queryClient.removeQueries({ queryKey: ['@gusto/embedded-api', 'Contractors', 'list'] })
     } finally {
       setIsCancelPending(false)
       setCancellingId(null)
@@ -382,6 +432,11 @@ function ContractorListContent() {
               void navigate(`${contractor.uuid}/dismiss`)
             }}
             onCancelDismissal={contractor => {
+              setConfirmCancelType('dismissal')
+              setConfirmCancelContractor(contractor)
+            }}
+            onCancelRehire={contractor => {
+              setConfirmCancelType('rehire')
               setConfirmCancelContractor(contractor)
             }}
           />
@@ -391,9 +446,10 @@ function ContractorListContent() {
       case 'dismissed':
         return (
           <DismissedContractorsTable
-            contractors={contractors}
+            contractors={contractors.filter(c => !c.upcomingEmployment)}
             isFetching={isPending}
             onCancelDismissal={contractor => {
+              setConfirmCancelType('dismissal')
               setConfirmCancelContractor(contractor)
             }}
             onRehire={contractor => {
@@ -433,18 +489,29 @@ function ContractorListContent() {
           setConfirmCancelContractor(null)
         }}
         onPrimaryActionClick={() => {
-          void handleCancelDismissal()
+          void handleConfirmCancel()
         }}
         isPrimaryActionLoading={isCancelPending}
         primaryActionLabel="Yes, cancel"
         closeActionLabel="No, go back"
-        title="Cancel dismissal"
+        title={confirmCancelType === 'rehire' ? 'Cancel rehire' : 'Cancel dismissal'}
       >
         <Components.Text>
-          Cancel {cancelContractorName}&apos;s dismissal? Their dismissal on{' '}
-          {confirmCancelContractor?.dismissalDate &&
-            formatDate(confirmCancelContractor.dismissalDate)}{' '}
-          will be removed and this contractor will remain active.
+          {confirmCancelType === 'rehire' ? (
+            <>
+              Cancel {cancelContractorName}&apos;s rehire? Their scheduled start date of{' '}
+              {confirmCancelContractor?.upcomingEmployment?.startDate &&
+                formatDate(confirmCancelContractor.upcomingEmployment.startDate)}{' '}
+              will be removed.
+            </>
+          ) : (
+            <>
+              Cancel {cancelContractorName}&apos;s dismissal? Their dismissal on{' '}
+              {confirmCancelContractor?.dismissalDate &&
+                formatDate(confirmCancelContractor.dismissalDate)}{' '}
+              will be removed and this contractor will remain active.
+            </>
+          )}
         </Components.Text>
       </Components.Dialog>
     </Flex>
