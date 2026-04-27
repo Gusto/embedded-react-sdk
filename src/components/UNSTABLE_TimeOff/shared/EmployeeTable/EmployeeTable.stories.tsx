@@ -129,9 +129,7 @@ export const SearchActive = () => {
       data={mockEmployees}
       searchValue={searchValue}
       onSearchChange={setSearchValue}
-      onSearchClear={() => {
-        setSearchValue('')
-      }}
+      onSearchClear={() => { setSearchValue(''); }}
       additionalColumns={[{ key: 'department' as keyof StoryEmployee, title: 'Department' }]}
     />
   )
