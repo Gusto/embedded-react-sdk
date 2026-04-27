@@ -57,11 +57,14 @@ export function EmployeeTable<T extends EmployeeTableItem>({
       {
         key: 'name',
         title: t('name'),
-        render: (item: T) =>
-          firstLastName({
-            first_name: item.firstName,
-            last_name: item.lastName,
-          }),
+        render: (item: T) => (
+          <span id={`employee-name-${item.uuid}`}>
+            {firstLastName({
+              first_name: item.firstName,
+              last_name: item.lastName,
+            })}
+          </span>
+        ),
       },
       {
         key: 'jobTitle' as keyof T,
@@ -87,27 +90,28 @@ export function EmployeeTable<T extends EmployeeTableItem>({
   return (
     <div className={styles.root} data-has-menu={itemMenu ? true : undefined}>
       <div className={styles.searchContainer}>
-        <Components.TextInput
-          name="employee-search"
-          label={t('searchLabel')}
-          shouldVisuallyHideLabel
-          placeholder={searchPlaceholder ?? t('searchPlaceholder')}
-          value={searchValue}
-          onChange={onSearchChange}
-          adornmentStart={<SearchIcon aria-hidden />}
-          adornmentEnd={
-            hasActiveSearch ? (
-              <button
-                type="button"
-                className={styles.clearButton}
-                onClick={onSearchClear}
-                aria-label={t('clearSearch')}
-              >
-                <CloseIcon aria-hidden />
-              </button>
-            ) : undefined
-          }
-        />
+        <div className={styles.searchWrapper}>
+          <Components.TextInput
+            name="employee-search"
+            type="search"
+            label={t('searchLabel')}
+            shouldVisuallyHideLabel
+            placeholder={searchPlaceholder ?? t('searchPlaceholder')}
+            value={searchValue}
+            onChange={onSearchChange}
+            adornmentStart={<SearchIcon aria-hidden />}
+          />
+          {hasActiveSearch && (
+            <button
+              type="button"
+              className={styles.clearButton}
+              onClick={onSearchClear}
+              aria-label={t('clearSearch')}
+            >
+              <CloseIcon aria-hidden />
+            </button>
+          )}
+        </div>
       </div>
       <DataView label={label ?? t('tableLabel')} {...dataViewProps} />
     </div>
