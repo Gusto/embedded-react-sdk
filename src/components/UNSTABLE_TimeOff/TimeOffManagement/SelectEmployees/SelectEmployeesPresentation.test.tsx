@@ -136,10 +136,12 @@ describe('SelectEmployeesPresentation', () => {
     expect(onSearchChange).toHaveBeenCalledWith('A')
   })
 
-  test('calls onSearchClear when clear button is clicked', async () => {
+  test('calls onSearchChange and onSearchClear when input is cleared', async () => {
+    const onSearchChange = vi.fn()
     const onSearchClear = vi.fn()
-    renderPresentation({ searchValue: 'alice', onSearchClear })
-    await userEvent.click(screen.getByLabelText('clearSearch'))
+    renderPresentation({ searchValue: 'alice', onSearchChange, onSearchClear })
+    await userEvent.clear(screen.getByRole('searchbox'))
+    expect(onSearchChange).toHaveBeenCalledWith('')
     expect(onSearchClear).toHaveBeenCalledOnce()
   })
 
