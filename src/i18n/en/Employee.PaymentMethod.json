@@ -45,6 +45,7 @@
   "validations": {
     "percentageError": "If payment method amount is split by Percentage, all split amounts must add up to exactly 100.",
     "percentageErrorWithTotal": "Splits must total 100%. Currently {{total}}%.",
+    "percentageAmountError": "Percentage should be a whole number between 0 and 100",
     "amountError": "Please enter valid amount",
     "accountName": "Account name is required",
     "routingNumber": "Routing number should be a number (9 digits)",
