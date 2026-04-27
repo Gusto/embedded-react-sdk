@@ -110,6 +110,7 @@ function ProfileViewContent({ contractor }: { contractor: Contractor }) {
   const Components = useComponentContext()
   const [localTab, setLocalTab] = useState(selectedTab)
   const [isDismissed, setIsDismissed] = useState(false)
+  const isEditable = contractor.isActive
 
   const { data: bankAccountsData } = useContractorPaymentMethodGetBankAccountsSuspense({
     contractorUuid: contractor.uuid,
@@ -160,15 +161,23 @@ function ProfileViewContent({ contractor }: { contractor: Contractor }) {
         <Flex flexDirection="column" gap={24}>
           <ContractorDetails
             contractor={contractor}
-            onEdit={() => {
-              onEvent('contractor/details/edit' as EventType)
-            }}
+            onEdit={
+              isEditable
+                ? () => {
+                    onEvent('contractor/details/edit' as EventType)
+                  }
+                : undefined
+            }
           />
           <ContractorAddress
             contractor={contractorWithAddress}
-            onEdit={() => {
-              onEvent('contractor/address/edit' as EventType)
-            }}
+            onEdit={
+              isEditable
+                ? () => {
+                    onEvent('contractor/address/edit' as EventType)
+                  }
+                : undefined
+            }
           />
         </Flex>
       ),
@@ -181,20 +190,32 @@ function ProfileViewContent({ contractor }: { contractor: Contractor }) {
           <ContractorPaymentMethod
             paymentMethodType={paymentMethod?.type ?? 'Check'}
             bankAccounts={bankAccounts}
-            onAddPaymentMethod={() => {
-              onEvent('contractor/paymentMethod/add' as EventType)
-            }}
-            onEditPaymentMethod={() => {
-              onEvent('contractor/paymentMethod/edit' as EventType)
-            }}
-            onRemoveAccount={handleRemoveAccount}
+            onAddPaymentMethod={
+              isEditable
+                ? () => {
+                    onEvent('contractor/paymentMethod/add' as EventType)
+                  }
+                : undefined
+            }
+            onEditPaymentMethod={
+              isEditable
+                ? () => {
+                    onEvent('contractor/paymentMethod/edit' as EventType)
+                  }
+                : undefined
+            }
+            onRemoveAccount={isEditable ? handleRemoveAccount : undefined}
             isRemovingAccount={isPaymentMethodPending}
           />
           <ContractorPay
             contractor={contractor}
-            onEdit={() => {
-              onEvent('contractor/compensation/edit' as EventType)
-            }}
+            onEdit={
+              isEditable
+                ? () => {
+                    onEvent('contractor/compensation/edit' as EventType)
+                  }
+                : undefined
+            }
           />
         </Flex>
       ),
@@ -219,9 +240,12 @@ function ProfileViewContent({ contractor }: { contractor: Contractor }) {
         />
       )}
       <Flex flexDirection="column" gap={4}>
-        <Components.Heading as="h1" styledAs="h2">
-          {contractorName(contractor)}
-        </Components.Heading>
+        <Flex alignItems="center" gap={8}>
+          <Components.Heading as="h1" styledAs="h2">
+            {contractorName(contractor)}
+          </Components.Heading>
+          {!isEditable && <Components.Badge status="error">Dismissed</Components.Badge>}
+        </Flex>
         <Components.Text variant="supporting">Contractor</Components.Text>
       </Flex>
       <Components.Tabs onSelectionChange={setLocalTab} tabs={tabs} selectedId={localTab} />

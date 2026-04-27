@@ -298,12 +298,18 @@ function OnboardingContractorsTable({
 function dismissedContractorActions(
   contractor: Contractor,
   callbacks: {
+    onViewDetails: (contractor: Contractor) => void
     onCancelDismissal: (contractor: Contractor) => void
     onRehire: (contractor: Contractor) => void
   },
 ) {
   const actions: { label: string; onClick: () => void }[] = [
-    { label: 'View details', onClick: () => {} },
+    {
+      label: 'View details',
+      onClick: () => {
+        callbacks.onViewDetails(contractor)
+      },
+    },
   ]
 
   if (contractor.upcomingEmployment) {
@@ -337,11 +343,13 @@ function dismissedContractorActions(
 function DismissedContractorsTable({
   contractors,
   isFetching,
+  onViewDetails,
   onCancelDismissal,
   onRehire,
 }: {
   contractors: Contractor[]
   isFetching: boolean
+  onViewDetails: (contractor: Contractor) => void
   onCancelDismissal: (contractor: Contractor) => void
   onRehire: (contractor: Contractor) => void
 }) {
@@ -369,7 +377,11 @@ function DismissedContractorsTable({
       ]}
       itemMenu={contractor => (
         <HamburgerMenu
-          items={dismissedContractorActions(contractor, { onCancelDismissal, onRehire })}
+          items={dismissedContractorActions(contractor, {
+            onViewDetails,
+            onCancelDismissal,
+            onRehire,
+          })}
           triggerLabel="Actions"
         />
       )}
@@ -472,7 +484,7 @@ function ContractorListContent() {
           ? `Rehire cancelled for ${contractorName(contractor)}`
           : `Dismissal cancelled for ${contractorName(contractor)}`,
       )
-      queryClient.removeQueries({ queryKey: ['@gusto/embedded-api', 'Contractors', 'list'] })
+      queryClient.removeQueries({ queryKey: ['@gusto/embedded-api', 'Contractors'] })
     } finally {
       setIsCancelPending(false)
       setCancellingId(null)
@@ -486,7 +498,7 @@ function ContractorListContent() {
         requestBody: { onboardingStatus: 'onboarding_completed' },
       },
     })
-    queryClient.removeQueries({ queryKey: ['@gusto/embedded-api', 'Contractors', 'list'] })
+    queryClient.removeQueries({ queryKey: ['@gusto/embedded-api', 'Contractors'] })
     setSuccessMessage(`Onboarding completed for ${contractorName(contractor)}`)
   }
 
@@ -509,7 +521,7 @@ function ContractorListContent() {
         setSuccessMessage(`Self-onboarding cancelled for ${name}`)
       }
       setOnboardingAction(null)
-      queryClient.removeQueries({ queryKey: ['@gusto/embedded-api', 'Contractors', 'list'] })
+      queryClient.removeQueries({ queryKey: ['@gusto/embedded-api', 'Contractors'] })
     } finally {
       setIsOnboardingActionPending(false)
     }
@@ -585,6 +597,9 @@ function ContractorListContent() {
           <DismissedContractorsTable
             contractors={contractors.filter(c => !c.upcomingEmployment)}
             isFetching={isPending}
+            onViewDetails={contractor => {
+              void navigate(contractor.uuid)
+            }}
             onCancelDismissal={contractor => {
               setConfirmCancelType('dismissal')
               setConfirmCancelContractor(contractor)

@@ -19,9 +19,11 @@ export function ContractorDetails({
           <Components.Heading as="h3" styledAs="h4">
             Basic details
           </Components.Heading>
-          <Components.Button variant="secondary" onClick={onEdit}>
-            Edit
-          </Components.Button>
+          {onEdit && (
+            <Components.Button variant="secondary" onClick={onEdit}>
+              Edit
+            </Components.Button>
+          )}
         </Flex>
       }
     >

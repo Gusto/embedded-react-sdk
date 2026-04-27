@@ -44,7 +44,7 @@ function ContractorRehireContent() {
       }
 
       const name = contractorName(contractor)
-      queryClient.removeQueries({ queryKey: ['@gusto/embedded-api', 'Contractors', 'list'] })
+      queryClient.removeQueries({ queryKey: ['@gusto/embedded-api', 'Contractors'] })
       void navigate(`..?success=${encodeURIComponent(`Rehire scheduled for ${name}`)}`, {
         replace: true,
       })
