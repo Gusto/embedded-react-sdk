@@ -2,6 +2,7 @@ import type { Contractor } from '@gusto/embedded-api/models/components/contracto
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { contractorName } from './contractorName'
 import { DatePickerField, Flex } from '@/components/Common'
 import { ActionsLayout } from '@/components/Common/ActionsLayout/ActionsLayout'
 import { useBase } from '@/components/Base/useBase'
@@ -43,7 +44,7 @@ export function ContractorDismissalForm({
     })
   }
 
-  const contractorName = [contractor.firstName, contractor.lastName].filter(Boolean).join(' ')
+  const name = contractorName(contractor)
 
   const minDate = (() => {
     if (contractor.startDate) {
@@ -59,7 +60,7 @@ export function ContractorDismissalForm({
       <HtmlForm onSubmit={formMethods.handleSubmit(handleSubmit)}>
         <Flex flexDirection="column" gap={24}>
           <Flex flexDirection="column" gap={4}>
-            <Components.Heading as="h2">Dismiss {contractorName}</Components.Heading>
+            <Components.Heading as="h2">Dismiss {name}</Components.Heading>
             <Components.Text variant="supporting">
               Schedule a dismissal date for this contractor. This action can be cancelled before the
               dismissal date takes effect.

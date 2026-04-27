@@ -12,6 +12,7 @@ import ContractorList from './design/prototypes/contractor-management/Contractor
 import { ContractorProfile } from './design/prototypes/contractor-management/ContractorProfile'
 import { ContractorDismiss } from './design/prototypes/contractor-management/ContractorDismiss'
 import { ContractorRehire } from './design/prototypes/contractor-management/ContractorRehire'
+import { AddContractor } from './design/prototypes/contractor-management/AddContractor'
 import './app.scss'
 import '@/styles/sdk.scss'
 
@@ -33,6 +34,8 @@ const router = createBrowserRouter([
             element: <ContractorManagementFlow />,
             children: [
               { index: true, element: <ContractorList /> },
+              { path: 'add', element: <AddContractor /> },
+              { path: 'add/:contractorId', element: <AddContractor /> },
               { path: ':contractorId', element: <ContractorProfile /> },
               { path: ':contractorId/dismiss', element: <ContractorDismiss /> },
               { path: ':contractorId/rehire', element: <ContractorRehire /> },

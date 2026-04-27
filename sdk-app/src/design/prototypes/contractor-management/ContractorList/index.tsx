@@ -2,16 +2,18 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useOutletContext, useSearchParams } from 'react-router-dom'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import { useContractorsList } from '@gusto/embedded-api/react-query/contractorsList'
+import { useContractorsDeleteMutation } from '@gusto/embedded-api/react-query/contractorsDelete'
+import { useContractorsUpdateOnboardingStatusMutation } from '@gusto/embedded-api/react-query/contractorsUpdateOnboardingStatus'
 import { useQueryClient } from '@tanstack/react-query'
 import type { EntityIds } from '../../../../useEntities'
+import { contractorName } from '../components/contractorName'
 import { Skeleton } from '../components/Skeleton'
 import { SkeletonDataView } from './SkeletonDataView'
 import { EmptyData, Flex } from '@/components/Common'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu/HamburgerMenu'
 import { ContractorOnboardingStatusBadge } from '@/components/Common/OnboardingStatusBadge'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { CONTRACTOR_TYPE } from '@/shared/constants'
-import { firstLastName } from '@/helpers/formattedStrings'
+import { ContractorOnboardingStatus } from '@/shared/constants'
 
 function formatDate(dateStr: string): string {
   const date = new Date(dateStr + 'T00:00:00')
@@ -27,21 +29,6 @@ function formatRate(contractor: Contractor) {
     return `Hourly — $${contractor.hourlyRate}/hr`
   }
   return contractor.wageType ?? '–'
-}
-
-function contractorName(contractor: Contractor) {
-  return contractor.type === CONTRACTOR_TYPE.BUSINESS
-    ? contractor.businessName
-    : firstLastName({
-        first_name: contractor.firstName,
-        last_name: contractor.lastName,
-      })
-}
-
-function contractorMenu(actions: { label: string; onClick: () => void }[]) {
-  return function ContractorMenu() {
-    return <HamburgerMenu items={actions} triggerLabel="Actions" />
-  }
 }
 
 function ContractorStatusBadge({
@@ -179,12 +166,91 @@ function ActiveContractorsTable({
   )
 }
 
+function onboardingContractorActions(
+  contractor: Contractor,
+  callbacks: {
+    onEdit: (contractor: Contractor) => void
+    onRemove: (contractor: Contractor) => void
+    onCancelSelfOnboarding: (contractor: Contractor) => void
+    onCompleteOnboarding: (contractor: Contractor) => void
+  },
+) {
+  const actions: { label: string; onClick: () => void }[] = []
+  const status = contractor.onboardingStatus
+
+  if (
+    status === ContractorOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE ||
+    status === ContractorOnboardingStatus.SELF_ONBOARDING_NOT_INVITED
+  ) {
+    actions.push(
+      {
+        label: 'Edit',
+        onClick: () => {
+          callbacks.onEdit(contractor)
+        },
+      },
+      {
+        label: 'Remove',
+        onClick: () => {
+          callbacks.onRemove(contractor)
+        },
+      },
+    )
+  } else if (
+    status === ContractorOnboardingStatus.SELF_ONBOARDING_INVITED ||
+    status === ContractorOnboardingStatus.SELF_ONBOARDING_STARTED
+  ) {
+    actions.push(
+      {
+        label: 'Cancel self-onboarding',
+        onClick: () => {
+          callbacks.onCancelSelfOnboarding(contractor)
+        },
+      },
+      {
+        label: 'Remove',
+        onClick: () => {
+          callbacks.onRemove(contractor)
+        },
+      },
+    )
+  } else if (
+    status === ContractorOnboardingStatus.ADMIN_ONBOARDING_REVIEW ||
+    status === ContractorOnboardingStatus.SELF_ONBOARDING_REVIEW
+  ) {
+    actions.push(
+      {
+        label: 'Complete onboarding',
+        onClick: () => {
+          callbacks.onCompleteOnboarding(contractor)
+        },
+      },
+      {
+        label: 'Remove',
+        onClick: () => {
+          callbacks.onRemove(contractor)
+        },
+      },
+    )
+  }
+
+  return actions
+}
+
 function OnboardingContractorsTable({
   contractors,
   isFetching,
+  onEdit,
+  onRemove,
+  onCancelSelfOnboarding,
+  onCompleteOnboarding,
 }: {
   contractors: Contractor[]
   isFetching: boolean
+  onEdit: (contractor: Contractor) => void
+  onRemove: (contractor: Contractor) => void
+  onCancelSelfOnboarding: (contractor: Contractor) => void
+  onCompleteOnboarding: (contractor: Contractor) => void
 }) {
   return (
     <SkeletonDataView
@@ -213,7 +279,17 @@ function OnboardingContractorsTable({
           skeletonWidth: 90,
         },
       ]}
-      itemMenu={contractorMenu([{ label: 'View details', onClick: () => {} }])}
+      itemMenu={contractor => (
+        <HamburgerMenu
+          items={onboardingContractorActions(contractor, {
+            onEdit,
+            onRemove,
+            onCancelSelfOnboarding,
+            onCompleteOnboarding,
+          })}
+          triggerLabel="Actions"
+        />
+      )}
       emptyState={() => <EmptyData title="No contractors currently onboarding." />}
     />
   )
@@ -340,6 +416,15 @@ function ContractorListContent() {
   const queryClient = useQueryClient()
   const { data, isPending } = useContractorsList(queryParams)
 
+  const { mutateAsync: deleteContractor } = useContractorsDeleteMutation()
+  const { mutateAsync: updateOnboardingStatus } = useContractorsUpdateOnboardingStatusMutation()
+
+  const [onboardingAction, setOnboardingAction] = useState<{
+    contractor: Contractor
+    type: 'remove' | 'cancelSelfOnboarding'
+  } | null>(null)
+  const [isOnboardingActionPending, setIsOnboardingActionPending] = useState(false)
+
   const { data: dismissedData } = useContractorsList(
     { companyUuid: companyId, terminatedToday: true },
     { enabled: selectedTab === 'active' },
@@ -381,10 +466,11 @@ function ContractorListContent() {
             `Failed to cancel ${isRehire ? 'rehire' : 'dismissal'} (${res.status})`,
         )
       }
-      const name = [contractor.firstName, contractor.lastName].filter(Boolean).join(' ')
       setConfirmCancelContractor(null)
       setSuccessMessage(
-        isRehire ? `Rehire cancelled for ${name}` : `Dismissal cancelled for ${name}`,
+        isRehire
+          ? `Rehire cancelled for ${contractorName(contractor)}`
+          : `Dismissal cancelled for ${contractorName(contractor)}`,
       )
       queryClient.removeQueries({ queryKey: ['@gusto/embedded-api', 'Contractors', 'list'] })
     } finally {
@@ -393,10 +479,44 @@ function ContractorListContent() {
     }
   }
 
+  const handleCompleteOnboarding = async (contractor: Contractor) => {
+    await updateOnboardingStatus({
+      request: {
+        contractorUuid: contractor.uuid,
+        requestBody: { onboardingStatus: 'onboarding_completed' },
+      },
+    })
+    queryClient.removeQueries({ queryKey: ['@gusto/embedded-api', 'Contractors', 'list'] })
+    setSuccessMessage(`Onboarding completed for ${contractorName(contractor)}`)
+  }
+
+  const handleConfirmOnboardingAction = async () => {
+    if (!onboardingAction) return
+    const { contractor, type } = onboardingAction
+    setIsOnboardingActionPending(true)
+    try {
+      const name = contractorName(contractor)
+      if (type === 'remove') {
+        await deleteContractor({ request: { contractorUuid: contractor.uuid } })
+        setSuccessMessage(`${name} has been removed`)
+      } else {
+        await updateOnboardingStatus({
+          request: {
+            contractorUuid: contractor.uuid,
+            requestBody: { onboardingStatus: 'admin_onboarding_incomplete' },
+          },
+        })
+        setSuccessMessage(`Self-onboarding cancelled for ${name}`)
+      }
+      setOnboardingAction(null)
+      queryClient.removeQueries({ queryKey: ['@gusto/embedded-api', 'Contractors', 'list'] })
+    } finally {
+      setIsOnboardingActionPending(false)
+    }
+  }
+
   const cancelContractorName = confirmCancelContractor
-    ? [confirmCancelContractor.firstName, confirmCancelContractor.lastName]
-        .filter(Boolean)
-        .join(' ')
+    ? contractorName(confirmCancelContractor)
     : ''
 
   const tabs = [
@@ -442,7 +562,24 @@ function ContractorListContent() {
           />
         )
       case 'onboarding':
-        return <OnboardingContractorsTable contractors={contractors} isFetching={isPending} />
+        return (
+          <OnboardingContractorsTable
+            contractors={contractors}
+            isFetching={isPending}
+            onEdit={contractor => {
+              void navigate(`add/${contractor.uuid}`)
+            }}
+            onRemove={contractor => {
+              setOnboardingAction({ contractor, type: 'remove' })
+            }}
+            onCancelSelfOnboarding={contractor => {
+              setOnboardingAction({ contractor, type: 'cancelSelfOnboarding' })
+            }}
+            onCompleteOnboarding={contractor => {
+              void handleCompleteOnboarding(contractor)
+            }}
+          />
+        )
       case 'dismissed':
         return (
           <DismissedContractorsTable
@@ -475,7 +612,12 @@ function ContractorListContent() {
         <Components.Heading as="h1" styledAs="h2">
           Contractors
         </Components.Heading>
-        <Components.Button variant="primary" onClick={() => {}}>
+        <Components.Button
+          variant="primary"
+          onClick={() => {
+            void navigate('add')
+          }}
+        >
           Add contractor
         </Components.Button>
       </Flex>
@@ -512,6 +654,30 @@ function ContractorListContent() {
               will be removed and this contractor will remain active.
             </>
           )}
+        </Components.Text>
+      </Components.Dialog>
+      <Components.Dialog
+        isOpen={onboardingAction !== null}
+        onClose={() => {
+          setOnboardingAction(null)
+        }}
+        onPrimaryActionClick={() => {
+          void handleConfirmOnboardingAction()
+        }}
+        isPrimaryActionLoading={isOnboardingActionPending}
+        primaryActionLabel={onboardingAction?.type === 'remove' ? 'Yes, remove' : 'Yes, cancel'}
+        closeActionLabel="No, go back"
+        title={onboardingAction?.type === 'remove' ? 'Remove contractor' : 'Cancel self-onboarding'}
+      >
+        <Components.Text>
+          {onboardingAction?.type === 'remove' ? (
+            <>Remove {contractorName(onboardingAction.contractor)}? This action cannot be undone.</>
+          ) : onboardingAction ? (
+            <>
+              Cancel self-onboarding for {contractorName(onboardingAction.contractor)}? They will be
+              reverted to admin onboarding.
+            </>
+          ) : null}
         </Components.Text>
       </Components.Dialog>
     </Flex>

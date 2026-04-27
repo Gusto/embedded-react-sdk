@@ -2,6 +2,7 @@ import type { Contractor } from '@gusto/embedded-api/models/components/contracto
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { contractorName } from './contractorName'
 import { DatePickerField, Flex } from '@/components/Common'
 import { ActionsLayout } from '@/components/Common/ActionsLayout/ActionsLayout'
 import { useBase } from '@/components/Base/useBase'
@@ -43,17 +44,17 @@ export function ContractorRehireForm({
     })
   }
 
-  const contractorName = [contractor.firstName, contractor.lastName].filter(Boolean).join(' ')
+  const name = contractorName(contractor)
 
   return (
     <FormProvider {...formMethods}>
       <HtmlForm onSubmit={formMethods.handleSubmit(handleSubmit)}>
         <Flex flexDirection="column" gap={24}>
           <Flex flexDirection="column" gap={4}>
-            <Components.Heading as="h2">Rehire {contractorName}</Components.Heading>
+            <Components.Heading as="h2">Rehire {name}</Components.Heading>
             <Components.Text variant="supporting">
-              {contractorName} will be reactivated and will be able to start receiving payments
-              again. You can cancel this anytime before their start date.
+              {name} will be reactivated and will be able to start receiving payments again. You can
+              cancel this anytime before their start date.
             </Components.Text>
           </Flex>
 

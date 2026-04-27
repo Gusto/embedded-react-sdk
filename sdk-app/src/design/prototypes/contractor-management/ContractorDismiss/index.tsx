@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useQueryClient } from '@tanstack/react-query'
 import { useContractorsGetSuspense } from '@gusto/embedded-api/react-query/contractorsGet'
 import { ContractorDismissalForm } from '../components/ContractorDismissalForm'
+import { contractorName } from '../components/contractorName'
 import { Skeleton } from '../components/Skeleton'
 import { Flex } from '@/components/Common'
 import { BaseComponent } from '@/components/Base'
@@ -44,7 +45,7 @@ function ContractorDismissContent() {
         throw new Error(errorData.message || `Failed to dismiss contractor (${res.status})`)
       }
 
-      const name = [contractor.firstName, contractor.lastName].filter(Boolean).join(' ')
+      const name = contractorName(contractor)
       const today = new Date().toISOString().slice(0, 10)
       const message =
         endDate <= today ? `${name} has been dismissed` : `Dismissal scheduled for ${name}`

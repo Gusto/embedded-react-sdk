@@ -1,4 +1,5 @@
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
+import { CONTRACTOR_TYPE } from '@/shared/constants'
 import { Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
@@ -30,9 +31,11 @@ export function ContractorDetails({
             term: <Components.Text weight="medium">Legal name</Components.Text>,
             description: (
               <Components.Text>
-                {[contractor.firstName, contractor.middleInitial, contractor.lastName]
-                  .filter(Boolean)
-                  .join(' ')}
+                {contractor.type === CONTRACTOR_TYPE.BUSINESS
+                  ? contractor.businessName
+                  : [contractor.firstName, contractor.middleInitial, contractor.lastName]
+                      .filter(Boolean)
+                      .join(' ')}
               </Components.Text>
             ),
           },
@@ -48,7 +51,7 @@ export function ContractorDetails({
           },
           {
             term: <Components.Text weight="medium">Email address</Components.Text>,
-            description: <Components.Text>{contractor.email}</Components.Text>,
+            description: <Components.Text>{contractor.email || '–'}</Components.Text>,
           },
         ]}
       />

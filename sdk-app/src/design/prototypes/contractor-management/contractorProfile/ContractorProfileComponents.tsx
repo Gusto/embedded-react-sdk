@@ -15,6 +15,7 @@ import { useContractorsUpdateAddressMutation } from '@gusto/embedded-api/react-q
 import { useContractorsUpdateMutation } from '@gusto/embedded-api/react-query/contractorsUpdate'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
 import { useQueryClient } from '@tanstack/react-query'
+import { contractorName } from '../components/contractorName'
 import { ContractorAddress } from '../components/ContractorAddress'
 import { ContractorAddressForm } from '../components/ContractorAddressForm'
 import { ContractorDetails } from '../components/ContractorDetails'
@@ -219,9 +220,7 @@ function ProfileViewContent({ contractor }: { contractor: Contractor }) {
       )}
       <Flex flexDirection="column" gap={4}>
         <Components.Heading as="h1" styledAs="h2">
-          {[contractor.firstName, contractor.middleInitial, contractor.lastName]
-            .filter(Boolean)
-            .join(' ')}
+          {contractorName(contractor)}
         </Components.Heading>
         <Components.Text variant="supporting">Contractor</Components.Text>
       </Flex>
