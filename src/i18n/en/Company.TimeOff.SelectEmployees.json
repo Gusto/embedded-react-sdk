@@ -1,0 +1,10 @@
+{
+  "title": "Add employees to policy",
+  "description": "Select the employees you want to add to this policy.",
+  "holidayDescription": "Select the employees you want to add to this holiday pay policy.",
+  "reassignmentWarning": "Employees can only be enrolled in one time-off policy. Adding them here will remove them from their current policy.",
+  "departmentColumn": "Department",
+  "startingBalanceColumn": "Starting balance (hrs)",
+  "backCta": "Back",
+  "continueCta": "Continue"
+}
