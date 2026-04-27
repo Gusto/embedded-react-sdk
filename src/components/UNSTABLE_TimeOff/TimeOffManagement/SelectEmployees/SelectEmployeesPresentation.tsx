@@ -68,7 +68,9 @@ export function SelectEmployeesPresentation({
                       shouldVisuallyHideLabel
                       aria-labelledby={`employee-name-${employee.uuid} ${balanceColHeaderId}`}
                       value={balances?.[employee.uuid] ?? ''}
-                      onChange={(value: string) => { onBalanceChange(employee.uuid, value); }}
+                      onChange={(value: string) => {
+                        onBalanceChange(employee.uuid, value)
+                      }}
                       placeholder="0"
                     />
                   ),
