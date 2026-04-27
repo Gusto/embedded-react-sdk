@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react'
-import { useNavigate, useOutletContext } from 'react-router-dom'
+import { useNavigate, useOutletContext, useSearchParams } from 'react-router-dom'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import { useContractorsList } from '@gusto/embedded-api/react-query/contractorsList'
 import type { EntityIds } from '../../../../useEntities'
+import { Skeleton } from '../components/Skeleton'
 import { SkeletonDataView } from './SkeletonDataView'
 import { EmptyData, Flex } from '@/components/Common'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu/HamburgerMenu'
@@ -10,6 +11,15 @@ import { ContractorOnboardingStatusBadge } from '@/components/Common/OnboardingS
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { CONTRACTOR_TYPE } from '@/shared/constants'
 import { firstLastName } from '@/helpers/formattedStrings'
+
+function formatDismissalDate(dateStr: string): string {
+  const date = new Date(dateStr + 'T00:00:00')
+  const now = new Date()
+  const sameYear = date.getFullYear() === now.getFullYear()
+  const month = date.toLocaleDateString('en-US', { month: 'long' })
+  const day = date.getDate()
+  return sameYear ? `${month} ${day}` : `${month} ${day}, ${date.getFullYear()}`
+}
 
 function formatRate(contractor: Contractor) {
   if (contractor.wageType === 'Hourly' && contractor.hourlyRate) {
@@ -33,14 +43,37 @@ function contractorMenu(actions: { label: string; onClick: () => void }[]) {
   }
 }
 
+function DismissalBadge({
+  contractor,
+  isCancelling,
+}: {
+  contractor: Contractor
+  isCancelling?: boolean
+}) {
+  const Components = useComponentContext()
+  if (isCancelling) return <Skeleton width={120} height={16} />
+  if (!contractor.dismissalDate) return null
+  return (
+    <Components.Badge status="warning">
+      Last day {formatDismissalDate(contractor.dismissalDate)}
+    </Components.Badge>
+  )
+}
+
 function ActiveContractorsTable({
   contractors,
   isFetching,
+  cancellingId,
   onViewDetails,
+  onDismiss,
+  onCancelDismissal,
 }: {
   contractors: Contractor[]
   isFetching: boolean
+  cancellingId: string | null
   onViewDetails: (contractor: Contractor) => void
+  onDismiss: (contractor: Contractor) => void
+  onCancelDismissal: (contractor: Contractor) => void
 }) {
   return (
     <SkeletonDataView
@@ -63,6 +96,16 @@ function ActiveContractorsTable({
           render: contractor => formatRate(contractor),
           skeletonWidth: 100,
         },
+        {
+          title: '',
+          render: contractor => (
+            <DismissalBadge
+              contractor={contractor}
+              isCancelling={cancellingId === contractor.uuid}
+            />
+          ),
+          skeletonWidth: 120,
+        },
       ]}
       itemMenu={contractor => (
         <HamburgerMenu
@@ -73,7 +116,19 @@ function ActiveContractorsTable({
                 onViewDetails(contractor)
               },
             },
-            { label: 'Dismiss contractor', onClick: () => {} },
+            contractor.dismissalDate
+              ? {
+                  label: 'Cancel dismissal',
+                  onClick: () => {
+                    onCancelDismissal(contractor)
+                  },
+                }
+              : {
+                  label: 'Dismiss contractor',
+                  onClick: () => {
+                    onDismiss(contractor)
+                  },
+                },
           ]}
           triggerLabel="Actions"
         />
@@ -162,7 +217,17 @@ function ContractorListContent() {
   const Components = useComponentContext()
   const { entities } = useOutletContext<{ entities: EntityIds }>()
   const companyId = entities.companyId
+  const [cancellingId, setCancellingId] = useState<string | null>(null)
   const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  const [successMessage, setSuccessMessage] = useState<string | null>(() => {
+    const msg = searchParams.get('success')
+    if (msg) {
+      setSearchParams({}, { replace: true })
+    }
+    return msg
+  })
   const [selectedTab, setSelectedTab] = useState('active')
 
   const queryParams = useMemo(() => {
@@ -178,8 +243,26 @@ function ContractorListContent() {
     }
   }, [companyId, selectedTab])
 
-  const { data, isPending } = useContractorsList(queryParams)
+  const { data, isPending, refetch } = useContractorsList(queryParams)
   const contractors = data?.contractors ?? []
+
+  const handleCancelDismissal = async (contractor: Contractor) => {
+    setCancellingId(contractor.uuid)
+    try {
+      const res = await fetch(`/api/v1/contractors/${contractor.uuid}/termination`, {
+        method: 'DELETE',
+      })
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}))
+        throw new Error(errorData.message || `Failed to cancel dismissal (${res.status})`)
+      }
+      await refetch()
+      const name = [contractor.firstName, contractor.lastName].filter(Boolean).join(' ')
+      setSuccessMessage(`Dismissal cancelled for ${name}`)
+    } finally {
+      setCancellingId(null)
+    }
+  }
 
   const tabs = [
     {
@@ -206,8 +289,15 @@ function ContractorListContent() {
           <ActiveContractorsTable
             contractors={contractors}
             isFetching={isPending}
+            cancellingId={cancellingId}
             onViewDetails={contractor => {
               void navigate(contractor.uuid)
+            }}
+            onDismiss={contractor => {
+              void navigate(`${contractor.uuid}/dismiss`)
+            }}
+            onCancelDismissal={contractor => {
+              void handleCancelDismissal(contractor)
             }}
           />
         )
@@ -220,6 +310,15 @@ function ContractorListContent() {
 
   return (
     <Flex flexDirection="column" gap={24}>
+      {successMessage && (
+        <Components.Alert
+          label={successMessage}
+          status="success"
+          onDismiss={() => {
+            setSuccessMessage(null)
+          }}
+        />
+      )}
       <Flex justifyContent="space-between" alignItems="center">
         <Components.Heading as="h1" styledAs="h2">
           Contractors

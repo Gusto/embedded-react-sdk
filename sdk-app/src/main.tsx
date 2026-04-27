@@ -10,6 +10,7 @@ import { ComponentShowcase } from './design/prototypes/component-showcase'
 import { ContractorManagementFlow } from './design/prototypes/contractor-management/ContractorManagementFlow'
 import ContractorList from './design/prototypes/contractor-management/ContractorList'
 import { ContractorProfile } from './design/prototypes/contractor-management/ContractorProfile'
+import { ContractorDismiss } from './design/prototypes/contractor-management/ContractorDismiss'
 import './app.scss'
 import '@/styles/sdk.scss'
 
@@ -32,6 +33,7 @@ const router = createBrowserRouter([
             children: [
               { index: true, element: <ContractorList /> },
               { path: ':contractorId', element: <ContractorProfile /> },
+              { path: ':contractorId/dismiss', element: <ContractorDismiss /> },
             ],
           },
         ],
