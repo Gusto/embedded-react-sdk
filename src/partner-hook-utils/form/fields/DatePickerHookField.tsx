@@ -4,13 +4,14 @@ import type { BaseFieldProps, ValidationMessages, FormHookResult } from '../../t
 import { DatePickerField } from '@/components/Common/Fields/DatePickerField'
 import type { DatePickerProps } from '@/components/Common/UI/DatePicker/DatePickerTypes'
 
-export interface DatePickerHookFieldProps<
-  TErrorCode extends string = never,
-> extends BaseFieldProps {
+export interface DatePickerHookFieldProps<TErrorCode extends string = never>
+  extends BaseFieldProps, Pick<DatePickerProps, 'portalContainer'> {
   name: string
   formHookResult?: FormHookResult
   validationMessages?: ValidationMessages<TErrorCode>
   FieldComponent?: ComponentType<DatePickerProps>
+  /** When used inside a modal, pass the modal backdrop ref’s element so the calendar popover stacks correctly. */
+  portalContainer?: DatePickerProps['portalContainer']
 }
 
 export function DatePickerHookField<TErrorCode extends string>({
@@ -20,6 +21,7 @@ export function DatePickerHookField<TErrorCode extends string>({
   description,
   validationMessages,
   FieldComponent,
+  portalContainer,
 }: DatePickerHookFieldProps<TErrorCode>) {
   const { metadata, control, errorMessage } = useHookFieldResolution(
     name,
@@ -38,6 +40,7 @@ export function DatePickerHookField<TErrorCode extends string>({
       isRequired={fieldMetadata?.isRequired}
       isDisabled={fieldMetadata?.isDisabled}
       FieldComponent={FieldComponent}
+      portalContainer={portalContainer}
     />
   )
 }

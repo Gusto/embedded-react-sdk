@@ -10,7 +10,7 @@ function I18nLoader({ children }: { children: React.ReactNode }) {
 }
 
 export default {
-  title: 'TimeOff/HolidaySelectionForm',
+  title: 'Domain/TimeOff/HolidaySelectionForm',
   decorators: [
     (Story: React.ComponentType) => (
       <I18nLoader>

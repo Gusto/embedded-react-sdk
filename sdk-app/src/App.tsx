@@ -12,6 +12,7 @@ import { ThemeModeProvider } from './ThemeModeContext'
 
 export function App() {
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   const { entities, updateEntity, replaceEntities, resetToDefaults } = useEntities()
   const demoManager = useDemoManager()
@@ -43,7 +44,15 @@ export function App() {
           }}
         />
         <div className="app-body">
-          <Sidebar mode={mode} searchQuery={searchQuery} onSearchChange={setSearchQuery} />
+          <Sidebar
+            mode={mode}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            isOpen={sidebarOpen}
+            onToggle={() => {
+              setSidebarOpen(open => !open)
+            }}
+          />
           <main className="main-content">
             <Outlet context={{ entities }} />
           </main>

@@ -1,4 +1,5 @@
 export { useHomeAddressForm } from './useHomeAddressForm'
+export { useCurrentHomeAddressForm } from './useCurrentHomeAddressForm'
 export type {
   HomeAddressSubmitOptions,
   HomeAddressOptionalFieldsToRequire,
@@ -8,6 +9,7 @@ export type {
   HomeAddressFieldsMetadata,
   HomeAddressFormFields,
 } from './useHomeAddressForm'
+export type { UseCurrentHomeAddressFormProps } from './useCurrentHomeAddressForm'
 export {
   createHomeAddressSchema,
   HomeAddressErrorCodes,
