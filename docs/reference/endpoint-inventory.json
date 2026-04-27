@@ -1342,6 +1342,14 @@
         {
           "method": "POST",
           "path": "/v1/companies/:companyUuid/time_off_policies"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy/add"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/add_employees"
         }
       ],
       "variables": [
@@ -1379,6 +1387,14 @@
         {
           "method": "POST",
           "path": "/v1/companies/:companyUuid/time_off_policies"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy/add"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/add_employees"
         }
       ],
       "variables": [
@@ -1427,6 +1443,14 @@
         {
           "method": "POST",
           "path": "/v1/companies/:companyUuid/time_off_policies"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy/add"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/add_employees"
         }
       ],
       "variables": [
@@ -1464,6 +1488,14 @@
         {
           "method": "POST",
           "path": "/v1/companies/:companyUuid/time_off_policies"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy/add"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/add_employees"
         }
       ],
       "variables": [
@@ -1501,6 +1533,14 @@
         {
           "method": "POST",
           "path": "/v1/companies/:companyUuid/time_off_policies"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy/add"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/add_employees"
         }
       ],
       "variables": [
@@ -1538,6 +1578,14 @@
         {
           "method": "POST",
           "path": "/v1/companies/:companyUuid/time_off_policies"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy/add"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/add_employees"
         }
       ],
       "variables": [
@@ -1575,6 +1623,14 @@
         {
           "method": "POST",
           "path": "/v1/companies/:companyUuid/time_off_policies"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy/add"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/add_employees"
         }
       ],
       "variables": [
@@ -1612,6 +1668,14 @@
         {
           "method": "POST",
           "path": "/v1/companies/:companyUuid/time_off_policies"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy/add"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/add_employees"
         }
       ],
       "variables": [
@@ -1649,6 +1713,14 @@
         {
           "method": "POST",
           "path": "/v1/companies/:companyUuid/time_off_policies"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy/add"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/add_employees"
         }
       ],
       "variables": [
@@ -1686,6 +1758,14 @@
         {
           "method": "POST",
           "path": "/v1/companies/:companyUuid/time_off_policies"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy/add"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/add_employees"
         }
       ],
       "variables": [
@@ -1723,6 +1803,14 @@
         {
           "method": "POST",
           "path": "/v1/companies/:companyUuid/time_off_policies"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy/add"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/add_employees"
         }
       ],
       "variables": [
@@ -1760,6 +1848,14 @@
         {
           "method": "POST",
           "path": "/v1/companies/:companyUuid/time_off_policies"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy/add"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/add_employees"
         }
       ],
       "variables": [
