@@ -22,7 +22,11 @@ const mockTimeOffPolicies = [
 
 const TimeOffPoliciesHandlers = [
   http.get(`${API_BASE_URL}/v1/companies/:company_uuid/time_off_policies`, () => {
-    return HttpResponse.json({ time_off_policies: mockTimeOffPolicies })
+    return HttpResponse.json(mockTimeOffPolicies)
+  }),
+  // PolicyList fetches this alongside time-off policies; 404 is handled gracefully
+  http.get(`${API_BASE_URL}/v1/companies/:company_uuid/holiday_pay_policy`, () => {
+    return HttpResponse.json({ message: 'Not found' }, { status: 404 })
   }),
 ]
 
