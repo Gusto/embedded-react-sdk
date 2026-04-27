@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { useOutletContext } from 'react-router-dom'
+import { useNavigate, useOutletContext } from 'react-router-dom'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import { useContractorsList } from '@gusto/embedded-api/react-query/contractorsList'
 import type { EntityIds } from '../../../../useEntities'
@@ -36,9 +36,11 @@ function contractorMenu(actions: { label: string; onClick: () => void }[]) {
 function ActiveContractorsTable({
   contractors,
   isFetching,
+  onViewDetails,
 }: {
   contractors: Contractor[]
   isFetching: boolean
+  onViewDetails: (contractor: Contractor) => void
 }) {
   return (
     <SkeletonDataView
@@ -62,10 +64,20 @@ function ActiveContractorsTable({
           skeletonWidth: 100,
         },
       ]}
-      itemMenu={contractorMenu([
-        { label: 'View details', onClick: () => {} },
-        { label: 'Dismiss contractor', onClick: () => {} },
-      ])}
+      itemMenu={contractor => (
+        <HamburgerMenu
+          items={[
+            {
+              label: 'View details',
+              onClick: () => {
+                onViewDetails(contractor)
+              },
+            },
+            { label: 'Dismiss contractor', onClick: () => {} },
+          ]}
+          triggerLabel="Actions"
+        />
+      )}
       emptyState={() => <EmptyData title="No active contractors found." />}
     />
   )
@@ -150,6 +162,7 @@ function ContractorListContent() {
   const Components = useComponentContext()
   const { entities } = useOutletContext<{ entities: EntityIds }>()
   const companyId = entities.companyId
+  const navigate = useNavigate()
   const [selectedTab, setSelectedTab] = useState('active')
 
   const queryParams = useMemo(() => {
@@ -165,7 +178,7 @@ function ContractorListContent() {
     }
   }, [companyId, selectedTab])
 
-  const { data, isFetching } = useContractorsList(queryParams)
+  const { data, isPending } = useContractorsList(queryParams)
   const contractors = data?.contractors ?? []
 
   const tabs = [
@@ -189,11 +202,19 @@ function ContractorListContent() {
   const renderTable = () => {
     switch (selectedTab) {
       case 'active':
-        return <ActiveContractorsTable contractors={contractors} isFetching={isFetching} />
+        return (
+          <ActiveContractorsTable
+            contractors={contractors}
+            isFetching={isPending}
+            onViewDetails={contractor => {
+              void navigate(contractor.uuid)
+            }}
+          />
+        )
       case 'onboarding':
-        return <OnboardingContractorsTable contractors={contractors} isFetching={isFetching} />
+        return <OnboardingContractorsTable contractors={contractors} isFetching={isPending} />
       case 'dismissed':
-        return <DismissedContractorsTable contractors={contractors} isFetching={isFetching} />
+        return <DismissedContractorsTable contractors={contractors} isFetching={isPending} />
     }
   }
 

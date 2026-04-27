@@ -1,4 +1,5 @@
 import { Suspense, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import { useContractorsGetSuspense } from '@gusto/embedded-api/react-query/contractorsGet'
 import { useContractorPaymentMethodGetBankAccountsSuspense } from '@gusto/embedded-api/react-query/contractorPaymentMethodGetBankAccounts'
@@ -29,6 +30,7 @@ import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { BaseComponent } from '@/components/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { componentEvents, type EventType } from '@/shared/constants'
+import CaretLeftIcon from '@/assets/icons/caret-left.svg?react'
 
 export interface ContractorProfileContextInterface extends FlowContextInterface {
   contractorId: string
@@ -77,10 +79,28 @@ function ProfileViewData() {
 }
 
 export function ProfileViewContextual() {
+  const { contractorId: routeContractorId } = useParams<{ contractorId: string }>()
+  const navigate = useNavigate()
+  const Components = useComponentContext()
+
   return (
-    <Suspense fallback={<ProfileSkeleton />}>
-      <ProfileViewData />
-    </Suspense>
+    <Flex flexDirection="column" gap={32}>
+      {routeContractorId && (
+        <div>
+          <Components.Button
+            variant="secondary"
+            onClick={() => {
+              void navigate('..')
+            }}
+          >
+            <CaretLeftIcon /> Back to contractors
+          </Components.Button>
+        </div>
+      )}
+      <Suspense fallback={<ProfileSkeleton />}>
+        <ProfileViewData />
+      </Suspense>
+    </Flex>
   )
 }
 
