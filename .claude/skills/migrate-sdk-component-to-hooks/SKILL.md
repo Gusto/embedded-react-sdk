@@ -27,6 +27,31 @@ Common anti-patterns to avoid:
 
 **Rule of thumb**: if you're writing business logic in the component that every partner using the hook would also need, that logic belongs in the hook. Stop, move it into the hook, and re-export it via the hook's return shape. The SDK component and partner code should look identical in terms of which fields are shown and when.
 
+## 0. Pre-Migration Test Coverage
+
+Before touching any implementation code, write thorough unit tests for the **existing** component. These tests are the regression safety net — if the migration breaks behavior, a test failure tells you immediately.
+
+### Required coverage
+
+- **Default render** — fields, labels, and submit button are present with correct text
+- **Successful submission** — form submits and `onEvent` fires with the correct event type(s) and payload shape(s); cover both create mode and update mode if both exist
+- **Validation errors** — each field shows the correct message for required and format failures; simulate a 422 API response with `fieldErrors` and verify inline field errors appear
+- **Loading state** — while data fetches, the loading indicator is shown and the form is not rendered
+- **API error state** — when a query fails, an error message is shown and a retry action is available
+- **Conditional field visibility** — any field that shows/hides based on form state or server data is verified in both the shown and hidden states
+- **i18n** — rendered labels and button text match the expected translation keys (no raw key strings visible to the user)
+
+### Process
+
+1. Run the existing test file first to establish the baseline: `npm run test -- --run src/components/path/to/Component.test.tsx`
+2. Add test cases until all required coverage areas above are represented
+3. Run again and confirm all tests pass before writing a single line of migration code
+4. A test that fails at this stage is a bug in the test — fix it now, not after the migration
+
+### What tests to keep after migration
+
+Tests for the component's **public behavior** (rendered output, events emitted, loading/error states) survive the migration unchanged. Tests for internal helpers, context providers, or sub-components that are deleted during cleanup (Section 9) are removed along with that code. Do not delete a test just because the internal structure changed — delete it only when the thing it tested no longer exists.
+
 ## 1. Component Structure
 
 ### Entry Point
@@ -469,8 +494,78 @@ After migration, remove:
 - [ ] Tests for deleted helpers
 - [ ] Unused imports in barrel files
 
-## 10. Migration Checklist
+Verify hook placement:
 
+- [ ] Hook placed in `src/components/<Domain>/<Feature>/shared/use<Name>Form/`
+- [ ] Hook exported from the feature-level barrel and from the SDK root barrel (if it is a public partner hook)
+
+## 10. Hook Placement
+
+All form hooks live inside a `shared/` directory scoped to the domain feature, one directory per hook:
+
+```
+src/components/<Domain>/<Feature>/shared/
+└── use<Name>Form/
+    ├── use<Name>Form.tsx        # hook implementation
+    ├── use<Name>FormSchema.ts   # Zod schema + error codes constant
+    ├── fields.tsx               # Fields.* components wired to the hook
+    ├── index.ts                 # public re-exports
+    └── use<Name>Form.test.tsx   # hook unit tests
+```
+
+Reference examples:
+
+- `src/components/Employee/Profile/shared/useEmployeeDetailsForm/`
+- `src/components/Employee/Compensation/shared/useCompensationForm/`
+- `src/components/Company/PaySchedule/shared/usePayScheduleForm/`
+
+### Steps
+
+1. If `shared/` does not exist under the feature directory, create it
+2. Create the `use<Name>Form/` directory inside `shared/`
+3. Create the five files above; do not add extra files unless the hook genuinely needs them
+4. Export the hook (and its types, error codes constant, and `Fields`) from `index.ts` inside the hook directory
+5. Re-export from the feature-level barrel (e.g. `src/components/Employee/Profile/index.ts`) and from the SDK root barrel (`src/index.ts`) if the hook is intended as a public partner API
+
+## 11. Documentation
+
+Two documentation updates are required for every new hook. Complete both before marking the migration done.
+
+### Before writing anything, read the existing docs
+
+Read these files in full — structure, section order, table columns, frontmatter, and code snippet style must all match:
+
+- `docs/hooks/useEmployeeDetailsForm.md`
+- `docs/hooks/useCompensationForm.md`
+- `docs/hooks/hooks.md` (for the inventory table format)
+
+Do not rely on the description below as a substitute for reading the source material.
+
+### 1. Add a row to the inventory table in `docs/hooks/hooks.md`
+
+Add one row to the `Available Hooks` table, following the existing column order and link format exactly:
+
+```md
+| `useMyForm` | One-line description of what the hook manages | [useMyForm](./useMyForm.md) |
+```
+
+### 2. Create `docs/hooks/use<Name>Form.md`
+
+Use the structure of the existing hook doc files as the template. Required sections, in order:
+
+- **Frontmatter** — `title` (hook name) and `order` (increment beyond the highest existing value; check other files' frontmatter)
+- **H1** matching the hook name
+- Short description paragraph + import snippet
+- **Props** — table with columns: Prop, Type, Required, Description
+- **Return Type** — loading branch shape and ready branch shape, with TypeScript interface blocks
+- **Fields Reference** — per-field table with columns: Field, Input type, Required by default, Error codes, Conditional availability
+- **Usage Examples** — `SDKFormProvider` pattern and `formHookResult` prop pattern, both with complete runnable snippets
+
+Keep description style, table formatting, and code fence language tags consistent with the existing files you read.
+
+## 12. Migration Checklist
+
+- [ ] Pre-migration unit tests written covering all required areas (Section 0) and passing before migration began
 - [ ] Public component wraps `BaseBoundaries` (not `BaseComponent`) and delegates to a single `Root`
 - [ ] All hooks initialized with `shouldFocusError: false`
 - [ ] Errors composed via `composeSubmitHandler` (multi-form) and/or `composeErrorHandler` (extra queries / submit state) rather than manual array spreading
@@ -483,4 +578,7 @@ After migration, remove:
 - [ ] `onEvent` passed as prop (not via `useBase()`)
 - [ ] i18n namespaces loaded and translations consistent with prior component
 - [ ] Dead code from old implementation removed
-- [ ] All existing tests pass (`npm run test -- --run`)
+- [ ] Hook placed in `src/components/<Domain>/<Feature>/shared/use<Name>Form/` and exported from barrels
+- [ ] All tests pass after migration (`npm run test -- --run`)
+- [ ] Hook row added to `docs/hooks/hooks.md` inventory table
+- [ ] `docs/hooks/use<Name>Form.md` created following existing doc structure
