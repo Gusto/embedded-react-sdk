@@ -9,6 +9,7 @@ const mockTimeOffPolicies = [
     policy_type: 'vacation',
     accrual_method: 'unlimited',
     is_active: true,
+    employees: [],
   },
   {
     uuid: 'policy-2',
@@ -17,6 +18,7 @@ const mockTimeOffPolicies = [
     policy_type: 'sick',
     accrual_method: 'per_pay_period',
     is_active: true,
+    employees: [],
   },
 ]
 
