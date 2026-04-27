@@ -2,14 +2,14 @@ import { Suspense, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useQueryClient } from '@tanstack/react-query'
 import { useContractorsGetSuspense } from '@gusto/embedded-api/react-query/contractorsGet'
-import { ContractorDismissalForm } from '../components/ContractorDismissalForm'
+import { ContractorRehireForm } from '../components/ContractorRehireForm'
 import { Skeleton } from '../components/Skeleton'
 import { Flex } from '@/components/Common'
 import { BaseComponent } from '@/components/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import CaretLeftIcon from '@/assets/icons/caret-left.svg?react'
 
-function DismissSkeleton() {
+function RehireSkeleton() {
   return (
     <Flex flexDirection="column" gap={24}>
       <Skeleton width={250} height={28} />
@@ -19,7 +19,7 @@ function DismissSkeleton() {
   )
 }
 
-function ContractorDismissContent() {
+function ContractorRehireContent() {
   const { contractorId } = useParams<{ contractorId: string }>()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
@@ -30,26 +30,23 @@ function ContractorDismissContent() {
 
   if (!contractor) return null
 
-  const handleDismiss = async ({ endDate }: { endDate: string }) => {
+  const handleRehire = async ({ startDate }: { startDate: string }) => {
     setIsPending(true)
     try {
-      const res = await fetch(`/api/v1/contractors/${contractor.uuid}/termination`, {
+      const res = await fetch(`/api/v1/contractors/${contractor.uuid}/rehire`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ end_date: endDate }),
+        body: JSON.stringify({ start_date: startDate }),
       })
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}))
-        throw new Error(errorData.message || `Failed to dismiss contractor (${res.status})`)
+        throw new Error(errorData.message || `Failed to rehire contractor (${res.status})`)
       }
 
       const name = [contractor.firstName, contractor.lastName].filter(Boolean).join(' ')
-      const today = new Date().toISOString().slice(0, 10)
-      const message =
-        endDate <= today ? `${name} has been dismissed` : `Dismissal scheduled for ${name}`
       queryClient.removeQueries({ queryKey: ['@gusto/embedded-api', 'Contractors', 'list'] })
-      void navigate(`..?success=${encodeURIComponent(message)}`, {
+      void navigate(`..?success=${encodeURIComponent(`Rehire scheduled for ${name}`)}`, {
         replace: true,
       })
     } finally {
@@ -58,18 +55,18 @@ function ContractorDismissContent() {
   }
 
   return (
-    <ContractorDismissalForm
+    <ContractorRehireForm
       contractor={contractor}
       isPending={isPending}
       onCancel={() => {
         void navigate('..')
       }}
-      onDismiss={handleDismiss}
+      onRehire={handleRehire}
     />
   )
 }
 
-export function ContractorDismiss() {
+export function ContractorRehire() {
   const navigate = useNavigate()
   const Components = useComponentContext()
 
@@ -86,8 +83,8 @@ export function ContractorDismiss() {
             <CaretLeftIcon /> Back to contractors
           </Components.Button>
         </div>
-        <Suspense fallback={<DismissSkeleton />}>
-          <ContractorDismissContent />
+        <Suspense fallback={<RehireSkeleton />}>
+          <ContractorRehireContent />
         </Suspense>
       </Flex>
     </BaseComponent>

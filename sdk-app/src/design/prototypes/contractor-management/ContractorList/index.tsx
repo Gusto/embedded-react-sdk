@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useOutletContext, useSearchParams } from 'react-router-dom'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import { useContractorsList } from '@gusto/embedded-api/react-query/contractorsList'
@@ -12,7 +12,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { CONTRACTOR_TYPE } from '@/shared/constants'
 import { firstLastName } from '@/helpers/formattedStrings'
 
-function formatDismissalDate(dateStr: string): string {
+function formatDate(dateStr: string): string {
   const date = new Date(dateStr + 'T00:00:00')
   const now = new Date()
   const sameYear = date.getFullYear() === now.getFullYear()
@@ -43,21 +43,59 @@ function contractorMenu(actions: { label: string; onClick: () => void }[]) {
   }
 }
 
-function DismissalBadge({
+function ContractorStatusBadge({
   contractor,
-  isCancelling,
+  isLoading,
 }: {
   contractor: Contractor
-  isCancelling?: boolean
+  isLoading?: boolean
 }) {
   const Components = useComponentContext()
-  if (isCancelling) return <Skeleton width={120} height={16} />
-  if (!contractor.dismissalDate) return null
-  return (
-    <Components.Badge status="warning">
-      Last day {formatDismissalDate(contractor.dismissalDate)}
-    </Components.Badge>
-  )
+  if (isLoading) return <Skeleton width={120} height={16} />
+  if (contractor.dismissalDate) {
+    return (
+      <Components.Badge status="warning">
+        Last day {formatDate(contractor.dismissalDate)}
+      </Components.Badge>
+    )
+  }
+  return null
+}
+
+function activeContractorActions(
+  contractor: Contractor,
+  callbacks: {
+    onViewDetails: (contractor: Contractor) => void
+    onDismiss: (contractor: Contractor) => void
+    onCancelDismissal: (contractor: Contractor) => void
+  },
+) {
+  const actions: { label: string; onClick: () => void }[] = [
+    {
+      label: 'View details',
+      onClick: () => {
+        callbacks.onViewDetails(contractor)
+      },
+    },
+  ]
+
+  if (contractor.dismissalDate && contractor.dismissalCancellationEligible) {
+    actions.push({
+      label: 'Cancel dismissal',
+      onClick: () => {
+        callbacks.onCancelDismissal(contractor)
+      },
+    })
+  } else if (!contractor.dismissalDate) {
+    actions.push({
+      label: 'Dismiss contractor',
+      onClick: () => {
+        callbacks.onDismiss(contractor)
+      },
+    })
+  }
+
+  return actions
 }
 
 function ActiveContractorsTable({
@@ -99,9 +137,9 @@ function ActiveContractorsTable({
         {
           title: '',
           render: contractor => (
-            <DismissalBadge
+            <ContractorStatusBadge
               contractor={contractor}
-              isCancelling={cancellingId === contractor.uuid}
+              isLoading={cancellingId === contractor.uuid}
             />
           ),
           skeletonWidth: 120,
@@ -109,27 +147,11 @@ function ActiveContractorsTable({
       ]}
       itemMenu={contractor => (
         <HamburgerMenu
-          items={[
-            {
-              label: 'View details',
-              onClick: () => {
-                onViewDetails(contractor)
-              },
-            },
-            contractor.dismissalDate
-              ? {
-                  label: 'Cancel dismissal',
-                  onClick: () => {
-                    onCancelDismissal(contractor)
-                  },
-                }
-              : {
-                  label: 'Dismiss contractor',
-                  onClick: () => {
-                    onDismiss(contractor)
-                  },
-                },
-          ]}
+          items={activeContractorActions(contractor, {
+            onViewDetails,
+            onDismiss,
+            onCancelDismissal,
+          })}
           triggerLabel="Actions"
         />
       )}
@@ -178,12 +200,55 @@ function OnboardingContractorsTable({
   )
 }
 
+function dismissedContractorActions(
+  contractor: Contractor,
+  callbacks: {
+    onCancelDismissal: (contractor: Contractor) => void
+    onRehire: (contractor: Contractor) => void
+  },
+) {
+  const actions: { label: string; onClick: () => void }[] = [
+    { label: 'View details', onClick: () => {} },
+  ]
+
+  if (contractor.upcomingEmployment) {
+    if (contractor.rehireCancellationEligible) {
+      actions.push({
+        label: 'Cancel rehire',
+        onClick: () => {
+          callbacks.onCancelDismissal(contractor)
+        },
+      })
+    }
+  } else if (contractor.dismissalCancellationEligible) {
+    actions.push({
+      label: 'Cancel dismissal',
+      onClick: () => {
+        callbacks.onCancelDismissal(contractor)
+      },
+    })
+  } else if (!contractor.isActive) {
+    actions.push({
+      label: 'Rehire contractor',
+      onClick: () => {
+        callbacks.onRehire(contractor)
+      },
+    })
+  }
+
+  return actions
+}
+
 function DismissedContractorsTable({
   contractors,
   isFetching,
+  onCancelDismissal,
+  onRehire,
 }: {
   contractors: Contractor[]
   isFetching: boolean
+  onCancelDismissal: (contractor: Contractor) => void
+  onRehire: (contractor: Contractor) => void
 }) {
   return (
     <SkeletonDataView
@@ -207,7 +272,12 @@ function DismissedContractorsTable({
           skeletonWidth: 80,
         },
       ]}
-      itemMenu={contractorMenu([{ label: 'View details', onClick: () => {} }])}
+      itemMenu={contractor => (
+        <HamburgerMenu
+          items={dismissedContractorActions(contractor, { onCancelDismissal, onRehire })}
+          triggerLabel="Actions"
+        />
+      )}
       emptyState={() => <EmptyData title="No dismissed contractors found." />}
     />
   )
@@ -218,16 +288,20 @@ function ContractorListContent() {
   const { entities } = useOutletContext<{ entities: EntityIds }>()
   const companyId = entities.companyId
   const [cancellingId, setCancellingId] = useState<string | null>(null)
+  const [confirmCancelContractor, setConfirmCancelContractor] = useState<Contractor | null>(null)
+  const [isCancelPending, setIsCancelPending] = useState(false)
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
 
-  const [successMessage, setSuccessMessage] = useState<string | null>(() => {
+  const [successMessage, setSuccessMessage] = useState<string | null>(null)
+
+  useEffect(() => {
     const msg = searchParams.get('success')
     if (msg) {
+      setSuccessMessage(msg)
       setSearchParams({}, { replace: true })
     }
-    return msg
-  })
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
   const [selectedTab, setSelectedTab] = useState('active')
 
   const queryParams = useMemo(() => {
@@ -246,7 +320,10 @@ function ContractorListContent() {
   const { data, isPending, refetch } = useContractorsList(queryParams)
   const contractors = data?.contractors ?? []
 
-  const handleCancelDismissal = async (contractor: Contractor) => {
+  const handleCancelDismissal = async () => {
+    const contractor = confirmCancelContractor
+    if (!contractor) return
+    setIsCancelPending(true)
     setCancellingId(contractor.uuid)
     try {
       const res = await fetch(`/api/v1/contractors/${contractor.uuid}/termination`, {
@@ -256,13 +333,21 @@ function ContractorListContent() {
         const errorData = await res.json().catch(() => ({}))
         throw new Error(errorData.message || `Failed to cancel dismissal (${res.status})`)
       }
+      setConfirmCancelContractor(null)
       await refetch()
       const name = [contractor.firstName, contractor.lastName].filter(Boolean).join(' ')
       setSuccessMessage(`Dismissal cancelled for ${name}`)
     } finally {
+      setIsCancelPending(false)
       setCancellingId(null)
     }
   }
+
+  const cancelContractorName = confirmCancelContractor
+    ? [confirmCancelContractor.firstName, confirmCancelContractor.lastName]
+        .filter(Boolean)
+        .join(' ')
+    : ''
 
   const tabs = [
     {
@@ -297,14 +382,25 @@ function ContractorListContent() {
               void navigate(`${contractor.uuid}/dismiss`)
             }}
             onCancelDismissal={contractor => {
-              void handleCancelDismissal(contractor)
+              setConfirmCancelContractor(contractor)
             }}
           />
         )
       case 'onboarding':
         return <OnboardingContractorsTable contractors={contractors} isFetching={isPending} />
       case 'dismissed':
-        return <DismissedContractorsTable contractors={contractors} isFetching={isPending} />
+        return (
+          <DismissedContractorsTable
+            contractors={contractors}
+            isFetching={isPending}
+            onCancelDismissal={contractor => {
+              setConfirmCancelContractor(contractor)
+            }}
+            onRehire={contractor => {
+              void navigate(`${contractor.uuid}/rehire`)
+            }}
+          />
+        )
     }
   }
 
@@ -331,6 +427,26 @@ function ContractorListContent() {
         <Components.Tabs onSelectionChange={setSelectedTab} tabs={tabs} selectedId={selectedTab} />
         {renderTable()}
       </Flex>
+      <Components.Dialog
+        isOpen={confirmCancelContractor !== null}
+        onClose={() => {
+          setConfirmCancelContractor(null)
+        }}
+        onPrimaryActionClick={() => {
+          void handleCancelDismissal()
+        }}
+        isPrimaryActionLoading={isCancelPending}
+        primaryActionLabel="Yes, cancel"
+        closeActionLabel="No, go back"
+        title="Cancel dismissal"
+      >
+        <Components.Text>
+          Cancel {cancelContractorName}&apos;s dismissal? Their dismissal on{' '}
+          {confirmCancelContractor?.dismissalDate &&
+            formatDate(confirmCancelContractor.dismissalDate)}{' '}
+          will be removed and this contractor will remain active.
+        </Components.Text>
+      </Components.Dialog>
     </Flex>
   )
 }
