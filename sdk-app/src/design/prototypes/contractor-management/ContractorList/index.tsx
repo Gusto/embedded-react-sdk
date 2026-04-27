@@ -402,6 +402,7 @@ function ContractorListContent() {
   const [searchParams, setSearchParams] = useSearchParams()
 
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   useEffect(() => {
     const msg = searchParams.get('success')
@@ -492,14 +493,20 @@ function ContractorListContent() {
   }
 
   const handleCompleteOnboarding = async (contractor: Contractor) => {
-    await updateOnboardingStatus({
-      request: {
-        contractorUuid: contractor.uuid,
-        requestBody: { onboardingStatus: 'onboarding_completed' },
-      },
-    })
-    queryClient.removeQueries({ queryKey: ['@gusto/embedded-api', 'Contractors'] })
-    setSuccessMessage(`Onboarding completed for ${contractorName(contractor)}`)
+    try {
+      await updateOnboardingStatus({
+        request: {
+          contractorUuid: contractor.uuid,
+          requestBody: { onboardingStatus: 'onboarding_completed' },
+        },
+      })
+      queryClient.removeQueries({ queryKey: ['@gusto/embedded-api', 'Contractors'] })
+      setSuccessMessage(`Onboarding completed for ${contractorName(contractor)}`)
+    } catch {
+      setErrorMessage(
+        `Failed to complete onboarding for ${contractorName(contractor)}. Please try again.`,
+      )
+    }
   }
 
   const handleConfirmOnboardingAction = async () => {
@@ -620,6 +627,15 @@ function ContractorListContent() {
           status="success"
           onDismiss={() => {
             setSuccessMessage(null)
+          }}
+        />
+      )}
+      {errorMessage && (
+        <Components.Alert
+          label={errorMessage}
+          status="error"
+          onDismiss={() => {
+            setErrorMessage(null)
           }}
         />
       )}
