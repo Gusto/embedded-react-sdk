@@ -148,7 +148,9 @@ function StoryWrapper({
       selectedUuids={selectedUuids}
       searchValue={searchValue}
       onSearchChange={setSearchValue}
-      onSearchClear={() => { setSearchValue(''); }}
+      onSearchClear={() => {
+        setSearchValue('')
+      }}
       onSelect={handleSelect}
       onBack={onBack}
       onContinue={onContinue}
@@ -188,7 +190,9 @@ export const SearchFiltered = () => {
       selectedUuids={new Set(['1'])}
       searchValue={searchValue}
       onSearchChange={setSearchValue}
-      onSearchClear={() => { setSearchValue(''); }}
+      onSearchClear={() => {
+        setSearchValue('')
+      }}
       onSelect={fn()}
       onBack={onBack}
       onContinue={onContinue}
