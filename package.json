@@ -146,11 +146,15 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
     "@gusto/embedded-api": "0.12.5",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^5.2.2",
     "@internationalized/date": "^3.12.1",
     "@internationalized/number": "^3.6.6",
+    "@mui/material": "^9.0.0",
+    "@shopify/polaris": "^13.9.5",
     "classnames": "^2.5.1",
     "deepmerge": "^4.3.1",
     "dompurify": "^3.4.1",

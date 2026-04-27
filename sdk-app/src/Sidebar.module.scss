@@ -38,6 +38,39 @@
   }
 }
 
+.tabBar {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border-bottom: 0.0625rem solid var(--color-border);
+  padding: 0.375rem 0.5rem;
+  background: var(--color-bg-sidebar);
+}
+
+.tab {
+  flex: 1;
+  padding: 0.375rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 0.25rem;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+
+  &:hover {
+    color: var(--color-text);
+    background: var(--color-hover-bg);
+  }
+}
+
+.tabActive {
+  background: var(--color-active-bg);
+  color: var(--color-active);
+  font-weight: 600;
+}
+
 .search {
   padding: 0.75rem;
   border-bottom: 0.0625rem solid var(--color-border);
@@ -57,6 +90,7 @@
     font-size: 0.8125rem;
     outline: none;
     background: var(--color-bg);
+    color: var(--color-text);
 
     &:focus {
       border-color: var(--color-active);

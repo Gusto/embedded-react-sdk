@@ -9,8 +9,11 @@ import {
   CATEGORIES as DESIGN_CATEGORIES,
 } from './design/registry'
 import type { AppMode } from './useAppMode'
+import { ThemeEditor } from './ThemeEditor'
 import styles from './Sidebar.module.scss'
 import CaretRightIcon from '@/assets/icons/caret-right.svg?react'
+
+type SidebarTab = 'components' | 'theme'
 
 interface SidebarProps {
   mode: AppMode
@@ -84,6 +87,7 @@ function CategorySection({
 }
 
 export function Sidebar({ mode, searchQuery, onSearchChange, isOpen, onToggle }: SidebarProps) {
+  const [activeTab, setActiveTab] = useState<SidebarTab>('components')
   const placeholder = mode === 'design' ? 'Search prototypes...' : 'Search components...'
 
   if (!isOpen) {
@@ -104,54 +108,81 @@ export function Sidebar({ mode, searchQuery, onSearchChange, isOpen, onToggle }:
 
   return (
     <aside className={styles.root}>
-      <div className={styles.search}>
-        <div className={styles.searchRow}>
-          <input
-            type="text"
-            placeholder={placeholder}
-            value={searchQuery}
-            onChange={e => {
-              onSearchChange(e.target.value)
-            }}
-          />
-          <button
-            type="button"
-            className={styles.sidebarToggle}
-            onClick={onToggle}
-            aria-label="Hide sidebar"
-            title="Hide sidebar"
-          >
-            <span>◂</span>
-          </button>
-        </div>
+      <div className={styles.tabBar}>
+        <button
+          type="button"
+          className={`${styles.tab} ${activeTab === 'components' ? styles.tabActive : ''}`}
+          onClick={() => {
+            setActiveTab('components')
+          }}
+        >
+          Components
+        </button>
+        <button
+          type="button"
+          className={`${styles.tab} ${activeTab === 'theme' ? styles.tabActive : ''}`}
+          onClick={() => {
+            setActiveTab('theme')
+          }}
+        >
+          Theme
+        </button>
+        <button
+          type="button"
+          className={styles.sidebarToggle}
+          onClick={onToggle}
+          aria-label="Hide sidebar"
+          title="Hide sidebar"
+        >
+          <span>◂</span>
+        </button>
       </div>
-      <div className={styles.list}>
-        {mode === 'preview'
-          ? PREVIEW_CATEGORIES.map(category => {
-              const items = previewRegistry[category]
-              return (
-                <CategorySection
-                  key={category}
-                  category={category}
-                  items={items}
-                  searchQuery={searchQuery}
-                  mode={mode}
-                />
-              )
-            })
-          : DESIGN_CATEGORIES.map(category => {
-              const items = designRegistry[category]
-              return (
-                <CategorySection
-                  key={category}
-                  category={category}
-                  items={items}
-                  searchQuery={searchQuery}
-                  mode={mode}
-                />
-              )
-            })}
-      </div>
+
+      {activeTab === 'theme' ? (
+        <ThemeEditor />
+      ) : (
+        <>
+          <div className={styles.search}>
+            <div className={styles.searchRow}>
+              <input
+                type="text"
+                placeholder={placeholder}
+                value={searchQuery}
+                onChange={e => {
+                  onSearchChange(e.target.value)
+                }}
+              />
+            </div>
+          </div>
+          <div className={styles.list}>
+            {mode === 'preview'
+              ? PREVIEW_CATEGORIES.map(category => {
+                  const items = previewRegistry[category]
+                  return (
+                    <CategorySection
+                      key={category}
+                      category={category}
+                      items={items}
+                      searchQuery={searchQuery}
+                      mode={mode}
+                    />
+                  )
+                })
+              : DESIGN_CATEGORIES.map(category => {
+                  const items = designRegistry[category]
+                  return (
+                    <CategorySection
+                      key={category}
+                      category={category}
+                      items={items}
+                      searchQuery={searchQuery}
+                      mode={mode}
+                    />
+                  )
+                })}
+          </div>
+        </>
+      )}
     </aside>
   )
 }

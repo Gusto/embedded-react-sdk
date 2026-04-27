@@ -11,6 +11,7 @@ import { ContractorProfile } from './design/prototypes/contractor-management/Con
 import ContractorList from './design/prototypes/contractor-management/ContractorList'
 import './app.scss'
 import '@/styles/sdk.scss'
+import '@shopify/polaris/build/esm/styles.css'
 
 const router = createBrowserRouter([
   {

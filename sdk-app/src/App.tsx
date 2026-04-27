@@ -9,6 +9,8 @@ import { useDemoManager } from './useDemoManager'
 import { useAppMode } from './useAppMode'
 import { useThemeMode } from './useThemeMode'
 import { ThemeModeProvider } from './ThemeModeContext'
+import { DesignSystemContext, useDesignSystemState } from './DesignSystemContext'
+import { ThemeEditorContext, useThemeEditorState } from './ThemeEditorContext'
 
 export function App() {
   const [settingsOpen, setSettingsOpen] = useState(false)
@@ -18,6 +20,8 @@ export function App() {
   const demoManager = useDemoManager()
   const mode = useAppMode()
   const themeMode = useThemeMode()
+  const designSystemState = useDesignSystemState()
+  const themeEditorState = useThemeEditorState()
 
   const handleCreateNewDemo = async (demoType: string) => {
     const result = await demoManager.createNewDemo(demoType)
@@ -35,51 +39,55 @@ export function App() {
 
   return (
     <ThemeModeProvider value={themeMode}>
-      <div className="app-layout">
-        <TopBar
-          companyId={entities.companyId}
-          tokenStatus={demoManager.tokenStatus}
-          onOpenSettings={() => {
-            setSettingsOpen(true)
-          }}
-        />
-        <div className="app-body">
-          <Sidebar
-            mode={mode}
-            searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
-            isOpen={sidebarOpen}
-            onToggle={() => {
-              setSidebarOpen(open => !open)
-            }}
-          />
-          <main className="main-content">
-            <Outlet context={{ entities }} />
-          </main>
-        </div>
-        <DemoSettingsPanel
-          isOpen={settingsOpen}
-          onClose={() => {
-            setSettingsOpen(false)
-          }}
-          entities={entities}
-          onUpdateEntity={updateEntity}
-          onResetToDefaults={resetToDefaults}
-          tokenStatus={demoManager.tokenStatus}
-          isCreatingDemo={demoManager.isCreatingDemo}
-          demoError={demoManager.demoError}
-          proxyMode={demoManager.proxyMode}
-          onCreateNewDemo={handleCreateNewDemo}
-          onRefreshToken={demoManager.refreshToken}
-        />
-        {demoManager.tokenStatus === 'expired' && (
-          <TokenExpiredOverlay
-            onRefresh={demoManager.refreshToken}
-            isRefreshing={demoManager.isCreatingDemo}
-            error={demoManager.demoError}
-          />
-        )}
-      </div>
+      <DesignSystemContext.Provider value={designSystemState}>
+        <ThemeEditorContext.Provider value={themeEditorState}>
+          <div className="app-layout">
+            <TopBar
+              companyId={entities.companyId}
+              tokenStatus={demoManager.tokenStatus}
+              onOpenSettings={() => {
+                setSettingsOpen(true)
+              }}
+            />
+            <div className="app-body">
+              <Sidebar
+                mode={mode}
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                isOpen={sidebarOpen}
+                onToggle={() => {
+                  setSidebarOpen(open => !open)
+                }}
+              />
+              <main className="main-content">
+                <Outlet context={{ entities }} />
+              </main>
+            </div>
+            <DemoSettingsPanel
+              isOpen={settingsOpen}
+              onClose={() => {
+                setSettingsOpen(false)
+              }}
+              entities={entities}
+              onUpdateEntity={updateEntity}
+              onResetToDefaults={resetToDefaults}
+              tokenStatus={demoManager.tokenStatus}
+              isCreatingDemo={demoManager.isCreatingDemo}
+              demoError={demoManager.demoError}
+              proxyMode={demoManager.proxyMode}
+              onCreateNewDemo={handleCreateNewDemo}
+              onRefreshToken={demoManager.refreshToken}
+            />
+            {demoManager.tokenStatus === 'expired' && (
+              <TokenExpiredOverlay
+                onRefresh={demoManager.refreshToken}
+                isRefreshing={demoManager.isCreatingDemo}
+                error={demoManager.demoError}
+              />
+            )}
+          </div>
+        </ThemeEditorContext.Provider>
+      </DesignSystemContext.Provider>
     </ThemeModeProvider>
   )
 }

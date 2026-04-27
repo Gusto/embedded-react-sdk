@@ -1,0 +1,58 @@
+.root {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.label {
+  font-size: 11px;
+  color: var(--topbar-muted, #64748b);
+  white-space: nowrap;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+}
+
+.options {
+  display: flex;
+  gap: 2px;
+  background: var(--topbar-chip-bg, #f1f5f9);
+  border-radius: 8px;
+  padding: 2px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--topbar-text, #475569);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+
+  &:hover {
+    background: var(--topbar-chip-hover, #e2e8f0);
+    color: var(--topbar-text-strong, #1e293b);
+  }
+}
+
+.active {
+  background: var(--topbar-chip-active, #ffffff);
+  color: var(--topbar-text-strong, #1e293b);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.optionLogo {
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.optionLabel {
+  font-size: 11px;
+}

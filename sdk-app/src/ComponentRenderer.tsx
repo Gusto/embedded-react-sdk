@@ -1,12 +1,30 @@
 import { Suspense, useState, useCallback, Component, type ReactNode } from 'react'
 import { useParams } from 'react-router-dom'
+import { AppProvider as PolarisAppProvider } from '@shopify/polaris'
+import {
+  ThemeProvider as MuiThemeProvider,
+  createTheme as createMuiTheme,
+} from '@mui/material/styles'
+import CssBaseline from '@mui/material/CssBaseline'
 import { findComponent, CATEGORIES } from './registry'
 import { resolveDefaults } from './component-defaults'
 import { useResolvedTheme } from './useThemeModeContext'
 import { darkTheme } from './darkTheme'
+import { useDesignSystem } from './DesignSystemContext'
+import { useThemeEditor } from './ThemeEditorContext'
+import { materialAdapter } from './adapters/materialAdapter'
+import { polarisAdapter } from './adapters/polarisAdapter'
 import type { EntityIds } from './useEntities'
 import styles from './ComponentRenderer.module.scss'
 import { GustoProvider } from '@/contexts'
+import type { GustoSDKTheme } from '@/contexts/ThemeProvider/theme'
+
+const muiTheme = createMuiTheme({
+  typography: { fontFamily: 'inherit' },
+  components: {
+    MuiButton: { defaultProps: { disableElevation: true } },
+  },
+})
 
 interface ComponentRendererProps {
   entities: EntityIds
@@ -124,9 +142,25 @@ export function ComponentRenderer({ entities }: ComponentRendererProps) {
     component: string
   }>()
   const resolvedTheme = useResolvedTheme()
+  const { designSystem } = useDesignSystem()
+  const { themeOverrides } = useThemeEditor()
   const [events, setEvents] = useState<EventLogEntry[]>([])
   const [eventsOpen, setEventsOpen] = useState(true)
   const [resetKey, setResetKey] = useState(0)
+
+  const resolvedComponents =
+    designSystem === 'material'
+      ? materialAdapter
+      : designSystem === 'polaris'
+        ? polarisAdapter
+        : undefined
+
+  const resolvedSDKTheme: GustoSDKTheme | undefined = (() => {
+    const base = resolvedTheme === 'dark' ? darkTheme : undefined
+    const hasOverrides = Object.keys(themeOverrides).length > 0
+    if (!base && !hasOverrides) return undefined
+    return { ...base, ...themeOverrides }
+  })()
 
   const handleEvent = useCallback((...args: unknown[]) => {
     const entry: EventLogEntry = {
@@ -255,15 +289,45 @@ export function ComponentRenderer({ entities }: ComponentRendererProps) {
                 setResetKey(k => k + 1)
               }}
             >
-              <GustoProvider
-                config={{ baseUrl: `${window.location.origin}/api/` }}
-                theme={resolvedTheme === 'dark' ? darkTheme : undefined}
-                key={providerKey}
-              >
-                <Suspense fallback={<div className={styles.contentLoading}>Loading...</div>}>
-                  <SdkComponent {...componentProps} />
-                </Suspense>
-              </GustoProvider>
+              {designSystem === 'material' ? (
+                <MuiThemeProvider theme={muiTheme}>
+                  <CssBaseline />
+                  <GustoProvider
+                    config={{ baseUrl: `${window.location.origin}/api/` }}
+                    theme={resolvedSDKTheme}
+                    components={resolvedComponents}
+                    key={providerKey}
+                  >
+                    <Suspense fallback={<div className={styles.contentLoading}>Loading...</div>}>
+                      <SdkComponent {...componentProps} />
+                    </Suspense>
+                  </GustoProvider>
+                </MuiThemeProvider>
+              ) : designSystem === 'polaris' ? (
+                <PolarisAppProvider i18n={{}}>
+                  <GustoProvider
+                    config={{ baseUrl: `${window.location.origin}/api/` }}
+                    theme={resolvedSDKTheme}
+                    components={resolvedComponents}
+                    key={providerKey}
+                  >
+                    <Suspense fallback={<div className={styles.contentLoading}>Loading...</div>}>
+                      <SdkComponent {...componentProps} />
+                    </Suspense>
+                  </GustoProvider>
+                </PolarisAppProvider>
+              ) : (
+                <GustoProvider
+                  config={{ baseUrl: `${window.location.origin}/api/` }}
+                  theme={resolvedSDKTheme}
+                  components={resolvedComponents}
+                  key={providerKey}
+                >
+                  <Suspense fallback={<div className={styles.contentLoading}>Loading...</div>}>
+                    <SdkComponent {...componentProps} />
+                  </Suspense>
+                </GustoProvider>
+              )}
             </ComponentErrorBoundary>
           </div>
         </div>
