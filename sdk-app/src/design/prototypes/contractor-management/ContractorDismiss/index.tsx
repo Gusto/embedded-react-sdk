@@ -7,8 +7,6 @@ import { contractorName } from '../components/contractorName'
 import { Skeleton } from '../components/Skeleton'
 import { Flex } from '@/components/Common'
 import { BaseComponent } from '@/components/Base'
-import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import CaretLeftIcon from '@/assets/icons/caret-left.svg?react'
 
 function DismissSkeleton() {
   return (
@@ -71,26 +69,11 @@ function ContractorDismissContent() {
 }
 
 export function ContractorDismiss() {
-  const navigate = useNavigate()
-  const Components = useComponentContext()
-
   return (
     <BaseComponent onEvent={() => {}}>
-      <Flex flexDirection="column" gap={32}>
-        <div>
-          <Components.Button
-            variant="secondary"
-            onClick={() => {
-              void navigate('..')
-            }}
-          >
-            <CaretLeftIcon /> Back to contractors
-          </Components.Button>
-        </div>
-        <Suspense fallback={<DismissSkeleton />}>
-          <ContractorDismissContent />
-        </Suspense>
-      </Flex>
+      <Suspense fallback={<DismissSkeleton />}>
+        <ContractorDismissContent />
+      </Suspense>
     </BaseComponent>
   )
 }
