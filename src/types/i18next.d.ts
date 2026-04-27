@@ -1961,6 +1961,7 @@ export interface EmployeePaymentMethod{
 "validations":{
 "percentageError":string;
 "percentageErrorWithTotal":string;
+"percentageAmountError":string;
 "amountError":string;
 "accountName":string;
 "routingNumber":string;

@@ -116,6 +116,46 @@ describe('PaymentMethod - Percentage Split Validation', () => {
       expect(result.success).toBe(false)
     })
 
+    it('should reject decimal percentages', () => {
+      const invalidData = {
+        type: 'Direct Deposit' as const,
+        isSplit: true as const,
+        hasBankPayload: false as const,
+        splitBy: 'Percentage' as const,
+        splitAmount: {
+          'account-1': 80.001,
+          'account-2': 19.9,
+        },
+        priority: {
+          'account-1': 1,
+          'account-2': 2,
+        },
+      }
+
+      const result = CombinedSchema.safeParse(invalidData)
+      expect(result.success).toBe(false)
+      expect(result.error?.issues[0]?.code).toEqual('invalid_union')
+
+      if (!result.success && result.error.issues[0]?.code === 'invalid_union') {
+        expect(result.error.issues[0].errors).toContainEqual([
+          {
+            code: 'invalid_type',
+            expected: 'int',
+            format: 'safeint',
+            message: 'Invalid input: expected int, received number',
+            path: ['splitAmount', 'account-1'],
+          },
+          {
+            code: 'invalid_type',
+            expected: 'int',
+            format: 'safeint',
+            message: 'Invalid input: expected int, received number',
+            path: ['splitAmount', 'account-2'],
+          },
+        ])
+      }
+    })
+
     it('should reject percentages over 100 for individual accounts', () => {
       const invalidData = {
         type: 'Direct Deposit' as const,
