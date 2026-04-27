@@ -8,6 +8,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useI18n } from '@/i18n/I18n'
 import { firstLastName } from '@/helpers/formattedStrings'
 import SearchIcon from '@/assets/icons/search-lg.svg?react'
+import CloseIcon from '@/assets/icons/close.svg?react'
 
 export function EmployeeTable<T extends EmployeeTableItem>({
   data,
@@ -31,12 +32,8 @@ export function EmployeeTable<T extends EmployeeTableItem>({
   const { t } = useTranslation('Company.TimeOff.EmployeeTable')
   const Components = useComponentContext()
 
-  const isSearchWithNoResults = searchValue.length > 0 && data.length === 0
-
-  const handleSearchChange = (value: string) => {
-    onSearchChange(value)
-    if (!value) onSearchClear()
-  }
+  const hasActiveSearch = searchValue.length > 0
+  const isSearchWithNoResults = hasActiveSearch && data.length === 0
 
   const defaultEmptySearch = useMemo(() => {
     const noSearchResults = t('noSearchResults')
@@ -93,16 +90,28 @@ export function EmployeeTable<T extends EmployeeTableItem>({
   return (
     <div className={styles.root} data-has-menu={itemMenu ? true : undefined}>
       <div className={styles.searchContainer}>
-        <Components.TextInput
-          name="employee-search"
-          type="search"
-          label={t('searchLabel')}
-          shouldVisuallyHideLabel
-          placeholder={searchPlaceholder ?? t('searchPlaceholder')}
-          value={searchValue}
-          onChange={handleSearchChange}
-          adornmentStart={<SearchIcon aria-hidden />}
-        />
+        <div className={styles.searchWrapper}>
+          <Components.TextInput
+            name="employee-search"
+            type="search"
+            label={t('searchLabel')}
+            shouldVisuallyHideLabel
+            placeholder={searchPlaceholder ?? t('searchPlaceholder')}
+            value={searchValue}
+            onChange={onSearchChange}
+            adornmentStart={<SearchIcon aria-hidden />}
+          />
+          {hasActiveSearch && (
+            <button
+              type="button"
+              className={styles.clearButton}
+              onClick={onSearchClear}
+              aria-label={t('clearSearch')}
+            >
+              <CloseIcon aria-hidden />
+            </button>
+          )}
+        </div>
       </div>
       <DataView label={label ?? t('tableLabel')} {...dataViewProps} />
     </div>
