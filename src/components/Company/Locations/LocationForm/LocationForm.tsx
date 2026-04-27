@@ -100,12 +100,7 @@ function Root({
       <FormProvider {...methods} control={control}>
         <HtmlForm onSubmit={methods.handleSubmit(onSubmit)}>
           <LocationsFormProvider
-            value={{
-              handleCancel,
-              isPending: isPendingCreate || isPendingUpdate,
-              isMailingLocked,
-              isFilingLocked,
-            }}
+            value={{ handleCancel, isPending: isPendingCreate || isPendingUpdate }}
           >
             <Flex flexDirection="column" gap={32}>
               {children ? (
@@ -113,7 +108,7 @@ function Root({
               ) : (
                 <>
                   <Head />
-                  <Form />
+                  <Form isMailingLocked={isMailingLocked} isFilingLocked={isFilingLocked} />
                   <Actions />
                 </>
               )}

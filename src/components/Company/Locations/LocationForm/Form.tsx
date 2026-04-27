@@ -1,6 +1,5 @@
 import { z } from 'zod'
 import { useTranslation } from 'react-i18next'
-import { useLocationsForm } from './useLocationForm'
 import { phoneValidation, zipValidation } from '@/helpers/validations'
 import { CheckboxGroupField, Flex, Grid, SelectField, TextInputField } from '@/components/Common'
 import { STATES_ABBR } from '@/shared/constants'
@@ -18,10 +17,14 @@ export const LocationFormSchema = z.object({
 
 export type LocationFormInputs = z.infer<typeof LocationFormSchema>
 
-export function Form() {
+interface FormProps {
+  isMailingLocked?: boolean
+  isFilingLocked?: boolean
+}
+
+export function Form({ isMailingLocked = false, isFilingLocked = false }: FormProps = {}) {
   const { t } = useTranslation('Company.Locations')
   const transform = useMaskedTransform(commonMasks.phoneMask)
-  const { isMailingLocked, isFilingLocked } = useLocationsForm()
 
   return (
     <Flex flexDirection="column" gap={20}>
