@@ -81,6 +81,19 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'Payroll.RecoveryCases': ['companyId'],
   'Payroll.TransitionCreation': ['companyId'],
   'Payroll.TransitionFlow': ['companyId'],
+  'UNSTABLE_TimeOff.TimeOffFlow': ['companyId'],
+  'UNSTABLE_TimeOff.PolicyList': ['companyId'],
+  'UNSTABLE_TimeOff.PolicyTypeSelector': ['companyId'],
+  'UNSTABLE_TimeOff.PolicyConfigurationForm': ['companyId'],
+  'UNSTABLE_TimeOff.HolidaySelectionForm': ['companyId'],
+  'UNSTABLE_TimeOff.AddEmployeesHoliday': ['companyId'],
+  'UNSTABLE_TimeOff.ViewHolidayEmployees': ['companyId'],
+  'UNSTABLE_TimeOff.ViewHolidaySchedule': ['companyId'],
+  'UNSTABLE_TimeOff.AddEmployeesToPolicy': ['companyId'],
+  'UNSTABLE_TimeOff.PolicySettings': ['companyId'],
+  'UNSTABLE_TimeOff.PolicySettingsPresentation': ['companyId'],
+  'UNSTABLE_TimeOff.ViewPolicyDetails': ['companyId'],
+  'UNSTABLE_TimeOff.ViewPolicyEmployees': ['companyId'],
 }
 
 export const ADDITIONAL_REQUIRED_PROPS: Record<string, string[]> = {
@@ -96,4 +109,8 @@ export const ADDITIONAL_REQUIRED_PROPS: Record<string, string[]> = {
   'Payroll.OffCycleDeductionsSetting': ['skipRegularDeductions'],
   'Payroll.TransitionCreation': ['startDate', 'endDate', 'payScheduleUuid'],
   'Payroll.TransitionFlow': ['startDate', 'endDate', 'payScheduleUuid'],
+  'UNSTABLE_TimeOff.AddEmployeesToPolicy': ['policyId'],
+  'UNSTABLE_TimeOff.ViewPolicyDetails': ['policyId'],
+  'UNSTABLE_TimeOff.ViewPolicyEmployees': ['policyId'],
+  'UNSTABLE_TimeOff.PolicySettings': ['policyId'],
 }
