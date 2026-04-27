@@ -42,6 +42,8 @@ function Root({
   const { mutateAsync: createLocation, isPending: isPendingCreate } = useLocationsCreateMutation()
   const { mutateAsync: updateLocation, isPending: isPendingUpdate } = useLocationsUpdateMutation()
   const addressType = ['mailingAddress', 'filingAddress'] as const
+  const isMailingLocked = location?.mailingAddress === true
+  const isFilingLocked = location?.filingAddress === true
 
   const { control, ...methods } = useForm<LocationFormInputs>({
     resolver: zodResolver(LocationFormSchema),
@@ -63,10 +65,14 @@ function Root({
     await baseSubmitHandler(data, async innerData => {
       const { addressType, ...payload } = innerData
 
+      // The PUT /v1/locations/:id endpoint treats mailing_address and filing_address
+      // as set-only flags: once a location is the company's mailing/filing address,
+      // sending false is silently ignored (a company must always have one of each).
+      // We mirror this contract by omitting locked fields from the request body.
       const requestBody = {
         ...payload,
-        mailingAddress: addressType?.includes('mailingAddress'),
-        filingAddress: addressType?.includes('filingAddress'),
+        ...(isMailingLocked ? {} : { mailingAddress: addressType?.includes('mailingAddress') }),
+        ...(isFilingLocked ? {} : { filingAddress: addressType?.includes('filingAddress') }),
       }
 
       if (location && location.version !== undefined) {
@@ -94,7 +100,12 @@ function Root({
       <FormProvider {...methods} control={control}>
         <HtmlForm onSubmit={methods.handleSubmit(onSubmit)}>
           <LocationsFormProvider
-            value={{ handleCancel, isPending: isPendingCreate || isPendingUpdate }}
+            value={{
+              handleCancel,
+              isPending: isPendingCreate || isPendingUpdate,
+              isMailingLocked,
+              isFilingLocked,
+            }}
           >
             <Flex flexDirection="column" gap={32}>
               {children ? (

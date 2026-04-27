@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { useTranslation } from 'react-i18next'
+import { useLocationsForm } from './useLocationForm'
 import { phoneValidation, zipValidation } from '@/helpers/validations'
 import { CheckboxGroupField, Flex, Grid, SelectField, TextInputField } from '@/components/Common'
 import { STATES_ABBR } from '@/shared/constants'
@@ -20,6 +21,7 @@ export type LocationFormInputs = z.infer<typeof LocationFormSchema>
 export function Form() {
   const { t } = useTranslation('Company.Locations')
   const transform = useMaskedTransform(commonMasks.phoneMask)
+  const { isMailingLocked, isFilingLocked } = useLocationsForm()
 
   return (
     <Flex flexDirection="column" gap={20}>
@@ -72,12 +74,18 @@ export function Form() {
           {
             value: 'mailingAddress',
             label: t('mailingAddressLabel'),
-            description: t('mailingAddressDescription'),
+            description: isMailingLocked
+              ? t('mailingAddressDescriptionLocked')
+              : t('mailingAddressDescription'),
+            isDisabled: isMailingLocked,
           },
           {
             value: 'filingAddress',
             label: t('filingAddressLabel'),
-            description: t('filingAddressDescription'),
+            description: isFilingLocked
+              ? t('filingAddressDescriptionLocked')
+              : t('filingAddressDescription'),
+            isDisabled: isFilingLocked,
           },
         ]}
       />
