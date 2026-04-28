@@ -5,12 +5,12 @@ import { DatePickerField } from '@/components/Common/Fields/DatePickerField'
 import type { DatePickerProps } from '@/components/Common/UI/DatePicker/DatePickerTypes'
 
 export interface DatePickerHookFieldProps<TErrorCode extends string = never>
-  extends BaseFieldProps, Pick<DatePickerProps, 'portalContainer'> {
+  extends BaseFieldProps, Pick<DatePickerProps, 'portalContainer' | 'minDate' | 'maxDate'> {
   name: string
   formHookResult?: FormHookResult
   validationMessages?: ValidationMessages<TErrorCode>
   FieldComponent?: ComponentType<DatePickerProps>
-  /** When used inside a modal, pass the modal backdrop ref’s element so the calendar popover stacks correctly. */
+  /** When used inside a modal, pass the modal backdrop ref's element so the calendar popover stacks correctly. */
   portalContainer?: DatePickerProps['portalContainer']
 }
 
@@ -22,6 +22,8 @@ export function DatePickerHookField<TErrorCode extends string>({
   validationMessages,
   FieldComponent,
   portalContainer,
+  minDate,
+  maxDate,
 }: DatePickerHookFieldProps<TErrorCode>) {
   const { metadata, control, errorMessage } = useHookFieldResolution(
     name,
@@ -41,6 +43,8 @@ export function DatePickerHookField<TErrorCode extends string>({
       isDisabled={fieldMetadata?.isDisabled}
       FieldComponent={FieldComponent}
       portalContainer={portalContainer}
+      minDate={minDate}
+      maxDate={maxDate}
     />
   )
 }
