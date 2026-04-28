@@ -1,21 +1,12 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { usePayScheduleForm } from './shared/usePayScheduleForm'
-import type { UsePayScheduleFormProps } from './shared/usePayScheduleForm'
+import type { UsePayScheduleFormProps, PayScheduleFrequency } from './shared/usePayScheduleForm'
 import style from './PayScheduleForm.module.scss'
 import { BaseBoundaries, BaseLayout } from '@/components/Base'
 import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { Form } from '@/components/Common/Form'
-import {
-  Flex,
-  Grid,
-  TextInputField,
-  SelectField,
-  RadioGroupField,
-  DatePickerField,
-  NumberInputField,
-  ActionsLayout,
-} from '@/components/Common'
+import { Flex, Grid, ActionsLayout } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import { componentEvents, type EventType } from '@/shared/constants'
@@ -58,7 +49,19 @@ function PayScheduleFormRoot({ onEvent, ...hookProps }: PayScheduleFormProps) {
 
   const { Fields } = paySchedule.form
   const { paymentSpeedDays, payPreviewLoading } = paySchedule.data
-  const payPeriodPreview = paySchedule.data.payPeriodPreview ?? undefined
+  const payPeriodPreview = paySchedule.data.payPeriodPreview
+
+  const frequencyLabels: Record<PayScheduleFrequency, string> = {
+    'Every week': t('frequencies.everyWeek'),
+    'Every other week': t('frequencies.everyOtherWeek'),
+    'Twice per month': t('frequencies.twicePerMonth'),
+    Monthly: t('frequencies.monthly'),
+  }
+
+  const twicePerMonthLabels: Record<string, string> = {
+    '1st15th': t('frequencyOptions.15thAndLast'),
+    custom: t('frequencyOptions.custom'),
+  }
 
   return (
     <BaseLayout error={paySchedule.errorHandling.errors}>
@@ -78,68 +81,53 @@ function PayScheduleFormRoot({ onEvent, ...hookProps }: PayScheduleFormProps) {
               <Grid gap={32} gridTemplateColumns={{ base: '1fr', small: '1fr 1fr' }}>
                 <div className={style.payScheduleForm}>
                   <Flex flexDirection="column">
-                    <TextInputField
-                      name="customName"
+                    <Fields.CustomName
                       label={t('labels.name')}
-                      isRequired
-                      errorMessage={t('validations.name')}
+                      validationMessages={{ REQUIRED: t('validations.name') }}
                     />
-                    <SelectField
-                      name="frequency"
+                    <Fields.Frequency
                       label={t('labels.frequency')}
-                      options={[
-                        { value: 'Every week', label: t('frequencies.everyWeek') },
-                        { value: 'Every other week', label: t('frequencies.everyOtherWeek') },
-                        { value: 'Twice per month', label: t('frequencies.twicePerMonth') },
-                        { value: 'Monthly', label: t('frequencies.monthly') },
-                      ]}
-                      isRequired
-                      errorMessage={t('validations.frequency')}
+                      getOptionLabel={(entry: PayScheduleFrequency) => frequencyLabels[entry]}
+                      validationMessages={{ REQUIRED: t('validations.frequency') }}
                     />
-                    {Fields.CustomTwicePerMonth !== undefined && (
-                      <RadioGroupField
-                        name="customTwicePerMonth"
+                    {Fields.CustomTwicePerMonth && (
+                      <Fields.CustomTwicePerMonth
                         label={t('labels.frequencyOptions')}
                         description={t('descriptions.frequencyOptionsDescription')}
-                        options={[
-                          { value: '1st15th', label: t('frequencyOptions.15thAndLast') },
-                          { value: 'custom', label: t('frequencyOptions.custom') },
-                        ]}
+                        getOptionLabel={(entry: string) => twicePerMonthLabels[entry] ?? entry}
                       />
                     )}
-                    <DatePickerField
-                      name="anchorPayDate"
+                    <Fields.AnchorPayDate
                       label={t('labels.firstPayDate')}
                       description={t('descriptions.anchorPayDateDescription', {
                         count: paymentSpeedDays,
                       })}
-                      isRequired
-                      errorMessage={t('validations.firstPayDate')}
+                      validationMessages={{ REQUIRED: t('validations.firstPayDate') }}
                       minDate={new Date()}
                     />
-                    <DatePickerField
-                      name="anchorEndOfPayPeriod"
+                    <Fields.AnchorEndOfPayPeriod
                       label={t('labels.firstPayPeriodEndDate')}
                       description={t('descriptions.anchorEndOfPayPeriodDescription')}
-                      isRequired
-                      errorMessage={t('validations.firstPayPeriodEndDate')}
+                      validationMessages={{ REQUIRED: t('validations.firstPayPeriodEndDate') }}
                     />
-                    <div className={Fields.Day1 !== undefined ? '' : style.visuallyHidden}>
-                      <NumberInputField
-                        name="day1"
+                    {Fields.Day1 && (
+                      <Fields.Day1
                         label={t('labels.firstPayDayOfTheMonth')}
-                        isRequired
-                        errorMessage={t('validations.firstPayDayOfTheMonth')}
+                        validationMessages={{
+                          REQUIRED: t('validations.firstPayDayOfTheMonth'),
+                          DAY_RANGE: t('validations.dayRange'),
+                        }}
                       />
-                    </div>
-                    <div className={Fields.Day2 !== undefined ? '' : style.visuallyHidden}>
-                      <NumberInputField
-                        name="day2"
+                    )}
+                    {Fields.Day2 && (
+                      <Fields.Day2
                         label={t('labels.lastPayDayOfTheMonth')}
-                        isRequired
-                        errorMessage={t('validations.lastPayDayOfTheMonth')}
+                        validationMessages={{
+                          REQUIRED: t('validations.lastPayDayOfTheMonth'),
+                          DAY_RANGE: t('validations.dayRange'),
+                        }}
                       />
-                    </div>
+                    )}
                   </Flex>
                 </div>
                 <Flex flexDirection="column" gap={4} justifyContent="center" alignItems="center">
