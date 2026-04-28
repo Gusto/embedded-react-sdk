@@ -2,6 +2,7 @@ import { useId } from 'react'
 import { useTranslation } from 'react-i18next'
 import styles from './DataCards.module.scss'
 import type { useDataViewPropReturn, SelectionMode } from '@/components/Common/DataView/useDataView'
+import type { TableProps } from '@/components/Common/UI/Table/TableTypes'
 import { useSelectionState } from '@/components/Common/DataView/useSelectionState'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -17,6 +18,7 @@ export type DataCardsProps<T> = {
   emptyState?: useDataViewPropReturn<T>['emptyState']
   footer?: useDataViewPropReturn<T>['footer']
   selectionMode?: SelectionMode
+  isWithinBox?: TableProps['isWithinBox']
 }
 
 export const DataCards = <T,>({
@@ -30,6 +32,7 @@ export const DataCards = <T,>({
   emptyState,
   footer,
   selectionMode = 'multiple',
+  isWithinBox,
 }: DataCardsProps<T>) => {
   const Components = useComponentContext()
   const { t } = useTranslation('common')
@@ -68,7 +71,11 @@ export const DataCards = <T,>({
   }
 
   return (
-    <div data-testid="data-cards">
+    <div
+      className={styles.root}
+      data-testid="data-cards"
+      data-within-box={isWithinBox || undefined}
+    >
       {onSelect && getIsItemSelected && selectionMode === 'multiple' && data.length > 0 && (
         <div className={styles.selectAllRow}>
           <Components.Checkbox

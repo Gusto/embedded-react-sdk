@@ -1,3 +1,23 @@
+.root {
+  &[data-within-box] {
+    .selectAllRow {
+      border-bottom: 1px solid var(--g-colorBorderSecondary);
+    }
+
+    [data-testid='data-card'] {
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
+      margin-bottom: 0;
+      border-bottom: 1px solid var(--g-colorBorderSecondary);
+    }
+
+    [role='list'] [role='listitem']:last-child [data-testid='data-card'] {
+      border-bottom: none;
+    }
+  }
+}
+
 .selectAllRow {
   padding: toRem(8) toRem(16);
 }
