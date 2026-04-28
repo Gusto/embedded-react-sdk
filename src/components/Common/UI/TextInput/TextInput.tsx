@@ -31,6 +31,7 @@ export function TextInput(rawProps: TextInputProps) {
     max,
     maxLength,
     'aria-describedby': ariaDescribedByFromProps,
+    'aria-labelledby': ariaLabelledBy,
     ...otherProps
   } = resolvedProps
   const { inputId, errorMessageId, descriptionId, ariaDescribedBy } = useFieldIds({
@@ -68,6 +69,7 @@ export function TextInput(rawProps: TextInputProps) {
         onChange={handleChange}
         onBlur={onBlur}
         aria-describedby={ariaDescribedBy}
+        aria-labelledby={ariaLabelledBy}
         aria-invalid={isInvalid}
         isDisabled={isDisabled}
         adornmentStart={adornmentStart}

@@ -3,6 +3,7 @@ import type { useDataViewProp, SelectionMode } from '@/components/Common/DataVie
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
 export interface EmployeeTableItem {
+  uuid: string
   firstName?: string | null
   lastName?: string | null
   jobTitle?: string | null
