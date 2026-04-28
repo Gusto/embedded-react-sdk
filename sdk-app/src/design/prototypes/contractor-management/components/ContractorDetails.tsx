@@ -1,4 +1,5 @@
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
+import { CONTRACTOR_TYPE } from '@/shared/constants'
 import { Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
@@ -18,9 +19,11 @@ export function ContractorDetails({
           <Components.Heading as="h3" styledAs="h4">
             Basic details
           </Components.Heading>
-          <Components.Button variant="secondary" onClick={onEdit}>
-            Edit
-          </Components.Button>
+          {onEdit && (
+            <Components.Button variant="secondary" onClick={onEdit}>
+              Edit
+            </Components.Button>
+          )}
         </Flex>
       }
     >
@@ -30,9 +33,11 @@ export function ContractorDetails({
             term: <Components.Text weight="medium">Legal name</Components.Text>,
             description: (
               <Components.Text>
-                {[contractor.firstName, contractor.middleInitial, contractor.lastName]
-                  .filter(Boolean)
-                  .join(' ')}
+                {contractor.type === CONTRACTOR_TYPE.BUSINESS
+                  ? contractor.businessName
+                  : [contractor.firstName, contractor.middleInitial, contractor.lastName]
+                      .filter(Boolean)
+                      .join(' ')}
               </Components.Text>
             ),
           },
@@ -48,7 +53,7 @@ export function ContractorDetails({
           },
           {
             term: <Components.Text weight="medium">Email address</Components.Text>,
-            description: <Components.Text>{contractor.email}</Components.Text>,
+            description: <Components.Text>{contractor.email || '–'}</Components.Text>,
           },
         ]}
       />

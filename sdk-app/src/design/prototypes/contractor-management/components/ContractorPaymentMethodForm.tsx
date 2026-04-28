@@ -12,7 +12,7 @@ import { accountNumberValidation, routingNumberValidation } from '@/helpers/vali
 const BankAccountFormSchema = z.object({
   name: z.string().min(1),
   routingNumber: routingNumberValidation,
-  accountNumber: z.any(),
+  accountNumber: z.string().min(1),
   accountType: z.enum(['Checking', 'Savings']),
 })
 
