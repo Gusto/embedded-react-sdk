@@ -195,8 +195,10 @@ export interface CompanyLocations{
 "addressTypeLabel":string;
 "mailingAddressLabel":string;
 "mailingAddressDescription":string;
+"mailingAddressDescriptionLocked":string;
 "filingAddressLabel":string;
 "filingAddressDescription":string;
+"filingAddressDescriptionLocked":string;
 "saveCta":string;
 "cancelCta":string;
 "continueCta":string;
