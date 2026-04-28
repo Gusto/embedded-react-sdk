@@ -8,6 +8,7 @@
   },
   "optionalLabel": "(optional)",
   "progressBarLabel": "You are on step {{currentStep}} of {{totalSteps}}",
+  "back": "Back",
   "errors": {
     "errorHeading": "Error",
     "globalReactError": "Error while rendering SDK component: {{error}}",

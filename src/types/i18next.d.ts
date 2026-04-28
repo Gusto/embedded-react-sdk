@@ -3172,6 +3172,7 @@ export interface common{
 };
 "optionalLabel":string;
 "progressBarLabel":string;
+"back":string;
 "errors":{
 "errorHeading":string;
 "globalReactError":string;

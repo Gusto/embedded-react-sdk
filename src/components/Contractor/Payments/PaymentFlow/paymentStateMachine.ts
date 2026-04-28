@@ -14,7 +14,7 @@ import {
 } from './PaymentFlowComponents'
 import { componentEvents, informationRequestEvents, payrollWireEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
-import { updateBreadcrumbs } from '@/helpers/breadcrumbHelpers'
+import { patchBreadcrumbsHeader, updateBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 import type { BreadcrumbNodes } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
 import { createBreadcrumbNavigateTransition } from '@/components/Common/FlowBreadcrumbs/breadcrumbTransitionHelpers'
 
@@ -52,9 +52,7 @@ export const paymentFlowBreadcrumbsNodes: BreadcrumbNodes = {
       label: 'breadcrumbLabel',
       namespace: 'Contractor.Payments.PaymentsList',
       onNavigate: ((ctx: PaymentFlowContextInterface) => ({
-        ...ctx,
-        currentBreadcrumb: 'landing',
-        progressBarType: null,
+        ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: undefined }),
         component: PaymentListContextual,
       })) as (context: unknown) => unknown,
     },
@@ -111,19 +109,13 @@ export const paymentMachine = {
     transition(
       componentEvents.CONTRACTOR_PAYMENT_CREATE,
       'createPayment',
-      reduce(
-        (
-          ctx: PaymentFlowContextInterface,
-          ev: MachineEventType<EventPayloads, typeof componentEvents.CONTRACTOR_PAYMENT_CREATE>,
-        ): PaymentFlowContextInterface => {
-          return {
-            ...updateBreadcrumbs('createPayment', ctx),
-            component: CreatePaymentContextual,
-            progressBarType: 'breadcrumbs',
-            alerts: undefined,
-          }
-        },
-      ),
+      reduce((ctx: PaymentFlowContextInterface): PaymentFlowContextInterface => {
+        return {
+          ...updateBreadcrumbs('createPayment', ctx),
+          component: CreatePaymentContextual,
+          alerts: undefined,
+        }
+      }),
     ),
     transition(
       componentEvents.CONTRACTOR_PAYMENT_VIEW,
@@ -137,7 +129,6 @@ export const paymentMachine = {
             ...updateBreadcrumbs('history', ctx),
             component: PaymentHistoryContextual,
             currentPaymentId: ev.payload.paymentId,
-            progressBarType: 'breadcrumbs',
             alerts: undefined,
           }
         },
@@ -146,21 +137,12 @@ export const paymentMachine = {
     transition(
       componentEvents.CONTRACTOR_PAYMENT_RFI_RESPOND,
       'informationRequests',
-      reduce(
-        (
-          ctx: PaymentFlowContextInterface,
-          ev: MachineEventType<
-            EventPayloads,
-            typeof componentEvents.CONTRACTOR_PAYMENT_RFI_RESPOND
-          >,
-        ): PaymentFlowContextInterface => {
-          return {
-            ...ctx,
-            component: InformationRequestsContextual,
-            progressBarType: null,
-          }
-        },
-      ),
+      reduce((ctx: PaymentFlowContextInterface): PaymentFlowContextInterface => {
+        return {
+          ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: undefined }),
+          component: InformationRequestsContextual,
+        }
+      }),
     ),
     transition(
       payrollWireEvents.PAYROLL_WIRE_FORM_DONE,
@@ -197,7 +179,6 @@ export const paymentMachine = {
             ...updateBreadcrumbs('paymentSummary', ctx),
             component: PaymentSummaryContextual,
             createdPaymentGroupId: ev.payload.uuid,
-            progressBarType: 'breadcrumbs',
             alerts: undefined,
           }
         },
@@ -209,20 +190,14 @@ export const paymentMachine = {
     transition(
       componentEvents.CONTRACTOR_PAYMENT_EXIT,
       'landing',
-      reduce(
-        (
-          ctx: PaymentFlowContextInterface,
-          ev: MachineEventType<EventPayloads, typeof componentEvents.CONTRACTOR_PAYMENT_EXIT>,
-        ): PaymentFlowContextInterface => {
-          return {
-            ...updateBreadcrumbs('landing', ctx),
-            progressBarType: null,
-            component: PaymentListContextual,
-            createdPaymentGroupId: undefined,
-            alerts: undefined,
-          }
-        },
-      ),
+      reduce((ctx: PaymentFlowContextInterface): PaymentFlowContextInterface => {
+        return {
+          ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: undefined }),
+          component: PaymentListContextual,
+          createdPaymentGroupId: undefined,
+          alerts: undefined,
+        }
+      }),
     ),
     transition(
       payrollWireEvents.PAYROLL_WIRE_FORM_DONE,
@@ -266,7 +241,6 @@ export const paymentMachine = {
             component: PaymentStatementContextual,
             currentContractorUuid: ev.payload.contractor.uuid,
             currentPaymentId: ev.payload.paymentGroupId,
-            progressBarType: 'breadcrumbs',
             alerts: undefined,
           }
         },
@@ -275,24 +249,18 @@ export const paymentMachine = {
     transition(
       componentEvents.CONTRACTOR_PAYMENT_CANCEL,
       'landing',
-      reduce(
-        (
-          ctx: PaymentFlowContextInterface,
-          ev: MachineEventType<EventPayloads, typeof componentEvents.CONTRACTOR_PAYMENT_CANCEL>,
-        ): PaymentFlowContextInterface => {
-          return {
-            ...updateBreadcrumbs('landing', ctx),
-            progressBarType: null,
-            component: PaymentListContextual,
-            alerts: [
-              {
-                type: 'success',
-                title: 'paymentCancelledSuccessfully',
-              },
-            ],
-          }
-        },
-      ),
+      reduce((ctx: PaymentFlowContextInterface): PaymentFlowContextInterface => {
+        return {
+          ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: undefined }),
+          component: PaymentListContextual,
+          alerts: [
+            {
+              type: 'success',
+              title: 'paymentCancelledSuccessfully',
+            },
+          ],
+        }
+      }),
     ),
     breadcrumbNavigateTransition('landing'),
   ),
@@ -304,40 +272,22 @@ export const paymentMachine = {
     transition(
       informationRequestEvents.INFORMATION_REQUEST_FORM_DONE,
       'landing',
-      reduce(
-        (
-          ctx: PaymentFlowContextInterface,
-          ev: MachineEventType<
-            EventPayloads,
-            typeof informationRequestEvents.INFORMATION_REQUEST_FORM_DONE
-          >,
-        ): PaymentFlowContextInterface => {
-          return {
-            ...updateBreadcrumbs('landing', ctx),
-            component: PaymentListContextual,
-            progressBarType: null,
-          }
-        },
-      ),
+      reduce((ctx: PaymentFlowContextInterface): PaymentFlowContextInterface => {
+        return {
+          ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: undefined }),
+          component: PaymentListContextual,
+        }
+      }),
     ),
     transition(
       informationRequestEvents.INFORMATION_REQUEST_FORM_CANCEL,
       'landing',
-      reduce(
-        (
-          ctx: PaymentFlowContextInterface,
-          ev: MachineEventType<
-            EventPayloads,
-            typeof informationRequestEvents.INFORMATION_REQUEST_FORM_CANCEL
-          >,
-        ): PaymentFlowContextInterface => {
-          return {
-            ...updateBreadcrumbs('landing', ctx),
-            component: PaymentListContextual,
-            progressBarType: null,
-          }
-        },
-      ),
+      reduce((ctx: PaymentFlowContextInterface): PaymentFlowContextInterface => {
+        return {
+          ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: undefined }),
+          component: PaymentListContextual,
+        }
+      }),
     ),
   ),
 }

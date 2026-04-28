@@ -9,14 +9,14 @@ function createTestMachine() {
   return createMachine(
     'landing',
     payrollFlowMachine,
-    (initialContext: PayrollFlowContextInterface) => ({
+    (initialContext: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
       ...initialContext,
       component: () => null,
       companyId: 'test-company',
-      progressBarType: null,
-      breadcrumbs: buildBreadcrumbs(payrollFlowBreadcrumbsNodes),
-      currentBreadcrumbId: 'landing',
-      progressBarCta: null,
+      header: {
+        type: 'breadcrumbs',
+        breadcrumbs: buildBreadcrumbs(payrollFlowBreadcrumbsNodes),
+      },
       withReimbursements: true,
     }),
   )
@@ -67,7 +67,12 @@ describe('payrollFlowMachine', () => {
       send(service, componentEvents.RUN_PAYROLL_BLOCKERS_VIEW_ALL)
 
       expect(service.machine.current).toBe('blockers')
-      expect(service.context.progressBarType).toBe('breadcrumbs')
+      expect(service.context.header?.type).toBe('breadcrumbs')
+      expect(
+        service.context.header?.type === 'breadcrumbs'
+          ? service.context.header.currentBreadcrumbId
+          : undefined,
+      ).toBe('blockers')
       expect(service.context.showPayrollCancelledAlert).toBe(false)
     })
 
@@ -103,7 +108,11 @@ describe('payrollFlowMachine', () => {
       expect(service.machine.current).toBe('landing')
       expect(service.context.payrollUuid).toBeUndefined()
       expect(service.context.executionInitialState).toBeUndefined()
-      expect(service.context.progressBarType).toBeNull()
+      expect(
+        service.context.header?.type === 'breadcrumbs'
+          ? service.context.header.currentBreadcrumbId
+          : undefined,
+      ).toBeUndefined()
     })
 
     it('transitions to landing with alert on RUN_PAYROLL_CANCELLED', () => {
@@ -128,7 +137,12 @@ describe('payrollFlowMachine', () => {
       expect(service.machine.current).toBe('submittedOverview')
       expect(service.context.payPeriod).toEqual(payPeriod)
       expect(service.context.executionInitialState).toBeUndefined()
-      expect(service.context.progressBarType).toBe('breadcrumbs')
+      expect(service.context.header?.type).toBe('breadcrumbs')
+      expect(
+        service.context.header?.type === 'breadcrumbs'
+          ? service.context.header.currentBreadcrumbId
+          : undefined,
+      ).toBe('submittedOverview')
     })
 
     it('transitions to landing on BREADCRUMB_NAVIGATE with landing key', () => {
@@ -170,7 +184,11 @@ describe('payrollFlowMachine', () => {
       send(service, componentEvents.RUN_PAYROLL_RECEIPT_GET)
 
       expect(service.machine.current).toBe('submittedReceipts')
-      expect(service.context.progressBarType).toBe('breadcrumbs')
+      expect(
+        service.context.header?.type === 'breadcrumbs'
+          ? service.context.header.currentBreadcrumbId
+          : undefined,
+      ).toBe('submittedReceipts')
     })
 
     it('transitions to landing with alert on RUN_PAYROLL_CANCELLED', () => {
@@ -236,7 +254,11 @@ describe('payrollFlowMachine', () => {
 
       expect(service.machine.current).toBe('offCycle')
       expect(service.context.showPayrollCancelledAlert).toBe(false)
-      expect(service.context.progressBarType).toBeNull()
+      expect(
+        service.context.header?.type === 'breadcrumbs'
+          ? service.context.header.currentBreadcrumbId
+          : undefined,
+      ).toBeUndefined()
     })
 
     it('transitions to landing on BREADCRUMB_NAVIGATE with landing key', () => {
@@ -292,7 +314,11 @@ describe('payrollFlowMachine', () => {
       expect(service.context.payPeriod).toEqual(payPeriod)
       expect(service.context.payrollUuid).toBe('payroll-789')
       expect(service.context.executionInitialState).toBeUndefined()
-      expect(service.context.progressBarType).toBe('breadcrumbs')
+      expect(
+        service.context.header?.type === 'breadcrumbs'
+          ? service.context.header.currentBreadcrumbId
+          : undefined,
+      ).toBe('submittedOverview')
     })
   })
 
@@ -320,7 +346,11 @@ describe('payrollFlowMachine', () => {
       expect(service.context.transitionEndDate).toBe('2026-03-15')
       expect(service.context.transitionPayScheduleUuid).toBe('ps-123')
       expect(service.context.showPayrollCancelledAlert).toBe(false)
-      expect(service.context.progressBarType).toBeNull()
+      expect(
+        service.context.header?.type === 'breadcrumbs'
+          ? service.context.header.currentBreadcrumbId
+          : undefined,
+      ).toBeUndefined()
     })
 
     it('transitions to landing on BREADCRUMB_NAVIGATE with landing key', () => {
@@ -376,7 +406,11 @@ describe('payrollFlowMachine', () => {
       expect(service.context.payPeriod).toEqual(payPeriod)
       expect(service.context.payrollUuid).toBe('payroll-789')
       expect(service.context.executionInitialState).toBeUndefined()
-      expect(service.context.progressBarType).toBe('breadcrumbs')
+      expect(
+        service.context.header?.type === 'breadcrumbs'
+          ? service.context.header.currentBreadcrumbId
+          : undefined,
+      ).toBe('submittedOverview')
     })
   })
 })
