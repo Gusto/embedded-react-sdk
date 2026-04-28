@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 import {
   formatDateShortWithWeekday,
   formatDateShortWithWeekdayAndYear,
@@ -194,9 +194,10 @@ describe('Date Formatting Helpers', () => {
   })
 
   describe('normalizeDateToLocal', () => {
-    it('should normalize UTC dates to local midnight', () => {
-      const utcDate = new Date('2023-12-25T00:00:00.000Z')
-      const normalized = normalizeDateToLocal(utcDate)
+    it('returns a Date at local midnight reflecting the input\u2019s local calendar date', () => {
+      // Constructed in local time so the assertion is timezone-deterministic.
+      const localDate = new Date(2023, 11, 25)
+      const normalized = normalizeDateToLocal(localDate)
 
       expect(normalized).toBeInstanceOf(Date)
       expect(normalized?.getFullYear()).toBe(2023)
@@ -206,20 +207,95 @@ describe('Date Formatting Helpers', () => {
       expect(normalized?.getMinutes()).toBe(0)
     })
 
-    it('should normalize dates with time to midnight', () => {
-      const dateWithTime = new Date('2024-03-15T15:30:45.000Z')
+    it('zeros the time component while preserving the local calendar date', () => {
+      const dateWithTime = new Date(2024, 2, 15, 15, 30, 45)
       const normalized = normalizeDateToLocal(dateWithTime)
 
       expect(normalized?.getFullYear()).toBe(2024)
       expect(normalized?.getMonth()).toBe(2)
       expect(normalized?.getDate()).toBe(15)
       expect(normalized?.getHours()).toBe(0)
+      expect(normalized?.getMinutes()).toBe(0)
+      expect(normalized?.getSeconds()).toBe(0)
     })
 
     it('should return null for invalid inputs', () => {
       expect(normalizeDateToLocal(null)).toBeNull()
       expect(normalizeDateToLocal(new Date('invalid'))).toBeNull()
       expect(normalizeDateToLocal(new Date(NaN))).toBeNull()
+    })
+  })
+
+  describe.each([
+    { tz: 'UTC', label: 'UTC' },
+    { tz: 'America/Los_Angeles', label: 'UTC-8 (PST)' },
+    { tz: 'Asia/Kolkata', label: 'UTC+5:30 (IST)' },
+    { tz: 'Pacific/Kiritimati', label: 'UTC+14' },
+  ])('timezone behavior in $label', ({ tz }) => {
+    const originalTZ = process.env.TZ
+
+    beforeAll(() => {
+      process.env.TZ = tz
+    })
+
+    afterAll(() => {
+      process.env.TZ = originalTZ
+    })
+
+    describe('formatDateToStringDate', () => {
+      it('returns the local calendar date for a local-midnight Date', () => {
+        // `new Date(year, month, day)` creates a Date at LOCAL midnight regardless
+        // of host timezone. The formatter must return the same calendar date the
+        // user constructed, not the date's UTC interpretation.
+        expect(formatDateToStringDate(new Date(2024, 0, 15))).toBe('2024-01-15')
+      })
+
+      it('returns the local calendar date for a Date with an explicit time component', () => {
+        // 11:30 PM local on Jan 15 — in UTC- timezones this maps to a UTC instant
+        // on Jan 16, so any UTC-based formatter would emit the wrong calendar date.
+        expect(formatDateToStringDate(new Date(2024, 0, 15, 23, 30))).toBe('2024-01-15')
+      })
+
+      it('returns the local calendar date for an early-morning Date', () => {
+        // 1:00 AM local on Jan 16 — in UTC+ timezones this maps to a UTC instant
+        // on Jan 15, so any UTC-based formatter would emit the wrong calendar date.
+        expect(formatDateToStringDate(new Date(2024, 0, 16, 1, 0))).toBe('2024-01-16')
+      })
+    })
+
+    describe('normalizeDateToLocal', () => {
+      it('returns the same calendar date for a local-midnight Date (no-op)', () => {
+        const localMidnight = new Date(2024, 0, 15)
+        const normalized = normalizeDateToLocal(localMidnight)
+        expect(normalized?.getFullYear()).toBe(2024)
+        expect(normalized?.getMonth()).toBe(0)
+        expect(normalized?.getDate()).toBe(15)
+        expect(normalized?.getHours()).toBe(0)
+      })
+
+      it('zeros the time component while preserving the local calendar date', () => {
+        const lateAfternoon = new Date(2024, 0, 15, 17, 30, 45)
+        const normalized = normalizeDateToLocal(lateAfternoon)
+        expect(normalized?.getFullYear()).toBe(2024)
+        expect(normalized?.getMonth()).toBe(0)
+        expect(normalized?.getDate()).toBe(15)
+        expect(normalized?.getHours()).toBe(0)
+        expect(normalized?.getMinutes()).toBe(0)
+        expect(normalized?.getSeconds()).toBe(0)
+      })
+    })
+
+    describe('round trip: normalizeDateToLocal -> formatDateToStringDate', () => {
+      it('preserves the user-picked calendar date', () => {
+        // This mirrors what DatePickerField does in string mode: the underlying
+        // adapter (react-aria) hands us a local-midnight Date for the day the
+        // user clicked, and we round-trip through these two helpers to produce
+        // the YYYY-MM-DD string stored in the form. The picked date must survive.
+        const pickedDate = new Date(2024, 3, 16) // April 16 local midnight
+        const normalized = normalizeDateToLocal(pickedDate)
+        const stringForm = normalized ? formatDateToStringDate(normalized) : null
+        expect(stringForm).toBe('2024-04-16')
+      })
     })
   })
 

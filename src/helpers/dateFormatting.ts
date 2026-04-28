@@ -168,11 +168,23 @@ export const formatPayPeriodRange = (
   return `${startFormatted}–${endFormatted}`
 }
 
+/**
+ * Formats a Date as a `YYYY-MM-DD` string using the date's *local* calendar
+ * date (year/month/day), so the output reflects the calendar date the user
+ * actually picked or stored regardless of the runtime timezone.
+ *
+ * Reading via `toISOString()` would shift the date by a day for users in
+ * UTC+ timezones, where local midnight falls before UTC midnight on the
+ * previous calendar day.
+ */
 export const formatDateToStringDate = (date: Date): string | null => {
   if (isNaN(date.getTime())) {
     return null
   }
-  return date.toISOString().split('T')[0] || null
+  const year = String(date.getFullYear()).padStart(4, '0')
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
 }
 
 /**
@@ -197,28 +209,19 @@ export const normalizeToISOString = (value?: string | null): string => {
 }
 
 /**
- * Normalizes Date to local midnight, handling timezone issues from any adapter.
+ * Returns a new Date at local midnight whose calendar year/month/day matches
+ * the input's *local* interpretation. Equivalent to zeroing the time component
+ * while preserving the local calendar date.
+ *
+ * Reading via `toISOString()` would shift the result by a day for users in
+ * UTC+ timezones whose local midnight lies on the previous UTC calendar day.
  */
 export const normalizeDateToLocal = (date: Date | null): Date | null => {
   if (!date || isNaN(date.getTime())) {
     return null
   }
 
-  const isoString = date.toISOString()
-  const [datePart] = isoString.split('T')
-  if (!datePart) return null
-
-  const parts = datePart.split('-')
-  if (parts.length !== 3) return null
-  const numbers = parts.map(Number)
-  const year = numbers[0]!
-  const month = numbers[1]!
-  const day = numbers[2]!
-  if (isNaN(year) || isNaN(month) || isNaN(day) || month < 1 || month > 12 || day < 1 || day > 31) {
-    return null
-  }
-
-  return new Date(year, month - 1, day)
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate())
 }
 
 export const MS_PER_HOUR = 1000 * 60 * 60
