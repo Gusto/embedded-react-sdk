@@ -182,20 +182,12 @@ function onboardingContractorActions(
     status === ContractorOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE ||
     status === ContractorOnboardingStatus.SELF_ONBOARDING_NOT_INVITED
   ) {
-    actions.push(
-      {
-        label: 'Edit',
-        onClick: () => {
-          callbacks.onEdit(contractor)
-        },
+    actions.push({
+      label: 'Remove',
+      onClick: () => {
+        callbacks.onRemove(contractor)
       },
-      {
-        label: 'Remove',
-        onClick: () => {
-          callbacks.onRemove(contractor)
-        },
-      },
-    )
+    })
   } else if (
     status === ContractorOnboardingStatus.SELF_ONBOARDING_INVITED ||
     status === ContractorOnboardingStatus.SELF_ONBOARDING_STARTED
@@ -218,29 +210,67 @@ function onboardingContractorActions(
     status === ContractorOnboardingStatus.ADMIN_ONBOARDING_REVIEW ||
     status === ContractorOnboardingStatus.SELF_ONBOARDING_REVIEW
   ) {
-    actions.push(
-      {
-        label: 'Edit',
-        onClick: () => {
-          callbacks.onEdit(contractor)
-        },
+    actions.push({
+      label: 'Remove',
+      onClick: () => {
+        callbacks.onRemove(contractor)
       },
-      {
-        label: 'Mark completed',
-        onClick: () => {
-          callbacks.onCompleteOnboarding(contractor)
-        },
+    })
+  } else if (status === ContractorOnboardingStatus.ONBOARDING_COMPLETED) {
+    actions.push({
+      label: 'Remove',
+      onClick: () => {
+        callbacks.onRemove(contractor)
       },
-      {
-        label: 'Remove',
-        onClick: () => {
-          callbacks.onRemove(contractor)
-        },
-      },
-    )
+    })
   }
 
   return actions
+}
+
+function OnboardingActionButton({
+  contractor,
+  onEdit,
+}: {
+  contractor: Contractor
+  onEdit: (contractor: Contractor) => void
+}) {
+  const Components = useComponentContext()
+  const status = contractor.onboardingStatus
+
+  if (
+    status === ContractorOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE ||
+    status === ContractorOnboardingStatus.SELF_ONBOARDING_NOT_INVITED
+  ) {
+    return (
+      <Components.Button
+        variant="secondary"
+        onClick={() => {
+          onEdit(contractor)
+        }}
+      >
+        Continue
+      </Components.Button>
+    )
+  }
+
+  if (
+    status === ContractorOnboardingStatus.ADMIN_ONBOARDING_REVIEW ||
+    status === ContractorOnboardingStatus.SELF_ONBOARDING_REVIEW
+  ) {
+    return (
+      <Components.Button
+        variant="secondary"
+        onClick={() => {
+          onEdit(contractor)
+        }}
+      >
+        Review
+      </Components.Button>
+    )
+  }
+
+  return null
 }
 
 function OnboardingContractorsTable({
@@ -258,6 +288,7 @@ function OnboardingContractorsTable({
   onCancelSelfOnboarding: (contractor: Contractor) => void
   onCompleteOnboarding: (contractor: Contractor) => void
 }) {
+  const Components = useComponentContext()
   return (
     <SkeletonDataView
       label="Onboarding contractors"
@@ -277,24 +308,35 @@ function OnboardingContractorsTable({
         {
           title: 'Onboarding status',
           render: contractor => (
-            <ContractorOnboardingStatusBadge
-              onboarded={contractor.onboarded}
-              onboardingStatus={contractor.onboardingStatus}
-            />
+            <Flex alignItems="center" gap={8}>
+              <ContractorOnboardingStatusBadge
+                onboarded={contractor.onboarded}
+                onboardingStatus={contractor.onboardingStatus}
+              />
+              {contractor.onboardingStatus === ContractorOnboardingStatus.ONBOARDING_COMPLETED &&
+                contractor.upcomingEmployment?.startDate && (
+                  <Components.Badge status="info">
+                    Starts {formatDate(contractor.upcomingEmployment.startDate)}
+                  </Components.Badge>
+                )}
+            </Flex>
           ),
           skeletonWidth: 90,
         },
       ]}
       itemMenu={contractor => (
-        <HamburgerMenu
-          items={onboardingContractorActions(contractor, {
-            onEdit,
-            onRemove,
-            onCancelSelfOnboarding,
-            onCompleteOnboarding,
-          })}
-          triggerLabel="Actions"
-        />
+        <Flex alignItems="center" justifyContent="flex-end" gap={4}>
+          <OnboardingActionButton contractor={contractor} onEdit={onEdit} />
+          <HamburgerMenu
+            items={onboardingContractorActions(contractor, {
+              onEdit,
+              onRemove,
+              onCancelSelfOnboarding,
+              onCompleteOnboarding,
+            })}
+            triggerLabel="Actions"
+          />
+        </Flex>
       )}
       emptyState={() => <EmptyData title="No contractors currently onboarding." />}
     />
@@ -592,7 +634,15 @@ function ContractorListContent() {
             contractors={contractors}
             isFetching={isPending}
             onEdit={contractor => {
-              void navigate(`add/${contractor.uuid}`)
+              const status = contractor.onboardingStatus
+              if (
+                status === ContractorOnboardingStatus.ADMIN_ONBOARDING_REVIEW ||
+                status === ContractorOnboardingStatus.SELF_ONBOARDING_REVIEW
+              ) {
+                void navigate(contractor.uuid)
+              } else {
+                void navigate(`add/${contractor.uuid}`)
+              }
             }}
             onRemove={contractor => {
               setOnboardingAction({ contractor, type: 'remove' })
@@ -702,7 +752,9 @@ function ContractorListContent() {
           void handleConfirmOnboardingAction()
         }}
         isPrimaryActionLoading={isOnboardingActionPending}
-        primaryActionLabel={onboardingAction?.type === 'remove' ? 'Yes, remove' : 'Yes, cancel'}
+        primaryActionLabel={
+          onboardingAction?.type === 'remove' ? 'Yes, remove' : 'Cancel self-onboarding'
+        }
         closeActionLabel="No, go back"
         title={onboardingAction?.type === 'remove' ? 'Remove contractor' : 'Cancel self-onboarding'}
       >
@@ -711,8 +763,8 @@ function ContractorListContent() {
             <>Remove {contractorName(onboardingAction.contractor)}? This action cannot be undone.</>
           ) : onboardingAction ? (
             <>
-              Cancel self-onboarding for {contractorName(onboardingAction.contractor)}? They will be
-              reverted to admin onboarding.
+              Self-onboarding for {contractorName(onboardingAction.contractor)} will be cancelled.
+              You will need to fill out the contractor&apos;s information yourself.
             </>
           ) : null}
         </Components.Text>

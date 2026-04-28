@@ -1,4 +1,4 @@
-import { Suspense, useState } from 'react'
+import { Suspense, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import { useContractorsGetSuspense } from '@gusto/embedded-api/react-query/contractorsGet'
@@ -13,6 +13,7 @@ import { useContractorDocumentsGetAllSuspense } from '@gusto/embedded-api/react-
 import { useContractorsGetAddressSuspense } from '@gusto/embedded-api/react-query/contractorsGetAddress'
 import { useContractorsUpdateAddressMutation } from '@gusto/embedded-api/react-query/contractorsUpdateAddress'
 import { useContractorsUpdateMutation } from '@gusto/embedded-api/react-query/contractorsUpdate'
+import { useContractorsUpdateOnboardingStatusMutation } from '@gusto/embedded-api/react-query/contractorsUpdateOnboardingStatus'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
 import { useQueryClient } from '@tanstack/react-query'
 import { contractorName } from '../components/contractorName'
@@ -30,7 +31,12 @@ import { Flex } from '@/components/Common'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { BaseComponent } from '@/components/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { componentEvents, type EventType } from '@/shared/constants'
+import {
+  componentEvents,
+  ContractorOnboardingStatus,
+  STATES_ABBR,
+  type EventType,
+} from '@/shared/constants'
 import CaretLeftIcon from '@/assets/icons/caret-left.svg?react'
 
 export interface ContractorProfileContextInterface extends FlowContextInterface {
@@ -108,9 +114,22 @@ export function ProfileViewContextual() {
 function ProfileViewContent({ contractor }: { contractor: Contractor }) {
   const { onEvent, successMessage, selectedTab } = useFlow<ContractorProfileContextInterface>()
   const Components = useComponentContext()
+  const navigate = useNavigate()
   const [localTab, setLocalTab] = useState(selectedTab)
   const [isDismissed, setIsDismissed] = useState(false)
-  const isEditable = contractor.isActive
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const isReviewState =
+    isSubmitting ||
+    contractor.onboardingStatus === ContractorOnboardingStatus.ADMIN_ONBOARDING_REVIEW ||
+    contractor.onboardingStatus === ContractorOnboardingStatus.SELF_ONBOARDING_REVIEW
+  const isEditable = contractor.isActive || isReviewState
+
+  const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false)
+  const [fileNewHireReport, setFileNewHireReport] = useState('no')
+  const [workState, setWorkState] = useState('')
+  const [stateError, setStateError] = useState(false)
+  const dialogRef = useRef<HTMLDivElement>(null)
 
   const { data: bankAccountsData } = useContractorPaymentMethodGetBankAccountsSuspense({
     contractorUuid: contractor.uuid,
@@ -135,6 +154,12 @@ function ProfileViewContent({ contractor }: { contractor: Contractor }) {
   const { mutateAsync: updatePaymentMethod, isPending: isPaymentMethodPending } =
     useContractorPaymentMethodUpdateMutation()
 
+  const { mutateAsync: updateContractor, isPending: isUpdatePending } =
+    useContractorsUpdateMutation()
+  const { mutateAsync: updateOnboardingStatus, isPending: isStatusPending } =
+    useContractorsUpdateOnboardingStatusMutation()
+  const isSubmitPending = isUpdatePending || isStatusPending
+
   const contractorWithAddress = {
     ...contractor,
     address: address ?? contractor.address,
@@ -153,6 +178,72 @@ function ProfileViewContent({ contractor }: { contractor: Contractor }) {
     onEvent('contractor/paymentMethod/removed' as EventType)
   }
 
+  const handleCloseSubmitModal = () => {
+    setIsSubmitModalOpen(false)
+    setFileNewHireReport('no')
+    setWorkState('')
+    setStateError(false)
+  }
+
+  const [submitError, setSubmitError] = useState('')
+
+  const handleSubmitContractor = async () => {
+    if (fileNewHireReport === 'yes' && !workState) {
+      setStateError(true)
+      return
+    }
+
+    setSubmitError('')
+    setIsSubmitting(true)
+
+    try {
+      await updateContractor({
+        request: {
+          contractorUuid: contractor.uuid,
+          contractorUpdateRequestBody: {
+            version: contractor.version!,
+            fileNewHireReport: fileNewHireReport === 'yes',
+            workState: fileNewHireReport === 'yes' ? workState : null,
+          },
+        },
+      })
+
+      await updateOnboardingStatus({
+        request: {
+          contractorUuid: contractor.uuid,
+          requestBody: { onboardingStatus: 'onboarding_completed' },
+        },
+      })
+
+      void navigate(`..?success=${encodeURIComponent('Contractor submitted successfully')}`, {
+        replace: true,
+      })
+    } catch (error) {
+      setIsSubmitting(false)
+      setSubmitError(
+        error instanceof Error ? error.message : 'Something went wrong. Please try again.',
+      )
+    }
+  }
+
+  const editCallbacks = {
+    onEditDetails: () => {
+      onEvent('contractor/details/edit' as EventType)
+    },
+    onEditAddress: () => {
+      onEvent('contractor/address/edit' as EventType)
+    },
+    onEditCompensation: () => {
+      onEvent('contractor/compensation/edit' as EventType)
+    },
+    onAddPaymentMethod: () => {
+      onEvent('contractor/paymentMethod/add' as EventType)
+    },
+    onEditPaymentMethod: () => {
+      onEvent('contractor/paymentMethod/edit' as EventType)
+    },
+  }
+
   const tabs = [
     {
       id: 'basic-details',
@@ -161,23 +252,11 @@ function ProfileViewContent({ contractor }: { contractor: Contractor }) {
         <Flex flexDirection="column" gap={24}>
           <ContractorDetails
             contractor={contractor}
-            onEdit={
-              isEditable
-                ? () => {
-                    onEvent('contractor/details/edit' as EventType)
-                  }
-                : undefined
-            }
+            onEdit={isEditable ? editCallbacks.onEditDetails : undefined}
           />
           <ContractorAddress
             contractor={contractorWithAddress}
-            onEdit={
-              isEditable
-                ? () => {
-                    onEvent('contractor/address/edit' as EventType)
-                  }
-                : undefined
-            }
+            onEdit={isEditable ? editCallbacks.onEditAddress : undefined}
           />
         </Flex>
       ),
@@ -190,32 +269,14 @@ function ProfileViewContent({ contractor }: { contractor: Contractor }) {
           <ContractorPaymentMethod
             paymentMethodType={paymentMethod?.type ?? 'Check'}
             bankAccounts={bankAccounts}
-            onAddPaymentMethod={
-              isEditable
-                ? () => {
-                    onEvent('contractor/paymentMethod/add' as EventType)
-                  }
-                : undefined
-            }
-            onEditPaymentMethod={
-              isEditable
-                ? () => {
-                    onEvent('contractor/paymentMethod/edit' as EventType)
-                  }
-                : undefined
-            }
+            onAddPaymentMethod={isEditable ? editCallbacks.onAddPaymentMethod : undefined}
+            onEditPaymentMethod={isEditable ? editCallbacks.onEditPaymentMethod : undefined}
             onRemoveAccount={isEditable ? handleRemoveAccount : undefined}
             isRemovingAccount={isPaymentMethodPending}
           />
           <ContractorPay
             contractor={contractor}
-            onEdit={
-              isEditable
-                ? () => {
-                    onEvent('contractor/compensation/edit' as EventType)
-                  }
-                : undefined
-            }
+            onEdit={isEditable ? editCallbacks.onEditCompensation : undefined}
           />
         </Flex>
       ),
@@ -226,6 +287,112 @@ function ProfileViewContent({ contractor }: { contractor: Contractor }) {
       content: <ContractorDocuments documents={documents} />,
     },
   ]
+
+  if (isReviewState) {
+    return (
+      <Flex flexDirection="column" gap={24}>
+        <Flex flexDirection="column" gap={4}>
+          <Components.Alert
+            label="This contractor has completed onboarding and is awaiting review. Please verify their information and submit when ready."
+            status="warning"
+            disableScrollIntoView
+          />
+          {successMessage && !isDismissed && (
+            <Components.Alert
+              disableScrollIntoView
+              label={successMessage}
+              status="success"
+              onDismiss={() => {
+                setIsDismissed(true)
+              }}
+            />
+          )}
+        </Flex>
+        <Flex justifyContent="space-between" alignItems="center">
+          <Flex flexDirection="column" gap={4}>
+            <Components.Heading as="h1" styledAs="h2">
+              {contractorName(contractor)}
+            </Components.Heading>
+            <Components.Text variant="supporting">Contractor</Components.Text>
+          </Flex>
+          <Components.Button
+            variant="primary"
+            onClick={() => {
+              setIsSubmitModalOpen(true)
+            }}
+          >
+            Submit contractor
+          </Components.Button>
+        </Flex>
+        <ContractorDetails contractor={contractor} onEdit={editCallbacks.onEditDetails} />
+        <ContractorAddress
+          contractor={contractorWithAddress}
+          onEdit={editCallbacks.onEditAddress}
+        />
+        <ContractorPay contractor={contractor} onEdit={editCallbacks.onEditCompensation} />
+        <ContractorPaymentMethod
+          paymentMethodType={paymentMethod?.type ?? 'Check'}
+          bankAccounts={bankAccounts}
+          onAddPaymentMethod={editCallbacks.onAddPaymentMethod}
+          onEditPaymentMethod={editCallbacks.onEditPaymentMethod}
+          onRemoveAccount={handleRemoveAccount}
+          isRemovingAccount={isPaymentMethodPending}
+        />
+        <Components.Dialog
+          isOpen={isSubmitModalOpen}
+          onClose={handleCloseSubmitModal}
+          onPrimaryActionClick={() => {
+            void handleSubmitContractor()
+          }}
+          isPrimaryActionLoading={isSubmitPending}
+          primaryActionLabel="Submit contractor"
+          closeActionLabel="Cancel"
+          title="File new hire report"
+        >
+          <div ref={dialogRef}>
+            <Flex flexDirection="column" gap={16}>
+              <Components.Text>
+                Would you like to file a new hire report with the state for this contractor?
+              </Components.Text>
+              <Components.RadioGroup
+                label="File new hire report"
+                shouldVisuallyHideLabel
+                value={fileNewHireReport}
+                onChange={value => {
+                  setFileNewHireReport(value)
+                  if (value === 'no') {
+                    setWorkState('')
+                    setStateError(false)
+                  }
+                }}
+                options={[
+                  { value: 'no', label: 'No, I have already filed a new hire report' },
+                  { value: 'yes', label: 'Yes, file a new hire report' },
+                ]}
+              />
+              {fileNewHireReport === 'yes' && (
+                <Components.Select
+                  label="Work state"
+                  value={workState || null}
+                  onChange={value => {
+                    setWorkState(value)
+                    setStateError(false)
+                  }}
+                  options={STATES_ABBR.map(s => ({ label: s, value: s }))}
+                  isInvalid={stateError}
+                  errorMessage={stateError ? 'Please select a state' : undefined}
+                  placeholder=""
+                  isRequired
+                  portalContainer={dialogRef.current ?? undefined}
+                />
+              )}
+              {submitError && <Components.Alert status="error" label={submitError} />}
+            </Flex>
+          </div>
+        </Components.Dialog>
+      </Flex>
+    )
+  }
 
   return (
     <Flex flexDirection="column" gap={24}>
@@ -244,7 +411,9 @@ function ProfileViewContent({ contractor }: { contractor: Contractor }) {
           <Components.Heading as="h1" styledAs="h2">
             {contractorName(contractor)}
           </Components.Heading>
-          {!isEditable && <Components.Badge status="error">Dismissed</Components.Badge>}
+          {!contractor.isActive && contractor.dismissalDate && (
+            <Components.Badge status="error">Dismissed</Components.Badge>
+          )}
         </Flex>
         <Components.Text variant="supporting">Contractor</Components.Text>
       </Flex>
