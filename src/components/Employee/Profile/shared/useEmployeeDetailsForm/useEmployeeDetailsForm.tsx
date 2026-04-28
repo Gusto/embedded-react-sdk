@@ -23,6 +23,7 @@ import {
   SsnField,
   SelfOnboardingField,
 } from './fields'
+import { normalizeToISOString } from '@/helpers/dateFormatting'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
@@ -130,7 +131,7 @@ export function useEmployeeDetailsForm({
     middleInitial: employee?.middleInitial ?? partnerDefaults?.middleInitial ?? '',
     lastName: employee?.lastName ?? partnerDefaults?.lastName ?? '',
     email: employee?.email ?? partnerDefaults?.email ?? '',
-    dateOfBirth: employee?.dateOfBirth ?? partnerDefaults?.dateOfBirth ?? '',
+    dateOfBirth: employee?.dateOfBirth ?? normalizeToISOString(partnerDefaults?.dateOfBirth),
     ssn: partnerDefaults?.ssn ?? '',
     selfOnboarding: partnerDefaults?.selfOnboarding ?? isCurrentlySelfOnboarding(employee),
   }
