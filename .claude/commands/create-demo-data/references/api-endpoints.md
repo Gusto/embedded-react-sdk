@@ -100,23 +100,67 @@ POST /v1/employees/{employee_id}/bank_accounts
 POST /v1/companies/{company_uuid}/contractors
 ```
 
-| Field                | Type    | Required | Notes                                                     |
-| -------------------- | ------- | -------- | --------------------------------------------------------- |
-| type                 | string  | yes      | "Individual" or "Business"                                |
-| wage_type            | string  | yes      | "Hourly" or "Fixed"                                       |
-| start_date           | string  | yes      | Format: YYYY-MM-DD                                        |
-| first_name           | string  | yes\*    | Required for Individual, ignored for Business             |
-| last_name            | string  | yes\*    | Required for Individual, ignored for Business             |
-| middle_initial       | string  | no       | Individual only                                           |
-| email                | string  | no       | Required if self_onboarding is true                       |
-| hourly_rate          | string  | no       | Required if wage_type is "Hourly" (e.g., "50.00")         |
-| self_onboarding      | boolean | no       | Recommended true so contractors get Gusto accounts        |
-| file_new_hire_report | boolean | no       | Individual only                                           |
-| work_state           | string  | no       | Two-letter code. Required if file_new_hire_report is true |
-| ssn                  | string  | no       | Individual only, for 1099 filing                          |
-| business_name        | string  | yes\*    | Required for Business type                                |
-| ein                  | string  | no       | Business type only                                        |
-| is_active            | boolean | no       |                                                           |
+| Field                | Type    | Required | Notes                                                                                     |
+| -------------------- | ------- | -------- | ----------------------------------------------------------------------------------------- |
+| type                 | string  | yes      | "Individual" or "Business"                                                                |
+| wage_type            | string  | yes      | "Hourly" or "Fixed"                                                                       |
+| start_date           | string  | yes      | Format: YYYY-MM-DD                                                                        |
+| first_name           | string  | yes\*    | Required for Individual, ignored for Business                                             |
+| last_name            | string  | yes\*    | Required for Individual, ignored for Business                                             |
+| middle_initial       | string  | no       | Individual only                                                                           |
+| email                | string  | no       | Required if self_onboarding is true                                                       |
+| hourly_rate          | string  | no       | Required if wage_type is "Hourly" (e.g., "50.00")                                         |
+| self_onboarding      | boolean | no       | Recommended true so contractors get Gusto accounts                                        |
+| file_new_hire_report | boolean | no       | Individual only                                                                           |
+| work_state           | string  | no       | Two-letter code. Required if file_new_hire_report is true                                 |
+| ssn                  | string  | no       | Individual only, for 1099 filing                                                          |
+| business_name        | string  | yes\*    | Required for Business type                                                                |
+| ein                  | string  | no       | Business type only. **Format: 9 digits, no hyphen** (e.g., `123456789`, NOT `12-3456789`) |
+| is_active            | boolean | no       |                                                                                           |
+
+### Update Contractor Address
+
+```
+PUT /v1/contractors/{contractor_uuid}/address
+```
+
+| Field    | Type   | Required | Notes                 |
+| -------- | ------ | -------- | --------------------- |
+| street_1 | string | yes      |                       |
+| street_2 | string | no       |                       |
+| city     | string | yes      |                       |
+| state    | string | yes      | Two-letter state code |
+| zip      | string | yes      |                       |
+
+### Update Contractor Onboarding Status
+
+```
+PUT /v1/contractors/{contractor_uuid}/onboarding_status
+```
+
+| Field             | Type   | Required | Notes                 |
+| ----------------- | ------ | -------- | --------------------- |
+| onboarding_status | string | yes      | See transitions below |
+
+**Valid transitions:**
+
+| Action                     | Current status                                                 | New status                    |
+| :------------------------- | :------------------------------------------------------------- | :---------------------------- |
+| Mark as self-onboarding    | `admin_onboarding_incomplete`                                  | `self_onboarding_not_invited` |
+| Invite to self-onboard     | `admin_onboarding_incomplete` or `self_onboarding_not_invited` | `self_onboarding_invited`     |
+| Cancel self-onboarding     | `self_onboarding_invited` or `self_onboarding_not_invited`     | `admin_onboarding_incomplete` |
+| Review self-onboarded info | `self_onboarding_started`                                      | `self_onboarding_review`      |
+| Finish onboarding          | `admin_onboarding_review` or `self_onboarding_review`          | `onboarding_completed`        |
+
+**Note:** Inviting a contractor with populated data may auto-advance to `self_onboarding_started`. All required onboarding steps (basic_details, add_address, compensation_details) must be completed before transitioning to `self_onboarding_review`.
+
+### Get Contractor Onboarding Status
+
+```
+GET /v1/contractors/{contractor_uuid}/onboarding_status
+```
+
+Returns the current `onboarding_status` and `onboarding_steps` array showing which steps are completed.
 
 ### Terminate Contractor
 

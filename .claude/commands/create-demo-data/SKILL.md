@@ -27,16 +27,51 @@ Construct the base URL for all API calls:
 
 ## Step 2 — Understand what the user wants
 
-Ask the user what entity they want to create. Supported entity types:
+Ask the user what entity they want to create. Present only the top-level entity options initially:
 
-| Entity             | Clarifying questions to ask                                    |
-| ------------------ | -------------------------------------------------------------- |
-| Employee           | Self-onboarding or admin-entered? Any specific name/email?     |
-| Contractor         | Individual or Business? Hourly or Fixed wage? Self-onboarding? |
-| Time off policy    | Vacation or sick? What accrual method?                         |
-| Location           | What address?                                                  |
-| Pay schedule       | What frequency?                                                |
-| Contractor payment | Which contractor? Amount?                                      |
+- Employee
+- Contractor
+- Time off policy
+- Location
+- Pay schedule
+- Contractor payment
+
+Tell the user: if they want more than one, just say so.
+
+### Narrowing down — progressive clarification
+
+Only ask follow-up questions when the user's request doesn't already specify what you need. If the user gives a description that maps directly to a known scenario (see "Handling common scenarios" below), skip clarification and execute immediately.
+
+**If the user says "employee"** → ask what onboarding state:
+
+| State                       | Description                                         |
+| --------------------------- | --------------------------------------------------- |
+| Admin onboarding incomplete | Brand new, admin fills in everything                |
+| Self-onboarding invited     | Received invite, hasn't started yet                 |
+| Partially onboarded         | Some steps done (e.g., address but no bank account) |
+| Fully onboarded             | All steps complete, active employee                 |
+
+**If the user says "contractor"** → ask what onboarding state, and whether Individual or Business:
+
+| State                            | Description                                    |
+| -------------------------------- | ---------------------------------------------- |
+| Admin onboarding incomplete      | Brand new, admin fills in everything           |
+| Self-onboarding invited          | Received invite, hasn't started                |
+| Self-onboarding ready for review | Completed self-onboarding, admin review needed |
+| Fully onboarded                  | All steps complete, active contractor          |
+
+**If the user says "a self-onboarding contractor"** → they've already narrowed the path. Ask only the remaining ambiguity: Invited? Ready for review? Individual or Business?
+
+**If the user says "a contractor that has completed self-onboarding ready for review"** → that maps exactly to a known state. Execute it.
+
+**Other entities:**
+
+| Entity             | Clarifying questions to ask            |
+| ------------------ | -------------------------------------- |
+| Time off policy    | Vacation or sick? What accrual method? |
+| Location           | What address?                          |
+| Pay schedule       | What frequency?                        |
+| Contractor payment | Which contractor? Amount?              |
 
 For each entity type, ask only the questions that meaningfully change the outcome. Use sensible defaults for everything else:
 
@@ -48,19 +83,13 @@ For each entity type, ask only the questions that meaningfully change the outcom
 
 If the user gives a vague request like "add an employee", create one with reasonable defaults and report what was created. Don't over-ask.
 
-## Step 3 — Verify connectivity
-
-Before the first API call, verify the token is still valid:
-
-```bash
-curl -s -o /dev/null -w '%{http_code}' '{base_url}/v1/companies/{company_id}/employees'
-```
-
-If this returns anything other than 200, tell the user their token has likely expired and suggest running `npm run sdk-app:setup` to re-provision.
-
-## Step 4 — Make the API call
+## Step 3 — Verify connectivity and make API calls (single Bash call)
 
 Read `references/api-endpoints.md` for the exact endpoint, method, and request body schema for the entity type.
+
+### IMPORTANT: Chain everything into one Bash call
+
+**All API work for a single entity — connectivity check, creation, and any follow-up calls — must be chained into a single Bash command using `&&`.** This minimizes permission prompts to just 1 per entity.
 
 Use curl with:
 
@@ -68,9 +97,13 @@ Use curl with:
 - The constructed base URL from Step 1
 - Snake_case field names in the JSON body
 
-Example:
+When follow-up calls need the UUID from the creation response, extract it inline with `python3 -c` or `jq`.
+
+### Example — simple entity (no follow-up)
 
 ```bash
+STATUS=$(curl -s -o /dev/null -w '%{http_code}' '{base_url}/v1/companies/{company_id}/employees') && \
+if [ "$STATUS" != "200" ]; then echo "Token expired (got $STATUS)"; exit 1; fi && \
 curl -s -X POST '{base_url}/v1/companies/{company_id}/employees' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -81,6 +114,32 @@ curl -s -X POST '{base_url}/v1/companies/{company_id}/employees' \
   }'
 ```
 
+### Example — entity with follow-up calls
+
+```bash
+STATUS=$(curl -s -o /dev/null -w '%{http_code}' '{base_url}/v1/companies/{company_id}/contractors') && \
+if [ "$STATUS" != "200" ]; then echo "Token expired (got $STATUS)"; exit 1; fi && \
+RESULT=$(curl -s -X POST '{base_url}/v1/companies/{company_id}/contractors' \
+  -H 'Content-Type: application/json' \
+  -d '{...}') && \
+echo "Create response: $RESULT" && \
+UUID=$(echo "$RESULT" | python3 -c "import sys,json; print(json.load(sys.stdin)['uuid'])") && \
+echo "Created contractor: $UUID" && \
+curl -s -X PUT "{base_url}/v1/contractors/$UUID/address" \
+  -H 'Content-Type: application/json' \
+  -d '{...}' && \
+curl -s -X POST "{base_url}/v1/contractors/$UUID/bank_accounts" \
+  -H 'Content-Type: application/json' \
+  -d '{...}' && \
+curl -s -X PUT "{base_url}/v1/contractors/$UUID/onboarding_status" \
+  -H 'Content-Type: application/json' \
+  -d '{"onboarding_status": "onboarding_completed"}'
+```
+
+**Goal: 1 permission prompt per entity, regardless of how many API calls are needed.**
+
+### Error handling
+
 Capture the full response. On success (2xx), extract the `uuid` from the response.
 
 On failure (4xx), read the error response body and:
@@ -89,7 +148,7 @@ On failure (4xx), read the error response body and:
 - If 401/403: token is likely expired, suggest re-provisioning
 - If 404: endpoint may not be available in demo, explain this
 
-## Step 5 — Report results
+## Step 4 — Report results
 
 After a successful creation, report:
 
@@ -97,7 +156,7 @@ After a successful creation, report:
 - Any useful details from the response (status, onboarding state)
 - If the user might want to do follow-up operations (e.g., "Want me to also add a home address and bank account for this employee?")
 
-## Step 6 — Batch creation
+## Step 5 — Batch creation
 
 If the user asks for multiple records (e.g., "create 3 employees"), create them sequentially and report a summary table at the end.
 
