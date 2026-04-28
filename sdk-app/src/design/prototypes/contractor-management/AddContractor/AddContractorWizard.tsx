@@ -11,7 +11,7 @@ import { componentEvents } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Flex } from '@/components/Common'
 
-type WizardStep = 'profile' | 'address' | 'paymentMethod' | 'newHireReport' | 'submit'
+export type WizardStep = 'profile' | 'address' | 'paymentMethod' | 'newHireReport' | 'submit'
 
 const STEP_CONFIG = {
   full: {
@@ -44,17 +44,19 @@ function StepSkeleton() {
 interface AddContractorWizardProps {
   companyId: string
   contractorId?: string
+  initialStep?: WizardStep
 }
 
 export function AddContractorWizard({
   companyId,
   contractorId: initialContractorId,
+  initialStep = 'profile',
 }: AddContractorWizardProps) {
   const Components = useComponentContext()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
 
-  const [currentStep, setCurrentStep] = useState<WizardStep>('profile')
+  const [currentStep, setCurrentStep] = useState<WizardStep>(initialStep)
   const [contractorId, setContractorId] = useState<string | null>(initialContractorId ?? null)
   const [selfOnboarding, setSelfOnboarding] = useState(false)
 

@@ -220,7 +220,13 @@ function onboardingContractorActions(
   ) {
     actions.push(
       {
-        label: 'Complete onboarding',
+        label: 'Edit',
+        onClick: () => {
+          callbacks.onEdit(contractor)
+        },
+      },
+      {
+        label: 'Mark completed',
         onClick: () => {
           callbacks.onCompleteOnboarding(contractor)
         },

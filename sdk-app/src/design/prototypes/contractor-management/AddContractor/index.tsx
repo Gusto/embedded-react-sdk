@@ -1,9 +1,11 @@
-import { Suspense } from 'react'
+import { Suspense, useState } from 'react'
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom'
 import { useQueryClient } from '@tanstack/react-query'
 import { Skeleton } from '../components/Skeleton'
 import type { EntityIds } from '../../../../useEntities'
 import { AddContractorWizard } from './AddContractorWizard'
+import type { WizardStep } from './AddContractorWizard'
+import { ContractorOnboardingOverview } from './ContractorOnboardingOverview'
 import { Flex } from '@/components/Common'
 import { BaseComponent } from '@/components/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -24,7 +26,25 @@ function WizardSkeleton() {
 function AddContractorContent() {
   const { entities } = useOutletContext<{ entities: EntityIds }>()
   const { contractorId } = useParams<{ contractorId: string }>()
-  return <AddContractorWizard companyId={entities.companyId} contractorId={contractorId} />
+  const [showWizard, setShowWizard] = useState(!contractorId)
+  const [startStep, setStartStep] = useState<WizardStep>('profile')
+
+  const handleContinue = (step: WizardStep) => {
+    setStartStep(step)
+    setShowWizard(true)
+  }
+
+  if (!showWizard && contractorId) {
+    return <ContractorOnboardingOverview contractorId={contractorId} onContinue={handleContinue} />
+  }
+
+  return (
+    <AddContractorWizard
+      companyId={entities.companyId}
+      contractorId={contractorId}
+      initialStep={startStep}
+    />
+  )
 }
 
 export function AddContractor() {
