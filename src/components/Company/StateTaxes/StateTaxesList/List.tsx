@@ -48,7 +48,9 @@ export const List = () => {
         title: t('requirementsListCol1'),
         render: requirement => (
           <Flex flexDirection="column" gap={4}>
-            <span>{statesHash(requirement.state as (typeof STATES_ABBR)[number])}</span>
+            <Components.Text as="span">
+              {statesHash(requirement.state as (typeof STATES_ABBR)[number])}
+            </Components.Text>
             {requirement.defaultRatesApplied && (
               <Components.Text size="sm">{t('defaultRatesAppliedText')}</Components.Text>
             )}
@@ -61,14 +63,14 @@ export const List = () => {
         render: requirement => {
           const status = getSetupStatus(requirement)
           return (
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+            <Flex gap={8} alignItems="center" flexWrap="wrap">
               <Components.Badge status={badgeStatusMap[status]}>
                 {t(badgeLabelMap[status])}
               </Components.Badge>
               {requirement.readyToRunPayroll && (
                 <Components.Badge status="success">{t('readyToRunPayrollBadge')}</Components.Badge>
               )}
-            </div>
+            </Flex>
           )
         },
       },
