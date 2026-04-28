@@ -118,6 +118,7 @@ function ProfileViewContent({ contractor }: { contractor: Contractor }) {
   const [localTab, setLocalTab] = useState(selectedTab)
   const [isDismissed, setIsDismissed] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   const isReviewState =
     isSubmitting ||
@@ -169,16 +170,24 @@ function ProfileViewContent({ contractor }: { contractor: Contractor }) {
   } as Contractor
 
   const handleRemoveAccount = async () => {
-    await updatePaymentMethod({
-      request: {
-        contractorUuid: contractor.uuid,
-        requestBody: {
-          version: paymentMethod?.version as string,
-          type: 'Check',
+    try {
+      await updatePaymentMethod({
+        request: {
+          contractorUuid: contractor.uuid,
+          requestBody: {
+            version: paymentMethod?.version ?? '',
+            type: 'Check',
+          },
         },
-      },
-    })
-    onEvent('contractor/paymentMethod/removed' as EventType)
+      })
+      onEvent('contractor/paymentMethod/removed' as EventType)
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : 'Failed to remove payment method. Please try again.',
+      )
+    }
   }
 
   const handleCloseSubmitModal = () => {
@@ -300,6 +309,16 @@ function ProfileViewContent({ contractor }: { contractor: Contractor }) {
             status="warning"
             disableScrollIntoView
           />
+          {errorMessage && (
+            <Components.Alert
+              disableScrollIntoView
+              label={errorMessage}
+              status="error"
+              onDismiss={() => {
+                setErrorMessage(null)
+              }}
+            />
+          )}
           {successMessage && !isDismissed && (
             <Components.Alert
               disableScrollIntoView
@@ -399,6 +418,16 @@ function ProfileViewContent({ contractor }: { contractor: Contractor }) {
 
   return (
     <Flex flexDirection="column" gap={24}>
+      {errorMessage && (
+        <Components.Alert
+          disableScrollIntoView
+          label={errorMessage}
+          status="error"
+          onDismiss={() => {
+            setErrorMessage(null)
+          }}
+        />
+      )}
       {successMessage && !isDismissed && (
         <Components.Alert
           disableScrollIntoView
@@ -454,7 +483,7 @@ function EditAddressContent() {
       request: {
         contractorUuid: contractor.uuid,
         requestBody: {
-          version: address?.version as string,
+          version: address?.version ?? '',
           street1: data.street1,
           street2: data.street2,
           city: data.city,
@@ -522,7 +551,7 @@ function AddPaymentMethodContent() {
       contractorUuid: contractor.uuid,
     })
     const updatedPaymentMethod = await queryClient.fetchQuery(getPaymentMethodQuery)
-    const version = updatedPaymentMethod.contractorPaymentMethod?.version as string
+    const version = updatedPaymentMethod.contractorPaymentMethod?.version ?? ''
 
     await updatePaymentMethod({
       request: {
@@ -597,7 +626,7 @@ function EditPaymentMethodContent() {
       contractorUuid: contractor.uuid,
     })
     const updatedPaymentMethod = await queryClient.fetchQuery(getPaymentMethodQuery)
-    const version = updatedPaymentMethod.contractorPaymentMethod?.version as string
+    const version = updatedPaymentMethod.contractorPaymentMethod?.version ?? ''
 
     await updatePaymentMethod({
       request: {
@@ -646,7 +675,7 @@ function EditCompensationContent() {
       request: {
         contractorUuid: contractor.uuid,
         contractorUpdateRequestBody: {
-          version: contractor.version as string,
+          version: contractor.version ?? '',
           wageType: data.wageType,
           ...(data.wageType === 'Hourly' ? { hourlyRate: data.hourlyRate } : {}),
         },
@@ -695,7 +724,7 @@ function EditBasicDetailsContent() {
       request: {
         contractorUuid: contractor.uuid,
         contractorUpdateRequestBody: {
-          version: contractor.version as string,
+          version: contractor.version ?? '',
           firstName: data.firstName,
           middleInitial: data.middleInitial || undefined,
           lastName: data.lastName,

@@ -173,7 +173,6 @@ function onboardingContractorActions(
     onViewDetails: (contractor: Contractor) => void
     onRemove: (contractor: Contractor) => void
     onCancelSelfOnboarding: (contractor: Contractor) => void
-    onCompleteOnboarding: (contractor: Contractor) => void
   },
 ) {
   const actions: { label: string; onClick: () => void }[] = []
@@ -289,7 +288,6 @@ function OnboardingContractorsTable({
   onViewDetails,
   onRemove,
   onCancelSelfOnboarding,
-  onCompleteOnboarding,
 }: {
   contractors: Contractor[]
   isFetching: boolean
@@ -297,7 +295,6 @@ function OnboardingContractorsTable({
   onViewDetails: (contractor: Contractor) => void
   onRemove: (contractor: Contractor) => void
   onCancelSelfOnboarding: (contractor: Contractor) => void
-  onCompleteOnboarding: (contractor: Contractor) => void
 }) {
   const Components = useComponentContext()
   return (
@@ -344,7 +341,6 @@ function OnboardingContractorsTable({
               onViewDetails,
               onRemove,
               onCancelSelfOnboarding,
-              onCompleteOnboarding,
             })}
             triggerLabel="Actions"
           />
@@ -431,7 +427,8 @@ function DismissedContractorsTable({
         },
         {
           title: 'Dismissal date',
-          render: contractor => contractor.dismissalDate ?? '–',
+          render: contractor =>
+            contractor.dismissalDate ? formatDate(contractor.dismissalDate) : '–',
           skeletonWidth: 80,
         },
       ]}
@@ -461,6 +458,8 @@ function ContractorListContent() {
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
 
+  const queryClient = useQueryClient()
+
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
@@ -487,7 +486,6 @@ function ContractorListContent() {
     }
   }, [companyId, selectedTab])
 
-  const queryClient = useQueryClient()
   const { data, isPending } = useContractorsList(queryParams)
 
   const { mutateAsync: deleteContractor } = useContractorsDeleteMutation()
@@ -547,26 +545,16 @@ function ContractorListContent() {
           : `Dismissal cancelled for ${contractorName(contractor)}`,
       )
       queryClient.removeQueries({ queryKey: ['@gusto/embedded-api', 'Contractors'] })
+    } catch (error) {
+      setConfirmCancelContractor(null)
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : `Failed to cancel ${isRehire ? 'rehire' : 'dismissal'}. Please try again.`,
+      )
     } finally {
       setIsCancelPending(false)
       setCancellingId(null)
-    }
-  }
-
-  const handleCompleteOnboarding = async (contractor: Contractor) => {
-    try {
-      await updateOnboardingStatus({
-        request: {
-          contractorUuid: contractor.uuid,
-          requestBody: { onboardingStatus: 'onboarding_completed' },
-        },
-      })
-      queryClient.removeQueries({ queryKey: ['@gusto/embedded-api', 'Contractors'] })
-      setSuccessMessage(`Onboarding completed for ${contractorName(contractor)}`)
-    } catch {
-      setErrorMessage(
-        `Failed to complete onboarding for ${contractorName(contractor)}. Please try again.`,
-      )
     }
   }
 
@@ -590,6 +578,11 @@ function ContractorListContent() {
       }
       setOnboardingAction(null)
       queryClient.removeQueries({ queryKey: ['@gusto/embedded-api', 'Contractors'] })
+    } catch (error) {
+      setOnboardingAction(null)
+      setErrorMessage(
+        error instanceof Error ? error.message : 'Something went wrong. Please try again.',
+      )
     } finally {
       setIsOnboardingActionPending(false)
     }
@@ -665,9 +658,6 @@ function ContractorListContent() {
             }}
             onCancelSelfOnboarding={contractor => {
               setOnboardingAction({ contractor, type: 'cancelSelfOnboarding' })
-            }}
-            onCompleteOnboarding={contractor => {
-              void handleCompleteOnboarding(contractor)
             }}
           />
         )
