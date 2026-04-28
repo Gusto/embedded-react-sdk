@@ -31,6 +31,20 @@ function formatRate(contractor: Contractor) {
   return contractor.wageType ?? '–'
 }
 
+function ContractorNameCell({ contractor }: { contractor: Contractor }) {
+  const Components = useComponentContext()
+  return (
+    <Flex flexDirection="column" gap={0}>
+      <Components.Text size="sm" weight="medium">
+        {contractorName(contractor)}
+      </Components.Text>
+      <Components.Text variant="supporting" size="sm">
+        {contractor.type ?? '–'}
+      </Components.Text>
+    </Flex>
+  )
+}
+
 function ContractorStatusBadge({
   contractor,
   isLoading,
@@ -126,13 +140,8 @@ function ActiveContractorsTable({
       columns={[
         {
           title: 'Name',
-          render: contractor => contractorName(contractor),
+          render: contractor => <ContractorNameCell contractor={contractor} />,
           skeletonWidth: 120,
-        },
-        {
-          title: 'Type',
-          render: contractor => contractor.type ?? '–',
-          skeletonWidth: 80,
         },
         {
           title: 'Rate',
@@ -305,13 +314,8 @@ function OnboardingContractorsTable({
       columns={[
         {
           title: 'Name',
-          render: contractor => contractorName(contractor),
+          render: contractor => <ContractorNameCell contractor={contractor} />,
           skeletonWidth: 120,
-        },
-        {
-          title: 'Type',
-          render: contractor => contractor.type ?? '–',
-          skeletonWidth: 80,
         },
         {
           title: 'Onboarding status',
@@ -417,13 +421,8 @@ function DismissedContractorsTable({
       columns={[
         {
           title: 'Name',
-          render: contractor => contractorName(contractor),
+          render: contractor => <ContractorNameCell contractor={contractor} />,
           skeletonWidth: 120,
-        },
-        {
-          title: 'Type',
-          render: contractor => contractor.type ?? '–',
-          skeletonWidth: 80,
         },
         {
           title: 'Dismissal date',
