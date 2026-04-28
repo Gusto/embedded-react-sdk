@@ -1,6 +1,8 @@
 {
   "title": "Recovery cases",
   "description": "One or more payments couldn't be processed due to a bank error. Resolve open recovery cases to continue running payroll.",
+  "emptyTableTitle": "No recovery cases",
+  "emptyTableDescription": "There are no recovery cases that need your response at this time.",
   "labels": {
     "noLatestErrorCode": "—",
     "noLatestErrorCodeAriaLabel": "No error code available"
