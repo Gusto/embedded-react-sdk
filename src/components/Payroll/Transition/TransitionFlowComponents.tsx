@@ -43,9 +43,12 @@ export function TransitionCreationContextual() {
 }
 
 export function TransitionExecutionContextual() {
-  const { companyId, payrollUuid, onEvent, breadcrumbs } = useFlow<TransitionFlowContextInterface>()
+  const { companyId, payrollUuid, onEvent, header } = useFlow<TransitionFlowContextInterface>()
 
-  const transitionCreationBreadcrumb = breadcrumbs?.['createTransitionPayroll']?.[0]
+  const transitionCreationBreadcrumb =
+    header?.type === 'breadcrumbs'
+      ? header.breadcrumbs?.['createTransitionPayroll']?.[0]
+      : undefined
   const prefixBreadcrumbs = useMemo(() => {
     return transitionCreationBreadcrumb ? [transitionCreationBreadcrumb] : undefined
   }, [transitionCreationBreadcrumb])

@@ -11,7 +11,11 @@ import {
 } from '../PayrollFlow/PayrollFlowComponents'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
-import { hideBreadcrumb, updateBreadcrumbs } from '@/helpers/breadcrumbHelpers'
+import {
+  hideBreadcrumb,
+  patchBreadcrumbsHeader,
+  updateBreadcrumbs,
+} from '@/helpers/breadcrumbHelpers'
 import type {
   BreadcrumbNode,
   BreadcrumbNodes,
@@ -152,7 +156,6 @@ const employeeEditTransition = transition(
           startDate: ctx.payPeriod?.startDate ?? '',
           endDate: ctx.payPeriod?.endDate ?? '',
         }),
-        progressBarType: 'breadcrumbs',
         component: PayrollEditEmployeeContextual,
         employeeId: ev.payload.employeeId,
         firstName: ev.payload.firstName,
@@ -217,7 +220,6 @@ const receiptGetTransition = transition(
         endDate: ctx.payPeriod?.endDate ?? '',
       }),
       component: PayrollReceiptsContextual,
-      progressBarType: 'breadcrumbs',
       alerts: undefined,
       ctaConfig: {
         labelKey: 'exitFlowCta',
@@ -232,8 +234,7 @@ const employeeSavedTransition = transition(
   'configuration',
   reduce(
     (ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
-      ...ctx,
-      currentBreadcrumbId: 'configuration',
+      ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: 'configuration' }),
       component: PayrollConfigurationContextual,
       employeeId: undefined,
       firstName: undefined,
@@ -251,8 +252,7 @@ const employeeCancelledTransition = transition(
   'configuration',
   reduce(
     (ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
-      ...ctx,
-      currentBreadcrumbId: 'configuration',
+      ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: 'configuration' }),
       component: PayrollConfigurationContextual,
       employeeId: undefined,
       firstName: undefined,

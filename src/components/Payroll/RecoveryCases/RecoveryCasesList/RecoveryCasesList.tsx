@@ -11,7 +11,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { DataView } from '@/components/Common/DataView/DataView'
 import { useDataView } from '@/components/Common/DataView/useDataView'
-import { Flex, FlexItem } from '@/components/Common'
+import { EmptyData, Flex, FlexItem } from '@/components/Common'
 import { recoveryCasesEvents } from '@/shared/constants'
 import type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'
 import { formatNumberAsCurrency } from '@/helpers/formattedStrings'
@@ -116,6 +116,9 @@ function Root({ companyId, dictionary, onEvent }: RecoveryCasesListProps) {
 
   const dataViewProps = useDataView({
     data: recoveryCases,
+    emptyState: () => (
+      <EmptyData title={t('emptyTableTitle')} description={t('emptyTableDescription')} />
+    ),
     columns: [
       {
         key: 'originalDebitDate',
@@ -169,7 +172,7 @@ function Root({ companyId, dictionary, onEvent }: RecoveryCasesListProps) {
           <Heading as="h2" styledAs="h4">
             {t('title')}
           </Heading>
-          <Text>{t('description')}</Text>
+          {recoveryCases.length > 0 && <Text>{t('description')}</Text>}
         </Flex>
 
         <DataView {...dataViewProps} label={t('title')} />

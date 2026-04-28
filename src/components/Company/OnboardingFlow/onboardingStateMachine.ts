@@ -13,6 +13,15 @@ import {
 } from './OnboardingFlowComponents'
 import { componentEvents } from '@/shared/constants'
 import type { MachineTransition } from '@/types/Helpers'
+import type { FlowHeaderConfig } from '@/components/Flow/useFlow'
+
+const TOTAL_STEPS = 8
+
+const progressHeader = (currentStep: number): FlowHeaderConfig => ({
+  type: 'progress',
+  currentStep,
+  totalSteps: TOTAL_STEPS,
+})
 
 const createReducer = (props: Partial<OnboardingFlowContextInterface>) => {
   return (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
@@ -20,6 +29,7 @@ const createReducer = (props: Partial<OnboardingFlowContextInterface>) => {
     ...props,
   })
 }
+
 export const onboardingMachine = {
   overview: state<MachineTransition>(
     transition(
@@ -28,8 +38,7 @@ export const onboardingMachine = {
       reduce(
         createReducer({
           component: LocationsContextual,
-          currentStep: 1,
-          progressBarType: 'progress',
+          header: progressHeader(1),
         }),
       ),
     ),
@@ -39,49 +48,49 @@ export const onboardingMachine = {
     transition(
       componentEvents.COMPANY_LOCATION_DONE,
       'federalTaxes',
-      reduce(createReducer({ component: FederalTaxesContextual, currentStep: 2 })),
+      reduce(createReducer({ component: FederalTaxesContextual, header: progressHeader(2) })),
     ),
   ),
   federalTaxes: state<MachineTransition>(
     transition(
       componentEvents.COMPANY_FEDERAL_TAXES_DONE,
       'industry',
-      reduce(createReducer({ component: IndustryContextual, currentStep: 3 })),
+      reduce(createReducer({ component: IndustryContextual, header: progressHeader(3) })),
     ),
   ),
   industry: state<MachineTransition>(
     transition(
       componentEvents.COMPANY_INDUSTRY_SELECTED,
       'bankAccount',
-      reduce(createReducer({ component: BankAccountContextual, currentStep: 4 })),
+      reduce(createReducer({ component: BankAccountContextual, header: progressHeader(4) })),
     ),
   ),
   bankAccount: state<MachineTransition>(
     transition(
       componentEvents.COMPANY_BANK_ACCOUNT_DONE,
       'employees',
-      reduce(createReducer({ component: EmployeesContextual, currentStep: 5 })),
+      reduce(createReducer({ component: EmployeesContextual, header: progressHeader(5) })),
     ),
   ),
   employees: state<MachineTransition>(
     transition(
       componentEvents.EMPLOYEE_ONBOARDING_DONE,
       'payschedule',
-      reduce(createReducer({ component: PayScheduleContextual, currentStep: 6 })),
+      reduce(createReducer({ component: PayScheduleContextual, header: progressHeader(6) })),
     ),
   ),
   payschedule: state<MachineTransition>(
     transition(
       componentEvents.PAY_SCHEDULE_DONE,
       'stateTaxes',
-      reduce(createReducer({ component: StateTaxesContextual, currentStep: 7 })),
+      reduce(createReducer({ component: StateTaxesContextual, header: progressHeader(7) })),
     ),
   ),
   stateTaxes: state<MachineTransition>(
     transition(
       componentEvents.COMPANY_STATE_TAX_DONE,
       'documents',
-      reduce(createReducer({ component: DocumentSignerContextual, currentStep: 8 })),
+      reduce(createReducer({ component: DocumentSignerContextual, header: progressHeader(8) })),
     ),
   ),
   documents: state<MachineTransition>(
@@ -91,8 +100,7 @@ export const onboardingMachine = {
       reduce(
         createReducer({
           component: OnboardingOverviewContextual,
-          currentStep: 1,
-          progressBarType: null,
+          header: null,
         }),
       ),
     ),

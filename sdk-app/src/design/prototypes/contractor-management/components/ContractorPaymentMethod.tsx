@@ -15,10 +15,10 @@ export function ContractorPaymentMethod({
 }: {
   paymentMethodType: 'Check' | 'Direct Deposit'
   bankAccounts: ContractorBankAccount[]
-  onAddPaymentMethod: () => void
-  onEditPaymentMethod: () => void
-  onRemoveAccount: () => void
-  isRemovingAccount: boolean
+  onAddPaymentMethod?: () => void
+  onEditPaymentMethod?: () => void
+  onRemoveAccount?: () => void
+  isRemovingAccount?: boolean
 }) {
   const Components = useComponentContext()
 
@@ -42,21 +42,18 @@ export function ContractorPaymentMethod({
         render: account => account.accountType ?? '–',
       },
     ],
-    itemMenu: () => (
-      <HamburgerMenu
-        items={[
-          {
-            label: 'Edit',
-            onClick: onEditPaymentMethod,
-          },
-          {
-            label: 'Remove account',
-            onClick: onRemoveAccount,
-          },
-        ]}
-        triggerLabel="Actions"
-      />
-    ),
+    itemMenu:
+      onEditPaymentMethod || onRemoveAccount
+        ? () => (
+            <HamburgerMenu
+              items={[
+                ...(onEditPaymentMethod ? [{ label: 'Edit', onClick: onEditPaymentMethod }] : []),
+                ...(onRemoveAccount ? [{ label: 'Remove account', onClick: onRemoveAccount }] : []),
+              ]}
+              triggerLabel="Actions"
+            />
+          )
+        : undefined,
   })
 
   if (paymentMethodType === 'Check' && !isRemovingAccount) {
@@ -67,10 +64,12 @@ export function ContractorPaymentMethod({
             <Components.Heading as="h3" styledAs="h4">
               Payment
             </Components.Heading>
-            <Components.Button variant="secondary" onClick={onAddPaymentMethod}>
-              <CirclePlus />
-              Add bank account
-            </Components.Button>
+            {onAddPaymentMethod && (
+              <Components.Button variant="secondary" onClick={onAddPaymentMethod}>
+                <CirclePlus />
+                Add bank account
+              </Components.Button>
+            )}
           </Flex>
         }
       >

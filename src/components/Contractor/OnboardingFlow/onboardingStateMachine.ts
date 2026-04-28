@@ -5,11 +5,13 @@ import {
   NewHireReportContextual,
   PaymentMethodContextual,
   ProfileContextual,
+  ProgressBarCta,
   SubmitContextual,
   type OnboardingFlowContextInterface,
 } from './OnboardingFlowComponents'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
+import type { FlowHeaderConfig } from '@/components/Flow/useFlow'
 
 type EventPayloads = {
   [componentEvents.CONTRACTOR_UPDATE]: {
@@ -19,12 +21,26 @@ type EventPayloads = {
   [componentEvents.CONTRACTOR_SUBMIT_DONE]: { message?: string }
 }
 
+const TOTAL_STEPS_DEFAULT = 5
+const TOTAL_STEPS_SELF_ONBOARDING = 3
+
+const progressHeader = (
+  currentStep: number,
+  totalSteps: number = TOTAL_STEPS_DEFAULT,
+): FlowHeaderConfig => ({
+  type: 'progress',
+  currentStep,
+  totalSteps,
+  cta: ProgressBarCta,
+})
+
 const createReducer = (props: Partial<OnboardingFlowContextInterface>) => {
   return (ctx: OnboardingFlowContextInterface): OnboardingFlowContextInterface => ({
     ...ctx,
     ...props,
   })
 }
+
 const cancelTransition = () =>
   transition(
     componentEvents.CANCEL,
@@ -32,8 +48,7 @@ const cancelTransition = () =>
     reduce(
       createReducer({
         component: ContractorListContextual,
-        progressBarType: null,
-        currentStep: 0,
+        header: null,
         contractorId: undefined,
         successMessage: undefined,
       }),
@@ -48,8 +63,7 @@ export const onboardingMachine = {
       reduce(
         createReducer({
           component: ProfileContextual,
-          currentStep: 1,
-          progressBarType: 'progress',
+          header: progressHeader(1),
           contractorId: undefined,
           successMessage: undefined,
         }),
@@ -66,8 +80,7 @@ export const onboardingMachine = {
           return {
             ...ctx,
             component: ProfileContextual,
-            currentStep: 1,
-            progressBarType: 'progress',
+            header: progressHeader(1),
             contractorId: ev.payload.contractorId,
             successMessage: undefined,
           }
@@ -88,13 +101,13 @@ export const onboardingMachine = {
           return {
             ...ctx,
             component: AddressContextual,
-            currentStep: 2,
+            header: progressHeader(2),
             contractorId: ev.payload.contractorId,
             selfOnboarding: ev.payload.selfOnboarding,
           }
         },
       ),
-      guard((ctx, ev) => !ev.payload.selfOnboarding), // Only allow transition to address if not self-onboarding
+      guard((ctx, ev) => !ev.payload.selfOnboarding),
     ),
     transition(
       componentEvents.CONTRACTOR_PROFILE_DONE,
@@ -107,14 +120,13 @@ export const onboardingMachine = {
           return {
             ...ctx,
             component: NewHireReportContextual,
+            header: progressHeader(2, TOTAL_STEPS_SELF_ONBOARDING),
             contractorId: ev.payload.contractorId,
             selfOnboarding: ev.payload.selfOnboarding,
-            currentStep: 2,
-            totalSteps: 3,
           }
         },
       ),
-      guard((ctx, ev) => ev.payload.selfOnboarding), // Only allow transition to new hire report if self-onboarding
+      guard((ctx, ev) => ev.payload.selfOnboarding),
     ),
   ),
   address: state<MachineTransition>(
@@ -122,7 +134,7 @@ export const onboardingMachine = {
     transition(
       componentEvents.CONTRACTOR_ADDRESS_DONE,
       'paymentMethod',
-      reduce(createReducer({ component: PaymentMethodContextual, currentStep: 3 })),
+      reduce(createReducer({ component: PaymentMethodContextual, header: progressHeader(3) })),
     ),
   ),
   paymentMethod: state<MachineTransition>(
@@ -133,7 +145,7 @@ export const onboardingMachine = {
       reduce(
         createReducer({
           component: NewHireReportContextual,
-          currentStep: 4,
+          header: progressHeader(4),
         }),
       ),
     ),
@@ -146,7 +158,7 @@ export const onboardingMachine = {
       reduce(
         createReducer({
           component: SubmitContextual,
-          currentStep: 5,
+          header: progressHeader(5),
         }),
       ),
     ),
@@ -164,8 +176,7 @@ export const onboardingMachine = {
           return {
             ...ctx,
             component: ContractorListContextual,
-            currentStep: 0,
-            progressBarType: null,
+            header: null,
             successMessage: ev.payload.message,
           }
         },

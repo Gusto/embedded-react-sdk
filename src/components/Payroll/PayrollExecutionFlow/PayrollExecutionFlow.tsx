@@ -69,8 +69,12 @@ export function PayrollExecutionFlow({
     const initialBreadcrumbContext = updateBreadcrumbs(
       initialState,
       {
-        breadcrumbs,
-      } as PayrollFlowContextInterface,
+        header: {
+          type: 'breadcrumbs' as const,
+          breadcrumbs,
+          cta: SaveAndExitCta,
+        },
+      },
       {
         startDate: initialPayPeriod?.startDate ?? '',
         endDate: initialPayPeriod?.endDate ?? '',
@@ -87,11 +91,8 @@ export function PayrollExecutionFlow({
         companyId,
         payrollUuid: payrollId,
         payPeriod: initialPayPeriod,
-        progressBarType: 'breadcrumbs' as const,
-        currentBreadcrumbId: initialState,
         withReimbursements,
         ConfirmWireDetailsComponent,
-        progressBarCta: SaveAndExitCta,
         ctaConfig: {
           labelKey: 'exitFlowCta',
           namespace: INITIAL_NAMESPACE_MAP[initialState],

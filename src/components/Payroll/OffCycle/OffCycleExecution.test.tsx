@@ -138,9 +138,10 @@ function OffCycleFlowInExecutionState({
           component: OffCycleExecutionContextual,
           companyId: COMPANY_ID,
           payrollUuid: PAYROLL_ID,
-          breadcrumbs: buildBreadcrumbs(offCycleBreadcrumbsNodes),
-          currentBreadcrumbId: 'createOffCyclePayroll',
-          progressBarType: null,
+          header: {
+            type: 'breadcrumbs' as const,
+            breadcrumbs: buildBreadcrumbs(offCycleBreadcrumbsNodes),
+          },
           withReimbursements,
         }),
       ),
