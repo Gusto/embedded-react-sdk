@@ -7,6 +7,7 @@ import {
 import { componentEvents } from '@/shared/constants'
 import type { MachineTransition } from '@/types/Helpers'
 import type { BreadcrumbNodes } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
+import { patchBreadcrumbsHeader } from '@/helpers/breadcrumbHelpers'
 
 export const offCycleBreadcrumbsNodes: BreadcrumbNodes = {
   createOffCyclePayroll: {
@@ -16,11 +17,9 @@ export const offCycleBreadcrumbsNodes: BreadcrumbNodes = {
       label: 'createOffCyclePayroll.breadcrumbLabel',
       namespace: 'Payroll.OffCycle',
       onNavigate: ((ctx: OffCycleFlowContextInterface) => ({
-        ...ctx,
+        ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: 'createOffCyclePayroll' }),
         component: OffCycleCreationContextual,
         payrollUuid: undefined,
-        currentBreadcrumbId: 'createOffCyclePayroll',
-        progressBarType: 'breadcrumbs',
       })) as (context: unknown) => unknown,
     },
   },
@@ -28,11 +27,9 @@ export const offCycleBreadcrumbsNodes: BreadcrumbNodes = {
 
 function toCreationReducer(ctx: OffCycleFlowContextInterface): OffCycleFlowContextInterface {
   return {
-    ...ctx,
+    ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: 'createOffCyclePayroll' }),
     component: OffCycleCreationContextual,
     payrollUuid: undefined,
-    currentBreadcrumbId: 'createOffCyclePayroll',
-    progressBarType: 'breadcrumbs',
   }
 }
 
@@ -56,10 +53,9 @@ export const offCycleMachine = {
           ctx: OffCycleFlowContextInterface,
           ev: { payload?: { payrollUuid?: string } },
         ): OffCycleFlowContextInterface => ({
-          ...ctx,
+          ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: undefined }),
           payrollUuid: ev.payload?.payrollUuid,
           component: OffCycleExecutionContextual,
-          progressBarType: null,
         }),
       ),
     ),

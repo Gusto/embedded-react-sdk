@@ -38,9 +38,11 @@ export const payrollLandingBreadcrumbNodes: BreadcrumbNodes = {
       namespace: 'Payroll.PayrollLanding',
       onNavigate: ((ctx: PayrollLandingFlowContextInterface) => ({
         ...ctx,
-        currentBreadcrumbId: 'tabs',
-        progressBarType: null,
         component: PayrollLandingTabsContextual,
+        header:
+          ctx.header?.type === 'breadcrumbs'
+            ? { ...ctx.header, currentBreadcrumbId: undefined }
+            : null,
         payrollUuid: undefined,
         previousState: undefined,
         startDate: undefined,
@@ -73,6 +75,27 @@ const createReducer = (props: Partial<PayrollLandingFlowContextInterface>) => {
   })
 }
 
+/**
+ * Reducer that returns the flow to the landing tabs view while preserving
+ * the existing breadcrumbs trail data so that re-entering a sub-state can
+ * pick it up without rebuilding.
+ */
+const returnToTabs = (
+  extra: Partial<PayrollLandingFlowContextInterface> = {},
+): ((ctx: PayrollLandingFlowContextInterface) => PayrollLandingFlowContextInterface) => {
+  return (ctx: PayrollLandingFlowContextInterface) => ({
+    ...ctx,
+    component: PayrollLandingTabsContextual,
+    payrollUuid: undefined,
+    previousState: undefined,
+    startDate: undefined,
+    endDate: undefined,
+    header:
+      ctx.header?.type === 'breadcrumbs' ? { ...ctx.header, currentBreadcrumbId: undefined } : null,
+    ...extra,
+  })
+}
+
 const breadcrumbNavigateTransition =
   createBreadcrumbNavigateTransition<PayrollLandingFlowContextInterface>()
 
@@ -94,7 +117,6 @@ export const payrollLandingMachine = {
           payrollUuid: ev.payload.payrollId,
           previousState: 'tabs',
           selectedTab: 'payroll-history',
-          progressBarType: 'breadcrumbs',
           startDate: ev.payload.startDate,
           endDate: ev.payload.endDate,
           showPayrollCancelledAlert: false,
@@ -117,7 +139,6 @@ export const payrollLandingMachine = {
           payrollUuid: ev.payload.payrollId,
           previousState: 'tabs',
           selectedTab: 'payroll-history',
-          progressBarType: 'breadcrumbs',
           startDate: ev.payload.startDate,
           endDate: ev.payload.endDate,
           showPayrollCancelledAlert: false,
@@ -145,21 +166,7 @@ export const payrollLandingMachine = {
   ),
   overview: state<MachineTransition>(
     breadcrumbNavigateTransition('tabs'),
-    transition(
-      componentEvents.RUN_PAYROLL_BACK,
-      'tabs',
-      reduce(
-        createReducer({
-          component: PayrollLandingTabsContextual,
-          payrollUuid: undefined,
-          previousState: undefined,
-          progressBarType: null,
-          currentBreadcrumbId: 'tabs',
-          startDate: undefined,
-          endDate: undefined,
-        }),
-      ),
-    ),
+    transition(componentEvents.RUN_PAYROLL_BACK, 'tabs', reduce(returnToTabs())),
     transition(
       componentEvents.RUN_PAYROLL_RECEIPT_GET,
       'receipt',
@@ -167,35 +174,21 @@ export const payrollLandingMachine = {
         (
           ctx: PayrollLandingFlowContextInterface,
           ev: MachineEventType<EventPayloads, typeof componentEvents.RUN_PAYROLL_RECEIPT_GET>,
-        ): PayrollLandingFlowContextInterface => {
-          return {
-            ...updateBreadcrumbs('receipt', ctx, {
-              startDate: ctx.startDate ?? '',
-              endDate: ctx.endDate ?? '',
-            }),
-            component: PayrollLandingReceiptsContextual,
-            payrollUuid: ev.payload.payrollId,
-            previousState: 'overview',
-            progressBarType: 'breadcrumbs',
-          }
-        },
+        ): PayrollLandingFlowContextInterface => ({
+          ...updateBreadcrumbs('receipt', ctx, {
+            startDate: ctx.startDate ?? '',
+            endDate: ctx.endDate ?? '',
+          }),
+          component: PayrollLandingReceiptsContextual,
+          payrollUuid: ev.payload.payrollId,
+          previousState: 'overview',
+        }),
       ),
     ),
     transition(
       componentEvents.RUN_PAYROLL_CANCELLED,
       'tabs',
-      reduce(
-        createReducer({
-          component: PayrollLandingTabsContextual,
-          payrollUuid: undefined,
-          previousState: undefined,
-          progressBarType: null,
-          currentBreadcrumbId: 'tabs',
-          startDate: undefined,
-          endDate: undefined,
-          showPayrollCancelledAlert: true,
-        }),
-      ),
+      reduce(returnToTabs({ showPayrollCancelledAlert: true })),
     ),
   ),
   receipt: state<MachineTransition>(
@@ -211,7 +204,6 @@ export const payrollLandingMachine = {
           }),
           component: PayrollLandingOverviewContextual,
           previousState: 'tabs',
-          progressBarType: 'breadcrumbs',
         }),
       ),
       guard((ctx: PayrollLandingFlowContextInterface) => {
@@ -221,17 +213,7 @@ export const payrollLandingMachine = {
     transition(
       componentEvents.RUN_PAYROLL_BACK,
       'tabs',
-      reduce(
-        createReducer({
-          component: PayrollLandingTabsContextual,
-          payrollUuid: undefined,
-          previousState: undefined,
-          progressBarType: null,
-          currentBreadcrumbId: 'tabs',
-          startDate: undefined,
-          endDate: undefined,
-        }),
-      ),
+      reduce(returnToTabs()),
       guard((ctx: PayrollLandingFlowContextInterface) => {
         return ctx.previousState === 'tabs'
       }),

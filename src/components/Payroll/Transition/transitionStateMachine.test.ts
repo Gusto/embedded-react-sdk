@@ -16,8 +16,11 @@ function createTestMachine() {
       startDate: '2025-08-14',
       endDate: '2025-08-27',
       payScheduleUuid: 'schedule-uuid-1',
-      breadcrumbs: buildBreadcrumbs(transitionBreadcrumbsNodes),
-      currentBreadcrumbId: 'createTransitionPayroll',
+      header: {
+        type: 'breadcrumbs' as const,
+        breadcrumbs: buildBreadcrumbs(transitionBreadcrumbsNodes),
+        currentBreadcrumbId: 'createTransitionPayroll',
+      },
     }),
   )
 }
@@ -46,7 +49,11 @@ describe('transitionStateMachine', () => {
 
       expect(service.machine.current).toBe('execution')
       expect(service.context.payrollUuid).toBe('payroll-123')
-      expect(service.context.progressBarType).toBeNull()
+      expect(
+        service.context.header?.type === 'breadcrumbs'
+          ? service.context.header.currentBreadcrumbId
+          : undefined,
+      ).toBeUndefined()
     })
 
     it('preserves flow context (startDate, endDate, payScheduleUuid) through transition', () => {
@@ -82,8 +89,12 @@ describe('transitionStateMachine', () => {
 
       expect(service.machine.current).toBe('createTransitionPayroll')
       expect(service.context.payrollUuid).toBeUndefined()
-      expect(service.context.progressBarType).toBe('breadcrumbs')
-      expect(service.context.currentBreadcrumbId).toBe('createTransitionPayroll')
+      expect(service.context.header?.type).toBe('breadcrumbs')
+      expect(
+        service.context.header?.type === 'breadcrumbs'
+          ? service.context.header.currentBreadcrumbId
+          : undefined,
+      ).toBe('createTransitionPayroll')
     })
 
     it('ignores BREADCRUMB_NAVIGATE with non-matching key', () => {

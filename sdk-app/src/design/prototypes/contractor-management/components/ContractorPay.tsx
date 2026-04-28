@@ -33,9 +33,11 @@ export function ContractorPay({
           <Components.Heading as="h3" styledAs="h4">
             Compensation
           </Components.Heading>
-          <Components.Button variant="secondary" onClick={onEdit}>
-            Edit
-          </Components.Button>
+          {onEdit && (
+            <Components.Button variant="secondary" onClick={onEdit}>
+              Edit
+            </Components.Button>
+          )}
         </Flex>
       }
     >

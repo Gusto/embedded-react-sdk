@@ -7,6 +7,7 @@ import {
 import { componentEvents } from '@/shared/constants'
 import type { MachineTransition } from '@/types/Helpers'
 import type { BreadcrumbNodes } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
+import { patchBreadcrumbsHeader } from '@/helpers/breadcrumbHelpers'
 
 export const transitionBreadcrumbsNodes: BreadcrumbNodes = {
   createTransitionPayroll: {
@@ -16,11 +17,9 @@ export const transitionBreadcrumbsNodes: BreadcrumbNodes = {
       label: 'breadcrumbLabel',
       namespace: 'Payroll.Transition',
       onNavigate: ((ctx: TransitionFlowContextInterface) => ({
-        ...ctx,
+        ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: 'createTransitionPayroll' }),
         component: TransitionCreationContextual,
         payrollUuid: undefined,
-        currentBreadcrumbId: 'createTransitionPayroll',
-        progressBarType: 'breadcrumbs',
       })) as (context: unknown) => unknown,
     },
   },
@@ -28,11 +27,9 @@ export const transitionBreadcrumbsNodes: BreadcrumbNodes = {
 
 function toCreationReducer(ctx: TransitionFlowContextInterface): TransitionFlowContextInterface {
   return {
-    ...ctx,
+    ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: 'createTransitionPayroll' }),
     component: TransitionCreationContextual,
     payrollUuid: undefined,
-    currentBreadcrumbId: 'createTransitionPayroll',
-    progressBarType: 'breadcrumbs',
   }
 }
 
@@ -56,10 +53,9 @@ export const transitionMachine = {
           ctx: TransitionFlowContextInterface,
           ev: { payload?: { payrollUuid?: string } },
         ): TransitionFlowContextInterface => ({
-          ...ctx,
+          ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: undefined }),
           payrollUuid: ev.payload?.payrollUuid,
           component: TransitionExecutionContextual,
-          progressBarType: null,
         }),
       ),
     ),

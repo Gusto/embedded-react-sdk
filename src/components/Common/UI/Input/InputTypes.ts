@@ -11,6 +11,7 @@ export interface InputProps extends Pick<
   | 'onChange'
   | 'onBlur'
   | 'aria-describedby'
+  | 'aria-labelledby'
   | 'aria-invalid'
   | 'min'
   | 'max'

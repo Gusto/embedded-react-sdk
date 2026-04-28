@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useOutletContext } from 'react-router-dom'
+import { useOutletContext, useParams } from 'react-router-dom'
 import { createMachine } from 'robot3'
 import type { EntityIds } from '../../../../useEntities'
 import { contractorProfileStateMachine } from './contractorProfileStateMachine'
@@ -12,6 +12,9 @@ import { BaseComponent, useBase } from '@/components/Base'
 function ContractorProfileRoot() {
   const { onEvent } = useBase()
   const { entities } = useOutletContext<{ entities: EntityIds }>()
+  const { contractorId: routeContractorId } = useParams<{ contractorId: string }>()
+
+  const resolvedContractorId = routeContractorId || entities.contractorId
 
   const machine = useMemo(
     () =>
@@ -21,14 +24,14 @@ function ContractorProfileRoot() {
         (initialContext: ContractorProfileContextInterface) => ({
           ...initialContext,
           component: ProfileViewContextual,
-          contractorId: entities.contractorId,
+          contractorId: resolvedContractorId,
           selectedTab: 'basic-details',
         }),
       ),
-    [entities.contractorId],
+    [resolvedContractorId],
   )
 
-  if (!entities.contractorId) {
+  if (!resolvedContractorId) {
     return <EmptyData title="No contractor selected. Set a Contractor ID in the settings panel." />
   }
 

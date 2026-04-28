@@ -51,9 +51,20 @@ export interface UsePayScheduleFormProps {
   shouldFocusError?: boolean
 }
 
+export interface PayScheduleFields {
+  CustomName: typeof CustomNameField
+  Frequency: typeof FrequencyField
+  CustomTwicePerMonth: typeof CustomTwicePerMonthField | undefined
+  AnchorPayDate: typeof AnchorPayDateField
+  AnchorEndOfPayPeriod: typeof AnchorEndOfPayPeriodField
+  Day1: typeof Day1Field | undefined
+  Day2: typeof Day2Field | undefined
+}
+
 export interface UsePayScheduleFormReady extends BaseFormHookReady<
   FieldsMetadata,
-  PayScheduleFormData
+  PayScheduleFormData,
+  PayScheduleFields
 > {
   data: {
     paySchedule: PaySchedule | null
