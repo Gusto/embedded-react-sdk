@@ -53,6 +53,10 @@ const getRecoveryCases = handleGetRecoveryCases(() => {
   return HttpResponse.json(mockRecoveryCases)
 })
 
+export const getEmptyRecoveryCases = handleGetRecoveryCases(() => {
+  return HttpResponse.json([])
+})
+
 const redebitRecoveryCase = handleRedebitRecoveryCase(() => {
   return new HttpResponse(null, { status: 202 })
 })

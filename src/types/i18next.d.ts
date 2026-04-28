@@ -3020,6 +3020,8 @@ export interface PayrollPayrollReceipts{
 export interface PayrollRecoveryCasesList{
 "title":string;
 "description":string;
+"emptyTableTitle":string;
+"emptyTableDescription":string;
 "labels":{
 "noLatestErrorCode":string;
 "noLatestErrorCodeAriaLabel":string;
