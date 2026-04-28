@@ -1,0 +1,23 @@
+{
+  "skill_name": "create-demo-data",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I need a contractor to test with",
+      "expected_output": "Should ask clarifying questions (Individual vs Business, wage type), then create a contractor via POST to the demo API using env config from sdk-app/env/.env.demo",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Create 3 employees in different onboarding states so I can test the employee list",
+      "expected_output": "Should create one admin_onboarding_incomplete employee (self_onboarding: false), one self_onboarding_invited (self_onboarding: true + email), and one fully onboarded employee. Should report all UUIDs in a summary table.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Set up an unlimited PTO policy for my company",
+      "expected_output": "Should create a time off policy with policy_type vacation, accrual_method unlimited, and complete: true. Should NOT set accrual_rate, max_hours, or carryover_limit_hours (must be null for unlimited).",
+      "files": []
+    }
+  ]
+}
