@@ -39,13 +39,14 @@ export function OffCycleCreationContextual() {
 }
 
 export function OffCycleExecutionContextual() {
-  const { companyId, payrollUuid, onEvent, withReimbursements, breadcrumbs } =
+  const { companyId, payrollUuid, onEvent, withReimbursements, header } =
     useFlow<OffCycleFlowContextInterface>()
 
   const resolvedCompanyId = ensureRequired(companyId)
   const resolvedPayrollId = ensureRequired(payrollUuid)
 
-  const offCycleRootBreadcrumb = breadcrumbs?.['createOffCyclePayroll']?.[0]
+  const offCycleRootBreadcrumb =
+    header?.type === 'breadcrumbs' ? header.breadcrumbs?.['createOffCyclePayroll']?.[0] : undefined
   const prefixBreadcrumbs = useMemo(
     () => (offCycleRootBreadcrumb ? [offCycleRootBreadcrumb] : undefined),
     [offCycleRootBreadcrumb],

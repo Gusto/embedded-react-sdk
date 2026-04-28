@@ -13,6 +13,7 @@ import {
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 import type { BreadcrumbNodes } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
+import { patchBreadcrumbsHeader } from '@/helpers/breadcrumbHelpers'
 
 type EventPayloads = {
   [componentEvents.EMPLOYEE_TERMINATION_DONE]: {
@@ -52,10 +53,8 @@ export const terminationBreadcrumbNodes: BreadcrumbNodes = {
       label: 'breadcrumbs.form',
       namespace: 'Employee.Terminations.TerminationFlow',
       onNavigate: ((ctx: TerminationFlowContextInterface) => ({
-        ...ctx,
+        ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: 'form' }),
         component: TerminateEmployeeContextual,
-        currentBreadcrumbId: 'form',
-        progressBarType: 'breadcrumbs',
       })) as (context: unknown) => unknown,
     },
   },
@@ -66,10 +65,8 @@ export const terminationBreadcrumbNodes: BreadcrumbNodes = {
       label: 'breadcrumbs.summary',
       namespace: 'Employee.Terminations.TerminationFlow',
       onNavigate: ((ctx: TerminationFlowContextInterface) => ({
-        ...ctx,
+        ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: 'summary' }),
         component: TerminationSummaryContextual,
-        currentBreadcrumbId: 'summary',
-        progressBarType: 'breadcrumbs',
       })) as (context: unknown) => unknown,
     },
   },
@@ -80,10 +77,8 @@ export const terminationBreadcrumbNodes: BreadcrumbNodes = {
       label: 'breadcrumbs.dismissal',
       namespace: 'Employee.Terminations.TerminationFlow',
       onNavigate: ((ctx: TerminationFlowContextInterface) => ({
-        ...ctx,
+        ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: undefined }),
         component: DismissalFlowContextual,
-        currentBreadcrumbId: 'dismissal',
-        progressBarType: null,
       })) as (context: unknown) => unknown,
     },
   },
@@ -91,19 +86,15 @@ export const terminationBreadcrumbNodes: BreadcrumbNodes = {
 
 function toFormReducer(ctx: TerminationFlowContextInterface): TerminationFlowContextInterface {
   return {
-    ...ctx,
+    ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: 'form' }),
     component: TerminateEmployeeContextual,
-    currentBreadcrumbId: 'form',
-    progressBarType: 'breadcrumbs',
   }
 }
 
 function toSummaryReducer(ctx: TerminationFlowContextInterface): TerminationFlowContextInterface {
   return {
-    ...ctx,
+    ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: 'summary' }),
     component: TerminationSummaryContextual,
-    currentBreadcrumbId: 'summary',
-    progressBarType: 'breadcrumbs',
   }
 }
 
@@ -138,12 +129,11 @@ export const terminationMachine = {
           ev: MachineEventType<EventPayloads, typeof componentEvents.EMPLOYEE_TERMINATION_DONE>,
         ): TerminationFlowContextInterface => {
           return {
-            ...ctx,
+            ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: 'summary' }),
             component: TerminationSummaryContextual,
             payrollOption: ev.payload.payrollOption,
             payrollUuid: ev.payload.payrollUuid,
             alerts: undefined,
-            currentBreadcrumbId: 'summary',
           }
         },
       ),
@@ -151,22 +141,13 @@ export const terminationMachine = {
     transition(
       componentEvents.EMPLOYEE_TERMINATION_VIEW_SUMMARY,
       'summary',
-      reduce(
-        (
-          ctx: TerminationFlowContextInterface,
-          ev: MachineEventType<
-            EventPayloads,
-            typeof componentEvents.EMPLOYEE_TERMINATION_VIEW_SUMMARY
-          >,
-        ): TerminationFlowContextInterface => {
-          return {
-            ...ctx,
-            component: TerminationSummaryContextual,
-            alerts: undefined,
-            currentBreadcrumbId: 'summary',
-          }
-        },
-      ),
+      reduce((ctx: TerminationFlowContextInterface): TerminationFlowContextInterface => {
+        return {
+          ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: 'summary' }),
+          component: TerminationSummaryContextual,
+          alerts: undefined,
+        }
+      }),
     ),
   ),
   summary: state<MachineTransition>(
@@ -175,10 +156,9 @@ export const terminationMachine = {
       'form',
       reduce((ctx: TerminationFlowContextInterface): TerminationFlowContextInterface => {
         return {
-          ...ctx,
+          ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: 'form' }),
           component: TerminateEmployeeContextual,
           alerts: undefined,
-          currentBreadcrumbId: 'form',
         }
       }),
     ),
@@ -194,11 +174,10 @@ export const terminationMachine = {
           >,
         ): TerminationFlowContextInterface => {
           return {
-            ...ctx,
+            ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: 'form' }),
             component: TerminateEmployeeContextual,
             alerts: ev.payload.alert ? [ev.payload.alert] : undefined,
             payrollOption: undefined,
-            currentBreadcrumbId: 'form',
           }
         },
       ),
@@ -215,10 +194,9 @@ export const terminationMachine = {
           >,
         ): TerminationFlowContextInterface => {
           return {
-            ...ctx,
+            ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: undefined }),
             component: DismissalFlowContextual,
             payrollUuid: ev.payload.payrollUuid ?? ctx.payrollUuid,
-            progressBarType: null,
           }
         },
       ),
@@ -228,10 +206,9 @@ export const terminationMachine = {
       'dismissalPayroll',
       reduce((ctx: TerminationFlowContextInterface): TerminationFlowContextInterface => {
         return {
-          ...ctx,
+          ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: undefined }),
           component: DismissalFlowContextual,
           payrollUuid: undefined,
-          progressBarType: null,
         }
       }),
     ),
@@ -243,10 +220,9 @@ export const terminationMachine = {
       'payrollLanding',
       reduce(
         (ctx: TerminationFlowContextInterface): TerminationFlowContextInterface => ({
-          ...ctx,
+          ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: undefined }),
           component: PayrollLandingContextual,
           payrollOption: undefined,
-          progressBarType: null,
         }),
       ),
     ),
