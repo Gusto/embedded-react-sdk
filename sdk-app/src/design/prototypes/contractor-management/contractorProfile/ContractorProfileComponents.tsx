@@ -123,7 +123,10 @@ function ProfileViewContent({ contractor }: { contractor: Contractor }) {
     isSubmitting ||
     contractor.onboardingStatus === ContractorOnboardingStatus.ADMIN_ONBOARDING_REVIEW ||
     contractor.onboardingStatus === ContractorOnboardingStatus.SELF_ONBOARDING_REVIEW
-  const isEditable = contractor.isActive || isReviewState
+  const isEditable =
+    contractor.isActive ||
+    isReviewState ||
+    contractor.onboardingStatus === ContractorOnboardingStatus.ONBOARDING_COMPLETED
 
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false)
   const [fileNewHireReport, setFileNewHireReport] = useState('no')

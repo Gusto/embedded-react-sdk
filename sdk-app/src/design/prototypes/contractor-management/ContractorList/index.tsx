@@ -170,6 +170,7 @@ function onboardingContractorActions(
   contractor: Contractor,
   callbacks: {
     onEdit: (contractor: Contractor) => void
+    onViewDetails: (contractor: Contractor) => void
     onRemove: (contractor: Contractor) => void
     onCancelSelfOnboarding: (contractor: Contractor) => void
     onCompleteOnboarding: (contractor: Contractor) => void
@@ -217,12 +218,20 @@ function onboardingContractorActions(
       },
     })
   } else if (status === ContractorOnboardingStatus.ONBOARDING_COMPLETED) {
-    actions.push({
-      label: 'Remove',
-      onClick: () => {
-        callbacks.onRemove(contractor)
+    actions.push(
+      {
+        label: 'View details',
+        onClick: () => {
+          callbacks.onViewDetails(contractor)
+        },
       },
-    })
+      {
+        label: 'Remove',
+        onClick: () => {
+          callbacks.onRemove(contractor)
+        },
+      },
+    )
   }
 
   return actions
@@ -277,6 +286,7 @@ function OnboardingContractorsTable({
   contractors,
   isFetching,
   onEdit,
+  onViewDetails,
   onRemove,
   onCancelSelfOnboarding,
   onCompleteOnboarding,
@@ -284,6 +294,7 @@ function OnboardingContractorsTable({
   contractors: Contractor[]
   isFetching: boolean
   onEdit: (contractor: Contractor) => void
+  onViewDetails: (contractor: Contractor) => void
   onRemove: (contractor: Contractor) => void
   onCancelSelfOnboarding: (contractor: Contractor) => void
   onCompleteOnboarding: (contractor: Contractor) => void
@@ -330,6 +341,7 @@ function OnboardingContractorsTable({
           <HamburgerMenu
             items={onboardingContractorActions(contractor, {
               onEdit,
+              onViewDetails,
               onRemove,
               onCancelSelfOnboarding,
               onCompleteOnboarding,
@@ -457,6 +469,7 @@ function ContractorListContent() {
     if (msg) {
       setSuccessMessage(msg)
       setSearchParams({}, { replace: true })
+      queryClient.removeQueries({ queryKey: ['@gusto/embedded-api', 'Contractors'] })
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
   const [selectedTab, setSelectedTab] = useState('active')
@@ -633,6 +646,9 @@ function ContractorListContent() {
           <OnboardingContractorsTable
             contractors={contractors}
             isFetching={isPending}
+            onViewDetails={contractor => {
+              void navigate(contractor.uuid)
+            }}
             onEdit={contractor => {
               const status = contractor.onboardingStatus
               if (
