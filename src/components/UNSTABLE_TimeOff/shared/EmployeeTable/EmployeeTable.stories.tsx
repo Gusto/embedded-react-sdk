@@ -121,6 +121,22 @@ function useSearchState() {
   }
 }
 
+export const SearchActive = () => {
+  const [searchValue, setSearchValue] = useState('Alex')
+
+  return (
+    <EmployeeTable<StoryEmployee>
+      data={mockEmployees}
+      searchValue={searchValue}
+      onSearchChange={setSearchValue}
+      onSearchClear={() => {
+        setSearchValue('')
+      }}
+      additionalColumns={[{ key: 'department' as keyof StoryEmployee, title: 'Department' }]}
+    />
+  )
+}
+
 export const SelectEmployees = () => {
   const search = useSearchState()
   const [selected, setSelected] = useState(new Set())
