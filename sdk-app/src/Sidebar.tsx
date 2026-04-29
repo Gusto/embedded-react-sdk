@@ -39,7 +39,7 @@ function CategorySection({
     return items.filter(item => item.name.toLowerCase().includes(q))
   }, [items, searchQuery])
 
-  if (filteredItems.length === 0) return null
+  if (searchQuery && filteredItems.length === 0) return null
 
   const displayCategory =
     mode === 'preview' && category === 'InformationRequests' ? 'Info Requests' : category
