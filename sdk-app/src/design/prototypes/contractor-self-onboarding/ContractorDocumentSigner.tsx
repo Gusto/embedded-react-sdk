@@ -94,7 +94,12 @@ const Root = ({ contractorId, className }: ContractorDocumentSignerProps) => {
         title: '',
         render: (doc: Document) =>
           doc.signedAt ? null : (
-            <Components.Button variant="secondary" onClick={() => { handleRequestSign(doc); }}>
+            <Components.Button
+              variant="secondary"
+              onClick={() => {
+                handleRequestSign(doc)
+              }}
+            >
               Sign document
             </Components.Button>
           ),
