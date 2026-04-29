@@ -1,4 +1,5 @@
 import { ModeSwitcher } from './ModeSwitcher'
+import { ThemeSwitcher } from './ThemeSwitcher'
 import { useAppMode } from './useAppMode'
 import { useCompanyName } from './design/useCompanyName'
 import type { TokenStatus } from './useDemoManager'
@@ -97,6 +98,7 @@ export function TopBar({ companyId, tokenStatus, onOpenSettings }: TopBarProps) 
         </div>
 
         <div className={styles.actions}>
+          <ThemeSwitcher />
           <ModeSwitcher />
           <button className={styles.settingsBtn} onClick={onOpenSettings} type="button">
             <SettingsIcon />

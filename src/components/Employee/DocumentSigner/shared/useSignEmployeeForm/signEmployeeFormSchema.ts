@@ -8,7 +8,6 @@ import {
 
 export const SignEmployeeFormErrorCodes = {
   REQUIRED: 'REQUIRED',
-  CONFIRMATION_REQUIRED: 'CONFIRMATION_REQUIRED',
 } as const
 
 export type SignEmployeeFormErrorCode =
@@ -133,9 +132,13 @@ const ALL_PREPARER_FIELDS = PREPARER_FIELDS_BY_INDEX.flat()
 
 // ── Field validators ───────────────────────────────────────────────────
 
+const agreeValidator = z.boolean().refine(val => val, {
+  message: SignEmployeeFormErrorCodes.REQUIRED,
+})
+
 const fieldValidators = {
   signature: z.string(),
-  confirmSignature: z.boolean(),
+  confirmSignature: agreeValidator,
   usedPreparer: z.enum(['yes', 'no']),
 
   // Preparer 1
@@ -147,7 +150,7 @@ const fieldValidators = {
   [PREPARER_1.state]: z.string(),
   [PREPARER_1.zip]: z.string(),
   [PREPARER_1.signature]: z.string(),
-  [PREPARER_1.agree]: z.boolean(),
+  [PREPARER_1.agree]: agreeValidator,
 
   // Preparer 2
   [PREPARER_2.firstName]: z.string(),
@@ -158,7 +161,7 @@ const fieldValidators = {
   [PREPARER_2.state]: z.string(),
   [PREPARER_2.zip]: z.string(),
   [PREPARER_2.signature]: z.string(),
-  [PREPARER_2.agree]: z.boolean(),
+  [PREPARER_2.agree]: agreeValidator,
 
   // Preparer 3
   [PREPARER_3.firstName]: z.string(),
@@ -169,7 +172,7 @@ const fieldValidators = {
   [PREPARER_3.state]: z.string(),
   [PREPARER_3.zip]: z.string(),
   [PREPARER_3.signature]: z.string(),
-  [PREPARER_3.agree]: z.boolean(),
+  [PREPARER_3.agree]: agreeValidator,
 
   // Preparer 4
   [PREPARER_4.firstName]: z.string(),
@@ -180,7 +183,7 @@ const fieldValidators = {
   [PREPARER_4.state]: z.string(),
   [PREPARER_4.zip]: z.string(),
   [PREPARER_4.signature]: z.string(),
-  [PREPARER_4.agree]: z.boolean(),
+  [PREPARER_4.agree]: agreeValidator,
 }
 
 export type SignEmployeeFormField = keyof typeof fieldValidators
@@ -227,28 +230,5 @@ export function createSignEmployeeFormSchema(options: SignEmployeeFormSchemaOpti
     requiredErrorCode: SignEmployeeFormErrorCodes.REQUIRED,
     mode: 'create',
     excludeFields,
-    superRefine: (data, ctx) => {
-      if (!data.confirmSignature) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ['confirmSignature'],
-          message: SignEmployeeFormErrorCodes.CONFIRMATION_REQUIRED,
-        })
-      }
-
-      if (isI9) {
-        const agreeFields = [PREPARER_1.agree, PREPARER_2.agree, PREPARER_3.agree, PREPARER_4.agree]
-        for (let index = 0; index < preparerCount; index++) {
-          const agreeName = agreeFields[index]!
-          if (!(data as Record<string, unknown>)[agreeName]) {
-            ctx.addIssue({
-              code: z.ZodIssueCode.custom,
-              path: [agreeName],
-              message: SignEmployeeFormErrorCodes.CONFIRMATION_REQUIRED,
-            })
-          }
-        }
-      }
-    },
   })
 }

@@ -189,6 +189,95 @@ describe('useEmployeeDetailsForm', () => {
       expect(createRequestBody).toBeNull()
     })
 
+    it('rejects submission when dateOfBirth is required but empty', async () => {
+      const { result } = renderHook(
+        () =>
+          useEmployeeDetailsForm({
+            companyId: 'company-1',
+            optionalFieldsToRequire: { create: ['dateOfBirth'] },
+            defaultValues: {
+              firstName: 'Jane',
+              lastName: 'Doe',
+              dateOfBirth: '',
+            },
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      const readyResult = result.current
+      assertReady(readyResult)
+
+      await act(async () => {
+        await readyResult.actions.onSubmit()
+      })
+
+      expect(createRequestBody).toBeNull()
+    })
+
+    it('accepts submission when dateOfBirth is provided in locale format (M/D/YYYY)', async () => {
+      const { result } = renderHook(
+        () =>
+          useEmployeeDetailsForm({
+            companyId: 'company-1',
+            optionalFieldsToRequire: { create: ['dateOfBirth'] },
+            defaultValues: {
+              firstName: 'Jane',
+              lastName: 'Doe',
+              dateOfBirth: '4/16/1998',
+            },
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      const readyResult = result.current
+      assertReady(readyResult)
+
+      await act(async () => {
+        await readyResult.actions.onSubmit()
+      })
+
+      expect(createRequestBody).not.toBeNull()
+      expect(createRequestBody?.date_of_birth).toBe('1998-04-16')
+    })
+
+    it('accepts submission when dateOfBirth is provided in ISO format (YYYY-MM-DD)', async () => {
+      const { result } = renderHook(
+        () =>
+          useEmployeeDetailsForm({
+            companyId: 'company-1',
+            optionalFieldsToRequire: { create: ['dateOfBirth'] },
+            defaultValues: {
+              firstName: 'Jane',
+              lastName: 'Doe',
+              dateOfBirth: '1998-04-16',
+            },
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      const readyResult = result.current
+      assertReady(readyResult)
+
+      await act(async () => {
+        await readyResult.actions.onSubmit()
+      })
+
+      expect(createRequestBody).not.toBeNull()
+      expect(createRequestBody?.date_of_birth).toBe('1998-04-16')
+    })
+
     it('accepts submission when requiredFields email is required and provided', async () => {
       const { result } = renderHook(
         () =>

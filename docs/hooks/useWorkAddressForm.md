@@ -17,15 +17,16 @@ import { useWorkAddressForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
 
 `useWorkAddressForm` accepts a single options object:
 
-| Prop                     | Type                                                                                 | Required | Default      | Description                                                                                                                                                                                                    |
-| ------------------------ | ------------------------------------------------------------------------------------ | -------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `companyId`              | `string`                                                                             | Yes      | —            | The UUID of the company. Used to fetch available locations.                                                                                                                                                    |
-| `employeeId`             | `string`                                                                             | No       | —            | The UUID of the employee. Optional for composed form scenarios where the ID isn't known until a prior form submits — pass it via `onSubmit` options instead. Required for update mode (fetches existing data). |
-| `withEffectiveDateField` | `boolean`                                                                            | No       | `true`       | Whether to include the effective date field. When `false`, pass effective date via `onSubmit` options instead.                                                                                                 |
-| `requiredFields`         | `WorkAddressField[] \| { create?: WorkAddressField[], update?: WorkAddressField[] }` | No       | —            | Additional fields to make required beyond API defaults. A flat array applies to both modes; an object targets specific modes.                                                                                  |
-| `defaultValues`          | `Partial<WorkAddressFormData>`                                                       | No       | —            | Pre-fill form values. Server data takes precedence when editing an existing work address.                                                                                                                      |
-| `validationMode`         | `'onSubmit' \| 'onBlur' \| 'onChange' \| 'onTouched' \| 'all'`                       | No       | `'onSubmit'` | When validation runs. Passed through to react-hook-form.                                                                                                                                                       |
-| `shouldFocusError`       | `boolean`                                                                            | No       | `true`       | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`.                                                                                                                |
+| Prop                     | Type                                                                                 | Required | Default      | Description                                                                                                                                                                                                                                    |
+| ------------------------ | ------------------------------------------------------------------------------------ | -------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `companyId`              | `string`                                                                             | Yes      | —            | The UUID of the company. Used to fetch available locations.                                                                                                                                                                                    |
+| `employeeId`             | `string`                                                                             | Yes      | —            | The UUID of the employee. For composed create flows where the id isn't known until a prior form submits, pass `''` here and supply the real id at submit time via `WorkAddressSubmitOptions.employeeId`.                                       |
+| `workAddressUuid`        | `string`                                                                             | No       | —            | When set, the form loads that row via GET `/v1/work_addresses/{work_address_uuid}` and the hook is in update mode. When omitted, the hook is in create mode (POST). Use `useCurrentWorkAddressForm` to auto-resolve the employee's active row. |
+| `withEffectiveDateField` | `boolean`                                                                            | No       | `true`       | Whether to include the effective date field. When `false`, pass effective date via `onSubmit` options instead.                                                                                                                                 |
+| `requiredFields`         | `WorkAddressField[] \| { create?: WorkAddressField[], update?: WorkAddressField[] }` | No       | —            | Additional fields to make required beyond API defaults. A flat array applies to both modes; an object targets specific modes.                                                                                                                  |
+| `defaultValues`          | `Partial<WorkAddressFormData>`                                                       | No       | —            | Pre-fill form values. Server data takes precedence when editing an existing work address.                                                                                                                                                      |
+| `validationMode`         | `'onSubmit' \| 'onBlur' \| 'onChange' \| 'onTouched' \| 'all'`                       | No       | `'onSubmit'` | When validation runs. Passed through to react-hook-form.                                                                                                                                                                                       |
+| `shouldFocusError`       | `boolean`                                                                            | No       | `true`       | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`.                                                                                                                                                |
 
 ### WorkAddressField
 
@@ -79,8 +80,8 @@ The hook returns a discriminated union on `isLoading`.
 {
   isLoading: false
   data: {
+    /** The address row loaded for update; `null` in create mode. */
     workAddress: EmployeeWorkAddress | null
-    workAddresses: EmployeeWorkAddress[]
     companyLocations: Location[]
   }
   status: {
@@ -103,9 +104,11 @@ The hook returns a discriminated union on `isLoading`.
 }
 ```
 
+`useWorkAddressForm` is single-row by design — it fetches the row under edit (when `workAddressUuid` is provided) and the company's locations, but it does not list the employee's other work addresses. For surfaces that need the active row resolved automatically, use `useCurrentWorkAddressForm`. For full edit history / change-management UIs, use `useWorkAddressManagement`, which exposes `employeeWorkAddresses` on its `data`.
+
 ### Mode detection
 
-The hook automatically detects create vs. update mode based on whether the employee has an active work address. If an active work address exists, the hook enters update mode. Otherwise, it enters create mode.
+The hook is in update mode when `workAddressUuid` is provided (the row is fetched via GET `/v1/work_addresses/{work_address_uuid}`) and in create mode otherwise.
 
 ### Submit callbacks
 

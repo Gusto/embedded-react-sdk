@@ -10,6 +10,11 @@ import type {
   FlowBreadcrumb,
   BreadcrumbNodes,
 } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
+import type { FlowHeaderConfig } from '@/components/Flow/useFlow'
+
+const breadcrumbsHeader = (
+  fields: Omit<Extract<FlowHeaderConfig, { type: 'breadcrumbs' }>, 'type'>,
+): FlowHeaderConfig => ({ type: 'breadcrumbs', ...fields })
 
 describe('buildBreadcrumbs', () => {
   it('should build breadcrumbs for a single node with no parent', () => {
@@ -268,25 +273,29 @@ describe('buildBreadcrumbs', () => {
 describe('hideBreadcrumb', () => {
   it('should remove the target breadcrumb from all trails', () => {
     const context = {
-      breadcrumbs: {
-        configuration: [{ id: 'configuration', label: 'Config' } as FlowBreadcrumb],
-        overview: [
-          { id: 'configuration', label: 'Config' } as FlowBreadcrumb,
-          { id: 'overview', label: 'Overview' } as FlowBreadcrumb,
-        ],
-        receipts: [
-          { id: 'configuration', label: 'Config' } as FlowBreadcrumb,
-          { id: 'overview', label: 'Overview' } as FlowBreadcrumb,
-          { id: 'receipts', label: 'Receipts' } as FlowBreadcrumb,
-        ],
-      },
+      header: breadcrumbsHeader({
+        breadcrumbs: {
+          configuration: [{ id: 'configuration', label: 'Config' } as FlowBreadcrumb],
+          overview: [
+            { id: 'configuration', label: 'Config' } as FlowBreadcrumb,
+            { id: 'overview', label: 'Overview' } as FlowBreadcrumb,
+          ],
+          receipts: [
+            { id: 'configuration', label: 'Config' } as FlowBreadcrumb,
+            { id: 'overview', label: 'Overview' } as FlowBreadcrumb,
+            { id: 'receipts', label: 'Receipts' } as FlowBreadcrumb,
+          ],
+        },
+      }),
     }
 
     const result = hideBreadcrumb('configuration', context)
+    const breadcrumbs =
+      result.header.type === 'breadcrumbs' ? (result.header.breadcrumbs ?? {}) : {}
 
-    expect(result.breadcrumbs.configuration).toEqual([])
-    expect(result.breadcrumbs.overview).toEqual([{ id: 'overview', label: 'Overview' }])
-    expect(result.breadcrumbs.receipts).toEqual([
+    expect(breadcrumbs.configuration).toEqual([])
+    expect(breadcrumbs.overview).toEqual([{ id: 'overview', label: 'Overview' }])
+    expect(breadcrumbs.receipts).toEqual([
       { id: 'overview', label: 'Overview' },
       { id: 'receipts', label: 'Receipts' },
     ])
@@ -294,17 +303,21 @@ describe('hideBreadcrumb', () => {
 
   it('should not modify breadcrumbs that do not match the target id', () => {
     const context = {
-      breadcrumbs: {
-        overview: [
-          { id: 'configuration', label: 'Config' } as FlowBreadcrumb,
-          { id: 'overview', label: 'Overview' } as FlowBreadcrumb,
-        ],
-      },
+      header: breadcrumbsHeader({
+        breadcrumbs: {
+          overview: [
+            { id: 'configuration', label: 'Config' } as FlowBreadcrumb,
+            { id: 'overview', label: 'Overview' } as FlowBreadcrumb,
+          ],
+        },
+      }),
     }
 
     const result = hideBreadcrumb('other', context)
+    const breadcrumbs =
+      result.header.type === 'breadcrumbs' ? (result.header.breadcrumbs ?? {}) : {}
 
-    expect(result.breadcrumbs.overview).toEqual([
+    expect(breadcrumbs.overview).toEqual([
       { id: 'configuration', label: 'Config' },
       { id: 'overview', label: 'Overview' },
     ])
@@ -312,9 +325,11 @@ describe('hideBreadcrumb', () => {
 
   it('should preserve other context properties', () => {
     const context = {
-      breadcrumbs: {
-        step: [{ id: 'step', label: 'Step' } as FlowBreadcrumb],
-      },
+      header: breadcrumbsHeader({
+        breadcrumbs: {
+          step: [{ id: 'step', label: 'Step' } as FlowBreadcrumb],
+        },
+      }),
       companyId: 'test-company',
       payrollUuid: 'payroll-123',
     }
@@ -326,53 +341,73 @@ describe('hideBreadcrumb', () => {
   })
 
   it('should handle empty breadcrumbs', () => {
-    const context = { breadcrumbs: {} }
+    const context = { header: breadcrumbsHeader({ breadcrumbs: {} }) }
+
+    const result = hideBreadcrumb('anything', context)
+    const breadcrumbs =
+      result.header.type === 'breadcrumbs' ? (result.header.breadcrumbs ?? {}) : {}
+
+    expect(breadcrumbs).toEqual({})
+  })
+
+  it('should default to a breadcrumbs header when none is set', () => {
+    const context: { header?: FlowHeaderConfig | null } = {}
 
     const result = hideBreadcrumb('anything', context)
 
-    expect(result.breadcrumbs).toEqual({})
+    expect(result.header).toEqual({ type: 'breadcrumbs', breadcrumbs: {} })
   })
 })
 
 describe('lockBreadcrumb', () => {
   it('should mark the target breadcrumb as non-navigable across all trails', () => {
     const context = {
-      breadcrumbs: {
-        configuration: [{ id: 'configuration', label: 'Config' } as FlowBreadcrumb],
-        overview: [
-          { id: 'configuration', label: 'Config' } as FlowBreadcrumb,
-          { id: 'overview', label: 'Overview' } as FlowBreadcrumb,
-        ],
-      },
+      header: breadcrumbsHeader({
+        breadcrumbs: {
+          configuration: [{ id: 'configuration', label: 'Config' } as FlowBreadcrumb],
+          overview: [
+            { id: 'configuration', label: 'Config' } as FlowBreadcrumb,
+            { id: 'overview', label: 'Overview' } as FlowBreadcrumb,
+          ],
+        },
+      }),
     }
 
     const result = lockBreadcrumb('configuration', context)
+    const breadcrumbs =
+      result.header.type === 'breadcrumbs' ? (result.header.breadcrumbs ?? {}) : {}
 
-    expect(result.breadcrumbs.configuration![0]!.isNavigable).toBe(false)
-    expect(result.breadcrumbs.overview![0]!.isNavigable).toBe(false)
-    expect(result.breadcrumbs.overview![1]!.isNavigable).toBeUndefined()
+    expect(breadcrumbs.configuration![0]!.isNavigable).toBe(false)
+    expect(breadcrumbs.overview![0]!.isNavigable).toBe(false)
+    expect(breadcrumbs.overview![1]!.isNavigable).toBeUndefined()
   })
 
   it('should not modify breadcrumbs that do not match the target id', () => {
     const context = {
-      breadcrumbs: {
-        overview: [
-          { id: 'configuration', label: 'Config' } as FlowBreadcrumb,
-          { id: 'overview', label: 'Overview' } as FlowBreadcrumb,
-        ],
-      },
+      header: breadcrumbsHeader({
+        breadcrumbs: {
+          overview: [
+            { id: 'configuration', label: 'Config' } as FlowBreadcrumb,
+            { id: 'overview', label: 'Overview' } as FlowBreadcrumb,
+          ],
+        },
+      }),
     }
 
     const result = lockBreadcrumb('configuration', context)
+    const breadcrumbs =
+      result.header.type === 'breadcrumbs' ? (result.header.breadcrumbs ?? {}) : {}
 
-    expect(result.breadcrumbs.overview![1]).toEqual({ id: 'overview', label: 'Overview' })
+    expect(breadcrumbs.overview![1]).toEqual({ id: 'overview', label: 'Overview' })
   })
 
   it('should preserve other context properties', () => {
     const context = {
-      breadcrumbs: {
-        step: [{ id: 'step', label: 'Step' } as FlowBreadcrumb],
-      },
+      header: breadcrumbsHeader({
+        breadcrumbs: {
+          step: [{ id: 'step', label: 'Step' } as FlowBreadcrumb],
+        },
+      }),
       companyId: 'test-company',
       payrollUuid: 'payroll-123',
     }
@@ -384,11 +419,13 @@ describe('lockBreadcrumb', () => {
   })
 
   it('should handle empty breadcrumbs', () => {
-    const context = { breadcrumbs: {} }
+    const context = { header: breadcrumbsHeader({ breadcrumbs: {} }) }
 
     const result = lockBreadcrumb('anything', context)
+    const breadcrumbs =
+      result.header.type === 'breadcrumbs' ? (result.header.breadcrumbs ?? {}) : {}
 
-    expect(result.breadcrumbs).toEqual({})
+    expect(breadcrumbs).toEqual({})
   })
 })
 
@@ -510,78 +547,86 @@ describe('resolveBreadcrumbVariables', () => {
 describe('updateBreadcrumbs', () => {
   it('should add breadcrumbs for a new state', () => {
     const context = {
-      breadcrumbs: {
-        list: [{ id: 'list', label: 'List' }],
-        configuration: [
-          { id: 'list', label: 'List' },
-          { id: 'configuration', label: 'Configuration' },
-        ],
-      },
-      currentBreadcrumbId: 'list',
+      header: breadcrumbsHeader({
+        breadcrumbs: {
+          list: [{ id: 'list', label: 'List' }],
+          configuration: [
+            { id: 'list', label: 'List' },
+            { id: 'configuration', label: 'Configuration' },
+          ],
+        },
+        currentBreadcrumbId: 'list',
+      }),
     }
 
     const result = updateBreadcrumbs('configuration', context)
 
-    expect(result.currentBreadcrumbId).toBe('configuration')
-    expect(result.breadcrumbs.configuration).toEqual([
+    expect(result.header.currentBreadcrumbId).toBe('configuration')
+    expect(result.header.breadcrumbs?.configuration).toEqual([
       { id: 'list', label: 'List', variables: {} },
       { id: 'configuration', label: 'Configuration', variables: {} },
     ])
   })
 
-  it('should initialize breadcrumbs when context has empty breadcrumbs', () => {
-    const context = {
+  it('should initialize a breadcrumbs header when one is missing', () => {
+    const context: { someOtherProp: string; header?: FlowHeaderConfig | null } = {
       someOtherProp: 'value',
-      breadcrumbs: {},
     }
 
     const result = updateBreadcrumbs('newState', context)
 
-    expect(result.breadcrumbs).toEqual({
-      newState: [],
+    expect(result.header).toEqual({
+      type: 'breadcrumbs',
+      breadcrumbs: { newState: [] },
+      currentBreadcrumbId: 'newState',
     })
-    expect(result.currentBreadcrumbId).toBe('newState')
   })
 
   it('should handle empty breadcrumb trail for new state', () => {
     const context = {
-      breadcrumbs: {
-        existingState: [{ id: 'existingState', label: 'Existing' }],
-      },
-      currentBreadcrumbId: 'existingState',
+      header: breadcrumbsHeader({
+        breadcrumbs: {
+          existingState: [{ id: 'existingState', label: 'Existing' }],
+        },
+        currentBreadcrumbId: 'existingState',
+      }),
     }
 
     const result = updateBreadcrumbs('newState', context)
 
-    expect(result.breadcrumbs.newState).toEqual([])
-    expect(result.breadcrumbs.existingState).toEqual([{ id: 'existingState', label: 'Existing' }])
+    expect(result.header.breadcrumbs?.newState).toEqual([])
+    expect(result.header.breadcrumbs?.existingState).toEqual([
+      { id: 'existingState', label: 'Existing' },
+    ])
   })
 
   it('should preserve existing breadcrumbs for other states', () => {
     const context = {
-      breadcrumbs: {
-        list: [{ id: 'list', label: 'List' }],
-        configuration: [
-          { id: 'list', label: 'List' },
-          { id: 'configuration', label: 'Configuration' },
-        ],
-        overview: [
-          { id: 'list', label: 'List' },
-          { id: 'configuration', label: 'Configuration' },
-          { id: 'overview', label: 'Overview' },
-        ],
-      },
-      currentBreadcrumbId: 'configuration',
+      header: breadcrumbsHeader({
+        breadcrumbs: {
+          list: [{ id: 'list', label: 'List' }],
+          configuration: [
+            { id: 'list', label: 'List' },
+            { id: 'configuration', label: 'Configuration' },
+          ],
+          overview: [
+            { id: 'list', label: 'List' },
+            { id: 'configuration', label: 'Configuration' },
+            { id: 'overview', label: 'Overview' },
+          ],
+        },
+        currentBreadcrumbId: 'configuration',
+      }),
     }
 
     const result = updateBreadcrumbs('overview', context)
 
-    expect(result.breadcrumbs.list).toEqual([{ id: 'list', label: 'List' }])
-    expect(result.breadcrumbs.configuration).toEqual([
+    expect(result.header.breadcrumbs?.list).toEqual([{ id: 'list', label: 'List' }])
+    expect(result.header.breadcrumbs?.configuration).toEqual([
       { id: 'list', label: 'List' },
       { id: 'configuration', label: 'Configuration' },
     ])
-    expect(result.currentBreadcrumbId).toBe('overview')
+    expect(result.header.currentBreadcrumbId).toBe('overview')
   })
 
   it('should preserve other context properties', () => {
@@ -589,8 +634,7 @@ describe('updateBreadcrumbs', () => {
       payrollId: 'payroll-123',
       companyId: 'company-456',
       someFlag: true,
-      breadcrumbs: {},
-      currentBreadcrumbId: 'initial',
+      header: breadcrumbsHeader({ breadcrumbs: {}, currentBreadcrumbId: 'initial' }),
     }
 
     const result = updateBreadcrumbs('newState', context)
@@ -598,7 +642,7 @@ describe('updateBreadcrumbs', () => {
     expect(result.payrollId).toBe('payroll-123')
     expect(result.companyId).toBe('company-456')
     expect(result.someFlag).toBe(true)
-    expect(result.currentBreadcrumbId).toBe('newState')
+    expect(result.header.currentBreadcrumbId).toBe('newState')
   })
 
   it('should handle complex real-world scenario with multiple state transitions', () => {
@@ -606,19 +650,21 @@ describe('updateBreadcrumbs', () => {
       firstName: 'Alice',
       lastName: 'Cooper',
       employeeId: 'emp-789',
-      breadcrumbs: {
-        list: [{ id: 'list', label: 'List' }],
-        configuration: [
-          { id: 'list', label: 'List' },
-          { id: 'configuration', label: 'Configuration' },
-        ],
-        editEmployee: [
-          { id: 'list', label: 'List' },
-          { id: 'configuration', label: 'Configuration' },
-          { id: 'editEmployee', label: 'Edit Employee' },
-        ],
-      },
-      currentBreadcrumbId: 'configuration',
+      header: breadcrumbsHeader({
+        breadcrumbs: {
+          list: [{ id: 'list', label: 'List' }],
+          configuration: [
+            { id: 'list', label: 'List' },
+            { id: 'configuration', label: 'Configuration' },
+          ],
+          editEmployee: [
+            { id: 'list', label: 'List' },
+            { id: 'configuration', label: 'Configuration' },
+            { id: 'editEmployee', label: 'Edit Employee' },
+          ],
+        },
+        currentBreadcrumbId: 'configuration',
+      }),
     }
 
     const result = updateBreadcrumbs('editEmployee', initialContext, {
@@ -626,7 +672,7 @@ describe('updateBreadcrumbs', () => {
       lastName: '{{lastName}}',
     })
 
-    expect(result.breadcrumbs.editEmployee).toEqual([
+    expect(result.header.breadcrumbs?.editEmployee).toEqual([
       { id: 'list', label: 'List', variables: { firstName: 'Alice', lastName: 'Cooper' } },
       {
         id: 'configuration',

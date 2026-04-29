@@ -1,4 +1,4 @@
-export { EmployeeList } from './employee-list/onboarding/EmployeeList'
+export { EmployeeList } from './EmployeeList/onboarding/EmployeeList'
 export { Deductions } from './Deductions'
 export { OnboardingSummary } from './OnboardingSummary'
 export { Profile } from './Profile'
@@ -13,6 +13,8 @@ export { SelfOnboardingFlow } from './SelfOnboardingFlow/SelfOnboardingFlow'
 export { EmployeeDocuments } from './EmployeeDocuments'
 export { DashboardFlow } from './Dashboard'
 export type { DashboardFlowProps } from './Dashboard'
+export { HomeAddress } from './HomeAddress/management/HomeAddress'
+export type { HomeAddressProps } from './HomeAddress/management/HomeAddress'
 
 export { EmploymentEligibility } from './DocumentSigner/EmploymentEligibility'
 export type { EmploymentEligibilityProps } from './DocumentSigner/EmploymentEligibility'
@@ -24,6 +26,9 @@ export type { TerminationSummaryProps } from './Terminations/TerminationSummary/
 export { TerminationFlow } from './Terminations/TerminationFlow/TerminationFlow'
 export type { TerminationFlowProps } from './Terminations/TerminationFlow/TerminationFlowComponents'
 export type { PayrollOption } from './Terminations/types'
+
+export { WorkAddress } from './WorkAddress/management/WorkAddress'
+export type { WorkAddressProps } from './WorkAddress/management/WorkAddress'
 
 // TODO: Remove once we have migrated partners to use the new FederalTaxes and StateTaxes components
 export { Taxes } from './Taxes'

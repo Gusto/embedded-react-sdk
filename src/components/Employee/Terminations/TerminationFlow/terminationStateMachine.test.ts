@@ -16,9 +16,11 @@ function createTestMachine(initialState: TerminationState = 'form') {
       component: () => null,
       companyId: 'company-123',
       employeeId: 'employee-123',
-      progressBarType: 'breadcrumbs' as const,
-      breadcrumbs: buildBreadcrumbs(terminationBreadcrumbNodes),
-      currentBreadcrumbId: initialState,
+      header: {
+        type: 'breadcrumbs' as const,
+        breadcrumbs: buildBreadcrumbs(terminationBreadcrumbNodes),
+        currentBreadcrumbId: initialState,
+      },
     }),
   )
 }
@@ -31,6 +33,11 @@ function createService(initialState: TerminationState = 'form') {
 
 function send(service: ReturnType<typeof createService>, type: string, payload?: unknown) {
   ;(service.send as SendFunction<string>)({ type, payload })
+}
+
+function currentBreadcrumb(service: ReturnType<typeof createService>) {
+  const header = service.context.header
+  return header?.type === 'breadcrumbs' ? header.currentBreadcrumbId : undefined
 }
 
 function toSummary(service: ReturnType<typeof createService>) {
@@ -73,7 +80,7 @@ describe('terminationStateMachine', () => {
       expect(service.machine.current).toBe('summary')
       expect(service.context.payrollOption).toBe('dismissalPayroll')
       expect(service.context.payrollUuid).toBe('payroll-123')
-      expect(service.context.currentBreadcrumbId).toBe('summary')
+      expect(currentBreadcrumb(service)).toBe('summary')
       expect(service.context.alerts).toBeUndefined()
     })
 
@@ -87,7 +94,7 @@ describe('terminationStateMachine', () => {
 
       expect(service.machine.current).toBe('summary')
       expect(service.context.payrollOption).toBeUndefined()
-      expect(service.context.currentBreadcrumbId).toBe('summary')
+      expect(currentBreadcrumb(service)).toBe('summary')
       expect(service.context.alerts).toBeUndefined()
     })
   })
@@ -102,7 +109,7 @@ describe('terminationStateMachine', () => {
       })
 
       expect(service.machine.current).toBe('form')
-      expect(service.context.currentBreadcrumbId).toBe('form')
+      expect(currentBreadcrumb(service)).toBe('form')
       expect(service.context.alerts).toBeUndefined()
     })
 
@@ -116,7 +123,7 @@ describe('terminationStateMachine', () => {
       })
 
       expect(service.machine.current).toBe('form')
-      expect(service.context.currentBreadcrumbId).toBe('form')
+      expect(currentBreadcrumb(service)).toBe('form')
       expect(service.context.payrollOption).toBeUndefined()
       expect(service.context.alerts).toEqual([{ type: 'success', title: 'Cancelled' }])
     })
@@ -133,7 +140,7 @@ describe('terminationStateMachine', () => {
 
       expect(service.machine.current).toBe('dismissalPayroll')
       expect(service.context.payrollUuid).toBe('payroll-456')
-      expect(service.context.progressBarType).toBeNull()
+      expect(currentBreadcrumb(service)).toBeUndefined()
     })
 
     it('uses existing payrollUuid when event payload has none', () => {
@@ -160,7 +167,7 @@ describe('terminationStateMachine', () => {
 
       expect(service.machine.current).toBe('dismissalPayroll')
       expect(service.context.payrollUuid).toBeUndefined()
-      expect(service.context.progressBarType).toBeNull()
+      expect(currentBreadcrumb(service)).toBeUndefined()
     })
 
     it('navigates to form via breadcrumb', () => {
@@ -170,8 +177,7 @@ describe('terminationStateMachine', () => {
       send(service, componentEvents.BREADCRUMB_NAVIGATE, { key: 'form' })
 
       expect(service.machine.current).toBe('form')
-      expect(service.context.currentBreadcrumbId).toBe('form')
-      expect(service.context.progressBarType).toBe('breadcrumbs')
+      expect(currentBreadcrumb(service)).toBe('form')
     })
   })
 
@@ -184,7 +190,7 @@ describe('terminationStateMachine', () => {
 
       expect(service.machine.current).toBe('payrollLanding')
       expect(service.context.payrollOption).toBeUndefined()
-      expect(service.context.progressBarType).toBeNull()
+      expect(currentBreadcrumb(service)).toBeUndefined()
     })
 
     it('navigates to summary via breadcrumb', () => {
@@ -194,8 +200,7 @@ describe('terminationStateMachine', () => {
       send(service, componentEvents.BREADCRUMB_NAVIGATE, { key: 'summary' })
 
       expect(service.machine.current).toBe('summary')
-      expect(service.context.currentBreadcrumbId).toBe('summary')
-      expect(service.context.progressBarType).toBe('breadcrumbs')
+      expect(currentBreadcrumb(service)).toBe('summary')
     })
 
     it('navigates to form via breadcrumb', () => {
@@ -205,8 +210,7 @@ describe('terminationStateMachine', () => {
       send(service, componentEvents.BREADCRUMB_NAVIGATE, { key: 'form' })
 
       expect(service.machine.current).toBe('form')
-      expect(service.context.currentBreadcrumbId).toBe('form')
-      expect(service.context.progressBarType).toBe('breadcrumbs')
+      expect(currentBreadcrumb(service)).toBe('form')
     })
   })
 
@@ -220,8 +224,7 @@ describe('terminationStateMachine', () => {
       send(service, componentEvents.BREADCRUMB_NAVIGATE, { key: 'summary' })
 
       expect(service.machine.current).toBe('summary')
-      expect(service.context.currentBreadcrumbId).toBe('summary')
-      expect(service.context.progressBarType).toBe('breadcrumbs')
+      expect(currentBreadcrumb(service)).toBe('summary')
     })
 
     it('navigates to form via breadcrumb', () => {
@@ -233,8 +236,7 @@ describe('terminationStateMachine', () => {
       send(service, componentEvents.BREADCRUMB_NAVIGATE, { key: 'form' })
 
       expect(service.machine.current).toBe('form')
-      expect(service.context.currentBreadcrumbId).toBe('form')
-      expect(service.context.progressBarType).toBe('breadcrumbs')
+      expect(currentBreadcrumb(service)).toBe('form')
     })
   })
 
@@ -284,7 +286,7 @@ describe('terminationStateMachine', () => {
       send(service, componentEvents.PAYROLL_EXIT_FLOW)
       expect(service.machine.current).toBe('payrollLanding')
       expect(service.context.payrollOption).toBeUndefined()
-      expect(service.context.progressBarType).toBeNull()
+      expect(currentBreadcrumb(service)).toBeUndefined()
     })
 
     it('supports form -> summary -> off-cycle payroll -> save and exit -> payrollLanding', () => {
@@ -308,7 +310,7 @@ describe('terminationStateMachine', () => {
       send(service, componentEvents.PAYROLL_EXIT_FLOW)
       expect(service.machine.current).toBe('payrollLanding')
       expect(service.context.payrollOption).toBeUndefined()
-      expect(service.context.progressBarType).toBeNull()
+      expect(currentBreadcrumb(service)).toBeUndefined()
     })
 
     it('supports form -> summary -> cancel -> form with alert', () => {

@@ -103,25 +103,6 @@
         "companyUuid"
       ]
     },
-    "Company.SignatureForm": {
-      "endpoints": [
-        {
-          "method": "GET",
-          "path": "/v1/forms/:formId"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/forms/:formId/sign"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/forms/:formId/pdf"
-        }
-      ],
-      "variables": [
-        "formId"
-      ]
-    },
     "Company.DocumentSigner": {
       "endpoints": [
         {
@@ -137,12 +118,12 @@
           "path": "/v1/forms/:formId"
         },
         {
-          "method": "PUT",
-          "path": "/v1/forms/:formId/sign"
-        },
-        {
           "method": "GET",
           "path": "/v1/forms/:formId/pdf"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/forms/:formId/sign"
         }
       ],
       "variables": [
@@ -603,6 +584,10 @@
           "path": "/v1/employees/:employeeId/home_addresses"
         },
         {
+          "method": "GET",
+          "path": "/v1/home_addresses/:homeAddressUuid"
+        },
+        {
           "method": "POST",
           "path": "/v1/employees/:employeeId/home_addresses"
         },
@@ -613,6 +598,10 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/locations"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/work_addresses/:workAddressUuid"
         },
         {
           "method": "POST",
@@ -775,15 +764,15 @@
         },
         {
           "method": "GET",
+          "path": "/v1/employees/:employeeId/forms/:formId"
+        },
+        {
+          "method": "GET",
           "path": "/v1/employees/:employeeId/forms/:formId/pdf"
         },
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeId/forms/:formId/sign"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/forms/:formId"
         }
       ],
       "variables": [
@@ -852,6 +841,26 @@
       "variables": [
         "employeeId",
         "employeeUuid"
+      ]
+    },
+    "Employee.HomeAddress": {
+      "endpoints": [
+        {
+          "method": "DELETE",
+          "path": "/v1/home_addresses/:homeAddressUuid"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/home_addresses"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId"
+        }
+      ],
+      "variables": [
+        "employeeId",
+        "homeAddressUuid"
       ]
     },
     "Employee.EmploymentEligibility": {
@@ -927,6 +936,26 @@
       "variables": [
         "companyId",
         "employeeId"
+      ]
+    },
+    "Employee.WorkAddress": {
+      "endpoints": [
+        {
+          "method": "DELETE",
+          "path": "/v1/work_addresses/:workAddressUuid"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/work_addresses"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId"
+        }
+      ],
+      "variables": [
+        "employeeId",
+        "workAddressUuid"
       ]
     },
     "Employee.Taxes": {
@@ -1879,12 +1908,12 @@
           "path": "/v1/forms/:formId"
         },
         {
-          "method": "PUT",
-          "path": "/v1/forms/:formId/sign"
-        },
-        {
           "method": "GET",
           "path": "/v1/forms/:formId/pdf"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/forms/:formId/sign"
         },
         {
           "method": "PUT",
@@ -2230,6 +2259,10 @@
           "path": "/v1/employees/:employeeId/home_addresses"
         },
         {
+          "method": "GET",
+          "path": "/v1/home_addresses/:homeAddressUuid"
+        },
+        {
           "method": "POST",
           "path": "/v1/employees/:employeeId/home_addresses"
         },
@@ -2240,6 +2273,10 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/locations"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/work_addresses/:workAddressUuid"
         },
         {
           "method": "POST",
@@ -2301,15 +2338,15 @@
         },
         {
           "method": "GET",
+          "path": "/v1/employees/:employeeId/forms/:formId"
+        },
+        {
+          "method": "GET",
           "path": "/v1/employees/:employeeId/forms/:formId/pdf"
         },
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeId/forms/:formId/sign"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/forms/:formId"
         },
         {
           "method": "GET",
@@ -2372,6 +2409,10 @@
           "path": "/v1/employees/:employeeId/home_addresses"
         },
         {
+          "method": "GET",
+          "path": "/v1/home_addresses/:homeAddressUuid"
+        },
+        {
           "method": "POST",
           "path": "/v1/employees/:employeeId/home_addresses"
         },
@@ -2382,6 +2423,10 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/locations"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/work_addresses/:workAddressUuid"
         },
         {
           "method": "POST",

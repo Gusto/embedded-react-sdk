@@ -1,12 +1,16 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { screen, waitFor } from '@testing-library/react'
+import { http, HttpResponse } from 'msw'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { QueryClient } from '@tanstack/react-query'
 import { LocationForm } from './LocationForm'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { companyEvents } from '@/shared/constants'
-import { getCompanyLocation } from '@/test/mocks/apis/company_locations'
+import { basicLocation, getCompanyLocation, getLocation } from '@/test/mocks/apis/company_locations'
 import { server } from '@/test/mocks/server'
+import { API_BASE_URL } from '@/test/constants'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+import { GustoTestProvider } from '@/test/GustoTestApiProvider'
 
 describe('LocationForm', () => {
   const onEvent = vi.fn()
@@ -52,4 +56,173 @@ describe('LocationForm', () => {
   //     expect(onEvent).toHaveBeenCalledWith(companyEvents.COMPANY_LOCATION_CREATED)
   //   })
   // })
+})
+
+describe('LocationForm (edit mode)', () => {
+  const onEvent = vi.fn()
+  const user = userEvent.setup()
+
+  beforeEach(() => {
+    onEvent.mockReset()
+    setupApiTestMocks()
+    server.use(getLocation)
+    renderWithProviders(
+      <LocationForm companyId="company-123" locationId={basicLocation.uuid} onEvent={onEvent} />,
+    )
+  })
+
+  it('prepopulates address-type checkboxes from the existing location', async () => {
+    const mailingCheckbox = await screen.findByRole('checkbox', { name: /mailing address/i })
+    const filingCheckbox = await screen.findByRole('checkbox', { name: /filing address/i })
+
+    expect(mailingCheckbox).toBeChecked()
+    expect(filingCheckbox).not.toBeChecked()
+  })
+
+  it('disables the mailing-address checkbox when the location is already the mailing address', async () => {
+    const mailingCheckbox = await screen.findByRole('checkbox', { name: /mailing address/i })
+    const filingCheckbox = await screen.findByRole('checkbox', { name: /filing address/i })
+
+    expect(mailingCheckbox).toBeDisabled()
+    expect(filingCheckbox).not.toBeDisabled()
+  })
+
+  it('omits already-set address-type fields from the PUT request body', async () => {
+    let capturedRequestBody: Record<string, unknown> | undefined
+    server.use(
+      http.put(`${API_BASE_URL}/v1/locations/:location_id`, async ({ request }) => {
+        capturedRequestBody = (await request.json()) as Record<string, unknown>
+        return HttpResponse.json({
+          ...basicLocation,
+          version: '2.0',
+        })
+      }),
+    )
+
+    const submitButton = await screen.findByTestId('location-submit')
+    await user.click(submitButton)
+
+    await waitFor(() => {
+      expect(onEvent).toHaveBeenCalledWith(
+        companyEvents.COMPANY_LOCATION_UPDATED,
+        expect.anything(),
+      )
+    })
+
+    expect(capturedRequestBody).toBeDefined()
+    expect(capturedRequestBody).not.toHaveProperty('mailing_address')
+    expect(capturedRequestBody).toHaveProperty('filing_address', false)
+  })
+})
+
+describe('LocationForm (cross-location cache refresh)', () => {
+  const onEvent = vi.fn()
+  const user = userEvent.setup()
+
+  const locationAUuid = '11111111-1111-1111-1111-111111111111'
+  const locationBUuid = '22222222-2222-2222-2222-222222222222'
+
+  type LocationFixture = typeof basicLocation
+  type LocationStore = Record<string, LocationFixture>
+
+  function createLocationsStore(): LocationStore {
+    return {
+      [locationAUuid]: {
+        ...basicLocation,
+        uuid: locationAUuid,
+        street_1: '111 A St',
+        mailing_address: true,
+        filing_address: true,
+      },
+      [locationBUuid]: {
+        ...basicLocation,
+        uuid: locationBUuid,
+        street_1: '222 B St',
+        mailing_address: false,
+        filing_address: false,
+      },
+    }
+  }
+
+  let store: LocationStore
+  let queryClient: QueryClient
+
+  beforeEach(() => {
+    onEvent.mockReset()
+    setupApiTestMocks()
+    store = createLocationsStore()
+    queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    })
+
+    server.use(
+      http.get(`${API_BASE_URL}/v1/companies/:company_id/locations`, () =>
+        HttpResponse.json(Object.values(store)),
+      ),
+      http.get(`${API_BASE_URL}/v1/locations/:location_id`, ({ params }) => {
+        const loc = store[params.location_id as string]
+        return loc ? HttpResponse.json(loc) : new HttpResponse(null, { status: 404 })
+      }),
+      http.put(`${API_BASE_URL}/v1/locations/:location_id`, async ({ params, request }) => {
+        const body = (await request.json()) as Record<string, unknown>
+        const id = params.location_id as string
+        // Mirror the real API's set-only contract: assigning the mailing or
+        // filing address to one location silently flips the previous holder.
+        const setMailing = body.mailing_address === true
+        const setFiling = body.filing_address === true
+
+        if (setMailing) {
+          for (const otherId of Object.keys(store)) {
+            store[otherId] = { ...store[otherId]!, mailing_address: otherId === id }
+          }
+        }
+        if (setFiling) {
+          for (const otherId of Object.keys(store)) {
+            store[otherId] = { ...store[otherId]!, filing_address: otherId === id }
+          }
+        }
+        store[id] = { ...store[id]!, version: '2.0' }
+        return HttpResponse.json(store[id])
+      }),
+    )
+  })
+
+  it('refreshes the previous mailing-address holder when another location takes the flag', async () => {
+    const renderForm = (locationId: string) =>
+      render(
+        <GustoTestProvider queryClient={queryClient}>
+          <LocationForm companyId="company-123" locationId={locationId} onEvent={onEvent} />
+        </GustoTestProvider>,
+      )
+
+    // 1. Open Location A first so its retrieve query is populated in cache.
+    let view = renderForm(locationAUuid)
+    let mailingCheckbox = await screen.findByRole('checkbox', { name: /mailing address/i })
+    expect(mailingCheckbox).toBeChecked()
+    expect(mailingCheckbox).toBeDisabled()
+    view.unmount()
+
+    // 2. Open Location B and make it the new mailing address.
+    view = renderForm(locationBUuid)
+    mailingCheckbox = await screen.findByRole('checkbox', { name: /mailing address/i })
+    expect(mailingCheckbox).not.toBeChecked()
+    await user.click(mailingCheckbox)
+    await user.click(await screen.findByTestId('location-submit'))
+
+    await waitFor(() => {
+      expect(onEvent).toHaveBeenCalledWith(
+        companyEvents.COMPANY_LOCATION_UPDATED,
+        expect.anything(),
+      )
+    })
+    view.unmount()
+
+    // 3. Reopen Location A — its mailing flag was silently flipped server-side,
+    // and the form must reflect that on the *first* open after the swap.
+    onEvent.mockReset()
+    renderForm(locationAUuid)
+    mailingCheckbox = await screen.findByRole('checkbox', { name: /mailing address/i })
+    expect(mailingCheckbox).not.toBeChecked()
+    expect(mailingCheckbox).not.toBeDisabled()
+  })
 })

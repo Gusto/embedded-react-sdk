@@ -70,9 +70,13 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
       value: a.state as string,
     })) || []
 
-  // if deduction exists check if it has a type, else if does not exist default to garnishment
-  const [isGarnishment, setIsGarnishment] = useState(
-    (deductionType && SUPPORTED_GARNISHMENT_TYPES.includes(deductionType)) || !deduction,
+  // if deduction exists check if it has a type, else no default selection
+  const [isGarnishment, setIsGarnishment] = useState<boolean | null>(
+    deduction
+      ? deductionType && SUPPORTED_GARNISHMENT_TYPES.includes(deductionType)
+        ? true
+        : false
+      : null,
   )
   const [selectedGarnishment, setSelectedGarnishment] = useState<GarnishmentType>(
     deductionType || 'child_support',
@@ -96,7 +100,7 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
     ? deductionType
       ? 'garnishment'
       : 'custom'
-    : 'garnishment'
+    : undefined
 
   // filter out specific fipsCodes/counties as mapped to selected state agency
   // some states only have 1 fips code/county to cover the entire state,
@@ -176,40 +180,41 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
               )}
             </Flex>
 
-            <hr />
+            {isGarnishment !== null && <hr />}
           </>
         )}
 
-        {isGarnishment ? (
-          <>
-            {selectedGarnishment === 'child_support' ? (
-              <ChildSupportForm
-                deduction={deduction}
-                employeeId={employeeId}
-                handleStateAgencySelect={handleStateAgencySelect}
-                stateAgencies={stateAgencies}
-                counties={counties}
-                singleAllCountiesFipsCode={singleAllCountiesFipsCode}
-                selectedAgency={selectedAgency}
-                onCancel={handleCancel}
-              />
-            ) : (
-              <GarnishmentForm
-                deduction={deduction}
-                employeeId={employeeId}
-                selectedGarnishmentType={selectedGarnishment}
-                selectedGarnishmentTitle={garnishmentPlaceholder!}
-                onCancel={handleCancel}
-              />
-            )}
-          </>
-        ) : (
-          <CustomDeductionForm
-            deduction={deduction}
-            employeeId={employeeId}
-            onCancel={handleCancel}
-          />
-        )}
+        {isGarnishment !== null &&
+          (isGarnishment ? (
+            <>
+              {selectedGarnishment === 'child_support' ? (
+                <ChildSupportForm
+                  deduction={deduction}
+                  employeeId={employeeId}
+                  handleStateAgencySelect={handleStateAgencySelect}
+                  stateAgencies={stateAgencies}
+                  counties={counties}
+                  singleAllCountiesFipsCode={singleAllCountiesFipsCode}
+                  selectedAgency={selectedAgency}
+                  onCancel={handleCancel}
+                />
+              ) : (
+                <GarnishmentForm
+                  deduction={deduction}
+                  employeeId={employeeId}
+                  selectedGarnishmentType={selectedGarnishment}
+                  selectedGarnishmentTitle={garnishmentPlaceholder!}
+                  onCancel={handleCancel}
+                />
+              )}
+            </>
+          ) : (
+            <CustomDeductionForm
+              deduction={deduction}
+              employeeId={employeeId}
+              onCancel={handleCancel}
+            />
+          ))}
       </Grid>
     </section>
   )

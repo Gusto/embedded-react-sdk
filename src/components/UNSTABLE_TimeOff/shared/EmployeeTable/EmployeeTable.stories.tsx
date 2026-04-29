@@ -9,7 +9,7 @@ import PencilSvg from '@/assets/icons/pencil.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 
 export default {
-  title: 'TimeOff/EmployeeTable',
+  title: 'Domain/TimeOff/EmployeeTable',
   decorators: [
     (Story: React.ComponentType) => (
       <Suspense fallback={<div>Loading translations...</div>}>
@@ -119,6 +119,22 @@ function useSearchState() {
       setSearchValue('')
     },
   }
+}
+
+export const SearchActive = () => {
+  const [searchValue, setSearchValue] = useState('Alex')
+
+  return (
+    <EmployeeTable<StoryEmployee>
+      data={mockEmployees}
+      searchValue={searchValue}
+      onSearchChange={setSearchValue}
+      onSearchClear={() => {
+        setSearchValue('')
+      }}
+      additionalColumns={[{ key: 'department' as keyof StoryEmployee, title: 'Department' }]}
+    />
+  )
 }
 
 export const SelectEmployees = () => {

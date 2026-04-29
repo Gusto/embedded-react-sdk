@@ -32,6 +32,10 @@ export const getCompanyLocations = http.get(
   () => HttpResponse.json([basicLocation]),
 )
 
+export const getLocation = http.get(`${API_BASE_URL}/v1/locations/:location_id`, () =>
+  HttpResponse.json(basicLocation),
+)
+
 export const getEmptyCompanyLocations = http.get(
   `${API_BASE_URL}/v1/companies/:company_id/locations`,
   () => HttpResponse.json([]),
@@ -72,22 +76,19 @@ export const createCompanyLocation = http.post<PathParams, CompanyLocationReques
 const updateCompanyLocation = http.put<PathParams, PutV1LocationsLocationIdRequestBody>(
   `${API_BASE_URL}/v1/locations/:location_id`,
   async ({ request }) => {
-    const requestBody = await request.json()
+    const requestBody = (await request.json()) as Record<string, unknown>
+    // Mirror the real API's set-only contract: mailing_address / filing_address
+    // can be flipped from false -> true, but a request to flip true -> false
+    // is silently ignored. (A company must always have one of each.)
+    const nextMailing = requestBody.mailing_address === true ? true : basicLocation.mailing_address
+    const nextFiling = requestBody.filing_address === true ? true : basicLocation.filing_address
+
     return HttpResponse.json({
+      ...basicLocation,
+      ...requestBody,
       uuid: 'location_uuid',
-      version: '1.0',
-      company_uuid: '789e4567-e89b-12d3-a456-426614174001',
-      phone_number: requestBody.phoneNumber,
-      street_1: requestBody.street1,
-      street_2: requestBody.street2,
-      city: requestBody.city,
-      state: requestBody.state,
-      zip: requestBody.zip,
-      country: 'USA',
-      active: true,
-      mailing_address: requestBody.mailingAddress,
-      filing_address: requestBody.filingAddress,
-      created_at: '2024-05-29T12:00:00Z',
+      mailing_address: nextMailing,
+      filing_address: nextFiling,
       updated_at: '2024-05-29T12:30:00Z',
     })
   },

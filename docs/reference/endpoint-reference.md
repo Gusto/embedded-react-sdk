@@ -34,14 +34,11 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | DELETE | `/v1/companies/:companyUuid/signatories/:signatoryUuid` |
 | **Company.DocumentList** | GET | `/v1/companies/:companyId/forms` |
 |  | GET | `/v1/companies/:companyUuid/signatories` |
-| **Company.SignatureForm** | GET | `/v1/forms/:formId` |
-|  | PUT | `/v1/forms/:formId/sign` |
-|  | GET | `/v1/forms/:formId/pdf` |
 | **Company.DocumentSigner** | GET | `/v1/companies/:companyId/forms` |
 |  | GET | `/v1/companies/:companyUuid/signatories` |
 |  | GET | `/v1/forms/:formId` |
-|  | PUT | `/v1/forms/:formId/sign` |
 |  | GET | `/v1/forms/:formId/pdf` |
+|  | PUT | `/v1/forms/:formId/sign` |
 | **Company.OnboardingOverview** | GET | `/v1/companies/:companyUuid/onboarding_status` |
 | **Company.Locations** | PUT | `/v1/locations/:locationId` |
 |  | GET | `/v1/locations/:locationId` |
@@ -121,9 +118,11 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | `/v1/employees/:employeeId` |
 |  | PUT | `/v1/employees/:employeeId/onboarding_status` |
 |  | GET | `/v1/employees/:employeeId/home_addresses` |
+|  | GET | `/v1/home_addresses/:homeAddressUuid` |
 |  | POST | `/v1/employees/:employeeId/home_addresses` |
 |  | PUT | `/v1/home_addresses/:homeAddressUuid` |
 |  | GET | `/v1/companies/:companyId/locations` |
+|  | GET | `/v1/work_addresses/:workAddressUuid` |
 |  | POST | `/v1/employees/:employeeId/work_addresses` |
 |  | PUT | `/v1/work_addresses/:workAddressUuid` |
 | **Employee.Compensation** | GET | `/v1/employees/:employeeId/jobs` |
@@ -151,9 +150,9 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | `/v1/employees/:employeeId` |
 |  | GET | `/v1/employees/:employeeId/i9_authorization` |
 |  | PUT | `/v1/employees/:employeeId/i9_authorization` |
+|  | GET | `/v1/employees/:employeeId/forms/:formId` |
 |  | GET | `/v1/employees/:employeeId/forms/:formId/pdf` |
 |  | PUT | `/v1/employees/:employeeId/forms/:formId/sign` |
-|  | GET | `/v1/employees/:employeeId/forms/:formId` |
 | **Employee.EmployeeDocuments** | GET | `/v1/employees/:employeeId` |
 |  | PUT | `/v1/employees/:employeeId/onboarding_documents_config` |
 | **Employee.DashboardFlow** | GET | `/v1/employees/:employeeId` |
@@ -166,6 +165,9 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | `/v1/employees/:employeeId/forms` |
 |  | GET | `/v1/employees/:employeeUuid/federal_taxes` |
 |  | GET | `/v1/employees/:employeeUuid/state_taxes` |
+| **Employee.HomeAddress** | DELETE | `/v1/home_addresses/:homeAddressUuid` |
+|  | GET | `/v1/employees/:employeeId/home_addresses` |
+|  | GET | `/v1/employees/:employeeId` |
 | **Employee.EmploymentEligibility** | GET | `/v1/employees/:employeeId/i9_authorization` |
 |  | PUT | `/v1/employees/:employeeId/i9_authorization` |
 | **Employee.TerminateEmployee** | GET | `/v1/employees/:employeeId` |
@@ -179,6 +181,9 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | `/v1/employees/:employeeId/terminations` |
 |  | DELETE | `/v1/employees/:employeeId/terminations` |
 |  | GET | `/v1/companies/:companyId/employees` |
+| **Employee.WorkAddress** | DELETE | `/v1/work_addresses/:workAddressUuid` |
+|  | GET | `/v1/employees/:employeeId/work_addresses` |
+|  | GET | `/v1/employees/:employeeId` |
 | **Employee.Taxes** | GET | `/v1/employees/:employeeUuid/federal_taxes` |
 |  | PUT | `/v1/employees/:employeeUuid/federal_taxes` |
 |  | GET | `/v1/employees/:employeeUuid/state_taxes` |

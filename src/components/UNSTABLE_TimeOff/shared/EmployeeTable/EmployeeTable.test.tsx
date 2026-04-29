@@ -116,20 +116,15 @@ describe('EmployeeTable', () => {
     expect(onSearchChange).toHaveBeenCalledWith('A')
   })
 
-  test('does not show clear button when search is empty', () => {
-    renderEmployeeTable({ searchValue: '' })
-
-    expect(screen.queryByLabelText('clearSearch')).not.toBeInTheDocument()
-  })
-
-  test('shows clear button when search has value and fires onSearchClear', async () => {
+  test('calls onSearchChange and onSearchClear when input is cleared', async () => {
+    const onSearchChange = vi.fn()
     const onSearchClear = vi.fn()
-    renderEmployeeTable({ searchValue: 'alice', onSearchClear })
+    renderEmployeeTable({ searchValue: 'alice', onSearchChange, onSearchClear })
 
-    const clearButton = screen.getByLabelText('clearSearch')
-    expect(clearButton).toBeInTheDocument()
+    const input = screen.getByRole('searchbox')
+    await userEvent.clear(input)
 
-    await userEvent.click(clearButton)
+    expect(onSearchChange).toHaveBeenCalledWith('')
     expect(onSearchClear).toHaveBeenCalledOnce()
   })
 

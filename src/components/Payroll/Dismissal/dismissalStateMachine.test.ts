@@ -14,8 +14,11 @@ function createTestMachine() {
       component: () => null,
       companyId: 'test-company',
       employeeId: 'test-employee',
-      breadcrumbs: buildBreadcrumbs(dismissalBreadcrumbsNodes),
-      currentBreadcrumbId: 'payPeriodSelection',
+      header: {
+        type: 'breadcrumbs' as const,
+        breadcrumbs: buildBreadcrumbs(dismissalBreadcrumbsNodes),
+        currentBreadcrumbId: 'payPeriodSelection',
+      },
     }),
   )
 }
@@ -46,7 +49,11 @@ describe('dismissalStateMachine', () => {
 
       expect(service.machine.current).toBe('execution')
       expect(service.context.payrollUuid).toBe('payroll-123')
-      expect(service.context.progressBarType).toBeNull()
+      expect(
+        service.context.header?.type === 'breadcrumbs'
+          ? service.context.header.currentBreadcrumbId
+          : undefined,
+      ).toBeUndefined()
     })
   })
 
@@ -66,8 +73,12 @@ describe('dismissalStateMachine', () => {
 
       expect(service.machine.current).toBe('payPeriodSelection')
       expect(service.context.payrollUuid).toBeUndefined()
-      expect(service.context.progressBarType).toBe('breadcrumbs')
-      expect(service.context.currentBreadcrumbId).toBe('payPeriodSelection')
+      expect(service.context.header?.type).toBe('breadcrumbs')
+      expect(
+        service.context.header?.type === 'breadcrumbs'
+          ? service.context.header.currentBreadcrumbId
+          : undefined,
+      ).toBe('payPeriodSelection')
     })
 
     it('ignores BREADCRUMB_NAVIGATE with non-matching key', () => {

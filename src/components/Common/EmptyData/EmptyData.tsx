@@ -8,6 +8,9 @@ type EmptyDataProps = {
   title?: string
   description?: string
   children?: React.ReactNode
+  /**
+   * When set, replaces the default search (magnifying glass) illustration.
+   */
   icon?: React.ReactNode
 }
 export function EmptyData({ title, description, children, icon }: EmptyDataProps) {
@@ -16,7 +19,9 @@ export function EmptyData({ title, description, children, icon }: EmptyDataProps
   return (
     <div className={styles.emptyData} data-testid="emptydata">
       <Flex flexDirection="column" alignItems="center">
-        {icon || (
+        {icon ? (
+          <span className={styles.iconSlot}>{icon}</span>
+        ) : (
           <img src={magnifyingGlass} alt={t('icons.magnifyingGlass')} className={styles.image} />
         )}
         <div className={styles.textContent}>

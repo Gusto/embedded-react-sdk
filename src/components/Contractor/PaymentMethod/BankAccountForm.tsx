@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next'
 import type { BankAccountFormProps } from './types'
-import { RadioGroupField, TextInputField } from '@/components/Common'
+import { Flex, RadioGroupField, TextInputField } from '@/components/Common'
 
 export function BankAccountForm({ bankAccount }: BankAccountFormProps) {
   const { t } = useTranslation('Contractor.PaymentMethod', { keyPrefix: 'bankAccountForm' })
 
   return (
-    <>
+    <Flex gap={20} flexDirection={'column'}>
       <TextInputField
         name="name"
         isRequired
@@ -38,6 +38,6 @@ export function BankAccountForm({ bankAccount }: BankAccountFormProps) {
           { value: 'Savings', label: t('accountTypeSavings') },
         ]}
       />
-    </>
+    </Flex>
   )
 }

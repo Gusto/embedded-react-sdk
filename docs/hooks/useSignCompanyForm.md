@@ -64,8 +64,7 @@ The hook returns a discriminated union on `isLoading`.
     isPending: boolean
   }
   actions: {
-    onSubmit: (callbacks?: SignCompanyFormSubmitCallbacks) =>
-      Promise<HookSubmitResult<Form> | undefined>
+    onSubmit: () => Promise<HookSubmitResult<Form> | undefined>
   }
   errorHandling: HookErrorHandling
   form: {
@@ -83,15 +82,9 @@ The hook returns a discriminated union on `isLoading`.
 
 The `data` object contains the company form entity and its PDF URL. Use `data.companyForm` to display the form's title and description, and `data.pdfUrl` to render the document for the user to review before signing.
 
-### Submit callbacks
+### Submit result
 
-`onSubmit` accepts optional callbacks:
-
-```typescript
-interface SignCompanyFormSubmitCallbacks {
-  onFormSigned?: (form: Form) => void
-}
-```
+`onSubmit` returns a `HookSubmitResult<Form> | undefined`. On success, `result.data` is the signed `Form` — use it for any post-submit side effects. On validation or API failure, `onSubmit` returns `undefined` and the error is exposed via `errorHandling.errors`.
 
 ---
 
@@ -197,11 +190,7 @@ function SignFormReady({ signForm }: { signForm: UseSignCompanyFormReady }) {
   const { Fields } = signForm.form
 
   const handleSubmit = async () => {
-    const result = await signForm.actions.onSubmit({
-      onFormSigned: form => {
-        console.log('Form signed:', form.uuid)
-      },
-    })
+    const result = await signForm.actions.onSubmit()
 
     if (result) {
       console.log('Signed form:', result.data.uuid)

@@ -4,6 +4,22 @@ import type {
   BreadcrumbTrail,
   FlowBreadcrumb,
 } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
+import type { FlowHeaderConfig } from '@/components/Flow/useFlow'
+
+type BreadcrumbsHeader = Extract<FlowHeaderConfig, { type: 'breadcrumbs' }>
+
+type WithHeader = { header?: FlowHeaderConfig | null }
+
+/**
+ * Returns the existing breadcrumbs header from a context, defaulting to a
+ * blank breadcrumbs config when the header is missing or of a different
+ * variant. Helpers below use this so callers don't need to manually narrow
+ * the discriminated `header` union before mutating breadcrumb data.
+ */
+const getBreadcrumbsHeader = (header: FlowHeaderConfig | null | undefined): BreadcrumbsHeader => {
+  if (header?.type === 'breadcrumbs') return header
+  return { type: 'breadcrumbs' }
+}
 
 /**
  * Builds a complete breadcrumb trail map from a hierarchical node structure.
@@ -60,74 +76,91 @@ export const resolveBreadcrumbVariables = (
 }
 
 /**
- * Removes a breadcrumb from all trails in the context.
- * Use this in state machine reducers to hide a step entirely (e.g. after payroll submission).
+ * Merges `patch` fields into the existing breadcrumbs header on a context,
+ * preserving the existing trails and CTA. If the context has no breadcrumbs
+ * header, a fresh one is created. Useful when a transition needs to flip
+ * breadcrumbs visibility (`currentBreadcrumbId`) without rebuilding any
+ * trails.
  */
-export const hideBreadcrumb = <T extends { breadcrumbs?: BreadcrumbTrail }>(
-  breadcrumbId: string,
+export const patchBreadcrumbsHeader = <T extends WithHeader>(
   context: T,
-): T => {
-  const allBreadcrumbs = context.breadcrumbs ?? {}
+  patch: Partial<Omit<BreadcrumbsHeader, 'type'>>,
+): T & { header: BreadcrumbsHeader } => {
+  const existing = getBreadcrumbsHeader(context.header)
+  return { ...context, header: { ...existing, ...patch } }
+}
+
+/**
+ * Removes a breadcrumb from all trails in the context's breadcrumbs header.
+ * Use this in state machine reducers to hide a step entirely (e.g. after
+ * payroll submission).
+ */
+export const hideBreadcrumb = <T extends WithHeader>(breadcrumbId: string, context: T): T => {
+  const breadcrumbsHeader = getBreadcrumbsHeader(context.header)
+  const allBreadcrumbs = breadcrumbsHeader.breadcrumbs ?? {}
   const updatedBreadcrumbs = Object.fromEntries(
     Object.entries(allBreadcrumbs).map(([stateKey, trail]) => [
       stateKey,
       trail.filter(b => b.id !== breadcrumbId),
     ]),
   )
-  return { ...context, breadcrumbs: updatedBreadcrumbs }
+  return {
+    ...context,
+    header: { ...breadcrumbsHeader, breadcrumbs: updatedBreadcrumbs },
+  }
 }
 
 /**
- * Marks a breadcrumb as non-navigable across all trails in the context.
- * Use this in state machine reducers to disable backward navigation to a specific step.
+ * Marks a breadcrumb as non-navigable across all trails in the context's
+ * breadcrumbs header. Use this in state machine reducers to disable backward
+ * navigation to a specific step.
  */
-export const lockBreadcrumb = <T extends { breadcrumbs?: BreadcrumbTrail }>(
-  breadcrumbId: string,
-  context: T,
-): T => {
-  const allBreadcrumbs = context.breadcrumbs ?? {}
+export const lockBreadcrumb = <T extends WithHeader>(breadcrumbId: string, context: T): T => {
+  const breadcrumbsHeader = getBreadcrumbsHeader(context.header)
+  const allBreadcrumbs = breadcrumbsHeader.breadcrumbs ?? {}
   const updatedBreadcrumbs = Object.fromEntries(
     Object.entries(allBreadcrumbs).map(([stateKey, trail]) => [
       stateKey,
       trail.map(b => (b.id === breadcrumbId ? { ...b, isNavigable: false } : b)),
     ]),
   )
-  return { ...context, breadcrumbs: updatedBreadcrumbs }
+  return {
+    ...context,
+    header: { ...breadcrumbsHeader, breadcrumbs: updatedBreadcrumbs },
+  }
 }
 
 /**
- * Updates the breadcrumb trail for a specific state with resolved variables.
+ * Updates the breadcrumb trail for a specific state with resolved variables
+ * and switches the active breadcrumb to that state.
  *
- * This function is typically used in state machine transitions to update breadcrumb
- * navigation when moving between states. It preserves all existing breadcrumb trails
- * for other states and only updates the trail for the specified state by resolving
- * any template variables for that state's breadcrumb.
-
+ * This function is typically used in state machine transitions to update
+ * breadcrumb navigation when moving between states. It preserves all existing
+ * breadcrumb trails for other states and only updates the trail for the
+ * specified state by resolving any template variables for that state's
+ * breadcrumb. The resulting context's header is always of type `'breadcrumbs'`.
  */
-export const updateBreadcrumbs = <
-  T extends { breadcrumbs?: BreadcrumbTrail; currentBreadcrumb?: string },
->(
+export const updateBreadcrumbs = <T extends WithHeader>(
   stateName: string,
   context: T,
   variables?: Record<string, string>,
-): Omit<T, 'breadcrumbs' | 'currentBreadcrumb'> & {
-  breadcrumbs: BreadcrumbTrail
-  currentBreadcrumbId: string
-} => {
-  const allBreadcrumbs = context.breadcrumbs ?? {}
+): T & { header: BreadcrumbsHeader } => {
+  const breadcrumbsHeader = getBreadcrumbsHeader(context.header)
+  const allBreadcrumbs = breadcrumbsHeader.breadcrumbs ?? {}
   const trail = allBreadcrumbs[stateName] ?? []
-  const resolvedTrail = trail.map(breadcrumb => {
-    return {
-      ...breadcrumb,
-      variables: resolveBreadcrumbVariables(variables, context as Record<string, unknown>),
-    }
-  })
+  const resolvedTrail = trail.map(breadcrumb => ({
+    ...breadcrumb,
+    variables: resolveBreadcrumbVariables(variables, context as Record<string, unknown>),
+  }))
   return {
     ...context,
-    breadcrumbs: {
-      ...allBreadcrumbs,
-      [stateName]: resolvedTrail,
+    header: {
+      ...breadcrumbsHeader,
+      breadcrumbs: {
+        ...allBreadcrumbs,
+        [stateName]: resolvedTrail,
+      },
+      currentBreadcrumbId: stateName,
     },
-    currentBreadcrumbId: stateName,
   }
 }

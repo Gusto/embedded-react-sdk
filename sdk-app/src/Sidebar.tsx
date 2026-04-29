@@ -16,6 +16,8 @@ interface SidebarProps {
   mode: AppMode
   searchQuery: string
   onSearchChange: (query: string) => void
+  isOpen: boolean
+  onToggle: () => void
 }
 
 function CategorySection({
@@ -37,7 +39,7 @@ function CategorySection({
     return items.filter(item => item.name.toLowerCase().includes(q))
   }, [items, searchQuery])
 
-  if (filteredItems.length === 0) return null
+  if (searchQuery && filteredItems.length === 0) return null
 
   const displayCategory =
     mode === 'preview' && category === 'InformationRequests' ? 'Info Requests' : category
@@ -81,20 +83,47 @@ function CategorySection({
   )
 }
 
-export function Sidebar({ mode, searchQuery, onSearchChange }: SidebarProps) {
+export function Sidebar({ mode, searchQuery, onSearchChange, isOpen, onToggle }: SidebarProps) {
   const placeholder = mode === 'design' ? 'Search prototypes...' : 'Search components...'
+
+  if (!isOpen) {
+    return (
+      <aside className={styles.rootCollapsed}>
+        <button
+          type="button"
+          className={styles.collapsedHeader}
+          onClick={onToggle}
+          aria-label="Show components sidebar"
+          title="Show components sidebar"
+        >
+          <span>▸</span>
+        </button>
+      </aside>
+    )
+  }
 
   return (
     <aside className={styles.root}>
       <div className={styles.search}>
-        <input
-          type="text"
-          placeholder={placeholder}
-          value={searchQuery}
-          onChange={e => {
-            onSearchChange(e.target.value)
-          }}
-        />
+        <div className={styles.searchRow}>
+          <input
+            type="text"
+            placeholder={placeholder}
+            value={searchQuery}
+            onChange={e => {
+              onSearchChange(e.target.value)
+            }}
+          />
+          <button
+            type="button"
+            className={styles.sidebarToggle}
+            onClick={onToggle}
+            aria-label="Hide sidebar"
+            title="Hide sidebar"
+          >
+            <span>◂</span>
+          </button>
+        </div>
       </div>
       <div className={styles.list}>
         {mode === 'preview'

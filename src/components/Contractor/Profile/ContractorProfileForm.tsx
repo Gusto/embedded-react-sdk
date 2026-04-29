@@ -2,7 +2,6 @@ import { FormProvider } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { type Contractor } from '@gusto/embedded-api/models/components/contractor'
 import type { useContractorProfile } from './useContractorProfile'
-import styles from './ContractorProfileForm.module.scss'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 import { Form } from '@/components/Common/Form'
@@ -49,14 +48,16 @@ export function ContractorProfileForm({
     <section className={className}>
       <FormProvider {...formMethods}>
         <Form onSubmit={handleSubmit}>
-          <Grid gridTemplateColumns="1fr" gap={24} className="mb-8">
+          <Flex flexDirection="column" gap={20} alignItems="stretch">
             <header>
-              <Components.Heading as="h2">{t('title')}</Components.Heading>
-              <Components.Text>{t('subtitle')}</Components.Text>
+              <Flex flexDirection="column" gap={4}>
+                <Components.Heading as="h2">{t('title')}</Components.Heading>
+                <Components.Text variant="supporting">{t('subtitle')}</Components.Text>
+              </Flex>
             </header>
 
             {/* Invite Contractor Card */}
-            <div className={styles.switchFieldContainer}>
+            <Components.Box>
               <Grid gap={16}>
                 {/* Invite Contractor Toggle */}
                 <SwitchField
@@ -80,7 +81,7 @@ export function ContractorProfileForm({
                   />
                 )}
               </Grid>
-            </div>
+            </Components.Box>
 
             {/* Contractor Type */}
             <RadioGroupField
@@ -156,7 +157,7 @@ export function ContractorProfileForm({
               description={t('fields.startDate.description')}
               isRequired
             />
-          </Grid>
+          </Flex>
 
           {/* Actions */}
           <Flex gap={12} justifyContent="flex-end">
