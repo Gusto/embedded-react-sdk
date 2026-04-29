@@ -124,19 +124,19 @@ describe('DataCards', () => {
   })
 
   describe('isWithinBox', () => {
-    test('does not add data-within-box attribute by default', () => {
-      renderCards()
-      expect(screen.getByTestId('data-cards')).not.toHaveAttribute('data-within-box')
-    })
-
-    test('adds data-within-box attribute when isWithinBox is true', () => {
+    test('renders without data-within-box attribute', () => {
       renderCards({ isWithinBox: true })
-      expect(screen.getByTestId('data-cards')).toHaveAttribute('data-within-box')
+      expect(screen.getByTestId('data-cards')).not.toHaveAttribute('data-within-box')
     })
 
-    test('does not add data-within-box attribute when isWithinBox is false', () => {
-      renderCards({ isWithinBox: false })
-      expect(screen.getByTestId('data-cards')).not.toHaveAttribute('data-within-box')
+    test('applies withinBox class when isWithinBox is true', () => {
+      renderCards({ isWithinBox: true })
+      expect(screen.getByTestId('data-cards').className).toMatch(/withinBox/)
+    })
+
+    test('does not apply withinBox class by default', () => {
+      renderCards()
+      expect(screen.getByTestId('data-cards').className).not.toMatch(/withinBox/)
     })
   })
 

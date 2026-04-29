@@ -1,4 +1,5 @@
 import { useId } from 'react'
+import cn from 'classnames'
 import { useTranslation } from 'react-i18next'
 import styles from './DataCards.module.scss'
 import type { useDataViewPropReturn, SelectionMode } from '@/components/Common/DataView/useDataView'
@@ -71,11 +72,7 @@ export const DataCards = <T,>({
   }
 
   return (
-    <div
-      className={styles.root}
-      data-testid="data-cards"
-      data-within-box={isWithinBox || undefined}
-    >
+    <div className={cn(styles.root, isWithinBox && styles.withinBox)} data-testid="data-cards">
       {onSelect && getIsItemSelected && selectionMode === 'multiple' && data.length > 0 && (
         <div className={styles.selectAllRow}>
           <Components.Checkbox
@@ -88,12 +85,18 @@ export const DataCards = <T,>({
       <div role="list" aria-label={label}>
         {data.length === 0 && emptyState && (
           <div role="listitem">
-            <Components.Card>{emptyState()}</Components.Card>
+            <Components.Card className={isWithinBox ? styles.flushCard : undefined}>
+              {emptyState()}
+            </Components.Card>
           </div>
         )}
         {data.map((item, index) => (
           <div role="listitem" key={index}>
-            <Components.Card menu={itemMenu && itemMenu(item)} action={renderAction(item, index)}>
+            <Components.Card
+              menu={itemMenu && itemMenu(item)}
+              action={renderAction(item, index)}
+              className={isWithinBox ? styles.flushCard : undefined}
+            >
               {columns.map((column, colIndex) => (
                 <Flex key={colIndex} flexDirection="column" gap={0}>
                   {column.title && <h5 className={styles.columnTitle}>{column.title}</h5>}
@@ -108,7 +111,7 @@ export const DataCards = <T,>({
         ))}
         {footer && (
           <div role="listitem">
-            <Components.Card>
+            <Components.Card className={isWithinBox ? styles.flushCard : undefined}>
               {(() => {
                 const footerContent = footer()
 

@@ -1,10 +1,10 @@
 .root {
-  &[data-within-box] {
+  &.withinBox {
     .selectAllRow {
       border-bottom: 1px solid var(--g-colorBorderSecondary);
     }
 
-    [data-testid='data-card'] {
+    .flushCard {
       border: none;
       border-radius: 0;
       box-shadow: none;
@@ -12,7 +12,7 @@
       border-bottom: 1px solid var(--g-colorBorderSecondary);
     }
 
-    [role='list'] [role='listitem']:last-child [data-testid='data-card'] {
+    [role='list'] [role='listitem']:last-child .flushCard {
       border-bottom: none;
     }
   }
