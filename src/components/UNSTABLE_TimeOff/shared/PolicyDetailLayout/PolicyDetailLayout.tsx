@@ -1,3 +1,4 @@
+import { Fragment, isValidElement, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { EmployeeTableItem } from '../EmployeeTable/EmployeeTableTypes'
 import { EmployeeTable } from '../EmployeeTable/EmployeeTable'
@@ -5,6 +6,13 @@ import type { PolicyDetailLayoutProps } from './PolicyDetailLayoutTypes'
 import { DetailViewLayout } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
+
+function unwrapFragment(node: ReactNode): ReactNode {
+  if (isValidElement(node) && node.type === Fragment) {
+    return (node.props as { children?: ReactNode }).children
+  }
+  return node
+}
 
 const EMPLOYEES_TAB_ID = 'employees'
 
@@ -61,7 +69,7 @@ export function PolicyDetailLayout<T extends EmployeeTableItem>({
         subtitle={subtitle}
         onBack={onBack}
         backLabel={backLabel}
-        actions={actions}
+        actions={unwrapFragment(actions)}
         tabs={tabs}
         selectedTabId={selectedTabId}
         onTabChange={onTabChange}
