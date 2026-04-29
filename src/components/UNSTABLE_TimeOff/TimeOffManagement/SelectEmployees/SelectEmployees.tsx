@@ -1,10 +1,7 @@
 import { useId } from 'react'
 import { useTranslation } from 'react-i18next'
 import { EmployeeTable } from '../../shared/EmployeeTable/EmployeeTable'
-import type {
-  EmployeeItem,
-  SelectEmployeesProps,
-} from './SelectEmployeesTypes'
+import type { EmployeeItem, SelectEmployeesProps } from './SelectEmployeesTypes'
 import { ActionsLayout, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
