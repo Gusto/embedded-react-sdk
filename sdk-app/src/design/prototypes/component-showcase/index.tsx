@@ -1,11 +1,31 @@
 import { useState } from 'react'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { Flex, Grid } from '@/components/Common'
+import { DataView, Flex, Grid, useDataView } from '@/components/Common'
+
+const teamMembers = [
+  {
+    name: 'Alice Chen',
+    role: 'Software Engineer',
+    department: 'Engineering',
+    startDate: '2024-01-15',
+  },
+  { name: 'Bob Martinez', role: 'Product Designer', department: 'Design', startDate: '2023-06-01' },
+]
 
 export function ComponentShowcase() {
   const Components = useComponentContext()
   const [textValue, setTextValue] = useState('')
   const [selectValue, setSelectValue] = useState('')
+
+  const dataViewProps = useDataView({
+    data: teamMembers,
+    columns: [
+      { key: 'name' as const, title: 'Name' },
+      { key: 'role' as const, title: 'Role' },
+      { key: 'department' as const, title: 'Department' },
+      { key: 'startDate' as const, title: 'Start Date' },
+    ],
+  })
 
   return (
     <Grid gap={32}>
@@ -108,6 +128,13 @@ export function ComponentShowcase() {
         <Components.Text size="md">Text — Medium</Components.Text>
         <Components.Text size="sm">Text — Small</Components.Text>
         <Components.Text size="xs">Text — Extra Small</Components.Text>
+      </Flex>
+
+      <Flex flexDirection="column" gap={12}>
+        <Components.Heading as="h2">Data View</Components.Heading>
+        <Components.Box withPadding={false} header={<Components.BoxHeader title="Team Members" />}>
+          <DataView label="Team members" {...dataViewProps} isWithinBox />
+        </Components.Box>
       </Flex>
     </Grid>
   )

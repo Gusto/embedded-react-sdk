@@ -6,6 +6,7 @@
   box-shadow: var(--g-shadowResting);
   border-radius: var(--g-boxRadius);
   border: 1px solid var(--g-colorBorderSecondary);
+  overflow: hidden;
 }
 
 .header {

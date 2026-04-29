@@ -123,6 +123,23 @@ describe('DataCards', () => {
     expect(screen.getByText('No data available')).toBeInTheDocument()
   })
 
+  describe('isWithinBox', () => {
+    test('renders without data-within-box attribute', () => {
+      renderCards({ isWithinBox: true })
+      expect(screen.getByTestId('data-cards')).not.toHaveAttribute('data-within-box')
+    })
+
+    test('applies withinBox class when isWithinBox is true', () => {
+      renderCards({ isWithinBox: true })
+      expect(screen.getByTestId('data-cards').className).toMatch(/withinBox/)
+    })
+
+    test('does not apply withinBox class by default', () => {
+      renderCards()
+      expect(screen.getByTestId('data-cards').className).not.toMatch(/withinBox/)
+    })
+  })
+
   test('should render footer when provided', () => {
     const footer = () => ({
       name: <strong>Total Records:</strong>,
