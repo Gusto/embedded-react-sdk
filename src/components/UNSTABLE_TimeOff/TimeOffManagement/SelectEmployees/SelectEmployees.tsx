@@ -16,7 +16,7 @@ export function SelectEmployees({
   onBack,
   onContinue,
   showReassignmentWarning,
-  balances,
+  balances = {},
   onBalanceChange,
   pagination,
   isFetching,
@@ -64,7 +64,7 @@ export function SelectEmployees({
                       label={t('startingBalanceColumn')}
                       shouldVisuallyHideLabel
                       aria-labelledby={`employee-name-${employee.uuid} ${balanceColHeaderId}`}
-                      value={balances?.[employee.uuid] ?? ''}
+                      value={balances[employee.uuid] ?? ''}
                       onChange={(value: string) => {
                         onBalanceChange(employee.uuid, value)
                       }}
