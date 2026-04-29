@@ -13,6 +13,7 @@ import { ContractorProfile } from './design/prototypes/contractor-management/Con
 import { ContractorDismiss } from './design/prototypes/contractor-management/ContractorDismiss'
 import { ContractorRehire } from './design/prototypes/contractor-management/ContractorRehire'
 import { AddContractor } from './design/prototypes/contractor-management/AddContractor'
+import { ContractorSelfOnboarding } from './design/prototypes/contractor-self-onboarding'
 import './app.scss'
 import '@/styles/sdk.scss'
 
@@ -41,6 +42,7 @@ const router = createBrowserRouter([
               { path: ':contractorId/rehire', element: <ContractorRehire /> },
             ],
           },
+          { path: 'contractor-self-onboarding', element: <ContractorSelfOnboarding /> },
         ],
       },
     ],

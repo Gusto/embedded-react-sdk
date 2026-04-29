@@ -1,7 +1,10 @@
+import { useState } from 'react'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import styles from './ContractorDetailsForm.module.scss'
+import { normalizeSSN } from '@/helpers/ssn'
 import { TextInputField, DatePickerField, Flex } from '@/components/Common'
 import { ActionsLayout } from '@/components/Common/ActionsLayout/ActionsLayout'
 import { useBase } from '@/components/Base/useBase'
@@ -13,7 +16,10 @@ const BasicDetailsFormSchema = z.object({
   middleInitial: z.string().optional(),
   lastName: z.string().min(1),
   startDate: z.string().optional(),
-  ssn: z.string().optional(),
+  ssn: z
+    .string()
+    .optional()
+    .refine(val => !val || val.replace(/\D/g, '').length === 9, 'SSN must be 9 digits'),
   email: z.string().email().optional().or(z.literal('')),
 })
 
@@ -34,6 +40,8 @@ export function ContractorDetailsForm({
 }: ContractorDetailsFormProps) {
   const Components = useComponentContext()
   const { baseSubmitHandler } = useBase()
+
+  const [isEditingSsn, setIsEditingSsn] = useState(!contractor.hasSsn)
 
   const formMethods = useForm<BasicDetailsFormValues>({
     resolver: zodResolver(BasicDetailsFormSchema),
@@ -69,13 +77,47 @@ export function ContractorDetailsForm({
             <TextInputField name="middleInitial" label="Middle initial" />
             <TextInputField name="lastName" label="Last name" isRequired />
             <DatePickerField<string> name="startDate" label="Start date" />
-            <TextInputField
-              name="ssn"
-              label="Social security number"
-              description={
-                contractor.hasSsn ? 'Already on file. Leave blank to keep current.' : undefined
-              }
-            />
+            {contractor.hasSsn && !isEditingSsn ? (
+              <div className={styles.lockedField}>
+                <Components.Text weight="medium" size="sm">
+                  Social security number
+                </Components.Text>
+                <div className={styles.lockedFieldRow}>
+                  <div className={styles.lockedFieldInput}>
+                    <Components.TextInput
+                      name="ssn"
+                      label="Social security number"
+                      shouldVisuallyHideLabel
+                      value="•••-••-••••"
+                      isDisabled
+                    />
+                  </div>
+                  <Components.Button
+                    variant="secondary"
+                    type="button"
+                    className={styles.lockedFieldButton}
+                    onClick={() => {
+                      setIsEditingSsn(true)
+                      formMethods.setValue('ssn', '')
+                    }}
+                  >
+                    Change
+                  </Components.Button>
+                </div>
+                <Components.Text variant="supporting" size="sm">
+                  Already on file.
+                </Components.Text>
+              </div>
+            ) : (
+              <TextInputField
+                name="ssn"
+                label="Social security number"
+                placeholder="###-##-####"
+                maxLength={11}
+                transform={normalizeSSN}
+                isRequired={isEditingSsn}
+              />
+            )}
             <TextInputField name="email" label="Email address" />
           </Flex>
 
