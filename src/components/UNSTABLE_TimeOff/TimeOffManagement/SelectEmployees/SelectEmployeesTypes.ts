@@ -9,7 +9,7 @@ export interface EmployeeItem {
   balance?: string | null
 }
 
-export interface SelectEmployeesPresentationProps {
+export interface SelectEmployeesProps {
   employees: EmployeeItem[]
   selectedUuids: Set<string>
   searchValue: string

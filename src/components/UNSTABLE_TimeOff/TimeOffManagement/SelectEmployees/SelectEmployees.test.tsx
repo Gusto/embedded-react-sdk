@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react'
 import { describe, test, expect, vi, beforeEach } from 'vitest'
 import { userEvent } from '@testing-library/user-event'
-import { SelectEmployeesPresentation } from './SelectEmployeesPresentation'
-import type { SelectEmployeesPresentationProps } from './SelectEmployeesPresentationTypes'
+import { SelectEmployees } from './SelectEmployees'
+import type { SelectEmployeesProps } from './SelectEmployeesTypes'
 import { ThemeProvider } from '@/contexts/ThemeProvider'
 import { ComponentsProvider } from '@/contexts/ComponentAdapter/ComponentsProvider'
 import { defaultComponents } from '@/contexts/ComponentAdapter/adapters/defaultComponentAdapter'
@@ -23,7 +23,7 @@ const mockEmployees = [
   { uuid: '2', firstName: 'Bob', lastName: 'Jones', jobTitle: 'Designer', department: 'Design' },
 ]
 
-const defaultProps: SelectEmployeesPresentationProps = {
+const defaultProps: SelectEmployeesProps = {
   employees: mockEmployees,
   selectedUuids: new Set<string>(),
   searchValue: '',
@@ -35,17 +35,17 @@ const defaultProps: SelectEmployeesPresentationProps = {
   showReassignmentWarning: false,
 }
 
-function renderPresentation(overrides: Partial<SelectEmployeesPresentationProps> = {}) {
+function renderPresentation(overrides: Partial<SelectEmployeesProps> = {}) {
   return render(
     <ThemeProvider>
       <ComponentsProvider value={defaultComponents}>
-        <SelectEmployeesPresentation {...defaultProps} {...overrides} />
+        <SelectEmployees {...defaultProps} {...overrides} />
       </ComponentsProvider>
     </ThemeProvider>,
   )
 }
 
-describe('SelectEmployeesPresentation', () => {
+describe('SelectEmployees', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockUseContainerBreakpoints.mockReturnValue(['base', 'small', 'medium', 'large'])

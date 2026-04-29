@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { fn } from 'storybook/test'
-import { SelectEmployeesPresentation } from './SelectEmployeesPresentation'
-import type { EmployeeItem } from './SelectEmployeesPresentationTypes'
+import { SelectEmployees } from './SelectEmployees'
+import type { EmployeeItem } from './SelectEmployeesTypes'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 import { useI18n } from '@/i18n'
 
@@ -143,7 +143,7 @@ function StoryWrapper({
   }
 
   return (
-    <SelectEmployeesPresentation
+    <SelectEmployees
       employees={employees}
       selectedUuids={selectedUuids}
       searchValue={searchValue}
@@ -185,7 +185,7 @@ export const SearchFiltered = () => {
   )
 
   return (
-    <SelectEmployeesPresentation
+    <SelectEmployees
       employees={filtered}
       selectedUuids={new Set(['1'])}
       searchValue={searchValue}
@@ -204,7 +204,7 @@ export const SearchFiltered = () => {
 }
 
 export const EmptySearchResults = () => (
-  <SelectEmployeesPresentation
+  <SelectEmployees
     employees={[]}
     selectedUuids={new Set()}
     searchValue="nonexistent employee"

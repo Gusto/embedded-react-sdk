@@ -3,13 +3,13 @@ import { useTranslation } from 'react-i18next'
 import { EmployeeTable } from '../../shared/EmployeeTable/EmployeeTable'
 import type {
   EmployeeItem,
-  SelectEmployeesPresentationProps,
-} from './SelectEmployeesPresentationTypes'
+  SelectEmployeesProps,
+} from './SelectEmployeesTypes'
 import { ActionsLayout, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 
-export function SelectEmployeesPresentation({
+export function SelectEmployees({
   employees,
   selectedUuids,
   searchValue,
@@ -23,7 +23,7 @@ export function SelectEmployeesPresentation({
   onBalanceChange,
   pagination,
   isFetching,
-}: SelectEmployeesPresentationProps) {
+}: SelectEmployeesProps) {
   useI18n('Company.TimeOff.SelectEmployees')
   const { t } = useTranslation('Company.TimeOff.SelectEmployees')
   const Components = useComponentContext()
@@ -53,13 +53,13 @@ export function SelectEmployeesPresentation({
         pagination={pagination}
         additionalColumns={[
           {
-            key: 'department' as keyof EmployeeItem,
+            key: 'department',
             title: t('departmentColumn'),
           },
           ...(onBalanceChange
             ? [
                 {
-                  key: 'balance' as keyof EmployeeItem,
+                  key: 'balance',
                   title: <span id={balanceColHeaderId}>{t('startingBalanceColumn')}</span>,
                   render: (employee: EmployeeItem) => (
                     <Components.TextInput
