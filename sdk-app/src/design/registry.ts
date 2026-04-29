@@ -1,6 +1,6 @@
 export type Category = (typeof CATEGORIES)[number]
 
-export const CATEGORIES = ['Examples', 'Contractors'] as const
+export const CATEGORIES = ['Examples', 'Companies', 'Contractors', 'Employees', 'Payroll'] as const
 
 export interface PrototypeEntry {
   name: string
@@ -19,6 +19,7 @@ export const categorizedRegistry: CategorizedRegistry = {
         'A single page demonstrating SDK components like Button, TextInput, Select, Alert, and more.',
     },
   ],
+  Companies: [],
   Contractors: [
     {
       name: 'Contractor Management',
@@ -27,4 +28,6 @@ export const categorizedRegistry: CategorizedRegistry = {
         'A prototype flow for managing contractors — view the list and drill into individual profiles.',
     },
   ],
+  Employees: [],
+  Payroll: [],
 }
