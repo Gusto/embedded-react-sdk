@@ -27,6 +27,11 @@ export const categorizedRegistry: CategorizedRegistry = {
       description:
         'A prototype flow for managing contractors — view the list and drill into individual profiles.',
     },
+    {
+      name: 'Contractor Self-Onboarding',
+      path: '/design/contractor-self-onboarding',
+      description: 'The contractor-facing onboarding experience after receiving an invite link.',
+    },
   ],
   Employees: [],
   Payroll: [],

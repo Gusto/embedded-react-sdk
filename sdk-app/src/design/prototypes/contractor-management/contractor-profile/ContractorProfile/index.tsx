@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useOutletContext, useParams } from 'react-router-dom'
 import { createMachine } from 'robot3'
-import type { EntityIds } from '../../../../useEntities'
+import type { EntityIds } from '../../../../../useEntities'
 import { contractorProfileStateMachine } from './contractorProfileStateMachine'
 import type { ContractorProfileContextInterface } from './ContractorProfileComponents'
 import { ProfileViewContextual } from './ContractorProfileComponents'
