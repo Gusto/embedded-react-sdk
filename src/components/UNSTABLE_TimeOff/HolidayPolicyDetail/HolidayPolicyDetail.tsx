@@ -26,8 +26,8 @@ export interface HolidayPolicyDetailProps extends BaseComponentInterface {
 
 export function HolidayPolicyDetail(props: HolidayPolicyDetailProps) {
   return (
-    <BaseComponent componentName="Company.TimeOff.HolidayPolicy" {...props}>
-      <Root companyId={props.companyId} defaultTab={props.defaultTab} />
+    <BaseComponent {...props} componentName="Company.TimeOff.HolidayPolicy">
+      <Root {...props} />
     </BaseComponent>
   )
 }
@@ -37,10 +37,7 @@ interface RemoveDialogTarget {
   name: string
 }
 
-function Root({
-  companyId,
-  defaultTab = 'holidays',
-}: Pick<HolidayPolicyDetailProps, 'companyId' | 'defaultTab'>) {
+function Root({ companyId, defaultTab = 'holidays' }: HolidayPolicyDetailProps) {
   useI18n('Company.TimeOff.HolidayPolicy')
   useI18n('Company.TimeOff.PolicyDetail')
   const { t } = useTranslation('Company.TimeOff.HolidayPolicy')

@@ -351,9 +351,26 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | `/v1/time_off_policies/:timeOffPolicyUuid` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid` |
 |  | POST | `/v1/companies/:companyUuid/time_off_policies` |
-|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/add` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/add_employees` |
-| **UNSTABLE_TimeOff.TimeOffFlow** | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
+| **UNSTABLE_TimeOff.ViewHolidayPolicyDetails** | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
+|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
+|  | GET | `/v1/companies/:companyId/employees` |
+|  | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
+|  | GET | `/v1/companies/:companyUuid/time_off_policies` |
+|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/deactivate` |
+|  | DELETE | `/v1/companies/:companyUuid/holiday_pay_policy` |
+|  | POST | `/v1/companies/:companyUuid/time_off_policies` |
+| **UNSTABLE_TimeOff.ViewHolidaySchedule** | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
+|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
+|  | GET | `/v1/companies/:companyId/employees` |
+|  | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
+|  | GET | `/v1/companies/:companyUuid/time_off_policies` |
+|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/deactivate` |
+|  | DELETE | `/v1/companies/:companyUuid/holiday_pay_policy` |
+|  | POST | `/v1/companies/:companyUuid/time_off_policies` |
+| **UNSTABLE_TimeOff.TimeOffFlow** | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
+|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
+|  | GET | `/v1/companies/:companyId/employees` |
+|  | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
 |  | GET | `/v1/companies/:companyUuid/time_off_policies` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/deactivate` |
 |  | DELETE | `/v1/companies/:companyUuid/holiday_pay_policy` |

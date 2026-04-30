@@ -1926,6 +1926,47 @@
         "timeOffPolicyUuid"
       ]
     },
+    "UNSTABLE_TimeOff.ViewHolidayPolicyDetails": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy/remove"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/employees"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/time_off_policies"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/deactivate"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyUuid/time_off_policies"
+        }
+      ],
+      "variables": [
+        "companyId",
+        "companyUuid",
+        "timeOffPolicyUuid"
+      ]
+    },
     "UNSTABLE_TimeOff.ViewHolidaySchedule": {
       "endpoints": [
         {
