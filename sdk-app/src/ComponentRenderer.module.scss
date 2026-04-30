@@ -12,9 +12,7 @@
 
 .componentContainer {
   width: 100%;
-  height: 100%;
   padding: 1.5rem;
-  overflow-y: auto;
 }
 
 .contentBody {
@@ -135,6 +133,10 @@
 }
 
 .eventsLog {
+  position: sticky;
+  bottom: 0;
+  background: var(--color-bg);
+  z-index: 10;
   border-top: 0.0625rem solid var(--color-border);
   max-height: 12.5rem;
 }

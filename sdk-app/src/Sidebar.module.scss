@@ -6,6 +6,10 @@
   flex-direction: column;
   overflow: hidden;
   flex-shrink: 0;
+  position: sticky;
+  top: var(--topbar-height);
+  height: calc(100vh - var(--topbar-height));
+  align-self: flex-start;
 }
 
 .rootCollapsed {
@@ -15,6 +19,10 @@
   border-right: 0.0625rem solid var(--color-border);
   display: flex;
   flex-direction: column;
+  position: sticky;
+  top: var(--topbar-height);
+  height: calc(100vh - var(--topbar-height));
+  align-self: flex-start;
 }
 
 .collapsedHeader {
