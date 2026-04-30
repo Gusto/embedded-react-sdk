@@ -31,6 +31,9 @@ const dompurifyConfig = {
   ALLOWED_ATTR: ['target', 'href', 'rel'],
 }
 
+/* API does not enforce an upper limit, so set a reasonable character max for a single-line input. */
+const MAX_TEXT_RESPONSE = 5000
+
 const InformationRequestFormSchema = z.record(
   z.string(),
   z.union([z.string().min(1), z.instanceof(File)]),
@@ -188,6 +191,7 @@ function Root({ companyId, requestId, dictionary }: InformationRequestFormProps)
               name={fieldName}
               label={t('fields.textAnswer.label')}
               placeholder={t('fields.textAnswer.placeholder')}
+              maxLength={MAX_TEXT_RESPONSE}
               isRequired
               errorMessage={t('validation.required')}
             />
