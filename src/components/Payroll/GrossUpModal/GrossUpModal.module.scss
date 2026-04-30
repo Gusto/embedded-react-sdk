@@ -17,11 +17,18 @@
   }
 }
 
-.calculateButton:global(.react-aria-Button) {
-  min-height: toRem(40);
-  padding-block: toRem(7);
+// Needs three classes to win specifity for margin and height compared to
+// `.root:global(.react-aria-Button)` in Button.module.scss
+// Extra class may be removed if we update loading order to include common UI classes first
+.content .calculateButton:global(.react-aria-Button) {
   flex-shrink: 0;
-  align-self: flex-end;
+  // Aligned from flex-start since height of input changes with error message.
+  // Adjust own margin top to account for height of input label which is static
+  margin-top: toRem(24);
+  // Match the exact height of the input
+  min-height: toRem(40);
+  height: toRem(40);
+  max-height: toRem(40);
 }
 
 .result {
