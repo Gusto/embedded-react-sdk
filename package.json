@@ -76,6 +76,7 @@
     "sdk-app:staging": "npx tsx sdk-app/scripts/start.ts dev --env=staging",
     "sdk-app:local": "npx tsx sdk-app/scripts/start.ts dev --env=local",
     "sdk-app-prod": "npx tsx sdk-app/scripts/start.ts prod --env=demo",
+    "sdk-app:build": "vite build --config sdk-app/vite.config.ts",
     "sdk-app:setup": "npx tsx sdk-app/scripts/setup.ts",
     "sdk-app:analyze-props": "npx tsx sdk-app/scripts/analyze-component-props.ts"
   },
