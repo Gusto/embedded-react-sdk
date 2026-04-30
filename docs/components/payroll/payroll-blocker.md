@@ -24,11 +24,11 @@ function MyComponent() {
 
 ## Props
 
-| Name | Type | Required | Description |
-| --- | --- | --- | --- |
-| `companyId` | `string` | Yes | The associated company identifier. |
-| `onEvent` | `(eventType: string, data?: unknown) => void` | Yes | Callback invoked when events are emitted. |
-| `dictionary` | `object` | No | Custom label overrides for UI text. |
+| Name         | Type                                          | Required | Description                               |
+| ------------ | --------------------------------------------- | -------- | ----------------------------------------- |
+| `companyId`  | `string`                                      | Yes      | The associated company identifier.        |
+| `onEvent`    | `(eventType: string, data?: unknown) => void` | Yes      | Callback invoked when events are emitted. |
+| `dictionary` | `object`                                      | No       | Custom label overrides for UI text.       |
 
 ## Events
 

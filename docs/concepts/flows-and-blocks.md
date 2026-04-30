@@ -11,20 +11,20 @@ Flows are pre-built, multi-step components that handle an entire user journey. T
 
 ### Available Flows
 
-| Flow | Description |
-| --- | --- |
-| `Company.OnboardingFlow` | Company setup: locations, tax info, bank account, signatory, pay schedule |
-| `Employee.OnboardingFlow` | Admin-driven employee onboarding: profile, taxes, payment, documents |
-| `Employee.SelfOnboardingFlow` | Employee-facing self-service onboarding |
-| `Employee.TerminationFlow` | Employee termination and final pay |
-| `Contractor.OnboardingFlow` | Contractor profile and payment setup |
-| `Contractor.PaymentFlow` | Create and manage contractor payments |
-| `Payroll.PayrollFlow` | Full payroll run: configure, edit, review, submit |
-| `Payroll.PayrollExecutionFlow` | Payroll execution from an existing payroll |
-| `Payroll.OffCycleFlow` | Off-cycle payroll creation and execution |
-| `Payroll.DismissalFlow` | Dismissal payroll processing |
-| `Payroll.TransitionFlow` | Payroll transition between providers |
-| `InformationRequests.InformationRequestsFlow` | Respond to information requests from Gusto |
+| Flow                                          | Description                                                               |
+| --------------------------------------------- | ------------------------------------------------------------------------- |
+| `Company.OnboardingFlow`                      | Company setup: locations, tax info, bank account, signatory, pay schedule |
+| `Employee.OnboardingFlow`                     | Admin-driven employee onboarding: profile, taxes, payment, documents      |
+| `Employee.SelfOnboardingFlow`                 | Employee-facing self-service onboarding                                   |
+| `Employee.TerminationFlow`                    | Employee termination and final pay                                        |
+| `Contractor.OnboardingFlow`                   | Contractor profile and payment setup                                      |
+| `Contractor.PaymentFlow`                      | Create and manage contractor payments                                     |
+| `Payroll.PayrollFlow`                         | Full payroll run: configure, edit, review, submit                         |
+| `Payroll.PayrollExecutionFlow`                | Payroll execution from an existing payroll                                |
+| `Payroll.OffCycleFlow`                        | Off-cycle payroll creation and execution                                  |
+| `Payroll.DismissalFlow`                       | Dismissal payroll processing                                              |
+| `Payroll.TransitionFlow`                      | Payroll transition between providers                                      |
+| `InformationRequests.InformationRequestsFlow` | Respond to information requests from Gusto                                |
 
 ### Using a Flow
 

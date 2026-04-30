@@ -24,13 +24,13 @@ function MyComponent() {
 
 ## Props
 
-| Name | Type | Required | Description |
-| --- | --- | --- | --- |
-| `companyId` | `string` | Yes | The associated company identifier. |
-| `onEvent` | `(eventType: string, data?: unknown) => void` | Yes | Callback invoked when events are emitted. |
+| Name        | Type                                          | Required | Description                               |
+| ----------- | --------------------------------------------- | -------- | ----------------------------------------- |
+| `companyId` | `string`                                      | Yes      | The associated company identifier.        |
+| `onEvent`   | `(eventType: string, data?: unknown) => void` | Yes      | Callback invoked when events are emitted. |
 
 ## Events
 
-| Event | Description | Data |
-| --- | --- | --- |
+| Event                     | Description                                                     | Data                                   |
+| ------------------------- | --------------------------------------------------------------- | -------------------------------------- |
 | `OFF_CYCLE_SELECT_REASON` | Fired when the user selects a reason for the off-cycle payroll. | `{ reason: string, defaults: object }` |

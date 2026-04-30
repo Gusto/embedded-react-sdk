@@ -400,12 +400,12 @@ function MyComponent() {
 
 #### Props
 
-| Name                     | Type     | Description                                                                                        |
-| ------------------------ | -------- | -------------------------------------------------------------------------------------------------- |
-| **companyId** (Required) | string   | The associated company identifier.                                                                 |
+| Name                     | Type     | Description                                                                                         |
+| ------------------------ | -------- | --------------------------------------------------------------------------------------------------- |
+| **companyId** (Required) | string   | The associated company identifier.                                                                  |
 | **employeeId**           | string   | The employee being terminated. Used to scope the pay period selection.                              |
 | **payrollId**            | string   | When provided with `employeeId`, skips pay period selection and goes directly to payroll execution. |
-| **onEvent** (Required)   | function | See events table for available events.                                                             |
+| **onEvent** (Required)   | function | See events table for available events.                                                              |
 
 #### Events
 
@@ -488,13 +488,13 @@ function MyComponent() {
 
 #### Props
 
-| Name                            | Type     | Description                                     |
-| ------------------------------- | -------- | ----------------------------------------------- |
-| **companyId** (Required)        | string   | The associated company identifier.              |
-| **startDate** (Required)        | string   | The start date of the transition pay period.    |
-| **endDate** (Required)          | string   | The end date of the transition pay period.      |
-| **payScheduleUuid** (Required)  | string   | The pay schedule identifier for the transition. |
-| **onEvent** (Required)          | function | See events table for available events.          |
+| Name                           | Type     | Description                                     |
+| ------------------------------ | -------- | ----------------------------------------------- |
+| **companyId** (Required)       | string   | The associated company identifier.              |
+| **startDate** (Required)       | string   | The start date of the transition pay period.    |
+| **endDate** (Required)         | string   | The end date of the transition pay period.      |
+| **payScheduleUuid** (Required) | string   | The pay schedule identifier for the transition. |
+| **onEvent** (Required)         | function | See events table for available events.          |
 
 #### Events
 
@@ -524,13 +524,13 @@ function MyComponent() {
 
 #### Props
 
-| Name                            | Type     | Description                                     |
-| ------------------------------- | -------- | ----------------------------------------------- |
-| **companyId** (Required)        | string   | The associated company identifier.              |
-| **startDate** (Required)        | string   | The start date of the transition pay period.    |
-| **endDate** (Required)          | string   | The end date of the transition pay period.      |
-| **payScheduleUuid** (Required)  | string   | The pay schedule identifier for the transition. |
-| **onEvent** (Required)          | function | See events table for available events.          |
+| Name                           | Type     | Description                                     |
+| ------------------------------ | -------- | ----------------------------------------------- |
+| **companyId** (Required)       | string   | The associated company identifier.              |
+| **startDate** (Required)       | string   | The start date of the transition pay period.    |
+| **endDate** (Required)         | string   | The end date of the transition pay period.      |
+| **payScheduleUuid** (Required) | string   | The pay schedule identifier for the transition. |
+| **onEvent** (Required)         | function | See events table for available events.          |
 
 #### Events
 
@@ -558,13 +558,13 @@ function MyComponent() {
 
 #### Props
 
-| Name                            | Type                                     | Description                                                        |
-| ------------------------------- | ---------------------------------------- | ------------------------------------------------------------------ |
-| **companyId** (Required)        | string                                   | The associated company identifier.                                 |
-| **payrollId** (Required)        | string                                   | The associated payroll identifier.                                 |
-| **onEvent** (Required)          | function                                 | See events table for available events.                             |
-| **withReimbursements**          | boolean                                  | Optional flag to show/hide reimbursements fields. Defaults to true.|
-| **ConfirmWireDetailsComponent** | `ComponentType<ConfirmWireDetailsProps>` | Optional custom component to replace the default wire details UI.  |
+| Name                            | Type                                     | Description                                                         |
+| ------------------------------- | ---------------------------------------- | ------------------------------------------------------------------- |
+| **companyId** (Required)        | string                                   | The associated company identifier.                                  |
+| **payrollId** (Required)        | string                                   | The associated payroll identifier.                                  |
+| **onEvent** (Required)          | function                                 | See events table for available events.                              |
+| **withReimbursements**          | boolean                                  | Optional flag to show/hide reimbursements fields. Defaults to true. |
+| **ConfirmWireDetailsComponent** | `ComponentType<ConfirmWireDetailsProps>` | Optional custom component to replace the default wire details UI.   |
 
 ### Payroll.RecoveryCases
 

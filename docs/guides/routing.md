@@ -67,7 +67,7 @@ function EmployeeLandingWrapper({ companyId, employeeId }) {
     <Employee.Landing
       employeeId={employeeId}
       companyId={companyId}
-      onEvent={(eventType) => {
+      onEvent={eventType => {
         if (eventType === componentEvents.EMPLOYEE_SELF_ONBOARDING_START) {
           navigate('/profile')
         }
@@ -86,11 +86,7 @@ Here is the full working example with all wrapper components and the router conf
 ```tsx
 import { Employee, componentEvents, GustoProvider } from '@gusto/embedded-react-sdk'
 import '@gusto/embedded-react-sdk/style.css'
-import {
-  createBrowserRouter,
-  RouterProvider,
-  useNavigate,
-} from 'react-router-dom'
+import { createBrowserRouter, RouterProvider, useNavigate } from 'react-router-dom'
 
 interface AppProps {
   companyId: string
@@ -110,7 +106,7 @@ function EmployeeLandingWrapper({
     <Employee.Landing
       employeeId={employeeId}
       companyId={companyId}
-      onEvent={(eventType) => {
+      onEvent={eventType => {
         if (eventType === componentEvents.EMPLOYEE_SELF_ONBOARDING_START) {
           navigate('/profile')
         }
@@ -132,7 +128,7 @@ function EmployeeProfileWrapper({
     <Employee.Profile
       employeeId={employeeId}
       companyId={companyId}
-      onEvent={(eventType) => {
+      onEvent={eventType => {
         if (eventType === componentEvents.EMPLOYEE_PROFILE_DONE) {
           navigate('/taxes')
         }
@@ -147,7 +143,7 @@ function EmployeeTaxesWrapper({ employeeId }: { employeeId: string }) {
   return (
     <Employee.Taxes
       employeeId={employeeId}
-      onEvent={(eventType) => {
+      onEvent={eventType => {
         if (eventType === componentEvents.EMPLOYEE_TAXES_DONE) {
           navigate('/payment_method')
         }
@@ -162,7 +158,7 @@ function EmployeePaymentMethodWrapper({ employeeId }: { employeeId: string }) {
   return (
     <Employee.PaymentMethod
       employeeId={employeeId}
-      onEvent={(eventType) => {
+      onEvent={eventType => {
         if (eventType === componentEvents.EMPLOYEE_PAYMENT_METHOD_DONE) {
           navigate('/document_signer')
         }
@@ -177,7 +173,7 @@ function EmployeeDocumentSignerWrapper({ employeeId }: { employeeId: string }) {
   return (
     <Employee.DocumentSigner
       employeeId={employeeId}
-      onEvent={(eventType) => {
+      onEvent={eventType => {
         if (eventType === componentEvents.EMPLOYEE_FORMS_DONE) {
           navigate('/onboarding_summary')
         }
@@ -187,12 +183,7 @@ function EmployeeDocumentSignerWrapper({ employeeId }: { employeeId: string }) {
 }
 
 function EmployeeOnboardingSummaryWrapper({ employeeId }: { employeeId: string }) {
-  return (
-    <Employee.OnboardingSummary
-      employeeId={employeeId}
-      onEvent={() => {}}
-    />
-  )
+  return <Employee.OnboardingSummary employeeId={employeeId} onEvent={() => {}} />
 }
 
 const createEmployeeSelfOnboardingRouter = ({

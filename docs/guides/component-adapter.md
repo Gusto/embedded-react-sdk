@@ -120,10 +120,7 @@ const myCustomComponents: Partial<ComponentsContextType> = {
 ### 3. Provide to Your App
 
 ```tsx
-<GustoProvider
-  config={{ baseUrl: '/api/gusto/' }}
-  components={myCustomComponents}
->
+<GustoProvider config={{ baseUrl: '/api/gusto/' }} components={myCustomComponents}>
   <YourApp />
 </GustoProvider>
 ```
@@ -174,7 +171,12 @@ const materialUIComponents = {
       variant === 'primary' ? 'contained' : variant === 'secondary' ? 'outlined' : 'text'
 
     return (
-      <MuiButton disabled={isDisabled || isLoading} onClick={onClick} variant={muiVariant} {...props}>
+      <MuiButton
+        disabled={isDisabled || isLoading}
+        onClick={onClick}
+        variant={muiVariant}
+        {...props}
+      >
         {isLoading ? 'Loading...' : children}
       </MuiButton>
     )
@@ -183,10 +185,7 @@ const materialUIComponents = {
 
 function App() {
   return (
-    <GustoProvider
-      config={{ baseUrl: '/api/gusto/' }}
-      components={materialUIComponents}
-    >
+    <GustoProvider config={{ baseUrl: '/api/gusto/' }} components={materialUIComponents}>
       <Employee.OnboardingFlow companyId="company_123" onEvent={() => {}} />
     </GustoProvider>
   )
@@ -226,13 +225,13 @@ Reference the [default implementations](https://github.com/Gusto/embedded-react-
 
 The SDK expects specific value formats from each component's `onChange` handler:
 
-| Component | onChange parameter |
-| --- | --- |
-| Checkbox | `boolean` |
-| DatePicker | `Date \| null` |
-| NumberInput | `number` |
-| Select | `string` |
-| TextInput | `string` |
+| Component   | onChange parameter |
+| ----------- | ------------------ |
+| Checkbox    | `boolean`          |
+| DatePicker  | `Date \| null`     |
+| NumberInput | `number`           |
+| Select      | `string`           |
+| TextInput   | `string`           |
 
 ### What about accessibility?
 

@@ -33,25 +33,19 @@ function MyApp({ companyId }) {
     // Handle events from all subcomponents
   }
 
-  return (
-    <Employee.OnboardingFlow
-      companyId={companyId}
-      onEvent={handleEvent}
-      withEmployeeI9
-    />
-  )
+  return <Employee.OnboardingFlow companyId={companyId} onEvent={handleEvent} withEmployeeI9 />
 }
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-| --- | --- | --- | --- | --- |
-| **companyId** | `string` | | Yes | The associated company identifier. |
-| **defaultValues** | `object` | | No | Default values for individual flow step components. |
-| **onEvent** | `(eventType: string, data?: unknown) => void` | | Yes | Callback invoked when events are emitted from any subcomponent. |
-| **isSelfOnboardingEnabled** | `boolean` | `true` | No | When true, presents the self-onboarding toggle allowing the admin to opt the employee into self-onboarding. |
-| **withEmployeeI9** | `boolean` | `false` | No | When true, enables the Employee Documents step in the onboarding flow for I-9 configuration. |
+| Name                        | Type                                          | Default | Required | Description                                                                                                 |
+| --------------------------- | --------------------------------------------- | ------- | -------- | ----------------------------------------------------------------------------------------------------------- |
+| **companyId**               | `string`                                      |         | Yes      | The associated company identifier.                                                                          |
+| **defaultValues**           | `object`                                      |         | No       | Default values for individual flow step components.                                                         |
+| **onEvent**                 | `(eventType: string, data?: unknown) => void` |         | Yes      | Callback invoked when events are emitted from any subcomponent.                                             |
+| **isSelfOnboardingEnabled** | `boolean`                                     | `true`  | No       | When true, presents the self-onboarding toggle allowing the admin to opt the employee into self-onboarding. |
+| **withEmployeeI9**          | `boolean`                                     | `false` | No       | When true, enables the Employee Documents step in the onboarding flow for I-9 configuration.                |
 
 ## Events
 

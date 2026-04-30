@@ -24,17 +24,17 @@ function MyComponent() {
 
 ## Props
 
-| Name | Type | Required | Description |
-| --- | --- | --- | --- |
-| `companyId` | `string` | Yes | The associated company identifier. |
-| `signatoryId` | `string` | No | ID of the signatory. When set and matching an existing signatory, the form pre-populates with their information for editing. |
-| `defaultValues` | `object` | No | Default values for form fields: `firstName`, `lastName`, `email`, `title`, `phone`, `birthday`, `ssn`, `street1`, `street2`, `city`, `state`, `zip`. If signatory data is available via the API, `defaultValues` will be overwritten. |
-| `onEvent` | `(eventType: string, data?: unknown) => void` | Yes | Callback invoked when events are emitted. |
+| Name            | Type                                          | Required | Description                                                                                                                                                                                                                           |
+| --------------- | --------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `companyId`     | `string`                                      | Yes      | The associated company identifier.                                                                                                                                                                                                    |
+| `signatoryId`   | `string`                                      | No       | ID of the signatory. When set and matching an existing signatory, the form pre-populates with their information for editing.                                                                                                          |
+| `defaultValues` | `object`                                      | No       | Default values for form fields: `firstName`, `lastName`, `email`, `title`, `phone`, `birthday`, `ssn`, `street1`, `street2`, `city`, `state`, `zip`. If signatory data is available via the API, `defaultValues` will be overwritten. |
+| `onEvent`       | `(eventType: string, data?: unknown) => void` | Yes      | Callback invoked when events are emitted.                                                                                                                                                                                             |
 
 ## Events
 
-| Event | Description | Data |
-| --- | --- | --- |
-| `COMPANY_SIGNATORY_CREATED` | Fired when a new signatory is created successfully. | [Response from the create signatory API](https://docs.gusto.com/embedded-payroll/reference/post-v1-company-signatories) |
-| `COMPANY_SIGNATORY_UPDATED` | Fired when an existing signatory is updated successfully. | [Response from the update signatory API](https://docs.gusto.com/embedded-payroll/reference/put-v1-companies-company_uuid-signatories-signatory_uuid) |
-| `COMPANY_CREATE_SIGNATORY_DONE` | Fired when the create signatory process is complete. | None |
+| Event                           | Description                                               | Data                                                                                                                                                 |
+| ------------------------------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `COMPANY_SIGNATORY_CREATED`     | Fired when a new signatory is created successfully.       | [Response from the create signatory API](https://docs.gusto.com/embedded-payroll/reference/post-v1-company-signatories)                              |
+| `COMPANY_SIGNATORY_UPDATED`     | Fired when an existing signatory is updated successfully. | [Response from the update signatory API](https://docs.gusto.com/embedded-payroll/reference/put-v1-companies-company_uuid-signatories-signatory_uuid) |
+| `COMPANY_CREATE_SIGNATORY_DONE` | Fired when the create signatory process is complete.      | None                                                                                                                                                 |

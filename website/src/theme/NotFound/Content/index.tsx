@@ -1,7 +1,7 @@
-import Link from '@docusaurus/Link';
-import Heading from '@theme/Heading';
-import clsx from 'clsx';
-import styles from './styles.module.css';
+import Link from '@docusaurus/Link'
+import Heading from '@theme/Heading'
+import clsx from 'clsx'
+import styles from './styles.module.css'
 
 export default function NotFoundContent(): JSX.Element {
   return (
@@ -40,5 +40,5 @@ export default function NotFoundContent(): JSX.Element {
         </div>
       </div>
     </main>
-  );
+  )
 }

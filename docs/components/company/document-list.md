@@ -24,14 +24,14 @@ function MyComponent() {
 
 ## Props
 
-| Name | Type | Required | Description |
-| --- | --- | --- | --- |
-| `companyId` | `string` | Yes | The associated company identifier. |
-| `signatoryId` | `string` | No | The signatory identifier. When provided, filters the document list to forms for this signatory. |
-| `onEvent` | `(eventType: string, data?: unknown) => void` | Yes | Callback invoked when events are emitted. |
+| Name          | Type                                          | Required | Description                                                                                     |
+| ------------- | --------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------- |
+| `companyId`   | `string`                                      | Yes      | The associated company identifier.                                                              |
+| `signatoryId` | `string`                                      | No       | The signatory identifier. When provided, filters the document list to forms for this signatory. |
+| `onEvent`     | `(eventType: string, data?: unknown) => void` | Yes      | Callback invoked when events are emitted.                                                       |
 
 ## Events
 
-| Event | Description | Data |
-| --- | --- | --- |
+| Event                       | Description                                                      | Data                                                                                                            |
+| --------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
 | `COMPANY_VIEW_FORM_TO_SIGN` | Fired when a user selects a form to sign from the document list. | [Response from the get company form API](https://docs.gusto.com/embedded-payroll/reference/get-v1-company-form) |

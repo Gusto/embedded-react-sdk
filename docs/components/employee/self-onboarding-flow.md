@@ -40,12 +40,12 @@ function MyApp({ companyId, employeeId }) {
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-| --- | --- | --- | --- | --- |
-| **companyId** | `string` | | Yes | The associated company identifier. |
-| **employeeId** | `string` | | Yes | The associated employee identifier. |
-| **onEvent** | `(eventType: string, data?: unknown) => void` | | Yes | Callback invoked when events are emitted from any subcomponent. |
-| **withEmployeeI9** | `boolean` | `false` | No | When true, the Document Signer step checks if the employee has I-9 enabled and routes to the Employment Eligibility and I-9 signature form steps. |
+| Name               | Type                                          | Default | Required | Description                                                                                                                                       |
+| ------------------ | --------------------------------------------- | ------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **companyId**      | `string`                                      |         | Yes      | The associated company identifier.                                                                                                                |
+| **employeeId**     | `string`                                      |         | Yes      | The associated employee identifier.                                                                                                               |
+| **onEvent**        | `(eventType: string, data?: unknown) => void` |         | Yes      | Callback invoked when events are emitted from any subcomponent.                                                                                   |
+| **withEmployeeI9** | `boolean`                                     | `false` | No       | When true, the Document Signer step checks if the employee has I-9 enabled and routes to the Employment Eligibility and I-9 signature form steps. |
 
 ## Events
 

@@ -1,8 +1,8 @@
-import type { Config } from '@docusaurus/types';
-import type * as Preset from '@docusaurus/preset-classic';
-import type * as Plugin from '@docusaurus/types/src/plugin';
-import type * as OpenApiPlugin from 'docusaurus-plugin-openapi-docs';
-import { themes as prismThemes } from 'prism-react-renderer';
+import type { Config } from '@docusaurus/types'
+import type * as Preset from '@docusaurus/preset-classic'
+import type * as Plugin from '@docusaurus/types/src/plugin'
+import type * as OpenApiPlugin from 'docusaurus-plugin-openapi-docs'
+import { themes as prismThemes } from 'prism-react-renderer'
 
 const config: Config = {
   title: 'Gusto Embedded',
@@ -66,9 +66,9 @@ const config: Config = {
                 path: require.resolve('path-browserify'),
               },
             },
-          };
+          }
         },
-      };
+      }
     },
     [
       'docusaurus-plugin-openapi-docs',
@@ -164,6 +164,6 @@ const config: Config = {
       additionalLanguages: ['bash', 'json', 'ruby', 'python', 'java'],
     },
   } satisfies Preset.ThemeConfig,
-};
+}
 
-export default config;
+export default config

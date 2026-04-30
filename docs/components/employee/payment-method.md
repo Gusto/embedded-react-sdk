@@ -17,28 +17,23 @@ function MyApp({ employeeId }) {
     // Handle payment method events
   }
 
-  return (
-    <Employee.PaymentMethod
-      employeeId={employeeId}
-      onEvent={handleEvent}
-    />
-  )
+  return <Employee.PaymentMethod employeeId={employeeId} onEvent={handleEvent} />
 }
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-| --- | --- | --- | --- | --- |
-| **employeeId** | `string` | | Yes | The associated employee identifier. |
-| **onEvent** | `(eventType: string, data?: unknown) => void` | | Yes | Callback invoked when events are emitted. |
-| **isAdmin** | `boolean` | `false` | No | When true, configures the form for admin onboarding. When false, configures for self-onboarding. |
+| Name           | Type                                          | Default | Required | Description                                                                                      |
+| -------------- | --------------------------------------------- | ------- | -------- | ------------------------------------------------------------------------------------------------ |
+| **employeeId** | `string`                                      |         | Yes      | The associated employee identifier.                                                              |
+| **onEvent**    | `(eventType: string, data?: unknown) => void` |         | Yes      | Callback invoked when events are emitted.                                                        |
+| **isAdmin**    | `boolean`                                     | `false` | No       | When true, configures the form for admin onboarding. When false, configures for self-onboarding. |
 
 ## Events
 
-| Event | Description | Data |
-| --- | --- | --- |
-| `EMPLOYEE_BANK_ACCOUNT_CREATED` | Fired after the add bank account form is submitted and a new account is created | Response from the Create a bank account endpoint |
-| `EMPLOYEE_BANK_ACCOUNT_DELETED` | Fired after deleting a bank account | Response from the Delete a bank account endpoint |
+| Event                             | Description                                                                                               | Data                                             |
+| --------------------------------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| `EMPLOYEE_BANK_ACCOUNT_CREATED`   | Fired after the add bank account form is submitted and a new account is created                           | Response from the Create a bank account endpoint |
+| `EMPLOYEE_BANK_ACCOUNT_DELETED`   | Fired after deleting a bank account                                                                       | Response from the Delete a bank account endpoint |
 | `EMPLOYEE_PAYMENT_METHOD_UPDATED` | Fired when the employee updates the payment method by continuing or saving a split paycheck configuration | Response from the Update payment method endpoint |
-| `EMPLOYEE_PAYMENT_METHOD_DONE` | Fired when all API calls are finished and the step is ready to advance | None |
+| `EMPLOYEE_PAYMENT_METHOD_DONE`    | Fired when all API calls are finished and the step is ready to advance                                    | None                                             |

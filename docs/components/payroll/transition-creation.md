@@ -27,16 +27,16 @@ function MyComponent() {
 
 ## Props
 
-| Name | Type | Required | Description |
-| --- | --- | --- | --- |
-| `companyId` | `string` | Yes | The associated company identifier. |
-| `startDate` | `string` | Yes | The start date of the transition period (ISO 8601 format). |
-| `endDate` | `string` | Yes | The end date of the transition period (ISO 8601 format). |
-| `payScheduleUuid` | `string` | Yes | The pay schedule identifier for the transition. |
-| `onEvent` | `(eventType: string, data?: unknown) => void` | Yes | Callback invoked when events are emitted. |
+| Name              | Type                                          | Required | Description                                                |
+| ----------------- | --------------------------------------------- | -------- | ---------------------------------------------------------- |
+| `companyId`       | `string`                                      | Yes      | The associated company identifier.                         |
+| `startDate`       | `string`                                      | Yes      | The start date of the transition period (ISO 8601 format). |
+| `endDate`         | `string`                                      | Yes      | The end date of the transition period (ISO 8601 format).   |
+| `payScheduleUuid` | `string`                                      | Yes      | The pay schedule identifier for the transition.            |
+| `onEvent`         | `(eventType: string, data?: unknown) => void` | Yes      | Callback invoked when events are emitted.                  |
 
 ## Events
 
-| Event | Description | Data |
-| --- | --- | --- |
+| Event                | Description                                                | Data |
+| -------------------- | ---------------------------------------------------------- | ---- |
 | `TRANSITION_CREATED` | Fired when the transition payroll is successfully created. | None |

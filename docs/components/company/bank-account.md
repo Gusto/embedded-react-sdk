@@ -24,18 +24,18 @@ function MyComponent() {
 
 ## Props
 
-| Name | Type | Required | Description |
-| --- | --- | --- | --- |
-| `companyId` | `string` | Yes | The associated company identifier. |
-| `defaultValues` | `object` | No | Default values for bank account form fields. **Note:** This prop is accepted by the type definition but is not currently forwarded by the BankAccount orchestrator component. |
-| `onEvent` | `(eventType: string, data?: unknown) => void` | Yes | Callback invoked when events are emitted. |
+| Name            | Type                                          | Required | Description                                                                                                                                                                   |
+| --------------- | --------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `companyId`     | `string`                                      | Yes      | The associated company identifier.                                                                                                                                            |
+| `defaultValues` | `object`                                      | No       | Default values for bank account form fields. **Note:** This prop is accepted by the type definition but is not currently forwarded by the BankAccount orchestrator component. |
+| `onEvent`       | `(eventType: string, data?: unknown) => void` | Yes      | Callback invoked when events are emitted.                                                                                                                                     |
 
 ## Events
 
-| Event | Description | Data |
-| --- | --- | --- |
-| `COMPANY_BANK_ACCOUNT_CHANGE` | Fired when a user chooses to change the existing bank account. | None |
-| `COMPANY_BANK_ACCOUNT_CREATED` | Fired when a new bank account is created. | [Response from the create company bank account API](https://docs.gusto.com/embedded-payroll/reference/post-v1-companies-company_id-bank-accounts) |
-| `COMPANY_BANK_ACCOUNT_VERIFY` | Fired when a user chooses to verify a bank account (after micro-deposits are made). | None |
-| `COMPANY_BANK_ACCOUNT_VERIFIED` | Fired when a bank account has been successfully verified. | [Response from the verify company bank account API](https://docs.gusto.com/embedded-payroll/reference/put-v1-companies-company_id-bank-accounts-verify) |
-| `COMPANY_BANK_ACCOUNT_DONE` | Fired when the user chooses to proceed to the next step. | None |
+| Event                           | Description                                                                         | Data                                                                                                                                                    |
+| ------------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `COMPANY_BANK_ACCOUNT_CHANGE`   | Fired when a user chooses to change the existing bank account.                      | None                                                                                                                                                    |
+| `COMPANY_BANK_ACCOUNT_CREATED`  | Fired when a new bank account is created.                                           | [Response from the create company bank account API](https://docs.gusto.com/embedded-payroll/reference/post-v1-companies-company_id-bank-accounts)       |
+| `COMPANY_BANK_ACCOUNT_VERIFY`   | Fired when a user chooses to verify a bank account (after micro-deposits are made). | None                                                                                                                                                    |
+| `COMPANY_BANK_ACCOUNT_VERIFIED` | Fired when a bank account has been successfully verified.                           | [Response from the verify company bank account API](https://docs.gusto.com/embedded-payroll/reference/put-v1-companies-company_id-bank-accounts-verify) |
+| `COMPANY_BANK_ACCOUNT_DONE`     | Fired when the user chooses to proceed to the next step.                            | None                                                                                                                                                    |

@@ -24,17 +24,17 @@ function MyComponent() {
 
 ## Props
 
-| Name | Type | Required | Description |
-| --- | --- | --- | --- |
-| `companyId` | `string` | Yes | The associated company identifier. |
-| `successMessage` | `string` | No | Optional success message to display at the top of the list. |
-| `onEvent` | `(eventType: string, data?: unknown) => void` | Yes | Callback invoked when events are emitted. |
+| Name             | Type                                          | Required | Description                                                 |
+| ---------------- | --------------------------------------------- | -------- | ----------------------------------------------------------- |
+| `companyId`      | `string`                                      | Yes      | The associated company identifier.                          |
+| `successMessage` | `string`                                      | No       | Optional success message to display at the top of the list. |
+| `onEvent`        | `(eventType: string, data?: unknown) => void` | Yes      | Callback invoked when events are emitted.                   |
 
 ## Events
 
-| Event | Description | Data |
-| --- | --- | --- |
-| `CONTRACTOR_CREATE` | Fired when the user initiates creating a new contractor. | None |
-| `CONTRACTOR_UPDATE` | Fired when the user selects a contractor to edit. | `{ contractorId: string }` |
-| `CONTRACTOR_DELETED` | Fired when a contractor is deleted. | `{ contractorId: string }` |
-| `CONTRACTOR_ONBOARDING_CONTINUE` | Fired when the user continues onboarding for a contractor. | None |
+| Event                            | Description                                                | Data                       |
+| -------------------------------- | ---------------------------------------------------------- | -------------------------- |
+| `CONTRACTOR_CREATE`              | Fired when the user initiates creating a new contractor.   | None                       |
+| `CONTRACTOR_UPDATE`              | Fired when the user selects a contractor to edit.          | `{ contractorId: string }` |
+| `CONTRACTOR_DELETED`             | Fired when a contractor is deleted.                        | `{ contractorId: string }` |
+| `CONTRACTOR_ONBOARDING_CONTINUE` | Fired when the user continues onboarding for a contractor. | None                       |

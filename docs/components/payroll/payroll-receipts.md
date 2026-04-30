@@ -24,12 +24,12 @@ function MyComponent() {
 
 ## Props
 
-| Name | Type | Required | Description |
-| --- | --- | --- | --- |
-| `payrollId` | `string` | Yes | The payroll identifier. |
-| `onEvent` | `(eventType: string, data?: unknown) => void` | Yes | Callback invoked when events are emitted. |
-| `withReimbursements` | `boolean` | No | Whether to include reimbursement details. |
-| `dictionary` | `object` | No | Custom label overrides for UI text. |
+| Name                 | Type                                          | Required | Description                               |
+| -------------------- | --------------------------------------------- | -------- | ----------------------------------------- |
+| `payrollId`          | `string`                                      | Yes      | The payroll identifier.                   |
+| `onEvent`            | `(eventType: string, data?: unknown) => void` | Yes      | Callback invoked when events are emitted. |
+| `withReimbursements` | `boolean`                                     | No       | Whether to include reimbursement details. |
+| `dictionary`         | `object`                                      | No       | Custom label overrides for UI text.       |
 
 ## Events
 

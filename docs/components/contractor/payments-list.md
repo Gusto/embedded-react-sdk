@@ -24,16 +24,16 @@ function MyComponent() {
 
 ## Props
 
-| Name | Type | Required | Description |
-| --- | --- | --- | --- |
-| `companyId` | `string` | Yes | The associated company identifier. |
-| `alerts` | `array` | No | Optional array of alert objects to display above the payments list. |
-| `onEvent` | `(eventType: string, data?: unknown) => void` | Yes | Callback invoked when events are emitted. |
+| Name        | Type                                          | Required | Description                                                         |
+| ----------- | --------------------------------------------- | -------- | ------------------------------------------------------------------- |
+| `companyId` | `string`                                      | Yes      | The associated company identifier.                                  |
+| `alerts`    | `array`                                       | No       | Optional array of alert objects to display above the payments list. |
+| `onEvent`   | `(eventType: string, data?: unknown) => void` | Yes      | Callback invoked when events are emitted.                           |
 
 ## Events
 
-| Event | Description | Data |
-| --- | --- | --- |
-| `CONTRACTOR_PAYMENT_CREATE` | Fired when the user initiates creating a new payment. | None |
-| `CONTRACTOR_PAYMENT_VIEW` | Fired when the user selects a payment to view. | `{ paymentId: string }` |
-| `CONTRACTOR_PAYMENT_RFI_RESPOND` | Fired when the user responds to a payment-related information request. | None |
+| Event                            | Description                                                            | Data                    |
+| -------------------------------- | ---------------------------------------------------------------------- | ----------------------- |
+| `CONTRACTOR_PAYMENT_CREATE`      | Fired when the user initiates creating a new payment.                  | None                    |
+| `CONTRACTOR_PAYMENT_VIEW`        | Fired when the user selects a payment to view.                         | `{ paymentId: string }` |
+| `CONTRACTOR_PAYMENT_RFI_RESPOND` | Fired when the user responds to a payment-related information request. | None                    |

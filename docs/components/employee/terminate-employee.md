@@ -34,18 +34,18 @@ function MyApp({ companyId, employeeId }) {
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-| --- | --- | --- | --- | --- |
-| **companyId** | `string` | | Yes | The associated company identifier. |
-| **employeeId** | `string` | | Yes | The employee identifier to terminate. |
-| **onEvent** | `(eventType: string, data?: unknown) => void` | | Yes | Callback invoked when events are emitted. |
-| **dictionary** | `object` | | No | Optional translations for component text. |
+| Name           | Type                                          | Default | Required | Description                               |
+| -------------- | --------------------------------------------- | ------- | -------- | ----------------------------------------- |
+| **companyId**  | `string`                                      |         | Yes      | The associated company identifier.        |
+| **employeeId** | `string`                                      |         | Yes      | The employee identifier to terminate.     |
+| **onEvent**    | `(eventType: string, data?: unknown) => void` |         | Yes      | Callback invoked when events are emitted. |
+| **dictionary** | `object`                                      |         | No       | Optional translations for component text. |
 
 ## Events
 
-| Event | Description | Data |
-| --- | --- | --- |
-| `EMPLOYEE_TERMINATION_CREATED` | Fired when a new termination is created | `{ employeeId, effectiveDate, payrollOption }` |
-| `EMPLOYEE_TERMINATION_UPDATED` | Fired when an existing termination is updated | `{ employeeId, effectiveDate, payrollOption }` |
-| `EMPLOYEE_TERMINATION_DONE` | Fired when the termination form is completed | `{ employeeId, effectiveDate, payrollOption }` |
-| `EMPLOYEE_TERMINATION_VIEW_SUMMARY` | Fired when redirecting to view an existing termination | `{ employeeId, effectiveDate }` |
+| Event                               | Description                                            | Data                                           |
+| ----------------------------------- | ------------------------------------------------------ | ---------------------------------------------- |
+| `EMPLOYEE_TERMINATION_CREATED`      | Fired when a new termination is created                | `{ employeeId, effectiveDate, payrollOption }` |
+| `EMPLOYEE_TERMINATION_UPDATED`      | Fired when an existing termination is updated          | `{ employeeId, effectiveDate, payrollOption }` |
+| `EMPLOYEE_TERMINATION_DONE`         | Fired when the termination form is completed           | `{ employeeId, effectiveDate, payrollOption }` |
+| `EMPLOYEE_TERMINATION_VIEW_SUMMARY` | Fired when redirecting to view an existing termination | `{ employeeId, effectiveDate }`                |

@@ -65,7 +65,9 @@
   font-weight: 600;
   font-size: 0.95rem;
   text-decoration: none;
-  transition: border-color 0.15s ease, color 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease;
 }
 
 .docsLink:hover {
@@ -124,7 +126,9 @@
   font-size: 0.85rem;
   color: #1b1b1d;
   text-decoration: none;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
 }
 
 .suggestionsList li a:hover {

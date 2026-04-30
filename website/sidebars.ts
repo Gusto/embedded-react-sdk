@@ -1,5 +1,5 @@
-import type { SidebarsConfig } from '@docusaurus/plugin-content-docs';
-import apiSidebar from '../docs/api/sidebar';
+import type { SidebarsConfig } from '@docusaurus/plugin-content-docs'
+import apiSidebar from '../docs/api/sidebar'
 
 const sidebars: SidebarsConfig = {
   docs: [
@@ -202,9 +202,7 @@ const sidebars: SidebarsConfig = {
             {
               type: 'category',
               label: 'Flows',
-              items: [
-                'components/information-requests/information-requests-flow',
-              ],
+              items: ['components/information-requests/information-requests-flow'],
             },
             {
               type: 'category',
@@ -259,6 +257,6 @@ const sidebars: SidebarsConfig = {
     },
   ],
   api: apiSidebar,
-};
+}
 
-export default sidebars;
+export default sidebars

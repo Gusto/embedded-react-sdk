@@ -24,19 +24,19 @@ function MyApp() {
 
 #### Props
 
-| Name                     | Type     | Default | Description                                                                                                               |
-| ------------------------ | -------- | ------- | ------------------------------------------------------------------------------------------------------------------------- |
-| **companyId** (Required) | string   |         | The associated company identifier.                                                                                        |
-| **onEvent**              | function |         | Event handler for information request events.                                                                             |
+| Name                     | Type     | Default | Description                                                                                                                                                          |
+| ------------------------ | -------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **companyId** (Required) | string   |         | The associated company identifier.                                                                                                                                   |
+| **onEvent**              | function |         | Event handler for information request events.                                                                                                                        |
 | **withAlert**            | boolean  | true    | When true, displays a success alert at the top of the component after a request is submitted. Set to false when embedding in a parent that renders alerts elsewhere. |
 
 #### Events
 
-| Event type                       | Description                                              | Data                               |
-| -------------------------------- | -------------------------------------------------------- | ---------------------------------- |
-| INFORMATION_REQUEST_RESPOND      | Fired when user clicks to respond to a request           | { requestId: string }              |
-| INFORMATION_REQUEST_FORM_DONE    | Fired when a request is successfully submitted           | The updated information request    |
-| INFORMATION_REQUEST_FORM_CANCEL  | Fired when user cancels the response form                | None                               |
+| Event type                      | Description                                    | Data                            |
+| ------------------------------- | ---------------------------------------------- | ------------------------------- |
+| INFORMATION_REQUEST_RESPOND     | Fired when user clicks to respond to a request | { requestId: string }           |
+| INFORMATION_REQUEST_FORM_DONE   | Fired when a request is successfully submitted | The updated information request |
+| INFORMATION_REQUEST_FORM_CANCEL | Fired when user cancels the response form      | None                            |
 
 ## Using Information Request Subcomponents
 
@@ -66,10 +66,10 @@ function MyComponent() {
 
 #### Props
 
-| Name                     | Type     | Description                                    |
-| ------------------------ | -------- | ---------------------------------------------- |
-| **companyId** (Required) | string   | The associated company identifier.             |
-| **onEvent** (Required)   | function | See events table for available events.         |
+| Name                     | Type     | Description                            |
+| ------------------------ | -------- | -------------------------------------- |
+| **companyId** (Required) | string   | The associated company identifier.     |
+| **onEvent** (Required)   | function | See events table for available events. |
 
 #### Events
 
@@ -105,7 +105,7 @@ function MyComponent() {
 
 #### Events
 
-| Event type                      | Description                                    | Data                            |
-| ------------------------------- | ---------------------------------------------- | ------------------------------- |
+| Event type                      | Description                                      | Data                            |
+| ------------------------------- | ------------------------------------------------ | ------------------------------- |
 | INFORMATION_REQUEST_FORM_DONE   | Fired when the request is successfully submitted | The updated information request |
-| INFORMATION_REQUEST_FORM_CANCEL | Fired when user cancels the response form       | None                            |
+| INFORMATION_REQUEST_FORM_CANCEL | Fired when user cancels the response form        | None                            |

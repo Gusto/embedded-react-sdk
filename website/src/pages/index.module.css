@@ -91,7 +91,9 @@
   font-weight: 600;
   font-size: 1rem;
   text-decoration: none;
-  transition: background-color 0.15s ease, transform 0.1s ease;
+  transition:
+    background-color 0.15s ease,
+    transform 0.1s ease;
 }
 
 .heroPrimary:hover {
@@ -112,7 +114,10 @@
   font-weight: 600;
   font-size: 1rem;
   text-decoration: none;
-  transition: border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease,
+    transform 0.1s ease;
 }
 
 .heroSecondary:hover {
@@ -197,7 +202,9 @@
   background-color: #faf9f8;
   border: 1px solid #dfe1e5;
   border-radius: 12px;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .featureCard:hover {
@@ -301,7 +308,10 @@
   border-radius: 10px;
   text-decoration: none;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.1s ease;
 }
 
 .quickLinkCard:hover {

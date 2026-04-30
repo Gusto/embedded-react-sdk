@@ -25,15 +25,15 @@ function MyComponent() {
 
 ## Props
 
-| Name | Type | Required | Description |
-| --- | --- | --- | --- |
-| `paymentGroupId` | `string` | Yes | The payment group identifier. |
-| `companyId` | `string` | Yes | The associated company identifier. |
-| `onEvent` | `(eventType: string, data?: unknown) => void` | Yes | Callback invoked when events are emitted. |
-| `alerts` | `array` | No | Optional array of alert objects to display above the payment summary. |
+| Name             | Type                                          | Required | Description                                                           |
+| ---------------- | --------------------------------------------- | -------- | --------------------------------------------------------------------- |
+| `paymentGroupId` | `string`                                      | Yes      | The payment group identifier.                                         |
+| `companyId`      | `string`                                      | Yes      | The associated company identifier.                                    |
+| `onEvent`        | `(eventType: string, data?: unknown) => void` | Yes      | Callback invoked when events are emitted.                             |
+| `alerts`         | `array`                                       | No       | Optional array of alert objects to display above the payment summary. |
 
 ## Events
 
-| Event | Description | Data |
-| --- | --- | --- |
+| Event                     | Description                                    | Data |
+| ------------------------- | ---------------------------------------------- | ---- |
 | `CONTRACTOR_PAYMENT_EXIT` | Fired when the user exits the payment summary. | None |

@@ -17,25 +17,20 @@ function MyApp({ employeeId }) {
     // Handle federal tax events
   }
 
-  return (
-    <Employee.FederalTaxes
-      employeeId={employeeId}
-      onEvent={handleEvent}
-    />
-  )
+  return <Employee.FederalTaxes employeeId={employeeId} onEvent={handleEvent} />
 }
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-| --- | --- | --- | --- | --- |
-| **employeeId** | `string` | | Yes | The associated employee identifier. |
-| **onEvent** | `(eventType: string, data?: unknown) => void` | | Yes | Callback invoked when events are emitted. |
+| Name           | Type                                          | Default | Required | Description                               |
+| -------------- | --------------------------------------------- | ------- | -------- | ----------------------------------------- |
+| **employeeId** | `string`                                      |         | Yes      | The associated employee identifier.       |
+| **onEvent**    | `(eventType: string, data?: unknown) => void` |         | Yes      | Callback invoked when events are emitted. |
 
 ## Events
 
-| Event | Description | Data |
-| --- | --- | --- |
-| `EMPLOYEE_FEDERAL_TAXES_UPDATED` | Fired when federal taxes are successfully updated | Response from the Update federal taxes endpoint |
-| `EMPLOYEE_FEDERAL_TAXES_DONE` | Fired when the form is submitted, the API request completes, and the step is ready to advance | None |
+| Event                            | Description                                                                                   | Data                                            |
+| -------------------------------- | --------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| `EMPLOYEE_FEDERAL_TAXES_UPDATED` | Fired when federal taxes are successfully updated                                             | Response from the Update federal taxes endpoint |
+| `EMPLOYEE_FEDERAL_TAXES_DONE`    | Fired when the form is submitted, the API request completes, and the step is ready to advance | None                                            |

@@ -17,25 +17,20 @@ function MyApp({ employeeId }) {
     // Handle employment eligibility events
   }
 
-  return (
-    <Employee.EmploymentEligibility
-      employeeId={employeeId}
-      onEvent={handleEvent}
-    />
-  )
+  return <Employee.EmploymentEligibility employeeId={employeeId} onEvent={handleEvent} />
 }
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-| --- | --- | --- | --- | --- |
-| **employeeId** | `string` | | Yes | The associated employee identifier. |
-| **onEvent** | `(eventType: string, data?: unknown) => void` | | Yes | Callback invoked when events are emitted. |
+| Name           | Type                                          | Default | Required | Description                               |
+| -------------- | --------------------------------------------- | ------- | -------- | ----------------------------------------- |
+| **employeeId** | `string`                                      |         | Yes      | The associated employee identifier.       |
+| **onEvent**    | `(eventType: string, data?: unknown) => void` |         | Yes      | Callback invoked when events are emitted. |
 
 ## Events
 
-| Event | Description | Data |
-| --- | --- | --- |
-| `EMPLOYEE_EMPLOYMENT_ELIGIBILITY_DONE` | Fired when the employee completes the employment eligibility form | Response from the Create or update an employee's I-9 authorization endpoint |
-| `EMPLOYEE_CHANGE_ELIGIBILITY_STATUS` | Fired when the employee changes their eligibility status (e.g. citizenship or immigration status) | None |
+| Event                                  | Description                                                                                       | Data                                                                        |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `EMPLOYEE_EMPLOYMENT_ELIGIBILITY_DONE` | Fired when the employee completes the employment eligibility form                                 | Response from the Create or update an employee's I-9 authorization endpoint |
+| `EMPLOYEE_CHANGE_ELIGIBILITY_STATUS`   | Fired when the employee changes their eligibility status (e.g. citizenship or immigration status) | None                                                                        |

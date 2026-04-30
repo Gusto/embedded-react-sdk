@@ -24,14 +24,14 @@ function MyComponent() {
 
 ## Props
 
-| Name | Type | Required | Description |
-| --- | --- | --- | --- |
-| `paymentId` | `string` | Yes | The payment identifier. |
-| `onEvent` | `(eventType: string, data?: unknown) => void` | Yes | Callback invoked when events are emitted. |
+| Name        | Type                                          | Required | Description                               |
+| ----------- | --------------------------------------------- | -------- | ----------------------------------------- |
+| `paymentId` | `string`                                      | Yes      | The payment identifier.                   |
+| `onEvent`   | `(eventType: string, data?: unknown) => void` | Yes      | Callback invoked when events are emitted. |
 
 ## Events
 
-| Event | Description | Data |
-| --- | --- | --- |
+| Event                             | Description                                                        | Data |
+| --------------------------------- | ------------------------------------------------------------------ | ---- |
 | `CONTRACTOR_PAYMENT_VIEW_DETAILS` | Fired when the user requests to view detailed payment information. | None |
-| `CONTRACTOR_PAYMENT_CANCEL` | Fired when the user cancels the payment. | None |
+| `CONTRACTOR_PAYMENT_CANCEL`       | Fired when the user cancels the payment.                           | None |

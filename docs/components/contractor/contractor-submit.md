@@ -24,16 +24,16 @@ function MyComponent() {
 
 ## Props
 
-| Name | Type | Required | Description |
-| --- | --- | --- | --- |
-| `contractorId` | `string` | Yes | The contractor identifier. |
-| `selfOnboarding` | `boolean` | No | When `true`, indicates the contractor is completing their own onboarding. |
-| `onEvent` | `(eventType: string, data?: unknown) => void` | Yes | Callback invoked when events are emitted. |
+| Name             | Type                                          | Required | Description                                                               |
+| ---------------- | --------------------------------------------- | -------- | ------------------------------------------------------------------------- |
+| `contractorId`   | `string`                                      | Yes      | The contractor identifier.                                                |
+| `selfOnboarding` | `boolean`                                     | No       | When `true`, indicates the contractor is completing their own onboarding. |
+| `onEvent`        | `(eventType: string, data?: unknown) => void` | Yes      | Callback invoked when events are emitted.                                 |
 
 ## Events
 
-| Event | Description | Data |
-| --- | --- | --- |
-| `CONTRACTOR_ONBOARDING_STATUS_UPDATED` | Fired when the contractor's onboarding status is updated. | None |
-| `CONTRACTOR_SUBMIT_DONE` | Fired when the submission step is complete. | None |
-| `CONTRACTOR_INVITE_CONTRACTOR` | Fired when the user chooses to invite the contractor to self-onboard. | `{ contractorId: string }` |
+| Event                                  | Description                                                           | Data                       |
+| -------------------------------------- | --------------------------------------------------------------------- | -------------------------- |
+| `CONTRACTOR_ONBOARDING_STATUS_UPDATED` | Fired when the contractor's onboarding status is updated.             | None                       |
+| `CONTRACTOR_SUBMIT_DONE`               | Fired when the submission step is complete.                           | None                       |
+| `CONTRACTOR_INVITE_CONTRACTOR`         | Fired when the user chooses to invite the contractor to self-onboard. | `{ contractorId: string }` |

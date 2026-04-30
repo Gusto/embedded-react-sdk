@@ -75,12 +75,12 @@ interface ObservabilityError extends SDKError {
 
 ### Error Categories
 
-| Category | Description | When it occurs |
-| --- | --- | --- |
-| `api_error` | HTTP error from the Gusto API | API returns 4xx or 5xx status codes |
-| `validation_error` | Client-side Zod schema validation | Request/response fails Zod validation |
-| `network_error` | Network connectivity failure | Connection refused, timeout, or request aborted |
-| `internal_error` | Unexpected runtime error | Unhandled exceptions caught by error boundaries or provider |
+| Category           | Description                       | When it occurs                                              |
+| ------------------ | --------------------------------- | ----------------------------------------------------------- |
+| `api_error`        | HTTP error from the Gusto API     | API returns 4xx or 5xx status codes                         |
+| `validation_error` | Client-side Zod schema validation | Request/response fails Zod validation                       |
+| `network_error`    | Network connectivity failure      | Connection refused, timeout, or request aborted             |
+| `internal_error`   | Unexpected runtime error          | Unhandled exceptions caught by error boundaries or provider |
 
 ### Field Errors
 
@@ -106,10 +106,10 @@ For errors caught by React ErrorBoundaries, `error.componentStack` provides the 
 
 ## Performance Metrics
 
-| Metric Name | Description | Unit | Tags |
-| --- | --- | --- | --- |
-| `sdk.form.submit_duration` | Form submission time | ms | `status` (success/error), `component` |
-| `sdk.component.loading_duration` | Time spent in loading/suspense state | ms | `component` |
+| Metric Name                      | Description                          | Unit | Tags                                  |
+| -------------------------------- | ------------------------------------ | ---- | ------------------------------------- |
+| `sdk.form.submit_duration`       | Form submission time                 | ms   | `status` (success/error), `component` |
+| `sdk.component.loading_duration` | Time spent in loading/suspense state | ms   | `component`                           |
 
 ```typescript
 interface ObservabilityMetric {
@@ -291,11 +291,11 @@ const observability: ObservabilityHook = {
 
 ## Comparison with Other Tracking Mechanisms
 
-| Mechanism | Purpose | Use case |
-| --- | --- | --- |
-| `observability.onError` | Error tracking | Send errors to Sentry, Datadog, etc. |
-| `observability.onMetric` | Performance metrics | Track form submission times, component render times |
-| `onEvent` (component prop) | Business events | Track user actions, flow completions, API responses |
+| Mechanism                   | Purpose                       | Use case                                            |
+| --------------------------- | ----------------------------- | --------------------------------------------------- |
+| `observability.onError`     | Error tracking                | Send errors to Sentry, Datadog, etc.                |
+| `observability.onMetric`    | Performance metrics           | Track form submission times, component render times |
+| `onEvent` (component prop)  | Business events               | Track user actions, flow completions, API responses |
 | `hooks.afterError` (config) | Request/response interception | Modify requests, add auth tokens, log all API calls |
 
 ## TypeScript Types

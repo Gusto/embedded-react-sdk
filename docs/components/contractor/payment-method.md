@@ -24,15 +24,15 @@ function MyComponent() {
 
 ## Props
 
-| Name | Type | Required | Description |
-| --- | --- | --- | --- |
-| `contractorId` | `string` | Yes | The contractor identifier. |
-| `onEvent` | `(eventType: string, data?: unknown) => void` | Yes | Callback invoked when events are emitted. |
+| Name           | Type                                          | Required | Description                               |
+| -------------- | --------------------------------------------- | -------- | ----------------------------------------- |
+| `contractorId` | `string`                                      | Yes      | The contractor identifier.                |
+| `onEvent`      | `(eventType: string, data?: unknown) => void` | Yes      | Callback invoked when events are emitted. |
 
 ## Events
 
-| Event | Description | Data |
-| --- | --- | --- |
-| `CONTRACTOR_BANK_ACCOUNT_CREATED` | Fired when a bank account is successfully created for the contractor. | None |
-| `CONTRACTOR_PAYMENT_METHOD_UPDATED` | Fired when the contractor's payment method is updated. | None |
-| `CONTRACTOR_PAYMENT_METHOD_DONE` | Fired when the payment method step is complete. | None |
+| Event                               | Description                                                           | Data |
+| ----------------------------------- | --------------------------------------------------------------------- | ---- |
+| `CONTRACTOR_BANK_ACCOUNT_CREATED`   | Fired when a bank account is successfully created for the contractor. | None |
+| `CONTRACTOR_PAYMENT_METHOD_UPDATED` | Fired when the contractor's payment method is updated.                | None |
+| `CONTRACTOR_PAYMENT_METHOD_DONE`    | Fired when the payment method step is complete.                       | None |

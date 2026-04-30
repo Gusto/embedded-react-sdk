@@ -17,26 +17,21 @@ function MyApp({ companyId }) {
     // Handle employee list events
   }
 
-  return (
-    <Employee.EmployeeList
-      companyId={companyId}
-      onEvent={handleEvent}
-    />
-  )
+  return <Employee.EmployeeList companyId={companyId} onEvent={handleEvent} />
 }
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-| --- | --- | --- | --- | --- |
-| **companyId** | `string` | | Yes | The associated company identifier. |
-| **onEvent** | `(eventType: string, data?: unknown) => void` | | Yes | Callback invoked when events are emitted. |
+| Name          | Type                                          | Default | Required | Description                               |
+| ------------- | --------------------------------------------- | ------- | -------- | ----------------------------------------- |
+| **companyId** | `string`                                      |         | Yes      | The associated company identifier.        |
+| **onEvent**   | `(eventType: string, data?: unknown) => void` |         | Yes      | Callback invoked when events are emitted. |
 
 ## Events
 
-| Event | Description | Data |
-| --- | --- | --- |
-| `EMPLOYEE_CREATE` | Fired when user clicks the "Add employee" button | None |
-| `EMPLOYEE_UPDATE` | Fired when user selects "Edit" from employee actions menu | `{ employeeId: string }` |
-| `EMPLOYEE_DELETED` | Fired after selecting delete and the operation completes | API response from Delete an onboarding employee endpoint |
+| Event              | Description                                               | Data                                                     |
+| ------------------ | --------------------------------------------------------- | -------------------------------------------------------- |
+| `EMPLOYEE_CREATE`  | Fired when user clicks the "Add employee" button          | None                                                     |
+| `EMPLOYEE_UPDATE`  | Fired when user selects "Edit" from employee actions menu | `{ employeeId: string }`                                 |
+| `EMPLOYEE_DELETED` | Fired after selecting delete and the operation completes  | API response from Delete an onboarding employee endpoint |

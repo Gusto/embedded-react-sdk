@@ -25,15 +25,15 @@ function MyApp() {
 
 ## Props
 
-| Name | Type | Required | Description |
-| --- | --- | --- | --- |
-| `companyId` | `string` | Yes | The associated company identifier. |
-| `payrollId` | `string` | Yes | The payroll identifier to execute. |
-| `onEvent` | `(eventType: string, data?: unknown) => void` | Yes | Callback invoked when events are emitted. Receives events from all subcomponents. |
-| `initialState` | `'configuration' \| 'overview'` | No | Which step of the execution flow to start on. Defaults to `'configuration'`. |
-| `initialPayPeriod` | `object` | No | Initial pay period to use when starting the flow. |
-| `withReimbursements` | `boolean` | No | Whether to include reimbursement inputs in the payroll. |
-| `ConfirmWireDetailsComponent` | `React.ComponentType` | No | Custom component to render for wire transfer confirmation. |
+| Name                          | Type                                          | Required | Description                                                                       |
+| ----------------------------- | --------------------------------------------- | -------- | --------------------------------------------------------------------------------- |
+| `companyId`                   | `string`                                      | Yes      | The associated company identifier.                                                |
+| `payrollId`                   | `string`                                      | Yes      | The payroll identifier to execute.                                                |
+| `onEvent`                     | `(eventType: string, data?: unknown) => void` | Yes      | Callback invoked when events are emitted. Receives events from all subcomponents. |
+| `initialState`                | `'configuration' \| 'overview'`               | No       | Which step of the execution flow to start on. Defaults to `'configuration'`.      |
+| `initialPayPeriod`            | `object`                                      | No       | Initial pay period to use when starting the flow.                                 |
+| `withReimbursements`          | `boolean`                                     | No       | Whether to include reimbursement inputs in the payroll.                           |
+| `ConfirmWireDetailsComponent` | `React.ComponentType`                         | No       | Custom component to render for wire transfer confirmation.                        |
 
 ## Events
 

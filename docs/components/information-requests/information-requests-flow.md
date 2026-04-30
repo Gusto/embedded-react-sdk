@@ -24,16 +24,16 @@ function MyApp() {
 
 ## Props
 
-| Name | Type | Required | Description |
-| --- | --- | --- | --- |
-| `companyId` | `string` | Yes | The associated company identifier. |
-| `onEvent` | `(eventType: string, data?: unknown) => void` | No | Callback invoked when events are emitted. Receives events from all subcomponents. |
-| `withAlert` | `boolean` | No | Whether to display an alert banner for pending requests. Defaults to `true`. |
+| Name        | Type                                          | Required | Description                                                                       |
+| ----------- | --------------------------------------------- | -------- | --------------------------------------------------------------------------------- |
+| `companyId` | `string`                                      | Yes      | The associated company identifier.                                                |
+| `onEvent`   | `(eventType: string, data?: unknown) => void` | No       | Callback invoked when events are emitted. Receives events from all subcomponents. |
+| `withAlert` | `boolean`                                     | No       | Whether to display an alert banner for pending requests. Defaults to `true`.      |
 
 ## Events
 
-| Event | Description | Data |
-| --- | --- | --- |
-| `INFORMATION_REQUEST_RESPOND` | Fired when the user selects a request to respond to. | None |
-| `INFORMATION_REQUEST_FORM_DONE` | Fired when a request response is successfully submitted. | None |
-| `INFORMATION_REQUEST_FORM_CANCEL` | Fired when the user cancels responding to a request. | None |
+| Event                             | Description                                              | Data |
+| --------------------------------- | -------------------------------------------------------- | ---- |
+| `INFORMATION_REQUEST_RESPOND`     | Fired when the user selects a request to respond to.     | None |
+| `INFORMATION_REQUEST_FORM_DONE`   | Fired when a request response is successfully submitted. | None |
+| `INFORMATION_REQUEST_FORM_CANCEL` | Fired when the user cancels responding to a request.     | None |

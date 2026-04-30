@@ -17,8 +17,7 @@ Pre-built workflow components encapsulate multi-step processes like employee onb
 
 ```jsx
 import { Employee } from '@gusto/embedded-react-sdk'
-
-<Employee.OnboardingFlow companyId={companyId} onEvent={handleEvent} />
+;<Employee.OnboardingFlow companyId={companyId} onEvent={handleEvent} />
 ```
 
 ### Full UI control
@@ -49,12 +48,12 @@ The SDK manages API calls, form validation, error handling, and state transition
 
 ## How it compares
 
-| | React SDK | Flows (iframes) | Raw API |
-| --- | --- | --- | --- |
+|                      | React SDK                                       | Flows (iframes)         | Raw API              |
+| -------------------- | ----------------------------------------------- | ----------------------- | -------------------- |
 | **UI customization** | Full (theming, component adapters, composition) | Limited (CSS overrides) | You build everything |
-| **Build effort** | Low-medium | Low | High |
-| **Business logic** | Included | Included | You implement |
-| **Framework** | React required | Any (iframe) | Any |
+| **Build effort**     | Low-medium                                      | Low                     | High                 |
+| **Business logic**   | Included                                        | Included                | You implement        |
+| **Framework**        | React required                                  | Any (iframe)            | Any                  |
 
 ## Next steps
 

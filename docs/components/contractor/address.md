@@ -24,15 +24,15 @@ function MyComponent() {
 
 ## Props
 
-| Name | Type | Required | Description |
-| --- | --- | --- | --- |
-| `contractorId` | `string` | Yes | The contractor identifier. |
-| `defaultValues` | `object` | No | Default values for address fields: `street1`, `street2`, `city`, `state`, `zip`. |
-| `onEvent` | `(eventType: string, data?: unknown) => void` | Yes | Callback invoked when events are emitted. |
+| Name            | Type                                          | Required | Description                                                                      |
+| --------------- | --------------------------------------------- | -------- | -------------------------------------------------------------------------------- |
+| `contractorId`  | `string`                                      | Yes      | The contractor identifier.                                                       |
+| `defaultValues` | `object`                                      | No       | Default values for address fields: `street1`, `street2`, `city`, `state`, `zip`. |
+| `onEvent`       | `(eventType: string, data?: unknown) => void` | Yes      | Callback invoked when events are emitted.                                        |
 
 ## Events
 
-| Event | Description | Data |
-| --- | --- | --- |
+| Event                        | Description                                                  | Data |
+| ---------------------------- | ------------------------------------------------------------ | ---- |
 | `CONTRACTOR_ADDRESS_UPDATED` | Fired when the contractor's address is successfully updated. | None |
-| `CONTRACTOR_ADDRESS_DONE` | Fired when the address step is complete. | None |
+| `CONTRACTOR_ADDRESS_DONE`    | Fired when the address step is complete.                     | None |

@@ -23,11 +23,7 @@ import { GustoProvider } from '@gusto/embedded-react-sdk'
 import '@gusto/embedded-react-sdk/style.css'
 
 function App({ children }) {
-  return (
-    <GustoProvider config={{ baseUrl: '/api/gusto/' }}>
-      {children}
-    </GustoProvider>
-  )
+  return <GustoProvider config={{ baseUrl: '/api/gusto/' }}>{children}</GustoProvider>
 }
 ```
 
@@ -128,8 +124,8 @@ Look up the components your app uses, substitute `:param` placeholders with sess
 
 The tighter you resolve URL parameters, the more restrictive the allowlist:
 
-| What you resolve | Use case |
-| --- | --- |
-| Nothing | Generic allowlisting, no user scoping |
-| `:companyId` only | Admin who can access any employee in their company |
+| What you resolve             | Use case                                            |
+| ---------------------------- | --------------------------------------------------- |
+| Nothing                      | Generic allowlisting, no user scoping               |
+| `:companyId` only            | Admin who can access any employee in their company  |
 | `:companyId` + `:employeeId` | Self-service employee, restricted to their own data |

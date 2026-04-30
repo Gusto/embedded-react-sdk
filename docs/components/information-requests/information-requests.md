@@ -7,13 +7,13 @@ The Information Requests domain provides components for responding to tax agency
 
 ## Flow
 
-| Component | Description |
-| --- | --- |
+| Component                                                                     | Description                                                             |
+| ----------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
 | [InformationRequests.InformationRequestsFlow](./information-requests-flow.md) | End-to-end workflow for viewing and responding to information requests. |
 
 ## Blocks
 
-| Component | Description |
-| --- | --- |
+| Component                                                                   | Description                                            |
+| --------------------------------------------------------------------------- | ------------------------------------------------------ |
 | [InformationRequests.InformationRequestList](./information-request-list.md) | Displays a list of information requests for a company. |
 | [InformationRequests.InformationRequestForm](./information-request-form.md) | Form for responding to a specific information request. |

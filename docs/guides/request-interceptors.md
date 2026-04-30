@@ -7,12 +7,12 @@ Request interceptors let you customize HTTP requests and responses in the Gusto 
 
 ## Hook Types
 
-| Hook | When it runs | Use case |
-| --- | --- | --- |
-| `beforeCreateRequest` | Before the `Request` object is created | URL modification, method changes |
-| `beforeRequest` | Before the request is sent | Add headers, auth tokens, logging |
-| `afterSuccess` | After a successful response (2xx) | Response logging, analytics |
-| `afterError` | After an error response (4xx, 5xx) or network failure | Error tracking, retry logic |
+| Hook                  | When it runs                                          | Use case                          |
+| --------------------- | ----------------------------------------------------- | --------------------------------- |
+| `beforeCreateRequest` | Before the `Request` object is created                | URL modification, method changes  |
+| `beforeRequest`       | Before the request is sent                            | Add headers, auth tokens, logging |
+| `afterSuccess`        | After a successful response (2xx)                     | Response logging, analytics       |
+| `afterError`          | After an error response (4xx, 5xx) or network failure | Error tracking, retry logic       |
 
 For complete hook interface details, see the [Speakeasy SDK Hooks documentation](https://www.speakeasy.com/docs/customize/code/sdk-hooks).
 

@@ -65,12 +65,7 @@ If you need more control over layout or step ordering, you can use the individua
 
 ```jsx
 import { Employee } from '@gusto/embedded-react-sdk'
-
-<Employee.Compensation
-  employeeId={employeeId}
-  startDate="2025-01-01"
-  onEvent={handleEvent}
-/>
+;<Employee.Compensation employeeId={employeeId} startDate="2025-01-01" onEvent={handleEvent} />
 ```
 
 Each step of a flow is available as a standalone component. You can rearrange them, mix them with your own UI, or integrate them into your existing routing. See [Composition](../concepts/composition.md) for details.

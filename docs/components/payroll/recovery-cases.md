@@ -24,16 +24,16 @@ function MyComponent() {
 
 ## Props
 
-| Name | Type | Required | Description |
-| --- | --- | --- | --- |
-| `companyId` | `string` | Yes | The associated company identifier. |
-| `onEvent` | `(eventType: string, data?: unknown) => void` | No | Callback invoked when events are emitted. |
+| Name        | Type                                          | Required | Description                               |
+| ----------- | --------------------------------------------- | -------- | ----------------------------------------- |
+| `companyId` | `string`                                      | Yes      | The associated company identifier.        |
+| `onEvent`   | `(eventType: string, data?: unknown) => void` | No       | Callback invoked when events are emitted. |
 
 ## Events
 
-| Event | Description | Data |
-| --- | --- | --- |
-| `RECOVERY_CASE_RESOLVE` | Fired when a recovery case is resolved. | None |
-| `RECOVERY_CASE_RESUBMIT` | Fired when a recovery case is resubmitted. | None |
-| `RECOVERY_CASE_RESUBMIT_DONE` | Fired when a recovery case resubmission is complete. | None |
+| Event                           | Description                                           | Data |
+| ------------------------------- | ----------------------------------------------------- | ---- |
+| `RECOVERY_CASE_RESOLVE`         | Fired when a recovery case is resolved.               | None |
+| `RECOVERY_CASE_RESUBMIT`        | Fired when a recovery case is resubmitted.            | None |
+| `RECOVERY_CASE_RESUBMIT_DONE`   | Fired when a recovery case resubmission is complete.  | None |
 | `RECOVERY_CASE_RESUBMIT_CANCEL` | Fired when a recovery case resubmission is cancelled. | None |

@@ -1,13 +1,20 @@
-import Link from '@docusaurus/Link';
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
-import Layout from '@theme/Layout';
-import clsx from 'clsx';
-import type { ReactNode } from 'react';
-import styles from './index.module.css';
+import Link from '@docusaurus/Link'
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
+import Layout from '@theme/Layout'
+import clsx from 'clsx'
+import type { ReactNode } from 'react'
+import styles from './index.module.css'
 
 function WorkflowIcon({ className }: { className?: string }) {
   return (
-    <svg className={className} width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      className={className}
+      width="28"
+      height="28"
+      viewBox="0 0 28 28"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <rect x="2" y="3" width="8" height="8" rx="2" stroke="currentColor" strokeWidth="1.75" />
       <rect x="18" y="3" width="8" height="8" rx="2" stroke="currentColor" strokeWidth="1.75" />
       <rect x="10" y="17" width="8" height="8" rx="2" stroke="currentColor" strokeWidth="1.75" />
@@ -15,46 +22,92 @@ function WorkflowIcon({ className }: { className?: string }) {
       <path d="M6 11V14C6 15.1 6.9 16 8 16H10" stroke="currentColor" strokeWidth="1.75" />
       <path d="M22 11V14C22 15.1 21.1 16 20 16H18" stroke="currentColor" strokeWidth="1.75" />
     </svg>
-  );
+  )
 }
 
 function PaletteIcon({ className }: { className?: string }) {
   return (
-    <svg className={className} width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      className={className}
+      width="28"
+      height="28"
+      viewBox="0 0 28 28"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <rect x="3" y="3" width="22" height="22" rx="3" stroke="currentColor" strokeWidth="1.75" />
       <rect x="7" y="7" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.5" />
       <rect x="7" y="16" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.5" />
       <rect x="16" y="7" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.5" />
       <rect x="16" y="16" width="5" height="5" rx="1" fill="currentColor" />
     </svg>
-  );
+  )
 }
 
 function SignalIcon({ className }: { className?: string }) {
   return (
-    <svg className={className} width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      className={className}
+      width="28"
+      height="28"
+      viewBox="0 0 28 28"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <circle cx="14" cy="14" r="3" stroke="currentColor" strokeWidth="1.75" />
-      <path d="M8.5 8.5C6.8 10.2 5.75 12.5 5.75 14C5.75 15.5 6.8 17.8 8.5 19.5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
-      <path d="M19.5 8.5C21.2 10.2 22.25 12.5 22.25 14C22.25 15.5 21.2 17.8 19.5 19.5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
-      <path d="M5.5 5.5C2.85 8.15 2 11 2 14C2 17 2.85 19.85 5.5 22.5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
-      <path d="M22.5 5.5C25.15 8.15 26 11 26 14C26 17 25.15 19.85 22.5 22.5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
+      <path
+        d="M8.5 8.5C6.8 10.2 5.75 12.5 5.75 14C5.75 15.5 6.8 17.8 8.5 19.5"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+      />
+      <path
+        d="M19.5 8.5C21.2 10.2 22.25 12.5 22.25 14C22.25 15.5 21.2 17.8 19.5 19.5"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+      />
+      <path
+        d="M5.5 5.5C2.85 8.15 2 11 2 14C2 17 2.85 19.85 5.5 22.5"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+      />
+      <path
+        d="M22.5 5.5C25.15 8.15 26 11 26 14C26 17 25.15 19.85 22.5 22.5"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+      />
     </svg>
-  );
+  )
 }
 
 function GearIcon({ className }: { className?: string }) {
   return (
-    <svg className={className} width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      className={className}
+      width="28"
+      height="28"
+      viewBox="0 0 28 28"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <circle cx="14" cy="14" r="4" stroke="currentColor" strokeWidth="1.75" />
-      <path d="M14 2V5M14 23V26M2 14H5M23 14H26M5.1 5.1L7.2 7.2M20.8 20.8L22.9 22.9M22.9 5.1L20.8 7.2M7.2 20.8L5.1 22.9" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
+      <path
+        d="M14 2V5M14 23V26M2 14H5M23 14H26M5.1 5.1L7.2 7.2M20.8 20.8L22.9 22.9M22.9 5.1L20.8 7.2M7.2 20.8L5.1 22.9"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+      />
     </svg>
-  );
+  )
 }
 
 interface Feature {
-  title: string;
-  description: string;
-  icon: (props: { className?: string }) => ReactNode;
+  title: string
+  description: string
+  icon: (props: { className?: string }) => ReactNode
 }
 
 const features: Feature[] = [
@@ -82,10 +135,10 @@ const features: Feature[] = [
       'API calls, form validation, error handling, and state transitions are managed internally with React Query, react-hook-form, and Zod.',
     icon: GearIcon,
   },
-];
+]
 
 function HeroSection() {
-  const { siteConfig } = useDocusaurusContext();
+  const { siteConfig } = useDocusaurusContext()
 
   return (
     <header className={styles.hero}>
@@ -104,8 +157,8 @@ function HeroSection() {
           <span className={styles.heroSdkLabel}>SDK</span>
         </div>
         <p className={styles.heroTagline}>
-          A React component library for building embedded payroll experiences on
-          top of the Gusto Embedded API.
+          A React component library for building embedded payroll experiences on top of the Gusto
+          Embedded API.
         </p>
         <div className={styles.heroActions}>
           <Link className={styles.heroPrimary} to="/docs/quickstart/quickstart">
@@ -120,7 +173,7 @@ function HeroSection() {
         </div>
       </div>
     </header>
-  );
+  )
 }
 
 function FeaturesSection() {
@@ -128,7 +181,7 @@ function FeaturesSection() {
     <section className={styles.features}>
       <div className={styles.featuresInner}>
         <div className={styles.featuresGrid}>
-          {features.map((feature) => (
+          {features.map(feature => (
             <div key={feature.title} className={styles.featureCard}>
               <feature.icon className={styles.featureIcon} />
               <h3 className={styles.featureTitle}>{feature.title}</h3>
@@ -138,7 +191,7 @@ function FeaturesSection() {
         </div>
       </div>
     </section>
-  );
+  )
 }
 
 function QuickLinksSection() {
@@ -149,36 +202,28 @@ function QuickLinksSection() {
         <div className={styles.quickLinksGrid}>
           <Link to="/docs/components/components" className={styles.quickLinkCard}>
             <h3>Components</h3>
-            <p>
-              Flows and blocks for onboarding, payroll, contractors, and more.
-            </p>
+            <p>Flows and blocks for onboarding, payroll, contractors, and more.</p>
           </Link>
           <Link to="/docs/concepts/concepts" className={styles.quickLinkCard}>
             <h3>Concepts</h3>
-            <p>
-              Events, composition, theming, authentication, and error handling.
-            </p>
+            <p>Events, composition, theming, authentication, and error handling.</p>
           </Link>
           <Link to="/docs/api/companies" className={styles.quickLinkCard}>
             <h3>API Reference</h3>
-            <p>
-              Full OpenAPI documentation for the Gusto Embedded API.
-            </p>
+            <p>Full OpenAPI documentation for the Gusto Embedded API.</p>
           </Link>
           <Link to="https://github.com/Gusto/embedded-react-sdk" className={styles.quickLinkCard}>
             <h3>GitHub</h3>
-            <p>
-              Source code, issues, and contributions.
-            </p>
+            <p>Source code, issues, and contributions.</p>
           </Link>
         </div>
       </div>
     </section>
-  );
+  )
 }
 
 export default function Home(): JSX.Element {
-  const { siteConfig } = useDocusaurusContext();
+  const { siteConfig } = useDocusaurusContext()
 
   return (
     <Layout title={siteConfig.title} description={siteConfig.tagline}>
@@ -186,5 +231,5 @@ export default function Home(): JSX.Element {
       <FeaturesSection />
       <QuickLinksSection />
     </Layout>
-  );
+  )
 }

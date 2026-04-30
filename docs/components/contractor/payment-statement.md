@@ -25,8 +25,8 @@ function MyComponent() {
 
 ## Props
 
-| Name | Type | Required | Description |
-| --- | --- | --- | --- |
-| `paymentGroupId` | `string` | Yes | The payment group identifier. |
-| `contractorUuid` | `string` | Yes | The contractor identifier. |
-| `onEvent` | `(eventType: string, data?: unknown) => void` | Yes | Callback invoked when events are emitted. |
+| Name             | Type                                          | Required | Description                               |
+| ---------------- | --------------------------------------------- | -------- | ----------------------------------------- |
+| `paymentGroupId` | `string`                                      | Yes      | The payment group identifier.             |
+| `contractorUuid` | `string`                                      | Yes      | The contractor identifier.                |
+| `onEvent`        | `(eventType: string, data?: unknown) => void` | Yes      | Callback invoked when events are emitted. |

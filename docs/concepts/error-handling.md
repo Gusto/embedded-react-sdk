@@ -19,12 +19,12 @@ interface SDKError {
 }
 ```
 
-| Category | Description | Examples |
-| --- | --- | --- |
-| `api_error` | HTTP error from the Gusto API | 422 validation errors, 404 not found, 409 conflict |
-| `validation_error` | Client-side Zod schema failure | Request or response failed Zod validation |
-| `network_error` | Network connectivity failure | Connection refused, timeout, request aborted |
-| `internal_error` | Unexpected runtime error | Unhandled exceptions, initialization failures |
+| Category           | Description                    | Examples                                           |
+| ------------------ | ------------------------------ | -------------------------------------------------- |
+| `api_error`        | HTTP error from the Gusto API  | 422 validation errors, 404 not found, 409 conflict |
+| `validation_error` | Client-side Zod schema failure | Request or response failed Zod validation          |
+| `network_error`    | Network connectivity failure   | Connection refused, timeout, request aborted       |
+| `internal_error`   | Unexpected runtime error       | Unhandled exceptions, initialization failures      |
 
 ### Field errors
 
@@ -68,7 +68,7 @@ import { GustoProvider } from '@gusto/embedded-react-sdk'
 import type { ObservabilityHook } from '@gusto/embedded-react-sdk'
 
 const observability: ObservabilityHook = {
-  onError: (error) => {
+  onError: error => {
     Sentry.captureException(error.raw ?? new Error(error.message), {
       tags: {
         error_category: error.category,
@@ -77,7 +77,7 @@ const observability: ObservabilityHook = {
       },
     })
   },
-  onMetric: (metric) => {
+  onMetric: metric => {
     if (metric.unit === 'ms') {
       datadogRum.addTiming(metric.name, metric.value)
     }
@@ -118,7 +118,7 @@ Configure sanitization behavior:
 
 ```tsx
 const observability: ObservabilityHook = {
-  onError: (error) => errorTracker.capture(error),
+  onError: error => errorTracker.capture(error),
   sanitization: {
     enabled: true,
     includeRawError: false,

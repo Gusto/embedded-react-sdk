@@ -24,15 +24,15 @@ function MyApp() {
 
 ## Props
 
-| Name | Type | Required | Description |
-| --- | --- | --- | --- |
-| `companyId` | `string` | Yes | The associated company identifier. |
-| `employeeId` | `string` | No | The employee identifier for the dismissed employee. |
-| `payrollId` | `string` | No | An existing payroll identifier to continue processing. |
-| `onEvent` | `(eventType: string, data?: unknown) => void` | Yes | Callback invoked when events are emitted. Receives events from all subcomponents. |
+| Name         | Type                                          | Required | Description                                                                       |
+| ------------ | --------------------------------------------- | -------- | --------------------------------------------------------------------------------- |
+| `companyId`  | `string`                                      | Yes      | The associated company identifier.                                                |
+| `employeeId` | `string`                                      | No       | The employee identifier for the dismissed employee.                               |
+| `payrollId`  | `string`                                      | No       | An existing payroll identifier to continue processing.                            |
+| `onEvent`    | `(eventType: string, data?: unknown) => void` | Yes      | Callback invoked when events are emitted. Receives events from all subcomponents. |
 
 ## Events
 
-| Event | Description | Data |
-| --- | --- | --- |
+| Event                           | Description                                                    | Data |
+| ------------------------------- | -------------------------------------------------------------- | ---- |
 | `DISMISSAL_PAY_PERIOD_SELECTED` | Fired when a pay period is selected for the dismissal payroll. | None |

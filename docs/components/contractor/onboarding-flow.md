@@ -37,11 +37,11 @@ function MyApp() {
 
 ## Props
 
-| Name | Type | Required | Description |
-| --- | --- | --- | --- |
-| `companyId` | `string` | Yes | The associated company identifier. |
-| `defaultValues` | `object` | No | Default values for individual flow step components. Supports `profile` and `address` sub-objects. |
-| `onEvent` | `(eventType: string, data?: unknown) => void` | Yes | Callback invoked when events are emitted. Receives events from all subcomponents. |
+| Name            | Type                                          | Required | Description                                                                                       |
+| --------------- | --------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------- |
+| `companyId`     | `string`                                      | Yes      | The associated company identifier.                                                                |
+| `defaultValues` | `object`                                      | No       | Default values for individual flow step components. Supports `profile` and `address` sub-objects. |
+| `onEvent`       | `(eventType: string, data?: unknown) => void` | Yes      | Callback invoked when events are emitted. Receives events from all subcomponents.                 |
 
 ## Events
 

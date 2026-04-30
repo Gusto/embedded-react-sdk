@@ -25,16 +25,16 @@ function MyComponent() {
 
 ## Props
 
-| Name | Type | Required | Description |
-| --- | --- | --- | --- |
-| `companyId` | `string` | Yes | The associated company identifier. |
-| `formId` | `string` | Yes | The identifier of the form to sign. |
-| `onEvent` | `(eventType: string, data?: unknown) => void` | Yes | Callback invoked when events are emitted. |
+| Name        | Type                                          | Required | Description                               |
+| ----------- | --------------------------------------------- | -------- | ----------------------------------------- |
+| `companyId` | `string`                                      | Yes      | The associated company identifier.        |
+| `formId`    | `string`                                      | Yes      | The identifier of the form to sign.       |
+| `onEvent`   | `(eventType: string, data?: unknown) => void` | Yes      | Callback invoked when events are emitted. |
 
 ## Events
 
-| Event | Description | Data |
-| --- | --- | --- |
-| `COMPANY_SIGN_FORM` | Fired when a form is successfully signed. | [Response from the sign company form API](https://docs.gusto.com/embedded-payroll/reference/put-v1-company-form-sign) |
-| `COMPANY_SIGN_FORM_DONE` | Fired when the form signing process is complete. | None |
-| `COMPANY_SIGN_FORM_BACK` | Fired when the user navigates back from the signature form. | None |
+| Event                    | Description                                                 | Data                                                                                                                  |
+| ------------------------ | ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `COMPANY_SIGN_FORM`      | Fired when a form is successfully signed.                   | [Response from the sign company form API](https://docs.gusto.com/embedded-payroll/reference/put-v1-company-form-sign) |
+| `COMPANY_SIGN_FORM_DONE` | Fired when the form signing process is complete.            | None                                                                                                                  |
+| `COMPANY_SIGN_FORM_BACK` | Fired when the user navigates back from the signature form. | None                                                                                                                  |

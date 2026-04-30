@@ -93,15 +93,15 @@ config={{
 
 Beyond `config`, `GustoProvider` accepts these props:
 
-| Prop | Type | Description |
-| --- | --- | --- |
-| `theme` | `GustoSDKTheme` | CSS variable overrides for colors, typography, shadows. See [Theming](./theming-and-customization.md). |
-| `components` | `Partial<ComponentsContextType>` | Override SDK UI primitives with your own. See [Theming and Customization](./theming-and-customization.md). |
-| `dictionary` | `ResourceDictionary` | i18n string overrides. See [Internationalization](./i18n.md). |
-| `lng` | `string` | Language code (default: `'en'`). |
-| `locale` | `string` | Locale for number/date formatting (default: `'en-US'`). |
-| `currency` | `string` | Currency code (default: `'USD'`). |
-| `queryClient` | `QueryClient` | Custom TanStack Query client instance. |
+| Prop          | Type                             | Description                                                                                                |
+| ------------- | -------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `theme`       | `GustoSDKTheme`                  | CSS variable overrides for colors, typography, shadows. See [Theming](./theming-and-customization.md).     |
+| `components`  | `Partial<ComponentsContextType>` | Override SDK UI primitives with your own. See [Theming and Customization](./theming-and-customization.md). |
+| `dictionary`  | `ResourceDictionary`             | i18n string overrides. See [Internationalization](./i18n.md).                                              |
+| `lng`         | `string`                         | Language code (default: `'en'`).                                                                           |
+| `locale`      | `string`                         | Locale for number/date formatting (default: `'en-US'`).                                                    |
+| `currency`    | `string`                         | Currency code (default: `'USD'`).                                                                          |
+| `queryClient` | `QueryClient`                    | Custom TanStack Query client instance.                                                                     |
 
 ## Full example
 
@@ -116,7 +116,7 @@ function App({ children }) {
         baseUrl: '/api/gusto/',
         headers: { 'X-Partner-Id': 'partner_123' },
         observability: {
-          onError: (error) => errorTracker.capture(error),
+          onError: error => errorTracker.capture(error),
         },
       }}
       theme={{

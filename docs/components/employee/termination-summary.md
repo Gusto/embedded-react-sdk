@@ -39,20 +39,20 @@ function MyApp({ companyId, employeeId }) {
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-| --- | --- | --- | --- | --- |
-| **companyId** | `string` | | Yes | The associated company identifier. |
-| **employeeId** | `string` | | Yes | The employee identifier. |
-| **payrollOption** | `PayrollOption` | | No | The selected payroll processing option. When provided, shows a success alert. |
-| **payrollUuid** | `string` | | No | UUID of the created payroll, if applicable. |
-| **onEvent** | `(eventType: string, data?: unknown) => void` | | Yes | Callback invoked when events are emitted. |
-| **dictionary** | `object` | | No | Optional translations for component text. |
+| Name              | Type                                          | Default | Required | Description                                                                   |
+| ----------------- | --------------------------------------------- | ------- | -------- | ----------------------------------------------------------------------------- |
+| **companyId**     | `string`                                      |         | Yes      | The associated company identifier.                                            |
+| **employeeId**    | `string`                                      |         | Yes      | The employee identifier.                                                      |
+| **payrollOption** | `PayrollOption`                               |         | No       | The selected payroll processing option. When provided, shows a success alert. |
+| **payrollUuid**   | `string`                                      |         | No       | UUID of the created payroll, if applicable.                                   |
+| **onEvent**       | `(eventType: string, data?: unknown) => void` |         | Yes      | Callback invoked when events are emitted.                                     |
+| **dictionary**    | `object`                                      |         | No       | Optional translations for component text.                                     |
 
 ## Events
 
-| Event | Description | Data |
-| --- | --- | --- |
-| `EMPLOYEE_TERMINATION_EDIT` | Fired when user clicks to edit termination details | `{ employeeId }` |
-| `EMPLOYEE_TERMINATION_CANCELLED` | Fired when a termination is successfully cancelled | `{ employeeId, alert? }` |
-| `EMPLOYEE_TERMINATION_RUN_PAYROLL` | Fired when user clicks to run termination payroll | `{ employeeId, companyId, effectiveDate }` |
-| `EMPLOYEE_TERMINATION_RUN_OFF_CYCLE_PAYROLL` | Fired when user clicks to run an off-cycle payroll | `{ employeeId, companyId }` |
+| Event                                        | Description                                        | Data                                       |
+| -------------------------------------------- | -------------------------------------------------- | ------------------------------------------ |
+| `EMPLOYEE_TERMINATION_EDIT`                  | Fired when user clicks to edit termination details | `{ employeeId }`                           |
+| `EMPLOYEE_TERMINATION_CANCELLED`             | Fired when a termination is successfully cancelled | `{ employeeId, alert? }`                   |
+| `EMPLOYEE_TERMINATION_RUN_PAYROLL`           | Fired when user clicks to run termination payroll  | `{ employeeId, companyId, effectiveDate }` |
+| `EMPLOYEE_TERMINATION_RUN_OFF_CYCLE_PAYROLL` | Fired when user clicks to run an off-cycle payroll | `{ employeeId, companyId }`                |

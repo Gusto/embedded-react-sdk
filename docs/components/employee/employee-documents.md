@@ -19,25 +19,20 @@ function MyApp({ employeeId }) {
     // Handle document configuration events
   }
 
-  return (
-    <Employee.EmployeeDocuments
-      employeeId={employeeId}
-      onEvent={handleEvent}
-    />
-  )
+  return <Employee.EmployeeDocuments employeeId={employeeId} onEvent={handleEvent} />
 }
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-| --- | --- | --- | --- | --- |
-| **employeeId** | `string` | | Yes | The associated employee identifier. |
-| **onEvent** | `(eventType: string, data?: unknown) => void` | | Yes | Callback invoked when events are emitted. |
+| Name           | Type                                          | Default | Required | Description                               |
+| -------------- | --------------------------------------------- | ------- | -------- | ----------------------------------------- |
+| **employeeId** | `string`                                      |         | Yes      | The associated employee identifier.       |
+| **onEvent**    | `(eventType: string, data?: unknown) => void` |         | Yes      | Callback invoked when events are emitted. |
 
 ## Events
 
-| Event | Description | Data |
-| --- | --- | --- |
+| Event                                          | Description                                                                               | Data                                                                        |
+| ---------------------------------------------- | ----------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
 | `EMPLOYEE_ONBOARDING_DOCUMENTS_CONFIG_UPDATED` | Fired after the admin toggles I-9 inclusion and the configuration is successfully updated | Response from the Update an employee's onboarding documents config endpoint |
-| `EMPLOYEE_DOCUMENTS_DONE` | Fired when the admin clicks continue and is ready to advance | None |
+| `EMPLOYEE_DOCUMENTS_DONE`                      | Fired when the admin clicks continue and is ready to advance                              | None                                                                        |

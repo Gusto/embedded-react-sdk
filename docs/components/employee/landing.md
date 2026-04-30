@@ -17,26 +17,20 @@ function MyApp({ companyId, employeeId }) {
     // Handle landing events
   }
 
-  return (
-    <Employee.Landing
-      companyId={companyId}
-      employeeId={employeeId}
-      onEvent={handleEvent}
-    />
-  )
+  return <Employee.Landing companyId={companyId} employeeId={employeeId} onEvent={handleEvent} />
 }
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-| --- | --- | --- | --- | --- |
-| **employeeId** | `string` | | Yes | The associated employee identifier. |
-| **companyId** | `string` | | Yes | The associated company identifier. |
-| **onEvent** | `(eventType: string, data?: unknown) => void` | | Yes | Callback invoked when events are emitted. |
+| Name           | Type                                          | Default | Required | Description                               |
+| -------------- | --------------------------------------------- | ------- | -------- | ----------------------------------------- |
+| **employeeId** | `string`                                      |         | Yes      | The associated employee identifier.       |
+| **companyId**  | `string`                                      |         | Yes      | The associated company identifier.        |
+| **onEvent**    | `(eventType: string, data?: unknown) => void` |         | Yes      | Callback invoked when events are emitted. |
 
 ## Events
 
-| Event | Description | Data |
-| --- | --- | --- |
+| Event                            | Description                                                                                     | Data |
+| -------------------------------- | ----------------------------------------------------------------------------------------------- | ---- |
 | `EMPLOYEE_SELF_ONBOARDING_START` | Fired when the employee selects the "Get started" CTA and is ready to navigate to the next step | None |

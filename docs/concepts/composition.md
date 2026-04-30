@@ -43,7 +43,7 @@ function App({ employeeId, startDate }) {
       <Employee.Compensation
         employeeId={employeeId}
         startDate={startDate}
-        onEvent={(eventType) => {
+        onEvent={eventType => {
           if (eventType === 'employee/compensations/done') {
             // Navigate to your next step
           }
@@ -78,7 +78,7 @@ function ProfileStep({ companyId, employeeId }) {
     <Employee.Profile
       companyId={companyId}
       employeeId={employeeId}
-      onEvent={(eventType) => {
+      onEvent={eventType => {
         if (eventType === componentEvents.EMPLOYEE_PROFILE_DONE) {
           navigate('/onboarding/taxes')
         }
@@ -93,7 +93,7 @@ function TaxesStep({ employeeId }) {
   return (
     <Employee.Taxes
       employeeId={employeeId}
-      onEvent={(eventType) => {
+      onEvent={eventType => {
         if (eventType === componentEvents.EMPLOYEE_TAXES_DONE) {
           navigate('/onboarding/payment')
         }
@@ -110,10 +110,7 @@ function OnboardingApp({ companyId, employeeId }) {
           path="/onboarding/profile"
           element={<ProfileStep companyId={companyId} employeeId={employeeId} />}
         />
-        <Route
-          path="/onboarding/taxes"
-          element={<TaxesStep employeeId={employeeId} />}
-        />
+        <Route path="/onboarding/taxes" element={<TaxesStep employeeId={employeeId} />} />
         {/* Additional steps... */}
       </Routes>
     </GustoProvider>

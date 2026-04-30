@@ -25,15 +25,15 @@ function MyComponent() {
 
 ## Props
 
-| Name | Type | Required | Description |
-| --- | --- | --- | --- |
-| `companyId` | `string` | Yes | The associated company identifier. |
-| `state` | `string` | Yes | The state abbreviation to edit tax requirements for (e.g. `"CA"`, `"NY"`). |
-| `onEvent` | `(eventType: string, data?: unknown) => void` | Yes | Callback invoked when events are emitted. |
+| Name        | Type                                          | Required | Description                                                                |
+| ----------- | --------------------------------------------- | -------- | -------------------------------------------------------------------------- |
+| `companyId` | `string`                                      | Yes      | The associated company identifier.                                         |
+| `state`     | `string`                                      | Yes      | The state abbreviation to edit tax requirements for (e.g. `"CA"`, `"NY"`). |
+| `onEvent`   | `(eventType: string, data?: unknown) => void` | Yes      | Callback invoked when events are emitted.                                  |
 
 ## Events
 
-| Event | Description | Data |
-| --- | --- | --- |
+| Event                       | Description                                                   | Data                                                                                                                                                          |
+| --------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `COMPANY_STATE_TAX_UPDATED` | Fired when a state tax setup has been successfully submitted. | [Response from the update state tax requirements API](https://docs.gusto.com/embedded-payroll/reference/put-v1-companies-company_uuid-tax_requirements-state) |
-| `CANCEL` | Fired when the user cancels editing. | None |
+| `CANCEL`                    | Fired when the user cancels editing.                          | None                                                                                                                                                          |

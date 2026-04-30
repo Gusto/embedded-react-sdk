@@ -17,24 +17,19 @@ function MyApp({ employeeId }) {
     // Handle tax events
   }
 
-  return (
-    <Employee.Taxes
-      employeeId={employeeId}
-      onEvent={handleEvent}
-    />
-  )
+  return <Employee.Taxes employeeId={employeeId} onEvent={handleEvent} />
 }
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-| --- | --- | --- | --- | --- |
-| **employeeId** | `string` | | Yes | The associated employee identifier. |
-| **onEvent** | `(eventType: string, data?: unknown) => void` | | Yes | Callback invoked when events are emitted. |
+| Name           | Type                                          | Default | Required | Description                               |
+| -------------- | --------------------------------------------- | ------- | -------- | ----------------------------------------- |
+| **employeeId** | `string`                                      |         | Yes      | The associated employee identifier.       |
+| **onEvent**    | `(eventType: string, data?: unknown) => void` |         | Yes      | Callback invoked when events are emitted. |
 
 ## Events
 
-| Event | Description | Data |
-| --- | --- | --- |
+| Event                 | Description                                                                               | Data |
+| --------------------- | ----------------------------------------------------------------------------------------- | ---- |
 | `EMPLOYEE_TAXES_DONE` | Fired when both federal and state tax forms are complete and the step is ready to advance | None |
