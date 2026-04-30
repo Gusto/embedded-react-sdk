@@ -32,7 +32,8 @@ export function ContractorDocumentSigner(
 type DocumentSignerView = { type: 'list' } | { type: 'sign'; documentUuid: string }
 
 const Root = ({ contractorId, className }: ContractorDocumentSignerProps) => {
-  const { onEvent } = useBase()
+  const { onEvent: _onEvent } = useBase()
+  const onEvent = _onEvent as (type: string, data?: unknown) => void
   const Components = useComponentContext()
   const queryClient = useQueryClient()
   const [view, setView] = useState<DocumentSignerView>({ type: 'list' })

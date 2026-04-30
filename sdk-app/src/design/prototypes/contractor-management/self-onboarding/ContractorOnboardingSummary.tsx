@@ -23,7 +23,8 @@ export function ContractorOnboardingSummary(
 }
 
 const Root = ({ className }: ContractorOnboardingSummaryProps) => {
-  const { onEvent } = useBase()
+  const { onEvent: _onEvent } = useBase()
+  const onEvent = _onEvent as (type: string, data?: unknown) => void
   const Components = useComponentContext()
 
   return (

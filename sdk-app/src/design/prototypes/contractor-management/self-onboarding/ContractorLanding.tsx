@@ -26,7 +26,8 @@ export function ContractorLanding(props: ContractorLandingProps & BaseComponentI
 }
 
 const Root = ({ contractorId, companyId, className }: ContractorLandingProps) => {
-  const { onEvent } = useBase()
+  const { onEvent: _onEvent } = useBase()
+  const onEvent = _onEvent as (type: string, data?: unknown) => void
   const Components = useComponentContext()
 
   const {

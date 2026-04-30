@@ -28,7 +28,8 @@ export function ContractorSignatureForm({
   onSignComplete,
   onBack,
 }: ContractorSignatureFormProps) {
-  const { onEvent } = useBase()
+  const { onEvent: _onEvent } = useBase()
+  const onEvent = _onEvent as (type: string, data?: unknown) => void
   const Components = useComponentContext()
 
   const {
@@ -77,10 +78,12 @@ export function ContractorSignatureForm({
       <FormProvider {...formMethods}>
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Flex flexDirection="column" gap={24}>
-            <header>
+            <Flex flexDirection="column" gap={4}>
               <Components.Heading as="h2">{document?.title ?? 'Sign document'}</Components.Heading>
-              {document?.description && <Components.Text>{document.description}</Components.Text>}
-            </header>
+              {document?.description && (
+                <Components.Text variant="supporting">{document.description}</Components.Text>
+              )}
+            </Flex>
 
             <DocumentViewer
               url={pdfUrl}
