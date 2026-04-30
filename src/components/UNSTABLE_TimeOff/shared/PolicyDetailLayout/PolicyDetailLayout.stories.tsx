@@ -7,7 +7,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 
 export default {
-  title: 'TimeOff/PolicyDetailLayout',
+  title: 'Domain/TimeOff/PolicyDetailLayout',
   decorators: [
     (Story: React.ComponentType) => (
       <Suspense fallback={<div>Loading translations...</div>}>

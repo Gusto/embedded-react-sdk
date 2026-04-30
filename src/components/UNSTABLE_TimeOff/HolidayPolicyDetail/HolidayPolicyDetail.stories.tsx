@@ -118,16 +118,14 @@ function useSearchState() {
 function usePolicyActions() {
   const { Button } = useComponentContext()
 
-  return (
-    <>
-      <Button variant="secondary" icon={<PlusCircleIcon aria-hidden />} onClick={fn()}>
-        Add employees
-      </Button>
-      <Button variant="secondary" icon={<EditIcon aria-hidden />} onClick={fn()}>
-        Edit policy
-      </Button>
-    </>
-  )
+  return [
+    <Button key="add" variant="secondary" icon={<PlusCircleIcon aria-hidden />} onClick={fn()}>
+      Add employees
+    </Button>,
+    <Button key="edit" variant="secondary" icon={<EditIcon aria-hidden />} onClick={fn()}>
+      Edit policy
+    </Button>,
+  ]
 }
 
 const closedRemoveDialog = {

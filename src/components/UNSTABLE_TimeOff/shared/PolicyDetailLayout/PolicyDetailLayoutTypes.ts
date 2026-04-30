@@ -14,7 +14,7 @@ export interface PolicyDetailLayoutProps<T extends EmployeeTableItem> {
   subtitle?: string
   onBack: () => void
   backLabel: string
-  actions?: ReactNode
+  actions?: ReactNode[]
 
   firstTab: {
     id: string

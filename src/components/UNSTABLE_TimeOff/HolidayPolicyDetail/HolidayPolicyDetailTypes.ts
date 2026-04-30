@@ -15,7 +15,7 @@ export interface HolidayPolicyDetailPresentationProps {
   subtitle?: string
   onBack: () => void
   backLabel: string
-  actions?: ReactNode
+  actions?: ReactNode[]
 
   holidays: HolidayItem[]
 
