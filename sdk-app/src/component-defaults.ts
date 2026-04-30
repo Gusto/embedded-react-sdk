@@ -18,6 +18,9 @@ export const DEFAULT_COMPONENT_PROPS: Record<string, Record<string, PropValueOrF
   'Employee.Compensation': {
     startDate: () => new Date().toISOString().slice(0, 10),
   },
+  'Employee.DocumentSigner': {
+    withEmployeeI9: true,
+  },
 }
 
 export function resolveDefaults(key: string): Record<string, PropValue> {
