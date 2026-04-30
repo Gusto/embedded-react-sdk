@@ -18,14 +18,8 @@ export const DEFAULT_COMPONENT_PROPS: Record<string, Record<string, PropValueOrF
   'Employee.Compensation': {
     startDate: () => new Date().toISOString().slice(0, 10),
   },
-  'Hooks.CompensationForm': {
-    withStartDateField: true,
-  },
-  'Hooks.SignEmployeeForm': {
-    formId: '',
-  },
-  'Hooks.SignEmployeeI9Form': {
-    formId: '',
+  'Employee.DocumentSigner': {
+    withEmployeeI9: true,
   },
 }
 

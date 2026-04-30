@@ -7,16 +7,15 @@ import {
 import { componentEvents } from '@/shared/constants'
 import type { MachineTransition } from '@/types/Helpers'
 import type { BreadcrumbNodes } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
+import { patchBreadcrumbsHeader } from '@/helpers/breadcrumbHelpers'
 
 function toPayPeriodSelectionReducer(
   ctx: DismissalFlowContextInterface,
 ): DismissalFlowContextInterface {
   return {
-    ...ctx,
+    ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: 'payPeriodSelection' }),
     component: DismissalPayPeriodSelectionContextual,
     payrollUuid: undefined,
-    currentBreadcrumbId: 'payPeriodSelection',
-    progressBarType: 'breadcrumbs',
   }
 }
 
@@ -52,10 +51,9 @@ export const dismissalMachine = {
           ctx: DismissalFlowContextInterface,
           ev: { payload?: { payrollUuid?: string } },
         ): DismissalFlowContextInterface => ({
-          ...ctx,
+          ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: undefined }),
           payrollUuid: ev.payload?.payrollUuid,
           component: DismissalExecutionContextual,
-          progressBarType: null,
         }),
       ),
     ),

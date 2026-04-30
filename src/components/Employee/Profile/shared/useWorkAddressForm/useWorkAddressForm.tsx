@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import type { Location } from '@gusto/embedded-api/models/components/location'
 import type { EmployeeWorkAddress } from '@gusto/embedded-api/models/components/employeeworkaddress'
 import { useLocationsGet } from '@gusto/embedded-api/react-query/locationsGet'
-import { useEmployeeAddressesGetWorkAddresses } from '@gusto/embedded-api/react-query/employeeAddressesGetWorkAddresses'
+import { useEmployeeAddressesRetrieveWorkAddress } from '@gusto/embedded-api/react-query/employeeAddressesRetrieveWorkAddress'
 import { useEmployeeAddressesCreateWorkAddressMutation } from '@gusto/embedded-api/react-query/employeeAddressesCreateWorkAddress'
 import { useEmployeeAddressesUpdateWorkAddressMutation } from '@gusto/embedded-api/react-query/employeeAddressesUpdateWorkAddress'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
@@ -43,8 +43,14 @@ export interface WorkAddressSubmitOptions {
 }
 
 export interface UseWorkAddressFormProps {
-  companyId: string
-  employeeId?: string
+  /** Company UUID for locations; omit or leave unset while resolving from the employee record. */
+  companyId?: string
+  employeeId: string
+  /**
+   * When set, loads that work address via GET `/v1/work_addresses/{work_address_uuid}` and updates it (PUT).
+   * When omitted, the form is in create mode (POST).
+   */
+  workAddressUuid?: string
   withEffectiveDateField?: boolean
   optionalFieldsToRequire?: WorkAddressOptionalFieldsToRequire
   defaultValues?: Partial<WorkAddressFormData>
@@ -63,8 +69,8 @@ export interface UseWorkAddressFormReady extends BaseFormHookReady<
   WorkAddressFields
 > {
   data: {
+    /** The address row loaded for update; `null` in create mode. */
     workAddress: EmployeeWorkAddress | null
-    workAddresses: EmployeeWorkAddress[] | undefined
     companyLocations: Location[] | undefined
   }
   status: { isPending: boolean; mode: 'create' | 'update' }
@@ -79,34 +85,47 @@ export interface UseWorkAddressFormReady extends BaseFormHookReady<
 export function useWorkAddressForm({
   companyId,
   employeeId,
+  workAddressUuid,
   withEffectiveDateField = true,
   optionalFieldsToRequire,
   defaultValues: partnerDefaults,
   validationMode = 'onSubmit',
   shouldFocusError = true,
 }: UseWorkAddressFormProps): HookLoadingResult | UseWorkAddressFormReady {
-  const locationsQuery = useLocationsGet({ companyId })
-  const workAddressesQuery = useEmployeeAddressesGetWorkAddresses(
-    { employeeId: employeeId ?? '' },
-    { enabled: !!employeeId },
+  const locationsQuery = useLocationsGet({ companyId: companyId ?? '' }, { enabled: !!companyId })
+
+  const retrieveWorkAddressQuery = useEmployeeAddressesRetrieveWorkAddress(
+    { workAddressUuid: workAddressUuid ?? '' },
+    { enabled: !!workAddressUuid },
   )
 
   const companyLocations = locationsQuery.data?.companyLocationsList
-  const workAddresses = workAddressesQuery.data?.employeeWorkAddressesList
-  const currentWorkAddress = workAddresses?.find(address => address.active)
 
-  const isCreateMode = !currentWorkAddress
-  const mode = isCreateMode ? 'create' : 'update'
+  const isCreateMode = !workAddressUuid
+
+  const fetchedWorkAddress = workAddressUuid
+    ? retrieveWorkAddressQuery.data?.employeeWorkAddress
+    : undefined
+
+  const schemaMode = isCreateMode ? 'create' : 'update'
 
   const [schema, metadataConfig] = useMemo(
-    () => createWorkAddressSchema({ mode, optionalFieldsToRequire, withEffectiveDateField }),
-    [mode, optionalFieldsToRequire, withEffectiveDateField],
+    () =>
+      createWorkAddressSchema({
+        mode: schemaMode,
+        optionalFieldsToRequire,
+        withEffectiveDateField,
+      }),
+    [schemaMode, optionalFieldsToRequire, withEffectiveDateField],
   )
 
-  const resolvedDefaults: WorkAddressFormData = {
-    locationUuid: currentWorkAddress?.locationUuid ?? partnerDefaults?.locationUuid ?? '',
-    effectiveDate: currentWorkAddress?.effectiveDate ?? partnerDefaults?.effectiveDate ?? '',
-  }
+  const resolvedDefaults: WorkAddressFormData = useMemo(
+    () => ({
+      locationUuid: fetchedWorkAddress?.locationUuid ?? partnerDefaults?.locationUuid ?? '',
+      effectiveDate: fetchedWorkAddress?.effectiveDate ?? partnerDefaults?.effectiveDate ?? '',
+    }),
+    [fetchedWorkAddress, partnerDefaults],
+  )
 
   const formMethods = useForm<WorkAddressFormData, unknown, WorkAddressFormOutputs>({
     resolver: zodResolver(schema),
@@ -128,8 +147,8 @@ export function useWorkAddressForm({
     setError: setSubmitError,
   } = useBaseSubmit('WorkAddressForm')
 
-  const queries = employeeId ? [locationsQuery, workAddressesQuery] : [locationsQuery]
-  const errorHandling = composeErrorHandler(queries, { submitError, setSubmitError })
+  const queriesForErrors = [locationsQuery, ...(workAddressUuid ? [retrieveWorkAddressQuery] : [])]
+  const errorHandling = composeErrorHandler(queriesForErrors, { submitError, setSubmitError })
 
   const locationOptions = (companyLocations ?? []).map(location => ({
     value: location.uuid,
@@ -191,11 +210,17 @@ export function useWorkAddressForm({
               updatedWorkAddress = result.employeeWorkAddress
               callbacks?.onWorkAddressCreated?.(updatedWorkAddress)
             } else {
+              if (!fetchedWorkAddress || !workAddressUuid) {
+                throw new SDKInternalError(
+                  'Cannot update work address: no matching address on file',
+                )
+              }
+
               const result = await updateWorkAddressMutation.mutateAsync({
                 request: {
-                  workAddressUuid: currentWorkAddress.uuid,
+                  workAddressUuid: fetchedWorkAddress.uuid,
                   requestBody: {
-                    version: currentWorkAddress.version,
+                    version: fetchedWorkAddress.version,
                     locationUuid: payload.locationUuid,
                     effectiveDate: effectiveDateParam,
                   },
@@ -227,17 +252,21 @@ export function useWorkAddressForm({
   }
 
   const isDataLoading =
-    locationsQuery.isLoading || (employeeId ? workAddressesQuery.isLoading : false)
+    (!!companyId && locationsQuery.isLoading) ||
+    (!!workAddressUuid && retrieveWorkAddressQuery.isLoading)
 
-  if (isDataLoading || !companyLocations || (employeeId && !workAddresses)) {
+  if (!companyId || isDataLoading || !companyLocations) {
+    return { isLoading: true as const, errorHandling }
+  }
+
+  if (workAddressUuid && !fetchedWorkAddress) {
     return { isLoading: true as const, errorHandling }
   }
 
   return {
     isLoading: false as const,
     data: {
-      workAddress: currentWorkAddress ?? null,
-      workAddresses,
+      workAddress: fetchedWorkAddress ?? null,
       companyLocations,
     },
     status: {

@@ -163,7 +163,6 @@ function Root({ contractorId, className, dictionary }: PaymentMethodProps) {
           <Flex gap={32} flexDirection={'column'}>
             <Components.Heading as="h2">{t('title')}</Components.Heading>
             <PaymentTypeForm />
-            <hr />
             {showBankAccountForm && <BankAccountForm bankAccount={bankAccount} />}
             <ActionsLayout>
               <Components.Button

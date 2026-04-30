@@ -16,9 +16,10 @@ export const PaymentFlow = ({ companyId, onEvent }: PaymentFlowProps) => {
         ...initialContext,
         component: PaymentListContextual,
         companyId,
-        progressBarType: null, //landing step does not show progress bar/breadcrumbs
-        breadcrumbs: buildBreadcrumbs(paymentFlowBreadcrumbsNodes),
-        currentBreadcrumb: 'landing',
+        header: {
+          type: 'breadcrumbs' as const,
+          breadcrumbs: buildBreadcrumbs(paymentFlowBreadcrumbsNodes),
+        },
       })),
     [companyId],
   )

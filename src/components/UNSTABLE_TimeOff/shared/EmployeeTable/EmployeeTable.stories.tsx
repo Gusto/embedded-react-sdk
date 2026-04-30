@@ -9,7 +9,7 @@ import PencilSvg from '@/assets/icons/pencil.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 
 export default {
-  title: 'TimeOff/EmployeeTable',
+  title: 'Domain/TimeOff/EmployeeTable',
   decorators: [
     (Story: React.ComponentType) => (
       <Suspense fallback={<div>Loading translations...</div>}>

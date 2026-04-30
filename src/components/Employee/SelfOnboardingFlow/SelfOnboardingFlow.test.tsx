@@ -35,6 +35,7 @@ import {
 } from '@/test/mocks/apis/employee_state_taxes'
 import {
   createEmployeeHomeAddress,
+  getEmployeeHomeAddress,
   getEmployeeHomeAddresses,
   updateEmployeeHomeAddress,
 } from '@/test/mocks/apis/employee_home_addresses'
@@ -50,6 +51,7 @@ describe('EmployeeSelfOnboardingFlow', () => {
         createEmployeeWorkAddress,
         updateEmployeeWorkAddress,
         getEmployeeHomeAddresses,
+        getEmployeeHomeAddress,
         createEmployeeHomeAddress,
         updateEmployeeHomeAddress,
         getEmployee,

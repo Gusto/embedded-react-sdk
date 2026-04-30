@@ -584,6 +584,10 @@
           "path": "/v1/employees/:employeeId/home_addresses"
         },
         {
+          "method": "GET",
+          "path": "/v1/home_addresses/:homeAddressUuid"
+        },
+        {
           "method": "POST",
           "path": "/v1/employees/:employeeId/home_addresses"
         },
@@ -594,6 +598,10 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/locations"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/work_addresses/:workAddressUuid"
         },
         {
           "method": "POST",
@@ -756,15 +764,15 @@
         },
         {
           "method": "GET",
+          "path": "/v1/employees/:employeeId/forms/:formId"
+        },
+        {
+          "method": "GET",
           "path": "/v1/employees/:employeeId/forms/:formId/pdf"
         },
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeId/forms/:formId/sign"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/forms/:formId"
         }
       ],
       "variables": [
@@ -833,6 +841,26 @@
       "variables": [
         "employeeId",
         "employeeUuid"
+      ]
+    },
+    "Employee.HomeAddress": {
+      "endpoints": [
+        {
+          "method": "DELETE",
+          "path": "/v1/home_addresses/:homeAddressUuid"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/home_addresses"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId"
+        }
+      ],
+      "variables": [
+        "employeeId",
+        "homeAddressUuid"
       ]
     },
     "Employee.EmploymentEligibility": {
@@ -908,6 +936,26 @@
       "variables": [
         "companyId",
         "employeeId"
+      ]
+    },
+    "Employee.WorkAddress": {
+      "endpoints": [
+        {
+          "method": "DELETE",
+          "path": "/v1/work_addresses/:workAddressUuid"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/work_addresses"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId"
+        }
+      ],
+      "variables": [
+        "employeeId",
+        "workAddressUuid"
       ]
     },
     "Employee.Taxes": {
@@ -1340,6 +1388,14 @@
           "path": "/v1/companies/:companyUuid/holiday_pay_policy"
         },
         {
+          "method": "GET",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
+        },
+        {
           "method": "POST",
           "path": "/v1/companies/:companyUuid/time_off_policies"
         },
@@ -1385,6 +1441,14 @@
           "path": "/v1/companies/:companyUuid/holiday_pay_policy"
         },
         {
+          "method": "GET",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
+        },
+        {
           "method": "POST",
           "path": "/v1/companies/:companyUuid/time_off_policies"
         },
@@ -1414,51 +1478,6 @@
         "companyUuid"
       ]
     },
-    "UNSTABLE_TimeOff.PolicySettings": {
-      "endpoints": [
-        {
-          "method": "POST",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyUuid/time_off_policies"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/deactivate"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/employees"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
-        },
-        {
-          "method": "DELETE",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/companies/:companyUuid/time_off_policies"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy/add"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/add_employees"
-        }
-      ],
-      "variables": [
-        "companyId",
-        "companyUuid",
-        "timeOffPolicyUuid"
-      ]
-    },
     "UNSTABLE_TimeOff.PolicySettingsPresentation": {
       "endpoints": [
         {
@@ -1484,6 +1503,14 @@
         {
           "method": "DELETE",
           "path": "/v1/companies/:companyUuid/holiday_pay_policy"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
         },
         {
           "method": "POST",
@@ -1531,6 +1558,14 @@
           "path": "/v1/companies/:companyUuid/holiday_pay_policy"
         },
         {
+          "method": "GET",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
+        },
+        {
           "method": "POST",
           "path": "/v1/companies/:companyUuid/time_off_policies"
         },
@@ -1574,6 +1609,14 @@
         {
           "method": "DELETE",
           "path": "/v1/companies/:companyUuid/holiday_pay_policy"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
         },
         {
           "method": "POST",
@@ -1621,6 +1664,14 @@
           "path": "/v1/companies/:companyUuid/holiday_pay_policy"
         },
         {
+          "method": "GET",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
+        },
+        {
           "method": "POST",
           "path": "/v1/companies/:companyUuid/time_off_policies"
         },
@@ -1664,6 +1715,14 @@
         {
           "method": "DELETE",
           "path": "/v1/companies/:companyUuid/holiday_pay_policy"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
         },
         {
           "method": "POST",
@@ -1711,6 +1770,14 @@
           "path": "/v1/companies/:companyUuid/holiday_pay_policy"
         },
         {
+          "method": "GET",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
+        },
+        {
           "method": "POST",
           "path": "/v1/companies/:companyUuid/time_off_policies"
         },
@@ -1754,6 +1821,14 @@
         {
           "method": "DELETE",
           "path": "/v1/companies/:companyUuid/holiday_pay_policy"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
         },
         {
           "method": "POST",
@@ -1801,6 +1876,14 @@
           "path": "/v1/companies/:companyUuid/holiday_pay_policy"
         },
         {
+          "method": "GET",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
+        },
+        {
           "method": "POST",
           "path": "/v1/companies/:companyUuid/time_off_policies"
         },
@@ -1844,6 +1927,14 @@
         {
           "method": "DELETE",
           "path": "/v1/companies/:companyUuid/holiday_pay_policy"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
         },
         {
           "method": "POST",
@@ -2256,6 +2347,10 @@
           "path": "/v1/employees/:employeeId/home_addresses"
         },
         {
+          "method": "GET",
+          "path": "/v1/home_addresses/:homeAddressUuid"
+        },
+        {
           "method": "POST",
           "path": "/v1/employees/:employeeId/home_addresses"
         },
@@ -2266,6 +2361,10 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/locations"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/work_addresses/:workAddressUuid"
         },
         {
           "method": "POST",
@@ -2327,15 +2426,15 @@
         },
         {
           "method": "GET",
+          "path": "/v1/employees/:employeeId/forms/:formId"
+        },
+        {
+          "method": "GET",
           "path": "/v1/employees/:employeeId/forms/:formId/pdf"
         },
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeId/forms/:formId/sign"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/forms/:formId"
         },
         {
           "method": "GET",
@@ -2398,6 +2497,10 @@
           "path": "/v1/employees/:employeeId/home_addresses"
         },
         {
+          "method": "GET",
+          "path": "/v1/home_addresses/:homeAddressUuid"
+        },
+        {
           "method": "POST",
           "path": "/v1/employees/:employeeId/home_addresses"
         },
@@ -2408,6 +2511,10 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/locations"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/work_addresses/:workAddressUuid"
         },
         {
           "method": "POST",

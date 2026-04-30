@@ -14,17 +14,14 @@ import type { HookFieldProps } from '@/partner-hook-utils/types'
 // ── Validation types ──────────────────────────────────────────────────
 
 export type RequiredValidation = typeof SignEmployeeFormErrorCodes.REQUIRED
-export type ConfirmationValidation = (typeof SignEmployeeFormErrorCodes)[
-  | 'REQUIRED'
-  | 'CONFIRMATION_REQUIRED']
 
 // ── Shared preparer field prop types ──────────────────────────────────
 
 export type PreparerTextFieldProps = HookFieldProps<TextInputHookFieldProps<RequiredValidation>>
-export type PreparerSelectFieldProps = HookFieldProps<SelectHookFieldProps<RequiredValidation>>
-export type PreparerCheckboxFieldProps = HookFieldProps<
-  CheckboxHookFieldProps<ConfirmationValidation>
+export type PreparerSelectFieldProps = HookFieldProps<
+  SelectHookFieldProps<RequiredValidation, string>
 >
+export type PreparerCheckboxFieldProps = HookFieldProps<CheckboxHookFieldProps<RequiredValidation>>
 
 // ── Base fields (always present) ──────────────────────────────────────
 
@@ -34,9 +31,7 @@ export function SignatureField(props: SignatureFieldProps) {
   return <TextInputHookField {...props} name="signature" />
 }
 
-export type ConfirmSignatureFieldProps = HookFieldProps<
-  CheckboxHookFieldProps<ConfirmationValidation>
->
+export type ConfirmSignatureFieldProps = HookFieldProps<CheckboxHookFieldProps<RequiredValidation>>
 
 export function ConfirmSignatureField(props: ConfirmSignatureFieldProps) {
   return <CheckboxHookField {...props} name="confirmSignature" />

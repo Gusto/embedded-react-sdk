@@ -17,10 +17,11 @@ function createTestMachine(initialState: 'configuration' | 'overview' = 'configu
       component: () => null,
       companyId: 'test-company',
       payrollUuid: 'payroll-123',
-      progressBarType: 'breadcrumbs' as const,
-      breadcrumbs: buildBreadcrumbs(getPayrollExecutionBreadcrumbsNodes()),
-      currentBreadcrumbId: initialState,
-      progressBarCta: null,
+      header: {
+        type: 'breadcrumbs' as const,
+        breadcrumbs: buildBreadcrumbs(getPayrollExecutionBreadcrumbsNodes()),
+        currentBreadcrumbId: initialState,
+      },
       withReimbursements: true,
     }),
   )
@@ -69,10 +70,11 @@ describe('payrollExecutionMachine', () => {
           component: () => null,
           companyId: 'test-company',
           payrollUuid: 'payroll-123',
-          progressBarType: 'breadcrumbs' as const,
-          breadcrumbs: buildBreadcrumbs(getPayrollExecutionBreadcrumbsNodes()),
-          currentBreadcrumbId: 'configuration' as const,
-          progressBarCta: null,
+          header: {
+            type: 'breadcrumbs' as const,
+            breadcrumbs: buildBreadcrumbs(getPayrollExecutionBreadcrumbsNodes()),
+            currentBreadcrumbId: 'configuration' as const,
+          },
           withReimbursements: true,
           alerts: [progressSavedAlert],
         }),
@@ -145,7 +147,12 @@ describe('payrollExecutionMachine', () => {
       send(service, componentEvents.RUN_PAYROLL_RECEIPT_GET)
 
       expect(service.machine.current).toBe('receipts')
-      expect(service.context.progressBarType).toBe('breadcrumbs')
+      expect(service.context.header?.type).toBe('breadcrumbs')
+      expect(
+        service.context.header?.type === 'breadcrumbs'
+          ? service.context.header.currentBreadcrumbId
+          : undefined,
+      ).toBe('receipts')
     })
 
     it('does not handle RUN_PAYROLL_PROCESSED (bubbles to parent)', () => {
@@ -181,10 +188,7 @@ describe('payrollExecutionMachine', () => {
 
       send(service, componentEvents.BREADCRUMB_NAVIGATE, {
         key: 'configuration',
-        onNavigate: (ctx: PayrollFlowContextInterface) => ({
-          ...ctx,
-          currentBreadcrumbId: 'configuration',
-        }),
+        onNavigate: (ctx: PayrollFlowContextInterface) => ctx,
       })
 
       expect(service.machine.current).toBe('configuration')
@@ -200,10 +204,7 @@ describe('payrollExecutionMachine', () => {
 
       send(service, componentEvents.BREADCRUMB_NAVIGATE, {
         key: 'configuration',
-        onNavigate: (ctx: PayrollFlowContextInterface) => ({
-          ...ctx,
-          currentBreadcrumbId: 'configuration',
-        }),
+        onNavigate: (ctx: PayrollFlowContextInterface) => ctx,
       })
 
       expect(service.machine.current).toBe('overview')
@@ -226,7 +227,10 @@ describe('payrollExecutionMachine', () => {
 
       send(service, componentEvents.RUN_PAYROLL_SUBMITTING)
 
-      const allBreadcrumbs = service.context.breadcrumbs ?? {}
+      const allBreadcrumbs =
+        service.context.header?.type === 'breadcrumbs'
+          ? (service.context.header.breadcrumbs ?? {})
+          : {}
       for (const trail of Object.values(allBreadcrumbs)) {
         expect(trail.find(b => b.id === 'configuration')).toBeUndefined()
       }

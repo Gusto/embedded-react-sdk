@@ -1,6 +1,6 @@
 export { OnboardingFlow } from '../OnboardingFlow/OnboardingFlow'
 export { SelfOnboardingFlow } from '../SelfOnboardingFlow/SelfOnboardingFlow'
-export { EmployeeList } from '../employee-list/onboarding/EmployeeList'
+export { EmployeeList } from '../EmployeeList/onboarding/EmployeeList'
 export { OnboardingSummary } from '../OnboardingSummary'
 export { Landing } from '../Landing'
 export { DocumentSigner } from '../DocumentSigner'

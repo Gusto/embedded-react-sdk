@@ -241,10 +241,10 @@ We standardize on a **feature module**: one **feature root** folder per cohesive
 
 ### Directory shape
 
-Use **kebab-case** for the feature folder name to distinguish **feature modules** from **PascalCase component files** (e.g. `employee-list/`). Adjust if the repo standardizes on PascalCase folders—consistency matters more than the exact casing.
+Use **PascalCase** for **multi-word feature root** folder names (e.g. `EmployeeList/`, `HomeAddress/`) so they read as proper names alongside **PascalCase** component files (`EmployeeList.tsx`, `HomeAddress.tsx`). Do **not** use **kebab-case** or **snake_case** for those segments—single-word folders such as `shared/`, `onboarding/`, and `management/` remain lowercase.
 
 ```text
-Employee/employee-list/
+Employee/EmployeeList/
   shared/
     useEmployeeList.tsx
     # types, constants, small pure helpers used only by this feature (not generic app hooks)
@@ -274,10 +274,10 @@ Employee/employee-list/
 | Layer | Responsibility |
 |--------|----------------|
 | **Journey barrel** (`exports/employeeOnboarding.ts`, `exports/employeeManagement.ts`) | Re-exports **public components** for that use case; **may also re-export shared hooks** (see below). |
-| **Feature folder** (`employee-list/onboarding/`, `employee-list/management/`) | **Implementation** of journey entry + view only. |
+| **Feature folder** (`EmployeeList/onboarding/`, `EmployeeList/management/`) | **Implementation** of journey entry + view only. |
 | **`shared/`** | **Single implementation** of `useEmployeeList` and related types—**the** module partner hook exports resolve to. |
 
-When a new steady-state surface shares the same hook, **add a sibling journey folder** under `employee-list/` (e.g. `partner-embed/`) rather than creating a separate top-level feature without a shared home for logic.
+When a new steady-state surface shares the same hook, **add a sibling journey folder** under `EmployeeList/` (e.g. `PartnerEmbed/`) rather than creating a separate top-level feature without a shared home for logic.
 
 ### Exporting hooks for partners (`useEmployeeList` and similar)
 
@@ -286,7 +286,7 @@ Partners building **fully custom UI** need the same headless behavior our packag
 **Principles**
 
 1. **Journey-agnostic API** — `useEmployeeList` is the same function whether the partner is building an onboarding or management experience; journey differences are **props** (e.g. `employeeType`) and **which packaged component** they might otherwise use—not separate hook types.  
-2. **One physical module** — All public paths resolve to `employee-list/shared/useEmployeeList.tsx` (or its `shared/index` barrel).  
+2. **One physical module** — All public paths resolve to `EmployeeList/shared/useEmployeeList.tsx` (or its `shared/index` barrel).  
 3. **Types ship with the hook** — Export `UseEmployeeListProps`, result types, and action types from the same public surfaces as the hook.
 
 **Where partners import hooks (complementary patterns)**
@@ -309,7 +309,7 @@ The tables below map **current** public exports (as of this RFC) to **suggested*
 
 **Exports:** Add **journey barrel files** and **`src/components/index.ts`** entries (additive where possible).
 
-**Directories:** Moving `EmployeeList` (and similar) into the **feature module** layout (`employee-list/shared` + journey folders) should happen **in the same initiative** as export work so paths, docs, barrels, and **hook re-exports** stay consistent — exact sequencing (barrels first vs moves first) is an implementation detail, but **avoid** leaving public paths pointing at obsolete files long-term.
+**Directories:** Moving `EmployeeList` (and similar) into the **feature module** layout (`EmployeeList/shared` + journey folders) should happen **in the same initiative** as export work so paths, docs, barrels, and **hook re-exports** stay consistent — exact sequencing (barrels first vs moves first) is an implementation detail, but **avoid** leaving public paths pointing at obsolete files long-term.
 
 Legend:
 
@@ -343,7 +343,7 @@ Legend:
 | `PaymentMethod` | **Shared** | both |
 | `Taxes` | **Shared** (deprecated) | both, until removed |
 
-**Hook:** `useEmployeeList` (and its public types) — **not** journey-specific; re-export from **`EmployeeOnboarding`**, **`EmployeeManagement`**, and umbrella **`Employee`** so partners can co-locate imports with the journey they are building. Single implementation: `employee-list/shared/useEmployeeList.tsx`.
+**Hook:** `useEmployeeList` (and its public types) — **not** journey-specific; re-export from **`EmployeeOnboarding`**, **`EmployeeManagement`**, and umbrella **`Employee`** so partners can co-locate imports with the journey they are building. Single implementation: `EmployeeList/shared/useEmployeeList.tsx`.
 
 ### Company → `CompanyOnboarding` / `CompanyConfiguration`
 
@@ -422,19 +422,19 @@ Legend:
 
 Journey barrels are **additive** files. They only **re-export** implementation modules from feature folders and `shared/` — they do not contain UI logic.
 
-**Employee list** imports below use the **feature module** paths (`employee-list/...`). Other exports still use today’s paths until those features move.
+**Employee list** imports below use the **feature module** paths (`EmployeeList/...`). Other exports still use today’s paths until those features move.
 
 ### `src/components/Employee/exports/employeeOnboarding.ts`
 
 ```ts
 export { OnboardingFlow } from '../OnboardingFlow/OnboardingFlow'
 export { SelfOnboardingFlow } from '../SelfOnboardingFlow/SelfOnboardingFlow'
-export { EmployeeList } from '../employee-list/onboarding/EmployeeList'
+export { EmployeeList } from '../EmployeeList/onboarding/EmployeeList'
 export {
   useEmployeeList,
   type UseEmployeeListProps,
   type UseEmployeeListResult,
-} from '../employee-list/shared/useEmployeeList'
+} from '../EmployeeList/shared/useEmployeeList'
 export { OnboardingSummary } from '../OnboardingSummary'
 export { Landing } from '../Landing'
 export { DocumentSigner } from '../DocumentSigner'
@@ -454,12 +454,12 @@ export { Taxes } from '../Taxes'
 ### `src/components/Employee/exports/employeeManagement.ts`
 
 ```ts
-export { ManagementEmployeeList } from '../employee-list/management/ManagementEmployeeList'
+export { ManagementEmployeeList } from '../EmployeeList/management/ManagementEmployeeList'
 export {
   useEmployeeList,
   type UseEmployeeListProps,
   type UseEmployeeListResult,
-} from '../employee-list/shared/useEmployeeList'
+} from '../EmployeeList/shared/useEmployeeList'
 export { EmployeeDocuments } from '../EmployeeDocuments'
 export { DashboardFlow } from '../Dashboard'
 export type { DashboardFlowProps } from '../Dashboard'
@@ -515,7 +515,7 @@ Other domain barrels (`companyOnboarding.ts`, `payrollFlows.ts`, etc.) follow th
 
 - **Public API:** Treat **Option 3 journey namespaces** as the primary story for new integrations; keep umbrella `Employee`, `Company`, `Payroll`, etc. exports as **compatibility / full inventory** until a planned major version. Journey barrels can ship **additively** first if needed.  
 - **Partner hooks:** Expose each shared hook from **`shared/`** via **journey barrels** (same hook on both journeys when applicable), plus **umbrella** and/or a **dedicated hooks entry** in `package.json` exports—see **Exporting hooks for partners** above.  
-- **Internal layout:** Use the **feature module** pattern (`feature-name/shared` + per-journey folders) for any capability that follows the **EmployeeList** model (shared hook, multiple UIs).  
+- **Internal layout:** Use the **feature module** pattern (`FeatureName/shared` + per-journey folders) for any capability that follows the **EmployeeList** model (shared hook, multiple UIs).  
 - **Timing:** Combine **export barrel work**, **hook re-exports**, and **directory moves** for the same feature in one program of work so imports, docs, and paths stay aligned.  
 - **Long term:** Revisit Option 1 vs 2 for **runtime** naming if we ever expose deep `Entity.Context.Component` APIs; Option 3 plus feature modules may avoid that need for a long time.  
 
@@ -531,14 +531,14 @@ Other domain barrels (`companyOnboarding.ts`, `payrollFlows.ts`, etc.) follow th
 | Payroll | See `Payroll/index.ts` | Add `PayrollFlows`, `PayrollExecution`, `PayrollManagement` barrels |
 | InformationRequests | See `InformationRequests/index.ts` | Add `InformationRequestsFlow`, `InformationRequestsManagement` barrels |
 
-**Directory + hooks:** Apply the **feature module** layout (`employee-list/shared`, journey folders) and **public hook re-exports** together; **EmployeeList** is the first candidate under `Employee/`.
+**Directory + hooks:** Apply the **feature module** layout (`EmployeeList/shared`, journey folders) and **public hook re-exports** together; **EmployeeList** is the first candidate under `Employee/`.
 
 ---
 
 ## Migration Notes
 
 1. **Phase 1:** Add journey barrel files + root exports (additive).  
-2. **Phase 1b (parallel):** Move high-value features (starting with **EmployeeList**) into the **feature module** directory layout; update internal imports, tests, **`Employee/index.ts`** (components + hooks), and **journey barrels** so `useEmployeeList` resolves to `employee-list/shared/useEmployeeList`.  
+2. **Phase 1b (parallel):** Move high-value features (starting with **EmployeeList**) into the **feature module** directory layout; update internal imports, tests, **`Employee/index.ts`** (components + hooks), and **journey barrels** so `useEmployeeList` resolves to `EmployeeList/shared/useEmployeeList`.  
 3. **Phase 2:** Update public docs to lead with journey namespaces; optionally add ESLint `no-restricted-imports` presets per app area.  
 4. **Phase 3 (optional):** Deprecate umbrella-only workflows in docs, or add dev warnings for legacy import paths — only if product agrees on migration pressure.  
 

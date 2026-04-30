@@ -94,7 +94,7 @@ function Root({ contractorId, defaultValues, children, className, dictionary }: 
       >
         <FormProvider {...formMethods}>
           <HtmlForm onSubmit={formMethods.handleSubmit(onSubmit)}>
-            <Flex flexDirection="column" gap={32}>
+            <Flex flexDirection="column" gap={32} alignItems="stretch">
               {children ? (
                 children
               ) : (

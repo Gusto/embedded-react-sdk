@@ -128,9 +128,20 @@ export interface UseSignEmployeeFormProps {
   formId: string
 }
 
+export interface SignEmployeeFormFieldComponents {
+  Signature: typeof SignatureField
+  ConfirmSignature: typeof ConfirmSignatureField
+  UsedPreparer: typeof UsedPreparerField | undefined
+  Preparer1: PreparerFieldGroup | undefined
+  Preparer2: PreparerFieldGroup | undefined
+  Preparer3: PreparerFieldGroup | undefined
+  Preparer4: PreparerFieldGroup | undefined
+}
+
 export interface UseSignEmployeeFormReady extends BaseFormHookReady<
   FieldsMetadata,
-  SignEmployeeFormData
+  SignEmployeeFormData,
+  SignEmployeeFormFieldComponents
 > {
   data: {
     form: Form
@@ -142,7 +153,11 @@ export interface UseSignEmployeeFormReady extends BaseFormHookReady<
     addPreparer?: () => void
     removePreparer?: () => void
   }
-  form: BaseFormHookReady<FieldsMetadata, SignEmployeeFormData>['form'] & {
+  form: BaseFormHookReady<
+    FieldsMetadata,
+    SignEmployeeFormData,
+    SignEmployeeFormFieldComponents
+  >['form'] & {
     preparers?: { count: number; canAdd: boolean; canRemove: boolean }
   }
 }
@@ -198,10 +213,10 @@ export function useSignEmployeeForm({
               { label: 'No, I completed this myself', value: 'no' },
               { label: 'Yes, I used a preparer/translator', value: 'yes' },
             ]),
-            preparerState: withOptions(baseMetadata.preparerState, stateOptions),
-            preparer2State: withOptions(baseMetadata.preparer2State, stateOptions),
-            preparer3State: withOptions(baseMetadata.preparer3State, stateOptions),
-            preparer4State: withOptions(baseMetadata.preparer4State, stateOptions),
+            preparerState: withOptions(baseMetadata.preparerState, stateOptions, STATES_ABBR),
+            preparer2State: withOptions(baseMetadata.preparer2State, stateOptions, STATES_ABBR),
+            preparer3State: withOptions(baseMetadata.preparer3State, stateOptions, STATES_ABBR),
+            preparer4State: withOptions(baseMetadata.preparer4State, stateOptions, STATES_ABBR),
           }
         : {}),
     }),

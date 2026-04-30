@@ -6,17 +6,16 @@ import type { ProfileProps } from './Profile'
 import styles from './EmployeeProfile.module.scss'
 import { useEmployeeDetailsForm } from './shared/useEmployeeDetailsForm'
 import type { EmployeeDetailsOptionalFieldsToRequire } from './shared/useEmployeeDetailsForm'
-import { useHomeAddressForm } from './shared/useHomeAddressForm'
+import { useCurrentHomeAddressForm } from './shared/useHomeAddressForm'
 import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { composeSubmitHandler } from '@/partner-hook-utils/form/composeSubmitHandler'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
-import { SelectField } from '@/components/Common'
 import { Grid } from '@/components/Common/Grid/Grid'
 import { ActionsLayout } from '@/components/Common'
 import { Form } from '@/components/Common/Form'
 import { BaseLayout } from '@/components/Base'
 import { useI18n } from '@/i18n'
-import { componentEvents, STATES_ABBR } from '@/shared/constants'
+import { componentEvents } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useComponentDictionary } from '@/i18n/I18n'
 import { getStreet, getCityStateZip } from '@/helpers/formattedStrings'
@@ -39,6 +38,7 @@ export function EmployeeProfile({
   useComponentDictionary('Employee.Profile', dictionary)
   const { t } = useTranslation('Employee.Profile')
   const { t: tHome } = useTranslation('Employee.HomeAddress')
+  const { t: tCommon } = useTranslation('common')
   const Components = useComponentContext()
 
   const [resolvedEmployeeId, setResolvedEmployeeId] = useState(employeeId)
@@ -52,8 +52,8 @@ export function EmployeeProfile({
     shouldFocusError: false,
   })
 
-  const homeAddress = useHomeAddressForm({
-    employeeId: resolvedEmployeeId,
+  const homeAddress = useCurrentHomeAddressForm({
+    employeeId: resolvedEmployeeId ?? '',
     withEffectiveDateField: false,
     defaultValues: {
       street1: defaultValues?.homeAddress?.street1,
@@ -113,7 +113,11 @@ export function EmployeeProfile({
     onEvent(componentEvents.EMPLOYEE_PROFILE_DONE, employeeResult.data)
   })
 
-  const errorHandling = composeErrorHandler([submitResult, workAddressesQuery])
+  const errorHandling = composeErrorHandler([
+    submitResult,
+    { errorHandling: homeAddress.errorHandling },
+    workAddressesQuery,
+  ])
 
   const isPending = employeeDetails.status.isPending || homeAddress.status.isPending
 
@@ -182,16 +186,13 @@ export function EmployeeProfile({
                   label={tHome('city')}
                   validationMessages={{ REQUIRED: tHome('validations.city') }}
                 />
-                <SelectField
-                  name="state"
-                  options={STATES_ABBR.map((stateAbbr: (typeof STATES_ABBR)[number]) => ({
-                    label: tHome(`statesHash.${stateAbbr}`, { ns: 'common' }),
-                    value: stateAbbr,
-                  }))}
+                <HomeFields.State
                   label={tHome('state')}
                   placeholder={tHome('statePlaceholder')}
-                  errorMessage={tHome('validations.state')}
-                  isRequired
+                  validationMessages={{ REQUIRED: tHome('validations.state') }}
+                  getOptionLabel={(abbr: string) =>
+                    tCommon(`statesHash.${abbr}`, { defaultValue: abbr })
+                  }
                 />
                 <HomeFields.Zip
                   label={tHome('zip')}

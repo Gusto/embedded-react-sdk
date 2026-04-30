@@ -224,8 +224,9 @@ function PercentageField({
         })}
         format="percent"
         min={0}
+        maximumFractionDigits={0}
         isRequired
-        errorMessage={t('validations.amountError')}
+        errorMessage={t('validations.percentageAmountError')}
         onChange={onChange}
       />
     </Fragment>

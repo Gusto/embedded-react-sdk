@@ -13,9 +13,11 @@ export const SubmitDone = ({ onDone }: SubmitDoneProps) => {
   const { t } = useTranslation('Contractor.Submit')
 
   return (
-    <Flex flexDirection="column" alignItems="center">
-      <Heading as="h2">{t('doneTitle')}</Heading>
-      <Text>{t('doneDescription')}</Text>
+    <Flex flexDirection="column" gap={20} alignItems="center">
+      <Flex flexDirection="column" gap={4} alignItems="center">
+        <Heading as="h2">{t('doneTitle')}</Heading>
+        <Text variant="supporting">{t('doneDescription')}</Text>
+      </Flex>
       <Button variant="secondary" onClick={onDone}>
         {t('doneCta')}
       </Button>

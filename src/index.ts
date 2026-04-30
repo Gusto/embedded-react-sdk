@@ -143,6 +143,7 @@ export type {
 
 export {
   useWorkAddressForm,
+  useCurrentWorkAddressForm,
   WorkAddressErrorCodes,
   createWorkAddressSchema,
 } from '@/components/Employee/Profile/shared/useWorkAddressForm'
@@ -150,6 +151,7 @@ export type {
   WorkAddressSubmitCallbacks,
   WorkAddressSubmitOptions,
   WorkAddressOptionalFieldsToRequire,
+  UseCurrentWorkAddressFormProps,
   UseWorkAddressFormProps,
   UseWorkAddressFormResult,
   UseWorkAddressFormReady,
@@ -166,6 +168,7 @@ export type {
 
 export {
   useHomeAddressForm,
+  useCurrentHomeAddressForm,
   HomeAddressErrorCodes,
   createHomeAddressSchema,
 } from '@/components/Employee/Profile/shared/useHomeAddressForm'
@@ -173,6 +176,7 @@ export type {
   HomeAddressSubmitOptions,
   HomeAddressOptionalFieldsToRequire,
   UseHomeAddressFormProps,
+  UseCurrentHomeAddressFormProps,
   UseHomeAddressFormResult,
   UseHomeAddressFormReady,
   HomeAddressFieldsMetadata,
@@ -204,6 +208,7 @@ export type {
   UseSignEmployeeFormProps,
   UseSignEmployeeFormResult,
   UseSignEmployeeFormReady,
+  SignEmployeeFormFieldComponents,
   SignEmployeeFormFieldsMetadata,
   SignEmployeeFormFields,
   PreparerFieldGroup,
@@ -214,7 +219,6 @@ export type {
   PreparerIndex,
   PreparerFieldSuffix,
   SignEmployeeFormRequiredValidation,
-  SignEmployeeFormConfirmationValidation,
   SignatureFieldProps as SignEmployeeFormSignatureFieldProps,
   ConfirmSignatureFieldProps as SignEmployeeFormConfirmSignatureFieldProps,
   UsedPreparerFieldProps,

@@ -32,7 +32,7 @@ export function CityField(props: CityFieldProps) {
   return <TextInputHookField {...props} name="city" />
 }
 
-export type StateFieldProps = HookFieldProps<SelectHookFieldProps<RequiredValidation>>
+export type StateFieldProps = HookFieldProps<SelectHookFieldProps<RequiredValidation, string>>
 
 export function StateField(props: StateFieldProps) {
   return <SelectHookField {...props} name="state" />

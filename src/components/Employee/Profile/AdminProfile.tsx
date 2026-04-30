@@ -7,8 +7,8 @@ import type { ProfileProps } from './Profile'
 import styles from './AdminProfile.module.scss'
 import { useEmployeeDetailsForm } from './shared/useEmployeeDetailsForm'
 import type { EmployeeDetailsOptionalFieldsToRequire } from './shared/useEmployeeDetailsForm'
-import { useHomeAddressForm } from './shared/useHomeAddressForm'
-import { useWorkAddressForm } from './shared/useWorkAddressForm'
+import { useCurrentHomeAddressForm } from './shared/useHomeAddressForm'
+import { useCurrentWorkAddressForm } from './shared/useWorkAddressForm'
 import type { UseEmployeeDetailsFormReady } from './shared/useEmployeeDetailsForm'
 import type { UseHomeAddressFormReady } from './shared/useHomeAddressForm'
 import type { UseWorkAddressFormReady } from './shared/useWorkAddressForm'
@@ -19,14 +19,8 @@ import { Grid } from '@/components/Common/Grid/Grid'
 import { ActionsLayout, DatePickerField } from '@/components/Common'
 import { Form } from '@/components/Common/Form'
 import { BaseLayout } from '@/components/Base'
-import { SelectField } from '@/components/Common'
 import { useI18n } from '@/i18n'
-import {
-  componentEvents,
-  EmployeeOnboardingStatus,
-  STATES_ABBR,
-  type EventType,
-} from '@/shared/constants'
+import { componentEvents, EmployeeOnboardingStatus, type EventType } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useComponentDictionary } from '@/i18n/I18n'
 
@@ -97,8 +91,8 @@ export function AdminProfile({
     shouldFocusError: false,
   })
 
-  const homeAddress = useHomeAddressForm({
-    employeeId: resolvedEmployeeId,
+  const homeAddress = useCurrentHomeAddressForm({
+    employeeId: resolvedEmployeeId ?? '',
     withEffectiveDateField: false,
     defaultValues: {
       street1: defaultValues?.homeAddress?.street1,
@@ -110,9 +104,9 @@ export function AdminProfile({
     shouldFocusError: false,
   })
 
-  const workAddress = useWorkAddressForm({
+  const workAddress = useCurrentWorkAddressForm({
     companyId,
-    employeeId: resolvedEmployeeId,
+    employeeId: resolvedEmployeeId ?? '',
     withEffectiveDateField: false,
     shouldFocusError: false,
   })
@@ -165,6 +159,7 @@ function AdminProfileReady({
 }: AdminProfileReadyProps) {
   const { t } = useTranslation('Employee.Profile')
   const { t: tHome } = useTranslation('Employee.HomeAddress')
+  const { t: tCommon } = useTranslation('common')
   const Components = useComponentContext()
 
   const employee = employeeDetails.data.employee ?? undefined
@@ -376,16 +371,13 @@ function AdminProfileReady({
                     label={tHome('city')}
                     validationMessages={{ REQUIRED: tHome('validations.city') }}
                   />
-                  <SelectField
-                    name="state"
-                    options={STATES_ABBR.map((stateAbbr: (typeof STATES_ABBR)[number]) => ({
-                      label: tHome(`statesHash.${stateAbbr}`, { ns: 'common' }),
-                      value: stateAbbr,
-                    }))}
+                  <HomeAddressFields.State
                     label={tHome('state')}
                     placeholder={tHome('statePlaceholder')}
-                    errorMessage={tHome('validations.state')}
-                    isRequired
+                    validationMessages={{ REQUIRED: tHome('validations.state') }}
+                    getOptionLabel={(abbr: string) =>
+                      tCommon(`statesHash.${abbr}`, { defaultValue: abbr })
+                    }
                   />
                   <HomeAddressFields.Zip
                     label={tHome('zip')}

@@ -58,7 +58,7 @@ function buildCreateRequestBody(
   const base: TimeOffPolicyRequest = { name: data.name, policyType, accrualMethod }
 
   if (accrualMethod === 'unlimited') {
-    return base
+    return { ...base, complete: true }
   }
 
   const isHourly =
@@ -107,6 +107,7 @@ function Root({ companyId, policyType, defaultValues }: PolicyConfigurationFormP
 
         onEvent(componentEvents.TIME_OFF_POLICY_DETAILS_DONE, {
           policyId: response.timeOffPolicy!.uuid,
+          accrualMethod: requestBody.accrualMethod,
         })
       })
     },

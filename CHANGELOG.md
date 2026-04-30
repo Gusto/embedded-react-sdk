@@ -1,5 +1,50 @@
 # Changelog
 
+## 0.42.0
+
+### Features & Enhancements
+
+- Add employee home address management and dashboard integration
+- Add employee work address management (SDK-640)
+- Extend TextInput with HTML input constraints and add EmployeeTable search
+- Add contractor management prototype with review, onboarding, and profile flows
+
+### Fixes
+
+- Contractor profile UX fixes, settings panel wiring, and skeleton loading state
+- Validate integer percentages in payment method split (SDK-464)
+- Add empty state to RecoveryCasesList (SDK-426)
+- Normalize locale-format dateOfBirth defaultValues to ISO before form validation
+- Use hook Fields in PayScheduleForm instead of raw Common field components
+
+### Chores & Maintenance
+
+- Consolidate Flow header chrome into a single discriminated `header` config (replaces internal `progressBarType`, `progressBarCta`, `currentBreadcrumbId` fields)
+- Integrate useSignEmployeeForm hook into Employee DocumentSigner
+- Remove Common/SignatureForm shared components
+- Remove stale Hooks namespace from SDK Dev App
+- Fix TimeOff storybook story titles to use Domain/ prefix
+- Bump various dependencies (typescript-eslint, react-i18next, react-hook-form, i18next, msw, @commitlint/cli, postcss)
+
+## 0.41.0
+
+### Features & Enhancements
+
+- Add contractor profile design prototype with payment method management
+- Add Contractor List design prototype
+- Add theme switcher (system/light/dark) to sdk-app
+
+### Fixes
+
+- Seed Start date from employee hire date in edit mode
+
+### Chores & Maintenance
+
+- Integrate useSignCompanyForm hook into Company DocumentSigner
+- Migrate PaySchedule to usePayScheduleForm + Flow state machine (SDK-774)
+- Add unit tests for PolicySettings presentation component
+- Bump various dependencies (typescript-eslint, react-router-dom, @vitest/coverage-v8, dompurify, react-hook-form)
+
 ## 0.40.0
 
 ### Breaking Changes
