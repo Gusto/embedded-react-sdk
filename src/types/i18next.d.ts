@@ -397,6 +397,14 @@ export interface CompanyTimeOffCreateTimeOffPolicy{
 "perCalendarYearLabel":string;
 "monthLabel":string;
 "dayLabel":string;
+"validations":{
+"policyName":string;
+"accrualMethod":string;
+"accrualRate":string;
+"accrualRateUnit":string;
+"accrualMethodFixed":string;
+"resetDateType":string;
+};
 };
 "policySettings":{
 "title":string;

@@ -7,12 +7,13 @@ import { RoutedComponentRenderer } from './RoutedComponentRenderer'
 import { DesignLayout } from './design/DesignLayout'
 import { DesignHome } from './design/DesignHome'
 import { ComponentShowcase } from './design/prototypes/component-showcase'
-import { ContractorManagementFlow } from './design/prototypes/contractor-management/ContractorManagementFlow'
-import ContractorList from './design/prototypes/contractor-management/ContractorList'
-import { ContractorProfile } from './design/prototypes/contractor-management/ContractorProfile'
-import { ContractorDismiss } from './design/prototypes/contractor-management/ContractorDismiss'
-import { ContractorRehire } from './design/prototypes/contractor-management/ContractorRehire'
-import { AddContractor } from './design/prototypes/contractor-management/AddContractor'
+import { ContractorManagementFlow } from './design/prototypes/contractor-management/contractor-profile/ContractorManagementFlow'
+import ContractorList from './design/prototypes/contractor-management/contractor-list/ContractorList'
+import { ContractorProfile } from './design/prototypes/contractor-management/contractor-profile/ContractorProfile'
+import { ContractorDismiss } from './design/prototypes/contractor-management/contractor-list/ContractorDismiss'
+import { ContractorRehire } from './design/prototypes/contractor-management/contractor-list/ContractorRehire'
+import { AddContractor } from './design/prototypes/contractor-management/contractor-list/AddContractor'
+import { ContractorSelfOnboarding } from './design/prototypes/contractor-management/self-onboarding'
 import './app.scss'
 import '@/styles/sdk.scss'
 
@@ -41,6 +42,7 @@ const router = createBrowserRouter([
               { path: ':contractorId/rehire', element: <ContractorRehire /> },
             ],
           },
+          { path: 'contractor-self-onboarding', element: <ContractorSelfOnboarding /> },
         ],
       },
     ],

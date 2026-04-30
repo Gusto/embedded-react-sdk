@@ -2,13 +2,16 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  height: var(--topbar-height);
   background: var(--color-bg-topbar);
   color: var(--color-text);
-  padding: 0.75rem 1rem;
+  padding: 0 1rem;
   gap: 1rem;
   flex-shrink: 0;
   font-size: 0.8125rem;
-  z-index: 10;
+  position: sticky;
+  top: 0;
+  z-index: 100;
   border-bottom: 1px solid var(--color-border);
   box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.05);
 }

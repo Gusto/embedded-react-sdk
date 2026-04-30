@@ -260,6 +260,7 @@
 | **value**                   | `null \| string`                    | No       | Currently selected value                                                                                                                       |
 | **inputRef**                | `Ref<HTMLInputElement \| null>`     | No       | React ref for the combo box input element                                                                                                      |
 | **allowsCustomValue**       | `boolean`                           | No       | Allows the user to type any value, not just options in the list. The options list becomes a suggestion helper rather than a strict constraint. |
+| **portalContainer**         | `HTMLElement`                       | No       | Element to use as the portal container for the dropdown popover. Overrides the default SDK root container from context.                        |
 | **description**             | `React.ReactNode`                   | No       | Optional description text for the field                                                                                                        |
 | **errorMessage**            | `string`                            | No       | Error message to display when the field is invalid                                                                                             |
 | **isRequired**              | `boolean`                           | No       | Indicates if the field is required                                                                                                             |
@@ -390,14 +391,15 @@
 
 ## MenuProps
 
-| Prop           | Type                                                                                                   | Required | Description                                                        |
-| -------------- | ------------------------------------------------------------------------------------------------------ | -------- | ------------------------------------------------------------------ |
-| **triggerRef** | `RefObject`                                                                                            | No       | Reference to the element that triggers the menu                    |
-| **items**      | [MenuItem](#menuitem)[]                                                                                | No       | Array of menu items to display                                     |
-| **isOpen**     | `boolean`                                                                                              | No       | Controls whether the menu is currently open                        |
-| **onClose**    | `() => void`                                                                                           | No       | Callback when the menu is closed                                   |
-| **aria-label** | `string`                                                                                               | Yes      | Accessible label describing the menu's purpose                     |
-| **placement**  | `"top" \| "top start" \| "top end" \| "bottom" \| "bottom start" \| "bottom end" \| "left" \| "right"` | No       | Controls the placement of the menu popover relative to the trigger |
+| Prop                | Type                                                                                                   | Required | Description                                                                                                         |
+| ------------------- | ------------------------------------------------------------------------------------------------------ | -------- | ------------------------------------------------------------------------------------------------------------------- |
+| **triggerRef**      | `RefObject`                                                                                            | No       | Reference to the element that triggers the menu                                                                     |
+| **items**           | [MenuItem](#menuitem)[]                                                                                | No       | Array of menu items to display                                                                                      |
+| **isOpen**          | `boolean`                                                                                              | No       | Controls whether the menu is currently open                                                                         |
+| **onClose**         | `() => void`                                                                                           | No       | Callback when the menu is closed                                                                                    |
+| **aria-label**      | `string`                                                                                               | Yes      | Accessible label describing the menu's purpose                                                                      |
+| **portalContainer** | `HTMLElement`                                                                                          | No       | Element to use as the portal container for the menu popover. Overrides the default SDK root container from context. |
+| **placement**       | `"top" \| "top start" \| "top end" \| "bottom" \| "bottom start" \| "bottom end" \| "left" \| "right"` | No       | Controls the placement of the menu popover relative to the trigger                                                  |
 
 ### MenuItem
 

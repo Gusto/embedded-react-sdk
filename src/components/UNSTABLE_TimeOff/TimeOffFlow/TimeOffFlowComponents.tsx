@@ -108,8 +108,14 @@ export function PolicySettingsContextual() {
 }
 
 export function AddEmployeesToPolicyContextual() {
-  const { onEvent, policyId } = useFlow<TimeOffFlowContextInterface>()
-  return <AddEmployeesToPolicy onEvent={onEvent} policyId={ensureRequired(policyId)} />
+  const { onEvent, companyId, policyId } = useFlow<TimeOffFlowContextInterface>()
+  return (
+    <AddEmployeesToPolicy
+      onEvent={onEvent}
+      companyId={ensureRequired(companyId)}
+      policyId={ensureRequired(policyId)}
+    />
+  )
 }
 
 export function ViewPolicyDetailsContextual() {

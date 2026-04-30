@@ -1,4 +1,3 @@
-import classNames from 'classnames'
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import type { PolicySettingsFormData, PolicySettingsPresentationProps } from './PolicySettingsTypes'
@@ -53,10 +52,7 @@ export function PolicySettingsPresentation({
                 <>
                   <div className={styles.settingRow}>
                     <NumberInputField
-                      className={classNames(
-                        styles.settingField,
-                        !accrualMaximumEnabled && styles.disabledField,
-                      )}
+                      className={styles.settingField}
                       name="accrualMaximum"
                       label={t('policySettings.accrualMaximumLabel')}
                       description={t('policySettings.accrualMaximumHint')}
@@ -80,10 +76,7 @@ export function PolicySettingsPresentation({
 
               <div className={styles.settingRow}>
                 <NumberInputField
-                  className={classNames(
-                    styles.settingField,
-                    !balanceMaximumEnabled && styles.disabledField,
-                  )}
+                  className={styles.settingField}
                   name="balanceMaximum"
                   label={t('policySettings.balanceMaximumLabel')}
                   description={t('policySettings.balanceMaximumHint')}
@@ -105,10 +98,7 @@ export function PolicySettingsPresentation({
 
               <div className={styles.settingRow}>
                 <NumberInputField
-                  className={classNames(
-                    styles.settingField,
-                    !carryOverLimitEnabled && styles.disabledField,
-                  )}
+                  className={styles.settingField}
                   name="carryOverLimit"
                   label={t('policySettings.carryOverLimitLabel')}
                   description={t('policySettings.carryOverLimitHint')}
@@ -132,10 +122,7 @@ export function PolicySettingsPresentation({
                 <>
                   <div className={styles.settingRow}>
                     <NumberInputField
-                      className={classNames(
-                        styles.settingField,
-                        !waitingPeriodEnabled && styles.disabledField,
-                      )}
+                      className={styles.settingField}
                       name="waitingPeriod"
                       label={t('policySettings.waitingPeriodLabel')}
                       description={t('policySettings.waitingPeriodHint')}

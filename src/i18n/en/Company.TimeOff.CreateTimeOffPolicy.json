@@ -31,7 +31,15 @@
     "perAnniversaryYearLabel": "Each employee's start date",
     "perCalendarYearLabel": "Custom date",
     "monthLabel": "Month",
-    "dayLabel": "Day"
+    "dayLabel": "Day",
+    "validations": {
+      "policyName": "Policy name is required.",
+      "accrualMethod": "Please select an accrual method.",
+      "accrualRate": "Accrual rate is required.",
+      "accrualRateUnit": "Hours worked is required.",
+      "accrualMethodFixed": "Please select an accrual rate.",
+      "resetDateType": "Please select a reset date."
+    }
   },
   "policySettings": {
     "title": "Policy settings",

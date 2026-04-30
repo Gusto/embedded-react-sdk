@@ -140,7 +140,7 @@ export const DatePicker = ({
           </Group>
           <Popover
             className={classNames(styles.popover, 'react-aria-Popover')}
-            UNSTABLE_portalContainer={portalContainer || container.current}
+            UNSTABLE_portalContainer={portalContainer ?? container.current ?? undefined}
           >
             <Dialog>
               <Calendar>
