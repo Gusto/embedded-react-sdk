@@ -126,16 +126,14 @@ function Root({ companyId, defaultTab = 'holidays' }: HolidayPolicyDetailProps) 
     onEvent(componentEvents.TIME_OFF_VIEW_HOLIDAY_SCHEDULE)
   }
 
-  const actions = (
-    <>
-      <Button variant="secondary" onClick={handleAddEmployees}>
-        {t('show.addEmployeesCta')}
-      </Button>
-      <Button variant="secondary" onClick={handleEditPolicy}>
-        {t('show.editPolicyCta')}
-      </Button>
-    </>
-  )
+  const actions = [
+    <Button key="add" variant="secondary" onClick={handleAddEmployees}>
+      {t('show.addEmployeesCta')}
+    </Button>,
+    <Button key="edit" variant="secondary" onClick={handleEditPolicy}>
+      {t('show.editPolicyCta')}
+    </Button>,
+  ]
 
   return (
     <HolidayPolicyDetailPresentation
