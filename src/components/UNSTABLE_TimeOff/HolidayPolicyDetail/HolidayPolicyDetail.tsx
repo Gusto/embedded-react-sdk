@@ -11,9 +11,8 @@ import { getDefaultHolidayItems } from '../shared/holidayHelpers'
 import { HolidayPolicyDetailPresentation } from './HolidayPolicyDetailPresentation'
 import type { HolidayPolicyDetailEmployee } from './HolidayPolicyDetailTypes'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
-import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/components/Base'
-import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
-import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
+import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
+import { useBase } from '@/components/Base/useBase'
 import { componentEvents } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
@@ -25,14 +24,11 @@ export interface HolidayPolicyDetailProps extends BaseComponentInterface {
   defaultTab?: 'holidays' | 'employees'
 }
 
-export function HolidayPolicyDetail({ FallbackComponent, ...props }: HolidayPolicyDetailProps) {
+export function HolidayPolicyDetail(props: HolidayPolicyDetailProps) {
   return (
-    <BaseBoundaries
-      componentName="Company.TimeOff.HolidayPolicy"
-      FallbackComponent={FallbackComponent}
-    >
-      <Root {...props} />
-    </BaseBoundaries>
+    <BaseComponent componentName="Company.TimeOff.HolidayPolicy" {...props}>
+      <Root companyId={props.companyId} defaultTab={props.defaultTab} />
+    </BaseComponent>
   )
 }
 
@@ -41,19 +37,17 @@ interface RemoveDialogTarget {
   name: string
 }
 
-function Root({ companyId, defaultTab = 'holidays', onEvent }: HolidayPolicyDetailProps) {
+function Root({
+  companyId,
+  defaultTab = 'holidays',
+}: Pick<HolidayPolicyDetailProps, 'companyId' | 'defaultTab'>) {
   useI18n('Company.TimeOff.HolidayPolicy')
   useI18n('Company.TimeOff.PolicyDetail')
   const { t } = useTranslation('Company.TimeOff.HolidayPolicy')
   const { t: tShared } = useTranslation('Company.TimeOff.PolicyDetail')
   const { Button } = useComponentContext()
   const queryClient = useQueryClient()
-
-  const {
-    baseSubmitHandler,
-    error: submitError,
-    setError: setSubmitError,
-  } = useBaseSubmit('Company.TimeOff.HolidayPolicy')
+  const { onEvent, baseSubmitHandler } = useBase()
 
   const [selectedTabId, setSelectedTabId] = useState<string>(defaultTab)
   const [searchValue, setSearchValue] = useState('')
@@ -69,8 +63,6 @@ function Root({ companyId, defaultTab = 'holidays', onEvent }: HolidayPolicyDeta
   })
 
   const removeEmployeesMutation = useHolidayPayPoliciesRemoveEmployeesMutation()
-
-  const errorHandling = composeErrorHandler([], { submitError, setSubmitError })
 
   const holidays = useMemo(() => getDefaultHolidayItems(t), [t])
 
@@ -149,57 +141,55 @@ function Root({ companyId, defaultTab = 'holidays', onEvent }: HolidayPolicyDeta
   )
 
   return (
-    <BaseLayout error={errorHandling.errors}>
-      <HolidayPolicyDetailPresentation
-        title={t('show.title')}
-        onBack={handleBack}
-        backLabel={tShared('backLabel')}
-        actions={actions}
-        holidays={holidays}
-        selectedTabId={selectedTabId}
-        onTabChange={setSelectedTabId}
-        employees={{
-          data: filteredEmployees,
-          searchValue,
-          onSearchChange: setSearchValue,
-          onSearchClear: () => {
-            setSearchValue('')
-          },
-          itemMenu: employee => (
-            <HamburgerMenu
-              items={[
-                {
-                  label: tShared('removeEmployeeDialog.confirmCta'),
-                  icon: <TrashCanSvg aria-hidden />,
-                  onClick: () => {
-                    setRemoveDialogTarget({
-                      uuid: employee.uuid,
-                      name: firstLastName({
-                        first_name: employee.firstName,
-                        last_name: employee.lastName,
-                      }),
-                    })
-                  },
+    <HolidayPolicyDetailPresentation
+      title={t('show.title')}
+      onBack={handleBack}
+      backLabel={tShared('backLabel')}
+      actions={actions}
+      holidays={holidays}
+      selectedTabId={selectedTabId}
+      onTabChange={setSelectedTabId}
+      employees={{
+        data: filteredEmployees,
+        searchValue,
+        onSearchChange: setSearchValue,
+        onSearchClear: () => {
+          setSearchValue('')
+        },
+        itemMenu: employee => (
+          <HamburgerMenu
+            items={[
+              {
+                label: tShared('removeEmployeeDialog.confirmCta'),
+                icon: <TrashCanSvg aria-hidden />,
+                onClick: () => {
+                  setRemoveDialogTarget({
+                    uuid: employee.uuid,
+                    name: firstLastName({
+                      first_name: employee.firstName,
+                      last_name: employee.lastName,
+                    }),
+                  })
                 },
-              ]}
-              triggerLabel={`Actions for ${firstLastName({ first_name: employee.firstName, last_name: employee.lastName })}`}
-            />
-          ),
-        }}
-        removeDialog={{
-          isOpen: removeDialogTarget !== null,
-          employeeName: removeDialogTarget?.name ?? '',
-          onConfirm: handleRemoveEmployee,
-          onClose: () => {
-            setRemoveDialogTarget(null)
-          },
-          isPending: removeEmployeesMutation.isPending,
-        }}
-        successAlert={successAlert ?? undefined}
-        onDismissAlert={() => {
-          setSuccessAlert(null)
-        }}
-      />
-    </BaseLayout>
+              },
+            ]}
+            triggerLabel={`Actions for ${firstLastName({ first_name: employee.firstName, last_name: employee.lastName })}`}
+          />
+        ),
+      }}
+      removeDialog={{
+        isOpen: removeDialogTarget !== null,
+        employeeName: removeDialogTarget?.name ?? '',
+        onConfirm: handleRemoveEmployee,
+        onClose: () => {
+          setRemoveDialogTarget(null)
+        },
+        isPending: removeEmployeesMutation.isPending,
+      }}
+      successAlert={successAlert ?? undefined}
+      onDismissAlert={() => {
+        setSuccessAlert(null)
+      }}
+    />
   )
 }
