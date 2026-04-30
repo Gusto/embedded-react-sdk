@@ -4,8 +4,15 @@ import * as Contractor from '@/components/Contractor'
 import * as Employee from '@/components/Employee'
 import * as Payroll from '@/components/Payroll'
 import * as InformationRequests from '@/components/InformationRequests'
+import * as UNSTABLE_TimeOff from '@/components/UNSTABLE_TimeOff'
 
-export type Category = 'Company' | 'Contractor' | 'Employee' | 'Payroll' | 'InformationRequests'
+export type Category =
+  | 'Company'
+  | 'Contractor'
+  | 'Employee'
+  | 'Payroll'
+  | 'InformationRequests'
+  | 'UNSTABLE_TimeOff'
 
 export interface ComponentEntry {
   name: string
@@ -21,6 +28,7 @@ const namespaces: Record<Category, Record<string, unknown>> = {
   Employee,
   Payroll,
   InformationRequests,
+  UNSTABLE_TimeOff,
 }
 
 function isReactComponent(value: unknown): value is React.ComponentType<Record<string, unknown>> {
@@ -64,6 +72,7 @@ export const categorizedRegistry: Record<Category, ComponentEntry[]> = {
   Employee: [],
   Payroll: [],
   InformationRequests: [],
+  UNSTABLE_TimeOff: [],
 }
 
 for (const entry of componentRegistry) {
@@ -76,6 +85,7 @@ export const CATEGORIES: Category[] = [
   'Contractor',
   'Payroll',
   'InformationRequests',
+  'UNSTABLE_TimeOff',
 ]
 
 export function findComponent(category: string, name: string): ComponentEntry | undefined {

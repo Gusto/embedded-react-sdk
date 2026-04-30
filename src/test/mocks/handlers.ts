@@ -35,6 +35,7 @@ import {
 } from './apis/company'
 import { getEmployeeFederalTaxes, updateEmployeeFederalTaxes } from './apis/employee_federal_taxes'
 import { getEmployeeStateTaxes, updateEmployeeStateTaxes } from './apis/employee_state_taxes'
+import TimeOffPoliciesHandlers from './apis/time_off_policies'
 
 export const handlers = [
   getCompany,
@@ -74,4 +75,5 @@ export const handlers = [
   ...EmployeeFormHandlers,
   ...RecoveryCasesHandlers,
   ...TerminationHandlers,
+  ...TimeOffPoliciesHandlers,
 ]
