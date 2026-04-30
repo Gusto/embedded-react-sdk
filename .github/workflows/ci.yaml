@@ -147,6 +147,46 @@ jobs:
       - name: Verify endpoint inventory
         run: npm run endpoints:verify
 
+  # Storybook build job: validates all stories compile and index successfully
+  storybook-build:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Restore node_modules cache
+        uses: actions/cache/restore@v5
+        with:
+          path: node_modules
+          key: ${{ needs.setup.outputs.cache-key }}
+
+      - name: Build Storybook
+        run: npm run build-storybook
+
+  # SDK app build job: validates the dev app's vite config and entry compile
+  sdk-app-build:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Restore node_modules cache
+        uses: actions/cache/restore@v5
+        with:
+          path: node_modules
+          key: ${{ needs.setup.outputs.cache-key }}
+
+      - name: Build SDK app
+        run: npm run sdk-app:build
+
   # Test job: Run tests with coverage (parallel with other checks)
   test:
     needs: setup
