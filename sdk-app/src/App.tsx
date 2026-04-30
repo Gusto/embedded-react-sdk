@@ -1,4 +1,4 @@
-import type React from 'react';
+import type React from 'react'
 import { useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import { TopBar } from './TopBar'
