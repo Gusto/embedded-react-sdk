@@ -51,11 +51,7 @@ export function SelectEmployeesTimeOff({
     )
   }, [employees, searchValue])
 
-  const pagination = useMemo(
-    () => getPaginationProps(employeesData.httpMeta.response.headers, isFetching),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [employeesData.httpMeta.response.headers, isFetching, currentPage, itemsPerPage],
-  )
+  const pagination = getPaginationProps(employeesData.httpMeta.response.headers, isFetching)
 
   const { mutateAsync: addEmployees } = useTimeOffPoliciesAddEmployeesMutation()
 
@@ -80,7 +76,7 @@ export function SelectEmployeesTimeOff({
     [resetPage],
   )
 
-  const handleContinue = useCallback(async () => {
+  const handleContinue = async () => {
     if (mode === 'wizard') {
       onEvent(componentEvents.TIME_OFF_ADD_EMPLOYEES_DONE, {
         employeeUuids: [...selectedUuids],
@@ -89,7 +85,7 @@ export function SelectEmployeesTimeOff({
     }
 
     await baseSubmitHandler({}, async () => {
-      await addEmployees({
+      const response = await addEmployees({
         request: {
           timeOffPolicyUuid: policyId,
           requestBody: {
@@ -100,9 +96,9 @@ export function SelectEmployeesTimeOff({
           },
         },
       })
-      onEvent(componentEvents.TIME_OFF_ADD_EMPLOYEES_DONE)
+      onEvent(componentEvents.TIME_OFF_ADD_EMPLOYEES_DONE, response.timeOffPolicy)
     })
-  }, [mode, baseSubmitHandler, addEmployees, policyId, selectedUuids, onEvent])
+  }
 
   const handleBack = useCallback(() => {
     onEvent(componentEvents.CANCEL)

@@ -81,7 +81,7 @@ describe('SelectEmployeesTimeOff', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockUseContainerBreakpoints.mockReturnValue(['base', 'small', 'medium', 'large'])
-    mockAddEmployees.mockResolvedValue({})
+    mockAddEmployees.mockResolvedValue({ timeOffPolicy: { uuid: 'policy-456' } })
   })
 
   it('renders employee names from API data', async () => {
@@ -161,7 +161,9 @@ describe('SelectEmployeesTimeOff', () => {
       })
 
       await waitFor(() => {
-        expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.TIME_OFF_ADD_EMPLOYEES_DONE)
+        expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.TIME_OFF_ADD_EMPLOYEES_DONE, {
+          uuid: 'policy-456',
+        })
       })
     })
 
