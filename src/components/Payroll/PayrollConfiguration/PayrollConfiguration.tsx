@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
 import { payrollsCalculate } from '@gusto/embedded-api/funcs/payrollsCalculate'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
@@ -12,6 +12,7 @@ import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/model
 import type { PayrollUpdateEmployeeCompensations } from '@gusto/embedded-api/models/components/payrollupdate'
 import { usePayrollsGetBlockersSuspense } from '@gusto/embedded-api/react-query/payrollsGetBlockers'
 import { payrollSubmitHandler, type ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
+import { hasDirectDepositEmployees } from '../helpers'
 import { GrossUpModal } from '../GrossUpModal'
 import { PayrollConfigurationPresentation } from './PayrollConfigurationPresentation'
 import { usePayrollConfigurationData } from './usePayrollConfigurationData'
@@ -66,7 +67,26 @@ export const Root = ({
 
   const [isPolling, setIsPolling] = useState(false)
   const [isCalculatingPayroll, setIsCalculatingPayroll] = useState(false)
+  const previousCalculatedAtRef = useRef<number | null>(null)
   const gustoClient = useGustoEmbeddedContext()
+
+  const { data: payrollData } = usePayrollsGetSuspense(
+    {
+      companyId,
+      payrollId,
+      include: ['taxes', 'benefits', 'deductions', 'payroll_status_meta'],
+    },
+    { refetchInterval: isPolling ? 5_000 : false },
+  )
+
+  const excludedEmployeeUuids = useMemo(
+    () =>
+      payrollData.payrollShow?.employeeCompensations
+        ?.filter(comp => comp.excluded)
+        .map(comp => comp.employeeUuid!)
+        .filter(Boolean) ?? [],
+    [payrollData.payrollShow?.employeeCompensations],
+  )
 
   const {
     employeeDetails,
@@ -81,16 +101,8 @@ export const Root = ({
     companyId,
     payrollId,
     isCalculating: isPolling || isCalculatingPayroll,
+    excludedEmployeeUuids,
   })
-
-  const { data: payrollData } = usePayrollsGetSuspense(
-    {
-      companyId,
-      payrollId,
-      include: ['taxes', 'benefits', 'deductions', 'payroll_status_meta'],
-    },
-    { refetchInterval: isPolling ? 5_000 : false },
-  )
 
   const { mutateAsync: updatePayroll, isPending: isUpdatingPayroll } = usePayrollsUpdateMutation()
 
@@ -232,6 +244,7 @@ export const Root = ({
 
   const onCalculatePayroll = async () => {
     setPayrollBlockers([])
+    previousCalculatedAtRef.current = payrollData.payrollShow?.calculatedAt?.getTime() ?? null
 
     await baseSubmitHandler({}, async () => {
       const result = await payrollSubmitHandler(async () => {
@@ -306,14 +319,15 @@ export const Root = ({
 
   useEffect(() => {
     if (isCalculatingStatus(payrollData.payrollShow?.processingRequest) && !isPolling) {
+      previousCalculatedAtRef.current = payrollData.payrollShow?.calculatedAt?.getTime() ?? null
       setIsPolling(true)
     }
+    const currentCalculatedAt = payrollData.payrollShow?.calculatedAt
+    const isNewCalculation = currentCalculatedAt?.getTime() !== previousCalculatedAtRef.current
     if (
       isPolling &&
-      isCalculatedStatus(
-        payrollData.payrollShow?.processingRequest,
-        payrollData.payrollShow?.calculatedAt,
-      )
+      isNewCalculation &&
+      isCalculatedStatus(payrollData.payrollShow?.processingRequest, currentCalculatedAt)
     ) {
       onEvent(componentEvents.RUN_PAYROLL_CALCULATED, {
         payrollId,
@@ -358,37 +372,49 @@ export const Root = ({
     }
   }, [isPolling, onEvent])
 
-  const payrollAlert =
-    payrollData.payrollShow?.payrollStatusMeta?.payrollLate &&
-    payrollData.payrollShow.payrollStatusMeta.initialCheckDate &&
-    payrollData.payrollShow.payrollStatusMeta.expectedDebitTime &&
-    payrollData.payrollShow.payrollStatusMeta.expectedCheckDate
-      ? {
-          label: t('alerts.payrollLate', {
-            initialCheckDate: dateFormatter.formatShortWithWeekday(
-              payrollData.payrollShow.payrollStatusMeta.initialCheckDate,
-            ),
-          }),
-          content: t('alerts.payrollLateText', {
-            ...dateFormatter.formatWithTime(
-              payrollData.payrollShow.payrollStatusMeta.expectedDebitTime,
-            ),
-            newCheckDate: dateFormatter.formatShortWithWeekday(
-              payrollData.payrollShow.payrollStatusMeta.expectedCheckDate,
-            ),
-          }),
-          variant: 'warning' as const,
-        }
-      : payrollData.payrollShow
-        ? {
-            label: t('alerts.directDepositDeadline', {
-              payDate: dateFormatter.formatShortWithWeekday(payrollData.payrollShow.checkDate),
-              ...dateFormatter.formatWithTime(payrollData.payrollShow.payrollDeadline),
-            }),
-            content: t('alerts.directDepositDeadlineText'),
-            variant: 'info' as const,
-          }
-        : undefined
+  const payrollAlert = (() => {
+    const statusMeta = payrollData.payrollShow?.payrollStatusMeta
+
+    const isLatePayroll =
+      statusMeta?.payrollLate &&
+      statusMeta.initialCheckDate &&
+      statusMeta.expectedDebitTime &&
+      statusMeta.expectedCheckDate
+
+    if (isLatePayroll) {
+      return {
+        label: t('alerts.payrollLate', {
+          initialCheckDate: dateFormatter.formatShortWithWeekday(statusMeta.initialCheckDate),
+        }),
+        content: t('alerts.payrollLateText', {
+          ...dateFormatter.formatWithTime(statusMeta.expectedDebitTime),
+          newCheckDate: dateFormatter.formatShortWithWeekday(statusMeta.expectedCheckDate),
+        }),
+        variant: 'warning' as const,
+      }
+    }
+
+    const { payrollShow } = payrollData
+    const allCompensations = payrollShow?.employeeCompensations
+
+    if (
+      payrollShow &&
+      allCompensations &&
+      allCompensations.length > 0 &&
+      hasDirectDepositEmployees(allCompensations)
+    ) {
+      return {
+        label: t('alerts.directDepositDeadline', {
+          payDate: dateFormatter.formatShortWithWeekday(payrollShow.checkDate),
+          ...dateFormatter.formatWithTime(payrollShow.payrollDeadline),
+        }),
+        content: t('alerts.directDepositDeadlineText'),
+        variant: 'info' as const,
+      }
+    }
+
+    return undefined
+  })()
 
   return (
     <>

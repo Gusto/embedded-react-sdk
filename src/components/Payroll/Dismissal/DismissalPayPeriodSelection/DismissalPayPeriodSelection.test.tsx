@@ -164,7 +164,7 @@ describe('DismissalPayPeriodSelection', () => {
       })
     })
 
-    it('sends the period checkDate when available', async () => {
+    it('does not send checkDate so the server computes it', async () => {
       const user = userEvent.setup()
       mockCreateOffCyclePayroll.mockResolvedValueOnce({
         payrollUnprocessed: { payrollUuid: 'new-payroll-123' },
@@ -188,7 +188,7 @@ describe('DismissalPayPeriodSelection', () => {
       })
 
       const call = mockCreateOffCyclePayroll.mock.calls[0]![0]
-      expect(call.request.requestBody.checkDate).toBeDefined()
+      expect(call.request.requestBody.checkDate).toBeUndefined()
     })
   })
 
@@ -233,7 +233,7 @@ describe('DismissalPayPeriodSelection', () => {
   })
 
   describe('payroll creation with missing checkDate', () => {
-    it('computes a fallback checkDate when period has no checkDate', async () => {
+    it('does not send checkDate even when period has no checkDate', async () => {
       mockPayPeriods = [
         {
           startDate: '2024-12-01',
@@ -262,9 +262,7 @@ describe('DismissalPayPeriodSelection', () => {
       })
 
       const call = mockCreateOffCyclePayroll.mock.calls[0]![0]
-      const sentCheckDate = call.request.requestBody.checkDate
-      expect(sentCheckDate).toBeDefined()
-      expect(sentCheckDate).not.toBe('2024-12-17')
+      expect(call.request.requestBody.checkDate).toBeUndefined()
     })
   })
 })

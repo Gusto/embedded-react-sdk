@@ -11,8 +11,14 @@ import type {
   PayrollSubmissionBlockerType,
   UnblockOptions,
 } from '@gusto/embedded-api/models/components/payrollsubmissionblockertype'
+import type { PaymentSpeed } from '@gusto/embedded-api/models/components/paymentconfigs'
 import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
-import { calculateTotalPayroll, getPayrollTypeLabel, hasDirectDepositEmployees } from '../helpers'
+import {
+  calculateTotalPayroll,
+  getPayrollTypeLabel,
+  hasDirectDepositEmployees,
+  isDismissalPayroll,
+} from '../helpers'
 import { PayrollOverviewStatus } from './PayrollOverviewTypes'
 import { FastAchSubmissionBlockerBanner, GenericBlocker } from './SubmissionBlockers'
 import styles from './PayrollOverviewPresentation.module.scss'
@@ -50,7 +56,7 @@ interface PayrollOverviewProps {
   onPaystubDownload: (employeeId: string) => void
   onUnblockOptionChange?: (blockerType: string, value: string) => void
   withReimbursements?: boolean
-  paymentSpeed?: string
+  paymentSpeed?: PaymentSpeed
 }
 
 const getPayrollOverviewTitle = (
@@ -84,7 +90,7 @@ export const PayrollOverviewPresentation = ({
   withReimbursements = true,
   paymentSpeed,
 }: PayrollOverviewProps) => {
-  const { Alert, Button, ButtonIcon, Dialog, Heading, Text, Tabs } = useComponentContext()
+  const { Alert, Badge, Button, ButtonIcon, Dialog, Heading, Text, Tabs } = useComponentContext()
   useI18n('Payroll.PayrollOverview')
   const dateFormatter = useDateFormatter()
   const { t } = useTranslation('Payroll.PayrollOverview')
@@ -101,10 +107,12 @@ export const PayrollOverviewPresentation = ({
   const pageHeading = (
     <Heading as="h1">{isProcessed ? t('summaryTitle') : t('overviewTitle')}</Heading>
   )
+  const isDismissal = isDismissalPayroll(payrollData.offCycleReason)
+
   const pageSubtitle = (
     <Text>
       <Trans
-        i18nKey="pageSubtitle"
+        i18nKey={isDismissal ? 'pageSubtitleDismissal' : 'pageSubtitle'}
         t={t}
         components={{ dateWrapper: <Text weight="bold" as="span" /> }}
         values={{
@@ -228,11 +236,15 @@ export const PayrollOverviewPresentation = ({
     {
       key: 'employeeName',
       title: t('tableHeaders.employees'),
-      render: (employeeCompensations: EmployeeCompensations) =>
-        firstLastName({
-          first_name: employeeMap.get(employeeCompensations.employeeUuid!)?.firstName,
-          last_name: employeeMap.get(employeeCompensations.employeeUuid!)?.lastName,
-        }),
+      render: (employeeCompensations: EmployeeCompensations) => (
+        <Flex flexDirection="column" gap={0}>
+          {firstLastName({
+            first_name: employeeMap.get(employeeCompensations.employeeUuid!)?.firstName,
+            last_name: employeeMap.get(employeeCompensations.employeeUuid!)?.lastName,
+          })}
+          {employeeCompensations.excluded && <Badge status="warning">{t('skippedBadge')}</Badge>}
+        </Flex>
+      ),
     },
     {
       key: 'grossPay',
@@ -319,9 +331,7 @@ export const PayrollOverviewPresentation = ({
           footer={() => ({
             employeeName: (
               <>
-                <Text weight="semibold" size="sm">
-                  {t('tableHeaders.footerTotalsLabel')}
-                </Text>
+                {t('tableHeaders.footerTotalsLabel')}
                 <Text variant="supporting" size="sm">
                   {t('tableHeaders.footerTotalsDescription')}
                 </Text>
@@ -349,11 +359,17 @@ export const PayrollOverviewPresentation = ({
           columns={[
             {
               title: t('tableHeaders.employees'),
-              render: (employeeCompensations: EmployeeCompensations) =>
-                firstLastName({
-                  first_name: employeeMap.get(employeeCompensations.employeeUuid!)?.firstName,
-                  last_name: employeeMap.get(employeeCompensations.employeeUuid!)?.lastName,
-                }),
+              render: (employeeCompensations: EmployeeCompensations) => (
+                <Flex flexDirection="column" gap={0}>
+                  {firstLastName({
+                    first_name: employeeMap.get(employeeCompensations.employeeUuid!)?.firstName,
+                    last_name: employeeMap.get(employeeCompensations.employeeUuid!)?.lastName,
+                  })}
+                  {employeeCompensations.excluded && (
+                    <Badge status="warning">{t('skippedBadge')}</Badge>
+                  )}
+                </Flex>
+              ),
             },
             {
               title: t('tableHeaders.compensationType'),
@@ -422,11 +438,17 @@ export const PayrollOverviewPresentation = ({
           columns={[
             {
               title: t('tableHeaders.employees'),
-              render: (employeeCompensations: EmployeeCompensations) =>
-                firstLastName({
-                  first_name: employeeMap.get(employeeCompensations.employeeUuid!)?.firstName,
-                  last_name: employeeMap.get(employeeCompensations.employeeUuid!)?.lastName,
-                }),
+              render: (employeeCompensations: EmployeeCompensations) => (
+                <Flex flexDirection="column" gap={0}>
+                  {firstLastName({
+                    first_name: employeeMap.get(employeeCompensations.employeeUuid!)?.firstName,
+                    last_name: employeeMap.get(employeeCompensations.employeeUuid!)?.lastName,
+                  })}
+                  {employeeCompensations.excluded && (
+                    <Badge status="warning">{t('skippedBadge')}</Badge>
+                  )}
+                </Flex>
+              ),
             },
             {
               title: t('tableHeaders.paymentType'),
@@ -797,7 +819,7 @@ export const PayrollOverviewPresentation = ({
                 primaryActionLabel={t('confirmCancelCta')}
                 isDestructive={true}
                 closeActionLabel={t('declineCancelCta')}
-                title={t('cancelDialogTitle', {
+                title={t(isDismissal ? 'cancelDialogTitleDismissal' : 'cancelDialogTitle', {
                   startDate: dateFormatter.formatLong(payrollData.payPeriod?.startDate),
                   endDate: dateFormatter.formatLongWithYear(payrollData.payPeriod?.endDate),
                 })}

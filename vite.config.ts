@@ -31,9 +31,11 @@ export const svgrPlugin = () =>
  */
 export default defineConfig(({ mode }) => {
   const isDev = mode === 'development'
+
   return {
     plugins: [
       react(),
+      svgrPlugin(),
       externalizeDeps(),
       !isDev &&
         dts({
@@ -60,7 +62,6 @@ export default defineConfig(({ mode }) => {
           },
         }),
       !isDev && stylelint({ fix: true }),
-      svgrPlugin(),
       !isDev && circularDependencyDetector(),
       !isDev &&
         checker({
@@ -88,7 +89,6 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         input: {
           index: resolve(__dirname, 'src/index.ts'),
-          UNSTABLE_Hooks: resolve(__dirname, 'src/UNSTABLE_Hooks.ts'),
         },
         output: {
           preserveModules: !isDev,

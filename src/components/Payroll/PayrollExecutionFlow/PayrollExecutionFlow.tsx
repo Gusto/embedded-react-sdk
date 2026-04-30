@@ -10,7 +10,7 @@ import {
 } from '../PayrollFlow/PayrollFlowComponents'
 import {
   payrollExecutionMachine,
-  payrollExecutionBreadcrumbsNodes,
+  getPayrollExecutionBreadcrumbsNodes,
 } from './payrollExecutionMachine'
 import { Flow } from '@/components/Flow/Flow'
 import type { FlowBreadcrumb } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
@@ -27,6 +27,7 @@ export interface PayrollExecutionFlowProps {
   payrollId: string
   onEvent: OnEventType<EventType, unknown>
   initialPayPeriod?: PayrollPayPeriodType
+  isDismissalPayroll?: boolean
   withReimbursements?: boolean
   ConfirmWireDetailsComponent?: ConfirmWireDetailsComponentType
   prefixBreadcrumbs?: FlowBreadcrumb[]
@@ -48,25 +49,32 @@ export function PayrollExecutionFlow({
   payrollId,
   onEvent,
   initialPayPeriod,
+  isDismissalPayroll: isDismissal = false,
   withReimbursements = true,
   ConfirmWireDetailsComponent,
   prefixBreadcrumbs = EMPTY_BREADCRUMBS,
   initialState = 'configuration',
 }: PayrollExecutionFlowProps) {
   const executionFlowMachine = useMemo(() => {
-    const baseBreadcrumbs = buildBreadcrumbs(payrollExecutionBreadcrumbsNodes)
+    const breadcrumbNodes = getPayrollExecutionBreadcrumbsNodes(isDismissal)
+    const baseBreadcrumbs = buildBreadcrumbs(breadcrumbNodes)
+    const displayOnlyPrefixes = prefixBreadcrumbs.map(({ onNavigate, ...rest }) => rest)
     const breadcrumbs = Object.fromEntries(
       Object.entries(baseBreadcrumbs).map(([stateKey, trail]) => [
         stateKey,
-        [...prefixBreadcrumbs, ...trail],
+        [...displayOnlyPrefixes, ...trail],
       ]),
     )
 
     const initialBreadcrumbContext = updateBreadcrumbs(
       initialState,
       {
-        breadcrumbs,
-      } as PayrollFlowContextInterface,
+        header: {
+          type: 'breadcrumbs' as const,
+          breadcrumbs,
+          cta: SaveAndExitCta,
+        },
+      },
       {
         startDate: initialPayPeriod?.startDate ?? '',
         endDate: initialPayPeriod?.endDate ?? '',
@@ -83,11 +91,8 @@ export function PayrollExecutionFlow({
         companyId,
         payrollUuid: payrollId,
         payPeriod: initialPayPeriod,
-        progressBarType: 'breadcrumbs' as const,
-        currentBreadcrumbId: initialState,
         withReimbursements,
         ConfirmWireDetailsComponent,
-        progressBarCta: SaveAndExitCta,
         ctaConfig: {
           labelKey: 'exitFlowCta',
           namespace: INITIAL_NAMESPACE_MAP[initialState],
@@ -97,6 +102,7 @@ export function PayrollExecutionFlow({
   }, [
     companyId,
     payrollId,
+    isDismissal,
     withReimbursements,
     ConfirmWireDetailsComponent,
     prefixBreadcrumbs,

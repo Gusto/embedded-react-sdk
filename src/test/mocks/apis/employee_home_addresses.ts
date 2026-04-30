@@ -30,7 +30,17 @@ export const getEmployeeHomeAddress = http.get<
   PathParams,
   GetV1HomeAddressesHomeAddressUuidRequest,
   GetV1HomeAddressesHomeAddressUuidResponse
->(`${API_BASE_URL}/v1/home_addresses/:home_address_uuid`, async () => {
+>(`${API_BASE_URL}/v1/home_addresses/:home_address_uuid`, async ({ params }) => {
+  const uuid = String(params.home_address_uuid)
+  const listFixture = await getFixture('get-v1-employees-employee_id-home_addresses')
+  if (Array.isArray(listFixture)) {
+    const row = listFixture.find(
+      (a: { uuid?: string }) => typeof a.uuid === 'string' && a.uuid === uuid,
+    )
+    if (row) {
+      return HttpResponse.json(row)
+    }
+  }
   const responseFixture = await getFixture('get-v1-home_addresses-home_address_uuid')
   return HttpResponse.json(responseFixture)
 })

@@ -11,6 +11,8 @@ import {
   formatPayPeriodRange,
   formatDateToStringDate,
   normalizeDateToLocal,
+  normalizeToISOString,
+  addBusinessDays,
 } from './dateFormatting'
 
 describe('Date Formatting Helpers', () => {
@@ -252,6 +254,95 @@ describe('Date Formatting Helpers', () => {
       expect(formatDateShortWithWeekday(dateString, locale)).toBe(
         formatDateShortWithWeekday(dateObject, locale),
       )
+    })
+  })
+
+  describe('normalizeToISOString', () => {
+    it('returns an ISO string as-is', () => {
+      expect(normalizeToISOString('1998-04-16')).toBe('1998-04-16')
+    })
+
+    it('converts a locale M/D/YYYY string to YYYY-MM-DD', () => {
+      expect(normalizeToISOString('4/16/1998')).toBe('1998-04-16')
+    })
+
+    it('converts a locale MM/DD/YYYY string to YYYY-MM-DD', () => {
+      expect(normalizeToISOString('04/16/1998')).toBe('1998-04-16')
+    })
+
+    it('converts a long-form date string to YYYY-MM-DD', () => {
+      expect(normalizeToISOString('April 16, 1998')).toBe('1998-04-16')
+    })
+
+    it('returns empty string for null', () => {
+      expect(normalizeToISOString(null)).toBe('')
+    })
+
+    it('returns empty string for undefined', () => {
+      expect(normalizeToISOString(undefined)).toBe('')
+    })
+
+    it('returns empty string for empty string', () => {
+      expect(normalizeToISOString('')).toBe('')
+    })
+
+    it('returns empty string for an unparseable string', () => {
+      expect(normalizeToISOString('not-a-date')).toBe('')
+    })
+
+    it('handles leap year dates', () => {
+      expect(normalizeToISOString('2/29/2000')).toBe('2000-02-29')
+    })
+
+    it('handles year boundary Dec 31', () => {
+      expect(normalizeToISOString('12/31/2023')).toBe('2023-12-31')
+    })
+
+    it('handles year boundary Jan 1', () => {
+      expect(normalizeToISOString('1/1/2024')).toBe('2024-01-01')
+    })
+  })
+
+  describe('addBusinessDays', () => {
+    it('should add business days within the same week', () => {
+      const monday = new Date(2024, 0, 8)
+      const result = addBusinessDays(monday, 2)
+      expect(result.getDay()).toBe(3)
+      expect(result.getDate()).toBe(10)
+    })
+
+    it('should skip weekends when adding business days', () => {
+      const friday = new Date(2024, 0, 5)
+      const result = addBusinessDays(friday, 1)
+      expect(result.getDay()).toBe(1)
+      expect(result.getDate()).toBe(8)
+    })
+
+    it('should handle spanning multiple weekends', () => {
+      const monday = new Date(2024, 0, 8)
+      const result = addBusinessDays(monday, 7)
+      expect(result.getDay()).toBe(3)
+      expect(result.getDate()).toBe(17)
+    })
+
+    it('should return the same date when adding 0 business days', () => {
+      const wednesday = new Date(2024, 0, 10)
+      const result = addBusinessDays(wednesday, 0)
+      expect(result.getDate()).toBe(10)
+    })
+
+    it('should add 4 business days correctly from Thursday', () => {
+      const thursday = new Date(2024, 0, 11)
+      const result = addBusinessDays(thursday, 4)
+      expect(result.getDay()).toBe(3)
+      expect(result.getDate()).toBe(17)
+    })
+
+    it('should handle starting on a weekend', () => {
+      const saturday = new Date(2024, 0, 6)
+      const result = addBusinessDays(saturday, 1)
+      expect(result.getDay()).toBe(1)
+      expect(result.getDate()).toBe(8)
     })
   })
 })

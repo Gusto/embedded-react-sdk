@@ -11,6 +11,7 @@ export const SwitchField: React.FC<SwitchFieldProps> = ({
   rules,
   defaultValue,
   name,
+  control,
   errorMessage,
   isRequired,
   onChange,
@@ -24,6 +25,7 @@ export const SwitchField: React.FC<SwitchFieldProps> = ({
   const Components = useComponentContext()
   const fieldProps = useField({
     name,
+    control,
     rules,
     defaultValue,
     errorMessage,

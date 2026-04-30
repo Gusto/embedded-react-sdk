@@ -1,3 +1,5 @@
+@use 'Helpers' as *;
+
 .GSDK {
   .react-aria-Popover {
     --background-color: var(--g-colorBody);
@@ -6,12 +8,14 @@
     gap: toRem(20);
     align-items: flex-start;
     box-shadow: var(--g-shadowTopmost);
-    border-radius: toRem(6);
+    border-radius: toRem(12);
     border: 1px solid var(--g-colorBorderSecondary);
     background: var(--background-color);
     color: var(--g-colorBodyContent);
     outline: none;
     max-width: 400px;
+    padding: toRem(0);
+    overflow: hidden;
 
     .react-aria-OverlayArrow svg {
       display: block;

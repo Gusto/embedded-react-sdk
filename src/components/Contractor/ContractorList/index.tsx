@@ -8,7 +8,7 @@ import { HamburgerMenu } from '@/components/Common/HamburgerMenu/HamburgerMenu'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { ContractorOnboardingStatusBadge } from '@/components/Common/OnboardingStatusBadge'
-import { useI18n } from '@/i18n'
+import { useI18n, useComponentDictionary } from '@/i18n'
 import {
   BaseComponent,
   useBase,
@@ -70,6 +70,7 @@ export function ContractorList(props: ContractorListProps & BaseComponentInterfa
 
 function Root({ companyId, className, dictionary, successMessage }: ContractorListProps) {
   useI18n('Contractor.ContractorList')
+  useComponentDictionary('Contractor.ContractorList', dictionary)
   const { t } = useTranslation('Contractor.ContractorList')
   const { onEvent, baseSubmitHandler } = useBase()
   const { Alert, Button } = useComponentContext()

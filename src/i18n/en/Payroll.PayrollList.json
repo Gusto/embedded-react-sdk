@@ -1,6 +1,15 @@
 {
   "emptyState": "All payrolls have been processed",
   "title": "Upcoming payroll",
+  "dateFilter": {
+    "startDate": "From",
+    "endDate": "To",
+    "apply": "Apply",
+    "cancel": "Cancel",
+    "reset": "Reset",
+    "selectDates": "Select dates",
+    "trigger": "Filter by date"
+  },
   "payrollsListLabel": "Payrolls",
   "runPayrollTitle": "Run Payroll",
   "submitPayrollCta": "Review and submit",
@@ -13,6 +22,14 @@
     "cancelCta": "No, go back"
   },
   "skipSuccessAlert": "Payroll skipped",
+  "deletePayrollCta": "Cancel payroll",
+  "deletePayrollDialog": {
+    "title": "Cancel {{payPeriod}} payroll?",
+    "body": "This will permanently remove this off-cycle payroll. Any changes you've made will be lost.",
+    "confirmCta": "Yes, cancel payroll",
+    "cancelCta": "No, go back"
+  },
+  "deleteSuccessAlert": "Payroll cancelled",
   "type": {
     "External": "External",
     "Off-Cycle": "Off-Cycle",

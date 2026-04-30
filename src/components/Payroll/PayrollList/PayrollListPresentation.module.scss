@@ -24,6 +24,17 @@
   background-color: var(--g-colorBodyAccent);
 }
 
+.offCycleCtaText {
+  display: flex;
+  flex-direction: column;
+  gap: toRem(4);
+  min-width: 0;
+}
+
+.menuPlaceholder {
+  visibility: hidden;
+}
+
 .offCycleCtaButton {
   flex-shrink: 0;
   white-space: nowrap;

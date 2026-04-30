@@ -1,10 +1,25 @@
+import { useState, useCallback } from 'react'
 import { fn } from 'storybook/test'
 import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
 import type { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest'
 import { PayrollHistoryPresentation } from './PayrollHistoryPresentation'
+import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
+import type { UseDateRangeFilterResult } from '@/hooks/useDateRangeFilter/useDateRangeFilter'
 
 export default {
   title: 'Domain/Payroll/PayrollHistory',
+}
+
+const mockDateRangeFilter: UseDateRangeFilterResult = {
+  filterStartDate: null,
+  filterEndDate: null,
+  isFilterActive: false,
+  handleStartDateChange: fn().mockName('handleStartDateChange'),
+  handleEndDateChange: fn().mockName('handleEndDateChange'),
+  handleClearFilter: fn().mockName('handleClearFilter'),
+  getApiDateParams: () => ({}),
+  getMaxEndDate: () => undefined,
+  getMinStartDate: () => undefined,
 }
 
 const createMockPayroll = (id: string, overrides: Partial<Payroll> = {}): Payroll => ({
@@ -34,6 +49,18 @@ const createMockPayroll = (id: string, overrides: Partial<Payroll> = {}): Payrol
   ...overrides,
 })
 
+const createMockPagination = (totalCount: number): PaginationControlProps => ({
+  currentPage: 1,
+  totalPages: Math.max(1, Math.ceil(totalCount / 5)),
+  totalCount,
+  itemsPerPage: 5,
+  handleFirstPage: fn().mockName('handleFirstPage'),
+  handlePreviousPage: fn().mockName('handlePreviousPage'),
+  handleNextPage: fn().mockName('handleNextPage'),
+  handleLastPage: fn().mockName('handleLastPage'),
+  handleItemsPerPageChange: fn().mockName('handleItemsPerPageChange'),
+})
+
 const mockPayrollHistory: Payroll[] = [
   createMockPayroll('1', {
     processed: true,
@@ -60,14 +87,14 @@ export const PayrollHistoryStory = () => {
     <PayrollHistoryPresentation
       payrollHistory={mockPayrollHistory}
       wireInRequests={mockWireInRequests}
-      selectedTimeFilter="3months"
-      onTimeFilterChange={fn().mockName('onTimeFilterChange')}
+      pagination={createMockPagination(mockPayrollHistory.length)}
       onViewSummary={fn().mockName('onViewSummary')}
       onViewReceipt={fn().mockName('onViewReceipt')}
       onCancelPayroll={fn().mockName('onCancelPayroll')}
       cancelDialogItem={null}
       onCancelDialogOpen={fn().mockName('onCancelDialogOpen')}
       onCancelDialogClose={fn().mockName('onCancelDialogClose')}
+      dateRangeFilter={mockDateRangeFilter}
     />
   )
 }
@@ -141,37 +168,47 @@ export const AllStatusesShowcase = () => {
     <PayrollHistoryPresentation
       payrollHistory={showcasePayrolls}
       wireInRequests={showcaseWireInRequests}
-      selectedTimeFilter="3months"
-      onTimeFilterChange={fn().mockName('onTimeFilterChange')}
+      pagination={createMockPagination(showcasePayrolls.length)}
       onViewSummary={fn().mockName('onViewSummary')}
       onViewReceipt={fn().mockName('onViewReceipt')}
       onCancelPayroll={fn().mockName('onCancelPayroll')}
       cancelDialogItem={null}
       onCancelDialogOpen={fn().mockName('onCancelDialogOpen')}
       onCancelDialogClose={fn().mockName('onCancelDialogClose')}
+      dateRangeFilter={mockDateRangeFilter}
     />
   )
 }
 
+const cancelPayroll = createMockPayroll('cancel-dialog', {
+  processed: false,
+  payrollDeadline: new Date('2024-12-20T23:30:00Z'),
+  payPeriod: { startDate: '2024-12-01', endDate: '2024-12-15', payScheduleUuid: 'schedule-1' },
+})
+
 export const CancelDialog = () => {
-  const cancelPayroll = createMockPayroll('cancel-dialog', {
-    processed: false,
-    payrollDeadline: new Date('2024-12-20T23:30:00Z'),
-    payPeriod: { startDate: '2024-12-01', endDate: '2024-12-15', payScheduleUuid: 'schedule-1' },
-  })
+  const [payrolls, setPayrolls] = useState([cancelPayroll])
+  const [dialogItem, setDialogItem] = useState<Payroll | null>(cancelPayroll)
+
+  const handleCancelPayroll = (item: Payroll) => {
+    setPayrolls(prev => prev.filter(p => p.payrollUuid !== item.payrollUuid))
+    setDialogItem(null)
+  }
 
   return (
     <PayrollHistoryPresentation
-      payrollHistory={[cancelPayroll]}
+      payrollHistory={payrolls}
       wireInRequests={[]}
-      selectedTimeFilter="3months"
-      onTimeFilterChange={fn().mockName('onTimeFilterChange')}
+      pagination={createMockPagination(1)}
       onViewSummary={fn().mockName('onViewSummary')}
       onViewReceipt={fn().mockName('onViewReceipt')}
-      onCancelPayroll={fn().mockName('onCancelPayroll')}
-      cancelDialogItem={cancelPayroll}
-      onCancelDialogOpen={fn().mockName('onCancelDialogOpen')}
-      onCancelDialogClose={fn().mockName('onCancelDialogClose')}
+      onCancelPayroll={handleCancelPayroll}
+      cancelDialogItem={dialogItem}
+      onCancelDialogOpen={setDialogItem}
+      onCancelDialogClose={() => {
+        setDialogItem(null)
+      }}
+      dateRangeFilter={mockDateRangeFilter}
     />
   )
 }
@@ -181,14 +218,56 @@ export const EmptyState = () => {
     <PayrollHistoryPresentation
       payrollHistory={[]}
       wireInRequests={[]}
-      selectedTimeFilter="3months"
-      onTimeFilterChange={fn().mockName('onTimeFilterChange')}
+      pagination={createMockPagination(0)}
       onViewSummary={fn().mockName('onViewSummary')}
       onViewReceipt={fn().mockName('onViewReceipt')}
       onCancelPayroll={fn().mockName('onCancelPayroll')}
       cancelDialogItem={null}
       onCancelDialogOpen={fn().mockName('onCancelDialogOpen')}
       onCancelDialogClose={fn().mockName('onCancelDialogClose')}
+      dateRangeFilter={mockDateRangeFilter}
+    />
+  )
+}
+
+export const WithDateFilter = () => {
+  const [startDate, setStartDate] = useState<Date | null>(new Date('2024-10-01'))
+  const [endDate, setEndDate] = useState<Date | null>(new Date('2025-03-31'))
+
+  const handleClear = useCallback(() => {
+    setStartDate(null)
+    setEndDate(null)
+  }, [])
+
+  const activeDateRangeFilter: UseDateRangeFilterResult = {
+    filterStartDate: startDate,
+    filterEndDate: endDate,
+    isFilterActive: startDate !== null || endDate !== null,
+    handleStartDateChange: setStartDate,
+    handleEndDateChange: setEndDate,
+    handleClearFilter: handleClear,
+    getApiDateParams: () => ({
+      startDate: startDate?.toISOString().split('T')[0],
+      endDate: endDate?.toISOString().split('T')[0],
+    }),
+    getMaxEndDate: () =>
+      startDate ? new Date(new Date(startDate).setMonth(startDate.getMonth() + 12)) : undefined,
+    getMinStartDate: () =>
+      endDate ? new Date(new Date(endDate).setMonth(endDate.getMonth() - 12)) : undefined,
+  }
+
+  return (
+    <PayrollHistoryPresentation
+      payrollHistory={mockPayrollHistory}
+      wireInRequests={mockWireInRequests}
+      pagination={createMockPagination(mockPayrollHistory.length)}
+      onViewSummary={fn().mockName('onViewSummary')}
+      onViewReceipt={fn().mockName('onViewReceipt')}
+      onCancelPayroll={fn().mockName('onCancelPayroll')}
+      cancelDialogItem={null}
+      onCancelDialogOpen={fn().mockName('onCancelDialogOpen')}
+      onCancelDialogClose={fn().mockName('onCancelDialogClose')}
+      dateRangeFilter={activeDateRangeFilter}
     />
   )
 }

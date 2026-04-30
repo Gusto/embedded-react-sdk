@@ -12,8 +12,7 @@ import { useBase } from '@/components/Base/useBase'
 import { componentEvents } from '@/shared/constants'
 import { SDKInternalError } from '@/types/sdkError'
 import { useComponentDictionary, useI18n } from '@/i18n'
-import { addBusinessDays, formatPayPeriodRange } from '@/helpers/dateFormatting'
-import { ACH_LEAD_TIME_BUSINESS_DAYS } from '@/components/Payroll/OffCyclePayPeriodDateForm/useOffCyclePayPeriodDateValidation'
+import { formatPayPeriodRange } from '@/helpers/dateFormatting'
 import type { SelectOption } from '@/components/Common/UI/Select/SelectTypes'
 
 export interface DismissalPayPeriodSelectionProps extends BaseComponentInterface<'Payroll.Dismissal'> {
@@ -89,10 +88,6 @@ function Root({ companyId, employeeId, payrollId, dictionary }: DismissalPayPeri
 
       const resolvedEmployeeId = employeeId ?? period.employeeUuid
 
-      const checkDate = period.checkDate
-        ? new RFCDate(period.checkDate)
-        : new RFCDate(addBusinessDays(new Date(), ACH_LEAD_TIME_BUSINESS_DAYS))
-
       const response = await createOffCyclePayroll({
         request: {
           companyId,
@@ -102,7 +97,6 @@ function Root({ companyId, employeeId, payrollId, dictionary }: DismissalPayPeri
             startDate: new RFCDate(period.startDate),
             endDate: new RFCDate(period.endDate),
             employeeUuids: [resolvedEmployeeId],
-            checkDate,
           },
         },
       })

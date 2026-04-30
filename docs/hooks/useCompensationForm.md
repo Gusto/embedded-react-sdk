@@ -6,7 +6,7 @@ order: 3
 Creates or updates job compensation for an employee — job title, FLSA classification, pay rate, payment unit, minimum wage adjustments, and Washington state workers' compensation fields.
 
 ```tsx
-import { useCompensationForm, SDKFormProvider } from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'
+import { useCompensationForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
 ```
 
 ---
@@ -15,38 +15,53 @@ import { useCompensationForm, SDKFormProvider } from '@gusto/embedded-react-sdk/
 
 `useCompensationForm` accepts a single options object:
 
-| Prop                 | Type                                                                                    | Required | Default      | Description                                                                                                                                                                                                    |
-| -------------------- | --------------------------------------------------------------------------------------- | -------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `employeeId`         | `string`                                                                                | No       | —            | The UUID of the employee. Optional for composed form scenarios where the ID isn't known until a prior form submits — pass it via `onSubmit` options instead. Required for update mode (fetches existing data). |
-| `jobId`              | `string`                                                                                | No       | —            | The UUID of a specific job to edit. If omitted and the employee has exactly one job, that job is used. If omitted and the employee has no jobs, create mode is used.                                           |
-| `withStartDateField` | `boolean`                                                                               | No       | `true`       | Whether to include the start date field. When `false`, pass start date via `onSubmit` options instead.                                                                                                         |
-| `requiredFields`     | `CompensationField[] \| { create?: CompensationField[], update?: CompensationField[] }` | No       | —            | Additional fields to make required beyond API defaults. A flat array applies to both modes; an object targets specific modes.                                                                                  |
-| `defaultValues`      | `Partial<CompensationFormData>`                                                         | No       | —            | Pre-fill form values. Server data takes precedence when editing an existing job.                                                                                                                               |
-| `validationMode`     | `'onSubmit' \| 'onBlur' \| 'onChange' \| 'onTouched' \| 'all'`                          | No       | `'onSubmit'` | When validation runs. Passed through to react-hook-form.                                                                                                                                                       |
-| `shouldFocusError`   | `boolean`                                                                               | No       | `true`       | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`.                                                                                                                |
+| Prop                      | Type                                                           | Required | Default      | Description                                                                                                                                                                                                    |
+| ------------------------- | -------------------------------------------------------------- | -------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `employeeId`              | `string`                                                       | No       | —            | The UUID of the employee. Optional for composed form scenarios where the ID isn't known until a prior form submits — pass it via `onSubmit` options instead. Required for update mode (fetches existing data). |
+| `jobId`                   | `string`                                                       | No       | —            | The UUID of a specific job to edit. If omitted and the employee has exactly one job, that job is used. If omitted and the employee has no jobs, create mode is used.                                           |
+| `withStartDateField`      | `boolean`                                                      | No       | `true`       | Whether to include the start date field. When `false`, pass start date via `onSubmit` options instead.                                                                                                         |
+| `optionalFieldsToRequire` | `CompensationOptionalFieldsToRequire`                          | No       | —            | Override specific fields to be required in a given mode. Only fields that are optional in that mode can be listed. See [Configurable Required Fields](#configurable-required-fields).                          |
+| `defaultValues`           | `Partial<CompensationFormData>`                                | No       | —            | Pre-fill form values. Server data takes precedence when editing an existing job.                                                                                                                               |
+| `validationMode`          | `'onSubmit' \| 'onBlur' \| 'onChange' \| 'onTouched' \| 'all'` | No       | `'onSubmit'` | When validation runs. Passed through to react-hook-form.                                                                                                                                                       |
+| `shouldFocusError`        | `boolean`                                                      | No       | `true`       | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`.                                                                                                                |
 
-### CompensationField
+### Configurable Required Fields
 
-The `requiredFields` arrays accept these field names:
+The compensation schema declares requiredness rules per field. Fields default to **always required** unless configured otherwise:
+
+| Field                   | Rule       | Required on create | Required on update | Partner-configurable? |
+| ----------------------- | ---------- | ------------------ | ------------------ | --------------------- |
+| `jobTitle`              | `'create'` | Yes                | No                 | Yes (on update)       |
+| `flsaStatus`            | `'create'` | Yes                | No                 | Yes (on update)       |
+| `paymentUnit`           | `'create'` | Yes                | No                 | Yes (on update)       |
+| `rate`                  | `'create'` | Yes                | No                 | Yes (on update)       |
+| `startDate`             | `'create'` | Yes                | No                 | Yes (on update)       |
+| `adjustForMinimumWage`  | (unlisted) | Yes                | Yes                | No                    |
+| `stateWcCovered`        | (unlisted) | Yes                | Yes                | No                    |
+| `twoPercentShareholder` | (unlisted) | Yes                | Yes                | No                    |
+| `minimumWageId`         | predicate  | When toggle is on  | When toggle is on  | No                    |
+| `stateWcClassCode`      | predicate  | When WC is covered | When WC is covered | No                    |
+
+`optionalFieldsToRequire` lets you override fields that are **optional** in a given mode to be required. The type is derived from the schema configuration:
 
 ```typescript
-type CompensationField = 'jobTitle' | 'flsaStatus' | 'rate' | 'paymentUnit' | 'startDate'
+type CompensationOptionalFieldsToRequire = {
+  create?: never[] // all 'create' fields are already required on create
+  update?: Array<'jobTitle' | 'flsaStatus' | 'paymentUnit' | 'rate' | 'startDate'>
+}
 ```
 
-### Required Fields
+Only the `update` key is useful for compensation — it lets you require fields in update mode that would otherwise be optional. The `create` key has no configurable fields because all `'create'`-scoped fields are already required on create.
 
-**Required by default on create:** `jobTitle`, `flsaStatus`, `rate`, `paymentUnit`
-**Required by default on update:** (none)
+`startDate` requirements are ignored when `withStartDateField` is `false` (the field is excluded from the schema entirely).
 
-All `CompensationField` values are available to require in either mode. For example, pass `requiredFields: ['startDate']` to make the start date required on create. Note that `startDate` requirements are ignored when `withStartDateField` is `false`.
-
-Cross-field validations (e.g., `minimumWageId` required when `adjustForMinimumWage` is `true`, workers' comp fields required in WA) are always enforced by the schema regardless of `requiredFields`.
+Cross-field validations (`minimumWageId` when `adjustForMinimumWage` is `true`, workers' comp fields in WA) are always enforced by the schema regardless of `optionalFieldsToRequire`.
 
 ```tsx
 useCompensationForm({
   employeeId,
-  requiredFields: {
-    update: ['rate', 'paymentUnit'],
+  optionalFieldsToRequire: {
+    update: ['jobTitle', 'rate', 'paymentUnit'],
   },
 })
 ```
@@ -443,15 +458,15 @@ Radio group for Washington state workers' compensation coverage.
 | ---------------- | -------------------------------- | -------- |
 | `label`          | `string`                         | Yes      |
 | `description`    | `ReactNode`                      | No       |
-| `getOptionLabel` | `(key: string) => string`        | No       |
+| `getOptionLabel` | `(key: boolean) => string`       | No       |
 | `FieldComponent` | `ComponentType<RadioGroupProps>` | No       |
 
 **Options:**
 
-| Value     | Default label |
-| --------- | ------------- |
-| `'true'`  | `Yes`         |
-| `'false'` | `No`          |
+| Value   | Default label |
+| ------- | ------------- |
+| `true`  | `Yes`         |
+| `false` | `No`          |
 
 **Conditional availability:** This field is `undefined` when the employee does not work in Washington state.
 
@@ -464,7 +479,7 @@ By default, options display as `"Yes"` and `"No"`. You can optionally pass `getO
       label="Workers' compensation coverage"
       description="Indicate if this employee is exempt from the workers' comp tax."
       getOptionLabel={key =>
-        key === 'yes' ? 'Yes, this employee is covered' : 'No, this employee is not covered'
+        key ? 'Yes, this employee is covered' : 'No, this employee is not covered'
       }
     />
   )
@@ -505,7 +520,9 @@ Select dropdown for Washington state workers' compensation risk class code.
 
 ---
 
-## Usage Example
+## Usage Examples
+
+### With `SDKFormProvider` (context)
 
 A complete example showing all fields, validation messages, `getOptionLabel` usage, and submit handling:
 
@@ -514,7 +531,7 @@ import {
   useCompensationForm,
   SDKFormProvider,
   type UseCompensationFormReady,
-} from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'
+} from '@gusto/embedded-react-sdk'
 
 function CompensationPage({ employeeId }: { employeeId: string }) {
   const compensation = useCompensationForm({
@@ -663,7 +680,7 @@ function CompensationFormReady({ compensation }: { compensation: UseCompensation
             label="Workers' compensation coverage"
             description="Indicate if this employee is exempt from the workers' comp tax."
             getOptionLabel={key =>
-              key === 'yes' ? 'Yes, this employee is covered' : 'No, this employee is not covered'
+              key ? 'Yes, this employee is covered' : 'No, this employee is not covered'
             }
           />
         )}
@@ -684,3 +701,88 @@ function CompensationFormReady({ compensation }: { compensation: UseCompensation
   )
 }
 ```
+
+### With `formHookResult` prop
+
+The same form using prop-based field connection. No `SDKFormProvider` wrapper needed:
+
+```tsx
+import { useCompensationForm, type UseCompensationFormReady } from '@gusto/embedded-react-sdk'
+
+function CompensationPage({ employeeId }: { employeeId: string }) {
+  const compensation = useCompensationForm({ employeeId, withStartDateField: true })
+
+  if (compensation.isLoading) {
+    return <div>Loading...</div>
+  }
+
+  return <CompensationFormReady compensation={compensation} />
+}
+
+function CompensationFormReady({ compensation }: { compensation: UseCompensationFormReady }) {
+  const { Fields } = compensation.form
+
+  return (
+    <form
+      onSubmit={e => {
+        e.preventDefault()
+        void compensation.actions.onSubmit()
+      }}
+    >
+      <h2>{compensation.status.mode === 'create' ? 'Add Job' : 'Edit Job'}</h2>
+
+      {compensation.errorHandling.errors.length > 0 && (
+        <div role="alert">
+          {compensation.errorHandling.errors.map((error, i) => (
+            <p key={i}>{error.message}</p>
+          ))}
+        </div>
+      )}
+
+      {Fields.StartDate && (
+        <Fields.StartDate
+          label="Start date"
+          formHookResult={compensation}
+          validationMessages={{ REQUIRED: 'Start date is required' }}
+        />
+      )}
+
+      <Fields.JobTitle
+        label="Job title"
+        formHookResult={compensation}
+        validationMessages={{ REQUIRED: 'Job title is required' }}
+      />
+
+      {Fields.FlsaStatus && (
+        <Fields.FlsaStatus
+          label="Employee type"
+          formHookResult={compensation}
+          validationMessages={{ REQUIRED: 'Employee classification is required' }}
+        />
+      )}
+
+      <Fields.Rate
+        label="Compensation amount"
+        formHookResult={compensation}
+        validationMessages={{
+          REQUIRED: 'Amount is a required field',
+          RATE_MINIMUM: 'Amount must be at least $1.00',
+          RATE_EXEMPT_THRESHOLD: 'FLSA Exempt employees must meet salary threshold of $35,568/year',
+        }}
+      />
+
+      <Fields.PaymentUnit
+        label="Per"
+        formHookResult={compensation}
+        validationMessages={{ REQUIRED: 'Payment unit is required' }}
+      />
+
+      <button type="submit" disabled={compensation.status.isPending}>
+        {compensation.status.mode === 'create' ? 'Add job' : 'Save job'}
+      </button>
+    </form>
+  )
+}
+```
+
+Both examples produce identical validation, error handling, and API behavior. The prop-based approach is particularly useful when embedding compensation fields within a larger composed form — see [Composing Multiple Hooks](./hooks.md#composing-multiple-hooks).

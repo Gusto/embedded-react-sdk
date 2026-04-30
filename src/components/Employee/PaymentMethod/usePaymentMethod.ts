@@ -23,15 +23,17 @@ export const CombinedSchema = z.union([
       isSplit: z.literal(true),
       hasBankPayload: z.literal(false),
       splitBy: z.literal('Percentage'),
-      splitAmount: z.record(z.string(), z.number().max(100).min(0)).superRefine((input, ctx) => {
-        const total = Object.values(input).reduce((acc, curr) => acc + curr, 0)
-        if (total !== 100) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: `percentage_split_total_error:${total}`,
-          })
-        }
-      }),
+      splitAmount: z
+        .record(z.string(), z.number().int().max(100).min(0))
+        .superRefine((input, ctx) => {
+          const total = Object.values(input).reduce((acc, curr) => acc + curr, 0)
+          if (total !== 100) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: `percentage_split_total_error:${total}`,
+            })
+          }
+        }),
       priority: z.record(z.string(), z.number()),
     }),
     z.object({
@@ -55,6 +57,7 @@ export type CombinedSchemaOutputs = z.output<typeof CombinedSchema>
 type PaymentMethodContextType = {
   bankAccounts: EmployeeBankAccount[]
   isPending: boolean
+  deletePendingBankAccountUuid?: string
   watchedType?: string
   mode: MODE
   paymentMethod: EmployeePaymentMethod

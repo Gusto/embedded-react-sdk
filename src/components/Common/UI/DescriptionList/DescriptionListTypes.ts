@@ -7,7 +7,12 @@ export interface DescriptionListItem {
 
 export interface DescriptionListProps {
   items: DescriptionListItem[]
+  layout?: 'stacked' | 'horizontal'
+  showSeparators?: boolean
   className?: string
 }
 
-export const DescriptionListDefaults = {} as const satisfies Partial<DescriptionListProps>
+export const DescriptionListDefaults = {
+  layout: 'stacked',
+  showSeparators: true,
+} as const satisfies Partial<DescriptionListProps>

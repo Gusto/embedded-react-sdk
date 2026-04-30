@@ -68,7 +68,7 @@ export const PaymentSummaryPresentation = ({
   }, [contractorPayments])
 
   return (
-    <Flex flexDirection="column" gap={32}>
+    <Flex flexDirection="column" gap={16}>
       {alerts.length > 0 && (
         <Flex flexDirection="column" gap={16}>
           {alerts.map((alert, index) => (
@@ -115,29 +115,24 @@ export const PaymentSummaryPresentation = ({
         columns={[
           {
             title: t('totalAmount'),
-            render: () => (
-              <Text>{currencyFormatter(Number(contractorPaymentGroup.totals?.amount || '0'))}</Text>
-            ),
+            render: () => currencyFormatter(Number(contractorPaymentGroup.totals?.amount || '0')),
           },
           {
             title: t('debitAmount'),
-            render: () => (
-              <Text>
-                {currencyFormatter(Number(contractorPaymentGroup.totals?.debitAmount || '0'))}
-              </Text>
-            ),
+            render: () =>
+              currencyFormatter(Number(contractorPaymentGroup.totals?.debitAmount || '0')),
           },
           {
             title: t('debitAccount'),
-            render: () => <Text>{bankAccount?.hiddenAccountNumber ?? t('notAvailable')}</Text>,
+            render: () => bankAccount?.hiddenAccountNumber ?? t('notAvailable'),
           },
           {
             title: t('debitDate'),
-            render: () => <Text>{contractorPaymentGroup.debitDate || t('notAvailable')}</Text>,
+            render: () => contractorPaymentGroup.debitDate || t('notAvailable'),
           },
           {
             title: t('contractorPayDate'),
-            render: () => <Text>{contractorPaymentGroup.checkDate || t('notAvailable')}</Text>,
+            render: () => contractorPaymentGroup.checkDate || t('notAvailable'),
           },
         ]}
         data={[contractorPaymentGroup]}
@@ -150,74 +145,60 @@ export const PaymentSummaryPresentation = ({
           columns={[
             {
               title: t('contractor'),
-              render: contractorPayment => (
-                <Text>
-                  {getContractorDisplayName(
-                    contractors.find(
-                      contractor => contractor.uuid === contractorPayment.contractorUuid,
-                    ),
-                  )}
-                </Text>
-              ),
+              render: contractorPayment =>
+                getContractorDisplayName(
+                  contractors.find(
+                    contractor => contractor.uuid === contractorPayment.contractorUuid,
+                  ),
+                ),
             },
             {
               title: t('wageType'),
-              render: contractorPayment => <Text>{formatWageType(contractorPayment)}</Text>,
+              render: contractorPayment => formatWageType(contractorPayment),
             },
             {
               title: t('paymentMethod'),
-              render: contractorPayment => (
-                <Text>
-                  {contractorPayment.paymentMethod === 'Direct Deposit'
-                    ? t('paymentMethods.directDeposit')
-                    : contractorPayment.paymentMethod === 'Check'
-                      ? t('paymentMethods.check')
-                      : contractorPayment.paymentMethod || t('notAvailable')}
-                </Text>
-              ),
+              render: contractorPayment =>
+                contractorPayment.paymentMethod === 'Direct Deposit'
+                  ? t('paymentMethods.directDeposit')
+                  : contractorPayment.paymentMethod === 'Check'
+                    ? t('paymentMethods.check')
+                    : contractorPayment.paymentMethod || t('notAvailable'),
             },
             {
               title: t('hours'),
-              render: contractorPayment => (
-                <Text>
-                  {contractorPayment.wageType === 'Hourly' && contractorPayment.hours
-                    ? formatHoursDisplay(parseFloat(contractorPayment.hours))
-                    : ZERO_HOURS_DISPLAY}
-                </Text>
-              ),
+              render: contractorPayment =>
+                contractorPayment.wageType === 'Hourly' && contractorPayment.hours
+                  ? formatHoursDisplay(parseFloat(contractorPayment.hours))
+                  : ZERO_HOURS_DISPLAY,
             },
             {
               title: t('wage'),
-              render: contractorPayment => (
-                <Text>{currencyFormatter(Number(contractorPayment.wage || '0'))}</Text>
-              ),
+              render: contractorPayment => currencyFormatter(Number(contractorPayment.wage || '0')),
             },
             {
               title: t('bonus'),
-              render: contractorPayment => (
-                <Text>{currencyFormatter(Number(contractorPayment.bonus || '0'))}</Text>
-              ),
+              render: contractorPayment =>
+                currencyFormatter(Number(contractorPayment.bonus || '0')),
             },
             {
               title: t('reimbursement'),
-              render: contractorPayment => (
-                <Text>{currencyFormatter(Number(contractorPayment.reimbursement || '0'))}</Text>
-              ),
+              render: contractorPayment =>
+                currencyFormatter(Number(contractorPayment.reimbursement || '0')),
             },
             {
               title: t('total'),
-              render: contractorPayment => (
-                <Text>{currencyFormatter(Number(contractorPayment.wageTotal || '0'))}</Text>
-              ),
+              render: contractorPayment =>
+                currencyFormatter(Number(contractorPayment.wageTotal || '0')),
             },
           ]}
           data={contractorPayments}
           footer={() => ({
-            'column-0': <Text weight="bold">{t('totalsLabel')}</Text>,
-            'column-4': <Text>{currencyFormatter(totals.wageAmount || 0)}</Text>,
-            'column-5': <Text>{currencyFormatter(totals.bonusAmount || 0)}</Text>,
-            'column-6': <Text>{currencyFormatter(totals.reimbursementAmount || 0)}</Text>,
-            'column-7': <Text>{currencyFormatter(totals.totalAmount || 0)}</Text>,
+            'column-0': t('totalsLabel'),
+            'column-4': currencyFormatter(totals.wageAmount || 0),
+            'column-5': currencyFormatter(totals.bonusAmount || 0),
+            'column-6': currencyFormatter(totals.reimbursementAmount || 0),
+            'column-7': currencyFormatter(totals.totalAmount || 0),
           })}
           label={t('contractorPaymentsTitle')}
         />

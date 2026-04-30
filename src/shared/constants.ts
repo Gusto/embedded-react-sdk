@@ -7,14 +7,19 @@ export const employeeEvents = {
   EMPLOYEE_UPDATE: 'employee/update',
   EMPLOYEE_UPDATED: 'employee/updated',
   EMPLOYEE_DELETED: 'employee/deleted',
+  EMPLOYEE_DISMISS: 'employee/dismiss',
   EMPLOYEE_ONBOARDING_DONE: 'employee/onboarding/done',
   EMPLOYEE_PROFILE_DONE: 'employee/profile/done',
   EMPLOYEE_HOME_ADDRESS: 'employee/addresses/home',
+  EMPLOYEE_HOME_ADDRESS_UPDATE: 'employee/addresses/home/update',
   EMPLOYEE_HOME_ADDRESS_CREATED: 'employee/addresses/home/created',
   EMPLOYEE_HOME_ADDRESS_UPDATED: 'employee/addresses/home/updated',
+  EMPLOYEE_HOME_ADDRESS_DELETED: 'employee/addresses/home/deleted',
   EMPLOYEE_WORK_ADDRESS: 'employee/addresses/work',
+  EMPLOYEE_WORK_ADDRESS_UPDATE: 'employee/addresses/work/update',
   EMPLOYEE_WORK_ADDRESS_CREATED: 'employee/addresses/work/created',
   EMPLOYEE_WORK_ADDRESS_UPDATED: 'employee/addresses/work/updated',
+  EMPLOYEE_WORK_ADDRESS_DELETED: 'employee/addresses/work/deleted',
   EMPLOYEE_DEDUCTION_ADD: 'employee/deductions/add',
   EMPLOYEE_DEDUCTION_CREATED: 'employee/deductions/created',
   EMPLOYEE_DEDUCTION_UPDATED: 'employee/deductions/updated',
@@ -28,6 +33,7 @@ export const employeeEvents = {
   EMPLOYEE_DEDUCTION_INCLUDE_NO: 'employee/deductions/include/no',
   EMPLOYEE_COMPENSATION_CREATE: 'employee/compensations/create',
   EMPLOYEE_COMPENSATION_CREATED: 'employee/compensations/created',
+  EMPLOYEE_COMPENSATION_UPDATE: 'employee/compensations/update',
   EMPLOYEE_COMPENSATION_UPDATED: 'employee/compensations/updated',
   EMPLOYEE_COMPENSATION_DONE: 'employee/compensations/done',
   EMPLOYEE_PAYMENT_METHOD_UPDATED: 'employee/paymentMethod/updated',
@@ -36,8 +42,10 @@ export const employeeEvents = {
   EMPLOYEE_BANK_ACCOUNT_CREATE: 'employee/bankAccount/create',
   EMPLOYEE_BANK_ACCOUNT_CREATED: 'employee/bankAccount/created',
   EMPLOYEE_BANK_ACCOUNT_DELETED: 'employee/bankAccount/deleted',
+  EMPLOYEE_FEDERAL_TAXES_EDIT: 'employee/federalTaxes/edit',
   EMPLOYEE_FEDERAL_TAXES_UPDATED: 'employee/federalTaxes/updated',
   EMPLOYEE_FEDERAL_TAXES_DONE: 'employee/federalTaxes/done',
+  EMPLOYEE_STATE_TAXES_EDIT: 'employee/stateTaxes/edit',
   EMPLOYEE_STATE_TAXES_UPDATED: 'employee/stateTaxes/updated',
   EMPLOYEE_STATE_TAXES_DONE: 'employee/stateTaxes/done',
   EMPLOYEE_TAXES_DONE: 'employee/taxes/done',
@@ -56,6 +64,7 @@ export const employeeEvents = {
   EMPLOYEE_CHANGE_ELIGIBILITY_STATUS: 'employee/employmentEligibility/change',
   EMPLOYEE_ONBOARDING_DOCUMENTS_CONFIG_UPDATED: 'employee/onboardingDocumentsConfig/updated',
   EMPLOYEE_DOCUMENTS_DONE: 'employee/documents/done',
+  EMPLOYEE_REHIRE: 'employee/rehire',
 } as const
 
 export const companyEvents = {
@@ -167,6 +176,7 @@ export const runPayrollEvents = {
   OFF_CYCLE_SELECT_REASON: 'offCycle/selectReason',
   OFF_CYCLE_DEDUCTIONS_CHANGE: 'offCycle/deductionsChange',
   RUN_PAYROLL_SUBMITTED: 'runPayroll/submitted',
+  RUN_PAYROLL_SUBMITTING: 'runPayroll/submitting',
   RUN_PAYROLL_SUMMARY_VIEWED: 'runPayroll/summary/viewed',
   RUN_PAYROLL_RECEIPT_GET: 'runPayroll/receipt/get',
   RUN_PAYROLL_RECEIPT_VIEWED: 'runPayroll/receipt/viewed',
@@ -179,6 +189,7 @@ export const runPayrollEvents = {
   RUN_PAYROLL_DATES_CONFIGURED: 'runPayroll/dates/configured',
   REVIEW_PAYROLL: 'payroll/review',
   PAYROLL_SKIPPED: 'payroll/skipped',
+  PAYROLL_DELETED: 'payroll/deleted',
   PAYROLL_EXIT_FLOW: 'payroll/saveAndExit',
   RUN_PAYROLL_GROSS_UP_SELECTED: 'runPayroll/grossUp/selected',
   RUN_PAYROLL_GROSS_UP_CALCULATED: 'runPayroll/grossUp/calculated',
@@ -215,6 +226,28 @@ export const offCycleEvents = {
   TRANSITION_PAYROLL_SKIPPED: 'transition/payrollSkipped',
 } as const
 
+export const timeOffEvents = {
+  TIME_OFF_CREATE_POLICY: 'timeOff/createPolicy',
+  TIME_OFF_VIEW_POLICY: 'timeOff/viewPolicy',
+  TIME_OFF_POLICY_TYPE_SELECTED: 'timeOff/policyTypeSelected',
+  TIME_OFF_POLICY_DETAILS_DONE: 'timeOff/policyDetails/done',
+  TIME_OFF_POLICY_SETTINGS_DONE: 'timeOff/policySettings/done',
+  TIME_OFF_POLICY_SETTINGS_BACK: 'timeOff/policySettings/back',
+  TIME_OFF_ADD_EMPLOYEES_DONE: 'timeOff/addEmployees/done',
+  TIME_OFF_HOLIDAY_SELECTION_DONE: 'timeOff/holidaySelection/done',
+  TIME_OFF_HOLIDAY_ADD_EMPLOYEES_DONE: 'timeOff/holidayAddEmployees/done',
+  TIME_OFF_VIEW_POLICY_DETAILS: 'timeOff/viewPolicyDetails',
+  TIME_OFF_VIEW_POLICY_EMPLOYEES: 'timeOff/viewPolicyEmployees',
+  TIME_OFF_VIEW_HOLIDAY_EMPLOYEES: 'timeOff/viewHolidayEmployees',
+  TIME_OFF_VIEW_HOLIDAY_SCHEDULE: 'timeOff/viewHolidaySchedule',
+  TIME_OFF_BACK_TO_LIST: 'timeOff/backToList',
+  TIME_OFF_POLICY_CREATE_ERROR: 'timeOff/policyCreate/error',
+  TIME_OFF_POLICY_SETTINGS_ERROR: 'timeOff/policySettings/error',
+  TIME_OFF_ADD_EMPLOYEES_ERROR: 'timeOff/addEmployees/error',
+  TIME_OFF_HOLIDAY_CREATE_ERROR: 'timeOff/holidayCreate/error',
+  TIME_OFF_HOLIDAY_ADD_EMPLOYEES_ERROR: 'timeOff/holidayAddEmployees/error',
+} as const
+
 export const componentEvents = {
   ROBOT_MACHINE_DONE: 'done', //This is internal Robot event thrown when machine transitions to final state
   ERROR: 'ERROR',
@@ -231,6 +264,7 @@ export const componentEvents = {
   ...contractorPaymentEvents,
   ...offCycleEvents,
   ...terminationEvents,
+  ...timeOffEvents,
 } as const
 
 export type EventType = (typeof componentEvents)[keyof typeof componentEvents]
@@ -267,7 +301,6 @@ export const ContractorSelfOnboardingStatuses = new Set([
   ContractorOnboardingStatus.SELF_ONBOARDING_INVITED,
   ContractorOnboardingStatus.SELF_ONBOARDING_STARTED,
   ContractorOnboardingStatus.SELF_ONBOARDING_REVIEW,
-  ContractorOnboardingStatus.ADMIN_ONBOARDING_REVIEW,
 ])
 
 /**Map of API response flsa statuses */

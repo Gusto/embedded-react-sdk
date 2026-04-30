@@ -2,22 +2,24 @@ import { describe, expect, it, vi } from 'vitest'
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
-import type { PayScheduleList } from '@gusto/embedded-api/models/components/payschedulelist'
+import type { PaySchedule } from '@gusto/embedded-api/models/components/payschedule'
+import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import type { PayrollType } from './types'
 import { PayrollListPresentation } from './PayrollListPresentation'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+import type { UseDateRangeFilterResult } from '@/hooks/useDateRangeFilter/useDateRangeFilter'
 
 interface PresentationPayroll extends Payroll {
   payrollType: PayrollType
 }
 
-const mockPaySchedules: PayScheduleList[] = [
+const mockPaySchedules: PaySchedule[] = [
   {
     uuid: 'schedule-1',
     frequency: 'Every week',
-    anchorPayDate: '2024-01-01',
-    anchorEndOfPayPeriod: '2024-01-07',
+    anchorPayDate: new RFCDate('2024-01-01'),
+    anchorEndOfPayPeriod: new RFCDate('2024-01-07'),
     customName: 'Weekly Schedule',
     active: true,
     version: '56a489ce86ed6c1b0f0cecc4050a0b01',
@@ -69,45 +71,48 @@ const mockBlockers: ApiPayrollBlocker[] = [
   },
 ]
 
+const mockDateRangeFilter: UseDateRangeFilterResult = {
+  filterStartDate: null,
+  filterEndDate: null,
+  isFilterActive: false,
+  handleStartDateChange: vi.fn(),
+  handleEndDateChange: vi.fn(),
+  handleClearFilter: vi.fn(),
+  getApiDateParams: () => ({}),
+  getMaxEndDate: () => undefined,
+  getMinStartDate: () => undefined,
+}
+
+const defaultProps = {
+  onRunPayroll: vi.fn(),
+  onSubmitPayroll: vi.fn(),
+  onSkipPayroll: vi.fn(),
+  onDeletePayroll: vi.fn(),
+  onRunOffCyclePayroll: vi.fn(),
+  payrolls: [mockUnprocessedPayroll] as Payroll[],
+  paySchedules: mockPaySchedules,
+  showSkipSuccessAlert: false,
+  onDismissSkipSuccessAlert: vi.fn(),
+  showDeleteSuccessAlert: false,
+  onDismissDeleteSuccessAlert: vi.fn(),
+  skippingPayrollId: null,
+  deletingPayrollId: null,
+  blockers: [] as ApiPayrollBlocker[],
+  wireInRequests: [],
+  dateRangeFilter: mockDateRangeFilter,
+}
+
 describe('PayrollListPresentation', () => {
   describe('rendering', () => {
     it('renders pay period information', async () => {
-      renderWithProviders(
-        <PayrollListPresentation
-          onRunPayroll={() => {}}
-          onSubmitPayroll={() => {}}
-          onSkipPayroll={() => {}}
-          onRunOffCyclePayroll={() => {}}
-          payrolls={[mockUnprocessedPayroll]}
-          paySchedules={mockPaySchedules}
-          showSkipSuccessAlert={false}
-          onDismissSkipSuccessAlert={() => {}}
-          skippingPayrollId={null}
-          blockers={[]}
-          wireInRequests={[]}
-        />,
-      )
+      renderWithProviders(<PayrollListPresentation {...defaultProps} />)
 
       await screen.findByRole('heading', { name: 'Upcoming payroll' })
       expect(screen.getByText(/Dec 1 - Dec 15, 2024/)).toBeInTheDocument()
     })
 
     it('renders pay schedule name', async () => {
-      renderWithProviders(
-        <PayrollListPresentation
-          onRunPayroll={() => {}}
-          onSubmitPayroll={() => {}}
-          onSkipPayroll={() => {}}
-          onRunOffCyclePayroll={() => {}}
-          payrolls={[mockUnprocessedPayroll]}
-          paySchedules={mockPaySchedules}
-          showSkipSuccessAlert={false}
-          onDismissSkipSuccessAlert={() => {}}
-          skippingPayrollId={null}
-          blockers={[]}
-          wireInRequests={[]}
-        />,
-      )
+      renderWithProviders(<PayrollListPresentation {...defaultProps} />)
 
       await screen.findByRole('heading', { name: 'Upcoming payroll' })
       expect(screen.getByText('Weekly Schedule')).toBeInTheDocument()
@@ -116,21 +121,7 @@ describe('PayrollListPresentation', () => {
 
   describe('skip payroll menu', () => {
     it('shows hamburger menu with skip option when there are no blockers and pay period has started', async () => {
-      renderWithProviders(
-        <PayrollListPresentation
-          onRunPayroll={() => {}}
-          onSubmitPayroll={() => {}}
-          onSkipPayroll={() => {}}
-          onRunOffCyclePayroll={() => {}}
-          payrolls={[mockUnprocessedPayroll]}
-          paySchedules={mockPaySchedules}
-          showSkipSuccessAlert={false}
-          onDismissSkipSuccessAlert={() => {}}
-          skippingPayrollId={null}
-          blockers={[]}
-          wireInRequests={[]}
-        />,
-      )
+      renderWithProviders(<PayrollListPresentation {...defaultProps} />)
 
       await screen.findByRole('heading', { name: 'Upcoming payroll' })
       const hamburgerButton = screen.getByRole('button', { name: /open menu/i })
@@ -138,25 +129,10 @@ describe('PayrollListPresentation', () => {
     })
 
     it('does not show hamburger menu when there are blockers', async () => {
-      renderWithProviders(
-        <PayrollListPresentation
-          onRunPayroll={() => {}}
-          onSubmitPayroll={() => {}}
-          onSkipPayroll={() => {}}
-          onRunOffCyclePayroll={() => {}}
-          payrolls={[mockUnprocessedPayroll]}
-          paySchedules={mockPaySchedules}
-          showSkipSuccessAlert={false}
-          onDismissSkipSuccessAlert={() => {}}
-          skippingPayrollId={null}
-          blockers={mockBlockers}
-          wireInRequests={[]}
-        />,
-      )
+      renderWithProviders(<PayrollListPresentation {...defaultProps} blockers={mockBlockers} />)
 
       await screen.findByRole('heading', { name: 'Upcoming payroll' })
-      const hamburgerButton = screen.queryByRole('button', { name: /open menu/i })
-      expect(hamburgerButton).not.toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: /open menu/i })).not.toBeInTheDocument()
     })
 
     it('does not show hamburger menu when pay period starts tomorrow', async () => {
@@ -173,25 +149,10 @@ describe('PayrollListPresentation', () => {
         },
       }
 
-      renderWithProviders(
-        <PayrollListPresentation
-          onRunPayroll={() => {}}
-          onSubmitPayroll={() => {}}
-          onSkipPayroll={() => {}}
-          onRunOffCyclePayroll={() => {}}
-          payrolls={[futurePayroll]}
-          paySchedules={mockPaySchedules}
-          showSkipSuccessAlert={false}
-          onDismissSkipSuccessAlert={() => {}}
-          skippingPayrollId={null}
-          blockers={[]}
-          wireInRequests={[]}
-        />,
-      )
+      renderWithProviders(<PayrollListPresentation {...defaultProps} payrolls={[futurePayroll]} />)
 
       await screen.findByRole('heading', { name: 'Upcoming payroll' })
-      const hamburgerButton = screen.queryByRole('button', { name: /open menu/i })
-      expect(hamburgerButton).not.toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: /open menu/i })).not.toBeInTheDocument()
     })
 
     it('shows hamburger menu when pay period starts today', async () => {
@@ -207,21 +168,7 @@ describe('PayrollListPresentation', () => {
         },
       }
 
-      renderWithProviders(
-        <PayrollListPresentation
-          onRunPayroll={() => {}}
-          onSubmitPayroll={() => {}}
-          onSkipPayroll={() => {}}
-          onRunOffCyclePayroll={() => {}}
-          payrolls={[todayPayroll]}
-          paySchedules={mockPaySchedules}
-          showSkipSuccessAlert={false}
-          onDismissSkipSuccessAlert={() => {}}
-          skippingPayrollId={null}
-          blockers={[]}
-          wireInRequests={[]}
-        />,
-      )
+      renderWithProviders(<PayrollListPresentation {...defaultProps} payrolls={[todayPayroll]} />)
 
       await screen.findByRole('heading', { name: 'Upcoming payroll' })
       const hamburgerButton = screen.getByRole('button', { name: /open menu/i })
@@ -242,25 +189,30 @@ describe('PayrollListPresentation', () => {
         },
       }
 
-      renderWithProviders(
-        <PayrollListPresentation
-          onRunPayroll={() => {}}
-          onSubmitPayroll={() => {}}
-          onSkipPayroll={() => {}}
-          onRunOffCyclePayroll={() => {}}
-          payrolls={[pastPayroll]}
-          paySchedules={mockPaySchedules}
-          showSkipSuccessAlert={false}
-          onDismissSkipSuccessAlert={() => {}}
-          skippingPayrollId={null}
-          blockers={[]}
-          wireInRequests={[]}
-        />,
-      )
+      renderWithProviders(<PayrollListPresentation {...defaultProps} payrolls={[pastPayroll]} />)
 
       await screen.findByRole('heading', { name: 'Upcoming payroll' })
       const hamburgerButton = screen.getByRole('button', { name: /open menu/i })
       expect(hamburgerButton).toBeInTheDocument()
+    })
+
+    it('does not show skip option for off-cycle payrolls', async () => {
+      const user = userEvent.setup()
+      const bonusPayroll: PresentationPayroll = {
+        ...mockUnprocessedPayroll,
+        payrollUuid: 'payroll-bonus',
+        offCycle: true,
+        offCycleReason: 'Bonus',
+      }
+
+      renderWithProviders(<PayrollListPresentation {...defaultProps} payrolls={[bonusPayroll]} />)
+
+      await screen.findByRole('heading', { name: 'Upcoming payroll' })
+      const hamburgerButton = screen.getByRole('button', { name: /open menu/i })
+      await user.click(hamburgerButton)
+
+      expect(screen.queryByText('Skip payroll')).not.toBeInTheDocument()
+      expect(screen.getByText('Cancel payroll')).toBeInTheDocument()
     })
 
     it('does not show hamburger menu for processed payrolls', async () => {
@@ -270,24 +222,127 @@ describe('PayrollListPresentation', () => {
       }
 
       renderWithProviders(
-        <PayrollListPresentation
-          onRunPayroll={() => {}}
-          onSubmitPayroll={() => {}}
-          onSkipPayroll={() => {}}
-          onRunOffCyclePayroll={() => {}}
-          payrolls={[processedPayroll]}
-          paySchedules={mockPaySchedules}
-          showSkipSuccessAlert={false}
-          onDismissSkipSuccessAlert={() => {}}
-          skippingPayrollId={null}
-          blockers={[]}
-          wireInRequests={[]}
-        />,
+        <PayrollListPresentation {...defaultProps} payrolls={[processedPayroll]} />,
       )
 
       await screen.findByRole('heading', { name: 'Upcoming payroll' })
-      const hamburgerButton = screen.queryByRole('button', { name: /open menu/i })
-      expect(hamburgerButton).not.toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: /open menu/i })).not.toBeInTheDocument()
+    })
+  })
+
+  describe('cancel payroll menu', () => {
+    const bonusPayroll: PresentationPayroll = {
+      ...mockUnprocessedPayroll,
+      payrollUuid: 'payroll-bonus',
+      offCycle: true,
+      offCycleReason: 'Bonus',
+    }
+
+    const dismissalPayroll: PresentationPayroll = {
+      ...mockUnprocessedPayroll,
+      payrollUuid: 'payroll-dismissal',
+      offCycle: true,
+      offCycleReason: 'Dismissed employee',
+    }
+
+    it('shows cancel option in hamburger menu for bonus payrolls', async () => {
+      const user = userEvent.setup()
+
+      renderWithProviders(<PayrollListPresentation {...defaultProps} payrolls={[bonusPayroll]} />)
+
+      await screen.findByRole('heading', { name: 'Upcoming payroll' })
+      const hamburgerButton = screen.getByRole('button', { name: /open menu/i })
+      await user.click(hamburgerButton)
+
+      expect(screen.getByText('Cancel payroll')).toBeInTheDocument()
+    })
+
+    it('shows cancel option in hamburger menu for dismissal payrolls', async () => {
+      const user = userEvent.setup()
+
+      renderWithProviders(
+        <PayrollListPresentation {...defaultProps} payrolls={[dismissalPayroll]} />,
+      )
+
+      await screen.findByRole('heading', { name: 'Upcoming payroll' })
+      const hamburgerButton = screen.getByRole('button', { name: /open menu/i })
+      await user.click(hamburgerButton)
+
+      expect(screen.getByText('Cancel payroll')).toBeInTheDocument()
+    })
+
+    it('opens cancel confirmation dialog when cancel is clicked for dismissal payroll', async () => {
+      const user = userEvent.setup()
+
+      HTMLDialogElement.prototype.showModal = vi.fn()
+      HTMLDialogElement.prototype.close = vi.fn()
+      Object.defineProperty(HTMLDialogElement.prototype, 'open', {
+        get: vi.fn(() => false),
+        set: vi.fn(),
+        configurable: true,
+      })
+
+      renderWithProviders(
+        <PayrollListPresentation {...defaultProps} payrolls={[dismissalPayroll]} />,
+      )
+
+      await screen.findByRole('heading', { name: 'Upcoming payroll' })
+      const hamburgerButton = screen.getByRole('button', { name: /open menu/i })
+      await user.click(hamburgerButton)
+      await user.click(screen.getByText('Cancel payroll'))
+
+      expect(screen.getByText(/Yes, cancel payroll/)).toBeInTheDocument()
+    })
+
+    it('opens cancel confirmation dialog when cancel is clicked for bonus payroll', async () => {
+      const user = userEvent.setup()
+
+      HTMLDialogElement.prototype.showModal = vi.fn()
+      HTMLDialogElement.prototype.close = vi.fn()
+      Object.defineProperty(HTMLDialogElement.prototype, 'open', {
+        get: vi.fn(() => false),
+        set: vi.fn(),
+        configurable: true,
+      })
+
+      renderWithProviders(<PayrollListPresentation {...defaultProps} payrolls={[bonusPayroll]} />)
+
+      await screen.findByRole('heading', { name: 'Upcoming payroll' })
+      const hamburgerButton = screen.getByRole('button', { name: /open menu/i })
+      await user.click(hamburgerButton)
+      await user.click(screen.getByText('Cancel payroll'))
+
+      expect(screen.getByText(/Yes, cancel payroll/)).toBeInTheDocument()
+    })
+
+    it('shows skip option instead of cancel for transition payrolls', async () => {
+      const user = userEvent.setup()
+      const transitionPayroll: PresentationPayroll = {
+        ...mockUnprocessedPayroll,
+        payrollUuid: 'payroll-transition',
+        offCycle: true,
+        offCycleReason: 'Transition from old pay schedule',
+      }
+
+      renderWithProviders(
+        <PayrollListPresentation {...defaultProps} payrolls={[transitionPayroll]} />,
+      )
+
+      await screen.findByRole('heading', { name: 'Upcoming payroll' })
+      const hamburgerButton = screen.getByRole('button', { name: /open menu/i })
+      await user.click(hamburgerButton)
+
+      expect(screen.getByText('Skip payroll')).toBeInTheDocument()
+      expect(screen.queryByText('Cancel payroll')).not.toBeInTheDocument()
+    })
+
+    it('shows cancel success alert when showDeleteSuccessAlert is true', async () => {
+      renderWithProviders(
+        <PayrollListPresentation {...defaultProps} showDeleteSuccessAlert={true} />,
+      )
+
+      await screen.findByRole('heading', { name: 'Upcoming payroll' })
+      expect(screen.getByText('Payroll cancelled')).toBeInTheDocument()
     })
   })
 
@@ -296,21 +351,7 @@ describe('PayrollListPresentation', () => {
       const user = userEvent.setup()
       const onRunPayroll = vi.fn()
 
-      renderWithProviders(
-        <PayrollListPresentation
-          onRunPayroll={onRunPayroll}
-          onSubmitPayroll={() => {}}
-          onSkipPayroll={() => {}}
-          onRunOffCyclePayroll={() => {}}
-          payrolls={[mockUnprocessedPayroll]}
-          paySchedules={mockPaySchedules}
-          showSkipSuccessAlert={false}
-          onDismissSkipSuccessAlert={() => {}}
-          skippingPayrollId={null}
-          blockers={[]}
-          wireInRequests={[]}
-        />,
-      )
+      renderWithProviders(<PayrollListPresentation {...defaultProps} onRunPayroll={onRunPayroll} />)
 
       await screen.findByRole('heading', { name: 'Upcoming payroll' })
       const runPayrollButton = screen.getByRole('button', { name: 'Run Payroll' })
@@ -332,17 +373,9 @@ describe('PayrollListPresentation', () => {
 
       renderWithProviders(
         <PayrollListPresentation
-          onRunPayroll={() => {}}
+          {...defaultProps}
           onSubmitPayroll={onSubmitPayroll}
-          onSkipPayroll={() => {}}
-          onRunOffCyclePayroll={() => {}}
           payrolls={[mockCalculatedPayroll]}
-          paySchedules={mockPaySchedules}
-          showSkipSuccessAlert={false}
-          onDismissSkipSuccessAlert={() => {}}
-          skippingPayrollId={null}
-          blockers={[]}
-          wireInRequests={[]}
         />,
       )
 
@@ -363,42 +396,14 @@ describe('PayrollListPresentation', () => {
 
   describe('skip success alert', () => {
     it('shows skip success alert when showSkipSuccessAlert is true', async () => {
-      renderWithProviders(
-        <PayrollListPresentation
-          onRunPayroll={() => {}}
-          onSubmitPayroll={() => {}}
-          onSkipPayroll={() => {}}
-          onRunOffCyclePayroll={() => {}}
-          payrolls={[mockUnprocessedPayroll]}
-          paySchedules={mockPaySchedules}
-          showSkipSuccessAlert={true}
-          onDismissSkipSuccessAlert={() => {}}
-          skippingPayrollId={null}
-          blockers={[]}
-          wireInRequests={[]}
-        />,
-      )
+      renderWithProviders(<PayrollListPresentation {...defaultProps} showSkipSuccessAlert={true} />)
 
       await screen.findByRole('heading', { name: 'Upcoming payroll' })
       expect(screen.getByText('Payroll skipped')).toBeInTheDocument()
     })
 
     it('does not show skip success alert when showSkipSuccessAlert is false', async () => {
-      renderWithProviders(
-        <PayrollListPresentation
-          onRunPayroll={() => {}}
-          onSubmitPayroll={() => {}}
-          onSkipPayroll={() => {}}
-          onRunOffCyclePayroll={() => {}}
-          payrolls={[mockUnprocessedPayroll]}
-          paySchedules={mockPaySchedules}
-          showSkipSuccessAlert={false}
-          onDismissSkipSuccessAlert={() => {}}
-          skippingPayrollId={null}
-          blockers={[]}
-          wireInRequests={[]}
-        />,
-      )
+      renderWithProviders(<PayrollListPresentation {...defaultProps} />)
 
       await screen.findByRole('heading', { name: 'Upcoming payroll' })
       expect(screen.queryByText('Payroll skipped')).not.toBeInTheDocument()
@@ -410,17 +415,9 @@ describe('PayrollListPresentation', () => {
 
       renderWithProviders(
         <PayrollListPresentation
-          onRunPayroll={() => {}}
-          onSubmitPayroll={() => {}}
-          onSkipPayroll={() => {}}
-          onRunOffCyclePayroll={() => {}}
-          payrolls={[mockUnprocessedPayroll]}
-          paySchedules={mockPaySchedules}
+          {...defaultProps}
           showSkipSuccessAlert={true}
           onDismissSkipSuccessAlert={onDismissSkipSuccessAlert}
-          skippingPayrollId={null}
-          blockers={[]}
-          wireInRequests={[]}
         />,
       )
 

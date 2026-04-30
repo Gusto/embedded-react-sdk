@@ -14,7 +14,7 @@ import {
 } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
-import { parseDate } from '@internationalized/date'
+import { parseDate, type CalendarDate } from '@internationalized/date'
 import { useFieldIds } from '../hooks/useFieldIds'
 import styles from './DatePicker.module.scss'
 import type { DatePickerProps } from './DatePickerTypes'
@@ -25,6 +25,21 @@ import CaretRight from '@/assets/icons/caret-right.svg?react'
 import CaretLeft from '@/assets/icons/caret-left.svg?react'
 import AlertCircle from '@/assets/icons/alert-circle.svg?react'
 import { formatDateToStringDate } from '@/helpers/dateFormatting'
+
+function dateToCalendarDate(date: Date): CalendarDate | undefined {
+  if (!(date instanceof Date) || isNaN(date.getTime())) {
+    return undefined
+  }
+
+  // Use local date parts to avoid UTC timezone shift from toISOString()
+  const dateString = [
+    String(date.getFullYear()).padStart(4, '0'),
+    String(date.getMonth() + 1).padStart(2, '0'),
+    String(date.getDate()).padStart(2, '0'),
+  ].join('-')
+
+  return parseDate(dateString)
+}
 
 function calendarDateValueToDate(dateValue: DateValue | null): Date | null {
   if (!dateValue) return null
@@ -52,6 +67,9 @@ export const DatePicker = ({
   onBlur,
   value,
   portalContainer,
+  minDate,
+  maxDate,
+  isDateDisabled,
   ...props
 }: DatePickerProps) => {
   const { t } = useTranslation()
@@ -66,6 +84,16 @@ export const DatePicker = ({
   // Format the date as YYYY-MM-DD for parseDate
   const formattedDate = value ? formatDateToStringDate(value) : ''
   const internalValue = formattedDate ? parseDate(formattedDate) : null
+
+  // Convert date constraint props to react-aria DateValue format
+  const minValue = minDate ? dateToCalendarDate(minDate) : undefined
+  const maxValue = maxDate ? dateToCalendarDate(maxDate) : undefined
+  const isDateUnavailable = isDateDisabled
+    ? (dateValue: DateValue) => {
+        const jsDate = calendarDateValueToDate(dateValue)
+        return jsDate ? isDateDisabled(jsDate) : false
+      }
+    : undefined
 
   // Handle internal onChange to convert DateValue back to Date
   const handleChange = (dateValue: DateValue | null) => {
@@ -95,6 +123,9 @@ export const DatePicker = ({
           isInvalid={isInvalid}
           value={internalValue}
           onChange={handleChange}
+          minValue={minValue}
+          maxValue={maxValue}
+          isDateUnavailable={isDateUnavailable}
           {...props}
         >
           <Group>

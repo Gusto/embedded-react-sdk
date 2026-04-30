@@ -1,0 +1,29 @@
+.policySettings {
+  --g-inputLabelColor: #414651;
+  --g-inputLabelFontSize: #{toRem(14)};
+  --g-inputDescriptionColor: #535862;
+  color: #181d27;
+  width: 100%;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid var(--g-inputBorderColor);
+  margin: toRem(4) 0;
+}
+
+.settingRow {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: toRem(20);
+  align-items: start;
+  width: 100%;
+}
+
+.settingField > :nth-child(2) {
+  max-width: toRem(200);
+}
+
+.toggleCell {
+  padding-top: toRem(2);
+}

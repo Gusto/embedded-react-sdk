@@ -1,0 +1,246 @@
+.root {
+  width: fit-content;
+}
+
+.dateInputGroup {
+  display: flex;
+  align-items: flex-end;
+  gap: toRem(8);
+  margin-top: toRem(16);
+  margin-bottom: toRem(16);
+}
+
+.dateInputWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: toRem(4);
+  flex: 1;
+}
+
+.dateInputLabel {
+  font-size: var(--g-fontSizeExtraSmall);
+  color: var(--g-colorBodyContent);
+  font-weight: 500;
+  display: none;
+}
+
+.dateInput {
+  display: flex;
+  font-size: var(--g-fontSizeSmall);
+  padding: toRem(8) toRem(12);
+  height: toRem(40);
+  white-space: nowrap;
+  forced-color-adjust: none;
+  border: var(--g-inputBorderWidth) solid var(--g-inputBorderColor);
+  border-radius: var(--g-inputRadius);
+  background-color: var(--g-inputBackgroundColor);
+  color: var(--g-inputContentColor);
+  box-shadow: var(--g-shadowResting);
+
+  &[data-focus-within] {
+    outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
+    outline-offset: calc(var(--g-inputBorderWidth) * -1);
+  }
+
+  :global(.react-aria-DateSegment) {
+    padding: 0 toRem(2);
+    font-variant-numeric: tabular-nums;
+    text-align: end;
+    color: var(--g-inputContentColor);
+    border-radius: 4px;
+
+    &[data-type='literal'] {
+      padding: 0;
+    }
+
+    &[data-placeholder] {
+      color: var(--g-inputPlaceholderColor);
+    }
+
+    &[data-hovered] {
+      color: var(--g-colorBodyContent);
+      background-color: var(--g-colorBodyAccent);
+    }
+
+    &:focus {
+      color: var(--g-colorPrimaryContent);
+      background: var(--g-colorPrimary);
+      outline: none;
+      caret-color: transparent;
+    }
+  }
+}
+
+.rangeSeparator {
+  color: var(--g-colorBodyContent);
+  padding-bottom: toRem(10);
+}
+
+.rangeCalendar {
+  width: fit-content;
+  max-width: 100%;
+  color: var(--g-colorBodyContent);
+  font-weight: 400;
+  font-size: var(--g-fontSizeSmall);
+  overflow-x: hidden;
+  padding: toRem(16);
+}
+
+.calendarHeader {
+  display: flex;
+  align-items: center;
+}
+
+.calendarHeading {
+  flex: 1;
+  margin: 0;
+  text-align: center;
+  font-size: var(--g-fontSizeSmall);
+  color: var(--g-colorBodySubContent);
+}
+
+.calendarNavButton {
+  width: toRem(32);
+  height: toRem(32);
+  padding: 0;
+  border-radius: 999px;
+  background-color: unset;
+  border: none;
+  color: var(--g-colorBodyContent);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    width: toRem(20);
+    height: toRem(20);
+  }
+
+  &[data-focus-visible] {
+    outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
+    outline-offset: 2px;
+  }
+
+  &[data-hovered] {
+    background-color: var(--g-colorBodyAccent);
+  }
+}
+
+.calendarGrid {
+  border-collapse: separate;
+  border-spacing: 0 toRem(3);
+  width: toRem(286);
+
+  :global(.react-aria-CalendarGridHeader) {
+    th {
+      padding-bottom: toRem(8);
+      text-align: center;
+      color: var(--g-colorBodySubContent);
+      font-weight: var(--g-fontWeightSemibold);
+    }
+  }
+
+  td {
+    height: toRem(40);
+
+    &:has([data-selected]) {
+      background: var(--g-colorBorderSecondary);
+    }
+
+    &:has([data-selection-start]) {
+      background: linear-gradient(to left, var(--g-colorBorderSecondary) 50%, transparent 50%);
+    }
+
+    &:has([data-selection-end]) {
+      background: linear-gradient(to right, var(--g-colorBorderSecondary) 50%, transparent 50%);
+    }
+
+    &:has([data-selection-start][data-selection-end]) {
+      background: transparent;
+    }
+
+    &:first-child:has([data-selected]) {
+      border-radius: 999px 0 0 999px;
+    }
+
+    &:last-child:has([data-selected]) {
+      border-radius: 0 999px 999px 0;
+    }
+
+    &:has([data-selected]:not([data-selection-end])) + td:has([data-outside-month]) {
+      background: linear-gradient(to right, var(--g-colorBorderSecondary), transparent);
+    }
+
+    &:has([data-outside-month]) + td:has([data-selected]:not([data-selection-start])) {
+      background: linear-gradient(to left, var(--g-colorBorderSecondary), transparent);
+    }
+  }
+}
+
+.calendarCell {
+  width: toRem(40);
+  line-height: toRem(40);
+  text-align: center;
+  border-radius: toRem(999);
+  cursor: pointer;
+  outline: none;
+  forced-color-adjust: none;
+
+  &[data-outside-month] {
+    display: none;
+
+    &[data-selected] {
+      display: block;
+      color: var(--g-colorBodySubContent);
+      border-radius: 0;
+      cursor: default;
+    }
+  }
+
+  &[data-hovered] {
+    background: var(--g-colorBodyAccent);
+  }
+
+  &[data-pressed] {
+    background: var(--g-colorPrimary);
+    color: var(--g-colorPrimaryContent);
+  }
+
+  &[data-focus-visible] {
+    outline: var(--g-focusRingWidth) solid var(--g-focusRingColor);
+    outline-offset: 2px;
+  }
+
+  &[data-selected] {
+    color: var(--g-colorBodyContent);
+    border-radius: 0;
+  }
+
+  &[data-selection-start] {
+    background: var(--g-colorPrimary);
+    color: var(--g-colorPrimaryContent);
+    border-radius: 999px;
+    line-height: toRem(40);
+    width: toRem(40);
+    position: relative;
+    z-index: 1;
+  }
+
+  &[data-selection-end] {
+    background: var(--g-colorPrimary);
+    color: var(--g-colorPrimaryContent);
+    border-radius: 999px;
+    line-height: toRem(40);
+    width: toRem(40);
+
+    position: relative;
+    z-index: 1;
+  }
+
+  &[data-disabled]:not([data-outside-month]) {
+    cursor: not-allowed;
+    display: block;
+    opacity: 0.5;
+  }
+}

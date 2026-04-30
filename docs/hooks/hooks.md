@@ -14,16 +14,18 @@ Hooks give you full control over form rendering while the SDK manages data fetch
 | `useEmployeeDetailsForm` | Create or update employee profile fields (name, email, SSN, date of birth, self-onboarding)                  | [useEmployeeDetailsForm](./useEmployeeDetailsForm.md) |
 | `useCompensationForm`    | Create or update job compensation (job title, FLSA status, pay rate, payment unit, minimum wage adjustments) | [useCompensationForm](./useCompensationForm.md)       |
 | `useWorkAddressForm`     | Create or update an employee's work address (company location select, effective date)                        | [useWorkAddressForm](./useWorkAddressForm.md)         |
+| `usePayScheduleForm`     | Create or update a company pay schedule (frequency, pay dates, pay period calendar preview)                  | [usePayScheduleForm](./usePayScheduleForm.md)         |
+| `useSignCompanyForm`     | Sign a company form (PDF viewer, typed signature, confirmation checkbox)                                     | [useSignCompanyForm](./useSignCompanyForm.md)         |
+| `useSignEmployeeForm`    | Sign an employee form (signature, confirmation, I-9 preparer/translator sections)                            | [useSignEmployeeForm](./useSignEmployeeForm.md)       |
 
 ---
 
 ## Getting Started
 
-All hooks are exported from the `@gusto/embedded-react-sdk/UNSTABLE_Hooks` entry point. Your app must be wrapped in `GustoProvider`.
+All hooks are exported from `@gusto/embedded-react-sdk`. Your app must be wrapped in `GustoProvider`.
 
 ```tsx
-import { GustoProvider } from '@gusto/embedded-react-sdk'
-import { useEmployeeDetailsForm, SDKFormProvider } from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'
+import { GustoProvider, useEmployeeDetailsForm } from '@gusto/embedded-react-sdk'
 
 function App() {
   return (
@@ -43,18 +45,16 @@ function EmployeeForm({ companyId }: { companyId: string }) {
   const { Fields } = employeeDetails.form
 
   return (
-    <SDKFormProvider formHookResult={employeeDetails}>
-      <form
-        onSubmit={async e => {
-          e.preventDefault()
-          await employeeDetails.actions.onSubmit()
-        }}
-      >
-        <Fields.FirstName label="First name" />
-        <Fields.LastName label="Last name" />
-        <button type="submit">Save</button>
-      </form>
-    </SDKFormProvider>
+    <form
+      onSubmit={async e => {
+        e.preventDefault()
+        await employeeDetails.actions.onSubmit()
+      }}
+    >
+      <Fields.FirstName label="First name" formHookResult={employeeDetails} />
+      <Fields.LastName label="Last name" formHookResult={employeeDetails} />
+      <button type="submit">Save</button>
+    </form>
   )
 }
 ```
@@ -63,9 +63,59 @@ function EmployeeForm({ companyId }: { companyId: string }) {
 
 1. **Call the hook** with the required identifiers (`companyId`, `employeeId`, etc.)
 2. **Check `isLoading`** — the hook fetches server data before the form is ready
-3. **Wrap with `SDKFormProvider`** — this connects react-hook-form, field metadata, and server error syncing
+3. **Connect fields** — pass `formHookResult` as a prop to each field, or wrap fields in `SDKFormProvider` for context-based connection (see [Connecting Fields to the Form](#connecting-fields-to-the-form))
 4. **Render `Fields`** — each field is a pre-bound component that handles validation, error display, and metadata automatically
 5. **Call `onSubmit`** — the hook handles API mutations, error normalization, and returns the saved entity
+
+---
+
+## Connecting Fields to the Form
+
+Every Field component needs access to form state — react-hook-form's control, field metadata (required/disabled), and error messages. There are two ways to provide this connection:
+
+### Option A: `formHookResult` prop (explicit)
+
+Pass the hook result directly to each field. No wrapper component needed.
+
+```tsx
+const { Fields } = employeeDetails.form
+
+<Fields.FirstName label="First name" formHookResult={employeeDetails} />
+<Fields.LastName label="Last name" formHookResult={employeeDetails} />
+<Fields.Email label="Email" formHookResult={employeeDetails} />
+```
+
+Each field reads metadata, form control, and error state directly from the prop. This is the most flexible approach — fields can be placed anywhere in your component tree and interleaved freely with fields from other hooks.
+
+### Option B: `SDKFormProvider` (context)
+
+Wrap fields in `SDKFormProvider` and they pick up form state from context automatically.
+
+```tsx
+import { SDKFormProvider } from '@gusto/embedded-react-sdk'
+;<SDKFormProvider formHookResult={employeeDetails}>
+  <Fields.FirstName label="First name" />
+  <Fields.LastName label="Last name" />
+  <Fields.Email label="Email" />
+</SDKFormProvider>
+```
+
+Fields inside an `SDKFormProvider` don't need the `formHookResult` prop — the provider injects form state via React context. This is convenient when all fields from a single hook are grouped together.
+
+### Choosing an approach
+
+Both approaches produce identical validation, API payloads, and behavior. The difference is purely in how fields discover their form state.
+
+|                       | `formHookResult` prop                                               | `SDKFormProvider`                               |
+| --------------------- | ------------------------------------------------------------------- | ----------------------------------------------- |
+| **Best for**          | Interleaving fields from multiple hooks; maximum layout flexibility | Grouping fields from a single hook together     |
+| **Boilerplate**       | Each field receives the prop                                        | One wrapper, fields are clean                   |
+| **Interleaving**      | Fields from different hooks can be placed in any order              | Fields must stay within their provider boundary |
+| **API error syncing** | Handled automatically per-field                                     | Handled automatically via the provider          |
+
+You can use different approaches for different hooks on the same page — for example, `SDKFormProvider` for one hook's fields that are grouped together, and `formHookResult` props for another hook's fields that are scattered. See [Composing Multiple Hooks](#composing-multiple-hooks) for examples.
+
+> **Avoid passing `formHookResult` to fields via props that are already inside an `SDKFormProvider`.** When both are present on the same field, the prop takes precedence and the provider's context is ignored, which may lead to unexpected behavior.
 
 ---
 
@@ -84,7 +134,7 @@ If you need a specific field to render differently without changing your global 
 The `FieldComponent` receives the same props the underlying UI primitive expects (`TextInputProps`, `SelectProps`, `NumberInputProps`, etc.) -- including `value`, `onChange`, `onBlur`, error state, and accessibility attributes. You don't need any react-hook-form knowledge; the hook field handles all form binding and passes clean UI props to your component.
 
 ```tsx
-import type { TextInputProps } from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'
+import type { TextInputProps } from '@gusto/embedded-react-sdk'
 
 function MyCustomTextInput(props: TextInputProps) {
   return (
@@ -111,7 +161,7 @@ function MyCustomTextInput(props: TextInputProps) {
 
 This is useful when you want to use a third-party input library for one field, add custom styling, or render a completely different control while still getting the hook's validation, error handling, and form binding for free.
 
-The `FieldComponent` prop is available on all field types: `TextInputProps`, `SelectProps`, `NumberInputProps`, `CheckboxProps`, `DatePickerProps`, `RadioGroupProps`, and `SwitchProps`. Import the corresponding prop type from `@gusto/embedded-react-sdk/UNSTABLE_Hooks` for type-safe implementations.
+The `FieldComponent` prop is available on all field types: `TextInputProps`, `SelectProps`, `NumberInputProps`, `CheckboxProps`, `DatePickerProps`, `RadioGroupProps`, and `SwitchProps`. Import the corresponding prop type from `@gusto/embedded-react-sdk` for type-safe implementations.
 
 ---
 
@@ -131,14 +181,20 @@ The shape of `data` varies by hook — see each hook's reference page for detail
 - `useEmployeeDetailsForm` — `{ employee }`
 - `useCompensationForm` — `{ compensation, jobs, currentJob, minimumWages }`
 - `useWorkAddressForm` — `{ workAddress, workAddresses, companyLocations }`
+- `usePayScheduleForm` — `{ paySchedule, payPeriodPreview, payPreviewLoading, paymentSpeedDays }`
+- `useSignCompanyForm` — `{ companyForm, pdfUrl }`
 
 ---
 
 ## Required Fields
 
-Hooks that support `requiredFields` let you declare which form fields are required beyond the API defaults. Each hook has built-in defaults based on what the API requires per mode (create vs. update), and `requiredFields` adds to those defaults.
+Hooks let you declare which form fields are required beyond the built-in defaults. Each hook has built-in requiredness rules based on the form mode (create vs. update), and you can override optional fields to be required.
 
-You can pass `requiredFields` as a flat array (applies to both modes) or as an object with per-mode arrays:
+The API varies by hook. Some hooks use `requiredFields` (flat array or per-mode object), while newer hooks use `optionalFieldsToRequire` with type-safe, mode-aware overrides derived from the schema configuration.
+
+### `requiredFields` (useEmployeeDetailsForm, useWorkAddressForm)
+
+Pass a flat array (applies to both modes) or an object with per-mode arrays:
 
 ```tsx
 // Flat array: same requirements for both create and update
@@ -157,11 +213,25 @@ useEmployeeDetailsForm({
 })
 ```
 
+### `optionalFieldsToRequire` (useCompensationForm)
+
+Override specific fields that are optional in a given mode to be required. The type constrains which fields can be listed per mode — only fields that are actually optional in that mode are allowed:
+
+```tsx
+useCompensationForm({
+  employeeId,
+  optionalFieldsToRequire: {
+    update: ['jobTitle', 'rate'],
+  },
+})
+```
+
 Each hook's reference page documents which fields are available to require and which are required by default in each mode. See:
 
 - [useEmployeeDetailsForm required fields](./useEmployeeDetailsForm.md#required-fields)
-- [useCompensationForm required fields](./useCompensationForm.md#required-fields)
+- [useCompensationForm configurable required fields](./useCompensationForm.md#configurable-required-fields)
 - [useWorkAddressForm required fields](./useWorkAddressForm.md#required-fields)
+- [usePayScheduleForm configurable required fields](./usePayScheduleForm.md#configurable-required-fields)
 
 ---
 
@@ -196,6 +266,8 @@ Each hook's reference page documents the full form data shape accepted by `defau
 - [useEmployeeDetailsForm form data](./useEmployeeDetailsForm.md#employeedetailsformdata)
 - [useCompensationForm form data](./useCompensationForm.md#compensationformdata)
 - [useWorkAddressForm form data](./useWorkAddressForm.md#workaddressformdata)
+- [usePayScheduleForm form data](./usePayScheduleForm.md#payscheduleformdata)
+- [useSignCompanyForm form data](./useSignCompanyForm.md#signcompanyformdata)
 
 ---
 
@@ -231,6 +303,10 @@ interface HookErrorHandling {
 }
 ```
 
+### Multi-hook screens
+
+When a screen pulls from more than one SDK hook (or mixes SDK hooks with additional `@gusto/embedded-api` queries), combine their error state into one banner and one retry/dismiss flow using `composeErrorHandler` / `composeSubmitHandler`. See [Composing Multiple Hooks](#composing-multiple-hooks).
+
 ### SDKError shape
 
 ```typescript
@@ -263,6 +339,8 @@ interface SDKFieldError {
 
 - **`retryQueries()`** — Retries all failed data-fetching queries. Dependent queries automatically re-trigger when their dependencies resolve.
 - **`clearSubmitError()`** — Clears the most recent form submission error from state.
+
+Explicit **`query` vs `submit` labels** on each `SDKError` are not part of the type today; infer recovery from **`retryQueries`** (fetch) vs **`clearSubmitError`** (submit). A future revision may add structured discrimination.
 
 ### Example: error display with retry
 
@@ -312,7 +390,7 @@ const { errors, clearSubmitError } = employeeDetails.errorHandling
 }
 ```
 
-Field-level API errors (e.g., 422 responses with `fieldErrors`) are automatically synced to the corresponding form fields by `SDKFormProvider`, so they appear inline alongside client-side validation errors.
+Field-level API errors (e.g., 422 responses with `fieldErrors`) are automatically synced to the corresponding form fields so they appear inline alongside client-side validation errors. When using `SDKFormProvider`, the provider handles this syncing via context. When using the `formHookResult` prop, each field resolves errors directly from `formHookResult.errorHandling.errors` — no provider is needed.
 
 For a deeper look at the SDK's error architecture, see [Error Handling in the React SDK](../integration-guide/error-handling.md) and [Observability](../integration-guide/observability.md).
 
@@ -371,7 +449,7 @@ Use `status.isPending` to disable the submit button while mutations are in fligh
 Each field component accepts a `validationMessages` prop that maps error codes to human-readable strings. Error codes are defined as typed constants, and TypeScript enforces that you provide a message for every code the field can produce.
 
 ```tsx
-import { EmployeeDetailsErrorCodes } from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'
+import { EmployeeDetailsErrorCodes } from '@gusto/embedded-react-sdk'
 
 <Fields.FirstName
   label="First name"
@@ -398,18 +476,92 @@ Error codes for each hook are exported alongside the hook:
 - `EmployeeDetailsErrorCodes` — see [useEmployeeDetailsForm field reference](./useEmployeeDetailsForm.md#fields-reference)
 - `CompensationErrorCodes` — see [useCompensationForm field reference](./useCompensationForm.md#fields-reference)
 - `WorkAddressErrorCodes` — see [useWorkAddressForm field reference](./useWorkAddressForm.md#fields-reference)
+- `PayScheduleErrorCodes` — see [usePayScheduleForm field reference](./usePayScheduleForm.md#fields-reference)
+- `SignCompanyFormErrorCodes` — see [useSignCompanyForm field reference](./useSignCompanyForm.md#fields-reference)
 
 ---
 
 ## Composing Multiple Hooks
 
-When you need multiple forms on the same page (e.g., employee details and compensation side by side), use `composeSubmitHandler` to coordinate validation and submission across all forms.
+A screen that combines multiple SDK hooks, or mixes SDK hooks with additional `@gusto/embedded-api` queries, produces multiple `errorHandling` objects and (for form screens) multiple submit flows. Two small helpers stitch them together:
 
-`composeSubmitHandler` validates all forms simultaneously, then focuses the first invalid field across all forms (in array order). It only calls your submission logic when every form passes validation.
+- **`composeErrorHandler([sources])`** — merges many error sources into a single `HookErrorHandling`.
+- **`composeSubmitHandler([forms], onAllValid)`** — coordinates validation and ordered submits across forms, and returns `{ handleSubmit, errorHandling }` where `errorHandling` is built from those forms via `composeErrorHandler` under the hood.
+
+### Combining data fetches with `composeErrorHandler`
+
+Use `composeErrorHandler` to produce a single `errorHandling` bag for any screen that reads from multiple sources. It accepts any mix of:
+
+- **SDK hook results** — objects with an `errorHandling` property (e.g., `useEmployeeDetailsForm`, `useCompensationForm`, or the return value of `composeSubmitHandler`).
+- **`@gusto/embedded-api` React Query results** — objects with `error` and `refetch` properties.
+
+```tsx
+import { composeErrorHandler, useEmployeeDetailsForm } from '@gusto/embedded-react-sdk'
+import { useEmployeeFormsList } from '@gusto/embedded-api/react-query/employeeFormsList'
+
+function EmployeeProfileView({ companyId, employeeId }: { companyId: string; employeeId: string }) {
+  const employeeDetails = useEmployeeDetailsForm({ companyId, employeeId })
+  const formsListQuery = useEmployeeFormsList({ employeeId })
+
+  const errorHandling = composeErrorHandler([employeeDetails, formsListQuery])
+
+  if (errorHandling.errors.length > 0) {
+    return (
+      <div role="alert">
+        {errorHandling.errors.map((error, i) => (
+          <p key={i}>{error.message}</p>
+        ))}
+        <button onClick={errorHandling.retryQueries}>Retry</button>
+      </div>
+    )
+  }
+
+  // ...render
+}
+```
+
+`employeeDetails` is an SDK hook result (its `errorHandling` is delegated into), while `formsListQuery` is a raw `@gusto/embedded-api` query (its `error` is normalized and its `refetch` is wired into `retryQueries`). The same call works for any combination of the two shapes.
+
+The returned `errorHandling` has the same shape as any SDK hook's `errorHandling`:
+
+- `errors: SDKError[]` — fetch errors from all sources.
+- `retryQueries()` — refetches every failed query and delegates into nested hooks so their retries fire too.
+- `clearSubmitError()` — clears submit errors across any nested hook results passed in.
+
+### Combining forms with `composeSubmitHandler`
+
+When multiple forms sit on the same page (e.g., employee details and compensation side by side), use `composeSubmitHandler` to coordinate validation, focus, and ordered submission across all of them. It returns both pieces you typically need:
+
+- **`handleSubmit`** — a form event handler that validates every form in parallel, focuses the first invalid field across forms (in array order) if any fail, and calls your `onAllValid` callback only when every form passes.
+- **`errorHandling`** — a combined `HookErrorHandling` built from the forms via `composeErrorHandler` internally. No need to call `composeErrorHandler` yourself for the common case.
+
+```tsx
+const { handleSubmit, errorHandling } = composeSubmitHandler(
+  [employeeDetails, compensation],
+  async () => {
+    await employeeDetails.actions.onSubmit()
+    await compensation.actions.onSubmit()
+  },
+)
+```
+
+If the same screen also has extra `@gusto/embedded-api` queries that should feed the same error banner, pass the `composeSubmitHandler` result back into `composeErrorHandler` alongside those queries — the result already satisfies `composeErrorHandler`'s input shape:
+
+```tsx
+const submitResult = composeSubmitHandler([employeeDetails, compensation], onAllValid)
+
+const errorHandling = composeErrorHandler([submitResult, extraQuery])
+```
 
 ### Setup
 
-Each hook must be initialized with `shouldFocusError: false` so that react-hook-form's per-form focus is disabled and `composeSubmitHandler` can manage cross-form focus instead.
+Each form hook must be initialized with `shouldFocusError: false` so that react-hook-form's per-form focus is disabled and `composeSubmitHandler` can manage cross-form focus instead.
+
+Both connection approaches work with composition. Choose the one that fits your layout.
+
+#### Grouped layout with `SDKFormProvider`
+
+When fields from each hook are grouped into their own sections, `SDKFormProvider` keeps things clean:
 
 ```tsx
 import {
@@ -417,7 +569,7 @@ import {
   useCompensationForm,
   composeSubmitHandler,
   SDKFormProvider,
-} from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'
+} from '@gusto/embedded-react-sdk'
 
 function OnboardingPage({ companyId, employeeId }: { companyId: string; employeeId: string }) {
   const employeeDetails = useEmployeeDetailsForm({
@@ -435,26 +587,37 @@ function OnboardingPage({ companyId, employeeId }: { companyId: string; employee
     return <LoadingSpinner />
   }
 
-  const DetailsFields = employeeDetails.form.Fields
-  const CompFields = compensation.form.Fields
+  const EmployeeDetailsFields = employeeDetails.form.Fields
+  const CompensationFields = compensation.form.Fields
 
-  const handleSubmit = composeSubmitHandler([employeeDetails, compensation], async () => {
-    await employeeDetails.actions.onSubmit()
-    await compensation.actions.onSubmit()
-  })
+  const { handleSubmit, errorHandling } = composeSubmitHandler(
+    [employeeDetails, compensation],
+    async () => {
+      await employeeDetails.actions.onSubmit()
+      await compensation.actions.onSubmit()
+    },
+  )
 
   return (
     <form onSubmit={handleSubmit}>
+      {errorHandling.errors.length > 0 && (
+        <div role="alert">
+          {errorHandling.errors.map((error, i) => (
+            <p key={i}>{error.message}</p>
+          ))}
+        </div>
+      )}
+
       <SDKFormProvider formHookResult={employeeDetails}>
         <h2>Employee Details</h2>
-        <DetailsFields.FirstName label="First name" />
-        <DetailsFields.LastName label="Last name" />
+        <EmployeeDetailsFields.FirstName label="First name" />
+        <EmployeeDetailsFields.LastName label="Last name" />
       </SDKFormProvider>
 
       <SDKFormProvider formHookResult={compensation}>
         <h2>Compensation</h2>
-        <CompFields.JobTitle label="Job title" />
-        <CompFields.Rate label="Pay rate" />
+        <CompensationFields.JobTitle label="Job title" />
+        <CompensationFields.Rate label="Pay rate" />
       </SDKFormProvider>
 
       <button type="submit">Save All</button>
@@ -463,7 +626,88 @@ function OnboardingPage({ companyId, employeeId }: { companyId: string; employee
 }
 ```
 
-Each `SDKFormProvider` scopes field metadata and error syncing to its respective hook. The outer `<form>` element uses the composed submit handler to coordinate everything.
+Each `SDKFormProvider` scopes field metadata and error syncing to its respective hook. The outer `<form>` element uses the composed submit handler, and the combined `errorHandling` drives a single banner covering fetch failures from either hook and submit failures from any of the `onSubmit` calls.
+
+#### Interleaved layout with `formHookResult` prop
+
+When you want to mix fields from different hooks in any order — for example, placing job title next to first name, or grouping fields by theme rather than domain — use the `formHookResult` prop. There are no provider boundaries to manage, so fields can go anywhere:
+
+```tsx
+import {
+  useEmployeeDetailsForm,
+  useCompensationForm,
+  useWorkAddressForm,
+  composeSubmitHandler,
+} from '@gusto/embedded-react-sdk'
+
+function OnboardingPage({ companyId, employeeId }: { companyId: string; employeeId: string }) {
+  const employeeDetails = useEmployeeDetailsForm({
+    companyId,
+    employeeId,
+    shouldFocusError: false,
+  })
+
+  const compensation = useCompensationForm({
+    employeeId,
+    shouldFocusError: false,
+  })
+
+  const workAddress = useWorkAddressForm({
+    companyId,
+    employeeId,
+    shouldFocusError: false,
+  })
+
+  if (employeeDetails.isLoading || compensation.isLoading || workAddress.isLoading) {
+    return <LoadingSpinner />
+  }
+
+  const EmployeeDetailsFields = employeeDetails.form.Fields
+  const CompensationFields = compensation.form.Fields
+  const WorkAddressFields = workAddress.form.Fields
+
+  const { handleSubmit, errorHandling } = composeSubmitHandler(
+    [employeeDetails, compensation, workAddress],
+    async () => {
+      await employeeDetails.actions.onSubmit()
+      await compensation.actions.onSubmit()
+      await workAddress.actions.onSubmit()
+    },
+  )
+
+  return (
+    <form onSubmit={handleSubmit}>
+      {errorHandling.errors.length > 0 && (
+        <div role="alert">
+          {errorHandling.errors.map((error, i) => (
+            <p key={i}>{error.message}</p>
+          ))}
+        </div>
+      )}
+
+      <section>
+        <h2>Who</h2>
+        <EmployeeDetailsFields.FirstName label="First name" formHookResult={employeeDetails} />
+        <EmployeeDetailsFields.LastName label="Last name" formHookResult={employeeDetails} />
+        <EmployeeDetailsFields.Email label="Email" formHookResult={employeeDetails} />
+        <CompensationFields.StartDate label="Start date" formHookResult={compensation} />
+      </section>
+
+      <section>
+        <h2>Role and Location</h2>
+        <CompensationFields.JobTitle label="Job title" formHookResult={compensation} />
+        <WorkAddressFields.Location label="Work address" formHookResult={workAddress} />
+        <CompensationFields.Rate label="Pay rate" formHookResult={compensation} />
+        <CompensationFields.PaymentUnit label="Pay frequency" formHookResult={compensation} />
+      </section>
+
+      <button type="submit">Save All</button>
+    </form>
+  )
+}
+```
+
+Fields from `employeeDetails`, `compensation`, and `workAddress` are freely interleaved — each field knows which hook it belongs to via its `formHookResult` prop. Validation, error handling, and submission all work identically to the provider-based approach.
 
 ### Submit-time entity ID resolution
 
@@ -487,7 +731,7 @@ function CreateOnboardingPage({ companyId }: { companyId: string }) {
 
   // ...loading checks...
 
-  const handleSubmit = composeSubmitHandler(
+  const { handleSubmit } = composeSubmitHandler(
     [employeeDetails, compensation, workAddress],
     async () => {
       const employeeResult = await employeeDetails.actions.onSubmit()
@@ -513,7 +757,7 @@ When `employeeId` is omitted from props, the hooks skip data fetching and render
 Early return when a subsequent call depends on data from a prior call:
 
 ```tsx
-const handleSubmit = composeSubmitHandler(
+const { handleSubmit, errorHandling } = composeSubmitHandler(
   [employeeDetails, compensation, workAddress],
   async () => {
     const employeeResult = await employeeDetails.actions.onSubmit()
@@ -558,7 +802,7 @@ const compensation = useCompensationForm({
 
 // ...loading checks...
 
-const handleSubmit = composeSubmitHandler(
+const { handleSubmit } = composeSubmitHandler(
   [employeeDetails, workAddress, compensation],
   async () => {
     const employeeResult = await employeeDetails.actions.onSubmit()

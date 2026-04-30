@@ -4,6 +4,7 @@
 - [BadgeProps](#badgeprops)
 - [BannerProps](#bannerprops)
 - [BaseListProps](#baselistprops)
+- [BoxHeaderProps](#boxheaderprops)
 - [BoxProps](#boxprops)
 - [BreadcrumbsProps](#breadcrumbsprops)
   - [Breadcrumb](#breadcrumb)
@@ -95,13 +96,24 @@
 | **aria-labelledby**  | `string`            | No       | ID of an element that labels this list    |
 | **aria-describedby** | `string`            | No       | ID of an element that describes this list |
 
+## BoxHeaderProps
+
+| Prop             | Type                                           | Required | Description |
+| ---------------- | ---------------------------------------------- | -------- | ----------- |
+| **title**        | `React.ReactNode`                              | Yes      | -           |
+| **description**  | `React.ReactNode`                              | No       | -           |
+| **action**       | `React.ReactNode`                              | No       | -           |
+| **headingLevel** | `"h1" \| "h2" \| "h3" \| "h4" \| "h5" \| "h6"` | No       | -           |
+
 ## BoxProps
 
-| Prop          | Type              | Required | Description                                                               |
-| ------------- | ----------------- | -------- | ------------------------------------------------------------------------- |
-| **children**  | `React.ReactNode` | Yes      | Content to be displayed inside the box                                    |
-| **footer**    | `React.ReactNode` | No       | Content rendered at the bottom of the box with an edge-to-edge top border |
-| **className** | `string`          | No       | CSS className to be applied                                               |
+| Prop            | Type              | Required | Description |
+| --------------- | ----------------- | -------- | ----------- |
+| **children**    | `React.ReactNode` | Yes      | -           |
+| **header**      | `React.ReactNode` | No       | -           |
+| **footer**      | `React.ReactNode` | No       | -           |
+| **withPadding** | `boolean`         | No       | -           |
+| **className**   | `string`          | No       | -           |
 
 ## BreadcrumbsProps
 
@@ -116,10 +128,11 @@
 
 ### Breadcrumb
 
-| Prop      | Type              | Required | Description |
-| --------- | ----------------- | -------- | ----------- |
-| **id**    | `string`          | Yes      | -           |
-| **label** | `React.ReactNode` | Yes      | -           |
+| Prop            | Type              | Required | Description                                                                                         |
+| --------------- | ----------------- | -------- | --------------------------------------------------------------------------------------------------- |
+| **id**          | `string`          | Yes      | -                                                                                                   |
+| **label**       | `React.ReactNode` | Yes      | -                                                                                                   |
+| **isClickable** | `boolean`         | No       | When false, the breadcrumb is rendered as plain text even if onClick is provided. Defaults to true. |
 
 ## ButtonIconProps
 
@@ -244,7 +257,7 @@
 | **onChange**                | `(value: string) => void`           | No       | Callback when selection changes                                                                                                                |
 | **onBlur**                  | `() => void`                        | No       | Handler for blur events                                                                                                                        |
 | **options**                 | [ComboBoxOption](#comboboxoption)[] | Yes      | Array of options to display in the dropdown                                                                                                    |
-| **value**                   | `string`                            | No       | Currently selected value                                                                                                                       |
+| **value**                   | `null \| string`                    | No       | Currently selected value                                                                                                                       |
 | **inputRef**                | `Ref<HTMLInputElement \| null>`     | No       | React ref for the combo box input element                                                                                                      |
 | **allowsCustomValue**       | `boolean`                           | No       | Allows the user to type any value, not just options in the list. The options list becomes a suggestion helper rather than a strict constraint. |
 | **description**             | `React.ReactNode`                   | No       | Optional description text for the field                                                                                                        |
@@ -265,31 +278,36 @@
 
 ## DatePickerProps
 
-| Prop                        | Type                            | Required | Description                                                            |
-| --------------------------- | ------------------------------- | -------- | ---------------------------------------------------------------------- |
-| **inputRef**                | `Ref<HTMLInputElement \| null>` | No       | React ref for the date input element                                   |
-| **isDisabled**              | `boolean`                       | No       | Disables the date picker and prevents interaction                      |
-| **isInvalid**               | `boolean`                       | No       | Indicates that the field has an error                                  |
-| **onChange**                | `(value: Date \| null) => void` | No       | Callback when selected date changes                                    |
-| **onBlur**                  | `() => void`                    | No       | Handler for blur events                                                |
-| **label**                   | `string`                        | Yes      | Label text for the date picker field                                   |
-| **value**                   | `null \| Date`                  | No       | Currently selected date value                                          |
-| **placeholder**             | `string`                        | No       | Placeholder text when no date is selected                              |
-| **portalContainer**         | `HTMLElement`                   | No       | Element to use as the portal container                                 |
-| **description**             | `React.ReactNode`               | No       | Optional description text for the field                                |
-| **errorMessage**            | `string`                        | No       | Error message to display when the field is invalid                     |
-| **isRequired**              | `boolean`                       | No       | Indicates if the field is required                                     |
-| **shouldVisuallyHideLabel** | `boolean`                       | No       | Hides the label visually while keeping it accessible to screen readers |
-| **className**               | `string`                        | No       | -                                                                      |
-| **id**                      | `string`                        | No       | -                                                                      |
-| **name**                    | `string`                        | No       | -                                                                      |
+| Prop                        | Type                            | Required | Description                                                                                   |
+| --------------------------- | ------------------------------- | -------- | --------------------------------------------------------------------------------------------- |
+| **inputRef**                | `Ref<HTMLInputElement \| null>` | No       | React ref for the date input element                                                          |
+| **isDisabled**              | `boolean`                       | No       | Disables the date picker and prevents interaction                                             |
+| **isInvalid**               | `boolean`                       | No       | Indicates that the field has an error                                                         |
+| **onChange**                | `(value: Date \| null) => void` | No       | Callback when selected date changes                                                           |
+| **onBlur**                  | `() => void`                    | No       | Handler for blur events                                                                       |
+| **label**                   | `string`                        | Yes      | Label text for the date picker field                                                          |
+| **value**                   | `null \| Date`                  | No       | Currently selected date value                                                                 |
+| **placeholder**             | `string`                        | No       | Placeholder text when no date is selected                                                     |
+| **portalContainer**         | `HTMLElement`                   | No       | Element to use as the portal container                                                        |
+| **minDate**                 | `Date`                          | No       | Minimum selectable date. Dates before this will be disabled.                                  |
+| **maxDate**                 | `Date`                          | No       | Maximum selectable date. Dates after this will be disabled.                                   |
+| **isDateDisabled**          | `(date: Date) => boolean`       | No       | Callback to determine if a specific date should be disabled. Return true to disable the date. |
+| **description**             | `React.ReactNode`               | No       | Optional description text for the field                                                       |
+| **errorMessage**            | `string`                        | No       | Error message to display when the field is invalid                                            |
+| **isRequired**              | `boolean`                       | No       | Indicates if the field is required                                                            |
+| **shouldVisuallyHideLabel** | `boolean`                       | No       | Hides the label visually while keeping it accessible to screen readers                        |
+| **className**               | `string`                        | No       | -                                                                                             |
+| **id**                      | `string`                        | No       | -                                                                                             |
+| **name**                    | `string`                        | No       | -                                                                                             |
 
 ## DescriptionListProps
 
-| Prop          | Type                                          | Required | Description |
-| ------------- | --------------------------------------------- | -------- | ----------- |
-| **items**     | [DescriptionListItem](#descriptionlistitem)[] | Yes      | -           |
-| **className** | `string`                                      | No       | -           |
+| Prop               | Type                                          | Required | Description |
+| ------------------ | --------------------------------------------- | -------- | ----------- |
+| **items**          | [DescriptionListItem](#descriptionlistitem)[] | Yes      | -           |
+| **layout**         | `"stacked" \| "horizontal"`                   | No       | -           |
+| **showSeparators** | `boolean`                                     | No       | -           |
+| **className**      | `string`                                      | No       | -           |
 
 ### DescriptionListItem
 
@@ -340,6 +358,7 @@
 | **textAlign** | `"start" \| "center" \| "end"`                 | No       | Text alignment within the heading                                         |
 | **children**  | `React.ReactNode`                              | No       | Content to be displayed inside the heading                                |
 | **className** | `string`                                       | No       | -                                                                         |
+| **id**        | `string`                                       | No       | -                                                                         |
 
 ## LinkProps
 
@@ -477,7 +496,7 @@ type PaginationItemsPerPage = 5 | 10 | 50
 | **isInvalid**               | `boolean`                               | No       | Indicates that the field has an error                                  |
 | **isDisabled**              | `boolean`                               | No       | Disables all radio options in the group                                |
 | **options**                 | [RadioGroupOption](#radiogroupoption)[] | Yes      | Array of radio options to display                                      |
-| **value**                   | `string`                                | No       | Currently selected value                                               |
+| **value**                   | `null \| string`                        | No       | Currently selected value                                               |
 | **defaultValue**            | `string`                                | No       | Initially selected value                                               |
 | **onChange**                | `(value: string) => void`               | No       | Callback when selection changes                                        |
 | **inputRef**                | `Ref<HTMLInputElement \| null>`         | No       | React ref for the first radio input element                            |
@@ -527,7 +546,7 @@ type PaginationItemsPerPage = 5 | 10 | 50
 | **onBlur**                  | `() => void`                     | No       | Handler for blur events                                                |
 | **options**                 | [SelectOption](#selectoption)[]  | Yes      | Array of options to display in the select dropdown                     |
 | **placeholder**             | `string`                         | No       | Placeholder text when no option is selected                            |
-| **value**                   | `string`                         | No       | Currently selected value                                               |
+| **value**                   | `null \| string`                 | No       | Currently selected value                                               |
 | **inputRef**                | `Ref<HTMLButtonElement \| null>` | No       | React ref for the select button element                                |
 | **portalContainer**         | `HTMLElement`                    | No       | Element to use as the portal container                                 |
 | **description**             | `React.ReactNode`                | No       | Optional description text for the field                                |
@@ -572,7 +591,7 @@ type PaginationItemsPerPage = 5 | 10 | 50
 | **rows**              | [TableRow](#tablerow)[]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | Yes      | Array of rows to be displayed in the table                                               |
 | **footer**            | [TableData](#tabledata)[]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | No       | Array of footer cells for the table                                                      |
 | **emptyState**        | `React.ReactNode`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | No       | Content to display when the table has no rows                                            |
-| **variant**           | `"default" \| "minimal"`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | No       | Visual style variant of the table                                                        |
+| **isWithinBox**       | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | No       | Removes borders and background for use inside a Box component                            |
 | **hasCheckboxColumn** | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | No       | Whether the first column contains checkboxes (affects which column gets leading variant) |
 | **className**         | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | No       | -                                                                                        |
 | **id**                | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | No       | -                                                                                        |
@@ -663,6 +682,7 @@ type PaginationItemsPerPage = 5 | 10 | 50
 | **min**                     | `string \| number`                                                                                                                                                                                                                                                    | No       | -                                                                      |
 | **max**                     | `string \| number`                                                                                                                                                                                                                                                    | No       | -                                                                      |
 | **maxLength**               | `number`                                                                                                                                                                                                                                                              | No       | -                                                                      |
+| **aria-labelledby**         | `string`                                                                                                                                                                                                                                                              | No       | Identifies the element (or elements) that labels the current element.  |
 | **aria-describedby**        | `string`                                                                                                                                                                                                                                                              | No       | Identifies the element (or elements) that describes the object.        |
 
 ## TextProps

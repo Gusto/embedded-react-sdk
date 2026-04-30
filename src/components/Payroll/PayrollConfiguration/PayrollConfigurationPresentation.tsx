@@ -3,7 +3,7 @@ import { useRef } from 'react'
 import type { EmployeeCompensations } from '@gusto/embedded-api/models/components/payroll'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
-import type { PayScheduleObject } from '@gusto/embedded-api/models/components/payscheduleobject'
+import type { PaySchedule as PayScheduleObject } from '@gusto/embedded-api/models/components/payschedule'
 import { Trans, useTranslation } from 'react-i18next'
 import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
 import {
@@ -122,7 +122,11 @@ export const PayrollConfigurationPresentation = ({
             {payPeriod && (
               <Text variant="supporting">
                 <Trans
-                  i18nKey="description"
+                  i18nKey={
+                    payrollCategory === PayrollCategory.Dismissal
+                      ? 'descriptionDismissal'
+                      : 'description'
+                  }
                   t={t}
                   components={{ dateWrapper: <Text weight="bold" as="span" /> }}
                   values={{

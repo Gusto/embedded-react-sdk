@@ -176,6 +176,27 @@ export const formatDateToStringDate = (date: Date): string | null => {
 }
 
 /**
+ * Converts any parseable date string to a `YYYY-MM-DD` ISO string using local
+ * time, so the calendar date is preserved regardless of the runtime timezone.
+ *
+ * Unlike `formatDateToStringDate` (which reads UTC), this function reads the
+ * local year/month/day — safe for dates parsed from locale-format strings
+ * (e.g. "4/16/1998") or ISO strings, both of which `normalizeToDate` lands at
+ * local midnight.
+ *
+ * Returns `''` for null, undefined, empty, or unparseable input.
+ */
+export const normalizeToISOString = (value?: string | null): string => {
+  if (!value) return ''
+  const date = normalizeToDate(value)
+  if (!date) return ''
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+/**
  * Normalizes Date to local midnight, handling timezone issues from any adapter.
  */
 export const normalizeDateToLocal = (date: Date | null): Date | null => {
@@ -245,4 +266,10 @@ export const addBusinessDays = (startDate: Date, businessDays: number): Date => 
   }
 
   return currentDate
+}
+
+/** Formats numeric month and day as a zero-padded `MM-DD` string. */
+export function formatMonthDay(month?: number, day?: number): string | undefined {
+  if (month == null || day == null) return undefined
+  return `${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
 }

@@ -15,12 +15,13 @@ export type DataViewProps<T> = {
   label: string
   itemMenu?: useDataViewPropReturn<T>['itemMenu']
   onSelect?: useDataViewPropReturn<T>['onSelect']
-  isItemSelected?: useDataViewPropReturn<T>['isItemSelected']
+  onSelectAll?: useDataViewPropReturn<T>['onSelectAll']
+  getIsItemSelected?: (item: T) => boolean
   breakAt?: string
   breakpoints?: useContainerBreakpointsProps['breakpoints']
   footer?: useDataViewPropReturn<T>['footer']
   isFetching?: boolean
-  variant?: TableProps['variant']
+  isWithinBox?: TableProps['isWithinBox']
   emptyState?: useDataViewPropReturn<T>['emptyState']
   selectionMode?: SelectionMode
 }
@@ -31,9 +32,10 @@ export const DataView = <T,>({
   breakAt = 'small',
   breakpoints: customBreakpoints,
   footer,
-  variant,
+  isWithinBox,
   emptyState,
   selectionMode,
+  onSelectAll,
   ...dataViewProps
 }: DataViewProps<T>) => {
   const containerRef = useRef<HTMLElement | null>(null)
@@ -61,8 +63,9 @@ export const DataView = <T,>({
       {isBreakpointsDetected && (
         <Component
           {...dataViewProps}
+          onSelectAll={onSelectAll}
           footer={footer}
-          variant={variant}
+          isWithinBox={isWithinBox}
           emptyState={emptyState}
           selectionMode={selectionMode}
         />

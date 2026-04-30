@@ -1,0 +1,13 @@
+.payScheduleContainer {
+  width: 100%;
+}
+
+.payScheduleForm {
+  width: 100%;
+}
+
+.calendarContainer {
+  display: flex;
+  flex-direction: column;
+  gap: toRem(16);
+}

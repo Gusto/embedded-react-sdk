@@ -15,10 +15,10 @@ import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 
 export function Table(rawProps: TableProps) {
   const resolvedProps = applyMissingDefaults(rawProps, TableDefaults)
-  const { className, headers, rows, footer, emptyState, variant, hasCheckboxColumn, ...props } =
+  const { className, headers, rows, footer, emptyState, isWithinBox, hasCheckboxColumn, ...props } =
     resolvedProps
   return (
-    <div className={styles.root} data-variant={variant}>
+    <div className={styles.root} data-within-box={isWithinBox || undefined}>
       <AriaTable {...props} className={classnames('react-aria-Table', className)}>
         <AriaTableHeader>
           <Row>

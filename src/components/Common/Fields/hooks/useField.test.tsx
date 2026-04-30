@@ -1,6 +1,6 @@
 import { renderHook, act, waitFor } from '@testing-library/react'
 import { describe, test, expect, vi } from 'vitest'
-import { FormProvider, useForm } from 'react-hook-form'
+import { type Control, FormProvider, useForm } from 'react-hook-form'
 import React from 'react'
 import { useField } from './useField'
 
@@ -35,12 +35,43 @@ describe('useField', () => {
     })
   })
 
-  test('should not return an error message if fieldState has no error', () => {
+  test('should not show errorMessage from context path when there is no fieldState error', () => {
     const { result } = renderHook(
       () => useField({ name: 'testField', errorMessage: 'test error message' }),
       { wrapper: FormWrapper },
     )
 
+    expect(result.current.isInvalid).toBe(false)
+    expect(result.current.errorMessage).toBeUndefined()
+  })
+
+  test('should show errorMessage as authoritative when control is explicitly provided', () => {
+    let capturedControl: ReturnType<typeof useForm>['control'] | undefined
+    const ControlCapture = ({ children }: { children: React.ReactNode }) => {
+      const methods = useForm({ mode: 'onTouched' })
+      capturedControl = methods.control
+      return <FormProvider {...methods}>{children}</FormProvider>
+    }
+    const { result } = renderHook(
+      () =>
+        useField({
+          name: 'testField',
+          control: capturedControl as unknown as Control,
+          errorMessage: 'sdk error',
+        }),
+      { wrapper: ControlCapture },
+    )
+
+    expect(result.current.isInvalid).toBe(true)
+    expect(result.current.errorMessage).toBe('sdk error')
+  })
+
+  test('should not return an error message when neither fieldState nor errorMessage prop has an error', () => {
+    const { result } = renderHook(() => useField({ name: 'testField' }), {
+      wrapper: FormWrapper,
+    })
+
+    expect(result.current.isInvalid).toBe(false)
     expect(result.current.errorMessage).toBeUndefined()
   })
 

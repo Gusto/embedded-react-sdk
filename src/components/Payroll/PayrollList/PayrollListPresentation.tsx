@@ -1,54 +1,115 @@
 import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
-import type { PayScheduleList } from '@gusto/embedded-api/models/components/payschedulelist'
+import { OffCycleReasonType } from '@gusto/embedded-api/models/components/payroll'
+import type { PaySchedule } from '@gusto/embedded-api/models/components/payschedule'
 import type { WireInRequest } from '@gusto/embedded-api/models/components/wireinrequest'
-import { useState, useRef } from 'react'
+import { useState, useRef, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { PayrollStatusBadges } from '../PayrollStatusBadges'
 import { getPayrollTypeLabel } from '../helpers'
 import styles from './PayrollListPresentation.module.scss'
-import { DataView, Flex, HamburgerMenu } from '@/components/Common'
+import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
+import { DataView, Flex, HamburgerMenu, DateRangeFilter } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import type { UseDateRangeFilterResult } from '@/hooks/useDateRangeFilter/useDateRangeFilter'
 import { useI18n } from '@/i18n'
 import { formatDateToStringDate } from '@/helpers/dateFormatting'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 import FeatureIconCheck from '@/assets/icons/feature-icon-check.svg?react'
 import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 
+const CANCELLABLE_OFF_CYCLE_REASONS = new Set<string>([
+  OffCycleReasonType.Bonus,
+  OffCycleReasonType.Correction,
+  OffCycleReasonType.DismissedEmployee,
+])
+
+function hasKebabActions(
+  payroll: Payroll,
+  blockers: ApiPayrollBlocker[],
+  todayAtMidnight: Date | null,
+): boolean {
+  if (payroll.processed) return false
+
+  const payPeriodStartDate = payroll.payPeriod?.startDate
+    ? new Date(payroll.payPeriod.startDate)
+    : null
+
+  const isSkippablePayroll =
+    !payroll.offCycle || payroll.offCycleReason === OffCycleReasonType.TransitionFromOldPaySchedule
+
+  const canSkipPayroll =
+    blockers.length === 0 &&
+    isSkippablePayroll &&
+    todayAtMidnight &&
+    payPeriodStartDate &&
+    todayAtMidnight >= payPeriodStartDate
+
+  const canDeletePayroll =
+    payroll.offCycle &&
+    !!payroll.offCycleReason &&
+    CANCELLABLE_OFF_CYCLE_REASONS.has(payroll.offCycleReason)
+
+  return !!(canSkipPayroll || canDeletePayroll)
+}
+
 interface PayrollListPresentationProps {
   onRunPayroll: ({ payrollUuid, payPeriod }: Pick<Payroll, 'payrollUuid' | 'payPeriod'>) => void
   onSubmitPayroll: ({ payrollUuid, payPeriod }: Pick<Payroll, 'payrollUuid' | 'payPeriod'>) => void
   onSkipPayroll: ({ payrollUuid }: Pick<Payroll, 'payrollUuid'>) => void
+  onDeletePayroll: ({ payrollUuid }: Pick<Payroll, 'payrollUuid'>) => void
   onRunOffCyclePayroll: () => void
   payrolls: Payroll[]
-  paySchedules: PayScheduleList[]
+  pagination?: PaginationControlProps
+  paySchedules: PaySchedule[]
   showSkipSuccessAlert: boolean
   onDismissSkipSuccessAlert: () => void
+  showDeleteSuccessAlert: boolean
+  onDismissDeleteSuccessAlert: () => void
   skippingPayrollId: string | null
+  deletingPayrollId: string | null
   blockers: ApiPayrollBlocker[]
   wireInRequests: WireInRequest[]
+  dateRangeFilter: UseDateRangeFilterResult
 }
 
 export const PayrollListPresentation = ({
   onRunPayroll,
   onSubmitPayroll,
   onSkipPayroll,
+  onDeletePayroll,
   onRunOffCyclePayroll,
   payrolls,
+  pagination,
   paySchedules,
   showSkipSuccessAlert,
   onDismissSkipSuccessAlert,
+  showDeleteSuccessAlert,
+  onDismissDeleteSuccessAlert,
   skippingPayrollId,
+  deletingPayrollId,
   blockers,
   wireInRequests,
+  dateRangeFilter,
 }: PayrollListPresentationProps) => {
-  const { Box, Button, Dialog, Heading, Text, Alert } = useComponentContext()
+  const { Box, Button, ButtonIcon, Dialog, Heading, Text, Alert } = useComponentContext()
   useI18n('Payroll.PayrollList')
   const { t } = useTranslation('Payroll.PayrollList')
   const dateFormatter = useDateFormatter()
   const containerRef = useRef<HTMLDivElement>(null)
   const breakpoints = useContainerBreakpoints({ ref: containerRef })
   const isDesktop = breakpoints.includes('large')
+
+  const todayAtMidnight = useMemo(() => {
+    const todayDateString = formatDateToStringDate(new Date())
+    return todayDateString ? new Date(todayDateString) : null
+  }, [])
+
+  const anyPayrollHasKebabActions = useMemo(
+    () => payrolls.some(payroll => hasKebabActions(payroll, blockers, todayAtMidnight)),
+    [payrolls, blockers, todayAtMidnight],
+  )
+
   const [skipPayrollDialogState, setSkipPayrollDialogState] = useState<{
     isOpen: boolean
     payrollId: string | null
@@ -79,6 +140,39 @@ export const PayrollListPresentation = ({
     if (skipPayrollDialogState.payrollId) {
       onSkipPayroll({ payrollUuid: skipPayrollDialogState.payrollId })
       handleCloseSkipDialog()
+    }
+  }
+
+  const [deletePayrollDialogState, setDeletePayrollDialogState] = useState<{
+    isOpen: boolean
+    payrollId: string | null
+    payPeriod: string | null
+  }>({
+    isOpen: false,
+    payrollId: null,
+    payPeriod: null,
+  })
+
+  const handleOpenDeleteDialog = (payrollId: string, payPeriod: string) => {
+    setDeletePayrollDialogState({
+      isOpen: true,
+      payrollId,
+      payPeriod,
+    })
+  }
+
+  const handleCloseDeleteDialog = () => {
+    setDeletePayrollDialogState({
+      isOpen: false,
+      payrollId: null,
+      payPeriod: null,
+    })
+  }
+
+  const handleConfirmDeletePayroll = () => {
+    if (deletePayrollDialogState.payrollId) {
+      onDeletePayroll({ payrollUuid: deletePayrollDialogState.payrollId })
+      handleCloseDeleteDialog()
     }
   }
 
@@ -139,19 +233,39 @@ export const PayrollListPresentation = ({
             />
           </div>
         )}
-        <Flex
-          flexDirection={{ base: 'column', medium: 'row' }}
-          justifyContent="space-between"
-          alignItems="flex-start"
-          gap={{ base: 12, medium: 24 }}
-        >
-          <Flex>
-            <Heading as="h2">{t('title')}</Heading>
-          </Flex>
+        {showDeleteSuccessAlert && (
+          <div className={styles.alertContainer}>
+            <Alert
+              status="info"
+              label={t('deleteSuccessAlert')}
+              onDismiss={onDismissDeleteSuccessAlert}
+            />
+          </div>
+        )}
+        <Flex justifyContent="space-between" alignItems="center">
+          <Heading as="h2">{t('title')}</Heading>
+          <DateRangeFilter
+            startDate={dateRangeFilter.filterStartDate}
+            endDate={dateRangeFilter.filterEndDate}
+            onStartDateChange={dateRangeFilter.handleStartDateChange}
+            onEndDateChange={dateRangeFilter.handleEndDateChange}
+            onClear={dateRangeFilter.handleClearFilter}
+            startDateLabel={t('dateFilter.startDate')}
+            endDateLabel={t('dateFilter.endDate')}
+            applyLabel={t('dateFilter.apply')}
+            cancelLabel={t('dateFilter.cancel')}
+            resetLabel={t('dateFilter.reset')}
+            selectDatesLabel={t('dateFilter.selectDates')}
+            triggerLabel={t('dateFilter.trigger')}
+            isFilterActive={dateRangeFilter.isFilterActive}
+            maxEndDate={dateRangeFilter.getMaxEndDate()}
+            minStartDate={dateRangeFilter.getMinStartDate()}
+          />
         </Flex>
 
         <DataView
           breakAt="large"
+          pagination={pagination}
           emptyState={() => (
             <Flex flexDirection="column" alignItems="center" gap={24}>
               <FeatureIconCheck />
@@ -182,7 +296,7 @@ export const PayrollListPresentation = ({
               title: t('tableHeaders.0'),
             },
             {
-              render: payroll => <Text>{getPayrollTypeLabel(payroll)}</Text>,
+              render: payroll => getPayrollTypeLabel(payroll),
               title: t('tableHeaders.1'),
             },
             {
@@ -224,52 +338,92 @@ export const PayrollListPresentation = ({
           itemMenu={payroll => {
             const { payrollUuid, processed, payPeriod } = payroll
 
-            if (processed) {
-              return null
-            }
-
             const isProcessingSkipPayroll = skippingPayrollId === payrollUuid
+            const isProcessingDeletePayroll = deletingPayrollId === payrollUuid
+
+            const button = isDesktop ? renderActionButton(payroll) : null
+
+            if (processed) {
+              return (
+                <div className={styles.actionsContainer}>
+                  {anyPayrollHasKebabActions && (
+                    <ButtonIcon
+                      aria-label=""
+                      aria-hidden={true}
+                      tabIndex={-1}
+                      isDisabled={true}
+                      className={styles.menuPlaceholder}
+                    />
+                  )}
+                </div>
+              )
+            }
 
             const { fullPeriod: payPeriodString } = formatPayPeriod(
               payPeriod?.startDate,
               payPeriod?.endDate,
             )
 
-            const todayDateString = formatDateToStringDate(new Date())
-            const todayAtMidnight = todayDateString ? new Date(todayDateString) : null
             const payPeriodStartDate = payPeriod?.startDate ? new Date(payPeriod.startDate) : null
+
+            const isSkippablePayroll =
+              !payroll.offCycle ||
+              payroll.offCycleReason === OffCycleReasonType.TransitionFromOldPaySchedule
 
             const canSkipPayroll =
               blockers.length === 0 &&
+              isSkippablePayroll &&
               todayAtMidnight &&
               payPeriodStartDate &&
               todayAtMidnight >= payPeriodStartDate
 
-            const button = isDesktop ? renderActionButton(payroll) : null
+            const canDeletePayroll =
+              payroll.offCycle &&
+              !!payroll.offCycleReason &&
+              CANCELLABLE_OFF_CYCLE_REASONS.has(payroll.offCycleReason)
 
-            const hamburgerMenu = canSkipPayroll ? (
-              <HamburgerMenu
-                isLoading={isProcessingSkipPayroll}
-                menuLabel={t('payrollMenuLabel')}
-                items={[
+            const menuItems = canSkipPayroll
+              ? [
                   {
                     label: t('skipPayrollCta'),
                     onClick: () => {
                       handleOpenSkipDialog(payrollUuid!, payPeriodString)
                     },
                   },
-                ]}
-              />
-            ) : null
+                ]
+              : canDeletePayroll
+                ? [
+                    {
+                      label: t('deletePayrollCta'),
+                      onClick: () => {
+                        handleOpenDeleteDialog(payrollUuid!, payPeriodString)
+                      },
+                    },
+                  ]
+                : null
 
-            if (!button && !hamburgerMenu) {
-              return null
-            }
+            const hasMenuActions = menuItems !== null
 
             return (
               <div className={styles.actionsContainer}>
                 {button}
-                {hamburgerMenu}
+                {hasMenuActions ? (
+                  <HamburgerMenu
+                    isLoading={canSkipPayroll ? isProcessingSkipPayroll : isProcessingDeletePayroll}
+                    menuLabel={t('payrollMenuLabel')}
+                    items={menuItems}
+                  />
+                ) : (
+                  anyPayrollHasKebabActions && (
+                    <ButtonIcon
+                      aria-label=""
+                      aria-hidden={true}
+                      tabIndex={-1}
+                      isDisabled={true}
+                      className={styles.menuPlaceholder}
+                    />
+                  )
+                )}
               </div>
             )
           }}
@@ -284,6 +438,19 @@ export const PayrollListPresentation = ({
           closeActionLabel={t('skipPayrollDialog.cancelCta')}
         >
           {t('skipPayrollDialog.body')}
+        </Dialog>
+        <Dialog
+          isOpen={deletePayrollDialogState.isOpen}
+          onClose={handleCloseDeleteDialog}
+          onPrimaryActionClick={handleConfirmDeletePayroll}
+          isDestructive={true}
+          title={t('deletePayrollDialog.title', {
+            payPeriod: deletePayrollDialogState.payPeriod,
+          })}
+          primaryActionLabel={t('deletePayrollDialog.confirmCta')}
+          closeActionLabel={t('deletePayrollDialog.cancelCta')}
+        >
+          {t('deletePayrollDialog.body')}
         </Dialog>
         <Box className={styles.offCycleCta}>
           <Flex

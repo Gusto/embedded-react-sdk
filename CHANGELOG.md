@@ -1,5 +1,318 @@
 # Changelog
 
+## 0.42.0
+
+### Features & Enhancements
+
+- Add employee home address management and dashboard integration
+- Add employee work address management (SDK-640)
+- Extend TextInput with HTML input constraints and add EmployeeTable search
+- Add contractor management prototype with review, onboarding, and profile flows
+
+### Fixes
+
+- Contractor profile UX fixes, settings panel wiring, and skeleton loading state
+- Validate integer percentages in payment method split (SDK-464)
+- Add empty state to RecoveryCasesList (SDK-426)
+- Normalize locale-format dateOfBirth defaultValues to ISO before form validation
+- Use hook Fields in PayScheduleForm instead of raw Common field components
+
+### Chores & Maintenance
+
+- Consolidate Flow header chrome into a single discriminated `header` config (replaces internal `progressBarType`, `progressBarCta`, `currentBreadcrumbId` fields)
+- Integrate useSignEmployeeForm hook into Employee DocumentSigner
+- Remove Common/SignatureForm shared components
+- Remove stale Hooks namespace from SDK Dev App
+- Fix TimeOff storybook story titles to use Domain/ prefix
+- Bump various dependencies (typescript-eslint, react-i18next, react-hook-form, i18next, msw, @commitlint/cli, postcss)
+
+## 0.41.0
+
+### Features & Enhancements
+
+- Add contractor profile design prototype with payment method management
+- Add Contractor List design prototype
+- Add theme switcher (system/light/dark) to sdk-app
+
+### Fixes
+
+- Seed Start date from employee hire date in edit mode
+
+### Chores & Maintenance
+
+- Integrate useSignCompanyForm hook into Company DocumentSigner
+- Migrate PaySchedule to usePayScheduleForm + Flow state machine (SDK-774)
+- Add unit tests for PolicySettings presentation component
+- Bump various dependencies (typescript-eslint, react-router-dom, @vitest/coverage-v8, dompurify, react-hook-form)
+
+## 0.40.0
+
+### Breaking Changes
+
+#### `composeSubmitHandler` now returns `{ handleSubmit, errorHandling }`
+
+`composeSubmitHandler` now returns an object with both the submit event handler
+and an aggregated `errorHandling` bag built from the forms it receives, instead
+of returning the submit handler directly. Partners who only need one shared error
+surface across multiple forms no longer have to call `composeErrorHandler`
+themselves.
+
+- **Before**: `const handleSubmit = composeSubmitHandler([formA, formB], onAllValid)`
+- **After**: `const { handleSubmit, errorHandling } = composeSubmitHandler([formA, formB], onAllValid)`
+
+For screens that also need to combine extra `@gusto/embedded-api` queries into
+the same error surface, pass the `composeSubmitHandler` result into
+`composeErrorHandler` alongside those queries:
+
+```tsx
+const submitResult = composeSubmitHandler([formA, formB], onAllValid)
+const errorHandling = composeErrorHandler([submitResult, extraQuery])
+```
+
+#### Hooks now exported from main entry point
+
+All form hooks have graduated from experimental to stable. They are now available
+directly from the main package entry:
+
+- **Before**: `import { useCompensationForm } from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'`
+- **After**: `import { useCompensationForm } from '@gusto/embedded-react-sdk'`
+
+The `@gusto/embedded-react-sdk/UNSTABLE_Hooks` entry point has been removed. All hook
+exports are now available from the main package entry.
+
+**Find and replace**: Search your codebase for
+`from '@gusto/embedded-react-sdk/UNSTABLE_Hooks'`
+and replace with `from '@gusto/embedded-react-sdk'`.
+
+#### Prebuilt hook form components removed
+
+The following prebuilt components have been removed: `CompensationForm`,
+`EmployeeDetailsForm`, `WorkAddressForm`, `HomeAddressForm`, `PayScheduleForm`,
+`SignCompanyForm`, `SignEmployeeForm`, `SignEmployeeI9Form`. These were internal
+testing artifacts. Use the corresponding hooks directly (e.g., `useCompensationForm`)
+to build custom form UI.
+
+#### `Employee.ManagementEmployeeList` removed
+
+`ManagementEmployeeList` is no longer exported from the `Employee` umbrella namespace. Use `EmployeeManagement.EmployeeList` instead:
+
+```tsx
+// Before
+import { Employee } from '@gusto/embedded-react-sdk'
+;<Employee.ManagementEmployeeList companyId={companyId} onEvent={handleEvent} />
+
+// After
+import { EmployeeManagement } from '@gusto/embedded-react-sdk'
+;<EmployeeManagement.EmployeeList companyId={companyId} onEvent={handleEvent} />
+```
+
+#### `Employee.*`, `Company.*`, and `Contractor.*` umbrella namespaces deprecated
+
+The flat `Employee`, `Company`, and `Contractor` namespace exports are now **deprecated** in favor of the new journey-based namespaces (`EmployeeOnboarding`, `EmployeeManagement`, `CompanyOnboarding`, `ContractorOnboarding`). Existing imports continue to work without changes, but partners should migrate at their convenience:
+
+```tsx
+// Deprecated (still works)
+import { Employee } from '@gusto/embedded-react-sdk'
+;<Employee.OnboardingFlow companyId={companyId} onEvent={handleEvent} />
+
+// Recommended
+import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
+;<EmployeeOnboarding.OnboardingFlow companyId={companyId} onEvent={handleEvent} />
+```
+
+The `Employee`, `Company`, and `Contractor` umbrella namespaces will be removed in a future major version. The `Payroll` and `InformationRequests` namespaces are unaffected and remain the primary import path for those domains.
+
+### Features & Enhancements
+
+- Add journey-based export namespaces (`EmployeeOnboarding`, `EmployeeManagement`, `CompanyOnboarding`, `ContractorOnboarding`) grouping flows and components by integration use case
+- Add PolicySettings presentation component for time-off policy creation
+- Fetch and display holiday pay policy in PolicyList
+- Add `useHomeAddressForm` unstable hook
+- Merge `sdk-app` and `prototype-app` into a unified development environment
+
+### Fixes
+
+- Exclude `admin_onboarding_review` from contractor self-onboarding statuses
+- Add flex properties to Box so content fills remaining space in parent
+- Remove scroll-into-view behavior on alerts
+- Remove overriding text instances in payroll receipt data views
+- Add spacing between description list items when rendered without dividing lines
+- Make PaySchedule create/edit tests more robust
+
+### Chores & Maintenance
+
+- Migrate Employee Profile to hook-based architecture
+- Replace error-handling helpers with `composeErrorHandler`
+- Partner hooks `BaseHookReady` typing (SDK-778)
+- Restructure `EmployeeList` into a feature module layout (internal, no public API change)
+- Update prototype app to use SDK components
+- Add document requirements list to contractor submit view
+- Add comprehensive Employee Profile component tests
+- Add Cursor skill for migrating SDK components to hooks
+- Add prototype-app design prototyping environment
+- Add RFC for SDK hooks approach for partner flexibility
+- Bump various dependencies (i18next, react-i18next, dompurify, @internationalized/date, @internationalized/number, eslint-plugin-react-hooks, msw, vite-plugin-checker, prettier, typescript-eslint, follow-redirects, react-router-dom, axe-core)
+
+## 0.39.0
+
+### Breaking Changes
+
+#### Box component adapter (`header`, `withPadding` props)
+
+The `Box` component now accepts a `header` prop (used for section titles and actions) and a `withPadding` prop. If you supply a custom **Box** via the [component adapter](./docs/component-adapter/component-adapter.md), update it to handle the new props:
+
+```tsx
+// Before
+Box: ({ children, footer, className }) => (
+  <div className={className}>
+    <div className="box-body">{children}</div>
+    {footer && <div className="box-footer">{footer}</div>}
+  </div>
+)
+
+// After
+Box: ({ children, header, footer, withPadding = true, className }) => (
+  <div className={className}>
+    {header && <div className="box-header">{header}</div>}
+    <div className="box-body" style={withPadding ? undefined : { padding: 0 }}>
+      {children}
+    </div>
+    {footer && <div className="box-footer">{footer}</div>}
+  </div>
+)
+```
+
+#### New `BoxHeader` component adapter
+
+A new **BoxHeader** component has been added to the component adapter. It renders a title, optional description, and optional action (e.g. an "Edit" button) inside `Box` headers. If you provide a custom component adapter, add a `BoxHeader` implementation:
+
+```tsx
+BoxHeader: ({ title, description, action, headingLevel = 'h3' }) => {
+  const Heading = headingLevel
+  return (
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div>
+        <Heading>{title}</Heading>
+        {description && <p>{description}</p>}
+      </div>
+      {action && <div>{action}</div>}
+    </div>
+  )
+}
+```
+
+#### Table `variant` prop replaced with `isWithinBox`
+
+The Table component's `variant` prop has been replaced with `isWithinBox`. The SDK sets `isWithinBox={true}` on tables that are rendered inside a `Box` layout element, so your adapter can remove redundant borders, shadows, or background colors to avoid visual doubling. If you supply a custom **Table** via the component adapter, update your implementation:
+
+```tsx
+// Before: variant?: 'default' | 'minimal'
+Table: ({ variant = 'default', ...props }) => (
+  <table style={variant === 'minimal' ? { border: 'none' } : undefined} {...props} />
+)
+
+// After: isWithinBox?: boolean — true when the table is inside a Box
+Table: ({ isWithinBox = false, ...props }) => (
+  <table
+    style={
+      isWithinBox
+        ? { border: 'none', borderRadius: 0, boxShadow: 'none', background: 'transparent' }
+        : undefined
+    }
+    {...props}
+  />
+)
+```
+
+#### DescriptionList new `layout` and `showSeparators` props
+
+The `DescriptionList` component now accepts `layout` (`'stacked' | 'horizontal'`) and `showSeparators` (boolean) props. If you supply a custom **DescriptionList**, update it to handle these props for proper rendering in the Employee Dashboard and other views.
+
+### Features & Enhancements
+
+- Add Employee Dashboard component
+- Add Time Off policy management: PolicyList, SelectPolicyType, SelectHolidays, and PolicyConfigurationForm (presentation and functional components)
+- Wire PolicyConfigurationForm into TimeOff state machine
+- Add usePayScheduleForm unstable hook
+- Add useSignCompanyForm unstable hook
+- Add useSignEmployeeForm hook with I-9 preparer support
+- Add select-all header checkbox to DataView
+- Streamline schema composition with unified buildFormSchema pattern
+- Add holiday data helpers and i18n translations
+- Add full-screen token expired overlay with periodic health polling (SDK App)
+
+### Fixes
+
+- Fix table text styles in contractors and payroll
+- Fix date picker style improvements
+- Align datepicker styles with date range picker styles
+- Fix uncontrolled to controlled input warning
+- Fix minor style updates to popover and menu UI
+- Always show kebab menu in payroll list for consistent alignment
+- Dynamic payment processing copy based on company ACH speed
+- Use taxableAsScorp for Two Percent Shareholder visibility
+- Add spacing to file input wrapper for error message
+
+### Chores & Maintenance
+
+- Refactor Box to expose Header, Footer, Content as subcomponents
+- Migrate useWorkAddressForm and useEmployeeDetailsForm to buildFormSchema pattern
+- Move EmployeeTable to UNSTABLE_TimeOff/shared and remove TimeOffManagement
+- Remove legacy composeFormSchema, resolveRequiredFields, and deriveFieldsMetadata
+- Add tests and Storybook stories for PolicyList, SelectPolicyType, and PolicyConfigurationForm
+- Add component naming and organization RFC
+- Upgrade @gusto/embedded-api from 0.12.4 to 0.12.5
+- Upgrade react-aria-components from 1.13.0 to 1.16.0
+- Upgrade GitHub Actions to Node.js 24-compatible versions
+- Bump i18next from 26.0.3 to 26.0.4
+- Bump Storybook packages to 10.3.5
+- Bump various dev dependencies (vitest, msw, axios, typescript-eslint, ts-morph, prettier, dotenv, globals, and others)
+
+## 0.38.0
+
+### Features & Enhancements
+
+- Add date range filter to PayrollList and PayrollHistory
+- Add SDK Dev App for standalone component development
+- Add ManagementEmployeeList component and refactor EmployeeList
+- Add DetailViewLayout and EmployeeTable reusable components
+- Add icon prop to Button component
+- Update payroll breadcrumb labels
+- Disable past dates in Pay Schedule first pay date picker
+- Support prop-based field connection via formHookResult
+
+### Fixes
+
+- Fix breadcrumb navigation guards and post-submit flow
+- Fix off-cycle, dismissal, and transition payroll bugs (breadcrumb display, cancel transitions, date range handling, employee selection, PTO labeling)
+- Keep excluded employees visible in PayrollConfiguration after calculation
+- Fix gross-up modal layout and calculate button alignment
+- Fix payroll history sorting and pagination
+- Treat blank time off fields as zero to prevent raw API error
+- Hide direct deposit banner and ACH deadline messages for check-only payrolls
+- Keep start/end date fields visible for check-only payrolls
+- Sync contractor self-onboarding toggle with API status changes
+- Wire up missing dictionary overrides in Contractor components
+- Scope PaymentMethod loading spinner to the specific row being deleted
+- Respect withReimbursements prop in off-cycle payroll configuration
+- Update gross pay live when editing bonus and fixed compensation amounts
+- Prevent dropdown flicker on rapid blur-focus in MultiSelectComboBox
+- Fix NumberField onBlur value formatting
+- Fix compensation base validators and child support required attributes
+- Ensure all labels display in payroll receipt mobile layout
+- Reduce spacing between input section title and description
+- Clarify tax withholding rates copy
+
+### Chores & Maintenance
+
+- Add tests, Storybook stories, and documentation for new components
+- Add icon assets (umbrella, search-lg, user-02, edit-02)
+- Re-enable e2e tests on ubuntu-latest runners
+- Bump i18next from 25.10.4 to 26.0.3
+- Bump react-i18next from 16.6.6 to 17.0.2
+- Bump Storybook packages to 10.3.4
+- Bump various dev dependencies (sass-embedded, vite-plugin-svgr, @playwright/test, typescript-eslint, and others)
+
 ## 0.37.0
 
 ### Features & Enhancements

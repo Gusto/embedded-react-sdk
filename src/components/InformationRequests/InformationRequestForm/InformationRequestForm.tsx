@@ -109,7 +109,6 @@ function Root({ companyId, requestId, dictionary }: InformationRequestFormProps)
     }
   })
 
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-arguments -- removing this breaks resolver type compatibility
   const formMethods = useForm<InformationRequestFormValues>({
     resolver: zodResolver(InformationRequestFormSchema),
     defaultValues,
@@ -168,10 +167,10 @@ function Root({ companyId, requestId, dictionary }: InformationRequestFormProps)
     return (
       <div key={fieldName} className={styles.questionCard}>
         <div className={styles.questionDescription}>
-          <Text weight="medium">
+          <Text size="sm" weight="medium">
             {isDocumentType ? t('questionTypes.document') : t('questionTypes.answer')}
           </Text>
-          <Text>
+          <Text size="sm" variant="supporting">
             {/* SECURITY: XSS mitigated via DOMPurify with strict allowlist. Pattern matches TaxInputs.tsx */}
             <span
               dangerouslySetInnerHTML={{

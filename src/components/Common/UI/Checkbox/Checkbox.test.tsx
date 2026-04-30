@@ -93,32 +93,44 @@ describe('Checkbox', () => {
     expect(screen.getByText('This field is required')).toBeInTheDocument()
   })
 
-  describe('Accessibility', () => {
-    const testCases = [
-      { name: 'default', props: { label: 'Default Checkbox' } },
-      { name: 'checked', props: { label: 'Checked Checkbox', isSelected: true } },
-      { name: 'disabled', props: { label: 'Disabled Checkbox', isDisabled: true } },
-      { name: 'indeterminate', props: { label: 'Indeterminate Checkbox', isIndeterminate: true } },
-      {
-        name: 'with description',
-        props: { label: 'Checkbox with Description', description: 'Helpful text' },
-      },
-      {
-        name: 'with error',
-        props: { label: 'Error Checkbox', isInvalid: true, errorMessage: 'Required field' },
-      },
-    ]
+  describe('controlled toggle', () => {
+    it('calls onChange with true when value is false and clicked', async () => {
+      const user = userEvent.setup()
+      const onChange = vi.fn()
+      renderWithProviders(<Checkbox label="Toggle" value={false} onChange={onChange} />)
 
-    it.each(testCases)(
-      'should not have any accessibility violations - $name',
-      async ({ props }) => {
-        const { container } = renderWithProviders(<Checkbox {...props} />)
-        await expectNoAxeViolations(container)
-      },
-    )
+      await user.click(screen.getByRole('checkbox'))
+      expect(onChange).toHaveBeenCalledWith(true)
+    })
+
+    it('calls onChange with false when value is true and clicked', async () => {
+      const user = userEvent.setup()
+      const onChange = vi.fn()
+      renderWithProviders(<Checkbox label="Toggle" value={true} onChange={onChange} />)
+
+      await user.click(screen.getByRole('checkbox'))
+      expect(onChange).toHaveBeenCalledWith(false)
+    })
   })
 
-  describe('Accessibility', () => {
+  describe('disabled behavior', () => {
+    it('does not call onChange when disabled and clicked', async () => {
+      const user = userEvent.setup()
+      const onChange = vi.fn()
+      renderWithProviders(<Checkbox label="Disabled" isDisabled onChange={onChange} />)
+
+      await user.click(screen.getByRole('checkbox'))
+      expect(onChange).not.toHaveBeenCalled()
+    })
+
+    it('renders disabled state on input', () => {
+      renderWithProviders(<Checkbox label="Disabled" isDisabled />)
+      const input = screen.getByRole('checkbox')
+      expect(input).toBeDisabled()
+    })
+  })
+
+  describe('accessibility', () => {
     const testCases = [
       { name: 'default', props: { label: 'Default Checkbox' } },
       { name: 'checked', props: { label: 'Checked Checkbox', isSelected: true } },

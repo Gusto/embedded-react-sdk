@@ -7,6 +7,7 @@
   "state": "State",
   "statePlaceholder": "Select state...",
   "zip": "Zip",
+  "effectiveDate": "Effective date",
   "courtesyWithholdingLabel": "Include courtesy withholding",
   "courtesyWithholdingDescription": "Withhold and pay local income taxes for employees who live and work in different states. ",
   "learnMoreCta": "<LearnMoreLink href=\"https://support.gusto.com/article/101365481100000/Reciprocal-agreements-and-courtesy-withholding\" target=\"_blank\">Learn more about courtesy withholdings.</LearnMoreLink>",

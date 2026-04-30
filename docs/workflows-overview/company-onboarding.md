@@ -10,42 +10,45 @@ The Company Onboarding workflow provides components for managing company-related
 ### Implementation
 
 ```jsx
-import { Company } from '@gusto/embedded-react-sdk'
+import { CompanyOnboarding } from '@gusto/embedded-react-sdk'
 
 function MyApp() {
   return (
-    <Company.OnboardingFlow companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
+    <CompanyOnboarding.OnboardingFlow
+      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+      onEvent={() => {}}
+    />
   )
 }
 ```
 
 #### Props
 
-| Name                     | Type     | Description                                                     |
-| ------------------------ | -------- | --------------------------------------------------------------- |
-| **companyId** (Required) | string   | The associated company identifier.                              |
-| **defaultValues**        | object   | Default values for individual flow step components.             |
-| **onEvent** (Required)   | function | See events table for each subcomponent to see available events. |
+| Name               | Type   | Description                                                     |
+| ------------------ | ------ | --------------------------------------------------------------- |
+| companyId Required | string | The associated company identifier.                              |
+| defaultValues      | object | Default values for individual flow step components              |
+| onEvent Required   |        | See events table for each subcomponent to see available events. |
 
 ## Using Company Subcomponents
 
-Company onboarding components can be used to compose your own workflow, or can be rendered in isolation. For guidance on creating a custom workflow, see [docs on composition](../integration-guide/composition.md).
+Employee onboarding components can be used to compose your own workflow, or can be rendered in isolation. For guidance on creating a custom workflow, see [docs on composition](../integration-guide/composition.md).
 
 ### Available Subcomponents
 
-- Company.AssignSignatory
-- Company.CreateSignatory
-- Company.InviteSignatory
-- Company.Industry
-- Company.DocumentSigner
-- Company.FederalTaxes
-- Company.PaySchedule
-- Company.Locations
-- Company.BankAccount
-- Company.StateTaxes
-- Company.StateTaxesList
-- Company.StateTaxesForm
-- Company.OnboardingOverview
+- CompanyOnboarding.AssignSignatory
+- CompanyOnboarding.CreateSignatory
+- CompanyOnboarding.InviteSignatory
+- CompanyOnboarding.Industry
+- CompanyOnboarding.DocumentSigner
+- CompanyOnboarding.FederalTaxes
+- CompanyOnboarding.PaySchedule
+- CompanyOnboarding.Locations
+- CompanyOnboarding.BankAccount
+- CompanyOnboarding.StateTaxes
+- CompanyOnboarding.OnboardingOverview
+
+> Legacy imports via `Company.*` (e.g. `Company.OnboardingFlow`) continue to work.
 
 ### Company.AssignSignatory
 
@@ -250,11 +253,11 @@ function MyComponent() {
 
 #### Props
 
-| Name                     | Type     | Description                            |
-| ------------------------ | -------- | -------------------------------------- |
-| **companyId** (Required) | string   | The associated company identifier.     |
-| **defaultValues**        | object   | Default values for location form fields. |
-| **onEvent** (Required)   | function | See events table for available events. |
+| Name                     | Type   | Description                            |
+| ------------------------ | ------ | -------------------------------------- |
+| **companyId** (Required) | string | The associated company identifier.     |
+| **defaultValues**        |        |                                        |
+| **onEvent** (Required)   |        | See events table for available events. |
 
 #### Events
 
@@ -280,11 +283,11 @@ function MyComponent() {
 
 #### Props
 
-| Name                     | Type     | Description                            |
-| ------------------------ | -------- | -------------------------------------- |
-| **companyId** (Required) | string   | The associated company identifier.     |
-| **defaultValues**        | object   | Default values for bank account form fields. |
-| **onEvent** (Required)   | function | See events table for available events. |
+| Name                     | Type   | Description                            |
+| ------------------------ | ------ | -------------------------------------- |
+| **companyId** (Required) | string | The associated company identifier.     |
+| **defaultValues**        |        |                                        |
+| **onEvent** (Required)   |        | See events table for available events. |
 
 #### Events
 

@@ -247,6 +247,9 @@ const sidebars: SidebarsConfig = {
         'hooks/useEmployeeDetailsForm',
         'hooks/useCompensationForm',
         'hooks/useWorkAddressForm',
+        'hooks/usePayScheduleForm',
+        'hooks/useSignCompanyForm',
+        'hooks/useSignEmployeeForm',
       ],
     },
     {

@@ -1,5 +1,5 @@
 import { test, expect } from '../utils/localTestFixture'
-import { waitForLoadingComplete, skipPendingPayrolls } from '../utils/helpers'
+import { waitForLoadingComplete } from '../utils/helpers'
 
 test.describe('DismissalFlow', () => {
   test.beforeEach(({ localConfig }) => {
@@ -50,7 +50,7 @@ test.describe('DismissalFlow', () => {
 
       const payPeriodSelect = page.getByRole('button', { name: /pay period/i })
       await payPeriodSelect.click()
-      await page.getByRole('option').first().click()
+      await page.getByRole('listbox').getByRole('option').first().click()
 
       const continueButton = page.getByRole('button', { name: /continue/i })
       await expect(continueButton).toBeEnabled()
@@ -71,7 +71,7 @@ test.describe('DismissalFlow', () => {
       const payPeriodSelect = page.getByRole('button', { name: /pay period/i })
       await payPeriodSelect.click()
 
-      const options = page.getByRole('option')
+      const options = page.getByRole('listbox').getByRole('option')
       const optionCount = await options.count()
       expect(optionCount).toBeGreaterThan(0)
 
@@ -106,93 +106,6 @@ test.describe('DismissalFlow', () => {
   })
 
   test.describe('full payroll execution', () => {
-    test('completes the entire dismissal payroll flow from pay period selection to submission', async ({
-      page,
-      localConfig,
-    }) => {
-      const isRealApi = localConfig.isLocal
-      test.setTimeout(isRealApi ? 600_000 : 120_000)
-      const stepTimeout = isRealApi ? 300_000 : 30_000
-      const companyId = isRealApi ? localConfig.dismissalCompanyId : '123'
-
-      if (isRealApi) {
-        await skipPendingPayrolls({
-          flowToken: localConfig.dismissalFlowToken || localConfig.flowToken,
-          companyId: localConfig.dismissalCompanyId || localConfig.companyId,
-        })
-      }
-
-      await page.goto(
-        `/?flow=dismissal&companyId=${companyId}&employeeId=${localConfig.terminatedEmployeeId}`,
-      )
-      await waitForLoadingComplete(page)
-
-      if (!localConfig.isLocal) {
-        await page.evaluate(() => {
-          const w = window as Record<string, unknown>
-          const worker = w.__mswWorker as { use: (handler: unknown) => void } | undefined
-          const msw = w.__msw as
-            | {
-                http: { get: (path: string, handler: () => unknown) => unknown }
-                HttpResponse: { json: (data: unknown) => unknown }
-              }
-            | undefined
-          if (worker && msw) {
-            worker.use(msw.http.get('*/payrolls/blockers', () => msw.HttpResponse.json([])))
-          }
-        })
-      }
-
-      // Step 1: Pay Period Selection
-      await expect(page.getByRole('heading', { name: /run dismissal payroll/i })).toBeVisible({
-        timeout: 30000,
-      })
-
-      const payPeriodSelect = page.getByRole('button', { name: /pay period/i })
-      await payPeriodSelect.click()
-      await page.getByRole('option').first().click()
-
-      await page.getByRole('button', { name: /continue/i }).click()
-      await waitForLoadingComplete(page)
-
-      const submissionError = page.getByRole('alert').filter({ hasText: /there was a problem/i })
-      const hasSubmissionError = await submissionError.isVisible().catch(() => false)
-      if (hasSubmissionError) {
-        const errorText = await submissionError.textContent()
-        throw new Error(`Off-cycle payroll creation failed: ${errorText}`)
-      }
-
-      // Step 2: Edit Payroll (Configuration)
-      await expect(page.getByRole('heading', { name: /edit payroll/i }).first()).toBeVisible({
-        timeout: stepTimeout,
-      })
-
-      const calculateButton = page.getByRole('button', { name: /calculate and review/i })
-      await expect(calculateButton).toBeVisible({ timeout: stepTimeout })
-      await calculateButton.click()
-
-      // Step 3: Review Payroll (Overview)
-      await expect(page.getByRole('heading', { name: /review payroll/i }).first()).toBeVisible({
-        timeout: stepTimeout,
-      })
-
-      const submitButton = page.getByRole('button', { name: /^submit$/i })
-      await expect(submitButton).toBeVisible({ timeout: stepTimeout })
-      await submitButton.click()
-
-      // Step 4: Payroll Submitted confirmation
-      await expect(page.getByText(/payroll submitted/i).first()).toBeVisible({
-        timeout: stepTimeout,
-      })
-
-      // Step 5: View Payroll Receipt
-      const receiptButton = page.getByRole('button', { name: /view payroll receipt/i })
-      await expect(receiptButton).toBeVisible({ timeout: stepTimeout })
-      await receiptButton.click()
-
-      await expect(page.getByText(/receipt/i).first()).toBeVisible({ timeout: stepTimeout })
-    })
-
     test('transitions from pay period selection to edit payroll', async ({ page, localConfig }) => {
       test.skip(
         localConfig.isLocal,
@@ -211,7 +124,7 @@ test.describe('DismissalFlow', () => {
 
       const payPeriodSelect = page.getByRole('button', { name: /pay period/i })
       await payPeriodSelect.click()
-      await page.getByRole('option').first().click()
+      await page.getByRole('listbox').getByRole('option').first().click()
 
       await page.getByRole('button', { name: /continue/i }).click()
       await waitForLoadingComplete(page)

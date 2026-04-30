@@ -40,7 +40,7 @@ export const List = () => {
         <Components.Button
           variant="secondary"
           onClick={() => {
-            handleChange(requirement.state)
+            if (requirement.state) handleChange(requirement.state)
           }}
         >
           {requirement.setupComplete ? t('editStateTaxCta') : t('continueStateTaxSetupCta')}

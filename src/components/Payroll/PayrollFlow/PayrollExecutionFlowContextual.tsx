@@ -1,6 +1,7 @@
 import { Suspense } from 'react'
 import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
 import { PayrollExecutionFlow } from '../PayrollExecutionFlow/PayrollExecutionFlow'
+import { isDismissalPayroll } from '../helpers'
 import type { PayrollFlowContextInterface } from './PayrollFlowComponents'
 import { useFlow } from '@/components/Flow/useFlow'
 import { ensureRequired } from '@/helpers/ensureRequired'
@@ -52,6 +53,7 @@ function PayrollExecutionFlowWithData({
       companyId={companyId}
       payrollId={payrollId}
       initialPayPeriod={initialPayPeriod}
+      isDismissalPayroll={isDismissalPayroll(data.payrollShow?.offCycleReason)}
       {...rest}
     />
   )

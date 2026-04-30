@@ -16,18 +16,18 @@ For this exercise we’ll be creating the Employee Self Onboarding flow in [Reac
 Employee Self Onboarding is comprised of the following steps:
 
 ```typescript
-Employee.Landing
-Employee.Profile
-Employee.Taxes
-Employee.PaymentMethod
-Employee.DocumentSigner
-Employee.OnboardingSummary
+EmployeeOnboarding.Landing
+EmployeeOnboarding.Profile
+EmployeeOnboarding.Taxes
+EmployeeOnboarding.PaymentMethod
+EmployeeOnboarding.DocumentSigner
+EmployeeOnboarding.OnboardingSummary
 ```
 
-Each step is available as a subcomponent of `Employee` which can be imported as follows:
+Each step is available as a subcomponent of `EmployeeOnboarding` which can be imported as follows:
 
 ```typescript
-import { Employee } from '@gusto/embedded-react-sdk'
+import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 ```
 
 For self onboarding to work, we’ll need to have access to the company id, and the employee id. Not all steps require the company id, but each will require the employee id.
@@ -84,18 +84,18 @@ const createEmployeeSelfOnboardingRouter = ({
 
 Each component in the React SDK has an onEvent property. `onEvent` is fired when the users perform various actions for the SDK components (read more in the Event Handling documentation). When a component is ready for navigation, an event will be fired. We can hook into the event and configure our navigation.
 
-In our first step in our flow, `Employee.Landing`, the `EMPLOYEE_SELF_ONBOARDING_START` event is fired when we are ready to proceed with the flow.
+In our first step in our flow, `EmployeeOnboarding.Landing`, the `EMPLOYEE_SELF_ONBOARDING_START` event is fired when we are ready to proceed with the flow.
 
-We can create a wrapper component around `Employee.Landing` and execute routing per our declared routes above when onEvent is fired with the `EMPLOYEE_SELF_ONBOARDING_START` event.
+We can create a wrapper component around `EmployeeOnboarding.Landing` and execute routing per our declared routes above when onEvent is fired with the `EMPLOYEE_SELF_ONBOARDING_START` event.
 
 ```jsx
-import { Employee, componentEvents } from '@gusto/embedded-react-sdk';
+import { EmployeeOnboarding, componentEvents } from '@gusto/embedded-react-sdk';
 
 function EmployeeLandingWrapper({ companyId, employeeId }: { companyId: string; employeeId: string }) {
   const navigate = useNavigate();
 
   return (
-    <Employee.Landing
+    <EmployeeOnboarding.Landing
       employeeId={employeeId}
       companyId={companyId}
       onEvent={(eventType) => {
@@ -116,11 +116,11 @@ Once we have our wrapper components configured with the correct navigation, we c
 
 ```jsx
 import {
-  Employee,
+  EmployeeOnboarding,
   componentEvents,
 } from '@gusto/embedded-react-sdk';
 import '@gusto/embedded-react-sdk/style.css';
-import React from 'react';
+import React, { Suspense } from 'react';
 import {
   createBrowserRouter,
   Link,
@@ -146,7 +146,7 @@ function EmployeeLandingWrapper({
   const navigate = useNavigate();
 
   return (
-    <Employee.Landing
+    <EmployeeOnboarding.Landing
       employeeId={employeeId}
       companyId={companyId}
       onEvent={(eventType) => {
@@ -168,7 +168,7 @@ function EmployeeProfileWrapper({
   const navigate = useNavigate();
 
   return (
-    <Employee.Profile
+    <EmployeeOnboarding.Profile
       employeeId={employeeId}
       companyId={companyId}
       onEvent={(eventType) => {
@@ -184,7 +184,7 @@ function EmployeeTaxesWrapper({ employeeId }: { employeeId: string }) {
   const navigate = useNavigate();
 
   return (
-    <Employee.Taxes
+    <EmployeeOnboarding.Taxes
       employeeId={employeeId}
       onEvent={(eventType) => {
         if (eventType === componentEvents.EMPLOYEE_TAXES_DONE) {
@@ -199,7 +199,7 @@ function EmployeePaymentMethodWrapper({ employeeId }: { employeeId: string }) {
   const navigate = useNavigate();
 
   return (
-    <Employee.PaymentMethod
+    <EmployeeOnboarding.PaymentMethod
       employeeId={employeeId}
       onEvent={(eventType) => {
         if (eventType === componentEvents.EMPLOYEE_PAYMENT_METHOD_DONE) {
@@ -214,7 +214,7 @@ function EmployeeDocumentSignerWrapper({ employeeId }: { employeeId: string }) {
   const navigate = useNavigate();
 
   return (
-    <Employee.DocumentSigner
+    <EmployeeOnboarding.DocumentSigner
       employeeId={employeeId}
       onEvent={(eventType) => {
         if (eventType === componentEvents.EMPLOYEE_FORMS_DONE) {
@@ -227,7 +227,7 @@ function EmployeeDocumentSignerWrapper({ employeeId }: { employeeId: string }) {
 
 function EmployeeOnboardingSummaryWrapper({ employeeId }: { employeeId: string }) {
   return (
-    <Employee.OnboardingSummary
+    <EmployeeOnboarding.OnboardingSummary
       employeeId={employeeId}
       onEvent={() => {}}
     />

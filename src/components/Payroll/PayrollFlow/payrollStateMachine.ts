@@ -13,7 +13,7 @@ import { TransitionFlowContextual } from './TransitionFlowContextual'
 import { OffCycleFlowContextual } from './OffCycleFlowContextual'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
-import { updateBreadcrumbs } from '@/helpers/breadcrumbHelpers'
+import { patchBreadcrumbsHeader, updateBreadcrumbs } from '@/helpers/breadcrumbHelpers'
 import type { BreadcrumbNodes } from '@/components/Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
 import { createBreadcrumbNavigateTransition } from '@/components/Common/FlowBreadcrumbs/breadcrumbTransitionHelpers'
 
@@ -26,6 +26,7 @@ type PayrollFlowEventPayloads = {
   }
   [componentEvents.RUN_PAYROLL_PROCESSED]: {
     payPeriod?: PayrollPayPeriodType
+    payrollUuid?: string
   }
   [componentEvents.RUN_TRANSITION_PAYROLL]: {
     startDate: string
@@ -42,9 +43,7 @@ export const payrollFlowBreadcrumbsNodes: BreadcrumbNodes = {
       label: 'breadcrumbs.landing',
       namespace: 'Payroll.PayrollLanding',
       onNavigate: ((ctx: PayrollFlowContextInterface) => ({
-        ...ctx,
-        currentBreadcrumbId: 'landing',
-        progressBarType: null,
+        ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: undefined }),
         component: PayrollLandingContextual,
         payrollUuid: undefined,
         executionInitialState: undefined,
@@ -82,12 +81,10 @@ const breadcrumbNavigateTransition =
 
 function toLandingReducer(ctx: PayrollFlowContextInterface): PayrollFlowContextInterface {
   return {
-    ...ctx,
+    ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: undefined }),
     component: PayrollLandingContextual,
     payrollUuid: undefined,
     payPeriod: undefined,
-    progressBarType: null,
-    currentBreadcrumbId: 'landing',
     executionInitialState: undefined,
   }
 }
@@ -133,6 +130,33 @@ const cancelledToLandingTransition = transition(
   ),
 )
 
+const processedToSubmittedOverviewTransition = transition(
+  componentEvents.RUN_PAYROLL_PROCESSED,
+  'submittedOverview',
+  reduce(
+    (
+      ctx: PayrollFlowContextInterface,
+      ev: MachineEventType<PayrollFlowEventPayloads, typeof componentEvents.RUN_PAYROLL_PROCESSED>,
+    ): PayrollFlowContextInterface => {
+      const payPeriod = ev.payload.payPeriod ?? ctx.payPeriod
+      return {
+        ...updateBreadcrumbs('submittedOverview', ctx, {
+          startDate: payPeriod?.startDate ?? '',
+          endDate: payPeriod?.endDate ?? '',
+        }),
+        component: PayrollOverviewContextual,
+        payrollUuid: ev.payload.payrollUuid ?? ctx.payrollUuid,
+        payPeriod,
+        executionInitialState: undefined,
+        ctaConfig: {
+          labelKey: 'exitFlowCta',
+          namespace: 'Payroll.PayrollOverview',
+        },
+      }
+    },
+  ),
+)
+
 export const payrollFlowMachine = {
   landing: state<MachineTransition>(
     transition(
@@ -165,7 +189,6 @@ export const payrollFlowMachine = {
         (ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
           ...updateBreadcrumbs('blockers', ctx),
           component: PayrollBlockerContextual,
-          progressBarType: 'breadcrumbs',
           showPayrollCancelledAlert: false,
           ctaConfig: {
             labelKey: 'exitFlowCta',
@@ -195,13 +218,12 @@ export const payrollFlowMachine = {
             typeof componentEvents.RUN_TRANSITION_PAYROLL
           >,
         ): PayrollFlowContextInterface => ({
-          ...ctx,
+          ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: undefined }),
           component: TransitionFlowContextual,
           transitionStartDate: ev.payload.startDate,
           transitionEndDate: ev.payload.endDate,
           transitionPayScheduleUuid: ev.payload.payScheduleUuid,
           showPayrollCancelledAlert: false,
-          progressBarType: null,
         }),
       ),
     ),
@@ -210,10 +232,9 @@ export const payrollFlowMachine = {
       'offCycle',
       reduce(
         (ctx: PayrollFlowContextInterface): PayrollFlowContextInterface => ({
-          ...ctx,
+          ...patchBreadcrumbsHeader(ctx, { currentBreadcrumbId: undefined }),
           component: OffCycleFlowContextual,
           showPayrollCancelledAlert: false,
-          progressBarType: null,
         }),
       ),
     ),
@@ -222,35 +243,7 @@ export const payrollFlowMachine = {
     landingBreadcrumbNavigateTransition,
     exitFlowTransition,
     cancelledToLandingTransition,
-    transition(
-      componentEvents.RUN_PAYROLL_PROCESSED,
-      'submittedOverview',
-      reduce(
-        (
-          ctx: PayrollFlowContextInterface,
-          ev: MachineEventType<
-            PayrollFlowEventPayloads,
-            typeof componentEvents.RUN_PAYROLL_PROCESSED
-          >,
-        ): PayrollFlowContextInterface => {
-          const payPeriod = ev.payload.payPeriod ?? ctx.payPeriod
-          return {
-            ...updateBreadcrumbs('submittedOverview', ctx, {
-              startDate: payPeriod?.startDate ?? '',
-              endDate: payPeriod?.endDate ?? '',
-            }),
-            component: PayrollOverviewContextual,
-            payPeriod,
-            progressBarType: 'breadcrumbs',
-            executionInitialState: undefined,
-            ctaConfig: {
-              labelKey: 'exitFlowCta',
-              namespace: 'Payroll.PayrollOverview',
-            },
-          }
-        },
-      ),
-    ),
+    processedToSubmittedOverviewTransition,
   ),
   blockers: state<MachineTransition>(breadcrumbNavigateTransition('landing'), exitFlowTransition),
   submittedOverview: state<MachineTransition>(
@@ -265,7 +258,6 @@ export const payrollFlowMachine = {
             endDate: ctx.payPeriod?.endDate ?? '',
           }),
           component: PayrollReceiptsContextual,
-          progressBarType: 'breadcrumbs',
           alerts: undefined,
           ctaConfig: {
             labelKey: 'exitFlowCta',
@@ -281,6 +273,16 @@ export const payrollFlowMachine = {
     breadcrumbNavigateTransition('landing'),
     exitFlowTransition,
   ),
-  transition: state<MachineTransition>(landingBreadcrumbNavigateTransition, exitFlowTransition),
-  offCycle: state<MachineTransition>(landingBreadcrumbNavigateTransition, exitFlowTransition),
+  transition: state<MachineTransition>(
+    landingBreadcrumbNavigateTransition,
+    exitFlowTransition,
+    cancelledToLandingTransition,
+    processedToSubmittedOverviewTransition,
+  ),
+  offCycle: state<MachineTransition>(
+    landingBreadcrumbNavigateTransition,
+    exitFlowTransition,
+    cancelledToLandingTransition,
+    processedToSubmittedOverviewTransition,
+  ),
 }

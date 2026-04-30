@@ -1,0 +1,182 @@
+.contentHeader {
+  padding: 1rem 1.5rem;
+  border-bottom: 0.0625rem solid var(--color-border);
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+
+  span {
+    color: var(--color-text);
+    font-weight: 500;
+  }
+}
+
+.componentContainer {
+  width: 100%;
+  padding: 1.5rem;
+}
+
+.contentBody {
+  margin: 0 auto;
+  max-width: 1200px;
+}
+
+.contentError {
+  padding: 1.5rem;
+  text-align: center;
+
+  pre {
+    text-align: left;
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    white-space: pre-wrap;
+  }
+
+  button {
+    padding: 0.5rem 1rem;
+    background: var(--color-active);
+    color: #fff;
+    border: none;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    font-size: 0.8125rem;
+  }
+}
+
+.contentErrorMessage {
+  color: var(--color-danger);
+  margin-bottom: 1rem;
+}
+
+.contentHint {
+  color: var(--color-text-muted);
+}
+
+.contentLoading {
+  padding: 1.5rem;
+  color: var(--color-text-muted);
+}
+
+.warningCard {
+  padding: 1.25rem;
+  background: var(--color-warning-bg);
+  border: 0.0625rem solid var(--color-warning-border);
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+  max-width: 35rem;
+
+  strong {
+    font-size: 0.9375rem;
+  }
+
+  p {
+    margin-top: 0.5rem;
+    color: var(--color-warning-text);
+    line-height: 1.5;
+  }
+
+  code {
+    background: var(--color-warning-code-bg);
+    padding: 0.0625rem 0.375rem;
+    border-radius: 0.1875rem;
+  }
+}
+
+.warningTags {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.warningTag {
+  background: var(--color-warning-tag-bg);
+  color: #fff;
+  padding: 0.1875rem 0.625rem;
+  border-radius: 0.25rem;
+  font-family: monospace;
+  font-size: 0.75rem;
+}
+
+.warningTagAlt {
+  background: var(--color-warning-tag-alt-bg);
+}
+
+.warningDescription {
+  margin-top: 0.75rem;
+  color: var(--color-warning-text);
+  line-height: 1.6;
+}
+
+.warningHint {
+  margin-top: 0.5rem;
+  color: var(--color-warning-text);
+  font-size: 0.75rem;
+}
+
+.warningActions {
+  margin-top: 1rem;
+}
+
+.retryBtn {
+  padding: 0.5rem 0.875rem;
+  border: 0.0625rem solid var(--color-border);
+  border-radius: 0.375rem;
+  background: var(--color-bg);
+  color: var(--color-text);
+  cursor: pointer;
+  font-size: 0.8125rem;
+  transition: background 0.15s;
+
+  &:hover {
+    background: var(--color-hover-bg);
+  }
+}
+
+.eventsLog {
+  position: sticky;
+  bottom: 0;
+  background: var(--color-bg);
+  z-index: 10;
+  border-top: 0.0625rem solid var(--color-border);
+  max-height: 12.5rem;
+}
+
+.eventsLogHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1.5rem;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03125rem;
+  background: var(--color-bg-sidebar);
+  user-select: none;
+}
+
+.eventsLogEntries {
+  padding: 0.5rem 1.5rem;
+  font-family: monospace;
+  font-size: 0.75rem;
+  line-height: 1.6;
+  overflow: auto;
+  height: 100%;
+}
+
+.eventsLogEntry {
+  padding: 0.125rem 0;
+  border-bottom: 0.0625rem solid var(--color-border);
+}
+
+.eventsLogEmpty {
+  color: var(--color-text-muted);
+  font-style: italic;
+  padding: 0.5rem 1.5rem;
+  font-size: 0.75rem;
+}
+
+.eventsLogTimestamp {
+  color: var(--color-text-muted);
+}

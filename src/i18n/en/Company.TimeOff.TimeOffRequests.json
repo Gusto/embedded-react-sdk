@@ -1,0 +1,129 @@
+{
+  "index": {
+    "title": "Time off requests",
+    "addTimeOff": "Add time off",
+    "tabs": {
+      "needsReview": "Needs review",
+      "approved": "Approved",
+      "completed": "Completed",
+      "declined": "Declined"
+    },
+    "emptyState": {
+      "needsReview": {
+        "heading": "No requests to review",
+        "body": "New time off requests will appear here."
+      },
+      "approved": {
+        "heading": "No approved requests yet",
+        "body": "Once time off is approved, it will appear here."
+      },
+      "completed": {
+        "heading": "No completed time off yet",
+        "body": "Once approved time off is completed, it will appear here."
+      },
+      "declined": {
+        "heading": "No declined requests",
+        "body": "If a time off request is declined, it will appear here."
+      }
+    }
+  },
+  "requestsTable": {
+    "employee": "Employee",
+    "policy": "Policy",
+    "dates": "Date(s)",
+    "requested": "Requested",
+    "remaining": "Remaining",
+    "actions": "Actions",
+    "view": "View",
+    "requestsCount_one": "{{count}} request",
+    "requestsCount_other": "{{count}} requests",
+    "hoursUnit": "hrs"
+  },
+  "policyType": {
+    "vacation": "Vacation",
+    "sick": "Sick leave",
+    "bereavement": "Bereavement",
+    "floatingHoliday": "Floating holiday",
+    "juryDuty": "Jury duty",
+    "learningAndDevelopment": "Learning and development",
+    "personalDay": "Personal day",
+    "volunteer": "Volunteer",
+    "weather": "Weather",
+    "parentalLeave": "Parental leave",
+    "custom": "Custom"
+  },
+  "show": {
+    "title": "{{policyType}} request",
+    "breadcrumb": "Time off requests",
+    "details": "Details",
+    "employee": "Employee",
+    "datesRequested": "Date(s) requested",
+    "timeRequested": "Time requested",
+    "viewBreakdown": "View breakdown by day",
+    "breakdownDate": "Date",
+    "breakdownTimeRequested": "Time requested",
+    "employeeNote": "Employee note",
+    "policyName": "Policy name",
+    "policyType": "Policy type",
+    "requestedOn": "Requested on",
+    "noteToEmployee": "Note to employee",
+    "notes": "Notes",
+    "hoursUnit": "hrs",
+    "statusNeedsReview": "Needs review",
+    "statusApproved": "Approved",
+    "statusCompleted": "Completed",
+    "statusDeclined": "Declined",
+    "approveRequestCta": "Approve request",
+    "declineRequestCta": "Decline request",
+    "declineApprovedRequestCta": "Decline approved request",
+    "doneCta": "Done",
+    "employerNoteRequired": "A note to the employee is required when declining a request"
+  },
+  "new": {
+    "title": "Add time off",
+    "breadcrumb": "Back",
+    "subtitle": "Time off you record for an employee is approved automatically.",
+    "employeeLabel": "Employee",
+    "selectEmployee": "Select...",
+    "policyLabel": "Policy",
+    "selectPolicy": "Select...",
+    "noteLabel": "Note",
+    "optionalLabel": "(Optional)",
+    "saveCta": "Save",
+    "cancelCta": "Cancel"
+  },
+  "dateHoursFields": {
+    "startDate": "Start date",
+    "endDate": "End date",
+    "timeRequested": "Time requested",
+    "hoursUnit": "hrs",
+    "invalidDateRange": "End date must be on or after start date.",
+    "duration": {
+      "title": "Duration",
+      "description": "Choose how many hours of time off to record for the selected dates.",
+      "fullDays": "Full days",
+      "fullDaysDescription": "Automatically counts 8 hours for each weekday (Monday - Friday). Weekends are excluded.",
+      "partialDays": "Partial days",
+      "partialDaysDescription": "Use this option to specify the exact number of hours for each day.",
+      "dateHeader": "Date",
+      "timeRequestedHeader": "Time requested"
+    }
+  },
+  "balancePreview": {
+    "title": "Time off balance for this policy",
+    "availableBalance": "Available balance",
+    "availableBalanceHint": "The amount of time off this employee has available today to use on this policy.",
+    "otherRequested": "Other requested time off",
+    "otherRequestedHint": "Any other approved future time off and pending time off under this policy. Excludes this request.",
+    "thisRequest": "This request",
+    "remainingBalance": "Remaining available balance",
+    "placeholder": "TBD hrs",
+    "negativeBalanceWarning": "If you approve this request, the employee will end up with a negative time off balance."
+  },
+  "flash": {
+    "createSuccess": "Time off request created successfully",
+    "approveSuccess": "Time off request approved",
+    "declineSuccess": "Time off request declined",
+    "employerNoteRequired": "A note is required when declining a request"
+  }
+}

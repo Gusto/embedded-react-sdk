@@ -1,9 +1,9 @@
-import type { ResponseBody } from '@gusto/embedded-api/models/operations/getv1companiescompanyuuidtaxrequirements'
+import type { TaxRequirementStatesList } from '@gusto/embedded-api/models/components/taxrequirementstateslist'
 import { createCompoundContext } from '@/components/Base'
 
 type StateTaxesListContextType = {
   isPending: boolean
-  stateTaxRequirements: ResponseBody[]
+  stateTaxRequirements: TaxRequirementStatesList[]
   handleContinue: () => void
   handleChange: (state: string) => void
 }

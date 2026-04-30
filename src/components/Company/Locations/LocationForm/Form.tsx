@@ -17,7 +17,12 @@ export const LocationFormSchema = z.object({
 
 export type LocationFormInputs = z.infer<typeof LocationFormSchema>
 
-export function Form() {
+interface FormProps {
+  isMailingLocked?: boolean
+  isFilingLocked?: boolean
+}
+
+export function Form({ isMailingLocked = false, isFilingLocked = false }: FormProps = {}) {
   const { t } = useTranslation('Company.Locations')
   const transform = useMaskedTransform(commonMasks.phoneMask)
 
@@ -72,12 +77,18 @@ export function Form() {
           {
             value: 'mailingAddress',
             label: t('mailingAddressLabel'),
-            description: t('mailingAddressDescription'),
+            description: isMailingLocked
+              ? t('mailingAddressDescriptionLocked')
+              : t('mailingAddressDescription'),
+            isDisabled: isMailingLocked,
           },
           {
             value: 'filingAddress',
             label: t('filingAddressLabel'),
-            description: t('filingAddressDescription'),
+            description: isFilingLocked
+              ? t('filingAddressDescriptionLocked')
+              : t('filingAddressDescription'),
+            isDisabled: isFilingLocked,
           },
         ]}
       />

@@ -27,7 +27,8 @@ import { PaymentUnit } from '@gusto/embedded-api/models/components/compensation'
 import { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
 import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api/models/components/payrollfixedcompensationtypestype'
 import { PayScheduleFrequency } from '@gusto/embedded-api/models/components/payschedulefrequency'
-import type { PayScheduleObject } from '@gusto/embedded-api/models/components/payscheduleobject'
+import type { PaySchedule as PayScheduleObject } from '@gusto/embedded-api/models/components/payschedule'
+import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
 import type { TFunction } from 'i18next'
 import { Job } from '@gusto/embedded-api/models/components/job.js'
 import {
@@ -309,8 +310,8 @@ describe('Payroll helpers', () => {
     ): PayScheduleObject => ({
       uuid: 'pay-schedule-123',
       frequency,
-      anchorPayDate: '2022-01-01',
-      anchorEndOfPayPeriod: '2022-01-07',
+      anchorPayDate: new RFCDate('2022-01-01'),
+      anchorEndOfPayPeriod: new RFCDate('2022-01-07'),
       version: '2024-04-01',
     })
 

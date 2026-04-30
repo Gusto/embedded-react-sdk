@@ -1,0 +1,21 @@
+.triggerButton {
+  &:global(.react-aria-Button) {
+    white-space: nowrap;
+    font-size: var(--g-fontSizeSmall);
+  }
+}
+
+.dialog {
+  padding: 0;
+}
+
+.popoverContent {
+  display: flex;
+  flex-direction: column;
+  gap: toRem(16);
+}
+
+.popoverFooter {
+  border-top: 1px solid var(--g-colorBorderSecondary);
+  padding: toRem(16);
+}

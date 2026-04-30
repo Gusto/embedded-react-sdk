@@ -14,6 +14,7 @@ import type { OffCycleTaxWithholdingConfig } from '../OffCycleTaxWithholdingTabl
 import type { TransitionCreationProps, TransitionCreationFormData } from './TransitionCreationTypes'
 import { createTransitionCreationSchema } from './TransitionCreationTypes'
 import { TransitionCreationPresentation } from './TransitionCreationPresentation'
+import { useCompanyPaymentSpeed } from '@/hooks/useCompanyPaymentSpeed'
 import { BaseComponent } from '@/components/Base/Base'
 import { useBase } from '@/components/Base/useBase'
 import { useComponentDictionary, useI18n } from '@/i18n'
@@ -44,7 +45,9 @@ function Root({
   const { t } = useTranslation('Payroll.TransitionCreation')
   const { onEvent, baseSubmitHandler } = useBase()
 
-  const { minCheckDate } = useOffCyclePayPeriodDateValidation()
+  const { paymentSpeedDays } = useCompanyPaymentSpeed(companyId)
+
+  const { minCheckDate } = useOffCyclePayPeriodDateValidation(paymentSpeedDays)
   const { mutateAsync: createTransitionPayroll, isPending } = usePayrollsCreateOffCycleMutation()
 
   const { data: paySchedulesData } = usePaySchedulesGetAllSuspense({ companyId })
@@ -69,17 +72,18 @@ function Root({
   }, [])
 
   const payScheduleName = useMemo(() => {
-    const schedules = paySchedulesData.payScheduleList ?? []
+    const schedules = paySchedulesData.paySchedules ?? []
     const match = schedules.find(s => s.uuid === payScheduleUuid)
     return match?.customName ?? match?.name ?? null
   }, [paySchedulesData, payScheduleUuid])
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const translateValidation = (key: string): string => t(key as any) as string
+  const translateValidation = (key: string, options?: Record<string, unknown>): string =>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    t(key as any, options as any) as string
 
   const schema = useMemo(
-    () => createTransitionCreationSchema(translateValidation, minCheckDate),
-    [t, minCheckDate],
+    () => createTransitionCreationSchema(translateValidation, minCheckDate, paymentSpeedDays),
+    [t, minCheckDate, paymentSpeedDays],
   )
 
   const methods = useForm<TransitionCreationFormData>({

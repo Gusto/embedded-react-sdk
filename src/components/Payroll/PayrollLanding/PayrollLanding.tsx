@@ -50,9 +50,10 @@ export function PayrollLandingFlow({
           selectedTab: 'run-payroll',
           withReimbursements,
           ConfirmWireDetailsComponent,
-          breadcrumbs: buildBreadcrumbs(payrollLandingBreadcrumbNodes),
-          currentBreadcrumbId: 'tabs',
-          progressBarType: null,
+          header: {
+            type: 'breadcrumbs' as const,
+            breadcrumbs: buildBreadcrumbs(payrollLandingBreadcrumbNodes),
+          },
           showPayrollCancelledAlert,
         }),
       ),

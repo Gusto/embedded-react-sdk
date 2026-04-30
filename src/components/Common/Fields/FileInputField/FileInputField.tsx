@@ -11,6 +11,7 @@ export const FileInputField: React.FC<FileInputFieldProps> = ({
   rules,
   defaultValue,
   name,
+  control,
   errorMessage,
   isRequired,
   onChange,
@@ -23,6 +24,7 @@ export const FileInputField: React.FC<FileInputFieldProps> = ({
   const Components = useComponentContext()
   const fieldProps = useField({
     name,
+    control,
     rules,
     defaultValue,
     errorMessage,

@@ -3,6 +3,7 @@ export type { BreadcrumbsProps } from '@/components/Common/UI/Breadcrumbs/Breadc
 export type { ButtonProps, ButtonIconProps } from '@/components/Common/UI/Button/ButtonTypes'
 export type { CardProps } from '@/components/Common/UI/Card/CardTypes'
 export type { BoxProps } from '@/components/Common/UI/Box/BoxTypes'
+export type { BoxHeaderProps } from '@/components/Common/UI/BoxHeader/BoxHeaderTypes'
 export type { CheckboxProps } from '@/components/Common/UI/Checkbox/CheckboxTypes'
 export type {
   CheckboxGroupProps,

@@ -47,3 +47,6 @@ npm install @gusto/embedded-react-sdk
   - [useEmployeeDetailsForm](docs/hooks/useEmployeeDetailsForm.md)
   - [useCompensationForm](docs/hooks/useCompensationForm.md)
   - [useWorkAddressForm](docs/hooks/useWorkAddressForm.md)
+  - [usePayScheduleForm](docs/hooks/usePayScheduleForm.md)
+  - [useSignCompanyForm](docs/hooks/useSignCompanyForm.md)
+  - [useSignEmployeeForm](docs/hooks/useSignEmployeeForm.md)

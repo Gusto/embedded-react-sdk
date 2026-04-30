@@ -20,9 +20,12 @@ describe('PayrollHistory', () => {
     onEvent,
   }
 
+  let capturedPayrollListUrl: URL | null = null
+
   beforeEach(async () => {
     setupApiTestMocks()
     onEvent.mockClear()
+    capturedPayrollListUrl = null
 
     // Mock dialog methods since JSDOM doesn't support them
     HTMLDialogElement.prototype.showModal = vi.fn()
@@ -36,7 +39,8 @@ describe('PayrollHistory', () => {
     // Mock the payrolls list API with fixture data
     const mockPayrollData = await getFixture('payroll-history-test-data')
     server.use(
-      http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls`, () => {
+      http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls`, ({ request }) => {
+        capturedPayrollListUrl = new URL(request.url)
         return HttpResponse.json(mockPayrollData)
       }),
     )
@@ -87,54 +91,8 @@ describe('PayrollHistory', () => {
       expect(
         screen.getByText("When you run payrolls, they'll appear here for easy reference."),
       ).toBeInTheDocument()
-    })
 
-    it('renders time filter options', async () => {
-      renderWithProviders(<PayrollHistory {...defaultProps} />)
-
-      await waitFor(() => {
-        expect(screen.getByDisplayValue('3 months')).toBeInTheDocument()
-      })
-    })
-  })
-
-  describe('time filter functionality', () => {
-    it('allows changing time filter', async () => {
-      renderWithProviders(<PayrollHistory {...defaultProps} />)
-
-      // Wait for the component to render and find the select button
-      await waitFor(() => {
-        expect(screen.getByRole('button', { name: /Last 3 months/i })).toBeInTheDocument()
-      })
-
-      // Find the select button and click it to open options
-      const selectButton = screen.getByRole('button', { name: /Last 3 months/i })
-      await user.click(selectButton)
-
-      // Wait for the listbox to appear and select a different option
-      await waitFor(() => {
-        expect(screen.getByRole('listbox')).toBeInTheDocument()
-      })
-
-      const sixMonthsOption = screen.getByRole('option', { name: '6 months' })
-      await user.click(sixMonthsOption)
-
-      // Verify the selection changed by checking the button text
-      await waitFor(() => {
-        expect(screen.getByRole('button', { name: /Last 3 months/i })).toHaveTextContent('6 months')
-      })
-    })
-
-    it('renders time filter with default 3 months selection', async () => {
-      renderWithProviders(<PayrollHistory {...defaultProps} />)
-
-      await waitFor(() => {
-        expect(screen.getByRole('button', { name: /Last 3 months/i })).toBeInTheDocument()
-      })
-
-      // Verify default selection is "3 months"
-      const selectButton = screen.getByRole('button', { name: /Last 3 months/i })
-      expect(selectButton).toHaveTextContent('3 months')
+      expect(screen.getByRole('button', { name: 'Filter by date' })).toBeInTheDocument()
     })
   })
 
@@ -726,6 +684,98 @@ describe('PayrollHistory', () => {
       })
 
       expect(screen.getByText('$1,234,567.89')).toBeInTheDocument()
+    })
+  })
+
+  describe('date range filter', () => {
+    it('renders filter trigger and shows date range picker in popover', async () => {
+      renderWithProviders(<PayrollHistory {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Payroll history')).toBeInTheDocument()
+      })
+
+      const filterButton = screen.getByRole('button', { name: 'Filter by date' })
+      expect(filterButton).toBeInTheDocument()
+
+      await user.click(filterButton)
+
+      await waitFor(() => {
+        expect(screen.getByText('From')).toBeInTheDocument()
+        expect(screen.getByText('To')).toBeInTheDocument()
+        expect(screen.getByRole('group', { name: 'From – To' })).toBeInTheDocument()
+        expect(screen.getByRole('button', { name: 'Apply' })).toBeInTheDocument()
+        expect(screen.getByRole('button', { name: 'Reset' })).toBeInTheDocument()
+      })
+    })
+
+    it('does not pass date params to API by default', async () => {
+      renderWithProviders(<PayrollHistory {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(capturedPayrollListUrl).not.toBeNull()
+      })
+
+      expect(capturedPayrollListUrl!.searchParams.get('start_date')).toBeNull()
+      expect(capturedPayrollListUrl!.searchParams.get('end_date')).toBeNull()
+      expect(capturedPayrollListUrl!.searchParams.get('date_filter_by')).toBeNull()
+    })
+  })
+
+  describe('pagination', () => {
+    it('includes page, per, and sort_order params in the API request', async () => {
+      renderWithProviders(<PayrollHistory {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(capturedPayrollListUrl).not.toBeNull()
+      })
+
+      expect(capturedPayrollListUrl!.searchParams.get('page')).toBeTruthy()
+      expect(capturedPayrollListUrl!.searchParams.get('per')).toBeTruthy()
+      expect(capturedPayrollListUrl!.searchParams.get('sort_order')).toBe('desc')
+    })
+
+    it('renders pagination controls when totalCount exceeds page size', async () => {
+      const mockPayrollData = await getFixture('payroll-history-test-data')
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls`, ({ request }) => {
+          capturedPayrollListUrl = new URL(request.url)
+          return HttpResponse.json(mockPayrollData, {
+            headers: {
+              'x-total-pages': '3',
+              'x-total-count': '15',
+            },
+          })
+        }),
+      )
+
+      renderWithProviders(<PayrollHistory {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByTestId('pagination-control')).toBeInTheDocument()
+      })
+    })
+
+    it('does not render pagination controls when totalCount is within a single page', async () => {
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls`, ({ request }) => {
+          capturedPayrollListUrl = new URL(request.url)
+          return HttpResponse.json(mockEmptyPayrollData, {
+            headers: {
+              'x-total-pages': '1',
+              'x-total-count': '3',
+            },
+          })
+        }),
+      )
+
+      renderWithProviders(<PayrollHistory {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('No payroll history')).toBeInTheDocument()
+      })
+
+      expect(screen.queryByTestId('pagination-control')).not.toBeInTheDocument()
     })
   })
 })

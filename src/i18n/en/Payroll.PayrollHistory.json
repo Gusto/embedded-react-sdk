@@ -1,12 +1,13 @@
 {
   "title": "Payroll history",
-  "timeFilter": {
-    "placeholder": "Last 3 months",
-    "options": {
-      "3months": "3 months",
-      "6months": "6 months",
-      "year": "Year"
-    }
+  "dateFilter": {
+    "startDate": "From",
+    "endDate": "To",
+    "apply": "Apply",
+    "cancel": "Cancel",
+    "reset": "Reset",
+    "selectDates": "Select dates",
+    "trigger": "Filter by date"
   },
   "dataView": {
     "label": "Payroll history"

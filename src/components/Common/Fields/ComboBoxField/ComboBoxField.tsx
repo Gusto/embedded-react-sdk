@@ -24,6 +24,7 @@ export const ComboBoxField = <TValue = string,>({
   rules,
   defaultValue,
   name,
+  control,
   errorMessage,
   isRequired,
   onChange: onChangeFromProps,
@@ -38,6 +39,7 @@ export const ComboBoxField = <TValue = string,>({
   const Components = useComponentContext()
   const { value, onChange, ...fieldProps } = useField<TValue>({
     name,
+    control,
     rules,
     defaultValue,
     errorMessage,

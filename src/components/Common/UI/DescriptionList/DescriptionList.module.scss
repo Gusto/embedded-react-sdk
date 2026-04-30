@@ -1,6 +1,10 @@
 .root {
   width: 100%;
 
+  .item:not(:last-child) {
+    margin-bottom: toRem(16);
+  }
+
   dt {
     font-weight: var(--g-fontWeightMedium);
     color: var(--g-colorBodyContent);
@@ -12,11 +16,24 @@
     margin-inline-start: 0;
   }
 
-  .item {
-    &:not(:last-child) {
-      padding-bottom: toRem(16);
-      margin-bottom: toRem(16);
-      border-bottom: 1px solid var(--g-colorBorderSecondary);
+  &[data-layout='horizontal'] .item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: toRem(16);
+
+    dt {
+      flex-shrink: 0;
+    }
+
+    dd {
+      text-align: right;
     }
   }
+}
+
+.withSeparators .item:not(:last-child) {
+  padding-bottom: toRem(16);
+  margin-bottom: toRem(16);
+  border-bottom: 1px solid var(--g-colorBorderSecondary);
 }

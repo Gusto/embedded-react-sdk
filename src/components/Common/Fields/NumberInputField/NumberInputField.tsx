@@ -12,6 +12,7 @@ export const NumberInputField: React.FC<NumberInputFieldProps> = ({
   rules: providedRules,
   defaultValue,
   name,
+  control,
   errorMessage,
   isRequired,
   onChange,
@@ -35,6 +36,7 @@ export const NumberInputField: React.FC<NumberInputFieldProps> = ({
 
   const fieldProps = useField({
     name,
+    control,
     rules,
     defaultValue,
     errorMessage,

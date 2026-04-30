@@ -68,6 +68,7 @@ const defaultThemeColors = {
   colorSuccessContent: baseColors.success[800],
   colorBorderPrimary: baseColors.neutral[300],
   colorBorderSecondary: baseColors.neutral[200],
+  colorButtonIcon: baseColors.neutral[400],
 }
 
 export type GustoSDKThemeColors = Partial<typeof defaultThemeColors>

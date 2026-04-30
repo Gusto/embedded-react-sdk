@@ -20,6 +20,7 @@ export const DatePickerField = <TValue extends DateFieldValue = Date | null>({
   rules,
   defaultValue,
   name,
+  control,
   errorMessage,
   isRequired,
   onChange,
@@ -37,6 +38,7 @@ export const DatePickerField = <TValue extends DateFieldValue = Date | null>({
     ...restFieldProps
   } = useField<TValue>({
     name,
+    control,
     rules,
     defaultValue,
     errorMessage,

@@ -1,0 +1,15 @@
+{
+  "name": "Name",
+  "jobTitle": "Job title",
+  "department": "Department",
+  "selected": "of {{numAll}} employees selected",
+  "selectAllEmployees": "Select all employees",
+  "selectAll": "Select all",
+  "clearAriaLabel": "Clear selected employees",
+  "clear": "Clear",
+  "searchPlaceholder": "Search employees",
+  "searchLabel": "Search employees",
+  "tableLabel": "Employees",
+  "noSearchResults": "No employees found",
+  "clearSearch": "Clear search"
+}

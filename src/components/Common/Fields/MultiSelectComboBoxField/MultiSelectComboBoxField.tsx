@@ -11,6 +11,7 @@ export const MultiSelectComboBoxField: React.FC<MultiSelectComboBoxFieldProps> =
   rules,
   defaultValue,
   name,
+  control,
   errorMessage,
   isRequired,
   onChange: onChangeFromProps,
@@ -23,6 +24,7 @@ export const MultiSelectComboBoxField: React.FC<MultiSelectComboBoxFieldProps> =
   const Components = useComponentContext()
   const fieldProps = useField<string[]>({
     name,
+    control,
     rules,
     defaultValue,
     errorMessage,

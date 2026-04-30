@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { createMachine, interpret, type SendFunction } from 'robot3'
 import {
   payrollExecutionMachine,
-  payrollExecutionBreadcrumbsNodes,
+  getPayrollExecutionBreadcrumbsNodes,
 } from './payrollExecutionMachine'
 import type { PayrollFlowContextInterface } from '../PayrollFlow/PayrollFlowComponents'
 import { componentEvents } from '@/shared/constants'
@@ -17,10 +17,11 @@ function createTestMachine(initialState: 'configuration' | 'overview' = 'configu
       component: () => null,
       companyId: 'test-company',
       payrollUuid: 'payroll-123',
-      progressBarType: 'breadcrumbs' as const,
-      breadcrumbs: buildBreadcrumbs(payrollExecutionBreadcrumbsNodes),
-      currentBreadcrumbId: initialState,
-      progressBarCta: null,
+      header: {
+        type: 'breadcrumbs' as const,
+        breadcrumbs: buildBreadcrumbs(getPayrollExecutionBreadcrumbsNodes()),
+        currentBreadcrumbId: initialState,
+      },
       withReimbursements: true,
     }),
   )
@@ -69,10 +70,11 @@ describe('payrollExecutionMachine', () => {
           component: () => null,
           companyId: 'test-company',
           payrollUuid: 'payroll-123',
-          progressBarType: 'breadcrumbs' as const,
-          breadcrumbs: buildBreadcrumbs(payrollExecutionBreadcrumbsNodes),
-          currentBreadcrumbId: 'configuration' as const,
-          progressBarCta: null,
+          header: {
+            type: 'breadcrumbs' as const,
+            breadcrumbs: buildBreadcrumbs(getPayrollExecutionBreadcrumbsNodes()),
+            currentBreadcrumbId: 'configuration' as const,
+          },
           withReimbursements: true,
           alerts: [progressSavedAlert],
         }),
@@ -145,7 +147,12 @@ describe('payrollExecutionMachine', () => {
       send(service, componentEvents.RUN_PAYROLL_RECEIPT_GET)
 
       expect(service.machine.current).toBe('receipts')
-      expect(service.context.progressBarType).toBe('breadcrumbs')
+      expect(service.context.header?.type).toBe('breadcrumbs')
+      expect(
+        service.context.header?.type === 'breadcrumbs'
+          ? service.context.header.currentBreadcrumbId
+          : undefined,
+      ).toBe('receipts')
     })
 
     it('does not handle RUN_PAYROLL_PROCESSED (bubbles to parent)', () => {
@@ -173,6 +180,60 @@ describe('payrollExecutionMachine', () => {
       send(service, componentEvents.RUN_PAYROLL_CANCELLED)
 
       expect(service.machine.current).toBe('overview')
+    })
+
+    it('allows breadcrumb navigation to configuration before submission', () => {
+      const service = createService()
+      toOverview(service)
+
+      send(service, componentEvents.BREADCRUMB_NAVIGATE, {
+        key: 'configuration',
+        onNavigate: (ctx: PayrollFlowContextInterface) => ctx,
+      })
+
+      expect(service.machine.current).toBe('configuration')
+    })
+
+    it('blocks breadcrumb navigation to configuration after RUN_PAYROLL_SUBMITTING', () => {
+      const service = createService()
+      toOverview(service)
+
+      send(service, componentEvents.RUN_PAYROLL_SUBMITTING)
+      expect(service.machine.current).toBe('overview')
+      expect(service.context.hasPayrollSubmissionStarted).toBe(true)
+
+      send(service, componentEvents.BREADCRUMB_NAVIGATE, {
+        key: 'configuration',
+        onNavigate: (ctx: PayrollFlowContextInterface) => ctx,
+      })
+
+      expect(service.machine.current).toBe('overview')
+    })
+
+    it('blocks RUN_PAYROLL_EDIT after RUN_PAYROLL_SUBMITTING', () => {
+      const service = createService()
+      toOverview(service)
+
+      send(service, componentEvents.RUN_PAYROLL_SUBMITTING)
+
+      send(service, componentEvents.RUN_PAYROLL_EDIT)
+
+      expect(service.machine.current).toBe('overview')
+    })
+
+    it('removes configuration breadcrumb from all trails after RUN_PAYROLL_SUBMITTING', () => {
+      const service = createService()
+      toOverview(service)
+
+      send(service, componentEvents.RUN_PAYROLL_SUBMITTING)
+
+      const allBreadcrumbs =
+        service.context.header?.type === 'breadcrumbs'
+          ? (service.context.header.breadcrumbs ?? {})
+          : {}
+      for (const trail of Object.values(allBreadcrumbs)) {
+        expect(trail.find(b => b.id === 'configuration')).toBeUndefined()
+      }
     })
   })
 

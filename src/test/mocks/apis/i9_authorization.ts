@@ -1,7 +1,7 @@
 import type { HttpResponseResolver, PathParams } from 'msw'
 import { http, HttpResponse } from 'msw'
 import type { GetV1EmployeesEmployeeIdI9AuthorizationRequest } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidi9authorization'
-import type { PutV1EmployeesEmployeeIdI9AuthorizationRequestBody } from '@gusto/embedded-api/models/operations/putv1employeesemployeeidi9authorization'
+import type { I9AuthorizationRequestBody } from '@gusto/embedded-api/models/components/i9authorizationrequestbody'
 import { getFixture } from '../fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
 
@@ -21,7 +21,7 @@ export const getI9AuthorizationNotFound = handleGetI9Authorization(() => {
 })
 
 export function handleUpdateI9Authorization(
-  resolver: HttpResponseResolver<PathParams, PutV1EmployeesEmployeeIdI9AuthorizationRequestBody>,
+  resolver: HttpResponseResolver<PathParams, I9AuthorizationRequestBody>,
 ) {
   return http.put(`${API_BASE_URL}/v1/employees/:employee_id/i9_authorization`, resolver)
 }

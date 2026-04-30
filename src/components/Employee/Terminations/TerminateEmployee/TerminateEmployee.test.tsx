@@ -233,6 +233,33 @@ describe('TerminateEmployee', () => {
       })
     })
 
+    it('falls back to uuid when payroll_uuid is missing from API response', async () => {
+      const uuidOnlyPayrollId = 'uuid-only-payroll-id'
+      const { payroll_uuid: _, ...fixtureWithoutPayrollUuid } = payrollFixture
+
+      server.use(
+        http.post(`${API_BASE_URL}/v1/companies/:company_id/payrolls`, () => {
+          return HttpResponse.json({
+            ...fixtureWithoutPayrollUuid,
+            uuid: uuidOnlyPayrollId,
+          })
+        }),
+      )
+
+      renderWithProviders(<TerminateEmployee {...defaultProps} />)
+
+      await fillDateAndSubmit()
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(
+          componentEvents.EMPLOYEE_TERMINATION_DONE,
+          expect.objectContaining({
+            payrollUuid: uuidOnlyPayrollId,
+          }),
+        )
+      })
+    })
+
     it('emits EMPLOYEE_TERMINATION_PAYROLL_CREATED when off-cycle payroll is created', async () => {
       renderWithProviders(<TerminateEmployee {...defaultProps} />)
 

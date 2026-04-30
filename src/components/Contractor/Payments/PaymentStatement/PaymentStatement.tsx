@@ -1,7 +1,7 @@
 import { useContractorPaymentGroupsGetSuspense } from '@gusto/embedded-api/react-query/contractorPaymentGroupsGet'
 import { useContractorsListSuspense } from '@gusto/embedded-api/react-query/contractorsList'
 import { useContractorPaymentsGetReceipt } from '@gusto/embedded-api/react-query/contractorPaymentsGetReceipt'
-import { APIError } from '@gusto/embedded-api/models/errors/apierror'
+import { GustoEmbeddedError } from '@gusto/embedded-api/models/errors/gustoembeddederror'
 import { useTranslation } from 'react-i18next'
 import { PaymentStatementPresentation } from './PaymentStatementPresentation'
 import { useComponentDictionary } from '@/i18n'
@@ -54,7 +54,7 @@ export const Root = ({ paymentGroupId, contractorUuid, dictionary }: PaymentStat
       retry: false,
       throwOnError: (error: Error) => {
         // Ignore 404 errors (receipt not available), but throw other errors
-        if (error instanceof APIError && error.httpMeta.response.status === 404) {
+        if (error instanceof GustoEmbeddedError && error.httpMeta.response.status === 404) {
           return false
         }
         return true

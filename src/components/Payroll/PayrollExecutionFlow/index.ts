@@ -5,5 +5,5 @@ export {
 } from './PayrollExecutionFlow'
 export {
   payrollExecutionMachine,
-  payrollExecutionBreadcrumbsNodes,
+  getPayrollExecutionBreadcrumbsNodes,
 } from './payrollExecutionMachine'

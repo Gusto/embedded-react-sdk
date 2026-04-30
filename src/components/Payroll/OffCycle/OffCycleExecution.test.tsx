@@ -138,9 +138,10 @@ function OffCycleFlowInExecutionState({
           component: OffCycleExecutionContextual,
           companyId: COMPANY_ID,
           payrollUuid: PAYROLL_ID,
-          breadcrumbs: buildBreadcrumbs(offCycleBreadcrumbsNodes),
-          currentBreadcrumbId: 'createOffCyclePayroll',
-          progressBarType: null,
+          header: {
+            type: 'breadcrumbs' as const,
+            breadcrumbs: buildBreadcrumbs(offCycleBreadcrumbsNodes),
+          },
           withReimbursements,
         }),
       ),
@@ -190,12 +191,12 @@ function setupMswHandlers(options?: { onPrepare?: () => void }) {
   )
 }
 
-describe('OffCycleExecution - breadcrumb safety', () => {
+describe('OffCycleExecution - breadcrumb display', () => {
   beforeEach(() => {
     setupMswHandlers()
   })
 
-  it('does not render the creation breadcrumb during payroll execution', async () => {
+  it('renders the off-cycle payroll breadcrumb as non-clickable during payroll execution', async () => {
     const onEvent = vi.fn()
 
     renderWithProviders(<OffCycleFlowInExecutionState onEvent={onEvent} />)
@@ -204,7 +205,9 @@ describe('OffCycleExecution - breadcrumb safety', () => {
       expect(screen.getByText('Jane Doe')).toBeInTheDocument()
     })
 
-    expect(screen.queryByText('New Off-Cycle Payroll')).not.toBeInTheDocument()
+    const breadcrumb = screen.getByText('Run Off-Cycle Payroll')
+    expect(breadcrumb).toBeInTheDocument()
+    expect(breadcrumb.closest('button')).toBeNull()
   })
 })
 

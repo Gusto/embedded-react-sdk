@@ -4,6 +4,7 @@ import type { ContractorPaymentForGroupPreview } from '@gusto/embedded-api/model
 import { useMemo } from 'react'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import type { CompanyBankAccount } from '@gusto/embedded-api/models/components/companybankaccount'
+import type { PaymentSpeed } from '@gusto/embedded-api/models/components/paymentconfigs'
 import { getContractorDisplayName } from './helpers'
 import { FastAchSubmissionBlockerBanner } from './FastAchSubmissionBlockerBanner'
 import { GenericBlocker } from './GenericBlocker'
@@ -25,7 +26,7 @@ interface PreviewPresentationProps {
   bankAccount?: CompanyBankAccount
   selectedUnblockOptions?: Record<string, string>
   onUnblockOptionChange?: (blockerType: string, value: string) => void
-  paymentSpeed?: string
+  paymentSpeed?: PaymentSpeed
 }
 
 export const PreviewPresentation = ({
@@ -144,29 +145,24 @@ export const PreviewPresentation = ({
         columns={[
           {
             title: t('summaryTableHeaders.totalAmount'),
-            render: () => (
-              <Text>{currencyFormatter(Number(contractorPaymentGroup.totals?.amount || '0'))}</Text>
-            ),
+            render: () => currencyFormatter(Number(contractorPaymentGroup.totals?.amount || '0')),
           },
           {
             title: t('summaryTableHeaders.debitAmount'),
-            render: () => (
-              <Text>
-                {currencyFormatter(Number(contractorPaymentGroup.totals?.debitAmount || '0'))}
-              </Text>
-            ),
+            render: () =>
+              currencyFormatter(Number(contractorPaymentGroup.totals?.debitAmount || '0')),
           },
           {
             title: t('summaryTableHeaders.debitAccount'),
-            render: () => <Text>{bankAccount?.hiddenAccountNumber ?? t('naDebitAccount')}</Text>,
+            render: () => bankAccount?.hiddenAccountNumber ?? t('naDebitAccount'),
           },
           {
             title: t('summaryTableHeaders.debitDate'),
-            render: () => <Text>{contractorPaymentGroup.debitDate || 'debitDate'}</Text>,
+            render: () => contractorPaymentGroup.debitDate || 'debitDate',
           },
           {
             title: t('summaryTableHeaders.contractorPayDate'),
-            render: () => <Text>{contractorPaymentGroup.checkDate || 'contractorPayDate'}</Text>,
+            render: () => contractorPaymentGroup.checkDate || 'contractorPayDate',
           },
         ]}
         data={[contractorPaymentGroup]}
@@ -178,73 +174,59 @@ export const PreviewPresentation = ({
         columns={[
           {
             title: t('contractorTableHeaders.contractor'),
-            render: contractorPayment => (
-              <Text>
-                {getContractorDisplayName(
-                  contractors.find(
-                    contractor => contractor.uuid === contractorPayment.contractorUuid,
-                  ),
-                )}
-              </Text>
-            ),
+            render: contractorPayment =>
+              getContractorDisplayName(
+                contractors.find(
+                  contractor => contractor.uuid === contractorPayment.contractorUuid,
+                ),
+              ),
           },
           {
             title: t('contractorTableHeaders.wageType'),
-            render: contractorPayment => <Text>{formatWageType(contractorPayment)}</Text>,
+            render: contractorPayment => formatWageType(contractorPayment),
           },
           {
             title: t('contractorTableHeaders.paymentMethod'),
-            render: contractorPayment => <Text>{contractorPayment.paymentMethod || 'N/A'}</Text>,
+            render: contractorPayment => contractorPayment.paymentMethod || 'N/A',
           },
           {
             title: t('contractorTableHeaders.hours'),
             render: contractorPayment => {
               const hours = Number(contractorPayment.hours || '0')
-              return (
-                <Text>
-                  {contractorPayment.wageType === 'Hourly' && hours
-                    ? formatHoursDisplay(hours)
-                    : ZERO_HOURS_DISPLAY}
-                </Text>
-              )
+              return contractorPayment.wageType === 'Hourly' && hours
+                ? formatHoursDisplay(hours)
+                : ZERO_HOURS_DISPLAY
             },
           },
           {
             title: t('contractorTableHeaders.wage'),
-            render: contractorPayment => (
-              <Text>
-                {contractorPayment.wageType === 'Fixed' && contractorPayment.wage
-                  ? currencyFormatter(Number(contractorPayment.wage || '0'))
-                  : currencyFormatter(0)}
-              </Text>
-            ),
+            render: contractorPayment =>
+              contractorPayment.wageType === 'Fixed' && contractorPayment.wage
+                ? currencyFormatter(Number(contractorPayment.wage || '0'))
+                : currencyFormatter(0),
           },
           {
             title: t('contractorTableHeaders.bonus'),
-            render: contractorPayment => (
-              <Text>{currencyFormatter(Number(contractorPayment.bonus || '0'))}</Text>
-            ),
+            render: contractorPayment => currencyFormatter(Number(contractorPayment.bonus || '0')),
           },
           {
             title: t('contractorTableHeaders.reimbursement'),
-            render: contractorPayment => (
-              <Text>{currencyFormatter(Number(contractorPayment.reimbursement || '0'))}</Text>
-            ),
+            render: contractorPayment =>
+              currencyFormatter(Number(contractorPayment.reimbursement || '0')),
           },
           {
             title: t('contractorTableHeaders.total'),
-            render: contractorPayment => (
-              <Text>{currencyFormatter(Number(contractorPayment.wageTotal || '0'))}</Text>
-            ),
+            render: contractorPayment =>
+              currencyFormatter(Number(contractorPayment.wageTotal || '0')),
           },
         ]}
         data={contractorPayments}
         footer={() => ({
-          'column-0': <Text weight="bold">{t('totalsLabel')}</Text>,
-          'column-4': <Text>{currencyFormatter(totals?.wageAmount ?? 0)}</Text>,
-          'column-5': <Text>{currencyFormatter(totals?.bonusAmount ?? 0)}</Text>,
-          'column-6': <Text>{currencyFormatter(totals?.reimbursementAmount ?? 0)}</Text>,
-          'column-7': <Text>{currencyFormatter(totals?.totalAmount ?? 0)}</Text>,
+          'column-0': t('totalsLabel'),
+          'column-4': currencyFormatter(totals?.wageAmount ?? 0),
+          'column-5': currencyFormatter(totals?.bonusAmount ?? 0),
+          'column-6': currencyFormatter(totals?.reimbursementAmount ?? 0),
+          'column-7': currencyFormatter(totals?.totalAmount ?? 0),
         })}
         label={t('whatYourCompanyPays')}
       />
