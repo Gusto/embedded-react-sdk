@@ -341,6 +341,11 @@ export interface CompanyStateTaxes{
 "requirementsListCol2":string;
 "completeBadge":string;
 "incompleteBadge":string;
+"notStartedBadge":string;
+"inProgressBadge":string;
+"startStateTaxSetupCta":string;
+"defaultRatesAppliedText":string;
+"readyToRunPayrollBadge":string;
 "requirementsListLabel":string;
 "emptyTableTitle":string;
 "emptyTableDescription":string;
