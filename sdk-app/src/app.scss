@@ -1,4 +1,5 @@
 :root {
+  --topbar-height: 3.75rem;
   --color-bg: #ffffff;
   --color-bg-sidebar: #f8f9fa;
   --color-bg-topbar: #ffffff;
@@ -87,18 +88,15 @@ body {
 .app-layout {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
 }
 
 .app-body {
   display: flex;
-  flex: 1;
-  overflow: hidden;
 }
 
 .main-content {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  overflow: auto;
+  flex: 1;
 }
