@@ -100,7 +100,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react-swc": "^4.3.0",
     "@vitest/coverage-v8": "^4.1.5",
-    "axe-core": "^4.11.3",
+    "axe-core": "^4.11.4",
     "dotenv": "^17.4.2",
     "eslint": "^9.39.4",
     "eslint-plugin-import": "^2.31.0",
