@@ -1,5 +1,5 @@
 import { Outlet, useOutletContext } from 'react-router-dom'
-import type { EntityIds } from '../../../../useEntities'
+import type { EntityIds } from '../../../../../useEntities'
 
 export function ContractorManagementFlow() {
   const { entities } = useOutletContext<{ entities: EntityIds }>()

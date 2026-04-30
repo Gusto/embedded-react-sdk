@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 import { useOutletContext } from 'react-router-dom'
-import type { EntityIds } from '../../../useEntities'
+import type { EntityIds } from '../../../../useEntities'
 import { ContractorSelfOnboardingWizard } from './ContractorSelfOnboardingWizard'
 import { Flex } from '@/components/Common'
 import { BaseComponent } from '@/components/Base'
