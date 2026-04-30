@@ -1,21 +1,20 @@
-import { useCallback, useState } from 'react'
-import { useTimeOffPoliciesAddEmployeesMutation } from '@gusto/embedded-api/react-query/timeOffPoliciesAddEmployees'
+import { useCallback } from 'react'
+import { useHolidayPayPoliciesAddEmployeesMutation } from '@gusto/embedded-api/react-query/holidayPayPoliciesAddEmployees'
+import { useHolidayPayPoliciesGetSuspense } from '@gusto/embedded-api/react-query/holidayPayPoliciesGet'
 import { SelectEmployeesPresentation } from './SelectEmployeesPresentation'
 import { useSelectEmployeesData } from './useSelectEmployeesData'
 import { useBase } from '@/components/Base/useBase'
 import { componentEvents } from '@/shared/constants'
 
-interface SelectEmployeesTimeOffProps {
+interface SelectEmployeesHolidayProps {
   companyId: string
-  policyId: string
   mode?: 'standalone' | 'wizard'
 }
 
-export function SelectEmployeesTimeOff({
+export function SelectEmployeesHoliday({
   companyId,
-  policyId,
   mode = 'standalone',
-}: SelectEmployeesTimeOffProps) {
+}: SelectEmployeesHolidayProps) {
   const { onEvent, baseSubmitHandler } = useBase()
   const {
     filteredEmployees,
@@ -27,37 +26,34 @@ export function SelectEmployeesTimeOff({
     handleSearchChange,
     handleSearchClear,
   } = useSelectEmployeesData(companyId)
-  const [balances, setBalances] = useState<Record<string, string>>({})
 
-  const { mutateAsync: addEmployees } = useTimeOffPoliciesAddEmployeesMutation()
+  const { data: policyData } = useHolidayPayPoliciesGetSuspense({
+    companyUuid: companyId,
+  })
 
-  const handleBalanceChange = useCallback((uuid: string, value: string) => {
-    setBalances(prev => ({ ...prev, [uuid]: value }))
-  }, [])
+  const { mutateAsync: addEmployees } = useHolidayPayPoliciesAddEmployeesMutation()
 
   const handleContinue = useCallback(async () => {
     if (mode === 'wizard') {
-      onEvent(componentEvents.TIME_OFF_ADD_EMPLOYEES_DONE, {
+      onEvent(componentEvents.TIME_OFF_HOLIDAY_ADD_EMPLOYEES_DONE, {
         employeeUuids: [...selectedUuids],
       })
       return
     }
 
     await baseSubmitHandler({}, async () => {
-      const response = await addEmployees({
+      const result = await addEmployees({
         request: {
-          timeOffPolicyUuid: policyId,
+          companyUuid: companyId,
           requestBody: {
-            employees: [...selectedUuids].map(uuid => ({
-              uuid,
-              ...(balances[uuid] !== undefined && { balance: balances[uuid] }),
-            })),
+            version: policyData.holidayPayPolicy?.version ?? '',
+            employees: [...selectedUuids].map(uuid => ({ uuid })),
           },
         },
       })
-      onEvent(componentEvents.TIME_OFF_ADD_EMPLOYEES_DONE, response.timeOffPolicy)
+      onEvent(componentEvents.TIME_OFF_HOLIDAY_ADD_EMPLOYEES_DONE, result.holidayPayPolicy)
     })
-  }, [mode, baseSubmitHandler, addEmployees, policyId, selectedUuids, balances, onEvent])
+  }, [mode, baseSubmitHandler, addEmployees, companyId, policyData, selectedUuids, onEvent])
 
   const handleBack = useCallback(() => {
     onEvent(componentEvents.CANCEL)
@@ -73,9 +69,7 @@ export function SelectEmployeesTimeOff({
       onSearchClear={handleSearchClear}
       onBack={handleBack}
       onContinue={handleContinue}
-      showReassignmentWarning
-      balances={balances}
-      onBalanceChange={handleBalanceChange}
+      showReassignmentWarning={false}
       pagination={pagination}
       isFetching={isFetching}
     />
