@@ -58,7 +58,7 @@ export function AddressForm({
 
           <Flex flexDirection="column" gap={20}>
             <TextInputField name="street1" label="Street 1" isRequired />
-            <TextInputField name="street2" label="Street 2 (optional)" />
+            <TextInputField name="street2" label="Street 2" />
             <TextInputField name="city" label="City" isRequired />
             <SelectField
               name="state"

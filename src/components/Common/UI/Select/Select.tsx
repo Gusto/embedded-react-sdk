@@ -92,7 +92,7 @@ export const Select = ({
         </Button>
         <Popover
           className={classNames(styles.popover, 'react-aria-Popover')}
-          UNSTABLE_portalContainer={portalContainer || container.current}
+          UNSTABLE_portalContainer={portalContainer ?? container.current ?? undefined}
           maxHeight={320}
         >
           <ListBox items={items}>
