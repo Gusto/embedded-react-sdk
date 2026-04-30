@@ -1,12 +1,12 @@
 import { Suspense, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useQueryClient } from '@tanstack/react-query'
-import { Skeleton } from '../components/Skeleton'
-import { ContractorProfile } from '@/components/Contractor/Profile'
-import { Address } from '@/components/Contractor/Address'
-import { PaymentMethod } from '@/components/Contractor/PaymentMethod/PaymentMethod'
-import { NewHireReport } from '@/components/Contractor/NewHireReport/NewHireReport'
-import { ContractorSubmit } from '@/components/Contractor/Submit/Submit'
+import { Skeleton } from '../../contractor-profile/components/Skeleton'
+import { ContractorProfile } from './ContractorProfile'
+import { ContractorAddress } from './ContractorAddress'
+import { ContractorPaymentMethod } from './ContractorPaymentMethod'
+import { ContractorNewHireReport } from './ContractorNewHireReport'
+import { ContractorSubmit } from './ContractorSubmit'
 import { componentEvents } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Flex } from '@/components/Common'
@@ -102,12 +102,12 @@ export function AddContractorWizard({
           />
         )
       case 'address':
-        return <Address contractorId={contractorId!} onEvent={handleEvent} />
+        return <ContractorAddress contractorId={contractorId!} onEvent={handleEvent} />
       case 'paymentMethod':
-        return <PaymentMethod contractorId={contractorId!} onEvent={handleEvent} />
+        return <ContractorPaymentMethod contractorId={contractorId!} onEvent={handleEvent} />
       case 'newHireReport':
         return (
-          <NewHireReport
+          <ContractorNewHireReport
             contractorId={contractorId!}
             selfOnboarding={selfOnboarding}
             onEvent={handleEvent}

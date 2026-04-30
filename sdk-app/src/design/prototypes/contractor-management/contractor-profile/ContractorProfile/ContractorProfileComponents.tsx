@@ -33,6 +33,7 @@ import { BaseComponent } from '@/components/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import {
   componentEvents,
+  CONTRACTOR_TYPE,
   ContractorOnboardingStatus,
   STATES_ABBR,
   type EventType,
@@ -214,6 +215,7 @@ function ProfileViewContent({ contractor }: { contractor: Contractor }) {
           contractorUuid: contractor.uuid,
           contractorUpdateRequestBody: {
             version: contractor.version!,
+            type: contractor.type,
             fileNewHireReport: fileNewHireReport === 'yes',
             workState: fileNewHireReport === 'yes' ? workState : null,
           },
@@ -676,6 +678,7 @@ function EditCompensationContent() {
         contractorUuid: contractor.uuid,
         contractorUpdateRequestBody: {
           version: contractor.version ?? '',
+          type: contractor.type,
           wageType: data.wageType,
           ...(data.wageType === 'Hourly' ? { hourlyRate: data.hourlyRate } : {}),
         },
@@ -712,12 +715,16 @@ function EditBasicDetailsContent() {
 
   if (!contractor) return null
 
+  const isBusiness = contractor.type === CONTRACTOR_TYPE.BUSINESS
+
   const handleSave = async (data: {
     firstName: string
     middleInitial?: string
     lastName: string
+    businessName?: string
     startDate?: string
     ssn?: string
+    ein?: string
     email?: string
   }) => {
     await updateContractor({
@@ -725,12 +732,20 @@ function EditBasicDetailsContent() {
         contractorUuid: contractor.uuid,
         contractorUpdateRequestBody: {
           version: contractor.version ?? '',
-          firstName: data.firstName,
-          middleInitial: data.middleInitial || undefined,
-          lastName: data.lastName,
           startDate: data.startDate || undefined,
-          ...(data.ssn ? { ssn: data.ssn } : {}),
-          email: data.email || undefined,
+          type: contractor.type,
+          ...(isBusiness
+            ? {
+                businessName: data.businessName,
+                ...(data.ein ? { ein: data.ein.replace(/-/g, '') } : {}),
+              }
+            : {
+                firstName: data.firstName,
+                middleInitial: data.middleInitial || undefined,
+                lastName: data.lastName,
+                ...(data.ssn ? { ssn: data.ssn.replace(/\D/g, '') } : {}),
+                email: data.email || undefined,
+              }),
         },
       },
     })
