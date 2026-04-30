@@ -532,7 +532,7 @@ function PreparerSection({ signForm }: { signForm: UseSignEmployeeFormReady }) {
               label="Street 1"
               validationMessages={{ REQUIRED: 'Street address is required' }}
             />
-            <Group.Street2 label="Street 2 (optional)" />
+            <Group.Street2 label="Street 2" />
             <Group.City label="City" validationMessages={{ REQUIRED: 'City is required' }} />
             <Group.State label="State" validationMessages={{ REQUIRED: 'State is required' }} />
             <Group.Zip label="Zip" validationMessages={{ REQUIRED: 'Zip is required' }} />
