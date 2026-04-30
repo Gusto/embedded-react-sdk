@@ -85,7 +85,9 @@ describe('SelectEmployeesHoliday', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockUseContainerBreakpoints.mockReturnValue(['base', 'small', 'medium', 'large'])
-    mockAddEmployees.mockResolvedValue({})
+    mockAddEmployees.mockResolvedValue({
+      holidayPayPolicy: { companyUuid: 'company-123', version: 'abc123' },
+    })
   })
 
   it('renders employee names from API data', async () => {
@@ -169,6 +171,7 @@ describe('SelectEmployeesHoliday', () => {
       await waitFor(() => {
         expect(mockOnEvent).toHaveBeenCalledWith(
           componentEvents.TIME_OFF_HOLIDAY_ADD_EMPLOYEES_DONE,
+          { companyUuid: 'company-123', version: 'abc123' },
         )
       })
     })

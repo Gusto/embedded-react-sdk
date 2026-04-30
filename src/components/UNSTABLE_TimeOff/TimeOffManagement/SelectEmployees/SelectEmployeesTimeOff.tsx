@@ -1,10 +1,8 @@
-import { useCallback, useMemo, useState } from 'react'
-import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
+import { useCallback, useState } from 'react'
 import { useTimeOffPoliciesAddEmployeesMutation } from '@gusto/embedded-api/react-query/timeOffPoliciesAddEmployees'
 import { SelectEmployeesPresentation } from './SelectEmployeesPresentation'
-import type { EmployeeItem } from './SelectEmployeesPresentationTypes'
+import { useSelectEmployeesData } from './useSelectEmployeesData'
 import { useBase } from '@/components/Base/useBase'
-import { usePagination } from '@/hooks/usePagination/usePagination'
 import { componentEvents } from '@/shared/constants'
 
 interface SelectEmployeesTimeOffProps {
@@ -19,64 +17,25 @@ export function SelectEmployeesTimeOff({
   mode = 'standalone',
 }: SelectEmployeesTimeOffProps) {
   const { onEvent, baseSubmitHandler } = useBase()
-  const [selectedUuids, setSelectedUuids] = useState(new Set<string>())
-  const [searchValue, setSearchValue] = useState('')
+  const {
+    filteredEmployees,
+    selectedUuids,
+    searchValue,
+    pagination,
+    isFetching,
+    handleSelect,
+    handleSearchChange,
+    handleSearchClear,
+  } = useSelectEmployeesData(companyId)
   const [balances, setBalances] = useState<Record<string, string>>({})
-  const { currentPage, itemsPerPage, getPaginationProps, resetPage } = usePagination()
-
-  const { data: employeesData, isFetching } = useEmployeesListSuspense({
-    companyId,
-    terminated: false,
-    page: currentPage,
-    per: itemsPerPage,
-  })
-
-  const employees = useMemo<EmployeeItem[]>(
-    () =>
-      (employeesData.showEmployees ?? []).map(e => ({
-        uuid: e.uuid,
-        firstName: e.firstName,
-        lastName: e.lastName,
-        jobTitle: e.jobs?.find(job => job.primary)?.title ?? null,
-        department: e.department ?? null,
-      })),
-    [employeesData.showEmployees],
-  )
-
-  const filteredEmployees = useMemo(() => {
-    if (!searchValue) return employees
-    const lower = searchValue.toLowerCase()
-    return employees.filter(e =>
-      `${e.firstName ?? ''} ${e.lastName ?? ''}`.toLowerCase().includes(lower),
-    )
-  }, [employees, searchValue])
-
-  const pagination = getPaginationProps(employeesData.httpMeta.response.headers, isFetching)
 
   const { mutateAsync: addEmployees } = useTimeOffPoliciesAddEmployeesMutation()
-
-  const handleSelect = useCallback((item: EmployeeItem, checked: boolean) => {
-    setSelectedUuids(prev => {
-      const next = new Set(prev)
-      if (checked) next.add(item.uuid)
-      else next.delete(item.uuid)
-      return next
-    })
-  }, [])
 
   const handleBalanceChange = useCallback((uuid: string, value: string) => {
     setBalances(prev => ({ ...prev, [uuid]: value }))
   }, [])
 
-  const handleSearchChange = useCallback(
-    (value: string) => {
-      setSearchValue(value)
-      resetPage()
-    },
-    [resetPage],
-  )
-
-  const handleContinue = async () => {
+  const handleContinue = useCallback(async () => {
     if (mode === 'wizard') {
       onEvent(componentEvents.TIME_OFF_ADD_EMPLOYEES_DONE, {
         employeeUuids: [...selectedUuids],
@@ -98,7 +57,7 @@ export function SelectEmployeesTimeOff({
       })
       onEvent(componentEvents.TIME_OFF_ADD_EMPLOYEES_DONE, response.timeOffPolicy)
     })
-  }
+  }, [mode, baseSubmitHandler, addEmployees, policyId, selectedUuids, balances, onEvent])
 
   const handleBack = useCallback(() => {
     onEvent(componentEvents.CANCEL)
@@ -111,10 +70,7 @@ export function SelectEmployeesTimeOff({
       searchValue={searchValue}
       onSelect={handleSelect}
       onSearchChange={handleSearchChange}
-      onSearchClear={() => {
-        setSearchValue('')
-        resetPage()
-      }}
+      onSearchClear={handleSearchClear}
       onBack={handleBack}
       onContinue={handleContinue}
       showReassignmentWarning
