@@ -105,7 +105,7 @@ export const DateRangeFilter = ({
       {triggerButton}
 
       <Popover
-        UNSTABLE_portalContainer={container.current}
+        UNSTABLE_portalContainer={container.current ?? undefined}
         isOpen={isOpen}
         onOpenChange={open => {
           if (!open) handleClose()

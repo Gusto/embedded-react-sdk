@@ -12,6 +12,7 @@ export function Menu(rawProps: MenuProps) {
     isOpen,
     onClose,
     placement,
+    portalContainer,
     'aria-label': ariaLabel,
     ...otherProps
   } = resolvedProps
@@ -25,7 +26,7 @@ export function Menu(rawProps: MenuProps) {
 
   return (
     <Popover
-      UNSTABLE_portalContainer={container.current}
+      UNSTABLE_portalContainer={portalContainer ?? container.current ?? undefined}
       onOpenChange={handleOpenChange}
       isOpen={isOpen}
       triggerRef={triggerRef}
