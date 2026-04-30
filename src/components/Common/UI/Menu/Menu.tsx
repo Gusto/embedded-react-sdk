@@ -25,7 +25,7 @@ export function Menu(rawProps: MenuProps) {
 
   return (
     <Popover
-      UNSTABLE_portalContainer={container.current}
+      UNSTABLE_portalContainer={container.current ?? undefined}
       onOpenChange={handleOpenChange}
       isOpen={isOpen}
       triggerRef={triggerRef}

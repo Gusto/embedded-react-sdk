@@ -97,7 +97,7 @@ export const ComboBox = ({
 
         <Popover
           className={classNames(styles.popover, 'react-aria-Popover')}
-          UNSTABLE_portalContainer={container.current}
+          UNSTABLE_portalContainer={container.current ?? undefined}
           maxHeight={320}
         >
           <Virtualizer layout={ListLayout}>
