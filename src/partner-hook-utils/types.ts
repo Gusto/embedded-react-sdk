@@ -11,7 +11,7 @@ export interface FieldMetadata {
 
 export interface FieldMetadataWithOptions<TEntry = unknown> extends FieldMetadata {
   options: Array<{ label: string; value: string }>
-  entries?: TEntry[]
+  entries?: readonly TEntry[]
 }
 
 export type FieldsMetadata = { [key: string]: FieldMetadata | FieldMetadataWithOptions }

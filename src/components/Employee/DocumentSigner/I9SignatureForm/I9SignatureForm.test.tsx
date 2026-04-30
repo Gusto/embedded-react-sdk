@@ -161,7 +161,7 @@ describe('I9SignatureForm', () => {
 
     // State uses a react-aria Select — the trigger button's text is the placeholder until a value is chosen
     await user.click(screen.getByRole('button', { name: /Select a state/i }))
-    await user.click(await screen.findByRole('option', { name: 'CA' }))
+    await user.click(await screen.findByRole('option', { name: 'California' }))
 
     await user.click(screen.getByRole('button', { name: 'Sign' }))
 
