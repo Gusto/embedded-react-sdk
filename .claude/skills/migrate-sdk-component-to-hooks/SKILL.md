@@ -437,6 +437,48 @@ Validation translations should live in the component's translation namespace (e.
 - Fields whose error codes can never fire (e.g. `MiddleInitial` with `requiredFieldsConfig: 'never'` and no format validator)
 - Boolean fields (checkbox/switch) — always have a value so `REQUIRED` never fires
 
+### Select Fields with Translated Labels
+
+**Translations must never live in hooks.** Hooks produce option values (form submission values) and provide raw entry data. The UI component owns all display-label translation.
+
+The pattern for translatable select options uses two cooperating pieces:
+
+**Hook side** — pass the raw entries array as the third argument to `withOptions`. The options array carries the abbreviation/value as a fallback label; entries carries the raw data the UI will translate:
+
+```ts
+// In the hook (e.g. useHomeAddressForm, useSignEmployeeForm)
+const stateOptions = STATES_ABBR.map(abbr => ({ value: abbr, label: abbr }))
+
+state: withOptions(baseMetadata.state, stateOptions, STATES_ABBR),
+```
+
+`withOptions` accepts `readonly TEntry[]` so `as const` arrays like `STATES_ABBR` work directly without spreading.
+
+**Field type** — set `TEntry` on the field's `SelectHookFieldProps` to match the entries type, so `getOptionLabel` is typed correctly at the call site:
+
+```ts
+// In fields.tsx
+export type StateFieldProps = HookFieldProps<SelectHookFieldProps<RequiredValidation, string>>
+```
+
+**Component side** — pass `getOptionLabel` to the field component. `SelectHookField` detects both `entries` on the metadata and `getOptionLabel` on the props, and rebuilds the option labels — the fallback abbreviation labels from the hook are never shown to the user:
+
+```tsx
+// In the UI component (e.g. AdminProfile, I9SignatureForm)
+const { t: tCommon } = useTranslation('common')
+
+<HomeAddressFields.State
+  label={tHome('state')}
+  placeholder={tHome('statePlaceholder')}
+  validationMessages={{ REQUIRED: tHome('validations.state') }}
+  getOptionLabel={(abbr: string) => tCommon(`statesHash.${abbr}`, { defaultValue: abbr })}
+/>
+```
+
+Use `{ defaultValue: abbr }` (or another known-string overload) when passing a template literal key to `t` — i18next's typed `t` function requires exact key literals and won't accept a `` `namespace.${string}` `` template directly. The `defaultValue` forces a permissive overload that returns `string`, which is the pattern used throughout the codebase.
+
+**Do NOT use a raw `<SelectField>` inside an `SDKFormProvider` to work around a hook whose state options are abbreviation-only.** That is an anti-pattern. Add `entries` to the hook's `withOptions` call and use `getOptionLabel` on the hook's field component instead.
+
 ### Watching Form Values
 
 `useWatch` is a last resort — reach for it only when the reactive behavior is genuinely presentational and has no business meaning (e.g. showing a non-functional preview panel). Anything that affects which fields render, which are required, or which get submitted belongs in the hook.
@@ -575,6 +617,7 @@ Keep description style, table formatting, and code fence language tags consisten
 - [ ] `composeSubmitHandler` used for multi-hook forms, not memoized
 - [ ] Partial update recovery handled for create mode
 - [ ] All field error codes have `validationMessages` for codes that can realistically fire
+- [ ] Select fields with translated labels use `getOptionLabel` on the hook's field component — no raw `<SelectField>` override inside `SDKFormProvider`
 - [ ] `onEvent` passed as prop (not via `useBase()`)
 - [ ] i18n namespaces loaded and translations consistent with prior component
 - [ ] Dead code from old implementation removed

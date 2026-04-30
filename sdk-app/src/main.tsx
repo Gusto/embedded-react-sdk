@@ -7,8 +7,13 @@ import { RoutedComponentRenderer } from './RoutedComponentRenderer'
 import { DesignLayout } from './design/DesignLayout'
 import { DesignHome } from './design/DesignHome'
 import { ComponentShowcase } from './design/prototypes/component-showcase'
-import { ContractorProfile } from './design/prototypes/contractor-management/contractorProfile'
-import ContractorList from './design/prototypes/contractor-management/ContractorList'
+import { ContractorManagementFlow } from './design/prototypes/contractor-management/contractor-profile/ContractorManagementFlow'
+import ContractorList from './design/prototypes/contractor-management/contractor-list/ContractorList'
+import { ContractorProfile } from './design/prototypes/contractor-management/contractor-profile/ContractorProfile'
+import { ContractorDismiss } from './design/prototypes/contractor-management/contractor-list/ContractorDismiss'
+import { ContractorRehire } from './design/prototypes/contractor-management/contractor-list/ContractorRehire'
+import { AddContractor } from './design/prototypes/contractor-management/contractor-list/AddContractor'
+import { ContractorSelfOnboarding } from './design/prototypes/contractor-management/self-onboarding'
 import './app.scss'
 import '@/styles/sdk.scss'
 
@@ -25,8 +30,19 @@ const router = createBrowserRouter([
         children: [
           { index: true, element: <DesignHome /> },
           { path: 'component-showcase', element: <ComponentShowcase /> },
-          { path: 'contractor-profile', element: <ContractorProfile /> },
-          { path: 'contractor-list', element: <ContractorList /> },
+          {
+            path: 'contractor-management',
+            element: <ContractorManagementFlow />,
+            children: [
+              { index: true, element: <ContractorList /> },
+              { path: 'add', element: <AddContractor /> },
+              { path: 'add/:contractorId', element: <AddContractor /> },
+              { path: ':contractorId', element: <ContractorProfile /> },
+              { path: ':contractorId/dismiss', element: <ContractorDismiss /> },
+              { path: ':contractorId/rehire', element: <ContractorRehire /> },
+            ],
+          },
+          { path: 'contractor-self-onboarding', element: <ContractorSelfOnboarding /> },
         ],
       },
     ],

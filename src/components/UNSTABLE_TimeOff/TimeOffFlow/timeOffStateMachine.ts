@@ -18,7 +18,7 @@ import { componentEvents } from '@/shared/constants'
 import type { MachineTransition } from '@/types/Helpers'
 
 type PolicyTypePayload = { policyType: 'sick' | 'vacation' | 'holiday' }
-type PolicyCreatedPayload = { policyId: string }
+type PolicyCreatedPayload = { policyId: string; accrualMethod?: string }
 type ErrorPayload = { alert?: TimeOffFlowAlert }
 type ViewPolicyPayload = { policyId: string; policyType: 'sick' | 'vacation' | 'holiday' }
 
@@ -39,6 +39,13 @@ function isSickOrVacationView(
 
 function isHolidayView(_ctx: TimeOffFlowContextInterface, ev: { payload: ViewPolicyPayload }) {
   return ev.payload.policyType === 'holiday'
+}
+
+function isUnlimitedPolicy(
+  _ctx: TimeOffFlowContextInterface,
+  ev: { payload: PolicyCreatedPayload },
+) {
+  return ev.payload.accrualMethod === 'unlimited'
 }
 
 const cancelToPolicyList = transition(
@@ -153,6 +160,22 @@ export const timeOffMachine = {
   policyDetailsForm: state<MachineTransition>(
     transition(
       componentEvents.TIME_OFF_POLICY_DETAILS_DONE,
+      'addEmployeesToPolicy',
+      guard(isUnlimitedPolicy),
+      reduce(
+        (
+          ctx: TimeOffFlowContextInterface,
+          ev: { payload: PolicyCreatedPayload },
+        ): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: AddEmployeesToPolicyContextual,
+          policyId: ev.payload.policyId,
+          alerts: undefined,
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.TIME_OFF_POLICY_DETAILS_DONE,
       'policySettings',
       reduce(
         (
@@ -191,6 +214,17 @@ export const timeOffMachine = {
         (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
           ...ctx,
           component: AddEmployeesToPolicyContextual,
+          alerts: undefined,
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.TIME_OFF_POLICY_SETTINGS_BACK,
+      'policyDetailsForm',
+      reduce(
+        (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: PolicyDetailsFormContextual,
           alerts: undefined,
         }),
       ),

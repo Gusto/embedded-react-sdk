@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { Skeleton } from '../contractorProfile/components/Skeleton'
+import { Skeleton } from '../../contractor-profile/components/Skeleton'
 import { DataView, useDataView } from '@/components/Common'
 
 interface Column {

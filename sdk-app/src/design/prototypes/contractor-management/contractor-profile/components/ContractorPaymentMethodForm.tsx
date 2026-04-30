@@ -12,7 +12,7 @@ import { accountNumberValidation, routingNumberValidation } from '@/helpers/vali
 const BankAccountFormSchema = z.object({
   name: z.string().min(1),
   routingNumber: routingNumberValidation,
-  accountNumber: z.any(),
+  accountNumber: z.string().min(1),
   accountType: z.enum(['Checking', 'Savings']),
 })
 
@@ -48,13 +48,9 @@ export function ContractorPaymentMethodForm({
 
   const handleSubmit = async (data: BankAccountFormValues) => {
     await baseSubmitHandler(data, async payload => {
-      const hasChanged =
-        !bankAccount ||
-        payload.name !== bankAccount.name ||
-        payload.routingNumber !== bankAccount.routingNumber ||
-        payload.accountType !== bankAccount.accountType ||
-        payload.accountNumber !== bankAccount.hiddenAccountNumber
-      if (hasChanged) {
+      const accountNumberChanged =
+        !bankAccount || payload.accountNumber !== bankAccount.hiddenAccountNumber
+      if (accountNumberChanged) {
         const result = accountNumberValidation.safeParse(payload.accountNumber)
         if (!result.success) {
           formMethods.setError('accountNumber', { type: 'validate' })

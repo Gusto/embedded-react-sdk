@@ -237,6 +237,7 @@ function PreparerSection({
   onRemove,
 }: PreparerSectionProps) {
   const { t } = useTranslation('Employee.I9SignatureForm')
+  const { t: tCommon } = useTranslation('common')
   const Components = useComponentContext()
 
   return (
@@ -264,6 +265,7 @@ function PreparerSection({
         label={t('preparerStateLabel')}
         placeholder={t('preparerStatePlaceholder')}
         validationMessages={{ REQUIRED: t('preparerStateError') }}
+        getOptionLabel={(abbr: string) => tCommon(`statesHash.${abbr}`, { defaultValue: abbr })}
       />
       <PreparerFields.Zip
         label={t('preparerZipLabel')}

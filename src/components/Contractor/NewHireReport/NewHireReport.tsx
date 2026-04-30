@@ -88,10 +88,12 @@ function Root({ contractorId, className, dictionary, selfOnboarding = false }: N
     <section className={className}>
       <FormProvider {...formMethods}>
         <Form onSubmit={formMethods.handleSubmit(onSubmit)}>
-          <Flex flexDirection={'column'}>
+          <Flex flexDirection="column" alignItems="stretch">
             <header>
-              <Components.Heading as="h2">{t('title')}</Components.Heading>
-              <Components.Text>{t('description')}</Components.Text>
+              <Flex flexDirection="column" gap={4}>
+                <Components.Heading as="h2">{t('title')}</Components.Heading>
+                <Components.Text variant="supporting">{t('description')}</Components.Text>
+              </Flex>
             </header>
             <RadioGroupField
               name="fileNewHireReport"
