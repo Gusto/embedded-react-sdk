@@ -38,6 +38,7 @@ export const ComboBox = ({
   inputRef,
   shouldVisuallyHideLabel,
   name,
+  portalContainer,
   ...props
 }: ComboBoxProps) => {
   const { t } = useTranslation()
@@ -97,7 +98,7 @@ export const ComboBox = ({
 
         <Popover
           className={classNames(styles.popover, 'react-aria-Popover')}
-          UNSTABLE_portalContainer={container.current ?? undefined}
+          UNSTABLE_portalContainer={portalContainer ?? container.current ?? undefined}
           maxHeight={320}
         >
           <Virtualizer layout={ListLayout}>
