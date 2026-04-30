@@ -30,6 +30,17 @@ const TimeOffPoliciesHandlers = [
   http.get(`${API_BASE_URL}/v1/companies/:company_uuid/holiday_pay_policy`, () => {
     return HttpResponse.json({ message: 'Not found' }, { status: 404 })
   }),
+  http.put(`${API_BASE_URL}/v1/time_off_policies/:timeOffPolicyUuid/add_employees`, () => {
+    return HttpResponse.json({ ...mockTimeOffPolicies[0], employees: [] })
+  }),
+  http.put(`${API_BASE_URL}/v1/companies/:company_uuid/holiday_pay_policy/add`, () => {
+    return HttpResponse.json({
+      uuid: 'holiday-pay-policy-1',
+      company_uuid: '123',
+      version: 1,
+      is_active: true,
+    })
+  }),
 ]
 
 export default TimeOffPoliciesHandlers

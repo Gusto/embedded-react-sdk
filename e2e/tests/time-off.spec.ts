@@ -17,39 +17,26 @@ test.describe('SelectEmployees - Add employees to time-off policy', () => {
     await page.goto('/?flow=time-off&companyId=123')
     await waitForLoadingComplete(page)
 
-    // Navigate into a policy — click the first available policy
     const policyLink = page
       .getByRole('button')
       .filter({ hasText: /vacation|sick|pto/i })
       .first()
-    const hasPolicies = await policyLink.count()
-
-    if (!hasPolicies) {
-      test.skip()
-      return
-    }
-
+    await expect(policyLink).toBeVisible({ timeout: 30000 })
     await policyLink.click()
     await waitForLoadingComplete(page)
 
-    // Navigate to the "Add employees" action
     const addEmployeesButton = page
       .getByRole('button')
       .filter({ hasText: /add employees/i })
       .first()
-    if (!(await addEmployeesButton.count())) {
-      test.skip()
-      return
-    }
-
+    await expect(addEmployeesButton).toBeVisible({ timeout: 30000 })
     await addEmployeesButton.click()
     await waitForLoadingComplete(page)
 
-    // Verify the SelectEmployees screen
     await expect(page.getByRole('heading', { name: /add employees to policy/i })).toBeVisible({
       timeout: 30000,
     })
-    await expect(page.getByPlaceholderText(/search employees/i)).toBeVisible()
+    await expect(page.getByPlaceholder(/search employees/i)).toBeVisible()
     await expect(page.getByRole('button', { name: /back/i })).toBeVisible()
     await expect(page.getByRole('button', { name: /continue/i })).toBeVisible()
   })
@@ -62,11 +49,7 @@ test.describe('SelectEmployees - Add employees to time-off policy', () => {
       .getByRole('button')
       .filter({ hasText: /vacation|sick|pto/i })
       .first()
-    if (!(await policyLink.count())) {
-      test.skip()
-      return
-    }
-
+    await expect(policyLink).toBeVisible({ timeout: 30000 })
     await policyLink.click()
     await waitForLoadingComplete(page)
 
@@ -74,11 +57,7 @@ test.describe('SelectEmployees - Add employees to time-off policy', () => {
       .getByRole('button')
       .filter({ hasText: /add employees/i })
       .first()
-    if (!(await addEmployeesButton.count())) {
-      test.skip()
-      return
-    }
-
+    await expect(addEmployeesButton).toBeVisible({ timeout: 30000 })
     await addEmployeesButton.click()
     await waitForLoadingComplete(page)
 
@@ -99,11 +78,7 @@ test.describe('SelectEmployees - Add employees to time-off policy', () => {
       .getByRole('button')
       .filter({ hasText: /vacation|sick|pto/i })
       .first()
-    if (!(await policyLink.count())) {
-      test.skip()
-      return
-    }
-
+    await expect(policyLink).toBeVisible({ timeout: 30000 })
     await policyLink.click()
     await waitForLoadingComplete(page)
 
@@ -111,11 +86,7 @@ test.describe('SelectEmployees - Add employees to time-off policy', () => {
       .getByRole('button')
       .filter({ hasText: /add employees/i })
       .first()
-    if (!(await addEmployeesButton.count())) {
-      test.skip()
-      return
-    }
-
+    await expect(addEmployeesButton).toBeVisible({ timeout: 30000 })
     await addEmployeesButton.click()
     await waitForLoadingComplete(page)
 
@@ -123,7 +94,7 @@ test.describe('SelectEmployees - Add employees to time-off policy', () => {
       timeout: 30000,
     })
 
-    const searchInput = page.getByPlaceholderText(/search employees/i)
+    const searchInput = page.getByPlaceholder(/search employees/i)
     const initialRowCount = await page.getByRole('row').count()
 
     await searchInput.fill('zzz_no_match_expected')
@@ -145,11 +116,7 @@ test.describe('SelectEmployees - Add employees to time-off policy', () => {
       .getByRole('button')
       .filter({ hasText: /vacation|sick|pto/i })
       .first()
-    if (!(await policyLink.count())) {
-      test.skip()
-      return
-    }
-
+    await expect(policyLink).toBeVisible({ timeout: 30000 })
     await policyLink.click()
     await waitForLoadingComplete(page)
 
@@ -157,11 +124,7 @@ test.describe('SelectEmployees - Add employees to time-off policy', () => {
       .getByRole('button')
       .filter({ hasText: /add employees/i })
       .first()
-    if (!(await addEmployeesButton.count())) {
-      test.skip()
-      return
-    }
-
+    await expect(addEmployeesButton).toBeVisible({ timeout: 30000 })
     await addEmployeesButton.click()
     await waitForLoadingComplete(page)
 
@@ -169,8 +132,9 @@ test.describe('SelectEmployees - Add employees to time-off policy', () => {
       timeout: 30000,
     })
 
-    // Select the first employee
-    const firstCheckbox = page.getByRole('checkbox').first()
+    // Skip the select-all header checkbox (row 0 is the column header, row 1 is the first employee)
+    const firstEmployeeRow = page.getByRole('row').nth(1)
+    const firstCheckbox = firstEmployeeRow.getByRole('checkbox')
     await firstCheckbox.check()
     await expect(firstCheckbox).toBeChecked()
 
@@ -181,20 +145,20 @@ test.describe('SelectEmployees - Add employees to time-off policy', () => {
 })
 
 test.describe('SelectEmployees - Add employees to holiday pay policy', () => {
-  test('navigates to add holiday employees step', async ({ page }) => {
+  test('navigates to add holiday employees step', async ({ page, localConfig }) => {
+    test.skip(
+      !localConfig.isLocal,
+      'Holiday flow requires real backend — MSW mocks return 404 for the holiday pay policy',
+    )
+
     await page.goto('/?flow=time-off&companyId=123')
     await waitForLoadingComplete(page)
 
-    // Navigate to holiday pay section
     const holidayTab = page
       .getByRole('button')
       .filter({ hasText: /holiday/i })
       .first()
-    if (!(await holidayTab.count())) {
-      test.skip()
-      return
-    }
-
+    await expect(holidayTab).toBeVisible({ timeout: 30000 })
     await holidayTab.click()
     await waitForLoadingComplete(page)
 
@@ -202,11 +166,7 @@ test.describe('SelectEmployees - Add employees to holiday pay policy', () => {
       .getByRole('button')
       .filter({ hasText: /add employees/i })
       .first()
-    if (!(await addEmployeesButton.count())) {
-      test.skip()
-      return
-    }
-
+    await expect(addEmployeesButton).toBeVisible({ timeout: 30000 })
     await addEmployeesButton.click()
     await waitForLoadingComplete(page)
 
