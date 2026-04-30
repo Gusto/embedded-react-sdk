@@ -19,14 +19,8 @@ import { Grid } from '@/components/Common/Grid/Grid'
 import { ActionsLayout, DatePickerField } from '@/components/Common'
 import { Form } from '@/components/Common/Form'
 import { BaseLayout } from '@/components/Base'
-import { SelectField } from '@/components/Common'
 import { useI18n } from '@/i18n'
-import {
-  componentEvents,
-  EmployeeOnboardingStatus,
-  STATES_ABBR,
-  type EventType,
-} from '@/shared/constants'
+import { componentEvents, EmployeeOnboardingStatus, type EventType } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useComponentDictionary } from '@/i18n/I18n'
 
@@ -165,6 +159,7 @@ function AdminProfileReady({
 }: AdminProfileReadyProps) {
   const { t } = useTranslation('Employee.Profile')
   const { t: tHome } = useTranslation('Employee.HomeAddress')
+  const { t: tCommon } = useTranslation('common')
   const Components = useComponentContext()
 
   const employee = employeeDetails.data.employee ?? undefined
@@ -376,16 +371,13 @@ function AdminProfileReady({
                     label={tHome('city')}
                     validationMessages={{ REQUIRED: tHome('validations.city') }}
                   />
-                  <SelectField
-                    name="state"
-                    options={STATES_ABBR.map((stateAbbr: (typeof STATES_ABBR)[number]) => ({
-                      label: tHome(`statesHash.${stateAbbr}`, { ns: 'common' }),
-                      value: stateAbbr,
-                    }))}
+                  <HomeAddressFields.State
                     label={tHome('state')}
                     placeholder={tHome('statePlaceholder')}
-                    errorMessage={tHome('validations.state')}
-                    isRequired
+                    validationMessages={{ REQUIRED: tHome('validations.state') }}
+                    getOptionLabel={(abbr: string) =>
+                      tCommon(`statesHash.${abbr}`, { defaultValue: abbr })
+                    }
                   />
                   <HomeAddressFields.Zip
                     label={tHome('zip')}

@@ -165,7 +165,7 @@ export function useHomeAddressForm({
     street1: baseMetadata.street1,
     street2: baseMetadata.street2,
     city: baseMetadata.city,
-    state: withOptions(baseMetadata.state, stateOptions),
+    state: withOptions(baseMetadata.state, stateOptions, STATES_ABBR),
     zip: baseMetadata.zip,
     courtesyWithholding: baseMetadata.courtesyWithholding,
     effectiveDate: baseMetadata.effectiveDate,

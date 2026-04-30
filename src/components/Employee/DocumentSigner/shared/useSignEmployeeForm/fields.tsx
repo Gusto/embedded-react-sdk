@@ -18,7 +18,9 @@ export type RequiredValidation = typeof SignEmployeeFormErrorCodes.REQUIRED
 // ── Shared preparer field prop types ──────────────────────────────────
 
 export type PreparerTextFieldProps = HookFieldProps<TextInputHookFieldProps<RequiredValidation>>
-export type PreparerSelectFieldProps = HookFieldProps<SelectHookFieldProps<RequiredValidation>>
+export type PreparerSelectFieldProps = HookFieldProps<
+  SelectHookFieldProps<RequiredValidation, string>
+>
 export type PreparerCheckboxFieldProps = HookFieldProps<CheckboxHookFieldProps<RequiredValidation>>
 
 // ── Base fields (always present) ──────────────────────────────────────
