@@ -1406,6 +1406,14 @@
         {
           "method": "PUT",
           "path": "/v1/time_off_policies/:timeOffPolicyUuid/add_employees"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/remove_employees"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/balance"
         }
       ],
       "variables": [
@@ -1459,6 +1467,14 @@
         {
           "method": "PUT",
           "path": "/v1/time_off_policies/:timeOffPolicyUuid/add_employees"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/remove_employees"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/balance"
         }
       ],
       "variables": [
@@ -1523,6 +1539,14 @@
         {
           "method": "PUT",
           "path": "/v1/time_off_policies/:timeOffPolicyUuid/add_employees"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/remove_employees"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/balance"
         }
       ],
       "variables": [
@@ -1576,6 +1600,14 @@
         {
           "method": "PUT",
           "path": "/v1/time_off_policies/:timeOffPolicyUuid/add_employees"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/remove_employees"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/balance"
         }
       ],
       "variables": [
@@ -1629,6 +1661,14 @@
         {
           "method": "PUT",
           "path": "/v1/time_off_policies/:timeOffPolicyUuid/add_employees"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/remove_employees"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/balance"
         }
       ],
       "variables": [
@@ -1682,6 +1722,14 @@
         {
           "method": "PUT",
           "path": "/v1/time_off_policies/:timeOffPolicyUuid/add_employees"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/remove_employees"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/balance"
         }
       ],
       "variables": [
@@ -1735,6 +1783,14 @@
         {
           "method": "PUT",
           "path": "/v1/time_off_policies/:timeOffPolicyUuid/add_employees"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/remove_employees"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/balance"
         }
       ],
       "variables": [
@@ -1788,6 +1844,14 @@
         {
           "method": "PUT",
           "path": "/v1/time_off_policies/:timeOffPolicyUuid/add_employees"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/remove_employees"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/balance"
         }
       ],
       "variables": [
@@ -1841,6 +1905,14 @@
         {
           "method": "PUT",
           "path": "/v1/time_off_policies/:timeOffPolicyUuid/add_employees"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/remove_employees"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/balance"
         }
       ],
       "variables": [
@@ -1894,11 +1966,38 @@
         {
           "method": "PUT",
           "path": "/v1/time_off_policies/:timeOffPolicyUuid/add_employees"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/remove_employees"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/balance"
         }
       ],
       "variables": [
         "companyId",
         "companyUuid",
+        "timeOffPolicyUuid"
+      ]
+    },
+    "UNSTABLE_TimeOff.TimeOffPolicyDetailPresentation": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/remove_employees"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/balance"
+        }
+      ],
+      "variables": [
         "timeOffPolicyUuid"
       ]
     },
@@ -1947,6 +2046,14 @@
         {
           "method": "PUT",
           "path": "/v1/time_off_policies/:timeOffPolicyUuid/add_employees"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/remove_employees"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/balance"
         }
       ],
       "variables": [
@@ -2733,16 +2840,30 @@
     },
     "UNSTABLE_TimeOff.TimeOffFlow": {
       "blocks": [
-        "UNSTABLE_TimeOff.PolicyConfigurationForm"
+        "UNSTABLE_TimeOff.PolicyConfigurationForm",
+        "UNSTABLE_TimeOff.TimeOffPolicyDetailPresentation"
       ],
       "endpoints": [
         {
           "method": "POST",
           "path": "/v1/companies/:companyUuid/time_off_policies"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/remove_employees"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/balance"
         }
       ],
       "variables": [
-        "companyUuid"
+        "companyUuid",
+        "timeOffPolicyUuid"
       ]
     }
   }

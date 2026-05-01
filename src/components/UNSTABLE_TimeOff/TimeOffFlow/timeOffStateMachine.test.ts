@@ -10,8 +10,7 @@ type TimeOffState =
   | 'policyDetailsForm'
   | 'policySettings'
   | 'addEmployeesToPolicy'
-  | 'viewPolicyDetails'
-  | 'viewPolicyEmployees'
+  | 'viewTimeOffPolicyDetail'
   | 'holidaySelectionForm'
   | 'addEmployeesHoliday'
   | 'viewHolidayEmployees'
@@ -91,7 +90,7 @@ describe('timeOffStateMachine', () => {
       expect(service.context.alerts).toBeUndefined()
     })
 
-    it('transitions to viewPolicyDetails on TIME_OFF_VIEW_POLICY with sick/vacation type', () => {
+    it('transitions to viewTimeOffPolicyDetail on TIME_OFF_VIEW_POLICY with sick/vacation type', () => {
       const service = createService()
 
       send(service, componentEvents.TIME_OFF_VIEW_POLICY, {
@@ -99,7 +98,7 @@ describe('timeOffStateMachine', () => {
         policyType: 'vacation',
       })
 
-      expect(service.machine.current).toBe('viewPolicyDetails')
+      expect(service.machine.current).toBe('viewTimeOffPolicyDetail')
       expect(service.context.policyId).toBe('policy-456')
       expect(service.context.policyType).toBe('vacation')
       expect(service.context.alerts).toBeUndefined()
@@ -213,17 +212,17 @@ describe('timeOffStateMachine', () => {
       expect(service.context.alerts).toBeUndefined()
     })
 
-    it('transitions addEmployeesToPolicy -> viewPolicyDetails on ADD_EMPLOYEES_DONE', () => {
+    it('transitions addEmployeesToPolicy -> viewTimeOffPolicyDetail on ADD_EMPLOYEES_DONE', () => {
       const service = createService()
       toAddEmployeesToPolicy(service)
 
       send(service, componentEvents.TIME_OFF_ADD_EMPLOYEES_DONE)
 
-      expect(service.machine.current).toBe('viewPolicyDetails')
+      expect(service.machine.current).toBe('viewTimeOffPolicyDetail')
       expect(service.context.alerts).toBeUndefined()
     })
 
-    it('supports full happy path: policyList -> viewPolicyDetails', () => {
+    it('supports full happy path: policyList -> viewTimeOffPolicyDetail', () => {
       const service = createService()
 
       send(service, componentEvents.TIME_OFF_CREATE_POLICY)
@@ -241,7 +240,7 @@ describe('timeOffStateMachine', () => {
       expect(service.machine.current).toBe('addEmployeesToPolicy')
 
       send(service, componentEvents.TIME_OFF_ADD_EMPLOYEES_DONE)
-      expect(service.machine.current).toBe('viewPolicyDetails')
+      expect(service.machine.current).toBe('viewTimeOffPolicyDetail')
       expect(service.context.policyId).toBe('policy-123')
     })
   })
@@ -283,33 +282,6 @@ describe('timeOffStateMachine', () => {
   })
 
   describe('tab switching', () => {
-    it('switches from viewPolicyDetails to viewPolicyEmployees', () => {
-      const service = createService()
-      send(service, componentEvents.TIME_OFF_VIEW_POLICY, {
-        policyId: 'policy-123',
-        policyType: 'vacation',
-      })
-      expect(service.machine.current).toBe('viewPolicyDetails')
-
-      send(service, componentEvents.TIME_OFF_VIEW_POLICY_EMPLOYEES)
-
-      expect(service.machine.current).toBe('viewPolicyEmployees')
-    })
-
-    it('switches from viewPolicyEmployees to viewPolicyDetails', () => {
-      const service = createService()
-      send(service, componentEvents.TIME_OFF_VIEW_POLICY, {
-        policyId: 'policy-123',
-        policyType: 'vacation',
-      })
-      send(service, componentEvents.TIME_OFF_VIEW_POLICY_EMPLOYEES)
-      expect(service.machine.current).toBe('viewPolicyEmployees')
-
-      send(service, componentEvents.TIME_OFF_VIEW_POLICY_DETAILS)
-
-      expect(service.machine.current).toBe('viewPolicyDetails')
-    })
-
     it('switches from viewHolidayEmployees to viewHolidaySchedule', () => {
       const service = createService()
       send(service, componentEvents.TIME_OFF_VIEW_POLICY, {
@@ -339,7 +311,7 @@ describe('timeOffStateMachine', () => {
   })
 
   describe('back to list', () => {
-    it('returns to policyList from viewPolicyDetails', () => {
+    it('returns to policyList from viewTimeOffPolicyDetail', () => {
       const service = createService()
       send(service, componentEvents.TIME_OFF_VIEW_POLICY, {
         policyId: 'policy-123',
@@ -350,19 +322,6 @@ describe('timeOffStateMachine', () => {
 
       expect(service.machine.current).toBe('policyList')
       expect(service.context.alerts).toBeUndefined()
-    })
-
-    it('returns to policyList from viewPolicyEmployees', () => {
-      const service = createService()
-      send(service, componentEvents.TIME_OFF_VIEW_POLICY, {
-        policyId: 'policy-123',
-        policyType: 'vacation',
-      })
-      send(service, componentEvents.TIME_OFF_VIEW_POLICY_EMPLOYEES)
-
-      send(service, componentEvents.TIME_OFF_BACK_TO_LIST)
-
-      expect(service.machine.current).toBe('policyList')
     })
 
     it('returns to policyList from viewHolidayEmployees', () => {

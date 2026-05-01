@@ -4,8 +4,7 @@ import { PolicyTypeSelector } from '../PolicyTypeSelector/PolicyTypeSelector'
 import { PolicyConfigurationForm } from '../TimeOffManagement/PolicyConfigurationForm'
 import { PolicySettings } from '../PolicySettings/PolicySettings'
 import { AddEmployeesToPolicy } from '../AddEmployeesToPolicy/AddEmployeesToPolicy'
-import { ViewPolicyDetails } from '../ViewPolicyDetails/ViewPolicyDetails'
-import { ViewPolicyEmployees } from '../ViewPolicyEmployees/ViewPolicyEmployees'
+import { TimeOffPolicyDetail } from '../TimeOffPolicyDetail/TimeOffPolicyDetail'
 import { HolidaySelectionForm } from '../HolidaySelectionForm/HolidaySelectionForm'
 import { AddEmployeesHoliday } from '../AddEmployeesHoliday/AddEmployeesHoliday'
 import { ViewHolidayEmployees } from '../ViewHolidayEmployees/ViewHolidayEmployees'
@@ -118,14 +117,9 @@ export function AddEmployeesToPolicyContextual() {
   )
 }
 
-export function ViewPolicyDetailsContextual() {
+export function TimeOffPolicyDetailContextual() {
   const { onEvent, policyId } = useFlow<TimeOffFlowContextInterface>()
-  return <ViewPolicyDetails onEvent={onEvent} policyId={ensureRequired(policyId)} />
-}
-
-export function ViewPolicyEmployeesContextual() {
-  const { onEvent, policyId } = useFlow<TimeOffFlowContextInterface>()
-  return <ViewPolicyEmployees onEvent={onEvent} policyId={ensureRequired(policyId)} />
+  return <TimeOffPolicyDetail onEvent={onEvent} policyId={ensureRequired(policyId)} />
 }
 
 export function HolidaySelectionFormContextual() {
