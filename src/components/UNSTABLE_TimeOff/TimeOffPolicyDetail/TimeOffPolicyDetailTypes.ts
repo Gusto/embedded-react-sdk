@@ -49,16 +49,12 @@ export interface PolicySettingsDisplay {
   paidOutOnTermination: boolean
 }
 
-export interface TimeOffPolicyDetailPresentationProps {
+interface TimeOffPolicyDetailPresentationBaseProps {
   title: string
   subtitle?: string
   onBack: () => void
   backLabel: string
   actions?: ReactNode[]
-
-  policyDetails: PolicyDetails
-  policySettings?: PolicySettingsDisplay
-  onChangeSettings?: () => void
 
   selectedTabId: string
   onTabChange: (id: string) => void
@@ -85,3 +81,17 @@ export interface TimeOffPolicyDetailPresentationProps {
   successAlert?: string
   onDismissAlert?: () => void
 }
+
+export type TimeOffPolicyDetailPresentationProps = TimeOffPolicyDetailPresentationBaseProps &
+  (
+    | {
+        policyDetails: UnlimitedPolicyDetails
+        policySettings?: never
+        onChangeSettings?: never
+      }
+    | {
+        policyDetails: RateBasedPolicyDetails
+        policySettings: PolicySettingsDisplay
+        onChangeSettings?: () => void
+      }
+  )
