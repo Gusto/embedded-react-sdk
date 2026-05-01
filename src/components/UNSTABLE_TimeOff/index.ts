@@ -22,9 +22,8 @@ export { ViewHolidayPolicyDetails } from './ViewHolidayPolicyDetails/ViewHoliday
 export type { ViewHolidayPolicyDetailsProps } from './ViewHolidayPolicyDetails/ViewHolidayPolicyDetails'
 export { ViewHolidaySchedule } from './ViewHolidaySchedule/ViewHolidaySchedule'
 export type { ViewHolidayScheduleProps } from './ViewHolidaySchedule/ViewHolidaySchedule'
-export { HolidayPolicyDetailPresentation as HolidayPolicyDetail } from './HolidayPolicyDetail'
 export type {
-  HolidayPolicyDetailPresentationProps as HolidayPolicyDetailProps,
+  HolidayPolicyDetailPresentationProps,
   HolidayPolicyDetailEmployee,
 } from './HolidayPolicyDetail'
 export { TimeOffFlow } from './TimeOffFlow/TimeOffFlow'

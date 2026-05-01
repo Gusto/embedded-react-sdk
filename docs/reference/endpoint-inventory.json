@@ -1999,26 +1999,6 @@
         "timeOffPolicyUuid"
       ]
     },
-    "UNSTABLE_TimeOff.HolidayPolicyDetailPresentation": {
-      "endpoints": [
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy/remove"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/employees"
-        }
-      ],
-      "variables": [
-        "companyId",
-        "companyUuid"
-      ]
-    },
     "UNSTABLE_TimeOff.TimeOffFlow": {
       "endpoints": [
         {
