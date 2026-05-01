@@ -19,6 +19,7 @@ export function PolicyDetailLayout<T extends EmployeeTableItem>({
   onTabChange,
   employees,
   removeDialog,
+  bulkRemoveDialog,
   successAlert,
   onDismissAlert,
 }: PolicyDetailLayoutProps<T>) {
@@ -47,6 +48,10 @@ export function PolicyDetailLayout<T extends EmployeeTableItem>({
           isFetching={employees.isFetching}
           emptyState={employees.emptyState}
           additionalColumns={employees.additionalColumns}
+          selectionMode={employees.selectionMode}
+          onSelect={employees.onSelect}
+          getIsItemSelected={employees.getIsItemSelected}
+          footer={employees.footer}
         />
       ),
     },
@@ -79,6 +84,21 @@ export function PolicyDetailLayout<T extends EmployeeTableItem>({
       >
         {t('removeEmployeeDialog.description', { name: removeDialog.employeeName })}
       </Dialog>
+
+      {bulkRemoveDialog && (
+        <Dialog
+          isOpen={bulkRemoveDialog.isOpen}
+          onClose={bulkRemoveDialog.onClose}
+          onPrimaryActionClick={bulkRemoveDialog.onConfirm}
+          isPrimaryActionLoading={bulkRemoveDialog.isPending}
+          isDestructive
+          title={t('bulkRemoveDialog.title', { count: bulkRemoveDialog.count })}
+          primaryActionLabel={t('bulkRemoveDialog.confirmCta')}
+          closeActionLabel={t('bulkRemoveDialog.cancelCta')}
+        >
+          {t('bulkRemoveDialog.description')}
+        </Dialog>
+      )}
     </>
   )
 }

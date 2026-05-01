@@ -25,5 +25,12 @@ export type {
   HolidayPolicyDetailPresentationProps as HolidayPolicyDetailProps,
   HolidayPolicyDetailEmployee,
 } from './HolidayPolicyDetail'
+export { TimeOffPolicyDetailPresentation } from './TimeOffPolicyDetail'
+export type {
+  TimeOffPolicyDetailPresentationProps,
+  TimeOffPolicyDetailEmployee,
+  PolicyDetails,
+  PolicySettingsDisplay,
+} from './TimeOffPolicyDetail'
 export { TimeOffFlow } from './TimeOffFlow/TimeOffFlow'
 export type { TimeOffFlowProps } from './TimeOffFlow/TimeOffFlowComponents'

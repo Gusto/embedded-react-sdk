@@ -47,6 +47,7 @@
   },
   "resetDate": "Reset date",
   "policySettingsTitle": "Policy settings",
+  "changeSettingsCta": "Change",
   "maxAccrualHoursPerYear": {
     "label": "Accrual maximum",
     "noMaximum": "No maximum",
@@ -85,8 +86,11 @@
   },
   "editBalanceModal": {
     "title": "Edit {{name}} time off balance",
+    "balanceLabel": "Balance (hrs)",
     "currentBalance": "Current balance",
-    "hoursUnit": "hours"
+    "hoursUnit": "hours",
+    "cancelCta": "Cancel",
+    "updateCta": "Update balance"
   },
   "removeEmployeeModal": {
     "title": "Remove {{name}} from policy?",

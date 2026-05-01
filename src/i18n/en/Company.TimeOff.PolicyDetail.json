@@ -8,5 +8,11 @@
     "description": "Are you sure you want to remove {{name}} from this policy?",
     "confirmCta": "Remove",
     "cancelCta": "Cancel"
+  },
+  "bulkRemoveDialog": {
+    "title": "Remove {{count}} employee(s) from policy?",
+    "description": "When you remove an employee from a policy, any existing balance is removed.",
+    "confirmCta": "Remove employees",
+    "cancelCta": "Cancel"
   }
 }
