@@ -1,2 +1,6 @@
 export { PolicyDetailLayout } from './PolicyDetailLayout'
-export type { PolicyDetailLayoutProps, RemoveDialogState } from './PolicyDetailLayoutTypes'
+export type {
+  PolicyDetailLayoutProps,
+  RemoveDialogState,
+  BulkRemoveDialogState,
+} from './PolicyDetailLayoutTypes'
