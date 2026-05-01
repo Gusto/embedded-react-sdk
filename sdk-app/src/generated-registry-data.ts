@@ -74,6 +74,10 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'Payroll.RecoveryCases': ['companyId'],
   'Payroll.TransitionCreation': ['companyId'],
   'Payroll.TransitionFlow': ['companyId'],
+  'Demo.EmployeeInformation': ['companyId', 'employeeId'],
+  'Demo.EmployeeDetails': ['companyId', 'employeeId'],
+  'Demo.EmployeeDetailsAndAddress': ['companyId', 'employeeId'],
+  'Demo.EmployeeDetailsAndAddressCombined': ['companyId', 'employeeId'],
 }
 
 export const ADDITIONAL_REQUIRED_PROPS: Record<string, string[]> = {

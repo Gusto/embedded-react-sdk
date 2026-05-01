@@ -1,11 +1,18 @@
 import { ENTITY_REQUIREMENTS, ADDITIONAL_REQUIRED_PROPS } from './generated-registry-data'
+import * as Demo from './demo'
 import * as Company from '@/components/Company'
 import * as Contractor from '@/components/Contractor'
 import * as Employee from '@/components/Employee'
 import * as Payroll from '@/components/Payroll'
 import * as InformationRequests from '@/components/InformationRequests'
 
-export type Category = 'Company' | 'Contractor' | 'Employee' | 'Payroll' | 'InformationRequests'
+export type Category =
+  | 'Company'
+  | 'Contractor'
+  | 'Employee'
+  | 'Payroll'
+  | 'InformationRequests'
+  | 'Demo'
 
 export interface ComponentEntry {
   name: string
@@ -21,6 +28,7 @@ const namespaces: Record<Category, Record<string, unknown>> = {
   Employee,
   Payroll,
   InformationRequests,
+  Demo,
 }
 
 function isReactComponent(value: unknown): value is React.ComponentType<Record<string, unknown>> {
@@ -64,6 +72,7 @@ export const categorizedRegistry: Record<Category, ComponentEntry[]> = {
   Employee: [],
   Payroll: [],
   InformationRequests: [],
+  Demo: [],
 }
 
 for (const entry of componentRegistry) {
@@ -76,6 +85,7 @@ export const CATEGORIES: Category[] = [
   'Contractor',
   'Payroll',
   'InformationRequests',
+  'Demo',
 ]
 
 export function findComponent(category: string, name: string): ComponentEntry | undefined {
