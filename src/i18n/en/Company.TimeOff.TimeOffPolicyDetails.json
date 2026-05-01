@@ -86,11 +86,8 @@
   },
   "editBalanceModal": {
     "title": "Edit {{name}} time off balance",
-    "balanceLabel": "Balance (hrs)",
     "currentBalance": "Current balance",
-    "hoursUnit": "hours",
-    "cancelCta": "Cancel",
-    "updateCta": "Update balance"
+    "hoursUnit": "hours"
   },
   "removeEmployeeModal": {
     "title": "Remove {{name}} from policy?",
