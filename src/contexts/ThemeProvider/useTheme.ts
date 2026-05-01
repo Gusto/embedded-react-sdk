@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react'
 
 export interface ThemeContextProps {
-  container: React.RefObject<HTMLElement>
+  container: React.RefObject<HTMLElement | null>
 }
 export const ThemeContext = createContext({} as ThemeContextProps)
 

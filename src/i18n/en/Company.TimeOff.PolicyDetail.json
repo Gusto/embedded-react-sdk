@@ -1,0 +1,12 @@
+{
+  "tabs": {
+    "employees": "Employees"
+  },
+  "backLabel": "Back to policies",
+  "removeEmployeeDialog": {
+    "title": "Remove {{name}}",
+    "description": "Are you sure you want to remove {{name}} from this policy?",
+    "confirmCta": "Remove",
+    "cancelCta": "Cancel"
+  }
+}

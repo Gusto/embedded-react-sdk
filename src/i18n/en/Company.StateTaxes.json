@@ -9,6 +9,11 @@
     "requirementsListCol2": "Status",
     "completeBadge": "Complete",
     "incompleteBadge": "Missing information",
+    "notStartedBadge": "Not started",
+    "inProgressBadge": "In progress",
+    "startStateTaxSetupCta": "Start setup",
+    "defaultRatesAppliedText": "Default tax rates applied",
+    "readyToRunPayrollBadge": "Ready to run payroll",
     "requirementsListLabel": "State tax requirements",
     "emptyTableTitle": "No state tax requirements",
     "emptyTableDescription": "Add company location or an employee to get started."

@@ -125,7 +125,7 @@ export function ComponentRenderer({ entities }: ComponentRendererProps) {
   }>()
   const resolvedTheme = useResolvedTheme()
   const [events, setEvents] = useState<EventLogEntry[]>([])
-  const [eventsOpen, setEventsOpen] = useState(true)
+  const [eventsOpen, setEventsOpen] = useState(false)
   const [resetKey, setResetKey] = useState(0)
 
   const handleEvent = useCallback((...args: unknown[]) => {
@@ -269,19 +269,17 @@ export function ComponentRenderer({ entities }: ComponentRendererProps) {
         </div>
       )}
       <div className={styles.eventsLog}>
-        <div
-          className={styles.eventsLogHeader}
-          onClick={() => {
-            setEventsOpen(!eventsOpen)
-          }}
-          role="button"
-          tabIndex={0}
-          onKeyDown={e => {
-            if (e.key === 'Enter' || e.key === ' ') setEventsOpen(!eventsOpen)
-          }}
-        >
+        <div className={styles.eventsLogHeader}>
           <span>Events Log ({events.length})</span>
-          <span>{eventsOpen ? '▾' : '▸'}</span>
+          <button
+            className={styles.eventsLogToggle}
+            onClick={() => {
+              setEventsOpen(o => !o)
+            }}
+            type="button"
+          >
+            {eventsOpen ? 'Collapse' : 'Expand'}
+          </button>
         </div>
         {eventsOpen &&
           (events.length > 0 ? (

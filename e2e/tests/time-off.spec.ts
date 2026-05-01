@@ -12,7 +12,14 @@ test.describe('TimeOffFlow', () => {
   })
 })
 
-test.describe('SelectEmployees - Add employees to time-off policy', () => {
+// The tests below were added in #1617 but assume a UI shape that doesn't exist:
+// they look for `getByRole('button').filter({ hasText: /vacation|sick|pto/i })`,
+// but PolicyListPresentation renders policy names as <Text> inside a DataView grid,
+// not as buttons. Reaching AddEmployeesToPolicy requires navigating the full
+// Create Policy flow (PolicyTypeSelector -> PolicyDetailsForm -> [PolicySettings ->]
+// AddEmployees). Skipping until the SelectEmployees feature owners can rewrite
+// these against the real flow with local validation.
+test.describe.skip('SelectEmployees - Add employees to time-off policy', () => {
   test('navigates to add employees step and displays employee table', async ({ page }) => {
     await page.goto('/?flow=time-off&companyId=123')
     await waitForLoadingComplete(page)
@@ -144,7 +151,8 @@ test.describe('SelectEmployees - Add employees to time-off policy', () => {
   })
 })
 
-test.describe('SelectEmployees - Add employees to holiday pay policy', () => {
+// Same root cause as the time-off describe above — selector mismatch with the actual UI.
+test.describe.skip('SelectEmployees - Add employees to holiday pay policy', () => {
   test('navigates to add holiday employees step', async ({ page, localConfig }) => {
     test.skip(
       !localConfig.isLocal,

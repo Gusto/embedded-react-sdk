@@ -46,6 +46,11 @@ export interface MenuProps extends DataAttributes {
    */
   'aria-label': string
   /**
+   * Element to use as the portal container for the menu popover.
+   * Overrides the default SDK root container from context.
+   */
+  portalContainer?: HTMLElement
+  /**
    * Controls the placement of the menu popover relative to the trigger
    */
   placement?:

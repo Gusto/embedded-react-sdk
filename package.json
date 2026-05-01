@@ -1,6 +1,6 @@
 {
   "name": "@gusto/embedded-react-sdk",
-  "version": "0.42.0",
+  "version": "0.43.0",
   "homepage": "https://github.com/Gusto/embedded-react-sdk",
   "bugs": {
     "url": "https://github.com/Gusto/embedded-react-sdk/issues"
@@ -76,17 +76,18 @@
     "sdk-app:staging": "npx tsx sdk-app/scripts/start.ts dev --env=staging",
     "sdk-app:local": "npx tsx sdk-app/scripts/start.ts dev --env=local",
     "sdk-app-prod": "npx tsx sdk-app/scripts/start.ts prod --env=demo",
+    "sdk-app:build": "vite build --config sdk-app/vite.config.ts",
     "sdk-app:setup": "npx tsx sdk-app/scripts/setup.ts",
     "sdk-app:analyze-props": "npx tsx sdk-app/scripts/analyze-component-props.ts"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.5.2",
-    "@commitlint/config-conventional": "^20.5.0",
+    "@commitlint/config-conventional": "^20.5.3",
     "@eslint/js": "^9.39.2",
     "@playwright/test": "^1.59.1",
-    "@storybook/addon-a11y": "^10.3.5",
-    "@storybook/addon-docs": "^10.3.5",
-    "@storybook/addon-onboarding": "^10.3.5",
+    "@storybook/addon-a11y": "^10.3.6",
+    "@storybook/addon-docs": "^10.3.6",
+    "@storybook/addon-onboarding": "^10.3.6",
     "@storybook/react-vite": "^10.3.6",
     "@storybook/test-runner": "^0.24.3",
     "@testing-library/jest-dom": "^6.9.1",
