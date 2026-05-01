@@ -95,26 +95,28 @@ function DetailsTab({
   const isUnlimited = policyDetails.accrualMethod === 'unlimited'
 
   const detailItems = useMemo(() => {
-    const accrualMethodKey = policyDetails.accrualMethod
-    const items = [
+    const items: { term: string; description: string }[] = [
       {
         term: t('accrualMethod.label'),
-        description: t(`accrualMethod.${accrualMethodKey}`),
-      },
-      {
-        term: t('accrualRate.label'),
-        description: t(`accrualRate.${accrualMethodKey}`, {
-          accrualRate: policyDetails.accrualRate,
-          accrualRateUnit: policyDetails.accrualRateUnit,
-        }),
+        description: t(`accrualMethod.${policyDetails.accrualMethod}`),
       },
     ]
 
-    if (policyDetails.resetDate) {
+    if (policyDetails.accrualMethod !== 'unlimited') {
       items.push({
-        term: t('resetDate'),
-        description: policyDetails.resetDate,
+        term: t('accrualRate.label'),
+        description: t(`accrualRate.${policyDetails.accrualMethod}`, {
+          accrualRate: policyDetails.accrualRate,
+          accrualRateUnit: policyDetails.accrualRateUnit,
+        }),
       })
+
+      if (policyDetails.resetDate) {
+        items.push({
+          term: t('resetDate'),
+          description: policyDetails.resetDate,
+        })
+      }
     }
 
     return items

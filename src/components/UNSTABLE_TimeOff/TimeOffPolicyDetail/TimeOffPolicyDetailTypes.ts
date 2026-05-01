@@ -8,15 +8,12 @@ import type {
   BulkRemoveDialogState,
 } from '../shared/PolicyDetailLayout/PolicyDetailLayoutTypes'
 
-export type { BulkRemoveDialogState }
-
 export interface TimeOffPolicyDetailEmployee extends EmployeeTableItem {
   uuid: string
   balance: number | null
 }
 
-export type AccrualMethodKey =
-  | 'unlimited'
+export type RateBasedAccrualMethod =
   | 'perPayPeriod'
   | 'perCalendarYear'
   | 'perAnniversaryYear'
@@ -25,15 +22,24 @@ export type AccrualMethodKey =
   | 'perHourPaid'
   | 'perHourPaidNoOvertime'
 
+export type AccrualMethodKey = 'unlimited' | RateBasedAccrualMethod
+
 export type PolicyTypeKey = 'vacation' | 'sick'
 
-export interface PolicyDetails {
+interface UnlimitedPolicyDetails {
   policyType: PolicyTypeKey
-  accrualMethod: AccrualMethodKey
-  accrualRate?: number
+  accrualMethod: 'unlimited'
+}
+
+interface RateBasedPolicyDetails {
+  policyType: PolicyTypeKey
+  accrualMethod: RateBasedAccrualMethod
+  accrualRate: number
   accrualRateUnit?: number
   resetDate?: string
 }
+
+export type PolicyDetails = UnlimitedPolicyDetails | RateBasedPolicyDetails
 
 export interface PolicySettingsDisplay {
   maxAccrualHoursPerYear: number | null
