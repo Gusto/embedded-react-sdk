@@ -57,32 +57,34 @@ function Root({ formId, children, dictionary }: SignatureFormProps) {
     <BaseLayout error={hookResult.errorHandling.errors}>
       <SDKFormProvider formHookResult={hookResult}>
         <FormLayout onSubmit={handleFormSubmit}>
-          <Flex flexDirection="column" gap={32}>
+          <Flex flexDirection="column" gap={32} alignItems="stretch">
             {children ?? (
               <>
                 <section>
-                  <Components.Heading as="h2">
-                    {t('signatureFormTitle', { formTitle: form.title })}
-                  </Components.Heading>
-                  {pdfUrl && (
-                    <Components.Text>
-                      <Trans
-                        t={t}
-                        i18nKey="downloadPrompt"
-                        values={{ description: form.description }}
-                        components={{
-                          downloadLink: (
-                            <Components.Link
-                              href={pdfUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              download={`${form.title || 'form'}.pdf`}
-                            />
-                          ),
-                        }}
-                      />
-                    </Components.Text>
-                  )}
+                  <Flex flexDirection="column" gap={4}>
+                    <Components.Heading as="h2">
+                      {t('signatureFormTitle', { formTitle: form.title })}
+                    </Components.Heading>
+                    {pdfUrl && (
+                      <Components.Text variant="supporting">
+                        <Trans
+                          t={t}
+                          i18nKey="downloadPrompt"
+                          values={{ description: form.description }}
+                          components={{
+                            downloadLink: (
+                              <Components.Link
+                                href={pdfUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                download={`${form.title || 'form'}.pdf`}
+                              />
+                            ),
+                          }}
+                        />
+                      </Components.Text>
+                    )}
+                  </Flex>
                 </section>
                 <DocumentViewer
                   url={pdfUrl}
