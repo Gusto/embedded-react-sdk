@@ -4,5 +4,4 @@ export type {
   TimeOffPolicyDetailEmployee,
   PolicyDetails,
   PolicySettingsDisplay,
-  BulkRemoveDialogState,
 } from './TimeOffPolicyDetailTypes'
