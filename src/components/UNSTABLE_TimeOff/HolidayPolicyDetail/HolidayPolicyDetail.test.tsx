@@ -113,7 +113,7 @@ describe('HolidayPolicyDetail', () => {
         expect(screen.getByText('Alice Smith')).toBeInTheDocument()
       })
 
-      const searchInput = screen.getByRole('textbox')
+      const searchInput = screen.getByRole('searchbox')
       await user.type(searchInput, 'Alice')
 
       expect(screen.getByText('Alice Smith')).toBeInTheDocument()
