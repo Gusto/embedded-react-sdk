@@ -5,3 +5,5 @@ export type {
   PolicyDetails,
   PolicySettingsDisplay,
 } from './TimeOffPolicyDetailTypes'
+export { EditEmployeeBalanceModal } from './EditEmployeeBalanceModal'
+export type { EditEmployeeBalanceModalProps } from './EditEmployeeBalanceModal'
