@@ -1,0 +1,32 @@
+---
+id: employee-federal-tax
+title: "Employee-Federal-Tax"
+description: "Federal tax information for an employee. The response structure varies based on the w4_data_type field."
+sidebar_label: "Employee-Federal-Tax"
+hide_title: true
+hide_table_of_contents: true
+schema: true
+sample: {"version":"string","employee_uuid":"string","employee_id":0,"company_id":0,"w4_data_type":"pre_2020_w4","filing_status":"string","federal_withholding_allowance":0,"additional_withholding":"string"}
+custom_edit_url: null
+---
+
+import Schema from "@theme/Schema";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Employee-Federal-Tax"}
+>
+</Heading>
+
+
+
+Federal tax information for an employee. The response structure varies based on the w4_data_type field.
+
+<Schema
+  {...require("./employee-federal-tax.Schema.json")}
+>
+  
+</Schema>
+            

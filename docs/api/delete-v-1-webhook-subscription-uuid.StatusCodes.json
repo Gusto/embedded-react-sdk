@@ -1,0 +1,1 @@
+{"responses":{"204":{"description":"The resource was deleted successfully."},"404":{"description":"Not Found \n  \nThe requested resource does not exist. Make sure the provided UUID is valid.\n"}}}

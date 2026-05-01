@@ -1,0 +1,32 @@
+---
+id: contractor-payment-group
+title: "Contractor-Payment-Group"
+description: "The full contractor payment group, including associated contractor payments."
+sidebar_label: "Contractor-Payment-Group"
+hide_title: true
+hide_table_of_contents: true
+schema: true
+sample: {"uuid":"string","company_uuid":"string","check_date":"string","debit_date":"string","status":"Unfunded","creation_token":"string","partner_owned_disbursement":true,"submission_blockers":[{"blocker_type":"string","blocker_name":"string","unblock_options":[{"unblock_type":"string","check_date":"string","metadata":{}}],"selected_option":"string","status":"unresolved"}],"credit_blockers":[{"blocker_type":"string","blocker_name":"string","unblock_options":[{"unblock_type":"submit_wire","check_date":"string","metadata":{"wire_in_amount":"string","wire_in_deadline":"2024-07-29T15:51:28.071Z","wire_in_request_uuid":"string"}},{"unblock_type":"submit_bank_screenshot","check_date":"string","metadata":{"information_request_uuid":"string","bank_account_last_four_digits":"string"}},{"unblock_type":"respond_to_high_risk_fraud_rfi","check_date":"string","metadata":{"information_request_uuid":"string"}},{"unblock_type":"wait_for_reverse_wire","check_date":"string","metadata":{"reverse_wire_detail_id":0,"bank_account_last_four_digits":"string"}}],"selected_option":"string","status":"unresolved"}],"totals":{"amount":"string","debit_amount":"string","wage_amount":"string","reimbursement_amount":"string","check_amount":"string"},"contractor_payments":[{"uuid":"string","contractor_uuid":"string","bonus":"string","hours":"string","payment_method":"Direct Deposit","reimbursement":"string","status":"Funded","hourly_rate":"string","may_cancel":true,"wage":"string","wage_type":"Hourly","wage_total":"string"}]}
+custom_edit_url: null
+---
+
+import Schema from "@theme/Schema";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Contractor-Payment-Group"}
+>
+</Heading>
+
+
+
+The full contractor payment group, including associated contractor payments.
+
+<Schema
+  {...require("./contractor-payment-group.Schema.json")}
+>
+  
+</Schema>
+            

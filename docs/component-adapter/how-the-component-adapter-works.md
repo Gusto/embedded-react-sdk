@@ -3,8 +3,6 @@ title: How the Component Adapter Works
 order: 2
 ---
 
-## How the Component Adapter Works
-
 1. You create mappings that connect the SDK props to your UI components
 2. You provide these mappings to either:
    - `GustoProvider` (recommended): Includes default React Aria components and allows overriding specific ones
@@ -50,7 +48,7 @@ function App() {
         Button: ButtonAdapter, // Override just what you need
       }}
     >
-      <EmployeeOnboardingFlow />
+      <Employee.OnboardingFlow companyId="company-uuid" onEvent={() => {}} />
     </GustoProvider>
   )
 }
@@ -72,7 +70,7 @@ function App() {
       config={{ baseUrl: '/api/gusto/' }}
       components={myCompleteComponentSet} // Must provide all required components
     >
-      <EmployeeOnboardingFlow />
+      <Employee.OnboardingFlow companyId="company-uuid" onEvent={() => {}} />
     </GustoProviderCustomUIAdapter>
   )
 }

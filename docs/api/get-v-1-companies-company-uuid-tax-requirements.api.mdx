@@ -1,0 +1,71 @@
+---
+id: get-v-1-companies-company-uuid-tax-requirements
+title: "Get All Tax Requirement States"
+description: "Returns objects describing the states that have tax requirements for the company"
+sidebar_label: "Get All Tax Requirement States"
+hide_title: true
+hide_table_of_contents: true
+api: eJzdV91v2zYQ/1e420NbQLKTot2DnmYkXRAMW4Ok2QY4RkKLZ5stRarkSbVh6H8vjpJt+WvAsIcB84sd8r75u99d1rBM51Ugl2pLOPeStLMprUqEbAxYTFEpVDBJQGHIvS75HjK4R6q8DcJNP2NOQbS3U23nghYoAknCIGghSSxkjYLkUnj8WmmPBVoKYuZ8lMxdUUq7erJPNuSuxEy8dEfPJJfPfZ3Mo1QvkEApvSyQ0AfIxmuwskDIYKNWVVpBAprDLCUtIIHOioKMfIUJhHyBhYRsDW2mEMhrO4fmMM1PCxSPj7fXws360UKTbN3+ld7E+o3ubtM/0AdW7LwvUCr0e/5n0gQ89HLNuRTaxoqhUJIwncqASozubkXdGhUyBJdrSajEN00LsXKVjwK5NGYgbmfCOotCB1F6V2uFKmllZFkanceXfRXEuNBWF1XRtz15vSAqQzYcKpeHQQTEIHfFcAOAtJQr74yJ90NZ6rTT1Hb+Y2cw7R2/4TCqgGoA56udANqqYJy9vXj7Pr34Kb183yJtJitDkPXPm2aSAMk5Pzl8kktx30MGa3kMpbMBAzt6e3HBX/tl/vgrJJA7S2iJb3t1GX4OLLI+jlV6L1eQwDLFpSxK09rvfqeXEYAR7ZDB1YizRarKZwaKQT5lxDFcNkI3p4QiLJpJk4AmLELPf9tgDHrvSvSk2wA6a2sgTYblHuJBclTigxJY3ECZvrnUIBH6tluFnE491jrWY9efMz2jlXi0mnH30La1tCreXWt2kxObvHKmKqZaitfXV2+4kQ5T3GY0dc6gtEex3c6ENOY0S7QRRiaZIloRJOkw06hEqPJFyzO9/hS5tGLj+sk6O3XSK23nyZ6UDuJlP8wXoe3O4UCMtrJFFUhM8ZTCk23jNlhLS1vuc9sIosWXeP4c1V+2ZnehiUBYDqBp+nQx7h76qJyThj8JvLt4dwz03x2JX1xllXiyQjxZZjG2iYEf0WNwlc9RKIdBWEcClzrQQPwmv6AIlW/j3ZBIy386iFoarQZPNobIWIxIuVWQwRwprS/TNimNIe1zcXrI47GbQonyC8qwSufeVSVkQHJ5f16K2TZ1NXqvFbYuR8YwhywJLXNOOwy+4Aqy80MtgVqa6mC4cXtu9A7j2iocxXdaaz/OnXYXL7NYgbRwXdniNKMFZDCsL4fbAg7X/Qo2wxMlDOjrzQSsvOFx03G4LHVL4anCIvL4Ua9dY+EOCtzaSzUHxnoxvzOGT9q88079jc2Srzn9gHnlNa1i5FdtmqM8xxBGFVdiPOlLPTAht5x3QnZLKhziZtREkkHp4+jdj7EzkRqs0QhZ0QItdTOASethFQiLf+OhtXDGAfO7nbk+b8flgWcxY6VbH/YGXwK8HISPswf0tc6x9x67OS2nrqJhFBwqds39mca/UzeL78Cqh8H+iSZ3BTJXxTheBfGh6wpx1078uCYol1eMu5jGD90UlXmcot0adL3xKu7RtDOEm7OQ2kRAdbc/7/DD1ShdoELanp0bJDEyRhyM+G70HGaw3s3z/3Yl7UBCuKRhaaSOaIrds+4afAz1Zaxc1+KQQHawsh51+SSBhQvEyus1b4SP3jQNH3+t0HMHTZhhvJZTBtN4DUoH/n1m0+yX63VXXfVGnNtyz6S12YyixIbfIOnIcC+nuNJ0a/A/C+9/vhOfLGxbwNP/UGzrvBs7TFMl9e6OFtq9aXPz4RM0zXenO+xq
+sidebar_class_name: "get api-method"
+info_path: docs/api/gusto-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Get All Tax Requirement States"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/v1/companies/{company_uuid}/tax_requirements"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Returns objects describing the states that have tax requirements for the company
+
+scope: `company_tax_requirements:read`
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  {...require("./get-v-1-companies-company-uuid-tax-requirements.ParamsDetails.json")}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  {...require("./get-v-1-companies-company-uuid-tax-requirements.RequestSchema.json")}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  {...require("./get-v-1-companies-company-uuid-tax-requirements.StatusCodes.json")}
+>
+  
+</StatusCodes>
+
+
+      

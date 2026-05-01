@@ -12,7 +12,7 @@ Workflows are individual components that encapsulate complex, often multi step u
 Using a workflow has appeal because you can render an entire user flow with a single component. For example, we can render the entire employee onboarding flow which is comprised of tax forms, user details, and payment information by using a single component as follows:
 
 ```jsx
-import { EmployeeOnboardingFlow } from '@gusto/embedded-react-sdk';
+import { Employee } from '@gusto/embedded-react-sdk';
 
 function MyApp({ companyId }) {
   return(
@@ -21,7 +21,7 @@ function MyApp({ companyId }) {
         baseUrl: `/myapp/`,
       }}
     >
-      <EmployeeOnboardingFlow companyId={companyId} onEvent={() => {...}} />
+      <Employee.OnboardingFlow companyId={companyId} onEvent={() => {...}} />
     </GustoProvider>
   );
 }

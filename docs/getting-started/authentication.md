@@ -3,8 +3,6 @@ title: Authentication
 order: 0
 ---
 
-## Authentication
-
 To get started, you'll need to create a way to properly create and retrieve access tokens on behalf of your authenticated user from your application.
 
 Since there are a vast number of ways this might work for a partner, what we can suggest to get up and running is to implement a proxy server that handles translating requests from the SDK to the Gusto Embedded API.
@@ -19,7 +17,7 @@ The most simple implementation is one where a partner has a backend service that
 
 The `<GustoProvider>` can receive a `baseUrl` that can be configured with the address of your backend proxy service and can also be used if necessary to pass along vendor authentication credentials.
 
-```jsx react
+```jsx
 import { GustoProvider } from '@gusto/embedded-react-sdk'
 
 function App() {
@@ -37,7 +35,7 @@ The SDK provides two ways to add headers to API requests:
 
 For static headers like API keys or simple authentication tokens, you can pass them directly in the config:
 
-```jsx react
+```jsx
 import { GustoProvider } from '@gusto/embedded-react-sdk'
 
 function App() {

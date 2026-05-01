@@ -1,0 +1,71 @@
+---
+id: get-v-1-employees-employee-id-payment-method
+title: "Get payment method for an employee"
+description: "Returns the payment method for an employee (e.g. Check or Direct Deposit with split configuration)."
+sidebar_label: "Get payment method for an employee"
+hide_title: true
+hide_table_of_contents: true
+api: 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
+sidebar_class_name: "get api-method"
+info_path: docs/api/gusto-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Get payment method for an employee"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/v1/employees/{employee_id}/payment_method"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Returns the payment method for an employee (e.g. Check or Direct Deposit with split configuration).
+
+scope: `employee_payment_methods:read`
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  {...require("./get-v-1-employees-employee-id-payment-method.ParamsDetails.json")}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  {...require("./get-v-1-employees-employee-id-payment-method.RequestSchema.json")}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  {...require("./get-v-1-employees-employee-id-payment-method.StatusCodes.json")}
+>
+  
+</StatusCodes>
+
+
+      

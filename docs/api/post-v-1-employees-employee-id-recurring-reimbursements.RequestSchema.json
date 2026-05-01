@@ -1,0 +1,1 @@
+{"title":"Body","body":{"content":{"application/json":{"schema":{"type":"object","required":["description","amount"],"properties":{"description":{"type":"string","description":"The description of the reimbursement"},"amount":{"type":"number","description":"The dollar amount of the reimbursement"}}}}},"required":true}}

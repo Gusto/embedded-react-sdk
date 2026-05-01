@@ -1,0 +1,71 @@
+---
+id: get-companies-company-uuid-report-templates-report-type
+title: "Get a report template"
+description: "Get a company's report template. The only supported report type is `payroll_journal`. The resulting columns and groupings from this endpoint can be used as a guidance to create the report using the POST create report endpoint."
+sidebar_label: "Get a report template"
+hide_title: true
+hide_table_of_contents: true
+api: eJztV21v2zYQ/isc96EdIFpOmraZPy1YuiLAtgZNug1wjIQWzxZbiWT54kYw9N+HoyhHtuOu6z5tWL5EEu+Nd889d17Te7YMzmsmlYel5V5qxXxjgE6mFOo5CAGCzjKqDXSnF4JO6BI8K3RtuJLg0lNzG4IUzILR1jMPtam4B5c+3EajGbXgjFYOHJ2s6fF4jP8EuMJKg9bphL6657WpgPSSNKOFVh6UR1luTCWLGEn+3qHCmrqihJrjUxc51fP3UHiaUWMxbi87d4WuQq3cQJBbyxua7UTws3Se6AVJ8sRCoesaFKYio9JDPbThvJVqSds2o0urg5Fq+eUuNhpf7mSY7X2JXUc/dtLk3buLc9pi/h+q8ZfK140BjLJTIn1NYxj3DLpCxTDTMzvayvOUWliGittbi2rZ5rXUwbrBO3CrYt5mW0mcUsMbq6uKZhR96wYARbZTQM3pMzEu+Cl7KU6O2Mkx/56dPjtp2EtxfHQKixfF/HhMd67eW759r4NVvIp38tJXePa2w/D15r4ZHV42IRQfV7wK8C++M/5l9GR8st+Hv2pPftJBCXKjCLlR1yX25McAzoPA7tTBFkCEBkeU9gTupfMj8gv/AMQFC8SXQIzVKylARPwR6ciKV1KMblTM97bD1+AJJ+meT9wu6kYEI9CqaogLBo9iGJ0MAlU6crdzw7tOyYILlZdquWlprsSg9xZW18SX0hFQwmipPCm4InMgwYEg3BFOlkEKrgogXpPCAvfdBVMAwaF1/HD55uq6F0iHvdHRjbpRrtAGJuSur2cn4yafrPRwh5zFLa/Bg0UwrKniNZZuq/wZlSqW05exxh+DtCDoxNsA2T4d9uSx194ldHXRixh68kHb7BFOfTCSItrm9c8FtO91ULboLZn8g72Ow+js8oL9BtahQjJdAhdgt4wveOX2rJ9j5mqpwMUrCe6BzTlW8ezygqw6o4Q7pwvJEUGfpC9Jo4ONAgWvqhG5WBClVURUD+CskxmMnyeOTGupZB3qoe3Z09J74yZ5LnThRnG6jgpd5/00ZQmj8TznRrKkKdXy22SQDT5/h2EgDkf0cG0zCirUyB7H4+PnbPyCHT1H1hCw4KHydDL83razjHresU3HdZGF7pkzwD8Adw3DijC9AmulgG7ib+gQ2dCDwuA6jH6Ahk4OrxJZT5PDlQLL3usdcrtR3HKP0dfgS502kdgzvqQTmq+O8s1akq+HPdPmPV77xSRfDxDcYm7BrvquC7ZC0KVKciO7QjIBdazm3qg8h1rT7RR29lika9SLSD9g+FGbl1aLz9g0eIzJcFAEK30TI08D/6wowLmzgHmZzoZSVwihbpA9IrsBFobYAw7f58BtbMBH9wtWwQoqwoMvQfnUIUgWV43zUP8TD52FAw5apIeFjlbT8I4Ugh2J8EkksgX/jCJFuDeLK7ArWcCgHg/dyuc6+DwK5gJd4yLJ4jvTi1gHVN0N9neoCl3HIRHjeOLIqwR5ctn1fSQLoYtQg/LxGt+kFZcXccVNZHjeeyVvoYpyLq4EXFYRUOn0hwf8YDaMdr7mamCnG6u7K9xO4OuHHfv/OdzN4YRSD/c+NxWXEc6xfdeJb6Z0dUT7zQx/Y2R0sjOnd0kHRYaDc5bRUjuPttZrnFPvbNW2+PljAIsdPUMStJLPEdzTNRXS4fOB+Tes49O3aVR+Rw5N+gO37H+6RImegmmW+HrrishpXx3ScA34qlCGqWxnbdavCX8vUf/xneHRvHb5e3zh2qT5YUYjgRs/ONv7Hb41lV+/uqZt+yevt8H+
+sidebar_class_name: "get api-method"
+info_path: docs/api/gusto-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Get a report template"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/v1/companies/{company_uuid}/report_templates/{report_type}"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Get a company's report template. The only supported report type is `payroll_journal`. The resulting columns and groupings from this endpoint can be used as a guidance to create the report using the POST create report endpoint.
+
+scope: `company_reports:write`
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  {...require("./get-companies-company-uuid-report-templates-report-type.ParamsDetails.json")}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  {...require("./get-companies-company-uuid-report-templates-report-type.RequestSchema.json")}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  {...require("./get-companies-company-uuid-report-templates-report-type.StatusCodes.json")}
+>
+  
+</StatusCodes>
+
+
+      

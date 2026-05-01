@@ -1,0 +1,32 @@
+---
+id: external-payroll
+title: "External-Payroll"
+description: "The representation of an external payroll."
+sidebar_label: "External-Payroll"
+hide_title: true
+hide_table_of_contents: true
+schema: true
+sample: {"uuid":"string","company_uuid":"string","check_date":"string","payment_period_start_date":"string","payment_period_end_date":"string","status":"unprocessed","external_payroll_items":[{"employee_uuid":"string","earnings":[{"amount":"string","hours":"string","earning_type":"string","earning_id":0}],"benefits":[{"benefit_id":0,"company_contribution_amount":"string","employee_deduction_amount":"string"}],"taxes":[{"tax_id":0,"amount":"string"}]}],"applicable_earnings":[{"earning_type":"string","earning_id":0,"name":"string","input_type":"string","category":"string"}],"applicable_benefits":"Unknown Type: array,null","applicable_taxes":[{"id":0,"name":"string","employer_tax":true,"resident_tax":true}],"metadata":{"deletable":true}}
+custom_edit_url: null
+---
+
+import Schema from "@theme/Schema";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"External-Payroll"}
+>
+</Heading>
+
+
+
+The representation of an external payroll.
+
+<Schema
+  {...require("./external-payroll.Schema.json")}
+>
+  
+</Schema>
+            

@@ -1,0 +1,32 @@
+---
+id: payroll-minimal
+title: "Payroll-Minimal"
+description: ""
+sidebar_label: "Payroll-Minimal"
+hide_title: true
+hide_table_of_contents: true
+schema: true
+sample: {"payroll_deadline":"2024-07-29T15:51:28.071Z","check_date":"string","processed":true,"processed_date":"string","calculated_at":"2024-07-29T15:51:28.071Z","uuid":"string","payroll_uuid":"string","company_uuid":"string","off_cycle":true,"off_cycle_reason":"Adhoc","auto_pilot":true,"external":true,"final_termination_payroll":true,"withholding_pay_period":"Every week","skip_regular_deductions":true,"fixed_withholding_rate":true,"pay_period":{"start_date":"string","end_date":"string","pay_schedule_uuid":"string"},"payroll_status_meta":{"cancellable":true,"expected_check_date":"string","initial_check_date":"string","expected_debit_time":"string","payroll_late":true,"initial_debit_cutoff_time":"string"},"totals":{"company_debit":"string","net_pay_debit":"string","tax_debit":"string","reimbursement_debit":"string","child_support_debit":"string","reimbursements":"string","net_pay":"string","gross_pay":"string","employee_bonuses":"string","employee_commissions":"string","employee_cash_tips":"string","employee_paycheck_tips":"string","additional_earnings":"string","owners_draw":"string","check_amount":"string","employer_taxes":"string","employee_taxes":"string","benefits":"string","employee_benefits_deductions":"string","imputed_pay":"string","deferred_payroll_taxes":"string","other_deductions":"string"},"payment_speed_changed":{"original_check_date":"string","current_check_date":"string","original_debit_date":"string","current_debit_date":"string","reason":"string"},"created_at":"2024-07-29T15:51:28.071Z","submission_blockers":[{"blocker_type":"string","blocker_name":"string","unblock_options":[{"unblock_type":"string","check_date":"string","metadata":{}}],"selected_option":"string","status":"unresolved"}],"credit_blockers":[{"blocker_type":"string","blocker_name":"string","unblock_options":[{"unblock_type":"submit_wire","check_date":"string","metadata":{"wire_in_amount":"string","wire_in_deadline":"2024-07-29T15:51:28.071Z","wire_in_request_uuid":"string"}},{"unblock_type":"submit_bank_screenshot","check_date":"string","metadata":{"information_request_uuid":"string","bank_account_last_four_digits":"string"}},{"unblock_type":"respond_to_high_risk_fraud_rfi","check_date":"string","metadata":{"information_request_uuid":"string"}},{"unblock_type":"wait_for_reverse_wire","check_date":"string","metadata":{"reverse_wire_detail_id":0,"bank_account_last_four_digits":"string"}}],"selected_option":"string","status":"unresolved"}],"reversal_payroll_uuids":["string"]}
+custom_edit_url: null
+---
+
+import Schema from "@theme/Schema";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Payroll-Minimal"}
+>
+</Heading>
+
+
+
+
+
+<Schema
+  {...require("./payroll-minimal.Schema.json")}
+>
+  
+</Schema>
+            

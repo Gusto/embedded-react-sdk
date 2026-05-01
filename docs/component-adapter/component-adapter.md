@@ -3,8 +3,6 @@ title: Component Adapter
 order: 5
 ---
 
-## Component Adapter
-
 The Component Adapter system provides a powerful way to customize the UI components used throughout the Gusto Embedded React SDK. This feature allows you to replace the default SDK UI components with your own UI components while maintaining all the SDK's functionality.
 
 > Component adapters are powerful but can be complicated to set up and involve higher maintenance overhead. It is recommended to start with [theming](../theming/theming-guide.md) and then only use component adapters as needed.

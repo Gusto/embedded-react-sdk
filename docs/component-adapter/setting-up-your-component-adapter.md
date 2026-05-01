@@ -3,8 +3,6 @@ title: Setting Up Your Component Adapter
 order: 3
 ---
 
-## Setting Up Your Component Adapter
-
 This guide will walk you through the process of creating and implementing your own Component Adapter for the Gusto Embedded React SDK.
 
 ### 1. Create Your Custom Component Implementations
@@ -122,7 +120,7 @@ function App() {
       }}
     >
       {/* Your application components */}
-      <EmployeeOnboardingFlow companyId="company_123" />
+      <Employee.OnboardingFlow companyId="company_123" onEvent={() => {}} />
     </GustoProvider>
   )
 }
@@ -149,7 +147,7 @@ function App() {
       components={myCustomComponents} // Must provide all required components
     >
       {/* Your application components */}
-      <EmployeeOnboardingFlow companyId="company_123" />
+      <Employee.OnboardingFlow companyId="company_123" onEvent={() => {}} />
     </GustoProviderCustomUIAdapter>
   )
 }
@@ -244,7 +242,7 @@ function App() {
       config={{ baseUrl: '/api/gusto/' }}
       components={materialUIComponents} // Only the components you want to customize
     >
-      <EmployeeOnboardingFlow companyId="company_123" />
+      <Employee.OnboardingFlow companyId="company_123" onEvent={() => {}} />
     </GustoProvider>
   )
 }

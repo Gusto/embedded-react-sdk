@@ -1,0 +1,1 @@
+{"title":"Body","body":{"content":{"application/json":{"schema":{"type":"object","properties":{"employee_uuids":{"type":["array","null"],"description":"An array of employee UUIDs. If passed, only those employees payroll items will be prepared.","items":{"type":"string"}}}}}}}}

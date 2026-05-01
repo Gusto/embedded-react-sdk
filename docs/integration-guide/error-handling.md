@@ -3,8 +3,6 @@ title: Error Handling in the React SDK
 order: 7
 ---
 
-# Error Handling in the React SDK
-
 Error handling in the React SDK occurs across multiple layers:
 
 1. **Top-Level Error Boundary** — in `GustoProviderCustomUIAdapter.tsx`

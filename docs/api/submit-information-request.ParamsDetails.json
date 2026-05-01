@@ -1,0 +1,1 @@
+{"parameters":[{"name":"information_request_uuid","in":"path","required":true,"schema":{"type":"string"},"description":"The UUID of the information request"}]}

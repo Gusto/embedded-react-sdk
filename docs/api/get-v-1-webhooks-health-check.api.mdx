@@ -1,0 +1,75 @@
+---
+id: get-v-1-webhooks-health-check
+title: "Get the webhooks health status"
+description: "Returns the health status (`healthy`, `unhealthy`, or `unknown`) of the webhooks system based on the last ten minutes of activity."
+sidebar_label: "Get the webhooks health status"
+hide_title: true
+hide_table_of_contents: true
+api: eJztVl9v2zYQ/yrc7aEtIMV2hhadnpa1RRtgQIPGW4elRkJLZ4uNRGrkyYlr6FPsZW/7ivsIw5FULDnphj4NGOYXi+T9493vfscdmAatJGX0aQEZrJHSzSy9wWVpzLVLS5QVlZd5ifk1JFCgy61qWBwyeIfUWu0ElSiCoHAkqXXi8VVYb68ScdXq/cJYXl9rc6Ovngiz8rq9N+G2jrAWS+mwEEb7w0o6EoRa1Eq3hI6VZE5qo2h79EF/0H/+8dvv4jxonuQ5OidOWipRk8r9xVhoXionUBeNUZpE6zBEffE9SovWKwiXl1ijuFFU+sMQTVrhBishg2Uy16iFCqG9mc/PvKqx6pN3xWko0C4el0SNyyaTwuTuaN06Mke5qSdYL7EosEgbubWmqvz5JDoKLp5wuC43DWbiKmbm0rXLu8S7zKIsriABkmsH2QW8j/mDRQK3qfeWKk24DoVNadsgy/XeIQHZNEMRr9pIK2sktGx0B1rWCBn8nL72Bk/OTtOf0DoufQKK6x8uCwn4zEnIdhBcgSOr9BoSQN3W7Pp4evw0nT5LZ0/ZU4Er2VYE2XC/O4TXS46lVjrWqpCEaYDGydmp2IRYhHTO5EoSFqFyW9NaL5DLqjoSpyuhjUahnGis2agCiyTIyKapIkIeOXFRK63qth7a/sIyykalUVPp9dfRYDrYfsJhtA6LI+gWCTjMW6to69MdEBwAzJiC7GLRDQpq3Y1cQ0a2xQQsusZoh45zfjyd8t84ea71llZtBQnkRhNqYqnBrScfHYvuBuUb25iXKCw2Fh1qCvjm5tv3a2x6zw6ij4mBGVBglh8xJ+A74K2smyrEG0O7DFzhd+IXRKKABLjtA+1gcSn3UPk2nT6fH8+y41n2zfOj6XT6C3RdAo1lHiOFI3v38Ti+4A+S0NEBdz1MSsBJl8VbXW37IvTY3gd9x3T+27McLLoHLnM/sJWxtb+mhzmpGh/wOI7+9Pzt82fTmWBhR7Ju+tA9Ze4BMC6Tb5JaVZVymBtdiMZirnxbcyJJUcWB9ZySvvHK6QtWTs9DYjv+JYC3hNp5+mAEX+MWss8TUAIbWbX/TERdcmgqQP9On3PBnVEjlSYOLWD64qaByWY26Ws3ORhfDu2mp7fWVgy42OCyUaG/0wJr3+T3wPISa+Ox7BqU1yjdNg32UsVBsB5w7J8x/KDNM2uKv7HZ8PGQKc79iPLIfmHqRurtkDDuUMXOe1rm9dJPuXveo4l+wo2GJtPxfUr6Ug/noxF64KDjMbIy3mpEnR81TMFc7ThsRkMiAZ4J7u3qHO1G5TjI9J6e5dK0NPGCk4JdMzekfp2alc8wqx4G+x6r3NQoyAgfxyMnXkWgirNA9H46FCZv654Rv4r0KnPf1nFovuy9indYRWAngLVUlYdKPP1ujwxPYsZRLfXAzmukMRmNqOrwBrs90f//Nvu332ahTwhvadJUUvmG8tSwi0x1AZsZJNAnGBIYsdUigdI4YrndjrP+o626jrd/bdHym2HBjGiVXHLrXPCciQ8yprdCOT4oIFvJyh3OjiFS/tPPrM8UIsyXh5+2ccoA7AcRQ7ehwdm9V9RoHr1+NefJNmbMO4aMH1ykeCT1dmB7twsSc4Zz10EfrYc3dIuu6/4CQc3cew==
+sidebar_class_name: "get api-method"
+info_path: docs/api/gusto-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Get the webhooks health status"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/v1/webhooks/health_check"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Returns the health status (`healthy`, `unhealthy`, or `unknown`) of the webhooks system based on the last ten minutes of activity.
+
+📘 System Access Authentication
+
+This endpoint uses the [Bearer Auth scheme with the system-level access token in the HTTP Authorization header](https://docs.gusto.com/embedded-payroll/docs/system-access)
+
+scope: `webhook_subscriptions:read`
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  {...require("./get-v-1-webhooks-health-check.ParamsDetails.json")}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  {...require("./get-v-1-webhooks-health-check.RequestSchema.json")}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  {...require("./get-v-1-webhooks-health-check.StatusCodes.json")}
+>
+  
+</StatusCodes>
+
+
+      

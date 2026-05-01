@@ -1,0 +1,32 @@
+---
+id: company
+title: "Company"
+description: "The representation of a company in Gusto."
+sidebar_label: "Company"
+hide_title: true
+hide_table_of_contents: true
+schema: true
+sample: {"ein":"string","entity_type":"C-Corporation","contractor_only":true,"tier":"simple","is_suspended":true,"company_status":"Approved","is_high_risk_business":true,"is_marijuana_business":true,"uuid":"string","name":"string","slug":"string","trade_name":"string","is_partner_managed":true,"pay_schedule_type":"single","join_date":"string","funding_type":"ach","locations":[{"street_1":"string","street_2":"string","city":"string","state":"string","zip":"string","country":"USA","inactive":true,"active":true}],"compensations":{"hourly":[{"name":"Overtime","multiple":1.5}],"fixed":[{"name":"Bonus"}],"paid_time_off":[{"name":"Vacation Hours"}]},"primary_signatory":"Unknown Type: object,null","primary_payroll_admin":{"first_name":"string","last_name":"string","phone":"string","email":"string"}}
+custom_edit_url: null
+---
+
+import Schema from "@theme/Schema";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Company"}
+>
+</Heading>
+
+
+
+The representation of a company in Gusto.
+
+<Schema
+  {...require("./company.Schema.json")}
+>
+  
+</Schema>
+            

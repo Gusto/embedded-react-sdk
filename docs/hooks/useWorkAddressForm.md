@@ -3,8 +3,6 @@ title: useWorkAddressForm
 order: 4
 ---
 
-# useWorkAddressForm
-
 Creates or updates an employee's work address — selecting a company location and an effective date.
 
 ```tsx

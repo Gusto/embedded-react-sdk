@@ -1,0 +1,71 @@
+---
+id: get-v-1-companies-company-id-contractor-payments
+title: "Get contractor payments for a company"
+description: "Returns an object containing individual contractor payments, within a given time period, including totals."
+sidebar_label: "Get contractor payments for a company"
+hide_title: true
+hide_table_of_contents: true
+api: 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
+sidebar_class_name: "get api-method"
+info_path: docs/api/gusto-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Get contractor payments for a company"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/v1/companies/{company_id}/contractor_payments"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Returns an object containing individual contractor payments, within a given time period, including totals.
+
+scope: `payrolls:read`
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  {...require("./get-v-1-companies-company-id-contractor-payments.ParamsDetails.json")}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  {...require("./get-v-1-companies-company-id-contractor-payments.RequestSchema.json")}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  {...require("./get-v-1-companies-company-id-contractor-payments.StatusCodes.json")}
+>
+  
+</StatusCodes>
+
+
+      

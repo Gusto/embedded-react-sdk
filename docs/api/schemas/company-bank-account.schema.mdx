@@ -1,0 +1,32 @@
+---
+id: company-bank-account
+title: "Company-Bank-Account"
+description: "The company bank account"
+sidebar_label: "Company-Bank-Account"
+hide_title: true
+hide_table_of_contents: true
+schema: true
+sample: {"uuid":"string","company_uuid":"string","account_type":"Checking","routing_number":"string","hidden_account_number":"string","verification_status":"awaiting_deposits","verification_type":"bank_deposits","plaid_status":"connected","last_cached_balance":"string","balance_fetched_date":"string","name":"string"}
+custom_edit_url: null
+---
+
+import Schema from "@theme/Schema";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Company-Bank-Account"}
+>
+</Heading>
+
+
+
+The company bank account
+
+<Schema
+  {...require("./company-bank-account.Schema.json")}
+>
+  
+</Schema>
+            

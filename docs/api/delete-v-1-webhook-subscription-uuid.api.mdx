@@ -1,0 +1,76 @@
+---
+id: delete-v-1-webhook-subscription-uuid
+title: "Delete a webhook subscription"
+description: "Deletes the Webhook Subscription associated with the provided UUID."
+sidebar_label: "Delete a webhook subscription"
+hide_title: true
+hide_table_of_contents: true
+api: eJztVk1vGzcQ/Svs9JAYWEq2kfSwh6Bu7bYG2tSI5aaAJCTUcuQlvEtu+CFbFfZX9NJb/2J/QjFcSl5ZUgMDPRU9SVpx3gxn3nuzK3jgt8F5w5X2eGuFV0Zzv2wQ8jFgPUMpUUIGomn6RxxMM7DoGqMdOshXcHr8ij4kusKqhs5ADqMSmUVngi2Q3QvHJFboUTIXigKdm4eqWg6gzeDVvvC3xrPvTNCSTTRjE93BfQroCGMDLA06po1n+KCcH7CfxB0yFywyXyJrrFkoiZLd3FyeM+XYQlRKDiYa2jYD02B3o0sJOXTl8cUJv8dZacwdd2G2qYiHoKgX20WexxgXc73voth1L4oJ50yhBJV8r3y5W9Rgoif6Dfvrz9//YNdL57FmZ7E97Cz4ErVXRSxxot/QuVGpHEMtG6O0Z8Gl3ONvUFi0MYa5osQaH/O5CMsrXGDFRAfuzR1qpnQ88MNodBVDjVW/xWysRCHRTl+W3jcuHw6lKdwgkmVQmHq4JgdvxNKaqor/D1OiLsVRvJkrTIM5+5ha+qHfUpffW+Xx40RDBo2wokaP1kE+XoEWNUIO+8I+pEkoGkAjfAnExk9BWZSQexswg9gCQaTq6AzOW6VviWy7JE1JWD9JNxtos00pv/Lvo1bOri75L2gdxaciumZtlTEXlcNdtni0tdJpaFJ45DPhULKzq0u26EB3KLM0wcYDhaiqAbucM200EpnXRMq6M6JpqsSWF46Na6VVHeo+9jPnKRrFU6TSt18mQN57fERlBIdyAIebngHqUJOnnB6fvubHX/GT12QhEuciVB7y/vO2nWbgsAhW+WWkQqeKThREUsjHUzrkxS1xBZLuois9cNeguEPhlpzmxs0CrVUSN/ruq5Mqe/CoXTQ1ynWHS8gP22IGC1GFz9sj0WYNdaigDda+wuh+NfrSPBpT1AjdHoaLk+FePQ1XB/XS0nzQLtb6CrYi4iY2iEZ1ZOAS68iIPU5XG9hucIfHVVdjbaJaDgDvxbyyRv4DZkN/9+lwHY0tbpxvTd0IveyzYkM7Sr6mI/2eRW/cyZ4g1r645bZkFLu8e26G6y3jfZKgJfOYm4iqfEUw0WBIr0SOZDFb4siADMT9PL9Gu1AF9jr9qGUxM8EP48GhpNS05nj8zc08dphCnxb7HqvC1Mi8YbGOF45dJI6zq84VopVIU4QatY/X+AIyKIz2ovB0kWSV5+us7B1WSRMZYC1UFamS/v36kRnUjcY4Xwu9hUPEZ2KvQz+9wCoWgtr/v5b/xbWcCO/xwQ+bSqiojKjxVbKjMSxOINu7qWnq+eEVPs2gNM4TxGpFe/DGVm1Ljz8FtGT+UzJJq8SM5DFegVSOvh/Yr30GvHyXVvER+8yKP3DH9FDoZc+pIUu2fvhS7bTN1i8Ezyv5P/52sLfLXTf3v1ptmr61DM8vfrwYXdDW3bbkjQWnL9T7vTNcrboTI5Ja225GGqVH42vbvwEE9KhT
+sidebar_class_name: "delete api-method"
+info_path: docs/api/gusto-api
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+import Translate from "@docusaurus/Translate";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Delete a webhook subscription"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"delete"}
+  path={"/v1/webhook_subscriptions/{webhook_subscription_uuid}"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Deletes the Webhook Subscription associated with the provided UUID.
+
+> 📘 System Access Authentication
+>
+> This endpoint uses the [Bearer Auth scheme with the system-level access token in the HTTP Authorization header](https://docs.gusto.com/embedded-payroll/docs/system-access).
+
+scope: `webhook_subscriptions:write`
+
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+>
+  <Translate id="theme.openapi.request.title">Request</Translate>
+</Heading>
+
+<ParamsDetails
+  {...require("./delete-v-1-webhook-subscription-uuid.ParamsDetails.json")}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  {...require("./delete-v-1-webhook-subscription-uuid.RequestSchema.json")}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  {...require("./delete-v-1-webhook-subscription-uuid.StatusCodes.json")}
+>
+  
+</StatusCodes>
+
+
+      

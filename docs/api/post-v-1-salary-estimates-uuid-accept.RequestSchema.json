@@ -1,0 +1,1 @@
+{"title":"Body","body":{"content":{"application/json":{"schema":{"type":"object","required":["employee_job_uuid"],"properties":{"employee_job_uuid":{"type":"string","description":"The UUID of the employee job to associate with this salary estimate","example":"7f5d3d93-6d6f-48c0-9f4e-cd12c2d3e4b2"}}}}},"required":true}}

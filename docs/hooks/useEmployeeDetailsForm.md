@@ -3,8 +3,6 @@ title: useEmployeeDetailsForm
 order: 2
 ---
 
-# useEmployeeDetailsForm
-
 Creates or updates an employee's profile information — name, email, SSN, date of birth, and self-onboarding preference.
 
 ```tsx
