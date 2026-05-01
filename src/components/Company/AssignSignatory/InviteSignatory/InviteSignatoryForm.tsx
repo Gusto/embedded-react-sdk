@@ -51,10 +51,12 @@ export const InviteSignatoryForm = () => {
   }
 
   return (
-    <Flex flexDirection="column" gap={12}>
+    <Flex flexDirection="column" gap={32} alignItems="stretch">
       <header>
-        <Components.Heading as="h2">{t('inviteSignatory.title')}</Components.Heading>
-        <Components.Text>{t('inviteSignatory.description')}</Components.Text>
+        <Flex flexDirection="column" gap={4}>
+          <Components.Heading as="h2">{t('inviteSignatory.title')}</Components.Heading>
+          <Components.Text variant="supporting">{t('inviteSignatory.description')}</Components.Text>
+        </Flex>
       </header>
 
       <Grid gridTemplateColumns={{ base: '1fr', small: ['1fr', '1fr'] }} gap={20}>

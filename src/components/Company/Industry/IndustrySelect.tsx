@@ -9,6 +9,7 @@ import type { IndustryFormFields } from './Edit'
 import { Form } from '@/components/Common/Form'
 import { loadAll } from '@/models/NAICSCodes'
 import type { ComboBoxOption } from '@/components/Common/UI/ComboBox/ComboBoxTypes'
+import { Flex } from '@/components/Common'
 
 interface IndustrySelectProps extends PropsWithChildren {
   naics_code?: string | null | undefined
@@ -46,15 +47,17 @@ export function IndustrySelect({
     <IndustryItemsProvider value={{ items }}>
       <FormProvider {...formMethods}>
         <Form onSubmit={handleSubmit(onValid)}>
-          {children ? (
-            children
-          ) : (
-            <>
-              <Head />
-              <Edit />
-              <Actions />
-            </>
-          )}
+          <Flex flexDirection="column" gap={32}>
+            {children ? (
+              children
+            ) : (
+              <>
+                <Head />
+                <Edit />
+                <Actions />
+              </>
+            )}
+          </Flex>
         </Form>
       </FormProvider>
     </IndustryItemsProvider>
