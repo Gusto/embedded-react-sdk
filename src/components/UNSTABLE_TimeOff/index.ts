@@ -18,11 +18,12 @@ export { AddEmployeesHoliday } from './AddEmployeesHoliday/AddEmployeesHoliday'
 export type { AddEmployeesHolidayProps } from './AddEmployeesHoliday/AddEmployeesHoliday'
 export { ViewHolidayEmployees } from './ViewHolidayEmployees/ViewHolidayEmployees'
 export type { ViewHolidayEmployeesProps } from './ViewHolidayEmployees/ViewHolidayEmployees'
+export { ViewHolidayPolicyDetails } from './ViewHolidayPolicyDetails/ViewHolidayPolicyDetails'
+export type { ViewHolidayPolicyDetailsProps } from './ViewHolidayPolicyDetails/ViewHolidayPolicyDetails'
 export { ViewHolidaySchedule } from './ViewHolidaySchedule/ViewHolidaySchedule'
 export type { ViewHolidayScheduleProps } from './ViewHolidaySchedule/ViewHolidaySchedule'
-export { HolidayPolicyDetailPresentation as HolidayPolicyDetail } from './HolidayPolicyDetail'
 export type {
-  HolidayPolicyDetailPresentationProps as HolidayPolicyDetailProps,
+  HolidayPolicyDetailPresentationProps,
   HolidayPolicyDetailEmployee,
 } from './HolidayPolicyDetail'
 export { TimeOffFlow } from './TimeOffFlow/TimeOffFlow'
