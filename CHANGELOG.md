@@ -1,5 +1,32 @@
 # Changelog
 
+## 0.43.0
+
+### Features & Enhancements
+
+- Add `portalContainer` prop to `GustoProvider` for overlay positioning control
+- Add contractor self-onboarding prototype
+- Wire `SelectEmployees` into `TimeOffFlow` and add E2E tests
+- Add `SelectEmployees` container for holiday pay policies (SDK-567)
+- Add `SelectEmployees` container for time-off/sick policies (SDK-565)
+- Wire `PolicySettings` into `TimeOff` state machine (SDK-579)
+- Add `SelectEmployees` presentational component (SDK-563)
+
+### Fixes
+
+- Remove duplicate `SelectEmployees` container story
+- Show full state names in state selects (I-9 preparer and home address)
+- Improve contractor form layout and typography consistency
+- Remove italic styling and normalize text size in company address list
+- Remove default garnishment selection in deductions form
+- Add `isWithinBox` support to `DataCards`
+- Respect set-only contract for mailing/filing address flags (SDK-169)
+
+### Chores & Maintenance
+
+- Bump various dependencies (pixelmatch, eslint-plugin-storybook, @storybook/react-vite, msw, axe-core)
+- Add empty sidebar categories for upcoming design prototypes
+
 ## 0.42.0
 
 ### Features & Enhancements

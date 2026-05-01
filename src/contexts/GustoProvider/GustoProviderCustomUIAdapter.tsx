@@ -35,6 +35,7 @@ export interface GustoProviderProps {
   locale?: string
   currency?: string
   theme?: GustoSDKTheme
+  portalContainer?: HTMLElement
   queryClient?: QueryClient
   components: ComponentsContextType
   LoaderComponent?: LoadingIndicatorContextProps['LoadingIndicator']
@@ -56,6 +57,7 @@ const GustoProviderCustomUIAdapter: React.FC<GustoProviderCustomUIAdapterProps> 
     locale = 'en-US',
     currency = 'USD',
     theme,
+    portalContainer,
     components,
     LoaderComponent,
     queryClient,
@@ -106,7 +108,7 @@ const GustoProviderCustomUIAdapter: React.FC<GustoProviderCustomUIAdapterProps> 
       <LoadingIndicatorProvider value={LoaderComponent}>
         <ObservabilityProvider observability={config.observability}>
           <ErrorBoundary FallbackComponent={InternalError} onError={handleTopLevelError}>
-            <ThemeProvider theme={theme}>
+            <ThemeProvider theme={theme} portalContainer={portalContainer}>
               <LocaleProvider locale={locale} currency={currency}>
                 <I18nextProvider i18n={SDKI18next} key={lng}>
                   <ApiProvider

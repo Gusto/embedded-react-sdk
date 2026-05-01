@@ -18,6 +18,7 @@ export interface FlexProps {
     | 'normal'
   >
   alignItems?: Responsive<'center' | 'flex-start' | 'flex-end' | 'stretch'>
+  flexWrap?: Responsive<'wrap' | 'nowrap' | 'wrap-reverse'>
   gap?: Responsive<CustomPropertyValue>
 }
 
@@ -26,12 +27,14 @@ export function Flex({
   flexDirection = 'row',
   justifyContent = 'normal',
   alignItems = 'flex-start',
+  flexWrap,
   gap = 24,
 }: FlexProps) {
   const properties = setResponsiveCustomProperties({
     'flex-direction': flexDirection,
     'justify-content': justifyContent,
     'align-items': alignItems,
+    'flex-wrap': flexWrap,
     gap,
   })
 

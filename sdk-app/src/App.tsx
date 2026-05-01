@@ -1,3 +1,4 @@
+import type React from 'react'
 import { useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import { TopBar } from './TopBar'
@@ -53,7 +54,12 @@ export function App() {
               setSidebarOpen(open => !open)
             }}
           />
-          <main className="main-content">
+          <main
+            className="main-content"
+            style={
+              { '--sidebar-width': sidebarOpen ? '16.25rem' : '2.75rem' } as React.CSSProperties
+            }
+          >
             <Outlet context={{ entities }} />
           </main>
         </div>
