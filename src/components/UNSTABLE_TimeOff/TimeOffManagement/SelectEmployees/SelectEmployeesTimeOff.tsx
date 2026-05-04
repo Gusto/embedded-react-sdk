@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import { useTimeOffPoliciesAddEmployeesMutation } from '@gusto/embedded-api/react-query/timeOffPoliciesAddEmployees'
 import type { CreatableTimeOffPolicyType } from '../../TimeOffFlow/timeOffPolicyTypes'
 import { SelectEmployeesPresentation } from './SelectEmployeesPresentation'
@@ -19,16 +19,25 @@ const PAID_TIME_OFF_NAME_BY_POLICY_TYPE: Record<CreatableTimeOffPolicyType, stri
   sick: 'Sick Hours',
 }
 
+function extractCarryOverBalance(
+  employee: EmployeeItem | undefined,
+  policyType: CreatableTimeOffPolicyType,
+): string | undefined {
+  if (!employee) return undefined
+  const targetName = PAID_TIME_OFF_NAME_BY_POLICY_TYPE[policyType]
+  const matching = employee.eligiblePaidTimeOff?.find(pto => pto.name === targetName)
+  const balance = matching?.accrualBalance
+  return balance && balance.length > 0 ? balance : undefined
+}
+
 function deriveCarryOverBalances(
   employees: EmployeeItem[],
   policyType: CreatableTimeOffPolicyType,
 ): Record<string, string> {
-  const targetName = PAID_TIME_OFF_NAME_BY_POLICY_TYPE[policyType]
   const map: Record<string, string> = {}
   for (const employee of employees) {
-    const matching = employee.eligiblePaidTimeOff?.find(pto => pto.name === targetName)
-    const balance = matching?.accrualBalance
-    if (balance && balance.length > 0) {
+    const balance = extractCarryOverBalance(employee, policyType)
+    if (balance) {
       map[employee.uuid] = balance
     }
   }
@@ -52,6 +61,24 @@ export function SelectEmployeesTimeOff({
     handleSearchChange,
     handleSearchClear,
   } = useSelectEmployeesData(companyId)
+
+  // Captures the full Employee record at the moment a row is selected so
+  // their carry-over balance is still available at submit time even if the
+  // user has since searched/paginated the row out of view. Without this,
+  // `selectedUuids` would point at UUIDs we no longer have data for.
+  const selectedEmployeesRef = useRef(new Map<string, EmployeeItem>())
+
+  const handleSelectWithCapture = useCallback(
+    (item: EmployeeItem, checked: boolean) => {
+      if (checked) {
+        selectedEmployeesRef.current.set(item.uuid, item)
+      } else {
+        selectedEmployeesRef.current.delete(item.uuid)
+      }
+      handleSelect(item, checked)
+    },
+    [handleSelect],
+  )
 
   const carryOverBalances = useMemo(
     () => deriveCarryOverBalances(filteredEmployees, policyType),
@@ -86,7 +113,10 @@ export function SelectEmployeesTimeOff({
           requestBody: {
             employees: [...selectedUuids].map(uuid => {
               const userValue = balances[uuid]
-              const carryOver = carryOverBalances[uuid]
+              const carryOver = extractCarryOverBalance(
+                selectedEmployeesRef.current.get(uuid),
+                policyType,
+              )
               // Per design review: do not zero out balances accidentally.
               // Prefer user input → fall back to carry-over → omit `balance`
               // entirely (backend defaults the row to 0) when neither is set.
@@ -105,7 +135,7 @@ export function SelectEmployeesTimeOff({
     policyId,
     selectedUuids,
     balances,
-    carryOverBalances,
+    policyType,
     onEvent,
   ])
 
@@ -118,7 +148,7 @@ export function SelectEmployeesTimeOff({
       employees={filteredEmployees}
       selectedUuids={selectedUuids}
       searchValue={searchValue}
-      onSelect={handleSelect}
+      onSelect={handleSelectWithCapture}
       onSearchChange={handleSearchChange}
       onSearchClear={handleSearchClear}
       onBack={handleBack}

@@ -346,6 +346,37 @@ describe('SelectEmployeesTimeOff', () => {
         })
       })
     })
+
+    it('preserves carry-over for selected employees that get filtered out before submit', async () => {
+      const user = userEvent.setup()
+      renderComponent({ mode: 'standalone' })
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice Smith')).toBeInTheDocument()
+      })
+
+      // Select Alice (carry-over balance 40 for vacation)
+      await user.click(screen.getAllByRole('checkbox')[FIRST_EMPLOYEE_CHECKBOX] as Element)
+
+      // Search for someone else — Alice's row leaves the DOM
+      await user.type(screen.getByPlaceholderText('searchPlaceholder'), 'bob')
+      await waitFor(() => {
+        expect(screen.queryByText('Alice Smith')).not.toBeInTheDocument()
+      })
+
+      // Submit — Alice's carry-over should still be in the request even though
+      // her row is no longer rendered (carry-over is captured at select-time).
+      await user.click(screen.getByRole('button', { name: 'continueCta' }))
+
+      await waitFor(() => {
+        expect(mockAddEmployees).toHaveBeenCalled()
+      })
+      const submitted = mockAddEmployees.mock.calls[0]?.[0].request.requestBody.employees as Array<{
+        uuid: string
+        balance?: string
+      }>
+      expect(submitted.find(e => e.uuid === '1')).toEqual({ uuid: '1', balance: '40' })
+    })
   })
 
   describe('wizard mode', () => {
