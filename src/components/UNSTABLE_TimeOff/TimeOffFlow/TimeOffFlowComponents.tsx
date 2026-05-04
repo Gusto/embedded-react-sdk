@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react'
-import type { PolicyType } from '@gusto/embedded-api/models/components/timeoffpolicy'
 import { PolicyList } from '../PolicyList/PolicyList'
 import { PolicyTypeSelector } from '../PolicyTypeSelector/PolicyTypeSelector'
 import { PolicyConfigurationForm } from '../TimeOffManagement/PolicyConfigurationForm'
@@ -11,6 +10,7 @@ import { HolidaySelectionForm } from '../HolidaySelectionForm/HolidaySelectionFo
 import { AddEmployeesHoliday } from '../AddEmployeesHoliday/AddEmployeesHoliday'
 import { ViewHolidayEmployees } from '../ViewHolidayEmployees/ViewHolidayEmployees'
 import { ViewHolidaySchedule } from '../ViewHolidaySchedule/ViewHolidaySchedule'
+import { assertCreatablePolicyType, type TimeOffPolicyType } from './timeOffPolicyTypes'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { BaseComponentInterface } from '@/components/Base'
 import { Flex } from '@/components/Common'
@@ -26,12 +26,6 @@ export type TimeOffFlowAlert = {
   title: string
   content?: ReactNode
 }
-
-// SDK exposes more PolicyType values (bereavement, custom, etc.) but only
-// vacation and sick are creatable through the API. Holiday is a separate
-// concept (holiday-pay policies) handled outside @gusto/embedded-api.
-export type SelectableTimeOffPolicyType = Extract<PolicyType, 'sick' | 'vacation'>
-export type TimeOffPolicyType = SelectableTimeOffPolicyType | 'holiday'
 
 export interface TimeOffFlowContextInterface extends FlowContextInterface {
   companyId: string
@@ -79,6 +73,8 @@ export function SelectPolicyTypeContextual() {
 export function PolicyDetailsFormContextual() {
   const { onEvent, companyId, policyType, alerts } = useFlow<TimeOffFlowContextInterface>()
   const { Alert } = useComponentContext()
+  const requiredPolicyType = ensureRequired(policyType)
+  assertCreatablePolicyType(requiredPolicyType)
 
   return (
     <Flex flexDirection="column" gap={8}>
@@ -90,7 +86,7 @@ export function PolicyDetailsFormContextual() {
       <PolicyConfigurationForm
         onEvent={onEvent}
         companyId={ensureRequired(companyId)}
-        policyType={ensureRequired(policyType) as SelectableTimeOffPolicyType}
+        policyType={requiredPolicyType}
       />
     </Flex>
   )
