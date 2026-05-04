@@ -488,6 +488,7 @@ describe('PolicyConfigurationForm', () => {
             accrualMethod: 'per_hour_worked_no_overtime',
             accrualRate: '1',
             accrualRateUnit: '40',
+            complete: false,
           }),
         },
       })
@@ -526,6 +527,7 @@ describe('PolicyConfigurationForm', () => {
             accrualMethod: 'per_hour_paid',
             accrualRate: '2',
             accrualRateUnit: '30',
+            complete: false,
           }),
         },
       })
@@ -562,6 +564,7 @@ describe('PolicyConfigurationForm', () => {
             policyType: 'vacation',
             accrualMethod: 'per_pay_period',
             accrualRate: '120',
+            complete: false,
           }),
         },
       })
@@ -597,6 +600,7 @@ describe('PolicyConfigurationForm', () => {
             accrualMethod: 'per_calendar_year',
             accrualRate: '80',
             policyResetDate: '01-01',
+            complete: false,
           }),
         },
       })
@@ -631,6 +635,7 @@ describe('PolicyConfigurationForm', () => {
           timeOffPolicyRequest: expect.objectContaining({
             accrualMethod: 'per_anniversary_year',
             accrualRate: '60',
+            complete: false,
           }),
         },
       })

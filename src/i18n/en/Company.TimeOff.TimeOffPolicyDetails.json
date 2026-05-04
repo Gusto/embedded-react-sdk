@@ -47,6 +47,7 @@
   },
   "resetDate": "Reset date",
   "policySettingsTitle": "Policy settings",
+  "changeSettingsCta": "Change",
   "maxAccrualHoursPerYear": {
     "label": "Accrual maximum",
     "noMaximum": "No maximum",

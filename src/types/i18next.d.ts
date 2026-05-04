@@ -565,6 +565,12 @@ export interface CompanyTimeOffPolicyDetail{
 "confirmCta":string;
 "cancelCta":string;
 };
+"bulkRemoveDialog":{
+"title":string;
+"description":string;
+"confirmCta":string;
+"cancelCta":string;
+};
 };
 export interface CompanyTimeOffSelectEmployees{
 "title":string;
@@ -677,6 +683,7 @@ export interface CompanyTimeOffTimeOffPolicyDetails{
 };
 "resetDate":string;
 "policySettingsTitle":string;
+"changeSettingsCta":string;
 "maxAccrualHoursPerYear":{
 "label":string;
 "noMaximum":string;
@@ -2417,6 +2424,9 @@ export interface PayrollGrossUpModal{
 "cancelCta":string;
 "grossPayResult":string;
 "errorMessage":string;
+"validations":{
+"netPay":string;
+};
 };
 export interface PayrollOffCycle{
 "createOffCyclePayroll":{

@@ -78,6 +78,7 @@ function buildCreateRequestBody(
       accrualRate: data.accrualRate != null ? String(data.accrualRate) : undefined,
       accrualRateUnit: data.accrualRateUnit != null ? String(data.accrualRateUnit) : undefined,
       policyResetDate,
+      complete: false,
     }
   }
 
@@ -85,6 +86,7 @@ function buildCreateRequestBody(
     ...base,
     accrualRate: data.accrualRate != null ? String(data.accrualRate) : undefined,
     policyResetDate,
+    complete: false,
   }
 }
 
