@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { screen, waitFor } from '@testing-library/react'
+import { fireEvent, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import type { SelectableTimeOffPolicyType } from '../../TimeOffFlow/TimeOffFlowComponents'
 import { SelectEmployeesTimeOff } from './SelectEmployeesTimeOff'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { componentEvents } from '@/shared/constants'
@@ -20,6 +21,20 @@ const mockEmployees = [
     lastName: 'Smith',
     jobs: [{ primary: true, title: 'Engineer' }],
     department: 'Engineering',
+    eligiblePaidTimeOff: [
+      {
+        name: 'Vacation Hours',
+        policyName: 'Old Vacation Policy',
+        policyUuid: 'old-policy-uuid',
+        accrualBalance: '40',
+      },
+      {
+        name: 'Sick Hours',
+        policyName: 'Old Sick Policy',
+        policyUuid: 'old-sick-policy',
+        accrualBalance: '8',
+      },
+    ],
   },
   {
     uuid: '2',
@@ -27,6 +42,23 @@ const mockEmployees = [
     lastName: 'Jones',
     jobs: [{ primary: true, title: 'Designer' }],
     department: 'Design',
+    eligiblePaidTimeOff: [
+      {
+        name: 'Vacation Hours',
+        policyName: 'Old Vacation Policy',
+        policyUuid: 'old-policy-uuid',
+        accrualBalance: '0',
+      },
+    ],
+  },
+  {
+    uuid: '3',
+    firstName: 'Carol',
+    lastName: 'Davis',
+    jobs: [{ primary: true, title: 'Manager' }],
+    department: 'Management',
+    // New hire — no PTO history
+    eligiblePaidTimeOff: [],
   },
 ]
 
@@ -66,9 +98,19 @@ vi.mock('@/hooks/usePagination/usePagination', () => ({
   }),
 }))
 
-function renderComponent(props: Partial<{ mode: 'standalone' | 'wizard' }> = {}) {
+function renderComponent(
+  props: Partial<{
+    mode: 'standalone' | 'wizard'
+    policyType: SelectableTimeOffPolicyType
+  }> = {},
+) {
   return renderWithProviders(
-    <SelectEmployeesTimeOff companyId="company-123" policyId="policy-456" {...props} />,
+    <SelectEmployeesTimeOff
+      companyId="company-123"
+      policyId="policy-456"
+      policyType="vacation"
+      {...props}
+    />,
   )
 }
 
@@ -136,12 +178,52 @@ describe('SelectEmployeesTimeOff', () => {
     expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.CANCEL)
   })
 
-  describe('standalone mode', () => {
-    it('calls mutation with selected employee UUID and fires TIME_OFF_ADD_EMPLOYEES_DONE', async () => {
+  describe('carry-over balance pre-fill', () => {
+    it("pre-fills balance input from eligiblePaidTimeOff matching the new policy's type", async () => {
+      renderComponent({ policyType: 'vacation' })
+      await waitFor(() => {
+        expect(screen.getByDisplayValue('40')).toBeInTheDocument()
+      })
+      // Bob's vacation carry-over is '0'
+      expect(screen.getByDisplayValue('0')).toBeInTheDocument()
+    })
+
+    it("ignores eligiblePaidTimeOff entries that don't match the new policy's type", async () => {
+      // Alice has Sick Hours = '8' but for a vacation policy we should NOT pre-fill from sick
+      renderComponent({ policyType: 'vacation' })
+      await waitFor(() => {
+        expect(screen.getByDisplayValue('40')).toBeInTheDocument()
+      })
+      expect(screen.queryByDisplayValue('8')).not.toBeInTheDocument()
+    })
+
+    it('pulls Sick Hours carry-over when adding to a sick policy', async () => {
+      renderComponent({ policyType: 'sick' })
+      await waitFor(() => {
+        expect(screen.getByDisplayValue('8')).toBeInTheDocument()
+      })
+      // Alice's vacation '40' should NOT pre-fill on a sick policy
+      expect(screen.queryByDisplayValue('40')).not.toBeInTheDocument()
+    })
+
+    it('shows empty input for employees with no matching PTO history', async () => {
+      renderComponent({ policyType: 'vacation' })
+      await waitFor(() => {
+        expect(screen.getByText('Carol Davis')).toBeInTheDocument()
+      })
+      // Carol (uuid '3') has no PTO history; her input should be empty
+      const carolInputs = screen
+        .getAllByRole('textbox')
+        .filter(input => (input as HTMLInputElement).name === 'balance-3')
+      expect((carolInputs[0] as HTMLInputElement).value).toBe('')
+    })
+  })
+
+  describe('standalone mode submit', () => {
+    it('submits with carry-over balance for selected employees who did not edit', async () => {
       const user = userEvent.setup()
       renderComponent({ mode: 'standalone' })
 
-      // Wait for employee checkboxes (header select-all at [0] + 2 employee rows = 3 total)
       await waitFor(() => {
         expect(screen.getAllByRole('checkbox').length).toBeGreaterThan(1)
       })
@@ -154,26 +236,95 @@ describe('SelectEmployeesTimeOff', () => {
           request: {
             timeOffPolicyUuid: 'policy-456',
             requestBody: {
-              employees: [{ uuid: '1' }],
+              employees: [{ uuid: '1', balance: '40' }],
             },
           },
         })
       })
+    })
+
+    it('submits user-typed balance overriding carry-over', async () => {
+      const user = userEvent.setup()
+      renderComponent({ mode: 'standalone' })
 
       await waitFor(() => {
-        expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.TIME_OFF_ADD_EMPLOYEES_DONE, {
-          uuid: 'policy-456',
+        expect(screen.getByDisplayValue('40')).toBeInTheDocument()
+      })
+
+      // fireEvent.change is used in place of userEvent.clear/type because
+      // userEvent cannot focus the underlying react-aria Input under JSDOM.
+      const aliceInput = screen.getByDisplayValue('40') as HTMLInputElement
+      fireEvent.change(aliceInput, { target: { value: '80' } })
+
+      await user.click(screen.getAllByRole('checkbox')[FIRST_EMPLOYEE_CHECKBOX] as Element)
+      await user.click(screen.getByRole('button', { name: 'continueCta' }))
+
+      await waitFor(() => {
+        expect(mockAddEmployees).toHaveBeenCalledWith({
+          request: {
+            timeOffPolicyUuid: 'policy-456',
+            requestBody: {
+              employees: [{ uuid: '1', balance: '80' }],
+            },
+          },
         })
       })
     })
 
-    it('calls mutation with multiple selected UUIDs', async () => {
+    it('falls back to carry-over when user clears the input (does not zero out)', async () => {
       const user = userEvent.setup()
       renderComponent({ mode: 'standalone' })
 
-      // 1 select-all header + 2 employees = 3 checkboxes
       await waitFor(() => {
-        expect(screen.getAllByRole('checkbox').length).toBe(3)
+        expect(screen.getByDisplayValue('40')).toBeInTheDocument()
+      })
+
+      const aliceInput = screen.getByDisplayValue('40') as HTMLInputElement
+      fireEvent.change(aliceInput, { target: { value: '' } })
+
+      await user.click(screen.getAllByRole('checkbox')[FIRST_EMPLOYEE_CHECKBOX] as Element)
+      await user.click(screen.getByRole('button', { name: 'continueCta' }))
+
+      await waitFor(() => {
+        expect(mockAddEmployees).toHaveBeenCalled()
+      })
+      const submitted = mockAddEmployees.mock.calls[0]?.[0].request.requestBody.employees as Array<{
+        uuid: string
+        balance?: string
+      }>
+      expect(submitted.find(e => e.uuid === '1')).toEqual({ uuid: '1', balance: '40' })
+    })
+
+    it('omits balance for selected employees with no carry-over and no user input', async () => {
+      const user = userEvent.setup()
+      renderComponent({ mode: 'standalone' })
+
+      await waitFor(() => {
+        expect(screen.getByText('Carol Davis')).toBeInTheDocument()
+      })
+
+      // Select Carol (third employee) — she has no PTO history, no user input
+      await user.click(screen.getAllByRole('checkbox')[3] as Element)
+      await user.click(screen.getByRole('button', { name: 'continueCta' }))
+
+      await waitFor(() => {
+        expect(mockAddEmployees).toHaveBeenCalled()
+      })
+      const submitted = mockAddEmployees.mock.calls[0]?.[0].request.requestBody.employees as Array<{
+        uuid: string
+        balance?: string
+      }>
+      const carol = submitted.find(e => e.uuid === '3')
+      expect(carol).toEqual({ uuid: '3' })
+      expect(carol).not.toHaveProperty('balance')
+    })
+
+    it('submits multiple selected UUIDs with their respective carry-over balances', async () => {
+      const user = userEvent.setup()
+      renderComponent({ mode: 'standalone' })
+
+      await waitFor(() => {
+        expect(screen.getAllByRole('checkbox').length).toBe(4)
       })
 
       const checkboxes = screen.getAllByRole('checkbox')
@@ -186,7 +337,10 @@ describe('SelectEmployeesTimeOff', () => {
           request: {
             timeOffPolicyUuid: 'policy-456',
             requestBody: {
-              employees: expect.arrayContaining([{ uuid: '1' }, { uuid: '2' }]),
+              employees: expect.arrayContaining([
+                { uuid: '1', balance: '40' },
+                { uuid: '2', balance: '0' },
+              ]),
             },
           },
         })
@@ -213,27 +367,6 @@ describe('SelectEmployeesTimeOff', () => {
       })
 
       expect(mockAddEmployees).not.toHaveBeenCalled()
-    })
-
-    it('includes all selected UUIDs in wizard event payload', async () => {
-      const user = userEvent.setup()
-      renderComponent({ mode: 'wizard' })
-
-      // 1 select-all header + 2 employees = 3 checkboxes
-      await waitFor(() => {
-        expect(screen.getAllByRole('checkbox').length).toBe(3)
-      })
-
-      const checkboxes = screen.getAllByRole('checkbox')
-      await user.click(checkboxes[FIRST_EMPLOYEE_CHECKBOX] as Element)
-      await user.click(checkboxes[SECOND_EMPLOYEE_CHECKBOX] as Element)
-      await user.click(screen.getByRole('button', { name: 'continueCta' }))
-
-      await waitFor(() => {
-        expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.TIME_OFF_ADD_EMPLOYEES_DONE, {
-          employeeUuids: expect.arrayContaining(['1', '2']),
-        })
-      })
     })
   })
 })

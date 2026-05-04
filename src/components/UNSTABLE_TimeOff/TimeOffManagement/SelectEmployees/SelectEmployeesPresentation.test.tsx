@@ -166,4 +166,33 @@ describe('SelectEmployeesPresentation', () => {
     })
     expect(screen.getByTestId('pagination-control')).toBeInTheDocument()
   })
+
+  describe('inline balance column', () => {
+    test('renders the editable balance column when onBalanceChange is provided', () => {
+      const onBalanceChange = vi.fn()
+      renderPresentation({
+        balances: { '1': '40' },
+        onBalanceChange,
+      })
+      // Both the column header AND each row's hidden input label use this text
+      expect(screen.getAllByText('startingBalanceColumn').length).toBeGreaterThan(0)
+      expect(screen.getByDisplayValue('40')).toBeInTheDocument()
+    })
+
+    test('omits the balance column when onBalanceChange is not provided', () => {
+      renderPresentation()
+      expect(screen.queryByText('startingBalanceColumn')).not.toBeInTheDocument()
+    })
+
+    test('calls onBalanceChange when user types in a balance cell', async () => {
+      const onBalanceChange = vi.fn()
+      renderPresentation({
+        balances: {},
+        onBalanceChange,
+      })
+      const inputs = screen.getAllByLabelText('startingBalanceColumn')
+      await userEvent.type(inputs[0] as Element, '4')
+      expect(onBalanceChange).toHaveBeenCalledWith('1', '4')
+    })
+  })
 })

@@ -119,15 +119,17 @@ function StoryWrapper({
   showReassignmentWarning = false,
   employees = mockEmployees,
   pagination,
+  initialBalances = {},
 }: {
   initialSelected?: Set<string>
   showReassignmentWarning?: boolean
   employees?: EmployeeItem[]
   pagination?: PaginationControlProps
+  initialBalances?: Record<string, string>
 }) {
   const [searchValue, setSearchValue] = useState('')
   const [selectedUuids, setSelectedUuids] = useState(initialSelected)
-  const [balances, setBalances] = useState<Record<string, string>>({})
+  const [balances, setBalances] = useState<Record<string, string>>(initialBalances)
 
   const handleSelect = (item: EmployeeItem, checked: boolean) => {
     setSelectedUuids(prev => {
@@ -176,6 +178,18 @@ export const WithoutReassignmentWarning = () => <StoryWrapper />
 
 export const WithPagination = () => (
   <StoryWrapper initialSelected={new Set(['1', '4', '6'])} pagination={mockPagination} />
+)
+
+export const WithCarryOver = () => (
+  <StoryWrapper
+    initialBalances={{
+      '1': '40',
+      '2': '24.5',
+      '3': '8',
+      '4': '0',
+    }}
+    showReassignmentWarning
+  />
 )
 
 export const SearchFiltered = () => {
