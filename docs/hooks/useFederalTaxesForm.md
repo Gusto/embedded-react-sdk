@@ -13,6 +13,8 @@ import { useFederalTaxesForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
 
 The federal tax record is created automatically with the employee, so this hook is always in update mode. Only the revised 2020 W-4 format (`rev_2020_w4`) is supported for updates.
 
+> **`<FederalTaxes>` component note:** When using the `Employee.FederalTaxes` component, set `isOnboarding` to `true` to render a single "Continue" submit button that emits `EMPLOYEE_FEDERAL_TAXES_DONE` after a successful save (so the parent flow can advance). Leave it `false` (default) for steady-state edit screens — the component then renders Cancel + Save buttons, where Cancel emits `CANCEL` and Save submits the form, surfaces a success alert, and keeps the user on the screen.
+
 ---
 
 ## Props

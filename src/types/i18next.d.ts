@@ -1749,6 +1749,9 @@ export interface EmployeeFederalTaxes{
 "otherIncome":string;
 "selectWithholdingDescription":string;
 "submitCta":string;
+"saveCta":string;
+"cancelCta":string;
+"successAlert":string;
 "twoJobNoLabel":string;
 "twoJobYesLabel":string;
 "validations":{

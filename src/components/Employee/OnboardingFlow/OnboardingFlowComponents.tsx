@@ -28,7 +28,9 @@ export interface OnboardingContextInterface extends FlowContextInterface {
 
 export function FederalTaxesContextual() {
   const { employeeId, onEvent } = useFlow<OnboardingContextInterface>()
-  return <FederalTaxes onEvent={onEvent} employeeId={ensureRequired(employeeId)} />
+  return (
+    <FederalTaxes onEvent={onEvent} employeeId={ensureRequired(employeeId)} isOnboarding />
+  )
 }
 
 export function StateTaxesContextual() {

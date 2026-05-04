@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import {
   useFederalTaxesForm,
@@ -20,6 +21,17 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 export interface FederalTaxesProps extends CommonComponentInterface<'Employee.FederalTaxes'> {
   employeeId: string
   defaultValues?: Partial<FederalTaxesFormData>
+  /**
+   * When true, renders a single "Continue" submit button and emits
+   * `EMPLOYEE_FEDERAL_TAXES_DONE` after a successful save so the parent
+   * onboarding flow can advance to the next step.
+   *
+   * When false (default — steady-state edit), renders Cancel + Save actions.
+   * Cancel emits `CANCEL` so the parent can navigate away; Save submits the
+   * form, surfaces a success alert, and keeps the user on the screen.
+   * `EMPLOYEE_FEDERAL_TAXES_DONE` is not emitted in this mode.
+   */
+  isOnboarding?: boolean
   onEvent: BaseComponentInterface['onEvent']
 }
 
@@ -40,6 +52,7 @@ function FederalTaxesRoot({
   children,
   dictionary,
   defaultValues,
+  isOnboarding = false,
   onEvent,
 }: FederalTaxesProps) {
   useI18n('Employee.FederalTaxes')
@@ -55,7 +68,12 @@ function FederalTaxesRoot({
   }
 
   return (
-    <FederalTaxesReady federalTaxes={federalTaxes} onEvent={onEvent} className={className}>
+    <FederalTaxesReady
+      federalTaxes={federalTaxes}
+      onEvent={onEvent}
+      isOnboarding={isOnboarding}
+      className={className}
+    >
       {children}
     </FederalTaxesReady>
   )
@@ -64,6 +82,7 @@ function FederalTaxesRoot({
 interface FederalTaxesReadyProps {
   federalTaxes: Extract<ReturnType<typeof useFederalTaxesForm>, { isLoading: false }>
   onEvent: (event: EventType, data?: unknown) => void
+  isOnboarding: boolean
   className?: string
   children?: React.ReactNode
 }
@@ -71,19 +90,30 @@ interface FederalTaxesReadyProps {
 function FederalTaxesReady({
   federalTaxes,
   onEvent,
+  isOnboarding,
   className,
   children,
 }: FederalTaxesReadyProps) {
   const { t } = useTranslation('Employee.FederalTaxes')
   const Components = useComponentContext()
   const Fields = federalTaxes.form.Fields
+  const [showSuccess, setShowSuccess] = useState(false)
 
   const handleSubmit = async () => {
+    setShowSuccess(false)
     const result = await federalTaxes.actions.onSubmit()
-    if (result) {
-      onEvent(componentEvents.EMPLOYEE_FEDERAL_TAXES_UPDATED, result.data)
+    if (!result) return
+
+    onEvent(componentEvents.EMPLOYEE_FEDERAL_TAXES_UPDATED, result.data)
+    if (isOnboarding) {
       onEvent(componentEvents.EMPLOYEE_FEDERAL_TAXES_DONE)
+    } else {
+      setShowSuccess(true)
     }
+  }
+
+  const handleCancel = () => {
+    onEvent(componentEvents.CANCEL)
   }
 
   return (
@@ -93,6 +123,16 @@ function FederalTaxesReady({
           <Form onSubmit={handleSubmit}>
             {children ?? (
               <>
+                {!isOnboarding && showSuccess && (
+                  <Components.Alert
+                    status="success"
+                    label={t('successAlert')}
+                    onDismiss={() => {
+                      setShowSuccess(false)
+                    }}
+                  />
+                )}
+
                 <Components.Heading as="h1">{t('federalTaxesTitle')}</Components.Heading>
                 <Components.Text>
                   <Trans
@@ -142,11 +182,22 @@ function FederalTaxesReady({
                   validationMessages={{ REQUIRED: t('fieldIsRequired') }}
                 />
 
-                <ActionsLayout>
-                  <Components.Button type="submit" isLoading={federalTaxes.status.isPending}>
-                    {t('submitCta')}
-                  </Components.Button>
-                </ActionsLayout>
+                {isOnboarding ? (
+                  <ActionsLayout>
+                    <Components.Button type="submit" isLoading={federalTaxes.status.isPending}>
+                      {t('submitCta')}
+                    </Components.Button>
+                  </ActionsLayout>
+                ) : (
+                  <ActionsLayout>
+                    <Components.Button variant="secondary" onClick={handleCancel}>
+                      {t('cancelCta')}
+                    </Components.Button>
+                    <Components.Button type="submit" isLoading={federalTaxes.status.isPending}>
+                      {t('saveCta')}
+                    </Components.Button>
+                  </ActionsLayout>
+                )}
               </>
             )}
           </Form>

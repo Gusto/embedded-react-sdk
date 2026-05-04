@@ -58,12 +58,6 @@ describe('Employee.FederalTaxes', () => {
       expect(screen.getByLabelText(/Extra withholding/i)).toBeInTheDocument()
     })
 
-    it('renders a Continue submit button', async () => {
-      renderWithProviders(<FederalTaxes employeeId="employee-1" onEvent={mockOnEvent} />)
-
-      await screen.findByRole('button', { name: /Continue/i })
-    })
-
     it('prefills filing status from API data', async () => {
       server.use(
         handleGetEmployeeFederalTaxes(() =>
@@ -79,7 +73,17 @@ describe('Employee.FederalTaxes', () => {
     })
   })
 
-  describe('submission', () => {
+  describe('onboarding mode (isOnboarding=true)', () => {
+    it('renders a single Continue submit button (no Cancel)', async () => {
+      renderWithProviders(
+        <FederalTaxes employeeId="employee-1" onEvent={mockOnEvent} isOnboarding />,
+      )
+
+      await screen.findByRole('button', { name: /Continue/i })
+      expect(screen.queryByRole('button', { name: /^Cancel$/i })).not.toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: /^Save$/i })).not.toBeInTheDocument()
+    })
+
     it('fires updated and done events with the API response when the form is submitted', async () => {
       const user = userEvent.setup()
       let capturedRequestBody: Record<string, unknown> | null = null
@@ -91,7 +95,9 @@ describe('Employee.FederalTaxes', () => {
         }),
       )
 
-      renderWithProviders(<FederalTaxes employeeId="employee-1" onEvent={mockOnEvent} />)
+      renderWithProviders(
+        <FederalTaxes employeeId="employee-1" onEvent={mockOnEvent} isOnboarding />,
+      )
 
       await screen.findByRole('heading', { name: /Federal tax withholdings/i })
 
@@ -128,7 +134,9 @@ describe('Employee.FederalTaxes', () => {
       )
 
       const user = userEvent.setup()
-      renderWithProviders(<FederalTaxes employeeId="employee-1" onEvent={mockOnEvent} />)
+      renderWithProviders(
+        <FederalTaxes employeeId="employee-1" onEvent={mockOnEvent} isOnboarding />,
+      )
 
       await screen.findByRole('heading', { name: /Federal tax withholdings/i })
 
@@ -143,6 +151,85 @@ describe('Employee.FederalTaxes', () => {
         expect.anything(),
       )
       expect(mockOnEvent).not.toHaveBeenCalledWith(componentEvents.EMPLOYEE_FEDERAL_TAXES_DONE)
+    })
+  })
+
+  describe('steady-state mode (default)', () => {
+    it('renders Cancel and Save buttons (no Continue)', async () => {
+      renderWithProviders(<FederalTaxes employeeId="employee-1" onEvent={mockOnEvent} />)
+
+      await screen.findByRole('heading', { name: /Federal tax withholdings/i })
+
+      expect(screen.getByRole('button', { name: /^Cancel$/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /^Save$/i })).toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: /Continue/i })).not.toBeInTheDocument()
+    })
+
+    it('emits CANCEL event when the Cancel button is clicked without submitting', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(<FederalTaxes employeeId="employee-1" onEvent={mockOnEvent} />)
+
+      await screen.findByRole('heading', { name: /Federal tax withholdings/i })
+
+      await user.click(screen.getByRole('button', { name: /^Cancel$/i }))
+
+      expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.CANCEL)
+      expect(mockOnEvent).not.toHaveBeenCalledWith(
+        componentEvents.EMPLOYEE_FEDERAL_TAXES_UPDATED,
+        expect.anything(),
+      )
+      expect(mockOnEvent).not.toHaveBeenCalledWith(componentEvents.EMPLOYEE_FEDERAL_TAXES_DONE)
+    })
+
+    it('saves and shows a success alert without emitting DONE', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(<FederalTaxes employeeId="employee-1" onEvent={mockOnEvent} />)
+
+      await screen.findByRole('heading', { name: /Federal tax withholdings/i })
+
+      expect(screen.queryByText(/Successfully updated federal tax settings/i)).not.toBeInTheDocument()
+
+      await user.click(screen.getByRole('button', { name: /^Save$/i }))
+
+      await waitFor(() => {
+        expect(mockOnEvent).toHaveBeenCalledWith(
+          componentEvents.EMPLOYEE_FEDERAL_TAXES_UPDATED,
+          expect.anything(),
+        )
+      })
+
+      expect(mockOnEvent).not.toHaveBeenCalledWith(componentEvents.EMPLOYEE_FEDERAL_TAXES_DONE)
+
+      await waitFor(() => {
+        expect(screen.getByText(/Successfully updated federal tax settings/i)).toBeInTheDocument()
+      })
+
+      expect(screen.getByRole('heading', { name: /Federal tax withholdings/i })).toBeInTheDocument()
+    })
+
+    it('does not submit and surfaces a required error when filing status is empty', async () => {
+      server.use(
+        handleGetEmployeeFederalTaxes(() =>
+          HttpResponse.json({ ...fixtureFederalTaxes, filing_status: null }),
+        ),
+      )
+
+      const user = userEvent.setup()
+      renderWithProviders(<FederalTaxes employeeId="employee-1" onEvent={mockOnEvent} />)
+
+      await screen.findByRole('heading', { name: /Federal tax withholdings/i })
+
+      await user.click(screen.getByRole('button', { name: /^Save$/i }))
+
+      await waitFor(() => {
+        expect(screen.getByText(/Please select filing status/i)).toBeInTheDocument()
+      })
+
+      expect(screen.queryByText(/Successfully updated federal tax settings/i)).not.toBeInTheDocument()
+      expect(mockOnEvent).not.toHaveBeenCalledWith(
+        componentEvents.EMPLOYEE_FEDERAL_TAXES_UPDATED,
+        expect.anything(),
+      )
     })
   })
 })
