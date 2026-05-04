@@ -1,11 +1,11 @@
 import { SelectEmployeesTimeOff } from '../TimeOffManagement/SelectEmployees/SelectEmployeesTimeOff'
-import type { SelectableTimeOffPolicyType } from '../TimeOffFlow/TimeOffFlowComponents'
+import type { CreatableTimeOffPolicyType } from '../TimeOffFlow/timeOffPolicyTypes'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 
 export interface AddEmployeesToPolicyProps extends BaseComponentInterface {
   companyId: string
   policyId: string
-  policyType: SelectableTimeOffPolicyType
+  policyType: CreatableTimeOffPolicyType
 }
 
 export function AddEmployeesToPolicy(props: AddEmployeesToPolicyProps) {

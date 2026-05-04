@@ -110,12 +110,14 @@ export function PolicySettingsContextual() {
 
 export function AddEmployeesToPolicyContextual() {
   const { onEvent, companyId, policyId, policyType } = useFlow<TimeOffFlowContextInterface>()
+  const requiredPolicyType = ensureRequired(policyType)
+  assertCreatablePolicyType(requiredPolicyType)
   return (
     <AddEmployeesToPolicy
       onEvent={onEvent}
       companyId={ensureRequired(companyId)}
       policyId={ensureRequired(policyId)}
-      policyType={ensureRequired(policyType) as SelectableTimeOffPolicyType}
+      policyType={requiredPolicyType}
     />
   )
 }

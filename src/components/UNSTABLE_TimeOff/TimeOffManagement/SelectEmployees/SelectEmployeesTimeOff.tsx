@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useTimeOffPoliciesAddEmployeesMutation } from '@gusto/embedded-api/react-query/timeOffPoliciesAddEmployees'
-import type { SelectableTimeOffPolicyType } from '../../TimeOffFlow/TimeOffFlowComponents'
+import type { CreatableTimeOffPolicyType } from '../../TimeOffFlow/timeOffPolicyTypes'
 import { SelectEmployeesPresentation } from './SelectEmployeesPresentation'
 import { useSelectEmployeesData } from './useSelectEmployeesData'
 import type { EmployeeItem } from './SelectEmployeesPresentationTypes'
@@ -10,18 +10,18 @@ import { componentEvents } from '@/shared/constants'
 interface SelectEmployeesTimeOffProps {
   companyId: string
   policyId: string
-  policyType: SelectableTimeOffPolicyType
+  policyType: CreatableTimeOffPolicyType
   mode?: 'standalone' | 'wizard'
 }
 
-const PAID_TIME_OFF_NAME_BY_POLICY_TYPE: Record<SelectableTimeOffPolicyType, string> = {
+const PAID_TIME_OFF_NAME_BY_POLICY_TYPE: Record<CreatableTimeOffPolicyType, string> = {
   vacation: 'Vacation Hours',
   sick: 'Sick Hours',
 }
 
 function deriveCarryOverBalances(
   employees: EmployeeItem[],
-  policyType: SelectableTimeOffPolicyType,
+  policyType: CreatableTimeOffPolicyType,
 ): Record<string, string> {
   const targetName = PAID_TIME_OFF_NAME_BY_POLICY_TYPE[policyType]
   const map: Record<string, string> = {}

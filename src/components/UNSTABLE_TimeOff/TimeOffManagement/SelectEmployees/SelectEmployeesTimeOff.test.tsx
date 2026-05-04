@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { fireEvent, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import type { SelectableTimeOffPolicyType } from '../../TimeOffFlow/TimeOffFlowComponents'
+import type { CreatableTimeOffPolicyType } from '../../TimeOffFlow/timeOffPolicyTypes'
 import { SelectEmployeesTimeOff } from './SelectEmployeesTimeOff'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { componentEvents } from '@/shared/constants'
@@ -101,7 +101,7 @@ vi.mock('@/hooks/usePagination/usePagination', () => ({
 function renderComponent(
   props: Partial<{
     mode: 'standalone' | 'wizard'
-    policyType: SelectableTimeOffPolicyType
+    policyType: CreatableTimeOffPolicyType
   }> = {},
 ) {
   return renderWithProviders(
