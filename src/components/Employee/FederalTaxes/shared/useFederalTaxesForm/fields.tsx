@@ -2,7 +2,11 @@ import type { FederalTaxesErrorCodes, FilingStatusValue } from './federalTaxesSc
 import type { SelectHookFieldProps } from '@/partner-hook-utils/form/fields/SelectHookField'
 import type { RadioGroupHookFieldProps } from '@/partner-hook-utils/form/fields/RadioGroupHookField'
 import type { NumberInputHookFieldProps } from '@/partner-hook-utils/form/fields/NumberInputHookField'
-import { SelectHookField, RadioGroupHookField, NumberInputHookField } from '@/partner-hook-utils/form/fields'
+import {
+  SelectHookField,
+  RadioGroupHookField,
+  NumberInputHookField,
+} from '@/partner-hook-utils/form/fields'
 import type { HookFieldProps } from '@/partner-hook-utils/types'
 
 export type RequiredValidation = typeof FederalTaxesErrorCodes.REQUIRED
@@ -15,7 +19,9 @@ export function FilingStatusField(props: FilingStatusFieldProps) {
   return <SelectHookField {...props} name="filingStatus" />
 }
 
-export type TwoJobsFieldProps = HookFieldProps<RadioGroupHookFieldProps<RequiredValidation, boolean>>
+export type TwoJobsFieldProps = HookFieldProps<
+  RadioGroupHookFieldProps<RequiredValidation, boolean>
+>
 
 export function TwoJobsField(props: TwoJobsFieldProps) {
   return <RadioGroupHookField {...props} name="twoJobs" />

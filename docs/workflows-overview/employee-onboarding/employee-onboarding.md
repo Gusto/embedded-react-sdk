@@ -202,19 +202,19 @@ function MyComponent() {
 
 #### Props
 
-| Name                | Type    | Description                                                                                                                                                            |
-| ------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| employeeId Required | string  | The associated employee identifier.                                                                                                                                    |
-| onEvent Required    |         | See events table for available events.                                                                                                                                 |
+| Name                | Type    | Description                                                                                                                                                                  |
+| ------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| employeeId Required | string  | The associated employee identifier.                                                                                                                                          |
+| onEvent Required    |         | See events table for available events.                                                                                                                                       |
 | isOnboarding        | boolean | When `true`, renders a single "Continue" submit button and emits `EMPLOYEE_FEDERAL_TAXES_DONE` on save. When `false` (default), renders Cancel + Save for steady-state edit. |
 
 #### Events
 
-| Event type                     | Description                                                                                                                                                                                              | Data                                            |
-| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
-| EMPLOYEE_FEDERAL_TAXES_UPDATED | Fired when the employee federal taxes form is submitted and federal taxes are successfully updated                                                                                                       | Response from the Update federal taxes endpoint |
-| EMPLOYEE_FEDERAL_TAXES_DONE    | Fired only when `isOnboarding` is `true` after a successful save, signalling the parent flow can advance to the next step                                                                                | None                                            |
-| CANCEL                         | Fired when `isOnboarding` is `false` and the user clicks the Cancel button                                                                                                                              | None                                            |
+| Event type                     | Description                                                                                                               | Data                                            |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| EMPLOYEE_FEDERAL_TAXES_UPDATED | Fired when the employee federal taxes form is submitted and federal taxes are successfully updated                        | Response from the Update federal taxes endpoint |
+| EMPLOYEE_FEDERAL_TAXES_DONE    | Fired only when `isOnboarding` is `true` after a successful save, signalling the parent flow can advance to the next step | None                                            |
+| CANCEL                         | Fired when `isOnboarding` is `false` and the user clicks the Cancel button                                                | None                                            |
 
 ### Employee.StateTaxes
 

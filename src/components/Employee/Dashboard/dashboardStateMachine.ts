@@ -53,12 +53,8 @@ export const dashboardStateMachine = {
       ),
     ),
   ),
-  homeAddress: state<MachineTransition>(
-    transition(componentEvents.CANCEL, 'index', returnToIndex),
-  ),
-  workAddress: state<MachineTransition>(
-    transition(componentEvents.CANCEL, 'index', returnToIndex),
-  ),
+  homeAddress: state<MachineTransition>(transition(componentEvents.CANCEL, 'index', returnToIndex)),
+  workAddress: state<MachineTransition>(transition(componentEvents.CANCEL, 'index', returnToIndex)),
   federalTaxes: state<MachineTransition>(
     transition(componentEvents.CANCEL, 'index', returnToIndex),
     transition(componentEvents.EMPLOYEE_FEDERAL_TAXES_DONE, 'index', returnToIndex),

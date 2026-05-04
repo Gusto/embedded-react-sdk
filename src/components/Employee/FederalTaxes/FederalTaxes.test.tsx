@@ -68,7 +68,9 @@ describe('Employee.FederalTaxes', () => {
       renderWithProviders(<FederalTaxes employeeId="employee-1" onEvent={mockOnEvent} />)
 
       await waitFor(() => {
-        expect(screen.getByRole('button', { name: /Married/i, expanded: false })).toBeInTheDocument()
+        expect(
+          screen.getByRole('button', { name: /Married/i, expanded: false }),
+        ).toBeInTheDocument()
       })
     })
   })
@@ -187,7 +189,9 @@ describe('Employee.FederalTaxes', () => {
 
       await screen.findByRole('heading', { name: /Federal tax withholdings/i })
 
-      expect(screen.queryByText(/Successfully updated federal tax settings/i)).not.toBeInTheDocument()
+      expect(
+        screen.queryByText(/Successfully updated federal tax settings/i),
+      ).not.toBeInTheDocument()
 
       await user.click(screen.getByRole('button', { name: /^Save$/i }))
 
@@ -225,7 +229,9 @@ describe('Employee.FederalTaxes', () => {
         expect(screen.getByText(/Please select filing status/i)).toBeInTheDocument()
       })
 
-      expect(screen.queryByText(/Successfully updated federal tax settings/i)).not.toBeInTheDocument()
+      expect(
+        screen.queryByText(/Successfully updated federal tax settings/i),
+      ).not.toBeInTheDocument()
       expect(mockOnEvent).not.toHaveBeenCalledWith(
         componentEvents.EMPLOYEE_FEDERAL_TAXES_UPDATED,
         expect.anything(),

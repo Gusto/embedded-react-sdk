@@ -21,13 +21,13 @@ The federal tax record is created automatically with the employee, so this hook 
 
 `useFederalTaxesForm` accepts a single options object:
 
-| Prop                       | Type                                                            | Required | Default      | Description                                                                                                                          |
-| -------------------------- | --------------------------------------------------------------- | -------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `employeeId`               | `string`                                                        | Yes      | —            | The UUID of the employee whose federal tax record is being updated.                                                                  |
-| `optionalFieldsToRequire`  | `FederalTaxesOptionalFieldsToRequire`                           | No       | —            | Per-mode partner override that promotes optional fields to required. All hook fields are required by default, so this is rarely needed. |
-| `defaultValues`            | `Partial<FederalTaxesFormData>`                                 | No       | —            | Pre-fill form values. Server data takes precedence when the employee already has values on file.                                     |
-| `validationMode`           | `'onSubmit' \| 'onBlur' \| 'onChange' \| 'onTouched' \| 'all'`  | No       | `'onSubmit'` | When validation runs. Passed through to react-hook-form.                                                                             |
-| `shouldFocusError`         | `boolean`                                                       | No       | `true`       | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`.                                      |
+| Prop                      | Type                                                           | Required | Default      | Description                                                                                                                             |
+| ------------------------- | -------------------------------------------------------------- | -------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `employeeId`              | `string`                                                       | Yes      | —            | The UUID of the employee whose federal tax record is being updated.                                                                     |
+| `optionalFieldsToRequire` | `FederalTaxesOptionalFieldsToRequire`                          | No       | —            | Per-mode partner override that promotes optional fields to required. All hook fields are required by default, so this is rarely needed. |
+| `defaultValues`           | `Partial<FederalTaxesFormData>`                                | No       | —            | Pre-fill form values. Server data takes precedence when the employee already has values on file.                                        |
+| `validationMode`          | `'onSubmit' \| 'onBlur' \| 'onChange' \| 'onTouched' \| 'all'` | No       | `'onSubmit'` | When validation runs. Passed through to react-hook-form.                                                                                |
+| `shouldFocusError`        | `boolean`                                                      | No       | `true`       | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`.                                         |
 
 ### FederalTaxesField
 
@@ -99,15 +99,16 @@ The hook returns a discriminated union on `isLoading`.
     mode: 'update'
   }
   actions: {
-    onSubmit: (
-      callbacks?: FederalTaxesSubmitCallbacks,
-    ) => Promise<HookSubmitResult<EmployeeFederalTax> | undefined>
+    onSubmit: (callbacks?: FederalTaxesSubmitCallbacks) =>
+      Promise<HookSubmitResult<EmployeeFederalTax> | undefined>
   }
   errorHandling: HookErrorHandling
   form: {
     Fields: FederalTaxesFormFields
     fieldsMetadata: FederalTaxesFieldsMetadata
-    hookFormInternals: { formMethods: UseFormReturn }
+    hookFormInternals: {
+      formMethods: UseFormReturn
+    }
     getFormSubmissionValues: () => FederalTaxesFormOutputs | undefined
   }
 }
@@ -145,7 +146,7 @@ const FederalTaxesErrorCodes = {
 
 | Field              | Input type     | Required by default | Error codes | Conditional availability |
 | ------------------ | -------------- | ------------------- | ----------- | ------------------------ |
-| `FilingStatus`     | Select          | Yes                 | `REQUIRED`  | Always available         |
+| `FilingStatus`     | Select         | Yes                 | `REQUIRED`  | Always available         |
 | `TwoJobs`          | Radio group    | Yes (boolean)       | `REQUIRED`  | Always available         |
 | `DependentsAmount` | Currency input | Yes                 | `REQUIRED`  | Always available         |
 | `OtherIncome`      | Currency input | Yes                 | `REQUIRED`  | Always available         |
@@ -158,14 +159,14 @@ const FederalTaxesErrorCodes = {
 
 Select dropdown for choosing the IRS filing status used for federal withholding.
 
-| Prop                 | Type                                            | Required |
-| -------------------- | ----------------------------------------------- | -------- |
-| `label`              | `string`                                        | Yes      |
-| `description`        | `ReactNode`                                     | No       |
-| `placeholder`        | `string`                                        | No       |
-| `validationMessages` | `{ REQUIRED: string }`                          | No       |
-| `getOptionLabel`     | `(value: FilingStatusValue) => string`          | No       |
-| `FieldComponent`     | `ComponentType<SelectProps>`                    | No       |
+| Prop                 | Type                                   | Required |
+| -------------------- | -------------------------------------- | -------- |
+| `label`              | `string`                               | Yes      |
+| `description`        | `ReactNode`                            | No       |
+| `placeholder`        | `string`                               | No       |
+| `validationMessages` | `{ REQUIRED: string }`                 | No       |
+| `getOptionLabel`     | `(value: FilingStatusValue) => string` | No       |
+| `FieldComponent`     | `ComponentType<SelectProps>`           | No       |
 
 **Options:** Populated from `FILING_STATUS_VALUES` (`'Single'`, `'Married'`, `'Head of Household'`, `'Exempt from withholding'`). The default option label is the raw filing status value. Pass `getOptionLabel` to localize:
 
@@ -185,13 +186,13 @@ Select dropdown for choosing the IRS filing status used for federal withholding.
 
 Radio group for the W-4 multiple-jobs question (Step 2c).
 
-| Prop                 | Type                                          | Required |
-| -------------------- | --------------------------------------------- | -------- |
-| `label`              | `string`                                      | Yes      |
-| `description`        | `ReactNode`                                   | No       |
-| `validationMessages` | `{ REQUIRED: string }`                        | No       |
-| `getOptionLabel`     | `(value: boolean) => string`                  | No       |
-| `FieldComponent`     | `ComponentType<RadioGroupProps>`              | No       |
+| Prop                 | Type                             | Required |
+| -------------------- | -------------------------------- | -------- |
+| `label`              | `string`                         | Yes      |
+| `description`        | `ReactNode`                      | No       |
+| `validationMessages` | `{ REQUIRED: string }`           | No       |
+| `getOptionLabel`     | `(value: boolean) => string`     | No       |
+| `FieldComponent`     | `ComponentType<RadioGroupProps>` | No       |
 
 **Options:** Two options for `true` and `false`. The default labels are `'Yes'` and `'No'`. Use `getOptionLabel` to localize:
 
@@ -328,11 +329,7 @@ function FederalTaxesPage({ employeeId }: { employeeId: string }) {
   return <FederalTaxesFormReady federalTaxes={federalTaxes} />
 }
 
-function FederalTaxesFormReady({
-  federalTaxes,
-}: {
-  federalTaxes: UseFederalTaxesFormReady
-}) {
+function FederalTaxesFormReady({ federalTaxes }: { federalTaxes: UseFederalTaxesFormReady }) {
   const { Fields } = federalTaxes.form
 
   const handleSubmit = async () => {
@@ -405,10 +402,7 @@ function FederalTaxesFormReady({
 The same form using prop-based field connection — useful when interleaving these fields with other hooks' fields:
 
 ```tsx
-import {
-  useFederalTaxesForm,
-  type UseFederalTaxesFormReady,
-} from '@gusto/embedded-react-sdk'
+import { useFederalTaxesForm, type UseFederalTaxesFormReady } from '@gusto/embedded-react-sdk'
 
 function FederalTaxesPage({ employeeId }: { employeeId: string }) {
   const federalTaxes = useFederalTaxesForm({ employeeId })
@@ -420,11 +414,7 @@ function FederalTaxesPage({ employeeId }: { employeeId: string }) {
   return <FederalTaxesFormReady federalTaxes={federalTaxes} />
 }
 
-function FederalTaxesFormReady({
-  federalTaxes,
-}: {
-  federalTaxes: UseFederalTaxesFormReady
-}) {
+function FederalTaxesFormReady({ federalTaxes }: { federalTaxes: UseFederalTaxesFormReady }) {
   const { Fields } = federalTaxes.form
 
   return (

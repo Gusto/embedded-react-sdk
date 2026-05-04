@@ -49,11 +49,7 @@ export function Profile() {
 export function FederalTaxes() {
   const { employeeId, onEvent } = useFlow<SelfOnboardingContextInterface>()
   return (
-    <FederalTaxesComponent
-      employeeId={ensureRequired(employeeId)}
-      onEvent={onEvent}
-      isOnboarding
-    />
+    <FederalTaxesComponent employeeId={ensureRequired(employeeId)} onEvent={onEvent} isOnboarding />
   )
 }
 

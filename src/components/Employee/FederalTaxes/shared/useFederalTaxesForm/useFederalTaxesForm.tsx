@@ -62,8 +62,11 @@ export interface FederalTaxesFields {
   ExtraWithholding: typeof ExtraWithholdingField
 }
 
-export interface UseFederalTaxesFormReady
-  extends BaseFormHookReady<FieldsMetadata, FederalTaxesFormData, FederalTaxesFields> {
+export interface UseFederalTaxesFormReady extends BaseFormHookReady<
+  FieldsMetadata,
+  FederalTaxesFormData,
+  FederalTaxesFields
+> {
   data: {
     employeeFederalTax: EmployeeFederalTax
   }
