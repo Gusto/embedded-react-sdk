@@ -1,6 +1,7 @@
 import { Dashboard } from './Dashboard'
 import { HomeAddress } from '@/components/Employee/HomeAddress/management/HomeAddress'
 import { WorkAddress } from '@/components/Employee/WorkAddress/management/WorkAddress'
+import { FederalTaxes } from '@/components/Employee/FederalTaxes/FederalTaxes'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { ensureRequired } from '@/helpers/ensureRequired'
 
@@ -21,4 +22,9 @@ export function HomeAddressContextual() {
 export function WorkAddressContextual() {
   const { employeeId, onEvent } = useFlow<DashboardContextInterface>()
   return <WorkAddress employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
+}
+
+export function FederalTaxesContextual() {
+  const { employeeId, onEvent } = useFlow<DashboardContextInterface>()
+  return <FederalTaxes employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
 }
