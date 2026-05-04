@@ -197,6 +197,35 @@ export type {
 } from '@/components/Employee/Profile/shared/useHomeAddressForm'
 
 export {
+  useFederalTaxesForm,
+  FederalTaxesErrorCodes,
+  createFederalTaxesSchema,
+  FILING_STATUS_VALUES,
+} from '@/components/Employee/FederalTaxes/shared/useFederalTaxesForm'
+export type {
+  FederalTaxesSubmitCallbacks,
+  FederalTaxesOptionalFieldsToRequire,
+  UseFederalTaxesFormProps,
+  UseFederalTaxesFormResult,
+  UseFederalTaxesFormReady,
+  FederalTaxesFieldsMetadata,
+  FederalTaxesFormFields,
+  FederalTaxesFields,
+  FederalTaxesErrorCode,
+  FederalTaxesFormData,
+  FederalTaxesFormOutputs,
+  FederalTaxesField,
+  FilingStatusValue,
+  FederalTaxesRequiredValidation,
+  FilingStatusFieldProps,
+  TwoJobsFieldProps,
+  DependentsAmountFieldProps,
+  OtherIncomeFieldProps,
+  DeductionsFieldProps,
+  ExtraWithholdingFieldProps,
+} from '@/components/Employee/FederalTaxes/shared/useFederalTaxesForm'
+
+export {
   useSignEmployeeForm,
   SignEmployeeFormErrorCodes,
   createSignEmployeeFormSchema,

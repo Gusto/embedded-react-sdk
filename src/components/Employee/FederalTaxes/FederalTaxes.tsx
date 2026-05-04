@@ -1,138 +1,157 @@
-import { zodResolver } from '@hookform/resolvers/zod'
-import { FormProvider, useForm, type SubmitHandler } from 'react-hook-form'
-import { useEffect } from 'react'
-import { useEmployeeTaxSetupGetFederalTaxesSuspense } from '@gusto/embedded-api/react-query/employeeTaxSetupGetFederalTaxes'
-import { useEmployeeTaxSetupUpdateFederalTaxesMutation } from '@gusto/embedded-api/react-query/employeeTaxSetupUpdateFederalTaxes'
-import type { PutV1EmployeesEmployeeIdFederalTaxesRequestBody } from '@gusto/embedded-api/models/operations/putv1employeesemployeeidfederaltaxes'
-import { FederalForm } from './FederalForm'
-import { FederalFormSchema, type FederalFormInputs, type FederalFormPayload } from './FederalForm'
-import { Head } from './Head'
-import { Actions } from './Actions'
-import { FederalTaxesProvider } from './useFederalTaxes'
+import { Trans, useTranslation } from 'react-i18next'
 import {
-  useBase,
-  BaseComponent,
+  useFederalTaxesForm,
+  type UseFederalTaxesFormProps,
+  type FederalTaxesFormData,
+} from './shared/useFederalTaxesForm'
+import {
+  BaseBoundaries,
+  BaseLayout,
   type BaseComponentInterface,
   type CommonComponentInterface,
 } from '@/components/Base'
-import { useI18n } from '@/i18n'
-import { normalizeErrorKeyForForm } from '@/helpers/formattedStrings'
-import { componentEvents } from '@/shared/constants'
+import { ActionsLayout } from '@/components/Common'
 import { Form } from '@/components/Common/Form'
-import { useComponentDictionary } from '@/i18n/I18n'
+import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
+import { useI18n, useComponentDictionary } from '@/i18n'
+import { componentEvents, type EventType } from '@/shared/constants'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
-interface FederalTaxesProps extends CommonComponentInterface<'Employee.FederalTaxes'> {
+export interface FederalTaxesProps extends CommonComponentInterface<'Employee.FederalTaxes'> {
   employeeId: string
+  defaultValues?: Partial<FederalTaxesFormData>
+  onEvent: BaseComponentInterface['onEvent']
 }
 
-export function FederalTaxes(props: FederalTaxesProps & BaseComponentInterface) {
+export function FederalTaxes({
+  FallbackComponent,
+  ...props
+}: FederalTaxesProps & Pick<BaseComponentInterface, 'FallbackComponent'>) {
   return (
-    <BaseComponent<'Employee.FederalTaxes'> {...props}>
-      <Root {...props} />
-    </BaseComponent>
+    <BaseBoundaries componentName="Employee.FederalTaxes" FallbackComponent={FallbackComponent}>
+      <FederalTaxesRoot {...props} />
+    </BaseBoundaries>
   )
 }
 
-const Root = (props: FederalTaxesProps) => {
-  const { employeeId, className, children, dictionary } = props
-  const { onEvent, error, baseSubmitHandler } = useBase()
+function FederalTaxesRoot({
+  employeeId,
+  className,
+  children,
+  dictionary,
+  defaultValues,
+  onEvent,
+}: FederalTaxesProps) {
   useI18n('Employee.FederalTaxes')
   useComponentDictionary('Employee.FederalTaxes', dictionary)
 
-  const { data: fedData } = useEmployeeTaxSetupGetFederalTaxesSuspense({
-    employeeUuid: employeeId,
-  })
-  const employeeFederalTax = fedData.employeeFederalTax!
-
-  const { mutateAsync: updateFederalTaxes, isPending } =
-    useEmployeeTaxSetupUpdateFederalTaxesMutation()
-
-  const isRev2020 = employeeFederalTax.w4DataType === 'rev_2020_w4'
-
-  const defaultValues = isRev2020
-    ? {
-        filingStatus: employeeFederalTax.filingStatus ?? '',
-        twoJobs: employeeFederalTax.twoJobs ? 'true' : 'false',
-        deductions: employeeFederalTax.deductions ? Number(employeeFederalTax.deductions) : 0,
-        dependentsAmount: employeeFederalTax.dependentsAmount
-          ? Number(employeeFederalTax.dependentsAmount)
-          : 0,
-        otherIncome: employeeFederalTax.otherIncome ? Number(employeeFederalTax.otherIncome) : 0,
-        extraWithholding: employeeFederalTax.extraWithholding
-          ? Number(employeeFederalTax.extraWithholding)
-          : 0,
-      }
-    : {
-        filingStatus: '',
-        twoJobs: 'false',
-        deductions: 0,
-        dependentsAmount: 0,
-        otherIncome: 0,
-        extraWithholding: 0,
-      }
-
-  const formMethods = useForm<FederalFormInputs, unknown, FederalFormPayload>({
-    resolver: zodResolver(FederalFormSchema),
+  const federalTaxes = useFederalTaxesForm({
+    employeeId,
     defaultValues,
-  })
-  const { handleSubmit, setError: _setError } = formMethods
+  } satisfies UseFederalTaxesFormProps)
 
-  const fieldErrors = error?.fieldErrors
-  useEffect(() => {
-    if (fieldErrors && fieldErrors.length > 0) {
-      fieldErrors.forEach(fieldError => {
-        const key = normalizeErrorKeyForForm(fieldError.field)
-        _setError(key as keyof FederalFormInputs, { type: 'custom', message: fieldError.message })
-      })
-    }
-  }, [fieldErrors, _setError])
+  if (federalTaxes.isLoading) {
+    return <BaseLayout isLoading error={federalTaxes.errorHandling.errors} />
+  }
 
-  const onSubmit: SubmitHandler<FederalFormPayload> = async data => {
-    await baseSubmitHandler(data, async payload => {
-      const requestBody: PutV1EmployeesEmployeeIdFederalTaxesRequestBody = {
-        filingStatus:
-          payload.filingStatus as PutV1EmployeesEmployeeIdFederalTaxesRequestBody['filingStatus'],
-        twoJobs: payload.twoJobs === 'true',
-        dependentsAmount: Number(payload.dependentsAmount),
-        otherIncome: Number(payload.otherIncome),
-        deductions: Number(payload.deductions),
-        extraWithholding: Number(payload.extraWithholding),
-        w4DataType: 'rev_2020_w4',
-        version: employeeFederalTax.version,
-      }
+  return (
+    <FederalTaxesReady federalTaxes={federalTaxes} onEvent={onEvent} className={className}>
+      {children}
+    </FederalTaxesReady>
+  )
+}
 
-      const federalTaxesResponse = await updateFederalTaxes({
-        request: {
-          employeeUuid: employeeId,
-          requestBody,
-        },
-      })
-      onEvent(componentEvents.EMPLOYEE_FEDERAL_TAXES_UPDATED, federalTaxesResponse)
+interface FederalTaxesReadyProps {
+  federalTaxes: Extract<ReturnType<typeof useFederalTaxesForm>, { isLoading: false }>
+  onEvent: (event: EventType, data?: unknown) => void
+  className?: string
+  children?: React.ReactNode
+}
+
+function FederalTaxesReady({
+  federalTaxes,
+  onEvent,
+  className,
+  children,
+}: FederalTaxesReadyProps) {
+  const { t } = useTranslation('Employee.FederalTaxes')
+  const Components = useComponentContext()
+  const Fields = federalTaxes.form.Fields
+
+  const handleSubmit = async () => {
+    const result = await federalTaxes.actions.onSubmit()
+    if (result) {
+      onEvent(componentEvents.EMPLOYEE_FEDERAL_TAXES_UPDATED, result.data)
       onEvent(componentEvents.EMPLOYEE_FEDERAL_TAXES_DONE)
-    })
+    }
   }
 
   return (
     <section className={className}>
-      <FederalTaxesProvider
-        value={{
-          isPending,
-        }}
-      >
-        <FormProvider {...formMethods}>
-          <Form onSubmit={handleSubmit(onSubmit)}>
-            {children ? (
-              children
-            ) : (
+      <BaseLayout error={federalTaxes.errorHandling.errors}>
+        <SDKFormProvider formHookResult={federalTaxes}>
+          <Form onSubmit={handleSubmit}>
+            {children ?? (
               <>
-                <Head />
-                <FederalForm />
-                <Actions />
+                <Components.Heading as="h1">{t('federalTaxesTitle')}</Components.Heading>
+                <Components.Text>
+                  <Trans
+                    i18nKey="irsCalculator"
+                    t={t}
+                    components={{
+                      IrsCalculatorLink: <Components.Link />,
+                      HelpCenterLink: <Components.Link />,
+                    }}
+                  />
+                </Components.Text>
+
+                <Fields.FilingStatus
+                  label={t('federalFilingStatus1c')}
+                  placeholder={t('federalFilingStatusPlaceholder')}
+                  description={t('selectWithholdingDescription')}
+                  validationMessages={{ REQUIRED: t('validations.federalFilingStatus') }}
+                />
+                <Fields.TwoJobs
+                  label={t('multipleJobs2c')}
+                  description={
+                    <Trans
+                      i18nKey="includesSpouseExplanation"
+                      t={t}
+                      components={{
+                        IrsLink: <Components.Link />,
+                      }}
+                    />
+                  }
+                  validationMessages={{ REQUIRED: t('validations.federalTwoJobs') }}
+                  getOptionLabel={value => (value ? t('twoJobYesLabel') : t('twoJobNoLabel'))}
+                />
+                <Fields.DependentsAmount
+                  label={t('dependentsTotalIfApplicable')}
+                  validationMessages={{ REQUIRED: t('fieldIsRequired') }}
+                />
+                <Fields.OtherIncome
+                  label={t('otherIncome')}
+                  validationMessages={{ REQUIRED: t('fieldIsRequired') }}
+                />
+                <Fields.Deductions
+                  label={t('deductions')}
+                  validationMessages={{ REQUIRED: t('fieldIsRequired') }}
+                />
+                <Fields.ExtraWithholding
+                  label={t('extraWithholding')}
+                  validationMessages={{ REQUIRED: t('fieldIsRequired') }}
+                />
+
+                <ActionsLayout>
+                  <Components.Button type="submit" isLoading={federalTaxes.status.isPending}>
+                    {t('submitCta')}
+                  </Components.Button>
+                </ActionsLayout>
               </>
             )}
           </Form>
-        </FormProvider>
-      </FederalTaxesProvider>
+        </SDKFormProvider>
+      </BaseLayout>
     </section>
   )
 }
