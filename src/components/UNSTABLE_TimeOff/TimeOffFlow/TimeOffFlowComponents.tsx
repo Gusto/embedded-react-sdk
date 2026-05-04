@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import type { PolicyType } from '@gusto/embedded-api/models/components/timeoffpolicy'
 import { PolicyList } from '../PolicyList/PolicyList'
 import { PolicyTypeSelector } from '../PolicyTypeSelector/PolicyTypeSelector'
 import { PolicyConfigurationForm } from '../TimeOffManagement/PolicyConfigurationForm'
@@ -26,7 +27,11 @@ export type TimeOffFlowAlert = {
   content?: ReactNode
 }
 
-export type TimeOffPolicyType = 'sick' | 'vacation' | 'holiday'
+// SDK exposes more PolicyType values (bereavement, custom, etc.) but only
+// vacation and sick are creatable through the API. Holiday is a separate
+// concept (holiday-pay policies) handled outside @gusto/embedded-api.
+export type SelectableTimeOffPolicyType = Extract<PolicyType, 'sick' | 'vacation'>
+export type TimeOffPolicyType = SelectableTimeOffPolicyType | 'holiday'
 
 export interface TimeOffFlowContextInterface extends FlowContextInterface {
   companyId: string
@@ -85,7 +90,7 @@ export function PolicyDetailsFormContextual() {
       <PolicyConfigurationForm
         onEvent={onEvent}
         companyId={ensureRequired(companyId)}
-        policyType={ensureRequired(policyType) as 'sick' | 'vacation'}
+        policyType={ensureRequired(policyType) as SelectableTimeOffPolicyType}
       />
     </Flex>
   )
