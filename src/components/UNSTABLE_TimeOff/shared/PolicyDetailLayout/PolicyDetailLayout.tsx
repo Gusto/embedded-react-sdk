@@ -19,12 +19,13 @@ export function PolicyDetailLayout<T extends EmployeeTableItem>({
   onTabChange,
   employees,
   removeDialog,
+  bulkRemoveDialog,
   successAlert,
   onDismissAlert,
 }: PolicyDetailLayoutProps<T>) {
   useI18n('Company.TimeOff.PolicyDetail')
   const { t } = useTranslation('Company.TimeOff.PolicyDetail')
-  const { Alert, Dialog } = useComponentContext()
+  const { Alert, Dialog, Box } = useComponentContext()
 
   const tabs = [
     {
@@ -36,18 +37,24 @@ export function PolicyDetailLayout<T extends EmployeeTableItem>({
       id: EMPLOYEES_TAB_ID,
       label: t('tabs.employees'),
       content: (
-        <EmployeeTable<T>
-          data={employees.data}
-          searchValue={employees.searchValue}
-          onSearchChange={employees.onSearchChange}
-          onSearchClear={employees.onSearchClear}
-          searchPlaceholder={employees.searchPlaceholder}
-          itemMenu={employees.itemMenu}
-          pagination={employees.pagination}
-          isFetching={employees.isFetching}
-          emptyState={employees.emptyState}
-          additionalColumns={employees.additionalColumns}
-        />
+        <Box withPadding={false}>
+          <EmployeeTable<T>
+            data={employees.data}
+            searchValue={employees.searchValue}
+            onSearchChange={employees.onSearchChange}
+            onSearchClear={employees.onSearchClear}
+            searchPlaceholder={employees.searchPlaceholder}
+            itemMenu={employees.itemMenu}
+            pagination={employees.pagination}
+            isFetching={employees.isFetching}
+            emptyState={employees.emptyState}
+            additionalColumns={employees.additionalColumns}
+            selectionMode={employees.selectionMode}
+            onSelect={employees.onSelect}
+            getIsItemSelected={employees.getIsItemSelected}
+            footer={employees.footer}
+          />
+        </Box>
       ),
     },
   ]
@@ -79,6 +86,21 @@ export function PolicyDetailLayout<T extends EmployeeTableItem>({
       >
         {t('removeEmployeeDialog.description', { name: removeDialog.employeeName })}
       </Dialog>
+
+      {bulkRemoveDialog && (
+        <Dialog
+          isOpen={bulkRemoveDialog.isOpen}
+          onClose={bulkRemoveDialog.onClose}
+          onPrimaryActionClick={bulkRemoveDialog.onConfirm}
+          isPrimaryActionLoading={bulkRemoveDialog.isPending}
+          isDestructive
+          title={t('bulkRemoveDialog.title', { count: bulkRemoveDialog.count })}
+          primaryActionLabel={t('bulkRemoveDialog.confirmCta')}
+          closeActionLabel={t('bulkRemoveDialog.cancelCta')}
+        >
+          {t('bulkRemoveDialog.description')}
+        </Dialog>
+      )}
     </>
   )
 }

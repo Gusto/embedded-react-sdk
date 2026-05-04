@@ -9,6 +9,14 @@ export interface RemoveDialogState {
   isPending: boolean
 }
 
+export interface BulkRemoveDialogState {
+  isOpen: boolean
+  count: number
+  onConfirm: () => void
+  onClose: () => void
+  isPending: boolean
+}
+
 export interface PolicyDetailLayoutProps<T extends EmployeeTableItem> {
   title: string
   subtitle?: string
@@ -36,9 +44,14 @@ export interface PolicyDetailLayoutProps<T extends EmployeeTableItem> {
     | 'isFetching'
     | 'emptyState'
     | 'additionalColumns'
+    | 'selectionMode'
+    | 'onSelect'
+    | 'getIsItemSelected'
+    | 'footer'
   >
 
   removeDialog: RemoveDialogState
+  bulkRemoveDialog?: BulkRemoveDialogState
   successAlert?: string
   onDismissAlert?: () => void
 }
