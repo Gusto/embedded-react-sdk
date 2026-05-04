@@ -122,6 +122,7 @@ export function GrossUpModal({ isOpen, onCalculateGrossUp, onApply, onCancel }: 
               name="netPay"
               label={t('netPayLabel')}
               format="currency"
+              errorMessage={t('validations.netPay')}
               min={0}
               isRequired
             />

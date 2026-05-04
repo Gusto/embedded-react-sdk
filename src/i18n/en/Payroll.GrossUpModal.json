@@ -8,5 +8,8 @@
   "applyCta": "Apply",
   "cancelCta": "Cancel",
   "grossPayResult": "Calculated gross pay",
-  "errorMessage": "Unable to calculate gross up. Please try again."
+  "errorMessage": "Unable to calculate gross up. Please try again.",
+  "validations": {
+    "netPay": "Net amount must be greater than zero cents"
+  }
 }
