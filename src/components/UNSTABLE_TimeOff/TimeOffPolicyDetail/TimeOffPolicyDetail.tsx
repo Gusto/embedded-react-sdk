@@ -65,11 +65,17 @@ function formatResetDate(resetDate: string | null | undefined): string | undefin
 }
 
 function derivePolicyDetails(policy: TimeOffPolicy): PolicyDetails {
+  const policyType = mapPolicyType(policy.policyType)
   const accrualMethod = mapAccrualMethod(policy.accrualMethod)
+
+  if (accrualMethod === 'unlimited') {
+    return { policyType, accrualMethod }
+  }
+
   return {
-    policyType: mapPolicyType(policy.policyType),
+    policyType,
     accrualMethod,
-    accrualRate: policy.accrualRate ? Number(policy.accrualRate) : undefined,
+    accrualRate: policy.accrualRate ? Number(policy.accrualRate) : 0,
     accrualRateUnit: policy.accrualRateUnit ? Number(policy.accrualRateUnit) : undefined,
     resetDate: formatResetDate(policy.policyResetDate),
   }
@@ -295,20 +301,27 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
     })
   }, [selectedEmployeeUuids, Button, t])
 
+  const discriminatedProps =
+    policyDetails.accrualMethod === 'unlimited'
+      ? { policyDetails }
+      : {
+          policyDetails,
+          policySettings: policySettings!,
+          onChangeSettings: () => {
+            onEvent(componentEvents.TIME_OFF_CHANGE_SETTINGS, { policyId })
+          },
+        }
+
   return (
     <>
       <TimeOffPolicyDetailPresentation
+        {...discriminatedProps}
         title={policy.name}
         onBack={() => {
           onEvent(componentEvents.TIME_OFF_BACK_TO_LIST)
         }}
         backLabel={t('breadcrumb')}
         actions={actions}
-        policyDetails={policyDetails}
-        policySettings={policySettings}
-        onChangeSettings={() => {
-          onEvent(componentEvents.TIME_OFF_CHANGE_SETTINGS, { policyId })
-        }}
         selectedTabId={selectedTabId}
         onTabChange={setSelectedTabId}
         employees={{
