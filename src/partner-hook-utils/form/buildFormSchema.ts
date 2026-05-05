@@ -182,12 +182,13 @@ function resolveOptionalFieldsToRequire<TConfig>(
 }
 
 function makeOptional(validator: z.ZodType): z.ZodType {
-  return z.preprocess(v => (v === '' || v === null ? undefined : v), validator.optional())
+  return z.preprocess(v => (isEmpty(v) ? undefined : v), validator.optional())
 }
 
 function isEmpty(value: unknown): boolean {
   if (value === undefined || value === null) return true
   if (typeof value === 'string' && value.trim() === '') return true
+  if (typeof value === 'number' && Number.isNaN(value)) return true
   return false
 }
 
