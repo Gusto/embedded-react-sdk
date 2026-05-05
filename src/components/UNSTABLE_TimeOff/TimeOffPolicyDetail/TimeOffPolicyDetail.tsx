@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useTimeOffPoliciesGetSuspense } from '@gusto/embedded-api/react-query/timeOffPoliciesGet'
 import { useTimeOffPoliciesRemoveEmployeesMutation } from '@gusto/embedded-api/react-query/timeOffPoliciesRemoveEmployees'
 import { useTimeOffPoliciesUpdateBalanceMutation } from '@gusto/embedded-api/react-query/timeOffPoliciesUpdateBalance'
+import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
 import type { TimeOffPolicy } from '@gusto/embedded-api/models/components/timeoffpolicy'
 import { useQueryClient } from '@tanstack/react-query'
 import { TimeOffPolicyDetailPresentation } from './TimeOffPolicyDetailPresentation'
@@ -95,11 +96,26 @@ function derivePolicySettings(policy: TimeOffPolicy): PolicySettingsDisplay | un
   }
 }
 
-function deriveEmployees(policy: TimeOffPolicy): TimeOffPolicyDetailEmployee[] {
-  return policy.employees.map(emp => ({
-    uuid: emp.uuid ?? '',
-    balance: emp.balance != null ? Number(emp.balance) : null,
-  }))
+function deriveEmployees(
+  policy: TimeOffPolicy,
+  allEmployees: Array<{
+    uuid: string
+    firstName?: string | null
+    lastName?: string | null
+    title?: string | null
+  }>,
+): TimeOffPolicyDetailEmployee[] {
+  const employeeMap = new Map(allEmployees.map(e => [e.uuid, e]))
+  return policy.employees.map(policyEmp => {
+    const emp = employeeMap.get(policyEmp.uuid ?? '')
+    return {
+      uuid: policyEmp.uuid ?? '',
+      firstName: emp?.firstName ?? null,
+      lastName: emp?.lastName ?? null,
+      jobTitle: emp?.title ?? null,
+      balance: policyEmp.balance != null ? Number(policyEmp.balance) : null,
+    }
+  })
 }
 
 interface EditBalanceState {
@@ -127,6 +143,11 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
   const policy = policyResponse.timeOffPolicy
   if (!policy) throw new Error('Unexpected response: missing timeOffPolicy')
 
+  const { data: employeesData } = useEmployeesListSuspense({
+    companyId: policy.companyUuid,
+    terminated: false,
+  })
+
   const [selectedTabId, setSelectedTabId] = useState('details')
   const [searchValue, setSearchValue] = useState('')
   const [successAlert, setSuccessAlert] = useState<string | undefined>()
@@ -140,7 +161,10 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
 
   const policyDetails = useMemo(() => derivePolicyDetails(policy), [policy])
   const policySettings = useMemo(() => derivePolicySettings(policy), [policy])
-  const employees = useMemo(() => deriveEmployees(policy), [policy])
+  const employees = useMemo(
+    () => deriveEmployees(policy, employeesData.showEmployees ?? []),
+    [policy, employeesData.showEmployees],
+  )
 
   const filteredEmployees = useMemo(() => {
     if (!searchValue.trim()) return employees
