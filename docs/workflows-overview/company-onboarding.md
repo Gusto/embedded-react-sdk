@@ -32,21 +32,25 @@ function MyApp() {
 
 ## Using Company Subcomponents
 
-Employee onboarding components can be used to compose your own workflow, or can be rendered in isolation. For guidance on creating a custom workflow, see [docs on composition](../integration-guide/composition.md).
+Company onboarding components can be used to compose your own workflow, or can be rendered in isolation. For guidance on creating a custom workflow, see [docs on composition](../integration-guide/composition.md).
 
 ### Available Subcomponents
 
-- CompanyOnboarding.AssignSignatory
-- CompanyOnboarding.CreateSignatory
-- CompanyOnboarding.InviteSignatory
-- CompanyOnboarding.Industry
-- CompanyOnboarding.DocumentSigner
-- CompanyOnboarding.FederalTaxes
-- CompanyOnboarding.PaySchedule
-- CompanyOnboarding.Locations
-- CompanyOnboarding.BankAccount
-- CompanyOnboarding.StateTaxes
-- CompanyOnboarding.OnboardingOverview
+- [CompanyOnboarding.AssignSignatory](#companyassignsignatory)
+- [CompanyOnboarding.CreateSignatory](#companycreatesignatory)
+- [CompanyOnboarding.InviteSignatory](#companyinvitesignatory)
+- [CompanyOnboarding.Industry](#companyindustry)
+- [CompanyOnboarding.DocumentSigner](#companydocumentsigner)
+- [CompanyOnboarding.DocumentList](#companydocumentlist)
+- [CompanyOnboarding.SignatureForm](#companysignatureform)
+- [CompanyOnboarding.FederalTaxes](#companyfederaltaxes)
+- [CompanyOnboarding.PaySchedule](#companypayschedule)
+- [CompanyOnboarding.Locations](#companylocations)
+- [CompanyOnboarding.BankAccount](#companybankaccount)
+- [CompanyOnboarding.StateTaxes](#companystatetaxes)
+- [CompanyOnboarding.StateTaxesForm](#companystatetaxesform)
+- [CompanyOnboarding.StateTaxesList](#companystatetaxeslist)
+- [CompanyOnboarding.OnboardingOverview](#companyonboardingoverview)
 
 > Legacy imports via `Company.*` (e.g. `Company.OnboardingFlow`) continue to work.
 
@@ -145,6 +149,31 @@ function MyComponent() {
 | COMPANY_SIGNATORY_INVITED     | Fired when a signatory is successfully invited to the company | [Response from the invite signatory API request](https://docs.gusto.com/embedded-payroll/reference/post-v1-companies-company_uuid-signatories-invite) |
 | COMPANY_INVITE_SIGNATORY_DONE | Fired when the invite signatory process is complete           | None                                                                                                                                                  |
 
+### Company.Industry
+
+A component for selecting and saving the company's industry classification (NAICS code). The selector presents a searchable list of industry options for the company.
+
+```jsx
+import { Company } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return <Company.Industry companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
+}
+```
+
+#### Props
+
+| Name                     | Type   | Description                            |
+| ------------------------ | ------ | -------------------------------------- |
+| **companyId** (Required) | string | The associated company identifier.     |
+| **onEvent** (Required)   |        | See events table for available events. |
+
+#### Events
+
+| Event type                | Description                                  | Data                                                                                                                                                                  |
+| ------------------------- | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| COMPANY_INDUSTRY_SELECTED | Fired when an industry is selected and saved | `industry` field from the [Update industry selection API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-companies-company_uuid-industry_selection) |
+
 ### Company.DocumentSigner
 
 Provides an interface for company representatives to read and sign required company documents. The component handles document listing, signatory management, and document signing workflow.
@@ -182,6 +211,70 @@ function MyComponent() {
 | COMPANY_SIGNATORY_CREATED             | Fired when a new signatory is created successfully               | [Response from the create signatory API request](https://docs.gusto.com/embedded-payroll/reference/post-v1-company-signatories)                              |
 | COMPANY_SIGNATORY_UPDATED             | Fired when an existing signatory is updated successfully         | [Response from the update signatory API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-companies-company_uuid-signatories-signatory_uuid) |
 | COMPANY_SIGNATORY_INVITED             | Fired when a signatory is successfully invited to the company    | [Response from the invite signatory API request](https://docs.gusto.com/embedded-payroll/reference/post-v1-companies-company_uuid-signatories-invite)        |
+
+### Company.DocumentList
+
+A standalone component that displays the list of company documents to be signed and lets the user manage signatories. This is the lower-level building block used internally by `Company.DocumentSigner` for its list view. Use this component directly when you need full control over navigation between the document list and the signature form.
+
+```jsx
+import { Company } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return (
+    <Company.DocumentList companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365" onEvent={() => {}} />
+  )
+}
+```
+
+#### Props
+
+| Name                     | Type   | Description                                                                                                                              |
+| ------------------------ | ------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| **companyId** (Required) | string | The associated company identifier.                                                                                                       |
+| **signatoryId**          | string | ID of the signatory. When set and matching the current signatory, the user is treated as the signatory and is allowed to sign documents. |
+| **onEvent** (Required)   |        | See events table for available events.                                                                                                   |
+
+#### Events
+
+| Event type                  | Description                                                     | Data                                                                                                                         |
+| --------------------------- | --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| COMPANY_VIEW_FORM_TO_SIGN   | Fired when a user selects a form to sign from the document list | Called with [response from get company form endpoint](https://docs.gusto.com/embedded-payroll/reference/get-v1-company-form) |
+| COMPANY_FORM_EDIT_SIGNATORY | Fired when user requests to change the document signatory       | Current signatory entity                                                                                                     |
+| COMPANY_FORMS_DONE          | Fired when user completes the document signing process          | None                                                                                                                         |
+
+### Company.SignatureForm
+
+A standalone form for signing an individual company document. This is the lower-level building block used internally by `Company.DocumentSigner` for its signing view. Use this component directly when you need full control over navigation between the document list and the signature form (e.g. you are routing the user yourself after they select a form from `Company.DocumentList`).
+
+```jsx
+import { Company } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return (
+    <Company.SignatureForm
+      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+      formId="form-uuid"
+      onEvent={() => {}}
+    />
+  )
+}
+```
+
+#### Props
+
+| Name                     | Type   | Description                                     |
+| ------------------------ | ------ | ----------------------------------------------- |
+| **companyId** (Required) | string | The associated company identifier.              |
+| **formId** (Required)    | string | The identifier of the form the user is signing. |
+| **onEvent** (Required)   |        | See events table for available events.          |
+
+#### Events
+
+| Event type             | Description                                                | Data                                                                                                                          |
+| ---------------------- | ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| COMPANY_SIGN_FORM      | Fired when a form is successfully signed                   | [Response from the sign company form API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-company-form-sign) |
+| COMPANY_SIGN_FORM_DONE | Fired when the form signing process is complete            | None                                                                                                                          |
+| COMPANY_SIGN_FORM_BACK | Fired when the user navigates back from the signature form | None                                                                                                                          |
 
 ### Company.FederalTaxes
 
@@ -301,7 +394,7 @@ function MyComponent() {
 
 ### Company.StateTaxes
 
-An orchestrated component for managing company state taxes setup. Internally uses a state machine to switch between a list view and an edit form. For more granular control, you can use `Company.StateTaxesList` or `Company.StateTaxesForm` directly.
+An orchestrated component for managing company state taxes setup. Internally uses a state machine to switch between a list view and an edit form. For more granular control, you can use `CompanyOnboarding.StateTaxesList` or `CompanyOnboarding.StateTaxesForm` directly.
 
 ```jsx
 import { Company } from '@gusto/embedded-react-sdk'
@@ -386,3 +479,34 @@ function MyComponent() {
 | ---------------------- | ------------------------------------------------------------------- | ------------------- |
 | COMPANY_STATE_TAX_EDIT | Fired when a user chooses to edit requirements for a specific state | `{ state: string }` |
 | COMPANY_STATE_TAX_DONE | Fired when user chooses to proceed to a next step                   | None                |
+
+### Company.OnboardingOverview
+
+Displays the company's overall onboarding status. Shows completed steps and remaining requirements, providing a high-level summary of where the company is in the onboarding process. Used as the landing/summary screen of the onboarding flow.
+
+```jsx
+import { Company } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return (
+    <Company.OnboardingOverview
+      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+      onEvent={() => {}}
+    />
+  )
+}
+```
+
+#### Props
+
+| Name                     | Type   | Description                            |
+| ------------------------ | ------ | -------------------------------------- |
+| **companyId** (Required) | string | The associated company identifier.     |
+| **onEvent** (Required)   |        | See events table for available events. |
+
+#### Events
+
+| Event type                | Description                                                                                          | Data |
+| ------------------------- | ---------------------------------------------------------------------------------------------------- | ---- |
+| COMPANY_OVERVIEW_CONTINUE | Fired when the user chooses to continue to the next outstanding onboarding requirement               | None |
+| COMPANY_OVERVIEW_DONE     | Fired when the user signals they are done with the overview screen (typically after onboarding ends) | None |

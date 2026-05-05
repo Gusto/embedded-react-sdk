@@ -65,6 +65,8 @@ Off-cycle components can be used to compose your own workflow, or can be rendere
 - [Payroll.OffCycleReasonSelection](#payrolloffcyclereasonselection)
 - [Payroll.OffCycleDeductionsSetting](#payrolloffcycledeductionssetting)
 
+After creation, the flow hands off to the shared [`Payroll.PayrollExecutionFlow`](./run-payroll.md#payrollpayrollexecutionflow) for the configuration → overview → submission → receipts steps. If you build your own creation step in front of the standard execution UI, render `Payroll.PayrollExecutionFlow` directly with the payroll you created.
+
 ### Payroll.OffCycleCreation
 
 The main creation form for off-cycle payrolls. Includes reason selection, pay period date configuration, employee selection, deduction settings, and tax withholding configuration.
