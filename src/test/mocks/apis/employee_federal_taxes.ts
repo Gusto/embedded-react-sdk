@@ -1,22 +1,28 @@
-import type { PathParams } from 'msw'
+import type { HttpResponseResolver, PathParams } from 'msw'
 import { http, HttpResponse } from 'msw'
 import type { GetV1EmployeesEmployeeIdFederalTaxesRequest } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidfederaltaxes'
 import type { PutV1EmployeesEmployeeIdFederalTaxesRequestBody } from '@gusto/embedded-api/models/operations/putv1employeesemployeeidfederaltaxes'
 import { getFixture } from '../fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
 
-export const getEmployeeFederalTaxes = http.get<
-  PathParams,
-  GetV1EmployeesEmployeeIdFederalTaxesRequest
->(`${API_BASE_URL}/v1/employees/:employee_id/federal_taxes`, async () => {
+export function handleGetEmployeeFederalTaxes(
+  resolver: HttpResponseResolver<PathParams, GetV1EmployeesEmployeeIdFederalTaxesRequest>,
+) {
+  return http.get(`${API_BASE_URL}/v1/employees/:employee_id/federal_taxes`, resolver)
+}
+
+export const getEmployeeFederalTaxes = handleGetEmployeeFederalTaxes(async () => {
   const responseFixture = await getFixture('get-v1-employees-employee_id-federal_taxes')
   return HttpResponse.json(responseFixture)
 })
 
-export const updateEmployeeFederalTaxes = http.put<
-  PathParams,
-  PutV1EmployeesEmployeeIdFederalTaxesRequestBody
->(`${API_BASE_URL}/v1/employees/:employee_id/federal_taxes`, async () => {
+export function handleUpdateEmployeeFederalTaxes(
+  resolver: HttpResponseResolver<PathParams, PutV1EmployeesEmployeeIdFederalTaxesRequestBody>,
+) {
+  return http.put(`${API_BASE_URL}/v1/employees/:employee_id/federal_taxes`, resolver)
+}
+
+export const updateEmployeeFederalTaxes = handleUpdateEmployeeFederalTaxes(async () => {
   const responseFixture = await getFixture('get-v1-employees-employee_id-federal_taxes')
   return HttpResponse.json(responseFixture)
 })
