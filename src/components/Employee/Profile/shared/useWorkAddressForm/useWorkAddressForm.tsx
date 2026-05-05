@@ -17,6 +17,7 @@ import {
 } from './workAddressSchema'
 import { LocationField, EffectiveDateField } from './fields'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
+import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
 import { withOptions } from '@/partner-hook-utils/form/withOptions'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
@@ -251,6 +252,8 @@ export function useWorkAddressForm({
     return submitResult
   }
 
+  const hookFormInternals = useHookFormInternals(formMethods)
+
   const isDataLoading =
     (!!companyId && locationsQuery.isLoading) ||
     (!!workAddressUuid && retrieveWorkAddressQuery.isLoading)
@@ -281,7 +284,7 @@ export function useWorkAddressForm({
         EffectiveDate: withEffectiveDateField ? EffectiveDateField : undefined,
       },
       fieldsMetadata,
-      hookFormInternals: { formMethods },
+      hookFormInternals,
       getFormSubmissionValues: createGetFormSubmissionValues(formMethods, schema),
     },
   }

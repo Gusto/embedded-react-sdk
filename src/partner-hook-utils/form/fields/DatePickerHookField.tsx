@@ -1,6 +1,7 @@
 import type { ComponentType } from 'react'
 import { useHookFieldResolution } from '../useHookFieldResolution'
 import type { BaseFieldProps, ValidationMessages, FormHookResult } from '../../types'
+import { withFieldElementRegistry } from './withFieldElementRegistry'
 import { DatePickerField } from '@/components/Common/Fields/DatePickerField'
 import type { DatePickerProps } from '@/components/Common/UI/DatePicker/DatePickerTypes'
 
@@ -25,14 +26,15 @@ export function DatePickerHookField<TErrorCode extends string>({
   minDate,
   maxDate,
 }: DatePickerHookFieldProps<TErrorCode>) {
-  const { metadata, control, errorMessage } = useHookFieldResolution(
+  const { metadata, control, errorMessage, fieldElementRegistry } = useHookFieldResolution(
     name,
     formHookResult,
     validationMessages,
   )
   const fieldMetadata = metadata[name]
 
-  return (
+  return withFieldElementRegistry(
+    fieldElementRegistry,
     <DatePickerField
       name={name}
       control={control}
@@ -45,6 +47,6 @@ export function DatePickerHookField<TErrorCode extends string>({
       portalContainer={portalContainer}
       minDate={minDate}
       maxDate={maxDate}
-    />
+    />,
   )
 }

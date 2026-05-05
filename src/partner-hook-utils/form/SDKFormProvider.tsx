@@ -2,6 +2,7 @@ import { type ReactNode, useEffect } from 'react'
 import type { FieldPath, FieldValues } from 'react-hook-form'
 import { FormProvider } from 'react-hook-form'
 import type { FieldMetadata, FieldMetadataWithOptions, HookFormInternals } from '../types'
+import { FieldElementRegistryProvider } from './FieldElementRegistryProvider'
 import { FormFieldsMetadataProvider } from './FormFieldsMetadataProvider'
 import type { SDKError, SDKFieldError } from '@/types/sdkError'
 
@@ -62,7 +63,9 @@ export function SDKFormProvider<
 
   return (
     <FormFieldsMetadataProvider metadata={form.fieldsMetadata} errors={errorHandling.errors}>
-      <FormProvider {...form.hookFormInternals.formMethods}>{children}</FormProvider>
+      <FieldElementRegistryProvider registry={form.hookFormInternals._fieldElementRegistry}>
+        <FormProvider {...form.hookFormInternals.formMethods}>{children}</FormProvider>
+      </FieldElementRegistryProvider>
     </FormFieldsMetadataProvider>
   )
 }

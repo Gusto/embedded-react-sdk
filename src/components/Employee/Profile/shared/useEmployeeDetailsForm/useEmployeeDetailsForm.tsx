@@ -25,6 +25,7 @@ import {
 } from './fields'
 import { normalizeToISOString } from '@/helpers/dateFormatting'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
+import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type {
@@ -263,6 +264,8 @@ export function useEmployeeDetailsForm({
     return submitResult
   }
 
+  const hookFormInternals = useHookFormInternals(formMethods)
+
   const isDataLoading = employeeId ? employeeQuery.isLoading : false
 
   if (isDataLoading || (employeeId && !employee)) {
@@ -292,7 +295,7 @@ export function useEmployeeDetailsForm({
           withSelfOnboardingField && isSelfOnboardingToggleable ? SelfOnboardingField : undefined,
       },
       fieldsMetadata,
-      hookFormInternals: { formMethods },
+      hookFormInternals,
       getFormSubmissionValues: createGetFormSubmissionValues(formMethods, schema),
     },
   }

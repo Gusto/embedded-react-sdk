@@ -24,6 +24,9 @@ export type {
 } from './buildFormSchema'
 export { composeSubmitHandler, type ComposeSubmitHandlerResult } from './composeSubmitHandler'
 export { createGetFormSubmissionValues } from './getFormSubmissionValues'
+export { useHookFormInternals } from './useHookFormInternals'
+export { useFieldElementRegistry, type FieldElementRegistry } from './fieldElementRegistry'
+export { FieldElementRegistryProvider } from './FieldElementRegistryProvider'
 export {
   TextInputHookField,
   type TextInputHookFieldProps,

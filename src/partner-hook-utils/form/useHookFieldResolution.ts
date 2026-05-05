@@ -1,6 +1,7 @@
 import type { Control } from 'react-hook-form'
 import { useFormState } from 'react-hook-form'
 import type { FieldsMetadata, ValidationMessages, FormHookResult } from '../types'
+import type { FieldElementRegistry } from './fieldElementRegistry'
 import { useFormFieldsMetadataContext } from './FormFieldsMetadataContext'
 import { resolveFieldError } from './resolveFieldError'
 
@@ -8,20 +9,26 @@ interface HookFieldResolution {
   metadata: FieldsMetadata
   control: Control | undefined
   errorMessage: string | undefined
+  fieldElementRegistry: FieldElementRegistry | undefined
 }
 
 /**
  * Resolves all data a HookField needs from either a `formHookResult` prop or
  * the standard context providers (FormProvider + FormFieldsMetadataProvider).
  *
- * When `formHookResult` is provided, metadata/errors/control are read from
- * the prop — no context providers required. When absent, falls back to the
- * existing context-based path.
+ * When `formHookResult` is provided, metadata/errors/control/registry are read
+ * from the prop — no context providers required. When absent, falls back to
+ * the existing context-based path.
  *
  * Uses `useFormState` to establish a proper RHF subscription for error updates.
  * When `control` is provided (prop path), useFormState subscribes directly via
  * the control object. When absent (context path), it falls back to useFormContext
  * internally. The `name` parameter scopes the subscription to this field.
+ *
+ * `fieldElementRegistry` is forwarded so HookFields in the prop-based path can
+ * self-publish the registry via `withFieldElementRegistry`. In the
+ * `SDKFormProvider` path the wrap is a no-op (no registry on the prop) and the
+ * outer provider's registry remains in scope.
  */
 export function useHookFieldResolution<
   TErrorCode extends string,
@@ -45,5 +52,7 @@ export function useHookFieldResolution<
 
   const errorMessage = resolveFieldError(name, formErrors, sdkErrors, validationMessages)
 
-  return { metadata, control, errorMessage }
+  const fieldElementRegistry = formHookResult?.form.hookFormInternals._fieldElementRegistry
+
+  return { metadata, control, errorMessage, fieldElementRegistry }
 }
