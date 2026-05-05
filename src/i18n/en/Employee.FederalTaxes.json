@@ -20,6 +20,9 @@
   "otherIncome": "Step 4a: Other income",
   "selectWithholdingDescription": "If you select Exempt from withholding, we won't withhold federal income taxes, but we'll still report taxable wages on a W-2. Keep in mind that anyone who claims exemption from withholding needs to submit a new W-4 each year.",
   "submitCta": "Continue",
+  "saveCta": "Save",
+  "cancelCta": "Cancel",
+  "successAlert": "Successfully updated federal tax settings.",
   "twoJobNoLabel": "No",
   "twoJobYesLabel": "Yes",
   "validations": {

@@ -65,7 +65,7 @@ function MinimalHeader({ cta: Cta }: { cta?: React.ComponentType }) {
     <Flex flexDirection="row" justifyContent="space-between" alignItems="center">
       <FlexItem>
         <Components.Button
-          variant="tertiary"
+          variant="secondary"
           icon={<CaretLeftIcon aria-hidden="true" />}
           onClick={() => {
             onEvent(componentEvents.CANCEL, undefined)
