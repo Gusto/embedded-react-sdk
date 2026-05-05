@@ -193,7 +193,7 @@ The shape of `data` varies by hook — see each hook's reference page for detail
 
 Hooks let you declare which form fields are required beyond the built-in defaults. Each hook has built-in requiredness rules based on the form mode (create vs. update), and you can override optional fields to be required.
 
-The API varies by hook. Some hooks use `requiredFields` (flat array or per-mode object), while newer hooks use `optionalFieldsToRequire` with type-safe, mode-aware overrides derived from the schema configuration.
+The API varies by hook. Some hooks use `requiredFields` (flat array or per-mode object), while newer hooks use `optionalFieldsToRequire` with type-safe, mode-aware overrides.
 
 ### `requiredFields` (useEmployeeDetailsForm, useWorkAddressForm)
 
@@ -847,19 +847,3 @@ Use this when you need to:
 - Access form state like `isDirty`, `isValid`, or `dirtyFields`
 
 In most cases the built-in Fields, `onSubmit`, and `getFormSubmissionValues` are sufficient. Reach for `hookFormInternals` only when you need fine-grained form control that the hook doesn't expose directly.
-
----
-
-## Advanced: Fields Metadata
-
-Each hook exposes `form.fieldsMetadata` — an object keyed by field name with metadata about each field's current state. The field components consume this automatically under the hood to determine required/disabled states and populate select options, so you typically don't need to interact with it directly.
-
-If you're building fully custom field UI, you can read this metadata yourself:
-
-```tsx
-const { fieldsMetadata } = employeeDetails.form
-
-if (fieldsMetadata.email.isRequired) {
-  // Show a required indicator in your custom UI
-}
-```
