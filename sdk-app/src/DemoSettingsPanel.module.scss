@@ -166,3 +166,124 @@
   gap: 0.5rem;
   margin-top: 0.5rem;
 }
+
+.copyRow {
+  display: flex;
+  gap: 0.5rem;
+  align-items: stretch;
+
+  input {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+.readOnly {
+  background: var(--color-badge-bg);
+  cursor: default;
+}
+
+.selectWrapper {
+  position: relative;
+}
+
+.selectButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.5rem 0.625rem;
+  border: 0.0625rem solid var(--color-border);
+  border-radius: 0.375rem;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 0.8125rem;
+  cursor: pointer;
+  text-align: left;
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-active);
+    box-shadow: 0 0 0 0.125rem var(--color-focus-ring);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.selectButtonContent {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.selectPlaceholder {
+  color: var(--color-text-muted);
+  flex: 1;
+}
+
+.selectChevron {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+
+.selectMenu {
+  position: absolute;
+  top: calc(100% + 0.25rem);
+  left: 0;
+  right: 0;
+  z-index: 10;
+  margin: 0;
+  padding: 0.25rem;
+  list-style: none;
+  background: var(--color-bg);
+  border: 0.0625rem solid var(--color-border);
+  border-radius: 0.375rem;
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.12);
+  max-height: 16rem;
+  overflow-y: auto;
+}
+
+.selectOption {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  padding: 0.5rem 0.625rem;
+  background: transparent;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  text-align: left;
+  color: var(--color-text);
+
+  &:hover {
+    background: var(--color-hover-bg);
+  }
+}
+
+.selectOptionActive {
+  background: var(--color-hover-bg);
+}
+
+.optionPrimary {
+  font-size: 0.8125rem;
+  color: var(--color-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.optionSecondary {
+  font-size: 0.6875rem;
+  font-family: monospace;
+  color: var(--color-text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
