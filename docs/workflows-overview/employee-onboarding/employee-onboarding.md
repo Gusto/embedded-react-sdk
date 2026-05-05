@@ -180,41 +180,53 @@ function MyComponent() {
 | EMPLOYEE_COMPENSATION_UPDATED | Fired after updating compensation details                                                      | Response from the Update a compensation endpoint |
 | EMPLOYEE_COMPENSATION_DONE    | Fired when compensation setup is complete and we are ready to advance to the next step         | None                                             |
 
-### Employee.FederalTaxes
+### EmployeeOnboarding.FederalTaxes / EmployeeManagement.FederalTaxes
 
-Provides required form inputs for employee federal tax configuration.
+Provides required form inputs for employee federal tax configuration. The component ships in two journey-scoped variants that share the same form rendering but differ in CTAs and emitted events; pick the variant that matches your screen instead of toggling a prop.
 
-When used in an onboarding flow, set `isOnboarding` so the form renders a single "Continue" submit button and emits `EMPLOYEE_FEDERAL_TAXES_DONE` after a successful save (allowing the parent flow to advance). When omitted (default), the component renders Cancel + Save actions for steady-state edit, where Cancel emits `CANCEL` and Save submits, surfaces a success alert, and keeps the user on the screen (no `_DONE` event).
+- **`EmployeeOnboarding.FederalTaxes`** renders a single **Continue** submit button and emits `EMPLOYEE_FEDERAL_TAXES_DONE` after a successful save so the parent onboarding flow can advance.
+- **`EmployeeManagement.FederalTaxes`** (also exported as `Employee.FederalTaxes` for backwards compatibility) renders **Cancel** + **Save**. Cancel emits `CANCEL` so the parent can navigate away; Save submits the form, surfaces a dismissible success alert, and keeps the user on the screen.
 
 ```jsx
-import { Employee } from '@gusto/embedded-react-sdk'
+// Onboarding journey
+import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 
-function MyComponent() {
+function OnboardingStep() {
   return (
-    <Employee.FederalTaxes
+    <EmployeeOnboarding.FederalTaxes
       employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
       onEvent={() => {}}
-      isOnboarding
+    />
+  )
+}
+
+// Steady-state edit (e.g. Dashboard)
+import { EmployeeManagement } from '@gusto/embedded-react-sdk'
+
+function ManagementEditScreen() {
+  return (
+    <EmployeeManagement.FederalTaxes
+      employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
+      onEvent={() => {}}
     />
   )
 }
 ```
 
-#### Props
+#### Props (both variants)
 
-| Name                | Type    | Description                                                                                                                                                                  |
-| ------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| employeeId Required | string  | The associated employee identifier.                                                                                                                                          |
-| onEvent Required    |         | See events table for available events.                                                                                                                                       |
-| isOnboarding        | boolean | When `true`, renders a single "Continue" submit button and emits `EMPLOYEE_FEDERAL_TAXES_DONE` on save. When `false` (default), renders Cancel + Save for steady-state edit. |
+| Name                | Type   | Description                            |
+| ------------------- | ------ | -------------------------------------- |
+| employeeId Required | string | The associated employee identifier.    |
+| onEvent Required    |        | See events table for available events. |
 
 #### Events
 
-| Event type                     | Description                                                                                                               | Data                                                                                                                                                                                                      |
-| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| EMPLOYEE_FEDERAL_TAXES_UPDATED | Fired when the employee federal taxes form is submitted and federal taxes are successfully updated                        | Updated `EmployeeFederalTax` entity (the `employeeFederalTax` body of the Update federal taxes response). **Breaking change in this release** — previously the full endpoint response object was emitted. |
-| EMPLOYEE_FEDERAL_TAXES_DONE    | Fired only when `isOnboarding` is `true` after a successful save, signalling the parent flow can advance to the next step | None                                                                                                                                                                                                      |
-| CANCEL                         | Fired when `isOnboarding` is `false` and the user clicks the Cancel button                                                | None                                                                                                                                                                                                      |
+| Event type                     | Variant(s)             | Description                                                                                        | Data                                                                                                                                                                                                      |
+| ------------------------------ | ---------------------- | -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| EMPLOYEE_FEDERAL_TAXES_UPDATED | Onboarding, Management | Fired when the employee federal taxes form is submitted and federal taxes are successfully updated | Updated `EmployeeFederalTax` entity (the `employeeFederalTax` body of the Update federal taxes response). **Breaking change in this release** — previously the full endpoint response object was emitted. |
+| EMPLOYEE_FEDERAL_TAXES_DONE    | Onboarding only        | Fired after a successful save, signalling the parent flow can advance to the next step             | None                                                                                                                                                                                                      |
+| CANCEL                         | Management only        | Fired when the user clicks the Cancel button                                                       | None                                                                                                                                                                                                      |
 
 ### Employee.StateTaxes
 

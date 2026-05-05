@@ -1,5 +1,5 @@
 import type { PaymentMethodBankAccount } from '@gusto/embedded-api/models/components/paymentmethodbankaccount'
-import { FederalTaxes } from '../FederalTaxes/FederalTaxes'
+import { FederalTaxes } from '../FederalTaxes/onboarding/FederalTaxes'
 import { StateTaxes } from '../StateTaxes/StateTaxes'
 import type { ProfileDefaultValues } from '../Profile'
 import type { CompensationDefaultValues } from '../Compensation'
@@ -28,7 +28,7 @@ export interface OnboardingContextInterface extends FlowContextInterface {
 
 export function FederalTaxesContextual() {
   const { employeeId, onEvent } = useFlow<OnboardingContextInterface>()
-  return <FederalTaxes onEvent={onEvent} employeeId={ensureRequired(employeeId)} isOnboarding />
+  return <FederalTaxes onEvent={onEvent} employeeId={ensureRequired(employeeId)} />
 }
 
 export function StateTaxesContextual() {

@@ -5,7 +5,7 @@ import { useFlow } from '@/components/Flow/useFlow'
 import type { BaseComponentInterface } from '@/components/Base'
 import { Landing as LandingComponent } from '@/components/Employee/Landing'
 import { Profile as ProfileComponent } from '@/components/Employee/Profile'
-import { FederalTaxes as FederalTaxesComponent } from '@/components/Employee/FederalTaxes'
+import { FederalTaxes as FederalTaxesComponent } from '@/components/Employee/FederalTaxes/onboarding/FederalTaxes'
 import { StateTaxes as StateTaxesComponent } from '@/components/Employee/StateTaxes'
 import { PaymentMethod as PaymentMethodComponent } from '@/components/Employee/PaymentMethod'
 import { OnboardingSummary as OnboardingSummaryComponent } from '@/components/Employee/OnboardingSummary'
@@ -48,9 +48,7 @@ export function Profile() {
 
 export function FederalTaxes() {
   const { employeeId, onEvent } = useFlow<SelfOnboardingContextInterface>()
-  return (
-    <FederalTaxesComponent employeeId={ensureRequired(employeeId)} onEvent={onEvent} isOnboarding />
-  )
+  return <FederalTaxesComponent employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
 }
 
 export function StateTaxes() {

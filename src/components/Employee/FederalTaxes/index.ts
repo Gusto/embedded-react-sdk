@@ -1,4 +1,4 @@
-export { FederalTaxes, type FederalTaxesProps } from './FederalTaxes'
+export { FederalTaxes, type FederalTaxesProps } from './management/FederalTaxes'
 export {
   useFederalTaxesForm,
   createFederalTaxesSchema,

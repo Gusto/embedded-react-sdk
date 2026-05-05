@@ -1,7 +1,7 @@
 import { Dashboard } from './Dashboard'
 import { HomeAddress } from '@/components/Employee/HomeAddress/management/HomeAddress'
 import { WorkAddress } from '@/components/Employee/WorkAddress/management/WorkAddress'
-import { FederalTaxes } from '@/components/Employee/FederalTaxes/FederalTaxes'
+import { FederalTaxes } from '@/components/Employee/FederalTaxes/management/FederalTaxes'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { ensureRequired } from '@/helpers/ensureRequired'
 

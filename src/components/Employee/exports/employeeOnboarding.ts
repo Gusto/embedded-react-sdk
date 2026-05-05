@@ -8,7 +8,7 @@ export { EmploymentEligibility } from '../DocumentSigner/EmploymentEligibility'
 
 export { Profile } from '../Profile'
 export { Compensation } from '../Compensation'
-export { FederalTaxes, type FederalTaxesProps } from '../FederalTaxes'
+export { FederalTaxes, type FederalTaxesProps } from '../FederalTaxes/onboarding/FederalTaxes'
 export { StateTaxes } from '../StateTaxes'
 export { Deductions } from '../Deductions'
 export { PaymentMethod } from '../PaymentMethod'
