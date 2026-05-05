@@ -3,10 +3,19 @@ import {
   DashboardViewContextual,
   HomeAddressContextual,
   WorkAddressContextual,
+  FederalTaxesContextual,
   type DashboardContextInterface,
 } from './DashboardComponents'
 import { componentEvents } from '@/shared/constants'
 import type { MachineTransition } from '@/types/Helpers'
+
+const returnToIndex = reduce(
+  (ctx: DashboardContextInterface): DashboardContextInterface => ({
+    ...ctx,
+    component: DashboardViewContextual,
+    header: null,
+  }),
+)
 
 export const dashboardStateMachine = {
   index: state<MachineTransition>(
@@ -32,31 +41,22 @@ export const dashboardStateMachine = {
         }),
       ),
     ),
-  ),
-  homeAddress: state<MachineTransition>(
     transition(
-      componentEvents.CANCEL,
-      'index',
+      componentEvents.EMPLOYEE_FEDERAL_TAXES_EDIT,
+      'federalTaxes',
       reduce(
         (ctx: DashboardContextInterface): DashboardContextInterface => ({
           ...ctx,
-          component: DashboardViewContextual,
-          header: null,
+          component: FederalTaxesContextual,
+          header: { type: 'minimal' },
         }),
       ),
     ),
   ),
-  workAddress: state<MachineTransition>(
-    transition(
-      componentEvents.CANCEL,
-      'index',
-      reduce(
-        (ctx: DashboardContextInterface): DashboardContextInterface => ({
-          ...ctx,
-          component: DashboardViewContextual,
-          header: null,
-        }),
-      ),
-    ),
+  homeAddress: state<MachineTransition>(transition(componentEvents.CANCEL, 'index', returnToIndex)),
+  workAddress: state<MachineTransition>(transition(componentEvents.CANCEL, 'index', returnToIndex)),
+  federalTaxes: state<MachineTransition>(
+    transition(componentEvents.CANCEL, 'index', returnToIndex),
+    transition(componentEvents.EMPLOYEE_FEDERAL_TAXES_DONE, 'index', returnToIndex),
   ),
 }

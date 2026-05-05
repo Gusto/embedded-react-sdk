@@ -49,6 +49,7 @@ export function PolicyDetailLayout<T extends EmployeeTableItem>({
             isFetching={employees.isFetching}
             emptyState={employees.emptyState}
             additionalColumns={employees.additionalColumns}
+            hideJobTitle={employees.hideJobTitle}
             selectionMode={employees.selectionMode}
             onSelect={employees.onSelect}
             getIsItemSelected={employees.getIsItemSelected}
