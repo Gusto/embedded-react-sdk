@@ -2100,9 +2100,14 @@
         {
           "method": "PUT",
           "path": "/v1/time_off_policies/:timeOffPolicyUuid/balance"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/employees"
         }
       ],
       "variables": [
+        "companyId",
         "timeOffPolicyUuid"
       ]
     },
@@ -2968,9 +2973,14 @@
         {
           "method": "PUT",
           "path": "/v1/time_off_policies/:timeOffPolicyUuid/balance"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/employees"
         }
       ],
       "variables": [
+        "companyId",
         "companyUuid",
         "timeOffPolicyUuid"
       ]
