@@ -203,7 +203,6 @@ export {
   FILING_STATUS_VALUES,
 } from '@/components/Employee/FederalTaxes/shared/useFederalTaxesForm'
 export type {
-  FederalTaxesSubmitCallbacks,
   FederalTaxesOptionalFieldsToRequire,
   UseFederalTaxesFormProps,
   UseFederalTaxesFormResult,

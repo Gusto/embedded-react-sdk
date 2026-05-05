@@ -6,7 +6,6 @@ export {
   FILING_STATUS_VALUES,
 } from './shared/useFederalTaxesForm'
 export type {
-  FederalTaxesSubmitCallbacks,
   FederalTaxesOptionalFieldsToRequire,
   UseFederalTaxesFormProps,
   UseFederalTaxesFormResult,

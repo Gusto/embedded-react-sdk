@@ -41,10 +41,6 @@ import { SDKInternalError } from '@/types/sdkError'
 
 export type { FederalTaxesOptionalFieldsToRequire } from './federalTaxesSchema'
 
-export interface FederalTaxesSubmitCallbacks {
-  onFederalTaxesUpdated?: (federalTaxes: EmployeeFederalTax) => void
-}
-
 export interface UseFederalTaxesFormProps {
   employeeId: string
   optionalFieldsToRequire?: FederalTaxesOptionalFieldsToRequire
@@ -72,9 +68,7 @@ export interface UseFederalTaxesFormReady extends BaseFormHookReady<
   }
   status: { isPending: boolean; mode: 'update' }
   actions: {
-    onSubmit: (
-      callbacks?: FederalTaxesSubmitCallbacks,
-    ) => Promise<HookSubmitResult<EmployeeFederalTax> | undefined>
+    onSubmit: () => Promise<HookSubmitResult<EmployeeFederalTax> | undefined>
   }
 }
 
@@ -87,10 +81,10 @@ function toFilingStatus(value: string | null | undefined): FilingStatusValue | '
   return FILING_STATUS_VALUES.find(allowed => allowed === value) ?? ''
 }
 
-function toNumber(value: string | null | undefined): number {
-  if (value === null || value === undefined || value === '') return 0
+function toNumber(value: string | null | undefined): number | undefined {
+  if (value === null || value === undefined || value === '') return undefined
   const parsed = Number(value)
-  return Number.isNaN(parsed) ? 0 : parsed
+  return Number.isNaN(parsed) ? undefined : parsed
 }
 
 export function useFederalTaxesForm({
@@ -132,11 +126,11 @@ export function useFederalTaxesForm({
       filingStatus: fromServerFilingStatus || partnerDefaults?.filingStatus || '',
       twoJobs: rev2020Source?.twoJobs ?? partnerDefaults?.twoJobs ?? false,
       dependentsAmount:
-        toNumber(rev2020Source?.dependentsAmount) || (partnerDefaults?.dependentsAmount ?? 0),
-      otherIncome: toNumber(rev2020Source?.otherIncome) || (partnerDefaults?.otherIncome ?? 0),
-      deductions: toNumber(rev2020Source?.deductions) || (partnerDefaults?.deductions ?? 0),
+        toNumber(rev2020Source?.dependentsAmount) ?? partnerDefaults?.dependentsAmount ?? 0,
+      otherIncome: toNumber(rev2020Source?.otherIncome) ?? partnerDefaults?.otherIncome ?? 0,
+      deductions: toNumber(rev2020Source?.deductions) ?? partnerDefaults?.deductions ?? 0,
       extraWithholding:
-        toNumber(rev2020Source?.extraWithholding) || (partnerDefaults?.extraWithholding ?? 0),
+        toNumber(rev2020Source?.extraWithholding) ?? partnerDefaults?.extraWithholding ?? 0,
     }
   }, [employeeFederalTax, partnerDefaults])
 
@@ -174,9 +168,7 @@ export function useFederalTaxesForm({
     extraWithholding: baseMetadata.extraWithholding,
   }
 
-  const onSubmit = async (
-    callbacks?: FederalTaxesSubmitCallbacks,
-  ): Promise<HookSubmitResult<EmployeeFederalTax> | undefined> => {
+  const onSubmit = async (): Promise<HookSubmitResult<EmployeeFederalTax> | undefined> => {
     let submitResult: HookSubmitResult<EmployeeFederalTax> | undefined
 
     await new Promise<void>(resolve => {
@@ -209,10 +201,7 @@ export function useFederalTaxesForm({
               throw new SDKInternalError('Federal taxes update did not return an updated record')
             }
 
-            const updated = response.employeeFederalTax
-            callbacks?.onFederalTaxesUpdated?.(updated)
-
-            submitResult = { mode: 'update', data: updated }
+            submitResult = { mode: 'update', data: response.employeeFederalTax }
           })
           resolve()
         },

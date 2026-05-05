@@ -1,6 +1,5 @@
 export { useFederalTaxesForm } from './useFederalTaxesForm'
 export type {
-  FederalTaxesSubmitCallbacks,
   FederalTaxesOptionalFieldsToRequire,
   UseFederalTaxesFormProps,
   UseFederalTaxesFormResult,

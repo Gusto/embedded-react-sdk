@@ -210,11 +210,11 @@ function MyComponent() {
 
 #### Events
 
-| Event type                     | Description                                                                                                               | Data                                            |
-| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
-| EMPLOYEE_FEDERAL_TAXES_UPDATED | Fired when the employee federal taxes form is submitted and federal taxes are successfully updated                        | Response from the Update federal taxes endpoint |
-| EMPLOYEE_FEDERAL_TAXES_DONE    | Fired only when `isOnboarding` is `true` after a successful save, signalling the parent flow can advance to the next step | None                                            |
-| CANCEL                         | Fired when `isOnboarding` is `false` and the user clicks the Cancel button                                                | None                                            |
+| Event type                     | Description                                                                                                               | Data                                                                                                                                                                                                      |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| EMPLOYEE_FEDERAL_TAXES_UPDATED | Fired when the employee federal taxes form is submitted and federal taxes are successfully updated                        | Updated `EmployeeFederalTax` entity (the `employeeFederalTax` body of the Update federal taxes response). **Breaking change in this release** — previously the full endpoint response object was emitted. |
+| EMPLOYEE_FEDERAL_TAXES_DONE    | Fired only when `isOnboarding` is `true` after a successful save, signalling the parent flow can advance to the next step | None                                                                                                                                                                                                      |
+| CANCEL                         | Fired when `isOnboarding` is `false` and the user clicks the Cancel button                                                | None                                                                                                                                                                                                      |
 
 ### Employee.StateTaxes
 

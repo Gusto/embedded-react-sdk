@@ -51,7 +51,17 @@ export type FederalTaxesFormOutputs = FederalTaxesFormData
 
 // ── Required fields config ─────────────────────────────────────────────
 
-const requiredFieldsConfig = {} satisfies RequiredFieldConfig<typeof fieldValidators>
+// Only `filingStatus` is required by the API on update. The remaining fields are
+// optional by default so partners can decide their own UX; the bundled
+// `<FederalTaxes>` component promotes them to required via `optionalFieldsToRequire`
+// to preserve the original (all-required) behavior.
+const requiredFieldsConfig = {
+  twoJobs: 'never',
+  dependentsAmount: 'never',
+  otherIncome: 'never',
+  deductions: 'never',
+  extraWithholding: 'never',
+} satisfies RequiredFieldConfig<typeof fieldValidators>
 
 // ── Schema factory ─────────────────────────────────────────────────────
 

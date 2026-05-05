@@ -4,6 +4,7 @@ import {
   useFederalTaxesForm,
   type UseFederalTaxesFormProps,
   type FederalTaxesFormData,
+  type FilingStatusValue,
 } from './shared/useFederalTaxesForm'
 import {
   BaseBoundaries,
@@ -61,6 +62,9 @@ function FederalTaxesRoot({
   const federalTaxes = useFederalTaxesForm({
     employeeId,
     defaultValues,
+    optionalFieldsToRequire: {
+      update: ['twoJobs', 'dependentsAmount', 'otherIncome', 'deductions', 'extraWithholding'],
+    },
   } satisfies UseFederalTaxesFormProps)
 
   if (federalTaxes.isLoading) {
@@ -98,6 +102,19 @@ function FederalTaxesReady({
   const Components = useComponentContext()
   const Fields = federalTaxes.form.Fields
   const [showSuccess, setShowSuccess] = useState(false)
+
+  const filingStatusLabel = (value: FilingStatusValue): string => {
+    switch (value) {
+      case 'Single':
+        return t('filingStatusSingle')
+      case 'Married':
+        return t('filingStatusMarried')
+      case 'Head of Household':
+        return t('filingStatusHeadOfHousehold')
+      case 'Exempt from withholding':
+        return t('filingStatusExemptFromWithholding')
+    }
+  }
 
   const handleSubmit = async () => {
     setShowSuccess(false)
@@ -150,6 +167,7 @@ function FederalTaxesReady({
                   placeholder={t('federalFilingStatusPlaceholder')}
                   description={t('selectWithholdingDescription')}
                   validationMessages={{ REQUIRED: t('validations.federalFilingStatus') }}
+                  getOptionLabel={filingStatusLabel}
                 />
                 <Fields.TwoJobs
                   label={t('multipleJobs2c')}

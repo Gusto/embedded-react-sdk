@@ -13,21 +13,19 @@ import { useFederalTaxesForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
 
 The federal tax record is created automatically with the employee, so this hook is always in update mode. Only the revised 2020 W-4 format (`rev_2020_w4`) is supported for updates.
 
-> **`<FederalTaxes>` component note:** When using the `Employee.FederalTaxes` component, set `isOnboarding` to `true` to render a single "Continue" submit button that emits `EMPLOYEE_FEDERAL_TAXES_DONE` after a successful save (so the parent flow can advance). Leave it `false` (default) for steady-state edit screens — the component then renders Cancel + Save buttons, where Cancel emits `CANCEL` and Save submits the form, surfaces a success alert, and keeps the user on the screen.
-
 ---
 
 ## Props
 
 `useFederalTaxesForm` accepts a single options object:
 
-| Prop                      | Type                                                           | Required | Default      | Description                                                                                                                             |
-| ------------------------- | -------------------------------------------------------------- | -------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
-| `employeeId`              | `string`                                                       | Yes      | —            | The UUID of the employee whose federal tax record is being updated.                                                                     |
-| `optionalFieldsToRequire` | `FederalTaxesOptionalFieldsToRequire`                          | No       | —            | Per-mode partner override that promotes optional fields to required. All hook fields are required by default, so this is rarely needed. |
-| `defaultValues`           | `Partial<FederalTaxesFormData>`                                | No       | —            | Pre-fill form values. Server data takes precedence when the employee already has values on file.                                        |
-| `validationMode`          | `'onSubmit' \| 'onBlur' \| 'onChange' \| 'onTouched' \| 'all'` | No       | `'onSubmit'` | When validation runs. Passed through to react-hook-form.                                                                                |
-| `shouldFocusError`        | `boolean`                                                      | No       | `true`       | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`.                                         |
+| Prop                      | Type                                                           | Required | Default      | Description                                                                                                                                                                                                                                              |
+| ------------------------- | -------------------------------------------------------------- | -------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `employeeId`              | `string`                                                       | Yes      | —            | The UUID of the employee whose federal tax record is being updated.                                                                                                                                                                                      |
+| `optionalFieldsToRequire` | `FederalTaxesOptionalFieldsToRequire`                          | No       | —            | Promotes API-optional fields to required. By default the hook only requires `filingStatus` (the only field the API requires); pass `{ update: ['twoJobs', 'dependentsAmount', 'otherIncome', 'deductions', 'extraWithholding'] }` to require any subset. |
+| `defaultValues`           | `Partial<FederalTaxesFormData>`                                | No       | —            | Pre-fill form values. Server data takes precedence when the employee already has values on file.                                                                                                                                                         |
+| `validationMode`          | `'onSubmit' \| 'onBlur' \| 'onChange' \| 'onTouched' \| 'all'` | No       | `'onSubmit'` | When validation runs. Passed through to react-hook-form.                                                                                                                                                                                                 |
+| `shouldFocusError`        | `boolean`                                                      | No       | `true`       | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`.                                                                                                                                                          |
 
 ### FederalTaxesField
 
@@ -45,7 +43,7 @@ type FederalTaxesField =
 
 ### Required Fields
 
-**Required by default on update:** all fields (`filingStatus`, `twoJobs`, `dependentsAmount`, `otherIncome`, `deductions`, `extraWithholding`). The `twoJobs` checkbox always carries a boolean value, so the required check is inherently satisfied; it cannot be left unselected.
+**Required by default on update:** `filingStatus` only — the API treats every other W-4 field as optional. Promote any of `twoJobs`, `dependentsAmount`, `otherIncome`, `deductions`, or `extraWithholding` to required by adding them to `optionalFieldsToRequire.update`. The shipped `<Employee.FederalTaxes>` component promotes all of them, mirroring the original (all-required) UX.
 
 ### FederalTaxesFormData
 
@@ -99,8 +97,7 @@ The hook returns a discriminated union on `isLoading`.
     mode: 'update'
   }
   actions: {
-    onSubmit: (callbacks?: FederalTaxesSubmitCallbacks) =>
-      Promise<HookSubmitResult<EmployeeFederalTax> | undefined>
+    onSubmit: () => Promise<HookSubmitResult<EmployeeFederalTax> | undefined>
   }
   errorHandling: HookErrorHandling
   form: {
@@ -118,17 +115,9 @@ The hook returns a discriminated union on `isLoading`.
 
 `status.mode` is always `'update'`. The federal tax record is created when the employee is created, so the hook does not have a create mode.
 
-### Submit callbacks
+### Submit result
 
-`onSubmit` accepts an optional callbacks object:
-
-```typescript
-interface FederalTaxesSubmitCallbacks {
-  onFederalTaxesUpdated?: (federalTaxes: EmployeeFederalTax) => void
-}
-```
-
-The callback fires after a successful update with the updated `EmployeeFederalTax` entity. The same entity is also returned in `result.data` from `onSubmit`.
+`onSubmit` resolves to either `undefined` (validation blocked the submit, or a request error was already surfaced through `errorHandling`) or an object of the form `{ mode: 'update', data: EmployeeFederalTax }` carrying the updated record.
 
 ---
 
@@ -147,11 +136,11 @@ const FederalTaxesErrorCodes = {
 | Field              | Input type     | Required by default | Error codes | Conditional availability |
 | ------------------ | -------------- | ------------------- | ----------- | ------------------------ |
 | `FilingStatus`     | Select         | Yes                 | `REQUIRED`  | Always available         |
-| `TwoJobs`          | Radio group    | Yes (boolean)       | `REQUIRED`  | Always available         |
-| `DependentsAmount` | Currency input | Yes                 | `REQUIRED`  | Always available         |
-| `OtherIncome`      | Currency input | Yes                 | `REQUIRED`  | Always available         |
-| `Deductions`       | Currency input | Yes                 | `REQUIRED`  | Always available         |
-| `ExtraWithholding` | Currency input | Yes                 | `REQUIRED`  | Always available         |
+| `TwoJobs`          | Radio group    | No                  | `REQUIRED`  | Always available         |
+| `DependentsAmount` | Currency input | No                  | `REQUIRED`  | Always available         |
+| `OtherIncome`      | Currency input | No                  | `REQUIRED`  | Always available         |
+| `Deductions`       | Currency input | No                  | `REQUIRED`  | Always available         |
+| `ExtraWithholding` | Currency input | No                  | `REQUIRED`  | Always available         |
 
 ---
 
@@ -333,14 +322,10 @@ function FederalTaxesFormReady({ federalTaxes }: { federalTaxes: UseFederalTaxes
   const { Fields } = federalTaxes.form
 
   const handleSubmit = async () => {
-    const result = await federalTaxes.actions.onSubmit({
-      onFederalTaxesUpdated: federalTax => {
-        console.log('Federal taxes updated:', federalTax.version)
-      },
-    })
+    const result = await federalTaxes.actions.onSubmit()
 
     if (result) {
-      console.log('Saved record:', result.data)
+      console.log('Saved record:', result.data.version)
     }
   }
 
