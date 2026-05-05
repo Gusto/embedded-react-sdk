@@ -8,6 +8,8 @@ import type {
   BulkRemoveDialogState,
 } from '../shared/PolicyDetailLayout/PolicyDetailLayoutTypes'
 
+export type { BulkRemoveDialogState }
+
 export interface TimeOffPolicyDetailEmployee extends EmployeeTableItem {
   uuid: string
   balance: number | null

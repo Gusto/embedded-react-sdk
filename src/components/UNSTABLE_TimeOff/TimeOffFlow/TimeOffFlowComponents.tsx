@@ -4,12 +4,12 @@ import { PolicyTypeSelector } from '../PolicyTypeSelector/PolicyTypeSelector'
 import { PolicyConfigurationForm } from '../TimeOffManagement/PolicyConfigurationForm'
 import { PolicySettings } from '../PolicySettings/PolicySettings'
 import { AddEmployeesToPolicy } from '../AddEmployeesToPolicy/AddEmployeesToPolicy'
-import { ViewPolicyDetails } from '../ViewPolicyDetails/ViewPolicyDetails'
-import { ViewPolicyEmployees } from '../ViewPolicyEmployees/ViewPolicyEmployees'
+import { TimeOffPolicyDetail } from '../TimeOffPolicyDetail/TimeOffPolicyDetail'
 import { HolidaySelectionForm } from '../HolidaySelectionForm/HolidaySelectionForm'
 import { AddEmployeesHoliday } from '../AddEmployeesHoliday/AddEmployeesHoliday'
 import { ViewHolidayEmployees } from '../ViewHolidayEmployees/ViewHolidayEmployees'
 import { ViewHolidaySchedule } from '../ViewHolidaySchedule/ViewHolidaySchedule'
+import { assertCreatablePolicyType, type TimeOffPolicyType } from './timeOffPolicyTypes'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { BaseComponentInterface } from '@/components/Base'
 import { Flex } from '@/components/Common'
@@ -25,8 +25,6 @@ export type TimeOffFlowAlert = {
   title: string
   content?: ReactNode
 }
-
-export type TimeOffPolicyType = 'sick' | 'vacation' | 'holiday'
 
 export interface TimeOffFlowContextInterface extends FlowContextInterface {
   companyId: string
@@ -74,6 +72,8 @@ export function SelectPolicyTypeContextual() {
 export function PolicyDetailsFormContextual() {
   const { onEvent, companyId, policyType, alerts } = useFlow<TimeOffFlowContextInterface>()
   const { Alert } = useComponentContext()
+  const requiredPolicyType = ensureRequired(policyType)
+  assertCreatablePolicyType(requiredPolicyType)
 
   return (
     <Flex flexDirection="column" gap={8}>
@@ -85,7 +85,7 @@ export function PolicyDetailsFormContextual() {
       <PolicyConfigurationForm
         onEvent={onEvent}
         companyId={ensureRequired(companyId)}
-        policyType={ensureRequired(policyType) as 'sick' | 'vacation'}
+        policyType={requiredPolicyType}
       />
     </Flex>
   )
@@ -108,24 +108,22 @@ export function PolicySettingsContextual() {
 }
 
 export function AddEmployeesToPolicyContextual() {
-  const { onEvent, companyId, policyId } = useFlow<TimeOffFlowContextInterface>()
+  const { onEvent, companyId, policyId, policyType } = useFlow<TimeOffFlowContextInterface>()
+  const requiredPolicyType = ensureRequired(policyType)
+  assertCreatablePolicyType(requiredPolicyType)
   return (
     <AddEmployeesToPolicy
       onEvent={onEvent}
       companyId={ensureRequired(companyId)}
       policyId={ensureRequired(policyId)}
+      policyType={requiredPolicyType}
     />
   )
 }
 
-export function ViewPolicyDetailsContextual() {
+export function TimeOffPolicyDetailContextual() {
   const { onEvent, policyId } = useFlow<TimeOffFlowContextInterface>()
-  return <ViewPolicyDetails onEvent={onEvent} policyId={ensureRequired(policyId)} />
-}
-
-export function ViewPolicyEmployeesContextual() {
-  const { onEvent, policyId } = useFlow<TimeOffFlowContextInterface>()
-  return <ViewPolicyEmployees onEvent={onEvent} policyId={ensureRequired(policyId)} />
+  return <TimeOffPolicyDetail onEvent={onEvent} policyId={ensureRequired(policyId)} />
 }
 
 export function HolidaySelectionFormContextual() {

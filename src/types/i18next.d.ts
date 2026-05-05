@@ -722,8 +722,11 @@ export interface CompanyTimeOffTimeOffPolicyDetails{
 };
 "editBalanceModal":{
 "title":string;
+"balanceLabel":string;
 "currentBalance":string;
 "hoursUnit":string;
+"cancelCta":string;
+"updateCta":string;
 };
 "removeEmployeeModal":{
 "title":string;
