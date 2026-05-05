@@ -13,6 +13,7 @@ export function EmployeeTable<T extends EmployeeTableItem>({
   data,
   label,
   additionalColumns = [],
+  hideJobTitle,
   searchValue,
   onSearchChange,
   onSearchClear,
@@ -69,14 +70,18 @@ export function EmployeeTable<T extends EmployeeTableItem>({
           </span>
         ),
       },
-      {
-        key: 'jobTitle' as keyof T,
-        title: t('jobTitle'),
-        render: (item: T) => item.jobTitle ?? '',
-      },
+      ...(hideJobTitle
+        ? []
+        : [
+            {
+              key: 'jobTitle' as keyof T,
+              title: t('jobTitle'),
+              render: (item: T) => item.jobTitle ?? '',
+            },
+          ]),
       ...additionalColumns,
     ],
-    [t, additionalColumns],
+    [t, additionalColumns, hideJobTitle],
   )
 
   const dataViewProps = useDataView<T>({
