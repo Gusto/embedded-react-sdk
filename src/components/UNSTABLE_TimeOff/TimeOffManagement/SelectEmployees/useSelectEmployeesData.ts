@@ -1,5 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
+import { Include } from '@gusto/embedded-api/models/operations/getv1companiescompanyidemployees'
+import type { PaidTimeOff } from '@gusto/embedded-api/models/components/paidtimeoff'
 import type { EmployeeItem } from './SelectEmployeesPresentationTypes'
 import { usePagination } from '@/hooks/usePagination/usePagination'
 
@@ -8,11 +10,15 @@ export function useSelectEmployeesData(companyId: string) {
   const [searchValue, setSearchValue] = useState('')
   const { currentPage, itemsPerPage, getPaginationProps, resetPage } = usePagination()
 
+  // include: all_compensations is required to populate eligiblePaidTimeOff,
+  // which carries each employee's current balance on their existing time-off
+  // policies — used to pre-fill carry-over balances for selection.
   const { data: employeesData, isFetching } = useEmployeesListSuspense({
     companyId,
     terminated: false,
     page: currentPage,
     per: itemsPerPage,
+    include: [Include.AllCompensations],
   })
 
   const employees = useMemo<EmployeeItem[]>(
@@ -23,6 +29,7 @@ export function useSelectEmployeesData(companyId: string) {
         lastName: e.lastName,
         jobTitle: e.jobs?.find(job => job.primary)?.title ?? null,
         department: e.department ?? null,
+        eligiblePaidTimeOff: e.eligiblePaidTimeOff as PaidTimeOff[] | undefined,
       })),
     [employeesData.showEmployees],
   )
