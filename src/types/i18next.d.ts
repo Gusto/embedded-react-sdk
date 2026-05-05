@@ -2427,6 +2427,9 @@ export interface PayrollGrossUpModal{
 "cancelCta":string;
 "grossPayResult":string;
 "errorMessage":string;
+"validations":{
+"netPay":string;
+};
 };
 export interface PayrollOffCycle{
 "createOffCyclePayroll":{
