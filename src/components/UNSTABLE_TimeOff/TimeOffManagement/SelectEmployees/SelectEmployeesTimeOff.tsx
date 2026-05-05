@@ -1,11 +1,13 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
 import { useTimeOffPoliciesAddEmployeesMutation } from '@gusto/embedded-api/react-query/timeOffPoliciesAddEmployees'
+import { useTranslation } from 'react-i18next'
 import type { CreatableTimeOffPolicyType } from '../../TimeOffFlow/timeOffPolicyTypes'
 import { SelectEmployeesPresentation } from './SelectEmployeesPresentation'
 import { useSelectEmployeesData } from './useSelectEmployeesData'
 import type { EmployeeItem } from './SelectEmployeesPresentationTypes'
 import { useBase } from '@/components/Base/useBase'
 import { componentEvents } from '@/shared/constants'
+import { useI18n } from '@/i18n'
 
 interface SelectEmployeesTimeOffProps {
   companyId: string
@@ -50,6 +52,8 @@ export function SelectEmployeesTimeOff({
   policyType,
   mode = 'standalone',
 }: SelectEmployeesTimeOffProps) {
+  useI18n('Company.TimeOff.SelectEmployees')
+  const { t } = useTranslation('Company.TimeOff.SelectEmployees')
   const { onEvent, baseSubmitHandler } = useBase()
   const {
     filteredEmployees,
@@ -154,6 +158,7 @@ export function SelectEmployeesTimeOff({
       onBack={handleBack}
       onContinue={handleContinue}
       showReassignmentWarning
+      policyTypeLabel={t(`policyTypeLabel_${policyType}`)}
       balances={effectiveBalances}
       onBalanceChange={handleBalanceChange}
       pagination={pagination}

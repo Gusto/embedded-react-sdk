@@ -577,6 +577,8 @@ export interface CompanyTimeOffSelectEmployees{
 "description":string;
 "holidayDescription":string;
 "reassignmentWarning":string;
+"policyTypeLabel_vacation":string;
+"policyTypeLabel_sick":string;
 "departmentColumn":string;
 "startingBalanceColumn":string;
 "backCta":string;
