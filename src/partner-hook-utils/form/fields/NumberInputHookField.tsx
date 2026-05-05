@@ -5,8 +5,9 @@ import { withFieldElementRegistry } from './withFieldElementRegistry'
 import { NumberInputField } from '@/components/Common'
 import type { NumberInputProps } from '@/components/Common/UI/NumberInput/NumberInputTypes'
 
-export interface NumberInputHookFieldProps<TErrorCode extends string = never>
-  extends BaseFieldProps {
+export interface NumberInputHookFieldProps<
+  TErrorCode extends string = never,
+> extends BaseFieldProps {
   name: string
   formHookResult?: FormHookResult
   format?: NumberInputProps['format']
