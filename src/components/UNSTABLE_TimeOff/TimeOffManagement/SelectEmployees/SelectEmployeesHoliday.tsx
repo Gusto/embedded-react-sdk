@@ -4,8 +4,11 @@ import { useHolidayPayPoliciesAddEmployeesMutation } from '@gusto/embedded-api/r
 import { useHolidayPayPoliciesRemoveEmployeesMutation } from '@gusto/embedded-api/react-query/holidayPayPoliciesRemoveEmployees'
 import {
   useHolidayPayPoliciesGetSuspense,
+  queryKeyHolidayPayPoliciesGet,
   invalidateAllHolidayPayPoliciesGet,
+  type HolidayPayPoliciesGetQueryData,
 } from '@gusto/embedded-api/react-query/holidayPayPoliciesGet'
+import type { HolidayPayPolicy } from '@gusto/embedded-api/models/components/holidaypaypolicy'
 import { SelectEmployeesPresentation } from './SelectEmployeesPresentation'
 import { useSelectEmployeesData } from './useSelectEmployeesData'
 import { useBase } from '@/components/Base/useBase'
@@ -83,7 +86,7 @@ function SelectEmployeesHolidayInner({
     async (toAdd: string[], toRemove: string[]) => {
       await baseSubmitHandler({}, async () => {
         let currentVersion = version ?? ''
-        let policyResult: unknown
+        let latestPolicy: HolidayPayPolicy | undefined
         if (toRemove.length > 0) {
           const response = await removeEmployees({
             request: {
@@ -97,7 +100,7 @@ function SelectEmployeesHolidayInner({
           if (response.holidayPayPolicy?.version) {
             currentVersion = response.holidayPayPolicy.version
           }
-          policyResult = response.holidayPayPolicy
+          latestPolicy = response.holidayPayPolicy
         }
         if (toAdd.length > 0) {
           const response = await addEmployees({
@@ -109,10 +112,23 @@ function SelectEmployeesHolidayInner({
               },
             },
           })
-          policyResult = response.holidayPayPolicy
+          latestPolicy = response.holidayPayPolicy
+        }
+        // Seed the GET cache from the mutation response so that the next mount
+        // of HolidayPolicyDetail reads fresh data immediately. invalidateQueries
+        // alone only refetches *active* subscriptions, but we navigate away
+        // before the refetch can complete.
+        if (latestPolicy) {
+          queryClient.setQueryData<HolidayPayPoliciesGetQueryData>(
+            queryKeyHolidayPayPoliciesGet(companyId, {}),
+            prev =>
+              prev
+                ? { ...prev, holidayPayPolicy: latestPolicy }
+                : (undefined as unknown as HolidayPayPoliciesGetQueryData),
+          )
         }
         await invalidateAllHolidayPayPoliciesGet(queryClient)
-        onEvent(componentEvents.TIME_OFF_HOLIDAY_ADD_EMPLOYEES_DONE, policyResult)
+        onEvent(componentEvents.TIME_OFF_HOLIDAY_ADD_EMPLOYEES_DONE, latestPolicy)
       })
     },
     [baseSubmitHandler, removeEmployees, addEmployees, companyId, version, queryClient, onEvent],
