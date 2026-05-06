@@ -57,6 +57,17 @@ export function useSelectEmployeesData(companyId: string) {
     })
   }, [])
 
+  const handleSelectAll = useCallback((checked: boolean, visibleItems: EmployeeItem[]) => {
+    setSelectedUuids(prev => {
+      const next = new Set(prev)
+      for (const item of visibleItems) {
+        if (checked) next.add(item.uuid)
+        else next.delete(item.uuid)
+      }
+      return next
+    })
+  }, [])
+
   const handleSearchChange = useCallback(
     (value: string) => {
       setSearchValue(value)
@@ -77,6 +88,7 @@ export function useSelectEmployeesData(companyId: string) {
     pagination,
     isFetching,
     handleSelect,
+    handleSelectAll,
     handleSearchChange,
     handleSearchClear,
   }

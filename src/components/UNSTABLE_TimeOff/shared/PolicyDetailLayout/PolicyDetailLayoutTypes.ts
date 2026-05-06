@@ -47,6 +47,7 @@ export interface PolicyDetailLayoutProps<T extends EmployeeTableItem> {
     | 'hideJobTitle'
     | 'selectionMode'
     | 'onSelect'
+    | 'onSelectAll'
     | 'getIsItemSelected'
     | 'footer'
   >

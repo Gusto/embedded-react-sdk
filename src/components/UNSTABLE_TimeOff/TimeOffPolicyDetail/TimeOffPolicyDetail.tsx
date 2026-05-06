@@ -246,6 +246,20 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
     })
   }, [])
 
+  const handleSelectAll = useCallback(
+    (checked: boolean, visibleItems: TimeOffPolicyDetailEmployee[]) => {
+      setSelectedEmployeeUuids(prev => {
+        const next = new Set(prev)
+        for (const item of visibleItems) {
+          if (checked) next.add(item.uuid)
+          else next.delete(item.uuid)
+        }
+        return next
+      })
+    },
+    [],
+  )
+
   const getIsItemSelected = useCallback(
     (item: TimeOffPolicyDetailEmployee) => selectedEmployeeUuids.has(item.uuid),
     [selectedEmployeeUuids],
@@ -359,6 +373,7 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
           itemMenu,
           selectionMode: 'multiple',
           onSelect: handleSelect,
+          onSelectAll: handleSelectAll,
           getIsItemSelected,
           footer,
         }}
