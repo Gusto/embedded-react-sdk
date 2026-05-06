@@ -149,7 +149,7 @@ export function NumberInput({
       name={key}
       label={label}
       description={description ?? wcDescription}
-      defaultValue={typeof value !== 'undefined' ? Number(value) : undefined}
+      defaultValue={value !== undefined && value !== null ? Number(value) : undefined}
       format={isCurrency ? 'currency' : isPercent ? 'percent' : 'decimal'}
       isDisabled={isDisabled}
       maximumFractionDigits={isPercent ? 4 : undefined}
