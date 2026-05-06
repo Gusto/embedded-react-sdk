@@ -53,6 +53,11 @@ export function SelectPolicyTypeContextual() {
   const { onEvent, companyId, policyType, alerts } = useFlow<TimeOffFlowContextInterface>()
   const { Alert } = useComponentContext()
 
+  const selectorDefault =
+    policyType === 'sick' || policyType === 'vacation' || policyType === 'holiday'
+      ? policyType
+      : undefined
+
   return (
     <Flex flexDirection="column" gap={8}>
       {alerts?.map((alert, index) => (
@@ -63,7 +68,7 @@ export function SelectPolicyTypeContextual() {
       <PolicyTypeSelector
         onEvent={onEvent}
         companyId={ensureRequired(companyId)}
-        defaultPolicyType={policyType}
+        defaultPolicyType={selectorDefault}
       />
     </Flex>
   )
