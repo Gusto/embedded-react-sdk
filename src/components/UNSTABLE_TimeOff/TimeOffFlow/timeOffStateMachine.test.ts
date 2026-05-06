@@ -9,6 +9,7 @@ type TimeOffState =
   | 'policyTypeSelector'
   | 'policyDetailsForm'
   | 'policySettings'
+  | 'editPolicySettings'
   | 'addEmployeesToPolicy'
   | 'viewTimeOffPolicyDetail'
   | 'holidaySelectionForm'
@@ -329,14 +330,57 @@ describe('timeOffStateMachine', () => {
       expect(service.context.policyId).toBe('policy-existing')
     })
 
-    it('transitions to policySettings on TIME_OFF_CHANGE_SETTINGS with policyId', () => {
+    it('transitions to editPolicySettings on TIME_OFF_CHANGE_SETTINGS with policyId', () => {
       const service = createService()
       toViewPolicyDetail(service)
 
       send(service, componentEvents.TIME_OFF_CHANGE_SETTINGS, { policyId: 'policy-existing' })
 
-      expect(service.machine.current).toBe('policySettings')
+      expect(service.machine.current).toBe('editPolicySettings')
       expect(service.context.policyId).toBe('policy-existing')
+    })
+
+    it('returns to viewTimeOffPolicyDetail on TIME_OFF_POLICY_SETTINGS_DONE in the edit flow', () => {
+      const service = createService()
+      toViewPolicyDetail(service)
+      send(service, componentEvents.TIME_OFF_CHANGE_SETTINGS, { policyId: 'policy-existing' })
+
+      send(service, componentEvents.TIME_OFF_POLICY_SETTINGS_DONE)
+
+      expect(service.machine.current).toBe('viewTimeOffPolicyDetail')
+      // policyId is preserved so the detail view re-renders for the same policy
+      expect(service.context.policyId).toBe('policy-existing')
+    })
+
+    it('returns to viewTimeOffPolicyDetail on TIME_OFF_POLICY_SETTINGS_BACK in the edit flow', () => {
+      const service = createService()
+      toViewPolicyDetail(service)
+      send(service, componentEvents.TIME_OFF_CHANGE_SETTINGS, { policyId: 'policy-existing' })
+
+      send(service, componentEvents.TIME_OFF_POLICY_SETTINGS_BACK)
+
+      expect(service.machine.current).toBe('viewTimeOffPolicyDetail')
+      expect(service.context.policyId).toBe('policy-existing')
+    })
+
+    it('cancels from editPolicySettings to policyList', () => {
+      const service = createService()
+      toViewPolicyDetail(service)
+      send(service, componentEvents.TIME_OFF_CHANGE_SETTINGS, { policyId: 'policy-existing' })
+
+      send(service, componentEvents.CANCEL)
+
+      expect(service.machine.current).toBe('policyList')
+    })
+
+    it('does not route TIME_OFF_POLICY_SETTINGS_DONE in the create flow back to the detail view', () => {
+      // Guards against regression of the create flow when adding the edit-only state.
+      const service = createService()
+      toPolicySettings(service)
+
+      send(service, componentEvents.TIME_OFF_POLICY_SETTINGS_DONE)
+
+      expect(service.machine.current).toBe('addEmployeesToPolicy')
     })
   })
 

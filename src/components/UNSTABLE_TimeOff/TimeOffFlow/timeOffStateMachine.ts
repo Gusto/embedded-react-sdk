@@ -20,7 +20,7 @@ type PolicyTypePayload = { policyType: 'sick' | 'vacation' | 'holiday' }
 type PolicyCreatedPayload = { policyId: string; accrualMethod?: string }
 type ErrorPayload = { alert?: TimeOffFlowAlert }
 type ViewPolicyPayload = { policyId: string; policyType: 'sick' | 'vacation' | 'holiday' }
-type EditPolicyPayload = { policyId: string }
+type PolicyIdPayload = { policyId: string }
 
 function isSickOrVacation(_ctx: TimeOffFlowContextInterface, ev: { payload: PolicyTypePayload }) {
   return ev.payload.policyType === 'sick' || ev.payload.policyType === 'vacation'
@@ -282,7 +282,7 @@ export const timeOffMachine = {
       reduce(
         (
           ctx: TimeOffFlowContextInterface,
-          ev: { payload: EditPolicyPayload },
+          ev: { payload: PolicyIdPayload },
         ): TimeOffFlowContextInterface => ({
           ...ctx,
           component: PolicyDetailsFormContextual,
@@ -293,11 +293,11 @@ export const timeOffMachine = {
     ),
     transition(
       componentEvents.TIME_OFF_CHANGE_SETTINGS,
-      'policySettings',
+      'editPolicySettings',
       reduce(
         (
           ctx: TimeOffFlowContextInterface,
-          ev: { payload: EditPolicyPayload },
+          ev: { payload: PolicyIdPayload },
         ): TimeOffFlowContextInterface => ({
           ...ctx,
           component: PolicySettingsContextual,
@@ -307,6 +307,35 @@ export const timeOffMachine = {
       ),
     ),
     backToListTransition,
+  ),
+
+  // Distinct from `policySettings` (the create-flow step) so that DONE/BACK
+  // return to the policy detail view instead of routing into the create
+  // flow's add-employees / details-form steps.
+  editPolicySettings: state<MachineTransition>(
+    transition(
+      componentEvents.TIME_OFF_POLICY_SETTINGS_DONE,
+      'viewTimeOffPolicyDetail',
+      reduce(
+        (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: TimeOffPolicyDetailContextual,
+          alerts: undefined,
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.TIME_OFF_POLICY_SETTINGS_BACK,
+      'viewTimeOffPolicyDetail',
+      reduce(
+        (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: TimeOffPolicyDetailContextual,
+          alerts: undefined,
+        }),
+      ),
+    ),
+    cancelToPolicyList,
   ),
 
   holidaySelectionForm: state<MachineTransition>(
