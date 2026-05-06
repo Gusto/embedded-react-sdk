@@ -249,6 +249,7 @@ export const timeOffEvents = {
   TIME_OFF_EDIT_POLICY: 'timeOff/editPolicy',
   TIME_OFF_CHANGE_SETTINGS: 'timeOff/changeSettings',
   TIME_OFF_ADD_EMPLOYEES_TO_POLICY: 'timeOff/addEmployeesToPolicy',
+  TIME_OFF_HOLIDAY_ADD_EMPLOYEES: 'timeOff/holidayAddEmployees',
 } as const
 
 export const componentEvents = {

@@ -128,7 +128,7 @@ function Root({ companyId, defaultTab = 'holidays' }: HolidayPolicyDetailProps) 
   }
 
   const handleAddEmployees = () => {
-    onEvent(componentEvents.TIME_OFF_HOLIDAY_ADD_EMPLOYEES_DONE)
+    onEvent(componentEvents.TIME_OFF_HOLIDAY_ADD_EMPLOYEES)
   }
 
   const handleEditPolicy = () => {

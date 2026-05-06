@@ -420,6 +420,17 @@ export const timeOffMachine = {
         }),
       ),
     ),
+    transition(
+      componentEvents.TIME_OFF_HOLIDAY_ADD_EMPLOYEES,
+      'addEmployeesHoliday',
+      reduce(
+        (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: AddEmployeesHolidayContextual,
+          alerts: undefined,
+        }),
+      ),
+    ),
     backToListTransition,
   ),
 
@@ -431,6 +442,17 @@ export const timeOffMachine = {
         (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
           ...ctx,
           component: ViewHolidayEmployeesContextual,
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.TIME_OFF_HOLIDAY_ADD_EMPLOYEES,
+      'addEmployeesHoliday',
+      reduce(
+        (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: AddEmployeesHolidayContextual,
+          alerts: undefined,
         }),
       ),
     ),
