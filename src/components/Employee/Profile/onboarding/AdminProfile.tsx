@@ -83,7 +83,8 @@ export function AdminProfile({
   )
 
   const employeeDetails = useEmployeeDetailsForm({
-    ...(resolvedEmployeeId ? { employeeId: resolvedEmployeeId } : { companyId }),
+    companyId,
+    employeeId: resolvedEmployeeId,
     withSelfOnboardingField: true,
     optionalFieldsToRequire,
     defaultValues: employeeDetailsDefaults,
