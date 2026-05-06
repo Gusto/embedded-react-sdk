@@ -615,6 +615,7 @@ export interface CompanyTimeOffTimeOffPolicies{
 "tableLabel":string;
 "actions":{
 "editPolicy":string;
+"viewPolicy":string;
 "deletePolicy":string;
 };
 "finishSetupCta":string;
