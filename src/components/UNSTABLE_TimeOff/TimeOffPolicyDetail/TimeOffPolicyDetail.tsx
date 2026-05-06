@@ -341,6 +341,7 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
       <TimeOffPolicyDetailPresentation
         {...discriminatedProps}
         title={policy.name}
+        subtitle={t(`subtitle.${policyDetails.policyType}`)}
         onBack={() => {
           onEvent(componentEvents.TIME_OFF_BACK_TO_LIST)
         }}

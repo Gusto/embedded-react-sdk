@@ -639,6 +639,10 @@ export interface CompanyTimeOffTimeOffPolicies{
 export interface CompanyTimeOffTimeOffPolicyDetails{
 "breadcrumb":string;
 "addEmployeeCta":string;
+"subtitle":{
+"vacation":string;
+"sick":string;
+};
 "tabs":{
 "employees":string;
 "policyDetails":string;
