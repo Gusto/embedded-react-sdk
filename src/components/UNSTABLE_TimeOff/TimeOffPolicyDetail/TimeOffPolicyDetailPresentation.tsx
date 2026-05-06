@@ -27,7 +27,6 @@ export function TimeOffPolicyDetailPresentation({
   onTabChange,
   employees,
   removeDialog,
-  bulkRemoveDialog,
   successAlert,
   onDismissAlert,
 }: TimeOffPolicyDetailPresentationProps) {
@@ -78,7 +77,6 @@ export function TimeOffPolicyDetailPresentation({
         hideJobTitle: isUnlimited,
       }}
       removeDialog={removeDialog}
-      bulkRemoveDialog={bulkRemoveDialog}
       successAlert={successAlert}
       onDismissAlert={onDismissAlert}
     />

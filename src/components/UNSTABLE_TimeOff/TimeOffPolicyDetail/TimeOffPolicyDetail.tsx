@@ -158,8 +158,6 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
     uuid: string
     name: string
   } | null>(null)
-  const [selectedEmployeeUuids, setSelectedEmployeeUuids] = useState<Set<string>>(new Set())
-  const [bulkRemoveOpen, setBulkRemoveOpen] = useState(false)
   const [editBalanceState, setEditBalanceState] = useState<EditBalanceState | null>(null)
 
   const policyDetails = useMemo(() => derivePolicyDetails(policy), [policy])
@@ -201,22 +199,6 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
     [baseSubmitHandler, removeEmployees, policyId, invalidatePolicy, t],
   )
 
-  const handleBulkRemove = useCallback(async () => {
-    const uuids = Array.from(selectedEmployeeUuids)
-    await baseSubmitHandler({}, async () => {
-      await removeEmployees({
-        request: {
-          timeOffPolicyUuid: policyId,
-          requestBody: { employees: uuids.map(uuid => ({ uuid })) },
-        },
-      })
-      invalidatePolicy()
-      setBulkRemoveOpen(false)
-      setSelectedEmployeeUuids(new Set())
-      setSuccessAlert(t('flash.employeesRemoved', { count: uuids.length }))
-    })
-  }, [baseSubmitHandler, removeEmployees, policyId, selectedEmployeeUuids, invalidatePolicy, t])
-
   const handleUpdateBalance = useCallback(
     async (newBalance: number) => {
       if (!editBalanceState) return
@@ -235,37 +217,6 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
       })
     },
     [baseSubmitHandler, updateBalance, policyId, editBalanceState, invalidatePolicy, t],
-  )
-
-  const handleSelect = useCallback((item: TimeOffPolicyDetailEmployee, checked: boolean) => {
-    setSelectedEmployeeUuids(prev => {
-      const next = new Set(prev)
-      if (checked) {
-        next.add(item.uuid)
-      } else {
-        next.delete(item.uuid)
-      }
-      return next
-    })
-  }, [])
-
-  const handleSelectAll = useCallback(
-    (checked: boolean, visibleItems: TimeOffPolicyDetailEmployee[]) => {
-      setSelectedEmployeeUuids(prev => {
-        const next = new Set(prev)
-        for (const item of visibleItems) {
-          if (checked) next.add(item.uuid)
-          else next.delete(item.uuid)
-        }
-        return next
-      })
-    },
-    [],
-  )
-
-  const getIsItemSelected = useCallback(
-    (item: TimeOffPolicyDetailEmployee) => selectedEmployeeUuids.has(item.uuid),
-    [selectedEmployeeUuids],
   )
 
   const actions = useMemo(() => {
@@ -326,22 +277,6 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
     [t],
   )
 
-  const footer = useMemo(() => {
-    if (selectedEmployeeUuids.size === 0) return undefined
-    return () => ({
-      uuid: (
-        <Button
-          variant="error"
-          onClick={() => {
-            setBulkRemoveOpen(true)
-          }}
-        >
-          {t('employeeTable.removeEmployees')} ({selectedEmployeeUuids.size})
-        </Button>
-      ),
-    })
-  }, [selectedEmployeeUuids, Button, t])
-
   const discriminatedProps =
     policyDetails.accrualMethod === 'unlimited'
       ? { policyDetails }
@@ -375,16 +310,7 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
           onSearchClear: () => {
             setSearchValue('')
           },
-          ...(isEditable
-            ? {
-                itemMenu,
-                selectionMode: 'multiple',
-                onSelect: handleSelect,
-                onSelectAll: handleSelectAll,
-                getIsItemSelected,
-                footer,
-              }
-            : {}),
+          ...(isEditable ? { itemMenu } : {}),
         }}
         removeDialog={{
           isOpen: removeTarget !== null,
@@ -396,17 +322,6 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
           },
           onClose: () => {
             setRemoveTarget(null)
-          },
-          isPending: isRemovePending,
-        }}
-        bulkRemoveDialog={{
-          isOpen: bulkRemoveOpen,
-          count: selectedEmployeeUuids.size,
-          onConfirm: () => {
-            void handleBulkRemove()
-          },
-          onClose: () => {
-            setBulkRemoveOpen(false)
           },
           isPending: isRemovePending,
         }}
