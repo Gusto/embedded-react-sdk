@@ -96,11 +96,20 @@ Wrap fields in `SDKFormProvider` and they pick up form state from context automa
 
 ```tsx
 import { SDKFormProvider } from '@gusto/embedded-react-sdk'
-;<SDKFormProvider formHookResult={employeeDetails}>
-  <Fields.FirstName label="First name" />
-  <Fields.LastName label="Last name" />
-  <Fields.Email label="Email" />
-</SDKFormProvider>
+
+function EmployeeFormSection() {
+  // ...employeeDetails from useEmployeeDetailsForm
+
+  const { Fields } = employeeDetails.form
+
+  return (
+    <SDKFormProvider formHookResult={employeeDetails}>
+      <Fields.FirstName label="First name" />
+      <Fields.LastName label="Last name" />
+      <Fields.Email label="Email" />
+    </SDKFormProvider>
+  )
+}
 ```
 
 Fields inside an `SDKFormProvider` don't need the `formHookResult` prop — the provider injects form state via React context. This is convenient when all fields from a single hook are grouped together.
@@ -116,7 +125,35 @@ Both approaches produce identical validation, API payloads, and behavior. The di
 | **Interleaving**      | Fields from different hooks can be placed in any order              | Fields must stay within their provider boundary |
 | **API error syncing** | Handled automatically per-field                                     | Handled automatically via the provider          |
 
-You can use different approaches for different hooks on the same page — for example, `SDKFormProvider` for one hook's fields that are grouped together, and `formHookResult` props for another hook's fields that are scattered. See [Composing Multiple Hooks](#composing-multiple-hooks) for examples.
+#### Side-by-side: two hooks on one screen
+
+The same `employeeDetails` + `compensation` form, written each way:
+
+```tsx
+// Option A: formHookResult prop — fields can be interleaved freely
+const EmployeeDetailsFields = employeeDetails.form.Fields
+const CompensationFields = compensation.form.Fields
+
+<EmployeeDetailsFields.FirstName label="First name" formHookResult={employeeDetails} />
+<EmployeeDetailsFields.LastName label="Last name" formHookResult={employeeDetails} />
+<CompensationFields.JobTitle label="Job title" formHookResult={compensation} />
+<CompensationFields.Rate label="Pay rate" formHookResult={compensation} />
+```
+
+```tsx
+// Option B: SDKFormProvider — one wrapper per hook, fields stay grouped
+<SDKFormProvider formHookResult={employeeDetails}>
+  <EmployeeDetailsFields.FirstName label="First name" />
+  <EmployeeDetailsFields.LastName label="Last name" />
+</SDKFormProvider>
+
+<SDKFormProvider formHookResult={compensation}>
+  <CompensationFields.JobTitle label="Job title" />
+  <CompensationFields.Rate label="Pay rate" />
+</SDKFormProvider>
+```
+
+You can also mix approaches on the same page — for example, `SDKFormProvider` for one hook's fields that are grouped together, and `formHookResult` props for another hook's fields that are scattered. See [Composing Multiple Hooks](#composing-multiple-hooks) for the full submit-handler wiring around either layout.
 
 > **Avoid passing `formHookResult` to fields via props that are already inside an `SDKFormProvider`.** When both are present on the same field, the prop takes precedence and the provider's context is ignored, which may lead to unexpected behavior.
 
@@ -155,6 +192,7 @@ function MyCustomTextInput(props: TextInputProps) {
   )
 }
 
+// Then in your form:
 ;<Fields.FirstName
   label="First name"
   FieldComponent={MyCustomTextInput}
