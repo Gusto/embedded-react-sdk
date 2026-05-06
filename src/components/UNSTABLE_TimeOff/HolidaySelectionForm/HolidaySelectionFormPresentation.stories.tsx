@@ -110,11 +110,23 @@ function StoryWrapper({ initialSelected }: { initialSelected: Set<string> }) {
     })
   }
 
+  const handleSelectAll = (selected: boolean, visibleItems: HolidayItem[]) => {
+    setSelectedUuids(prev => {
+      const next = new Set(prev)
+      for (const item of visibleItems) {
+        if (selected) next.add(item.uuid)
+        else next.delete(item.uuid)
+      }
+      return next
+    })
+  }
+
   return (
     <HolidaySelectionFormPresentation
       holidays={holidays}
       selectedHolidayUuids={selectedUuids}
       onSelectionChange={handleSelectionChange}
+      onSelectAll={handleSelectAll}
       onContinue={onContinue}
       onBack={onBack}
     />

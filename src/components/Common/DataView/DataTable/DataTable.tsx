@@ -62,12 +62,30 @@ export const DataTable = <T,>({
             key: 'select-header',
             content:
               selectionMode === 'multiple' && getIsItemSelected ? (
-                <Components.Checkbox
-                  value={allSelected}
-                  onChange={(checked: boolean) => onSelectAll?.(checked, data)}
-                  label={t('table.selectAllRowsLabel')}
-                  shouldVisuallyHideLabel
-                />
+                // Stop propagation so the surrounding react-aria-components
+                // <Column> press handler doesn't intercept the checkbox click
+                // and desync the controlled DOM state. The inner <input> is
+                // the actual interactive element; this span is a propagation
+                // shield, not a click target itself.
+                // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
+                <span
+                  onClick={e => {
+                    e.stopPropagation()
+                  }}
+                  onPointerDown={e => {
+                    e.stopPropagation()
+                  }}
+                  onMouseDown={e => {
+                    e.stopPropagation()
+                  }}
+                >
+                  <Components.Checkbox
+                    value={allSelected}
+                    onChange={(checked: boolean) => onSelectAll?.(checked, data)}
+                    label={t('table.selectAllRowsLabel')}
+                    shouldVisuallyHideLabel
+                  />
+                </span>
               ) : (
                 <VisuallyHidden>{t('table.selectRowHeader')}</VisuallyHidden>
               ),

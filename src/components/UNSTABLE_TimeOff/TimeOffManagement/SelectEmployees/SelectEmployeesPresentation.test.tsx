@@ -28,6 +28,7 @@ const defaultProps: SelectEmployeesPresentationProps = {
   selectedUuids: new Set<string>(),
   searchValue: '',
   onSelect: vi.fn(),
+  onSelectAll: vi.fn(),
   onSearchChange: vi.fn(),
   onSearchClear: vi.fn(),
   onBack: vi.fn(),
@@ -118,6 +119,23 @@ describe('SelectEmployeesPresentation', () => {
     const checkboxes = screen.getAllByRole('checkbox')
     await userEvent.click(checkboxes[1] as Element)
     expect(onSelect).toHaveBeenCalledWith(mockEmployees[0], true)
+  })
+
+  test('calls onSelectAll with checked=true and visible employees when header checkbox is clicked', async () => {
+    const onSelectAll = vi.fn()
+    renderPresentation({ onSelectAll })
+    await userEvent.click(screen.getAllByRole('checkbox')[0] as Element)
+    expect(onSelectAll).toHaveBeenCalledWith(true, mockEmployees)
+  })
+
+  test('calls onSelectAll with checked=false when header checkbox is clicked while all selected', async () => {
+    const onSelectAll = vi.fn()
+    renderPresentation({
+      onSelectAll,
+      selectedUuids: new Set(mockEmployees.map(e => e.uuid)),
+    })
+    await userEvent.click(screen.getAllByRole('checkbox')[0] as Element)
+    expect(onSelectAll).toHaveBeenCalledWith(false, mockEmployees)
   })
 
   test('renders selected state for checked employees', () => {

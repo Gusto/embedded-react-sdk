@@ -14,7 +14,7 @@ export interface SelectEmployeesProps {
   selectedUuids: Set<string>
   searchValue: string
   onSelect: (item: EmployeeItem, checked: boolean) => void
-  onSelectAll?: (checked: boolean, visibleItems: EmployeeItem[]) => void
+  onSelectAll: (checked: boolean, visibleItems: EmployeeItem[]) => void
   onSearchChange: (value: string) => void
   onSearchClear: () => void
   onBack: () => void

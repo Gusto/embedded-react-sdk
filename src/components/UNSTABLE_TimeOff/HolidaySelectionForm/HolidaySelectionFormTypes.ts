@@ -13,7 +13,7 @@ interface HolidaySelectionFormSelectModeProps extends HolidaySelectionFormBasePr
   mode?: 'select'
   selectedHolidayUuids: Set<string>
   onSelectionChange: (item: HolidayItem, selected: boolean) => void
-  onSelectAll?: (selected: boolean, visibleItems: HolidayItem[]) => void
+  onSelectAll: (selected: boolean, visibleItems: HolidayItem[]) => void
   onContinue: () => void
   onBack: () => void
 }
