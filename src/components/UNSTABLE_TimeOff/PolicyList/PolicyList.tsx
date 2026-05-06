@@ -54,7 +54,7 @@ function Root({ companyId, onEvent }: PolicyListProps) {
   const { data: policiesData } = useTimeOffPoliciesGetAllSuspense({
     companyUuid: companyId,
   })
-  const timeOffPolicies = policiesData.timeOffPolicies ?? []
+  const timeOffPolicies = (policiesData.timeOffPolicies ?? []).filter(policy => policy.isActive)
 
   const holidayQuery = useHolidayPayPoliciesGet(
     { companyUuid: companyId },
