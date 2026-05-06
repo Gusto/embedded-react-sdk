@@ -44,8 +44,7 @@ export function EmployeeProfile({
   const [resolvedEmployeeId, setResolvedEmployeeId] = useState(employeeId)
 
   const employeeDetails = useEmployeeDetailsForm({
-    companyId,
-    employeeId: resolvedEmployeeId,
+    ...(resolvedEmployeeId ? { employeeId: resolvedEmployeeId } : { companyId }),
     withSelfOnboardingField: false,
     optionalFieldsToRequire: SELF_OPTIONAL_FIELDS,
     defaultValues: defaultValues?.employee,

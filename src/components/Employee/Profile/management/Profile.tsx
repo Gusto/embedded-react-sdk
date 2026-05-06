@@ -40,7 +40,6 @@ function ProfileRoot({ employeeId, className, dictionary, onEvent }: ProfileProp
   const Components = useComponentContext()
 
   const employeeDetails = useEmployeeDetailsForm({
-    companyId: '',
     employeeId,
     withSelfOnboardingField: false,
     optionalFieldsToRequire: {
