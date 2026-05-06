@@ -1,6 +1,6 @@
 import type React from 'react'
 import type { UseFormReturn, FieldValues } from 'react-hook-form'
-import type { FieldElementRegistry } from './form/fieldElementRegistry'
+import type { FieldElementRegistry } from '@/components/Common/Fields/hooks/fieldElementRegistry'
 import type { SDKError } from '@/types/sdkError'
 
 export interface FieldMetadata {

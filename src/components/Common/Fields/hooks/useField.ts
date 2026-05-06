@@ -1,7 +1,7 @@
 import type { Control, RegisterOptions } from 'react-hook-form'
 import { useController, useFormContext } from 'react-hook-form'
 import React, { useCallback, useMemo, type Ref } from 'react'
-import { useFieldElementRegistryContext } from '@/partner-hook-utils/form/fieldElementRegistry'
+import { useFieldElementRegistryContext } from './fieldElementRegistry'
 import { createMarkup } from '@/helpers/formattedStrings'
 import { useForkRef } from '@/hooks/useForkRef/useForkRef'
 

@@ -1,9 +1,9 @@
 import type { Control } from 'react-hook-form'
 import { useFormState } from 'react-hook-form'
 import type { FieldsMetadata, ValidationMessages, FormHookResult } from '../types'
-import type { FieldElementRegistry } from './fieldElementRegistry'
 import { useFormFieldsMetadataContext } from './FormFieldsMetadataContext'
 import { resolveFieldError } from './resolveFieldError'
+import type { FieldElementRegistry } from '@/components/Common/Fields/hooks/fieldElementRegistry'
 
 interface HookFieldResolution {
   metadata: FieldsMetadata

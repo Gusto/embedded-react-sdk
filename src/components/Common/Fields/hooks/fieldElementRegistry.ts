@@ -4,6 +4,10 @@ import { createContext, useContext, useRef } from 'react'
  * Per-form map of registered field `name` → DOM element. Populated by `useField`
  * via a ref callback, consumed by `composeSubmitHandler` to focus the visually
  * first invalid field across multiple composed forms.
+ *
+ * Lives here (next to `useField`) rather than in `partner-hook-utils` so the
+ * established module-boundary direction (`partner-hook-utils` → `Common`) is
+ * preserved. Partner code consumes it via re-exports from `partner-hook-utils/form`.
  */
 export interface FieldElementRegistry {
   register: (name: string, element: HTMLElement | null) => void

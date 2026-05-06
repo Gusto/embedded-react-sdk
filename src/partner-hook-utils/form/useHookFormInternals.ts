@@ -1,6 +1,6 @@
 import type { FieldValues, UseFormReturn } from 'react-hook-form'
 import type { HookFormInternals } from '../types'
-import { useFieldElementRegistry } from './fieldElementRegistry'
+import { useFieldElementRegistry } from '@/components/Common/Fields/hooks/fieldElementRegistry'
 
 /**
  * Builds the `hookFormInternals` object every SDK form hook returns. Creates a

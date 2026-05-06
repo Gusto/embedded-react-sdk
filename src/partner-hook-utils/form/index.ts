@@ -25,8 +25,11 @@ export type {
 export { composeSubmitHandler, type ComposeSubmitHandlerResult } from './composeSubmitHandler'
 export { createGetFormSubmissionValues } from './getFormSubmissionValues'
 export { useHookFormInternals } from './useHookFormInternals'
-export { useFieldElementRegistry, type FieldElementRegistry } from './fieldElementRegistry'
-export { FieldElementRegistryProvider } from './FieldElementRegistryProvider'
+export {
+  useFieldElementRegistry,
+  type FieldElementRegistry,
+} from '@/components/Common/Fields/hooks/fieldElementRegistry'
+export { FieldElementRegistryProvider } from '@/components/Common/Fields/hooks/FieldElementRegistryProvider'
 export {
   TextInputHookField,
   type TextInputHookFieldProps,

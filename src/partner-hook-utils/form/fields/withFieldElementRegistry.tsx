@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react'
-import { FieldElementRegistryProvider } from '../FieldElementRegistryProvider'
-import type { FieldElementRegistry } from '../fieldElementRegistry'
+import { FieldElementRegistryProvider } from '@/components/Common/Fields/hooks/FieldElementRegistryProvider'
+import type { FieldElementRegistry } from '@/components/Common/Fields/hooks/fieldElementRegistry'
 
 /**
  * Wraps a HookField's rendered output with `FieldElementRegistryProvider` when

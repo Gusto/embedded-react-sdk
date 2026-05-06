@@ -2,8 +2,8 @@ import { type ReactNode, useEffect } from 'react'
 import type { FieldPath, FieldValues } from 'react-hook-form'
 import { FormProvider } from 'react-hook-form'
 import type { FieldMetadata, FieldMetadataWithOptions, HookFormInternals } from '../types'
-import { FieldElementRegistryProvider } from './FieldElementRegistryProvider'
 import { FormFieldsMetadataProvider } from './FormFieldsMetadataProvider'
+import { FieldElementRegistryProvider } from '@/components/Common/Fields/hooks/FieldElementRegistryProvider'
 import type { SDKError, SDKFieldError } from '@/types/sdkError'
 
 function useSyncFieldErrors<
