@@ -143,9 +143,17 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
   const policy = policyResponse.timeOffPolicy
   if (!policy) throw new Error('Unexpected response: missing timeOffPolicy')
 
+  const policyEmployeeUuids = useMemo(
+    () => policy.employees.map(e => e.uuid).filter((uuid): uuid is string => Boolean(uuid)),
+    [policy.employees],
+  )
+
+  // Fetch by uuid rather than filtering by `terminated: false` — terminated
+  // employees can still be attached to a policy and we want their names/titles
+  // to render on the detail screen.
   const { data: employeesData } = useEmployeesListSuspense({
     companyId: policy.companyUuid,
-    terminated: false,
+    uuids: policyEmployeeUuids,
   })
 
   const [selectedTabId, setSelectedTabId] = useState('details')

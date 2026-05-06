@@ -40,16 +40,10 @@ vi.mock('@gusto/embedded-api/react-query/timeOffPoliciesGet', () => ({
   }),
 }))
 
+const mockUseEmployeesListSuspense = vi.fn()
+
 vi.mock('@gusto/embedded-api/react-query/employeesList', () => ({
-  useEmployeesListSuspense: () => ({
-    data: {
-      showEmployees: [
-        { uuid: 'emp-1', firstName: 'Alice', lastName: 'Smith', title: 'Engineer' },
-        { uuid: 'emp-2', firstName: 'Bob', lastName: 'Jones', title: 'Designer' },
-        { uuid: 'emp-3', firstName: 'Carol', lastName: 'Davis', title: null },
-      ],
-    },
-  }),
+  useEmployeesListSuspense: (args: unknown) => mockUseEmployeesListSuspense(args),
 }))
 
 vi.mock('@gusto/embedded-api/react-query/timeOffPoliciesRemoveEmployees', () => ({
@@ -74,6 +68,15 @@ describe('TimeOffPolicyDetail', () => {
     mockRemoveEmployees.mockResolvedValue({ timeOffPolicy: mockPolicyData })
     mockUpdateBalance.mockResolvedValue({ timeOffPolicy: mockPolicyData })
     mockPolicyData = { ...basePolicyData }
+    mockUseEmployeesListSuspense.mockReturnValue({
+      data: {
+        showEmployees: [
+          { uuid: 'emp-1', firstName: 'Alice', lastName: 'Smith', title: 'Engineer' },
+          { uuid: 'emp-2', firstName: 'Bob', lastName: 'Jones', title: 'Designer' },
+          { uuid: 'emp-3', firstName: 'Carol', lastName: 'Davis', title: null },
+        ],
+      },
+    })
   })
 
   function renderComponent(props = {}) {
@@ -126,6 +129,19 @@ describe('TimeOffPolicyDetail', () => {
         expect(screen.getByRole('button', { name: /add employee/i })).toBeInTheDocument()
       })
       expect(screen.getByRole('button', { name: /edit policy/i })).toBeInTheDocument()
+    })
+
+    it('fetches policy employees by uuid so terminated employees still appear', async () => {
+      renderComponent()
+
+      await waitFor(() => {
+        expect(mockUseEmployeesListSuspense).toHaveBeenCalled()
+      })
+      const args = mockUseEmployeesListSuspense.mock.calls[0]?.[0] as
+        | { uuids?: string[]; terminated?: boolean }
+        | undefined
+      expect(args?.uuids).toEqual(['emp-1', 'emp-2', 'emp-3'])
+      expect(args?.terminated).toBeUndefined()
     })
   })
 
