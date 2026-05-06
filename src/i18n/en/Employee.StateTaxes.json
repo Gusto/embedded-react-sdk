@@ -1,4 +1,7 @@
 {
   "stateTaxesTitle": "{{state}} Tax Requirements",
-  "submitCta": "Continue"
+  "submitCta": "Continue",
+  "validations": {
+    "required": "This field is a required field. Please enter a value."
+  }
 }

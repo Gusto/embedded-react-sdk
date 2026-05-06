@@ -2082,6 +2082,9 @@ export interface EmployeeSplitPaycheck{
 export interface EmployeeStateTaxes{
 "stateTaxesTitle":string;
 "submitCta":string;
+"validations":{
+"required":string;
+};
 };
 export interface EmployeeTaxes{
 "additionalWithholding":string;

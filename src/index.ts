@@ -202,6 +202,38 @@ export {
   createFederalTaxesSchema,
   FILING_STATUS_VALUES,
 } from '@/components/Employee/FederalTaxes/shared/useFederalTaxesForm'
+export {
+  useEmployeeStateTaxesForm,
+  createEmployeeStateTaxesSchema,
+  EmployeeStateTaxesErrorCodes,
+  createStateFields,
+  useStateFields,
+  getQuestionVariant,
+} from '@/components/Employee/StateTaxes/shared'
+export type {
+  UseEmployeeStateTaxesFormProps,
+  UseEmployeeStateTaxesFormResult,
+  UseEmployeeStateTaxesFormReady,
+  EmployeeStateTaxesFieldsMetadata,
+  EmployeeStateTaxesFormFields,
+  EmployeeStateTaxesErrorCode,
+  EmployeeStateTaxesFormData,
+  EmployeeStateTaxesFormOutputs,
+  EmployeeStateTaxesSchemaOptions,
+  EmployeeStateTaxesQuestionMeta,
+  EmployeeStateTaxesMetadataConfig,
+  StateTaxValue,
+  StateTaxQuestionVariant,
+  StateTaxFieldsGroup,
+  StateTaxQuestionFieldEntry,
+  CreateStateFieldsOptions,
+  SelectStateTaxFieldProps,
+  RadioStateTaxFieldProps,
+  TextStateTaxFieldProps,
+  NumberStateTaxFieldProps,
+  CurrencyStateTaxFieldProps,
+  DateStateTaxFieldProps,
+} from '@/components/Employee/StateTaxes/shared'
 export type {
   FederalTaxesOptionalFieldsToRequire,
   UseFederalTaxesFormProps,
