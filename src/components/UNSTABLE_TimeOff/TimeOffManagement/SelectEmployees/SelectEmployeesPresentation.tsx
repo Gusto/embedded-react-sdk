@@ -14,6 +14,7 @@ export function SelectEmployeesPresentation({
   selectedUuids,
   searchValue,
   onSelect,
+  onSelectAll,
   onSearchChange,
   onSearchClear,
   onBack,
@@ -51,6 +52,7 @@ export function SelectEmployeesPresentation({
         onSearchClear={onSearchClear}
         selectionMode="multiple"
         onSelect={onSelect}
+        onSelectAll={onSelectAll}
         getIsItemSelected={item => selectedUuids.has(item.uuid)}
         isFetching={isFetching}
         pagination={pagination}

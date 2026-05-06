@@ -74,6 +74,7 @@ interface TimeOffPolicyDetailPresentationBaseProps {
     | 'emptyState'
     | 'selectionMode'
     | 'onSelect'
+    | 'onSelectAll'
     | 'getIsItemSelected'
     | 'footer'
   >

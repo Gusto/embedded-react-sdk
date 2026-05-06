@@ -48,6 +48,17 @@ function Root({ companyId }: { companyId: string }) {
     })
   }, [])
 
+  const handleSelectAll = useCallback((selected: boolean, visibleItems: HolidayItem[]) => {
+    setSelectedUuids(prev => {
+      const next = new Set(prev)
+      for (const item of visibleItems) {
+        if (selected) next.add(item.uuid)
+        else next.delete(item.uuid)
+      }
+      return next
+    })
+  }, [])
+
   const handleContinue = useCallback(async () => {
     await baseSubmitHandler({}, async () => {
       await createPolicy({
@@ -71,6 +82,7 @@ function Root({ companyId }: { companyId: string }) {
       holidays={holidays}
       selectedHolidayUuids={selectedUuids}
       onSelectionChange={handleSelectionChange}
+      onSelectAll={handleSelectAll}
       onContinue={handleContinue}
       onBack={handleBack}
     />

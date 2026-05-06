@@ -62,6 +62,7 @@ export function SelectEmployeesTimeOff({
     pagination,
     isFetching,
     handleSelect,
+    handleSelectAll,
     handleSearchChange,
     handleSearchClear,
   } = useSelectEmployeesData(companyId)
@@ -82,6 +83,20 @@ export function SelectEmployeesTimeOff({
       handleSelect(item, checked)
     },
     [handleSelect],
+  )
+
+  const handleSelectAllWithCapture = useCallback(
+    (checked: boolean, visibleItems: EmployeeItem[]) => {
+      for (const item of visibleItems) {
+        if (checked) {
+          selectedEmployeesRef.current.set(item.uuid, item)
+        } else {
+          selectedEmployeesRef.current.delete(item.uuid)
+        }
+      }
+      handleSelectAll(checked, visibleItems)
+    },
+    [handleSelectAll],
   )
 
   const carryOverBalances = useMemo(
@@ -153,6 +168,7 @@ export function SelectEmployeesTimeOff({
       selectedUuids={selectedUuids}
       searchValue={searchValue}
       onSelect={handleSelectWithCapture}
+      onSelectAll={handleSelectAllWithCapture}
       onSearchChange={handleSearchChange}
       onSearchClear={handleSearchClear}
       onBack={handleBack}
