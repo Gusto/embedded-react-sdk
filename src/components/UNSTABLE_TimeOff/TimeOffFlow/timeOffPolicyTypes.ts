@@ -5,7 +5,7 @@ import type { PolicyType } from '@gusto/embedded-api/models/components/timeoffpo
 // Holiday is a distinct concept routed through @gusto/embedded-api's
 // holidayPayPolicies* hooks against a different endpoint family.
 export type CreatableTimeOffPolicyType = Extract<PolicyType, 'sick' | 'vacation'>
-export type TimeOffPolicyType = CreatableTimeOffPolicyType | 'holiday'
+export type TimeOffPolicyType = PolicyType | 'holiday'
 
 export function assertCreatablePolicyType(
   policyType: TimeOffPolicyType,

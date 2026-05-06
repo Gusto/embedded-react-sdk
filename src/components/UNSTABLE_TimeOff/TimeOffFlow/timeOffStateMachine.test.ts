@@ -118,6 +118,22 @@ describe('timeOffStateMachine', () => {
       expect(service.context.policyType).toBe('holiday')
       expect(service.context.alerts).toBeUndefined()
     })
+
+    it.each(['custom', 'bereavement', 'parental_leave', 'jury_duty', 'volunteer'])(
+      'transitions to viewTimeOffPolicyDetail on TIME_OFF_VIEW_POLICY with non-holiday type %s',
+      policyType => {
+        const service = createService()
+
+        send(service, componentEvents.TIME_OFF_VIEW_POLICY, {
+          policyId: `policy-${policyType}`,
+          policyType,
+        })
+
+        expect(service.machine.current).toBe('viewTimeOffPolicyDetail')
+        expect(service.context.policyId).toBe(`policy-${policyType}`)
+        expect(service.context.policyType).toBe(policyType)
+      },
+    )
   })
 
   describe('policyTypeSelector state', () => {

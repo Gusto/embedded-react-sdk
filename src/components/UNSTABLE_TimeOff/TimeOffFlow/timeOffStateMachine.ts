@@ -13,13 +13,14 @@ import {
   type TimeOffFlowContextInterface,
   type TimeOffFlowAlert,
 } from './TimeOffFlowComponents'
+import type { TimeOffPolicyType } from './timeOffPolicyTypes'
 import { componentEvents } from '@/shared/constants'
 import type { MachineTransition } from '@/types/Helpers'
 
 type PolicyTypePayload = { policyType: 'sick' | 'vacation' | 'holiday' }
 type PolicyCreatedPayload = { policyId: string; accrualMethod?: string }
 type ErrorPayload = { alert?: TimeOffFlowAlert }
-type ViewPolicyPayload = { policyId: string; policyType: 'sick' | 'vacation' | 'holiday' }
+type ViewPolicyPayload = { policyId: string; policyType: TimeOffPolicyType }
 type PolicyIdPayload = { policyId: string }
 
 function isSickOrVacation(_ctx: TimeOffFlowContextInterface, ev: { payload: PolicyTypePayload }) {
@@ -30,11 +31,8 @@ function isHoliday(_ctx: TimeOffFlowContextInterface, ev: { payload: PolicyTypeP
   return ev.payload.policyType === 'holiday'
 }
 
-function isSickOrVacationView(
-  _ctx: TimeOffFlowContextInterface,
-  ev: { payload: ViewPolicyPayload },
-) {
-  return ev.payload.policyType === 'sick' || ev.payload.policyType === 'vacation'
+function isNonHolidayView(_ctx: TimeOffFlowContextInterface, ev: { payload: ViewPolicyPayload }) {
+  return ev.payload.policyType !== 'holiday'
 }
 
 function isHolidayView(_ctx: TimeOffFlowContextInterface, ev: { payload: ViewPolicyPayload }) {
@@ -88,7 +86,7 @@ export const timeOffMachine = {
     transition(
       componentEvents.TIME_OFF_VIEW_POLICY,
       'viewTimeOffPolicyDetail',
-      guard(isSickOrVacationView),
+      guard(isNonHolidayView),
       reduce(
         (
           ctx: TimeOffFlowContextInterface,
