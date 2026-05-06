@@ -21,6 +21,7 @@ import { useBase } from '@/components/Base/useBase'
 import { componentEvents } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
+import { isEditableTimeOffPolicyType } from '@/components/UNSTABLE_TimeOff/TimeOffFlow/timeOffPolicyTypes'
 import EditIcon from '@/assets/icons/edit-02.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
@@ -142,6 +143,8 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
 
   const policy = policyResponse.timeOffPolicy
   if (!policy) throw new Error('Unexpected response: missing timeOffPolicy')
+
+  const isEditable = isEditableTimeOffPolicyType(policy.policyType)
 
   const { data: employeesData } = useEmployeesListSuspense({
     companyId: policy.companyUuid,
@@ -265,8 +268,9 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
     [selectedEmployeeUuids],
   )
 
-  const actions = useMemo(
-    () => [
+  const actions = useMemo(() => {
+    if (!isEditable) return undefined
+    return [
       <Button
         key="add"
         variant="secondary"
@@ -287,9 +291,8 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
       >
         {t('editPolicyCta')}
       </Button>,
-    ],
-    [Button, onEvent, policyId, t],
-  )
+    ]
+  }, [Button, onEvent, policyId, t, isEditable])
 
   const itemMenu = useCallback(
     (employee: TimeOffPolicyDetailEmployee) => {
@@ -345,9 +348,11 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
       : {
           policyDetails,
           policySettings: policySettings!,
-          onChangeSettings: () => {
-            onEvent(componentEvents.TIME_OFF_CHANGE_SETTINGS, { policyId })
-          },
+          onChangeSettings: isEditable
+            ? () => {
+                onEvent(componentEvents.TIME_OFF_CHANGE_SETTINGS, { policyId })
+              }
+            : undefined,
         }
 
   return (
@@ -370,12 +375,16 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
           onSearchClear: () => {
             setSearchValue('')
           },
-          itemMenu,
-          selectionMode: 'multiple',
-          onSelect: handleSelect,
-          onSelectAll: handleSelectAll,
-          getIsItemSelected,
-          footer,
+          ...(isEditable
+            ? {
+                itemMenu,
+                selectionMode: 'multiple',
+                onSelect: handleSelect,
+                onSelectAll: handleSelectAll,
+                getIsItemSelected,
+                footer,
+              }
+            : {}),
         }}
         removeDialog={{
           isOpen: removeTarget !== null,
