@@ -13,8 +13,12 @@
   display: flex;
   flex-wrap: wrap;
   gap: toRem(16) toRem(20);
-  align-items: flex-start;
+  align-items: center;
   width: 100%;
+}
+
+.pageHeader.hasSubtitle {
+  align-items: flex-start;
 }
 
 .titleGroup {
