@@ -17,6 +17,19 @@ export function isEditableTimeOffPolicyType(
   return EDITABLE_TIME_OFF_POLICY_TYPES.includes(policyType as EditableTimeOffPolicyType)
 }
 
+// Subset of types the SDK surfaces from the time_off_policies endpoint.
+// Holiday lives on a separate endpoint and is merged into the list by the caller.
+export const LISTED_TIME_OFF_POLICY_TYPES = [
+  'sick',
+  'vacation',
+] as const satisfies readonly PolicyType[]
+
+export function isListedTimeOffPolicyType(
+  policyType: PolicyType | null | undefined,
+): policyType is CreatableTimeOffPolicyType {
+  return LISTED_TIME_OFF_POLICY_TYPES.includes(policyType as CreatableTimeOffPolicyType)
+}
+
 export function assertCreatablePolicyType(
   policyType: TimeOffPolicyType,
 ): asserts policyType is CreatableTimeOffPolicyType {

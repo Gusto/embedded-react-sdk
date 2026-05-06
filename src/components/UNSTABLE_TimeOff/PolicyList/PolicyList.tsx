@@ -15,6 +15,7 @@ import { useHolidayPayPoliciesDeleteMutation } from '@gusto/embedded-api/react-q
 import type { TimeOffPolicy } from '@gusto/embedded-api/models/components/timeoffpolicy'
 import { PolicyListPresentation } from './PolicyListPresentation'
 import type { PolicyListItem } from './PolicyListTypes'
+import { isListedTimeOffPolicyType } from '@/components/UNSTABLE_TimeOff/TimeOffFlow/timeOffPolicyTypes'
 import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/components/Base'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
@@ -53,7 +54,9 @@ function Root({ companyId, onEvent }: PolicyListProps) {
   const { data: policiesData } = useTimeOffPoliciesGetAllSuspense({
     companyUuid: companyId,
   })
-  const timeOffPolicies = (policiesData.timeOffPolicies ?? []).filter(policy => policy.isActive)
+  const timeOffPolicies = (policiesData.timeOffPolicies ?? []).filter(
+    policy => policy.isActive && isListedTimeOffPolicyType(policy.policyType),
+  )
 
   // Holiday pay policy is auxiliary to the main time-off list; never crash the
   // boundary on its failure. composeErrorHandler below surfaces the error as
