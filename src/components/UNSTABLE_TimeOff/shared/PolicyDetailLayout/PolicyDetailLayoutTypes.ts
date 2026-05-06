@@ -44,8 +44,10 @@ export interface PolicyDetailLayoutProps<T extends EmployeeTableItem> {
     | 'isFetching'
     | 'emptyState'
     | 'additionalColumns'
+    | 'hideJobTitle'
     | 'selectionMode'
     | 'onSelect'
+    | 'onSelectAll'
     | 'getIsItemSelected'
     | 'footer'
   >

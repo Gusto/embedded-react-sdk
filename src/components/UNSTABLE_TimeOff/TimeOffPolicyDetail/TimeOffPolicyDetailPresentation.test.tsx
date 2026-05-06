@@ -247,6 +247,51 @@ describe('TimeOffPolicyDetailPresentation', () => {
       })
       expect(screen.getByText('-')).toBeInTheDocument()
     })
+
+    it('selects all visible employees when the header checkbox is toggled on', async () => {
+      const onSelectAll = vi.fn()
+      const user = userEvent.setup()
+      renderComponent({
+        selectedTabId: 'employees',
+        employees: {
+          data: mockEmployees,
+          searchValue: '',
+          onSearchChange,
+          onSearchClear,
+          selectionMode: 'multiple' as const,
+          onSelect,
+          onSelectAll,
+          getIsItemSelected,
+        },
+      })
+
+      await waitFor(() => {
+        expect(screen.getByText('Alejandro Kuhic')).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('checkbox', { name: 'Select all rows' }))
+
+      expect(onSelectAll).toHaveBeenCalledTimes(1)
+      const [checked, items] = onSelectAll.mock.calls[0]!
+      expect(checked).toBe(true)
+      expect(items).toEqual(mockEmployees)
+    })
+
+    it('hides Balance and Job title columns for unlimited policies', async () => {
+      renderComponent({
+        policyDetails: unlimitedPolicyDetails,
+        policySettings: undefined,
+        selectedTabId: 'employees',
+      })
+
+      await waitFor(() => {
+        expect(screen.getByText('Alejandro Kuhic')).toBeInTheDocument()
+      })
+      expect(screen.queryByText('Balance (hrs)')).not.toBeInTheDocument()
+      expect(screen.queryByText('Job title')).not.toBeInTheDocument()
+      expect(screen.queryByText('Marketing Director')).not.toBeInTheDocument()
+      expect(screen.queryByText('80')).not.toBeInTheDocument()
+    })
   })
 
   describe('success alert', () => {

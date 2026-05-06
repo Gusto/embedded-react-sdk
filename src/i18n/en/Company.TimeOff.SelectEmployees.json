@@ -2,9 +2,19 @@
   "title": "Add employees to policy",
   "description": "Select the employees you want to add to this policy.",
   "holidayDescription": "Select the employees you want to add to this holiday pay policy.",
-  "reassignmentWarning": "Employees can only be enrolled in one time-off policy. Adding them here will remove them from their current policy.",
+  "reassignmentWarning": "Any employees currently assigned to another {{policyType}} policy will be moved to this policy.",
+  "policyTypeLabel_vacation": "paid time off",
+  "policyTypeLabel_sick": "sick leave",
   "departmentColumn": "Department",
   "startingBalanceColumn": "Starting balance (hrs)",
   "backCta": "Back",
-  "continueCta": "Continue"
+  "continueCta": "Continue",
+  "removeConfirmDialog": {
+    "title_one": "Remove {{count}} employee from this policy?",
+    "title_other": "Remove {{count}} employees from this policy?",
+    "description_one": "This employee's balance for this policy will be removed. They can be re-added later.",
+    "description_other": "These employees' balances for this policy will be removed. They can be re-added later.",
+    "confirmCta": "Remove and save",
+    "cancelCta": "Cancel"
+  }
 }

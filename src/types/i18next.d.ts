@@ -577,10 +577,20 @@ export interface CompanyTimeOffSelectEmployees{
 "description":string;
 "holidayDescription":string;
 "reassignmentWarning":string;
+"policyTypeLabel_vacation":string;
+"policyTypeLabel_sick":string;
 "departmentColumn":string;
 "startingBalanceColumn":string;
 "backCta":string;
 "continueCta":string;
+"removeConfirmDialog":{
+"title_one":string;
+"title_other":string;
+"description_one":string;
+"description_other":string;
+"confirmCta":string;
+"cancelCta":string;
+};
 };
 export interface CompanyTimeOffSelectPolicyType{
 "title":string;
@@ -637,6 +647,10 @@ export interface CompanyTimeOffTimeOffPolicies{
 export interface CompanyTimeOffTimeOffPolicyDetails{
 "breadcrumb":string;
 "addEmployeeCta":string;
+"subtitle":{
+"vacation":string;
+"sick":string;
+};
 "tabs":{
 "employees":string;
 "policyDetails":string;
