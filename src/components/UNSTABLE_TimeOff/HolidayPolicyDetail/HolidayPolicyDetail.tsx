@@ -61,7 +61,14 @@ function Root({ companyId, defaultTab = 'holidays' }: HolidayPolicyDetailProps) 
 
   const removeEmployeesMutation = useHolidayPayPoliciesRemoveEmployeesMutation()
 
-  const holidays = useMemo(() => getDefaultHolidayItems(t), [t])
+  const holidays = useMemo(() => {
+    const allHolidays = getDefaultHolidayItems(t)
+    const { federalHolidays } = holidayPayPolicy
+    return allHolidays.filter(holiday => {
+      const holidayData = federalHolidays[holiday.uuid as keyof typeof federalHolidays]
+      return holidayData?.selected === true
+    })
+  }, [t, holidayPayPolicy])
 
   const policyEmployeeUuids = useMemo(
     () => new Set(holidayPayPolicy.employees.map(e => e.uuid)),

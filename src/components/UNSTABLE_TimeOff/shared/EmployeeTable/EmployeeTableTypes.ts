@@ -13,6 +13,7 @@ export interface EmployeeTableProps<T extends EmployeeTableItem> {
   data: T[]
   label?: string
   additionalColumns?: useDataViewProp<T>['columns']
+  hideJobTitle?: boolean
 
   searchValue: string
   onSearchChange: (value: string) => void

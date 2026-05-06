@@ -21,6 +21,7 @@ export interface SelectEmployeesPresentationProps {
   onBack: () => void
   onContinue: () => void
   showReassignmentWarning: boolean
+  policyTypeLabel?: string
   balances?: Record<string, string>
   onBalanceChange?: (uuid: string, value: string) => void
   pagination?: PaginationControlProps

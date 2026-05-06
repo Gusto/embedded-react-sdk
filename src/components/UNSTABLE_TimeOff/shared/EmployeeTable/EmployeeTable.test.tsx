@@ -83,6 +83,16 @@ describe('EmployeeTable', () => {
     expect(screen.getByText('Designer')).toBeInTheDocument()
   })
 
+  test('hides Job title column when hideJobTitle is true', () => {
+    renderEmployeeTable({ hideJobTitle: true })
+
+    expect(screen.getByText('name')).toBeInTheDocument()
+    expect(screen.queryByText('jobTitle')).not.toBeInTheDocument()
+    expect(screen.getByText('Alice Smith')).toBeInTheDocument()
+    expect(screen.queryByText('Engineer')).not.toBeInTheDocument()
+    expect(screen.queryByText('Designer')).not.toBeInTheDocument()
+  })
+
   test('renders additional columns when provided', () => {
     renderEmployeeTable({
       additionalColumns: [{ key: 'department' as keyof TestEmployee, title: 'Department' }],
