@@ -104,7 +104,7 @@ describe('TimeOffPolicyDetail', () => {
       renderComponent()
 
       await waitFor(() => {
-        expect(screen.getByText('Settings')).toBeInTheDocument()
+        expect(screen.getByRole('heading', { name: 'Settings' })).toBeInTheDocument()
       })
       expect(screen.getByText('240 hour(s)')).toBeInTheDocument()
     })
@@ -116,7 +116,7 @@ describe('TimeOffPolicyDetail', () => {
       await waitFor(() => {
         expect(screen.getByText('Details')).toBeInTheDocument()
       })
-      expect(screen.queryByText('Settings')).not.toBeInTheDocument()
+      expect(screen.queryByRole('heading', { name: 'Settings' })).not.toBeInTheDocument()
     })
 
     it('renders action buttons', async () => {
