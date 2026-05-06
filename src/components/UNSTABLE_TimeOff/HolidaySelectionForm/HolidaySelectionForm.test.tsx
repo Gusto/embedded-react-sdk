@@ -193,4 +193,103 @@ describe('HolidaySelectionForm', () => {
       })
     })
   })
+
+  describe('edit mode', () => {
+    const editProps = { ...defaultProps, mode: 'edit' as const }
+
+    const existingPolicy = {
+      version: 'policy-version-1',
+      company_uuid: 'company-123',
+      federal_holidays: {
+        new_years_day: { selected: true },
+        mlk_day: { selected: false },
+        presidents_day: { selected: true },
+        memorial_day: { selected: false },
+        juneteenth: { selected: false },
+        independence_day: { selected: true },
+        labor_day: { selected: false },
+        columbus_day: { selected: false },
+        veterans_day: { selected: false },
+        thanksgiving: { selected: true },
+        christmas_day: { selected: true },
+      },
+      employees: [],
+    }
+
+    beforeEach(() => {
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:companyUuid/holiday_pay_policy`, () => {
+          return HttpResponse.json(existingPolicy)
+        }),
+      )
+    })
+
+    it('prefills checkboxes from existing policy selections', async () => {
+      renderWithProviders(<HolidaySelectionForm {...editProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText("New Year's Day")).toBeInTheDocument()
+      })
+
+      const headerCheckbox = screen.getByRole('checkbox', { name: 'Select all rows' })
+      const rowCheckboxes = screen
+        .getAllByRole('checkbox')
+        .filter(cb => cb !== headerCheckbox) as HTMLInputElement[]
+
+      const checkedCount = rowCheckboxes.filter(cb => cb.checked).length
+      expect(checkedCount).toBe(5)
+    })
+
+    it('calls PUT and emits HOLIDAY_SELECTION_EDIT_DONE on Continue', async () => {
+      let putCalled = false
+      let putBody: Record<string, unknown> | null = null
+      server.use(
+        http.put(
+          `${API_BASE_URL}/v1/companies/:companyUuid/holiday_pay_policy`,
+          async ({ request }) => {
+            putCalled = true
+            putBody = (await request.json()) as Record<string, unknown>
+            return HttpResponse.json(existingPolicy)
+          },
+        ),
+      )
+
+      renderWithProviders(<HolidaySelectionForm {...editProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Continue' })).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: 'Continue' }))
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(componentEvents.TIME_OFF_HOLIDAY_SELECTION_EDIT_DONE)
+      })
+
+      expect(putCalled).toBe(true)
+      expect(putBody).toMatchObject({ version: 'policy-version-1' })
+    })
+
+    it('does not emit the create-flow DONE event in edit mode', async () => {
+      server.use(
+        http.put(`${API_BASE_URL}/v1/companies/:companyUuid/holiday_pay_policy`, () => {
+          return HttpResponse.json(existingPolicy)
+        }),
+      )
+
+      renderWithProviders(<HolidaySelectionForm {...editProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Continue' })).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: 'Continue' }))
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(componentEvents.TIME_OFF_HOLIDAY_SELECTION_EDIT_DONE)
+      })
+
+      expect(onEvent).not.toHaveBeenCalledWith(componentEvents.TIME_OFF_HOLIDAY_SELECTION_DONE)
+    })
+  })
 })
