@@ -1,4 +1,12 @@
-import { useState, useEffect, useRef, useCallback, useMemo, type ReactNode } from 'react'
+import {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+  type KeyboardEvent as ReactKeyboardEvent,
+  type ReactNode,
+} from 'react'
 import type { EntityIds } from './useEntities'
 import type { TokenStatus } from './useDemoManager'
 import type { EntityCatalog } from './useEntityCatalog'
@@ -101,9 +109,12 @@ function EntityCombobox({
 }: EntityComboboxProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [query, setQuery] = useState('')
+  const [activeIndex, setActiveIndex] = useState(0)
   const wrapperRef = useRef<HTMLDivElement | null>(null)
   const inputRef = useRef<HTMLInputElement | null>(null)
+  const optionRefs = useRef<Array<HTMLLIElement | null>>([])
   const inputId = `entity-${label.toLowerCase().replace(/\s+/g, '-')}-input`
+  const optionId = (index: number) => `${inputId}-option-${index}`
 
   useEffect(() => {
     if (!isOpen) return
@@ -129,6 +140,24 @@ function EntityCombobox({
   const matched = useMemo(() => options.find(option => option.value === value), [options, value])
   const filtered = useMemo(() => filterOptions(options, query), [options, query])
 
+  useEffect(() => {
+    if (!isOpen) return
+    const selectedIdx = filtered.findIndex(option => option.value === value)
+    setActiveIndex(selectedIdx >= 0 ? selectedIdx : 0)
+  }, [isOpen]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    setActiveIndex(idx => {
+      if (filtered.length === 0) return 0
+      return Math.min(Math.max(idx, 0), filtered.length - 1)
+    })
+  }, [filtered.length])
+
+  useEffect(() => {
+    if (!isOpen) return
+    optionRefs.current[activeIndex]?.scrollIntoView({ block: 'nearest' })
+  }, [activeIndex, isOpen])
+
   if (useFallback) {
     return (
       <div className={styles.field}>
@@ -152,6 +181,7 @@ function EntityCombobox({
   const handleInputChange = (next: string) => {
     setQuery(next)
     onChange(next)
+    setActiveIndex(0)
     if (!isOpen) setIsOpen(true)
   }
 
@@ -160,6 +190,37 @@ function EntityCombobox({
     setQuery('')
     setIsOpen(false)
     inputRef.current?.blur()
+  }
+
+  const handleKeyDown = (e: ReactKeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault()
+      if (!isOpen) {
+        setIsOpen(true)
+        return
+      }
+      if (filtered.length === 0) return
+      setActiveIndex(idx => (idx + 1) % filtered.length)
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault()
+      if (!isOpen) {
+        setIsOpen(true)
+        return
+      }
+      if (filtered.length === 0) return
+      setActiveIndex(idx => (idx - 1 + filtered.length) % filtered.length)
+    } else if (e.key === 'Enter') {
+      if (isOpen && filtered[activeIndex]) {
+        e.preventDefault()
+        handleSelect(filtered[activeIndex])
+      }
+    } else if (e.key === 'Home' && isOpen) {
+      e.preventDefault()
+      setActiveIndex(0)
+    } else if (e.key === 'End' && isOpen) {
+      e.preventDefault()
+      setActiveIndex(Math.max(filtered.length - 1, 0))
+    }
   }
 
   return (
@@ -183,9 +244,13 @@ function EntityCombobox({
               onChange={e => {
                 handleInputChange(e.target.value)
               }}
+              onKeyDown={handleKeyDown}
               role="combobox"
               aria-expanded={isOpen}
               aria-controls={`${inputId}-listbox`}
+              aria-activedescendant={
+                isOpen && filtered[activeIndex] ? optionId(activeIndex) : undefined
+              }
               aria-autocomplete="list"
               autoComplete="off"
               spellCheck={false}
@@ -220,15 +285,27 @@ function EntityCombobox({
                   {options.length === 0 ? 'No options available' : 'No matches'}
                 </li>
               ) : (
-                filtered.map(option => {
+                filtered.map((option, index) => {
                   const isSelected = option.value === value
+                  const isActive = index === activeIndex
                   return (
-                    <li key={option.value} role="option" aria-selected={isSelected}>
+                    <li
+                      key={option.value}
+                      id={optionId(index)}
+                      ref={el => {
+                        optionRefs.current[index] = el
+                      }}
+                      role="option"
+                      aria-selected={isSelected}
+                    >
                       <button
                         type="button"
-                        className={`${styles.selectOption} ${isSelected ? styles.selectOptionActive : ''}`}
+                        className={`${styles.selectOption} ${isActive ? styles.selectOptionActive : ''}`}
                         onMouseDown={e => {
                           e.preventDefault()
+                        }}
+                        onMouseEnter={() => {
+                          setActiveIndex(index)
                         }}
                         onClick={() => {
                           handleSelect(option)
