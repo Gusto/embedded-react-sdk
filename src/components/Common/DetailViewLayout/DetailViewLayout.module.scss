@@ -28,3 +28,11 @@
   flex: 1 0 0;
   min-width: toRem(320);
 }
+
+.actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: toRem(12);
+}

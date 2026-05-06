@@ -1,6 +1,10 @@
 {
   "breadcrumb": "Time off policies",
   "addEmployeeCta": "Add employee",
+  "subtitle": {
+    "vacation": "Paid time off policy",
+    "sick": "Sick leave policy"
+  },
   "tabs": {
     "employees": "Employees",
     "policyDetails": "Policy details"
