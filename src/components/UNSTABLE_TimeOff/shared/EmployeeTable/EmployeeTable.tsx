@@ -20,6 +20,7 @@ export function EmployeeTable<T extends EmployeeTableItem>({
   searchPlaceholder,
   selectionMode,
   onSelect,
+  onSelectAll,
   getIsItemSelected,
   itemMenu,
   pagination,
@@ -92,7 +93,7 @@ export function EmployeeTable<T extends EmployeeTableItem>({
     isFetching,
     emptyState: resolvedEmptyState,
     footer,
-    ...(onSelect && { selectionMode, onSelect, getIsItemSelected }),
+    ...(onSelect && { selectionMode, onSelect, onSelectAll, getIsItemSelected }),
   } as useDataViewProp<T>)
 
   return (

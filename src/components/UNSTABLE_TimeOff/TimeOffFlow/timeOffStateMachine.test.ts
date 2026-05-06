@@ -311,7 +311,7 @@ describe('timeOffStateMachine', () => {
     })
   })
 
-  describe('viewTimeOffPolicyDetail edit transitions', () => {
+  describe('viewTimeOffPolicyDetail state', () => {
     function toViewPolicyDetail(service: ReturnType<typeof createService>) {
       send(service, componentEvents.TIME_OFF_VIEW_POLICY, {
         policyId: 'policy-existing',
@@ -319,6 +319,32 @@ describe('timeOffStateMachine', () => {
       })
       expect(service.machine.current).toBe('viewTimeOffPolicyDetail')
     }
+
+    it('transitions to addEmployeesToPolicy on TIME_OFF_ADD_EMPLOYEES_TO_POLICY with policyId', () => {
+      const service = createService()
+      toViewPolicyDetail(service)
+
+      send(service, componentEvents.TIME_OFF_ADD_EMPLOYEES_TO_POLICY, {
+        policyId: 'policy-existing',
+      })
+
+      expect(service.machine.current).toBe('addEmployeesToPolicy')
+      expect(service.context.policyId).toBe('policy-existing')
+      expect(service.context.alerts).toBeUndefined()
+    })
+
+    it('returns to viewTimeOffPolicyDetail with the same policyId after adding employees', () => {
+      const service = createService()
+      toViewPolicyDetail(service)
+      send(service, componentEvents.TIME_OFF_ADD_EMPLOYEES_TO_POLICY, {
+        policyId: 'policy-existing',
+      })
+
+      send(service, componentEvents.TIME_OFF_ADD_EMPLOYEES_DONE)
+
+      expect(service.machine.current).toBe('viewTimeOffPolicyDetail')
+      expect(service.context.policyId).toBe('policy-existing')
+    })
 
     it('transitions to policyDetailsForm on TIME_OFF_EDIT_POLICY with policyId', () => {
       const service = createService()
@@ -328,6 +354,7 @@ describe('timeOffStateMachine', () => {
 
       expect(service.machine.current).toBe('policyDetailsForm')
       expect(service.context.policyId).toBe('policy-existing')
+      expect(service.context.alerts).toBeUndefined()
     })
 
     it('transitions to editPolicySettings on TIME_OFF_CHANGE_SETTINGS with policyId', () => {

@@ -277,6 +277,21 @@ export const timeOffMachine = {
 
   viewTimeOffPolicyDetail: state<MachineTransition>(
     transition(
+      componentEvents.TIME_OFF_ADD_EMPLOYEES_TO_POLICY,
+      'addEmployeesToPolicy',
+      reduce(
+        (
+          ctx: TimeOffFlowContextInterface,
+          ev: { payload: PolicyIdPayload },
+        ): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: AddEmployeesToPolicyContextual,
+          policyId: ev.payload.policyId,
+          alerts: undefined,
+        }),
+      ),
+    ),
+    transition(
       componentEvents.TIME_OFF_EDIT_POLICY,
       'policyDetailsForm',
       reduce(

@@ -1,6 +1,16 @@
-import { useState, useEffect, useRef } from 'react'
+import {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+  type KeyboardEvent as ReactKeyboardEvent,
+  type ReactNode,
+} from 'react'
 import type { EntityIds } from './useEntities'
 import type { TokenStatus } from './useDemoManager'
+import type { EntityCatalog } from './useEntityCatalog'
+import type { EntityOption } from './entityFormatters'
 import styles from './DemoSettingsPanel.module.scss'
 
 interface DemoSettingsPanelProps {
@@ -15,16 +25,315 @@ interface DemoSettingsPanelProps {
   proxyMode: string
   onCreateNewDemo: (demoType: string) => Promise<unknown>
   onRefreshToken: () => Promise<unknown>
+  entityCatalog: EntityCatalog
 }
 
-const ENTITY_FIELDS: { key: keyof EntityIds; label: string }[] = [
-  { key: 'companyId', label: 'Company ID' },
-  { key: 'employeeId', label: 'Employee ID' },
-  { key: 'contractorId', label: 'Contractor ID' },
-  { key: 'payrollId', label: 'Payroll ID' },
+const TEXT_FIELDS: { key: keyof EntityIds; label: string }[] = [
   { key: 'requestId', label: 'Request ID' },
   { key: 'formId', label: 'Form ID' },
 ]
+
+interface EntityComboboxProps {
+  label: string
+  value: string
+  options: EntityOption[]
+  isLoading: boolean
+  placeholder: string
+  useFallback: boolean
+  onChange: (value: string) => void
+  trailing?: ReactNode
+}
+
+function filterOptions(options: EntityOption[], query: string): EntityOption[] {
+  const trimmed = query.trim().toLowerCase()
+  if (!trimmed) return options
+  return options.filter(
+    option =>
+      option.primary.toLowerCase().includes(trimmed) ||
+      option.secondary.toLowerCase().includes(trimmed),
+  )
+}
+
+interface CopyIdButtonProps {
+  value: string
+  ariaLabel: string
+}
+
+function CopyIdButton({ value, ariaLabel }: CopyIdButtonProps) {
+  const [status, setStatus] = useState<'idle' | 'copied'>('idle')
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(
+    () => () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current)
+    },
+    [],
+  )
+
+  const handleClick = useCallback(async () => {
+    if (!value) return
+    try {
+      await navigator.clipboard.writeText(value)
+      setStatus('copied')
+      if (timeoutRef.current) clearTimeout(timeoutRef.current)
+      timeoutRef.current = setTimeout(() => {
+        setStatus('idle')
+      }, 1500)
+    } catch {
+      // Clipboard unavailable
+    }
+  }, [value])
+
+  return (
+    <button
+      type="button"
+      className={styles.btn}
+      onClick={handleClick}
+      disabled={!value}
+      aria-label={ariaLabel}
+    >
+      {status === 'copied' ? 'Copied' : 'Copy ID'}
+    </button>
+  )
+}
+
+function EntityCombobox({
+  label,
+  value,
+  options,
+  isLoading,
+  placeholder,
+  useFallback,
+  onChange,
+  trailing,
+}: EntityComboboxProps) {
+  const [isOpen, setIsOpen] = useState(false)
+  const [query, setQuery] = useState('')
+  const [activeIndex, setActiveIndex] = useState(0)
+  const wrapperRef = useRef<HTMLDivElement | null>(null)
+  const inputRef = useRef<HTMLInputElement | null>(null)
+  const optionRefs = useRef<Array<HTMLLIElement | null>>([])
+  const inputId = `entity-${label.toLowerCase().replace(/\s+/g, '-')}-input`
+  const optionId = (index: number) => `${inputId}-option-${index}`
+
+  useEffect(() => {
+    if (!isOpen) return
+    const handleClick = (e: MouseEvent) => {
+      if (!wrapperRef.current?.contains(e.target as Node)) {
+        setIsOpen(false)
+      }
+    }
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsOpen(false)
+        inputRef.current?.blur()
+      }
+    }
+    document.addEventListener('mousedown', handleClick)
+    document.addEventListener('keydown', handleKey)
+    return () => {
+      document.removeEventListener('mousedown', handleClick)
+      document.removeEventListener('keydown', handleKey)
+    }
+  }, [isOpen])
+
+  const matched = useMemo(() => options.find(option => option.value === value), [options, value])
+  const filtered = useMemo(() => filterOptions(options, query), [options, query])
+
+  useEffect(() => {
+    if (!isOpen) return
+    const selectedIdx = filtered.findIndex(option => option.value === value)
+    setActiveIndex(selectedIdx >= 0 ? selectedIdx : 0)
+  }, [isOpen]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    setActiveIndex(idx => {
+      if (filtered.length === 0) return 0
+      return Math.min(Math.max(idx, 0), filtered.length - 1)
+    })
+  }, [filtered.length])
+
+  useEffect(() => {
+    if (!isOpen) return
+    optionRefs.current[activeIndex]?.scrollIntoView({ block: 'nearest' })
+  }, [activeIndex, isOpen])
+
+  if (useFallback) {
+    return (
+      <div className={styles.field}>
+        <label htmlFor={inputId}>{label}</label>
+        <div className={styles.copyRow}>
+          <input
+            id={inputId}
+            type="text"
+            value={value}
+            onChange={e => {
+              onChange(e.target.value)
+            }}
+            placeholder={placeholder}
+          />
+          {trailing}
+        </div>
+      </div>
+    )
+  }
+
+  const handleInputChange = (next: string) => {
+    setQuery(next)
+    onChange(next)
+    setActiveIndex(0)
+    if (!isOpen) setIsOpen(true)
+  }
+
+  const handleSelect = (option: EntityOption) => {
+    onChange(option.value)
+    setQuery('')
+    setIsOpen(false)
+    inputRef.current?.blur()
+  }
+
+  const handleKeyDown = (e: ReactKeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault()
+      if (!isOpen) {
+        setIsOpen(true)
+        return
+      }
+      if (filtered.length === 0) return
+      setActiveIndex(idx => (idx + 1) % filtered.length)
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault()
+      if (!isOpen) {
+        setIsOpen(true)
+        return
+      }
+      if (filtered.length === 0) return
+      setActiveIndex(idx => (idx - 1 + filtered.length) % filtered.length)
+    } else if (e.key === 'Enter') {
+      if (isOpen && filtered[activeIndex]) {
+        e.preventDefault()
+        handleSelect(filtered[activeIndex])
+      }
+    } else if (e.key === 'Home' && isOpen) {
+      e.preventDefault()
+      setActiveIndex(0)
+    } else if (e.key === 'End' && isOpen) {
+      e.preventDefault()
+      setActiveIndex(Math.max(filtered.length - 1, 0))
+    }
+  }
+
+  return (
+    <div className={styles.field}>
+      <label htmlFor={inputId}>{label}</label>
+      <div className={styles.copyRow}>
+        <div className={styles.selectWrapper} ref={wrapperRef}>
+          <div className={styles.comboboxInputWrapper}>
+            <input
+              id={inputId}
+              ref={inputRef}
+              type="text"
+              value={isOpen ? query : value}
+              placeholder={value ? '' : placeholder}
+              onFocus={() => {
+                setQuery('')
+              }}
+              onMouseDown={() => {
+                setIsOpen(open => !open)
+              }}
+              onChange={e => {
+                handleInputChange(e.target.value)
+              }}
+              onKeyDown={handleKeyDown}
+              role="combobox"
+              aria-expanded={isOpen}
+              aria-controls={`${inputId}-listbox`}
+              aria-activedescendant={
+                isOpen && filtered[activeIndex] ? optionId(activeIndex) : undefined
+              }
+              aria-autocomplete="list"
+              autoComplete="off"
+              spellCheck={false}
+              data-1p-ignore="true"
+              data-lpignore="true"
+            />
+            <button
+              type="button"
+              className={styles.comboboxChevron}
+              tabIndex={-1}
+              aria-label={isOpen ? 'Close options' : 'Open options'}
+              onClick={() => {
+                setIsOpen(open => !open)
+                if (!isOpen) inputRef.current?.focus()
+              }}
+            >
+              ▾
+            </button>
+          </div>
+
+          {isOpen && (
+            <ul
+              id={`${inputId}-listbox`}
+              className={styles.selectMenu}
+              role="listbox"
+              aria-label={label}
+            >
+              {isLoading && options.length === 0 ? (
+                <li className={styles.selectStatus}>Loading…</li>
+              ) : filtered.length === 0 ? (
+                <li className={styles.selectStatus}>
+                  {options.length === 0 ? 'No options available' : 'No matches'}
+                </li>
+              ) : (
+                filtered.map((option, index) => {
+                  const isSelected = option.value === value
+                  const isActive = index === activeIndex
+                  return (
+                    <li
+                      key={option.value}
+                      id={optionId(index)}
+                      ref={el => {
+                        optionRefs.current[index] = el
+                      }}
+                      role="option"
+                      aria-selected={isSelected}
+                    >
+                      <button
+                        type="button"
+                        className={`${styles.selectOption} ${isActive ? styles.selectOptionActive : ''}`}
+                        onMouseDown={e => {
+                          e.preventDefault()
+                        }}
+                        onMouseEnter={() => {
+                          setActiveIndex(index)
+                        }}
+                        onClick={() => {
+                          handleSelect(option)
+                        }}
+                      >
+                        <span className={styles.optionPrimary}>{option.primary}</span>
+                        <span className={styles.optionSecondary}>{option.secondary}</span>
+                      </button>
+                    </li>
+                  )
+                })
+              )}
+            </ul>
+          )}
+        </div>
+        {trailing}
+      </div>
+      {matched && (
+        <div
+          className={`${styles.helperLine} ${isOpen ? styles.helperLineHidden : ''}`}
+          aria-hidden={isOpen}
+        >
+          {matched.primary}
+        </div>
+      )}
+    </div>
+  )
+}
 
 export function DemoSettingsPanel({
   isOpen,
@@ -38,6 +347,7 @@ export function DemoSettingsPanel({
   proxyMode,
   onCreateNewDemo,
   onRefreshToken,
+  entityCatalog,
 }: DemoSettingsPanelProps) {
   const currentDemoType = import.meta.env.VITE_DEMO_TYPE || 'react_sdk_demo_company_onboarded'
   const [selectedDemoType, setSelectedDemoType] = useState(currentDemoType)
@@ -49,17 +359,20 @@ export function DemoSettingsPanel({
     }
   }, [isOpen, entities])
 
-  const hasChanges = ENTITY_FIELDS.some(
-    ({ key }) => entities[key] !== confirmedSnapshot.current[key],
-  )
-
   const env = typeof __SDK_APP_ENV__ !== 'undefined' ? __SDK_APP_ENV__ : 'demo'
   const build = typeof __SDK_APP_BUILD__ !== 'undefined' ? __SDK_APP_BUILD__ : 'dev'
   const mode = typeof __SDK_APP_PROXY_MODE__ !== 'undefined' ? __SDK_APP_PROXY_MODE__ : proxyMode
 
+  const isFlowTokenMode = mode === 'flow-token'
+
+  const hasChanges =
+    entities.employeeId !== confirmedSnapshot.current.employeeId ||
+    entities.contractorId !== confirmedSnapshot.current.contractorId ||
+    entities.payrollId !== confirmedSnapshot.current.payrollId ||
+    TEXT_FIELDS.some(({ key }) => entities[key] !== confirmedSnapshot.current[key])
+
   if (!isOpen) return null
 
-  const isFlowTokenMode = mode === 'flow-token'
   const displayEnv = env === 'localzp' ? 'local' : env
 
   return (
@@ -146,19 +459,80 @@ export function DemoSettingsPanel({
 
         <div className={styles.section}>
           <h3>Entity IDs</h3>
-          {ENTITY_FIELDS.map(({ key, label }) => (
-            <div key={key} className={styles.field}>
-              <label>{label}</label>
+
+          <div className={styles.field}>
+            <label htmlFor="company-id-input">Company ID</label>
+            <div className={styles.copyRow}>
               <input
+                id="company-id-input"
                 type="text"
-                value={entities[key]}
-                onChange={e => {
-                  onUpdateEntity(key, e.target.value)
-                }}
-                placeholder={`Enter ${label.toLowerCase()}...`}
+                value={entities.companyId}
+                readOnly
+                className={styles.readOnly}
               />
+              <CopyIdButton value={entities.companyId} ariaLabel="Copy company ID" />
             </div>
-          ))}
+          </div>
+
+          <EntityCombobox
+            label="Employee"
+            value={entities.employeeId}
+            options={entityCatalog.employees}
+            isLoading={entityCatalog.isLoading}
+            placeholder="Search or paste an employee id..."
+            useFallback={!isFlowTokenMode}
+            onChange={value => {
+              onUpdateEntity('employeeId', value)
+            }}
+            trailing={<CopyIdButton value={entities.employeeId} ariaLabel="Copy employee ID" />}
+          />
+
+          <EntityCombobox
+            label="Contractor"
+            value={entities.contractorId}
+            options={entityCatalog.contractors}
+            isLoading={entityCatalog.isLoading}
+            placeholder="Search or paste a contractor id..."
+            useFallback={!isFlowTokenMode}
+            onChange={value => {
+              onUpdateEntity('contractorId', value)
+            }}
+            trailing={<CopyIdButton value={entities.contractorId} ariaLabel="Copy contractor ID" />}
+          />
+
+          <EntityCombobox
+            label="Payroll"
+            value={entities.payrollId}
+            options={entityCatalog.payrolls}
+            isLoading={entityCatalog.isLoading}
+            placeholder="Search or paste a payroll id..."
+            useFallback={!isFlowTokenMode}
+            onChange={value => {
+              onUpdateEntity('payrollId', value)
+            }}
+            trailing={<CopyIdButton value={entities.payrollId} ariaLabel="Copy payroll ID" />}
+          />
+
+          {TEXT_FIELDS.map(({ key, label }) => {
+            const inputId = `entity-${key}-input`
+            return (
+              <div key={key} className={styles.field}>
+                <label htmlFor={inputId}>{label}</label>
+                <div className={styles.copyRow}>
+                  <input
+                    id={inputId}
+                    type="text"
+                    value={entities[key]}
+                    onChange={e => {
+                      onUpdateEntity(key, e.target.value)
+                    }}
+                    placeholder={`Enter ${label.toLowerCase()}...`}
+                  />
+                  <CopyIdButton value={entities[key]} ariaLabel={`Copy ${label.toLowerCase()}`} />
+                </div>
+              </div>
+            )
+          })}
 
           <div className={styles.actions}>
             {hasChanges && (

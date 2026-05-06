@@ -102,6 +102,25 @@ describe('HolidaySelectionForm', () => {
 
       expect(checkboxes[1]).not.toBeChecked()
     })
+
+    it('header checkbox toggles every holiday off and back on', async () => {
+      renderWithProviders(<HolidaySelectionForm {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getAllByRole('checkbox').length).toBeGreaterThanOrEqual(12)
+      })
+
+      const headerCheckbox = screen.getByRole('checkbox', { name: 'Select all rows' })
+      const rowCheckboxes = screen.getAllByRole('checkbox').filter(cb => cb !== headerCheckbox)
+
+      expect(rowCheckboxes.every(cb => (cb as HTMLInputElement).checked)).toBe(true)
+
+      await user.click(headerCheckbox)
+      expect(rowCheckboxes.every(cb => !(cb as HTMLInputElement).checked)).toBe(true)
+
+      await user.click(headerCheckbox)
+      expect(rowCheckboxes.every(cb => (cb as HTMLInputElement).checked)).toBe(true)
+    })
   })
 
   describe('actions', () => {

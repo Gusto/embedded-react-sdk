@@ -23,6 +23,7 @@ export function SelectEmployeesHoliday({
     pagination,
     isFetching,
     handleSelect,
+    handleSelectAll,
     handleSearchChange,
     handleSearchClear,
   } = useSelectEmployeesData(companyId)
@@ -65,6 +66,7 @@ export function SelectEmployeesHoliday({
       selectedUuids={selectedUuids}
       searchValue={searchValue}
       onSelect={handleSelect}
+      onSelectAll={handleSelectAll}
       onSearchChange={handleSearchChange}
       onSearchClear={handleSearchClear}
       onBack={handleBack}

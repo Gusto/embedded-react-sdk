@@ -6,6 +6,7 @@ import { Sidebar } from './Sidebar'
 import { DemoSettingsPanel } from './DemoSettingsPanel'
 import { TokenExpiredOverlay } from './TokenExpiredOverlay'
 import { useEntities } from './useEntities'
+import { useEntityCatalog } from './useEntityCatalog'
 import { useDemoManager } from './useDemoManager'
 import { useAppMode } from './useAppMode'
 import { useThemeMode } from './useThemeMode'
@@ -16,6 +17,7 @@ export function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   const { entities, updateEntity, replaceEntities, resetToDefaults } = useEntities()
+  const entityCatalog = useEntityCatalog(entities.companyId)
   const demoManager = useDemoManager()
   const mode = useAppMode()
   const themeMode = useThemeMode()
@@ -77,6 +79,7 @@ export function App() {
           proxyMode={demoManager.proxyMode}
           onCreateNewDemo={handleCreateNewDemo}
           onRefreshToken={demoManager.refreshToken}
+          entityCatalog={entityCatalog}
         />
         {demoManager.tokenStatus === 'expired' && (
           <TokenExpiredOverlay
