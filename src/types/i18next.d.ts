@@ -565,12 +565,6 @@ export interface CompanyTimeOffPolicyDetail{
 "confirmCta":string;
 "cancelCta":string;
 };
-"bulkRemoveDialog":{
-"title":string;
-"description":string;
-"confirmCta":string;
-"cancelCta":string;
-};
 };
 export interface CompanyTimeOffSelectEmployees{
 "title":string;
@@ -729,7 +723,6 @@ export interface CompanyTimeOffTimeOffPolicyDetails{
 "actions":string;
 "editBalance":string;
 "removeEmployee":string;
-"removeEmployees":string;
 };
 "addEmployeeModal":{
 "title":string;
@@ -755,8 +748,6 @@ export interface CompanyTimeOffTimeOffPolicyDetails{
 };
 "flash":{
 "employeeRemoved":string;
-"employeesRemoved_one":string;
-"employeesRemoved_other":string;
 "employeesAdded_one":string;
 "employeesAdded_other":string;
 "balanceUpdated":string;

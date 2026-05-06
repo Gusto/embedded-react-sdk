@@ -155,9 +155,6 @@ export const DetailsTabLimited = () => {
         data: mockEmployees,
         ...search,
         itemMenu: makeItemMenu,
-        selectionMode: 'multiple',
-        onSelect: fn().mockName('onSelect'),
-        getIsItemSelected: () => false,
       }}
       removeDialog={closedRemoveDialog}
     />
@@ -192,9 +189,6 @@ export const DetailsTabSick = () => {
         data: mockEmployees,
         ...search,
         itemMenu: makeItemMenu,
-        selectionMode: 'multiple',
-        onSelect: fn().mockName('onSelect'),
-        getIsItemSelected: () => false,
       }}
       removeDialog={closedRemoveDialog}
     />
@@ -223,9 +217,6 @@ export const DetailsTabUnlimited = () => {
         data: mockEmployees,
         ...search,
         itemMenu: makeItemMenu,
-        selectionMode: 'multiple',
-        onSelect: fn().mockName('onSelect'),
-        getIsItemSelected: () => false,
       }}
       removeDialog={closedRemoveDialog}
     />
@@ -256,56 +247,8 @@ export const EmployeesTab = () => {
         data: mockEmployees,
         ...search,
         itemMenu: makeItemMenu,
-        selectionMode: 'multiple',
-        onSelect: fn().mockName('onSelect'),
-        getIsItemSelected: () => false,
       }}
       removeDialog={closedRemoveDialog}
-    />
-  )
-}
-
-export const BulkRemoveSelected = () => {
-  const [selectedTabId, setSelectedTabId] = useState('employees')
-  const search = useSearchState()
-  const actions = usePolicyActions()
-
-  return (
-    <TimeOffPolicyDetailPresentation
-      title="Awesome Time Off Policy"
-      subtitle="Paid time off policy"
-      onBack={onBack}
-      backLabel="Back"
-      actions={actions}
-      policyDetails={mockLimitedPolicyDetails}
-      policySettings={mockPolicySettings}
-      onChangeSettings={onChangeSettings}
-      selectedTabId={selectedTabId}
-      onTabChange={id => {
-        setSelectedTabId(id)
-        onTabChange(id)
-      }}
-      employees={{
-        data: mockEmployees,
-        ...search,
-        itemMenu: makeItemMenu,
-        selectionMode: 'multiple',
-        onSelect: fn().mockName('onSelect'),
-        getIsItemSelected: employee => employee.uuid === '1' || employee.uuid === '3',
-        footer: () => ({
-          name: null,
-          jobTitle: null,
-          balance: null,
-        }),
-      }}
-      removeDialog={closedRemoveDialog}
-      bulkRemoveDialog={{
-        isOpen: false,
-        count: 2,
-        onConfirm: fn().mockName('bulkRemoveConfirm'),
-        onClose: fn().mockName('bulkRemoveClose'),
-        isPending: false,
-      }}
     />
   )
 }
@@ -334,9 +277,6 @@ export const WithSuccessAlert = () => {
         data: mockEmployees,
         ...search,
         itemMenu: makeItemMenu,
-        selectionMode: 'multiple',
-        onSelect: fn().mockName('onSelect'),
-        getIsItemSelected: () => false,
       }}
       removeDialog={closedRemoveDialog}
       successAlert="Alejandro Kuhic has been removed from the policy."
@@ -369,9 +309,6 @@ export const RemoveDialogOpen = () => {
         data: mockEmployees,
         ...search,
         itemMenu: makeItemMenu,
-        selectionMode: 'multiple',
-        onSelect: fn().mockName('onSelect'),
-        getIsItemSelected: () => false,
       }}
       removeDialog={{
         isOpen: true,
@@ -407,9 +344,6 @@ export const EmptyEmployees = () => {
       employees={{
         data: [],
         ...search,
-        selectionMode: 'multiple',
-        onSelect: fn().mockName('onSelect'),
-        getIsItemSelected: () => false,
       }}
       removeDialog={closedRemoveDialog}
     />
