@@ -18,6 +18,8 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useI18n } from '@/i18n'
 import { firstLastName } from '@/helpers/formattedStrings'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
+import EditIcon from '@/assets/icons/edit-02.svg?react'
+import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 
 export interface HolidayPolicyDetailProps extends BaseComponentInterface {
   companyId: string
@@ -134,10 +136,20 @@ function Root({ companyId, defaultTab = 'holidays' }: HolidayPolicyDetailProps) 
   }
 
   const actions = [
-    <Button key="add" variant="secondary" onClick={handleAddEmployees}>
+    <Button
+      key="add"
+      variant="secondary"
+      icon={<PlusCircleIcon aria-hidden />}
+      onClick={handleAddEmployees}
+    >
       {t('show.addEmployeesCta')}
     </Button>,
-    <Button key="edit" variant="secondary" onClick={handleEditPolicy}>
+    <Button
+      key="edit"
+      variant="secondary"
+      icon={<EditIcon aria-hidden />}
+      onClick={handleEditPolicy}
+    >
       {t('show.editPolicyCta')}
     </Button>,
   ]
