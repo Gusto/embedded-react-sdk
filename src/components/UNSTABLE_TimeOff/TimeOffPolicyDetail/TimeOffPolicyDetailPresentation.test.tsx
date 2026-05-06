@@ -150,7 +150,7 @@ describe('TimeOffPolicyDetailPresentation', () => {
       renderComponent({ policySettings: fullPolicySettings })
 
       await waitFor(() => {
-        expect(screen.getByText('Policy settings')).toBeInTheDocument()
+        expect(screen.getByText('Settings')).toBeInTheDocument()
       })
       expect(screen.getByText('Accrual maximum')).toBeInTheDocument()
       expect(screen.getByText('100 hour(s) per year')).toBeInTheDocument()
@@ -167,7 +167,7 @@ describe('TimeOffPolicyDetailPresentation', () => {
       renderComponent()
 
       await waitFor(() => {
-        expect(screen.getByText('Policy settings')).toBeInTheDocument()
+        expect(screen.getByText('Settings')).toBeInTheDocument()
       })
       expect(screen.getByText('No maximum')).toBeInTheDocument()
       expect(screen.getByText('No carry over limit')).toBeInTheDocument()
@@ -198,7 +198,7 @@ describe('TimeOffPolicyDetailPresentation', () => {
         expect(screen.getByText('Details')).toBeInTheDocument()
       })
       expect(screen.getByText('Unlimited')).toBeInTheDocument()
-      expect(screen.queryByText('Policy settings')).not.toBeInTheDocument()
+      expect(screen.queryByText('Settings')).not.toBeInTheDocument()
     })
   })
 

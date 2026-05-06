@@ -46,7 +46,7 @@
     "perHourPaidNoOvertime": "{{accrualRate}} hour(s) for every {{accrualRateUnit}} hour(s) worked and all paid hours, excluding overtime"
   },
   "resetDate": "Reset date",
-  "policySettingsTitle": "Policy settings",
+  "policySettingsTitle": "Settings",
   "changeSettingsCta": "Change",
   "maxAccrualHoursPerYear": {
     "label": "Accrual maximum",
