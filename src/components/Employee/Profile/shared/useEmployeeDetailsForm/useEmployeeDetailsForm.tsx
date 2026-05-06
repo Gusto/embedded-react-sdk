@@ -56,7 +56,7 @@ type UseEmployeeDetailsFormSharedProps = {
 
 export type UseEmployeeDetailsFormProps =
   | (UseEmployeeDetailsFormSharedProps & { companyId: string; employeeId?: never })
-  | (UseEmployeeDetailsFormSharedProps & { employeeId: string; companyId?: never })
+  | (UseEmployeeDetailsFormSharedProps & { employeeId: string; companyId?: string })
 
 export interface EmployeeDetailsFields {
   FirstName: typeof FirstNameField
