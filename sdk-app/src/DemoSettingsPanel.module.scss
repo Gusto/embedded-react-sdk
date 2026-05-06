@@ -170,9 +170,10 @@
 .copyRow {
   display: flex;
   gap: 0.5rem;
-  align-items: stretch;
+  align-items: flex-start;
 
-  input {
+  > input,
+  > .selectWrapper {
     flex: 1;
     min-width: 0;
   }
@@ -187,49 +188,51 @@
   position: relative;
 }
 
-.selectButton {
-  width: 100%;
+.comboboxInputWrapper {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+
+  input {
+    flex: 1;
+    padding-right: 2rem;
+  }
+}
+
+.comboboxChevron {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 2rem;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  padding: 0.5rem 0.625rem;
-  border: 0.0625rem solid var(--color-border);
-  border-radius: 0.375rem;
-  background: var(--color-bg);
-  color: var(--color-text);
-  font-size: 0.8125rem;
+  justify-content: center;
+  background: transparent;
+  border: none;
   cursor: pointer;
-  text-align: left;
-
-  &:focus {
-    outline: none;
-    border-color: var(--color-active);
-    box-shadow: 0 0 0 0.125rem var(--color-focus-ring);
-  }
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-}
-
-.selectButtonContent {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  flex: 1;
-}
-
-.selectPlaceholder {
-  color: var(--color-text-muted);
-  flex: 1;
-}
-
-.selectChevron {
   color: var(--color-text-muted);
   font-size: 0.75rem;
-  flex-shrink: 0;
+  padding: 0;
+}
+
+.helperLine {
+  margin-top: 0.25rem;
+  font-size: 0.6875rem;
+  color: var(--color-text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.helperLineHidden {
+  visibility: hidden;
+}
+
+.selectStatus {
+  padding: 0.5rem 0.625rem;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
 }
 
 .selectMenu {
