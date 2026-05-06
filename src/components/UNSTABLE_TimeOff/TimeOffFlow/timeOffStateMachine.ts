@@ -308,7 +308,7 @@ export const timeOffMachine = {
     ),
     transition(
       componentEvents.TIME_OFF_CHANGE_SETTINGS,
-      'policySettings',
+      'editPolicySettings',
       reduce(
         (
           ctx: TimeOffFlowContextInterface,
@@ -322,6 +322,35 @@ export const timeOffMachine = {
       ),
     ),
     backToListTransition,
+  ),
+
+  // Distinct from `policySettings` (the create-flow step) so that DONE/BACK
+  // return to the policy detail view instead of routing into the create
+  // flow's add-employees / details-form steps.
+  editPolicySettings: state<MachineTransition>(
+    transition(
+      componentEvents.TIME_OFF_POLICY_SETTINGS_DONE,
+      'viewTimeOffPolicyDetail',
+      reduce(
+        (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: TimeOffPolicyDetailContextual,
+          alerts: undefined,
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.TIME_OFF_POLICY_SETTINGS_BACK,
+      'viewTimeOffPolicyDetail',
+      reduce(
+        (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: TimeOffPolicyDetailContextual,
+          alerts: undefined,
+        }),
+      ),
+    ),
+    cancelToPolicyList,
   ),
 
   holidaySelectionForm: state<MachineTransition>(
