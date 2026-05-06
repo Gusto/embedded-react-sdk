@@ -510,7 +510,7 @@ import { EmployeeDetailsErrorCodes } from '@gusto/embedded-react-sdk'
 />
 ```
 
-If you omit `validationMessages`, validation still runs but no message is displayed — the field is marked as invalid without explanatory text.
+If you omit `validationMessages`, validation still runs and the field is marked as invalid, but the displayed text falls back to the raw error code (e.g., `REQUIRED`, `INVALID_EMAIL`, `INVALID_AMOUNT`). Always supply `validationMessages` for production UI so partners control the user-facing copy.
 
 Error codes for each hook are exported alongside the hook:
 
