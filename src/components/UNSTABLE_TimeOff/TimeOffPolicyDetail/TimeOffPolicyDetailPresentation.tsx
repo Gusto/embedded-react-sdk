@@ -173,9 +173,13 @@ function DetailsTab({
     ]
   }, [policySettings, t])
 
+  const detailsCardClassName = isUnlimited
+    ? `${styles.descriptionCard} ${styles.descriptionCardUnlimited}`
+    : styles.descriptionCard
+
   return (
     <Flex flexDirection="column" gap={20}>
-      <div className={styles.descriptionCard}>
+      <div className={detailsCardClassName}>
         <Box header={<BoxHeader title={t('details')} />} withPadding>
           <DescriptionList items={detailItems} showSeparators={false} layout="stacked" />
         </Box>

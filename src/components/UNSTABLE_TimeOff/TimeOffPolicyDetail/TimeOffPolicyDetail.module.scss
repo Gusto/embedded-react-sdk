@@ -1,4 +1,7 @@
 .descriptionCard {
-  min-width: toRem(320);
   max-width: toRem(480);
+}
+
+.descriptionCardUnlimited {
+  min-width: toRem(320);
 }
