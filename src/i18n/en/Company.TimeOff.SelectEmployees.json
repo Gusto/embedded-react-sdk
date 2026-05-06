@@ -8,5 +8,13 @@
   "departmentColumn": "Department",
   "startingBalanceColumn": "Starting balance (hrs)",
   "backCta": "Back",
-  "continueCta": "Continue"
+  "continueCta": "Continue",
+  "removeConfirmDialog": {
+    "title_one": "Remove {{count}} employee from this policy?",
+    "title_other": "Remove {{count}} employees from this policy?",
+    "description_one": "This employee's balance for this policy will be removed. They can be re-added later.",
+    "description_other": "These employees' balances for this policy will be removed. They can be re-added later.",
+    "confirmCta": "Remove and save",
+    "cancelCta": "Cancel"
+  }
 }

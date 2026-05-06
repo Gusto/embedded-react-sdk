@@ -310,6 +310,71 @@ describe('timeOffStateMachine', () => {
     })
   })
 
+  describe('viewTimeOffPolicyDetail state', () => {
+    it('transitions to addEmployeesToPolicy on TIME_OFF_ADD_EMPLOYEES_TO_POLICY with policyId', () => {
+      const service = createService()
+      send(service, componentEvents.TIME_OFF_VIEW_POLICY, {
+        policyId: 'policy-existing',
+        policyType: 'vacation',
+      })
+      expect(service.machine.current).toBe('viewTimeOffPolicyDetail')
+
+      send(service, componentEvents.TIME_OFF_ADD_EMPLOYEES_TO_POLICY, {
+        policyId: 'policy-existing',
+      })
+
+      expect(service.machine.current).toBe('addEmployeesToPolicy')
+      expect(service.context.policyId).toBe('policy-existing')
+      expect(service.context.alerts).toBeUndefined()
+    })
+
+    it('returns to viewTimeOffPolicyDetail with the same policyId after adding employees', () => {
+      const service = createService()
+      send(service, componentEvents.TIME_OFF_VIEW_POLICY, {
+        policyId: 'policy-existing',
+        policyType: 'vacation',
+      })
+      send(service, componentEvents.TIME_OFF_ADD_EMPLOYEES_TO_POLICY, {
+        policyId: 'policy-existing',
+      })
+
+      send(service, componentEvents.TIME_OFF_ADD_EMPLOYEES_DONE)
+
+      expect(service.machine.current).toBe('viewTimeOffPolicyDetail')
+      expect(service.context.policyId).toBe('policy-existing')
+    })
+
+    it('transitions to policyDetailsForm on TIME_OFF_EDIT_POLICY', () => {
+      const service = createService()
+      send(service, componentEvents.TIME_OFF_VIEW_POLICY, {
+        policyId: 'policy-existing',
+        policyType: 'vacation',
+      })
+      expect(service.machine.current).toBe('viewTimeOffPolicyDetail')
+
+      send(service, componentEvents.TIME_OFF_EDIT_POLICY, { policyId: 'policy-existing' })
+
+      expect(service.machine.current).toBe('policyDetailsForm')
+      expect(service.context.policyId).toBe('policy-existing')
+      expect(service.context.alerts).toBeUndefined()
+    })
+
+    it('transitions to policySettings on TIME_OFF_CHANGE_SETTINGS', () => {
+      const service = createService()
+      send(service, componentEvents.TIME_OFF_VIEW_POLICY, {
+        policyId: 'policy-existing',
+        policyType: 'vacation',
+      })
+      expect(service.machine.current).toBe('viewTimeOffPolicyDetail')
+
+      send(service, componentEvents.TIME_OFF_CHANGE_SETTINGS, { policyId: 'policy-existing' })
+
+      expect(service.machine.current).toBe('policySettings')
+      expect(service.context.policyId).toBe('policy-existing')
+      expect(service.context.alerts).toBeUndefined()
+    })
+  })
+
   describe('back to list', () => {
     it('returns to policyList from viewTimeOffPolicyDetail', () => {
       const service = createService()
