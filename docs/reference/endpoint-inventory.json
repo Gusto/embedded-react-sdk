@@ -634,16 +634,8 @@
           "path": "/v1/jobs/:jobId"
         },
         {
-          "method": "DELETE",
-          "path": "/v1/jobs/:jobId"
-        },
-        {
           "method": "PUT",
           "path": "/v1/compensations/:compensationId"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/locations/:locationUuid/minimum_wages"
         },
         {
           "method": "GET",
@@ -651,11 +643,19 @@
         },
         {
           "method": "GET",
+          "path": "/v1/employees/:employeeId"
+        },
+        {
+          "method": "GET",
           "path": "/v1/companies/:companyId/federal_tax_details"
         },
         {
           "method": "GET",
-          "path": "/v1/employees/:employeeId"
+          "path": "/v1/locations/:locationUuid/minimum_wages"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/jobs/:jobId"
         }
       ],
       "variables": [
@@ -2464,16 +2464,8 @@
           "path": "/v1/jobs/:jobId"
         },
         {
-          "method": "DELETE",
-          "path": "/v1/jobs/:jobId"
-        },
-        {
           "method": "PUT",
           "path": "/v1/compensations/:compensationId"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/locations/:locationUuid/minimum_wages"
         },
         {
           "method": "GET",
@@ -2481,11 +2473,19 @@
         },
         {
           "method": "GET",
+          "path": "/v1/employees/:employeeId"
+        },
+        {
+          "method": "GET",
           "path": "/v1/companies/:companyId/federal_tax_details"
         },
         {
           "method": "GET",
-          "path": "/v1/employees/:employeeId"
+          "path": "/v1/locations/:locationUuid/minimum_wages"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/jobs/:jobId"
         },
         {
           "method": "GET",

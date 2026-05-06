@@ -16,7 +16,7 @@ export const DEFAULT_COMPONENT_PROPS: Record<string, Record<string, PropValueOrF
     isAdmin: true,
   },
   'Employee.Compensation': {
-    startDate: () => new Date().toISOString().slice(0, 10),
+    startDate: '2020-01-01',
   },
   'Employee.DocumentSigner': {
     withEmployeeI9: true,

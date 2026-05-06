@@ -1,17 +1,40 @@
 import { useTranslation } from 'react-i18next'
 import { type Job } from '@gusto/embedded-api/models/components/job'
-import { useCompensation } from './useCompensation'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
-import { DataView, useDataView } from '@/components/Common'
+import { ActionsLayout, DataView, Flex, useDataView } from '@/components/Common'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { useI18n } from '@/i18n'
+import { FlsaStatus } from '@/shared/constants'
 
-export const List = () => {
-  const { employeeJobs, mode, isPending, handleEdit, handleDelete } = useCompensation()
+export interface JobsListPresentationProps {
+  jobs: Job[]
+  primaryFlsaStatus: string | undefined
+  isPending: boolean
+  onAdd: () => void
+  onEdit: (jobId: string) => void
+  onDelete: (jobId: string) => void
+  onContinue: () => void
+}
+
+export function JobsListPresentation({
+  jobs,
+  primaryFlsaStatus,
+  isPending,
+  onAdd,
+  onEdit,
+  onDelete,
+  onContinue,
+}: JobsListPresentationProps) {
+  useI18n('Employee.Compensation')
   const { t } = useTranslation('Employee.Compensation')
+  const Components = useComponentContext()
 
-  const { ...dataViewProps } = useDataView({
-    data: employeeJobs,
+  const showAddAnotherJob = primaryFlsaStatus === FlsaStatus.NONEXEMPT
+
+  const dataViewProps = useDataView({
+    data: jobs,
     columns: [
       {
         key: 'title',
@@ -47,7 +70,7 @@ export const List = () => {
             label: t('allCompensations.editCta'),
             icon: <PencilSvg aria-hidden />,
             onClick: () => {
-              handleEdit(job.uuid)
+              onEdit(job.uuid)
             },
           },
           ...(!job.primary
@@ -56,7 +79,7 @@ export const List = () => {
                   label: t('allCompensations.deleteCta'),
                   icon: <TrashCanSvg aria-hidden />,
                   onClick: () => {
-                    handleDelete(job.uuid)
+                    onDelete(job.uuid)
                   },
                 },
               ]
@@ -67,11 +90,24 @@ export const List = () => {
     ),
   })
 
-  if (mode !== 'LIST') {
-    return
-  }
-
   return (
-    <DataView data-testid="data-view" label={t('allCompensations.tableLabel')} {...dataViewProps} />
+    <Flex flexDirection="column" gap={32}>
+      <Components.Heading as="h2">{t('title')}</Components.Heading>
+      <DataView
+        data-testid="data-view"
+        label={t('allCompensations.tableLabel')}
+        {...dataViewProps}
+      />
+      <ActionsLayout>
+        {showAddAnotherJob && (
+          <Components.Button variant="secondary" onClick={onAdd} isDisabled={isPending}>
+            {t('addAnotherJobCta')}
+          </Components.Button>
+        )}
+        <Components.Button onClick={onContinue} isLoading={isPending}>
+          {t('submitCta')}
+        </Components.Button>
+      </ActionsLayout>
+    </Flex>
   )
 }
