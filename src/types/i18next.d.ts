@@ -3231,6 +3231,7 @@ export interface common{
 "requiredField":string;
 "errorEncountered":string;
 "multipleErrorsEncountered":string;
+"duplicateErrorCount":string;
 };
 "optionalLabel":string;
 "progressBarLabel":string;

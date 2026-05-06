@@ -7,6 +7,7 @@ import { QueryErrorResetBoundary } from '@tanstack/react-query'
 import { FadeIn } from '../Common/FadeIn/FadeIn'
 import { BaseContext, type OnEventType } from './useBase'
 import { useBaseSubmit } from './useBaseSubmit'
+import { dedupeFieldErrorMessages } from './dedupeFieldErrorMessages'
 import { componentEvents, type EventType } from '@/shared/constants'
 import { InternalError } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -93,16 +94,19 @@ function SingleErrorContent({ error }: { error: SDKError }) {
   const Components = useComponentContext()
   const { t } = useTranslation()
   const hasFieldErrors = error.fieldErrors.length > 0
+  const dedupedFieldErrors = dedupeFieldErrorMessages(
+    error.fieldErrors.map(fieldError => fieldError.message),
+  )
 
   return (
     <Components.Alert label={t('status.errorEncountered')} status="error">
       {hasFieldErrors && (
         <Components.UnorderedList
-          items={error.fieldErrors
-            .filter(fieldError => fieldError.message)
-            .map(fieldError => (
-              <span key={fieldError.field}>{fieldError.message}</span>
-            ))}
+          items={dedupedFieldErrors.map(({ message, count }) => (
+            <span key={message}>
+              {count > 1 ? t('status.duplicateErrorCount', { message, count }) : message}
+            </span>
+          ))}
         />
       )}
       {!hasFieldErrors && error.category === 'validation_error' && (
@@ -138,12 +142,18 @@ function MultipleErrorsContent({ errors }: { errors: SDKError[] }) {
               return <span key={index}>{error.message || t('errors.unknownError')}</span>
             }
 
+            const dedupedFieldErrors = dedupeFieldErrorMessages(
+              visibleFieldErrors.map(fieldError => fieldError.message),
+            )
+
             return (
               <span key={index}>
                 {error.message || t('errors.unknownError')}
                 <Components.UnorderedList
-                  items={visibleFieldErrors.map(fieldError => (
-                    <span key={fieldError.field}>{fieldError.message}</span>
+                  items={dedupedFieldErrors.map(({ message, count }) => (
+                    <span key={message}>
+                      {count > 1 ? t('status.duplicateErrorCount', { message, count }) : message}
+                    </span>
                   ))}
                 />
               </span>
