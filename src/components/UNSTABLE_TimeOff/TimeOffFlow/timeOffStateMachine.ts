@@ -20,6 +20,7 @@ type PolicyTypePayload = { policyType: 'sick' | 'vacation' | 'holiday' }
 type PolicyCreatedPayload = { policyId: string; accrualMethod?: string }
 type ErrorPayload = { alert?: TimeOffFlowAlert }
 type ViewPolicyPayload = { policyId: string; policyType: 'sick' | 'vacation' | 'holiday' }
+type EditPolicyPayload = { policyId: string }
 
 function isSickOrVacation(_ctx: TimeOffFlowContextInterface, ev: { payload: PolicyTypePayload }) {
   return ev.payload.policyType === 'sick' || ev.payload.policyType === 'vacation'
@@ -274,7 +275,39 @@ export const timeOffMachine = {
     cancelToPolicyList,
   ),
 
-  viewTimeOffPolicyDetail: state<MachineTransition>(backToListTransition),
+  viewTimeOffPolicyDetail: state<MachineTransition>(
+    transition(
+      componentEvents.TIME_OFF_EDIT_POLICY,
+      'policyDetailsForm',
+      reduce(
+        (
+          ctx: TimeOffFlowContextInterface,
+          ev: { payload: EditPolicyPayload },
+        ): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: PolicyDetailsFormContextual,
+          policyId: ev.payload.policyId,
+          alerts: undefined,
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.TIME_OFF_CHANGE_SETTINGS,
+      'policySettings',
+      reduce(
+        (
+          ctx: TimeOffFlowContextInterface,
+          ev: { payload: EditPolicyPayload },
+        ): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: PolicySettingsContextual,
+          policyId: ev.payload.policyId,
+          alerts: undefined,
+        }),
+      ),
+    ),
+    backToListTransition,
+  ),
 
   holidaySelectionForm: state<MachineTransition>(
     transition(
