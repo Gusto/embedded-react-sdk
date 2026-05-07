@@ -73,7 +73,7 @@ export function PolicyListPresentation({
       const menuItems = isEditable
         ? [
             {
-              label: t('actions.editPolicy'),
+              label: t('actions.viewPolicy'),
               onClick: () => {
                 onEditPolicy(policy)
               },

@@ -287,7 +287,7 @@ describe('PolicyList', () => {
       expect(onEvent).toHaveBeenCalledWith(componentEvents.TIME_OFF_CREATE_POLICY)
     })
 
-    it('emits TIME_OFF_VIEW_POLICY event when edit policy is clicked from menu', async () => {
+    it('emits TIME_OFF_VIEW_POLICY event when view policy is clicked from menu', async () => {
       renderWithProviders(<PolicyList {...defaultProps} />)
 
       await waitFor(() => {
@@ -298,10 +298,10 @@ describe('PolicyList', () => {
       await user.click(menuButtons[0]!)
 
       await waitFor(() => {
-        expect(screen.getByText('Edit policy')).toBeInTheDocument()
+        expect(screen.getByText('View policy')).toBeInTheDocument()
       })
 
-      await user.click(screen.getByText('Edit policy'))
+      await user.click(screen.getByText('View policy'))
 
       expect(onEvent).toHaveBeenCalledWith(componentEvents.TIME_OFF_VIEW_POLICY, {
         policyId: 'policy-1',
@@ -541,10 +541,10 @@ describe('PolicyList', () => {
       await user.click(holidayMenuButton)
 
       await waitFor(() => {
-        expect(screen.getByText('Edit policy')).toBeInTheDocument()
+        expect(screen.getByText('View policy')).toBeInTheDocument()
       })
 
-      await user.click(screen.getByText('Edit policy'))
+      await user.click(screen.getByText('View policy'))
 
       expect(onEvent).toHaveBeenCalledWith(componentEvents.TIME_OFF_VIEW_POLICY, {
         policyId: 'company-123',
