@@ -2,6 +2,7 @@ import type { ComponentType } from 'react'
 import { useHookFieldResolution } from '../useHookFieldResolution'
 import { getFieldWithOptions } from '../getFieldWithOptions'
 import type { BaseFieldProps, ValidationMessages, FormHookResult } from '../../types'
+import { withFieldElementRegistry } from './withFieldElementRegistry'
 import { RadioGroupField } from '@/components/Common'
 import type { RadioGroupProps } from '@/components/Common/UI/RadioGroup/RadioGroupTypes'
 
@@ -25,7 +26,7 @@ export function RadioGroupHookField<TErrorCode extends string, TEntry = unknown>
   getOptionLabel,
   FieldComponent,
 }: RadioGroupHookFieldProps<TErrorCode, TEntry>) {
-  const { metadata, control, errorMessage } = useHookFieldResolution(
+  const { metadata, control, errorMessage, fieldElementRegistry } = useHookFieldResolution(
     name,
     formHookResult,
     validationMessages,
@@ -41,7 +42,8 @@ export function RadioGroupHookField<TErrorCode extends string, TEntry = unknown>
         }))
       : defaultOptions
 
-  return (
+  return withFieldElementRegistry(
+    fieldElementRegistry,
     <RadioGroupField
       name={name}
       control={control}
@@ -52,6 +54,6 @@ export function RadioGroupHookField<TErrorCode extends string, TEntry = unknown>
       isDisabled={fieldMetadata?.isDisabled}
       options={options}
       FieldComponent={FieldComponent}
-    />
+    />,
   )
 }

@@ -1,6 +1,7 @@
 import type { ComponentType } from 'react'
 import { useHookFieldResolution } from '../useHookFieldResolution'
 import type { BaseFieldProps, ValidationMessages, FormHookResult } from '../../types'
+import { withFieldElementRegistry } from './withFieldElementRegistry'
 import { CheckboxField } from '@/components/Common'
 import type { CheckboxProps } from '@/components/Common/UI/Checkbox/CheckboxTypes'
 
@@ -19,14 +20,15 @@ export function CheckboxHookField<TErrorCode extends string>({
   validationMessages,
   FieldComponent,
 }: CheckboxHookFieldProps<TErrorCode>) {
-  const { metadata, control, errorMessage } = useHookFieldResolution(
+  const { metadata, control, errorMessage, fieldElementRegistry } = useHookFieldResolution(
     name,
     formHookResult,
     validationMessages,
   )
   const fieldMetadata = metadata[name]
 
-  return (
+  return withFieldElementRegistry(
+    fieldElementRegistry,
     <CheckboxField
       name={name}
       control={control}
@@ -36,6 +38,6 @@ export function CheckboxHookField<TErrorCode extends string>({
       isRequired={fieldMetadata?.isRequired}
       isDisabled={fieldMetadata?.isDisabled}
       FieldComponent={FieldComponent}
-    />
+    />,
   )
 }

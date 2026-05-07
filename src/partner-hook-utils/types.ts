@@ -1,5 +1,6 @@
 import type React from 'react'
 import type { UseFormReturn, FieldValues } from 'react-hook-form'
+import type { FieldElementRegistry } from '@/components/Common/Fields/hooks/fieldElementRegistry'
 import type { SDKError } from '@/types/sdkError'
 
 export interface FieldMetadata {
@@ -33,6 +34,15 @@ export type HookFieldProps<TProps extends { name: string }> = Omit<TProps, 'name
 /** Exposes react-hook-form internals for SDK utilities and advanced partner use cases. */
 export interface HookFormInternals<TFormData extends FieldValues = FieldValues> {
   formMethods: UseFormReturn<TFormData>
+  /**
+   * Per-form map of registered field `name` → DOM element. Populated by
+   * `useField` via a ref callback and consumed by `composeSubmitHandler` to
+   * focus the visually first invalid field across multiple composed forms.
+   * `SDKFormProvider` and the `withFieldElementRegistry` HookField wrapper
+   * publish it via context for `useField` to populate. Not intended as a
+   * partner API surface.
+   */
+  _fieldElementRegistry?: FieldElementRegistry
 }
 
 /** Discriminated union member returned while async data is being fetched. */
@@ -101,12 +111,17 @@ export interface BaseFormHookReady<
  * stay in sync with hook return types. `control` is typed as `unknown` because
  * react-hook-form's `Control<T>` is invariant on `T` — the single `as Control`
  * cast lives in {@link useHookFieldResolution}, the only consumer.
+ *
+ * `_fieldElementRegistry` is forwarded from {@link HookFormInternals} so HookFields
+ * can self-publish the registry for descendant `useField` calls when partners
+ * use the prop-based field connection path (no `SDKFormProvider`).
  */
 export type FormHookResult = {
   errorHandling: Pick<BaseFormHookReady['errorHandling'], 'errors'>
   form: Pick<BaseFormHookReady['form'], 'fieldsMetadata'> & {
     hookFormInternals: {
       formMethods: { control: unknown }
+      _fieldElementRegistry?: FieldElementRegistry
     }
   }
 }

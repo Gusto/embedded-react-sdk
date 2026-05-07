@@ -1,6 +1,7 @@
 import type { ComponentType } from 'react'
 import { useHookFieldResolution } from '../useHookFieldResolution'
 import type { BaseFieldProps, ValidationMessages, FormHookResult } from '../../types'
+import { withFieldElementRegistry } from './withFieldElementRegistry'
 import { NumberInputField } from '@/components/Common'
 import type { NumberInputProps } from '@/components/Common/UI/NumberInput/NumberInputTypes'
 
@@ -27,14 +28,15 @@ export function NumberInputHookField<TErrorCode extends string>({
   validationMessages,
   FieldComponent,
 }: NumberInputHookFieldProps<TErrorCode>) {
-  const { metadata, control, errorMessage } = useHookFieldResolution(
+  const { metadata, control, errorMessage, fieldElementRegistry } = useHookFieldResolution(
     name,
     formHookResult,
     validationMessages,
   )
   const fieldMetadata = metadata[name]
 
-  return (
+  return withFieldElementRegistry(
+    fieldElementRegistry,
     <NumberInputField
       name={name}
       control={control}
@@ -47,6 +49,6 @@ export function NumberInputHookField<TErrorCode extends string>({
       min={min}
       max={max}
       FieldComponent={FieldComponent}
-    />
+    />,
   )
 }

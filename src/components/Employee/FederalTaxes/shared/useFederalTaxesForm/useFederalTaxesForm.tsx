@@ -27,6 +27,7 @@ import {
   ExtraWithholdingField,
 } from './fields'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
+import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
 import { withOptions } from '@/partner-hook-utils/form/withOptions'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
@@ -214,6 +215,8 @@ export function useFederalTaxesForm({
     return submitResult
   }
 
+  const hookFormInternals = useHookFormInternals(formMethods)
+
   if (federalTaxesQuery.isLoading || !employeeFederalTax) {
     return { isLoading: true as const, errorHandling }
   }
@@ -239,7 +242,7 @@ export function useFederalTaxesForm({
         ExtraWithholding: ExtraWithholdingField,
       },
       fieldsMetadata,
-      hookFormInternals: { formMethods },
+      hookFormInternals,
       getFormSubmissionValues: createGetFormSubmissionValues(formMethods, schema),
     },
   }

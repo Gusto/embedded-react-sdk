@@ -23,6 +23,7 @@ import {
   EffectiveDateField,
 } from './fields'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
+import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
 import { withOptions } from '@/partner-hook-utils/form/withOptions'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
@@ -263,6 +264,8 @@ export function useHomeAddressForm({
     return submitResult
   }
 
+  const hookFormInternals = useHookFormInternals(formMethods)
+
   if (homeAddressUuid && !fetchedHomeAddress) {
     return { isLoading: true as const, errorHandling }
   }
@@ -289,7 +292,7 @@ export function useHomeAddressForm({
         EffectiveDate: withEffectiveDateField ? EffectiveDateField : undefined,
       },
       fieldsMetadata,
-      hookFormInternals: { formMethods },
+      hookFormInternals,
       getFormSubmissionValues: createGetFormSubmissionValues(formMethods, schema),
     },
   }
