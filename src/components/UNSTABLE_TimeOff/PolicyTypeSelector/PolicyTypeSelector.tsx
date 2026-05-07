@@ -1,3 +1,4 @@
+import { useHolidayPayPoliciesGet } from '@gusto/embedded-api/react-query/holidayPayPoliciesGet'
 import { PolicyTypeSelectorPresentation } from './PolicyTypeSelectorPresentation'
 import type { PolicyType } from './PolicyTypeSelectorTypes'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
@@ -17,8 +18,14 @@ export function PolicyTypeSelector(props: PolicyTypeSelectorProps) {
   )
 }
 
-function Root({ defaultPolicyType }: PolicyTypeSelectorProps) {
+function Root({ companyId, defaultPolicyType }: PolicyTypeSelectorProps) {
   const { onEvent } = useBase()
+
+  const holidayQuery = useHolidayPayPoliciesGet(
+    { companyUuid: companyId },
+    { throwOnError: () => false },
+  )
+  const holidayPolicyExists = Boolean(holidayQuery.data?.holidayPayPolicy)
 
   const handleContinue = (policyType: PolicyType) => {
     onEvent(componentEvents.TIME_OFF_POLICY_TYPE_SELECTED, {
@@ -35,6 +42,7 @@ function Root({ defaultPolicyType }: PolicyTypeSelectorProps) {
       onContinue={handleContinue}
       onCancel={handleCancel}
       defaultPolicyType={defaultPolicyType}
+      holidayPolicyExists={holidayPolicyExists}
     />
   )
 }

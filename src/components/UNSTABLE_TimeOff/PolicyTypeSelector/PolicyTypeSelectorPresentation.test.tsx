@@ -1,10 +1,14 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { http, HttpResponse } from 'msw'
 import { PolicyTypeSelector } from './PolicyTypeSelector'
 import { PolicyTypeSelectorPresentation } from './PolicyTypeSelectorPresentation'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { componentEvents } from '@/shared/constants'
+import { setupApiTestMocks } from '@/test/mocks/apiServer'
+import { server } from '@/test/mocks/server'
+import { API_BASE_URL } from '@/test/constants'
 
 describe('PolicyTypeSelectorPresentation', () => {
   const defaultProps = {
@@ -214,6 +218,32 @@ describe('PolicyTypeSelectorPresentation', () => {
     })
   })
 
+  describe('holidayPolicyExists', () => {
+    it('hides the Holiday pay option when a holiday policy already exists', async () => {
+      renderWithProviders(<PolicyTypeSelectorPresentation {...defaultProps} holidayPolicyExists />)
+
+      await waitFor(() => {
+        expect(screen.getAllByRole('radio')).toHaveLength(2)
+      })
+
+      expect(screen.queryByLabelText('Holiday pay')).not.toBeInTheDocument()
+      expect(screen.getByLabelText('Time off')).toBeInTheDocument()
+      expect(screen.getByLabelText('Sick leave')).toBeInTheDocument()
+    })
+
+    it('shows all three options when no holiday policy exists', async () => {
+      renderWithProviders(
+        <PolicyTypeSelectorPresentation {...defaultProps} holidayPolicyExists={false} />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getAllByRole('radio')).toHaveLength(3)
+      })
+
+      expect(screen.getByLabelText('Holiday pay')).toBeInTheDocument()
+    })
+  })
+
   describe('accessibility', () => {
     it('has a radio group with correct role', async () => {
       renderWithProviders(<PolicyTypeSelectorPresentation {...defaultProps} />)
@@ -243,11 +273,26 @@ describe('PolicyTypeSelectorPresentation', () => {
   })
 })
 
+const mockHolidayPayPolicy = {
+  version: '1b37938b017c7fd7116bada007072290',
+  company_uuid: 'company-123',
+  federal_holidays: {
+    new_years_day: { selected: true, name: "New Year's Day", date: 'January 1' },
+  },
+  employees: [],
+}
+
 describe('PolicyTypeSelector', () => {
   const onEvent = vi.fn()
 
   beforeEach(() => {
+    setupApiTestMocks()
     onEvent.mockClear()
+    server.use(
+      http.get(`${API_BASE_URL}/v1/companies/:companyUuid/holiday_pay_policy`, () => {
+        return new HttpResponse(null, { status: 204 })
+      }),
+    )
   })
 
   it('fires TIME_OFF_POLICY_TYPE_SELECTED with vacation on submit', async () => {
@@ -340,5 +385,22 @@ describe('PolicyTypeSelector', () => {
     await waitFor(() => {
       expect(onEvent).not.toHaveBeenCalled()
     })
+  })
+
+  it('hides Holiday pay option when the company already has a holiday policy', async () => {
+    server.use(
+      http.get(`${API_BASE_URL}/v1/companies/:companyUuid/holiday_pay_policy`, () => {
+        return HttpResponse.json(mockHolidayPayPolicy)
+      }),
+    )
+
+    renderWithProviders(<PolicyTypeSelector onEvent={onEvent} companyId="company-123" />)
+
+    await waitFor(() => {
+      expect(screen.queryByLabelText('Holiday pay')).not.toBeInTheDocument()
+    })
+
+    expect(screen.getByLabelText('Time off')).toBeInTheDocument()
+    expect(screen.getByLabelText('Sick leave')).toBeInTheDocument()
   })
 })
