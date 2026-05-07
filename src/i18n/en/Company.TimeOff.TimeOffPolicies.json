@@ -7,7 +7,6 @@
   },
   "tableLabel": "Time off policies",
   "actions": {
-    "editPolicy": "Edit policy",
     "viewPolicy": "View policy",
     "deletePolicy": "Delete policy"
   },
