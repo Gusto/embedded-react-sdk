@@ -22,8 +22,6 @@ function MyApp() {
 }
 ```
 
-> Legacy imports via `Contractor.*` (e.g. `Contractor.OnboardingFlow`) continue to work.
-
 #### Props
 
 | Name               | Type   | Description                                                                                           |
@@ -40,12 +38,14 @@ Contractor onboarding components can be used to compose your own workflow, or ca
 
 ### Available Subcomponents
 
-- Contractor.ContractorList
-- Contractor.ContractorProfile
-- Contractor.Address
-- Contractor.PaymentMethod
-- Contractor.NewHireReport
-- Contractor.ContractorSubmit
+- [ContractorOnboarding.ContractorList](#contractorcontractorlist)
+- [ContractorOnboarding.ContractorProfile](#contractorcontractorprofile)
+- [ContractorOnboarding.Address](#contractoraddress)
+- [ContractorOnboarding.PaymentMethod](#contractorpaymentmethod)
+- [ContractorOnboarding.NewHireReport](#contractornewhirereport)
+- [ContractorOnboarding.ContractorSubmit](#contractorcontractorsubmit)
+
+> Legacy imports via `Contractor.*` (e.g. `Contractor.OnboardingFlow`) continue to work.
 
 ### Contractor.ContractorList
 

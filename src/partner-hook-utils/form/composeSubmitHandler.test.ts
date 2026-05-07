@@ -1,11 +1,11 @@
 import { describe, expect, it, vi, type Mock } from 'vitest'
-import type { UseFormReturn } from 'react-hook-form'
+import type { FieldValues, UseFormReturn } from 'react-hook-form'
 import { composeSubmitHandler } from './composeSubmitHandler'
 import { composeErrorHandler } from '../composeErrorHandler'
 import type { HookErrorHandling } from '../types'
 import type { SDKError } from '@/types/sdkError'
 
-type ComposableForm = Parameters<typeof composeSubmitHandler>[0][number]
+type ComposableForm = Extract<Parameters<typeof composeSubmitHandler>[0][number], { form: unknown }>
 
 interface MockFormMethods {
   handleSubmit: Mock
@@ -31,37 +31,69 @@ function createMockErrorHandling(
   }
 }
 
+interface FieldElementOverride {
+  name: string
+  top: number
+  left?: number
+}
+
+function createMockFieldElement(top: number, left = 0): HTMLElement {
+  const element = {
+    focus: vi.fn(),
+    getBoundingClientRect: () => ({ top, left, bottom: top, right: left, width: 0, height: 0 }),
+  } as unknown as HTMLElement
+  return element
+}
+
 function createMockForm(
   overrides: {
     isValid?: boolean
     errorFields?: string[]
     errorHandling?: HookErrorHandling
+    fieldElements?: FieldElementOverride[]
   } = {},
 ): ComposableForm & {
   formMethods: MockFormMethods
   errorHandling: HookErrorHandling & { retryQueries: Mock; clearSubmitError: Mock }
+  fieldElementsByName: Map<string, HTMLElement>
 } {
-  const { isValid = true, errorFields = [] } = overrides
+  const { isValid = true, errorFields = [], fieldElements = [] } = overrides
 
   const errors: Record<string, { message: string }> = {}
   for (const field of errorFields) {
     errors[field] = { message: 'validation_error' }
   }
 
-  const handleSubmit = vi.fn((onValid: () => void, onInvalid?: () => void) => {
-    return async () => {
-      if (isValid) {
-        onValid()
-      } else {
-        onInvalid?.()
+  const handleSubmit = vi.fn(
+    (onValid: () => void, onInvalid?: (errors: Record<string, unknown>) => void) => {
+      return async () => {
+        if (isValid) {
+          onValid()
+        } else {
+          onInvalid?.(errors)
+        }
       }
-    }
-  })
+    },
+  )
 
   const formMethods: MockFormMethods = {
     handleSubmit,
     setFocus: vi.fn(),
     formState: { errors },
+  }
+
+  const fieldElementsByName = new Map<string, HTMLElement>()
+  for (const fe of fieldElements) {
+    fieldElementsByName.set(fe.name, createMockFieldElement(fe.top, fe.left))
+  }
+
+  const hookFormInternals: Record<string, unknown> = { formMethods }
+  if (fieldElements.length > 0) {
+    hookFormInternals._fieldElementRegistry = {
+      register: vi.fn(),
+      get: (name: string) => fieldElementsByName.get(name) ?? null,
+      names: () => Array.from(fieldElementsByName.keys()),
+    }
   }
 
   const errorHandling =
@@ -70,9 +102,10 @@ function createMockForm(
       | undefined) ?? createMockErrorHandling()
 
   return {
-    form: { hookFormInternals: { formMethods: formMethods as never } },
+    form: { hookFormInternals: hookFormInternals as never },
     errorHandling,
     formMethods,
+    fieldElementsByName,
   }
 }
 
@@ -171,6 +204,108 @@ describe('composeSubmitHandler', () => {
     expect(form2.formMethods.setFocus).not.toHaveBeenCalled()
   })
 
+  describe('DOM-order focus resolution', () => {
+    it('focuses the visually first invalid field across forms regardless of form array order', async () => {
+      const form1 = createMockForm({
+        isValid: false,
+        errorFields: ['firstName', 'lastName'],
+        fieldElements: [
+          { name: 'firstName', top: 300 },
+          { name: 'lastName', top: 400 },
+        ],
+      })
+      const form2 = createMockForm({
+        isValid: false,
+        errorFields: ['city'],
+        fieldElements: [{ name: 'city', top: 100 }],
+      })
+      const onAllValid = vi.fn()
+
+      const { handleSubmit } = composeSubmitHandler([form1, form2], onAllValid)
+      await handleSubmit(createMockEvent())
+
+      const cityElement = form2.fieldElementsByName.get('city')!
+      const firstNameElement = form1.fieldElementsByName.get('firstName')!
+      expect(cityElement.focus).toHaveBeenCalledOnce()
+      expect(firstNameElement.focus).not.toHaveBeenCalled()
+      expect(form1.formMethods.setFocus).not.toHaveBeenCalled()
+      expect(form2.formMethods.setFocus).not.toHaveBeenCalled()
+    })
+
+    it('resolves ties by left position when two candidates share a top', async () => {
+      const form = createMockForm({
+        isValid: false,
+        errorFields: ['right', 'left'],
+        fieldElements: [
+          { name: 'right', top: 100, left: 500 },
+          { name: 'left', top: 100, left: 50 },
+        ],
+      })
+      const onAllValid = vi.fn()
+
+      const { handleSubmit } = composeSubmitHandler([form], onAllValid)
+      await handleSubmit(createMockEvent())
+
+      const leftElement = form.fieldElementsByName.get('left')!
+      const rightElement = form.fieldElementsByName.get('right')!
+      expect(leftElement.focus).toHaveBeenCalledOnce()
+      expect(rightElement.focus).not.toHaveBeenCalled()
+    })
+
+    it('falls back to setFocus on first error field when no forms provide _fieldElementRegistry', async () => {
+      const form1 = createMockForm({
+        isValid: false,
+        errorFields: ['street1', 'city'],
+      })
+      const form2 = createMockForm({ isValid: true })
+      const onAllValid = vi.fn()
+
+      const { handleSubmit } = composeSubmitHandler([form1, form2], onAllValid)
+      await handleSubmit(createMockEvent())
+
+      expect(form1.formMethods.setFocus).toHaveBeenCalledWith('street1')
+      expect(form2.formMethods.setFocus).not.toHaveBeenCalled()
+    })
+
+    it('uses DOM-order candidates from registered forms and ignores legacy forms entirely when any candidate is found', async () => {
+      const legacyForm = createMockForm({
+        isValid: false,
+        errorFields: ['legacyField'],
+      })
+      const registeredForm = createMockForm({
+        isValid: false,
+        errorFields: ['registeredField'],
+        fieldElements: [{ name: 'registeredField', top: 200 }],
+      })
+      const onAllValid = vi.fn()
+
+      const { handleSubmit } = composeSubmitHandler([legacyForm, registeredForm], onAllValid)
+      await handleSubmit(createMockEvent())
+
+      const registeredElement = registeredForm.fieldElementsByName.get('registeredField')!
+      expect(registeredElement.focus).toHaveBeenCalledOnce()
+      expect(legacyForm.formMethods.setFocus).not.toHaveBeenCalled()
+    })
+
+    it('falls back to legacy setFocus when _fieldElementRegistry has no entries for the error fields', async () => {
+      const form = createMockForm({
+        isValid: false,
+        errorFields: ['unregistered'],
+      })
+      form.form.hookFormInternals._fieldElementRegistry = {
+        register: vi.fn(),
+        get: () => null,
+        names: () => [],
+      }
+      const onAllValid = vi.fn()
+
+      const { handleSubmit } = composeSubmitHandler([form], onAllValid)
+      await handleSubmit(createMockEvent())
+
+      expect(form.formMethods.setFocus).toHaveBeenCalledWith('unregistered')
+    })
+  })
+
   it('does not call onAllValid when validation fails even with no focusable error fields', async () => {
     const form1 = createMockForm({ isValid: false, errorFields: [] })
     const onAllValid = vi.fn()
@@ -262,7 +397,7 @@ describe('composeSubmitHandler', () => {
   describe('raw UseFormReturn slots', () => {
     function createMockRawForm(
       overrides: { isValid?: boolean; errorFields?: string[] } = {},
-    ): UseFormReturn<{ startDate: string }> & {
+    ): UseFormReturn<FieldValues> & {
       handleSubmit: Mock
       setFocus: Mock
     } {
@@ -273,21 +408,23 @@ describe('composeSubmitHandler', () => {
         errors[field] = { message: 'validation_error' }
       }
 
-      const handleSubmit = vi.fn((onValid: () => void, onInvalid?: () => void) => {
-        return async () => {
-          if (isValid) {
-            onValid()
-          } else {
-            onInvalid?.()
+      const handleSubmit = vi.fn(
+        (onValid: () => void, onInvalid?: (errors: Record<string, unknown>) => void) => {
+          return async () => {
+            if (isValid) {
+              onValid()
+            } else {
+              onInvalid?.(errors)
+            }
           }
-        }
-      })
+        },
+      )
 
       const mock = {
         handleSubmit,
         setFocus: vi.fn(),
         formState: { errors },
-      } as unknown as UseFormReturn<{ startDate: string }> & {
+      } as unknown as UseFormReturn<FieldValues> & {
         handleSubmit: Mock
         setFocus: Mock
       }

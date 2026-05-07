@@ -30,17 +30,119 @@ function MyApp() {
 
 #### Events
 
-| Event type                      | Description                      | Data                                                     |
-| ------------------------------- | -------------------------------- | -------------------------------------------------------- |
-| `employee/update`               | Fired when editing basic details | { employeeId: string }                                   |
-| `employee/addresses/home`       | Fired when managing home address | { employeeId: string }                                   |
-| `employee/addresses/work`       | Fired when managing work address | { employeeId: string }                                   |
-| `employee/compensations/update` | Fired when editing compensation  | { employeeId: string, job: Job }                         |
-| `employee/bankAccount/create`   | Fired when adding a bank account | { employeeId: string }                                   |
-| `employee/deductions/add`       | Fired when adding a deduction    | { employeeId: string }                                   |
-| `employee/federalTaxes/edit`    | Fired when editing federal taxes | { employeeId: string, federalTaxes: EmployeeFederalTax } |
-| `employee/stateTaxes/edit`      | Fired when editing state taxes   | { employeeId: string, state: string }                    |
-| `employee/forms/view`           | Fired when viewing a form        | { employeeId: string, formUuid: string }                 |
+| Event type                   | Description                      | Data                                                     |
+| ---------------------------- | -------------------------------- | -------------------------------------------------------- |
+| EMPLOYEE_UPDATE              | Fired when editing basic details | { employeeId: string }                                   |
+| EMPLOYEE_HOME_ADDRESS        | Fired when managing home address | { employeeId: string }                                   |
+| EMPLOYEE_WORK_ADDRESS        | Fired when managing work address | { employeeId: string }                                   |
+| EMPLOYEE_COMPENSATION_UPDATE | Fired when editing compensation  | { employeeId: string, job: Job }                         |
+| EMPLOYEE_BANK_ACCOUNT_CREATE | Fired when adding a bank account | { employeeId: string }                                   |
+| EMPLOYEE_DEDUCTION_ADD       | Fired when adding a deduction    | { employeeId: string }                                   |
+| EMPLOYEE_FEDERAL_TAXES_EDIT  | Fired when editing federal taxes | { employeeId: string, federalTaxes: EmployeeFederalTax } |
+| EMPLOYEE_STATE_TAXES_EDIT    | Fired when editing state taxes   | { employeeId: string, state: string }                    |
+| EMPLOYEE_VIEW_FORM_TO_SIGN   | Fired when viewing a form        | { employeeId: string, formUuid: string }                 |
+
+## Using Dashboard Subcomponents
+
+The Dashboard workflow can be used through the wrapping flow component or rendered directly without the flow wrapper. The `EmployeeManagement` namespace also exports related steady-state components that are typically rendered in response to events emitted from the Dashboard (for example, an "Edit work address" CTA emits `EMPLOYEE_WORK_ADDRESS` and your application should render `EmployeeManagement.WorkAddress` in response). For guidance on creating a custom workflow, see [docs on composition](../integration-guide/composition.md).
+
+### Available Subcomponents
+
+- [EmployeeManagement.DashboardFlow](#employeemanagementdashboardflow)
+- [Employee.Dashboard](#employeedashboard)
+- [EmployeeManagement.EmployeeList](#employeemanagementemployeelist)
+- [EmployeeManagement.WorkAddress](#employeemanagementworkaddress)
+
+> Legacy import via `Employee.DashboardFlow` continues to work.
+
+### EmployeeManagement.DashboardFlow
+
+The main entry point for the Employee Dashboard workflow. Wraps the dashboard with error boundaries, suspense, and provides a consistent loading/error experience. See the [Implementation](#implementation) section above for full props and events.
+
+### Employee.Dashboard
+
+The Dashboard component renders the tabbed interface directly without the flow wrapper. Use this when you want to embed the dashboard into a custom layout that already provides its own error boundaries.
+
+```jsx
+import { Employee } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return <Employee.Dashboard employeeId="employee-id" onEvent={() => {}} />
+}
+```
+
+#### Props
+
+| Name                | Type     | Description                                                    |
+| ------------------- | -------- | -------------------------------------------------------------- |
+| employeeId Required | string   | The employee identifier.                                       |
+| onEvent Required    | function | See events table for available events (same as DashboardFlow). |
+| dictionary          | object   | Optional translations for component text.                      |
+
+#### Events
+
+`Employee.Dashboard` emits the same events as `EmployeeManagement.DashboardFlow`. See the events table at the top of this page.
+
+### EmployeeManagement.EmployeeList
+
+Displays a directory of employees for a company organized into Active, Onboarding, and Dismissed tabs. Supports adding, editing, dismissing, deleting, and rehiring employees. Typically used as the entry point that navigates the user to a specific employee's `DashboardFlow`.
+
+```jsx
+import { EmployeeManagement } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return <EmployeeManagement.EmployeeList companyId="your-company-id" onEvent={() => {}} />
+}
+```
+
+#### Props
+
+| Name               | Type                                          | Default    | Description                                           |
+| ------------------ | --------------------------------------------- | ---------- | ----------------------------------------------------- |
+| companyId Required | string                                        |            | The associated company identifier.                    |
+| onEvent Required   | function                                      |            | See events table for available events.                |
+| initialTab         | `'active'` \| `'onboarding'` \| `'dismissed'` | `'active'` | The tab that is selected when the list first renders. |
+| dictionary         | object                                        |            | Optional translations for component text.             |
+| FallbackComponent  | React.ComponentType                           |            | Optional custom error fallback component.             |
+
+#### Events
+
+| Event type       | Description                                                | Data                   |
+| ---------------- | ---------------------------------------------------------- | ---------------------- |
+| EMPLOYEE_CREATE  | Fired when user clicks "Add employee"                      | None                   |
+| EMPLOYEE_UPDATE  | Fired when user selects an employee to edit                | { employeeId: string } |
+| EMPLOYEE_DISMISS | Fired when user chooses to dismiss/terminate an employee   | { employeeId: string } |
+| EMPLOYEE_REHIRE  | Fired when user chooses to rehire a dismissed employee     | { employeeId: string } |
+| EMPLOYEE_DELETED | Fired after an onboarding employee is successfully deleted | { employeeId: string } |
+
+### EmployeeManagement.WorkAddress
+
+A standalone management screen for viewing and editing an employee's work addresses. Supports adding, switching the active address (with an effective date), editing existing addresses, and deleting addresses. Typically rendered in response to the `EMPLOYEE_WORK_ADDRESS` event emitted from the Dashboard.
+
+```jsx
+import { EmployeeManagement } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return <EmployeeManagement.WorkAddress employeeId="employee-id" onEvent={() => {}} />
+}
+```
+
+#### Props
+
+| Name                | Type                | Description                               |
+| ------------------- | ------------------- | ----------------------------------------- |
+| employeeId Required | string              | The employee identifier.                  |
+| onEvent Required    | function            | See events table for available events.    |
+| dictionary          | object              | Optional translations for component text. |
+| FallbackComponent   | React.ComponentType | Optional custom error fallback component. |
+
+#### Events
+
+| Event type                    | Description                                    | Data                                                                                                                                               |
+| ----------------------------- | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| EMPLOYEE_WORK_ADDRESS_CREATED | Fired when a new work address is created       | [Response from the Create a work address endpoint](https://docs.gusto.com/embedded-payroll/reference/post-v1-employees-employee_id-work_addresses) |
+| EMPLOYEE_WORK_ADDRESS_UPDATED | Fired when an existing work address is updated | [Response from the Update a work address endpoint](https://docs.gusto.com/embedded-payroll/reference/put-v1-work_addresses-work_address_uuid)      |
+| EMPLOYEE_WORK_ADDRESS_DELETED | Fired when a work address is deleted           | The deleted `EmployeeWorkAddress` snapshot                                                                                                         |
 
 ## Dashboard Tabs
 
@@ -128,20 +230,6 @@ Displays employee forms in a table format:
 
 Forms include W2s, W4s, direct deposit authorizations, and other employment documents.
 
-## Using Dashboard as a Standalone Component
-
-The Dashboard component can be used directly without the Flow wrapper for embedding into custom layouts:
-
-```jsx
-import { Employee } from '@gusto/embedded-react-sdk'
-
-function MyComponent() {
-  return <Employee.Dashboard employeeId="employee-id" onEvent={() => {}} />
-}
-```
-
-This renders the tabbed interface with all data fetching and state management handled automatically.
-
 ## Data Loading
 
 The Dashboard uses React Query with Suspense for data fetching. All API calls happen automatically when the component mounts:
@@ -214,49 +302,32 @@ To provide a custom error fallback:
 
 ### Event Handling
 
-All interactive elements emit events through the `onEvent` callback. Use these events to navigate to editing flows or trigger other actions in your application:
+All interactive elements emit events through the `onEvent` callback. Use these events to navigate to editing flows or trigger other actions in your application. Import and use the `componentEvents` constants for type safety:
 
 ```jsx
-<Employee.DashboardFlow
-  employeeId="employee-id"
-  onEvent={(eventType, data) => {
-    switch (eventType) {
-      case 'employee/update':
-        // Navigate to employee edit form
-        break
-      case 'employee/bankAccount/create':
-        // Show bank account creation flow
-        break
-      case 'employee/forms/view':
-        // Open form viewer/signer
-        break
-      // Handle other events...
-    }
-  }}
-/>
-```
+import { componentEvents, EmployeeManagement } from '@gusto/embedded-react-sdk'
 
-Alternatively, you can import and use the `componentEvents` constants for type safety:
-
-```jsx
-import { componentEvents } from '@gusto/embedded-react-sdk'
-;<Employee.DashboardFlow
-  employeeId="employee-id"
-  onEvent={(eventType, data) => {
-    switch (eventType) {
-      case componentEvents.EMPLOYEE_UPDATE:
-        // Navigate to employee edit form
-        break
-      case componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATE:
-        // Show bank account creation flow
-        break
-      case componentEvents.EMPLOYEE_VIEW_FORM_TO_SIGN:
-        // Open form viewer/signer
-        break
-      // Handle other events...
-    }
-  }}
-/>
+function MyDashboard() {
+  return (
+    <EmployeeManagement.DashboardFlow
+      employeeId="employee-id"
+      onEvent={(eventType, data) => {
+        switch (eventType) {
+          case componentEvents.EMPLOYEE_UPDATE:
+            // Navigate to employee edit form
+            break
+          case componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATE:
+            // Show bank account creation flow
+            break
+          case componentEvents.EMPLOYEE_VIEW_FORM_TO_SIGN:
+            // Open form viewer/signer
+            break
+          // Handle other events...
+        }
+      }}
+    />
+  )
+}
 ```
 
 ### Internationalization

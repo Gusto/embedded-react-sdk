@@ -6,7 +6,7 @@ export { Landing } from '../Landing'
 export { DocumentSigner } from '../DocumentSigner'
 export { EmploymentEligibility } from '../DocumentSigner/EmploymentEligibility'
 
-export { Profile } from '../Profile'
+export { Profile } from '../Profile/onboarding/Profile'
 export { Compensation } from '../Compensation'
 export { FederalTaxes, type FederalTaxesProps } from '../FederalTaxes/onboarding/FederalTaxes'
 export { StateTaxes } from '../StateTaxes'

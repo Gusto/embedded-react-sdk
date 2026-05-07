@@ -1,20 +1,26 @@
 import type { SyntheticEvent } from 'react'
 import type { FieldValues, UseFormReturn } from 'react-hook-form'
 import { composeErrorHandler } from '../composeErrorHandler'
-import type { HookErrorHandling } from '../types'
+import type { HookErrorHandling, HookFormInternals } from '../types'
 
 /**
  * Minimal shape required for a form hook result to participate in `composeSubmitHandler`.
  * Any hook returning `BaseFormHookReady` satisfies this interface.
  *
- * Uses method syntax so TypeScript applies bivariant checking on parameter types,
+ * `formMethods` is declared with method-call syntax (rather than reused from
+ * `HookFormInternals`) so TypeScript applies bivariant parameter checking,
  * allowing hooks with specific form data generics to be passed without casts.
+ * `_fieldElementRegistry` is reused directly since its type doesn't depend on
+ * the form's generic.
  */
 interface ComposableFormHookResult {
   form: {
-    hookFormInternals: {
+    hookFormInternals: Pick<HookFormInternals, '_fieldElementRegistry'> & {
       formMethods: {
-        handleSubmit(onValid: () => void, onInvalid?: () => void): () => Promise<void>
+        handleSubmit(
+          onValid: () => void,
+          onInvalid?: (errors: Record<string, unknown>) => void,
+        ): () => Promise<void>
         setFocus(name: string): void
         formState: { errors: Record<string, unknown> }
       }
@@ -35,6 +41,13 @@ export type ComposeSubmitInput<T extends FieldValues = FieldValues> =
   | ComposableFormHookResult
   | UseFormReturn<T>
 
+interface FormValidationResult {
+  input: ComposeSubmitInput
+  formMethods: FormMethods
+  valid: boolean
+  errors: Record<string, unknown>
+}
+
 export interface ComposeSubmitHandlerResult {
   handleSubmit: (e: SyntheticEvent) => Promise<void>
   errorHandling: HookErrorHandling
@@ -54,11 +67,66 @@ function extractFormMethods<T extends FieldValues>(input: ComposeSubmitInput<T>)
 }
 
 /**
+ * Picks the visually first invalid field across all composed forms using live
+ * `getBoundingClientRect()` positions, then focuses its DOM element. Falls back
+ * to array-order (first form's first error) when no element can be resolved —
+ * raw `UseFormReturn` inputs have no registry, and forms rendered without
+ * `SDKFormProvider` or a HookField wrapper won't have their fields registered
+ * either, so we let react-hook-form's `setFocus` attempt it instead.
+ *
+ * Consumes `results` (captured from each form's `onInvalid` callback) rather
+ * than reading `formState.errors` — the latter is a proxy that returns `{}`
+ * when accessed outside a component subscription.
+ */
+function focusFirstInvalidAcrossForms(results: FormValidationResult[]): void {
+  type Candidate = {
+    formMethods: FormMethods
+    name: string
+    element: HTMLElement
+  }
+  const candidates: Candidate[] = []
+  for (const { input, formMethods, errors } of results) {
+    if (isRawUseForm(input)) continue
+    const registry = input.form.hookFormInternals._fieldElementRegistry
+    if (!registry) continue
+    for (const name of Object.keys(errors)) {
+      const element = registry.get(name)
+      if (element) {
+        candidates.push({ formMethods, name, element })
+      }
+    }
+  }
+
+  if (candidates.length > 0) {
+    candidates.sort((a, b) => {
+      const ar = a.element.getBoundingClientRect()
+      const br = b.element.getBoundingClientRect()
+      return ar.top - br.top || ar.left - br.left
+    })
+    const winner = candidates[0]!
+    // Focus the DOM element directly. Bypasses react-hook-form's `setFocus`,
+    // which depends on `_fields[name]._f.ref` and isn't reliably populated
+    // when fields are rendered through libraries like react-aria-components.
+    winner.element.focus()
+    return
+  }
+
+  for (const { formMethods, errors } of results) {
+    const firstErrorField = Object.keys(errors)[0]
+    if (firstErrorField) {
+      formMethods.setFocus(firstErrorField)
+      return
+    }
+  }
+}
+
+/**
  * Coordinates validation and submission across multiple form hooks on the same page, and
  * returns aggregated `errorHandling` for those forms so you can drive a single error surface.
  *
- * Validates all forms simultaneously via `handleSubmit()`, then focuses the first invalid
- * field across all forms (in array order). Only calls `onAllValid` when every form passes.
+ * Validates all forms simultaneously via `handleSubmit()`, then focuses the visually first
+ * invalid field across all forms (sorted by `getBoundingClientRect()`). Only calls
+ * `onAllValid` when every form passes.
  *
  * Uses `handleSubmit` rather than `trigger` so that react-hook-form sets
  * `formState.isSubmitted = true`, which enables `reValidateMode` (default: `onChange`).
@@ -95,38 +163,32 @@ export function composeSubmitHandler<TForms extends readonly FieldValues[]>(
   forms: readonly [...{ [K in keyof TForms]: ComposeSubmitInput<TForms[K]> }],
   onAllValid: () => Promise<void>,
 ): ComposeSubmitHandlerResult {
-  const formMethodsList = forms.map(extractFormMethods)
   const errorSources = forms.filter((form): form is ComposableFormHookResult => !isRawUseForm(form))
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault()
 
     const validationResults = await Promise.all(
-      formMethodsList.map(
-        methods =>
-          new Promise<boolean>(resolve => {
-            void methods.handleSubmit(
+      forms.map(
+        input =>
+          new Promise<FormValidationResult>(resolve => {
+            const formMethods = extractFormMethods(input)
+            void formMethods.handleSubmit(
               () => {
-                resolve(true)
+                resolve({ input, formMethods, valid: true, errors: {} })
               },
-              () => {
-                resolve(false)
+              errors => {
+                resolve({ input, formMethods, valid: false, errors })
               },
             )()
           }),
       ),
     )
 
-    const allValid = validationResults.every(Boolean)
+    const allValid = validationResults.every(r => r.valid)
 
     if (!allValid) {
-      for (const methods of formMethodsList) {
-        const firstErrorField = Object.keys(methods.formState.errors)[0]
-        if (firstErrorField) {
-          methods.setFocus(firstErrorField)
-          return
-        }
-      }
+      focusFirstInvalidAcrossForms(validationResults)
       return
     }
 

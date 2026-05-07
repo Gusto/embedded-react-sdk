@@ -40,15 +40,15 @@ Employee onboarding components can be used to compose your own workflow, or can 
 
 ### Available Subcomponents
 
-- EmployeeOnboarding.EmployeeList
-- EmployeeOnboarding.Profile
-- EmployeeOnboarding.Compensation
-- EmployeeOnboarding.FederalTaxes
-- EmployeeOnboarding.StateTaxes
-- EmployeeOnboarding.PaymentMethod
-- EmployeeOnboarding.Deductions
-- EmployeeOnboarding.EmployeeDocuments
-- EmployeeOnboarding.OnboardingSummary
+- [EmployeeOnboarding.EmployeeList](#employeelist)
+- [EmployeeOnboarding.Profile](#employeeprofile)
+- [EmployeeOnboarding.Compensation](#employeecompensation)
+- [EmployeeOnboarding.FederalTaxes](#employeeonboardingfederaltaxes--employeemanagementfederaltaxes)
+- [EmployeeOnboarding.StateTaxes](#employeestatetaxes)
+- [EmployeeOnboarding.PaymentMethod](#employeepaymentmethod)
+- [EmployeeOnboarding.Deductions](#employeedeductions)
+- [EmployeeOnboarding.EmployeeDocuments](#employeeemployeedocuments)
+- [EmployeeOnboarding.OnboardingSummary](#employeeonboardingsummary)
 
 > Legacy imports via `Employee.*` (e.g. `Employee.EmployeeList`) continue to work.
 
@@ -163,12 +163,12 @@ function MyComponent() {
 
 #### Props
 
-| Name                | Type                                                                                               | Description                            |
-| ------------------- | -------------------------------------------------------------------------------------------------- | -------------------------------------- | -------- | ----------- | ------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| employeeId Required | string                                                                                             | The associated employee identifier.    |
-| startDate Required  | string                                                                                             | The date the employee will start work. |
-| onEvent Required    |                                                                                                    | See events table for available events. |
-| defaultValues       | { title?: string \| null rate?: string paymentUnit?: string, flsaStatus?: 'Commission Only Exempt' | 'Commission Only Nonexempt'            | 'Exempt' | 'Nonexempt' | 'Owner' | 'Salaried Nonexempt' } | Default values for the employee profile form inputs. If employee data is available via the API, defaultValues will be overwritten. |
+| Name                | Type     | Description                                                                                                                                                                                                                                                                                                                             |
+| ------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| employeeId Required | string   | The associated employee identifier.                                                                                                                                                                                                                                                                                                     |
+| startDate Required  | string   | The date the employee will start work.                                                                                                                                                                                                                                                                                                  |
+| onEvent Required    | function | See events table for available events.                                                                                                                                                                                                                                                                                                  |
+| defaultValues       | object   | Default values for the compensation form fields: `title?: string \| null`, `rate?: string`, `paymentUnit?: string`, `flsaStatus?: 'Commission Only Exempt' \| 'Commission Only Nonexempt' \| 'Exempt' \| 'Nonexempt' \| 'Owner' \| 'Salaried Nonexempt'`. If employee data is available via the API, defaultValues will be overwritten. |
 
 #### Events
 

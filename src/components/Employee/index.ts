@@ -1,7 +1,7 @@
 export { EmployeeList } from './EmployeeList/onboarding/EmployeeList'
 export { Deductions } from './Deductions'
 export { OnboardingSummary } from './OnboardingSummary'
-export { Profile } from './Profile'
+export { Profile } from './Profile/onboarding/Profile'
 export { Compensation } from './Compensation'
 export { FederalTaxes } from './FederalTaxes'
 export type { FederalTaxesProps } from './FederalTaxes'

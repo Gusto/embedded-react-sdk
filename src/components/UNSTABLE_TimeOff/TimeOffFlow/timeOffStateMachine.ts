@@ -7,6 +7,7 @@ import {
   AddEmployeesToPolicyContextual,
   TimeOffPolicyDetailContextual,
   HolidaySelectionFormContextual,
+  EditHolidaySelectionFormContextual,
   AddEmployeesHolidayContextual,
   ViewHolidayEmployeesContextual,
   ViewHolidayScheduleContextual,
@@ -291,7 +292,7 @@ export const timeOffMachine = {
     ),
     transition(
       componentEvents.TIME_OFF_EDIT_POLICY,
-      'policyDetailsForm',
+      'editPolicyDetailsForm',
       reduce(
         (
           ctx: TimeOffFlowContextInterface,
@@ -320,6 +321,54 @@ export const timeOffMachine = {
       ),
     ),
     backToListTransition,
+  ),
+
+  // Distinct from `policyDetailsForm` (the create-flow step) so that
+  // DONE/CANCEL return to the policy detail view and settings route through
+  // `editPolicySettings` instead of the create flow's steps.
+  editPolicyDetailsForm: state<MachineTransition>(
+    transition(
+      componentEvents.TIME_OFF_POLICY_DETAILS_DONE,
+      'viewTimeOffPolicyDetail',
+      guard(isUnlimitedPolicy),
+      reduce(
+        (
+          ctx: TimeOffFlowContextInterface,
+          ev: { payload: PolicyCreatedPayload },
+        ): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: TimeOffPolicyDetailContextual,
+          policyId: ev.payload.policyId,
+          alerts: undefined,
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.TIME_OFF_POLICY_DETAILS_DONE,
+      'editPolicySettings',
+      reduce(
+        (
+          ctx: TimeOffFlowContextInterface,
+          ev: { payload: PolicyCreatedPayload },
+        ): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: PolicySettingsContextual,
+          policyId: ev.payload.policyId,
+          alerts: undefined,
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.CANCEL,
+      'viewTimeOffPolicyDetail',
+      reduce(
+        (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: TimeOffPolicyDetailContextual,
+          alerts: undefined,
+        }),
+      ),
+    ),
   ),
 
   // Distinct from `policySettings` (the create-flow step) so that DONE/BACK
@@ -411,12 +460,45 @@ export const timeOffMachine = {
 
   viewHolidayEmployees: state<MachineTransition>(
     transition(
+      componentEvents.TIME_OFF_HOLIDAY_ADD_EMPLOYEES,
+      'addEmployeesHoliday',
+      reduce(
+        (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: AddEmployeesHolidayContextual,
+          alerts: undefined,
+        }),
+      ),
+    ),
+    transition(
       componentEvents.TIME_OFF_VIEW_HOLIDAY_SCHEDULE,
       'viewHolidaySchedule',
       reduce(
         (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
           ...ctx,
           component: ViewHolidayScheduleContextual,
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.TIME_OFF_HOLIDAY_ADD_EMPLOYEES,
+      'addEmployeesHoliday',
+      reduce(
+        (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: AddEmployeesHolidayContextual,
+          alerts: undefined,
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.TIME_OFF_EDIT_HOLIDAY_POLICY,
+      'editHolidaySelectionForm',
+      reduce(
+        (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: EditHolidaySelectionFormContextual,
+          alerts: undefined,
         }),
       ),
     ),
@@ -434,7 +516,61 @@ export const timeOffMachine = {
         }),
       ),
     ),
+    transition(
+      componentEvents.TIME_OFF_HOLIDAY_ADD_EMPLOYEES,
+      'addEmployeesHoliday',
+      reduce(
+        (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: AddEmployeesHolidayContextual,
+          alerts: undefined,
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.TIME_OFF_EDIT_HOLIDAY_POLICY,
+      'editHolidaySelectionForm',
+      reduce(
+        (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: EditHolidaySelectionFormContextual,
+          alerts: undefined,
+        }),
+      ),
+    ),
     backToListTransition,
+  ),
+
+  // Distinct from `holidaySelectionForm` (the create-flow step) so that
+  // DONE returns to the holiday detail view instead of routing into
+  // `addEmployeesHoliday`.
+  editHolidaySelectionForm: state<MachineTransition>(
+    transition(
+      componentEvents.TIME_OFF_HOLIDAY_SELECTION_EDIT_DONE,
+      'viewHolidayEmployees',
+      reduce(
+        (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: ViewHolidayEmployeesContextual,
+          alerts: undefined,
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.TIME_OFF_HOLIDAY_CREATE_ERROR,
+      'viewHolidayEmployees',
+      reduce(
+        (
+          ctx: TimeOffFlowContextInterface,
+          ev: { payload: ErrorPayload },
+        ): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: ViewHolidayEmployeesContextual,
+          alerts: ev.payload.alert ? [ev.payload.alert] : undefined,
+        }),
+      ),
+    ),
+    cancelToPolicyList,
   ),
 
   final: state<MachineTransition>(),

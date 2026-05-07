@@ -1,6 +1,7 @@
 import type { ComponentType } from 'react'
 import { useHookFieldResolution } from '../useHookFieldResolution'
 import type { BaseFieldProps, ValidationMessages, FormHookResult } from '../../types'
+import { withFieldElementRegistry } from './withFieldElementRegistry'
 import { TextInputField } from '@/components/Common'
 import type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputTypes'
 
@@ -29,14 +30,15 @@ export function TextInputHookField<
   placeholder,
   FieldComponent,
 }: TextInputHookFieldProps<TErrorCode, TOptionalErrorCode>) {
-  const { metadata, control, errorMessage } = useHookFieldResolution(
+  const { metadata, control, errorMessage, fieldElementRegistry } = useHookFieldResolution(
     name,
     formHookResult,
     validationMessages,
   )
   const fieldMetadata = metadata[name]
 
-  return (
+  return withFieldElementRegistry(
+    fieldElementRegistry,
     <TextInputField
       name={name}
       control={control}
@@ -48,6 +50,6 @@ export function TextInputHookField<
       transform={transform}
       placeholder={placeholder}
       FieldComponent={FieldComponent}
-    />
+    />,
   )
 }
