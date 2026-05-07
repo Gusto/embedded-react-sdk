@@ -1,0 +1,74 @@
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #959595;
+  cursor: pointer;
+  outline: none;
+  border-radius: 999px;
+  font-family: 'InterfaceLib Sans', Helvetica, Arial, sans-serif;
+  transition:
+    color 0.24s ease-out,
+    background-color 0.24s ease-out;
+
+  svg {
+    display: block;
+  }
+
+  &:hover,
+  &:focus-visible,
+  &[data-pressed] {
+    color: #101010;
+  }
+
+  &[data-focus-visible] {
+    outline: 2px solid #006aff;
+    outline-offset: 2px;
+  }
+}
+
+.tooltip {
+  max-width: 400px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background-color: #232323;
+  color: #ffffff;
+  font-family: 'InterfaceLib Sans', Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 22px;
+  font-weight: 300;
+  box-shadow:
+    0 4px 32px rgba(0, 0, 0, 0.1),
+    0 8px 16px rgba(0, 0, 0, 0.1);
+  outline: none;
+
+  &[data-entering] {
+    animation: il-tooltip-enter 0.16s ease-out;
+  }
+
+  &[data-exiting] {
+    animation: il-tooltip-enter 0.12s ease-in reverse;
+  }
+}
+
+a {
+  color: white;
+}
+
+@keyframes il-tooltip-enter {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -1,0 +1,35 @@
+@font-face {
+  font-family: 'InterfaceLib Sans';
+  src: url('./Fonts/Sans-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'InterfaceLib Sans';
+  src: url('./Fonts/Sans-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'InterfaceLib Sans';
+  src: url('./Fonts/Sans-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+.GSDK {
+  font-family: 'InterfaceLib Sans', Helvetica, Arial, sans-serif;
+}
+
+.GSDK :is(h1, h2, h3, h4, h5, h6) + p {
+  color: rgb(102, 102, 102);
+}
+
+.GSDK :is(h1, h2) + p {
+  margin-top: 8px;
+}
