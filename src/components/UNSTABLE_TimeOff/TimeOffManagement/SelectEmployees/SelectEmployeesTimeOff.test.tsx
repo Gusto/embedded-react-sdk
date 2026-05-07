@@ -111,10 +111,12 @@ vi.mock('@tanstack/react-query', async importActual => {
   }
 })
 
+const mockBaseSubmitHandler = vi.fn(async (_: unknown, fn: () => Promise<void>) => fn())
+
 vi.mock('@/components/Base/useBase', () => ({
   useBase: () => ({
     onEvent: mockOnEvent,
-    baseSubmitHandler: vi.fn(async (_, fn: () => Promise<void>) => fn()),
+    baseSubmitHandler: mockBaseSubmitHandler,
     setError: vi.fn(),
     error: null,
     LoadingIndicator: () => null,
@@ -533,6 +535,60 @@ describe('SelectEmployeesTimeOff', () => {
       expect(mockInvalidateQueries).toHaveBeenCalledWith({
         queryKey: ['@gusto/embedded-api', 'timeOffPolicies', 'get'],
       })
+    })
+  })
+
+  describe('remove employee 422 error', () => {
+    it('re-throws a contextual SDKInternalError when remove_employees returns a 422', async () => {
+      const user = userEvent.setup()
+      mockPolicyEmployees = [{ uuid: '1', balance: '12' }]
+
+      const { UnprocessableEntityErrorObject } =
+        await import('@gusto/embedded-api/models/errors/unprocessableentityerrorobject')
+      const apiError = new UnprocessableEntityErrorObject(
+        {
+          errors: [
+            {
+              errorKey: 'base',
+              category: 'invalid_operation',
+              message:
+                'There are pending or approved time off requests from a previous policy. Please decline them before removing the employee from the policy',
+            },
+          ],
+        },
+        {
+          response: new Response(null, { status: 422 }),
+          request: new Request('https://example.com'),
+          body: '',
+        },
+      )
+      mockRemoveEmployees.mockRejectedValueOnce(apiError)
+
+      const caughtErrors: Error[] = []
+      mockBaseSubmitHandler.mockImplementation(async (_: unknown, fn: () => Promise<void>) => {
+        try {
+          await fn()
+        } catch (err) {
+          caughtErrors.push(err as Error)
+        }
+      })
+
+      renderComponent({ mode: 'standalone' })
+      await waitFor(() => {
+        expect(screen.getByText('Alice Smith')).toBeInTheDocument()
+      })
+
+      await user.click(screen.getAllByRole('checkbox')[FIRST_EMPLOYEE_CHECKBOX] as Element)
+      await user.click(screen.getByRole('button', { name: 'continueCta' }))
+      const confirmBtn = await screen.findByRole('button', {
+        name: 'removeConfirmDialog.confirmCta',
+      })
+      await user.click(confirmBtn)
+
+      await waitFor(() => {
+        expect(caughtErrors).toHaveLength(1)
+      })
+      expect(caughtErrors[0]!.message).toContain('errors.removeEmployeesFailed')
     })
   })
 

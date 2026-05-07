@@ -569,6 +569,9 @@ export interface CompanyTimeOffSelectEmployees{
 "startingBalanceColumn":string;
 "backCta":string;
 "continueCta":string;
+"errors":{
+"removeEmployeesFailed":string;
+};
 "removeConfirmDialog":{
 "title_one":string;
 "title_other":string;
