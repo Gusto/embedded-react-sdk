@@ -12,6 +12,7 @@ import { useAppMode } from './useAppMode'
 import { useThemeMode } from './useThemeMode'
 import { ThemeModeProvider } from './ThemeModeContext'
 import { useManualConfig, type ManualConfig } from './useManualConfig'
+import { useChromeVisibility } from './useChromeVisibility'
 
 function entitiesFromManualConfig(config: ManualConfig): EntityIds {
   return {
@@ -36,6 +37,7 @@ export function App() {
   const demoManager = useDemoManager({ pollingDisabled: isManual })
   const appMode = useAppMode()
   const themeMode = useThemeMode()
+  const { chromeHidden, showChrome } = useChromeVisibility()
 
   const handleCreateNewDemo = async (demoType: string) => {
     const result = await demoManager.createNewDemo(demoType)
@@ -68,35 +70,49 @@ export function App() {
     )
   }
 
+  const sidebarWidth = chromeHidden ? '0rem' : sidebarOpen ? '16.25rem' : '2.75rem'
+
   return (
     <ThemeModeProvider value={themeMode}>
-      <div className="app-layout">
-        <TopBar
-          companyId={activeEntities.companyId}
-          tokenStatus={demoManager.tokenStatus}
-          onOpenSettings={() => {
-            setSettingsOpen(true)
-          }}
-        />
-        <div className="app-body">
-          <Sidebar
-            mode={appMode}
-            searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
-            isOpen={sidebarOpen}
-            onToggle={() => {
-              setSidebarOpen(open => !open)
+      <div className={`app-layout${chromeHidden ? ' app-layout-chrome-hidden' : ''}`}>
+        {!chromeHidden && (
+          <TopBar
+            companyId={activeEntities.companyId}
+            tokenStatus={demoManager.tokenStatus}
+            onOpenSettings={() => {
+              setSettingsOpen(true)
             }}
           />
+        )}
+        <div className="app-body">
+          {!chromeHidden && (
+            <Sidebar
+              mode={appMode}
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
+              isOpen={sidebarOpen}
+              onToggle={() => {
+                setSidebarOpen(open => !open)
+              }}
+            />
+          )}
           <main
             className="main-content"
-            style={
-              { '--sidebar-width': sidebarOpen ? '16.25rem' : '2.75rem' } as React.CSSProperties
-            }
+            style={{ '--sidebar-width': sidebarWidth } as React.CSSProperties}
           >
-            <Outlet context={{ entities: activeEntities }} />
+            <Outlet context={{ entities: activeEntities, chromeHidden }} />
           </main>
         </div>
+        {chromeHidden && (
+          <button
+            type="button"
+            className="chrome-restore-pill"
+            onClick={showChrome}
+            aria-label="Show chrome"
+          >
+            <span className="chrome-restore-pill-key">\</span> Show chrome
+          </button>
+        )}
         <DemoSettingsPanel
           isOpen={settingsOpen}
           onClose={() => {
