@@ -554,14 +554,15 @@ describe('timeOffStateMachine', () => {
       expect(service.context.policyId).toBe('holiday-policy')
     })
 
-    it('cancels from editHolidaySelectionForm to policyList', () => {
+    it('cancels from editHolidaySelectionForm back to viewHolidayEmployees', () => {
       const service = createService()
       toViewHolidayEmployees(service)
       send(service, componentEvents.TIME_OFF_EDIT_HOLIDAY_POLICY)
 
       send(service, componentEvents.CANCEL)
 
-      expect(service.machine.current).toBe('policyList')
+      expect(service.machine.current).toBe('viewHolidayEmployees')
+      expect(service.context.alerts).toBeUndefined()
     })
 
     it('does not route TIME_OFF_HOLIDAY_SELECTION_DONE in the edit flow into the create flow', () => {

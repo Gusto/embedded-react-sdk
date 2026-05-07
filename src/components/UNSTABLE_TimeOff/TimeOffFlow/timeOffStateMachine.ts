@@ -559,7 +559,17 @@ export const timeOffMachine = {
         }),
       ),
     ),
-    cancelToPolicyList,
+    transition(
+      componentEvents.CANCEL,
+      'viewHolidayEmployees',
+      reduce(
+        (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: ViewHolidayEmployeesContextual,
+          alerts: undefined,
+        }),
+      ),
+    ),
   ),
 
   final: state<MachineTransition>(),

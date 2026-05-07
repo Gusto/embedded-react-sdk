@@ -304,7 +304,7 @@ Following types are currently defined:
 
 ## Documentation
 
-You can find documentation on building with the Gusto Embedded React SDK [in the `docs` directory within this repo here](./docs/01/what-is-the-gep-react-sdk.md). [Documentation is also hosted live alongside the Gusto Embedded API docs here](https://docs.gusto.com/embedded-payroll/docs/what-is-the-gep-react-sdk).
+You can find documentation on building with the Gusto Embedded React SDK [in the `docs` directory within this repo](./docs/).
 
 ## Cutting a new release
 
