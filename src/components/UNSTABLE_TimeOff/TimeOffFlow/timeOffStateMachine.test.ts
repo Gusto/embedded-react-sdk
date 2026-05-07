@@ -300,6 +300,37 @@ describe('timeOffStateMachine', () => {
     })
   })
 
+  describe('holiday add employees from detail', () => {
+    it('transitions viewHolidayEmployees -> addEmployeesHoliday on TIME_OFF_HOLIDAY_ADD_EMPLOYEES', () => {
+      const service = createService()
+      send(service, componentEvents.TIME_OFF_VIEW_POLICY, {
+        policyId: 'policy-123',
+        policyType: 'holiday',
+      })
+      expect(service.machine.current).toBe('viewHolidayEmployees')
+
+      send(service, componentEvents.TIME_OFF_HOLIDAY_ADD_EMPLOYEES)
+
+      expect(service.machine.current).toBe('addEmployeesHoliday')
+      expect(service.context.alerts).toBeUndefined()
+    })
+
+    it('returns to viewHolidayEmployees after adding employees from detail', () => {
+      const service = createService()
+      send(service, componentEvents.TIME_OFF_VIEW_POLICY, {
+        policyId: 'policy-123',
+        policyType: 'holiday',
+      })
+      send(service, componentEvents.TIME_OFF_HOLIDAY_ADD_EMPLOYEES)
+      expect(service.machine.current).toBe('addEmployeesHoliday')
+
+      send(service, componentEvents.TIME_OFF_HOLIDAY_ADD_EMPLOYEES_DONE)
+
+      expect(service.machine.current).toBe('viewHolidayEmployees')
+      expect(service.context.alerts).toBeUndefined()
+    })
+  })
+
   describe('tab switching', () => {
     it('switches from viewHolidayEmployees to viewHolidaySchedule', () => {
       const service = createService()
