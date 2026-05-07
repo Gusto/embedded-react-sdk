@@ -11,16 +11,17 @@ Hooks give you full control over form rendering while the SDK manages data fetch
 
 ## Available Hooks
 
-| Hook                        | Description                                                                                                  | Reference                                                   |
-| --------------------------- | ------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------- |
-| `useEmployeeDetailsForm`    | Create or update employee profile fields (name, email, SSN, date of birth, self-onboarding)                  | [useEmployeeDetailsForm](./useEmployeeDetailsForm.md)       |
-| `useCompensationForm`       | Create or update job compensation (job title, FLSA status, pay rate, payment unit, minimum wage adjustments) | [useCompensationForm](./useCompensationForm.md)             |
-| `useWorkAddressForm`        | Create or update an employee's work address (company location select, effective date)                        | [useWorkAddressForm](./useWorkAddressForm.md)               |
-| `useFederalTaxesForm`       | Update an employee's federal tax (W-4) withholding information                                               | [useFederalTaxesForm](./useFederalTaxesForm.md)             |
-| `useEmployeeStateTaxesForm` | Update an employee's state tax withholding answers (dynamic, per-state question groups)                      | [useEmployeeStateTaxesForm](./useEmployeeStateTaxesForm.md) |
-| `usePayScheduleForm`        | Create or update a company pay schedule (frequency, pay dates, pay period calendar preview)                  | [usePayScheduleForm](./usePayScheduleForm.md)               |
-| `useSignCompanyForm`        | Sign a company form (PDF viewer, typed signature, confirmation checkbox)                                     | [useSignCompanyForm](./useSignCompanyForm.md)               |
-| `useSignEmployeeForm`       | Sign an employee form (signature, confirmation, I-9 preparer/translator sections)                            | [useSignEmployeeForm](./useSignEmployeeForm.md)             |
+| Hook                        | Description                                                                                        | Reference                                                   |
+| --------------------------- | -------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| `useEmployeeDetailsForm`    | Create or update employee profile fields (name, email, SSN, date of birth, self-onboarding)        | [useEmployeeDetailsForm](./useEmployeeDetailsForm.md)       |
+| `useJobForm`                | Create or update an employee's job (title, hire date, S-Corp 2% shareholder, WA workers' comp)     | [useJobForm](./useJobForm.md)                               |
+| `useCompensationForm`       | Create or update a compensation row on a job (FLSA status, pay rate, payment unit, effective date) | [useCompensationForm](./useCompensationForm.md)             |
+| `useWorkAddressForm`        | Create or update an employee's work address (company location select, effective date)              | [useWorkAddressForm](./useWorkAddressForm.md)               |
+| `useFederalTaxesForm`       | Update an employee's federal tax (W-4) withholding information                                     | [useFederalTaxesForm](./useFederalTaxesForm.md)             |
+| `useEmployeeStateTaxesForm` | Update an employee's state tax withholding answers (dynamic, per-state question groups)            | [useEmployeeStateTaxesForm](./useEmployeeStateTaxesForm.md) |
+| `usePayScheduleForm`        | Create or update a company pay schedule (frequency, pay dates, pay period calendar preview)        | [usePayScheduleForm](./usePayScheduleForm.md)               |
+| `useSignCompanyForm`        | Sign a company form (PDF viewer, typed signature, confirmation checkbox)                           | [useSignCompanyForm](./useSignCompanyForm.md)               |
+| `useSignEmployeeForm`       | Sign an employee form (signature, confirmation, I-9 preparer/translator sections)                  | [useSignEmployeeForm](./useSignEmployeeForm.md)             |
 
 ---
 
@@ -221,7 +222,8 @@ if (!employeeDetails.isLoading) {
 The shape of `data` varies by hook — see each hook's reference page for details:
 
 - `useEmployeeDetailsForm` — `{ employee }`
-- `useCompensationForm` — `{ compensation, jobs, currentJob, minimumWages }`
+- `useJobForm` — `{ currentJob, jobs, employee, currentWorkAddress, showTwoPercentShareholder, showStateWc }`
+- `useCompensationForm` — `{ compensation, currentJob, minimumWages, canTriggerCarveOut, minimumEffectiveDate, maximumEffectiveDate, hasPendingFutureCompensation }`
 - `useWorkAddressForm` — `{ workAddress, workAddresses, companyLocations }`
 - `usePayScheduleForm` — `{ paySchedule, payPeriodPreview, payPreviewLoading, paymentSpeedDays }`
 - `useSignCompanyForm` — `{ companyForm, pdfUrl }`
@@ -255,15 +257,25 @@ useEmployeeDetailsForm({
 })
 ```
 
-### `optionalFieldsToRequire` (useCompensationForm)
+### `optionalFieldsToRequire` (useJobForm, useCompensationForm)
 
 Override specific fields that are optional in a given mode to be required. The type constrains which fields can be listed per mode — only fields that are actually optional in that mode are allowed:
 
 ```tsx
+useJobForm({
+  employeeId,
+  jobId,
+  optionalFieldsToRequire: {
+    update: ['title'],
+  },
+})
+
 useCompensationForm({
   employeeId,
+  jobId,
+  compensationId,
   optionalFieldsToRequire: {
-    update: ['jobTitle', 'rate'],
+    update: ['rate'],
   },
 })
 ```
@@ -271,6 +283,7 @@ useCompensationForm({
 Each hook's reference page documents which fields are available to require and which are required by default in each mode. See:
 
 - [useEmployeeDetailsForm required fields](./useEmployeeDetailsForm.md#required-fields)
+- [useJobForm configurable required fields](./useJobForm.md#configurable-required-fields)
 - [useCompensationForm configurable required fields](./useCompensationForm.md#configurable-required-fields)
 - [useWorkAddressForm required fields](./useWorkAddressForm.md#required-fields)
 - [usePayScheduleForm configurable required fields](./usePayScheduleForm.md#configurable-required-fields)
@@ -290,11 +303,20 @@ useEmployeeDetailsForm({
   },
 })
 
+useJobForm({
+  employeeId,
+  defaultValues: {
+    title: 'Software Engineer',
+    hireDate: '2025-01-15',
+  },
+})
+
 useCompensationForm({
   defaultValues: {
-    jobTitle: 'Software Engineer',
     rate: 85000,
     paymentUnit: 'Year',
+    flsaStatus: 'Exempt',
+    effectiveDate: '2025-01-15',
   },
 })
 ```
@@ -306,6 +328,7 @@ In **create mode** (no existing entity), `defaultValues` populate the form direc
 Each hook's reference page documents the full form data shape accepted by `defaultValues`:
 
 - [useEmployeeDetailsForm form data](./useEmployeeDetailsForm.md#employeedetailsformdata)
+- [useJobForm form data](./useJobForm.md#jobformdata)
 - [useCompensationForm form data](./useCompensationForm.md#compensationformdata)
 - [useWorkAddressForm form data](./useWorkAddressForm.md#workaddressformdata)
 - [usePayScheduleForm form data](./usePayScheduleForm.md#payscheduleformdata)
@@ -516,6 +539,7 @@ If you omit `validationMessages`, validation still runs and the field is marked 
 Error codes for each hook are exported alongside the hook:
 
 - `EmployeeDetailsErrorCodes` — see [useEmployeeDetailsForm field reference](./useEmployeeDetailsForm.md#fields-reference)
+- `JobErrorCodes` — see [useJobForm field reference](./useJobForm.md#fields-reference)
 - `CompensationErrorCodes` — see [useCompensationForm field reference](./useCompensationForm.md#fields-reference)
 - `WorkAddressErrorCodes` — see [useWorkAddressForm field reference](./useWorkAddressForm.md#fields-reference)
 - `PayScheduleErrorCodes` — see [usePayScheduleForm field reference](./usePayScheduleForm.md#fields-reference)
@@ -751,6 +775,153 @@ function OnboardingPage({ companyId, employeeId }: { companyId: string; employee
 
 Fields from `employeeDetails`, `compensation`, and `workAddress` are freely interleaved — each field knows which hook it belongs to via its `formHookResult` prop. Validation, error handling, and submission all work identically to the provider-based approach.
 
+### Composing Job + Compensation
+
+Jobs and compensations are separate entities in the Gusto API: a job (`POST /v1/employees/:id/jobs`, `PUT /v1/jobs/:id`) carries title/hire-date/2%-shareholder/WA-WC fields; a compensation (`POST /v1/jobs/:jobId/compensations`, `PUT /v1/compensations/:id`) carries FLSA/rate/payment-unit/effective-date. Most product flows compose both hooks on the same screen.
+
+#### Onboarding stub-fill (POST job → PUT auto-created stub)
+
+When a job is created, the API auto-creates a stub compensation with `rate: 0`. Onboarding flows replace that stub with the partner's real values via PUT. `useCompensationForm.actions.onSubmit` accepts `{ jobId, compensationId, compensationVersion }` for this exact case:
+
+```tsx
+import {
+  useJobForm,
+  useCompensationForm,
+  composeSubmitHandler,
+  SDKFormProvider,
+} from '@gusto/embedded-react-sdk'
+
+function OnboardingCompensationPage({ employeeId }: { employeeId: string }) {
+  const jobForm = useJobForm({ employeeId, shouldFocusError: false })
+  const compensationForm = useCompensationForm({ employeeId, shouldFocusError: false })
+
+  if (jobForm.isLoading || compensationForm.isLoading) return <LoadingSpinner />
+
+  const JobFields = jobForm.form.Fields
+  const CompFields = compensationForm.form.Fields
+
+  const { handleSubmit, errorHandling } = composeSubmitHandler(
+    [jobForm, compensationForm],
+    async () => {
+      const jobResult = await jobForm.actions.onSubmit()
+      if (!jobResult || jobResult.mode !== 'create') return
+
+      const job = jobResult.data
+      const compensationId = job.currentCompensationUuid
+      const stub = job.compensations?.find(c => c.uuid === compensationId)
+
+      await compensationForm.actions.onSubmit({
+        jobId: job.uuid,
+        compensationId,
+        compensationVersion: stub?.version,
+      })
+    },
+  )
+
+  return (
+    <form onSubmit={handleSubmit}>
+      {errorHandling.errors.length > 0 && (
+        <div role="alert">
+          {errorHandling.errors.map((e, i) => (
+            <p key={i}>{e.message}</p>
+          ))}
+        </div>
+      )}
+
+      <SDKFormProvider formHookResult={jobForm}>
+        <JobFields.Title label="Job title" validationMessages={{ REQUIRED: 'Required' }} />
+        <JobFields.HireDate label="Hire date" validationMessages={{ REQUIRED: 'Required' }} />
+        {JobFields.TwoPercentShareholder && (
+          <JobFields.TwoPercentShareholder label="2% S-Corp shareholder" />
+        )}
+        {JobFields.StateWcCovered && <JobFields.StateWcCovered label="WA workers' comp covered" />}
+        {JobFields.StateWcClassCode && (
+          <JobFields.StateWcClassCode
+            label="Risk class code"
+            validationMessages={{ REQUIRED: 'Required' }}
+          />
+        )}
+      </SDKFormProvider>
+
+      <SDKFormProvider formHookResult={compensationForm}>
+        {CompFields.FlsaStatus && (
+          <CompFields.FlsaStatus
+            label="Employee type"
+            validationMessages={{ REQUIRED: 'Required' }}
+          />
+        )}
+        <CompFields.Rate
+          label="Compensation amount"
+          validationMessages={{
+            REQUIRED: 'Required',
+            RATE_MINIMUM: 'Must be at least $1.00',
+            RATE_EXEMPT_THRESHOLD: 'Must clear the FLSA salary threshold',
+          }}
+        />
+        <CompFields.PaymentUnit
+          label="Per"
+          validationMessages={{
+            REQUIRED: 'Required',
+            PAYMENT_UNIT_OWNER: 'Owners must use Paycheck',
+            PAYMENT_UNIT_COMMISSION: 'Commission-only must use Year',
+          }}
+        />
+        <CompFields.EffectiveDate
+          label="Effective date"
+          validationMessages={{
+            REQUIRED: 'Required',
+            EFFECTIVE_DATE_BEFORE_HIRE: 'Cannot precede hire date',
+          }}
+        />
+        {CompFields.AdjustForMinimumWage && (
+          <CompFields.AdjustForMinimumWage label="Adjust for minimum wage" />
+        )}
+        {CompFields.MinimumWageId && (
+          <CompFields.MinimumWageId
+            label="Minimum wage"
+            validationMessages={{ REQUIRED: 'Required' }}
+          />
+        )}
+      </SDKFormProvider>
+
+      <button type="submit">Save</button>
+    </form>
+  )
+}
+```
+
+`composeSubmitHandler` validates both forms in parallel — if either fails, the chain short-circuits before any network I/O. Inside `onAllValid`, the partner threads the new IDs and the stub's version into `useCompensationForm` to PUT it.
+
+#### Steady-state edit (job + compensation already exist)
+
+When both records exist (a partner page that edits the current compensation), pass IDs to both hooks and submit them in parallel. The hooks own their own version handling:
+
+```tsx
+const jobForm = useJobForm({ employeeId, jobId, shouldFocusError: false })
+const compensationForm = useCompensationForm({
+  employeeId,
+  jobId,
+  compensationId,
+  shouldFocusError: false,
+})
+
+const { handleSubmit } = composeSubmitHandler([jobForm, compensationForm], async () => {
+  if (compensationForm.isLoading || compensationForm.isLoading) return
+
+  if (compensationForm.data.canTriggerCarveOut) {
+    const ok = window.confirm("This will affect rates on this employee's other jobs. Continue?")
+    if (!ok) return
+  }
+
+  await jobForm.actions.onSubmit()
+  await compensationForm.actions.onSubmit()
+})
+```
+
+Use `useCurrentJobForm` / `useCurrentCompensationForm` to skip the explicit `jobId` / `compensationId` props — they resolve to the employee's primary job and its current compensation automatically.
+
+---
+
 ### Submit-time entity ID resolution
 
 In a create flow, the employee doesn't exist yet — so `useCompensationForm` and `useWorkAddressForm` can't receive an `employeeId` at init time. Both hooks accept `employeeId` as optional in their props and allow it to be provided at submit time via the `options` parameter:
@@ -781,7 +952,7 @@ function CreateOnboardingPage({ companyId }: { companyId: string }) {
 
       const newEmployeeId = employeeResult.data.uuid
 
-      await compensation.actions.onSubmit(undefined, { employeeId: newEmployeeId })
+      await compensation.actions.onSubmit({ employeeId: newEmployeeId })
       await workAddress.actions.onSubmit(undefined, { employeeId: newEmployeeId })
     },
   )
@@ -807,7 +978,7 @@ const { handleSubmit, errorHandling } = composeSubmitHandler(
 
     const newEmployeeId = employeeResult.data.uuid
 
-    await compensation.actions.onSubmit(undefined, { employeeId: newEmployeeId })
+    await compensation.actions.onSubmit({ employeeId: newEmployeeId })
     await workAddress.actions.onSubmit(undefined, { employeeId: newEmployeeId })
   },
 )
@@ -854,7 +1025,7 @@ const { handleSubmit } = composeSubmitHandler(
     const workAddressValues = workAddress.form.getFormSubmissionValues()
 
     await workAddress.actions.onSubmit(undefined, { employeeId: newEmployeeId })
-    await compensation.actions.onSubmit(undefined, {
+    await compensation.actions.onSubmit({
       employeeId: newEmployeeId,
       startDate: workAddressValues?.effectiveDate,
     })

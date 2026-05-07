@@ -656,6 +656,10 @@
         {
           "method": "DELETE",
           "path": "/v1/jobs/:jobId"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/jobs/:jobId/compensations"
         }
       ],
       "variables": [
@@ -2405,6 +2409,10 @@
         {
           "method": "DELETE",
           "path": "/v1/jobs/:jobId"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/jobs/:jobId/compensations"
         },
         {
           "method": "GET",

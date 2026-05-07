@@ -349,8 +349,9 @@ return {
 
 - Use `formMethods.handleSubmit` inside a `Promise` wrapper so `onSubmit` is async/awaitable
 - Delegate to `baseSubmitHandler` for error boundary integration
-- Accept callbacks for each mutation step so partner integrations can receive events (e.g. `onEvent`)
-- Return `HookSubmitResult<TEntity>` where `TEntity` is the primary domain entity the form manages (e.g. `Compensation`). This gives partners direct access to the saved entity without needing to wire up callbacks for simple use cases
+- Return `HookSubmitResult<TEntity>` where `TEntity` is the primary domain entity the form manages (e.g. `Compensation`). The result already carries `mode` and `data`, so partners read it directly
+- Default to `onSubmit(options?)` — a single options argument. Do **not** add a `*SubmitCallbacks` parameter when the hook performs a single mutation per submit (including create-or-update routing where exactly one of the two fires). Partners read `result.data` and either branch on `result.mode` or emit `onEvent` from the awaited return value
+- The narrow exception is hooks that chain **multiple sequential API calls inside a single submit** (e.g. `useEmployeeDetailsForm` runs `updateEmployee` + `updateOnboardingStatus` together). Only those benefit from intermediate-step callbacks, because the final return value can't surface the per-step results. For chained submits across separate hook instances, use `composeSubmitHandler` instead of per-hook callbacks
 
 ## 4. Prebuilt Component (Removed)
 
@@ -392,15 +393,15 @@ Wire through two barrel levels in order:
 
 Reference `gws-flows/app/frontend/react_sdk/CustomCompensationForm.tsx` as the real-world partner usage. A partner building a custom form imports only:
 
-| Category           | Examples                                                     | Why                                                                                                 |
-| ------------------ | ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------- |
-| Hook               | `useCompensationForm`                                        | Core entry point for partners                                                                       |
-| Prebuilt component | _(removed)_                                                  | Partners build UI with the hook; there is no bundled prebuilt form component                        |
-| Form provider      | `SDKFormProvider`                                            | Wraps custom form for metadata + error syncing                                                      |
-| Domain types       | `UseCompensationFormReady`, `CompensationSubmitCallbacks`    | Type-narrowing ready state, typed submit callbacks                                                  |
-| Field prop types   | `FlsaStatusFieldProps`, `PaymentUnitFieldProps`, etc.        | Typing `getOptionLabel` callbacks — lets partners derive API entity types without us exporting them |
-| Validation types   | `ValidationMessages`, `RateValidation`, `RequiredValidation` | Typing `validationMessages` props                                                                   |
-| UI prop types      | `TextInputProps`, `SelectProps`, etc.                        | Typing custom `FieldComponent` implementations                                                      |
+| Category           | Examples                                                     | Why                                                                                                                                                                                                                  |
+| ------------------ | ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Hook               | `useCompensationForm`                                        | Core entry point for partners                                                                                                                                                                                        |
+| Prebuilt component | _(removed)_                                                  | Partners build UI with the hook; there is no bundled prebuilt form component                                                                                                                                         |
+| Form provider      | `SDKFormProvider`                                            | Wraps custom form for metadata + error syncing                                                                                                                                                                       |
+| Domain types       | `UseCompensationFormReady`, `CompensationSubmitOptions`      | Type-narrowing ready state and submit options. Only export a `*SubmitCallbacks` type when the hook actually accepts callbacks (multi-API-call hooks like `useEmployeeDetailsForm`); single-mutation hooks should not |
+| Field prop types   | `FlsaStatusFieldProps`, `PaymentUnitFieldProps`, etc.        | Typing `getOptionLabel` callbacks — lets partners derive API entity types without us exporting them                                                                                                                  |
+| Validation types   | `ValidationMessages`, `RateValidation`, `RequiredValidation` | Typing `validationMessages` props                                                                                                                                                                                    |
+| UI prop types      | `TextInputProps`, `SelectProps`, etc.                        | Typing custom `FieldComponent` implementations                                                                                                                                                                       |
 
 ### What stays internal (export from inner barrels but NOT from `src/index.ts` unless needed)
 

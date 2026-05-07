@@ -82,34 +82,60 @@ export type {
 // Domain hooks - Employee
 export {
   useCompensationForm,
+  useCurrentCompensationForm,
   CompensationErrorCodes,
   createCompensationSchema,
 } from '@/components/Employee/Compensation/shared/useCompensationForm'
 export type {
-  CompensationSubmitCallbacks,
   CompensationSubmitOptions,
   UseCompensationFormProps,
+  UseCurrentCompensationFormProps,
   UseCompensationFormResult,
   UseCompensationFormReady,
   CompensationFieldsMetadata,
   CompensationFormFields,
   CompensationErrorCode,
   CompensationOptionalFieldsToRequire,
+  CompensationSchemaOptions,
   CompensationFormData,
   CompensationFormOutputs,
-  RequiredValidation,
+  RequiredValidation as CompensationRequiredValidation,
   RateValidation,
-  StartDateFieldProps,
-  JobTitleFieldProps,
+  EffectiveDateValidation as CompensationEffectiveDateValidation,
+  TitleFieldProps as CompensationTitleFieldProps,
+  EffectiveDateFieldProps as CompensationEffectiveDateFieldProps,
   FlsaStatusFieldProps,
   RateFieldProps,
   PaymentUnitFieldProps,
   AdjustForMinimumWageFieldProps,
   MinimumWageIdFieldProps,
+} from '@/components/Employee/Compensation/shared/useCompensationForm'
+
+export {
+  useJobForm,
+  useCurrentJobForm,
+  JobErrorCodes,
+  createJobSchema,
+} from '@/components/Employee/Compensation/shared/useJobForm'
+export type {
+  JobSubmitOptions,
+  UseJobFormProps,
+  UseCurrentJobFormProps,
+  UseJobFormResult,
+  UseJobFormReady,
+  JobFieldsMetadata,
+  JobFormFields,
+  JobErrorCode,
+  JobOptionalFieldsToRequire,
+  JobFormData,
+  JobFormOutputs,
+  JobRequiredValidation,
+  JobTitleFieldProps,
+  HireDateFieldProps,
   TwoPercentShareholderFieldProps,
   StateWcCoveredFieldProps,
   StateWcClassCodeFieldProps,
-} from '@/components/Employee/Compensation/shared/useCompensationForm'
+} from '@/components/Employee/Compensation/shared/useJobForm'
 
 export {
   useEmployeeDetailsForm,

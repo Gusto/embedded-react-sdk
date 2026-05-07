@@ -7,13 +7,11 @@ import type { Job } from '@gusto/embedded-api/models/components/job'
 import type { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
 import type { MinimumWage } from '@gusto/embedded-api/models/components/minimumwage'
 import { useJobsAndCompensationsGetJobs } from '@gusto/embedded-api/react-query/jobsAndCompensationsGetJobs'
-import { useJobsAndCompensationsCreateJobMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsCreateJob'
-import { useJobsAndCompensationsUpdateMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsUpdate'
+import { useJobsAndCompensationsCreateCompensationMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsCreateCompensation'
 import { useJobsAndCompensationsUpdateCompensationMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsUpdateCompensation'
 import { useLocationsGetMinimumWages } from '@gusto/embedded-api/react-query/locationsGetMinimumWages'
 import { useEmployeeAddressesGetWorkAddresses } from '@gusto/embedded-api/react-query/employeeAddressesGetWorkAddresses'
 import { useEmployeesGet } from '@gusto/embedded-api/react-query/employeesGet'
-import { useFederalTaxDetailsGet } from '@gusto/embedded-api/react-query/federalTaxDetailsGet'
 import {
   createCompensationSchema,
   type CompensationOptionalFieldsToRequire,
@@ -21,16 +19,13 @@ import {
   type CompensationFormOutputs,
 } from './compensationSchema'
 import {
-  JobTitleField,
+  TitleField,
   FlsaStatusField,
   RateField,
   PaymentUnitField,
   AdjustForMinimumWageField,
   MinimumWageIdField,
-  TwoPercentShareholderField,
-  StateWcCoveredField,
-  StateWcClassCodeField,
-  StartDateField,
+  EffectiveDateField,
 } from './fields'
 import { withOptions } from '@/partner-hook-utils/form/withOptions'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
@@ -46,72 +41,97 @@ import type {
 import { FlsaStatus, PAY_PERIODS, TIP_CREDITS_UNSUPPORTED_STATES } from '@/shared/constants'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { SDKInternalError } from '@/types/sdkError'
-import { WA_RISK_CLASS_CODES, type WARiskClassCode } from '@/models/WA_RISK_CODES'
-
-export interface CompensationSubmitCallbacks {
-  onJobCreated?: (job: Job) => void
-  onJobUpdated?: (job: Job) => void
-  onCompensationUpdated?: (compensation: Compensation | undefined) => void
-}
 
 export interface CompensationSubmitOptions {
-  employeeId?: string
-  startDate?: string
+  /** Override jobId — required when creating a compensation if not configured at hook construction (e.g. when the parent job was just created in the same submit chain). */
+  jobId?: string
+  /** Override compensationId — when present, forces update (PUT) routing regardless of hook construction. */
+  compensationId?: string
+  /**
+   * Compensation version for optimistic locking on PUT. Required when forcing
+   * update routing post-create (e.g. updating the auto-created stub returned
+   * from `POST /v1/employees/:id/jobs`). When omitted, the hook reads the
+   * version from its cached `currentCompensation`.
+   */
+  compensationVersion?: string
 }
 
 export interface UseCompensationFormProps {
   employeeId?: string
-  withStartDateField?: boolean
+  /** When updating, the parent job's UUID. Used to scope minimum wages and to derive carve-out helpers. */
   jobId?: string
+  /** Present → update mode (PUT /v1/compensations/:id). Omitted → create mode (POST /v1/jobs/:jobId/compensations). */
+  compensationId?: string
   optionalFieldsToRequire?: CompensationOptionalFieldsToRequire
   defaultValues?: Partial<CompensationFormData>
   validationMode?: UseFormProps['mode']
   shouldFocusError?: boolean
 }
 
+export interface CompensationFormFields {
+  Title: typeof TitleField
+  FlsaStatus: typeof FlsaStatusField | undefined
+  Rate: typeof RateField
+  PaymentUnit: typeof PaymentUnitField
+  AdjustForMinimumWage: typeof AdjustForMinimumWageField | undefined
+  MinimumWageId: typeof MinimumWageIdField | undefined
+  EffectiveDate: typeof EffectiveDateField | undefined
+}
+
 export interface UseCompensationFormReady extends BaseFormHookReady<
   FieldsMetadata,
-  CompensationFormData
+  CompensationFormData,
+  CompensationFormFields
 > {
   data: {
+    /** The compensation row loaded for update; `null` in create mode. */
     compensation: Compensation | null
-    jobs: Job[] | undefined
+    /** The parent job (when `jobId` resolves), used for derived helpers. */
     currentJob: Job | null
     minimumWages: MinimumWage[]
+    /**
+     * True when the active edit could trigger the secondary-pay-rate carve-out:
+     * the partner's screen surfaces a confirmation prompt before submitting.
+     *
+     * Carve-out conditions: the current compensation is Nonexempt, the
+     * `flsaStatus` field has been changed to a non-Nonexempt value, the
+     * employee has at least one secondary job, and the effective date is
+     * today (immediate change rather than future-dated).
+     */
+    canTriggerCarveOut: boolean
+    /** Lower bound for `effectiveDate` (typically the parent job's hire date). */
+    minimumEffectiveDate: string | null
+    /** Upper bound for `effectiveDate` — the next scheduled future compensation's effective date, when one exists. */
+    maximumEffectiveDate: string | null
+    /** True when at least one future-dated compensation already exists for this job. */
+    hasPendingFutureCompensation: boolean
   }
   status: { isPending: boolean; mode: 'create' | 'update' }
   actions: {
     onSubmit: (
-      callbacks?: CompensationSubmitCallbacks,
       options?: CompensationSubmitOptions,
-    ) => Promise<HookSubmitResult<Compensation | undefined> | undefined>
+    ) => Promise<HookSubmitResult<Compensation> | undefined>
   }
 }
 
-function findCurrentCompensation(job?: Job | null): Compensation | undefined {
-  return job?.compensations?.find(comp => comp.uuid === job.currentCompensationUuid)
+function findCompensation(
+  job: Job | null,
+  compensationId: string | undefined,
+): Compensation | null {
+  if (!job || !compensationId) return null
+  return job.compensations?.find(c => c.uuid === compensationId) ?? null
 }
 
-type FlsaStatusValue = CompensationFormData['flsaStatus']
+const flsaStatusEntries: FlsaStatusType[] = [
+  FlsaStatus.EXEMPT,
+  FlsaStatus.SALARIED_NONEXEMPT,
+  FlsaStatus.NONEXEMPT,
+  FlsaStatus.OWNER,
+  FlsaStatus.COMMISSION_ONLY_EXEMPT,
+  FlsaStatus.COMMISSION_ONLY_NONEXEMPT,
+]
 
-function derivePrimaryFlsaStatus(jobs: Job[]): FlsaStatusValue | undefined {
-  return jobs.reduce<FlsaStatusValue | undefined>((prev, curr) => {
-    const compensation = curr.compensations?.find(
-      comp => comp.uuid === curr.currentCompensationUuid,
-    )
-    if (!curr.primary || !compensation) return prev
-    return compensation.flsaStatus ?? prev
-  }, undefined)
-}
-
-const flsaStatusEntries: FlsaStatusType[] = (
-  Object.keys(FlsaStatus) as Array<keyof typeof FlsaStatus>
-).map(key => FlsaStatus[key])
-
-const flsaOptions = flsaStatusEntries.map(status => ({
-  value: status,
-  label: status,
-}))
+const flsaOptions = flsaStatusEntries.map(status => ({ value: status, label: status }))
 
 const paymentUnitEntries: PaymentUnit[] = [
   PAY_PERIODS.HOUR,
@@ -121,15 +141,16 @@ const paymentUnitEntries: PaymentUnit[] = [
   PAY_PERIODS.PAYCHECK,
 ]
 
-const paymentUnitOptions = paymentUnitEntries.map(unit => ({
-  value: unit,
-  label: unit,
-}))
+const paymentUnitOptions = paymentUnitEntries.map(unit => ({ value: unit, label: unit }))
+
+function todayISO(): string {
+  return new Date().toISOString().split('T')[0]!
+}
 
 export function useCompensationForm({
   employeeId,
-  withStartDateField = true,
   jobId,
+  compensationId,
   optionalFieldsToRequire,
   defaultValues: partnerDefaults,
   validationMode = 'onSubmit',
@@ -150,65 +171,77 @@ export function useCompensationForm({
   const currentWorkAddress = workAddresses?.find(address => address.active)
   const locationUuid = currentWorkAddress?.locationUuid
   const employee = employeeQuery.data?.employee
-  const companyUuid = employee?.companyUuid
 
   const minWagesQuery = useLocationsGetMinimumWages(
     { locationUuid: locationUuid ?? '' },
     { enabled: !!locationUuid },
   )
 
-  const taxQuery = useFederalTaxDetailsGet(
-    { companyId: companyUuid ?? '' },
-    { enabled: !!companyUuid },
-  )
-
   const minimumWages = minWagesQuery.data?.minimumWageList ?? []
-  const federalTaxDetails = taxQuery.data?.federalTaxDetails
-  const showTwoPercentStakeholder = federalTaxDetails?.taxableAsScorp === true
 
   const currentJob = useMemo<Job | null>(() => {
     if (!employeeJobs) return null
-    if (jobId) {
-      return employeeJobs.find(j => j.uuid === jobId) ?? null
-    }
-    return employeeJobs.length === 1 ? (employeeJobs[0] ?? null) : null
+    if (jobId) return employeeJobs.find(j => j.uuid === jobId) ?? null
+    return null
   }, [employeeJobs, jobId])
 
-  const currentCompensation = useMemo(() => findCurrentCompensation(currentJob), [currentJob])
+  const currentCompensation = useMemo(
+    () => findCompensation(currentJob, compensationId),
+    [currentJob, compensationId],
+  )
 
-  const primaryFlsaStatus = useMemo(() => {
-    if (!employeeJobs) return undefined
-    return derivePrimaryFlsaStatus(employeeJobs)
-  }, [employeeJobs])
+  const otherJobsCount = useMemo(() => {
+    if (!employeeJobs || !currentJob) return 0
+    return employeeJobs.filter(j => j.uuid !== currentJob.uuid).length
+  }, [employeeJobs, currentJob])
 
-  const isCreateMode = !currentJob
+  const hireDate = currentJob?.hireDate ?? null
+
+  const futureCompensations = useMemo(() => {
+    if (!currentJob?.compensations) return []
+    const today = todayISO()
+    return currentJob.compensations.filter(
+      c => c.effectiveDate !== undefined && c.effectiveDate > today,
+    )
+  }, [currentJob])
+
+  const hasPendingFutureCompensation = futureCompensations.length > 0
+  const maximumEffectiveDate = useMemo(() => {
+    if (futureCompensations.length === 0) return null
+    return futureCompensations.reduce<string | null>((min, c) => {
+      const d = c.effectiveDate
+      if (!d) return min
+      if (!min || d < min) return d
+      return min
+    }, null)
+  }, [futureCompensations])
+
+  const isCreateMode = !compensationId
   const mode = isCreateMode ? 'create' : 'update'
 
   const [schema, metadataConfig] = useMemo(
-    () => createCompensationSchema({ mode, optionalFieldsToRequire, withStartDateField }),
-    [mode, optionalFieldsToRequire, withStartDateField],
+    () => createCompensationSchema({ mode, optionalFieldsToRequire, hireDate }),
+    [mode, optionalFieldsToRequire, hireDate],
   )
 
   const state = currentWorkAddress?.state
 
-  const hireDate = currentJob?.hireDate
-  const resolvedDefaults: CompensationFormData = {
-    jobTitle: currentJob?.title || partnerDefaults?.jobTitle || '',
-    flsaStatus:
-      currentCompensation?.flsaStatus ??
-      primaryFlsaStatus ??
-      partnerDefaults?.flsaStatus ??
-      FlsaStatus.NONEXEMPT,
-    rate: Number(currentCompensation?.rate ?? partnerDefaults?.rate ?? 0),
-    adjustForMinimumWage: currentCompensation?.adjustForMinimumWage ?? false,
-    minimumWageId: currentCompensation?.minimumWages?.[0]?.uuid ?? '',
-    paymentUnit:
-      currentCompensation?.paymentUnit ?? partnerDefaults?.paymentUnit ?? PAY_PERIODS.HOUR,
-    stateWcCovered: currentJob?.stateWcCovered ?? false,
-    stateWcClassCode: currentJob?.stateWcClassCode ?? '',
-    twoPercentShareholder: currentJob?.twoPercentShareholder ?? false,
-    startDate: hireDate ?? partnerDefaults?.startDate ?? null,
-  }
+  const resolvedDefaults: CompensationFormData = useMemo(
+    () => ({
+      title: currentCompensation?.title ?? partnerDefaults?.title ?? '',
+      flsaStatus:
+        currentCompensation?.flsaStatus ?? partnerDefaults?.flsaStatus ?? FlsaStatus.NONEXEMPT,
+      rate: Number(currentCompensation?.rate ?? partnerDefaults?.rate ?? 0),
+      adjustForMinimumWage:
+        currentCompensation?.adjustForMinimumWage ?? partnerDefaults?.adjustForMinimumWage ?? false,
+      minimumWageId:
+        currentCompensation?.minimumWages?.[0]?.uuid ?? partnerDefaults?.minimumWageId ?? '',
+      paymentUnit:
+        currentCompensation?.paymentUnit ?? partnerDefaults?.paymentUnit ?? PAY_PERIODS.HOUR,
+      effectiveDate: currentCompensation?.effectiveDate ?? partnerDefaults?.effectiveDate ?? null,
+    }),
+    [currentCompensation, partnerDefaults],
+  )
 
   const formMethods = useForm<CompensationFormData, unknown, CompensationFormOutputs>({
     resolver: zodResolver(schema),
@@ -219,42 +252,32 @@ export function useCompensationForm({
     resetOptions: { keepDirtyValues: true },
   })
 
-  const watchedFlsaStatus = useWatch({
-    control: formMethods.control,
-    name: 'flsaStatus',
-  })
+  const { control, setValue } = formMethods
+  const watchedFlsaStatus = useWatch({ control, name: 'flsaStatus' })
   const watchedAdjustForMinimumWage = useWatch({
-    control: formMethods.control,
+    control,
     name: 'adjustForMinimumWage',
   })
-  const rawStateWcCovered = useWatch({
-    control: formMethods.control,
-    name: 'stateWcCovered',
-  })
-  const watchedStateWcCovered = String(rawStateWcCovered) === 'true'
+  const watchedEffectiveDate = useWatch({ control, name: 'effectiveDate' })
 
   useEffect(() => {
     if (watchedFlsaStatus === FlsaStatus.OWNER) {
-      formMethods.setValue('paymentUnit', PAY_PERIODS.PAYCHECK)
+      setValue('paymentUnit', PAY_PERIODS.PAYCHECK)
     } else if (
       watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_NONEXEMPT ||
       watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT
     ) {
-      formMethods.setValue('paymentUnit', PAY_PERIODS.YEAR)
-      formMethods.setValue('rate', 0)
+      setValue('paymentUnit', PAY_PERIODS.YEAR)
+      setValue('rate', 0)
     } else {
-      formMethods.setValue('paymentUnit', resolvedDefaults.paymentUnit)
+      setValue('paymentUnit', resolvedDefaults.paymentUnit)
     }
-  }, [watchedFlsaStatus, formMethods.setValue, resolvedDefaults.paymentUnit])
+  }, [watchedFlsaStatus, setValue, resolvedDefaults.paymentUnit])
 
   const updateCompensationMutation = useJobsAndCompensationsUpdateCompensationMutation()
-  const createJobMutation = useJobsAndCompensationsCreateJobMutation()
-  const updateJobMutation = useJobsAndCompensationsUpdateMutation()
+  const createCompensationMutation = useJobsAndCompensationsCreateCompensationMutation()
 
-  const isPending =
-    updateCompensationMutation.isPending ||
-    createJobMutation.isPending ||
-    updateJobMutation.isPending
+  const isPending = updateCompensationMutation.isPending || createCompensationMutation.isPending
 
   const {
     baseSubmitHandler,
@@ -262,15 +285,14 @@ export function useCompensationForm({
     setError: setSubmitError,
   } = useBaseSubmit('CompensationForm')
 
-  const queries = employeeId
-    ? [jobsQuery, addressesQuery, employeeQuery, minWagesQuery, taxQuery]
+  const queriesForErrors = employeeId
+    ? [jobsQuery, addressesQuery, employeeQuery, minWagesQuery]
     : []
-  const errorHandling = composeErrorHandler(queries, { submitError, setSubmitError })
+  const errorHandling = composeErrorHandler(queriesForErrors, { submitError, setSubmitError })
 
   const isCommissionOnly =
     watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_NONEXEMPT ||
     watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT
-
   const isOwner = watchedFlsaStatus === FlsaStatus.OWNER
 
   const isFlsaSelectionEnabled =
@@ -282,22 +304,15 @@ export function useCompensationForm({
     state !== undefined &&
     !TIP_CREDITS_UNSUPPORTED_STATES.includes(state)
 
-  const isWaState = state === 'WA'
-
   const minimumWageOptions = minimumWages.map(wage => ({
     value: wage.uuid,
     label: `${wage.wage} - ${wage.authority}: ${wage.notes ?? ''}`,
   }))
 
-  const stateWcClassCodeOptions = WA_RISK_CLASS_CODES.map(({ code, description }) => ({
-    value: code,
-    label: `${code}: ${description}`,
-  }))
-
   const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
   const fieldsMetadata = {
-    startDate: baseMetadata.startDate,
-    jobTitle: baseMetadata.jobTitle,
+    title: baseMetadata.title,
+    effectiveDate: baseMetadata.effectiveDate,
     flsaStatus: withOptions<FlsaStatusType>(
       baseMetadata.flsaStatus,
       flsaOptions,
@@ -318,117 +333,92 @@ export function useCompensationForm({
       minimumWageOptions,
       minimumWages,
     ),
-    twoPercentShareholder: {
-      ...baseMetadata.twoPercentShareholder,
-      isDisabled: !showTwoPercentStakeholder,
-    },
-    stateWcCovered: withOptions<boolean>(
-      { ...baseMetadata.stateWcCovered, isDisabled: !isWaState },
-      [
-        { label: 'Yes', value: 'true' },
-        { label: 'No', value: 'false' },
-      ],
-      [true, false],
-    ),
-    stateWcClassCode: withOptions<WARiskClassCode>(
-      { ...baseMetadata.stateWcClassCode, isDisabled: !isWaState },
-      stateWcClassCodeOptions,
-      WA_RISK_CLASS_CODES,
-    ),
   }
 
+  /**
+   * Carve-out detection — true when:
+   * - we're in update mode (compensationId set),
+   * - the loaded compensation was Nonexempt,
+   * - the form's flsaStatus has been changed to a non-Nonexempt value,
+   * - the employee has at least one secondary job (otherJobsCount > 0),
+   * - and the effective date is today (immediate, not future-dated).
+   *
+   * Partners read this flag to drive their own confirmation prompt before
+   * calling `actions.onSubmit`. The submit itself routes to PUT either way.
+   */
+  const canTriggerCarveOut =
+    !isCreateMode &&
+    currentCompensation?.flsaStatus === FlsaStatus.NONEXEMPT &&
+    watchedFlsaStatus !== FlsaStatus.NONEXEMPT &&
+    otherJobsCount > 0 &&
+    (watchedEffectiveDate ?? '') === todayISO()
+
   const onSubmit = async (
-    callbacks?: CompensationSubmitCallbacks,
     options?: CompensationSubmitOptions,
-  ): Promise<HookSubmitResult<Compensation | undefined> | undefined> => {
-    let submitResult: HookSubmitResult<Compensation | undefined> | undefined
+  ): Promise<HookSubmitResult<Compensation> | undefined> => {
+    let submitResult: HookSubmitResult<Compensation> | undefined
 
     await new Promise<void>(resolve => {
       void formMethods.handleSubmit(
         async (data: CompensationFormOutputs) => {
           await baseSubmitHandler(data, async payload => {
-            const resolvedEmployeeId = options?.employeeId ?? employeeId
+            const resolvedJobId = options?.jobId ?? jobId
+            const resolvedCompensationId = options?.compensationId ?? compensationId
+            const resolvedMode = resolvedCompensationId ? 'update' : 'create'
 
-            if (!resolvedEmployeeId) {
-              throw new SDKInternalError('employeeId is required to submit compensation')
+            const requestBodyBase = {
+              rate: String(payload.rate),
+              paymentUnit: payload.paymentUnit,
+              flsaStatus: payload.flsaStatus,
+              effectiveDate: payload.effectiveDate ?? undefined,
+              title: payload.title || undefined,
+              adjustForMinimumWage: payload.adjustForMinimumWage,
+              minimumWages: payload.adjustForMinimumWage ? [{ uuid: payload.minimumWageId }] : [],
             }
 
-            const {
-              jobTitle,
-              twoPercentShareholder,
-              startDate: formStartDate,
-              ...compensationData
-            } = payload
+            let result: Compensation | undefined
 
-            const resolvedHireDate =
-              withStartDateField && formStartDate ? formStartDate : options?.startDate
-
-            let updatedJobData: Job
-
-            if (!currentJob) {
-              if (!resolvedHireDate) {
-                throw new SDKInternalError('Start date is required')
+            if (resolvedMode === 'create') {
+              if (!resolvedJobId) {
+                throw new SDKInternalError(
+                  'jobId is required to create a compensation. Pass it as a hook prop or via submit options.',
+                )
               }
-
-              const result = await createJobMutation.mutateAsync({
+              const createResponse = await createCompensationMutation.mutateAsync({
                 request: {
-                  employeeId: resolvedEmployeeId,
-                  jobsCreateRequestBody: {
-                    title: jobTitle,
-                    hireDate: resolvedHireDate,
-                    stateWcCovered: compensationData.stateWcCovered,
-                    stateWcClassCode: compensationData.stateWcCovered
-                      ? compensationData.stateWcClassCode
-                      : null,
-                    twoPercentShareholder,
-                  },
+                  jobId: resolvedJobId,
+                  compensationsRequestBody: requestBodyBase,
                 },
               })
-              updatedJobData = result.job!
-              callbacks?.onJobCreated?.(updatedJobData)
+              result = createResponse.compensation
+              if (!result) throw new SDKInternalError('Compensation creation failed')
             } else {
-              const result = await updateJobMutation.mutateAsync({
+              if (!resolvedCompensationId) {
+                throw new SDKInternalError(
+                  'compensationId is required to update a compensation. Pass it as a hook prop or via submit options.',
+                )
+              }
+              const resolvedVersion =
+                options?.compensationVersion ?? (currentCompensation?.version as string | undefined)
+              if (!resolvedVersion) {
+                throw new SDKInternalError(
+                  'compensation version is required to update a compensation. Pass it via submit options when threading post-create, or ensure the compensation is loaded.',
+                )
+              }
+              const updateResponse = await updateCompensationMutation.mutateAsync({
                 request: {
-                  jobId: currentJob.uuid,
-                  jobsUpdateRequestBody: {
-                    title: jobTitle,
-                    version: currentJob.version as string,
-                    hireDate: resolvedHireDate,
-                    stateWcClassCode: compensationData.stateWcCovered
-                      ? compensationData.stateWcClassCode
-                      : null,
-                    stateWcCovered: compensationData.stateWcCovered,
-                    twoPercentShareholder,
+                  compensationId: resolvedCompensationId,
+                  compensationsUpdateRequestBody: {
+                    version: resolvedVersion,
+                    ...requestBodyBase,
                   },
                 },
               })
-              updatedJobData = result.job!
-              callbacks?.onJobUpdated?.(updatedJobData)
+              result = updateResponse.compensation
+              if (!result) throw new SDKInternalError('Compensation update failed')
             }
 
-            const { compensation } = await updateCompensationMutation.mutateAsync({
-              request: {
-                compensationId: updatedJobData.currentCompensationUuid!,
-                compensationsUpdateRequestBody: {
-                  // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-                  version: updatedJobData.compensations?.find(
-                    comp => comp.uuid === updatedJobData.currentCompensationUuid,
-                  )?.version!,
-                  ...compensationData,
-                  rate: String(compensationData.rate),
-                  minimumWages: compensationData.adjustForMinimumWage
-                    ? [{ uuid: compensationData.minimumWageId }]
-                    : [],
-                },
-              },
-            })
-
-            callbacks?.onCompensationUpdated?.(compensation)
-
-            submitResult = {
-              mode: isCreateMode ? 'create' : 'update',
-              data: compensation,
-            }
+            submitResult = { mode: resolvedMode, data: result }
           })
           resolve()
         },
@@ -445,26 +435,25 @@ export function useCompensationForm({
     ? jobsQuery.isLoading ||
       addressesQuery.isLoading ||
       employeeQuery.isLoading ||
-      minWagesQuery.isLoading ||
-      taxQuery.isLoading
+      minWagesQuery.isLoading
     : false
 
   const hookFormInternals = useHookFormInternals(formMethods)
 
-  if (
-    isDataLoading ||
-    (employeeId && (!employeeJobs || !employee || !companyUuid || !federalTaxDetails))
-  ) {
+  if (isDataLoading || (employeeId && (!employeeJobs || !employee))) {
     return { isLoading: true as const, errorHandling }
   }
 
   return {
     isLoading: false as const,
     data: {
-      compensation: currentCompensation ?? null,
-      jobs: employeeJobs,
+      compensation: currentCompensation,
       currentJob,
       minimumWages,
+      canTriggerCarveOut,
+      minimumEffectiveDate: hireDate,
+      maximumEffectiveDate,
+      hasPendingFutureCompensation,
     },
     status: {
       isPending,
@@ -474,8 +463,7 @@ export function useCompensationForm({
     errorHandling,
     form: {
       Fields: {
-        StartDate: withStartDateField ? StartDateField : undefined,
-        JobTitle: JobTitleField,
+        Title: TitleField,
         FlsaStatus: isFlsaSelectionEnabled ? FlsaStatusField : undefined,
         Rate: RateField,
         PaymentUnit: PaymentUnitField,
@@ -484,9 +472,7 @@ export function useCompensationForm({
           isAdjustMinimumWageEnabled && watchedAdjustForMinimumWage
             ? MinimumWageIdField
             : undefined,
-        TwoPercentShareholder: showTwoPercentStakeholder ? TwoPercentShareholderField : undefined,
-        StateWcCovered: isWaState ? StateWcCoveredField : undefined,
-        StateWcClassCode: isWaState && watchedStateWcCovered ? StateWcClassCodeField : undefined,
+        EffectiveDate: EffectiveDateField,
       },
       fieldsMetadata,
       hookFormInternals,
@@ -497,4 +483,3 @@ export function useCompensationForm({
 
 export type UseCompensationFormResult = HookLoadingResult | UseCompensationFormReady
 export type CompensationFieldsMetadata = UseCompensationFormReady['form']['fieldsMetadata']
-export type CompensationFormFields = UseCompensationFormReady['form']['Fields']

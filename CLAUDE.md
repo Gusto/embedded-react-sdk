@@ -123,3 +123,57 @@ Build and test components in Storybook (`npm run storybook`) before integrating 
 - Run with coverage: `npm run test -- --run --coverage`
 - Update snapshots: `npm run test -- --run -u`
 - E2E tests require gws-flows and ZenPayroll running. See `e2e/local.config.example.env`.
+
+### Asserting on HTTP requests
+
+When a test needs to verify which HTTP requests went out (verb, path, body, call count, ordering across endpoints), use `vi.fn()` to wrap the MSW resolver. Do **not** introduce a custom request-spy utility — vitest and MSW already provide everything needed.
+
+Always pass the resolver type as a generic to `vi.fn` — without it, `request` is inferred as `any` and `request.json()` / `request.url` fail `@typescript-eslint/no-unsafe-call`. Import the type from `msw`:
+
+```ts
+import { HttpResponse, type HttpResponseResolver } from 'msw'
+```
+
+Per-endpoint assertions (call count, request body):
+
+```ts
+let createJobBody: Record<string, unknown> | null = null
+const createJobResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+  createJobBody = (await request.json()) as Record<string, unknown>
+  return HttpResponse.json({ uuid: 'new-job-uuid' /* ... */ }, { status: 201 })
+})
+
+server.use(handleCreateEmployeeJob(createJobResolver))
+
+// ...interact with the component...
+
+expect(createJobResolver).toHaveBeenCalledTimes(1)
+expect(createJobBody).toMatchObject({ title: 'Engineer', hire_date: '2025-01-15' })
+```
+
+Cross-endpoint ordering — use `mock.invocationCallOrder` (vitest assigns a global counter to every spy invocation):
+
+```ts
+expect(createJobResolver.mock.invocationCallOrder[0]!).toBeLessThan(
+  updateCompensationResolver.mock.invocationCallOrder[0]!,
+)
+```
+
+Path assertions when the path itself encodes IDs (e.g., `PUT /v1/jobs/:id`) — capture the URL inside the resolver:
+
+```ts
+let updateJobPath: string | null = null
+const updateJobResolver = vi.fn<HttpResponseResolver>(({ request }) => {
+  updateJobPath = new URL(request.url).pathname
+  return HttpResponse.json({
+    /* ... */
+  })
+})
+
+// ...
+expect(updateJobPath).toBe('/v1/jobs/job-uuid')
+```
+
+When you want to assert that a specific endpoint was _not_ called, register its handler with a `vi.fn()` resolver alongside the one(s) you do expect, then `expect(resolver).not.toHaveBeenCalled()`. This is more explicit than relying on the default mock returning success.
+
+Most form-hook tests don't need this at all — assertions on the rendered DOM, the `onEvent`/`onSaved` callback payload, and the hook's `data`/`status` typically pin behavior sufficiently. Reach for resolver spies only when the wire-level contract (verb, path, version, sequence) is the thing under test, e.g. when a refactor needs to prove that two endpoints are still called in the right order or that the body still carries an optimistic-locking `version`.

@@ -4,11 +4,7 @@ import {
   type RequiredFieldConfig,
   type OptionalFieldsToRequire,
 } from '@/partner-hook-utils/form/buildFormSchema'
-import {
-  coerceNaN,
-  coerceToISODate,
-  coerceStringBoolean,
-} from '@/partner-hook-utils/form/preprocessors'
+import { coerceNaN, coerceToISODate } from '@/partner-hook-utils/form/preprocessors'
 import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus, PAY_PERIODS } from '@/shared/constants'
 import { yearlyRate } from '@/helpers/payRateCalculator'
 
@@ -21,13 +17,22 @@ export const CompensationErrorCodes = {
   PAYMENT_UNIT_OWNER: 'PAYMENT_UNIT_OWNER',
   PAYMENT_UNIT_COMMISSION: 'PAYMENT_UNIT_COMMISSION',
   RATE_COMMISSION_ZERO: 'RATE_COMMISSION_ZERO',
+  EFFECTIVE_DATE_BEFORE_HIRE: 'EFFECTIVE_DATE_BEFORE_HIRE',
 } as const
 
 export type CompensationErrorCode =
   (typeof CompensationErrorCodes)[keyof typeof CompensationErrorCodes]
 
 const fieldValidators = {
-  jobTitle: z.string(),
+  /**
+   * Optional in both modes. Setting title here scopes the change to this
+   * compensation's `effectiveDate` — pair it with a future-dated comp to
+   * schedule a promotion title alongside a rate change. Use
+   * `useJobForm.Fields.Title` instead when creating a job (title is required
+   * by the API on job creation) or when renaming the active role
+   * immediately, and avoid rendering both fields on the same screen.
+   */
+  title: z.string(),
   flsaStatus: z.enum([
     FlsaStatus.EXEMPT,
     FlsaStatus.SALARIED_NONEXEMPT,
@@ -44,29 +49,31 @@ const fieldValidators = {
     PAY_PERIODS.PAYCHECK,
   ]),
   rate: z.preprocess(coerceNaN(0), z.number()),
-  startDate: z.preprocess(coerceToISODate, z.iso.date().nullable()),
+  /**
+   * The effective date a new compensation should take effect on.
+   *
+   * - **create mode (`compensationId` absent)**: required; partners typically default
+   *   to the parent job's `hireDate` (onboarding stub-fill) or a future date
+   *   (rate change). Server-side this maps to POST /v1/jobs/:jobId/compensations.
+   * - **update mode (`compensationId` present)**: optional; if omitted the API
+   *   keeps the existing effective date. PUT /v1/compensations/:id.
+   */
+  effectiveDate: z.preprocess(coerceToISODate, z.iso.date().nullable()),
   adjustForMinimumWage: z.boolean(),
   minimumWageId: z.string(),
-  // Radio group delivers 'true'/'false' strings; coerceStringBoolean converts to boolean
-  stateWcCovered: z.preprocess(coerceStringBoolean, z.boolean()),
-  stateWcClassCode: z.string(),
-  twoPercentShareholder: z.boolean(),
 }
 
 export type CompensationFormData = {
   [K in keyof typeof fieldValidators]: z.infer<(typeof fieldValidators)[K]>
 }
 
-// ── Required fields config (requiredness rules per field) ────────────
-
 const requiredFieldsConfig = {
-  jobTitle: 'create',
+  title: 'never',
   flsaStatus: 'create',
   paymentUnit: 'create',
   rate: 'create',
-  startDate: 'create',
+  effectiveDate: 'create',
   minimumWageId: data => data.adjustForMinimumWage,
-  stateWcClassCode: data => String(data.stateWcCovered) === 'true',
 } satisfies RequiredFieldConfig<typeof fieldValidators>
 
 function validateFlsaRules(data: CompensationFormData, ctx: z.RefinementCtx) {
@@ -131,28 +138,39 @@ function validateFlsaRules(data: CompensationFormData, ctx: z.RefinementCtx) {
   }
 }
 
-// ── Schema factory ───────────────────────────────────────────────────
-
 export type CompensationOptionalFieldsToRequire = OptionalFieldsToRequire<
   typeof requiredFieldsConfig
 >
 export type CompensationFormOutputs = CompensationFormData
 
-interface CompensationSchemaOptions {
+export interface CompensationSchemaOptions {
   mode?: 'create' | 'update'
   optionalFieldsToRequire?: CompensationOptionalFieldsToRequire
-  withStartDateField?: boolean
+  /**
+   * Lower bound for `effectiveDate` (typically the parent job's `hireDate`).
+   * When set, surfaces a `EFFECTIVE_DATE_BEFORE_HIRE` issue if the user
+   * picks an earlier date.
+   */
+  hireDate?: string | null
 }
 
 export function createCompensationSchema(options: CompensationSchemaOptions = {}) {
-  const { mode = 'create', optionalFieldsToRequire, withStartDateField = true } = options
+  const { mode = 'create', optionalFieldsToRequire, hireDate } = options
 
   return buildFormSchema(fieldValidators, {
     requiredFieldsConfig,
     requiredErrorCode: CompensationErrorCodes.REQUIRED,
     mode,
     optionalFieldsToRequire,
-    excludeFields: withStartDateField ? [] : ['startDate'],
-    superRefine: validateFlsaRules,
+    superRefine: (data, ctx) => {
+      validateFlsaRules(data, ctx)
+      if (hireDate && data.effectiveDate && data.effectiveDate < hireDate) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['effectiveDate'],
+          message: CompensationErrorCodes.EFFECTIVE_DATE_BEFORE_HIRE,
+        })
+      }
+    },
   })
 }
