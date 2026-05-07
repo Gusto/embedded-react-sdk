@@ -127,7 +127,8 @@ function Root({ companyId, onEvent }: PolicyListProps) {
     })
   }
 
-  const handleDeletePolicy = async (policy: PolicyListItem) => {
+  const handleDeletePolicy = async (policy: PolicyListItem): Promise<boolean> => {
+    let success = false
     setIsDeletingPolicyId(policy.uuid)
     await baseSubmitHandler({}, async () => {
       if (policy.isHoliday) {
@@ -144,8 +145,10 @@ function Root({ companyId, onEvent }: PolicyListProps) {
         setDeleteSuccessAlert(t('flash.policyDeleted', { name: policy.name }))
       }
       onEvent(componentEvents.TIME_OFF_DELETE_POLICY_DONE, { policyId: policy.uuid })
+      success = true
     })
     setIsDeletingPolicyId(null)
+    return success
   }
 
   return (
