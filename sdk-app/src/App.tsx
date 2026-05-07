@@ -18,6 +18,8 @@ import { useGlobalShortcut } from './useGlobalShortcut'
 import { useCodePanel } from './useCodePanel'
 import { CodePanel } from './CodePanel'
 import { CurrentComponentProvider } from './CurrentComponentContext'
+import { useDemoChrome } from './useDemoChrome'
+import { findDemoChrome, SDK_NATIVE_CHROME_ID } from './demoChromes/registry'
 
 const THEME_CYCLE: ThemeMode[] = ['system', 'light', 'dark']
 
@@ -48,6 +50,8 @@ export function App() {
   const shortcutHelper = useShortcutHelper()
   const navigate = useNavigate()
   const codePanel = useCodePanel()
+  const { chromeId, setChromeId } = useDemoChrome()
+  const customChrome = chromeId !== SDK_NATIVE_CHROME_ID ? findDemoChrome(chromeId) : undefined
 
   const openSettings = useCallback(() => {
     setSettingsOpen(true)
@@ -129,42 +133,58 @@ export function App() {
     )
   }
 
-  const sidebarWidth = chromeHidden ? '0rem' : sidebarOpen ? '16.25rem' : '2.75rem'
+  const sidebarWidth = chromeHidden || customChrome ? '0rem' : sidebarOpen ? '16.25rem' : '2.75rem'
+
+  const outletEl = (
+    <main
+      className="main-content"
+      style={{ '--sidebar-width': sidebarWidth } as React.CSSProperties}
+    >
+      <Outlet
+        context={{ entities: activeEntities, chromeHidden: chromeHidden || !!customChrome }}
+      />
+    </main>
+  )
+
+  let bodyEl: React.ReactNode
+  if (chromeHidden) {
+    bodyEl = outletEl
+  } else if (customChrome) {
+    const Chrome = customChrome.Chrome
+    bodyEl = <Chrome onOpenSettings={openSettings}>{outletEl}</Chrome>
+  } else {
+    bodyEl = (
+      <>
+        <TopBar
+          companyId={activeEntities.companyId}
+          tokenStatus={demoManager.tokenStatus}
+          onOpenSettings={openSettings}
+          onToggleCode={codePanel.toggle}
+          codeOpen={codePanel.isOpen}
+        />
+        <div className="app-body">
+          <Sidebar
+            mode={appMode}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            isOpen={sidebarOpen}
+            onToggle={() => {
+              setSidebarOpen(open => !open)
+            }}
+            onShowShortcuts={shortcutHelper.open}
+          />
+          {outletEl}
+          {codePanel.isOpen && <CodePanel onClose={codePanel.close} />}
+        </div>
+      </>
+    )
+  }
 
   return (
     <ThemeModeProvider value={themeMode}>
       <CurrentComponentProvider>
         <div className={`app-layout${chromeHidden ? ' app-layout-chrome-hidden' : ''}`}>
-          {!chromeHidden && (
-            <TopBar
-              companyId={activeEntities.companyId}
-              tokenStatus={demoManager.tokenStatus}
-              onOpenSettings={openSettings}
-              onToggleCode={codePanel.toggle}
-              codeOpen={codePanel.isOpen}
-            />
-          )}
-          <div className="app-body">
-            {!chromeHidden && (
-              <Sidebar
-                mode={appMode}
-                searchQuery={searchQuery}
-                onSearchChange={setSearchQuery}
-                isOpen={sidebarOpen}
-                onToggle={() => {
-                  setSidebarOpen(open => !open)
-                }}
-                onShowShortcuts={shortcutHelper.open}
-              />
-            )}
-            <main
-              className="main-content"
-              style={{ '--sidebar-width': sidebarWidth } as React.CSSProperties}
-            >
-              <Outlet context={{ entities: activeEntities, chromeHidden }} />
-            </main>
-            {codePanel.isOpen && !chromeHidden && <CodePanel onClose={codePanel.close} />}
-          </div>
+          {bodyEl}
           {chromeHidden && (
             <button
               type="button"
@@ -197,6 +217,8 @@ export function App() {
             onApplyManualConfig={handleApplyManualConfig}
             onSaveManualConfig={manual.saveConfig}
             onDeleteManualSave={manual.deleteSave}
+            chromeId={chromeId}
+            onChromeIdChange={setChromeId}
           />
           <ShortcutHelper isOpen={shortcutHelper.isOpen} onClose={shortcutHelper.close} />
           {!isManual && demoManager.tokenStatus === 'expired' && (
