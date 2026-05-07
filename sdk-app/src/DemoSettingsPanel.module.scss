@@ -167,6 +167,48 @@
   margin-top: 0.5rem;
 }
 
+.modeToggle {
+  display: flex;
+  border: 0.0625rem solid var(--color-border);
+  border-radius: 0.375rem;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.modeToggleBtn {
+  flex: 1;
+  padding: 0.4375rem 0.75rem;
+  background: var(--color-bg);
+  border: none;
+  cursor: pointer;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  transition:
+    background 0.15s,
+    color 0.15s;
+
+  &:hover {
+    background: var(--color-hover-bg);
+  }
+
+  & + & {
+    border-left: 0.0625rem solid var(--color-border);
+  }
+}
+
+.modeToggleBtnActive {
+  background: var(--color-active);
+  color: #fff;
+
+  &:hover {
+    background: var(--color-active-hover);
+  }
+}
+
+.modeHint {
+  margin-top: 0.5rem;
+}
+
 .copyRow {
   display: flex;
   gap: 0.5rem;

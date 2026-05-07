@@ -158,6 +158,76 @@ export default defineConfig(() => {
             }
           })
 
+          server.middlewares.use('/sdk-app/api/set-manual-token', async (req, res) => {
+            if (req.method !== 'POST') {
+              res.statusCode = 405
+              res.end('Method not allowed')
+              return
+            }
+
+            try {
+              let body = ''
+              for await (const chunk of req) body += chunk
+
+              const payload = JSON.parse(body) as {
+                flowToken?: string
+                companyId?: string
+                employeeId?: string
+                contractorId?: string
+                payrollId?: string
+                formId?: string
+                requestId?: string
+              }
+
+              if (!payload.flowToken) {
+                res.statusCode = 400
+                res.setHeader('Content-Type', 'application/json')
+                res.end(JSON.stringify({ error: 'flowToken is required' }))
+                return
+              }
+
+              env.FLOW_TOKEN = payload.flowToken
+              if (payload.companyId) env.VITE_COMPANY_ID = payload.companyId
+              if (payload.employeeId) env.VITE_EMPLOYEE_ID = payload.employeeId
+              if (payload.contractorId) env.VITE_CONTRACTOR_ID = payload.contractorId
+              if (payload.payrollId) env.VITE_PAYROLL_ID = payload.payrollId
+              if (payload.formId) env.VITE_FORM_ID = payload.formId
+              if (payload.requestId) env.VITE_REQUEST_ID = payload.requestId
+
+              res.setHeader('Content-Type', 'application/json')
+              res.end(JSON.stringify({ ok: true }))
+            } catch (err) {
+              res.statusCode = 500
+              res.setHeader('Content-Type', 'application/json')
+              res.end(JSON.stringify({ error: String(err) }))
+            }
+          })
+
+          server.middlewares.use('/sdk-app/api/restore-auto-token', async (req, res) => {
+            if (req.method !== 'POST') {
+              res.statusCode = 405
+              res.end('Method not allowed')
+              return
+            }
+
+            try {
+              const fileEnv = loadEnvFile(zpEnv)
+              for (const key of Object.keys(env)) {
+                if (key in fileEnv) env[key] = fileEnv[key]
+                else delete env[key]
+              }
+              for (const [k, v] of Object.entries(fileEnv)) {
+                env[k] = v
+              }
+              res.setHeader('Content-Type', 'application/json')
+              res.end(JSON.stringify({ ok: true }))
+            } catch (err) {
+              res.statusCode = 500
+              res.setHeader('Content-Type', 'application/json')
+              res.end(JSON.stringify({ error: String(err) }))
+            }
+          })
+
           server.middlewares.use('/sdk-app/api/validate-token', async (_req, res) => {
             try {
               let safeHost: string
