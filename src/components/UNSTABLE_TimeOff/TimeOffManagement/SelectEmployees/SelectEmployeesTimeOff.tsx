@@ -2,6 +2,7 @@ import { useCallback, useMemo, useRef, useState } from 'react'
 import { useTimeOffPoliciesAddEmployeesMutation } from '@gusto/embedded-api/react-query/timeOffPoliciesAddEmployees'
 import { useTimeOffPoliciesRemoveEmployeesMutation } from '@gusto/embedded-api/react-query/timeOffPoliciesRemoveEmployees'
 import { useTimeOffPoliciesGetSuspense } from '@gusto/embedded-api/react-query/timeOffPoliciesGet'
+import { UnprocessableEntityErrorObject } from '@gusto/embedded-api/models/errors/unprocessableentityerrorobject'
 import { useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import type { CreatableTimeOffPolicyType } from '../../TimeOffFlow/timeOffPolicyTypes'
@@ -9,6 +10,7 @@ import { SelectEmployeesPresentation } from './SelectEmployeesPresentation'
 import { useSelectEmployeesData } from './useSelectEmployeesData'
 import type { EmployeeItem } from './SelectEmployeesPresentationTypes'
 import { useBase } from '@/components/Base/useBase'
+import { SDKInternalError } from '@/types/sdkError'
 import { componentEvents } from '@/shared/constants'
 import { useI18n } from '@/i18n'
 
@@ -193,12 +195,23 @@ function SelectEmployeesTimeOffInner({
     async (toAdd: string[], toRemove: string[]) => {
       await baseSubmitHandler({}, async () => {
         if (toRemove.length > 0) {
-          await removeEmployees({
-            request: {
-              timeOffPolicyUuid: policyId,
-              requestBody: { employees: toRemove.map(uuid => ({ uuid })) },
-            },
-          })
+          try {
+            await removeEmployees({
+              request: {
+                timeOffPolicyUuid: policyId,
+                requestBody: { employees: toRemove.map(uuid => ({ uuid })) },
+              },
+            })
+          } catch (err) {
+            if (err instanceof UnprocessableEntityErrorObject) {
+              const apiMessage = err.errors[0]?.message ?? ''
+              throw new SDKInternalError(
+                t('errors.removeEmployeesFailed', { details: apiMessage }),
+                'api_error',
+              )
+            }
+            throw err
+          }
         }
         let policyResult: unknown
         if (toAdd.length > 0) {
@@ -224,6 +237,7 @@ function SelectEmployeesTimeOffInner({
       policyId,
       queryClient,
       onEvent,
+      t,
     ],
   )
 
