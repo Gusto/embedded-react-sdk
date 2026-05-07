@@ -77,6 +77,38 @@ describe('EditEmployeeBalanceModal', () => {
     expect(cancelButton).toBeDisabled()
   })
 
+  it('resets balance when currentBalance prop changes', async () => {
+    const user = userEvent.setup()
+    const { rerender } = renderWithProviders(
+      <EditEmployeeBalanceModal
+        isOpen
+        onClose={onClose}
+        employeeName="Alexander Hamilton"
+        currentBalance={80}
+        onConfirm={onConfirm}
+        isPending={false}
+      />,
+    )
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Update balance' })).toBeInTheDocument()
+    })
+
+    rerender(
+      <EditEmployeeBalanceModal
+        isOpen
+        onClose={onClose}
+        employeeName="Thomas Jefferson"
+        currentBalance={40}
+        onConfirm={onConfirm}
+        isPending={false}
+      />,
+    )
+
+    await user.click(screen.getByRole('button', { name: 'Update balance' }))
+    expect(onConfirm).toHaveBeenCalledWith(40)
+  })
+
   describe('accessibility', () => {
     it('should not have accessibility violations', async () => {
       const { container } = renderModal()
