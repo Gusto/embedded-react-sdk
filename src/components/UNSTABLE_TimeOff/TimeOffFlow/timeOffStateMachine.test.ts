@@ -648,6 +648,61 @@ describe('timeOffStateMachine', () => {
     })
   })
 
+  describe('policyId cleanup on create/cancel/backToList', () => {
+    it('clears policyId when starting a new create flow after viewing a policy', () => {
+      const service = createService()
+
+      send(service, componentEvents.TIME_OFF_VIEW_POLICY, {
+        policyId: 'policy-existing',
+        policyType: 'vacation',
+      })
+      expect(service.context.policyId).toBe('policy-existing')
+
+      send(service, componentEvents.TIME_OFF_BACK_TO_LIST)
+      expect(service.machine.current).toBe('policyList')
+      expect(service.context.policyId).toBeUndefined()
+      expect(service.context.policyType).toBeUndefined()
+
+      send(service, componentEvents.TIME_OFF_CREATE_POLICY)
+      expect(service.machine.current).toBe('policyTypeSelector')
+      expect(service.context.policyId).toBeUndefined()
+      expect(service.context.policyType).toBeUndefined()
+    })
+
+    it('clears policyId when starting a new create flow after completing a policy creation', () => {
+      const service = createService()
+
+      send(service, componentEvents.TIME_OFF_CREATE_POLICY)
+      send(service, componentEvents.TIME_OFF_POLICY_TYPE_SELECTED, { policyType: 'vacation' })
+      send(service, componentEvents.TIME_OFF_POLICY_DETAILS_DONE, {
+        policyId: 'first-policy',
+        accrualMethod: 'unlimited',
+      })
+      send(service, componentEvents.TIME_OFF_ADD_EMPLOYEES_DONE)
+      expect(service.machine.current).toBe('viewTimeOffPolicyDetail')
+      expect(service.context.policyId).toBe('first-policy')
+
+      send(service, componentEvents.TIME_OFF_BACK_TO_LIST)
+      expect(service.context.policyId).toBeUndefined()
+
+      send(service, componentEvents.TIME_OFF_CREATE_POLICY)
+      expect(service.context.policyId).toBeUndefined()
+      expect(service.context.policyType).toBeUndefined()
+    })
+
+    it('clears policyId on cancel from policyDetailsForm', () => {
+      const service = createService()
+      toPolicyDetailsForm(service)
+      send(service, componentEvents.TIME_OFF_POLICY_DETAILS_DONE, { policyId: 'policy-123' })
+      expect(service.context.policyId).toBe('policy-123')
+
+      send(service, componentEvents.CANCEL)
+      expect(service.machine.current).toBe('policyList')
+      expect(service.context.policyId).toBeUndefined()
+      expect(service.context.policyType).toBeUndefined()
+    })
+  })
+
   describe('cancel transitions', () => {
     it('cancels from policyTypeSelector to policyList', () => {
       const service = createService()
