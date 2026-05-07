@@ -114,8 +114,11 @@ export function App() {
           entityCatalog={entityCatalog}
           mode={manual.mode}
           manualConfig={manual.config}
+          manualSaves={manual.saves}
           onSwitchToAuto={manual.switchToAuto}
           onApplyManualConfig={handleApplyManualConfig}
+          onSaveManualConfig={manual.saveConfig}
+          onDeleteManualSave={manual.deleteSave}
         />
         {!isManual && demoManager.tokenStatus === 'expired' && (
           <TokenExpiredOverlay

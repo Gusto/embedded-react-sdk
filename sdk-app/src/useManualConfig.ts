@@ -17,7 +17,10 @@ interface PersistedShape {
   config: ManualConfig
 }
 
+export type ManualConfigSaves = Record<string, ManualConfig>
+
 const STORAGE_KEY = 'sdk-app-manual-config'
+const SAVES_STORAGE_KEY = 'sdk-app-manual-config-saves'
 
 const EMPTY_CONFIG: ManualConfig = {
   flowToken: '',
@@ -50,6 +53,29 @@ function writePersisted(shape: PersistedShape) {
   }
 }
 
+function readSaves(): ManualConfigSaves {
+  try {
+    const raw = localStorage.getItem(SAVES_STORAGE_KEY)
+    if (!raw) return {}
+    const parsed = JSON.parse(raw) as Record<string, Partial<ManualConfig>>
+    const result: ManualConfigSaves = {}
+    for (const [name, config] of Object.entries(parsed)) {
+      result[name] = { ...EMPTY_CONFIG, ...config }
+    }
+    return result
+  } catch {
+    return {}
+  }
+}
+
+function writeSaves(saves: ManualConfigSaves) {
+  try {
+    localStorage.setItem(SAVES_STORAGE_KEY, JSON.stringify(saves))
+  } catch {
+    // Storage unavailable; continue without persistence.
+  }
+}
+
 async function postManualToken(config: ManualConfig): Promise<void> {
   const res = await fetch('/sdk-app/api/set-manual-token', {
     method: 'POST',
@@ -77,12 +103,16 @@ export interface UseManualConfigResult {
   rehydrationError: string | null
   switchToAuto: () => Promise<void>
   applyManualConfig: (next: ManualConfig) => Promise<void>
+  saves: ManualConfigSaves
+  saveConfig: (name: string, config: ManualConfig) => void
+  deleteSave: (name: string) => void
 }
 
 export function useManualConfig(): UseManualConfigResult {
   const [{ mode, config }, setState] = useState<PersistedShape>(() => readPersisted())
   const [isReady, setIsReady] = useState<boolean>(() => readPersisted().mode !== 'manual')
   const [rehydrationError, setRehydrationError] = useState<string | null>(null)
+  const [saves, setSaves] = useState<ManualConfigSaves>(() => readSaves())
 
   useEffect(() => {
     if (mode !== 'manual') {
@@ -127,5 +157,37 @@ export function useManualConfig(): UseManualConfigResult {
     setIsReady(true)
   }, [])
 
-  return { mode, config, isReady, rehydrationError, switchToAuto, applyManualConfig }
+  const saveConfig = useCallback((name: string, next: ManualConfig) => {
+    const trimmed = name.trim()
+    if (!trimmed) return
+    setSaves(prev => {
+      const updated = { ...prev, [trimmed]: next }
+      writeSaves(updated)
+      return updated
+    })
+  }, [])
+
+  const deleteSave = useCallback((name: string) => {
+    setSaves(prev => {
+      if (!(name in prev)) return prev
+      const updated: ManualConfigSaves = {}
+      for (const [k, v] of Object.entries(prev)) {
+        if (k !== name) updated[k] = v
+      }
+      writeSaves(updated)
+      return updated
+    })
+  }, [])
+
+  return {
+    mode,
+    config,
+    isReady,
+    rehydrationError,
+    switchToAuto,
+    applyManualConfig,
+    saves,
+    saveConfig,
+    deleteSave,
+  }
 }

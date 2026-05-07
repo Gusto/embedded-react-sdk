@@ -11,7 +11,7 @@ import type { EntityIds } from './useEntities'
 import type { TokenStatus } from './useDemoManager'
 import type { EntityCatalog } from './useEntityCatalog'
 import type { EntityOption } from './entityFormatters'
-import type { AppMode, ManualConfig } from './useManualConfig'
+import type { AppMode, ManualConfig, ManualConfigSaves } from './useManualConfig'
 import styles from './DemoSettingsPanel.module.scss'
 
 interface DemoSettingsPanelProps {
@@ -29,8 +29,11 @@ interface DemoSettingsPanelProps {
   entityCatalog: EntityCatalog
   mode: AppMode
   manualConfig: ManualConfig
+  manualSaves: ManualConfigSaves
   onSwitchToAuto: () => Promise<void>
   onApplyManualConfig: (next: ManualConfig) => Promise<void>
+  onSaveManualConfig: (name: string, config: ManualConfig) => void
+  onDeleteManualSave: (name: string) => void
 }
 
 const MANUAL_FIELDS: { key: keyof ManualConfig; label: string; required?: boolean }[] = [
@@ -365,8 +368,11 @@ export function DemoSettingsPanel({
   entityCatalog,
   mode,
   manualConfig,
+  manualSaves,
   onSwitchToAuto,
   onApplyManualConfig,
+  onSaveManualConfig,
+  onDeleteManualSave,
 }: DemoSettingsPanelProps) {
   const currentDemoType = import.meta.env.VITE_DEMO_TYPE || 'react_sdk_demo_company_onboarded'
   const [selectedDemoType, setSelectedDemoType] = useState(currentDemoType)
@@ -376,6 +382,11 @@ export function DemoSettingsPanel({
   const [manualError, setManualError] = useState<string | null>(null)
   const [manualBanner, setManualBanner] = useState<string | null>(null)
   const [tabMode, setTabMode] = useState<AppMode>(mode)
+  const [selectedSaveName, setSelectedSaveName] = useState<string>('')
+  const [saveDialogOpen, setSaveDialogOpen] = useState(false)
+  const [saveDialogName, setSaveDialogName] = useState('')
+
+  const saveNames = Object.keys(manualSaves).sort((a, b) => a.localeCompare(b))
 
   useEffect(() => {
     setManualDraft(manualConfig)
@@ -391,6 +402,8 @@ export function DemoSettingsPanel({
       setManualError(null)
       setManualBanner(null)
       setTabMode(mode)
+      setSaveDialogOpen(false)
+      setSaveDialogName('')
     }
   }, [isOpen, entities, mode])
 
@@ -488,6 +501,104 @@ export function DemoSettingsPanel({
               Token must be valid for the active host (set at startup; can&apos;t be changed without
               restarting the dev server).
             </div>
+
+            <div className={styles.field}>
+              <label htmlFor="manual-save-select">Saved Presets</label>
+              <div className={styles.copyRow}>
+                <select
+                  id="manual-save-select"
+                  value={selectedSaveName}
+                  onChange={e => {
+                    const next = e.target.value
+                    setSelectedSaveName(next)
+                    if (next && manualSaves[next]) {
+                      setManualDraft(manualSaves[next])
+                      setManualError(null)
+                      setManualBanner(`Loaded preset "${next}". Click Apply to activate.`)
+                    }
+                  }}
+                >
+                  <option value="">— Select a preset —</option>
+                  {saveNames.map(name => (
+                    <option key={name} value={name}>
+                      {name}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  className={styles.btn}
+                  type="button"
+                  onClick={() => {
+                    setSaveDialogName(selectedSaveName)
+                    setSaveDialogOpen(true)
+                  }}
+                  disabled={!manualDraft.flowToken || !manualDraft.companyId}
+                  title="Save current fields as a named preset"
+                >
+                  Save…
+                </button>
+                <button
+                  className={`${styles.btn} ${styles.btnDanger}`}
+                  type="button"
+                  disabled={!selectedSaveName}
+                  onClick={() => {
+                    if (!selectedSaveName) return
+                    onDeleteManualSave(selectedSaveName)
+                    setSelectedSaveName('')
+                    setManualBanner(`Deleted preset "${selectedSaveName}".`)
+                  }}
+                  title="Delete the selected preset"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+
+            {saveDialogOpen && (
+              <div className={styles.field}>
+                <label htmlFor="manual-save-name-input">Preset name</label>
+                <div className={styles.copyRow}>
+                  <input
+                    id="manual-save-name-input"
+                    type="text"
+                    value={saveDialogName}
+                    onChange={e => {
+                      setSaveDialogName(e.target.value)
+                    }}
+                    placeholder="e.g. Acme Test"
+                    ref={el => {
+                      if (el && document.activeElement !== el) el.focus()
+                    }}
+                  />
+                  <button
+                    className={`${styles.btn} ${styles.btnPrimary}`}
+                    type="button"
+                    disabled={!saveDialogName.trim()}
+                    onClick={() => {
+                      const name = saveDialogName.trim()
+                      onSaveManualConfig(name, manualDraft)
+                      setSelectedSaveName(name)
+                      setSaveDialogOpen(false)
+                      setSaveDialogName('')
+                      setManualBanner(`Saved preset "${name}".`)
+                    }}
+                  >
+                    Save
+                  </button>
+                  <button
+                    className={styles.btn}
+                    type="button"
+                    onClick={() => {
+                      setSaveDialogOpen(false)
+                      setSaveDialogName('')
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+
             {manualBanner && (
               <div className={`${styles.info} ${styles.modeHint}`}>{manualBanner}</div>
             )}
@@ -505,6 +616,7 @@ export function DemoSettingsPanel({
                     value={manualDraft[key]}
                     onChange={e => {
                       setManualDraft(prev => ({ ...prev, [key]: e.target.value.trim() }))
+                      if (selectedSaveName) setSelectedSaveName('')
                     }}
                     placeholder={`Enter ${label.toLowerCase()}...`}
                     autoComplete="off"
