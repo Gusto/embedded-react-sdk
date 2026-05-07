@@ -13,6 +13,13 @@ const limitedPolicyDetails = {
   resetDate: 'January 1',
 }
 
+const fixedPolicyDetails = {
+  policyType: 'sick' as const,
+  accrualMethod: 'perCalendarYear' as const,
+  accrualRate: 40,
+  resetDate: 'January 1',
+}
+
 const unlimitedPolicyDetails = {
   policyType: 'vacation' as const,
   accrualMethod: 'unlimited' as const,
@@ -179,6 +186,24 @@ describe('TimeOffPolicyDetailPresentation', () => {
 
       await user.click(screen.getByRole('button', { name: 'Change' }))
       expect(onChangeSettings).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe('details tab - fixed accrual policy', () => {
+    it('does not show Accrual maximum or Waiting period for fixed accrual', async () => {
+      renderComponent({
+        policyDetails: fixedPolicyDetails,
+        policySettings: fullPolicySettings,
+      })
+
+      await waitFor(() => {
+        expect(screen.getByText('Policy settings')).toBeInTheDocument()
+      })
+      expect(screen.getByText('Balance maximum')).toBeInTheDocument()
+      expect(screen.getByText('Carry over limit')).toBeInTheDocument()
+      expect(screen.getByText('Paid out on termination')).toBeInTheDocument()
+      expect(screen.queryByText('Accrual maximum')).not.toBeInTheDocument()
+      expect(screen.queryByText('Waiting period')).not.toBeInTheDocument()
     })
   })
 
