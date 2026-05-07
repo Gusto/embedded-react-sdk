@@ -97,6 +97,11 @@ function DetailsTab({
   const { Box, BoxHeader, DescriptionList, Button } = useComponentContext()
 
   const isUnlimited = policyDetails.accrualMethod === 'unlimited'
+  const isHoursWorked =
+    policyDetails.accrualMethod === 'perHourWorked' ||
+    policyDetails.accrualMethod === 'perHourWorkedNoOvertime' ||
+    policyDetails.accrualMethod === 'perHourPaid' ||
+    policyDetails.accrualMethod === 'perHourPaidNoOvertime'
 
   const detailItems = useMemo(() => {
     const items: { term: string; description: string }[] = [
@@ -129,8 +134,10 @@ function DetailsTab({
   const settingsItems = useMemo(() => {
     if (!policySettings) return []
 
-    return [
-      {
+    const items: { term: string; description: string }[] = []
+
+    if (isHoursWorked) {
+      items.push({
         term: t('maxAccrualHoursPerYear.label'),
         description:
           policySettings.maxAccrualHoursPerYear != null
@@ -138,7 +145,10 @@ function DetailsTab({
                 count: policySettings.maxAccrualHoursPerYear,
               })
             : t('maxAccrualHoursPerYear.noMaximum'),
-      },
+      })
+    }
+
+    items.push(
       {
         term: t('maxHours.label'),
         description:
@@ -153,7 +163,10 @@ function DetailsTab({
             ? t('carryoverLimitHours.withLimit', { count: policySettings.carryoverLimitHours })
             : t('carryoverLimitHours.noLimit'),
       },
-      {
+    )
+
+    if (isHoursWorked) {
+      items.push({
         term: t('accrualWaitingPeriodDays.label'),
         description:
           policySettings.accrualWaitingPeriodDays != null
@@ -161,15 +174,18 @@ function DetailsTab({
                 count: policySettings.accrualWaitingPeriodDays,
               })
             : t('accrualWaitingPeriodDays.noPeriod'),
-      },
-      {
-        term: t('paidOutOnTermination.label'),
-        description: policySettings.paidOutOnTermination
-          ? t('paidOutOnTermination.yes')
-          : t('paidOutOnTermination.no'),
-      },
-    ]
-  }, [policySettings, t])
+      })
+    }
+
+    items.push({
+      term: t('paidOutOnTermination.label'),
+      description: policySettings.paidOutOnTermination
+        ? t('paidOutOnTermination.yes')
+        : t('paidOutOnTermination.no'),
+    })
+
+    return items
+  }, [policySettings, t, isHoursWorked])
 
   const detailsCardClassName = isUnlimited
     ? `${styles.descriptionCard} ${styles.descriptionCardUnlimited}`
