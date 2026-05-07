@@ -15,7 +15,7 @@ import { CompensationContextual } from '@/components/Employee/Compensation'
 import { DeductionsContextual } from '@/components/Employee/Deductions'
 import { EmployeeDocumentsContextual } from '@/components/Employee/EmployeeDocuments'
 import { PaymentMethodContextual } from '@/components/Employee/PaymentMethod'
-import { ProfileContextual } from '@/components/Employee/Profile'
+import { ProfileContextual } from '@/components/Employee/Profile/onboarding/Profile'
 import { OnboardingSummaryContextual } from '@/components/Employee/OnboardingSummary'
 
 type EventPayloads = {

@@ -27,22 +27,26 @@ export function TimeOffPolicyDetailPresentation({
   onTabChange,
   employees,
   removeDialog,
-  bulkRemoveDialog,
   successAlert,
   onDismissAlert,
 }: TimeOffPolicyDetailPresentationProps) {
   useI18n('Company.TimeOff.TimeOffPolicyDetails')
   const { t } = useTranslation('Company.TimeOff.TimeOffPolicyDetails')
 
+  const isUnlimited = policyDetails.accrualMethod === 'unlimited'
+
   const balanceColumn = useMemo(
-    () => [
-      {
-        key: 'balance' as keyof TimeOffPolicyDetailEmployee,
-        title: t('employeeTable.balance'),
-        render: (item: TimeOffPolicyDetailEmployee) => item.balance ?? '-',
-      },
-    ],
-    [t],
+    () =>
+      isUnlimited
+        ? []
+        : [
+            {
+              key: 'balance' as keyof TimeOffPolicyDetailEmployee,
+              title: t('employeeTable.balance'),
+              render: (item: TimeOffPolicyDetailEmployee) => item.balance ?? '-',
+            },
+          ],
+    [t, isUnlimited],
   )
 
   const detailsTabContent = (
@@ -70,9 +74,9 @@ export function TimeOffPolicyDetailPresentation({
       employees={{
         ...employees,
         additionalColumns: balanceColumn,
+        hideJobTitle: isUnlimited,
       }}
       removeDialog={removeDialog}
-      bulkRemoveDialog={bulkRemoveDialog}
       successAlert={successAlert}
       onDismissAlert={onDismissAlert}
     />
@@ -167,9 +171,13 @@ function DetailsTab({
     ]
   }, [policySettings, t])
 
+  const detailsCardClassName = isUnlimited
+    ? `${styles.descriptionCard} ${styles.descriptionCardUnlimited}`
+    : styles.descriptionCard
+
   return (
     <Flex flexDirection="column" gap={20}>
-      <div className={styles.descriptionCard}>
+      <div className={detailsCardClassName}>
         <Box header={<BoxHeader title={t('details')} />} withPadding>
           <DescriptionList items={detailItems} showSeparators={false} layout="stacked" />
         </Box>

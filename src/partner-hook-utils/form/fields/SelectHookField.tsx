@@ -2,6 +2,7 @@ import type { ComponentType } from 'react'
 import { useHookFieldResolution } from '../useHookFieldResolution'
 import { getFieldWithOptions } from '../getFieldWithOptions'
 import type { BaseFieldProps, ValidationMessages, FormHookResult } from '../../types'
+import { withFieldElementRegistry } from './withFieldElementRegistry'
 import { SelectField } from '@/components/Common'
 import type { SelectProps } from '@/components/Common/UI/Select/SelectTypes'
 
@@ -28,7 +29,7 @@ export function SelectHookField<TErrorCode extends string, TEntry = unknown>({
   FieldComponent,
   portalContainer,
 }: SelectHookFieldProps<TErrorCode, TEntry>) {
-  const { metadata, control, errorMessage } = useHookFieldResolution(
+  const { metadata, control, errorMessage, fieldElementRegistry } = useHookFieldResolution(
     name,
     formHookResult,
     validationMessages,
@@ -44,7 +45,8 @@ export function SelectHookField<TErrorCode extends string, TEntry = unknown>({
         }))
       : defaultOptions
 
-  return (
+  return withFieldElementRegistry(
+    fieldElementRegistry,
     <SelectField
       name={name}
       control={control}
@@ -57,6 +59,6 @@ export function SelectHookField<TErrorCode extends string, TEntry = unknown>({
       placeholder={placeholder}
       FieldComponent={FieldComponent}
       portalContainer={portalContainer}
-    />
+    />,
   )
 }

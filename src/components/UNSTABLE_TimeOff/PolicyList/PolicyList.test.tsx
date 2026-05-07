@@ -173,6 +173,74 @@ describe('PolicyList', () => {
         expect(screen.getByRole('button', { name: 'Finish setup' })).toBeInTheDocument()
       })
     })
+
+    it('omits deactivated policies from the list', async () => {
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:companyUuid/time_off_policies`, () => {
+          return HttpResponse.json([
+            ...mockPolicies,
+            {
+              uuid: 'policy-deactivated',
+              company_uuid: 'company-123',
+              name: 'Deactivated Policy',
+              policy_type: 'vacation',
+              accrual_method: 'per_pay_period',
+              accrual_rate: '40.0',
+              is_active: false,
+              complete: true,
+              employees: [],
+            },
+          ])
+        }),
+      )
+
+      renderWithProviders(<PolicyList {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Vacation')).toBeInTheDocument()
+      })
+      expect(screen.getByText('Sick Leave')).toBeInTheDocument()
+      expect(screen.queryByText('Deactivated Policy')).not.toBeInTheDocument()
+    })
+
+    it('omits non-PTO/sick policies (custom, bereavement, etc.) from the list', async () => {
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:companyUuid/time_off_policies`, () => {
+          return HttpResponse.json([
+            ...mockPolicies,
+            {
+              uuid: 'policy-custom',
+              company_uuid: 'company-123',
+              name: 'Custom Policy',
+              policy_type: 'custom',
+              accrual_method: 'unlimited',
+              is_active: true,
+              complete: true,
+              employees: [],
+            },
+            {
+              uuid: 'policy-bereavement',
+              company_uuid: 'company-123',
+              name: 'Bereavement',
+              policy_type: 'bereavement',
+              accrual_method: 'unlimited',
+              is_active: true,
+              complete: true,
+              employees: [],
+            },
+          ])
+        }),
+      )
+
+      renderWithProviders(<PolicyList {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Vacation')).toBeInTheDocument()
+      })
+      expect(screen.getByText('Sick Leave')).toBeInTheDocument()
+      expect(screen.queryByText('Custom Policy')).not.toBeInTheDocument()
+      expect(screen.queryByText('Bereavement')).not.toBeInTheDocument()
+    })
   })
 
   describe('empty state', () => {

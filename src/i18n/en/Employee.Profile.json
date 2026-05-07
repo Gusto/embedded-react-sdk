@@ -15,7 +15,9 @@
   "ssnMask": "***-**-****",
   "startDateDescription": "Your employee’s first day of work at your company.",
   "startDateLabel": "Start date",
+  "saveCta": "Save",
   "submitCta": "Continue",
+  "successAlert": "Successfully updated profile",
   "title": "Basics",
   "validations": {
     "email": "Valid email is required",

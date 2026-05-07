@@ -1,8 +1,13 @@
-import { renderHook, act, waitFor } from '@testing-library/react'
+import { renderHook, render, act, waitFor } from '@testing-library/react'
 import { describe, test, expect, vi } from 'vitest'
 import { type Control, FormProvider, useForm } from 'react-hook-form'
 import React from 'react'
 import { useField } from './useField'
+import {
+  FieldElementRegistryContext,
+  useFieldElementRegistry,
+  type FieldElementRegistry,
+} from './fieldElementRegistry'
 
 const FormWrapper = ({ children }: { children: React.ReactNode }) => {
   const methods = useForm({
@@ -314,6 +319,100 @@ describe('useField', () => {
 
       // Should be different objects
       expect(firstDescription).not.toBe(secondDescription)
+    })
+  })
+
+  describe('field element registry', () => {
+    function TestField({ name }: { name: string }) {
+      const { inputRef } = useField({ name })
+      return <input data-testid={`input-${name}`} ref={inputRef} />
+    }
+
+    function RegistryFormWrapper({
+      registry,
+      children,
+    }: {
+      registry: FieldElementRegistry | null
+      children: React.ReactNode
+    }) {
+      const methods = useForm()
+      return (
+        <FieldElementRegistryContext.Provider value={registry}>
+          <FormProvider {...methods}>{children}</FormProvider>
+        </FieldElementRegistryContext.Provider>
+      )
+    }
+
+    test('registers the DOM element under the field name when a registry is in context', () => {
+      const { result: registryResult } = renderHook(() => useFieldElementRegistry())
+      const registry = registryResult.current
+
+      const { getByTestId } = render(
+        <RegistryFormWrapper registry={registry}>
+          <TestField name="firstName" />
+        </RegistryFormWrapper>,
+      )
+
+      const input = getByTestId('input-firstName')
+      expect(registry.get('firstName')).toBe(input)
+      expect(registry.names()).toEqual(['firstName'])
+    })
+
+    test('unregisters the field when the component unmounts', () => {
+      const { result: registryResult } = renderHook(() => useFieldElementRegistry())
+      const registry = registryResult.current
+
+      const { unmount } = render(
+        <RegistryFormWrapper registry={registry}>
+          <TestField name="firstName" />
+        </RegistryFormWrapper>,
+      )
+
+      expect(registry.get('firstName')).not.toBeNull()
+
+      unmount()
+
+      expect(registry.get('firstName')).toBeNull()
+      expect(registry.names()).toEqual([])
+    })
+
+    test('cleans up the previous entry when the field name changes', () => {
+      const { result: registryResult } = renderHook(() => useFieldElementRegistry())
+      const registry = registryResult.current
+
+      const { rerender, getByTestId } = render(
+        <RegistryFormWrapper registry={registry}>
+          <TestField name="firstName" />
+        </RegistryFormWrapper>,
+      )
+
+      expect(registry.names()).toEqual(['firstName'])
+
+      rerender(
+        <RegistryFormWrapper registry={registry}>
+          <TestField name="lastName" />
+        </RegistryFormWrapper>,
+      )
+
+      const lastNameInput = getByTestId('input-lastName')
+      expect(registry.get('firstName')).toBeNull()
+      expect(registry.get('lastName')).toBe(lastNameInput)
+      expect(registry.names()).toEqual(['lastName'])
+    })
+
+    test('is a no-op when no registry is published in context', () => {
+      const FormWrapperNoRegistry = ({ children }: { children: React.ReactNode }) => {
+        const methods = useForm()
+        return <FormProvider {...methods}>{children}</FormProvider>
+      }
+
+      expect(() =>
+        render(
+          <FormWrapperNoRegistry>
+            <TestField name="firstName" />
+          </FormWrapperNoRegistry>,
+        ),
+      ).not.toThrow()
     })
   })
 })

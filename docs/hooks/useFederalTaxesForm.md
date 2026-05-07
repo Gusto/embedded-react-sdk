@@ -11,7 +11,7 @@ Updates an employee's federal tax (W-4) withholding information — filing statu
 import { useFederalTaxesForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
 ```
 
-The federal tax record is created automatically with the employee, so this hook is always in update mode. Only the revised 2020 W-4 format (`rev_2020_w4`) is supported for updates.
+The federal tax record is created automatically with the employee, so this hook is always in update mode. Only the revised 2020 W-4 format is supported for updates.
 
 ---
 

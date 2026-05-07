@@ -939,4 +939,40 @@ describe('buildFormSchema', () => {
       expect(metadata.dependent.isRequired).toBe(false)
     })
   })
+
+  describe('NaN handling for number fields', () => {
+    it('treats NaN as empty so required validation fires for cleared number inputs', () => {
+      const fieldValidators = {
+        amount: z.preprocess(
+          (v: unknown) => (typeof v === 'number' && Number.isNaN(v) ? 0 : v),
+          z.number(),
+        ),
+      }
+
+      const [schema] = buildFormSchema(fieldValidators, { mode: 'update' })
+
+      const result = schema.safeParse({ amount: NaN })
+
+      expect(result.success).toBe(false)
+      expect(getErrorMessages(result, 'amount')).toContain('REQUIRED')
+    })
+
+    it('still passes when a non-required NaN number is supplied', () => {
+      const fieldValidators = {
+        amount: z.preprocess(
+          (v: unknown) => (typeof v === 'number' && Number.isNaN(v) ? 0 : v),
+          z.number(),
+        ),
+      }
+
+      const [schema] = buildFormSchema(fieldValidators, {
+        requiredFieldsConfig: { amount: 'never' },
+        mode: 'update',
+      })
+
+      const result = schema.safeParse({ amount: NaN })
+
+      expect(result.success).toBe(true)
+    })
+  })
 })

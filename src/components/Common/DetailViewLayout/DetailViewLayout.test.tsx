@@ -113,6 +113,35 @@ describe('DetailViewLayout', () => {
       await screen.findByRole('heading', { name: 'Company PTO' })
       expect(container.querySelector('[class*="actions"]')).not.toBeInTheDocument()
     })
+
+    it('applies a subtitle modifier on the page header when a subtitle is provided', async () => {
+      const { container } = renderWithProviders(
+        <DetailViewLayout
+          title="Company PTO"
+          subtitle="Paid time off policy"
+          tabs={tabs}
+          selectedTabId="details"
+          onTabChange={vi.fn()}
+        />,
+      )
+
+      await screen.findByRole('heading', { name: 'Company PTO' })
+      expect(container.querySelector('[class*="hasSubtitle"]')).toBeInTheDocument()
+    })
+
+    it('omits the subtitle modifier when no subtitle is provided', async () => {
+      const { container } = renderWithProviders(
+        <DetailViewLayout
+          title="Company PTO"
+          tabs={tabs}
+          selectedTabId="details"
+          onTabChange={vi.fn()}
+        />,
+      )
+
+      await screen.findByRole('heading', { name: 'Company PTO' })
+      expect(container.querySelector('[class*="hasSubtitle"]')).not.toBeInTheDocument()
+    })
   })
 
   describe('Back navigation', () => {

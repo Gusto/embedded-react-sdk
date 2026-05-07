@@ -5,8 +5,10 @@ import type { PaidTimeOff } from '@gusto/embedded-api/models/components/paidtime
 import type { EmployeeItem } from './SelectEmployeesPresentationTypes'
 import { usePagination } from '@/hooks/usePagination/usePagination'
 
-export function useSelectEmployeesData(companyId: string) {
-  const [selectedUuids, setSelectedUuids] = useState(new Set<string>())
+export function useSelectEmployeesData(companyId: string, initialSelectedUuids?: Set<string>) {
+  const [selectedUuids, setSelectedUuids] = useState<Set<string>>(
+    () => new Set(initialSelectedUuids ?? []),
+  )
   const [searchValue, setSearchValue] = useState('')
   const { currentPage, itemsPerPage, getPaginationProps, resetPage } = usePagination()
 
@@ -57,6 +59,17 @@ export function useSelectEmployeesData(companyId: string) {
     })
   }, [])
 
+  const handleSelectAll = useCallback((checked: boolean, visibleItems: EmployeeItem[]) => {
+    setSelectedUuids(prev => {
+      const next = new Set(prev)
+      for (const item of visibleItems) {
+        if (checked) next.add(item.uuid)
+        else next.delete(item.uuid)
+      }
+      return next
+    })
+  }, [])
+
   const handleSearchChange = useCallback(
     (value: string) => {
       setSearchValue(value)
@@ -77,6 +90,7 @@ export function useSelectEmployeesData(companyId: string) {
     pagination,
     isFetching,
     handleSelect,
+    handleSelectAll,
     handleSearchChange,
     handleSearchClear,
   }

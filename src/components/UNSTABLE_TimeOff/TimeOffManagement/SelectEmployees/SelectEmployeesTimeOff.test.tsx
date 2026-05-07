@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { fireEvent, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import type * as ReactQuery from '@tanstack/react-query'
 import type { CreatableTimeOffPolicyType } from '../../TimeOffFlow/timeOffPolicyTypes'
 import { SelectEmployeesTimeOff } from './SelectEmployeesTimeOff'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
@@ -12,7 +13,10 @@ vi.mock('@/i18n/I18n', () => ({
 }))
 
 const mockAddEmployees = vi.fn()
+const mockRemoveEmployees = vi.fn()
 const mockOnEvent = vi.fn()
+const mockInvalidateQueries = vi.fn()
+let mockPolicyEmployees: Array<{ uuid: string; balance?: string }> = []
 
 const mockEmployees = [
   {
@@ -79,6 +83,27 @@ vi.mock('@gusto/embedded-api/react-query/timeOffPoliciesAddEmployees', () => ({
   }),
 }))
 
+vi.mock('@gusto/embedded-api/react-query/timeOffPoliciesRemoveEmployees', () => ({
+  useTimeOffPoliciesRemoveEmployeesMutation: () => ({
+    mutateAsync: mockRemoveEmployees,
+    isPending: false,
+  }),
+}))
+
+vi.mock('@gusto/embedded-api/react-query/timeOffPoliciesGet', () => ({
+  useTimeOffPoliciesGetSuspense: () => ({
+    data: { timeOffPolicy: { uuid: 'policy-456', employees: mockPolicyEmployees } },
+  }),
+}))
+
+vi.mock('@tanstack/react-query', async importActual => {
+  const actual = await importActual<typeof ReactQuery>()
+  return {
+    ...actual,
+    useQueryClient: () => ({ invalidateQueries: mockInvalidateQueries }),
+  }
+})
+
 vi.mock('@/components/Base/useBase', () => ({
   useBase: () => ({
     onEvent: mockOnEvent,
@@ -124,6 +149,8 @@ describe('SelectEmployeesTimeOff', () => {
     vi.clearAllMocks()
     mockUseContainerBreakpoints.mockReturnValue(['base', 'small', 'medium', 'large'])
     mockAddEmployees.mockResolvedValue({ timeOffPolicy: { uuid: 'policy-456' } })
+    mockRemoveEmployees.mockResolvedValue({ timeOffPolicy: { uuid: 'policy-456' } })
+    mockPolicyEmployees = []
   })
 
   it('renders employee names from API data', async () => {
@@ -376,6 +403,129 @@ describe('SelectEmployeesTimeOff', () => {
         balance?: string
       }>
       expect(submitted.find(e => e.uuid === '1')).toEqual({ uuid: '1', balance: '40' })
+    })
+  })
+
+  describe('standalone mode with existing assignees', () => {
+    it('pre-selects employees that are already on the policy', async () => {
+      mockPolicyEmployees = [{ uuid: '1', balance: '12' }]
+      renderComponent({ mode: 'standalone' })
+      await waitFor(() => {
+        expect(screen.getAllByRole('checkbox').length).toBe(4)
+      })
+      const checkboxes = screen.getAllByRole('checkbox')
+      // Alice (uuid '1') is on the policy → pre-checked.
+      expect(checkboxes[FIRST_EMPLOYEE_CHECKBOX]).toBeChecked()
+      expect(checkboxes[SECOND_EMPLOYEE_CHECKBOX]).not.toBeChecked()
+    })
+
+    it("renders existing assignee's policy balance as read-only text", async () => {
+      mockPolicyEmployees = [{ uuid: '1', balance: '12' }]
+      renderComponent({ mode: 'standalone' })
+      await waitFor(() => {
+        expect(screen.getByText('Alice Smith')).toBeInTheDocument()
+      })
+      // No editable input for Alice — her balance is rendered as plain text "12"
+      expect(screen.getByText('12')).toBeInTheDocument()
+      expect(screen.queryByDisplayValue('40')).not.toBeInTheDocument()
+    })
+
+    it('emits DONE without any mutation when nothing changed', async () => {
+      const user = userEvent.setup()
+      mockPolicyEmployees = [{ uuid: '1', balance: '12' }]
+      renderComponent({ mode: 'standalone' })
+      await waitFor(() => {
+        expect(screen.getByText('Alice Smith')).toBeInTheDocument()
+      })
+      await user.click(screen.getByRole('button', { name: 'continueCta' }))
+      await waitFor(() => {
+        expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.TIME_OFF_ADD_EMPLOYEES_DONE)
+      })
+      expect(mockAddEmployees).not.toHaveBeenCalled()
+      expect(mockRemoveEmployees).not.toHaveBeenCalled()
+    })
+
+    it('submits only newly-added employees when no removals are queued', async () => {
+      const user = userEvent.setup()
+      mockPolicyEmployees = [{ uuid: '1', balance: '12' }]
+      renderComponent({ mode: 'standalone' })
+      await waitFor(() => {
+        expect(screen.getByText('Bob Jones')).toBeInTheDocument()
+      })
+      // Add Bob — he is not yet on the policy
+      await user.click(screen.getAllByRole('checkbox')[SECOND_EMPLOYEE_CHECKBOX] as Element)
+      await user.click(screen.getByRole('button', { name: 'continueCta' }))
+      await waitFor(() => {
+        expect(mockAddEmployees).toHaveBeenCalledWith({
+          request: {
+            timeOffPolicyUuid: 'policy-456',
+            requestBody: { employees: [{ uuid: '2', balance: '0' }] },
+          },
+        })
+      })
+      // Alice was unchanged — must not be re-submitted
+      const submitted = mockAddEmployees.mock.calls[0]?.[0].request.requestBody.employees as Array<{
+        uuid: string
+      }>
+      expect(submitted.find(e => e.uuid === '1')).toBeUndefined()
+      expect(mockRemoveEmployees).not.toHaveBeenCalled()
+    })
+
+    it('opens confirm dialog when an existing assignee is unchecked', async () => {
+      const user = userEvent.setup()
+      mockPolicyEmployees = [{ uuid: '1', balance: '12' }]
+      renderComponent({ mode: 'standalone' })
+      await waitFor(() => {
+        expect(screen.getByText('Alice Smith')).toBeInTheDocument()
+      })
+      // Uncheck Alice
+      await user.click(screen.getAllByRole('checkbox')[FIRST_EMPLOYEE_CHECKBOX] as Element)
+      await user.click(screen.getByRole('button', { name: 'continueCta' }))
+      // Dialog should be visible — confirm/cancel buttons render with i18n keys
+      expect(
+        await screen.findByRole('button', { name: 'removeConfirmDialog.confirmCta' }),
+      ).toBeInTheDocument()
+      // No mutation has fired yet — gated on confirm
+      expect(mockRemoveEmployees).not.toHaveBeenCalled()
+      expect(mockAddEmployees).not.toHaveBeenCalled()
+    })
+
+    it('runs remove then add and invalidates the policy cache on confirm', async () => {
+      const user = userEvent.setup()
+      mockPolicyEmployees = [{ uuid: '1', balance: '12' }]
+      renderComponent({ mode: 'standalone' })
+      await waitFor(() => {
+        expect(screen.getByText('Bob Jones')).toBeInTheDocument()
+      })
+      // Uncheck Alice (uuid '1') and check Bob (uuid '2')
+      await user.click(screen.getAllByRole('checkbox')[FIRST_EMPLOYEE_CHECKBOX] as Element)
+      await user.click(screen.getAllByRole('checkbox')[SECOND_EMPLOYEE_CHECKBOX] as Element)
+      await user.click(screen.getByRole('button', { name: 'continueCta' }))
+      const confirmBtn = await screen.findByRole('button', {
+        name: 'removeConfirmDialog.confirmCta',
+      })
+      await user.click(confirmBtn)
+      await waitFor(() => {
+        expect(mockRemoveEmployees).toHaveBeenCalledWith({
+          request: {
+            timeOffPolicyUuid: 'policy-456',
+            requestBody: { employees: [{ uuid: '1' }] },
+          },
+        })
+      })
+      expect(mockAddEmployees).toHaveBeenCalledWith({
+        request: {
+          timeOffPolicyUuid: 'policy-456',
+          requestBody: { employees: [{ uuid: '2', balance: '0' }] },
+        },
+      })
+      // remove must come before add
+      expect(mockRemoveEmployees.mock.invocationCallOrder[0]).toBeLessThan(
+        mockAddEmployees.mock.invocationCallOrder[0]!,
+      )
+      expect(mockInvalidateQueries).toHaveBeenCalledWith({
+        queryKey: ['@gusto/embedded-api', 'timeOffPolicies', 'get'],
+      })
     })
   })
 

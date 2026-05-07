@@ -28,7 +28,7 @@ import { usePayScheduleForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
 
 ### Configurable Required Fields
 
-The `optionalFieldsToRequire` prop lets you override optional fields to be required in a given mode. Only fields with `'never'` requiredness rules are configurable:
+The `optionalFieldsToRequire` prop lets you override optional fields to be required in a given mode. Only fields that are optional by default can be promoted to required:
 
 ```tsx
 usePayScheduleForm({
@@ -39,7 +39,7 @@ usePayScheduleForm({
 })
 ```
 
-`customTwicePerMonth` is the only field configurable via `optionalFieldsToRequire`. All other fields use either `'always'` requiredness or conditional predicate rules that are not partner-configurable.
+`customTwicePerMonth` is currently the only field configurable via `optionalFieldsToRequire`. All other fields are either always required or have conditional rules that are not partner-configurable.
 
 ### PayScheduleFormData
 

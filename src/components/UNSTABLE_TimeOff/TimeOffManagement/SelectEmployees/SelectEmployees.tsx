@@ -11,6 +11,7 @@ export function SelectEmployees({
   selectedUuids,
   searchValue,
   onSelect,
+  onSelectAll,
   onSearchChange,
   onSearchClear,
   onBack,
@@ -45,6 +46,7 @@ export function SelectEmployees({
         onSearchClear={onSearchClear}
         selectionMode="multiple"
         onSelect={onSelect}
+        onSelectAll={onSelectAll}
         getIsItemSelected={item => selectedUuids.has(item.uuid)}
         isFetching={isFetching}
         pagination={pagination}

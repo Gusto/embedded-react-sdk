@@ -2,6 +2,7 @@ import { useTimeOffPoliciesGetSuspense } from '@gusto/embedded-api/react-query/t
 import { useTimeOffPoliciesUpdateMutation } from '@gusto/embedded-api/react-query/timeOffPoliciesUpdate'
 import type { PutV1TimeOffPoliciesTimeOffPolicyUuidRequestBody } from '@gusto/embedded-api/models/operations/putv1timeoffpoliciestimeoffpolicyuuid'
 import type { TimeOffPolicy } from '@gusto/embedded-api/models/components/timeoffpolicy'
+import { useQueryClient } from '@tanstack/react-query'
 import { PolicySettingsPresentation } from './PolicySettingsPresentation'
 import type { PolicySettingsFormData, PolicySettingsAccrualMethod } from './PolicySettingsTypes'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
@@ -89,6 +90,7 @@ function buildUpdateRequestBody(
 
 function Root({ policyId }: PolicySettingsProps) {
   const { onEvent, baseSubmitHandler } = useBase()
+  const queryClient = useQueryClient()
 
   const { data: policyResponse } = useTimeOffPoliciesGetSuspense({
     timeOffPolicyUuid: policyId,
@@ -111,6 +113,9 @@ function Root({ policyId }: PolicySettingsProps) {
         },
       })
 
+      void queryClient.invalidateQueries({
+        queryKey: ['@gusto/embedded-api', 'timeOffPolicies', 'get'],
+      })
       onEvent(componentEvents.TIME_OFF_POLICY_SETTINGS_DONE, timeOffPolicy)
     })
   }

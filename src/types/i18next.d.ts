@@ -565,22 +565,26 @@ export interface CompanyTimeOffPolicyDetail{
 "confirmCta":string;
 "cancelCta":string;
 };
-"bulkRemoveDialog":{
-"title":string;
-"description":string;
-"confirmCta":string;
-"cancelCta":string;
-};
 };
 export interface CompanyTimeOffSelectEmployees{
 "title":string;
 "description":string;
 "holidayDescription":string;
 "reassignmentWarning":string;
+"policyTypeLabel_vacation":string;
+"policyTypeLabel_sick":string;
 "departmentColumn":string;
 "startingBalanceColumn":string;
 "backCta":string;
 "continueCta":string;
+"removeConfirmDialog":{
+"title_one":string;
+"title_other":string;
+"description_one":string;
+"description_other":string;
+"confirmCta":string;
+"cancelCta":string;
+};
 };
 export interface CompanyTimeOffSelectPolicyType{
 "title":string;
@@ -605,6 +609,7 @@ export interface CompanyTimeOffTimeOffPolicies{
 "tableLabel":string;
 "actions":{
 "editPolicy":string;
+"viewPolicy":string;
 "deletePolicy":string;
 };
 "finishSetupCta":string;
@@ -637,6 +642,10 @@ export interface CompanyTimeOffTimeOffPolicies{
 export interface CompanyTimeOffTimeOffPolicyDetails{
 "breadcrumb":string;
 "addEmployeeCta":string;
+"subtitle":{
+"vacation":string;
+"sick":string;
+};
 "tabs":{
 "employees":string;
 "policyDetails":string;
@@ -714,7 +723,6 @@ export interface CompanyTimeOffTimeOffPolicyDetails{
 "actions":string;
 "editBalance":string;
 "removeEmployee":string;
-"removeEmployees":string;
 };
 "addEmployeeModal":{
 "title":string;
@@ -740,8 +748,6 @@ export interface CompanyTimeOffTimeOffPolicyDetails{
 };
 "flash":{
 "employeeRemoved":string;
-"employeesRemoved_one":string;
-"employeesRemoved_other":string;
 "employeesAdded_one":string;
 "employeesAdded_other":string;
 "balanceUpdated":string;
@@ -2040,7 +2046,9 @@ export interface EmployeeProfile{
 "ssnMask":string;
 "startDateDescription":string;
 "startDateLabel":string;
+"saveCta":string;
 "submitCta":string;
+"successAlert":string;
 "title":string;
 "validations":{
 "email":string;

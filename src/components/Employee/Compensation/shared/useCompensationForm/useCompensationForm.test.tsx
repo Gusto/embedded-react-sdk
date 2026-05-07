@@ -223,12 +223,12 @@ describe('createCompensationSchema error codes', () => {
     expect(errors.rate).toContain(CompensationErrorCodes.RATE_MINIMUM)
   })
 
-  it('produces RATE_MINIMUM for NaN rate', () => {
+  it('produces REQUIRED for NaN rate (empty input)', () => {
     const [schema] = createCompensationSchema({ mode: 'create', withStartDateField: true })
     const result = schema.safeParse({ ...VALID_FORM_DATA, rate: NaN })
     const errors = getFieldErrors(result)
 
-    expect(errors.rate).toContain(CompensationErrorCodes.RATE_MINIMUM)
+    expect(errors.rate).toContain(CompensationErrorCodes.REQUIRED)
   })
 })
 

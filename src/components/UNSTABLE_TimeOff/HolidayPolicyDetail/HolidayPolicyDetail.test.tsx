@@ -71,7 +71,7 @@ describe('HolidayPolicyDetail', () => {
   })
 
   describe('holidays tab', () => {
-    it('renders the holidays tab with federal holidays', async () => {
+    it('renders only the selected holidays from the policy', async () => {
       renderWithProviders(<HolidayPolicyDetail {...defaultProps} defaultTab="holidays" />)
 
       await waitFor(() => {
@@ -79,7 +79,10 @@ describe('HolidayPolicyDetail', () => {
       })
 
       expect(screen.getByText("New Year's Day")).toBeInTheDocument()
+      expect(screen.getByText('Martin Luther King, Jr. Day')).toBeInTheDocument()
       expect(screen.getByText('Christmas Day')).toBeInTheDocument()
+      expect(screen.queryByText('Independence Day')).not.toBeInTheDocument()
+      expect(screen.queryByText('Thanksgiving')).not.toBeInTheDocument()
     })
 
     it('renders back button and action buttons', async () => {
@@ -91,6 +94,20 @@ describe('HolidayPolicyDetail', () => {
 
       expect(screen.getByText('Add employees')).toBeInTheDocument()
       expect(screen.getByText('Edit policy')).toBeInTheDocument()
+    })
+
+    it('renders icons on the Add employees and Edit policy buttons', async () => {
+      renderWithProviders(<HolidayPolicyDetail {...defaultProps} defaultTab="holidays" />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Add employees')).toBeInTheDocument()
+      })
+
+      const addButton = screen.getByRole('button', { name: /add employees/i })
+      const editButton = screen.getByRole('button', { name: /edit policy/i })
+
+      expect(addButton.querySelector('svg')).toBeInTheDocument()
+      expect(editButton.querySelector('svg')).toBeInTheDocument()
     })
   })
 
