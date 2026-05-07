@@ -1,42 +1,59 @@
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useEffect, useMemo, useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
+import { useMemo } from 'react'
+import { createMachine } from 'robot3'
 import { useTranslation } from 'react-i18next'
 import { useJobsAndCompensationsGetJobsSuspense } from '@gusto/embedded-api/react-query/jobsAndCompensationsGetJobs'
-import { useJobsAndCompensationsCreateJobMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsCreateJob'
-import { useJobsAndCompensationsUpdateMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsUpdate'
-import { useJobsAndCompensationsDeleteMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsDelete'
-import { useJobsAndCompensationsUpdateCompensationMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsUpdateCompensation'
-import { useLocationsGetMinimumWagesSuspense } from '@gusto/embedded-api/react-query/locationsGetMinimumWages'
-import { useEmployeeAddressesGetWorkAddressesSuspense } from '@gusto/embedded-api/react-query/employeeAddressesGetWorkAddresses'
 import { type Job } from '@gusto/embedded-api/models/components/job'
 import type { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
-import { useFederalTaxDetailsGetSuspense } from '@gusto/embedded-api/react-query/federalTaxDetailsGet'
-import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
 import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlowComponents'
-import { List } from './List'
-import { Head } from './Head'
-import { Edit } from './Edit'
-import { Actions } from './Actions'
 import {
-  type CompensationInputs,
-  type CompensationOutputs,
-  CompensationProvider,
-  CompensationSchema,
-  type MODE,
-} from './useCompensation'
-import { Form } from '@/components/Common/Form'
+  InitialEditCompensationContextual,
+  JobsListContextual,
+  type CompensationFlowContextInterface,
+} from './CompensationFlowComponents'
+import { compensationStateMachine } from './compensationStateMachine'
+import { JobsList } from './JobsList'
+import { EditCompensation } from './EditCompensation'
 import type { RequireAtLeastOne } from '@/types/Helpers'
 import type { PAY_PERIODS } from '@/shared/constants'
-import { componentEvents, FlsaStatus } from '@/shared/constants'
-import { useComponentDictionary, useI18n } from '@/i18n'
+import { FlsaStatus } from '@/shared/constants'
+import { useComponentDictionary } from '@/i18n'
 import {
   BaseComponent,
   type BaseComponentInterface,
-  useBase,
   type CommonComponentInterface,
 } from '@/components/Base'
+import { Flow } from '@/components/Flow/Flow'
 import { useFlow } from '@/components/Flow/useFlow'
+
+type CompensationInitialState = 'initialEditJob' | 'viewJobs'
+
+interface InitialFlowConfig {
+  initialState: CompensationInitialState
+  currentJobId: string | null
+}
+
+const INITIAL_COMPONENT_BY_STATE: Record<
+  CompensationInitialState,
+  React.ComponentType<CommonComponentInterface>
+> = {
+  initialEditJob: InitialEditCompensationContextual,
+  viewJobs: JobsListContextual,
+}
+
+function deriveInitialFlowConfig(employeeJobs: Job[]): InitialFlowConfig {
+  if (employeeJobs.length === 0) {
+    return { initialState: 'initialEditJob', currentJobId: null }
+  }
+
+  const onlyJob = employeeJobs.length === 1 ? (employeeJobs[0] ?? null) : null
+  const onlyJobCompensation = findCurrentCompensation(onlyJob)
+
+  if (onlyJob && onlyJobCompensation?.flsaStatus !== FlsaStatus.NONEXEMPT) {
+    return { initialState: 'initialEditJob', currentJobId: onlyJob.uuid }
+  }
+
+  return { initialState: 'viewJobs', currentJobId: null }
+}
 
 export type CompensationDefaultValues = RequireAtLeastOne<{
   rate?: Job['rate']
@@ -45,305 +62,61 @@ export type CompensationDefaultValues = RequireAtLeastOne<{
   flsaStatus?: FlsaStatusType
 }>
 
-interface CompensationProps extends CommonComponentInterface<'Employee.Compensation'> {
+export interface CompensationProps extends BaseComponentInterface<'Employee.Compensation'> {
   employeeId: string
   startDate: string
   defaultValues?: CompensationDefaultValues
 }
 
-export function Compensation(props: CompensationProps & BaseComponentInterface) {
-  useComponentDictionary('Employee.Compensation', props.dictionary)
+export function Compensation(props: CompensationProps) {
   return (
     <BaseComponent {...props}>
-      <Root {...props}>{props.children}</Root>
+      <CompensationFlow {...props} />
     </BaseComponent>
   )
 }
 
-const findCurrentCompensation = (employeeJob?: Job | null) => {
-  return employeeJob?.compensations?.find(comp => comp.uuid === employeeJob.currentCompensationUuid)
+const findCurrentCompensation = (job?: Job | null) => {
+  return job?.compensations?.find(comp => comp.uuid === job.currentCompensationUuid)
 }
 
-const Root = ({ employeeId, startDate, className, children, ...props }: CompensationProps) => {
-  useI18n('Employee.Compensation')
-  const { baseSubmitHandler, onEvent } = useBase()
+function CompensationFlow({
+  employeeId,
+  startDate,
+  defaultValues,
+  dictionary,
+  onEvent,
+}: CompensationProps) {
+  useComponentDictionary('Employee.Compensation', dictionary)
 
   const { data: jobsData } = useJobsAndCompensationsGetJobsSuspense({ employeeId })
-  const employeeJobs = jobsData.jobs!
 
-  const { data: addressesData } = useEmployeeAddressesGetWorkAddressesSuspense({ employeeId })
-  const workAddresses = addressesData.employeeWorkAddressesList!
+  const { initialState, currentJobId } = deriveInitialFlowConfig(jobsData.jobs ?? [])
 
-  const currentWorkAddress = workAddresses.find(address => address.active) ?? workAddresses[0]
-
-  if (!currentWorkAddress?.locationUuid) {
-    throw new Error('No active work address with a location found for this employee')
-  }
-
-  const {
-    data: { minimumWageList },
-  } = useLocationsGetMinimumWagesSuspense({
-    locationUuid: currentWorkAddress.locationUuid,
-  })
-  const minimumWages = minimumWageList!
-
-  const {
-    data: { employee },
-  } = useEmployeesGetSuspense({ employeeId })
-
-  if (!employee) {
-    throw new Error('Employee not found')
-  }
-
-  const { data } = useFederalTaxDetailsGetSuspense({ companyId: employee.companyUuid! })
-  const showTwoPercentStakeholder = data.federalTaxDetails!.taxableAsScorp === true
-
-  const updateCompensationMutation = useJobsAndCompensationsUpdateCompensationMutation()
-  const createEmployeeJobMutation = useJobsAndCompensationsCreateJobMutation()
-  const updateEmployeeJobMutation = useJobsAndCompensationsUpdateMutation()
-  const deleteEmployeeJobMutation = useJobsAndCompensationsDeleteMutation()
-
-  //Job being edited/created
-  const [currentJob, setCurrentJob] = useState(
-    employeeJobs.length === 1 ? (employeeJobs[0] ?? null) : null,
+  const manageCompensation = useMemo(
+    () =>
+      createMachine(
+        initialState,
+        compensationStateMachine,
+        (initialContext: CompensationFlowContextInterface) => ({
+          ...initialContext,
+          component: INITIAL_COMPONENT_BY_STATE[initialState],
+          employeeId,
+          startDate,
+          partnerDefaultValues: defaultValues,
+          currentJobId,
+        }),
+      ),
+    // `defaultValues` is intentionally omitted: it's a partner-supplied prop that may
+    // arrive as a fresh object reference on every render. It seeds the form once at
+    // initialization, so re-creating the machine on reference churn would only serve
+    // to discard in-flight state. Genuine API state changes (different employee, a
+    // change in the only-job FLSA status) flow through the scalar deps below.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [employeeId, startDate, initialState, currentJobId],
   )
 
-  const [mode, setMode] = useState<MODE>(() => {
-    if (!employeeJobs.length) {
-      return 'ADD_INITIAL_JOB'
-    }
-
-    const currentCompensation = findCurrentCompensation(employeeJobs[0])
-
-    if (employeeJobs.length === 1 && currentCompensation?.flsaStatus !== FlsaStatus.NONEXEMPT) {
-      return 'EDIT_INITIAL_JOB'
-    }
-
-    return 'LIST'
-  })
-
-  const [showFlsaChangeWarning, setShowFlsaChangeWarning] = useState(false)
-  //Getting current compensation for a job -> the one with the most recent effective date
-  const currentCompensation = findCurrentCompensation(currentJob)
-  /** Returns FLSA status of a current compensation of a primary job:
-   * Employees can have multiple jobs, with multiple compensations, but only 1 job is primary with 1 current compensation
-   */
-  const primaryFlsaStatus = useMemo<string | undefined>(() => {
-    return employeeJobs.reduce<string | undefined>((prev, curr) => {
-      const compensation = curr.compensations?.find(
-        comp => comp.uuid === curr.currentCompensationUuid,
-      )
-      if (!curr.primary || !compensation) return prev
-      return compensation.flsaStatus ?? prev
-    }, undefined)
-  }, [employeeJobs])
-
-  const defaultValues: CompensationInputs = useMemo(() => {
-    return {
-      jobTitle:
-        currentJob?.title && currentJob.title !== ''
-          ? currentJob.title
-          : (props.defaultValues?.title ?? ''),
-      flsaStatus:
-        currentCompensation?.flsaStatus ?? primaryFlsaStatus ?? props.defaultValues?.flsaStatus,
-      rate: Number(currentCompensation?.rate ?? props.defaultValues?.rate ?? 0),
-      adjustForMinimumWage: currentCompensation?.adjustForMinimumWage ?? false,
-      minimumWageId: currentCompensation?.minimumWages?.[0]?.uuid ?? '',
-      paymentUnit: currentCompensation?.paymentUnit ?? props.defaultValues?.paymentUnit ?? 'Hour',
-      stateWcCovered: currentJob?.stateWcCovered ?? false,
-      stateWcClassCode: currentJob?.stateWcClassCode ?? '',
-      twoPercentShareholder: currentJob?.twoPercentShareholder ?? false,
-    } as CompensationInputs
-  }, [currentJob, currentCompensation, primaryFlsaStatus, props.defaultValues])
-
-  const formMethods = useForm<CompensationInputs, unknown, CompensationOutputs>({
-    resolver: zodResolver(CompensationSchema),
-    defaultValues,
-  })
-  const { resetField, setValue, handleSubmit, reset } = formMethods
-  useEffect(() => {
-    reset(defaultValues)
-  }, [currentJob, defaultValues, reset])
-
-  const submitWithEffect = async (newMode?: MODE) => {
-    if (mode === 'LIST' && newMode === 'PROCEED') {
-      onEvent(componentEvents.EMPLOYEE_COMPENSATION_DONE)
-      return
-    }
-    //If no job has been modified, switch to edit mode
-    if (!currentJob && mode === 'LIST') {
-      setMode('ADD_ADDITIONAL_JOB')
-      return
-    }
-    //Performing post-submit state setting only on success
-    await handleSubmit(async (data: CompensationOutputs) => {
-      await baseSubmitHandler(data, async payload => {
-        const { jobTitle, twoPercentShareholder, ...compensationData } = payload
-        let updatedJobData
-        //Note: some of the type fixes below are due to the fact that API incorrectly defines current_compensation_uuid as optional
-        if (!currentJob) {
-          //Adding new job for NONEXEMPT
-          const data = await createEmployeeJobMutation.mutateAsync({
-            request: {
-              employeeId,
-              jobsCreateRequestBody: {
-                title: jobTitle,
-                hireDate: startDate,
-                stateWcCovered: compensationData.stateWcCovered,
-                stateWcClassCode: compensationData.stateWcCovered
-                  ? compensationData.stateWcClassCode
-                  : null,
-                twoPercentShareholder: twoPercentShareholder ?? false,
-              },
-            },
-          })
-          updatedJobData = data.job!
-          onEvent(componentEvents.EMPLOYEE_JOB_CREATED, updatedJobData)
-        } else {
-          const data = await updateEmployeeJobMutation.mutateAsync({
-            request: {
-              jobId: currentJob.uuid,
-              jobsUpdateRequestBody: {
-                title: jobTitle,
-                version: currentJob.version as string,
-                hireDate: startDate,
-                stateWcClassCode: compensationData.stateWcCovered
-                  ? compensationData.stateWcClassCode
-                  : null,
-                stateWcCovered: compensationData.stateWcCovered,
-                twoPercentShareholder: twoPercentShareholder ?? false,
-              },
-            },
-          })
-          updatedJobData = data.job!
-          onEvent(componentEvents.EMPLOYEE_JOB_UPDATED, updatedJobData)
-        }
-
-        const { compensation } = await updateCompensationMutation.mutateAsync({
-          request: {
-            compensationId: updatedJobData.currentCompensationUuid!,
-            compensationsUpdateRequestBody: {
-              // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-              version: updatedJobData.compensations?.find(
-                comp => comp.uuid === updatedJobData.currentCompensationUuid,
-              )?.version!,
-              ...compensationData,
-              rate: String(compensationData.rate),
-              minimumWages: compensationData.adjustForMinimumWage
-                ? [{ uuid: compensationData.minimumWageId }]
-                : [],
-            },
-          },
-        })
-        setShowFlsaChangeWarning(false)
-        onEvent(componentEvents.EMPLOYEE_COMPENSATION_UPDATED, compensation)
-
-        // Success logic only runs if no errors were thrown above
-        switch (newMode) {
-          case 'LIST':
-            setMode('LIST')
-            setCurrentJob(null)
-            reset(defaultValues)
-            break
-          default:
-            onEvent(componentEvents.EMPLOYEE_COMPENSATION_DONE)
-        }
-      })
-    })()
-  }
-  const handleAdd = () => {
-    setMode('ADD_ADDITIONAL_JOB')
-    setCurrentJob(null)
-    reset(defaultValues)
-  }
-
-  const handleCancelAddJob = () => {
-    if (employeeJobs.length > 0) {
-      setMode('LIST')
-    } else {
-      setMode('ADD_INITIAL_JOB')
-    }
-
-    setCurrentJob(null)
-    reset(defaultValues)
-  }
-
-  const handleEdit = (uuid: string) => {
-    const selectedJob = employeeJobs.find(job => uuid === job.uuid)
-    if (selectedJob) {
-      setMode('EDIT_ADDITIONAL_JOB')
-      setCurrentJob(selectedJob)
-    }
-  }
-
-  const handleDelete = async (jobId: string) => {
-    await deleteEmployeeJobMutation.mutateAsync({ request: { jobId } })
-    onEvent(componentEvents.EMPLOYEE_JOB_DELETED)
-  }
-
-  /**Update dependent field values upon change in FLSA type */
-  const handleFlsaChange = (value: string | number) => {
-    //Attempting to change flsa status from nonexempt should prompt user about deletion of other jobs associated with the employee
-    if (currentCompensation?.flsaStatus === FlsaStatus.NONEXEMPT && employeeJobs.length > 1) {
-      setShowFlsaChangeWarning(true)
-    }
-    if (value === FlsaStatus.OWNER) {
-      setValue('paymentUnit', 'Paycheck')
-      resetField('rate', { defaultValue: Number(currentCompensation?.rate) })
-    } else if (
-      value === FlsaStatus.COMMISSION_ONLY_NONEXEMPT ||
-      value === FlsaStatus.COMMISSION_ONLY_EXEMPT
-    ) {
-      setValue('paymentUnit', 'Year')
-      setValue('rate', 0)
-    } else {
-      //reset fields
-      resetField('paymentUnit', { defaultValue: currentCompensation?.paymentUnit })
-      resetField('rate', { defaultValue: Number(currentCompensation?.rate) })
-    }
-  }
-  return (
-    <section className={className}>
-      <CompensationProvider
-        value={{
-          employeeJobs,
-          currentJob,
-          primaryFlsaStatus,
-          showFlsaChangeWarning,
-          mode,
-          minimumWages,
-          handleFlsaChange,
-          handleDelete,
-          handleEdit,
-          handleAdd,
-          submitWithEffect,
-          handleCancelAddJob,
-          isPending:
-            updateCompensationMutation.isPending ||
-            createEmployeeJobMutation.isPending ||
-            updateEmployeeJobMutation.isPending ||
-            deleteEmployeeJobMutation.isPending,
-          state: currentWorkAddress.state,
-          showTwoPercentStakeholder,
-        }}
-      >
-        <FormProvider {...formMethods}>
-          <Form>
-            {children ? (
-              children
-            ) : (
-              <>
-                <Head />
-                <List />
-                <Edit />
-                <Actions />
-              </>
-            )}
-          </Form>
-        </FormProvider>
-      </CompensationProvider>
-    </section>
-  )
+  return <Flow machine={manageCompensation} onEvent={onEvent} />
 }
 
 export const CompensationContextual = () => {
@@ -368,3 +141,6 @@ export const CompensationContextual = () => {
     />
   )
 }
+
+Compensation.JobsList = JobsList
+Compensation.EditCompensation = EditCompensation

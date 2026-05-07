@@ -11,7 +11,7 @@
  * to align with the Employee schema, which has no mode concept and no startDate field.
  */
 import { describe, it, expect } from 'vitest'
-import { CompensationSchema as EmployeeSchema } from '@/components/Employee/Compensation/useCompensation'
+import { CompensationSchema as EmployeeSchema } from '@/components/Employee/Compensation/compensationSchema'
 import { createCompensationSchema } from './compensationSchema'
 import { FlsaStatus, PAY_PERIODS } from '@/shared/constants'
 
