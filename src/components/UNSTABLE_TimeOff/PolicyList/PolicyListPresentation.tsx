@@ -45,9 +45,9 @@ export function PolicyListPresentation({
     setDeletePolicyDialogState({ isOpen: false, policy: null })
   }
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     if (deletePolicyDialogState.policy) {
-      onDeletePolicy(deletePolicyDialogState.policy)
+      await onDeletePolicy(deletePolicyDialogState.policy)
       handleCloseDeleteDialog()
     }
   }
