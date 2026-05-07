@@ -460,6 +460,17 @@ export const timeOffMachine = {
 
   viewHolidayEmployees: state<MachineTransition>(
     transition(
+      componentEvents.TIME_OFF_HOLIDAY_ADD_EMPLOYEES,
+      'addEmployeesHoliday',
+      reduce(
+        (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: AddEmployeesHolidayContextual,
+          alerts: undefined,
+        }),
+      ),
+    ),
+    transition(
       componentEvents.TIME_OFF_VIEW_HOLIDAY_SCHEDULE,
       'viewHolidaySchedule',
       reduce(
