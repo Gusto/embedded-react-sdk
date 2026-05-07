@@ -77,8 +77,8 @@ export function getNextObservationDate(holidayKey: string, referenceDate: Date =
   return computeDate(holiday.dateRule, year + 1)
 }
 
-function formatDate(date: Date): string {
-  return date.toLocaleDateString('en-US', {
+function formatDate(date: Date, locale?: string): string {
+  return date.toLocaleDateString(locale, {
     month: 'long',
     day: 'numeric',
     year: 'numeric',
@@ -116,12 +116,13 @@ const HOLIDAY_DATE_KEYS = {
 export function getDefaultHolidayItems(
   t: TFunction<'Company.TimeOff.HolidayPolicy'>,
   referenceDate?: Date,
+  locale?: string,
 ): HolidayItem[] {
   return FEDERAL_HOLIDAYS.map(holiday => ({
     uuid: holiday.key,
     name: t(HOLIDAY_NAME_KEYS[holiday.key as keyof typeof HOLIDAY_NAME_KEYS]),
     observedDate: t(HOLIDAY_DATE_KEYS[holiday.key as keyof typeof HOLIDAY_DATE_KEYS]),
-    nextObservation: formatDate(getNextObservationDate(holiday.key, referenceDate)),
+    nextObservation: formatDate(getNextObservationDate(holiday.key, referenceDate), locale),
   }))
 }
 
