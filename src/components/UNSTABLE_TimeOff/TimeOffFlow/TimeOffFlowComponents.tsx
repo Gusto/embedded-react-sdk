@@ -75,7 +75,8 @@ export function SelectPolicyTypeContextual() {
 }
 
 export function PolicyDetailsFormContextual() {
-  const { onEvent, companyId, policyType, alerts } = useFlow<TimeOffFlowContextInterface>()
+  const { onEvent, companyId, policyType, policyId, alerts } =
+    useFlow<TimeOffFlowContextInterface>()
   const { Alert } = useComponentContext()
   const requiredPolicyType = ensureRequired(policyType)
   assertCreatablePolicyType(requiredPolicyType)
@@ -91,6 +92,7 @@ export function PolicyDetailsFormContextual() {
         onEvent={onEvent}
         companyId={ensureRequired(companyId)}
         policyType={requiredPolicyType}
+        policyId={policyId}
       />
     </Flex>
   )
