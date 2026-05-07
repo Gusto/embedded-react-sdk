@@ -187,7 +187,9 @@ function Root({ companyId, defaultTab = 'holidays' }: HolidayPolicyDetailProps) 
                 },
               },
             ]}
-            triggerLabel={`Actions for ${firstLastName({ first_name: employee.firstName, last_name: employee.lastName })}`}
+            triggerLabel={tShared('employeeActions', {
+              name: firstLastName({ first_name: employee.firstName, last_name: employee.lastName }),
+            })}
           />
         ),
       }}
