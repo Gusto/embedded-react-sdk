@@ -67,13 +67,20 @@ const mockEmployees = [
 ]
 
 vi.mock('@gusto/embedded-api/react-query/employeesList', () => ({
-  useEmployeesListSuspense: () => ({
-    data: {
-      showEmployees: mockEmployees,
-      httpMeta: { response: { headers: new Headers() } },
-    },
-    isFetching: false,
-  }),
+  useEmployeesListSuspense: (request: { searchTerm?: string }) => {
+    const filtered = request.searchTerm
+      ? mockEmployees.filter(e =>
+          `${e.firstName} ${e.lastName}`.toLowerCase().includes(request.searchTerm!.toLowerCase()),
+        )
+      : mockEmployees
+    return {
+      data: {
+        showEmployees: filtered,
+        httpMeta: { response: { headers: new Headers() } },
+      },
+      isFetching: false,
+    }
+  },
 }))
 
 vi.mock('@gusto/embedded-api/react-query/timeOffPoliciesAddEmployees', () => ({
