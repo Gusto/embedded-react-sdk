@@ -55,6 +55,7 @@ import {
   Preparer4ConfirmSignature,
 } from './fields'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
+import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
 import { withOptions } from '@/partner-hook-utils/form/withOptions'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
@@ -296,6 +297,8 @@ export function useSignEmployeeForm({
     return submitResult
   }
 
+  const hookFormInternals = useHookFormInternals(formMethods)
+
   const isDataLoading = formQuery.isLoading || pdfQuery.isLoading
 
   if (isDataLoading || !form) {
@@ -322,7 +325,7 @@ export function useSignEmployeeForm({
         Preparer4: isI9 && preparerCount >= 4 ? preparer4Fields : undefined,
       },
       fieldsMetadata,
-      hookFormInternals: { formMethods },
+      hookFormInternals,
       getFormSubmissionValues: createGetFormSubmissionValues(formMethods, schema),
       ...(isI9
         ? {

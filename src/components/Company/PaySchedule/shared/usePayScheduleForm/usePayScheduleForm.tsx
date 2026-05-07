@@ -27,6 +27,7 @@ import {
   Day2Field,
 } from './fields'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
+import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
 import { withOptions } from '@/partner-hook-utils/form/withOptions'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
@@ -305,6 +306,8 @@ export function usePayScheduleForm({
     return submitResult
   }
 
+  const hookFormInternals = useHookFormInternals(formMethods)
+
   const isDataLoading =
     paymentConfigsQuery.isLoading || (payScheduleId ? payScheduleQuery.isLoading : false)
 
@@ -337,7 +340,7 @@ export function usePayScheduleForm({
         Day2: showDay2 ? Day2Field : undefined,
       },
       fieldsMetadata,
-      hookFormInternals: { formMethods },
+      hookFormInternals,
       getFormSubmissionValues: createGetFormSubmissionValues(formMethods, schema),
     },
   }
