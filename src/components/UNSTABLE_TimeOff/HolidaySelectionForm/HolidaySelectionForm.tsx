@@ -21,6 +21,7 @@ import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useBase } from '@/components/Base/useBase'
 import { componentEvents } from '@/shared/constants'
 import { useI18n } from '@/i18n'
+import { useLocale } from '@/contexts/LocaleProvider/useLocale'
 
 export interface HolidaySelectionFormProps extends BaseComponentInterface {
   companyId: string
@@ -91,9 +92,10 @@ function CreateRoot({ companyId }: RootProps) {
   useI18n('Company.TimeOff.HolidayPolicy')
   const { t } = useTranslation('Company.TimeOff.HolidayPolicy')
   const { onEvent, baseSubmitHandler } = useBase()
+  const { locale } = useLocale()
   const queryClient = useQueryClient()
 
-  const holidays = useMemo(() => getDefaultHolidayItems(t), [t])
+  const holidays = useMemo(() => getDefaultHolidayItems(t, undefined, locale), [t, locale])
   const allKeys = useMemo(() => new Set(FEDERAL_HOLIDAY_KEYS), [])
   const { selectedUuids, handleSelectionChange, handleSelectAll } = useHolidaySelection(allKeys)
 
@@ -139,12 +141,13 @@ function EditRoot({ companyId }: RootProps) {
   useI18n('Company.TimeOff.HolidayPolicy')
   const { t } = useTranslation('Company.TimeOff.HolidayPolicy')
   const { onEvent, baseSubmitHandler } = useBase()
+  const { locale } = useLocale()
   const queryClient = useQueryClient()
 
   const { data } = useHolidayPayPoliciesGetSuspense({ companyUuid: companyId })
   const policy = data.holidayPayPolicy!
 
-  const holidays = useMemo(() => getDefaultHolidayItems(t), [t])
+  const holidays = useMemo(() => getDefaultHolidayItems(t, undefined, locale), [t, locale])
 
   const initialSelected = useMemo(() => {
     const next = new Set<string>()
