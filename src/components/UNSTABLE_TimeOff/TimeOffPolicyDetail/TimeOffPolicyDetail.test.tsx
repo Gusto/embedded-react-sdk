@@ -214,6 +214,35 @@ describe('TimeOffPolicyDetail', () => {
     })
   })
 
+  describe('unlimited policy menu', () => {
+    it('does not show Edit balance in the overflow menu for unlimited policies', async () => {
+      mockPolicyData = { ...basePolicyData, accrualMethod: 'unlimited' }
+      const user = userEvent.setup()
+      renderComponent()
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: 'Vacation Policy' })).toBeInTheDocument()
+      })
+
+      const tabSelect = screen.getByRole('button', { name: /Vacation Policy/i })
+      await user.click(tabSelect)
+      const employeesOption = await screen.findByRole('option', { name: 'Employees' })
+      await user.click(employeesOption)
+
+      await waitFor(() => {
+        expect(screen.getAllByRole('button', { name: /actions/i }).length).toBeGreaterThan(0)
+      })
+
+      const hamburgerButtons = screen.getAllByRole('button', { name: /actions/i })
+      await user.click(hamburgerButtons[0]!)
+
+      await waitFor(() => {
+        expect(screen.getByText('Remove employee')).toBeInTheDocument()
+      })
+      expect(screen.queryByText('Edit balance')).not.toBeInTheDocument()
+    })
+  })
+
   describe('accessibility', () => {
     it('should not have accessibility violations on details tab', async () => {
       const { container } = renderComponent()
