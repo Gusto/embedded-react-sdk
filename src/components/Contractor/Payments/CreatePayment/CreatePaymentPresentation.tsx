@@ -78,7 +78,7 @@ export const CreatePaymentPresentation = ({
   return (
     <Flex flexDirection="column" gap={32}>
       <Flex justifyContent="flex-end" gap={16}>
-        <Flex flexDirection="column" gap={16}>
+        <Flex flexDirection="column" gap={4}>
           <Heading as="h2">{t('title')}</Heading>
           <Text variant="supporting">
             {t('paymentSpeedNotice', {

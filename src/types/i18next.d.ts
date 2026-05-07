@@ -259,6 +259,7 @@ export interface CompanyPaySchedule{
 "inactive":string;
 "edit":string;
 };
+"payScheduleListLabel":string;
 "headings":{
 "addPaySchedule":string;
 "editPaySchedule":string;
