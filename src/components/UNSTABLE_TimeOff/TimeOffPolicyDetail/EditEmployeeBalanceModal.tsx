@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ActionsLayout, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -26,6 +26,10 @@ export function EditEmployeeBalanceModal({
   const { Modal, Heading, NumberInput, Button } = useComponentContext()
 
   const [balance, setBalance] = useState(currentBalance)
+
+  useEffect(() => {
+    setBalance(currentBalance)
+  }, [currentBalance])
 
   const handleConfirm = () => {
     onConfirm(balance)
