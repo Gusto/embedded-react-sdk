@@ -12,6 +12,7 @@ import {
 } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
+import { isEditableTimeOffPolicyType } from '@/components/UNSTABLE_TimeOff/TimeOffFlow/timeOffPolicyTypes'
 
 export function PolicyListPresentation({
   policies,
@@ -67,10 +68,35 @@ export function PolicyListPresentation({
     ],
     itemMenu: (policy: PolicyListItem) => {
       const isDeleting = isDeletingPolicyId === policy.uuid
+      const isEditable = isEditableTimeOffPolicyType(policy.policyType)
+
+      const menuItems = isEditable
+        ? [
+            {
+              label: t('actions.editPolicy'),
+              onClick: () => {
+                onEditPolicy(policy)
+              },
+            },
+            {
+              label: t('actions.deletePolicy'),
+              onClick: () => {
+                handleOpenDeleteDialog(policy)
+              },
+            },
+          ]
+        : [
+            {
+              label: t('actions.viewPolicy'),
+              onClick: () => {
+                onEditPolicy(policy)
+              },
+            },
+          ]
 
       return (
         <div className={styles.actionsCell}>
-          {!policy.isComplete && (
+          {isEditable && !policy.isComplete && (
             <Button
               variant="secondary"
               onClick={() => {
@@ -80,24 +106,7 @@ export function PolicyListPresentation({
               {t('finishSetupCta')}
             </Button>
           )}
-          <HamburgerMenu
-            isLoading={isDeleting}
-            menuLabel={t('tableLabel')}
-            items={[
-              {
-                label: t('actions.editPolicy'),
-                onClick: () => {
-                  onEditPolicy(policy)
-                },
-              },
-              {
-                label: t('actions.deletePolicy'),
-                onClick: () => {
-                  handleOpenDeleteDialog(policy)
-                },
-              },
-            ]}
-          />
+          <HamburgerMenu isLoading={isDeleting} menuLabel={t('tableLabel')} items={menuItems} />
         </div>
       )
     },

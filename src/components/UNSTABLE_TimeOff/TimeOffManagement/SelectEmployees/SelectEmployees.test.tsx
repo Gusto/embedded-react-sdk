@@ -28,6 +28,7 @@ const defaultProps: SelectEmployeesProps = {
   selectedUuids: new Set<string>(),
   searchValue: '',
   onSelect: vi.fn(),
+  onSelectAll: vi.fn(),
   onSearchChange: vi.fn(),
   onSearchClear: vi.fn(),
   onBack: vi.fn(),

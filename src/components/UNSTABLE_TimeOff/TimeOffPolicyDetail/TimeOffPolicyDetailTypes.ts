@@ -3,12 +3,7 @@ import type {
   EmployeeTableItem,
   EmployeeTableProps,
 } from '../shared/EmployeeTable/EmployeeTableTypes'
-import type {
-  RemoveDialogState,
-  BulkRemoveDialogState,
-} from '../shared/PolicyDetailLayout/PolicyDetailLayoutTypes'
-
-export type { BulkRemoveDialogState }
+import type { RemoveDialogState } from '../shared/PolicyDetailLayout/PolicyDetailLayoutTypes'
 
 export interface TimeOffPolicyDetailEmployee extends EmployeeTableItem {
   uuid: string
@@ -72,14 +67,9 @@ interface TimeOffPolicyDetailPresentationBaseProps {
     | 'pagination'
     | 'isFetching'
     | 'emptyState'
-    | 'selectionMode'
-    | 'onSelect'
-    | 'getIsItemSelected'
-    | 'footer'
   >
 
   removeDialog: RemoveDialogState
-  bulkRemoveDialog?: BulkRemoveDialogState
   successAlert?: string
   onDismissAlert?: () => void
 }

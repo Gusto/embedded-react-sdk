@@ -4,7 +4,6 @@ import type { DetailViewLayoutProps } from './DetailViewLayoutTypes'
 import styles from './DetailViewLayout.module.scss'
 import CaretLeftIcon from '@/assets/icons/caret-left.svg?react'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { ActionsLayout } from '@/components/Common/ActionsLayout'
 
 export function DetailViewLayout({
   title,
@@ -34,14 +33,14 @@ export function DetailViewLayout({
         </Button>
       )}
 
-      <div className={styles.pageHeader}>
+      <div className={classNames(styles.pageHeader, subtitle && styles.hasSubtitle)}>
         <div className={styles.titleGroup}>
           <Heading as="h2" styledAs="h2" id={headingId}>
             {title}
           </Heading>
           {subtitle && <Text variant="supporting">{subtitle}</Text>}
         </div>
-        {actions && <ActionsLayout>{actions}</ActionsLayout>}
+        {actions && <div className={styles.actions}>{actions}</div>}
       </div>
 
       {tabs !== undefined ? (

@@ -12,10 +12,10 @@ import {
   invalidateAllHolidayPayPoliciesGet,
 } from '@gusto/embedded-api/react-query/holidayPayPoliciesGet'
 import { useHolidayPayPoliciesDeleteMutation } from '@gusto/embedded-api/react-query/holidayPayPoliciesDelete'
-import { GustoEmbeddedError } from '@gusto/embedded-api/models/errors/gustoembeddederror'
 import type { TimeOffPolicy } from '@gusto/embedded-api/models/components/timeoffpolicy'
 import { PolicyListPresentation } from './PolicyListPresentation'
 import type { PolicyListItem } from './PolicyListTypes'
+import { isListedTimeOffPolicyType } from '@/components/UNSTABLE_TimeOff/TimeOffFlow/timeOffPolicyTypes'
 import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/components/Base'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
@@ -54,20 +54,17 @@ function Root({ companyId, onEvent }: PolicyListProps) {
   const { data: policiesData } = useTimeOffPoliciesGetAllSuspense({
     companyUuid: companyId,
   })
-  const timeOffPolicies = policiesData.timeOffPolicies ?? []
+  const timeOffPolicies = (policiesData.timeOffPolicies ?? []).filter(
+    policy => policy.isActive && isListedTimeOffPolicyType(policy.policyType),
+  )
 
+  // Holiday pay policy is auxiliary to the main time-off list; never crash the
+  // boundary on its failure. composeErrorHandler below surfaces the error as
+  // an inline alert via BaseLayout when it isn't an expected 204/404.
   const holidayQuery = useHolidayPayPoliciesGet(
     { companyUuid: companyId },
     {
-      throwOnError: (error: Error) => {
-        if (error instanceof GustoEmbeddedError) {
-          const status = error.httpMeta.response.status
-          if (status === 204 || status === 404) {
-            return false
-          }
-        }
-        return true
-      },
+      throwOnError: () => false,
     },
   )
   const holidayPayPolicy = holidayQuery.data?.holidayPayPolicy

@@ -13,12 +13,14 @@ export function EmployeeTable<T extends EmployeeTableItem>({
   data,
   label,
   additionalColumns = [],
+  hideJobTitle,
   searchValue,
   onSearchChange,
   onSearchClear,
   searchPlaceholder,
   selectionMode,
   onSelect,
+  onSelectAll,
   getIsItemSelected,
   itemMenu,
   pagination,
@@ -69,14 +71,18 @@ export function EmployeeTable<T extends EmployeeTableItem>({
           </span>
         ),
       },
-      {
-        key: 'jobTitle' as keyof T,
-        title: t('jobTitle'),
-        render: (item: T) => item.jobTitle ?? '',
-      },
+      ...(hideJobTitle
+        ? []
+        : [
+            {
+              key: 'jobTitle' as keyof T,
+              title: t('jobTitle'),
+              render: (item: T) => item.jobTitle ?? '',
+            },
+          ]),
       ...additionalColumns,
     ],
-    [t, additionalColumns],
+    [t, additionalColumns, hideJobTitle],
   )
 
   const dataViewProps = useDataView<T>({
@@ -87,7 +93,7 @@ export function EmployeeTable<T extends EmployeeTableItem>({
     isFetching,
     emptyState: resolvedEmptyState,
     footer,
-    ...(onSelect && { selectionMode, onSelect, getIsItemSelected }),
+    ...(onSelect && { selectionMode, onSelect, onSelectAll, getIsItemSelected }),
   } as useDataViewProp<T>)
 
   return (

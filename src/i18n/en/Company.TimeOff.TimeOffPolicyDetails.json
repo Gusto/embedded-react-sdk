@@ -1,6 +1,10 @@
 {
   "breadcrumb": "Time off policies",
   "addEmployeeCta": "Add employee",
+  "subtitle": {
+    "vacation": "Paid time off policy",
+    "sick": "Sick leave policy"
+  },
   "tabs": {
     "employees": "Employees",
     "policyDetails": "Policy details"
@@ -77,8 +81,7 @@
     "balance": "Balance (hrs)",
     "actions": "Actions",
     "editBalance": "Edit balance",
-    "removeEmployee": "Remove employee",
-    "removeEmployees": "Remove employees"
+    "removeEmployee": "Remove employee"
   },
   "addEmployeeModal": {
     "title": "Add employee to this policy",
@@ -104,8 +107,6 @@
   },
   "flash": {
     "employeeRemoved": "{{name}} has been removed from the policy.",
-    "employeesRemoved_one": "{{count}} employee has been removed from the policy.",
-    "employeesRemoved_other": "{{count}} employees have been removed from the policy.",
     "employeesAdded_one": "{{count}} employee has been added to this policy.",
     "employeesAdded_other": "{{count}} employees have been added to this policy.",
     "balanceUpdated": "{{name}}'s time off balance has been updated."

@@ -13,6 +13,7 @@ export interface EmployeeTableProps<T extends EmployeeTableItem> {
   data: T[]
   label?: string
   additionalColumns?: useDataViewProp<T>['columns']
+  hideJobTitle?: boolean
 
   searchValue: string
   onSearchChange: (value: string) => void
@@ -21,6 +22,7 @@ export interface EmployeeTableProps<T extends EmployeeTableItem> {
 
   selectionMode?: SelectionMode
   onSelect?: (item: T, checked: boolean) => void
+  onSelectAll?: (checked: boolean, visibleItems: T[]) => void
   getIsItemSelected?: (item: T) => boolean
 
   itemMenu?: (item: T) => ReactNode

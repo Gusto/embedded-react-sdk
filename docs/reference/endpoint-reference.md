@@ -263,6 +263,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
 |  | GET | `/v1/companies/:companyId/employees` |
 |  | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
+|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy` |
 |  | GET | `/v1/companies/:companyUuid/time_off_policies` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/deactivate` |
 |  | DELETE | `/v1/companies/:companyUuid/holiday_pay_policy` |
@@ -277,6 +278,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
 |  | GET | `/v1/companies/:companyId/employees` |
 |  | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
+|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy` |
 |  | GET | `/v1/companies/:companyUuid/time_off_policies` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/deactivate` |
 |  | DELETE | `/v1/companies/:companyUuid/holiday_pay_policy` |
@@ -292,6 +294,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
 |  | GET | `/v1/companies/:companyId/employees` |
 |  | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
+|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy` |
 |  | GET | `/v1/companies/:companyUuid/time_off_policies` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/deactivate` |
 |  | DELETE | `/v1/companies/:companyUuid/holiday_pay_policy` |
@@ -306,6 +309,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
 |  | GET | `/v1/companies/:companyId/employees` |
 |  | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
+|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy` |
 |  | GET | `/v1/companies/:companyUuid/time_off_policies` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/deactivate` |
 |  | DELETE | `/v1/companies/:companyUuid/holiday_pay_policy` |
@@ -320,6 +324,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
 |  | GET | `/v1/companies/:companyId/employees` |
 |  | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
+|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy` |
 |  | GET | `/v1/companies/:companyUuid/time_off_policies` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/deactivate` |
 |  | DELETE | `/v1/companies/:companyUuid/holiday_pay_policy` |
@@ -334,6 +339,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
 |  | GET | `/v1/companies/:companyId/employees` |
 |  | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
+|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy` |
 |  | GET | `/v1/companies/:companyUuid/time_off_policies` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/deactivate` |
 |  | DELETE | `/v1/companies/:companyUuid/holiday_pay_policy` |
@@ -348,6 +354,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
 |  | GET | `/v1/companies/:companyId/employees` |
 |  | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
+|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy` |
 |  | GET | `/v1/companies/:companyUuid/time_off_policies` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/deactivate` |
 |  | DELETE | `/v1/companies/:companyUuid/holiday_pay_policy` |
@@ -362,6 +369,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
 |  | GET | `/v1/companies/:companyId/employees` |
 |  | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
+|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy` |
 |  | GET | `/v1/companies/:companyUuid/time_off_policies` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/deactivate` |
 |  | DELETE | `/v1/companies/:companyUuid/holiday_pay_policy` |
@@ -376,6 +384,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
 |  | GET | `/v1/companies/:companyId/employees` |
 |  | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
+|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy` |
 |  | GET | `/v1/companies/:companyUuid/time_off_policies` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/deactivate` |
 |  | DELETE | `/v1/companies/:companyUuid/holiday_pay_policy` |
@@ -390,6 +399,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
 |  | GET | `/v1/companies/:companyId/employees` |
 |  | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
+|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy` |
 |  | GET | `/v1/companies/:companyUuid/time_off_policies` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/deactivate` |
 |  | DELETE | `/v1/companies/:companyUuid/holiday_pay_policy` |
@@ -404,6 +414,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
 |  | GET | `/v1/companies/:companyId/employees` |
 |  | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
+|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy` |
 |  | GET | `/v1/companies/:companyUuid/time_off_policies` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/deactivate` |
 |  | DELETE | `/v1/companies/:companyUuid/holiday_pay_policy` |
@@ -417,10 +428,12 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 | **UNSTABLE_TimeOff.TimeOffPolicyDetailPresentation** | GET | `/v1/time_off_policies/:timeOffPolicyUuid` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/remove_employees` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/balance` |
+|  | GET | `/v1/companies/:companyId/employees` |
 | **UNSTABLE_TimeOff.TimeOffFlow** | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
 |  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
 |  | GET | `/v1/companies/:companyId/employees` |
 |  | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
+|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy` |
 |  | GET | `/v1/companies/:companyUuid/time_off_policies` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/deactivate` |
 |  | DELETE | `/v1/companies/:companyUuid/holiday_pay_policy` |

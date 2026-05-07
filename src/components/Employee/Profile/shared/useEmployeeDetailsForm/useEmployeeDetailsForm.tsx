@@ -47,15 +47,17 @@ export interface EmployeeDetailsSubmitCallbacks {
   onOnboardingStatusUpdated?: (status: unknown) => void
 }
 
-export interface UseEmployeeDetailsFormProps {
-  companyId: string
-  employeeId?: string
+type UseEmployeeDetailsFormSharedProps = {
   withSelfOnboardingField?: boolean
   optionalFieldsToRequire?: EmployeeDetailsOptionalFieldsToRequire
   defaultValues?: Partial<EmployeeDetailsFormData>
   validationMode?: UseFormProps['mode']
   shouldFocusError?: boolean
 }
+
+export type UseEmployeeDetailsFormProps =
+  | (UseEmployeeDetailsFormSharedProps & { companyId: string; employeeId?: never })
+  | (UseEmployeeDetailsFormSharedProps & { employeeId: string; companyId?: string })
 
 export interface EmployeeDetailsFields {
   FirstName: typeof FirstNameField
@@ -183,6 +185,9 @@ export function useEmployeeDetailsForm({
             let updatedEmployee: Employee
 
             if (isCreateMode) {
+              if (!companyId) {
+                throw new SDKInternalError('companyId is required to create an employee')
+              }
               const result = await createEmployeeMutation.mutateAsync({
                 request: {
                   companyId,
