@@ -37,6 +37,19 @@ function MyApp() {
 
 Like Employee onboarding, self-onboarding components can be used to compose your own workflow, or be rendered in isolation. Many of these components are the same as the ones used for general employee onboarding, however some fields are hidden and shown based on the current user type. For guidance on creating a custom workflow, see [docs on composition](../../integration-guide/composition.md).
 
+### Available Subcomponents
+
+- [EmployeeOnboarding.Landing](#employeeonboardinglanding)
+- [EmployeeOnboarding.Profile](#employeeonboardingprofile)
+- [EmployeeOnboarding.FederalTaxes](#employeeonboardingfederaltaxes)
+- [EmployeeOnboarding.StateTaxes](#employeeonboardingstatetaxes)
+- [EmployeeOnboarding.PaymentMethod](#employeeonboardingpaymentmethod)
+- [EmployeeOnboarding.DocumentSigner](#employeeonboardingdocumentsigner)
+- [EmployeeOnboarding.EmploymentEligibility](#employeeonboardingemploymenteligibility)
+- [EmployeeOnboarding.OnboardingSummary](#employee-onboarding-summary)
+
+> Legacy imports via `Employee.*` (e.g. `Employee.Landing`) continue to work.
+
 ### EmployeeOnboarding.Landing
 
 Displays guidance on what to expect from the workflow and what information the employee will be required to have on hand and provide.
@@ -188,6 +201,36 @@ function MyComponent() {
 | EMPLOYEE_VIEW_FORM_TO_SIGN           | Fired when the sign form CTA is selected for a given form                                      | Response from the [Get the employee form pdf](https://docs.gusto.com/embedded-payroll/reference/get-v1-employees-employee_id-forms-form_id-pdf) endpoint aggregated with the pdf URL { ...getEmployeeFormPdfResponse, pdfUrl } |
 | EMPLOYEE_SIGN_FORM                   | Fired when the user submits the form to sign                                                   | Response from the [Sign an employee form](https://docs.gusto.com/embedded-payroll/reference/put-v1-employees-employee_id-forms-form_id-sign) endpoint                                                                          |
 | EMPLOYEE_FORMS_DONE                  | Fired when the user is done signing forms and is ready to advance to the next step in the flow | None                                                                                                                                                                                                                           |
+
+### EmployeeOnboarding.EmploymentEligibility
+
+A standalone form for collecting an employee's I-9 employment eligibility (Section 1) details, including authorization status (citizen, non-citizen national, permanent resident, alien) and supporting document information when applicable. This is the lower-level building block used internally by `EmployeeOnboarding.DocumentSigner` when `withEmployeeI9` is enabled. Use this component directly when you want to collect I-9 details outside of the document-signing flow or compose a custom routing experience.
+
+```jsx
+import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return (
+    <EmployeeOnboarding.EmploymentEligibility
+      employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
+      onEvent={() => {}}
+    />
+  )
+}
+```
+
+#### Props
+
+| Name                | Type   | Description                            |
+| ------------------- | ------ | -------------------------------------- |
+| employeeId Required | string | The associated employee identifier.    |
+| onEvent Required    |        | See events table for available events. |
+
+#### Events
+
+| Event type                           | Description                                                       | Data                                                                                                                                                                           |
+| ------------------------------------ | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| EMPLOYEE_EMPLOYMENT_ELIGIBILITY_DONE | Fired when the employee completes the employment eligibility form | Response from the [Create or update an employee's I-9 authorization](https://docs.gusto.com/embedded-payroll/reference/put-v1-employees-employee_id-i9_authorization) endpoint |
 
 ### Employee Onboarding Summary
 
