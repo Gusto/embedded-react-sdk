@@ -144,6 +144,27 @@ describe('useFieldErrorMessage', () => {
     })
   })
 
+  it('matches API field errors that include a trailing .value path segment', () => {
+    const sdkError: SDKError = {
+      category: 'api_error',
+      message: '1 field has issues',
+      httpStatus: 422,
+      fieldErrors: [
+        {
+          field: 'street1.value',
+          category: 'invalid_attribute_value',
+          message: 'Street address from API',
+        },
+      ],
+    }
+
+    const wrapper = createWrapper({ errors: [sdkError] })
+
+    const { result } = renderHook(() => useFieldErrorMessage('street1'), { wrapper })
+
+    expect(result.current).toBe('Street address from API')
+  })
+
   it('returns undefined when field has no errors from either source', () => {
     const sdkError: SDKError = {
       category: 'api_error',

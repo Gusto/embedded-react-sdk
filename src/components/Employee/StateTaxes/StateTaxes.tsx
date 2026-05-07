@@ -11,7 +11,7 @@ import { useI18n, useComponentDictionary } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
-export interface StateTaxesProps extends CommonComponentInterface<'Employee.StateTaxes'> {
+export type StateTaxesProps = Omit<CommonComponentInterface<'Employee.StateTaxes'>, 'children'> & {
   employeeId: string
   /** Render admin-only questions and submit them. Defaults to `false`. */
   isAdmin?: boolean
@@ -32,7 +32,6 @@ export function StateTaxes({
 function StateTaxesRoot({
   employeeId,
   className,
-  children,
   dictionary,
   onEvent,
   isAdmin = false,
@@ -62,9 +61,7 @@ function StateTaxesRoot({
       onSubmit={handleSubmit}
       actions={<ContinueAction isPending={stateTaxes.status.isPending} />}
       className={className}
-    >
-      {children}
-    </EmployeeStateTaxesView>
+    />
   )
 }
 

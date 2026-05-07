@@ -20,6 +20,7 @@ import { getQuestionVariant } from './fieldMapping'
 import { snakeCaseToCamelCase } from '@/helpers/formattedStrings'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
+import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type {
   BaseFormHookReady,
@@ -160,6 +161,8 @@ export function useEmployeeStateTaxesForm({
     return submitResult
   }
 
+  const hookFormInternals = useHookFormInternals(formMethods)
+
   if (stateTaxesQuery.isLoading || !stateTaxesQuery.data?.employeeStateTaxesList) {
     return { isLoading: true as const, errorHandling }
   }
@@ -173,7 +176,7 @@ export function useEmployeeStateTaxesForm({
     form: {
       Fields: fieldsArray,
       fieldsMetadata,
-      hookFormInternals: { formMethods },
+      hookFormInternals,
       getFormSubmissionValues: createGetFormSubmissionValues(formMethods, schema) as () =>
         | Record<string, unknown>
         | undefined,

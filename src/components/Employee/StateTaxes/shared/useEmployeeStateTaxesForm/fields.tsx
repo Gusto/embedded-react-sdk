@@ -36,16 +36,11 @@ export type {
 
 interface SharedQuestionMetadata {
   /** Stable identifier for this question (camelCase form of the API key). */
-  id: string
+  questionId: string
   /** API-supplied label; default text for the rendered Field. */
   label: string
   /** API-supplied description (raw HTML, sanitized internally before render). */
   description: string | null
-  /** Whether the API marks this question as visible only to payroll admins. */
-  isAdminOnly: boolean
-  /** Whether the schema requires a value for this question. Always `true`
-   *  in v1 — every state-tax question is required when visible. */
-  isRequired: boolean
 }
 
 export type StateTaxQuestionFieldEntry =
@@ -61,7 +56,6 @@ export type StateTaxQuestionFieldEntry =
 
 export interface StateTaxFieldsGroup {
   state: string
-  isWorkState: boolean
   questions: StateTaxQuestionFieldEntry[]
 }
 
@@ -93,19 +87,18 @@ export function createStateFields(
       }
       const variant = getQuestionVariant(question)
       const shared: SharedQuestionMetadata = {
-        id: formKey,
+        questionId: formKey,
         label: question.label,
         description: question.description,
-        isAdminOnly: question.isQuestionForAdminOnly,
-        isRequired: true,
       }
 
       questions.push(buildEntry(variant, meta, shared))
     }
 
+    if (questions.length === 0) continue
+
     groups.push({
       state: stateGroup.state,
-      isWorkState: Boolean(stateGroup.isWorkState),
       questions,
     })
   }

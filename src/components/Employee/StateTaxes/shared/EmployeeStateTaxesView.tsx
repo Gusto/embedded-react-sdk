@@ -17,7 +17,6 @@ export interface EmployeeStateTaxesViewProps {
   actions: ReactNode
   alert?: ReactNode
   className?: string
-  children?: ReactNode
 }
 
 export function EmployeeStateTaxesView({
@@ -26,7 +25,6 @@ export function EmployeeStateTaxesView({
   actions,
   alert,
   className,
-  children,
 }: EmployeeStateTaxesViewProps) {
   const { t } = useTranslation('Employee.StateTaxes')
   const { t: tCommon } = useTranslation('common')
@@ -38,28 +36,24 @@ export function EmployeeStateTaxesView({
       <BaseLayout error={stateTaxes.errorHandling.errors}>
         <SDKFormProvider formHookResult={stateTaxes}>
           <Form onSubmit={onSubmit}>
-            {children ?? (
-              <>
-                {alert}
+            {alert}
 
-                {groups.map(group => {
-                  const stateName = tCommon(`statesHash.${group.state}`, group.state)
-                  return (
-                    <Fragment key={group.state}>
-                      <Components.Heading as="h2">
-                        {t('stateTaxesTitle', { state: stateName })}
-                      </Components.Heading>
+            {groups.map(group => {
+              const stateName = tCommon(`statesHash.${group.state}`, group.state)
+              return (
+                <Fragment key={group.state}>
+                  <Components.Heading as="h2">
+                    {t('stateTaxesTitle', { state: stateName })}
+                  </Components.Heading>
 
-                      {group.questions.map(({ id, Field }) => (
-                        <Field key={id} />
-                      ))}
-                    </Fragment>
-                  )
-                })}
+                  {group.questions.map(({ questionId, Field }) => {
+                    return <Field key={questionId} />
+                  })}
+                </Fragment>
+              )
+            })}
 
-                {actions}
-              </>
-            )}
+            {actions}
           </Form>
         </SDKFormProvider>
       </BaseLayout>

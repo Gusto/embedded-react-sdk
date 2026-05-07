@@ -1,6 +1,7 @@
 import { useFormContext, get } from 'react-hook-form'
 import type { ValidationMessages } from '../types'
 import { useFormFieldsMetadataContext } from './FormFieldsMetadataContext'
+import { normalizeErrorKeyForForm } from '@/helpers/formattedStrings'
 
 export function useFieldErrorMessage<TErrorCode extends string>(
   fieldName: string,
@@ -19,7 +20,9 @@ export function useFieldErrorMessage<TErrorCode extends string>(
   }
 
   for (const sdkError of sdkErrors) {
-    const sdkFieldError = sdkError.fieldErrors.find(fe => fe.field === fieldName)
+    const sdkFieldError = sdkError.fieldErrors.find(
+      fe => normalizeErrorKeyForForm(fe.field) === fieldName,
+    )
     if (sdkFieldError?.message) return sdkFieldError.message
   }
 
