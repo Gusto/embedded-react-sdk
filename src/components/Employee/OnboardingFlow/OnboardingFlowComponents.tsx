@@ -1,7 +1,7 @@
 import type { PaymentMethodBankAccount } from '@gusto/embedded-api/models/components/paymentmethodbankaccount'
 import { FederalTaxes } from '../FederalTaxes/onboarding/FederalTaxes'
 import { StateTaxes } from '../StateTaxes/StateTaxes'
-import type { ProfileDefaultValues } from '../Profile'
+import type { ProfileDefaultValues } from '../Profile/onboarding/Profile'
 import type { CompensationDefaultValues } from '../Compensation'
 import { EmployeeList } from '../EmployeeList/onboarding/EmployeeList'
 import { ensureRequired } from '@/helpers/ensureRequired'

@@ -61,8 +61,6 @@ describe('TimeOffPolicyDetailPresentation', () => {
   const onDismissAlert = vi.fn()
   const onSearchChange = vi.fn()
   const onSearchClear = vi.fn()
-  const onSelect = vi.fn()
-  const getIsItemSelected = vi.fn().mockReturnValue(false)
 
   beforeEach(() => {
     vi.clearAllMocks()
@@ -84,9 +82,6 @@ describe('TimeOffPolicyDetailPresentation', () => {
         searchValue: '',
         onSearchChange,
         onSearchClear,
-        selectionMode: 'multiple' as const,
-        onSelect,
-        getIsItemSelected,
       },
       removeDialog: closedRemoveDialog,
       ...overrides,
@@ -248,6 +243,16 @@ describe('TimeOffPolicyDetailPresentation', () => {
       expect(screen.getByText('-')).toBeInTheDocument()
     })
 
+    it('does not render selection checkboxes', async () => {
+      renderComponent({ selectedTabId: 'employees' })
+
+      await waitFor(() => {
+        expect(screen.getByText('Alejandro Kuhic')).toBeInTheDocument()
+      })
+
+      expect(screen.queryByRole('checkbox', { name: 'Select all rows' })).not.toBeInTheDocument()
+    })
+
     it('hides Balance and Job title columns for unlimited policies', async () => {
       renderComponent({
         policyDetails: unlimitedPolicyDetails,
@@ -329,24 +334,6 @@ describe('TimeOffPolicyDetailPresentation', () => {
 
       await user.click(screen.getByRole('button', { name: 'Remove' }))
       expect(onConfirm).toHaveBeenCalledTimes(1)
-    })
-  })
-
-  describe('bulk remove dialog', () => {
-    it('renders the bulk remove dialog when open', async () => {
-      renderComponent({
-        bulkRemoveDialog: {
-          isOpen: true,
-          count: 3,
-          onConfirm: vi.fn(),
-          onClose: vi.fn(),
-          isPending: false,
-        },
-      })
-
-      await waitFor(() => {
-        expect(screen.getByText('Remove 3 employee(s) from policy?')).toBeInTheDocument()
-      })
     })
   })
 

@@ -21,6 +21,7 @@ import { useBase } from '@/components/Base/useBase'
 import { componentEvents } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
+import { isEditableTimeOffPolicyType } from '@/components/UNSTABLE_TimeOff/TimeOffFlow/timeOffPolicyTypes'
 import EditIcon from '@/assets/icons/edit-02.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
@@ -143,6 +144,8 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
   const policy = policyResponse.timeOffPolicy
   if (!policy) throw new Error('Unexpected response: missing timeOffPolicy')
 
+  const isEditable = isEditableTimeOffPolicyType(policy.policyType)
+
   const { data: employeesData } = useEmployeesListSuspense({
     companyId: policy.companyUuid,
     terminated: false,
@@ -155,8 +158,6 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
     uuid: string
     name: string
   } | null>(null)
-  const [selectedEmployeeUuids, setSelectedEmployeeUuids] = useState<Set<string>>(new Set())
-  const [bulkRemoveOpen, setBulkRemoveOpen] = useState(false)
   const [editBalanceState, setEditBalanceState] = useState<EditBalanceState | null>(null)
 
   const policyDetails = useMemo(() => derivePolicyDetails(policy), [policy])
@@ -198,22 +199,6 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
     [baseSubmitHandler, removeEmployees, policyId, invalidatePolicy, t],
   )
 
-  const handleBulkRemove = useCallback(async () => {
-    const uuids = Array.from(selectedEmployeeUuids)
-    await baseSubmitHandler({}, async () => {
-      await removeEmployees({
-        request: {
-          timeOffPolicyUuid: policyId,
-          requestBody: { employees: uuids.map(uuid => ({ uuid })) },
-        },
-      })
-      invalidatePolicy()
-      setBulkRemoveOpen(false)
-      setSelectedEmployeeUuids(new Set())
-      setSuccessAlert(t('flash.employeesRemoved', { count: uuids.length }))
-    })
-  }, [baseSubmitHandler, removeEmployees, policyId, selectedEmployeeUuids, invalidatePolicy, t])
-
   const handleUpdateBalance = useCallback(
     async (newBalance: number) => {
       if (!editBalanceState) return
@@ -234,25 +219,9 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
     [baseSubmitHandler, updateBalance, policyId, editBalanceState, invalidatePolicy, t],
   )
 
-  const handleSelect = useCallback((item: TimeOffPolicyDetailEmployee, checked: boolean) => {
-    setSelectedEmployeeUuids(prev => {
-      const next = new Set(prev)
-      if (checked) {
-        next.add(item.uuid)
-      } else {
-        next.delete(item.uuid)
-      }
-      return next
-    })
-  }, [])
-
-  const getIsItemSelected = useCallback(
-    (item: TimeOffPolicyDetailEmployee) => selectedEmployeeUuids.has(item.uuid),
-    [selectedEmployeeUuids],
-  )
-
-  const actions = useMemo(
-    () => [
+  const actions = useMemo(() => {
+    if (!isEditable) return undefined
+    return [
       <Button
         key="add"
         variant="secondary"
@@ -273,9 +242,8 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
       >
         {t('editPolicyCta')}
       </Button>,
-    ],
-    [Button, onEvent, policyId, t],
-  )
+    ]
+  }, [Button, onEvent, policyId, t, isEditable])
 
   const itemMenu = useCallback(
     (employee: TimeOffPolicyDetailEmployee) => {
@@ -309,31 +277,17 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
     [t],
   )
 
-  const footer = useMemo(() => {
-    if (selectedEmployeeUuids.size === 0) return undefined
-    return () => ({
-      uuid: (
-        <Button
-          variant="error"
-          onClick={() => {
-            setBulkRemoveOpen(true)
-          }}
-        >
-          {t('employeeTable.removeEmployees')} ({selectedEmployeeUuids.size})
-        </Button>
-      ),
-    })
-  }, [selectedEmployeeUuids, Button, t])
-
   const discriminatedProps =
     policyDetails.accrualMethod === 'unlimited'
       ? { policyDetails }
       : {
           policyDetails,
           policySettings: policySettings!,
-          onChangeSettings: () => {
-            onEvent(componentEvents.TIME_OFF_CHANGE_SETTINGS, { policyId })
-          },
+          onChangeSettings: isEditable
+            ? () => {
+                onEvent(componentEvents.TIME_OFF_CHANGE_SETTINGS, { policyId })
+              }
+            : undefined,
         }
 
   return (
@@ -341,6 +295,7 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
       <TimeOffPolicyDetailPresentation
         {...discriminatedProps}
         title={policy.name}
+        subtitle={t(`subtitle.${policyDetails.policyType}`)}
         onBack={() => {
           onEvent(componentEvents.TIME_OFF_BACK_TO_LIST)
         }}
@@ -355,11 +310,7 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
           onSearchClear: () => {
             setSearchValue('')
           },
-          itemMenu,
-          selectionMode: 'multiple',
-          onSelect: handleSelect,
-          getIsItemSelected,
-          footer,
+          ...(isEditable ? { itemMenu } : {}),
         }}
         removeDialog={{
           isOpen: removeTarget !== null,
@@ -371,17 +322,6 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
           },
           onClose: () => {
             setRemoveTarget(null)
-          },
-          isPending: isRemovePending,
-        }}
-        bulkRemoveDialog={{
-          isOpen: bulkRemoveOpen,
-          count: selectedEmployeeUuids.size,
-          onConfirm: () => {
-            void handleBulkRemove()
-          },
-          onClose: () => {
-            setBulkRemoveOpen(false)
           },
           isPending: isRemovePending,
         }}

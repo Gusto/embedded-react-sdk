@@ -158,7 +158,7 @@ const EmployeeDetailsErrorCodes = {
 
 ### Fields.FirstName
 
-Text input for the employee's first name. Validates against `NAME_REGEX` to reject special characters.
+Text input for the employee's first name. Validates that the value contains only allowed name characters (letters, spaces, hyphens, and apostrophes).
 
 | Prop                 | Type                                         | Required |
 | -------------------- | -------------------------------------------- | -------- |
@@ -208,7 +208,7 @@ No validation codes — this field is always optional.
 
 ### Fields.LastName
 
-Text input for the employee's last name. Validates against `NAME_REGEX` to reject special characters.
+Text input for the employee's last name. Validates that the value contains only allowed name characters (letters, spaces, hyphens, and apostrophes).
 
 | Prop                 | Type                                         | Required |
 | -------------------- | -------------------------------------------- | -------- |
@@ -310,7 +310,7 @@ Text input for the employee's Social Security number. Automatically formats inpu
 | ------------- | -------------------------------------------- |
 | `INVALID_SSN` | Value does not match the expected SSN format |
 
-The `fieldsMetadata.ssn.hasRedactedValue` flag indicates whether the employee already has an SSN on file. When `true`, the field renders with a masked placeholder (e.g., `•••-••-1234`). If the field is included in `requiredFields` but `hasSsn` is already `true` on the employee, the requirement is automatically waived.
+The masked placeholder appears as `•••-••-1234`. When the employee already has an SSN on record, the `REQUIRED` rule is automatically waived even if `ssn` is listed in `requiredFields`.
 
 ```tsx
 <Fields.Ssn

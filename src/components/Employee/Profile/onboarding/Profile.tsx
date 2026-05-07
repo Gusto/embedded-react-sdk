@@ -1,4 +1,4 @@
-import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlowComponents'
+import type { OnboardingContextInterface } from '../../OnboardingFlow/OnboardingFlowComponents'
 import { AdminProfile } from './AdminProfile'
 import { EmployeeProfile } from './EmployeeProfile'
 import {

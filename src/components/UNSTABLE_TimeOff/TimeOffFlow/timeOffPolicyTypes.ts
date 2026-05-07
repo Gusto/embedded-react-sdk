@@ -5,7 +5,30 @@ import type { PolicyType } from '@gusto/embedded-api/models/components/timeoffpo
 // Holiday is a distinct concept routed through @gusto/embedded-api's
 // holidayPayPolicies* hooks against a different endpoint family.
 export type CreatableTimeOffPolicyType = Extract<PolicyType, 'sick' | 'vacation'>
-export type TimeOffPolicyType = CreatableTimeOffPolicyType | 'holiday'
+export type TimeOffPolicyType = PolicyType | 'holiday'
+
+export const EDITABLE_TIME_OFF_POLICY_TYPES = ['sick', 'vacation', 'holiday'] as const
+
+export type EditableTimeOffPolicyType = (typeof EDITABLE_TIME_OFF_POLICY_TYPES)[number]
+
+export function isEditableTimeOffPolicyType(
+  policyType: string | null | undefined,
+): policyType is EditableTimeOffPolicyType {
+  return EDITABLE_TIME_OFF_POLICY_TYPES.includes(policyType as EditableTimeOffPolicyType)
+}
+
+// Subset of types the SDK surfaces from the time_off_policies endpoint.
+// Holiday lives on a separate endpoint and is merged into the list by the caller.
+export const LISTED_TIME_OFF_POLICY_TYPES = [
+  'sick',
+  'vacation',
+] as const satisfies readonly PolicyType[]
+
+export function isListedTimeOffPolicyType(
+  policyType: PolicyType | null | undefined,
+): policyType is CreatableTimeOffPolicyType {
+  return LISTED_TIME_OFF_POLICY_TYPES.includes(policyType as CreatableTimeOffPolicyType)
+}
 
 export function assertCreatablePolicyType(
   policyType: TimeOffPolicyType,

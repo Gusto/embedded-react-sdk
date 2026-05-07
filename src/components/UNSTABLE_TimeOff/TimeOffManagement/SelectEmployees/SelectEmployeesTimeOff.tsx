@@ -1,5 +1,8 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
 import { useTimeOffPoliciesAddEmployeesMutation } from '@gusto/embedded-api/react-query/timeOffPoliciesAddEmployees'
+import { useTimeOffPoliciesRemoveEmployeesMutation } from '@gusto/embedded-api/react-query/timeOffPoliciesRemoveEmployees'
+import { useTimeOffPoliciesGetSuspense } from '@gusto/embedded-api/react-query/timeOffPoliciesGet'
+import { useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import type { CreatableTimeOffPolicyType } from '../../TimeOffFlow/timeOffPolicyTypes'
 import { SelectEmployeesPresentation } from './SelectEmployeesPresentation'
@@ -46,15 +49,63 @@ function deriveCarryOverBalances(
   return map
 }
 
-export function SelectEmployeesTimeOff({
+export function SelectEmployeesTimeOff(props: SelectEmployeesTimeOffProps) {
+  if (props.mode === 'wizard') {
+    return <SelectEmployeesTimeOffInner {...props} mode="wizard" />
+  }
+  return <StandaloneLoader {...props} />
+}
+
+function StandaloneLoader(props: SelectEmployeesTimeOffProps) {
+  const { data: policyResponse } = useTimeOffPoliciesGetSuspense({
+    timeOffPolicyUuid: props.policyId,
+  })
+  const policy = policyResponse.timeOffPolicy
+  if (!policy) throw new Error('Unexpected response: missing timeOffPolicy')
+
+  const originalUuids = useMemo(() => {
+    const set = new Set<string>()
+    for (const e of policy.employees) {
+      if (e.uuid) set.add(e.uuid)
+    }
+    return set
+  }, [policy.employees])
+
+  const originalBalances = useMemo(() => {
+    const map: Record<string, string> = {}
+    for (const e of policy.employees) {
+      if (e.uuid) map[e.uuid] = e.balance ?? '0'
+    }
+    return map
+  }, [policy.employees])
+
+  return (
+    <SelectEmployeesTimeOffInner
+      {...props}
+      mode="standalone"
+      originalUuids={originalUuids}
+      originalBalances={originalBalances}
+    />
+  )
+}
+
+interface InnerProps extends SelectEmployeesTimeOffProps {
+  originalUuids?: Set<string>
+  originalBalances?: Record<string, string>
+}
+
+function SelectEmployeesTimeOffInner({
   companyId,
   policyId,
   policyType,
   mode = 'standalone',
-}: SelectEmployeesTimeOffProps) {
+  originalUuids,
+  originalBalances,
+}: InnerProps) {
   useI18n('Company.TimeOff.SelectEmployees')
   const { t } = useTranslation('Company.TimeOff.SelectEmployees')
   const { onEvent, baseSubmitHandler } = useBase()
+  const queryClient = useQueryClient()
   const {
     filteredEmployees,
     selectedUuids,
@@ -62,9 +113,10 @@ export function SelectEmployeesTimeOff({
     pagination,
     isFetching,
     handleSelect,
+    handleSelectAll,
     handleSearchChange,
     handleSearchClear,
-  } = useSelectEmployeesData(companyId)
+  } = useSelectEmployeesData(companyId, originalUuids)
 
   // Captures the full Employee record at the moment a row is selected so
   // their carry-over balance is still available at submit time even if the
@@ -84,6 +136,20 @@ export function SelectEmployeesTimeOff({
     [handleSelect],
   )
 
+  const handleSelectAllWithCapture = useCallback(
+    (checked: boolean, visibleItems: EmployeeItem[]) => {
+      for (const item of visibleItems) {
+        if (checked) {
+          selectedEmployeesRef.current.set(item.uuid, item)
+        } else {
+          selectedEmployeesRef.current.delete(item.uuid)
+        }
+      }
+      handleSelectAll(checked, visibleItems)
+    },
+    [handleSelectAll],
+  )
+
   const carryOverBalances = useMemo(
     () => deriveCarryOverBalances(filteredEmployees, policyType),
     [filteredEmployees, policyType],
@@ -97,10 +163,69 @@ export function SelectEmployeesTimeOff({
   )
 
   const { mutateAsync: addEmployees } = useTimeOffPoliciesAddEmployeesMutation()
+  const { mutateAsync: removeEmployees, isPending: isRemovePending } =
+    useTimeOffPoliciesRemoveEmployeesMutation()
+
+  const [confirmRemoveOpen, setConfirmRemoveOpen] = useState(false)
 
   const handleBalanceChange = useCallback((uuid: string, value: string) => {
     setBalances(prev => ({ ...prev, [uuid]: value }))
   }, [])
+
+  const buildAddPayload = useCallback(
+    (uuids: string[]) =>
+      uuids.map(uuid => {
+        const userValue = balances[uuid]
+        const carryOver = extractCarryOverBalance(
+          selectedEmployeesRef.current.get(uuid),
+          policyType,
+        )
+        // Per design review: do not zero out balances accidentally.
+        // Prefer user input → fall back to carry-over → omit `balance`
+        // entirely (backend defaults the row to 0) when neither is set.
+        const balance = userValue && userValue.length > 0 ? userValue : carryOver
+        return balance ? { uuid, balance } : { uuid }
+      }),
+    [balances, policyType],
+  )
+
+  const submitDiff = useCallback(
+    async (toAdd: string[], toRemove: string[]) => {
+      await baseSubmitHandler({}, async () => {
+        if (toRemove.length > 0) {
+          await removeEmployees({
+            request: {
+              timeOffPolicyUuid: policyId,
+              requestBody: { employees: toRemove.map(uuid => ({ uuid })) },
+            },
+          })
+        }
+        let policyResult: unknown
+        if (toAdd.length > 0) {
+          const response = await addEmployees({
+            request: {
+              timeOffPolicyUuid: policyId,
+              requestBody: { employees: buildAddPayload(toAdd) },
+            },
+          })
+          policyResult = response.timeOffPolicy
+        }
+        void queryClient.invalidateQueries({
+          queryKey: ['@gusto/embedded-api', 'timeOffPolicies', 'get'],
+        })
+        onEvent(componentEvents.TIME_OFF_ADD_EMPLOYEES_DONE, policyResult)
+      })
+    },
+    [
+      baseSubmitHandler,
+      removeEmployees,
+      addEmployees,
+      buildAddPayload,
+      policyId,
+      queryClient,
+      onEvent,
+    ],
+  )
 
   const handleContinue = useCallback(async () => {
     if (mode === 'wizard') {
@@ -110,38 +235,37 @@ export function SelectEmployeesTimeOff({
       return
     }
 
-    await baseSubmitHandler({}, async () => {
-      const response = await addEmployees({
-        request: {
-          timeOffPolicyUuid: policyId,
-          requestBody: {
-            employees: [...selectedUuids].map(uuid => {
-              const userValue = balances[uuid]
-              const carryOver = extractCarryOverBalance(
-                selectedEmployeesRef.current.get(uuid),
-                policyType,
-              )
-              // Per design review: do not zero out balances accidentally.
-              // Prefer user input → fall back to carry-over → omit `balance`
-              // entirely (backend defaults the row to 0) when neither is set.
-              const balance = userValue && userValue.length > 0 ? userValue : carryOver
-              return balance ? { uuid, balance } : { uuid }
-            }),
-          },
-        },
-      })
-      onEvent(componentEvents.TIME_OFF_ADD_EMPLOYEES_DONE, response.timeOffPolicy)
-    })
-  }, [
-    mode,
-    baseSubmitHandler,
-    addEmployees,
-    policyId,
-    selectedUuids,
-    balances,
-    policyType,
-    onEvent,
-  ])
+    const original = originalUuids ?? new Set<string>()
+    const toAdd = [...selectedUuids].filter(uuid => !original.has(uuid))
+    const toRemove = [...original].filter(uuid => !selectedUuids.has(uuid))
+
+    if (toAdd.length === 0 && toRemove.length === 0) {
+      onEvent(componentEvents.TIME_OFF_ADD_EMPLOYEES_DONE)
+      return
+    }
+
+    if (toRemove.length > 0) {
+      setConfirmRemoveOpen(true)
+      return
+    }
+
+    await submitDiff(toAdd, toRemove)
+  }, [mode, originalUuids, selectedUuids, onEvent, submitDiff])
+
+  const handleConfirmRemove = useCallback(async () => {
+    const original = originalUuids ?? new Set<string>()
+    const toAdd = [...selectedUuids].filter(uuid => !original.has(uuid))
+    const toRemove = [...original].filter(uuid => !selectedUuids.has(uuid))
+    setConfirmRemoveOpen(false)
+    await submitDiff(toAdd, toRemove)
+  }, [originalUuids, selectedUuids, submitDiff])
+
+  const removeCount = useMemo(() => {
+    if (!originalUuids) return 0
+    let count = 0
+    for (const uuid of originalUuids) if (!selectedUuids.has(uuid)) count += 1
+    return count
+  }, [originalUuids, selectedUuids])
 
   const handleBack = useCallback(() => {
     onEvent(componentEvents.CANCEL)
@@ -153,6 +277,7 @@ export function SelectEmployeesTimeOff({
       selectedUuids={selectedUuids}
       searchValue={searchValue}
       onSelect={handleSelectWithCapture}
+      onSelectAll={handleSelectAllWithCapture}
       onSearchChange={handleSearchChange}
       onSearchClear={handleSearchClear}
       onBack={handleBack}
@@ -163,6 +288,23 @@ export function SelectEmployeesTimeOff({
       onBalanceChange={handleBalanceChange}
       pagination={pagination}
       isFetching={isFetching}
+      originallyOnPolicyUuids={originalUuids}
+      originalBalances={originalBalances}
+      removeConfirmDialog={
+        mode === 'standalone'
+          ? {
+              isOpen: confirmRemoveOpen,
+              count: removeCount,
+              onConfirm: () => {
+                void handleConfirmRemove()
+              },
+              onClose: () => {
+                setConfirmRemoveOpen(false)
+              },
+              isPending: isRemovePending,
+            }
+          : undefined
+      }
     />
   )
 }

@@ -27,7 +27,6 @@ export function TimeOffPolicyDetailPresentation({
   onTabChange,
   employees,
   removeDialog,
-  bulkRemoveDialog,
   successAlert,
   onDismissAlert,
 }: TimeOffPolicyDetailPresentationProps) {
@@ -78,7 +77,6 @@ export function TimeOffPolicyDetailPresentation({
         hideJobTitle: isUnlimited,
       }}
       removeDialog={removeDialog}
-      bulkRemoveDialog={bulkRemoveDialog}
       successAlert={successAlert}
       onDismissAlert={onDismissAlert}
     />
@@ -173,9 +171,13 @@ function DetailsTab({
     ]
   }, [policySettings, t])
 
+  const detailsCardClassName = isUnlimited
+    ? `${styles.descriptionCard} ${styles.descriptionCardUnlimited}`
+    : styles.descriptionCard
+
   return (
     <Flex flexDirection="column" gap={20}>
-      <div className={styles.descriptionCard}>
+      <div className={detailsCardClassName}>
         <Box header={<BoxHeader title={t('details')} />} withPadding>
           <DescriptionList items={detailItems} showSeparators={false} layout="stacked" />
         </Box>

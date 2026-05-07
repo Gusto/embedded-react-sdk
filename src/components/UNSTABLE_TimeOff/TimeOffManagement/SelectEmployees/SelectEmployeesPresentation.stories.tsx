@@ -120,16 +120,23 @@ function StoryWrapper({
   employees = mockEmployees,
   pagination,
   initialBalances = {},
+  originallyOnPolicyUuids,
+  originalBalances,
+  removeConfirmOpen = false,
 }: {
   initialSelected?: Set<string>
   showReassignmentWarning?: boolean
   employees?: EmployeeItem[]
   pagination?: PaginationControlProps
   initialBalances?: Record<string, string>
+  originallyOnPolicyUuids?: Set<string>
+  originalBalances?: Record<string, string>
+  removeConfirmOpen?: boolean
 }) {
   const [searchValue, setSearchValue] = useState('')
   const [selectedUuids, setSelectedUuids] = useState(initialSelected)
   const [balances, setBalances] = useState<Record<string, string>>(initialBalances)
+  const [confirmOpen, setConfirmOpen] = useState(removeConfirmOpen)
 
   const handleSelect = (item: EmployeeItem, checked: boolean) => {
     setSelectedUuids(prev => {
@@ -144,6 +151,10 @@ function StoryWrapper({
     setBalances(prev => ({ ...prev, [uuid]: value }))
   }
 
+  const removeCount = originallyOnPolicyUuids
+    ? [...originallyOnPolicyUuids].filter(uuid => !selectedUuids.has(uuid)).length
+    : 0
+
   return (
     <SelectEmployeesPresentation
       employees={employees}
@@ -155,11 +166,31 @@ function StoryWrapper({
       }}
       onSelect={handleSelect}
       onBack={onBack}
-      onContinue={onContinue}
+      onContinue={() => {
+        if (removeCount > 0) setConfirmOpen(true)
+        else onContinue()
+      }}
       showReassignmentWarning={showReassignmentWarning}
       balances={balances}
       onBalanceChange={handleBalanceChange}
       pagination={pagination}
+      originallyOnPolicyUuids={originallyOnPolicyUuids}
+      originalBalances={originalBalances}
+      removeConfirmDialog={
+        originallyOnPolicyUuids
+          ? {
+              isOpen: confirmOpen,
+              count: removeCount,
+              onConfirm: () => {
+                setConfirmOpen(false)
+                onContinue()
+              },
+              onClose: () => {
+                setConfirmOpen(false)
+              },
+            }
+          : undefined
+      }
     />
   )
 }
@@ -188,6 +219,35 @@ export const WithCarryOver = () => (
       '3': '8',
       '4': '0',
     }}
+    showReassignmentWarning
+  />
+)
+
+export const WithExistingAssignees = () => (
+  <StoryWrapper
+    initialSelected={new Set(['1', '3'])}
+    originallyOnPolicyUuids={new Set(['1', '3'])}
+    originalBalances={{ '1': '12', '3': '4.5' }}
+    showReassignmentWarning
+  />
+)
+
+export const ExistingAssigneesWithNewSelections = () => (
+  <StoryWrapper
+    initialSelected={new Set(['1', '3', '5'])}
+    originallyOnPolicyUuids={new Set(['1', '3'])}
+    originalBalances={{ '1': '12', '3': '4.5' }}
+    initialBalances={{ '5': '8' }}
+    showReassignmentWarning
+  />
+)
+
+export const RemoveConfirmDialogOpen = () => (
+  <StoryWrapper
+    initialSelected={new Set(['1'])}
+    originallyOnPolicyUuids={new Set(['1', '3', '5'])}
+    originalBalances={{ '1': '12', '3': '4.5', '5': '20' }}
+    removeConfirmOpen
     showReassignmentWarning
   />
 )
