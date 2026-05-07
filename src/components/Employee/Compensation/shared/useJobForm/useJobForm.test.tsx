@@ -281,7 +281,7 @@ describe('useJobForm', () => {
   })
 
   describe('gating signals', () => {
-    it('exposes showStateWc=true when active work address is in WA, and renders the fields', async () => {
+    it('exposes showStateWc=true when active work address is in WA, renders StateWcCovered, and gates StateWcClassCode on stateWcCovered=true', async () => {
       server.use(
         handleGetEmployeeJobs(() => HttpResponse.json([])),
         http.get(`${API_BASE_URL}/v1/employees/:employee_id/work_addresses`, () =>
@@ -314,6 +314,47 @@ describe('useJobForm', () => {
 
       assertReady(result.current)
       expect(result.current.data.showStateWc).toBe(true)
+      expect(result.current.form.Fields.StateWcCovered).toBeDefined()
+      expect(result.current.form.Fields.StateWcClassCode).toBeUndefined()
+    })
+
+    it('renders StateWcClassCode once stateWcCovered flips to true (via defaultValues)', async () => {
+      server.use(
+        handleGetEmployeeJobs(() => HttpResponse.json([])),
+        http.get(`${API_BASE_URL}/v1/employees/:employee_id/work_addresses`, () =>
+          HttpResponse.json([
+            {
+              uuid: 'wa-uuid',
+              employee_uuid: 'employee-uuid',
+              location_uuid: 'wa-loc-uuid',
+              effective_date: '2024-01-01',
+              active: true,
+              version: 'wa-v1',
+              street_1: '123 Pike',
+              street_2: '',
+              city: 'Seattle',
+              state: 'WA',
+              zip: '98101',
+              country: 'USA',
+            },
+          ]),
+        ),
+      )
+
+      const { result } = renderHook(
+        () =>
+          useJobForm({
+            employeeId: 'employee-uuid',
+            defaultValues: { stateWcCovered: true },
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      assertReady(result.current)
       expect(result.current.form.Fields.StateWcCovered).toBeDefined()
       expect(result.current.form.Fields.StateWcClassCode).toBeDefined()
     })

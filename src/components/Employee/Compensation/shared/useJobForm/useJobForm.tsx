@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { Job } from '@gusto/embedded-api/models/components/job'
@@ -76,7 +76,12 @@ export interface UseJobFormReady extends BaseFormHookReady<
     currentWorkAddress: EmployeeWorkAddress | null
     /** True when the company is taxable as an S-Corp; partners use this to decide whether to render `TwoPercentShareholder`. */
     showTwoPercentShareholder: boolean
-    /** True when the active work-address state is WA; partners use this to decide whether to render `StateWcCovered` / `StateWcClassCode`. */
+    /**
+     * True when the active work-address state is WA; partners use this to decide whether to render
+     * `StateWcCovered`. `Fields.StateWcClassCode` is additionally gated on `stateWcCovered === true`,
+     * so partners typically only need to check `Fields.StateWcCovered` / `Fields.StateWcClassCode`
+     * truthiness rather than this flag directly.
+     */
     showStateWc: boolean
   }
   status: { isPending: boolean; mode: 'create' | 'update' }
@@ -151,6 +156,8 @@ export function useJobForm({
     values: resolvedDefaults,
     resetOptions: { keepDirtyValues: true },
   })
+
+  const watchedStateWcCovered = useWatch({ control: formMethods.control, name: 'stateWcCovered' })
 
   const createJobMutation = useJobsAndCompensationsCreateJobMutation()
   const updateJobMutation = useJobsAndCompensationsUpdateMutation()
@@ -302,7 +309,7 @@ export function useJobForm({
         HireDate: HireDateField,
         TwoPercentShareholder: showTwoPercentShareholder ? TwoPercentShareholderField : undefined,
         StateWcCovered: showStateWc ? StateWcCoveredField : undefined,
-        StateWcClassCode: showStateWc ? StateWcClassCodeField : undefined,
+        StateWcClassCode: showStateWc && watchedStateWcCovered ? StateWcClassCodeField : undefined,
       },
       fieldsMetadata,
       hookFormInternals,
