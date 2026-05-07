@@ -143,6 +143,7 @@ function Root({ companyId, onEvent }: PolicyListProps) {
         await invalidateAllTimeOffPoliciesGetAll(queryClient)
         setDeleteSuccessAlert(t('flash.policyDeleted', { name: policy.name }))
       }
+      onEvent(componentEvents.TIME_OFF_DELETE_POLICY_DONE, { policyId: policy.uuid })
     })
     setIsDeletingPolicyId(null)
   }
