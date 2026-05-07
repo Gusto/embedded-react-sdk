@@ -3,6 +3,7 @@
     "employees": "Employees"
   },
   "backLabel": "Back to policies",
+  "employeeActions": "Actions for {{name}}",
   "removeEmployeeDialog": {
     "title": "Remove {{name}}",
     "description": "Are you sure you want to remove {{name}} from this policy?",

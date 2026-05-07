@@ -551,6 +551,7 @@ export interface CompanyTimeOffPolicyDetail{
 "employees":string;
 };
 "backLabel":string;
+"employeeActions":string;
 "removeEmployeeDialog":{
 "title":string;
 "description":string;
