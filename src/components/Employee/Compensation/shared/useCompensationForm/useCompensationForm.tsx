@@ -35,6 +35,7 @@ import {
 import { withOptions } from '@/partner-hook-utils/form/withOptions'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
+import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type {
   BaseFormHookReady,
@@ -448,6 +449,8 @@ export function useCompensationForm({
       taxQuery.isLoading
     : false
 
+  const hookFormInternals = useHookFormInternals(formMethods)
+
   if (
     isDataLoading ||
     (employeeId && (!employeeJobs || !employee || !companyUuid || !federalTaxDetails))
@@ -486,7 +489,7 @@ export function useCompensationForm({
         StateWcClassCode: isWaState && watchedStateWcCovered ? StateWcClassCodeField : undefined,
       },
       fieldsMetadata,
-      hookFormInternals: { formMethods },
+      hookFormInternals,
       getFormSubmissionValues: createGetFormSubmissionValues(formMethods, schema),
     },
   }

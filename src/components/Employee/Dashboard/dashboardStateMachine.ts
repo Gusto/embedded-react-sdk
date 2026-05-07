@@ -4,6 +4,7 @@ import {
   HomeAddressContextual,
   WorkAddressContextual,
   FederalTaxesContextual,
+  ProfileContextual,
   type DashboardContextInterface,
 } from './DashboardComponents'
 import { componentEvents } from '@/shared/constants'
@@ -19,6 +20,17 @@ const returnToIndex = reduce(
 
 export const dashboardStateMachine = {
   index: state<MachineTransition>(
+    transition(
+      componentEvents.EMPLOYEE_UPDATE,
+      'profile',
+      reduce(
+        (ctx: DashboardContextInterface): DashboardContextInterface => ({
+          ...ctx,
+          component: ProfileContextual,
+          header: { type: 'minimal' },
+        }),
+      ),
+    ),
     transition(
       componentEvents.EMPLOYEE_HOME_ADDRESS,
       'homeAddress',
@@ -59,4 +71,5 @@ export const dashboardStateMachine = {
     transition(componentEvents.CANCEL, 'index', returnToIndex),
     transition(componentEvents.EMPLOYEE_FEDERAL_TAXES_DONE, 'index', returnToIndex),
   ),
+  profile: state<MachineTransition>(transition(componentEvents.CANCEL, 'index', returnToIndex)),
 }

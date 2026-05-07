@@ -1,6 +1,7 @@
 import type { ComponentType } from 'react'
 import { useHookFieldResolution } from '../useHookFieldResolution'
 import type { BaseFieldProps, ValidationMessages, FormHookResult } from '../../types'
+import { withFieldElementRegistry } from './withFieldElementRegistry'
 import { SwitchField } from '@/components/Common'
 import type { SwitchProps } from '@/components/Common/UI/Switch/SwitchTypes'
 
@@ -19,14 +20,15 @@ export function SwitchHookField<TErrorCode extends string>({
   validationMessages,
   FieldComponent,
 }: SwitchHookFieldProps<TErrorCode>) {
-  const { metadata, control, errorMessage } = useHookFieldResolution(
+  const { metadata, control, errorMessage, fieldElementRegistry } = useHookFieldResolution(
     name,
     formHookResult,
     validationMessages,
   )
   const fieldMetadata = metadata[name]
 
-  return (
+  return withFieldElementRegistry(
+    fieldElementRegistry,
     <SwitchField
       name={name}
       control={control}
@@ -36,6 +38,6 @@ export function SwitchHookField<TErrorCode extends string>({
       isRequired={fieldMetadata?.isRequired}
       isDisabled={fieldMetadata?.isDisabled}
       FieldComponent={FieldComponent}
-    />
+    />,
   )
 }

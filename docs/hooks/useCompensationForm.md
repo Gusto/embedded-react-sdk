@@ -29,35 +29,35 @@ import { useCompensationForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
 
 ### Configurable Required Fields
 
-The compensation schema declares requiredness rules per field. Fields default to **always required** unless configured otherwise:
+Each compensation field has a default required-ness based on form mode (create vs. update). Fields default to **always required** unless configured otherwise:
 
-| Field                   | Rule       | Required on create | Required on update | Partner-configurable? |
-| ----------------------- | ---------- | ------------------ | ------------------ | --------------------- |
-| `jobTitle`              | `'create'` | Yes                | No                 | Yes (on update)       |
-| `flsaStatus`            | `'create'` | Yes                | No                 | Yes (on update)       |
-| `paymentUnit`           | `'create'` | Yes                | No                 | Yes (on update)       |
-| `rate`                  | `'create'` | Yes                | No                 | Yes (on update)       |
-| `startDate`             | `'create'` | Yes                | No                 | Yes (on update)       |
-| `adjustForMinimumWage`  | (unlisted) | Yes                | Yes                | No                    |
-| `stateWcCovered`        | (unlisted) | Yes                | Yes                | No                    |
-| `twoPercentShareholder` | (unlisted) | Yes                | Yes                | No                    |
-| `minimumWageId`         | predicate  | When toggle is on  | When toggle is on  | No                    |
-| `stateWcClassCode`      | predicate  | When WC is covered | When WC is covered | No                    |
+| Field                   | Required on create | Required on update | Partner-configurable? |
+| ----------------------- | ------------------ | ------------------ | --------------------- |
+| `jobTitle`              | Yes                | No                 | Yes (on update)       |
+| `flsaStatus`            | Yes                | No                 | Yes (on update)       |
+| `paymentUnit`           | Yes                | No                 | Yes (on update)       |
+| `rate`                  | Yes                | No                 | Yes (on update)       |
+| `startDate`             | Yes                | No                 | Yes (on update)       |
+| `adjustForMinimumWage`  | Yes                | Yes                | No                    |
+| `stateWcCovered`        | Yes                | Yes                | No                    |
+| `twoPercentShareholder` | Yes                | Yes                | No                    |
+| `minimumWageId`         | When toggle is on  | When toggle is on  | No                    |
+| `stateWcClassCode`      | When WC is covered | When WC is covered | No                    |
 
-`optionalFieldsToRequire` lets you override fields that are **optional** in a given mode to be required. The type is derived from the schema configuration:
+`optionalFieldsToRequire` lets you override fields that are **optional** in a given mode to be required. TypeScript constrains which fields can be promoted per mode:
 
 ```typescript
 type CompensationOptionalFieldsToRequire = {
-  create?: never[] // all 'create' fields are already required on create
+  create?: never[] // these fields are already required on create
   update?: Array<'jobTitle' | 'flsaStatus' | 'paymentUnit' | 'rate' | 'startDate'>
 }
 ```
 
-Only the `update` key is useful for compensation — it lets you require fields in update mode that would otherwise be optional. The `create` key has no configurable fields because all `'create'`-scoped fields are already required on create.
+Only the `update` key is useful for compensation — it lets you require fields in update mode that would otherwise be optional. The `create` key has no configurable fields because every field listed above is already required on create.
 
-`startDate` requirements are ignored when `withStartDateField` is `false` (the field is excluded from the schema entirely).
+`startDate` requirements are ignored when `withStartDateField` is `false` (the field is omitted from the form entirely).
 
-Cross-field validations (`minimumWageId` when `adjustForMinimumWage` is `true`, workers' comp fields in WA) are always enforced by the schema regardless of `optionalFieldsToRequire`.
+Cross-field rules (`minimumWageId` when `adjustForMinimumWage` is `true`, workers' comp fields in WA) are always enforced regardless of `optionalFieldsToRequire`.
 
 ```tsx
 useCompensationForm({
@@ -312,7 +312,7 @@ This field is automatically **disabled** when the FLSA status is Commission Only
   validationMessages={{
     REQUIRED: 'Amount is a required field',
     RATE_MINIMUM: 'Amount must be at least $1.00',
-    RATE_EXEMPT_THRESHOLD: `FLSA Exempt employees must meet salary threshold of $${FLSA_OVERTIME_SALARY_LIMIT}/year`,
+    RATE_EXEMPT_THRESHOLD: 'FLSA Exempt employees must meet salary threshold of $35,568/year',
   }}
 />
 ```

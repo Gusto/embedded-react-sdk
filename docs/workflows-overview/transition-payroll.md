@@ -63,6 +63,8 @@ Transition payroll components can be used to compose your own workflow, or can b
 
 - [Payroll.TransitionCreation](#payrolltransitioncreation)
 
+After creation, the flow hands off to the shared [`Payroll.PayrollExecutionFlow`](./run-payroll.md#payrollpayrollexecutionflow) for the configuration → overview → submission → receipts steps. If you build your own creation step in front of the standard execution UI, render `Payroll.PayrollExecutionFlow` directly with the payroll you created.
+
 ### Payroll.TransitionCreation
 
 The creation form for transition payrolls. Displays the transition pay period and pay schedule information, and allows configuration of check date, deductions, and tax withholding.

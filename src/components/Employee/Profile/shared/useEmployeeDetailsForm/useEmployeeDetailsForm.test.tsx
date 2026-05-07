@@ -387,7 +387,6 @@ describe('useEmployeeDetailsForm', () => {
       const { result } = renderHook(
         () =>
           useEmployeeDetailsForm({
-            companyId: 'company-1',
             employeeId: 'emp-1',
           }),
         { wrapper: GustoTestProvider },
@@ -408,7 +407,6 @@ describe('useEmployeeDetailsForm', () => {
       const { result } = renderHook(
         () =>
           useEmployeeDetailsForm({
-            companyId: 'company-1',
             employeeId: 'emp-1',
           }),
         { wrapper: GustoTestProvider },
@@ -433,7 +431,6 @@ describe('useEmployeeDetailsForm', () => {
       const { result } = renderHook(
         () =>
           useEmployeeDetailsForm({
-            companyId: 'company-1',
             employeeId: 'emp-1',
             defaultValues: {
               selfOnboarding: true,
@@ -461,7 +458,6 @@ describe('useEmployeeDetailsForm', () => {
       const { result } = renderHook(
         () =>
           useEmployeeDetailsForm({
-            companyId: 'company-1',
             employeeId: 'emp-1',
             optionalFieldsToRequire: {
               create: ['email'],
@@ -501,7 +497,6 @@ describe('useEmployeeDetailsForm', () => {
       const { result } = renderHook(
         () =>
           useEmployeeDetailsForm({
-            companyId: 'company-1',
             employeeId: 'emp-1',
             optionalFieldsToRequire: { update: ['ssn'] },
           }),
@@ -536,7 +531,6 @@ describe('useEmployeeDetailsForm', () => {
       const { result } = renderHook(
         () =>
           useEmployeeDetailsForm({
-            companyId: 'company-1',
             employeeId: 'emp-1',
             optionalFieldsToRequire: { update: ['ssn'] },
           }),

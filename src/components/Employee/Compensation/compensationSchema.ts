@@ -1,7 +1,4 @@
-import type { Job } from '@gusto/embedded-api/models/components/job'
-import type { MinimumWage } from '@gusto/embedded-api/models/components/minimumwage'
 import { z } from 'zod'
-import { createCompoundContext } from '@/components/Base/createCompoundContext'
 import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus } from '@/shared/constants'
 import { yearlyRate } from '@/helpers/payRateCalculator'
 
@@ -28,7 +25,6 @@ export const CompensationSchema = z
     rate: z.number().optional(),
   })
   .superRefine((data, ctx) => {
-    // adjustForMinimumWage
     if (data.adjustForMinimumWage && (!data.minimumWageId || data.minimumWageId.trim() === '')) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -37,7 +33,6 @@ export const CompensationSchema = z
       })
     }
 
-    // stateWcCovered
     if (
       data.stateWcCovered === true &&
       (!data.stateWcClassCode || data.stateWcClassCode.trim() === '')
@@ -49,14 +44,12 @@ export const CompensationSchema = z
       })
     }
 
-    // FLSA logic
     const { flsaStatus, paymentUnit, rate } = data
     if (
       flsaStatus === FlsaStatus.EXEMPT ||
       flsaStatus === FlsaStatus.SALARIED_NONEXEMPT ||
       flsaStatus === FlsaStatus.NONEXEMPT
     ) {
-      // For EXEMPT, check salary threshold
       if (
         flsaStatus === FlsaStatus.EXEMPT &&
         rate !== undefined &&
@@ -113,32 +106,3 @@ export const CompensationSchema = z
 
 export type CompensationInputs = z.input<typeof CompensationSchema>
 export type CompensationOutputs = z.output<typeof CompensationSchema>
-
-export type MODE =
-  | 'LIST'
-  | 'ADD_ADDITIONAL_JOB'
-  | 'ADD_INITIAL_JOB'
-  | 'EDIT_ADDITIONAL_JOB'
-  | 'EDIT_INITIAL_JOB'
-  | 'PROCEED'
-
-type CompensationContextType = {
-  employeeJobs: Job[]
-  currentJob?: Job | null
-  primaryFlsaStatus?: string
-  isPending: boolean
-  mode: MODE
-  showFlsaChangeWarning: boolean
-  minimumWages: MinimumWage[]
-  state?: string
-  showTwoPercentStakeholder?: boolean
-  submitWithEffect: (newMode: MODE) => void
-  handleAdd: () => void
-  handleEdit: (uuid: string) => void
-  handleDelete: (uuid: string) => void
-  handleFlsaChange: (status: string | number) => void
-  handleCancelAddJob: () => void
-}
-const [useCompensation, CompensationProvider] =
-  createCompoundContext<CompensationContextType>('CompensationContext')
-export { useCompensation, CompensationProvider }

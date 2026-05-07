@@ -25,6 +25,7 @@ import {
 } from './fields'
 import { normalizeToISOString } from '@/helpers/dateFormatting'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
+import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type {
@@ -46,15 +47,17 @@ export interface EmployeeDetailsSubmitCallbacks {
   onOnboardingStatusUpdated?: (status: unknown) => void
 }
 
-export interface UseEmployeeDetailsFormProps {
-  companyId: string
-  employeeId?: string
+type UseEmployeeDetailsFormSharedProps = {
   withSelfOnboardingField?: boolean
   optionalFieldsToRequire?: EmployeeDetailsOptionalFieldsToRequire
   defaultValues?: Partial<EmployeeDetailsFormData>
   validationMode?: UseFormProps['mode']
   shouldFocusError?: boolean
 }
+
+export type UseEmployeeDetailsFormProps =
+  | (UseEmployeeDetailsFormSharedProps & { companyId: string; employeeId?: never })
+  | (UseEmployeeDetailsFormSharedProps & { employeeId: string; companyId?: string })
 
 export interface EmployeeDetailsFields {
   FirstName: typeof FirstNameField
@@ -182,6 +185,9 @@ export function useEmployeeDetailsForm({
             let updatedEmployee: Employee
 
             if (isCreateMode) {
+              if (!companyId) {
+                throw new SDKInternalError('companyId is required to create an employee')
+              }
               const result = await createEmployeeMutation.mutateAsync({
                 request: {
                   companyId,
@@ -263,6 +269,8 @@ export function useEmployeeDetailsForm({
     return submitResult
   }
 
+  const hookFormInternals = useHookFormInternals(formMethods)
+
   const isDataLoading = employeeId ? employeeQuery.isLoading : false
 
   if (isDataLoading || (employeeId && !employee)) {
@@ -292,7 +300,7 @@ export function useEmployeeDetailsForm({
           withSelfOnboardingField && isSelfOnboardingToggleable ? SelfOnboardingField : undefined,
       },
       fieldsMetadata,
-      hookFormInternals: { formMethods },
+      hookFormInternals,
       getFormSubmissionValues: createGetFormSubmissionValues(formMethods, schema),
     },
   }

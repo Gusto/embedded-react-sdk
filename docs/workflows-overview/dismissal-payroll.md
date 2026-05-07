@@ -46,6 +46,16 @@ Events emitted during the pay period selection phase:
 
 Once the payroll is created, all standard [run payroll events](./run-payroll.md) are emitted during execution (e.g. `RUN_PAYROLL_CALCULATED`, `RUN_PAYROLL_SUBMITTED`, `RUN_PAYROLL_PROCESSED`).
 
+## Using Dismissal Subcomponents
+
+The dismissal payroll workflow is delivered as a single orchestrated flow (`Payroll.DismissalFlow`). After the dismissal payroll is created, the flow transitions into the standard payroll execution experience and uses the [Run Payroll subcomponents](./run-payroll.md#available-subcomponents) for configuration, overview, submission, and receipts.
+
+### Available Subcomponents
+
+- `Payroll.DismissalFlow` (the entire dismissal flow — see [Implementation](#implementation) above)
+
+For the execution phase, the dismissal flow internally renders [`Payroll.PayrollExecutionFlow`](./run-payroll.md#payrollpayrollexecutionflow) with `isDismissalPayroll` enabled. If you want to build a custom dismissal-creation step in front of the standard execution UI, render `Payroll.PayrollExecutionFlow` directly with the payroll you created. See the [Run Payroll docs](./run-payroll.md) for individual execution subcomponents (`Payroll.PayrollConfiguration`, `Payroll.PayrollOverview`, `Payroll.PayrollReceipts`).
+
 ## Workflow Steps
 
 The flow adapts based on whether a `payrollId` is provided:

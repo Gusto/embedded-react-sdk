@@ -66,8 +66,10 @@ Run payroll components can be used to compose your own workflow, or can be rende
 - [Payroll.PayrollConfiguration](#payrollpayrollconfiguration)
 - [Payroll.PayrollEditEmployee](#payrollpayrolleditemployee)
 - [Payroll.PayrollOverview](#payrollpayrolloverview)
+- [Payroll.PayrollExecutionFlow](#payrollpayrollexecutionflow)
 - [Payroll.PayrollReceipts](#payrollpayrollreceipts)
-- [Payroll.PayrollBlocker](#payrollpayrollblocker)
+- [Payroll.PayrollBlockerList](#payrollpayrollblockerlist)
+- [Payroll.RecoveryCases](#payrollrecoverycases)
 - [Payroll.ConfirmWireDetails](#payrollconfirmwiredetails)
 
 ### Payroll.PayrollLanding
@@ -283,6 +285,44 @@ function MyComponent() {
 | RUN_PAYROLL_RECEIPT_GET        | Fired when user requests payroll receipt     | { payrollId: string }                                                                                                                                 |
 | RUN_PAYROLL_PDF_PAYSTUB_VIEWED | Fired when user views employee paystub PDF   | { employeeId: string }                                                                                                                                |
 
+### Payroll.PayrollExecutionFlow
+
+The shared execution flow that runs the **configuration → overview → submission → receipt** steps for a single payroll. This is the inner flow that powers the back half of `Payroll.PayrollFlow`, and it is also reused by the [off-cycle](./off-cycle-payroll.md), [dismissal](./dismissal-payroll.md), and [transition](./transition-payroll.md) flows after they have created their respective payrolls.
+
+Use this component directly when you have built your own payroll-creation step (e.g. a custom intake form) and want to hand the user off to the standard execution experience without re-implementing it. The flow ships with breadcrumb navigation, the standard wire-confirmation UX, and emits the same `RUN_PAYROLL_*` events as the full `PayrollFlow`.
+
+```jsx
+import { Payroll } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return (
+    <Payroll.PayrollExecutionFlow
+      companyId="your-company-id"
+      payrollId="your-payroll-id"
+      onEvent={() => {}}
+    />
+  )
+}
+```
+
+#### Props
+
+| Name                        | Type                                     | Default           | Description                                                                                                                                                                                 |
+| --------------------------- | ---------------------------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| companyId Required          | string                                   |                   | The associated company identifier.                                                                                                                                                          |
+| payrollId Required          | string                                   |                   | The identifier of the payroll to execute. The payroll must already exist (e.g. created by a prior creation step or by the standard `PayrollFlow` selection).                                |
+| onEvent Required            | function                                 |                   | See events table for available events. Emits the standard `RUN_PAYROLL_*` events.                                                                                                           |
+| initialPayPeriod            | `PayrollPayPeriodType`                   |                   | Optional pay period metadata used to seed breadcrumb labels and date context.                                                                                                               |
+| initialState                | `'configuration'` \| `'overview'`        | `'configuration'` | Where the flow starts. Use `'overview'` when you want to drop the user directly on the review screen (e.g. resuming an already-calculated payroll).                                         |
+| isDismissalPayroll          | boolean                                  | `false`           | When true, surfaces dismissal-specific copy and breadcrumbs (used by `Payroll.DismissalFlow`).                                                                                              |
+| withReimbursements          | boolean                                  | `true`            | Optional flag to show/hide reimbursement fields throughout the flow.                                                                                                                        |
+| ConfirmWireDetailsComponent | `ComponentType<ConfirmWireDetailsProps>` |                   | Optional custom component to replace the default wire details confirmation UI. See [ConfirmWireDetailsProps](#confirmwiredetailsprops).                                                     |
+| prefixBreadcrumbs           | `FlowBreadcrumb[]`                       | `[]`              | Optional breadcrumbs prepended to the flow's own breadcrumb trail. Useful when embedding inside a parent flow (e.g. an off-cycle creation step) so the breadcrumb history remains coherent. |
+
+#### Events
+
+Emits the same events as `Payroll.PayrollFlow` during execution — see the [main events table](#events) at the top of this page (e.g. `RUN_PAYROLL_CALCULATED`, `RUN_PAYROLL_EMPLOYEE_EDIT`, `RUN_PAYROLL_SUBMITTED`, `RUN_PAYROLL_PROCESSED`, `RUN_PAYROLL_RECEIPT_VIEWED`).
+
 ### Payroll.PayrollReceipts
 
 Displays a detailed receipt for a completed payroll, including all payment information, deductions, taxes, and totals. This component provides a comprehensive view of a processed payroll for record-keeping and review purposes.
@@ -311,7 +351,7 @@ function MyComponent() {
 | ---------------- | ------------------------------ | ---- |
 | RUN_PAYROLL_BACK | Fired when user navigates back | None |
 
-### Payroll.PayrollBlocker
+### Payroll.PayrollBlockerList
 
 Displays a list of blockers that prevent payroll from being processed. Blockers indicate issues that must be resolved before a payroll can be calculated or submitted, such as missing employee information, invalid tax setups, or incomplete company configuration.
 
@@ -319,7 +359,7 @@ Displays a list of blockers that prevent payroll from being processed. Blockers 
 import { Payroll } from '@gusto/embedded-react-sdk'
 
 function MyComponent() {
-  return <Payroll.PayrollBlocker companyId="your-company-id" onEvent={() => {}} />
+  return <Payroll.PayrollBlockerList companyId="your-company-id" onEvent={() => {}} />
 }
 ```
 
@@ -334,6 +374,33 @@ function MyComponent() {
 #### Events
 
 This component does not emit any events. It displays blockers fetched from the API and provides information to help users resolve issues.
+
+### Payroll.RecoveryCases
+
+Displays open recovery cases for a company and provides an in-modal resubmit workflow for resolving them. Recovery cases are issues that arise after a payroll has been submitted (for example, a returned ACH transfer) and must be resolved before subsequent payrolls can run cleanly. The component is also embedded inside `Payroll.PayrollBlockerList`, but can be used standalone when you want a dedicated recovery cases surface.
+
+```jsx
+import { Payroll } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return <Payroll.RecoveryCases companyId="your-company-id" onEvent={() => {}} />
+}
+```
+
+#### Props
+
+| Name               | Type     | Description                            |
+| ------------------ | -------- | -------------------------------------- |
+| companyId Required | string   | The associated company identifier.     |
+| onEvent            | function | See events table for available events. |
+
+#### Events
+
+| Event type                    | Description                                                      | Data                       |
+| ----------------------------- | ---------------------------------------------------------------- | -------------------------- |
+| RECOVERY_CASE_RESOLVE         | Fired when the user opens the resubmit modal for a recovery case | { recoveryCaseId: string } |
+| RECOVERY_CASE_RESUBMIT_DONE   | Fired when the user successfully resubmits a recovery case       | Resubmit result payload    |
+| RECOVERY_CASE_RESUBMIT_CANCEL | Fired when the user cancels the resubmit modal                   | None                       |
 
 ### Payroll.ConfirmWireDetails
 

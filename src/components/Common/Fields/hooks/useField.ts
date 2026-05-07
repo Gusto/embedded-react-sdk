@@ -1,6 +1,7 @@
 import type { Control, RegisterOptions } from 'react-hook-form'
 import { useController, useFormContext } from 'react-hook-form'
-import React, { useMemo, type Ref } from 'react'
+import React, { useCallback, useMemo, type Ref } from 'react'
+import { useFieldElementRegistryContext } from './fieldElementRegistry'
 import { createMarkup } from '@/helpers/formattedStrings'
 import { useForkRef } from '@/hooks/useForkRef/useForkRef'
 
@@ -64,7 +65,16 @@ export function useField<TValue = string, TRef = HTMLInputElement>({
 
   const { value } = field
 
-  const ref = useForkRef(field.ref, inputRef)
+  const fieldElementRegistry = useFieldElementRegistryContext()
+  const registryRef = useCallback(
+    (element: HTMLElement | null) => {
+      if (!fieldElementRegistry) return
+      fieldElementRegistry.register(name, element)
+    },
+    [fieldElementRegistry, name],
+  )
+
+  const ref = useForkRef(field.ref, inputRef, registryRef)
 
   const handleChange = (updatedValue: TValue) => {
     const value = transform ? transform(updatedValue) : updatedValue

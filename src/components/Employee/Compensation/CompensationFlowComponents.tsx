@@ -1,0 +1,85 @@
+import { useTranslation } from 'react-i18next'
+import type { Job } from '@gusto/embedded-api/models/components/job'
+import type { Compensation } from '@gusto/embedded-api/models/components/compensation'
+import type { CompensationDefaultValues } from './Compensation'
+import { JobsList } from './JobsList'
+import { EditCompensation } from './EditCompensation'
+import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
+import { useI18n } from '@/i18n'
+import { componentEvents, FlsaStatus } from '@/shared/constants'
+import { ensureRequired } from '@/helpers/ensureRequired'
+
+export type EventPayloads = {
+  [componentEvents.EMPLOYEE_JOB_ADD]: undefined
+  [componentEvents.EMPLOYEE_JOB_EDIT]: { uuid: string }
+  [componentEvents.EMPLOYEE_JOB_CREATED]: Job
+  [componentEvents.EMPLOYEE_JOB_UPDATED]: Job
+  [componentEvents.EMPLOYEE_JOB_DELETED]: undefined
+  [componentEvents.EMPLOYEE_COMPENSATION_UPDATED]: Compensation | undefined
+  [componentEvents.EMPLOYEE_COMPENSATION_RETURN_TO_LIST]: undefined
+  [componentEvents.EMPLOYEE_COMPENSATION_CANCEL]: undefined
+  [componentEvents.EMPLOYEE_COMPENSATION_DONE]: undefined
+}
+
+export interface CompensationFlowContextInterface extends FlowContextInterface {
+  employeeId: string
+  startDate: string
+  currentJobId?: string | null
+  partnerDefaultValues?: CompensationDefaultValues
+}
+
+export function JobsListContextual() {
+  const { employeeId, onEvent } = useFlow<CompensationFlowContextInterface>()
+  return <JobsList employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
+}
+
+export function InitialEditCompensationContextual() {
+  const { employeeId, startDate, currentJobId, partnerDefaultValues, onEvent } =
+    useFlow<CompensationFlowContextInterface>()
+  useI18n('Employee.Compensation')
+  const { t } = useTranslation('Employee.Compensation')
+
+  return (
+    <EditCompensation
+      employeeId={ensureRequired(employeeId)}
+      startDate={ensureRequired(startDate)}
+      currentJobId={currentJobId}
+      title={t('title')}
+      submitCtaLabel={t('submitCta')}
+      onSaved={data => {
+        if (data.flsaStatus !== FlsaStatus.NONEXEMPT) {
+          onEvent(componentEvents.EMPLOYEE_COMPENSATION_DONE)
+        } else {
+          onEvent(componentEvents.EMPLOYEE_COMPENSATION_RETURN_TO_LIST)
+        }
+      }}
+      partnerDefaultValues={partnerDefaultValues}
+      onEvent={onEvent}
+    />
+  )
+}
+
+export function EditCompensationContextual() {
+  const { employeeId, startDate, currentJobId, partnerDefaultValues, onEvent } =
+    useFlow<CompensationFlowContextInterface>()
+  useI18n('Employee.Compensation')
+  const { t } = useTranslation('Employee.Compensation')
+
+  return (
+    <EditCompensation
+      employeeId={ensureRequired(employeeId)}
+      startDate={ensureRequired(startDate)}
+      currentJobId={currentJobId}
+      title={currentJobId ? t('editTitle') : t('addTitle')}
+      submitCtaLabel={t('saveNewJobCta')}
+      onSaved={() => {
+        onEvent(componentEvents.EMPLOYEE_COMPENSATION_RETURN_TO_LIST)
+      }}
+      onCancel={() => {
+        onEvent(componentEvents.EMPLOYEE_COMPENSATION_CANCEL)
+      }}
+      partnerDefaultValues={partnerDefaultValues}
+      onEvent={onEvent}
+    />
+  )
+}

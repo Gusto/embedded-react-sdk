@@ -2046,7 +2046,9 @@ export interface EmployeeProfile{
 "ssnMask":string;
 "startDateDescription":string;
 "startDateLabel":string;
+"saveCta":string;
 "submitCta":string;
+"successAlert":string;
 "title":string;
 "validations":{
 "email":string;

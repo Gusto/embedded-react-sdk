@@ -144,7 +144,23 @@ export function HolidaySelectionFormContextual() {
           {alert.content}
         </Alert>
       ))}
-      <HolidaySelectionForm onEvent={onEvent} companyId={ensureRequired(companyId)} />
+      <HolidaySelectionForm onEvent={onEvent} companyId={ensureRequired(companyId)} mode="create" />
+    </Flex>
+  )
+}
+
+export function EditHolidaySelectionFormContextual() {
+  const { onEvent, companyId, alerts } = useFlow<TimeOffFlowContextInterface>()
+  const { Alert } = useComponentContext()
+
+  return (
+    <Flex flexDirection="column" gap={8}>
+      {alerts?.map((alert, index) => (
+        <Alert key={index} status={alert.type} label={alert.title}>
+          {alert.content}
+        </Alert>
+      ))}
+      <HolidaySelectionForm onEvent={onEvent} companyId={ensureRequired(companyId)} mode="edit" />
     </Flex>
   )
 }

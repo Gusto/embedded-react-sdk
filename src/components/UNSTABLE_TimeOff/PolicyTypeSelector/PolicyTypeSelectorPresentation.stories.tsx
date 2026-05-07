@@ -48,3 +48,7 @@ export const SickLeaveSelected = () => (
     defaultPolicyType="sick"
   />
 )
+
+export const HolidayPolicyAlreadyExists = () => (
+  <PolicyTypeSelectorPresentation onContinue={onContinue} onCancel={onCancel} holidayPolicyExists />
+)

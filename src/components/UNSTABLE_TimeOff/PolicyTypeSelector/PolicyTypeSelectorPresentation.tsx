@@ -15,6 +15,7 @@ export function PolicyTypeSelectorPresentation({
   onContinue,
   onCancel,
   defaultPolicyType,
+  holidayPolicyExists = false,
 }: PolicyTypeSelectorPresentationProps) {
   useI18n('Company.TimeOff.SelectPolicyType')
   const { t } = useTranslation('Company.TimeOff.SelectPolicyType')
@@ -26,26 +27,29 @@ export function PolicyTypeSelectorPresentation({
     },
   })
 
-  const policyTypeOptions = useMemo(
-    () => [
-      {
-        value: 'holiday' as PolicyType,
+  const policyTypeOptions = useMemo(() => {
+    const options: Array<{ value: PolicyType; label: string; description: string }> = []
+    if (!holidayPolicyExists) {
+      options.push({
+        value: 'holiday',
         label: t('holidayLabel'),
         description: t('holidayHint'),
-      },
+      })
+    }
+    options.push(
       {
-        value: 'vacation' as PolicyType,
+        value: 'vacation',
         label: t('timeOffLabel'),
         description: t('timeOffHint'),
       },
       {
-        value: 'sick' as PolicyType,
+        value: 'sick',
         label: t('sickLeaveLabel'),
         description: t('sickLeaveHint'),
       },
-    ],
-    [t],
-  )
+    )
+    return options
+  }, [t, holidayPolicyExists])
 
   const handleSubmit = (data: PolicyTypeSelectorFormData) => {
     onContinue(data.policyType)

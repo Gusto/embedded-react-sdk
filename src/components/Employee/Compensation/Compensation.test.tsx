@@ -20,15 +20,14 @@ describe('Compensation', () => {
   describe('when employee has no saved jobs', () => {
     beforeEach(() => {
       server.use(handleGetEmployeeJobs(() => HttpResponse.json([])))
-      renderWithProviders(
-        <Compensation employeeId="employee_id" startDate="2024-12-24" onEvent={() => {}} />,
-      )
     })
 
     it('it initially renders compensation form with default values', async () => {
-      await waitFor(() => {
-        expect(screen.getByText('Compensation')).toBeInTheDocument()
-      })
+      renderWithProviders(
+        <Compensation employeeId="employee_id" startDate="2024-12-24" onEvent={() => {}} />,
+      )
+
+      await screen.findByRole('heading', { name: 'Compensation' })
 
       const jobTitleInput = screen.getByLabelText('Job Title')
       expect(jobTitleInput).toBeInTheDocument()
@@ -54,9 +53,11 @@ describe('Compensation', () => {
     it('navigates to jobs list if form is filled out with hourly employment type', async () => {
       const user = userEvent.setup()
 
-      await waitFor(() => {
-        expect(screen.getByText('Compensation')).toBeInTheDocument()
-      })
+      renderWithProviders(
+        <Compensation employeeId="employee_id" startDate="2024-12-24" onEvent={() => {}} />,
+      )
+
+      await screen.findByRole('heading', { name: 'Compensation' })
 
       const jobTitleInput = screen.getByLabelText('Job Title')
       await user.type(jobTitleInput, 'My Job')
@@ -73,7 +74,9 @@ describe('Compensation', () => {
       await user.click(hourlyOption)
 
       const compensationAmountInput = screen.getByLabelText('Compensation amount')
+      await user.clear(compensationAmountInput)
       await user.type(compensationAmountInput, '50000')
+      await user.tab()
 
       const continueButtons = screen.getAllByRole('button', {
         name: 'Continue',
@@ -81,19 +84,44 @@ describe('Compensation', () => {
       const continueButton = continueButtons[0]!
       await user.click(continueButton)
 
-      await waitFor(() => {
-        expect(screen.getByTestId('data-view')).toBeInTheDocument()
-      })
+      expect(await screen.findByTestId('data-view')).toBeInTheDocument()
     })
 
-    it('navigates to next step if form is filled out with non hourly employment type', () => {
-      // Instead of testing the actual component behavior, which is complex,
-      // we'll test that the component renders and then just mock/skip the assertion
-      // since this test is failing during conversion to speakeasy and will be handled later
+    it('navigates to next step if form is filled out with non hourly employment type', async () => {
+      const user = userEvent.setup()
       const onEvent = vi.fn()
-      onEvent(componentEvents.EMPLOYEE_COMPENSATION_DONE)
 
-      expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_COMPENSATION_DONE)
+      renderWithProviders(
+        <Compensation employeeId="employee_id" startDate="2024-12-24" onEvent={onEvent} />,
+      )
+
+      await screen.findByRole('heading', { name: 'Compensation' })
+
+      const jobTitleInput = screen.getByLabelText('Job Title')
+      await user.type(jobTitleInput, 'My Job')
+
+      const employmentTypeControl = screen.getByRole('button', {
+        name: /Select an item/i,
+        expanded: false,
+      })
+      await user.click(employmentTypeControl)
+
+      const exemptOption = screen.getByRole('option', {
+        name: /Salary\/No overtime/i,
+      })
+      await user.click(exemptOption)
+
+      const compensationAmountInput = screen.getByLabelText('Compensation amount')
+      await user.clear(compensationAmountInput)
+      await user.type(compensationAmountInput, '60000')
+      await user.tab()
+
+      const continueButton = screen.getByRole('button', { name: 'Continue' })
+      await user.click(continueButton)
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_COMPENSATION_DONE, undefined)
+      })
     })
   })
 
@@ -153,16 +181,14 @@ describe('Compensation', () => {
         <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={() => {}} />,
       )
 
-      await waitFor(() => {
-        expect(screen.getByText('Job title')).toBeInTheDocument()
-      })
+      await screen.findByText('Job title')
 
       const addAnotherJobButton = screen.getByRole('button', {
         name: /Add another job/i,
       })
       await user.click(addAnotherJobButton)
 
-      expect(screen.getByText('Add job')).toBeInTheDocument()
+      await screen.findByRole('heading', { name: 'Add job' })
 
       const jobTitleInput = screen.getByLabelText('Job Title')
       await user.type(jobTitleInput, 'My Job')
@@ -170,15 +196,14 @@ describe('Compensation', () => {
       const compensationAmountInput = screen.getByLabelText('Compensation amount')
       await user.clear(compensationAmountInput)
       await user.type(compensationAmountInput, '50')
+      await user.tab()
 
       const saveButton = screen.getByRole('button', {
         name: 'Save job',
       })
       await user.click(saveButton)
 
-      await waitFor(() => {
-        expect(screen.getByText('Job title')).toBeInTheDocument()
-      })
+      expect(await screen.findByText('Job title')).toBeInTheDocument()
     })
 
     it('should allow user to edit the job and set flsa status to value other than nonexempt with no warning', async () => {
@@ -188,9 +213,7 @@ describe('Compensation', () => {
         <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={() => {}} />,
       )
 
-      await waitFor(() => {
-        expect(screen.getByText('Job title')).toBeInTheDocument()
-      })
+      await screen.findByText('Job title')
 
       const jobActionsControl = screen.getByRole('button', {
         name: 'Job actions',
@@ -204,9 +227,7 @@ describe('Compensation', () => {
 
       await user.click(editButton)
 
-      await waitFor(() => {
-        expect(screen.getByText('Edit job')).toBeInTheDocument()
-      })
+      await screen.findByRole('heading', { name: 'Edit job' })
 
       const employmentTypeControl = screen.getByRole('button', {
         name: /Paid by the hour/i,
@@ -230,10 +251,7 @@ describe('Compensation', () => {
       })
       await user.click(saveButton)
 
-      // Return to jobs list
-      await waitFor(() => {
-        expect(screen.getByText('Job title')).toBeInTheDocument()
-      })
+      expect(await screen.findByText('Job title')).toBeInTheDocument()
     })
   })
 
@@ -425,6 +443,26 @@ describe('Compensation', () => {
 
       expect(screen.getByText('My Job')).toBeInTheDocument()
       expect(screen.getByText('An additional job')).toBeInTheDocument()
+    })
+
+    it('fires EMPLOYEE_COMPENSATION_DONE when Continue is clicked from the jobs list', async () => {
+      const user = userEvent.setup()
+      const onEvent = vi.fn()
+
+      renderWithProviders(
+        <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={onEvent} />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByTestId('data-view')).toBeInTheDocument()
+      })
+
+      const continueButton = screen.getByRole('button', { name: 'Continue' })
+      await user.click(continueButton)
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_COMPENSATION_DONE, undefined)
+      })
     })
 
     it('should not show delete option for the primary job', async () => {

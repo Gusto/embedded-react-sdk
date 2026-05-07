@@ -36,6 +36,10 @@ export const employeeEvents = {
   EMPLOYEE_COMPENSATION_UPDATE: 'employee/compensations/update',
   EMPLOYEE_COMPENSATION_UPDATED: 'employee/compensations/updated',
   EMPLOYEE_COMPENSATION_DONE: 'employee/compensations/done',
+  EMPLOYEE_COMPENSATION_CANCEL: 'employee/compensations/cancel',
+  EMPLOYEE_COMPENSATION_RETURN_TO_LIST: 'employee/compensations/returnToList',
+  EMPLOYEE_JOB_ADD: 'employee/job/add',
+  EMPLOYEE_JOB_EDIT: 'employee/job/edit',
   EMPLOYEE_PAYMENT_METHOD_UPDATED: 'employee/paymentMethod/updated',
   EMPLOYEE_PAYMENT_METHOD_DONE: 'employee/paymentMethod/done',
   EMPLOYEE_SPLIT_PAYMENT: 'employee/paymentMethod/split',
@@ -249,6 +253,9 @@ export const timeOffEvents = {
   TIME_OFF_EDIT_POLICY: 'timeOff/editPolicy',
   TIME_OFF_CHANGE_SETTINGS: 'timeOff/changeSettings',
   TIME_OFF_ADD_EMPLOYEES_TO_POLICY: 'timeOff/addEmployeesToPolicy',
+  TIME_OFF_HOLIDAY_ADD_EMPLOYEES: 'timeOff/holidayAddEmployees',
+  TIME_OFF_EDIT_HOLIDAY_POLICY: 'timeOff/editHolidayPolicy',
+  TIME_OFF_HOLIDAY_SELECTION_EDIT_DONE: 'timeOff/holidaySelection/editDone',
 } as const
 
 export const componentEvents = {
