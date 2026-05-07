@@ -495,6 +495,42 @@ describe('PolicyConfigurationForm', () => {
     })
   })
 
+  it('submits hourly accrual without selecting a reset date type', async () => {
+    const user = userEvent.setup()
+    renderComponent()
+
+    await waitFor(() => {
+      expect(screen.getByLabelText('Based on hours worked')).toBeInTheDocument()
+    })
+
+    await user.type(screen.getByLabelText('Policy name'), 'No Reset Date')
+    await user.click(screen.getByLabelText('Based on hours worked'))
+
+    await waitFor(() => {
+      expect(screen.getByLabelText('Employees will accrue')).toBeInTheDocument()
+    })
+
+    await user.type(screen.getByLabelText('Employees will accrue'), '1')
+    await user.type(screen.getByLabelText('For every'), '40')
+
+    await user.click(screen.getByRole('button', { name: 'Save & continue' }))
+
+    await waitFor(() => {
+      expect(mockCreateTimeOffPolicy).toHaveBeenCalledWith({
+        request: {
+          companyUuid: 'company-123',
+          timeOffPolicyRequest: expect.objectContaining({
+            name: 'No Reset Date',
+            accrualMethod: 'per_hour_worked_no_overtime',
+            accrualRate: '1',
+            accrualRateUnit: '40',
+            complete: false,
+          }),
+        },
+      })
+    })
+  })
+
   it('maps per_hour_paid with both checkboxes to per_hour_paid', async () => {
     const user = userEvent.setup()
     renderComponent()
