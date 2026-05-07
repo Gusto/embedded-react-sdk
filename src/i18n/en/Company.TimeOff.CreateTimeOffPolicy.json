@@ -59,15 +59,6 @@
     "numberOfDaysPlaceholder": "Number of days",
     "continueCta": "Save"
   },
-  "addEmployees": {
-    "title": "Add employees to your policy",
-    "employeesMovedWarning": "Any employees currently assigned to another {{policyType}} policy will be moved to this policy.",
-    "createPolicyCta": "Create policy",
-    "policyType": {
-      "vacation": "paid time off",
-      "sick": "sick leave"
-    }
-  },
   "startingBalances": {
     "title": "Starting balances",
     "description": "If your employees have an existing balance, please enter those hours here. Employees moving to this policy from another will carry over their accrued hours.",
