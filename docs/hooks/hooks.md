@@ -11,15 +11,16 @@ Hooks give you full control over form rendering while the SDK manages data fetch
 
 ## Available Hooks
 
-| Hook                     | Description                                                                                                  | Reference                                             |
-| ------------------------ | ------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------- |
-| `useEmployeeDetailsForm` | Create or update employee profile fields (name, email, SSN, date of birth, self-onboarding)                  | [useEmployeeDetailsForm](./useEmployeeDetailsForm.md) |
-| `useCompensationForm`    | Create or update job compensation (job title, FLSA status, pay rate, payment unit, minimum wage adjustments) | [useCompensationForm](./useCompensationForm.md)       |
-| `useWorkAddressForm`     | Create or update an employee's work address (company location select, effective date)                        | [useWorkAddressForm](./useWorkAddressForm.md)         |
-| `useFederalTaxesForm`    | Update an employee's federal tax (W-4) withholding information                                               | [useFederalTaxesForm](./useFederalTaxesForm.md)       |
-| `usePayScheduleForm`     | Create or update a company pay schedule (frequency, pay dates, pay period calendar preview)                  | [usePayScheduleForm](./usePayScheduleForm.md)         |
-| `useSignCompanyForm`     | Sign a company form (PDF viewer, typed signature, confirmation checkbox)                                     | [useSignCompanyForm](./useSignCompanyForm.md)         |
-| `useSignEmployeeForm`    | Sign an employee form (signature, confirmation, I-9 preparer/translator sections)                            | [useSignEmployeeForm](./useSignEmployeeForm.md)       |
+| Hook                        | Description                                                                                                  | Reference                                                   |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------- |
+| `useEmployeeDetailsForm`    | Create or update employee profile fields (name, email, SSN, date of birth, self-onboarding)                  | [useEmployeeDetailsForm](./useEmployeeDetailsForm.md)       |
+| `useCompensationForm`       | Create or update job compensation (job title, FLSA status, pay rate, payment unit, minimum wage adjustments) | [useCompensationForm](./useCompensationForm.md)             |
+| `useWorkAddressForm`        | Create or update an employee's work address (company location select, effective date)                        | [useWorkAddressForm](./useWorkAddressForm.md)               |
+| `useFederalTaxesForm`       | Update an employee's federal tax (W-4) withholding information                                               | [useFederalTaxesForm](./useFederalTaxesForm.md)             |
+| `useEmployeeStateTaxesForm` | Update an employee's state tax withholding answers (dynamic, per-state question groups)                      | [useEmployeeStateTaxesForm](./useEmployeeStateTaxesForm.md) |
+| `usePayScheduleForm`        | Create or update a company pay schedule (frequency, pay dates, pay period calendar preview)                  | [usePayScheduleForm](./usePayScheduleForm.md)               |
+| `useSignCompanyForm`        | Sign a company form (PDF viewer, typed signature, confirmation checkbox)                                     | [useSignCompanyForm](./useSignCompanyForm.md)               |
+| `useSignEmployeeForm`       | Sign an employee form (signature, confirmation, I-9 preparer/translator sections)                            | [useSignEmployeeForm](./useSignEmployeeForm.md)             |
 
 ---
 
