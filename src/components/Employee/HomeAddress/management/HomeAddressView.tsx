@@ -311,7 +311,9 @@ export function HomeAddressView({
   return (
     <Flex flexDirection="column" gap={24}>
       <Flex flexDirection="column" gap={4} alignItems="flex-start">
-        <Components.Heading as="h2">{t('title')}</Components.Heading>
+        <Components.Heading as="h1" styledAs="h2">
+          {t('title')}
+        </Components.Heading>
         <Components.Text variant="supporting">{t('description')}</Components.Text>
       </Flex>
 

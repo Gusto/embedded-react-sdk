@@ -12,6 +12,7 @@
     "inactive": "Inactive",
     "edit": "Edit"
   },
+  "payScheduleListLabel": "Pay schedules",
   "headings": {
     "addPaySchedule": "Add pay schedule",
     "editPaySchedule": "Edit pay schedule",

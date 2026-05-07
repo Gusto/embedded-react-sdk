@@ -15,7 +15,7 @@ export function Head() {
         <Components.Heading as="h2">{t('addBankAccountTitle')}</Components.Heading>
         <Components.Text variant="supporting">{t('addBankAccountDescription')}</Components.Text>
       </Flex>
-      <Flex>
+      <Flex flexDirection="column" gap={16}>
         {bankAccount?.verificationStatus != 'verified' && (
           <Components.Alert
             //@ts-expect-error: typescript limitation

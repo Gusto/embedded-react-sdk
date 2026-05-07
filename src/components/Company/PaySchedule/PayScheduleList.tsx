@@ -99,7 +99,7 @@ export function PayScheduleList({ companyId, onEvent }: PayScheduleListProps) {
           </Flex>
         </header>
       </Flex>
-      <DataView label="test" {...dataViewProps} />
+      <DataView label={t('payScheduleListLabel')} {...dataViewProps} />
       <ActionsLayout>
         <Components.Button
           variant="secondary"
