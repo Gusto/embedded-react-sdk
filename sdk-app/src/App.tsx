@@ -133,52 +133,50 @@ export function App() {
     )
   }
 
-  const sidebarWidth = chromeHidden || customChrome ? '0rem' : sidebarOpen ? '16.25rem' : '2.75rem'
+  const sidebarWidth = chromeHidden ? '0rem' : sidebarOpen ? '16.25rem' : '2.75rem'
 
-  const outletEl = (
+  const outletEl = <Outlet context={{ entities: activeEntities, chromeHidden }} />
+  const chromedOutlet = customChrome ? (
+    <customChrome.Chrome onOpenSettings={openSettings}>{outletEl}</customChrome.Chrome>
+  ) : (
+    outletEl
+  )
+  const mainEl = (
     <main
       className="main-content"
       style={{ '--sidebar-width': sidebarWidth } as React.CSSProperties}
     >
-      <Outlet
-        context={{ entities: activeEntities, chromeHidden: chromeHidden || !!customChrome }}
-      />
+      {chromedOutlet}
     </main>
   )
 
-  let bodyEl: React.ReactNode
-  if (chromeHidden) {
-    bodyEl = outletEl
-  } else if (customChrome) {
-    const Chrome = customChrome.Chrome
-    bodyEl = <Chrome onOpenSettings={openSettings}>{outletEl}</Chrome>
-  } else {
-    bodyEl = (
-      <>
-        <TopBar
-          companyId={activeEntities.companyId}
-          tokenStatus={demoManager.tokenStatus}
-          onOpenSettings={openSettings}
-          onToggleCode={codePanel.toggle}
-          codeOpen={codePanel.isOpen}
+  const bodyEl = chromeHidden ? (
+    mainEl
+  ) : (
+    <>
+      <TopBar
+        companyId={activeEntities.companyId}
+        tokenStatus={demoManager.tokenStatus}
+        onOpenSettings={openSettings}
+        onToggleCode={codePanel.toggle}
+        codeOpen={codePanel.isOpen}
+      />
+      <div className="app-body">
+        <Sidebar
+          mode={appMode}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          isOpen={sidebarOpen}
+          onToggle={() => {
+            setSidebarOpen(open => !open)
+          }}
+          onShowShortcuts={shortcutHelper.open}
         />
-        <div className="app-body">
-          <Sidebar
-            mode={appMode}
-            searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
-            isOpen={sidebarOpen}
-            onToggle={() => {
-              setSidebarOpen(open => !open)
-            }}
-            onShowShortcuts={shortcutHelper.open}
-          />
-          {outletEl}
-          {codePanel.isOpen && <CodePanel onClose={codePanel.close} />}
-        </div>
-      </>
-    )
-  }
+        {mainEl}
+        {codePanel.isOpen && <CodePanel onClose={codePanel.close} />}
+      </div>
+    </>
+  )
 
   return (
     <ThemeModeProvider value={themeMode}>
