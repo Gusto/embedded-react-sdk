@@ -245,36 +245,43 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
     ]
   }, [Button, onEvent, policyId, t, isEditable])
 
+  const isUnlimited = policy.accrualMethod === 'unlimited'
+
   const itemMenu = useCallback(
     (employee: TimeOffPolicyDetailEmployee) => {
       const employeeName = `${employee.firstName ?? ''} ${employee.lastName ?? ''}`.trim()
+      const items = [
+        ...(!isUnlimited
+          ? [
+              {
+                label: t('employeeTable.editBalance'),
+                icon: <EditIcon aria-hidden />,
+                onClick: () => {
+                  setEditBalanceState({
+                    employeeUuid: employee.uuid,
+                    employeeName,
+                    currentBalance: employee.balance ?? 0,
+                  })
+                },
+              },
+            ]
+          : []),
+        {
+          label: t('employeeTable.removeEmployee'),
+          icon: <TrashCanSvg aria-hidden />,
+          onClick: () => {
+            setRemoveTarget({ uuid: employee.uuid, name: employeeName })
+          },
+        },
+      ]
       return (
         <HamburgerMenu
-          items={[
-            {
-              label: t('employeeTable.editBalance'),
-              icon: <EditIcon aria-hidden />,
-              onClick: () => {
-                setEditBalanceState({
-                  employeeUuid: employee.uuid,
-                  employeeName,
-                  currentBalance: employee.balance ?? 0,
-                })
-              },
-            },
-            {
-              label: t('employeeTable.removeEmployee'),
-              icon: <TrashCanSvg aria-hidden />,
-              onClick: () => {
-                setRemoveTarget({ uuid: employee.uuid, name: employeeName })
-              },
-            },
-          ]}
+          items={items}
           triggerLabel={`${t('employeeTable.actions')} ${employeeName}`}
         />
       )
     },
-    [t],
+    [t, isUnlimited],
   )
 
   const discriminatedProps =
