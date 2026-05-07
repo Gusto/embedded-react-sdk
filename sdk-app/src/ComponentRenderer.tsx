@@ -18,6 +18,7 @@ import { nativeComponents } from './ThemePanel/adapters/nativeAdapter'
 import type { EntityIds } from './useEntities'
 import styles from './ComponentRenderer.module.scss'
 import { useCurrentComponentRegistry } from './useCurrentComponent'
+import { interfaceLibComponents } from './InterfaceLib'
 import { GustoProvider } from '@/contexts'
 
 interface ComponentRendererProps {
@@ -139,7 +140,8 @@ export function ComponentRenderer({ entities, chromeHidden = false }: ComponentR
   const resolvedTheme = useResolvedTheme()
   const { themeOverrides } = useThemeEditor()
   const { designSystem } = useDesignSystem()
-  const resolvedComponents = designSystem === 'native' ? nativeComponents : undefined
+  const resolvedComponents =
+    designSystem === 'native' ? nativeComponents : interfaceLibComponents
   const resolvedSDKTheme = useMemo(() => {
     const base = resolvedTheme === 'dark' ? darkTheme : undefined
     const hasOverrides = Object.keys(themeOverrides).length > 0
