@@ -76,11 +76,16 @@ function deriveFormDefaults(policy: TimeOffPolicy): Partial<PolicyConfigurationF
 
     if (policy.accrualRate != null) defaults.accrualRate = Number(policy.accrualRate)
     if (policy.accrualRateUnit != null) defaults.accrualRateUnit = Number(policy.accrualRateUnit)
+
+    if (policy.policyResetDate) {
+      defaults.resetDateType = 'per_calendar_year'
+    }
   } else {
     defaults.accrualMethod = 'per_calendar_year'
 
     if (apiMethod === 'per_pay_period') {
       defaults.accrualMethodFixed = 'per_pay_period'
+      defaults.resetDateType = policy.policyResetDate ? 'per_calendar_year' : 'per_anniversary_year'
     } else {
       defaults.accrualMethodFixed = 'all_at_once'
       defaults.resetDateType =
