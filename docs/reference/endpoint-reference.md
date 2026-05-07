@@ -322,36 +322,6 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/add_employees` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/remove_employees` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/balance` |
-| **UNSTABLE_TimeOff.ViewPolicyDetails** | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
-|  | GET | `/v1/companies/:companyId/employees` |
-|  | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | GET | `/v1/companies/:companyUuid/time_off_policies` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/deactivate` |
-|  | DELETE | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | GET | `/v1/time_off_policies/:timeOffPolicyUuid` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid` |
-|  | POST | `/v1/companies/:companyUuid/time_off_policies` |
-|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/add` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/add_employees` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/remove_employees` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/balance` |
-| **UNSTABLE_TimeOff.ViewPolicyEmployees** | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
-|  | GET | `/v1/companies/:companyId/employees` |
-|  | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | GET | `/v1/companies/:companyUuid/time_off_policies` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/deactivate` |
-|  | DELETE | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | GET | `/v1/time_off_policies/:timeOffPolicyUuid` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid` |
-|  | POST | `/v1/companies/:companyUuid/time_off_policies` |
-|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/add` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/add_employees` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/remove_employees` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/balance` |
 | **UNSTABLE_TimeOff.HolidaySelectionForm** | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
 |  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
 |  | GET | `/v1/companies/:companyId/employees` |
