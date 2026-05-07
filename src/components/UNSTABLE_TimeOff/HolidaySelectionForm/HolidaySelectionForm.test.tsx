@@ -1,12 +1,15 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { http, HttpResponse } from 'msw'
+import { QueryClient } from '@tanstack/react-query'
+import { queryKeyHolidayPayPoliciesGet } from '@gusto/embedded-api/react-query/holidayPayPoliciesGet'
 import { HolidaySelectionForm } from './HolidaySelectionForm'
 import { server } from '@/test/mocks/server'
 import { componentEvents } from '@/shared/constants'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+import { GustoTestProvider } from '@/test/GustoTestApiProvider'
 import { API_BASE_URL } from '@/test/constants'
 
 describe('HolidaySelectionForm', () => {
@@ -190,6 +193,188 @@ describe('HolidaySelectionForm', () => {
 
       await waitFor(() => {
         expect(onEvent).toHaveBeenCalledWith(componentEvents.TIME_OFF_HOLIDAY_SELECTION_DONE)
+      })
+    })
+
+    it('seeds the GET cache with the created policy so the next mount sees it', async () => {
+      const createdPolicy = {
+        version: 'fresh-version',
+        company_uuid: 'company-123',
+        federal_holidays: { new_years_day: { selected: true } },
+        employees: [],
+      }
+      server.use(
+        http.post(`${API_BASE_URL}/v1/companies/:companyUuid/holiday_pay_policy`, () =>
+          HttpResponse.json(createdPolicy),
+        ),
+      )
+
+      const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
+      // Pre-populate the cache with `{ holidayPayPolicy: undefined }` to mirror
+      // the production scenario where PolicyList's non-suspense GET ran before
+      // any policy existed. Without seeding from the create response, the next
+      // SelectEmployeesHoliday StandaloneLoader would read this stale undefined
+      // via Suspense and throw "Unexpected response: missing holidayPayPolicy".
+      queryClient.setQueryData(queryKeyHolidayPayPoliciesGet('company-123', {}), {
+        holidayPayPolicy: undefined,
+      })
+
+      render(
+        <GustoTestProvider queryClient={queryClient}>
+          <HolidaySelectionForm {...defaultProps} />
+        </GustoTestProvider>,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Continue' })).toBeInTheDocument()
+      })
+      await user.click(screen.getByRole('button', { name: 'Continue' }))
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(componentEvents.TIME_OFF_HOLIDAY_SELECTION_DONE)
+      })
+
+      const cached = queryClient.getQueryData<{ holidayPayPolicy?: { version?: string } }>(
+        queryKeyHolidayPayPoliciesGet('company-123', {}),
+      )
+      expect(cached?.holidayPayPolicy?.version).toBe('fresh-version')
+    })
+  })
+
+  describe('edit mode', () => {
+    const editProps = { ...defaultProps, mode: 'edit' as const }
+
+    const existingPolicy = {
+      version: 'policy-version-1',
+      company_uuid: 'company-123',
+      federal_holidays: {
+        new_years_day: { selected: true },
+        mlk_day: { selected: false },
+        presidents_day: { selected: true },
+        memorial_day: { selected: false },
+        juneteenth: { selected: false },
+        independence_day: { selected: true },
+        labor_day: { selected: false },
+        columbus_day: { selected: false },
+        veterans_day: { selected: false },
+        thanksgiving: { selected: true },
+        christmas_day: { selected: true },
+      },
+      employees: [],
+    }
+
+    beforeEach(() => {
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:companyUuid/holiday_pay_policy`, () => {
+          return HttpResponse.json(existingPolicy)
+        }),
+      )
+    })
+
+    it('prefills checkboxes from existing policy selections', async () => {
+      renderWithProviders(<HolidaySelectionForm {...editProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText("New Year's Day")).toBeInTheDocument()
+      })
+
+      const headerCheckbox = screen.getByRole('checkbox', { name: 'Select all rows' })
+      const rowCheckboxes = screen
+        .getAllByRole('checkbox')
+        .filter(cb => cb !== headerCheckbox) as HTMLInputElement[]
+
+      const checkedCount = rowCheckboxes.filter(cb => cb.checked).length
+      expect(checkedCount).toBe(5)
+    })
+
+    it('calls PUT and emits HOLIDAY_SELECTION_EDIT_DONE on Continue', async () => {
+      let putCalled = false
+      let putBody: Record<string, unknown> | null = null
+      server.use(
+        http.put(
+          `${API_BASE_URL}/v1/companies/:companyUuid/holiday_pay_policy`,
+          async ({ request }) => {
+            putCalled = true
+            putBody = (await request.json()) as Record<string, unknown>
+            return HttpResponse.json(existingPolicy)
+          },
+        ),
+      )
+
+      renderWithProviders(<HolidaySelectionForm {...editProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Continue' })).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: 'Continue' }))
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(componentEvents.TIME_OFF_HOLIDAY_SELECTION_EDIT_DONE)
+      })
+
+      expect(putCalled).toBe(true)
+      expect(putBody).toMatchObject({ version: 'policy-version-1' })
+    })
+
+    it('does not emit the create-flow DONE event in edit mode', async () => {
+      server.use(
+        http.put(`${API_BASE_URL}/v1/companies/:companyUuid/holiday_pay_policy`, () => {
+          return HttpResponse.json(existingPolicy)
+        }),
+      )
+
+      renderWithProviders(<HolidaySelectionForm {...editProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Continue' })).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: 'Continue' }))
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(componentEvents.TIME_OFF_HOLIDAY_SELECTION_EDIT_DONE)
+      })
+
+      expect(onEvent).not.toHaveBeenCalledWith(componentEvents.TIME_OFF_HOLIDAY_SELECTION_DONE)
+    })
+
+    it('seeds the GET cache with the updated policy', async () => {
+      const updatedPolicy = { ...existingPolicy, version: 'updated-version' }
+      // Replace the GET handler too so the post-invalidate refetch (which fires
+      // because HolidaySelectionForm is still mounted in this test) returns the
+      // updated policy rather than overwriting our seed with the stale one.
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:companyUuid/holiday_pay_policy`, () =>
+          HttpResponse.json(updatedPolicy),
+        ),
+        http.put(`${API_BASE_URL}/v1/companies/:companyUuid/holiday_pay_policy`, () =>
+          HttpResponse.json(updatedPolicy),
+        ),
+      )
+
+      const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
+
+      render(
+        <GustoTestProvider queryClient={queryClient}>
+          <HolidaySelectionForm {...editProps} />
+        </GustoTestProvider>,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Continue' })).toBeInTheDocument()
+      })
+      await user.click(screen.getByRole('button', { name: 'Continue' }))
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(componentEvents.TIME_OFF_HOLIDAY_SELECTION_EDIT_DONE)
+      })
+
+      await waitFor(() => {
+        const cached = queryClient.getQueryData<{ holidayPayPolicy?: { version?: string } }>(
+          queryKeyHolidayPayPoliciesGet('company-123', {}),
+        )
+        expect(cached?.holidayPayPolicy?.version).toBe('updated-version')
       })
     })
   })
