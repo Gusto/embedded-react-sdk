@@ -7,6 +7,7 @@ import {
   AddEmployeesToPolicyContextual,
   TimeOffPolicyDetailContextual,
   HolidaySelectionFormContextual,
+  EditHolidaySelectionFormContextual,
   AddEmployeesHolidayContextual,
   ViewHolidayEmployeesContextual,
   ViewHolidayScheduleContextual,
@@ -420,6 +421,28 @@ export const timeOffMachine = {
         }),
       ),
     ),
+    transition(
+      componentEvents.TIME_OFF_HOLIDAY_ADD_EMPLOYEES,
+      'addEmployeesHoliday',
+      reduce(
+        (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: AddEmployeesHolidayContextual,
+          alerts: undefined,
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.TIME_OFF_EDIT_HOLIDAY_POLICY,
+      'editHolidaySelectionForm',
+      reduce(
+        (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: EditHolidaySelectionFormContextual,
+          alerts: undefined,
+        }),
+      ),
+    ),
     backToListTransition,
   ),
 
@@ -434,7 +457,61 @@ export const timeOffMachine = {
         }),
       ),
     ),
+    transition(
+      componentEvents.TIME_OFF_HOLIDAY_ADD_EMPLOYEES,
+      'addEmployeesHoliday',
+      reduce(
+        (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: AddEmployeesHolidayContextual,
+          alerts: undefined,
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.TIME_OFF_EDIT_HOLIDAY_POLICY,
+      'editHolidaySelectionForm',
+      reduce(
+        (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: EditHolidaySelectionFormContextual,
+          alerts: undefined,
+        }),
+      ),
+    ),
     backToListTransition,
+  ),
+
+  // Distinct from `holidaySelectionForm` (the create-flow step) so that
+  // DONE returns to the holiday detail view instead of routing into
+  // `addEmployeesHoliday`.
+  editHolidaySelectionForm: state<MachineTransition>(
+    transition(
+      componentEvents.TIME_OFF_HOLIDAY_SELECTION_EDIT_DONE,
+      'viewHolidayEmployees',
+      reduce(
+        (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: ViewHolidayEmployeesContextual,
+          alerts: undefined,
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.TIME_OFF_HOLIDAY_CREATE_ERROR,
+      'viewHolidayEmployees',
+      reduce(
+        (
+          ctx: TimeOffFlowContextInterface,
+          ev: { payload: ErrorPayload },
+        ): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: ViewHolidayEmployeesContextual,
+          alerts: ev.payload.alert ? [ev.payload.alert] : undefined,
+        }),
+      ),
+    ),
+    cancelToPolicyList,
   ),
 
   final: state<MachineTransition>(),

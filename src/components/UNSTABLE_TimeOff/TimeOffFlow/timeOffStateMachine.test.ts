@@ -13,6 +13,7 @@ type TimeOffState =
   | 'addEmployeesToPolicy'
   | 'viewTimeOffPolicyDetail'
   | 'holidaySelectionForm'
+  | 'editHolidaySelectionForm'
   | 'addEmployeesHoliday'
   | 'viewHolidayEmployees'
   | 'viewHolidaySchedule'
@@ -424,6 +425,112 @@ describe('timeOffStateMachine', () => {
       send(service, componentEvents.TIME_OFF_POLICY_SETTINGS_DONE)
 
       expect(service.machine.current).toBe('addEmployeesToPolicy')
+    })
+  })
+
+  describe('viewHolidayEmployees state', () => {
+    function toViewHolidayEmployees(service: ReturnType<typeof createService>) {
+      send(service, componentEvents.TIME_OFF_VIEW_POLICY, {
+        policyId: 'holiday-policy',
+        policyType: 'holiday',
+      })
+      expect(service.machine.current).toBe('viewHolidayEmployees')
+    }
+
+    it('transitions to addEmployeesHoliday on TIME_OFF_HOLIDAY_ADD_EMPLOYEES', () => {
+      const service = createService()
+      toViewHolidayEmployees(service)
+
+      send(service, componentEvents.TIME_OFF_HOLIDAY_ADD_EMPLOYEES)
+
+      expect(service.machine.current).toBe('addEmployeesHoliday')
+      expect(service.context.policyId).toBe('holiday-policy')
+      expect(service.context.alerts).toBeUndefined()
+    })
+
+    it('transitions to editHolidaySelectionForm on TIME_OFF_EDIT_HOLIDAY_POLICY', () => {
+      const service = createService()
+      toViewHolidayEmployees(service)
+
+      send(service, componentEvents.TIME_OFF_EDIT_HOLIDAY_POLICY)
+
+      expect(service.machine.current).toBe('editHolidaySelectionForm')
+      expect(service.context.policyId).toBe('holiday-policy')
+      expect(service.context.alerts).toBeUndefined()
+    })
+
+    it('returns to viewHolidayEmployees with same policyId after add-employees DONE', () => {
+      const service = createService()
+      toViewHolidayEmployees(service)
+      send(service, componentEvents.TIME_OFF_HOLIDAY_ADD_EMPLOYEES)
+
+      send(service, componentEvents.TIME_OFF_HOLIDAY_ADD_EMPLOYEES_DONE)
+
+      expect(service.machine.current).toBe('viewHolidayEmployees')
+      expect(service.context.policyId).toBe('holiday-policy')
+    })
+
+    it('returns to viewHolidayEmployees with same policyId after edit DONE', () => {
+      const service = createService()
+      toViewHolidayEmployees(service)
+      send(service, componentEvents.TIME_OFF_EDIT_HOLIDAY_POLICY)
+
+      send(service, componentEvents.TIME_OFF_HOLIDAY_SELECTION_EDIT_DONE)
+
+      expect(service.machine.current).toBe('viewHolidayEmployees')
+      expect(service.context.policyId).toBe('holiday-policy')
+    })
+
+    it('cancels from editHolidaySelectionForm to policyList', () => {
+      const service = createService()
+      toViewHolidayEmployees(service)
+      send(service, componentEvents.TIME_OFF_EDIT_HOLIDAY_POLICY)
+
+      send(service, componentEvents.CANCEL)
+
+      expect(service.machine.current).toBe('policyList')
+    })
+
+    it('does not route TIME_OFF_HOLIDAY_SELECTION_DONE in the edit flow into the create flow', () => {
+      const service = createService()
+      toViewHolidayEmployees(service)
+      send(service, componentEvents.TIME_OFF_EDIT_HOLIDAY_POLICY)
+
+      send(service, componentEvents.TIME_OFF_HOLIDAY_SELECTION_DONE)
+
+      // edit state only handles SELECTION_EDIT_DONE; the create-flow event is ignored
+      expect(service.machine.current).toBe('editHolidaySelectionForm')
+    })
+  })
+
+  describe('viewHolidaySchedule state', () => {
+    function toViewHolidaySchedule(service: ReturnType<typeof createService>) {
+      send(service, componentEvents.TIME_OFF_VIEW_POLICY, {
+        policyId: 'holiday-policy',
+        policyType: 'holiday',
+      })
+      send(service, componentEvents.TIME_OFF_VIEW_HOLIDAY_SCHEDULE)
+      expect(service.machine.current).toBe('viewHolidaySchedule')
+    }
+
+    it('transitions to addEmployeesHoliday on TIME_OFF_HOLIDAY_ADD_EMPLOYEES', () => {
+      const service = createService()
+      toViewHolidaySchedule(service)
+
+      send(service, componentEvents.TIME_OFF_HOLIDAY_ADD_EMPLOYEES)
+
+      expect(service.machine.current).toBe('addEmployeesHoliday')
+      expect(service.context.policyId).toBe('holiday-policy')
+    })
+
+    it('transitions to editHolidaySelectionForm on TIME_OFF_EDIT_HOLIDAY_POLICY', () => {
+      const service = createService()
+      toViewHolidaySchedule(service)
+
+      send(service, componentEvents.TIME_OFF_EDIT_HOLIDAY_POLICY)
+
+      expect(service.machine.current).toBe('editHolidaySelectionForm')
+      expect(service.context.policyId).toBe('holiday-policy')
     })
   })
 

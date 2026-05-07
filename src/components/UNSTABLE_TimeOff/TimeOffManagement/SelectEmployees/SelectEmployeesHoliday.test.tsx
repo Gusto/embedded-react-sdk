@@ -40,15 +40,33 @@ vi.mock('@gusto/embedded-api/react-query/employeesList', () => ({
   }),
 }))
 
+const mockHolidayPolicyEmployees: Array<{ uuid: string }> = []
+
 vi.mock('@gusto/embedded-api/react-query/holidayPayPoliciesGet', () => ({
   useHolidayPayPoliciesGetSuspense: () => ({
-    data: { holidayPayPolicy: { version: 'abc123' } },
+    data: {
+      holidayPayPolicy: { version: 'abc123', employees: mockHolidayPolicyEmployees },
+    },
   }),
+  invalidateAllHolidayPayPoliciesGet: vi.fn(),
+  queryKeyHolidayPayPoliciesGet: (companyUuid: string) => [
+    '@gusto/embedded-api',
+    'holidayPayPolicies',
+    'get',
+    companyUuid,
+  ],
 }))
 
 vi.mock('@gusto/embedded-api/react-query/holidayPayPoliciesAddEmployees', () => ({
   useHolidayPayPoliciesAddEmployeesMutation: () => ({
     mutateAsync: mockAddEmployees,
+    isPending: false,
+  }),
+}))
+
+vi.mock('@gusto/embedded-api/react-query/holidayPayPoliciesRemoveEmployees', () => ({
+  useHolidayPayPoliciesRemoveEmployeesMutation: () => ({
+    mutateAsync: vi.fn(),
     isPending: false,
   }),
 }))
@@ -201,6 +219,53 @@ describe('SelectEmployeesHoliday', () => {
           },
         })
       })
+    })
+  })
+
+  describe('pre-selection', () => {
+    it('pre-selects employees already on the holiday policy', async () => {
+      mockHolidayPolicyEmployees.length = 0
+      mockHolidayPolicyEmployees.push({ uuid: '1' })
+
+      try {
+        renderComponent({ mode: 'standalone' })
+
+        await waitFor(() => {
+          expect(screen.getAllByRole('checkbox').length).toBe(3)
+        })
+
+        const checkboxes = screen.getAllByRole('checkbox') as HTMLInputElement[]
+        expect(checkboxes[FIRST_EMPLOYEE_CHECKBOX]).toBeChecked()
+        expect(checkboxes[SECOND_EMPLOYEE_CHECKBOX]).not.toBeChecked()
+      } finally {
+        mockHolidayPolicyEmployees.length = 0
+      }
+    })
+
+    it('emits done event without calling mutations when nothing changed', async () => {
+      mockHolidayPolicyEmployees.length = 0
+      mockHolidayPolicyEmployees.push({ uuid: '1' })
+
+      try {
+        const user = userEvent.setup()
+        renderComponent({ mode: 'standalone' })
+
+        await waitFor(() => {
+          expect(screen.getByRole('button', { name: 'continueCta' })).toBeInTheDocument()
+        })
+
+        await user.click(screen.getByRole('button', { name: 'continueCta' }))
+
+        await waitFor(() => {
+          expect(mockOnEvent).toHaveBeenCalledWith(
+            componentEvents.TIME_OFF_HOLIDAY_ADD_EMPLOYEES_DONE,
+          )
+        })
+
+        expect(mockAddEmployees).not.toHaveBeenCalled()
+      } finally {
+        mockHolidayPolicyEmployees.length = 0
+      }
     })
   })
 
