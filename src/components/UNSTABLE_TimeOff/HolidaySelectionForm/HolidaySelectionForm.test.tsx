@@ -1,12 +1,15 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { http, HttpResponse } from 'msw'
+import { QueryClient } from '@tanstack/react-query'
+import { queryKeyHolidayPayPoliciesGet } from '@gusto/embedded-api/react-query/holidayPayPoliciesGet'
 import { HolidaySelectionForm } from './HolidaySelectionForm'
 import { server } from '@/test/mocks/server'
 import { componentEvents } from '@/shared/constants'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+import { GustoTestProvider } from '@/test/GustoTestApiProvider'
 import { API_BASE_URL } from '@/test/constants'
 
 describe('HolidaySelectionForm', () => {
@@ -192,6 +195,50 @@ describe('HolidaySelectionForm', () => {
         expect(onEvent).toHaveBeenCalledWith(componentEvents.TIME_OFF_HOLIDAY_SELECTION_DONE)
       })
     })
+
+    it('seeds the GET cache with the created policy so the next mount sees it', async () => {
+      const createdPolicy = {
+        version: 'fresh-version',
+        company_uuid: 'company-123',
+        federal_holidays: { new_years_day: { selected: true } },
+        employees: [],
+      }
+      server.use(
+        http.post(`${API_BASE_URL}/v1/companies/:companyUuid/holiday_pay_policy`, () =>
+          HttpResponse.json(createdPolicy),
+        ),
+      )
+
+      const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
+      // Pre-populate the cache with `{ holidayPayPolicy: undefined }` to mirror
+      // the production scenario where PolicyList's non-suspense GET ran before
+      // any policy existed. Without seeding from the create response, the next
+      // SelectEmployeesHoliday StandaloneLoader would read this stale undefined
+      // via Suspense and throw "Unexpected response: missing holidayPayPolicy".
+      queryClient.setQueryData(queryKeyHolidayPayPoliciesGet('company-123', {}), {
+        holidayPayPolicy: undefined,
+      })
+
+      render(
+        <GustoTestProvider queryClient={queryClient}>
+          <HolidaySelectionForm {...defaultProps} />
+        </GustoTestProvider>,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Continue' })).toBeInTheDocument()
+      })
+      await user.click(screen.getByRole('button', { name: 'Continue' }))
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(componentEvents.TIME_OFF_HOLIDAY_SELECTION_DONE)
+      })
+
+      const cached = queryClient.getQueryData<{ holidayPayPolicy?: { version?: string } }>(
+        queryKeyHolidayPayPoliciesGet('company-123', {}),
+      )
+      expect(cached?.holidayPayPolicy?.version).toBe('fresh-version')
+    })
   })
 
   describe('edit mode', () => {
@@ -290,6 +337,45 @@ describe('HolidaySelectionForm', () => {
       })
 
       expect(onEvent).not.toHaveBeenCalledWith(componentEvents.TIME_OFF_HOLIDAY_SELECTION_DONE)
+    })
+
+    it('seeds the GET cache with the updated policy', async () => {
+      const updatedPolicy = { ...existingPolicy, version: 'updated-version' }
+      // Replace the GET handler too so the post-invalidate refetch (which fires
+      // because HolidaySelectionForm is still mounted in this test) returns the
+      // updated policy rather than overwriting our seed with the stale one.
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:companyUuid/holiday_pay_policy`, () =>
+          HttpResponse.json(updatedPolicy),
+        ),
+        http.put(`${API_BASE_URL}/v1/companies/:companyUuid/holiday_pay_policy`, () =>
+          HttpResponse.json(updatedPolicy),
+        ),
+      )
+
+      const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
+
+      render(
+        <GustoTestProvider queryClient={queryClient}>
+          <HolidaySelectionForm {...editProps} />
+        </GustoTestProvider>,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Continue' })).toBeInTheDocument()
+      })
+      await user.click(screen.getByRole('button', { name: 'Continue' }))
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(componentEvents.TIME_OFF_HOLIDAY_SELECTION_EDIT_DONE)
+      })
+
+      await waitFor(() => {
+        const cached = queryClient.getQueryData<{ holidayPayPolicy?: { version?: string } }>(
+          queryKeyHolidayPayPoliciesGet('company-123', {}),
+        )
+        expect(cached?.holidayPayPolicy?.version).toBe('updated-version')
+      })
     })
   })
 })

@@ -4,9 +4,12 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useHolidayPayPoliciesCreateMutation } from '@gusto/embedded-api/react-query/holidayPayPoliciesCreate'
 import {
   useHolidayPayPoliciesGetSuspense,
+  queryKeyHolidayPayPoliciesGet,
   invalidateAllHolidayPayPoliciesGet,
+  type HolidayPayPoliciesGetQueryData,
 } from '@gusto/embedded-api/react-query/holidayPayPoliciesGet'
 import { useHolidayPayPoliciesUpdateMutation } from '@gusto/embedded-api/react-query/holidayPayPoliciesUpdate'
+import type { HolidayPayPolicy } from '@gusto/embedded-api/models/components/holidaypaypolicy'
 import {
   getDefaultHolidayItems,
   buildFederalHolidaysPayload,
@@ -69,10 +72,26 @@ function useHolidaySelection(initialKeys: Set<string>) {
   return { selectedUuids, handleSelectionChange, handleSelectAll }
 }
 
+function seedPolicyCache(
+  queryClient: ReturnType<typeof useQueryClient>,
+  companyId: string,
+  policy: HolidayPayPolicy | undefined,
+) {
+  if (!policy) return
+  queryClient.setQueryData<HolidayPayPoliciesGetQueryData>(
+    queryKeyHolidayPayPoliciesGet(companyId, {}),
+    prev =>
+      prev
+        ? { ...prev, holidayPayPolicy: policy }
+        : (undefined as unknown as HolidayPayPoliciesGetQueryData),
+  )
+}
+
 function CreateRoot({ companyId }: RootProps) {
   useI18n('Company.TimeOff.HolidayPolicy')
   const { t } = useTranslation('Company.TimeOff.HolidayPolicy')
   const { onEvent, baseSubmitHandler } = useBase()
+  const queryClient = useQueryClient()
 
   const holidays = useMemo(() => getDefaultHolidayItems(t), [t])
   const allKeys = useMemo(() => new Set(FEDERAL_HOLIDAY_KEYS), [])
@@ -82,7 +101,7 @@ function CreateRoot({ companyId }: RootProps) {
 
   const handleContinue = useCallback(async () => {
     await baseSubmitHandler({}, async () => {
-      await createPolicy({
+      const response = await createPolicy({
         request: {
           companyUuid: companyId,
           holidayPayPolicyRequest: {
@@ -90,9 +109,15 @@ function CreateRoot({ companyId }: RootProps) {
           },
         },
       })
+      // Seed the GET cache so the next mount of SelectEmployeesHoliday's
+      // StandaloneLoader (in addEmployeesHoliday state) reads the freshly
+      // created policy instead of a stale `{ holidayPayPolicy: undefined }`
+      // left over from PolicyList's pre-create GET.
+      seedPolicyCache(queryClient, companyId, response.holidayPayPolicy)
+      await invalidateAllHolidayPayPoliciesGet(queryClient)
       onEvent(componentEvents.TIME_OFF_HOLIDAY_SELECTION_DONE)
     })
-  }, [baseSubmitHandler, createPolicy, companyId, selectedUuids, onEvent])
+  }, [baseSubmitHandler, createPolicy, companyId, selectedUuids, queryClient, onEvent])
 
   const handleBack = useCallback(() => {
     onEvent(componentEvents.CANCEL)
@@ -140,7 +165,7 @@ function EditRoot({ companyId }: RootProps) {
 
   const handleContinue = useCallback(async () => {
     await baseSubmitHandler({}, async () => {
-      await updatePolicy({
+      const response = await updatePolicy({
         request: {
           companyUuid: companyId,
           requestBody: {
@@ -149,6 +174,7 @@ function EditRoot({ companyId }: RootProps) {
           },
         },
       })
+      seedPolicyCache(queryClient, companyId, response.holidayPayPolicy)
       await invalidateAllHolidayPayPoliciesGet(queryClient)
       onEvent(componentEvents.TIME_OFF_HOLIDAY_SELECTION_EDIT_DONE)
     })
