@@ -54,6 +54,8 @@ const cancelToPolicyList = transition(
     (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
       ...ctx,
       component: PolicyListContextual,
+      policyId: undefined,
+      policyType: undefined,
       alerts: undefined,
     }),
   ),
@@ -66,6 +68,8 @@ const backToListTransition = transition(
     (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
       ...ctx,
       component: PolicyListContextual,
+      policyId: undefined,
+      policyType: undefined,
       alerts: undefined,
     }),
   ),
@@ -80,6 +84,8 @@ export const timeOffMachine = {
         (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
           ...ctx,
           component: SelectPolicyTypeContextual,
+          policyId: undefined,
+          policyType: undefined,
           alerts: undefined,
         }),
       ),
