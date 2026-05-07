@@ -391,6 +391,50 @@ describe('PolicyList', () => {
       })
     })
 
+    it('emits TIME_OFF_DELETE_POLICY_DONE event after successful deletion', async () => {
+      server.use(
+        http.put(`${API_BASE_URL}/v1/time_off_policies/:timeOffPolicyUuid/deactivate`, () => {
+          return HttpResponse.json({
+            uuid: 'policy-1',
+            company_uuid: 'company-123',
+            name: 'Vacation',
+            policy_type: 'vacation',
+            accrual_method: 'per_pay_period',
+            is_active: false,
+            employees: [],
+          })
+        }),
+      )
+
+      renderWithProviders(<PolicyList {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Vacation')).toBeInTheDocument()
+      })
+
+      const menuButtons = screen.getAllByRole('button', { name: 'Open menu' })
+      await user.click(menuButtons[0]!)
+
+      await waitFor(() => {
+        expect(screen.getByRole('menuitem', { name: 'Delete policy' })).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('menuitem', { name: 'Delete policy' }))
+
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+      })
+
+      const dialog = screen.getByRole('dialog')
+      await user.click(within(dialog).getByRole('button', { name: 'Delete policy' }))
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(componentEvents.TIME_OFF_DELETE_POLICY_DONE, {
+          policyId: 'policy-1',
+        })
+      })
+    })
+
     it('closes dialog when cancel is clicked', async () => {
       renderWithProviders(<PolicyList {...defaultProps} />)
 
@@ -545,6 +589,46 @@ describe('PolicyList', () => {
 
       await waitFor(() => {
         expect(screen.getByText('Holiday pay policy deleted successfully')).toBeInTheDocument()
+      })
+    })
+
+    it('emits TIME_OFF_DELETE_POLICY_DONE event after holiday policy deletion', async () => {
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:companyUuid/holiday_pay_policy`, () => {
+          return HttpResponse.json(mockHolidayPayPolicy)
+        }),
+        http.delete(`${API_BASE_URL}/v1/companies/:companyUuid/holiday_pay_policy`, () => {
+          return new HttpResponse(null, { status: 204 })
+        }),
+      )
+
+      renderWithProviders(<PolicyList {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Holiday pay policy')).toBeInTheDocument()
+      })
+
+      const menuButtons = screen.getAllByRole('button', { name: 'Open menu' })
+      const holidayMenuButton = menuButtons[menuButtons.length - 1]!
+      await user.click(holidayMenuButton)
+
+      await waitFor(() => {
+        expect(screen.getByRole('menuitem', { name: 'Delete policy' })).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('menuitem', { name: 'Delete policy' }))
+
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+      })
+
+      const dialog = screen.getByRole('dialog')
+      await user.click(within(dialog).getByRole('button', { name: 'Delete policy' }))
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(componentEvents.TIME_OFF_DELETE_POLICY_DONE, {
+          policyId: 'company-123',
+        })
       })
     })
   })
