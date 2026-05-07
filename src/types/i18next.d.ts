@@ -425,15 +425,6 @@ export interface CompanyTimeOffCreateTimeOffPolicy{
 "numberOfDaysPlaceholder":string;
 "continueCta":string;
 };
-"addEmployees":{
-"title":string;
-"employeesMovedWarning":string;
-"createPolicyCta":string;
-"policyType":{
-"vacation":string;
-"sick":string;
-};
-};
 "startingBalances":{
 "title":string;
 "description":string;
