@@ -102,6 +102,7 @@ function DetailsTab({
     policyDetails.accrualMethod === 'perHourWorkedNoOvertime' ||
     policyDetails.accrualMethod === 'perHourPaid' ||
     policyDetails.accrualMethod === 'perHourPaidNoOvertime'
+  const showAccrualMaxAndWaiting = isHoursWorked || policyDetails.accrualMethod === 'perPayPeriod'
 
   const detailItems = useMemo(() => {
     const items: { term: string; description: string }[] = [
@@ -136,7 +137,7 @@ function DetailsTab({
 
     const items: { term: string; description: string }[] = []
 
-    if (isHoursWorked) {
+    if (showAccrualMaxAndWaiting) {
       items.push({
         term: t('maxAccrualHoursPerYear.label'),
         description:
@@ -165,7 +166,7 @@ function DetailsTab({
       },
     )
 
-    if (isHoursWorked) {
+    if (showAccrualMaxAndWaiting) {
       items.push({
         term: t('accrualWaitingPeriodDays.label'),
         description:
@@ -185,7 +186,7 @@ function DetailsTab({
     })
 
     return items
-  }, [policySettings, t, isHoursWorked])
+  }, [policySettings, t, showAccrualMaxAndWaiting])
 
   const detailsCardClassName = isUnlimited
     ? `${styles.descriptionCard} ${styles.descriptionCardUnlimited}`

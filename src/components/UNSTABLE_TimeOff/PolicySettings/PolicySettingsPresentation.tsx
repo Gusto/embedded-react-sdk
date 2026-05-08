@@ -35,6 +35,9 @@ export function PolicySettingsPresentation({
   const waitingPeriodEnabled = useWatch({ control, name: 'waitingPeriodEnabled' })
 
   const isHoursWorked = accrualMethod === 'hours_worked'
+  const isFixedPerPayPeriod = accrualMethod === 'fixed_per_pay_period'
+  const showAccrualMaximum = isHoursWorked || isFixedPerPayPeriod
+  const showWaitingPeriod = isHoursWorked || isFixedPerPayPeriod
 
   const handleSubmit = (data: PolicySettingsFormData) => {
     onContinue(data)
@@ -48,7 +51,7 @@ export function PolicySettingsPresentation({
             <Heading as="h2">{t('policySettings.title')}</Heading>
 
             <Flex flexDirection="column" gap={20}>
-              {isHoursWorked && (
+              {showAccrualMaximum && (
                 <>
                   <div className={styles.settingRow}>
                     <NumberInputField
@@ -118,7 +121,7 @@ export function PolicySettingsPresentation({
 
               <hr className={styles.divider} />
 
-              {isHoursWorked && (
+              {showWaitingPeriod && (
                 <>
                   <div className={styles.settingRow}>
                     <NumberInputField
