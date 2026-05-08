@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react'
-import { useWatch } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import type { Compensation, PaymentUnit } from '@gusto/embedded-api/models/components/compensation'
 import type { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
@@ -15,12 +13,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { composeSubmitHandler } from '@/partner-hook-utils/form/composeSubmitHandler'
-import {
-  componentEvents,
-  FLSA_OVERTIME_SALARY_LIMIT,
-  FlsaStatus,
-  type EventType,
-} from '@/shared/constants'
+import { componentEvents, FLSA_OVERTIME_SALARY_LIMIT, type EventType } from '@/shared/constants'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 
 export interface EditCompensationProps extends CommonComponentInterface<'Employee.Compensation'> {
@@ -193,37 +186,11 @@ function FormBody({
   const JobFields = jobForm.form.Fields
   const CompFields = compensationForm.form.Fields
 
-  // Watch the comp form's FLSA value so we can fire the secondary-pay-rate
-  // carve-out warning when the user moves away from Nonexempt while secondaries
-  // exist. Kept here (not in `useCompensationForm`) because it's screen-specific
-  // UX — the hook already exposes `data.canTriggerCarveOut` for partners who
-  // want to drive their own confirmation prompt with effectiveDate semantics.
-  const watchedFlsaStatus = useWatch({
-    control: compensationForm.form.hookFormInternals.formMethods.control,
-    name: 'flsaStatus',
-  })
-  const currentCompensationFlsaStatus = compensationForm.data.compensation?.flsaStatus ?? null
-  const otherJobsCount = (jobForm.data.jobs ?? []).filter(
-    j => j.uuid !== compensationForm.data.currentJob?.uuid,
-  ).length
-
-  const [showFlsaChangeWarning, setShowFlsaChangeWarning] = useState(false)
-
-  useEffect(() => {
-    if (
-      currentCompensationFlsaStatus === FlsaStatus.NONEXEMPT &&
-      otherJobsCount > 0 &&
-      watchedFlsaStatus !== FlsaStatus.NONEXEMPT
-    ) {
-      setShowFlsaChangeWarning(true)
-    }
-  }, [watchedFlsaStatus, currentCompensationFlsaStatus, otherJobsCount])
-
   return (
     <Flex flexDirection="column" gap={32}>
       <Components.Heading as="h2">{title}</Components.Heading>
 
-      {showFlsaChangeWarning && (
+      {compensationForm.status.willDeleteSecondaryJobs && (
         <Components.Alert
           label={t('validations.classificationChangeNotification')}
           status="warning"
