@@ -246,6 +246,12 @@ export function useCompensationForm({
 
   const isCreateMode = !compensationId
   const mode = isCreateMode ? 'create' : 'update'
+  // Adding a secondary job (the employee already has a primary). The Gusto API
+  // only allows secondaries when the primary's current FLSA is Nonexempt, and
+  // the secondary itself must match — so the FLSA field is not user-editable
+  // in this branch. We force the form value to the primary's FLSA below and
+  // hide `Fields.FlsaStatus`.
+  const isAddingSecondaryJob = isCreateMode && primaryFlsaStatus !== null
 
   const [schema, metadataConfig] = useMemo(
     () => createCompensationSchema({ mode, optionalFieldsToRequire, hireDate }),
@@ -264,11 +270,15 @@ export function useCompensationForm({
   const resolvedDefaults: CompensationFormData = useMemo(
     () => ({
       title: currentCompensation?.title ?? partnerDefaults?.title ?? '',
-      flsaStatus:
-        currentCompensation?.flsaStatus ??
-        partnerDefaults?.flsaStatus ??
-        primaryFlsaStatus ??
-        undefined,
+      // When adding a secondary, the FLSA must match the primary's — force it
+      // here (overriding any partner default) so the form submits the right
+      // value even though `Fields.FlsaStatus` is hidden.
+      flsaStatus: isAddingSecondaryJob
+        ? primaryFlsaStatus
+        : (currentCompensation?.flsaStatus ??
+          partnerDefaults?.flsaStatus ??
+          primaryFlsaStatus ??
+          undefined),
       rate: Number(currentCompensation?.rate ?? partnerDefaults?.rate ?? 0),
       adjustForMinimumWage:
         currentCompensation?.adjustForMinimumWage ?? partnerDefaults?.adjustForMinimumWage ?? false,
@@ -278,7 +288,7 @@ export function useCompensationForm({
         currentCompensation?.paymentUnit ?? partnerDefaults?.paymentUnit ?? PAY_PERIODS.HOUR,
       effectiveDate: currentCompensation?.effectiveDate ?? partnerDefaults?.effectiveDate ?? null,
     }),
-    [currentCompensation, partnerDefaults, primaryFlsaStatus],
+    [currentCompensation, partnerDefaults, primaryFlsaStatus, isAddingSecondaryJob],
   )
 
   const formMethods = useForm<CompensationFormData, unknown, CompensationFormOutputs>({
@@ -371,8 +381,14 @@ export function useCompensationForm({
     watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT
   const isOwner = watchedFlsaStatus === FlsaStatus.OWNER
 
+  // Hide `Fields.FlsaStatus` when the user has no meaningful choice:
+  // - update mode editing a secondary whose comp is already Nonexempt
+  //   (must keep matching the primary), and
+  // - create mode while adding a secondary (must inherit primary's FLSA).
+  // The first job's create flow and primary-job edits keep the field exposed.
   const isFlsaSelectionEnabled =
-    watchedFlsaStatus !== FlsaStatus.NONEXEMPT || currentJob?.primary === true || isCreateMode
+    !isAddingSecondaryJob &&
+    (watchedFlsaStatus !== FlsaStatus.NONEXEMPT || currentJob?.primary === true || isCreateMode)
 
   const isAdjustMinimumWageEnabled =
     watchedFlsaStatus === FlsaStatus.NONEXEMPT &&

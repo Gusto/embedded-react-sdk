@@ -626,6 +626,108 @@ describe('useCompensationForm', () => {
     })
   })
 
+  describe('FLSA field availability', () => {
+    it('exposes Fields.FlsaStatus when adding the very first job (no primary exists)', async () => {
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'noJobs' })),
+        ),
+      )
+
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+      expect(result.current.form.Fields.FlsaStatus).toBeDefined()
+    })
+
+    it('hides Fields.FlsaStatus and seeds form value to primary FLSA when adding a secondary job', async () => {
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'singleNonexempt' })),
+        ),
+      )
+
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'new-secondary-job-uuid',
+            // Even if a partner attempts to seed Exempt, the hook must override
+            // it because secondaries must match the primary's FLSA.
+            defaultValues: { flsaStatus: FlsaStatus.EXEMPT },
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+      expect(result.current.form.Fields.FlsaStatus).toBeUndefined()
+      expect(result.current.form.hookFormInternals.formMethods.getValues('flsaStatus')).toBe(
+        FlsaStatus.NONEXEMPT,
+      )
+    })
+
+    it('hides Fields.FlsaStatus when editing a Nonexempt secondary job (must keep matching the primary)', async () => {
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'multiJob' })),
+        ),
+      )
+
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid-2',
+            compensationId: 'compensation-uuid-2',
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+      expect(result.current.form.Fields.FlsaStatus).toBeUndefined()
+    })
+
+    it('exposes Fields.FlsaStatus when editing the primary job', async () => {
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'singleNonexempt' })),
+        ),
+      )
+
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+            compensationId: 'compensation-uuid',
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+      expect(result.current.form.Fields.FlsaStatus).toBeDefined()
+    })
+  })
+
   describe('errorHandling', () => {
     it('surfaces query errors via errorHandling.errors', async () => {
       server.use(
