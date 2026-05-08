@@ -16,7 +16,7 @@ Most product flows compose both hooks on the same screen. This page covers the t
 
 ## Onboarding stub-fill (POST job → PUT auto-created stub)
 
-When a job is created, the API auto-creates a stub compensation with `rate: 0`. Onboarding flows replace that stub with the partner's real values via PUT. `useCompensationForm.actions.onSubmit` accepts `{ jobId, compensationId, compensationVersion }` for this exact case:
+When a job is created, the API auto-creates a stub compensation with `rate: 0`. Onboarding flows replace that stub with the real values via PUT. `useCompensationForm.actions.onSubmit` accepts `{ jobId, compensationId, compensationVersion }` for this exact case:
 
 ```tsx
 import {
@@ -125,13 +125,13 @@ function OnboardingCompensationPage({ employeeId }: { employeeId: string }) {
 }
 ```
 
-`composeSubmitHandler` validates both forms in parallel — if either fails, the chain short-circuits before any network I/O. Inside `onAllValid`, the partner threads the new IDs and the stub's version into `useCompensationForm` to PUT it.
+`composeSubmitHandler` validates both forms in parallel — if either fails, the chain short-circuits before any network I/O. Inside `onAllValid`, thread the new IDs and the stub's version into `useCompensationForm` to PUT it.
 
 ---
 
 ## Steady-state edit (job + compensation already exist)
 
-When both records exist (a partner page that edits the current compensation), pass IDs to both hooks and submit them in parallel. The hooks own their own version handling:
+When both records exist (a page that edits the current compensation), pass IDs to both hooks and submit them in parallel. The hooks own their own version handling:
 
 ```tsx
 function CompensationEditPage({
@@ -173,10 +173,10 @@ function CompensationEditPage({
 }
 ```
 
-`compensationForm.status.willDeleteSecondaryJobs` is a reactive flag that flips to `true` when submitting the current form values would delete the employee's secondary jobs server-side: update mode, current FLSA was `Nonexempt`, the form's `flsaStatus` was just changed to a non-`Nonexempt` value, the employee has at least one secondary job, and the effective date is today. It tracks `flsaStatus` and `effectiveDate` via `useWatch` internally — render-time read is enough, no extra `useWatch` on the partner side. The submit itself still routes through a normal PUT either way; the flag is purely for the warning UX. See [derived helpers](./useCompensationForm.md#derived-helpers) for the full breakdown.
+`compensationForm.status.willDeleteSecondaryJobs` is a reactive flag that flips to `true` when submitting the current form values would delete the employee's secondary jobs server-side: update mode, current FLSA was `Nonexempt`, the form's `flsaStatus` was just changed to a non-`Nonexempt` value, the employee has at least one secondary job, and the effective date is today. It tracks `flsaStatus` and `effectiveDate` via `useWatch` internally — a render-time read is enough; you don't need an extra `useWatch` of your own. The submit itself still routes through a normal PUT either way; the flag is purely for the warning UX. See [derived helpers](./useCompensationForm.md#derived-helpers) for the full breakdown.
 
 ---
 
 ## Shorthand wrappers
 
-Use [`useCurrentJobForm`](./useJobForm.md#usecurrentjobform) / [`useCurrentCompensationForm`](./useCompensationForm.md#usecurrentcompensationform) to skip the explicit `jobId` / `compensationId` props — they resolve to the employee's primary job and its current compensation automatically. This is the right choice for steady-state edit screens where the partner does not need to pick a specific job or compensation record.
+Use [`useCurrentJobForm`](./useJobForm.md#usecurrentjobform) / [`useCurrentCompensationForm`](./useCompensationForm.md#usecurrentcompensationform) to skip the explicit `jobId` / `compensationId` props — they resolve to the employee's primary job and its current compensation automatically. This is the right choice for steady-state edit screens that don't expose a job or compensation picker.

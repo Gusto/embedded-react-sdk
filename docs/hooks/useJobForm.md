@@ -11,7 +11,7 @@ Creates or updates an employee's job — title, hire date, S-Corp 2% shareholder
 import { useJobForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
 ```
 
-A wrapper hook, [`useCurrentJobForm`](#usecurrentjobform), automatically resolves the employee's primary job and threads its UUID into `useJobForm` — useful for steady-state edit screens that don't ask the partner to choose a specific job.
+A wrapper hook, [`useCurrentJobForm`](#usecurrentjobform), automatically resolves the employee's primary job and threads its UUID into `useJobForm` — useful for steady-state edit screens that don't expose a job picker.
 
 > **Composing with `useCompensationForm`?** See [Working with Jobs and Compensations](./jobs-and-compensations.md) for end-to-end patterns covering onboarding stub-fill (POST job → PUT auto-created stub) and steady-state edits.
 
@@ -32,13 +32,13 @@ A wrapper hook, [`useCurrentJobForm`](#usecurrentjobform), automatically resolve
 
 ### Configurable Required Fields
 
-| Field                   | Rule       | Required on create | Required on update | Partner-configurable? |
-| ----------------------- | ---------- | ------------------ | ------------------ | --------------------- |
-| `title`                 | `'create'` | Yes                | No                 | Yes (on update)       |
-| `hireDate`              | `'create'` | Yes                | No                 | Yes (on update)       |
-| `twoPercentShareholder` | `'never'`  | No                 | No                 | Yes (either mode)     |
-| `stateWcCovered`        | `'never'`  | No                 | No                 | Yes (either mode)     |
-| `stateWcClassCode`      | predicate  | When WC is covered | When WC is covered | No (auto)             |
+| Field                   | Rule       | Required on create | Required on update | Configurable?     |
+| ----------------------- | ---------- | ------------------ | ------------------ | ----------------- |
+| `title`                 | `'create'` | Yes                | No                 | Yes (on update)   |
+| `hireDate`              | `'create'` | Yes                | No                 | Yes (on update)   |
+| `twoPercentShareholder` | `'never'`  | No                 | No                 | Yes (either mode) |
+| `stateWcCovered`        | `'never'`  | No                 | No                 | Yes (either mode) |
+| `stateWcClassCode`      | predicate  | When WC is covered | When WC is covered | No (auto)         |
 
 ```typescript
 type JobOptionalFieldsToRequire = {
@@ -117,7 +117,7 @@ interface JobSubmitOptions {
 }
 ```
 
-`onSubmit` resolves to a `HookSubmitResult<Job>` containing both the mode (`'create' | 'update'`) and the saved `Job` entity, so partners read the result directly rather than wiring step callbacks.
+`onSubmit` resolves to a `HookSubmitResult<Job>` containing both the mode (`'create' | 'update'`) and the saved `Job` entity — read the result directly rather than wiring step callbacks.
 
 ---
 

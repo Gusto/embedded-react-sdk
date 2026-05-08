@@ -11,7 +11,7 @@ Creates or updates a compensation row on a job — FLSA classification, pay rate
 import { useCompensationForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
 ```
 
-A wrapper hook, [`useCurrentCompensationForm`](#usecurrentcompensationform), automatically resolves the primary job's `currentCompensationUuid` and threads it into `useCompensationForm` — useful for steady-state edits where the partner does not need to pick a specific compensation record.
+A wrapper hook, [`useCurrentCompensationForm`](#usecurrentcompensationform), automatically resolves the primary job's `currentCompensationUuid` and threads it into `useCompensationForm` — useful for steady-state edits that don't expose a compensation picker.
 
 > **Looking for `jobTitle`, `hireDate`, `twoPercentShareholder`, `stateWcCovered` / `stateWcClassCode`?** Those moved to [`useJobForm`](./useJobForm.md). Compensation now models only what `POST /v1/jobs/:jobId/compensations` and `PUT /v1/compensations/:id` accept.
 
@@ -35,15 +35,15 @@ A wrapper hook, [`useCurrentCompensationForm`](#usecurrentcompensationform), aut
 
 ### Configurable Required Fields
 
-| Field                  | Rule       | Required on create    | Required on update    | Partner-configurable? |
-| ---------------------- | ---------- | --------------------- | --------------------- | --------------------- |
-| `flsaStatus`           | `'create'` | Yes                   | No                    | Yes (on update)       |
-| `paymentUnit`          | `'create'` | Yes                   | No                    | Yes (on update)       |
-| `rate`                 | `'create'` | Yes                   | No                    | Yes (on update)       |
-| `effectiveDate`        | `'create'` | Yes                   | No                    | Yes (on update)       |
-| `title`                | `'never'`  | No                    | No                    | Yes (either mode)     |
-| `adjustForMinimumWage` | (always)   | Yes                   | Yes                   | No                    |
-| `minimumWageId`        | predicate  | When the toggle is on | When the toggle is on | No                    |
+| Field                  | Rule       | Required on create    | Required on update    | Configurable?     |
+| ---------------------- | ---------- | --------------------- | --------------------- | ----------------- |
+| `flsaStatus`           | `'create'` | Yes                   | No                    | Yes (on update)   |
+| `paymentUnit`          | `'create'` | Yes                   | No                    | Yes (on update)   |
+| `rate`                 | `'create'` | Yes                   | No                    | Yes (on update)   |
+| `effectiveDate`        | `'create'` | Yes                   | No                    | Yes (on update)   |
+| `title`                | `'never'`  | No                    | No                    | Yes (either mode) |
+| `adjustForMinimumWage` | (always)   | Yes                   | Yes                   | No                |
+| `minimumWageId`        | predicate  | When the toggle is on | When the toggle is on | No                |
 
 ```typescript
 type CompensationOptionalFieldsToRequire = {
@@ -52,7 +52,7 @@ type CompensationOptionalFieldsToRequire = {
 }
 ```
 
-`title` is intentionally optional in both modes because partners typically thread it through `useJobForm.Fields.Title` (where it's required on create). It remains here as an optional convenience for partners building a single-form steady-state edit screen.
+`title` is intentionally optional in both modes because you'll typically thread it through `useJobForm.Fields.Title` (where it's required on create). It remains here as an optional convenience when you're building a single-form steady-state edit screen.
 
 `minimumWageId` is automatically required when `adjustForMinimumWage` is `true` regardless of `optionalFieldsToRequire`.
 
@@ -72,7 +72,7 @@ interface CompensationFormData {
 }
 ```
 
-When the hook is given a `compensationId` (update mode) or its parent job has a current compensation, `flsaStatus` is seeded from that row. In create mode without a parent compensation, the hook falls back to the employee's primary job's current FLSA status (so adding a secondary job stays consistent with the primary by default), then to `defaultValues.flsaStatus`. If none of those are available the field renders empty — partners can preselect by passing `defaultValues.flsaStatus`. Requiredness is enforced on submit per the table above.
+When the hook is given a `compensationId` (update mode) or its parent job has a current compensation, `flsaStatus` is seeded from that row. In create mode without a parent compensation, the hook falls back to the employee's primary job's current FLSA status (so adding a secondary job stays consistent with the primary by default), then to `defaultValues.flsaStatus`. If none of those are available the field renders empty — preselect a value by passing `defaultValues.flsaStatus`. Requiredness is enforced on submit per the table above.
 
 ---
 
@@ -155,18 +155,18 @@ interface CompensationSubmitOptions {
 }
 ```
 
-`onSubmit` resolves to a `HookSubmitResult<Compensation>` containing both the mode (`'create' | 'update'`) and the saved `Compensation` entity, so partners read the result directly rather than wiring step callbacks.
+`onSubmit` resolves to a `HookSubmitResult<Compensation>` containing both the mode (`'create' | 'update'`) and the saved `Compensation` entity — read the result directly rather than wiring step callbacks.
 
 ---
 
 ## Derived helpers
 
-The hook exposes derived values partners use to drive UX. Static, entity-derived values live under `data.*`; reactive values that flip with form input live under `status.*`.
+The hook exposes derived values for driving UX. Static, entity-derived values live under `data.*`; reactive values that flip with form input live under `status.*`.
 
-- **`status.willDeleteSecondaryJobs`** — reactive: `true` when submitting the current form values would delete the employee's secondary jobs server-side. Conditions: update mode, the current compensation was `Nonexempt`, the form's `flsaStatus` was just changed to a non-`Nonexempt` value, the employee has at least one secondary job, and the effective date is today (immediate, not future-dated). Partners typically render an inline warning above the form keyed off this flag (mirroring the `EditCompensation` UX). The submit itself routes through a normal PUT either way.
-- **`data.minimumEffectiveDate`** — lower bound for the `effectiveDate` field. Typically the parent job's `hireDate`. Partners pass this as `min` to the date picker.
-- **`data.maximumEffectiveDate`** — upper bound for the `effectiveDate` field, when a future-dated compensation already exists for this job. Partners pass this as `max` to the date picker so users can't push a new entry past a pending one.
-- **`data.hasPendingFutureCompensation`** — `true` when at least one future-dated compensation exists for this job. Partners use this to render an explanatory note ("A future rate change is already scheduled for …").
+- **`status.willDeleteSecondaryJobs`** — reactive: `true` when submitting the current form values would delete the employee's secondary jobs server-side. Conditions: update mode, the current compensation was `Nonexempt`, the form's `flsaStatus` was just changed to a non-`Nonexempt` value, the employee has at least one secondary job, and the effective date is today (immediate, not future-dated). Use this to render an inline warning above the form (mirroring the `EditCompensation` UX). The submit itself routes through a normal PUT either way.
+- **`data.minimumEffectiveDate`** — lower bound for the `effectiveDate` field. Typically the parent job's `hireDate`. Pass this as `min` to the date picker.
+- **`data.maximumEffectiveDate`** — upper bound for the `effectiveDate` field, when a future-dated compensation already exists for this job. Pass this as `max` to the date picker so users can't push a new entry past a pending one.
+- **`data.hasPendingFutureCompensation`** — `true` when at least one future-dated compensation exists for this job. Use this to render an explanatory note ("A future rate change is already scheduled for …").
 
 ---
 
@@ -357,7 +357,7 @@ function CurrentCompensationEditPage({ employeeId }: { employeeId: string }) {
 }
 ```
 
-Props are `Omit<UseCompensationFormProps, 'jobId' | 'compensationId'>`. When the employee has no primary job, the hook lands in **create** mode and the partner threads `jobId` (and optionally `compensationId` / `compensationVersion`) via submit options.
+Props are `Omit<UseCompensationFormProps, 'jobId' | 'compensationId'>`. When the employee has no primary job, the hook lands in **create** mode and you thread `jobId` (and optionally `compensationId` / `compensationVersion`) via submit options.
 
 ---
 

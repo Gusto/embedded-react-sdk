@@ -391,7 +391,7 @@ interface SDKFieldError {
 }
 ```
 
-### Error categories and partner actions
+### Error categories and recommended actions
 
 | Category           | What happened                                                    | What you should do                                                                                                                                         |
 | ------------------ | ---------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -534,7 +534,7 @@ import { EmployeeDetailsErrorCodes } from '@gusto/embedded-react-sdk'
 />
 ```
 
-If you omit `validationMessages`, validation still runs and the field is marked as invalid, but the displayed text falls back to the raw error code (e.g., `REQUIRED`, `INVALID_EMAIL`, `INVALID_AMOUNT`). Always supply `validationMessages` for production UI so partners control the user-facing copy.
+If you omit `validationMessages`, validation still runs and the field is marked as invalid, but the displayed text falls back to the raw error code (e.g., `REQUIRED`, `INVALID_EMAIL`, `INVALID_AMOUNT`). Always supply `validationMessages` for production UI so you control the user-facing copy.
 
 Error codes for each hook are exported alongside the hook:
 
