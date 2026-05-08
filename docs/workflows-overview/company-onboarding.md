@@ -46,6 +46,7 @@ Company onboarding components can be used to compose your own workflow, or can b
 - [CompanyOnboarding.FederalTaxes](#companyfederaltaxes)
 - [CompanyOnboarding.PaySchedule](#companypayschedule)
 - [CompanyOnboarding.Locations](#companylocations)
+- [CompanyOnboarding.LocationForm](#companylocationform)
 - [CompanyOnboarding.BankAccount](#companybankaccount)
 - [CompanyOnboarding.StateTaxes](#companystatetaxes)
 - [CompanyOnboarding.StateTaxesForm](#companystatetaxesform)
@@ -334,7 +335,7 @@ function MyComponent() {
 
 ### Company.Locations
 
-A component for managing company addresses, including mailing and filing address.
+An orchestrated component for managing company addresses, including mailing and filing address. Internally uses a state machine to switch between a list view and a create/edit form. For more granular control, you can use `Company.LocationForm` directly.
 
 ```jsx
 import { Company } from '@gusto/embedded-react-sdk'
@@ -361,6 +362,42 @@ function MyComponent() {
 | COMPANY_LOCATION_EDIT    | Fired when a user selects existing location for editing | `{uuid:string}`                                                                                                                                     |
 | COMPANY_LOCATION_UPDATED | Fired when locations has been successfully edited       | [Response from the update a location API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-locations-location_id)                   |
 | COMPANY_LOCATION_DONE    | Fired when user chooses to proceed to a next step       | None                                                                                                                                                |
+
+### Company.LocationForm
+
+A standalone form component for creating a new company location or editing an existing one. This is the lower-level building block used internally by `Company.Locations` for its create/edit views. Use this component directly when you need full control over navigation between the list and form views.
+
+Pass a `locationId` to edit an existing location; omit it to create a new location.
+
+```jsx
+import { Company } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return (
+    <Company.LocationForm
+      companyId="a007e1ab-3595-43c2-ab4b-af7a5af2e365"
+      locationId="d3b4c1e2-1234-5678-9abc-def012345678"
+      onEvent={() => {}}
+    />
+  )
+}
+```
+
+#### Props
+
+| Name                     | Type   | Description                                                                 |
+| ------------------------ | ------ | --------------------------------------------------------------------------- |
+| **companyId** (Required) | string | The associated company identifier.                                          |
+| **locationId**           | string | When provided, the form edits this location. Omit to create a new location. |
+| **onEvent** (Required)   |        | See events table for available events.                                      |
+
+#### Events
+
+| Event type               | Description                                        | Data                                                                                                                                                |
+| ------------------------ | -------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| COMPANY_LOCATION_CREATED | Fired when a new location is created               | [Response from the create a company location API request](https://docs.gusto.com/embedded-payroll/reference/post-v1-companies-company_id-locations) |
+| COMPANY_LOCATION_UPDATED | Fired when a location has been successfully edited | [Response from the update a location API request](https://docs.gusto.com/embedded-payroll/reference/put-v1-locations-location_id)                   |
+| CANCEL                   | Fired when the user cancels editing                | None                                                                                                                                                |
 
 ### Company.BankAccount
 
