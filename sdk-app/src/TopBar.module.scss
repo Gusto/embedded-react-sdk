@@ -176,3 +176,13 @@
     background: var(--color-hover-bg);
   }
 }
+
+.settingsBtnActive {
+  background: var(--color-active-bg);
+  color: var(--color-active);
+  border-color: var(--color-active);
+
+  &:hover {
+    background: var(--color-active-bg);
+  }
+}

@@ -1,5 +1,5 @@
 import type React from 'react'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
 import { TopBar } from './TopBar'
 import { Sidebar } from './Sidebar'
@@ -15,6 +15,9 @@ import { useManualConfig, type ManualConfig } from './useManualConfig'
 import { useChromeVisibility } from './useChromeVisibility'
 import { ShortcutHelper, useShortcutHelper } from './ShortcutHelper'
 import { useGlobalShortcut } from './useGlobalShortcut'
+import { useCodePanel } from './useCodePanel'
+import { CodePanel } from './CodePanel'
+import { CurrentComponentProvider } from './CurrentComponentContext'
 
 const THEME_CYCLE: ThemeMode[] = ['system', 'light', 'dark']
 
@@ -44,6 +47,7 @@ export function App() {
   const { chromeHidden, showChrome } = useChromeVisibility()
   const shortcutHelper = useShortcutHelper()
   const navigate = useNavigate()
+  const codePanel = useCodePanel()
 
   const openSettings = useCallback(() => {
     setSettingsOpen(true)
@@ -84,6 +88,16 @@ export function App() {
     },
   })
 
+  useEffect(() => {
+    if (codePanel.isOpen && settingsOpen) setSettingsOpen(false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [codePanel.isOpen])
+
+  useEffect(() => {
+    if (settingsOpen && codePanel.isOpen) codePanel.close()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [settingsOpen])
+
   const handleCreateNewDemo = async (demoType: string) => {
     const result = await demoManager.createNewDemo(demoType)
     if (result) {
@@ -119,76 +133,81 @@ export function App() {
 
   return (
     <ThemeModeProvider value={themeMode}>
-      <div className={`app-layout${chromeHidden ? ' app-layout-chrome-hidden' : ''}`}>
-        {!chromeHidden && (
-          <TopBar
-            companyId={activeEntities.companyId}
-            tokenStatus={demoManager.tokenStatus}
-            onOpenSettings={openSettings}
-          />
-        )}
-        <div className="app-body">
+      <CurrentComponentProvider>
+        <div className={`app-layout${chromeHidden ? ' app-layout-chrome-hidden' : ''}`}>
           {!chromeHidden && (
-            <Sidebar
-              mode={appMode}
-              searchQuery={searchQuery}
-              onSearchChange={setSearchQuery}
-              isOpen={sidebarOpen}
-              onToggle={() => {
-                setSidebarOpen(open => !open)
-              }}
-              onShowShortcuts={shortcutHelper.open}
+            <TopBar
+              companyId={activeEntities.companyId}
+              tokenStatus={demoManager.tokenStatus}
+              onOpenSettings={openSettings}
+              onToggleCode={codePanel.toggle}
+              codeOpen={codePanel.isOpen}
             />
           )}
-          <main
-            className="main-content"
-            style={{ '--sidebar-width': sidebarWidth } as React.CSSProperties}
-          >
-            <Outlet context={{ entities: activeEntities, chromeHidden }} />
-          </main>
-        </div>
-        {chromeHidden && (
-          <button
-            type="button"
-            className="chrome-restore-pill"
-            onClick={showChrome}
-            aria-label="Show chrome"
-          >
-            <span className="chrome-restore-pill-key">\</span> Show chrome
-          </button>
-        )}
-        <DemoSettingsPanel
-          isOpen={settingsOpen}
-          onClose={() => {
-            setSettingsOpen(false)
-          }}
-          entities={activeEntities}
-          onUpdateEntity={updateEntity}
-          onResetToDefaults={resetToDefaults}
-          tokenStatus={demoManager.tokenStatus}
-          isCreatingDemo={demoManager.isCreatingDemo}
-          demoError={demoManager.demoError}
-          proxyMode={demoManager.proxyMode}
-          onCreateNewDemo={handleCreateNewDemo}
-          onRefreshToken={demoManager.refreshToken}
-          entityCatalog={entityCatalog}
-          mode={manual.mode}
-          manualConfig={manual.config}
-          manualSaves={manual.saves}
-          onSwitchToAuto={manual.switchToAuto}
-          onApplyManualConfig={handleApplyManualConfig}
-          onSaveManualConfig={manual.saveConfig}
-          onDeleteManualSave={manual.deleteSave}
-        />
-        <ShortcutHelper isOpen={shortcutHelper.isOpen} onClose={shortcutHelper.close} />
-        {!isManual && demoManager.tokenStatus === 'expired' && (
-          <TokenExpiredOverlay
-            onRefresh={demoManager.refreshToken}
-            isRefreshing={demoManager.isCreatingDemo}
-            error={demoManager.demoError}
+          <div className="app-body">
+            {!chromeHidden && (
+              <Sidebar
+                mode={appMode}
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                isOpen={sidebarOpen}
+                onToggle={() => {
+                  setSidebarOpen(open => !open)
+                }}
+                onShowShortcuts={shortcutHelper.open}
+              />
+            )}
+            <main
+              className="main-content"
+              style={{ '--sidebar-width': sidebarWidth } as React.CSSProperties}
+            >
+              <Outlet context={{ entities: activeEntities, chromeHidden }} />
+            </main>
+            {codePanel.isOpen && !chromeHidden && <CodePanel onClose={codePanel.close} />}
+          </div>
+          {chromeHidden && (
+            <button
+              type="button"
+              className="chrome-restore-pill"
+              onClick={showChrome}
+              aria-label="Show chrome"
+            >
+              <span className="chrome-restore-pill-key">\</span> Show chrome
+            </button>
+          )}
+          <DemoSettingsPanel
+            isOpen={settingsOpen}
+            onClose={() => {
+              setSettingsOpen(false)
+            }}
+            entities={activeEntities}
+            onUpdateEntity={updateEntity}
+            onResetToDefaults={resetToDefaults}
+            tokenStatus={demoManager.tokenStatus}
+            isCreatingDemo={demoManager.isCreatingDemo}
+            demoError={demoManager.demoError}
+            proxyMode={demoManager.proxyMode}
+            onCreateNewDemo={handleCreateNewDemo}
+            onRefreshToken={demoManager.refreshToken}
+            entityCatalog={entityCatalog}
+            mode={manual.mode}
+            manualConfig={manual.config}
+            manualSaves={manual.saves}
+            onSwitchToAuto={manual.switchToAuto}
+            onApplyManualConfig={handleApplyManualConfig}
+            onSaveManualConfig={manual.saveConfig}
+            onDeleteManualSave={manual.deleteSave}
           />
-        )}
-      </div>
+          <ShortcutHelper isOpen={shortcutHelper.isOpen} onClose={shortcutHelper.close} />
+          {!isManual && demoManager.tokenStatus === 'expired' && (
+            <TokenExpiredOverlay
+              onRefresh={demoManager.refreshToken}
+              isRefreshing={demoManager.isCreatingDemo}
+              error={demoManager.demoError}
+            />
+          )}
+        </div>
+      </CurrentComponentProvider>
     </ThemeModeProvider>
   )
 }

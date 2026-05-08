@@ -1,4 +1,4 @@
-import { Suspense, useState, useCallback, Component, type ReactNode } from 'react'
+import { Suspense, useState, useCallback, useEffect, Component, type ReactNode } from 'react'
 import { useParams } from 'react-router-dom'
 import { findComponent, CATEGORIES } from './registry'
 import { resolveDefaults } from './component-defaults'
@@ -7,6 +7,7 @@ import { darkTheme } from './darkTheme'
 import type { EntityIds } from './useEntities'
 import styles from './ComponentRenderer.module.scss'
 import { interfaceLibComponents } from './InterfaceLib'
+import { useCurrentComponentRegistry } from './useCurrentComponent'
 import { GustoProvider } from '@/contexts'
 
 interface ComponentRendererProps {
@@ -126,6 +127,7 @@ export function ComponentRenderer({ entities, chromeHidden = false }: ComponentR
     component: string
   }>()
   const resolvedTheme = useResolvedTheme()
+  const { register, unregister } = useCurrentComponentRegistry()
   const [events, setEvents] = useState<EventLogEntry[]>([])
   const [eventsOpen, setEventsOpen] = useState(false)
   const [resetKey, setResetKey] = useState(0)
@@ -138,6 +140,20 @@ export function ComponentRenderer({ entities, chromeHidden = false }: ComponentR
     setEvents(prev => [entry, ...prev].slice(0, 100))
   }, [])
 
+  const matchedCategory = category
+    ? CATEGORIES.find(c => c.toLowerCase() === category.toLowerCase())
+    : undefined
+  const entry =
+    matchedCategory && componentName ? findComponent(matchedCategory, componentName) : undefined
+
+  useEffect(() => {
+    if (entry) register({ entry, entities })
+    else unregister()
+    return () => {
+      unregister()
+    }
+  }, [entry, entities, register, unregister])
+
   if (!category || !componentName) {
     return (
       <div className={styles.contentBody}>
@@ -145,9 +161,6 @@ export function ComponentRenderer({ entities, chromeHidden = false }: ComponentR
       </div>
     )
   }
-
-  const matchedCategory = CATEGORIES.find(c => c.toLowerCase() === category.toLowerCase())
-  const entry = matchedCategory ? findComponent(matchedCategory, componentName) : undefined
 
   if (!entry) {
     return (

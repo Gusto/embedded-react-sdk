@@ -4,12 +4,15 @@ import { useAppMode } from './useAppMode'
 import { useCompanyName } from './design/useCompanyName'
 import type { TokenStatus } from './useDemoManager'
 import SettingsIcon from './assets/icons/icon-settings.svg?react'
+import CodeIcon from './assets/icons/icon-code.svg?react'
 import styles from './TopBar.module.scss'
 
 interface TopBarProps {
   companyId: string
   tokenStatus: TokenStatus
   onOpenSettings: () => void
+  onToggleCode: () => void
+  codeOpen: boolean
 }
 
 function TokenDot({ status }: { status: TokenStatus }) {
@@ -42,7 +45,13 @@ const DEMO_TYPE_LABELS: Record<string, string> = {
   react_sdk_demo: 'New Company',
 }
 
-export function TopBar({ companyId, tokenStatus, onOpenSettings }: TopBarProps) {
+export function TopBar({
+  companyId,
+  tokenStatus,
+  onOpenSettings,
+  onToggleCode,
+  codeOpen,
+}: TopBarProps) {
   const mode = useAppMode()
   const rawEnv = typeof __SDK_APP_ENV__ !== 'undefined' ? __SDK_APP_ENV__ : 'demo'
   const displayEnv = rawEnv === 'localzp' ? 'local' : rawEnv
@@ -103,6 +112,17 @@ export function TopBar({ companyId, tokenStatus, onOpenSettings }: TopBarProps) 
           <button className={styles.settingsBtn} onClick={onOpenSettings} type="button">
             <SettingsIcon />
             Settings
+          </button>
+          <button
+            className={`${styles.settingsBtn} ${codeOpen ? styles.settingsBtnActive : ''}`}
+            onClick={onToggleCode}
+            type="button"
+            aria-pressed={codeOpen}
+            aria-label="Toggle code panel"
+            title="Toggle code panel"
+          >
+            <CodeIcon />
+            Code
           </button>
         </div>
       </div>
