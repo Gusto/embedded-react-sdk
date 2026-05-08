@@ -1,2 +1,2 @@
-export { StateTaxes, type StateTaxesProps } from './StateTaxes'
+export { StateTaxes, type StateTaxesProps } from './management'
 export * from './shared'

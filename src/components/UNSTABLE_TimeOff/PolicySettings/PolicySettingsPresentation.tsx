@@ -1,3 +1,4 @@
+import { useId } from 'react'
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import type { PolicySettingsFormData, PolicySettingsPresentationProps } from './PolicySettingsTypes'
@@ -16,6 +17,12 @@ export function PolicySettingsPresentation({
   useI18n('Company.TimeOff.CreateTimeOffPolicy')
   const { t } = useTranslation('Company.TimeOff.CreateTimeOffPolicy')
   const { Heading, Button } = useComponentContext()
+  const headingId = useId()
+
+  const accrualMaxInputId = useId()
+  const balanceMaxInputId = useId()
+  const carryOverInputId = useId()
+  const waitingPeriodInputId = useId()
 
   const formMethods = useForm<PolicySettingsFormData>({
     defaultValues: {
@@ -35,6 +42,9 @@ export function PolicySettingsPresentation({
   const waitingPeriodEnabled = useWatch({ control, name: 'waitingPeriodEnabled' })
 
   const isHoursWorked = accrualMethod === 'hours_worked'
+  const isFixedPerPayPeriod = accrualMethod === 'fixed_per_pay_period'
+  const showAccrualMaximum = isHoursWorked || isFixedPerPayPeriod
+  const showWaitingPeriod = isHoursWorked || isFixedPerPayPeriod
 
   const handleSubmit = (data: PolicySettingsFormData) => {
     onContinue(data)
@@ -42,17 +52,20 @@ export function PolicySettingsPresentation({
 
   return (
     <FormProvider {...formMethods}>
-      <HtmlForm onSubmit={formMethods.handleSubmit(handleSubmit)}>
+      <HtmlForm aria-labelledby={headingId} onSubmit={formMethods.handleSubmit(handleSubmit)}>
         <div className={styles.policySettings}>
           <Flex flexDirection="column" gap={32}>
-            <Heading as="h2">{t('policySettings.title')}</Heading>
+            <Heading as="h2" id={headingId}>
+              {t('policySettings.title')}
+            </Heading>
 
             <Flex flexDirection="column" gap={20}>
-              {isHoursWorked && (
+              {showAccrualMaximum && (
                 <>
                   <div className={styles.settingRow}>
                     <NumberInputField
                       className={styles.settingField}
+                      id={accrualMaxInputId}
                       name="accrualMaximum"
                       label={t('policySettings.accrualMaximumLabel')}
                       description={t('policySettings.accrualMaximumHint')}
@@ -66,6 +79,7 @@ export function PolicySettingsPresentation({
                         name="accrualMaximumEnabled"
                         label={t('policySettings.accrualMaximumLabel')}
                         shouldVisuallyHideLabel
+                        aria-controls={accrualMaxInputId}
                       />
                     </div>
                   </div>
@@ -77,6 +91,7 @@ export function PolicySettingsPresentation({
               <div className={styles.settingRow}>
                 <NumberInputField
                   className={styles.settingField}
+                  id={balanceMaxInputId}
                   name="balanceMaximum"
                   label={t('policySettings.balanceMaximumLabel')}
                   description={t('policySettings.balanceMaximumHint')}
@@ -90,6 +105,7 @@ export function PolicySettingsPresentation({
                     name="balanceMaximumEnabled"
                     label={t('policySettings.balanceMaximumLabel')}
                     shouldVisuallyHideLabel
+                    aria-controls={balanceMaxInputId}
                   />
                 </div>
               </div>
@@ -99,6 +115,7 @@ export function PolicySettingsPresentation({
               <div className={styles.settingRow}>
                 <NumberInputField
                   className={styles.settingField}
+                  id={carryOverInputId}
                   name="carryOverLimit"
                   label={t('policySettings.carryOverLimitLabel')}
                   description={t('policySettings.carryOverLimitHint')}
@@ -112,17 +129,19 @@ export function PolicySettingsPresentation({
                     name="carryOverLimitEnabled"
                     label={t('policySettings.carryOverLimitLabel')}
                     shouldVisuallyHideLabel
+                    aria-controls={carryOverInputId}
                   />
                 </div>
               </div>
 
               <hr className={styles.divider} />
 
-              {isHoursWorked && (
+              {showWaitingPeriod && (
                 <>
                   <div className={styles.settingRow}>
                     <NumberInputField
                       className={styles.settingField}
+                      id={waitingPeriodInputId}
                       name="waitingPeriod"
                       label={t('policySettings.waitingPeriodLabel')}
                       description={t('policySettings.waitingPeriodHint')}
@@ -136,6 +155,7 @@ export function PolicySettingsPresentation({
                         name="waitingPeriodEnabled"
                         label={t('policySettings.waitingPeriodLabel')}
                         shouldVisuallyHideLabel
+                        aria-controls={waitingPeriodInputId}
                       />
                     </div>
                   </div>

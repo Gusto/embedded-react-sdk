@@ -17,19 +17,17 @@ export function TokenExpiredOverlay({ onRefresh, isRefreshing, error }: TokenExp
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            strokeWidth="2"
+            strokeWidth="2.5"
             strokeLinecap="round"
             strokeLinejoin="round"
           >
-            <circle cx="12" cy="12" r="10" />
-            <line x1="12" y1="8" x2="12" y2="12" />
-            <line x1="12" y1="16" x2="12.01" y2="16" />
+            <polyline points="20 6 9 17 4 12" />
           </svg>
         </div>
-        <h2 className={styles.title}>Demo Token Expired</h2>
+        <h2 className={styles.title}>Time for a New Company!</h2>
         <p className={styles.description}>
-          Your demo session has expired. This will create a fresh demo environment with a new token
-          and reload the page. It typically takes 1–2 minutes.
+          Your demo token has expired — the perfect excuse for a fresh start. We&apos;ll spin up a
+          brand new demo company and reload the page. It typically takes 1–2 minutes.
         </p>
         <button
           className={styles.refreshBtn}
@@ -40,15 +38,15 @@ export function TokenExpiredOverlay({ onRefresh, isRefreshing, error }: TokenExp
           {isRefreshing ? (
             <>
               <span className={styles.spinner} />
-              Creating New Demo…
+              Building Your New Company…
             </>
           ) : (
-            'Refresh Demo'
+            'New Demo Company!'
           )}
         </button>
         {isRefreshing && (
           <p className={styles.progress}>
-            Provisioning a new demo environment. The page will reload automatically.
+            Your new demo company is being set up. The page will reload when it&apos;s ready.
           </p>
         )}
         {error && <p className={styles.error}>{error}</p>}

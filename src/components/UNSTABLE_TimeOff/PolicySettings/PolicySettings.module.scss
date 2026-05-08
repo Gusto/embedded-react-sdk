@@ -1,8 +1,7 @@
 .policySettings {
-  --g-inputLabelColor: #414651;
+  --g-inputLabelColor: var(--g-colorBodySubContent);
   --g-inputLabelFontSize: #{toRem(14)};
-  --g-inputDescriptionColor: #535862;
-  color: #181d27;
+  --g-inputDescriptionColor: var(--g-colorSecondaryContent);
   width: 100%;
 }
 

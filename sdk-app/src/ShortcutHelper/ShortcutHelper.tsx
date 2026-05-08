@@ -13,6 +13,8 @@ const SHORTCUTS: Shortcut[] = [
   { keys: ['?'], label: 'Show keyboard shortcuts' },
   { keys: [MOD, 'K'], label: 'Open page search' },
   { keys: ['\\'], label: 'Hide chrome' },
+  { keys: [MOD, 'B'], label: 'Toggle sidebar' },
+  { keys: [MOD, 'E'], label: 'Toggle code panel' },
   { keys: ['Esc'], label: 'Restore chrome (when hidden)' },
   { keys: [MOD, ','], label: 'Open settings' },
   { keys: [MOD, '.'], label: 'Toggle design / development' },

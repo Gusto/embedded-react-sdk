@@ -568,22 +568,23 @@ type PaginationItemsPerPage = 5 | 10 | 50
 
 ## SwitchProps
 
-| Prop                        | Type                            | Required | Description                                                            |
-| --------------------------- | ------------------------------- | -------- | ---------------------------------------------------------------------- |
-| **onBlur**                  | `() => void`                    | No       | Handler for blur events                                                |
-| **onChange**                | `(checked: boolean) => void`    | No       | Callback when switch state changes                                     |
-| **value**                   | `boolean`                       | No       | Current checked state of the switch                                    |
-| **inputRef**                | `Ref<HTMLInputElement \| null>` | No       | React ref for the switch input element                                 |
-| **isInvalid**               | `boolean`                       | No       | Indicates that the field has an error                                  |
-| **isDisabled**              | `boolean`                       | No       | Disables the switch and prevents interaction                           |
-| **className**               | `string`                        | No       | Additional CSS class name for the switch container                     |
-| **label**                   | `string`                        | Yes      | Label text for the switch                                              |
-| **description**             | `React.ReactNode`               | No       | Optional description text for the field                                |
-| **errorMessage**            | `string`                        | No       | Error message to display when the field is invalid                     |
-| **isRequired**              | `boolean`                       | No       | Indicates if the field is required                                     |
-| **shouldVisuallyHideLabel** | `boolean`                       | No       | Hides the label visually while keeping it accessible to screen readers |
-| **id**                      | `string`                        | No       | -                                                                      |
-| **name**                    | `string`                        | No       | -                                                                      |
+| Prop                        | Type                            | Required | Description                                                                                            |
+| --------------------------- | ------------------------------- | -------- | ------------------------------------------------------------------------------------------------------ |
+| **onBlur**                  | `() => void`                    | No       | Handler for blur events                                                                                |
+| **onChange**                | `(checked: boolean) => void`    | No       | Callback when switch state changes                                                                     |
+| **value**                   | `boolean`                       | No       | Current checked state of the switch                                                                    |
+| **inputRef**                | `Ref<HTMLInputElement \| null>` | No       | React ref for the switch input element                                                                 |
+| **isInvalid**               | `boolean`                       | No       | Indicates that the field has an error                                                                  |
+| **isDisabled**              | `boolean`                       | No       | Disables the switch and prevents interaction                                                           |
+| **className**               | `string`                        | No       | Additional CSS class name for the switch container                                                     |
+| **label**                   | `string`                        | Yes      | Label text for the switch                                                                              |
+| **description**             | `React.ReactNode`               | No       | Optional description text for the field                                                                |
+| **errorMessage**            | `string`                        | No       | Error message to display when the field is invalid                                                     |
+| **isRequired**              | `boolean`                       | No       | Indicates if the field is required                                                                     |
+| **shouldVisuallyHideLabel** | `boolean`                       | No       | Hides the label visually while keeping it accessible to screen readers                                 |
+| **id**                      | `string`                        | No       | -                                                                                                      |
+| **name**                    | `string`                        | No       | -                                                                                                      |
+| **aria-controls**           | `string`                        | No       | Identifies the element (or elements) whose contents or presence are controlled by the current element. |
 
 ## TableProps
 
