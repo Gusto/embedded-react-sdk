@@ -135,7 +135,7 @@ export function DatePicker({
                 })}
               >
                 {label}
-                {isRequired && <span aria-hidden="true"> *</span>}
+                {!isRequired && <span className={styles.optional}> (optional)</span>}
               </span>
               <span className={styles.value}>
                 {value ? (

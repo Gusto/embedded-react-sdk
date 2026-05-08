@@ -84,7 +84,7 @@ export function TextInput({
             })}
           >
             {label}
-            {isRequired && <span aria-hidden="true"> *</span>}
+            {!isRequired && <span className={styles.optional}> (optional)</span>}
           </span>
         </label>
 

@@ -35,3 +35,14 @@ html {
   margin-top: 2px;
   font-size: 16px;
 }
+
+/* SDK-internal switch-field wrapper — no exposed adapter prop, so override
+   here. Class name is CSS-module-hashed (e.g. _switchFieldContainer_v19ck_5),
+   so match by prefix. */
+[class^='_switchFieldContainer_'],
+[class*=' _switchFieldContainer_'] {
+  border-radius: 0;
+  border: 1px solid #d9d9d9;
+  box-shadow: none;
+  padding: 16px;
+}

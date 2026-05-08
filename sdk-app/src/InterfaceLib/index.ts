@@ -1,4 +1,4 @@
-import './fonts.css'
+import './global.css'
 import { Button, ButtonIcon } from './Button'
 import { Heading } from './Heading'
 import { Text } from './Text'
@@ -10,6 +10,7 @@ import { Tabs } from './Tabs'
 import { Badge } from './Badge'
 import { Alert } from './Alert'
 import { DatePicker } from './DatePicker'
+import { Switch } from './Switch'
 
 export {
   Button,
@@ -24,6 +25,7 @@ export {
   Badge,
   Alert,
   DatePicker,
+  Switch,
 }
 
 export const interfaceLibComponents = {
@@ -39,4 +41,5 @@ export const interfaceLibComponents = {
   Badge,
   Alert,
   DatePicker,
+  Switch,
 }
