@@ -17,6 +17,7 @@ export function PolicySettingsPresentation({
   useI18n('Company.TimeOff.CreateTimeOffPolicy')
   const { t } = useTranslation('Company.TimeOff.CreateTimeOffPolicy')
   const { Heading, Button } = useComponentContext()
+  const headingId = useId()
 
   const accrualMaxInputId = useId()
   const balanceMaxInputId = useId()
@@ -41,6 +42,9 @@ export function PolicySettingsPresentation({
   const waitingPeriodEnabled = useWatch({ control, name: 'waitingPeriodEnabled' })
 
   const isHoursWorked = accrualMethod === 'hours_worked'
+  const isFixedPerPayPeriod = accrualMethod === 'fixed_per_pay_period'
+  const showAccrualMaximum = isHoursWorked || isFixedPerPayPeriod
+  const showWaitingPeriod = isHoursWorked || isFixedPerPayPeriod
 
   const handleSubmit = (data: PolicySettingsFormData) => {
     onContinue(data)
@@ -48,13 +52,15 @@ export function PolicySettingsPresentation({
 
   return (
     <FormProvider {...formMethods}>
-      <HtmlForm onSubmit={formMethods.handleSubmit(handleSubmit)}>
+      <HtmlForm aria-labelledby={headingId} onSubmit={formMethods.handleSubmit(handleSubmit)}>
         <div className={styles.policySettings}>
           <Flex flexDirection="column" gap={32}>
-            <Heading as="h2">{t('policySettings.title')}</Heading>
+            <Heading as="h2" id={headingId}>
+              {t('policySettings.title')}
+            </Heading>
 
             <Flex flexDirection="column" gap={20}>
-              {isHoursWorked && (
+              {showAccrualMaximum && (
                 <>
                   <div className={styles.settingRow}>
                     <NumberInputField
@@ -130,7 +136,7 @@ export function PolicySettingsPresentation({
 
               <hr className={styles.divider} />
 
-              {isHoursWorked && (
+              {showWaitingPeriod && (
                 <>
                   <div className={styles.settingRow}>
                     <NumberInputField

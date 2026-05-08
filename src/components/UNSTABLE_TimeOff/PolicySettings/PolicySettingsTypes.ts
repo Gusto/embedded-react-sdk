@@ -1,4 +1,7 @@
-export type PolicySettingsAccrualMethod = 'hours_worked' | 'fixed'
+export type PolicySettingsAccrualMethod =
+  | 'hours_worked'
+  | 'fixed_per_pay_period'
+  | 'fixed_all_at_once'
 
 export interface PolicySettingsFormData {
   accrualMaximumEnabled: boolean
