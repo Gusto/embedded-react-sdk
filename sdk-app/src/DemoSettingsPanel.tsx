@@ -12,6 +12,7 @@ import type { TokenStatus } from './useDemoManager'
 import type { EntityCatalog } from './useEntityCatalog'
 import type { EntityOption } from './entityFormatters'
 import type { AppMode, ManualConfig, ManualConfigSaves } from './useManualConfig'
+import { demoChromes } from './demoChromes/registry'
 import styles from './DemoSettingsPanel.module.scss'
 
 interface DemoSettingsPanelProps {
@@ -34,6 +35,8 @@ interface DemoSettingsPanelProps {
   onApplyManualConfig: (next: ManualConfig) => Promise<void>
   onSaveManualConfig: (name: string, config: ManualConfig) => void
   onDeleteManualSave: (name: string) => void
+  chromeId: string
+  onChromeIdChange: (next: string) => void
 }
 
 const MANUAL_FIELDS: { key: keyof ManualConfig; label: string; required?: boolean }[] = [
@@ -373,6 +376,8 @@ export function DemoSettingsPanel({
   onApplyManualConfig,
   onSaveManualConfig,
   onDeleteManualSave,
+  chromeId,
+  onChromeIdChange,
 }: DemoSettingsPanelProps) {
   const currentDemoType = import.meta.env.VITE_DEMO_TYPE || 'react_sdk_demo_company_onboarded'
   const [selectedDemoType, setSelectedDemoType] = useState(currentDemoType)
@@ -816,6 +821,29 @@ export function DemoSettingsPanel({
             </div>
           </div>
         )}
+
+        <div className={styles.section}>
+          <h3>Chrome</h3>
+          <div className={styles.field}>
+            <label htmlFor="demo-chrome-select">Demo chrome</label>
+            <select
+              id="demo-chrome-select"
+              value={chromeId}
+              onChange={e => {
+                onChromeIdChange(e.target.value)
+              }}
+            >
+              {demoChromes.map(entry => (
+                <option key={entry.id} value={entry.id}>
+                  {entry.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className={styles.info}>
+            {demoChromes.find(entry => entry.id === chromeId)?.description}
+          </div>
+        </div>
 
         <div className={styles.section}>
           <h3>Environment</h3>

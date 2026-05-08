@@ -1,5 +1,5 @@
 import type React from 'react'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
 import { TopBar } from './TopBar'
 import { Sidebar } from './Sidebar'
@@ -18,6 +18,8 @@ import { useGlobalShortcut } from './useGlobalShortcut'
 import { useCodePanel } from './useCodePanel'
 import { CodePanel } from './CodePanel'
 import { CurrentComponentProvider } from './CurrentComponentContext'
+import { useDemoChrome } from './useDemoChrome'
+import { findDemoChrome, SDK_NATIVE_CHROME_ID } from './demoChromes/registry'
 
 const THEME_CYCLE: ThemeMode[] = ['system', 'light', 'dark']
 
@@ -39,7 +41,20 @@ export function App() {
   const manual = useManualConfig()
   const isManual = manual.mode === 'manual'
   const { entities, updateEntity, replaceEntities, resetToDefaults } = useEntities()
-  const activeEntities = isManual ? entitiesFromManualConfig(manual.config) : entities
+  const activeEntities = useMemo(
+    () => (isManual ? entitiesFromManualConfig(manual.config) : entities),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      isManual,
+      entities,
+      manual.config.companyId,
+      manual.config.employeeId,
+      manual.config.contractorId,
+      manual.config.payrollId,
+      manual.config.formId,
+      manual.config.requestId,
+    ],
+  )
   const entityCatalog = useEntityCatalog(isManual ? '' : entities.companyId)
   const demoManager = useDemoManager({ pollingDisabled: isManual })
   const appMode = useAppMode()
@@ -48,6 +63,8 @@ export function App() {
   const shortcutHelper = useShortcutHelper()
   const navigate = useNavigate()
   const codePanel = useCodePanel()
+  const { chromeId, setChromeId } = useDemoChrome()
+  const customChrome = chromeId !== SDK_NATIVE_CHROME_ID ? findDemoChrome(chromeId) : undefined
 
   const openSettings = useCallback(() => {
     setSettingsOpen(true)
@@ -131,40 +148,54 @@ export function App() {
 
   const sidebarWidth = chromeHidden ? '0rem' : sidebarOpen ? '16.25rem' : '2.75rem'
 
+  const outletEl = <Outlet context={{ entities: activeEntities, chromeHidden }} />
+  const chromedOutlet = customChrome ? (
+    <customChrome.Chrome onOpenSettings={openSettings}>{outletEl}</customChrome.Chrome>
+  ) : (
+    outletEl
+  )
+  const mainEl = (
+    <main
+      className="main-content"
+      style={{ '--sidebar-width': sidebarWidth } as React.CSSProperties}
+    >
+      {chromedOutlet}
+    </main>
+  )
+
+  const bodyEl = chromeHidden ? (
+    mainEl
+  ) : (
+    <>
+      <TopBar
+        companyId={activeEntities.companyId}
+        tokenStatus={demoManager.tokenStatus}
+        onOpenSettings={openSettings}
+        onToggleCode={codePanel.toggle}
+        codeOpen={codePanel.isOpen}
+      />
+      <div className="app-body">
+        <Sidebar
+          mode={appMode}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          isOpen={sidebarOpen}
+          onToggle={() => {
+            setSidebarOpen(open => !open)
+          }}
+          onShowShortcuts={shortcutHelper.open}
+        />
+        {mainEl}
+        {codePanel.isOpen && <CodePanel onClose={codePanel.close} />}
+      </div>
+    </>
+  )
+
   return (
     <ThemeModeProvider value={themeMode}>
       <CurrentComponentProvider>
         <div className={`app-layout${chromeHidden ? ' app-layout-chrome-hidden' : ''}`}>
-          {!chromeHidden && (
-            <TopBar
-              companyId={activeEntities.companyId}
-              tokenStatus={demoManager.tokenStatus}
-              onOpenSettings={openSettings}
-              onToggleCode={codePanel.toggle}
-              codeOpen={codePanel.isOpen}
-            />
-          )}
-          <div className="app-body">
-            {!chromeHidden && (
-              <Sidebar
-                mode={appMode}
-                searchQuery={searchQuery}
-                onSearchChange={setSearchQuery}
-                isOpen={sidebarOpen}
-                onToggle={() => {
-                  setSidebarOpen(open => !open)
-                }}
-                onShowShortcuts={shortcutHelper.open}
-              />
-            )}
-            <main
-              className="main-content"
-              style={{ '--sidebar-width': sidebarWidth } as React.CSSProperties}
-            >
-              <Outlet context={{ entities: activeEntities, chromeHidden }} />
-            </main>
-            {codePanel.isOpen && !chromeHidden && <CodePanel onClose={codePanel.close} />}
-          </div>
+          {bodyEl}
           {chromeHidden && (
             <button
               type="button"
@@ -197,6 +228,8 @@ export function App() {
             onApplyManualConfig={handleApplyManualConfig}
             onSaveManualConfig={manual.saveConfig}
             onDeleteManualSave={manual.deleteSave}
+            chromeId={chromeId}
+            onChromeIdChange={setChromeId}
           />
           <ShortcutHelper isOpen={shortcutHelper.isOpen} onClose={shortcutHelper.close} />
           {!isManual && demoManager.tokenStatus === 'expired' && (
