@@ -1,3 +1,4 @@
+import { useId } from 'react'
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import type { PolicySettingsFormData, PolicySettingsPresentationProps } from './PolicySettingsTypes'
@@ -16,6 +17,7 @@ export function PolicySettingsPresentation({
   useI18n('Company.TimeOff.CreateTimeOffPolicy')
   const { t } = useTranslation('Company.TimeOff.CreateTimeOffPolicy')
   const { Heading, Button } = useComponentContext()
+  const headingId = useId()
 
   const formMethods = useForm<PolicySettingsFormData>({
     defaultValues: {
@@ -45,10 +47,12 @@ export function PolicySettingsPresentation({
 
   return (
     <FormProvider {...formMethods}>
-      <HtmlForm onSubmit={formMethods.handleSubmit(handleSubmit)}>
+      <HtmlForm aria-labelledby={headingId} onSubmit={formMethods.handleSubmit(handleSubmit)}>
         <div className={styles.policySettings}>
           <Flex flexDirection="column" gap={32}>
-            <Heading as="h2">{t('policySettings.title')}</Heading>
+            <Heading as="h2" id={headingId}>
+              {t('policySettings.title')}
+            </Heading>
 
             <Flex flexDirection="column" gap={20}>
               {showAccrualMaximum && (
