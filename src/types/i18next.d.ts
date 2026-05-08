@@ -259,7 +259,6 @@ export interface CompanyPaySchedule{
 "inactive":string;
 "edit":string;
 };
-"payScheduleListLabel":string;
 "headings":{
 "addPaySchedule":string;
 "editPaySchedule":string;
@@ -551,6 +550,7 @@ export interface CompanyTimeOffPolicyDetail{
 "employees":string;
 };
 "backLabel":string;
+"employeeActions":string;
 "removeEmployeeDialog":{
 "title":string;
 "description":string;

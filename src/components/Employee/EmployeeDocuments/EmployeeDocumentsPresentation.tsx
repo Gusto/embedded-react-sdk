@@ -47,10 +47,10 @@ export const EmployeeDocumentsPresentation = ({
     <FormProvider {...formMethods}>
       <Form id={EMPLOYEE_DOCUMENTS_FORM_ID} onSubmit={formMethods.handleSubmit(onSubmit)}>
         <Flex flexDirection="column" gap={16}>
-          <Flex flexDirection="column" gap={4}>
+          <FlexItem>
             <Heading as="h2">{t('selfOnboarding.title')}</Heading>
             <Text variant="supporting">{t('selfOnboarding.description')}</Text>
-          </Flex>
+          </FlexItem>
 
           <Heading as="h3">{t('selfOnboarding.documentsIncludedLabel')}</Heading>
           <FlexItem>
@@ -104,28 +104,27 @@ export const EmployeeDocumentsPresentation = ({
   )
 
   const renderNotSelfOnboarding = () => (
-    <Flex flexDirection="column" gap={32}>
-      <Flex flexDirection="column" gap={4}>
+    <Flex flexDirection="column" gap={16}>
+      <FlexItem>
         <Heading as="h2">{t('notSelfOnboarding.title')}</Heading>
-        <Text variant="supporting">{t('notSelfOnboarding.description')}</Text>
-      </Flex>
-      <Flex flexDirection="column" gap={20}>
-        <FlexItem>
-          <Text weight="medium">{t('notSelfOnboarding.employmentEligibilityLabel')}</Text>
-          <Text variant="supporting">
-            {t('notSelfOnboarding.employmentEligibilityDescription')}
-          </Text>
-        </FlexItem>
+        <Text>{t('notSelfOnboarding.description')}</Text>
+      </FlexItem>
 
-        <FlexItem>
-          <Text weight="medium">{t('notSelfOnboarding.taxWithholdingLabel')}</Text>
-          <Text variant="supporting">{t('notSelfOnboarding.taxWithholdingDescription')}</Text>
-        </FlexItem>
-        <FlexItem>
-          <Text weight="medium">{t('notSelfOnboarding.directDepositLabel')}</Text>
-          <Text variant="supporting">{t('notSelfOnboarding.directDepositDescription')}</Text>
-        </FlexItem>
-      </Flex>
+      <FlexItem>
+        <Text weight="medium">{t('notSelfOnboarding.employmentEligibilityLabel')}</Text>
+        <Text>{t('notSelfOnboarding.employmentEligibilityDescription')}</Text>
+      </FlexItem>
+
+      <FlexItem>
+        <Text weight="medium">{t('notSelfOnboarding.taxWithholdingLabel')}</Text>
+        <Text>{t('notSelfOnboarding.taxWithholdingDescription')}</Text>
+      </FlexItem>
+
+      <FlexItem>
+        <Text weight="medium">{t('notSelfOnboarding.directDepositLabel')}</Text>
+        <Text>{t('notSelfOnboarding.directDepositDescription')}</Text>
+      </FlexItem>
+
       <Alert status="info" label={t('notSelfOnboarding.alertTitle')} disableScrollIntoView></Alert>
     </Flex>
   )

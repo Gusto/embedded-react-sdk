@@ -273,3 +273,8 @@ export function formatMonthDay(month?: number, day?: number): string | undefined
   if (month == null || day == null) return undefined
   return `${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
 }
+
+/** Returns the number of days in a given month (1-indexed). Uses a non-leap year so February always returns 28. */
+export function getDaysInMonth(month: number): number {
+  return new Date(2023, month, 0).getDate()
+}

@@ -18,6 +18,7 @@ interface SidebarProps {
   onSearchChange: (query: string) => void
   isOpen: boolean
   onToggle: () => void
+  onShowShortcuts: () => void
 }
 
 function CategorySection({
@@ -83,7 +84,14 @@ function CategorySection({
   )
 }
 
-export function Sidebar({ mode, searchQuery, onSearchChange, isOpen, onToggle }: SidebarProps) {
+export function Sidebar({
+  mode,
+  searchQuery,
+  onSearchChange,
+  isOpen,
+  onToggle,
+  onShowShortcuts,
+}: SidebarProps) {
   const placeholder = mode === 'design' ? 'Search prototypes...' : 'Search components...'
 
   if (!isOpen) {
@@ -105,6 +113,14 @@ export function Sidebar({ mode, searchQuery, onSearchChange, isOpen, onToggle }:
   return (
     <aside className={styles.root}>
       <div className={styles.search}>
+        <button
+          type="button"
+          className={styles.shortcutHint}
+          onClick={onShowShortcuts}
+          aria-label="Show keyboard shortcuts"
+        >
+          Press <kbd className={styles.shortcutHintKey}>?</kbd> for shortcuts
+        </button>
         <div className={styles.searchRow}>
           <input
             type="text"

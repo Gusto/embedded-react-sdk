@@ -56,9 +56,9 @@ function Root({ className, dictionary }: IncludeDeductionsProps) {
         {/* TODO: Replace with proper empty state component for DataViews */}
         <section className={styles.emptyStateContainer}>
           <Flex flexDirection="column" gap={16} justifyContent="center" alignItems="center">
-            <div className={styles.coinHandsIconContainer}>
+            <section className={styles.coinHandsIconContainer}>
               <CoinsHandsIcon width={24} height={24} />
-            </div>
+            </section>
             <Components.Text weight="bold">{t('includeDeductionsEmptyState')}</Components.Text>
             <Components.Button
               type="button"

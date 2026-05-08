@@ -94,7 +94,7 @@ function Root({ companyId, children, className, defaultValues, dictionary }: Fed
       >
         <FormProvider {...formMethods}>
           <HtmlForm onSubmit={formMethods.handleSubmit(handleSubmit)}>
-            <Flex flexDirection="column" gap={32} alignItems="stretch">
+            <Flex flexDirection="column" gap={32}>
               {children ? (
                 children
               ) : (

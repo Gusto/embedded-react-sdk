@@ -1,4 +1,4 @@
-import { Suspense, useState, useCallback, Component, type ReactNode } from 'react'
+import { Suspense, useState, useCallback, useEffect, Component, type ReactNode } from 'react'
 import { useParams } from 'react-router-dom'
 import { findComponent, CATEGORIES } from './registry'
 import { resolveDefaults } from './component-defaults'
@@ -6,10 +6,12 @@ import { useResolvedTheme } from './useThemeModeContext'
 import { darkTheme } from './darkTheme'
 import type { EntityIds } from './useEntities'
 import styles from './ComponentRenderer.module.scss'
+import { useCurrentComponentRegistry } from './useCurrentComponent'
 import { GustoProvider } from '@/contexts'
 
 interface ComponentRendererProps {
   entities: EntityIds
+  chromeHidden?: boolean
 }
 
 interface EventLogEntry {
@@ -118,12 +120,13 @@ class ComponentErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundary
   }
 }
 
-export function ComponentRenderer({ entities }: ComponentRendererProps) {
+export function ComponentRenderer({ entities, chromeHidden = false }: ComponentRendererProps) {
   const { category, component: componentName } = useParams<{
     category: string
     component: string
   }>()
   const resolvedTheme = useResolvedTheme()
+  const { register, unregister } = useCurrentComponentRegistry()
   const [events, setEvents] = useState<EventLogEntry[]>([])
   const [eventsOpen, setEventsOpen] = useState(false)
   const [resetKey, setResetKey] = useState(0)
@@ -136,6 +139,20 @@ export function ComponentRenderer({ entities }: ComponentRendererProps) {
     setEvents(prev => [entry, ...prev].slice(0, 100))
   }, [])
 
+  const matchedCategory = category
+    ? CATEGORIES.find(c => c.toLowerCase() === category.toLowerCase())
+    : undefined
+  const entry =
+    matchedCategory && componentName ? findComponent(matchedCategory, componentName) : undefined
+
+  useEffect(() => {
+    if (entry) register({ entry, entities })
+    else unregister()
+    return () => {
+      unregister()
+    }
+  }, [entry, entities, register, unregister])
+
   if (!category || !componentName) {
     return (
       <div className={styles.contentBody}>
@@ -143,9 +160,6 @@ export function ComponentRenderer({ entities }: ComponentRendererProps) {
       </div>
     )
   }
-
-  const matchedCategory = CATEGORIES.find(c => c.toLowerCase() === category.toLowerCase())
-  const entry = matchedCategory ? findComponent(matchedCategory, componentName) : undefined
 
   if (!entry) {
     return (
@@ -201,9 +215,11 @@ export function ComponentRenderer({ entities }: ComponentRendererProps) {
 
   return (
     <>
-      <div className={styles.contentHeader}>
-        {displayCategory} &rsaquo; <span>{entry.name}</span>
-      </div>
+      {!chromeHidden && (
+        <div className={styles.contentHeader}>
+          {displayCategory} &rsaquo; <span>{entry.name}</span>
+        </div>
+      )}
       {missingIds.length > 0 || missingAdditionalProps.length > 0 ? (
         <div className={styles.componentContainer}>
           <div className={styles.contentBody}>
@@ -268,37 +284,39 @@ export function ComponentRenderer({ entities }: ComponentRendererProps) {
           </div>
         </div>
       )}
-      <div className={styles.eventsLog}>
-        <div className={styles.eventsLogHeader}>
-          <span>Events Log ({events.length})</span>
-          <button
-            className={styles.eventsLogToggle}
-            onClick={() => {
-              setEventsOpen(o => !o)
-            }}
-            type="button"
-          >
-            {eventsOpen ? 'Collapse' : 'Expand'}
-          </button>
+      {!chromeHidden && (
+        <div className={styles.eventsLog}>
+          <div className={styles.eventsLogHeader}>
+            <span>Events Log ({events.length})</span>
+            <button
+              className={styles.eventsLogToggle}
+              onClick={() => {
+                setEventsOpen(o => !o)
+              }}
+              type="button"
+            >
+              {eventsOpen ? 'Collapse' : 'Expand'}
+            </button>
+          </div>
+          {eventsOpen &&
+            (events.length > 0 ? (
+              <div className={styles.eventsLogEntries}>
+                {events.map((entry, i) => (
+                  <div key={i} className={styles.eventsLogEntry}>
+                    <span className={styles.eventsLogTimestamp}>[{entry.timestamp}]</span>{' '}
+                    {typeof entry.event === 'object'
+                      ? JSON.stringify(entry.event, null, 2)
+                      : JSON.stringify(entry.event)}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className={styles.eventsLogEmpty}>
+                No events yet. Interact with the component above.
+              </div>
+            ))}
         </div>
-        {eventsOpen &&
-          (events.length > 0 ? (
-            <div className={styles.eventsLogEntries}>
-              {events.map((entry, i) => (
-                <div key={i} className={styles.eventsLogEntry}>
-                  <span className={styles.eventsLogTimestamp}>[{entry.timestamp}]</span>{' '}
-                  {typeof entry.event === 'object'
-                    ? JSON.stringify(entry.event, null, 2)
-                    : JSON.stringify(entry.event)}
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className={styles.eventsLogEmpty}>
-              No events yet. Interact with the component above.
-            </div>
-          ))}
-      </div>
+      )}
     </>
   )
 }

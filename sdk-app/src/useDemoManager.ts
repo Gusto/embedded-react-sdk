@@ -10,7 +10,11 @@ interface DemoManagerState {
   demoError: string | null
 }
 
-export function useDemoManager() {
+interface UseDemoManagerOptions {
+  pollingDisabled?: boolean
+}
+
+export function useDemoManager({ pollingDisabled = false }: UseDemoManagerOptions = {}) {
   const [state, setState] = useState<DemoManagerState>({
     tokenStatus: 'unknown',
     isCreatingDemo: false,
@@ -44,6 +48,10 @@ export function useDemoManager() {
 
   useEffect(() => {
     if (proxyMode === 'none') return
+    if (pollingDisabled) {
+      setState(prev => ({ ...prev, tokenStatus: 'unknown' }))
+      return
+    }
 
     void checkTokenHealth()
 
@@ -54,7 +62,7 @@ export function useDemoManager() {
     return () => {
       clearInterval(pollRef.current)
     }
-  }, [proxyMode, checkTokenHealth])
+  }, [proxyMode, pollingDisabled, checkTokenHealth])
 
   const createNewDemo = useCallback(
     async (demoType: string = 'react_sdk_demo_company_onboarded') => {
