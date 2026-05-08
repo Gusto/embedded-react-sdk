@@ -208,7 +208,7 @@ describe('SelectEmployeesPresentation', () => {
         balances: {},
         onBalanceChange,
       })
-      const inputs = screen.getAllByLabelText('startingBalanceColumn')
+      const inputs = screen.getAllByPlaceholderText('0')
       await userEvent.type(inputs[0] as Element, '4')
       expect(onBalanceChange).toHaveBeenCalledWith('1', '4')
     })
