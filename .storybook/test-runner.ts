@@ -58,6 +58,23 @@ const titleToBaselineId = (title: string) =>
     .replace(/^-+|-+$/g, '')
 
 const config: TestRunnerConfig = {
+  // Visual smoke tests should be JUST visual: load the story, screenshot,
+  // compare. The default test-storybook pipeline also runs @storybook/addon-a11y
+  // in `afterEach`, which calls `axe.run()` against the document body before
+  // STORY_FINISHED fires. We've seen this deadlock under headless Linux
+  // Chromium for stories that mount with an open <dialog> (axe is the most
+  // plausible suspect: STORY_RENDERED runs first, applyAfterEach is what's
+  // outstanding). Skip the a11y addon by setting its `manual` global —
+  // Storybook UI is unaffected, and a11y is verified separately in unit tests.
+  async prepare({ page, browserContext, testRunnerConfig: cfg }) {
+    const target = process.env.TARGET_URL ?? ''
+    const iframeURL = new URL('iframe.html', target)
+    iframeURL.searchParams.set('globals', 'a11y.manual:!true')
+    if (cfg?.getHttpHeaders) {
+      await browserContext.setExtraHTTPHeaders(await cfg.getHttpHeaders(iframeURL.toString()))
+    }
+    await page.goto(iframeURL.toString(), { waitUntil: 'load' })
+  },
   async postVisit(page, context) {
     const storyContext = await getStoryContext(page, context)
 
