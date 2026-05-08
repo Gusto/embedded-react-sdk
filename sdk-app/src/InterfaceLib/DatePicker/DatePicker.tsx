@@ -118,6 +118,16 @@ export function DatePicker({
               [styles.fieldWithTooltip as string]: !!description,
             })}
           >
+            <span className={styles.leadingIcon} aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M19.8333 3.5H17.5V5.83333H10.5V3.5H8.16667V5.83333C6.23001 5.83333 4.66667 7.39667 4.66667 9.33333V10.5V12.8333V21C4.66667 22.9367 6.23001 24.5 8.16667 24.5H19.8333C21.77 24.5 23.3333 22.9367 23.3333 21V12.8333V10.5V9.33333C23.3333 7.39667 21.77 5.83333 19.8333 5.83333V3.5ZM21 9.33333C21 8.69167 20.475 8.16667 19.8333 8.16667H8.16667C7.52501 8.16667 7.00001 8.69167 7.00001 9.33333V10.5H21V9.33333ZM7.00001 12.8333V21C7.00001 21.6417 7.52501 22.1667 8.16667 22.1667H19.8333C20.475 22.1667 21 21.6417 21 21V12.8333H7.00001Z"
+                  fill="currentColor"
+                />
+              </svg>
+            </span>
             <span className={styles.valueArea}>
               <span
                 className={classNames(styles.label, {
@@ -172,7 +182,7 @@ export function DatePicker({
                 <Button slot="previous" className={styles.navButton} aria-label="Previous month">
                   <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
                     <path
-                      d="M20 11H7.83l4.59-4.59L11 5l-7 7 7 7 1.41-1.41L7.83 13H20z"
+                      d="M12.2074 5.20654L6.41445 10.9995H20.0004V12.9995H6.41445L12.2074 18.7925L10.7934 20.2065L3.29336 12.7065C2.90288 12.316 2.90285 11.683 3.29336 11.2925L10.7934 3.79248L12.2074 5.20654Z"
                       fill="currentColor"
                     />
                   </svg>
@@ -181,7 +191,7 @@ export function DatePicker({
                 <Button slot="next" className={styles.navButton} aria-label="Next month">
                   <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
                     <path
-                      d="M13 5l-1.41 1.41L16.17 11H4v2h12.17l-4.58 4.59L13 19l7-7z"
+                      d="M20.7075 11.2925C20.8949 11.4799 21.0004 11.7345 21.0005 11.9995C21.0005 12.2645 20.8948 12.519 20.7075 12.7065L13.2075 20.2065L11.7935 18.7925L17.5864 12.9995H4.00049V10.9995H17.5864L11.7935 5.20654L13.2075 3.79248L20.7075 11.2925Z"
                       fill="currentColor"
                     />
                   </svg>
