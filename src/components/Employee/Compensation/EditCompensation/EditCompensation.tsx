@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import classNames from 'classnames'
 import { Trans, useTranslation } from 'react-i18next'
 import type { PaymentUnit } from '@gusto/embedded-api/models/components/compensation'
 import type { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
@@ -6,6 +7,7 @@ import type { MinimumWage } from '@gusto/embedded-api/models/components/minimumw
 import type { CompensationDefaultValues } from '../Compensation'
 import { useJobForm, type UseJobFormReady } from '../shared/useJobForm'
 import { useCompensationForm, type UseCompensationFormReady } from '../shared/useCompensationForm'
+import styles from './EditCompensation.module.scss'
 import { BaseBoundaries, BaseLayout, type CommonComponentInterface } from '@/components/Base'
 import type { OnEventType } from '@/components/Base/useBase'
 import { ActionsLayout, Flex } from '@/components/Common'
@@ -153,7 +155,7 @@ function Root({
   const isPending = jobForm.status.isPending || compensationForm.status.isPending
 
   return (
-    <section className={className}>
+    <section className={classNames(styles.container, className)}>
       <BaseLayout error={errorHandling.errors}>
         <Form onSubmit={submitResult.handleSubmit}>
           <FormBody
