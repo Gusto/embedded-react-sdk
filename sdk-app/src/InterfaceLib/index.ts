@@ -11,6 +11,7 @@ import { Badge } from './Badge'
 import { Alert } from './Alert'
 import { DatePicker } from './DatePicker'
 import { Switch } from './Switch'
+import { ComboBox } from './ComboBox'
 
 export {
   Button,
@@ -26,6 +27,7 @@ export {
   Alert,
   DatePicker,
   Switch,
+  ComboBox,
 }
 
 export const interfaceLibComponents = {
@@ -42,4 +44,5 @@ export const interfaceLibComponents = {
   Alert,
   DatePicker,
   Switch,
+  ComboBox,
 }
