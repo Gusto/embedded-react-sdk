@@ -70,7 +70,7 @@ export interface UseJobFormReady extends BaseFormHookReady<
   data: {
     /** The job row loaded for update; `null` in create mode. */
     currentJob: Job | null
-    /** All jobs for the employee, when employeeId is set. Useful for screen-level cross-checks (e.g. carve-out detection). */
+    /** All jobs for the employee, when employeeId is set. Useful for screen-level cross-checks across jobs. */
     jobs: Job[] | undefined
     employee: Employee | null
     currentWorkAddress: EmployeeWorkAddress | null

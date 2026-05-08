@@ -58,7 +58,7 @@ export interface CompensationSubmitOptions {
 
 export interface UseCompensationFormProps {
   employeeId?: string
-  /** When updating, the parent job's UUID. Used to scope minimum wages and to derive carve-out helpers. */
+  /** When updating, the parent job's UUID. Used to scope minimum wages and to derive `status.willDeleteSecondaryJobs`. */
   jobId?: string
   /** Present → update mode (PUT /v1/compensations/:id). Omitted → create mode (POST /v1/jobs/:jobId/compensations). */
   compensationId?: string
@@ -89,16 +89,6 @@ export interface UseCompensationFormReady extends BaseFormHookReady<
     /** The parent job (when `jobId` resolves), used for derived helpers. */
     currentJob: Job | null
     minimumWages: MinimumWage[]
-    /**
-     * True when the active edit could trigger the secondary-pay-rate carve-out:
-     * the partner's screen surfaces a confirmation prompt before submitting.
-     *
-     * Carve-out conditions: the current compensation is Nonexempt, the
-     * `flsaStatus` field has been changed to a non-Nonexempt value, the
-     * employee has at least one secondary job, and the effective date is
-     * today (immediate change rather than future-dated).
-     */
-    canTriggerCarveOut: boolean
     /** Lower bound for `effectiveDate` (typically the parent job's hire date). */
     minimumEffectiveDate: string | null
     /** Upper bound for `effectiveDate` — the next scheduled future compensation's effective date, when one exists. */
@@ -106,7 +96,27 @@ export interface UseCompensationFormReady extends BaseFormHookReady<
     /** True when at least one future-dated compensation already exists for this job. */
     hasPendingFutureCompensation: boolean
   }
-  status: { isPending: boolean; mode: 'create' | 'update' }
+  status: {
+    isPending: boolean
+    mode: 'create' | 'update'
+    /**
+     * True when submitting the form right now would delete the employee's
+     * secondary jobs server-side. Reactive: derived from the current
+     * `flsaStatus` and `effectiveDate` form values plus the loaded
+     * compensation and other-jobs count, so this flips as the partner
+     * changes inputs.
+     *
+     * Conditions: update mode, the current compensation is Nonexempt, the
+     * form's `flsaStatus` has been changed to a non-Nonexempt value, the
+     * employee has at least one secondary job, and the effective date is
+     * today (immediate change rather than future-dated).
+     *
+     * Partners typically render an inline warning above the form keyed
+     * off this flag; the submit itself routes through a normal PUT either
+     * way.
+     */
+    willDeleteSecondaryJobs: boolean
+  }
   actions: {
     onSubmit: (
       options?: CompensationSubmitOptions,
@@ -361,17 +371,19 @@ export function useCompensationForm({
   }
 
   /**
-   * Carve-out detection — true when:
-   * - we're in update mode (compensationId set),
+   * Reactive flag — true when submitting the current form values would
+   * delete this employee's secondary jobs server-side (the "carve-out"
+   * path on the Rails backend). Conditions:
+   * - update mode (compensationId set),
    * - the loaded compensation was Nonexempt,
    * - the form's flsaStatus has been changed to a non-Nonexempt value,
    * - the employee has at least one secondary job (otherJobsCount > 0),
    * - and the effective date is today (immediate, not future-dated).
    *
-   * Partners read this flag to drive their own confirmation prompt before
-   * calling `actions.onSubmit`. The submit itself routes to PUT either way.
+   * Partners typically render an inline warning above the form keyed off
+   * this flag; the submit itself routes to PUT either way.
    */
-  const canTriggerCarveOut =
+  const willDeleteSecondaryJobs =
     !isCreateMode &&
     currentCompensation?.flsaStatus === FlsaStatus.NONEXEMPT &&
     watchedFlsaStatus !== FlsaStatus.NONEXEMPT &&
@@ -482,7 +494,6 @@ export function useCompensationForm({
       compensation: currentCompensation,
       currentJob,
       minimumWages,
-      canTriggerCarveOut,
       minimumEffectiveDate: hireDate,
       maximumEffectiveDate,
       hasPendingFutureCompensation,
@@ -490,6 +501,7 @@ export function useCompensationForm({
     status: {
       isPending,
       mode: isCreateMode ? 'create' : 'update',
+      willDeleteSecondaryJobs,
     },
     actions: { onSubmit },
     errorHandling,

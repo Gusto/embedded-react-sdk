@@ -15,21 +15,23 @@ A wrapper hook, [`useCurrentCompensationForm`](#usecurrentcompensationform), aut
 
 > **Looking for `jobTitle`, `hireDate`, `twoPercentShareholder`, `stateWcCovered` / `stateWcClassCode`?** Those moved to [`useJobForm`](./useJobForm.md). Compensation now models only what `POST /v1/jobs/:jobId/compensations` and `PUT /v1/compensations/:id` accept.
 
+> **Composing with `useJobForm`?** See [Working with Jobs and Compensations](./jobs-and-compensations.md) for end-to-end patterns covering onboarding stub-fill (POST job → PUT auto-created stub) and steady-state edits.
+
 ---
 
 ## Props
 
 `useCompensationForm` accepts a single options object:
 
-| Prop                      | Type                                                           | Required | Default      | Description                                                                                                                                                  |
-| ------------------------- | -------------------------------------------------------------- | -------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `employeeId`              | `string`                                                       | No       | —            | The UUID of the employee. Drives data fetching for derived helpers (jobs list, work address, minimum wages). Optional for composed flows.                    |
-| `jobId`                   | `string`                                                       | No       | —            | The UUID of the parent job. Required to scope minimum wages and to derive carve-out helpers. Can also be passed at submit time when the job is just-created. |
-| `compensationId`          | `string`                                                       | No       | —            | When present → **update** mode (PUT /v1/compensations/:id). When absent → **create** mode (POST /v1/jobs/:jobId/compensations).                              |
-| `optionalFieldsToRequire` | `CompensationOptionalFieldsToRequire`                          | No       | —            | Override fields that are optional in a given mode to be required. See [Configurable Required Fields](#configurable-required-fields).                         |
-| `defaultValues`           | `Partial<CompensationFormData>`                                | No       | —            | Pre-fill form values. Server data takes precedence on update.                                                                                                |
-| `validationMode`          | `'onSubmit' \| 'onBlur' \| 'onChange' \| 'onTouched' \| 'all'` | No       | `'onSubmit'` | Passed through to react-hook-form.                                                                                                                           |
-| `shouldFocusError`        | `boolean`                                                      | No       | `true`       | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`.                                                              |
+| Prop                      | Type                                                           | Required | Default      | Description                                                                                                                                                                 |
+| ------------------------- | -------------------------------------------------------------- | -------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `employeeId`              | `string`                                                       | No       | —            | The UUID of the employee. Drives data fetching for derived helpers (jobs list, work address, minimum wages). Optional for composed flows.                                   |
+| `jobId`                   | `string`                                                       | No       | —            | The UUID of the parent job. Required to scope minimum wages and to derive `status.willDeleteSecondaryJobs`. Can also be passed at submit time when the job is just-created. |
+| `compensationId`          | `string`                                                       | No       | —            | When present → **update** mode (PUT /v1/compensations/:id). When absent → **create** mode (POST /v1/jobs/:jobId/compensations).                                             |
+| `optionalFieldsToRequire` | `CompensationOptionalFieldsToRequire`                          | No       | —            | Override fields that are optional in a given mode to be required. See [Configurable Required Fields](#configurable-required-fields).                                        |
+| `defaultValues`           | `Partial<CompensationFormData>`                                | No       | —            | Pre-fill form values. Server data takes precedence on update.                                                                                                               |
+| `validationMode`          | `'onSubmit' \| 'onBlur' \| 'onChange' \| 'onTouched' \| 'all'` | No       | `'onSubmit'` | Passed through to react-hook-form.                                                                                                                                          |
+| `shouldFocusError`        | `boolean`                                                      | No       | `true`       | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`.                                                                             |
 
 ### Configurable Required Fields
 
@@ -111,7 +113,6 @@ The hook returns a discriminated union on `isLoading`.
     compensation: Compensation | null   // the loaded comp; null in create mode
     currentJob: Job | null              // the parent job (when jobId resolves)
     minimumWages: MinimumWage[]
-    canTriggerCarveOut: boolean         // see "Derived helpers" below
     minimumEffectiveDate: string | null // typically the parent job's hireDate
     maximumEffectiveDate: string | null // the next future-dated comp's effective date, when one exists
     hasPendingFutureCompensation: boolean
@@ -119,6 +120,7 @@ The hook returns a discriminated union on `isLoading`.
   status: {
     isPending: boolean
     mode: 'create' | 'update'
+    willDeleteSecondaryJobs: boolean    // see "Derived helpers" below
   }
   actions: {
     onSubmit: (
@@ -159,12 +161,12 @@ interface CompensationSubmitOptions {
 
 ## Derived helpers
 
-`data.*` exposes derived values partners use to drive UX:
+The hook exposes derived values partners use to drive UX. Static, entity-derived values live under `data.*`; reactive values that flip with form input live under `status.*`.
 
-- **`canTriggerCarveOut`** — `true` when the active edit could trigger the secondary-pay-rate carve-out: update mode, current FLSA was `Nonexempt`, the form's `flsaStatus` was just changed to a non-`Nonexempt` value, the employee has at least one secondary job, and the effective date is today (immediate, not future-dated). Partners typically render a confirmation prompt before calling `actions.onSubmit`. The submit itself routes to PUT either way.
-- **`minimumEffectiveDate`** — lower bound for the `effectiveDate` field. Typically the parent job's `hireDate`. Partners pass this as `min` to the date picker.
-- **`maximumEffectiveDate`** — upper bound for the `effectiveDate` field, when a future-dated compensation already exists for this job. Partners pass this as `max` to the date picker so users can't push a new entry past a pending one.
-- **`hasPendingFutureCompensation`** — `true` when at least one future-dated compensation exists for this job. Partners use this to render an explanatory note ("A future rate change is already scheduled for …").
+- **`status.willDeleteSecondaryJobs`** — reactive: `true` when submitting the current form values would delete the employee's secondary jobs server-side. Conditions: update mode, the current compensation was `Nonexempt`, the form's `flsaStatus` was just changed to a non-`Nonexempt` value, the employee has at least one secondary job, and the effective date is today (immediate, not future-dated). Partners typically render an inline warning above the form keyed off this flag (mirroring the `EditCompensation` UX). The submit itself routes through a normal PUT either way.
+- **`data.minimumEffectiveDate`** — lower bound for the `effectiveDate` field. Typically the parent job's `hireDate`. Partners pass this as `min` to the date picker.
+- **`data.maximumEffectiveDate`** — upper bound for the `effectiveDate` field, when a future-dated compensation already exists for this job. Partners pass this as `max` to the date picker so users can't push a new entry past a pending one.
+- **`data.hasPendingFutureCompensation`** — `true` when at least one future-dated compensation exists for this job. Partners use this to render an explanatory note ("A future rate change is already scheduled for …").
 
 ---
 
@@ -386,22 +388,21 @@ function CompensationEditPage({
 
 function CompensationFormReady({ compensation }: { compensation: UseCompensationFormReady }) {
   const { Fields } = compensation.form
-  const { canTriggerCarveOut, hasPendingFutureCompensation, maximumEffectiveDate } =
-    compensation.data
+  const { hasPendingFutureCompensation, maximumEffectiveDate } = compensation.data
+  const { willDeleteSecondaryJobs } = compensation.status
 
   return (
     <SDKFormProvider formHookResult={compensation}>
       <form
         onSubmit={async e => {
           e.preventDefault()
-          if (
-            canTriggerCarveOut &&
-            !window.confirm('This change will affect rates on other jobs. Continue?')
-          )
-            return
           await compensation.actions.onSubmit()
         }}
       >
+        {willDeleteSecondaryJobs && (
+          <p role="alert">Saving will delete this employee's secondary jobs.</p>
+        )}
+
         {hasPendingFutureCompensation && (
           <p>A future rate change is already scheduled for {maximumEffectiveDate}.</p>
         )}
@@ -459,11 +460,12 @@ function CompensationFormReady({ compensation }: { compensation: UseCompensation
 }
 ```
 
-For the onboarding stub-fill chain (POST job → PUT auto-created stub) and other multi-form flows, see [Composing Job + Compensation](./hooks.md#composing-job--compensation).
+For the onboarding stub-fill chain (POST job → PUT auto-created stub) and other multi-form flows, see [Working with Jobs and Compensations](./jobs-and-compensations.md).
 
 ---
 
 ## Related
 
 - [useJobForm](./useJobForm.md) — pair this with `useCompensationForm` for full job + compensation editing.
+- [Working with Jobs and Compensations](./jobs-and-compensations.md) — onboarding stub-fill and steady-state edit recipes.
 - [Composing Multiple Hooks](./hooks.md#composing-multiple-hooks) — coordinate `useJobForm` + `useCompensationForm` (and others) on a single screen.

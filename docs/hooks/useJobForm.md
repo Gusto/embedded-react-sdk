@@ -13,6 +13,8 @@ import { useJobForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
 
 A wrapper hook, [`useCurrentJobForm`](#usecurrentjobform), automatically resolves the employee's primary job and threads its UUID into `useJobForm` — useful for steady-state edit screens that don't ask the partner to choose a specific job.
 
+> **Composing with `useCompensationForm`?** See [Working with Jobs and Compensations](./jobs-and-compensations.md) for end-to-end patterns covering onboarding stub-fill (POST job → PUT auto-created stub) and steady-state edits.
+
 ---
 
 ## Props
@@ -129,7 +131,7 @@ The hook auto-routes between create and update based on `jobId`:
 | `{ employeeId }` (no `jobId`)                | create | `POST /v1/employees/:employeeId/jobs`         |
 | `{}` (no `employeeId`) + submit `employeeId` | create | `POST /v1/employees/:options.employeeId/jobs` |
 
-Important note for onboarding: creating a job auto-creates a stub compensation. Capture `currentCompensationUuid` (and the compensation's `version` from `compensations[]`) from the create response and thread them into `useCompensationForm.actions.onSubmit({ jobId, compensationId, compensationVersion })` to update the stub. See [hooks.md](./hooks.md#composing-job--compensation).
+Important note for onboarding: creating a job auto-creates a stub compensation. Capture `currentCompensationUuid` (and the compensation's `version` from `compensations[]`) from the create response and thread them into `useCompensationForm.actions.onSubmit({ jobId, compensationId, compensationVersion })` to update the stub. See [Working with Jobs and Compensations](./jobs-and-compensations.md).
 
 ---
 
@@ -338,4 +340,4 @@ function JobFormReady({ job }: { job: UseJobFormReady }) {
 
 - [useCompensationForm](./useCompensationForm.md) — pair this with `useJobForm` for full job + compensation editing.
 - [Composing Multiple Hooks](./hooks.md#composing-multiple-hooks) — coordinate `useJobForm` + `useCompensationForm` (and others) on a single screen.
-- [Composing Job + Compensation](./hooks.md#composing-job--compensation) — onboarding stub-fill and steady-state edit recipes.
+- [Working with Jobs and Compensations](./jobs-and-compensations.md) — onboarding stub-fill and steady-state edit recipes.

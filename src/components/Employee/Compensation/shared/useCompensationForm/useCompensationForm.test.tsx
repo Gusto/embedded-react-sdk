@@ -349,7 +349,7 @@ describe('useCompensationForm', () => {
   })
 
   describe('derived helpers', () => {
-    it('canTriggerCarveOut=true after partner switches Nonexempt → non-Nonexempt with secondary jobs and effectiveDate=today', async () => {
+    it('willDeleteSecondaryJobs=true after partner switches Nonexempt → non-Nonexempt with secondary jobs and effectiveDate=today', async () => {
       server.use(
         handleGetEmployeeJobs(() =>
           HttpResponse.json(buildEmployeeWithJobs({ scenario: 'multiJob' })),
@@ -370,7 +370,7 @@ describe('useCompensationForm', () => {
         expect(result.current.isLoading).toBe(false)
       })
       assertReady(result.current)
-      expect(result.current.data.canTriggerCarveOut).toBe(false)
+      expect(result.current.status.willDeleteSecondaryJobs).toBe(false)
 
       const { formMethods } = result.current.form.hookFormInternals
       act(() => {
@@ -380,11 +380,11 @@ describe('useCompensationForm', () => {
 
       await waitFor(() => {
         if (result.current.isLoading) throw new Error('still loading')
-        expect(result.current.data.canTriggerCarveOut).toBe(true)
+        expect(result.current.status.willDeleteSecondaryJobs).toBe(true)
       })
     })
 
-    it('canTriggerCarveOut=false when employee has no secondary jobs (single primary)', async () => {
+    it('willDeleteSecondaryJobs=false when employee has no secondary jobs (single primary)', async () => {
       server.use(
         handleGetEmployeeJobs(() =>
           HttpResponse.json(buildEmployeeWithJobs({ scenario: 'singleNonexempt' })),
@@ -412,11 +412,11 @@ describe('useCompensationForm', () => {
       })
       await waitFor(() => {
         if (result.current.isLoading) throw new Error('still loading')
-        expect(result.current.data.canTriggerCarveOut).toBe(false)
+        expect(result.current.status.willDeleteSecondaryJobs).toBe(false)
       })
     })
 
-    it('canTriggerCarveOut=false when effectiveDate is in the future', async () => {
+    it('willDeleteSecondaryJobs=false when effectiveDate is in the future', async () => {
       server.use(
         handleGetEmployeeJobs(() =>
           HttpResponse.json(buildEmployeeWithJobs({ scenario: 'multiJob' })),
@@ -443,10 +443,10 @@ describe('useCompensationForm', () => {
         formMethods.setValue('effectiveDate', '2099-06-01')
       })
       await new Promise(r => setTimeout(r, 20))
-      expect(result.current.data.canTriggerCarveOut).toBe(false)
+      expect(result.current.status.willDeleteSecondaryJobs).toBe(false)
     })
 
-    it('canTriggerCarveOut=false in create mode (compensationId not set)', async () => {
+    it('willDeleteSecondaryJobs=false in create mode (compensationId not set)', async () => {
       server.use(
         handleGetEmployeeJobs(() =>
           HttpResponse.json(buildEmployeeWithJobs({ scenario: 'multiJob' })),
@@ -466,7 +466,7 @@ describe('useCompensationForm', () => {
         expect(result.current.isLoading).toBe(false)
       })
       assertReady(result.current)
-      expect(result.current.data.canTriggerCarveOut).toBe(false)
+      expect(result.current.status.willDeleteSecondaryJobs).toBe(false)
     })
 
     it('hasPendingFutureCompensation=true and maximumEffectiveDate set when a future comp exists', async () => {
