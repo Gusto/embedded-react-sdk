@@ -2,10 +2,6 @@ import type { ComponentEntry } from './registry'
 import type { EntityIds } from './useEntities'
 import { resolveDefaults } from './component-defaults'
 
-interface GenerateSnippetOptions {
-  anonymize?: boolean
-}
-
 const TODO = '{/* TODO */}'
 
 function formatPropValue(value: unknown): string {
@@ -15,11 +11,7 @@ function formatPropValue(value: unknown): string {
   return TODO
 }
 
-export function generateSnippet(
-  entry: ComponentEntry,
-  entities: EntityIds,
-  { anonymize = false }: GenerateSnippetOptions = {},
-): string {
+export function generateSnippet(entry: ComponentEntry, entities: EntityIds): string {
   const propLines: string[] = []
   const seen = new Set<string>()
 
@@ -31,7 +23,7 @@ export function generateSnippet(
 
   for (const id of entry.requiredEntityIds) {
     const value = entities[id as keyof EntityIds]
-    if (anonymize || !value) {
+    if (!value) {
       pushProp(id, TODO)
     } else {
       pushProp(id, JSON.stringify(value))
@@ -41,7 +33,7 @@ export function generateSnippet(
   for (const prop of entry.additionalRequiredProps) {
     if (seen.has(prop)) continue
     const fromEntities = entities[prop as keyof EntityIds]
-    if (!anonymize && fromEntities) {
+    if (fromEntities) {
       pushProp(prop, JSON.stringify(fromEntities))
     } else {
       pushProp(prop, TODO)

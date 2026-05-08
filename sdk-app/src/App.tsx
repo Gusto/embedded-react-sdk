@@ -140,6 +140,8 @@ export function App() {
               companyId={activeEntities.companyId}
               tokenStatus={demoManager.tokenStatus}
               onOpenSettings={openSettings}
+              onToggleCode={codePanel.toggle}
+              codeOpen={codePanel.isOpen}
             />
           )}
           <div className="app-body">
@@ -161,6 +163,7 @@ export function App() {
             >
               <Outlet context={{ entities: activeEntities, chromeHidden }} />
             </main>
+            {codePanel.isOpen && !chromeHidden && <CodePanel onClose={codePanel.close} />}
           </div>
           {chromeHidden && (
             <button
@@ -203,7 +206,6 @@ export function App() {
               error={demoManager.demoError}
             />
           )}
-          <CodePanel isOpen={codePanel.isOpen} onClose={codePanel.close} />
         </div>
       </CurrentComponentProvider>
     </ThemeModeProvider>
