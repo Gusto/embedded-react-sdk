@@ -59,9 +59,12 @@ const fieldValidators = {
    *
    * - **create mode (`compensationId` absent)**: required; partners typically default
    *   to the parent job's `hireDate` (onboarding stub-fill) or a future date
-   *   (rate change). Server-side this maps to POST /v1/jobs/:jobId/compensations.
+   *   (rate change). Must be on or after `hireDate`. Server-side this maps to
+   *   POST /v1/jobs/:jobId/compensations.
    * - **update mode (`compensationId` present)**: optional; if omitted the API
-   *   keeps the existing effective date. PUT /v1/compensations/:id.
+   *   keeps the existing effective date. The `hireDate` lower bound is **not**
+   *   enforced — loaded values may legitimately predate the hire date. Maps to
+   *   PUT /v1/compensations/:id.
    */
   effectiveDate: z.preprocess(coerceToISODate, z.iso.date().nullable()),
   adjustForMinimumWage: z.boolean(),
@@ -155,8 +158,9 @@ export interface CompensationSchemaOptions {
   optionalFieldsToRequire?: CompensationOptionalFieldsToRequire
   /**
    * Lower bound for `effectiveDate` (typically the parent job's `hireDate`).
-   * When set, surfaces a `EFFECTIVE_DATE_BEFORE_HIRE` issue if the user
-   * picks an earlier date.
+   * Only enforced in `create` mode — on `update` the loaded effective date
+   * may legitimately predate the hire date and is left as-is. Surfaces an
+   * `EFFECTIVE_DATE_BEFORE_HIRE` issue when violated.
    */
   hireDate?: string | null
 }
@@ -171,7 +175,13 @@ export function createCompensationSchema(options: CompensationSchemaOptions = {}
     optionalFieldsToRequire,
     superRefine: (data, ctx) => {
       validateFlsaRules(data, ctx)
-      if (hireDate && data.effectiveDate && data.effectiveDate < hireDate) {
+      // Only enforce the hire-date lower bound when picking a brand-new
+      // effective date (create mode). On update, the loaded effectiveDate
+      // can legitimately predate the parent job's hireDate (e.g. carried
+      // over from a stub or out-of-order data) and the API accepts the
+      // unchanged value or omitting it entirely. Blocking the submit here
+      // would trap partners whose flow doesn't render Fields.EffectiveDate.
+      if (mode === 'create' && hireDate && data.effectiveDate && data.effectiveDate < hireDate) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           path: ['effectiveDate'],

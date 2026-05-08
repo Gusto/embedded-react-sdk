@@ -65,13 +65,24 @@ describe('createCompensationSchema', () => {
     expect(updateSchema.safeParse({ ...VALID_FORM_DATA, title: '' }).success).toBe(true)
   })
 
-  it('rejects effectiveDate before hireDate (EFFECTIVE_DATE_BEFORE_HIRE)', () => {
+  it('rejects effectiveDate before hireDate on create (EFFECTIVE_DATE_BEFORE_HIRE)', () => {
     const [schema] = createCompensationSchema({ mode: 'create', hireDate: '2024-12-24' })
     const result = schema.safeParse({ ...VALID_FORM_DATA, effectiveDate: '2024-12-23' })
     expect(result.success).toBe(false)
     if (result.success) return
     const issue = result.error.issues.find(i => String(i.path[0]) === 'effectiveDate')
     expect(issue?.message).toBe(CompensationErrorCodes.EFFECTIVE_DATE_BEFORE_HIRE)
+  })
+
+  it('does NOT enforce hireDate lower bound on update', () => {
+    // Loaded comp.effectiveDate may legitimately predate the parent job's
+    // hireDate (e.g. carried over from a stub or out-of-order data). The API
+    // accepts the unchanged value or omitting it entirely on PUT, so the
+    // schema must not block the submit — partners whose flow doesn't render
+    // Fields.EffectiveDate would otherwise be trapped with no way to recover.
+    const [schema] = createCompensationSchema({ mode: 'update', hireDate: '2025-05-08' })
+    const result = schema.safeParse({ ...VALID_FORM_DATA, effectiveDate: '2020-01-01' })
+    expect(result.success).toBe(true)
   })
 
   it('Owner must use Paycheck (PAYMENT_UNIT_OWNER)', () => {
