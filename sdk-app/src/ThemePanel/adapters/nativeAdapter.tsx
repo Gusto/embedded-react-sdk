@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { useState, useRef } from 'react'
+import type React from 'react'
 import type { ComponentsContextType } from '@/contexts/ComponentAdapter/useComponentContext'
 import type { AlertProps } from '@/components/Common/UI/Alert/AlertTypes'
 import type { BadgeProps } from '@/components/Common/UI/Badge/BadgeTypes'

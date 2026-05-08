@@ -22,7 +22,9 @@
   cursor: pointer;
   text-align: left;
   font-size: 0.8125rem;
-  transition: background 0.15s, border-color 0.15s;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
 
   &:hover:not(:disabled) {
     background: var(--color-hover-bg);

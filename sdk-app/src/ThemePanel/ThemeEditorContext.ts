@@ -30,10 +30,14 @@ export function useThemeEditorState(): ThemeEditorContextValue {
   }, [colorMode, themeOverrides])
 
   const setThemeOverride = (key: keyof GustoSDKTheme, value: string) => {
-    setThemeOverrides(prev => ({
-      ...prev,
-      [key]: value || undefined,
-    }))
+    setThemeOverrides(prev => {
+      if (!value) {
+        if (!(key in prev)) return prev
+        const { [key]: _removed, ...rest } = prev
+        return rest
+      }
+      return { ...prev, [key]: value }
+    })
   }
 
   const clearThemeOverrides = () => {
