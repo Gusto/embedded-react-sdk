@@ -1,10 +1,11 @@
-import type { InputHTMLAttributes, Ref } from 'react'
+import type { AriaAttributes, InputHTMLAttributes, Ref } from 'react'
 import type { SharedHorizontalFieldLayoutProps } from '@/components/Common/HorizontalFieldLayout/HorizontalFieldLayoutTypes'
 
 export interface SwitchProps
   extends
     SharedHorizontalFieldLayoutProps,
-    Pick<InputHTMLAttributes<HTMLInputElement>, 'name' | 'id'> {
+    Pick<InputHTMLAttributes<HTMLInputElement>, 'name' | 'id'>,
+    Pick<AriaAttributes, 'aria-controls'> {
   /**
    * Handler for blur events
    */

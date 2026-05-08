@@ -254,6 +254,125 @@ describe('PolicyConfigurationFormPresentation', () => {
     })
   })
 
+  describe('day dropdown adjusts to selected month', () => {
+    it('shows 28 days for February', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(
+        <PolicyConfigurationFormPresentation
+          {...defaultProps}
+          defaultValues={{
+            accrualMethod: 'per_calendar_year',
+            accrualMethodFixed: 'all_at_once',
+            resetDateType: 'per_calendar_year',
+            resetMonth: 2,
+            resetDay: 1,
+          }}
+        />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText('Day')).toBeInTheDocument()
+      })
+
+      const dayButton = screen.getByLabelText('Day')
+      await user.click(dayButton)
+
+      await waitFor(() => {
+        expect(screen.getByRole('option', { name: '28' })).toBeInTheDocument()
+      })
+      expect(screen.queryByRole('option', { name: '29' })).not.toBeInTheDocument()
+    })
+
+    it('shows 30 days for April', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(
+        <PolicyConfigurationFormPresentation
+          {...defaultProps}
+          defaultValues={{
+            accrualMethod: 'per_calendar_year',
+            accrualMethodFixed: 'all_at_once',
+            resetDateType: 'per_calendar_year',
+            resetMonth: 4,
+            resetDay: 1,
+          }}
+        />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText('Day')).toBeInTheDocument()
+      })
+
+      const dayButton = screen.getByLabelText('Day')
+      await user.click(dayButton)
+
+      await waitFor(() => {
+        expect(screen.getByRole('option', { name: '30' })).toBeInTheDocument()
+      })
+      expect(screen.queryByRole('option', { name: '31' })).not.toBeInTheDocument()
+    })
+
+    it('shows 31 days for January', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(
+        <PolicyConfigurationFormPresentation
+          {...defaultProps}
+          defaultValues={{
+            accrualMethod: 'per_calendar_year',
+            accrualMethodFixed: 'all_at_once',
+            resetDateType: 'per_calendar_year',
+            resetMonth: 1,
+            resetDay: 1,
+          }}
+        />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText('Day')).toBeInTheDocument()
+      })
+
+      const dayButton = screen.getByLabelText('Day')
+      await user.click(dayButton)
+
+      await waitFor(() => {
+        expect(screen.getByRole('option', { name: '31' })).toBeInTheDocument()
+      })
+    })
+
+    it('clamps the day value when switching to a month with fewer days', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(
+        <PolicyConfigurationFormPresentation
+          {...defaultProps}
+          defaultValues={{
+            accrualMethod: 'per_calendar_year',
+            accrualMethodFixed: 'all_at_once',
+            resetDateType: 'per_calendar_year',
+            resetMonth: 1,
+            resetDay: 31,
+          }}
+        />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText('Day')).toBeInTheDocument()
+      })
+
+      const monthButton = screen.getByLabelText('Month')
+      await user.click(monthButton)
+
+      await waitFor(() => {
+        expect(screen.getByRole('listbox')).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('option', { name: 'February' }))
+
+      await waitFor(() => {
+        const dayButton = screen.getByLabelText('Day')
+        expect(dayButton).toHaveTextContent('28')
+      })
+    })
+  })
+
   describe('switching between methods', () => {
     it('switches from hourly to fixed fields', async () => {
       const user = userEvent.setup()

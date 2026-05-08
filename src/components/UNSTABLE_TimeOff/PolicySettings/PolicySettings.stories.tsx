@@ -29,8 +29,20 @@ export const HoursWorkedVariant = () => (
   />
 )
 
-export const FixedVariant = () => (
-  <PolicySettingsPresentation accrualMethod="fixed" onContinue={onContinue} onBack={onBack} />
+export const FixedPerPayPeriodVariant = () => (
+  <PolicySettingsPresentation
+    accrualMethod="fixed_per_pay_period"
+    onContinue={onContinue}
+    onBack={onBack}
+  />
+)
+
+export const FixedAllAtOnceVariant = () => (
+  <PolicySettingsPresentation
+    accrualMethod="fixed_all_at_once"
+    onContinue={onContinue}
+    onBack={onBack}
+  />
 )
 
 export const EditMode = () => (
