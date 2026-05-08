@@ -19,6 +19,11 @@ export function PolicySettingsPresentation({
   const { Heading, Button } = useComponentContext()
   const headingId = useId()
 
+  const accrualMaxInputId = useId()
+  const balanceMaxInputId = useId()
+  const carryOverInputId = useId()
+  const waitingPeriodInputId = useId()
+
   const formMethods = useForm<PolicySettingsFormData>({
     defaultValues: {
       accrualMaximumEnabled: false,
@@ -60,6 +65,7 @@ export function PolicySettingsPresentation({
                   <div className={styles.settingRow}>
                     <NumberInputField
                       className={styles.settingField}
+                      id={accrualMaxInputId}
                       name="accrualMaximum"
                       label={t('policySettings.accrualMaximumLabel')}
                       description={t('policySettings.accrualMaximumHint')}
@@ -73,6 +79,7 @@ export function PolicySettingsPresentation({
                         name="accrualMaximumEnabled"
                         label={t('policySettings.accrualMaximumLabel')}
                         shouldVisuallyHideLabel
+                        aria-controls={accrualMaxInputId}
                       />
                     </div>
                   </div>
@@ -84,6 +91,7 @@ export function PolicySettingsPresentation({
               <div className={styles.settingRow}>
                 <NumberInputField
                   className={styles.settingField}
+                  id={balanceMaxInputId}
                   name="balanceMaximum"
                   label={t('policySettings.balanceMaximumLabel')}
                   description={t('policySettings.balanceMaximumHint')}
@@ -97,6 +105,7 @@ export function PolicySettingsPresentation({
                     name="balanceMaximumEnabled"
                     label={t('policySettings.balanceMaximumLabel')}
                     shouldVisuallyHideLabel
+                    aria-controls={balanceMaxInputId}
                   />
                 </div>
               </div>
@@ -106,6 +115,7 @@ export function PolicySettingsPresentation({
               <div className={styles.settingRow}>
                 <NumberInputField
                   className={styles.settingField}
+                  id={carryOverInputId}
                   name="carryOverLimit"
                   label={t('policySettings.carryOverLimitLabel')}
                   description={t('policySettings.carryOverLimitHint')}
@@ -119,6 +129,7 @@ export function PolicySettingsPresentation({
                     name="carryOverLimitEnabled"
                     label={t('policySettings.carryOverLimitLabel')}
                     shouldVisuallyHideLabel
+                    aria-controls={carryOverInputId}
                   />
                 </div>
               </div>
@@ -130,6 +141,7 @@ export function PolicySettingsPresentation({
                   <div className={styles.settingRow}>
                     <NumberInputField
                       className={styles.settingField}
+                      id={waitingPeriodInputId}
                       name="waitingPeriod"
                       label={t('policySettings.waitingPeriodLabel')}
                       description={t('policySettings.waitingPeriodHint')}
@@ -143,6 +155,7 @@ export function PolicySettingsPresentation({
                         name="waitingPeriodEnabled"
                         label={t('policySettings.waitingPeriodLabel')}
                         shouldVisuallyHideLabel
+                        aria-controls={waitingPeriodInputId}
                       />
                     </div>
                   </div>
