@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useGlobalShortcut } from './useGlobalShortcut'
 
 const STORAGE_KEY = 'sdk-app-code-panel-open'
-const TOGGLE_KEY = '?'
+const TOGGLE_KEY = 'e'
 
 function readInitial(): boolean {
   try {
@@ -48,6 +48,7 @@ export function useCodePanel(): UseCodePanelResult {
 
   useGlobalShortcut({
     key: TOGGLE_KEY,
+    modifier: 'mod',
     onTrigger: event => {
       event.preventDefault()
       toggle()
