@@ -61,7 +61,7 @@ The shape of `defaultValues`:
 ```typescript
 interface CompensationFormData {
   title: string
-  flsaStatus: FlsaStatusType // 'Exempt' | 'Salaried Nonexempt' | 'Nonexempt' | 'Owner' | 'Commission Only Exempt' | 'Commission Only Nonexempt'
+  flsaStatus?: FlsaStatusType // 'Exempt' | 'Salaried Nonexempt' | 'Nonexempt' | 'Owner' | 'Commission Only Exempt' | 'Commission Only Nonexempt'
   rate: number
   paymentUnit: PaymentUnit // 'Hour' | 'Week' | 'Month' | 'Year' | 'Paycheck'
   effectiveDate: string | null // ISO date string (YYYY-MM-DD) or null
@@ -69,6 +69,8 @@ interface CompensationFormData {
   minimumWageId: string
 }
 ```
+
+When the hook is given a `compensationId` (update mode) or its parent job has a current compensation, `flsaStatus` is seeded from that row. In create mode without a parent compensation, the hook falls back to the employee's primary job's current FLSA status (so adding a secondary job stays consistent with the primary by default), then to `defaultValues.flsaStatus`. If none of those are available the field renders empty — partners can preselect by passing `defaultValues.flsaStatus`. Requiredness is enforced on submit per the table above.
 
 ---
 

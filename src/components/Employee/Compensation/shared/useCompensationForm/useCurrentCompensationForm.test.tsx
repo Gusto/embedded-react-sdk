@@ -12,6 +12,7 @@ import { handleCreateCompensation } from '@/test/mocks/apis/compensations'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
 import { buildEmployeeWithJobs, buildJob } from '@/test/factories/jobsAndCompensations'
+import { FlsaStatus } from '@/shared/constants'
 
 type ReadyResult = Extract<UseCompensationFormResult, { isLoading: false }>
 
@@ -130,7 +131,11 @@ describe('useCurrentCompensationForm', () => {
       () =>
         useCurrentCompensationForm({
           employeeId: 'employee-uuid',
-          defaultValues: { rate: 20, effectiveDate: '2099-01-01' },
+          defaultValues: {
+            flsaStatus: FlsaStatus.NONEXEMPT,
+            rate: 20,
+            effectiveDate: '2099-01-01',
+          },
         }),
       { wrapper: GustoTestProvider },
     )

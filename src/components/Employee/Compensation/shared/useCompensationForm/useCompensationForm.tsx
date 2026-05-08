@@ -195,6 +195,21 @@ export function useCompensationForm({
     return employeeJobs.filter(j => j.uuid !== currentJob.uuid).length
   }, [employeeJobs, currentJob])
 
+  // FLSA status of the employee's primary job's current compensation, when one
+  // exists. Used as a fallback default when adding a *secondary* job/comp so the
+  // multi-job classification stays consistent with the primary by default — the
+  // user can still override it (when allowed). Null when there is no primary
+  // job or it has no current compensation yet.
+  const primaryFlsaStatus = useMemo<FlsaStatusType | null>(() => {
+    if (!employeeJobs) return null
+    for (const job of employeeJobs) {
+      if (!job.primary) continue
+      const compensation = job.compensations?.find(c => c.uuid === job.currentCompensationUuid)
+      if (compensation?.flsaStatus) return compensation.flsaStatus
+    }
+    return null
+  }, [employeeJobs])
+
   const hireDate = currentJob?.hireDate ?? null
 
   const futureCompensations = useMemo(() => {
@@ -226,11 +241,21 @@ export function useCompensationForm({
 
   const state = currentWorkAddress?.state
 
+  // `flsaStatus` is intentionally allowed to be undefined so the field renders
+  // an empty placeholder when nothing is provided — partners can choose to
+  // seed it via `defaultValues.flsaStatus`. When a `compensation` is loaded we
+  // seed from it; for a brand-new secondary job we inherit from the primary's
+  // current compensation so multi-job classification stays consistent. The
+  // schema enforces requiredness on submit in `create` mode (see
+  // `requiredFieldsConfig` in compensationSchema.ts).
   const resolvedDefaults: CompensationFormData = useMemo(
     () => ({
       title: currentCompensation?.title ?? partnerDefaults?.title ?? '',
       flsaStatus:
-        currentCompensation?.flsaStatus ?? partnerDefaults?.flsaStatus ?? FlsaStatus.NONEXEMPT,
+        currentCompensation?.flsaStatus ??
+        partnerDefaults?.flsaStatus ??
+        primaryFlsaStatus ??
+        undefined,
       rate: Number(currentCompensation?.rate ?? partnerDefaults?.rate ?? 0),
       adjustForMinimumWage:
         currentCompensation?.adjustForMinimumWage ?? partnerDefaults?.adjustForMinimumWage ?? false,
@@ -240,7 +265,7 @@ export function useCompensationForm({
         currentCompensation?.paymentUnit ?? partnerDefaults?.paymentUnit ?? PAY_PERIODS.HOUR,
       effectiveDate: currentCompensation?.effectiveDate ?? partnerDefaults?.effectiveDate ?? null,
     }),
-    [currentCompensation, partnerDefaults],
+    [currentCompensation, partnerDefaults, primaryFlsaStatus],
   )
 
   const formMethods = useForm<CompensationFormData, unknown, CompensationFormOutputs>({
@@ -384,10 +409,17 @@ export function useCompensationForm({
                   'jobId is required to create a compensation. Pass it as a hook prop or via submit options.',
                 )
               }
+              // Schema's `requiredFieldsConfig` guarantees `flsaStatus` is set
+              // on create-mode submit; the runtime guard appeases the API
+              // request-body type (which requires a non-undefined value on
+              // POST, vs. the optional PUT body).
+              if (!payload.flsaStatus) {
+                throw new SDKInternalError('flsaStatus is required to create a compensation.')
+              }
               const createResponse = await createCompensationMutation.mutateAsync({
                 request: {
                   jobId: resolvedJobId,
-                  compensationsRequestBody: requestBodyBase,
+                  compensationsRequestBody: { ...requestBodyBase, flsaStatus: payload.flsaStatus },
                 },
               })
               result = createResponse.compensation

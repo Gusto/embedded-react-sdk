@@ -33,14 +33,19 @@ const fieldValidators = {
    * immediately, and avoid rendering both fields on the same screen.
    */
   title: z.string(),
-  flsaStatus: z.enum([
-    FlsaStatus.EXEMPT,
-    FlsaStatus.SALARIED_NONEXEMPT,
-    FlsaStatus.NONEXEMPT,
-    FlsaStatus.OWNER,
-    FlsaStatus.COMMISSION_ONLY_EXEMPT,
-    FlsaStatus.COMMISSION_ONLY_NONEXEMPT,
-  ]),
+  // `flsaStatus` is `.optional()` so the field can render an empty placeholder
+  // until the user (or partner default) picks one. Requiredness is still
+  // enforced via `requiredFieldsConfig` on submit in `create` mode.
+  flsaStatus: z
+    .enum([
+      FlsaStatus.EXEMPT,
+      FlsaStatus.SALARIED_NONEXEMPT,
+      FlsaStatus.NONEXEMPT,
+      FlsaStatus.OWNER,
+      FlsaStatus.COMMISSION_ONLY_EXEMPT,
+      FlsaStatus.COMMISSION_ONLY_NONEXEMPT,
+    ])
+    .optional(),
   paymentUnit: z.enum([
     PAY_PERIODS.HOUR,
     PAY_PERIODS.WEEK,
@@ -84,13 +89,11 @@ function validateFlsaRules(data: CompensationFormData, ctx: z.RefinementCtx) {
     flsaStatus === FlsaStatus.SALARIED_NONEXEMPT ||
     flsaStatus === FlsaStatus.NONEXEMPT
   ) {
-    if (rate < 1) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['rate'],
-        message: CompensationErrorCodes.RATE_MINIMUM,
-      })
-    } else if (
+    // Surface the EXEMPT salary-threshold issue *before* the generic minimum,
+    // so a partner setting rate=0 with EXEMPT sees the more actionable
+    // "must meet salary threshold" message rather than the generic
+    // "amount must be at least $1.00".
+    if (
       flsaStatus === FlsaStatus.EXEMPT &&
       yearlyRate(rate, paymentUnit) < FLSA_OVERTIME_SALARY_LIMIT
     ) {
@@ -98,6 +101,12 @@ function validateFlsaRules(data: CompensationFormData, ctx: z.RefinementCtx) {
         code: z.ZodIssueCode.custom,
         path: ['rate'],
         message: CompensationErrorCodes.RATE_EXEMPT_THRESHOLD,
+      })
+    } else if (rate < 1) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['rate'],
+        message: CompensationErrorCodes.RATE_MINIMUM,
       })
     }
   } else if (flsaStatus === FlsaStatus.OWNER) {
@@ -115,12 +124,10 @@ function validateFlsaRules(data: CompensationFormData, ctx: z.RefinementCtx) {
         message: CompensationErrorCodes.RATE_MINIMUM,
       })
     }
-    /* eslint-disable @typescript-eslint/no-unnecessary-condition -- explicit match prevents a future FLSA status from silently falling into commission rules */
   } else if (
     flsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT ||
     flsaStatus === FlsaStatus.COMMISSION_ONLY_NONEXEMPT
   ) {
-    /* eslint-enable @typescript-eslint/no-unnecessary-condition */
     if (paymentUnit !== PAY_PERIODS.YEAR) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,

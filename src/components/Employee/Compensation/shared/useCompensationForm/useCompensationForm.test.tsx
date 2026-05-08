@@ -325,7 +325,11 @@ describe('useCompensationForm', () => {
         () =>
           useCompensationForm({
             employeeId: 'employee-uuid',
-            defaultValues: { rate: 30, effectiveDate: '2099-01-01' },
+            defaultValues: {
+              flsaStatus: FlsaStatus.NONEXEMPT,
+              rate: 30,
+              effectiveDate: '2099-01-01',
+            },
           }),
         { wrapper: GustoTestProvider },
       )
