@@ -105,5 +105,6 @@ npm run test:visual:update     # write new baselines (only do this in CI)
 Baselines are sensitive to OS, browser, and font rendering. Generate and
 commit them from CI (Linux); macOS/Windows-generated PNGs will not match.
 The same loose threshold is also configured in `playwright.config.ts` for
-opt-in `expect(...).toHaveScreenshot()` checks in e2e specs — see
-[`e2e/CLAUDE.md`](e2e/CLAUDE.md) for the e2e workflow.
+opt-in `expect(...).toHaveScreenshot()` checks in e2e specs. Snapshot only
+the rendered SDK container and `mask` dynamic fields (SSN, email, dates),
+and update baselines from CI only.
