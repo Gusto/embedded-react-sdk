@@ -11,6 +11,7 @@ import { GustoProvider } from '@/contexts'
 
 interface ComponentRendererProps {
   entities: EntityIds
+  chromeHidden?: boolean
 }
 
 interface EventLogEntry {
@@ -119,7 +120,7 @@ class ComponentErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundary
   }
 }
 
-export function ComponentRenderer({ entities }: ComponentRendererProps) {
+export function ComponentRenderer({ entities, chromeHidden = false }: ComponentRendererProps) {
   const { category, component: componentName } = useParams<{
     category: string
     component: string
@@ -202,9 +203,11 @@ export function ComponentRenderer({ entities }: ComponentRendererProps) {
 
   return (
     <>
-      <div className={styles.contentHeader}>
-        {displayCategory} &rsaquo; <span>{entry.name}</span>
-      </div>
+      {!chromeHidden && (
+        <div className={styles.contentHeader}>
+          {displayCategory} &rsaquo; <span>{entry.name}</span>
+        </div>
+      )}
       {missingIds.length > 0 || missingAdditionalProps.length > 0 ? (
         <div className={styles.componentContainer}>
           <div className={styles.contentBody}>
@@ -270,37 +273,39 @@ export function ComponentRenderer({ entities }: ComponentRendererProps) {
           </div>
         </div>
       )}
-      <div className={styles.eventsLog}>
-        <div className={styles.eventsLogHeader}>
-          <span>Events Log ({events.length})</span>
-          <button
-            className={styles.eventsLogToggle}
-            onClick={() => {
-              setEventsOpen(o => !o)
-            }}
-            type="button"
-          >
-            {eventsOpen ? 'Collapse' : 'Expand'}
-          </button>
+      {!chromeHidden && (
+        <div className={styles.eventsLog}>
+          <div className={styles.eventsLogHeader}>
+            <span>Events Log ({events.length})</span>
+            <button
+              className={styles.eventsLogToggle}
+              onClick={() => {
+                setEventsOpen(o => !o)
+              }}
+              type="button"
+            >
+              {eventsOpen ? 'Collapse' : 'Expand'}
+            </button>
+          </div>
+          {eventsOpen &&
+            (events.length > 0 ? (
+              <div className={styles.eventsLogEntries}>
+                {events.map((entry, i) => (
+                  <div key={i} className={styles.eventsLogEntry}>
+                    <span className={styles.eventsLogTimestamp}>[{entry.timestamp}]</span>{' '}
+                    {typeof entry.event === 'object'
+                      ? JSON.stringify(entry.event, null, 2)
+                      : JSON.stringify(entry.event)}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className={styles.eventsLogEmpty}>
+                No events yet. Interact with the component above.
+              </div>
+            ))}
         </div>
-        {eventsOpen &&
-          (events.length > 0 ? (
-            <div className={styles.eventsLogEntries}>
-              {events.map((entry, i) => (
-                <div key={i} className={styles.eventsLogEntry}>
-                  <span className={styles.eventsLogTimestamp}>[{entry.timestamp}]</span>{' '}
-                  {typeof entry.event === 'object'
-                    ? JSON.stringify(entry.event, null, 2)
-                    : JSON.stringify(entry.event)}
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className={styles.eventsLogEmpty}>
-              No events yet. Interact with the component above.
-            </div>
-          ))}
-      </div>
+      )}
     </>
   )
 }
