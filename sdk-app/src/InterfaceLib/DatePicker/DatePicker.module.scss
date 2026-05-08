@@ -107,7 +107,7 @@
   flex-grow: 1;
   align-items: flex-start;
   justify-content: center;
-  padding: 10px 16px;
+  padding: 10px 16px 10px 0;
   overflow: hidden;
   gap: 2px;
 }
@@ -161,6 +161,18 @@
   flex-shrink: 0;
   width: 48px;
   color: #959595;
+}
+
+.leadingIcon {
+  display: inline-flex;
+  align-self: center;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  margin: 0 12px 0 16px;
+  color: #101010;
 }
 
 // Popover / Calendar
