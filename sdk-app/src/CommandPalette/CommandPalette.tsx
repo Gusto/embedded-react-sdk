@@ -1,22 +1,26 @@
 import { useEffect, useMemo, useRef, useState, type ChangeEvent, type KeyboardEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { searchPages, type PageEntry } from './pages'
+import { searchEntries, type PaletteEntry } from './pages'
 import styles from './CommandPalette.module.scss'
 
 interface CommandPaletteProps {
   isOpen: boolean
   onClose: () => void
+  entries: PaletteEntry[]
 }
 
 const ROW_ID_PREFIX = 'command-palette-row-'
 
-export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
+export function CommandPalette({ isOpen, onClose, entries }: CommandPaletteProps) {
   const [query, setQuery] = useState('')
   const [highlightIndex, setHighlightIndex] = useState(0)
   const inputRef = useRef<HTMLInputElement>(null)
   const navigate = useNavigate()
 
-  const results = useMemo(() => (isOpen ? searchPages(query) : []), [isOpen, query])
+  const results = useMemo(
+    () => (isOpen ? searchEntries(entries, query) : []),
+    [isOpen, query, entries],
+  )
   const showResults = isOpen && query.trim().length > 0
 
   useEffect(() => {
@@ -37,8 +41,12 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
 
   if (!isOpen) return null
 
-  const goTo = (page: PageEntry) => {
-    void navigate(page.path)
+  const execute = (entry: PaletteEntry) => {
+    if (entry.kind === 'navigate') {
+      void navigate(entry.path)
+    } else {
+      entry.perform()
+    }
     onClose()
   }
 
@@ -51,7 +59,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
     if (event.key === 'Enter') {
       event.preventDefault()
       const target = results[highlightIndex] ?? results[0]
-      if (target) goTo(target)
+      if (target) execute(target)
       return
     }
     if (event.key === 'ArrowDown') {
@@ -83,7 +91,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
         type="button"
         className={styles.backdrop}
         onClick={onClose}
-        aria-label="Close page search"
+        aria-label="Close command palette"
       />
       <div className={styles.container}>
         <input
@@ -91,11 +99,11 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
           type="text"
           role="combobox"
           className={styles.input}
-          placeholder="Search pages…"
+          placeholder="Search pages and commands…"
           value={query}
           onChange={onChange}
           onKeyDown={onKeyDown}
-          aria-label="Search pages"
+          aria-label="Search pages and commands"
           aria-autocomplete="list"
           aria-controls="command-palette-list"
           aria-expanded={showResults}
@@ -106,25 +114,25 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
         {showResults &&
           (results.length > 0 ? (
             <ul id="command-palette-list" className={styles.list} role="listbox">
-              {results.map((page, index) => {
+              {results.map((entry, index) => {
                 const isActive = index === highlightIndex
                 return (
                   // eslint-disable-next-line jsx-a11y/click-events-have-key-events -- listbox keyboard nav happens on the input via aria-activedescendant
                   <li
-                    id={`${ROW_ID_PREFIX}${page.id}`}
-                    key={page.id}
+                    id={`${ROW_ID_PREFIX}${entry.id}`}
+                    key={entry.id}
                     role="option"
                     aria-selected={isActive}
                     className={`${styles.row}${isActive ? ` ${styles.rowActive}` : ''}`}
                     onClick={() => {
-                      goTo(page)
+                      execute(entry)
                     }}
                     onMouseEnter={() => {
                       setHighlightIndex(index)
                     }}
                   >
-                    <span className={styles.label}>{page.label}</span>
-                    <span className={styles.category}>{page.category}</span>
+                    <span className={styles.label}>{entry.label}</span>
+                    <span className={styles.category}>{entry.category}</span>
                   </li>
                 )
               })}
