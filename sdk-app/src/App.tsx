@@ -14,6 +14,7 @@ import { ThemeModeProvider } from './ThemeModeContext'
 import { useManualConfig, type ManualConfig } from './useManualConfig'
 import { useChromeVisibility } from './useChromeVisibility'
 import { ShortcutHelper, useShortcutHelper } from './ShortcutHelper'
+import { CommandPalette, useCommandPalette } from './CommandPalette'
 import { useGlobalShortcut } from './useGlobalShortcut'
 import { useCodePanel } from './useCodePanel'
 import { CodePanel } from './CodePanel'
@@ -61,6 +62,7 @@ export function App() {
   const themeMode = useThemeMode()
   const { chromeHidden, showChrome } = useChromeVisibility()
   const shortcutHelper = useShortcutHelper()
+  const commandPalette = useCommandPalette()
   const navigate = useNavigate()
   const codePanel = useCodePanel()
   const { chromeId, setChromeId } = useDemoChrome()
@@ -232,6 +234,7 @@ export function App() {
             onChromeIdChange={setChromeId}
           />
           <ShortcutHelper isOpen={shortcutHelper.isOpen} onClose={shortcutHelper.close} />
+          <CommandPalette isOpen={commandPalette.isOpen} onClose={commandPalette.close} />
           {!isManual && demoManager.tokenStatus === 'expired' && (
             <TokenExpiredOverlay
               onRefresh={demoManager.refreshToken}
