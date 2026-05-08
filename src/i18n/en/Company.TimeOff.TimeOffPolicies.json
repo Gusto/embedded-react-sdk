@@ -8,7 +8,9 @@
   "tableLabel": "Time off policies",
   "actions": {
     "viewPolicy": "View policy",
-    "deletePolicy": "Delete policy"
+    "deletePolicy": "Delete policy",
+    "menuTrigger": "Actions for {{name}}",
+    "menuFor": "Actions for {{name}}"
   },
   "finishSetupCta": "Finish setup",
   "allEmployeesLabel": "All employees",

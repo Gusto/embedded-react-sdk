@@ -294,8 +294,8 @@ describe('PolicyList', () => {
         expect(screen.getByText('Vacation')).toBeInTheDocument()
       })
 
-      const menuButtons = screen.getAllByRole('button', { name: 'Open menu' })
-      await user.click(menuButtons[0]!)
+      const menuButton = screen.getByRole('button', { name: 'Actions for Vacation' })
+      await user.click(menuButton)
 
       await waitFor(() => {
         expect(screen.getByText('View policy')).toBeInTheDocument()
@@ -333,8 +333,8 @@ describe('PolicyList', () => {
         expect(screen.getByText('Vacation')).toBeInTheDocument()
       })
 
-      const menuButtons = screen.getAllByRole('button', { name: 'Open menu' })
-      await user.click(menuButtons[0]!)
+      const menuButton = screen.getByRole('button', { name: 'Actions for Vacation' })
+      await user.click(menuButton)
 
       await waitFor(() => {
         expect(screen.getByRole('menuitem', { name: 'Delete policy' })).toBeInTheDocument()
@@ -370,8 +370,8 @@ describe('PolicyList', () => {
         expect(screen.getByText('Vacation')).toBeInTheDocument()
       })
 
-      const menuButtons = screen.getAllByRole('button', { name: 'Open menu' })
-      await user.click(menuButtons[0]!)
+      const menuButton = screen.getByRole('button', { name: 'Actions for Vacation' })
+      await user.click(menuButton)
 
       await waitFor(() => {
         expect(screen.getByRole('menuitem', { name: 'Delete policy' })).toBeInTheDocument()
@@ -412,8 +412,8 @@ describe('PolicyList', () => {
         expect(screen.getByText('Vacation')).toBeInTheDocument()
       })
 
-      const menuButtons = screen.getAllByRole('button', { name: 'Open menu' })
-      await user.click(menuButtons[0]!)
+      const menuButton = screen.getByRole('button', { name: 'Actions for Vacation' })
+      await user.click(menuButton)
 
       await waitFor(() => {
         expect(screen.getByRole('menuitem', { name: 'Delete policy' })).toBeInTheDocument()
@@ -460,8 +460,8 @@ describe('PolicyList', () => {
         expect(screen.getByText('Vacation')).toBeInTheDocument()
       })
 
-      const menuButtons = screen.getAllByRole('button', { name: 'Open menu' })
-      await user.click(menuButtons[0]!)
+      const menuButton = screen.getByRole('button', { name: 'Actions for Vacation' })
+      await user.click(menuButton)
 
       await waitFor(() => {
         expect(screen.getByRole('menuitem', { name: 'Delete policy' })).toBeInTheDocument()
@@ -489,8 +489,8 @@ describe('PolicyList', () => {
         expect(screen.getByText('Vacation')).toBeInTheDocument()
       })
 
-      const menuButtons = screen.getAllByRole('button', { name: 'Open menu' })
-      await user.click(menuButtons[0]!)
+      const menuButton = screen.getByRole('button', { name: 'Actions for Vacation' })
+      await user.click(menuButton)
 
       await waitFor(() => {
         expect(screen.getByRole('menuitem', { name: 'Delete policy' })).toBeInTheDocument()
@@ -583,9 +583,10 @@ describe('PolicyList', () => {
         expect(screen.getByText('Holiday pay policy')).toBeInTheDocument()
       })
 
-      const menuButtons = screen.getAllByRole('button', { name: 'Open menu' })
-      const holidayMenuButton = menuButtons[menuButtons.length - 1]!
-      await user.click(holidayMenuButton)
+      const menuButton = screen.getByRole('button', {
+        name: 'Actions for Holiday pay policy',
+      })
+      await user.click(menuButton)
 
       await waitFor(() => {
         expect(screen.getByText('View policy')).toBeInTheDocument()
@@ -615,9 +616,10 @@ describe('PolicyList', () => {
         expect(screen.getByText('Holiday pay policy')).toBeInTheDocument()
       })
 
-      const menuButtons = screen.getAllByRole('button', { name: 'Open menu' })
-      const holidayMenuButton = menuButtons[menuButtons.length - 1]!
-      await user.click(holidayMenuButton)
+      const menuButton = screen.getByRole('button', {
+        name: 'Actions for Holiday pay policy',
+      })
+      await user.click(menuButton)
 
       await waitFor(() => {
         expect(screen.getByRole('menuitem', { name: 'Delete policy' })).toBeInTheDocument()
@@ -655,9 +657,10 @@ describe('PolicyList', () => {
         expect(screen.getByText('Holiday pay policy')).toBeInTheDocument()
       })
 
-      const menuButtons = screen.getAllByRole('button', { name: 'Open menu' })
-      const holidayMenuButton = menuButtons[menuButtons.length - 1]!
-      await user.click(holidayMenuButton)
+      const menuButton = screen.getByRole('button', {
+        name: 'Actions for Holiday pay policy',
+      })
+      await user.click(menuButton)
 
       await waitFor(() => {
         expect(screen.getByRole('menuitem', { name: 'Delete policy' })).toBeInTheDocument()

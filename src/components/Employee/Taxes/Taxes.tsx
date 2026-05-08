@@ -24,7 +24,6 @@ import {
   type BaseComponentInterface,
   type CommonComponentInterface,
 } from '@/components/Base'
-import { Flex } from '@/components/Common'
 import { useFlow } from '@/components/Flow/useFlow'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
@@ -214,16 +213,10 @@ const Root = (props: TaxesProps) => {
               children
             ) : (
               <>
-                <Flex flexDirection="column" gap={32}>
-                  <FederalHead />
-                  <Flex flexDirection="column" gap={20}>
-                    <Flex flexDirection="column" gap={32}>
-                      <FederalForm />
-                      <StateForm />
-                    </Flex>
-                    <Actions />
-                  </Flex>
-                </Flex>
+                <FederalHead />
+                <FederalForm />
+                <StateForm />
+                <Actions />
               </>
             )}
           </Form>

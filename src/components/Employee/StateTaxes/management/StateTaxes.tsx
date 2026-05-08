@@ -1,5 +1,6 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { EmployeeStateTaxesView, useEmployeeStateTaxesForm } from './shared'
+import { EmployeeStateTaxesView, useEmployeeStateTaxesForm } from '../shared'
 import {
   BaseBoundaries,
   BaseLayout,
@@ -13,8 +14,6 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 
 export type StateTaxesProps = Omit<CommonComponentInterface<'Employee.StateTaxes'>, 'children'> & {
   employeeId: string
-  /** Render admin-only questions and submit them. Defaults to `false`. */
-  isAdmin?: boolean
   onEvent: BaseComponentInterface['onEvent']
 }
 
@@ -29,51 +28,60 @@ export function StateTaxes({
   )
 }
 
-function StateTaxesRoot({
-  employeeId,
-  className,
-  dictionary,
-  onEvent,
-  isAdmin = false,
-}: StateTaxesProps) {
+function StateTaxesRoot({ employeeId, className, dictionary, onEvent }: StateTaxesProps) {
   useI18n('Employee.StateTaxes')
   useComponentDictionary('Employee.StateTaxes', dictionary)
+  const { t } = useTranslation('Employee.StateTaxes')
+  const Components = useComponentContext()
 
-  const stateTaxes = useEmployeeStateTaxesForm({ employeeId, isAdmin })
+  const stateTaxes = useEmployeeStateTaxesForm({ employeeId })
+  const [showSuccess, setShowSuccess] = useState(false)
 
   if (stateTaxes.isLoading) {
     return <BaseLayout isLoading error={stateTaxes.errorHandling.errors} />
   }
 
   const handleSubmit = async () => {
+    setShowSuccess(false)
     const result = await stateTaxes.actions.onSubmit()
     if (!result) return
 
     onEvent(componentEvents.EMPLOYEE_STATE_TAXES_UPDATED, {
       employeeStateTaxesList: result.data,
     })
-    onEvent(componentEvents.EMPLOYEE_STATE_TAXES_DONE)
+    setShowSuccess(true)
   }
+
+  const handleCancel = () => {
+    onEvent(componentEvents.CANCEL)
+  }
+
+  const alert = showSuccess ? (
+    <Components.Alert
+      status="success"
+      label={t('successAlert')}
+      onDismiss={() => {
+        setShowSuccess(false)
+      }}
+    />
+  ) : undefined
 
   return (
     <EmployeeStateTaxesView
       stateTaxes={stateTaxes}
       onSubmit={handleSubmit}
-      actions={<ContinueAction isPending={stateTaxes.status.isPending} />}
+      alert={alert}
+      actions={
+        <ActionsLayout>
+          <Components.Button variant="secondary" onClick={handleCancel}>
+            {t('cancelCta')}
+          </Components.Button>
+          <Components.Button type="submit" isLoading={stateTaxes.status.isPending}>
+            {t('saveCta')}
+          </Components.Button>
+        </ActionsLayout>
+      }
       className={className}
     />
-  )
-}
-
-function ContinueAction({ isPending }: { isPending: boolean }) {
-  const { t } = useTranslation('Employee.StateTaxes')
-  const Components = useComponentContext()
-
-  return (
-    <ActionsLayout>
-      <Components.Button type="submit" isLoading={isPending}>
-        {t('submitCta')}
-      </Components.Button>
-    </ActionsLayout>
   )
 }

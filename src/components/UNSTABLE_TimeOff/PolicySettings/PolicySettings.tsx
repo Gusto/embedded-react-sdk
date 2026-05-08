@@ -28,9 +28,12 @@ const HOURLY_ACCRUAL_METHODS = [
   'per_hour_paid_no_overtime',
 ]
 
+const ALL_AT_ONCE_ACCRUAL_METHODS = ['per_anniversary_year', 'per_calendar_year']
+
 function deriveAccrualMethodCategory(apiAccrualMethod: string): PolicySettingsAccrualMethod {
   if (HOURLY_ACCRUAL_METHODS.includes(apiAccrualMethod)) return 'hours_worked'
-  return 'fixed'
+  if (ALL_AT_ONCE_ACCRUAL_METHODS.includes(apiAccrualMethod)) return 'fixed_all_at_once'
+  return 'fixed_per_pay_period'
 }
 
 function deriveDefaultValues(policy: TimeOffPolicy): Partial<PolicySettingsFormData> {
@@ -66,10 +69,13 @@ function deriveDefaultValues(policy: TimeOffPolicy): Partial<PolicySettingsFormD
 function buildUpdateRequestBody(
   data: PolicySettingsFormData,
   version: string,
+  accrualCategory: PolicySettingsAccrualMethod,
 ): PutV1TimeOffPoliciesTimeOffPolicyUuidRequestBody {
+  const isAllAtOnce = accrualCategory === 'fixed_all_at_once'
+
   return {
     maxAccrualHoursPerYear:
-      data.accrualMaximumEnabled && data.accrualMaximum != null
+      !isAllAtOnce && data.accrualMaximumEnabled && data.accrualMaximum != null
         ? String(data.accrualMaximum)
         : null,
     maxHours:
@@ -81,7 +87,9 @@ function buildUpdateRequestBody(
         ? String(data.carryOverLimit)
         : null,
     accrualWaitingPeriodDays:
-      data.waitingPeriodEnabled && data.waitingPeriod != null ? data.waitingPeriod : null,
+      !isAllAtOnce && data.waitingPeriodEnabled && data.waitingPeriod != null
+        ? data.waitingPeriod
+        : null,
     paidOutOnTermination: data.paidOutOnTermination,
     complete: true,
     version,
@@ -109,7 +117,7 @@ function Root({ policyId }: PolicySettingsProps) {
       const { timeOffPolicy } = await updateTimeOffPolicy({
         request: {
           timeOffPolicyUuid: policyId,
-          requestBody: buildUpdateRequestBody(data, version),
+          requestBody: buildUpdateRequestBody(data, version, accrualCategory),
         },
       })
 

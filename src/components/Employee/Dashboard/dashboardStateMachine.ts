@@ -4,6 +4,7 @@ import {
   HomeAddressContextual,
   WorkAddressContextual,
   FederalTaxesContextual,
+  StateTaxesContextual,
   ProfileContextual,
   type DashboardContextInterface,
 } from './DashboardComponents'
@@ -64,6 +65,17 @@ export const dashboardStateMachine = {
         }),
       ),
     ),
+    transition(
+      componentEvents.EMPLOYEE_STATE_TAXES_EDIT,
+      'stateTaxes',
+      reduce(
+        (ctx: DashboardContextInterface): DashboardContextInterface => ({
+          ...ctx,
+          component: StateTaxesContextual,
+          header: { type: 'minimal' },
+        }),
+      ),
+    ),
   ),
   homeAddress: state<MachineTransition>(transition(componentEvents.CANCEL, 'index', returnToIndex)),
   workAddress: state<MachineTransition>(transition(componentEvents.CANCEL, 'index', returnToIndex)),
@@ -71,5 +83,6 @@ export const dashboardStateMachine = {
     transition(componentEvents.CANCEL, 'index', returnToIndex),
     transition(componentEvents.EMPLOYEE_FEDERAL_TAXES_DONE, 'index', returnToIndex),
   ),
+  stateTaxes: state<MachineTransition>(transition(componentEvents.CANCEL, 'index', returnToIndex)),
   profile: state<MachineTransition>(transition(componentEvents.CANCEL, 'index', returnToIndex)),
 }

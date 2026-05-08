@@ -18,7 +18,7 @@ function renderHoursWorked(overrides = {}) {
 function renderFixed(overrides = {}) {
   return renderWithProviders(
     <PolicySettingsPresentation
-      accrualMethod="fixed"
+      accrualMethod="fixed_all_at_once"
       onContinue={handlers.onContinue}
       onBack={handlers.onBack}
       {...overrides}

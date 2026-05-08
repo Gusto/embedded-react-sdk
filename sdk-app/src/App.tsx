@@ -106,6 +106,14 @@ export function App() {
       cycleTheme()
     },
   })
+  useGlobalShortcut({
+    key: 'b',
+    modifier: 'mod',
+    onTrigger: event => {
+      event.preventDefault()
+      setSidebarOpen(open => !open)
+    },
+  })
 
   useEffect(() => {
     if (codePanel.isOpen && settingsOpen) setSettingsOpen(false)

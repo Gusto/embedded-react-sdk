@@ -104,17 +104,18 @@ describe('PolicySettings container', () => {
       expect(screen.queryAllByText('Waiting period')).toHaveLength(0)
     })
 
-    it('also treats per_pay_period as fixed', async () => {
+    it('shows accrual maximum and waiting period for per_pay_period', async () => {
       mockPolicyData = { ...basePolicyData, accrualMethod: 'per_pay_period' }
       renderComponent()
 
       await waitFor(() => {
         expect(screen.getByText('Policy settings')).toBeInTheDocument()
       })
-      expect(screen.queryAllByText('Accrual maximum')).toHaveLength(0)
+      expect(screen.getAllByText('Accrual maximum').length).toBeGreaterThan(0)
+      expect(screen.getAllByText('Waiting period').length).toBeGreaterThan(0)
     })
 
-    it('also treats per_anniversary_year as fixed', async () => {
+    it('hides accrual maximum and waiting period for per_anniversary_year', async () => {
       mockPolicyData = { ...basePolicyData, accrualMethod: 'per_anniversary_year' }
       renderComponent()
 
@@ -122,6 +123,7 @@ describe('PolicySettings container', () => {
         expect(screen.getByText('Policy settings')).toBeInTheDocument()
       })
       expect(screen.queryAllByText('Accrual maximum')).toHaveLength(0)
+      expect(screen.queryAllByText('Waiting period')).toHaveLength(0)
     })
   })
 
@@ -210,6 +212,33 @@ describe('PolicySettings container', () => {
           componentEvents.TIME_OFF_POLICY_SETTINGS_DONE,
           expect.objectContaining({ complete: true }),
         )
+      })
+    })
+
+    it('nulls out accrual maximum and waiting period for all_at_once policies', async () => {
+      const user = userEvent.setup()
+      mockPolicyData = {
+        ...basePolicyData,
+        accrualMethod: 'per_anniversary_year',
+      }
+      renderComponent()
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Save' })).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: 'Save' }))
+
+      await waitFor(() => {
+        expect(mockUpdateTimeOffPolicy).toHaveBeenCalledWith({
+          request: {
+            timeOffPolicyUuid: 'policy-123',
+            requestBody: expect.objectContaining({
+              maxAccrualHoursPerYear: null,
+              accrualWaitingPeriodDays: null,
+            }),
+          },
+        })
       })
     })
   })
