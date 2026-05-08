@@ -11,6 +11,7 @@ const MOD = isMac ? '⌘' : 'Ctrl'
 
 const SHORTCUTS: Shortcut[] = [
   { keys: ['?'], label: 'Show keyboard shortcuts' },
+  { keys: [MOD, 'K'], label: 'Open page search' },
   { keys: ['\\'], label: 'Hide chrome' },
   { keys: ['Esc'], label: 'Restore chrome (when hidden)' },
   { keys: [MOD, ','], label: 'Open settings' },
