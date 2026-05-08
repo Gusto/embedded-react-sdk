@@ -78,14 +78,16 @@ export const List = () => {
     itemMenu: requirement => {
       const status = getSetupStatus(requirement)
       return (
-        <Components.Button
-          variant="secondary"
-          onClick={() => {
-            if (requirement.state) handleChange(requirement.state)
-          }}
-        >
-          {t(ctaLabelMap[status])}
-        </Components.Button>
+        <Flex gap={4} alignItems="center" justifyContent="flex-end">
+          <Components.Button
+            variant="secondary"
+            onClick={() => {
+              if (requirement.state) handleChange(requirement.state)
+            }}
+          >
+            {t(ctaLabelMap[status])}
+          </Components.Button>
+        </Flex>
       )
     },
 

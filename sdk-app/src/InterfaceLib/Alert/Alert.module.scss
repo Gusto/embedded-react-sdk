@@ -1,0 +1,141 @@
+.root {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  padding: 16px;
+  border: 1px solid #dadada;
+  border-radius: 12px;
+  background-color: #f0f0f0;
+  color: #101010;
+  font-family: 'InterfaceLib Sans', Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  outline: none;
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  color: inherit;
+
+  svg {
+    display: block;
+  }
+}
+
+.body {
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.label {
+  margin: 0;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  color: inherit;
+}
+
+.content {
+  margin-top: 4px;
+  font-size: 14px;
+  line-height: 22px;
+  color: inherit;
+}
+
+.dismiss {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  outline: none;
+  transition: background-color 0.16s ease-out;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.06);
+  }
+
+  &:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 1px;
+  }
+}
+
+.root[data-status='info'] {
+  background-color: #f0f0f0;
+  border-color: #dadada;
+  color: #101010;
+
+  .icon {
+    color: #666666;
+  }
+}
+
+.root[data-status='warning'] {
+  background-color: #fff2e6;
+  border-color: #ffe6cc;
+  color: #101010;
+
+  .icon {
+    color: rgb(255, 159, 64);
+  }
+}
+
+.root[data-status='error'] {
+  background-color: #ffe5ea;
+  border-color: #ffccd5;
+  color: #101010;
+
+  .icon {
+    color: #c5271c;
+  }
+}
+
+.root[data-status='success'] {
+  background-color: #e5ffee;
+  border-color: #ccffdd;
+  color: #101010;
+
+  .icon {
+    color: #007d2a;
+  }
+}
+
+// Force any nested secondary Button to render with tertiary-like styling.
+// `.root.root` doubles class specificity to (0,2,1) so this beats the
+// Button's own `.root[data-variant='secondary']` rule (0,2,0).
+.root.root [data-variant='secondary'] {
+  background-color: unset;
+  color: rgb(16, 16, 16);
+  border-color: transparent;
+  padding: 0;
+  text-decoration: underline;
+  min-height: 0;
+  margin-top: 10px;
+
+  &:hover:not([data-disabled]) {
+    background-color: unset;
+    color: rgb(89, 89, 89);
+    border-color: transparent;
+  }
+
+  &:active:not([data-disabled]) {
+    background-color: transparent;
+    border-color: transparent;
+  }
+}

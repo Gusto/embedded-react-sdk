@@ -22,14 +22,16 @@
   font-display: swap;
 }
 
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 .GSDK {
   font-family: 'InterfaceLib Sans', Helvetica, Arial, sans-serif;
 }
 
-.GSDK :is(h1, h2, h3, h4, h5, h6) + p {
-  color: rgb(102, 102, 102);
-}
-
 .GSDK :is(h1, h2) + p {
-  margin-top: 8px;
+  margin-top: 2px;
+  font-size: 16px;
 }

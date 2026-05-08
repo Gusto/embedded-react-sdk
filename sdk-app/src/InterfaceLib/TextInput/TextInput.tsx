@@ -58,7 +58,7 @@ export function TextInput({
       <div className={styles.field}>
         {adornmentStart && <span className={styles.adornmentStart}>{adornmentStart}</span>}
 
-        <div className={styles.labelInputContainer}>
+        <label htmlFor={inputId} className={styles.labelInputContainer}>
           <input
             id={inputId}
             ref={inputRef}
@@ -78,16 +78,15 @@ export function TextInput({
             maxLength={maxLength}
             className={styles.input}
           />
-          <label
-            htmlFor={inputId}
+          <span
             className={classNames(styles.label, {
               [styles.labelHidden as string]: shouldVisuallyHideLabel,
             })}
           >
             {label}
             {isRequired && <span aria-hidden="true"> *</span>}
-          </label>
-        </div>
+          </span>
+        </label>
 
         {description && (
           <span className={styles.tooltipSlot}>
