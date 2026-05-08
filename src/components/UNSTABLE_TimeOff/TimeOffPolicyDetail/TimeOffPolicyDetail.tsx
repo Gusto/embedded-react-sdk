@@ -21,6 +21,7 @@ import { useBase } from '@/components/Base/useBase'
 import { componentEvents } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
+import { useLocale } from '@/contexts/LocaleProvider/useLocale'
 import { isEditableTimeOffPolicyType } from '@/components/UNSTABLE_TimeOff/TimeOffFlow/timeOffPolicyTypes'
 import EditIcon from '@/assets/icons/edit-02.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
@@ -58,15 +59,18 @@ function mapPolicyType(apiType: string): PolicyTypeKey {
   return 'vacation'
 }
 
-function formatResetDate(resetDate: string | null | undefined): string | undefined {
+function formatResetDate(
+  resetDate: string | null | undefined,
+  locale?: string,
+): string | undefined {
   if (!resetDate) return undefined
   const [month, day] = resetDate.split('-')
   if (!month || !day) return resetDate
   const date = new Date(2000, parseInt(month, 10) - 1, parseInt(day, 10))
-  return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })
+  return date.toLocaleDateString(locale, { month: 'long', day: 'numeric' })
 }
 
-function derivePolicyDetails(policy: TimeOffPolicy): PolicyDetails {
+function derivePolicyDetails(policy: TimeOffPolicy, locale?: string): PolicyDetails {
   const policyType = mapPolicyType(policy.policyType)
   const accrualMethod = mapAccrualMethod(policy.accrualMethod)
 
@@ -79,7 +83,7 @@ function derivePolicyDetails(policy: TimeOffPolicy): PolicyDetails {
     accrualMethod,
     accrualRate: policy.accrualRate ? Number(policy.accrualRate) : 0,
     accrualRateUnit: policy.accrualRateUnit ? Number(policy.accrualRateUnit) : undefined,
-    resetDate: formatResetDate(policy.policyResetDate),
+    resetDate: formatResetDate(policy.policyResetDate, locale),
   }
 }
 
@@ -130,6 +134,7 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
   const { t } = useTranslation('Company.TimeOff.TimeOffPolicyDetails')
   const { onEvent, baseSubmitHandler } = useBase()
   const { Button } = useComponentContext()
+  const { locale } = useLocale()
   const queryClient = useQueryClient()
 
   const { data: policyResponse } = useTimeOffPoliciesGetSuspense({
@@ -160,7 +165,7 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
   } | null>(null)
   const [editBalanceState, setEditBalanceState] = useState<EditBalanceState | null>(null)
 
-  const policyDetails = useMemo(() => derivePolicyDetails(policy), [policy])
+  const policyDetails = useMemo(() => derivePolicyDetails(policy, locale), [policy, locale])
   const policySettings = useMemo(() => derivePolicySettings(policy), [policy])
   const employees = useMemo(
     () => deriveEmployees(policy, employeesData.showEmployees ?? []),
@@ -245,36 +250,43 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
     ]
   }, [Button, onEvent, policyId, t, isEditable])
 
+  const isUnlimited = policy.accrualMethod === 'unlimited'
+
   const itemMenu = useCallback(
     (employee: TimeOffPolicyDetailEmployee) => {
       const employeeName = `${employee.firstName ?? ''} ${employee.lastName ?? ''}`.trim()
+      const items = [
+        ...(!isUnlimited
+          ? [
+              {
+                label: t('employeeTable.editBalance'),
+                icon: <EditIcon aria-hidden />,
+                onClick: () => {
+                  setEditBalanceState({
+                    employeeUuid: employee.uuid,
+                    employeeName,
+                    currentBalance: employee.balance ?? 0,
+                  })
+                },
+              },
+            ]
+          : []),
+        {
+          label: t('employeeTable.removeEmployee'),
+          icon: <TrashCanSvg aria-hidden />,
+          onClick: () => {
+            setRemoveTarget({ uuid: employee.uuid, name: employeeName })
+          },
+        },
+      ]
       return (
         <HamburgerMenu
-          items={[
-            {
-              label: t('employeeTable.editBalance'),
-              icon: <EditIcon aria-hidden />,
-              onClick: () => {
-                setEditBalanceState({
-                  employeeUuid: employee.uuid,
-                  employeeName,
-                  currentBalance: employee.balance ?? 0,
-                })
-              },
-            },
-            {
-              label: t('employeeTable.removeEmployee'),
-              icon: <TrashCanSvg aria-hidden />,
-              onClick: () => {
-                setRemoveTarget({ uuid: employee.uuid, name: employeeName })
-              },
-            },
-          ]}
+          items={items}
           triggerLabel={`${t('employeeTable.actions')} ${employeeName}`}
         />
       )
     },
-    [t],
+    [t, isUnlimited],
   )
 
   const discriminatedProps =

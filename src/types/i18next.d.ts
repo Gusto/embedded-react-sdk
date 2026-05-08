@@ -259,6 +259,7 @@ export interface CompanyPaySchedule{
 "inactive":string;
 "edit":string;
 };
+"payScheduleListLabel":string;
 "headings":{
 "addPaySchedule":string;
 "editPaySchedule":string;
@@ -424,15 +425,6 @@ export interface CompanyTimeOffCreateTimeOffPolicy{
 "numberOfDaysPlaceholder":string;
 "continueCta":string;
 };
-"addEmployees":{
-"title":string;
-"employeesMovedWarning":string;
-"createPolicyCta":string;
-"policyType":{
-"vacation":string;
-"sick":string;
-};
-};
 "startingBalances":{
 "title":string;
 "description":string;
@@ -559,6 +551,7 @@ export interface CompanyTimeOffPolicyDetail{
 "employees":string;
 };
 "backLabel":string;
+"employeeActions":string;
 "removeEmployeeDialog":{
 "title":string;
 "description":string;
@@ -577,6 +570,9 @@ export interface CompanyTimeOffSelectEmployees{
 "startingBalanceColumn":string;
 "backCta":string;
 "continueCta":string;
+"errors":{
+"removeEmployeesFailed":string;
+};
 "removeConfirmDialog":{
 "title_one":string;
 "title_other":string;
@@ -608,7 +604,6 @@ export interface CompanyTimeOffTimeOffPolicies{
 };
 "tableLabel":string;
 "actions":{
-"editPolicy":string;
 "viewPolicy":string;
 "deletePolicy":string;
 };
@@ -2088,6 +2083,9 @@ export interface EmployeeSplitPaycheck{
 export interface EmployeeStateTaxes{
 "stateTaxesTitle":string;
 "submitCta":string;
+"validations":{
+"required":string;
+};
 };
 export interface EmployeeTaxes{
 "additionalWithholding":string;

@@ -54,6 +54,8 @@ const cancelToPolicyList = transition(
     (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
       ...ctx,
       component: PolicyListContextual,
+      policyId: undefined,
+      policyType: undefined,
       alerts: undefined,
     }),
   ),
@@ -66,6 +68,8 @@ const backToListTransition = transition(
     (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
       ...ctx,
       component: PolicyListContextual,
+      policyId: undefined,
+      policyType: undefined,
       alerts: undefined,
     }),
   ),
@@ -80,6 +84,8 @@ export const timeOffMachine = {
         (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
           ...ctx,
           component: SelectPolicyTypeContextual,
+          policyId: undefined,
+          policyType: undefined,
           alerts: undefined,
         }),
       ),
@@ -481,17 +487,6 @@ export const timeOffMachine = {
       ),
     ),
     transition(
-      componentEvents.TIME_OFF_HOLIDAY_ADD_EMPLOYEES,
-      'addEmployeesHoliday',
-      reduce(
-        (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
-          ...ctx,
-          component: AddEmployeesHolidayContextual,
-          alerts: undefined,
-        }),
-      ),
-    ),
-    transition(
       componentEvents.TIME_OFF_EDIT_HOLIDAY_POLICY,
       'editHolidaySelectionForm',
       reduce(
@@ -570,7 +565,17 @@ export const timeOffMachine = {
         }),
       ),
     ),
-    cancelToPolicyList,
+    transition(
+      componentEvents.CANCEL,
+      'viewHolidayEmployees',
+      reduce(
+        (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: ViewHolidayEmployeesContextual,
+          alerts: undefined,
+        }),
+      ),
+    ),
   ),
 
   final: state<MachineTransition>(),

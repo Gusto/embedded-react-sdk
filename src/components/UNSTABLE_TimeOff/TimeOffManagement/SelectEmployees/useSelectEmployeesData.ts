@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useDeferredValue, useMemo, useState } from 'react'
 import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
 import { Include } from '@gusto/embedded-api/models/operations/getv1companiescompanyidemployees'
 import type { PaidTimeOff } from '@gusto/embedded-api/models/components/paidtimeoff'
@@ -10,6 +10,7 @@ export function useSelectEmployeesData(companyId: string, initialSelectedUuids?:
     () => new Set(initialSelectedUuids ?? []),
   )
   const [searchValue, setSearchValue] = useState('')
+  const deferredSearchValue = useDeferredValue(searchValue)
   const { currentPage, itemsPerPage, getPaginationProps, resetPage } = usePagination()
 
   // include: all_compensations is required to populate eligiblePaidTimeOff,
@@ -21,9 +22,10 @@ export function useSelectEmployeesData(companyId: string, initialSelectedUuids?:
     page: currentPage,
     per: itemsPerPage,
     include: [Include.AllCompensations],
+    ...(deferredSearchValue ? { searchTerm: deferredSearchValue } : {}),
   })
 
-  const employees = useMemo<EmployeeItem[]>(
+  const filteredEmployees = useMemo<EmployeeItem[]>(
     () =>
       (employeesData.showEmployees ?? []).map(e => ({
         uuid: e.uuid,
@@ -35,14 +37,6 @@ export function useSelectEmployeesData(companyId: string, initialSelectedUuids?:
       })),
     [employeesData.showEmployees],
   )
-
-  const filteredEmployees = useMemo(() => {
-    if (!searchValue) return employees
-    const lower = searchValue.toLowerCase()
-    return employees.filter(e =>
-      `${e.firstName ?? ''} ${e.lastName ?? ''}`.toLowerCase().includes(lower),
-    )
-  }, [employees, searchValue])
 
   const pagination = useMemo(
     () => getPaginationProps(employeesData.httpMeta.response.headers, isFetching),

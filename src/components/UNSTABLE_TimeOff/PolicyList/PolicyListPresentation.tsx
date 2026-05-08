@@ -45,10 +45,12 @@ export function PolicyListPresentation({
     setDeletePolicyDialogState({ isOpen: false, policy: null })
   }
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     if (deletePolicyDialogState.policy) {
-      onDeletePolicy(deletePolicyDialogState.policy)
-      handleCloseDeleteDialog()
+      const success = await onDeletePolicy(deletePolicyDialogState.policy)
+      if (success) {
+        handleCloseDeleteDialog()
+      }
     }
   }
 
@@ -73,7 +75,7 @@ export function PolicyListPresentation({
       const menuItems = isEditable
         ? [
             {
-              label: t('actions.editPolicy'),
+              label: t('actions.viewPolicy'),
               onClick: () => {
                 onEditPolicy(policy)
               },

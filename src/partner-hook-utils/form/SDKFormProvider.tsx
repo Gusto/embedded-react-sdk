@@ -4,6 +4,7 @@ import { FormProvider } from 'react-hook-form'
 import type { FieldMetadata, FieldMetadataWithOptions, HookFormInternals } from '../types'
 import { FormFieldsMetadataProvider } from './FormFieldsMetadataProvider'
 import { FieldElementRegistryProvider } from '@/components/Common/Fields/hooks/FieldElementRegistryProvider'
+import { normalizeErrorKeyForForm } from '@/helpers/formattedStrings'
 import type { SDKError, SDKFieldError } from '@/types/sdkError'
 
 function useSyncFieldErrors<
@@ -25,8 +26,9 @@ function useSyncFieldErrors<
     if (!fieldErrors.length) return
     const knownFields = new Set(Object.keys(fieldsMetadata))
     for (const fieldError of fieldErrors) {
-      if (knownFields.has(fieldError.field)) {
-        setError(fieldError.field as FieldPath<TFormData>, {
+      const normalizedField = normalizeErrorKeyForForm(fieldError.field)
+      if (knownFields.has(normalizedField)) {
+        setError(normalizedField as FieldPath<TFormData>, {
           type: 'custom',
           message: fieldError.message,
         })

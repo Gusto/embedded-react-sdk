@@ -7,11 +7,26 @@ import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { componentEvents } from '@/shared/constants'
 
 const mockCreateTimeOffPolicy = vi.fn()
+const mockUpdateTimeOffPolicy = vi.fn()
+let mockGetPolicyResponse: { timeOffPolicy: Record<string, unknown> } | undefined
 
 vi.mock('@gusto/embedded-api/react-query/timeOffPoliciesCreate', () => ({
   useTimeOffPoliciesCreateMutation: () => ({
     mutateAsync: mockCreateTimeOffPolicy,
     isPending: false,
+  }),
+}))
+
+vi.mock('@gusto/embedded-api/react-query/timeOffPoliciesUpdate', () => ({
+  useTimeOffPoliciesUpdateMutation: () => ({
+    mutateAsync: mockUpdateTimeOffPolicy,
+    isPending: false,
+  }),
+}))
+
+vi.mock('@gusto/embedded-api/react-query/timeOffPoliciesGet', () => ({
+  useTimeOffPoliciesGetSuspense: () => ({
+    data: mockGetPolicyResponse ?? { timeOffPolicy: undefined },
   }),
 }))
 
@@ -495,6 +510,42 @@ describe('PolicyConfigurationForm', () => {
     })
   })
 
+  it('submits hourly accrual without selecting a reset date type', async () => {
+    const user = userEvent.setup()
+    renderComponent()
+
+    await waitFor(() => {
+      expect(screen.getByLabelText('Based on hours worked')).toBeInTheDocument()
+    })
+
+    await user.type(screen.getByLabelText('Policy name'), 'No Reset Date')
+    await user.click(screen.getByLabelText('Based on hours worked'))
+
+    await waitFor(() => {
+      expect(screen.getByLabelText('Employees will accrue')).toBeInTheDocument()
+    })
+
+    await user.type(screen.getByLabelText('Employees will accrue'), '1')
+    await user.type(screen.getByLabelText('For every'), '40')
+
+    await user.click(screen.getByRole('button', { name: 'Save & continue' }))
+
+    await waitFor(() => {
+      expect(mockCreateTimeOffPolicy).toHaveBeenCalledWith({
+        request: {
+          companyUuid: 'company-123',
+          timeOffPolicyRequest: expect.objectContaining({
+            name: 'No Reset Date',
+            accrualMethod: 'per_hour_worked_no_overtime',
+            accrualRate: '1',
+            accrualRateUnit: '40',
+            complete: false,
+          }),
+        },
+      })
+    })
+  })
+
   it('maps per_hour_paid with both checkboxes to per_hour_paid', async () => {
     const user = userEvent.setup()
     renderComponent()
@@ -664,5 +715,126 @@ describe('PolicyConfigurationForm', () => {
         },
       })
     })
+  })
+})
+
+describe('PolicyConfigurationForm - edit mode (deriveFormDefaults)', () => {
+  const onEvent = vi.fn()
+
+  beforeEach(() => {
+    onEvent.mockClear()
+    mockUpdateTimeOffPolicy.mockClear()
+    mockUpdateTimeOffPolicy.mockResolvedValue({
+      timeOffPolicy: { uuid: 'policy-edit-123' },
+    })
+  })
+
+  function renderEditComponent(policyData: Record<string, unknown>) {
+    mockGetPolicyResponse = {
+      timeOffPolicy: { uuid: 'policy-edit-123', version: 'v1', employees: [], ...policyData },
+    }
+    return renderWithProviders(
+      <PolicyConfigurationForm
+        onEvent={onEvent}
+        companyId="company-123"
+        policyType="vacation"
+        policyId="policy-edit-123"
+      />,
+    )
+  }
+
+  it('pre-populates name and hourly accrual fields from policy data', async () => {
+    renderEditComponent({
+      name: 'Hourly Vacation',
+      accrualMethod: 'per_hour_paid',
+      accrualRate: '1.5',
+      accrualRateUnit: '40',
+      policyResetDate: '03-15',
+    })
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('Hourly Vacation')).toBeInTheDocument()
+    })
+    expect(screen.getByLabelText('Based on hours worked')).toBeChecked()
+    expect((screen.getByLabelText('Employees will accrue') as HTMLInputElement).value).toBe('1.5')
+    expect((screen.getByLabelText('For every') as HTMLInputElement).value).toBe('40')
+    expect(screen.getByLabelText('Custom date')).toBeChecked()
+  })
+
+  it('pre-populates hourly policy without reset date (resetDateType left unset)', async () => {
+    renderEditComponent({
+      name: 'No Reset Hourly',
+      accrualMethod: 'per_hour_worked_no_overtime',
+      accrualRate: '2',
+      accrualRateUnit: '30',
+    })
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('No Reset Hourly')).toBeInTheDocument()
+    })
+    expect(screen.getByLabelText('Based on hours worked')).toBeChecked()
+    expect(screen.getByLabelText("Each employee's start date")).not.toBeChecked()
+    expect(screen.getByLabelText('Custom date')).not.toBeChecked()
+  })
+
+  it('pre-populates per_pay_period with policyResetDate as per_calendar_year', async () => {
+    renderEditComponent({
+      name: 'Per Pay Period',
+      accrualMethod: 'per_pay_period',
+      accrualRate: '120',
+      policyResetDate: '01-01',
+    })
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('Per Pay Period')).toBeInTheDocument()
+    })
+    expect(screen.getByLabelText('Fixed amount per year')).toBeChecked()
+    expect(screen.getByLabelText('Each pay period')).toBeChecked()
+    expect(screen.getByLabelText('Custom date')).toBeChecked()
+  })
+
+  it('pre-populates per_pay_period without policyResetDate as per_anniversary_year', async () => {
+    renderEditComponent({
+      name: 'Anniversary Pay Period',
+      accrualMethod: 'per_pay_period',
+      accrualRate: '80',
+    })
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('Anniversary Pay Period')).toBeInTheDocument()
+    })
+    expect(screen.getByLabelText('Each pay period')).toBeChecked()
+    expect(screen.getByLabelText("Each employee's start date")).toBeChecked()
+  })
+
+  it('pre-populates per_anniversary_year correctly', async () => {
+    renderEditComponent({
+      name: 'Anniversary All At Once',
+      accrualMethod: 'per_anniversary_year',
+      accrualRate: '60',
+    })
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('Anniversary All At Once')).toBeInTheDocument()
+    })
+    expect(screen.getByLabelText('Fixed amount per year')).toBeChecked()
+    expect(screen.getByLabelText('All at once')).toBeChecked()
+    expect(screen.getByLabelText("Each employee's start date")).toBeChecked()
+  })
+
+  it('pre-populates per_calendar_year with custom date fields', async () => {
+    renderEditComponent({
+      name: 'Calendar Year Policy',
+      accrualMethod: 'per_calendar_year',
+      accrualRate: '100',
+      policyResetDate: '06-15',
+    })
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('Calendar Year Policy')).toBeInTheDocument()
+    })
+    expect(screen.getByLabelText('Fixed amount per year')).toBeChecked()
+    expect(screen.getByLabelText('All at once')).toBeChecked()
+    expect(screen.getByLabelText('Custom date')).toBeChecked()
   })
 })

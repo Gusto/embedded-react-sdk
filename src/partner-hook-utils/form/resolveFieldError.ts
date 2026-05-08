@@ -1,6 +1,7 @@
 import type { FieldErrors } from 'react-hook-form'
 import { get } from 'react-hook-form'
 import type { ValidationMessages } from '../types'
+import { normalizeErrorKeyForForm } from '@/helpers/formattedStrings'
 import type { SDKError } from '@/types/sdkError'
 
 export function resolveFieldError<
@@ -19,7 +20,9 @@ export function resolveFieldError<
   }
 
   for (const sdkError of sdkErrors) {
-    const sdkFieldError = sdkError.fieldErrors.find(fe => fe.field === fieldName)
+    const sdkFieldError = sdkError.fieldErrors.find(
+      fe => normalizeErrorKeyForForm(fe.field) === fieldName,
+    )
     if (sdkFieldError?.message) return sdkFieldError.message
   }
 

@@ -212,7 +212,7 @@ export function PolicyConfigurationFormPresentation({
                   label={t('policyDetails.policyResetDateType')}
                   description={t('policyDetails.policyResetDateTypeHint')}
                   options={resetDateTypeOptions}
-                  isRequired
+                  isRequired={!isHourlyMethod}
                   errorMessage={t('policyDetails.validations.resetDateType')}
                 />
 

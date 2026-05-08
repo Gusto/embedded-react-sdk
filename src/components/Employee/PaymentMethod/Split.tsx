@@ -7,7 +7,7 @@ import { Fragment } from 'react/jsx-runtime'
 import DOMPurify from 'dompurify'
 import { useEffect, useMemo } from 'react'
 import { usePaymentMethod, type CombinedSchemaInputs } from './usePaymentMethod'
-import { NumberInputField, RadioGroupField } from '@/components/Common'
+import { Flex, NumberInputField, RadioGroupField } from '@/components/Common'
 import { useLocale } from '@/contexts/LocaleProvider'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { ReorderableList } from '@/components/Common/ReorderableList'
@@ -157,8 +157,14 @@ export function Split() {
           return <Components.Alert status="error" label={t('validations.percentageError')} />
         }}
       />
-      <Components.Heading as="h2">{t('title')}</Components.Heading>
-      <Trans t={t} i18nKey="splitDescription" components={{ p: <Components.Text /> }} />
+      <Flex flexDirection="column" gap={4}>
+        <Components.Heading as="h2">{t('title')}</Components.Heading>
+        <Trans
+          t={t}
+          i18nKey="splitDescription"
+          components={{ p: <Components.Text variant="supporting" /> }}
+        />
+      </Flex>
       <RadioGroupField
         name="splitBy"
         label={t('splitByLabel')}

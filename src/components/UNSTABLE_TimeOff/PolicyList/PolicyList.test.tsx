@@ -287,7 +287,7 @@ describe('PolicyList', () => {
       expect(onEvent).toHaveBeenCalledWith(componentEvents.TIME_OFF_CREATE_POLICY)
     })
 
-    it('emits TIME_OFF_VIEW_POLICY event when edit policy is clicked from menu', async () => {
+    it('emits TIME_OFF_VIEW_POLICY event when view policy is clicked from menu', async () => {
       renderWithProviders(<PolicyList {...defaultProps} />)
 
       await waitFor(() => {
@@ -298,10 +298,10 @@ describe('PolicyList', () => {
       await user.click(menuButtons[0]!)
 
       await waitFor(() => {
-        expect(screen.getByText('Edit policy')).toBeInTheDocument()
+        expect(screen.getByText('View policy')).toBeInTheDocument()
       })
 
-      await user.click(screen.getByText('Edit policy'))
+      await user.click(screen.getByText('View policy'))
 
       expect(onEvent).toHaveBeenCalledWith(componentEvents.TIME_OFF_VIEW_POLICY, {
         policyId: 'policy-1',
@@ -435,6 +435,53 @@ describe('PolicyList', () => {
       })
     })
 
+    it('keeps dialog open when delete fails with API error', async () => {
+      server.use(
+        http.put(`${API_BASE_URL}/v1/time_off_policies/:timeOffPolicyUuid/deactivate`, () => {
+          return HttpResponse.json(
+            {
+              errors: [
+                {
+                  error_key: 'base',
+                  category: 'invalid_request',
+                  message:
+                    'There are pending or approved time off requests that need to be declined before deactivating this policy',
+                },
+              ],
+            },
+            { status: 422 },
+          )
+        }),
+      )
+
+      renderWithProviders(<PolicyList {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Vacation')).toBeInTheDocument()
+      })
+
+      const menuButtons = screen.getAllByRole('button', { name: 'Open menu' })
+      await user.click(menuButtons[0]!)
+
+      await waitFor(() => {
+        expect(screen.getByRole('menuitem', { name: 'Delete policy' })).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('menuitem', { name: 'Delete policy' }))
+
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+      })
+
+      const dialog = screen.getByRole('dialog')
+      await user.click(within(dialog).getByRole('button', { name: 'Delete policy' }))
+
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+      })
+      expect(screen.queryByText('Policy "Vacation" deleted successfully')).not.toBeInTheDocument()
+    })
+
     it('closes dialog when cancel is clicked', async () => {
       renderWithProviders(<PolicyList {...defaultProps} />)
 
@@ -541,10 +588,10 @@ describe('PolicyList', () => {
       await user.click(holidayMenuButton)
 
       await waitFor(() => {
-        expect(screen.getByText('Edit policy')).toBeInTheDocument()
+        expect(screen.getByText('View policy')).toBeInTheDocument()
       })
 
-      await user.click(screen.getByText('Edit policy'))
+      await user.click(screen.getByText('View policy'))
 
       expect(onEvent).toHaveBeenCalledWith(componentEvents.TIME_OFF_VIEW_POLICY, {
         policyId: 'company-123',

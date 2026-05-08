@@ -12,7 +12,7 @@ export interface PolicyListPresentationProps {
   onCreatePolicy: () => void
   onEditPolicy: (policy: PolicyListItem) => void
   onFinishSetup: (policy: PolicyListItem) => void
-  onDeletePolicy: (policy: PolicyListItem) => void
+  onDeletePolicy: (policy: PolicyListItem) => Promise<boolean>
   deleteSuccessAlert?: string | null
   onDismissDeleteAlert?: () => void
   isDeletingPolicyId?: string | null
