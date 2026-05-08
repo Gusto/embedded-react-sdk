@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import type { PaymentUnit } from '@gusto/embedded-api/models/components/compensation'
 import type { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
@@ -55,9 +56,15 @@ function Root({
 }: EditCompensationProps) {
   useI18n('Employee.Compensation')
 
+  // Track jobId locally so a partial-failure submit chain (job POST succeeds,
+  // comp PUT fails) doesn't re-POST and create a duplicate job on retry. We
+  // initialize from the prop and only write back when the partner-supplied
+  // `currentJobId` was nullish (i.e. add-job flow) — see the submit handler.
+  const [resolvedJobId, setResolvedJobId] = useState<string | undefined>(currentJobId ?? undefined)
+
   const jobForm = useJobForm({
     employeeId,
-    jobId: currentJobId ?? undefined,
+    jobId: resolvedJobId,
     defaultValues: {
       title: partnerDefaultValues?.title ?? '',
       hireDate: startDate,
@@ -80,7 +87,7 @@ function Root({
 
   const compensationForm = useCompensationForm({
     employeeId,
-    jobId: currentJobId ?? undefined,
+    jobId: resolvedJobId,
     compensationId: resolvedCompensationId,
     // The Compensation flow always presents flsaStatus, rate, and paymentUnit
     // as required, even when editing an existing compensation. The hook's
@@ -133,7 +140,10 @@ function Root({
       compensationId: jobResult.data.currentCompensationUuid ?? undefined,
       compensationVersion: stubCompensation?.version ?? undefined,
     })
-    if (!compensationResult) return
+    if (!compensationResult) {
+      if (!currentJobId) setResolvedJobId(jobResult.data.uuid)
+      return
+    }
 
     onEvent(componentEvents.EMPLOYEE_COMPENSATION_UPDATED, compensationResult.data)
   })
