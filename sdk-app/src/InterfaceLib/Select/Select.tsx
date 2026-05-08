@@ -82,7 +82,7 @@ export const Select = ({
                 })}
               >
                 {label}
-                {isRequired && <span aria-hidden="true"> *</span>}
+                {!isRequired && <span className={styles.optional}> (optional)</span>}
               </label>
               <span className={styles.value}>
                 <SelectValue>

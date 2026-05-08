@@ -76,13 +76,13 @@
 }
 
 .fieldWithTooltip .valueArea {
-  padding-right: 56px;
+  padding-right: 36px;
 }
 
 .tooltipFloat {
   position: absolute;
   top: 50%;
-  right: 56px;
+  right: 36px;
   transform: translateY(-50%);
   display: inline-flex;
   align-items: center;
@@ -110,6 +110,11 @@
   padding: 10px 16px 10px 0;
   overflow: hidden;
   gap: 2px;
+}
+
+.optional {
+  color: #666666;
+  font-weight: 400;
 }
 
 // Static label — always at top, no animation

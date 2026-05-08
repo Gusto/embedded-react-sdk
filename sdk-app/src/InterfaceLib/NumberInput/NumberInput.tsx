@@ -118,7 +118,7 @@ export function NumberInput({
                 })}
               >
                 {label}
-                {isRequired && <span aria-hidden="true"> *</span>}
+                {!isRequired && <span className={styles.optional}> (optional)</span>}
               </span>
             </label>
 

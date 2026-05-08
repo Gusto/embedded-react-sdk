@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-restricted-imports
 import { Button, Tooltip, TooltipTrigger } from 'react-aria-components'
+import { FocusableContext } from '@react-aria/interactions'
 import classNames from 'classnames'
 import type { ReactNode } from 'react'
 import styles from './InfoTooltip.module.scss'
@@ -23,7 +24,7 @@ export function InfoTooltip({
 }: InfoTooltipProps) {
   return (
     <TooltipTrigger delay={150} closeDelay={100}>
-      <Button aria-label={ariaLabel} className={classNames(styles.trigger, className)}>
+      <Button slot={null} aria-label={ariaLabel} className={classNames(styles.trigger, className)}>
         <svg
           width="18"
           height="18"
@@ -41,7 +42,7 @@ export function InfoTooltip({
         </svg>
       </Button>
       <Tooltip className={styles.tooltip} offset={6}>
-        {children}
+        <FocusableContext.Provider value={null}>{children}</FocusableContext.Provider>
       </Tooltip>
     </TooltipTrigger>
   )

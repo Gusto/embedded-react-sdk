@@ -56,10 +56,10 @@
   &[data-exiting] {
     animation: il-tooltip-enter 0.12s ease-in reverse;
   }
-}
 
-a {
-  color: white;
+  a {
+    color: white;
+  }
 }
 
 @keyframes il-tooltip-enter {
