@@ -167,6 +167,65 @@ jobs:
       - name: Build Storybook
         run: npm run build-storybook
 
+  # Visual diff job: takes a screenshot of every story and compares against the
+  # committed PNG baselines under .storybook/__screenshots__/. Uses a deliberately
+  # loose threshold (50% pixel-ratio) to catch catastrophic regressions like a
+  # wrong design system being shipped, without flagging minor visual changes.
+  # See README.md "Visual diffing" for how to update baselines.
+  visual:
+    needs: setup
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Restore node_modules cache
+        uses: actions/cache/restore@v5
+        with:
+          path: node_modules
+          key: ${{ needs.setup.outputs.cache-key }}
+
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            playwright-${{ runner.os }}-
+
+      - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+
+      - name: Install Playwright system dependencies only
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+
+      - name: Build Storybook
+        run: npm run build-storybook
+
+      - name: Serve Storybook
+        run: npx --yes http-server@14 storybook-static --port 6006 --silent &
+
+      - name: Wait for Storybook
+        run: npx --yes wait-on@7 tcp:127.0.0.1:6006
+
+      - name: Run visual tests
+        run: npm run test:visual
+
+      - name: Upload visual diff output
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: storybook-visual-diff
+          path: .storybook/__screenshots__/__diff_output__/
+          retention-days: 7
+
   # SDK app build job: validates the dev app's vite config and entry compile
   sdk-app-build:
     needs: setup

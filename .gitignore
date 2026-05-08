@@ -190,6 +190,9 @@ dist
 # Storybook build output
 storybook-static/
 
+# Storybook visual diff output (baselines under __screenshots__ are committed)
+.storybook/__screenshots__/__diff_output__/
+
 # Playwright
 playwright-report/
 test-results/

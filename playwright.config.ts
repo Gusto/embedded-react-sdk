@@ -10,6 +10,14 @@ export default defineConfig({
   timeout: 60_000,
   expect: {
     timeout: 10_000,
+    // Loose visual-diff thresholds for opt-in `expect(...).toHaveScreenshot()`
+    // checks in e2e specs. The intent is to catch catastrophic regressions
+    // (wrong design system, broken theme, missing CSS), not minor visual
+    // differences — see README.md "Visual diffing" for details.
+    toHaveScreenshot: {
+      threshold: 0.2,
+      maxDiffPixelRatio: 0.5,
+    },
   },
   use: {
     baseURL: 'http://localhost:5173',

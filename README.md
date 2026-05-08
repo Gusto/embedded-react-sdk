@@ -73,3 +73,37 @@ See the [SDK Dev App README](sdk-app/README.md) for full setup and usage details
   - [useSignCompanyForm](docs/hooks/useSignCompanyForm.md)
   - [useSignEmployeeForm](docs/hooks/useSignEmployeeForm.md)
   - [useWorkAddressForm](docs/hooks/useWorkAddressForm.md)
+
+## Visual diffing
+
+The CI `visual` job takes a screenshot of every Storybook story and compares
+it against a committed PNG baseline under `.storybook/__screenshots__/`. The
+goal is to catch catastrophic regressions — a wrong design system being
+shipped, a broken theme, or missing CSS — without flagging minor layout or
+font-rendering changes.
+
+Thresholds (configured in `.storybook/test-runner.ts`):
+
+- per-pixel color tolerance: `0.2`
+- allowed pixel-ratio difference: `0.5` (50% of pixels)
+
+These thresholds are deliberately loose. They will not catch small visual
+regressions; for tighter visual coverage prefer
+[Chromatic](https://www.chromatic.com/) (hosted, integrates directly with
+Storybook, handles cross-platform rendering and review UI) or per-component
+snapshot tests with their own tighter thresholds. Chromatic is a paid SaaS
+dependency, which is why this repo currently uses self-hosted PNG baselines.
+
+Running locally:
+
+```bash
+npm run storybook              # serve Storybook on :6006
+npm run test:visual            # run the diff against the running Storybook
+npm run test:visual:update     # write new baselines (only do this in CI)
+```
+
+Baselines are sensitive to OS, browser, and font rendering. Generate and
+commit them from CI (Linux); macOS/Windows-generated PNGs will not match.
+The same loose threshold is also configured in `playwright.config.ts` for
+opt-in `expect(...).toHaveScreenshot()` checks in e2e specs — see
+[`e2e/CLAUDE.md`](e2e/CLAUDE.md) for the e2e workflow.
