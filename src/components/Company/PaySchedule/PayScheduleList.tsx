@@ -77,29 +77,27 @@ export function PayScheduleList({ companyId, onEvent }: PayScheduleListProps) {
   })
 
   return (
-    <Flex flexDirection="column" gap={32}>
-      <Flex justifyContent="space-between" flexDirection="column" gap={4} alignItems="stretch">
+    <Flex flexDirection="column">
+      <Flex justifyContent="space-between" flexDirection="column" gap={4}>
         <header>
-          <Flex flexDirection="column" gap={4}>
-            <Components.Heading as="h2">{t('headings.pageTitle')}</Components.Heading>
-            <Components.Text variant="supporting">
-              <Trans
-                i18nKey="listDescription"
-                t={t}
-                components={{ ScheduleLink: <Components.Link /> }}
-              />
-            </Components.Text>
-            <Components.Text variant="supporting">
-              <Trans
-                i18nKey="listDescription2"
-                t={t}
-                components={{ PaymentLawLink: <Components.Link /> }}
-              />
-            </Components.Text>
-          </Flex>
+          <Components.Heading as="h2">{t('headings.pageTitle')}</Components.Heading>
+          <Components.Text>
+            <Trans
+              i18nKey="listDescription"
+              t={t}
+              components={{ ScheduleLink: <Components.Link /> }}
+            />
+          </Components.Text>
+          <Components.Text>
+            <Trans
+              i18nKey="listDescription2"
+              t={t}
+              components={{ PaymentLawLink: <Components.Link /> }}
+            />
+          </Components.Text>
         </header>
       </Flex>
-      <DataView label={t('payScheduleListLabel')} {...dataViewProps} />
+      <DataView label="test" {...dataViewProps} />
       <ActionsLayout>
         <Components.Button
           variant="secondary"
