@@ -103,7 +103,7 @@ export function NumberInput({
           >
             {adornmentStart && <span className={styles.adornmentStart}>{adornmentStart}</span>}
 
-            <div className={styles.labelInputContainer}>
+            <label htmlFor={inputId} className={styles.labelInputContainer}>
               <AriaInput
                 id={inputId}
                 ref={inputRef}
@@ -112,16 +112,15 @@ export function NumberInput({
                 aria-invalid={isInvalid}
                 className={styles.input}
               />
-              <label
-                htmlFor={inputId}
+              <span
                 className={classNames(styles.label, {
                   [styles.labelHidden as string]: shouldVisuallyHideLabel,
                 })}
               >
                 {label}
                 {isRequired && <span aria-hidden="true"> *</span>}
-              </label>
-            </div>
+              </span>
+            </label>
 
             {adornmentEnd && <span className={styles.adornmentEnd}>{adornmentEnd}</span>}
           </Group>

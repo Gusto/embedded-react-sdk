@@ -59,8 +59,8 @@
     }
 
     &:active:not([data-disabled]) {
-      background-color: rgba(232, 232, 232);
-      border-color: rgba(232, 232, 232);
+      background-color: rgba(204, 204, 204);
+      border-color: rgba(204, 204, 204);
     }
   }
 
@@ -120,7 +120,7 @@
 
     &[data-variant='secondary']::after,
     &[data-variant='tertiary']::after {
-      color: #006aff;
+      color: rgb(16, 16, 16);
     }
   }
 

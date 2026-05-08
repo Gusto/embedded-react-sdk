@@ -1,0 +1,101 @@
+.root {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  font-family: 'InterfaceLib Sans', Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 22px;
+  color: #101010;
+  background-color: #ffffff;
+  text-align: left;
+}
+
+.bare {
+  background-color: transparent;
+}
+
+.head {
+  background-color: #ffffff;
+}
+
+.headRow {
+  height: 47px;
+}
+
+.headCell {
+  padding: 12px 8px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 22px;
+  color: #101010;
+  text-align: left;
+  vertical-align: middle;
+  border-bottom: 1px solid #959595;
+  background-color: inherit;
+}
+
+.body {
+  background-color: inherit;
+}
+
+.row {
+  height: 73px;
+  transition: background-color 0.24s;
+
+  &:last-child {
+    .cell {
+      border-bottom: 0;
+    }
+  }
+}
+
+.row[data-hovered] .cell {
+  background-color: #f7f7f7;
+}
+
+.cell {
+  padding: 12px 8px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+  color: #101010;
+  text-align: left;
+  vertical-align: middle;
+  border-bottom: 1px solid #f0f0f0;
+  background-color: inherit;
+  transition: background-color 0.24s;
+}
+
+.withCheckboxColumn .headCell:first-child,
+.withCheckboxColumn .cell:first-child {
+  width: 49px;
+  padding-right: 0;
+}
+
+.emptyRow {
+  height: 73px;
+}
+
+.emptyCell {
+  padding: 24px 8px;
+  text-align: center;
+  color: #959595;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.foot {
+  background-color: inherit;
+}
+
+.footRow {
+  height: 56px;
+}
+
+.footCell {
+  padding: 12px 8px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 22px;
+  color: #101010;
+  vertical-align: middle;
+}
