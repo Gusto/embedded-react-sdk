@@ -1,0 +1,42 @@
+.shell {
+  position: sticky;
+  top: var(--topbar-height);
+  align-self: flex-start;
+  height: calc(100vh - var(--topbar-height));
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: row;
+  background: var(--color-bg);
+  border-left: 0.0625rem solid var(--color-border);
+  overflow: hidden;
+  min-width: 0;
+}
+
+.handle {
+  width: 0.25rem;
+  flex-shrink: 0;
+  cursor: col-resize;
+  touch-action: none;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: transparent;
+    transition: background 0.15s;
+  }
+
+  &:hover::after,
+  &:active::after {
+    background: var(--color-active);
+  }
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}

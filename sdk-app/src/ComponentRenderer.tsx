@@ -1,9 +1,20 @@
-import { Suspense, useState, useCallback, useEffect, Component, type ReactNode } from 'react'
+import {
+  Suspense,
+  useState,
+  useCallback,
+  useEffect,
+  useMemo,
+  Component,
+  type ReactNode,
+} from 'react'
 import { useParams } from 'react-router-dom'
 import { findComponent, CATEGORIES } from './registry'
 import { resolveDefaults } from './component-defaults'
 import { useResolvedTheme } from './useThemeModeContext'
 import { darkTheme } from './darkTheme'
+import { useThemeEditor } from './ThemePanel/ThemeEditorContext'
+import { useDesignSystem } from './ThemePanel/DesignSystemContext'
+import { nativeComponents } from './ThemePanel/adapters/nativeAdapter'
 import type { EntityIds } from './useEntities'
 import styles from './ComponentRenderer.module.scss'
 import { useCurrentComponentRegistry } from './useCurrentComponent'
@@ -126,6 +137,15 @@ export function ComponentRenderer({ entities, chromeHidden = false }: ComponentR
     component: string
   }>()
   const resolvedTheme = useResolvedTheme()
+  const { themeOverrides } = useThemeEditor()
+  const { designSystem } = useDesignSystem()
+  const resolvedComponents = designSystem === 'native' ? nativeComponents : undefined
+  const resolvedSDKTheme = useMemo(() => {
+    const base = resolvedTheme === 'dark' ? darkTheme : undefined
+    const hasOverrides = Object.keys(themeOverrides).length > 0
+    if (!base && !hasOverrides) return undefined
+    return { ...base, ...themeOverrides }
+  }, [resolvedTheme, themeOverrides])
   const { register, unregister } = useCurrentComponentRegistry()
   const [events, setEvents] = useState<EventLogEntry[]>([])
   const [eventsOpen, setEventsOpen] = useState(false)
@@ -273,7 +293,8 @@ export function ComponentRenderer({ entities, chromeHidden = false }: ComponentR
             >
               <GustoProvider
                 config={{ baseUrl: `${window.location.origin}/api/` }}
-                theme={resolvedTheme === 'dark' ? darkTheme : undefined}
+                theme={resolvedSDKTheme}
+                components={resolvedComponents}
                 key={providerKey}
               >
                 <Suspense fallback={<div className={styles.contentLoading}>Loading...</div>}>

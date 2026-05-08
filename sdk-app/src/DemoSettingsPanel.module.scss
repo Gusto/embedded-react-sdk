@@ -1,25 +1,9 @@
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.3);
-  z-index: 100;
-}
-
 .panel {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 23.75rem;
-  background: var(--color-bg);
-  box-shadow: -0.25rem 0 1.5rem rgba(0, 0, 0, 0.15);
-  z-index: 101;
+  flex: 1;
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
+  overflow: hidden;
+  min-width: 0;
 }
 
 .header {
@@ -28,11 +12,17 @@
   justify-content: space-between;
   padding: 1rem 1.25rem;
   border-bottom: 0.0625rem solid var(--color-border);
+  flex-shrink: 0;
 
   h2 {
     font-size: 1rem;
     font-weight: 600;
   }
+}
+
+.body {
+  flex: 1;
+  overflow-y: auto;
 }
 
 .close {
