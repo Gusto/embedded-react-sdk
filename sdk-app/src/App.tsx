@@ -149,12 +149,11 @@ export function App() {
   const sidebarWidth = chromeHidden ? '0rem' : sidebarOpen ? '16.25rem' : '2.75rem'
 
   const outletEl = <Outlet context={{ entities: activeEntities, chromeHidden }} />
-  const chromedOutlet =
-    customChrome && !chromeHidden ? (
-      <customChrome.Chrome onOpenSettings={openSettings}>{outletEl}</customChrome.Chrome>
-    ) : (
-      outletEl
-    )
+  const chromedOutlet = customChrome ? (
+    <customChrome.Chrome onOpenSettings={openSettings}>{outletEl}</customChrome.Chrome>
+  ) : (
+    outletEl
+  )
   const mainEl = (
     <main
       className="main-content"
