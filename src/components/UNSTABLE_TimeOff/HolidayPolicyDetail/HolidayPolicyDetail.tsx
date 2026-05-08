@@ -16,6 +16,7 @@ import { useBase } from '@/components/Base/useBase'
 import { componentEvents } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
+import { useLocale } from '@/contexts/LocaleProvider/useLocale'
 import { firstLastName } from '@/helpers/formattedStrings'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import EditIcon from '@/assets/icons/edit-02.svg?react'
@@ -45,6 +46,7 @@ function Root({ companyId, defaultTab = 'holidays' }: HolidayPolicyDetailProps) 
   const { t } = useTranslation('Company.TimeOff.HolidayPolicy')
   const { t: tShared } = useTranslation('Company.TimeOff.PolicyDetail')
   const { Button } = useComponentContext()
+  const { locale } = useLocale()
   const queryClient = useQueryClient()
   const { onEvent, baseSubmitHandler } = useBase()
 
@@ -64,13 +66,13 @@ function Root({ companyId, defaultTab = 'holidays' }: HolidayPolicyDetailProps) 
   const removeEmployeesMutation = useHolidayPayPoliciesRemoveEmployeesMutation()
 
   const holidays = useMemo(() => {
-    const allHolidays = getDefaultHolidayItems(t)
+    const allHolidays = getDefaultHolidayItems(t, undefined, locale)
     const { federalHolidays } = holidayPayPolicy
     return allHolidays.filter(holiday => {
       const holidayData = federalHolidays[holiday.uuid as keyof typeof federalHolidays]
       return holidayData?.selected === true
     })
-  }, [t, holidayPayPolicy])
+  }, [t, holidayPayPolicy, locale])
 
   const policyEmployeeUuids = useMemo(
     () => new Set(holidayPayPolicy.employees.map(e => e.uuid)),
@@ -187,7 +189,9 @@ function Root({ companyId, defaultTab = 'holidays' }: HolidayPolicyDetailProps) 
                 },
               },
             ]}
-            triggerLabel={`Actions for ${firstLastName({ first_name: employee.firstName, last_name: employee.lastName })}`}
+            triggerLabel={tShared('employeeActions', {
+              name: firstLastName({ first_name: employee.firstName, last_name: employee.lastName }),
+            })}
           />
         ),
       }}

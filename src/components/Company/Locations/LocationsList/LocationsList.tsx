@@ -53,7 +53,7 @@ function Root({ companyId, className, children }: LocationsListProps) {
           handleContinue,
         }}
       >
-        <Flex flexDirection="column" gap={32} alignItems="stretch">
+        <Flex flexDirection="column" gap={32}>
           {children ? (
             children
           ) : (
