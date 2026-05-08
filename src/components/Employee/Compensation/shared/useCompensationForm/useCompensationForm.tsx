@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -101,19 +101,22 @@ export interface UseCompensationFormReady extends BaseFormHookReady<
     mode: 'create' | 'update'
     /**
      * True when submitting the form right now would delete the employee's
-     * secondary jobs server-side. Reactive: derived from the current
-     * `flsaStatus` and `effectiveDate` form values plus the loaded
-     * compensation and other-jobs count, so this flips as the partner
-     * changes inputs.
+     * secondary jobs server-side (the "carve-out" branch). Reactive:
+     * derived from the current `flsaStatus` form value, the loaded
+     * compensation, and the other-jobs count, so this flips as you change
+     * inputs.
      *
-     * Conditions: update mode, the current compensation is Nonexempt, the
-     * form's `flsaStatus` has been changed to a non-Nonexempt value, the
-     * employee has at least one secondary job, and the effective date is
-     * today (immediate change rather than future-dated).
+     * Conditions: update mode, the loaded compensation is Nonexempt, the
+     * form's `flsaStatus` has been changed to a non-Nonexempt value, and
+     * the employee has at least one secondary job.
      *
-     * Partners typically render an inline warning above the form keyed
-     * off this flag; the submit itself routes through a normal PUT either
-     * way.
+     * While this flag is true the hook also takes the `effectiveDate`
+     * field over: it forces the form value to today (so submits route
+     * through a PUT that immediately deletes secondaries) and exposes
+     * `fieldsMetadata.effectiveDate.isDisabled = true` so `Fields.EffectiveDate`
+     * renders as disabled. On revert (FLSA back to Nonexempt) the prior
+     * `effectiveDate` is restored. Render an inline warning keyed off
+     * this flag — no separate confirmation step is needed.
      */
     willDeleteSecondaryJobs: boolean
   }
@@ -287,13 +290,12 @@ export function useCompensationForm({
     resetOptions: { keepDirtyValues: true },
   })
 
-  const { control, setValue } = formMethods
+  const { control, getValues, setValue } = formMethods
   const watchedFlsaStatus = useWatch({ control, name: 'flsaStatus' })
   const watchedAdjustForMinimumWage = useWatch({
     control,
     name: 'adjustForMinimumWage',
   })
-  const watchedEffectiveDate = useWatch({ control, name: 'effectiveDate' })
 
   useEffect(() => {
     if (watchedFlsaStatus === FlsaStatus.OWNER) {
@@ -308,6 +310,45 @@ export function useCompensationForm({
       setValue('paymentUnit', resolvedDefaults.paymentUnit)
     }
   }, [watchedFlsaStatus, setValue, resolvedDefaults.paymentUnit])
+
+  // Carve-out UX (matches gws-flows): when the user flips a Nonexempt primary
+  // compensation to a non-Nonexempt status while secondary jobs exist, the
+  // server only honors the change immediately — saving "deletes" the
+  // secondary jobs. Mirror the screen UX by forcing `effectiveDate` to today
+  // (so submits route through PUT-current rather than create-future) and
+  // disabling the field. Snapshot the prior value so a revert (back to
+  // Nonexempt before saving) restores what the user had selected.
+  const currentCompensationFlsaStatus = currentCompensation?.flsaStatus
+  const carveOutActiveRef = useRef(false)
+  const priorEffectiveDateRef = useRef<string | null>(null)
+  useEffect(() => {
+    const carveOutBranch =
+      !isCreateMode &&
+      currentCompensationFlsaStatus === FlsaStatus.NONEXEMPT &&
+      watchedFlsaStatus !== undefined &&
+      watchedFlsaStatus !== FlsaStatus.NONEXEMPT &&
+      otherJobsCount > 0
+
+    if (carveOutBranch && !carveOutActiveRef.current) {
+      priorEffectiveDateRef.current = getValues('effectiveDate') ?? null
+      setValue('effectiveDate', todayISO(), { shouldDirty: true, shouldValidate: false })
+      carveOutActiveRef.current = true
+    } else if (!carveOutBranch && carveOutActiveRef.current) {
+      setValue('effectiveDate', priorEffectiveDateRef.current ?? null, {
+        shouldDirty: true,
+        shouldValidate: false,
+      })
+      priorEffectiveDateRef.current = null
+      carveOutActiveRef.current = false
+    }
+  }, [
+    isCreateMode,
+    currentCompensationFlsaStatus,
+    watchedFlsaStatus,
+    otherJobsCount,
+    getValues,
+    setValue,
+  ])
 
   const updateCompensationMutation = useJobsAndCompensationsUpdateCompensationMutation()
   const createCompensationMutation = useJobsAndCompensationsCreateCompensationMutation()
@@ -344,10 +385,21 @@ export function useCompensationForm({
     label: `${wage.wage} - ${wage.authority}: ${wage.notes ?? ''}`,
   }))
 
+  // Carve-out branch — true when the form is currently positioned to delete
+  // secondary jobs on submit. The hook locks `effectiveDate` to today and
+  // disables the field while this is true (see effect above), so the flag
+  // is also the trigger for an inline warning above the form.
+  const willDeleteSecondaryJobs =
+    !isCreateMode &&
+    currentCompensationFlsaStatus === FlsaStatus.NONEXEMPT &&
+    watchedFlsaStatus !== undefined &&
+    watchedFlsaStatus !== FlsaStatus.NONEXEMPT &&
+    otherJobsCount > 0
+
   const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
   const fieldsMetadata = {
     title: baseMetadata.title,
-    effectiveDate: baseMetadata.effectiveDate,
+    effectiveDate: { ...baseMetadata.effectiveDate, isDisabled: willDeleteSecondaryJobs },
     flsaStatus: withOptions<FlsaStatusType>(
       baseMetadata.flsaStatus,
       flsaOptions,
@@ -369,26 +421,6 @@ export function useCompensationForm({
       minimumWages,
     ),
   }
-
-  /**
-   * Reactive flag — true when submitting the current form values would
-   * delete this employee's secondary jobs server-side (the "carve-out"
-   * path on the Rails backend). Conditions:
-   * - update mode (compensationId set),
-   * - the loaded compensation was Nonexempt,
-   * - the form's flsaStatus has been changed to a non-Nonexempt value,
-   * - the employee has at least one secondary job (otherJobsCount > 0),
-   * - and the effective date is today (immediate, not future-dated).
-   *
-   * Partners typically render an inline warning above the form keyed off
-   * this flag; the submit itself routes to PUT either way.
-   */
-  const willDeleteSecondaryJobs =
-    !isCreateMode &&
-    currentCompensation?.flsaStatus === FlsaStatus.NONEXEMPT &&
-    watchedFlsaStatus !== FlsaStatus.NONEXEMPT &&
-    otherJobsCount > 0 &&
-    (watchedEffectiveDate ?? '') === todayISO()
 
   const onSubmit = async (
     options?: CompensationSubmitOptions,

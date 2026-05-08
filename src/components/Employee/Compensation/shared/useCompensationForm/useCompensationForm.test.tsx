@@ -349,7 +349,7 @@ describe('useCompensationForm', () => {
   })
 
   describe('derived helpers', () => {
-    it('willDeleteSecondaryJobs=true after partner switches Nonexempt → non-Nonexempt with secondary jobs and effectiveDate=today', async () => {
+    it('flips willDeleteSecondaryJobs=true and force-clears effectiveDate to today when partner switches Nonexempt → non-Nonexempt with secondary jobs', async () => {
       server.use(
         handleGetEmployeeJobs(() =>
           HttpResponse.json(buildEmployeeWithJobs({ scenario: 'multiJob' })),
@@ -375,12 +375,89 @@ describe('useCompensationForm', () => {
       const { formMethods } = result.current.form.hookFormInternals
       act(() => {
         formMethods.setValue('flsaStatus', FlsaStatus.EXEMPT)
-        formMethods.setValue('effectiveDate', todayISO())
       })
 
       await waitFor(() => {
         if (result.current.isLoading) throw new Error('still loading')
         expect(result.current.status.willDeleteSecondaryJobs).toBe(true)
+      })
+      expect(formMethods.getValues('effectiveDate')).toBe(todayISO())
+    })
+
+    it('disables Fields.EffectiveDate via fieldsMetadata while in the carve-out branch', async () => {
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'multiJob' })),
+        ),
+      )
+
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+            compensationId: 'compensation-uuid',
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+      expect(result.current.form.fieldsMetadata.effectiveDate?.isDisabled).toBeFalsy()
+
+      const { formMethods } = result.current.form.hookFormInternals
+      act(() => {
+        formMethods.setValue('flsaStatus', FlsaStatus.EXEMPT)
+      })
+
+      await waitFor(() => {
+        if (result.current.isLoading) throw new Error('still loading')
+        expect(result.current.form.fieldsMetadata.effectiveDate?.isDisabled).toBe(true)
+      })
+    })
+
+    it('restores the prior effectiveDate when partner reverts FLSA back to Nonexempt', async () => {
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'multiJob' })),
+        ),
+      )
+
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+            compensationId: 'compensation-uuid',
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+
+      const { formMethods } = result.current.form.hookFormInternals
+      const priorEffectiveDate = formMethods.getValues('effectiveDate')
+
+      act(() => {
+        formMethods.setValue('flsaStatus', FlsaStatus.EXEMPT)
+      })
+      await waitFor(() => {
+        expect(formMethods.getValues('effectiveDate')).toBe(todayISO())
+      })
+
+      act(() => {
+        formMethods.setValue('flsaStatus', FlsaStatus.NONEXEMPT)
+      })
+      await waitFor(() => {
+        if (result.current.isLoading) throw new Error('still loading')
+        expect(result.current.status.willDeleteSecondaryJobs).toBe(false)
+        expect(result.current.form.fieldsMetadata.effectiveDate?.isDisabled).toBeFalsy()
+        expect(formMethods.getValues('effectiveDate')).toBe(priorEffectiveDate)
       })
     })
 
@@ -406,44 +483,13 @@ describe('useCompensationForm', () => {
       })
       assertReady(result.current)
       const { formMethods } = result.current.form.hookFormInternals
+      const priorEffectiveDate = formMethods.getValues('effectiveDate')
       act(() => {
         formMethods.setValue('flsaStatus', FlsaStatus.EXEMPT)
-        formMethods.setValue('effectiveDate', todayISO())
-      })
-      await waitFor(() => {
-        if (result.current.isLoading) throw new Error('still loading')
-        expect(result.current.status.willDeleteSecondaryJobs).toBe(false)
-      })
-    })
-
-    it('willDeleteSecondaryJobs=false when effectiveDate is in the future', async () => {
-      server.use(
-        handleGetEmployeeJobs(() =>
-          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'multiJob' })),
-        ),
-      )
-
-      const { result } = renderHook(
-        () =>
-          useCompensationForm({
-            employeeId: 'employee-uuid',
-            jobId: 'job-uuid',
-            compensationId: 'compensation-uuid',
-          }),
-        { wrapper: GustoTestProvider },
-      )
-
-      await waitFor(() => {
-        expect(result.current.isLoading).toBe(false)
-      })
-      assertReady(result.current)
-      const { formMethods } = result.current.form.hookFormInternals
-      act(() => {
-        formMethods.setValue('flsaStatus', FlsaStatus.EXEMPT)
-        formMethods.setValue('effectiveDate', '2099-06-01')
       })
       await new Promise(r => setTimeout(r, 20))
       expect(result.current.status.willDeleteSecondaryJobs).toBe(false)
+      expect(formMethods.getValues('effectiveDate')).toBe(priorEffectiveDate)
     })
 
     it('willDeleteSecondaryJobs=false in create mode (compensationId not set)', async () => {

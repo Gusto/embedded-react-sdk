@@ -163,7 +163,7 @@ interface CompensationSubmitOptions {
 
 The hook exposes derived values for driving UX. Static, entity-derived values live under `data.*`; reactive values that flip with form input live under `status.*`.
 
-- **`status.willDeleteSecondaryJobs`** — reactive: `true` when submitting the current form values would delete the employee's secondary jobs server-side. Conditions: update mode, the current compensation was `Nonexempt`, the form's `flsaStatus` was just changed to a non-`Nonexempt` value, the employee has at least one secondary job, and the effective date is today (immediate, not future-dated). Use this to render an inline warning above the form (mirroring the `EditCompensation` UX). The submit itself routes through a normal PUT either way.
+- **`status.willDeleteSecondaryJobs`** — reactive: `true` when the form is currently positioned to delete the employee's secondary jobs server-side (the "carve-out" branch). Conditions: update mode, the loaded compensation is `Nonexempt`, the form's `flsaStatus` has been changed to a non-`Nonexempt` value, and the employee has at least one secondary job. While this flag is `true` the hook also locks the `effectiveDate` field — it forces the form value to today and exposes `fieldsMetadata.effectiveDate.isDisabled = true` so `Fields.EffectiveDate` renders as disabled. Reverting `flsaStatus` back to `Nonexempt` restores the prior `effectiveDate`. Use the flag to render an inline warning ("Saving will delete this employee's secondary jobs"); choose either to render the disabled `Fields.EffectiveDate` (so users can see why the date is forced) or to hide it entirely while the flag is on.
 - **`data.minimumEffectiveDate`** — lower bound for the `effectiveDate` field. Typically the parent job's `hireDate`. Pass this as `min` to the date picker.
 - **`data.maximumEffectiveDate`** — upper bound for the `effectiveDate` field, when a future-dated compensation already exists for this job. Pass this as `max` to the date picker so users can't push a new entry past a pending one.
 - **`data.hasPendingFutureCompensation`** — `true` when at least one future-dated compensation exists for this job. Use this to render an explanatory note ("A future rate change is already scheduled for …").
@@ -298,6 +298,8 @@ Date picker for when the new compensation row takes effect.
 **Required on create.** Optional on update (the API keeps the existing effective date when omitted) unless `optionalFieldsToRequire.update` includes `'effectiveDate'`.
 
 Use `data.minimumEffectiveDate` and `data.maximumEffectiveDate` to constrain the picker.
+
+This field is automatically **disabled** (and the form value forced to today) while `status.willDeleteSecondaryJobs` is `true` — see [Derived helpers](#derived-helpers). You can render the disabled field as-is, or hide it altogether and key off the flag for a separate inline message.
 
 ```tsx
 <Fields.EffectiveDate

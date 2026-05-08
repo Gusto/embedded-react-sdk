@@ -173,7 +173,7 @@ function CompensationEditPage({
 }
 ```
 
-`compensationForm.status.willDeleteSecondaryJobs` is a reactive flag that flips to `true` when submitting the current form values would delete the employee's secondary jobs server-side: update mode, current FLSA was `Nonexempt`, the form's `flsaStatus` was just changed to a non-`Nonexempt` value, the employee has at least one secondary job, and the effective date is today. It tracks `flsaStatus` and `effectiveDate` via `useWatch` internally — a render-time read is enough; you don't need an extra `useWatch` of your own. The submit itself still routes through a normal PUT either way; the flag is purely for the warning UX. See [derived helpers](./useCompensationForm.md#derived-helpers) for the full breakdown.
+`compensationForm.status.willDeleteSecondaryJobs` is a reactive flag that flips to `true` when the form is positioned on the carve-out branch: update mode, loaded compensation is `Nonexempt`, the form's `flsaStatus` was just changed to a non-`Nonexempt` value, and the employee has at least one secondary job. While the flag is on, the hook also locks the `effectiveDate` field — it forces the form value to today and renders the field disabled (via `fieldsMetadata.effectiveDate.isDisabled`). Reverting `flsaStatus` back to `Nonexempt` restores the prior date. You can render the disabled `Fields.EffectiveDate` as-is or skip it entirely and rely on the inline warning. The hook tracks form state via `useWatch` internally — a render-time read of the flag is enough. See [derived helpers](./useCompensationForm.md#derived-helpers) for the full breakdown.
 
 ---
 
