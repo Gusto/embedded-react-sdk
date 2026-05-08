@@ -1,5 +1,5 @@
-import { useId } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useId } from 'react'
 import { EmployeeTable } from '../../shared/EmployeeTable/EmployeeTable'
 import type {
   EmployeeItem,
@@ -68,16 +68,10 @@ export function SelectEmployeesPresentation({
             ? [
                 {
                   key: 'balance' as keyof EmployeeItem,
-                  title: <span id={balanceColHeaderId}>{t('startingBalanceColumn')}</span>,
+                  title: t('startingBalanceColumn'),
                   render: (employee: EmployeeItem) => {
                     if (originallyOnPolicyUuids?.has(employee.uuid)) {
-                      return (
-                        <Text
-                          aria-labelledby={`employee-name-${employee.uuid} ${balanceColHeaderId}`}
-                        >
-                          {originalBalances?.[employee.uuid] ?? '0'}
-                        </Text>
-                      )
+                      return <Text>{originalBalances?.[employee.uuid] ?? '0'}</Text>
                     }
                     return (
                       <Components.TextInput
