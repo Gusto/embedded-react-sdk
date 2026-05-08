@@ -278,7 +278,17 @@ describe('TimeOffPolicyDetailPresentation', () => {
       expect(screen.queryByRole('checkbox', { name: 'Select all rows' })).not.toBeInTheDocument()
     })
 
-    it('hides Balance and Job title columns for unlimited policies', async () => {
+    it('hides Job title column for all policy types', async () => {
+      renderComponent({ selectedTabId: 'employees' })
+
+      await waitFor(() => {
+        expect(screen.getByText('Alejandro Kuhic')).toBeInTheDocument()
+      })
+      expect(screen.queryByText('Job title')).not.toBeInTheDocument()
+      expect(screen.queryByText('Marketing Director')).not.toBeInTheDocument()
+    })
+
+    it('hides Balance column for unlimited policies', async () => {
       renderComponent({
         policyDetails: unlimitedPolicyDetails,
         policySettings: undefined,
@@ -289,8 +299,6 @@ describe('TimeOffPolicyDetailPresentation', () => {
         expect(screen.getByText('Alejandro Kuhic')).toBeInTheDocument()
       })
       expect(screen.queryByText('Balance (hrs)')).not.toBeInTheDocument()
-      expect(screen.queryByText('Job title')).not.toBeInTheDocument()
-      expect(screen.queryByText('Marketing Director')).not.toBeInTheDocument()
       expect(screen.queryByText('80')).not.toBeInTheDocument()
     })
   })
