@@ -11,6 +11,7 @@ import type { EntityIds } from './useEntities'
 import type { TokenStatus } from './useDemoManager'
 import type { EntityCatalog } from './useEntityCatalog'
 import type { EntityOption } from './entityFormatters'
+import type { AppMode, ManualConfig, ManualConfigSaves } from './useManualConfig'
 import styles from './DemoSettingsPanel.module.scss'
 
 interface DemoSettingsPanelProps {
@@ -26,7 +27,24 @@ interface DemoSettingsPanelProps {
   onCreateNewDemo: (demoType: string) => Promise<unknown>
   onRefreshToken: () => Promise<unknown>
   entityCatalog: EntityCatalog
+  mode: AppMode
+  manualConfig: ManualConfig
+  manualSaves: ManualConfigSaves
+  onSwitchToAuto: () => Promise<void>
+  onApplyManualConfig: (next: ManualConfig) => Promise<void>
+  onSaveManualConfig: (name: string, config: ManualConfig) => void
+  onDeleteManualSave: (name: string) => void
 }
+
+const MANUAL_FIELDS: { key: keyof ManualConfig; label: string; required?: boolean }[] = [
+  { key: 'flowToken', label: 'Flow Token', required: true },
+  { key: 'companyId', label: 'Company ID', required: true },
+  { key: 'employeeId', label: 'Employee ID' },
+  { key: 'contractorId', label: 'Contractor ID' },
+  { key: 'payrollId', label: 'Payroll ID' },
+  { key: 'formId', label: 'Form ID' },
+  { key: 'requestId', label: 'Request ID' },
+]
 
 const TEXT_FIELDS: { key: keyof EntityIds; label: string }[] = [
   { key: 'requestId', label: 'Request ID' },
@@ -348,22 +366,56 @@ export function DemoSettingsPanel({
   onCreateNewDemo,
   onRefreshToken,
   entityCatalog,
+  mode,
+  manualConfig,
+  manualSaves,
+  onSwitchToAuto,
+  onApplyManualConfig,
+  onSaveManualConfig,
+  onDeleteManualSave,
 }: DemoSettingsPanelProps) {
   const currentDemoType = import.meta.env.VITE_DEMO_TYPE || 'react_sdk_demo_company_onboarded'
   const [selectedDemoType, setSelectedDemoType] = useState(currentDemoType)
   const confirmedSnapshot = useRef(entities)
+  const [manualDraft, setManualDraft] = useState<ManualConfig>(manualConfig)
+  const [manualSubmitting, setManualSubmitting] = useState(false)
+  const [manualError, setManualError] = useState<string | null>(null)
+  const [manualBanner, setManualBanner] = useState<string | null>(null)
+  const [tabMode, setTabMode] = useState<AppMode>(mode)
+  const [selectedSaveName, setSelectedSaveName] = useState<string>('')
+  const [saveDialogOpen, setSaveDialogOpen] = useState(false)
+  const [saveDialogName, setSaveDialogName] = useState('')
+
+  const saveNames = Object.keys(manualSaves).sort((a, b) => a.localeCompare(b))
+
+  useEffect(() => {
+    setManualDraft(manualConfig)
+  }, [manualConfig])
+
+  useEffect(() => {
+    setTabMode(mode)
+  }, [mode])
 
   useEffect(() => {
     if (!isOpen) {
       confirmedSnapshot.current = entities
+      setManualError(null)
+      setManualBanner(null)
+      setTabMode(mode)
+      setSaveDialogOpen(false)
+      setSaveDialogName('')
     }
-  }, [isOpen, entities])
+  }, [isOpen, entities, mode])
 
   const env = typeof __SDK_APP_ENV__ !== 'undefined' ? __SDK_APP_ENV__ : 'demo'
   const build = typeof __SDK_APP_BUILD__ !== 'undefined' ? __SDK_APP_BUILD__ : 'dev'
-  const mode = typeof __SDK_APP_PROXY_MODE__ !== 'undefined' ? __SDK_APP_PROXY_MODE__ : proxyMode
+  const buildProxyMode =
+    typeof __SDK_APP_PROXY_MODE__ !== 'undefined' ? __SDK_APP_PROXY_MODE__ : proxyMode
 
-  const isFlowTokenMode = mode === 'flow-token'
+  const isManual = mode === 'manual'
+  const showManualPanel = tabMode === 'manual'
+  const isFlowTokenMode = !showManualPanel && buildProxyMode === 'flow-token'
+  const displayProxyMode = isManual ? 'manual' : buildProxyMode
 
   const hasChanges =
     entities.employeeId !== confirmedSnapshot.current.employeeId ||
@@ -394,6 +446,214 @@ export function DemoSettingsPanel({
             &times;
           </button>
         </div>
+
+        <div className={styles.section}>
+          <h3>Mode</h3>
+          <div className={styles.modeToggle} role="tablist" aria-label="App mode">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={!showManualPanel}
+              className={`${styles.modeToggleBtn} ${!showManualPanel ? styles.modeToggleBtnActive : ''}`}
+              onClick={() => {
+                setTabMode('auto')
+                setManualError(null)
+                setManualBanner(null)
+                if (isManual) {
+                  void (async () => {
+                    try {
+                      await onSwitchToAuto()
+                    } catch (err) {
+                      setManualError(err instanceof Error ? err.message : String(err))
+                    }
+                  })()
+                }
+              }}
+            >
+              Auto
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={showManualPanel}
+              className={`${styles.modeToggleBtn} ${showManualPanel ? styles.modeToggleBtnActive : ''}`}
+              onClick={() => {
+                setTabMode('manual')
+                if (!isManual) setManualBanner('Paste a flow token + company ID, then Apply.')
+              }}
+            >
+              Manual
+            </button>
+          </div>
+          <div className={`${styles.info} ${styles.modeHint}`}>
+            {showManualPanel
+              ? isManual
+                ? 'Manual mode is active. Token polling and auto-provisioning are disabled.'
+                : 'Configure a token + IDs below, then click Apply to switch to Manual mode.'
+              : 'Auto mode auto-provisions demo tokens through GWS-Flows.'}
+          </div>
+        </div>
+
+        {showManualPanel && (
+          <div className={styles.section}>
+            <h3>Manual Token</h3>
+            <div className={`${styles.info} ${styles.infoSpaced}`}>
+              Token must be valid for the active host (set at startup; can&apos;t be changed without
+              restarting the dev server).
+            </div>
+
+            <div className={styles.field}>
+              <label htmlFor="manual-save-select">Saved Presets</label>
+              <div className={styles.copyRow}>
+                <select
+                  id="manual-save-select"
+                  value={selectedSaveName}
+                  onChange={e => {
+                    const next = e.target.value
+                    setSelectedSaveName(next)
+                    if (next && manualSaves[next]) {
+                      setManualDraft(manualSaves[next])
+                      setManualError(null)
+                      setManualBanner(`Loaded preset "${next}". Click Apply to activate.`)
+                    }
+                  }}
+                >
+                  <option value="">— Select a preset —</option>
+                  {saveNames.map(name => (
+                    <option key={name} value={name}>
+                      {name}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  className={styles.btn}
+                  type="button"
+                  onClick={() => {
+                    setSaveDialogName(selectedSaveName)
+                    setSaveDialogOpen(true)
+                  }}
+                  disabled={!manualDraft.flowToken || !manualDraft.companyId}
+                  title="Save current fields as a named preset"
+                >
+                  Save…
+                </button>
+                <button
+                  className={`${styles.btn} ${styles.btnDanger}`}
+                  type="button"
+                  disabled={!selectedSaveName}
+                  onClick={() => {
+                    if (!selectedSaveName) return
+                    onDeleteManualSave(selectedSaveName)
+                    setSelectedSaveName('')
+                    setManualBanner(`Deleted preset "${selectedSaveName}".`)
+                  }}
+                  title="Delete the selected preset"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+
+            {saveDialogOpen && (
+              <div className={styles.field}>
+                <label htmlFor="manual-save-name-input">Preset name</label>
+                <div className={styles.copyRow}>
+                  <input
+                    id="manual-save-name-input"
+                    type="text"
+                    value={saveDialogName}
+                    onChange={e => {
+                      setSaveDialogName(e.target.value)
+                    }}
+                    placeholder="e.g. Acme Test"
+                    ref={el => {
+                      if (el && document.activeElement !== el) el.focus()
+                    }}
+                  />
+                  <button
+                    className={`${styles.btn} ${styles.btnPrimary}`}
+                    type="button"
+                    disabled={!saveDialogName.trim()}
+                    onClick={() => {
+                      const name = saveDialogName.trim()
+                      onSaveManualConfig(name, manualDraft)
+                      setSelectedSaveName(name)
+                      setSaveDialogOpen(false)
+                      setSaveDialogName('')
+                      setManualBanner(`Saved preset "${name}".`)
+                    }}
+                  >
+                    Save
+                  </button>
+                  <button
+                    className={styles.btn}
+                    type="button"
+                    onClick={() => {
+                      setSaveDialogOpen(false)
+                      setSaveDialogName('')
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {manualBanner && (
+              <div className={`${styles.info} ${styles.modeHint}`}>{manualBanner}</div>
+            )}
+            {MANUAL_FIELDS.map(({ key, label, required }) => {
+              const inputId = `manual-${key}-input`
+              return (
+                <div key={key} className={styles.field}>
+                  <label htmlFor={inputId}>
+                    {label}
+                    {required && <span aria-hidden="true"> *</span>}
+                  </label>
+                  <input
+                    id={inputId}
+                    type="text"
+                    value={manualDraft[key]}
+                    onChange={e => {
+                      setManualDraft(prev => ({ ...prev, [key]: e.target.value.trim() }))
+                      if (selectedSaveName) setSelectedSaveName('')
+                    }}
+                    placeholder={`Enter ${label.toLowerCase()}...`}
+                    autoComplete="off"
+                    spellCheck={false}
+                    data-1p-ignore="true"
+                    data-lpignore="true"
+                  />
+                </div>
+              )
+            })}
+            <div className={styles.actions}>
+              <button
+                className={`${styles.btn} ${styles.btnPrimary}`}
+                type="button"
+                disabled={manualSubmitting || !manualDraft.flowToken || !manualDraft.companyId}
+                onClick={() => {
+                  void (async () => {
+                    setManualSubmitting(true)
+                    setManualError(null)
+                    setManualBanner(null)
+                    try {
+                      await onApplyManualConfig(manualDraft)
+                      setManualBanner('Manual config applied.')
+                    } catch (err) {
+                      setManualError(err instanceof Error ? err.message : String(err))
+                    } finally {
+                      setManualSubmitting(false)
+                    }
+                  })()
+                }}
+              >
+                {manualSubmitting ? 'Applying...' : 'Apply'}
+              </button>
+            </div>
+            {manualError && <div className={styles.error}>{manualError}</div>}
+          </div>
+        )}
 
         {isFlowTokenMode && (
           <div className={styles.section}>
@@ -457,101 +717,105 @@ export function DemoSettingsPanel({
           </div>
         )}
 
-        <div className={styles.section}>
-          <h3>Entity IDs</h3>
+        {!showManualPanel && (
+          <div className={styles.section}>
+            <h3>Entity IDs</h3>
 
-          <div className={styles.field}>
-            <label htmlFor="company-id-input">Company ID</label>
-            <div className={styles.copyRow}>
-              <input
-                id="company-id-input"
-                type="text"
-                value={entities.companyId}
-                readOnly
-                className={styles.readOnly}
-              />
-              <CopyIdButton value={entities.companyId} ariaLabel="Copy company ID" />
+            <div className={styles.field}>
+              <label htmlFor="company-id-input">Company ID</label>
+              <div className={styles.copyRow}>
+                <input
+                  id="company-id-input"
+                  type="text"
+                  value={entities.companyId}
+                  readOnly
+                  className={styles.readOnly}
+                />
+                <CopyIdButton value={entities.companyId} ariaLabel="Copy company ID" />
+              </div>
+            </div>
+
+            <EntityCombobox
+              label="Employee"
+              value={entities.employeeId}
+              options={entityCatalog.employees}
+              isLoading={entityCatalog.isLoading}
+              placeholder="Search or paste an employee id..."
+              useFallback={!isFlowTokenMode}
+              onChange={value => {
+                onUpdateEntity('employeeId', value)
+              }}
+              trailing={<CopyIdButton value={entities.employeeId} ariaLabel="Copy employee ID" />}
+            />
+
+            <EntityCombobox
+              label="Contractor"
+              value={entities.contractorId}
+              options={entityCatalog.contractors}
+              isLoading={entityCatalog.isLoading}
+              placeholder="Search or paste a contractor id..."
+              useFallback={!isFlowTokenMode}
+              onChange={value => {
+                onUpdateEntity('contractorId', value)
+              }}
+              trailing={
+                <CopyIdButton value={entities.contractorId} ariaLabel="Copy contractor ID" />
+              }
+            />
+
+            <EntityCombobox
+              label="Payroll"
+              value={entities.payrollId}
+              options={entityCatalog.payrolls}
+              isLoading={entityCatalog.isLoading}
+              placeholder="Search or paste a payroll id..."
+              useFallback={!isFlowTokenMode}
+              onChange={value => {
+                onUpdateEntity('payrollId', value)
+              }}
+              trailing={<CopyIdButton value={entities.payrollId} ariaLabel="Copy payroll ID" />}
+            />
+
+            {TEXT_FIELDS.map(({ key, label }) => {
+              const inputId = `entity-${key}-input`
+              return (
+                <div key={key} className={styles.field}>
+                  <label htmlFor={inputId}>{label}</label>
+                  <div className={styles.copyRow}>
+                    <input
+                      id={inputId}
+                      type="text"
+                      value={entities[key]}
+                      onChange={e => {
+                        onUpdateEntity(key, e.target.value)
+                      }}
+                      placeholder={`Enter ${label.toLowerCase()}...`}
+                    />
+                    <CopyIdButton value={entities[key]} ariaLabel={`Copy ${label.toLowerCase()}`} />
+                  </div>
+                </div>
+              )
+            })}
+
+            <div className={styles.actions}>
+              {hasChanges && (
+                <button
+                  className={`${styles.btn} ${styles.btnPrimary}`}
+                  onClick={() => {
+                    confirmedSnapshot.current = { ...entities }
+                    onClose()
+                  }}
+                  type="button"
+                >
+                  Update
+                </button>
+              )}
+              <button className={styles.btn} onClick={onResetToDefaults} type="button">
+                Restore Default IDs
+              </button>
             </div>
           </div>
-
-          <EntityCombobox
-            label="Employee"
-            value={entities.employeeId}
-            options={entityCatalog.employees}
-            isLoading={entityCatalog.isLoading}
-            placeholder="Search or paste an employee id..."
-            useFallback={!isFlowTokenMode}
-            onChange={value => {
-              onUpdateEntity('employeeId', value)
-            }}
-            trailing={<CopyIdButton value={entities.employeeId} ariaLabel="Copy employee ID" />}
-          />
-
-          <EntityCombobox
-            label="Contractor"
-            value={entities.contractorId}
-            options={entityCatalog.contractors}
-            isLoading={entityCatalog.isLoading}
-            placeholder="Search or paste a contractor id..."
-            useFallback={!isFlowTokenMode}
-            onChange={value => {
-              onUpdateEntity('contractorId', value)
-            }}
-            trailing={<CopyIdButton value={entities.contractorId} ariaLabel="Copy contractor ID" />}
-          />
-
-          <EntityCombobox
-            label="Payroll"
-            value={entities.payrollId}
-            options={entityCatalog.payrolls}
-            isLoading={entityCatalog.isLoading}
-            placeholder="Search or paste a payroll id..."
-            useFallback={!isFlowTokenMode}
-            onChange={value => {
-              onUpdateEntity('payrollId', value)
-            }}
-            trailing={<CopyIdButton value={entities.payrollId} ariaLabel="Copy payroll ID" />}
-          />
-
-          {TEXT_FIELDS.map(({ key, label }) => {
-            const inputId = `entity-${key}-input`
-            return (
-              <div key={key} className={styles.field}>
-                <label htmlFor={inputId}>{label}</label>
-                <div className={styles.copyRow}>
-                  <input
-                    id={inputId}
-                    type="text"
-                    value={entities[key]}
-                    onChange={e => {
-                      onUpdateEntity(key, e.target.value)
-                    }}
-                    placeholder={`Enter ${label.toLowerCase()}...`}
-                  />
-                  <CopyIdButton value={entities[key]} ariaLabel={`Copy ${label.toLowerCase()}`} />
-                </div>
-              </div>
-            )
-          })}
-
-          <div className={styles.actions}>
-            {hasChanges && (
-              <button
-                className={`${styles.btn} ${styles.btnPrimary}`}
-                onClick={() => {
-                  confirmedSnapshot.current = { ...entities }
-                  onClose()
-                }}
-                type="button"
-              >
-                Update
-              </button>
-            )}
-            <button className={styles.btn} onClick={onResetToDefaults} type="button">
-              Restore Default IDs
-            </button>
-          </div>
-        </div>
+        )}
 
         <div className={styles.section}>
           <h3>Environment</h3>
@@ -563,7 +827,7 @@ export function DemoSettingsPanel({
               SDK build: <code>{build}</code>
             </p>
             <p>
-              Proxy: <code>{mode}</code>
+              Proxy: <code>{displayProxyMode}</code>
             </p>
           </div>
         </div>

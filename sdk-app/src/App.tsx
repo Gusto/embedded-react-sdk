@@ -5,21 +5,36 @@ import { TopBar } from './TopBar'
 import { Sidebar } from './Sidebar'
 import { DemoSettingsPanel } from './DemoSettingsPanel'
 import { TokenExpiredOverlay } from './TokenExpiredOverlay'
-import { useEntities } from './useEntities'
+import { useEntities, type EntityIds } from './useEntities'
 import { useEntityCatalog } from './useEntityCatalog'
 import { useDemoManager } from './useDemoManager'
 import { useAppMode } from './useAppMode'
 import { useThemeMode } from './useThemeMode'
 import { ThemeModeProvider } from './ThemeModeContext'
+import { useManualConfig, type ManualConfig } from './useManualConfig'
+
+function entitiesFromManualConfig(config: ManualConfig): EntityIds {
+  return {
+    companyId: config.companyId,
+    employeeId: config.employeeId,
+    contractorId: config.contractorId,
+    payrollId: config.payrollId,
+    formId: config.formId,
+    requestId: config.requestId,
+  }
+}
 
 export function App() {
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
+  const manual = useManualConfig()
+  const isManual = manual.mode === 'manual'
   const { entities, updateEntity, replaceEntities, resetToDefaults } = useEntities()
-  const entityCatalog = useEntityCatalog(entities.companyId)
-  const demoManager = useDemoManager()
-  const mode = useAppMode()
+  const activeEntities = isManual ? entitiesFromManualConfig(manual.config) : entities
+  const entityCatalog = useEntityCatalog(isManual ? '' : entities.companyId)
+  const demoManager = useDemoManager({ pollingDisabled: isManual })
+  const appMode = useAppMode()
   const themeMode = useThemeMode()
 
   const handleCreateNewDemo = async (demoType: string) => {
@@ -36,11 +51,28 @@ export function App() {
     }
   }
 
+  const handleApplyManualConfig = async (next: ManualConfig) => {
+    await manual.applyManualConfig(next)
+    replaceEntities(entitiesFromManualConfig(next))
+  }
+
+  if (!manual.isReady) {
+    return (
+      <ThemeModeProvider value={themeMode}>
+        <div className="app-layout">
+          <div style={{ padding: '2rem', fontSize: '0.875rem' }}>
+            Restoring manual configuration…
+          </div>
+        </div>
+      </ThemeModeProvider>
+    )
+  }
+
   return (
     <ThemeModeProvider value={themeMode}>
       <div className="app-layout">
         <TopBar
-          companyId={entities.companyId}
+          companyId={activeEntities.companyId}
           tokenStatus={demoManager.tokenStatus}
           onOpenSettings={() => {
             setSettingsOpen(true)
@@ -48,7 +80,7 @@ export function App() {
         />
         <div className="app-body">
           <Sidebar
-            mode={mode}
+            mode={appMode}
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
             isOpen={sidebarOpen}
@@ -62,7 +94,7 @@ export function App() {
               { '--sidebar-width': sidebarOpen ? '16.25rem' : '2.75rem' } as React.CSSProperties
             }
           >
-            <Outlet context={{ entities }} />
+            <Outlet context={{ entities: activeEntities }} />
           </main>
         </div>
         <DemoSettingsPanel
@@ -70,7 +102,7 @@ export function App() {
           onClose={() => {
             setSettingsOpen(false)
           }}
-          entities={entities}
+          entities={activeEntities}
           onUpdateEntity={updateEntity}
           onResetToDefaults={resetToDefaults}
           tokenStatus={demoManager.tokenStatus}
@@ -80,8 +112,15 @@ export function App() {
           onCreateNewDemo={handleCreateNewDemo}
           onRefreshToken={demoManager.refreshToken}
           entityCatalog={entityCatalog}
+          mode={manual.mode}
+          manualConfig={manual.config}
+          manualSaves={manual.saves}
+          onSwitchToAuto={manual.switchToAuto}
+          onApplyManualConfig={handleApplyManualConfig}
+          onSaveManualConfig={manual.saveConfig}
+          onDeleteManualSave={manual.deleteSave}
         />
-        {demoManager.tokenStatus === 'expired' && (
+        {!isManual && demoManager.tokenStatus === 'expired' && (
           <TokenExpiredOverlay
             onRefresh={demoManager.refreshToken}
             isRefreshing={demoManager.isCreatingDemo}
