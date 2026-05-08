@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import type {
@@ -22,11 +22,7 @@ import { Form as HtmlForm } from '@/components/Common/Form'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useLocale } from '@/contexts/LocaleProvider/useLocale'
 import { useI18n } from '@/i18n'
-
-const DAY_OPTIONS = Array.from({ length: 31 }, (_, i) => ({
-  value: i + 1,
-  label: String(i + 1),
-}))
+import { getDaysInMonth } from '@/helpers/dateFormatting'
 
 export function PolicyConfigurationFormPresentation({
   onContinue,
@@ -55,9 +51,26 @@ export function PolicyConfigurationFormPresentation({
     },
   })
 
-  const { control } = formMethods
+  const { control, setValue, getValues } = formMethods
   const accrualMethod = useWatch({ control, name: 'accrualMethod' })
   const resetDateType = useWatch({ control, name: 'resetDateType' })
+  const resetMonth = useWatch({ control, name: 'resetMonth' })
+
+  const dayOptions = useMemo(() => {
+    const days = getDaysInMonth(resetMonth ?? 1)
+    return Array.from({ length: days }, (_, i) => ({
+      value: i + 1,
+      label: String(i + 1),
+    }))
+  }, [resetMonth])
+
+  useEffect(() => {
+    const maxDay = getDaysInMonth(resetMonth ?? 1)
+    const currentDay = getValues('resetDay')
+    if (currentDay != null && currentDay > maxDay) {
+      setValue('resetDay', maxDay)
+    }
+  }, [resetMonth, getValues, setValue])
 
   const accrualMethodOptions = useMemo(
     () => [
@@ -228,7 +241,7 @@ export function PolicyConfigurationFormPresentation({
                       className={styles.dateSelect}
                       name="resetDay"
                       label={t('policyDetails.dayLabel')}
-                      options={DAY_OPTIONS}
+                      options={dayOptions}
                     />
                   </Flex>
                 )}
