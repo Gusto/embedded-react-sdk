@@ -4,8 +4,7 @@
   "compilerOptions": {
     "baseUrl": "..",
     "paths": {
-      "@/*": ["src/*"],
-      "@gusto/embedded-react-sdk": ["src/index.ts"]
+      "@/*": ["src/*"]
     },
     "noEmit": true,
     "rootDir": ".."
