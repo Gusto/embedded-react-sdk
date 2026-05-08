@@ -1,6 +1,6 @@
 import { renderHook, act, waitFor } from '@testing-library/react'
 import { describe, it, expect, beforeEach, assertType, vi } from 'vitest'
-import { HttpResponse, type HttpResponseResolver } from 'msw'
+import { http, HttpResponse, type HttpResponseResolver } from 'msw'
 import { useCompensationForm } from './useCompensationForm'
 import type { UseCompensationFormResult } from './useCompensationForm'
 import {
@@ -17,7 +17,12 @@ import {
 import { handleCreateCompensation } from '@/test/mocks/apis/compensations'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
-import { buildEmployeeWithJobs, buildJob } from '@/test/factories/jobsAndCompensations'
+import {
+  buildCompensation,
+  buildEmployeeWithJobs,
+  buildJob,
+} from '@/test/factories/jobsAndCompensations'
+import { API_BASE_URL } from '@/test/constants'
 import { FlsaStatus, PAY_PERIODS } from '@/shared/constants'
 
 assertType<CompensationOptionalFieldsToRequire>({ update: ['title'] })
@@ -633,6 +638,90 @@ describe('useCompensationForm', () => {
       await waitFor(() => {
         expect(formMethods.getValues('paymentUnit')).toBe(PAY_PERIODS.YEAR)
         expect(formMethods.getValues('rate')).toBe(0)
+      })
+    })
+
+    it('resets adjustForMinimumWage and minimumWageId when FLSA leaves Nonexempt', async () => {
+      // Min-wage adjustment is API-side gated to flsa_status: Nonexempt, but
+      // because Fields.AdjustForMinimumWage / MinimumWageId stop rendering as
+      // soon as FLSA leaves Nonexempt, react-hook-form would otherwise carry
+      // their stale values straight into the PUT body and the server rejects
+      // with "Minimum wage adjustments only valid for flsa_status: Nonexempt".
+      const minWageUuid = '70c523ff-c71e-4474-9c83-a4ea51bd54a8'
+      server.use(
+        // Default fixture work address is in AK, which is in
+        // TIP_CREDITS_UNSUPPORTED_STATES — override to TX so the gate opens.
+        http.get(`${API_BASE_URL}/v1/employees/:employee_id/work_addresses`, () =>
+          HttpResponse.json([
+            {
+              uuid: 'wa-uuid',
+              employee_uuid: 'employee-uuid',
+              location_uuid: 'tx-loc-uuid',
+              effective_date: '2024-01-01',
+              active: true,
+              version: 'wa-v1',
+              street_1: '100 Congress',
+              street_2: '',
+              city: 'Austin',
+              state: 'TX',
+              zip: '78701',
+              country: 'USA',
+            },
+          ]),
+        ),
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json([
+            buildJob({
+              uuid: 'job-uuid',
+              flsaStatus: FlsaStatus.NONEXEMPT,
+              compensations: [
+                buildCompensation({
+                  uuid: 'compensation-uuid',
+                  flsa_status: FlsaStatus.NONEXEMPT,
+                  adjust_for_minimum_wage: true,
+                  minimum_wages: [{ uuid: minWageUuid }],
+                }),
+              ],
+            }),
+          ]),
+        ),
+      )
+
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+            compensationId: 'compensation-uuid',
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+      const { formMethods } = result.current.form.hookFormInternals
+
+      // Sanity-check: the gate is open and the form picked up the loaded values.
+      await waitFor(() => {
+        if (result.current.isLoading) throw new Error('still loading')
+        expect(result.current.form.Fields.AdjustForMinimumWage).toBeDefined()
+        expect(result.current.form.Fields.MinimumWageId).toBeDefined()
+      })
+      expect(formMethods.getValues('adjustForMinimumWage')).toBe(true)
+      expect(formMethods.getValues('minimumWageId')).toBe(minWageUuid)
+
+      act(() => {
+        formMethods.setValue('flsaStatus', FlsaStatus.EXEMPT)
+      })
+
+      await waitFor(() => {
+        expect(formMethods.getValues('adjustForMinimumWage')).toBe(false)
+        expect(formMethods.getValues('minimumWageId')).toBe('')
+        if (result.current.isLoading) throw new Error('still loading')
+        expect(result.current.form.Fields.AdjustForMinimumWage).toBeUndefined()
+        expect(result.current.form.Fields.MinimumWageId).toBeUndefined()
       })
     })
   })

@@ -396,6 +396,25 @@ export function useCompensationForm({
     state !== undefined &&
     !TIP_CREDITS_UNSUPPORTED_STATES.includes(state)
 
+  // Min-wage adjustment is only valid for Nonexempt FLSA (and a state that
+  // allows tip credit). When the gate flips off — typically because the user
+  // changed FLSA away from Nonexempt — `Fields.AdjustForMinimumWage` and
+  // `Fields.MinimumWageId` stop rendering, but the underlying form values
+  // persist in react-hook-form state. That would leak an
+  // `adjust_for_minimum_wage: true` + `minimum_wages: [...]` body on submit
+  // (server rejects with "Minimum wage adjustments only valid for
+  // flsa_status: Nonexempt"). Reset both values to safe defaults so the
+  // submitted payload always matches what the user can actually see.
+  useEffect(() => {
+    if (isAdjustMinimumWageEnabled) return
+    if (getValues('adjustForMinimumWage')) {
+      setValue('adjustForMinimumWage', false, { shouldDirty: true, shouldValidate: false })
+    }
+    if (getValues('minimumWageId')) {
+      setValue('minimumWageId', '', { shouldDirty: true, shouldValidate: false })
+    }
+  }, [isAdjustMinimumWageEnabled, getValues, setValue])
+
   const minimumWageOptions = minimumWages.map(wage => ({
     value: wage.uuid,
     label: `${wage.wage} - ${wage.authority}: ${wage.notes ?? ''}`,
