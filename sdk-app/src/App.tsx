@@ -1,5 +1,5 @@
 import type React from 'react'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
 import { TopBar } from './TopBar'
 import { Sidebar } from './Sidebar'
@@ -41,7 +41,20 @@ export function App() {
   const manual = useManualConfig()
   const isManual = manual.mode === 'manual'
   const { entities, updateEntity, replaceEntities, resetToDefaults } = useEntities()
-  const activeEntities = isManual ? entitiesFromManualConfig(manual.config) : entities
+  const activeEntities = useMemo(
+    () => (isManual ? entitiesFromManualConfig(manual.config) : entities),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      isManual,
+      entities,
+      manual.config.companyId,
+      manual.config.employeeId,
+      manual.config.contractorId,
+      manual.config.payrollId,
+      manual.config.formId,
+      manual.config.requestId,
+    ],
+  )
   const entityCatalog = useEntityCatalog(isManual ? '' : entities.companyId)
   const demoManager = useDemoManager({ pollingDisabled: isManual })
   const appMode = useAppMode()
@@ -136,11 +149,12 @@ export function App() {
   const sidebarWidth = chromeHidden ? '0rem' : sidebarOpen ? '16.25rem' : '2.75rem'
 
   const outletEl = <Outlet context={{ entities: activeEntities, chromeHidden }} />
-  const chromedOutlet = customChrome ? (
-    <customChrome.Chrome onOpenSettings={openSettings}>{outletEl}</customChrome.Chrome>
-  ) : (
-    outletEl
-  )
+  const chromedOutlet =
+    customChrome && !chromeHidden ? (
+      <customChrome.Chrome onOpenSettings={openSettings}>{outletEl}</customChrome.Chrome>
+    ) : (
+      outletEl
+    )
   const mainEl = (
     <main
       className="main-content"
