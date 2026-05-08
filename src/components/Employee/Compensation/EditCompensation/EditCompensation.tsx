@@ -1,5 +1,5 @@
 import { Trans, useTranslation } from 'react-i18next'
-import type { Compensation, PaymentUnit } from '@gusto/embedded-api/models/components/compensation'
+import type { PaymentUnit } from '@gusto/embedded-api/models/components/compensation'
 import type { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
 import type { MinimumWage } from '@gusto/embedded-api/models/components/minimumwage'
 import type { CompensationDefaultValues } from '../Compensation'
@@ -22,14 +22,14 @@ export interface EditCompensationProps extends CommonComponentInterface<'Employe
   currentJobId?: string | null
   title: string
   submitCtaLabel: string
-  /**
-   * Called once the job + compensation chain has saved successfully. Receives the saved
-   * `Compensation` so the flow's contextual can branch on `flsaStatus` (FLSA-driven
-   * navigation between `JobsList` and `EMPLOYEE_COMPENSATION_DONE`).
-   */
-  onSaved: (compensation: Compensation) => void
   onCancel?: () => void
   partnerDefaultValues?: CompensationDefaultValues
+  /**
+   * Receives the broadcast events: `EMPLOYEE_JOB_CREATED` / `EMPLOYEE_JOB_UPDATED`
+   * (with the saved `Job`), then `EMPLOYEE_COMPENSATION_UPDATED` (with the saved
+   * `Compensation`) on a successful submit chain. Use `EMPLOYEE_COMPENSATION_UPDATED`
+   * for "save complete" branching.
+   */
   onEvent: OnEventType<EventType, unknown>
 }
 
@@ -48,7 +48,6 @@ function Root({
   currentJobId,
   title,
   submitCtaLabel,
-  onSaved,
   onCancel,
   partnerDefaultValues,
   className,
@@ -137,7 +136,6 @@ function Root({
     if (!compensationResult) return
 
     onEvent(componentEvents.EMPLOYEE_COMPENSATION_UPDATED, compensationResult.data)
-    onSaved(compensationResult.data)
   })
 
   const errorHandling = composeErrorHandler([submitResult])
