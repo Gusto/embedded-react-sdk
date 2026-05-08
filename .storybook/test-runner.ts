@@ -58,12 +58,6 @@ const titleToBaselineId = (title: string) =>
     .replace(/^-+|-+$/g, '')
 
 const config: TestRunnerConfig = {
-  setup() {
-    // Some stories (e.g. those that open a <dialog> after an i18n Suspense
-    // boundary resolves) can take longer to reach a steady state in headless
-    // Chromium. 30 s is generous but still a useful guard against true hangs.
-    jest.setTimeout(30_000)
-  },
   async postVisit(page, context) {
     const storyContext = await getStoryContext(page, context)
 
