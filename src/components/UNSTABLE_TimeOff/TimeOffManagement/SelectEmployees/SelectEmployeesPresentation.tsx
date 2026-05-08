@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import { useId } from 'react'
 import { EmployeeTable } from '../../shared/EmployeeTable/EmployeeTable'
 import type {
   EmployeeItem,
@@ -32,6 +33,7 @@ export function SelectEmployeesPresentation({
   const { t } = useTranslation('Company.TimeOff.SelectEmployees')
   const Components = useComponentContext()
   const { Heading, Text, Button, Alert, Dialog } = Components
+  const balanceColHeaderId = useId()
 
   return (
     <Flex flexDirection="column" alignItems="stretch" gap={32}>
@@ -76,6 +78,7 @@ export function SelectEmployeesPresentation({
                         name={`balance-${employee.uuid}`}
                         label={t('startingBalanceColumn')}
                         shouldVisuallyHideLabel
+                        aria-labelledby={`employee-name-${employee.uuid} ${balanceColHeaderId}`}
                         value={balances?.[employee.uuid] ?? ''}
                         onChange={(value: string) => {
                           onBalanceChange(employee.uuid, value)
