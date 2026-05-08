@@ -20,14 +20,10 @@ export const CreateSignatoryForm = () => {
 
   return (
     <Flex flexDirection="column" gap={32}>
-      <Flex flexDirection="column" gap={32} alignItems="stretch">
+      <Flex flexDirection="column" gap={12}>
         <header>
-          <Flex flexDirection="column" gap={4}>
-            <Components.Heading as="h2">{t('signatoryDetails.title')}</Components.Heading>
-            <Components.Text variant="supporting">
-              {t('signatoryDetails.description')}
-            </Components.Text>
-          </Flex>
+          <Components.Heading as="h2">{t('signatoryDetails.title')}</Components.Heading>
+          <Components.Text>{t('signatoryDetails.description')}</Components.Text>
         </header>
 
         <Grid gridTemplateColumns={{ base: '1fr', small: ['1fr', '1fr'] }} gap={20}>
@@ -75,12 +71,10 @@ export const CreateSignatoryForm = () => {
         </Grid>
       </Flex>
 
-      <Flex flexDirection="column" gap={32} alignItems="stretch">
+      <Flex flexDirection="column" gap={12}>
         <header>
-          <Flex flexDirection="column" gap={4}>
-            <Components.Heading as="h2">{t('address.title')}</Components.Heading>
-            <Components.Text variant="supporting">{t('address.description')}</Components.Text>
-          </Flex>
+          <Components.Heading as="h2">{t('address.title')}</Components.Heading>
+          <Components.Text>{t('address.description')}</Components.Text>
         </header>
 
         <Grid gridTemplateColumns={{ base: '1fr', small: ['1fr', '1fr'] }} gap={20}>
