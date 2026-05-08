@@ -6,7 +6,6 @@ import { useResolvedTheme } from './useThemeModeContext'
 import { darkTheme } from './darkTheme'
 import type { EntityIds } from './useEntities'
 import styles from './ComponentRenderer.module.scss'
-import { interfaceLibComponents } from './InterfaceLib'
 import { useCurrentComponentRegistry } from './useCurrentComponent'
 import { GustoProvider } from '@/contexts'
 
@@ -275,7 +274,6 @@ export function ComponentRenderer({ entities, chromeHidden = false }: ComponentR
               <GustoProvider
                 config={{ baseUrl: `${window.location.origin}/api/` }}
                 theme={resolvedTheme === 'dark' ? darkTheme : undefined}
-                components={interfaceLibComponents}
                 key={providerKey}
               >
                 <Suspense fallback={<div className={styles.contentLoading}>Loading...</div>}>
