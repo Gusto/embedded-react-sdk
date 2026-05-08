@@ -1,6 +1,6 @@
 import type React from 'react'
-import { useState } from 'react'
-import { Outlet } from 'react-router-dom'
+import { useCallback, useState } from 'react'
+import { Outlet, useNavigate } from 'react-router-dom'
 import { TopBar } from './TopBar'
 import { Sidebar } from './Sidebar'
 import { DemoSettingsPanel } from './DemoSettingsPanel'
@@ -9,10 +9,14 @@ import { useEntities, type EntityIds } from './useEntities'
 import { useEntityCatalog } from './useEntityCatalog'
 import { useDemoManager } from './useDemoManager'
 import { useAppMode } from './useAppMode'
-import { useThemeMode } from './useThemeMode'
+import { useThemeMode, type ThemeMode } from './useThemeMode'
 import { ThemeModeProvider } from './ThemeModeContext'
 import { useManualConfig, type ManualConfig } from './useManualConfig'
 import { useChromeVisibility } from './useChromeVisibility'
+import { ShortcutHelper, useShortcutHelper } from './ShortcutHelper'
+import { useGlobalShortcut } from './useGlobalShortcut'
+
+const THEME_CYCLE: ThemeMode[] = ['system', 'light', 'dark']
 
 function entitiesFromManualConfig(config: ManualConfig): EntityIds {
   return {
@@ -38,6 +42,47 @@ export function App() {
   const appMode = useAppMode()
   const themeMode = useThemeMode()
   const { chromeHidden, showChrome } = useChromeVisibility()
+  const shortcutHelper = useShortcutHelper()
+  const navigate = useNavigate()
+
+  const openSettings = useCallback(() => {
+    setSettingsOpen(true)
+  }, [])
+
+  const toggleAppMode = useCallback(() => {
+    void navigate(appMode === 'design' ? '/' : '/design')
+  }, [navigate, appMode])
+
+  const cycleTheme = useCallback(() => {
+    const current = THEME_CYCLE.indexOf(themeMode.mode)
+    const next = THEME_CYCLE[(current + 1) % THEME_CYCLE.length]
+    if (next) themeMode.setMode(next)
+  }, [themeMode])
+
+  useGlobalShortcut({
+    key: ',',
+    modifier: 'mod',
+    onTrigger: event => {
+      event.preventDefault()
+      openSettings()
+    },
+  })
+  useGlobalShortcut({
+    key: '.',
+    modifier: 'mod',
+    onTrigger: event => {
+      event.preventDefault()
+      toggleAppMode()
+    },
+  })
+  useGlobalShortcut({
+    key: ';',
+    modifier: 'mod',
+    onTrigger: event => {
+      event.preventDefault()
+      cycleTheme()
+    },
+  })
 
   const handleCreateNewDemo = async (demoType: string) => {
     const result = await demoManager.createNewDemo(demoType)
@@ -79,9 +124,7 @@ export function App() {
           <TopBar
             companyId={activeEntities.companyId}
             tokenStatus={demoManager.tokenStatus}
-            onOpenSettings={() => {
-              setSettingsOpen(true)
-            }}
+            onOpenSettings={openSettings}
           />
         )}
         <div className="app-body">
@@ -94,6 +137,7 @@ export function App() {
               onToggle={() => {
                 setSidebarOpen(open => !open)
               }}
+              onShowShortcuts={shortcutHelper.open}
             />
           )}
           <main
@@ -136,6 +180,7 @@ export function App() {
           onSaveManualConfig={manual.saveConfig}
           onDeleteManualSave={manual.deleteSave}
         />
+        <ShortcutHelper isOpen={shortcutHelper.isOpen} onClose={shortcutHelper.close} />
         {!isManual && demoManager.tokenStatus === 'expired' && (
           <TokenExpiredOverlay
             onRefresh={demoManager.refreshToken}

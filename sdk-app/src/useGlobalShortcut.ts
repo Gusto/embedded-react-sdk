@@ -4,6 +4,8 @@ interface UseGlobalShortcutOptions {
   key: string
   onTrigger: (event: KeyboardEvent) => void
   enabled?: boolean
+  /** When 'mod', requires Cmd on Mac or Ctrl on other platforms. */
+  modifier?: 'mod'
 }
 
 function isTypingTarget(target: EventTarget | null): boolean {
@@ -16,18 +18,28 @@ function isTypingTarget(target: EventTarget | null): boolean {
   return false
 }
 
-export function useGlobalShortcut({ key, onTrigger, enabled = true }: UseGlobalShortcutOptions) {
+export function useGlobalShortcut({
+  key,
+  onTrigger,
+  enabled = true,
+  modifier,
+}: UseGlobalShortcutOptions) {
   useEffect(() => {
     if (!enabled) return
     const handler = (event: KeyboardEvent) => {
-      if (event.metaKey || event.ctrlKey || event.altKey) return
+      if (modifier === 'mod') {
+        const hasMod = event.metaKey || event.ctrlKey
+        if (!hasMod || event.altKey) return
+      } else {
+        if (event.metaKey || event.ctrlKey || event.altKey) return
+        if (isTypingTarget(event.target)) return
+      }
       if (event.key !== key) return
-      if (isTypingTarget(event.target)) return
       onTrigger(event)
     }
     document.addEventListener('keydown', handler)
     return () => {
       document.removeEventListener('keydown', handler)
     }
-  }, [key, enabled, onTrigger])
+  }, [key, enabled, modifier, onTrigger])
 }
