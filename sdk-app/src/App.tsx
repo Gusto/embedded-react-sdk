@@ -21,6 +21,15 @@ import { CodePanel } from './CodePanel'
 import { CurrentComponentProvider } from './CurrentComponentContext'
 import { useDemoChrome } from './useDemoChrome'
 import { findDemoChrome, SDK_NATIVE_CHROME_ID } from './demoChromes/registry'
+import {
+  ThemePanel,
+  useThemePanel,
+  ThemeEditorContext,
+  useThemeEditorState,
+  DesignSystemContext,
+  useDesignSystemState,
+} from './ThemePanel'
+import { RightPanelShell } from './RightPanelShell'
 
 const THEME_CYCLE: ThemeMode[] = ['system', 'light', 'dark']
 
@@ -65,12 +74,44 @@ export function App() {
   const commandPalette = useCommandPalette()
   const navigate = useNavigate()
   const codePanel = useCodePanel()
+  const themePanel = useThemePanel()
+  const themeEditorState = useThemeEditorState()
+  const designSystemState = useDesignSystemState()
   const { chromeId, setChromeId } = useDemoChrome()
   const customChrome = chromeId !== SDK_NATIVE_CHROME_ID ? findDemoChrome(chromeId) : undefined
 
+  const activePanel: 'theme' | 'settings' | 'code' | null = codePanel.isOpen
+    ? 'code'
+    : themePanel.isOpen
+      ? 'theme'
+      : settingsOpen
+        ? 'settings'
+        : null
+
+  const togglePanel = useCallback(
+    (panel: 'theme' | 'settings' | 'code') => {
+      if (panel === 'code') {
+        themePanel.close()
+        setSettingsOpen(false)
+        codePanel.toggle()
+      } else if (panel === 'theme') {
+        codePanel.close()
+        setSettingsOpen(false)
+        themePanel.toggle()
+      } else {
+        codePanel.close()
+        themePanel.close()
+        setSettingsOpen(prev => !prev)
+      }
+    },
+    [codePanel, themePanel],
+  )
+
   const openSettings = useCallback(() => {
+    codePanel.close()
+    themePanel.close()
     setSettingsOpen(true)
-  }, [])
+  }, [codePanel, themePanel])
 
   const toggleAppMode = useCallback(() => {
     void navigate(appMode === 'design' ? '/' : '/design')
@@ -87,7 +128,7 @@ export function App() {
     modifier: 'mod',
     onTrigger: event => {
       event.preventDefault()
-      openSettings()
+      togglePanel('settings')
     },
   })
   useGlobalShortcut({
@@ -117,13 +158,21 @@ export function App() {
 
   useEffect(() => {
     if (codePanel.isOpen && settingsOpen) setSettingsOpen(false)
+    if (codePanel.isOpen && themePanel.isOpen) themePanel.close()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [codePanel.isOpen])
 
   useEffect(() => {
     if (settingsOpen && codePanel.isOpen) codePanel.close()
+    if (settingsOpen && themePanel.isOpen) themePanel.close()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settingsOpen])
+
+  useEffect(() => {
+    if (themePanel.isOpen && codePanel.isOpen) codePanel.close()
+    if (themePanel.isOpen && settingsOpen) setSettingsOpen(false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [themePanel.isOpen])
 
   const handleCreateNewDemo = async (demoType: string) => {
     const result = await demoManager.createNewDemo(demoType)
@@ -180,9 +229,8 @@ export function App() {
       <TopBar
         companyId={activeEntities.companyId}
         tokenStatus={demoManager.tokenStatus}
-        onOpenSettings={openSettings}
-        onToggleCode={codePanel.toggle}
-        codeOpen={codePanel.isOpen}
+        activePanel={activePanel}
+        onPanelToggle={togglePanel}
       />
       <div className="app-body">
         <Sidebar
@@ -196,62 +244,72 @@ export function App() {
           onShowShortcuts={shortcutHelper.open}
         />
         {mainEl}
-        {codePanel.isOpen && <CodePanel onClose={codePanel.close} />}
+        {(codePanel.isOpen || themePanel.isOpen || settingsOpen) && (
+          <RightPanelShell>
+            {codePanel.isOpen && <CodePanel onClose={codePanel.close} />}
+            {themePanel.isOpen && <ThemePanel onClose={themePanel.close} />}
+            {settingsOpen && (
+              <DemoSettingsPanel
+                onClose={() => {
+                  setSettingsOpen(false)
+                }}
+                entities={activeEntities}
+                onUpdateEntity={updateEntity}
+                onResetToDefaults={resetToDefaults}
+                tokenStatus={demoManager.tokenStatus}
+                isCreatingDemo={demoManager.isCreatingDemo}
+                demoError={demoManager.demoError}
+                proxyMode={demoManager.proxyMode}
+                onCreateNewDemo={handleCreateNewDemo}
+                onRefreshToken={demoManager.refreshToken}
+                entityCatalog={entityCatalog}
+                mode={manual.mode}
+                manualConfig={manual.config}
+                manualSaves={manual.saves}
+                onSwitchToAuto={manual.switchToAuto}
+                onApplyManualConfig={handleApplyManualConfig}
+                onSaveManualConfig={manual.saveConfig}
+                onDeleteManualSave={manual.deleteSave}
+                chromeId={chromeId}
+                onChromeIdChange={setChromeId}
+              />
+            )}
+          </RightPanelShell>
+        )}
       </div>
     </>
   )
 
   return (
     <ThemeModeProvider value={themeMode}>
-      <CurrentComponentProvider>
-        <div className={`app-layout${chromeHidden ? ' app-layout-chrome-hidden' : ''}`}>
-          {bodyEl}
-          {chromeHidden && (
-            <button
-              type="button"
-              className="chrome-restore-pill"
-              onClick={showChrome}
-              aria-label="Show chrome"
-            >
-              <span className="chrome-restore-pill-key">\</span> Show chrome
-            </button>
-          )}
-          <DemoSettingsPanel
-            isOpen={settingsOpen}
-            onClose={() => {
-              setSettingsOpen(false)
-            }}
-            entities={activeEntities}
-            onUpdateEntity={updateEntity}
-            onResetToDefaults={resetToDefaults}
-            tokenStatus={demoManager.tokenStatus}
-            isCreatingDemo={demoManager.isCreatingDemo}
-            demoError={demoManager.demoError}
-            proxyMode={demoManager.proxyMode}
-            onCreateNewDemo={handleCreateNewDemo}
-            onRefreshToken={demoManager.refreshToken}
-            entityCatalog={entityCatalog}
-            mode={manual.mode}
-            manualConfig={manual.config}
-            manualSaves={manual.saves}
-            onSwitchToAuto={manual.switchToAuto}
-            onApplyManualConfig={handleApplyManualConfig}
-            onSaveManualConfig={manual.saveConfig}
-            onDeleteManualSave={manual.deleteSave}
-            chromeId={chromeId}
-            onChromeIdChange={setChromeId}
-          />
-          <ShortcutHelper isOpen={shortcutHelper.isOpen} onClose={shortcutHelper.close} />
-          <CommandPalette isOpen={commandPalette.isOpen} onClose={commandPalette.close} />
-          {!isManual && demoManager.tokenStatus === 'expired' && (
-            <TokenExpiredOverlay
-              onRefresh={demoManager.refreshToken}
-              isRefreshing={demoManager.isCreatingDemo}
-              error={demoManager.demoError}
-            />
-          )}
-        </div>
-      </CurrentComponentProvider>
+      <ThemeEditorContext.Provider value={themeEditorState}>
+        <DesignSystemContext.Provider value={designSystemState}>
+          <CurrentComponentProvider>
+            <div className={`app-layout${chromeHidden ? ' app-layout-chrome-hidden' : ''}`}>
+              {bodyEl}
+              {chromeHidden && (
+                <button
+                  type="button"
+                  className="chrome-restore-pill"
+                  onClick={showChrome}
+                  aria-label="Show chrome"
+                >
+                  <span className="chrome-restore-pill-key">\</span> Show chrome
+                </button>
+              )}
+              <ShortcutHelper isOpen={shortcutHelper.isOpen} onClose={shortcutHelper.close} />
+              <CommandPalette isOpen={commandPalette.isOpen} onClose={commandPalette.close} />
+              {!isManual && demoManager.tokenStatus === 'expired' && (
+                <TokenExpiredOverlay
+                  onRefresh={demoManager.refreshToken}
+                  isRefreshing={demoManager.isCreatingDemo}
+                  error={demoManager.demoError}
+                />
+              )}
+            </div>
+          </CurrentComponentProvider>
+        </DesignSystemContext.Provider>
+      </ThemeEditorContext.Provider>
     </ThemeModeProvider>
   )
 }
