@@ -108,7 +108,12 @@ export function PolicyListPresentation({
               {t('finishSetupCta')}
             </Button>
           )}
-          <HamburgerMenu isLoading={isDeleting} menuLabel={t('tableLabel')} items={menuItems} />
+          <HamburgerMenu
+            isLoading={isDeleting}
+            triggerLabel={t('actions.menuTrigger', { name: policy.name })}
+            menuLabel={t('actions.menuFor', { name: policy.name })}
+            items={menuItems}
+          />
         </div>
       )
     },
