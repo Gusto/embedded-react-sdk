@@ -52,6 +52,7 @@ The Dashboard workflow can be used through the wrapping flow component or render
 - [Employee.Dashboard](#employeedashboard)
 - [EmployeeManagement.EmployeeList](#employeemanagementemployeelist)
 - [EmployeeManagement.WorkAddress](#employeemanagementworkaddress)
+- [EmployeeManagement.StateTaxes](#employeemanagementstatetaxes)
 
 > Legacy import via `Employee.DashboardFlow` continues to work.
 
@@ -143,6 +144,34 @@ function MyComponent() {
 | EMPLOYEE_WORK_ADDRESS_CREATED | Fired when a new work address is created       | [Response from the Create a work address endpoint](https://docs.gusto.com/embedded-payroll/reference/post-v1-employees-employee_id-work_addresses) |
 | EMPLOYEE_WORK_ADDRESS_UPDATED | Fired when an existing work address is updated | [Response from the Update a work address endpoint](https://docs.gusto.com/embedded-payroll/reference/put-v1-work_addresses-work_address_uuid)      |
 | EMPLOYEE_WORK_ADDRESS_DELETED | Fired when a work address is deleted           | The deleted `EmployeeWorkAddress` snapshot                                                                                                         |
+
+### EmployeeManagement.StateTaxes
+
+A standalone management screen for viewing and editing an employee's state tax withholding answers. Renders **Cancel** + **Save** buttons; Save surfaces a dismissible success alert and keeps the user on the screen. Admin-only questions (e.g. `file_new_hire_report`) are not shown — new-hire reporting is an onboarding-only concept. Typically rendered in response to the `EMPLOYEE_STATE_TAXES_EDIT` event emitted from the Dashboard.
+
+```jsx
+import { EmployeeManagement } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return <EmployeeManagement.StateTaxes employeeId="employee-id" onEvent={() => {}} />
+}
+```
+
+#### Props
+
+| Name                | Type                | Description                               |
+| ------------------- | ------------------- | ----------------------------------------- |
+| employeeId Required | string              | The employee identifier.                  |
+| onEvent Required    | function            | See events table for available events.    |
+| dictionary          | object              | Optional translations for component text. |
+| FallbackComponent   | React.ComponentType | Optional custom error fallback component. |
+
+#### Events
+
+| Event type                   | Description                                                 | Data                                                   |
+| ---------------------------- | ----------------------------------------------------------- | ------------------------------------------------------ |
+| EMPLOYEE_STATE_TAXES_UPDATED | Fired when state taxes are successfully saved               | `{ employeeStateTaxesList: EmployeeStateTaxesList[] }` |
+| CANCEL                       | Fired when the user clicks the Cancel button without saving | None                                                   |
 
 ## Dashboard Tabs
 

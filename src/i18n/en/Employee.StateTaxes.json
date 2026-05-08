@@ -1,6 +1,9 @@
 {
   "stateTaxesTitle": "{{state}} Tax Requirements",
   "submitCta": "Continue",
+  "saveCta": "Save",
+  "cancelCta": "Cancel",
+  "successAlert": "Successfully updated state tax settings.",
   "validations": {
     "required": "This field is a required field. Please enter a value."
   }

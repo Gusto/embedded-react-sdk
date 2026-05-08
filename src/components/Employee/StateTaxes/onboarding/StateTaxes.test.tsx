@@ -2,15 +2,15 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { HttpResponse } from 'msw'
-import { StateTaxes } from './StateTaxes'
 import {
   caEmployeeStateTaxes,
   emptyStateTaxes,
   multiStateEmployeeStateTaxes,
   nyEmployeeStateTaxes,
   unsetAnswersStateTaxes,
-} from './shared/useEmployeeStateTaxesForm/__fixtures__/stateTaxesFixtures'
-import { toWireStateTaxes } from './shared/useEmployeeStateTaxesForm/__fixtures__/toWireFormat'
+} from '../shared/useEmployeeStateTaxesForm/__fixtures__/stateTaxesFixtures'
+import { toWireStateTaxes } from '../shared/useEmployeeStateTaxesForm/__fixtures__/toWireFormat'
+import { StateTaxes } from './StateTaxes'
 import { server } from '@/test/mocks/server'
 import {
   handleGetEmployeeStateTaxes,
@@ -20,7 +20,7 @@ import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { componentEvents } from '@/shared/constants'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
-describe('Employee.StateTaxes', () => {
+describe('Employee.StateTaxes (onboarding)', () => {
   const mockOnEvent = vi.fn()
 
   beforeEach(() => {
