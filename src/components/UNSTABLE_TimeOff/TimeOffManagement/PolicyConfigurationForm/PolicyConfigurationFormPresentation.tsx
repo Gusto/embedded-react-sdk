@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useId, useMemo } from 'react'
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import type {
@@ -33,6 +33,7 @@ export function PolicyConfigurationFormPresentation({
   const { t } = useTranslation('Company.TimeOff.CreateTimeOffPolicy')
   const { Heading, Text, Button } = useComponentContext()
   const { locale } = useLocale()
+  const headingId = useId()
 
   const monthOptions = useMemo(() => {
     const formatter = new Intl.DateTimeFormat(locale, { month: 'long' })
@@ -134,9 +135,11 @@ export function PolicyConfigurationFormPresentation({
 
   return (
     <FormProvider {...formMethods}>
-      <HtmlForm onSubmit={formMethods.handleSubmit(handleSubmit)}>
+      <HtmlForm aria-labelledby={headingId} onSubmit={formMethods.handleSubmit(handleSubmit)}>
         <Flex flexDirection="column" gap={32}>
-          <Heading as="h2">{t('policyDetails.title')}</Heading>
+          <Heading as="h2" id={headingId}>
+            {t('policyDetails.title')}
+          </Heading>
 
           <Flex flexDirection="column" gap={20}>
             <TextInputField

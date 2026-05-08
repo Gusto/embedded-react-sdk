@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useId, useMemo } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import type { PolicyType, PolicyTypeSelectorPresentationProps } from './PolicyTypeSelectorTypes'
@@ -20,6 +20,7 @@ export function PolicyTypeSelectorPresentation({
   useI18n('Company.TimeOff.SelectPolicyType')
   const { t } = useTranslation('Company.TimeOff.SelectPolicyType')
   const { Heading, Text, Button } = useComponentContext()
+  const headingId = useId()
 
   const formMethods = useForm<PolicyTypeSelectorFormData>({
     defaultValues: {
@@ -57,10 +58,12 @@ export function PolicyTypeSelectorPresentation({
 
   return (
     <FormProvider {...formMethods}>
-      <HtmlForm onSubmit={formMethods.handleSubmit(handleSubmit)}>
+      <HtmlForm aria-labelledby={headingId} onSubmit={formMethods.handleSubmit(handleSubmit)}>
         <Flex flexDirection="column" gap={24}>
           <Flex flexDirection="column" gap={4}>
-            <Heading as="h2">{t('title')}</Heading>
+            <Heading as="h2" id={headingId}>
+              {t('title')}
+            </Heading>
             <Text variant="supporting">{t('policyTypeHint')}</Text>
           </Flex>
 
