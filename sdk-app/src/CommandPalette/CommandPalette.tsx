@@ -45,7 +45,10 @@ export function CommandPalette({ isOpen, onClose, entries }: CommandPaletteProps
     if (entry.kind === 'navigate') {
       void navigate(entry.path)
     } else {
-      entry.perform()
+      Promise.resolve(entry.perform()).catch((err: unknown) => {
+        // eslint-disable-next-line no-console
+        console.error(`Command "${entry.id}" failed:`, err)
+      })
     }
     onClose()
   }

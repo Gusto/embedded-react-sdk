@@ -16,7 +16,7 @@ export interface NavEntry extends BaseEntry {
 
 export interface ActionEntry extends BaseEntry {
   kind: 'action'
-  perform: () => void
+  perform: () => void | Promise<void>
 }
 
 export type PaletteEntry = NavEntry | ActionEntry
