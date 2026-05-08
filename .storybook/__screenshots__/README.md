@@ -1,8 +1,11 @@
 # Storybook visual baselines
 
 This directory holds PNG baselines used by the visual diff check in
-`.storybook/test-runner.ts`. One file per story, named after the story id
-(for example `common-button--primary.png`).
+`.storybook/test-runner.ts`. One file per story **file** (CSF title), named
+after a slugified version of the title (for example `common-button.png` for a
+file titled `Common/Button`). The runner snapshots the first story it sees
+for each title and skips the rest — this is a smoke test, not exhaustive
+per-story coverage.
 
 ## Threshold
 

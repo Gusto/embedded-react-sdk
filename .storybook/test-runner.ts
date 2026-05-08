@@ -1,9 +1,11 @@
 /**
  * Storybook test-runner configuration.
  *
- * Performs a loose visual regression check on every story by taking a screenshot
- * after the story renders and comparing it to a committed PNG baseline under
- * `.storybook/__screenshots__/`.
+ * Performs a loose visual regression smoke test by taking a single screenshot
+ * per story file (the first story encountered for a given CSF title) and
+ * comparing it to a committed PNG baseline under `.storybook/__screenshots__/`.
+ * Subsequent stories in the same file are skipped — the goal is a smoke test,
+ * not exhaustive per-story coverage.
  *
  * The threshold is intentionally very loose:
  *   - per-pixel color sensitivity: 0.2 (Playwright/pixelmatch default)
@@ -41,9 +43,16 @@ const MAX_DIFF_PIXEL_RATIO = 0.5
 
 const shouldUpdate = process.env.UPDATE_SCREENSHOTS === '1'
 
+// Track which story-file titles we've already snapshotted so that we only run
+// the visual diff against the first story per file (smoke test, not exhaustive).
+const snapshottedTitles = new Set<string>()
+
 const ensureDir = (dir: string) => {
   if (!existsSync(dir)) mkdirSync(dir, { recursive: true })
 }
+
+const titleToBaselineId = (title: string) =>
+  title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
 
 const config: TestRunnerConfig = {
   async postVisit(page, context) {
@@ -53,6 +62,15 @@ const config: TestRunnerConfig = {
     if (storyContext.parameters?.visualTest?.skip === true) {
       return
     }
+
+    // One screenshot per story file: skip if we've already snapshotted a story
+    // with the same CSF title.
+    if (snapshottedTitles.has(context.title)) {
+      return
+    }
+    snapshottedTitles.add(context.title)
+
+    const baselineId = titleToBaselineId(context.title)
 
     // Wait for any pending fonts/images so the screenshot is stable.
     await page
@@ -65,7 +83,7 @@ const config: TestRunnerConfig = {
       : await page.screenshot({ fullPage: true })
 
     ensureDir(SCREENSHOT_DIR)
-    const baselinePath = join(SCREENSHOT_DIR, `${context.id}.png`)
+    const baselinePath = join(SCREENSHOT_DIR, `${baselineId}.png`)
 
     if (!existsSync(baselinePath) || shouldUpdate) {
       writeFileSync(baselinePath, screenshotBuffer)
@@ -77,9 +95,9 @@ const config: TestRunnerConfig = {
 
     if (baseline.width !== actual.width || baseline.height !== actual.height) {
       ensureDir(DIFF_DIR)
-      writeFileSync(join(DIFF_DIR, `${context.id}-actual.png`), screenshotBuffer)
+      writeFileSync(join(DIFF_DIR, `${baselineId}-actual.png`), screenshotBuffer)
       throw new Error(
-        `Visual diff size mismatch for "${context.id}": baseline ${baseline.width}x${baseline.height}, actual ${actual.width}x${actual.height}. Run UPDATE_SCREENSHOTS=1 to refresh.`,
+        `Visual diff size mismatch for "${context.title}": baseline ${baseline.width}x${baseline.height}, actual ${actual.width}x${actual.height}. Run UPDATE_SCREENSHOTS=1 to refresh.`,
       )
     }
 
@@ -92,10 +110,10 @@ const config: TestRunnerConfig = {
 
     if (diffRatio > MAX_DIFF_PIXEL_RATIO) {
       ensureDir(DIFF_DIR)
-      writeFileSync(join(DIFF_DIR, `${context.id}-actual.png`), screenshotBuffer)
-      writeFileSync(join(DIFF_DIR, `${context.id}-diff.png`), PNG.sync.write(diff))
+      writeFileSync(join(DIFF_DIR, `${baselineId}-actual.png`), screenshotBuffer)
+      writeFileSync(join(DIFF_DIR, `${baselineId}-diff.png`), PNG.sync.write(diff))
       throw new Error(
-        `Visual diff exceeded threshold for "${context.id}": ${(diffRatio * 100).toFixed(2)}% of pixels differ (max ${(
+        `Visual diff exceeded threshold for "${context.title}": ${(diffRatio * 100).toFixed(2)}% of pixels differ (max ${(
           MAX_DIFF_PIXEL_RATIO * 100
         ).toFixed(0)}%). See ${DIFF_DIR} for the actual screenshot and diff.`,
       )

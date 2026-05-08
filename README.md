@@ -76,8 +76,10 @@ See the [SDK Dev App README](sdk-app/README.md) for full setup and usage details
 
 ## Visual diffing
 
-The CI `visual` job takes a screenshot of every Storybook story and compares
-it against a committed PNG baseline under `.storybook/__screenshots__/`. The
+The CI `visual` job takes one screenshot per Storybook **story file** (the
+first story per CSF title — a smoke test, not exhaustive per-story coverage)
+and compares it against a committed PNG baseline under
+`.storybook/__screenshots__/`. The
 goal is to catch catastrophic regressions — a wrong design system being
 shipped, a broken theme, or missing CSS — without flagging minor layout or
 font-rendering changes.
