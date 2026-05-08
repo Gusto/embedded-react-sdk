@@ -1,17 +1,6 @@
-import { useDesignSystem, type DesignSystem } from './DesignSystemContext'
+import { useDesignSystem } from './DesignSystemContext'
+import { DESIGN_SYSTEM_OPTIONS } from './designSystemOptions'
 import styles from './DesignSystemSwitcher.module.scss'
-
-interface DesignSystemOption {
-  id: DesignSystem
-  label: string
-  logo: string
-  available: boolean
-}
-
-const OPTIONS: DesignSystemOption[] = [
-  { id: 'default', label: 'Gusto Default', logo: '🎨', available: true },
-  { id: 'native', label: 'Native HTML', logo: '🌐', available: true },
-]
 
 export function DesignSystemSwitcher() {
   const { designSystem, setDesignSystem } = useDesignSystem()
@@ -19,7 +8,7 @@ export function DesignSystemSwitcher() {
   return (
     <div className={styles.root}>
       <div className={styles.options}>
-        {OPTIONS.map(option => (
+        {DESIGN_SYSTEM_OPTIONS.map(option => (
           <button
             key={option.id}
             type="button"

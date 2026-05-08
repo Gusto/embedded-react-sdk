@@ -14,7 +14,7 @@ import { ThemeModeProvider } from './ThemeModeContext'
 import { useManualConfig, type ManualConfig } from './useManualConfig'
 import { useChromeVisibility } from './useChromeVisibility'
 import { ShortcutHelper, useShortcutHelper } from './ShortcutHelper'
-import { CommandPalette, useCommandPalette } from './CommandPalette'
+import { CommandPalette, useCommandPalette, useCommands, PAGES } from './CommandPalette'
 import { useGlobalShortcut } from './useGlobalShortcut'
 import { useCodePanel } from './useCodePanel'
 import { CodePanel } from './CodePanel'
@@ -69,7 +69,8 @@ export function App() {
   const demoManager = useDemoManager({ pollingDisabled: isManual })
   const appMode = useAppMode()
   const themeMode = useThemeMode()
-  const { chromeHidden, showChrome } = useChromeVisibility()
+  const chromeVisibility = useChromeVisibility()
+  const { chromeHidden, showChrome } = chromeVisibility
   const shortcutHelper = useShortcutHelper()
   const commandPalette = useCommandPalette()
   const navigate = useNavigate()
@@ -174,24 +175,59 @@ export function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [themePanel.isOpen])
 
-  const handleCreateNewDemo = async (demoType: string) => {
-    const result = await demoManager.createNewDemo(demoType)
-    if (result) {
-      replaceEntities({
-        companyId: result.companyId || '',
-        employeeId: result.entities.employeeId || '',
-        contractorId: result.entities.contractorId || '',
-        payrollId: result.entities.payrollId || '',
-        requestId: '',
-      })
-      window.location.reload()
-    }
-  }
+  const handleCreateNewDemo = useCallback(
+    async (demoType: string) => {
+      const result = await demoManager.createNewDemo(demoType)
+      if (result) {
+        replaceEntities({
+          companyId: result.companyId || '',
+          employeeId: result.entities.employeeId || '',
+          contractorId: result.entities.contractorId || '',
+          payrollId: result.entities.payrollId || '',
+          requestId: '',
+        })
+        window.location.reload()
+      }
+    },
+    [demoManager, replaceEntities],
+  )
 
   const handleApplyManualConfig = async (next: ManualConfig) => {
     await manual.applyManualConfig(next)
     replaceEntities(entitiesFromManualConfig(next))
   }
+
+  const onCreateNewDemoCommand = useCallback(
+    (demoType: string) => {
+      void handleCreateNewDemo(demoType)
+    },
+    [handleCreateNewDemo],
+  )
+
+  const commands = useCommands({
+    themeMode,
+    cycleTheme,
+    appMode,
+    toggleAppMode,
+    codePanel,
+    chromeVisibility,
+    settingsOpen,
+    setSettingsOpen,
+    sidebarOpen,
+    setSidebarOpen,
+    chromeId,
+    setChromeId,
+    designSystem: designSystemState.designSystem,
+    setDesignSystem: designSystemState.setDesignSystem,
+    demoManager,
+    manualMode: manual.mode,
+    switchToAuto: manual.switchToAuto,
+    shortcutHelper,
+    onCreateNewDemo: onCreateNewDemoCommand,
+    resetEntitiesToDefaults: resetToDefaults,
+  })
+
+  const paletteEntries = useMemo(() => [...PAGES, ...commands], [commands])
 
   if (!manual.isReady) {
     return (
@@ -298,7 +334,11 @@ export function App() {
                 </button>
               )}
               <ShortcutHelper isOpen={shortcutHelper.isOpen} onClose={shortcutHelper.close} />
-              <CommandPalette isOpen={commandPalette.isOpen} onClose={commandPalette.close} />
+              <CommandPalette
+                isOpen={commandPalette.isOpen}
+                onClose={commandPalette.close}
+                entries={paletteEntries}
+              />
               {!isManual && demoManager.tokenStatus === 'expired' && (
                 <TokenExpiredOverlay
                   onRefresh={demoManager.refreshToken}

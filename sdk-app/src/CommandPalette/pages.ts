@@ -1,22 +1,41 @@
 import { componentRegistry } from '../registry'
 import { categorizedRegistry as designRegistry } from '../design/registry'
 
-export interface PageEntry {
+interface BaseEntry {
   id: string
   label: string
   category: string
-  path: string
   description?: string
+  keywords?: string[]
 }
 
-function buildPages(): PageEntry[] {
-  const pages: PageEntry[] = [
-    { id: 'home', label: 'Home', category: 'Components', path: '/' },
-    { id: 'design-home', label: 'Design Home', category: 'Design', path: '/design' },
+export interface NavEntry extends BaseEntry {
+  kind: 'navigate'
+  path: string
+}
+
+export interface ActionEntry extends BaseEntry {
+  kind: 'action'
+  perform: () => void | Promise<void>
+}
+
+export type PaletteEntry = NavEntry | ActionEntry
+
+function buildPages(): NavEntry[] {
+  const pages: NavEntry[] = [
+    { kind: 'navigate', id: 'home', label: 'Home', category: 'Components', path: '/' },
+    {
+      kind: 'navigate',
+      id: 'design-home',
+      label: 'Design Home',
+      category: 'Design',
+      path: '/design',
+    },
   ]
 
   for (const entry of componentRegistry) {
     pages.push({
+      kind: 'navigate',
       id: `component:${entry.category}:${entry.name}`,
       label: entry.name,
       category: entry.category,
@@ -27,6 +46,7 @@ function buildPages(): PageEntry[] {
   for (const [category, entries] of Object.entries(designRegistry)) {
     for (const entry of entries) {
       pages.push({
+        kind: 'navigate',
         id: `design:${category}:${entry.name}`,
         label: entry.name,
         category: `Design / ${category}`,
@@ -39,31 +59,32 @@ function buildPages(): PageEntry[] {
   return pages
 }
 
-export const PAGES: PageEntry[] = buildPages()
+export const PAGES: NavEntry[] = buildPages()
 
 const MAX_RESULTS = 50
 
-export function searchPages(query: string): PageEntry[] {
+export function searchEntries(entries: PaletteEntry[], query: string): PaletteEntry[] {
   const trimmed = query.trim().toLowerCase()
   if (!trimmed) return []
 
-  const prefixMatches: PageEntry[] = []
-  const labelMatches: PageEntry[] = []
-  const otherMatches: PageEntry[] = []
+  const prefixMatches: PaletteEntry[] = []
+  const labelMatches: PaletteEntry[] = []
+  const otherMatches: PaletteEntry[] = []
 
-  for (const page of PAGES) {
-    const label = page.label.toLowerCase()
+  for (const entry of entries) {
+    const label = entry.label.toLowerCase()
     if (label.startsWith(trimmed)) {
-      prefixMatches.push(page)
+      prefixMatches.push(entry)
       continue
     }
     if (label.includes(trimmed)) {
-      labelMatches.push(page)
+      labelMatches.push(entry)
       continue
     }
-    const haystack = `${page.category} ${page.description ?? ''}`.toLowerCase()
+    const keywords = entry.keywords?.join(' ') ?? ''
+    const haystack = `${entry.category} ${entry.description ?? ''} ${keywords}`.toLowerCase()
     if (haystack.includes(trimmed)) {
-      otherMatches.push(page)
+      otherMatches.push(entry)
     }
   }
 
