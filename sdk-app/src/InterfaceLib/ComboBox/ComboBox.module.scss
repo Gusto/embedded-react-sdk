@@ -6,18 +6,73 @@
   font-family: 'InterfaceLib Sans', Helvetica, Arial, sans-serif;
 }
 
-.select {
+.combobox {
   display: block;
 }
 
-.triggerWrapper {
+.fieldWrapper {
   position: relative;
+}
+
+.field {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  min-height: 64px;
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: #101010;
+  cursor: text;
+  transition:
+    background-color 0.24s,
+    color 0.24s;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 8px;
+    box-shadow: inset 0 0 0 1px #dadada;
+    pointer-events: none;
+    transition: box-shadow 0.24s;
+  }
+
+  &:hover:not([data-disabled]):not(:focus-within)::after {
+    box-shadow: inset 0 0 0 1px #101010;
+  }
+
+  &:focus-within::after {
+    box-shadow: inset 0 0 0 2px #101010;
+  }
+}
+
+.root[data-invalid] .field::after {
+  box-shadow: inset 0 0 0 1px #cc0023;
+}
+
+.root[data-invalid] .field:focus-within::after {
+  box-shadow: inset 0 0 0 2px #101010;
+}
+
+.root[data-disabled] .field {
+  background-color: #f0f0f0;
+  color: #959595;
+  cursor: not-allowed;
+
+  &::after {
+    box-shadow: inset 0 0 0 1px #f0f0f0;
+  }
+}
+
+.fieldWithTooltip .labelInputContainer {
+  padding-right: 56px;
 }
 
 .tooltipFloat {
   position: absolute;
   top: 50%;
-  right: 36px;
+  right: 56px;
   transform: translateY(-50%);
   display: inline-flex;
   align-items: center;
@@ -35,80 +90,13 @@
   border: 0;
 }
 
-.trigger {
+.labelInputContainer {
   position: relative;
   display: flex;
-  align-items: stretch;
-  width: 100%;
-  min-height: 64px;
-  padding: 0;
-  margin: 0;
-  border: 0;
-  border-radius: 8px;
-  background-color: #ffffff;
-  color: #101010;
-  font-family: inherit;
-  font-size: 16px;
-  line-height: 24px;
-  text-align: left;
-  cursor: pointer;
-  transition:
-    background-color 0.24s,
-    color 0.24s;
-  outline: none;
-
-  &::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 8px;
-    box-shadow: inset 0 0 0 1px #dadada;
-    pointer-events: none;
-    transition: box-shadow 0.24s;
-  }
-
-  &:hover:not([data-disabled])::after {
-    box-shadow: inset 0 0 0 1px #101010;
-  }
-
-  &[data-focus-visible]::after,
-  &[data-pressed]::after,
-  &[data-open]::after {
-    box-shadow: inset 0 0 0 2px #101010;
-  }
-}
-
-.root[data-invalid] .trigger::after {
-  box-shadow: inset 0 0 0 1px #cc0023;
-}
-
-.root[data-invalid] .trigger[data-focus-visible]::after,
-.root[data-invalid] .trigger[data-pressed]::after,
-.root[data-invalid] .trigger[data-open]::after {
-  box-shadow: inset 0 0 0 2px #101010;
-}
-
-.root[data-disabled] .trigger {
-  background-color: #f0f0f0;
-  color: #959595;
-  cursor: not-allowed;
-
-  &::after {
-    box-shadow: inset 0 0 0 1px #f0f0f0;
-  }
-}
-
-.valueArea {
-  position: relative;
   flex-grow: 1;
-  display: flex;
   align-items: flex-end;
-  padding: 12px 16px;
-  overflow: hidden;
-}
-
-.triggerWithTooltip .valueArea {
-  padding-right: 56px;
+  padding: 12px 0;
+  cursor: text;
 }
 
 .optional {
@@ -124,6 +112,7 @@
   font-size: 16px;
   font-weight: 500;
   line-height: 22px;
+  letter-spacing: normal;
   color: #101010;
   pointer-events: none;
   transform-origin: 0 0;
@@ -134,21 +123,18 @@
     font-weight 0.24s;
 }
 
-.root:not([data-has-value])
-  .trigger:not([data-pressed]):not([data-open]):not([data-focus-visible])
-  .label {
+.input:placeholder-shown:not(:focus) ~ .label {
   transform: translateY(10px) scale(1);
   font-weight: 400;
   color: #666666;
 }
 
-.root[data-invalid]:not([data-has-value])
-  .trigger:not([data-pressed]):not([data-open]):not([data-focus-visible])
-  .label {
+.root[data-invalid] .input:placeholder-shown:not(:focus) ~ .label {
   color: #cc0023;
 }
 
-.root[data-disabled] .label {
+.root[data-disabled] .label,
+.root[data-disabled] .input:placeholder-shown:not(:focus) ~ .label {
   color: #959595;
 }
 
@@ -163,45 +149,74 @@
   border: 0;
 }
 
-.value {
-  display: block;
+.input {
+  flex-grow: 1;
   width: 100%;
-  font-size: 16px;
-
-  color: inherit;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  height: 100%;
   position: relative;
-  top: 6px;
+  top: 14px;
+  margin: 0;
+  padding: 0 16px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: normal;
+  outline: none;
+  appearance: none;
+  box-sizing: border-box;
+
+  &::placeholder {
+    color: transparent;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
 }
 
-.root:not([data-has-value])
-  .trigger:not([data-pressed]):not([data-open]):not([data-focus-visible])
-  .value {
-  visibility: hidden;
+.caretButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 48px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  outline: none;
+
+  &[data-focus-visible] {
+    outline: 2px solid #101010;
+    outline-offset: -2px;
+    border-radius: 6px;
+  }
 }
 
 .caret {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-  width: 48px;
-  color: inherit;
-  transition: transform 0.24s;
   color: #959595;
+  transition: transform 0.24s;
 }
 
-.trigger[data-open] .caret {
+.combobox[data-open] .caret {
   transform: rotate(180deg);
 }
 
+// Popover (matches Select popover for visual consistency)
 .popover {
   overflow: auto;
   width: var(--trigger-width);
   max-height: 464px;
-  padding: 8px;
+  padding: 16px;
   background: #ffffff;
   border-radius: 12px;
   box-shadow:
@@ -220,7 +235,7 @@
   display: flex;
   align-items: center;
   min-height: 56px;
-  padding: 12px 8px;
+  padding: 12px 16px;
   border-radius: 6px;
   font-size: 16px;
   font-weight: 400;
