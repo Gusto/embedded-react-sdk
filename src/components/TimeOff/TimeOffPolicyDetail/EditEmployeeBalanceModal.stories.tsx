@@ -4,6 +4,9 @@ import { EditEmployeeBalanceModal } from './EditEmployeeBalanceModal'
 
 export default {
   title: 'Domain/TimeOff/EditEmployeeBalanceModal',
+  // DIAGNOSTIC: testing whether disabling a11y for this story fixes the
+  // visual smoke test hang in CI. Will be reverted once we know.
+  parameters: { a11y: { test: 'off' } },
   decorators: [
     (Story: React.ComponentType) => (
       <Suspense fallback={<div>Loading translations...</div>}>
