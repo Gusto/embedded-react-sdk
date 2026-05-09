@@ -251,7 +251,7 @@ export function useCompensationForm({
   // the secondary itself must match — so the FLSA field is not user-editable
   // in this branch. We force the form value to the primary's FLSA below and
   // hide `Fields.FlsaStatus`.
-  const isAddingSecondaryJob = isCreateMode && primaryFlsaStatus !== null
+  const isAddingSecondaryJob = isCreateMode && primaryFlsaStatus === FlsaStatus.NONEXEMPT
 
   const [schema, metadataConfig] = useMemo(
     () => createCompensationSchema({ mode, optionalFieldsToRequire, hireDate }),
