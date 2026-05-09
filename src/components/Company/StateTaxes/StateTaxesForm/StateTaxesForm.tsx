@@ -9,6 +9,7 @@ import { Head } from './Head'
 import { StateTaxesFormProvider } from './context'
 import { Form } from './Form'
 import { Actions } from './Actions'
+import { fromRhfKey, toRhfKey } from './rhfKey'
 import type { BaseComponentInterface, CommonComponentInterface } from '@/components/Base/Base'
 import { BaseComponent } from '@/components/Base/Base'
 import { useI18n } from '@/i18n/I18n'
@@ -20,6 +21,14 @@ import { useBase } from '@/components/Base'
 interface StateTaxesFormProps extends CommonComponentInterface {
   companyId: string
   state: string
+}
+
+function stringifyRequirementValue(value: unknown): string {
+  if (value === undefined || value === null) return ''
+  if (typeof value === 'number') return isNaN(value) ? '' : String(value)
+  if (typeof value === 'string') return value
+  if (typeof value === 'boolean') return String(value)
+  return ''
 }
 
 export function StateTaxesForm(props: StateTaxesFormProps & BaseComponentInterface) {
@@ -57,13 +66,18 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
       requirementSet.requirements?.forEach(requirement => {
         if (!requirement.key) return
 
-        const requirementKey = requirement.key
+        const requirementKey = toRhfKey(requirement.key)
 
         const isPercentField =
           requirement.metadata?.type === 'tax_rate' || requirement.metadata?.type === 'percent'
 
         if (requirement.metadata?.type === 'radio') {
           requirementValues[requirementKey] = requirement.value ?? undefined
+        } else if (requirement.metadata?.type === 'workers_compensation_rate') {
+          requirementValues[requirementKey] =
+            requirement.value !== null && requirement.value !== undefined
+              ? Number(requirement.value)
+              : undefined
         } else {
           requirementValues[requirementKey] = requirement.value ? String(requirement.value) : ''
         }
@@ -86,6 +100,8 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
 
         if (requirement.metadata?.type === 'radio') {
           fieldSchema = z.boolean().optional()
+        } else if (requirement.metadata?.type === 'workers_compensation_rate') {
+          fieldSchema = z.number().optional()
         }
         requirementShape[requirementKey] = fieldSchema
         // --- End Schema Logic ---
@@ -127,8 +143,8 @@ function Root({ companyId, state, className, children }: StateTaxesFormProps) {
             key: requirementSetKey,
             effectiveFrom: requirementSet.effectiveFrom,
             requirements: Object.entries(payloadSet).map(([reqKey, value]) => ({
-              key: reqKey,
-              value: String(value),
+              key: fromRhfKey(reqKey),
+              value: stringifyRequirementValue(value),
             })),
           }
         })

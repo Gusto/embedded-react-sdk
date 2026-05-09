@@ -259,7 +259,6 @@ export interface CompanyPaySchedule{
 "inactive":string;
 "edit":string;
 };
-"payScheduleListLabel":string;
 "headings":{
 "addPaySchedule":string;
 "editPaySchedule":string;
@@ -606,6 +605,8 @@ export interface CompanyTimeOffTimeOffPolicies{
 "actions":{
 "viewPolicy":string;
 "deletePolicy":string;
+"menuTrigger":string;
+"menuFor":string;
 };
 "finishSetupCta":string;
 "allEmployeesLabel":string;
@@ -2083,6 +2084,9 @@ export interface EmployeeSplitPaycheck{
 export interface EmployeeStateTaxes{
 "stateTaxesTitle":string;
 "submitCta":string;
+"saveCta":string;
+"cancelCta":string;
+"successAlert":string;
 "validations":{
 "required":string;
 };

@@ -134,9 +134,7 @@ export const PaymentsListPresentation = ({
         }}
         justifyContent="space-between"
       >
-        <Heading as="h2" styledAs="h4">
-          {t('subtitle')}
-        </Heading>
+        <Heading as="h2">{t('subtitle')}</Heading>
         <div className={styles.actionsContainer}>
           <Select
             id="date-range-select"

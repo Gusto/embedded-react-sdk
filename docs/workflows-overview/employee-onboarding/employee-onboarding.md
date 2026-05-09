@@ -44,7 +44,7 @@ Employee onboarding components can be used to compose your own workflow, or can 
 - [EmployeeOnboarding.Profile](#employeeprofile)
 - [EmployeeOnboarding.Compensation](#employeecompensation)
 - [EmployeeOnboarding.FederalTaxes](#employeeonboardingfederaltaxes--employeemanagementfederaltaxes)
-- [EmployeeOnboarding.StateTaxes](#employeestatetaxes)
+- [EmployeeOnboarding.StateTaxes / EmployeeManagement.StateTaxes](#employeeonboardingstatetaxes--employeemanagementstatetaxes)
 - [EmployeeOnboarding.PaymentMethod](#employeepaymentmethod)
 - [EmployeeOnboarding.Deductions](#employeedeductions)
 - [EmployeeOnboarding.EmployeeDocuments](#employeeemployeedocuments)
@@ -228,34 +228,54 @@ function ManagementEditScreen() {
 | EMPLOYEE_FEDERAL_TAXES_DONE    | Onboarding only        | Fired after a successful save, signalling the parent flow can advance to the next step             | None                                                                                                                                                                                                      |
 | CANCEL                         | Management only        | Fired when the user clicks the Cancel button                                                       | None                                                                                                                                                                                                      |
 
-### Employee.StateTaxes
+### EmployeeOnboarding.StateTaxes / EmployeeManagement.StateTaxes
 
-Provides required form inputs for employee state tax configuration.
+Provides required form inputs for employee state tax configuration. The component ships in two journey-scoped variants that share the same form rendering but differ in CTAs, emitted events, and visible questions; pick the variant that matches your screen instead of toggling a prop.
+
+- **`EmployeeOnboarding.StateTaxes`** renders a single **Continue** submit button and emits `EMPLOYEE_STATE_TAXES_DONE` after a successful save so the parent onboarding flow can advance. Accepts an optional `isAdmin` prop to surface admin-only questions (e.g. `file_new_hire_report`).
+- **`EmployeeManagement.StateTaxes`** renders **Cancel** + **Save**. Cancel emits `CANCEL` so the parent can navigate away; Save submits the form, surfaces a dismissible success alert, and keeps the user on the screen. Admin-only questions such as `file_new_hire_report` are never shown — new-hire reporting is an onboarding-only concept.
 
 ```jsx
-import { Employee } from '@gusto/embedded-react-sdk'
+// Onboarding journey
+import { EmployeeOnboarding } from '@gusto/embedded-react-sdk'
 
-function MyComponent() {
+function OnboardingStep() {
   return (
-    <Employee.StateTaxes employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e" onEvent={() => {}} />
+    <EmployeeOnboarding.StateTaxes
+      employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
+      onEvent={() => {}}
+    />
+  )
+}
+
+// Steady-state edit (e.g. Dashboard)
+import { EmployeeManagement } from '@gusto/embedded-react-sdk'
+
+function ManagementEditScreen() {
+  return (
+    <EmployeeManagement.StateTaxes
+      employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
+      onEvent={() => {}}
+    />
   )
 }
 ```
 
 #### Props
 
-| Name                | Type    | Default | Description                                                                                          |
-| ------------------- | ------- | ------- | ---------------------------------------------------------------------------------------------------- |
-| employeeId Required | string  |         | The associated employee identifier.                                                                  |
-| onEvent Required    |         |         | See events table for available events.                                                               |
-| isAdmin             | boolean | false   | If the onboarding is being performed by an admin. When false it is configured to be self onboarding. |
+| Name                | Type    | Default | Variant(s) | Description                                                                                          |
+| ------------------- | ------- | ------- | ---------- | ---------------------------------------------------------------------------------------------------- |
+| employeeId Required | string  |         | Both       | The associated employee identifier.                                                                  |
+| onEvent Required    |         |         | Both       | See events table for available events.                                                               |
+| isAdmin             | boolean | false   | Onboarding | When true, surfaces admin-only questions (e.g. `file_new_hire_report`). Not available on Management. |
 
 #### Events
 
-| Event type                   | Description                                                                                                                                | Data                                          |
-| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------- |
-| EMPLOYEE_STATE_TAXES_UPDATED | Fired when the employee state taxes form is submitted and state taxes are successfully updated                                             | Response from the Update state taxes endpoint |
-| EMPLOYEE_STATE_TAXES_DONE    | Fired when the employee state taxes form is successfully submitted, API request is completed, and we are ready to advance to the next step | None                                          |
+| Event type                   | Variant(s)             | Description                                                                            | Data                                                   |
+| ---------------------------- | ---------------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| EMPLOYEE_STATE_TAXES_UPDATED | Onboarding, Management | Fired when the state taxes form is submitted and taxes are successfully updated        | `{ employeeStateTaxesList: EmployeeStateTaxesList[] }` |
+| EMPLOYEE_STATE_TAXES_DONE    | Onboarding only        | Fired after a successful save, signalling the parent flow can advance to the next step | None                                                   |
+| CANCEL                       | Management only        | Fired when the user clicks the Cancel button                                           | None                                                   |
 
 ### Employee.PaymentMethod
 

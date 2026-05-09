@@ -3,7 +3,6 @@ import { Trans, useTranslation } from 'react-i18next'
 import { type useFederalTaxesForm, type FilingStatusValue } from './useFederalTaxesForm'
 import { BaseLayout } from '@/components/Base'
 import { Form } from '@/components/Common/Form'
-import { Flex } from '@/components/Common/Flex'
 import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
@@ -44,76 +43,70 @@ export function FederalTaxesView({
   }
 
   return (
-    <Flex flexDirection="column" gap={32} alignItems="stretch">
-      <section className={className}>
-        <BaseLayout error={federalTaxes.errorHandling.errors}>
-          <SDKFormProvider formHookResult={federalTaxes}>
-            <Form onSubmit={onSubmit}>
-              {children ?? (
-                <>
-                  {alert}
-                  <Flex flexDirection="column" gap={32}>
-                    <Flex flexDirection="column" gap={4}>
-                      <Components.Heading as="h2">{t('federalTaxesTitle')}</Components.Heading>
-                      <Components.Text variant="supporting">
-                        <Trans
-                          i18nKey="irsCalculator"
-                          t={t}
-                          components={{
-                            IrsCalculatorLink: <Components.Link />,
-                            HelpCenterLink: <Components.Link />,
-                          }}
-                        />
-                      </Components.Text>
-                    </Flex>
-                    <Flex flexDirection="column" gap={20}>
-                      <Fields.FilingStatus
-                        label={t('federalFilingStatus1c')}
-                        placeholder={t('federalFilingStatusPlaceholder')}
-                        description={t('selectWithholdingDescription')}
-                        validationMessages={{ REQUIRED: t('validations.federalFilingStatus') }}
-                        getOptionLabel={filingStatusLabel}
-                      />
-                      <Fields.TwoJobs
-                        label={t('multipleJobs2c')}
-                        description={
-                          <Trans
-                            i18nKey="includesSpouseExplanation"
-                            t={t}
-                            components={{
-                              IrsLink: <Components.Link />,
-                            }}
-                          />
-                        }
-                        validationMessages={{ REQUIRED: t('validations.federalTwoJobs') }}
-                        getOptionLabel={value => (value ? t('twoJobYesLabel') : t('twoJobNoLabel'))}
-                      />
-                      <Fields.DependentsAmount
-                        label={t('dependentsTotalIfApplicable')}
-                        validationMessages={{ REQUIRED: t('fieldIsRequired') }}
-                      />
-                      <Fields.OtherIncome
-                        label={t('otherIncome')}
-                        validationMessages={{ REQUIRED: t('fieldIsRequired') }}
-                      />
-                      <Fields.Deductions
-                        label={t('deductions')}
-                        validationMessages={{ REQUIRED: t('fieldIsRequired') }}
-                      />
-                      <Fields.ExtraWithholding
-                        label={t('extraWithholding')}
-                        validationMessages={{ REQUIRED: t('fieldIsRequired') }}
-                      />
-                    </Flex>
+    <section className={className}>
+      <BaseLayout error={federalTaxes.errorHandling.errors}>
+        <SDKFormProvider formHookResult={federalTaxes}>
+          <Form onSubmit={onSubmit}>
+            {children ?? (
+              <>
+                {alert}
 
-                    {actions}
-                  </Flex>
-                </>
-              )}
-            </Form>
-          </SDKFormProvider>
-        </BaseLayout>
-      </section>
-    </Flex>
+                <Components.Heading as="h1">{t('federalTaxesTitle')}</Components.Heading>
+                <Components.Text>
+                  <Trans
+                    i18nKey="irsCalculator"
+                    t={t}
+                    components={{
+                      IrsCalculatorLink: <Components.Link />,
+                      HelpCenterLink: <Components.Link />,
+                    }}
+                  />
+                </Components.Text>
+
+                <Fields.FilingStatus
+                  label={t('federalFilingStatus1c')}
+                  placeholder={t('federalFilingStatusPlaceholder')}
+                  description={t('selectWithholdingDescription')}
+                  validationMessages={{ REQUIRED: t('validations.federalFilingStatus') }}
+                  getOptionLabel={filingStatusLabel}
+                />
+                <Fields.TwoJobs
+                  label={t('multipleJobs2c')}
+                  description={
+                    <Trans
+                      i18nKey="includesSpouseExplanation"
+                      t={t}
+                      components={{
+                        IrsLink: <Components.Link />,
+                      }}
+                    />
+                  }
+                  validationMessages={{ REQUIRED: t('validations.federalTwoJobs') }}
+                  getOptionLabel={value => (value ? t('twoJobYesLabel') : t('twoJobNoLabel'))}
+                />
+                <Fields.DependentsAmount
+                  label={t('dependentsTotalIfApplicable')}
+                  validationMessages={{ REQUIRED: t('fieldIsRequired') }}
+                />
+                <Fields.OtherIncome
+                  label={t('otherIncome')}
+                  validationMessages={{ REQUIRED: t('fieldIsRequired') }}
+                />
+                <Fields.Deductions
+                  label={t('deductions')}
+                  validationMessages={{ REQUIRED: t('fieldIsRequired') }}
+                />
+                <Fields.ExtraWithholding
+                  label={t('extraWithholding')}
+                  validationMessages={{ REQUIRED: t('fieldIsRequired') }}
+                />
+
+                {actions}
+              </>
+            )}
+          </Form>
+        </SDKFormProvider>
+      </BaseLayout>
+    </section>
   )
 }

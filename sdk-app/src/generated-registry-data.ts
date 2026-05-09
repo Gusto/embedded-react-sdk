@@ -10,6 +10,7 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'Company.FederalTaxes': ['companyId'],
   'Company.Industry': ['companyId'],
   'Company.InviteSignatory': ['companyId'],
+  'Company.LocationForm': ['companyId'],
   'Company.Locations': ['companyId'],
   'Company.OnboardingFlow': ['companyId'],
   'Company.OnboardingOverview': ['companyId'],

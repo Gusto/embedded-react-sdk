@@ -2,6 +2,7 @@ import { z } from 'zod'
 import { useTranslation } from 'react-i18next'
 import { Fragment } from 'react/jsx-runtime'
 import { useStateTaxesForm } from './context'
+import { toRhfKey } from './rhfKey'
 import { QuestionInput } from '@/components/Common/TaxInputs/TaxInputs'
 import { useLocaleDateFormatter } from '@/contexts/LocaleProvider/useLocale'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -32,7 +33,7 @@ export function Form() {
             <QuestionInput
               requirement={{
                 ...requirement,
-                key: `${key}.${requirement.key as string}`,
+                key: `${key}.${toRhfKey(requirement.key as string)}`,
               }}
               questionType={requirement.metadata?.type ?? 'Text'}
               key={requirement.key}

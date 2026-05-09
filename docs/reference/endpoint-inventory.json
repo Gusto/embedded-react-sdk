@@ -167,6 +167,26 @@
         "locationId"
       ]
     },
+    "Company.LocationForm": {
+      "endpoints": [
+        {
+          "method": "PUT",
+          "path": "/v1/locations/:locationId"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/locations/:locationId"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyId/locations"
+        }
+      ],
+      "variables": [
+        "companyId",
+        "locationId"
+      ]
+    },
     "Company.PaySchedule": {
       "endpoints": [
         {

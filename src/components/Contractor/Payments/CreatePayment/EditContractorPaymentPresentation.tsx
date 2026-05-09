@@ -98,9 +98,9 @@ export const EditContractorPaymentPresentation = ({
       <FormProvider {...formMethods}>
         <Form id={formId} onSubmit={formMethods.handleSubmit(onSubmit)}>
           <Flex flexDirection="column" gap={32}>
-            <Flex flexDirection="column" gap={4}>
+            <Flex flexDirection="column" gap={16}>
               <Heading as="h2">{t('title')}</Heading>
-              <Text variant="supporting">{t('subtitle')}</Text>
+              <Text>{t('subtitle')}</Text>
               <Text weight="bold">
                 {t('totalPay')}: {currencyFormatter(totalAmount)}
               </Text>
