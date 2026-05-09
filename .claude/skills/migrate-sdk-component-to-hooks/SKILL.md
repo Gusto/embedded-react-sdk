@@ -162,9 +162,9 @@ if (result) {
 }
 ```
 
-Callbacks on `onSubmit` are only appropriate when a hook makes **multiple sequential API calls** and partners need access to intermediate results that aren't otherwise surfaced in the final return value. `useEmployeeDetailsForm` and `useCompensationForm` are reference cases — they expose `onEmployeeCreated` / `onJobCreated` etc. so a partner can react between the create-employee and update-onboarding-status calls, or between job and compensation updates.
+Callbacks on `onSubmit` are only appropriate when a hook makes **multiple sequential API calls inside a single submit** and partners need access to intermediate results that aren't otherwise surfaced in the final return value. `useEmployeeDetailsForm` is the canonical reference — on update it chains `updateEmployee` with `updateOnboardingStatus`, so a partner can observe the status flip between the two calls.
 
-Rule of thumb: if the hook's `onSubmit` wraps a single mutation, drop the callbacks interface entirely — `result.data` already carries everything the consumer needs.
+Rule of thumb: if the hook's `onSubmit` resolves to a single mutation per submit (including create-or-update routing where exactly one of the two fires), drop the callbacks interface entirely — `HookSubmitResult<TEntity>` already carries the saved entity and the mode. `useJobForm`, `useCompensationForm`, and `useHomeAddressForm` are reference cases for the no-callbacks shape; for chained submits across multiple hooks, prefer `composeSubmitHandler` over per-hook callbacks.
 
 **2. Preserve the existing event surface when migrating.** The set of `onEvent` types a component emits — and their payloads — is the component's public contract with partners. A migration refactor must not add, remove, rename, or change the payload of any existing event. Before rewriting the submit handler, enumerate the events the pre-migration component emits (search `onEvent(` in the current file and any subcomponents it delegates to) and make sure every one still fires in the refactor, with the same payload shape, regardless of how the hook's `onSubmit` surfaces the data:
 

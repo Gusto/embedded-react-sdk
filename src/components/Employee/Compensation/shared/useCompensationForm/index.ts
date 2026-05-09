@@ -1,6 +1,6 @@
 export { useCompensationForm } from './useCompensationForm'
+export { useCurrentCompensationForm } from './useCurrentCompensationForm'
 export type {
-  CompensationSubmitCallbacks,
   CompensationSubmitOptions,
   UseCompensationFormProps,
   UseCompensationFormResult,
@@ -8,6 +8,7 @@ export type {
   CompensationFieldsMetadata,
   CompensationFormFields,
 } from './useCompensationForm'
+export type { UseCurrentCompensationFormProps } from './useCurrentCompensationForm'
 export {
   createCompensationSchema,
   CompensationErrorCodes,
@@ -15,18 +16,17 @@ export {
   type CompensationOptionalFieldsToRequire,
   type CompensationFormData,
   type CompensationFormOutputs,
+  type CompensationSchemaOptions,
 } from './compensationSchema'
 export type {
   RequiredValidation,
   RateValidation,
-  StartDateFieldProps,
-  JobTitleFieldProps,
+  EffectiveDateValidation,
+  TitleFieldProps,
+  EffectiveDateFieldProps,
   FlsaStatusFieldProps,
   RateFieldProps,
   PaymentUnitFieldProps,
   AdjustForMinimumWageFieldProps,
   MinimumWageIdFieldProps,
-  TwoPercentShareholderFieldProps,
-  StateWcCoveredFieldProps,
-  StateWcClassCodeFieldProps,
 } from './fields'

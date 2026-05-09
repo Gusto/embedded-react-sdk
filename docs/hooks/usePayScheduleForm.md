@@ -39,7 +39,7 @@ usePayScheduleForm({
 })
 ```
 
-`customTwicePerMonth` is currently the only field configurable via `optionalFieldsToRequire`. All other fields are either always required or have conditional rules that are not partner-configurable.
+`customTwicePerMonth` is currently the only field configurable via `optionalFieldsToRequire`. All other fields are either always required or have conditional rules that are not configurable.
 
 ### PayScheduleFormData
 

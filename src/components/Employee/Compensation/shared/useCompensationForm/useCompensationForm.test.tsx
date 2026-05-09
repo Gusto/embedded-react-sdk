@@ -1,28 +1,31 @@
 import { renderHook, act, waitFor } from '@testing-library/react'
-import { describe, it, expect, vi, beforeEach, assertType } from 'vitest'
-import { HttpResponse } from 'msw'
+import { describe, it, expect, beforeEach, assertType, vi } from 'vitest'
+import { http, HttpResponse, type HttpResponseResolver } from 'msw'
 import { useCompensationForm } from './useCompensationForm'
 import type { UseCompensationFormResult } from './useCompensationForm'
 import {
   createCompensationSchema,
   CompensationErrorCodes,
+  type CompensationFormData,
   type CompensationOptionalFieldsToRequire,
 } from './compensationSchema'
 import { server } from '@/test/mocks/server'
-import { handleGetEmployeeJobs, handleCreateEmployeeJob } from '@/test/mocks/apis/employees'
+import {
+  handleGetEmployeeJobs,
+  handleUpdateEmployeeCompensation,
+} from '@/test/mocks/apis/employees'
+import { handleCreateCompensation } from '@/test/mocks/apis/compensations'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
-import { getFixture } from '@/test/mocks/fixtures/getFixture'
+import {
+  buildCompensation,
+  buildEmployeeWithJobs,
+  buildJob,
+} from '@/test/factories/jobsAndCompensations'
+import { API_BASE_URL } from '@/test/constants'
+import { FlsaStatus, PAY_PERIODS } from '@/shared/constants'
 
-// ── Type-level assertions for CompensationOptionalFieldsToRequire ────
-// These validate at compile time that the derived type matches expectations.
-
-assertType<CompensationOptionalFieldsToRequire>({
-  update: ['jobTitle', 'flsaStatus', 'paymentUnit', 'rate', 'startDate'],
-})
-
-assertType<CompensationOptionalFieldsToRequire>({ update: ['jobTitle'] })
-
+assertType<CompensationOptionalFieldsToRequire>({ update: ['title'] })
 assertType<CompensationOptionalFieldsToRequire>({})
 
 type ReadyResult = Extract<UseCompensationFormResult, { isLoading: false }>
@@ -33,361 +36,817 @@ function assertReady(hookResult: UseCompensationFormResult): asserts hookResult 
   }
 }
 
-const VALID_DEFAULTS = {
-  jobTitle: 'Software Engineer',
-  rate: 50,
+function todayISO(): string {
+  return new Date().toISOString().split('T')[0]!
 }
 
-describe('useCompensationForm start date handling', () => {
-  let createJobRequestBody: Record<string, unknown> | null = null
+const VALID_FORM_DATA: CompensationFormData = {
+  title: '',
+  flsaStatus: FlsaStatus.NONEXEMPT,
+  paymentUnit: PAY_PERIODS.HOUR,
+  rate: 20,
+  effectiveDate: '2024-12-24',
+  adjustForMinimumWage: false,
+  minimumWageId: '',
+}
 
+describe('createCompensationSchema', () => {
+  it('requires flsaStatus, paymentUnit, rate, effectiveDate on create', () => {
+    const [schema] = createCompensationSchema({ mode: 'create' })
+    const result = schema.safeParse({ ...VALID_FORM_DATA, effectiveDate: null })
+    expect(result.success).toBe(false)
+  })
+
+  it('does NOT require effectiveDate on update', () => {
+    const [schema] = createCompensationSchema({ mode: 'update' })
+    const result = schema.safeParse({ ...VALID_FORM_DATA, effectiveDate: null })
+    expect(result.success).toBe(true)
+  })
+
+  it('keeps title optional in both modes (title belongs to useJobForm on create)', () => {
+    const [createSchema] = createCompensationSchema({ mode: 'create' })
+    const [updateSchema] = createCompensationSchema({ mode: 'update' })
+    expect(createSchema.safeParse({ ...VALID_FORM_DATA, title: '' }).success).toBe(true)
+    expect(updateSchema.safeParse({ ...VALID_FORM_DATA, title: '' }).success).toBe(true)
+  })
+
+  it('rejects effectiveDate before hireDate on create (EFFECTIVE_DATE_BEFORE_HIRE)', () => {
+    const [schema] = createCompensationSchema({ mode: 'create', hireDate: '2024-12-24' })
+    const result = schema.safeParse({ ...VALID_FORM_DATA, effectiveDate: '2024-12-23' })
+    expect(result.success).toBe(false)
+    if (result.success) return
+    const issue = result.error.issues.find(i => String(i.path[0]) === 'effectiveDate')
+    expect(issue?.message).toBe(CompensationErrorCodes.EFFECTIVE_DATE_BEFORE_HIRE)
+  })
+
+  it('does NOT enforce hireDate lower bound on update', () => {
+    // Loaded comp.effectiveDate may legitimately predate the parent job's
+    // hireDate (e.g. carried over from a stub or out-of-order data). The API
+    // accepts the unchanged value or omitting it entirely on PUT, so the
+    // schema must not block the submit — partners whose flow doesn't render
+    // Fields.EffectiveDate would otherwise be trapped with no way to recover.
+    const [schema] = createCompensationSchema({ mode: 'update', hireDate: '2025-05-08' })
+    const result = schema.safeParse({ ...VALID_FORM_DATA, effectiveDate: '2020-01-01' })
+    expect(result.success).toBe(true)
+  })
+
+  it('Owner must use Paycheck (PAYMENT_UNIT_OWNER)', () => {
+    const [schema] = createCompensationSchema({ mode: 'create' })
+    const result = schema.safeParse({
+      ...VALID_FORM_DATA,
+      flsaStatus: FlsaStatus.OWNER,
+      paymentUnit: PAY_PERIODS.YEAR,
+      rate: 100,
+    })
+    expect(result.success).toBe(false)
+    if (result.success) return
+    const issue = result.error.issues.find(i => String(i.path[0]) === 'paymentUnit')
+    expect(issue?.message).toBe(CompensationErrorCodes.PAYMENT_UNIT_OWNER)
+  })
+
+  it('Commission Only must use Year (PAYMENT_UNIT_COMMISSION) and rate=0 (RATE_COMMISSION_ZERO)', () => {
+    const [schema] = createCompensationSchema({ mode: 'create' })
+    const badPaymentUnit = schema.safeParse({
+      ...VALID_FORM_DATA,
+      flsaStatus: FlsaStatus.COMMISSION_ONLY_NONEXEMPT,
+      paymentUnit: PAY_PERIODS.HOUR,
+      rate: 0,
+    })
+    expect(badPaymentUnit.success).toBe(false)
+
+    const badRate = schema.safeParse({
+      ...VALID_FORM_DATA,
+      flsaStatus: FlsaStatus.COMMISSION_ONLY_NONEXEMPT,
+      paymentUnit: PAY_PERIODS.YEAR,
+      rate: 100,
+    })
+    expect(badRate.success).toBe(false)
+    if (badRate.success) return
+    const issue = badRate.error.issues.find(i => String(i.path[0]) === 'rate')
+    expect(issue?.message).toBe(CompensationErrorCodes.RATE_COMMISSION_ZERO)
+  })
+
+  it('rate must be at least 1 for Nonexempt/Exempt/Salaried Nonexempt', () => {
+    const [schema] = createCompensationSchema({ mode: 'create' })
+    const result = schema.safeParse({
+      ...VALID_FORM_DATA,
+      flsaStatus: FlsaStatus.NONEXEMPT,
+      rate: 0,
+    })
+    expect(result.success).toBe(false)
+    if (result.success) return
+    const issue = result.error.issues.find(i => String(i.path[0]) === 'rate')
+    expect(issue?.message).toBe(CompensationErrorCodes.RATE_MINIMUM)
+  })
+
+  it('Exempt rate must clear FLSA overtime salary threshold (yearly)', () => {
+    const [schema] = createCompensationSchema({ mode: 'create' })
+    const result = schema.safeParse({
+      ...VALID_FORM_DATA,
+      flsaStatus: FlsaStatus.EXEMPT,
+      paymentUnit: PAY_PERIODS.YEAR,
+      rate: 100,
+    })
+    expect(result.success).toBe(false)
+    if (result.success) return
+    const issue = result.error.issues.find(i => String(i.path[0]) === 'rate')
+    expect(issue?.message).toBe(CompensationErrorCodes.RATE_EXEMPT_THRESHOLD)
+  })
+
+  it('minimumWageId required only when adjustForMinimumWage is true', () => {
+    const [schema] = createCompensationSchema({ mode: 'create' })
+    expect(
+      schema.safeParse({ ...VALID_FORM_DATA, adjustForMinimumWage: false, minimumWageId: '' })
+        .success,
+    ).toBe(true)
+    const bad = schema.safeParse({
+      ...VALID_FORM_DATA,
+      adjustForMinimumWage: true,
+      minimumWageId: '',
+    })
+    expect(bad.success).toBe(false)
+    if (bad.success) return
+    expect(bad.error.issues.some(i => String(i.path[0]) === 'minimumWageId')).toBe(true)
+  })
+
+  it('metadata reflects mode-driven required fields', () => {
+    const [, { getFieldsMetadata: createMeta }] = createCompensationSchema({ mode: 'create' })
+    const create = createMeta()
+    expect(create.flsaStatus.isRequired).toBe(true)
+    expect(create.paymentUnit.isRequired).toBe(true)
+    expect(create.rate.isRequired).toBe(true)
+    expect(create.effectiveDate.isRequired).toBe(true)
+    expect(create.title.isRequired).toBe(false)
+
+    const [, { getFieldsMetadata: updateMeta }] = createCompensationSchema({ mode: 'update' })
+    const update = updateMeta()
+    expect(update.flsaStatus.isRequired).toBe(false)
+    expect(update.effectiveDate.isRequired).toBe(false)
+  })
+})
+
+describe('useCompensationForm', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-    createJobRequestBody = null
     setupApiTestMocks()
-    server.use(
-      handleGetEmployeeJobs(() => HttpResponse.json([])),
-      handleCreateEmployeeJob(async ({ request }) => {
-        createJobRequestBody = (await request.json()) as Record<string, unknown>
-        const responseFixture = await getFixture('get-v1-employees-employee_id-jobs')
+  })
+
+  describe('verb routing', () => {
+    it('update mode → PUT /v1/compensations/:id with version (onboarding stub-fill)', async () => {
+      let updateCompensationBody: Record<string, unknown> | null = null
+      let updateCompensationPath: string | null = null
+      const updateCompensationResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+        updateCompensationPath = new URL(request.url).pathname
+        updateCompensationBody = (await request.json()) as Record<string, unknown>
+        return HttpResponse.json({
+          uuid: 'compensation-uuid',
+          version: 'compensation-version-456',
+          job_uuid: 'job-uuid',
+          rate: updateCompensationBody.rate,
+          payment_unit: updateCompensationBody.paymentUnit ?? 'Hour',
+          flsa_status: updateCompensationBody.flsaStatus ?? 'Nonexempt',
+          effective_date: updateCompensationBody.effectiveDate ?? '2024-12-24',
+          adjust_for_minimum_wage: updateCompensationBody.adjustForMinimumWage ?? false,
+        })
+      })
+      const createCompensationResolver = vi.fn(() => HttpResponse.json({}, { status: 201 }))
+
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'singleNonexempt' })),
+        ),
+        handleUpdateEmployeeCompensation(updateCompensationResolver),
+        handleCreateCompensation(createCompensationResolver),
+      )
+
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+            compensationId: 'compensation-uuid',
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+      expect(result.current.status.mode).toBe('update')
+
+      const { formMethods } = result.current.form.hookFormInternals
+      act(() => {
+        formMethods.setValue('rate', 25)
+      })
+
+      await act(async () => {
+        assertReady(result.current)
+        await result.current.actions.onSubmit()
+      })
+
+      expect(updateCompensationResolver).toHaveBeenCalledTimes(1)
+      expect(updateCompensationPath).toBe('/v1/compensations/compensation-uuid')
+      expect(updateCompensationBody).toMatchObject({
+        version: 'compensation-version-123',
+        rate: '25',
+      })
+      expect(createCompensationResolver).not.toHaveBeenCalled()
+    })
+
+    it('create mode → POST /v1/jobs/:jobId/compensations (future-dated change)', async () => {
+      let createCompensationBody: Record<string, unknown> | null = null
+      let createCompensationPath: string | null = null
+      const createCompensationResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+        createCompensationPath = new URL(request.url).pathname
+        createCompensationBody = (await request.json()) as Record<string, unknown>
         return HttpResponse.json(
           {
-            ...responseFixture[0],
-            title: createJobRequestBody.title,
-            hire_date: createJobRequestBody.hireDate,
+            uuid: 'new-compensation-uuid',
+            version: 'v1',
+            job_uuid: 'job-uuid',
+            rate: createCompensationBody.rate,
+            payment_unit: createCompensationBody.paymentUnit ?? 'Hour',
+            flsa_status: createCompensationBody.flsaStatus ?? 'Nonexempt',
+            effective_date: createCompensationBody.effectiveDate ?? '2099-01-01',
+            adjust_for_minimum_wage: false,
           },
           { status: 201 },
         )
-      }),
-    )
-  })
+      })
+      const updateCompensationResolver = vi.fn(() => HttpResponse.json({}))
 
-  it('blocks submission when startDate is missing in create mode', async () => {
-    const { result } = renderHook(
-      () =>
-        useCompensationForm({
-          employeeId: 'emp-1',
-          defaultValues: VALID_DEFAULTS,
-        }),
-      { wrapper: GustoTestProvider },
-    )
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'singleNonexempt' })),
+        ),
+        handleCreateCompensation(createCompensationResolver),
+        handleUpdateEmployeeCompensation(updateCompensationResolver),
+      )
 
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(false)
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+            defaultValues: { rate: 30, effectiveDate: '2099-01-01' },
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+      expect(result.current.status.mode).toBe('create')
+
+      await act(async () => {
+        assertReady(result.current)
+        await result.current.actions.onSubmit()
+      })
+
+      expect(createCompensationResolver).toHaveBeenCalledTimes(1)
+      expect(createCompensationPath).toBe('/v1/jobs/job-uuid/compensations')
+      expect(createCompensationBody).toMatchObject({
+        rate: '30',
+        effective_date: '2099-01-01',
+      })
+      expect(updateCompensationResolver).not.toHaveBeenCalled()
     })
 
-    assertReady(result.current)
-
-    const submitResult = await act(async () => {
-      return (result.current as ReadyResult).actions.onSubmit()
-    })
-
-    expect(submitResult).toBeUndefined()
-    expect(createJobRequestBody).toBeNull()
-  })
-
-  it('creates a job with hireDate from options.startDate when field is hidden', async () => {
-    const { result } = renderHook(
-      () =>
-        useCompensationForm({
-          employeeId: 'emp-1',
-          withStartDateField: false,
-          defaultValues: VALID_DEFAULTS,
-        }),
-      { wrapper: GustoTestProvider },
-    )
-
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(false)
-    })
-
-    const readyResult = result.current
-    assertReady(readyResult)
-
-    await act(async () => {
-      await readyResult.actions.onSubmit({}, { startDate: '2024-06-15' })
-    })
-
-    expect(result.current.errorHandling.errors).toHaveLength(0)
-    expect(createJobRequestBody).not.toBeNull()
-    expect(createJobRequestBody?.hire_date).toBe('2024-06-15')
-  })
-
-  it('creates a job with hireDate from the form when withStartDateField is enabled', async () => {
-    const { result } = renderHook(
-      () =>
-        useCompensationForm({
-          employeeId: 'emp-1',
-          withStartDateField: true,
-          defaultValues: {
-            ...VALID_DEFAULTS,
-            startDate: '2024-03-20',
+    it('options.jobId overrides hook-level jobId at submit (post-job-create chaining)', async () => {
+      let createCompensationPath: string | null = null
+      const createCompensationResolver = vi.fn(({ request }) => {
+        createCompensationPath = new URL(request.url).pathname
+        return HttpResponse.json(
+          {
+            uuid: 'new-compensation-uuid',
+            version: 'v1',
+            job_uuid: 'newly-created-job',
+            rate: '30',
+            payment_unit: 'Hour',
+            flsa_status: 'Nonexempt',
+            effective_date: '2099-01-01',
+            adjust_for_minimum_wage: false,
           },
-        }),
-      { wrapper: GustoTestProvider },
-    )
+          { status: 201 },
+        )
+      })
 
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(false)
+      server.use(
+        handleGetEmployeeJobs(() => HttpResponse.json([])),
+        handleCreateCompensation(createCompensationResolver),
+      )
+
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            defaultValues: {
+              flsaStatus: FlsaStatus.NONEXEMPT,
+              rate: 30,
+              effectiveDate: '2099-01-01',
+            },
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      await act(async () => {
+        assertReady(result.current)
+        await result.current.actions.onSubmit({ jobId: 'newly-created-job' })
+      })
+
+      expect(createCompensationResolver).toHaveBeenCalledTimes(1)
+      expect(createCompensationPath).toBe('/v1/jobs/newly-created-job/compensations')
+    })
+  })
+
+  describe('derived helpers', () => {
+    it('flips willDeleteSecondaryJobs=true and force-clears effectiveDate to today when partner switches Nonexempt → non-Nonexempt with secondary jobs', async () => {
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'multiJob' })),
+        ),
+      )
+
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+            compensationId: 'compensation-uuid',
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+      expect(result.current.status.willDeleteSecondaryJobs).toBe(false)
+
+      const { formMethods } = result.current.form.hookFormInternals
+      act(() => {
+        formMethods.setValue('flsaStatus', FlsaStatus.EXEMPT)
+      })
+
+      await waitFor(() => {
+        if (result.current.isLoading) throw new Error('still loading')
+        expect(result.current.status.willDeleteSecondaryJobs).toBe(true)
+      })
+      expect(formMethods.getValues('effectiveDate')).toBe(todayISO())
     })
 
-    const readyResult = result.current
-    assertReady(readyResult)
+    it('disables Fields.EffectiveDate via fieldsMetadata while in the carve-out branch', async () => {
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'multiJob' })),
+        ),
+      )
 
-    await act(async () => {
-      await readyResult.actions.onSubmit()
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+            compensationId: 'compensation-uuid',
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+      expect(result.current.form.fieldsMetadata.effectiveDate?.isDisabled).toBeFalsy()
+
+      const { formMethods } = result.current.form.hookFormInternals
+      act(() => {
+        formMethods.setValue('flsaStatus', FlsaStatus.EXEMPT)
+      })
+
+      await waitFor(() => {
+        if (result.current.isLoading) throw new Error('still loading')
+        expect(result.current.form.fieldsMetadata.effectiveDate?.isDisabled).toBe(true)
+      })
     })
 
-    expect(result.current.errorHandling.errors).toHaveLength(0)
-    expect(createJobRequestBody).not.toBeNull()
-    expect(createJobRequestBody?.hire_date).toBe('2024-03-20')
-  })
+    it('restores the prior effectiveDate when partner reverts FLSA back to Nonexempt', async () => {
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'multiJob' })),
+        ),
+      )
 
-  it('form start date takes precedence over options.startDate', async () => {
-    const { result } = renderHook(
-      () =>
-        useCompensationForm({
-          employeeId: 'emp-1',
-          withStartDateField: true,
-          defaultValues: {
-            ...VALID_DEFAULTS,
-            startDate: '2024-03-20',
-          },
-        }),
-      { wrapper: GustoTestProvider },
-    )
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+            compensationId: 'compensation-uuid',
+          }),
+        { wrapper: GustoTestProvider },
+      )
 
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(false)
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+
+      const { formMethods } = result.current.form.hookFormInternals
+      const priorEffectiveDate = formMethods.getValues('effectiveDate')
+
+      act(() => {
+        formMethods.setValue('flsaStatus', FlsaStatus.EXEMPT)
+      })
+      await waitFor(() => {
+        expect(formMethods.getValues('effectiveDate')).toBe(todayISO())
+      })
+
+      act(() => {
+        formMethods.setValue('flsaStatus', FlsaStatus.NONEXEMPT)
+      })
+      await waitFor(() => {
+        if (result.current.isLoading) throw new Error('still loading')
+        expect(result.current.status.willDeleteSecondaryJobs).toBe(false)
+        expect(result.current.form.fieldsMetadata.effectiveDate?.isDisabled).toBeFalsy()
+        expect(formMethods.getValues('effectiveDate')).toBe(priorEffectiveDate)
+      })
     })
 
-    const readyResult = result.current
-    assertReady(readyResult)
+    it('willDeleteSecondaryJobs=false when employee has no secondary jobs (single primary)', async () => {
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'singleNonexempt' })),
+        ),
+      )
 
-    await act(async () => {
-      await readyResult.actions.onSubmit({}, { startDate: '2024-09-01' })
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+            compensationId: 'compensation-uuid',
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+      const { formMethods } = result.current.form.hookFormInternals
+      const priorEffectiveDate = formMethods.getValues('effectiveDate')
+      act(() => {
+        formMethods.setValue('flsaStatus', FlsaStatus.EXEMPT)
+      })
+      await new Promise(r => setTimeout(r, 20))
+      expect(result.current.status.willDeleteSecondaryJobs).toBe(false)
+      expect(formMethods.getValues('effectiveDate')).toBe(priorEffectiveDate)
     })
 
-    expect(createJobRequestBody).not.toBeNull()
-    expect(createJobRequestBody?.hire_date).toBe('2024-03-20')
-  })
-})
+    it('willDeleteSecondaryJobs=false in create mode (compensationId not set)', async () => {
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'multiJob' })),
+        ),
+      )
 
-const VALID_FORM_DATA = {
-  jobTitle: 'Software Engineer',
-  flsaStatus: 'Nonexempt' as const,
-  paymentUnit: 'Hour' as const,
-  rate: 50,
-  startDate: '2024-06-15',
-  adjustForMinimumWage: false,
-  minimumWageId: '',
-  stateWcCovered: false,
-  stateWcClassCode: '',
-  twoPercentShareholder: false,
-}
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+          }),
+        { wrapper: GustoTestProvider },
+      )
 
-function getFieldErrors(
-  result: ReturnType<ReturnType<typeof createCompensationSchema>[0]['safeParse']>,
-) {
-  if (result.success) return {}
-  const errors: Record<string, string[]> = {}
-  for (const issue of result.error.issues) {
-    const path = issue.path.join('.')
-    if (!errors[path]) errors[path] = []
-    errors[path].push(issue.message)
-  }
-  return errors
-}
-
-describe('createCompensationSchema error codes', () => {
-  it('produces REQUIRED for missing startDate when required', () => {
-    const [schema] = createCompensationSchema({ mode: 'create', withStartDateField: true })
-    const result = schema.safeParse({ ...VALID_FORM_DATA, startDate: null })
-    const errors = getFieldErrors(result)
-
-    expect(errors.startDate).toContain(CompensationErrorCodes.REQUIRED)
-  })
-
-  it('does not error on startDate when not required', () => {
-    const [schema] = createCompensationSchema({ mode: 'create', withStartDateField: false })
-    const result = schema.safeParse({ ...VALID_FORM_DATA, startDate: null })
-
-    expect(result.success).toBe(true)
-  })
-
-  it('produces RATE_MINIMUM for rate of 0', () => {
-    const [schema] = createCompensationSchema({ mode: 'create', withStartDateField: true })
-    const result = schema.safeParse({ ...VALID_FORM_DATA, rate: 0 })
-    const errors = getFieldErrors(result)
-
-    expect(errors.rate).toContain(CompensationErrorCodes.RATE_MINIMUM)
-  })
-
-  it('produces REQUIRED for NaN rate (empty input)', () => {
-    const [schema] = createCompensationSchema({ mode: 'create', withStartDateField: true })
-    const result = schema.safeParse({ ...VALID_FORM_DATA, rate: NaN })
-    const errors = getFieldErrors(result)
-
-    expect(errors.rate).toContain(CompensationErrorCodes.REQUIRED)
-  })
-})
-
-describe('CompensationOptionalFieldsToRequire typing', () => {
-  it('allows update-mode overrides for create-scoped fields', () => {
-    const [schema] = createCompensationSchema({
-      mode: 'update',
-      optionalFieldsToRequire: {
-        update: ['jobTitle', 'flsaStatus', 'paymentUnit', 'rate', 'startDate'],
-      },
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+      expect(result.current.status.willDeleteSecondaryJobs).toBe(false)
     })
-    const result = schema.safeParse({
-      ...VALID_FORM_DATA,
-      jobTitle: '',
+
+    it('hasPendingFutureCompensation=true and maximumEffectiveDate set when a future comp exists', async () => {
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'futureCompPending' })),
+        ),
+      )
+
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+            compensationId: 'compensation-uuid',
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+      expect(result.current.data.hasPendingFutureCompensation).toBe(true)
+      expect(result.current.data.maximumEffectiveDate).toBe('2099-01-01')
     })
-    expect(result.success).toBe(false)
-    expect(getFieldErrors(result).jobTitle).toContain(CompensationErrorCodes.REQUIRED)
+
+    it('minimumEffectiveDate is the parent job hireDate when available', async () => {
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json([buildJob({ uuid: 'job-uuid', hireDate: '2020-03-15' })]),
+        ),
+      )
+
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+            compensationId: 'compensation-uuid',
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+      expect(result.current.data.minimumEffectiveDate).toBe('2020-03-15')
+    })
   })
 
-  it('single field override makes only that field required on update', () => {
-    const [schema] = createCompensationSchema({
-      mode: 'update',
-      optionalFieldsToRequire: { update: ['jobTitle'] },
+  describe('FLSA-driven side effects', () => {
+    it('selecting Owner forces paymentUnit=Paycheck', async () => {
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'singleExempt' })),
+        ),
+      )
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+            compensationId: 'compensation-uuid',
+          }),
+        { wrapper: GustoTestProvider },
+      )
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+      const { formMethods } = result.current.form.hookFormInternals
+
+      act(() => {
+        formMethods.setValue('flsaStatus', FlsaStatus.OWNER)
+      })
+      await waitFor(() => {
+        expect(formMethods.getValues('paymentUnit')).toBe(PAY_PERIODS.PAYCHECK)
+      })
     })
-    const result = schema.safeParse({
-      ...VALID_FORM_DATA,
-      jobTitle: '',
-      flsaStatus: '' as never,
+
+    it('selecting Commission Only forces paymentUnit=Year and rate=0', async () => {
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'singleExempt' })),
+        ),
+      )
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+            compensationId: 'compensation-uuid',
+          }),
+        { wrapper: GustoTestProvider },
+      )
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+      const { formMethods } = result.current.form.hookFormInternals
+
+      act(() => {
+        formMethods.setValue('flsaStatus', FlsaStatus.COMMISSION_ONLY_NONEXEMPT)
+      })
+      await waitFor(() => {
+        expect(formMethods.getValues('paymentUnit')).toBe(PAY_PERIODS.YEAR)
+        expect(formMethods.getValues('rate')).toBe(0)
+      })
     })
-    const errors = getFieldErrors(result)
-    expect(errors.jobTitle).toContain(CompensationErrorCodes.REQUIRED)
-    expect(errors.flsaStatus).toBeUndefined()
+
+    it('resets adjustForMinimumWage and minimumWageId when FLSA leaves Nonexempt', async () => {
+      // Min-wage adjustment is API-side gated to flsa_status: Nonexempt, but
+      // because Fields.AdjustForMinimumWage / MinimumWageId stop rendering as
+      // soon as FLSA leaves Nonexempt, react-hook-form would otherwise carry
+      // their stale values straight into the PUT body and the server rejects
+      // with "Minimum wage adjustments only valid for flsa_status: Nonexempt".
+      const minWageUuid = '70c523ff-c71e-4474-9c83-a4ea51bd54a8'
+      server.use(
+        // Default fixture work address is in AK, which is in
+        // TIP_CREDITS_UNSUPPORTED_STATES — override to TX so the gate opens.
+        http.get(`${API_BASE_URL}/v1/employees/:employee_id/work_addresses`, () =>
+          HttpResponse.json([
+            {
+              uuid: 'wa-uuid',
+              employee_uuid: 'employee-uuid',
+              location_uuid: 'tx-loc-uuid',
+              effective_date: '2024-01-01',
+              active: true,
+              version: 'wa-v1',
+              street_1: '100 Congress',
+              street_2: '',
+              city: 'Austin',
+              state: 'TX',
+              zip: '78701',
+              country: 'USA',
+            },
+          ]),
+        ),
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json([
+            buildJob({
+              uuid: 'job-uuid',
+              flsaStatus: FlsaStatus.NONEXEMPT,
+              compensations: [
+                buildCompensation({
+                  uuid: 'compensation-uuid',
+                  flsa_status: FlsaStatus.NONEXEMPT,
+                  adjust_for_minimum_wage: true,
+                  minimum_wages: [{ uuid: minWageUuid }],
+                }),
+              ],
+            }),
+          ]),
+        ),
+      )
+
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+            compensationId: 'compensation-uuid',
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+      const { formMethods } = result.current.form.hookFormInternals
+
+      // Sanity-check: the gate is open and the form picked up the loaded values.
+      await waitFor(() => {
+        if (result.current.isLoading) throw new Error('still loading')
+        expect(result.current.form.Fields.AdjustForMinimumWage).toBeDefined()
+        expect(result.current.form.Fields.MinimumWageId).toBeDefined()
+      })
+      expect(formMethods.getValues('adjustForMinimumWage')).toBe(true)
+      expect(formMethods.getValues('minimumWageId')).toBe(minWageUuid)
+
+      act(() => {
+        formMethods.setValue('flsaStatus', FlsaStatus.EXEMPT)
+      })
+
+      await waitFor(() => {
+        expect(formMethods.getValues('adjustForMinimumWage')).toBe(false)
+        expect(formMethods.getValues('minimumWageId')).toBe('')
+        if (result.current.isLoading) throw new Error('still loading')
+        expect(result.current.form.Fields.AdjustForMinimumWage).toBeUndefined()
+        expect(result.current.form.Fields.MinimumWageId).toBeUndefined()
+      })
+    })
   })
 
-  it('update overrides do not alter create-mode metadata', () => {
-    const [, withOverrideMeta] = createCompensationSchema({
-      mode: 'create',
-      optionalFieldsToRequire: { update: ['jobTitle', 'rate', 'startDate'] },
+  describe('FLSA field availability', () => {
+    it('exposes Fields.FlsaStatus when adding the very first job (no primary exists)', async () => {
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'noJobs' })),
+        ),
+      )
+
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+      expect(result.current.form.Fields.FlsaStatus).toBeDefined()
     })
-    const [, withoutMeta] = createCompensationSchema({ mode: 'create' })
 
-    const metaWith = withOverrideMeta.getFieldsMetadata()
-    const metaWithout = withoutMeta.getFieldsMetadata()
+    it('hides Fields.FlsaStatus and seeds form value to primary FLSA when adding a secondary job', async () => {
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'singleNonexempt' })),
+        ),
+      )
 
-    for (const key of Object.keys(metaWith) as Array<keyof typeof metaWith>) {
-      expect(metaWith[key].isRequired).toBe(metaWithout[key].isRequired)
-    }
-  })
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'new-secondary-job-uuid',
+            // Even if a partner attempts to seed Exempt, the hook must override
+            // it because secondaries must match the primary's FLSA.
+            defaultValues: { flsaStatus: FlsaStatus.EXEMPT },
+          }),
+        { wrapper: GustoTestProvider },
+      )
 
-  it('metadata reflects partner override in update mode', () => {
-    const [, { getFieldsMetadata }] = createCompensationSchema({
-      mode: 'update',
-      optionalFieldsToRequire: { update: ['rate'] },
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+      expect(result.current.form.Fields.FlsaStatus).toBeUndefined()
+      expect(result.current.form.hookFormInternals.formMethods.getValues('flsaStatus')).toBe(
+        FlsaStatus.NONEXEMPT,
+      )
     })
-    const metadata = getFieldsMetadata()
 
-    expect(metadata.rate.isRequired).toBe(true)
-    expect(metadata.jobTitle.isRequired).toBe(false)
-    expect(metadata.flsaStatus.isRequired).toBe(false)
-  })
+    it('hides Fields.FlsaStatus when editing a Nonexempt secondary job (must keep matching the primary)', async () => {
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'multiJob' })),
+        ),
+      )
 
-  it('metadata shows create-scoped fields as optional in update without overrides', () => {
-    const [, { getFieldsMetadata }] = createCompensationSchema({
-      mode: 'update',
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid-2',
+            compensationId: 'compensation-uuid-2',
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+      expect(result.current.form.Fields.FlsaStatus).toBeUndefined()
     })
-    const metadata = getFieldsMetadata()
 
-    expect(metadata.jobTitle.isRequired).toBe(false)
-    expect(metadata.flsaStatus.isRequired).toBe(false)
-    expect(metadata.paymentUnit.isRequired).toBe(false)
-    expect(metadata.rate.isRequired).toBe(false)
-    expect(metadata.startDate.isRequired).toBe(false)
-  })
+    it('exposes Fields.FlsaStatus when editing the primary job', async () => {
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'singleNonexempt' })),
+        ),
+      )
 
-  it('metadata shows create-scoped fields as required in create mode', () => {
-    const [, { getFieldsMetadata }] = createCompensationSchema({
-      mode: 'create',
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+            compensationId: 'compensation-uuid',
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+      expect(result.current.form.Fields.FlsaStatus).toBeDefined()
     })
-    const metadata = getFieldsMetadata()
-
-    expect(metadata.jobTitle.isRequired).toBe(true)
-    expect(metadata.flsaStatus.isRequired).toBe(true)
-    expect(metadata.paymentUnit.isRequired).toBe(true)
-    expect(metadata.rate.isRequired).toBe(true)
-    expect(metadata.startDate.isRequired).toBe(true)
   })
 
-  it('function-based fields reflect data in metadata', () => {
-    const [, { getFieldsMetadata }] = createCompensationSchema({
-      mode: 'create',
+  describe('errorHandling', () => {
+    it('surfaces query errors via errorHandling.errors', async () => {
+      server.use(
+        handleGetEmployeeJobs(() => HttpResponse.json({ message: 'boom' }, { status: 500 })),
+      )
+
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+            compensationId: 'compensation-uuid',
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.errorHandling.errors.length).toBeGreaterThan(0)
+      })
     })
-    const withMinWage = getFieldsMetadata({ adjustForMinimumWage: true })
-    expect(withMinWage.minimumWageId.isRequired).toBe(true)
-
-    const withoutMinWage = getFieldsMetadata({ adjustForMinimumWage: false })
-    expect(withoutMinWage.minimumWageId.isRequired).toBe(false)
-
-    const withWc = getFieldsMetadata({ stateWcCovered: true })
-    expect(withWc.stateWcClassCode.isRequired).toBe(true)
-
-    const withoutWc = getFieldsMetadata({ stateWcCovered: false })
-    expect(withoutWc.stateWcClassCode.isRequired).toBe(false)
-  })
-
-  it('unlisted fields (always-required) are required in both modes', () => {
-    for (const mode of ['create', 'update'] as const) {
-      const [, { getFieldsMetadata }] = createCompensationSchema({ mode })
-      const metadata = getFieldsMetadata()
-
-      expect(metadata.adjustForMinimumWage.isRequired).toBe(true)
-      expect(metadata.stateWcCovered.isRequired).toBe(true)
-      expect(metadata.twoPercentShareholder.isRequired).toBe(true)
-    }
-  })
-
-  it('excludeFields removes startDate from validation', () => {
-    const [schema] = createCompensationSchema({
-      mode: 'create',
-      withStartDateField: false,
-    })
-    const result = schema.safeParse({ ...VALID_FORM_DATA, startDate: undefined })
-    expect(result.success).toBe(true)
-  })
-})
-
-describe('createCompensationSchema superRefine unblocking', () => {
-  it('reports rate errors even when startDate is missing', () => {
-    const [schema] = createCompensationSchema({ mode: 'create', withStartDateField: true })
-    const result = schema.safeParse({ ...VALID_FORM_DATA, startDate: null, rate: 0 })
-    const errors = getFieldErrors(result)
-
-    expect(errors.startDate).toContain(CompensationErrorCodes.REQUIRED)
-    expect(errors.rate).toContain(CompensationErrorCodes.RATE_MINIMUM)
-  })
-
-  it('reports payment unit errors even when startDate is missing', () => {
-    const [schema] = createCompensationSchema({ mode: 'create', withStartDateField: true })
-    const result = schema.safeParse({
-      ...VALID_FORM_DATA,
-      startDate: null,
-      flsaStatus: 'Owner' as const,
-      paymentUnit: 'Hour' as const,
-    })
-    const errors = getFieldErrors(result)
-
-    expect(errors.startDate).toContain(CompensationErrorCodes.REQUIRED)
-    expect(errors.paymentUnit).toContain(CompensationErrorCodes.PAYMENT_UNIT_OWNER)
-  })
-
-  it('reports RATE_MINIMUM before RATE_EXEMPT_THRESHOLD for low values', () => {
-    const [schema] = createCompensationSchema({ mode: 'create', withStartDateField: true })
-    const result = schema.safeParse({
-      ...VALID_FORM_DATA,
-      flsaStatus: 'Exempt' as const,
-      rate: 0,
-    })
-    const errors = getFieldErrors(result)
-
-    expect(errors.rate).toContain(CompensationErrorCodes.RATE_MINIMUM)
-    expect(errors.rate).not.toContain(CompensationErrorCodes.RATE_EXEMPT_THRESHOLD)
   })
 })

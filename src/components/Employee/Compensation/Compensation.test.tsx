@@ -1,15 +1,23 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { HttpResponse } from 'msw'
+import { HttpResponse, type HttpResponseResolver } from 'msw'
 import { Compensation } from './Compensation'
 import { server } from '@/test/mocks/server'
 import { componentEvents } from '@/shared/constants'
-import { handleGetEmployeeJobs } from '@/test/mocks/apis/employees'
+import {
+  handleGetEmployeeJobs,
+  handleCreateEmployeeJob,
+  handleUpdateEmployeeJob,
+  handleUpdateEmployeeCompensation,
+  handleDeleteEmployeeJob,
+} from '@/test/mocks/apis/employees'
+import { handleCreateCompensation } from '@/test/mocks/apis/compensations'
 import { handleGetCompanyFederalTaxes } from '@/test/mocks/apis/company_federal_taxes'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { getMinimumWages } from '@/test/mocks/apis/company_locations'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+import { buildEmployeeWithJobs } from '@/test/factories/jobsAndCompensations'
 
 describe('Compensation', () => {
   beforeEach(() => {
@@ -337,7 +345,7 @@ describe('Compensation', () => {
       await user.click(continueButton)
 
       await waitFor(() => {
-        expect(onEvent).toHaveBeenCalled()
+        expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_COMPENSATION_DONE, undefined)
       })
     })
 
@@ -533,7 +541,7 @@ describe('Compensation', () => {
       await user.click(deleteButton)
 
       await waitFor(() => {
-        expect(onEvent).toHaveBeenCalled()
+        expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_JOB_DELETED, undefined)
       })
     })
 
@@ -903,6 +911,333 @@ describe('Compensation', () => {
       expect(
         screen.getByText(/FLSA Exempt employees must meet salary threshold of/),
       ).toBeInTheDocument()
+    })
+  })
+
+  // Pins the underlying request sequence the state-machine flow drives. The
+  // existing presentation/integration tests above assert UI/event outcomes;
+  // these wrap MSW handlers in `vi.fn()` so a future hook migration can prove
+  // parity by re-running this suite. Each test maps to a UAC code from
+  // `docs/reference/jobs-and-compensations.md`.
+  describe('API request sequencing', () => {
+    it('ONB-01: no jobs → POST /v1/employees/:id/jobs then PUT /v1/compensations/:id (no POST /jobs/:id/compensations)', async () => {
+      const user = userEvent.setup()
+      let createJobBody: Record<string, unknown> | null = null
+      const createJobResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+        createJobBody = (await request.json()) as Record<string, unknown>
+        return HttpResponse.json(
+          {
+            uuid: 'new-job-uuid',
+            version: 'new-job-version',
+            employee_uuid: 'employee-uuid',
+            current_compensation_uuid: 'new-compensation-uuid',
+            payment_unit: 'Hour',
+            primary: true,
+            title: 'My Job',
+            two_percent_shareholder: false,
+            state_wc_covered: null,
+            state_wc_class_code: null,
+            hire_date: '2024-12-24',
+            rate: '50.00',
+            compensations: [
+              {
+                uuid: 'new-compensation-uuid',
+                version: 'new-compensation-version',
+                job_uuid: 'new-job-uuid',
+                payment_unit: 'Hour',
+                flsa_status: 'Nonexempt',
+                rate: '50.00',
+                effective_date: '2024-12-24',
+                adjust_for_minimum_wage: false,
+              },
+            ],
+          },
+          { status: 201 },
+        )
+      })
+      const updateCompensationResolver = vi.fn(() => HttpResponse.json({}))
+      const createCompensationResolver = vi.fn(() => HttpResponse.json({}))
+
+      server.use(
+        handleGetEmployeeJobs(() => HttpResponse.json([])),
+        handleCreateEmployeeJob(createJobResolver),
+        handleUpdateEmployeeCompensation(updateCompensationResolver),
+        handleCreateCompensation(createCompensationResolver),
+      )
+
+      renderWithProviders(
+        <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={() => {}} />,
+      )
+
+      await screen.findByRole('heading', { name: 'Compensation' })
+      await user.type(screen.getByLabelText('Job Title'), 'My Job')
+      await user.click(screen.getByRole('button', { name: /Select an item/i }))
+      await user.click(screen.getByRole('option', { name: 'Paid by the hour' }))
+      const amount = screen.getByLabelText('Compensation amount')
+      await user.clear(amount)
+      await user.type(amount, '50')
+      await user.tab()
+
+      const continueButtons = screen.getAllByRole('button', { name: 'Continue' })
+      await user.click(continueButtons[0]!)
+
+      await waitFor(() => {
+        expect(updateCompensationResolver).toHaveBeenCalledTimes(1)
+      })
+
+      expect(createJobResolver).toHaveBeenCalledTimes(1)
+      expect(createCompensationResolver).not.toHaveBeenCalled()
+
+      expect(createJobResolver.mock.invocationCallOrder[0]!).toBeLessThan(
+        updateCompensationResolver.mock.invocationCallOrder[0]!,
+      )
+
+      expect(createJobBody).toMatchObject({
+        title: 'My Job',
+        hire_date: '2024-12-24',
+      })
+    })
+
+    it('ONB-02: revisit single Nonexempt onboarding job → PUT /v1/jobs/:id then PUT /v1/compensations/:id', async () => {
+      const user = userEvent.setup()
+      const updateJobResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+        const body = (await request.json()) as Record<string, unknown>
+        return HttpResponse.json({
+          uuid: 'job-uuid',
+          version: 'job-version-updated',
+          employee_uuid: 'employee-uuid',
+          current_compensation_uuid: 'compensation-uuid',
+          payment_unit: 'Hour',
+          primary: true,
+          title: body.title ?? 'My Job',
+          two_percent_shareholder: false,
+          hire_date: '2024-12-24',
+          rate: '100.00',
+          compensations: [
+            {
+              uuid: 'compensation-uuid',
+              version: 'compensation-version-123',
+              job_uuid: 'job-uuid',
+              payment_unit: 'Hour',
+              flsa_status: 'Nonexempt',
+              rate: '100.00',
+              effective_date: '2024-12-24',
+              adjust_for_minimum_wage: false,
+            },
+          ],
+        })
+      })
+      const createJobResolver = vi.fn(() => HttpResponse.json({}, { status: 201 }))
+      const updateCompensationResolver = vi.fn(() => HttpResponse.json({}))
+
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'singleNonexempt' })),
+        ),
+        handleUpdateEmployeeJob(updateJobResolver),
+        handleCreateEmployeeJob(createJobResolver),
+        handleUpdateEmployeeCompensation(updateCompensationResolver),
+      )
+
+      renderWithProviders(
+        <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={() => {}} />,
+      )
+
+      await screen.findByText('Job title')
+
+      const editButton = screen.getByRole('button', { name: /Add another job/i })
+      // Sanity that we landed on the jobs list. To test the primary edit path
+      // we open the job actions menu on the primary card.
+      expect(editButton).toBeInTheDocument()
+
+      const cards = await screen.findAllByTestId('data-card')
+      const primaryCard = cards.find(card => card.textContent.includes('My Job'))!
+      await user.click(within(primaryCard).getByRole('button', { name: 'Job actions' }))
+      await user.click(screen.getByRole('menuitem', { name: 'Edit' }))
+
+      await screen.findByRole('heading', { name: 'Edit job' })
+      await user.click(screen.getByRole('button', { name: 'Save job' }))
+
+      await waitFor(() => {
+        expect(updateCompensationResolver).toHaveBeenCalledTimes(1)
+      })
+
+      expect(updateJobResolver).toHaveBeenCalledTimes(1)
+      expect(createJobResolver).not.toHaveBeenCalled()
+
+      expect(updateJobResolver.mock.invocationCallOrder[0]!).toBeLessThan(
+        updateCompensationResolver.mock.invocationCallOrder[0]!,
+      )
+    })
+
+    it('ONB-03: single non-Nonexempt revisit on hourly switch → PUT /v1/jobs/:id + PUT /v1/compensations/:id then jobs-list redirect', async () => {
+      const user = userEvent.setup()
+      const updateJobResolver = vi.fn(() =>
+        HttpResponse.json({
+          uuid: 'job-uuid',
+          version: 'job-version-updated',
+          employee_uuid: 'employee-uuid',
+          current_compensation_uuid: 'compensation-uuid',
+          payment_unit: 'Hour',
+          primary: true,
+          title: 'My Job',
+          two_percent_shareholder: false,
+          hire_date: '2024-12-24',
+          rate: '100.00',
+          compensations: [
+            {
+              uuid: 'compensation-uuid',
+              version: 'compensation-version-456',
+              job_uuid: 'job-uuid',
+              payment_unit: 'Hour',
+              flsa_status: 'Nonexempt',
+              rate: '50.00',
+              effective_date: '2024-12-24',
+              adjust_for_minimum_wage: false,
+            },
+          ],
+        }),
+      )
+      const updateCompensationResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+        const body = (await request.json()) as Record<string, unknown>
+        return HttpResponse.json({
+          ...body,
+          uuid: 'compensation-uuid',
+          job_uuid: 'job-uuid',
+        })
+      })
+
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'singleExempt' })),
+        ),
+        handleUpdateEmployeeJob(updateJobResolver),
+        handleUpdateEmployeeCompensation(updateCompensationResolver),
+      )
+
+      renderWithProviders(
+        <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={() => {}} />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText('Compensation')).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: /Salary\/No overtime/i }))
+      await user.click(screen.getByRole('option', { name: 'Paid by the hour' }))
+      await user.click(screen.getByRole('button', { name: 'Continue' }))
+
+      await waitFor(() => {
+        expect(screen.getByText('Job title')).toBeInTheDocument()
+      })
+
+      expect(updateJobResolver).toHaveBeenCalledTimes(1)
+      expect(updateCompensationResolver).toHaveBeenCalledTimes(1)
+    })
+
+    it('EMF-A07: add secondary → POST /v1/employees/:id/jobs then PUT /v1/compensations/:id (stub-fill)', async () => {
+      const user = userEvent.setup()
+      const createJobResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+        const body = (await request.json()) as Record<string, unknown>
+        return HttpResponse.json(
+          {
+            uuid: 'secondary-job-uuid',
+            version: 'secondary-job-version',
+            employee_uuid: 'employee-uuid',
+            current_compensation_uuid: 'secondary-comp-uuid',
+            payment_unit: 'Hour',
+            primary: false,
+            title: body.title ?? 'My Job',
+            two_percent_shareholder: false,
+            hire_date: '2024-12-24',
+            rate: '50.00',
+            compensations: [
+              {
+                uuid: 'secondary-comp-uuid',
+                version: 'secondary-comp-version',
+                job_uuid: 'secondary-job-uuid',
+                payment_unit: 'Hour',
+                flsa_status: 'Nonexempt',
+                rate: '50.00',
+                effective_date: '2024-12-24',
+                adjust_for_minimum_wage: false,
+              },
+            ],
+          },
+          { status: 201 },
+        )
+      })
+      const updateCompensationResolver = vi.fn(() => HttpResponse.json({}))
+      const createCompensationResolver = vi.fn(() => HttpResponse.json({}))
+
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'singleNonexempt' })),
+        ),
+        handleCreateEmployeeJob(createJobResolver),
+        handleUpdateEmployeeCompensation(updateCompensationResolver),
+        handleCreateCompensation(createCompensationResolver),
+      )
+
+      renderWithProviders(
+        <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={() => {}} />,
+      )
+
+      await screen.findByText('Job title')
+      await user.click(screen.getByRole('button', { name: /Add another job/i }))
+      await screen.findByRole('heading', { name: 'Add job' })
+
+      await user.type(screen.getByLabelText('Job Title'), 'My Job')
+      const amount = screen.getByLabelText('Compensation amount')
+      await user.clear(amount)
+      await user.type(amount, '50')
+      await user.tab()
+      await user.click(screen.getByRole('button', { name: 'Save job' }))
+
+      await waitFor(() => {
+        expect(updateCompensationResolver).toHaveBeenCalledTimes(1)
+      })
+
+      expect(createJobResolver).toHaveBeenCalledTimes(1)
+      expect(createCompensationResolver).not.toHaveBeenCalled()
+    })
+
+    it('EMF-A04: delete secondary fires DELETE /v1/jobs/:id', async () => {
+      const user = userEvent.setup()
+      const onEvent = vi.fn()
+      let deletedJobPath: string | null = null
+      const deleteJobResolver = vi.fn(({ request }) => {
+        deletedJobPath = new URL(request.url).pathname
+        return new HttpResponse(null, { status: 204 }) as never
+      })
+
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'multiJob' })),
+        ),
+        handleDeleteEmployeeJob(deleteJobResolver),
+      )
+
+      renderWithProviders(
+        <Compensation employeeId="employee-uuid" startDate="2024-12-24" onEvent={onEvent} />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByTestId('data-view')).toBeInTheDocument()
+      })
+
+      const cards = screen.getAllByTestId('data-card')
+      const nonPrimary = cards.find(card => card.textContent.includes('An additional job'))!
+
+      await user.click(within(nonPrimary).getByRole('button', { name: 'Job actions' }))
+      await user.click(screen.getByRole('menuitem', { name: 'Delete' }))
+
+      await waitFor(() => {
+        expect(deleteJobResolver).toHaveBeenCalledTimes(1)
+      })
+
+      expect(deletedJobPath).toBe('/v1/jobs/job-uuid-2')
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_JOB_DELETED, undefined)
     })
   })
 })
