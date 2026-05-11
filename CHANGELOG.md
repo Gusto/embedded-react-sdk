@@ -1,5 +1,105 @@
 # Changelog
 
+## 0.44.0
+
+### Breaking Changes
+
+#### `UNSTABLE_TimeOff` namespace renamed to `TimeOff`
+
+TimeOff components are now exported as `TimeOff.*` instead of `UNSTABLE_TimeOff.*`:
+
+```tsx
+// Before
+import { UNSTABLE_TimeOff } from '@gusto/embedded-react-sdk'
+;<UNSTABLE_TimeOff.TimeOffFlow companyId={companyId} onEvent={handleEvent} />
+
+// After
+import { TimeOff } from '@gusto/embedded-react-sdk'
+;<TimeOff.TimeOffFlow companyId={companyId} onEvent={handleEvent} />
+```
+
+#### `useCompensationForm` split into `useJobForm` + `useCompensationForm`
+
+The monolithic `useCompensationForm` has been decomposed into focused, steady-state hooks so partners can drive job and compensation lifecycles independently or together.
+
+- `useJobForm` / `useCurrentJobForm`: create | update routing, error handling, and POST/PUT/DELETE wiring for the Jobs API.
+- `useCompensationForm` / `useCurrentCompensationForm`: single create | update path covering both the onboarding stub-update case and steady-state effective-dated compensations, with optimistic-locking via version.
+
+`useCompensationForm.actions.onSubmit` changed from `(callbacks?, options?)` to `(options?)`. The `CompensationSubmitCallbacks` export is removed. Read the saved compensation from the awaited `HookSubmitResult`'s `data` field instead of wiring `onCompensationCreated` / `onCompensationUpdated`.
+
+#### `Employee.Profile` migrated to hook architecture with management variant
+
+`Employee.Profile` has been rebuilt on the hook architecture and now supports steady-state edit mode. `useEmployeeDetailsForm` props are now a discriminated union on `companyId`/`employeeId`. `EmployeeOnboarding.Profile` and `EmployeeManagement.Profile` each point to their dedicated variant.
+
+#### `Employee.FederalTaxes` split into onboarding + management variants
+
+The `isOnboarding` prop has been replaced with two journey-scoped components:
+
+- `EmployeeOnboarding.FederalTaxes` — Continue button, emits `EMPLOYEE_FEDERAL_TAXES_UPDATED` + `EMPLOYEE_FEDERAL_TAXES_DONE`.
+- `EmployeeManagement.FederalTaxes` — Cancel + Save, dismissible success alert, emits `CANCEL` or `EMPLOYEE_FEDERAL_TAXES_UPDATED` (no `_DONE`).
+
+`Employee.FederalTaxes` now resolves to the management variant (matching the WorkAddress/HomeAddress convention).
+
+### Features & Enhancements
+
+- Export `LocationForm` as standalone component
+- Add `useEmployeeStateTaxesForm` hook and migrate `Employee.StateTaxes`
+- Add `StateTaxes` management variant (onboarding/management split)
+- Display `setup_status`, `default_rates_applied`, and `ready_to_run_payroll` in `StateTaxesList`
+- Add time-off policy detail presentational and functional components with tests
+- Add `HolidayPolicyDetail` presentational and functional components
+- Add edit employee balance modal for time-off policy detail
+- Pre-fill carry-over balances when adding employees to a time-off policy
+- Surface `eligiblePaidTimeOff` via `Include.AllCompensations`
+- Focus visually first invalid field across composed forms
+- Update Company header styles with consistent spacing and supporting text variant
+
+### Fixes
+
+- Make sure to update for component adaptor
+- Use component context for dialog buttons
+- Workers comp rate inputs submit typed values (SDK-798)
+- Improve accessibility: add `aria-labelledby` and `aria-controls` attributes to Time Off form landmarks, PolicySettings switches, and balance inputs
+- Remove hardcoded colors in PolicySettings for theme compliance
+- Correct policy settings visibility for fixed accrual methods
+- Adjust day dropdown in policy reset date based on selected month
+- Hide job title column on time-off policy detail page
+- Use locale-aware date formatting in TimeOff components
+- Use server-side search for employee selection in time-off flows
+- Wire holiday policy edit, add-employees, and delete flows
+- Keep delete confirmation dialog open when deletion fails
+- Clear stale policyId when starting new create flow in TimeOff wizard
+- Rename policy list menu item from "Edit policy" to "View policy"
+- Improve error message when removing employees with pending time-off requests
+- Make reset date type optional for hourly accrual methods
+- Filter policy detail settings display by accrual method category
+- Hide Edit balance menu item for unlimited time-off policies
+- Emit SDK event on time off policy deletion
+- Reset edit balance modal state when switching employees
+- Use update mutation when editing existing time-off policies
+- Hide holiday pay option when company already has a policy
+- Filter time-off policy list to PTO, Sick, and Holiday only
+- Hide deactivated policies from time-off policy list
+- Display employee names in time-off policy detail
+- Hide job title and balance columns for unlimited time-off policies
+- Send `complete: false` when creating non-unlimited time-off policies
+- Scope time-off reassignment warning per policy type
+- Treat NaN as empty in form schema so required validation fires for cleared number inputs
+- Improve validation error for net pay in off-cycle payroll (SDK-735)
+- Reduce button padding and min-height to match input height
+- Apply max length to information request text response (SDK-423)
+
+### Chores & Maintenance
+
+- Rebuild `Employee.Compensation` around a state machine + presentation/connected split
+- Anchor `TimeOffPolicyType` to SDK `PolicyType` enum
+- Remove dead code (`SelectEmployees`, `ViewPolicyDetails`/`ViewPolicyEmployees` stubs, unused i18n keys)
+- Remove duplicate `contractorName` and clean up Street 2 labels
+- Update README with missing docs and fix stale links
+- Standardize workflows-overview structure and add missing components
+- Validate Storybook and SDK app builds in CI
+- Bump various dependencies (i18next, react-i18next, msw, lint-staged, vite-plugin-circular-dependency, react-router-dom, axios, typescript-eslint, globals, @commitlint/cli, react-hook-form, dompurify, @storybook/addon-docs, @storybook/addon-a11y, @storybook/addon-onboarding, @commitlint/config-conventional)
+
 ## 0.43.0
 
 ### Features & Enhancements
