@@ -76,9 +76,18 @@ export const DateRangeFilter = ({
     setDraftRange(null)
   }, [])
 
-  const handleRangeChange = useCallback((range: DateRange | null) => {
-    setDraftRange(range)
-  }, [])
+  const handleRangeChange = useCallback(
+    (range: DateRange | null) => {
+      setDraftRange(range)
+      if (range) {
+        onStartDateChange(range.start)
+        onEndDateChange(range.end)
+      } else {
+        onClear()
+      }
+    },
+    [onStartDateChange, onEndDateChange, onClear],
+  )
 
   const filterDateLabel = useMemo(() => {
     if (!isFilterActive || !startDate || !endDate) return null

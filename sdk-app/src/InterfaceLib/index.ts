@@ -10,6 +10,7 @@ import { Tabs } from './Tabs'
 import { Badge } from './Badge'
 import { Alert } from './Alert'
 import { DatePicker } from './DatePicker'
+import { DateRangePicker } from './DateRangePicker'
 import { Switch } from './Switch'
 import { ComboBox } from './ComboBox'
 import { Menu } from './Menu'
@@ -30,6 +31,7 @@ export {
   Badge,
   Alert,
   DatePicker,
+  DateRangePicker,
   Switch,
   ComboBox,
   Menu,
@@ -51,6 +53,7 @@ export const interfaceLibComponents = {
   Badge,
   Alert,
   DatePicker,
+  DateRangePicker,
   Switch,
   ComboBox,
   Menu,

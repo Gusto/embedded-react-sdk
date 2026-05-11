@@ -1,0 +1,157 @@
+.root {
+  font-family: 'InterfaceLib Sans', Helvetica, Arial, sans-serif;
+}
+
+.inline {
+  display: flex;
+  padding: 16px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  width: 320px;
+}
+
+.calendarWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.calendar {
+  width: 100%;
+}
+
+/* Calendar header / title / nav — match DatePicker exactly */
+.calendarHeader {
+  composes: calendarHeader from '../DatePicker/DatePicker.module.scss';
+}
+
+.calendarTitle {
+  composes: calendarTitle from '../DatePicker/DatePicker.module.scss';
+}
+
+.navButton {
+  composes: navButton from '../DatePicker/DatePicker.module.scss';
+}
+
+/* Grid — match DatePicker base, but switch to separate spacing so the
+   range fill rectangle on each <td> doesn't fuse rows vertically. */
+.grid {
+  composes: grid from '../DatePicker/DatePicker.module.scss';
+  border-collapse: separate;
+  border-spacing: 0 4px;
+}
+
+.dayHeader {
+  composes: dayHeader from '../DatePicker/DatePicker.module.scss';
+}
+
+/* Range fill lives on the <td> (the gridcell), not the day cell.
+   This is what makes adjacent in-range days look connected. */
+.grid td:has([data-selected]) {
+  background-color: #f0f0f0;
+}
+
+.grid td:has([data-selection-start]:not([data-selection-end])) {
+  background: linear-gradient(to right, transparent 50%, #f0f0f0 50%);
+}
+
+.grid td:has([data-selection-end]:not([data-selection-start])) {
+  background: linear-gradient(to left, transparent 50%, #f0f0f0 50%);
+}
+
+.grid td:has([data-selection-start][data-selection-end]) {
+  background: transparent;
+}
+
+/* Round outer edges of the row fill at the row boundaries */
+.grid td:first-child:has([data-selected]) {
+  border-radius: 999px 0 0 999px;
+}
+
+.grid td:last-child:has([data-selected]) {
+  border-radius: 0 999px 999px 0;
+}
+
+/* Day cell — start from DatePicker base.
+   Drop the row margin since border-spacing now handles vertical gap. */
+.day {
+  composes: day from '../DatePicker/DatePicker.module.scss';
+  margin-bottom: 0;
+}
+
+/* In-range middle days: fill is on the parent <td>, so neutralize the day's
+   own background. Keep the composed 999px radius so the focus-visible
+   outline draws as a circle, not a square. */
+.day[data-selected]:not([data-selection-start]):not([data-selection-end]) {
+  background-color: transparent;
+  color: #101010;
+  font-weight: 400;
+}
+
+/* Range caps inherit the composed [data-selected] solid black circle.
+   Lift them above the <td> background fill so the band tucks behind. */
+.day[data-selection-start],
+.day[data-selection-end] {
+  position: relative;
+  z-index: 1;
+}
+
+/* The composed focus-visible outline would draw a square around the cap.
+   Hide it — the filled circle already indicates the active cap. */
+.day[data-selection-start][data-focus-visible],
+.day[data-selection-end][data-focus-visible] {
+  outline: none;
+}
+
+/* Date inputs row below calendar */
+.inputs {
+  display: flex;
+  gap: 12px;
+}
+
+.inputField {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px #dadada;
+}
+
+.inputField:focus-within {
+  box-shadow: inset 0 0 0 2px #101010;
+}
+
+.inputLabel {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  color: #101010;
+}
+
+.dateInput {
+  display: flex;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  color: #101010;
+  font-variant-numeric: tabular-nums;
+}
+
+.dateSegment {
+  padding: 0 1px;
+  outline: none;
+  border-radius: 2px;
+}
+
+.dateSegment[data-placeholder] {
+  color: #959595;
+}
+
+.dateSegment[data-focused] {
+  background-color: #101010;
+  color: #ffffff;
+}

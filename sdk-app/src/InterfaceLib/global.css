@@ -40,6 +40,30 @@
   font-size: 14px;
 }
 
+/* DateRangePicker adapter needs wider popover than the SDK default 400px cap,
+   and no border (the inner dialog already has its own bg/shadow). */
+.interface-lib-adapter-active .GSDK .react-aria-Popover:has([data-il-date-range-picker]) {
+  max-width: none;
+  overflow: visible;
+  border: none;
+}
+
+/* DateRangeFilter footer (Reset/Cancel/Apply) is unused when the adapter applies
+   the range immediately on change — hide it. */
+.interface-lib-adapter-active
+  [role='dialog']:has([data-il-date-range-picker])
+  [class*='popoverFooter'] {
+  display: none;
+}
+
+/* DateRangeFilter wraps the adapter in a content div with gap; remove since
+   the adapter handles its own padding. */
+.interface-lib-adapter-active
+  [role='dialog']:has([data-il-date-range-picker])
+  [class*='popoverContent'] {
+  gap: 0;
+}
+
 /* SDK-internal switch-field wrapper — no exposed adapter prop, so override
    here. Class name is CSS-module-hashed (e.g. _switchFieldContainer_v19ck_5),
    so match by prefix. */
