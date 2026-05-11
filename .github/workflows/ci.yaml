@@ -176,6 +176,10 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     continue-on-error: true
+    # contents: write so the job can commit newly-generated baseline PNGs back
+    # to the branch on the first run (or after a manual baseline refresh).
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v6
 
@@ -217,6 +221,23 @@ jobs:
 
       - name: Run visual tests
         run: npm run test:visual
+
+      - name: Commit new baseline screenshots
+        # Runs on success or failure (but not cancellation) so that any
+        # baselines successfully written by the test runner are preserved for
+        # future comparisons. The __diff_output__ sub-directory is git-ignored,
+        # so only top-level baseline PNGs are ever staged here.
+        # Push is best-effort: it will silently skip for fork PRs or protected
+        # branches where the GITHUB_TOKEN lacks write access.
+        if: success() || failure()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .storybook/__screenshots__/*.png 2>/dev/null || true
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(visual): update baseline screenshots [skip ci]"
+            git push || echo "::notice::Could not push baseline screenshots (fork PR or protected branch). Commit them manually by running: UPDATE_SCREENSHOTS=1 npm run test:visual"
+          fi
 
       - name: Upload visual diff output
         if: failure()
