@@ -19,6 +19,7 @@ Workflows are pre-built UI experiences you can use to quickly and easily incorpo
 - Contractor Onboarding
 - Contractor Payments
 - Employee Termination
+- Time Off Policy Management
 - Information Requests
 
 ### Why should I use a Workflow?
