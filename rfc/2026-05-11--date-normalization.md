@@ -63,9 +63,10 @@ Functions that parse them: `normalizeToDate` handles `YYYY-MM-DD` safely via reg
 Wraps dates for API write mutations. Serializes internally via `.toISOString().slice(0, 10)` (UTC).
 
 - **Safe:** `new RFCDate("YYYY-MM-DD")` — string input is UTC midnight; serializes back correctly
-- **Unsafe:** `new RFCDate(new Date(someString))` — local-midnight `Date` is UTC midnight minus the offset; wrong day for UTC+ users ⚠️
+- **Safe (but redundant):** `new RFCDate(new Date("YYYY-MM-DD"))` — `new Date` parses the string as UTC midnight; `RFCDate` serializes back via UTC; roundtrip is correct. The intermediate `Date` is unnecessary and confusing, but not buggy.
+- **Unsafe:** `new RFCDate(new Date(localMidnightDate))` — if the `Date` was constructed via `new Date(year, month, day)` (local midnight), then UTC serialization reads the previous day for UTC+ users ⚠️
 
-Three files use the unsafe pattern: `useEmployeeDetailsForm` (`dateOfBirth`), `useHomeAddressForm` (`effectiveDate`), `useWorkAddressForm` (`effectiveDate`).
+Three files use `new RFCDate(new Date(string))`: `useEmployeeDetailsForm` (`dateOfBirth`), `useHomeAddressForm` (`effectiveDate`), `useWorkAddressForm` (`effectiveDate`). Because these fields are typed as `z.iso.date()` in their Zod schemas, the value is always a `YYYY-MM-DD` string — so the UTC roundtrip cancels and no data-integrity bug occurs. The pattern is redundant noise, not a bug.
 
 ### Central Utilities
 
@@ -91,7 +92,7 @@ Three files use the unsafe pattern: `useEmployeeDetailsForm` (`dateOfBirth`), `u
 | `Payroll/helpers.ts` (compensation effective dates)                  | `new Date(effectiveDate)` on string → UTC midnight                                                                                             |
 | `useEmployeeStateTaxesForm` deserialization                          | `new Date(trimmed)` on string → UTC midnight                                                                                                   |
 | `CalendarPreview.tsx:32`                                             | `new Date(dateValue.toString())` — behavior varies                                                                                             |
-| `useEmployeeDetailsForm`, `useHomeAddressForm`, `useWorkAddressForm` | `new RFCDate(new Date(string))` — UTC roundtrip (**live data-integrity bug** for UTC+ users: wrong birth date / effective date sent to API)    |
+| `useEmployeeDetailsForm`, `useHomeAddressForm`, `useWorkAddressForm` | `new RFCDate(new Date(string))` — redundant UTC roundtrip, but **not a bug**: fields are `z.iso.date()` strings so UTC→UTC conversion cancels correctly |
 | `getHoursUntil`, `getDaysUntil` (`dateFormatting.ts`)                | Pass string to `normalizeToDate`, which falls through to `new Date(string)` for ISO timestamps → UTC parsing; arithmetic is off for UTC+ users |
 
 ### Notable Domain Patterns
@@ -123,7 +124,7 @@ Three files use the unsafe pattern: `useEmployeeDetailsForm` (`dateOfBirth`), `u
 
 ### What Changes
 
-**Fix `new RFCDate(new Date(string))` patterns** — replace with `new RFCDate(string)` in 3 files: `useEmployeeDetailsForm` (`dateOfBirth`), `useHomeAddressForm` (`effectiveDate`), `useWorkAddressForm` (`effectiveDate`). These are live data-integrity bugs: UTC+ users have the wrong date written to the Gusto API. Do this first — it is the lowest-risk change and the highest-severity bug.
+**Clean up `new RFCDate(new Date(string))` patterns** — replace with `new RFCDate(string)` in 3 files: `useEmployeeDetailsForm` (`dateOfBirth`), `useHomeAddressForm` (`effectiveDate`), `useWorkAddressForm` (`effectiveDate`). These fields are `z.iso.date()` strings, so the intermediate `Date` is a harmless UTC roundtrip rather than a live bug. The change is optional cleanup for clarity — not a correctness fix.
 
 **Extend `normalizeToISOString`** to accept `Date | string | null` (currently only `string | null`). Implementation reads `getFullYear/getMonth/getDate` for both input types — no UTC.
 
@@ -152,10 +153,10 @@ All type signatures, partner hook APIs, `DatePickerProps`, arithmetic helpers, `
 
 ### Implementation Order
 
-1. `new RFCDate(new Date(string))` → `new RFCDate(string)` in 3 employee form files
-2. Extend `normalizeToISOString`; delete `formatDateToStringDate` and `normalizeDateToLocal`; replace serialization callsites
-3. Fix `new Date(YYYY-MM-DD)` deserialization callsites
-4. Address `normalizeToDate` fallthrough for timestamp strings
+1. Extend `normalizeToISOString`; delete `formatDateToStringDate` and `normalizeDateToLocal`; replace serialization callsites
+2. Fix `new Date(YYYY-MM-DD)` deserialization callsites
+3. Address `normalizeToDate` fallthrough for timestamp strings
+4. _(Optional cleanup)_ `new RFCDate(new Date(string))` → `new RFCDate(string)` in 3 employee form files — not a bug, but removes confusing indirection
 
 ---
 
