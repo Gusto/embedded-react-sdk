@@ -18,6 +18,8 @@
 - [ComboBoxProps](#comboboxprops)
   - [ComboBoxOption](#comboboxoption)
 - [DatePickerProps](#datepickerprops)
+- [DateRangePickerProps](#daterangepickerprops)
+  - [DateRange](#daterange)
 - [DescriptionListProps](#descriptionlistprops)
   - [DescriptionListItem](#descriptionlistitem)
 - [DialogProps](#dialogprops)
@@ -28,6 +30,8 @@
 - [MenuProps](#menuprops)
   - [MenuItem](#menuitem)
 - [ModalProps](#modalprops)
+- [MultiSelectComboBoxProps](#multiselectcomboboxprops)
+  - [MultiSelectComboBoxOption](#multiselectcomboboxoption)
 - [NumberInputProps](#numberinputprops)
 - [OrderedListProps](#orderedlistprops)
 - [PaginationControlProps](#paginationcontrolprops)
@@ -301,6 +305,26 @@
 | **id**                      | `string`                        | No       | -                                                                                             |
 | **name**                    | `string`                        | No       | -                                                                                             |
 
+## DateRangePickerProps
+
+| Prop                        | Type                                               | Required | Description |
+| --------------------------- | -------------------------------------------------- | -------- | ----------- |
+| **label**                   | `string`                                           | Yes      | -           |
+| **shouldVisuallyHideLabel** | `boolean`                                          | No       | -           |
+| **value**                   | `null \| [DateRange](#daterange)`                  | Yes      | -           |
+| **onChange**                | `(range: [DateRange](#daterange) \| null) => void` | Yes      | -           |
+| **startDateLabel**          | `string`                                           | Yes      | -           |
+| **endDateLabel**            | `string`                                           | Yes      | -           |
+| **minValue**                | `Date`                                             | No       | -           |
+| **maxValue**                | `Date`                                             | No       | -           |
+
+### DateRange
+
+| Prop      | Type   | Required | Description |
+| --------- | ------ | -------- | ----------- |
+| **start** | `Date` | Yes      | -           |
+| **end**   | `Date` | Yes      | -           |
+
 ## DescriptionListProps
 
 | Prop               | Type                                          | Required | Description |
@@ -421,6 +445,35 @@
 | **children**                   | `React.ReactNode` | No       | Main content to be rendered in the modal body            |
 | **footer**                     | `React.ReactNode` | No       | Footer content to be rendered at the bottom of the modal |
 | **containerRef**               | `RefObject`       | No       | Optional ref to the backdrop container                   |
+
+## MultiSelectComboBoxProps
+
+| Prop                        | Type                                                      | Required | Description                                                            |
+| --------------------------- | --------------------------------------------------------- | -------- | ---------------------------------------------------------------------- |
+| **inputRef**                | `Ref<HTMLInputElement \| null>`                           | No       | -                                                                      |
+| **isDisabled**              | `boolean`                                                 | No       | -                                                                      |
+| **isInvalid**               | `boolean`                                                 | No       | -                                                                      |
+| **isLoading**               | `boolean`                                                 | No       | -                                                                      |
+| **label**                   | `string`                                                  | Yes      | -                                                                      |
+| **options**                 | [MultiSelectComboBoxOption](#multiselectcomboboxoption)[] | Yes      | -                                                                      |
+| **value**                   | `string[]`                                                | No       | -                                                                      |
+| **onChange**                | `(values: string[]) => void`                              | No       | -                                                                      |
+| **onBlur**                  | `() => void`                                              | No       | -                                                                      |
+| **description**             | `React.ReactNode`                                         | No       | Optional description text for the field                                |
+| **errorMessage**            | `string`                                                  | No       | Error message to display when the field is invalid                     |
+| **isRequired**              | `boolean`                                                 | No       | Indicates if the field is required                                     |
+| **shouldVisuallyHideLabel** | `boolean`                                                 | No       | Hides the label visually while keeping it accessible to screen readers |
+| **className**               | `string`                                                  | No       | -                                                                      |
+| **id**                      | `string`                                                  | No       | -                                                                      |
+| **name**                    | `string`                                                  | No       | -                                                                      |
+| **placeholder**             | `string`                                                  | No       | -                                                                      |
+
+### MultiSelectComboBoxOption
+
+| Prop      | Type     | Required | Description |
+| --------- | -------- | -------- | ----------- |
+| **label** | `string` | Yes      | -           |
+| **value** | `string` | Yes      | -           |
 
 ## NumberInputProps
 
