@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState, type FocusEvent } from 'react'
 // eslint-disable-next-line no-restricted-imports
 import {
   DateRangePicker as AriaDateRangePicker,
@@ -28,6 +29,11 @@ function toNativeDate(value: DateValue): Date {
   return new Date(value.year, value.month - 1, value.day)
 }
 
+function rangeEquals(a: RangeValue<DateValue> | null, b: RangeValue<DateValue> | null) {
+  if (!a || !b) return a === b
+  return a.start.compare(b.start) === 0 && a.end.compare(b.end) === 0
+}
+
 export function DateRangePicker({
   label,
   value,
@@ -46,19 +52,45 @@ export function DateRangePicker({
   const minCalendarValue = toCalendarDate(minValue)
   const maxCalendarValue = toCalendarDate(maxValue)
 
+  /* Buffer the value locally so segment-by-segment typing in the date inputs
+     doesn't commit upstream until the user is done. */
+  const [draft, setDraft] = useState<RangeValue<DateValue> | null>(calendarValue)
+  const typingInInputsRef = useRef(false)
+
+  useEffect(() => {
+    if (!rangeEquals(draft, calendarValue)) {
+      setDraft(calendarValue)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value])
+
+  const commit = (next: RangeValue<DateValue> | null) => {
+    if (!next) {
+      onChange(null)
+      return
+    }
+    onChange({
+      start: toNativeDate(next.start),
+      end: toNativeDate(next.end),
+    })
+  }
+
+  const handleInputsBlur = (e: FocusEvent<HTMLElement>) => {
+    /* Only commit when focus leaves the inputs group entirely. */
+    if (e.currentTarget.contains(e.relatedTarget as Node)) return
+    typingInInputsRef.current = false
+    commit(draft)
+  }
+
   return (
     <AriaDateRangePicker
       aria-label={typeof label === 'string' ? label : `${startDateLabel} – ${endDateLabel}`}
-      value={calendarValue}
+      value={draft}
       onChange={(next: RangeValue<DateValue> | null) => {
-        if (!next) {
-          onChange(null)
-          return
-        }
-        onChange({
-          start: toNativeDate(next.start),
-          end: toNativeDate(next.end),
-        })
+        setDraft(next)
+        /* If the change didn't originate from typing in an input, commit now
+           (calendar clicks land here). Input edits commit on blur instead. */
+        if (!typingInInputsRef.current) commit(next)
       }}
       minValue={minCalendarValue ?? undefined}
       maxValue={maxCalendarValue ?? undefined}
@@ -99,7 +131,13 @@ export function DateRangePicker({
               </CalendarGridBody>
             </CalendarGrid>
           </RangeCalendar>
-          <Group className={styles.inputs}>
+          <Group
+            className={styles.inputs}
+            onFocus={() => {
+              typingInInputsRef.current = true
+            }}
+            onBlur={handleInputsBlur}
+          >
             <div className={styles.inputField}>
               <span className={styles.inputLabel}>{startDateLabel}</span>
               <DateInput slot="start" className={styles.dateInput} aria-label={startDateLabel}>
