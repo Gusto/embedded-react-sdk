@@ -31,9 +31,13 @@
   font-family: 'InterfaceLib Sans', Helvetica, Arial, sans-serif;
 }
 
-.interface-lib-adapter-active .GSDK :is(h1, h2) + p {
-  margin-top: 2px;
-  font-size: 16px;
+.interface-lib-adapter-active .GSDK :is(h1, h2):has(+ p) {
+  margin-bottom: 12.5px;
+}
+
+.interface-lib-adapter-active .GSDK :is(h1, h2) + p,
+.interface-lib-adapter-active .GSDK :is(h1, h2) + p + p {
+  font-size: 14px;
 }
 
 /* SDK-internal switch-field wrapper — no exposed adapter prop, so override

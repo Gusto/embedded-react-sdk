@@ -1,3 +1,6 @@
-.content {
-  width: 100%;
+.actionsContainer {
+  display: flex;
+  gap: toRem(4);
+  align-items: center;
+  justify-content: flex-end;
 }

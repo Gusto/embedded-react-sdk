@@ -33,46 +33,44 @@ export function PayScheduleList({ companyId, onEvent }: PayScheduleListProps) {
           } else {
             displayName = schedule.customName
           }
-          const displayFrequency = schedule.customName
           return (
-            <Flex flexDirection="column" gap={0}>
-              <div className={styles.content}>
-                <div>{displayName}</div>
-                {hasName && <div>{displayFrequency}</div>}
-              </div>
-            </Flex>
+            <>
+              {displayName}
+              {hasName && (
+                <Components.Text size="sm" variant="supporting">
+                  {schedule.customName}
+                </Components.Text>
+              )}
+            </>
           )
         },
       },
       {
         title: <VisuallyHidden>{t('payScheduleList.active')}</VisuallyHidden>,
         key: 'active',
-        render: schedule => (
-          <Flex alignItems="center" justifyContent="center">
-            <div className={styles.content}>
-              {schedule.active ? (
-                <Components.Badge status="success">{t('payScheduleList.active')}</Components.Badge>
-              ) : (
-                <Components.Badge status="info">{t('payScheduleList.inactive')}</Components.Badge>
-              )}
-            </div>
-          </Flex>
-        ),
+        render: schedule =>
+          schedule.active ? (
+            <Components.Badge status="success">{t('payScheduleList.active')}</Components.Badge>
+          ) : (
+            <Components.Badge status="info">{t('payScheduleList.inactive')}</Components.Badge>
+          ),
       },
     ],
     itemMenu: schedule => (
-      <HamburgerMenu
-        triggerLabel="Actions"
-        items={[
-          {
-            label: t('payScheduleList.edit'),
-            onClick: () => {
-              onEvent(componentEvents.PAY_SCHEDULE_UPDATE, { uuid: schedule.uuid })
+      <div className={styles.actionsContainer}>
+        <HamburgerMenu
+          triggerLabel="Actions"
+          items={[
+            {
+              label: t('payScheduleList.edit'),
+              onClick: () => {
+                onEvent(componentEvents.PAY_SCHEDULE_UPDATE, { uuid: schedule.uuid })
+              },
+              icon: <PencilSvg aria-hidden />,
             },
-            icon: <PencilSvg aria-hidden />,
-          },
-        ]}
-      />
+          ]}
+        />
+      </div>
     ),
   })
 
