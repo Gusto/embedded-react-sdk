@@ -1,0 +1,32 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  overflow: hidden;
+  font-family: 'InterfaceLib Sans', Helvetica, Arial, sans-serif;
+  color: #101010;
+  box-shadow: inset 0 0 0 1px #dadada;
+}
+
+.header {
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 22px;
+  color: #ffffff;
+}
+
+.root[data-status='warning'] .header {
+  background-color: #d97706;
+}
+
+.root[data-status='error'] .header {
+  background-color: #cc0023;
+}
+
+.body {
+  padding: 16px 20px;
+  background-color: #ffffff;
+  font-size: 14px;
+  line-height: 20px;
+}

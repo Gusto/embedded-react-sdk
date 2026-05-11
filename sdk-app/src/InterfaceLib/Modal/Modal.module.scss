@@ -1,0 +1,52 @@
+.dialog {
+  padding: 0;
+  border: 0;
+  margin: auto;
+  max-width: none;
+  max-height: none;
+  background: transparent;
+  color: inherit;
+
+  &::backdrop {
+    background-color: rgba(16, 16, 16, 0.6);
+  }
+
+  &:not([open]) {
+    display: none;
+  }
+}
+
+.backdrop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  max-width: 560px;
+  max-height: calc(100vh - 48px);
+  width: 100%;
+  border-radius: 12px;
+  background-color: #ffffff;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.24);
+  font-family: 'InterfaceLib Sans', Helvetica, Arial, sans-serif;
+  color: #101010;
+  overflow: hidden;
+}
+
+.body {
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 16px 24px;
+  border-top: 1px solid #dadada;
+  background-color: #fafafa;
+}

@@ -1,0 +1,47 @@
+.root {
+  font-family: 'InterfaceLib Sans', Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  color: #666666;
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.separator {
+  color: #b3b3b3;
+}
+
+.link {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #101010;
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.current {
+  color: #101010;
+  font-weight: 500;
+}

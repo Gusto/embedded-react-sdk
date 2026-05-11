@@ -1,0 +1,33 @@
+.root {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  font-family: 'InterfaceLib Sans', Helvetica, Arial, sans-serif;
+  color: #101010;
+}
+
+.titleBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 24px;
+}
+
+.description {
+  margin: 0;
+  font-size: 14px;
+  line-height: 20px;
+  color: #666666;
+}
+
+.action {
+  flex-shrink: 0;
+}

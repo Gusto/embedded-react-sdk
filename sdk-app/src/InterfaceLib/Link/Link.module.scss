@@ -1,0 +1,20 @@
+.root {
+  font-family: 'InterfaceLib Sans', Helvetica, Arial, sans-serif;
+  color: rgb(16, 16, 16);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+  cursor: pointer;
+  transition: color 0.125s linear;
+
+  &:hover {
+    color: rgb(51, 51, 51);
+    text-decoration-thickness: 2px;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #101010;
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+}

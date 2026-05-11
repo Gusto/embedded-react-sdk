@@ -1,0 +1,24 @@
+.root {
+  margin: 0;
+  padding-left: 24px;
+  font-family: 'InterfaceLib Sans', Helvetica, Arial, sans-serif;
+  color: #101010;
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.ordered {
+  list-style: decimal;
+}
+
+.unordered {
+  list-style: square;
+}
+
+.item {
+  margin-bottom: 4px;
+}
+
+.item::marker {
+  color: rgb(16, 16, 16);
+}

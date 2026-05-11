@@ -1,0 +1,43 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-family: 'InterfaceLib Sans', Helvetica, Arial, sans-serif;
+  color: #101010;
+}
+
+.header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.steps {
+  font-size: 13px;
+  line-height: 18px;
+  color: #666666;
+}
+
+.track {
+  height: 6px;
+  border-radius: 999px;
+  background-color: #ebebeb;
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  background-color: rgb(16, 16, 16);
+  transition: width 0.24s ease-in-out;
+}
+
+.cta {
+  margin-top: 4px;
+}

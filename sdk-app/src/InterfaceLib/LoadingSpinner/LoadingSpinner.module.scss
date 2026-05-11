@@ -1,0 +1,33 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.root[data-style='block'] {
+  display: flex;
+  width: 100%;
+  padding: 16px 0;
+}
+
+.spinner {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 3px solid #ebebeb;
+  border-top-color: rgb(16, 16, 16);
+  animation: spin 0.8s linear infinite;
+}
+
+.root[data-size='sm'] .spinner {
+  width: 18px;
+  height: 18px;
+  border-width: 2px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

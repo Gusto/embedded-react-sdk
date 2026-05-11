@@ -1,0 +1,202 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  font-family: 'InterfaceLib Sans', Helvetica, Arial, sans-serif;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.fieldWrapper {
+  position: relative;
+}
+
+.field {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 64px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: #101010;
+  transition: background-color 0.24s;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 8px;
+    box-shadow: inset 0 0 0 1px #dadada;
+    pointer-events: none;
+    transition: box-shadow 0.24s;
+  }
+
+  &:hover:not([data-disabled]):not(:focus-within)::after {
+    box-shadow: inset 0 0 0 1px #101010;
+  }
+
+  &:focus-within::after {
+    box-shadow: inset 0 0 0 2px #101010;
+  }
+}
+
+.root[data-invalid] .field::after {
+  box-shadow: inset 0 0 0 1px #cc0023;
+}
+
+.root[data-disabled] .field {
+  background-color: #f0f0f0;
+  color: #959595;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  color: #666666;
+}
+
+.labelHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.optional {
+  font-weight: 400;
+}
+
+.chipsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background-color: rgb(16, 16, 16);
+  color: #ffffff;
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.chipRemove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background-color: transparent;
+  color: inherit;
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+.input {
+  flex: 1;
+  min-width: 80px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 22px;
+  outline: none;
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.tooltipFloat {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.listbox {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  max-height: 220px;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+  overflow-y: auto;
+  z-index: 10;
+}
+
+.option {
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  line-height: 20px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f5f5f5;
+  }
+}
+
+.optionSelected {
+  background-color: rgb(16, 16, 16);
+  color: #ffffff;
+
+  &:hover {
+    background-color: rgb(51, 51, 51);
+  }
+}
+
+.loading,
+.empty {
+  padding: 8px 12px;
+  font-size: 14px;
+  color: #666666;
+}
+
+.error {
+  font-size: 14px;
+  line-height: 20px;
+  color: #cc0023;
+}
