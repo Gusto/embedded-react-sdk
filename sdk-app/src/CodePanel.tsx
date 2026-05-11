@@ -67,11 +67,13 @@ export function CodePanel({ onClose }: CodePanelProps) {
             {({ className, style, tokens, getLineProps, getTokenProps }) => (
               <pre className={`${styles.code} ${className}`} style={style}>
                 {tokens.map((line, i) => (
-                  <div key={i} {...getLineProps({ line })}>
+                  <div key={i} {...getLineProps({ line, className: styles.line })}>
                     <span className={styles.lineNumber}>{i + 1}</span>
-                    {line.map((token, key) => (
-                      <span key={key} {...getTokenProps({ token })} />
-                    ))}
+                    <span className={styles.lineContent}>
+                      {line.map((token, key) => (
+                        <span key={key} {...getTokenProps({ token })} />
+                      ))}
+                    </span>
                   </div>
                 ))}
               </pre>
