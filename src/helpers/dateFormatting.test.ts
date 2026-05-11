@@ -195,9 +195,9 @@ describe('Date Formatting Helpers', () => {
   })
 
   describe('normalizeDateToLocal', () => {
-    it('should normalize UTC dates to local midnight', () => {
-      const utcDate = new Date('2023-12-25T00:00:00.000Z')
-      const normalized = normalizeDateToLocal(utcDate)
+    it('returns local midnight for a Date already at local midnight', () => {
+      const localMidnight = new Date(2023, 11, 25) // local midnight Dec 25
+      const normalized = normalizeDateToLocal(localMidnight)
 
       assertDefined(normalized)
       expect(normalized.getFullYear()).toBe(2023)
@@ -207,8 +207,8 @@ describe('Date Formatting Helpers', () => {
       expect(normalized.getMinutes()).toBe(0)
     })
 
-    it('should normalize dates with time to midnight', () => {
-      const dateWithTime = new Date('2024-03-15T15:30:45.000Z')
+    it('strips the time portion to local midnight', () => {
+      const dateWithTime = new Date(2024, 2, 15, 15, 30, 45) // March 15 15:30 local
       const normalized = normalizeDateToLocal(dateWithTime)
 
       assertDefined(normalized)
@@ -358,29 +358,21 @@ describe('Date Formatting Helpers', () => {
     })
 
     describe('normalizeDateToLocal', () => {
-      it.fails(
-        'preserves the local calendar date when the input is already at local midnight',
-        () => {
-          const localMidnight = new Date(2026, 5, 15)
-          const result = normalizeDateToLocal(localMidnight)
+      it('preserves the local calendar date when the input is already at local midnight', () => {
+        const localMidnight = new Date(2026, 5, 15)
+        const result = normalizeDateToLocal(localMidnight)
 
-          assertDefined(result)
-          expect(result.getFullYear()).toBe(2026)
-          expect(result.getMonth()).toBe(5) // June
-          expect(result.getDate()).toBe(15)
-        },
-      )
+        assertDefined(result)
+        expect(result.getFullYear()).toBe(2026)
+        expect(result.getMonth()).toBe(5) // June
+        expect(result.getDate()).toBe(15)
+      })
     })
 
     describe('formatDateToStringDate', () => {
-      it.fails(
-        'returns a YYYY-MM-DD string matching the local calendar date when the input is at local midnight',
-        () => {
-          // Bug: uses toISOString().split('T')[0] which reads UTC.
-          // In UTC+2, local midnight June 15 = UTC June 14 22:00 → returns '2026-06-14'.
-          expect(formatDateToStringDate(new Date(2026, 5, 15))).toBe('2026-06-15')
-        },
-      )
+      it('returns a YYYY-MM-DD string matching the local calendar date when the input is at local midnight', () => {
+        expect(formatDateToStringDate(new Date(2026, 5, 15))).toBe('2026-06-15')
+      })
     })
   })
 })

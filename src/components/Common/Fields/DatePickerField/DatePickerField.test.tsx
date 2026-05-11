@@ -162,66 +162,57 @@ describe('DatePickerField', () => {
       vi.unstubAllEnvs()
     })
 
-    it.fails(
-      'Date mode: submits the correct date when local midnight falls in UTC previous day',
-      async () => {
-        const onSubmit = vi.fn<SubmitHandler<DateTestFormValues>>()
-        // June 10 initial value keeps the calendar in June 2026 despite the UTC shift
-        render(<TestForm defaultValues={{ testDate: new Date(2026, 5, 10) }} onSubmit={onSubmit} />)
+    it('Date mode: submits the correct date when local midnight falls in UTC previous day', async () => {
+      const onSubmit = vi.fn<SubmitHandler<DateTestFormValues>>()
+      // June 10 initial value keeps the calendar in June 2026 despite the UTC shift
+      render(<TestForm defaultValues={{ testDate: new Date(2026, 5, 10) }} onSubmit={onSubmit} />)
 
-        // Open the calendar via the toggle button inside the date picker group
-        const group = screen.getByRole('group', { name: new RegExp(LABEL, 'i') })
-        await user.click(within(group).getByRole('button'))
-        await waitFor(() => expect(screen.getByRole('dialog')).toBeInTheDocument())
+      // Open the calendar via the toggle button inside the date picker group
+      const group = screen.getByRole('group', { name: new RegExp(LABEL, 'i') })
+      await user.click(within(group).getByRole('button'))
+      await waitFor(() => expect(screen.getByRole('dialog')).toBeInTheDocument())
 
-        const june15 = screen
-          .getAllByRole('button')
-          .find(btn => btn.getAttribute('aria-label')?.includes('June 15'))
-        assertDefined(june15)
-        await user.click(june15)
+      const june15 = screen
+        .getAllByRole('button')
+        .find(btn => btn.getAttribute('aria-label')?.includes('June 15'))
+      assertDefined(june15)
+      await user.click(june15)
 
-        await user.click(screen.getByRole('button', { name: 'Submit' }))
-        await waitFor(() => {
-          expect(onSubmit).toHaveBeenCalled()
-        })
+      await user.click(screen.getByRole('button', { name: 'Submit' }))
+      await waitFor(() => {
+        expect(onSubmit).toHaveBeenCalled()
+      })
 
-        const submitted = onSubmit.mock.calls[0]?.[0].testDate
-        assertInstanceOf(submitted, Date)
-        expect(submitted.getFullYear()).toBe(2026)
-        expect(submitted.getMonth()).toBe(5) // June = index 5
-        expect(submitted.getDate()).toBe(15)
-      },
-    )
+      const submitted = onSubmit.mock.calls[0]?.[0].testDate
+      assertInstanceOf(submitted, Date)
+      expect(submitted.getFullYear()).toBe(2026)
+      expect(submitted.getMonth()).toBe(5) // June = index 5
+      expect(submitted.getDate()).toBe(15)
+    })
 
-    it.fails(
-      'String mode: submits the correct YYYY-MM-DD when local midnight falls in UTC previous day',
-      async () => {
-        const onSubmit = vi.fn<SubmitHandler<DateTestFormValues>>()
-        render(<TestForm defaultValues={{ testDate: '2026-06-10' }} onSubmit={onSubmit} />)
+    it('String mode: submits the correct YYYY-MM-DD when local midnight falls in UTC previous day', async () => {
+      const onSubmit = vi.fn<SubmitHandler<DateTestFormValues>>()
+      render(<TestForm defaultValues={{ testDate: '2026-06-10' }} onSubmit={onSubmit} />)
 
-        const group = screen.getByRole('group', { name: new RegExp(LABEL, 'i') })
-        await user.click(within(group).getByRole('button'))
-        await waitFor(() => expect(screen.getByRole('dialog')).toBeInTheDocument())
+      const group = screen.getByRole('group', { name: new RegExp(LABEL, 'i') })
+      await user.click(within(group).getByRole('button'))
+      await waitFor(() => expect(screen.getByRole('dialog')).toBeInTheDocument())
 
-        const june15 = screen
-          .getAllByRole('button')
-          .find(btn => btn.getAttribute('aria-label')?.includes('June 15'))
-        assertDefined(june15)
-        await user.click(june15)
+      const june15 = screen
+        .getAllByRole('button')
+        .find(btn => btn.getAttribute('aria-label')?.includes('June 15'))
+      assertDefined(june15)
+      await user.click(june15)
 
-        await user.click(screen.getByRole('button', { name: 'Submit' }))
-        await waitFor(() => {
-          expect(onSubmit).toHaveBeenCalled()
-        })
+      await user.click(screen.getByRole('button', { name: 'Submit' }))
+      await waitFor(() => {
+        expect(onSubmit).toHaveBeenCalled()
+      })
 
-        // Bug: normalizeDateToLocal shift + formatDateToStringDate shift = 2 days off.
-        // Local midnight June 15 → normalizeDateToLocal returns June 14 → formatDateToStringDate
-        // reads UTC again, returning '2026-06-13' instead of '2026-06-15'.
-        expect(onSubmit).toHaveBeenCalledWith(
-          expect.objectContaining({ testDate: '2026-06-15' }),
-          expect.anything(),
-        )
-      },
-    )
+      expect(onSubmit).toHaveBeenCalledWith(
+        expect.objectContaining({ testDate: '2026-06-15' }),
+        expect.anything(),
+      )
+    })
   })
 })

@@ -191,19 +191,14 @@ describe('DatePicker Component', () => {
         vi.unstubAllEnvs()
       })
 
-      it.fails(
-        'renders the correct day segment when value is local midnight in a UTC+2 timezone',
-        () => {
-          // Bug: DatePicker uses formatDateToStringDate(value) which calls toISOString().
-          // In UTC+2, local midnight June 15 = UTC June 14 22:00 → displayed as June 14.
-          renderDatePicker({ value: new Date(2026, 5, 15) })
-          const group = screen.getByRole('group', { name: /test date/i })
-          expect(within(group).getByRole('spinbutton', { name: /^day/i })).toHaveAttribute(
-            'aria-valuenow',
-            '15',
-          )
-        },
-      )
+      it('renders the correct day segment when value is local midnight in a UTC+2 timezone', () => {
+        renderDatePicker({ value: new Date(2026, 5, 15) })
+        const group = screen.getByRole('group', { name: /test date/i })
+        expect(within(group).getByRole('spinbutton', { name: /^day/i })).toHaveAttribute(
+          'aria-valuenow',
+          '15',
+        )
+      })
     })
   })
 

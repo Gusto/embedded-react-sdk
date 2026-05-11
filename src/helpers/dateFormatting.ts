@@ -172,7 +172,10 @@ export const formatDateToStringDate = (date: Date): string | null => {
   if (isNaN(date.getTime())) {
     return null
   }
-  return date.toISOString().split('T')[0] || null
+  const year = String(date.getFullYear()).padStart(4, '0')
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
 }
 
 /**
@@ -203,22 +206,7 @@ export const normalizeDateToLocal = (date: Date | null): Date | null => {
   if (!date || isNaN(date.getTime())) {
     return null
   }
-
-  const isoString = date.toISOString()
-  const [datePart] = isoString.split('T')
-  if (!datePart) return null
-
-  const parts = datePart.split('-')
-  if (parts.length !== 3) return null
-  const numbers = parts.map(Number)
-  const year = numbers[0]!
-  const month = numbers[1]!
-  const day = numbers[2]!
-  if (isNaN(year) || isNaN(month) || isNaN(day) || month < 1 || month > 12 || day < 1 || day > 31) {
-    return null
-  }
-
-  return new Date(year, month - 1, day)
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate())
 }
 
 export const MS_PER_HOUR = 1000 * 60 * 60
