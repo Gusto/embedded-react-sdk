@@ -16,7 +16,6 @@ import { demoChromes } from './demoChromes/registry'
 import styles from './DemoSettingsPanel.module.scss'
 
 interface DemoSettingsPanelProps {
-  isOpen: boolean
   onClose: () => void
   entities: EntityIds
   onUpdateEntity: (key: keyof EntityIds, value: string) => void
@@ -357,7 +356,6 @@ function EntityCombobox({
 }
 
 export function DemoSettingsPanel({
-  isOpen,
   onClose,
   entities,
   onUpdateEntity,
@@ -401,17 +399,6 @@ export function DemoSettingsPanel({
     setTabMode(mode)
   }, [mode])
 
-  useEffect(() => {
-    if (!isOpen) {
-      confirmedSnapshot.current = entities
-      setManualError(null)
-      setManualBanner(null)
-      setTabMode(mode)
-      setSaveDialogOpen(false)
-      setSaveDialogName('')
-    }
-  }, [isOpen, entities, mode])
-
   const env = typeof __SDK_APP_ENV__ !== 'undefined' ? __SDK_APP_ENV__ : 'demo'
   const build = typeof __SDK_APP_BUILD__ !== 'undefined' ? __SDK_APP_BUILD__ : 'dev'
   const buildProxyMode =
@@ -428,30 +415,17 @@ export function DemoSettingsPanel({
     entities.payrollId !== confirmedSnapshot.current.payrollId ||
     TEXT_FIELDS.some(({ key }) => entities[key] !== confirmedSnapshot.current[key])
 
-  if (!isOpen) return null
-
   const displayEnv = env === 'localzp' ? 'local' : env
 
   return (
-    <>
-      <div
-        className={styles.overlay}
-        onClick={onClose}
-        onKeyDown={e => {
-          if (e.key === 'Escape') onClose()
-        }}
-        role="button"
-        tabIndex={-1}
-        aria-label="Close settings"
-      />
-      <div className={styles.panel}>
-        <div className={styles.header}>
-          <h2>Demo Settings</h2>
-          <button className={styles.close} onClick={onClose} type="button">
-            &times;
-          </button>
-        </div>
-
+    <div className={styles.panel}>
+      <div className={styles.header}>
+        <h2>Demo Settings</h2>
+        <button className={styles.close} onClick={onClose} type="button">
+          &times;
+        </button>
+      </div>
+      <div className={styles.body}>
         <div className={styles.section}>
           <h3>Mode</h3>
           <div className={styles.modeToggle} role="tablist" aria-label="App mode">
@@ -860,6 +834,6 @@ export function DemoSettingsPanel({
           </div>
         </div>
       </div>
-    </>
+    </div>
   )
 }

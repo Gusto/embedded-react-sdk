@@ -19,6 +19,7 @@ const SHORTCUTS: Shortcut[] = [
   { keys: [MOD, ','], label: 'Open settings' },
   { keys: [MOD, '.'], label: 'Toggle design / development' },
   { keys: [MOD, ';'], label: 'Cycle theme (system → light → dark)' },
+  { keys: [MOD, 'J'], label: 'Open theme panel' },
 ]
 
 interface ShortcutHelperProps {

@@ -137,6 +137,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | `/v1/companies/:companyId/federal_tax_details` |
 |  | GET | `/v1/locations/:locationUuid/minimum_wages` |
 |  | DELETE | `/v1/jobs/:jobId` |
+|  | POST | `/v1/jobs/:jobId/compensations` |
 | **Employee.FederalTaxes** | GET | `/v1/employees/:employeeUuid/federal_taxes` |
 |  | PUT | `/v1/employees/:employeeUuid/federal_taxes` |
 | **Employee.StateTaxes** | GET | `/v1/employees/:employeeUuid/state_taxes` |

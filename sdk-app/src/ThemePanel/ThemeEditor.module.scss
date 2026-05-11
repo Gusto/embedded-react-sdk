@@ -1,0 +1,207 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex: 1;
+  min-height: 0;
+}
+
+.searchRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  border-bottom: 0.0625rem solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.searchInput {
+  flex: 1;
+  font-size: 0.8125rem;
+  padding: 0.3125rem 0.625rem;
+  border: 0.0625rem solid var(--color-border);
+  border-radius: 0.375rem;
+  background: transparent;
+  color: inherit;
+  min-width: 0;
+
+  &::placeholder {
+    color: var(--color-text-muted);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-active);
+  }
+
+  // Remove native search input clear button
+  &::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+  }
+}
+
+.clearBtn {
+  font-size: 0.6875rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  border: 0.0625rem solid currentColor;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition:
+    color 0.15s,
+    border-color 0.15s;
+
+  &:hover {
+    color: #ef4444;
+    border-color: #ef4444;
+  }
+}
+
+.groups {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.group {
+  border-bottom: 0.0625rem solid var(--color-border);
+}
+
+.groupHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.5rem 1.25rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+  text-align: left;
+
+  &:hover {
+    background: var(--color-hover-bg);
+  }
+}
+
+.groupLabel {
+  flex: 1;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.groupCount {
+  font-size: 0.625rem;
+  color: var(--color-text-muted);
+  background: var(--color-hover-bg);
+  border-radius: 0.75rem;
+  padding: 0.0625rem 0.375rem;
+  line-height: 1.4;
+}
+
+.groupChevron {
+  font-size: 0.625rem;
+  color: var(--color-text-muted);
+  transition: transform 0.15s;
+  display: inline-block;
+}
+
+.groupChevronOpen {
+  transform: rotate(90deg);
+}
+
+.groupBody {
+  padding: 0.25rem 0 0.5rem;
+}
+
+// Token rows
+
+.token {
+  display: grid;
+  grid-template-columns: 1.25rem 1fr;
+  grid-template-rows: auto auto;
+  gap: 0.125rem 0.5rem;
+  align-items: center;
+  padding: 0.3125rem 1.25rem;
+}
+
+.tokenPreview {
+  grid-row: 1 / 3;
+  grid-column: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tokenPreviewPlaceholder {
+  grid-row: 1 / 3;
+  grid-column: 1;
+  width: 1rem;
+}
+
+.colorPickerLabel {
+  display: flex;
+  position: relative;
+  cursor: pointer;
+}
+
+.colorSwatch {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0.1875rem;
+  flex-shrink: 0;
+  box-shadow:
+    inset 0 0 0 0.0625rem rgba(0, 0, 0, 0.2),
+    inset 0 0 0 0.125rem rgba(255, 255, 255, 0.15);
+}
+
+.colorPickerInput {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  padding: 0;
+  border: none;
+}
+
+.tokenLabel {
+  grid-column: 2;
+  grid-row: 1;
+  font-size: 0.6875rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.colorInput {
+  grid-column: 2;
+  grid-row: 2;
+  font-size: 0.75rem;
+  padding: 0.1875rem 0.4375rem;
+  border: 0.0625rem solid var(--color-border);
+  border-radius: 0.25rem;
+  background: transparent;
+  color: inherit;
+  width: 100%;
+  font-family: monospace;
+  transition: border-color 0.15s;
+
+  &::placeholder {
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-active);
+  }
+}

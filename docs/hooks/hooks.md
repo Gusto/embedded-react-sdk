@@ -11,16 +11,17 @@ Hooks give you full control over form rendering while the SDK manages data fetch
 
 ## Available Hooks
 
-| Hook                        | Description                                                                                                  | Reference                                                   |
-| --------------------------- | ------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------- |
-| `useEmployeeDetailsForm`    | Create or update employee profile fields (name, email, SSN, date of birth, self-onboarding)                  | [useEmployeeDetailsForm](./useEmployeeDetailsForm.md)       |
-| `useCompensationForm`       | Create or update job compensation (job title, FLSA status, pay rate, payment unit, minimum wage adjustments) | [useCompensationForm](./useCompensationForm.md)             |
-| `useWorkAddressForm`        | Create or update an employee's work address (company location select, effective date)                        | [useWorkAddressForm](./useWorkAddressForm.md)               |
-| `useFederalTaxesForm`       | Update an employee's federal tax (W-4) withholding information                                               | [useFederalTaxesForm](./useFederalTaxesForm.md)             |
-| `useEmployeeStateTaxesForm` | Update an employee's state tax withholding answers (dynamic, per-state question groups)                      | [useEmployeeStateTaxesForm](./useEmployeeStateTaxesForm.md) |
-| `usePayScheduleForm`        | Create or update a company pay schedule (frequency, pay dates, pay period calendar preview)                  | [usePayScheduleForm](./usePayScheduleForm.md)               |
-| `useSignCompanyForm`        | Sign a company form (PDF viewer, typed signature, confirmation checkbox)                                     | [useSignCompanyForm](./useSignCompanyForm.md)               |
-| `useSignEmployeeForm`       | Sign an employee form (signature, confirmation, I-9 preparer/translator sections)                            | [useSignEmployeeForm](./useSignEmployeeForm.md)             |
+| Hook                        | Description                                                                                        | Reference                                                   |
+| --------------------------- | -------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| `useEmployeeDetailsForm`    | Create or update employee profile fields (name, email, SSN, date of birth, self-onboarding)        | [useEmployeeDetailsForm](./useEmployeeDetailsForm.md)       |
+| `useJobForm`                | Create or update an employee's job (title, hire date, S-Corp 2% shareholder, WA workers' comp)     | [useJobForm](./useJobForm.md)                               |
+| `useCompensationForm`       | Create or update a compensation row on a job (FLSA status, pay rate, payment unit, effective date) | [useCompensationForm](./useCompensationForm.md)             |
+| `useWorkAddressForm`        | Create or update an employee's work address (company location select, effective date)              | [useWorkAddressForm](./useWorkAddressForm.md)               |
+| `useFederalTaxesForm`       | Update an employee's federal tax (W-4) withholding information                                     | [useFederalTaxesForm](./useFederalTaxesForm.md)             |
+| `useEmployeeStateTaxesForm` | Update an employee's state tax withholding answers (dynamic, per-state question groups)            | [useEmployeeStateTaxesForm](./useEmployeeStateTaxesForm.md) |
+| `usePayScheduleForm`        | Create or update a company pay schedule (frequency, pay dates, pay period calendar preview)        | [usePayScheduleForm](./usePayScheduleForm.md)               |
+| `useSignCompanyForm`        | Sign a company form (PDF viewer, typed signature, confirmation checkbox)                           | [useSignCompanyForm](./useSignCompanyForm.md)               |
+| `useSignEmployeeForm`       | Sign an employee form (signature, confirmation, I-9 preparer/translator sections)                  | [useSignEmployeeForm](./useSignEmployeeForm.md)             |
 
 ---
 
@@ -221,7 +222,8 @@ if (!employeeDetails.isLoading) {
 The shape of `data` varies by hook — see each hook's reference page for details:
 
 - `useEmployeeDetailsForm` — `{ employee }`
-- `useCompensationForm` — `{ compensation, jobs, currentJob, minimumWages }`
+- `useJobForm` — `{ currentJob, jobs, employee, currentWorkAddress, showTwoPercentShareholder, showStateWc }`
+- `useCompensationForm` — `{ compensation, currentJob, minimumWages, minimumEffectiveDate, maximumEffectiveDate, hasPendingFutureCompensation }` (plus `status.willDeleteSecondaryJobs` for the reactive carve-out flag)
 - `useWorkAddressForm` — `{ workAddress, workAddresses, companyLocations }`
 - `usePayScheduleForm` — `{ paySchedule, payPeriodPreview, payPreviewLoading, paymentSpeedDays }`
 - `useSignCompanyForm` — `{ companyForm, pdfUrl }`
@@ -255,15 +257,25 @@ useEmployeeDetailsForm({
 })
 ```
 
-### `optionalFieldsToRequire` (useCompensationForm)
+### `optionalFieldsToRequire` (useJobForm, useCompensationForm)
 
 Override specific fields that are optional in a given mode to be required. The type constrains which fields can be listed per mode — only fields that are actually optional in that mode are allowed:
 
 ```tsx
+useJobForm({
+  employeeId,
+  jobId,
+  optionalFieldsToRequire: {
+    update: ['title'],
+  },
+})
+
 useCompensationForm({
   employeeId,
+  jobId,
+  compensationId,
   optionalFieldsToRequire: {
-    update: ['jobTitle', 'rate'],
+    update: ['rate'],
   },
 })
 ```
@@ -271,6 +283,7 @@ useCompensationForm({
 Each hook's reference page documents which fields are available to require and which are required by default in each mode. See:
 
 - [useEmployeeDetailsForm required fields](./useEmployeeDetailsForm.md#required-fields)
+- [useJobForm configurable required fields](./useJobForm.md#configurable-required-fields)
 - [useCompensationForm configurable required fields](./useCompensationForm.md#configurable-required-fields)
 - [useWorkAddressForm required fields](./useWorkAddressForm.md#required-fields)
 - [usePayScheduleForm configurable required fields](./usePayScheduleForm.md#configurable-required-fields)
@@ -290,11 +303,20 @@ useEmployeeDetailsForm({
   },
 })
 
+useJobForm({
+  employeeId,
+  defaultValues: {
+    title: 'Software Engineer',
+    hireDate: '2025-01-15',
+  },
+})
+
 useCompensationForm({
   defaultValues: {
-    jobTitle: 'Software Engineer',
     rate: 85000,
     paymentUnit: 'Year',
+    flsaStatus: 'Exempt',
+    effectiveDate: '2025-01-15',
   },
 })
 ```
@@ -306,6 +328,7 @@ In **create mode** (no existing entity), `defaultValues` populate the form direc
 Each hook's reference page documents the full form data shape accepted by `defaultValues`:
 
 - [useEmployeeDetailsForm form data](./useEmployeeDetailsForm.md#employeedetailsformdata)
+- [useJobForm form data](./useJobForm.md#jobformdata)
 - [useCompensationForm form data](./useCompensationForm.md#compensationformdata)
 - [useWorkAddressForm form data](./useWorkAddressForm.md#workaddressformdata)
 - [usePayScheduleForm form data](./usePayScheduleForm.md#payscheduleformdata)
@@ -368,7 +391,7 @@ interface SDKFieldError {
 }
 ```
 
-### Error categories and partner actions
+### Error categories and recommended actions
 
 | Category           | What happened                                                    | What you should do                                                                                                                                         |
 | ------------------ | ---------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -511,11 +534,12 @@ import { EmployeeDetailsErrorCodes } from '@gusto/embedded-react-sdk'
 />
 ```
 
-If you omit `validationMessages`, validation still runs and the field is marked as invalid, but the displayed text falls back to the raw error code (e.g., `REQUIRED`, `INVALID_EMAIL`, `INVALID_AMOUNT`). Always supply `validationMessages` for production UI so partners control the user-facing copy.
+If you omit `validationMessages`, validation still runs and the field is marked as invalid, but the displayed text falls back to the raw error code (e.g., `REQUIRED`, `INVALID_EMAIL`, `INVALID_AMOUNT`). Always supply `validationMessages` for production UI so you control the user-facing copy.
 
 Error codes for each hook are exported alongside the hook:
 
 - `EmployeeDetailsErrorCodes` — see [useEmployeeDetailsForm field reference](./useEmployeeDetailsForm.md#fields-reference)
+- `JobErrorCodes` — see [useJobForm field reference](./useJobForm.md#fields-reference)
 - `CompensationErrorCodes` — see [useCompensationForm field reference](./useCompensationForm.md#fields-reference)
 - `WorkAddressErrorCodes` — see [useWorkAddressForm field reference](./useWorkAddressForm.md#fields-reference)
 - `PayScheduleErrorCodes` — see [usePayScheduleForm field reference](./usePayScheduleForm.md#fields-reference)
@@ -751,6 +775,12 @@ function OnboardingPage({ companyId, employeeId }: { companyId: string; employee
 
 Fields from `employeeDetails`, `compensation`, and `workAddress` are freely interleaved — each field knows which hook it belongs to via its `formHookResult` prop. Validation, error handling, and submission all work identically to the provider-based approach.
 
+### Composing Job + Compensation
+
+Jobs and compensations are separate entities in the Gusto API and most product flows compose both hooks on the same screen. See [Working with Jobs and Compensations](./jobs-and-compensations.md) for the full onboarding-stub-fill and steady-state-edit patterns.
+
+---
+
 ### Submit-time entity ID resolution
 
 In a create flow, the employee doesn't exist yet — so `useCompensationForm` and `useWorkAddressForm` can't receive an `employeeId` at init time. Both hooks accept `employeeId` as optional in their props and allow it to be provided at submit time via the `options` parameter:
@@ -781,7 +811,7 @@ function CreateOnboardingPage({ companyId }: { companyId: string }) {
 
       const newEmployeeId = employeeResult.data.uuid
 
-      await compensation.actions.onSubmit(undefined, { employeeId: newEmployeeId })
+      await compensation.actions.onSubmit({ employeeId: newEmployeeId })
       await workAddress.actions.onSubmit(undefined, { employeeId: newEmployeeId })
     },
   )
@@ -807,7 +837,7 @@ const { handleSubmit, errorHandling } = composeSubmitHandler(
 
     const newEmployeeId = employeeResult.data.uuid
 
-    await compensation.actions.onSubmit(undefined, { employeeId: newEmployeeId })
+    await compensation.actions.onSubmit({ employeeId: newEmployeeId })
     await workAddress.actions.onSubmit(undefined, { employeeId: newEmployeeId })
   },
 )
@@ -854,7 +884,7 @@ const { handleSubmit } = composeSubmitHandler(
     const workAddressValues = workAddress.form.getFormSubmissionValues()
 
     await workAddress.actions.onSubmit(undefined, { employeeId: newEmployeeId })
-    await compensation.actions.onSubmit(undefined, {
+    await compensation.actions.onSubmit({
       employeeId: newEmployeeId,
       startDate: workAddressValues?.effectiveDate,
     })

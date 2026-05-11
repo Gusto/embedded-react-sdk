@@ -62,7 +62,7 @@ The hook returns a discriminated union on `isLoading`.
 }
 ```
 
-The non-primitive types in the Ready state are all re-exported from `@gusto/embedded-react-sdk` for partner use:
+The non-primitive types in the Ready state are all re-exported from `@gusto/embedded-react-sdk`:
 
 | Type                               | What it is                                                                                                                                                                                               |
 | ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

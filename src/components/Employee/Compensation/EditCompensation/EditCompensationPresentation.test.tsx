@@ -247,6 +247,40 @@ describe('EditCompensationPresentation', () => {
 
       expect(await screen.findByText(/Changing this employee's classification/)).toBeInTheDocument()
     })
+
+    it('EMF-CO3: warning persists once the user has triggered an FLSA change', async () => {
+      // The warning is a forward-only signal: once the user demonstrates intent
+      // to change classification away from Nonexempt with secondaries, we keep
+      // the warning visible even if they toggle back to Nonexempt — partners
+      // need to know secondary pay-rate carve-out can still be triggered on
+      // submit. (Aligns with current CompensationPresentation behavior.)
+      const user = userEvent.setup()
+      renderWithProviders(
+        <EditCompensationPresentation
+          {...defaultProps}
+          canChangeFlsaClassification
+          currentCompensationFlsaStatus={FlsaStatus.NONEXEMPT}
+          otherJobsCount={1}
+          defaultValues={{
+            ...baseDefaults,
+            jobTitle: 'Main Gig',
+            flsaStatus: FlsaStatus.NONEXEMPT,
+            rate: 25,
+          }}
+          onCancel={vi.fn()}
+        />,
+      )
+
+      await user.click(await screen.findByRole('button', { name: /Paid by the hour/i }))
+      await user.click(screen.getByRole('option', { name: /Salary\/No overtime/i }))
+
+      expect(await screen.findByText(/Changing this employee's classification/)).toBeInTheDocument()
+
+      await user.click(screen.getByRole('button', { name: /Salary\/No overtime/i }))
+      await user.click(screen.getByRole('option', { name: 'Paid by the hour' }))
+
+      expect(screen.getByText(/Changing this employee's classification/)).toBeInTheDocument()
+    })
   })
 
   describe('two percent shareholder', () => {
@@ -504,6 +538,30 @@ describe('EditCompensationPresentation', () => {
       await user.click(await screen.findByRole('switch', { name: 'Adjust for minimum wage' }))
 
       expect(await screen.findByText('Minimum wage')).toBeInTheDocument()
+    })
+
+    it('EMF-M03: blocks submit and surfaces a required error when the switch is on without a minimumWageId', async () => {
+      const onSave = vi.fn()
+      const user = userEvent.setup()
+      renderWithProviders(
+        <EditCompensationPresentation
+          {...defaultProps}
+          onSave={onSave}
+          state="CO"
+          minimumWages={minimumWageFixture}
+          defaultValues={{
+            ...baseDefaults,
+            jobTitle: 'Server',
+            flsaStatus: FlsaStatus.NONEXEMPT,
+            rate: 25,
+          }}
+        />,
+      )
+
+      await user.click(await screen.findByRole('switch', { name: 'Adjust for minimum wage' }))
+      await user.click(screen.getByRole('button', { name: 'Continue' }))
+
+      expect(onSave).not.toHaveBeenCalled()
     })
   })
 })
