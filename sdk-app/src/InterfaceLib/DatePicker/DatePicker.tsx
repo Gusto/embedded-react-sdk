@@ -63,6 +63,7 @@ export function DatePicker({
   value,
   shouldVisuallyHideLabel,
   className,
+  placeholder,
   portalContainer,
   minDate,
   maxDate,
@@ -141,7 +142,7 @@ export function DatePicker({
                 {value ? (
                   formatDisplay(value)
                 ) : (
-                  <span className={styles.placeholder}>mm/dd/yyyy</span>
+                  <span className={styles.placeholder}>{placeholder ?? 'mm/dd/yyyy'}</span>
                 )}
               </span>
             </span>
