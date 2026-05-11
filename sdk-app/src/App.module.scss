@@ -2,6 +2,6 @@
   position: fixed;
   bottom: calc(var(--events-log-total-height) + 1rem);
   right: 1.5rem;
-  z-index: 200;
+  z-index: 99;
   transition: bottom 0.2s ease;
 }
