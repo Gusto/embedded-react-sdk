@@ -10,7 +10,15 @@ export type {
   CheckboxGroupOption,
 } from '@/components/Common/UI/CheckboxGroup/CheckboxGroupTypes'
 export type { ComboBoxProps, ComboBoxOption } from '@/components/Common/UI/ComboBox/ComboBoxTypes'
+export type {
+  MultiSelectComboBoxProps,
+  MultiSelectComboBoxOption,
+} from '@/components/Common/UI/MultiSelectComboBox/MultiSelectComboBoxTypes'
 export type { DatePickerProps } from '@/components/Common/UI/DatePicker/DatePickerTypes'
+export type {
+  DateRangePickerProps,
+  DateRange,
+} from '@/components/Common/UI/DateRangePicker/DateRangePickerTypes'
 export type { LinkProps } from '@/components/Common/UI/Link/LinkTypes'
 export type { MenuProps, MenuItem } from '@/components/Common/UI/Menu/MenuTypes'
 export type { NumberInputProps } from '@/components/Common/UI/NumberInput/NumberInputTypes'
