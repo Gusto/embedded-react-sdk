@@ -16,7 +16,7 @@ import type { PaginationControlProps } from '@/components/Common/PaginationContr
 
 // Derive types from operations responses
 type EmployeeBankAccount = NonNullable<
-  GetV1EmployeesEmployeeIdBankAccountsResponse['employeeBankAccountList']
+  GetV1EmployeesEmployeeIdBankAccountsResponse['employeeBankAccounts']
 >[number]
 type EmployeePayStub = NonNullable<
   GetV1EmployeesEmployeeUuidPayStubsResponse['employeePayStubsList']
@@ -65,7 +65,7 @@ export function useEmployeeCompensation({
   const employee = employeeQuery.data.employee
   const employeePaymentMethod = paymentMethodQuery.data.employeePaymentMethod
   const bankAccountsData = bankAccountsQuery.data
-  const garnishmentList = garnishmentsQuery.data.garnishmentList
+  const garnishmentList = garnishmentsQuery.data.garnishments
   const payStubsData = payStubsQuery.data
 
   // Derive primary job
@@ -75,7 +75,7 @@ export function useEmployeeCompensation({
 
   // Derive bank accounts
   const bankAccounts = useMemo(() => {
-    return bankAccountsData.employeeBankAccountList || []
+    return bankAccountsData.employeeBankAccounts || []
   }, [bankAccountsData])
 
   // Extract paystubs from response

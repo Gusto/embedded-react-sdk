@@ -20,7 +20,7 @@ export function PayScheduleList({ companyId, onEvent }: PayScheduleListProps) {
   const { data: paySchedules } = usePaySchedulesGetAllSuspense({ companyId })
 
   const dataViewProps = useDataView({
-    data: paySchedules.paySchedules || [],
+    data: paySchedules.payScheduleShowResponse || [],
     columns: [
       {
         title: t('payScheduleList.name'),

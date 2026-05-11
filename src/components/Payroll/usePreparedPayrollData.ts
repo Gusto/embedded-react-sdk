@@ -2,9 +2,9 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { usePayrollsPrepareMutation } from '@gusto/embedded-api/react-query/payrollsPrepare'
 import { usePaySchedulesGet } from '@gusto/embedded-api/react-query/paySchedulesGet'
 import type { PayrollPrepared } from '@gusto/embedded-api/models/components/payroll'
-import type { PaySchedule } from '@gusto/embedded-api/models/components/payschedule'
+import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'
 import type { QueryParamSortBy } from '@gusto/embedded-api/models/operations/putv1companiescompanyidpayrollspayrollidprepare'
-import { UnprocessableEntityErrorObject } from '@gusto/embedded-api/models/errors/unprocessableentityerrorobject'
+import { UnprocessableEntityError } from '@gusto/embedded-api/models/errors/unprocessableentityerror'
 import { useBase } from '../Base'
 import { retryAsync } from '@/helpers/retryAsync'
 
@@ -19,7 +19,7 @@ interface UsePreparedPayrollDataParams {
 interface UsePreparedPayrollDataReturn {
   handlePreparePayroll: () => Promise<void>
   preparedPayroll: PayrollPrepared | undefined
-  paySchedule: PaySchedule | undefined
+  paySchedule: PayScheduleShow | undefined
   isLoading: boolean
   isPaginating: boolean
   hasInitialData: boolean
@@ -29,7 +29,7 @@ const PREPARE_MAX_ATTEMPTS = 4
 const PREPARE_RETRY_DELAY_MS = 1500
 
 const isPayrollBeingProcessedError = (error: unknown): boolean => {
-  if (!(error instanceof UnprocessableEntityErrorObject)) return false
+  if (!(error instanceof UnprocessableEntityError)) return false
   return error.errors.some(e => e.category === 'invalid_operation')
 }
 
@@ -100,7 +100,7 @@ export const usePreparedPayrollData = ({
   return {
     handlePreparePayroll,
     preparedPayroll,
-    paySchedule: payScheduleData?.paySchedule,
+    paySchedule: payScheduleData?.payScheduleShow,
     isLoading,
     isPaginating,
     hasInitialData: hasInitialDataRef.current,

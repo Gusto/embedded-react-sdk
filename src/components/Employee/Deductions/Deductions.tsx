@@ -23,7 +23,7 @@ export interface DeductionsProps extends BaseComponentInterface<'Employee.Deduct
 function DeductionsFlow({ employeeId, onEvent, dictionary }: DeductionsProps) {
   useComponentDictionary('Employee.Deductions', dictionary)
   const { data } = useGarnishmentsListSuspense({ employeeId })
-  const deductions = data.garnishmentList!
+  const deductions = data.garnishments!
   const activeDeductions = deductions.filter(deduction => deduction.active)
   const hasExistingDeductions = useMemo(
     () => activeDeductions.length > 0,

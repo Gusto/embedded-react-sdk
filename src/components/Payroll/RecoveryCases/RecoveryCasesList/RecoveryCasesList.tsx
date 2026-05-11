@@ -112,7 +112,7 @@ function Root({ companyId, dictionary, onEvent }: RecoveryCasesListProps) {
     companyUuid: companyId,
   })
 
-  const recoveryCases = (data.recoveryCaseList ?? []).filter(rc => rc.status !== 'recovered')
+  const recoveryCases = (data.recoveryCases ?? []).filter(rc => rc.status !== 'recovered')
 
   const dataViewProps = useDataView({
     data: recoveryCases,

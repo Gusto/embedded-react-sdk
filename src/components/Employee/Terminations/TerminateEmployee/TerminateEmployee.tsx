@@ -70,11 +70,11 @@ const Root = ({ employeeId, companyId, dictionary }: TerminateEmployeeProps) => 
 
   // If employee is already terminated, redirect to summary with existing termination data
   // Don't pass payrollOption to avoid showing the success alert
-  if (employee?.terminated && terminationsData.terminationList?.[0]) {
+  if (employee?.terminated && terminationsData.terminations?.[0]) {
     onEvent(componentEvents.EMPLOYEE_TERMINATION_VIEW_SUMMARY, {
       employeeId,
-      effectiveDate: terminationsData.terminationList[0].effectiveDate!,
-      termination: terminationsData.terminationList[0],
+      effectiveDate: terminationsData.terminations[0].effectiveDate!,
+      termination: terminationsData.terminations[0],
     })
     return null
   }
@@ -84,7 +84,7 @@ const Root = ({ employeeId, companyId, dictionary }: TerminateEmployeeProps) => 
     last_name: employee?.lastName,
   })
 
-  const existingTermination = terminationsData.terminationList?.[0]
+  const existingTermination = terminationsData.terminations?.[0]
 
   const handleSubmit = async (formData: TerminateEmployeeFormData) => {
     const { lastDayOfWork, payrollOption } = formData
@@ -123,7 +123,7 @@ const Root = ({ employeeId, companyId, dictionary }: TerminateEmployeeProps) => 
           const { data: terminationPeriodsData } = await fetchTerminationPeriods()
 
           const employeePeriods =
-            terminationPeriodsData?.unprocessedTerminationPayPeriodList?.filter(
+            terminationPeriodsData?.unprocessedTerminationPayPeriods?.filter(
               period => period.employeeUuid === employeeId,
             ) ?? []
 

@@ -2,7 +2,7 @@ import type { HttpResponseResolver, PathParams } from 'msw'
 import { http, HttpResponse } from 'msw'
 import type { GetV1ContractorsContractorUuidRequest } from '@gusto/embedded-api/models/operations/getv1contractorscontractoruuid'
 import type { GetV1ContractorsContractorUuidAddressRequest } from '@gusto/embedded-api/models/operations/getv1contractorscontractoruuidaddress'
-import type { PutV1ContractorsContractorUuidAddressRequestBody } from '@gusto/embedded-api/models/operations/putv1contractorscontractoruuidaddress'
+import type { ContractorAddressUpdateBody } from '@gusto/embedded-api/models/components/contractoraddressupdatebody'
 import { getFixture } from '../fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
 
@@ -29,7 +29,7 @@ export const getContractorAddress = handleGetContractorAddress(async () => {
 })
 
 export function handleUpdateContractorAddress(
-  resolver: HttpResponseResolver<PathParams, PutV1ContractorsContractorUuidAddressRequestBody>,
+  resolver: HttpResponseResolver<PathParams, ContractorAddressUpdateBody>,
 ) {
   return http.put(`${API_BASE_URL}/v1/contractors/:contractorUuid/address`, resolver)
 }

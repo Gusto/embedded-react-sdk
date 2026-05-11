@@ -68,7 +68,7 @@ import type { APIError } from '@gusto/embedded-api/models/errors/apierror'
 - `@gusto/embedded-api/react-query/<operation>` -- React Query hooks
 - `@gusto/embedded-api/models/components/<name>` -- Component/entity types
 - `@gusto/embedded-api/models/operations/<name>` -- Operation request/response types
-- `@gusto/embedded-api/models/errors/<name>` -- Error types (`APIError`, `SDKValidationError`, `UnprocessableEntityErrorObject`)
+- `@gusto/embedded-api/models/errors/<name>` -- Error types (`APIError`, `SDKValidationError`, `UnprocessableEntityError`)
 
 ### Hook Naming Convention
 

@@ -130,8 +130,8 @@ function Root({ className, companyId, dictionary, onEvent }: PayrollBlockerListP
     }
   })
 
-  const recoveryCases = recoveryCasesData.recoveryCaseList ?? []
-  const informationRequests = informationRequestsData.informationRequestList ?? []
+  const recoveryCases = recoveryCasesData.recoveryCases ?? []
+  const informationRequests = informationRequestsData.informationRequests ?? []
 
   const hasUnrecoveredCases = recoveryCases.some(
     recoveryCase => recoveryCase.status !== 'recovered',

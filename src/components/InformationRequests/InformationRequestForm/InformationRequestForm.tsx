@@ -69,9 +69,7 @@ const convertFileToDataUrl = (file: File) => {
 const SUPPORTED_RESPONSE_TYPES: ResponseType[] = [ResponseType.Text, ResponseType.Document]
 
 function hasUnsupportedQuestionTypes(questions: RequiredQuestions[]) {
-  return questions.some(
-    question => question.responseType && !SUPPORTED_RESPONSE_TYPES.includes(question.responseType),
-  )
+  return questions.some(question => !SUPPORTED_RESPONSE_TYPES.includes(question.responseType))
 }
 
 function hasPersonaQuestionType(questions: RequiredQuestions[]) {
@@ -89,7 +87,7 @@ function Root({ companyId, requestId, dictionary }: InformationRequestFormProps)
     companyUuid: companyId,
   })
 
-  const informationRequest = data.informationRequestList?.find(req => req.uuid === requestId)
+  const informationRequest = data.informationRequests?.find(req => req.uuid === requestId)
   const requiredQuestions = informationRequest?.requiredQuestions ?? []
   const isBlockingPayroll = informationRequest?.blockingPayroll ?? false
   const hasUnsupportedTypes = hasUnsupportedQuestionTypes(requiredQuestions)
@@ -101,8 +99,6 @@ function Root({ companyId, requestId, dictionary }: InformationRequestFormProps)
   const questionUuids: string[] = []
 
   requiredQuestions.forEach(question => {
-    if (!question.questionUuid || !question.responseType) return
-
     if (question.responseType === ResponseType.Text) {
       questionUuids.push(question.questionUuid)
       defaultValues[question.questionUuid] = ''
@@ -161,8 +157,6 @@ function Root({ companyId, requestId, dictionary }: InformationRequestFormProps)
   }
 
   const renderQuestion = (question: RequiredQuestions) => {
-    if (!question.questionUuid || !question.responseType) return null
-
     const fieldName = question.questionUuid
     const isDocumentType = question.responseType === ResponseType.Document
     const isTextType = question.responseType === ResponseType.Text
@@ -177,7 +171,7 @@ function Root({ companyId, requestId, dictionary }: InformationRequestFormProps)
             {/* SECURITY: XSS mitigated via DOMPurify with strict allowlist. Pattern matches TaxInputs.tsx */}
             <span
               dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(question.questionText ?? '', dompurifyConfig),
+                __html: DOMPurify.sanitize(question.questionText, dompurifyConfig),
               }}
             />
           </Text>
@@ -271,9 +265,7 @@ const Footer = ({ onEvent }: { onEvent: OnEventType<EventType, unknown> }) => {
     companyUuid: companyId,
   })
 
-  const informationRequest = data.informationRequestList?.find(
-    req => req.uuid === selectedRequestId,
-  )
+  const informationRequest = data.informationRequests?.find(req => req.uuid === selectedRequestId)
   const requiredQuestions = informationRequest?.requiredQuestions ?? []
   const hasUnsupportedTypes = hasUnsupportedQuestionTypes(requiredQuestions)
 

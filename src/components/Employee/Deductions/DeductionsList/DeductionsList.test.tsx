@@ -30,7 +30,7 @@ describe('DeductionsList', () => {
   const renderDeductionsList = (deductions: unknown[] = []) => {
     server.use(
       http.get('/api/v1/employees/:employee_id/garnishments', () =>
-        HttpResponse.json({ garnishmentList: deductions }),
+        HttpResponse.json({ garnishments: deductions }),
       ),
     )
 

@@ -31,12 +31,12 @@ function Root({ companyId, signatoryId, className, children, dictionary }: Docum
   const { onEvent } = useBase()
 
   const {
-    data: { formList },
+    data: { forms },
     error: documentListError,
   } = useCompanyFormsGetAllSuspense({
     companyId,
   })
-  const companyForms = formList!
+  const companyForms = forms!
 
   const {
     data: { signatories: signatoryList },

@@ -11,7 +11,7 @@ import type {
 import type { GetV1EmployeesEmployeeIdOnboardingStatusRequest } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidonboardingstatus'
 import type { PutV1EmployeesEmployeeIdOnboardingStatusRequestBody } from '@gusto/embedded-api/models/operations/putv1employeesemployeeidonboardingstatus'
 import type { GetV1EmployeesEmployeeIdJobsRequest } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidjobs'
-import type { PostV1JobsJobIdRequestBody } from '@gusto/embedded-api/models/operations/postv1jobsjobid'
+import type { JobsCreateRequestBody } from '@gusto/embedded-api/models/components/jobscreaterequestbody'
 import type { CompensationsUpdateRequestBody } from '@gusto/embedded-api/models/components/compensationsupdaterequestbody'
 import type { JobsUpdateRequestBody } from '@gusto/embedded-api/models/components/jobsupdaterequestbody'
 import type {
@@ -123,7 +123,7 @@ export const getEmployeeJobs = handleGetEmployeeJobs(async () => {
 })
 
 export function handleCreateEmployeeJob(
-  resolver: HttpResponseResolver<PathParams, PostV1JobsJobIdRequestBody>,
+  resolver: HttpResponseResolver<PathParams, JobsCreateRequestBody>,
 ) {
   return http.post(`${API_BASE_URL}/v1/employees/:employee_id/jobs`, resolver)
 }

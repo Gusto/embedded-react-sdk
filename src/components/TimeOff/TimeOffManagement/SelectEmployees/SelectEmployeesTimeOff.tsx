@@ -2,7 +2,7 @@ import { useCallback, useMemo, useRef, useState } from 'react'
 import { useTimeOffPoliciesAddEmployeesMutation } from '@gusto/embedded-api/react-query/timeOffPoliciesAddEmployees'
 import { useTimeOffPoliciesRemoveEmployeesMutation } from '@gusto/embedded-api/react-query/timeOffPoliciesRemoveEmployees'
 import { useTimeOffPoliciesGetSuspense } from '@gusto/embedded-api/react-query/timeOffPoliciesGet'
-import { UnprocessableEntityErrorObject } from '@gusto/embedded-api/models/errors/unprocessableentityerrorobject'
+import { UnprocessableEntityError } from '@gusto/embedded-api/models/errors/unprocessableentityerror'
 import { useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import type { CreatableTimeOffPolicyType } from '../../TimeOffFlow/timeOffPolicyTypes'
@@ -203,7 +203,7 @@ function SelectEmployeesTimeOffInner({
               },
             })
           } catch (err) {
-            if (err instanceof UnprocessableEntityErrorObject) {
+            if (err instanceof UnprocessableEntityError) {
               const apiMessage = err.errors[0]?.message ?? ''
               throw new SDKInternalError(
                 t('errors.removeEmployeesFailed', { details: apiMessage }),
