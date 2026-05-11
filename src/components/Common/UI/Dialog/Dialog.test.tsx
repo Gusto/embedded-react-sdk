@@ -1,8 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { screen } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { Dialog } from './Dialog'
 import { DialogDefaults } from './DialogTypes'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+import { ThemeProvider } from '@/contexts/ThemeProvider'
+import { ComponentsProvider } from '@/contexts/ComponentAdapter/ComponentsProvider'
+import { defaultComponents } from '@/contexts/ComponentAdapter/adapters/defaultComponentAdapter'
 
 const defaultProps = {
   primaryActionLabel: 'Confirm',
@@ -91,5 +94,27 @@ describe('Dialog', () => {
     closeButton.click()
 
     expect(onClose).toHaveBeenCalledTimes(1)
+  })
+
+  it('renders action buttons via the Button component adapter', () => {
+    const CustomButton = vi.fn(({ children, onClick }) => (
+      <button data-testid="custom-adapter-button" onClick={onClick}>
+        {children}
+      </button>
+    ))
+
+    render(
+      <ThemeProvider>
+        <ComponentsProvider value={{ ...defaultComponents, Button: CustomButton }}>
+          <Dialog {...defaultProps} />
+        </ComponentsProvider>
+      </ThemeProvider>,
+    )
+
+    const adapterButtons = screen.getAllByTestId('custom-adapter-button')
+    expect(adapterButtons).toHaveLength(2)
+    expect(adapterButtons[0]).toHaveTextContent('Cancel')
+    expect(adapterButtons[1]).toHaveTextContent('Confirm')
+    expect(CustomButton).toHaveBeenCalled()
   })
 })
