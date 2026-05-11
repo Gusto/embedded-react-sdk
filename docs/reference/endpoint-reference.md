@@ -259,11 +259,11 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 | **Payroll.TransitionCreation** | POST | `/v1/companies/:companyId/payrolls` |
 |  | GET | `/v1/companies/:companyId/pay_schedules` |
 
-## UNSTABLE_TimeOff components
+## TimeOff components
 
 | Component | Method | Path |
 | --- | --- | --- |
-| **UNSTABLE_TimeOff.PolicyList** | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
+| **TimeOff.PolicyList** | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
 |  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
 |  | GET | `/v1/companies/:companyId/employees` |
 |  | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
@@ -278,7 +278,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/add_employees` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/remove_employees` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/balance` |
-| **UNSTABLE_TimeOff.PolicyTypeSelector** | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
+| **TimeOff.PolicyTypeSelector** | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
 |  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
 |  | GET | `/v1/companies/:companyId/employees` |
 |  | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
@@ -293,10 +293,10 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/add_employees` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/remove_employees` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/balance` |
-| **UNSTABLE_TimeOff.PolicyConfigurationForm** | POST | `/v1/companies/:companyUuid/time_off_policies` |
+| **TimeOff.PolicyConfigurationForm** | POST | `/v1/companies/:companyUuid/time_off_policies` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid` |
 |  | GET | `/v1/time_off_policies/:timeOffPolicyUuid` |
-| **UNSTABLE_TimeOff.PolicySettingsPresentation** | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
+| **TimeOff.PolicySettingsPresentation** | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
 |  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
 |  | GET | `/v1/companies/:companyId/employees` |
 |  | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
@@ -311,7 +311,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/add_employees` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/remove_employees` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/balance` |
-| **UNSTABLE_TimeOff.AddEmployeesToPolicy** | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
+| **TimeOff.AddEmployeesToPolicy** | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
 |  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
 |  | GET | `/v1/companies/:companyId/employees` |
 |  | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
@@ -326,7 +326,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/add_employees` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/remove_employees` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/balance` |
-| **UNSTABLE_TimeOff.HolidaySelectionForm** | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
+| **TimeOff.HolidaySelectionForm** | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
 |  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
 |  | GET | `/v1/companies/:companyId/employees` |
 |  | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
@@ -341,7 +341,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/add_employees` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/remove_employees` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/balance` |
-| **UNSTABLE_TimeOff.AddEmployeesHoliday** | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
+| **TimeOff.AddEmployeesHoliday** | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
 |  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
 |  | GET | `/v1/companies/:companyId/employees` |
 |  | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
@@ -356,7 +356,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/add_employees` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/remove_employees` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/balance` |
-| **UNSTABLE_TimeOff.ViewHolidayEmployees** | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
+| **TimeOff.ViewHolidayEmployees** | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
 |  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
 |  | GET | `/v1/companies/:companyId/employees` |
 |  | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
@@ -371,7 +371,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/add_employees` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/remove_employees` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/balance` |
-| **UNSTABLE_TimeOff.ViewHolidayPolicyDetails** | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
+| **TimeOff.ViewHolidayPolicyDetails** | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
 |  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
 |  | GET | `/v1/companies/:companyId/employees` |
 |  | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
@@ -386,7 +386,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/add_employees` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/remove_employees` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/balance` |
-| **UNSTABLE_TimeOff.ViewHolidaySchedule** | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
+| **TimeOff.ViewHolidaySchedule** | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
 |  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
 |  | GET | `/v1/companies/:companyId/employees` |
 |  | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
@@ -401,11 +401,11 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/add_employees` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/remove_employees` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/balance` |
-| **UNSTABLE_TimeOff.TimeOffPolicyDetailPresentation** | GET | `/v1/time_off_policies/:timeOffPolicyUuid` |
+| **TimeOff.TimeOffPolicyDetailPresentation** | GET | `/v1/time_off_policies/:timeOffPolicyUuid` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/remove_employees` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/balance` |
 |  | GET | `/v1/companies/:companyId/employees` |
-| **UNSTABLE_TimeOff.TimeOffFlow** | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
+| **TimeOff.TimeOffFlow** | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
 |  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
 |  | GET | `/v1/companies/:companyId/employees` |
 |  | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
@@ -435,4 +435,4 @@ Flows compose multiple blocks into a single workflow. The endpoint list for a fl
 | **Employee.Terminations.TerminationFlow** | Employee.TerminateEmployee, Employee.TerminationFlow, Employee.TerminationSummary, Payroll.DismissalFlow, Payroll.PayrollLanding |
 | **Payroll.PayrollExecutionFlow** | Payroll.PayrollFlow |
 | **Payroll.PayrollFlow** | Payroll.OffCycleFlow, Payroll.PayrollBlockerList, Payroll.PayrollConfiguration, Payroll.PayrollEditEmployee, Payroll.PayrollFlow, Payroll.PayrollLanding, Payroll.PayrollOverview, Payroll.PayrollReceipts, Payroll.TransitionFlow |
-| **UNSTABLE_TimeOff.TimeOffFlow** | UNSTABLE_TimeOff.PolicyConfigurationForm, UNSTABLE_TimeOff.TimeOffPolicyDetailPresentation |
+| **TimeOff.TimeOffFlow** | TimeOff.PolicyConfigurationForm, TimeOff.TimeOffPolicyDetailPresentation |
