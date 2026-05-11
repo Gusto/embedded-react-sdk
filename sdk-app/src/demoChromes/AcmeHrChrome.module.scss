@@ -144,6 +144,16 @@
   color: #6b7488;
 }
 
+.sidebarGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+
+  & + & {
+    margin-top: 1rem;
+  }
+}
+
 .navLink {
   display: block;
   padding: 0.5rem 0.625rem;

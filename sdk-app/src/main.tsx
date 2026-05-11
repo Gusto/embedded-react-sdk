@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { App } from './App'
 import { Home } from './Home'
 import { RoutedComponentRenderer } from './RoutedComponentRenderer'
+import { RoutedDemoRenderer } from './RoutedDemoRenderer'
 import { DesignLayout } from './design/DesignLayout'
 import { DesignHome } from './design/DesignHome'
 import { ComponentShowcase } from './design/prototypes/component-showcase'
@@ -24,6 +25,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
       { path: ':category/:component', element: <RoutedComponentRenderer /> },
+      { path: 'demos/:demoId', element: <RoutedDemoRenderer /> },
       {
         path: 'design',
         element: <DesignLayout />,

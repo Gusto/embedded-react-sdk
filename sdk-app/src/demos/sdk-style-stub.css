@@ -1,0 +1,4 @@
+/* Empty stub. The real SDK styles are loaded once via `@/styles/sdk.scss` in main.tsx.
+   This file exists so demo files can `import '@gusto/embedded-react-sdk/style.css'` exactly
+   as a partner would when consuming the published npm package. The vite alias in
+   sdk-app/vite.config.ts redirects that import here. */
