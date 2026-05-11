@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback } from 'react'
+import { Suspense, useMemo, useState, useCallback } from 'react'
 import { usePaySchedulesGetPayPeriodsSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetPayPeriods'
 import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
 import { usePayrollsSkipMutation } from '@gusto/embedded-api/react-query/payrollsSkip'
@@ -18,22 +18,28 @@ interface TransitionPayrollAlertProps {
   onEvent: OnEventType<EventType, unknown>
 }
 
+interface GroupedTransitionPayPeriods {
+  payScheduleUuid: string
+  payScheduleName: string
+  payPeriods: PayPeriod[]
+}
+
+interface RootProps {
+  companyId: string
+  groupedPayPeriods: GroupedTransitionPayPeriods[]
+}
+
 const LOOK_AHEAD_DAYS = 90
 
 export function TransitionPayrollAlert(props: TransitionPayrollAlertProps) {
   return (
-    <BaseComponent onEvent={props.onEvent}>
-      <Root {...props} />
-    </BaseComponent>
+    <Suspense fallback={null}>
+      <TransitionPayrollAlertGate {...props} />
+    </Suspense>
   )
 }
 
-function Root({ companyId }: TransitionPayrollAlertProps) {
-  const { onEvent, baseSubmitHandler } = useBase()
-
-  const [showSkipSuccessAlert, setShowSkipSuccessAlert] = useState(false)
-  const [skippingPayPeriod, setSkippingPayPeriod] = useState<PayPeriod | null>(null)
-
+function TransitionPayrollAlertGate({ companyId, onEvent }: TransitionPayrollAlertProps) {
   const lookAheadEndDate = useMemo(() => {
     const date = new Date()
     date.setDate(date.getDate() + LOOK_AHEAD_DAYS)
@@ -47,19 +53,15 @@ function Root({ companyId }: TransitionPayrollAlertProps) {
   })
 
   const { data: paySchedulesData } = usePaySchedulesGetAllSuspense({ companyId })
-  const paySchedules = paySchedulesData.payScheduleShowResponse ?? []
 
-  const { mutateAsync: skipPayroll } = usePayrollsSkipMutation()
+  const groupedPayPeriods = useMemo<GroupedTransitionPayPeriods[]>(() => {
+    const paySchedules = paySchedulesData.payScheduleShowResponse ?? []
+    const unprocessed = (payPeriodsData.payPeriods ?? []).filter(
+      (pp: PayPeriod) => !pp.payroll?.processed,
+    )
 
-  const unprocessedTransitionPeriods = useMemo(() => {
-    const periods = payPeriodsData.payPeriods ?? []
-    return periods.filter((pp: PayPeriod) => !pp.payroll?.processed)
-  }, [payPeriodsData])
-
-  const groupedPayPeriods = useMemo(() => {
     const groups = new Map<string, PayPeriod[]>()
-
-    for (const period of unprocessedTransitionPeriods) {
+    for (const period of unprocessed) {
       const uuid = period.payScheduleUuid ?? 'unknown'
       const existing = groups.get(uuid) ?? []
       existing.push(period)
@@ -69,10 +71,28 @@ function Root({ companyId }: TransitionPayrollAlertProps) {
     return Array.from(groups.entries()).map(([payScheduleUuid, payPeriods]) => {
       const schedule = paySchedules.find(s => s.uuid === payScheduleUuid)
       const payScheduleName = schedule?.customName || schedule?.name || 'Transition'
-
       return { payScheduleUuid, payScheduleName, payPeriods }
     })
-  }, [unprocessedTransitionPeriods, paySchedules])
+  }, [payPeriodsData, paySchedulesData])
+
+  if (groupedPayPeriods.length === 0) {
+    return null
+  }
+
+  return (
+    <BaseComponent onEvent={onEvent}>
+      <Root companyId={companyId} groupedPayPeriods={groupedPayPeriods} />
+    </BaseComponent>
+  )
+}
+
+function Root({ companyId, groupedPayPeriods }: RootProps) {
+  const { onEvent, baseSubmitHandler } = useBase()
+
+  const [showSkipSuccessAlert, setShowSkipSuccessAlert] = useState(false)
+  const [skippingPayPeriod, setSkippingPayPeriod] = useState<PayPeriod | null>(null)
+
+  const { mutateAsync: skipPayroll } = usePayrollsSkipMutation()
 
   const handleRunPayroll = useCallback(
     (payPeriod: PayPeriod) => {
@@ -115,10 +135,6 @@ function Root({ companyId }: TransitionPayrollAlertProps) {
   const handleDismissSkipSuccessAlert = useCallback(() => {
     setShowSkipSuccessAlert(false)
   }, [])
-
-  if (groupedPayPeriods.length === 0) {
-    return null
-  }
 
   return (
     <TransitionPayrollAlertPresentation
