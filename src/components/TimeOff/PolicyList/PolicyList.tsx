@@ -15,7 +15,7 @@ import { useHolidayPayPoliciesDeleteMutation } from '@gusto/embedded-api/react-q
 import type { TimeOffPolicy } from '@gusto/embedded-api/models/components/timeoffpolicy'
 import { PolicyListPresentation } from './PolicyListPresentation'
 import type { PolicyListItem } from './PolicyListTypes'
-import { isListedTimeOffPolicyType } from '@/components/UNSTABLE_TimeOff/TimeOffFlow/timeOffPolicyTypes'
+import { isListedTimeOffPolicyType } from '@/components/TimeOff/TimeOffFlow/timeOffPolicyTypes'
 import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/components/Base'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'

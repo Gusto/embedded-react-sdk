@@ -12,7 +12,7 @@ import {
 } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
-import { isEditableTimeOffPolicyType } from '@/components/UNSTABLE_TimeOff/TimeOffFlow/timeOffPolicyTypes'
+import { isEditableTimeOffPolicyType } from '@/components/TimeOff/TimeOffFlow/timeOffPolicyTypes'
 
 export function PolicyListPresentation({
   policies,

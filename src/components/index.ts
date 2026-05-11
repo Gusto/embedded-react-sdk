@@ -6,7 +6,7 @@ export * as Contractor from './Contractor'
 export * as Employee from './Employee'
 export * as InformationRequests from './InformationRequests'
 export * as Payroll from './Payroll'
-export * as UNSTABLE_TimeOff from './UNSTABLE_TimeOff'
+export * as TimeOff from './TimeOff'
 
 // Journey-based namespaces (preferred)
 export * as EmployeeOnboarding from './Employee/exports/employeeOnboarding'

@@ -1385,7 +1385,7 @@
         "companyId"
       ]
     },
-    "UNSTABLE_TimeOff.PolicyList": {
+    "TimeOff.PolicyList": {
       "endpoints": [
         {
           "method": "GET",
@@ -1454,7 +1454,7 @@
         "timeOffPolicyUuid"
       ]
     },
-    "UNSTABLE_TimeOff.PolicyTypeSelector": {
+    "TimeOff.PolicyTypeSelector": {
       "endpoints": [
         {
           "method": "GET",
@@ -1523,7 +1523,7 @@
         "timeOffPolicyUuid"
       ]
     },
-    "UNSTABLE_TimeOff.PolicyConfigurationForm": {
+    "TimeOff.PolicyConfigurationForm": {
       "endpoints": [
         {
           "method": "POST",
@@ -1543,7 +1543,7 @@
         "timeOffPolicyUuid"
       ]
     },
-    "UNSTABLE_TimeOff.PolicySettingsPresentation": {
+    "TimeOff.PolicySettingsPresentation": {
       "endpoints": [
         {
           "method": "GET",
@@ -1612,7 +1612,7 @@
         "timeOffPolicyUuid"
       ]
     },
-    "UNSTABLE_TimeOff.AddEmployeesToPolicy": {
+    "TimeOff.AddEmployeesToPolicy": {
       "endpoints": [
         {
           "method": "GET",
@@ -1681,7 +1681,7 @@
         "timeOffPolicyUuid"
       ]
     },
-    "UNSTABLE_TimeOff.HolidaySelectionForm": {
+    "TimeOff.HolidaySelectionForm": {
       "endpoints": [
         {
           "method": "GET",
@@ -1750,7 +1750,7 @@
         "timeOffPolicyUuid"
       ]
     },
-    "UNSTABLE_TimeOff.AddEmployeesHoliday": {
+    "TimeOff.AddEmployeesHoliday": {
       "endpoints": [
         {
           "method": "GET",
@@ -1819,7 +1819,7 @@
         "timeOffPolicyUuid"
       ]
     },
-    "UNSTABLE_TimeOff.ViewHolidayEmployees": {
+    "TimeOff.ViewHolidayEmployees": {
       "endpoints": [
         {
           "method": "GET",
@@ -1888,7 +1888,7 @@
         "timeOffPolicyUuid"
       ]
     },
-    "UNSTABLE_TimeOff.ViewHolidayPolicyDetails": {
+    "TimeOff.ViewHolidayPolicyDetails": {
       "endpoints": [
         {
           "method": "GET",
@@ -1957,7 +1957,7 @@
         "timeOffPolicyUuid"
       ]
     },
-    "UNSTABLE_TimeOff.ViewHolidaySchedule": {
+    "TimeOff.ViewHolidaySchedule": {
       "endpoints": [
         {
           "method": "GET",
@@ -2026,7 +2026,7 @@
         "timeOffPolicyUuid"
       ]
     },
-    "UNSTABLE_TimeOff.TimeOffPolicyDetailPresentation": {
+    "TimeOff.TimeOffPolicyDetailPresentation": {
       "endpoints": [
         {
           "method": "GET",
@@ -2050,7 +2050,7 @@
         "timeOffPolicyUuid"
       ]
     },
-    "UNSTABLE_TimeOff.TimeOffFlow": {
+    "TimeOff.TimeOffFlow": {
       "endpoints": [
         {
           "method": "GET",
@@ -2899,10 +2899,10 @@
         "wireInRequestUuid"
       ]
     },
-    "UNSTABLE_TimeOff.TimeOffFlow": {
+    "TimeOff.TimeOffFlow": {
       "blocks": [
-        "UNSTABLE_TimeOff.PolicyConfigurationForm",
-        "UNSTABLE_TimeOff.TimeOffPolicyDetailPresentation"
+        "TimeOff.PolicyConfigurationForm",
+        "TimeOff.TimeOffPolicyDetailPresentation"
       ],
       "endpoints": [
         {
