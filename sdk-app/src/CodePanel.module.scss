@@ -83,16 +83,35 @@
   padding: 1rem 1.25rem;
   font-size: 0.8125rem;
   line-height: 1.5;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   font-family: 'SFMono-Regular', Menlo, Monaco, Consolas, monospace;
   background: transparent;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.line {
+  display: flex;
+  align-items: flex-start;
+
+  & + & {
+    margin-top: 0.25rem;
+  }
 }
 
 .lineNumber {
-  display: inline-block;
+  flex: 0 0 auto;
   min-width: 1.75rem;
   margin-right: 0.75rem;
   text-align: right;
   color: var(--color-text-muted);
   user-select: none;
+}
+
+.lineContent {
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
