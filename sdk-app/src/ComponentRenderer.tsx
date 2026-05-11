@@ -16,7 +16,6 @@ import { useBreakpointMaxWidth } from './useBreakpointContext'
 import { darkTheme } from './darkTheme'
 import { useThemeEditor } from './ThemePanel/ThemeEditorContext'
 import { useDesignSystem } from './ThemePanel/DesignSystemContext'
-import { nativeComponents } from './ThemePanel/adapters/nativeAdapter'
 import type { EntityIds } from './useEntities'
 import styles from './ComponentRenderer.module.scss'
 import { useCurrentComponentRegistry } from './useCurrentComponent'
@@ -142,8 +141,7 @@ export function ComponentRenderer({ entities, chromeHidden = false }: ComponentR
   const resolvedTheme = useResolvedTheme()
   const { themeOverrides } = useThemeEditor()
   const { designSystem } = useDesignSystem()
-  const resolvedComponents =
-    designSystem === 'native' ? nativeComponents : interfaceLibComponents
+  const resolvedComponents = designSystem === 'overrides' ? interfaceLibComponents : undefined
   const resolvedSDKTheme = useMemo(() => {
     const base = resolvedTheme === 'dark' ? darkTheme : undefined
     const hasOverrides = Object.keys(themeOverrides).length > 0
@@ -317,16 +315,18 @@ export function ComponentRenderer({ entities, chromeHidden = false }: ComponentR
                 setResetKey(k => k + 1)
               }}
             >
-              <GustoProvider
-                config={{ baseUrl: `${window.location.origin}/api/` }}
-                theme={resolvedSDKTheme}
-                components={resolvedComponents}
-                key={providerKey}
-              >
-                <Suspense fallback={<div className={styles.contentLoading}>Loading...</div>}>
-                  <SdkComponent {...componentProps} />
-                </Suspense>
-              </GustoProvider>
+              <div className={resolvedComponents ? 'interface-lib-adapter-active' : undefined}>
+                <GustoProvider
+                  config={{ baseUrl: `${window.location.origin}/api/` }}
+                  theme={resolvedSDKTheme}
+                  {...(resolvedComponents ? { components: resolvedComponents } : {})}
+                  key={providerKey}
+                >
+                  <Suspense fallback={<div className={styles.contentLoading}>Loading...</div>}>
+                    <SdkComponent {...componentProps} />
+                  </Suspense>
+                </GustoProvider>
+              </div>
             </ComponentErrorBoundary>
           </div>
         </div>
