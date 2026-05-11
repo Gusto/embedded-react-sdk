@@ -19,6 +19,7 @@
 .contentBody {
   margin: 0 auto;
   max-width: 1200px;
+  transition: max-width 0.2s ease;
 }
 
 .contentError {

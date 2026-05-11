@@ -5,6 +5,9 @@ import { TopBar } from './TopBar'
 import { Sidebar } from './Sidebar'
 import { DemoSettingsPanel } from './DemoSettingsPanel'
 import { TokenExpiredOverlay } from './TokenExpiredOverlay'
+import { BreakpointSwitcher } from './BreakpointSwitcher'
+import type { BreakpointOption } from './breakpointConstants'
+import { BreakpointProvider } from './BreakpointContext'
 import { useEntities, type EntityIds } from './useEntities'
 import { useEntityCatalog } from './useEntityCatalog'
 import { useDemoManager } from './useDemoManager'
@@ -30,6 +33,7 @@ import {
   useDesignSystemState,
 } from './ThemePanel'
 import { RightPanelShell } from './RightPanelShell'
+import styles from './App.module.scss'
 
 const THEME_CYCLE: ThemeMode[] = ['system', 'light', 'dark']
 
@@ -48,6 +52,7 @@ export function App() {
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
+  const [breakpoint, setBreakpoint] = useState<BreakpointOption>('large')
   const manual = useManualConfig()
   const isManual = manual.mode === 'manual'
   const { entities, updateEntity, replaceEntities, resetToDefaults } = useEntities()
@@ -321,32 +326,39 @@ export function App() {
       <ThemeEditorContext.Provider value={themeEditorState}>
         <DesignSystemContext.Provider value={designSystemState}>
           <CurrentComponentProvider>
-            <div className={`app-layout${chromeHidden ? ' app-layout-chrome-hidden' : ''}`}>
-              {bodyEl}
-              {chromeHidden && (
-                <button
-                  type="button"
-                  className="chrome-restore-pill"
-                  onClick={showChrome}
-                  aria-label="Show chrome"
-                >
-                  <span className="chrome-restore-pill-key">\</span> Show chrome
-                </button>
-              )}
-              <ShortcutHelper isOpen={shortcutHelper.isOpen} onClose={shortcutHelper.close} />
-              <CommandPalette
-                isOpen={commandPalette.isOpen}
-                onClose={commandPalette.close}
-                entries={paletteEntries}
-              />
-              {!isManual && demoManager.tokenStatus === 'expired' && (
-                <TokenExpiredOverlay
-                  onRefresh={demoManager.refreshToken}
-                  isRefreshing={demoManager.isCreatingDemo}
-                  error={demoManager.demoError}
+            <BreakpointProvider value={{ breakpoint, setBreakpoint }}>
+              <div className={`app-layout${chromeHidden ? ' app-layout-chrome-hidden' : ''}`}>
+                {bodyEl}
+                {!chromeHidden && (
+                  <div className={styles.breakpointSwitcherContainer}>
+                    <BreakpointSwitcher value={breakpoint} onChange={setBreakpoint} />
+                  </div>
+                )}
+                {chromeHidden && (
+                  <button
+                    type="button"
+                    className="chrome-restore-pill"
+                    onClick={showChrome}
+                    aria-label="Show chrome"
+                  >
+                    <span className="chrome-restore-pill-key">\</span> Show chrome
+                  </button>
+                )}
+                <ShortcutHelper isOpen={shortcutHelper.isOpen} onClose={shortcutHelper.close} />
+                <CommandPalette
+                  isOpen={commandPalette.isOpen}
+                  onClose={commandPalette.close}
+                  entries={paletteEntries}
                 />
-              )}
-            </div>
+                {!isManual && demoManager.tokenStatus === 'expired' && (
+                  <TokenExpiredOverlay
+                    onRefresh={demoManager.refreshToken}
+                    isRefreshing={demoManager.isCreatingDemo}
+                    error={demoManager.demoError}
+                  />
+                )}
+              </div>
+            </BreakpointProvider>
           </CurrentComponentProvider>
         </DesignSystemContext.Provider>
       </ThemeEditorContext.Provider>

@@ -4,6 +4,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   Component,
   type ReactNode,
 } from 'react'
@@ -11,6 +12,7 @@ import { useParams } from 'react-router-dom'
 import { findComponent, CATEGORIES } from './registry'
 import { resolveDefaults } from './component-defaults'
 import { useResolvedTheme } from './useThemeModeContext'
+import { useBreakpointMaxWidth } from './useBreakpointContext'
 import { darkTheme } from './darkTheme'
 import { useThemeEditor } from './ThemePanel/ThemeEditorContext'
 import { useDesignSystem } from './ThemePanel/DesignSystemContext'
@@ -149,9 +151,31 @@ export function ComponentRenderer({ entities, chromeHidden = false }: ComponentR
     return { ...base, ...themeOverrides }
   }, [resolvedTheme, themeOverrides])
   const { register, unregister } = useCurrentComponentRegistry()
+  const breakpointMaxWidth = useBreakpointMaxWidth()
+  const contentBodyStyle = breakpointMaxWidth ? { maxWidth: breakpointMaxWidth } : undefined
   const [events, setEvents] = useState<EventLogEntry[]>([])
   const [eventsOpen, setEventsOpen] = useState(false)
   const [resetKey, setResetKey] = useState(0)
+  const eventsLogRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const node = eventsLogRef.current
+    if (!node) return
+    const root = document.documentElement
+    const update = () => {
+      root.style.setProperty(
+        '--events-log-total-height',
+        `${node.getBoundingClientRect().height}px`,
+      )
+    }
+    update()
+    const observer = new ResizeObserver(update)
+    observer.observe(node)
+    return () => {
+      observer.disconnect()
+      root.style.removeProperty('--events-log-total-height')
+    }
+  }, [])
 
   const handleEvent = useCallback((...args: unknown[]) => {
     const entry: EventLogEntry = {
@@ -244,7 +268,7 @@ export function ComponentRenderer({ entities, chromeHidden = false }: ComponentR
       )}
       {missingIds.length > 0 || missingAdditionalProps.length > 0 ? (
         <div className={styles.componentContainer}>
-          <div className={styles.contentBody}>
+          <div className={styles.contentBody} style={contentBodyStyle}>
             <div className={styles.warningCard}>
               <strong>
                 {missingIds.length > 0 ? 'Missing required IDs' : 'Missing required props'}
@@ -287,7 +311,7 @@ export function ComponentRenderer({ entities, chromeHidden = false }: ComponentR
         </div>
       ) : (
         <div className={styles.componentContainer}>
-          <div className={styles.contentBody}>
+          <div className={styles.contentBody} style={contentBodyStyle}>
             <ComponentErrorBoundary
               onReset={() => {
                 setResetKey(k => k + 1)
@@ -308,7 +332,7 @@ export function ComponentRenderer({ entities, chromeHidden = false }: ComponentR
         </div>
       )}
       {!chromeHidden && (
-        <div className={styles.eventsLog}>
+        <div className={styles.eventsLog} ref={eventsLogRef}>
           <div className={styles.eventsLogHeader}>
             <span>Events Log ({events.length})</span>
             <button
