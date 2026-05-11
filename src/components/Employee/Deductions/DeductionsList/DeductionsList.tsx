@@ -44,7 +44,7 @@ function Root({ className, children, employeeId, dictionary }: DeductionsListPro
   useI18n('Employee.Deductions')
 
   const { data } = useGarnishmentsListSuspense({ employeeId })
-  const deductions = data.garnishmentList!
+  const deductions = data.garnishments!
   const activeDeductions = deductions.filter(deduction => deduction.active)
 
   const { mutateAsync: updateDeduction, isPending: isPendingUpdate } =
@@ -55,7 +55,7 @@ function Root({ className, children, employeeId, dictionary }: DeductionsListPro
       const { garnishment } = await updateDeduction({
         request: {
           garnishmentId: payload.uuid,
-          requestBody: {
+          updateGarnishmentRequest: {
             ...payload,
             totalAmount: payload.totalAmount ?? undefined,
             active: false,

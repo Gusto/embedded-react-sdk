@@ -3,7 +3,7 @@ import { http, HttpResponse } from 'msw'
 import type { GetV1ContractorsContractorUuidPaymentMethodRequest } from '@gusto/embedded-api/models/operations/getv1contractorscontractoruuidpaymentmethod'
 import type { GetV1ContractorsContractorUuidBankAccountsRequest } from '@gusto/embedded-api/models/operations/getv1contractorscontractoruuidbankaccounts'
 import type { PutV1ContractorsContractorIdPaymentMethodType } from '@gusto/embedded-api/models/operations/putv1contractorscontractoridpaymentmethod'
-import type { PostV1ContractorsContractorUuidBankAccountsAccountType } from '@gusto/embedded-api/models/operations/postv1contractorscontractoruuidbankaccounts'
+import type { ContractorBankAccountCreateRequestBody } from '@gusto/embedded-api/models/components/contractorbankaccountcreaterequestbody'
 import { getFixture } from '../fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
 
@@ -43,7 +43,7 @@ export const getContractorBankAccounts = http.get(
 )
 export const createContractorBankAccount = http.post<
   PathParams,
-  PostV1ContractorsContractorUuidBankAccountsAccountType
+  ContractorBankAccountCreateRequestBody
 >(`${API_BASE_URL}/v1/contractors/:contractor_id/bank_accounts`, async () => {
   const responseFixture = await getFixture('get-v1-contractors-contractor_id-bank_accounts')
   return HttpResponse.json(responseFixture[0], { status: 201 })

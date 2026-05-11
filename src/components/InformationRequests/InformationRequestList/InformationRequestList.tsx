@@ -42,7 +42,7 @@ function Root({ companyId, dictionary, onEvent }: InformationRequestListProps) {
     companyUuid: companyId,
   })
 
-  const informationRequests = data.informationRequestList ?? []
+  const informationRequests = data.informationRequests ?? []
 
   const visibleRequests = informationRequests.filter(
     request => request.status !== InformationRequestStatus.Approved,

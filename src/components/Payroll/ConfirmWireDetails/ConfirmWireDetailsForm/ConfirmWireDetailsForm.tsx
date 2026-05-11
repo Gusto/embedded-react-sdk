@@ -41,7 +41,7 @@ const CONFIRM_WIRE_FORM_ID = 'confirm-wire-details-form'
 
 const transformFormDataToPayload = (
   data: ConfirmWireDetailsFormValues,
-): PutWireInRequestsWireInRequestUuidRequest['requestBody'] => {
+): PutWireInRequestsWireInRequestUuidRequest['wireInRequestUpdateRequestBody'] => {
   return {
     amountSent: String(data.amountSent),
     dateSent: data.dateSent.toISOString().split('T')[0] || '',
@@ -108,7 +108,7 @@ const Root = ({
       const response = await submitWireInRequest({
         request: {
           wireInRequestUuid: wireInId,
-          requestBody: payload,
+          wireInRequestUpdateRequestBody: payload,
         },
       })
       onEvent(payrollWireEvents.PAYROLL_WIRE_FORM_DONE, {

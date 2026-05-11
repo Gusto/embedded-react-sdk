@@ -52,7 +52,7 @@ function Root({ companyId, employeeId, payrollId, dictionary }: DismissalPayPeri
   }, [payrollId, employeeId, onEvent])
 
   const employeePayPeriods: RequiredPayPeriod[] = useMemo(() => {
-    const allPeriods = data.unprocessedTerminationPayPeriodList ?? []
+    const allPeriods = data.unprocessedTerminationPayPeriods ?? []
     return allPeriods
       .filter(period => !employeeId || period.employeeUuid === employeeId)
       .filter(

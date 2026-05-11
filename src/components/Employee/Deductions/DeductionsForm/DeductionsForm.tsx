@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
 import { useGarnishmentsListSuspense } from '@gusto/embedded-api/react-query/garnishmentsList'
 import { useGarnishmentsGetChildSupportDataSuspense } from '@gusto/embedded-api/react-query/garnishmentsGetChildSupportData'
-import type { GarnishmentType } from '@gusto/embedded-api/models/operations/postv1employeesemployeeidgarnishments'
+import type { GarnishmentType } from '@gusto/embedded-api/models/components/garnishment'
 import ChildSupportForm from './ChildSupportForm'
 import GarnishmentForm from './GarnishmentForm'
 import CustomDeductionForm from './CustomDeductionForm'
@@ -60,7 +60,7 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
   // find existing deduction to determine if in ADD or EDIT mode
   // if deduction exists we are editing, else we are adding
   const deduction = deductionId
-    ? (data.garnishmentList?.find(g => g.uuid === deductionId) ?? null)
+    ? (data.garnishments?.find(g => g.uuid === deductionId) ?? null)
     : null
   const title = !deduction ? t('addDeductionTitle') : t('editDeductionTitle')
   const deductionType = deduction?.garnishmentType
@@ -130,7 +130,7 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
 
   const handleCancel = () => {
     // if any active garnishments return to list view, else return to empty state view
-    if (data.garnishmentList?.some(g => g.active)) {
+    if (data.garnishments?.some(g => g.active)) {
       onEvent(componentEvents.EMPLOYEE_DEDUCTION_CANCEL)
     } else {
       onEvent(componentEvents.EMPLOYEE_DEDUCTION_CANCEL_EMPTY)

@@ -119,7 +119,7 @@ function Root({ contractorId, className, dictionary }: PaymentMethodProps) {
         const bankAccountResponse = await createBankAccount({
           request: {
             contractorUuid: contractorId,
-            requestBody: {
+            contractorBankAccountCreateRequestBody: {
               name,
               routingNumber,
               accountNumber,

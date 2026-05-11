@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
 import { NotFoundErrorObject } from '@gusto/embedded-api/models/errors/notfounderrorobject'
 import { APIError } from '@gusto/embedded-api/models/errors/apierror'
-import { UnprocessableEntityErrorObject } from '@gusto/embedded-api/models/errors/unprocessableentityerrorobject'
+import { UnprocessableEntityError } from '@gusto/embedded-api/models/errors/unprocessableentityerror'
 import { GustoEmbeddedError } from '@gusto/embedded-api/models/errors/gustoembeddederror'
 import { useBaseSubmit } from './useBaseSubmit'
 
@@ -31,10 +31,10 @@ describe('useBaseSubmit', () => {
       expect(result.current.error?.httpStatus).toBe(404)
     })
 
-    it('catches UnprocessableEntityErrorObject and extracts field errors', async () => {
+    it('catches UnprocessableEntityError and extracts field errors', async () => {
       const { result } = renderHook(() => useBaseSubmit())
 
-      const unprocessableError = new UnprocessableEntityErrorObject(
+      const unprocessableError = new UnprocessableEntityError(
         {
           errors: [
             {
@@ -114,7 +114,7 @@ describe('useBaseSubmit', () => {
     it('extracts structured fieldErrors from payroll_blocker category', async () => {
       const { result } = renderHook(() => useBaseSubmit())
 
-      const blockerError = new UnprocessableEntityErrorObject(
+      const blockerError = new UnprocessableEntityError(
         {
           errors: [
             {
@@ -144,7 +144,7 @@ describe('useBaseSubmit', () => {
     it('handles errors with no message field gracefully', async () => {
       const { result } = renderHook(() => useBaseSubmit())
 
-      const errorWithoutMessage = new UnprocessableEntityErrorObject(
+      const errorWithoutMessage = new UnprocessableEntityError(
         {
           errors: [
             {
@@ -190,7 +190,7 @@ describe('useBaseSubmit', () => {
     it('extracts multiple field errors from a single 422 response', async () => {
       const { result } = renderHook(() => useBaseSubmit())
 
-      const multiFieldError = new UnprocessableEntityErrorObject(
+      const multiFieldError = new UnprocessableEntityError(
         {
           errors: [
             {

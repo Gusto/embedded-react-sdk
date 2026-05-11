@@ -58,7 +58,7 @@ export const Root = ({
 
   const employee = employeeData.employee!
   const employeeCompensation = preparedPayroll?.employeeCompensations?.at(0)
-  const bankAccounts = bankAccountsList.employeeBankAccountList || []
+  const bankAccounts = bankAccountsList.employeeBankAccounts || []
   const hasDirectDepositSetup = bankAccounts.length > 0
 
   const transformEmployeeCompensation = ({

@@ -1151,7 +1151,7 @@ function TerminationsDataContent({ companyId, useMockData }: TerminationsDataPro
   }
 
   const realPayrollList = payrollsData.payrollList || []
-  const realTerminationPeriods = terminationPeriodsData.unprocessedTerminationPayPeriodList || []
+  const realTerminationPeriods = terminationPeriodsData.unprocessedTerminationPayPeriods || []
   const realTerminatedEmployees = terminatedEmployeesData.showEmployees || []
   const activeEmployees = activeEmployeesData.showEmployees || []
 

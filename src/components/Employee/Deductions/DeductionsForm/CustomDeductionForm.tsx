@@ -82,7 +82,12 @@ function CustomDeductionForm({ deduction, employeeId, onCancel }: ChildSupportFo
         const { garnishment: createDeductionResponse } = await createDeduction({
           request: {
             employeeId: employeeId,
-            requestBody: { ...payload, courtOrdered: false, times: payload.recurring ? null : 1 }, // custom deductions cannot be court ordered/garnishment
+            // custom deductions cannot be court ordered/garnishment
+            garnishmentRequest: {
+              ...payload,
+              courtOrdered: false,
+              times: payload.recurring ? null : 1,
+            },
           },
         })
 
@@ -91,7 +96,7 @@ function CustomDeductionForm({ deduction, employeeId, onCancel }: ChildSupportFo
         const { garnishment: updateDeductionResponse } = await updateDeduction({
           request: {
             garnishmentId: deduction.uuid,
-            requestBody: {
+            updateGarnishmentRequest: {
               ...payload,
               version: deduction.version as string,
               times: payload.recurring ? null : 1,

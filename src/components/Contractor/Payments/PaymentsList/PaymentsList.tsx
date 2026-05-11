@@ -57,7 +57,7 @@ export const Root = ({ companyId, dictionary, onEvent, alerts }: PaymentsListPro
   const { data: informationRequestsData } = useInformationRequestsGetInformationRequestsSuspense({
     companyUuid: companyId,
   })
-  const informationRequests = informationRequestsData.informationRequestList ?? []
+  const informationRequests = informationRequestsData.informationRequests ?? []
 
   const hasUnresolvedWireInRequests = useMemo(() => {
     return contractorPayments.some(payment => {

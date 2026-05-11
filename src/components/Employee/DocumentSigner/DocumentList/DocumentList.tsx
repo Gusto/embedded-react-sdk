@@ -31,7 +31,7 @@ function Root({ employeeId, className, children }: DocumentListProps) {
   const { onEvent } = useBase()
 
   const { data, error: documentListError } = useEmployeeFormsListSuspense({ employeeId })
-  const employeeForms = data.formList!
+  const employeeForms = data.forms!
 
   const hasSignedAllForms = employeeForms.every(employeeForm => !employeeForm.requiresSigning)
 
