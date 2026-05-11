@@ -222,6 +222,16 @@ export type {
   HomeAddressEffectiveDateFieldProps,
 } from '@/components/Employee/Profile/shared/useHomeAddressForm'
 
+export { useEmployeeList } from '@/components/Employee/EmployeeList/shared'
+export type {
+  EmployeeAction,
+  EmployeeWithActions,
+  EmployeeActionCallbacks,
+  EmployeeType,
+  UseEmployeeListProps,
+  UseEmployeeListResult,
+} from '@/components/Employee/EmployeeList/shared'
+
 export {
   useFederalTaxesForm,
   FederalTaxesErrorCodes,

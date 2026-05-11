@@ -1,6 +1,13 @@
 import type { ComponentType } from 'react'
 import WorkflowDemo from './WorkflowDemo'
 import CompositionDemo from './CompositionDemo'
+import IndividualComponentsDemo from './IndividualComponentsDemo'
+import HooksHelloDemo from './HooksHelloDemo'
+import HooksBasicDemo from './HooksBasicDemo'
+import HooksCustomFieldDemo from './HooksCustomFieldDemo'
+import HooksChainedDemo from './HooksChainedDemo'
+import HooksInterleavedDemo from './HooksInterleavedDemo'
+import HooksEmployeeListDemo from './HooksEmployeeListDemo'
 import ThemeDemo from './ThemeDemo'
 import AdaptersDemo from './AdaptersDemo'
 import TranslationsDemo from './TranslationsDemo'
@@ -19,6 +26,17 @@ export const DEMO_ROUTE_PREFIX = '/demos'
 export const DEMOS: DemoEntry[] = [
   { id: 'workflow', label: 'Workflow', component: WorkflowDemo },
   { id: 'composition', label: 'Composition', component: CompositionDemo },
+  {
+    id: 'individual-components',
+    label: 'Individual Components',
+    component: IndividualComponentsDemo,
+  },
+  { id: 'hooks-hello', label: 'Hooks: Hello', component: HooksHelloDemo },
+  { id: 'hooks-basic', label: 'Hooks: Basic', component: HooksBasicDemo },
+  { id: 'hooks-custom-field', label: 'Hooks: Custom Field', component: HooksCustomFieldDemo },
+  { id: 'hooks-chained', label: 'Hooks: Chained', component: HooksChainedDemo },
+  { id: 'hooks-interleaved', label: 'Hooks: Interleaved', component: HooksInterleavedDemo },
+  { id: 'hooks-employee-list', label: 'Hooks: Employee List', component: HooksEmployeeListDemo },
   { id: 'theme', label: 'Theming', component: ThemeDemo },
   { id: 'adapters', label: 'Component Adapters', component: AdaptersDemo },
   { id: 'translations', label: 'Translations', component: TranslationsDemo },

@@ -15,6 +15,7 @@ import { ComboBox } from './ComboBox'
 import { Menu } from './Menu'
 import { DescriptionList } from './DescriptionList'
 import { PaginationControl } from './PaginationControl'
+import { Loading } from './Loading'
 
 export {
   Button,
@@ -34,6 +35,7 @@ export {
   Menu,
   DescriptionList,
   PaginationControl,
+  Loading,
 }
 
 export const interfaceLibComponents = {
