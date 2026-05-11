@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.44.1
+
+### Chores & Maintenance
+
+- Upgrade `@gusto/embedded-api` to `0.13.0` (adapts SDK to renamed error class `UnprocessableEntityError`, `PayScheduleShow` rename, typed mutation bodies, and renamed response payload keys; no public SDK API changes)
+- Bump various dev dependencies (`@commitlint/cli`, `@commitlint/config-conventional`, `lint-staged`, `msw`)
+- Bump `fast-uri` to `3.1.2` (transitive npm/yarn security update)
+
 ## 0.44.0
 
 ### Breaking Changes
