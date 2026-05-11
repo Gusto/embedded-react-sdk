@@ -19,7 +19,7 @@ export const Heading = ({
         className,
         styles.root,
         styles[levelStyles as string],
-        styles[`textAlign-${textAlign}`],
+        textAlign && styles[`textAlign-${textAlign}`],
       )}
     >
       {children}

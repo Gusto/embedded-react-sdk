@@ -18,6 +18,7 @@ export function Switch({
   value = false,
   shouldVisuallyHideLabel,
   className,
+  'aria-controls': ariaControls,
 }: SwitchProps) {
   const reactId = useId()
   const inputId = id ?? `il-switch-${reactId}`
@@ -50,6 +51,7 @@ export function Switch({
         aria-invalid={isInvalid}
         aria-required={isRequired}
         aria-describedby={describedByIds}
+        aria-controls={ariaControls}
         onChange={handleChange}
         onBlur={onBlur}
         className={styles.input}
