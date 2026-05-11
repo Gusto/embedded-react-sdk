@@ -8,35 +8,13 @@
   color: #101010;
 }
 
-.itemsPerPage {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  color: #666666;
-}
-
-.itemsPerPage label {
-  white-space: nowrap;
-}
-
-.selectWrapper {
-  width: 104px;
+.navButton {
+  width: 40px;
+  height: 40px;
 }
 
 .buttons {
   display: flex;
   align-items: center;
   gap: 4px;
-}
-
-.pageIndicator {
-  margin-right: 8px;
-  font-size: 14px;
-  color: #666666;
-  white-space: nowrap;
-}
-
-.spinner {
-  margin-right: 8px;
 }

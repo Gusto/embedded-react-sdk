@@ -459,7 +459,11 @@ export const PayrollListPresentation = ({
             alignItems={{ base: 'stretch', medium: 'center' }}
             gap={16}
           >
-            <Flex flexDirection="column" gap={4}>
+            <Flex
+              flexDirection={{ base: 'column', medium: 'column' }}
+              alignItems={{ base: 'flex-start', medium: 'flex-start' }}
+              gap={4}
+            >
               <Text weight="bold">{t('offCycleCta.title')}</Text>
               <Text variant="supporting" size="sm">
                 {t('offCycleCta.description')}
