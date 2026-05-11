@@ -10,6 +10,7 @@
   border-left: 0.0625rem solid var(--color-border);
   overflow: hidden;
   min-width: 0;
+  z-index: 200;
 }
 
 .handle {

@@ -1,4 +1,4 @@
-import { useId, useMemo } from 'react'
+import { useId, useMemo, useState } from 'react'
 // eslint-disable-next-line no-restricted-imports
 import {
   ComboBox as AriaComboBox,
@@ -14,6 +14,8 @@ import classNames from 'classnames'
 import type { ComboBoxProps } from '@gusto/embedded-react-sdk'
 import { InfoTooltip } from '../InfoTooltip'
 import styles from './ComboBox.module.scss'
+
+const MAX_VISIBLE_OPTIONS = 50
 
 export const ComboBox = ({
   allowsCustomValue,
@@ -45,6 +47,21 @@ export const ComboBox = ({
     [options],
   )
 
+  const [filterText, setFilterText] = useState('')
+
+  const filteredItems = useMemo(() => {
+    if (!filterText) return items.slice(0, MAX_VISIBLE_OPTIONS)
+    const search = filterText.toLowerCase()
+    const matches: typeof items = []
+    for (const item of items) {
+      if (item.name.toLowerCase().includes(search)) {
+        matches.push(item)
+        if (matches.length >= MAX_VISIBLE_OPTIONS) break
+      }
+    }
+    return matches
+  }, [items, filterText])
+
   const describedByIds =
     [description ? descriptionId : null, errorMessage ? errorId : null].filter(Boolean).join(' ') ||
     undefined
@@ -75,16 +92,23 @@ export const ComboBox = ({
         id={inputId}
         name={name}
         className={styles.combobox}
+        onOpenChange={isOpen => {
+          if (!isOpen) setFilterText('')
+        }}
         {...(allowsCustomValue
           ? {
               inputValue: value ?? '',
-              onInputChange: (next: string) => onChange?.(next),
+              onInputChange: (next: string) => {
+                setFilterText(next)
+                onChange?.(next)
+              },
             }
           : {
               selectedKey: value ? (value as Key) : null,
               onSelectionChange: (key: Key | null) => {
                 if (key !== null) onChange?.(key.toString())
               },
+              onInputChange: setFilterText,
             })}
       >
         <div className={styles.fieldWrapper}>
@@ -131,7 +155,7 @@ export const ComboBox = ({
         </div>
 
         <Popover className={styles.popover} UNSTABLE_portalContainer={portalContainer} offset={6}>
-          <ListBox items={items} className={styles.listbox}>
+          <ListBox items={filteredItems} className={styles.listbox}>
             {item => (
               <ListBoxItem key={item.id} className={styles.option}>
                 {item.name}
