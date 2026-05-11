@@ -64,6 +64,10 @@
   border-bottom: 1px solid #f0f0f0;
   background-color: inherit;
   transition: background-color 0.24s;
+
+  p {
+    color: #666666;
+  }
 }
 
 .withCheckboxColumn .headCell:first-child,
