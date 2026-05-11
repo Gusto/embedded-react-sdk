@@ -63,12 +63,12 @@ export function EmployeeTable<T extends EmployeeTableItem>({
         key: 'name',
         title: t('name'),
         render: (item: T) => (
-          <span id={`employee-name-${item.uuid}`}>
+          <Components.Text as="span" id={`employee-name-${item.uuid}`}>
             {firstLastName({
               first_name: item.firstName,
               last_name: item.lastName,
             })}
-          </span>
+          </Components.Text>
         ),
       },
       ...(hideJobTitle
@@ -77,12 +77,14 @@ export function EmployeeTable<T extends EmployeeTableItem>({
             {
               key: 'jobTitle' as keyof T,
               title: t('jobTitle'),
-              render: (item: T) => item.jobTitle ?? '',
+              render: (item: T) => (
+                <Components.Text as="span">{item.jobTitle ?? ''}</Components.Text>
+              ),
             },
           ]),
       ...additionalColumns,
     ],
-    [t, additionalColumns, hideJobTitle],
+    [t, additionalColumns, hideJobTitle, Components],
   )
 
   const dataViewProps = useDataView<T>({
