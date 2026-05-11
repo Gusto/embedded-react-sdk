@@ -1,0 +1,53 @@
+.popover {
+  outline: none;
+}
+
+.root {
+  background: #ffffff;
+  border-radius: 4px;
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.1),
+    0 2px 16px rgba(0, 0, 0, 0.1);
+  outline: none;
+  padding: 4px 0;
+  min-width: 172px;
+  width: max-content;
+  font-family: 'InterfaceLib Sans', Helvetica, Arial, sans-serif;
+}
+
+.menuItem {
+  padding: 12px 16px;
+  font-size: 14px;
+  line-height: 22px;
+  font-weight: 400;
+  color: #1a1a1a;
+  cursor: pointer;
+  outline: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.menuItem[data-focused] {
+  background: #f7f7f7;
+}
+
+.menuItem[data-disabled] {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.menuIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+
+.menuIcon svg {
+  width: 16px;
+  height: 16px;
+}

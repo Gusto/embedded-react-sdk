@@ -80,18 +80,18 @@
   }
 
   &[data-variant='error'] {
-    background-color: #d93025;
-    color: #ffffff;
-    border-color: #d93025;
+    background-color: rgb(240, 240, 240);
+    color: #d93025;
+    border-color: rgb(240, 240, 240);
 
     &:hover:not([data-disabled]) {
-      background-color: #b1261d;
-      border-color: #b1261d;
+      background-color: rgba(232, 232, 232);
+      border-color: rgba(232, 232, 232);
     }
 
     &:active:not([data-disabled]) {
-      background-color: #d93025;
-      border-color: #d93025;
+      background-color: rgba(204, 204, 204);
+      border-color: rgba(204, 204, 204);
     }
   }
 

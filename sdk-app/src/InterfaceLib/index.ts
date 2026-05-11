@@ -12,6 +12,7 @@ import { Alert } from './Alert'
 import { DatePicker } from './DatePicker'
 import { Switch } from './Switch'
 import { ComboBox } from './ComboBox'
+import { Menu } from './Menu'
 
 export {
   Button,
@@ -28,6 +29,7 @@ export {
   DatePicker,
   Switch,
   ComboBox,
+  Menu,
 }
 
 export const interfaceLibComponents = {
@@ -45,4 +47,5 @@ export const interfaceLibComponents = {
   DatePicker,
   Switch,
   ComboBox,
+  Menu,
 }
