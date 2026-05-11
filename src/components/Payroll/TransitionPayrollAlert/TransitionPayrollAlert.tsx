@@ -1,4 +1,7 @@
-import { Suspense, useMemo, useState, useCallback } from 'react'
+import { Suspense, useMemo, useState, useCallback, type ErrorInfo } from 'react'
+import type { FallbackProps } from 'react-error-boundary'
+import { ErrorBoundary } from 'react-error-boundary'
+import { QueryErrorResetBoundary } from '@tanstack/react-query'
 import { usePaySchedulesGetPayPeriodsSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetPayPeriods'
 import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
 import { usePayrollsSkipMutation } from '@gusto/embedded-api/react-query/payrollsSkip'
@@ -6,37 +9,68 @@ import { PayrollType } from '@gusto/embedded-api/models/operations/postcompanies
 import { PayrollTypes } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayperiods'
 import type { PayPeriod } from '@gusto/embedded-api/models/components/payperiod'
 import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
-import { TransitionPayrollAlertPresentation } from './TransitionPayrollAlertPresentation'
+import {
+  TransitionPayrollAlertPresentation,
+  type TransitionPayPeriodGroup,
+} from './TransitionPayrollAlertPresentation'
 import { BaseComponent } from '@/components/Base/Base'
 import { useBase } from '@/components/Base/useBase'
 import type { OnEventType } from '@/components/Base/useBase'
 import type { EventType } from '@/shared/constants'
 import { componentEvents } from '@/shared/constants'
+import { useObservability } from '@/contexts/ObservabilityProvider/useObservability'
+import { normalizeToSDKError } from '@/types/sdkError'
 
 interface TransitionPayrollAlertProps {
   companyId: string
   onEvent: OnEventType<EventType, unknown>
 }
 
-interface GroupedTransitionPayPeriods {
-  payScheduleUuid: string
-  payScheduleName: string
-  payPeriods: PayPeriod[]
-}
-
 interface RootProps {
   companyId: string
-  groupedPayPeriods: GroupedTransitionPayPeriods[]
+  groupedPayPeriods: TransitionPayPeriodGroup[]
 }
 
 const LOOK_AHEAD_DAYS = 90
 
 export function TransitionPayrollAlert(props: TransitionPayrollAlertProps) {
-  return (
-    <Suspense fallback={null}>
-      <TransitionPayrollAlertGate {...props} />
-    </Suspense>
+  const { onEvent } = props
+  const { observability } = useObservability()
+
+  const handleGateError = useCallback(
+    (boundaryError: unknown, errorInfo: ErrorInfo) => {
+      onEvent(componentEvents.ERROR, boundaryError)
+
+      const sdkError = normalizeToSDKError(boundaryError)
+      observability?.onError?.({
+        ...sdkError,
+        timestamp: Date.now(),
+        componentName: 'Payroll.TransitionPayrollAlert',
+        componentStack: errorInfo.componentStack ?? undefined,
+      })
+    },
+    [observability, onEvent],
   )
+
+  return (
+    <QueryErrorResetBoundary>
+      {({ reset: resetQueries }) => (
+        <ErrorBoundary
+          FallbackComponent={NullFallback}
+          onReset={resetQueries}
+          onError={handleGateError}
+        >
+          <Suspense fallback={null}>
+            <TransitionPayrollAlertGate {...props} />
+          </Suspense>
+        </ErrorBoundary>
+      )}
+    </QueryErrorResetBoundary>
+  )
+}
+
+function NullFallback(_: FallbackProps) {
+  return null
 }
 
 function TransitionPayrollAlertGate({ companyId, onEvent }: TransitionPayrollAlertProps) {
@@ -54,7 +88,7 @@ function TransitionPayrollAlertGate({ companyId, onEvent }: TransitionPayrollAle
 
   const { data: paySchedulesData } = usePaySchedulesGetAllSuspense({ companyId })
 
-  const groupedPayPeriods = useMemo<GroupedTransitionPayPeriods[]>(() => {
+  const groupedPayPeriods = useMemo<TransitionPayPeriodGroup[]>(() => {
     const paySchedules = paySchedulesData.payScheduleShowResponse ?? []
     const unprocessed = (payPeriodsData.payPeriods ?? []).filter(
       (pp: PayPeriod) => !pp.payroll?.processed,
