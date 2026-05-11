@@ -3,7 +3,10 @@
   align-items: center;
   justify-content: center;
   width: 50px;
+  height: 50px;
+  min-height: 0;
   padding: 0;
+  border-radius: 50%;
   line-height: 0;
 
   svg {
@@ -15,4 +18,9 @@
   &[data-loading='true'] svg {
     display: none;
   }
+}
+
+:is(td, th) .root[data-variant] {
+  background-color: transparent;
+  border-color: transparent;
 }

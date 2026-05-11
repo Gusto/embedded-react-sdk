@@ -52,6 +52,7 @@ export const Select = ({
       data-invalid={isInvalid || undefined}
       data-disabled={isDisabled || undefined}
       data-has-value={hasValue || undefined}
+      data-no-label={shouldVisuallyHideLabel || !label || undefined}
     >
       <AriaSelect
         aria-label={typeof label === 'string' ? label : undefined}

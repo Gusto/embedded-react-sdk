@@ -107,6 +107,18 @@
   overflow: hidden;
 }
 
+.root[data-no-label] .valueArea {
+  align-items: center;
+}
+
+.root[data-no-label] .value {
+  top: 0;
+}
+
+.root[data-no-label] .trigger {
+  min-height: 48px;
+}
+
 .triggerWithTooltip .valueArea {
   padding-right: 56px;
 }

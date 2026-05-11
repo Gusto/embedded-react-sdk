@@ -13,6 +13,8 @@ import { DatePicker } from './DatePicker'
 import { Switch } from './Switch'
 import { ComboBox } from './ComboBox'
 import { Menu } from './Menu'
+import { DescriptionList } from './DescriptionList'
+import { PaginationControl } from './PaginationControl'
 
 export {
   Button,
@@ -30,6 +32,8 @@ export {
   Switch,
   ComboBox,
   Menu,
+  DescriptionList,
+  PaginationControl,
 }
 
 export const interfaceLibComponents = {
@@ -48,4 +52,6 @@ export const interfaceLibComponents = {
   Switch,
   ComboBox,
   Menu,
+  DescriptionList,
+  PaginationControl,
 }

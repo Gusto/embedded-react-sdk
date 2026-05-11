@@ -1,0 +1,64 @@
+.root {
+  width: 100%;
+  margin: 0;
+  font-family: 'InterfaceLib Sans', Helvetica, Arial, sans-serif;
+}
+
+.root .item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 16px 8px;
+}
+
+.root .item dt {
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  color: #101010;
+
+  p {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+    color: #101010;
+  }
+}
+
+.root .item dd {
+  margin: 0;
+  margin-inline-start: 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+  color: #666666;
+
+  p {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 22px;
+    color: #666666;
+  }
+}
+
+.root.withSeparators .item:not(:last-child) {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.root[data-layout='horizontal'] .item {
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+}
+
+.root[data-layout='horizontal'] .item dt {
+  flex-shrink: 0;
+}
+
+.root[data-layout='horizontal'] .item dd {
+  text-align: right;
+}

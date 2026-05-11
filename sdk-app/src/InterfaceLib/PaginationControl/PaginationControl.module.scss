@@ -1,0 +1,42 @@
+.root {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 16px 0;
+  font-family: 'InterfaceLib Sans', Helvetica, Arial, sans-serif;
+  color: #101010;
+}
+
+.itemsPerPage {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #666666;
+}
+
+.itemsPerPage label {
+  white-space: nowrap;
+}
+
+.selectWrapper {
+  width: 72px;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pageIndicator {
+  margin-right: 8px;
+  font-size: 14px;
+  color: #666666;
+  white-space: nowrap;
+}
+
+.spinner {
+  margin-right: 8px;
+}

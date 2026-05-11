@@ -3,14 +3,10 @@ import type { ButtonIconProps } from '@gusto/embedded-react-sdk'
 import { Button } from './Button'
 import styles from './ButtonIcon.module.scss'
 
-export function ButtonIcon({
-  variant = 'tertiary',
-  className,
-  children,
-  ...props
-}: ButtonIconProps) {
+export function ButtonIcon({ variant, className, children, ...props }: ButtonIconProps) {
+  const resolvedVariant = variant === 'error' ? 'error' : 'secondary'
   return (
-    <Button {...props} variant={variant} className={classNames(styles.root, className)}>
+    <Button {...props} variant={resolvedVariant} className={classNames(styles.root, className)}>
       {children}
     </Button>
   )
