@@ -48,6 +48,7 @@ export default defineConfig(() => {
 
   const aliases: Record<string, string> = {
     '@': sdkSrcPath,
+    '@gusto/embedded-react-sdk/style.css': resolve(__dirname, 'src/demos/sdk-style-stub.css'),
     '@gusto/embedded-react-sdk': isProd
       ? resolve(__dirname, '../dist/index.js')
       : resolve(sdkSrcPath, 'index.ts'),

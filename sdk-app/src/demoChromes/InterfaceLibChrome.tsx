@@ -2,26 +2,30 @@ import { NavLink } from 'react-router-dom'
 import { Button } from '../InterfaceLib'
 import type { DemoChromeProps } from './types'
 import styles from './InterfaceLibChrome.module.scss'
+import {
+  DEMO_LINKS,
+  PROFILE_ROUTE,
+  TOP_NAV_LINKS,
+  WORKSPACE_LINKS,
+  type ChromeSidebarLink,
+} from './workspaceLinks'
 
-const HOME_ROUTE = '/company/OnboardingOverview'
-const PROFILE_ROUTE = '/employee/Profile'
-
-const TOP_NAV_LINKS: { to: string; label: string; end?: boolean }[] = [
-  { to: HOME_ROUTE, label: 'Dashboard', end: true },
-  { to: PROFILE_ROUTE, label: 'People' },
-  { to: '/payroll/PayrollLanding', label: 'Payroll' },
-  { to: '/company/DocumentList', label: 'Documents' },
-]
-
-const SIDEBAR_LINKS: { to: string; label: string }[] = [
-  { to: PROFILE_ROUTE, label: 'Employees' },
-  { to: '/employee/OnboardingFlow', label: 'Onboarding' },
-  { to: '/employee/Compensation', label: 'Compensation' },
-  { to: '/payroll/PayrollFlow', label: 'Run Payroll' },
-  { to: '/company/DocumentList', label: 'Documents' },
-  { to: '/company/BankAccount', label: 'Bank Account' },
-  { to: '/company/PaySchedule', label: 'Pay Schedule' },
-]
+function SidebarGroup({ title, links }: { title: string; links: ChromeSidebarLink[] }) {
+  return (
+    <nav className={styles.sidebarGroup} aria-label={title}>
+      <div className={styles.sidebarHeader}>{title}</div>
+      {links.map(link => (
+        <NavLink
+          key={link.to}
+          to={link.to}
+          className={({ isActive }) => `${styles.navLink} ${isActive ? styles.navLinkActive : ''}`}
+        >
+          {link.label}
+        </NavLink>
+      ))}
+    </nav>
+  )
+}
 
 export function InterfaceLibChrome({ children, onOpenSettings }: DemoChromeProps) {
   return (
@@ -58,18 +62,8 @@ export function InterfaceLibChrome({ children, onOpenSettings }: DemoChromeProps
 
       <div className={styles.body}>
         <aside className={styles.sidebar} aria-label="Workspace navigation">
-          <div className={styles.sidebarHeader}>Workspace</div>
-          {SIDEBAR_LINKS.map(link => (
-            <NavLink
-              key={link.to}
-              to={link.to}
-              className={({ isActive }) =>
-                `${styles.navLink} ${isActive ? styles.navLinkActive : ''}`
-              }
-            >
-              {link.label}
-            </NavLink>
-          ))}
+          <SidebarGroup title="Workspace" links={WORKSPACE_LINKS} />
+          <SidebarGroup title="Demos" links={DEMO_LINKS} />
         </aside>
 
         <div className={styles.content}>{children}</div>

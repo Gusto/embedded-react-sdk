@@ -35,7 +35,14 @@ export default [
       ],
       'import/extensions': [
         'error',
-        { js: 'never', svg: 'always', png: 'always', scss: 'always', json: 'always' },
+        {
+          js: 'never',
+          svg: 'always',
+          png: 'always',
+          scss: 'always',
+          css: 'always',
+          json: 'always',
+        },
       ],
       // Enable error for unused imports (and variables)
       '@typescript-eslint/no-unused-vars': ['error'],
@@ -140,6 +147,17 @@ export default [
     files: ['src/components/InformationRequests/InformationRequestForm/InformationRequestForm.tsx'],
     rules: {
       '@typescript-eslint/no-unnecessary-type-arguments': 'off',
+    },
+  },
+  {
+    // Partner-facing demo files are kept verbatim with the public embedded-react-sdk-demo-app
+    // for copy-paste fidelity. The rules below conflict with that intent (educational
+    // console.log inside onEvent callbacks, idiomatic React arrow shorthands, etc.).
+    files: ['sdk-app/src/demos/**/*.{ts,tsx}'],
+    rules: {
+      'no-console': 'off',
+      '@typescript-eslint/no-confusing-void-expression': 'off',
+      'jsx-a11y/label-has-associated-control': 'off',
     },
   },
   ...storybook.configs['flat/recommended'],
