@@ -1,4 +1,5 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { assertDefined } from '@/test-utils/assertions'
 import {
   formatDateShortWithWeekday,
   formatDateShortWithWeekdayAndYear,
@@ -198,22 +199,23 @@ describe('Date Formatting Helpers', () => {
       const utcDate = new Date('2023-12-25T00:00:00.000Z')
       const normalized = normalizeDateToLocal(utcDate)
 
-      expect(normalized).toBeInstanceOf(Date)
-      expect(normalized?.getFullYear()).toBe(2023)
-      expect(normalized?.getMonth()).toBe(11)
-      expect(normalized?.getDate()).toBe(25)
-      expect(normalized?.getHours()).toBe(0)
-      expect(normalized?.getMinutes()).toBe(0)
+      assertDefined(normalized)
+      expect(normalized.getFullYear()).toBe(2023)
+      expect(normalized.getMonth()).toBe(11)
+      expect(normalized.getDate()).toBe(25)
+      expect(normalized.getHours()).toBe(0)
+      expect(normalized.getMinutes()).toBe(0)
     })
 
     it('should normalize dates with time to midnight', () => {
       const dateWithTime = new Date('2024-03-15T15:30:45.000Z')
       const normalized = normalizeDateToLocal(dateWithTime)
 
-      expect(normalized?.getFullYear()).toBe(2024)
-      expect(normalized?.getMonth()).toBe(2)
-      expect(normalized?.getDate()).toBe(15)
-      expect(normalized?.getHours()).toBe(0)
+      assertDefined(normalized)
+      expect(normalized.getFullYear()).toBe(2024)
+      expect(normalized.getMonth()).toBe(2)
+      expect(normalized.getDate()).toBe(15)
+      expect(normalized.getHours()).toBe(0)
     })
 
     it('should return null for invalid inputs', () => {
@@ -343,6 +345,42 @@ describe('Date Formatting Helpers', () => {
       const result = addBusinessDays(saturday, 1)
       expect(result.getDay()).toBe(1)
       expect(result.getDate()).toBe(8)
+    })
+  })
+
+  describe('UTC+ timezone sensitivity', () => {
+    beforeEach(() => {
+      vi.stubEnv('TZ', 'Europe/Paris') // UTC+2 in summer: local midnight June 15 = UTC June 14 22:00
+    })
+
+    afterEach(() => {
+      vi.unstubAllEnvs()
+    })
+
+    describe('normalizeDateToLocal', () => {
+      it.fails(
+        'preserves the local calendar date when the input is already at local midnight',
+        () => {
+          const localMidnight = new Date(2026, 5, 15)
+          const result = normalizeDateToLocal(localMidnight)
+
+          assertDefined(result)
+          expect(result.getFullYear()).toBe(2026)
+          expect(result.getMonth()).toBe(5) // June
+          expect(result.getDate()).toBe(15)
+        },
+      )
+    })
+
+    describe('formatDateToStringDate', () => {
+      it.fails(
+        'returns a YYYY-MM-DD string matching the local calendar date when the input is at local midnight',
+        () => {
+          // Bug: uses toISOString().split('T')[0] which reads UTC.
+          // In UTC+2, local midnight June 15 = UTC June 14 22:00 → returns '2026-06-14'.
+          expect(formatDateToStringDate(new Date(2026, 5, 15))).toBe('2026-06-15')
+        },
+      )
     })
   })
 })
