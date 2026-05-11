@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { OnboardingStatus } from '@gusto/embedded-api/models/operations/putv1employeesemployeeidonboardingstatus'
 import type { UseEmployeeListResult, EmployeeWithActions } from '../shared/useEmployeeList'
+import styles from './EmployeeListView.module.scss'
 import { DataView, EmptyData, ActionsLayout, useDataView, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
@@ -108,7 +109,11 @@ export function EmployeeListView({
         })
       }
 
-      return <HamburgerMenu items={menuItems} triggerLabel={t('hamburgerTitle')} />
+      return (
+        <div className={styles.actionsContainer}>
+          <HamburgerMenu items={menuItems} triggerLabel={t('hamburgerTitle')} />
+        </div>
+      )
     },
     isFetching,
     pagination,
