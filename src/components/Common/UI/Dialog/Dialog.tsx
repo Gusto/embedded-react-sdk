@@ -1,5 +1,4 @@
 import { useRef } from 'react'
-import { Button } from '../Button/Button'
 import { Grid } from '../../Grid/Grid'
 import { type DialogProps, DialogDefaults } from './DialogTypes'
 import styles from './Dialog.module.scss'
@@ -52,16 +51,16 @@ export function Dialog(rawProps: DialogProps) {
 
   const dialogFooter = (
     <Grid gridTemplateColumns={gridColumns} gap={12} className={styles.actions}>
-      <Button variant="secondary" onClick={handleClose}>
+      <Components.Button variant="secondary" onClick={handleClose}>
         {closeActionLabel}
-      </Button>
-      <Button
+      </Components.Button>
+      <Components.Button
         variant={isDestructive ? 'error' : 'primary'}
         onClick={handlePrimaryAction}
         isLoading={isPrimaryActionLoading}
       >
         {primaryActionLabel}
-      </Button>
+      </Components.Button>
     </Grid>
   )
 
