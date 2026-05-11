@@ -1,5 +1,5 @@
 import type { CSSProperties, PropsWithChildren } from 'react'
-import { GustoProvider, useEmployeeDetailsForm } from '@gusto/embedded-react-sdk'
+import { GustoProvider, SDKFormProvider, useEmployeeDetailsForm } from '@gusto/embedded-react-sdk'
 import '@gusto/embedded-react-sdk/style.css'
 import { Button, Loading, interfaceLibComponents } from '../InterfaceLib'
 import { BASE_URL, COMPANY_ID, EMPLOYEE_ID } from './config'
@@ -41,6 +41,18 @@ const fieldGridStyle: CSSProperties = {
 
 const fullWidthStyle: CSSProperties = { gridColumn: '1 / -1' }
 
+const cardStackStyle: CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '20px',
+}
+
+const formActionsStyle: CSSProperties = {
+  display: 'flex',
+  justifyContent: 'flex-end',
+  marginTop: '4px',
+}
+
 function Card({ children }: PropsWithChildren) {
   return <section style={cardStyle}>{children}</section>
 }
@@ -66,63 +78,79 @@ function EmployeeDetailsForm() {
   const { Fields } = employeeDetails.form
 
   return (
-    <form
-      onSubmit={e => {
-        e.preventDefault()
-        void employeeDetails.actions.onSubmit()
-      }}
-    >
-      <Card>
-        <h2 style={cardTitleStyle}>Employee details</h2>
-        <p style={cardDescriptionStyle}>
-          The same hook from the Hello demo, now rendered through your design system and a custom
-          layout.
-        </p>
-        <FieldGrid>
-          <Fields.FirstName
-            label="First name"
-            formHookResult={employeeDetails}
-            validationMessages={{
-              REQUIRED: 'First name is required',
-              INVALID_NAME: 'Enter a valid first name',
-            }}
-          />
-          <Fields.LastName
-            label="Last name"
-            formHookResult={employeeDetails}
-            validationMessages={{
-              REQUIRED: 'Last name is required',
-              INVALID_NAME: 'Enter a valid last name',
-            }}
-          />
-          <FullWidth>
-            <Fields.Email
-              label="Personal email"
-              formHookResult={employeeDetails}
-              validationMessages={{
-                REQUIRED: 'Email is required',
-                INVALID_EMAIL: 'Enter a valid email address',
-                EMAIL_REQUIRED_FOR_SELF_ONBOARDING:
-                  'Email is required when self-onboarding is enabled',
-              }}
-            />
-          </FullWidth>
-          <Fields.DateOfBirth
-            label="Date of birth"
-            formHookResult={employeeDetails}
-            validationMessages={{ REQUIRED: 'Date of birth is required' }}
-          />
-          <Fields.Ssn
-            label="Social Security number"
-            formHookResult={employeeDetails}
-            validationMessages={{ INVALID_SSN: 'Enter a valid Social Security number' }}
-          />
-        </FieldGrid>
-        <Button type="submit" isLoading={employeeDetails.status.isPending}>
-          Save changes
-        </Button>
-      </Card>
-    </form>
+    <SDKFormProvider formHookResult={employeeDetails}>
+      <form
+        onSubmit={e => {
+          e.preventDefault()
+          void employeeDetails.actions.onSubmit()
+        }}
+      >
+        <div style={cardStackStyle}>
+          <Card>
+            <h2 style={cardTitleStyle}>Personal information</h2>
+            <p style={cardDescriptionStyle}>
+              The same fields as the Hello demo, but split across cards and reordered to match your
+              layout — last name first, then first name, then date of birth.
+            </p>
+            <FieldGrid>
+              <Fields.LastName
+                label="Last name"
+                validationMessages={{
+                  REQUIRED: 'Last name is required',
+                  INVALID_NAME: 'Enter a valid last name',
+                }}
+              />
+              <Fields.FirstName
+                label="First name"
+                validationMessages={{
+                  REQUIRED: 'First name is required',
+                  INVALID_NAME: 'Enter a valid first name',
+                }}
+              />
+              <FullWidth>
+                <Fields.DateOfBirth
+                  label="Date of birth"
+                  validationMessages={{ REQUIRED: 'Date of birth is required' }}
+                />
+              </FullWidth>
+            </FieldGrid>
+          </Card>
+
+          <Card>
+            <h2 style={cardTitleStyle}>Contact &amp; security</h2>
+            <p style={cardDescriptionStyle}>
+              Sensitive fields live in their own card. The hook doesn&apos;t care how the fields are
+              grouped — render them wherever your design needs them.
+            </p>
+            <FieldGrid>
+              <FullWidth>
+                <Fields.Email
+                  label="Personal email"
+                  validationMessages={{
+                    REQUIRED: 'Email is required',
+                    INVALID_EMAIL: 'Enter a valid email address',
+                    EMAIL_REQUIRED_FOR_SELF_ONBOARDING:
+                      'Email is required when self-onboarding is enabled',
+                  }}
+                />
+              </FullWidth>
+              <FullWidth>
+                <Fields.Ssn
+                  label="Social Security number"
+                  validationMessages={{ INVALID_SSN: 'Enter a valid Social Security number' }}
+                />
+              </FullWidth>
+            </FieldGrid>
+          </Card>
+
+          <div style={formActionsStyle}>
+            <Button type="submit" isLoading={employeeDetails.status.isPending}>
+              Save changes
+            </Button>
+          </div>
+        </div>
+      </form>
+    </SDKFormProvider>
   )
 }
 

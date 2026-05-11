@@ -1,6 +1,7 @@
 import type { CSSProperties, PropsWithChildren } from 'react'
 import {
   GustoProvider,
+  SDKFormProvider,
   composeSubmitHandler,
   useEmployeeDetailsForm,
   useHomeAddressForm,
@@ -82,8 +83,11 @@ function ChainedForm() {
 
   const homeAddress = useHomeAddressForm({
     employeeId: EMPLOYEE_ID,
-    withEffectiveDateField: false,
+    withEffectiveDateField: true,
     shouldFocusError: false,
+    optionalFieldsToRequire: {
+      create: ['effectiveDate'],
+    },
   })
 
   if (employeeDetails.isLoading || homeAddress.isLoading) {
@@ -115,79 +119,80 @@ function ChainedForm() {
         </div>
       )}
 
-      <Card>
-        <h2 style={cardTitleStyle}>Employee details</h2>
-        <p style={cardDescriptionStyle}>The first form in the composed submit.</p>
-        <FieldGrid>
-          <EmployeeFields.FirstName
-            label="First name"
-            formHookResult={employeeDetails}
-            validationMessages={{
-              REQUIRED: 'First name is required',
-              INVALID_NAME: 'Enter a valid first name',
-            }}
-          />
-          <EmployeeFields.LastName
-            label="Last name"
-            formHookResult={employeeDetails}
-            validationMessages={{
-              REQUIRED: 'Last name is required',
-              INVALID_NAME: 'Enter a valid last name',
-            }}
-          />
-          <FullWidth>
-            <EmployeeFields.Email
-              label="Personal email"
-              formHookResult={employeeDetails}
+      <SDKFormProvider formHookResult={employeeDetails}>
+        <Card>
+          <h2 style={cardTitleStyle}>Employee details</h2>
+          <p style={cardDescriptionStyle}>
+            The first form in the composed submit, wrapped in its own SDKFormProvider.
+          </p>
+          <FieldGrid>
+            <EmployeeFields.FirstName
+              label="First name"
               validationMessages={{
-                REQUIRED: 'Email is required',
-                INVALID_EMAIL: 'Enter a valid email address',
-                EMAIL_REQUIRED_FOR_SELF_ONBOARDING:
-                  'Email is required when self-onboarding is enabled',
+                REQUIRED: 'First name is required',
+                INVALID_NAME: 'Enter a valid first name',
               }}
             />
-          </FullWidth>
-        </FieldGrid>
-      </Card>
+            <EmployeeFields.LastName
+              label="Last name"
+              validationMessages={{
+                REQUIRED: 'Last name is required',
+                INVALID_NAME: 'Enter a valid last name',
+              }}
+            />
+            <FullWidth>
+              <EmployeeFields.Email
+                label="Personal email"
+                validationMessages={{
+                  REQUIRED: 'Email is required',
+                  INVALID_EMAIL: 'Enter a valid email address',
+                  EMAIL_REQUIRED_FOR_SELF_ONBOARDING:
+                    'Email is required when self-onboarding is enabled',
+                }}
+              />
+            </FullWidth>
+          </FieldGrid>
+        </Card>
+      </SDKFormProvider>
 
-      <Card>
-        <h2 style={cardTitleStyle}>Home address</h2>
-        <p style={cardDescriptionStyle}>A second hook submitted in the same handler.</p>
-        <FieldGrid>
-          <FullWidth>
-            <AddressFields.Street1
-              label="Street address"
-              formHookResult={homeAddress}
-              validationMessages={{ REQUIRED: 'Street is required' }}
+      <SDKFormProvider formHookResult={homeAddress}>
+        <Card>
+          <h2 style={cardTitleStyle}>Home address</h2>
+          <p style={cardDescriptionStyle}>
+            A second hook, its own SDKFormProvider, submitted in the same composed handler.
+          </p>
+          <FieldGrid>
+            <FullWidth>
+              <AddressFields.Street1
+                label="Street address"
+                validationMessages={{ REQUIRED: 'Street is required' }}
+              />
+            </FullWidth>
+            <FullWidth>
+              <AddressFields.Street2
+                label="Apt, suite, etc. (optional)"
+                validationMessages={{ REQUIRED: 'Street 2 is required' }}
+              />
+            </FullWidth>
+            <AddressFields.City
+              label="City"
+              validationMessages={{ REQUIRED: 'City is required' }}
             />
-          </FullWidth>
-          <FullWidth>
-            <AddressFields.Street2
-              label="Apt, suite, etc. (optional)"
-              formHookResult={homeAddress}
-              validationMessages={{ REQUIRED: 'Street 2 is required' }}
+            <AddressFields.State
+              label="State"
+              validationMessages={{ REQUIRED: 'State is required' }}
             />
-          </FullWidth>
-          <AddressFields.City
-            label="City"
-            formHookResult={homeAddress}
-            validationMessages={{ REQUIRED: 'City is required' }}
-          />
-          <AddressFields.State
-            label="State"
-            formHookResult={homeAddress}
-            validationMessages={{ REQUIRED: 'State is required' }}
-          />
-          <AddressFields.Zip
-            label="ZIP code"
-            formHookResult={homeAddress}
-            validationMessages={{
-              REQUIRED: 'ZIP code is required',
-              INVALID_ZIP: 'Enter a valid ZIP code',
-            }}
-          />
-        </FieldGrid>
-      </Card>
+            <AddressFields.Zip
+              label="ZIP code"
+              validationMessages={{
+                REQUIRED: 'ZIP code is required',
+                INVALID_ZIP: 'Enter a valid ZIP code',
+              }}
+            />
+            {AddressFields.EffectiveDate && <AddressFields.EffectiveDate label="Effective date" />}
+          </FieldGrid>
+        </Card>
+      </SDKFormProvider>
 
       <div style={submitRowStyle}>
         <Button type="submit" isLoading={isPending}>

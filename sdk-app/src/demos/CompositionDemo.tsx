@@ -41,7 +41,7 @@ export default function CompositionDemo() {
           </button>
         </div>
       ) : (
-        <Employee.StateTaxes
+        <Employee.Deductions
           employeeId={EMPLOYEE_ID}
           onEvent={(eventType, data) => {
             console.log(eventType, data)
