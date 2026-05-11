@@ -22,16 +22,16 @@
   font-display: swap;
 }
 
-html {
+.interface-lib-adapter-active {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-.GSDK {
+.interface-lib-adapter-active .GSDK {
   font-family: 'InterfaceLib Sans', Helvetica, Arial, sans-serif;
 }
 
-.GSDK :is(h1, h2) + p {
+.interface-lib-adapter-active .GSDK :is(h1, h2) + p {
   margin-top: 2px;
   font-size: 16px;
 }
@@ -39,8 +39,8 @@ html {
 /* SDK-internal switch-field wrapper — no exposed adapter prop, so override
    here. Class name is CSS-module-hashed (e.g. _switchFieldContainer_v19ck_5),
    so match by prefix. */
-[class^='_switchFieldContainer_'],
-[class*=' _switchFieldContainer_'] {
+.interface-lib-adapter-active [class^='_switchFieldContainer_'],
+.interface-lib-adapter-active [class*=' _switchFieldContainer_'] {
   border-radius: 0;
   border: 1px solid #d9d9d9;
   box-shadow: none;
