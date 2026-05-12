@@ -27,13 +27,69 @@ Version bump rules (during 0.x.x):
    ```
 2. Run `npm run release`
 3. Review the proposed version and confirm (or type a different version)
-4. After `release-it` finishes, push the branch and open a PR:
+4. **Review and improve the generated changelog** (see below)
+5. After `release-it` finishes and the changelog is polished, push the branch and open a PR:
    ```bash
    git push -u origin chore/release-<version>
    gh pr create --title "chore: release <version>"
    ```
-5. Once the PR is merged, trigger the [Publish to NPM](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish.yaml) GitHub action
+6. Once the PR is merged, trigger the [Publish to NPM](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish.yaml) GitHub action
+
+## Changelog curation (step 4)
+
+After `release-it` commits, the generated `CHANGELOG.md` entry is a mechanical draft — correct but not consumer-friendly. Before pushing, rewrite it to match the style of existing entries.
+
+Read the newly added section at the top of `CHANGELOG.md`, then amend the release commit with an improved version.
+
+### Formatting rules
+
+Match the style of existing entries in `CHANGELOG.md`:
+
+- Blank line after the version header (`## 0.44.2`) and after each section header (`### Fixes`)
+- Use `-` bullets, not `*`
+- No commit hash links (e.g. `([bb3913c](...))`) — remove them
+- Keep PR links (e.g. `([#1774](...))`) if present — they are useful
+- Use backticks for component names, hook names, prop names, type names, and npm packages
+
+### Content rules
+
+Write for SDK consumers (partners integrating the SDK), not for internal contributors:
+
+- **Features**: Describe what the feature enables from the consumer's perspective. If a new component or hook is exported, name it.
+- **Fixes**: Describe the user-visible symptom that was fixed, not the internal cause.
+- **Breaking changes**: Always include a before/after code example showing the migration path. Name the old and new APIs explicitly.
+- **Chores & Maintenance**: Collapse multiple dependency bumps into a single grouped line (e.g. "Bump dev dependencies (`vitest`, `typescript-eslint`, `@playwright/test`)"). Only call out a dep bump individually if it has meaningful consumer impact.
+- Omit entries that have zero consumer relevance (internal tooling, CI config, docs-only changes).
+
+### Example transformation
+
+Generated:
+
+```
+### Fixes
+
+* **SDK-828:** utc roundtrip bug in date picker field ([#1767](...)) ([82b158b](...))
+* prevent skeleton/gap pop-in for empty TransitionPayrollAlert ([#1773](...)) ([8601f51](...))
+```
+
+After curation:
+
+```
+### Fixes
+
+- Fix UTC roundtrip bug in date picker field where dates near midnight would shift by one day ([#1767](...))
+- Prevent layout shift (skeleton flash) when `TransitionPayrollAlert` has no content to display ([#1773](...))
+```
+
+### Amending the commit
+
+Once the changelog is edited to your satisfaction:
+
+```bash
+git add CHANGELOG.md
+git commit --amend --no-edit
+```
 
 ## Alternatively: trigger from CI
 
-The [Prepare Release](https://github.com/Gusto/embedded-react-sdk/actions/workflows/prepare-release.yaml) workflow accepts a `workflow_dispatch` trigger. Run it from the GitHub Actions UI — it auto-detects the version from commits, creates the branch, and opens a PR without any local setup.
+The [Prepare Release](https://github.com/Gusto/embedded-react-sdk/actions/workflows/prepare-release.yaml) workflow accepts a `workflow_dispatch` trigger. Run it from the GitHub Actions UI — it auto-detects the version from commits, creates the branch, and opens a PR without any local setup. The changelog curation step still applies — edit `CHANGELOG.md` and push an additional commit to the PR branch before merging.
