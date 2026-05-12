@@ -107,17 +107,18 @@ function deriveEmployees(
     uuid: string
     firstName?: string | null
     lastName?: string | null
-    title?: string | null
+    jobs?: Array<{ primary?: boolean; title?: string | null }> | null
   }>,
 ): TimeOffPolicyDetailEmployee[] {
   const employeeMap = new Map(allEmployees.map(e => [e.uuid, e]))
   return policy.employees.map(policyEmp => {
     const emp = employeeMap.get(policyEmp.uuid ?? '')
+    const primaryJob = emp?.jobs?.find(job => job.primary)
     return {
       uuid: policyEmp.uuid ?? '',
       firstName: emp?.firstName ?? null,
       lastName: emp?.lastName ?? null,
-      jobTitle: emp?.title ?? null,
+      jobTitle: primaryJob?.title ?? null,
       balance: policyEmp.balance != null ? Number(policyEmp.balance) : null,
     }
   })
