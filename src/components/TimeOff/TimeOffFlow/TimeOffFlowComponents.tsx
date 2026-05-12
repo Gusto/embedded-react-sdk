@@ -26,11 +26,14 @@ export type TimeOffFlowAlert = {
   content?: ReactNode
 }
 
+export type AddEmployeesSource = 'policySettings' | 'policyDetailsForm' | 'viewTimeOffPolicyDetail'
+
 export interface TimeOffFlowContextInterface extends FlowContextInterface {
   companyId: string
   policyType?: TimeOffPolicyType
   policyId?: string
   alerts?: TimeOffFlowAlert[]
+  addEmployeesSource?: AddEmployeesSource
 }
 
 export function PolicyListContextual() {

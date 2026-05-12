@@ -14,6 +14,7 @@ import {
   ViewHolidayScheduleContextual,
   type TimeOffFlowContextInterface,
   type TimeOffFlowAlert,
+  type AddEmployeesSource,
 } from './TimeOffFlowComponents'
 import type { TimeOffPolicyType } from './timeOffPolicyTypes'
 import { componentEvents } from '@/shared/constants'
@@ -46,6 +47,10 @@ function isUnlimitedPolicy(
   ev: { payload: PolicyCreatedPayload },
 ) {
   return ev.payload.accrualMethod === 'unlimited'
+}
+
+function addEmployeesSourceIs(source: AddEmployeesSource) {
+  return (ctx: TimeOffFlowContextInterface) => ctx.addEmployeesSource === source
 }
 
 const cancelToPolicyList = transition(
@@ -177,6 +182,7 @@ export const timeOffMachine = {
           component: AddEmployeesToPolicyContextual,
           policyId: ev.payload.policyId,
           alerts: undefined,
+          addEmployeesSource: 'policyDetailsForm',
         }),
       ),
     ),
@@ -221,6 +227,7 @@ export const timeOffMachine = {
           ...ctx,
           component: AddEmployeesToPolicyContextual,
           alerts: undefined,
+          addEmployeesSource: 'policySettings',
         }),
       ),
     ),
@@ -261,6 +268,60 @@ export const timeOffMachine = {
           ...ctx,
           component: TimeOffPolicyDetailContextual,
           alerts: undefined,
+          addEmployeesSource: undefined,
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.TIME_OFF_ADD_EMPLOYEES_BACK,
+      'viewTimeOffPolicyDetail',
+      guard(addEmployeesSourceIs('viewTimeOffPolicyDetail')),
+      reduce(
+        (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: TimeOffPolicyDetailContextual,
+          alerts: undefined,
+          addEmployeesSource: undefined,
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.TIME_OFF_ADD_EMPLOYEES_BACK,
+      'policyDetailsForm',
+      guard(addEmployeesSourceIs('policyDetailsForm')),
+      reduce(
+        (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: PolicyDetailsFormContextual,
+          alerts: undefined,
+          addEmployeesSource: undefined,
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.TIME_OFF_ADD_EMPLOYEES_BACK,
+      'policySettings',
+      reduce(
+        (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: PolicySettingsContextual,
+          alerts: undefined,
+          addEmployeesSource: undefined,
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.TIME_OFF_ADD_EMPLOYEES_ERROR,
+      'policyDetailsForm',
+      guard(addEmployeesSourceIs('policyDetailsForm')),
+      reduce(
+        (
+          ctx: TimeOffFlowContextInterface,
+          ev: { payload: ErrorPayload },
+        ): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: PolicyDetailsFormContextual,
+          alerts: ev.payload.alert ? [ev.payload.alert] : undefined,
         }),
       ),
     ),
@@ -294,6 +355,7 @@ export const timeOffMachine = {
           component: AddEmployeesToPolicyContextual,
           policyId: ev.payload.policyId,
           alerts: undefined,
+          addEmployeesSource: 'viewTimeOffPolicyDetail',
         }),
       ),
     ),

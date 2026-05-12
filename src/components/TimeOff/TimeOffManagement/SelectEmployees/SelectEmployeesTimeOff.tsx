@@ -283,7 +283,7 @@ function SelectEmployeesTimeOffInner({
   }, [originalUuids, selectedUuids])
 
   const handleBack = useCallback(() => {
-    onEvent(componentEvents.CANCEL)
+    onEvent(componentEvents.TIME_OFF_ADD_EMPLOYEES_BACK)
   }, [onEvent])
 
   return (
