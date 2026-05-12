@@ -73,6 +73,13 @@ export function PolicyConfigurationFormPresentation({
     }
   }, [resetMonth, getValues, setValue])
 
+  useEffect(() => {
+    if (resetDateType === 'per_anniversary_year') {
+      setValue('resetMonth', 1)
+      setValue('resetDay', 1)
+    }
+  }, [resetDateType, setValue])
+
   const accrualMethodOptions = useMemo(
     () => [
       {

@@ -125,7 +125,7 @@ function buildCreateRequestBody(
   const policyResetDate =
     data.resetDateType === 'per_calendar_year'
       ? formatMonthDay(data.resetMonth, data.resetDay)
-      : undefined
+      : null
 
   if (isHourly) {
     return {
@@ -172,7 +172,7 @@ function buildUpdateRequestBody(
   const policyResetDate =
     data.resetDateType === 'per_calendar_year'
       ? formatMonthDay(data.resetMonth, data.resetDay)
-      : undefined
+      : null
 
   if (isHourly) {
     return {
