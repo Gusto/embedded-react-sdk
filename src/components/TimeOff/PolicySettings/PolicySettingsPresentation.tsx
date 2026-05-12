@@ -73,6 +73,7 @@ export function PolicySettingsPresentation({
                       placeholder={t('policySettings.numberOfHoursPlaceholder')}
                       isDisabled={!accrualMaximumEnabled}
                       min={0}
+                      max={20000}
                     />
                     <div className={styles.toggleCell}>
                       <SwitchField
@@ -99,6 +100,7 @@ export function PolicySettingsPresentation({
                   placeholder={t('policySettings.numberOfHoursPlaceholder')}
                   isDisabled={!balanceMaximumEnabled}
                   min={0}
+                  max={20000}
                 />
                 <div className={styles.toggleCell}>
                   <SwitchField
@@ -123,6 +125,7 @@ export function PolicySettingsPresentation({
                   placeholder={t('policySettings.numberOfHoursPlaceholder')}
                   isDisabled={!carryOverLimitEnabled}
                   min={0}
+                  max={20000}
                 />
                 <div className={styles.toggleCell}>
                   <SwitchField
@@ -149,6 +152,7 @@ export function PolicySettingsPresentation({
                       placeholder={t('policySettings.numberOfDaysPlaceholder')}
                       isDisabled={!waitingPeriodEnabled}
                       min={0}
+                      max={20000}
                     />
                     <div className={styles.toggleCell}>
                       <SwitchField
