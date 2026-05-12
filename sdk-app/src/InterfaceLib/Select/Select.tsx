@@ -115,14 +115,10 @@ export const Select = ({
             {description}
           </span>
         )}
-        <Popover
-          className={styles.popover}
-          UNSTABLE_portalContainer={portalContainer}
-          maxHeight={320}
-        >
+        <Popover className={styles.popover} UNSTABLE_portalContainer={portalContainer}>
           <ListBox items={items} className={styles.listbox}>
             {item => (
-              <ListBoxItem key={item.id} className={styles.option}>
+              <ListBoxItem key={item.id} textValue={item.name} className={styles.option}>
                 {item.name}
               </ListBoxItem>
             )}

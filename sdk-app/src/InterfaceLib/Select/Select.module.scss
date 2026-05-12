@@ -210,9 +210,7 @@
 }
 
 .popover {
-  overflow: auto;
   width: var(--trigger-width);
-  max-height: 464px;
   padding: 8px;
   background: #ffffff;
   border-radius: 12px;
@@ -220,11 +218,13 @@
     0 4px 32px rgba(0, 0, 0, 0.1),
     0 8px 16px rgba(0, 0, 0, 0.1);
   font-family: 'InterfaceLib Sans', Helvetica, Arial, sans-serif;
+  overflow: hidden;
 }
 
 .listbox {
-  display: flex;
-  flex-direction: column;
+  display: block;
+  max-height: 448px;
+  overflow-y: auto;
   outline: none;
 }
 
