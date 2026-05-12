@@ -339,4 +339,6 @@ Trigger the [Prepare Release](https://github.com/Gusto/embedded-react-sdk/action
 
 ### After the PR is merged
 
-Run the [Publish to NPM](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish.yaml) GitHub action (`Run workflow`) to publish to NPM.
+Publishing happens automatically. When a `chore: release` commit lands on `main` and all CI checks pass, the [Publish to NPM](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish.yaml) workflow runs automatically and publishes to NPM.
+
+If you need to trigger a publish manually (e.g. CI was re-run after the auto-trigger fired, or something went wrong), you can still run the workflow manually from the Actions UI (`Run workflow`).
