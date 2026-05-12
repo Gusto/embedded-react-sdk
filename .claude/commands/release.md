@@ -56,7 +56,7 @@ Do not make any file changes or git operations in dry-run mode.
 
 After `release-it` commits, the generated `CHANGELOG.md` entry is a mechanical draft — correct but not consumer-friendly. Before pushing, rewrite it to match the style of existing entries.
 
-Read the newly added section at the top of `CHANGELOG.md`, then amend the release commit with an improved version.
+Read only the new section from `CHANGELOG.md` — it always starts at line 3 and ends just before the next `## ` header. Use `Read` with a small `limit` (e.g. 60 lines) rather than reading the whole file. Then amend the release commit with an improved version.
 
 ### Formatting rules
 
