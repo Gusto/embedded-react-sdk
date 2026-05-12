@@ -1,5 +1,4 @@
-import { Fragment, useEffect, useMemo } from 'react'
-import type { Control } from 'react-hook-form'
+import { useEffect, useMemo } from 'react'
 import { FormProvider, useFormContext } from 'react-hook-form'
 import { ErrorMessage } from '@hookform/error-message'
 import { Trans, useTranslation } from 'react-i18next'
@@ -19,7 +18,6 @@ import { ReorderableList } from '@/components/Common/ReorderableList'
 import { useFlow } from '@/components/Flow/useFlow'
 import type { FlowContextInterface } from '@/components/Flow/useFlow'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { useLocale } from '@/contexts/LocaleProvider'
 import { centsToDollars } from '@/helpers/currencyHelpers'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 import { componentEvents, PAYMENT_METHODS, SPLIT_BY } from '@/shared/constants'
@@ -32,7 +30,7 @@ export interface PaymentMethodContextInterface extends FlowContextInterface {
 
 type Split = NonNullable<EmployeePaymentMethod['splits']>[number]
 
-// --- Shared helpers (require FormProvider in parent) ---
+// --- Shared helpers ---
 
 function BankAccountFormFields() {
   const { t } = useTranslation('Employee.PaymentMethod')
@@ -98,34 +96,6 @@ function PaymentTypeRadio({ isAdmin }: { isAdmin: boolean }) {
 
 // --- Contextual view components ---
 
-export function InitialViewContextual() {
-  const { employeeId, isAdmin, onEvent } = useFlow<PaymentMethodContextInterface>()
-  const { formMethods, isPending, handleBankAccountSubmit } = usePaymentMethod({
-    employeeId,
-    isAdmin,
-    onEvent,
-  })
-  const { handleSubmit, watch } = formMethods
-  const { t } = useTranslation('Employee.PaymentMethod')
-  const Components = useComponentContext()
-  const watchedType = watch('type')
-
-  return (
-    <FormProvider {...formMethods}>
-      <Form onSubmit={handleSubmit(handleBankAccountSubmit)}>
-        <Components.Heading as="h2">{t('title')}</Components.Heading>
-        <PaymentTypeRadio isAdmin={isAdmin} />
-        {watchedType !== PAYMENT_METHODS.check && <BankAccountFormFields />}
-        <ActionsLayout>
-          <Components.Button type="submit" isLoading={isPending}>
-            {t('saveCta')}
-          </Components.Button>
-        </ActionsLayout>
-      </Form>
-    </FormProvider>
-  )
-}
-
 export function ListViewContextual() {
   const { employeeId, isAdmin, onEvent } = useFlow<PaymentMethodContextInterface>()
   const {
@@ -137,17 +107,11 @@ export function ListViewContextual() {
     handlePaymentMethodTypeSubmit,
     handleDelete,
   } = usePaymentMethod({ employeeId, isAdmin, onEvent })
-  const { handleSubmit } = formMethods
+  const { handleSubmit, watch } = formMethods
   const { t } = useTranslation('Employee.PaymentMethod')
   const Components = useComponentContext()
   const format = useNumberFormatter(paymentMethod.splitBy === 'Amount' ? 'currency' : 'percent')
-
-  useEffect(() => {
-    if (bankAccounts.length === 0) {
-      onEvent(componentEvents.EMPLOYEE_PAYMENT_METHOD_RESET)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bankAccounts.length])
+  const watchedType = watch('type')
 
   const { ...dataViewProps } = useDataView({
     data: bankAccounts,
@@ -191,7 +155,9 @@ export function ListViewContextual() {
       <Form onSubmit={handleSubmit(handlePaymentMethodTypeSubmit)}>
         <Components.Heading as="h2">{t('title')}</Components.Heading>
         <PaymentTypeRadio isAdmin={isAdmin} />
-        <DataView label={t('bankAccountsListLabel')} {...dataViewProps} />
+        {bankAccounts.length > 0 && (
+          <DataView label={t('bankAccountsListLabel')} {...dataViewProps} />
+        )}
         <ActionsLayout>
           {bankAccounts.length > 1 && (
             <Components.Button
@@ -204,15 +170,17 @@ export function ListViewContextual() {
               {t('splitCta')}
             </Components.Button>
           )}
-          <Components.Button
-            variant="secondary"
-            type="button"
-            onClick={() => {
-              onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATE)
-            }}
-          >
-            {t('addAnotherCta')}
-          </Components.Button>
+          {watchedType === PAYMENT_METHODS.directDeposit && (
+            <Components.Button
+              variant="secondary"
+              type="button"
+              onClick={() => {
+                onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATE)
+              }}
+            >
+              {bankAccounts.length > 0 ? t('addAnotherCta') : t('addBankAccountCta')}
+            </Components.Button>
+          )}
           <Components.Button type="submit" isLoading={isPending}>
             {t('submitCta')}
           </Components.Button>
@@ -222,21 +190,16 @@ export function ListViewContextual() {
   )
 }
 
-export function AddViewContextual() {
+export function BankFormContextual() {
   const { employeeId, isAdmin, onEvent } = useFlow<PaymentMethodContextInterface>()
-  const { formMethods, bankAccounts, isPending, handleBankAccountSubmit, resetToDefaults } =
+  const { formMethods, isPending, handleBankAccountSubmit, resetToDefaults } =
     usePaymentMethod({ employeeId, isAdmin, onEvent })
-  const { handleSubmit, watch } = formMethods
+  const { handleSubmit, setValue } = formMethods
   const { t } = useTranslation('Employee.PaymentMethod')
   const Components = useComponentContext()
-  const watchedType = watch('type')
 
-  useEffect(() => {
-    if (bankAccounts.length === 0) {
-      onEvent(componentEvents.EMPLOYEE_PAYMENT_METHOD_RESET)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bankAccounts.length])
+  // Bank form is always Direct Deposit — force the type so the submit handler validates correctly
+  setValue('type', PAYMENT_METHODS.directDeposit)
 
   const handleCancel = () => {
     resetToDefaults()
@@ -246,8 +209,7 @@ export function AddViewContextual() {
   return (
     <FormProvider {...formMethods}>
       <Form onSubmit={handleSubmit(handleBankAccountSubmit)}>
-        <PaymentTypeRadio isAdmin={false} />
-        {watchedType !== PAYMENT_METHODS.check && <BankAccountFormFields />}
+        <BankAccountFormFields />
         <ActionsLayout>
           <Components.Button variant="secondary" type="button" onClick={handleCancel}>
             {t('cancelAddCta')}
@@ -266,7 +228,6 @@ export function SplitViewContextual() {
   const { formMethods, paymentMethod, bankAccounts, isPending, handleSplitSubmit, resetToDefaults } =
     usePaymentMethod({ employeeId, isAdmin, onEvent })
   const {
-    control,
     handleSubmit,
     setValue,
     resetField,
@@ -277,7 +238,6 @@ export function SplitViewContextual() {
   const Components = useComponentContext()
   const splitBy = watch('splitBy')
   const priorities = watch('priority')
-  const { currency } = useLocale()
 
   const splits = useMemo(() => paymentMethod.splits ?? [], [paymentMethod.splits])
 
@@ -289,21 +249,20 @@ export function SplitViewContextual() {
   useEffect(() => {
     if (!splits.length) return
     if (splitBy === SPLIT_BY.amount) {
-      const newAmountValues = splits.reduce<Record<string, number | null>>((acc, curr) => {
+      const newValues = splits.reduce<Record<string, number | null>>((acc, curr) => {
         acc[curr.uuid] = curr.uuid === remainderId ? null : 0
         return acc
       }, {})
-      setValue('splitAmount', newAmountValues)
+      setValue('splitAmount', newValues)
     } else {
-      const newPercentageValues = splits.reduce<Record<string, number>>((acc, curr, index) => {
+      const newValues = splits.reduce<Record<string, number>>((acc, curr, index) => {
         acc[curr.uuid] = index === 0 ? 100 : 0
         return acc
       }, {})
-      setValue('splitAmount', newPercentageValues)
+      setValue('splitAmount', newValues)
     }
-  }, [splitBy, splits, remainderId, setValue])
-
-  setValue('isSplit', true)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [splitBy])
 
   const updateSplitAmount = (uuid: string, value: number | null) => {
     setValue(`splitAmount.${uuid}`, value)
@@ -334,6 +293,8 @@ export function SplitViewContextual() {
     onEvent(componentEvents.CANCEL)
   }
 
+  setValue('isSplit', true)
+
   if (bankAccounts.length < 2 || paymentMethod.splits === null) return null
 
   const renderFieldsList = () => {
@@ -363,11 +324,9 @@ export function SplitViewContextual() {
       <PercentageField
         key={`percentage-${split.uuid}`}
         split={split}
-        control={control}
         onChange={value => {
           updateSplitAmount(split.uuid, value)
         }}
-        currency={currency}
       />
     ))
   }
@@ -446,32 +405,26 @@ function AmountField({
 
 function PercentageField({
   split,
-  control,
   onChange,
-  currency,
 }: {
   split: Split
-  control: Control<CombinedSchemaInputs>
   onChange: (value: number) => void
-  currency?: string
 }) {
   const { t } = useTranslation('Employee.PaymentMethod')
   return (
-    <Fragment key={split.uuid}>
-      <NumberInputField
-        name={`splitAmount.${split.uuid}`}
-        label={t('splitAmountLabel', {
-          name: DOMPurify.sanitize(split.name ?? ''),
-          account_number: DOMPurify.sanitize(split.hiddenAccountNumber ?? ''),
-          interpolation: { escapeValue: false },
-        })}
-        format="percent"
-        min={0}
-        maximumFractionDigits={0}
-        isRequired
-        errorMessage={t('validations.percentageAmountError')}
-        onChange={onChange}
-      />
-    </Fragment>
+    <NumberInputField
+      name={`splitAmount.${split.uuid}`}
+      label={t('splitAmountLabel', {
+        name: DOMPurify.sanitize(split.name ?? ''),
+        account_number: DOMPurify.sanitize(split.hiddenAccountNumber ?? ''),
+        interpolation: { escapeValue: false },
+      })}
+      format="percent"
+      min={0}
+      maximumFractionDigits={0}
+      isRequired
+      errorMessage={t('validations.percentageAmountError')}
+      onChange={onChange}
+    />
   )
 }

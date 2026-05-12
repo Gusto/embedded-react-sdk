@@ -2,27 +2,14 @@ import { reduce, state, transition } from 'robot3'
 import type { ComponentType } from 'react'
 import type { PaymentMethodContextInterface } from '../shared/PaymentMethodComponents'
 import {
-  InitialViewContextual,
   ListViewContextual,
-  AddViewContextual,
+  BankFormContextual,
   SplitViewContextual,
 } from '../shared/PaymentMethodComponents'
 import { componentEvents } from '@/shared/constants'
 import type { MachineTransition } from '@/types/Helpers'
 
 export const paymentMethodStateMachine = {
-  initial: state<MachineTransition>(
-    transition(
-      componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATED,
-      'list',
-      reduce(
-        (ctx: PaymentMethodContextInterface): PaymentMethodContextInterface => ({
-          ...ctx,
-          component: ListViewContextual as ComponentType,
-        }),
-      ),
-    ),
-  ),
   list: state<MachineTransition>(
     transition(
       componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATE,
@@ -30,7 +17,7 @@ export const paymentMethodStateMachine = {
       reduce(
         (ctx: PaymentMethodContextInterface): PaymentMethodContextInterface => ({
           ...ctx,
-          component: AddViewContextual as ComponentType,
+          component: BankFormContextual as ComponentType,
         }),
       ),
     ),
@@ -41,16 +28,6 @@ export const paymentMethodStateMachine = {
         (ctx: PaymentMethodContextInterface): PaymentMethodContextInterface => ({
           ...ctx,
           component: SplitViewContextual as ComponentType,
-        }),
-      ),
-    ),
-    transition(
-      componentEvents.EMPLOYEE_PAYMENT_METHOD_RESET,
-      'initial',
-      reduce(
-        (ctx: PaymentMethodContextInterface): PaymentMethodContextInterface => ({
-          ...ctx,
-          component: InitialViewContextual as ComponentType,
         }),
       ),
     ),
@@ -73,16 +50,6 @@ export const paymentMethodStateMachine = {
         (ctx: PaymentMethodContextInterface): PaymentMethodContextInterface => ({
           ...ctx,
           component: ListViewContextual as ComponentType,
-        }),
-      ),
-    ),
-    transition(
-      componentEvents.EMPLOYEE_PAYMENT_METHOD_RESET,
-      'initial',
-      reduce(
-        (ctx: PaymentMethodContextInterface): PaymentMethodContextInterface => ({
-          ...ctx,
-          component: InitialViewContextual as ComponentType,
         }),
       ),
     ),

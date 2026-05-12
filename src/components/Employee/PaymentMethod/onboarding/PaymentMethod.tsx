@@ -1,9 +1,8 @@
 import { createMachine } from 'robot3'
 import { useMemo } from 'react'
-import { useEmployeePaymentMethodsGetBankAccountsSuspense } from '@gusto/embedded-api/react-query/employeePaymentMethodsGetBankAccounts'
 import type { OnboardingContextInterface } from '../../OnboardingFlow/OnboardingFlowComponents'
 import type { PaymentMethodContextInterface } from '../shared/PaymentMethodComponents'
-import { InitialViewContextual, ListViewContextual } from '../shared/PaymentMethodComponents'
+import { ListViewContextual } from '../shared/PaymentMethodComponents'
 import { paymentMethodStateMachine } from './paymentMethodStateMachine'
 import { Flow } from '@/components/Flow/Flow'
 import { useFlow } from '@/components/Flow/useFlow'
@@ -27,19 +26,14 @@ function PaymentMethodFlow({
 }: PaymentMethodProps & { onEvent: OnEventType<EventType, unknown> }) {
   useI18n('Employee.PaymentMethod')
 
-  const { data: bankAccountsList } = useEmployeePaymentMethodsGetBankAccountsSuspense({
-    employeeId,
-  })
-  const bankAccountCount = bankAccountsList.employeeBankAccounts!.length
-
   const machine = useMemo(
     () =>
       createMachine(
-        bankAccountCount === 0 ? 'initial' : 'list',
+        'list',
         paymentMethodStateMachine,
-        (): PaymentMethodContextInterface => ({
-          component: bankAccountCount === 0 ? InitialViewContextual : ListViewContextual,
-          onEvent,
+        (initialContext: PaymentMethodContextInterface) => ({
+          ...initialContext,
+          component: ListViewContextual,
           employeeId,
           isAdmin,
         }),
