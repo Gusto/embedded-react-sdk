@@ -30,21 +30,21 @@ const mockEmployees = [
     first_name: 'Alice',
     last_name: 'Smith',
     email: 'alice@example.com',
-    title: 'Engineer',
+    jobs: [{ primary: true, title: 'Engineer' }],
   },
   {
     uuid: 'emp-2',
     first_name: 'Bob',
     last_name: 'Jones',
     email: 'bob@example.com',
-    title: 'Designer',
+    jobs: [{ primary: true, title: 'Designer' }],
   },
   {
     uuid: 'emp-3',
     first_name: 'Charlie',
     last_name: 'Brown',
     email: 'charlie@example.com',
-    title: 'Manager',
+    jobs: [{ primary: true, title: 'Manager' }],
   },
 ]
 
