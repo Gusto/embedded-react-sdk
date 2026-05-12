@@ -74,6 +74,18 @@ export function PolicyConfigurationFormPresentation({
     }
   }, [resetMonth, getValues, setValue])
 
+  useEffect(() => {
+    if (accrualMethod !== 'per_hour_paid') {
+      setValue('accrualRateUnit', undefined)
+      setValue('includeOvertime', undefined)
+      setValue('allPaidHours', undefined)
+    }
+    if (accrualMethod !== 'per_calendar_year') {
+      setValue('accrualMethodFixed', undefined)
+      setValue('resetDateType', undefined)
+    }
+  }, [accrualMethod, setValue])
+
   const accrualMethodOptions = useMemo(
     () => [
       {
