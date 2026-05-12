@@ -11,6 +11,7 @@ export interface EditEmployeeBalanceModalProps {
   currentBalance: number
   onConfirm: (newBalance: number) => void
   isPending: boolean
+  errorMessage?: string
 }
 
 export function EditEmployeeBalanceModal({
@@ -20,10 +21,11 @@ export function EditEmployeeBalanceModal({
   currentBalance,
   onConfirm,
   isPending,
+  errorMessage,
 }: EditEmployeeBalanceModalProps) {
   useI18n('Company.TimeOff.TimeOffPolicyDetails')
   const { t } = useTranslation('Company.TimeOff.TimeOffPolicyDetails')
-  const { Modal, Heading, NumberInput, Button } = useComponentContext()
+  const { Modal, Heading, NumberInput, Button, Alert } = useComponentContext()
 
   const [balance, setBalance] = useState(currentBalance)
 
@@ -54,6 +56,9 @@ export function EditEmployeeBalanceModal({
         <Heading as="h3" styledAs="h3">
           {t('editBalanceModal.title', { name: employeeName })}
         </Heading>
+        {errorMessage && (
+          <Alert status="error" label={errorMessage} />
+        )}
         <NumberInput
           name="balance"
           label={t('editBalanceModal.balanceLabel')}

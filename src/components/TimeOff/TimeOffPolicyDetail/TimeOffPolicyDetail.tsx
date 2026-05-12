@@ -164,6 +164,7 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
     name: string
   } | null>(null)
   const [editBalanceState, setEditBalanceState] = useState<EditBalanceState | null>(null)
+  const [balanceError, setBalanceError] = useState<string | undefined>()
 
   const policyDetails = useMemo(() => derivePolicyDetails(policy, locale), [policy, locale])
   const policySettings = useMemo(() => derivePolicySettings(policy), [policy])
@@ -207,19 +208,24 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
   const handleUpdateBalance = useCallback(
     async (newBalance: number) => {
       if (!editBalanceState) return
-      await baseSubmitHandler({}, async () => {
-        await updateBalance({
-          request: {
-            timeOffPolicyUuid: policyId,
-            requestBody: {
-              employees: [{ uuid: editBalanceState.employeeUuid, balance: String(newBalance) }],
+      setBalanceError(undefined)
+      try {
+        await baseSubmitHandler({}, async () => {
+          await updateBalance({
+            request: {
+              timeOffPolicyUuid: policyId,
+              requestBody: {
+                employees: [{ uuid: editBalanceState.employeeUuid, balance: String(newBalance) }],
+              },
             },
-          },
+          })
+          invalidatePolicy()
+          setEditBalanceState(null)
+          setSuccessAlert(t('flash.balanceUpdated', { name: editBalanceState.employeeName }))
         })
-        invalidatePolicy()
-        setEditBalanceState(null)
-        setSuccessAlert(t('flash.balanceUpdated', { name: editBalanceState.employeeName }))
-      })
+      } catch (err) {
+        setBalanceError(err instanceof Error ? err.message : t('editBalanceModal.updateError'))
+      }
     },
     [baseSubmitHandler, updateBalance, policyId, editBalanceState, invalidatePolicy, t],
   )
@@ -347,11 +353,13 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
         isOpen={editBalanceState !== null}
         onClose={() => {
           setEditBalanceState(null)
+          setBalanceError(undefined)
         }}
         employeeName={editBalanceState?.employeeName ?? ''}
         currentBalance={editBalanceState?.currentBalance ?? 0}
         onConfirm={handleUpdateBalance}
         isPending={isBalancePending}
+        errorMessage={balanceError}
       />
     </>
   )

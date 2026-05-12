@@ -732,6 +732,7 @@ export interface CompanyTimeOffTimeOffPolicyDetails{
 "hoursUnit":string;
 "cancelCta":string;
 "updateCta":string;
+"updateError":string;
 };
 "removeEmployeeModal":{
 "title":string;
