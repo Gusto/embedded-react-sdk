@@ -105,7 +105,9 @@ export const PayrollOverviewPresentation = ({
     status === PayrollOverviewStatus.Submitting || status === PayrollOverviewStatus.Cancelling
 
   const pageHeading = (
-    <Heading as="h1">{isProcessed ? t('summaryTitle') : t('overviewTitle')}</Heading>
+    <Heading as="h1" styledAs="h2">
+      {isProcessed ? t('summaryTitle') : t('overviewTitle')}
+    </Heading>
   )
   const isDismissal = isDismissalPayroll(payrollData.offCycleReason)
 
@@ -114,7 +116,7 @@ export const PayrollOverviewPresentation = ({
       <Trans
         i18nKey={isDismissal ? 'pageSubtitleDismissal' : 'pageSubtitle'}
         t={t}
-        components={{ dateWrapper: <Text weight="bold" as="span" /> }}
+        components={{ dateWrapper: <Text size="sm" weight="medium" as="span" /> }}
         values={{
           ...getPayrollOverviewTitle(payrollData.payPeriod, dateFormatter),
           payrollType: getPayrollTypeLabel(payrollData),

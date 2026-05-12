@@ -169,120 +169,122 @@ export function EditCompensationPresentation({
               status="warning"
             />
           )}
-          <TextInputField
-            name="jobTitle"
-            label={t('jobTitle')}
-            isRequired
-            errorMessage={t('validations.title')}
-          />
-          {isFlsaSelectionEnabled && (
-            <SelectField
-              name="flsaStatus"
-              label={t('employeeClassification')}
-              description={
-                <Trans
-                  t={t}
-                  i18nKey="classificationLink"
-                  components={{
-                    ClassificationLink: <Components.Link />,
-                  }}
-                />
-              }
-              errorMessage={t('validations.exemptThreshold', {
-                limit: format(FLSA_OVERTIME_SALARY_LIMIT),
-              })}
-              options={classificationOptions}
+          <Flex flexDirection="column" gap={20}>
+            <TextInputField
+              name="jobTitle"
+              label={t('jobTitle')}
               isRequired
-              isDisabled={!isFlsaSelectionEnabled}
-              onChange={handleFlsaChange}
+              errorMessage={t('validations.title')}
             />
-          )}
-          <NumberInputField
-            name="rate"
-            label={t('amount')}
-            format="currency"
-            min={0}
-            errorMessage={rateErrorMessage}
-            isRequired
-            isDisabled={
-              watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_NONEXEMPT ||
-              watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT
-            }
-          />
-          <SelectField
-            name="paymentUnit"
-            label={t('paymentUnitLabel')}
-            description={t('paymentUnitDescription')}
-            options={paymentUnitOptions}
-            errorMessage={t('validations.paymentUnit')}
-            isRequired
-            isDisabled={
-              watchedFlsaStatus === FlsaStatus.OWNER ||
-              watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_NONEXEMPT ||
-              watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT
-            }
-          />
-          {isAdjustMinimumWageEnabled && (
-            <>
-              <SwitchField
-                name="adjustForMinimumWage"
-                label={t('adjustForMinimumWage')}
-                description={t('adjustForMinimumWageDescription')}
-              />
-              {isAdjustingMinimumWage && (
-                <SelectField
-                  name="minimumWageId"
-                  label={t('minimumWageLabel')}
-                  description={t('minimumWageDescription')}
-                  options={minimumWages.map(wage => ({
-                    value: wage.uuid,
-                    label: `${format(Number(wage.wage))} - ${wage.authority}: ${wage.notes ?? ''}`,
-                  }))}
-                  errorMessage={t('validations.minimumWage')}
-                />
-              )}
-            </>
-          )}
-          {showTwoPercentStakeholder && (
-            <CheckboxField label={t('twoPercentStakeholderLabel')} name="twoPercentShareholder" />
-          )}
-          {state === 'WA' && (
-            <>
-              <RadioGroupField
-                name="stateWcCovered"
-                label={t('stateWcCoveredLabel')}
+            {isFlsaSelectionEnabled && (
+              <SelectField
+                name="flsaStatus"
+                label={t('employeeClassification')}
                 description={
                   <Trans
                     t={t}
-                    i18nKey="stateWcCoveredDescription"
+                    i18nKey="classificationLink"
                     components={{
-                      wcLink: (
-                        <Components.Link
-                          href="https://www.lni.wa.gov/insurance/rates-risk-classes/risk-classes-for-workers-compensation/risk-class-lookup#/"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        />
-                      ),
+                      ClassificationLink: <Components.Link />,
                     }}
                   />
                 }
-                options={[
-                  { label: t('stateWcCoveredOptions.yes'), value: true },
-                  { label: t('stateWcCoveredOptions.no'), value: false },
-                ]}
+                errorMessage={t('validations.exemptThreshold', {
+                  limit: format(FLSA_OVERTIME_SALARY_LIMIT),
+                })}
+                options={classificationOptions}
+                isRequired
+                isDisabled={!isFlsaSelectionEnabled}
+                onChange={handleFlsaChange}
               />
-              {watchedStateWcCovered && (
-                <ComboBoxField
-                  name="stateWcClassCode"
-                  label={t('stateWcClassCodeLabel')}
-                  options={stateWcRiskOptions}
-                  errorMessage={t('validations.stateWcClassCode')}
-                  placeholder={t('stateWcClassCodeLabel')}
-                  description={t('stateWcClassCodeDescription')}
+            )}
+            <NumberInputField
+              name="rate"
+              label={t('amount')}
+              format="currency"
+              min={0}
+              errorMessage={rateErrorMessage}
+              isRequired
+              isDisabled={
+                watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_NONEXEMPT ||
+                watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT
+              }
+            />
+            <SelectField
+              name="paymentUnit"
+              label={t('paymentUnitLabel')}
+              description={t('paymentUnitDescription')}
+              options={paymentUnitOptions}
+              errorMessage={t('validations.paymentUnit')}
+              isRequired
+              isDisabled={
+                watchedFlsaStatus === FlsaStatus.OWNER ||
+                watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_NONEXEMPT ||
+                watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT
+              }
+            />
+            {isAdjustMinimumWageEnabled && (
+              <>
+                <SwitchField
+                  name="adjustForMinimumWage"
+                  label={t('adjustForMinimumWage')}
+                  description={t('adjustForMinimumWageDescription')}
                 />
-              )}
-            </>
-          )}
+                {isAdjustingMinimumWage && (
+                  <SelectField
+                    name="minimumWageId"
+                    label={t('minimumWageLabel')}
+                    description={t('minimumWageDescription')}
+                    options={minimumWages.map(wage => ({
+                      value: wage.uuid,
+                      label: `${format(Number(wage.wage))} - ${wage.authority}: ${wage.notes ?? ''}`,
+                    }))}
+                    errorMessage={t('validations.minimumWage')}
+                  />
+                )}
+              </>
+            )}
+            {showTwoPercentStakeholder && (
+              <CheckboxField label={t('twoPercentStakeholderLabel')} name="twoPercentShareholder" />
+            )}
+            {state === 'WA' && (
+              <>
+                <RadioGroupField
+                  name="stateWcCovered"
+                  label={t('stateWcCoveredLabel')}
+                  description={
+                    <Trans
+                      t={t}
+                      i18nKey="stateWcCoveredDescription"
+                      components={{
+                        wcLink: (
+                          <Components.Link
+                            href="https://www.lni.wa.gov/insurance/rates-risk-classes/risk-classes-for-workers-compensation/risk-class-lookup#/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          />
+                        ),
+                      }}
+                    />
+                  }
+                  options={[
+                    { label: t('stateWcCoveredOptions.yes'), value: true },
+                    { label: t('stateWcCoveredOptions.no'), value: false },
+                  ]}
+                />
+                {watchedStateWcCovered && (
+                  <ComboBoxField
+                    name="stateWcClassCode"
+                    label={t('stateWcClassCodeLabel')}
+                    options={stateWcRiskOptions}
+                    errorMessage={t('validations.stateWcClassCode')}
+                    placeholder={t('stateWcClassCodeLabel')}
+                    description={t('stateWcClassCodeDescription')}
+                  />
+                )}
+              </>
+            )}
+          </Flex>
           <ActionsLayout>
             {showCancel && onCancel && (
               <Components.Button variant="secondary" onClick={onCancel} isDisabled={isPending}>

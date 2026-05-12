@@ -85,13 +85,15 @@
     border-color: rgb(240, 240, 240);
 
     &:hover:not([data-disabled]) {
-      background-color: rgba(232, 232, 232);
-      border-color: rgba(232, 232, 232);
+      background-color: rgba(251, 230, 234);
+      border-color: rgba(251, 230, 234);
+      color: #d93025;
     }
 
     &:active:not([data-disabled]) {
-      background-color: rgba(204, 204, 204);
-      border-color: rgba(204, 204, 204);
+      background-color: rgba(251, 230, 234);
+      border-color: rgba(251, 230, 234);
+      color: #d93025;
     }
   }
 

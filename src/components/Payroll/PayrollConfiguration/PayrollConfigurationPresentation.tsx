@@ -118,7 +118,9 @@ export const PayrollConfigurationPresentation = ({
           gap={isDesktop ? 0 : 16}
         >
           <FlexItem>
-            <Heading as="h1">{t('pageTitle')}</Heading>
+            <Heading as="h1" styledAs="h2">
+              {t('pageTitle')}
+            </Heading>
             {payPeriod && (
               <Text variant="supporting">
                 <Trans
@@ -128,7 +130,7 @@ export const PayrollConfigurationPresentation = ({
                       : 'description'
                   }
                   t={t}
-                  components={{ dateWrapper: <Text weight="bold" as="span" /> }}
+                  components={{ dateWrapper: <Text size="sm" weight="medium" as="span" /> }}
                   values={{
                     ...getPayrollConfigurationTitle(payPeriod, dateFormatter),
                     payrollType: payrollCategory,
@@ -185,10 +187,12 @@ export const PayrollConfigurationPresentation = ({
               />
             )}
             <Flex flexDirection="column" gap={20}>
-              <FlexItem>
+              <Flex flexDirection="column" gap={4}>
                 <Heading as="h3">{t('hoursAndEarningsTitle')}</Heading>
-                <Text variant="supporting">{t('hoursAndEarningsDescription')}</Text>
-              </FlexItem>
+                <Text variant="supporting" size="sm">
+                  {t('hoursAndEarningsDescription')}
+                </Text>
+              </Flex>
 
               <DataView
                 label={t('employeeCompensationsTitle')}
