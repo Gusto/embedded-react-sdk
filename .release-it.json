@@ -14,6 +14,7 @@
     "@release-it/conventional-changelog": {
       "preset": {
         "name": "conventionalcommits",
+        "preMajor": true,
         "breakingChangeTitle": "Breaking Changes",
         "types": [
           { "type": "feat", "section": "Features & Enhancements" },

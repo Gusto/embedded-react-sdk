@@ -16,7 +16,7 @@ Version bump rules (during 0.x.x):
 
 - `feat` → MINOR (0.1.0 → 0.2.0)
 - `fix` → PATCH (0.1.0 → 0.1.1)
-- `feat!` / `fix!` (breaking) → MINOR (0.1.0 → 0.2.0)
+- `feat!` / `fix!` (breaking) → MINOR (0.1.0 → 0.2.0) — enforced via `preMajor: true` in `.release-it.json`; remove that flag when intentionally releasing 1.0.0
 - `docs`, `chore`, `build`, etc. → no version bump
 
 ## Steps
