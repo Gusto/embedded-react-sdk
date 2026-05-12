@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { UnprocessableEntityErrorObject } from '@gusto/embedded-api/models/errors/unprocessableentityerrorobject'
+import { UnprocessableEntityError } from '@gusto/embedded-api/models/errors/unprocessableentityerror'
 import {
   payrollSubmitHandler,
   parsePayrollBlockersFromError,
@@ -20,8 +20,8 @@ describe('payrollHelpers', () => {
       expect(result).toEqual({ success: true, blockers: [] })
     })
 
-    it('returns blockers when handler throws UnprocessableEntityErrorObject with payroll_blocker', async () => {
-      const error = new UnprocessableEntityErrorObject(
+    it('returns blockers when handler throws UnprocessableEntityError with payroll_blocker', async () => {
+      const error = new UnprocessableEntityError(
         {
           errors: [
             {
@@ -59,8 +59,8 @@ describe('payrollHelpers', () => {
   })
 
   describe('parsePayrollBlockersFromError', () => {
-    it('parses UnprocessableEntityErrorObject with payroll_blocker into ApiPayrollBlocker[]', () => {
-      const error = new UnprocessableEntityErrorObject(
+    it('parses UnprocessableEntityError with payroll_blocker into ApiPayrollBlocker[]', () => {
+      const error = new UnprocessableEntityError(
         {
           errors: [
             {

@@ -28,9 +28,10 @@ function saveWidth(w: number) {
 
 interface RightPanelShellProps {
   children: ReactNode
+  floating?: boolean
 }
 
-export function RightPanelShell({ children }: RightPanelShellProps) {
+export function RightPanelShell({ children, floating = false }: RightPanelShellProps) {
   const [width, setWidth] = useState<number>(readWidth)
   const isResizingRef = useRef(false)
 
@@ -76,7 +77,10 @@ export function RightPanelShell({ children }: RightPanelShellProps) {
   }, [])
 
   return (
-    <aside className={styles.shell} style={{ width: `${width}px` }}>
+    <aside
+      className={`${styles.shell}${floating ? ` ${styles.floating}` : ''}`}
+      style={{ width: `${width}px` }}
+    >
       <div
         className={styles.handle}
         role="separator"

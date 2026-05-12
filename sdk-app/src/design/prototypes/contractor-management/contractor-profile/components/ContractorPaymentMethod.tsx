@@ -27,19 +27,19 @@ export function ContractorPaymentMethod({
     columns: [
       {
         title: 'Nickname',
-        render: account => account.name ?? '–',
+        render: account => account.name,
       },
       {
         title: 'Routing number',
-        render: account => account.routingNumber ?? '–',
+        render: account => account.routingNumber,
       },
       {
         title: 'Account number',
-        render: account => account.hiddenAccountNumber ?? '–',
+        render: account => account.hiddenAccountNumber,
       },
       {
         title: 'Account type',
-        render: account => account.accountType ?? '–',
+        render: account => account.accountType,
       },
     ],
     itemMenu:

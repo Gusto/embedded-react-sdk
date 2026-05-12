@@ -1,7 +1,7 @@
 import type { PathParams } from 'msw'
 import { http, HttpResponse } from 'msw'
 import type { GetV1EmployeesEmployeeIdBankAccountsRequest } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidbankaccounts'
-import type { PostV1EmployeesEmployeeIdBankAccountsRequestBody } from '@gusto/embedded-api/models/operations/postv1employeesemployeeidbankaccounts'
+import type { EmployeeBankAccountRequest } from '@gusto/embedded-api/models/components/employeebankaccountrequest'
 import type {
   DeleteV1EmployeesEmployeeIdBankAccountsBankAccountIdRequest,
   DeleteV1EmployeesEmployeeIdBankAccountsBankAccountIdResponse,
@@ -24,20 +24,20 @@ const getEmployeeBankAccounts = http.get<PathParams, GetV1EmployeesEmployeeIdBan
   },
 )
 
-const createEmployeeBankAccount = http.post<
-  PathParams,
-  PostV1EmployeesEmployeeIdBankAccountsRequestBody
->(`${API_BASE_URL}/v1/employees/:employee_id/bank_accounts`, async ({ request }) => {
-  const requestBody = await request.json()
-  const responseFixture = await getFixture('get-v1-employees-employee_id-bank_accounts')
-  return HttpResponse.json({
-    ...responseFixture[0],
-    accountType: requestBody.accountType,
-    hiddenAccountNumber: requestBody.accountNumber,
-    name: requestBody.name,
-    routingNumber: requestBody.routingNumber,
-  })
-})
+const createEmployeeBankAccount = http.post<PathParams, EmployeeBankAccountRequest>(
+  `${API_BASE_URL}/v1/employees/:employee_id/bank_accounts`,
+  async ({ request }) => {
+    const requestBody = await request.json()
+    const responseFixture = await getFixture('get-v1-employees-employee_id-bank_accounts')
+    return HttpResponse.json({
+      ...responseFixture[0],
+      accountType: requestBody.accountType,
+      hiddenAccountNumber: requestBody.accountNumber,
+      name: requestBody.name,
+      routingNumber: requestBody.routingNumber,
+    })
+  },
+)
 
 const deleteEmployeeBankAccount = http.delete<
   PathParams,

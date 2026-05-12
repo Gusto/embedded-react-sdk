@@ -66,7 +66,7 @@ function Root({ contractorId, defaultValues, children, className, dictionary }: 
       const { contractorAddress } = await updateAddress({
         request: {
           contractorUuid: contractorId,
-          requestBody: {
+          contractorAddressUpdateBody: {
             version: address?.version as string,
             street1: payload.street1,
             street2: payload.street2,

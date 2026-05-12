@@ -3,8 +3,10 @@ import { FormProvider, useForm, useWatch, type SubmitHandler } from 'react-hook-
 import { useMemo } from 'react'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { type Garnishment } from '@gusto/embedded-api/models/components/garnishment'
-import { GarnishmentType } from '@gusto/embedded-api/models/operations/postv1employeesemployeeidgarnishments'
+import {
+  type Garnishment,
+  GarnishmentType,
+} from '@gusto/embedded-api/models/components/garnishment'
 import { useGarnishmentsCreateMutation } from '@gusto/embedded-api/react-query/garnishmentsCreate'
 import { useGarnishmentsUpdateMutation } from '@gusto/embedded-api/react-query/garnishmentsUpdate'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -95,7 +97,7 @@ function GarnishmentForm({
         const { garnishment: createDeductionResponse } = await createDeduction({
           request: {
             employeeId: employeeId,
-            requestBody: { ...payload, times: payload.recurring ? null : 1 },
+            garnishmentRequest: { ...payload, times: payload.recurring ? null : 1 },
           },
         })
 
@@ -104,7 +106,7 @@ function GarnishmentForm({
         const { garnishment: updateDeductionResponse } = await updateDeduction({
           request: {
             garnishmentId: deduction.uuid,
-            requestBody: {
+            updateGarnishmentRequest: {
               ...payload,
               version: deduction.version as string,
               times: payload.recurring ? null : 1,

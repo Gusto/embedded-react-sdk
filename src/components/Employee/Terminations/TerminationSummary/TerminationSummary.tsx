@@ -57,7 +57,7 @@ const Root = ({
 
   const employeeName = [employee?.firstName, employee?.lastName].filter(Boolean).join(' ')
 
-  const terminations = terminationsData.terminationList ?? []
+  const terminations = terminationsData.terminations ?? []
   const termination = terminations.find(t => t.active) ?? terminations[0]
 
   const effectiveDate = termination?.effectiveDate

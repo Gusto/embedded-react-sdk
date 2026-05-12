@@ -4,7 +4,7 @@ import { FormProvider, useForm, useWatch, type SubmitHandler } from 'react-hook-
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
   AuthorizationStatus,
-  I9AuthorizationDocumentType,
+  DocumentType as I9AuthorizationDocumentType,
 } from '@gusto/embedded-api/models/components/i9authorization'
 import {
   generateEmploymentEligibilitySchema,

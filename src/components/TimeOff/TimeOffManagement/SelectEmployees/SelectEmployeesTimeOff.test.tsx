@@ -543,9 +543,9 @@ describe('SelectEmployeesTimeOff', () => {
       const user = userEvent.setup()
       mockPolicyEmployees = [{ uuid: '1', balance: '12' }]
 
-      const { UnprocessableEntityErrorObject } =
-        await import('@gusto/embedded-api/models/errors/unprocessableentityerrorobject')
-      const apiError = new UnprocessableEntityErrorObject(
+      const { UnprocessableEntityError } =
+        await import('@gusto/embedded-api/models/errors/unprocessableentityerror')
+      const apiError = new UnprocessableEntityError(
         {
           errors: [
             {

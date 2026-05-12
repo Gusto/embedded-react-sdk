@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { APIError } from '@gusto/embedded-api/models/errors/apierror'
 import { HTTPClientError } from '@gusto/embedded-api/models/errors/httpclienterrors'
 import { SDKValidationError } from '@gusto/embedded-api/models/errors/sdkvalidationerror'
-import { UnprocessableEntityErrorObject } from '@gusto/embedded-api/models/errors/unprocessableentityerrorobject'
+import { UnprocessableEntityError } from '@gusto/embedded-api/models/errors/unprocessableentityerror'
 import { normalizeToSDKError, SDKInternalError } from './sdkError'
 
 function createHttpMeta(status: number, body: string) {
@@ -46,7 +46,7 @@ describe('normalizeToSDKError', () => {
         ],
       })
       const httpMeta = createHttpMeta(422, body)
-      const error = new UnprocessableEntityErrorObject(
+      const error = new UnprocessableEntityError(
         {
           errors: [
             {

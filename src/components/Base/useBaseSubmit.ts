@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react'
 import { APIError } from '@gusto/embedded-api/models/errors/apierror'
 import { GustoEmbeddedError } from '@gusto/embedded-api/models/errors/gustoembeddederror'
 import { SDKValidationError } from '@gusto/embedded-api/models/errors/sdkvalidationerror'
-import { UnprocessableEntityErrorObject } from '@gusto/embedded-api/models/errors/unprocessableentityerrorobject'
+import { UnprocessableEntityError } from '@gusto/embedded-api/models/errors/unprocessableentityerror'
 import { useAsyncError } from '@/hooks/useAsyncError'
 import { useObservability } from '@/contexts/ObservabilityProvider/useObservability'
 import { type SDKError, SDKInternalError, normalizeToSDKError } from '@/types/sdkError'
@@ -39,7 +39,7 @@ export const useBaseSubmit = (componentName?: string) => {
         if (
           err instanceof APIError ||
           err instanceof SDKValidationError ||
-          err instanceof UnprocessableEntityErrorObject ||
+          err instanceof UnprocessableEntityError ||
           err instanceof GustoEmbeddedError ||
           err instanceof SDKInternalError
         ) {

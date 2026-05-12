@@ -4,8 +4,10 @@ import { useEffect, useMemo } from 'react'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { PaymentPeriod } from '@gusto/embedded-api/models/components/garnishmentchildsupport'
-import type { GarnishmentType } from '@gusto/embedded-api/models/operations/postv1employeesemployeeidgarnishments'
-import { type Garnishment } from '@gusto/embedded-api/models/components/garnishment'
+import {
+  type Garnishment,
+  type GarnishmentType,
+} from '@gusto/embedded-api/models/components/garnishment'
 import { useGarnishmentsCreateMutation } from '@gusto/embedded-api/react-query/garnishmentsCreate'
 import { useGarnishmentsUpdateMutation } from '@gusto/embedded-api/react-query/garnishmentsUpdate'
 import { type Agencies } from '@gusto/embedded-api/models/components/childsupportdata'
@@ -174,7 +176,7 @@ function ChildSupportForm({
         const { garnishment: createDeductionResponse } = await createDeduction({
           request: {
             employeeId,
-            requestBody,
+            garnishmentRequest: requestBody,
           },
         })
         onEvent(componentEvents.EMPLOYEE_DEDUCTION_CREATED, createDeductionResponse)
@@ -182,7 +184,7 @@ function ChildSupportForm({
         const { garnishment: updateDeductionResponse } = await updateDeduction({
           request: {
             garnishmentId: deduction.uuid,
-            requestBody: {
+            updateGarnishmentRequest: {
               ...requestBody,
               version: deduction.version as string,
             },

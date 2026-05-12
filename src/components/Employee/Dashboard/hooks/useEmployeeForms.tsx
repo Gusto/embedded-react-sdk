@@ -14,7 +14,7 @@ export type UseEmployeeFormsResult = HookLoadingResult | UseEmployeeFormsReady
 export function useEmployeeForms({ employeeId }: UseEmployeeFormsProps): UseEmployeeFormsResult {
   const formsQuery = useEmployeeFormsListSuspense({ employeeId })
 
-  const formList = formsQuery.data.formList
+  const formList = formsQuery.data.forms
 
   const isPending = formsQuery.isFetching
   const isLoading = !formList && isPending

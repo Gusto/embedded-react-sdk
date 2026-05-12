@@ -41,7 +41,7 @@ function Root({ dictionary, recoveryCaseId }: RecoveryCasesResubmitProps) {
     companyUuid: companyId,
   })
 
-  const recoveryCase = recoveryCasesData?.recoveryCaseList?.find(rc => rc.uuid === recoveryCaseId)
+  const recoveryCase = recoveryCasesData?.recoveryCases?.find(rc => rc.uuid === recoveryCaseId)
 
   const { title, subtitle, description } = useRecoveryCaseErrorCode(
     recoveryCase?.latestErrorCode ?? undefined,

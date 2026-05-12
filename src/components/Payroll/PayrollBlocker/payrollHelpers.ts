@@ -1,6 +1,5 @@
 import { PayrollBlockersError } from '@gusto/embedded-api/models/errors/payrollblockerserror'
-import { UnprocessableEntityErrorObject } from '@gusto/embedded-api/models/errors/unprocessableentityerrorobject'
-import { UnprocessableEntityErrorObject1 } from '@gusto/embedded-api/models/errors/unprocessableentityerrorobject1'
+import { UnprocessableEntityError } from '@gusto/embedded-api/models/errors/unprocessableentityerror'
 
 function hasMetadataKey(metadata: unknown): metadata is { key: string } {
   return (
@@ -22,18 +21,9 @@ export function isPayrollBlockersError(error: unknown): error is PayrollBlockers
 
 export function isUnprocessableEntityWithPayrollBlockers(
   error: unknown,
-): error is UnprocessableEntityErrorObject1 {
+): error is UnprocessableEntityError {
   return (
-    error instanceof UnprocessableEntityErrorObject1 &&
-    error.errors.some(err => err.category === 'payroll_blocker')
-  )
-}
-
-function isUnprocessableEntityWithPayrollBlockersAlt(
-  error: unknown,
-): error is UnprocessableEntityErrorObject {
-  return (
-    error instanceof UnprocessableEntityErrorObject &&
+    error instanceof UnprocessableEntityError &&
     error.errors.some(err => err.category === 'payroll_blocker')
   )
 }
@@ -54,21 +44,8 @@ export function parsePayrollBlockersFromError(error: unknown): ApiPayrollBlocker
     return blockers
   }
 
-  // Handle UnprocessableEntityErrorObject1 with payroll blockers
+  // Handle UnprocessableEntityError with payroll_blocker category (e.g. contractor payment preview, payroll calculate)
   if (isUnprocessableEntityWithPayrollBlockers(error)) {
-    const blockers = error.errors
-      .filter(err => err.category === 'payroll_blocker')
-      .map(err => {
-        const key = hasMetadataKey(err.metadata) ? err.metadata.key : err.errorKey || 'unknown'
-
-        return { key, message: err.message }
-      })
-
-    return blockers
-  }
-
-  // Handle UnprocessableEntityErrorObject (e.g. contractor payment preview, payroll calculate)
-  if (isUnprocessableEntityWithPayrollBlockersAlt(error)) {
     const blockers = error.errors
       .filter(err => err.category === 'payroll_blocker')
       .map(err => {
@@ -83,19 +60,13 @@ export function parsePayrollBlockersFromError(error: unknown): ApiPayrollBlocker
   return []
 }
 
-type PayrollBlockerError =
-  | PayrollBlockersError
-  | UnprocessableEntityErrorObject1
-  | UnprocessableEntityErrorObject
+type PayrollBlockerError = PayrollBlockersError | UnprocessableEntityError
 
 const hasPayrollBlockers = (error: unknown): error is PayrollBlockerError => {
   if (error instanceof PayrollBlockersError) {
     return true
   }
-  if (error instanceof UnprocessableEntityErrorObject1) {
-    return error.errors.some(err => err.category === 'payroll_blocker')
-  }
-  if (error instanceof UnprocessableEntityErrorObject) {
+  if (error instanceof UnprocessableEntityError) {
     return error.errors.some(err => err.category === 'payroll_blocker')
   }
   return false

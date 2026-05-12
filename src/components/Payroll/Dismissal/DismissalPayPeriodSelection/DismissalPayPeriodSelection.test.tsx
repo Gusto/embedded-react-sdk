@@ -41,7 +41,7 @@ let mockPayPeriods:
 vi.mock('@gusto/embedded-api/react-query/paySchedulesGetUnprocessedTerminationPeriods', () => ({
   usePaySchedulesGetUnprocessedTerminationPeriodsSuspense: () => ({
     data: {
-      unprocessedTerminationPayPeriodList: mockPayPeriods,
+      unprocessedTerminationPayPeriods: mockPayPeriods,
     },
   }),
 }))

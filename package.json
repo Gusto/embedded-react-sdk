@@ -1,6 +1,6 @@
 {
   "name": "@gusto/embedded-react-sdk",
-  "version": "0.44.0",
+  "version": "0.44.1",
   "homepage": "https://github.com/Gusto/embedded-react-sdk",
   "bugs": {
     "url": "https://github.com/Gusto/embedded-react-sdk/issues"
@@ -82,9 +82,9 @@
   },
   "devDependencies": {
     "@commitlint/cli": "^21.0.0",
-    "@commitlint/config-conventional": "^20.5.3",
+    "@commitlint/config-conventional": "^21.0.0",
     "@eslint/js": "^9.39.2",
-    "@playwright/test": "^1.59.1",
+    "@playwright/test": "^1.60.0",
     "@storybook/addon-a11y": "^10.3.6",
     "@storybook/addon-docs": "^10.3.6",
     "@storybook/addon-onboarding": "^10.3.6",
@@ -116,7 +116,7 @@
     "js-yaml": "^4.1.1",
     "jsdom": "^26.1.0",
     "jsdom-testing-mocks": "^1.16.0",
-    "lint-staged": "^17.0.2",
+    "lint-staged": "^17.0.4",
     "msw": "^2.14.6",
     "npm-run-all": "^4.1.5",
     "pixelmatch": "^7.2.0",
@@ -131,7 +131,7 @@
     "stylelint-config-standard": "^40.0.0",
     "ts-morph": "^28.0.0",
     "tsx": "^4.21.0",
-    "typescript-eslint": "^8.59.2",
+    "typescript-eslint": "^8.59.3",
     "vite": "^6.4.2",
     "vite-plugin-checker": "^0.13.0",
     "vite-plugin-circular-dependency": "^0.6.0",
@@ -139,7 +139,7 @@
     "vite-plugin-externalize-deps": "^0.10.0",
     "vite-plugin-stylelint": "^6.1.0",
     "vite-plugin-svgr": "^5.2.0",
-    "vitest": "^4.1.4"
+    "vitest": "^4.1.6"
   },
   "peerDependencies": {
     "@tanstack/react-query": "^5",
@@ -148,7 +148,7 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@gusto/embedded-api": "0.12.5",
+    "@gusto/embedded-api": "0.13.0",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^5.2.2",
     "@internationalized/date": "^3.12.1",
@@ -156,7 +156,7 @@
     "classnames": "^2.5.1",
     "deepmerge": "^4.3.1",
     "dompurify": "^3.4.2",
-    "i18next": "^26.0.10",
+    "i18next": "^26.1.0",
     "react-aria": "^3.47.0",
     "react-aria-components": "1.16.0",
     "react-error-boundary": "^6.1.1",

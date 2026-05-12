@@ -63,7 +63,7 @@ const Root = ({ employeeId, className, dictionary, isAdmin = false }: PaymentMet
   const { data: bankAccountsList } = useEmployeePaymentMethodsGetBankAccountsSuspense({
     employeeId,
   })
-  const bankAccounts = bankAccountsList.employeeBankAccountList!
+  const bankAccounts = bankAccountsList.employeeBankAccounts!
   const paymentMethodMutation = useEmployeePaymentMethodUpdateMutation()
   const deleteBankAccountMutation = useEmployeePaymentMethodDeleteBankAccountMutation()
   const addBankAccountMutation = useEmployeePaymentMethodCreateMutation()
@@ -163,7 +163,7 @@ const Root = ({ employeeId, className, dictionary, isAdmin = false }: PaymentMet
         const bankAccountResponse = await addBankAccountMutation.mutateAsync({
           request: {
             employeeId,
-            requestBody: {
+            employeeBankAccountRequest: {
               name: payload.name,
               routingNumber: payload.routingNumber,
               accountNumber: payload.accountNumber,

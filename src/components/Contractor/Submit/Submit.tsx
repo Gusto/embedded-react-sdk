@@ -48,7 +48,9 @@ export const Root = ({ contractorId, selfOnboarding, dictionary }: ContractorSub
       const response = await mutateAsync({
         request: {
           contractorUuid: contractorId,
-          requestBody: { onboardingStatus: ContractorOnboardingStatus.ONBOARDING_COMPLETED },
+          contractorOnboardingStatusUpdateRequestBody: {
+            onboardingStatus: ContractorOnboardingStatus.ONBOARDING_COMPLETED,
+          },
         },
       })
       onEvent(

@@ -34,7 +34,7 @@ function Root({ employeeId, onEvent, dictionary, withEmployeeI9 = false }: Docum
 
   const employeeHasI9Enabled = employeeData.employee?.onboardingDocumentsConfig?.i9Document === true
 
-  const i9Form = formsData.formList?.find(form => form.name === I9_FORM_NAME)
+  const i9Form = formsData.forms?.find(form => form.name === I9_FORM_NAME)
   const needsI9Form =
     withEmployeeI9 && employeeHasI9Enabled && (!i9Form || i9Form.requiresSigning === true)
 

@@ -243,6 +243,40 @@ export function App() {
 
   const sidebarWidth = chromeHidden ? '0rem' : sidebarOpen ? '16.25rem' : '2.75rem'
 
+  const panelsOpen = codePanel.isOpen || themePanel.isOpen || settingsOpen
+  const panelsContent = (
+    <>
+      {codePanel.isOpen && <CodePanel onClose={codePanel.close} />}
+      {themePanel.isOpen && <ThemePanel onClose={themePanel.close} />}
+      {settingsOpen && (
+        <DemoSettingsPanel
+          onClose={() => {
+            setSettingsOpen(false)
+          }}
+          entities={activeEntities}
+          onUpdateEntity={updateEntity}
+          onResetToDefaults={resetToDefaults}
+          tokenStatus={demoManager.tokenStatus}
+          isCreatingDemo={demoManager.isCreatingDemo}
+          demoError={demoManager.demoError}
+          proxyMode={demoManager.proxyMode}
+          onCreateNewDemo={handleCreateNewDemo}
+          onRefreshToken={demoManager.refreshToken}
+          entityCatalog={entityCatalog}
+          mode={manual.mode}
+          manualConfig={manual.config}
+          manualSaves={manual.saves}
+          onSwitchToAuto={manual.switchToAuto}
+          onApplyManualConfig={handleApplyManualConfig}
+          onSaveManualConfig={manual.saveConfig}
+          onDeleteManualSave={manual.deleteSave}
+          chromeId={chromeId}
+          onChromeIdChange={setChromeId}
+        />
+      )}
+    </>
+  )
+
   const outletEl = <Outlet context={{ entities: activeEntities, chromeHidden }} />
   const chromedOutlet = customChrome ? (
     <customChrome.Chrome onOpenSettings={openSettings}>{outletEl}</customChrome.Chrome>
@@ -280,38 +314,7 @@ export function App() {
           onShowShortcuts={shortcutHelper.open}
         />
         {mainEl}
-        {(codePanel.isOpen || themePanel.isOpen || settingsOpen) && (
-          <RightPanelShell>
-            {codePanel.isOpen && <CodePanel onClose={codePanel.close} />}
-            {themePanel.isOpen && <ThemePanel onClose={themePanel.close} />}
-            {settingsOpen && (
-              <DemoSettingsPanel
-                onClose={() => {
-                  setSettingsOpen(false)
-                }}
-                entities={activeEntities}
-                onUpdateEntity={updateEntity}
-                onResetToDefaults={resetToDefaults}
-                tokenStatus={demoManager.tokenStatus}
-                isCreatingDemo={demoManager.isCreatingDemo}
-                demoError={demoManager.demoError}
-                proxyMode={demoManager.proxyMode}
-                onCreateNewDemo={handleCreateNewDemo}
-                onRefreshToken={demoManager.refreshToken}
-                entityCatalog={entityCatalog}
-                mode={manual.mode}
-                manualConfig={manual.config}
-                manualSaves={manual.saves}
-                onSwitchToAuto={manual.switchToAuto}
-                onApplyManualConfig={handleApplyManualConfig}
-                onSaveManualConfig={manual.saveConfig}
-                onDeleteManualSave={manual.deleteSave}
-                chromeId={chromeId}
-                onChromeIdChange={setChromeId}
-              />
-            )}
-          </RightPanelShell>
-        )}
+        {panelsOpen && <RightPanelShell>{panelsContent}</RightPanelShell>}
       </div>
     </>
   )
@@ -323,6 +326,9 @@ export function App() {
           <CurrentComponentProvider>
             <div className={`app-layout${chromeHidden ? ' app-layout-chrome-hidden' : ''}`}>
               {bodyEl}
+              {chromeHidden && panelsOpen && (
+                <RightPanelShell floating>{panelsContent}</RightPanelShell>
+              )}
               {chromeHidden && (
                 <button
                   type="button"

@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { PaySchedule } from '@gusto/embedded-api/models/components/payschedule'
+import type { PayScheduleShow } from '@gusto/embedded-api/models/components/payscheduleshow'
 import type { PaySchedulePreviewPayPeriod } from '@gusto/embedded-api/models/components/payschedulepreviewpayperiod'
 import { usePaySchedulesGet } from '@gusto/embedded-api/react-query/paySchedulesGet'
 import { usePaySchedulesGetPreview } from '@gusto/embedded-api/react-query/paySchedulesGetPreview'
@@ -68,14 +68,14 @@ export interface UsePayScheduleFormReady extends BaseFormHookReady<
   PayScheduleFields
 > {
   data: {
-    paySchedule: PaySchedule | null
+    paySchedule: PayScheduleShow | null
     payPeriodPreview: PaySchedulePreviewPayPeriod[] | null
     payPreviewLoading: boolean
     paymentSpeedDays: number | null
   }
   status: { isPending: boolean; mode: 'create' | 'update' }
   actions: {
-    onSubmit: () => Promise<HookSubmitResult<PaySchedule> | undefined>
+    onSubmit: () => Promise<HookSubmitResult<PayScheduleShow> | undefined>
   }
 }
 
@@ -126,7 +126,7 @@ export function usePayScheduleForm({
 
   const paymentConfigsQuery = usePaymentConfigsGet({ companyUuid: companyId })
 
-  const currentPaySchedule = payScheduleQuery.data?.paySchedule ?? null
+  const currentPaySchedule = payScheduleQuery.data?.payScheduleShow ?? null
   const paymentSpeed = paymentConfigsQuery.data?.paymentConfigs?.paymentSpeed
   const paymentSpeedDays = parsePaymentSpeedDays(paymentSpeed)
 
@@ -249,8 +249,8 @@ export function usePayScheduleForm({
     day2: baseMetadata.day2,
   }
 
-  const onSubmit = async (): Promise<HookSubmitResult<PaySchedule> | undefined> => {
-    let submitResult: HookSubmitResult<PaySchedule> | undefined
+  const onSubmit = async (): Promise<HookSubmitResult<PayScheduleShow> | undefined> => {
+    let submitResult: HookSubmitResult<PayScheduleShow> | undefined
 
     await new Promise<void>(resolve => {
       void formMethods.handleSubmit(
@@ -274,7 +274,7 @@ export function usePayScheduleForm({
                 },
               })
 
-              submitResult = { mode: 'create', data: result.paySchedule! }
+              submitResult = { mode: 'create', data: result.payScheduleShow! }
             } else {
               const result = await updatePayScheduleMutation.mutateAsync({
                 request: {
@@ -292,7 +292,7 @@ export function usePayScheduleForm({
                 },
               })
 
-              submitResult = { mode: 'update', data: result.paySchedule! }
+              submitResult = { mode: 'update', data: result.payScheduleShow! }
             }
           })
           resolve()
