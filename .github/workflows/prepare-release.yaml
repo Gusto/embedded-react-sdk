@@ -38,9 +38,15 @@ jobs:
         run: npm ci
 
       - name: Run release-it
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
         run: |
-          if [ -n "${{ inputs.version }}" ]; then
-            npx release-it "${{ inputs.version }}" --ci
+          if [ -n "$RELEASE_VERSION" ]; then
+            if ! echo "$RELEASE_VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?(\+[a-zA-Z0-9.]+)?$'; then
+              echo "Error: Invalid version '$RELEASE_VERSION'. Expected semver (e.g. 0.45.0)."
+              exit 1
+            fi
+            npx release-it "$RELEASE_VERSION" --ci
           else
             npx release-it --ci
           fi

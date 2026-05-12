@@ -9,7 +9,7 @@
     "publish": false
   },
   "hooks": {
-    "after:bump": "git checkout -b chore/release-${version} && npm install --package-lock-only"
+    "after:bump": "VERSION=$(node -p \"require('./package.json').version\") && git checkout -b \"chore/release-$VERSION\" && npm install --package-lock-only"
   },
   "plugins": {
     "@release-it/conventional-changelog": {
