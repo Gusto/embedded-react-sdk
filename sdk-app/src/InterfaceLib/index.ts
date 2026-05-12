@@ -20,6 +20,8 @@ import { Loading } from './Loading'
 import { Checkbox } from './Checkbox'
 import { Radio } from './Radio'
 import { RadioGroup } from './RadioGroup'
+import { Box } from './Box'
+import { BoxHeader } from './BoxHeader'
 
 export {
   Button,
@@ -44,6 +46,8 @@ export {
   Checkbox,
   Radio,
   RadioGroup,
+  Box,
+  BoxHeader,
 }
 
 export const interfaceLibComponents = {
@@ -68,4 +72,6 @@ export const interfaceLibComponents = {
   Checkbox,
   Radio,
   RadioGroup,
+  Box,
+  BoxHeader,
 }

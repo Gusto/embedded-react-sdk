@@ -452,7 +452,7 @@ export const PayrollListPresentation = ({
         >
           {t('deletePayrollDialog.body')}
         </Dialog>
-        <Box className={styles.offCycleCta}>
+        <Box>
           <Flex
             flexDirection={{ base: 'column', medium: 'row' }}
             justifyContent="space-between"
