@@ -19,8 +19,8 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   margin-top: 2px;
   color: inherit;
 
@@ -36,7 +36,7 @@
 
 .label {
   margin: 0;
-  font-weight: 500;
+  font-weight: 400;
   font-size: 16px;
   line-height: 24px;
   color: inherit;
@@ -107,12 +107,12 @@
 }
 
 .root[data-status='success'] {
-  background-color: #e5ffee;
-  border-color: #ccffdd;
+  background-color: #eafeef;
+  border-color: #d7fedf;
   color: #101010;
 
   .icon {
-    color: #007d2a;
+    color: #53af48;
   }
 }
 
