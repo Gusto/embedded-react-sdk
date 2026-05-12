@@ -1,9 +1,6 @@
-import { Suspense, useMemo, useState, useCallback, type ErrorInfo } from 'react'
-import type { FallbackProps } from 'react-error-boundary'
-import { ErrorBoundary } from 'react-error-boundary'
-import { QueryErrorResetBoundary } from '@tanstack/react-query'
-import { usePaySchedulesGetPayPeriodsSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetPayPeriods'
-import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
+import { useMemo, useState, useCallback, useEffect } from 'react'
+import { usePaySchedulesGetPayPeriods } from '@gusto/embedded-api/react-query/paySchedulesGetPayPeriods'
+import { usePaySchedulesGetAll } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
 import { usePayrollsSkipMutation } from '@gusto/embedded-api/react-query/payrollsSkip'
 import { PayrollType } from '@gusto/embedded-api/models/operations/postcompaniespayrollskipcompanyuuid'
 import { PayrollTypes } from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayperiods'
@@ -32,63 +29,40 @@ interface RootProps {
 }
 
 const LOOK_AHEAD_DAYS = 90
+const COMPONENT_NAME = 'Payroll.TransitionPayrollAlert'
 
-export function TransitionPayrollAlert(props: TransitionPayrollAlertProps) {
-  const { onEvent } = props
+export function TransitionPayrollAlert({ companyId, onEvent }: TransitionPayrollAlertProps) {
   const { observability } = useObservability()
 
-  const handleGateError = useCallback(
-    (boundaryError: unknown, errorInfo: ErrorInfo) => {
-      onEvent(componentEvents.ERROR, boundaryError)
-
-      const sdkError = normalizeToSDKError(boundaryError)
-      observability?.onError?.({
-        ...sdkError,
-        timestamp: Date.now(),
-        componentName: 'Payroll.TransitionPayrollAlert',
-        componentStack: errorInfo.componentStack ?? undefined,
-      })
-    },
-    [observability, onEvent],
-  )
-
-  return (
-    <QueryErrorResetBoundary>
-      {({ reset: resetQueries }) => (
-        <ErrorBoundary
-          FallbackComponent={NullFallback}
-          onReset={resetQueries}
-          onError={handleGateError}
-        >
-          <Suspense fallback={null}>
-            <TransitionPayrollAlertGate {...props} />
-          </Suspense>
-        </ErrorBoundary>
-      )}
-    </QueryErrorResetBoundary>
-  )
-}
-
-function NullFallback(_: FallbackProps) {
-  return null
-}
-
-function TransitionPayrollAlertGate({ companyId, onEvent }: TransitionPayrollAlertProps) {
   const lookAheadEndDate = useMemo(() => {
     const date = new Date()
     date.setDate(date.getDate() + LOOK_AHEAD_DAYS)
     return new RFCDate(date)
   }, [])
 
-  const { data: payPeriodsData } = usePaySchedulesGetPayPeriodsSuspense({
+  const { data: payPeriodsData, error: payPeriodsError } = usePaySchedulesGetPayPeriods({
     companyId,
     payrollTypes: PayrollTypes.Transition,
     endDate: lookAheadEndDate,
   })
 
-  const { data: paySchedulesData } = usePaySchedulesGetAllSuspense({ companyId })
+  const { data: paySchedulesData, error: paySchedulesError } = usePaySchedulesGetAll({ companyId })
+
+  const gateError = payPeriodsError ?? paySchedulesError
+
+  useEffect(() => {
+    if (!gateError) return
+    onEvent(componentEvents.ERROR, gateError)
+    const sdkError = normalizeToSDKError(gateError)
+    observability?.onError?.({
+      ...sdkError,
+      timestamp: Date.now(),
+      componentName: COMPONENT_NAME,
+    })
+  }, [gateError, onEvent, observability])
 
   const groupedPayPeriods = useMemo<TransitionPayPeriodGroup[]>(() => {
+    if (!payPeriodsData || !paySchedulesData) return []
     const paySchedules = paySchedulesData.payScheduleShowResponse ?? []
     const unprocessed = (payPeriodsData.payPeriods ?? []).filter(
       (pp: PayPeriod) => !pp.payroll?.processed,
@@ -109,7 +83,7 @@ function TransitionPayrollAlertGate({ companyId, onEvent }: TransitionPayrollAle
     })
   }, [payPeriodsData, paySchedulesData])
 
-  if (groupedPayPeriods.length === 0) {
+  if (!payPeriodsData || !paySchedulesData || groupedPayPeriods.length === 0) {
     return null
   }
 
