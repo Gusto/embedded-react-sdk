@@ -1,7 +1,7 @@
 {
   "git": {
     "commitMessage": "chore: release ${version}",
-    "requireBranch": "marie/chore-release-script",
+    "requireBranch": "main",
     "push": false,
     "tag": false
   },
