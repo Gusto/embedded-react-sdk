@@ -1,39 +1,39 @@
 # Release
 
-This command manages releases for the React SDK.
+Prepares a release PR for the React SDK using `release-it`.
 
-## Automatic Versioning and Changelog
+## How it works
 
-Package versions and changelog are now automatically updated when PRs are merged to `main`, based on the PR title:
+`release-it` reads all commits since the last release, groups them by conventional commit type, proposes the next semver version, and then:
 
-**During 0.x.x (pre-1.0 development):**
+1. Bumps `package.json` to the new version
+2. Updates `package-lock.json`
+3. Prepends a new section to `CHANGELOG.md`
+4. Commits all three files as `chore: release <version>`
+5. Checks out a `chore/release-<version>` branch automatically
 
-- `feat:` → MINOR bump (0.1.0 → 0.2.0) + "Features & Enhancements" changelog entry
-- `fix:` → PATCH bump (0.1.0 → 0.1.1) + "Fixes" changelog entry
-- `feat!:` or `fix!:` → MINOR bump\* (0.1.0 → 0.2.0) + "Breaking Changes" changelog entry
-- Other types (`docs`, `chore`, etc.) → no version bump + "Chores & Maintenance" changelog entry
+Version bump rules (during 0.x.x):
 
-\*Per semver spec, breaking changes bump MINOR during 0.x.x since the API is unstable.
+- `feat` → MINOR (0.1.0 → 0.2.0)
+- `fix` → PATCH (0.1.0 → 0.1.1)
+- `feat!` / `fix!` (breaking) → MINOR (0.1.0 → 0.2.0)
+- `docs`, `chore`, `build`, etc. → no version bump
 
-## Publishing a Release
+## Steps
 
-After PRs are merged and versions are bumped:
+1. Make sure you're on a clean, up-to-date `main` branch:
+   ```bash
+   git checkout main && git pull origin main
+   ```
+2. Run `npm run release`
+3. Review the proposed version and confirm (or type a different version)
+4. After `release-it` finishes, push the branch and open a PR:
+   ```bash
+   git push -u origin chore/release-<version>
+   gh pr create --title "chore: release <version>"
+   ```
+5. Once the PR is merged, trigger the [Publish to NPM](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish.yaml) GitHub action
 
-1. Verify the current version in `package.json` is correct
-2. Verify `CHANGELOG.md` has been updated with recent changes
-3. Run the `Publish to NPM` GitHub action at https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish.yaml
-4. Click `Run workflow` to publish to NPM
+## Alternatively: trigger from CI
 
-## Manual Release (if needed)
-
-If automatic versioning didn't trigger or you need to manually adjust:
-
-1. Examine the git history and find the most recent release commit
-2. Calculate the next semantic version based on the conventional commit prefixes:
-   - `feat` commits → MINOR bump
-   - `fix` commits → PATCH bump
-   - Breaking changes (with `!`) → MINOR bump (during 0.x.x)
-3. Update `package.json` to use the calculated version
-4. Run `npm install` from the root directory after updating `package.json`
-5. Update `CHANGELOG.md` with the commit descriptions as presently organized in that file. Note any breaking changes consistent with what is already in the changelog
-6. After changes are verified, ask if user would like to commit those changes. If they do, create a git commit formatted as "chore: release <version-number>"
+The [Prepare Release](https://github.com/Gusto/embedded-react-sdk/actions/workflows/prepare-release.yaml) workflow accepts a `workflow_dispatch` trigger. Run it from the GitHub Actions UI — it auto-detects the version from commits, creates the branch, and opens a PR without any local setup.
