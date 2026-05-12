@@ -1,6 +1,8 @@
 import { Fragment, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
+import classNames from 'classnames'
 import { type useEmployeeStateTaxesForm } from './useEmployeeStateTaxesForm'
+import styles from './EmployeeStateTaxesView.module.scss'
 import { BaseLayout } from '@/components/Base'
 import { Form } from '@/components/Common/Form'
 import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
@@ -32,7 +34,7 @@ export function EmployeeStateTaxesView({
   const groups = stateTaxes.form.Fields
 
   return (
-    <section className={className}>
+    <section className={classNames(styles.container, className)}>
       <BaseLayout error={stateTaxes.errorHandling.errors}>
         <SDKFormProvider formHookResult={stateTaxes}>
           <Form onSubmit={onSubmit}>
