@@ -1,4 +1,4 @@
-import { expect, describe, it, vi } from 'vitest'
+import { expect, describe, it, vi, beforeEach, afterEach } from 'vitest'
 import {
   formatEmployeePayRate,
   getRegularHours,
@@ -1461,6 +1461,114 @@ describe('Payroll helpers', () => {
       expect(canCancelPayroll(payroll)).toBe(false)
 
       vi.useRealTimers()
+    })
+
+    it('PST: returns false after 4 PM when deadline UTC date is the day after the PT date', () => {
+      // deadline = Dec 15 00:00 UTC = Dec 14 16:00 PST; PT deadline date = Dec 14
+      // 4 PM PT on Dec 14 = Dec 15 00:00 UTC
+      const deadlineDate = new Date('2024-12-15T00:00:00Z')
+      const afterCutoff = new Date('2024-12-15T00:30:00Z') // Dec 14 16:30 PST
+
+      vi.setSystemTime(afterCutoff)
+
+      const payroll = createMockPayroll({ payrollDeadline: deadlineDate })
+
+      expect(canCancelPayroll(payroll)).toBe(false)
+
+      vi.useRealTimers()
+    })
+
+    it('PDT: returns true before 4 PM when deadline UTC date is the day after the PT date', () => {
+      // deadline = Jul 16 00:00 UTC = Jul 15 17:00 PDT; PT deadline date = Jul 15
+      // 4 PM PT on Jul 15 = Jul 15 23:00 UTC
+      const deadlineDate = new Date('2024-07-16T00:00:00Z')
+      const beforeCutoff = new Date('2024-07-15T22:30:00Z') // Jul 15 15:30 PDT
+
+      vi.setSystemTime(beforeCutoff)
+
+      const payroll = createMockPayroll({ payrollDeadline: deadlineDate })
+
+      expect(canCancelPayroll(payroll)).toBe(true)
+
+      vi.useRealTimers()
+    })
+
+    it('PDT: returns false after 4 PM when deadline UTC date is the day after the PT date', () => {
+      // deadline = Jul 16 00:00 UTC = Jul 15 17:00 PDT; PT deadline date = Jul 15
+      // 4 PM PT on Jul 15 = Jul 15 23:00 UTC
+      const deadlineDate = new Date('2024-07-16T00:00:00Z')
+      const afterCutoff = new Date('2024-07-15T23:30:00Z') // Jul 15 16:30 PDT
+
+      vi.setSystemTime(afterCutoff)
+
+      const payroll = createMockPayroll({ payrollDeadline: deadlineDate })
+
+      expect(canCancelPayroll(payroll)).toBe(false)
+
+      vi.useRealTimers()
+    })
+
+    it('cutoff is 4 PM PT on the deadline PT date, not the payrollDeadline timestamp itself', () => {
+      // deadline = Jan 16 02:00 UTC = Jan 15 18:00 PST (after 4 PM PT on Jan 15)
+      // The payrollDeadline timestamp is AFTER 4 PM PT, but the cutoff is still 4 PM PT on Jan 15.
+      // now = Jan 16 00:30 UTC = Jan 15 16:30 PST → after 4 PM PT cutoff → false
+      const deadlineDate = new Date('2024-01-16T02:00:00Z') // Jan 15 18:00 PST
+      const nowAfterCutoff = new Date('2024-01-16T00:30:00Z') // Jan 15 16:30 PST
+
+      vi.setSystemTime(nowAfterCutoff)
+
+      const payroll = createMockPayroll({ payrollDeadline: deadlineDate })
+
+      expect(canCancelPayroll(payroll)).toBe(false)
+
+      vi.useRealTimers()
+    })
+
+    it('cutoff is 4 PM PT on the deadline PT date: returns true when before 4 PM even if before payrollDeadline', () => {
+      // deadline = Jan 16 02:00 UTC = Jan 15 18:00 PST (after 4 PM on Jan 15)
+      // now = Jan 15 23:30 UTC = Jan 15 15:30 PST → before 4 PM PT cutoff → true
+      const deadlineDate = new Date('2024-01-16T02:00:00Z') // Jan 15 18:00 PST
+      const nowBeforeCutoff = new Date('2024-01-15T23:30:00Z') // Jan 15 15:30 PST
+
+      vi.setSystemTime(nowBeforeCutoff)
+
+      const payroll = createMockPayroll({ payrollDeadline: deadlineDate })
+
+      expect(canCancelPayroll(payroll)).toBe(true)
+
+      vi.useRealTimers()
+    })
+
+    describe('timezone sensitivity', () => {
+      beforeEach(() => {
+        vi.stubEnv('TZ', 'Europe/Paris')
+      })
+
+      afterEach(() => {
+        vi.unstubAllEnvs()
+        vi.useRealTimers()
+      })
+
+      it.fails(
+        'returns false when now is past 4 PM PT on the deadline PT date, near the PT spring DST transition',
+        () => {
+          // Bug: getPacificTimeOffset computes DST boundaries using new Date(year, 2, X)
+          // (local midnight), but the actual PT spring-forward is at 2 AM PT = 10:00 UTC.
+          // In Europe/Paris (UTC+1 in early March, before Paris's own DST on March 31),
+          // that boundary lands on March 9 23:00 UTC — 11 hours before the real PT transition.
+          // Deadlines between March 9 23:00 UTC and March 10 10:00 UTC get offset -7 instead of -8,
+          // shifting the computed cutoff date forward by one day.
+          //
+          // deadline = 2024-03-10T07:30:00Z = March 9 23:30 PST (PT deadline date = March 9)
+          // Correct 4 PM PT cutoff = March 9 16:00 PST = March 10 00:00 UTC
+          // now = 2024-03-10T01:00:00Z = March 9 17:00 PST — 1 hour past the cutoff → should be false
+          const deadlineDate = new Date('2024-03-10T07:30:00Z') // March 9 23:30 PST
+          vi.setSystemTime(new Date('2024-03-10T01:00:00Z')) // March 9 17:00 PST
+
+          const payroll = createMockPayroll({ payrollDeadline: deadlineDate })
+          expect(canCancelPayroll(payroll)).toBe(false)
+        },
+      )
     })
   })
 })

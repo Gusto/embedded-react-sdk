@@ -1,8 +1,9 @@
-import { screen, fireEvent } from '@testing-library/react'
+import { screen, fireEvent, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { vi, describe, test, expect, beforeEach, it } from 'vitest'
 import { DatePicker } from './DatePicker'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+import { assertDefined, assertInstanceOf } from '@/test-utils/assertions'
 
 vi.mock('@/assets/icons/caret-down.svg?react', () => ({
   default: () => <div data-testid="caret-down" />,
@@ -137,6 +138,121 @@ describe('DatePicker Component', () => {
     const testId = 'test-date-picker'
     renderDatePicker({ 'data-testid': testId })
     expect(screen.getByTestId(testId)).toBeInTheDocument()
+  })
+
+  describe('value and onChange', () => {
+    test('renders correct segments when given a Date value', () => {
+      renderDatePicker({ value: new Date(2026, 5, 15) })
+
+      const group = screen.getByRole('group', { name: /test date/i })
+      expect(within(group).getByRole('spinbutton', { name: /^month/i })).toHaveAttribute(
+        'aria-valuenow',
+        '6',
+      )
+      expect(within(group).getByRole('spinbutton', { name: /^day/i })).toHaveAttribute(
+        'aria-valuenow',
+        '15',
+      )
+      expect(within(group).getByRole('spinbutton', { name: /^year/i })).toHaveAttribute(
+        'aria-valuenow',
+        '2026',
+      )
+    })
+
+    test('onChange receives a Date at local midnight when user selects a date from the calendar', async () => {
+      const onChange = vi.fn<(value: Date | null) => void>()
+      // Provide a value so the calendar opens to June 2026
+      renderDatePicker({ value: new Date(2026, 5, 1), onChange })
+
+      await user.click(screen.getByRole('button'))
+      await waitFor(() => expect(screen.getByRole('dialog')).toBeInTheDocument())
+
+      // CalendarCell renders a <div role="button"> labeled with the full date
+      const june15 = screen
+        .getAllByRole('button')
+        .find(btn => btn.getAttribute('aria-label')?.includes('June 15'))
+      assertDefined(june15)
+      await user.click(june15)
+
+      expect(onChange).toHaveBeenCalled()
+      const received = onChange.mock.lastCall?.[0]
+      assertInstanceOf(received, Date)
+      expect(received.getFullYear()).toBe(2026)
+      expect(received.getMonth()).toBe(5) // June = index 5
+      expect(received.getDate()).toBe(15)
+    })
+
+    describe('timezone sensitivity', () => {
+      beforeEach(() => {
+        vi.stubEnv('TZ', 'Europe/Paris') // UTC+2 in summer: local midnight June 15 = UTC June 14 22:00
+      })
+
+      afterEach(() => {
+        vi.unstubAllEnvs()
+      })
+
+      it('renders the correct day segment when value is local midnight in a UTC+2 timezone', () => {
+        renderDatePicker({ value: new Date(2026, 5, 15) })
+        const group = screen.getByRole('group', { name: /test date/i })
+        expect(within(group).getByRole('spinbutton', { name: /^day/i })).toHaveAttribute(
+          'aria-valuenow',
+          '15',
+        )
+      })
+    })
+  })
+
+  describe('date constraints', () => {
+    test('minDate disables dates before the minimum in the calendar', async () => {
+      renderDatePicker({ value: new Date(2026, 5, 20), minDate: new Date(2026, 5, 15) })
+
+      await user.click(screen.getByRole('button'))
+      await waitFor(() => expect(screen.getByRole('dialog')).toBeInTheDocument())
+
+      const cells = screen.getAllByRole('gridcell')
+      const june8 = cells.find(c => c.textContent.trim() === '8')
+      assertDefined(june8)
+      expect(june8).toHaveAttribute('aria-disabled', 'true')
+
+      const june20 = cells.find(c => c.textContent.trim() === '20')
+      assertDefined(june20)
+      expect(june20).not.toHaveAttribute('aria-disabled')
+    })
+
+    test('maxDate disables dates after the maximum in the calendar', async () => {
+      renderDatePicker({ value: new Date(2026, 5, 10), maxDate: new Date(2026, 5, 15) })
+
+      await user.click(screen.getByRole('button'))
+      await waitFor(() => expect(screen.getByRole('dialog')).toBeInTheDocument())
+
+      const cells = screen.getAllByRole('gridcell')
+      const june25 = cells.find(c => c.textContent.trim() === '25')
+      assertDefined(june25)
+      expect(june25).toHaveAttribute('aria-disabled', 'true')
+
+      const june10 = cells.find(c => c.textContent.trim() === '10')
+      assertDefined(june10)
+      expect(june10).not.toHaveAttribute('aria-disabled')
+    })
+
+    test('isDateDisabled marks specific dates as unavailable in the calendar', async () => {
+      const isDateDisabled = (date: Date) =>
+        date.getFullYear() === 2026 && date.getMonth() === 5 && date.getDate() === 15
+
+      renderDatePicker({ value: new Date(2026, 5, 10), isDateDisabled })
+
+      await user.click(screen.getByRole('button'))
+      await waitFor(() => expect(screen.getByRole('dialog')).toBeInTheDocument())
+
+      const cells = screen.getAllByRole('gridcell')
+      const june15 = cells.find(c => c.textContent.trim() === '15')
+      assertDefined(june15)
+      expect(june15).toHaveAttribute('aria-disabled', 'true')
+
+      const june10 = cells.find(c => c.textContent.trim() === '10')
+      assertDefined(june10)
+      expect(june10).not.toHaveAttribute('aria-disabled')
+    })
   })
 
   describe('Accessibility', () => {
