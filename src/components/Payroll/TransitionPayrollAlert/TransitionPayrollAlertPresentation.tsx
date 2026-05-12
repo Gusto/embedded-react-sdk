@@ -6,7 +6,7 @@ import { Flex } from '@/components/Common/Flex/Flex'
 import { useI18n } from '@/i18n'
 import { useDateFormatter } from '@/hooks/useDateFormatter'
 
-interface TransitionPayPeriodGroup {
+export interface TransitionPayPeriodGroup {
   payScheduleUuid: string
   payScheduleName: string
   payPeriods: PayPeriod[]
