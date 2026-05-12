@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.44.2](https://github.com/Gusto/embedded-react-sdk/compare/v0.44.1...v0.44.2) (2026-05-12)
+
+### Fixes
+
+- Fix UTC roundtrip bug in date picker field where dates near midnight would shift by one day ([#1767](https://github.com/Gusto/embedded-react-sdk/issues/1767))
+- Prevent layout shift (skeleton flash) when `TransitionPayrollAlert` has no content to display ([#1773](https://github.com/Gusto/embedded-react-sdk/issues/1773))
+
+### Chores & Maintenance
+
+- Bump dev dependencies (`@playwright/test`, `typescript-eslint`, `vitest`) and `i18next` ([#1777](https://github.com/Gusto/embedded-react-sdk/issues/1777), [#1778](https://github.com/Gusto/embedded-react-sdk/issues/1778), [#1779](https://github.com/Gusto/embedded-react-sdk/issues/1779), [#1780](https://github.com/Gusto/embedded-react-sdk/issues/1780))
+
 ## 0.44.1
 
 ### Chores & Maintenance
