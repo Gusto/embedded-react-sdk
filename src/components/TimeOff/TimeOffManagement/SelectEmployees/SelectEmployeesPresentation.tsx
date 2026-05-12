@@ -28,6 +28,7 @@ export function SelectEmployeesPresentation({
   originallyOnPolicyUuids,
   originalBalances,
   removeConfirmDialog,
+  addConfirmDialog,
 }: SelectEmployeesPresentationProps) {
   useI18n('Company.TimeOff.SelectEmployees')
   const { t } = useTranslation('Company.TimeOff.SelectEmployees')
@@ -114,6 +115,20 @@ export function SelectEmployeesPresentation({
           closeActionLabel={t('removeConfirmDialog.cancelCta')}
         >
           {t('removeConfirmDialog.description', { count: removeConfirmDialog.count })}
+        </Dialog>
+      )}
+
+      {addConfirmDialog && (
+        <Dialog
+          isOpen={addConfirmDialog.isOpen}
+          onClose={addConfirmDialog.onClose}
+          onPrimaryActionClick={addConfirmDialog.onConfirm}
+          isPrimaryActionLoading={addConfirmDialog.isPending}
+          title={t('addConfirmDialog.title', { count: addConfirmDialog.count })}
+          primaryActionLabel={t('addConfirmDialog.confirmCta')}
+          closeActionLabel={t('addConfirmDialog.cancelCta')}
+        >
+          {t('addConfirmDialog.description', { count: addConfirmDialog.count })}
         </Dialog>
       )}
     </Flex>
