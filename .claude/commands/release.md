@@ -19,6 +19,21 @@ Version bump rules (during 0.x.x):
 - `feat!` / `fix!` (breaking) → MINOR (0.1.0 → 0.2.0) — enforced via `preMajor: true` in `.release-it.json`; remove that flag when intentionally releasing 1.0.0
 - `docs`, `chore`, `build`, etc. → no version bump
 
+## Dry run
+
+If `--dry-run` is passed to this skill, run:
+
+```bash
+npm run release -- --dry-run
+```
+
+Capture the full terminal output. Extract the proposed version and the generated changelog block (everything between `Changelog:` and the next blank section), then apply the curation rules below to produce a polished preview. Present:
+
+1. The target version (e.g. `0.44.2`)
+2. The curated changelog section as it would appear in `CHANGELOG.md`
+
+Do not make any file changes or git operations in dry-run mode.
+
 ## Steps
 
 1. Make sure you're on a clean, up-to-date `main` branch:
