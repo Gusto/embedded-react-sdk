@@ -1,6 +1,7 @@
 {
   "git": {
     "commitMessage": "chore: release ${version}",
+    "requireBranch": "marie/chore-release-script",
     "push": false,
     "tag": false
   },
@@ -8,7 +9,7 @@
     "publish": false
   },
   "hooks": {
-    "after:bump": "git checkout origin/main -b chore/release-${version} && npm install --package-lock-only"
+    "after:bump": "git checkout -b chore/release-${version} && npm install --package-lock-only"
   },
   "plugins": {
     "@release-it/conventional-changelog": {
