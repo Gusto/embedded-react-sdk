@@ -36,19 +36,20 @@ Do not make any file changes or git operations in dry-run mode.
 
 ## Steps
 
-1. Make sure you're on a clean, up-to-date `main` branch:
+1. Fetch latest remote state (no branch switch needed):
    ```bash
-   git checkout main && git pull origin main
+   git fetch origin
    ```
 2. Run `npm run release`
 3. Review the proposed version and confirm (or type a different version)
-4. **Review and improve the generated changelog** (see below)
-5. After `release-it` finishes and the changelog is polished, push the branch and open a PR:
+4. `release-it` will create and check out `chore/release-<version>` branched from `origin/main` automatically — no manual branch setup needed
+5. **Review and improve the generated changelog** (see below)
+6. After `release-it` finishes and the changelog is polished, push the branch and open a PR:
    ```bash
    git push -u origin chore/release-<version>
    gh pr create --title "chore: release <version>"
    ```
-6. Once the PR is merged, trigger the [Publish to NPM](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish.yaml) GitHub action
+7. Once the PR is merged, trigger the [Publish to NPM](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish.yaml) GitHub action
 
 ## Changelog curation (step 4)
 
