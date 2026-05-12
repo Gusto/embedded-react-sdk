@@ -19,7 +19,7 @@ import { useDesignSystem } from './ThemePanel/DesignSystemContext'
 import type { EntityIds } from './useEntities'
 import styles from './ComponentRenderer.module.scss'
 import { useCurrentComponentRegistry } from './useCurrentComponent'
-import { interfaceLibComponents } from './InterfaceLib'
+import { interfaceLibComponents, Loading as InterfaceLibLoading } from './InterfaceLib'
 import { GustoProvider } from '@/contexts'
 
 interface ComponentRendererProps {
@@ -319,7 +319,9 @@ export function ComponentRenderer({ entities, chromeHidden = false }: ComponentR
                 <GustoProvider
                   config={{ baseUrl: `${window.location.origin}/api/` }}
                   theme={resolvedSDKTheme}
-                  {...(resolvedComponents ? { components: resolvedComponents } : {})}
+                  {...(resolvedComponents
+                    ? { components: resolvedComponents, LoaderComponent: InterfaceLibLoading }
+                    : {})}
                   key={providerKey}
                 >
                   <Suspense fallback={<div className={styles.contentLoading}>Loading...</div>}>

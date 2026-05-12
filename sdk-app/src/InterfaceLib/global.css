@@ -38,6 +38,7 @@
 .interface-lib-adapter-active .GSDK :is(h1, h2) + p,
 .interface-lib-adapter-active .GSDK :is(h1, h2) + p + p {
   font-size: 14px;
+  color: rgb(16, 16, 16);
 }
 
 /* DateRangePicker adapter needs wider popover than the SDK default 400px cap,

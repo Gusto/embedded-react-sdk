@@ -1,9 +1,13 @@
-import { Loading as SDKLoading } from '@/components/Common/Loading/Loading'
+import styles from './Loading.module.scss'
 
 export interface LoadingProps {
   children?: React.ReactNode
 }
 
-export function Loading({ children }: LoadingProps) {
-  return <SDKLoading>{children}</SDKLoading>
+export function Loading(_props: LoadingProps) {
+  return (
+    <div className={styles.root} role="status" aria-label="Loading">
+      <span className={styles.spinner} aria-hidden="true" />
+    </div>
+  )
 }

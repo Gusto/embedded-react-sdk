@@ -1,0 +1,132 @@
+.root {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0;
+  font-family: 'InterfaceLib Sans', Helvetica, Arial, sans-serif;
+  color: #101010;
+  cursor: pointer;
+}
+
+.root[data-disabled] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.box {
+  position: relative;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #b3b3b3;
+  border-radius: 4px;
+  background-color: #ffffff;
+  transition:
+    background-color 0.16s ease-out,
+    border-color 0.16s ease-out;
+}
+
+.box svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 12px;
+  height: 9px;
+  transform: translate(-50%, -50%);
+  color: #ffffff;
+  visibility: hidden;
+}
+
+/* Unchecked: hover darkens the border */
+.root:hover:not([data-disabled]) .box {
+  border-color: #333333;
+}
+
+/* Unchecked: focus brings the border all the way to black with a soft ring
+   in the default unchecked border color around it */
+.input:focus-visible + .box {
+  border-color: #101010;
+  outline: 2px solid #b3b3b3;
+  outline-offset: 2px;
+}
+
+/* Checked: filled black square with white checkmark */
+.input:checked + .box {
+  background-color: #101010;
+  border-color: #101010;
+}
+
+.input:checked + .box svg {
+  visibility: visible;
+}
+
+/* Checked + hover: fill softens to dark gray */
+.root:hover:not([data-disabled]) .input:checked + .box {
+  background-color: #333333;
+  border-color: #333333;
+}
+
+.root[data-invalid] .box {
+  border-color: #cc0023;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.bodyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.labelWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.label {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  color: #101010;
+}
+
+.optional {
+  color: #666666;
+  font-weight: 400;
+}
+
+.description {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  color: #666666;
+}
+
+.error {
+  margin-top: 4px;
+  font-size: 14px;
+  line-height: 20px;
+  color: #cc0023;
+}

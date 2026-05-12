@@ -17,6 +17,7 @@ import { Menu } from './Menu'
 import { DescriptionList } from './DescriptionList'
 import { PaginationControl } from './PaginationControl'
 import { Loading } from './Loading'
+import { Checkbox } from './Checkbox'
 
 export {
   Button,
@@ -38,6 +39,7 @@ export {
   DescriptionList,
   PaginationControl,
   Loading,
+  Checkbox,
 }
 
 export const interfaceLibComponents = {
@@ -59,4 +61,5 @@ export const interfaceLibComponents = {
   Menu,
   DescriptionList,
   PaginationControl,
+  Checkbox,
 }
