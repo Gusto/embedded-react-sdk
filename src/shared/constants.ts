@@ -42,6 +42,7 @@ export const employeeEvents = {
   EMPLOYEE_JOB_EDIT: 'employee/job/edit',
   EMPLOYEE_PAYMENT_METHOD_UPDATED: 'employee/paymentMethod/updated',
   EMPLOYEE_PAYMENT_METHOD_DONE: 'employee/paymentMethod/done',
+  EMPLOYEE_PAYMENT_METHOD_RESET: 'employee/paymentMethod/reset',
   EMPLOYEE_SPLIT_PAYMENT: 'employee/paymentMethod/split',
   EMPLOYEE_BANK_ACCOUNT_CREATE: 'employee/bankAccount/create',
   EMPLOYEE_BANK_ACCOUNT_CREATED: 'employee/bankAccount/created',

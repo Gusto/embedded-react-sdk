@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { CombinedSchema } from './usePaymentMethod'
+import { CombinedSchema } from './shared/paymentMethodSchema'
 
 // Tests for percentage split validation with enhanced error messages
 describe('PaymentMethod - Percentage Split Validation', () => {

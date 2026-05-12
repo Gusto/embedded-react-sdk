@@ -1,8 +1,15 @@
-import type { EmployeeBankAccount } from '@gusto/embedded-api/models/components/employeebankaccount'
-import type { EmployeePaymentMethod } from '@gusto/embedded-api/models/components/employeepaymentmethod'
 import { z } from 'zod'
-import { BankAccountSchema } from './BankAccount'
-import { createCompoundContext } from '@/components/Base'
+import { accountNumberValidation, routingNumberValidation } from '@/helpers/validations'
+
+export const BankAccountSchema = z.object({
+  name: z.string().min(1),
+  routingNumber: routingNumberValidation,
+  accountNumber: accountNumberValidation,
+  accountType: z.enum(['Checking', 'Savings']),
+  hasBankPayload: z.literal(true),
+})
+
+export type BankAccountInputs = z.input<typeof BankAccountSchema>
 
 export const CombinedSchema = z.union([
   BankAccountSchema.extend({
@@ -53,23 +60,3 @@ export const CombinedSchema = z.union([
 
 export type CombinedSchemaInputs = z.input<typeof CombinedSchema>
 export type CombinedSchemaOutputs = z.output<typeof CombinedSchema>
-
-type PaymentMethodContextType = {
-  bankAccounts: EmployeeBankAccount[]
-  isPending: boolean
-  deletePendingBankAccountUuid?: string
-  watchedType?: string
-  mode: MODE
-  paymentMethod: EmployeePaymentMethod
-  handleAdd: () => void
-  handleSplit: () => void
-  handleCancel: () => void
-  handleDelete: (uuid: string) => void
-  isAdmin: boolean
-}
-
-export type MODE = 'ADD' | 'LIST' | 'SPLIT' | 'INITIAL'
-
-const [usePaymentMethod, PaymentMethodProvider] =
-  createCompoundContext<PaymentMethodContextType>('PaymentMethodContext')
-export { usePaymentMethod, PaymentMethodProvider }
