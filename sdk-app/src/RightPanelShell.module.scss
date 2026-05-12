@@ -12,6 +12,17 @@
   min-width: 0;
 }
 
+.floating {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  height: 100vh;
+  align-self: auto;
+  z-index: 100;
+  box-shadow: -0.25rem 0 1rem rgba(0, 0, 0, 0.18);
+}
+
 .handle {
   width: 0.25rem;
   flex-shrink: 0;
