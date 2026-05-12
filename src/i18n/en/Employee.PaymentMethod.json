@@ -16,6 +16,13 @@
   "checkDescriptionSelf": "If you select check as the payment method, you'll receive a physical check.",
   "checkLabel": "Check",
   "deleteBankAccountCta": "Delete",
+  "deleteBankAccountDialog": {
+    "title": "Delete bank account",
+    "description": "Are you sure you want to delete bank account {{account}}?",
+    "confirmCta": "Delete",
+    "cancelCta": "Cancel"
+  },
+  "deleteBankAccountSuccessAlert": "Bank account {{account}} was removed",
   "directDepositDescription": "We recommend direct deposit — we can deposit paychecks directly into your employees' bank accounts.",
   "directDepositDescriptionSelf": "We recommend direct deposit — we can deposit paychecks directly into your account.",
   "directDepositLabel": "Direct Deposit",

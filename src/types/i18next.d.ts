@@ -1997,6 +1997,13 @@ export interface EmployeePaymentMethod{
 "checkDescriptionSelf":string;
 "checkLabel":string;
 "deleteBankAccountCta":string;
+"deleteBankAccountDialog":{
+"title":string;
+"description":string;
+"confirmCta":string;
+"cancelCta":string;
+};
+"deleteBankAccountSuccessAlert":string;
 "directDepositDescription":string;
 "directDepositDescriptionSelf":string;
 "directDepositLabel":string;
