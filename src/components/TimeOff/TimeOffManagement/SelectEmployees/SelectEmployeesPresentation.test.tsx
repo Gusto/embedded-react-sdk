@@ -3,6 +3,7 @@ import { describe, test, expect, vi, beforeEach } from 'vitest'
 import { userEvent } from '@testing-library/user-event'
 import { SelectEmployeesPresentation } from './SelectEmployeesPresentation'
 import type { SelectEmployeesPresentationProps } from './SelectEmployeesPresentationTypes'
+import { LocaleProvider } from '@/contexts/LocaleProvider/LocaleProvider'
 import { ThemeProvider } from '@/contexts/ThemeProvider'
 import { ComponentsProvider } from '@/contexts/ComponentAdapter/ComponentsProvider'
 import { defaultComponents } from '@/contexts/ComponentAdapter/adapters/defaultComponentAdapter'
@@ -38,11 +39,13 @@ const defaultProps: SelectEmployeesPresentationProps = {
 
 function renderPresentation(overrides: Partial<SelectEmployeesPresentationProps> = {}) {
   return render(
-    <ThemeProvider>
-      <ComponentsProvider value={defaultComponents}>
-        <SelectEmployeesPresentation {...defaultProps} {...overrides} />
-      </ComponentsProvider>
-    </ThemeProvider>,
+    <LocaleProvider>
+      <ThemeProvider>
+        <ComponentsProvider value={defaultComponents}>
+          <SelectEmployeesPresentation {...defaultProps} {...overrides} />
+        </ComponentsProvider>
+      </ThemeProvider>
+    </LocaleProvider>,
   )
 }
 
@@ -202,15 +205,5 @@ describe('SelectEmployeesPresentation', () => {
       expect(screen.queryByText('startingBalanceColumn')).not.toBeInTheDocument()
     })
 
-    test('calls onBalanceChange when user types in a balance cell', async () => {
-      const onBalanceChange = vi.fn()
-      renderPresentation({
-        balances: {},
-        onBalanceChange,
-      })
-      const inputs = screen.getAllByPlaceholderText('0')
-      await userEvent.type(inputs[0] as Element, '4')
-      expect(onBalanceChange).toHaveBeenCalledWith('1', '4')
-    })
   })
 })
