@@ -55,6 +55,18 @@ jobs:
           path: dist
           key: build-${{ github.sha }}
 
+      - name: Tag release
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git rev-parse "v$VERSION" >/dev/null 2>&1; then
+            echo "Tag v$VERSION already exists, skipping."
+          else
+            git tag -a "v$VERSION" -m "Release v$VERSION"
+            git push origin "v$VERSION"
+          fi
+
       - name: Publish to NPM
         run: npm publish --access public
         env:

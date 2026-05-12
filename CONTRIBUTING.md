@@ -231,13 +231,13 @@ When creating a pull request, use the provided PR template (`.github/PULL_REQUES
 
 ### PR title format
 
-Use conventional commits format for your PR title. **PR titles are validated by CI and used for automatic semantic versioning.**
+Use conventional commits format for your PR title. **PR titles are validated by CI.** When a release is prepared with `npm run release`, commit history (which uses squash-merge PR titles) determines the version bump and populates the changelog — so PR title format directly affects how releases are documented.
 
-> **Note:** This PR title validation works alongside the existing commitlint check. Commitlint validates individual commit messages (enforced via husky pre-commit hook), while this workflow validates the PR title which is used for squash merge commits and version bumping.
+> **Note:** Commitlint runs in two places: as a pre-commit hook (via husky) validating individual commit messages, and as a CI check validating the PR title, which becomes the squash merge commit message.
 
 #### Semantic versioning (semver) mapping
 
-PR titles determine how the package version is bumped on merge, following [semver.org](https://semver.org/) specification:
+PR titles determine the version bump and changelog entry when a release is prepared, following [semver.org](https://semver.org/) specification:
 
 **During 0.x.x (pre-1.0 development):**
 
@@ -308,29 +308,35 @@ You can find documentation on building with the Gusto Embedded React SDK [in the
 
 ## Cutting a new release
 
-Package versions and the changelog are automatically updated when PRs are merged to `main`, based on the PR title:
+Releases are prepared with [`release-it`](https://github.com/release-it/release-it), which reads commits since the last release, proposes a semver bump, updates `package.json` and `CHANGELOG.md`, and creates a release branch ready for review.
 
-1. **Automatic version bumping**: When a PR is merged (not when it's opened), the `auto-version` workflow reads the PR title and bumps `package.json` version accordingly:
-   - `feat:` → MINOR bump
-   - `fix:` → PATCH bump
-   - `feat!:` or `fix!:` (with `!`) → MINOR bump (during 0.x.x pre-release)
-   - Other types (`docs`, `chore`, etc.) → no version bump
+### Option 1: locally
 
-2. **Automatic changelog updates**: The workflow also adds an entry to `CHANGELOG.md` based on the PR title description:
-   - `feat` → "Features & Enhancements" section
-   - `fix` → "Fixes" section
-   - Breaking changes (with `!`) → "Breaking Changes" section
-   - Other types → "Chores & Maintenance" section
+From a clean `main` branch:
 
-   > **Note:** The changelog entry uses the description portion of your PR title (e.g., `feat: add new component` becomes "add new component" in the changelog). For breaking changes, consider including migration guidance in your PR description - the auto-generated changelog entry provides the "what" but the PR body can provide the "how to migrate".
+```bash
+npm run release
+```
 
-3. **Publishing**: After the version is bumped, run the `Publish to NPM` GitHub action [here](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish.yaml) by clicking `Run workflow`
+`release-it` will:
 
-### Manual release (if needed)
+1. Show you the commits since the last release grouped by type
+2. Propose a version based on conventional commit prefixes (`feat` → MINOR, `fix` → PATCH, `feat!`/`fix!` → MINOR during 0.x.x)
+3. Ask you to confirm or override the target version
+4. Bump `package.json`, update `package-lock.json`, and prepend a new section to `CHANGELOG.md`
+5. Commit the changes and check out a `chore/release-<version>` branch automatically
 
-If you need to manually cut a release:
+Then push and open a PR:
 
-- Update the `version` field in `package.json`
-- Update `CHANGELOG.md` with the changes
-- Run `npm i` and commit the new lockfile
-- Run the `Publish to NPM` GitHub action
+```bash
+git push -u origin chore/release-<version>
+gh pr create --title "chore: release <version>"
+```
+
+### Option 2: via GitHub Actions
+
+Trigger the [Prepare Release](https://github.com/Gusto/embedded-react-sdk/actions/workflows/prepare-release.yaml) workflow from the Actions UI (`Run workflow`). It accepts an optional version override; if left blank it auto-detects from commits. The workflow creates the branch, commits the changes, and opens a PR automatically.
+
+### After the PR is merged
+
+Run the [Publish to NPM](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish.yaml) GitHub action (`Run workflow`) to publish to NPM.
