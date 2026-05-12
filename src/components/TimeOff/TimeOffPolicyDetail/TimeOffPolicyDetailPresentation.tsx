@@ -77,7 +77,6 @@ export function TimeOffPolicyDetailPresentation({
       employees={{
         ...employees,
         additionalColumns: balanceColumn,
-        hideJobTitle: true,
       }}
       removeDialog={removeDialog}
       successAlert={successAlert}
