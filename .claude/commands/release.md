@@ -50,7 +50,7 @@ Do not make any file changes or git operations in dry-run mode.
    git push -u origin chore/release-<version>
    gh pr create --title "chore: release <version>"
    ```
-6. Once the PR is merged, trigger the [Publish to NPM](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish.yaml) GitHub action
+6. Once the PR is merged, publishing happens automatically — the [Publish to NPM](https://github.com/Gusto/embedded-react-sdk/actions/workflows/publish.yaml) workflow triggers when the `chore: release` commit lands on `main` and CI passes. No manual action needed unless something goes wrong.
 
 ## Changelog curation (step 4)
 
