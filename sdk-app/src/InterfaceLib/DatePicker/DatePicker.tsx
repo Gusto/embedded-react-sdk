@@ -4,6 +4,8 @@ import {
   DatePicker as AriaDatePicker,
   Group,
   Button,
+  DateInput,
+  DateSegment,
   Popover,
   Dialog,
   Calendar,
@@ -28,13 +30,6 @@ function toCalendarDate(d?: Date | null): CalendarDate | null {
 
 function toNativeDate(value: DateValue): Date {
   return new Date(value.toDate('UTC'))
-}
-
-function formatDisplay(date: Date): string {
-  const mm = String(date.getMonth() + 1).padStart(2, '0')
-  const dd = String(date.getDate()).padStart(2, '0')
-  const yyyy = String(date.getFullYear())
-  return `${mm}/${dd}/${yyyy}`
 }
 
 function CalendarTitle({ className }: { className?: string }) {
@@ -63,7 +58,6 @@ export function DatePicker({
   value,
   shouldVisuallyHideLabel,
   className,
-  placeholder,
   portalContainer,
   minDate,
   maxDate,
@@ -111,51 +105,47 @@ export function DatePicker({
         isDateUnavailable={isDateDisabled ? cd => isDateDisabled(toNativeDate(cd)) : undefined}
         className={styles.picker}
       >
-        <Group className={styles.fieldWrapper}>
-          <Button
-            id={inputId}
-            ref={inputRef as never}
-            className={classNames(styles.field, {
-              [styles.fieldWithTooltip as string]: !!description,
-            })}
-          >
-            <span className={styles.leadingIcon} aria-hidden="true">
-              <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M19.8333 3.5H17.5V5.83333H10.5V3.5H8.16667V5.83333C6.23001 5.83333 4.66667 7.39667 4.66667 9.33333V10.5V12.8333V21C4.66667 22.9367 6.23001 24.5 8.16667 24.5H19.8333C21.77 24.5 23.3333 22.9367 23.3333 21V12.8333V10.5V9.33333C23.3333 7.39667 21.77 5.83333 19.8333 5.83333V3.5ZM21 9.33333C21 8.69167 20.475 8.16667 19.8333 8.16667H8.16667C7.52501 8.16667 7.00001 8.69167 7.00001 9.33333V10.5H21V9.33333ZM7.00001 12.8333V21C7.00001 21.6417 7.52501 22.1667 8.16667 22.1667H19.8333C20.475 22.1667 21 21.6417 21 21V12.8333H7.00001Z"
-                  fill="currentColor"
-                />
-              </svg>
+        <Group
+          className={classNames(styles.field, {
+            [styles.fieldWithTooltip as string]: !!description,
+          })}
+        >
+          <span className={styles.leadingIcon} aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M19.8333 3.5H17.5V5.83333H10.5V3.5H8.16667V5.83333C6.23001 5.83333 4.66667 7.39667 4.66667 9.33333V10.5V12.8333V21C4.66667 22.9367 6.23001 24.5 8.16667 24.5H19.8333C21.77 24.5 23.3333 22.9367 23.3333 21V12.8333V10.5V9.33333C23.3333 7.39667 21.77 5.83333 19.8333 5.83333V3.5ZM21 9.33333C21 8.69167 20.475 8.16667 19.8333 8.16667H8.16667C7.52501 8.16667 7.00001 8.69167 7.00001 9.33333V10.5H21V9.33333ZM7.00001 12.8333V21C7.00001 21.6417 7.52501 22.1667 8.16667 22.1667H19.8333C20.475 22.1667 21 21.6417 21 21V12.8333H7.00001Z"
+                fill="currentColor"
+              />
+            </svg>
+          </span>
+          <span className={styles.valueArea}>
+            <span
+              className={classNames(styles.label, {
+                [styles.labelHidden as string]: shouldVisuallyHideLabel,
+              })}
+            >
+              {label}
+              {!isRequired && <span className={styles.optional}> (optional)</span>}
             </span>
-            <span className={styles.valueArea}>
-              <span
-                className={classNames(styles.label, {
-                  [styles.labelHidden as string]: shouldVisuallyHideLabel,
-                })}
-              >
-                {label}
-                {!isRequired && <span className={styles.optional}> (optional)</span>}
-              </span>
-              <span className={styles.value}>
-                {value ? (
-                  formatDisplay(value)
-                ) : (
-                  <span className={styles.placeholder}>{placeholder ?? 'mm/dd/yyyy'}</span>
-                )}
-              </span>
-            </span>
-            <span className={styles.calendarIcon} aria-hidden="true">
-              <svg width="14" height="8" viewBox="0 0 14 8" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M7.70715 7.70711C7.31663 8.09763 6.68346 8.09763 6.29294 7.70711L0.29294 1.70711L1.70715 0.292892L7.00005 5.58579L12.2929 0.292893L13.7072 1.70711L7.70715 7.70711Z"
-                  fill="currentColor"
-                />
-              </svg>
-            </span>
+            <DateInput
+              ref={inputRef as never}
+              className={styles.dateInput}
+              aria-label={typeof label === 'string' ? label : undefined}
+            >
+              {segment => <DateSegment segment={segment} className={styles.dateSegment} />}
+            </DateInput>
+          </span>
+          <Button className={styles.calendarIcon} aria-label="Open calendar">
+            <svg width="14" height="8" viewBox="0 0 14 8" xmlns="http://www.w3.org/2000/svg">
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M7.70715 7.70711C7.31663 8.09763 6.68346 8.09763 6.29294 7.70711L0.29294 1.70711L1.70715 0.292892L7.00005 5.58579L12.2929 0.292893L13.7072 1.70711L7.70715 7.70711Z"
+                fill="currentColor"
+              />
+            </svg>
           </Button>
           {description && (
             <span className={styles.tooltipFloat}>

@@ -155,6 +155,31 @@
   font-variant-numeric: tabular-nums;
 }
 
+.dateInput {
+  display: flex;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  color: inherit;
+  font-variant-numeric: tabular-nums;
+  outline: none;
+}
+
+.dateSegment {
+  padding: 0 1px;
+  outline: none;
+  border-radius: 2px;
+}
+
+.dateSegment[data-placeholder] {
+  color: #666666;
+}
+
+.dateSegment[data-focused] {
+  background-color: #101010;
+  color: #ffffff;
+}
+
 .placeholder {
   color: #666666;
 }
@@ -165,7 +190,21 @@
   justify-content: center;
   flex-shrink: 0;
   width: 48px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
   color: #959595;
+  cursor: pointer;
+  outline: none;
+}
+
+.calendarIcon:hover:not([data-disabled]) {
+  color: #101010;
+}
+
+.calendarIcon[data-focus-visible] {
+  color: #101010;
 }
 
 .leadingIcon {

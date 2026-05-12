@@ -18,6 +18,8 @@ import { DescriptionList } from './DescriptionList'
 import { PaginationControl } from './PaginationControl'
 import { Loading } from './Loading'
 import { Checkbox } from './Checkbox'
+import { Radio } from './Radio'
+import { RadioGroup } from './RadioGroup'
 
 export {
   Button,
@@ -40,6 +42,8 @@ export {
   PaginationControl,
   Loading,
   Checkbox,
+  Radio,
+  RadioGroup,
 }
 
 export const interfaceLibComponents = {
@@ -62,4 +66,6 @@ export const interfaceLibComponents = {
   DescriptionList,
   PaginationControl,
   Checkbox,
+  Radio,
+  RadioGroup,
 }

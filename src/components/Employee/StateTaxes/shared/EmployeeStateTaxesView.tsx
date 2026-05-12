@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { type useEmployeeStateTaxesForm } from './useEmployeeStateTaxesForm'
 import { BaseLayout } from '@/components/Base'
 import { Form } from '@/components/Common/Form'
+import { Flex } from '@/components/Common/Flex/Flex'
 import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
@@ -33,30 +34,32 @@ export function EmployeeStateTaxesView({
 
   return (
     <section className={className}>
-      <BaseLayout error={stateTaxes.errorHandling.errors}>
-        <SDKFormProvider formHookResult={stateTaxes}>
-          <Form onSubmit={onSubmit}>
-            {alert}
+      <Flex flexDirection="column" alignItems="stretch">
+        <BaseLayout error={stateTaxes.errorHandling.errors}>
+          <SDKFormProvider formHookResult={stateTaxes}>
+            <Form onSubmit={onSubmit}>
+              {alert}
 
-            {groups.map(group => {
-              const stateName = tCommon(`statesHash.${group.state}`, group.state)
-              return (
-                <Fragment key={group.state}>
-                  <Components.Heading as="h2">
-                    {t('stateTaxesTitle', { state: stateName })}
-                  </Components.Heading>
+              {groups.map(group => {
+                const stateName = tCommon(`statesHash.${group.state}`, group.state)
+                return (
+                  <Fragment key={group.state}>
+                    <Components.Heading as="h2">
+                      {t('stateTaxesTitle', { state: stateName })}
+                    </Components.Heading>
 
-                  {group.questions.map(({ questionId, Field }) => {
-                    return <Field key={questionId} />
-                  })}
-                </Fragment>
-              )
-            })}
+                    {group.questions.map(({ questionId, Field }) => {
+                      return <Field key={questionId} />
+                    })}
+                  </Fragment>
+                )
+              })}
 
-            {actions}
-          </Form>
-        </SDKFormProvider>
-      </BaseLayout>
+              {actions}
+            </Form>
+          </SDKFormProvider>
+        </BaseLayout>
+      </Flex>
     </section>
   )
 }
