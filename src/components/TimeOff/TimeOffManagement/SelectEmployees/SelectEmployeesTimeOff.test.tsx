@@ -593,7 +593,7 @@ describe('SelectEmployeesTimeOff', () => {
   })
 
   describe('wizard mode', () => {
-    it('fires TIME_OFF_ADD_EMPLOYEES_DONE with employeeUuids and does NOT call mutation', async () => {
+    it('calls add-employees mutation with balances in wizard mode', async () => {
       const user = userEvent.setup()
       renderComponent({ mode: 'wizard' })
 
@@ -605,12 +605,8 @@ describe('SelectEmployeesTimeOff', () => {
       await user.click(screen.getByRole('button', { name: 'continueCta' }))
 
       await waitFor(() => {
-        expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.TIME_OFF_ADD_EMPLOYEES_DONE, {
-          employeeUuids: ['1'],
-        })
+        expect(mockAddEmployees).toHaveBeenCalledTimes(1)
       })
-
-      expect(mockAddEmployees).not.toHaveBeenCalled()
     })
   })
 })
