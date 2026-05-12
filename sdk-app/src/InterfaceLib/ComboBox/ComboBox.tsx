@@ -87,6 +87,7 @@ export const ComboBox = ({
         isDisabled={isDisabled}
         isInvalid={isInvalid}
         isRequired={isRequired}
+        validationBehavior="aria"
         menuTrigger="focus"
         allowsCustomValue={allowsCustomValue}
         id={inputId}

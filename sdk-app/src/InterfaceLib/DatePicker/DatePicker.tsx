@@ -95,6 +95,7 @@ export function DatePicker({
         isDisabled={isDisabled}
         isInvalid={isInvalid}
         isRequired={isRequired}
+        validationBehavior="aria"
         value={calendarValue}
         onChange={next => {
           onChange?.(next ? toNativeDate(next) : null)
