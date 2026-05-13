@@ -24,7 +24,7 @@ export function PolicyDetailLayout<T extends EmployeeTableItem>({
 }: PolicyDetailLayoutProps<T>) {
   useI18n('Company.TimeOff.PolicyDetail')
   const { t } = useTranslation('Company.TimeOff.PolicyDetail')
-  const { Alert, Dialog, Box } = useComponentContext()
+  const { Alert, Dialog } = useComponentContext()
 
   const tabs = [
     {
@@ -36,21 +36,19 @@ export function PolicyDetailLayout<T extends EmployeeTableItem>({
       id: EMPLOYEES_TAB_ID,
       label: t('tabs.employees'),
       content: (
-        <Box withPadding={false}>
-          <EmployeeTable<T>
-            data={employees.data}
-            searchValue={employees.searchValue}
-            onSearchChange={employees.onSearchChange}
-            onSearchClear={employees.onSearchClear}
-            searchPlaceholder={employees.searchPlaceholder}
-            itemMenu={employees.itemMenu}
-            pagination={employees.pagination}
-            isFetching={employees.isFetching}
-            emptyState={employees.emptyState}
-            additionalColumns={employees.additionalColumns}
-            hideJobTitle={employees.hideJobTitle}
-          />
-        </Box>
+        <EmployeeTable<T>
+          data={employees.data}
+          searchValue={employees.searchValue}
+          onSearchChange={employees.onSearchChange}
+          onSearchClear={employees.onSearchClear}
+          searchPlaceholder={employees.searchPlaceholder}
+          itemMenu={employees.itemMenu}
+          pagination={employees.pagination}
+          isFetching={employees.isFetching}
+          emptyState={employees.emptyState}
+          additionalColumns={employees.additionalColumns}
+          hideJobTitle={employees.hideJobTitle}
+        />
       ),
     },
   ]

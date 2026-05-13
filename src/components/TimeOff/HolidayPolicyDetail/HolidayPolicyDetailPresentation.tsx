@@ -53,7 +53,7 @@ export function HolidayPolicyDetailPresentation({
 function HolidaysTab({ holidays }: { holidays: HolidayItem[] }) {
   useI18n('Company.TimeOff.HolidayPolicy')
   const { t } = useTranslation('Company.TimeOff.HolidayPolicy')
-  const { Text, Box, BoxHeader } = useComponentContext()
+  const { Text } = useComponentContext()
 
   const columns = useMemo(
     () => [
@@ -81,9 +81,5 @@ function HolidaysTab({ holidays }: { holidays: HolidayItem[] }) {
     columns,
   })
 
-  return (
-    <Box header={<BoxHeader title={t('show.holidaySchedule')} />} withPadding={false}>
-      <DataView label={t('tableLabel')} {...dataViewProps} />
-    </Box>
-  )
+  return <DataView label={t('tableLabel')} {...dataViewProps} />
 }
