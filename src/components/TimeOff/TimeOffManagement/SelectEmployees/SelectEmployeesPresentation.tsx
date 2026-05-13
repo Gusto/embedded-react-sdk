@@ -9,6 +9,8 @@ import { ActionsLayout, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 
+const isNumericInput = (value: string) => /^\d*\.?\d*$/.test(value)
+
 export function SelectEmployeesPresentation({
   employees,
   selectedUuids,
@@ -81,10 +83,8 @@ export function SelectEmployeesPresentation({
                         aria-labelledby={`employee-name-${employee.uuid} ${balanceColHeaderId}`}
                         value={balances?.[employee.uuid] ?? ''}
                         onChange={(value: string) => {
-                          const numeric = value.replace(/[^0-9.]/g, '')
-                          if (numeric !== value) return
-                          if ((numeric.match(/\./g) ?? []).length > 1) return
-                          onBalanceChange(employee.uuid, numeric)
+                          if (value !== '' && !isNumericInput(value)) return
+                          onBalanceChange(employee.uuid, value)
                         }}
                         placeholder="0"
                       />
