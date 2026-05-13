@@ -1,3 +1,4 @@
+import { useEffect, useId, useRef, useState } from 'react'
 import { ModeSwitcher } from './ModeSwitcher'
 import { ThemeSwitcher } from './ThemeSwitcher'
 import { useAppMode } from './useAppMode'
@@ -5,7 +6,8 @@ import { useCompanyName } from './design/useCompanyName'
 import type { TokenStatus } from './useDemoManager'
 import SettingsIcon from './assets/icons/icon-settings.svg?react'
 import CodeIcon from './assets/icons/icon-code.svg?react'
-import BrushIcon from './assets/icons/icon-brush.svg?react'
+import PaletteIcon from './assets/icons/icon-palette.svg?react'
+import ChevronDownIcon from './assets/icons/icon-chevron-down.svg?react'
 import styles from './TopBar.module.scss'
 
 type ActivePanel = 'theme' | 'settings' | 'code' | null
@@ -17,7 +19,7 @@ interface TopBarProps {
   onPanelToggle: (panel: 'theme' | 'settings' | 'code') => void
 }
 
-function TokenDot({ status }: { status: TokenStatus }) {
+function TokenDot({ status, compact = false }: { status: TokenStatus; compact?: boolean }) {
   const label =
     status === 'valid'
       ? 'Token OK'
@@ -33,6 +35,10 @@ function TokenDot({ status }: { status: TokenStatus }) {
     checking: styles.tokenDotChecking,
     unknown: styles.tokenDotUnknown,
   }[status]
+
+  if (compact) {
+    return <div className={`${styles.tokenDot} ${dotClass}`} title={label} aria-label={label} />
+  }
 
   return (
     <div className={styles.tokenStatus}>
@@ -55,6 +61,27 @@ export function TopBar({ companyId, tokenStatus, activePanel, onPanelToggle }: T
   const demoType = import.meta.env.VITE_DEMO_TYPE || ''
   const demoTypeLabel = DEMO_TYPE_LABELS[demoType] || demoType
   const companyName = useCompanyName(companyId)
+  const [infoOpen, setInfoOpen] = useState(false)
+  const infoWrapRef = useRef<HTMLDivElement>(null)
+  const infoPanelId = useId()
+
+  useEffect(() => {
+    if (!infoOpen) return
+    const handleClick = (e: MouseEvent) => {
+      if (infoWrapRef.current && !infoWrapRef.current.contains(e.target as Node)) {
+        setInfoOpen(false)
+      }
+    }
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setInfoOpen(false)
+    }
+    document.addEventListener('mousedown', handleClick)
+    document.addEventListener('keydown', handleKey)
+    return () => {
+      document.removeEventListener('mousedown', handleClick)
+      document.removeEventListener('keydown', handleKey)
+    }
+  }, [infoOpen])
 
   return (
     <header className={styles.root}>
@@ -63,43 +90,64 @@ export function TopBar({ companyId, tokenStatus, activePanel, onPanelToggle }: T
       </span>
 
       <div className={styles.rightBar}>
-        <div className={styles.envInfo}>
-          <span
-            className={`${styles.badge} ${styles.badgeEnv}`}
-            title="ZenPayroll environment (demo, staging, or local)"
+        <div
+          className={`${styles.envInfoWrap} ${infoOpen ? styles.envInfoWrapOpen : ''}`}
+          ref={infoWrapRef}
+        >
+          <button
+            type="button"
+            className={styles.infoToggle}
+            onClick={() => {
+              setInfoOpen(o => !o)
+            }}
+            aria-expanded={infoOpen}
+            aria-controls={infoPanelId}
+            aria-label={infoOpen ? 'Hide environment info' : 'Show environment info'}
+            title="Environment info"
           >
-            <span className={styles.badgeLabel}>API</span>
-            {displayEnv}
-          </span>
-          <span
-            className={`${styles.badge} ${styles.badgeBuild}`}
-            title="SDK build mode (dev = live source with HMR, prod = built dist)"
-          >
-            <span className={styles.badgeLabel}>SDK</span>
-            {build}
-          </span>
-          {demoTypeLabel && (
+            <span className={styles.infoToggleSummary}>
+              <TokenDot status={tokenStatus} compact />
+            </span>
+            <ChevronDownIcon className={styles.infoToggleChevron} />
+          </button>
+          <div id={infoPanelId} className={styles.envInfo}>
             <span
-              className={`${styles.badge} ${styles.badgeDemoType}`}
-              title={`Demo type: ${demoType}`}
+              className={`${styles.badge} ${styles.badgeEnv}`}
+              title="ZenPayroll environment (demo, staging, or local)"
             >
-              {demoTypeLabel}
+              <span className={styles.badgeLabel}>API</span>
+              {displayEnv}
             </span>
-          )}
-          <div className={styles.divider} />
-          {companyName && (
-            <span className={styles.company} title={companyId}>
-              <span className={styles.badgeLabel}>Company</span>
-              {companyName}
+            <span
+              className={`${styles.badge} ${styles.badgeBuild}`}
+              title="SDK build mode (dev = live source with HMR, prod = built dist)"
+            >
+              <span className={styles.badgeLabel}>SDK</span>
+              {build}
             </span>
-          )}
-          {companyId && !companyName && (
-            <span className={styles.company} title={companyId}>
-              <span className={styles.badgeLabel}>Company</span>
-              {companyId}
-            </span>
-          )}
-          <TokenDot status={tokenStatus} />
+            {demoTypeLabel && (
+              <span
+                className={`${styles.badge} ${styles.badgeDemoType}`}
+                title={`Demo type: ${demoType}`}
+              >
+                {demoTypeLabel}
+              </span>
+            )}
+            <div className={styles.divider} />
+            {companyName && (
+              <span className={styles.company} title={companyId}>
+                <span className={styles.badgeLabel}>Company</span>
+                <span className={styles.companyValue}>{companyName}</span>
+              </span>
+            )}
+            {companyId && !companyName && (
+              <span className={styles.company} title={companyId}>
+                <span className={styles.badgeLabel}>Company</span>
+                <span className={styles.companyValue}>{companyId}</span>
+              </span>
+            )}
+            <TokenDot status={tokenStatus} />
+          </div>
         </div>
 
         <div className={styles.actions}>
@@ -116,8 +164,8 @@ export function TopBar({ companyId, tokenStatus, activePanel, onPanelToggle }: T
               aria-label="Toggle theme panel"
               title="Toggle theme panel (⌘J)"
             >
-              <BrushIcon />
-              Theme
+              <PaletteIcon />
+              <span className={styles.panelBtnLabel}>Theme</span>
             </button>
             <button
               className={`${styles.panelBtn} ${activePanel === 'settings' ? styles.panelBtnActive : ''}`}
@@ -130,7 +178,7 @@ export function TopBar({ companyId, tokenStatus, activePanel, onPanelToggle }: T
               title="Toggle settings panel (⌘,)"
             >
               <SettingsIcon />
-              Settings
+              <span className={styles.panelBtnLabel}>Settings</span>
             </button>
             <button
               className={`${styles.panelBtn} ${activePanel === 'code' ? styles.panelBtnActive : ''}`}
@@ -143,7 +191,7 @@ export function TopBar({ companyId, tokenStatus, activePanel, onPanelToggle }: T
               title="Toggle code panel (?)"
             >
               <CodeIcon />
-              Code
+              <span className={styles.panelBtnLabel}>Code</span>
             </button>
           </div>
         </div>

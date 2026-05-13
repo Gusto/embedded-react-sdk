@@ -50,6 +50,8 @@ export const EditMode = () => (
     accrualMethod="hours_worked"
     onContinue={onContinue}
     onBack={onBack}
+    mode="edit"
+    editingPolicyName="Paid Time Off Policy"
     defaultValues={{
       accrualMaximumEnabled: true,
       accrualMaximum: 100,
