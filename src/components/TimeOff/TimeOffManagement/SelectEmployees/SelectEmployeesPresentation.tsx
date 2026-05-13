@@ -74,22 +74,19 @@ export function SelectEmployeesPresentation({
                       return <Text>{originalBalances?.[employee.uuid] ?? '0'}</Text>
                     }
                     return (
-                      <Components.NumberInput
+                      <Components.TextInput
                         name={`balance-${employee.uuid}`}
                         label={t('startingBalanceColumn')}
                         shouldVisuallyHideLabel
                         aria-labelledby={`employee-name-${employee.uuid} ${balanceColHeaderId}`}
-                        value={
-                          balances?.[employee.uuid] != null
-                            ? Number(balances[employee.uuid])
-                            : 0
-                        }
-                        onChange={(value: number) => {
-                          onBalanceChange(employee.uuid, String(value))
+                        value={balances?.[employee.uuid] ?? ''}
+                        onChange={(value: string) => {
+                          const numeric = value.replace(/[^0-9.]/g, '')
+                          if (numeric !== value) return
+                          if ((numeric.match(/\./g) ?? []).length > 1) return
+                          onBalanceChange(employee.uuid, numeric)
                         }}
-                        min={0}
-                        minimumFractionDigits={1}
-                        maximumFractionDigits={2}
+                        placeholder="0"
                       />
                     )
                   },
