@@ -392,14 +392,13 @@ export const timeOffMachine = {
     backToListTransition,
   ),
 
-  // Distinct from `policyDetailsForm` (the create-flow step) so that
-  // DONE/CANCEL return to the policy detail view and settings route through
-  // `editPolicySettings` instead of the create flow's steps.
+  // Distinct from `policyDetailsForm` (the create-flow step) so that DONE
+  // returns to the policy detail view rather than continuing into the
+  // create flow's settings step.
   editPolicyDetailsForm: state<MachineTransition>(
     transition(
       componentEvents.TIME_OFF_POLICY_DETAILS_DONE,
       'viewTimeOffPolicyDetail',
-      guard(isUnlimitedPolicy),
       reduce(
         (
           ctx: TimeOffFlowContextInterface,
@@ -407,21 +406,6 @@ export const timeOffMachine = {
         ): TimeOffFlowContextInterface => ({
           ...ctx,
           component: TimeOffPolicyDetailContextual,
-          policyId: ev.payload.policyId,
-          alerts: undefined,
-        }),
-      ),
-    ),
-    transition(
-      componentEvents.TIME_OFF_POLICY_DETAILS_DONE,
-      'editPolicySettings',
-      reduce(
-        (
-          ctx: TimeOffFlowContextInterface,
-          ev: { payload: PolicyCreatedPayload },
-        ): TimeOffFlowContextInterface => ({
-          ...ctx,
-          component: EditPolicySettingsContextual,
           policyId: ev.payload.policyId,
           alerts: undefined,
         }),
