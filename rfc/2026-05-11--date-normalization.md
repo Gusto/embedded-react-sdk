@@ -2,7 +2,7 @@
 
 Every UTC bug in this codebase has the same root cause: `Date` carries a time and timezone component, but we use it to represent calendar dates that have neither. All the workarounds — `normalizeDateToLocal`, the regex-parse path in `normalizeToDate`, the `getFullYear/getMonth/getDate` read pattern — exist because of this mismatch.
 
-The fix has two phases. Phase 1 eliminates all known bugs by hardening the existing convention. Phase 2 migrates the internal type to `CalendarDate`, which makes correct behavior structural rather than conventional. Phase 1 is a prerequisite for Phase 2 — the callsite fixes done in Phase 1 are required work either way.
+The fix has three phases. Phase 1 eliminates all known bugs by hardening the existing convention. Phase 2 introduces an internal `ISODate` class that wraps a `YYYY-MM-DD` string, replacing unsafe `Date` construction in models, form state, and utilities — no partner-facing changes. Phase 3 extends the string contract to the partner-facing API as a breaking change, exposing lightweight `ISOString` utilities for cases where partners need to construct date strings. Phase 1 is a prerequisite for the rest — the callsite fixes done in Phase 1 are required work either way.
 
 ---
 
@@ -91,7 +91,7 @@ Three files use `new RFCDate(new Date(string))`: `useEmployeeDetailsForm` (`date
 | `PayPeriod.fromPayPeriodData`                                        | `new Date(YYYY-MM-DD)` → UTC midnight                                                                                                          |
 | `Payroll/helpers.ts` (compensation effective dates)                  | `new Date(effectiveDate)` on string → UTC midnight                                                                                             |
 | `useEmployeeStateTaxesForm` deserialization                          | `new Date(trimmed)` on string → UTC midnight                                                                                                   |
-| `CalendarPreview.tsx:32`                                             | `new Date(dateValue.toString())` — behavior varies                                                                                             |
+| `CalendarPreview.tsx:32`                                             | `new Date(dateValue.toString())` — `CalendarDate.toString()` yields `YYYY-MM-DD`, parsed as UTC midnight; off by one for UTC+ users           |
 | `useEmployeeDetailsForm`, `useHomeAddressForm`, `useWorkAddressForm` | `new RFCDate(new Date(string))` — redundant UTC roundtrip, but **not a bug**: fields are `z.iso.date()` strings so UTC→UTC conversion cancels correctly |
 | `getHoursUntil`, `getDaysUntil` (`dateFormatting.ts`)                | Pass string to `normalizeToDate`, which falls through to `new Date(string)` for ISO timestamps → UTC parsing; arithmetic is off for UTC+ users |
 
@@ -153,38 +153,73 @@ All type signatures, partner hook APIs, `DatePickerProps`, arithmetic helpers, `
 
 ### Implementation Order
 
-1. Extend `normalizeToISOString`; delete `formatDateToStringDate` and `normalizeDateToLocal`; replace serialization callsites
-2. Fix `new Date(YYYY-MM-DD)` deserialization callsites
-3. Address `normalizeToDate` fallthrough for timestamp strings
-4. _(Optional cleanup)_ `new RFCDate(new Date(string))` → `new RFCDate(string)` in 3 employee form files — not a bug, but removes confusing indirection
+- [ ] Extend `normalizeToISOString` to accept `Date | string | null`; delete `formatDateToStringDate` and `normalizeDateToLocal`; replace serialization callsites (see table above)
+- [ ] Fix `new Date(YYYY-MM-DD)` deserialization in `PayPeriod.fromPayPeriodData`, compensation sorting, and state taxes
+- [ ] Address `normalizeToDate` fallthrough for ISO timestamp strings
+- [ ] _(Optional)_ Replace `new RFCDate(new Date(string))` → `new RFCDate(string)` in `useEmployeeDetailsForm`, `useHomeAddressForm`, `useWorkAddressForm` — not a bug, removes confusing indirection
 
 ---
 
-## Phase 2: `CalendarDate` as the Internal Date Type
+## Phase 2: `ISODate` as the Internal Date Type
 
-Phase 1 fixes current bugs by convention. Phase 2 makes the correct behavior impossible to violate: `CalendarDate` has no time component and no UTC methods, so the class of bug cannot arise.
+Phase 1 fixes current bugs by convention. Phase 2 introduces a lightweight internal `ISODate` class that stores a `YYYY-MM-DD` string and acts as a translation layer between date formats — providing safe construction from strings, `Date` objects, and `CalendarDate`, and converting back to any of those formats or to `RFCDate` for API calls. When arithmetic is needed (e.g. adding days or months), callsites go through `toCalendarDate()`: `isoDate.toCalendarDate().add({ days: n }).toString()`. `ISODate` itself does not perform arithmetic.
 
-### Adapter Boundary Is Fixed
+### Adapter Boundary
 
-`DatePickerProps` and `DateRangePickerProps` are the partner-facing API and must keep `Date` at the boundary. Everything above this boundary is internal and can change.
+`DatePickerProps` and `DateRangePickerProps` are the partner-facing API. Phase 2 keeps `Date` at the boundary to preserve zero breaking changes. Phase 3 replaces `Date` with `string` at this boundary — see Phase 3 for details.
 
-Conversions happen at two edges:
+`CalendarDate` from `@internationalized/date` remains strictly inside the picker components as the format required by react-aria. It does not appear in form state, models, or business logic. The picker adapter converts at two edges, unchanged from Phase 1:
 
-- **Inbound** (adapter → form): `value.getFullYear/getMonth/getDate` → `new CalendarDate(...)` — reads local, safe
-- **Outbound** (form → adapter): `new Date(cd.year, cd.month - 1, cd.day)` — local midnight, safe
-- **Display**: `cd.toDate(getLocalTimeZone()).toLocaleDateString(...)`
+- **Inbound** (props → react-aria): `value.getFullYear/getMonth/getDate` → `new CalendarDate(...)` — reads local, safe
+- **Outbound** (react-aria → props): `new Date(cd.year, cd.month - 1, cd.day)` — local midnight, safe
+
+`DatePickerField` bridges the `Date` boundary and the `ISODate` form state:
+
+- **Inbound** (picker `onChange` → form state): `ISODate.fromDate(date)`
+- **Outbound** (form state → picker `value`): `isoDate.toLocalDate()`
+
+### `ISODate` Class
+
+`ISODate` is a private SDK-internal class — not exported. It wraps a `YYYY-MM-DD` string and provides a controlled API that makes the unsafe operations impossible:
+
+```ts
+class ISODate {
+  private constructor(private readonly value: string) {}
+
+  static from(value: string): ISODate        // validates YYYY-MM-DD format, throws on invalid input
+  static fromDate(date: Date): ISODate       // safe conversion via local getters (no UTC)
+  static fromCalendarDate(date: CalendarDate): ISODate
+
+  static today(): ISODate                    // today in local timezone
+
+  toString(): string                         // returns YYYY-MM-DD
+  toCalendarDate(): CalendarDate             // parseDate(this.value)
+  toLocalDate(): Date                        // toCalendarDate().toDate(getLocalTimeZone())
+  toRFCDate(): RFCDate                       // new RFCDate(this.value) — direct, no Date intermediary
+
+  isAfter(other: ISODate): boolean           // lexicographic string compare
+  isBefore(other: ISODate): boolean
+  equals(other: ISODate): boolean
+}
+```
+
+`toRFCDate()` is the key ergonomic benefit: it eliminates the `new RFCDate(new Date(str))` anti-pattern (which is both redundant and potentially buggy) that appears across the codebase. The correct path becomes `isoDate.toRFCDate()`.
+
+Zod schemas gain `.transform(ISODate.from)` where date fields flow through validation, making form state `ISODate | null` automatically.
 
 ### What Changes
 
-**`PayPeriod` model:** `parseDate(data.start_date)` → `CalendarDate` instead of `new Date(data.start_date)` (UTC midnight).
+**`PayPeriod` model:** Store `data.start_date` as `ISODate.from(data.start_date)` instead of `new Date(data.start_date)` (UTC midnight).
 
-**Compensation sorting:** `parseDate(a.effectiveDate).compare(parseDate(b.effectiveDate))` instead of `new Date(effectiveDate).getTime()`.
+**Compensation sorting:** `a.effectiveDate.toString() <= b.effectiveDate.toString()` — ISO strings sort lexicographically — or `a.effectiveDate.isBefore(b.effectiveDate)`.
 
-**Address pending-change detection:** `parseDate(raw).compare(today(getLocalTimeZone())) > 0` replaces `normalizeToDate` + `startOfLocalDay`.
+**Address pending-change detection:** `data.effectiveDate.isAfter(ISODate.today())` replaces `normalizeToDate` + `startOfLocalDay`.
 
-**`useDateRangeFilter`:** State becomes `CalendarDate | null`; arithmetic via `.add({ months: n })`; serialization via `.toString()`.
+**`useDateRangeFilter`:** State becomes `ISODate | null`. Arithmetic goes through `toCalendarDate()`: `ISODate.fromCalendarDate(isoDate.toCalendarDate().add({ months: n }))` when storing back as state, or `.toString()` when only the string is needed.
 
-**State taxes date fields:** Deserialization via `parseDate(trimmed)`, serialization via `formValue.toString()`.
+**State taxes date fields:** Zod schemas gain `.transform(ISODate.from)`. Deserialization changes from `new Date(trimmed)` to `ISODate.from(trimmed)`.
+
+**`new RFCDate(...)` callsites:** All `new RFCDate(dateValue)` and `new RFCDate(new Date(str))` callsites become `isoDate.toRFCDate()`.
 
 **`canCancelPayroll`** — the current implementation must be investigated before this migration. The hand-rolled DST logic shifts both `now` and `deadline` into a "fake PT" coordinate system (subtracting 7 or 8 hours), then uses `.setUTCHours(16, 0, 0, 0)` to pin the cutoff to 4 PM in that shifted system. This is self-consistent in the common case but has two edge-case failure modes: the DST boundary is computed at midnight local (not 2 AM), and if `now` and `payrollDeadline` straddle a DST transition they get different offsets, producing a 1-hour error. Once the intended semantics and failure modes are confirmed against tests and the API contract, the correct replacement is:
 
@@ -199,29 +234,96 @@ Note: `deadlinePT.set({ hour: 16 })` sets 4 PM on the deadline's _date in PT_. T
 
 ### What Gets Removed
 
-- `normalizeDateToLocal` — already removed in Phase 1
-- `formatDateToStringDate` — already removed in Phase 1
-- `normalizeToISOString` — replaced by `parseDate(s).toString()`
-- `getPacificTimeOffset` — replaced by `ZonedDateTime`
-- `addDays`, `isWeekend` — replaced by `.add({ days: n })` and `dayOfWeek >= 6`
+- `normalizeToISOString` — replaced by `ISODate.fromDate(date).toString()` or `ISODate.fromDate(date)` depending on context
+- `getPacificTimeOffset` — replaced by `now` / `parseAbsolute` from `@internationalized/date`
+- `addDays`, `isWeekend` — `addBusinessDays` uses both internally; update `addBusinessDays` to use `@internationalized/date` before removing these helpers
 - `startOfLocalDay` (duplicated in two address files)
 - Duplicated `dateToCalendarDate` / `calendarDateValueToDate` in both picker files
 
 ### Risks
 
-**1. Form value type change could be breaking.** If `DatePickerField`'s generic changes from `Date | null` to `CalendarDate | null`, partners reading form values directly would see a type change. _Mitigation: use `CalendarDate` as a safe intermediate, keep `Date` stored in form state — fixes all bugs with zero breaking changes._
-
-**2. `dayOfWeek` indexing differs.** `CalendarDate.dayOfWeek`: Mon=1, Sun=7. `Date.getDay()`: Sun=0, Sat=6. A direct port of `isWeekend` gets this wrong. _Mitigation: a single `isCalendarWeekend` utility._
-
-**3. Large migration surface.** Touches nearly every date-handling file. Requires test coverage before migrating each area.
-
-### Open Question: Where Does `CalendarDate` Live in Form State?
-
-- **Conservative:** use `CalendarDate` as a safe intermediate only; keep `Date` in form state. Fixes all bugs, zero breaking changes, `isStringMode` survives unchanged.
-- **Progressive:** store `CalendarDate` in form state. Eliminates `isStringMode`, cleaner long-term, but is technically a breaking change.
-
-`isStringMode` exists because `DatePickerField` is generic over `Date | null` _or_ `string | null`. Partners that bind date fields to a Zod schema where values round-trip as strings rely on the string output path. Before taking the progressive path, confirm no partner uses `DatePickerField<string>` — check SDK documentation and partner-facing examples.
+**Large migration surface.** Touches nearly every date-handling file. Requires test coverage before migrating each area. `isStringMode` and `DatePickerField`'s `TValue` generic are untouched — those are Phase 3 concerns.
 
 ### Implementation Order
 
-`DatePickerField` → `PayPeriod` → address utilities → `canCancelPayroll` (after bug investigation) → remaining form files
+- [ ] Implement `ISODate` class
+- [ ] Replace `new RFCDate(...)` callsites with `isoDate.toRFCDate()`
+- [ ] Migrate `PayPeriod` model
+- [ ] Migrate compensation sorting
+- [ ] Migrate address utilities (`startOfLocalDay`, pending-change detection)
+- [ ] Migrate `useDateRangeFilter`
+- [ ] Migrate state taxes date fields
+- [ ] Investigate `canCancelPayroll` DST edge cases; migrate after semantics are confirmed
+- [ ] Remove `addDays`, `isWeekend`, `normalizeToISOString`, `getPacificTimeOffset`; deduplicate picker bridge functions
+
+---
+
+## Phase 3: `string` as the Partner-Facing Date Type (Breaking Change)
+
+Phase 2 adopts `ISODate` as the internal date type. Phase 3 closes the partner-facing surface by removing `Date` from all public APIs. The external contract is plain `YYYY-MM-DD` strings — the same format the Gusto API already uses — so for the common case partners pass API strings directly with no conversion.
+
+### Motivation
+
+The Gusto API returns dates as `YYYY-MM-DD` strings. The current `DatePickerProps` API requires `Date`, so partners must convert — and the obvious conversion, `new Date(apiString)`, parses as UTC midnight and produces the wrong calendar date for UTC+ users. A partner following the natural integration path introduces a UTC bug without doing anything unusual.
+
+`Date` as a boundary type has no mechanism to distinguish a safely-constructed `Date` (local midnight, via `new Date(year, month-1, day)`) from an unsafe one (UTC midnight, via `new Date(string)`). The two look identical from the outside. Switching to `YYYY-MM-DD` strings eliminates the conversion step entirely: partners pass the API string directly, and the unsafe construction path does not exist.
+
+### What Changes
+
+**`DatePickerProps`:**
+
+| Prop | Before | After |
+| --- | --- | --- |
+| `value` | `Date \| null` | `string \| null` |
+| `onChange` | `(value: Date \| null) => void` | `(value: string \| null) => void` |
+| `minDate` | `Date` | `string` |
+| `maxDate` | `Date` | `string` |
+| `isDateDisabled` | `(date: Date) => boolean` | `(date: string) => boolean` |
+
+**`DateRangePickerProps`:**
+
+| Prop | Before | After |
+| --- | --- | --- |
+| `value` | `{ start: Date, end: Date } \| null` | `{ start: string, end: string } \| null` |
+| `onChange` | `(range: { start: Date, end: Date } \| null) => void` | `(range: { start: string, end: string } \| null) => void` |
+| `minValue` | `Date` | `string` |
+| `maxValue` | `Date` | `string` |
+
+**Form `defaultValues`:** Date fields in hook `defaultValues` change from `Date` to `string`.
+
+**`DatePickerField` and `isStringMode`:** `DatePickerField` is currently generic over `TValue extends Date | null | string | null`. Phase 3 removes the generic — the type is always `string | null`. `isStringMode` is removed.
+
+### Adapter Simplification
+
+In Phase 2 the picker adapter is unchanged — it still converts `Date ↔ CalendarDate` using local getters. Phase 3 switches the partner boundary to `string` and introduces `ISODate` into the picker itself:
+
+| | Before Phase 3 | Phase 3 |
+| --- | --- | --- |
+| Inbound (props → react-aria) | `Date` → local getters → `CalendarDate` | `ISODate.from(value)` → `isoDate.toCalendarDate()` |
+| Outbound (react-aria → props) | `new Date(cd.year, cd.month - 1, cd.day)` | `cd.toString()` |
+
+The last timezone-sensitive operation in the adapter layer is removed in Phase 3.
+
+### Format Contract
+
+The accepted format is `YYYY-MM-DD`. Strings with time components are not valid input. The SDK should warn in dev mode if a non-date string is passed. As a belt-and-suspenders measure, internal parsing can guard with `.split('T')[0]` when consuming partner-supplied strings.
+
+### Partner Utilities
+
+The partner-facing type is plain `string`. When passing values from the API directly, no conversion is needed. For cases where a string must be constructed (e.g. `minDate`, `defaultValues` from a `Date` the partner already has), the SDK exports an `ISOString` namespace:
+
+```ts
+ISOString.today(): string           // today in local timezone — replaces minDate={new Date()}
+ISOString.from(date: Date): string  // safe Date → YYYY-MM-DD using local getters
+ISOString.isValid(s: string): boolean
+```
+
+`ISOString` is a plain object — not a class, not a type. Partners import it like any other utility. The internal `ISODate` class is not exported.
+
+### Implementation Order
+
+- [ ] Update `DatePickerProps` and `DateRangePickerProps` type signatures
+- [ ] Update adapter conversions in `DatePicker.tsx` and `DateRangePicker.tsx` — inbound `ISODate.from(value)` → `isoDate.toCalendarDate()`, outbound `isoDate.toString()`
+- [ ] Remove `TValue` generic and `isStringMode` from `DatePickerField`
+- [ ] Update all exported hook `defaultValues` types for date fields
+- [ ] Export `ISOString` namespace
