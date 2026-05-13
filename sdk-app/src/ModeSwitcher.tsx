@@ -9,13 +9,23 @@ export function ModeSwitcher() {
 
   return (
     <div className={styles.root}>
-      <Link to="/" className={`${styles.option} ${mode === 'preview' ? styles.active : ''}`}>
+      <Link
+        to="/"
+        className={`${styles.option} ${mode === 'preview' ? styles.active : ''}`}
+        title="Development"
+        aria-label="Development"
+      >
         <TerminalIcon />
-        Development
+        <span className={styles.label}>Development</span>
       </Link>
-      <Link to="/design" className={`${styles.option} ${mode === 'design' ? styles.active : ''}`}>
+      <Link
+        to="/design"
+        className={`${styles.option} ${mode === 'design' ? styles.active : ''}`}
+        title="Design"
+        aria-label="Design"
+      >
         <BrushIcon />
-        Design
+        <span className={styles.label}>Design</span>
       </Link>
     </div>
   )

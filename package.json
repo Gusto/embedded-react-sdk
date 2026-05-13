@@ -1,6 +1,6 @@
 {
   "name": "@gusto/embedded-react-sdk",
-  "version": "0.44.1",
+  "version": "0.44.2",
   "homepage": "https://github.com/Gusto/embedded-react-sdk",
   "bugs": {
     "url": "https://github.com/Gusto/embedded-react-sdk/issues"
@@ -56,6 +56,7 @@
     "lint:check": "eslint .",
     "lint:staged": "eslint --fix --cache",
     "pack": "npm run build && npm pack",
+    "release": "release-it",
     "postversion": "git push",
     "prepare": "husky",
     "prepublishOnly": "npm run build",
@@ -85,6 +86,7 @@
     "@commitlint/config-conventional": "^21.0.0",
     "@eslint/js": "^9.39.2",
     "@playwright/test": "^1.60.0",
+    "@release-it/conventional-changelog": "^11.0.0",
     "@storybook/addon-a11y": "^10.3.6",
     "@storybook/addon-docs": "^10.3.6",
     "@storybook/addon-onboarding": "^10.3.6",
@@ -126,6 +128,7 @@
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "react-router-dom": "^7.15.0",
+    "release-it": "^20.0.1",
     "sass-embedded": "^1.99.0",
     "storybook": "^10.3.4",
     "stylelint-config-standard": "^40.0.0",

@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.44.2](https://github.com/Gusto/embedded-react-sdk/compare/v0.44.1...v0.44.2) (2026-05-12)
+
+### Fixes
+
+- Fix full-width layout of `EmployeeStateTaxesView` container ([#1782](https://github.com/Gusto/embedded-react-sdk/issues/1782))
+- Prevent layout shift (skeleton flash) when `TransitionPayrollAlert` has no content to display ([#1773](https://github.com/Gusto/embedded-react-sdk/issues/1773))
+- Fix UTC roundtrip bug in date picker field where dates near midnight would shift by one day ([#1767](https://github.com/Gusto/embedded-react-sdk/issues/1767))
+
+### Chores & Maintenance
+
+- Bump `i18next` to `26.1.0` ([#1778](https://github.com/Gusto/embedded-react-sdk/issues/1778))
+- Bump dev dependencies (`@playwright/test`, `typescript-eslint`, `vitest`)
+
 ## 0.44.1
 
 ### Chores & Maintenance

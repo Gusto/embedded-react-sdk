@@ -1,0 +1,65 @@
+name: Prepare Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Target version (e.g. 1.2.3). Leave blank to auto-detect from commits.'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  prepare-release:
+    name: Prepare Release PR
+    runs-on:
+      group: gusto-ubuntu-default
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run release-it
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: |
+          if [ -n "$RELEASE_VERSION" ]; then
+            if ! echo "$RELEASE_VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?(\+[a-zA-Z0-9.]+)?$'; then
+              echo "Error: Invalid version '$RELEASE_VERSION'. Expected semver (e.g. 0.45.0)."
+              exit 1
+            fi
+            npx release-it "$RELEASE_VERSION" --ci
+          else
+            npx release-it --ci
+          fi
+
+      - name: Push branch and open PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH=$(git branch --show-current)
+          VERSION=$(node -p "require('./package.json').version")
+          git push -u origin "$BRANCH"
+          gh pr create \
+            --title "chore: release $VERSION" \
+            --body "Automated release PR for v$VERSION. Review the changelog and merge to publish." \
+            --base main \
+            --head "$BRANCH"
