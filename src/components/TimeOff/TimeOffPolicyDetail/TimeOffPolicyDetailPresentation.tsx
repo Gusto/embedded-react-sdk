@@ -8,7 +8,6 @@ import type {
   PolicySettingsDisplay,
 } from './TimeOffPolicyDetailTypes'
 import styles from './TimeOffPolicyDetail.module.scss'
-import { Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 
@@ -191,39 +190,31 @@ function DetailsTab({
     return items
   }, [policySettings, t, showAccrualMaxAndWaiting])
 
-  const detailsCardClassName = isUnlimited
-    ? `${styles.descriptionCard} ${styles.descriptionCardUnlimited}`
-    : styles.descriptionCard
-
   return (
-    <Flex flexDirection="column" gap={20}>
-      <div className={detailsCardClassName}>
-        <Box header={<BoxHeader title={t('details')} />} withPadding>
-          <DescriptionList items={detailItems} showSeparators={false} layout="stacked" />
-        </Box>
-      </div>
+    <div className={styles.cards}>
+      <Box header={<BoxHeader title={t('details')} />} withPadding>
+        <DescriptionList items={detailItems} showSeparators={false} layout="stacked" />
+      </Box>
 
       {!isUnlimited && policySettings && (
-        <div className={styles.descriptionCard}>
-          <Box
-            header={
-              <BoxHeader
-                title={t('policySettingsTitle')}
-                action={
-                  onChangeSettings && (
-                    <Button variant="secondary" onClick={onChangeSettings}>
-                      {t('changeSettingsCta')}
-                    </Button>
-                  )
-                }
-              />
-            }
-            withPadding
-          >
-            <DescriptionList items={settingsItems} showSeparators={false} layout="stacked" />
-          </Box>
-        </div>
+        <Box
+          header={
+            <BoxHeader
+              title={t('policySettingsTitle')}
+              action={
+                onChangeSettings && (
+                  <Button variant="secondary" onClick={onChangeSettings}>
+                    {t('changeSettingsCta')}
+                  </Button>
+                )
+              }
+            />
+          }
+          withPadding
+        >
+          <DescriptionList items={settingsItems} showSeparators={false} layout="stacked" />
+        </Box>
       )}
-    </Flex>
+    </div>
   )
 }

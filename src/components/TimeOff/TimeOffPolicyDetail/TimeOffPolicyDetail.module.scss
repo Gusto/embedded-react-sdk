@@ -1,7 +1,9 @@
-.descriptionCard {
-  max-width: toRem(480);
+.cards {
+  display: grid;
+  gap: toRem(20);
+  grid-template-columns: minmax(0, toRem(480));
 }
 
-.descriptionCardUnlimited {
-  min-width: toRem(320);
+[data-tabs-mode='dropdown'] .cards {
+  grid-template-columns: 1fr;
 }
