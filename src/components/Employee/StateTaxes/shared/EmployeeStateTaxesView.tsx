@@ -1,6 +1,8 @@
 import { Fragment, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
+import cn from 'classnames'
 import { type useEmployeeStateTaxesForm } from './useEmployeeStateTaxesForm'
+import styles from './EmployeeStateTaxesView.module.scss'
 import { BaseLayout } from '@/components/Base'
 import { Form } from '@/components/Common/Form'
 import { Flex } from '@/components/Common/Flex/Flex'
@@ -33,7 +35,7 @@ export function EmployeeStateTaxesView({
   const groups = stateTaxes.form.Fields
 
   return (
-    <section className={className}>
+    <section className={cn(styles.root, className)}>
       <Flex flexDirection="column" alignItems="stretch">
         <BaseLayout error={stateTaxes.errorHandling.errors}>
           <SDKFormProvider formHookResult={stateTaxes}>

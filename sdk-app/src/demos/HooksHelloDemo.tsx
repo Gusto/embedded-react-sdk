@@ -8,7 +8,7 @@ function EmployeeDetailsForm() {
     companyId: COMPANY_ID,
     employeeId: EMPLOYEE_ID,
     optionalFieldsToRequire: {
-      update: ['firstName', 'lastName', 'email'],
+      update: ['firstName', 'lastName', 'dateOfBirth', 'email', 'ssn'],
     },
   })
 
@@ -27,7 +27,10 @@ function EmployeeDetailsForm() {
       <form
         onSubmit={e => {
           e.preventDefault()
-          void employeeDetails.actions.onSubmit()
+          void (async () => {
+            const result = await employeeDetails.actions.onSubmit()
+            console.log('[HooksHelloDemo] employee details submit complete:', result)
+          })()
         }}
         style={{ display: 'flex', flexDirection: 'column', gap: '12px', maxWidth: '480px' }}
       >
@@ -45,6 +48,10 @@ function EmployeeDetailsForm() {
             INVALID_NAME: 'Enter a valid last name',
           }}
         />
+        <Fields.DateOfBirth
+          label="Date of birth"
+          validationMessages={{ REQUIRED: 'Date of birth is required' }}
+        />
         <Fields.Email
           label="Personal email"
           validationMessages={{
@@ -53,13 +60,13 @@ function EmployeeDetailsForm() {
             EMAIL_REQUIRED_FOR_SELF_ONBOARDING: 'Email is required when self-onboarding is enabled',
           }}
         />
-        <Fields.DateOfBirth
-          label="Date of birth"
-          validationMessages={{ REQUIRED: 'Date of birth is required' }}
-        />
         <Fields.Ssn
-          label="Social Security number"
-          validationMessages={{ INVALID_SSN: 'Enter a valid Social Security number' }}
+          label="Social security number"
+          validationMessages={{
+            INVALID_SSN:
+              "The SSN must be exactly 9 digits long, cannot contain all zeros in any group, and the first three digits cannot be '666' or in the range 900–999.",
+            REQUIRED: 'Social security number is required',
+          }}
         />
         <Button type="submit" isLoading={employeeDetails.status.isPending}>
           Save

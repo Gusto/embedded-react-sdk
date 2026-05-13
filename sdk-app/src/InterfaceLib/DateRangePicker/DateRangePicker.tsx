@@ -85,6 +85,7 @@ export function DateRangePicker({
   return (
     <AriaDateRangePicker
       aria-label={typeof label === 'string' ? label : `${startDateLabel} – ${endDateLabel}`}
+      validationBehavior="aria"
       value={draft}
       onChange={(next: RangeValue<DateValue> | null) => {
         setDraft(next)

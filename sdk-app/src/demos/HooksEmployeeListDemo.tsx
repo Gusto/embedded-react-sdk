@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import type { CSSProperties, PropsWithChildren } from 'react'
 import { GustoProvider, useEmployeeList } from '@gusto/embedded-react-sdk'
 import '@gusto/embedded-react-sdk/style.css'
@@ -75,6 +76,14 @@ function formatStatus(status: string | null | undefined) {
 
 function EmployeeListView() {
   const employeeList = useEmployeeList({ companyId: COMPANY_ID })
+
+  const fetchedEmployees = employeeList.isLoading ? undefined : employeeList.data.employees
+
+  useEffect(() => {
+    if (fetchedEmployees) {
+      console.log('[HooksEmployeeListDemo] employee list fetch complete:', fetchedEmployees)
+    }
+  }, [fetchedEmployees])
 
   if (employeeList.isLoading) {
     return <Loading />

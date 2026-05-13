@@ -198,6 +198,9 @@ function EmployeeDetailsForm() {
   const employeeDetails = useEmployeeDetailsForm({
     companyId: COMPANY_ID,
     employeeId: EMPLOYEE_ID,
+    optionalFieldsToRequire: {
+      update: ['firstName', 'lastName', 'dateOfBirth', 'email', 'ssn'],
+    },
   })
 
   if (employeeDetails.isLoading) {
@@ -205,15 +208,26 @@ function EmployeeDetailsForm() {
   }
 
   const { Fields } = employeeDetails.form
+  const { employee } = employeeDetails.data
+  const employeeName =
+    [employee?.firstName, employee?.lastName].filter(Boolean).join(' ') || 'New employee'
 
   return (
     <SDKFormProvider formHookResult={employeeDetails}>
       <form
         onSubmit={e => {
           e.preventDefault()
-          void employeeDetails.actions.onSubmit()
+          void (async () => {
+            const result = await employeeDetails.actions.onSubmit()
+            console.log('[HooksCustomFieldDemo] employee details submit complete:', result)
+          })()
         }}
       >
+        <header style={{ marginBottom: '20px' }}>
+          <h1 style={{ margin: 0, fontSize: '24px', fontWeight: 600, color: '#101828' }}>
+            Editing {employeeName}
+          </h1>
+        </header>
         <Card>
           <h2 style={cardTitleStyle}>Employee details</h2>
           <p style={cardDescriptionStyle}>

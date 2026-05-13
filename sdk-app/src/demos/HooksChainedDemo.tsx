@@ -3,8 +3,8 @@ import {
   GustoProvider,
   SDKFormProvider,
   composeSubmitHandler,
+  useCurrentHomeAddressForm,
   useEmployeeDetailsForm,
-  useHomeAddressForm,
 } from '@gusto/embedded-react-sdk'
 import '@gusto/embedded-react-sdk/style.css'
 import { Button, Loading, interfaceLibComponents } from '../InterfaceLib'
@@ -79,15 +79,14 @@ function ChainedForm() {
     companyId: COMPANY_ID,
     employeeId: EMPLOYEE_ID,
     shouldFocusError: false,
+    optionalFieldsToRequire: {
+      update: ['firstName', 'lastName', 'email'],
+    },
   })
 
-  const homeAddress = useHomeAddressForm({
+  const homeAddress = useCurrentHomeAddressForm({
     employeeId: EMPLOYEE_ID,
-    withEffectiveDateField: true,
     shouldFocusError: false,
-    optionalFieldsToRequire: {
-      create: ['effectiveDate'],
-    },
   })
 
   if (employeeDetails.isLoading || homeAddress.isLoading) {
@@ -96,12 +95,17 @@ function ChainedForm() {
 
   const EmployeeFields = employeeDetails.form.Fields
   const AddressFields = homeAddress.form.Fields
+  const { employee } = employeeDetails.data
+  const employeeName =
+    [employee?.firstName, employee?.lastName].filter(Boolean).join(' ') || 'New employee'
 
   const { handleSubmit, errorHandling } = composeSubmitHandler(
     [employeeDetails, homeAddress],
     async () => {
-      await employeeDetails.actions.onSubmit()
-      await homeAddress.actions.onSubmit()
+      const employeeDetailsResult = await employeeDetails.actions.onSubmit()
+      console.log('[HooksChainedDemo] employee details submit complete:', employeeDetailsResult)
+      const homeAddressResult = await homeAddress.actions.onSubmit()
+      console.log('[HooksChainedDemo] home address submit complete:', homeAddressResult)
     },
   )
 
@@ -109,6 +113,12 @@ function ChainedForm() {
 
   return (
     <form onSubmit={handleSubmit} style={{ display: 'contents' }}>
+      <header>
+        <h1 style={{ margin: 0, fontSize: '24px', fontWeight: 600, color: '#101828' }}>
+          Editing {employeeName}
+        </h1>
+      </header>
+
       {errorHandling.errors.length > 0 && (
         <div role="alert" style={errorBannerStyle}>
           {errorHandling.errors.map((error, i) => (
@@ -189,7 +199,6 @@ function ChainedForm() {
                 INVALID_ZIP: 'Enter a valid ZIP code',
               }}
             />
-            {AddressFields.EffectiveDate && <AddressFields.EffectiveDate label="Effective date" />}
           </FieldGrid>
         </Card>
       </SDKFormProvider>

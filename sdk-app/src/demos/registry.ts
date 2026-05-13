@@ -8,6 +8,7 @@ import HooksCustomFieldDemo from './HooksCustomFieldDemo'
 import HooksChainedDemo from './HooksChainedDemo'
 import HooksInterleavedDemo from './HooksInterleavedDemo'
 import HooksEmployeeListDemo from './HooksEmployeeListDemo'
+import HooksPayScheduleDemo from './HooksPayScheduleDemo'
 import ThemeDemo from './ThemeDemo'
 import AdaptersDemo from './AdaptersDemo'
 import TranslationsDemo from './TranslationsDemo'
@@ -37,6 +38,7 @@ export const DEMOS: DemoEntry[] = [
   { id: 'hooks-chained', label: 'Hooks: Chained', component: HooksChainedDemo },
   { id: 'hooks-interleaved', label: 'Hooks: Interleaved', component: HooksInterleavedDemo },
   { id: 'hooks-employee-list', label: 'Hooks: Employee List', component: HooksEmployeeListDemo },
+  { id: 'hooks-pay-schedule', label: 'Hooks: Pay Schedule', component: HooksPayScheduleDemo },
   { id: 'theme', label: 'Theming', component: ThemeDemo },
   { id: 'adapters', label: 'Component Adapters', component: AdaptersDemo },
   { id: 'translations', label: 'Translations', component: TranslationsDemo },

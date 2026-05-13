@@ -2,8 +2,8 @@ import type { CSSProperties, PropsWithChildren } from 'react'
 import {
   GustoProvider,
   composeSubmitHandler,
+  useCurrentHomeAddressForm,
   useEmployeeDetailsForm,
-  useHomeAddressForm,
 } from '@gusto/embedded-react-sdk'
 import '@gusto/embedded-react-sdk/style.css'
 import { Button, Loading, interfaceLibComponents } from '../InterfaceLib'
@@ -80,9 +80,8 @@ function InterleavedForm() {
     shouldFocusError: false,
   })
 
-  const homeAddress = useHomeAddressForm({
+  const homeAddress = useCurrentHomeAddressForm({
     employeeId: EMPLOYEE_ID,
-    withEffectiveDateField: false,
     shouldFocusError: false,
   })
 
@@ -92,12 +91,17 @@ function InterleavedForm() {
 
   const EmployeeFields = employeeDetails.form.Fields
   const AddressFields = homeAddress.form.Fields
+  const { employee } = employeeDetails.data
+  const employeeName =
+    [employee?.firstName, employee?.lastName].filter(Boolean).join(' ') || 'New employee'
 
   const { handleSubmit, errorHandling } = composeSubmitHandler(
     [employeeDetails, homeAddress],
     async () => {
-      await employeeDetails.actions.onSubmit()
-      await homeAddress.actions.onSubmit()
+      const employeeDetailsResult = await employeeDetails.actions.onSubmit()
+      console.log('[HooksInterleavedDemo] employee details submit complete:', employeeDetailsResult)
+      const homeAddressResult = await homeAddress.actions.onSubmit()
+      console.log('[HooksInterleavedDemo] home address submit complete:', homeAddressResult)
     },
   )
 
@@ -105,6 +109,12 @@ function InterleavedForm() {
 
   return (
     <form onSubmit={handleSubmit} style={{ display: 'contents' }}>
+      <header>
+        <h1 style={{ margin: 0, fontSize: '24px', fontWeight: 600, color: '#101828' }}>
+          Editing {employeeName}
+        </h1>
+      </header>
+
       {errorHandling.errors.length > 0 && (
         <div role="alert" style={errorBannerStyle}>
           {errorHandling.errors.map((error, i) => (

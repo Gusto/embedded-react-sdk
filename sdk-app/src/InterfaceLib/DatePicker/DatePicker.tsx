@@ -91,6 +91,7 @@ export function DatePicker({
       )}
 
       <AriaDatePicker
+        aria-label={label}
         aria-describedby={describedByIds}
         isDisabled={isDisabled}
         isInvalid={isInvalid}

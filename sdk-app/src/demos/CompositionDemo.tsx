@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Employee, GustoProvider } from '@gusto/embedded-react-sdk'
+import { EmployeeOnboarding, GustoProvider } from '@gusto/embedded-react-sdk'
 import '@gusto/embedded-react-sdk/style.css'
 import { BASE_URL, EMPLOYEE_ID } from './config'
 
@@ -24,7 +24,6 @@ export default function CompositionDemo() {
             SDK block composed with your own custom entry point.
           </p>
           <button
-            className="welcome-cta"
             onClick={() => setStarted(true)}
             style={{
               padding: '0.75rem 1.25rem',
@@ -41,7 +40,7 @@ export default function CompositionDemo() {
           </button>
         </div>
       ) : (
-        <Employee.Deductions
+        <EmployeeOnboarding.StateTaxes
           employeeId={EMPLOYEE_ID}
           onEvent={(eventType, data) => {
             console.log(eventType, data)
