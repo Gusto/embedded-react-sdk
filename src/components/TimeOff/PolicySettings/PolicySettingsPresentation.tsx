@@ -13,6 +13,8 @@ export function PolicySettingsPresentation({
   onContinue,
   onBack,
   defaultValues,
+  mode,
+  editingPolicyName,
 }: PolicySettingsPresentationProps) {
   useI18n('Company.TimeOff.CreateTimeOffPolicy')
   const { t } = useTranslation('Company.TimeOff.CreateTimeOffPolicy')
@@ -56,7 +58,9 @@ export function PolicySettingsPresentation({
         <div className={styles.policySettings}>
           <Flex flexDirection="column" gap={32}>
             <Heading as="h2" id={headingId}>
-              {t('policySettings.title')}
+              {mode === 'edit' && editingPolicyName
+                ? t('policySettings.editTitle', { name: editingPolicyName })
+                : t('policySettings.createTitle')}
             </Heading>
 
             <Flex flexDirection="column" gap={20}>
