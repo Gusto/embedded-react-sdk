@@ -65,10 +65,10 @@ export function HolidaySelectionFormPresentation(props: HolidaySelectionFormPres
 
       {!isViewMode && (
         <ActionsLayout>
-          <Button variant="secondary" onClick={props.onBack}>
+          <Button variant="secondary" onClick={props.onBack} isDisabled={props.isPending}>
             {t('backCta')}
           </Button>
-          <Button variant="primary" onClick={props.onContinue}>
+          <Button variant="primary" onClick={props.onContinue} isLoading={props.isPending}>
             {t('continueCta')}
           </Button>
         </ActionsLayout>
