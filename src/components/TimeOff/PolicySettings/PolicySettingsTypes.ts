@@ -20,4 +20,7 @@ export interface PolicySettingsPresentationProps {
   onContinue: (data: PolicySettingsFormData) => void
   onBack: () => void
   defaultValues?: Partial<PolicySettingsFormData>
+  mode?: 'create' | 'edit'
+  editingPolicyName?: string
+  isPending?: boolean
 }

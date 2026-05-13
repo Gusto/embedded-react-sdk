@@ -331,7 +331,7 @@ describe('SelectEmployeesTimeOff', () => {
       expect(submitted.find(e => e.uuid === '1')).toEqual({ uuid: '1', balance: '40' })
     })
 
-    it('omits balance for selected employees with no carry-over and no user input', async () => {
+    it('defaults balance to 0 for selected employees with no carry-over and no user input', async () => {
       const user = userEvent.setup()
       renderComponent({ mode: 'standalone' })
 
@@ -351,8 +351,7 @@ describe('SelectEmployeesTimeOff', () => {
         balance?: string
       }>
       const carol = submitted.find(e => e.uuid === '3')
-      expect(carol).toEqual({ uuid: '3' })
-      expect(carol).not.toHaveProperty('balance')
+      expect(carol).toEqual({ uuid: '3', balance: '0' })
     })
 
     it('submits multiple selected UUIDs with their respective carry-over balances', async () => {
@@ -593,7 +592,7 @@ describe('SelectEmployeesTimeOff', () => {
   })
 
   describe('wizard mode', () => {
-    it('fires TIME_OFF_ADD_EMPLOYEES_DONE with employeeUuids and does NOT call mutation', async () => {
+    it('calls add-employees mutation with balances in wizard mode', async () => {
       const user = userEvent.setup()
       renderComponent({ mode: 'wizard' })
 
@@ -605,12 +604,8 @@ describe('SelectEmployeesTimeOff', () => {
       await user.click(screen.getByRole('button', { name: 'continueCta' }))
 
       await waitFor(() => {
-        expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.TIME_OFF_ADD_EMPLOYEES_DONE, {
-          employeeUuids: ['1'],
-        })
+        expect(mockAddEmployees).toHaveBeenCalledTimes(1)
       })
-
-      expect(mockAddEmployees).not.toHaveBeenCalled()
     })
   })
 })

@@ -213,7 +213,7 @@ interface CreateRootProps {
 function CreateRoot({ companyId, policyType, defaultValues }: CreateRootProps) {
   const { onEvent, baseSubmitHandler } = useBase()
 
-  const { mutateAsync: createTimeOffPolicy } = useTimeOffPoliciesCreateMutation()
+  const { mutateAsync: createTimeOffPolicy, isPending } = useTimeOffPoliciesCreateMutation()
 
   const handleContinue = useCallback(
     async (data: PolicyConfigurationFormData) => {
@@ -245,6 +245,7 @@ function CreateRoot({ companyId, policyType, defaultValues }: CreateRootProps) {
       onContinue={handleContinue}
       onCancel={handleCancel}
       defaultValues={defaultValues}
+      isPending={isPending}
     />
   )
 }
@@ -264,7 +265,7 @@ function EditRoot({ companyId, policyType, policyId, defaultValues }: EditRootPr
     timeOffPolicyUuid: policyId,
   })
 
-  const { mutateAsync: updateTimeOffPolicy } = useTimeOffPoliciesUpdateMutation()
+  const { mutateAsync: updateTimeOffPolicy, isPending } = useTimeOffPoliciesUpdateMutation()
 
   const policy = policyResponse.timeOffPolicy
   if (!policy) throw new Error('Unexpected response: missing timeOffPolicy')
@@ -307,6 +308,8 @@ function EditRoot({ companyId, policyType, policyId, defaultValues }: EditRootPr
       onContinue={handleContinue}
       onCancel={handleCancel}
       defaultValues={mergedDefaults}
+      editingPolicyName={policy.name}
+      isPending={isPending}
     />
   )
 }

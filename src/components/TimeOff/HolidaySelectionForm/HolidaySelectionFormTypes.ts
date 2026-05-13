@@ -16,6 +16,7 @@ interface HolidaySelectionFormSelectModeProps extends HolidaySelectionFormBasePr
   onSelectAll: (selected: boolean, visibleItems: HolidayItem[]) => void
   onContinue: () => void
   onBack: () => void
+  isPending?: boolean
 }
 
 interface HolidaySelectionFormViewModeProps extends HolidaySelectionFormBaseProps {

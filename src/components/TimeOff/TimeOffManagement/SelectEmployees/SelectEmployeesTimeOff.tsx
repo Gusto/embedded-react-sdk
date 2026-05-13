@@ -65,6 +65,8 @@ function StandaloneLoader(props: SelectEmployeesTimeOffProps) {
   const policy = policyResponse.timeOffPolicy
   if (!policy) throw new Error('Unexpected response: missing timeOffPolicy')
 
+  const isUnlimited = policy.accrualMethod === 'unlimited'
+
   const originalUuids = useMemo(() => {
     const set = new Set<string>()
     for (const e of policy.employees) {
@@ -87,6 +89,7 @@ function StandaloneLoader(props: SelectEmployeesTimeOffProps) {
       mode="standalone"
       originalUuids={originalUuids}
       originalBalances={originalBalances}
+      hideBalances={isUnlimited}
     />
   )
 }
@@ -94,6 +97,7 @@ function StandaloneLoader(props: SelectEmployeesTimeOffProps) {
 interface InnerProps extends SelectEmployeesTimeOffProps {
   originalUuids?: Set<string>
   originalBalances?: Record<string, string>
+  hideBalances?: boolean
 }
 
 function SelectEmployeesTimeOffInner({
@@ -103,6 +107,7 @@ function SelectEmployeesTimeOffInner({
   mode = 'standalone',
   originalUuids,
   originalBalances,
+  hideBalances = false,
 }: InnerProps) {
   useI18n('Company.TimeOff.SelectEmployees')
   const { t } = useTranslation('Company.TimeOff.SelectEmployees')
@@ -164,9 +169,11 @@ function SelectEmployeesTimeOffInner({
     [carryOverBalances, balances],
   )
 
-  const { mutateAsync: addEmployees } = useTimeOffPoliciesAddEmployeesMutation()
+  const { mutateAsync: addEmployees, isPending: isAddPending } =
+    useTimeOffPoliciesAddEmployeesMutation()
   const { mutateAsync: removeEmployees, isPending: isRemovePending } =
     useTimeOffPoliciesRemoveEmployeesMutation()
+  const isSubmitPending = isAddPending || isRemovePending
 
   const [confirmRemoveOpen, setConfirmRemoveOpen] = useState(false)
 
@@ -182,11 +189,8 @@ function SelectEmployeesTimeOffInner({
           selectedEmployeesRef.current.get(uuid),
           policyType,
         )
-        // Per design review: do not zero out balances accidentally.
-        // Prefer user input → fall back to carry-over → omit `balance`
-        // entirely (backend defaults the row to 0) when neither is set.
-        const balance = userValue && userValue.length > 0 ? userValue : carryOver
-        return balance ? { uuid, balance } : { uuid }
+        const balance = userValue && userValue.length > 0 ? userValue : (carryOver ?? '0')
+        return { uuid, balance }
       }),
     [balances, policyType],
   )
@@ -243,9 +247,8 @@ function SelectEmployeesTimeOffInner({
 
   const handleContinue = useCallback(async () => {
     if (mode === 'wizard') {
-      onEvent(componentEvents.TIME_OFF_ADD_EMPLOYEES_DONE, {
-        employeeUuids: [...selectedUuids],
-      })
+      const toAdd = [...selectedUuids]
+      await submitDiff(toAdd, [])
       return
     }
 
@@ -298,10 +301,11 @@ function SelectEmployeesTimeOffInner({
       onContinue={handleContinue}
       showReassignmentWarning
       policyTypeLabel={t(`policyTypeLabel_${policyType}`)}
-      balances={effectiveBalances}
-      onBalanceChange={handleBalanceChange}
+      balances={hideBalances ? undefined : effectiveBalances}
+      onBalanceChange={hideBalances ? undefined : handleBalanceChange}
       pagination={pagination}
       isFetching={isFetching}
+      isPending={isSubmitPending}
       originallyOnPolicyUuids={originalUuids}
       originalBalances={originalBalances}
       removeConfirmDialog={
