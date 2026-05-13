@@ -1,5 +1,5 @@
 import { useId, useMemo } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import type { PolicyType, PolicyTypeSelectorPresentationProps } from './PolicyTypeSelectorTypes'
 import { Flex, ActionsLayout, RadioGroupField } from '@/components/Common'
@@ -27,6 +27,8 @@ export function PolicyTypeSelectorPresentation({
       policyType: defaultPolicyType as PolicyType,
     },
   })
+
+  const selectedPolicyType = useWatch({ control: formMethods.control, name: 'policyType' })
 
   const policyTypeOptions = useMemo(() => {
     const options: Array<{ value: PolicyType; label: string; description: string }> = []
@@ -72,13 +74,14 @@ export function PolicyTypeSelectorPresentation({
             label={t('policyTypeLabel')}
             options={policyTypeOptions}
             isRequired
+            errorMessage={t('validations.policyTypeRequired')}
           />
 
           <ActionsLayout>
             <Button variant="secondary" onClick={onCancel}>
               {t('cancelCta')}
             </Button>
-            <Button variant="primary" type="submit">
+            <Button variant="primary" type="submit" isDisabled={!selectedPolicyType}>
               {t('continueCta')}
             </Button>
           </ActionsLayout>

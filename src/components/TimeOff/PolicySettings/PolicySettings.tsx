@@ -11,6 +11,7 @@ import { componentEvents } from '@/shared/constants'
 
 export interface PolicySettingsProps extends BaseComponentInterface {
   policyId: string
+  mode?: 'create' | 'edit'
 }
 
 export function PolicySettings(props: PolicySettingsProps) {
@@ -96,7 +97,7 @@ function buildUpdateRequestBody(
   }
 }
 
-function Root({ policyId }: PolicySettingsProps) {
+function Root({ policyId, mode }: PolicySettingsProps) {
   const { onEvent, baseSubmitHandler } = useBase()
   const queryClient = useQueryClient()
 
@@ -104,7 +105,7 @@ function Root({ policyId }: PolicySettingsProps) {
     timeOffPolicyUuid: policyId,
   })
 
-  const { mutateAsync: updateTimeOffPolicy } = useTimeOffPoliciesUpdateMutation()
+  const { mutateAsync: updateTimeOffPolicy, isPending } = useTimeOffPoliciesUpdateMutation()
 
   const policy = policyResponse.timeOffPolicy
   if (!policy) throw new Error('Unexpected response: missing timeOffPolicy')
@@ -138,6 +139,9 @@ function Root({ policyId }: PolicySettingsProps) {
       onContinue={handleContinue}
       onBack={handleBack}
       defaultValues={deriveDefaultValues(policy)}
+      mode={mode}
+      editingPolicyName={mode === 'edit' ? policy.name : undefined}
+      isPending={isPending}
     />
   )
 }

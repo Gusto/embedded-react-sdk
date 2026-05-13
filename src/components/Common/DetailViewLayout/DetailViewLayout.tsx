@@ -24,7 +24,7 @@ export function DetailViewLayout({
     <section className={classNames(styles.root, className)} aria-labelledby={headingId}>
       {onBack && (
         <Button
-          variant="tertiary"
+          variant="secondary"
           className={styles.backButton}
           icon={<CaretLeftIcon aria-hidden="true" />}
           onClick={onBack}

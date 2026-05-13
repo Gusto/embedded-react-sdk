@@ -9,5 +9,8 @@
   "sickLeaveLabel": "Sick leave",
   "sickLeaveHint": "Paid time employees can use when they're sick or caring for their health.",
   "continueCta": "Continue",
-  "cancelCta": "Cancel"
+  "cancelCta": "Cancel",
+  "validations": {
+    "policyTypeRequired": "Please select a policy type"
+  }
 }
