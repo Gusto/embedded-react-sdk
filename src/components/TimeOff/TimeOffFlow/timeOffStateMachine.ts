@@ -4,6 +4,7 @@ import {
   SelectPolicyTypeContextual,
   PolicyDetailsFormContextual,
   PolicySettingsContextual,
+  EditPolicySettingsContextual,
   AddEmployeesToPolicyContextual,
   TimeOffPolicyDetailContextual,
   HolidaySelectionFormContextual,
@@ -320,7 +321,7 @@ export const timeOffMachine = {
           ev: { payload: PolicyIdPayload },
         ): TimeOffFlowContextInterface => ({
           ...ctx,
-          component: PolicySettingsContextual,
+          component: EditPolicySettingsContextual,
           policyId: ev.payload.policyId,
           alerts: undefined,
         }),
@@ -358,7 +359,7 @@ export const timeOffMachine = {
           ev: { payload: PolicyCreatedPayload },
         ): TimeOffFlowContextInterface => ({
           ...ctx,
-          component: PolicySettingsContextual,
+          component: EditPolicySettingsContextual,
           policyId: ev.payload.policyId,
           alerts: undefined,
         }),
