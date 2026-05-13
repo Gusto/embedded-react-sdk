@@ -238,6 +238,7 @@ export const timeOffEvents = {
   TIME_OFF_POLICY_SETTINGS_DONE: 'timeOff/policySettings/done',
   TIME_OFF_POLICY_SETTINGS_BACK: 'timeOff/policySettings/back',
   TIME_OFF_ADD_EMPLOYEES_DONE: 'timeOff/addEmployees/done',
+  TIME_OFF_ADD_EMPLOYEES_BACK: 'timeOff/addEmployees/back',
   TIME_OFF_HOLIDAY_SELECTION_DONE: 'timeOff/holidaySelection/done',
   TIME_OFF_HOLIDAY_ADD_EMPLOYEES_DONE: 'timeOff/holidayAddEmployees/done',
   TIME_OFF_VIEW_POLICY_DETAILS: 'timeOff/viewPolicyDetails',

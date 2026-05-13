@@ -178,11 +178,30 @@ describe('SelectEmployeesTimeOff', () => {
     expect(screen.getByText('Design')).toBeInTheDocument()
   })
 
-  it('shows reassignment warning alert', async () => {
+  it('shows reassignment warning alert when selecting employee with existing PTO', async () => {
     renderComponent()
+    await waitFor(() => {
+      expect(screen.getByText('Alice Smith')).toBeInTheDocument()
+    })
+
+    const checkboxes = screen.getAllByRole('checkbox')
+    fireEvent.click(checkboxes[FIRST_EMPLOYEE_CHECKBOX]!)
+
     await waitFor(() => {
       expect(screen.getByText('reassignmentWarning')).toBeInTheDocument()
     })
+  })
+
+  it('does not show reassignment warning for employee without existing PTO', async () => {
+    renderComponent()
+    await waitFor(() => {
+      expect(screen.getByText('Carol Davis')).toBeInTheDocument()
+    })
+
+    const checkboxes = screen.getAllByRole('checkbox')
+    fireEvent.click(checkboxes[checkboxes.length - 1]!)
+
+    expect(screen.queryByText('reassignmentWarning')).not.toBeInTheDocument()
   })
 
   it('filters employees by search value', async () => {
@@ -202,7 +221,7 @@ describe('SelectEmployeesTimeOff', () => {
     expect(screen.queryByText('Bob Jones')).not.toBeInTheDocument()
   })
 
-  it('fires CANCEL when Back is clicked', async () => {
+  it('fires TIME_OFF_ADD_EMPLOYEES_BACK when Back is clicked', async () => {
     const user = userEvent.setup()
     renderComponent()
 
@@ -211,7 +230,7 @@ describe('SelectEmployeesTimeOff', () => {
     })
 
     await user.click(screen.getByRole('button', { name: 'backCta' }))
-    expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.CANCEL)
+    expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.TIME_OFF_ADD_EMPLOYEES_BACK)
   })
 
   describe('carry-over balance pre-fill', () => {

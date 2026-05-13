@@ -15,6 +15,7 @@ export function PolicySettingsPresentation({
   defaultValues,
   mode,
   editingPolicyName,
+  isPending = false,
 }: PolicySettingsPresentationProps) {
   useI18n('Company.TimeOff.CreateTimeOffPolicy')
   const { t } = useTranslation('Company.TimeOff.CreateTimeOffPolicy')
@@ -77,6 +78,7 @@ export function PolicySettingsPresentation({
                       placeholder={t('policySettings.numberOfHoursPlaceholder')}
                       isDisabled={!accrualMaximumEnabled}
                       min={0}
+                      max={20000}
                     />
                     <div className={styles.toggleCell}>
                       <SwitchField
@@ -103,6 +105,7 @@ export function PolicySettingsPresentation({
                   placeholder={t('policySettings.numberOfHoursPlaceholder')}
                   isDisabled={!balanceMaximumEnabled}
                   min={0}
+                  max={20000}
                 />
                 <div className={styles.toggleCell}>
                   <SwitchField
@@ -127,6 +130,7 @@ export function PolicySettingsPresentation({
                   placeholder={t('policySettings.numberOfHoursPlaceholder')}
                   isDisabled={!carryOverLimitEnabled}
                   min={0}
+                  max={20000}
                 />
                 <div className={styles.toggleCell}>
                   <SwitchField
@@ -153,6 +157,7 @@ export function PolicySettingsPresentation({
                       placeholder={t('policySettings.numberOfDaysPlaceholder')}
                       isDisabled={!waitingPeriodEnabled}
                       min={0}
+                      max={20000}
                     />
                     <div className={styles.toggleCell}>
                       <SwitchField
@@ -177,10 +182,10 @@ export function PolicySettingsPresentation({
               <hr className={styles.divider} />
 
               <ActionsLayout>
-                <Button variant="secondary" onClick={onBack}>
+                <Button variant="secondary" onClick={onBack} isDisabled={isPending}>
                   {t('backCta')}
                 </Button>
-                <Button variant="primary" type="submit">
+                <Button variant="primary" type="submit" isLoading={isPending}>
                   {t('policySettings.continueCta')}
                 </Button>
               </ActionsLayout>
