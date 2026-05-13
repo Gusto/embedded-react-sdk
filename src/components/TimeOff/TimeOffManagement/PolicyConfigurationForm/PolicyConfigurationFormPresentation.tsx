@@ -29,6 +29,7 @@ export function PolicyConfigurationFormPresentation({
   onCancel,
   defaultValues,
   editingPolicyName,
+  isPending = false,
 }: PolicyConfigurationFormPresentationProps) {
   useI18n('Company.TimeOff.CreateTimeOffPolicy')
   const { t } = useTranslation('Company.TimeOff.CreateTimeOffPolicy')
@@ -54,9 +55,11 @@ export function PolicyConfigurationFormPresentation({
   })
 
   const { control, setValue, getValues } = formMethods
+  const name = useWatch({ control, name: 'name' })
   const accrualMethod = useWatch({ control, name: 'accrualMethod' })
   const resetDateType = useWatch({ control, name: 'resetDateType' })
   const resetMonth = useWatch({ control, name: 'resetMonth' })
+  const isContinueDisabled = !name.trim() || !accrualMethod
 
   const dayOptions = useMemo(() => {
     const days = getDaysInMonth(resetMonth ?? 1)
@@ -269,10 +272,15 @@ export function PolicyConfigurationFormPresentation({
             )}
 
             <ActionsLayout>
-              <Button variant="secondary" onClick={onCancel}>
+              <Button variant="secondary" onClick={onCancel} isDisabled={isPending}>
                 {t('cancelCta')}
               </Button>
-              <Button variant="primary" type="submit">
+              <Button
+                variant="primary"
+                type="submit"
+                isLoading={isPending}
+                isDisabled={isContinueDisabled}
+              >
                 {t('continueCta')}
               </Button>
             </ActionsLayout>
