@@ -18,6 +18,7 @@ export function HolidayPolicyDetailPresentation({
   selectedTabId,
   onTabChange,
   employees,
+  onAddEmployee,
   removeDialog,
   successAlert,
   onDismissAlert,
@@ -42,6 +43,7 @@ export function HolidayPolicyDetailPresentation({
       selectedTabId={selectedTabId}
       onTabChange={onTabChange}
       employees={employees}
+      onAddEmployee={onAddEmployee}
       removeDialog={removeDialog}
       successAlert={successAlert}
       onDismissAlert={onDismissAlert}

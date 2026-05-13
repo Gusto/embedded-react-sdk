@@ -4,6 +4,10 @@
   },
   "backLabel": "Back to policies",
   "employeeActions": "Actions for {{name}}",
+  "emptyEmployees": {
+    "title": "No employees have been added to this policy",
+    "addEmployeeCta": "Add employee"
+  },
   "removeEmployeeDialog": {
     "title": "Remove {{name}}",
     "description": "Are you sure you want to remove {{name}} from this policy?",
