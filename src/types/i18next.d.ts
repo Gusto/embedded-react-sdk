@@ -479,7 +479,6 @@ export interface CompanyTimeOffHolidayPolicy{
 };
 "show":{
 "title":string;
-"holidaySchedule":string;
 "addEmployeesCta":string;
 "editPolicyCta":string;
 };
