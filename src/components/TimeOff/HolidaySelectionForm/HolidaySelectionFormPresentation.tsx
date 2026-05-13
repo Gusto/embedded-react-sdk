@@ -21,20 +21,20 @@ export function HolidaySelectionFormPresentation(props: HolidaySelectionFormPres
       {
         key: 'name' as keyof HolidayItem,
         title: t('tableHeaders.holidayName'),
-        render: (item: HolidayItem) => <Text weight="medium">{item.name}</Text>,
+        render: (item: HolidayItem) => item.name,
       },
       {
         key: 'observedDate' as keyof HolidayItem,
         title: t('tableHeaders.observedDate'),
-        render: (item: HolidayItem) => <Text variant="supporting">{item.observedDate}</Text>,
+        render: (item: HolidayItem) => item.observedDate,
       },
       {
         key: 'nextObservation' as keyof HolidayItem,
         title: t('tableHeaders.nextObservation'),
-        render: (item: HolidayItem) => <Text variant="supporting">{item.nextObservation}</Text>,
+        render: (item: HolidayItem) => item.nextObservation,
       },
     ],
-    [t, Text],
+    [t],
   )
 
   const selectionProps = !isViewMode

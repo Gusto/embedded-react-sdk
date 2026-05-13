@@ -1,7 +1,16 @@
 name: Publish to NPM
-on: workflow_dispatch
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
 jobs:
   publish:
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       startsWith(github.event.workflow_run.head_commit.message, 'chore: release'))
     runs-on:
       group: gusto-ubuntu-default
     permissions:
@@ -54,6 +63,18 @@ jobs:
         with:
           path: dist
           key: build-${{ github.sha }}
+
+      - name: Tag release
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git rev-parse "v$VERSION" >/dev/null 2>&1; then
+            echo "Tag v$VERSION already exists, skipping."
+          else
+            git tag -a "v$VERSION" -m "Release v$VERSION"
+            git push origin "v$VERSION"
+          fi
 
       - name: Publish to NPM
         run: npm publish --access public

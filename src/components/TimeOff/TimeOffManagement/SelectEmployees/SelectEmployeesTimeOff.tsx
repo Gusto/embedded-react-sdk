@@ -187,11 +187,8 @@ function SelectEmployeesTimeOffInner({
           selectedEmployeesRef.current.get(uuid),
           policyType,
         )
-        // Per design review: do not zero out balances accidentally.
-        // Prefer user input → fall back to carry-over → omit `balance`
-        // entirely (backend defaults the row to 0) when neither is set.
-        const balance = userValue && userValue.length > 0 ? userValue : carryOver
-        return balance ? { uuid, balance } : { uuid }
+        const balance = userValue && userValue.length > 0 ? userValue : (carryOver ?? '0')
+        return { uuid, balance }
       }),
     [balances, policyType],
   )
