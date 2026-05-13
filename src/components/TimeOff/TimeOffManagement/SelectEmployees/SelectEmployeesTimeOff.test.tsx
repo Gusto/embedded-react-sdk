@@ -331,7 +331,7 @@ describe('SelectEmployeesTimeOff', () => {
       expect(submitted.find(e => e.uuid === '1')).toEqual({ uuid: '1', balance: '40' })
     })
 
-    it('omits balance for selected employees with no carry-over and no user input', async () => {
+    it('defaults balance to 0 for selected employees with no carry-over and no user input', async () => {
       const user = userEvent.setup()
       renderComponent({ mode: 'standalone' })
 
@@ -351,8 +351,7 @@ describe('SelectEmployeesTimeOff', () => {
         balance?: string
       }>
       const carol = submitted.find(e => e.uuid === '3')
-      expect(carol).toEqual({ uuid: '3' })
-      expect(carol).not.toHaveProperty('balance')
+      expect(carol).toEqual({ uuid: '3', balance: '0' })
     })
 
     it('submits multiple selected UUIDs with their respective carry-over balances', async () => {
