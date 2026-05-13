@@ -221,7 +221,7 @@ describe('SelectEmployeesTimeOff', () => {
     expect(screen.queryByText('Bob Jones')).not.toBeInTheDocument()
   })
 
-  it('fires CANCEL when Back is clicked', async () => {
+  it('fires TIME_OFF_ADD_EMPLOYEES_BACK when Back is clicked', async () => {
     const user = userEvent.setup()
     renderComponent()
 
@@ -230,7 +230,7 @@ describe('SelectEmployeesTimeOff', () => {
     })
 
     await user.click(screen.getByRole('button', { name: 'backCta' }))
-    expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.CANCEL)
+    expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.TIME_OFF_ADD_EMPLOYEES_BACK)
   })
 
   describe('carry-over balance pre-fill', () => {
