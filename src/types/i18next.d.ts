@@ -2030,6 +2030,8 @@ export interface EmployeePaymentMethod{
 "priority_two":string;
 "priority_few":string;
 "priority_other":string;
+"managementTitle":string;
+"paymentMethodLabel":string;
 "validations":{
 "percentageError":string;
 "percentageErrorWithTotal":string;
