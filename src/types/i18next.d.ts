@@ -552,6 +552,10 @@ export interface CompanyTimeOffPolicyDetail{
 };
 "backLabel":string;
 "employeeActions":string;
+"emptyEmployees":{
+"title":string;
+"addEmployeeCta":string;
+};
 "removeEmployeeDialog":{
 "title":string;
 "description":string;
