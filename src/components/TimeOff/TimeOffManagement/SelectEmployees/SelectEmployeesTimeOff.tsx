@@ -169,9 +169,11 @@ function SelectEmployeesTimeOffInner({
     [carryOverBalances, balances],
   )
 
-  const { mutateAsync: addEmployees } = useTimeOffPoliciesAddEmployeesMutation()
+  const { mutateAsync: addEmployees, isPending: isAddPending } =
+    useTimeOffPoliciesAddEmployeesMutation()
   const { mutateAsync: removeEmployees, isPending: isRemovePending } =
     useTimeOffPoliciesRemoveEmployeesMutation()
+  const isSubmitPending = isAddPending || isRemovePending
 
   const [confirmRemoveOpen, setConfirmRemoveOpen] = useState(false)
 
@@ -303,6 +305,7 @@ function SelectEmployeesTimeOffInner({
       onBalanceChange={hideBalances ? undefined : handleBalanceChange}
       pagination={pagination}
       isFetching={isFetching}
+      isPending={isSubmitPending}
       originallyOnPolicyUuids={originalUuids}
       originalBalances={originalBalances}
       removeConfirmDialog={

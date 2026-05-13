@@ -15,6 +15,7 @@ export function PolicySettingsPresentation({
   defaultValues,
   mode,
   editingPolicyName,
+  isPending = false,
 }: PolicySettingsPresentationProps) {
   useI18n('Company.TimeOff.CreateTimeOffPolicy')
   const { t } = useTranslation('Company.TimeOff.CreateTimeOffPolicy')
@@ -177,10 +178,10 @@ export function PolicySettingsPresentation({
               <hr className={styles.divider} />
 
               <ActionsLayout>
-                <Button variant="secondary" onClick={onBack}>
+                <Button variant="secondary" onClick={onBack} isDisabled={isPending}>
                   {t('backCta')}
                 </Button>
-                <Button variant="primary" type="submit">
+                <Button variant="primary" type="submit" isLoading={isPending}>
                   {t('policySettings.continueCta')}
                 </Button>
               </ActionsLayout>
