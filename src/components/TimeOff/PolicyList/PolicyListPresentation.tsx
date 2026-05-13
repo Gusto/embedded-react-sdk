@@ -25,7 +25,7 @@ export function PolicyListPresentation({
   isDeletingPolicyId,
   isPending,
 }: PolicyListPresentationProps) {
-  const { Button, Heading, Text, Alert, Dialog } = useComponentContext()
+  const { Button, Heading, Alert, Dialog } = useComponentContext()
   useI18n('Company.TimeOff.TimeOffPolicies')
   const { t } = useTranslation('Company.TimeOff.TimeOffPolicies')
 
@@ -59,13 +59,11 @@ export function PolicyListPresentation({
     columns: [
       {
         title: t('tableHeaders.name'),
-        render: (policy: PolicyListItem) => <Text weight="medium">{policy.name}</Text>,
+        render: (policy: PolicyListItem) => policy.name,
       },
       {
         title: t('tableHeaders.enrolled'),
-        render: (policy: PolicyListItem) => (
-          <Text variant="supporting">{policy.enrolledDisplay}</Text>
-        ),
+        render: (policy: PolicyListItem) => policy.enrolledDisplay,
       },
     ],
     itemMenu: (policy: PolicyListItem) => {
