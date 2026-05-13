@@ -62,11 +62,14 @@ export function EmployeeTable<T extends EmployeeTableItem>({
       {
         key: 'name',
         title: t('name'),
-        render: (item: T) =>
-          firstLastName({
-            first_name: item.firstName,
-            last_name: item.lastName,
-          }),
+        render: (item: T) => (
+          <span id={`employee-name-${item.uuid}`}>
+            {firstLastName({
+              first_name: item.firstName,
+              last_name: item.lastName,
+            })}
+          </span>
+        ),
       },
       ...(hideJobTitle
         ? []
