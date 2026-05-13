@@ -2,9 +2,10 @@ import { useTranslation } from 'react-i18next'
 import type { EmployeeTableItem } from '../EmployeeTable/EmployeeTableTypes'
 import { EmployeeTable } from '../EmployeeTable/EmployeeTable'
 import type { PolicyDetailLayoutProps } from './PolicyDetailLayoutTypes'
-import { DetailViewLayout } from '@/components/Common'
+import { DetailViewLayout, EmptyData } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
+import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 
 const EMPLOYEES_TAB_ID = 'employees'
 
@@ -18,13 +19,30 @@ export function PolicyDetailLayout<T extends EmployeeTableItem>({
   selectedTabId,
   onTabChange,
   employees,
+  onAddEmployee,
   removeDialog,
   successAlert,
   onDismissAlert,
 }: PolicyDetailLayoutProps<T>) {
   useI18n('Company.TimeOff.PolicyDetail')
   const { t } = useTranslation('Company.TimeOff.PolicyDetail')
-  const { Alert, Dialog } = useComponentContext()
+  const { Alert, Dialog, Button } = useComponentContext()
+
+  const emptyEmployeesState =
+    employees.emptyState ??
+    (onAddEmployee
+      ? () => (
+          <EmptyData title={t('emptyEmployees.title')}>
+            <Button
+              variant="secondary"
+              icon={<PlusCircleIcon aria-hidden />}
+              onClick={onAddEmployee}
+            >
+              {t('emptyEmployees.addEmployeeCta')}
+            </Button>
+          </EmptyData>
+        )
+      : undefined)
 
   const tabs = [
     {
@@ -45,7 +63,7 @@ export function PolicyDetailLayout<T extends EmployeeTableItem>({
           itemMenu={employees.itemMenu}
           pagination={employees.pagination}
           isFetching={employees.isFetching}
-          emptyState={employees.emptyState}
+          emptyState={emptyEmployeesState}
           additionalColumns={employees.additionalColumns}
           hideJobTitle={employees.hideJobTitle}
         />

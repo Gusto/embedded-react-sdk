@@ -39,6 +39,8 @@ export interface PolicyDetailLayoutProps<T extends EmployeeTableItem> {
     | 'hideJobTitle'
   >
 
+  onAddEmployee?: () => void
+
   removeDialog: RemoveDialogState
   successAlert?: string
   onDismissAlert?: () => void
