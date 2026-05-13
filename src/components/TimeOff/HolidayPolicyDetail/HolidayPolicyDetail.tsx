@@ -162,6 +162,7 @@ function Root({ companyId, defaultTab = 'holidays' }: HolidayPolicyDetailProps) 
       onBack={handleBack}
       backLabel={tShared('backLabel')}
       actions={actions}
+      onAddEmployee={handleAddEmployees}
       holidays={holidays}
       selectedTabId={selectedTabId}
       onTabChange={setSelectedTabId}
