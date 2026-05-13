@@ -576,6 +576,7 @@ export interface CompanyTimeOffSelectEmployees{
 "continueCta":string;
 "errors":{
 "removeEmployeesFailed":string;
+"completePolicyFailed":string;
 };
 "removeConfirmDialog":{
 "title_one":string;
