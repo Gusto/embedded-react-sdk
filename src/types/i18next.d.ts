@@ -598,6 +598,9 @@ export interface CompanyTimeOffSelectPolicyType{
 "sickLeaveHint":string;
 "continueCta":string;
 "cancelCta":string;
+"validations":{
+"policyTypeRequired":string;
+};
 };
 export interface CompanyTimeOffTimeOffPolicies{
 "pageTitle":string;

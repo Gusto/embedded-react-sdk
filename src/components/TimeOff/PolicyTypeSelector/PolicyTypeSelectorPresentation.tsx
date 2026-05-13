@@ -74,6 +74,7 @@ export function PolicyTypeSelectorPresentation({
             label={t('policyTypeLabel')}
             options={policyTypeOptions}
             isRequired
+            errorMessage={t('validations.policyTypeRequired')}
           />
 
           <ActionsLayout>
