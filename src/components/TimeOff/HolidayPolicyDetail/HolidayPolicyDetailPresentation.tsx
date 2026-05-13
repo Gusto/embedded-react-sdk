@@ -4,7 +4,6 @@ import type { HolidayItem } from '../HolidaySelectionForm/HolidaySelectionFormTy
 import { PolicyDetailLayout } from '../shared/PolicyDetailLayout'
 import type { HolidayPolicyDetailPresentationProps } from './HolidayPolicyDetailTypes'
 import { DataView, useDataView } from '@/components/Common'
-import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 
 const HOLIDAYS_TAB_ID = 'holidays'
@@ -53,7 +52,6 @@ export function HolidayPolicyDetailPresentation({
 function HolidaysTab({ holidays }: { holidays: HolidayItem[] }) {
   useI18n('Company.TimeOff.HolidayPolicy')
   const { t } = useTranslation('Company.TimeOff.HolidayPolicy')
-  const { Box, BoxHeader } = useComponentContext()
 
   const columns = useMemo(
     () => [
@@ -81,9 +79,5 @@ function HolidaysTab({ holidays }: { holidays: HolidayItem[] }) {
     columns,
   })
 
-  return (
-    <Box header={<BoxHeader title={t('show.holidaySchedule')} />} withPadding={false}>
-      <DataView label={t('tableLabel')} {...dataViewProps} />
-    </Box>
-  )
+  return <DataView label={t('tableLabel')} {...dataViewProps} />
 }
