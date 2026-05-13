@@ -20,4 +20,5 @@ export interface PolicyConfigurationFormPresentationProps {
   onCancel: () => void
   defaultValues?: Partial<PolicyConfigurationFormData>
   editingPolicyName?: string
+  isPending?: boolean
 }

@@ -169,9 +169,11 @@ function SelectEmployeesTimeOffInner({
     [carryOverBalances, balances],
   )
 
-  const { mutateAsync: addEmployees } = useTimeOffPoliciesAddEmployeesMutation()
+  const { mutateAsync: addEmployees, isPending: isAddPending } =
+    useTimeOffPoliciesAddEmployeesMutation()
   const { mutateAsync: removeEmployees, isPending: isRemovePending } =
     useTimeOffPoliciesRemoveEmployeesMutation()
+  const isSubmitPending = isAddPending || isRemovePending
 
   const [confirmRemoveOpen, setConfirmRemoveOpen] = useState(false)
 
@@ -282,8 +284,21 @@ function SelectEmployeesTimeOffInner({
     return count
   }, [originalUuids, selectedUuids])
 
+  const showReassignmentWarning = useMemo(() => {
+    const originalSet = originalUuids ?? new Set<string>()
+    const targetPtoName = PAID_TIME_OFF_NAME_BY_POLICY_TYPE[policyType]
+    for (const uuid of selectedUuids) {
+      if (originalSet.has(uuid)) continue
+      const employee = selectedEmployeesRef.current.get(uuid)
+      if (employee?.eligiblePaidTimeOff?.some(pto => pto.name === targetPtoName)) {
+        return true
+      }
+    }
+    return false
+  }, [selectedUuids, originalUuids, policyType])
+
   const handleBack = useCallback(() => {
-    onEvent(componentEvents.CANCEL)
+    onEvent(componentEvents.TIME_OFF_ADD_EMPLOYEES_BACK)
   }, [onEvent])
 
   return (
@@ -297,12 +312,13 @@ function SelectEmployeesTimeOffInner({
       onSearchClear={handleSearchClear}
       onBack={handleBack}
       onContinue={handleContinue}
-      showReassignmentWarning
+      showReassignmentWarning={showReassignmentWarning}
       policyTypeLabel={t(`policyTypeLabel_${policyType}`)}
       balances={hideBalances ? undefined : effectiveBalances}
       onBalanceChange={hideBalances ? undefined : handleBalanceChange}
       pagination={pagination}
       isFetching={isFetching}
+      isPending={isSubmitPending}
       originallyOnPolicyUuids={originalUuids}
       originalBalances={originalBalances}
       removeConfirmDialog={

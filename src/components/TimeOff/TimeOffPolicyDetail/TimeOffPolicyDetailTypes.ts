@@ -69,6 +69,8 @@ interface TimeOffPolicyDetailPresentationBaseProps {
     | 'emptyState'
   >
 
+  onAddEmployee?: () => void
+
   removeDialog: RemoveDialogState
   successAlert?: string
   onDismissAlert?: () => void

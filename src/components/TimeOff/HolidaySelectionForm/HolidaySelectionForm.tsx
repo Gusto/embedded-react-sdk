@@ -99,7 +99,7 @@ function CreateRoot({ companyId }: RootProps) {
   const allKeys = useMemo(() => new Set(FEDERAL_HOLIDAY_KEYS), [])
   const { selectedUuids, handleSelectionChange, handleSelectAll } = useHolidaySelection(allKeys)
 
-  const { mutateAsync: createPolicy } = useHolidayPayPoliciesCreateMutation()
+  const { mutateAsync: createPolicy, isPending } = useHolidayPayPoliciesCreateMutation()
 
   const handleContinue = useCallback(async () => {
     await baseSubmitHandler({}, async () => {
@@ -133,6 +133,7 @@ function CreateRoot({ companyId }: RootProps) {
       onSelectAll={handleSelectAll}
       onContinue={handleContinue}
       onBack={handleBack}
+      isPending={isPending}
     />
   )
 }
@@ -164,7 +165,7 @@ function EditRoot({ companyId }: RootProps) {
   const { selectedUuids, handleSelectionChange, handleSelectAll } =
     useHolidaySelection(initialSelected)
 
-  const { mutateAsync: updatePolicy } = useHolidayPayPoliciesUpdateMutation()
+  const { mutateAsync: updatePolicy, isPending } = useHolidayPayPoliciesUpdateMutation()
 
   const handleContinue = useCallback(async () => {
     await baseSubmitHandler({}, async () => {
@@ -203,6 +204,7 @@ function EditRoot({ companyId }: RootProps) {
       onSelectAll={handleSelectAll}
       onContinue={handleContinue}
       onBack={handleBack}
+      isPending={isPending}
     />
   )
 }

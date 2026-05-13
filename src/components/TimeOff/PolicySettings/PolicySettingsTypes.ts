@@ -22,4 +22,5 @@ export interface PolicySettingsPresentationProps {
   defaultValues?: Partial<PolicySettingsFormData>
   mode?: 'create' | 'edit'
   editingPolicyName?: string
+  isPending?: boolean
 }
