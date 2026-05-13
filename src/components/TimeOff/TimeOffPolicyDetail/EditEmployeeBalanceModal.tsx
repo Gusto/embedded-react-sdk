@@ -56,9 +56,7 @@ export function EditEmployeeBalanceModal({
         <Heading as="h3" styledAs="h3">
           {t('editBalanceModal.title', { name: employeeName })}
         </Heading>
-        {errorMessage && (
-          <Alert status="error" label={errorMessage} />
-        )}
+        {errorMessage && <Alert status="error" label={errorMessage} />}
         <NumberInput
           name="balance"
           label={t('editBalanceModal.balanceLabel')}
