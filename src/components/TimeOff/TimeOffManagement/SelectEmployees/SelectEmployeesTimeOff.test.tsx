@@ -178,11 +178,30 @@ describe('SelectEmployeesTimeOff', () => {
     expect(screen.getByText('Design')).toBeInTheDocument()
   })
 
-  it('shows reassignment warning alert', async () => {
+  it('shows reassignment warning alert when selecting employee with existing PTO', async () => {
     renderComponent()
+    await waitFor(() => {
+      expect(screen.getByText('Alice Smith')).toBeInTheDocument()
+    })
+
+    const checkboxes = screen.getAllByRole('checkbox')
+    fireEvent.click(checkboxes[FIRST_EMPLOYEE_CHECKBOX]!)
+
     await waitFor(() => {
       expect(screen.getByText('reassignmentWarning')).toBeInTheDocument()
     })
+  })
+
+  it('does not show reassignment warning for employee without existing PTO', async () => {
+    renderComponent()
+    await waitFor(() => {
+      expect(screen.getByText('Carol Davis')).toBeInTheDocument()
+    })
+
+    const checkboxes = screen.getAllByRole('checkbox')
+    fireEvent.click(checkboxes[checkboxes.length - 1]!)
+
+    expect(screen.queryByText('reassignmentWarning')).not.toBeInTheDocument()
   })
 
   it('filters employees by search value', async () => {
@@ -202,7 +221,7 @@ describe('SelectEmployeesTimeOff', () => {
     expect(screen.queryByText('Bob Jones')).not.toBeInTheDocument()
   })
 
-  it('fires CANCEL when Back is clicked', async () => {
+  it('fires TIME_OFF_ADD_EMPLOYEES_BACK when Back is clicked', async () => {
     const user = userEvent.setup()
     renderComponent()
 
@@ -211,7 +230,7 @@ describe('SelectEmployeesTimeOff', () => {
     })
 
     await user.click(screen.getByRole('button', { name: 'backCta' }))
-    expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.CANCEL)
+    expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.TIME_OFF_ADD_EMPLOYEES_BACK)
   })
 
   describe('carry-over balance pre-fill', () => {
@@ -331,7 +350,7 @@ describe('SelectEmployeesTimeOff', () => {
       expect(submitted.find(e => e.uuid === '1')).toEqual({ uuid: '1', balance: '40' })
     })
 
-    it('omits balance for selected employees with no carry-over and no user input', async () => {
+    it('defaults balance to 0 for selected employees with no carry-over and no user input', async () => {
       const user = userEvent.setup()
       renderComponent({ mode: 'standalone' })
 
@@ -351,8 +370,7 @@ describe('SelectEmployeesTimeOff', () => {
         balance?: string
       }>
       const carol = submitted.find(e => e.uuid === '3')
-      expect(carol).toEqual({ uuid: '3' })
-      expect(carol).not.toHaveProperty('balance')
+      expect(carol).toEqual({ uuid: '3', balance: '0' })
     })
 
     it('submits multiple selected UUIDs with their respective carry-over balances', async () => {
@@ -593,7 +611,7 @@ describe('SelectEmployeesTimeOff', () => {
   })
 
   describe('wizard mode', () => {
-    it('fires TIME_OFF_ADD_EMPLOYEES_DONE with employeeUuids and does NOT call mutation', async () => {
+    it('calls add-employees mutation with balances in wizard mode', async () => {
       const user = userEvent.setup()
       renderComponent({ mode: 'wizard' })
 
@@ -605,12 +623,8 @@ describe('SelectEmployeesTimeOff', () => {
       await user.click(screen.getByRole('button', { name: 'continueCta' }))
 
       await waitFor(() => {
-        expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.TIME_OFF_ADD_EMPLOYEES_DONE, {
-          employeeUuids: ['1'],
-        })
+        expect(mockAddEmployees).toHaveBeenCalledTimes(1)
       })
-
-      expect(mockAddEmployees).not.toHaveBeenCalled()
     })
   })
 })

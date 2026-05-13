@@ -41,4 +41,6 @@ export interface SelectEmployeesPresentationProps {
   originalBalances?: Record<string, string>
   /** Optional confirm dialog shown before submitting when the user is about to remove employees from the policy. */
   removeConfirmDialog?: RemoveConfirmDialogState
+  /** Disables the back button and shows a spinner on the continue button while a submit is in flight. */
+  isPending?: boolean
 }

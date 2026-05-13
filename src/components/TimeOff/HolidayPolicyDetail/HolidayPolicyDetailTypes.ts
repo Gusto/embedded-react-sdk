@@ -35,6 +35,8 @@ export interface HolidayPolicyDetailPresentationProps {
     | 'emptyState'
   >
 
+  onAddEmployee?: () => void
+
   removeDialog: RemoveDialogState
   successAlert?: string
   onDismissAlert?: () => void

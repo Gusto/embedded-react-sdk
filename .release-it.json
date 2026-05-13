@@ -1,0 +1,38 @@
+{
+  "git": {
+    "commitMessage": "chore: release ${version}",
+    "requireBranch": "main",
+    "push": false,
+    "tag": false
+  },
+  "npm": {
+    "publish": false
+  },
+  "hooks": {
+    "after:bump": "VERSION=$(node -p \"require('./package.json').version\") && git checkout -b \"chore/release-$VERSION\" && npm install --package-lock-only"
+  },
+  "plugins": {
+    "@release-it/conventional-changelog": {
+      "preset": {
+        "name": "conventionalcommits",
+        "preMajor": true,
+        "breakingChangeTitle": "Breaking Changes",
+        "types": [
+          { "type": "feat", "section": "Features & Enhancements" },
+          { "type": "fix", "section": "Fixes" },
+          { "type": "perf", "section": "Fixes" },
+          { "type": "revert", "section": "Fixes" },
+          { "type": "docs", "section": "Chores & Maintenance", "hidden": false },
+          { "type": "build", "section": "Chores & Maintenance", "hidden": false },
+          { "type": "chore", "section": "Chores & Maintenance", "hidden": false },
+          { "type": "refactor", "section": "Chores & Maintenance", "hidden": false },
+          { "type": "ci", "hidden": true },
+          { "type": "test", "hidden": true },
+          { "type": "style", "hidden": true }
+        ]
+      },
+      "infile": "CHANGELOG.md",
+      "header": "# Changelog"
+    }
+  }
+}
