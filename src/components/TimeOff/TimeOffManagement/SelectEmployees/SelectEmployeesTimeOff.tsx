@@ -245,9 +245,8 @@ function SelectEmployeesTimeOffInner({
 
   const handleContinue = useCallback(async () => {
     if (mode === 'wizard') {
-      onEvent(componentEvents.TIME_OFF_ADD_EMPLOYEES_DONE, {
-        employeeUuids: [...selectedUuids],
-      })
+      const toAdd = [...selectedUuids]
+      await submitDiff(toAdd, [])
       return
     }
 
