@@ -307,6 +307,7 @@ function EditRoot({ companyId, policyType, policyId, defaultValues }: EditRootPr
       onContinue={handleContinue}
       onCancel={handleCancel}
       defaultValues={mergedDefaults}
+      editingPolicyName={policy.name}
     />
   )
 }

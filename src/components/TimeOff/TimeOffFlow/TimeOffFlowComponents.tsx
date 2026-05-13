@@ -109,7 +109,23 @@ export function PolicySettingsContextual() {
           {alert.content}
         </Alert>
       ))}
-      <PolicySettings onEvent={onEvent} policyId={ensureRequired(policyId)} />
+      <PolicySettings onEvent={onEvent} policyId={ensureRequired(policyId)} mode="create" />
+    </Flex>
+  )
+}
+
+export function EditPolicySettingsContextual() {
+  const { onEvent, policyId, alerts } = useFlow<TimeOffFlowContextInterface>()
+  const { Alert } = useComponentContext()
+
+  return (
+    <Flex flexDirection="column" gap={8}>
+      {alerts?.map((alert, index) => (
+        <Alert key={index} status={alert.type} label={alert.title}>
+          {alert.content}
+        </Alert>
+      ))}
+      <PolicySettings onEvent={onEvent} policyId={ensureRequired(policyId)} mode="edit" />
     </Flex>
   )
 }

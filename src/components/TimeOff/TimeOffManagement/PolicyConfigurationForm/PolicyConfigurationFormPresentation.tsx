@@ -28,6 +28,7 @@ export function PolicyConfigurationFormPresentation({
   onContinue,
   onCancel,
   defaultValues,
+  editingPolicyName,
 }: PolicyConfigurationFormPresentationProps) {
   useI18n('Company.TimeOff.CreateTimeOffPolicy')
   const { t } = useTranslation('Company.TimeOff.CreateTimeOffPolicy')
@@ -138,7 +139,9 @@ export function PolicyConfigurationFormPresentation({
       <HtmlForm aria-labelledby={headingId} onSubmit={formMethods.handleSubmit(handleSubmit)}>
         <Flex flexDirection="column" gap={32}>
           <Heading as="h2" id={headingId}>
-            {t('policyDetails.title')}
+            {editingPolicyName
+              ? t('policyDetails.editTitle', { name: editingPolicyName })
+              : t('policyDetails.createTitle')}
           </Heading>
 
           <Flex flexDirection="column" gap={20}>

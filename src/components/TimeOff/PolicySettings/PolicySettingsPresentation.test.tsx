@@ -38,11 +38,19 @@ describe('PolicySettingsPresentation', () => {
   })
 
   describe('rendering - hours worked variant', () => {
-    it('renders the heading', async () => {
+    it('renders the create heading by default', async () => {
       renderHoursWorked()
 
       await waitFor(() => {
         expect(screen.getByText('Policy settings')).toBeInTheDocument()
+      })
+    })
+
+    it('renders the edit heading with the policy name in edit mode', async () => {
+      renderHoursWorked({ mode: 'edit', editingPolicyName: 'Paid Time Off Policy' })
+
+      await waitFor(() => {
+        expect(screen.getByText('Paid Time Off Policy settings')).toBeInTheDocument()
       })
     })
 

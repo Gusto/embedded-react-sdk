@@ -11,6 +11,7 @@ import { componentEvents } from '@/shared/constants'
 
 export interface PolicySettingsProps extends BaseComponentInterface {
   policyId: string
+  mode?: 'create' | 'edit'
 }
 
 export function PolicySettings(props: PolicySettingsProps) {
@@ -96,7 +97,7 @@ function buildUpdateRequestBody(
   }
 }
 
-function Root({ policyId }: PolicySettingsProps) {
+function Root({ policyId, mode }: PolicySettingsProps) {
   const { onEvent, baseSubmitHandler } = useBase()
   const queryClient = useQueryClient()
 
@@ -138,6 +139,8 @@ function Root({ policyId }: PolicySettingsProps) {
       onContinue={handleContinue}
       onBack={handleBack}
       defaultValues={deriveDefaultValues(policy)}
+      mode={mode}
+      editingPolicyName={mode === 'edit' ? policy.name : undefined}
     />
   )
 }
