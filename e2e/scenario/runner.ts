@@ -1,6 +1,8 @@
 import { resolve, relative } from 'node:path'
-import type { ScenarioContext } from './context'
-import { loadScenario } from './loader'
+import type { ScenarioContext } from './cache'
+import { getCachedScenario, setCachedScenario } from './cache'
+import { loadScenario, resolveScenario } from './loader'
+import { hashScenarioStructure } from './hash'
 import { createDemoAndProvision } from '../../sdk-app/scripts/demo-provisioner'
 import type {
   Scenario,
@@ -77,13 +79,19 @@ async function decorateLocations(
 
     const created = await api.post<{ uuid: string }>(`/companies/${companyId}/locations`, {
       street_1: loc.street_1,
+      street_2: loc.street_2,
       city: loc.city,
       state: loc.state,
       zip: loc.zip,
       phone_number: '4155551234',
-      ...(loc.filing_address ? { filing_address: true } : {}),
-      ...(loc.mailing_address ? { mailing_address: true } : {}),
     })
+
+    if (loc.filing_address || loc.mailing_address) {
+      await api.put(`/companies/${companyId}/locations/${created.uuid}`, {
+        ...(loc.filing_address ? { filing_address: true } : {}),
+        ...(loc.mailing_address ? { mailing_address: true } : {}),
+      })
+    }
 
     locationIds[loc.key] = created.uuid
   }
@@ -181,18 +189,10 @@ async function decorateEmployees(
     }
 
     if (emp.onboarding_status) {
-      const onboardingStatus =
-        emp.onboarding_status === 'completed' ? 'onboarding_completed' : emp.onboarding_status
       log(`  Setting onboarding status for ${emp.key}: ${emp.onboarding_status}`)
-      try {
-        await api.put(`/employees/${uuid}/onboarding_status`, {
-          onboarding_status: onboardingStatus,
-        })
-      } catch (error) {
-        log(
-          `  Skipping onboarding status update for ${emp.key}; API rejected status (${String(error)})`,
-        )
-      }
+      await api.put(`/employees/${uuid}/onboarding_status`, {
+        onboarding_status: emp.onboarding_status,
+      })
     }
 
     if (emp.termination) {
@@ -227,7 +227,6 @@ async function decorateContractors(
       ...(contractor.email ? { email: contractor.email } : {}),
       ...(contractor.wage_type ? { wage_type: contractor.wage_type } : {}),
       ...(contractor.hourly_rate ? { hourly_rate: contractor.hourly_rate } : {}),
-      start_date: new Date().toISOString().split('T')[0],
     })
 
     contractorIds[contractor.key] = created.uuid
@@ -341,21 +340,10 @@ async function decoratePayrolls(
     let payrollUuid: string
 
     if (payroll.type === 'off_cycle') {
-      const payload: Record<string, unknown> = {
+      const created = await api.post<{ uuid: string }>(`/companies/${companyId}/payrolls`, {
         check_date: payroll.check_date,
         off_cycle: true,
         off_cycle_reason: 'Bonus',
-      }
-      const startDate =
-        typeof payroll['start_date'] === 'string' ? (payroll['start_date'] as string) : undefined
-      const endDate =
-        typeof payroll['end_date'] === 'string' ? (payroll['end_date'] as string) : undefined
-      const defaultRangeDate = payroll.check_date ?? new Date().toISOString().slice(0, 10)
-      payload.start_date = startDate ?? defaultRangeDate
-      payload.end_date = endDate ?? defaultRangeDate
-
-      const created = await api.post<{ uuid: string }>(`/companies/${companyId}/payrolls`, {
-        ...payload,
       })
       payrollUuid = created.uuid
     } else {
@@ -371,16 +359,12 @@ async function decoratePayrolls(
           `&end_date=${rangeEnd.toISOString().split('T')[0]}`,
       )
 
-      const unprocessedPast = periods.find(
+      const unprocessed = periods.find(
         p =>
           !p.payroll?.processed &&
           p.payroll?.payroll_type === 'regular' &&
           p.end_date <= today.toISOString().split('T')[0]!,
       )
-      const unprocessedAny = periods.find(
-        p => !p.payroll?.processed && p.payroll?.payroll_type === 'regular',
-      )
-      const unprocessed = unprocessedPast ?? unprocessedAny
 
       if (!unprocessed) {
         throw new Error(`No unprocessed regular payroll found for payroll key: ${payroll.key}`)
@@ -389,16 +373,7 @@ async function decoratePayrolls(
     }
 
     if (payroll.status === 'processed') {
-      try {
-        await processPayroll(api, companyId, payrollUuid, log)
-      } catch (error) {
-        const message = String(error)
-        if (message.includes('payroll_blocker') || message.includes('missing_forms')) {
-          log(`  Skipping payroll processing for ${payroll.key}; blocker encountered (${message})`)
-        } else {
-          throw error
-        }
-      }
+      await processPayroll(api, companyId, payrollUuid, log)
     }
 
     payrollIds[payroll.key] = payrollUuid
@@ -446,9 +421,22 @@ export async function provisionScenario(
 
   log(`Loading scenario: ${scenarioId}`)
 
-  const scenario = await loadScenario(scenarioPath)
+  const [scenario, preTemplateValue] = await Promise.all([
+    loadScenario(scenarioPath),
+    resolveScenario(scenarioPath),
+  ])
 
-  log(`Provisioning ${scenario.baseDemo} demo for ${scenarioId}`)
+  const hash = hashScenarioStructure(
+    preTemplateValue as Parameters<typeof hashScenarioStructure>[0],
+  )
+
+  const cached = await getCachedScenario(scenarioId, hash, gwsFlowsBase)
+  if (cached) {
+    log(`Cache hit for ${scenarioId}`)
+    return cached
+  }
+
+  log(`Cache miss — provisioning ${scenario.baseDemo} demo`)
   const demoResult = await createDemoAndProvision(gwsFlowsBase, scenario.baseDemo, {
     onProgress: options?.onProgress,
   })
@@ -491,7 +479,8 @@ export async function provisionScenario(
     validateExpectedContext(context, scenario.expectedContext)
   }
 
-  log(`Scenario ${scenarioId} provisioned`)
+  setCachedScenario(scenarioId, hash, context)
+  log(`Scenario ${scenarioId} provisioned and cached`)
 
   return context
 }

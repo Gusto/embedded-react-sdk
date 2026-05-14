@@ -1,6 +1,7 @@
 import { resolve } from 'path'
 import { readdirSync, existsSync, readFileSync } from 'fs'
 import { provisionScenario } from './runner'
+import { clearCache } from './cache'
 
 const SCENARIOS_DIR = resolve(process.cwd(), 'e2e/scenarios')
 
@@ -63,8 +64,12 @@ async function main(): Promise<void> {
     case 'prewarm':
       await prewarm(domain)
       break
+    case 'clear':
+      clearCache()
+      console.log('Cache cleared')
+      break
     default:
-      console.error(`Usage: npx tsx e2e/scenario/scripts.ts prewarm [--domain <domain>]`)
+      console.error(`Usage: npx tsx e2e/scenario/scripts.ts <prewarm|clear> [--domain <domain>]`)
       process.exit(1)
   }
 }

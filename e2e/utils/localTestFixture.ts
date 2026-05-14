@@ -1,7 +1,7 @@
 import { test as base } from '@playwright/test'
 import { existsSync, readFileSync } from 'fs'
 import { resolve } from 'path'
-import type { ScenarioContext } from '../scenario/context'
+import type { ScenarioContext } from '../scenario/cache'
 import { provisionScenario } from '../scenario/runner'
 
 interface E2EState {
@@ -170,6 +170,7 @@ export const test = base.extend<ScenarioFixtures & { localConfig: LocalConfig },
           cacheHit,
         }),
       })
+
 
       await use(ctx)
     },
