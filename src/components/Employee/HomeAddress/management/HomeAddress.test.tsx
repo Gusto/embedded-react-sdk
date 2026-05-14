@@ -18,13 +18,13 @@ describe('HomeAddress', () => {
 
     await waitFor(
       () => {
-        expect(screen.getByRole('heading', { name: 'Manage home address' })).toBeInTheDocument()
+        expect(screen.getByText(/100 5th Ave/)).toBeInTheDocument()
       },
       { timeout: 5000 },
     )
 
+    expect(screen.getByRole('heading', { name: 'Manage home address' })).toBeInTheDocument()
     expect(screen.getByText('Current home address')).toBeInTheDocument()
-    expect(screen.getByText(/100 5th Ave/)).toBeInTheDocument()
     expect(screen.getByText(/New York/)).toBeInTheDocument()
   })
 
@@ -33,12 +33,12 @@ describe('HomeAddress', () => {
 
     await waitFor(
       () => {
-        expect(screen.getByRole('heading', { name: 'Home address history' })).toBeInTheDocument()
+        expect(screen.getByText(/644 Fay Vista/)).toBeInTheDocument()
       },
       { timeout: 5000 },
     )
 
-    expect(screen.getByText(/644 Fay Vista/)).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Home address history' })).toBeInTheDocument()
     expect(screen.getByText(/Richmond/)).toBeInTheDocument()
   })
 

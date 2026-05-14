@@ -90,13 +90,15 @@ function Root({ companyId, onEvent }: PolicyListProps) {
     return t('enrolledDash')
   }
 
-  const policies: PolicyListItem[] = timeOffPolicies.map((policy: TimeOffPolicy) => ({
-    uuid: policy.uuid,
-    name: policy.name,
-    policyType: policy.policyType,
-    isComplete: policy.complete ?? false,
-    enrolledDisplay: getEnrolledDisplay(policy.employees.length),
-  }))
+  const policies: PolicyListItem[] = timeOffPolicies
+    .map((policy: TimeOffPolicy) => ({
+      uuid: policy.uuid,
+      name: policy.name,
+      policyType: policy.policyType,
+      isComplete: policy.complete ?? false,
+      enrolledDisplay: getEnrolledDisplay(policy.employees.length),
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name))
 
   if (holidayPayPolicy) {
     policies.push({

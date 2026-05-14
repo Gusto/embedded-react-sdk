@@ -9,6 +9,8 @@ import { ActionsLayout, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 
+const isNumericInput = (value: string) => /^\d*\.?\d*$/.test(value)
+
 export function SelectEmployeesPresentation({
   employees,
   selectedUuids,
@@ -28,6 +30,7 @@ export function SelectEmployeesPresentation({
   originallyOnPolicyUuids,
   originalBalances,
   removeConfirmDialog,
+  isPending = false,
 }: SelectEmployeesPresentationProps) {
   useI18n('Company.TimeOff.SelectEmployees')
   const { t } = useTranslation('Company.TimeOff.SelectEmployees')
@@ -81,6 +84,7 @@ export function SelectEmployeesPresentation({
                         aria-labelledby={`employee-name-${employee.uuid} ${balanceColHeaderId}`}
                         value={balances?.[employee.uuid] ?? ''}
                         onChange={(value: string) => {
+                          if (value !== '' && !isNumericInput(value)) return
                           onBalanceChange(employee.uuid, value)
                         }}
                         placeholder="0"
@@ -94,10 +98,10 @@ export function SelectEmployeesPresentation({
       />
 
       <ActionsLayout>
-        <Button variant="secondary" onClick={onBack}>
+        <Button variant="secondary" onClick={onBack} isDisabled={isPending}>
           {t('backCta')}
         </Button>
-        <Button variant="primary" onClick={onContinue}>
+        <Button variant="primary" onClick={onContinue} isLoading={isPending}>
           {t('continueCta')}
         </Button>
       </ActionsLayout>

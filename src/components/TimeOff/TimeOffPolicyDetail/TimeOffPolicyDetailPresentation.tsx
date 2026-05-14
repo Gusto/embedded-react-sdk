@@ -25,6 +25,7 @@ export function TimeOffPolicyDetailPresentation({
   selectedTabId,
   onTabChange,
   employees,
+  onAddEmployee,
   removeDialog,
   successAlert,
   onDismissAlert,
@@ -78,6 +79,7 @@ export function TimeOffPolicyDetailPresentation({
         additionalColumns: balanceColumn,
         hideJobTitle: true,
       }}
+      onAddEmployee={onAddEmployee}
       removeDialog={removeDialog}
       successAlert={successAlert}
       onDismissAlert={onDismissAlert}

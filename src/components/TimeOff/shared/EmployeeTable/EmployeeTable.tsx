@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { EmployeeTableItem, EmployeeTableProps } from './EmployeeTableTypes'
 import styles from './EmployeeTable.module.scss'
-import { DataView, useDataView } from '@/components/Common'
+import { DataView, Flex, useDataView } from '@/components/Common'
 import type { useDataViewProp } from '@/components/Common/DataView/useDataView'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n/I18n'
@@ -63,12 +63,12 @@ export function EmployeeTable<T extends EmployeeTableItem>({
         key: 'name',
         title: t('name'),
         render: (item: T) => (
-          <Components.Text as="span" id={`employee-name-${item.uuid}`}>
+          <span id={`employee-name-${item.uuid}`}>
             {firstLastName({
               first_name: item.firstName,
               last_name: item.lastName,
             })}
-          </Components.Text>
+          </span>
         ),
       },
       ...(hideJobTitle
@@ -77,14 +77,12 @@ export function EmployeeTable<T extends EmployeeTableItem>({
             {
               key: 'jobTitle' as keyof T,
               title: t('jobTitle'),
-              render: (item: T) => (
-                <Components.Text as="span">{item.jobTitle ?? ''}</Components.Text>
-              ),
+              render: (item: T) => item.jobTitle ?? '',
             },
           ]),
       ...additionalColumns,
     ],
-    [t, additionalColumns, hideJobTitle, Components],
+    [t, additionalColumns, hideJobTitle],
   )
 
   const dataViewProps = useDataView<T>({
@@ -119,5 +117,9 @@ export function EmployeeTable<T extends EmployeeTableItem>({
 
 function DefaultEmptySearchState({ message }: { message: string }) {
   const { Text } = useComponentContext()
-  return <Text>{message}</Text>
+  return (
+    <Flex flexDirection="column" alignItems="center" gap={8}>
+      <Text size="sm">{message}</Text>
+    </Flex>
+  )
 }
