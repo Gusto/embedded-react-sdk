@@ -127,6 +127,39 @@ function OnboardingCompensationPage({ employeeId }: { employeeId: string }) {
 
 `composeSubmitHandler` validates both forms in parallel — if either fails, the chain short-circuits before any network I/O. Inside `onAllValid`, thread the new IDs and the stub's version into `useCompensationForm` to PUT it.
 
+### Driving hireDate / effectiveDate from external context
+
+To submit `hireDate` and `effectiveDate` without rendering input fields for them, set `withHireDateField: false` and `withEffectiveDateField: false` and supply the values via submit options. The schemas drop those fields from validation and `Fields.HireDate` / `Fields.EffectiveDate` become `undefined`, so the TypeScript build flags any accidental renders.
+
+```tsx
+const jobForm = useJobForm({
+  employeeId,
+  withHireDateField: false,
+  shouldFocusError: false,
+})
+const compensationForm = useCompensationForm({
+  employeeId,
+  withEffectiveDateField: false,
+  shouldFocusError: false,
+})
+
+const { handleSubmit } = composeSubmitHandler([jobForm, compensationForm], async () => {
+  const jobResult = await jobForm.actions.onSubmit({ employeeId, hireDate: startDate })
+  if (!jobResult) return
+
+  const job = jobResult.data
+  const stub = job.compensations?.find(c => c.uuid === job.currentCompensationUuid)
+  await compensationForm.actions.onSubmit({
+    jobId: job.uuid,
+    compensationId: job.currentCompensationUuid ?? undefined,
+    compensationVersion: stub?.version,
+    effectiveDate: startDate,
+  })
+})
+```
+
+The hook still owns reactive behavior — the `willDeleteSecondaryJobs` carve-out keeps emitting today's date in the submitted PUT body even when `Fields.EffectiveDate` is hidden.
+
 ---
 
 ## Steady-state edit (job + compensation already exist)
@@ -174,9 +207,3 @@ function CompensationEditPage({
 ```
 
 `compensationForm.status.willDeleteSecondaryJobs` is a reactive flag that flips to `true` when the form is positioned on the carve-out branch: update mode, loaded compensation is `Nonexempt`, the form's `flsaStatus` was just changed to a non-`Nonexempt` value, and the employee has at least one secondary job. While the flag is on, the hook also locks the `effectiveDate` field — it forces the form value to today and renders the field disabled (via `fieldsMetadata.effectiveDate.isDisabled`). Reverting `flsaStatus` back to `Nonexempt` restores the prior date. You can render the disabled `Fields.EffectiveDate` as-is or skip it entirely and rely on the inline warning. The hook tracks form state via `useWatch` internally — a render-time read of the flag is enough. See [derived helpers](./useCompensationForm.md#derived-helpers) for the full breakdown.
-
----
-
-## Shorthand wrappers
-
-Use [`useCurrentJobForm`](./useJobForm.md#usecurrentjobform) / [`useCurrentCompensationForm`](./useCompensationForm.md#usecurrentcompensationform) to skip the explicit `jobId` / `compensationId` props — they resolve to the employee's primary job and its current compensation automatically. This is the right choice for steady-state edit screens that don't expose a job or compensation picker.

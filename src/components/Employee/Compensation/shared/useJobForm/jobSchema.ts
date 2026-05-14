@@ -43,15 +43,24 @@ export type JobOptionalFieldsToRequire = OptionalFieldsToRequire<typeof required
 interface JobSchemaOptions {
   mode?: 'create' | 'update'
   optionalFieldsToRequire?: JobOptionalFieldsToRequire
+  /**
+   * When `false`, drops `hireDate` from the validated shape entirely — the
+   * field becomes hook-managed rather than user-facing (e.g. an onboarding
+   * screen that derives hireDate from the employee's `startDate`). Partners
+   * supply the value at submit time via `JobSubmitOptions.hireDate`.
+   * Defaults to `true`.
+   */
+  withHireDateField?: boolean
 }
 
 export function createJobSchema(options: JobSchemaOptions = {}) {
-  const { mode = 'create', optionalFieldsToRequire } = options
+  const { mode = 'create', optionalFieldsToRequire, withHireDateField = true } = options
 
   return buildFormSchema(fieldValidators, {
     requiredFieldsConfig,
     requiredErrorCode: JobErrorCodes.REQUIRED,
     mode,
     optionalFieldsToRequire,
+    excludeFields: withHireDateField ? [] : ['hireDate'],
   })
 }

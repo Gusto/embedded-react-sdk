@@ -179,6 +179,7 @@ function SelectEmployeesTimeOffInner({
   const isSubmitPending = isAddPending || isRemovePending || isUpdatePending
 
   const [confirmRemoveOpen, setConfirmRemoveOpen] = useState(false)
+  const [confirmAddOpen, setConfirmAddOpen] = useState(false)
 
   const handleBalanceChange = useCallback((uuid: string, value: string) => {
     setBalances(prev => ({ ...prev, [uuid]: value }))
@@ -294,7 +295,10 @@ function SelectEmployeesTimeOffInner({
       return
     }
 
-    await submitDiff(toAdd, toRemove)
+    if (toAdd.length > 0) {
+      setConfirmAddOpen(true)
+      return
+    }
   }, [mode, originalUuids, selectedUuids, onEvent, submitDiff])
 
   const handleConfirmRemove = useCallback(async () => {
@@ -304,6 +308,21 @@ function SelectEmployeesTimeOffInner({
     setConfirmRemoveOpen(false)
     await submitDiff(toAdd, toRemove)
   }, [originalUuids, selectedUuids, submitDiff])
+
+  const handleConfirmAdd = useCallback(async () => {
+    const original = originalUuids ?? new Set<string>()
+    const toAdd = [...selectedUuids].filter(uuid => !original.has(uuid))
+    const toRemove = [...original].filter(uuid => !selectedUuids.has(uuid))
+    setConfirmAddOpen(false)
+    await submitDiff(toAdd, toRemove)
+  }, [originalUuids, selectedUuids, submitDiff])
+
+  const addCount = useMemo(() => {
+    if (!originalUuids) return selectedUuids.size
+    let count = 0
+    for (const uuid of selectedUuids) if (!originalUuids.has(uuid)) count += 1
+    return count
+  }, [originalUuids, selectedUuids])
 
   const removeCount = useMemo(() => {
     if (!originalUuids) return 0
@@ -361,6 +380,21 @@ function SelectEmployeesTimeOffInner({
                 setConfirmRemoveOpen(false)
               },
               isPending: isRemovePending,
+            }
+          : undefined
+      }
+      addConfirmDialog={
+        mode === 'standalone'
+          ? {
+              isOpen: confirmAddOpen,
+              count: addCount,
+              onConfirm: () => {
+                void handleConfirmAdd()
+              },
+              onClose: () => {
+                setConfirmAddOpen(false)
+              },
+              isPending: isAddPending,
             }
           : undefined
       }

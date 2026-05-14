@@ -1,6 +1,8 @@
 import { renderHook, act, waitFor } from '@testing-library/react'
 import { describe, it, expect, beforeEach, assertType, vi } from 'vitest'
 import { http, HttpResponse, type HttpResponseResolver } from 'msw'
+import { QueryClient } from '@tanstack/react-query'
+import { invalidateAllJobsAndCompensationsGetJobs } from '@gusto/embedded-api/react-query/jobsAndCompensationsGetJobs'
 import { useCompensationForm } from './useCompensationForm'
 import type { UseCompensationFormResult } from './useCompensationForm'
 import {
@@ -183,6 +185,13 @@ describe('createCompensationSchema', () => {
     expect(update.flsaStatus.isRequired).toBe(false)
     expect(update.effectiveDate.isRequired).toBe(false)
   })
+
+  it('drops effectiveDate from validation when withEffectiveDateField is false', () => {
+    const [schema] = createCompensationSchema({ mode: 'create', withEffectiveDateField: false })
+    const { effectiveDate: _omit, ...rest } = VALID_FORM_DATA
+    const result = schema.safeParse(rest)
+    expect(result.success).toBe(true)
+  })
 })
 
 describe('useCompensationForm', () => {
@@ -232,6 +241,70 @@ describe('useCompensationForm', () => {
         expect(result.current.isLoading).toBe(false)
       })
       assertReady(result.current)
+      expect(result.current.status.mode).toBe('update')
+
+      const { formMethods } = result.current.form.hookFormInternals
+      act(() => {
+        formMethods.setValue('rate', 25)
+      })
+
+      await act(async () => {
+        assertReady(result.current)
+        await result.current.actions.onSubmit()
+      })
+
+      expect(updateCompensationResolver).toHaveBeenCalledTimes(1)
+      expect(updateCompensationPath).toBe('/v1/compensations/compensation-uuid')
+      expect(updateCompensationBody).toMatchObject({
+        version: 'compensation-version-123',
+        rate: '25',
+      })
+      expect(createCompensationResolver).not.toHaveBeenCalled()
+    })
+
+    it('update mode → resolves comp + parent job from compensationId alone (no jobId)', async () => {
+      let updateCompensationBody: Record<string, unknown> | null = null
+      let updateCompensationPath: string | null = null
+      const updateCompensationResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+        updateCompensationPath = new URL(request.url).pathname
+        updateCompensationBody = (await request.json()) as Record<string, unknown>
+        return HttpResponse.json({
+          uuid: 'compensation-uuid',
+          version: 'compensation-version-456',
+          job_uuid: 'job-uuid',
+          rate: updateCompensationBody.rate,
+          payment_unit: updateCompensationBody.paymentUnit ?? 'Hour',
+          flsa_status: updateCompensationBody.flsaStatus ?? 'Nonexempt',
+          effective_date: updateCompensationBody.effectiveDate ?? '2024-12-24',
+          adjust_for_minimum_wage: updateCompensationBody.adjustForMinimumWage ?? false,
+        })
+      })
+      const createCompensationResolver = vi.fn(() => HttpResponse.json({}, { status: 201 }))
+
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'singleNonexempt' })),
+        ),
+        handleUpdateEmployeeCompensation(updateCompensationResolver),
+        handleCreateCompensation(createCompensationResolver),
+      )
+
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            compensationId: 'compensation-uuid',
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+
+      expect(result.current.data.compensation?.uuid).toBe('compensation-uuid')
+      expect(result.current.data.currentJob?.uuid).toBe('job-uuid')
       expect(result.current.status.mode).toBe('update')
 
       const { formMethods } = result.current.form.hookFormInternals
@@ -803,6 +876,68 @@ describe('useCompensationForm', () => {
       expect(result.current.form.Fields.FlsaStatus).toBeUndefined()
     })
 
+    it('keeps Fields.FlsaStatus visible when an onboarding stub primary (Nonexempt + rate 0) appears mid-mount', async () => {
+      // Regression: during onboarding's chained submit (job POST → comp PUT)
+      // `getJobs` invalidates and momentarily returns the API-generated stub
+      // primary (Nonexempt + rate "0.00") between the two mutations. Without
+      // the `hadPrimaryAtMount` snapshot, that transient primary flips
+      // `isAddingSecondaryJob` to true and hides `Fields.FlsaStatus`
+      // mid-submit — the user-visible "FLSA flicker."
+      let callCount = 0
+      server.use(
+        handleGetEmployeeJobs(() => {
+          callCount += 1
+          if (callCount === 1) {
+            return HttpResponse.json(buildEmployeeWithJobs({ scenario: 'noJobs' }))
+          }
+          return HttpResponse.json([
+            buildJob({
+              uuid: 'stub-primary-job-uuid',
+              primary: true,
+              flsaStatus: FlsaStatus.NONEXEMPT,
+              rate: '0.00',
+              currentCompensationUuid: 'stub-primary-comp-uuid',
+              compensations: [
+                buildCompensation({
+                  uuid: 'stub-primary-comp-uuid',
+                  job_uuid: 'stub-primary-job-uuid',
+                  flsa_status: FlsaStatus.NONEXEMPT,
+                  rate: '0.00',
+                }),
+              ],
+            }),
+          ])
+        }),
+      )
+
+      const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
+
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+          }),
+        { wrapper: ({ children }) => GustoTestProvider({ children, queryClient }) },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+      expect(result.current.form.Fields.FlsaStatus).toBeDefined()
+
+      await act(async () => {
+        await invalidateAllJobsAndCompensationsGetJobs(queryClient)
+      })
+
+      await waitFor(() => {
+        expect(callCount).toBeGreaterThanOrEqual(2)
+      })
+
+      expect(result.current.form.Fields.FlsaStatus).toBeDefined()
+    })
+
     it('exposes Fields.FlsaStatus when editing the primary job', async () => {
       server.use(
         handleGetEmployeeJobs(() =>
@@ -847,6 +982,140 @@ describe('useCompensationForm', () => {
       await waitFor(() => {
         expect(result.current.errorHandling.errors.length).toBeGreaterThan(0)
       })
+    })
+  })
+
+  describe('withEffectiveDateField', () => {
+    it('hides Fields.EffectiveDate when withEffectiveDateField: false', async () => {
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'singleNonexempt' })),
+        ),
+      )
+
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+            compensationId: 'compensation-uuid',
+            withEffectiveDateField: false,
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+      expect(result.current.form.Fields.EffectiveDate).toBeUndefined()
+    })
+
+    it('uses CompensationSubmitOptions.effectiveDate over the form value on submit', async () => {
+      let updateBody: Record<string, unknown> | null = null
+      const updateResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+        updateBody = (await request.json()) as Record<string, unknown>
+        return HttpResponse.json({
+          uuid: 'compensation-uuid',
+          version: 'v2',
+          job_uuid: 'job-uuid',
+          rate: '20.00',
+          payment_unit: 'Hour',
+          flsa_status: 'Nonexempt',
+          effective_date: updateBody.effectiveDate ?? '2024-12-24',
+          adjust_for_minimum_wage: false,
+        })
+      })
+
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'singleNonexempt' })),
+        ),
+        handleUpdateEmployeeCompensation(updateResolver),
+      )
+
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+            compensationId: 'compensation-uuid',
+            withEffectiveDateField: false,
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      await act(async () => {
+        assertReady(result.current)
+        await result.current.actions.onSubmit({ effectiveDate: '2026-08-15' })
+      })
+
+      expect(updateResolver).toHaveBeenCalledTimes(1)
+      expect(updateBody).toMatchObject({ effective_date: '2026-08-15' })
+    })
+
+    it('preserves carve-out: hidden field + Nonexempt → non-Nonexempt with secondaries still submits today', async () => {
+      let updateBody: Record<string, unknown> | null = null
+      const updateResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+        updateBody = (await request.json()) as Record<string, unknown>
+        return HttpResponse.json({
+          uuid: 'compensation-uuid',
+          version: 'v2',
+          job_uuid: 'job-uuid',
+          rate: '20.00',
+          payment_unit: 'Hour',
+          flsa_status: updateBody.flsaStatus ?? 'Exempt',
+          effective_date: updateBody.effectiveDate ?? todayISO(),
+          adjust_for_minimum_wage: false,
+        })
+      })
+
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'multiJob' })),
+        ),
+        handleUpdateEmployeeCompensation(updateResolver),
+      )
+
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+            compensationId: 'compensation-uuid',
+            withEffectiveDateField: false,
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+
+      const { formMethods } = result.current.form.hookFormInternals
+      act(() => {
+        formMethods.setValue('flsaStatus', FlsaStatus.EXEMPT)
+        formMethods.setValue('rate', 80000)
+        formMethods.setValue('paymentUnit', PAY_PERIODS.YEAR)
+      })
+
+      await waitFor(() => {
+        if (result.current.isLoading) throw new Error('still loading')
+        expect(result.current.status.willDeleteSecondaryJobs).toBe(true)
+      })
+
+      await act(async () => {
+        assertReady(result.current)
+        await result.current.actions.onSubmit()
+      })
+
+      expect(updateResolver).toHaveBeenCalledTimes(1)
+      expect(updateBody).toMatchObject({ effective_date: todayISO() })
     })
   })
 })
