@@ -255,6 +255,14 @@ jobs:
           path: playwright-report/
           retention-days: 7
 
+      - name: Upload scenario reports
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: e2e-scenario-report
+          path: e2e/reports/
+          retention-days: 7
+
   # E2E Demo job: Run Playwright e2e tests against the live demo environment
   e2e-demo:
     needs: setup
