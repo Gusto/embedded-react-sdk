@@ -1,0 +1,309 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/Gusto/embedded-react-sdk/e2e/scenarios/schema/scenario.schema.json",
+  "title": "Scenario",
+  "description": "E2E scenario definition consumed by the e2e/scenario/runner. Provisions a per-test company by decorating a base demo with locations, employees, contractors, pay schedules, and payrolls. Templated strings ({{ts}}, {{relative:+Nd}}, {{relative:+Nd:DayName}}) are resolved at decoration time.",
+  "type": "object",
+  "required": ["name", "domain", "baseDemo", "decorations"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Path to this schema for editor autocomplete (ignored at runtime)."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable scenario name shown in test reports."
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional longer description of what this scenario provisions and why."
+    },
+    "domain": {
+      "type": "string",
+      "enum": [
+        "payroll",
+        "employee",
+        "contractor",
+        "company",
+        "time-off",
+        "dismissal",
+        "information-requests"
+      ],
+      "description": "Domain the scenario belongs to. Used by the fixture to auto-tag tests with @<domain>."
+    },
+    "baseDemo": {
+      "type": "string",
+      "enum": [
+        "react_sdk_demo",
+        "react_sdk_demo_company_onboarded",
+        "react_sdk_demo_employee_self_onboarding",
+        "react_sdk_demo_contractor_onboarding"
+      ],
+      "description": "gws-flows demo form value to provision before decoration. Start from the cheapest demo that gets us close; decorate the rest."
+    },
+    "decorations": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Entities to create/update on top of the base demo. Order is fixed: locations -> employees (+ addresses, jobs, compensations, onboarding_status) -> contractors -> paySchedule -> payrolls.",
+      "properties": {
+        "locations": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/locationDecoration" }
+        },
+        "employees": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/employeeDecoration" }
+        },
+        "contractors": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/contractorDecoration" }
+        },
+        "paySchedule": { "$ref": "#/definitions/payScheduleDecoration" },
+        "payrolls": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/payrollDecoration" }
+        }
+      }
+    },
+    "expectedContext": {
+      "type": "array",
+      "description": "Dotted-path keys the scenario guarantees will be populated in ScenarioContext after provisioning. The runner fails fast if any are missing post-decoration.",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    }
+  },
+  "definitions": {
+    "keyHandle": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]*$",
+      "description": "Stable handle for cross-referencing entities within the scenario (e.g., employees[].key='alice' -> scenario.employeeIds.alice)."
+    },
+    "fragmentRef": {
+      "type": "object",
+      "description": "Reference to a shared fragment file with optional deep-merge overrides.",
+      "required": ["$ref"],
+      "properties": {
+        "$ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Relative path to a JSON fragment file (resolved by the loader from the scenario's directory)."
+        },
+        "key": { "$ref": "#/definitions/keyHandle" },
+        "overrides": {
+          "type": "object",
+          "description": "Properties to deep-merge into the fragment. Arrays are replaced, not merged."
+        }
+      }
+    },
+    "employeeFragment": {
+      "type": "object",
+      "description": "Partial employee decoration shape for shared fragment files. All fields optional; required fields supplied via fragment-ref overrides at the consuming scenario.",
+      "additionalProperties": true,
+      "properties": {
+        "first_name": { "type": "string" },
+        "last_name": { "type": "string" },
+        "email": { "type": "string" },
+        "home_address": { "type": "object", "additionalProperties": true },
+        "work_address": { "type": "object", "additionalProperties": true },
+        "job": { "type": "object", "additionalProperties": true },
+        "compensation": { "type": "object", "additionalProperties": true },
+        "onboarding_status": { "type": "string" },
+        "termination": { "type": "object", "additionalProperties": true }
+      }
+    },
+    "contractorFragment": {
+      "type": "object",
+      "description": "Partial contractor decoration shape for shared fragment files.",
+      "additionalProperties": true,
+      "properties": {
+        "type": { "type": "string", "enum": ["Individual", "Business"] },
+        "first_name": { "type": "string" },
+        "last_name": { "type": "string" },
+        "business_name": { "type": "string" },
+        "email": { "type": "string" },
+        "wage_type": { "type": "string", "enum": ["Fixed", "Hourly"] },
+        "hourly_rate": { "type": "string" }
+      }
+    },
+    "locationFragment": {
+      "type": "object",
+      "description": "Partial location decoration shape for shared fragment files.",
+      "additionalProperties": true,
+      "properties": {
+        "street_1": { "type": "string" },
+        "street_2": { "type": "string" },
+        "city": { "type": "string" },
+        "state": { "type": "string" },
+        "zip": { "type": "string" },
+        "filing_address": { "type": "boolean" },
+        "mailing_address": { "type": "boolean" }
+      }
+    },
+    "locationDecoration": {
+      "oneOf": [
+        { "$ref": "#/definitions/fragmentRef" },
+        {
+          "type": "object",
+          "required": ["key", "street_1", "city", "state", "zip"],
+          "additionalProperties": true,
+          "properties": {
+            "key": { "$ref": "#/definitions/keyHandle" },
+            "street_1": { "type": "string" },
+            "street_2": { "type": "string" },
+            "city": { "type": "string" },
+            "state": { "type": "string", "minLength": 2, "maxLength": 2 },
+            "zip": { "type": "string" },
+            "filing_address": { "type": "boolean" },
+            "mailing_address": { "type": "boolean" }
+          }
+        }
+      ]
+    },
+    "employeeDecoration": {
+      "oneOf": [
+        { "$ref": "#/definitions/fragmentRef" },
+        {
+          "type": "object",
+          "required": ["key", "first_name", "last_name"],
+          "additionalProperties": true,
+          "properties": {
+            "key": { "$ref": "#/definitions/keyHandle" },
+            "first_name": { "type": "string" },
+            "last_name": { "type": "string" },
+            "email": { "type": "string" },
+            "home_address": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "street_1": { "type": "string" },
+                "street_2": { "type": "string" },
+                "city": { "type": "string" },
+                "state": { "type": "string" },
+                "zip": { "type": "string" }
+              }
+            },
+            "work_address": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "locationKey": { "$ref": "#/definitions/keyHandle" }
+              }
+            },
+            "job": {
+              "type": "object",
+              "additionalProperties": true,
+              "required": ["title", "hire_date"],
+              "properties": {
+                "title": { "type": "string" },
+                "hire_date": { "type": "string" },
+                "locationKey": { "$ref": "#/definitions/keyHandle" }
+              }
+            },
+            "compensation": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "rate": { "type": "string" },
+                "payment_unit": {
+                  "type": "string",
+                  "enum": ["Year", "Hour", "Month", "Week", "Paycheck"]
+                },
+                "flsa_status": {
+                  "type": "string",
+                  "enum": [
+                    "Exempt",
+                    "Nonexempt",
+                    "Owner",
+                    "Salaried Nonexempt",
+                    "Commission Only Exempt",
+                    "Commission Only Nonexempt"
+                  ]
+                }
+              }
+            },
+            "onboarding_status": {
+              "type": "string",
+              "description": "Target onboarding_status. Runner validates that the transition is legal from the current state."
+            },
+            "termination": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "If present, runner creates a termination after the employee is fully provisioned.",
+              "properties": {
+                "effective_date": { "type": "string" },
+                "run_termination_payroll": { "type": "boolean" }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "contractorDecoration": {
+      "oneOf": [
+        { "$ref": "#/definitions/fragmentRef" },
+        {
+          "type": "object",
+          "required": ["key", "type"],
+          "additionalProperties": true,
+          "properties": {
+            "key": { "$ref": "#/definitions/keyHandle" },
+            "type": {
+              "type": "string",
+              "enum": ["Individual", "Business"]
+            },
+            "first_name": { "type": "string" },
+            "last_name": { "type": "string" },
+            "business_name": { "type": "string" },
+            "email": { "type": "string" },
+            "wage_type": {
+              "type": "string",
+              "enum": ["Fixed", "Hourly"]
+            },
+            "hourly_rate": { "type": "string" }
+          }
+        }
+      ]
+    },
+    "payScheduleDecoration": {
+      "type": "object",
+      "required": ["frequency"],
+      "additionalProperties": true,
+      "properties": {
+        "frequency": {
+          "type": "string",
+          "enum": [
+            "Every week",
+            "Every other week",
+            "Twice per month",
+            "Monthly",
+            "Quarterly",
+            "Semiannually",
+            "Annually"
+          ]
+        },
+        "anchor_pay_date": { "type": "string" },
+        "anchor_end_of_pay_period": { "type": "string" }
+      }
+    },
+    "payrollDecoration": {
+      "type": "object",
+      "required": ["key", "type"],
+      "additionalProperties": true,
+      "properties": {
+        "key": { "$ref": "#/definitions/keyHandle" },
+        "type": {
+          "type": "string",
+          "enum": ["regular", "off_cycle", "termination"]
+        },
+        "status": {
+          "type": "string",
+          "enum": ["unprocessed", "calculated", "processed"],
+          "description": "If 'processed', runner runs prepare -> calculate -> submit -> poll until status=processed."
+        },
+        "check_date": { "type": "string" }
+      }
+    }
+  }
+}
