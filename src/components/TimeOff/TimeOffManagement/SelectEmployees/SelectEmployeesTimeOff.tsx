@@ -188,6 +188,7 @@ function SelectEmployeesTimeOffInner({
   const buildAddPayload = useCallback(
     (uuids: string[]) =>
       uuids.map(uuid => {
+        if (hideBalances) return { uuid, balance: '0' }
         const userValue = balances[uuid]
         const carryOver = extractCarryOverBalance(
           selectedEmployeesRef.current.get(uuid),
@@ -196,7 +197,7 @@ function SelectEmployeesTimeOffInner({
         const balance = userValue && userValue.length > 0 ? userValue : (carryOver ?? '0')
         return { uuid, balance }
       }),
-    [balances, policyType],
+    [hideBalances, balances, policyType],
   )
 
   const submitDiff = useCallback(
