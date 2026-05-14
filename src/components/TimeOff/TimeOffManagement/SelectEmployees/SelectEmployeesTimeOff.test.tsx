@@ -692,6 +692,7 @@ describe('SelectEmployeesTimeOff', () => {
 
       await user.click(screen.getAllByRole('checkbox')[FIRST_EMPLOYEE_CHECKBOX] as Element)
       await user.click(screen.getByRole('button', { name: 'continueCta' }))
+      await user.click(await screen.findByRole('button', { name: 'addConfirmDialog.confirmCta' }))
 
       await waitFor(() => {
         expect(mockAddEmployees).toHaveBeenCalledWith({
