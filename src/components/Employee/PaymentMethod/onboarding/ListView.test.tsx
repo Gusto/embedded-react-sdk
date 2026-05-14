@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { screen, waitFor } from '@testing-library/react'
+import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { http, HttpResponse } from 'msw'
 import { PaymentMethod } from './PaymentMethod'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
@@ -10,6 +11,58 @@ import {
   getEmptyEmployeeBankAccounts,
   getEmptyEmployeePaymentMethod,
 } from '@/test/mocks/apis/employeesBankAccounts'
+import { API_BASE_URL } from '@/test/constants'
+
+const TWO_BANK_ACCOUNTS = [
+  {
+    uuid: 'bank-1',
+    employee_uuid: 'employee-123',
+    account_type: 'Checking',
+    name: 'Chase',
+    routing_number: '011401533',
+    hidden_account_number: 'XXXX0000',
+  },
+  {
+    uuid: 'bank-2',
+    employee_uuid: 'employee-123',
+    account_type: 'Savings',
+    name: 'Wells Fargo',
+    routing_number: '121000248',
+    hidden_account_number: 'XXXX1111',
+  },
+]
+
+const PERCENTAGE_PAYMENT_METHOD_TWO_SPLITS = {
+  version: 'ad88c4e3c40f122582e425030d5c2771',
+  type: 'Direct Deposit',
+  split_by: 'Percentage',
+  splits: [
+    {
+      uuid: 'bank-1',
+      name: 'Chase',
+      hidden_account_number: 'XXXX0000',
+      priority: 1,
+      split_amount: 60,
+    },
+    {
+      uuid: 'bank-2',
+      name: 'Wells Fargo',
+      hidden_account_number: 'XXXX1111',
+      priority: 2,
+      split_amount: 40,
+    },
+  ],
+}
+
+const mockTwoBankAccounts = () =>
+  { server.use(
+    http.get(`${API_BASE_URL}/v1/employees/:employee_id/bank_accounts`, () =>
+      HttpResponse.json(TWO_BANK_ACCOUNTS),
+    ),
+    http.get(`${API_BASE_URL}/v1/employees/:employee_id/payment_method`, () =>
+      HttpResponse.json(PERCENTAGE_PAYMENT_METHOD_TWO_SPLITS),
+    ),
+  ); }
 
 vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', async () => {
   const actual = await vi.importActual('@/hooks/useContainerBreakpoints/useContainerBreakpoints')
@@ -126,5 +179,234 @@ describe('PaymentMethod onboarding ListView', () => {
 
     // With no accounts and Check payment method, add bank account is not shown
     expect(screen.queryByRole('button', { name: /add.*bank account/i })).not.toBeInTheDocument()
+  })
+
+  describe('BankForm validation', () => {
+    it('shows required-field errors when submitting an empty bank form', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(<PaymentMethod employeeId="employee-123" onEvent={onEvent} />)
+
+      await waitFor(
+        () => {
+          expect(
+            screen.getByRole('button', { name: /add another bank account/i }),
+          ).toBeInTheDocument()
+        },
+        { timeout: 5000 },
+      )
+
+      await user.click(screen.getByRole('button', { name: /add another bank account/i }))
+      await waitFor(() => {
+        expect(screen.getByLabelText('Account nickname')).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: 'Save' }))
+
+      await waitFor(() => {
+        expect(screen.getByText('Account name is required')).toBeInTheDocument()
+      })
+      expect(screen.getByText('Routing number should be a number (9 digits)')).toBeInTheDocument()
+      expect(screen.getByText('Account number is a required field')).toBeInTheDocument()
+    })
+
+    it('shows format errors when routing/account numbers are not 9 digits', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(<PaymentMethod employeeId="employee-123" onEvent={onEvent} />)
+
+      await waitFor(
+        () => {
+          expect(
+            screen.getByRole('button', { name: /add another bank account/i }),
+          ).toBeInTheDocument()
+        },
+        { timeout: 5000 },
+      )
+
+      await user.click(screen.getByRole('button', { name: /add another bank account/i }))
+      await waitFor(() => {
+        expect(screen.getByLabelText('Account nickname')).toBeInTheDocument()
+      })
+
+      await user.type(screen.getByLabelText('Account nickname'), 'Test Account')
+      await user.type(screen.getByLabelText('Routing number'), '123')
+      await user.type(screen.getByLabelText('Account number'), 'abc')
+      await user.click(screen.getByRole('button', { name: 'Save' }))
+
+      await waitFor(() => {
+        expect(screen.getByText('Routing number should be a number (9 digits)')).toBeInTheDocument()
+      })
+      expect(screen.getByText('Account number is a required field')).toBeInTheDocument()
+    })
+
+    it('returns to list view when Cancel is clicked from BankForm', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(<PaymentMethod employeeId="employee-123" onEvent={onEvent} />)
+
+      await waitFor(
+        () => {
+          expect(
+            screen.getByRole('button', { name: /add another bank account/i }),
+          ).toBeInTheDocument()
+        },
+        { timeout: 5000 },
+      )
+
+      await user.click(screen.getByRole('button', { name: /add another bank account/i }))
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: 'Cancel' }))
+
+      await waitFor(() => {
+        expect(screen.getByText('Chase')).toBeInTheDocument()
+      })
+      expect(screen.queryByLabelText('Account nickname')).not.toBeInTheDocument()
+    })
+  })
+
+  describe('Split paycheck button visibility', () => {
+    it('hides Split paycheck button when fewer than 2 bank accounts exist', async () => {
+      renderWithProviders(<PaymentMethod employeeId="employee-123" onEvent={onEvent} />)
+
+      await waitFor(
+        () => {
+          expect(screen.getByText('Chase')).toBeInTheDocument()
+        },
+        { timeout: 5000 },
+      )
+
+      expect(screen.queryByRole('button', { name: /split paycheck/i })).not.toBeInTheDocument()
+    })
+
+    it('shows Split paycheck button when 2+ bank accounts exist', async () => {
+      mockTwoBankAccounts()
+      renderWithProviders(<PaymentMethod employeeId="employee-123" onEvent={onEvent} />)
+
+      await waitFor(
+        () => {
+          expect(screen.getByText('Chase')).toBeInTheDocument()
+        },
+        { timeout: 5000 },
+      )
+
+      expect(screen.getByRole('button', { name: /split paycheck/i })).toBeInTheDocument()
+    })
+  })
+
+  describe('SplitView', () => {
+    it('renders percentage fields for each bank account in default Percentage mode', async () => {
+      const user = userEvent.setup()
+      mockTwoBankAccounts()
+      renderWithProviders(<PaymentMethod employeeId="employee-123" onEvent={onEvent} />)
+
+      await waitFor(
+        () => {
+          expect(screen.getByRole('button', { name: /split paycheck/i })).toBeInTheDocument()
+        },
+        { timeout: 5000 },
+      )
+
+      await user.click(screen.getByRole('button', { name: /split paycheck/i }))
+
+      await waitFor(() => {
+        expect(screen.getByRole('radio', { name: 'Percentage' })).toBeInTheDocument()
+      })
+      expect(screen.getByRole('radio', { name: 'Percentage' })).toBeChecked()
+      expect(screen.getByRole('radio', { name: 'Fixed amount' })).toBeInTheDocument()
+      expect(screen.getByLabelText(/Chase \(XXXX0000\)/)).toBeInTheDocument()
+      expect(screen.getByLabelText(/Wells Fargo \(XXXX1111\)/)).toBeInTheDocument()
+    })
+
+    it('fires EMPLOYEE_PAYMENT_METHOD_UPDATED when percentages sum to 100', async () => {
+      const user = userEvent.setup()
+      mockTwoBankAccounts()
+      renderWithProviders(<PaymentMethod employeeId="employee-123" onEvent={onEvent} />)
+
+      await waitFor(
+        () => {
+          expect(screen.getByRole('button', { name: /split paycheck/i })).toBeInTheDocument()
+        },
+        { timeout: 5000 },
+      )
+      await user.click(screen.getByRole('button', { name: /split paycheck/i }))
+
+      await waitFor(() => {
+        expect(screen.getByLabelText(/Chase \(XXXX0000\)/)).toBeInTheDocument()
+      })
+
+      // Defaults from fixture already total 100 (60 + 40); just submit.
+      await user.click(screen.getByRole('button', { name: 'Save' }))
+
+      await waitFor(() => {
+        expect(onEvent).toHaveBeenCalledWith(
+          componentEvents.EMPLOYEE_PAYMENT_METHOD_UPDATED,
+          expect.any(Object),
+        )
+      })
+    })
+
+    // KNOWN BUG (to be fixed in migration): the percentage-total error alert is never
+    // surfaced and existing saved splits are overwritten on mount.
+    //   1. `useSplitViewState`'s mount effect (`shared/useSplitViewState.ts:29-44`)
+    //      resets splitAmount to `{first: 100, rest: 0}` regardless of the API response,
+    //      discarding the user's existing distribution.
+    //   2. `SplitView.tsx:49` listens at `splitAmount.root`, but `zodResolver` places the
+    //      percentage_split_total_error at `errors.splitAmount`, so the alert never renders.
+    // Once the migration moves total-validation into the hook with a proper error code,
+    // add a test here asserting: defaults are preserved, sum != 100 surfaces an alert,
+    // and `EMPLOYEE_PAYMENT_METHOD_UPDATED` is not fired.
+
+    it('switches to Fixed amount mode and renders the reorderable list', async () => {
+      const user = userEvent.setup()
+      mockTwoBankAccounts()
+      renderWithProviders(<PaymentMethod employeeId="employee-123" onEvent={onEvent} />)
+
+      await waitFor(
+        () => {
+          expect(screen.getByRole('button', { name: /split paycheck/i })).toBeInTheDocument()
+        },
+        { timeout: 5000 },
+      )
+      await user.click(screen.getByRole('button', { name: /split paycheck/i }))
+
+      await waitFor(() => {
+        expect(screen.getByRole('radio', { name: 'Fixed amount' })).toBeInTheDocument()
+      })
+      await user.click(screen.getByRole('radio', { name: 'Fixed amount' }))
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('list', { name: 'Reorderable list of bank accounts' }),
+        ).toBeInTheDocument()
+      })
+      const list = screen.getByRole('list', { name: 'Reorderable list of bank accounts' })
+      expect(within(list).getByLabelText(/Chase \(XXXX0000\)/)).toBeInTheDocument()
+      expect(within(list).getByLabelText(/Wells Fargo \(XXXX1111\)/)).toBeInTheDocument()
+    })
+
+    it('returns to list view when SplitView Cancel is clicked', async () => {
+      const user = userEvent.setup()
+      mockTwoBankAccounts()
+      renderWithProviders(<PaymentMethod employeeId="employee-123" onEvent={onEvent} />)
+
+      await waitFor(
+        () => {
+          expect(screen.getByRole('button', { name: /split paycheck/i })).toBeInTheDocument()
+        },
+        { timeout: 5000 },
+      )
+      await user.click(screen.getByRole('button', { name: /split paycheck/i }))
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument()
+      })
+      await user.click(screen.getByRole('button', { name: 'Cancel' }))
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /split paycheck/i })).toBeInTheDocument()
+      })
+      expect(screen.queryByRole('radio', { name: 'Fixed amount' })).not.toBeInTheDocument()
+    })
   })
 })
