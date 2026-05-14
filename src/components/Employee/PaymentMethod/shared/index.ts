@@ -1,6 +1,4 @@
 export * from './paymentMethodSchema'
-export * from './SplitViewFields'
-export * from './useSplitViewState'
 export * from './useDeleteBankAccount'
 export * from './DeleteBankAccountDialog'
 export * from './usePaymentMethodList'

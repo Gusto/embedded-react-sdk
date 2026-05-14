@@ -269,6 +269,29 @@ export type {
 } from '@/components/Employee/PaymentMethod/shared/usePaymentMethodForm'
 
 export {
+  useSplitPaymentsForm,
+  SplitPaymentsFormErrorCodes,
+  createSplitPaymentsFormSchema,
+  SPLIT_BY_VALUES,
+} from '@/components/Employee/PaymentMethod/shared/useSplitPaymentsForm'
+export type {
+  UseSplitPaymentsFormProps,
+  UseSplitPaymentsFormResult,
+  UseSplitPaymentsFormReady,
+  SplitPaymentsFormFields,
+  SplitPaymentsFormFieldsMetadata,
+  SplitPaymentsFormErrorCode,
+  SplitPaymentsFormData,
+  SplitPaymentsFormOutputs,
+  SplitPaymentsFormField,
+  SplitPaymentsFormOptionalFieldsToRequire,
+  SplitByValue,
+  SplitPaymentsFormRequiredValidation,
+  SplitByFieldProps,
+  WorkingSplit,
+} from '@/components/Employee/PaymentMethod/shared/useSplitPaymentsForm'
+
+export {
   useFederalTaxesForm,
   FederalTaxesErrorCodes,
   createFederalTaxesSchema,

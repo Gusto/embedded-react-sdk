@@ -54,15 +54,16 @@ const PERCENTAGE_PAYMENT_METHOD_TWO_SPLITS = {
   ],
 }
 
-const mockTwoBankAccounts = () =>
-  { server.use(
+const mockTwoBankAccounts = () => {
+  server.use(
     http.get(`${API_BASE_URL}/v1/employees/:employee_id/bank_accounts`, () =>
       HttpResponse.json(TWO_BANK_ACCOUNTS),
     ),
     http.get(`${API_BASE_URL}/v1/employees/:employee_id/payment_method`, () =>
       HttpResponse.json(PERCENTAGE_PAYMENT_METHOD_TWO_SPLITS),
     ),
-  ); }
+  )
+}
 
 vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', async () => {
   const actual = await vi.importActual('@/hooks/useContainerBreakpoints/useContainerBreakpoints')
@@ -346,16 +347,53 @@ describe('PaymentMethod onboarding ListView', () => {
       })
     })
 
-    // KNOWN BUG (to be fixed in migration): the percentage-total error alert is never
-    // surfaced and existing saved splits are overwritten on mount.
-    //   1. `useSplitViewState`'s mount effect (`shared/useSplitViewState.ts:29-44`)
-    //      resets splitAmount to `{first: 100, rest: 0}` regardless of the API response,
-    //      discarding the user's existing distribution.
-    //   2. `SplitView.tsx:49` listens at `splitAmount.root`, but `zodResolver` places the
-    //      percentage_split_total_error at `errors.splitAmount`, so the alert never renders.
-    // Once the migration moves total-validation into the hook with a proper error code,
-    // add a test here asserting: defaults are preserved, sum != 100 surfaces an alert,
-    // and `EMPLOYEE_PAYMENT_METHOD_UPDATED` is not fired.
+    it('shows the total-mismatch alert and blocks submit when percentages do not sum to 100', async () => {
+      const user = userEvent.setup()
+      const TOTAL_70_PAYMENT_METHOD = {
+        version: 'v1',
+        type: 'Direct Deposit',
+        split_by: 'Percentage',
+        splits: [
+          { ...PERCENTAGE_PAYMENT_METHOD_TWO_SPLITS.splits[0], split_amount: 30 },
+          { ...PERCENTAGE_PAYMENT_METHOD_TWO_SPLITS.splits[1], split_amount: 40 },
+        ],
+      }
+      server.use(
+        http.get(`${API_BASE_URL}/v1/employees/:employee_id/bank_accounts`, () =>
+          HttpResponse.json(TWO_BANK_ACCOUNTS),
+        ),
+        http.get(`${API_BASE_URL}/v1/employees/:employee_id/payment_method`, () =>
+          HttpResponse.json(TOTAL_70_PAYMENT_METHOD),
+        ),
+      )
+
+      renderWithProviders(<PaymentMethod employeeId="employee-123" onEvent={onEvent} />)
+
+      await waitFor(
+        () => {
+          expect(screen.getByRole('button', { name: /split paycheck/i })).toBeInTheDocument()
+        },
+        { timeout: 5000 },
+      )
+      await user.click(screen.getByRole('button', { name: /split paycheck/i }))
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Save' })).toBeInTheDocument()
+      })
+
+      // Defaults from fixture (30 + 40 = 70) are preserved on mount thanks to the
+      // post-migration fix to the splitBy-reset effect. Submitting surfaces the
+      // alert at the correct path (errors.splitAmount, not errors.splitAmount.root).
+      await user.click(screen.getByRole('button', { name: 'Save' }))
+
+      await waitFor(() => {
+        expect(screen.getByText(/splits must total 100%.*currently 70%/i)).toBeInTheDocument()
+      })
+      expect(onEvent).not.toHaveBeenCalledWith(
+        componentEvents.EMPLOYEE_PAYMENT_METHOD_UPDATED,
+        expect.anything(),
+      )
+    })
 
     it('switches to Fixed amount mode and renders the reorderable list', async () => {
       const user = userEvent.setup()
