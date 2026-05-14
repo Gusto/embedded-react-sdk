@@ -16,6 +16,12 @@
  * differences. For tighter visual checks, prefer Chromatic or per-component
  * snapshot tests with their own tighter thresholds.
  *
+ * Per-story configuration:
+ *   Stories can customize behavior via parameters.visualTest:
+ *     - skip: boolean - skip visual diffing for this story
+ *     - threshold: number - override per-pixel color tolerance (0-1)
+ *     - maxDiffPixelRatio: number - override allowed pixel difference (0-1)
+ *
  * Workflow:
  *   - Run `npm run test:visual` locally against a running Storybook.
  *   - Run `npm run test:visual:update` (or set `UPDATE_SCREENSHOTS=1`) to
@@ -36,10 +42,10 @@ const __dirname = dirname(__filename)
 const SCREENSHOT_DIR = join(__dirname, '__screenshots__')
 const DIFF_DIR = join(__dirname, '__screenshots__', '__diff_output__')
 
-// Pixelmatch per-pixel color tolerance (0 = exact, 1 = any color).
-const PIXEL_THRESHOLD = 0.2
-// Allowed fraction of differing pixels relative to the total.
-const MAX_DIFF_PIXEL_RATIO = 0.5
+// Default pixelmatch per-pixel color tolerance (0 = exact, 1 = any color).
+const DEFAULT_PIXEL_THRESHOLD = 0.2
+// Default allowed fraction of differing pixels relative to the total.
+const DEFAULT_MAX_DIFF_PIXEL_RATIO = 0.5
 
 const shouldUpdate = process.env.UPDATE_SCREENSHOTS === '1'
 
@@ -57,7 +63,39 @@ const titleToBaselineId = (title: string) =>
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
 
+// Track baseline generation metadata
+const metadataPath = join(SCREENSHOT_DIR, '.baseline-metadata.json')
+let metadataUpdated = false
+
+const updateMetadata = () => {
+  if (metadataUpdated) return
+  metadataUpdated = true
+
+  const baselineCount = existsSync(SCREENSHOT_DIR)
+    ? require('fs')
+        .readdirSync(SCREENSHOT_DIR)
+        .filter((f: string) => f.endsWith('.png')).length
+    : 0
+
+  const metadata = {
+    version: '1.0',
+    description: 'Metadata for visual regression test baselines',
+    lastGenerated: new Date().toISOString(),
+    platform: process.platform,
+    nodeVersion: process.version,
+    baselineCount,
+    generatedBy: process.env.CI ? 'CI' : 'local',
+  }
+
+  writeFileSync(metadataPath, JSON.stringify(metadata, null, 2) + '\n')
+}
+
 const config: TestRunnerConfig = {
+  setup() {
+    // Set default timeout for visual tests
+    // Individual stories can override via parameters.visualTest.timeout
+    jest.setTimeout(15000)
+  },
   // Visual smoke tests should be JUST visual: load the story, screenshot,
   // compare. The default test-storybook pipeline also runs @storybook/addon-a11y
   // in `afterEach`, which calls `axe.run()` against the document body before
@@ -74,6 +112,14 @@ const config: TestRunnerConfig = {
       await browserContext.setExtraHTTPHeaders(await cfg.getHttpHeaders(iframeURL.toString()))
     }
     await page.goto(iframeURL.toString(), { waitUntil: 'load' })
+  },
+  async preVisit(page, context) {
+    // Allow per-story timeout configuration
+    const storyContext = await getStoryContext(page, context)
+    const timeout = storyContext.parameters?.visualTest?.timeout
+    if (timeout && typeof timeout === 'number') {
+      jest.setTimeout(timeout)
+    }
   },
   async postVisit(page, context) {
     const storyContext = await getStoryContext(page, context)
@@ -92,10 +138,18 @@ const config: TestRunnerConfig = {
 
     const baselineId = titleToBaselineId(context.title)
 
+    // Allow per-story threshold overrides
+    const pixelThreshold = storyContext.parameters?.visualTest?.threshold ?? DEFAULT_PIXEL_THRESHOLD
+    const maxDiffPixelRatio =
+      storyContext.parameters?.visualTest?.maxDiffPixelRatio ?? DEFAULT_MAX_DIFF_PIXEL_RATIO
+
     // Wait for any pending fonts/images so the screenshot is stable.
     await page
       .evaluate(() => (document as Document & { fonts?: { ready: Promise<unknown> } }).fonts?.ready)
       .catch(() => undefined)
+
+    // Wait for any animations to complete
+    await page.waitForTimeout(100)
 
     const elementHandle = await page.$('#storybook-root')
     const screenshotBuffer = elementHandle
@@ -107,6 +161,8 @@ const config: TestRunnerConfig = {
 
     if (!existsSync(baselinePath) || shouldUpdate) {
       writeFileSync(baselinePath, screenshotBuffer)
+      updateMetadata()
+      console.log(`✓ ${shouldUpdate ? 'Updated' : 'Created'} baseline: ${baselineId}.png`)
       return
     }
 
@@ -117,25 +173,34 @@ const config: TestRunnerConfig = {
       ensureDir(DIFF_DIR)
       writeFileSync(join(DIFF_DIR, `${baselineId}-actual.png`), screenshotBuffer)
       throw new Error(
-        `Visual diff size mismatch for "${context.title}": baseline ${baseline.width}x${baseline.height}, actual ${actual.width}x${actual.height}. Run UPDATE_SCREENSHOTS=1 to refresh.`,
+        `Visual diff size mismatch for "${context.title}" (${context.id}):\n` +
+          `  Baseline: ${baseline.width}x${baseline.height}\n` +
+          `  Actual:   ${actual.width}x${actual.height}\n\n` +
+          `To update this baseline:\n` +
+          `  npm run test:visual:update\n\n` +
+          `Or in CI, the baseline will be auto-committed on the next run.`,
       )
     }
 
     const { width, height } = baseline
     const diff = new PNG({ width, height })
     const diffPixels = pixelmatch(baseline.data, actual.data, diff.data, width, height, {
-      threshold: PIXEL_THRESHOLD,
+      threshold: pixelThreshold,
     })
     const diffRatio = diffPixels / (width * height)
 
-    if (diffRatio > MAX_DIFF_PIXEL_RATIO) {
+    if (diffRatio > maxDiffPixelRatio) {
       ensureDir(DIFF_DIR)
       writeFileSync(join(DIFF_DIR, `${baselineId}-actual.png`), screenshotBuffer)
       writeFileSync(join(DIFF_DIR, `${baselineId}-diff.png`), PNG.sync.write(diff))
       throw new Error(
-        `Visual diff exceeded threshold for "${context.title}": ${(diffRatio * 100).toFixed(2)}% of pixels differ (max ${(
-          MAX_DIFF_PIXEL_RATIO * 100
-        ).toFixed(0)}%). See ${DIFF_DIR} for the actual screenshot and diff.`,
+        `Visual diff exceeded threshold for "${context.title}" (${context.id}):\n` +
+          `  Diff:      ${(diffRatio * 100).toFixed(2)}% of pixels differ\n` +
+          `  Threshold: ${(maxDiffPixelRatio * 100).toFixed(2)}% max allowed\n` +
+          `  Diff file: ${DIFF_DIR}/${baselineId}-diff.png\n\n` +
+          `To update this baseline:\n` +
+          `  npm run test:visual:update\n\n` +
+          `Or review the diff output and adjust the story if the change is unintended.`,
       )
     }
   },

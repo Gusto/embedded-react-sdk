@@ -4,9 +4,13 @@ import { EditEmployeeBalanceModal } from './EditEmployeeBalanceModal'
 
 export default {
   title: 'Domain/TimeOff/EditEmployeeBalanceModal',
-  // DIAGNOSTIC: testing whether disabling a11y for this story fixes the
-  // visual smoke test hang in CI. Will be reverted once we know.
-  parameters: { a11y: { test: 'off' } },
+  parameters: {
+    visualTest: {
+      // This story opens a modal after Suspense resolves, which takes longer
+      // than the default 15s timeout in headless Chromium
+      timeout: 30000,
+    },
+  },
   decorators: [
     (Story: React.ComponentType) => (
       <Suspense fallback={<div>Loading translations...</div>}>

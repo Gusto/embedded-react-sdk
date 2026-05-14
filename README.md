@@ -76,15 +76,16 @@ See the [SDK Dev App README](sdk-app/README.md) for full setup and usage details
 
 ## Visual diffing
 
-The CI `visual` job takes one screenshot per Storybook **story file** (the
-first story per CSF title — a smoke test, not exhaustive per-story coverage)
-and compares it against a committed PNG baseline under
-`.storybook/__screenshots__/`. The
-goal is to catch catastrophic regressions — a wrong design system being
-shipped, a broken theme, or missing CSS — without flagging minor layout or
-font-rendering changes.
+The CI `visual` job performs smoke-test visual regression checks on Storybook
+components. It takes one screenshot per story **file** (the first story per CSF
+title) and compares it against a committed PNG baseline under
+`.storybook/__screenshots__/`. The goal is to catch catastrophic regressions —
+a wrong design system being shipped, a broken theme, or missing CSS — without
+flagging minor layout or font-rendering changes.
 
-Thresholds (configured in `.storybook/test-runner.ts`):
+### Thresholds
+
+Default thresholds (configured in `.storybook/test-runner.ts`):
 
 - per-pixel color tolerance: `0.2`
 - allowed pixel-ratio difference: `0.5` (50% of pixels)
@@ -96,17 +97,34 @@ Storybook, handles cross-platform rendering and review UI) or per-component
 snapshot tests with their own tighter thresholds. Chromatic is a paid SaaS
 dependency, which is why this repo currently uses self-hosted PNG baselines.
 
-Running locally:
+### Per-story configuration
+
+Stories can override thresholds or skip visual testing via parameters:
+
+```tsx
+export const MyStory = {
+  parameters: {
+    visualTest: {
+      skip: true, // Skip visual testing
+      threshold: 0.1, // Tighter pixel tolerance
+      maxDiffPixelRatio: 0.2, // Tighter diff threshold
+    },
+  },
+}
+```
+
+### Running locally
 
 ```bash
 npm run storybook              # serve Storybook on :6006
 npm run test:visual            # run the diff against the running Storybook
-npm run test:visual:update     # write new baselines (only do this in CI)
+npm run test:visual:update     # write new baselines (USE WITH CAUTION)
 ```
 
-Baselines are sensitive to OS, browser, and font rendering. Generate and
-commit them from CI (Linux); macOS/Windows-generated PNGs will not match.
-The same loose threshold is also configured in `playwright.config.ts` for
-opt-in `expect(...).toHaveScreenshot()` checks in e2e specs. Snapshot only
-the rendered SDK container and `mask` dynamic fields (SSN, email, dates),
-and update baselines from CI only.
+⚠️ **Important**: Baselines are sensitive to OS, browser, and font rendering.
+Generate and commit them from CI (Linux); macOS/Windows-generated PNGs will
+not match and will cause failures. The CI job automatically commits new
+baselines when none exist.
+
+See `.storybook/__screenshots__/README.md` for detailed baseline management
+workflow and troubleshooting.
