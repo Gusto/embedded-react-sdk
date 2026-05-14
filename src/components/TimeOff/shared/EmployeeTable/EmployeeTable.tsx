@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { EmployeeTableItem, EmployeeTableProps } from './EmployeeTableTypes'
 import styles from './EmployeeTable.module.scss'
-import { DataView, useDataView } from '@/components/Common'
+import { DataView, Flex, useDataView } from '@/components/Common'
 import type { useDataViewProp } from '@/components/Common/DataView/useDataView'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n/I18n'
@@ -117,5 +117,9 @@ export function EmployeeTable<T extends EmployeeTableItem>({
 
 function DefaultEmptySearchState({ message }: { message: string }) {
   const { Text } = useComponentContext()
-  return <Text>{message}</Text>
+  return (
+    <Flex flexDirection="column" alignItems="center" gap={8}>
+      <Text size="sm">{message}</Text>
+    </Flex>
+  )
 }

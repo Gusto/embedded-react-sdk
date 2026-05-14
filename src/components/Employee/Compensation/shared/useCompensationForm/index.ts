@@ -1,5 +1,4 @@
 export { useCompensationForm } from './useCompensationForm'
-export { useCurrentCompensationForm } from './useCurrentCompensationForm'
 export type {
   CompensationSubmitOptions,
   UseCompensationFormProps,
@@ -8,7 +7,6 @@ export type {
   CompensationFieldsMetadata,
   CompensationFormFields,
 } from './useCompensationForm'
-export type { UseCurrentCompensationFormProps } from './useCurrentCompensationForm'
 export {
   createCompensationSchema,
   CompensationErrorCodes,

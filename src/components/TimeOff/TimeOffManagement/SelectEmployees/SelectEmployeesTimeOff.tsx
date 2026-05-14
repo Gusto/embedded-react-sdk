@@ -2,6 +2,7 @@ import { useCallback, useMemo, useRef, useState } from 'react'
 import { useTimeOffPoliciesAddEmployeesMutation } from '@gusto/embedded-api/react-query/timeOffPoliciesAddEmployees'
 import { useTimeOffPoliciesRemoveEmployeesMutation } from '@gusto/embedded-api/react-query/timeOffPoliciesRemoveEmployees'
 import { useTimeOffPoliciesGetSuspense } from '@gusto/embedded-api/react-query/timeOffPoliciesGet'
+import { useTimeOffPoliciesUpdateMutation } from '@gusto/embedded-api/react-query/timeOffPoliciesUpdate'
 import { UnprocessableEntityError } from '@gusto/embedded-api/models/errors/unprocessableentityerror'
 import { useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
@@ -173,7 +174,9 @@ function SelectEmployeesTimeOffInner({
     useTimeOffPoliciesAddEmployeesMutation()
   const { mutateAsync: removeEmployees, isPending: isRemovePending } =
     useTimeOffPoliciesRemoveEmployeesMutation()
-  const isSubmitPending = isAddPending || isRemovePending
+  const { mutateAsync: updatePolicy, isPending: isUpdatePending } =
+    useTimeOffPoliciesUpdateMutation()
+  const isSubmitPending = isAddPending || isRemovePending || isUpdatePending
 
   const [confirmRemoveOpen, setConfirmRemoveOpen] = useState(false)
   const [confirmAddOpen, setConfirmAddOpen] = useState(false)
@@ -197,7 +200,7 @@ function SelectEmployeesTimeOffInner({
   )
 
   const submitDiff = useCallback(
-    async (toAdd: string[], toRemove: string[]) => {
+    async (toAdd: string[], toRemove: string[], markComplete = false) => {
       await baseSubmitHandler({}, async () => {
         if (toRemove.length > 0) {
           try {
@@ -228,6 +231,29 @@ function SelectEmployeesTimeOffInner({
           })
           policyResult = response.timeOffPolicy
         }
+        if (markComplete && policyResult) {
+          const version =
+            typeof policyResult === 'object' && 'version' in policyResult
+              ? String((policyResult as { version: unknown }).version)
+              : ''
+          try {
+            await updatePolicy({
+              request: {
+                timeOffPolicyUuid: policyId,
+                requestBody: { complete: true, version },
+              },
+            })
+          } catch (err) {
+            if (err instanceof UnprocessableEntityError) {
+              const apiMessage = err.errors[0]?.message ?? ''
+              throw new SDKInternalError(
+                t('errors.completePolicyFailed', { details: apiMessage }),
+                'api_error',
+              )
+            }
+            throw err
+          }
+        }
         void queryClient.invalidateQueries({
           queryKey: ['@gusto/embedded-api', 'timeOffPolicies', 'get'],
         })
@@ -239,6 +265,7 @@ function SelectEmployeesTimeOffInner({
       removeEmployees,
       addEmployees,
       buildAddPayload,
+      updatePolicy,
       policyId,
       queryClient,
       onEvent,
@@ -249,7 +276,7 @@ function SelectEmployeesTimeOffInner({
   const handleContinue = useCallback(async () => {
     if (mode === 'wizard') {
       const toAdd = [...selectedUuids]
-      await submitDiff(toAdd, [])
+      await submitDiff(toAdd, [], true)
       return
     }
 

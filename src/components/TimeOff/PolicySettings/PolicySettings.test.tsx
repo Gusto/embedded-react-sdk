@@ -189,7 +189,9 @@ describe('PolicySettings container', () => {
       await user.click(balanceSwitches[0])
 
       await waitFor(() => {
-        expect(screen.getAllByPlaceholderText('Number of hours')[0]).not.toBeDisabled()
+        const balanceInput = screen.getByRole('textbox', { name: /^Balance maximum/ })
+        expect(balanceInput).toHaveAttribute('placeholder', '0')
+        expect(balanceInput).not.toBeDisabled()
       })
 
       await user.click(screen.getByRole('button', { name: 'Save' }))
@@ -199,7 +201,6 @@ describe('PolicySettings container', () => {
           request: {
             timeOffPolicyUuid: 'policy-123',
             requestBody: expect.objectContaining({
-              complete: true,
               version: 'version-abc',
               paidOutOnTermination: false,
             }),

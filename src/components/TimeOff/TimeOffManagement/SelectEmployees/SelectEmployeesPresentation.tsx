@@ -5,9 +5,12 @@ import type {
   EmployeeItem,
   SelectEmployeesPresentationProps,
 } from './SelectEmployeesPresentationTypes'
+import styles from './SelectEmployeesPresentation.module.scss'
 import { ActionsLayout, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
+
+const isNumericInput = (value: string) => /^\d*\.?\d*$/.test(value)
 
 export function SelectEmployeesPresentation({
   employees,
@@ -27,6 +30,7 @@ export function SelectEmployeesPresentation({
   isFetching,
   originallyOnPolicyUuids,
   originalBalances,
+
   removeConfirmDialog,
   addConfirmDialog,
   isPending = false,
@@ -83,9 +87,11 @@ export function SelectEmployeesPresentation({
                         aria-labelledby={`employee-name-${employee.uuid} ${balanceColHeaderId}`}
                         value={balances?.[employee.uuid] ?? ''}
                         onChange={(value: string) => {
+                          if (value !== '' && !isNumericInput(value)) return
                           onBalanceChange(employee.uuid, value)
                         }}
                         placeholder="0"
+                        className={styles.balanceInput}
                       />
                     )
                   },

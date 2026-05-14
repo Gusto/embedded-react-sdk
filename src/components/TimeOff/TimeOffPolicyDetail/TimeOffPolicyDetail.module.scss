@@ -1,7 +1,15 @@
-.descriptionCard {
-  max-width: toRem(480);
+.cardsContainer {
+  container-type: inline-size;
 }
 
-.descriptionCardUnlimited {
-  min-width: toRem(320);
+.cards {
+  display: grid;
+  gap: toRem(20);
+  grid-template-columns: 1fr;
+}
+
+@container (min-width: 40rem) {
+  .cards {
+    grid-template-columns: minmax(0, toRem(480));
+  }
 }

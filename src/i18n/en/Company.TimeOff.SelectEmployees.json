@@ -10,7 +10,8 @@
   "backCta": "Back",
   "continueCta": "Continue",
   "errors": {
-    "removeEmployeesFailed": "Unable to remove employees from this policy. {{details}}"
+    "removeEmployeesFailed": "Unable to remove employees from this policy. {{details}}",
+    "completePolicyFailed": "Unable to complete this policy. {{details}}"
   },
   "removeConfirmDialog": {
     "title_one": "Remove {{count}} employee from this policy?",
