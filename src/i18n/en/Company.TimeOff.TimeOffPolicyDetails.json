@@ -93,8 +93,7 @@
     "currentBalance": "Current balance",
     "hoursUnit": "hours",
     "cancelCta": "Cancel",
-    "updateCta": "Update balance",
-    "updateError": "Failed to update balance. Please try again."
+    "updateCta": "Update balance"
   },
   "removeEmployeeModal": {
     "title": "Remove {{name}} from policy?",

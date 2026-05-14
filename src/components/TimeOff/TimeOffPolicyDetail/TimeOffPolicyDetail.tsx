@@ -132,7 +132,7 @@ interface EditBalanceState {
 function Root({ policyId }: TimeOffPolicyDetailProps) {
   useI18n('Company.TimeOff.TimeOffPolicyDetails')
   const { t } = useTranslation('Company.TimeOff.TimeOffPolicyDetails')
-  const { onEvent, baseSubmitHandler } = useBase()
+  const { onEvent, baseSubmitHandler, error, setError } = useBase()
   const { Button } = useComponentContext()
   const { locale } = useLocale()
   const queryClient = useQueryClient()
@@ -164,7 +164,6 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
     name: string
   } | null>(null)
   const [editBalanceState, setEditBalanceState] = useState<EditBalanceState | null>(null)
-  const [balanceError, setBalanceError] = useState<string | undefined>()
 
   const policyDetails = useMemo(() => derivePolicyDetails(policy, locale), [policy, locale])
   const policySettings = useMemo(() => derivePolicySettings(policy), [policy])
@@ -208,24 +207,19 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
   const handleUpdateBalance = useCallback(
     async (newBalance: number) => {
       if (!editBalanceState) return
-      setBalanceError(undefined)
-      try {
-        await baseSubmitHandler({}, async () => {
-          await updateBalance({
-            request: {
-              timeOffPolicyUuid: policyId,
-              requestBody: {
-                employees: [{ uuid: editBalanceState.employeeUuid, balance: String(newBalance) }],
-              },
+      await baseSubmitHandler({}, async () => {
+        await updateBalance({
+          request: {
+            timeOffPolicyUuid: policyId,
+            requestBody: {
+              employees: [{ uuid: editBalanceState.employeeUuid, balance: String(newBalance) }],
             },
-          })
-          invalidatePolicy()
-          setEditBalanceState(null)
-          setSuccessAlert(t('flash.balanceUpdated', { name: editBalanceState.employeeName }))
+          },
         })
-      } catch (err) {
-        setBalanceError(err instanceof Error ? err.message : t('editBalanceModal.updateError'))
-      }
+        invalidatePolicy()
+        setEditBalanceState(null)
+        setSuccessAlert(t('flash.balanceUpdated', { name: editBalanceState.employeeName }))
+      })
     },
     [baseSubmitHandler, updateBalance, policyId, editBalanceState, invalidatePolicy, t],
   )
@@ -356,13 +350,13 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
         isOpen={editBalanceState !== null}
         onClose={() => {
           setEditBalanceState(null)
-          setBalanceError(undefined)
+          setError(null)
         }}
         employeeName={editBalanceState?.employeeName ?? ''}
         currentBalance={editBalanceState?.currentBalance ?? 0}
         onConfirm={handleUpdateBalance}
         isPending={isBalancePending}
-        errorMessage={balanceError}
+        error={error}
       />
     </>
   )
