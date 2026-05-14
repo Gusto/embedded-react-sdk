@@ -3,6 +3,7 @@ import { useWatch } from 'react-hook-form'
 import {
   usePaymentMethodList,
   type UsePaymentMethodListParams,
+  type UsePaymentMethodListReady,
 } from '../shared/usePaymentMethodList'
 import {
   usePaymentMethodForm,
@@ -15,9 +16,10 @@ import { ActionsLayout, DataView, useDataView } from '@/components/Common'
 import { Form } from '@/components/Common/Form'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { BaseLayout } from '@/components/Base/Base'
+import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
+import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { useBase } from '@/components/Base/useBase'
 import { centsToDollars } from '@/helpers/currencyHelpers'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 import { componentEvents, PAYMENT_METHODS, SPLIT_BY } from '@/shared/constants'
@@ -29,10 +31,21 @@ export function ListView({
   isAdmin,
   onEvent,
 }: UsePaymentMethodListParams & { isAdmin: boolean }) {
+  const paymentMethodList = usePaymentMethodList({ employeeId, onEvent })
   const paymentMethodForm = usePaymentMethodForm({ employeeId })
+  const {
+    error: deleteError,
+    setError: setDeleteError,
+    baseSubmitHandler: deleteSubmitHandler,
+  } = useBaseSubmit('PaymentMethodListDelete')
 
-  if (paymentMethodForm.isLoading) {
-    return <BaseLayout isLoading error={paymentMethodForm.errorHandling.errors} />
+  const errorHandling = composeErrorHandler([paymentMethodList, paymentMethodForm], {
+    submitError: deleteError,
+    setSubmitError: setDeleteError,
+  })
+
+  if (paymentMethodList.isLoading || paymentMethodForm.isLoading) {
+    return <BaseLayout isLoading error={errorHandling.errors} />
   }
 
   return (
@@ -40,20 +53,32 @@ export function ListView({
       employeeId={employeeId}
       isAdmin={isAdmin}
       onEvent={onEvent}
+      paymentMethodList={paymentMethodList}
       paymentMethodForm={paymentMethodForm}
+      errorHandling={errorHandling}
+      deleteSubmitHandler={deleteSubmitHandler}
     />
   )
 }
 
 interface ListViewReadyProps extends UsePaymentMethodListParams {
   isAdmin: boolean
+  paymentMethodList: UsePaymentMethodListReady
   paymentMethodForm: UsePaymentMethodFormReady
+  errorHandling: ReturnType<typeof composeErrorHandler>
+  deleteSubmitHandler: ReturnType<typeof useBaseSubmit>['baseSubmitHandler']
 }
 
-function ListViewReady({ employeeId, isAdmin, onEvent, paymentMethodForm }: ListViewReadyProps) {
-  const { baseSubmitHandler } = useBase()
-  const { paymentMethod, bankAccounts, deletePendingBankAccountUuid, handleDelete } =
-    usePaymentMethodList({ employeeId, onEvent })
+function ListViewReady({
+  isAdmin,
+  onEvent,
+  paymentMethodList,
+  paymentMethodForm,
+  errorHandling,
+  deleteSubmitHandler,
+}: ListViewReadyProps) {
+  const { paymentMethod, bankAccounts } = paymentMethodList.data
+  const { deletePendingBankAccountUuid, handleDelete } = paymentMethodList
   const { t } = useTranslation('Employee.PaymentMethod')
   const Components = useComponentContext()
   const format = useNumberFormatter(paymentMethod.splitBy === 'Amount' ? 'currency' : 'percent')
@@ -70,7 +95,7 @@ function ListViewReady({ employeeId, isAdmin, onEvent, paymentMethodForm }: List
     deletedAccountNumber,
     setDeletedAccountNumber,
     handleConfirmDelete,
-  } = useDeleteBankAccount(uuid => baseSubmitHandler(uuid, handleDelete))
+  } = useDeleteBankAccount(uuid => deleteSubmitHandler(uuid, handleDelete))
 
   const { ...dataViewProps } = useDataView({
     data: bankAccounts,
@@ -138,7 +163,7 @@ function ListViewReady({ employeeId, isAdmin, onEvent, paymentMethodForm }: List
 
   return (
     <>
-      <BaseLayout error={paymentMethodForm.errorHandling.errors}>
+      <BaseLayout error={errorHandling.errors}>
         <SDKFormProvider formHookResult={paymentMethodForm}>
           <Form onSubmit={handleSubmit}>
             {deletedAccountNumber !== null && (

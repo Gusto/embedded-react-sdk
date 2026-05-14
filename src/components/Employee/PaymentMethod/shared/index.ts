@@ -1,4 +1,3 @@
-export * from './paymentMethodSchema'
 export * from './useDeleteBankAccount'
 export * from './DeleteBankAccountDialog'
 export * from './usePaymentMethodList'

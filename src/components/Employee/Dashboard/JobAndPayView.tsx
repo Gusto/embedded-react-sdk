@@ -60,8 +60,18 @@ export function JobAndPayView({
   const formatPayRate = useFormatPayRate()
   const formatCurrency = useNumberFormatter('currency')
 
-  const { paymentMethod, bankAccounts, deletePendingBankAccountUuid, handleDelete } =
-    usePaymentMethodList({ employeeId, onEvent })
+  const paymentMethodList = usePaymentMethodList({ employeeId, onEvent })
+  const paymentMethod = paymentMethodList.isLoading
+    ? undefined
+    : paymentMethodList.data.paymentMethod
+  const bankAccounts = paymentMethodList.isLoading ? [] : paymentMethodList.data.bankAccounts
+  const deletePendingBankAccountUuid = paymentMethodList.isLoading
+    ? undefined
+    : paymentMethodList.deletePendingBankAccountUuid
+  const handleDelete = async (uuid: string) => {
+    if (paymentMethodList.isLoading) return
+    await paymentMethodList.handleDelete(uuid)
+  }
 
   const { pendingDeleteAccount, setPendingDeleteAccount, handleConfirmDelete } =
     useDeleteBankAccount(uuid => baseSubmitHandler(uuid, handleDelete))
@@ -138,7 +148,7 @@ export function JobAndPayView({
     {
       key: 'paymentMethod',
       title: t('jobAndPay.paystubs.paymentMethod'),
-      render: () => paymentMethod.type || t('jobAndPay.paystubs.noPaymentMethod'),
+      render: () => paymentMethod?.type || t('jobAndPay.paystubs.noPaymentMethod'),
     },
   ]
 
@@ -187,11 +197,11 @@ export function JobAndPayView({
     ),
   })
 
-  if (isLoading) {
+  if (isLoading || paymentMethodList.isLoading) {
     return <Loading />
   }
 
-  const isDirectDeposit = paymentMethod.type === PAYMENT_METHODS.directDeposit
+  const isDirectDeposit = paymentMethod?.type === PAYMENT_METHODS.directDeposit
 
   return (
     <Flex flexDirection="column" gap={24}>

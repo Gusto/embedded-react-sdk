@@ -2,23 +2,64 @@ import { useTranslation } from 'react-i18next'
 import {
   usePaymentMethodList,
   type UsePaymentMethodListParams,
+  type UsePaymentMethodListReady,
 } from '../shared/usePaymentMethodList'
 import { useDeleteBankAccount } from '../shared/useDeleteBankAccount'
 import { DeleteBankAccountDialog } from '../shared/DeleteBankAccountDialog'
 import { DataView, useDataView } from '@/components/Common'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
+import { BaseLayout } from '@/components/Base/Base'
+import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
+import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { useBase } from '@/components/Base/useBase'
 import { componentEvents, PAYMENT_METHODS } from '@/shared/constants'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 import PercentCircleIcon from '@/assets/icons/percent-circle.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 
 export function ListView({ employeeId, onEvent }: UsePaymentMethodListParams) {
-  const { baseSubmitHandler } = useBase()
-  const { bankAccounts, paymentMethod, deletePendingBankAccountUuid, handleDelete } =
-    usePaymentMethodList({ employeeId, onEvent })
+  const paymentMethodList = usePaymentMethodList({ employeeId, onEvent })
+  const {
+    error: deleteError,
+    setError: setDeleteError,
+    baseSubmitHandler: deleteSubmitHandler,
+  } = useBaseSubmit('PaymentMethodListDelete')
+
+  const errorHandling = composeErrorHandler([paymentMethodList], {
+    submitError: deleteError,
+    setSubmitError: setDeleteError,
+  })
+
+  if (paymentMethodList.isLoading) {
+    return <BaseLayout isLoading error={errorHandling.errors} />
+  }
+
+  return (
+    <ListViewReady
+      onEvent={onEvent}
+      paymentMethodList={paymentMethodList}
+      errorHandling={errorHandling}
+      deleteSubmitHandler={deleteSubmitHandler}
+    />
+  )
+}
+
+interface ListViewReadyProps {
+  onEvent: UsePaymentMethodListParams['onEvent']
+  paymentMethodList: UsePaymentMethodListReady
+  errorHandling: ReturnType<typeof composeErrorHandler>
+  deleteSubmitHandler: ReturnType<typeof useBaseSubmit>['baseSubmitHandler']
+}
+
+function ListViewReady({
+  onEvent,
+  paymentMethodList,
+  errorHandling,
+  deleteSubmitHandler,
+}: ListViewReadyProps) {
+  const { paymentMethod, bankAccounts } = paymentMethodList.data
+  const { deletePendingBankAccountUuid, handleDelete } = paymentMethodList
   const { t } = useTranslation('Employee.PaymentMethod')
   const Components = useComponentContext()
 
@@ -28,7 +69,7 @@ export function ListView({ employeeId, onEvent }: UsePaymentMethodListParams) {
     deletedAccountNumber,
     setDeletedAccountNumber,
     handleConfirmDelete,
-  } = useDeleteBankAccount(uuid => baseSubmitHandler(uuid, handleDelete))
+  } = useDeleteBankAccount(uuid => deleteSubmitHandler(uuid, handleDelete))
 
   const { ...dataViewProps } = useDataView({
     data: bankAccounts,
@@ -96,30 +137,32 @@ export function ListView({ employeeId, onEvent }: UsePaymentMethodListParams) {
 
   return (
     <>
-      <Components.Box
-        header={<Components.BoxHeader title={t('managementTitle')} action={headerAction} />}
-      >
-        {deletedAccountNumber !== null && (
-          <Components.Alert
-            status="success"
-            label={t('deleteBankAccountSuccessAlert', { account: deletedAccountNumber })}
-            onDismiss={() => {
-              setDeletedAccountNumber(null)
-            }}
-            disableScrollIntoView
-          />
-        )}
-        {isDirectDeposit && bankAccounts.length > 0 ? (
-          <DataView label={t('bankAccountsListLabel')} {...dataViewProps} />
-        ) : (
-          <Flex flexDirection="column" gap={0}>
-            <Components.Text variant="supporting">{t('paymentMethodLabel')}</Components.Text>
-            <Components.Text>
-              {isDirectDeposit ? t('directDepositLabel') : t('checkLabel')}
-            </Components.Text>
-          </Flex>
-        )}
-      </Components.Box>
+      <BaseLayout error={errorHandling.errors}>
+        <Components.Box
+          header={<Components.BoxHeader title={t('managementTitle')} action={headerAction} />}
+        >
+          {deletedAccountNumber !== null && (
+            <Components.Alert
+              status="success"
+              label={t('deleteBankAccountSuccessAlert', { account: deletedAccountNumber })}
+              onDismiss={() => {
+                setDeletedAccountNumber(null)
+              }}
+              disableScrollIntoView
+            />
+          )}
+          {isDirectDeposit && bankAccounts.length > 0 ? (
+            <DataView label={t('bankAccountsListLabel')} {...dataViewProps} />
+          ) : (
+            <Flex flexDirection="column" gap={0}>
+              <Components.Text variant="supporting">{t('paymentMethodLabel')}</Components.Text>
+              <Components.Text>
+                {isDirectDeposit ? t('directDepositLabel') : t('checkLabel')}
+              </Components.Text>
+            </Flex>
+          )}
+        </Components.Box>
+      </BaseLayout>
       <DeleteBankAccountDialog
         pendingDeleteAccount={pendingDeleteAccount}
         isPrimaryActionLoading={deletePendingBankAccountUuid === pendingDeleteAccount?.uuid}

@@ -9,7 +9,7 @@ import {
 import { paymentMethodStateMachine } from './paymentMethodStateMachine'
 import { Flow } from '@/components/Flow/Flow'
 import {
-  BaseComponent,
+  BaseBoundaries,
   type BaseComponentInterface,
   type CommonComponentInterface,
 } from '@/components/Base'
@@ -23,6 +23,7 @@ export interface PaymentMethodProps extends CommonComponentInterface<'Employee.P
   defaultValues?: never
   isAdmin?: boolean
   initialState?: 'list' | 'add' | 'split'
+  onEvent: OnEventType<EventType, unknown>
 }
 
 function PaymentMethodFlow({
@@ -30,7 +31,7 @@ function PaymentMethodFlow({
   isAdmin = true,
   initialState = 'list',
   onEvent,
-}: PaymentMethodProps & { onEvent: OnEventType<EventType, unknown> }) {
+}: PaymentMethodProps) {
   useI18n('Employee.PaymentMethod')
 
   const initialComponent =
@@ -52,7 +53,7 @@ function PaymentMethodFlow({
           isAdmin,
         }),
       ),
-    [employeeId, isAdmin, initialState],
+    [employeeId, isAdmin, initialState, initialComponent],
   )
 
   return <Flow machine={machine} onEvent={onEvent} />
@@ -60,12 +61,16 @@ function PaymentMethodFlow({
 
 export function PaymentMethod({
   dictionary,
+  FallbackComponent,
   ...props
 }: PaymentMethodProps & BaseComponentInterface) {
   useComponentDictionary('Employee.PaymentMethod', dictionary)
   return (
-    <BaseComponent {...props}>
+    <BaseBoundaries
+      componentName="Employee.PaymentMethod.Management"
+      FallbackComponent={FallbackComponent}
+    >
       <PaymentMethodFlow {...props} />
-    </BaseComponent>
+    </BaseBoundaries>
   )
 }
