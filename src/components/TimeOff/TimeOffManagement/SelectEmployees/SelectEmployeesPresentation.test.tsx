@@ -212,5 +212,27 @@ describe('SelectEmployeesPresentation', () => {
       await userEvent.type(inputs[0] as Element, '4')
       expect(onBalanceChange).toHaveBeenCalledWith('1', '4')
     })
+
+    test('rejects non-numeric input in a balance cell', async () => {
+      const onBalanceChange = vi.fn()
+      renderPresentation({
+        balances: {},
+        onBalanceChange,
+      })
+      const inputs = screen.getAllByPlaceholderText('0')
+      await userEvent.type(inputs[0] as Element, 'abc')
+      expect(onBalanceChange).not.toHaveBeenCalled()
+    })
+
+    test('rejects input with multiple decimal points', async () => {
+      const onBalanceChange = vi.fn()
+      renderPresentation({
+        balances: { '1': '1.2' },
+        onBalanceChange,
+      })
+      const inputs = screen.getAllByPlaceholderText('0')
+      await userEvent.type(inputs[0] as Element, '.')
+      expect(onBalanceChange).not.toHaveBeenCalled()
+    })
   })
 })

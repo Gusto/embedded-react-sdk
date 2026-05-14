@@ -13,6 +13,9 @@ export function PolicySettingsPresentation({
   onContinue,
   onBack,
   defaultValues,
+  mode,
+  editingPolicyName,
+  isPending = false,
 }: PolicySettingsPresentationProps) {
   useI18n('Company.TimeOff.CreateTimeOffPolicy')
   const { t } = useTranslation('Company.TimeOff.CreateTimeOffPolicy')
@@ -56,7 +59,9 @@ export function PolicySettingsPresentation({
         <div className={styles.policySettings}>
           <Flex flexDirection="column" gap={32}>
             <Heading as="h2" id={headingId}>
-              {t('policySettings.title')}
+              {mode === 'edit' && editingPolicyName
+                ? t('policySettings.editTitle', { name: editingPolicyName })
+                : t('policySettings.createTitle')}
             </Heading>
 
             <Flex flexDirection="column" gap={20}>
@@ -73,6 +78,7 @@ export function PolicySettingsPresentation({
                       placeholder={t('policySettings.numberOfHoursPlaceholder')}
                       isDisabled={!accrualMaximumEnabled}
                       min={0}
+                      max={20000}
                     />
                     <div className={styles.toggleCell}>
                       <SwitchField
@@ -99,6 +105,7 @@ export function PolicySettingsPresentation({
                   placeholder={t('policySettings.numberOfHoursPlaceholder')}
                   isDisabled={!balanceMaximumEnabled}
                   min={0}
+                  max={20000}
                 />
                 <div className={styles.toggleCell}>
                   <SwitchField
@@ -123,6 +130,7 @@ export function PolicySettingsPresentation({
                   placeholder={t('policySettings.numberOfHoursPlaceholder')}
                   isDisabled={!carryOverLimitEnabled}
                   min={0}
+                  max={20000}
                 />
                 <div className={styles.toggleCell}>
                   <SwitchField
@@ -149,6 +157,7 @@ export function PolicySettingsPresentation({
                       placeholder={t('policySettings.numberOfDaysPlaceholder')}
                       isDisabled={!waitingPeriodEnabled}
                       min={0}
+                      max={20000}
                     />
                     <div className={styles.toggleCell}>
                       <SwitchField
@@ -173,10 +182,10 @@ export function PolicySettingsPresentation({
               <hr className={styles.divider} />
 
               <ActionsLayout>
-                <Button variant="secondary" onClick={onBack}>
+                <Button variant="secondary" onClick={onBack} isDisabled={isPending}>
                   {t('backCta')}
                 </Button>
-                <Button variant="primary" type="submit">
+                <Button variant="primary" type="submit" isLoading={isPending}>
                   {t('policySettings.continueCta')}
                 </Button>
               </ActionsLayout>

@@ -42,12 +42,26 @@ describe('PolicyConfigurationFormPresentation', () => {
   })
 
   describe('rendering', () => {
-    it('renders the heading', async () => {
+    it('renders the create heading by default', async () => {
       renderWithProviders(<PolicyConfigurationFormPresentation {...defaultProps} />)
 
       await waitFor(() => {
         expect(screen.getByText('Policy details')).toBeInTheDocument()
       })
+    })
+
+    it('renders the edit heading with the policy name when editingPolicyName is provided', async () => {
+      renderWithProviders(
+        <PolicyConfigurationFormPresentation
+          {...defaultProps}
+          editingPolicyName="Paid Time Off Policy"
+        />,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText('Edit Paid Time Off Policy')).toBeInTheDocument()
+      })
+      expect(screen.queryByText('Policy details')).not.toBeInTheDocument()
     })
 
     it('renders the policy name field', async () => {

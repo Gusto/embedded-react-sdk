@@ -365,7 +365,8 @@ export interface CompanyStateTaxes{
 };
 export interface CompanyTimeOffCreateTimeOffPolicy{
 "policyDetails":{
-"title":string;
+"createTitle":string;
+"editTitle":string;
 "policyNameLabel":string;
 "accrualMethodLabel":string;
 "accrualMethodHint":string;
@@ -407,7 +408,8 @@ export interface CompanyTimeOffCreateTimeOffPolicy{
 };
 };
 "policySettings":{
-"title":string;
+"createTitle":string;
+"editTitle":string;
 "hoursUnit":string;
 "daysUnit":string;
 "accrualMaximumLabel":string;
@@ -479,7 +481,6 @@ export interface CompanyTimeOffHolidayPolicy{
 };
 "show":{
 "title":string;
-"holidaySchedule":string;
 "addEmployeesCta":string;
 "editPolicyCta":string;
 };
@@ -551,6 +552,10 @@ export interface CompanyTimeOffPolicyDetail{
 };
 "backLabel":string;
 "employeeActions":string;
+"emptyEmployees":{
+"title":string;
+"addEmployeeCta":string;
+};
 "removeEmployeeDialog":{
 "title":string;
 "description":string;
@@ -593,6 +598,9 @@ export interface CompanyTimeOffSelectPolicyType{
 "sickLeaveHint":string;
 "continueCta":string;
 "cancelCta":string;
+"validations":{
+"policyTypeRequired":string;
+};
 };
 export interface CompanyTimeOffTimeOffPolicies{
 "pageTitle":string;

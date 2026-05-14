@@ -4,6 +4,7 @@ import {
   SelectPolicyTypeContextual,
   PolicyDetailsFormContextual,
   PolicySettingsContextual,
+  EditPolicySettingsContextual,
   AddEmployeesToPolicyContextual,
   TimeOffPolicyDetailContextual,
   HolidaySelectionFormContextual,
@@ -13,6 +14,7 @@ import {
   ViewHolidayScheduleContextual,
   type TimeOffFlowContextInterface,
   type TimeOffFlowAlert,
+  type AddEmployeesSource,
 } from './TimeOffFlowComponents'
 import type { TimeOffPolicyType } from './timeOffPolicyTypes'
 import { componentEvents } from '@/shared/constants'
@@ -45,6 +47,10 @@ function isUnlimitedPolicy(
   ev: { payload: PolicyCreatedPayload },
 ) {
   return ev.payload.accrualMethod === 'unlimited'
+}
+
+function addEmployeesSourceIs(source: AddEmployeesSource) {
+  return (ctx: TimeOffFlowContextInterface) => ctx.addEmployeesSource === source
 }
 
 const cancelToPolicyList = transition(
@@ -176,6 +182,7 @@ export const timeOffMachine = {
           component: AddEmployeesToPolicyContextual,
           policyId: ev.payload.policyId,
           alerts: undefined,
+          addEmployeesSource: 'policyDetailsForm',
         }),
       ),
     ),
@@ -220,6 +227,7 @@ export const timeOffMachine = {
           ...ctx,
           component: AddEmployeesToPolicyContextual,
           alerts: undefined,
+          addEmployeesSource: 'policySettings',
         }),
       ),
     ),
@@ -260,6 +268,60 @@ export const timeOffMachine = {
           ...ctx,
           component: TimeOffPolicyDetailContextual,
           alerts: undefined,
+          addEmployeesSource: undefined,
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.TIME_OFF_ADD_EMPLOYEES_BACK,
+      'viewTimeOffPolicyDetail',
+      guard(addEmployeesSourceIs('viewTimeOffPolicyDetail')),
+      reduce(
+        (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: TimeOffPolicyDetailContextual,
+          alerts: undefined,
+          addEmployeesSource: undefined,
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.TIME_OFF_ADD_EMPLOYEES_BACK,
+      'policyDetailsForm',
+      guard(addEmployeesSourceIs('policyDetailsForm')),
+      reduce(
+        (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: PolicyDetailsFormContextual,
+          alerts: undefined,
+          addEmployeesSource: undefined,
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.TIME_OFF_ADD_EMPLOYEES_BACK,
+      'policySettings',
+      reduce(
+        (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: PolicySettingsContextual,
+          alerts: undefined,
+          addEmployeesSource: undefined,
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.TIME_OFF_ADD_EMPLOYEES_ERROR,
+      'policyDetailsForm',
+      guard(addEmployeesSourceIs('policyDetailsForm')),
+      reduce(
+        (
+          ctx: TimeOffFlowContextInterface,
+          ev: { payload: ErrorPayload },
+        ): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: PolicyDetailsFormContextual,
+          alerts: ev.payload.alert ? [ev.payload.alert] : undefined,
         }),
       ),
     ),
@@ -293,6 +355,7 @@ export const timeOffMachine = {
           component: AddEmployeesToPolicyContextual,
           policyId: ev.payload.policyId,
           alerts: undefined,
+          addEmployeesSource: 'viewTimeOffPolicyDetail',
         }),
       ),
     ),
@@ -320,7 +383,7 @@ export const timeOffMachine = {
           ev: { payload: PolicyIdPayload },
         ): TimeOffFlowContextInterface => ({
           ...ctx,
-          component: PolicySettingsContextual,
+          component: EditPolicySettingsContextual,
           policyId: ev.payload.policyId,
           alerts: undefined,
         }),
@@ -329,14 +392,13 @@ export const timeOffMachine = {
     backToListTransition,
   ),
 
-  // Distinct from `policyDetailsForm` (the create-flow step) so that
-  // DONE/CANCEL return to the policy detail view and settings route through
-  // `editPolicySettings` instead of the create flow's steps.
+  // Distinct from `policyDetailsForm` (the create-flow step) so that DONE
+  // returns to the policy detail view rather than continuing into the
+  // create flow's settings step.
   editPolicyDetailsForm: state<MachineTransition>(
     transition(
       componentEvents.TIME_OFF_POLICY_DETAILS_DONE,
       'viewTimeOffPolicyDetail',
-      guard(isUnlimitedPolicy),
       reduce(
         (
           ctx: TimeOffFlowContextInterface,
@@ -344,21 +406,6 @@ export const timeOffMachine = {
         ): TimeOffFlowContextInterface => ({
           ...ctx,
           component: TimeOffPolicyDetailContextual,
-          policyId: ev.payload.policyId,
-          alerts: undefined,
-        }),
-      ),
-    ),
-    transition(
-      componentEvents.TIME_OFF_POLICY_DETAILS_DONE,
-      'editPolicySettings',
-      reduce(
-        (
-          ctx: TimeOffFlowContextInterface,
-          ev: { payload: PolicyCreatedPayload },
-        ): TimeOffFlowContextInterface => ({
-          ...ctx,
-          component: PolicySettingsContextual,
           policyId: ev.payload.policyId,
           alerts: undefined,
         }),

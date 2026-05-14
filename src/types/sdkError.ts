@@ -117,10 +117,23 @@ function hasErrorsArray(error: unknown): error is ErrorWithErrors {
   )
 }
 
+function humanizeFieldName(snakeCaseField: string): string {
+  if (!snakeCaseField) return snakeCaseField
+  const words = snakeCaseField.replace(/_/g, ' ')
+  return words.charAt(0).toUpperCase() + words.slice(1)
+}
+
+function humanizeMessage(message: string, field: string): string {
+  if (!message || !field) return message
+  const humanized = humanizeFieldName(field)
+  return message.replace(field, humanized)
+}
+
 function toSDKFieldError(entityError: EntityErrorObject): SDKFieldError {
+  const rawMessage = entityError.message ?? ''
   return {
     field: entityError.errorKey,
-    message: entityError.message ?? '',
+    message: humanizeMessage(rawMessage, entityError.errorKey),
     category: entityError.category,
     metadata: entityError.metadata as Record<string, unknown> | undefined,
   }

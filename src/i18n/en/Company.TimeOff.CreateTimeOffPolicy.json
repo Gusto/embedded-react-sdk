@@ -1,6 +1,7 @@
 {
   "policyDetails": {
-    "title": "Policy details",
+    "createTitle": "Policy details",
+    "editTitle": "Edit {{name}}",
     "policyNameLabel": "Policy name",
     "accrualMethodLabel": "Accrual method",
     "accrualMethodHint": "The rate at which employees will accrue time paid time off.",
@@ -42,7 +43,8 @@
     }
   },
   "policySettings": {
-    "title": "Policy settings",
+    "createTitle": "Policy settings",
+    "editTitle": "{{name}} settings",
     "hoursUnit": "hours",
     "daysUnit": "days",
     "accrualMaximumLabel": "Accrual maximum",
@@ -55,8 +57,8 @@
     "waitingPeriodHint": "The number of days employees must work before they begin accruing time off.",
     "paidOutOnTerminationLabel": "Payout on dismissal",
     "paidOutOnTerminationHint": "Choose if unused time off is paid out when an employee leaves. Some states require it by law.",
-    "numberOfHoursPlaceholder": "Number of hours",
-    "numberOfDaysPlaceholder": "Number of days",
+    "numberOfHoursPlaceholder": "0",
+    "numberOfDaysPlaceholder": "0",
     "continueCta": "Save"
   },
   "startingBalances": {
