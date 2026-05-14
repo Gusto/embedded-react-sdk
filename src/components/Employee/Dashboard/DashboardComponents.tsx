@@ -9,6 +9,7 @@ import { BankForm } from '@/components/Employee/PaymentMethod/onboarding/BankFor
 import { SplitView } from '@/components/Employee/PaymentMethod/onboarding/SplitView'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { BaseComponent } from '@/components/Base'
 import { ensureRequired } from '@/helpers/ensureRequired'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
@@ -76,10 +77,18 @@ export function ProfileContextual() {
 
 export function PaymentBankFormContextual() {
   const { employeeId, onEvent } = useFlow<DashboardContextInterface>()
-  return <BankForm employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
+  return (
+    <BaseComponent onEvent={onEvent}>
+      <BankForm employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
+    </BaseComponent>
+  )
 }
 
 export function PaymentSplitViewContextual() {
   const { employeeId, onEvent } = useFlow<DashboardContextInterface>()
-  return <SplitView employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
+  return (
+    <BaseComponent onEvent={onEvent}>
+      <SplitView employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
+    </BaseComponent>
+  )
 }

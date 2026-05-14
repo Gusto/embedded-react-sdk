@@ -19,6 +19,7 @@ import {
 } from '@/components/Employee/PaymentMethod/shared'
 import { componentEvents, PAYMENT_METHODS, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
+import type { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 import PercentCircleIcon from '@/assets/icons/percent-circle.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
@@ -37,6 +38,7 @@ export interface JobAndPayViewProps {
   onEvent: OnEventType<EventType, unknown>
   onEditCompensation?: () => void
   onAddDeduction?: () => void
+  baseSubmitHandler: ReturnType<typeof useBaseSubmit>['baseSubmitHandler']
 }
 
 export function JobAndPayView({
@@ -49,6 +51,7 @@ export function JobAndPayView({
   onEvent,
   onEditCompensation,
   onAddDeduction,
+  baseSubmitHandler,
 }: JobAndPayViewProps) {
   useI18n('Employee.PaymentMethod')
   const { t } = useTranslation('Employee.Dashboard')
@@ -61,7 +64,7 @@ export function JobAndPayView({
     usePaymentMethodList({ employeeId, onEvent })
 
   const { pendingDeleteAccount, setPendingDeleteAccount, handleConfirmDelete } =
-    useDeleteBankAccount(handleDelete)
+    useDeleteBankAccount(uuid => baseSubmitHandler(uuid, handleDelete))
 
   const bankAccountsColumns = [
     {
