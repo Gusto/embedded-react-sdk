@@ -37,6 +37,16 @@ See [sdk-app/README.md](sdk-app/README.md) for all available commands and enviro
 - NEVER use `!important` in CSS/SCSS files — use proper CSS specificity instead
 - Do not include `@use` imports in `.module.scss` for modules globally available via Vite (e.g., `@/styles/Helpers` is auto-injected)
 
+## Documentation
+
+Files under `docs/` are **partner-facing**. They document the public SDK API for engineers integrating it into their own app. When writing or editing them:
+
+- Don't refer to "partners" in third person; the reader **is** the partner. Write neutrally or in second person ("supply the value at submit time", not "partners supply the value at submit time").
+- Don't speculate about the integrator's app or workflow ("captured on a previous step", "in your onboarding wizard", etc.). Describe what the API does and how to use it, not why someone might want it — there are many valid reasons.
+- Code samples must compile against the published SDK surface only. No `@/` import aliases, no internal helpers.
+
+`CLAUDE.md`, source comments, and other internal docs can reference "partners" and our team freely — they're written for SDK maintainers.
+
 ## SDK Architecture
 
 ### ComponentsContext Pattern

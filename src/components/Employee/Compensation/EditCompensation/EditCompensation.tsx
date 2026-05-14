@@ -1,24 +1,23 @@
-import { useMemo } from 'react'
-import type { Job } from '@gusto/embedded-api/models/components/job'
-import { useJobsAndCompensationsCreateJobMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsCreateJob'
-import { useJobsAndCompensationsGetJobsSuspense } from '@gusto/embedded-api/react-query/jobsAndCompensationsGetJobs'
-import { useJobsAndCompensationsUpdateMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsUpdate'
-import { useJobsAndCompensationsUpdateCompensationMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsUpdateCompensation'
-import { useEmployeeAddressesGetWorkAddressesSuspense } from '@gusto/embedded-api/react-query/employeeAddressesGetWorkAddresses'
-import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
-import { useFederalTaxDetailsGetSuspense } from '@gusto/embedded-api/react-query/federalTaxDetailsGet'
-import { useLocationsGetMinimumWagesSuspense } from '@gusto/embedded-api/react-query/locationsGetMinimumWages'
+import { useState } from 'react'
+import classNames from 'classnames'
+import { Trans, useTranslation } from 'react-i18next'
+import type { PaymentUnit } from '@gusto/embedded-api/models/components/compensation'
+import type { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
+import type { MinimumWage } from '@gusto/embedded-api/models/components/minimumwage'
 import type { CompensationDefaultValues } from '../Compensation'
-import { type CompensationInputs, type CompensationOutputs } from '../compensationSchema'
-import { EditCompensationPresentation } from './EditCompensationPresentation'
-import {
-  BaseComponent,
-  type BaseComponentInterface,
-  type CommonComponentInterface,
-  useBase,
-} from '@/components/Base'
+import { useJobForm, type UseJobFormReady } from '../shared/useJobForm'
+import { useCompensationForm, type UseCompensationFormReady } from '../shared/useCompensationForm'
+import styles from './EditCompensation.module.scss'
+import { BaseBoundaries, BaseLayout, type CommonComponentInterface } from '@/components/Base'
+import type { OnEventType } from '@/components/Base/useBase'
+import { ActionsLayout, Flex } from '@/components/Common'
+import { Form } from '@/components/Common/Form'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useComponentDictionary, useI18n } from '@/i18n'
-import { componentEvents } from '@/shared/constants'
+import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
+import { composeSubmitHandler } from '@/partner-hook-utils/form/composeSubmitHandler'
+import { componentEvents, FLSA_OVERTIME_SALARY_LIMIT, type EventType } from '@/shared/constants'
+import useNumberFormatter from '@/hooks/useNumberFormatter'
 
 export interface EditCompensationProps extends CommonComponentInterface<'Employee.Compensation'> {
   employeeId: string
@@ -26,22 +25,24 @@ export interface EditCompensationProps extends CommonComponentInterface<'Employe
   currentJobId?: string | null
   title: string
   submitCtaLabel: string
-  onSaved: (data: CompensationOutputs) => void
   onCancel?: () => void
   partnerDefaultValues?: CompensationDefaultValues
+  /**
+   * Receives the broadcast events: `EMPLOYEE_JOB_CREATED` / `EMPLOYEE_JOB_UPDATED`
+   * (with the saved `Job`), then `EMPLOYEE_COMPENSATION_UPDATED` (with the saved
+   * `Compensation`) on a successful submit chain. Use `EMPLOYEE_COMPENSATION_UPDATED`
+   * for "save complete" branching.
+   */
+  onEvent: OnEventType<EventType, unknown>
 }
 
-export function EditCompensation(props: EditCompensationProps & BaseComponentInterface) {
-  useComponentDictionary('Employee.Compensation', props.dictionary)
+export function EditCompensation({ dictionary, ...props }: EditCompensationProps) {
+  useComponentDictionary('Employee.Compensation', dictionary)
   return (
-    <BaseComponent {...props}>
+    <BaseBoundaries componentName="Employee.Compensation">
       <Root {...props} />
-    </BaseComponent>
+    </BaseBoundaries>
   )
-}
-
-const findCurrentCompensation = (job?: Job | null) => {
-  return job?.compensations?.find(comp => comp.uuid === job.currentCompensationUuid)
 }
 
 function Root({
@@ -50,173 +51,286 @@ function Root({
   currentJobId,
   title,
   submitCtaLabel,
-  onSaved,
   onCancel,
   partnerDefaultValues,
   className,
+  onEvent,
 }: EditCompensationProps) {
   useI18n('Employee.Compensation')
-  const { onEvent, baseSubmitHandler } = useBase()
 
-  const { data: jobsData } = useJobsAndCompensationsGetJobsSuspense({ employeeId })
-  const employeeJobs = useMemo(() => jobsData.jobs ?? [], [jobsData.jobs])
+  // Track jobId locally so a partial-failure submit chain (job POST succeeds,
+  // comp PUT fails) doesn't re-POST and create a duplicate job on retry. We
+  // initialize from the prop and only write back when the partner-supplied
+  // `currentJobId` was nullish (i.e. add-job flow) — see the submit handler.
+  const [resolvedJobId, setResolvedJobId] = useState<string | undefined>(currentJobId ?? undefined)
 
-  const { data: addressesData } = useEmployeeAddressesGetWorkAddressesSuspense({ employeeId })
-  const workAddresses = addressesData.employeeWorkAddressesList ?? []
-  const currentWorkAddress = workAddresses.find(address => address.active) ?? workAddresses[0]
-
-  if (!currentWorkAddress?.locationUuid) {
-    throw new Error('No active work address with a location found for this employee')
-  }
-
-  const {
-    data: { minimumWageList },
-  } = useLocationsGetMinimumWagesSuspense({
-    locationUuid: currentWorkAddress.locationUuid,
+  const jobForm = useJobForm({
+    employeeId,
+    jobId: resolvedJobId,
+    // The Compensation flow does not surface a hire-date field — the date is
+    // derived from the employee's `startDate` (passed via submit options
+    // below). Hiding via the hook flag also drops the field from the schema
+    // so partner forms don't silently fail validation on create.
+    withHireDateField: false,
+    defaultValues: {
+      title: partnerDefaultValues?.title ?? '',
+    },
+    // The Compensation flow always shows a job title field, even when editing
+    // an existing job. The hook's schema only requires `title` on create; we
+    // require it on update too to preserve the existing UX.
+    optionalFieldsToRequire: { update: ['title'] },
+    shouldFocusError: false,
   })
-  const minimumWages = minimumWageList ?? []
 
-  const {
-    data: { employee },
-  } = useEmployeesGetSuspense({ employeeId })
+  // Resolve the compensationId from the job we just loaded so the comp form can
+  // seed from the existing comp on edit. While the job form is still loading we
+  // pass undefined (compensation form starts in create mode); once the job
+  // resolves the prop change re-renders the comp form into update mode with the
+  // existing compensation as the seed.
+  const resolvedCompensationId = jobForm.isLoading
+    ? undefined
+    : (jobForm.data.currentJob?.currentCompensationUuid ?? undefined)
 
-  if (!employee) {
-    throw new Error('Employee not found')
+  const compensationForm = useCompensationForm({
+    employeeId,
+    jobId: resolvedJobId,
+    compensationId: resolvedCompensationId,
+    // The Compensation flow does not surface an effective-date field — the
+    // date is derived from the parent job's `hireDate` (= `startDate`),
+    // threaded via submit options below. The hook's `willDeleteSecondaryJobs`
+    // carve-out still works because it manipulates the underlying form value
+    // (which the hook reads at submit time even when the field is hidden).
+    withEffectiveDateField: false,
+    // The Compensation flow always presents flsaStatus, rate, and paymentUnit
+    // as required, even when editing an existing compensation. The hook's
+    // schema marks them `'create'`-only by default; we promote them on update
+    // here to preserve the existing UX (no "(optional)" labels).
+    optionalFieldsToRequire: { update: ['flsaStatus', 'rate', 'paymentUnit'] },
+    defaultValues: {
+      flsaStatus: partnerDefaultValues?.flsaStatus,
+      rate:
+        typeof partnerDefaultValues?.rate === 'number'
+          ? partnerDefaultValues.rate
+          : partnerDefaultValues?.rate
+            ? Number(partnerDefaultValues.rate)
+            : undefined,
+      paymentUnit: partnerDefaultValues?.paymentUnit,
+    },
+    shouldFocusError: false,
+  })
+
+  if (jobForm.isLoading || compensationForm.isLoading) {
+    const loadingErrorHandling = composeErrorHandler([jobForm, compensationForm])
+    return <BaseLayout isLoading error={loadingErrorHandling.errors} />
   }
 
-  const { data } = useFederalTaxDetailsGetSuspense({ companyId: employee.companyUuid! })
-  const showTwoPercentStakeholder = data.federalTaxDetails?.taxableAsScorp === true
+  const submitResult = composeSubmitHandler([jobForm, compensationForm], async () => {
+    const jobResult = await jobForm.actions.onSubmit({ employeeId, hireDate: startDate })
+    if (!jobResult) return
 
-  const currentJob = useMemo(
-    () => (currentJobId ? (employeeJobs.find(job => job.uuid === currentJobId) ?? null) : null),
-    [employeeJobs, currentJobId],
-  )
-  const currentCompensation = findCurrentCompensation(currentJob)
+    onEvent(
+      jobResult.mode === 'create'
+        ? componentEvents.EMPLOYEE_JOB_CREATED
+        : componentEvents.EMPLOYEE_JOB_UPDATED,
+      jobResult.data,
+    )
 
-  const primaryFlsaStatus = useMemo<string | undefined>(() => {
-    return employeeJobs.reduce<string | undefined>((prev, curr) => {
-      const compensation = curr.compensations?.find(
-        comp => comp.uuid === curr.currentCompensationUuid,
-      )
-      if (!curr.primary || !compensation) return prev
-      return compensation.flsaStatus ?? prev
-    }, undefined)
-  }, [employeeJobs])
+    // Always thread through the freshly returned job's currentCompensationUuid +
+    // its version so we PUT against the latest comp regardless of whether the job
+    // POST just auto-created the stub or the job PUT bumped a version.
+    const stubCompensation = jobResult.data.compensations?.find(
+      c => c.uuid === jobResult.data.currentCompensationUuid,
+    )
 
-  const defaultValues = useMemo<CompensationInputs>(() => {
-    return {
-      jobTitle:
-        currentJob?.title && currentJob.title !== ''
-          ? currentJob.title
-          : (partnerDefaultValues?.title ?? ''),
-      flsaStatus:
-        currentCompensation?.flsaStatus ?? primaryFlsaStatus ?? partnerDefaultValues?.flsaStatus,
-      rate: Number(currentCompensation?.rate ?? partnerDefaultValues?.rate ?? 0),
-      adjustForMinimumWage: currentCompensation?.adjustForMinimumWage ?? false,
-      minimumWageId: currentCompensation?.minimumWages?.[0]?.uuid ?? '',
-      paymentUnit: currentCompensation?.paymentUnit ?? partnerDefaultValues?.paymentUnit ?? 'Hour',
-      stateWcCovered: currentJob?.stateWcCovered ?? false,
-      stateWcClassCode: currentJob?.stateWcClassCode ?? '',
-      twoPercentShareholder: currentJob?.twoPercentShareholder ?? false,
-    } as CompensationInputs
-  }, [currentJob, currentCompensation, primaryFlsaStatus, partnerDefaultValues])
-
-  const updateCompensationMutation = useJobsAndCompensationsUpdateCompensationMutation()
-  const createEmployeeJobMutation = useJobsAndCompensationsCreateJobMutation()
-  const updateEmployeeJobMutation = useJobsAndCompensationsUpdateMutation()
-
-  const isPending =
-    updateCompensationMutation.isPending ||
-    createEmployeeJobMutation.isPending ||
-    updateEmployeeJobMutation.isPending
-
-  const otherJobsCount = currentJob
-    ? employeeJobs.filter(job => job.uuid !== currentJob.uuid).length
-    : employeeJobs.length
-
-  const onSave = async (formData: CompensationOutputs) => {
-    await baseSubmitHandler(formData, async payload => {
-      const { jobTitle, twoPercentShareholder, ...compensationData } = payload
-      let updatedJobData: Job
-
-      if (!currentJob) {
-        const createResult = await createEmployeeJobMutation.mutateAsync({
-          request: {
-            employeeId,
-            jobsCreateRequestBody: {
-              title: jobTitle,
-              hireDate: startDate,
-              stateWcCovered: compensationData.stateWcCovered,
-              stateWcClassCode: compensationData.stateWcCovered
-                ? compensationData.stateWcClassCode
-                : null,
-              twoPercentShareholder: twoPercentShareholder ?? false,
-            },
-          },
-        })
-        updatedJobData = createResult.job!
-        onEvent(componentEvents.EMPLOYEE_JOB_CREATED, updatedJobData)
-      } else {
-        const updateResult = await updateEmployeeJobMutation.mutateAsync({
-          request: {
-            jobId: currentJob.uuid,
-            jobsUpdateRequestBody: {
-              title: jobTitle,
-              version: currentJob.version as string,
-              hireDate: startDate,
-              stateWcClassCode: compensationData.stateWcCovered
-                ? compensationData.stateWcClassCode
-                : null,
-              stateWcCovered: compensationData.stateWcCovered,
-              twoPercentShareholder: twoPercentShareholder ?? false,
-            },
-          },
-        })
-        updatedJobData = updateResult.job!
-        onEvent(componentEvents.EMPLOYEE_JOB_UPDATED, updatedJobData)
-      }
-
-      const { compensation } = await updateCompensationMutation.mutateAsync({
-        request: {
-          compensationId: updatedJobData.currentCompensationUuid!,
-          compensationsUpdateRequestBody: {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-            version: updatedJobData.compensations?.find(
-              comp => comp.uuid === updatedJobData.currentCompensationUuid,
-            )?.version!,
-            ...compensationData,
-            rate: String(compensationData.rate),
-            minimumWages: compensationData.adjustForMinimumWage
-              ? [{ uuid: compensationData.minimumWageId }]
-              : [],
-          },
-        },
-      })
-
-      onEvent(componentEvents.EMPLOYEE_COMPENSATION_UPDATED, compensation)
-
-      onSaved(formData)
+    const compensationResult = await compensationForm.actions.onSubmit({
+      jobId: jobResult.data.uuid,
+      compensationId: jobResult.data.currentCompensationUuid ?? undefined,
+      compensationVersion: stubCompensation?.version ?? undefined,
+      effectiveDate: startDate,
     })
-  }
+    if (!compensationResult) {
+      if (!currentJobId) setResolvedJobId(jobResult.data.uuid)
+      return
+    }
 
-  const canChangeFlsaClassification = currentJob?.primary === true || employeeJobs.length === 0
+    onEvent(componentEvents.EMPLOYEE_COMPENSATION_UPDATED, compensationResult.data)
+  })
+
+  const errorHandling = composeErrorHandler([submitResult])
+
+  const isPending = jobForm.status.isPending || compensationForm.status.isPending
 
   return (
-    <section className={className}>
-      <EditCompensationPresentation
-        defaultValues={defaultValues}
-        title={title}
-        submitCtaLabel={submitCtaLabel}
-        canChangeFlsaClassification={canChangeFlsaClassification}
-        currentCompensationFlsaStatus={currentCompensation?.flsaStatus ?? undefined}
-        otherJobsCount={otherJobsCount}
-        state={currentWorkAddress.state}
-        minimumWages={minimumWages}
-        showTwoPercentStakeholder={showTwoPercentStakeholder}
-        isPending={isPending}
-        onSave={onSave}
-        onCancel={onCancel}
-      />
+    <section className={classNames(styles.container, className)}>
+      <BaseLayout error={errorHandling.errors}>
+        <Form onSubmit={submitResult.handleSubmit}>
+          <FormBody
+            jobForm={jobForm}
+            compensationForm={compensationForm}
+            title={title}
+            submitCtaLabel={submitCtaLabel}
+            isPending={isPending}
+            onCancel={onCancel}
+          />
+        </Form>
+      </BaseLayout>
     </section>
+  )
+}
+
+interface FormBodyProps {
+  jobForm: UseJobFormReady
+  compensationForm: UseCompensationFormReady
+  title: string
+  submitCtaLabel: string
+  isPending: boolean
+  onCancel?: () => void
+}
+
+function FormBody({
+  jobForm,
+  compensationForm,
+  title,
+  submitCtaLabel,
+  isPending,
+  onCancel,
+}: FormBodyProps) {
+  const { t } = useTranslation('Employee.Compensation')
+  const Components = useComponentContext()
+  const format = useNumberFormatter('currency')
+
+  const JobFields = jobForm.form.Fields
+  const CompFields = compensationForm.form.Fields
+
+  return (
+    <Flex flexDirection="column" gap={32}>
+      <Components.Heading as="h2">{title}</Components.Heading>
+
+      {compensationForm.status.willDeleteSecondaryJobs && (
+        <Components.Alert
+          label={t('validations.classificationChangeNotification')}
+          status="warning"
+        />
+      )}
+
+      <JobFields.Title
+        label={t('jobTitle')}
+        validationMessages={{ REQUIRED: t('validations.title') }}
+        formHookResult={jobForm}
+      />
+
+      {CompFields.FlsaStatus && (
+        <CompFields.FlsaStatus
+          label={t('employeeClassification')}
+          description={
+            <Trans
+              t={t}
+              i18nKey="classificationLink"
+              components={{ ClassificationLink: <Components.Link /> }}
+            />
+          }
+          validationMessages={{
+            REQUIRED: t('validations.exemptThreshold', {
+              limit: format(FLSA_OVERTIME_SALARY_LIMIT),
+            }),
+          }}
+          getOptionLabel={(status: FlsaStatusType) => t(`flsaStatusLabels.${status}`)}
+          formHookResult={compensationForm}
+        />
+      )}
+
+      <CompFields.Rate
+        label={t('amount')}
+        validationMessages={{
+          REQUIRED: t('validations.rate'),
+          RATE_MINIMUM: t('validations.nonZeroRate'),
+          RATE_EXEMPT_THRESHOLD: t('validations.rateExemptThreshold', {
+            limit: format(FLSA_OVERTIME_SALARY_LIMIT),
+          }),
+        }}
+        formHookResult={compensationForm}
+      />
+
+      <CompFields.PaymentUnit
+        label={t('paymentUnitLabel')}
+        description={t('paymentUnitDescription')}
+        validationMessages={{ REQUIRED: t('validations.paymentUnit') }}
+        getOptionLabel={(unit: PaymentUnit) => t(`paymentUnitOptions.${unit}`)}
+        formHookResult={compensationForm}
+      />
+
+      {CompFields.AdjustForMinimumWage && (
+        <CompFields.AdjustForMinimumWage
+          label={t('adjustForMinimumWage')}
+          description={t('adjustForMinimumWageDescription')}
+          formHookResult={compensationForm}
+        />
+      )}
+
+      {CompFields.MinimumWageId && (
+        <CompFields.MinimumWageId
+          label={t('minimumWageLabel')}
+          description={t('minimumWageDescription')}
+          validationMessages={{ REQUIRED: t('validations.minimumWage') }}
+          getOptionLabel={(wage: MinimumWage) =>
+            `${format(Number(wage.wage))} - ${wage.authority}: ${wage.notes ?? ''}`
+          }
+          formHookResult={compensationForm}
+        />
+      )}
+
+      {JobFields.TwoPercentShareholder && (
+        <JobFields.TwoPercentShareholder
+          label={t('twoPercentStakeholderLabel')}
+          formHookResult={jobForm}
+        />
+      )}
+
+      {JobFields.StateWcCovered && (
+        <JobFields.StateWcCovered
+          label={t('stateWcCoveredLabel')}
+          description={
+            <Trans
+              t={t}
+              i18nKey="stateWcCoveredDescription"
+              components={{
+                wcLink: (
+                  <Components.Link
+                    href="https://www.lni.wa.gov/insurance/rates-risk-classes/risk-classes-for-workers-compensation/risk-class-lookup#/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  />
+                ),
+              }}
+            />
+          }
+          getOptionLabel={(covered: boolean) =>
+            covered ? t('stateWcCoveredOptions.yes') : t('stateWcCoveredOptions.no')
+          }
+          formHookResult={jobForm}
+        />
+      )}
+
+      {JobFields.StateWcClassCode && (
+        <JobFields.StateWcClassCode
+          label={t('stateWcClassCodeLabel')}
+          description={t('stateWcClassCodeDescription')}
+          placeholder={t('stateWcClassCodeLabel')}
+          validationMessages={{ REQUIRED: t('validations.stateWcClassCode') }}
+          formHookResult={jobForm}
+        />
+      )}
+
+      <ActionsLayout>
+        {onCancel && (
+          <Components.Button variant="secondary" onClick={onCancel} isDisabled={isPending}>
+            {t('cancelNewJobCta')}
+          </Components.Button>
+        )}
+        <Components.Button type="submit" isLoading={isPending}>
+          {submitCtaLabel}
+        </Components.Button>
+      </ActionsLayout>
+    </Flex>
   )
 }

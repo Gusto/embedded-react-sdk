@@ -646,16 +646,20 @@
           "path": "/v1/employees/:employeeId/jobs"
         },
         {
-          "method": "POST",
-          "path": "/v1/employees/:employeeId/jobs"
+          "method": "DELETE",
+          "path": "/v1/jobs/:jobId"
         },
         {
-          "method": "PUT",
-          "path": "/v1/jobs/:jobId"
+          "method": "POST",
+          "path": "/v1/jobs/:jobId/compensations"
         },
         {
           "method": "PUT",
           "path": "/v1/compensations/:compensationId"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/locations/:locationUuid/minimum_wages"
         },
         {
           "method": "GET",
@@ -666,20 +670,16 @@
           "path": "/v1/employees/:employeeId"
         },
         {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/federal_tax_details"
+          "method": "POST",
+          "path": "/v1/employees/:employeeId/jobs"
         },
         {
-          "method": "GET",
-          "path": "/v1/locations/:locationUuid/minimum_wages"
-        },
-        {
-          "method": "DELETE",
+          "method": "PUT",
           "path": "/v1/jobs/:jobId"
         },
         {
-          "method": "POST",
-          "path": "/v1/jobs/:jobId/compensations"
+          "method": "GET",
+          "path": "/v1/companies/:companyId/federal_tax_details"
         }
       ],
       "variables": [
@@ -2387,16 +2387,20 @@
           "path": "/v1/employees/:employeeId/jobs"
         },
         {
-          "method": "POST",
-          "path": "/v1/employees/:employeeId/jobs"
+          "method": "DELETE",
+          "path": "/v1/jobs/:jobId"
         },
         {
-          "method": "PUT",
-          "path": "/v1/jobs/:jobId"
+          "method": "POST",
+          "path": "/v1/jobs/:jobId/compensations"
         },
         {
           "method": "PUT",
           "path": "/v1/compensations/:compensationId"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/locations/:locationUuid/minimum_wages"
         },
         {
           "method": "GET",
@@ -2407,20 +2411,16 @@
           "path": "/v1/employees/:employeeId"
         },
         {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/federal_tax_details"
+          "method": "POST",
+          "path": "/v1/employees/:employeeId/jobs"
         },
         {
-          "method": "GET",
-          "path": "/v1/locations/:locationUuid/minimum_wages"
-        },
-        {
-          "method": "DELETE",
+          "method": "PUT",
           "path": "/v1/jobs/:jobId"
         },
         {
-          "method": "POST",
-          "path": "/v1/jobs/:jobId/compensations"
+          "method": "GET",
+          "path": "/v1/companies/:companyId/federal_tax_details"
         },
         {
           "method": "GET",

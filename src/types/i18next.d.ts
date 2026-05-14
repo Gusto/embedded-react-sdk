@@ -586,6 +586,14 @@ export interface CompanyTimeOffSelectEmployees{
 "confirmCta":string;
 "cancelCta":string;
 };
+"addConfirmDialog":{
+"title_one":string;
+"title_other":string;
+"description_one":string;
+"description_other":string;
+"confirmCta":string;
+"cancelCta":string;
+};
 };
 export interface CompanyTimeOffSelectPolicyType{
 "title":string;
