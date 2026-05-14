@@ -11,7 +11,7 @@ export interface EmployeeItem {
   eligiblePaidTimeOff?: PaidTimeOff[]
 }
 
-export interface RemoveConfirmDialogState {
+export interface ConfirmDialogState {
   isOpen: boolean
   count: number
   onConfirm: () => void
@@ -40,5 +40,8 @@ export interface SelectEmployeesPresentationProps {
   /** Current policy balances keyed by employee uuid. Used to render read-only balance text for originally-on-policy employees. */
   originalBalances?: Record<string, string>
   /** Optional confirm dialog shown before submitting when the user is about to remove employees from the policy. */
-  removeConfirmDialog?: RemoveConfirmDialogState
+  removeConfirmDialog?: ConfirmDialogState
+  addConfirmDialog?: ConfirmDialogState
+  /** Disables the back button and shows a spinner on the continue button while a submit is in flight. */
+  isPending?: boolean
 }

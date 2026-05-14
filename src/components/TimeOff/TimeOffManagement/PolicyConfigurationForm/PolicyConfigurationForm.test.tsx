@@ -819,6 +819,7 @@ describe('PolicyConfigurationForm', () => {
           timeOffPolicyRequest: expect.objectContaining({
             accrualMethod: 'per_anniversary_year',
             accrualRate: '60',
+            policyResetDate: null,
             complete: false,
           }),
         },

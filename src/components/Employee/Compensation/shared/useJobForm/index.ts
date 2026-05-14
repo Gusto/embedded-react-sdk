@@ -1,5 +1,4 @@
 export { useJobForm } from './useJobForm'
-export { useCurrentJobForm } from './useCurrentJobForm'
 export type {
   JobSubmitOptions,
   UseJobFormProps,
@@ -8,7 +7,6 @@ export type {
   JobFieldsMetadata,
   JobFormFields,
 } from './useJobForm'
-export type { UseCurrentJobFormProps } from './useCurrentJobForm'
 export {
   createJobSchema,
   JobErrorCodes,

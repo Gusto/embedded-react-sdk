@@ -133,7 +133,7 @@ interface EditBalanceState {
 function Root({ policyId }: TimeOffPolicyDetailProps) {
   useI18n('Company.TimeOff.TimeOffPolicyDetails')
   const { t } = useTranslation('Company.TimeOff.TimeOffPolicyDetails')
-  const { onEvent, baseSubmitHandler } = useBase()
+  const { onEvent, baseSubmitHandler, error, setError } = useBase()
   const { Button } = useComponentContext()
   const { locale } = useLocale()
   const queryClient = useQueryClient()
@@ -225,6 +225,10 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
     [baseSubmitHandler, updateBalance, policyId, editBalanceState, invalidatePolicy, t],
   )
 
+  const handleAddEmployees = useCallback(() => {
+    onEvent(componentEvents.TIME_OFF_ADD_EMPLOYEES_TO_POLICY, { policyId })
+  }, [onEvent, policyId])
+
   const actions = useMemo(() => {
     if (!isEditable) return undefined
     return [
@@ -232,9 +236,7 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
         key="add"
         variant="secondary"
         icon={<PlusCircleIcon aria-hidden />}
-        onClick={() => {
-          onEvent(componentEvents.TIME_OFF_ADD_EMPLOYEES_TO_POLICY, { policyId })
-        }}
+        onClick={handleAddEmployees}
       >
         {t('addEmployeeCta')}
       </Button>,
@@ -249,7 +251,7 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
         {t('editPolicyCta')}
       </Button>,
     ]
-  }, [Button, onEvent, policyId, t, isEditable])
+  }, [Button, onEvent, policyId, t, isEditable, handleAddEmployees])
 
   const isUnlimited = policy.accrualMethod === 'unlimited'
 
@@ -325,6 +327,7 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
           },
           ...(isEditable ? { itemMenu } : {}),
         }}
+        onAddEmployee={isEditable ? handleAddEmployees : undefined}
         removeDialog={{
           isOpen: removeTarget !== null,
           employeeName: removeTarget?.name ?? '',
@@ -348,11 +351,13 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
         isOpen={editBalanceState !== null}
         onClose={() => {
           setEditBalanceState(null)
+          setError(null)
         }}
         employeeName={editBalanceState?.employeeName ?? ''}
         currentBalance={editBalanceState?.currentBalance ?? 0}
         onConfirm={handleUpdateBalance}
         isPending={isBalancePending}
+        error={error}
       />
     </>
   )

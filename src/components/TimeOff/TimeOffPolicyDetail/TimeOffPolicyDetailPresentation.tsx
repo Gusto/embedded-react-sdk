@@ -8,7 +8,6 @@ import type {
   PolicySettingsDisplay,
 } from './TimeOffPolicyDetailTypes'
 import styles from './TimeOffPolicyDetail.module.scss'
-import { Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 
@@ -26,6 +25,7 @@ export function TimeOffPolicyDetailPresentation({
   selectedTabId,
   onTabChange,
   employees,
+  onAddEmployee,
   removeDialog,
   successAlert,
   onDismissAlert,
@@ -78,6 +78,7 @@ export function TimeOffPolicyDetailPresentation({
         ...employees,
         additionalColumns: balanceColumn,
       }}
+      onAddEmployee={onAddEmployee}
       removeDialog={removeDialog}
       successAlert={successAlert}
       onDismissAlert={onDismissAlert}
@@ -190,20 +191,14 @@ function DetailsTab({
     return items
   }, [policySettings, t, showAccrualMaxAndWaiting])
 
-  const detailsCardClassName = isUnlimited
-    ? `${styles.descriptionCard} ${styles.descriptionCardUnlimited}`
-    : styles.descriptionCard
-
   return (
-    <Flex flexDirection="column" gap={20}>
-      <div className={detailsCardClassName}>
+    <div className={styles.cardsContainer}>
+      <div className={styles.cards}>
         <Box header={<BoxHeader title={t('details')} />} withPadding>
           <DescriptionList items={detailItems} showSeparators={false} layout="stacked" />
         </Box>
-      </div>
 
-      {!isUnlimited && policySettings && (
-        <div className={styles.descriptionCard}>
+        {!isUnlimited && policySettings && (
           <Box
             header={
               <BoxHeader
@@ -221,8 +216,8 @@ function DetailsTab({
           >
             <DescriptionList items={settingsItems} showSeparators={false} layout="stacked" />
           </Box>
-        </div>
-      )}
-    </Flex>
+        )}
+      </div>
+    </div>
   )
 }

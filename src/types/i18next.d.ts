@@ -552,6 +552,10 @@ export interface CompanyTimeOffPolicyDetail{
 };
 "backLabel":string;
 "employeeActions":string;
+"emptyEmployees":{
+"title":string;
+"addEmployeeCta":string;
+};
 "removeEmployeeDialog":{
 "title":string;
 "description":string;
@@ -572,8 +576,17 @@ export interface CompanyTimeOffSelectEmployees{
 "continueCta":string;
 "errors":{
 "removeEmployeesFailed":string;
+"completePolicyFailed":string;
 };
 "removeConfirmDialog":{
+"title_one":string;
+"title_other":string;
+"description_one":string;
+"description_other":string;
+"confirmCta":string;
+"cancelCta":string;
+};
+"addConfirmDialog":{
 "title_one":string;
 "title_other":string;
 "description_one":string;
@@ -594,6 +607,9 @@ export interface CompanyTimeOffSelectPolicyType{
 "sickLeaveHint":string;
 "continueCta":string;
 "cancelCta":string;
+"validations":{
+"policyTypeRequired":string;
+};
 };
 export interface CompanyTimeOffTimeOffPolicies{
 "pageTitle":string;

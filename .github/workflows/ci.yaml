@@ -211,7 +211,6 @@ jobs:
   e2e:
     needs: setup
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v6
 
@@ -260,7 +259,6 @@ jobs:
   e2e-demo:
     needs: setup
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v6
 

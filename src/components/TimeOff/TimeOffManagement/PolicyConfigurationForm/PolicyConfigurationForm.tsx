@@ -125,7 +125,7 @@ function buildCreateRequestBody(
   const policyResetDate =
     data.resetDateType === 'per_calendar_year'
       ? formatMonthDay(data.resetMonth, data.resetDay)
-      : undefined
+      : null
 
   if (isHourly) {
     return {
@@ -140,6 +140,7 @@ function buildCreateRequestBody(
   return {
     ...base,
     accrualRate: data.accrualRate != null ? String(data.accrualRate) : undefined,
+    accrualRateUnit: null,
     policyResetDate,
     complete: false,
   }
@@ -172,7 +173,7 @@ function buildUpdateRequestBody(
   const policyResetDate =
     data.resetDateType === 'per_calendar_year'
       ? formatMonthDay(data.resetMonth, data.resetDay)
-      : undefined
+      : null
 
   if (isHourly) {
     return {
@@ -186,6 +187,7 @@ function buildUpdateRequestBody(
   return {
     ...base,
     accrualRate: data.accrualRate != null ? String(data.accrualRate) : undefined,
+    accrualRateUnit: null,
     policyResetDate,
   }
 }
@@ -213,7 +215,7 @@ interface CreateRootProps {
 function CreateRoot({ companyId, policyType, defaultValues }: CreateRootProps) {
   const { onEvent, baseSubmitHandler } = useBase()
 
-  const { mutateAsync: createTimeOffPolicy } = useTimeOffPoliciesCreateMutation()
+  const { mutateAsync: createTimeOffPolicy, isPending } = useTimeOffPoliciesCreateMutation()
 
   const handleContinue = useCallback(
     async (data: PolicyConfigurationFormData) => {
@@ -245,6 +247,7 @@ function CreateRoot({ companyId, policyType, defaultValues }: CreateRootProps) {
       onContinue={handleContinue}
       onCancel={handleCancel}
       defaultValues={defaultValues}
+      isPending={isPending}
     />
   )
 }
@@ -264,7 +267,7 @@ function EditRoot({ companyId, policyType, policyId, defaultValues }: EditRootPr
     timeOffPolicyUuid: policyId,
   })
 
-  const { mutateAsync: updateTimeOffPolicy } = useTimeOffPoliciesUpdateMutation()
+  const { mutateAsync: updateTimeOffPolicy, isPending } = useTimeOffPoliciesUpdateMutation()
 
   const policy = policyResponse.timeOffPolicy
   if (!policy) throw new Error('Unexpected response: missing timeOffPolicy')
@@ -308,6 +311,7 @@ function EditRoot({ companyId, policyType, policyId, defaultValues }: EditRootPr
       onCancel={handleCancel}
       defaultValues={mergedDefaults}
       editingPolicyName={policy.name}
+      isPending={isPending}
     />
   )
 }

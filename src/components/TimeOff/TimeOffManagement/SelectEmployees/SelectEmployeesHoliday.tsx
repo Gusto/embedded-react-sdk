@@ -76,9 +76,11 @@ function SelectEmployeesHolidayInner({
     handleSearchClear,
   } = useSelectEmployeesData(companyId, originalUuids)
 
-  const { mutateAsync: addEmployees } = useHolidayPayPoliciesAddEmployeesMutation()
+  const { mutateAsync: addEmployees, isPending: isAddPending } =
+    useHolidayPayPoliciesAddEmployeesMutation()
   const { mutateAsync: removeEmployees, isPending: isRemovePending } =
     useHolidayPayPoliciesRemoveEmployeesMutation()
+  const isSubmitPending = isAddPending || isRemovePending
 
   const [confirmRemoveOpen, setConfirmRemoveOpen] = useState(false)
 
@@ -192,6 +194,7 @@ function SelectEmployeesHolidayInner({
       showReassignmentWarning={false}
       pagination={pagination}
       isFetching={isFetching}
+      isPending={isSubmitPending}
       originallyOnPolicyUuids={originalUuids}
       removeConfirmDialog={
         mode === 'standalone'

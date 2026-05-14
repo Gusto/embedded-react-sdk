@@ -92,7 +92,6 @@ function buildUpdateRequestBody(
         ? data.waitingPeriod
         : null,
     paidOutOnTermination: data.paidOutOnTermination,
-    complete: true,
     version,
   }
 }
@@ -105,7 +104,7 @@ function Root({ policyId, mode }: PolicySettingsProps) {
     timeOffPolicyUuid: policyId,
   })
 
-  const { mutateAsync: updateTimeOffPolicy } = useTimeOffPoliciesUpdateMutation()
+  const { mutateAsync: updateTimeOffPolicy, isPending } = useTimeOffPoliciesUpdateMutation()
 
   const policy = policyResponse.timeOffPolicy
   if (!policy) throw new Error('Unexpected response: missing timeOffPolicy')
@@ -141,6 +140,7 @@ function Root({ policyId, mode }: PolicySettingsProps) {
       defaultValues={deriveDefaultValues(policy)}
       mode={mode}
       editingPolicyName={mode === 'edit' ? policy.name : undefined}
+      isPending={isPending}
     />
   )
 }

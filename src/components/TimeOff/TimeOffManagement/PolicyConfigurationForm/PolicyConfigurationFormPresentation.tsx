@@ -1,4 +1,4 @@
-import { useEffect, useId, useMemo } from 'react'
+import { useCallback, useEffect, useId, useMemo } from 'react'
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import type {
@@ -29,6 +29,7 @@ export function PolicyConfigurationFormPresentation({
   onCancel,
   defaultValues,
   editingPolicyName,
+  isPending = false,
 }: PolicyConfigurationFormPresentationProps) {
   useI18n('Company.TimeOff.CreateTimeOffPolicy')
   const { t } = useTranslation('Company.TimeOff.CreateTimeOffPolicy')
@@ -54,9 +55,11 @@ export function PolicyConfigurationFormPresentation({
   })
 
   const { control, setValue, getValues } = formMethods
+  const name = useWatch({ control, name: 'name' })
   const accrualMethod = useWatch({ control, name: 'accrualMethod' })
   const resetDateType = useWatch({ control, name: 'resetDateType' })
   const resetMonth = useWatch({ control, name: 'resetMonth' })
+  const isContinueDisabled = !name.trim() || !accrualMethod
 
   const dayOptions = useMemo(() => {
     const days = getDaysInMonth(resetMonth ?? 1)
@@ -73,6 +76,30 @@ export function PolicyConfigurationFormPresentation({
       setValue('resetDay', maxDay)
     }
   }, [resetMonth, getValues, setValue])
+
+  useEffect(() => {
+    if (accrualMethod !== 'per_hour_paid') {
+      setValue('accrualRateUnit', undefined)
+      setValue('includeOvertime', undefined)
+      setValue('allPaidHours', undefined)
+    }
+    if (accrualMethod !== 'per_calendar_year') {
+      setValue('accrualMethodFixed', undefined)
+    }
+    if (accrualMethod !== 'per_hour_paid' && accrualMethod !== 'per_calendar_year') {
+      setValue('resetDateType', undefined)
+    }
+  }, [accrualMethod, setValue])
+
+  const handleResetDateTypeChange = useCallback(
+    (value: ResetDateType) => {
+      if (value === 'per_anniversary_year') {
+        setValue('resetMonth', 1)
+        setValue('resetDay', 1)
+      }
+    },
+    [setValue],
+  )
 
   const accrualMethodOptions = useMemo(
     () => [
@@ -233,6 +260,7 @@ export function PolicyConfigurationFormPresentation({
                   options={resetDateTypeOptions}
                   isRequired={!isHourlyMethod}
                   errorMessage={t('policyDetails.validations.resetDateType')}
+                  onChange={handleResetDateTypeChange}
                 />
 
                 {showCustomDateFields && (
@@ -255,10 +283,15 @@ export function PolicyConfigurationFormPresentation({
             )}
 
             <ActionsLayout>
-              <Button variant="secondary" onClick={onCancel}>
+              <Button variant="secondary" onClick={onCancel} isDisabled={isPending}>
                 {t('cancelCta')}
               </Button>
-              <Button variant="primary" type="submit">
+              <Button
+                variant="primary"
+                type="submit"
+                isLoading={isPending}
+                isDisabled={isContinueDisabled}
+              >
                 {t('continueCta')}
               </Button>
             </ActionsLayout>
