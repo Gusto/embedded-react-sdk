@@ -72,8 +72,6 @@
     "e2e:refresh-token": "npx tsx e2e/scripts/refreshToken.ts",
     "scenarios:types": "json2ts e2e/scenarios/schema/scenario.schema.json -o e2e/scenarios/schema/scenario.types.ts",
     "scenarios:validate": "node e2e/scenarios/scripts/validate.mjs",
-    "e2e:scenarios:prewarm": "npx tsx e2e/scenario/scripts.ts prewarm",
-    "e2e:scenarios:clear": "npx tsx e2e/scenario/scripts.ts clear",
     "test:scenarios": "vitest run --config vitest.scenario.config.ts",
     "tsc": "tsc --pretty",
     "storybook": "storybook dev -p 6006",
