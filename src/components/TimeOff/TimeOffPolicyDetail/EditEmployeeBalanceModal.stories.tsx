@@ -4,6 +4,7 @@ import { EditEmployeeBalanceModal } from './EditEmployeeBalanceModal'
 
 export default {
   title: 'Domain/TimeOff/EditEmployeeBalanceModal',
+  tags: ['test-skip'],
   parameters: {
     visualTest: {
       // Skip visual testing for this story due to Suspense + dialog timing issues

@@ -142,8 +142,11 @@ const config: TestRunnerConfig = {
       .evaluate(() => (document as Document & { fonts?: { ready: Promise<unknown> } }).fonts?.ready)
       .catch(() => undefined)
 
-    // Wait for any animations to complete
-    await page.waitForTimeout(100)
+    // Wait for any animations to complete and for content to stabilize
+    await page.waitForTimeout(500)
+
+    // Wait for network idle to ensure all async content has loaded
+    await page.waitForLoadState('networkidle').catch(() => undefined)
 
     const elementHandle = await page.$('#storybook-root')
     const screenshotBuffer = elementHandle
