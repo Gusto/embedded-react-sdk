@@ -28,7 +28,7 @@
  *     regenerate baselines. Baselines are platform-sensitive — generate them
  *     in CI (Linux) and commit the resulting PNGs.
  */
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import type { TestRunnerConfig } from '@storybook/test-runner'
@@ -72,9 +72,7 @@ const updateMetadata = () => {
   metadataUpdated = true
 
   const baselineCount = existsSync(SCREENSHOT_DIR)
-    ? require('fs')
-        .readdirSync(SCREENSHOT_DIR)
-        .filter((f: string) => f.endsWith('.png')).length
+    ? readdirSync(SCREENSHOT_DIR).filter((f: string) => f.endsWith('.png')).length
     : 0
 
   const metadata = {
@@ -91,11 +89,6 @@ const updateMetadata = () => {
 }
 
 const config: TestRunnerConfig = {
-  setup() {
-    // Set default timeout for visual tests
-    // Individual stories can override via parameters.visualTest.timeout
-    jest.setTimeout(15000)
-  },
   // Visual smoke tests should be JUST visual: load the story, screenshot,
   // compare. The default test-storybook pipeline also runs @storybook/addon-a11y
   // in `afterEach`, which calls `axe.run()` against the document body before
@@ -114,11 +107,12 @@ const config: TestRunnerConfig = {
     await page.goto(iframeURL.toString(), { waitUntil: 'load' })
   },
   async preVisit(page, context) {
-    // Allow per-story timeout configuration
+    // Increase timeout for stories that need it (e.g. Suspense + dialog)
+    // Default timeout is set via --testTimeout CLI flag in package.json
     const storyContext = await getStoryContext(page, context)
     const timeout = storyContext.parameters?.visualTest?.timeout
     if (timeout && typeof timeout === 'number') {
-      jest.setTimeout(timeout)
+      page.setDefaultTimeout(timeout)
     }
   },
   async postVisit(page, context) {
