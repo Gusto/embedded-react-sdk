@@ -1,4 +1,4 @@
-import { useEffect, useId, useMemo } from 'react'
+import { useCallback, useEffect, useId, useMemo } from 'react'
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import type {
@@ -76,6 +76,30 @@ export function PolicyConfigurationFormPresentation({
       setValue('resetDay', maxDay)
     }
   }, [resetMonth, getValues, setValue])
+
+  useEffect(() => {
+    if (accrualMethod !== 'per_hour_paid') {
+      setValue('accrualRateUnit', undefined)
+      setValue('includeOvertime', undefined)
+      setValue('allPaidHours', undefined)
+    }
+    if (accrualMethod !== 'per_calendar_year') {
+      setValue('accrualMethodFixed', undefined)
+    }
+    if (accrualMethod !== 'per_hour_paid' && accrualMethod !== 'per_calendar_year') {
+      setValue('resetDateType', undefined)
+    }
+  }, [accrualMethod, setValue])
+
+  const handleResetDateTypeChange = useCallback(
+    (value: ResetDateType) => {
+      if (value === 'per_anniversary_year') {
+        setValue('resetMonth', 1)
+        setValue('resetDay', 1)
+      }
+    },
+    [setValue],
+  )
 
   const accrualMethodOptions = useMemo(
     () => [
@@ -236,6 +260,7 @@ export function PolicyConfigurationFormPresentation({
                   options={resetDateTypeOptions}
                   isRequired={!isHourlyMethod}
                   errorMessage={t('policyDetails.validations.resetDateType')}
+                  onChange={handleResetDateTypeChange}
                 />
 
                 {showCustomDateFields && (
