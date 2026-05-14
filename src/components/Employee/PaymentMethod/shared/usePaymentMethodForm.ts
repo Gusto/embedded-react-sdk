@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useMemo } from 'react'
 import { useForm, type DefaultValues, type SubmitHandler } from 'react-hook-form'
 import { CombinedSchema, type CombinedSchemaInputs } from './paymentMethodSchema'
-import type { OnEventType } from '@/components/Base/useBase'
+import { useBase, type OnEventType } from '@/components/Base/useBase'
 import { componentEvents, PAYMENT_METHODS, SPLIT_BY, type EventType } from '@/shared/constants'
 
 export interface UsePaymentMethodFormParams {
@@ -25,6 +25,7 @@ export function usePaymentMethodForm({
   employeeId,
   onEvent,
 }: UsePaymentMethodFormParams): UsePaymentMethodFormResult {
+  const { baseSubmitHandler } = useBase()
   const {
     data: { employeePaymentMethod },
   } = useEmployeePaymentMethodGetSuspense({ employeeId })
@@ -53,23 +54,25 @@ export function usePaymentMethodForm({
   }, [paymentMethod, resetForm]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handlePaymentMethodTypeSubmit: SubmitHandler<CombinedSchemaInputs> = async payload => {
-    const { type } = payload
-    const body =
-      type === PAYMENT_METHODS.check
-        ? { version: paymentMethod.version as string }
-        : {
-            ...paymentMethod,
-            version: paymentMethod.version as string,
-            splitBy: paymentMethod.splitBy ?? SPLIT_BY.percentage,
-            splits: paymentMethod.splits ?? [],
-          }
+    await baseSubmitHandler(payload, async data => {
+      const { type } = data
+      const body =
+        type === PAYMENT_METHODS.check
+          ? { version: paymentMethod.version as string }
+          : {
+              ...paymentMethod,
+              version: paymentMethod.version as string,
+              splitBy: paymentMethod.splitBy ?? SPLIT_BY.percentage,
+              splits: paymentMethod.splits ?? [],
+            }
 
-    const response = await paymentMethodMutation.mutateAsync({
-      request: { employeeId, requestBody: { ...body, type } },
+      const response = await paymentMethodMutation.mutateAsync({
+        request: { employeeId, requestBody: { ...body, type } },
+      })
+
+      onEvent(componentEvents.EMPLOYEE_PAYMENT_METHOD_UPDATED, response)
+      onEvent(componentEvents.EMPLOYEE_PAYMENT_METHOD_DONE)
     })
-
-    onEvent(componentEvents.EMPLOYEE_PAYMENT_METHOD_UPDATED, response)
-    onEvent(componentEvents.EMPLOYEE_PAYMENT_METHOD_DONE)
   }
 
   const resetToDefaults = () => {

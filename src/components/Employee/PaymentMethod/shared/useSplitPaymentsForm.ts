@@ -8,7 +8,7 @@ import { useEffect, useMemo } from 'react'
 import { useForm, type DefaultValues, type SubmitHandler } from 'react-hook-form'
 import { CombinedSchema, type CombinedSchemaInputs } from './paymentMethodSchema'
 import type { WorkingSplit } from './SplitViewFields'
-import type { OnEventType } from '@/components/Base/useBase'
+import { useBase, type OnEventType } from '@/components/Base/useBase'
 import { centsToDollars, dollarsToCents } from '@/helpers/currencyHelpers'
 import { componentEvents, SPLIT_BY, type EventType } from '@/shared/constants'
 
@@ -31,6 +31,7 @@ export function useSplitPaymentsForm({
   employeeId,
   onEvent,
 }: UseSplitPaymentsFormParams): UseSplitPaymentsFormResult {
+  const { baseSubmitHandler } = useBase()
   const {
     data: { employeePaymentMethod },
   } = useEmployeePaymentMethodGetSuspense({ employeeId })
@@ -106,28 +107,31 @@ export function useSplitPaymentsForm({
     )
       return
 
-    const isAmountSplit = payload.splitBy === SPLIT_BY.amount
-    const body = {
-      ...paymentMethod,
-      version: paymentMethod.version as string,
-      splitBy: payload.splitBy,
-      splits: splits.map(split => {
-        const splitAmountValue = payload.splitAmount[split.uuid] ?? null
-        return {
-          uuid: split.uuid,
-          name: split.name ?? undefined,
-          hiddenAccountNumber: split.hiddenAccountNumber ?? undefined,
-          splitAmount: isAmountSplit ? dollarsToCents(splitAmountValue) : splitAmountValue,
-          priority: payload.priority[split.uuid],
-        }
-      }),
-    }
+    const { splitBy, splitAmount, priority } = payload
+    await baseSubmitHandler(payload, async () => {
+      const isAmountSplit = splitBy === SPLIT_BY.amount
+      const body = {
+        ...paymentMethod,
+        version: paymentMethod.version as string,
+        splitBy,
+        splits: splits.map(split => {
+          const splitAmountValue = splitAmount[split.uuid] ?? null
+          return {
+            uuid: split.uuid,
+            name: split.name ?? undefined,
+            hiddenAccountNumber: split.hiddenAccountNumber ?? undefined,
+            splitAmount: isAmountSplit ? dollarsToCents(splitAmountValue) : splitAmountValue,
+            priority: priority[split.uuid],
+          }
+        }),
+      }
 
-    const response = await paymentMethodMutation.mutateAsync({
-      request: { employeeId, requestBody: { ...body, type: 'Direct Deposit' } },
+      const response = await paymentMethodMutation.mutateAsync({
+        request: { employeeId, requestBody: { ...body, type: 'Direct Deposit' } },
+      })
+
+      onEvent(componentEvents.EMPLOYEE_PAYMENT_METHOD_UPDATED, response)
     })
-
-    onEvent(componentEvents.EMPLOYEE_PAYMENT_METHOD_UPDATED, response)
   }
 
   const resetToDefaults = () => {

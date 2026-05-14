@@ -2,7 +2,7 @@ import { useEmployeePaymentMethodCreateMutation } from '@gusto/embedded-api/reac
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, type DefaultValues, type SubmitHandler } from 'react-hook-form'
 import { CombinedSchema, type CombinedSchemaInputs } from './paymentMethodSchema'
-import type { OnEventType } from '@/components/Base/useBase'
+import { useBase, type OnEventType } from '@/components/Base/useBase'
 import { componentEvents, type EventType } from '@/shared/constants'
 
 export interface UseBankFormParams {
@@ -25,6 +25,7 @@ const defaultFormValues = {
 }
 
 export function useBankForm({ employeeId, onEvent }: UseBankFormParams): UseBankFormResult {
+  const { baseSubmitHandler } = useBase()
   const addBankAccountMutation = useEmployeePaymentMethodCreateMutation()
 
   const formMethods = useForm<CombinedSchemaInputs>({
@@ -40,19 +41,16 @@ export function useBankForm({ employeeId, onEvent }: UseBankFormParams): UseBank
     )
       return
 
-    const response = await addBankAccountMutation.mutateAsync({
-      request: {
-        employeeId,
-        employeeBankAccountRequest: {
-          name: payload.name,
-          routingNumber: payload.routingNumber,
-          accountNumber: payload.accountNumber,
-          accountType: payload.accountType,
+    const { name, routingNumber, accountNumber, accountType } = payload
+    await baseSubmitHandler(payload, async () => {
+      const response = await addBankAccountMutation.mutateAsync({
+        request: {
+          employeeId,
+          employeeBankAccountRequest: { name, routingNumber, accountNumber, accountType },
         },
-      },
+      })
+      onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATED, response)
     })
-
-    onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATED, response)
   }
 
   const resetToDefaults = () => {

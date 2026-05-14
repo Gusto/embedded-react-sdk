@@ -5,7 +5,7 @@ import { useEmployeePaymentMethodsGetBankAccountsSuspense } from '@gusto/embedde
 import { useEmployeePaymentMethodGetSuspense } from '@gusto/embedded-api/react-query/employeePaymentMethodGet'
 import { useEmployeePaymentMethodUpdateMutation } from '@gusto/embedded-api/react-query/employeePaymentMethodUpdate'
 import { useEffect, useRef } from 'react'
-import type { OnEventType } from '@/components/Base/useBase'
+import { useBase, type OnEventType } from '@/components/Base/useBase'
 import { componentEvents, SPLIT_BY, type EventType } from '@/shared/constants'
 
 export interface UsePaymentMethodListParams {
@@ -24,6 +24,7 @@ export function usePaymentMethodList({
   employeeId,
   onEvent,
 }: UsePaymentMethodListParams): UsePaymentMethodListResult {
+  const { baseSubmitHandler } = useBase()
   const {
     data: { employeePaymentMethod },
   } = useEmployeePaymentMethodGetSuspense({ employeeId })
@@ -76,10 +77,12 @@ export function usePaymentMethodList({
   }, [employeeId, paymentMethod, mutatePaymentMethod])
 
   const handleDelete = async (uuid: string) => {
-    const data = await deleteBankAccountMutation.mutateAsync({
-      request: { employeeId, bankAccountUuid: uuid },
+    await baseSubmitHandler(uuid, async id => {
+      const data = await deleteBankAccountMutation.mutateAsync({
+        request: { employeeId, bankAccountUuid: id },
+      })
+      onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_DELETED, data)
     })
-    onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_DELETED, data)
   }
 
   return {
