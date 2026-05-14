@@ -1,9 +1,15 @@
+.cardsContainer {
+  container-type: inline-size;
+}
+
 .cards {
   display: grid;
   gap: toRem(20);
-  grid-template-columns: minmax(0, toRem(480));
+  grid-template-columns: 1fr;
 }
 
-[data-tabs-mode='dropdown'] .cards {
-  grid-template-columns: 1fr;
+@container (min-width: 40rem) {
+  .cards {
+    grid-template-columns: minmax(0, toRem(480));
+  }
 }

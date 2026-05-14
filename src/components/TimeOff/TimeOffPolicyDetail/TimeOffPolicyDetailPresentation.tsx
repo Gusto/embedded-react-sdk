@@ -193,30 +193,32 @@ function DetailsTab({
   }, [policySettings, t, showAccrualMaxAndWaiting])
 
   return (
-    <div className={styles.cards}>
-      <Box header={<BoxHeader title={t('details')} />} withPadding>
-        <DescriptionList items={detailItems} showSeparators={false} layout="stacked" />
-      </Box>
-
-      {!isUnlimited && policySettings && (
-        <Box
-          header={
-            <BoxHeader
-              title={t('policySettingsTitle')}
-              action={
-                onChangeSettings && (
-                  <Button variant="secondary" onClick={onChangeSettings}>
-                    {t('changeSettingsCta')}
-                  </Button>
-                )
-              }
-            />
-          }
-          withPadding
-        >
-          <DescriptionList items={settingsItems} showSeparators={false} layout="stacked" />
+    <div className={styles.cardsContainer}>
+      <div className={styles.cards}>
+        <Box header={<BoxHeader title={t('details')} />} withPadding>
+          <DescriptionList items={detailItems} showSeparators={false} layout="stacked" />
         </Box>
-      )}
+
+        {!isUnlimited && policySettings && (
+          <Box
+            header={
+              <BoxHeader
+                title={t('policySettingsTitle')}
+                action={
+                  onChangeSettings && (
+                    <Button variant="secondary" onClick={onChangeSettings}>
+                      {t('changeSettingsCta')}
+                    </Button>
+                  )
+                }
+              />
+            }
+            withPadding
+          >
+            <DescriptionList items={settingsItems} showSeparators={false} layout="stacked" />
+          </Box>
+        )}
+      </div>
     </div>
   )
 }

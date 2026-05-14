@@ -27,11 +27,7 @@ export function Tabs({ tabs, selectedId, onSelectionChange, className, ...ariaPr
   }))
 
   return (
-    <div
-      ref={containerRef}
-      className={classNames(styles.root, className)}
-      data-tabs-mode={shouldUseDropdown ? 'dropdown' : 'tabs'}
-    >
+    <div ref={containerRef} className={classNames(styles.root, className)}>
       {!shouldUseDropdown ? (
         <AriaTabs
           className={styles.tabsContainer}
