@@ -460,6 +460,23 @@ describe('SelectEmployeesTimeOff', () => {
         expect(mockAddEmployees).toHaveBeenCalledTimes(1)
       })
     })
+
+    it('cancelling the add confirm dialog does not submit', async () => {
+      const user = userEvent.setup()
+      renderComponent({ mode: 'standalone' })
+
+      await waitFor(() => {
+        expect(screen.getAllByRole('checkbox').length).toBeGreaterThan(1)
+      })
+
+      await user.click(screen.getAllByRole('checkbox')[FIRST_EMPLOYEE_CHECKBOX] as Element)
+      await user.click(screen.getByRole('button', { name: 'continueCta' }))
+
+      const cancelBtn = await screen.findByRole('button', { name: 'addConfirmDialog.cancelCta' })
+      await user.click(cancelBtn)
+
+      expect(mockAddEmployees).not.toHaveBeenCalled()
+    })
   })
 
   describe('standalone mode with existing assignees', () => {
