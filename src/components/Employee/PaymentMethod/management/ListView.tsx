@@ -9,12 +9,14 @@ import { DataView, useDataView } from '@/components/Common'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { useBase } from '@/components/Base/useBase'
 import { componentEvents, PAYMENT_METHODS } from '@/shared/constants'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 import PercentCircleIcon from '@/assets/icons/percent-circle.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 
 export function ListView({ employeeId, onEvent }: UsePaymentMethodListParams) {
+  const { baseSubmitHandler } = useBase()
   const { bankAccounts, paymentMethod, deletePendingBankAccountUuid, handleDelete } =
     usePaymentMethodList({ employeeId, onEvent })
   const { t } = useTranslation('Employee.PaymentMethod')
@@ -26,7 +28,7 @@ export function ListView({ employeeId, onEvent }: UsePaymentMethodListParams) {
     deletedAccountNumber,
     setDeletedAccountNumber,
     handleConfirmDelete,
-  } = useDeleteBankAccount(handleDelete)
+  } = useDeleteBankAccount(uuid => baseSubmitHandler(uuid, handleDelete))
 
   const { ...dataViewProps } = useDataView({
     data: bankAccounts,

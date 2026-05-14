@@ -12,6 +12,7 @@ import { Form } from '@/components/Common/Form'
 import { RadioGroupField } from '@/components/Common'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { useBase } from '@/components/Base/useBase'
 import { centsToDollars } from '@/helpers/currencyHelpers'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 import { componentEvents, PAYMENT_METHODS, SPLIT_BY } from '@/shared/constants'
@@ -45,6 +46,7 @@ export function ListView({
   isAdmin,
   onEvent,
 }: UsePaymentMethodListParams & { isAdmin: boolean }) {
+  const { baseSubmitHandler } = useBase()
   const { paymentMethod, bankAccounts, deletePendingBankAccountUuid, handleDelete } =
     usePaymentMethodList({ employeeId, onEvent })
   const { formMethods, isPending, handlePaymentMethodTypeSubmit } = usePaymentMethodForm({
@@ -63,7 +65,7 @@ export function ListView({
     deletedAccountNumber,
     setDeletedAccountNumber,
     handleConfirmDelete,
-  } = useDeleteBankAccount(handleDelete)
+  } = useDeleteBankAccount(uuid => baseSubmitHandler(uuid, handleDelete))
 
   const { ...dataViewProps } = useDataView({
     data: bankAccounts,
