@@ -196,9 +196,11 @@ test-results/
 
 # E2E local testing
 e2e/.e2e-state.json
+e2e/.scenario-cache.json
 e2e/local.config.env
 e2e/recordings/
 e2e-recordings/
+e2e/reports/
 
 # Playwright MCP artifacts
 .playwright-mcp/
