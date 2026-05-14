@@ -20,5 +20,13 @@
     "description_other": "These employees' balances for this policy will be removed. They can be re-added later.",
     "confirmCta": "Remove and save",
     "cancelCta": "Cancel"
+  },
+  "addConfirmDialog": {
+    "title_one": "Add {{count}} employee to this policy?",
+    "title_other": "Add {{count}} employees to this policy?",
+    "description_one": "This employee will be added to the policy with the specified starting balance.",
+    "description_other": "These employees will be added to the policy with the specified starting balances.",
+    "confirmCta": "Add and save",
+    "cancelCta": "Cancel"
   }
 }
