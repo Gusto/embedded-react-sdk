@@ -17,6 +17,7 @@ const mockRemoveEmployees = vi.fn()
 const mockOnEvent = vi.fn()
 const mockInvalidateQueries = vi.fn()
 let mockPolicyEmployees: Array<{ uuid: string; balance?: string }> = []
+let mockPolicyAccrualMethod: string | undefined
 
 const mockEmployees = [
   {
@@ -99,7 +100,13 @@ vi.mock('@gusto/embedded-api/react-query/timeOffPoliciesRemoveEmployees', () => 
 
 vi.mock('@gusto/embedded-api/react-query/timeOffPoliciesGet', () => ({
   useTimeOffPoliciesGetSuspense: () => ({
-    data: { timeOffPolicy: { uuid: 'policy-456', employees: mockPolicyEmployees } },
+    data: {
+      timeOffPolicy: {
+        uuid: 'policy-456',
+        accrualMethod: mockPolicyAccrualMethod,
+        employees: mockPolicyEmployees,
+      },
+    },
   }),
 }))
 
@@ -160,6 +167,7 @@ describe('SelectEmployeesTimeOff', () => {
     mockAddEmployees.mockResolvedValue({ timeOffPolicy: { uuid: 'policy-456' } })
     mockRemoveEmployees.mockResolvedValue({ timeOffPolicy: { uuid: 'policy-456' } })
     mockPolicyEmployees = []
+    mockPolicyAccrualMethod = undefined
   })
 
   it('renders employee names from API data', async () => {
@@ -607,6 +615,47 @@ describe('SelectEmployeesTimeOff', () => {
         expect(caughtErrors).toHaveLength(1)
       })
       expect(caughtErrors[0]!.message).toContain('errors.removeEmployeesFailed')
+    })
+  })
+
+  describe('unlimited policy', () => {
+    it('hides the starting balance column when accrualMethod is unlimited', async () => {
+      mockPolicyAccrualMethod = 'unlimited'
+      renderComponent({ mode: 'standalone' })
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice Smith')).toBeInTheDocument()
+      })
+
+      expect(screen.queryByText('startingBalanceColumn')).not.toBeInTheDocument()
+      const balanceInputs = screen
+        .queryAllByRole('textbox')
+        .filter(el => (el as HTMLInputElement).name.startsWith('balance-'))
+      expect(balanceInputs).toHaveLength(0)
+    })
+
+    it('submits balance "0" for unlimited policies instead of carry-over values', async () => {
+      const user = userEvent.setup()
+      mockPolicyAccrualMethod = 'unlimited'
+      renderComponent({ mode: 'standalone' })
+
+      await waitFor(() => {
+        expect(screen.getAllByRole('checkbox').length).toBeGreaterThan(1)
+      })
+
+      await user.click(screen.getAllByRole('checkbox')[FIRST_EMPLOYEE_CHECKBOX] as Element)
+      await user.click(screen.getByRole('button', { name: 'continueCta' }))
+
+      await waitFor(() => {
+        expect(mockAddEmployees).toHaveBeenCalledWith({
+          request: {
+            timeOffPolicyUuid: 'policy-456',
+            requestBody: {
+              employees: [{ uuid: '1', balance: '0' }],
+            },
+          },
+        })
+      })
     })
   })
 

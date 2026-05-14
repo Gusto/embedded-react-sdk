@@ -123,6 +123,7 @@ function StoryWrapper({
   originallyOnPolicyUuids,
   originalBalances,
   removeConfirmOpen = false,
+  hideBalances = false,
 }: {
   initialSelected?: Set<string>
   showReassignmentWarning?: boolean
@@ -132,6 +133,7 @@ function StoryWrapper({
   originallyOnPolicyUuids?: Set<string>
   originalBalances?: Record<string, string>
   removeConfirmOpen?: boolean
+  hideBalances?: boolean
 }) {
   const [searchValue, setSearchValue] = useState('')
   const [selectedUuids, setSelectedUuids] = useState(initialSelected)
@@ -171,8 +173,8 @@ function StoryWrapper({
         else onContinue()
       }}
       showReassignmentWarning={showReassignmentWarning}
-      balances={balances}
-      onBalanceChange={handleBalanceChange}
+      balances={hideBalances ? undefined : balances}
+      onBalanceChange={hideBalances ? undefined : handleBalanceChange}
       pagination={pagination}
       originallyOnPolicyUuids={originallyOnPolicyUuids}
       originalBalances={originalBalances}
@@ -292,3 +294,5 @@ export const EmptySearchResults = () => (
     onBalanceChange={fn()}
   />
 )
+
+export const UnlimitedPolicy = () => <StoryWrapper showReassignmentWarning hideBalances />
