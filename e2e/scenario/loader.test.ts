@@ -53,63 +53,11 @@ describe('applyTemplates', () => {
   })
 })
 
-describe('resolveScenario + loadScenario (real fragment + minimal scenario)', () => {
-  let tmp: string
-  let scenarioPath: string
-
-  beforeEach(() => {
-    tmp = mkdtempSync(join(tmpdir(), 'scenario-loader-minimal-'))
-    mkdirSync(join(tmp, 'fragments'), { recursive: true })
-    mkdirSync(join(tmp, 'payroll'), { recursive: true })
-
-    writeFileSync(
-      join(tmp, 'fragments/w2-salaried.json'),
-      JSON.stringify({
-        first_name: 'Alice',
-        last_name: 'Anderson',
-        email: 'alice+{{ts}}@example.com',
-        compensation: { rate: '85000', payment_unit: 'Year', flsa_status: 'Exempt' },
-        onboarding_status: 'completed',
-      }),
-    )
-
-    scenarioPath = join(tmp, 'payroll/minimal.json')
-    writeFileSync(
-      scenarioPath,
-      JSON.stringify({
-        name: 'Minimal payroll scenario (1 employee, biweekly)',
-        domain: 'payroll',
-        baseDemo: 'react_sdk_demo_company_onboarded',
-        decorations: {
-          locations: [
-            {
-              key: 'hq',
-              street_1: '100 Test St',
-              city: 'San Francisco',
-              state: 'CA',
-              zip: '94105',
-              filing_address: true,
-              mailing_address: true,
-            },
-          ],
-          employees: [{ key: 'alice', $ref: '../fragments/w2-salaried.json' }],
-          paySchedule: {
-            frequency: 'Every other week',
-            anchor_pay_date: '{{relative:+14d:Friday}}',
-            anchor_end_of_pay_period: '{{relative:+13d}}',
-          },
-          payrolls: [],
-        },
-      }),
-    )
-  })
-
-  afterEach(() => {
-    rmSync(tmp, { recursive: true, force: true })
-  })
+describe('resolveScenario + loadScenario (real example-minimal.json)', () => {
+  const exampleAbs = join(process.cwd(), 'e2e/scenarios/payroll/example-minimal.json')
 
   it('resolves the $ref fragment and merges with key', async () => {
-    const resolved = await resolveScenario(scenarioPath)
+    const resolved = await resolveScenario(exampleAbs)
     const employees = (resolved as { decorations: { employees: unknown[] } }).decorations.employees
     expect(employees).toHaveLength(1)
     expect(employees[0]).toMatchObject({
@@ -118,16 +66,21 @@ describe('resolveScenario + loadScenario (real fragment + minimal scenario)', ()
       last_name: 'Anderson',
       compensation: { rate: '85000', payment_unit: 'Year' },
     })
+    // $ref + overrides should be stripped from the resolved output
+    expect(employees[0]).not.toHaveProperty('$ref')
+    expect(employees[0]).not.toHaveProperty('overrides')
   })
 
   it('loadScenario substitutes templates and passes schema validation', async () => {
-    const scenario = await loadScenario(scenarioPath, {
+    const scenario = await loadScenario(exampleAbs, {
       ts: 42,
       baseDate: new Date(Date.UTC(2026, 0, 15)),
     })
     expect(scenario.name).toBe('Minimal payroll scenario (1 employee, biweekly)')
     expect(scenario.domain).toBe('payroll')
-    const employee = scenario.decorations.employees![0] as { email: string }
+    const employee = scenario.decorations.employees![0] as {
+      email: string
+    }
     expect(employee.email).toBe('alice+42@example.com')
     expect(scenario.decorations.paySchedule!.anchor_pay_date).toBe('2026-01-30')
     expect(scenario.decorations.paySchedule!.anchor_end_of_pay_period).toBe('2026-01-28')
