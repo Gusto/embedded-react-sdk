@@ -22,6 +22,7 @@ Hooks give you full control over form rendering while the SDK manages data fetch
 | `usePayScheduleForm`        | Create or update a company pay schedule (frequency, pay dates, pay period calendar preview)        | [usePayScheduleForm](./usePayScheduleForm.md)               |
 | `useSignCompanyForm`        | Sign a company form (PDF viewer, typed signature, confirmation checkbox)                           | [useSignCompanyForm](./useSignCompanyForm.md)               |
 | `useSignEmployeeForm`       | Sign an employee form (signature, confirmation, I-9 preparer/translator sections)                  | [useSignEmployeeForm](./useSignEmployeeForm.md)             |
+| `useBankForm`               | Create a bank account for an employee (nickname, routing/account number, account type)             | [useBankForm](./useBankForm.md)                             |
 
 ---
 

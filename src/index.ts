@@ -219,6 +219,34 @@ export type {
 } from '@/components/Employee/Profile/shared/useHomeAddressForm'
 
 export {
+  useBankForm,
+  BankFormErrorCodes,
+  createBankFormSchema,
+  ACCOUNT_TYPES,
+} from '@/components/Employee/PaymentMethod/shared/useBankForm'
+export type {
+  BankFormSubmitOptions,
+  UseBankFormProps,
+  UseBankFormResult,
+  UseBankFormReady,
+  BankFormFields,
+  BankFormFieldsMetadata,
+  BankFormErrorCode,
+  BankFormData,
+  BankFormOutputs,
+  BankFormField,
+  BankFormOptionalFieldsToRequire,
+  AccountType,
+  BankFormRequiredValidation,
+  RoutingNumberValidation,
+  AccountNumberValidation,
+  NameFieldProps,
+  RoutingNumberFieldProps,
+  AccountNumberFieldProps,
+  AccountTypeFieldProps,
+} from '@/components/Employee/PaymentMethod/shared/useBankForm'
+
+export {
   useFederalTaxesForm,
   FederalTaxesErrorCodes,
   createFederalTaxesSchema,
