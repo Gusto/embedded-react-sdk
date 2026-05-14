@@ -1,0 +1,25 @@
+{
+  "first_name": "Bob",
+  "last_name": "Baker",
+  "email": "bob+{{ts}}@example.com",
+  "home_address": {
+    "street_1": "2 Hourly Lane",
+    "city": "San Francisco",
+    "state": "CA",
+    "zip": "94110"
+  },
+  "work_address": {
+    "locationKey": "hq"
+  },
+  "job": {
+    "title": "Technician",
+    "hire_date": "2024-01-15",
+    "locationKey": "hq"
+  },
+  "compensation": {
+    "rate": "30",
+    "payment_unit": "Hour",
+    "flsa_status": "Nonexempt"
+  },
+  "onboarding_status": "completed"
+}
