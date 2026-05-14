@@ -4,6 +4,8 @@ import { WorkAddress } from '@/components/Employee/WorkAddress/management/WorkAd
 import { FederalTaxes } from '@/components/Employee/FederalTaxes/management/FederalTaxes'
 import { StateTaxes } from '@/components/Employee/StateTaxes/management/StateTaxes'
 import { Profile } from '@/components/Employee/Profile/management/Profile'
+import { BankForm } from '@/components/Employee/PaymentMethod/onboarding/BankForm'
+import { SplitView } from '@/components/Employee/PaymentMethod/onboarding/SplitView'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { ensureRequired } from '@/helpers/ensureRequired'
 
@@ -39,4 +41,14 @@ export function StateTaxesContextual() {
 export function ProfileContextual() {
   const { employeeId, onEvent } = useFlow<DashboardContextInterface>()
   return <Profile employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
+}
+
+export function PaymentBankFormContextual() {
+  const { employeeId, onEvent } = useFlow<DashboardContextInterface>()
+  return <BankForm employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
+}
+
+export function PaymentSplitViewContextual() {
+  const { employeeId, onEvent } = useFlow<DashboardContextInterface>()
+  return <SplitView employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
 }

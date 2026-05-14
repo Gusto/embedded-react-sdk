@@ -22,7 +22,7 @@ export const paymentMethodStateMachine = {
       ),
     ),
     transition(
-      componentEvents.EMPLOYEE_SPLIT_PAYMENT,
+      componentEvents.EMPLOYEE_SPLIT_PAYCHECK,
       'split',
       reduce(
         (ctx: PaymentMethodContextInterface): PaymentMethodContextInterface => ({

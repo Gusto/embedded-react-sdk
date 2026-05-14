@@ -51,6 +51,8 @@
   "priority_other": "{{count}}th",
   "managementTitle": "Payment",
   "paymentMethodLabel": "Payment method",
+  "bankFormSuccessAlert": "Bank account was successfully added",
+  "splitViewSuccessAlert": "Payment split was successfully updated",
   "validations": {
     "percentageError": "If payment method amount is split by Percentage, all split amounts must add up to exactly 100.",
     "percentageErrorWithTotal": "Splits must total 100%. Currently {{total}}%.",

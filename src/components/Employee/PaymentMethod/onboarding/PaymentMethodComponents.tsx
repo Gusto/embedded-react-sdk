@@ -15,11 +15,11 @@ export function ListViewContextual() {
 }
 
 export function BankFormContextual() {
-  const { employeeId, isAdmin, onEvent } = useFlow<PaymentMethodContextInterface>()
-  return <BankForm employeeId={employeeId} isAdmin={isAdmin} onEvent={onEvent} />
+  const { employeeId, onEvent } = useFlow<PaymentMethodContextInterface>()
+  return <BankForm employeeId={employeeId} onEvent={onEvent} />
 }
 
 export function SplitViewContextual() {
-  const { employeeId, isAdmin, onEvent } = useFlow<PaymentMethodContextInterface>()
-  return <SplitView employeeId={employeeId} isAdmin={isAdmin} onEvent={onEvent} />
+  const { employeeId, onEvent } = useFlow<PaymentMethodContextInterface>()
+  return <SplitView employeeId={employeeId} onEvent={onEvent} />
 }

@@ -1,6 +1,7 @@
-import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { usePaymentMethod, type UsePaymentMethodParams } from './usePaymentMethod'
+import { usePaymentMethodList, type UsePaymentMethodListParams } from '../shared/usePaymentMethodList'
+import { useDeleteBankAccount } from '../shared/useDeleteBankAccount'
+import { DeleteBankAccountDialog } from '../shared/DeleteBankAccountDialog'
 import { DataView, useDataView } from '@/components/Common'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
@@ -10,25 +11,19 @@ import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 import PercentCircleIcon from '@/assets/icons/percent-circle.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 
-export function ManagementListView({ employeeId, isAdmin, onEvent }: UsePaymentMethodParams) {
+export function ListView({ employeeId, onEvent }: UsePaymentMethodListParams) {
   const { bankAccounts, paymentMethod, deletePendingBankAccountUuid, handleDelete } =
-    usePaymentMethod({ employeeId, isAdmin, onEvent })
+    usePaymentMethodList({ employeeId, onEvent })
   const { t } = useTranslation('Employee.PaymentMethod')
   const Components = useComponentContext()
 
-  const [pendingDeleteAccount, setPendingDeleteAccount] = useState<{
-    uuid: string
-    hiddenAccountNumber: string | undefined
-  } | null>(null)
-  const [deletedAccountNumber, setDeletedAccountNumber] = useState<string | null>(null)
-
-  const handleConfirmDelete = async () => {
-    if (!pendingDeleteAccount) return
-    const { uuid, hiddenAccountNumber } = pendingDeleteAccount
-    await handleDelete(uuid)
-    setPendingDeleteAccount(null)
-    setDeletedAccountNumber(hiddenAccountNumber ?? '')
-  }
+  const {
+    pendingDeleteAccount,
+    setPendingDeleteAccount,
+    deletedAccountNumber,
+    setDeletedAccountNumber,
+    handleConfirmDelete,
+  } = useDeleteBankAccount(handleDelete)
 
   const { ...dataViewProps } = useDataView({
     data: bankAccounts,
@@ -68,12 +63,12 @@ export function ManagementListView({ employeeId, isAdmin, onEvent }: UsePaymentM
   const isDirectDeposit = paymentMethod.type === PAYMENT_METHODS.directDeposit
 
   const headerAction = (
-    <Flex gap={8} alignItems="flex-end">
+    <Flex gap={8} alignItems="center">
       {isDirectDeposit && bankAccounts.length > 1 && (
         <Components.Button
           variant="secondary"
           onClick={() => {
-            onEvent(componentEvents.EMPLOYEE_SPLIT_PAYMENT)
+            onEvent(componentEvents.EMPLOYEE_SPLIT_PAYCHECK)
           }}
           icon={<PercentCircleIcon />}
         >
@@ -118,25 +113,16 @@ export function ManagementListView({ employeeId, isAdmin, onEvent }: UsePaymentM
           </Flex>
         )}
       </Components.Box>
-      <Components.Dialog
-        isOpen={pendingDeleteAccount !== null}
+      <DeleteBankAccountDialog
+        pendingDeleteAccount={pendingDeleteAccount}
+        isPrimaryActionLoading={deletePendingBankAccountUuid === pendingDeleteAccount?.uuid}
         onClose={() => {
           setPendingDeleteAccount(null)
         }}
-        onPrimaryActionClick={() => {
+        onConfirm={() => {
           void handleConfirmDelete()
         }}
-        isPrimaryActionLoading={deletePendingBankAccountUuid === pendingDeleteAccount?.uuid}
-        isDestructive
-        title={t('deleteBankAccountDialog.title')}
-        primaryActionLabel={t('deleteBankAccountDialog.confirmCta')}
-        closeActionLabel={t('deleteBankAccountDialog.cancelCta')}
-      >
-        {pendingDeleteAccount &&
-          t('deleteBankAccountDialog.description', {
-            account: pendingDeleteAccount.hiddenAccountNumber ?? '',
-          })}
-      </Components.Dialog>
+      />
     </>
   )
 }

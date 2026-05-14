@@ -2032,6 +2032,8 @@ export interface EmployeePaymentMethod{
 "priority_other":string;
 "managementTitle":string;
 "paymentMethodLabel":string;
+"bankFormSuccessAlert":string;
+"splitViewSuccessAlert":string;
 "validations":{
 "percentageError":string;
 "percentageErrorWithTotal":string;

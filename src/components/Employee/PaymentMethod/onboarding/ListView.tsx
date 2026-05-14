@@ -1,7 +1,9 @@
-import { useState } from 'react'
 import { FormProvider } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { usePaymentMethod, type UsePaymentMethodParams } from './usePaymentMethod'
+import { usePaymentMethodList, type UsePaymentMethodListParams } from '../shared/usePaymentMethodList'
+import { usePaymentMethodForm } from '../shared/usePaymentMethodForm'
+import { useDeleteBankAccount } from '../shared/useDeleteBankAccount'
+import { DeleteBankAccountDialog } from '../shared/DeleteBankAccountDialog'
 import { ActionsLayout, DataView, useDataView } from '@/components/Common'
 import { Form } from '@/components/Common/Form'
 import { RadioGroupField } from '@/components/Common'
@@ -35,35 +37,26 @@ function PaymentTypeRadio({ isAdmin }: { isAdmin: boolean }) {
   )
 }
 
-export function ListView({ employeeId, isAdmin, onEvent }: UsePaymentMethodParams) {
-  const {
-    formMethods,
-    bankAccounts,
-    paymentMethod,
-    isPending,
-    deletePendingBankAccountUuid,
-    handlePaymentMethodTypeSubmit,
-    handleDelete,
-  } = usePaymentMethod({ employeeId, isAdmin, onEvent })
+export function ListView({ employeeId, isAdmin, onEvent }: UsePaymentMethodListParams & { isAdmin: boolean }) {
+  const { paymentMethod, bankAccounts, deletePendingBankAccountUuid, handleDelete } =
+    usePaymentMethodList({ employeeId, onEvent })
+  const { formMethods, isPending, handlePaymentMethodTypeSubmit } = usePaymentMethodForm({
+    employeeId,
+    onEvent,
+  })
   const { handleSubmit, watch } = formMethods
   const { t } = useTranslation('Employee.PaymentMethod')
   const Components = useComponentContext()
   const format = useNumberFormatter(paymentMethod.splitBy === 'Amount' ? 'currency' : 'percent')
   const watchedType = watch('type')
 
-  const [pendingDeleteAccount, setPendingDeleteAccount] = useState<{
-    uuid: string
-    hiddenAccountNumber: string | undefined
-  } | null>(null)
-  const [deletedAccountNumber, setDeletedAccountNumber] = useState<string | null>(null)
-
-  const handleConfirmDelete = async () => {
-    if (!pendingDeleteAccount) return
-    const { uuid, hiddenAccountNumber } = pendingDeleteAccount
-    await handleDelete(uuid)
-    setPendingDeleteAccount(null)
-    setDeletedAccountNumber(hiddenAccountNumber ?? '')
-  }
+  const {
+    pendingDeleteAccount,
+    setPendingDeleteAccount,
+    deletedAccountNumber,
+    setDeletedAccountNumber,
+    handleConfirmDelete,
+  } = useDeleteBankAccount(handleDelete)
 
   const { ...dataViewProps } = useDataView({
     data: bankAccounts,
@@ -152,25 +145,16 @@ export function ListView({ employeeId, isAdmin, onEvent }: UsePaymentMethodParam
           </ActionsLayout>
         </Form>
       </FormProvider>
-      <Components.Dialog
-        isOpen={pendingDeleteAccount !== null}
+      <DeleteBankAccountDialog
+        pendingDeleteAccount={pendingDeleteAccount}
+        isPrimaryActionLoading={deletePendingBankAccountUuid === pendingDeleteAccount?.uuid}
         onClose={() => {
           setPendingDeleteAccount(null)
         }}
-        onPrimaryActionClick={() => {
+        onConfirm={() => {
           void handleConfirmDelete()
         }}
-        isPrimaryActionLoading={deletePendingBankAccountUuid === pendingDeleteAccount?.uuid}
-        isDestructive
-        title={t('deleteBankAccountDialog.title')}
-        primaryActionLabel={t('deleteBankAccountDialog.confirmCta')}
-        closeActionLabel={t('deleteBankAccountDialog.cancelCta')}
-      >
-        {pendingDeleteAccount &&
-          t('deleteBankAccountDialog.description', {
-            account: pendingDeleteAccount.hiddenAccountNumber ?? '',
-          })}
-      </Components.Dialog>
+      />
     </>
   )
 }

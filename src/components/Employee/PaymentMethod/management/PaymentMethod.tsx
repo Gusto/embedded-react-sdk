@@ -1,39 +1,49 @@
 import { createMachine } from 'robot3'
 import { useMemo } from 'react'
-import type { OnboardingContextInterface } from '../../OnboardingFlow/OnboardingFlowComponents'
 import type { PaymentMethodContextInterface } from './PaymentMethodComponents'
-import { ListViewContextual } from './PaymentMethodComponents'
+import {
+  ListViewContextual,
+  BankFormContextual,
+  SplitViewContextual,
+} from './PaymentMethodComponents'
 import { paymentMethodStateMachine } from './paymentMethodStateMachine'
 import { Flow } from '@/components/Flow/Flow'
-import { useFlow } from '@/components/Flow/useFlow'
 import { BaseComponent, type BaseComponentInterface, type CommonComponentInterface } from '@/components/Base'
 import { type EventType } from '@/shared/constants'
 import { useComponentDictionary } from '@/i18n/I18n'
 import { useI18n } from '@/i18n'
-import { ensureRequired } from '@/helpers/ensureRequired'
 import type { OnEventType } from '@/components/Base/useBase'
 
 export interface PaymentMethodProps extends CommonComponentInterface<'Employee.PaymentMethod'> {
   employeeId: string
   defaultValues?: never
   isAdmin?: boolean
+  initialState?: 'list' | 'add' | 'split'
 }
 
 function PaymentMethodFlow({
   employeeId,
-  isAdmin = false,
+  isAdmin = true,
+  initialState = 'list',
   onEvent,
 }: PaymentMethodProps & { onEvent: OnEventType<EventType, unknown> }) {
   useI18n('Employee.PaymentMethod')
 
+  const initialComponent =
+    initialState === 'add'
+      ? BankFormContextual
+      : initialState === 'split'
+        ? SplitViewContextual
+        : ListViewContextual
+
   const machine = useMemo(
     () =>
       createMachine(
-        'list',
+        initialState,
         paymentMethodStateMachine,
-        (initialContext: PaymentMethodContextInterface) => ({
-          ...initialContext,
-          component: ListViewContextual,
+        (ctx: PaymentMethodContextInterface) => ({
+          ...ctx,
+          component: initialComponent,
           employeeId,
           isAdmin,
         }),
@@ -51,16 +61,5 @@ export function PaymentMethod({ dictionary, ...props }: PaymentMethodProps & Bas
     <BaseComponent {...props}>
       <PaymentMethodFlow {...props} />
     </BaseComponent>
-  )
-}
-
-export function PaymentMethodContextual() {
-  const { employeeId, onEvent, isAdmin } = useFlow<OnboardingContextInterface>()
-  return (
-    <PaymentMethod
-      employeeId={ensureRequired(employeeId)}
-      onEvent={onEvent}
-      isAdmin={isAdmin}
-    />
   )
 }

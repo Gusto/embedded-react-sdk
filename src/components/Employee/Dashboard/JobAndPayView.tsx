@@ -1,54 +1,72 @@
 import { useTranslation } from 'react-i18next'
 import type { Job } from '@gusto/embedded-api/models/components/job'
-import type { EmployeePaymentMethod } from '@gusto/embedded-api/models/components/employeepaymentmethod'
-import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
 import type { EmployeeBankAccount } from '@gusto/embedded-api/models/components/employeebankaccount'
+import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
 import type { GetV1EmployeesEmployeeUuidPayStubsResponse } from '@gusto/embedded-api/models/operations/getv1employeesemployeeuuidpaystubs'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { DataView, useDataView, EmptyData, Loading } from '@/components/Common'
+import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { formatDateLongWithYear } from '@/helpers/dateFormatting'
 import { useFormatPayRate } from '@/helpers/formattedStrings'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
+import { useI18n } from '@/i18n'
+import {
+  usePaymentMethodList,
+  useDeleteBankAccount,
+  DeleteBankAccountDialog,
+} from '@/components/Employee/PaymentMethod/shared'
+import { componentEvents, PAYMENT_METHODS, type EventType } from '@/shared/constants'
+import type { OnEventType } from '@/components/Base/useBase'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 import PercentCircleIcon from '@/assets/icons/percent-circle.svg?react'
+import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 
 type EmployeePayStub = NonNullable<
   GetV1EmployeesEmployeeUuidPayStubsResponse['employeePayStubsList']
 >[number]
 
 export interface JobAndPayViewProps {
+  employeeId: string
   job?: Job
-  paymentMethod?: EmployeePaymentMethod
-  bankAccounts?: EmployeeBankAccount[]
   garnishments?: Garnishment[]
   payStubs?: EmployeePayStub[]
   payStubsPagination?: PaginationControlProps
   isLoading?: boolean
+  onEvent: OnEventType<EventType, unknown>
   onEditCompensation?: () => void
-  onSplitPaycheck?: () => void
-  onAddBankAccount?: () => void
   onAddDeduction?: () => void
 }
 
 export function JobAndPayView({
+  employeeId,
   job,
-  paymentMethod,
-  bankAccounts = [],
   garnishments = [],
   payStubs = [],
   payStubsPagination,
   isLoading = false,
+  onEvent,
   onEditCompensation,
-  onSplitPaycheck,
-  onAddBankAccount,
   onAddDeduction,
 }: JobAndPayViewProps) {
+  useI18n('Employee.PaymentMethod')
   const { t } = useTranslation('Employee.Dashboard')
+  const { t: tPayment } = useTranslation('Employee.PaymentMethod')
   const Components = useComponentContext()
   const formatPayRate = useFormatPayRate()
   const formatCurrency = useNumberFormatter('currency')
+
+  const { paymentMethod, bankAccounts, deletePendingBankAccountUuid, handleDelete } =
+    usePaymentMethodList({ employeeId, onEvent })
+
+  const {
+    pendingDeleteAccount,
+    setPendingDeleteAccount,
+    deletedAccountNumber,
+    setDeletedAccountNumber,
+    handleConfirmDelete,
+  } = useDeleteBankAccount(handleDelete)
 
   const bankAccountsColumns = [
     {
@@ -122,18 +140,34 @@ export function JobAndPayView({
     {
       key: 'paymentMethod',
       title: t('jobAndPay.paystubs.paymentMethod'),
-      render: () => paymentMethod?.type || t('jobAndPay.paystubs.noPaymentMethod'),
+      render: () => paymentMethod.type || t('jobAndPay.paystubs.noPaymentMethod'),
     },
   ]
 
   const bankAccountsDataView = useDataView({
     data: bankAccounts,
     columns: bankAccountsColumns,
-    isFetching: false,
     emptyState: () => (
       <EmptyData
         title={t('jobAndPay.payment.emptyState.title')}
         description={t('jobAndPay.payment.emptyState.description')}
+      />
+    ),
+    itemMenu: (bankAccount: EmployeeBankAccount) => (
+      <HamburgerMenu
+        items={[
+          {
+            label: tPayment('deleteBankAccountCta'),
+            onClick: () => {
+              setPendingDeleteAccount({
+                uuid: bankAccount.uuid,
+                hiddenAccountNumber: bankAccount.hiddenAccountNumber,
+              })
+            },
+            icon: <TrashCanSvg aria-hidden />,
+          },
+        ]}
+        triggerLabel={tPayment('hamburgerTitle')}
       />
     ),
   })
@@ -160,9 +194,13 @@ export function JobAndPayView({
       />
     ),
   })
+
   if (isLoading) {
     return <Loading />
   }
+
+  const isDirectDeposit = paymentMethod.type === PAYMENT_METHODS.directDeposit
+
   return (
     <Flex flexDirection="column" gap={24}>
       <Components.Box
@@ -229,17 +267,23 @@ export function JobAndPayView({
           <Components.BoxHeader
             title={t('jobAndPay.payment.title')}
             action={
-              <Flex gap={8} alignItems="flex-end">
+              <Flex gap={8} alignItems="center" justifyContent="flex-end">
+                {isDirectDeposit && bankAccounts.length > 1 && (
+                  <Components.Button
+                    variant="secondary"
+                    onClick={() => {
+                      onEvent(componentEvents.EMPLOYEE_SPLIT_PAYCHECK, { employeeId })
+                    }}
+                    icon={<PercentCircleIcon />}
+                  >
+                    {t('jobAndPay.payment.splitPaycheckCta')}
+                  </Components.Button>
+                )}
                 <Components.Button
                   variant="secondary"
-                  onClick={onSplitPaycheck}
-                  icon={<PercentCircleIcon />}
-                >
-                  {t('jobAndPay.payment.splitPaycheckCta')}
-                </Components.Button>
-                <Components.Button
-                  variant="secondary"
-                  onClick={onAddBankAccount}
+                  onClick={() => {
+                    onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATE, { employeeId })
+                  }}
                   icon={<PlusCircleIcon />}
                 >
                   {t('jobAndPay.payment.addBankAccountCta')}
@@ -250,6 +294,14 @@ export function JobAndPayView({
         }
       >
         <Flex flexDirection="column" gap={16}>
+          {deletedAccountNumber !== null && (
+            <Components.Alert
+              status="success"
+              label={tPayment('deleteBankAccountSuccessAlert', { account: deletedAccountNumber })}
+              onDismiss={() => setDeletedAccountNumber(null)}
+              disableScrollIntoView
+            />
+          )}
           <DataView label={t('jobAndPay.payment.listLabel')} {...bankAccountsDataView} />
         </Flex>
       </Components.Box>
@@ -280,6 +332,13 @@ export function JobAndPayView({
           <DataView label={t('jobAndPay.paystubs.listLabel')} {...payStubsDataView} />
         </Flex>
       </Components.Box>
+
+      <DeleteBankAccountDialog
+        pendingDeleteAccount={pendingDeleteAccount}
+        isPrimaryActionLoading={deletePendingBankAccountUuid === pendingDeleteAccount?.uuid}
+        onClose={() => setPendingDeleteAccount(null)}
+        onConfirm={() => void handleConfirmDelete()}
+      />
     </Flex>
   )
 }

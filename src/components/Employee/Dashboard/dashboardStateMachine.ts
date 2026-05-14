@@ -6,6 +6,8 @@ import {
   FederalTaxesContextual,
   StateTaxesContextual,
   ProfileContextual,
+  PaymentBankFormContextual,
+  PaymentSplitViewContextual,
   type DashboardContextInterface,
 } from './DashboardComponents'
 import { componentEvents } from '@/shared/constants'
@@ -76,6 +78,28 @@ export const dashboardStateMachine = {
         }),
       ),
     ),
+    transition(
+      componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATE,
+      'paymentBankForm',
+      reduce(
+        (ctx: DashboardContextInterface): DashboardContextInterface => ({
+          ...ctx,
+          component: PaymentBankFormContextual,
+          header: { type: 'minimal' },
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.EMPLOYEE_SPLIT_PAYCHECK,
+      'paymentSplitView',
+      reduce(
+        (ctx: DashboardContextInterface): DashboardContextInterface => ({
+          ...ctx,
+          component: PaymentSplitViewContextual,
+          header: { type: 'minimal' },
+        }),
+      ),
+    ),
   ),
   homeAddress: state<MachineTransition>(transition(componentEvents.CANCEL, 'index', returnToIndex)),
   workAddress: state<MachineTransition>(transition(componentEvents.CANCEL, 'index', returnToIndex)),
@@ -85,4 +109,12 @@ export const dashboardStateMachine = {
   ),
   stateTaxes: state<MachineTransition>(transition(componentEvents.CANCEL, 'index', returnToIndex)),
   profile: state<MachineTransition>(transition(componentEvents.CANCEL, 'index', returnToIndex)),
+  paymentBankForm: state<MachineTransition>(
+    transition(componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATED, 'index', returnToIndex),
+    transition(componentEvents.CANCEL, 'index', returnToIndex),
+  ),
+  paymentSplitView: state<MachineTransition>(
+    transition(componentEvents.EMPLOYEE_PAYMENT_METHOD_UPDATED, 'index', returnToIndex),
+    transition(componentEvents.CANCEL, 'index', returnToIndex),
+  ),
 }
