@@ -5,13 +5,13 @@ React component library for Gusto's Embedded Payroll product. Built with TypeScr
 ## Commands
 
 ```bash
-npm run build          # Build the SDK
-npm run test -- --run  # Run tests once and exit (omitting --run starts watch mode, which won't exit)
-npm run storybook      # Start Storybook on port 6006
-npm run e2e:serve      # Start E2E test app
-npm run test:e2e       # Run E2E tests (requires gws-flows + ZenPayroll running)
-npm run dev:setup      # Link SDK into gws-flows for local development
-npm run i18n:generate  # Generate translation types
+npm run build # Build the SDK
+npm run test -- --run # Run tests once and exit (omitting --run starts watch mode, which won't exit)
+npm run storybook # Start Storybook on port 6006
+npm run e2e:serve # Start E2E test app
+npm run test:e2e # Run E2E tests (requires gws-flows + ZenPayroll running)
+npm run dev:setup # Link SDK into gws-flows for local development
+npm run i18n:generate # Generate translation types
 ```
 
 ## SDK Dev App
@@ -19,13 +19,13 @@ npm run i18n:generate  # Generate translation types
 To get started, first run `npm install`, then for a dev SDK build:
 
 ```bash
-npm run sdk-app                # Dev build with HMR
+npm run sdk-app # Dev build with HMR
 ```
 
 Or for a production SDK build:
 
 ```
-npm run sdk-app-prod           # Production build (uses built dist/)
+npm run sdk-app-prod # Production build (uses built dist/)
 ```
 
 See [sdk-app/README.md](sdk-app/README.md) for all available commands and environment options.
@@ -66,14 +66,14 @@ Use Field components from `src/components/Common/Fields/` inside `FormProvider`.
 
 ```
 src/components/
-├── Common/         # Shared UI primitives and Field components
-│   ├── Fields/     # Form-connected Field components (use for forms)
-│   └── UI/         # Low-level UI components (via ComponentsContext)
-├── Company/        # Company domain features
-├── Employee/       # Employee domain features
-├── Contractor/     # Contractor domain features
-├── Payroll/        # Payroll domain features
-└── Flow/           # Multi-step flow orchestration
+├── Common/ # Shared UI primitives and Field components
+│ ├── Fields/ # Form-connected Field components (use for forms)
+│ └── UI/ # Low-level UI components (via ComponentsContext)
+├── Company/ # Company domain features
+├── Employee/ # Employee domain features
+├── Contractor/ # Contractor domain features
+├── Payroll/ # Payroll domain features
+└── Flow/ # Multi-step flow orchestration
 ```
 
 ### API Layer (`@gusto/embedded-api`)
@@ -115,9 +115,9 @@ Three-repo architecture with sibling directories:
 
 ```
 ~/workspace/
-├── zenpayroll/          # Core Rails app
-├── gws-flows/           # Rails API proxy for local SDK testing
-└── embedded-react-sdk/  # This repo
+├── zenpayroll/ # Core Rails app
+├── gws-flows/ # Rails API proxy for local SDK testing
+└── embedded-react-sdk/ # This repo
 ```
 
 Use `../gws-flows` as the source of truth for current API behavior and response shapes. Do NOT copy gws-flows code 1:1 — understand the "what" then implement it the SDK way.
@@ -187,3 +187,35 @@ expect(updateJobPath).toBe('/v1/jobs/job-uuid')
 When you want to assert that a specific endpoint was _not_ called, register its handler with a `vi.fn()` resolver alongside the one(s) you do expect, then `expect(resolver).not.toHaveBeenCalled()`. This is more explicit than relying on the default mock returning success.
 
 Most form-hook tests don't need this at all — assertions on the rendered DOM, the `onEvent`/`onSaved` callback payload, and the hook's `data`/`status` typically pin behavior sufficiently. Reach for resolver spies only when the wire-level contract (verb, path, version, sequence) is the thing under test, e.g. when a refactor needs to prove that two endpoints are still called in the right order or that the body still carries an optimistic-locking `version`.
+
+## Cursor Cloud specific instructions
+
+### Development workflow
+
+The primary development command is `npm run sdk-app`, which starts the SDK Dev App on port 5200 with HMR. It auto-provisions a demo company against `flows.gusto-demo.com` on first run (writes credentials to `sdk-app/env/.env.demo`). No additional backend services or configuration are needed.
+
+- `npm run build` is for production artifacts only — not needed during development.
+- Storybook (`npm run storybook`, port 6006) is available for isolated component development without any API backend.
+
+### Running tests
+
+- Always use `npm run test -- --run` (the `--run` flag is critical to avoid vitest watch mode, which hangs in non-interactive shells).
+- Run a single test file: `npm run test -- --run src/components/MyComponent.test.tsx`
+- All unit tests use MSW mocks — no external services required.
+- E2E tests (`npm run test:e2e`) require GWS-Flows + ZenPayroll which are not available in Cloud Agent VMs.
+
+### Lint and format
+
+- `npm run lint:check` — ESLint (exits 0 with pre-existing warnings, no errors)
+- `npm run format:check` — Prettier
+- `npm run lint` — ESLint with `--fix`
+- `npm run format` — Prettier with `--write`
+
+### Git hooks
+
+Husky pre-commit hook runs `lint-staged`; commit-msg hook runs `commitlint`. Use conventional commit format (`feat:`, `fix:`, `chore:`, etc.).
+
+### Gotchas
+
+- The `sdk-app/env/` directory is gitignored. The SDK app auto-provisions on first run, but if the env file already exists with an expired token, use `npm run sdk-app:setup` to re-provision.
+- Node version 22.x is required (see `.nvmrc`). The VM ships with a compatible version.

@@ -11,8 +11,6 @@ Creates or updates an employee's job — title, hire date, S-Corp 2% shareholder
 import { useJobForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
 ```
 
-A wrapper hook, [`useCurrentJobForm`](#usecurrentjobform), automatically resolves the employee's primary job and threads its UUID into `useJobForm` — useful for steady-state edit screens that don't expose a job picker.
-
 > **Composing with `useCompensationForm`?** See [Working with Jobs and Compensations](./jobs-and-compensations.md) for end-to-end patterns covering onboarding stub-fill (POST job → PUT auto-created stub) and steady-state edits.
 
 ---
@@ -21,14 +19,15 @@ A wrapper hook, [`useCurrentJobForm`](#usecurrentjobform), automatically resolve
 
 `useJobForm` accepts a single options object:
 
-| Prop                      | Type                                                           | Required | Default      | Description                                                                                                                                  |
-| ------------------------- | -------------------------------------------------------------- | -------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| `employeeId`              | `string`                                                       | No       | —            | The UUID of the employee. Optional for composed flows where the ID is created in the same submit chain — pass it via submit options instead. |
-| `jobId`                   | `string`                                                       | No       | —            | When present → **update** mode (PUT /v1/jobs/:id with `version`). When absent → **create** mode (POST /v1/employees/:id/jobs).               |
-| `optionalFieldsToRequire` | `JobOptionalFieldsToRequire`                                   | No       | —            | Override fields that are optional on a given mode to be required. See [Configurable Required Fields](#configurable-required-fields).         |
-| `defaultValues`           | `Partial<JobFormData>`                                         | No       | —            | Pre-fill form values. Server data takes precedence on update.                                                                                |
-| `validationMode`          | `'onSubmit' \| 'onBlur' \| 'onChange' \| 'onTouched' \| 'all'` | No       | `'onSubmit'` | Passed through to react-hook-form.                                                                                                           |
-| `shouldFocusError`        | `boolean`                                                      | No       | `true`       | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`.                                              |
+| Prop                      | Type                                                           | Required | Default      | Description                                                                                                                                                                                                  |
+| ------------------------- | -------------------------------------------------------------- | -------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `employeeId`              | `string`                                                       | No       | —            | The UUID of the employee. Optional for composed flows where the ID is created in the same submit chain — pass it via submit options instead.                                                                 |
+| `jobId`                   | `string`                                                       | No       | —            | When present → **update** mode (PUT /v1/jobs/:id with `version`). When absent → **create** mode (POST /v1/employees/:id/jobs).                                                                               |
+| `optionalFieldsToRequire` | `JobOptionalFieldsToRequire`                                   | No       | —            | Override fields that are optional on a given mode to be required. See [Configurable Required Fields](#configurable-required-fields).                                                                         |
+| `defaultValues`           | `Partial<JobFormData>`                                         | No       | —            | Pre-fill form values. Server data takes precedence on update.                                                                                                                                                |
+| `validationMode`          | `'onSubmit' \| 'onBlur' \| 'onChange' \| 'onTouched' \| 'all'` | No       | `'onSubmit'` | Passed through to react-hook-form.                                                                                                                                                                           |
+| `shouldFocusError`        | `boolean`                                                      | No       | `true`       | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`.                                                                                                              |
+| `withHireDateField`       | `boolean`                                                      | No       | `true`       | When `false`, hides `Fields.HireDate` and drops `hireDate` from schema validation. Supply the value via `JobSubmitOptions.hireDate` at submit time (e.g. from the employee's `startDate` during onboarding). |
 
 ### Configurable Required Fields
 
@@ -114,6 +113,13 @@ The hook returns a discriminated union on `isLoading`.
 interface JobSubmitOptions {
   /** Override the employeeId configured at hook construction. Useful when the employee is created in the same submit chain. */
   employeeId?: string
+  /**
+   * Supply `hireDate` at submit time rather than via a rendered field. Use
+   * with `withHireDateField: false` for screens that derive hireDate from
+   * external context (e.g. the employee's `startDate` during onboarding).
+   * Falls back to the loaded job's `hireDate` on update when omitted.
+   */
+  hireDate?: string
 }
 ```
 
@@ -179,8 +185,14 @@ Date picker for the employee's hire date for this job.
 
 **Required on create.** Optional on update unless `optionalFieldsToRequire.update` includes `'hireDate'`.
 
+**Conditional availability:** This field is `undefined` when `withHireDateField: false`. Supply the value via `JobSubmitOptions.hireDate` at submit time instead — useful when the date is derived from external context (e.g. the employee's `startDate` during an onboarding flow).
+
 ```tsx
-<Fields.HireDate label="Hire date" validationMessages={{ REQUIRED: 'Hire date is required' }} />
+{
+  Fields.HireDate && (
+    <Fields.HireDate label="Hire date" validationMessages={{ REQUIRED: 'Hire date is required' }} />
+  )
+}
 ```
 
 ---
@@ -259,23 +271,6 @@ Select dropdown for Washington state workers' compensation risk class code.
   )
 }
 ```
-
----
-
-## useCurrentJobForm
-
-A wrapper hook that resolves the employee's **primary** job and threads its UUID into `useJobForm`. Mirrors `useCurrentHomeAddressForm` / `useCurrentWorkAddressForm`. Use this when your screen is "edit the current job" without picking a specific record. For secondary or future jobs, use the core `useJobForm` directly with an explicit `jobId`.
-
-```tsx
-import { useCurrentJobForm } from '@gusto/embedded-react-sdk'
-
-function CurrentJobEditPage({ employeeId }: { employeeId: string }) {
-  const job = useCurrentJobForm({ employeeId })
-  // ... renders form against the primary job
-}
-```
-
-Props are `Omit<UseJobFormProps, 'jobId'>`. When the employee has no jobs, the hook lands in **create** mode automatically.
 
 ---
 

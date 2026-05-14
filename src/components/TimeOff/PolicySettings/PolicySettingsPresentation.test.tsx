@@ -155,8 +155,9 @@ describe('PolicySettingsPresentation', () => {
         expect(screen.getAllByText('Balance maximum').length).toBeGreaterThan(0)
       })
 
-      const balanceInputs = screen.getAllByPlaceholderText('Number of hours')
-      expect(balanceInputs[0]).toBeDisabled()
+      const balanceInput = screen.getByRole('textbox', { name: /^Balance maximum/ })
+      expect(balanceInput).toHaveAttribute('placeholder', '0')
+      expect(balanceInput).toBeDisabled()
 
       const balanceSwitches = screen
         .getAllByRole('switch')
@@ -167,7 +168,7 @@ describe('PolicySettingsPresentation', () => {
       await user.click(balanceSwitch)
 
       await waitFor(() => {
-        expect(screen.getAllByPlaceholderText('Number of hours')[0]).not.toBeDisabled()
+        expect(screen.getByRole('textbox', { name: /^Balance maximum/ })).not.toBeDisabled()
       })
     })
   })

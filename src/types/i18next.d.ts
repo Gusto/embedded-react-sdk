@@ -576,8 +576,17 @@ export interface CompanyTimeOffSelectEmployees{
 "continueCta":string;
 "errors":{
 "removeEmployeesFailed":string;
+"completePolicyFailed":string;
 };
 "removeConfirmDialog":{
+"title_one":string;
+"title_other":string;
+"description_one":string;
+"description_other":string;
+"confirmCta":string;
+"cancelCta":string;
+};
+"addConfirmDialog":{
 "title_one":string;
 "title_other":string;
 "description_one":string;

@@ -125,7 +125,7 @@ function buildCreateRequestBody(
   const policyResetDate =
     data.resetDateType === 'per_calendar_year'
       ? formatMonthDay(data.resetMonth, data.resetDay)
-      : undefined
+      : null
 
   if (isHourly) {
     return {
@@ -140,6 +140,7 @@ function buildCreateRequestBody(
   return {
     ...base,
     accrualRate: data.accrualRate != null ? String(data.accrualRate) : undefined,
+    accrualRateUnit: null,
     policyResetDate,
     complete: false,
   }
@@ -172,7 +173,7 @@ function buildUpdateRequestBody(
   const policyResetDate =
     data.resetDateType === 'per_calendar_year'
       ? formatMonthDay(data.resetMonth, data.resetDay)
-      : undefined
+      : null
 
   if (isHourly) {
     return {
@@ -186,6 +187,7 @@ function buildUpdateRequestBody(
   return {
     ...base,
     accrualRate: data.accrualRate != null ? String(data.accrualRate) : undefined,
+    accrualRateUnit: null,
     policyResetDate,
   }
 }

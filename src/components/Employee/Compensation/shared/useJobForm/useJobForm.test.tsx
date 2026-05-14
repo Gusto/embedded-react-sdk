@@ -81,6 +81,13 @@ describe('createJobSchema', () => {
     expect(result.success).toBe(false)
   })
 
+  it('drops hireDate from validation when withHireDateField is false', () => {
+    const [schema] = createJobSchema({ mode: 'create', withHireDateField: false })
+    const { hireDate: _omit, ...rest } = VALID_FORM_DATA
+    const result = schema.safeParse(rest)
+    expect(result.success).toBe(true)
+  })
+
   it('metadata reflects API requirements: title/hireDate required on create', () => {
     const [, { getFieldsMetadata }] = createJobSchema({ mode: 'create' })
     const metadata = getFieldsMetadata()
@@ -458,6 +465,172 @@ describe('useJobForm', () => {
       })
       assertReady(result.current)
       expect(fieldsMetadataEntry(result.current.form.fieldsMetadata, 'title').isRequired).toBe(true)
+    })
+  })
+
+  describe('withHireDateField', () => {
+    it('hides Fields.HireDate when withHireDateField: false', async () => {
+      server.use(handleGetEmployeeJobs(() => HttpResponse.json([])))
+
+      const { result } = renderHook(
+        () =>
+          useJobForm({
+            employeeId: 'employee-uuid',
+            withHireDateField: false,
+            defaultValues: { title: 'Engineer' },
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      assertReady(result.current)
+      expect(result.current.form.Fields.HireDate).toBeUndefined()
+      expect(result.current.form.Fields.Title).toBeDefined()
+    })
+
+    it('create mode: sends hireDate from JobSubmitOptions when field is hidden', async () => {
+      let createJobBody: Record<string, unknown> | null = null
+      const createJobResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+        createJobBody = (await request.json()) as Record<string, unknown>
+        return HttpResponse.json(
+          {
+            uuid: 'new-job-uuid',
+            version: 'v1',
+            employee_uuid: 'employee-uuid',
+            current_compensation_uuid: 'comp-uuid',
+            payment_unit: 'Hour',
+            primary: true,
+            title: createJobBody.title,
+            hire_date: createJobBody.hire_date,
+            two_percent_shareholder: false,
+            state_wc_covered: false,
+            state_wc_class_code: null,
+            compensations: [],
+            rate: '0.00',
+          },
+          { status: 201 },
+        )
+      })
+
+      server.use(
+        handleGetEmployeeJobs(() => HttpResponse.json([])),
+        handleCreateEmployeeJob(createJobResolver),
+      )
+
+      const { result } = renderHook(
+        () =>
+          useJobForm({
+            employeeId: 'employee-uuid',
+            withHireDateField: false,
+            defaultValues: { title: 'Engineer' },
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      await act(async () => {
+        assertReady(result.current)
+        await result.current.actions.onSubmit({ hireDate: '2025-03-01' })
+      })
+
+      expect(createJobResolver).toHaveBeenCalledTimes(1)
+      expect(createJobBody).toMatchObject({
+        title: 'Engineer',
+        hire_date: '2025-03-01',
+      })
+    })
+
+    it('create mode: throws when hidden and no JobSubmitOptions.hireDate supplied', async () => {
+      const createJobResolver = vi.fn(() => HttpResponse.json({}, { status: 201 }))
+
+      server.use(
+        handleGetEmployeeJobs(() => HttpResponse.json([])),
+        handleCreateEmployeeJob(createJobResolver),
+      )
+
+      const { result } = renderHook(
+        () =>
+          useJobForm({
+            employeeId: 'employee-uuid',
+            withHireDateField: false,
+            defaultValues: { title: 'Engineer' },
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      let submitResult
+      await act(async () => {
+        assertReady(result.current)
+        submitResult = await result.current.actions.onSubmit()
+      })
+
+      expect(submitResult).toBeUndefined()
+      expect(createJobResolver).not.toHaveBeenCalled()
+      expect(result.current.errorHandling.errors.length).toBeGreaterThan(0)
+    })
+
+    it('update mode: keeps existing hireDate when hidden and no override supplied', async () => {
+      let updateJobBody: Record<string, unknown> | null = null
+      const updateJobResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+        updateJobBody = (await request.json()) as Record<string, unknown>
+        return HttpResponse.json({
+          uuid: 'job-uuid',
+          version: 'v2',
+          employee_uuid: 'employee-uuid',
+          current_compensation_uuid: 'compensation-uuid',
+          payment_unit: 'Hour',
+          primary: true,
+          title: updateJobBody.title ?? 'My Job',
+          hire_date: '2024-12-24',
+          two_percent_shareholder: false,
+          state_wc_covered: false,
+          state_wc_class_code: null,
+          compensations: [],
+          rate: '100.00',
+        })
+      })
+
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'singleNonexempt' })),
+        ),
+        handleUpdateEmployeeJob(updateJobResolver),
+      )
+
+      const { result } = renderHook(
+        () =>
+          useJobForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+            withHireDateField: false,
+            optionalFieldsToRequire: { update: ['title'] },
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      await act(async () => {
+        assertReady(result.current)
+        await result.current.actions.onSubmit()
+      })
+
+      expect(updateJobResolver).toHaveBeenCalledTimes(1)
+      // currentJob.hireDate is the fallback when the field is hidden and no
+      // submit-options override is supplied; the API keeps the stored value.
+      expect(updateJobBody).toMatchObject({ hire_date: '2024-12-24' })
     })
   })
 })
