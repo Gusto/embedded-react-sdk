@@ -247,6 +247,28 @@ export type {
 } from '@/components/Employee/PaymentMethod/shared/useBankForm'
 
 export {
+  usePaymentMethodForm,
+  PaymentMethodFormErrorCodes,
+  createPaymentMethodFormSchema,
+  PAYMENT_METHOD_TYPES,
+} from '@/components/Employee/PaymentMethod/shared/usePaymentMethodForm'
+export type {
+  UsePaymentMethodFormProps,
+  UsePaymentMethodFormResult,
+  UsePaymentMethodFormReady,
+  PaymentMethodFormFields,
+  PaymentMethodFormFieldsMetadata,
+  PaymentMethodFormErrorCode,
+  PaymentMethodFormData,
+  PaymentMethodFormOutputs,
+  PaymentMethodFormField,
+  PaymentMethodFormOptionalFieldsToRequire,
+  PaymentMethodType,
+  PaymentMethodFormRequiredValidation,
+  TypeFieldProps,
+} from '@/components/Employee/PaymentMethod/shared/usePaymentMethodForm'
+
+export {
   useFederalTaxesForm,
   FederalTaxesErrorCodes,
   createFederalTaxesSchema,

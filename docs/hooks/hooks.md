@@ -23,6 +23,7 @@ Hooks give you full control over form rendering while the SDK manages data fetch
 | `useSignCompanyForm`        | Sign a company form (PDF viewer, typed signature, confirmation checkbox)                           | [useSignCompanyForm](./useSignCompanyForm.md)               |
 | `useSignEmployeeForm`       | Sign an employee form (signature, confirmation, I-9 preparer/translator sections)                  | [useSignEmployeeForm](./useSignEmployeeForm.md)             |
 | `useBankForm`               | Create a bank account for an employee (nickname, routing/account number, account type)             | [useBankForm](./useBankForm.md)                             |
+| `usePaymentMethodForm`      | Switch an employee's payment method between Direct Deposit and Check                               | [usePaymentMethodForm](./usePaymentMethodForm.md)           |
 
 ---
 
