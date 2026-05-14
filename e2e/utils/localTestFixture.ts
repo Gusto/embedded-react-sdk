@@ -1,7 +1,7 @@
 import { test as base } from '@playwright/test'
 import { existsSync, readFileSync } from 'fs'
 import { resolve } from 'path'
-import type { ScenarioContext } from '../scenario/context'
+import type { ScenarioContext } from '../scenario/cache'
 import { provisionScenario } from '../scenario/runner'
 
 interface E2EState {
@@ -84,6 +84,8 @@ export const test = base.extend<ScenarioFixtures & { localConfig: LocalConfig }>
       }
 
       const scenarioPath = resolve(process.cwd(), 'e2e/scenarios', `${annotation.description}.json`)
+      const ctx = await provisionScenario(scenarioPath)
+
       const scenarioJson = JSON.parse(readFileSync(scenarioPath, 'utf-8')) as {
         domain?: string
       }
@@ -91,12 +93,6 @@ export const test = base.extend<ScenarioFixtures & { localConfig: LocalConfig }>
         testInfo.annotations.push({ type: 'tag', description: `@${scenarioJson.domain}` })
       }
 
-      if (process.env.E2E_USE_REAL_BACKEND !== 'true') {
-        await use(EMPTY_SCENARIO_CONTEXT)
-        return
-      }
-
-      const ctx = await provisionScenario(scenarioPath)
       await use(ctx)
     },
     { scope: 'test' },
@@ -115,11 +111,10 @@ export const test = base.extend<ScenarioFixtures & { localConfig: LocalConfig }>
         params.set('companyId', scenario.companyId)
 
         const firstEmployee = Object.values(scenario.employeeIds)[0]
-        if (firstEmployee && !params.has('employeeId')) params.set('employeeId', firstEmployee)
+        if (firstEmployee) params.set('employeeId', firstEmployee)
 
         const firstContractor = Object.values(scenario.contractorIds)[0]
-        if (firstContractor && !params.has('contractorId'))
-          params.set('contractorId', firstContractor)
+        if (firstContractor) params.set('contractorId', firstContractor)
 
         if (scenario.paySchedule?.uuid) params.set('payScheduleUuid', scenario.paySchedule.uuid)
       } else {
