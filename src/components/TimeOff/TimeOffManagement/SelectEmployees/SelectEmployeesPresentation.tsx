@@ -5,6 +5,7 @@ import type {
   EmployeeItem,
   SelectEmployeesPresentationProps,
 } from './SelectEmployeesPresentationTypes'
+import styles from './SelectEmployeesPresentation.module.scss'
 import { ActionsLayout, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
@@ -88,6 +89,7 @@ export function SelectEmployeesPresentation({
                           onBalanceChange(employee.uuid, value)
                         }}
                         placeholder="0"
+                        className={styles.balanceInput}
                       />
                     )
                   },
