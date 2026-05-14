@@ -132,7 +132,7 @@ interface EditBalanceState {
 function Root({ policyId }: TimeOffPolicyDetailProps) {
   useI18n('Company.TimeOff.TimeOffPolicyDetails')
   const { t } = useTranslation('Company.TimeOff.TimeOffPolicyDetails')
-  const { onEvent, baseSubmitHandler } = useBase()
+  const { onEvent, baseSubmitHandler, error, setError } = useBase()
   const { Button } = useComponentContext()
   const { locale } = useLocale()
   const queryClient = useQueryClient()
@@ -350,11 +350,13 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
         isOpen={editBalanceState !== null}
         onClose={() => {
           setEditBalanceState(null)
+          setError(null)
         }}
         employeeName={editBalanceState?.employeeName ?? ''}
         currentBalance={editBalanceState?.currentBalance ?? 0}
         onConfirm={handleUpdateBalance}
         isPending={isBalancePending}
+        error={error}
       />
     </>
   )
