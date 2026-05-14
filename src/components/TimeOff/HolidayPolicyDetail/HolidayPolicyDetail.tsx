@@ -87,7 +87,7 @@ function Root({ companyId, defaultTab = 'holidays' }: HolidayPolicyDetailProps) 
         uuid: emp.uuid,
         firstName: emp.firstName,
         lastName: emp.lastName,
-        jobTitle: emp.title ?? null,
+        jobTitle: emp.jobs?.find(job => job.primary)?.title ?? null,
       }))
   }, [employeesData.showEmployees, policyEmployeeUuids])
 

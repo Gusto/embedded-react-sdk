@@ -44,9 +44,19 @@ vi.mock('@gusto/embedded-api/react-query/employeesList', () => ({
   useEmployeesListSuspense: () => ({
     data: {
       showEmployees: [
-        { uuid: 'emp-1', firstName: 'Alice', lastName: 'Smith', title: 'Engineer' },
-        { uuid: 'emp-2', firstName: 'Bob', lastName: 'Jones', title: 'Designer' },
-        { uuid: 'emp-3', firstName: 'Carol', lastName: 'Davis', title: null },
+        {
+          uuid: 'emp-1',
+          firstName: 'Alice',
+          lastName: 'Smith',
+          jobs: [{ primary: true, title: 'Engineer' }],
+        },
+        {
+          uuid: 'emp-2',
+          firstName: 'Bob',
+          lastName: 'Jones',
+          jobs: [{ primary: true, title: 'Designer' }],
+        },
+        { uuid: 'emp-3', firstName: 'Carol', lastName: 'Davis', jobs: [] },
       ],
     },
   }),
