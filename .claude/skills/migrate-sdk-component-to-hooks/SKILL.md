@@ -10,9 +10,19 @@ description: >-
 
 # Migrating SDK Components to Hook-Based Architecture
 
-Reference implementation: `PayScheduleForm` — PR #1545 or branch `sdk-774-pay-schedule-hook`. For hook composition, error aggregation, and `composeSubmitHandler` patterns, `AdminProfile` / `EmployeeProfile` on PR #1570 / branch `sdk-777-profile-hook-migration` are also useful.
+In-tree reference implementations (in order of increasing complexity — start at the top):
+
+- `src/components/Company/PaySchedule/PayScheduleForm.tsx` — **canonical single-hook migration** (`usePayScheduleForm`) using `BaseBoundaries` + `BaseLayout` + `SDKFormProvider`. Start here when migrating a one-hook screen.
+- `src/components/Employee/Profile/onboarding/EmployeeProfile.tsx` — **canonical two-hook composition** (`useEmployeeDetailsForm` + `useCurrentHomeAddressForm`) with `composeSubmitHandler` ordering and partial-update recovery. Start here when migrating a multi-hook screen.
+- `src/components/Employee/Compensation/EditCompensation/EditCompensation.tsx` — two-hook composition (`useJobForm` + `useCompensationForm`) demonstrating submit-time threading of a freshly-created parent's `currentCompensationUuid`/version into the next submit, plus `withHireDateField: false` / `withEffectiveDateField: false` to derive dates from external context.
+
+**Advanced / exceptional reference — read for orientation, do _not_ copy the exception:**
+
+- `src/components/Employee/Profile/onboarding/AdminProfile.tsx` — three-hook composition (`useEmployeeDetailsForm` + `useCurrentHomeAddressForm` + `useCurrentWorkAddressForm`) with `composeSubmitHandler` ordering, partial-update recovery, and `SDKFormProvider` + `formHookResult` props mixed on the same screen. This screen also stands up a raw `useForm` for `startDate` — a documented, non-canonical workaround for a date field that none of the existing hooks could own without introducing side effects on shared dates. **Do not use this as a template for new work.** When tempted to reach for raw `useForm` (or `useWatch`, `setValue`, or `hookFormInternals.formMethods.*`) in a component, push the field into an existing hook or scaffold a new one (`.claude/commands/create-hook.md`) — partners shouldn't have to know about react-hook-form internals to consume the SDK. If you genuinely believe you have another exception, stop and surface it to the reviewer with a written justification before merging.
 
 Hooks reference: `.claude/hooks-implementation.md` — covers schema, fields, hook internals, error handling, and exports in detail. Read it before starting a migration.
+
+Scaffolding a new hook from scratch: `.claude/commands/create-hook.md` walks through the file layout, schema/field/hook templates, barrel wiring, and verification steps.
 
 ## Core Principle: The Hook Owns the Business Logic
 
@@ -21,11 +31,15 @@ Before writing any logic in the component, read the hook. Hooks encapsulate fiel
 Common anti-patterns to avoid:
 
 - Reaching for `useWatch` to gate field visibility when the hook already returns the field as `undefined` when it shouldn't be shown
+- Standing up a raw `useForm` in the component for fields that conceptually belong to one of the form hooks on the same screen (or for a brand-new field that no hook owns yet — scaffold a hook for it instead, see `.claude/commands/create-hook.md`)
+- Pulling values via `hookResult.form.hookFormInternals.formMethods.*` to drive cross-field validation, requiredness, or submit ordering — that logic belongs inside the hook's schema/`requiredFieldsConfig`/`onSubmit`
 - Duplicating the hook's requiredness logic via component-level conditionals
 - Querying an entity in the component when the hook is already fetching and exposing it via `data` or `status`
 - Computing derived values (e.g. "is this schedule in create vs edit mode") in the component when the hook surfaces them
 
 **Rule of thumb**: if you're writing business logic in the component that every partner using the hook would also need, that logic belongs in the hook. Stop, move it into the hook, and re-export it via the hook's return shape. The SDK component and partner code should look identical in terms of which fields are shown and when.
+
+**Hooks are partner-facing; react-hook-form is not.** Partners should be able to consume the hook's documented surface (`data`, `status`, `actions`, `errorHandling`, `form.Fields`, `form.fieldsMetadata`, `form.getFormSubmissionValues`) without ever importing from `react-hook-form` or touching `form.hookFormInternals`. If you find yourself reaching for `useWatch`, raw `useForm`, `setValue`, `watch`, or any other RHF internal in the component, that is a signal the hook is missing functionality — either there is already a hook return value for the case (use it) or the hook needs to be updated to cover it. `form.hookFormInternals` exists as an escape hatch for narrowly presentational, non-business-logic cases (see Section 6 → "Watching Form Values"); treat each new use site as a candidate for moving the logic into the hook.
 
 ## 0. Pre-Migration Test Coverage
 
@@ -548,18 +562,21 @@ All form hooks live inside a `shared/` directory scoped to the domain feature, o
 ```
 src/components/<Domain>/<Feature>/shared/
 └── use<Name>Form/
-    ├── use<Name>Form.tsx        # hook implementation
-    ├── use<Name>FormSchema.ts   # Zod schema + error codes constant
-    ├── fields.tsx               # Fields.* components wired to the hook
-    ├── index.ts                 # public re-exports
-    └── use<Name>Form.test.tsx   # hook unit tests
+    ├── use<Name>Form.tsx       # hook implementation
+    ├── <camelDomain>Schema.ts  # Zod schema + error codes constant (e.g. employeeDetailsSchema.ts, homeAddressSchema.ts, compensationSchema.ts, jobSchema.ts)
+    ├── fields.tsx              # Fields.* components wired to the hook
+    ├── index.ts                # public re-exports
+    └── use<Name>Form.test.tsx  # hook unit tests
 ```
 
-Reference examples:
+Reference examples (read the closest match before scaffolding):
 
-- `src/components/Employee/Profile/shared/useEmployeeDetailsForm/`
-- `src/components/Employee/Compensation/shared/useCompensationForm/`
-- `src/components/Company/PaySchedule/shared/usePayScheduleForm/`
+- `src/components/Employee/Profile/shared/useEmployeeDetailsForm/` — chained mutations per submit (`updateEmployee` + `updateOnboardingStatus`); single hook that needs `*SubmitCallbacks`
+- `src/components/Employee/Profile/shared/useHomeAddressForm/` — single-mutation create-or-update; optional `homeAddressUuid` switches modes; `withEffectiveDateField` flag
+- `src/components/Employee/Profile/shared/useWorkAddressForm/` — list-query (company locations) feeding a Select via `withOptions`; create-or-update with effective-date handling
+- `src/components/Employee/Compensation/shared/useJobForm/` — predicate-based requiredness (`stateWcCovered → stateWcClassCode required`), radio coercion via `coerceStringBoolean`
+- `src/components/Employee/Compensation/shared/useCompensationForm/` — cross-field `superRefine`, conditional fields, reactive `status.willDeleteSecondaryJobs` flag exposed to partners
+- `src/components/Company/PaySchedule/shared/usePayScheduleForm/` — company-domain hook with admin-only fields and a calendar preview side query
 
 ### Steps
 
@@ -577,8 +594,10 @@ Two documentation updates are required for every new hook. Complete both before 
 
 Read these files in full — structure, section order, table columns, frontmatter, and code snippet style must all match:
 
-- `docs/hooks/useEmployeeDetailsForm.md`
-- `docs/hooks/useCompensationForm.md`
+- `docs/hooks/useEmployeeDetailsForm.md` — chained-submit hook with `*SubmitCallbacks`
+- `docs/hooks/useWorkAddressForm.md` — single-mutation hook with optional submit-time entity ids
+- `docs/hooks/useJobForm.md` and `docs/hooks/useCompensationForm.md` — Compensation-domain hooks (predicate-based requiredness, cross-field `superRefine`, status flags)
+- `docs/hooks/usePayScheduleForm.md` — company-domain hook with admin-only fields and a side query
 - `docs/hooks/hooks.md` (for the inventory table format)
 
 Do not rely on the description below as a substitute for reading the source material.
