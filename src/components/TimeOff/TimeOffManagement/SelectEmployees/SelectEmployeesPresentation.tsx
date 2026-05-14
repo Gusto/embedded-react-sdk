@@ -30,6 +30,7 @@ export function SelectEmployeesPresentation({
   isFetching,
   originallyOnPolicyUuids,
   originalBalances,
+
   removeConfirmDialog,
   isPending = false,
 }: SelectEmployeesPresentationProps) {
