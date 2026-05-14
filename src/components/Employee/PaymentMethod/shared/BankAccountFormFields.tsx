@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import type { CombinedSchemaInputs } from './paymentMethodSchema'
@@ -6,7 +7,10 @@ import { RadioGroupField, TextInputField } from '@/components/Common'
 export function BankAccountFormFields() {
   const { t } = useTranslation('Employee.PaymentMethod')
   const { setValue } = useFormContext<CombinedSchemaInputs>()
-  setValue('hasBankPayload', true)
+
+  useEffect(() => {
+    setValue('hasBankPayload', true)
+  }, [setValue])
 
   return (
     <>

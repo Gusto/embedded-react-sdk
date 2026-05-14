@@ -1,4 +1,5 @@
 import { FormProvider } from 'react-hook-form'
+import { useEffect } from 'react'
 import { ErrorMessage } from '@hookform/error-message'
 import { Trans, useTranslation } from 'react-i18next'
 import {
@@ -29,12 +30,14 @@ export function SplitView({ employeeId, onEvent }: UseSplitPaymentsFormParams) {
     formMethods,
   })
 
+  useEffect(() => {
+    setValue('isSplit', true)
+  }, [setValue])
+
   const handleCancel = () => {
     resetToDefaults()
     onEvent(componentEvents.CANCEL)
   }
-
-  setValue('isSplit', true)
 
   if (bankAccounts.length < 2) return null
 

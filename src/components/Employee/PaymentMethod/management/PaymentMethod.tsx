@@ -52,8 +52,7 @@ function PaymentMethodFlow({
           isAdmin,
         }),
       ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
+    [employeeId, isAdmin, initialState],
   )
 
   return <Flow machine={machine} onEvent={onEvent} />

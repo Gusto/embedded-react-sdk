@@ -112,7 +112,7 @@ describe('PaymentMethod onboarding ListView', () => {
     })
   })
 
-  it('shows Add bank account (not Add another) when no accounts exist', async () => {
+  it('does not show Add bank account button when no accounts exist and payment method is Check', async () => {
     server.use(getEmptyEmployeeBankAccounts, getEmptyEmployeePaymentMethod)
 
     renderWithProviders(<PaymentMethod employeeId="employee-123" onEvent={onEvent} />)

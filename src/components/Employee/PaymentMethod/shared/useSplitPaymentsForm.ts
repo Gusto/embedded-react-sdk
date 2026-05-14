@@ -59,7 +59,7 @@ export function useSplitPaymentsForm({
 
   const defaultFormValues = useMemo(() => {
     const isAmountSplit = paymentMethod.splitBy === SPLIT_BY.amount
-    const { splitAmount, priority } = paymentMethod.splits?.reduce(
+    const { splitAmount, priority } = splits.reduce(
       (acc, { uuid, splitAmount: amount, priority: p }) => ({
         splitAmount: {
           ...acc.splitAmount,
@@ -68,11 +68,10 @@ export function useSplitPaymentsForm({
         priority: { ...acc.priority, [uuid]: Number(p) },
       }),
       { splitAmount: {} as Record<string, number | null>, priority: {} as Record<string, number> },
-    ) ?? { splitAmount: {}, priority: {} }
+    )
 
-    const remainder = paymentMethod.splits?.reduce(
-      (acc, curr) =>
-        curr.splitAmount === null ? curr.uuid : (paymentMethod.splits?.at(-1)?.uuid ?? acc),
+    const remainder = splits.reduce(
+      (acc, curr) => (curr.splitAmount === null ? curr.uuid : (splits.at(-1)?.uuid ?? acc)),
       '',
     )
 
@@ -85,7 +84,7 @@ export function useSplitPaymentsForm({
       priority,
       remainder,
     }
-  }, [paymentMethod.splitBy, paymentMethod.splits])
+  }, [paymentMethod.splitBy, splits])
 
   const formMethods = useForm<CombinedSchemaInputs>({
     resolver: zodResolver(CombinedSchema),

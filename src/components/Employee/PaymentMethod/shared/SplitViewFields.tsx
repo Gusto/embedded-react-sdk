@@ -8,6 +8,8 @@ export type WorkingSplit = {
   uuid: string
   name?: string | null
   hiddenAccountNumber?: string | null
+  splitAmount?: number | null
+  priority?: number
 }
 
 function AmountField({
