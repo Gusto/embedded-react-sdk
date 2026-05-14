@@ -16,7 +16,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: 2,
   workers: process.env.CI ? 1 : undefined,
-  reporter: 'html',
+  reporter: [['html'], ['./e2e/reporters/scenario-reporter.ts']],
   timeout: 120_000,
   expect: {
     timeout: 30_000,
