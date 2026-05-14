@@ -201,7 +201,6 @@ describe('PolicySettings container', () => {
           request: {
             timeOffPolicyUuid: 'policy-123',
             requestBody: expect.objectContaining({
-              complete: true,
               version: 'version-abc',
               paidOutOnTermination: false,
             }),

@@ -92,7 +92,6 @@ function buildUpdateRequestBody(
         ? data.waitingPeriod
         : null,
     paidOutOnTermination: data.paidOutOnTermination,
-    complete: true,
     version,
   }
 }
