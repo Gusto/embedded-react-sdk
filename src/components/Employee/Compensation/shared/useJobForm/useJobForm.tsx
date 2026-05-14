@@ -42,6 +42,14 @@ import { WA_RISK_CLASS_CODES, type WARiskClassCode } from '@/models/WA_RISK_CODE
 export interface JobSubmitOptions {
   /** Override the `employeeId` configured at hook construction. Useful when the employee is created in the same submit chain. */
   employeeId?: string
+  /**
+   * Supply `hireDate` at submit time rather than via a rendered field. Use
+   * with `withHireDateField: false` for screens that derive hireDate from
+   * external context (e.g. the employee's `startDate` during onboarding).
+   * Falls back to the loaded job's `hireDate` on update mode when omitted;
+   * required (or sourced from a partner default) on create mode.
+   */
+  hireDate?: string
 }
 
 export interface UseJobFormProps {
@@ -52,11 +60,20 @@ export interface UseJobFormProps {
   defaultValues?: Partial<JobFormData>
   validationMode?: UseFormProps['mode']
   shouldFocusError?: boolean
+  /**
+   * When `false`, hides `Fields.HireDate` (becomes `undefined`) and removes
+   * `hireDate` from schema validation. Partners supply the value via
+   * `JobSubmitOptions.hireDate` at submit time, or rely on the loaded job's
+   * existing value on update. Use this when the date is driven by external
+   * context rather than user input (e.g. the employee's `startDate`).
+   * Defaults to `true`.
+   */
+  withHireDateField?: boolean
 }
 
 export interface JobFormFields {
   Title: typeof JobTitleField
-  HireDate: typeof HireDateField
+  HireDate: typeof HireDateField | undefined
   TwoPercentShareholder: typeof TwoPercentShareholderField | undefined
   StateWcCovered: typeof StateWcCoveredField | undefined
   StateWcClassCode: typeof StateWcClassCodeField | undefined
@@ -102,6 +119,7 @@ export function useJobForm({
   defaultValues: partnerDefaults,
   validationMode = 'onSubmit',
   shouldFocusError = true,
+  withHireDateField = true,
 }: UseJobFormProps): HookLoadingResult | UseJobFormReady {
   const jobsQuery = useJobsAndCompensationsGetJobs(
     { employeeId: employeeId ?? '' },
@@ -132,8 +150,8 @@ export function useJobForm({
   const mode = isCreateMode ? 'create' : 'update'
 
   const [schema, metadataConfig] = useMemo(
-    () => createJobSchema({ mode, optionalFieldsToRequire }),
-    [mode, optionalFieldsToRequire],
+    () => createJobSchema({ mode, optionalFieldsToRequire, withHireDateField }),
+    [mode, optionalFieldsToRequire, withHireDateField],
   )
 
   const resolvedDefaults: JobFormData = useMemo(
@@ -216,18 +234,32 @@ export function useJobForm({
 
             const stateWcClassCode = payload.stateWcCovered ? payload.stateWcClassCode : null
 
+            // Mirror the work/home address pattern: when the field is rendered
+            // the payload value wins; when it isn't, fall back to a submit-time
+            // override (`options.hireDate`), then to the loaded job's existing
+            // value on update mode. Create mode requires a resolved value —
+            // hireDate is mandatory on POST /v1/employees/:id/jobs.
+            const resolvedHireDate =
+              withHireDateField && payload.hireDate
+                ? payload.hireDate
+                : (options?.hireDate ?? currentJob?.hireDate ?? null)
+
             let updatedJob: Job
 
             if (isCreateMode) {
-              if (!payload.hireDate) {
-                throw new SDKInternalError('hireDate is required to create a job')
+              if (!resolvedHireDate) {
+                throw new SDKInternalError(
+                  withHireDateField
+                    ? 'hireDate is required to create a job'
+                    : 'hireDate is required to create a job. Pass it via JobSubmitOptions when withHireDateField is false.',
+                )
               }
               const result = await createJobMutation.mutateAsync({
                 request: {
                   employeeId: resolvedEmployeeId,
                   jobsCreateRequestBody: {
                     title: payload.title,
-                    hireDate: payload.hireDate,
+                    hireDate: resolvedHireDate,
                     twoPercentShareholder: payload.twoPercentShareholder,
                     stateWcCovered: payload.stateWcCovered,
                     stateWcClassCode,
@@ -248,7 +280,7 @@ export function useJobForm({
                   jobsUpdateRequestBody: {
                     version: currentJob.version as string,
                     title: payload.title,
-                    hireDate: payload.hireDate ?? undefined,
+                    hireDate: resolvedHireDate ?? undefined,
                     twoPercentShareholder: payload.twoPercentShareholder,
                     stateWcCovered: payload.stateWcCovered,
                     stateWcClassCode,
@@ -306,7 +338,7 @@ export function useJobForm({
     form: {
       Fields: {
         Title: JobTitleField,
-        HireDate: HireDateField,
+        HireDate: withHireDateField ? HireDateField : undefined,
         TwoPercentShareholder: showTwoPercentShareholder ? TwoPercentShareholderField : undefined,
         StateWcCovered: showStateWc ? StateWcCoveredField : undefined,
         StateWcClassCode: showStateWc && watchedStateWcCovered ? StateWcClassCodeField : undefined,

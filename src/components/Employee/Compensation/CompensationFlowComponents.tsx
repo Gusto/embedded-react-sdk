@@ -4,9 +4,10 @@ import type { Compensation } from '@gusto/embedded-api/models/components/compens
 import type { CompensationDefaultValues } from './Compensation'
 import { JobsList } from './JobsList'
 import { EditCompensation } from './EditCompensation'
+import type { OnEventType } from '@/components/Base/useBase'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { useI18n } from '@/i18n'
-import { componentEvents, FlsaStatus } from '@/shared/constants'
+import { componentEvents, FlsaStatus, type EventType } from '@/shared/constants'
 import { ensureRequired } from '@/helpers/ensureRequired'
 
 export type EventPayloads = {
@@ -15,7 +16,7 @@ export type EventPayloads = {
   [componentEvents.EMPLOYEE_JOB_CREATED]: Job
   [componentEvents.EMPLOYEE_JOB_UPDATED]: Job
   [componentEvents.EMPLOYEE_JOB_DELETED]: undefined
-  [componentEvents.EMPLOYEE_COMPENSATION_UPDATED]: Compensation | undefined
+  [componentEvents.EMPLOYEE_COMPENSATION_UPDATED]: Compensation
   [componentEvents.EMPLOYEE_COMPENSATION_RETURN_TO_LIST]: undefined
   [componentEvents.EMPLOYEE_COMPENSATION_CANCEL]: undefined
   [componentEvents.EMPLOYEE_COMPENSATION_DONE]: undefined
@@ -39,6 +40,18 @@ export function InitialEditCompensationContextual() {
   useI18n('Employee.Compensation')
   const { t } = useTranslation('Employee.Compensation')
 
+  const handleEvent: OnEventType<EventType, unknown> = (event, data) => {
+    onEvent(event, data)
+    if (event === componentEvents.EMPLOYEE_COMPENSATION_UPDATED) {
+      const compensation = data as Compensation
+      if (compensation.flsaStatus !== FlsaStatus.NONEXEMPT) {
+        onEvent(componentEvents.EMPLOYEE_COMPENSATION_DONE)
+      } else {
+        onEvent(componentEvents.EMPLOYEE_COMPENSATION_RETURN_TO_LIST)
+      }
+    }
+  }
+
   return (
     <EditCompensation
       employeeId={ensureRequired(employeeId)}
@@ -46,15 +59,8 @@ export function InitialEditCompensationContextual() {
       currentJobId={currentJobId}
       title={t('title')}
       submitCtaLabel={t('submitCta')}
-      onSaved={data => {
-        if (data.flsaStatus !== FlsaStatus.NONEXEMPT) {
-          onEvent(componentEvents.EMPLOYEE_COMPENSATION_DONE)
-        } else {
-          onEvent(componentEvents.EMPLOYEE_COMPENSATION_RETURN_TO_LIST)
-        }
-      }}
       partnerDefaultValues={partnerDefaultValues}
-      onEvent={onEvent}
+      onEvent={handleEvent}
     />
   )
 }
@@ -65,6 +71,13 @@ export function EditCompensationContextual() {
   useI18n('Employee.Compensation')
   const { t } = useTranslation('Employee.Compensation')
 
+  const handleEvent: OnEventType<EventType, unknown> = (event, data) => {
+    onEvent(event, data)
+    if (event === componentEvents.EMPLOYEE_COMPENSATION_UPDATED) {
+      onEvent(componentEvents.EMPLOYEE_COMPENSATION_RETURN_TO_LIST)
+    }
+  }
+
   return (
     <EditCompensation
       employeeId={ensureRequired(employeeId)}
@@ -72,14 +85,11 @@ export function EditCompensationContextual() {
       currentJobId={currentJobId}
       title={currentJobId ? t('editTitle') : t('addTitle')}
       submitCtaLabel={t('saveNewJobCta')}
-      onSaved={() => {
-        onEvent(componentEvents.EMPLOYEE_COMPENSATION_RETURN_TO_LIST)
-      }}
       onCancel={() => {
         onEvent(componentEvents.EMPLOYEE_COMPENSATION_CANCEL)
       }}
       partnerDefaultValues={partnerDefaultValues}
-      onEvent={onEvent}
+      onEvent={handleEvent}
     />
   )
 }
