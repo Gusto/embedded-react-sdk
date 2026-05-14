@@ -1,4 +1,4 @@
-import { useEffect, useId, useMemo } from 'react'
+import { useCallback, useEffect, useId, useMemo } from 'react'
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import type {
@@ -90,6 +90,16 @@ export function PolicyConfigurationFormPresentation({
       setValue('resetDateType', undefined)
     }
   }, [accrualMethod, setValue])
+
+  const handleResetDateTypeChange = useCallback(
+    (value: ResetDateType) => {
+      if (value === 'per_anniversary_year') {
+        setValue('resetMonth', 1)
+        setValue('resetDay', 1)
+      }
+    },
+    [setValue],
+  )
 
   const accrualMethodOptions = useMemo(
     () => [
@@ -250,6 +260,7 @@ export function PolicyConfigurationFormPresentation({
                   options={resetDateTypeOptions}
                   isRequired={!isHourlyMethod}
                   errorMessage={t('policyDetails.validations.resetDateType')}
+                  onChange={handleResetDateTypeChange}
                 />
 
                 {showCustomDateFields && (
