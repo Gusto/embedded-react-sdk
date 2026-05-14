@@ -67,9 +67,13 @@ function Root({
   const jobForm = useJobForm({
     employeeId,
     jobId: resolvedJobId,
+    // The Compensation flow does not surface a hire-date field — the date is
+    // derived from the employee's `startDate` (passed via submit options
+    // below). Hiding via the hook flag also drops the field from the schema
+    // so partner forms don't silently fail validation on create.
+    withHireDateField: false,
     defaultValues: {
       title: partnerDefaultValues?.title ?? '',
-      hireDate: startDate,
     },
     // The Compensation flow always shows a job title field, even when editing
     // an existing job. The hook's schema only requires `title` on create; we
@@ -91,6 +95,12 @@ function Root({
     employeeId,
     jobId: resolvedJobId,
     compensationId: resolvedCompensationId,
+    // The Compensation flow does not surface an effective-date field — the
+    // date is derived from the parent job's `hireDate` (= `startDate`),
+    // threaded via submit options below. The hook's `willDeleteSecondaryJobs`
+    // carve-out still works because it manipulates the underlying form value
+    // (which the hook reads at submit time even when the field is hidden).
+    withEffectiveDateField: false,
     // The Compensation flow always presents flsaStatus, rate, and paymentUnit
     // as required, even when editing an existing compensation. The hook's
     // schema marks them `'create'`-only by default; we promote them on update
@@ -105,11 +115,6 @@ function Root({
             ? Number(partnerDefaultValues.rate)
             : undefined,
       paymentUnit: partnerDefaultValues?.paymentUnit,
-      // The Compensation flow does not surface an effective-date field; seed
-      // it from the job's hireDate (= startDate from props) so the comp form's
-      // create-mode schema validates and so the PUT body sends a stable date
-      // when the API auto-creates a stub.
-      effectiveDate: startDate,
     },
     shouldFocusError: false,
   })
@@ -120,7 +125,7 @@ function Root({
   }
 
   const submitResult = composeSubmitHandler([jobForm, compensationForm], async () => {
-    const jobResult = await jobForm.actions.onSubmit({ employeeId })
+    const jobResult = await jobForm.actions.onSubmit({ employeeId, hireDate: startDate })
     if (!jobResult) return
 
     onEvent(
@@ -141,6 +146,7 @@ function Root({
       jobId: jobResult.data.uuid,
       compensationId: jobResult.data.currentCompensationUuid ?? undefined,
       compensationVersion: stubCompensation?.version ?? undefined,
+      effectiveDate: startDate,
     })
     if (!compensationResult) {
       if (!currentJobId) setResolvedJobId(jobResult.data.uuid)

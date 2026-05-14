@@ -163,16 +163,29 @@ export interface CompensationSchemaOptions {
    * `EFFECTIVE_DATE_BEFORE_HIRE` issue when violated.
    */
   hireDate?: string | null
+  /**
+   * When `false`, drops `effectiveDate` from the validated shape — the field
+   * becomes hook-managed (e.g. seeded from the parent job's `hireDate` during
+   * onboarding). Partners may still supply the value at submit time via
+   * `CompensationSubmitOptions.effectiveDate`. Defaults to `true`.
+   */
+  withEffectiveDateField?: boolean
 }
 
 export function createCompensationSchema(options: CompensationSchemaOptions = {}) {
-  const { mode = 'create', optionalFieldsToRequire, hireDate } = options
+  const {
+    mode = 'create',
+    optionalFieldsToRequire,
+    hireDate,
+    withEffectiveDateField = true,
+  } = options
 
   return buildFormSchema(fieldValidators, {
     requiredFieldsConfig,
     requiredErrorCode: CompensationErrorCodes.REQUIRED,
     mode,
     optionalFieldsToRequire,
+    excludeFields: withEffectiveDateField ? [] : ['effectiveDate'],
     superRefine: (data, ctx) => {
       validateFlsaRules(data, ctx)
       // Only enforce the hire-date lower bound when picking a brand-new
@@ -181,6 +194,9 @@ export function createCompensationSchema(options: CompensationSchemaOptions = {}
       // over from a stub or out-of-order data) and the API accepts the
       // unchanged value or omitting it entirely. Blocking the submit here
       // would trap partners whose flow doesn't render Fields.EffectiveDate.
+      // When `withEffectiveDateField` is false the field is excluded from
+      // the shape and `data.effectiveDate` is undefined — this check
+      // naturally short-circuits.
       if (mode === 'create' && hireDate && data.effectiveDate && data.effectiveDate < hireDate) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
