@@ -271,8 +271,6 @@ function SelectEmployeesTimeOffInner({
       setConfirmAddOpen(true)
       return
     }
-
-    await submitDiff(toAdd, toRemove)
   }, [mode, originalUuids, selectedUuids, onEvent, submitDiff])
 
   const handleConfirmRemove = useCallback(async () => {
@@ -368,6 +366,7 @@ function SelectEmployeesTimeOffInner({
               onClose: () => {
                 setConfirmAddOpen(false)
               },
+              isPending: isAddPending,
             }
           : undefined
       }

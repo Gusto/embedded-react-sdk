@@ -437,6 +437,29 @@ describe('SelectEmployeesTimeOff', () => {
       }>
       expect(submitted.find(e => e.uuid === '1')).toEqual({ uuid: '1', balance: '40' })
     })
+
+    it('opens add confirm dialog and gates submission until confirmed', async () => {
+      const user = userEvent.setup()
+      renderComponent({ mode: 'standalone' })
+
+      await waitFor(() => {
+        expect(screen.getAllByRole('checkbox').length).toBeGreaterThan(1)
+      })
+
+      await user.click(screen.getAllByRole('checkbox')[FIRST_EMPLOYEE_CHECKBOX] as Element)
+      await user.click(screen.getByRole('button', { name: 'continueCta' }))
+
+      expect(
+        await screen.findByRole('button', { name: 'addConfirmDialog.confirmCta' }),
+      ).toBeInTheDocument()
+      expect(mockAddEmployees).not.toHaveBeenCalled()
+
+      await user.click(screen.getByRole('button', { name: 'addConfirmDialog.confirmCta' }))
+
+      await waitFor(() => {
+        expect(mockAddEmployees).toHaveBeenCalledTimes(1)
+      })
+    })
   })
 
   describe('standalone mode with existing assignees', () => {
