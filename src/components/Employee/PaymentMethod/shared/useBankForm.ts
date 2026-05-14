@@ -24,10 +24,7 @@ const defaultFormValues = {
   accountType: 'Checking' as const,
 }
 
-export function useBankForm({
-  employeeId,
-  onEvent,
-}: UseBankFormParams): UseBankFormResult {
+export function useBankForm({ employeeId, onEvent }: UseBankFormParams): UseBankFormResult {
   const addBankAccountMutation = useEmployeePaymentMethodCreateMutation()
 
   const formMethods = useForm<CombinedSchemaInputs>({

@@ -1513,6 +1513,11 @@ export interface EmployeeDashboard{
 "yes":string;
 "no":string;
 };
+"alerts":{
+"bankAccountAdded":string;
+"bankAccountDeleted":string;
+"splitUpdated":string;
+};
 };
 export interface EmployeeDeductions{
 "pageTitle":string;

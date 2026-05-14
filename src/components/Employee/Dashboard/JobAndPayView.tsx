@@ -60,13 +60,8 @@ export function JobAndPayView({
   const { paymentMethod, bankAccounts, deletePendingBankAccountUuid, handleDelete } =
     usePaymentMethodList({ employeeId, onEvent })
 
-  const {
-    pendingDeleteAccount,
-    setPendingDeleteAccount,
-    deletedAccountNumber,
-    setDeletedAccountNumber,
-    handleConfirmDelete,
-  } = useDeleteBankAccount(handleDelete)
+  const { pendingDeleteAccount, setPendingDeleteAccount, handleConfirmDelete } =
+    useDeleteBankAccount(handleDelete)
 
   const bankAccountsColumns = [
     {
@@ -147,12 +142,6 @@ export function JobAndPayView({
   const bankAccountsDataView = useDataView({
     data: bankAccounts,
     columns: bankAccountsColumns,
-    emptyState: () => (
-      <EmptyData
-        title={t('jobAndPay.payment.emptyState.title')}
-        description={t('jobAndPay.payment.emptyState.description')}
-      />
-    ),
     itemMenu: (bankAccount: EmployeeBankAccount) => (
       <HamburgerMenu
         items={[
@@ -294,15 +283,18 @@ export function JobAndPayView({
         }
       >
         <Flex flexDirection="column" gap={16}>
-          {deletedAccountNumber !== null && (
-            <Components.Alert
-              status="success"
-              label={tPayment('deleteBankAccountSuccessAlert', { account: deletedAccountNumber })}
-              onDismiss={() => setDeletedAccountNumber(null)}
-              disableScrollIntoView
-            />
+          {bankAccounts.length === 0 ? (
+            <Flex flexDirection="column" gap={0}>
+              <Components.Text variant="supporting">
+                {tPayment('paymentMethodLabel')}
+              </Components.Text>
+              <Components.Text>
+                {isDirectDeposit ? tPayment('directDepositLabel') : tPayment('checkLabel')}
+              </Components.Text>
+            </Flex>
+          ) : (
+            <DataView label={t('jobAndPay.payment.listLabel')} {...bankAccountsDataView} />
           )}
-          <DataView label={t('jobAndPay.payment.listLabel')} {...bankAccountsDataView} />
         </Flex>
       </Components.Box>
 
@@ -336,8 +328,12 @@ export function JobAndPayView({
       <DeleteBankAccountDialog
         pendingDeleteAccount={pendingDeleteAccount}
         isPrimaryActionLoading={deletePendingBankAccountUuid === pendingDeleteAccount?.uuid}
-        onClose={() => setPendingDeleteAccount(null)}
-        onConfirm={() => void handleConfirmDelete()}
+        onClose={() => {
+          setPendingDeleteAccount(null)
+        }}
+        onConfirm={() => {
+          void handleConfirmDelete()
+        }}
       />
     </Flex>
   )

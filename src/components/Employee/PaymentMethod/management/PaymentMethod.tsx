@@ -8,7 +8,11 @@ import {
 } from './PaymentMethodComponents'
 import { paymentMethodStateMachine } from './paymentMethodStateMachine'
 import { Flow } from '@/components/Flow/Flow'
-import { BaseComponent, type BaseComponentInterface, type CommonComponentInterface } from '@/components/Base'
+import {
+  BaseComponent,
+  type BaseComponentInterface,
+  type CommonComponentInterface,
+} from '@/components/Base'
 import { type EventType } from '@/shared/constants'
 import { useComponentDictionary } from '@/i18n/I18n'
 import { useI18n } from '@/i18n'
@@ -55,7 +59,10 @@ function PaymentMethodFlow({
   return <Flow machine={machine} onEvent={onEvent} />
 }
 
-export function PaymentMethod({ dictionary, ...props }: PaymentMethodProps & BaseComponentInterface) {
+export function PaymentMethod({
+  dictionary,
+  ...props
+}: PaymentMethodProps & BaseComponentInterface) {
   useComponentDictionary('Employee.PaymentMethod', dictionary)
   return (
     <BaseComponent {...props}>

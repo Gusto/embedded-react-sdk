@@ -1,6 +1,9 @@
 import { FormProvider } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { usePaymentMethodList, type UsePaymentMethodListParams } from '../shared/usePaymentMethodList'
+import {
+  usePaymentMethodList,
+  type UsePaymentMethodListParams,
+} from '../shared/usePaymentMethodList'
 import { usePaymentMethodForm } from '../shared/usePaymentMethodForm'
 import { useDeleteBankAccount } from '../shared/useDeleteBankAccount'
 import { DeleteBankAccountDialog } from '../shared/DeleteBankAccountDialog'
@@ -37,7 +40,11 @@ function PaymentTypeRadio({ isAdmin }: { isAdmin: boolean }) {
   )
 }
 
-export function ListView({ employeeId, isAdmin, onEvent }: UsePaymentMethodListParams & { isAdmin: boolean }) {
+export function ListView({
+  employeeId,
+  isAdmin,
+  onEvent,
+}: UsePaymentMethodListParams & { isAdmin: boolean }) {
   const { paymentMethod, bankAccounts, deletePendingBankAccountUuid, handleDelete } =
     usePaymentMethodList({ employeeId, onEvent })
   const { formMethods, isPending, handlePaymentMethodTypeSubmit } = usePaymentMethodForm({

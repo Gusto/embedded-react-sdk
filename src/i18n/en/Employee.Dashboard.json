@@ -121,5 +121,10 @@
   "common": {
     "yes": "Yes",
     "no": "No"
+  },
+  "alerts": {
+    "bankAccountAdded": "Bank account successfully added.",
+    "bankAccountDeleted": "Bank account successfully deleted.",
+    "splitUpdated": "Split payment successfully updated."
   }
 }

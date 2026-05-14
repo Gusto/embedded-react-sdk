@@ -10,8 +10,8 @@ export function useDeleteBankAccount(handleDelete: (uuid: string) => Promise<voi
   const handleConfirmDelete = async () => {
     if (!pendingDeleteAccount) return
     const { uuid, hiddenAccountNumber } = pendingDeleteAccount
-    await handleDelete(uuid)
     setPendingDeleteAccount(null)
+    await handleDelete(uuid)
     setDeletedAccountNumber(hiddenAccountNumber ?? '')
   }
 

@@ -143,11 +143,10 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 | **Employee.StateTaxes** | GET | `/v1/employees/:employeeUuid/state_taxes` |
 |  | PUT | `/v1/employees/:employeeUuid/state_taxes` |
 | **Employee.PaymentMethod** | POST | `/v1/employees/:employeeId/bank_accounts` |
+|  | GET | `/v1/employees/:employeeId/payment_method` |
+|  | PUT | `/v1/employees/:employeeId/payment_method` |
 |  | DELETE | `/v1/employees/:employeeId/bank_accounts/:bankAccountUuid` |
 |  | GET | `/v1/employees/:employeeId/bank_accounts` |
-|  | GET | `/v1/employees/:employeeId/payment_method` |
-|  | PUT | `/v1/employees/:employeeId/bank_accounts/:bankAccountUuid` |
-|  | PUT | `/v1/employees/:employeeId/payment_method` |
 | **Employee.Landing** | GET | `/v1/employees/:employeeId` |
 |  | GET | `/v1/companies/:companyId` |
 | **Employee.DocumentSigner** | GET | `/v1/employees/:employeeId/forms` |
@@ -162,8 +161,6 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 | **Employee.DashboardFlow** | GET | `/v1/employees/:employeeId` |
 |  | GET | `/v1/employees/:employeeId/home_addresses` |
 |  | GET | `/v1/employees/:employeeId/work_addresses` |
-|  | GET | `/v1/employees/:employeeId/payment_method` |
-|  | GET | `/v1/employees/:employeeId/bank_accounts` |
 |  | GET | `/v1/employees/:employeeId/garnishments` |
 |  | GET | `/v1/employees/:employeeId/pay_stubs` |
 |  | GET | `/v1/employees/:employeeId/forms` |

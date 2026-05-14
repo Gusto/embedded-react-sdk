@@ -1,7 +1,10 @@
 import { FormProvider } from 'react-hook-form'
 import { ErrorMessage } from '@hookform/error-message'
 import { Trans, useTranslation } from 'react-i18next'
-import { useSplitPaymentsForm, type UseSplitPaymentsFormParams } from '../shared/useSplitPaymentsForm'
+import {
+  useSplitPaymentsForm,
+  type UseSplitPaymentsFormParams,
+} from '../shared/useSplitPaymentsForm'
 import { SplitFieldsList } from '../shared/SplitViewFields'
 import { useSplitViewState } from '../shared/useSplitViewState'
 import { ActionsLayout } from '@/components/Common'

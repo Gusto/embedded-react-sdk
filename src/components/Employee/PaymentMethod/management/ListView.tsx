@@ -1,5 +1,8 @@
 import { useTranslation } from 'react-i18next'
-import { usePaymentMethodList, type UsePaymentMethodListParams } from '../shared/usePaymentMethodList'
+import {
+  usePaymentMethodList,
+  type UsePaymentMethodListParams,
+} from '../shared/usePaymentMethodList'
 import { useDeleteBankAccount } from '../shared/useDeleteBankAccount'
 import { DeleteBankAccountDialog } from '../shared/DeleteBankAccountDialog'
 import { DataView, useDataView } from '@/components/Common'
@@ -34,7 +37,9 @@ export function ListView({ employeeId, onEvent }: UsePaymentMethodListParams) {
         render: bankAccount => (
           <Flex flexDirection="column" gap={0}>
             <Components.Text>{bankAccount.name}</Components.Text>
-            <Components.Text variant="supporting">{bankAccount.hiddenAccountNumber}</Components.Text>
+            <Components.Text variant="supporting">
+              {bankAccount.hiddenAccountNumber}
+            </Components.Text>
           </Flex>
         ),
       },

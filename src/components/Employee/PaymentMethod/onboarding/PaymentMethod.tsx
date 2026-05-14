@@ -6,7 +6,11 @@ import { ListViewContextual } from './PaymentMethodComponents'
 import { paymentMethodStateMachine } from './paymentMethodStateMachine'
 import { Flow } from '@/components/Flow/Flow'
 import { useFlow } from '@/components/Flow/useFlow'
-import { BaseComponent, type BaseComponentInterface, type CommonComponentInterface } from '@/components/Base'
+import {
+  BaseComponent,
+  type BaseComponentInterface,
+  type CommonComponentInterface,
+} from '@/components/Base'
 import { type EventType } from '@/shared/constants'
 import { useComponentDictionary } from '@/i18n/I18n'
 import { useI18n } from '@/i18n'
@@ -45,7 +49,10 @@ function PaymentMethodFlow({
   return <Flow machine={machine} onEvent={onEvent} />
 }
 
-export function PaymentMethod({ dictionary, ...props }: PaymentMethodProps & BaseComponentInterface) {
+export function PaymentMethod({
+  dictionary,
+  ...props
+}: PaymentMethodProps & BaseComponentInterface) {
   useComponentDictionary('Employee.PaymentMethod', dictionary)
   return (
     <BaseComponent {...props}>
@@ -57,10 +64,6 @@ export function PaymentMethod({ dictionary, ...props }: PaymentMethodProps & Bas
 export function PaymentMethodContextual() {
   const { employeeId, onEvent, isAdmin } = useFlow<OnboardingContextInterface>()
   return (
-    <PaymentMethod
-      employeeId={ensureRequired(employeeId)}
-      onEvent={onEvent}
-      isAdmin={isAdmin}
-    />
+    <PaymentMethod employeeId={ensureRequired(employeeId)} onEvent={onEvent} isAdmin={isAdmin} />
   )
 }

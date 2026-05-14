@@ -64,17 +64,11 @@ export function useEmployeeCompensation({
   }, [payStubsData.httpMeta.response.headers, payStubsQuery.isFetching, getPaginationProps])
 
   const isPending =
-    employeeQuery.isFetching ||
-    garnishmentsQuery.isFetching ||
-    payStubsQuery.isFetching
+    employeeQuery.isFetching || garnishmentsQuery.isFetching || payStubsQuery.isFetching
 
   const isLoading = !employee && isPending
 
-  const errorHandling = composeErrorHandler([
-    employeeQuery,
-    garnishmentsQuery,
-    payStubsQuery,
-  ])
+  const errorHandling = composeErrorHandler([employeeQuery, garnishmentsQuery, payStubsQuery])
 
   if (isLoading) {
     return {
