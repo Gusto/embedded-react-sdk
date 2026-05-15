@@ -46,6 +46,6 @@ test.describe('TimeOffFlow - policy list with multi-employee roster', () => {
       timeout: 30000,
     })
 
-    await expect(page.getByRole('radiogroup', { name: /policy type/i })).toBeVisible()
+    await expect(page.getByRole('radio', { name: /^time off$/i })).toBeVisible()
   })
 })
