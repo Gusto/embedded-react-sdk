@@ -64,15 +64,10 @@ function SelectEmployeesHolidayInner({
   const { onEvent, baseSubmitHandler } = useBase()
   const queryClient = useQueryClient()
   const {
-    filteredEmployees,
-    selectedUuids,
-    searchValue,
+    data: { employees, selectedUuids, searchValue },
     pagination,
-    isFetching,
-    handleSelect,
-    handleSelectAll,
-    handleSearchChange,
-    handleSearchClear,
+    status: { isFetching },
+    actions: { onSelect, onSelectAll, onSearchChange, onSearchClear },
   } = useSelectEmployeesData(companyId, existingAssigneeUuids)
 
   const { mutateAsync: addEmployees, isPending: isAddPending } =
@@ -137,13 +132,13 @@ function SelectEmployeesHolidayInner({
 
   return (
     <SelectEmployeesPresentation
-      employees={filteredEmployees}
+      employees={employees}
       selectedUuids={selectedUuids}
       searchValue={searchValue}
-      onSelect={handleSelect}
-      onSelectAll={handleSelectAll}
-      onSearchChange={handleSearchChange}
-      onSearchClear={handleSearchClear}
+      onSelect={onSelect}
+      onSelectAll={onSelectAll}
+      onSearchChange={onSearchChange}
+      onSearchClear={onSearchClear}
       onBack={handleBack}
       onContinue={handleContinue}
       showReassignmentWarning={false}

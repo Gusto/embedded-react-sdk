@@ -1,16 +1,12 @@
 import { act, renderHook } from '@testing-library/react'
 import { beforeEach, describe, expect, test, vi } from 'vitest'
-import type * as ReactQuery from '@tanstack/react-query'
-import type * as GustoContext from '@gusto/embedded-api/react-query/_context'
 import type { ReactNode } from 'react'
 import { Suspense } from 'react'
 import { useSelectEmployeesData } from './useSelectEmployeesData'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
 
-// These tests exercise the client-side pagination state machine directly:
-// page handlers (first/last/next/previous), per-page changes, and the
-// safeCurrentPage clamping that activates when filtering shrinks the list
-// below the current page.
+// Exercises the client-side pagination/search state machine end-to-end
+// through useClientPagination → useSelectEmployeesData.
 
 vi.mock('@/i18n/I18n', () => ({
   useI18n: vi.fn(),
@@ -32,33 +28,12 @@ const employees = Array.from({ length: 12 }, (_, i) => makeEmployee(i))
 
 vi.mock('@gusto/embedded-api/react-query/employeesList', () => ({
   useEmployeesListSuspense: () => ({
-    data: {
-      showEmployees: employees,
-      httpMeta: { response: { headers: new Headers() } },
-    },
+    data: { showEmployees: employees },
     isFetching: false,
-  }),
-  buildEmployeesListQuery: () => ({
-    queryKey: ['noop'],
-    queryFn: () => Promise.resolve({ showEmployees: [] }),
+    error: null,
+    refetch: vi.fn(),
   }),
 }))
-
-vi.mock('@gusto/embedded-api/react-query/_context', async importOriginal => {
-  const actual = await importOriginal<typeof GustoContext>()
-  return {
-    ...actual,
-    useGustoEmbeddedContext: () => ({}),
-  }
-})
-
-vi.mock('@tanstack/react-query', async importActual => {
-  const actual = await importActual<typeof ReactQuery>()
-  return {
-    ...actual,
-    useSuspenseQueries: () => [],
-  }
-})
 
 function wrapper({ children }: { children: ReactNode }) {
   return (
@@ -75,12 +50,17 @@ describe('useSelectEmployeesData pagination', () => {
 
   test('initial state: page 1, default 5 items per page, total 12', () => {
     const { result } = renderHook(() => useSelectEmployeesData('company-123'), { wrapper })
+
+    expect(result.current.isLoading).toBe(false)
     expect(result.current.pagination.currentPage).toBe(1)
     expect(result.current.pagination.itemsPerPage).toBe(5)
     expect(result.current.pagination.totalCount).toBe(12)
     expect(result.current.pagination.totalPages).toBe(3)
-    expect(result.current.filteredEmployees).toHaveLength(5)
-    expect(result.current.filteredEmployees[0]?.uuid).toBe('uuid-0')
+    expect(result.current.data.employees).toHaveLength(5)
+    expect(result.current.data.employees[0]?.uuid).toBe('uuid-0')
+    expect(result.current.status.isFetching).toBe(false)
+    expect(result.current.status.isPending).toBe(false)
+    expect(result.current.errorHandling.errors).toEqual([])
   })
 
   test('handleNextPage advances by one and clamps at totalPages', () => {
@@ -90,20 +70,18 @@ describe('useSelectEmployeesData pagination', () => {
       result.current.pagination.handleNextPage()
     })
     expect(result.current.pagination.currentPage).toBe(2)
-    expect(result.current.filteredEmployees[0]?.uuid).toBe('uuid-5')
+    expect(result.current.data.employees[0]?.uuid).toBe('uuid-5')
 
     act(() => {
       result.current.pagination.handleNextPage()
     })
     expect(result.current.pagination.currentPage).toBe(3)
 
-    // Clamp: clicking next on the last page should stay at the last page.
     act(() => {
       result.current.pagination.handleNextPage()
     })
     expect(result.current.pagination.currentPage).toBe(3)
-    // Last page has the remaining 2 employees.
-    expect(result.current.filteredEmployees).toHaveLength(2)
+    expect(result.current.data.employees).toHaveLength(2)
   })
 
   test('handlePreviousPage decrements by one and clamps at 1', () => {
@@ -124,7 +102,6 @@ describe('useSelectEmployeesData pagination', () => {
     })
     expect(result.current.pagination.currentPage).toBe(1)
 
-    // Clamp: clicking previous on page 1 should stay at 1.
     act(() => {
       result.current.pagination.handlePreviousPage()
     })
@@ -143,7 +120,7 @@ describe('useSelectEmployeesData pagination', () => {
       result.current.pagination.handleFirstPage()
     })
     expect(result.current.pagination.currentPage).toBe(1)
-    expect(result.current.filteredEmployees[0]?.uuid).toBe('uuid-0')
+    expect(result.current.data.employees[0]?.uuid).toBe('uuid-0')
   })
 
   test('handleLastPage jumps to totalPages', () => {
@@ -153,7 +130,7 @@ describe('useSelectEmployeesData pagination', () => {
       result.current.pagination.handleLastPage()
     })
     expect(result.current.pagination.currentPage).toBe(3)
-    expect(result.current.filteredEmployees).toHaveLength(2)
+    expect(result.current.data.employees).toHaveLength(2)
   })
 
   test('handleItemsPerPageChange resets to page 1 and recomputes totalPages', () => {
@@ -170,7 +147,7 @@ describe('useSelectEmployeesData pagination', () => {
     expect(result.current.pagination.itemsPerPage).toBe(10)
     expect(result.current.pagination.totalPages).toBe(2)
     expect(result.current.pagination.currentPage).toBe(1)
-    expect(result.current.filteredEmployees).toHaveLength(10)
+    expect(result.current.data.employees).toHaveLength(10)
   })
 
   test('handleItemsPerPageChange is a no-op when value matches current', () => {
@@ -184,33 +161,27 @@ describe('useSelectEmployeesData pagination', () => {
     act(() => {
       result.current.pagination.handleItemsPerPageChange(5)
     })
-    // Page should NOT reset back to 1 since itemsPerPage didn't change.
     expect(result.current.pagination.currentPage).toBe(2)
   })
 
   test('safeCurrentPage clamps when search filter shrinks results below current page', () => {
     const { result } = renderHook(() => useSelectEmployeesData('company-123'), { wrapper })
 
-    // Jump to the last page (3) where only 2 employees live.
     act(() => {
       result.current.pagination.handleLastPage()
     })
     expect(result.current.pagination.currentPage).toBe(3)
 
-    // Apply a search that matches only Employee0 — totalPages collapses to 1.
-    // currentPage state is still 3, but pagination.currentPage should report
-    // the clamped value (safeCurrentPage = 1) and filteredEmployees should
-    // reflect that page.
     act(() => {
-      result.current.handleSearchChange('Employee0 Test')
+      result.current.actions.onSearchChange('Employee0 Test')
     })
     expect(result.current.pagination.totalPages).toBe(1)
     expect(result.current.pagination.currentPage).toBe(1)
-    expect(result.current.filteredEmployees).toHaveLength(1)
-    expect(result.current.filteredEmployees[0]?.uuid).toBe('uuid-0')
+    expect(result.current.data.employees).toHaveLength(1)
+    expect(result.current.data.employees[0]?.uuid).toBe('uuid-0')
   })
 
-  test('handleSearchChange resets currentPage to 1', () => {
+  test('onSearchChange resets currentPage to 1', () => {
     const { result } = renderHook(() => useSelectEmployeesData('company-123'), { wrapper })
 
     act(() => {
@@ -219,16 +190,16 @@ describe('useSelectEmployeesData pagination', () => {
     expect(result.current.pagination.currentPage).toBe(2)
 
     act(() => {
-      result.current.handleSearchChange('Employee')
+      result.current.actions.onSearchChange('Employee')
     })
     expect(result.current.pagination.currentPage).toBe(1)
   })
 
-  test('handleSearchClear resets currentPage to 1', () => {
+  test('onSearchClear resets currentPage to 1', () => {
     const { result } = renderHook(() => useSelectEmployeesData('company-123'), { wrapper })
 
     act(() => {
-      result.current.handleSearchChange('Employee')
+      result.current.actions.onSearchChange('Employee')
     })
     act(() => {
       result.current.pagination.handleNextPage()
@@ -236,7 +207,7 @@ describe('useSelectEmployeesData pagination', () => {
     expect(result.current.pagination.currentPage).toBe(2)
 
     act(() => {
-      result.current.handleSearchClear()
+      result.current.actions.onSearchClear()
     })
     expect(result.current.pagination.currentPage).toBe(1)
   })

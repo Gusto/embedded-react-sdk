@@ -103,15 +103,15 @@ function SelectEmployeesTimeOffInner({
   const { onEvent, baseSubmitHandler } = useBase()
   const queryClient = useQueryClient()
   const {
-    filteredEmployees,
-    selectedUuids,
-    searchValue,
+    data: { employees: filteredEmployees, selectedUuids, searchValue },
     pagination,
-    isFetching,
-    handleSelect,
-    handleSelectAll,
-    handleSearchChange,
-    handleSearchClear,
+    status: { isFetching },
+    actions: {
+      onSelect: handleSelect,
+      onSelectAll: handleSelectAll,
+      onSearchChange: handleSearchChange,
+      onSearchClear: handleSearchClear,
+    },
   } = useSelectEmployeesData(companyId, existingAssigneeUuids)
 
   // Captures the full Employee record at the moment a row is selected so

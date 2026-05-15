@@ -31,20 +31,12 @@ const mockEmployees = [
 ]
 
 vi.mock('@gusto/embedded-api/react-query/employeesList', () => ({
-  useEmployeesListSuspense: (request: { searchTerm?: string }) => {
-    const filtered = request.searchTerm
-      ? mockEmployees.filter(e =>
-          `${e.firstName} ${e.lastName}`.toLowerCase().includes(request.searchTerm!.toLowerCase()),
-        )
-      : mockEmployees
-    return {
-      data: {
-        showEmployees: filtered,
-        httpMeta: { response: { headers: new Headers() } },
-      },
-      isFetching: false,
-    }
-  },
+  useEmployeesListSuspense: () => ({
+    data: { showEmployees: mockEmployees },
+    isFetching: false,
+    error: null,
+    refetch: vi.fn(),
+  }),
 }))
 
 const mockHolidayPolicyEmployees: Array<{ uuid: string }> = []

@@ -1,19 +1,15 @@
-import { useCallback, useDeferredValue, useMemo, useState } from 'react'
-import {
-  buildEmployeesListQuery,
-  useEmployeesListSuspense,
-} from '@gusto/embedded-api/react-query/employeesList'
-import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
-import { useSuspenseQueries } from '@tanstack/react-query'
+import { useCallback, useMemo, useState } from 'react'
+import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
 import { Include } from '@gusto/embedded-api/models/operations/getv1companiescompanyidemployees'
+import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { PaidTimeOff } from '@gusto/embedded-api/models/components/paidtimeoff'
 import type { EmployeeItem } from './SelectEmployeesPresentationTypes'
-import type {
-  PaginationControlProps,
-  PaginationItemsPerPage,
-} from '@/components/Common/PaginationControl/PaginationControlTypes'
+import { useClientPagination } from '@/hooks/useClientPagination/useClientPagination'
+import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
+import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
+import type { BaseHookReady } from '@/partner-hook-utils/types'
 
-const SERVER_MAX_PER_PAGE = 100
+const EMPLOYEES_PER_REQUEST = 100
 
 // Employees whose primary job's hire_date is in the future are rejected by
 // `POST /time_off_policies/:uuid/add_employees` as "ineligible" with no
@@ -25,120 +21,95 @@ export function isStartedByToday(hireDate: string | undefined): boolean {
   return hireDate <= today
 }
 
-export function useSelectEmployeesData(companyId: string, excludeUuids?: Set<string>) {
-  const gustoClient = useGustoEmbeddedContext()
-  const [selectedUuids, setSelectedUuids] = useState<Set<string>>(() => new Set())
-  const [searchValue, setSearchValue] = useState('')
-  const deferredSearchValue = useDeferredValue(searchValue)
-  const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage, setItemsPerPage] = useState<PaginationItemsPerPage>(5)
+function mapEmployeeToItem(employee: Employee): EmployeeItem {
+  return {
+    uuid: employee.uuid,
+    firstName: employee.firstName,
+    lastName: employee.lastName,
+    jobTitle: employee.jobs?.find(job => job.primary)?.title ?? null,
+    department: employee.department ?? null,
+    eligiblePaidTimeOff: employee.eligiblePaidTimeOff as PaidTimeOff[] | undefined,
+  }
+}
 
-  // Fetch the full employees list up front so filter, search, and pagination
-  // can all be applied client-side. include: all_compensations is required to
-  // populate eligiblePaidTimeOff, which carries each employee's current
-  // balance on their existing time-off policies — used to pre-fill carry-over
-  // balances for selection.
-  const { data: firstPage, isFetching: isFirstPageFetching } = useEmployeesListSuspense({
+function eligibleForAdd(employee: Employee): boolean {
+  return isStartedByToday(employee.jobs?.find(job => job.primary)?.hireDate)
+}
+
+function matchesEmployeeName(item: EmployeeItem, query: string): boolean {
+  const needle = query.toLowerCase()
+  return `${item.firstName ?? ''} ${item.lastName ?? ''}`.toLowerCase().includes(needle)
+}
+
+/**
+ * Returns the eligible employees for the time-off Add Employees flow,
+ * shaped for the SelectEmployees presentation: paginated and searchable
+ * client-side, with selection and submit-state mirroring the ready branch
+ * of `useEmployeeList`.
+ *
+ * Single `useEmployeesListSuspense` fetch + `useClientPagination` for the
+ * in-memory paginate/search. Adds employee-specific shaping: future-hire
+ * filter, exclude-by-uuid filter, and selection state.
+ */
+export interface UseSelectEmployeesDataResult extends BaseHookReady<
+  {
+    employees: EmployeeItem[]
+    selectedUuids: Set<string>
+    searchValue: string
+  },
+  { isFetching: boolean; isPending: boolean }
+> {
+  pagination: PaginationControlProps
+  actions: {
+    onSelect: (item: EmployeeItem, checked: boolean) => void
+    onSelectAll: (checked: boolean, visibleItems: EmployeeItem[]) => void
+    onSearchChange: (value: string) => void
+    onSearchClear: () => void
+  }
+}
+
+export function useSelectEmployeesData(
+  companyId: string,
+  excludeUuids?: Set<string>,
+): UseSelectEmployeesDataResult {
+  const [selectedUuids, setSelectedUuids] = useState<Set<string>>(() => new Set())
+
+  // include: all_compensations populates eligiblePaidTimeOff, which carries
+  // each employee's current balance on their existing time-off policies —
+  // used to pre-fill carry-over balances.
+  const employeesQuery = useEmployeesListSuspense({
     companyId,
     terminated: false,
     page: 1,
-    per: SERVER_MAX_PER_PAGE,
+    per: EMPLOYEES_PER_REQUEST,
     include: [Include.AllCompensations],
   })
 
-  const totalServerPages = Number(firstPage.httpMeta.response.headers.get('x-total-pages') ?? 1)
+  const eligibleEmployees = useMemo<EmployeeItem[]>(() => {
+    const all = employeesQuery.data.showEmployees ?? []
+    return all
+      .filter(eligibleForAdd)
+      .filter(employee => !(excludeUuids && employee.uuid && excludeUuids.has(employee.uuid)))
+      .map(mapEmployeeToItem)
+  }, [employeesQuery.data.showEmployees, excludeUuids])
 
-  // For each additional server page we fire a suspense query in parallel.
-  // No explicit concurrency cap: typical embedded customers are <100
-  // employees (one server page, zero extra requests). For larger companies
-  // the browser's per-origin connection limit (~6) acts as the natural
-  // ceiling. If this flow ever needs to support thousands of employees,
-  // reconsider — either a server-side eligibility filter or a paginated
-  // fetch-as-you-scroll strategy would be the right escape hatches.
-  const restPageResults = useSuspenseQueries({
-    queries: Array.from({ length: Math.max(0, totalServerPages - 1) }, (_, i) =>
-      buildEmployeesListQuery(gustoClient, {
-        companyId,
-        terminated: false,
-        page: i + 2,
-        per: SERVER_MAX_PER_PAGE,
-        include: [Include.AllCompensations],
-      }),
-    ),
-  })
+  const {
+    data: employees,
+    pagination: basePagination,
+    searchValue,
+    actions: { onSearchChange, onSearchClear },
+  } = useClientPagination(eligibleEmployees, { searchPredicate: matchesEmployeeName })
 
-  const allEmployees = useMemo<EmployeeItem[]>(() => {
-    const showEmployees = [
-      ...(firstPage.showEmployees ?? []),
-      ...restPageResults.flatMap(r => r.data.showEmployees ?? []),
-    ]
-    return showEmployees
-      .filter(e => isStartedByToday(e.jobs?.find(job => job.primary)?.hireDate))
-      .map(e => ({
-        uuid: e.uuid,
-        firstName: e.firstName,
-        lastName: e.lastName,
-        jobTitle: e.jobs?.find(job => job.primary)?.title ?? null,
-        department: e.department ?? null,
-        eligiblePaidTimeOff: e.eligiblePaidTimeOff as PaidTimeOff[] | undefined,
-      }))
-  }, [firstPage.showEmployees, restPageResults])
+  const isFetching = employeesQuery.isFetching
 
-  const eligibleEmployees = useMemo<EmployeeItem[]>(
-    () => allEmployees.filter(e => !excludeUuids?.has(e.uuid)),
-    [allEmployees, excludeUuids],
-  )
-
-  const searchFilteredEmployees = useMemo<EmployeeItem[]>(() => {
-    if (!deferredSearchValue) return eligibleEmployees
-    const needle = deferredSearchValue.toLowerCase()
-    return eligibleEmployees.filter(e =>
-      `${e.firstName ?? ''} ${e.lastName ?? ''}`.toLowerCase().includes(needle),
-    )
-  }, [eligibleEmployees, deferredSearchValue])
-
-  const totalCount = searchFilteredEmployees.length
-  const totalPages = Math.max(1, Math.ceil(totalCount / itemsPerPage))
-  const safeCurrentPage = Math.min(currentPage, totalPages)
-
-  const filteredEmployees = useMemo<EmployeeItem[]>(() => {
-    const start = (safeCurrentPage - 1) * itemsPerPage
-    return searchFilteredEmployees.slice(start, start + itemsPerPage)
-  }, [searchFilteredEmployees, safeCurrentPage, itemsPerPage])
-
-  const isRestFetching = restPageResults.some(r => r.isFetching)
-  const isFetching = isFirstPageFetching || isRestFetching
-
+  // Re-attach `isFetching` to the pagination shape so PaginationControl
+  // can reflect background refetches.
   const pagination = useMemo<PaginationControlProps>(
-    () => ({
-      currentPage: safeCurrentPage,
-      totalPages,
-      totalCount,
-      itemsPerPage,
-      isFetching,
-      handleFirstPage: () => {
-        setCurrentPage(1)
-      },
-      handleLastPage: () => {
-        setCurrentPage(totalPages)
-      },
-      handleNextPage: () => {
-        setCurrentPage(prev => Math.min(prev + 1, totalPages))
-      },
-      handlePreviousPage: () => {
-        setCurrentPage(prev => Math.max(prev - 1, 1))
-      },
-      handleItemsPerPageChange: (value: PaginationItemsPerPage) => {
-        if (value !== itemsPerPage) {
-          setItemsPerPage(value)
-          setCurrentPage(1)
-        }
-      },
-    }),
-    [safeCurrentPage, totalPages, totalCount, itemsPerPage, isFetching],
+    () => ({ ...basePagination, isFetching }),
+    [basePagination, isFetching],
   )
 
-  const handleSelect = useCallback((item: EmployeeItem, checked: boolean) => {
+  const onSelect = useCallback((item: EmployeeItem, checked: boolean) => {
     setSelectedUuids(prev => {
       const next = new Set(prev)
       if (checked) next.add(item.uuid)
@@ -147,7 +118,7 @@ export function useSelectEmployeesData(companyId: string, excludeUuids?: Set<str
     })
   }, [])
 
-  const handleSelectAll = useCallback((checked: boolean, visibleItems: EmployeeItem[]) => {
+  const onSelectAll = useCallback((checked: boolean, visibleItems: EmployeeItem[]) => {
     setSelectedUuids(prev => {
       const next = new Set(prev)
       for (const item of visibleItems) {
@@ -158,25 +129,14 @@ export function useSelectEmployeesData(companyId: string, excludeUuids?: Set<str
     })
   }, [])
 
-  const handleSearchChange = useCallback((value: string) => {
-    setSearchValue(value)
-    setCurrentPage(1)
-  }, [])
-
-  const handleSearchClear = useCallback(() => {
-    setSearchValue('')
-    setCurrentPage(1)
-  }, [])
+  const errorHandling = composeErrorHandler([employeesQuery])
 
   return {
-    filteredEmployees,
-    selectedUuids,
-    searchValue,
+    isLoading: false,
+    data: { employees, selectedUuids, searchValue },
     pagination,
-    isFetching,
-    handleSelect,
-    handleSelectAll,
-    handleSearchChange,
-    handleSearchClear,
+    status: { isFetching, isPending: false },
+    actions: { onSelect, onSelectAll, onSearchChange, onSearchClear },
+    errorHandling,
   }
 }
