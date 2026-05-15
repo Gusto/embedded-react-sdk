@@ -1475,6 +1475,9 @@ export interface EmployeeDashboard{
 "grossPay":string;
 "paymentMethod":string;
 "noPaymentMethod":string;
+"downloadCta":string;
+"downloadError":string;
+"downloadLoadingMessage":string;
 "emptyState":{
 "title":string;
 "description":string;

@@ -158,7 +158,8 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | `/v1/employees/:employeeId/forms/:formId/sign` |
 | **Employee.EmployeeDocuments** | GET | `/v1/employees/:employeeId` |
 |  | PUT | `/v1/employees/:employeeId/onboarding_documents_config` |
-| **Employee.DashboardFlow** | GET | `/v1/employees/:employeeId` |
+| **Employee.DashboardFlow** | GET | `/v1/payrolls/:payrollId/employees/:employeeId/pay_stub` |
+|  | GET | `/v1/employees/:employeeId` |
 |  | GET | `/v1/employees/:employeeId/home_addresses` |
 |  | GET | `/v1/employees/:employeeId/work_addresses` |
 |  | GET | `/v1/employees/:employeeId/garnishments` |

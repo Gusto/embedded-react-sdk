@@ -75,6 +75,9 @@
       "grossPay": "Gross pay",
       "paymentMethod": "Payment method",
       "noPaymentMethod": "Not available",
+      "downloadCta": "Download paystub",
+      "downloadError": "Unable to download paystub",
+      "downloadLoadingMessage": "Generating paystub…",
       "emptyState": {
         "title": "No paystubs",
         "description": "Paystubs will appear here after payroll is run"

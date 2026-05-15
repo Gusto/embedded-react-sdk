@@ -22,6 +22,7 @@ import { componentEvents, PAYMENT_METHODS, type EventType } from '@/shared/const
 import type { OnEventType } from '@/components/Base/useBase'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 import PercentCircleIcon from '@/assets/icons/percent-circle.svg?react'
+import DownloadCloudIcon from '@/assets/icons/download-cloud.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 
 type EmployeePayStub = NonNullable<
@@ -38,6 +39,8 @@ export interface JobAndPayViewProps {
   onEvent: OnEventType<EventType, unknown>
   onEditCompensation?: () => void
   onAddDeduction?: () => void
+  onPaystubDownload?: (payrollUuid: string) => void
+  downloadingPayrollUuids?: ReadonlySet<string>
 }
 
 export function JobAndPayView({
@@ -50,6 +53,8 @@ export function JobAndPayView({
   onEvent,
   onEditCompensation,
   onAddDeduction,
+  onPaystubDownload,
+  downloadingPayrollUuids,
 }: JobAndPayViewProps) {
   useI18n('Employee.PaymentMethod')
   const { t } = useTranslation('Employee.Dashboard')
@@ -189,6 +194,25 @@ export function JobAndPayView({
     data: payStubs,
     columns: payStubsColumns,
     pagination: payStubsPagination,
+    itemMenu: payStub => {
+      const isDownloading =
+        !!payStub.payrollUuid && !!downloadingPayrollUuids?.has(payStub.payrollUuid)
+      return (
+        <Components.ButtonIcon
+          variant="tertiary"
+          aria-label={t('jobAndPay.paystubs.downloadCta')}
+          isDisabled={!payStub.payrollUuid}
+          isLoading={isDownloading}
+          onClick={() => {
+            if (payStub.payrollUuid) {
+              onPaystubDownload?.(payStub.payrollUuid)
+            }
+          }}
+        >
+          <DownloadCloudIcon aria-hidden />
+        </Components.ButtonIcon>
+      )
+    },
     emptyState: () => (
       <EmptyData
         title={t('jobAndPay.paystubs.emptyState.title')}
