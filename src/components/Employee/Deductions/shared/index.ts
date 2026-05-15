@@ -6,3 +6,4 @@ export {
   type DeductionsListDeleteResult,
 } from './useDeductionsList'
 export * from './useDeductionForm'
+export * from './useChildSupportGarnishmentForm'
