@@ -141,6 +141,17 @@ describe('DataTable Component', () => {
       expect(screen.queryByRole('checkbox')).not.toBeInTheDocument()
       expect(screen.getAllByRole('radio')).toHaveLength(testData.length)
     })
+
+    test('does not render a header checkbox when hideSelectAll is true', () => {
+      renderTable({ ...selectableProps, hideSelectAll: true })
+      // Only the per-row checkboxes should be present.
+      expect(screen.getAllByRole('checkbox')).toHaveLength(testData.length)
+    })
+
+    test('does not render a header checkbox when data is empty', () => {
+      renderTable({ ...selectableProps, data: [] })
+      expect(screen.queryByRole('checkbox')).not.toBeInTheDocument()
+    })
   })
 
   test('should render itemMenu when provided', () => {

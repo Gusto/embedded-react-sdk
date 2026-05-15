@@ -19,7 +19,7 @@ const SERVER_MAX_PER_PAGE = 100
 // `POST /time_off_policies/:uuid/add_employees` as "ineligible" with no
 // per-uuid reason in the response. We can detect this from the employees
 // list response, so we drop them client-side to prevent the error.
-function isStartedByToday(hireDate: string | undefined): boolean {
+export function isStartedByToday(hireDate: string | undefined): boolean {
   if (!hireDate) return false
   const today = new Date().toISOString().slice(0, 10)
   return hireDate <= today
@@ -48,6 +48,13 @@ export function useSelectEmployeesData(companyId: string, excludeUuids?: Set<str
 
   const totalServerPages = Number(firstPage.httpMeta.response.headers.get('x-total-pages') ?? 1)
 
+  // For each additional server page we fire a suspense query in parallel.
+  // No explicit concurrency cap: typical embedded customers are <100
+  // employees (one server page, zero extra requests). For larger companies
+  // the browser's per-origin connection limit (~6) acts as the natural
+  // ceiling. If this flow ever needs to support thousands of employees,
+  // reconsider — either a server-side eligibility filter or a paginated
+  // fetch-as-you-scroll strategy would be the right escape hatches.
   const restPageResults = useSuspenseQueries({
     queries: Array.from({ length: Math.max(0, totalServerPages - 1) }, (_, i) =>
       buildEmployeesListQuery(gustoClient, {
