@@ -1,12 +1,22 @@
-import { readFileSync, readdirSync, writeFileSync, mkdirSync, statSync, existsSync } from 'fs'
+import {
+  readFileSync,
+  readdirSync,
+  writeFileSync,
+  mkdirSync,
+  statSync,
+  existsSync,
+  rmSync,
+} from 'fs'
 import { join, dirname, relative, resolve } from 'path'
 import { fileURLToPath } from 'url'
-import { Project, SyntaxKind } from 'ts-morph'
+import { spawnSync } from 'child_process'
+import { Project, SourceFile, SyntaxKind } from 'ts-morph'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 const ROOT = join(__dirname, '..')
+const SRC_DIR = join(ROOT, 'src')
 const FUNCS_DIR = join(ROOT, 'node_modules/@gusto/embedded-api/src/funcs')
 const OPS_DIR = join(ROOT, 'node_modules/@gusto/embedded-api/src/models/operations')
 const COMPONENTS_DIR = join(ROOT, 'src/components')
@@ -14,8 +24,6 @@ const JSON_OUTPUT_PATH = join(ROOT, 'docs/reference/endpoint-inventory.json')
 const MD_OUTPUT_PATH = join(ROOT, 'docs/reference/endpoint-reference.md')
 
 const isVerifyMode = process.argv.includes('--verify')
-
-// Removed NON_DOMAIN_DIRS - no longer needed with export-based discovery
 
 interface Endpoint {
   method: string
@@ -29,11 +37,27 @@ interface BlockEntry {
 
 interface FlowEntry {
   blocks: string[]
-  endpoints: Endpoint[]
-  variables: string[]
 }
 
-// --- AST-based extraction from @gusto/embedded-api ---
+interface BlockMapping {
+  blockName: string
+  componentDir: string
+}
+
+interface FlowMapping {
+  flowName: string
+  flowDir: string
+}
+
+interface Inventory {
+  blocks: Record<string, BlockEntry>
+  flows: Record<string, FlowEntry>
+}
+
+interface DerivationResult {
+  inventory: Inventory
+  funcLookup: Map<string, Endpoint>
+}
 
 function createApiProject(): Project {
   return new Project({
@@ -83,8 +107,8 @@ function buildParamNameMap(project: Project, funcPaths: string[]): Record<string
   const paramNameMap: Record<string, string> = {}
 
   for (const path of funcPaths) {
-    for (const match of path.matchAll(/\{([^}]+)\}/g)) {
-      const snakeParam = match[1]
+    // {employee_id}  →  snakeParam = "employee_id"
+    for (const [_fullMatch, snakeParam] of path.matchAll(/\{([^}]+)\}/g)) {
       if (!paramNameMap[snakeParam]) {
         paramNameMap[snakeParam] = snakeToCamelLookup.get(snakeParam) ?? snakeToCamel(snakeParam)
       }
@@ -93,8 +117,6 @@ function buildParamNameMap(project: Project, funcPaths: string[]): Record<string
 
   return paramNameMap
 }
-
-// --- Build a lookup from func name -> { method, path } ---
 
 function collectRawFuncPaths(
   project: Project,
@@ -136,8 +158,7 @@ function collectRawFuncPaths(
   return results
 }
 
-function buildFuncLookup(): Map<string, Endpoint> {
-  const project = createApiProject()
+function buildFuncLookup(project: Project): Map<string, Endpoint> {
   const rawFuncs = collectRawFuncPaths(project)
   const paramNameMap = buildParamNameMap(
     project,
@@ -154,8 +175,6 @@ function buildFuncLookup(): Map<string, Endpoint> {
 
   return lookup
 }
-
-// --- Recursively find source files in a directory ---
 
 function walkDir(dir: string): string[] {
   const results: string[] = []
@@ -175,35 +194,67 @@ function walkDir(dir: string): string[] {
   return results
 }
 
-// --- Extract @gusto/embedded-api imports from component files ---
-
-function extractApiImports(filePaths: string[]): Set<string> {
+function collectTransitiveApiImports(
+  project: Project,
+  entryFilePaths: string[],
+  componentDir: string,
+  otherBlockDirs: Set<string>,
+): Set<string> {
+  const visited = new Set<string>()
   const funcNames = new Set<string>()
 
-  const hookImportPattern = /from\s+['"]@gusto\/embedded-api\/react-query\/([^'"]+)['"]/g
-  const funcImportPattern = /from\s+['"]@gusto\/embedded-api\/funcs\/([^'"]+)['"]/g
+  function followSpec(spec: string, getResolved: () => SourceFile | undefined) {
+    if (spec.startsWith('@gusto/embedded-api/react-query/')) {
+      const name = spec.slice('@gusto/embedded-api/react-query/'.length)
+      if (!name.startsWith('_')) funcNames.add(name)
+    } else if (spec.startsWith('@gusto/embedded-api/funcs/')) {
+      funcNames.add(spec.slice('@gusto/embedded-api/funcs/'.length))
+    } else if (spec.startsWith('.') || spec.startsWith('@/hooks/')) {
+      // Follow relative imports (catches ../shared/ hooks) and cross-cutting utility hooks.
+      // Deliberately skip @/components/, @/contexts/, @/helpers/ etc. to avoid
+      // cascading through UI primitives and cross-domain components.
+      // Also stop at other blocks' directories so flow orchestrators don't absorb
+      // their sub-blocks' endpoints (those are already inventoried separately).
+      const resolved = getResolved()
+      if (!resolved) return
+      const targetPath = resolved.getFilePath()
+      if (!targetPath.startsWith(SRC_DIR + '/')) return
+      const isOtherBlock = [...otherBlockDirs].some(
+        dir => dir !== componentDir && targetPath.startsWith(dir + '/'),
+      )
+      if (!isOtherBlock) visitFile(targetPath)
+    }
+  }
 
-  for (const filePath of filePaths) {
-    const content = readFileSync(filePath, 'utf-8')
+  function visitFile(filePath: string) {
+    if (visited.has(filePath)) return
+    visited.add(filePath)
 
-    for (const match of content.matchAll(hookImportPattern)) {
-      const moduleName = match[1]
-      if (!moduleName.startsWith('_')) {
-        funcNames.add(moduleName)
+    const sourceFile = project.addSourceFileAtPathIfExists(filePath)
+    if (!sourceFile) return
+
+    for (const decl of sourceFile.getImportDeclarations()) {
+      if (decl.isTypeOnly()) continue
+      followSpec(decl.getModuleSpecifierValue(), () => decl.getModuleSpecifierSourceFile())
+    }
+    for (const decl of sourceFile.getExportDeclarations()) {
+      if (decl.isTypeOnly()) continue
+      const spec = decl.getModuleSpecifierValue()
+      if (spec) {
+        followSpec(spec, () => decl.getModuleSpecifierSourceFile())
       }
     }
+  }
 
-    for (const match of content.matchAll(funcImportPattern)) {
-      funcNames.add(match[1])
-    }
+  for (const filePath of entryFilePaths) {
+    visitFile(filePath)
   }
 
   return funcNames
 }
 
-// --- Normalize OpenAPI-style {param} paths to Express-style :param ---
-
 function normalizeEndpointPath(openApiPath: string, paramNameMap: Record<string, string>): string {
+  // {employee_id}  →  paramName = "employee_id"
   return openApiPath.replace(/\{([^}]+)\}/g, (_match, paramName: string) => {
     const normalized = paramNameMap[paramName]
     if (!normalized) {
@@ -214,24 +265,17 @@ function normalizeEndpointPath(openApiPath: string, paramNameMap: Record<string,
   })
 }
 
-// --- Map export chain to block names ---
-
-interface BlockMapping {
-  blockName: string
-  componentDir: string
-}
-
 function parseNamespaceExports(): Map<string, string> {
   const indexPath = join(COMPONENTS_DIR, 'index.ts')
   const namespaces = new Map<string, string>()
 
   try {
     const content = readFileSync(indexPath, 'utf-8')
-    // Match: export * as Namespace from './DomainDir'
+    // export * as EmployeeManagement from './Employee/exports/employeeManagement'  →
+    //   namespaceName = "EmployeeManagement"
+    //   domainDir = "Employee/exports/employeeManagement"
     const namespacePattern = /export\s+\*\s+as\s+(\w+)\s+from\s+['"]\.\/([^'"]+)['"]/g
-    for (const match of content.matchAll(namespacePattern)) {
-      const namespaceName = match[1]
-      const domainDir = match[2]
+    for (const [_fullMatch, namespaceName, domainDir] of content.matchAll(namespacePattern)) {
       namespaces.set(namespaceName, domainDir)
     }
   } catch (err) {
@@ -244,22 +288,23 @@ function parseNamespaceExports(): Map<string, string> {
 
 function parseComponentExports(domainDir: string): Map<string, string> {
   const exports = new Map<string, string>()
-
-  // Try both .ts and .tsx extensions
   const possibleBarrelFiles = [join(domainDir, 'index.ts'), join(domainDir, 'index.tsx')]
 
   for (const barrelPath of possibleBarrelFiles) {
     try {
       const content = readFileSync(barrelPath, 'utf-8')
-      // Match: export { Component } from './SomeDir/Component'
-      // Or: export { Component } from './Component'
-      const exportPattern = /export\s+\{\s*(\w+).*?\}\s+from\s+['"](\.[^'"]+)['"]/g
-      for (const match of content.matchAll(exportPattern)) {
-        const componentName = match[1]
-        const importPath = match[2]
+      // export { EmployeeDocuments as Documents } from './Documents'  →
+      //   nameToken = "EmployeeDocuments as Documents"
+      //   importPath = "./Documents"
+      // Uses the alias when present so the map key matches the public export name.
+      const exportPattern =
+        /export\s+\{\s*(\w+(?:\s+as\s+\w+)?)[^}]*?\}\s+from\s+['"](\.[^'"]+)['"]/g
+      for (const [_fullMatch, nameToken, importPath] of content.matchAll(exportPattern)) {
+        const asIndex = nameToken.indexOf(' as ')
+        const componentName = asIndex >= 0 ? nameToken.slice(asIndex + 4).trim() : nameToken.trim()
         exports.set(componentName, importPath)
       }
-      break // Found a barrel file, stop looking
+      break
     } catch {
       // barrel file doesn't exist, try next
     }
@@ -269,30 +314,16 @@ function parseComponentExports(domainDir: string): Map<string, string> {
 }
 
 function resolveComponentDirectory(domainDir: string, importPath: string): string {
-  // importPath is like './ContractorList' or './Payments/PaymentFlow'
   const resolved = resolve(domainDir, importPath)
 
-  // If it's a direct file import, get the directory
   if (existsSync(resolved + '.tsx') || existsSync(resolved + '.ts')) {
-    const dir = dirname(resolved)
-    // Feature module pattern: if a sibling shared/ directory exists, use the
-    // parent (feature module root) so walkDir picks up shared hooks with API imports
-    const parentDir = dirname(dir)
-    if (
-      existsSync(join(parentDir, 'shared')) &&
-      statSync(join(parentDir, 'shared')).isDirectory()
-    ) {
-      return parentDir
-    }
-    return dir
+    return dirname(resolved)
   }
 
-  // If it's a directory with an index file, use the directory
   if (existsSync(resolved) && statSync(resolved).isDirectory()) {
     return resolved
   }
 
-  // Fallback: assume it's the directory
   return resolved
 }
 
@@ -302,26 +333,15 @@ function discoverBlocks(): BlockMapping[] {
 
   for (const [namespaceName, domainDirName] of namespaces.entries()) {
     const domainDir = join(COMPONENTS_DIR, domainDirName)
-
     const componentExports = parseComponentExports(domainDir)
 
     for (const [componentName, importPath] of componentExports.entries()) {
       const componentDir = resolveComponentDirectory(domainDir, importPath)
-      blocks.push({
-        blockName: `${namespaceName}.${componentName}`,
-        componentDir,
-      })
+      blocks.push({ blockName: `${namespaceName}.${componentName}`, componentDir })
     }
   }
 
   return blocks
-}
-
-// --- Discover flow composition by scanning flow directory imports ---
-
-interface FlowMapping {
-  flowName: string
-  flowDir: string
 }
 
 function discoverFlows(): FlowMapping[] {
@@ -330,57 +350,61 @@ function discoverFlows(): FlowMapping[] {
 
   for (const [namespaceName, domainDirName] of namespaces.entries()) {
     const domainDir = join(COMPONENTS_DIR, domainDirName)
+    const componentExports = parseComponentExports(domainDir)
 
-    try {
-      const entries = readdirSync(domainDir)
-
-      // Look for direct Flow directories in the domain
-      for (const entry of entries) {
-        const fullPath = join(domainDir, entry)
-        if (!statSync(fullPath).isDirectory()) continue
-        if (!entry.endsWith('Flow')) continue
-        flows.push({ flowName: `${namespaceName}.${entry}`, flowDir: fullPath })
-      }
-
-      // Look for nested Flow directories (e.g., Contractor.Payments.PaymentFlow)
-      for (const entry of entries) {
-        const subDir = join(domainDir, entry)
-        if (!statSync(subDir).isDirectory()) continue
-        if (entry.endsWith('Flow')) continue
-
-        try {
-          const nestedEntries = readdirSync(subDir)
-          for (const nestedEntry of nestedEntries) {
-            const nestedPath = join(subDir, nestedEntry)
-            if (!statSync(nestedPath).isDirectory()) continue
-            if (!nestedEntry.endsWith('Flow')) continue
-            flows.push({
-              flowName: `${namespaceName}.${entry}.${nestedEntry}`,
-              flowDir: nestedPath,
-            })
-          }
-        } catch {
-          // nested dir doesn't exist or can't be read
-        }
-      }
-    } catch {
-      // domain dir doesn't exist
-      continue
+    for (const [componentName, importPath] of componentExports.entries()) {
+      if (!componentName.endsWith('Flow')) continue
+      const flowDir = resolveComponentDirectory(domainDir, importPath)
+      flows.push({ flowName: `${namespaceName}.${componentName}`, flowDir })
     }
   }
 
   return flows
 }
 
-function deriveFlowBlocks(
-  flowDir: string,
-  blockDirToName: Map<string, string>,
-  blockMappings: BlockMapping[],
+function deriveBlocksFromImport(
+  resolvedImportPath: string,
+  rawImportedNames: string,
+  dirToBlocks: Map<string, string[]>,
 ): string[] {
+  // Find the most specific directory that matches this import path
+  let matchingDir: string | undefined
+  for (const dir of dirToBlocks.keys()) {
+    if (resolvedImportPath === dir || resolvedImportPath.startsWith(dir + '/')) {
+      if (!matchingDir || dir.length > matchingDir.length) {
+        matchingDir = dir
+      }
+    }
+  }
+
+  if (!matchingDir) return []
+
+  const blocks = dirToBlocks.get(matchingDir)!
+  if (blocks.length === 1) return blocks
+
+  const importedNames = rawImportedNames.split(',').map((name: string) =>
+    name
+      .trim()
+      // Look at the export name only, ignore any `x as y`
+      .split(/\s+as\s+/)[0]
+      .trim(),
+  )
+
+  const blockNames = new Set<string>()
+  for (const blockName of blocks) {
+    const componentName = blockName.split('.').pop()
+    if (componentName && importedNames.includes(componentName)) {
+      blockNames.add(blockName)
+    }
+  }
+
+  return [...blockNames]
+}
+
+function deriveFlowBlocks(flowDir: string, blockMappings: BlockMapping[]): string[] {
   const files = walkDir(flowDir)
   const blockNames = new Set<string>()
 
-  // Build a map of component directory to all block names for that directory
   const dirToBlocks = new Map<string, string[]>()
   for (const mapping of blockMappings) {
     if (!dirToBlocks.has(mapping.componentDir)) {
@@ -389,126 +413,92 @@ function deriveFlowBlocks(
     dirToBlocks.get(mapping.componentDir)!.push(mapping.blockName)
   }
 
+  // import { EmployeeForm } from '@/components/Employee/Form'  →
+  //   allImportedNames = " EmployeeForm "
+  //   importPath = "Employee/Form"
   const absoluteImportPattern = /import\s+\{([^}]+)\}\s+from\s+['"]@\/components\/([^'"]+)['"]/g
+  // import { EmployeeForm, AnotherImport } from '../shared/EmployeeForm'  →
+  //   allImportedNames = " EmployeeForm, AnotherImport "
+  //   importPath = "../shared/EmployeeForm"
   const relativeImportPattern = /import\s+\{([^}]+)\}\s+from\s+['"](\.[^'"]+)['"]/g
 
   for (const filePath of files) {
     const content = readFileSync(filePath, 'utf-8')
 
     for (const match of content.matchAll(absoluteImportPattern)) {
-      const importedNames = match[1].split(',').map(name =>
-        name
-          .trim()
-          .split(/\s+as\s+/)[0]
-          .trim(),
-      )
-      const importPath = match[2]
+      const [_fullMatch, allImportedNames, importPath] = match
       if (
         importPath.startsWith('Flow/') ||
         importPath.startsWith('Base') ||
         importPath.startsWith('Common/')
-      )
+      ) {
         continue
-      const segments = importPath.split('/')
-      const candidateDirs = [
-        join(COMPONENTS_DIR, segments[0], segments[1] ?? ''),
-        join(COMPONENTS_DIR, segments[0], segments[1] ?? '', segments[2] ?? ''),
-      ]
-      for (const dir of candidateDirs) {
-        const blocks = dirToBlocks.get(dir)
-        if (blocks) {
-          if (blocks.length === 1) {
-            blockNames.add(blocks[0])
-          } else {
-            // Multiple blocks for this directory - match by component name
-            for (const blockName of blocks) {
-              const componentName = blockName.split('.').pop()
-              if (componentName && importedNames.includes(componentName)) {
-                blockNames.add(blockName)
-              }
-            }
-          }
-          break
-        }
       }
+
+      deriveBlocksFromImport(
+        join(COMPONENTS_DIR, importPath),
+        allImportedNames,
+        dirToBlocks,
+      ).forEach(blockName => blockNames.add(blockName))
     }
 
     for (const match of content.matchAll(relativeImportPattern)) {
-      const importedNames = match[1].split(',').map(name =>
-        name
-          .trim()
-          .split(/\s+as\s+/)[0]
-          .trim(),
-      )
-      const importPath = match[2]
-      if (importPath.includes('/Flow/') || importPath.includes('useFlow')) continue
-      const resolved = resolve(dirname(filePath), importPath)
-      const segments = relative(COMPONENTS_DIR, resolved).split('/')
-      const candidateDirs = [
-        join(COMPONENTS_DIR, segments[0], segments[1] ?? ''),
-        join(COMPONENTS_DIR, segments[0], segments[1] ?? '', segments[2] ?? ''),
-      ]
-      for (const dir of candidateDirs) {
-        const blocks = dirToBlocks.get(dir)
-        if (blocks) {
-          if (blocks.length === 1) {
-            blockNames.add(blocks[0])
-          } else {
-            // Multiple blocks for this directory - match by component name
-            for (const blockName of blocks) {
-              const componentName = blockName.split('.').pop()
-              if (componentName && importedNames.includes(componentName)) {
-                blockNames.add(blockName)
-              }
-            }
-          }
-          break
-        }
+      const [_fullMatch, allImportedNames, importPath] = match
+      if (importPath.includes('/Flow/') || importPath.includes('useFlow')) {
+        continue
       }
+
+      deriveBlocksFromImport(
+        resolve(dirname(filePath), importPath),
+        allImportedNames,
+        dirToBlocks,
+      ).forEach(blockName => blockNames.add(blockName))
     }
   }
 
   return [...blockNames].sort()
 }
 
-// --- Extract variables from endpoint paths ---
-
 function extractVariables(endpoints: Endpoint[]): string[] {
   const variables = new Set<string>()
   for (const ep of endpoints) {
-    for (const match of ep.path.matchAll(/:([a-zA-Z]+)/g)) {
-      variables.add(match[1])
+    // :companyId  →  varName = "companyId"
+    for (const [_fullMatch, varName] of ep.path.matchAll(/:([a-zA-Z]+)/g)) {
+      variables.add(varName)
     }
   }
   return [...variables].sort()
 }
 
-// --- Core derivation logic ---
+const METHOD_RANK: Record<string, number> = { GET: 0, POST: 1, PUT: 2, PATCH: 3, DELETE: 4 }
 
-interface Inventory {
-  blocks: Record<string, BlockEntry>
-  flows: Record<string, FlowEntry>
-}
-
-interface DerivationResult {
-  inventory: Inventory
-  funcLookup: Map<string, Endpoint>
+function deduplicateEndpoints(endpoints: Endpoint[]): Endpoint[] {
+  const seen = new Set<string>()
+  return endpoints
+    .filter(ep => {
+      const key = `${ep.method} ${ep.path}`
+      if (seen.has(key)) return false
+      seen.add(key)
+      return true
+    })
+    .sort((a, b) => {
+      const pathOrder = a.path.localeCompare(b.path)
+      if (pathOrder !== 0) return pathOrder
+      return (METHOD_RANK[a.method] ?? 99) - (METHOD_RANK[b.method] ?? 99)
+    })
 }
 
 function deriveInventory(): DerivationResult {
-  const funcLookup = buildFuncLookup()
+  const project = createApiProject()
+  const funcLookup = buildFuncLookup(project)
   const blockMappings = discoverBlocks()
-
-  const blockDirToName = new Map<string, string>()
-  for (const { blockName, componentDir } of blockMappings) {
-    blockDirToName.set(componentDir, blockName)
-  }
+  const allBlockDirs = new Set(blockMappings.map(m => m.componentDir))
 
   const blocks: Record<string, BlockEntry> = {}
 
   for (const { blockName, componentDir } of blockMappings) {
     const files = walkDir(componentDir)
-    const funcNames = extractApiImports(files)
+    const funcNames = collectTransitiveApiImports(project, files, componentDir, allBlockDirs)
 
     const endpoints: Endpoint[] = []
     for (const funcName of funcNames) {
@@ -531,37 +521,16 @@ function deriveInventory(): DerivationResult {
   const flows: Record<string, FlowEntry> = {}
 
   for (const { flowName, flowDir } of flowMappings) {
-    const blockNames = deriveFlowBlocks(flowDir, blockDirToName, blockMappings)
-
-    const endpoints: Endpoint[] = []
-    for (const blockName of blockNames) {
-      const blockEntry = blocks[blockName]
-      if (blockEntry) {
-        endpoints.push(...blockEntry.endpoints)
-      }
-    }
-    const deduped = deduplicateEndpoints(endpoints)
-    flows[flowName] = {
-      blocks: blockNames,
-      endpoints: deduped,
-      variables: extractVariables(deduped),
-    }
+    const blockNames = deriveFlowBlocks(flowDir, blockMappings).filter(b => b !== flowName)
+    flows[flowName] = { blocks: blockNames }
   }
 
-  return { inventory: { blocks, flows }, funcLookup }
-}
+  const sortedFlows = Object.fromEntries(
+    Object.entries(flows).sort(([a], [b]) => a.localeCompare(b)),
+  )
 
-function deduplicateEndpoints(endpoints: Endpoint[]): Endpoint[] {
-  const seen = new Set<string>()
-  return endpoints.filter(ep => {
-    const key = `${ep.method} ${ep.path}`
-    if (seen.has(key)) return false
-    seen.add(key)
-    return true
-  })
+  return { inventory: { blocks, flows: sortedFlows }, funcLookup }
 }
-
-// --- Generate endpoint-reference.md from inventory ---
 
 function generateMarkdown(inventory: Inventory): string {
   const lines: string[] = [
@@ -592,8 +561,7 @@ function generateMarkdown(inventory: Inventory): string {
   }
 
   for (const [domain, domainBlocks] of blocksByDomain) {
-    const sectionTitle = `${domain} components`
-    lines.push(`## ${sectionTitle}`, '')
+    lines.push(`## ${domain} components`, '')
     lines.push('| Component | Method | Path |')
     lines.push('| --- | --- | --- |')
 
@@ -626,8 +594,6 @@ function generateMarkdown(inventory: Inventory): string {
   return lines.join('\n')
 }
 
-// --- Validate all inventory endpoints exist in @gusto/embedded-api ---
-
 function validateEndpoints(
   inventory: { blocks: Record<string, BlockEntry> },
   funcLookup: Map<string, Endpoint>,
@@ -656,8 +622,6 @@ function validateEndpoints(
   return invalid.length
 }
 
-// --- Generate mode: write files ---
-
 function generate() {
   const { inventory, funcLookup } = deriveInventory()
 
@@ -678,7 +642,21 @@ function generate() {
   }
 }
 
-// --- Verify mode: compare against committed files, exit 1 if stale ---
+function printDiff(committedPath: string, freshContent: string): void {
+  const tmpPath = committedPath + '.tmp'
+  try {
+    writeFileSync(tmpPath, freshContent, 'utf-8')
+    const rel = relative(ROOT, committedPath)
+    const result = spawnSync(
+      'diff',
+      ['-u', '--label', `a/${rel}`, '--label', `b/${rel}`, committedPath, tmpPath],
+      { encoding: 'utf-8' },
+    )
+    if (result.stdout) process.stderr.write(result.stdout)
+  } finally {
+    rmSync(tmpPath, { force: true })
+  }
+}
 
 function verify() {
   const filesToCheck = [JSON_OUTPUT_PATH, MD_OUTPUT_PATH]
@@ -709,13 +687,13 @@ function verify() {
   console.error('  - A component added or removed an API hook/function import')
   console.error('  - A flow added or removed a block component')
   console.error('  - The @gusto/embedded-api package was updated')
-  console.error('  - The pre-commit hook was bypassed (--no-verify)')
+  console.error('')
+  if (committedJson !== freshJson) printDiff(JSON_OUTPUT_PATH, freshJson)
+  if (committedMd !== freshMd) printDiff(MD_OUTPUT_PATH, freshMd)
   console.error('')
   console.error('Fix: run "npm run endpoints:derive" and commit the updated files.')
   process.exit(1)
 }
-
-// --- Entry point ---
 
 if (isVerifyMode) {
   verify()

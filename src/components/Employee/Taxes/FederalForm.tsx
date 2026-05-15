@@ -1,6 +1,6 @@
 import { Trans, useTranslation } from 'react-i18next'
 import { z } from 'zod'
-import { NumberInputField, RadioGroupField, SelectField } from '@/components/Common'
+import { Flex, NumberInputField, RadioGroupField, SelectField } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 const Rev2020Schema = z.object({
@@ -30,67 +30,69 @@ export function FederalForm() {
 
   return (
     <>
-      <SelectField
-        name="filingStatus"
-        label={t('federalFilingStatus1c')}
-        placeholder={t('federalFilingStatusPlaceholder')}
-        options={filingStatusOptions}
-        isRequired
-        errorMessage={t('validations.federalFilingStatus')}
-      />
-      <RadioGroupField
-        name="twoJobs"
-        isRequired
-        label={t('multipleJobs2c')}
-        errorMessage={t('validations.federalTwoJobs')}
-        description={
-          <Components.Text>
-            <Trans
-              i18nKey={'includesSpouseExplanation'}
-              t={t}
-              components={{
-                IrsLink: <Components.Link />,
-              }}
-            />
-          </Components.Text>
-        }
-        options={[
-          { value: 'true', label: t('twoJobYesLabel') },
-          { value: 'false', label: t('twoJobNoLabel') },
-        ]}
-      />
-      <NumberInputField
-        name="dependentsAmount"
-        isRequired
-        label={t('dependentsTotalIfApplicable')}
-        format="currency"
-        min={0}
-        errorMessage={t('fieldIsRequired')}
-      />
-      <NumberInputField
-        name="otherIncome"
-        isRequired
-        label={t('otherIncome')}
-        format="currency"
-        min={0}
-        errorMessage={t('fieldIsRequired')}
-      />
-      <NumberInputField
-        name="deductions"
-        isRequired
-        label={t('deductions')}
-        format="currency"
-        min={0}
-        errorMessage={t('fieldIsRequired')}
-      />
-      <NumberInputField
-        name="extraWithholding"
-        isRequired
-        label={t('extraWithholding')}
-        format="currency"
-        min={0}
-        errorMessage={t('fieldIsRequired')}
-      />
+      <Flex flexDirection="column" gap={20}>
+        <SelectField
+          name="filingStatus"
+          label={t('federalFilingStatus1c')}
+          placeholder={t('federalFilingStatusPlaceholder')}
+          options={filingStatusOptions}
+          isRequired
+          errorMessage={t('validations.federalFilingStatus')}
+        />
+        <RadioGroupField
+          name="twoJobs"
+          isRequired
+          label={t('multipleJobs2c')}
+          errorMessage={t('validations.federalTwoJobs')}
+          description={
+            <Components.Text>
+              <Trans
+                i18nKey={'includesSpouseExplanation'}
+                t={t}
+                components={{
+                  IrsLink: <Components.Link />,
+                }}
+              />
+            </Components.Text>
+          }
+          options={[
+            { value: 'true', label: t('twoJobYesLabel') },
+            { value: 'false', label: t('twoJobNoLabel') },
+          ]}
+        />
+        <NumberInputField
+          name="dependentsAmount"
+          isRequired
+          label={t('dependentsTotalIfApplicable')}
+          format="currency"
+          min={0}
+          errorMessage={t('fieldIsRequired')}
+        />
+        <NumberInputField
+          name="otherIncome"
+          isRequired
+          label={t('otherIncome')}
+          format="currency"
+          min={0}
+          errorMessage={t('fieldIsRequired')}
+        />
+        <NumberInputField
+          name="deductions"
+          isRequired
+          label={t('deductions')}
+          format="currency"
+          min={0}
+          errorMessage={t('fieldIsRequired')}
+        />
+        <NumberInputField
+          name="extraWithholding"
+          isRequired
+          label={t('extraWithholding')}
+          format="currency"
+          min={0}
+          errorMessage={t('fieldIsRequired')}
+        />
+      </Flex>
     </>
   )
 }

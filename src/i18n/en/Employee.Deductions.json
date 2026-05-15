@@ -85,5 +85,18 @@
   "studentLoan": "Student Loan",
   "creditorGarnishment": "Creditor Garnishment",
   "federalLoan": "Federal Loan",
-  "otherGarnishment": "Other Garnishment"
+  "otherGarnishment": "Other Garnishment",
+  "descriptionRequired": "Description is required",
+  "frequencyRequired": "Frequency is required",
+  "deductionTypeRequired": "Deduction type is required",
+  "amountRequired": "Amount is required",
+  "amountNonNegative": "Amount must be 0 or greater",
+  "agencyRequired": "Agency is required",
+  "countyRequired": "County is required",
+  "caseNumberRequired": "Case number is required",
+  "orderNumberRequired": "Order number is required",
+  "remittanceNumberRequired": "Remittance number is required",
+  "payPeriodMaximumRequired": "Pay period maximum is required",
+  "percentOutOfRange": "Must be between 0 and 100",
+  "paymentPeriodRequired": "Payment period is required"
 }

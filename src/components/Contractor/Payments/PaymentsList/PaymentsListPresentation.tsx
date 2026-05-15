@@ -89,7 +89,9 @@ export const PaymentsListPresentation = ({
   return (
     <Flex flexDirection="column" gap={24}>
       <Flex flexDirection="column" gap={16}>
-        <Heading as="h1">{t('title')}</Heading>
+        <Heading as="h1" styledAs="h2">
+          {t('title')}
+        </Heading>
       </Flex>
 
       {hasUnresolvedWireInRequests && (
@@ -134,7 +136,9 @@ export const PaymentsListPresentation = ({
         }}
         justifyContent="space-between"
       >
-        <Heading as="h2">{t('subtitle')}</Heading>
+        <Heading as="h2" styledAs="h4">
+          {t('subtitle')}
+        </Heading>
         <div className={styles.actionsContainer}>
           <Select
             id="date-range-select"

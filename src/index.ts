@@ -81,6 +81,68 @@ export type {
 
 // Domain hooks - Employee
 export {
+  useDeductionForm,
+  DeductionFormErrorCodes,
+  createDeductionFormSchema,
+} from '@/components/Employee/Deductions/shared/useDeductionForm'
+export type {
+  UseDeductionFormProps,
+  UseDeductionFormResult,
+  UseDeductionFormReady,
+  DeductionFormFields,
+  DeductionFormFieldsMetadata,
+  DeductionFormErrorCode,
+  DeductionFormOptionalFieldsToRequire,
+  DeductionFormData,
+  DeductionFormOutputs,
+  DeductionFormRequiredValidation,
+  DeductionFormNegativeAmountValidation,
+  DeductionFormAmountValidation,
+  DeductionFormCapValidation,
+  DescriptionFieldProps,
+  RecurringFieldProps,
+  DeductAsPercentageFieldProps,
+  AmountFieldProps as DeductionAmountFieldProps,
+  TotalAmountFieldProps,
+  AnnualMaximumFieldProps,
+  GarnishmentTypeFieldProps,
+} from '@/components/Employee/Deductions/shared/useDeductionForm'
+
+export {
+  useChildSupportGarnishmentForm,
+  ChildSupportGarnishmentFormErrorCodes,
+  createChildSupportGarnishmentFormSchema,
+  getRequiredAttrKeys,
+  SUPPORTED_REQUIRED_ATTR_KEYS,
+} from '@/components/Employee/Deductions/shared/useChildSupportGarnishmentForm'
+export type {
+  UseChildSupportGarnishmentFormProps,
+  UseChildSupportGarnishmentFormResult,
+  UseChildSupportGarnishmentFormReady,
+  ChildSupportGarnishmentFormFields,
+  ChildSupportGarnishmentFormFieldsMetadata,
+  ChildSupportGarnishmentFormErrorCode,
+  ChildSupportGarnishmentFormData,
+  ChildSupportGarnishmentFormOutputs,
+  SupportedRequiredAttrKey,
+  ChildSupportGarnishmentRequiredValidation,
+  ChildSupportGarnishmentNegativeAmountValidation,
+  ChildSupportGarnishmentPercentValidation,
+  PayPeriodMaximumValidation,
+  ChildSupportGarnishmentAmountValidation,
+  StateFieldEntry,
+  CountyEntry,
+  ChildSupportGarnishmentStateFieldProps,
+  FipsCodeFieldProps,
+  CaseNumberFieldProps,
+  OrderNumberFieldProps,
+  RemittanceNumberFieldProps,
+  PayPeriodMaximumFieldProps,
+  ChildSupportGarnishmentAmountFieldProps,
+  PaymentPeriodFieldProps,
+} from '@/components/Employee/Deductions/shared/useChildSupportGarnishmentForm'
+
+export {
   useCompensationForm,
   CompensationErrorCodes,
   createCompensationSchema,
@@ -217,6 +279,79 @@ export type {
   CourtesyWithholdingFieldProps,
   HomeAddressEffectiveDateFieldProps,
 } from '@/components/Employee/Profile/shared/useHomeAddressForm'
+
+export {
+  useBankForm,
+  BankFormErrorCodes,
+  createBankFormSchema,
+  ACCOUNT_TYPES,
+} from '@/components/Employee/PaymentMethod/shared/useBankForm'
+export type {
+  BankFormSubmitOptions,
+  UseBankFormProps,
+  UseBankFormResult,
+  UseBankFormReady,
+  BankFormFields,
+  BankFormFieldsMetadata,
+  BankFormErrorCode,
+  BankFormData,
+  BankFormOutputs,
+  BankFormField,
+  BankFormOptionalFieldsToRequire,
+  AccountType,
+  BankFormRequiredValidation,
+  RoutingNumberValidation,
+  AccountNumberValidation,
+  NameFieldProps,
+  RoutingNumberFieldProps,
+  AccountNumberFieldProps,
+  AccountTypeFieldProps,
+} from '@/components/Employee/PaymentMethod/shared/useBankForm'
+
+export {
+  usePaymentMethodForm,
+  PaymentMethodFormErrorCodes,
+  createPaymentMethodFormSchema,
+  PAYMENT_METHOD_TYPES,
+} from '@/components/Employee/PaymentMethod/shared/usePaymentMethodForm'
+export type {
+  UsePaymentMethodFormProps,
+  UsePaymentMethodFormResult,
+  UsePaymentMethodFormReady,
+  PaymentMethodFormFields,
+  PaymentMethodFormFieldsMetadata,
+  PaymentMethodFormErrorCode,
+  PaymentMethodFormData,
+  PaymentMethodFormOutputs,
+  PaymentMethodFormField,
+  PaymentMethodFormOptionalFieldsToRequire,
+  PaymentMethodType,
+  PaymentMethodFormRequiredValidation,
+  TypeFieldProps,
+} from '@/components/Employee/PaymentMethod/shared/usePaymentMethodForm'
+
+export {
+  useSplitPaymentsForm,
+  SplitPaymentsFormErrorCodes,
+  createSplitPaymentsFormSchema,
+  SPLIT_BY_VALUES,
+} from '@/components/Employee/PaymentMethod/shared/useSplitPaymentsForm'
+export type {
+  UseSplitPaymentsFormProps,
+  UseSplitPaymentsFormResult,
+  UseSplitPaymentsFormReady,
+  SplitPaymentsFormFields,
+  SplitPaymentsFormFieldsMetadata,
+  SplitPaymentsFormErrorCode,
+  SplitPaymentsFormData,
+  SplitPaymentsFormOutputs,
+  SplitPaymentsFormField,
+  SplitPaymentsFormOptionalFieldsToRequire,
+  SplitByValue,
+  SplitPaymentsFormRequiredValidation,
+  SplitByFieldProps,
+  WorkingSplit,
+} from '@/components/Employee/PaymentMethod/shared/useSplitPaymentsForm'
 
 export {
   useFederalTaxesForm,
