@@ -1,0 +1,36 @@
+{
+  "$schema": "../../schema/scenario.schema.json",
+  "name": "Hourly employee terminated for dismissal flow",
+  "description": "Onboarded company with a terminated hourly employee, exercising hourly final-wages branches.",
+  "domain": "dismissal",
+  "baseDemo": "react_sdk_demo_company_onboarded",
+  "decorations": {
+    "locations": [
+      {
+        "key": "hq",
+        "street_1": "500 Hourly St",
+        "city": "San Francisco",
+        "state": "CA",
+        "zip": "94105",
+        "filing_address": true,
+        "mailing_address": true
+      }
+    ],
+    "employees": [
+      {
+        "key": "terminated-hourly",
+        "$ref": "../fragments/w2-hourly-employee.json",
+        "overrides": {
+          "first_name": "Hank",
+          "last_name": "Hourly",
+          "email": "hank-hourly+{{ts}}@example.com",
+          "termination": {
+            "effective_date": "{{relative:+14d}}",
+            "run_termination_payroll": true
+          }
+        }
+      }
+    ]
+  },
+  "expectedContext": ["companyId", "employeeIds.terminated-hourly"]
+}
