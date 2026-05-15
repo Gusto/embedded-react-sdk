@@ -57,11 +57,19 @@ Analyze the diff for the following, in addition to the learned rules:
 
 **Check when any SDK component or hook files are in the diff:**
 
+> **Reference Standards.** When the diff introduces a new partner-facing hook (`use*Form`) or migrates an SDK component to consume one, treat these two docs as the source of truth and validate the diff against them — the rules below are derived from them, but the docs cover details that aren't enumerated as individual rules:
+>
+> - `.claude/commands/create-hook.md` — canonical scaffolding for new hooks: directory layout, schema/fields/hook/index/test file structure, barrel wiring, and verification steps.
+> - `.claude/skills/migrate-sdk-component-to-hooks/SKILL.md` — migration playbook: pre-migration tests, hook-owns-business-logic rule, multi-form composition with `composeSubmitHandler`, `BaseBoundaries`/`BaseLayout` wiring, and the four canonical reference components.
+>
+> If a partner-facing hook in the diff materially diverges from these specs — different file layout, ad-hoc schema structure, business logic in the component instead of the hook, missing barrel exports, missing partner-facing doc in `docs/hooks/` — flag it as `[LEARNED-006]` and cite the relevant section of the canonical doc in the fix. Do not let "different but works" slide; partners depend on the consistency of these patterns.
+
 #### Hook Architecture (component layer)
 
 - **BaseBoundaries, not BaseComponent**: Public components must wrap `BaseBoundaries` and delegate to a `Root` component. Flag any use of `BaseComponent` or `useBase()`.
 - **`onEvent` as prop**: `onEvent` must be passed as a prop through to `Root` — never read from `useBase()`.
 - **Business logic stays in the hook**: Field visibility, conditional requiredness, derived data, and loading states must come from the hook. Flag `useWatch` usage that gates field rendering or sets requiredness — this logic belongs inside the hook's schema or `Fields` selection.
+- **No react-hook-form internals in the component (`[LEARNED-007]`, non-negotiable)**: Hooks are partner-facing; `react-hook-form` is not. Any component-layer use of raw `useForm`, `useWatch`, `setValue`, `watch`, `getValues`, `trigger`, `register`, or access through `hookResult.form.hookFormInternals.formMethods.*` is a **Critical** finding — flag it and surface it explicitly to the user as a non-negotiable issue, regardless of how small the diff looks. Each such site is a signal the hook is missing functionality: either an existing hook return value covers the case (use it) or the hook must be updated to cover it. The only acceptable resolutions are (a) move the logic into the hook, or (b) a written, reviewer-approved justification that no hook can own this case without introducing side effects elsewhere — never a silent merge. `hookFormInternals` exists narrowly as an escape hatch for purely presentational, non-business-logic concerns (see `migrate-sdk-component-to-hooks/SKILL.md → Section 6 → "Watching Form Values"`); even those uses should be reviewed skeptically. Do **not** treat `AdminProfile.tsx`'s `startDate` `useForm` as precedent — it is documented as a non-canonical exception, not a template.
 - **Conditional fields via truthiness**: Fields the hook returns as `undefined` when hidden must be rendered with a truthiness guard (`{Fields.SomeField && <Fields.SomeField ... />}`). Flag explicit `if` conditions based on form values.
 
 #### Multi-Form Composition

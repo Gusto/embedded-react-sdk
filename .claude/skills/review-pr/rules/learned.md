@@ -1,6 +1,6 @@
 ---
 version: 1
-last_updated: 2026-04-22
+last_updated: 2026-05-14
 ---
 
 # Learned Review Rules
@@ -137,6 +137,161 @@ const result = await updateTimeOffPolicy({
 onEvent(componentEvents.TIME_OFF_POLICY_SETTINGS_DONE, result.data)
 ```
 
+---
+
+### LEARNED-006: Partner-Facing Hooks Must Conform to the Canonical Spec
+
+- **Severity:** warning
+- **Rule:** Any new `use*Form` hook intended for the public partner surface — or any SDK component being migrated to consume one — must conform to the canonical specs in `.claude/commands/create-hook.md` (scaffolding/structure) and `.claude/skills/migrate-sdk-component-to-hooks/SKILL.md` (migration playbook). This means the hook lives at `src/components/<Domain>/<Feature>/shared/use<Name>Form/` with the five-file layout (`use*Form.tsx`, `<camelDomain>Schema.ts`, `fields.tsx`, `index.ts`, `use*Form.test.tsx`); the schema follows `ErrorCodes → fieldValidators → requiredFieldsConfig → buildFormSchema` (no inline `.optional()` except the documented enum-placeholder escape hatch); the hook returns the discriminated union with `errorHandling` in both branches and `HookSubmitResult<TEntity>` from `onSubmit`; field components are thin `*HookField` wrappers; partner-facing exports are wired through the feature barrel and `src/index.ts`; and a corresponding `docs/hooks/use<Name>Form.md` is added or updated. "Different but works" is not acceptable — partners rely on the consistency of these patterns. When flagging, cite the specific section of the canonical doc in the suggested fix.
+
+#### Bad Example
+
+```tsx
+// New "partner-facing" hook authored ad hoc:
+// - lives at src/hooks/useNewThingForm.ts (wrong location)
+// - inlines z.object(...) instead of using buildFormSchema
+// - returns { isLoading, isReady, errors, submit } (custom shape, not the discriminated union)
+// - exports buildFormSchema-style internals from the public barrel
+// - no docs/hooks/useNewThingForm.md added
+export function useNewThingForm(props: Props) {
+  const schema = z.object({ name: z.string().min(1), startDate: z.string().optional() })
+  const { handleSubmit, formState } = useForm({ resolver: zodResolver(schema) })
+  return {
+    isLoading: false,
+    isReady: true,
+    errors: formState.errors,
+    submit: handleSubmit(/* ... */),
+  }
+}
+```
+
+#### Good Example
+
+```tsx
+// src/components/Employee/NewThing/shared/useNewThingForm/useNewThingForm.tsx
+// Follows the five-file layout, buildFormSchema-based schema, and the
+// canonical discriminated-union return shape. See create-hook.md for the
+// full template.
+export function useNewThingForm(
+  props: UseNewThingFormProps,
+): HookLoadingResult | UseNewThingFormReady {
+  const [schema, metadataConfig] = useMemo(
+    () => createNewThingSchema({ mode, optionalFieldsToRequire }),
+    [mode, optionalFieldsToRequire],
+  )
+  const formMethods = useForm<NewThingFormData, unknown, NewThingFormOutputs>({
+    resolver: zodResolver(schema),
+    values: resolvedDefaults,
+    resetOptions: { keepDirtyValues: true },
+    shouldFocusError,
+  })
+  const errorHandling = composeErrorHandler(queriesForErrors, { submitError, setSubmitError })
+  const hookFormInternals = useHookFormInternals(formMethods)
+
+  if (isDataLoading) {
+    return { isLoading: true as const, errorHandling }
+  }
+  return {
+    isLoading: false as const,
+    data: { newThing },
+    status: { isPending, mode },
+    actions: { onSubmit },
+    errorHandling,
+    form: { Fields, fieldsMetadata, hookFormInternals, getFormSubmissionValues },
+  }
+}
+```
+
+---
+
+### LEARNED-007: No react-hook-form Internals in SDK Components (Non-Negotiable)
+
+- **Severity:** error
+- **Rule:** SDK components must consume form hooks only through their documented partner-facing surface (`data`, `status`, `actions`, `errorHandling`, `form.Fields`, `form.fieldsMetadata`, `form.getFormSubmissionValues`). Reaching for raw `useForm`, `useWatch`, `setValue`, `watch`, `getValues`, `trigger`, `register`, or `hookResult.form.hookFormInternals.formMethods.*` from the component is non-negotiable — partners should never need to know about `react-hook-form` to consume the SDK. Each such use is a signal the hook is missing functionality; the only acceptable resolutions are (a) move the logic into the hook (existing or newly-scaffolded — see `.claude/commands/create-hook.md`), or (b) a written, reviewer-approved justification that no hook can own the case without side effects. Flag every occurrence as Critical and surface it explicitly to the user; never let it slide silently. `AdminProfile.tsx`'s screen-local `useForm` for `startDate` is a documented historical exception, not a template — do not cite it as precedent for new code.
+
+#### Bad Example
+
+```tsx
+// Component pulls react-hook-form internals to drive cross-field behavior
+function CompensationStep() {
+  const job = useJobForm({ employeeId })
+  const compensation = useCompensationForm({ employeeId })
+
+  if (job.isLoading || compensation.isLoading) return <Spinner />
+
+  // Anti-pattern: reading form values out of the hook to compute requiredness
+  // and submit payload in the component.
+  const hireDate = useWatch({
+    control: job.form.hookFormInternals.formMethods.control,
+    name: 'hireDate',
+  })
+
+  // Anti-pattern: standing up a raw useForm for a field the hook should own
+  const { register, handleSubmit } = useForm<{ startDate: string }>()
+
+  const onSubmit = handleSubmit(async ({ startDate }) => {
+    await job.actions.onSubmit()
+    await compensation.actions.onSubmit({
+      effectiveDate: hireDate ?? startDate, // logic that belongs in the hook
+    })
+  })
+
+  return (
+    <form onSubmit={onSubmit}>
+      <SDKFormProvider hookResult={job}>
+        <job.form.Fields.Title />
+      </SDKFormProvider>
+      <input {...register('startDate')} />
+    </form>
+  )
+}
+```
+
+#### Good Example
+
+```tsx
+// Component consumes only the documented hook surface; cross-field logic
+// lives in the hooks themselves.
+function CompensationStep() {
+  const job = useJobForm({ employeeId, shouldFocusError: false })
+  const compensation = useCompensationForm({
+    employeeId,
+    withEffectiveDateField: false, // hook derives effectiveDate from hireDate
+    shouldFocusError: false,
+  })
+
+  const { handleSubmit, errorHandling } = composeSubmitHandler({
+    activeForms: [
+      { hookResult: job },
+      {
+        hookResult: compensation,
+        // Pass the just-created job's hireDate as a submit-time option.
+        // No useWatch / formMethods access needed — the hook reads it from
+        // its own form state.
+      },
+    ],
+  })
+
+  if (job.isLoading || compensation.isLoading) {
+    return <BaseLayout isLoading error={errorHandling.errors} />
+  }
+
+  return (
+    <BaseLayout error={errorHandling.errors}>
+      <form onSubmit={handleSubmit}>
+        <SDKFormProvider hookResult={job}>
+          <job.form.Fields.Title />
+          <job.form.Fields.HireDate />
+        </SDKFormProvider>
+        <SDKFormProvider hookResult={compensation}>
+          <compensation.form.Fields.Rate />
+        </SDKFormProvider>
+      </form>
+    </BaseLayout>
+  )
+}
+```
+
 ## Adding New Patterns
 
-Use `/learn-review <note>` to append a new entry. The next entry should be `LEARNED-006`.
+Use `/learn-review <note>` to append a new entry. The next entry should be `LEARNED-008`.
