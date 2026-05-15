@@ -50,15 +50,16 @@ const PERCENTAGE_PAYMENT_METHOD_TWO_SPLITS = {
   ],
 }
 
-const mockTwoBankAccounts = () =>
-  { server.use(
+const mockTwoBankAccounts = () => {
+  server.use(
     http.get(`${API_BASE_URL}/v1/employees/:employee_id/bank_accounts`, () =>
       HttpResponse.json(TWO_BANK_ACCOUNTS),
     ),
     http.get(`${API_BASE_URL}/v1/employees/:employee_id/payment_method`, () =>
       HttpResponse.json(PERCENTAGE_PAYMENT_METHOD_TWO_SPLITS),
     ),
-  ); }
+  )
+}
 
 vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', async () => {
   const actual = await vi.importActual('@/hooks/useContainerBreakpoints/useContainerBreakpoints')
