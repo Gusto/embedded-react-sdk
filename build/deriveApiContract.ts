@@ -7,9 +7,10 @@ import {
   mkdtempSync,
   rmSync,
 } from 'fs'
-import { join, dirname, resolve } from 'path'
+import { join, dirname, resolve, relative } from 'path'
 import { fileURLToPath, pathToFileURL } from 'url'
 import { tmpdir } from 'os'
+import { spawnSync } from 'child_process'
 import { build as esbuild } from 'esbuild'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -402,6 +403,24 @@ function generate() {
   console.log(`  YAML -> ${OUTPUT_PATH}`)
 }
 
+// --- Diff helper ---
+
+function printDiff(committedPath: string, freshContent: string): void {
+  const tmpPath = committedPath + '.tmp'
+  try {
+    writeFileSync(tmpPath, freshContent, 'utf-8')
+    const rel = relative(ROOT, committedPath)
+    const result = spawnSync(
+      'diff',
+      ['-u', '--label', `a/${rel}`, '--label', `b/${rel}`, committedPath, tmpPath],
+      { encoding: 'utf-8' },
+    )
+    if (result.stdout) process.stderr.write(result.stdout)
+  } finally {
+    rmSync(tmpPath, { force: true })
+  }
+}
+
 // --- Verify mode ---
 
 function verify() {
@@ -421,6 +440,7 @@ function verify() {
   }
 
   console.error('ERROR: API contract is out of date.')
+  printDiff(OUTPUT_PATH, freshYaml)
   console.error('Fix: run "npm run api-contract:derive" and commit the updated file.')
   process.exit(1)
 }

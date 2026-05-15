@@ -1,6 +1,15 @@
-import { readFileSync, readdirSync, writeFileSync, mkdirSync, statSync, existsSync } from 'fs'
+import {
+  readFileSync,
+  readdirSync,
+  writeFileSync,
+  mkdirSync,
+  statSync,
+  existsSync,
+  rmSync,
+} from 'fs'
 import { join, dirname, relative, resolve } from 'path'
 import { fileURLToPath } from 'url'
+import { spawnSync } from 'child_process'
 import { Project, SourceFile, SyntaxKind } from 'ts-morph'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -664,6 +673,24 @@ function generate() {
   }
 }
 
+// --- Diff helper ---
+
+function printDiff(committedPath: string, freshContent: string): void {
+  const tmpPath = committedPath + '.tmp'
+  try {
+    writeFileSync(tmpPath, freshContent, 'utf-8')
+    const rel = relative(ROOT, committedPath)
+    const result = spawnSync(
+      'diff',
+      ['-u', '--label', `a/${rel}`, '--label', `b/${rel}`, committedPath, tmpPath],
+      { encoding: 'utf-8' },
+    )
+    if (result.stdout) process.stderr.write(result.stdout)
+  } finally {
+    rmSync(tmpPath, { force: true })
+  }
+}
+
 // --- Verify mode: compare against committed files, exit 1 if stale ---
 
 function verify() {
@@ -690,12 +717,8 @@ function verify() {
   }
 
   console.error('ERROR: Endpoint inventory is out of date.')
-  console.error('')
-  console.error('This can happen when:')
-  console.error('  - A component added or removed an API hook/function import')
-  console.error('  - A flow added or removed a block component')
-  console.error('  - The @gusto/embedded-api package was updated')
-  console.error('  - The pre-commit hook was bypassed (--no-verify)')
+  if (committedJson !== freshJson) printDiff(JSON_OUTPUT_PATH, freshJson)
+  if (committedMd !== freshMd) printDiff(MD_OUTPUT_PATH, freshMd)
   console.error('')
   console.error('Fix: run "npm run endpoints:derive" and commit the updated files.')
   process.exit(1)
