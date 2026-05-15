@@ -140,8 +140,8 @@ function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
   }, [onEvent, employeeId])
 
   const handleViewForm = useCallback(
-    (formUuid: string) => {
-      onEvent(componentEvents.EMPLOYEE_VIEW_FORM_TO_SIGN, { employeeId, formUuid })
+    (formId: string) => {
+      onEvent(componentEvents.EMPLOYEE_VIEW_FORM_TO_SIGN, { employeeId, formId })
     },
     [onEvent, employeeId],
   )
