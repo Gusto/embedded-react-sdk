@@ -3,7 +3,7 @@
   "name": "Contractor onboarding flow",
   "description": "Company set up for contractor onboarding.",
   "domain": "contractor",
-  "baseDemo": "react_sdk_demo_contractor_onboarding",
+  "baseDemo": "react_sdk_demo",
   "decorations": {},
   "expectedContext": ["companyId"]
 }
