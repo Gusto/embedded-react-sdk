@@ -76,6 +76,9 @@
   "continueCta": "Save & continue",
   "backCta": "Back",
   "cancelCta": "Cancel",
+  "errors": {
+    "updatePolicySettingsFailed": "Unable to update policy settings. {{details}}"
+  },
   "flash": {
     "policyUpdated": "Details for this policy have been updated.",
     "policyActive": "Your time off policy is active.",
