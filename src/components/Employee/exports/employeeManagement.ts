@@ -1,5 +1,6 @@
 export { ManagementEmployeeList as EmployeeList } from '../EmployeeList/management/ManagementEmployeeList'
-export { EmployeeDocuments } from '../EmployeeDocuments'
+/** @deprecated Use EmployeeOnboarding.EmployeeDocuments; not applicable for post-onboarding flows. Will be removed in a future version. */
+export { EmployeeDocuments } from '../Documents/onboarding/EmployeeDocuments'
 export { DashboardFlow } from '../Dashboard'
 export { WorkAddress } from '../WorkAddress/management/WorkAddress'
 export type { WorkAddressProps } from '../WorkAddress/management/WorkAddress'
