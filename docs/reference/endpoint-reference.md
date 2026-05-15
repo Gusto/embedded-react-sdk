@@ -307,19 +307,187 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/balance` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/remove_employees` |
 
+## EmployeeOnboarding components
+
+| Component | Method | Path |
+| --- | --- | --- |
+| **EmployeeOnboarding.EmployeeList** | GET | `/v1/companies/:companyId/employees` |
+|  | DELETE | `/v1/employees/:employeeId` |
+|  | PUT | `/v1/employees/:employeeId/onboarding_status` |
+| **EmployeeOnboarding.OnboardingSummary** | GET | `/v1/employees/:employeeId` |
+|  | GET | `/v1/employees/:employeeId/onboarding_status` |
+| **EmployeeOnboarding.Landing** | GET | `/v1/companies/:companyId` |
+|  | GET | `/v1/employees/:employeeId` |
+| **EmployeeOnboarding.DocumentSigner** | GET | `/v1/employees/:employeeId` |
+|  | GET | `/v1/employees/:employeeId/forms` |
+|  | GET | `/v1/employees/:employeeId/forms/:formId` |
+|  | GET | `/v1/employees/:employeeId/forms/:formId/pdf` |
+|  | PUT | `/v1/employees/:employeeId/forms/:formId/sign` |
+|  | GET | `/v1/employees/:employeeId/i9_authorization` |
+|  | PUT | `/v1/employees/:employeeId/i9_authorization` |
+| **EmployeeOnboarding.EmploymentEligibility** | GET | `/v1/employees/:employeeId/i9_authorization` |
+|  | PUT | `/v1/employees/:employeeId/i9_authorization` |
+| **EmployeeOnboarding.Profile** | POST | `/v1/companies/:companyId/employees` |
+|  | GET | `/v1/companies/:companyId/locations` |
+|  | GET | `/v1/employees/:employeeId` |
+|  | PUT | `/v1/employees/:employeeId` |
+|  | GET | `/v1/employees/:employeeId/home_addresses` |
+|  | POST | `/v1/employees/:employeeId/home_addresses` |
+|  | PUT | `/v1/employees/:employeeId/onboarding_status` |
+|  | GET | `/v1/employees/:employeeId/work_addresses` |
+|  | POST | `/v1/employees/:employeeId/work_addresses` |
+|  | GET | `/v1/home_addresses/:homeAddressUuid` |
+|  | PUT | `/v1/home_addresses/:homeAddressUuid` |
+|  | GET | `/v1/work_addresses/:workAddressUuid` |
+|  | PUT | `/v1/work_addresses/:workAddressUuid` |
+| **EmployeeOnboarding.Compensation** | GET | `/v1/companies/:companyId/federal_tax_details` |
+|  | PUT | `/v1/compensations/:compensationId` |
+|  | GET | `/v1/employees/:employeeId` |
+|  | GET | `/v1/employees/:employeeId/jobs` |
+|  | POST | `/v1/employees/:employeeId/jobs` |
+|  | GET | `/v1/employees/:employeeId/work_addresses` |
+|  | PUT | `/v1/jobs/:jobId` |
+|  | DELETE | `/v1/jobs/:jobId` |
+|  | POST | `/v1/jobs/:jobId/compensations` |
+|  | GET | `/v1/locations/:locationUuid/minimum_wages` |
+| **EmployeeOnboarding.Deductions** | GET | `/v1/employees/:employeeId/garnishments` |
+|  | POST | `/v1/employees/:employeeId/garnishments` |
+|  | PUT | `/v1/garnishments/:garnishmentId` |
+|  | GET | `/v1/garnishments/child_support` |
+| **EmployeeOnboarding.Taxes** | GET | `/v1/employees/:employeeUuid/federal_taxes` |
+|  | PUT | `/v1/employees/:employeeUuid/federal_taxes` |
+|  | GET | `/v1/employees/:employeeUuid/state_taxes` |
+|  | PUT | `/v1/employees/:employeeUuid/state_taxes` |
+
+## EmployeeManagement components
+
+| Component | Method | Path |
+| --- | --- | --- |
+| **EmployeeManagement.EmployeeList** | GET | `/v1/companies/:companyId/employees` |
+|  | DELETE | `/v1/employees/:employeeId` |
+|  | PUT | `/v1/employees/:employeeId/onboarding_status` |
+| **EmployeeManagement.EmployeeDocuments** | GET | `/v1/employees/:employeeId` |
+|  | PUT | `/v1/employees/:employeeId/onboarding_documents_config` |
+| **EmployeeManagement.DashboardFlow** | GET | `/v1/employees/:employeeId` |
+|  | GET | `/v1/employees/:employeeId/forms` |
+|  | GET | `/v1/employees/:employeeId/garnishments` |
+|  | GET | `/v1/employees/:employeeId/home_addresses` |
+|  | GET | `/v1/employees/:employeeId/pay_stubs` |
+|  | GET | `/v1/employees/:employeeId/work_addresses` |
+|  | GET | `/v1/employees/:employeeUuid/federal_taxes` |
+|  | GET | `/v1/employees/:employeeUuid/state_taxes` |
+|  | GET | `/v1/payrolls/:payrollId/employees/:employeeId/pay_stub` |
+| **EmployeeManagement.WorkAddress** | GET | `/v1/employees/:employeeId` |
+|  | GET | `/v1/employees/:employeeId/work_addresses` |
+|  | DELETE | `/v1/work_addresses/:workAddressUuid` |
+| **EmployeeManagement.Profile** | POST | `/v1/companies/:companyId/employees` |
+|  | GET | `/v1/employees/:employeeId` |
+|  | PUT | `/v1/employees/:employeeId` |
+|  | PUT | `/v1/employees/:employeeId/onboarding_status` |
+| **EmployeeManagement.TerminateEmployee** | GET | `/v1/companies/:companyId/pay_periods/unprocessed_termination_pay_periods` |
+|  | GET | `/v1/companies/:companyId/payrolls` |
+|  | POST | `/v1/companies/:companyId/payrolls` |
+|  | GET | `/v1/employees/:employeeId` |
+|  | GET | `/v1/employees/:employeeId/terminations` |
+|  | POST | `/v1/employees/:employeeId/terminations` |
+|  | PUT | `/v1/terminations/:employeeId` |
+| **EmployeeManagement.TerminationSummary** | GET | `/v1/companies/:companyId/employees` |
+|  | GET | `/v1/employees/:employeeId` |
+|  | GET | `/v1/employees/:employeeId/terminations` |
+|  | DELETE | `/v1/employees/:employeeId/terminations` |
+
+## CompanyOnboarding components
+
+| Component | Method | Path |
+| --- | --- | --- |
+| **CompanyOnboarding.OnboardingOverview** | GET | `/v1/companies/:companyUuid/onboarding_status` |
+| **CompanyOnboarding.DocumentSigner** | GET | `/v1/companies/:companyId/forms` |
+|  | GET | `/v1/companies/:companyUuid/signatories` |
+|  | GET | `/v1/forms/:formId` |
+|  | GET | `/v1/forms/:formId/pdf` |
+|  | PUT | `/v1/forms/:formId/sign` |
+| **CompanyOnboarding.DocumentList** | GET | `/v1/companies/:companyId/forms` |
+|  | GET | `/v1/companies/:companyUuid/signatories` |
+| **CompanyOnboarding.Industry** | GET | `/v1/companies/:companyId/industry_selection` |
+|  | PUT | `/v1/companies/:companyId/industry_selection` |
+| **CompanyOnboarding.BankAccount** | GET | `/v1/companies/:companyId/bank_accounts` |
+|  | POST | `/v1/companies/:companyId/bank_accounts` |
+|  | PUT | `/v1/companies/:companyId/bank_accounts/:bankAccountUuid/verify` |
+| **CompanyOnboarding.Locations** | GET | `/v1/companies/:companyId/locations` |
+|  | POST | `/v1/companies/:companyId/locations` |
+|  | GET | `/v1/locations/:locationId` |
+|  | PUT | `/v1/locations/:locationId` |
+| **CompanyOnboarding.LocationForm** | POST | `/v1/companies/:companyId/locations` |
+|  | GET | `/v1/locations/:locationId` |
+|  | PUT | `/v1/locations/:locationId` |
+| **CompanyOnboarding.PaySchedule** | GET | `/v1/companies/:companyId/pay_schedules` |
+|  | POST | `/v1/companies/:companyId/pay_schedules` |
+|  | GET | `/v1/companies/:companyId/pay_schedules/:payScheduleId` |
+|  | PUT | `/v1/companies/:companyId/pay_schedules/:payScheduleId` |
+|  | GET | `/v1/companies/:companyId/pay_schedules/preview` |
+|  | GET | `/v1/companies/:companyUuid/payment_configs` |
+| **CompanyOnboarding.FederalTaxes** | GET | `/v1/companies/:companyId/federal_tax_details` |
+|  | PUT | `/v1/companies/:companyId/federal_tax_details` |
+| **CompanyOnboarding.StateTaxes** | GET | `/v1/companies/:companyUuid/tax_requirements` |
+|  | GET | `/v1/companies/:companyUuid/tax_requirements/:state` |
+|  | PUT | `/v1/companies/:companyUuid/tax_requirements/:state` |
+| **CompanyOnboarding.StateTaxesForm** | GET | `/v1/companies/:companyUuid/tax_requirements/:state` |
+|  | PUT | `/v1/companies/:companyUuid/tax_requirements/:state` |
+| **CompanyOnboarding.StateTaxesList** | GET | `/v1/companies/:companyUuid/tax_requirements` |
+| **CompanyOnboarding.AssignSignatory** | GET | `/v1/companies/:companyUuid/signatories` |
+|  | POST | `/v1/companies/:companyUuid/signatories` |
+|  | PUT | `/v1/companies/:companyUuid/signatories/:signatoryUuid` |
+|  | DELETE | `/v1/companies/:companyUuid/signatories/:signatoryUuid` |
+|  | POST | `/v1/companies/:companyUuid/signatories/invite` |
+| **CompanyOnboarding.CreateSignatory** | GET | `/v1/companies/:companyUuid/signatories` |
+|  | POST | `/v1/companies/:companyUuid/signatories` |
+|  | PUT | `/v1/companies/:companyUuid/signatories/:signatoryUuid` |
+|  | DELETE | `/v1/companies/:companyUuid/signatories/:signatoryUuid` |
+| **CompanyOnboarding.InviteSignatory** | GET | `/v1/companies/:companyUuid/signatories` |
+|  | DELETE | `/v1/companies/:companyUuid/signatories/:signatoryUuid` |
+|  | POST | `/v1/companies/:companyUuid/signatories/invite` |
+
+## ContractorOnboarding components
+
+| Component | Method | Path |
+| --- | --- | --- |
+| **ContractorOnboarding.ContractorList** | GET | `/v1/companies/:companyUuid/contractors` |
+|  | DELETE | `/v1/contractors/:contractorUuid` |
+| **ContractorOnboarding.ContractorProfile** | POST | `/v1/companies/:companyUuid/contractors` |
+|  | GET | `/v1/contractors/:contractorUuid` |
+|  | PUT | `/v1/contractors/:contractorUuid` |
+| **ContractorOnboarding.Address** | GET | `/v1/contractors/:contractorUuid` |
+|  | GET | `/v1/contractors/:contractorUuid/address` |
+|  | PUT | `/v1/contractors/:contractorUuid/address` |
+| **ContractorOnboarding.PaymentMethod** | GET | `/v1/contractors/:contractorUuid/bank_accounts` |
+|  | POST | `/v1/contractors/:contractorUuid/bank_accounts` |
+|  | GET | `/v1/contractors/:contractorUuid/payment_method` |
+|  | PUT | `/v1/contractors/:contractorUuid/payment_method` |
+| **ContractorOnboarding.NewHireReport** | GET | `/v1/contractors/:contractorUuid` |
+|  | PUT | `/v1/contractors/:contractorUuid` |
+| **ContractorOnboarding.ContractorSubmit** | GET | `/v1/contractors/:contractorUuid` |
+|  | GET | `/v1/contractors/:contractorUuid/onboarding_status` |
+|  | PUT | `/v1/contractors/:contractorUuid/onboarding_status` |
+
 ## Flows
 
 Flows compose multiple blocks into a single workflow. The endpoint list for a flow is the union of all its block endpoints.
 
 | Flow | Blocks included |
 | --- | --- |
-| **Company.OnboardingFlow** | Company.BankAccount, Company.DocumentSigner, Company.FederalTaxes, Company.Industry, Company.Locations, Company.OnboardingOverview, Company.PaySchedule, Company.StateTaxes, Employee.OnboardingFlow |
+| **Company.OnboardingFlow** | Company.BankAccount, Company.DocumentSigner, Company.FederalTaxes, Company.Industry, Company.Locations, Company.OnboardingOverview, Company.PaySchedule, Company.StateTaxes, EmployeeOnboarding.OnboardingFlow |
+| **CompanyOnboarding.OnboardingFlow** | CompanyOnboarding.BankAccount, CompanyOnboarding.DocumentSigner, CompanyOnboarding.FederalTaxes, CompanyOnboarding.Industry, CompanyOnboarding.Locations, CompanyOnboarding.OnboardingOverview, CompanyOnboarding.PaySchedule, CompanyOnboarding.StateTaxes, EmployeeOnboarding.OnboardingFlow |
 | **Contractor.OnboardingFlow** | Contractor.Address, Contractor.ContractorList, Contractor.ContractorProfile, Contractor.ContractorSubmit, Contractor.NewHireReport, Contractor.PaymentMethod |
 | **Contractor.PaymentFlow** | Contractor.CreatePayment, Contractor.PaymentHistory, Contractor.PaymentStatement, Contractor.PaymentSummary, Contractor.PaymentsList, InformationRequests.InformationRequestsFlow |
-| **Employee.DashboardFlow** | Employee.FederalTaxes, Employee.HomeAddress, Employee.PaymentMethod, Employee.StateTaxes, Employee.WorkAddress |
-| **Employee.OnboardingFlow** | Employee.Compensation, Employee.Deductions, Employee.EmployeeDocuments, Employee.EmployeeList, Employee.FederalTaxes, Employee.OnboardingSummary, Employee.PaymentMethod, Employee.Profile, Employee.StateTaxes |
-| **Employee.SelfOnboardingFlow** | Employee.DocumentSigner, Employee.FederalTaxes, Employee.Landing, Employee.OnboardingSummary, Employee.PaymentMethod, Employee.Profile, Employee.StateTaxes |
+| **ContractorOnboarding.OnboardingFlow** | ContractorOnboarding.Address, ContractorOnboarding.ContractorList, ContractorOnboarding.ContractorProfile, ContractorOnboarding.ContractorSubmit, ContractorOnboarding.NewHireReport, ContractorOnboarding.PaymentMethod |
+| **Employee.DashboardFlow** | Employee.HomeAddress, Employee.PaymentMethod, Employee.WorkAddress, EmployeeManagement.FederalTaxes, EmployeeManagement.Profile, EmployeeManagement.StateTaxes, EmployeeOnboarding.PaymentMethod |
+| **Employee.OnboardingFlow** | Employee.Compensation, Employee.Deductions, Employee.EmployeeDocuments, Employee.EmployeeList, Employee.OnboardingSummary, Employee.PaymentMethod, Employee.Profile, EmployeeOnboarding.FederalTaxes, EmployeeOnboarding.StateTaxes |
+| **Employee.SelfOnboardingFlow** | Employee.DocumentSigner, Employee.Landing, Employee.OnboardingSummary, Employee.PaymentMethod, Employee.Profile, EmployeeOnboarding.FederalTaxes, EmployeeOnboarding.StateTaxes |
 | **Employee.TerminationFlow** | Employee.TerminateEmployee, Employee.TerminationSummary, Payroll.DismissalFlow, Payroll.PayrollLanding |
+| **EmployeeManagement.DashboardFlow** | Employee.HomeAddress, Employee.PaymentMethod, EmployeeManagement.FederalTaxes, EmployeeManagement.Profile, EmployeeManagement.StateTaxes, EmployeeManagement.WorkAddress, EmployeeOnboarding.PaymentMethod |
+| **EmployeeManagement.TerminationFlow** | EmployeeManagement.TerminateEmployee, EmployeeManagement.TerminationSummary, Payroll.DismissalFlow, Payroll.PayrollLanding |
+| **EmployeeOnboarding.OnboardingFlow** | Employee.PaymentMethod, EmployeeManagement.EmployeeDocuments, EmployeeOnboarding.Compensation, EmployeeOnboarding.Deductions, EmployeeOnboarding.EmployeeList, EmployeeOnboarding.FederalTaxes, EmployeeOnboarding.OnboardingSummary, EmployeeOnboarding.Profile, EmployeeOnboarding.StateTaxes |
+| **EmployeeOnboarding.SelfOnboardingFlow** | Employee.PaymentMethod, EmployeeOnboarding.DocumentSigner, EmployeeOnboarding.FederalTaxes, EmployeeOnboarding.Landing, EmployeeOnboarding.OnboardingSummary, EmployeeOnboarding.Profile, EmployeeOnboarding.StateTaxes |
 | **InformationRequests.InformationRequestsFlow** | InformationRequests.InformationRequestForm, InformationRequests.InformationRequestList |
 | **Payroll.DismissalFlow** | Payroll.PayrollExecutionFlow |
 | **Payroll.OffCycleFlow** | Payroll.OffCycleCreation, Payroll.PayrollExecutionFlow |
