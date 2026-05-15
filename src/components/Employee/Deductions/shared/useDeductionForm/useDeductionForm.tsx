@@ -40,16 +40,15 @@ import { SDKInternalError } from '@/types/sdkError'
 
 export type { DeductionFormOptionalFieldsToRequire } from './deductionFormSchema'
 
-const BOOLEAN_RADIO_OPTIONS = [
-  { value: 'true', label: 'true' },
-  { value: 'false', label: 'false' },
-] as const
-
 // GarnishmentType is a runtime enum; the schema gates which values are valid.
 // The hook's `withOptions` entries below carry the raw enum values so the
 // consumer can supply translated labels via `getOptionLabel` on the field.
+//
+// `'child_support'` is intentionally omitted — child-support garnishments
+// require agency-keyed required attributes (case number, order number,
+// remittance number, county) that this hook doesn't model. Use
+// `useChildSupportGarnishmentForm` for those.
 const GARNISHMENT_TYPES: readonly GarnishmentType[] = [
-  'child_support',
   'federal_tax_lien',
   'state_tax_lien',
   'student_loan',
@@ -239,7 +238,6 @@ export function useDeductionForm({
       ? withOptions(baseMetadata.garnishmentType, garnishmentTypeOptions, GARNISHMENT_TYPES)
       : baseMetadata.garnishmentType,
   }
-  void BOOLEAN_RADIO_OPTIONS
 
   const onSubmit = async (): Promise<HookSubmitResult<Garnishment> | undefined> => {
     let submitResult: HookSubmitResult<Garnishment> | undefined
