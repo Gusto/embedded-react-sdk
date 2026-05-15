@@ -119,7 +119,7 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
                     {t('onboardedSelfDescription')}
                   </Components.Text>
                 </Flex>
-                <ActionsLayout justifyContent="center">
+                <ActionsLayout justifyContent={isOnboardingCompleted ? 'center' : 'start'}>
                   <Components.Button
                     variant="secondary"
                     onClick={() => {

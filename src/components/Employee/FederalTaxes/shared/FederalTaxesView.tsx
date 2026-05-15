@@ -54,7 +54,9 @@ export function FederalTaxesView({
                   {alert}
                   <Flex flexDirection="column" gap={32}>
                     <Flex flexDirection="column" gap={4}>
-                      <Components.Heading as="h2">{t('federalTaxesTitle')}</Components.Heading>
+                      <Components.Heading as="h1" styledAs="h2">
+                        {t('federalTaxesTitle')}
+                      </Components.Heading>
                       <Components.Text variant="supporting">
                         <Trans
                           i18nKey="irsCalculator"
