@@ -1,9 +1,16 @@
-import { test, expect } from '../utils/localTestFixture'
-import { waitForLoadingComplete } from '../utils/helpers'
+import { test, expect } from '../../utils/localTestFixture'
+import { waitForLoadingComplete } from '../../utils/helpers'
 
 test.describe('TimeOffFlow', () => {
+  test.beforeEach(({}, testInfo) => {
+    testInfo.annotations.push({
+      type: 'scenario',
+      description: 'time-off/time-off-management',
+    })
+  })
+
   test('loads the time-off flow and displays the policy list', async ({ page }) => {
-    await page.goto('/?flow=time-off&companyId=123')
+    await page.goto('/?flow=time-off')
     await waitForLoadingComplete(page)
 
     await expect(page.getByRole('heading', { name: /time.?off|holiday/i }).first()).toBeVisible({
@@ -21,7 +28,7 @@ test.describe('TimeOffFlow', () => {
 // these against the real flow with local validation.
 test.describe.skip('SelectEmployees - Add employees to time-off policy', () => {
   test('navigates to add employees step and displays employee table', async ({ page }) => {
-    await page.goto('/?flow=time-off&companyId=123')
+    await page.goto('/?flow=time-off')
     await waitForLoadingComplete(page)
 
     const policyLink = page
@@ -49,7 +56,7 @@ test.describe.skip('SelectEmployees - Add employees to time-off policy', () => {
   })
 
   test('employee table renders in table mode (not card mode)', async ({ page }) => {
-    await page.goto('/?flow=time-off&companyId=123')
+    await page.goto('/?flow=time-off')
     await waitForLoadingComplete(page)
 
     const policyLink = page
@@ -72,13 +79,12 @@ test.describe.skip('SelectEmployees - Add employees to time-off policy', () => {
       timeout: 30000,
     })
 
-    // Table mode has column headers; card mode does not
     await expect(page.getByRole('columnheader', { name: /name/i })).toBeVisible()
     await expect(page.getByRole('columnheader', { name: /department/i })).toBeVisible()
   })
 
   test('can search to filter employees', async ({ page }) => {
-    await page.goto('/?flow=time-off&companyId=123')
+    await page.goto('/?flow=time-off')
     await waitForLoadingComplete(page)
 
     const policyLink = page
@@ -106,7 +112,6 @@ test.describe.skip('SelectEmployees - Add employees to time-off policy', () => {
 
     await searchInput.fill('zzz_no_match_expected')
 
-    // Empty state or reduced results
     await expect(
       page.getByText(/no employees found/i).or(page.getByRole('row').nth(1)),
     ).toBeVisible({ timeout: 10000 })
@@ -116,7 +121,7 @@ test.describe.skip('SelectEmployees - Add employees to time-off policy', () => {
   })
 
   test('can select employees and continue', async ({ page }) => {
-    await page.goto('/?flow=time-off&companyId=123')
+    await page.goto('/?flow=time-off')
     await waitForLoadingComplete(page)
 
     const policyLink = page
@@ -139,27 +144,19 @@ test.describe.skip('SelectEmployees - Add employees to time-off policy', () => {
       timeout: 30000,
     })
 
-    // Skip the select-all header checkbox (row 0 is the column header, row 1 is the first employee)
     const firstEmployeeRow = page.getByRole('row').nth(1)
     const firstCheckbox = firstEmployeeRow.getByRole('checkbox')
     await firstCheckbox.check()
     await expect(firstCheckbox).toBeChecked()
 
-    // Continue — should not error
     await page.getByRole('button', { name: /continue/i }).click()
     await waitForLoadingComplete(page)
   })
 })
 
-// Same root cause as the time-off describe above — selector mismatch with the actual UI.
 test.describe.skip('SelectEmployees - Add employees to holiday pay policy', () => {
-  test('navigates to add holiday employees step', async ({ page, localConfig }) => {
-    test.skip(
-      !localConfig.isLocal,
-      'Holiday flow requires real backend — MSW mocks return 404 for the holiday pay policy',
-    )
-
-    await page.goto('/?flow=time-off&companyId=123')
+  test('navigates to add holiday employees step', async ({ page }) => {
+    await page.goto('/?flow=time-off')
     await waitForLoadingComplete(page)
 
     const holidayTab = page
@@ -182,7 +179,6 @@ test.describe.skip('SelectEmployees - Add employees to holiday pay policy', () =
       timeout: 30000,
     })
 
-    // Holiday mode does NOT show the reassignment warning
     await expect(
       page.getByText(/employees can only be enrolled in one time-off policy/i),
     ).not.toBeVisible()
