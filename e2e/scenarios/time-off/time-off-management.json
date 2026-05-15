@@ -23,7 +23,8 @@
         "overrides": {
           "first_name": "Alice",
           "last_name": "TimeOff",
-          "email": "alice-to+{{ts}}@example.com"
+          "email": "alice-to+{{ts}}@example.com",
+          "onboarding_status": "onboarding_completed"
         }
       }
     ]
