@@ -59,7 +59,10 @@
     "paidOutOnTerminationHint": "Choose if unused time off is paid out when an employee leaves. Some states require it by law.",
     "numberOfHoursPlaceholder": "0",
     "numberOfDaysPlaceholder": "0",
-    "continueCta": "Save"
+    "continueCta": "Save",
+    "errors": {
+      "balanceExceedsMaximum": "The balance maximum cannot be lower than an employee's current balance. Reduce the employee's balance first, or increase the maximum."
+    }
   },
   "startingBalances": {
     "title": "Starting balances",

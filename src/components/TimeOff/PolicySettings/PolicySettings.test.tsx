@@ -1,6 +1,7 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { UnprocessableEntityError } from '@gusto/embedded-api/models/errors/unprocessableentityerror'
 import { PolicySettings } from './PolicySettings'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { componentEvents } from '@/shared/constants'
@@ -214,6 +215,49 @@ describe('PolicySettings container', () => {
           expect.objectContaining({ complete: true }),
         )
       })
+    })
+
+    it('shows a friendly error when API returns LIMIT_VIOLATION_MAX_HOURS', async () => {
+      const user = userEvent.setup()
+      mockPolicyData = {
+        ...basePolicyData,
+        accrualMethod: 'per_hour_worked',
+        maxHours: '200',
+      }
+
+      const apiError = new UnprocessableEntityError(
+        {
+          errors: [
+            {
+              errorKey: 'base',
+              category: 'invalid_operation',
+              message: 'LIMIT_VIOLATION_MAX_HOURS',
+            },
+          ],
+        },
+        {
+          response: new Response(null, { status: 422 }),
+          request: new Request('https://example.com'),
+          body: '',
+        },
+      )
+      mockUpdateTimeOffPolicy.mockRejectedValueOnce(apiError)
+
+      renderComponent()
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Save' })).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: 'Save' }))
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(/balance maximum cannot be lower than an employee's current balance/i),
+        ).toBeInTheDocument()
+      })
+
+      expect(screen.queryByText('LIMIT_VIOLATION_MAX_HOURS')).not.toBeInTheDocument()
     })
 
     it('nulls out accrual maximum and waiting period for all_at_once policies', async () => {

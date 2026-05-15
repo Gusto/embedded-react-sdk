@@ -426,6 +426,9 @@ export interface CompanyTimeOffCreateTimeOffPolicy{
 "numberOfHoursPlaceholder":string;
 "numberOfDaysPlaceholder":string;
 "continueCta":string;
+"errors":{
+"balanceExceedsMaximum":string;
+};
 };
 "startingBalances":{
 "title":string;
