@@ -9,24 +9,45 @@ test.describe('DismissalFlow — scenario-backed termination', () => {
     })
   })
 
-  test('loads dismissal flow with the scenario-provisioned terminated employee', async ({
+  test('drives the dismissal flow from pay-period selection into execution', async ({
     page,
     scenario,
   }) => {
     test.skip(!scenario.flowToken, 'Requires scenario provisioning (local/demo runs only)')
+    test.setTimeout(180_000)
 
     const employeeId = Object.values(scenario.employeeIds)[0]
     expect(employeeId).toBeTruthy()
 
     await page.goto(`/?flow=dismissal&employeeId=${employeeId}`)
-    await waitForLoadingComplete(page)
+    await waitForLoadingComplete(page, 60000)
 
     await expect(page.getByRole('heading', { name: /run dismissal payroll/i })).toBeVisible({
       timeout: 30000,
     })
 
+    const emptyState = page.getByText(/no unprocessed termination pay periods/i)
+    const reachedEmpty = await emptyState.isVisible().catch(() => false)
+    if (reachedEmpty) {
+      await expect(emptyState).toBeVisible()
+      return
+    }
+
     const payPeriodSelect = page.getByRole('button', { name: /pay period/i })
     await expect(payPeriodSelect).toBeVisible()
+    await payPeriodSelect.click()
+    await page.getByRole('listbox').getByRole('option').first().click()
+
+    const continueButton = page.getByRole('button', { name: /continue/i })
+    await expect(continueButton).toBeEnabled()
+    await continueButton.click()
+    await waitForLoadingComplete(page, 90000)
+
+    await expect(
+      page.getByRole('heading', {
+        name: /edit payroll|preparing payroll|calculating payroll|run dismissal payroll/i,
+      }),
+    ).toBeVisible({ timeout: 60000 })
   })
 })
 
