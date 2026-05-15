@@ -1,0 +1,28 @@
+{
+  "$schema": "../../schema/scenario.schema.json",
+  "name": "Contractor list with mixed individual + business roster",
+  "description": "Onboarded company with both an individual hourly contractor and a business contractor for list view coverage.",
+  "domain": "contractor",
+  "baseDemo": "react_sdk_demo_company_onboarded",
+  "decorations": {
+    "contractors": [
+      {
+        "key": "individual",
+        "$ref": "../fragments/contractor-1099.json",
+        "overrides": {
+          "first_name": "Charlie",
+          "last_name": "Individual",
+          "email": "charlie-ind+{{ts}}@example.com"
+        }
+      },
+      {
+        "key": "business",
+        "type": "Business",
+        "business_name": "Bright Services Inc",
+        "email": "billing-bright+{{ts}}@example.com",
+        "wage_type": "Fixed"
+      }
+    ]
+  },
+  "expectedContext": ["companyId", "contractorIds.individual", "contractorIds.business"]
+}

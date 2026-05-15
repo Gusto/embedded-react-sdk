@@ -1,0 +1,19 @@
+{
+  "$schema": "../../schema/scenario.schema.json",
+  "name": "Contractor onboarding for a Business contractor",
+  "description": "Onboarded company with a pre-created Business-type contractor so the list view + business profile branch is reachable.",
+  "domain": "contractor",
+  "baseDemo": "react_sdk_demo_company_onboarded",
+  "decorations": {
+    "contractors": [
+      {
+        "key": "acme",
+        "type": "Business",
+        "business_name": "Acme Consulting LLC",
+        "email": "billing-acme+{{ts}}@example.com",
+        "wage_type": "Fixed"
+      }
+    ]
+  },
+  "expectedContext": ["companyId", "contractorIds.acme"]
+}
