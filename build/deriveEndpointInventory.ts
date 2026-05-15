@@ -372,11 +372,7 @@ function discoverFlows(): FlowMapping[] {
   return flows
 }
 
-function deriveFlowBlocks(
-  flowDir: string,
-  blockDirToName: Map<string, string>,
-  blockMappings: BlockMapping[],
-): string[] {
+function deriveFlowBlocks(flowDir: string, blockMappings: BlockMapping[]): string[] {
   const files = walkDir(flowDir)
   const blockNames = new Set<string>()
 
@@ -531,7 +527,7 @@ function deriveInventory(): DerivationResult {
   const flows: Record<string, FlowEntry> = {}
 
   for (const { flowName, flowDir } of flowMappings) {
-    const blockNames = deriveFlowBlocks(flowDir, blockDirToName, blockMappings)
+    const blockNames = deriveFlowBlocks(flowDir, blockMappings)
 
     const endpoints: Endpoint[] = []
     for (const blockName of blockNames) {
@@ -548,17 +544,29 @@ function deriveInventory(): DerivationResult {
     }
   }
 
-  return { inventory: { blocks, flows }, funcLookup }
+  const sortedFlows = Object.fromEntries(
+    Object.entries(flows).sort(([a], [b]) => a.localeCompare(b)),
+  )
+
+  return { inventory: { blocks, flows: sortedFlows }, funcLookup }
 }
+
+const METHOD_RANK: Record<string, number> = { GET: 0, POST: 1, PUT: 2, PATCH: 3, DELETE: 4 }
 
 function deduplicateEndpoints(endpoints: Endpoint[]): Endpoint[] {
   const seen = new Set<string>()
-  return endpoints.filter(ep => {
-    const key = `${ep.method} ${ep.path}`
-    if (seen.has(key)) return false
-    seen.add(key)
-    return true
-  })
+  return endpoints
+    .filter(ep => {
+      const key = `${ep.method} ${ep.path}`
+      if (seen.has(key)) return false
+      seen.add(key)
+      return true
+    })
+    .sort((a, b) => {
+      const pathOrder = a.path.localeCompare(b.path)
+      if (pathOrder !== 0) return pathOrder
+      return (METHOD_RANK[a.method] ?? 99) - (METHOD_RANK[b.method] ?? 99)
+    })
 }
 
 // --- Generate endpoint-reference.md from inventory ---
