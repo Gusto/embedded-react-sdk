@@ -207,9 +207,33 @@ jobs:
       - name: Test with coverage
         run: npm run test:ci
 
+  # Scenarios job: Validate scenario JSON against schema and run scenario unit tests.
+  # E2E jobs depend on this so a broken scenario fails fast (cheap) before Playwright runs (expensive).
+  scenarios:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Restore node_modules cache
+        uses: actions/cache/restore@v5
+        with:
+          path: node_modules
+          key: ${{ needs.setup.outputs.cache-key }}
+
+      - name: Validate scenario JSON
+        run: npm run scenarios:validate
+
+      - name: Run scenario unit tests
+        run: npm run test:scenarios
+
   # E2E job: Run Playwright e2e tests (parallel with other checks)
   e2e:
-    needs: setup
+    needs: [setup, scenarios]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -265,7 +289,7 @@ jobs:
 
   # E2E Demo job: Run Playwright e2e tests against the live demo environment
   e2e-demo:
-    needs: setup
+    needs: [setup, scenarios]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
