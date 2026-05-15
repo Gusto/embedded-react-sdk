@@ -35,25 +35,22 @@ test.describe('PayrollFlow — regular biweekly', () => {
     await expect(tabpanel).toBeVisible({ timeout: 15000 })
   })
 
-  test('renders run-payroll panel content (table or empty/setup state)', async ({ page }) => {
+  test('renders run-payroll panel content (pay period column or blocker surface)', async ({
+    page,
+  }) => {
     await page.goto('/?flow=payroll')
-    await waitForLoadingComplete(page)
+    await waitForLoadingComplete(page, 60000)
 
     await expect(page.getByRole('tab', { name: /run payroll/i })).toBeVisible({ timeout: 30000 })
 
     const tabpanel = page.getByRole('tabpanel')
     await expect(tabpanel).toBeVisible()
 
-    const hasPayPeriodHeader = await page
-      .getByRole('columnheader', { name: /pay period/i })
-      .isVisible()
-      .catch(() => false)
-    const hasBlockerSurface = await page
+    const payPeriodHeader = page.getByRole('columnheader', { name: /pay period/i })
+    const blockerSurface = page
       .getByText(/blocker|action.*required|complete.*setup|view.*blocker/i)
       .first()
-      .isVisible()
-      .catch(() => false)
 
-    expect(hasPayPeriodHeader || hasBlockerSurface || true).toBeTruthy()
+    await expect(payPeriodHeader.or(blockerSurface)).toBeVisible({ timeout: 30000 })
   })
 })

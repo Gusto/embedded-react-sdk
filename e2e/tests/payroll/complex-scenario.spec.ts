@@ -23,9 +23,17 @@ test.describe('PayrollComplexScenarioProvisioning', () => {
     expect(Object.keys(scenario.payrollIds)).toEqual(expect.arrayContaining(['off-cycle-preview']))
 
     await page.goto('/?flow=payroll')
-    await waitForLoadingComplete(page)
+    await waitForLoadingComplete(page, 60000)
 
     await expect(page.getByRole('tab', { name: /run payroll/i })).toBeVisible({ timeout: 30000 })
     await expect(page.getByRole('tab', { name: /payroll history/i })).toBeVisible()
+
+    const historyTab = page.getByRole('tab', { name: /payroll history/i })
+    await historyTab.click()
+    await waitForLoadingComplete(page, 30000)
+    await expect(historyTab).toHaveAttribute('aria-selected', 'true')
+    await expect(page.getByRole('tabpanel', { name: /payroll history/i })).toBeVisible({
+      timeout: 15000,
+    })
   })
 })

@@ -20,9 +20,13 @@ test.describe('PayrollFlow — weekly cadence', () => {
     expect(Object.keys(scenario.employeeIds)).toEqual(expect.arrayContaining(['alice']))
 
     await page.goto('/?flow=payroll')
-    await waitForLoadingComplete(page)
+    await waitForLoadingComplete(page, 60000)
 
     await expect(page.getByRole('tab', { name: /run payroll/i })).toBeVisible({ timeout: 30000 })
     await expect(page.getByRole('tab', { name: /payroll history/i })).toBeVisible()
+
+    const payPeriodHeader = page.getByRole('columnheader', { name: /pay period/i })
+    const blockerSurface = page.getByText(/blocker|action.*required|complete.*setup/i).first()
+    await expect(payPeriodHeader.or(blockerSurface)).toBeVisible({ timeout: 30000 })
   })
 })
