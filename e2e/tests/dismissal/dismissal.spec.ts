@@ -10,9 +10,7 @@ test.describe('DismissalFlow', () => {
   })
 
   test.describe('pay period selection', () => {
-    test('displays the pay period selection page with options and breadcrumb', async ({
-      page,
-    }) => {
+    test('displays the pay period selection page with options and breadcrumb', async ({ page }) => {
       await page.goto('/?flow=dismissal')
 
       await waitForLoadingComplete(page)
@@ -70,9 +68,7 @@ test.describe('DismissalFlow', () => {
     })
 
     test('shows empty state when no termination pay periods exist', async ({ page }) => {
-      await page.goto(
-        '/?flow=dismissal&employeeId=non-existent-employee',
-      )
+      await page.goto('/?flow=dismissal&employeeId=non-existent-employee')
 
       await waitForLoadingComplete(page)
 
