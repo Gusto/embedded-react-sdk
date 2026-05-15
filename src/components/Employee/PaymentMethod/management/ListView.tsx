@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import {
   usePaymentMethodList,
-  type UsePaymentMethodListParams,
   type UsePaymentMethodListReady,
 } from '../shared/usePaymentMethodList'
 import { useDeleteBankAccount } from '../shared/useDeleteBankAccount'
@@ -10,26 +9,23 @@ import { DataView, useDataView } from '@/components/Common'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { BaseLayout } from '@/components/Base/Base'
-import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { componentEvents, PAYMENT_METHODS } from '@/shared/constants'
+import { componentEvents, PAYMENT_METHODS, type EventType } from '@/shared/constants'
+import type { OnEventType } from '@/components/Base/useBase'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 import PercentCircleIcon from '@/assets/icons/percent-circle.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 
-export function ListView({ employeeId, onEvent }: UsePaymentMethodListParams) {
-  const paymentMethodList = usePaymentMethodList({ employeeId, onEvent })
-  const {
-    error: deleteError,
-    setError: setDeleteError,
-    baseSubmitHandler: deleteSubmitHandler,
-  } = useBaseSubmit('PaymentMethodListDelete')
+interface ListViewProps {
+  employeeId: string
+  onEvent: OnEventType<EventType, unknown>
+}
 
-  const errorHandling = composeErrorHandler([paymentMethodList], {
-    submitError: deleteError,
-    setSubmitError: setDeleteError,
-  })
+export function ListView({ employeeId, onEvent }: ListViewProps) {
+  const paymentMethodList = usePaymentMethodList({ employeeId })
+
+  const errorHandling = composeErrorHandler([paymentMethodList])
 
   if (paymentMethodList.isLoading) {
     return <BaseLayout isLoading error={errorHandling.errors} />
@@ -37,29 +33,22 @@ export function ListView({ employeeId, onEvent }: UsePaymentMethodListParams) {
 
   return (
     <ListViewReady
+      employeeId={employeeId}
       onEvent={onEvent}
       paymentMethodList={paymentMethodList}
       errorHandling={errorHandling}
-      deleteSubmitHandler={deleteSubmitHandler}
     />
   )
 }
 
-interface ListViewReadyProps {
-  onEvent: UsePaymentMethodListParams['onEvent']
+interface ListViewReadyProps extends ListViewProps {
   paymentMethodList: UsePaymentMethodListReady
   errorHandling: ReturnType<typeof composeErrorHandler>
-  deleteSubmitHandler: ReturnType<typeof useBaseSubmit>['baseSubmitHandler']
 }
 
-function ListViewReady({
-  onEvent,
-  paymentMethodList,
-  errorHandling,
-  deleteSubmitHandler,
-}: ListViewReadyProps) {
+function ListViewReady({ onEvent, paymentMethodList, errorHandling }: ListViewReadyProps) {
   const { paymentMethod, bankAccounts } = paymentMethodList.data
-  const { deletePendingBankAccountUuid, handleDelete } = paymentMethodList
+  const { deletePendingBankAccountUuid } = paymentMethodList.status
   const { t } = useTranslation('Employee.PaymentMethod')
   const Components = useComponentContext()
 
@@ -69,7 +58,12 @@ function ListViewReady({
     deletedAccountNumber,
     setDeletedAccountNumber,
     handleConfirmDelete,
-  } = useDeleteBankAccount(uuid => deleteSubmitHandler(uuid, handleDelete))
+  } = useDeleteBankAccount(async uuid => {
+    const result = await paymentMethodList.actions.onDelete(uuid)
+    if (result) {
+      onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_DELETED, result.data)
+    }
+  })
 
   const { ...dataViewProps } = useDataView({
     data: bankAccounts,

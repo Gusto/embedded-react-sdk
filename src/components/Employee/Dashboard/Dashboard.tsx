@@ -13,7 +13,6 @@ import { DocumentsView } from './DocumentsView'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/components/Base/Base'
-import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 
@@ -34,7 +33,6 @@ function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
   const compensation = useEmployeeCompensation({ employeeId })
   const taxes = useEmployeeTaxes({ employeeId })
   const forms = useEmployeeForms({ employeeId })
-  const { baseSubmitHandler: deleteSubmitHandler, error: deleteError } = useBaseSubmit()
 
   // Derive the inputs these callbacks depend on up here so all hooks are
   // declared before the early-return below (rules-of-hooks). The data fields
@@ -86,7 +84,6 @@ function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
     ...compensation.errorHandling.errors,
     ...taxes.errorHandling.errors,
     ...forms.errorHandling.errors,
-    ...(deleteError ? [deleteError] : []),
   ]
 
   // Show loading for initial data fetch
@@ -167,7 +164,6 @@ function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
               onEvent={onEvent}
               onEditCompensation={handleEditCompensation}
               onAddDeduction={handleAddDeduction}
-              baseSubmitHandler={deleteSubmitHandler}
             />
           )}
 

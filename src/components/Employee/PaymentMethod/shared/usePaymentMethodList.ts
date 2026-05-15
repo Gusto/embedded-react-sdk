@@ -6,36 +6,27 @@ import { useEmployeePaymentMethodGet } from '@gusto/embedded-api/react-query/emp
 import { useEmployeePaymentMethodUpdateMutation } from '@gusto/embedded-api/react-query/employeePaymentMethodUpdate'
 import { useEffect, useRef } from 'react'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
-import type { HookErrorHandling } from '@/partner-hook-utils/types'
-import type { OnEventType } from '@/components/Base/useBase'
-import { componentEvents, SPLIT_BY, type EventType } from '@/shared/constants'
+import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
+import type { BaseHookReady, HookLoadingResult, HookSubmitResult } from '@/partner-hook-utils/types'
+import { SPLIT_BY } from '@/shared/constants'
 
 export interface UsePaymentMethodListParams {
   employeeId: string
-  onEvent: OnEventType<EventType, unknown>
 }
 
-export interface UsePaymentMethodListLoading {
-  isLoading: true
-  errorHandling: HookErrorHandling
-}
-
-export interface UsePaymentMethodListReady {
-  isLoading: false
-  data: {
-    paymentMethod: EmployeePaymentMethod
-    bankAccounts: EmployeeBankAccount[]
+export interface UsePaymentMethodListReady extends BaseHookReady<
+  { paymentMethod: EmployeePaymentMethod; bankAccounts: EmployeeBankAccount[] },
+  { isFetching: boolean; isPending: boolean; deletePendingBankAccountUuid?: string }
+> {
+  actions: {
+    onDelete: (bankAccountUuid: string) => Promise<HookSubmitResult<unknown> | undefined>
   }
-  errorHandling: HookErrorHandling
-  deletePendingBankAccountUuid: string | undefined
-  handleDelete: (uuid: string) => Promise<void>
 }
 
-export type UsePaymentMethodListResult = UsePaymentMethodListLoading | UsePaymentMethodListReady
+export type UsePaymentMethodListResult = HookLoadingResult | UsePaymentMethodListReady
 
 export function usePaymentMethodList({
   employeeId,
-  onEvent,
 }: UsePaymentMethodListParams): UsePaymentMethodListResult {
   const paymentMethodQuery = useEmployeePaymentMethodGet({ employeeId })
   const bankAccountsQuery = useEmployeePaymentMethodsGetBankAccounts({ employeeId })
@@ -45,6 +36,12 @@ export function usePaymentMethodList({
 
   const deleteBankAccountMutation = useEmployeePaymentMethodDeleteBankAccountMutation()
   const { mutateAsync: mutatePaymentMethod } = useEmployeePaymentMethodUpdateMutation()
+
+  const {
+    baseSubmitHandler,
+    error: submitError,
+    setError: setSubmitError,
+  } = useBaseSubmit('PaymentMethodList')
 
   const normalizingRef = useRef(false)
   // Normalise single-account direct deposit to 100% on mount, skipping if already normalized
@@ -85,13 +82,22 @@ export function usePaymentMethodList({
     }
   }, [employeeId, paymentMethod, mutatePaymentMethod])
 
-  const errorHandling = composeErrorHandler([paymentMethodQuery, bankAccountsQuery])
+  const errorHandling = composeErrorHandler([paymentMethodQuery, bankAccountsQuery], {
+    submitError,
+    setSubmitError,
+  })
 
-  const handleDelete = async (uuid: string) => {
-    const data = await deleteBankAccountMutation.mutateAsync({
-      request: { employeeId, bankAccountUuid: uuid },
+  const onDelete = async (
+    bankAccountUuid: string,
+  ): Promise<HookSubmitResult<unknown> | undefined> => {
+    let submitResult: HookSubmitResult<unknown> | undefined
+    await baseSubmitHandler(bankAccountUuid, async uuid => {
+      const data = await deleteBankAccountMutation.mutateAsync({
+        request: { employeeId, bankAccountUuid: uuid },
+      })
+      submitResult = { mode: 'update', data }
     })
-    onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_DELETED, data)
+    return submitResult
   }
 
   const deletePendingBankAccountUuid = deleteBankAccountMutation.isPending
@@ -110,8 +116,12 @@ export function usePaymentMethodList({
   return {
     isLoading: false,
     data: { paymentMethod, bankAccounts },
+    status: {
+      isFetching: paymentMethodQuery.isFetching || bankAccountsQuery.isFetching,
+      isPending: deleteBankAccountMutation.isPending,
+      deletePendingBankAccountUuid,
+    },
+    actions: { onDelete },
     errorHandling,
-    deletePendingBankAccountUuid,
-    handleDelete,
   }
 }

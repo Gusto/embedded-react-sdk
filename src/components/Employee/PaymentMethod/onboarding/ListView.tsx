@@ -2,7 +2,6 @@ import { useTranslation } from 'react-i18next'
 import { useWatch } from 'react-hook-form'
 import {
   usePaymentMethodList,
-  type UsePaymentMethodListParams,
   type UsePaymentMethodListReady,
 } from '../shared/usePaymentMethodList'
 import {
@@ -16,33 +15,27 @@ import { ActionsLayout, DataView, useDataView } from '@/components/Common'
 import { Form } from '@/components/Common/Form'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { BaseLayout } from '@/components/Base/Base'
-import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { centsToDollars } from '@/helpers/currencyHelpers'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
-import { componentEvents, PAYMENT_METHODS, SPLIT_BY } from '@/shared/constants'
+import { componentEvents, PAYMENT_METHODS, SPLIT_BY, type EventType } from '@/shared/constants'
+import type { OnEventType } from '@/components/Base/useBase'
 import type { RadioGroupProps } from '@/components/Common/UI/RadioGroup/RadioGroupTypes'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 
-export function ListView({
-  employeeId,
-  isAdmin,
-  onEvent,
-}: UsePaymentMethodListParams & { isAdmin: boolean }) {
-  const paymentMethodList = usePaymentMethodList({ employeeId, onEvent })
-  const paymentMethodForm = usePaymentMethodForm({ employeeId })
-  const {
-    error: deleteError,
-    setError: setDeleteError,
-    baseSubmitHandler: deleteSubmitHandler,
-  } = useBaseSubmit('PaymentMethodListDelete')
+interface ListViewProps {
+  employeeId: string
+  isAdmin: boolean
+  onEvent: OnEventType<EventType, unknown>
+}
 
-  const errorHandling = composeErrorHandler([paymentMethodList, paymentMethodForm], {
-    submitError: deleteError,
-    setSubmitError: setDeleteError,
-  })
+export function ListView({ employeeId, isAdmin, onEvent }: ListViewProps) {
+  const paymentMethodList = usePaymentMethodList({ employeeId })
+  const paymentMethodForm = usePaymentMethodForm({ employeeId })
+
+  const errorHandling = composeErrorHandler([paymentMethodList, paymentMethodForm])
 
   if (paymentMethodList.isLoading || paymentMethodForm.isLoading) {
     return <BaseLayout isLoading error={errorHandling.errors} />
@@ -56,17 +49,14 @@ export function ListView({
       paymentMethodList={paymentMethodList}
       paymentMethodForm={paymentMethodForm}
       errorHandling={errorHandling}
-      deleteSubmitHandler={deleteSubmitHandler}
     />
   )
 }
 
-interface ListViewReadyProps extends UsePaymentMethodListParams {
-  isAdmin: boolean
+interface ListViewReadyProps extends ListViewProps {
   paymentMethodList: UsePaymentMethodListReady
   paymentMethodForm: UsePaymentMethodFormReady
   errorHandling: ReturnType<typeof composeErrorHandler>
-  deleteSubmitHandler: ReturnType<typeof useBaseSubmit>['baseSubmitHandler']
 }
 
 function ListViewReady({
@@ -75,10 +65,9 @@ function ListViewReady({
   paymentMethodList,
   paymentMethodForm,
   errorHandling,
-  deleteSubmitHandler,
 }: ListViewReadyProps) {
   const { paymentMethod, bankAccounts } = paymentMethodList.data
-  const { deletePendingBankAccountUuid, handleDelete } = paymentMethodList
+  const { deletePendingBankAccountUuid } = paymentMethodList.status
   const { t } = useTranslation('Employee.PaymentMethod')
   const Components = useComponentContext()
   const format = useNumberFormatter(paymentMethod.splitBy === 'Amount' ? 'currency' : 'percent')
@@ -95,7 +84,12 @@ function ListViewReady({
     deletedAccountNumber,
     setDeletedAccountNumber,
     handleConfirmDelete,
-  } = useDeleteBankAccount(uuid => deleteSubmitHandler(uuid, handleDelete))
+  } = useDeleteBankAccount(async uuid => {
+    const result = await paymentMethodList.actions.onDelete(uuid)
+    if (result) {
+      onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_DELETED, result.data)
+    }
+  })
 
   const { ...dataViewProps } = useDataView({
     data: bankAccounts,
