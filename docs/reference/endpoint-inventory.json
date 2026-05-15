@@ -823,6 +823,10 @@
       "endpoints": [
         {
           "method": "GET",
+          "path": "/v1/payrolls/:payrollId/employees/:employeeId/pay_stub"
+        },
+        {
+          "method": "GET",
           "path": "/v1/employees/:employeeId"
         },
         {
@@ -864,7 +868,8 @@
       ],
       "variables": [
         "employeeId",
-        "employeeUuid"
+        "employeeUuid",
+        "payrollId"
       ]
     },
     "Employee.HomeAddress": {

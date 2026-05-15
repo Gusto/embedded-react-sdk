@@ -13,6 +13,7 @@ import { useFormatPayRate } from '@/helpers/formattedStrings'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 import PercentCircleIcon from '@/assets/icons/percent-circle.svg?react'
+import DownloadCloudIcon from '@/assets/icons/download-cloud.svg?react'
 
 type EmployeePayStub = NonNullable<
   GetV1EmployeesEmployeeUuidPayStubsResponse['employeePayStubsList']
@@ -30,6 +31,8 @@ export interface JobAndPayViewProps {
   onSplitPaycheck?: () => void
   onAddBankAccount?: () => void
   onAddDeduction?: () => void
+  onPaystubDownload?: (payrollUuid: string) => void
+  downloadingPayrollUuids?: ReadonlySet<string>
 }
 
 export function JobAndPayView({
@@ -44,6 +47,8 @@ export function JobAndPayView({
   onSplitPaycheck,
   onAddBankAccount,
   onAddDeduction,
+  onPaystubDownload,
+  downloadingPayrollUuids,
 }: JobAndPayViewProps) {
   const { t } = useTranslation('Employee.Dashboard')
   const Components = useComponentContext()
@@ -153,6 +158,25 @@ export function JobAndPayView({
     data: payStubs,
     columns: payStubsColumns,
     pagination: payStubsPagination,
+    itemMenu: payStub => {
+      const isDownloading =
+        !!payStub.payrollUuid && !!downloadingPayrollUuids?.has(payStub.payrollUuid)
+      return (
+        <Components.ButtonIcon
+          variant="tertiary"
+          aria-label={t('jobAndPay.paystubs.downloadCta')}
+          isDisabled={!payStub.payrollUuid}
+          isLoading={isDownloading}
+          onClick={() => {
+            if (payStub.payrollUuid) {
+              onPaystubDownload?.(payStub.payrollUuid)
+            }
+          }}
+        >
+          <DownloadCloudIcon aria-hidden />
+        </Components.ButtonIcon>
+      )
+    },
     emptyState: () => (
       <EmptyData
         title={t('jobAndPay.paystubs.emptyState.title')}
