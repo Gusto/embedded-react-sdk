@@ -1,23 +1,19 @@
-import { test, expect } from '../utils/localTestFixture'
-import { waitForLoadingComplete } from '../utils/helpers'
+import { test, expect } from '../../utils/localTestFixture'
+import { waitForLoadingComplete } from '../../utils/helpers'
 
 test.describe('DismissalFlow', () => {
-  test.beforeEach(({ localConfig }) => {
-    test.skip(
-      localConfig.isLocal && !localConfig.terminatedEmployeeId,
-      'Dismissal setup failed — no terminated employee available',
-    )
+  test.beforeEach(({}, testInfo) => {
+    testInfo.annotations.push({
+      type: 'scenario',
+      description: 'dismissal/employee-terminated',
+    })
   })
 
   test.describe('pay period selection', () => {
     test('displays the pay period selection page with options and breadcrumb', async ({
       page,
-      localConfig,
     }) => {
-      const companyId = localConfig.isLocal ? localConfig.dismissalCompanyId : '123'
-      await page.goto(
-        `/?flow=dismissal&companyId=${companyId}&employeeId=${localConfig.terminatedEmployeeId}`,
-      )
+      await page.goto('/?flow=dismissal')
 
       await waitForLoadingComplete(page)
 
@@ -36,11 +32,8 @@ test.describe('DismissalFlow', () => {
       await expect(continueButton).toBeVisible()
     })
 
-    test('continue button enables after selecting a pay period', async ({ page, localConfig }) => {
-      const companyId = localConfig.isLocal ? localConfig.dismissalCompanyId : '123'
-      await page.goto(
-        `/?flow=dismissal&companyId=${companyId}&employeeId=${localConfig.terminatedEmployeeId}`,
-      )
+    test('continue button enables after selecting a pay period', async ({ page }) => {
+      await page.goto('/?flow=dismissal')
 
       await waitForLoadingComplete(page)
 
@@ -56,11 +49,8 @@ test.describe('DismissalFlow', () => {
       await expect(continueButton).toBeEnabled()
     })
 
-    test('pay period dropdown contains date ranges', async ({ page, localConfig }) => {
-      const companyId = localConfig.isLocal ? localConfig.dismissalCompanyId : '123'
-      await page.goto(
-        `/?flow=dismissal&companyId=${companyId}&employeeId=${localConfig.terminatedEmployeeId}`,
-      )
+    test('pay period dropdown contains date ranges', async ({ page }) => {
+      await page.goto('/?flow=dismissal')
 
       await waitForLoadingComplete(page)
 
@@ -79,20 +69,9 @@ test.describe('DismissalFlow', () => {
       expect(firstOptionText).toMatch(/\d/)
     })
 
-    test('shows empty state when no termination pay periods exist', async ({
-      page,
-      localConfig,
-    }) => {
-      const companyId = localConfig.isLocal ? localConfig.dismissalCompanyId : '123'
-      // For real API: uses an employee from the primary company who has no termination pay
-      // periods in the dismissal company, producing an empty filtered result.
-      // For mocks: uses a nonexistent ID so the mock returns no matching periods.
-      const nonTerminatedEmployeeId = localConfig.isLocal
-        ? localConfig.employeeId
-        : 'non-existent-employee'
-
+    test('shows empty state when no termination pay periods exist', async ({ page }) => {
       await page.goto(
-        `/?flow=dismissal&companyId=${companyId}&employeeId=${nonTerminatedEmployeeId}`,
+        '/?flow=dismissal&employeeId=non-existent-employee',
       )
 
       await waitForLoadingComplete(page)
@@ -106,16 +85,8 @@ test.describe('DismissalFlow', () => {
   })
 
   test.describe('full payroll execution', () => {
-    test('transitions from pay period selection to edit payroll', async ({ page, localConfig }) => {
-      test.skip(
-        localConfig.isLocal,
-        'Covered by the full execution test; real API has limited pay periods',
-      )
-
-      await page.goto(
-        `/?flow=dismissal&companyId=123&employeeId=${localConfig.terminatedEmployeeId}`,
-      )
-      // This test is skipped for real API, so companyId=123 is fine (MSW only)
+    test('transitions from pay period selection to edit payroll', async ({ page }) => {
+      await page.goto('/?flow=dismissal')
       await waitForLoadingComplete(page)
 
       await expect(page.getByRole('heading', { name: /run dismissal payroll/i })).toBeVisible({

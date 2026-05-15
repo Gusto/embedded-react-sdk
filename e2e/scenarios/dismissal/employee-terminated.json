@@ -1,0 +1,36 @@
+{
+  "$schema": "../../schema/scenario.schema.json",
+  "name": "Employee terminated for dismissal flow",
+  "description": "Company with a terminated employee for testing dismissal flow.",
+  "domain": "dismissal",
+  "baseDemo": "react_sdk_demo_company_onboarded",
+  "decorations": {
+    "locations": [
+      {
+        "key": "hq",
+        "street_1": "400 Test Rd",
+        "city": "San Francisco",
+        "state": "CA",
+        "zip": "94105",
+        "filing_address": true,
+        "mailing_address": true
+      }
+    ],
+    "employees": [
+      {
+        "key": "terminated-emp",
+        "$ref": "../fragments/w2-salaried-employee.json",
+        "overrides": {
+          "first_name": "Diana",
+          "last_name": "Dismissed",
+          "email": "diana-dismiss+{{ts}}@example.com",
+          "termination": {
+            "effective_date": "{{relative:+30d}}",
+            "run_termination_payroll": true
+          }
+        }
+      }
+    ]
+  },
+  "expectedContext": ["companyId", "employeeIds.terminated-emp"]
+}
