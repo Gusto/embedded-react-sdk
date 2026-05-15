@@ -187,9 +187,15 @@ async function decorateEmployees(
       const onboardingStatus =
         emp.onboarding_status === 'completed' ? 'onboarding_completed' : emp.onboarding_status
       log(`  Setting onboarding status for ${emp.key}: ${emp.onboarding_status}`)
-      await api.put(`/employees/${uuid}/onboarding_status`, {
-        onboarding_status: onboardingStatus,
-      })
+      try {
+        await api.put(`/employees/${uuid}/onboarding_status`, {
+          onboarding_status: onboardingStatus,
+        })
+      } catch (error) {
+        log(
+          `  Skipping onboarding status update for ${emp.key}; API rejected status (${String(error)})`,
+        )
+      }
     }
 
     if (emp.termination) {
