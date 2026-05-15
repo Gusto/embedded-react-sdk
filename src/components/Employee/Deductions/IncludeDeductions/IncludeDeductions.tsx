@@ -30,9 +30,9 @@ export function IncludeDeductions({ className, onAdd, onContinue }: IncludeDeduc
 
         <section className={styles.emptyStateContainer}>
           <Flex flexDirection="column" gap={16} justifyContent="center" alignItems="center">
-            <section className={styles.coinHandsIconContainer}>
+            <div className={styles.coinHandsIconContainer}>
               <CoinsHandsIcon width={24} height={24} />
-            </section>
+            </div>
             <Components.Text weight="bold">{t('includeDeductionsEmptyState')}</Components.Text>
             <Components.Button
               type="button"
