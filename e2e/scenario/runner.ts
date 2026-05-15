@@ -84,14 +84,9 @@ async function decorateLocations(
       state: loc.state,
       zip: loc.zip,
       phone_number: '4155551234',
+      ...(loc.filing_address ? { filing_address: true } : {}),
+      ...(loc.mailing_address ? { mailing_address: true } : {}),
     })
-
-    if (loc.filing_address || loc.mailing_address) {
-      await api.put(`/companies/${companyId}/locations/${created.uuid}`, {
-        ...(loc.filing_address ? { filing_address: true } : {}),
-        ...(loc.mailing_address ? { mailing_address: true } : {}),
-      })
-    }
 
     locationIds[loc.key] = created.uuid
   }
@@ -218,6 +213,10 @@ async function decorateContractors(
   for (const contractor of contractors) {
     if ('$ref' in contractor) continue
     log(`Creating contractor: ${contractor.key}`)
+    const startDate =
+      'start_date' in contractor && typeof contractor.start_date === 'string'
+        ? contractor.start_date
+        : new Date().toISOString().split('T')[0]
 
     const created = await api.post<{ uuid: string }>(`/companies/${companyId}/contractors`, {
       type: contractor.type,
@@ -227,6 +226,7 @@ async function decorateContractors(
       ...(contractor.email ? { email: contractor.email } : {}),
       ...(contractor.wage_type ? { wage_type: contractor.wage_type } : {}),
       ...(contractor.hourly_rate ? { hourly_rate: contractor.hourly_rate } : {}),
+      start_date: startDate,
     })
 
     contractorIds[contractor.key] = created.uuid
