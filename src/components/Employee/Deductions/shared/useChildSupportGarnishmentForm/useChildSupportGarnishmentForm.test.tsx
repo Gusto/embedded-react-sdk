@@ -300,4 +300,118 @@ describe('useChildSupportGarnishmentForm', () => {
       })
     })
   })
+
+  describe('update mode', () => {
+    // Snake-case Garnishment with the nested child_support shape the SDK
+    // produces. The list query returns this; useChildSupportGarnishmentForm
+    // finds the row by garnishmentId and pre-populates the form.
+    const existingChildSupport = {
+      uuid: 'existing-cs',
+      version: 'v-existing-cs',
+      active: true,
+      amount: '50',
+      description: 'Child Support - AK-OLD',
+      recurring: true,
+      deduct_as_percentage: true,
+      court_ordered: true,
+      times: null,
+      annual_maximum: null,
+      pay_period_maximum: '400',
+      total_amount: null,
+      garnishment_type: 'child_support',
+      child_support: {
+        state: 'AK',
+        fips_code: '02-AK',
+        case_number: 'AK-OLD',
+        order_number: null,
+        remittance_number: null,
+        payment_period: 'Monthly',
+      },
+    }
+
+    const stubList = (garnishments: Array<typeof existingChildSupport>) => {
+      server.use(
+        http.get(`${API_BASE_URL}/v1/employees/:employee_id/garnishments`, () =>
+          HttpResponse.json(garnishments),
+        ),
+      )
+    }
+
+    it('pre-populates the form from the loaded garnishment and PUTs with version', async () => {
+      stubList([existingChildSupport])
+
+      let updatePath: string | null = null
+      let updateBody: Record<string, unknown> | null = null
+      const updateResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+        updatePath = new URL(request.url).pathname
+        updateBody = (await request.json()) as Record<string, unknown>
+        return HttpResponse.json({
+          ...existingChildSupport,
+          pay_period_maximum: '600',
+          child_support: {
+            ...existingChildSupport.child_support,
+            case_number: 'AK-NEW',
+          },
+        })
+      })
+      server.use(http.put(`${API_BASE_URL}/v1/garnishments/:garnishment_id`, updateResolver))
+
+      const { result } = renderHook(
+        () =>
+          useChildSupportGarnishmentForm({
+            employeeId: 'employee-123',
+            garnishmentId: 'existing-cs',
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      const ready = await waitForReady(() => result.current)
+      // status mode reflects update
+      expect(ready.status.mode).toBe('update')
+      expect(ready.data.deduction?.uuid).toBe('existing-cs')
+
+      // Form should be pre-populated with state='AK' AND the loaded case_number
+      // (this is the regression locked down by the previousWatchedStateRef
+      // guard — without it, the wipe-on-state-change effect would have fired
+      // during initial sync and blanked these values).
+      const fm = ready.form.hookFormInternals.formMethods
+      expect(fm.getValues('state')).toBe('AK')
+      expect(fm.getValues('caseNumber')).toBe('AK-OLD')
+      expect(fm.getValues('payPeriodMaximum')).toBe(400)
+      expect(fm.getValues('paymentPeriod')).toBe('Monthly')
+
+      // Mutate one field and submit
+      act(() => {
+        fm.setValue('caseNumber', 'AK-NEW')
+        fm.setValue('payPeriodMaximum', 600)
+      })
+
+      let submitResult
+      await act(async () => {
+        const r = result.current
+        assertReady(r)
+        submitResult = await r.actions.onSubmit()
+      })
+
+      expect(updateResolver).toHaveBeenCalledTimes(1)
+      expect(updatePath).toBe('/v1/garnishments/existing-cs')
+      expect(updateBody).toMatchObject({
+        version: 'v-existing-cs',
+        active: true,
+        court_ordered: true,
+        garnishment_type: 'child_support',
+        recurring: true,
+        deduct_as_percentage: true,
+        pay_period_maximum: '600',
+        child_support: {
+          state: 'AK',
+          case_number: 'AK-NEW',
+        },
+      })
+      expect(submitResult).toMatchObject({
+        mode: 'update',
+        data: { uuid: 'existing-cs' },
+      })
+    })
+  })
 })
