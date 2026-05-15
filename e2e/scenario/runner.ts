@@ -348,10 +348,21 @@ async function decoratePayrolls(
     let payrollUuid: string
 
     if (payroll.type === 'off_cycle') {
-      const created = await api.post<{ uuid: string }>(`/companies/${companyId}/payrolls`, {
+      const payload: Record<string, unknown> = {
         check_date: payroll.check_date,
         off_cycle: true,
         off_cycle_reason: 'Bonus',
+      }
+      const startDate =
+        typeof payroll['start_date'] === 'string' ? (payroll['start_date'] as string) : undefined
+      const endDate =
+        typeof payroll['end_date'] === 'string' ? (payroll['end_date'] as string) : undefined
+      const defaultRangeDate = payroll.check_date ?? new Date().toISOString().slice(0, 10)
+      payload.start_date = startDate ?? defaultRangeDate
+      payload.end_date = endDate ?? defaultRangeDate
+
+      const created = await api.post<{ uuid: string }>(`/companies/${companyId}/payrolls`, {
+        ...payload,
       })
       payrollUuid = created.uuid
     } else {
