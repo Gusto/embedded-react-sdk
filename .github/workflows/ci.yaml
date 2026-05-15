@@ -238,7 +238,7 @@ jobs:
         # Local and CI environments may have subtle differences
         continue-on-error: true
         run: npm run test:visual:ci
-        
+
       - name: Regenerate mismatched baselines
         # If tests failed, regenerate baselines to match CI environment
         if: failure() && steps.visual-tests.outcome == 'failure'
