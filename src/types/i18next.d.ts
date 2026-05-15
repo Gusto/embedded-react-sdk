@@ -1522,6 +1522,11 @@ export interface EmployeeDashboard{
 "yes":string;
 "no":string;
 };
+"alerts":{
+"bankAccountAdded":string;
+"bankAccountDeleted":string;
+"splitUpdated":string;
+};
 };
 export interface EmployeeDeductions{
 "pageTitle":string;
@@ -2006,6 +2011,13 @@ export interface EmployeePaymentMethod{
 "checkDescriptionSelf":string;
 "checkLabel":string;
 "deleteBankAccountCta":string;
+"deleteBankAccountDialog":{
+"title":string;
+"description":string;
+"confirmCta":string;
+"cancelCta":string;
+};
+"deleteBankAccountSuccessAlert":string;
 "directDepositDescription":string;
 "directDepositDescriptionSelf":string;
 "directDepositLabel":string;
@@ -2032,6 +2044,10 @@ export interface EmployeePaymentMethod{
 "priority_two":string;
 "priority_few":string;
 "priority_other":string;
+"managementTitle":string;
+"paymentMethodLabel":string;
+"bankFormSuccessAlert":string;
+"splitViewSuccessAlert":string;
 "validations":{
 "percentageError":string;
 "percentageErrorWithTotal":string;

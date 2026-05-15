@@ -56,14 +56,6 @@ function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
     onEvent(componentEvents.EMPLOYEE_COMPENSATION_UPDATE, { employeeId, job: primaryJob })
   }, [onEvent, employeeId, primaryJob])
 
-  const handleSplitPaycheck = useCallback(() => {
-    onEvent(componentEvents.EMPLOYEE_SPLIT_PAYCHECK, { employeeId })
-  }, [onEvent, employeeId])
-
-  const handleAddBankAccount = useCallback(() => {
-    onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATE, { employeeId })
-  }, [onEvent, employeeId])
-
   const handleAddDeduction = useCallback(() => {
     onEvent(componentEvents.EMPLOYEE_DEDUCTION_ADD, { employeeId })
   }, [onEvent, employeeId])
@@ -100,7 +92,7 @@ function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
   }
 
   const { employee, currentHomeAddress, currentWorkAddress } = basicDetails.data
-  const { employeePaymentMethod, bankAccounts, garnishmentList, payStubs } = compensation.data
+  const { garnishmentList, payStubs } = compensation.data
   const { employeeStateTaxesList } = taxes.data
   const { formList } = forms.data
 
@@ -163,16 +155,14 @@ function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
 
           {selectedTab === 'jobAndPay' && (
             <JobAndPayView
+              employeeId={employeeId}
               job={primaryJob}
-              paymentMethod={employeePaymentMethod}
-              bankAccounts={bankAccounts}
               garnishments={garnishmentList}
               payStubs={payStubs}
               payStubsPagination={payStubsPagination}
               isLoading={isLoadingJobAndPay}
+              onEvent={onEvent}
               onEditCompensation={handleEditCompensation}
-              onSplitPaycheck={handleSplitPaycheck}
-              onAddBankAccount={handleAddBankAccount}
               onAddDeduction={handleAddDeduction}
             />
           )}
