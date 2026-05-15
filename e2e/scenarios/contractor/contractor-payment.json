@@ -9,7 +9,11 @@
       {
         "key": "contractor-1",
         "$ref": "../fragments/contractor-1099.json",
-        "overrides": { "first_name": "Charlie", "last_name": "Contractor", "email": "charlie+{{ts}}@example.com" }
+        "overrides": {
+          "first_name": "Charlie",
+          "last_name": "Contractor",
+          "email": "charlie+{{ts}}@example.com"
+        }
       }
     ]
   },
