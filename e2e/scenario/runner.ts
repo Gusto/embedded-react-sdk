@@ -184,9 +184,11 @@ async function decorateEmployees(
     }
 
     if (emp.onboarding_status) {
+      const onboardingStatus =
+        emp.onboarding_status === 'completed' ? 'onboarding_completed' : emp.onboarding_status
       log(`  Setting onboarding status for ${emp.key}: ${emp.onboarding_status}`)
       await api.put(`/employees/${uuid}/onboarding_status`, {
-        onboarding_status: emp.onboarding_status,
+        onboarding_status: onboardingStatus,
       })
     }
 
