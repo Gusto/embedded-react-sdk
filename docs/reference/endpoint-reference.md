@@ -92,6 +92,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | POST | `/v1/companies/:companyId/contractor_payment_groups` |
 |  | POST | `/v1/companies/:companyId/contractor_payment_groups/preview` |
 |  | GET | `/v1/companies/:companyUuid/contractors` |
+|  | GET | `/v1/companies/:companyUuid/payment_configs` |
 | **Contractor.PaymentHistory** | DELETE | `/v1/companies/:companyId/contractor_payments/:contractorPaymentId` |
 |  | GET | `/v1/companies/:companyUuid/contractors` |
 |  | GET | `/v1/contractor_payment_groups/:contractorPaymentGroupUuid` |
@@ -214,13 +215,18 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | `/v1/companies/:companyUuid/payrolls/blockers` |
 |  | GET | `/v1/employees/:employeeId` |
 |  | POST | `/v1/payrolls/:payrollUuid/gross_up` |
-| **Payroll.PayrollEditEmployee** | PUT | `/v1/companies/:companyId/payrolls/:payrollId` |
+| **Payroll.PayrollEditEmployee** | GET | `/v1/companies/:companyId/pay_schedules/:payScheduleId` |
+|  | PUT | `/v1/companies/:companyId/payrolls/:payrollId` |
+|  | PUT | `/v1/companies/:companyId/payrolls/:payrollId/prepare` |
 |  | GET | `/v1/employees/:employeeId` |
 |  | GET | `/v1/employees/:employeeId/bank_accounts` |
 | **Payroll.PayrollHistory** | GET | `/v1/companies/:companyId/payrolls` |
 |  | PUT | `/v1/companies/:companyId/payrolls/:payrollId/cancel` |
 |  | GET | `/v1/companies/:companyUuid/wire_in_requests` |
-| **Payroll.PayrollLanding** | GET | `/v1/companies/:companyUuid/payrolls/blockers` |
+| **Payroll.PayrollLanding** | GET | `/v1/companies/:companyId/pay_periods` |
+|  | GET | `/v1/companies/:companyId/pay_schedules` |
+|  | GET | `/v1/companies/:companyUuid/payrolls/blockers` |
+|  | POST | `/v1/companies/:companyUuid/payrolls/skip` |
 |  | GET | `/v1/companies/:companyUuid/wire_in_requests` |
 | **Payroll.PayrollList** | GET | `/v1/companies/:companyId/pay_schedules` |
 |  | GET | `/v1/companies/:companyId/payrolls` |
@@ -233,6 +239,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | `/v1/companies/:companyId/payrolls/:payrollId` |
 |  | PUT | `/v1/companies/:companyId/payrolls/:payrollId/cancel` |
 |  | PUT | `/v1/companies/:companyId/payrolls/:payrollId/submit` |
+|  | GET | `/v1/companies/:companyUuid/payment_configs` |
 |  | GET | `/v1/payrolls/:payrollId/employees/:employeeId/pay_stub` |
 |  | GET | `/v1/wire_in_requests/:wireInRequestUuid` |
 | **Payroll.PayrollFlow** | GET | `/v1/companies/:companyId/payrolls` |
@@ -249,6 +256,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | `/v1/recovery_cases/:recoveryCaseUuid/redebit` |
 | **Payroll.OffCycleCreation** | GET | `/v1/companies/:companyId/employees` |
 |  | POST | `/v1/companies/:companyId/payrolls` |
+|  | GET | `/v1/companies/:companyUuid/payment_configs` |
 | **Payroll.OffCycleFlow** | GET | `/v1/companies/:companyId/payrolls/:payrollId` |
 | **Payroll.DismissalFlow** | GET | `/v1/companies/:companyId/pay_periods/unprocessed_termination_pay_periods` |
 |  | POST | `/v1/companies/:companyId/payrolls` |
@@ -256,6 +264,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 | **Payroll.TransitionFlow** | GET | `/v1/companies/:companyId/payrolls/:payrollId` |
 | **Payroll.TransitionCreation** | GET | `/v1/companies/:companyId/pay_schedules` |
 |  | POST | `/v1/companies/:companyId/payrolls` |
+|  | GET | `/v1/companies/:companyUuid/payment_configs` |
 
 ## TimeOff components
 
@@ -263,160 +272,39 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 | --- | --- | --- |
 | **TimeOff.PolicyList** | GET | `/v1/companies/:companyId/employees` |
 |  | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy` |
 |  | DELETE | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/add` |
-|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
 |  | GET | `/v1/companies/:companyUuid/time_off_policies` |
-|  | POST | `/v1/companies/:companyUuid/time_off_policies` |
-|  | GET | `/v1/time_off_policies/:timeOffPolicyUuid` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/add_employees` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/balance` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/deactivate` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/remove_employees` |
-| **TimeOff.PolicyTypeSelector** | GET | `/v1/companies/:companyId/employees` |
-|  | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | DELETE | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/add` |
-|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
-|  | GET | `/v1/companies/:companyUuid/time_off_policies` |
-|  | POST | `/v1/companies/:companyUuid/time_off_policies` |
-|  | GET | `/v1/time_off_policies/:timeOffPolicyUuid` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/add_employees` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/balance` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/deactivate` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/remove_employees` |
+| **TimeOff.PolicyTypeSelector** | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
 | **TimeOff.PolicyConfigurationForm** | POST | `/v1/companies/:companyUuid/time_off_policies` |
 |  | GET | `/v1/time_off_policies/:timeOffPolicyUuid` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid` |
-| **TimeOff.PolicySettingsPresentation** | GET | `/v1/companies/:companyId/employees` |
-|  | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | DELETE | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/add` |
-|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
-|  | GET | `/v1/companies/:companyUuid/time_off_policies` |
-|  | POST | `/v1/companies/:companyUuid/time_off_policies` |
-|  | GET | `/v1/time_off_policies/:timeOffPolicyUuid` |
+| **TimeOff.PolicySettings** | GET | `/v1/time_off_policies/:timeOffPolicyUuid` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/add_employees` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/balance` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/deactivate` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/remove_employees` |
 | **TimeOff.AddEmployeesToPolicy** | GET | `/v1/companies/:companyId/employees` |
-|  | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | DELETE | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/add` |
-|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
-|  | GET | `/v1/companies/:companyUuid/time_off_policies` |
-|  | POST | `/v1/companies/:companyUuid/time_off_policies` |
 |  | GET | `/v1/time_off_policies/:timeOffPolicyUuid` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/add_employees` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/balance` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/deactivate` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/remove_employees` |
-| **TimeOff.HolidaySelectionForm** | GET | `/v1/companies/:companyId/employees` |
-|  | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
+| **TimeOff.HolidaySelectionForm** | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
 |  | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
 |  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | DELETE | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/add` |
-|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
-|  | GET | `/v1/companies/:companyUuid/time_off_policies` |
-|  | POST | `/v1/companies/:companyUuid/time_off_policies` |
-|  | GET | `/v1/time_off_policies/:timeOffPolicyUuid` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/add_employees` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/balance` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/deactivate` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/remove_employees` |
 | **TimeOff.AddEmployeesHoliday** | GET | `/v1/companies/:companyId/employees` |
 |  | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | DELETE | `/v1/companies/:companyUuid/holiday_pay_policy` |
 |  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/add` |
 |  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
-|  | GET | `/v1/companies/:companyUuid/time_off_policies` |
-|  | POST | `/v1/companies/:companyUuid/time_off_policies` |
-|  | GET | `/v1/time_off_policies/:timeOffPolicyUuid` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/add_employees` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/balance` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/deactivate` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/remove_employees` |
 | **TimeOff.ViewHolidayEmployees** | GET | `/v1/companies/:companyId/employees` |
 |  | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | DELETE | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/add` |
 |  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
-|  | GET | `/v1/companies/:companyUuid/time_off_policies` |
-|  | POST | `/v1/companies/:companyUuid/time_off_policies` |
-|  | GET | `/v1/time_off_policies/:timeOffPolicyUuid` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/add_employees` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/balance` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/deactivate` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/remove_employees` |
 | **TimeOff.ViewHolidayPolicyDetails** | GET | `/v1/companies/:companyId/employees` |
 |  | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | DELETE | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/add` |
 |  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
-|  | GET | `/v1/companies/:companyUuid/time_off_policies` |
-|  | POST | `/v1/companies/:companyUuid/time_off_policies` |
-|  | GET | `/v1/time_off_policies/:timeOffPolicyUuid` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/add_employees` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/balance` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/deactivate` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/remove_employees` |
 | **TimeOff.ViewHolidaySchedule** | GET | `/v1/companies/:companyId/employees` |
 |  | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | DELETE | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/add` |
 |  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
-|  | GET | `/v1/companies/:companyUuid/time_off_policies` |
-|  | POST | `/v1/companies/:companyUuid/time_off_policies` |
-|  | GET | `/v1/time_off_policies/:timeOffPolicyUuid` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/add_employees` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/balance` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/deactivate` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/remove_employees` |
 | **TimeOff.TimeOffPolicyDetailPresentation** | GET | `/v1/companies/:companyId/employees` |
 |  | GET | `/v1/time_off_policies/:timeOffPolicyUuid` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/balance` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/remove_employees` |
-| **TimeOff.TimeOffFlow** | GET | `/v1/companies/:companyId/employees` |
-|  | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | DELETE | `/v1/companies/:companyUuid/holiday_pay_policy` |
-|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/add` |
-|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
-|  | GET | `/v1/companies/:companyUuid/time_off_policies` |
-|  | POST | `/v1/companies/:companyUuid/time_off_policies` |
-|  | GET | `/v1/time_off_policies/:timeOffPolicyUuid` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/add_employees` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/balance` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/deactivate` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/remove_employees` |
 
 ## Flows
@@ -425,12 +313,17 @@ Flows compose multiple blocks into a single workflow. The endpoint list for a fl
 
 | Flow | Blocks included |
 | --- | --- |
-| **Company.OnboardingFlow** | Company.BankAccount, Company.DocumentSigner, Company.FederalTaxes, Company.Industry, Company.Locations, Company.OnboardingFlow, Company.OnboardingOverview, Company.PaySchedule, Company.StateTaxes, Employee.OnboardingFlow |
-| **Contractor.OnboardingFlow** | Contractor.Address, Contractor.ContractorList, Contractor.ContractorProfile, Contractor.ContractorSubmit, Contractor.NewHireReport, Contractor.OnboardingFlow, Contractor.PaymentMethod |
-| **Contractor.Payments.PaymentFlow** | Contractor.CreatePayment, Contractor.PaymentFlow, Contractor.PaymentHistory, Contractor.PaymentStatement, Contractor.PaymentSummary, Contractor.PaymentsList, InformationRequests.InformationRequestsFlow |
-| **Employee.OnboardingFlow** | Employee.Compensation, Employee.Deductions, Employee.EmployeeDocuments, Employee.EmployeeList, Employee.FederalTaxes, Employee.OnboardingFlow, Employee.OnboardingSummary, Employee.PaymentMethod, Employee.Profile, Employee.StateTaxes |
-| **Employee.SelfOnboardingFlow** | Employee.DocumentSigner, Employee.FederalTaxes, Employee.Landing, Employee.OnboardingSummary, Employee.PaymentMethod, Employee.Profile, Employee.SelfOnboardingFlow, Employee.StateTaxes |
-| **Employee.Terminations.TerminationFlow** | Employee.TerminateEmployee, Employee.TerminationFlow, Employee.TerminationSummary, Payroll.DismissalFlow, Payroll.PayrollLanding |
+| **Company.OnboardingFlow** | Company.BankAccount, Company.DocumentSigner, Company.FederalTaxes, Company.Industry, Company.Locations, Company.OnboardingOverview, Company.PaySchedule, Company.StateTaxes, Employee.OnboardingFlow |
+| **Contractor.OnboardingFlow** | Contractor.Address, Contractor.ContractorList, Contractor.ContractorProfile, Contractor.ContractorSubmit, Contractor.NewHireReport, Contractor.PaymentMethod |
+| **Contractor.PaymentFlow** | Contractor.CreatePayment, Contractor.PaymentHistory, Contractor.PaymentStatement, Contractor.PaymentSummary, Contractor.PaymentsList, InformationRequests.InformationRequestsFlow |
+| **Employee.DashboardFlow** | Employee.FederalTaxes, Employee.HomeAddress, Employee.PaymentMethod, Employee.StateTaxes, Employee.WorkAddress |
+| **Employee.OnboardingFlow** | Employee.Compensation, Employee.Deductions, Employee.EmployeeDocuments, Employee.EmployeeList, Employee.FederalTaxes, Employee.OnboardingSummary, Employee.PaymentMethod, Employee.Profile, Employee.StateTaxes |
+| **Employee.SelfOnboardingFlow** | Employee.DocumentSigner, Employee.FederalTaxes, Employee.Landing, Employee.OnboardingSummary, Employee.PaymentMethod, Employee.Profile, Employee.StateTaxes |
+| **Employee.TerminationFlow** | Employee.TerminateEmployee, Employee.TerminationSummary, Payroll.DismissalFlow, Payroll.PayrollLanding |
+| **InformationRequests.InformationRequestsFlow** | InformationRequests.InformationRequestForm, InformationRequests.InformationRequestList |
+| **Payroll.DismissalFlow** | Payroll.PayrollExecutionFlow |
+| **Payroll.OffCycleFlow** | Payroll.OffCycleCreation, Payroll.PayrollExecutionFlow |
 | **Payroll.PayrollExecutionFlow** | Payroll.PayrollFlow |
-| **Payroll.PayrollFlow** | Payroll.OffCycleFlow, Payroll.PayrollBlockerList, Payroll.PayrollConfiguration, Payroll.PayrollEditEmployee, Payroll.PayrollFlow, Payroll.PayrollLanding, Payroll.PayrollOverview, Payroll.PayrollReceipts, Payroll.TransitionFlow |
-| **TimeOff.TimeOffFlow** | TimeOff.PolicyConfigurationForm, TimeOff.TimeOffPolicyDetailPresentation |
+| **Payroll.PayrollFlow** | Payroll.OffCycleFlow, Payroll.PayrollBlockerList, Payroll.PayrollConfiguration, Payroll.PayrollEditEmployee, Payroll.PayrollExecutionFlow, Payroll.PayrollLanding, Payroll.PayrollOverview, Payroll.PayrollReceipts, Payroll.TransitionFlow |
+| **Payroll.TransitionFlow** | Payroll.PayrollExecutionFlow, Payroll.TransitionCreation |
+| **TimeOff.TimeOffFlow** | TimeOff.AddEmployeesHoliday, TimeOff.AddEmployeesToPolicy, TimeOff.HolidaySelectionForm, TimeOff.PolicyConfigurationForm, TimeOff.PolicyList, TimeOff.PolicySettings, TimeOff.PolicyTypeSelector, TimeOff.TimeOffPolicyDetailPresentation, TimeOff.ViewHolidayEmployees, TimeOff.ViewHolidaySchedule |
