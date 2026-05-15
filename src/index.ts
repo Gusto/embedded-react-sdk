@@ -285,7 +285,7 @@ export {
   MAX_PREPARERS,
   PREPARER_FIELDS_BY_INDEX,
   preparerFieldName,
-} from '@/components/Employee/Documents/onboarding/DocumentSigner/shared/useSignEmployeeForm'
+} from '@/components/Employee/Documents/shared/useSignEmployeeForm'
 export type {
   UseSignEmployeeFormProps,
   UseSignEmployeeFormResult,
@@ -306,7 +306,7 @@ export type {
   UsedPreparerFieldProps,
   PreparerTextFieldProps,
   PreparerCheckboxFieldProps,
-} from '@/components/Employee/Documents/onboarding/DocumentSigner/shared/useSignEmployeeForm'
+} from '@/components/Employee/Documents/shared/useSignEmployeeForm'
 
 // Domain hooks - Company
 export {
