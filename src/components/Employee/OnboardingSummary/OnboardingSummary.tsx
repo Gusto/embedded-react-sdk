@@ -64,21 +64,21 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
 
   return (
     <section className={className}>
-      <Flex flexDirection="column" gap={32}>
+      <Flex flexDirection="column" gap={20}>
         <Flex alignItems="center" flexDirection="column" gap={8}>
           {isAdmin ? (
             isOnboardingCompleted ? (
-              <>
+              <Flex flexDirection="column" gap={4} alignItems="center">
                 <Components.Heading as="h2" textAlign="center">
                   {t('onboardedAdminSubtitle', {
                     name: `${sanitizedFirstName} ${sanitizedLastName}`,
                     interpolation: { escapeValue: false },
                   })}
                 </Components.Heading>
-                <Components.Text className={styles.description}>
+                <Components.Text variant="supporting" className={styles.description}>
                   {t('onboardedAdminDescription')}
                 </Components.Text>
-              </>
+              </Flex>
             ) : (
               <Flex flexDirection="column" alignItems="flex-start" gap={8}>
                 <Components.Heading as="h2">{t('missingRequirementsSubtitle')}</Components.Heading>
@@ -110,22 +110,26 @@ const Root = ({ employeeId, className, isAdmin = false }: SummaryProps) => {
             )
           ) : (
             <>
-              <Components.Heading as="h2" textAlign="center">
-                {t('onboardedSelfSubtitle')}
-              </Components.Heading>
-              <Components.Text className={styles.description}>
-                {t('onboardedSelfDescription')}
-              </Components.Text>
-              <ActionsLayout justifyContent={isOnboardingCompleted ? 'center' : 'start'}>
-                <Components.Button
-                  variant="secondary"
-                  onClick={() => {
-                    onEvent(componentEvents.EMPLOYEE_ONBOARDING_DONE)
-                  }}
-                >
-                  {t('doneCta')}
-                </Components.Button>
-              </ActionsLayout>
+              <Flex flexDirection="column" gap={20} alignItems="center">
+                <Flex flexDirection="column" gap={4} alignItems="center">
+                  <Components.Heading as="h2" textAlign="center">
+                    {t('onboardedSelfSubtitle')}
+                  </Components.Heading>
+                  <Components.Text variant="supporting" className={styles.description}>
+                    {t('onboardedSelfDescription')}
+                  </Components.Text>
+                </Flex>
+                <ActionsLayout justifyContent={isOnboardingCompleted ? 'center' : 'start'}>
+                  <Components.Button
+                    variant="secondary"
+                    onClick={() => {
+                      onEvent(componentEvents.EMPLOYEE_ONBOARDING_DONE)
+                    }}
+                  >
+                    {t('doneCta')}
+                  </Components.Button>
+                </ActionsLayout>
+              </Flex>
             </>
           )}
         </Flex>

@@ -310,8 +310,10 @@ export function HomeAddressView({
 
   return (
     <Flex flexDirection="column" gap={24}>
-      <Flex flexDirection="column" gap={8} alignItems="flex-start">
-        <Components.Heading as="h1">{t('title')}</Components.Heading>
+      <Flex flexDirection="column" gap={4} alignItems="flex-start">
+        <Components.Heading as="h1" styledAs="h2">
+          {t('title')}
+        </Components.Heading>
         <Components.Text variant="supporting">{t('description')}</Components.Text>
       </Flex>
 
@@ -386,7 +388,9 @@ export function HomeAddressView({
       </Components.Box>
 
       <Flex flexDirection="column" gap={12}>
-        <Components.Heading as="h2">{t('historySectionTitle')}</Components.Heading>
+        <Components.Heading as="h2" styledAs="h4">
+          {t('historySectionTitle')}
+        </Components.Heading>
         <DataView label={t('historySectionTitle')} {...historyDataView} />
       </Flex>
 
@@ -417,13 +421,15 @@ export function HomeAddressView({
           </Flex>
         }
       >
-        <Flex flexDirection="column" gap={16}>
-          <Components.Heading as="h2">
-            {addressModal === 'edit' ? t('editModalTitle') : t('createModalTitle')}
-          </Components.Heading>
-          <Components.Text variant="supporting">
-            {addressModal === 'edit' ? t('editModalDescription') : t('createModalDescription')}
-          </Components.Text>
+        <Flex flexDirection="column" gap={32}>
+          <Flex flexDirection="column" gap={4}>
+            <Components.Heading as="h2">
+              {addressModal === 'edit' ? t('editModalTitle') : t('createModalTitle')}
+            </Components.Heading>
+            <Components.Text variant="supporting">
+              {addressModal === 'edit' ? t('editModalDescription') : t('createModalDescription')}
+            </Components.Text>
+          </Flex>
           {addressModal === 'edit' ? (
             <SDKFormProvider formHookResult={editHomeAddressForm}>
               <Grid

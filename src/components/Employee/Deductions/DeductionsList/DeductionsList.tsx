@@ -1,13 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { useGarnishmentsListSuspense } from '@gusto/embedded-api/react-query/garnishmentsList'
-import { useGarnishmentsUpdateMutation } from '@gusto/embedded-api/react-query/garnishmentsUpdate'
-import { type Garnishment } from '@gusto/embedded-api/models/components/garnishment'
-import {
-  BaseComponent,
-  type BaseComponentInterface,
-  type CommonComponentInterface,
-  useBase,
-} from '@/components/Base'
+import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
+import type { UseDeductionsListReady } from '../shared/useDeductionsList'
 import { useDataView, DataView } from '@/components/Common'
 import { ActionsLayout } from '@/components/Common'
 import { Flex } from '@/components/Common/Flex/Flex'
@@ -15,84 +8,38 @@ import useNumberFormatter from '@/hooks/useNumberFormatter'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
-import { useI18n } from '@/i18n'
-import { componentEvents } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { useComponentDictionary } from '@/i18n/I18n'
+import { useI18n } from '@/i18n'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 
-interface DeductionsListProps extends CommonComponentInterface<'Employee.Deductions'> {
-  employeeId: string
+export interface DeductionsListProps {
+  className?: string
+  deductionsList: UseDeductionsListReady
+  onAdd: () => void
+  onEdit: (deduction: Garnishment) => void
+  onDelete: (deduction: Garnishment) => void
+  onContinue: () => void
 }
 
-export function DeductionsList(props: DeductionsListProps & BaseComponentInterface) {
-  return (
-    <BaseComponent {...props}>
-      <Root {...props}>{props.children}</Root>
-    </BaseComponent>
-  )
-}
-
-function Root({ className, children, employeeId, dictionary }: DeductionsListProps) {
-  const { onEvent, baseSubmitHandler } = useBase()
+export function DeductionsList({
+  className,
+  deductionsList,
+  onAdd,
+  onEdit,
+  onDelete,
+  onContinue,
+}: DeductionsListProps) {
+  useI18n('Employee.Deductions')
   const { t } = useTranslation('Employee.Deductions')
   const Components = useComponentContext()
   const formatCurrency = useNumberFormatter('currency')
   const formatPercent = useNumberFormatter('percent')
 
-  useComponentDictionary('Employee.Deductions', dictionary)
-  useI18n('Employee.Deductions')
-
-  const { data } = useGarnishmentsListSuspense({ employeeId })
-  const deductions = data.garnishments!
-  const activeDeductions = deductions.filter(deduction => deduction.active)
-
-  const { mutateAsync: updateDeduction, isPending: isPendingUpdate } =
-    useGarnishmentsUpdateMutation()
-
-  const handleDelete = async (deduction: Garnishment) => {
-    await baseSubmitHandler(deduction, async payload => {
-      const { garnishment } = await updateDeduction({
-        request: {
-          garnishmentId: payload.uuid,
-          updateGarnishmentRequest: {
-            ...payload,
-            totalAmount: payload.totalAmount ?? undefined,
-            active: false,
-            version: payload.version as string,
-          },
-        },
-      })
-
-      // if soft deleted deduction was the last active, then return to empty view
-      // else if any other active deductions return to list view
-      const remainingActiveDeductions = deductions.filter(d => d.active)
-
-      if (
-        remainingActiveDeductions.length === 1 &&
-        remainingActiveDeductions[0]?.uuid === garnishment?.uuid
-      ) {
-        onEvent(componentEvents.EMPLOYEE_DEDUCTION_DELETED_EMPTY)
-      } else {
-        onEvent(componentEvents.EMPLOYEE_DEDUCTION_DELETED, garnishment)
-      }
-    })
-  }
-
-  const handleEdit = (deduction: Garnishment) => {
-    onEvent(componentEvents.EMPLOYEE_DEDUCTION_EDIT, deduction)
-  }
-
-  const handleAdd = () => {
-    onEvent(componentEvents.EMPLOYEE_DEDUCTION_ADD)
-  }
-
-  const handleContinue = () => {
-    onEvent(componentEvents.EMPLOYEE_DEDUCTION_DONE)
-  }
+  const { deductions } = deductionsList.data
+  const isPendingAny = deductionsList.status.isPending
 
   const { ...dataViewProps } = useDataView({
-    data: activeDeductions,
+    data: deductions,
     columns: [
       {
         key: 'description',
@@ -121,19 +68,19 @@ function Root({ className, children, employeeId, dictionary }: DeductionsListPro
     itemMenu: deduction => {
       return (
         <HamburgerMenu
-          isLoading={isPendingUpdate}
+          isLoading={isPendingAny}
           items={[
             {
               label: t('editCta'),
               onClick: () => {
-                handleEdit(deduction)
+                onEdit(deduction)
               },
               icon: <PencilSvg aria-hidden />,
             },
             {
               label: t('deleteCta'),
-              onClick: async () => {
-                await handleDelete(deduction)
+              onClick: () => {
+                onDelete(deduction)
               },
               icon: <TrashCanSvg aria-hidden />,
             },
@@ -146,27 +93,21 @@ function Root({ className, children, employeeId, dictionary }: DeductionsListPro
   return (
     <section className={className}>
       <Flex flexDirection="column" gap={32}>
-        {children ? (
-          children
-        ) : (
-          <>
-            <Flex flexDirection="column" gap={2}>
-              <Components.Heading as="h2">{t('pageTitle')}</Components.Heading>
-              <Components.Text variant="supporting">
-                {t('includeDeductionsDescriptionV2')}
-              </Components.Text>
-            </Flex>
+        <Flex flexDirection="column" gap={2}>
+          <Components.Heading as="h2">{t('pageTitle')}</Components.Heading>
+          <Components.Text variant="supporting">
+            {t('includeDeductionsDescriptionV2')}
+          </Components.Text>
+        </Flex>
 
-            <DataView label={t('deductionsTableLabel')} {...dataViewProps} />
-            <ActionsLayout>
-              <Components.Button variant="secondary" onClick={handleAdd}>
-                <PlusCircleIcon />
-                {t('addDeductionCta')}
-              </Components.Button>
-              <Components.Button onClick={handleContinue}>{t('continueCta')}</Components.Button>
-            </ActionsLayout>
-          </>
-        )}
+        <DataView label={t('deductionsTableLabel')} {...dataViewProps} />
+        <ActionsLayout>
+          <Components.Button variant="secondary" onClick={onAdd}>
+            <PlusCircleIcon />
+            {t('addDeductionCta')}
+          </Components.Button>
+          <Components.Button onClick={onContinue}>{t('continueCta')}</Components.Button>
+        </ActionsLayout>
       </Flex>
     </section>
   )

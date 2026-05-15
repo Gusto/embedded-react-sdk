@@ -12,7 +12,7 @@ import {
 } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 import { CompensationContextual } from '@/components/Employee/Compensation'
-import { DeductionsContextual } from '@/components/Employee/Deductions'
+import { DeductionsContextual } from '@/components/Employee/OnboardingFlow/OnboardingFlowComponents'
 import { EmployeeDocumentsContextual } from '@/components/Employee/EmployeeDocuments'
 import { PaymentMethodContextual } from '@/components/Employee/PaymentMethod'
 import { ProfileContextual } from '@/components/Employee/Profile/onboarding/Profile'
