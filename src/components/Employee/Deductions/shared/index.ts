@@ -5,3 +5,4 @@ export {
   type UseDeductionsListReady,
   type DeductionsListDeleteResult,
 } from './useDeductionsList'
+export * from './useDeductionForm'
