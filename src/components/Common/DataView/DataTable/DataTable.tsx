@@ -63,7 +63,10 @@ export const DataTable = <T,>({
           {
             key: 'select-header',
             content:
-              selectionMode === 'multiple' && getIsItemSelected && !hideSelectAll ? (
+              selectionMode === 'multiple' &&
+              getIsItemSelected &&
+              !hideSelectAll &&
+              data.length > 0 ? (
                 // Stop propagation so the surrounding react-aria-components
                 // <Column> press handler doesn't intercept the checkbox click
                 // and desync the controlled DOM state. The inner <input> is

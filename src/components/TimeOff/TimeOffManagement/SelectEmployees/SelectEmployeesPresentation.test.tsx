@@ -115,23 +115,23 @@ describe('SelectEmployeesPresentation', () => {
   test('calls onSelect with item and checked=true when a checkbox is clicked', async () => {
     const onSelect = vi.fn()
     renderPresentation({ onSelect })
+    // checkboxes[0] is the select-all header; checkboxes[1] is the first employee
     const checkboxes = screen.getAllByRole('checkbox')
-    await userEvent.click(checkboxes[0] as Element)
+    await userEvent.click(checkboxes[1] as Element)
     expect(onSelect).toHaveBeenCalledWith(mockEmployees[0], true)
   })
 
-  test('does not render a select-all header checkbox', () => {
-    renderPresentation()
-    // Only the per-row checkboxes should be present; no header select-all.
-    expect(screen.getAllByRole('checkbox').length).toBe(mockEmployees.length)
+  test('hides the select-all header checkbox when the table is empty', () => {
+    renderPresentation({ employees: [] })
+    expect(screen.queryAllByRole('checkbox').length).toBe(0)
   })
 
   test('renders selected state for checked employees', () => {
     renderPresentation({ selectedUuids: new Set(['1']) })
-    // checkboxes[0] = Alice (uuid '1'), checkboxes[1] = Bob (uuid '2')
+    // checkboxes[0] = select-all header, checkboxes[1] = Alice (uuid '1'), checkboxes[2] = Bob (uuid '2')
     const checkboxes = screen.getAllByRole('checkbox')
-    expect(checkboxes[0]).toBeChecked()
-    expect(checkboxes[1]).not.toBeChecked()
+    expect(checkboxes[1]).toBeChecked()
+    expect(checkboxes[2]).not.toBeChecked()
   })
 
   test('calls onSearchChange when user types in search input', async () => {

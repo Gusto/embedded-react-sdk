@@ -96,8 +96,8 @@ function renderComponent(props: Partial<{ mode: 'standalone' | 'wizard' }> = {})
 
 // DataTable renders a select-all header checkbox (index 0) when selectionMode="multiple"
 // and getIsItemSelected is provided. Employee checkboxes start at index 1.
-const FIRST_EMPLOYEE_CHECKBOX = 0
-const SECOND_EMPLOYEE_CHECKBOX = 1
+const FIRST_EMPLOYEE_CHECKBOX = 1
+const SECOND_EMPLOYEE_CHECKBOX = 2
 
 describe('SelectEmployeesHoliday', () => {
   beforeEach(() => {
@@ -199,9 +199,9 @@ describe('SelectEmployeesHoliday', () => {
       const user = userEvent.setup()
       renderComponent({ mode: 'standalone' })
 
-      // 2 employees, no select-all header
+      // select-all header + 2 employees = 3
       await waitFor(() => {
-        expect(screen.getAllByRole('checkbox').length).toBe(2)
+        expect(screen.getAllByRole('checkbox').length).toBe(3)
       })
 
       const checkboxes = screen.getAllByRole('checkbox')
@@ -253,8 +253,8 @@ describe('SelectEmployeesHoliday', () => {
 
       // Alice is already on the holiday policy and must not appear in the add list
       expect(screen.queryByText('Alice Smith')).not.toBeInTheDocument()
-      // Bob only — Alice already on policy; no select-all header
-      expect(screen.getAllByRole('checkbox').length).toBe(1)
+      // select-all header + Bob = 2 (Alice already on policy)
+      expect(screen.getAllByRole('checkbox').length).toBe(2)
     })
   })
 
@@ -284,9 +284,9 @@ describe('SelectEmployeesHoliday', () => {
       const user = userEvent.setup()
       renderComponent({ mode: 'wizard' })
 
-      // 2 employees, no select-all header
+      // select-all header + 2 employees = 3
       await waitFor(() => {
-        expect(screen.getAllByRole('checkbox').length).toBe(2)
+        expect(screen.getAllByRole('checkbox').length).toBe(3)
       })
 
       const checkboxes = screen.getAllByRole('checkbox')

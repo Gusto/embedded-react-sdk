@@ -149,8 +149,8 @@ function renderComponent(
 
 // DataTable renders a select-all header checkbox (index 0) when selectionMode="multiple"
 // and getIsItemSelected is provided. Employee checkboxes start at index 1.
-const FIRST_EMPLOYEE_CHECKBOX = 0
-const SECOND_EMPLOYEE_CHECKBOX = 1
+const FIRST_EMPLOYEE_CHECKBOX = 1
+const SECOND_EMPLOYEE_CHECKBOX = 2
 
 describe('SelectEmployeesTimeOff', () => {
   beforeEach(() => {
@@ -378,7 +378,7 @@ describe('SelectEmployeesTimeOff', () => {
       })
 
       // Select Carol (third employee) — she has no PTO history, no user input
-      await user.click(screen.getAllByRole('checkbox')[2] as Element)
+      await user.click(screen.getAllByRole('checkbox')[3] as Element)
       await user.click(screen.getByRole('button', { name: 'continueCta' }))
 
       await waitFor(() => {
@@ -397,7 +397,7 @@ describe('SelectEmployeesTimeOff', () => {
       renderComponent({ mode: 'standalone' })
 
       await waitFor(() => {
-        expect(screen.getAllByRole('checkbox').length).toBe(3)
+        expect(screen.getAllByRole('checkbox').length).toBe(4)
       })
 
       const checkboxes = screen.getAllByRole('checkbox')
@@ -474,8 +474,8 @@ describe('SelectEmployeesTimeOff', () => {
       })
       // Alice (uuid '1') is already on the policy and must not appear in the add list
       expect(screen.queryByText('Alice Smith')).not.toBeInTheDocument()
-      // Bob + Carol = 2 (Alice already on policy; no select-all header)
-      expect(screen.getAllByRole('checkbox').length).toBe(2)
+      // Bob + Carol + select-all header = 3 (Alice already on policy)
+      expect(screen.getAllByRole('checkbox').length).toBe(3)
     })
 
     it('submits only newly-added employees', async () => {

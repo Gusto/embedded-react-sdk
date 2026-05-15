@@ -59,7 +59,6 @@ export function SelectEmployeesPresentation({
         onSelect={onSelect}
         onSelectAll={onSelectAll}
         getIsItemSelected={item => selectedUuids.has(item.uuid)}
-        hideSelectAll
         isFetching={isFetching}
         pagination={pagination}
         emptyState={() => (
