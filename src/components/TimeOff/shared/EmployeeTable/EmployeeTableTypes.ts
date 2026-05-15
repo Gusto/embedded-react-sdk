@@ -19,11 +19,13 @@ export interface EmployeeTableProps<T extends EmployeeTableItem> {
   onSearchChange: (value: string) => void
   onSearchClear: () => void
   searchPlaceholder?: string
+  hideSearch?: boolean
 
   selectionMode?: SelectionMode
   onSelect?: (item: T, checked: boolean) => void
   onSelectAll?: (checked: boolean, visibleItems: T[]) => void
   getIsItemSelected?: (item: T) => boolean
+  hideSelectAll?: boolean
 
   itemMenu?: (item: T) => ReactNode
 

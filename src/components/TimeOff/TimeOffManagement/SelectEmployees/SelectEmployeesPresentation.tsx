@@ -28,16 +28,12 @@ export function SelectEmployeesPresentation({
   onBalanceChange,
   pagination,
   isFetching,
-  originallyOnPolicyUuids,
-  originalBalances,
-
-  removeConfirmDialog,
   isPending = false,
 }: SelectEmployeesPresentationProps) {
   useI18n('Company.TimeOff.SelectEmployees')
   const { t } = useTranslation('Company.TimeOff.SelectEmployees')
   const Components = useComponentContext()
-  const { Heading, Text, Button, Alert, Dialog } = Components
+  const { Heading, Text, Button, Alert } = Components
   const balanceColHeaderId = useId()
 
   return (
@@ -58,12 +54,21 @@ export function SelectEmployeesPresentation({
         searchValue={searchValue}
         onSearchChange={onSearchChange}
         onSearchClear={onSearchClear}
+        hideSearch={employees.length === 0 && searchValue.length === 0}
         selectionMode="multiple"
         onSelect={onSelect}
         onSelectAll={onSelectAll}
         getIsItemSelected={item => selectedUuids.has(item.uuid)}
+        hideSelectAll
         isFetching={isFetching}
         pagination={pagination}
+        emptyState={() => (
+          <Flex flexDirection="column" alignItems="center" gap={8}>
+            <Text size="sm" textAlign="center">
+              {t('emptyState')}
+            </Text>
+          </Flex>
+        )}
         additionalColumns={[
           {
             key: 'department' as keyof EmployeeItem,
@@ -74,26 +79,21 @@ export function SelectEmployeesPresentation({
                 {
                   key: 'balance' as keyof EmployeeItem,
                   title: t('startingBalanceColumn'),
-                  render: (employee: EmployeeItem) => {
-                    if (originallyOnPolicyUuids?.has(employee.uuid)) {
-                      return <Text>{originalBalances?.[employee.uuid] ?? '0'}</Text>
-                    }
-                    return (
-                      <Components.TextInput
-                        name={`balance-${employee.uuid}`}
-                        label={t('startingBalanceColumn')}
-                        shouldVisuallyHideLabel
-                        aria-labelledby={`employee-name-${employee.uuid} ${balanceColHeaderId}`}
-                        value={balances?.[employee.uuid] ?? ''}
-                        onChange={(value: string) => {
-                          if (value !== '' && !isNumericInput(value)) return
-                          onBalanceChange(employee.uuid, value)
-                        }}
-                        placeholder="0"
-                        className={styles.balanceInput}
-                      />
-                    )
-                  },
+                  render: (employee: EmployeeItem) => (
+                    <Components.TextInput
+                      name={`balance-${employee.uuid}`}
+                      label={t('startingBalanceColumn')}
+                      shouldVisuallyHideLabel
+                      aria-labelledby={`employee-name-${employee.uuid} ${balanceColHeaderId}`}
+                      value={balances?.[employee.uuid] ?? ''}
+                      onChange={(value: string) => {
+                        if (value !== '' && !isNumericInput(value)) return
+                        onBalanceChange(employee.uuid, value)
+                      }}
+                      placeholder="0"
+                      className={styles.balanceInput}
+                    />
+                  ),
                 },
               ]
             : []),
@@ -108,21 +108,6 @@ export function SelectEmployeesPresentation({
           {t('continueCta')}
         </Button>
       </ActionsLayout>
-
-      {removeConfirmDialog && (
-        <Dialog
-          isOpen={removeConfirmDialog.isOpen}
-          onClose={removeConfirmDialog.onClose}
-          onPrimaryActionClick={removeConfirmDialog.onConfirm}
-          isPrimaryActionLoading={removeConfirmDialog.isPending}
-          isDestructive
-          title={t('removeConfirmDialog.title', { count: removeConfirmDialog.count })}
-          primaryActionLabel={t('removeConfirmDialog.confirmCta')}
-          closeActionLabel={t('removeConfirmDialog.cancelCta')}
-        >
-          {t('removeConfirmDialog.description', { count: removeConfirmDialog.count })}
-        </Dialog>
-      )}
     </Flex>
   )
 }

@@ -13,7 +13,6 @@ vi.mock('@/i18n/I18n', () => ({
 }))
 
 const mockAddEmployees = vi.fn()
-const mockRemoveEmployees = vi.fn()
 const mockOnEvent = vi.fn()
 const mockInvalidateQueries = vi.fn()
 let mockPolicyEmployees: Array<{ uuid: string; balance?: string }> = []
@@ -23,7 +22,7 @@ const mockEmployees = [
     uuid: '1',
     firstName: 'Alice',
     lastName: 'Smith',
-    jobs: [{ primary: true, title: 'Engineer' }],
+    jobs: [{ primary: true, title: 'Engineer', hireDate: '2024-01-01' }],
     department: 'Engineering',
     eligiblePaidTimeOff: [
       {
@@ -44,7 +43,7 @@ const mockEmployees = [
     uuid: '2',
     firstName: 'Bob',
     lastName: 'Jones',
-    jobs: [{ primary: true, title: 'Designer' }],
+    jobs: [{ primary: true, title: 'Designer', hireDate: '2024-01-01' }],
     department: 'Design',
     eligiblePaidTimeOff: [
       {
@@ -59,7 +58,7 @@ const mockEmployees = [
     uuid: '3',
     firstName: 'Carol',
     lastName: 'Davis',
-    jobs: [{ primary: true, title: 'Manager' }],
+    jobs: [{ primary: true, title: 'Manager', hireDate: '2024-01-01' }],
     department: 'Management',
     // New hire — no PTO history
     eligiblePaidTimeOff: [],
@@ -90,9 +89,9 @@ vi.mock('@gusto/embedded-api/react-query/timeOffPoliciesAddEmployees', () => ({
   }),
 }))
 
-vi.mock('@gusto/embedded-api/react-query/timeOffPoliciesRemoveEmployees', () => ({
-  useTimeOffPoliciesRemoveEmployeesMutation: () => ({
-    mutateAsync: mockRemoveEmployees,
+vi.mock('@gusto/embedded-api/react-query/timeOffPoliciesUpdate', () => ({
+  useTimeOffPoliciesUpdateMutation: () => ({
+    mutateAsync: vi.fn().mockResolvedValue({ timeOffPolicy: { uuid: 'policy-456' } }),
     isPending: false,
   }),
 }))
@@ -150,15 +149,14 @@ function renderComponent(
 
 // DataTable renders a select-all header checkbox (index 0) when selectionMode="multiple"
 // and getIsItemSelected is provided. Employee checkboxes start at index 1.
-const FIRST_EMPLOYEE_CHECKBOX = 1
-const SECOND_EMPLOYEE_CHECKBOX = 2
+const FIRST_EMPLOYEE_CHECKBOX = 0
+const SECOND_EMPLOYEE_CHECKBOX = 1
 
 describe('SelectEmployeesTimeOff', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockUseContainerBreakpoints.mockReturnValue(['base', 'small', 'medium', 'large'])
     mockAddEmployees.mockResolvedValue({ timeOffPolicy: { uuid: 'policy-456' } })
-    mockRemoveEmployees.mockResolvedValue({ timeOffPolicy: { uuid: 'policy-456' } })
     mockPolicyEmployees = []
   })
 
@@ -168,6 +166,27 @@ describe('SelectEmployeesTimeOff', () => {
       expect(screen.getByText('Alice Smith')).toBeInTheDocument()
     })
     expect(screen.getByText('Bob Jones')).toBeInTheDocument()
+  })
+
+  it('hides employees whose primary job hire_date is in the future', async () => {
+    const future = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10)
+    mockEmployees.push({
+      uuid: '99',
+      firstName: 'Future',
+      lastName: 'Hire',
+      jobs: [{ primary: true, title: 'Engineer', hireDate: future }],
+      department: 'Engineering',
+      eligiblePaidTimeOff: [],
+    })
+    try {
+      renderComponent()
+      await waitFor(() => {
+        expect(screen.getByText('Alice Smith')).toBeInTheDocument()
+      })
+      expect(screen.queryByText('Future Hire')).not.toBeInTheDocument()
+    } finally {
+      mockEmployees.pop()
+    }
   })
 
   it('renders department column values', async () => {
@@ -359,7 +378,7 @@ describe('SelectEmployeesTimeOff', () => {
       })
 
       // Select Carol (third employee) — she has no PTO history, no user input
-      await user.click(screen.getAllByRole('checkbox')[3] as Element)
+      await user.click(screen.getAllByRole('checkbox')[2] as Element)
       await user.click(screen.getByRole('button', { name: 'continueCta' }))
 
       await waitFor(() => {
@@ -378,7 +397,7 @@ describe('SelectEmployeesTimeOff', () => {
       renderComponent({ mode: 'standalone' })
 
       await waitFor(() => {
-        expect(screen.getAllByRole('checkbox').length).toBe(4)
+        expect(screen.getAllByRole('checkbox').length).toBe(3)
       })
 
       const checkboxes = screen.getAllByRole('checkbox')
@@ -431,35 +450,9 @@ describe('SelectEmployeesTimeOff', () => {
       }>
       expect(submitted.find(e => e.uuid === '1')).toEqual({ uuid: '1', balance: '40' })
     })
-  })
 
-  describe('standalone mode with existing assignees', () => {
-    it('pre-selects employees that are already on the policy', async () => {
-      mockPolicyEmployees = [{ uuid: '1', balance: '12' }]
-      renderComponent({ mode: 'standalone' })
-      await waitFor(() => {
-        expect(screen.getAllByRole('checkbox').length).toBe(4)
-      })
-      const checkboxes = screen.getAllByRole('checkbox')
-      // Alice (uuid '1') is on the policy → pre-checked.
-      expect(checkboxes[FIRST_EMPLOYEE_CHECKBOX]).toBeChecked()
-      expect(checkboxes[SECOND_EMPLOYEE_CHECKBOX]).not.toBeChecked()
-    })
-
-    it("renders existing assignee's policy balance as read-only text", async () => {
-      mockPolicyEmployees = [{ uuid: '1', balance: '12' }]
-      renderComponent({ mode: 'standalone' })
-      await waitFor(() => {
-        expect(screen.getByText('Alice Smith')).toBeInTheDocument()
-      })
-      // No editable input for Alice — her balance is rendered as plain text "12"
-      expect(screen.getByText('12')).toBeInTheDocument()
-      expect(screen.queryByDisplayValue('40')).not.toBeInTheDocument()
-    })
-
-    it('emits DONE without any mutation when nothing changed', async () => {
+    it('emits DONE without any mutation when nothing is selected', async () => {
       const user = userEvent.setup()
-      mockPolicyEmployees = [{ uuid: '1', balance: '12' }]
       renderComponent({ mode: 'standalone' })
       await waitFor(() => {
         expect(screen.getByText('Alice Smith')).toBeInTheDocument()
@@ -469,10 +462,23 @@ describe('SelectEmployeesTimeOff', () => {
         expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.TIME_OFF_ADD_EMPLOYEES_DONE)
       })
       expect(mockAddEmployees).not.toHaveBeenCalled()
-      expect(mockRemoveEmployees).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('standalone mode with existing assignees', () => {
+    it('filters existing policy assignees out of the selectable list', async () => {
+      mockPolicyEmployees = [{ uuid: '1', balance: '12' }]
+      renderComponent({ mode: 'standalone' })
+      await waitFor(() => {
+        expect(screen.getByText('Bob Jones')).toBeInTheDocument()
+      })
+      // Alice (uuid '1') is already on the policy and must not appear in the add list
+      expect(screen.queryByText('Alice Smith')).not.toBeInTheDocument()
+      // Bob + Carol = 2 (Alice already on policy; no select-all header)
+      expect(screen.getAllByRole('checkbox').length).toBe(2)
     })
 
-    it('submits only newly-added employees when no removals are queued', async () => {
+    it('submits only newly-added employees', async () => {
       const user = userEvent.setup()
       mockPolicyEmployees = [{ uuid: '1', balance: '12' }]
       renderComponent({ mode: 'standalone' })
@@ -480,7 +486,7 @@ describe('SelectEmployeesTimeOff', () => {
         expect(screen.getByText('Bob Jones')).toBeInTheDocument()
       })
       // Add Bob — he is not yet on the policy
-      await user.click(screen.getAllByRole('checkbox')[SECOND_EMPLOYEE_CHECKBOX] as Element)
+      await user.click(screen.getAllByRole('checkbox')[FIRST_EMPLOYEE_CHECKBOX] as Element)
       await user.click(screen.getByRole('button', { name: 'continueCta' }))
       await waitFor(() => {
         expect(mockAddEmployees).toHaveBeenCalledWith({
@@ -490,123 +496,6 @@ describe('SelectEmployeesTimeOff', () => {
           },
         })
       })
-      // Alice was unchanged — must not be re-submitted
-      const submitted = mockAddEmployees.mock.calls[0]?.[0].request.requestBody.employees as Array<{
-        uuid: string
-      }>
-      expect(submitted.find(e => e.uuid === '1')).toBeUndefined()
-      expect(mockRemoveEmployees).not.toHaveBeenCalled()
-    })
-
-    it('opens confirm dialog when an existing assignee is unchecked', async () => {
-      const user = userEvent.setup()
-      mockPolicyEmployees = [{ uuid: '1', balance: '12' }]
-      renderComponent({ mode: 'standalone' })
-      await waitFor(() => {
-        expect(screen.getByText('Alice Smith')).toBeInTheDocument()
-      })
-      // Uncheck Alice
-      await user.click(screen.getAllByRole('checkbox')[FIRST_EMPLOYEE_CHECKBOX] as Element)
-      await user.click(screen.getByRole('button', { name: 'continueCta' }))
-      // Dialog should be visible — confirm/cancel buttons render with i18n keys
-      expect(
-        await screen.findByRole('button', { name: 'removeConfirmDialog.confirmCta' }),
-      ).toBeInTheDocument()
-      // No mutation has fired yet — gated on confirm
-      expect(mockRemoveEmployees).not.toHaveBeenCalled()
-      expect(mockAddEmployees).not.toHaveBeenCalled()
-    })
-
-    it('runs remove then add and invalidates the policy cache on confirm', async () => {
-      const user = userEvent.setup()
-      mockPolicyEmployees = [{ uuid: '1', balance: '12' }]
-      renderComponent({ mode: 'standalone' })
-      await waitFor(() => {
-        expect(screen.getByText('Bob Jones')).toBeInTheDocument()
-      })
-      // Uncheck Alice (uuid '1') and check Bob (uuid '2')
-      await user.click(screen.getAllByRole('checkbox')[FIRST_EMPLOYEE_CHECKBOX] as Element)
-      await user.click(screen.getAllByRole('checkbox')[SECOND_EMPLOYEE_CHECKBOX] as Element)
-      await user.click(screen.getByRole('button', { name: 'continueCta' }))
-      const confirmBtn = await screen.findByRole('button', {
-        name: 'removeConfirmDialog.confirmCta',
-      })
-      await user.click(confirmBtn)
-      await waitFor(() => {
-        expect(mockRemoveEmployees).toHaveBeenCalledWith({
-          request: {
-            timeOffPolicyUuid: 'policy-456',
-            requestBody: { employees: [{ uuid: '1' }] },
-          },
-        })
-      })
-      expect(mockAddEmployees).toHaveBeenCalledWith({
-        request: {
-          timeOffPolicyUuid: 'policy-456',
-          requestBody: { employees: [{ uuid: '2', balance: '0' }] },
-        },
-      })
-      // remove must come before add
-      expect(mockRemoveEmployees.mock.invocationCallOrder[0]).toBeLessThan(
-        mockAddEmployees.mock.invocationCallOrder[0]!,
-      )
-      expect(mockInvalidateQueries).toHaveBeenCalledWith({
-        queryKey: ['@gusto/embedded-api', 'timeOffPolicies', 'get'],
-      })
-    })
-  })
-
-  describe('remove employee 422 error', () => {
-    it('re-throws a contextual SDKInternalError when remove_employees returns a 422', async () => {
-      const user = userEvent.setup()
-      mockPolicyEmployees = [{ uuid: '1', balance: '12' }]
-
-      const { UnprocessableEntityError } =
-        await import('@gusto/embedded-api/models/errors/unprocessableentityerror')
-      const apiError = new UnprocessableEntityError(
-        {
-          errors: [
-            {
-              errorKey: 'base',
-              category: 'invalid_operation',
-              message:
-                'There are pending or approved time off requests from a previous policy. Please decline them before removing the employee from the policy',
-            },
-          ],
-        },
-        {
-          response: new Response(null, { status: 422 }),
-          request: new Request('https://example.com'),
-          body: '',
-        },
-      )
-      mockRemoveEmployees.mockRejectedValueOnce(apiError)
-
-      const caughtErrors: Error[] = []
-      mockBaseSubmitHandler.mockImplementation(async (_: unknown, fn: () => Promise<void>) => {
-        try {
-          await fn()
-        } catch (err) {
-          caughtErrors.push(err as Error)
-        }
-      })
-
-      renderComponent({ mode: 'standalone' })
-      await waitFor(() => {
-        expect(screen.getByText('Alice Smith')).toBeInTheDocument()
-      })
-
-      await user.click(screen.getAllByRole('checkbox')[FIRST_EMPLOYEE_CHECKBOX] as Element)
-      await user.click(screen.getByRole('button', { name: 'continueCta' }))
-      const confirmBtn = await screen.findByRole('button', {
-        name: 'removeConfirmDialog.confirmCta',
-      })
-      await user.click(confirmBtn)
-
-      await waitFor(() => {
-        expect(caughtErrors).toHaveLength(1)
-      })
-      expect(caughtErrors[0]!.message).toContain('errors.removeEmployeesFailed')
     })
   })
 

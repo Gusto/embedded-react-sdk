@@ -115,35 +115,23 @@ describe('SelectEmployeesPresentation', () => {
   test('calls onSelect with item and checked=true when a checkbox is clicked', async () => {
     const onSelect = vi.fn()
     renderPresentation({ onSelect })
-    // checkboxes[0] is the select-all header; checkboxes[1] is first employee
     const checkboxes = screen.getAllByRole('checkbox')
-    await userEvent.click(checkboxes[1] as Element)
+    await userEvent.click(checkboxes[0] as Element)
     expect(onSelect).toHaveBeenCalledWith(mockEmployees[0], true)
   })
 
-  test('calls onSelectAll with checked=true and visible employees when header checkbox is clicked', async () => {
-    const onSelectAll = vi.fn()
-    renderPresentation({ onSelectAll })
-    await userEvent.click(screen.getAllByRole('checkbox')[0] as Element)
-    expect(onSelectAll).toHaveBeenCalledWith(true, mockEmployees)
-  })
-
-  test('calls onSelectAll with checked=false when header checkbox is clicked while all selected', async () => {
-    const onSelectAll = vi.fn()
-    renderPresentation({
-      onSelectAll,
-      selectedUuids: new Set(mockEmployees.map(e => e.uuid)),
-    })
-    await userEvent.click(screen.getAllByRole('checkbox')[0] as Element)
-    expect(onSelectAll).toHaveBeenCalledWith(false, mockEmployees)
+  test('does not render a select-all header checkbox', () => {
+    renderPresentation()
+    // Only the per-row checkboxes should be present; no header select-all.
+    expect(screen.getAllByRole('checkbox').length).toBe(mockEmployees.length)
   })
 
   test('renders selected state for checked employees', () => {
     renderPresentation({ selectedUuids: new Set(['1']) })
-    // checkboxes[0] = select-all header, checkboxes[1] = Alice (uuid '1'), checkboxes[2] = Bob (uuid '2')
+    // checkboxes[0] = Alice (uuid '1'), checkboxes[1] = Bob (uuid '2')
     const checkboxes = screen.getAllByRole('checkbox')
-    expect(checkboxes[1]).toBeChecked()
-    expect(checkboxes[2]).not.toBeChecked()
+    expect(checkboxes[0]).toBeChecked()
+    expect(checkboxes[1]).not.toBeChecked()
   })
 
   test('calls onSearchChange when user types in search input', async () => {
@@ -166,6 +154,11 @@ describe('SelectEmployeesPresentation', () => {
   test('shows empty search results state when no employees match', () => {
     renderPresentation({ employees: [], searchValue: 'nonexistent' })
     expect(screen.getByText('noSearchResults')).toBeInTheDocument()
+  })
+
+  test('shows emptyState message when the list is empty and there is no search', () => {
+    renderPresentation({ employees: [], searchValue: '' })
+    expect(screen.getByText('emptyState')).toBeInTheDocument()
   })
 
   test('renders pagination when pagination prop is provided', () => {
@@ -192,9 +185,17 @@ describe('SelectEmployeesPresentation', () => {
         balances: { '1': '40' },
         onBalanceChange,
       })
-      // Both the column header AND each row's hidden input label use this text
       expect(screen.getAllByText('startingBalanceColumn').length).toBeGreaterThan(0)
       expect(screen.getByDisplayValue('40')).toBeInTheDocument()
+    })
+
+    test('renders an editable balance input for every employee row', () => {
+      const onBalanceChange = vi.fn()
+      renderPresentation({
+        balances: { '1': '40' },
+        onBalanceChange,
+      })
+      expect(screen.getAllByPlaceholderText('0').length).toBe(mockEmployees.length)
     })
 
     test('omits the balance column when onBalanceChange is not provided', () => {
