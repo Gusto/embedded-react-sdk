@@ -367,12 +367,16 @@ async function decoratePayrolls(
           `&end_date=${rangeEnd.toISOString().split('T')[0]}`,
       )
 
-      const unprocessed = periods.find(
+      const unprocessedPast = periods.find(
         p =>
           !p.payroll?.processed &&
           p.payroll?.payroll_type === 'regular' &&
           p.end_date <= today.toISOString().split('T')[0]!,
       )
+      const unprocessedAny = periods.find(
+        p => !p.payroll?.processed && p.payroll?.payroll_type === 'regular',
+      )
+      const unprocessed = unprocessedPast ?? unprocessedAny
 
       if (!unprocessed) {
         throw new Error(`No unprocessed regular payroll found for payroll key: ${payroll.key}`)
