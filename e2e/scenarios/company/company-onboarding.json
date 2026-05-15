@@ -4,6 +4,18 @@
   "description": "Fresh company for testing the company onboarding flow.",
   "domain": "company",
   "baseDemo": "react_sdk_demo",
-  "decorations": {},
-  "expectedContext": ["companyId"]
+  "decorations": {
+    "locations": [
+      {
+        "key": "hq",
+        "street_1": "100 Test St",
+        "city": "San Francisco",
+        "state": "CA",
+        "zip": "94105",
+        "filing_address": true,
+        "mailing_address": true
+      }
+    ]
+  },
+  "expectedContext": ["companyId", "locationIds.hq"]
 }
