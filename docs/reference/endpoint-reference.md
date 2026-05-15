@@ -293,7 +293,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 | **TimeOff.PolicyConfigurationForm** | POST | `/v1/companies/:companyUuid/time_off_policies` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid` |
 |  | GET | `/v1/time_off_policies/:timeOffPolicyUuid` |
-| **TimeOff.PolicySettingsPresentation** | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
+| **TimeOff.PolicySettings** | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
 |  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
 |  | GET | `/v1/companies/:companyId/employees` |
 |  | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
@@ -424,12 +424,17 @@ Flows compose multiple blocks into a single workflow. The endpoint list for a fl
 
 | Flow | Blocks included |
 | --- | --- |
-| **Company.OnboardingFlow** | Company.BankAccount, Company.DocumentSigner, Company.FederalTaxes, Company.Industry, Company.Locations, Company.OnboardingFlow, Company.OnboardingOverview, Company.PaySchedule, Company.StateTaxes, Employee.OnboardingFlow |
-| **Contractor.OnboardingFlow** | Contractor.Address, Contractor.ContractorList, Contractor.ContractorProfile, Contractor.ContractorSubmit, Contractor.NewHireReport, Contractor.OnboardingFlow, Contractor.PaymentMethod |
-| **Contractor.Payments.PaymentFlow** | Contractor.CreatePayment, Contractor.PaymentFlow, Contractor.PaymentHistory, Contractor.PaymentStatement, Contractor.PaymentSummary, Contractor.PaymentsList, InformationRequests.InformationRequestsFlow |
-| **Employee.OnboardingFlow** | Employee.Compensation, Employee.Deductions, Employee.EmployeeList, Employee.FederalTaxes, Employee.OnboardingFlow, Employee.OnboardingSummary, Employee.PaymentMethod, Employee.Profile, Employee.StateTaxes |
-| **Employee.SelfOnboardingFlow** | Employee.FederalTaxes, Employee.Landing, Employee.OnboardingSummary, Employee.PaymentMethod, Employee.Profile, Employee.SelfOnboardingFlow, Employee.StateTaxes |
-| **Employee.Terminations.TerminationFlow** | Employee.TerminateEmployee, Employee.TerminationFlow, Employee.TerminationSummary, Payroll.DismissalFlow, Payroll.PayrollLanding |
+| **Company.OnboardingFlow** | Company.BankAccount, Company.DocumentSigner, Company.FederalTaxes, Company.Industry, Company.Locations, Company.OnboardingOverview, Company.PaySchedule, Company.StateTaxes, Employee.OnboardingFlow |
+| **Contractor.OnboardingFlow** | Contractor.Address, Contractor.ContractorList, Contractor.ContractorProfile, Contractor.ContractorSubmit, Contractor.NewHireReport, Contractor.PaymentMethod |
+| **Contractor.PaymentFlow** | Contractor.CreatePayment, Contractor.PaymentHistory, Contractor.PaymentStatement, Contractor.PaymentSummary, Contractor.PaymentsList, InformationRequests.InformationRequestsFlow |
+| **Employee.OnboardingFlow** | Employee.Compensation, Employee.Deductions, Employee.EmployeeDocuments, Employee.EmployeeList, Employee.FederalTaxes, Employee.OnboardingSummary, Employee.PaymentMethod, Employee.Profile, Employee.StateTaxes |
+| **Employee.SelfOnboardingFlow** | Employee.DocumentSigner, Employee.FederalTaxes, Employee.Landing, Employee.OnboardingSummary, Employee.PaymentMethod, Employee.Profile, Employee.StateTaxes |
+| **Employee.DashboardFlow** | Employee.FederalTaxes, Employee.HomeAddress, Employee.Profile, Employee.StateTaxes, Employee.WorkAddress |
+| **Employee.TerminationFlow** | Employee.TerminateEmployee, Employee.TerminationSummary, Payroll.DismissalFlow, Payroll.PayrollLanding |
+| **InformationRequests.InformationRequestsFlow** | InformationRequests.InformationRequestForm, InformationRequests.InformationRequestList |
+| **Payroll.PayrollFlow** | Payroll.OffCycleFlow, Payroll.PayrollBlockerList, Payroll.PayrollConfiguration, Payroll.PayrollEditEmployee, Payroll.PayrollExecutionFlow, Payroll.PayrollLanding, Payroll.PayrollOverview, Payroll.PayrollReceipts, Payroll.TransitionFlow |
 | **Payroll.PayrollExecutionFlow** | Payroll.PayrollFlow |
-| **Payroll.PayrollFlow** | Payroll.OffCycleFlow, Payroll.PayrollBlockerList, Payroll.PayrollConfiguration, Payroll.PayrollEditEmployee, Payroll.PayrollFlow, Payroll.PayrollLanding, Payroll.PayrollOverview, Payroll.PayrollReceipts, Payroll.TransitionFlow |
-| **TimeOff.TimeOffFlow** | TimeOff.PolicyConfigurationForm, TimeOff.TimeOffPolicyDetailPresentation |
+| **Payroll.OffCycleFlow** | Payroll.OffCycleCreation, Payroll.PayrollExecutionFlow |
+| **Payroll.DismissalFlow** | Payroll.PayrollExecutionFlow |
+| **Payroll.TransitionFlow** | Payroll.PayrollExecutionFlow, Payroll.TransitionCreation |
+| **TimeOff.TimeOffFlow** | TimeOff.AddEmployeesHoliday, TimeOff.AddEmployeesToPolicy, TimeOff.HolidaySelectionForm, TimeOff.PolicyConfigurationForm, TimeOff.PolicyList, TimeOff.PolicySettings, TimeOff.PolicyTypeSelector, TimeOff.TimeOffPolicyDetailPresentation, TimeOff.ViewHolidayEmployees, TimeOff.ViewHolidaySchedule |
