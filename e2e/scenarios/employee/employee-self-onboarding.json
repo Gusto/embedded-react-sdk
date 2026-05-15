@@ -3,7 +3,7 @@
   "name": "Employee self-onboarding flow",
   "description": "Company with self-onboarding demo setup.",
   "domain": "employee",
-  "baseDemo": "react_sdk_demo_employee_self_onboarding",
+  "baseDemo": "react_sdk_demo",
   "decorations": {},
   "expectedContext": ["companyId"]
 }
