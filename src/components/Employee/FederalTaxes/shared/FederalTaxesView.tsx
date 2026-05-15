@@ -44,7 +44,7 @@ export function FederalTaxesView({
   }
 
   return (
-    <Flex flexDirection="column" gap={32} alignItems="stretch">
+    <Flex flexDirection="column" alignItems="stretch">
       <section className={className}>
         <BaseLayout error={federalTaxes.errorHandling.errors}>
           <SDKFormProvider formHookResult={federalTaxes}>
