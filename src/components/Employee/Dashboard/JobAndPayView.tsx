@@ -266,6 +266,7 @@ export function JobAndPayView({
         </Components.Box>
 
         <Components.Box
+          withPadding={bankAccounts.length === 0}
           header={
             <Components.BoxHeader
               title={t('jobAndPay.payment.title')}
@@ -296,23 +297,26 @@ export function JobAndPayView({
             />
           }
         >
-          <Flex flexDirection="column" gap={16}>
-            {bankAccounts.length === 0 ? (
-              <Flex flexDirection="column" gap={0}>
-                <Components.Text variant="supporting">
-                  {tPayment('paymentMethodLabel')}
-                </Components.Text>
-                <Components.Text>
-                  {isDirectDeposit ? tPayment('directDepositLabel') : tPayment('checkLabel')}
-                </Components.Text>
-              </Flex>
-            ) : (
-              <DataView label={t('jobAndPay.payment.listLabel')} {...bankAccountsDataView} />
-            )}
-          </Flex>
+          {bankAccounts.length === 0 ? (
+            <Flex flexDirection="column" gap={0}>
+              <Components.Text variant="supporting">
+                {tPayment('paymentMethodLabel')}
+              </Components.Text>
+              <Components.Text>
+                {isDirectDeposit ? tPayment('directDepositLabel') : tPayment('checkLabel')}
+              </Components.Text>
+            </Flex>
+          ) : (
+            <DataView
+              label={t('jobAndPay.payment.listLabel')}
+              isWithinBox
+              {...bankAccountsDataView}
+            />
+          )}
         </Components.Box>
 
         <Components.Box
+          withPadding={false}
           header={
             <Components.BoxHeader
               title={t('jobAndPay.deductions.title')}
@@ -328,15 +332,18 @@ export function JobAndPayView({
             />
           }
         >
-          <Flex flexDirection="column" gap={16}>
-            <DataView label={t('jobAndPay.deductions.listLabel')} {...garnishmentsDataView} />
-          </Flex>
+          <DataView
+            label={t('jobAndPay.deductions.listLabel')}
+            isWithinBox
+            {...garnishmentsDataView}
+          />
         </Components.Box>
 
-        <Components.Box header={<Components.BoxHeader title={t('jobAndPay.paystubs.title')} />}>
-          <Flex flexDirection="column" gap={16}>
-            <DataView label={t('jobAndPay.paystubs.listLabel')} {...payStubsDataView} />
-          </Flex>
+        <Components.Box
+          withPadding={false}
+          header={<Components.BoxHeader title={t('jobAndPay.paystubs.title')} />}
+        >
+          <DataView label={t('jobAndPay.paystubs.listLabel')} isWithinBox {...payStubsDataView} />
         </Components.Box>
 
         <DeleteBankAccountDialog
