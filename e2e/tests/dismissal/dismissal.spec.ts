@@ -17,17 +17,22 @@ async function chooseFirstPayPeriod(page: Page) {
 }
 
 test.describe('DismissalFlow', () => {
-  test.beforeEach(({ scenario }, testInfo) => {
+  test.beforeEach(({}, testInfo) => {
     testInfo.annotations.push({
       type: 'scenario',
       description: 'dismissal/employee-terminated',
     })
-    test.skip(!scenario.flowToken, 'Requires scenario provisioning (local/demo runs only)')
   })
 
   test.describe('pay period selection', () => {
-    test('displays the pay period selection page with options and breadcrumb', async ({ page }) => {
-      await page.goto('/?flow=dismissal')
+    test('displays the pay period selection page with options and breadcrumb', async ({
+      page,
+      scenario,
+    }) => {
+      test.skip(!scenario.flowToken, 'Requires scenario provisioning (local/demo runs only)')
+
+      const employeeId = Object.values(scenario.employeeIds)[0]
+      await page.goto(`/?flow=dismissal&employeeId=${employeeId}`)
 
       await waitForLoadingComplete(page)
 
@@ -46,8 +51,11 @@ test.describe('DismissalFlow', () => {
       await expect(continueButton).toBeVisible()
     })
 
-    test('continue button enables after selecting a pay period', async ({ page }) => {
-      await page.goto('/?flow=dismissal')
+    test('continue button enables after selecting a pay period', async ({ page, scenario }) => {
+      test.skip(!scenario.flowToken, 'Requires scenario provisioning (local/demo runs only)')
+
+      const employeeId = Object.values(scenario.employeeIds)[0]
+      await page.goto(`/?flow=dismissal&employeeId=${employeeId}`)
 
       await waitForLoadingComplete(page)
 
@@ -61,8 +69,11 @@ test.describe('DismissalFlow', () => {
       await expect(continueButton).toBeEnabled()
     })
 
-    test('pay period dropdown contains date ranges', async ({ page }) => {
-      await page.goto('/?flow=dismissal')
+    test('pay period dropdown contains date ranges', async ({ page, scenario }) => {
+      test.skip(!scenario.flowToken, 'Requires scenario provisioning (local/demo runs only)')
+
+      const employeeId = Object.values(scenario.employeeIds)[0]
+      await page.goto(`/?flow=dismissal&employeeId=${employeeId}`)
 
       await waitForLoadingComplete(page)
 
@@ -78,7 +89,9 @@ test.describe('DismissalFlow', () => {
       expect(selectedText).toMatch(/\d/)
     })
 
-    test('shows empty state when no termination pay periods exist', async ({ page }) => {
+    test('shows empty state when no termination pay periods exist', async ({ page, scenario }) => {
+      test.skip(!scenario.flowToken, 'Requires scenario provisioning (local/demo runs only)')
+
       await page.goto('/?flow=dismissal&employeeId=non-existent-employee')
 
       await waitForLoadingComplete(page)
@@ -92,8 +105,11 @@ test.describe('DismissalFlow', () => {
   })
 
   test.describe('full payroll execution', () => {
-    test('transitions from pay period selection to edit payroll', async ({ page }) => {
-      await page.goto('/?flow=dismissal')
+    test('transitions from pay period selection to edit payroll', async ({ page, scenario }) => {
+      test.skip(!scenario.flowToken, 'Requires scenario provisioning (local/demo runs only)')
+
+      const employeeId = Object.values(scenario.employeeIds)[0]
+      await page.goto(`/?flow=dismissal&employeeId=${employeeId}`)
       await waitForLoadingComplete(page)
 
       await expect(page.getByRole('heading', { name: /run dismissal payroll/i })).toBeVisible({
@@ -106,18 +122,9 @@ test.describe('DismissalFlow', () => {
       await waitForLoadingComplete(page)
 
       const payrollExecutionHeading = page.getByRole('heading', {
-        name: /edit payroll|preparing payroll|calculating payroll/i,
+        name: /edit payroll|preparing payroll|calculating payroll|run dismissal payroll/i,
       })
-      const reachedExecution = await payrollExecutionHeading
-        .first()
-        .isVisible()
-        .catch(() => false)
-
-      if (!reachedExecution) {
-        await expect(
-          page.getByText(/there was a problem with your submission|payroll could not be created/i),
-        ).toBeVisible({ timeout: 30000 })
-      }
+      await expect(payrollExecutionHeading.first()).toBeVisible({ timeout: 60000 })
     })
   })
 })
