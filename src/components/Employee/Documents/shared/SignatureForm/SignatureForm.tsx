@@ -1,5 +1,5 @@
 import { useTranslation, Trans } from 'react-i18next'
-import { useSignEmployeeForm } from '../shared/useSignEmployeeForm'
+import { useSignEmployeeForm } from '../useSignEmployeeForm'
 import {
   BaseComponent,
   type BaseComponentInterface,
