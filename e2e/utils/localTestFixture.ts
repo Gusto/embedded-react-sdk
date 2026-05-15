@@ -83,8 +83,6 @@ export const test = base.extend<ScenarioFixtures & { localConfig: LocalConfig }>
       }
 
       const scenarioPath = resolve(process.cwd(), 'e2e/scenarios', `${annotation.description}.json`)
-      const ctx = await provisionScenario(scenarioPath)
-
       const scenarioJson = JSON.parse(readFileSync(scenarioPath, 'utf-8')) as {
         domain?: string
       }
@@ -92,6 +90,12 @@ export const test = base.extend<ScenarioFixtures & { localConfig: LocalConfig }>
         testInfo.annotations.push({ type: 'tag', description: `@${scenarioJson.domain}` })
       }
 
+      if (process.env.E2E_LOCAL !== 'true') {
+        await use(EMPTY_SCENARIO_CONTEXT)
+        return
+      }
+
+      const ctx = await provisionScenario(scenarioPath)
       await use(ctx)
     },
     { scope: 'test' },
