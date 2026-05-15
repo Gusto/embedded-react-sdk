@@ -1,12 +1,13 @@
 import { readFileSync, readdirSync, writeFileSync, mkdirSync, statSync, existsSync } from 'fs'
 import { join, dirname, relative, resolve } from 'path'
 import { fileURLToPath } from 'url'
-import { Project, SyntaxKind } from 'ts-morph'
+import { Project, SourceFile, SyntaxKind } from 'ts-morph'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 const ROOT = join(__dirname, '..')
+const SRC_DIR = join(ROOT, 'src')
 const FUNCS_DIR = join(ROOT, 'node_modules/@gusto/embedded-api/src/funcs')
 const OPS_DIR = join(ROOT, 'node_modules/@gusto/embedded-api/src/models/operations')
 const COMPONENTS_DIR = join(ROOT, 'src/components')
@@ -29,8 +30,6 @@ interface BlockEntry {
 
 interface FlowEntry {
   blocks: string[]
-  endpoints: Endpoint[]
-  variables: string[]
 }
 
 // --- AST-based extraction from @gusto/embedded-api ---
@@ -136,8 +135,7 @@ function collectRawFuncPaths(
   return results
 }
 
-function buildFuncLookup(): Map<string, Endpoint> {
-  const project = createApiProject()
+function buildFuncLookup(project: Project): Map<string, Endpoint> {
   const rawFuncs = collectRawFuncPaths(project)
   const paramNameMap = buildParamNameMap(
     project,
@@ -175,27 +173,62 @@ function walkDir(dir: string): string[] {
   return results
 }
 
-// --- Extract @gusto/embedded-api imports from component files ---
+// --- Transitively collect @gusto/embedded-api imports via ts-morph import graph ---
 
-function extractApiImports(filePaths: string[]): Set<string> {
+function collectTransitiveApiImports(
+  project: Project,
+  entryFilePaths: string[],
+  componentDir: string,
+  otherBlockDirs: Set<string>,
+): Set<string> {
+  const visited = new Set<string>()
   const funcNames = new Set<string>()
 
-  const hookImportPattern = /from\s+['"]@gusto\/embedded-api\/react-query\/([^'"]+)['"]/g
-  const funcImportPattern = /from\s+['"]@gusto\/embedded-api\/funcs\/([^'"]+)['"]/g
+  function followSpec(spec: string, getResolved: () => SourceFile | undefined) {
+    if (spec.startsWith('@gusto/embedded-api/react-query/')) {
+      const name = spec.slice('@gusto/embedded-api/react-query/'.length)
+      if (!name.startsWith('_')) funcNames.add(name)
+    } else if (spec.startsWith('@gusto/embedded-api/funcs/')) {
+      funcNames.add(spec.slice('@gusto/embedded-api/funcs/'.length))
+    } else if (spec.startsWith('.') || spec.startsWith('@/hooks/')) {
+      // Follow relative imports (catches ../shared/ hooks) and cross-cutting utility hooks.
+      // Deliberately skip @/components/, @/contexts/, @/helpers/ etc. to avoid
+      // cascading through UI primitives and cross-domain components.
+      // Also stop at other blocks' directories so flow orchestrators don't absorb
+      // their sub-blocks' endpoints (those are already inventoried separately).
+      const resolved = getResolved()
+      if (!resolved) return
+      const targetPath = resolved.getFilePath()
+      if (!targetPath.startsWith(SRC_DIR + '/')) return
+      const isOtherBlock = [...otherBlockDirs].some(
+        dir => dir !== componentDir && targetPath.startsWith(dir + '/'),
+      )
+      if (!isOtherBlock) visitFile(targetPath)
+    }
+  }
 
-  for (const filePath of filePaths) {
-    const content = readFileSync(filePath, 'utf-8')
+  function visitFile(filePath: string) {
+    if (visited.has(filePath)) return
+    visited.add(filePath)
 
-    for (const match of content.matchAll(hookImportPattern)) {
-      const moduleName = match[1]
-      if (!moduleName.startsWith('_')) {
-        funcNames.add(moduleName)
+    const sourceFile = project.addSourceFileAtPathIfExists(filePath)
+    if (!sourceFile) return
+
+    for (const decl of sourceFile.getImportDeclarations()) {
+      if (decl.isTypeOnly()) continue
+      followSpec(decl.getModuleSpecifierValue(), () => decl.getModuleSpecifierSourceFile())
+    }
+    for (const decl of sourceFile.getExportDeclarations()) {
+      if (decl.isTypeOnly()) continue
+      const spec = decl.getModuleSpecifierValue()
+      if (spec) {
+        followSpec(spec, () => decl.getModuleSpecifierSourceFile())
       }
     }
+  }
 
-    for (const match of content.matchAll(funcImportPattern)) {
-      funcNames.add(match[1])
-    }
+  for (const filePath of entryFilePaths) {
+    visitFile(filePath)
   }
 
   return funcNames
@@ -274,30 +307,16 @@ function parseComponentExports(domainDir: string): Map<string, string> {
 }
 
 function resolveComponentDirectory(domainDir: string, importPath: string): string {
-  // importPath is like './ContractorList' or './Payments/PaymentFlow'
   const resolved = resolve(domainDir, importPath)
 
-  // If it's a direct file import, get the directory
   if (existsSync(resolved + '.tsx') || existsSync(resolved + '.ts')) {
-    const dir = dirname(resolved)
-    // Feature module pattern: if a sibling shared/ directory exists, use the
-    // parent (feature module root) so walkDir picks up shared hooks with API imports
-    const parentDir = dirname(dir)
-    if (
-      existsSync(join(parentDir, 'shared')) &&
-      statSync(join(parentDir, 'shared')).isDirectory()
-    ) {
-      return parentDir
-    }
-    return dir
+    return dirname(resolved)
   }
 
-  // If it's a directory with an index file, use the directory
   if (existsSync(resolved) && statSync(resolved).isDirectory()) {
     return resolved
   }
 
-  // Fallback: assume it's the directory
   return resolved
 }
 
@@ -479,14 +498,16 @@ interface DerivationResult {
 }
 
 function deriveInventory(): DerivationResult {
-  const funcLookup = buildFuncLookup()
+  const project = createApiProject()
+  const funcLookup = buildFuncLookup(project)
   const blockMappings = discoverBlocks()
+  const allBlockDirs = new Set(blockMappings.map(m => m.componentDir))
 
   const blocks: Record<string, BlockEntry> = {}
 
   for (const { blockName, componentDir } of blockMappings) {
     const files = walkDir(componentDir)
-    const funcNames = extractApiImports(files)
+    const funcNames = collectTransitiveApiImports(project, files, componentDir, allBlockDirs)
 
     const endpoints: Endpoint[] = []
     for (const funcName of funcNames) {
@@ -509,28 +530,8 @@ function deriveInventory(): DerivationResult {
   const flows: Record<string, FlowEntry> = {}
 
   for (const { flowName, flowDir } of flowMappings) {
-    // Do not include the flow itself in its list of child blocks
     const blockNames = deriveFlowBlocks(flowDir, blockMappings).filter(b => b !== flowName)
-
-    const endpoints: Endpoint[] = []
-    for (const blockName of blockNames) {
-      const blockEntry = blocks[blockName]
-      if (blockEntry) {
-        endpoints.push(...blockEntry.endpoints)
-      }
-    }
-    // Include direct API calls made within the flow's own directory (e.g. contextual
-    // wrappers that fetch data for sub-blocks but live in the flow's directory).
-    const ownBlockEntry = blocks[flowName]
-    if (ownBlockEntry) {
-      endpoints.push(...ownBlockEntry.endpoints)
-    }
-    const deduped = deduplicateEndpoints(endpoints)
-    flows[flowName] = {
-      blocks: blockNames,
-      endpoints: deduped,
-      variables: extractVariables(deduped),
-    }
+    flows[flowName] = { blocks: blockNames }
   }
 
   return { inventory: { blocks, flows }, funcLookup }
