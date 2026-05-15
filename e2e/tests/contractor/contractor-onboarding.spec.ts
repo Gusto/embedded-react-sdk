@@ -43,9 +43,8 @@ test.describe('ContractorOnboardingFlow', () => {
       await individualRadio.click()
     }
 
-    const uniqueSuffix = Date.now().toString().slice(-6)
     const firstNameField = page.getByLabel(/first name/i)
-    await firstNameField.fill(`Jane${uniqueSuffix}`)
+    await firstNameField.fill('Jane')
     await page.getByLabel(/last name/i).fill('TestContractor')
 
     const ssnField = page.getByLabel(/social security/i)
@@ -55,16 +54,19 @@ test.describe('ContractorOnboardingFlow', () => {
 
     await fillDate(page, 'Start Date', { month: 1, day: 15, year: 2025 })
 
-    await expect(firstNameField).toHaveValue(`Jane${uniqueSuffix}`)
+    await expect(firstNameField).toHaveValue('Jane')
     await expect(page.getByLabel(/last name/i)).toHaveValue('TestContractor')
 
     const createButton = page.getByRole('button', { name: /create contractor/i })
     await createButton.click()
 
-    await waitForLoadingComplete(page)
+    await waitForLoadingComplete(page, 60000)
 
-    const article = page.locator('article')
-    await expect(article).toBeVisible()
+    await expect(
+      page
+        .getByRole('heading', { name: /address/i })
+        .or(page.getByRole('heading', { name: /new hire/i })),
+    ).toBeVisible({ timeout: 30000 })
   })
 
   test('can navigate back to contractor list from profile', async ({ page }) => {

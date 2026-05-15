@@ -25,7 +25,10 @@ test.describe('ContractorPaymentFlow', () => {
     await expect(newPaymentButton).toBeVisible({ timeout: 15000 })
   })
 
-  test('clicking new payment opens the payment composition surface', async ({ page, scenario }) => {
+  test('clicking new payment opens the Pay contractors composition page', async ({
+    page,
+    scenario,
+  }) => {
     test.skip(!scenario.flowToken, 'Requires scenario provisioning (local/demo runs only)')
 
     await page.goto('/?flow=contractor-payment')
@@ -34,9 +37,14 @@ test.describe('ContractorPaymentFlow', () => {
     const newPaymentButton = page.getByRole('button', { name: /new payment/i }).first()
     await expect(newPaymentButton).toBeVisible({ timeout: 15000 })
     await newPaymentButton.click()
-    await waitForLoadingComplete(page)
+    await waitForLoadingComplete(page, 60000)
 
-    const article = page.locator('article')
-    await expect(article).toBeVisible()
+    await expect(
+      page
+        .getByRole('heading', { name: /pay contractors/i })
+        .or(page.getByRole('heading', { name: /no contractors available/i })),
+    ).toBeVisible({ timeout: 30000 })
+
+    await expect(page.getByLabel(/payment date/i)).toBeVisible()
   })
 })
