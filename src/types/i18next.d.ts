@@ -1611,6 +1611,19 @@ export interface EmployeeDeductions{
 "creditorGarnishment":string;
 "federalLoan":string;
 "otherGarnishment":string;
+"descriptionRequired":string;
+"frequencyRequired":string;
+"deductionTypeRequired":string;
+"amountRequired":string;
+"amountNonNegative":string;
+"agencyRequired":string;
+"countyRequired":string;
+"caseNumberRequired":string;
+"orderNumberRequired":string;
+"remittanceNumberRequired":string;
+"payPeriodMaximumRequired":string;
+"percentOutOfRange":string;
+"paymentPeriodRequired":string;
 };
 export interface EmployeeDocumentSigner{
 "documentListTitle":string;

@@ -541,16 +541,16 @@
     "Employee.Deductions": {
       "endpoints": [
         {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/garnishments"
-        },
-        {
           "method": "POST",
           "path": "/v1/employees/:employeeId/garnishments"
         },
         {
           "method": "PUT",
           "path": "/v1/garnishments/:garnishmentId"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/garnishments"
         },
         {
           "method": "GET",
@@ -2435,16 +2435,16 @@
           "path": "/v1/companies/:companyId/federal_tax_details"
         },
         {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/garnishments"
-        },
-        {
           "method": "POST",
           "path": "/v1/employees/:employeeId/garnishments"
         },
         {
           "method": "PUT",
           "path": "/v1/garnishments/:garnishmentId"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/garnishments"
         },
         {
           "method": "GET",
