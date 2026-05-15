@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -203,8 +203,21 @@ export function useChildSupportGarnishmentForm({
 
   // The agency-attribute fields stay in sync with the chosen state: when the
   // user switches states, the previous attribute values would otherwise carry
-  // over and potentially submit alongside the wrong agency.
+  // over and potentially submit alongside the wrong agency. The ref tracks
+  // the previous value so the wipe only fires on user-driven transitions —
+  // NOT on the initial sync when an existing garnishment loads (state moves
+  // from '' to e.g. 'AK' as a side effect of `values` updating, which would
+  // otherwise clobber the loaded case/order/remittance values).
+  const previousWatchedStateRef = useRef<string | null>(null)
   useEffect(() => {
+    const previous = previousWatchedStateRef.current
+    previousWatchedStateRef.current = liveWatchedState
+    // First render (no previous value) → skip the wipe.
+    if (previous === null) return
+    // Server-side load: previous was '' (initial defaults before the row
+    // arrived), now it's the loaded state. That's a sync, not a user toggle.
+    if (previous === '') return
+    if (previous === liveWatchedState) return
     formMethods.setValue('caseNumber', '')
     formMethods.setValue('orderNumber', '')
     formMethods.setValue('remittanceNumber', '')

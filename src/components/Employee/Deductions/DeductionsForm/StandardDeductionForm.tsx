@@ -1,9 +1,12 @@
 import { useTranslation } from 'react-i18next'
+import { useWatch } from 'react-hook-form'
 import type {
   Garnishment,
   GarnishmentType,
 } from '@gusto/embedded-api/models/components/garnishment'
+import type { Control } from 'react-hook-form'
 import { useDeductionForm } from '../shared/useDeductionForm'
+import type { DeductionFormData } from '../shared/useDeductionForm'
 import { Form } from '@/components/Common/Form'
 import { ActionsLayout } from '@/components/Common'
 import { Flex } from '@/components/Common/Flex/Flex'
@@ -19,6 +22,10 @@ interface StandardDeductionFormProps {
   /** Only meaningful when `courtOrdered: true`. Selects the garnishment type
    *  on create. Ignored in edit mode (the existing type is preserved). */
   garnishmentType?: GarnishmentType
+  /** Section heading shown above the form. The parent picker is responsible
+   *  for translating the garnishment-type label so this component doesn't
+   *  need to repeat the labels mapping. */
+  title: string
   onSaved: (deduction: Garnishment, mode: 'create' | 'update') => void
   onCancel: () => void
 }
@@ -28,6 +35,7 @@ export function StandardDeductionForm({
   deduction,
   courtOrdered,
   garnishmentType,
+  title,
   onSaved,
   onCancel,
 }: StandardDeductionFormProps) {
@@ -46,24 +54,50 @@ export function StandardDeductionForm({
   }
 
   const { Fields } = form.form
-  // Read once for adornment-less label/description switching; the field types
-  // for the schema don't expose adornments through HookField, but the
-  // description text and number format still vary by mode.
-  const watchedDeductAsPercentage =
-    form.form.hookFormInternals.formMethods.getValues('deductAsPercentage')
+  return (
+    <ReadyForm
+      form={form}
+      Fields={Fields}
+      Components={Components}
+      t={t}
+      title={title}
+      onSaved={onSaved}
+      onCancel={onCancel}
+    />
+  )
+}
+
+// Split into a child component so we can call `useWatch` on the form's control
+// only once the hook is in its ready state (the control reference exists then).
+function ReadyForm({
+  form,
+  Fields,
+  Components,
+  t,
+  title,
+  onSaved,
+  onCancel,
+}: {
+  form: Extract<ReturnType<typeof useDeductionForm>, { isLoading: false }>
+  Fields: Extract<ReturnType<typeof useDeductionForm>, { isLoading: false }>['form']['Fields']
+  Components: ReturnType<typeof useComponentContext>
+  t: ReturnType<typeof useTranslation<'Employee.Deductions'>>['t']
+  title: string
+  onSaved: (deduction: Garnishment, mode: 'create' | 'update') => void
+  onCancel: () => void
+}) {
+  // useWatch subscribes to changes; getValues only reads once. We need the
+  // subscription because `Fields.Amount`'s `format` and `description` props
+  // need to re-render when the user toggles Percentage / Fixed amount.
+  const watchedDeductAsPercentage = useWatch({
+    control: form.form.hookFormInternals.formMethods.control as Control<DeductionFormData>,
+    name: 'deductAsPercentage',
+  })
 
   const handleSubmit = async () => {
     const result = await form.actions.onSubmit()
     if (result) onSaved(result.data, result.mode)
   }
-
-  const title = courtOrdered
-    ? garnishmentType
-      ? // Translated label per type — pulled by the parent (DeductionsForm)
-        // when the user picks; here we just show the section title.
-        t('childSupportTitle')
-      : t('childSupportTitle')
-    : t('customDeductionTitle')
 
   return (
     <BaseLayout error={form.errorHandling.errors}>

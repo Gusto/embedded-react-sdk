@@ -130,6 +130,7 @@ export function DeductionsForm({
             employeeId={employeeId}
             deduction={deduction ?? null}
             courtOrdered={false}
+            title={t('customDeductionTitle')}
             onSaved={onSaved}
             onCancel={onCancel}
           />
@@ -148,6 +149,7 @@ export function DeductionsForm({
             deduction={deduction ?? null}
             courtOrdered={true}
             garnishmentType={variant.type}
+            title={garnishmentTypeLabel(t, variant.type)}
             onSaved={onSaved}
             onCancel={onCancel}
           />
