@@ -107,8 +107,8 @@ function buildParamNameMap(project: Project, funcPaths: string[]): Record<string
   const paramNameMap: Record<string, string> = {}
 
   for (const path of funcPaths) {
-    for (const match of path.matchAll(/\{([^}]+)\}/g)) {
-      const snakeParam = match[1]
+    // {employee_id}  →  snakeParam = "employee_id"
+    for (const [_fullMatch, snakeParam] of path.matchAll(/\{([^}]+)\}/g)) {
       if (!paramNameMap[snakeParam]) {
         paramNameMap[snakeParam] = snakeToCamelLookup.get(snakeParam) ?? snakeToCamel(snakeParam)
       }
@@ -254,6 +254,7 @@ function collectTransitiveApiImports(
 }
 
 function normalizeEndpointPath(openApiPath: string, paramNameMap: Record<string, string>): string {
+  // {employee_id}  →  paramName = "employee_id"
   return openApiPath.replace(/\{([^}]+)\}/g, (_match, paramName: string) => {
     const normalized = paramNameMap[paramName]
     if (!normalized) {
@@ -270,9 +271,12 @@ function parseNamespaceExports(): Map<string, string> {
 
   try {
     const content = readFileSync(indexPath, 'utf-8')
+    // export * as EmployeeManagement from './Employee/exports/employeeManagement'  →
+    //   namespaceName = "EmployeeManagement"
+    //   domainDir = "Employee/exports/employeeManagement"
     const namespacePattern = /export\s+\*\s+as\s+(\w+)\s+from\s+['"]\.\/([^'"]+)['"]/g
-    for (const match of content.matchAll(namespacePattern)) {
-      namespaces.set(match[1], match[2])
+    for (const [_fullMatch, namespaceName, domainDir] of content.matchAll(namespacePattern)) {
+      namespaces.set(namespaceName, domainDir)
     }
   } catch (err) {
     console.error(`ERROR: Could not read ${indexPath}`)
@@ -289,12 +293,13 @@ function parseComponentExports(domainDir: string): Map<string, string> {
   for (const barrelPath of possibleBarrelFiles) {
     try {
       const content = readFileSync(barrelPath, 'utf-8')
+      // export { EmployeeDocuments as Documents } from './Documents'  →
+      //   nameToken = "EmployeeDocuments as Documents"
+      //   importPath = "./Documents"
       // Uses the alias when present so the map key matches the public export name.
       const exportPattern =
         /export\s+\{\s*(\w+(?:\s+as\s+\w+)?)[^}]*?\}\s+from\s+['"](\.[^'"]+)['"]/g
-      for (const match of content.matchAll(exportPattern)) {
-        const nameToken = match[1]
-        const importPath = match[2]
+      for (const [_fullMatch, nameToken, importPath] of content.matchAll(exportPattern)) {
         const asIndex = nameToken.indexOf(' as ')
         const componentName = asIndex >= 0 ? nameToken.slice(asIndex + 4).trim() : nameToken.trim()
         exports.set(componentName, importPath)
@@ -408,7 +413,13 @@ function deriveFlowBlocks(flowDir: string, blockMappings: BlockMapping[]): strin
     dirToBlocks.get(mapping.componentDir)!.push(mapping.blockName)
   }
 
+  // import { EmployeeForm } from '@/components/Employee/Form'  →
+  //   allImportedNames = " EmployeeForm "
+  //   importPath = "Employee/Form"
   const absoluteImportPattern = /import\s+\{([^}]+)\}\s+from\s+['"]@\/components\/([^'"]+)['"]/g
+  // import { EmployeeForm, AnotherImport } from '../shared/EmployeeForm'  →
+  //   allImportedNames = " EmployeeForm, AnotherImport "
+  //   importPath = "../shared/EmployeeForm"
   const relativeImportPattern = /import\s+\{([^}]+)\}\s+from\s+['"](\.[^'"]+)['"]/g
 
   for (const filePath of files) {
@@ -451,8 +462,9 @@ function deriveFlowBlocks(flowDir: string, blockMappings: BlockMapping[]): strin
 function extractVariables(endpoints: Endpoint[]): string[] {
   const variables = new Set<string>()
   for (const ep of endpoints) {
-    for (const match of ep.path.matchAll(/:([a-zA-Z]+)/g)) {
-      variables.add(match[1])
+    // :companyId  →  varName = "companyId"
+    for (const [_fullMatch, varName] of ep.path.matchAll(/:([a-zA-Z]+)/g)) {
+      variables.add(varName)
     }
   }
   return [...variables].sort()
