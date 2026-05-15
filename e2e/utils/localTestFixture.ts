@@ -114,10 +114,11 @@ export const test = base.extend<ScenarioFixtures & { localConfig: LocalConfig }>
         params.set('companyId', scenario.companyId)
 
         const firstEmployee = Object.values(scenario.employeeIds)[0]
-        if (firstEmployee) params.set('employeeId', firstEmployee)
+        if (firstEmployee && !params.has('employeeId')) params.set('employeeId', firstEmployee)
 
         const firstContractor = Object.values(scenario.contractorIds)[0]
-        if (firstContractor) params.set('contractorId', firstContractor)
+        if (firstContractor && !params.has('contractorId'))
+          params.set('contractorId', firstContractor)
 
         if (scenario.paySchedule?.uuid) params.set('payScheduleUuid', scenario.paySchedule.uuid)
       } else {
