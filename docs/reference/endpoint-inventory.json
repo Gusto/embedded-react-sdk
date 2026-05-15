@@ -785,23 +785,10 @@
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeId/i9_authorization"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/forms/:formId"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/forms/:formId/pdf"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeId/forms/:formId/sign"
         }
       ],
       "variables": [
-        "employeeId",
-        "formId"
+        "employeeId"
       ]
     },
     "Employee.EmployeeDocuments": {
@@ -2384,7 +2371,6 @@
       "blocks": [
         "Employee.Compensation",
         "Employee.Deductions",
-        "Employee.EmployeeDocuments",
         "Employee.EmployeeList",
         "Employee.FederalTaxes",
         "Employee.OnboardingFlow",
@@ -2449,10 +2435,6 @@
         {
           "method": "GET",
           "path": "/v1/garnishments/child_support"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeId/onboarding_documents_config"
         },
         {
           "method": "GET",
@@ -2566,7 +2548,6 @@
     },
     "Employee.SelfOnboardingFlow": {
       "blocks": [
-        "Employee.DocumentSigner",
         "Employee.FederalTaxes",
         "Employee.Landing",
         "Employee.OnboardingSummary",
@@ -2578,39 +2559,15 @@
       "endpoints": [
         {
           "method": "GET",
-          "path": "/v1/employees/:employeeId/forms"
+          "path": "/v1/employees/:employeeUuid/federal_taxes"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/employees/:employeeUuid/federal_taxes"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/i9_authorization"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeId/i9_authorization"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/forms/:formId"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/forms/:formId/pdf"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeId/forms/:formId/sign"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeUuid/federal_taxes"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeUuid/federal_taxes"
         },
         {
           "method": "GET",
@@ -2706,7 +2663,6 @@
         "companyId",
         "employeeId",
         "employeeUuid",
-        "formId",
         "homeAddressUuid",
         "workAddressUuid"
       ]
