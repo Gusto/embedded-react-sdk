@@ -117,6 +117,7 @@ const onContinue = fn().mockName('onContinue')
 function StoryWrapper({
   initialSelected = new Set<string>(),
   showReassignmentWarning = false,
+  isHolidayPolicy = false,
   employees = mockEmployees,
   pagination,
   initialBalances = {},
@@ -127,6 +128,7 @@ function StoryWrapper({
 }: {
   initialSelected?: Set<string>
   showReassignmentWarning?: boolean
+  isHolidayPolicy?: boolean
   employees?: EmployeeItem[]
   pagination?: PaginationControlProps
   initialBalances?: Record<string, string>
@@ -173,6 +175,7 @@ function StoryWrapper({
         else onContinue()
       }}
       showReassignmentWarning={showReassignmentWarning}
+      isHolidayPolicy={isHolidayPolicy}
       balances={hideBalances ? undefined : balances}
       onBalanceChange={hideBalances ? undefined : handleBalanceChange}
       pagination={pagination}
@@ -208,6 +211,8 @@ export const AllSelected = () => (
 export const WithReassignmentWarning = () => <StoryWrapper showReassignmentWarning />
 
 export const WithoutReassignmentWarning = () => <StoryWrapper />
+
+export const HolidayPolicy = () => <StoryWrapper isHolidayPolicy />
 
 export const WithPagination = () => (
   <StoryWrapper initialSelected={new Set(['1', '4', '6'])} pagination={mockPagination} />
