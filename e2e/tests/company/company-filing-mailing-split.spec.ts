@@ -28,5 +28,10 @@ test.describe('CompanyOnboarding — filing/mailing split', () => {
         name: /get started|let's get started|we need a few more details/i,
       }),
     ).toBeVisible({ timeout: 30000 })
+
+    await page.getByRole('button', { name: /start onboarding|continue onboarding/i }).click()
+    await waitForLoadingComplete(page, 30000)
+
+    await expect(page.getByRole('heading', { name: /address/i })).toBeVisible({ timeout: 30000 })
   })
 })
