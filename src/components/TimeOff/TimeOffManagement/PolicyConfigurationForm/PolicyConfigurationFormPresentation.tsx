@@ -88,6 +88,9 @@ export function PolicyConfigurationFormPresentation({
     }
     if (accrualMethod !== 'per_hour_paid' && accrualMethod !== 'per_calendar_year') {
       setValue('resetDateType', undefined)
+      setValue('resetMonth', 1)
+      setValue('resetDay', 1)
+      setValue('accrualRate', undefined)
     }
   }, [accrualMethod, setValue])
 
