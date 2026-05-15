@@ -1,14 +1,11 @@
 import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
-import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlowComponents'
 import { DeductionsForm } from './DeductionsForm/DeductionsForm'
 import { DeductionsList } from './DeductionsList/DeductionsList'
 import { IncludeDeductions } from './IncludeDeductions/IncludeDeductions'
 import { useDeductionsList } from './shared/useDeductionsList'
 import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/components/Base/Base'
 import type { OnEventType } from '@/components/Base/useBase'
-import { useFlow } from '@/components/Flow/useFlow'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { componentEvents, type EventType } from '@/shared/constants'
 
@@ -146,27 +143,4 @@ function DeductionsRoot({ employeeId, dictionary, onEvent }: DeductionsRootProps
       <IncludeDeductions onAdd={handleAddFromInclude} onContinue={handleContinueFromInclude} />
     </BaseLayout>
   )
-}
-
-/**
- * Flow-context bridge for the outer OnboardingFlow state machine. Reads
- * `employeeId` and `onEvent` from the Flow context and mounts `Deductions`.
- * Mirrors how PaymentMethodContextual / CompensationContextual feed into the
- * same state machine.
- */
-export const DeductionsContextual = () => {
-  const { employeeId, onEvent } = useFlow<OnboardingContextInterface>()
-  const { t } = useTranslation('common')
-
-  if (!employeeId) {
-    throw new Error(
-      t('errors.missingParamsOrContext', {
-        component: 'Deductions',
-        param: 'employeeId',
-        provider: 'FlowProvider',
-      }),
-    )
-  }
-
-  return <Deductions employeeId={employeeId} onEvent={onEvent} />
 }
