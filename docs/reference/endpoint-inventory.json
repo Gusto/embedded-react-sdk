@@ -727,24 +727,20 @@
           "path": "/v1/employees/:employeeId/bank_accounts"
         },
         {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/payment_method"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/employees/:employeeId/payment_method"
+        },
+        {
           "method": "DELETE",
           "path": "/v1/employees/:employeeId/bank_accounts/:bankAccountUuid"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/bank_accounts"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/payment_method"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeId/bank_accounts/:bankAccountUuid"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeId/payment_method"
         }
       ],
       "variables": [
@@ -823,6 +819,10 @@
       "endpoints": [
         {
           "method": "GET",
+          "path": "/v1/payrolls/:payrollId/employees/:employeeId/pay_stub"
+        },
+        {
+          "method": "GET",
           "path": "/v1/employees/:employeeId"
         },
         {
@@ -832,14 +832,6 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/work_addresses"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/payment_method"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/bank_accounts"
         },
         {
           "method": "GET",
@@ -864,7 +856,8 @@
       ],
       "variables": [
         "employeeId",
-        "employeeUuid"
+        "employeeUuid",
+        "payrollId"
       ]
     },
     "Employee.HomeAddress": {
@@ -2483,24 +2476,20 @@
           "path": "/v1/employees/:employeeId/bank_accounts"
         },
         {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/payment_method"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/employees/:employeeId/payment_method"
+        },
+        {
           "method": "DELETE",
           "path": "/v1/employees/:employeeId/bank_accounts/:bankAccountUuid"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/bank_accounts"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/payment_method"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeId/bank_accounts/:bankAccountUuid"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeId/payment_method"
         },
         {
           "method": "POST",
@@ -2625,24 +2614,20 @@
           "path": "/v1/employees/:employeeId/bank_accounts"
         },
         {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/payment_method"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/employees/:employeeId/payment_method"
+        },
+        {
           "method": "DELETE",
           "path": "/v1/employees/:employeeId/bank_accounts/:bankAccountUuid"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/bank_accounts"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/payment_method"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeId/bank_accounts/:bankAccountUuid"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeId/payment_method"
         },
         {
           "method": "GET",

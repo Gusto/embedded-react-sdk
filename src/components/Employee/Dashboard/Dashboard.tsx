@@ -1,5 +1,8 @@
 import { useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
+import { payrollsGetPayStub } from '@gusto/embedded-api/funcs/payrollsGetPayStub'
+import { useErrorBoundary } from 'react-error-boundary'
 import {
   useEmployeeBasicDetails,
   useEmployeeCompensation,
@@ -13,6 +16,7 @@ import { DocumentsView } from './DocumentsView'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/components/Base/Base'
+import { readableStreamToBlob } from '@/helpers/readableStreamToBlob'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 
@@ -27,7 +31,12 @@ function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
   useComponentDictionary('Employee.Dashboard', dictionary)
   const { t } = useTranslation('Employee.Dashboard')
   const Components = useComponentContext()
+  const gustoEmbedded = useGustoEmbeddedContext()
+  const { showBoundary } = useErrorBoundary()
   const [selectedTab, setSelectedTab] = useState<DashboardTab>('basicDetails')
+  const [downloadingPayrollUuids, setDownloadingPayrollUuids] = useState<ReadonlySet<string>>(
+    () => new Set(),
+  )
 
   const basicDetails = useEmployeeBasicDetails({ employeeId })
   const compensation = useEmployeeCompensation({ employeeId })
@@ -56,17 +65,68 @@ function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
     onEvent(componentEvents.EMPLOYEE_COMPENSATION_UPDATE, { employeeId, job: primaryJob })
   }, [onEvent, employeeId, primaryJob])
 
-  const handleSplitPaycheck = useCallback(() => {
-    onEvent(componentEvents.EMPLOYEE_SPLIT_PAYCHECK, { employeeId })
-  }, [onEvent, employeeId])
-
-  const handleAddBankAccount = useCallback(() => {
-    onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATE, { employeeId })
-  }, [onEvent, employeeId])
-
   const handleAddDeduction = useCallback(() => {
     onEvent(componentEvents.EMPLOYEE_DEDUCTION_ADD, { employeeId })
   }, [onEvent, employeeId])
+
+  const handlePaystubDownload = useCallback(
+    async (payrollUuid: string) => {
+      const newWindow = window.open('', '_blank')
+      const loadingMessage = t('jobAndPay.paystubs.downloadLoadingMessage')
+      if (newWindow) {
+        // Avoid the user staring at about:blank while we fetch the PDF. The
+        // navigation to the Blob URL below replaces this document.
+        const doc = newWindow.document
+        doc.title = loadingMessage
+        const style = doc.createElement('style')
+        style.textContent =
+          'body{font-family:system-ui,-apple-system,sans-serif;display:flex;align-items:center;' +
+          'justify-content:center;height:100vh;margin:0;color:#444;gap:12px}' +
+          '.spinner{width:20px;height:20px;border:2px solid #ccc;border-top-color:#444;' +
+          'border-radius:50%;animation:spin .8s linear infinite}' +
+          '@keyframes spin{to{transform:rotate(360deg)}}'
+        doc.head.appendChild(style)
+        const spinner = doc.createElement('div')
+        spinner.className = 'spinner'
+        spinner.setAttribute('aria-hidden', 'true')
+        const label = doc.createElement('span')
+        label.textContent = loadingMessage
+        doc.body.replaceChildren(spinner, label)
+      }
+      setDownloadingPayrollUuids(prev => {
+        const next = new Set(prev)
+        next.add(payrollUuid)
+        return next
+      })
+      try {
+        const response = await payrollsGetPayStub(gustoEmbedded, {
+          payrollId: payrollUuid,
+          employeeId,
+        })
+        if (!response.value?.responseStream) {
+          throw new Error(t('jobAndPay.paystubs.downloadError'))
+        }
+        const pdfBlob = await readableStreamToBlob(response.value.responseStream, 'application/pdf')
+        const url = URL.createObjectURL(pdfBlob)
+        if (newWindow) {
+          newWindow.location.href = url
+        }
+        URL.revokeObjectURL(url)
+      } catch (err) {
+        if (newWindow) {
+          newWindow.close()
+        }
+        showBoundary(err instanceof Error ? err : new Error(String(err)))
+      } finally {
+        setDownloadingPayrollUuids(prev => {
+          const next = new Set(prev)
+          next.delete(payrollUuid)
+          return next
+        })
+      }
+    },
+    [gustoEmbedded, employeeId, t, showBoundary],
+  )
 
   const handleEditFederalTaxes = useCallback(() => {
     onEvent(componentEvents.EMPLOYEE_FEDERAL_TAXES_EDIT, {
@@ -100,7 +160,7 @@ function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
   }
 
   const { employee, currentHomeAddress, currentWorkAddress } = basicDetails.data
-  const { employeePaymentMethod, bankAccounts, garnishmentList, payStubs } = compensation.data
+  const { garnishmentList, payStubs } = compensation.data
   const { employeeStateTaxesList } = taxes.data
   const { formList } = forms.data
 
@@ -163,17 +223,17 @@ function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
 
           {selectedTab === 'jobAndPay' && (
             <JobAndPayView
+              employeeId={employeeId}
               job={primaryJob}
-              paymentMethod={employeePaymentMethod}
-              bankAccounts={bankAccounts}
               garnishments={garnishmentList}
               payStubs={payStubs}
               payStubsPagination={payStubsPagination}
               isLoading={isLoadingJobAndPay}
+              onEvent={onEvent}
               onEditCompensation={handleEditCompensation}
-              onSplitPaycheck={handleSplitPaycheck}
-              onAddBankAccount={handleAddBankAccount}
               onAddDeduction={handleAddDeduction}
+              onPaystubDownload={handlePaystubDownload}
+              downloadingPayrollUuids={downloadingPayrollUuids}
             />
           )}
 

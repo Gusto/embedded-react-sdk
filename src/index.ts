@@ -281,6 +281,79 @@ export type {
 } from '@/components/Employee/Profile/shared/useHomeAddressForm'
 
 export {
+  useBankForm,
+  BankFormErrorCodes,
+  createBankFormSchema,
+  ACCOUNT_TYPES,
+} from '@/components/Employee/PaymentMethod/shared/useBankForm'
+export type {
+  BankFormSubmitOptions,
+  UseBankFormProps,
+  UseBankFormResult,
+  UseBankFormReady,
+  BankFormFields,
+  BankFormFieldsMetadata,
+  BankFormErrorCode,
+  BankFormData,
+  BankFormOutputs,
+  BankFormField,
+  BankFormOptionalFieldsToRequire,
+  AccountType,
+  BankFormRequiredValidation,
+  RoutingNumberValidation,
+  AccountNumberValidation,
+  NameFieldProps,
+  RoutingNumberFieldProps,
+  AccountNumberFieldProps,
+  AccountTypeFieldProps,
+} from '@/components/Employee/PaymentMethod/shared/useBankForm'
+
+export {
+  usePaymentMethodForm,
+  PaymentMethodFormErrorCodes,
+  createPaymentMethodFormSchema,
+  PAYMENT_METHOD_TYPES,
+} from '@/components/Employee/PaymentMethod/shared/usePaymentMethodForm'
+export type {
+  UsePaymentMethodFormProps,
+  UsePaymentMethodFormResult,
+  UsePaymentMethodFormReady,
+  PaymentMethodFormFields,
+  PaymentMethodFormFieldsMetadata,
+  PaymentMethodFormErrorCode,
+  PaymentMethodFormData,
+  PaymentMethodFormOutputs,
+  PaymentMethodFormField,
+  PaymentMethodFormOptionalFieldsToRequire,
+  PaymentMethodType,
+  PaymentMethodFormRequiredValidation,
+  TypeFieldProps,
+} from '@/components/Employee/PaymentMethod/shared/usePaymentMethodForm'
+
+export {
+  useSplitPaymentsForm,
+  SplitPaymentsFormErrorCodes,
+  createSplitPaymentsFormSchema,
+  SPLIT_BY_VALUES,
+} from '@/components/Employee/PaymentMethod/shared/useSplitPaymentsForm'
+export type {
+  UseSplitPaymentsFormProps,
+  UseSplitPaymentsFormResult,
+  UseSplitPaymentsFormReady,
+  SplitPaymentsFormFields,
+  SplitPaymentsFormFieldsMetadata,
+  SplitPaymentsFormErrorCode,
+  SplitPaymentsFormData,
+  SplitPaymentsFormOutputs,
+  SplitPaymentsFormField,
+  SplitPaymentsFormOptionalFieldsToRequire,
+  SplitByValue,
+  SplitPaymentsFormRequiredValidation,
+  SplitByFieldProps,
+  WorkingSplit,
+} from '@/components/Employee/PaymentMethod/shared/useSplitPaymentsForm'
+
+export {
   useFederalTaxesForm,
   FederalTaxesErrorCodes,
   createFederalTaxesSchema,
