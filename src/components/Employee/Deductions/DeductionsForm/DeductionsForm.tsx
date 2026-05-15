@@ -1,39 +1,18 @@
 import { useTranslation } from 'react-i18next'
-import { useState } from 'react'
-import { useGarnishmentsListSuspense } from '@gusto/embedded-api/react-query/garnishmentsList'
-import { useGarnishmentsGetChildSupportDataSuspense } from '@gusto/embedded-api/react-query/garnishmentsGetChildSupportData'
-import type { GarnishmentType } from '@gusto/embedded-api/models/components/garnishment'
-import ChildSupportForm from './ChildSupportForm'
-import GarnishmentForm from './GarnishmentForm'
-import CustomDeductionForm from './CustomDeductionForm'
-import {
-  BaseComponent,
-  type BaseComponentInterface,
-  type CommonComponentInterface,
-  useBase,
-} from '@/components/Base'
-import { Grid } from '@/components/Common/Grid/Grid'
-import { useI18n } from '@/i18n'
-import { componentEvents } from '@/shared/constants'
+import { useMemo, useState } from 'react'
+import type {
+  Garnishment,
+  GarnishmentType,
+} from '@gusto/embedded-api/models/components/garnishment'
+import { StandardDeductionForm } from './StandardDeductionForm'
+import { ChildSupportFormView } from './ChildSupportFormView'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { useComponentDictionary } from '@/i18n/I18n'
+import { Grid } from '@/components/Common/Grid/Grid'
 import { Flex } from '@/components/Common/Flex/Flex'
+import { useI18n } from '@/i18n'
 
-interface DeductionsFormProps extends CommonComponentInterface<'Employee.Deductions'> {
-  employeeId: string
-  deductionId?: string | null
-}
-
-export function DeductionsForm(props: DeductionsFormProps & BaseComponentInterface) {
-  return (
-    <BaseComponent {...props}>
-      <Root {...props}>{props.children}</Root>
-    </BaseComponent>
-  )
-}
-
-// deductions can be either garnishment (court-ordered) or a custom deduction
-const SUPPORTED_GARNISHMENT_TYPES: GarnishmentType[] = [
+// Garnishment types the form supports (mirrors the legacy SUPPORTED_GARNISHMENT_TYPES).
+const SUPPORTED_GARNISHMENT_TYPES: readonly GarnishmentType[] = [
   'child_support',
   'federal_tax_lien',
   'state_tax_lien',
@@ -41,104 +20,69 @@ const SUPPORTED_GARNISHMENT_TYPES: GarnishmentType[] = [
   'creditor_garnishment',
   'federal_loan',
   'other_garnishment',
-]
+] as const
 
-function Root({ className, employeeId, deductionId, dictionary }: DeductionsFormProps) {
-  const { onEvent } = useBase()
+type Variant = { kind: 'custom' } | { kind: 'garnishment'; type: GarnishmentType }
+
+function deductionToVariant(deduction: Garnishment): Variant {
+  const type = deduction.garnishmentType
+  if (!deduction.courtOrdered) return { kind: 'custom' }
+  return {
+    kind: 'garnishment',
+    type: type && SUPPORTED_GARNISHMENT_TYPES.includes(type) ? type : 'child_support',
+  }
+}
+
+export interface DeductionsFormProps {
+  className?: string
+  employeeId: string
+  /** When provided, the form is in edit mode and the deduction's existing
+   *  garnishment type selects the inline form variant. Omit for add mode. */
+  deduction?: Garnishment | null
+  onSaved: (deduction: Garnishment, mode: 'create' | 'update') => void
+  onCancel: () => void
+}
+
+export function DeductionsForm({
+  className,
+  employeeId,
+  deduction,
+  onSaved,
+  onCancel,
+}: DeductionsFormProps) {
+  useI18n('Employee.Deductions')
   const { t } = useTranslation('Employee.Deductions')
   const Components = useComponentContext()
 
-  useComponentDictionary('Employee.Deductions', dictionary)
-  useI18n('Employee.Deductions')
+  const isEdit = !!deduction
+  const title = isEdit ? t('editDeductionTitle') : t('addDeductionTitle')
 
-  // Fetch all garnishments to find the specific one by ID
-  const { data } = useGarnishmentsListSuspense({ employeeId })
-
-  // Fetch child support garnishment metadata
-  const { data: childSupportData } = useGarnishmentsGetChildSupportDataSuspense({})
-
-  // find existing deduction to determine if in ADD or EDIT mode
-  // if deduction exists we are editing, else we are adding
-  const deduction = deductionId
-    ? (data.garnishments?.find(g => g.uuid === deductionId) ?? null)
-    : null
-  const title = !deduction ? t('addDeductionTitle') : t('editDeductionTitle')
-  const deductionType = deduction?.garnishmentType
-  const stateAgencies =
-    childSupportData.childSupportData?.agencies?.map(a => ({
-      label: a.name as string,
-      value: a.state as string,
-    })) || []
-
-  // if deduction exists check if it has a type, else no default selection
-  const [isGarnishment, setIsGarnishment] = useState<boolean | null>(
-    deduction
-      ? deductionType && SUPPORTED_GARNISHMENT_TYPES.includes(deductionType)
-        ? true
-        : false
-      : null,
+  // Pre-select the variant in edit mode; let the user pick in add mode.
+  const initialVariant = useMemo<Variant | null>(
+    () => (deduction ? deductionToVariant(deduction) : null),
+    [deduction],
   )
-  const [selectedGarnishment, setSelectedGarnishment] = useState<GarnishmentType>(
-    deductionType || 'child_support',
-  )
-  const garnishmentLabels: Record<string, string> = {
-    child_support: t('childSupportTitle'),
-    federal_tax_lien: t('federalTaxLien'),
-    state_tax_lien: t('stateTaxLien'),
-    student_loan: t('studentLoan'),
-    creditor_garnishment: t('creditorGarnishment'),
-    federal_loan: t('federalLoan'),
-    other_garnishment: t('otherGarnishment'),
-  }
-  const garnishmentPlaceholder = garnishmentLabels[selectedGarnishment]
-  const garnishmentOptions = SUPPORTED_GARNISHMENT_TYPES.map(garnishment => ({
-    value: garnishment,
-    label: garnishmentLabels[garnishment] as string,
-  }))
+  const [variant, setVariant] = useState<Variant | null>(initialVariant)
 
-  const defaultDeductionTypeSelection = deduction
-    ? deductionType
-      ? 'garnishment'
-      : 'custom'
-    : undefined
-
-  // filter out specific fipsCodes/counties as mapped to selected state agency
-  // some states only have 1 fips code/county to cover the entire state,
-  // but the API will return a null label so we need to provide a default label
-  const [stateAgency, setStateAgency] = useState(deduction?.childSupport?.state || '')
-  const handleStateAgencySelect = (stateAgency: string) => {
-    setStateAgency(stateAgency)
-  }
-  const selectedAgencyFipsCodes = childSupportData.childSupportData?.agencies?.find(
-    agency => agency.state === stateAgency,
-  )?.fipsCodes
-  const counties = (selectedAgencyFipsCodes ?? [])
-    .filter(fipsCode => typeof fipsCode.code === 'string')
-    .map(fipsCode => ({
-      label: fipsCode.county?.length ? fipsCode.county : t('allCounties'),
-      value: fipsCode.code ?? '',
-    }))
-  const singleFipsCode =
-    selectedAgencyFipsCodes?.length === 1 ? selectedAgencyFipsCodes[0] : undefined
-  const singleAllCountiesFipsCode =
-    singleFipsCode && !singleFipsCode.county?.length ? singleFipsCode.code : null
-
-  // get a reference to the currently selected agency to determine which required fields to display/include in submission
-  const selectedAgency = childSupportData.childSupportData?.agencies?.find(
-    agency => agency.state === stateAgency,
+  const garnishmentTypeOptions = useMemo(
+    () =>
+      SUPPORTED_GARNISHMENT_TYPES.map(value => ({
+        value,
+        label: garnishmentTypeLabel(t, value),
+      })),
+    [t],
   )
 
-  const handleCancel = () => {
-    // if any active garnishments return to list view, else return to empty state view
-    if (data.garnishments?.some(g => g.active)) {
-      onEvent(componentEvents.EMPLOYEE_DEDUCTION_CANCEL)
+  const handleSelectDeductionType = (selection: string) => {
+    if (selection === 'custom') {
+      setVariant({ kind: 'custom' })
     } else {
-      onEvent(componentEvents.EMPLOYEE_DEDUCTION_CANCEL_EMPTY)
+      setVariant({ kind: 'garnishment', type: 'child_support' })
     }
   }
 
-  const handleSelectDeductionType = (selection: string) => {
-    setIsGarnishment(selection === 'garnishment')
+  const handleSelectGarnishmentType = (value: string) => {
+    setVariant({ kind: 'garnishment', type: value as GarnishmentType })
   }
 
   return (
@@ -151,7 +95,7 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
           </Components.Text>
         </Flex>
 
-        {!deduction && (
+        {!isEdit && (
           <>
             <Flex flexDirection="column" gap={20}>
               <Components.RadioGroup
@@ -161,61 +105,78 @@ function Root({ className, employeeId, deductionId, dictionary }: DeductionsForm
                   { value: 'garnishment', label: t('garnishmentOption') },
                   { value: 'custom', label: t('customDeductionOption') },
                 ]}
-                defaultValue={defaultDeductionTypeSelection}
+                defaultValue={variant?.kind === 'custom' ? 'custom' : undefined}
                 onChange={handleSelectDeductionType}
                 isRequired
               />
 
-              {isGarnishment && (
+              {variant?.kind === 'garnishment' && (
                 <Components.Select
                   label={t('garnishmentType')}
-                  options={garnishmentOptions}
-                  placeholder={garnishmentPlaceholder}
-                  onChange={value => {
-                    setSelectedGarnishment(value as GarnishmentType)
-                  }}
-                  isDisabled={!!deduction} // API does not allow to change/edit an existing deduction type
+                  options={garnishmentTypeOptions}
+                  value={variant.type}
+                  onChange={handleSelectGarnishmentType}
                   isRequired
                 />
               )}
             </Flex>
 
-            {isGarnishment !== null && <hr />}
+            {variant !== null && <hr />}
           </>
         )}
 
-        {isGarnishment !== null &&
-          (isGarnishment ? (
-            <>
-              {selectedGarnishment === 'child_support' ? (
-                <ChildSupportForm
-                  deduction={deduction}
-                  employeeId={employeeId}
-                  handleStateAgencySelect={handleStateAgencySelect}
-                  stateAgencies={stateAgencies}
-                  counties={counties}
-                  singleAllCountiesFipsCode={singleAllCountiesFipsCode}
-                  selectedAgency={selectedAgency}
-                  onCancel={handleCancel}
-                />
-              ) : (
-                <GarnishmentForm
-                  deduction={deduction}
-                  employeeId={employeeId}
-                  selectedGarnishmentType={selectedGarnishment}
-                  selectedGarnishmentTitle={garnishmentPlaceholder!}
-                  onCancel={handleCancel}
-                />
-              )}
-            </>
-          ) : (
-            <CustomDeductionForm
-              deduction={deduction}
-              employeeId={employeeId}
-              onCancel={handleCancel}
-            />
-          ))}
+        {variant?.kind === 'custom' && (
+          <StandardDeductionForm
+            employeeId={employeeId}
+            deduction={deduction ?? null}
+            courtOrdered={false}
+            title={t('customDeductionTitle')}
+            onSaved={onSaved}
+            onCancel={onCancel}
+          />
+        )}
+        {variant?.kind === 'garnishment' && variant.type === 'child_support' && (
+          <ChildSupportFormView
+            employeeId={employeeId}
+            deduction={deduction ?? null}
+            onSaved={onSaved}
+            onCancel={onCancel}
+          />
+        )}
+        {variant?.kind === 'garnishment' && variant.type !== 'child_support' && (
+          <StandardDeductionForm
+            employeeId={employeeId}
+            deduction={deduction ?? null}
+            courtOrdered={true}
+            garnishmentType={variant.type}
+            title={garnishmentTypeLabel(t, variant.type)}
+            onSaved={onSaved}
+            onCancel={onCancel}
+          />
+        )}
       </Grid>
     </section>
   )
+}
+
+function garnishmentTypeLabel(
+  t: ReturnType<typeof useTranslation<'Employee.Deductions'>>['t'],
+  value: GarnishmentType,
+): string {
+  switch (value) {
+    case 'child_support':
+      return t('childSupportTitle')
+    case 'federal_tax_lien':
+      return t('federalTaxLien')
+    case 'state_tax_lien':
+      return t('stateTaxLien')
+    case 'student_loan':
+      return t('studentLoan')
+    case 'creditor_garnishment':
+      return t('creditorGarnishment')
+    case 'federal_loan':
+      return t('federalLoan')
+    case 'other_garnishment':
+      return t('otherGarnishment')
+  }
 }

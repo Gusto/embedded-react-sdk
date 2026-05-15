@@ -1,13 +1,10 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { http, HttpResponse } from 'msw'
+import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
+import type { UseDeductionsListReady } from '../shared/useDeductionsList'
 import { DeductionsList } from './DeductionsList'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
-import { componentEvents } from '@/shared/constants'
-import { setupApiTestMocks } from '@/test/mocks/apiServer'
-import { getEmployeeGarnishments } from '@/test/mocks/apis/employees'
-import { server } from '@/test/mocks/server'
 
 vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', async () => {
   const actual = await vi.importActual('@/hooks/useContainerBreakpoints/useContainerBreakpoints')
@@ -18,158 +15,96 @@ vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', async () => {
   }
 })
 
+const buildDeduction = (uuid: string, description: string): Garnishment => ({
+  uuid,
+  version: `version-${uuid}`,
+  active: true,
+  amount: '100',
+  description,
+  recurring: true,
+  deductAsPercentage: false,
+  courtOrdered: false,
+  times: null,
+  annualMaximum: null,
+  payPeriodMaximum: null,
+  totalAmount: null,
+})
+
+const buildReady = (
+  deductions: Garnishment[],
+  overrides: Partial<UseDeductionsListReady> = {},
+): UseDeductionsListReady => ({
+  isLoading: false,
+  data: { deductions },
+  status: {
+    isFetching: false,
+    isPending: false,
+    deletingGarnishmentUuid: undefined,
+  },
+  actions: { onDelete: vi.fn() },
+  errorHandling: { errors: [], retryQueries: vi.fn(), clearSubmitError: vi.fn() },
+  ...overrides,
+})
+
 describe('DeductionsList', () => {
   const user = userEvent.setup()
-  const mockOnEvent = vi.fn()
 
-  beforeEach(() => {
-    setupApiTestMocks()
-    server.use(getEmployeeGarnishments)
-  })
-
-  const renderDeductionsList = (deductions: unknown[] = []) => {
-    server.use(
-      http.get('/api/v1/employees/:employee_id/garnishments', () =>
-        HttpResponse.json({ garnishments: deductions }),
-      ),
+  it('renders the table headers + the "Add another" and "Continue" buttons', async () => {
+    renderWithProviders(
+      <DeductionsList
+        deductionsList={buildReady([buildDeduction('1', 'Health Insurance')])}
+        onAdd={vi.fn()}
+        onEdit={vi.fn()}
+        onDelete={vi.fn()}
+        onContinue={vi.fn()}
+      />,
     )
 
-    return renderWithProviders(
-      <DeductionsList employeeId="test-employee-id" onEvent={mockOnEvent} />,
+    await waitFor(() => {
+      expect(screen.getByTestId('data-table')).toBeInTheDocument()
+    })
+    expect(screen.getByText('Deduction')).toBeInTheDocument()
+    expect(screen.getByText('Frequency')).toBeInTheDocument()
+    expect(screen.getByText('Withheld')).toBeInTheDocument()
+    expect(screen.getByText('Add another deduction')).toBeInTheDocument()
+    expect(screen.getByText('Continue')).toBeInTheDocument()
+  })
+
+  it('invokes onAdd when "Add another deduction" is clicked', async () => {
+    const onAdd = vi.fn()
+    renderWithProviders(
+      <DeductionsList
+        deductionsList={buildReady([buildDeduction('1', 'Health Insurance')])}
+        onAdd={onAdd}
+        onEdit={vi.fn()}
+        onDelete={vi.fn()}
+        onContinue={vi.fn()}
+      />,
     )
-  }
 
-  describe('Button Rendering', () => {
-    it('should show "Add another deduction" button', async () => {
-      renderDeductionsList([])
-
-      await waitFor(() => {
-        expect(screen.getByText('Add another deduction')).toBeInTheDocument()
-      })
-    })
-
-    it('should show "Add another deduction" button when deductions exist', async () => {
-      const mockDeductions = [
-        {
-          uuid: '1',
-          description: 'Test Deduction',
-          amount: '100',
-          active: true,
-          recurring: true,
-          deductAsPercentage: false,
-        },
-      ]
-
-      renderDeductionsList(mockDeductions)
-
-      await waitFor(() => {
-        expect(screen.getByText('Add another deduction')).toBeInTheDocument()
-      })
-    })
-
-    it('should show "Continue" button when no deductions exist', async () => {
-      renderDeductionsList([])
-      await waitFor(() => {
-        expect(screen.getAllByText('Continue')).toHaveLength(1)
-      })
-    })
-
-    it('should show "Continue" button when deductions exist', async () => {
-      const mockDeductions = [
-        {
-          uuid: '1',
-          description: 'Test Deduction',
-          amount: '100',
-          active: true,
-          recurring: true,
-          deductAsPercentage: false,
-        },
-      ]
-
-      renderDeductionsList(mockDeductions)
-      await waitFor(() => {
-        expect(screen.getAllByText('Continue')).toHaveLength(1)
-      })
-    })
+    await user.click(await screen.findByText('Add another deduction'))
+    expect(onAdd).toHaveBeenCalledTimes(1)
   })
 
-  describe('Button Interactions', () => {
-    it('should trigger EMPLOYEE_DEDUCTION_ADD when "Add another deduction" is clicked', async () => {
-      const mockDeductions = [
-        {
-          uuid: '1',
-          description: 'Test Deduction',
-          amount: '100',
-          active: true,
-          recurring: true,
-          deductAsPercentage: false,
-        },
-      ]
+  it('invokes onContinue when "Continue" is clicked', async () => {
+    const onContinue = vi.fn()
+    renderWithProviders(
+      <DeductionsList
+        deductionsList={buildReady([])}
+        onAdd={vi.fn()}
+        onEdit={vi.fn()}
+        onDelete={vi.fn()}
+        onContinue={onContinue}
+      />,
+    )
 
-      renderDeductionsList(mockDeductions)
-
-      await waitFor(() => {
-        expect(screen.getByText('Add another deduction')).toBeInTheDocument()
-      })
-
-      const addButton = screen.getByText('Add another deduction')
-      await user.click(addButton)
-
-      expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_DEDUCTION_ADD)
-    })
-
-    it('should trigger EMPLOYEE_DEDUCTION_DONE when "Continue" is clicked', async () => {
-      renderDeductionsList([])
-
-      await waitFor(() => {
-        expect(screen.getByText('Continue')).toBeInTheDocument()
-      })
-
-      const continueButton = screen.getByText('Continue')
-      await user.click(continueButton)
-
-      expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_DEDUCTION_DONE)
-    })
+    await user.click(await screen.findByRole('button', { name: 'Continue' }))
+    expect(onContinue).toHaveBeenCalledTimes(1)
   })
 
-  describe('Deductions Display', () => {
-    it('should display existing deductions in a table', async () => {
-      const mockDeductions = [
-        {
-          uuid: '1',
-          description: 'Health Insurance',
-          amount: '100',
-          active: true,
-          recurring: true,
-          deductAsPercentage: false,
-        },
-        {
-          uuid: '2',
-          description: 'Parking Fee',
-          amount: '50',
-          active: true,
-          recurring: true,
-          deductAsPercentage: false,
-        },
-      ]
-
-      renderDeductionsList(mockDeductions)
-
-      await waitFor(() => {
-        // Check that the table is rendered with correct headers
-        expect(screen.getByTestId('data-table')).toBeInTheDocument()
-        expect(screen.getByText('Deduction')).toBeInTheDocument()
-        expect(screen.getByText('Frequency')).toBeInTheDocument()
-        expect(screen.getByText('Withheld')).toBeInTheDocument()
-      })
-    })
-
-    it('should show empty state when no deductions exist', async () => {
-      renderDeductionsList([])
-
-      await waitFor(() => {
-        expect(screen.getByTestId('data-view')).toBeInTheDocument()
-      })
-    })
-  })
+  // Row-action coverage (Edit / Delete via the HamburgerMenu) is locked down
+  // in useDeductionsList.test.tsx, which exercises the underlying mutation and
+  // the DELETED vs DELETED_EMPTY branching directly. The react-aria Popover
+  // does not open reliably in jsdom (see Common/UI/Menu/Menu.test.tsx), so
+  // testing the menuitem clicks here would be flaky.
 })

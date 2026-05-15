@@ -1,87 +1,50 @@
-import { useTranslation } from 'react-i18next'
 import { createMachine } from 'robot3'
-import { useGarnishmentsListSuspense } from '@gusto/embedded-api/react-query/garnishmentsList'
 import { useMemo } from 'react'
-import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlowComponents'
+import { useGarnishmentsListSuspense } from '@gusto/embedded-api/react-query/garnishmentsList'
 import {
-  IncludeDeductionsFormContextual,
-  type DeductionsContextInterface,
+  IncludeDeductionsContextual,
   DeductionsListContextual,
-} from './DeductionsComponents'
-import { deductionsStateMachine } from './stateMachine'
-import { DeductionsForm } from './DeductionsForm/DeductionsForm'
-import { DeductionsList } from './DeductionsList/DeductionsList'
-import { IncludeDeductions } from './IncludeDeductions/IncludeDeductions'
+  type DeductionsContextInterface,
+} from './deductionsContextualComponents'
+import { deductionsMachine } from './stateMachine'
 import { Flow } from '@/components/Flow/Flow'
-import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
-import { useComponentDictionary } from '@/i18n/I18n'
-import { useFlow } from '@/components/Flow/useFlow'
+import { BaseBoundaries, type BaseComponentInterface } from '@/components/Base/Base'
+import { useComponentDictionary, useI18n } from '@/i18n'
 
 export interface DeductionsProps extends BaseComponentInterface<'Employee.Deductions'> {
   employeeId: string
 }
-function DeductionsFlow({ employeeId, onEvent, dictionary }: DeductionsProps) {
-  useComponentDictionary('Employee.Deductions', dictionary)
-  const { data } = useGarnishmentsListSuspense({ employeeId })
-  const deductions = data.garnishments!
-  const activeDeductions = deductions.filter(deduction => deduction.active)
-  const hasExistingDeductions = useMemo(
-    () => activeDeductions.length > 0,
-    [activeDeductions.length],
+
+export function Deductions({ employeeId, dictionary, onEvent }: DeductionsProps) {
+  return (
+    <BaseBoundaries componentName="Employee.Deductions">
+      <DeductionsRoot employeeId={employeeId} dictionary={dictionary} onEvent={onEvent} />
+    </BaseBoundaries>
   )
+}
 
-  // Determine initial state based on existing deductions
-  const initialState: 'includeDeductions' | 'viewDeductions' = hasExistingDeductions
-    ? 'viewDeductions'
-    : 'includeDeductions'
+function DeductionsRoot({ employeeId, dictionary, onEvent }: DeductionsProps) {
+  useComponentDictionary('Employee.Deductions', dictionary)
+  useI18n('Employee.Deductions')
 
-  const initialComponent: React.ComponentType = hasExistingDeductions
-    ? DeductionsListContextual
-    : IncludeDeductionsFormContextual
+  // Used only to pick the machine's initial state. The list rendered inside
+  // each contextual wrapper uses a non-suspense hook (React Query dedupes).
+  const { data } = useGarnishmentsListSuspense({ employeeId })
+  const hasActiveDeductions = (data.garnishments ?? []).some(g => g.active)
 
-  const manageDeductions = useMemo(
+  const machine = useMemo(
     () =>
       createMachine(
-        initialState,
-        deductionsStateMachine,
+        hasActiveDeductions ? 'list' : 'include',
+        deductionsMachine,
         (initialContext: DeductionsContextInterface) => ({
           ...initialContext,
-          component: initialComponent,
+          component: hasActiveDeductions ? DeductionsListContextual : IncludeDeductionsContextual,
           employeeId,
-          currentDeductionId: null,
-          hasExistingDeductions,
         }),
       ),
-    [initialState, initialComponent, employeeId, hasExistingDeductions],
+    [employeeId, hasActiveDeductions],
   )
 
-  return <Flow machine={manageDeductions} onEvent={onEvent} />
+  return <Flow machine={machine} onEvent={onEvent} />
 }
-
-export function Deductions(props: DeductionsProps) {
-  return (
-    <BaseComponent {...props}>
-      <DeductionsFlow {...props} />
-    </BaseComponent>
-  )
-}
-
-export const DeductionsContextual = () => {
-  const { employeeId, onEvent } = useFlow<OnboardingContextInterface>()
-  const { t } = useTranslation('common')
-
-  if (!employeeId) {
-    throw new Error(
-      t('errors.missingParamsOrContext', {
-        component: 'Deductions',
-        param: 'employeeId',
-        provider: 'FlowProvider',
-      }),
-    )
-  }
-  return <Deductions employeeId={employeeId} onEvent={onEvent} />
-}
-
-Deductions.IncludeDeductions = IncludeDeductions
-Deductions.DeductionsForm = DeductionsForm
-Deductions.DeductionsList = DeductionsList

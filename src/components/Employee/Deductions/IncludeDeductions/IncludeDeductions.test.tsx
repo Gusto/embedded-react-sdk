@@ -3,7 +3,6 @@ import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { IncludeDeductions } from './IncludeDeductions'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
-import { componentEvents } from '@/shared/constants'
 
 vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', async () => {
   const actual = await vi.importActual('@/hooks/useContainerBreakpoints/useContainerBreakpoints')
@@ -16,21 +15,30 @@ vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', async () => {
 
 describe('IncludeDeductions', () => {
   const user = userEvent.setup()
-  const mockOnEvent = vi.fn()
 
-  describe('Empty state actions rendering', () => {
-    it('should show "Add deduction" button', async () => {
-      renderWithProviders(<IncludeDeductions employeeId="test-employee-id" onEvent={mockOnEvent} />)
+  it('invokes onAdd when the "Add deduction" button is clicked', async () => {
+    const onAdd = vi.fn()
+    const onContinue = vi.fn()
+    renderWithProviders(<IncludeDeductions onAdd={onAdd} onContinue={onContinue} />)
 
-      await waitFor(() => {
-        expect(screen.getByText('Deductions')).toBeInTheDocument()
-      })
-
-      const addButton = screen.getByText('Add deduction')
-
-      await user.click(addButton)
-
-      expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_DEDUCTION_INCLUDE_YES)
+    await waitFor(() => {
+      expect(screen.getByText('Deductions')).toBeInTheDocument()
     })
+
+    await user.click(screen.getByText('Add deduction'))
+
+    expect(onAdd).toHaveBeenCalledTimes(1)
+    expect(onContinue).not.toHaveBeenCalled()
+  })
+
+  it('invokes onContinue when the Continue button is clicked', async () => {
+    const onAdd = vi.fn()
+    const onContinue = vi.fn()
+    renderWithProviders(<IncludeDeductions onAdd={onAdd} onContinue={onContinue} />)
+
+    await user.click(await screen.findByRole('button', { name: 'Continue' }))
+
+    expect(onContinue).toHaveBeenCalledTimes(1)
+    expect(onAdd).not.toHaveBeenCalled()
   })
 })
