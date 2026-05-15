@@ -1,0 +1,28 @@
+{
+  "$schema": "../../schema/scenario.schema.json",
+  "name": "Company onboarding with filing/mailing address split",
+  "description": "Fresh company with two locations where filing and mailing addresses live on different locations to exercise that branch in the company addresses step.",
+  "domain": "company",
+  "baseDemo": "react_sdk_demo",
+  "decorations": {
+    "locations": [
+      {
+        "key": "filing-only",
+        "street_1": "10 Filing St",
+        "city": "San Francisco",
+        "state": "CA",
+        "zip": "94105",
+        "filing_address": true
+      },
+      {
+        "key": "mailing-only",
+        "street_1": "20 Mailing Way",
+        "city": "Oakland",
+        "state": "CA",
+        "zip": "94607",
+        "mailing_address": true
+      }
+    ]
+  },
+  "expectedContext": ["companyId", "locationIds.filing-only", "locationIds.mailing-only"]
+}
