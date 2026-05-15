@@ -82,14 +82,12 @@ export type {
 // Domain hooks - Employee
 export {
   useCompensationForm,
-  useCurrentCompensationForm,
   CompensationErrorCodes,
   createCompensationSchema,
 } from '@/components/Employee/Compensation/shared/useCompensationForm'
 export type {
   CompensationSubmitOptions,
   UseCompensationFormProps,
-  UseCurrentCompensationFormProps,
   UseCompensationFormResult,
   UseCompensationFormReady,
   CompensationFieldsMetadata,
@@ -113,14 +111,12 @@ export type {
 
 export {
   useJobForm,
-  useCurrentJobForm,
   JobErrorCodes,
   createJobSchema,
 } from '@/components/Employee/Compensation/shared/useJobForm'
 export type {
   JobSubmitOptions,
   UseJobFormProps,
-  UseCurrentJobFormProps,
   UseJobFormResult,
   UseJobFormReady,
   JobFieldsMetadata,

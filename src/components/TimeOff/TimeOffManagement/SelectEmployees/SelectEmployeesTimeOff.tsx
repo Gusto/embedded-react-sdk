@@ -164,6 +164,8 @@ function SelectEmployeesTimeOffInner({
     useTimeOffPoliciesUpdateMutation()
   const isSubmitPending = isAddPending || isUpdatePending
 
+  const [confirmAddOpen, setConfirmAddOpen] = useState(false)
+
   const handleBalanceChange = useCallback((uuid: string, value: string) => {
     setBalances(prev => ({ ...prev, [uuid]: value }))
   }, [])
@@ -171,6 +173,7 @@ function SelectEmployeesTimeOffInner({
   const buildAddPayload = useCallback(
     (uuids: string[]) =>
       uuids.map(uuid => {
+        if (hideBalances) return { uuid, balance: '0' }
         const userValue = balances[uuid]
         const carryOver = extractCarryOverBalance(
           selectedEmployeesRef.current.get(uuid),
@@ -179,7 +182,62 @@ function SelectEmployeesTimeOffInner({
         const balance = userValue && userValue.length > 0 ? userValue : (carryOver ?? '0')
         return { uuid, balance }
       }),
-    [balances, policyType],
+    [hideBalances, balances, policyType],
+  )
+
+  const submitAdd = useCallback(
+    async (toAdd: string[]) => {
+      await baseSubmitHandler({}, async () => {
+        let policyResult: unknown
+        if (toAdd.length > 0) {
+          const response = await addEmployees({
+            request: {
+              timeOffPolicyUuid: policyId,
+              requestBody: { employees: buildAddPayload(toAdd) },
+            },
+          })
+          policyResult = response.timeOffPolicy
+        }
+        if (mode === 'wizard' && policyResult) {
+          const version =
+            typeof policyResult === 'object' && 'version' in policyResult
+              ? String((policyResult as { version: unknown }).version)
+              : ''
+          try {
+            await updatePolicy({
+              request: {
+                timeOffPolicyUuid: policyId,
+                requestBody: { complete: true, version },
+              },
+            })
+          } catch (err) {
+            if (err instanceof UnprocessableEntityError) {
+              const apiMessage = err.errors[0]?.message ?? ''
+              throw new SDKInternalError(
+                t('errors.completePolicyFailed', { details: apiMessage }),
+                'api_error',
+              )
+            }
+            throw err
+          }
+        }
+        void queryClient.invalidateQueries({
+          queryKey: ['@gusto/embedded-api', 'timeOffPolicies', 'get'],
+        })
+        onEvent(componentEvents.TIME_OFF_ADD_EMPLOYEES_DONE, policyResult)
+      })
+    },
+    [
+      mode,
+      baseSubmitHandler,
+      addEmployees,
+      buildAddPayload,
+      updatePolicy,
+      policyId,
+      queryClient,
+      onEvent,
+      t,
+    ],
   )
 
   const handleContinue = useCallback(async () => {
@@ -190,57 +248,19 @@ function SelectEmployeesTimeOffInner({
       return
     }
 
-    await baseSubmitHandler({}, async () => {
-      let policyResult: unknown
-      if (toAdd.length > 0) {
-        const response = await addEmployees({
-          request: {
-            timeOffPolicyUuid: policyId,
-            requestBody: { employees: buildAddPayload(toAdd) },
-          },
-        })
-        policyResult = response.timeOffPolicy
-      }
-      if (mode === 'wizard' && policyResult) {
-        const version =
-          typeof policyResult === 'object' && 'version' in policyResult
-            ? String((policyResult as { version: unknown }).version)
-            : ''
-        try {
-          await updatePolicy({
-            request: {
-              timeOffPolicyUuid: policyId,
-              requestBody: { complete: true, version },
-            },
-          })
-        } catch (err) {
-          if (err instanceof UnprocessableEntityError) {
-            const apiMessage = err.errors[0]?.message ?? ''
-            throw new SDKInternalError(
-              t('errors.completePolicyFailed', { details: apiMessage }),
-              'api_error',
-            )
-          }
-          throw err
-        }
-      }
-      void queryClient.invalidateQueries({
-        queryKey: ['@gusto/embedded-api', 'timeOffPolicies', 'get'],
-      })
-      onEvent(componentEvents.TIME_OFF_ADD_EMPLOYEES_DONE, policyResult)
-    })
-  }, [
-    mode,
-    selectedUuids,
-    baseSubmitHandler,
-    addEmployees,
-    buildAddPayload,
-    updatePolicy,
-    policyId,
-    queryClient,
-    onEvent,
-    t,
-  ])
+    if (mode === 'standalone' && toAdd.length > 0) {
+      setConfirmAddOpen(true)
+      return
+    }
+
+    await submitAdd(toAdd)
+  }, [mode, selectedUuids, onEvent, submitAdd])
+
+  const handleConfirmAdd = useCallback(async () => {
+    const toAdd = [...selectedUuids]
+    setConfirmAddOpen(false)
+    await submitAdd(toAdd)
+  }, [selectedUuids, submitAdd])
 
   const showReassignmentWarning = useMemo(() => {
     const targetPtoName = PAID_TIME_OFF_NAME_BY_POLICY_TYPE[policyType]
@@ -275,6 +295,21 @@ function SelectEmployeesTimeOffInner({
       pagination={pagination}
       isFetching={isFetching}
       isPending={isSubmitPending}
+      addConfirmDialog={
+        mode === 'standalone'
+          ? {
+              isOpen: confirmAddOpen,
+              count: selectedUuids.size,
+              onConfirm: () => {
+                void handleConfirmAdd()
+              },
+              onClose: () => {
+                setConfirmAddOpen(false)
+              },
+              isPending: isAddPending,
+            }
+          : undefined
+      }
     />
   )
 }

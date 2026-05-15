@@ -12,5 +12,13 @@
   "emptyState": "All eligible employees have already been added to this policy.",
   "errors": {
     "completePolicyFailed": "Unable to complete this policy. {{details}}"
+  },
+  "addConfirmDialog": {
+    "title_one": "Add {{count}} employee to this policy?",
+    "title_other": "Add {{count}} employees to this policy?",
+    "description_one": "This employee will be added to the policy with the specified starting balance.",
+    "description_other": "These employees will be added to the policy with the specified starting balances.",
+    "confirmCta": "Add and save",
+    "cancelCta": "Cancel"
   }
 }

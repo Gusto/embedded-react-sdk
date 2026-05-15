@@ -54,11 +54,18 @@ export interface CompensationSubmitOptions {
    * version from its cached `currentCompensation`.
    */
   compensationVersion?: string
+  /**
+   * Supply `effectiveDate` at submit time. Takes precedence over the form
+   * value. Most useful with `withEffectiveDateField: false` for screens that
+   * derive the effective date from external context (e.g. the parent job's
+   * `hireDate` during onboarding stub-fill).
+   */
+  effectiveDate?: string
 }
 
 export interface UseCompensationFormProps {
   employeeId?: string
-  /** When updating, the parent job's UUID. Used to scope minimum wages and to derive `status.willDeleteSecondaryJobs`. */
+  /** The parent job's UUID. Required in create mode (scopes `POST /v1/jobs/:jobId/compensations`). Optional in update mode — the parent job is derived from the loaded compensation. */
   jobId?: string
   /** Present → update mode (PUT /v1/compensations/:id). Omitted → create mode (POST /v1/jobs/:jobId/compensations). */
   compensationId?: string
@@ -66,6 +73,16 @@ export interface UseCompensationFormProps {
   defaultValues?: Partial<CompensationFormData>
   validationMode?: UseFormProps['mode']
   shouldFocusError?: boolean
+  /**
+   * When `false`, hides `Fields.EffectiveDate` (becomes `undefined`) and
+   * removes `effectiveDate` from schema validation. Useful for screens where
+   * the effective date is driven by external context (e.g. the parent job's
+   * `hireDate` during onboarding) rather than user input. The hook still
+   * reads any form value at submit (so the internal "delete secondaries"
+   * carve-out, which sets the value to today, keeps working); partners can
+   * override via `CompensationSubmitOptions.effectiveDate`. Defaults to `true`.
+   */
+  withEffectiveDateField?: boolean
 }
 
 export interface CompensationFormFields {
@@ -86,7 +103,7 @@ export interface UseCompensationFormReady extends BaseFormHookReady<
   data: {
     /** The compensation row loaded for update; `null` in create mode. */
     compensation: Compensation | null
-    /** The parent job (when `jobId` resolves), used for derived helpers. */
+    /** The parent job. In update mode it's derived from the loaded compensation; in create mode it's looked up by `jobId`. `null` if neither resolves. */
     currentJob: Job | null
     minimumWages: MinimumWage[]
     /** Lower bound for `effectiveDate` (typically the parent job's hire date). */
@@ -127,12 +144,47 @@ export interface UseCompensationFormReady extends BaseFormHookReady<
   }
 }
 
-function findCompensation(
-  job: Job | null,
+function resolveCompAndJob(
+  jobs: Job[] | undefined,
   compensationId: string | undefined,
-): Compensation | null {
-  if (!job || !compensationId) return null
-  return job.compensations?.find(c => c.uuid === compensationId) ?? null
+  jobId: string | undefined,
+): { compensation: Compensation | null; job: Job | null } {
+  if (!jobs) return { compensation: null, job: null }
+  if (compensationId) {
+    for (const job of jobs) {
+      const compensation = job.compensations?.find(c => c.uuid === compensationId)
+      if (compensation) return { compensation, job }
+    }
+    return { compensation: null, job: null }
+  }
+  if (jobId) return { compensation: null, job: jobs.find(j => j.uuid === jobId) ?? null }
+  return { compensation: null, job: null }
+}
+
+function findPrimaryFlsaStatus(jobs: Job[] | undefined): FlsaStatusType | null {
+  if (!jobs) return null
+  for (const job of jobs) {
+    if (!job.primary) continue
+    const compensation = job.compensations?.find(c => c.uuid === job.currentCompensationUuid)
+    if (compensation?.flsaStatus) return compensation.flsaStatus
+  }
+  return null
+}
+
+function findFutureCompensations(job: Job | null): Compensation[] {
+  if (!job?.compensations) return []
+  const today = todayISO()
+  return job.compensations.filter(c => c.effectiveDate !== undefined && c.effectiveDate > today)
+}
+
+function minEffectiveDate(comps: Compensation[]): string | null {
+  if (comps.length === 0) return null
+  return comps.reduce<string | null>((min, c) => {
+    const d = c.effectiveDate
+    if (!d) return min
+    if (!min || d < min) return d
+    return min
+  }, null)
 }
 
 const flsaStatusEntries: FlsaStatusType[] = [
@@ -168,6 +220,7 @@ export function useCompensationForm({
   defaultValues: partnerDefaults,
   validationMode = 'onSubmit',
   shouldFocusError = true,
+  withEffectiveDateField = true,
 }: UseCompensationFormProps): HookLoadingResult | UseCompensationFormReady {
   const jobsQuery = useJobsAndCompensationsGetJobs(
     { employeeId: employeeId ?? '' },
@@ -192,57 +245,50 @@ export function useCompensationForm({
 
   const minimumWages = minWagesQuery.data?.minimumWageList ?? []
 
-  const currentJob = useMemo<Job | null>(() => {
-    if (!employeeJobs) return null
-    if (jobId) return employeeJobs.find(j => j.uuid === jobId) ?? null
-    return null
-  }, [employeeJobs, jobId])
-
-  const currentCompensation = useMemo(
-    () => findCompensation(currentJob, compensationId),
-    [currentJob, compensationId],
+  const { compensation: currentCompensation, job: currentJob } = resolveCompAndJob(
+    employeeJobs,
+    compensationId,
+    jobId,
   )
 
-  const otherJobsCount = useMemo(() => {
-    if (!employeeJobs || !currentJob) return 0
-    return employeeJobs.filter(j => j.uuid !== currentJob.uuid).length
-  }, [employeeJobs, currentJob])
+  const otherJobsCount =
+    employeeJobs && currentJob ? employeeJobs.filter(j => j.uuid !== currentJob.uuid).length : 0
+
+  // Snapshot — written exactly once, on the first render where `employeeJobs`
+  // is defined (i.e., the initial `getJobs` query has resolved) — capturing
+  // whether the employee already had a primary job at that moment.
+  //
+  // Used to ignore the API-generated stub primary (FLSA Nonexempt, rate "0.00")
+  // that briefly appears between the chained job POST and comp PUT during
+  // onboarding: `getJobs` invalidates between the two mutations and
+  // momentarily includes the stub, which would otherwise flip
+  // `isAddingSecondaryJob` to true and hide `Fields.FlsaStatus` mid-submit.
+  //
+  // In steady-state flows (edit primary, edit secondary, add secondary), the
+  // real primary already exists when the query first resolves, so the snapshot
+  // is `true` and live `employeeJobs` continues to drive `primaryFlsaStatus`.
+  // Recovery for the rare case where a partner mounts before any jobs exist
+  // and a primary is created externally mid-form is to remount the hook
+  // (e.g., via a `key` change).
+  const hadPrimaryAtMountRef = useRef<boolean | null>(null)
+  if (hadPrimaryAtMountRef.current === null && employeeJobs !== undefined) {
+    hadPrimaryAtMountRef.current = employeeJobs.some(job => job.primary)
+  }
+  const hadPrimaryAtMount = hadPrimaryAtMountRef.current === true
 
   // FLSA status of the employee's primary job's current compensation, when one
   // exists. Used as a fallback default when adding a *secondary* job/comp so the
   // multi-job classification stays consistent with the primary by default — the
-  // user can still override it (when allowed). Null when there is no primary
-  // job or it has no current compensation yet.
-  const primaryFlsaStatus = useMemo<FlsaStatusType | null>(() => {
-    if (!employeeJobs) return null
-    for (const job of employeeJobs) {
-      if (!job.primary) continue
-      const compensation = job.compensations?.find(c => c.uuid === job.currentCompensationUuid)
-      if (compensation?.flsaStatus) return compensation.flsaStatus
-    }
-    return null
-  }, [employeeJobs])
+  // user can still override it (when allowed). Null when there was no primary
+  // job at the moment the hook first observed `employeeJobs`, or when the
+  // primary has no current compensation yet.
+  const primaryFlsaStatus = hadPrimaryAtMount ? findPrimaryFlsaStatus(employeeJobs) : null
 
   const hireDate = currentJob?.hireDate ?? null
 
-  const futureCompensations = useMemo(() => {
-    if (!currentJob?.compensations) return []
-    const today = todayISO()
-    return currentJob.compensations.filter(
-      c => c.effectiveDate !== undefined && c.effectiveDate > today,
-    )
-  }, [currentJob])
-
+  const futureCompensations = findFutureCompensations(currentJob)
   const hasPendingFutureCompensation = futureCompensations.length > 0
-  const maximumEffectiveDate = useMemo(() => {
-    if (futureCompensations.length === 0) return null
-    return futureCompensations.reduce<string | null>((min, c) => {
-      const d = c.effectiveDate
-      if (!d) return min
-      if (!min || d < min) return d
-      return min
-    }, null)
-  }, [futureCompensations])
+  const maximumEffectiveDate = minEffectiveDate(futureCompensations)
 
   const isCreateMode = !compensationId
   const mode = isCreateMode ? 'create' : 'update'
@@ -254,8 +300,14 @@ export function useCompensationForm({
   const isAddingSecondaryJob = isCreateMode && primaryFlsaStatus === FlsaStatus.NONEXEMPT
 
   const [schema, metadataConfig] = useMemo(
-    () => createCompensationSchema({ mode, optionalFieldsToRequire, hireDate }),
-    [mode, optionalFieldsToRequire, hireDate],
+    () =>
+      createCompensationSchema({
+        mode,
+        optionalFieldsToRequire,
+        hireDate,
+        withEffectiveDateField,
+      }),
+    [mode, optionalFieldsToRequire, hireDate, withEffectiveDateField],
   )
 
   const state = currentWorkAddress?.state
@@ -321,29 +373,36 @@ export function useCompensationForm({
     }
   }, [watchedFlsaStatus, setValue, resolvedDefaults.paymentUnit])
 
-  // Carve-out UX (matches gws-flows): when the user flips a Nonexempt primary
-  // compensation to a non-Nonexempt status while secondary jobs exist, the
-  // server only honors the change immediately — saving "deletes" the
+  // Carve-out branch — true when submitting the form right now would delete
+  // the employee's secondary jobs server-side. Drives both the
+  // `effectiveDate`-lock side effect below and the `status.willDeleteSecondaryJobs`
+  // flag exposed to partners.
+  //
+  // Conditions (matches gws-flows): update mode, the loaded compensation is
+  // Nonexempt, the form's `flsaStatus` has been changed to a non-Nonexempt
+  // value, and the employee has at least one secondary job.
+  const currentCompensationFlsaStatus = currentCompensation?.flsaStatus
+  const willDeleteSecondaryJobs =
+    !isCreateMode &&
+    currentCompensationFlsaStatus === FlsaStatus.NONEXEMPT &&
+    watchedFlsaStatus !== undefined &&
+    watchedFlsaStatus !== FlsaStatus.NONEXEMPT &&
+    otherJobsCount > 0
+
+  // Carve-out UX (matches gws-flows): while the carve-out branch is active
+  // the server only honors the FLSA change immediately — saving "deletes" the
   // secondary jobs. Mirror the screen UX by forcing `effectiveDate` to today
   // (so submits route through PUT-current rather than create-future) and
   // disabling the field. Snapshot the prior value so a revert (back to
   // Nonexempt before saving) restores what the user had selected.
-  const currentCompensationFlsaStatus = currentCompensation?.flsaStatus
   const carveOutActiveRef = useRef(false)
   const priorEffectiveDateRef = useRef<string | null>(null)
   useEffect(() => {
-    const carveOutBranch =
-      !isCreateMode &&
-      currentCompensationFlsaStatus === FlsaStatus.NONEXEMPT &&
-      watchedFlsaStatus !== undefined &&
-      watchedFlsaStatus !== FlsaStatus.NONEXEMPT &&
-      otherJobsCount > 0
-
-    if (carveOutBranch && !carveOutActiveRef.current) {
+    if (willDeleteSecondaryJobs && !carveOutActiveRef.current) {
       priorEffectiveDateRef.current = getValues('effectiveDate') ?? null
       setValue('effectiveDate', todayISO(), { shouldDirty: true, shouldValidate: false })
       carveOutActiveRef.current = true
-    } else if (!carveOutBranch && carveOutActiveRef.current) {
+    } else if (!willDeleteSecondaryJobs && carveOutActiveRef.current) {
       setValue('effectiveDate', priorEffectiveDateRef.current ?? null, {
         shouldDirty: true,
         shouldValidate: false,
@@ -351,14 +410,7 @@ export function useCompensationForm({
       priorEffectiveDateRef.current = null
       carveOutActiveRef.current = false
     }
-  }, [
-    isCreateMode,
-    currentCompensationFlsaStatus,
-    watchedFlsaStatus,
-    otherJobsCount,
-    getValues,
-    setValue,
-  ])
+  }, [willDeleteSecondaryJobs, getValues, setValue])
 
   const updateCompensationMutation = useJobsAndCompensationsUpdateCompensationMutation()
   const createCompensationMutation = useJobsAndCompensationsCreateCompensationMutation()
@@ -420,17 +472,6 @@ export function useCompensationForm({
     label: `${wage.wage} - ${wage.authority}: ${wage.notes ?? ''}`,
   }))
 
-  // Carve-out branch — true when the form is currently positioned to delete
-  // secondary jobs on submit. The hook locks `effectiveDate` to today and
-  // disables the field while this is true (see effect above), so the flag
-  // is also the trigger for an inline warning above the form.
-  const willDeleteSecondaryJobs =
-    !isCreateMode &&
-    currentCompensationFlsaStatus === FlsaStatus.NONEXEMPT &&
-    watchedFlsaStatus !== undefined &&
-    watchedFlsaStatus !== FlsaStatus.NONEXEMPT &&
-    otherJobsCount > 0
-
   const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
   const fieldsMetadata = {
     title: baseMetadata.title,
@@ -470,11 +511,26 @@ export function useCompensationForm({
             const resolvedCompensationId = options?.compensationId ?? compensationId
             const resolvedMode = resolvedCompensationId ? 'update' : 'create'
 
+            // Submit-time override > form value. Even when
+            // `withEffectiveDateField` is false the form value is honored as
+            // a fallback so the internal `willDeleteSecondaryJobs` carve-out
+            // (which sets the form value to today) keeps emitting a date —
+            // this is a deliberate divergence from `useWorkAddressForm`,
+            // whose hidden-field behavior is strictly options-only.
+            //
+            // When `withEffectiveDateField` is false the schema strips
+            // `effectiveDate` from `payload`, so we read directly from the
+            // form's underlying state instead.
+            const formEffectiveDate = withEffectiveDateField
+              ? payload.effectiveDate
+              : (formMethods.getValues('effectiveDate') ?? undefined)
+            const resolvedEffectiveDate = options?.effectiveDate ?? formEffectiveDate ?? undefined
+
             const requestBodyBase = {
               rate: String(payload.rate),
               paymentUnit: payload.paymentUnit,
               flsaStatus: payload.flsaStatus,
-              effectiveDate: payload.effectiveDate ?? undefined,
+              effectiveDate: resolvedEffectiveDate,
               title: payload.title || undefined,
               adjustForMinimumWage: payload.adjustForMinimumWage,
               minimumWages: payload.adjustForMinimumWage ? [{ uuid: payload.minimumWageId }] : [],
@@ -567,7 +623,7 @@ export function useCompensationForm({
     },
     status: {
       isPending,
-      mode: isCreateMode ? 'create' : 'update',
+      mode,
       willDeleteSecondaryJobs,
     },
     actions: { onSubmit },
@@ -583,7 +639,7 @@ export function useCompensationForm({
           isAdjustMinimumWageEnabled && watchedAdjustForMinimumWage
             ? MinimumWageIdField
             : undefined,
-        EffectiveDate: EffectiveDateField,
+        EffectiveDate: withEffectiveDateField ? EffectiveDateField : undefined,
       },
       fieldsMetadata,
       hookFormInternals,

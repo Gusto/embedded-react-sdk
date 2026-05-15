@@ -278,14 +278,14 @@ describe('TimeOffPolicyDetailPresentation', () => {
       expect(screen.queryByRole('checkbox', { name: 'Select all rows' })).not.toBeInTheDocument()
     })
 
-    it('hides Job title column for all policy types', async () => {
+    it('shows Job title column for all policy types', async () => {
       renderComponent({ selectedTabId: 'employees' })
 
       await waitFor(() => {
         expect(screen.getByText('Alejandro Kuhic')).toBeInTheDocument()
       })
-      expect(screen.queryByText('Job title')).not.toBeInTheDocument()
-      expect(screen.queryByText('Marketing Director')).not.toBeInTheDocument()
+      expect(screen.getAllByText('Job title').length).toBeGreaterThan(0)
+      expect(screen.getByText('Marketing Director')).toBeInTheDocument()
     })
 
     it('hides Balance column for unlimited policies', async () => {

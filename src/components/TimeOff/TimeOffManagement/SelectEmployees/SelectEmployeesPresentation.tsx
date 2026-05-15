@@ -28,12 +28,13 @@ export function SelectEmployeesPresentation({
   onBalanceChange,
   pagination,
   isFetching,
+  addConfirmDialog,
   isPending = false,
 }: SelectEmployeesPresentationProps) {
   useI18n('Company.TimeOff.SelectEmployees')
   const { t } = useTranslation('Company.TimeOff.SelectEmployees')
   const Components = useComponentContext()
-  const { Heading, Text, Button, Alert } = Components
+  const { Heading, Text, Button, Alert, Dialog } = Components
   const balanceColHeaderId = useId()
 
   return (
@@ -107,6 +108,20 @@ export function SelectEmployeesPresentation({
           {t('continueCta')}
         </Button>
       </ActionsLayout>
+
+      {addConfirmDialog && (
+        <Dialog
+          isOpen={addConfirmDialog.isOpen}
+          onClose={addConfirmDialog.onClose}
+          onPrimaryActionClick={addConfirmDialog.onConfirm}
+          isPrimaryActionLoading={addConfirmDialog.isPending}
+          title={t('addConfirmDialog.title', { count: addConfirmDialog.count })}
+          primaryActionLabel={t('addConfirmDialog.confirmCta')}
+          closeActionLabel={t('addConfirmDialog.cancelCta')}
+        >
+          {t('addConfirmDialog.description', { count: addConfirmDialog.count })}
+        </Dialog>
+      )}
     </Flex>
   )
 }

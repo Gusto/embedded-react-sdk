@@ -99,5 +99,5 @@ export function searchEntries(entries: readonly PaletteEntry[], query: string): 
   return getFuse(entries)
     .search(trimmed)
     .slice(0, MAX_RESULTS)
-    .map(result => result.item)
+    .map((result: { item: PaletteEntry }) => result.item)
 }

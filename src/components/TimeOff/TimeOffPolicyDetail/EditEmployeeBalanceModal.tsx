@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import type { SDKError } from '@/types/sdkError'
 import { ActionsLayout, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
@@ -11,6 +12,7 @@ export interface EditEmployeeBalanceModalProps {
   currentBalance: number
   onConfirm: (newBalance: number) => void
   isPending: boolean
+  error?: SDKError | null
 }
 
 export function EditEmployeeBalanceModal({
@@ -20,10 +22,11 @@ export function EditEmployeeBalanceModal({
   currentBalance,
   onConfirm,
   isPending,
+  error,
 }: EditEmployeeBalanceModalProps) {
   useI18n('Company.TimeOff.TimeOffPolicyDetails')
   const { t } = useTranslation('Company.TimeOff.TimeOffPolicyDetails')
-  const { Modal, Heading, NumberInput, Button } = useComponentContext()
+  const { Modal, Heading, NumberInput, Button, Alert } = useComponentContext()
 
   const [balance, setBalance] = useState(currentBalance)
 
@@ -54,6 +57,7 @@ export function EditEmployeeBalanceModal({
         <Heading as="h3" styledAs="h3">
           {t('editBalanceModal.title', { name: employeeName })}
         </Heading>
+        {error && <Alert status="error" label={error.message} />}
         <NumberInput
           name="balance"
           label={t('editBalanceModal.balanceLabel')}

@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { createMachine } from 'robot3'
 import { useTranslation } from 'react-i18next'
 import { useJobsAndCompensationsGetJobsSuspense } from '@gusto/embedded-api/react-query/jobsAndCompensationsGetJobs'
@@ -91,7 +91,16 @@ function CompensationFlow({
 
   const { data: jobsData } = useJobsAndCompensationsGetJobsSuspense({ employeeId })
 
-  const { initialState, currentJobId } = deriveInitialFlowConfig(jobsData.jobs ?? [])
+  // Capture the routing decision from the first jobsData snapshot only. Suspense
+  // guarantees that snapshot is fresh on first render. Subsequent refetches (e.g.
+  // the getJobs invalidation that fires between EditCompensation's awaited job +
+  // compensation mutations) must NOT re-seat the machine and reset the user's
+  // place in the flow. Callers needing to re-derive routing for a different
+  // employee should remount via `key`, matching the contract used by
+  // OnboardingFlow / PayrollExecutionFlow / DismissalFlow.
+  const [{ initialState, currentJobId }] = useState<InitialFlowConfig>(() =>
+    deriveInitialFlowConfig(jobsData.jobs ?? []),
+  )
 
   const manageCompensation = useMemo(
     () =>
@@ -107,11 +116,10 @@ function CompensationFlow({
           currentJobId,
         }),
       ),
-    // `defaultValues` is intentionally omitted: it's a partner-supplied prop that may
-    // arrive as a fresh object reference on every render. It seeds the form once at
-    // initialization, so re-creating the machine on reference churn would only serve
-    // to discard in-flight state. Genuine API state changes (different employee, a
-    // change in the only-job FLSA status) flow through the scalar deps below.
+    // `defaultValues` is intentionally omitted: a partner-supplied prop that may
+    // arrive as a fresh object reference each render and only seeds the form
+    // once. `initialState` and `currentJobId` are stable values from useState
+    // above, so they're listed here as honest deps but never trigger recompute.
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [employeeId, startDate, initialState, currentJobId],
   )

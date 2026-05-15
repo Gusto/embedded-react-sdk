@@ -120,12 +120,14 @@ function StoryWrapper({
   employees = mockEmployees,
   pagination,
   initialBalances = {},
+  hideBalances = false,
 }: {
   initialSelected?: Set<string>
   showReassignmentWarning?: boolean
   employees?: EmployeeItem[]
   pagination?: PaginationControlProps
   initialBalances?: Record<string, string>
+  hideBalances?: boolean
 }) {
   const [searchValue, setSearchValue] = useState('')
   const [selectedUuids, setSelectedUuids] = useState(initialSelected)
@@ -157,8 +159,8 @@ function StoryWrapper({
       onBack={onBack}
       onContinue={onContinue}
       showReassignmentWarning={showReassignmentWarning}
-      balances={balances}
-      onBalanceChange={handleBalanceChange}
+      balances={hideBalances ? undefined : balances}
+      onBalanceChange={hideBalances ? undefined : handleBalanceChange}
       pagination={pagination}
     />
   )
@@ -232,3 +234,5 @@ export const EmptySearchResults = () => (
     onBalanceChange={fn()}
   />
 )
+
+export const UnlimitedPolicy = () => <StoryWrapper showReassignmentWarning hideBalances />
