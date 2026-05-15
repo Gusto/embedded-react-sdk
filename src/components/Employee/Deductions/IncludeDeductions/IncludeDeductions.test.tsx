@@ -32,5 +32,14 @@ describe('IncludeDeductions', () => {
 
       expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_DEDUCTION_INCLUDE_YES)
     })
+
+    it('fires EMPLOYEE_DEDUCTION_INCLUDE_NO when Continue is clicked', async () => {
+      renderWithProviders(<IncludeDeductions employeeId="test-employee-id" onEvent={mockOnEvent} />)
+
+      const continueButton = await screen.findByRole('button', { name: 'Continue' })
+      await user.click(continueButton)
+
+      expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_DEDUCTION_INCLUDE_NO)
+    })
   })
 })

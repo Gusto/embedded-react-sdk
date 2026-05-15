@@ -173,3 +173,11 @@ describe('DeductionsList', () => {
     })
   })
 })
+
+// Row-action coverage (Edit click, soft-delete soft-deletes via PUT active:false,
+// DELETED vs DELETED_EMPTY branching) lives in the new list hook's unit tests
+// rather than here. The HamburgerMenu uses a react-aria Popover that does not open
+// reliably under jsdom (see Common/UI/Menu/Menu.test.tsx for the canonical caveat),
+// so the row-action event surface is locked down at the hook level — that's where
+// the delete mutation and the remaining-count → event-selection logic live after
+// the migration.
