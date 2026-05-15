@@ -1,0 +1,68 @@
+{
+  "$schema": "../../schema/scenario.schema.json",
+  "name": "Time off policy assignment with multi-location workforce",
+  "description": "Onboarded company with employees split across multiple locations to exercise the SelectEmployees grid and add-to-policy flow.",
+  "domain": "time-off",
+  "baseDemo": "react_sdk_demo_company_onboarded",
+  "decorations": {
+    "locations": [
+      {
+        "key": "hq",
+        "street_1": "400 Folsom St",
+        "city": "San Francisco",
+        "state": "CA",
+        "zip": "94105",
+        "filing_address": true,
+        "mailing_address": true
+      },
+      {
+        "key": "south-bay",
+        "street_1": "100 W Tasman Dr",
+        "city": "San Jose",
+        "state": "CA",
+        "zip": "95134"
+      }
+    ],
+    "employees": [
+      {
+        "key": "alice",
+        "$ref": "../fragments/w2-salaried-employee.json",
+        "overrides": {
+          "first_name": "Alice",
+          "last_name": "Assign",
+          "email": "alice-assign+{{ts}}@example.com",
+          "onboarding_status": "onboarding_completed",
+          "work_address": { "locationKey": "hq" },
+          "job": {
+            "title": "Engineer",
+            "hire_date": "2024-01-15",
+            "locationKey": "hq"
+          }
+        }
+      },
+      {
+        "key": "bob",
+        "$ref": "../fragments/w2-hourly-employee.json",
+        "overrides": {
+          "first_name": "Bob",
+          "last_name": "Assign",
+          "email": "bob-assign+{{ts}}@example.com",
+          "onboarding_status": "onboarding_completed",
+          "work_address": { "locationKey": "south-bay" },
+          "job": {
+            "title": "Field Tech",
+            "hire_date": "2024-02-01",
+            "locationKey": "south-bay"
+          }
+        }
+      }
+    ]
+  },
+  "expectedContext": [
+    "companyId",
+    "locationIds.hq",
+    "locationIds.south-bay",
+    "employeeIds.alice",
+    "employeeIds.bob"
+  ]
+}
