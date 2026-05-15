@@ -1,59 +1,85 @@
 import { useTranslation } from 'react-i18next'
 import type { Job } from '@gusto/embedded-api/models/components/job'
-import type { EmployeePaymentMethod } from '@gusto/embedded-api/models/components/employeepaymentmethod'
-import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
 import type { EmployeeBankAccount } from '@gusto/embedded-api/models/components/employeebankaccount'
+import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
 import type { GetV1EmployeesEmployeeUuidPayStubsResponse } from '@gusto/embedded-api/models/operations/getv1employeesemployeeuuidpaystubs'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { DataView, useDataView, EmptyData, Loading } from '@/components/Common'
+import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
+import { BaseLayout } from '@/components/Base/Base'
 import { formatDateLongWithYear } from '@/helpers/dateFormatting'
 import { useFormatPayRate } from '@/helpers/formattedStrings'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
+import { useI18n } from '@/i18n'
+import {
+  usePaymentMethodList,
+  useDeleteBankAccount,
+  DeleteBankAccountDialog,
+} from '@/components/Employee/PaymentMethod/shared'
+import { componentEvents, PAYMENT_METHODS, type EventType } from '@/shared/constants'
+import type { OnEventType } from '@/components/Base/useBase'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 import PercentCircleIcon from '@/assets/icons/percent-circle.svg?react'
 import DownloadCloudIcon from '@/assets/icons/download-cloud.svg?react'
+import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 
 type EmployeePayStub = NonNullable<
   GetV1EmployeesEmployeeUuidPayStubsResponse['employeePayStubsList']
 >[number]
 
 export interface JobAndPayViewProps {
+  employeeId: string
   job?: Job
-  paymentMethod?: EmployeePaymentMethod
-  bankAccounts?: EmployeeBankAccount[]
   garnishments?: Garnishment[]
   payStubs?: EmployeePayStub[]
   payStubsPagination?: PaginationControlProps
   isLoading?: boolean
+  onEvent: OnEventType<EventType, unknown>
   onEditCompensation?: () => void
-  onSplitPaycheck?: () => void
-  onAddBankAccount?: () => void
   onAddDeduction?: () => void
   onPaystubDownload?: (payrollUuid: string) => void
   downloadingPayrollUuids?: ReadonlySet<string>
 }
 
 export function JobAndPayView({
+  employeeId,
   job,
-  paymentMethod,
-  bankAccounts = [],
   garnishments = [],
   payStubs = [],
   payStubsPagination,
   isLoading = false,
+  onEvent,
   onEditCompensation,
-  onSplitPaycheck,
-  onAddBankAccount,
   onAddDeduction,
   onPaystubDownload,
   downloadingPayrollUuids,
 }: JobAndPayViewProps) {
+  useI18n('Employee.PaymentMethod')
   const { t } = useTranslation('Employee.Dashboard')
+  const { t: tPayment } = useTranslation('Employee.PaymentMethod')
   const Components = useComponentContext()
   const formatPayRate = useFormatPayRate()
   const formatCurrency = useNumberFormatter('currency')
+
+  const paymentMethodList = usePaymentMethodList({ employeeId })
+  const paymentMethod = paymentMethodList.isLoading
+    ? undefined
+    : paymentMethodList.data.paymentMethod
+  const bankAccounts = paymentMethodList.isLoading ? [] : paymentMethodList.data.bankAccounts
+  const deletePendingBankAccountUuid = paymentMethodList.isLoading
+    ? undefined
+    : paymentMethodList.status.deletePendingBankAccountUuid
+
+  const { pendingDeleteAccount, setPendingDeleteAccount, handleConfirmDelete } =
+    useDeleteBankAccount(async uuid => {
+      if (paymentMethodList.isLoading) return
+      const result = await paymentMethodList.actions.onDelete(uuid)
+      if (result) {
+        onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_DELETED, result.data)
+      }
+    })
 
   const bankAccountsColumns = [
     {
@@ -134,11 +160,21 @@ export function JobAndPayView({
   const bankAccountsDataView = useDataView({
     data: bankAccounts,
     columns: bankAccountsColumns,
-    isFetching: false,
-    emptyState: () => (
-      <EmptyData
-        title={t('jobAndPay.payment.emptyState.title')}
-        description={t('jobAndPay.payment.emptyState.description')}
+    itemMenu: (bankAccount: EmployeeBankAccount) => (
+      <HamburgerMenu
+        items={[
+          {
+            label: tPayment('deleteBankAccountCta'),
+            onClick: () => {
+              setPendingDeleteAccount({
+                uuid: bankAccount.uuid,
+                hiddenAccountNumber: bankAccount.hiddenAccountNumber,
+              })
+            },
+            icon: <TrashCanSvg aria-hidden />,
+          },
+        ]}
+        triggerLabel={tPayment('hamburgerTitle')}
       />
     ),
   })
@@ -184,126 +220,167 @@ export function JobAndPayView({
       />
     ),
   })
-  if (isLoading) {
+
+  if (isLoading || paymentMethodList.isLoading) {
     return <Loading />
   }
+
+  const isDirectDeposit = paymentMethod?.type === PAYMENT_METHODS.directDeposit
+
   return (
-    <Flex flexDirection="column" gap={24}>
-      <Components.Box
-        header={
-          <Components.BoxHeader
-            title={t('jobAndPay.compensation.title')}
-            action={
-              <Components.Button variant="secondary" onClick={onEditCompensation}>
-                {t('jobAndPay.compensation.editCta')}
-              </Components.Button>
-            }
-          />
-        }
-      >
-        <Flex flexDirection="column" gap={16}>
-          <Flex flexDirection="column" gap={12}>
-            {job?.title && (
-              <Flex flexDirection="column" gap={0}>
-                <Components.Text variant="supporting">
-                  {t('jobAndPay.compensation.jobTitle')}
-                </Components.Text>
-                <Components.Text>{job.title}</Components.Text>
-              </Flex>
-            )}
-
-            {job?.paymentUnit && (
-              <Flex flexDirection="column" gap={0}>
-                <Components.Text variant="supporting">
-                  {t('jobAndPay.compensation.type')}
-                </Components.Text>
-                <Components.Text>
-                  {job.paymentUnit === 'Hour'
-                    ? t('jobAndPay.compensation.types.hourly')
-                    : job.paymentUnit === 'Salary' || job.paymentUnit === 'Year'
-                      ? t('jobAndPay.compensation.types.salary')
-                      : job.paymentUnit}
-                </Components.Text>
-              </Flex>
-            )}
-
-            {job?.rate && job.paymentUnit && typeof job.rate === 'number' && (
-              <Flex flexDirection="column" gap={0}>
-                <Components.Text variant="supporting">
-                  {t('jobAndPay.compensation.wage')}
-                </Components.Text>
-                <Components.Text>{formatPayRate(job.rate, job.paymentUnit)}</Components.Text>
-              </Flex>
-            )}
-
-            {job?.hireDate && (
-              <Flex flexDirection="column" gap={0}>
-                <Components.Text variant="supporting">
-                  {t('jobAndPay.compensation.startDate')}
-                </Components.Text>
-                <Components.Text>{formatDateLongWithYear(job.hireDate)}</Components.Text>
-              </Flex>
-            )}
-          </Flex>
-        </Flex>
-      </Components.Box>
-
-      <Components.Box
-        header={
-          <Components.BoxHeader
-            title={t('jobAndPay.payment.title')}
-            action={
-              <Flex gap={8} alignItems="flex-end">
-                <Components.Button
-                  variant="secondary"
-                  onClick={onSplitPaycheck}
-                  icon={<PercentCircleIcon />}
-                >
-                  {t('jobAndPay.payment.splitPaycheckCta')}
+    <BaseLayout error={paymentMethodList.errorHandling.errors}>
+      <Flex flexDirection="column" gap={24}>
+        <Components.Box
+          header={
+            <Components.BoxHeader
+              title={t('jobAndPay.compensation.title')}
+              action={
+                <Components.Button variant="secondary" onClick={onEditCompensation}>
+                  {t('jobAndPay.compensation.editCta')}
                 </Components.Button>
+              }
+            />
+          }
+        >
+          <Flex flexDirection="column" gap={16}>
+            <Flex flexDirection="column" gap={12}>
+              {job?.title && (
+                <Flex flexDirection="column" gap={0}>
+                  <Components.Text variant="supporting">
+                    {t('jobAndPay.compensation.jobTitle')}
+                  </Components.Text>
+                  <Components.Text>{job.title}</Components.Text>
+                </Flex>
+              )}
+
+              {job?.paymentUnit && (
+                <Flex flexDirection="column" gap={0}>
+                  <Components.Text variant="supporting">
+                    {t('jobAndPay.compensation.type')}
+                  </Components.Text>
+                  <Components.Text>
+                    {job.paymentUnit === 'Hour'
+                      ? t('jobAndPay.compensation.types.hourly')
+                      : job.paymentUnit === 'Salary' || job.paymentUnit === 'Year'
+                        ? t('jobAndPay.compensation.types.salary')
+                        : job.paymentUnit}
+                  </Components.Text>
+                </Flex>
+              )}
+
+              {job?.rate && job.paymentUnit && typeof job.rate === 'number' && (
+                <Flex flexDirection="column" gap={0}>
+                  <Components.Text variant="supporting">
+                    {t('jobAndPay.compensation.wage')}
+                  </Components.Text>
+                  <Components.Text>{formatPayRate(job.rate, job.paymentUnit)}</Components.Text>
+                </Flex>
+              )}
+
+              {job?.hireDate && (
+                <Flex flexDirection="column" gap={0}>
+                  <Components.Text variant="supporting">
+                    {t('jobAndPay.compensation.startDate')}
+                  </Components.Text>
+                  <Components.Text>{formatDateLongWithYear(job.hireDate)}</Components.Text>
+                </Flex>
+              )}
+            </Flex>
+          </Flex>
+        </Components.Box>
+
+        <Components.Box
+          withPadding={bankAccounts.length === 0}
+          header={
+            <Components.BoxHeader
+              title={t('jobAndPay.payment.title')}
+              action={
+                <Flex gap={8} alignItems="center" justifyContent="flex-end">
+                  {isDirectDeposit && bankAccounts.length > 1 && (
+                    <Components.Button
+                      variant="secondary"
+                      onClick={() => {
+                        onEvent(componentEvents.EMPLOYEE_SPLIT_PAYCHECK, { employeeId })
+                      }}
+                      icon={<PercentCircleIcon />}
+                    >
+                      {t('jobAndPay.payment.splitPaycheckCta')}
+                    </Components.Button>
+                  )}
+                  <Components.Button
+                    variant="secondary"
+                    onClick={() => {
+                      onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATE, { employeeId })
+                    }}
+                    icon={<PlusCircleIcon />}
+                  >
+                    {t('jobAndPay.payment.addBankAccountCta')}
+                  </Components.Button>
+                </Flex>
+              }
+            />
+          }
+        >
+          {bankAccounts.length === 0 ? (
+            <Flex flexDirection="column" gap={0}>
+              <Components.Text variant="supporting">
+                {tPayment('paymentMethodLabel')}
+              </Components.Text>
+              <Components.Text>
+                {isDirectDeposit ? tPayment('directDepositLabel') : tPayment('checkLabel')}
+              </Components.Text>
+            </Flex>
+          ) : (
+            <DataView
+              label={t('jobAndPay.payment.listLabel')}
+              isWithinBox
+              {...bankAccountsDataView}
+            />
+          )}
+        </Components.Box>
+
+        <Components.Box
+          withPadding={false}
+          header={
+            <Components.BoxHeader
+              title={t('jobAndPay.deductions.title')}
+              action={
                 <Components.Button
                   variant="secondary"
-                  onClick={onAddBankAccount}
+                  onClick={onAddDeduction}
                   icon={<PlusCircleIcon />}
                 >
-                  {t('jobAndPay.payment.addBankAccountCta')}
+                  {t('jobAndPay.deductions.addDeductionCta')}
                 </Components.Button>
-              </Flex>
-            }
+              }
+            />
+          }
+        >
+          <DataView
+            label={t('jobAndPay.deductions.listLabel')}
+            isWithinBox
+            {...garnishmentsDataView}
           />
-        }
-      >
-        <Flex flexDirection="column" gap={16}>
-          <DataView label={t('jobAndPay.payment.listLabel')} {...bankAccountsDataView} />
-        </Flex>
-      </Components.Box>
+        </Components.Box>
 
-      <Components.Box
-        header={
-          <Components.BoxHeader
-            title={t('jobAndPay.deductions.title')}
-            action={
-              <Components.Button
-                variant="secondary"
-                onClick={onAddDeduction}
-                icon={<PlusCircleIcon />}
-              >
-                {t('jobAndPay.deductions.addDeductionCta')}
-              </Components.Button>
-            }
-          />
-        }
-      >
-        <Flex flexDirection="column" gap={16}>
-          <DataView label={t('jobAndPay.deductions.listLabel')} {...garnishmentsDataView} />
-        </Flex>
-      </Components.Box>
+        <Components.Box
+          withPadding={false}
+          header={<Components.BoxHeader title={t('jobAndPay.paystubs.title')} />}
+        >
+          <DataView label={t('jobAndPay.paystubs.listLabel')} isWithinBox {...payStubsDataView} />
+        </Components.Box>
 
-      <Components.Box header={<Components.BoxHeader title={t('jobAndPay.paystubs.title')} />}>
-        <Flex flexDirection="column" gap={16}>
-          <DataView label={t('jobAndPay.paystubs.listLabel')} {...payStubsDataView} />
-        </Flex>
-      </Components.Box>
-    </Flex>
+        <DeleteBankAccountDialog
+          pendingDeleteAccount={pendingDeleteAccount}
+          isPrimaryActionLoading={deletePendingBankAccountUuid === pendingDeleteAccount?.uuid}
+          onClose={() => {
+            setPendingDeleteAccount(null)
+          }}
+          onConfirm={() => {
+            void handleConfirmDelete()
+          }}
+        />
+      </Flex>
+    </BaseLayout>
   )
 }
