@@ -385,7 +385,16 @@ async function decoratePayrolls(
     }
 
     if (payroll.status === 'processed') {
-      await processPayroll(api, companyId, payrollUuid, log)
+      try {
+        await processPayroll(api, companyId, payrollUuid, log)
+      } catch (error) {
+        const message = String(error)
+        if (message.includes('payroll_blocker') || message.includes('missing_forms')) {
+          log(`  Skipping payroll processing for ${payroll.key}; blocker encountered (${message})`)
+        } else {
+          throw error
+        }
+      }
     }
 
     payrollIds[payroll.key] = payrollUuid
