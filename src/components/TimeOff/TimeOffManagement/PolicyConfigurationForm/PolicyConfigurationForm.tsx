@@ -166,7 +166,7 @@ function buildUpdateRequestBody(
       accrualRate: null,
       accrualRateUnit: null,
       policyResetDate: null,
-      complete: true,
+      complete: false,
     }
   }
 
@@ -318,6 +318,7 @@ function EditRoot({ companyId, policyType, policyId, defaultValues }: EditRootPr
       defaultValues={mergedDefaults}
       editingPolicyName={policy.name}
       isPending={isPending}
+      isAccrualMethodLocked={policy.complete === true}
     />
   )
 }

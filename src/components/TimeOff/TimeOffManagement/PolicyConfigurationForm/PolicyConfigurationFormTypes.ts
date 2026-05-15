@@ -21,4 +21,5 @@ export interface PolicyConfigurationFormPresentationProps {
   defaultValues?: Partial<PolicyConfigurationFormData>
   editingPolicyName?: string
   isPending?: boolean
+  isAccrualMethodLocked?: boolean
 }

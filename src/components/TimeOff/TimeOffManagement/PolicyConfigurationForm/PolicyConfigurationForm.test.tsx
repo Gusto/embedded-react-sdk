@@ -972,7 +972,7 @@ describe('PolicyConfigurationForm - edit mode (deriveFormDefaults)', () => {
     expect(screen.getByLabelText('Custom date')).toBeChecked()
   })
 
-  it('sends policyResetDate: null when switching from hourly to unlimited', async () => {
+  it('sends policyResetDate: null when switching an incomplete policy from hourly to unlimited', async () => {
     const user = userEvent.setup()
     renderEditComponent({
       name: 'Hourly Vacation',
@@ -980,6 +980,7 @@ describe('PolicyConfigurationForm - edit mode (deriveFormDefaults)', () => {
       accrualRate: '1.5',
       accrualRateUnit: '40',
       policyResetDate: '03-15',
+      complete: false,
     })
 
     await waitFor(() => {
@@ -1003,10 +1004,28 @@ describe('PolicyConfigurationForm - edit mode (deriveFormDefaults)', () => {
             policyResetDate: null,
             accrualRate: null,
             accrualRateUnit: null,
-            complete: true,
+            complete: false,
           }),
         },
       })
     })
+  })
+
+  it('disables accrual method radios when editing a complete policy', async () => {
+    renderEditComponent({
+      name: 'Complete Policy',
+      accrualMethod: 'per_hour_paid',
+      accrualRate: '1',
+      accrualRateUnit: '40',
+      complete: true,
+    })
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('Complete Policy')).toBeInTheDocument()
+    })
+
+    expect(screen.getByLabelText('Based on hours worked')).toBeDisabled()
+    expect(screen.getByLabelText('Fixed amount per year')).toBeDisabled()
+    expect(screen.getByLabelText('Unlimited')).toBeDisabled()
   })
 })

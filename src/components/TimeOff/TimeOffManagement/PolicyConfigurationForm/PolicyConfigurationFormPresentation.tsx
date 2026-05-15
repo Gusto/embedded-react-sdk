@@ -30,6 +30,7 @@ export function PolicyConfigurationFormPresentation({
   defaultValues,
   editingPolicyName,
   isPending = false,
+  isAccrualMethodLocked = false,
 }: PolicyConfigurationFormPresentationProps) {
   useI18n('Company.TimeOff.CreateTimeOffPolicy')
   const { t } = useTranslation('Company.TimeOff.CreateTimeOffPolicy')
@@ -188,6 +189,7 @@ export function PolicyConfigurationFormPresentation({
               description={t('policyDetails.accrualMethodHint')}
               options={accrualMethodOptions}
               isRequired
+              isDisabled={isAccrualMethodLocked}
               errorMessage={t('policyDetails.validations.accrualMethod')}
             />
 
