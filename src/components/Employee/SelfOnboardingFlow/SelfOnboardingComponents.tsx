@@ -9,7 +9,7 @@ import { FederalTaxes as FederalTaxesComponent } from '@/components/Employee/Fed
 import { StateTaxes as StateTaxesComponent } from '@/components/Employee/StateTaxes/onboarding'
 import { PaymentMethod as PaymentMethodComponent } from '@/components/Employee/PaymentMethod'
 import { OnboardingSummary as OnboardingSummaryComponent } from '@/components/Employee/OnboardingSummary'
-import { DocumentSigner as DocumentSignerComponent } from '@/components/Employee/DocumentSigner'
+import { DocumentSigner as DocumentSignerComponent } from '@/components/Employee/Documents/onboarding/DocumentSigner'
 
 export interface SelfOnboardingFlowProps extends BaseComponentInterface {
   companyId: string
