@@ -34,6 +34,8 @@
     "build": "npm run build:clean && npm run i18n:generate && vite build && npm run endpoints:derive",
     "endpoints:derive": "npx tsx ./build/deriveEndpointInventory.ts",
     "endpoints:verify": "npx tsx ./build/deriveEndpointInventory.ts --verify",
+    "api-contract:derive": "npx tsx --tsconfig build/tsconfig.json ./build/deriveApiContract.ts",
+    "api-contract:verify": "npx tsx --tsconfig build/tsconfig.json ./build/deriveApiContract.ts --verify",
     "build:ci": "npm run build && npm run lint:check && npm run format:check && npm run test:ci",
     "build:clean": "rm -rf ./dist && mkdir ./dist",
     "commitlint": "commitlint --edit",
