@@ -971,4 +971,42 @@ describe('PolicyConfigurationForm - edit mode (deriveFormDefaults)', () => {
     expect(screen.getByLabelText('All at once')).toBeChecked()
     expect(screen.getByLabelText('Custom date')).toBeChecked()
   })
+
+  it('sends policyResetDate: null when switching from hourly to unlimited', async () => {
+    const user = userEvent.setup()
+    renderEditComponent({
+      name: 'Hourly Vacation',
+      accrualMethod: 'per_hour_paid',
+      accrualRate: '1.5',
+      accrualRateUnit: '40',
+      policyResetDate: '03-15',
+    })
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('Hourly Vacation')).toBeInTheDocument()
+    })
+
+    await user.click(screen.getByLabelText('Unlimited'))
+
+    await waitFor(() => {
+      expect(screen.getByLabelText('Unlimited')).toBeChecked()
+    })
+
+    await user.click(screen.getByRole('button', { name: 'Save & continue' }))
+
+    await waitFor(() => {
+      expect(mockUpdateTimeOffPolicy).toHaveBeenCalledWith({
+        request: {
+          timeOffPolicyUuid: 'policy-edit-123',
+          requestBody: expect.objectContaining({
+            accrualMethod: 'unlimited',
+            policyResetDate: null,
+            accrualRate: null,
+            accrualRateUnit: null,
+            complete: true,
+          }),
+        },
+      })
+    })
+  })
 })

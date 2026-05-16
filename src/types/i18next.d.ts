@@ -259,6 +259,7 @@ export interface CompanyPaySchedule{
 "inactive":string;
 "edit":string;
 };
+"payScheduleListLabel":string;
 "headings":{
 "addPaySchedule":string;
 "editPaySchedule":string;
@@ -425,6 +426,9 @@ export interface CompanyTimeOffCreateTimeOffPolicy{
 "numberOfHoursPlaceholder":string;
 "numberOfDaysPlaceholder":string;
 "continueCta":string;
+"errors":{
+"balanceExceedsMaximum":string;
+};
 };
 "startingBalances":{
 "title":string;
@@ -1622,6 +1626,19 @@ export interface EmployeeDeductions{
 "creditorGarnishment":string;
 "federalLoan":string;
 "otherGarnishment":string;
+"descriptionRequired":string;
+"frequencyRequired":string;
+"deductionTypeRequired":string;
+"amountRequired":string;
+"amountNonNegative":string;
+"agencyRequired":string;
+"countyRequired":string;
+"caseNumberRequired":string;
+"orderNumberRequired":string;
+"remittanceNumberRequired":string;
+"payPeriodMaximumRequired":string;
+"percentOutOfRange":string;
+"paymentPeriodRequired":string;
 };
 export interface EmployeeDocumentSigner{
 "documentListTitle":string;

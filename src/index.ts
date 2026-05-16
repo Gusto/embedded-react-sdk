@@ -81,6 +81,68 @@ export type {
 
 // Domain hooks - Employee
 export {
+  useDeductionForm,
+  DeductionFormErrorCodes,
+  createDeductionFormSchema,
+} from '@/components/Employee/Deductions/shared/useDeductionForm'
+export type {
+  UseDeductionFormProps,
+  UseDeductionFormResult,
+  UseDeductionFormReady,
+  DeductionFormFields,
+  DeductionFormFieldsMetadata,
+  DeductionFormErrorCode,
+  DeductionFormOptionalFieldsToRequire,
+  DeductionFormData,
+  DeductionFormOutputs,
+  DeductionFormRequiredValidation,
+  DeductionFormNegativeAmountValidation,
+  DeductionFormAmountValidation,
+  DeductionFormCapValidation,
+  DescriptionFieldProps,
+  RecurringFieldProps,
+  DeductAsPercentageFieldProps,
+  AmountFieldProps as DeductionAmountFieldProps,
+  TotalAmountFieldProps,
+  AnnualMaximumFieldProps,
+  GarnishmentTypeFieldProps,
+} from '@/components/Employee/Deductions/shared/useDeductionForm'
+
+export {
+  useChildSupportGarnishmentForm,
+  ChildSupportGarnishmentFormErrorCodes,
+  createChildSupportGarnishmentFormSchema,
+  getRequiredAttrKeys,
+  SUPPORTED_REQUIRED_ATTR_KEYS,
+} from '@/components/Employee/Deductions/shared/useChildSupportGarnishmentForm'
+export type {
+  UseChildSupportGarnishmentFormProps,
+  UseChildSupportGarnishmentFormResult,
+  UseChildSupportGarnishmentFormReady,
+  ChildSupportGarnishmentFormFields,
+  ChildSupportGarnishmentFormFieldsMetadata,
+  ChildSupportGarnishmentFormErrorCode,
+  ChildSupportGarnishmentFormData,
+  ChildSupportGarnishmentFormOutputs,
+  SupportedRequiredAttrKey,
+  ChildSupportGarnishmentRequiredValidation,
+  ChildSupportGarnishmentNegativeAmountValidation,
+  ChildSupportGarnishmentPercentValidation,
+  PayPeriodMaximumValidation,
+  ChildSupportGarnishmentAmountValidation,
+  StateFieldEntry,
+  CountyEntry,
+  ChildSupportGarnishmentStateFieldProps,
+  FipsCodeFieldProps,
+  CaseNumberFieldProps,
+  OrderNumberFieldProps,
+  RemittanceNumberFieldProps,
+  PayPeriodMaximumFieldProps,
+  ChildSupportGarnishmentAmountFieldProps,
+  PaymentPeriodFieldProps,
+} from '@/components/Employee/Deductions/shared/useChildSupportGarnishmentForm'
+
+export {
   useCompensationForm,
   CompensationErrorCodes,
   createCompensationSchema,
@@ -358,7 +420,7 @@ export {
   MAX_PREPARERS,
   PREPARER_FIELDS_BY_INDEX,
   preparerFieldName,
-} from '@/components/Employee/DocumentSigner/shared/useSignEmployeeForm'
+} from '@/components/Employee/Documents/shared/useSignEmployeeForm'
 export type {
   UseSignEmployeeFormProps,
   UseSignEmployeeFormResult,
@@ -379,7 +441,7 @@ export type {
   UsedPreparerFieldProps,
   PreparerTextFieldProps,
   PreparerCheckboxFieldProps,
-} from '@/components/Employee/DocumentSigner/shared/useSignEmployeeForm'
+} from '@/components/Employee/Documents/shared/useSignEmployeeForm'
 
 // Domain hooks - Company
 export {

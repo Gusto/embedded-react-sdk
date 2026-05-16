@@ -9,8 +9,8 @@ import { PolicySettingsPresentation } from './PolicySettingsPresentation'
 import type { PolicySettingsFormData, PolicySettingsAccrualMethod } from './PolicySettingsTypes'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useBase } from '@/components/Base/useBase'
-import { componentEvents } from '@/shared/constants'
 import { SDKInternalError } from '@/types/sdkError'
+import { componentEvents } from '@/shared/constants'
 import { useI18n } from '@/i18n'
 
 export interface PolicySettingsProps extends BaseComponentInterface {
@@ -134,6 +134,9 @@ function Root({ policyId, mode }: PolicySettingsProps) {
         onEvent(componentEvents.TIME_OFF_POLICY_SETTINGS_DONE, timeOffPolicy)
       } catch (err) {
         if (err instanceof UnprocessableEntityError) {
+          if (err.errors.some(e => e.message === 'LIMIT_VIOLATION_MAX_HOURS')) {
+            throw new SDKInternalError(t('policySettings.errors.balanceExceedsMaximum'), 'api_error')
+          }
           const uniqueMessages = [...new Set(err.errors.map(e => e.message).filter(Boolean))]
           throw new SDKInternalError(
             t('errors.updatePolicySettingsFailed', {
