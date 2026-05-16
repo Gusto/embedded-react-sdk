@@ -445,6 +445,9 @@ export interface CompanyTimeOffCreateTimeOffPolicy{
 "continueCta":string;
 "backCta":string;
 "cancelCta":string;
+"errors":{
+"updatePolicySettingsFailed":string;
+};
 "flash":{
 "policyUpdated":string;
 "policyActive":string;

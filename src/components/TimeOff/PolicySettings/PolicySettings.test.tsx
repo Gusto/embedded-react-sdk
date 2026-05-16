@@ -288,6 +288,67 @@ describe('PolicySettings container', () => {
     })
   })
 
+  describe('update policy 422 error', () => {
+    it('deduplicates identical error messages from a 422 response', async () => {
+      const user = userEvent.setup()
+      mockPolicyData = { ...basePolicyData, accrualMethod: 'per_calendar_year' }
+
+      const { UnprocessableEntityError } =
+        await import('@gusto/embedded-api/models/errors/unprocessableentityerror')
+
+      const duplicateMessage = 'Balance must be less than or equal to max balance (10.0)'
+      const apiError = new UnprocessableEntityError(
+        {
+          errors: Array.from({ length: 5 }, () => ({
+            errorKey: 'balance',
+            category: 'invalid_attribute_value',
+            message: duplicateMessage,
+          })),
+        },
+        {
+          response: new Response(null, { status: 422 }),
+          request: new Request('https://example.com'),
+          body: '',
+        },
+      )
+      mockUpdateTimeOffPolicy.mockRejectedValueOnce(apiError)
+
+      renderComponent()
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Save' })).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: 'Save' }))
+
+      await waitFor(() => {
+        expect(screen.getByText(/Unable to update policy settings/)).toBeInTheDocument()
+      })
+
+      const balanceErrors = screen.getAllByText(/Balance must be less than or equal to max balance/)
+      expect(balanceErrors).toHaveLength(1)
+    })
+
+    it('re-throws non-UnprocessableEntityError errors unchanged', async () => {
+      const user = userEvent.setup()
+      mockPolicyData = { ...basePolicyData, accrualMethod: 'per_calendar_year' }
+
+      mockUpdateTimeOffPolicy.mockRejectedValueOnce(new Error('Network failure'))
+
+      renderComponent()
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Save' })).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: 'Save' }))
+
+      await waitFor(() => {
+        expect(screen.getByTestId('internal-error-card')).toBeInTheDocument()
+      })
+    })
+  })
+
   describe('back navigation', () => {
     it('emits POLICY_SETTINGS_BACK when Back is clicked', async () => {
       const user = userEvent.setup()
