@@ -2631,8 +2631,8 @@
     },
     "EmployeeOnboarding.OnboardingFlow": {
       "blocks": [
+        "Employee.EmployeeDocuments",
         "Employee.PaymentMethod",
-        "EmployeeManagement.EmployeeDocuments",
         "EmployeeOnboarding.Compensation",
         "EmployeeOnboarding.Deductions",
         "EmployeeOnboarding.EmployeeList",
