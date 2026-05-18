@@ -1,13 +1,8 @@
 import { Trans, useTranslation } from 'react-i18next'
-import { useEmployeeFormsGet } from '@gusto/embedded-api/react-query/employeeFormsGet'
-import { useEmployeeFormsGetPdf } from '@gusto/embedded-api/react-query/employeeFormsGetPdf'
+import { useEmployeeFormsGetSuspense } from '@gusto/embedded-api/react-query/employeeFormsGet'
+import { useEmployeeFormsGetPdfSuspense } from '@gusto/embedded-api/react-query/employeeFormsGetPdf'
 import { SignatureForm } from '../shared/SignatureForm/SignatureForm'
-import {
-  BaseBoundaries,
-  BaseLayout,
-  type BaseComponentInterface,
-  type BaseBoundariesProps,
-} from '@/components/Base/Base'
+import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import { ActionsLayout, Flex } from '@/components/Common'
 import { DocumentViewer } from '@/components/Common/DocumentViewer'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -17,25 +12,30 @@ import { componentEvents } from '@/shared/constants'
 export interface DocumentManagerProps {
   employeeId: string
   formId: string
-  onEvent: BaseComponentInterface['onEvent']
 }
 
-function DocumentManagerRoot({ employeeId, formId, onEvent }: DocumentManagerProps) {
+export function DocumentManager(props: DocumentManagerProps & BaseComponentInterface) {
   useI18n('Employee.DocumentManager')
+  return (
+    <BaseComponent {...props} componentName="Employee.DocumentManager">
+      <DocumentManagerRoot employeeId={props.employeeId} formId={props.formId} />
+    </BaseComponent>
+  )
+}
+
+function DocumentManagerRoot({ employeeId, formId }: DocumentManagerProps) {
   const { t } = useTranslation('Employee.DocumentManager')
   const Components = useComponentContext()
+  const { onEvent } = useBase()
 
-  const formQuery = useEmployeeFormsGet({ employeeId, formId })
-  const pdfQuery = useEmployeeFormsGetPdf({ employeeId, formId })
+  const {
+    data: { form },
+  } = useEmployeeFormsGetSuspense({ employeeId, formId })
+  const {
+    data: { formPdf },
+  } = useEmployeeFormsGetPdfSuspense({ employeeId, formId })
 
-  const isLoading = formQuery.isLoading || pdfQuery.isLoading
-
-  if (isLoading) {
-    return <BaseLayout isLoading />
-  }
-
-  const form = formQuery.data?.form
-  const pdfUrl = pdfQuery.data?.formPdf?.documentUrl
+  const pdfUrl = formPdf?.documentUrl
 
   if (!form) return null
 
@@ -44,51 +44,38 @@ function DocumentManagerRoot({ employeeId, formId, onEvent }: DocumentManagerPro
   }
 
   return (
-    <BaseLayout>
-      <Flex flexDirection="column" gap={16}>
-        {form.title && <Components.Heading as="h2">{form.title}</Components.Heading>}
-        {pdfUrl && (
-          <Components.Text>
-            <Trans
-              t={t}
-              i18nKey="downloadDocumentCta"
-              components={{
-                downloadLink: (
-                  <Components.Link
-                    href={pdfUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    download={`${form.title || 'form'}.pdf`}
-                  />
-                ),
-              }}
-            />
-          </Components.Text>
-        )}
-        <DocumentViewer url={pdfUrl} title={form.title} viewDocumentLabel={t('viewDocumentCta')} />
-
-        <ActionsLayout>
-          <Components.Button
-            variant="secondary"
-            onClick={() => {
-              onEvent(componentEvents.CANCEL)
+    <Flex flexDirection="column" gap={16}>
+      {form.title && <Components.Heading as="h2">{form.title}</Components.Heading>}
+      {pdfUrl && (
+        <Components.Text>
+          <Trans
+            t={t}
+            i18nKey="downloadDocumentCta"
+            components={{
+              downloadLink: (
+                <Components.Link
+                  href={pdfUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  download={`${form.title || 'form'}.pdf`}
+                />
+              ),
             }}
-          >
-            {t('backCta')}
-          </Components.Button>
-        </ActionsLayout>
-      </Flex>
-    </BaseLayout>
-  )
-}
+          />
+        </Components.Text>
+      )}
+      <DocumentViewer url={pdfUrl} title={form.title} viewDocumentLabel={t('viewDocumentCta')} />
 
-export function DocumentManager({
-  FallbackComponent,
-  ...props
-}: DocumentManagerProps & { FallbackComponent?: BaseBoundariesProps['FallbackComponent'] }) {
-  return (
-    <BaseBoundaries componentName="Employee.DocumentManager" FallbackComponent={FallbackComponent}>
-      <DocumentManagerRoot {...props} />
-    </BaseBoundaries>
+      <ActionsLayout>
+        <Components.Button
+          variant="secondary"
+          onClick={() => {
+            onEvent(componentEvents.CANCEL)
+          }}
+        >
+          {t('backCta')}
+        </Components.Button>
+      </ActionsLayout>
+    </Flex>
   )
 }

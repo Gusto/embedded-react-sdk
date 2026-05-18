@@ -19,7 +19,7 @@ export type DashboardSuccessAlert = 'bankAccountAdded' | 'bankAccountDeleted' | 
 
 export interface DashboardContextInterface extends FlowContextInterface {
   employeeId: string
-  formId?: string | null
+  formId?: string
   successAlert?: DashboardSuccessAlert | null
 }
 
@@ -100,7 +100,7 @@ export function DocumentManagerContextual() {
   return (
     <DocumentManager
       employeeId={ensureRequired(employeeId)}
-      formId={ensureRequired(formId ?? undefined)}
+      formId={ensureRequired(formId)}
       onEvent={onEvent}
     />
   )
