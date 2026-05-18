@@ -131,6 +131,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | `/v1/work_addresses/:workAddressUuid` |
 | **Employee.Compensation** | GET | `/v1/companies/:companyId/federal_tax_details` |
 |  | PUT | `/v1/compensations/:compensationId` |
+|  | DELETE | `/v1/compensations/:compensationId` |
 |  | GET | `/v1/employees/:employeeId` |
 |  | GET | `/v1/employees/:employeeId/jobs` |
 |  | POST | `/v1/employees/:employeeId/jobs` |
@@ -342,6 +343,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | `/v1/work_addresses/:workAddressUuid` |
 | **EmployeeOnboarding.Compensation** | GET | `/v1/companies/:companyId/federal_tax_details` |
 |  | PUT | `/v1/compensations/:compensationId` |
+|  | DELETE | `/v1/compensations/:compensationId` |
 |  | GET | `/v1/employees/:employeeId` |
 |  | GET | `/v1/employees/:employeeId/jobs` |
 |  | POST | `/v1/employees/:employeeId/jobs` |

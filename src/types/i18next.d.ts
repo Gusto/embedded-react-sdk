@@ -1429,6 +1429,8 @@ export interface EmployeeCompensation{
 "confirmCta":string;
 "closeCta":string;
 };
+"addJobTitle":string;
+"addJobCta":string;
 };
 "validations":{
 "classificationChangeNotification":string;

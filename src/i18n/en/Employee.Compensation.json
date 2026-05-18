@@ -87,7 +87,9 @@
       "description": "{{jobTitle}} will be removed from this employee. This cannot be undone.",
       "confirmCta": "Delete job",
       "closeCta": "Keep job"
-    }
+    },
+    "addJobTitle": "Add another job",
+    "addJobCta": "Add job"
   },
   "validations": {
     "classificationChangeNotification": "Changing this employee's classification will delete the employee's additional pay rates.",

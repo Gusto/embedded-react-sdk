@@ -654,6 +654,10 @@
           "path": "/v1/compensations/:compensationId"
         },
         {
+          "method": "DELETE",
+          "path": "/v1/compensations/:compensationId"
+        },
+        {
           "method": "GET",
           "path": "/v1/employees/:employeeId"
         },
@@ -1821,6 +1825,10 @@
         },
         {
           "method": "PUT",
+          "path": "/v1/compensations/:compensationId"
+        },
+        {
+          "method": "DELETE",
           "path": "/v1/compensations/:compensationId"
         },
         {
