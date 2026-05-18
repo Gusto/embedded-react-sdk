@@ -72,10 +72,11 @@ export interface UseJobFormProps {
   /**
    * When `false`, hides `Fields.Title` (becomes `undefined`), removes
    * `title` from schema validation, and skips sending `title` on PUT/POST.
-   * Use this for steady-state compensation edits where title is rendered
-   * via `CompFields.Title` and rides the future-dated compensation row
-   * instead of mutating the job's current title immediately. Defaults to
-   * `true`.
+   * Use this when another form owns the title field — e.g. steady-state
+   * compensation edits render title via `CompFields.Title` so a title
+   * change is effective-dated alongside the rest of the compensation
+   * change, rather than overwriting the job's current title immediately.
+   * Defaults to `true`.
    */
   withTitleField?: boolean
 }

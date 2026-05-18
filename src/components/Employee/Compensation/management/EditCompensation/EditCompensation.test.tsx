@@ -154,6 +154,70 @@ describe('management/EditCompensation', () => {
     })
   })
 
+  it('does not PUT compensations if the job PUT fails', async () => {
+    server.use(
+      handleGetEmployeeJobs(() =>
+        HttpResponse.json(buildEmployeeWithJobs({ scenario: 'singleNonexempt' })),
+      ),
+    )
+
+    const updateJobResolver = vi.fn<HttpResponseResolver>(
+      () => new HttpResponse(null, { status: 500 }),
+    )
+    const updateCompensationResolver = vi.fn<HttpResponseResolver>(() =>
+      HttpResponse.json({
+        uuid: 'compensation-uuid',
+        version: 'compensation-version-next',
+        job_uuid: 'job-uuid',
+        payment_unit: 'Hour',
+        flsa_status: 'Nonexempt',
+        adjust_for_minimum_wage: false,
+        effective_date: '2024-12-24',
+        rate: '100.00',
+      }),
+    )
+
+    server.use(
+      handleUpdateEmployeeJob(updateJobResolver),
+      handleUpdateEmployeeCompensation(updateCompensationResolver),
+    )
+
+    const user = userEvent.setup()
+    const onEvent = vi.fn()
+
+    renderWithProviders(
+      <EditCompensation
+        employeeId="employee-uuid"
+        jobId="job-uuid"
+        compensationId="compensation-uuid"
+        onEvent={onEvent}
+      />,
+    )
+
+    await screen.findByRole('heading', { name: 'Edit compensation' })
+
+    const rateInput = screen.getByLabelText('Wage')
+    await user.clear(rateInput)
+    await user.type(rateInput, '125')
+    await user.tab()
+
+    await user.click(screen.getByRole('button', { name: 'Save' }))
+
+    await waitFor(() => {
+      expect(updateJobResolver).toHaveBeenCalledTimes(1)
+    })
+
+    expect(updateCompensationResolver).not.toHaveBeenCalled()
+    expect(onEvent).not.toHaveBeenCalledWith(
+      componentEvents.EMPLOYEE_JOB_UPDATED,
+      expect.anything(),
+    )
+    expect(onEvent).not.toHaveBeenCalledWith(
+      componentEvents.EMPLOYEE_COMPENSATION_UPDATED,
+      expect.anything(),
+    )
+  })
+
   it('puts 2% shareholder on the job body, not the compensation body', async () => {
     server.use(
       handleGetCompanyFederalTaxes(() =>
