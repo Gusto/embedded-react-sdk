@@ -1946,6 +1946,26 @@
         "employeeId"
       ]
     },
+    "EmployeeManagement.DocumentManager": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/forms/:formId"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/forms/:formId/pdf"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/employees/:employeeId/forms/:formId/sign"
+        }
+      ],
+      "variables": [
+        "employeeId",
+        "formId"
+      ]
+    },
     "EmployeeManagement.DashboardFlow": {
       "endpoints": [
         {
@@ -2572,6 +2592,7 @@
         "Employee.HomeAddress",
         "Employee.PaymentMethod",
         "Employee.WorkAddress",
+        "EmployeeManagement.DocumentManager",
         "EmployeeManagement.FederalTaxes",
         "EmployeeManagement.Profile",
         "EmployeeManagement.StateTaxes",
@@ -2614,6 +2635,7 @@
       "blocks": [
         "Employee.HomeAddress",
         "Employee.PaymentMethod",
+        "EmployeeManagement.DocumentManager",
         "EmployeeManagement.FederalTaxes",
         "EmployeeManagement.Profile",
         "EmployeeManagement.StateTaxes",
