@@ -61,7 +61,6 @@ interface Inventory {
 interface DerivationResult {
   inventory: Inventory
   funcLookup: Map<string, Endpoint>
-  deprecatedNamespaces: Map<string, string>
 }
 
 function createApiProject(): Project {
@@ -270,12 +269,9 @@ function normalizeEndpointPath(openApiPath: string, paramNameMap: Record<string,
   })
 }
 
-interface NamespaceInfo {
-  domainDir: string
-  deprecated: boolean
-  /** The text after "@deprecated" in the JSDoc comment, if present. */
-  deprecationMessage: string | undefined
-}
+type NamespaceInfo =
+  | { domainDir: string; deprecated: true; deprecationMessage: string }
+  | { domainDir: string; deprecated: false }
 
 function parseNamespaceExports(): Map<string, NamespaceInfo> {
   const indexPath = join(COMPONENTS_DIR, 'index.ts')
@@ -292,13 +288,14 @@ function parseNamespaceExports(): Map<string, NamespaceInfo> {
     for (const [_fullMatch, jsdoc, namespaceName, domainDir] of content.matchAll(
       namespacePattern,
     )) {
-      let deprecationMessage: string | undefined
       if (jsdoc) {
         // Extract the text that follows "@deprecated" inside the JSDoc block.
         const match = /@deprecated\s+([\s\S]*?)\s*\*\//.exec(jsdoc)
-        deprecationMessage = match ? match[1].replace(/\s*\*\s*/g, ' ').trim() : ''
+        const deprecationMessage = match ? match[1].replace(/\s*\*\s*/g, ' ').trim() : ''
+        namespaces.set(namespaceName, { domainDir, deprecated: true, deprecationMessage })
+      } else {
+        namespaces.set(namespaceName, { domainDir, deprecated: false })
       }
-      namespaces.set(namespaceName, { domainDir, deprecated: !!jsdoc, deprecationMessage })
     }
   } catch (err) {
     console.error(`ERROR: Could not read ${indexPath}`)
@@ -371,11 +368,10 @@ function discoverBlocks(): {
   const namespaces = parseNamespaceExports()
   const deprecatedNamespaces = new Map<string, string>()
 
-  for (const [
-    namespaceName,
-    { domainDir: domainDirName, deprecated: nsDeprecated, deprecationMessage },
-  ] of namespaces.entries()) {
-    if (nsDeprecated) deprecatedNamespaces.set(namespaceName, deprecationMessage ?? '')
+  for (const [namespaceName, namespaceInfo] of namespaces.entries()) {
+    if (namespaceInfo.deprecated)
+      deprecatedNamespaces.set(namespaceName, namespaceInfo.deprecationMessage)
+    const { domainDir: domainDirName, deprecated: nsDeprecated } = namespaceInfo
     const domainDir = join(COMPONENTS_DIR, domainDirName)
     const componentExports = parseComponentExports(domainDir)
 
@@ -584,7 +580,7 @@ function deduplicateEndpoints(endpoints: Endpoint[]): Endpoint[] {
 function deriveInventory(): DerivationResult {
   const project = createApiProject()
   const funcLookup = buildFuncLookup(project)
-  const { blocks: blockMappings, deprecatedNamespaces } = discoverBlocks()
+  const { blocks: blockMappings } = discoverBlocks()
   const allBlockDirs = new Set(blockMappings.map(m => m.componentDir))
 
   const blocks: Record<string, BlockEntry> = {}
@@ -625,7 +621,7 @@ function deriveInventory(): DerivationResult {
     Object.entries(flows).sort(([a], [b]) => a.localeCompare(b)),
   )
 
-  return { inventory: { blocks, flows: sortedFlows }, funcLookup, deprecatedNamespaces }
+  return { inventory: { blocks, flows: sortedFlows }, funcLookup }
 }
 
 function generateMarkdown(inventory: Inventory): string {
