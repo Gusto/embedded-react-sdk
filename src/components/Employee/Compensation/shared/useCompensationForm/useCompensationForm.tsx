@@ -319,9 +319,15 @@ export function useCompensationForm({
   // current compensation so multi-job classification stays consistent. The
   // schema enforces requiredness on submit in `create` mode (see
   // `requiredFieldsConfig` in compensationSchema.ts).
+  //
+  // `title` falls back to the parent job's title when the loaded compensation
+  // row has none — a compensation only carries a non-null `title` when an
+  // explicit title change has been scheduled on it. For steady-state edits
+  // we want the input to show the employee's current title as the starting
+  // value so the user can edit-in-place rather than re-typing.
   const resolvedDefaults: CompensationFormData = useMemo(
     () => ({
-      title: currentCompensation?.title ?? partnerDefaults?.title ?? '',
+      title: currentCompensation?.title ?? currentJob?.title ?? partnerDefaults?.title ?? '',
       // When adding a secondary, the FLSA must match the primary's — force it
       // here (overriding any partner default) so the form submits the right
       // value even though `Fields.FlsaStatus` is hidden.
@@ -340,7 +346,7 @@ export function useCompensationForm({
         currentCompensation?.paymentUnit ?? partnerDefaults?.paymentUnit ?? PAY_PERIODS.HOUR,
       effectiveDate: currentCompensation?.effectiveDate ?? partnerDefaults?.effectiveDate ?? null,
     }),
-    [currentCompensation, partnerDefaults, primaryFlsaStatus, isAddingSecondaryJob],
+    [currentCompensation, currentJob, partnerDefaults, primaryFlsaStatus, isAddingSecondaryJob],
   )
 
   const formMethods = useForm<CompensationFormData, unknown, CompensationFormOutputs>({
