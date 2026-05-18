@@ -17,12 +17,12 @@ import { useSplitPaymentsForm, SDKFormProvider } from '@gusto/embedded-react-sdk
 
 `useSplitPaymentsForm` accepts a single options object:
 
-| Prop                      | Type                                                           | Required | Default      | Description                                                                                                       |
-| ------------------------- | -------------------------------------------------------------- | -------- | ------------ | ----------------------------------------------------------------------------------------------------------------- |
-| `employeeId`              | `string`                                                       | Yes      | —            | The UUID of the employee whose payment splits are being edited.                                                   |
-| `optionalFieldsToRequire` | `SplitPaymentsFormOptionalFieldsToRequire`                     | No       | —            | Reserved for future schema expansion. `splitBy`, `splitAmount`, and `priority` are always required by the schema. |
-| `validationMode`          | `'onSubmit' \| 'onBlur' \| 'onChange' \| 'onTouched' \| 'all'` | No       | `'onSubmit'` | When validation runs. Passed through to react-hook-form.                                                          |
-| `shouldFocusError`        | `boolean`                                                      | No       | `true`       | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`.                   |
+| Prop                      | Type                                                           | Required | Default      | Description                                                                                                                                                                                                                      |
+| ------------------------- | -------------------------------------------------------------- | -------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `employeeId`              | `string`                                                       | Yes      | —            | The UUID of the employee whose payment splits are being edited.                                                                                                                                                                  |
+| `optionalFieldsToRequire` | `SplitPaymentsFormOptionalFieldsToRequire`                     | No       | —            | Maps optional schema fields to force-required. Currently a no-op — `splitBy` and `priority` are always required, and per-split `splitAmount` required-ness is intrinsic (see [Cross-field validation](#cross-field-validation)). |
+| `validationMode`          | `'onSubmit' \| 'onBlur' \| 'onChange' \| 'onTouched' \| 'all'` | No       | `'onSubmit'` | When validation runs. Passed through to react-hook-form.                                                                                                                                                                         |
+| `shouldFocusError`        | `boolean`                                                      | No       | `true`       | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`.                                                                                                                                  |
 
 `defaultValues` is not exposed because the hook always derives defaults from the existing payment method's `splits` — the values you load are the values you edit.
 
@@ -54,17 +54,37 @@ The hook fetches the payment method and the employee's bank accounts. While eith
     splits: WorkingSplit[]
     /** UUID of the split that absorbs the remainder in Amount mode (always the last by priority). */
     remainderId: string
+  }
+  status: {
+    isPending: boolean
+    mode: 'update'
+    /** The currently selected split mode. */
     splitBy: 'Percentage' | 'Amount'
     /** Live sum of `splitAmount` values; useful for displaying the current total in Percentage mode. */
     percentageTotal: number
+    /**
+     * Mirrors the schema-emitted `PERCENTAGE_TOTAL_MISMATCH` error and is the
+     * only place this invariant surfaces — there are no per-field
+     * `PERCENTAGE_TOTAL_MISMATCH` errors. Tracks `formState.errors` directly
+     * and follows the standard react-hook-form validation lifecycle: with
+     * the default `validationMode: 'onSubmit'`, becomes `true` after the
+     * first failed Save attempt and clears live as the user corrects the
+     * total. The hook keeps the synthetic error in sync as splits change
+     * post-submit, so a corrected total dismisses the imbalance immediately
+     * without waiting for the next submit. The schema only emits the
+     * imbalance when every split has a finite percentage value, so
+     * missing-value cases are surfaced as per-field `REQUIRED` errors
+     * instead. Only `true` in Percentage mode.
+     */
+    hasPercentageImbalance: boolean
   }
-  status: { isPending: boolean; mode: 'update' }
   actions: {
     onSubmit: () => Promise<HookSubmitResult<EmployeePaymentMethod> | undefined>
-    /** Reorders splits in Amount mode by updating `priority`; the last item becomes the remainder. */
-    reorderSplits: (newOrder: number[]) => void
-    /** Programmatic value update for a single split's amount. */
-    updateSplitAmount: (uuid: string, value: number | null) => void
+    /**
+     * Reorder splits in Amount mode by uuid. The last uuid in the array
+     * becomes the remainder.
+     */
+    reorderSplits: (orderedUuids: string[]) => void
   }
   errorHandling: HookErrorHandling
   form: {
@@ -88,17 +108,15 @@ interface WorkingSplit {
 }
 ```
 
-`splits` is derived from `paymentMethod.splits` when present, otherwise from `bankAccounts` (one entry per account, no allocated amount).
+`data.splits` is derived from `paymentMethod.splits` when present, otherwise from `bankAccounts` (one entry per account, no allocated amount). It carries the raw domain data — use it for label construction or lookups by uuid.
 
 ### Submit behavior
 
-`onSubmit` PUTs `/v1/employees/:id/payment_method` with `type: 'Direct Deposit'`, the chosen `splitBy`, and a `splits` array constructed from the working splits and current form values. In Amount mode, `splitAmount` values are converted from dollars to cents before sending. Returns `HookSubmitResult<EmployeePaymentMethod>` with `mode: 'update'`, or `undefined` if validation fails or the mutation errors.
+`onSubmit` runs schema validation via react-hook-form. When any field error is present — including the synthetic `PERCENTAGE_TOTAL_MISMATCH` invariant — submission is blocked and `onSubmit` returns `undefined`. Surface the imbalance via `status.hasPercentageImbalance`. On success it updates the employee's payment method with the chosen `splitBy` and the current splits, and returns `HookSubmitResult<EmployeePaymentMethod>` with `mode: 'update'`.
 
 ---
 
 ## Fields Reference
-
-All fields accept `label` (required) and `description` (optional). Fields with validation accept `validationMessages` mapping error codes to display strings.
 
 ### Error Codes
 
@@ -107,21 +125,56 @@ const SplitPaymentsFormErrorCodes = {
   REQUIRED: 'REQUIRED',
   INVALID_PERCENTAGE: 'INVALID_PERCENTAGE',
   INVALID_AMOUNT: 'INVALID_AMOUNT',
-  PERCENTAGE_TOTAL_MISMATCH: 'PERCENTAGE_TOTAL_MISMATCH',
   DUPLICATE_PRIORITIES: 'DUPLICATE_PRIORITIES',
+  PERCENTAGE_TOTAL_MISMATCH: 'PERCENTAGE_TOTAL_MISMATCH',
 } as const
 ```
+
+`PERCENTAGE_TOTAL_MISMATCH` is a form-level invariant — it is not attached to any individual split's error slot. Read `status.hasPercentageImbalance` and render your own alert / banner / inline summary. It follows the standard react-hook-form validation lifecycle (driven by `validationMode`), so it appears and clears in lockstep with per-field errors.
+
+### Static fields
 
 | Field     | Input type          | Required by default | Error codes | Conditional availability                                                |
 | --------- | ------------------- | ------------------- | ----------- | ----------------------------------------------------------------------- |
 | `SplitBy` | Radio (two options) | Yes (has a default) | `REQUIRED`  | Always rendered. Defaults to `paymentMethod.splitBy` or `'Percentage'`. |
 
-Per-split `splitAmount.{uuid}` and `priority.{uuid}` form fields are dynamic (one pair per bank account) and not exposed as named Fields — you render `NumberInputField` for each split yourself, reading the current splits from `data.splits`. The hook still owns the schema validation, default values, mode-toggle reset behavior, reordering, and submit logic for those fields.
+### Dynamic per-split Fields
+
+`form.Fields.splits` is an array of `SplitFieldEntry` objects — one per bank account — pairing each split's identity with a render-ready `Field` component:
+
+```typescript
+interface SplitFieldEntry {
+  uuid: string
+  name: string | null
+  hiddenAccountNumber: string | null
+  Field: ComponentType<SplitFieldProps>
+}
+```
+
+Each `Field` is pre-bound to its split. It formats values as currency in Amount mode and as a percentage in Percentage mode, switching automatically when `splitBy` changes. Required-ness and disabled state are intrinsic — every split is required, except the remainder in Amount mode, which is automatically disabled and not required. Supply `REQUIRED` in `validationMessages` to translate the "missing value" error. The sum-to-100 invariant is surfaced separately via `status.hasPercentageImbalance` (see [Cross-field validation](#cross-field-validation)) — not as a per-field error.
+
+```typescript
+interface SplitFieldProps {
+  label: string
+  description?: ReactNode
+  formHookResult?: FormHookResult
+  validationMessages?: ValidationMessages<SplitFieldValidation>
+  min?: number | string
+  max?: number | string
+  placeholder?: string
+  FieldComponent?: ComponentType<NumberInputProps>
+}
+
+type SplitFieldValidation = 'REQUIRED' | 'INVALID_AMOUNT' | 'INVALID_PERCENTAGE'
+```
+
+Construct the label from `entry.name` and `entry.hiddenAccountNumber`, supply `validationMessages` for all three codes, and use `entry.uuid === data.remainderId` if you want to decorate the remainder split visually (e.g. placeholder text).
 
 ### Cross-field validation
 
-- **Percentage mode**: `PERCENTAGE_TOTAL_MISMATCH` fires when split amounts do not sum to exactly 100. The error lands at form path `splitAmount`. Use `data.percentageTotal` to interpolate the current total into the displayed message.
-- **Amount mode**: `DUPLICATE_PRIORITIES` fires when two splits share a priority value. Reorder via `actions.reorderSplits` to keep priorities unique.
+- **Per-split required**: each `splitAmount.<uuid>` is required and emits `REQUIRED` if cleared. The remainder split in Amount mode is exempt — it is intentionally null to absorb leftover pay.
+- **Percentage mode**: read `status.hasPercentageImbalance` and `status.percentageTotal` to drive an inline alert. The flag is tied to react-hook-form's validation lifecycle — with the default `validationMode: 'onSubmit'`, the alert appears after the first Save attempt and clears as the user corrects the total. Configure `validationMode` if you want a different cadence (e.g. `'onBlur'` or `'onChange'`). `status.percentageTotal` is always a finite running sum — non-numeric values contribute 0 — so it is safe to render unconditionally.
+- **Amount mode**: `DUPLICATE_PRIORITIES` fires when two splits share a priority value. Use `actions.reorderSplits` to keep priorities unique.
 
 ---
 
@@ -135,17 +188,16 @@ A complete split-paycheck screen showing both modes, reorderable Amount layout, 
 import {
   useSplitPaymentsForm,
   SDKFormProvider,
-  SPLIT_BY_VALUES,
+  type SplitFieldEntry,
   type SplitByValue,
   type UseSplitPaymentsFormReady,
 } from '@gusto/embedded-react-sdk'
-import { useFormState } from 'react-hook-form'
 
 function SplitPaycheckPage({ employeeId }: { employeeId: string }) {
   const splitForm = useSplitPaymentsForm({ employeeId })
 
   if (splitForm.isLoading) {
-    return <div>Loading...</div>
+    return <div>Loading…</div>
   }
 
   return <SplitPaycheckFormReady splitForm={splitForm} />
@@ -153,15 +205,11 @@ function SplitPaycheckPage({ employeeId }: { employeeId: string }) {
 
 function SplitPaycheckFormReady({ splitForm }: { splitForm: UseSplitPaymentsFormReady }) {
   const { Fields } = splitForm.form
-  const { splits, splitBy, remainderId, percentageTotal } = splitForm.data
-  const { errors } = useFormState({
-    control: splitForm.form.hookFormInternals.formMethods.control,
-  })
-  const splitAmountError = errors.splitAmount as
-    | { message?: string; root?: { message?: string } }
-    | undefined
-  const totalMismatch =
-    (splitAmountError?.root?.message ?? splitAmountError?.message) === 'PERCENTAGE_TOTAL_MISMATCH'
+  const { remainderId } = splitForm.data
+  const { splitBy, percentageTotal, hasPercentageImbalance } = splitForm.status
+
+  const labelForSplit = (split: SplitFieldEntry) =>
+    `${split.name ?? 'Account'} (${split.hiddenAccountNumber ?? ''})`
 
   return (
     <SDKFormProvider formHookResult={splitForm}>
@@ -171,35 +219,36 @@ function SplitPaycheckFormReady({ splitForm }: { splitForm: UseSplitPaymentsForm
           void splitForm.actions.onSubmit()
         }}
       >
-        {totalMismatch && (
+        {hasPercentageImbalance && (
           <div role="alert">Splits must total 100%. Currently {percentageTotal}%.</div>
         )}
 
         <Fields.SplitBy label="Split by" getOptionLabel={(value: SplitByValue) => value} />
 
         {splitBy === 'Amount'
-          ? splits.map(split => (
-              <input
+          ? Fields.splits.map(split => (
+              <split.Field
                 key={split.uuid}
-                type="number"
-                aria-label={`${split.name} (${split.hiddenAccountNumber})`}
-                disabled={remainderId === split.uuid}
-                onChange={e =>
-                  splitForm.actions.updateSplitAmount(
-                    split.uuid,
-                    e.target.value === '' ? null : Number(e.target.value),
-                  )
-                }
+                label={labelForSplit(split)}
+                min={0}
+                validationMessages={{
+                  REQUIRED: 'Enter an amount',
+                  INVALID_AMOUNT: 'Amount must be at least 0',
+                  INVALID_PERCENTAGE: 'Amount must be at least 0',
+                }}
+                placeholder={remainderId === split.uuid ? 'rest of paycheck' : undefined}
               />
             ))
-          : splits.map(split => (
-              <input
+          : Fields.splits.map(split => (
+              <split.Field
                 key={split.uuid}
-                type="number"
-                aria-label={`${split.name} (${split.hiddenAccountNumber})`}
-                onChange={e =>
-                  splitForm.actions.updateSplitAmount(split.uuid, Number(e.target.value))
-                }
+                label={labelForSplit(split)}
+                min={0}
+                validationMessages={{
+                  REQUIRED: 'Enter a percentage',
+                  INVALID_AMOUNT: 'Percentage must be a whole number 0–100',
+                  INVALID_PERCENTAGE: 'Percentage must be a whole number 0–100',
+                }}
               />
             ))}
 
@@ -212,14 +261,41 @@ function SplitPaycheckFormReady({ splitForm }: { splitForm: UseSplitPaymentsForm
 }
 ```
 
-`actions.reorderSplits(newOrder)` accepts an array of split indices in the new desired order. Wire it to whatever reorderable list component your UI provides; the hook updates `priority` and shifts the remainder to the last item.
+### Wiring `reorderSplits` to a reorderable list
+
+`actions.reorderSplits(orderedUuids)` accepts an array of split uuids in the new desired order. The last uuid in the array becomes the remainder. If your reorder UI emits indices, translate them to uuids at the call boundary:
+
+```tsx
+function handleReorder(indices: number[]) {
+  const orderedUuids = indices
+    .map(i => splitForm.form.Fields.splits[i]?.uuid)
+    .filter((uuid): uuid is string => Boolean(uuid))
+  splitForm.actions.reorderSplits(orderedUuids)
+}
+```
+
+For non-drag UIs (up/down buttons, keyboard reorder), build the array of uuids directly.
 
 ### With `formHookResult` prop
 
-The radio field works the same way without `SDKFormProvider`:
+The static `SplitBy` field works the same way without `SDKFormProvider`:
 
 ```tsx
 <Fields.SplitBy label="Split by" formHookResult={splitForm} getOptionLabel={value => value} />
 ```
 
-The per-split number inputs need to read form context (via `SDKFormProvider`) since their names are dynamic. If you don't use `SDKFormProvider`, wire each split input to react-hook-form directly through `splitForm.form.hookFormInternals.formMethods`.
+Each `splits[i].Field` also accepts `formHookResult`:
+
+```tsx
+<split.Field
+  label={labelForSplit(split)}
+  formHookResult={splitForm}
+  validationMessages={{
+    REQUIRED: 'Required',
+    INVALID_AMOUNT: '…',
+    INVALID_PERCENTAGE: '…',
+  }}
+/>
+```
+
+The per-split Fields need access to the form to keep `splitBy` and remainder state in sync. Either pass `formHookResult` to each Field, or wrap the form tree with `SDKFormProvider` once and let every Field resolve through it.

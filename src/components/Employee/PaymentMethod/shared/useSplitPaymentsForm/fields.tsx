@@ -1,6 +1,6 @@
-import type { SplitByValue, SplitPaymentsFormErrorCodes } from './useSplitPaymentsFormSchema'
-import type { RadioGroupHookFieldProps } from '@/partner-hook-utils/form/fields/RadioGroupHookField'
+import type { SplitPaymentsFormErrorCodes, SplitByValue } from './useSplitPaymentsFormSchema'
 import { RadioGroupHookField } from '@/partner-hook-utils/form/fields'
+import type { RadioGroupHookFieldProps } from '@/partner-hook-utils/form/fields/RadioGroupHookField'
 import type { HookFieldProps } from '@/partner-hook-utils/types'
 
 export type RequiredValidation = typeof SplitPaymentsFormErrorCodes.REQUIRED
