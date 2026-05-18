@@ -42,6 +42,10 @@ interface FlowEntry {
 interface BlockMapping {
   blockName: string
   componentDir: string
+  /** true if the namespace itself is annotated as deprecated in index.ts */
+  namespaceDeprecated: boolean
+  /** true if the specific export within the barrel file is annotated as deprecated */
+  exportDeprecated: boolean
 }
 
 interface FlowMapping {
@@ -265,18 +269,33 @@ function normalizeEndpointPath(openApiPath: string, paramNameMap: Record<string,
   })
 }
 
-function parseNamespaceExports(): Map<string, string> {
+type NamespaceInfo =
+  | { domainDir: string; deprecated: true; deprecationMessage: string }
+  | { domainDir: string; deprecated: false }
+
+function parseNamespaceExports(): Map<string, NamespaceInfo> {
   const indexPath = join(COMPONENTS_DIR, 'index.ts')
-  const namespaces = new Map<string, string>()
+  const namespaces = new Map<string, NamespaceInfo>()
 
   try {
     const content = readFileSync(indexPath, 'utf-8')
     // export * as EmployeeManagement from './Employee/exports/employeeManagement'  →
     //   namespaceName = "EmployeeManagement"
     //   domainDir = "Employee/exports/employeeManagement"
-    const namespacePattern = /export\s+\*\s+as\s+(\w+)\s+from\s+['"]\.\/([^'"]+)['"]/g
-    for (const [_fullMatch, namespaceName, domainDir] of content.matchAll(namespacePattern)) {
-      namespaces.set(namespaceName, domainDir)
+    // Captures the optional /** @deprecated ... */ JSDoc comment that may precede the export.
+    const namespacePattern =
+      /(\/\*\*[\s\S]*?@deprecated[\s\S]*?\*\/\s*)?export\s+\*\s+as\s+(\w+)\s+from\s+['"]\.\/([^'"]+)['"]/g
+    for (const [_fullMatch, jsdoc, namespaceName, domainDir] of content.matchAll(
+      namespacePattern,
+    )) {
+      if (jsdoc) {
+        // Extract the text that follows "@deprecated" inside the JSDoc block.
+        const match = /@deprecated\s+([\s\S]*?)\s*\*\//.exec(jsdoc)
+        const deprecationMessage = match ? match[1].replace(/\s*\*\s*/g, ' ').trim() : ''
+        namespaces.set(namespaceName, { domainDir, deprecated: true, deprecationMessage })
+      } else {
+        namespaces.set(namespaceName, { domainDir, deprecated: false })
+      }
     }
   } catch (err) {
     console.error(`ERROR: Could not read ${indexPath}`)
@@ -286,23 +305,34 @@ function parseNamespaceExports(): Map<string, string> {
   return namespaces
 }
 
-function parseComponentExports(domainDir: string): Map<string, string> {
-  const exports = new Map<string, string>()
-  const possibleBarrelFiles = [join(domainDir, 'index.ts'), join(domainDir, 'index.tsx')]
+interface ComponentExport {
+  importPath: string
+  deprecated: boolean
+}
+
+function parseComponentExports(domainDir: string): Map<string, ComponentExport> {
+  const exports = new Map<string, ComponentExport>()
+  const possibleBarrelFiles = [
+    join(domainDir, 'index.ts'),
+    join(domainDir, 'index.tsx'),
+    domainDir + '.ts',
+    domainDir + '.tsx',
+  ]
 
   for (const barrelPath of possibleBarrelFiles) {
     try {
       const content = readFileSync(barrelPath, 'utf-8')
+      // Optionally captures a /** @deprecated */ JSDoc comment that may precede the export.
       // export { EmployeeDocuments as Documents } from './Documents'  →
       //   nameToken = "EmployeeDocuments as Documents"
       //   importPath = "./Documents"
       // Uses the alias when present so the map key matches the public export name.
       const exportPattern =
-        /export\s+\{\s*(\w+(?:\s+as\s+\w+)?)[^}]*?\}\s+from\s+['"](\.[^'"]+)['"]/g
-      for (const [_fullMatch, nameToken, importPath] of content.matchAll(exportPattern)) {
+        /(\/\*\*[\s\S]*?@deprecated[\s\S]*?\*\/\s*)?export\s+\{\s*(\w+(?:\s+as\s+\w+)?)[^}]*?\}\s+from\s+['"](\.[^'"]+)['"]/g
+      for (const [_fullMatch, jsdoc, nameToken, importPath] of content.matchAll(exportPattern)) {
         const asIndex = nameToken.indexOf(' as ')
         const componentName = asIndex >= 0 ? nameToken.slice(asIndex + 4).trim() : nameToken.trim()
-        exports.set(componentName, importPath)
+        exports.set(componentName, { importPath, deprecated: !!jsdoc })
       }
       break
     } catch {
@@ -314,7 +344,9 @@ function parseComponentExports(domainDir: string): Map<string, string> {
 }
 
 function resolveComponentDirectory(domainDir: string, importPath: string): string {
-  const resolved = resolve(domainDir, importPath)
+  const effectiveBase =
+    existsSync(domainDir) && statSync(domainDir).isDirectory() ? domainDir : dirname(domainDir)
+  const resolved = resolve(effectiveBase, importPath)
 
   if (existsSync(resolved + '.tsx') || existsSync(resolved + '.ts')) {
     return dirname(resolved)
@@ -327,32 +359,48 @@ function resolveComponentDirectory(domainDir: string, importPath: string): strin
   return resolved
 }
 
-function discoverBlocks(): BlockMapping[] {
+function discoverBlocks(): {
+  blocks: BlockMapping[]
+  /** Maps namespace name to its deprecation message (empty string if no message). */
+  deprecatedNamespaces: Map<string, string>
+} {
   const blocks: BlockMapping[] = []
   const namespaces = parseNamespaceExports()
+  const deprecatedNamespaces = new Map<string, string>()
 
-  for (const [namespaceName, domainDirName] of namespaces.entries()) {
+  for (const [namespaceName, namespaceInfo] of namespaces.entries()) {
+    if (namespaceInfo.deprecated)
+      deprecatedNamespaces.set(namespaceName, namespaceInfo.deprecationMessage)
+    const { domainDir: domainDirName, deprecated: nsDeprecated } = namespaceInfo
     const domainDir = join(COMPONENTS_DIR, domainDirName)
     const componentExports = parseComponentExports(domainDir)
 
-    for (const [componentName, importPath] of componentExports.entries()) {
+    for (const [
+      componentName,
+      { importPath, deprecated: exportDeprecated },
+    ] of componentExports.entries()) {
       const componentDir = resolveComponentDirectory(domainDir, importPath)
-      blocks.push({ blockName: `${namespaceName}.${componentName}`, componentDir })
+      blocks.push({
+        blockName: `${namespaceName}.${componentName}`,
+        componentDir,
+        namespaceDeprecated: nsDeprecated,
+        exportDeprecated,
+      })
     }
   }
 
-  return blocks
+  return { blocks, deprecatedNamespaces }
 }
 
 function discoverFlows(): FlowMapping[] {
   const flows: FlowMapping[] = []
   const namespaces = parseNamespaceExports()
 
-  for (const [namespaceName, domainDirName] of namespaces.entries()) {
+  for (const [namespaceName, { domainDir: domainDirName }] of namespaces.entries()) {
     const domainDir = join(COMPONENTS_DIR, domainDirName)
     const componentExports = parseComponentExports(domainDir)
 
-    for (const [componentName, importPath] of componentExports.entries()) {
+    for (const [componentName, { importPath }] of componentExports.entries()) {
       if (!componentName.endsWith('Flow')) continue
       const flowDir = resolveComponentDirectory(domainDir, importPath)
       flows.push({ flowName: `${namespaceName}.${componentName}`, flowDir })
@@ -366,6 +414,8 @@ function deriveBlocksFromImport(
   resolvedImportPath: string,
   rawImportedNames: string,
   dirToBlocks: Map<string, string[]>,
+  preferredNamespace?: string,
+  blockDeprecationLevel?: Map<string, number>,
 ): string[] {
   // Find the most specific directory that matches this import path
   let matchingDir: string | undefined
@@ -390,27 +440,62 @@ function deriveBlocksFromImport(
       .trim(),
   )
 
-  const blockNames = new Set<string>()
+  const nameMatchedBlocks = new Set<string>()
   for (const blockName of blocks) {
     const componentName = blockName.split('.').pop()
     if (componentName && importedNames.includes(componentName)) {
-      blockNames.add(blockName)
+      nameMatchedBlocks.add(blockName)
     }
   }
 
-  return [...blockNames]
+  // When imports use contextual wrappers (e.g. CompensationContextual) that don't
+  // match the block's component name, name matching returns nothing. Fall back to
+  // all blocks for this dir so the namespace-preference step below can still filter.
+  const candidates = nameMatchedBlocks.size > 0 ? [...nameMatchedBlocks] : blocks
+
+  if (candidates.length <= 1) return candidates
+
+  // Prefer blocks from the flow's own namespace first.
+  if (preferredNamespace) {
+    const sameNamespaceBlocks = candidates.filter(b => b.startsWith(preferredNamespace + '.'))
+    if (sameNamespaceBlocks.length > 0) return sameNamespaceBlocks
+  }
+
+  // No same-namespace match. Prefer least-deprecated blocks using a tiered approach:
+  //   level 0 = fully active
+  //   level 1 = namespace deprecated (whole namespace is being phased out)
+  //   level 2 = export deprecated (explicit "don't use this" on the specific export)
+  // Export-deprecated loses to namespace-deprecated because a targeted export @deprecated
+  // is a stronger signal to avoid that specific block than a namespace-wide deprecation.
+  if (blockDeprecationLevel) {
+    const minLevel = Math.min(...candidates.map(b => blockDeprecationLevel.get(b) ?? 0))
+    const leastDeprecated = candidates.filter(b => (blockDeprecationLevel.get(b) ?? 0) === minLevel)
+    if (leastDeprecated.length < candidates.length) return leastDeprecated
+  }
+
+  return candidates
 }
 
-function deriveFlowBlocks(flowDir: string, blockMappings: BlockMapping[]): string[] {
+function deriveFlowBlocks(
+  flowDir: string,
+  blockMappings: BlockMapping[],
+  flowNamespace: string,
+): string[] {
   const files = walkDir(flowDir)
   const blockNames = new Set<string>()
 
   const dirToBlocks = new Map<string, string[]>()
+  // Deprecation level: 0 = active, 1 = namespace deprecated, 2 = export deprecated.
+  // Export-deprecated is ranked worst because it's an explicit "don't use this" on
+  // a specific export (vs. a whole namespace being phased out).
+  const blockDeprecationLevel = new Map<string, number>()
   for (const mapping of blockMappings) {
     if (!dirToBlocks.has(mapping.componentDir)) {
       dirToBlocks.set(mapping.componentDir, [])
     }
     dirToBlocks.get(mapping.componentDir)!.push(mapping.blockName)
+    const level = mapping.exportDeprecated ? 2 : mapping.namespaceDeprecated ? 1 : 0
+    blockDeprecationLevel.set(mapping.blockName, level)
   }
 
   // import { EmployeeForm } from '@/components/Employee/Form'  →
@@ -439,6 +524,8 @@ function deriveFlowBlocks(flowDir: string, blockMappings: BlockMapping[]): strin
         join(COMPONENTS_DIR, importPath),
         allImportedNames,
         dirToBlocks,
+        flowNamespace,
+        blockDeprecationLevel,
       ).forEach(blockName => blockNames.add(blockName))
     }
 
@@ -452,6 +539,8 @@ function deriveFlowBlocks(flowDir: string, blockMappings: BlockMapping[]): strin
         resolve(dirname(filePath), importPath),
         allImportedNames,
         dirToBlocks,
+        flowNamespace,
+        blockDeprecationLevel,
       ).forEach(blockName => blockNames.add(blockName))
     }
   }
@@ -491,7 +580,7 @@ function deduplicateEndpoints(endpoints: Endpoint[]): Endpoint[] {
 function deriveInventory(): DerivationResult {
   const project = createApiProject()
   const funcLookup = buildFuncLookup(project)
-  const blockMappings = discoverBlocks()
+  const { blocks: blockMappings } = discoverBlocks()
   const allBlockDirs = new Set(blockMappings.map(m => m.componentDir))
 
   const blocks: Record<string, BlockEntry> = {}
@@ -521,7 +610,10 @@ function deriveInventory(): DerivationResult {
   const flows: Record<string, FlowEntry> = {}
 
   for (const { flowName, flowDir } of flowMappings) {
-    const blockNames = deriveFlowBlocks(flowDir, blockMappings).filter(b => b !== flowName)
+    const flowNamespace = flowName.split('.')[0]!
+    const blockNames = deriveFlowBlocks(flowDir, blockMappings, flowNamespace).filter(
+      b => b !== flowName,
+    )
     flows[flowName] = { blocks: blockNames }
   }
 
