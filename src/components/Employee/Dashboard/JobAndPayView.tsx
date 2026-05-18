@@ -10,7 +10,6 @@ import { DataView, useDataView, EmptyData, Loading } from '@/components/Common'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { BaseLayout } from '@/components/Base/Base'
 import { formatDateLongWithYear } from '@/helpers/dateFormatting'
-import { useFormatPayRate } from '@/helpers/formattedStrings'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 import { useI18n } from '@/i18n'
 import {
@@ -18,6 +17,7 @@ import {
   useDeleteBankAccount,
   DeleteBankAccountDialog,
 } from '@/components/Employee/PaymentMethod/shared'
+import { ManagementCompensation } from '@/components/Employee/Compensation/management'
 import { componentEvents, PAYMENT_METHODS, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
@@ -31,13 +31,18 @@ type EmployeePayStub = NonNullable<
 
 export interface JobAndPayViewProps {
   employeeId: string
+  /**
+   * The employee's primary job. Forwarded to `ManagementCompensation` as the
+   * `hireDate` source for the Add another job flow. The rest of the
+   * compensation surface — current/pending rate, edit, secondary jobs — is
+   * rendered by `ManagementCompensation` from its own getJobs fetch.
+   */
   job?: Job
   garnishments?: Garnishment[]
   payStubs?: EmployeePayStub[]
   payStubsPagination?: PaginationControlProps
   isLoading?: boolean
   onEvent: OnEventType<EventType, unknown>
-  onEditCompensation?: () => void
   onAddDeduction?: () => void
   onPaystubDownload?: (payrollUuid: string) => void
   downloadingPayrollUuids?: ReadonlySet<string>
@@ -51,7 +56,6 @@ export function JobAndPayView({
   payStubsPagination,
   isLoading = false,
   onEvent,
-  onEditCompensation,
   onAddDeduction,
   onPaystubDownload,
   downloadingPayrollUuids,
@@ -60,7 +64,6 @@ export function JobAndPayView({
   const { t } = useTranslation('Employee.Dashboard')
   const { t: tPayment } = useTranslation('Employee.PaymentMethod')
   const Components = useComponentContext()
-  const formatPayRate = useFormatPayRate()
   const formatCurrency = useNumberFormatter('currency')
 
   const paymentMethodList = usePaymentMethodList({ employeeId })
@@ -230,64 +233,11 @@ export function JobAndPayView({
   return (
     <BaseLayout error={paymentMethodList.errorHandling.errors}>
       <Flex flexDirection="column" gap={24}>
-        <Components.Box
-          header={
-            <Components.BoxHeader
-              title={t('jobAndPay.compensation.title')}
-              action={
-                <Components.Button variant="secondary" onClick={onEditCompensation}>
-                  {t('jobAndPay.compensation.editCta')}
-                </Components.Button>
-              }
-            />
-          }
-        >
-          <Flex flexDirection="column" gap={16}>
-            <Flex flexDirection="column" gap={12}>
-              {job?.title && (
-                <Flex flexDirection="column" gap={0}>
-                  <Components.Text variant="supporting">
-                    {t('jobAndPay.compensation.jobTitle')}
-                  </Components.Text>
-                  <Components.Text>{job.title}</Components.Text>
-                </Flex>
-              )}
-
-              {job?.paymentUnit && (
-                <Flex flexDirection="column" gap={0}>
-                  <Components.Text variant="supporting">
-                    {t('jobAndPay.compensation.type')}
-                  </Components.Text>
-                  <Components.Text>
-                    {job.paymentUnit === 'Hour'
-                      ? t('jobAndPay.compensation.types.hourly')
-                      : job.paymentUnit === 'Salary' || job.paymentUnit === 'Year'
-                        ? t('jobAndPay.compensation.types.salary')
-                        : job.paymentUnit}
-                  </Components.Text>
-                </Flex>
-              )}
-
-              {job?.rate && job.paymentUnit && typeof job.rate === 'number' && (
-                <Flex flexDirection="column" gap={0}>
-                  <Components.Text variant="supporting">
-                    {t('jobAndPay.compensation.wage')}
-                  </Components.Text>
-                  <Components.Text>{formatPayRate(job.rate, job.paymentUnit)}</Components.Text>
-                </Flex>
-              )}
-
-              {job?.hireDate && (
-                <Flex flexDirection="column" gap={0}>
-                  <Components.Text variant="supporting">
-                    {t('jobAndPay.compensation.startDate')}
-                  </Components.Text>
-                  <Components.Text>{formatDateLongWithYear(job.hireDate)}</Components.Text>
-                </Flex>
-              )}
-            </Flex>
-          </Flex>
-        </Components.Box>
+        <ManagementCompensation
+          employeeId={employeeId}
+          hireDate={job?.hireDate ?? ''}
+          onEvent={onEvent}
+        />
 
         <Components.Box
           withPadding={bankAccounts.length === 0}

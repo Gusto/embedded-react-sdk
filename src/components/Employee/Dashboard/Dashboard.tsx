@@ -61,10 +61,6 @@ function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
     onEvent(componentEvents.EMPLOYEE_WORK_ADDRESS, { employeeId })
   }, [onEvent, employeeId])
 
-  const handleEditCompensation = useCallback(() => {
-    onEvent(componentEvents.EMPLOYEE_COMPENSATION_UPDATE, { employeeId, job: primaryJob })
-  }, [onEvent, employeeId, primaryJob])
-
   const handleAddDeduction = useCallback(() => {
     onEvent(componentEvents.EMPLOYEE_DEDUCTION_ADD, { employeeId })
   }, [onEvent, employeeId])
@@ -230,7 +226,6 @@ function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
               payStubsPagination={payStubsPagination}
               isLoading={isLoadingJobAndPay}
               onEvent={onEvent}
-              onEditCompensation={handleEditCompensation}
               onAddDeduction={handleAddDeduction}
               onPaystubDownload={handlePaystubDownload}
               downloadingPayrollUuids={downloadingPayrollUuids}

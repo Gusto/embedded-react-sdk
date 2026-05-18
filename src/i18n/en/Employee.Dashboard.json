@@ -29,18 +29,6 @@
     "noAddress": "No work address on file"
   },
   "jobAndPay": {
-    "compensation": {
-      "title": "Compensation",
-      "editCta": "Edit",
-      "jobTitle": "Job title",
-      "type": "Type",
-      "types": {
-        "hourly": "Hourly/Overtime eligible",
-        "salary": "Salary/No overtime"
-      },
-      "wage": "Wage",
-      "startDate": "Start date"
-    },
     "payment": {
       "title": "Payment",
       "splitPaycheckCta": "Split paycheck",
