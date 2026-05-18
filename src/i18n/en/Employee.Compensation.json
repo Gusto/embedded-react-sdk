@@ -58,7 +58,36 @@
     },
     "effectiveDateWarning": "Changing an employee's start date may impact when they get paid, their time off balance and accruals, and possibly create the need for an additional off-cycle payroll.",
     "twoPercentShareholderLabel": "This employee is a 2% shareholder",
-    "saveCta": "Save"
+    "saveCta": "Save",
+    "listTitle": "Compensation",
+    "primaryJobLabel": "Primary job",
+    "secondaryJobsTitle": "Additional jobs",
+    "addAnotherJobCta": "+ Add another job",
+    "editCompensationCta": "Edit",
+    "deleteJobCta": "Delete",
+    "rateColumn": "Wage",
+    "frequencyColumn": "Wage frequency",
+    "effectiveDateColumn": "Effective date",
+    "jobColumn": "Job title",
+    "typeColumn": "Employee type",
+    "secondaryJobsTableLabel": "Additional jobs for this employee",
+    "hamburgerTitle": "Job actions",
+    "pendingChange": {
+      "banner": "A change is scheduled to take effect on {{date}}.",
+      "cancelCta": "Cancel change"
+    },
+    "cancelChangeDialog": {
+      "title": "Cancel scheduled change?",
+      "description": "The change scheduled to take effect on {{date}} will be discarded. This cannot be undone.",
+      "confirmCta": "Cancel change",
+      "closeCta": "Keep change"
+    },
+    "deleteJobDialog": {
+      "title": "Delete additional job?",
+      "description": "{{jobTitle}} will be removed from this employee. This cannot be undone.",
+      "confirmCta": "Delete job",
+      "closeCta": "Keep job"
+    }
   },
   "validations": {
     "classificationChangeNotification": "Changing this employee's classification will delete the employee's additional pay rates.",

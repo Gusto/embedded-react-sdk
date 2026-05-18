@@ -18,6 +18,10 @@ import type {
   DeleteV1JobsJobIdRequest,
   DeleteV1JobsJobIdResponse,
 } from '@gusto/embedded-api/models/operations/deletev1jobsjobid'
+import type {
+  DeleteV1CompensationsCompensationIdRequest,
+  DeleteV1CompensationsCompensationIdResponse,
+} from '@gusto/embedded-api/models/operations/deletev1compensationscompensationid'
 import { getFixture } from '../fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
 
@@ -206,6 +210,22 @@ export const deleteEmployeeJob = handleDeleteEmployeeJob(() => {
   })
 })
 
+export function handleDeleteEmployeeCompensation(
+  resolver: HttpResponseResolver<
+    PathParams,
+    DeleteV1CompensationsCompensationIdRequest,
+    DeleteV1CompensationsCompensationIdResponse
+  >,
+) {
+  return http.delete(`${API_BASE_URL}/v1/compensations/:compensation_id`, resolver)
+}
+
+export const deleteEmployeeCompensation = handleDeleteEmployeeCompensation(() => {
+  return new HttpResponse(null, {
+    status: 204,
+  })
+})
+
 export const getEmployeeGarnishments = http.get(
   `${API_BASE_URL}/v1/employees/:employee_id/garnishments`,
   () => HttpResponse.json([]),
@@ -222,4 +242,5 @@ export default [
   updateEmployeeCompensation,
   updateEmployeeJob,
   deleteEmployeeJob,
+  deleteEmployeeCompensation,
 ]
