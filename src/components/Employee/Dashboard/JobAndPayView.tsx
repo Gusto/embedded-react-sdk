@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Job } from '@gusto/embedded-api/models/components/job'
 import type { EmployeeBankAccount } from '@gusto/embedded-api/models/components/employeebankaccount'
@@ -15,7 +16,6 @@ import useNumberFormatter from '@/hooks/useNumberFormatter'
 import { useI18n } from '@/i18n'
 import {
   usePaymentMethodList,
-  useDeleteBankAccount,
   DeleteBankAccountDialog,
 } from '@/components/Employee/PaymentMethod/shared'
 import { componentEvents, PAYMENT_METHODS, type EventType } from '@/shared/constants'
@@ -72,14 +72,19 @@ export function JobAndPayView({
     ? undefined
     : paymentMethodList.status.deletePendingBankAccountUuid
 
-  const { pendingDeleteAccount, setPendingDeleteAccount, handleConfirmDelete } =
-    useDeleteBankAccount(async uuid => {
-      if (paymentMethodList.isLoading) return
-      const result = await paymentMethodList.actions.onDelete(uuid)
-      if (result) {
-        onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_DELETED, result.data)
-      }
-    })
+  const [deleteConfirmUuid, setDeleteConfirmUuid] = useState<string | null>(null)
+  const pendingDeleteAccount = paymentMethodList.isLoading
+    ? null
+    : (paymentMethodList.data.bankAccounts.find(a => a.uuid === deleteConfirmUuid) ?? null)
+
+  const handleConfirmDelete = async () => {
+    if (!pendingDeleteAccount || paymentMethodList.isLoading) return
+    const result = await paymentMethodList.actions.onDelete(pendingDeleteAccount.uuid)
+    if (result) {
+      onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_DELETED, result.data)
+      setDeleteConfirmUuid(null)
+    }
+  }
 
   const bankAccountsColumns = [
     {
@@ -166,10 +171,7 @@ export function JobAndPayView({
           {
             label: tPayment('deleteBankAccountCta'),
             onClick: () => {
-              setPendingDeleteAccount({
-                uuid: bankAccount.uuid,
-                hiddenAccountNumber: bankAccount.hiddenAccountNumber,
-              })
+              setDeleteConfirmUuid(bankAccount.uuid)
             },
             icon: <TrashCanSvg aria-hidden />,
           },
@@ -374,7 +376,7 @@ export function JobAndPayView({
           pendingDeleteAccount={pendingDeleteAccount}
           isPrimaryActionLoading={deletePendingBankAccountUuid === pendingDeleteAccount?.uuid}
           onClose={() => {
-            setPendingDeleteAccount(null)
+            setDeleteConfirmUuid(null)
           }}
           onConfirm={() => {
             void handleConfirmDelete()

@@ -7,7 +7,7 @@ export function DeleteBankAccountDialog({
   onClose,
   onConfirm,
 }: {
-  pendingDeleteAccount: { uuid: string; hiddenAccountNumber: string | undefined } | null
+  pendingDeleteAccount: { uuid: string; hiddenAccountNumber?: string } | null
   isPrimaryActionLoading: boolean
   onClose: () => void
   onConfirm: () => void

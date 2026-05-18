@@ -1,9 +1,9 @@
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   usePaymentMethodList,
   type UsePaymentMethodListReady,
 } from '../shared/usePaymentMethodList'
-import { useDeleteBankAccount } from '../shared/useDeleteBankAccount'
 import { DeleteBankAccountDialog } from '../shared/DeleteBankAccountDialog'
 import { DataView, useDataView } from '@/components/Common'
 import { Flex } from '@/components/Common/Flex/Flex'
@@ -52,18 +52,22 @@ function ListViewReady({ onEvent, paymentMethodList, errorHandling }: ListViewRe
   const { t } = useTranslation('Employee.PaymentMethod')
   const Components = useComponentContext()
 
-  const {
-    pendingDeleteAccount,
-    setPendingDeleteAccount,
-    deletedAccountNumber,
-    setDeletedAccountNumber,
-    handleConfirmDelete,
-  } = useDeleteBankAccount(async uuid => {
-    const result = await paymentMethodList.actions.onDelete(uuid)
+  const [deleteConfirmUuid, setDeleteConfirmUuid] = useState<string | null>(null)
+  const pendingDeleteAccount = useMemo(
+    () => bankAccounts.find(a => a.uuid === deleteConfirmUuid) ?? null,
+    [bankAccounts, deleteConfirmUuid],
+  )
+  const [deletedAccountNumber, setDeletedAccountNumber] = useState<string | null>(null)
+
+  const handleConfirmDelete = async () => {
+    if (!pendingDeleteAccount) return
+    const result = await paymentMethodList.actions.onDelete(pendingDeleteAccount.uuid)
     if (result) {
       onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_DELETED, result.data)
+      setDeletedAccountNumber(pendingDeleteAccount.hiddenAccountNumber ?? '')
+      setDeleteConfirmUuid(null)
     }
-  })
+  }
 
   const { ...dataViewProps } = useDataView({
     data: bankAccounts,
@@ -89,10 +93,7 @@ function ListViewReady({ onEvent, paymentMethodList, errorHandling }: ListViewRe
           {
             label: t('deleteBankAccountCta'),
             onClick: () => {
-              setPendingDeleteAccount({
-                uuid: bankAccount.uuid,
-                hiddenAccountNumber: bankAccount.hiddenAccountNumber,
-              })
+              setDeleteConfirmUuid(bankAccount.uuid)
             },
             icon: <TrashCanSvg aria-hidden />,
           },
@@ -161,7 +162,7 @@ function ListViewReady({ onEvent, paymentMethodList, errorHandling }: ListViewRe
         pendingDeleteAccount={pendingDeleteAccount}
         isPrimaryActionLoading={deletePendingBankAccountUuid === pendingDeleteAccount?.uuid}
         onClose={() => {
-          setPendingDeleteAccount(null)
+          setDeleteConfirmUuid(null)
         }}
         onConfirm={() => {
           void handleConfirmDelete()
