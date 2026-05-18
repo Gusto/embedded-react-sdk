@@ -40,8 +40,18 @@ export function DocumentsView({ forms = [], isLoading = false, onViewForm }: Doc
       key: 'requiresSigning',
       title: t('documents.columns.requiresSigning'),
       render: (form: Form) => {
-        if (form.requiresSigning) return t('common.yes')
-        return t('common.no')
+        if (form.requiresSigning) {
+          return (
+            <Components.Badge status="warning">
+              {t('documents.signingStatus.notSigned')}
+            </Components.Badge>
+          )
+        }
+        return (
+          <Components.Badge status="success">
+            {t('documents.signingStatus.signed')}
+          </Components.Badge>
+        )
       },
     },
   ]

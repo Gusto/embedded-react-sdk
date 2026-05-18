@@ -8,10 +8,15 @@ import {
   ProfileContextual,
   PaymentBankFormContextual,
   PaymentSplitViewContextual,
+  DocumentManagerContextual,
   type DashboardContextInterface,
 } from './DashboardComponents'
 import { componentEvents } from '@/shared/constants'
-import type { MachineTransition } from '@/types/Helpers'
+import type { MachineEventType, MachineTransition } from '@/types/Helpers'
+
+type EventPayloads = {
+  [componentEvents.EMPLOYEE_VIEW_FORM_TO_SIGN]: { employeeId: string; formId: string }
+}
 
 const returnToIndex = reduce(
   (ctx: DashboardContextInterface): DashboardContextInterface => ({
@@ -119,6 +124,22 @@ export const dashboardStateMachine = {
       ),
     ),
     transition(
+      componentEvents.EMPLOYEE_VIEW_FORM_TO_SIGN,
+      'documentManager',
+      reduce(
+        (
+          ctx: DashboardContextInterface,
+          ev: MachineEventType<EventPayloads, typeof componentEvents.EMPLOYEE_VIEW_FORM_TO_SIGN>,
+        ): DashboardContextInterface => ({
+          ...ctx,
+          component: DocumentManagerContextual,
+          header: { type: 'minimal' },
+          formId: ev.payload.formId,
+          successAlert: null,
+        }),
+      ),
+    ),
+    transition(
       componentEvents.EMPLOYEE_BANK_ACCOUNT_DELETED,
       'index',
       reduce(
@@ -161,6 +182,9 @@ export const dashboardStateMachine = {
       'index',
       returnToIndexWithAlert('splitUpdated'),
     ),
+    transition(componentEvents.CANCEL, 'index', returnToIndex),
+  ),
+  documentManager: state<MachineTransition>(
     transition(componentEvents.CANCEL, 'index', returnToIndex),
   ),
 }
