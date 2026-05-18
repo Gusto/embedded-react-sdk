@@ -109,8 +109,12 @@
       "title": "Form",
       "year": "Year",
       "status": "Status",
-      "requiresSigning": "Requires signing",
+      "requiresSigning": "Signing status",
       "actions": "Actions"
+    },
+    "signingStatus": {
+      "signed": "Signed",
+      "notSigned": "Not signed"
     },
     "status": {
       "draft": "Draft",

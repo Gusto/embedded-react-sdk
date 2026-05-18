@@ -1516,6 +1516,10 @@ export interface EmployeeDashboard{
 "requiresSigning":string;
 "actions":string;
 };
+"signingStatus":{
+"signed":string;
+"notSigned":string;
+};
 "status":{
 "draft":string;
 "final":string;
