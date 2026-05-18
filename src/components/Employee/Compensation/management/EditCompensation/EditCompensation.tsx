@@ -142,7 +142,7 @@ function FormBody({ jobForm, compensationForm, isPending, onCancel }: FormBodyPr
 
   return (
     <Flex flexDirection="column" gap={32}>
-      <Components.Heading as="h2">{t('editTitle')}</Components.Heading>
+      <Components.Heading as="h2">{t('management.editCompensationTitle')}</Components.Heading>
 
       {compensationForm.status.willDeleteSecondaryJobs && (
         <Components.Alert
@@ -152,8 +152,8 @@ function FormBody({ jobForm, compensationForm, isPending, onCancel }: FormBodyPr
       )}
 
       <CompFields.Title
-        label={t('jobTitle')}
-        validationMessages={{ REQUIRED: t('validations.title') }}
+        label={t('management.jobTitleLabel')}
+        validationMessages={{ REQUIRED: t('validations.jobTitleSentence') }}
         formHookResult={compensationForm}
       />
 
@@ -178,7 +178,7 @@ function FormBody({ jobForm, compensationForm, isPending, onCancel }: FormBodyPr
       )}
 
       <CompFields.Rate
-        label={t('amount')}
+        label={t('management.wageLabel')}
         validationMessages={{
           REQUIRED: t('validations.rate'),
           RATE_MINIMUM: t('validations.nonZeroRate'),
@@ -190,23 +190,27 @@ function FormBody({ jobForm, compensationForm, isPending, onCancel }: FormBodyPr
       />
 
       <CompFields.PaymentUnit
-        label={t('paymentUnitLabel')}
+        label={t('management.wageFrequencyLabel')}
         description={t('paymentUnitDescription')}
         validationMessages={{ REQUIRED: t('validations.paymentUnit') }}
-        getOptionLabel={(unit: PaymentUnit) => t(`paymentUnitOptions.${unit}`)}
+        getOptionLabel={(unit: PaymentUnit) =>
+          t(`management.wageFrequencyOptions.${unit}` as const)
+        }
         formHookResult={compensationForm}
       />
 
       {CompFields.EffectiveDate && (
-        <CompFields.EffectiveDate
-          label={t('effectiveDateLabel')}
-          description={t('effectiveDateDescription')}
-          validationMessages={{
-            REQUIRED: t('validations.effectiveDate'),
-            EFFECTIVE_DATE_BEFORE_HIRE: t('validations.effectiveDateBeforeHire'),
-          }}
-          formHookResult={compensationForm}
-        />
+        <Flex flexDirection="column" gap={16}>
+          <CompFields.EffectiveDate
+            label={t('effectiveDateLabel')}
+            validationMessages={{
+              REQUIRED: t('validations.effectiveDate'),
+              EFFECTIVE_DATE_BEFORE_HIRE: t('validations.effectiveDateBeforeHire'),
+            }}
+            formHookResult={compensationForm}
+          />
+          <Components.Alert label={t('management.effectiveDateWarning')} status="warning" />
+        </Flex>
       )}
 
       {CompFields.AdjustForMinimumWage && (
@@ -231,7 +235,7 @@ function FormBody({ jobForm, compensationForm, isPending, onCancel }: FormBodyPr
 
       {JobFields.TwoPercentShareholder && (
         <JobFields.TwoPercentShareholder
-          label={t('twoPercentStakeholderLabel')}
+          label={t('management.twoPercentShareholderLabel')}
           formHookResult={jobForm}
         />
       )}
@@ -278,7 +282,7 @@ function FormBody({ jobForm, compensationForm, isPending, onCancel }: FormBodyPr
           </Components.Button>
         )}
         <Components.Button type="submit" isLoading={isPending}>
-          {t('saveCompensationChangeCta')}
+          {t('management.saveCta')}
         </Components.Button>
       </ActionsLayout>
     </Flex>

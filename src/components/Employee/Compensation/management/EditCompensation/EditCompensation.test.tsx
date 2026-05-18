@@ -38,10 +38,10 @@ describe('management/EditCompensation', () => {
       />,
     )
 
-    await screen.findByRole('heading', { name: 'Edit job' })
+    await screen.findByRole('heading', { name: 'Edit compensation' })
 
-    expect(screen.getByLabelText('Job Title')).toHaveValue('My Job')
-    expect(screen.getByLabelText('Compensation amount')).toHaveValue('100.00')
+    expect(screen.getByLabelText('Job title')).toHaveValue('My Job')
+    expect(screen.getByLabelText('Wage')).toHaveValue('100.00')
     expect(
       screen.getByRole('button', { name: /Paid by the hour/i, expanded: false }),
     ).toBeInTheDocument()
@@ -63,12 +63,12 @@ describe('management/EditCompensation', () => {
       />,
     )
 
-    await screen.findByRole('heading', { name: 'Edit job' })
+    await screen.findByRole('heading', { name: 'Edit compensation' })
 
     // Only the compensation-form title field is rendered, never the job-form one.
-    // Both render as a `Job Title` label, so the simplest assertion is that
-    // exactly one is present (the compensation form's).
-    expect(screen.getAllByLabelText('Job Title')).toHaveLength(1)
+    // useJobForm with withTitleField:false produces undefined for Fields.Title,
+    // so just one labelled input should exist.
+    expect(screen.getAllByLabelText('Job title')).toHaveLength(1)
   })
 
   it('submits PUT /v1/jobs/:id before PUT /v1/compensations/:id', async () => {
@@ -128,14 +128,14 @@ describe('management/EditCompensation', () => {
       />,
     )
 
-    await screen.findByRole('heading', { name: 'Edit job' })
+    await screen.findByRole('heading', { name: 'Edit compensation' })
 
-    const rateInput = screen.getByLabelText('Compensation amount')
+    const rateInput = screen.getByLabelText('Wage')
     await user.clear(rateInput)
     await user.type(rateInput, '125')
     await user.tab()
 
-    await user.click(screen.getByRole('button', { name: 'Save change' }))
+    await user.click(screen.getByRole('button', { name: 'Save' }))
 
     await waitFor(() => {
       expect(updateCompensationResolver).toHaveBeenCalledTimes(1)
@@ -223,10 +223,10 @@ describe('management/EditCompensation', () => {
       />,
     )
 
-    await screen.findByRole('heading', { name: 'Edit job' })
+    await screen.findByRole('heading', { name: 'Edit compensation' })
 
-    await user.click(screen.getByLabelText('Select if employee is a 2% shareholder'))
-    await user.click(screen.getByRole('button', { name: 'Save change' }))
+    await user.click(screen.getByLabelText('This employee is a 2% shareholder'))
+    await user.click(screen.getByRole('button', { name: 'Save' }))
 
     await waitFor(() => {
       expect(updateJobResolver).toHaveBeenCalledTimes(1)
@@ -294,13 +294,13 @@ describe('management/EditCompensation', () => {
       />,
     )
 
-    await screen.findByRole('heading', { name: 'Edit job' })
+    await screen.findByRole('heading', { name: 'Edit compensation' })
 
-    const titleInput = screen.getByLabelText('Job Title')
+    const titleInput = screen.getByLabelText('Job title')
     await user.clear(titleInput)
     await user.type(titleInput, 'Senior Engineer')
 
-    await user.click(screen.getByRole('button', { name: 'Save change' }))
+    await user.click(screen.getByRole('button', { name: 'Save' }))
 
     await waitFor(() => {
       expect(updateCompensationResolver).toHaveBeenCalledTimes(1)
@@ -329,7 +329,7 @@ describe('management/EditCompensation', () => {
       />,
     )
 
-    await screen.findByRole('heading', { name: 'Edit job' })
+    await screen.findByRole('heading', { name: 'Edit compensation' })
 
     const flsaSelect = screen.getByRole('button', {
       name: /Paid by the hour/i,
