@@ -17,12 +17,12 @@ import { useSplitPaymentsForm, SDKFormProvider } from '@gusto/embedded-react-sdk
 
 `useSplitPaymentsForm` accepts a single options object:
 
-| Prop                      | Type                                                           | Required | Default      | Description                                                                                                                                                                                                                      |
-| ------------------------- | -------------------------------------------------------------- | -------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `employeeId`              | `string`                                                       | Yes      | —            | The UUID of the employee whose payment splits are being edited.                                                                                                                                                                  |
-| `optionalFieldsToRequire` | `SplitPaymentsFormOptionalFieldsToRequire`                     | No       | —            | Maps optional schema fields to force-required. Currently a no-op — `splitBy` and `priority` are always required, and per-split `splitAmount` required-ness is intrinsic (see [Cross-field validation](#cross-field-validation)). |
-| `validationMode`          | `'onSubmit' \| 'onBlur' \| 'onChange' \| 'onTouched' \| 'all'` | No       | `'onSubmit'` | When validation runs. Passed through to react-hook-form.                                                                                                                                                                         |
-| `shouldFocusError`        | `boolean`                                                      | No       | `true`       | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`.                                                                                                                                  |
+| Prop                      | Type                                                           | Required | Default      | Description                                                                                                                                                                                     |
+| ------------------------- | -------------------------------------------------------------- | -------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `employeeId`              | `string`                                                       | Yes      | —            | The UUID of the employee whose payment splits are being edited.                                                                                                                                 |
+| `optionalFieldsToRequire` | `SplitPaymentsFormOptionalFieldsToRequire`                     | No       | —            | Currently a no-op for this hook — `splitBy` and `priority` are always required, and per-split `splitAmount` required-ness is automatic (see [Cross-field validation](#cross-field-validation)). |
+| `validationMode`          | `'onSubmit' \| 'onBlur' \| 'onChange' \| 'onTouched' \| 'all'` | No       | `'onSubmit'` | When validation runs.                                                                                                                                                                           |
+| `shouldFocusError`        | `boolean`                                                      | No       | `true`       | Auto-focus the first invalid field on submit. Set to `false` when using `composeSubmitHandler`.                                                                                                 |
 
 `defaultValues` is not exposed because the hook always derives defaults from the existing payment method's `splits` — the values you load are the values you edit.
 
@@ -41,7 +41,7 @@ The hook returns a discriminated union on `isLoading`.
 }
 ```
 
-The hook fetches the payment method and the employee's bank accounts. While either request is in flight, only `isLoading` and `errorHandling` are available.
+Until the payment method and bank accounts have loaded, only `isLoading` and `errorHandling` are available.
 
 ### Ready state
 
@@ -63,18 +63,11 @@ The hook fetches the payment method and the employee's bank accounts. While eith
     /** Live sum of `splitAmount` values; useful for displaying the current total in Percentage mode. */
     percentageTotal: number
     /**
-     * Mirrors the schema-emitted `PERCENTAGE_TOTAL_MISMATCH` error and is the
-     * only place this invariant surfaces — there are no per-field
-     * `PERCENTAGE_TOTAL_MISMATCH` errors. Tracks `formState.errors` directly
-     * and follows the standard react-hook-form validation lifecycle: with
-     * the default `validationMode: 'onSubmit'`, becomes `true` after the
-     * first failed Save attempt and clears live as the user corrects the
-     * total. The hook keeps the synthetic error in sync as splits change
-     * post-submit, so a corrected total dismisses the imbalance immediately
-     * without waiting for the next submit. The schema only emits the
-     * imbalance when every split has a finite percentage value, so
-     * missing-value cases are surfaced as per-field `REQUIRED` errors
-     * instead. Only `true` in Percentage mode.
+     * In Percentage mode, becomes `true` after a Save attempt where the
+     * splits don't sum to 100, and clears live as the user corrects the
+     * total. `false` in Amount mode and while any split is missing a
+     * value (those splits surface `REQUIRED` instead). Use it to drive a
+     * form-level alert.
      */
     hasPercentageImbalance: boolean
   }
@@ -112,7 +105,7 @@ interface WorkingSplit {
 
 ### Submit behavior
 
-`onSubmit` runs schema validation via react-hook-form. When any field error is present — including the synthetic `PERCENTAGE_TOTAL_MISMATCH` invariant — submission is blocked and `onSubmit` returns `undefined`. Surface the imbalance via `status.hasPercentageImbalance`. On success it updates the employee's payment method with the chosen `splitBy` and the current splits, and returns `HookSubmitResult<EmployeePaymentMethod>` with `mode: 'update'`.
+`onSubmit` validates the current form values. When any field is invalid — including the percentage sum-to-100 invariant — submission is blocked and `onSubmit` returns `undefined`; surface the imbalance via `status.hasPercentageImbalance`. On success it updates the employee's payment method with the chosen `splitBy` and the current splits, and returns `HookSubmitResult<EmployeePaymentMethod>` with `mode: 'update'`.
 
 ---
 
@@ -130,7 +123,7 @@ const SplitPaymentsFormErrorCodes = {
 } as const
 ```
 
-`PERCENTAGE_TOTAL_MISMATCH` is a form-level invariant — it is not attached to any individual split's error slot. Read `status.hasPercentageImbalance` and render your own alert / banner / inline summary. It follows the standard react-hook-form validation lifecycle (driven by `validationMode`), so it appears and clears in lockstep with per-field errors.
+`PERCENTAGE_TOTAL_MISMATCH` is not attached to any individual split's error slot — surface it via `status.hasPercentageImbalance` and render your own alert / banner / inline summary. Its visibility follows `validationMode`: by default it appears after the first failed Save and clears as the user corrects the total.
 
 ### Static fields
 
@@ -151,7 +144,7 @@ interface SplitFieldEntry {
 }
 ```
 
-Each `Field` is pre-bound to its split. It formats values as currency in Amount mode and as a percentage in Percentage mode, switching automatically when `splitBy` changes. Required-ness and disabled state are intrinsic — every split is required, except the remainder in Amount mode, which is automatically disabled and not required. Supply `REQUIRED` in `validationMessages` to translate the "missing value" error. The sum-to-100 invariant is surfaced separately via `status.hasPercentageImbalance` (see [Cross-field validation](#cross-field-validation)) — not as a per-field error.
+Each `Field` is pre-bound to its split. It formats values as currency in Amount mode and as a percentage in Percentage mode, switching automatically when `splitBy` changes. Every split is required except the remainder in Amount mode, which is automatically disabled and not entered by the user. Supply `REQUIRED` in `validationMessages` to translate the "missing value" error. The sum-to-100 invariant is surfaced separately via `status.hasPercentageImbalance` (see [Cross-field validation](#cross-field-validation)) — not as a per-field error.
 
 ```typescript
 interface SplitFieldProps {
@@ -172,8 +165,8 @@ Construct the label from `entry.name` and `entry.hiddenAccountNumber`, supply `v
 
 ### Cross-field validation
 
-- **Per-split required**: each `splitAmount.<uuid>` is required and emits `REQUIRED` if cleared. The remainder split in Amount mode is exempt — it is intentionally null to absorb leftover pay.
-- **Percentage mode**: read `status.hasPercentageImbalance` and `status.percentageTotal` to drive an inline alert. The flag is tied to react-hook-form's validation lifecycle — with the default `validationMode: 'onSubmit'`, the alert appears after the first Save attempt and clears as the user corrects the total. Configure `validationMode` if you want a different cadence (e.g. `'onBlur'` or `'onChange'`). `status.percentageTotal` is always a finite running sum — non-numeric values contribute 0 — so it is safe to render unconditionally.
+- **Per-split required**: each `splitAmount.<uuid>` is required and emits `REQUIRED` if cleared. The remainder split in Amount mode is the exception — its value is computed automatically and no entry is required.
+- **Percentage mode**: read `status.hasPercentageImbalance` and `status.percentageTotal` to drive an alert. With the default `validationMode: 'onSubmit'`, the alert appears after the first Save attempt and clears as the user corrects the total; use `validationMode: 'onBlur'` or `'onChange'` for a different cadence. `status.percentageTotal` is always a finite running sum — non-numeric values contribute 0 — so it is safe to render unconditionally.
 - **Amount mode**: `DUPLICATE_PRIORITIES` fires when two splits share a priority value. Use `actions.reorderSplits` to keep priorities unique.
 
 ---
@@ -263,7 +256,7 @@ function SplitPaycheckFormReady({ splitForm }: { splitForm: UseSplitPaymentsForm
 
 ### Wiring `reorderSplits` to a reorderable list
 
-`actions.reorderSplits(orderedUuids)` accepts an array of split uuids in the new desired order. The last uuid in the array becomes the remainder. If your reorder UI emits indices, translate them to uuids at the call boundary:
+`actions.reorderSplits(orderedUuids)` accepts an array of split uuids in the new desired order. The last uuid in the array becomes the remainder. To translate from numeric indices:
 
 ```tsx
 function handleReorder(indices: number[]) {
@@ -274,7 +267,7 @@ function handleReorder(indices: number[]) {
 }
 ```
 
-For non-drag UIs (up/down buttons, keyboard reorder), build the array of uuids directly.
+If you already have uuids in the desired order, pass them directly.
 
 ### With `formHookResult` prop
 
@@ -298,4 +291,4 @@ Each `splits[i].Field` also accepts `formHookResult`:
 />
 ```
 
-The per-split Fields need access to the form to keep `splitBy` and remainder state in sync. Either pass `formHookResult` to each Field, or wrap the form tree with `SDKFormProvider` once and let every Field resolve through it.
+The per-split Fields read from the form to know the current split mode and which split is the remainder. Either pass `formHookResult` to each Field, or wrap the form tree with `SDKFormProvider` once and let every Field resolve through it.
