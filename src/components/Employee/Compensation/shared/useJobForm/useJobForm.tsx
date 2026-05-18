@@ -69,10 +69,19 @@ export interface UseJobFormProps {
    * Defaults to `true`.
    */
   withHireDateField?: boolean
+  /**
+   * When `false`, hides `Fields.Title` (becomes `undefined`), removes
+   * `title` from schema validation, and skips sending `title` on PUT/POST.
+   * Use this for steady-state compensation edits where title is rendered
+   * via `CompFields.Title` and rides the future-dated compensation row
+   * instead of mutating the job's current title immediately. Defaults to
+   * `true`.
+   */
+  withTitleField?: boolean
 }
 
 export interface JobFormFields {
-  Title: typeof JobTitleField
+  Title: typeof JobTitleField | undefined
   HireDate: typeof HireDateField | undefined
   TwoPercentShareholder: typeof TwoPercentShareholderField | undefined
   StateWcCovered: typeof StateWcCoveredField | undefined
@@ -120,6 +129,7 @@ export function useJobForm({
   validationMode = 'onSubmit',
   shouldFocusError = true,
   withHireDateField = true,
+  withTitleField = true,
 }: UseJobFormProps): HookLoadingResult | UseJobFormReady {
   const jobsQuery = useJobsAndCompensationsGetJobs(
     { employeeId: employeeId ?? '' },
@@ -150,8 +160,8 @@ export function useJobForm({
   const mode = isCreateMode ? 'create' : 'update'
 
   const [schema, metadataConfig] = useMemo(
-    () => createJobSchema({ mode, optionalFieldsToRequire, withHireDateField }),
-    [mode, optionalFieldsToRequire, withHireDateField],
+    () => createJobSchema({ mode, optionalFieldsToRequire, withHireDateField, withTitleField }),
+    [mode, optionalFieldsToRequire, withHireDateField, withTitleField],
   )
 
   const resolvedDefaults: JobFormData = useMemo(
@@ -244,6 +254,12 @@ export function useJobForm({
                 ? payload.hireDate
                 : (options?.hireDate ?? currentJob?.hireDate ?? null)
 
+            // When the title field is suppressed (steady-state edits drive
+            // title through useCompensationForm), omit it from the body so
+            // the server preserves the existing value rather than clobbering
+            // it with whatever sat in form state.
+            const titleToSend = withTitleField ? payload.title : undefined
+
             let updatedJob: Job
 
             if (isCreateMode) {
@@ -254,11 +270,16 @@ export function useJobForm({
                     : 'hireDate is required to create a job. Pass it via JobSubmitOptions when withHireDateField is false.',
                 )
               }
+              if (titleToSend === undefined) {
+                throw new SDKInternalError(
+                  'title is required to create a job. Set withTitleField: true (the default) on useJobForm for create flows.',
+                )
+              }
               const result = await createJobMutation.mutateAsync({
                 request: {
                   employeeId: resolvedEmployeeId,
                   jobsCreateRequestBody: {
-                    title: payload.title,
+                    title: titleToSend,
                     hireDate: resolvedHireDate,
                     twoPercentShareholder: payload.twoPercentShareholder,
                     stateWcCovered: payload.stateWcCovered,
@@ -279,7 +300,7 @@ export function useJobForm({
                   jobId: currentJob.uuid,
                   jobsUpdateRequestBody: {
                     version: currentJob.version as string,
-                    title: payload.title,
+                    title: titleToSend,
                     hireDate: resolvedHireDate ?? undefined,
                     twoPercentShareholder: payload.twoPercentShareholder,
                     stateWcCovered: payload.stateWcCovered,
@@ -337,7 +358,7 @@ export function useJobForm({
     errorHandling,
     form: {
       Fields: {
-        Title: JobTitleField,
+        Title: withTitleField ? JobTitleField : undefined,
         HireDate: withHireDateField ? HireDateField : undefined,
         TwoPercentShareholder: showTwoPercentShareholder ? TwoPercentShareholderField : undefined,
         StateWcCovered: showStateWc ? StateWcCoveredField : undefined,

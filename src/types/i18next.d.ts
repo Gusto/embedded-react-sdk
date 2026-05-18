@@ -1381,10 +1381,13 @@ export interface EmployeeCompensation{
 "Year":string;
 };
 "saveNewJobCta":string;
+"saveCompensationChangeCta":string;
 "submitCta":string;
 "title":string;
 "editTitle":string;
 "addTitle":string;
+"effectiveDateLabel":string;
+"effectiveDateDescription":string;
 "validations":{
 "classificationChangeNotification":string;
 "exemptThreshold":string;
@@ -1395,6 +1398,8 @@ export interface EmployeeCompensation{
 "title":string;
 "minimumWage":string;
 "stateWcClassCode":string;
+"effectiveDate":string;
+"effectiveDateBeforeHire":string;
 };
 "stateWcCoveredLabel":string;
 "stateWcCoveredDescription":string;
