@@ -246,6 +246,57 @@ describe('PolicySettingsPresentation', () => {
     })
   })
 
+  describe('waiting period integer validation', () => {
+    it('blocks submission and shows an error when waiting period is a decimal', async () => {
+      const user = userEvent.setup()
+      renderHoursWorked({
+        defaultValues: {
+          waitingPeriodEnabled: true,
+          waitingPeriod: 1.5,
+        },
+      })
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Save' })).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: 'Save' }))
+
+      await waitFor(() => {
+        expect(
+          screen.getByText('Waiting period must be a whole number of days'),
+        ).toBeInTheDocument()
+      })
+
+      expect(handlers.onContinue).not.toHaveBeenCalled()
+    })
+
+    it('allows submission when waiting period is an integer', async () => {
+      const user = userEvent.setup()
+      renderHoursWorked({
+        defaultValues: {
+          waitingPeriodEnabled: true,
+          waitingPeriod: 30,
+        },
+      })
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Save' })).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: 'Save' }))
+
+      await waitFor(() => {
+        expect(handlers.onContinue).toHaveBeenCalledWith(
+          expect.objectContaining({
+            waitingPeriodEnabled: true,
+            waitingPeriod: 30,
+          }),
+        )
+      })
+    })
+  })
+
   describe('accessibility', () => {
     it('should not have any accessibility violations - hours worked variant', async () => {
       const { container } = renderHoursWorked()
