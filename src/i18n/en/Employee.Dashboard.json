@@ -39,7 +39,12 @@
         "salary": "Salary/No overtime"
       },
       "wage": "Wage",
-      "startDate": "Start date"
+      "startDate": "Start date",
+      "addJobCta": "Add job",
+      "emptyState": {
+        "title": "No compensation",
+        "description": "Compensation will appear here once added"
+      }
     },
     "payment": {
       "title": "Payment",

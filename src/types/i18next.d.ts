@@ -1447,6 +1447,11 @@ export interface EmployeeDashboard{
 };
 "wage":string;
 "startDate":string;
+"addJobCta":string;
+"emptyState":{
+"title":string;
+"description":string;
+};
 };
 "payment":{
 "title":string;
