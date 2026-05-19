@@ -113,10 +113,27 @@ describe('cache', () => {
         .spyOn(global, 'fetch')
         .mockResolvedValue(new Response(JSON.stringify([]), { status: 200 }))
       await getCachedScenario(scenarioId, hash, 'http://flows.test:4000')
-      expect(fetchSpy).toHaveBeenCalledWith(
+      expect(fetchSpy).toHaveBeenCalledTimes(1)
+      const [calledUrl, calledInit] = fetchSpy.mock.calls[0]!
+      expect(calledUrl).toBeInstanceOf(URL)
+      expect((calledUrl as URL).href).toBe(
         `http://flows.test:4000/fe_sdk/${context.flowToken}/v1/companies/${context.companyId}/locations`,
-        expect.objectContaining({ signal: expect.any(AbortSignal) }),
       )
+      expect(calledInit).toEqual(expect.objectContaining({ signal: expect.any(AbortSignal) }))
+    })
+
+    it('returns null when gwsFlowsBase is not a valid URL', async () => {
+      const fetchSpy = vi.spyOn(global, 'fetch')
+      const result = await getCachedScenario(scenarioId, hash, 'not a url')
+      expect(result).toBeNull()
+      expect(fetchSpy).not.toHaveBeenCalled()
+    })
+
+    it('returns null when gwsFlowsBase uses a non-http(s) scheme', async () => {
+      const fetchSpy = vi.spyOn(global, 'fetch')
+      const result = await getCachedScenario(scenarioId, hash, 'file:///etc/passwd')
+      expect(result).toBeNull()
+      expect(fetchSpy).not.toHaveBeenCalled()
     })
   })
 

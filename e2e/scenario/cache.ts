@@ -63,16 +63,38 @@ export function writeCache(cache: CacheFile): void {
   renameSync(tmpPath, cachePath)
 }
 
+function buildValidationUrl(
+  gwsFlowsBase: string,
+  flowToken: string,
+  companyId: string,
+): URL | null {
+  let base: URL
+  try {
+    base = new URL(gwsFlowsBase)
+  } catch {
+    return null
+  }
+  if (base.protocol !== 'http:' && base.protocol !== 'https:') return null
+
+  const safeToken = encodeURIComponent(flowToken)
+  const safeCompanyId = encodeURIComponent(companyId)
+  const basePath = base.pathname.replace(/\/$/, '')
+  return new URL(
+    `${basePath}/fe_sdk/${safeToken}/v1/companies/${safeCompanyId}/locations`,
+    base.origin,
+  )
+}
+
 export async function validateToken(
   gwsFlowsBase: string,
   flowToken: string,
   companyId: string,
 ): Promise<boolean> {
+  const url = buildValidationUrl(gwsFlowsBase, flowToken, companyId)
+  if (!url) return false
+
   try {
-    const response = await fetch(
-      `${gwsFlowsBase}/fe_sdk/${flowToken}/v1/companies/${companyId}/locations`,
-      { signal: AbortSignal.timeout(5000) },
-    )
+    const response = await fetch(url, { signal: AbortSignal.timeout(5000) })
     return response.ok
   } catch {
     return false
