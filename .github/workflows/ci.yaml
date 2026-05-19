@@ -300,6 +300,7 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps chromium
 
+<<<<<<< HEAD
       - name: Provision demo companies
         env:
           E2E_USE_REAL_BACKEND: 'true'
