@@ -1,0 +1,32 @@
+{
+  "$schema": "../../schema/scenario.schema.json",
+  "name": "Active employee for termination flow",
+  "description": "Onboarded company with one active onboarded employee available for the termination flow (no pre-existing termination).",
+  "domain": "dismissal",
+  "baseDemo": "react_sdk_demo_company_onboarded",
+  "decorations": {
+    "locations": [
+      {
+        "key": "hq",
+        "street_1": "700 Termination Way",
+        "city": "San Francisco",
+        "state": "CA",
+        "zip": "94105",
+        "filing_address": true,
+        "mailing_address": true
+      }
+    ],
+    "employees": [
+      {
+        "key": "active",
+        "$ref": "../fragments/w2-salaried-employee.json",
+        "overrides": {
+          "first_name": "Tamsin",
+          "last_name": "Active",
+          "email": "tamsin-active+{{ts}}@example.com"
+        }
+      }
+    ]
+  },
+  "expectedContext": ["companyId", "employeeIds.active"]
+}
