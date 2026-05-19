@@ -260,6 +260,20 @@ jobs:
   e2e-setup:
     needs: [setup, scenarios]
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        domain:
+          - company
+          - contractor
+          - dismissal
+          - employee
+          - information-requests
+          - payroll
+          - termination
+          - time-off
+          - legacy
+    name: e2e (${{ matrix.domain }})
     steps:
       - uses: actions/checkout@v6
 
