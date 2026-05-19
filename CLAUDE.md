@@ -134,6 +134,34 @@ Build and test components in Storybook (`npm run storybook`) before integrating 
 - Update snapshots: `npm run test -- --run -u`
 - E2E tests require gws-flows and ZenPayroll running. See `e2e/local.config.example.env`.
 
+### Assertion style: prefer positive contracts
+
+Assert what something **is**, not what it **isn't**. The set of properties an object doesn't have, methods it doesn't expose, or strings it doesn't contain is unbounded — every passing negative assertion is one of infinite possibilities, and the test gains no real signal from it.
+
+```ts
+// BAD — negative-space assertions over an infinite solution space
+expect(entry).not.toHaveProperty('format')
+expect(entry).not.toHaveProperty('isRemainder')
+expect(rendered).not.toContain('admin')
+expect(api).not.toBeUndefined()
+```
+
+```ts
+// GOOD — positive shape assertion. If the shape changes intentionally (e.g.
+// a new field is added), this test still passes. If a field changes type or
+// goes missing, it fails — exactly when you want it to.
+expect(entry).toMatchObject({
+  uuid: 'bank-1',
+  name: 'Chase',
+  hiddenAccountNumber: 'XXXX0000',
+})
+expect(typeof entry.Field).toBe('function')
+```
+
+Use a negative assertion only when the **absence** is the contract under test — e.g. `expect(mutationResolver).not.toHaveBeenCalled()` when the test exists specifically to prove the API wasn't hit, or `expect(screen.queryByRole('dialog')).toBeNull()` when verifying a modal didn't open. The principle: a negative assertion needs a _named, observable behavior_ it's guarding, not just "this object happens not to have X right now."
+
+If you're tempted to add `not.toHaveProperty` to assert internal encapsulation (e.g. "the hook doesn't leak internal state"), prefer instead a positive assertion on the documented contract — partner-facing types and integration tests carry that load far better than property-absence checks.
+
 ### Asserting on HTTP requests
 
 When a test needs to verify which HTTP requests went out (verb, path, body, call count, ordering across endpoints), use `vi.fn()` to wrap the MSW resolver. Do **not** introduce a custom request-spy utility — vitest and MSW already provide everything needed.

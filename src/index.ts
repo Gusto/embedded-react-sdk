@@ -350,6 +350,9 @@ export type {
   SplitByValue,
   SplitPaymentsFormRequiredValidation,
   SplitByFieldProps,
+  SplitFieldEntry,
+  SplitFieldProps,
+  SplitFieldValidation,
   WorkingSplit,
 } from '@/components/Employee/PaymentMethod/shared/useSplitPaymentsForm'
 

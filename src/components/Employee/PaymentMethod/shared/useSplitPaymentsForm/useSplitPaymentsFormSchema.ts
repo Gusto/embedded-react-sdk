@@ -10,9 +10,16 @@ export const SplitPaymentsFormErrorCodes = {
   REQUIRED: 'REQUIRED',
   INVALID_PERCENTAGE: 'INVALID_PERCENTAGE',
   INVALID_AMOUNT: 'INVALID_AMOUNT',
-  PERCENTAGE_TOTAL_MISMATCH: 'PERCENTAGE_TOTAL_MISMATCH',
   DUPLICATE_PRIORITIES: 'DUPLICATE_PRIORITIES',
+  PERCENTAGE_TOTAL_MISMATCH: 'PERCENTAGE_TOTAL_MISMATCH',
 } as const
+
+/**
+ * Synthetic form path where the schema emits the percentage-sum-to-100
+ * invariant. The hook subscribes to errors at this path to drive
+ * `status.hasPercentageImbalance`.
+ */
+export const PERCENTAGE_TOTAL_PATH = 'percentageTotal' as const
 
 export type SplitPaymentsFormErrorCode =
   (typeof SplitPaymentsFormErrorCodes)[keyof typeof SplitPaymentsFormErrorCodes]
@@ -20,11 +27,19 @@ export type SplitPaymentsFormErrorCode =
 export const SPLIT_BY_VALUES = [SPLIT_BY.percentage, SPLIT_BY.amount] as const
 export type SplitByValue = (typeof SPLIT_BY_VALUES)[number]
 
+// Cleared NumberInput emits `NaN`. Normalize NaN to `null` at the schema
+// boundary so it (a) doesn't trip Zod's built-in "expected number, received
+// NaN" message, and (b) flows through the same REQUIRED branch in
+// `superRefine` as an explicitly null value.
+const splitAmountValueSchema = z.preprocess(
+  v => (typeof v === 'number' && Number.isNaN(v) ? null : v),
+  z.number().nullable(),
+)
+
 const fieldValidators = {
   splitBy: z.enum(SPLIT_BY_VALUES),
-  splitAmount: z.record(z.string(), z.number().nullable()),
+  splitAmount: z.record(z.string(), splitAmountValueSchema),
   priority: z.record(z.string(), z.number()),
-  remainder: z.string(),
 }
 
 export type SplitPaymentsFormField = keyof typeof fieldValidators
@@ -33,13 +48,10 @@ export type SplitPaymentsFormData = {
   splitBy: SplitByValue
   splitAmount: Record<string, number | null>
   priority: Record<string, number>
-  remainder: string
 }
 export type SplitPaymentsFormOutputs = SplitPaymentsFormData
 
-const requiredFieldsConfig = {
-  remainder: 'never',
-} satisfies RequiredFieldConfig<typeof fieldValidators>
+const requiredFieldsConfig = {} satisfies RequiredFieldConfig<typeof fieldValidators>
 
 export type SplitPaymentsFormOptionalFieldsToRequire = OptionalFieldsToRequire<
   typeof requiredFieldsConfig
@@ -47,6 +59,19 @@ export type SplitPaymentsFormOptionalFieldsToRequire = OptionalFieldsToRequire<
 
 interface SplitPaymentsFormSchemaOptions {
   optionalFieldsToRequire?: SplitPaymentsFormOptionalFieldsToRequire
+}
+
+/**
+ * Resolves the remainder uuid (highest priority value) from a priority map.
+ * Exported so the hook can mirror the same selection rule when deriving
+ * dynamic field metadata.
+ */
+export function resolveRemainderUuid(priority: Record<string, number>): string {
+  return Object.entries(priority).reduce<string>((maxId, [uuid, value]) => {
+    if (!maxId) return uuid
+    const currentMax = priority[maxId] ?? 0
+    return value > currentMax ? uuid : maxId
+  }, '')
 }
 
 export function createSplitPaymentsFormSchema(options: SplitPaymentsFormSchemaOptions = {}) {
@@ -57,27 +82,54 @@ export function createSplitPaymentsFormSchema(options: SplitPaymentsFormSchemaOp
     optionalFieldsToRequire: options.optionalFieldsToRequire,
     superRefine: (data, ctx) => {
       if (data.splitBy === SPLIT_BY.percentage) {
+        let anyInvalid = false
+        let total = 0
         for (const [uuid, value] of Object.entries(data.splitAmount)) {
-          if (value === null) continue
+          if (value === null) {
+            anyInvalid = true
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              path: ['splitAmount', uuid],
+              message: SplitPaymentsFormErrorCodes.REQUIRED,
+            })
+            continue
+          }
           if (!Number.isInteger(value) || value < 0 || value > 100) {
+            anyInvalid = true
             ctx.addIssue({
               code: z.ZodIssueCode.custom,
               path: ['splitAmount', uuid],
               message: SplitPaymentsFormErrorCodes.INVALID_PERCENTAGE,
             })
+            continue
           }
+          total += value
         }
-        const total = Object.values(data.splitAmount).reduce<number>((acc, v) => acc + (v ?? 0), 0)
-        if (total !== 100) {
+        // Only enforce sum-to-100 when every split is otherwise valid. While
+        // any value is missing or out of range, the per-field error is the
+        // right thing to surface; an additional sum mismatch would be noise.
+        // Emitted at the synthetic form path so the hook can drive a
+        // form-level alert via `status.hasPercentageImbalance` without
+        // polluting per-field errors.
+        if (!anyInvalid && total !== 100) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
-            path: ['splitAmount'],
+            path: [PERCENTAGE_TOTAL_PATH],
             message: SplitPaymentsFormErrorCodes.PERCENTAGE_TOTAL_MISMATCH,
           })
         }
       } else {
+        const remainderUuid = resolveRemainderUuid(data.priority)
         for (const [uuid, value] of Object.entries(data.splitAmount)) {
-          if (value === null) continue
+          if (value === null) {
+            if (uuid === remainderUuid) continue
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              path: ['splitAmount', uuid],
+              message: SplitPaymentsFormErrorCodes.REQUIRED,
+            })
+            continue
+          }
           if (value < 0) {
             ctx.addIssue({
               code: z.ZodIssueCode.custom,

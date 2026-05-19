@@ -13,6 +13,7 @@ export interface NumberInputHookFieldProps<
   format?: NumberInputProps['format']
   min?: NumberInputProps['min']
   max?: NumberInputProps['max']
+  placeholder?: NumberInputProps['placeholder']
   validationMessages?: ValidationMessages<TErrorCode>
   FieldComponent?: ComponentType<NumberInputProps>
 }
@@ -25,6 +26,7 @@ export function NumberInputHookField<TErrorCode extends string>({
   format,
   min,
   max,
+  placeholder,
   validationMessages,
   FieldComponent,
 }: NumberInputHookFieldProps<TErrorCode>) {
@@ -48,6 +50,7 @@ export function NumberInputHookField<TErrorCode extends string>({
       format={format}
       min={min}
       max={max}
+      placeholder={placeholder}
       FieldComponent={FieldComponent}
     />,
   )
