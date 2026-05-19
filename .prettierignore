@@ -1,5 +1,6 @@
 dist/
 rfc/
+spike/autogen-docs/embedded-react-sdk.api.md
 openapi/api.spec.json
 src/generated
 src/types/i18nresources.d.ts

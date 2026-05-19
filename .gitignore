@@ -206,6 +206,10 @@ e2e-recordings/
 # MSW generated service worker
 mockServiceWorker.js
 
+# API Extractor spike artifacts
+spike/autogen-docs/embedded-react-sdk.api.json
+spike/autogen-docs/temp/
+
 # SDK App
 sdk-app/dist/
 sdk-app/env/.env.demo
