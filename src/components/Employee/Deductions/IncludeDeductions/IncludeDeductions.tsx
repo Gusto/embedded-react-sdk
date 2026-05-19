@@ -1,3 +1,4 @@
+import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import styles from './IncludeDeductions.module.scss'
 import { Grid } from '@/components/Common/Grid/Grid'
@@ -19,7 +20,7 @@ export function IncludeDeductions({ className, onAdd, onContinue }: IncludeDeduc
   const Components = useComponentContext()
 
   return (
-    <section className={className}>
+    <section className={classNames(styles.container, className)}>
       <Grid gridTemplateColumns="1fr">
         <Flex flexDirection="column" gap={2}>
           <Components.Heading as="h2">{t('pageTitle')}</Components.Heading>

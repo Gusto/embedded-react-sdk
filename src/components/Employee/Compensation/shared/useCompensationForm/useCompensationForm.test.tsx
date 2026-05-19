@@ -1058,7 +1058,7 @@ describe('useCompensationForm', () => {
       expect(updateBody).toMatchObject({ effective_date: '2026-08-15' })
     })
 
-    it('preserves carve-out: hidden field + Nonexempt → non-Nonexempt with secondaries still submits today', async () => {
+    it('omits effective_date from the wire body even during the carve-out when no submit option is supplied', async () => {
       let updateBody: Record<string, unknown> | null = null
       const updateResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
         updateBody = (await request.json()) as Record<string, unknown>
@@ -1068,8 +1068,8 @@ describe('useCompensationForm', () => {
           job_uuid: 'job-uuid',
           rate: '20.00',
           payment_unit: 'Hour',
-          flsa_status: updateBody.flsaStatus ?? 'Exempt',
-          effective_date: updateBody.effectiveDate ?? todayISO(),
+          flsa_status: 'Exempt',
+          effective_date: todayISO(),
           adjust_for_minimum_wage: false,
         })
       })
@@ -1115,7 +1115,7 @@ describe('useCompensationForm', () => {
       })
 
       expect(updateResolver).toHaveBeenCalledTimes(1)
-      expect(updateBody).toMatchObject({ effective_date: todayISO() })
+      expect(updateBody).not.toHaveProperty('effective_date')
     })
   })
 })

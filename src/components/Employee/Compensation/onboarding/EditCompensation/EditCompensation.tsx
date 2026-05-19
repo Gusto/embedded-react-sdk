@@ -98,11 +98,12 @@ function Root({
     employeeId,
     jobId: resolvedJobId,
     compensationId: resolvedCompensationId,
-    // The Compensation flow does not surface an effective-date field — the
-    // date is derived from the parent job's `hireDate` (= `startDate`),
-    // threaded via submit options below. The hook's `willDeleteSecondaryJobs`
-    // carve-out still works because it manipulates the underlying form value
-    // (which the hook reads at submit time even when the field is hidden).
+    // No effective-date field is surfaced, and no `effectiveDate` is
+    // threaded into `actions.onSubmit` either: the server initializes
+    // `effective_date` on the auto-stub created by the parent job POST,
+    // and subsequent updates omit it from the PUT body so the existing
+    // value is preserved (e.g. a deliberately-set future-dated comp
+    // wouldn't be silently overwritten on an unrelated edit).
     withEffectiveDateField: false,
     // The Compensation flow always presents flsaStatus, rate, and paymentUnit
     // as required, even when editing an existing compensation. The hook's
@@ -149,7 +150,6 @@ function Root({
       jobId: jobResult.data.uuid,
       compensationId: jobResult.data.currentCompensationUuid ?? undefined,
       compensationVersion: stubCompensation?.version ?? undefined,
-      effectiveDate: startDate,
     })
     if (!compensationResult) {
       if (!currentJobId) setResolvedJobId(jobResult.data.uuid)

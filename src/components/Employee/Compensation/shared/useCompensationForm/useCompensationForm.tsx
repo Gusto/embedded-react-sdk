@@ -55,10 +55,11 @@ export interface CompensationSubmitOptions {
    */
   compensationVersion?: string
   /**
-   * Supply `effectiveDate` at submit time. Takes precedence over the form
-   * value. Most useful with `withEffectiveDateField: false` for screens that
-   * derive the effective date from external context (e.g. the parent job's
-   * `hireDate` during onboarding stub-fill).
+   * Supply `effectiveDate` at submit time. When `withEffectiveDateField`
+   * is `true`, this overrides the form's value. When `withEffectiveDateField`
+   * is `false`, this is the only way to put `effective_date` on the wire —
+   * the form value is not read in that mode (matching the options-only
+   * convention of `useWorkAddressForm` / `useHomeAddressForm` / `useJobForm`).
    */
   effectiveDate?: string
 }
@@ -75,12 +76,15 @@ export interface UseCompensationFormProps {
   shouldFocusError?: boolean
   /**
    * When `false`, hides `Fields.EffectiveDate` (becomes `undefined`) and
-   * removes `effectiveDate` from schema validation. Useful for screens where
-   * the effective date is driven by external context (e.g. the parent job's
-   * `hireDate` during onboarding) rather than user input. The hook still
-   * reads any form value at submit (so the internal "delete secondaries"
-   * carve-out, which sets the value to today, keeps working); partners can
-   * override via `CompensationSubmitOptions.effectiveDate`. Defaults to `true`.
+   * removes `effectiveDate` from schema validation. In this mode the hook
+   * does not read any form value at submit time — `effective_date` is
+   * omitted from the request body unless explicitly supplied via
+   * `CompensationSubmitOptions.effectiveDate`. This matches the
+   * options-only convention of `useWorkAddressForm` /
+   * `useHomeAddressForm` / `useJobForm`, and means the
+   * `willDeleteSecondaryJobs` carve-out's form-state side effects do not
+   * leak onto the wire (there is no field to render them in anyway).
+   * Defaults to `true`.
    */
   withEffectiveDateField?: boolean
 }
@@ -511,20 +515,18 @@ export function useCompensationForm({
             const resolvedCompensationId = options?.compensationId ?? compensationId
             const resolvedMode = resolvedCompensationId ? 'update' : 'create'
 
-            // Submit-time override > form value. Even when
-            // `withEffectiveDateField` is false the form value is honored as
-            // a fallback so the internal `willDeleteSecondaryJobs` carve-out
-            // (which sets the form value to today) keeps emitting a date —
-            // this is a deliberate divergence from `useWorkAddressForm`,
-            // whose hidden-field behavior is strictly options-only.
-            //
-            // When `withEffectiveDateField` is false the schema strips
-            // `effectiveDate` from `payload`, so we read directly from the
-            // form's underlying state instead.
-            const formEffectiveDate = withEffectiveDateField
-              ? payload.effectiveDate
-              : (formMethods.getValues('effectiveDate') ?? undefined)
-            const resolvedEffectiveDate = options?.effectiveDate ?? formEffectiveDate ?? undefined
+            // When the field is rendered, the validated payload value wins
+            // unless an explicit submit-time override is supplied. When the
+            // field is hidden (`withEffectiveDateField: false`) we are
+            // strictly options-only — matching `useWorkAddressForm` and the
+            // hidden-field behavior of `useHomeAddressForm` / `useJobForm`.
+            // The carve-out's form-state side effect (force value to today)
+            // is therefore inert in the hidden-field path; partners who
+            // need a specific date there must supply it via
+            // `CompensationSubmitOptions.effectiveDate`.
+            const resolvedEffectiveDate = withEffectiveDateField
+              ? (options?.effectiveDate ?? payload.effectiveDate ?? undefined)
+              : (options?.effectiveDate ?? undefined)
 
             const requestBodyBase = {
               rate: String(payload.rate),

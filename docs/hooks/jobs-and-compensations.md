@@ -158,7 +158,7 @@ const { handleSubmit } = composeSubmitHandler([jobForm, compensationForm], async
 })
 ```
 
-The hook still owns reactive behavior — the `willDeleteSecondaryJobs` carve-out keeps emitting today's date in the submitted PUT body even when `Fields.EffectiveDate` is hidden.
+When `withEffectiveDateField: false`, `useCompensationForm` is strictly options-only — `effective_date` is omitted from the PUT body unless you supply it via submit options. Omit `effectiveDate` from the options entirely to leave the existing date untouched.
 
 ---
 
