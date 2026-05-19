@@ -1,0 +1,33 @@
+{
+  "$schema": "../../schema/scenario.schema.json",
+  "name": "Time off management flow",
+  "description": "Company with employees for testing time off management.",
+  "domain": "time-off",
+  "baseDemo": "react_sdk_demo_company_onboarded",
+  "decorations": {
+    "locations": [
+      {
+        "key": "hq",
+        "street_1": "100 Test St",
+        "city": "San Francisco",
+        "state": "CA",
+        "zip": "94105",
+        "filing_address": true,
+        "mailing_address": true
+      }
+    ],
+    "employees": [
+      {
+        "key": "alice",
+        "$ref": "../fragments/w2-salaried-employee.json",
+        "overrides": {
+          "first_name": "Alice",
+          "last_name": "TimeOff",
+          "email": "alice-to+{{ts}}@example.com",
+          "onboarding_status": "onboarding_completed"
+        }
+      }
+    ]
+  },
+  "expectedContext": ["companyId", "employeeIds.alice"]
+}
