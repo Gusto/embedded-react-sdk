@@ -3,6 +3,7 @@ import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employe
 import { usePayrollsGetPayStubsSuspense } from '@gusto/embedded-api/react-query/payrollsGetPayStubs'
 import type { Job } from '@gusto/embedded-api/models/components/job'
 import type { GetV1EmployeesEmployeeUuidPayStubsResponse } from '@gusto/embedded-api/models/operations/getv1employeesemployeeuuidpaystubs'
+import { derivePrimaryFlsaStatus } from '@/components/Employee/Compensation/shared/derivePrimaryFlsaStatus'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { usePagination } from '@/hooks/usePagination/usePagination'
 import type { HookLoadingResult, BaseHookReady } from '@/partner-hook-utils/types'
@@ -18,7 +19,9 @@ export interface UseEmployeeCompensationProps {
 
 interface UseEmployeeCompensationReady extends BaseHookReady<
   {
+    jobs: Job[]
     primaryJob?: Job
+    primaryFlsaStatus?: string
     payStubs: EmployeePayStub[]
   },
   { isPending: boolean }
@@ -50,9 +53,9 @@ export function useEmployeeCompensation({
   const employee = employeeQuery.data.employee
   const payStubsData = payStubsQuery.data
 
-  const primaryJob = useMemo(() => {
-    return employee?.jobs?.find(job => job.primary === true)
-  }, [employee?.jobs])
+  const jobs = useMemo(() => employee?.jobs ?? [], [employee?.jobs])
+  const primaryJob = useMemo(() => jobs.find(job => job.primary === true), [jobs])
+  const primaryFlsaStatus = useMemo(() => derivePrimaryFlsaStatus(jobs), [jobs])
 
   const payStubs = payStubsData.employeePayStubsList || []
 
@@ -77,7 +80,9 @@ export function useEmployeeCompensation({
   return {
     isLoading: false,
     data: {
+      jobs,
       primaryJob,
+      primaryFlsaStatus,
       payStubs,
     },
     status: {

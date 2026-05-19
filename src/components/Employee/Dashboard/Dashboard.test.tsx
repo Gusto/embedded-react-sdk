@@ -1,18 +1,21 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { http, HttpResponse, type HttpResponseResolver } from 'msw'
-import type { DashboardProps } from './Dashboard'
-import { Dashboard } from './Dashboard'
+import { http, HttpResponse, type HttpResponseResolver, type PathParams } from 'msw'
+import type {
+  DeleteV1JobsJobIdRequest,
+  DeleteV1JobsJobIdResponse,
+} from '@gusto/embedded-api/models/operations/deletev1jobsjobid'
+import { Dashboard, type DashboardProps } from './Dashboard'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { server } from '@/test/mocks/server'
 import { API_BASE_URL } from '@/test/constants'
 import { handleGetEmployeeForms, i9Form } from '@/test/mocks/apis/employee_forms'
+import { handleGetEmployee, handleDeleteEmployeeJob } from '@/test/mocks/apis/employees'
 import { componentEvents } from '@/shared/constants'
 import { assertDefined } from '@/test-utils/assertions'
 import { getFixture } from '@/test/mocks/fixtures/getFixture'
-import { handleGetEmployee } from '@/test/mocks/apis/employees'
 
 type GarnishmentFixture = {
   uuid: string
@@ -62,6 +65,99 @@ const openJobAndPayTab = async (user: ReturnType<typeof userEvent.setup>) => {
   await waitFor(() => {
     expect(screen.getByRole('heading', { name: 'Deductions' })).toBeInTheDocument()
   })
+}
+
+const PRIMARY_JOB_UUID = '428a653a-0745-4db4-9c80-558288d416fa'
+const SECONDARY_JOB_UUID = 'secondary-job-uuid'
+
+async function getSingleNonexemptJobFixture() {
+  const employeeFixture = (await getFixture('get-v1-employees')) as Record<string, unknown>
+  return {
+    ...employeeFixture,
+    jobs: [
+      {
+        uuid: PRIMARY_JOB_UUID,
+        version: 'primary-version',
+        employee_uuid: 'employee-123',
+        current_compensation_uuid: 'primary-comp-uuid',
+        payment_unit: 'Hour',
+        primary: true,
+        title: 'Office Admin',
+        compensations: [
+          {
+            uuid: 'primary-comp-uuid',
+            version: 'primary-comp-version',
+            payment_unit: 'Hour',
+            flsa_status: 'Nonexempt',
+            job_uuid: PRIMARY_JOB_UUID,
+            effective_date: '2019-06-06',
+            rate: '32.00',
+            adjust_for_minimum_wage: false,
+            minimum_wages: [],
+          },
+        ],
+        rate: '32.00',
+        hire_date: '2019-06-06',
+      },
+    ],
+  }
+}
+
+async function getMultiJobFixture() {
+  const employeeFixture = (await getFixture('get-v1-employees')) as Record<string, unknown>
+  return {
+    ...employeeFixture,
+    jobs: [
+      {
+        uuid: PRIMARY_JOB_UUID,
+        version: 'primary-version',
+        employee_uuid: 'employee-123',
+        current_compensation_uuid: 'primary-comp-uuid',
+        payment_unit: 'Hour',
+        primary: true,
+        title: 'Administrator',
+        compensations: [
+          {
+            uuid: 'primary-comp-uuid',
+            version: 'primary-comp-version',
+            payment_unit: 'Hour',
+            flsa_status: 'Nonexempt',
+            job_uuid: PRIMARY_JOB_UUID,
+            effective_date: '2019-04-05',
+            rate: '35.00',
+            adjust_for_minimum_wage: false,
+            minimum_wages: [],
+          },
+        ],
+        rate: '35.00',
+        hire_date: '2019-04-05',
+      },
+      {
+        uuid: SECONDARY_JOB_UUID,
+        version: 'secondary-version',
+        employee_uuid: 'employee-123',
+        current_compensation_uuid: 'secondary-comp-uuid',
+        payment_unit: 'Hour',
+        primary: false,
+        title: 'Administrative Supervisor',
+        compensations: [
+          {
+            uuid: 'secondary-comp-uuid',
+            version: 'secondary-comp-version',
+            payment_unit: 'Hour',
+            flsa_status: 'Nonexempt',
+            job_uuid: SECONDARY_JOB_UUID,
+            effective_date: '2026-05-01',
+            rate: '35.00',
+            adjust_for_minimum_wage: false,
+            minimum_wages: [],
+          },
+        ],
+        rate: '35.00',
+        hire_date: '2026-05-01',
+      },
+    ],
+  }
 }
 
 vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', () => {
@@ -271,6 +367,270 @@ describe('Dashboard', () => {
         componentEvents.EMPLOYEE_DEDUCTION_DELETED,
         expect.objectContaining({ uuid: 'd-1', active: false }),
       )
+    })
+  })
+
+  it('emits EMPLOYEE_COMPENSATION_CREATE with the primary job when clicking the single-job Edit CTA', async () => {
+    const user = userEvent.setup()
+
+    renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
+
+    await waitFor(() => {
+      expect(screen.getByText('Legal name')).toBeTruthy()
+    })
+
+    await user.click(screen.getByRole('tab', { name: 'Job and pay' }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: 'Compensation' })).toBeInTheDocument()
+    })
+
+    const compensationHeading = screen.getByRole('heading', { name: 'Compensation' })
+    const compensationCard = compensationHeading.closest('[data-testid="data-box"]')!
+    await user.click(within(compensationCard as HTMLElement).getByRole('button', { name: 'Edit' }))
+
+    expect(onEvent).toHaveBeenCalledWith(
+      componentEvents.EMPLOYEE_COMPENSATION_CREATE,
+      expect.objectContaining({
+        employeeId: 'employee-123',
+        job: expect.objectContaining({ uuid: PRIMARY_JOB_UUID, primary: true }),
+      }),
+    )
+  })
+
+  it('does not show an Add another job CTA when the single primary job is exempt', async () => {
+    const user = userEvent.setup()
+
+    renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
+
+    await waitFor(() => {
+      expect(screen.getByText('Legal name')).toBeTruthy()
+    })
+
+    await user.click(screen.getByRole('tab', { name: 'Job and pay' }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: 'Compensation' })).toBeInTheDocument()
+    })
+
+    const compensationCard = screen
+      .getByRole('heading', { name: 'Compensation' })
+      .closest('[data-testid="data-box"]')! as HTMLElement
+
+    expect(within(compensationCard).getByRole('button', { name: 'Edit' })).toBeInTheDocument()
+    expect(
+      within(compensationCard).queryByRole('button', { name: 'Add another job' }),
+    ).not.toBeInTheDocument()
+  })
+
+  it('shows the single-job detail view with both Edit and Add another job when the primary job is nonexempt', async () => {
+    const user = userEvent.setup()
+
+    const fixture = await getSingleNonexemptJobFixture()
+    server.use(handleGetEmployee(() => HttpResponse.json(fixture)))
+
+    renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
+
+    await waitFor(() => {
+      expect(screen.getByText('Legal name')).toBeTruthy()
+    })
+
+    await user.click(screen.getByRole('tab', { name: 'Job and pay' }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: 'Compensation' })).toBeInTheDocument()
+    })
+
+    const compensationCard = screen
+      .getByRole('heading', { name: 'Compensation' })
+      .closest('[data-testid="data-box"]')! as HTMLElement
+
+    expect(within(compensationCard).getByText('Office Admin')).toBeInTheDocument()
+    expect(within(compensationCard).getByText('Wage')).toBeInTheDocument()
+    expect(within(compensationCard).getByText(/\$32\.00\/hr/)).toBeInTheDocument()
+    expect(within(compensationCard).getByRole('button', { name: 'Edit' })).toBeInTheDocument()
+
+    const addAnother = within(compensationCard).getByRole('button', { name: 'Add another job' })
+    await user.click(addAnother)
+
+    expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_JOB_ADD, {
+      employeeId: 'employee-123',
+    })
+  })
+
+  it('renders a jobs table with no header Edit CTA when the employee has multiple nonexempt jobs', async () => {
+    const user = userEvent.setup()
+
+    const multiJobFixture = await getMultiJobFixture()
+    server.use(handleGetEmployee(() => HttpResponse.json(multiJobFixture)))
+
+    renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
+
+    await waitFor(() => {
+      expect(screen.getByText('Legal name')).toBeTruthy()
+    })
+
+    await user.click(screen.getByRole('tab', { name: 'Job and pay' }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: 'Compensation' })).toBeInTheDocument()
+    })
+
+    const compensationCard = screen
+      .getByRole('heading', { name: 'Compensation' })
+      .closest('[data-testid="data-box"]')! as HTMLElement
+
+    expect(within(compensationCard).getByText('Administrator')).toBeInTheDocument()
+    expect(within(compensationCard).getByText('Administrative Supervisor')).toBeInTheDocument()
+    expect(within(compensationCard).getAllByText('Paid by the hour').length).toBe(2)
+    expect(within(compensationCard).queryByRole('button', { name: 'Edit' })).not.toBeInTheDocument()
+    expect(
+      within(compensationCard).getByRole('button', { name: 'Add another job' }),
+    ).toBeInTheDocument()
+  })
+
+  it('hides Delete on the primary job and shows Edit + Delete on the non-primary job', async () => {
+    const user = userEvent.setup()
+
+    const multiJobFixture = await getMultiJobFixture()
+    server.use(handleGetEmployee(() => HttpResponse.json(multiJobFixture)))
+
+    renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
+
+    await waitFor(() => {
+      expect(screen.getByText('Legal name')).toBeTruthy()
+    })
+
+    await user.click(screen.getByRole('tab', { name: 'Job and pay' }))
+
+    await waitFor(() => {
+      expect(screen.getByText('Administrator')).toBeInTheDocument()
+    })
+
+    const primaryRow = screen.getByText('Administrator').closest('[role="row"]')! as HTMLElement
+    await user.click(within(primaryRow).getByRole('button', { name: 'Job actions' }))
+
+    expect(screen.getByRole('menuitem', { name: 'Edit' })).toBeInTheDocument()
+    expect(screen.queryByRole('menuitem', { name: 'Delete' })).not.toBeInTheDocument()
+
+    // Close the primary menu by clicking outside (Escape via Esc key keeps focus tidy)
+    await user.keyboard('{Escape}')
+
+    const secondaryRow = screen
+      .getByText('Administrative Supervisor')
+      .closest('[role="row"]')! as HTMLElement
+    await user.click(within(secondaryRow).getByRole('button', { name: 'Job actions' }))
+
+    expect(screen.getByRole('menuitem', { name: 'Edit' })).toBeInTheDocument()
+    expect(screen.getByRole('menuitem', { name: 'Delete' })).toBeInTheDocument()
+  })
+
+  it('emits EMPLOYEE_COMPENSATION_CREATE with the row job when clicking the per-row Edit menu item', async () => {
+    const user = userEvent.setup()
+
+    const multiJobFixture = await getMultiJobFixture()
+    server.use(handleGetEmployee(() => HttpResponse.json(multiJobFixture)))
+
+    renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
+
+    await waitFor(() => {
+      expect(screen.getByText('Legal name')).toBeTruthy()
+    })
+
+    await user.click(screen.getByRole('tab', { name: 'Job and pay' }))
+
+    await waitFor(() => {
+      expect(screen.getByText('Administrative Supervisor')).toBeInTheDocument()
+    })
+
+    const secondaryRow = screen
+      .getByText('Administrative Supervisor')
+      .closest('[role="row"]')! as HTMLElement
+    await user.click(within(secondaryRow).getByRole('button', { name: 'Job actions' }))
+    await user.click(screen.getByRole('menuitem', { name: 'Edit' }))
+
+    expect(onEvent).toHaveBeenCalledWith(
+      componentEvents.EMPLOYEE_COMPENSATION_CREATE,
+      expect.objectContaining({
+        employeeId: 'employee-123',
+        job: expect.objectContaining({ uuid: SECONDARY_JOB_UUID, primary: false }),
+      }),
+    )
+  })
+
+  it('opens the delete dialog and calls the delete API when confirming a non-primary job deletion', async () => {
+    const user = userEvent.setup()
+
+    const multiJobFixture = await getMultiJobFixture()
+    server.use(handleGetEmployee(() => HttpResponse.json(multiJobFixture)))
+
+    let deletePath: string | null = null
+    const deleteJobResolver = vi.fn<
+      HttpResponseResolver<PathParams, DeleteV1JobsJobIdRequest, DeleteV1JobsJobIdResponse>
+    >(({ request }) => {
+      deletePath = new URL(request.url).pathname
+      return new HttpResponse(null, { status: 204 }) as unknown as ReturnType<
+        HttpResponseResolver<PathParams, DeleteV1JobsJobIdRequest, DeleteV1JobsJobIdResponse>
+      >
+    })
+    server.use(handleDeleteEmployeeJob(deleteJobResolver))
+
+    renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
+
+    await waitFor(() => {
+      expect(screen.getByText('Legal name')).toBeTruthy()
+    })
+
+    await user.click(screen.getByRole('tab', { name: 'Job and pay' }))
+
+    await waitFor(() => {
+      expect(screen.getByText('Administrative Supervisor')).toBeInTheDocument()
+    })
+
+    const secondaryRow = screen
+      .getByText('Administrative Supervisor')
+      .closest('[role="row"]')! as HTMLElement
+    await user.click(within(secondaryRow).getByRole('button', { name: 'Job actions' }))
+    await user.click(screen.getByRole('menuitem', { name: 'Delete' }))
+
+    const dialog = await screen.findByRole('dialog')
+    expect(within(dialog).getByText('Delete job?')).toBeInTheDocument()
+    expect(within(dialog).getByText(/Administrative Supervisor/)).toBeInTheDocument()
+
+    await user.click(within(dialog).getByRole('button', { name: 'Delete' }))
+
+    await waitFor(() => {
+      expect(deleteJobResolver).toHaveBeenCalledTimes(1)
+    })
+    expect(deletePath).toBe(`/v1/jobs/${SECONDARY_JOB_UUID}`)
+
+    await waitFor(() => {
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_JOB_DELETED, {
+        employeeId: 'employee-123',
+        jobId: SECONDARY_JOB_UUID,
+      })
+    })
+  })
+
+  it('emits EMPLOYEE_JOB_ADD when clicking the Add another job CTA in the multi-job view', async () => {
+    const user = userEvent.setup()
+
+    const multiJobFixture = await getMultiJobFixture()
+    server.use(handleGetEmployee(() => HttpResponse.json(multiJobFixture)))
+
+    renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
+
+    await waitFor(() => {
+      expect(screen.getByText('Legal name')).toBeTruthy()
+    })
+
+    await user.click(screen.getByRole('tab', { name: 'Job and pay' }))
+
+    const addAnother = await screen.findByRole('button', { name: 'Add another job' })
+    await user.click(addAnother)
+
+    expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_JOB_ADD, {
+      employeeId: 'employee-123',
     })
   })
 
