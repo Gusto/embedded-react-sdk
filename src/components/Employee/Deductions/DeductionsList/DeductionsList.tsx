@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
 import type { UseDeductionsListReady } from '../shared/useDeductionsList'
+import { formatDeductionAmount } from '../shared/formatDeductionAmount'
 import { useDataView, DataView } from '@/components/Common'
 import { ActionsLayout } from '@/components/Common'
 import { Flex } from '@/components/Common/Flex/Flex'
@@ -55,14 +56,12 @@ export function DeductionsList({
       {
         key: 'amount',
         title: t('withheldColumn'),
-        render: deduction => {
-          const formattedAmount = deduction.deductAsPercentage
-            ? formatPercent(Number(deduction.amount))
-            : formatCurrency(Number(deduction.amount))
-          return deduction.recurring
-            ? t('recurringAmount', { value: formattedAmount })
-            : formattedAmount
-        },
+        render: deduction =>
+          formatDeductionAmount(deduction, {
+            formatCurrency,
+            formatPercent,
+            formatPerPaycheck: (value: string) => t('recurringAmount', { value }),
+          }),
       },
     ],
     itemMenu: deduction => {

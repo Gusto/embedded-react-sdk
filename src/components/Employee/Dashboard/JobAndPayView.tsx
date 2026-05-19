@@ -23,6 +23,7 @@ import {
   useDeductionsList,
   useDeleteDeduction,
   DeleteDeductionDialog,
+  formatDeductionAmount,
 } from '@/components/Employee/Deductions/shared'
 import { componentEvents, PAYMENT_METHODS, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
@@ -150,19 +151,13 @@ export function JobAndPayView({
     {
       key: 'amount',
       title: t('jobAndPay.deductions.withhold'),
-      render: (garnishment: Garnishment) => {
-        // `amount` is a string per the API. `deductAsPercentage` switches
-        // between currency and percent formatting; `recurring` adds the
-        // "{value} per paycheck" suffix. Mirrors the legacy DeductionsList.
-        const numericAmount = Number(garnishment.amount)
-        if (Number.isNaN(numericAmount)) return '-'
-        const formatted = garnishment.deductAsPercentage
-          ? formatPercent(numericAmount)
-          : formatCurrency(numericAmount)
-        return garnishment.recurring
-          ? t('jobAndPay.deductions.amountPerPaycheck', { value: formatted })
-          : formatted
-      },
+      render: (garnishment: Garnishment) =>
+        formatDeductionAmount(garnishment, {
+          formatCurrency,
+          formatPercent,
+          formatPerPaycheck: (value: string) =>
+            t('jobAndPay.deductions.amountPerPaycheck', { value }),
+        }),
     },
   ]
 
