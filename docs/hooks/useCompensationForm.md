@@ -152,10 +152,11 @@ interface CompensationSubmitOptions {
    */
   compensationVersion?: string
   /**
-   * Supply `effectiveDate` at submit time. Takes precedence over the form
-   * value. Most useful with `withEffectiveDateField: false` for screens that
-   * derive the effective date from external context (e.g. the parent job's
-   * `hireDate` during onboarding stub-fill).
+   * Supply `effectiveDate` at submit time. When `withEffectiveDateField`
+   * is `true`, this overrides the form's value. When `withEffectiveDateField`
+   * is `false`, this is the only way to put `effective_date` on the wire —
+   * the form value is not read in that mode (matching the options-only
+   * convention of `useWorkAddressForm` / `useHomeAddressForm` / `useJobForm`).
    */
   effectiveDate?: string
 }
@@ -307,7 +308,7 @@ Use `data.minimumEffectiveDate` and `data.maximumEffectiveDate` to constrain the
 
 This field is automatically **disabled** (and the form value forced to today) while `status.willDeleteSecondaryJobs` is `true` — see [Derived helpers](#derived-helpers). You can render the disabled field as-is, or hide it altogether and key off the flag for a separate inline message.
 
-**Conditional availability:** This field is `undefined` when `withEffectiveDateField: false`. Supply the value via `CompensationSubmitOptions.effectiveDate` at submit time instead — useful when the date is derived from external context (e.g. the parent job's `hireDate` during an onboarding flow). The `willDeleteSecondaryJobs` carve-out still works in this mode: the hook continues to manage the underlying form value and emits it in the submitted PUT body.
+**Conditional availability:** This field is `undefined` when `withEffectiveDateField: false`. In this mode the hook is strictly options-only — `effective_date` is omitted from the request body unless you supply `CompensationSubmitOptions.effectiveDate` at submit time. The `willDeleteSecondaryJobs` carve-out's UI side effects (force form value to today, disable the field) are inert here because there is no field to render; pass the date through submit options if you need to pin one during the carve-out.
 
 ```tsx
 {
