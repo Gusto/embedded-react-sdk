@@ -1,0 +1,96 @@
+{
+  "$schema": "../../schema/scenario.schema.json",
+  "name": "Company onboarding with multi-entity setup",
+  "description": "Fresh company with multiple locations, mixed workforce, and a configured pay schedule.",
+  "domain": "company",
+  "baseDemo": "react_sdk_demo",
+  "decorations": {
+    "locations": [
+      {
+        "key": "hq",
+        "street_1": "100 Market St",
+        "city": "San Francisco",
+        "state": "CA",
+        "zip": "94105",
+        "filing_address": true,
+        "mailing_address": true
+      },
+      {
+        "key": "oakland-office",
+        "street_1": "221 Broadway",
+        "city": "Oakland",
+        "state": "CA",
+        "zip": "94607"
+      },
+      {
+        "key": "san-jose-hub",
+        "street_1": "88 Almaden Blvd",
+        "city": "San Jose",
+        "state": "CA",
+        "zip": "95113"
+      }
+    ],
+    "employees": [
+      {
+        "key": "alice",
+        "$ref": "../fragments/w2-salaried-employee.json",
+        "overrides": {
+          "first_name": "Alice",
+          "last_name": "Complex",
+          "email": "alice-complex+{{ts}}@example.com",
+          "work_address": {
+            "locationKey": "hq"
+          },
+          "job": {
+            "title": "Engineering Manager",
+            "hire_date": "2024-01-15",
+            "locationKey": "hq"
+          }
+        }
+      },
+      {
+        "key": "bob",
+        "$ref": "../fragments/w2-hourly-employee.json",
+        "overrides": {
+          "first_name": "Bob",
+          "last_name": "Complex",
+          "email": "bob-complex+{{ts}}@example.com",
+          "work_address": {
+            "locationKey": "oakland-office"
+          },
+          "job": {
+            "title": "Operations Specialist",
+            "hire_date": "2024-03-01",
+            "locationKey": "oakland-office"
+          }
+        }
+      }
+    ],
+    "contractors": [
+      {
+        "key": "casey",
+        "$ref": "../fragments/contractor-1099.json",
+        "overrides": {
+          "first_name": "Casey",
+          "last_name": "Complex",
+          "email": "casey-complex+{{ts}}@example.com"
+        }
+      }
+    ],
+    "paySchedule": {
+      "frequency": "Every other week",
+      "anchor_pay_date": "{{relative:+14d:Friday}}",
+      "anchor_end_of_pay_period": "{{relative:+13d}}"
+    }
+  },
+  "expectedContext": [
+    "companyId",
+    "locationIds.hq",
+    "locationIds.oakland-office",
+    "locationIds.san-jose-hub",
+    "employeeIds.alice",
+    "employeeIds.bob",
+    "contractorIds.casey",
+    "paySchedule.uuid"
+  ]
+}
