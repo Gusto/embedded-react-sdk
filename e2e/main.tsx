@@ -11,6 +11,7 @@ import { PaymentFlow } from '@/components/Contractor/Payments/PaymentFlow/Paymen
 import { TerminationFlow } from '@/components/Employee/Terminations/TerminationFlow/TerminationFlow'
 import { DismissalFlow } from '@/components/Payroll/Dismissal'
 import { TimeOffFlow } from '@/components/TimeOff/TimeOffFlow/TimeOffFlow'
+import { InformationRequestsFlow } from '@/components/InformationRequests'
 import '@/styles/sdk.scss'
 
 const DEFAULT_API_BASE_URL = 'https://api.gusto.com'
@@ -26,6 +27,7 @@ type FlowType =
   | 'termination'
   | 'dismissal'
   | 'time-off'
+  | 'information-requests'
 
 interface E2EConfig {
   flow: FlowType
@@ -95,6 +97,8 @@ function FlowRenderer({ config }: { config: E2EConfig }) {
       return <DismissalFlow companyId={companyId} employeeId={employeeId} onEvent={handleEvent} />
     case 'time-off':
       return <TimeOffFlow companyId={companyId} onEvent={handleEvent} />
+    case 'information-requests':
+      return <InformationRequestsFlow companyId={companyId} onEvent={handleEvent} />
     default:
       return <div>Unknown flow: {flow}</div>
   }
@@ -111,6 +115,7 @@ const FLOW_OPTIONS: { value: FlowType; label: string }[] = [
   { value: 'termination', label: 'Termination' },
   { value: 'dismissal', label: 'Dismissal' },
   { value: 'time-off', label: 'Time Off Management' },
+  { value: 'information-requests', label: 'Information Requests' },
 ]
 
 function FlowSelector({ currentFlow }: { currentFlow: FlowType }) {

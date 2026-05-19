@@ -180,8 +180,9 @@ function walkDir(dir: string): string[] {
 function extractApiImports(filePaths: string[]): Set<string> {
   const funcNames = new Set<string>()
 
-  const hookImportPattern = /from\s+['"]@gusto\/embedded-api\/react-query\/([^'"]+)['"]/g
-  const funcImportPattern = /from\s+['"]@gusto\/embedded-api\/funcs\/([^'"]+)['"]/g
+  const hookImportPattern =
+    /from\s+['"]@gusto\/embedded-api-v-2025-11-15\/react-query\/([^'"]+)['"]/g
+  const funcImportPattern = /from\s+['"]@gusto\/embedded-api-v-2025-11-15\/funcs\/([^'"]+)['"]/g
 
   for (const filePath of filePaths) {
     const content = readFileSync(filePath, 'utf-8')
