@@ -1,24 +1,16 @@
-import { Suspense } from 'react'
 import { fn } from 'storybook/test'
 import type { EmployeeFederalTaxRev2020 } from '@gusto/embedded-api/models/components/employeefederaltaxrev2020'
 import type { EmployeeStateTaxesList } from '@gusto/embedded-api/models/components/employeestatetaxeslist'
 import { TaxesView } from './TaxesView'
-import { useI18n } from '@/i18n'
-
-function I18nLoader({ children }: { children: React.ReactNode }) {
-  useI18n('Employee.Dashboard')
-  return <>{children}</>
-}
+import { BaseComponent } from '@/components/Base'
 
 export default {
   title: 'Domain/Employee/Dashboard/TaxesView',
   decorators: [
     (Story: React.ComponentType) => (
-      <Suspense fallback={<div>Loading translations...</div>}>
-        <I18nLoader>
-          <Story />
-        </I18nLoader>
-      </Suspense>
+      <BaseComponent onEvent={fn().mockName('onEvent')}>
+        <Story />
+      </BaseComponent>
     ),
   ],
 }
