@@ -284,6 +284,9 @@ jobs:
         with:
           name: e2e-state
           path: e2e/.e2e-state.json
+          # File starts with a dot (.e2e-state.json); upload-artifact@v6
+          # excludes hidden files by default, so opt in explicitly.
+          include-hidden-files: true
           retention-days: 1
           if-no-files-found: error
 
