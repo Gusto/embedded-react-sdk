@@ -1,0 +1,59 @@
+{
+  "$schema": "../../schema/scenario.schema.json",
+  "name": "Standard biweekly with 2 W-2 employees",
+  "description": "Company onboarded, biweekly schedule, two salaried employees ready for first regular payroll.",
+  "domain": "payroll",
+  "baseDemo": "react_sdk_demo_company_onboarded",
+  "decorations": {
+    "locations": [
+      {
+        "key": "hq",
+        "street_1": "100 Test St",
+        "city": "San Francisco",
+        "state": "CA",
+        "zip": "94105",
+        "filing_address": true,
+        "mailing_address": true
+      }
+    ],
+    "employees": [
+      {
+        "key": "alice",
+        "first_name": "Alice",
+        "last_name": "Anderson",
+        "email": "alice+{{ts}}@example.com",
+        "home_address": {
+          "street_1": "1 Home Way",
+          "city": "San Francisco",
+          "state": "CA",
+          "zip": "94110"
+        },
+        "work_address": { "locationKey": "hq" },
+        "job": { "title": "Engineer", "hire_date": "2024-01-15", "locationKey": "hq" },
+        "compensation": { "rate": "85000", "payment_unit": "Year", "flsa_status": "Exempt" },
+        "onboarding_status": "completed"
+      },
+      {
+        "key": "bob",
+        "$ref": "../fragments/w2-hourly-employee.json",
+        "overrides": {
+          "first_name": "Bob",
+          "last_name": "Builder",
+          "email": "bob+{{ts}}@example.com"
+        }
+      }
+    ],
+    "paySchedule": {
+      "frequency": "Every other week",
+      "anchor_pay_date": "{{relative:+14d:Friday}}",
+      "anchor_end_of_pay_period": "{{relative:+13d}}"
+    }
+  },
+  "expectedContext": [
+    "companyId",
+    "locationIds.hq",
+    "employeeIds.alice",
+    "employeeIds.bob",
+    "paySchedule.uuid"
+  ]
+}
