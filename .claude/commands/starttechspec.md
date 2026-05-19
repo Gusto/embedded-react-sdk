@@ -298,7 +298,7 @@ git commit -m "docs: initialize {feature_name} tech spec"
 
 ### Step 5: Run Zod Validation Tests
 
-Validate the `@gusto/embedded-api` Zod schemas against real API responses to catch bugs early.
+Validate the `@gusto/embedded-api-v-2025-11-15` Zod schemas against real API responses to catch bugs early.
 
 **Why this matters:**
 The embedded-api SDK uses Zod schemas to validate API responses. If the schema doesn't match reality, the SDK throws `ResponseValidationError`. Finding these mismatches during spec phase prevents runtime failures later.
@@ -357,7 +357,7 @@ In the spec repo, create a quick test harness:
 ```bash
 cd ~/workspace/{slug}-spec/zod-validation-test
 npm init -y
-npm install @gusto/embedded-api tsx typescript
+npm install @gusto/embedded-api-v-2025-11-15 tsx typescript
 ```
 
 **Step 5d: Test via the embedded-api React Query hooks**
@@ -373,9 +373,9 @@ The SDK provides React Query hooks that validate responses with Zod schemas. If 
 
 ```tsx
 import { ApiProvider } from './ApiProvider'
-import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
-import { usePayrollsListSuspense } from '@gusto/embedded-api/react-query/payrollsList'
-import { usePayrollsCreateOffCycleMutation } from '@gusto/embedded-api/react-query/payrollsCreateOffCycle'
+import { useEmployeesListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesList'
+import { usePayrollsListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsList'
+import { usePayrollsCreateOffCycleMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsCreateOffCycle'
 
 function TestHarness({ companyId }: { companyId: string }) {
   // Each hook call triggers Zod validation on the response
@@ -399,7 +399,7 @@ function TestHarness({ companyId }: { companyId: string }) {
 **Test the hooks you'll use in this feature:**
 
 - List through your API inventory
-- Call each React Query hook from `@gusto/embedded-api/react-query/*`
+- Call each React Query hook from `@gusto/embedded-api-v-2025-11-15/react-query/*`
 - Record which hooks pass/fail Zod validation
 
 **Step 5e: Document findings**

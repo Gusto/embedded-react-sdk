@@ -617,13 +617,13 @@ export const bankAccountStateMachine = {
 
 ### 6.2 React Query Integration
 
-**Via:** `@gusto/embedded-api` + `@tanstack/react-query`
+**Via:** `@gusto/embedded-api-v-2025-11-15` + `@tanstack/react-query`
 
 **Configuration:**
 
 - Retry: disabled by default
 - Auto-invalidation on mutations
-- Query key: `['@gusto/embedded-api']`
+- Query key: `['@gusto/embedded-api-v-2025-11-15']`
 
 **Assessment:**
 
@@ -637,7 +637,7 @@ export const bankAccountStateMachine = {
 
 ### 7.1 API Client Architecture
 
-**Primary Client:** `@gusto/embedded-api` (Speakeasy-generated SDK)
+**Primary Client:** `@gusto/embedded-api-v-2025-11-15` (Speakeasy-generated SDK)
 
 **Location:** `src/contexts/ApiProvider/`
 

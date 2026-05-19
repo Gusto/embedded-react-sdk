@@ -194,7 +194,7 @@ export function JobTitleField(props: JobTitleFieldProps) {
 
 ### Data Fetching
 
-- Use `@gusto/embedded-api/react-query/*` hooks for all API calls
+- Use `@gusto/embedded-api-v-2025-11-15/react-query/*` hooks for all API calls
 - Gate dependent queries with `enabled: !!dependency`
 - Use `composeErrorHandler` to build the `errorHandling` bag (see Error Handling section below)
 
@@ -308,7 +308,7 @@ const errorHandling = composeErrorHandler(queries, { submitError, setSubmitError
 
 You can pass **nested SDK hook results** (objects with `errorHandling`) plus extra React Query results in the first array — see `composeErrorHandler` in `src/partner-hook-utils/composeErrorHandler.ts`.
 
-**Multi-form screens:** `composeSubmitHandler` coordinates validation + ordered submits **and** returns `{ handleSubmit, errorHandling }` aggregated across the forms it receives. Partners that want to combine in extra `@gusto/embedded-api` queries or screen-level submit state feed the result into **`composeErrorHandler([submitResult, ...extraQueries], optionalScreenSubmit)`**.
+**Multi-form screens:** `composeSubmitHandler` coordinates validation + ordered submits **and** returns `{ handleSubmit, errorHandling }` aggregated across the forms it receives. Partners that want to combine in extra `@gusto/embedded-api-v-2025-11-15` queries or screen-level submit state feed the result into **`composeErrorHandler([submitResult, ...extraQueries], optionalScreenSubmit)`**.
 
 `composeErrorHandler` returns `HookErrorHandling`:
 
@@ -407,7 +407,7 @@ Reference `gws-flows/app/frontend/react_sdk/CustomCompensationForm.tsx` as the r
 
 Infrastructure utilities like `buildFormSchema`, `useDeriveFieldsMetadata`, `deriveFieldsMetadata`, `withOptions`, `FormFieldsMetadataProvider`, `composeErrorHandler`, `collectErrors`, generic `*HookField` components, and base types like `HookFormInternals`, `BaseFormHookReady` are used by the SDK to build hooks — not by partners. Only promote to the public barrel if a partner use case demands it.
 
-Do NOT re-export `@gusto/embedded-api` entity types directly — partners derive them from field prop generics (e.g. `NonNullable<FlsaStatusFieldProps['getOptionLabel']>` infers the entity type).
+Do NOT re-export `@gusto/embedded-api-v-2025-11-15` entity types directly — partners derive them from field prop generics (e.g. `NonNullable<FlsaStatusFieldProps['getOptionLabel']>` infers the entity type).
 
 ## 7. Validation Parity with Stable Components
 

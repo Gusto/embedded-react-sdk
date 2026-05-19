@@ -76,16 +76,16 @@ src/components/
 └── Flow/ # Multi-step flow orchestration
 ```
 
-### API Layer (`@gusto/embedded-api`)
+### API Layer (`@gusto/embedded-api-v-2025-11-15`)
 
-All API calls go through `@gusto/embedded-api` with React Query hooks and Zod schema validation.
+All API calls go through `@gusto/embedded-api-v-2025-11-15` with React Query hooks and Zod schema validation.
 
 Import paths:
 
-- `@gusto/embedded-api/react-query/<operation>` — React Query hooks
-- `@gusto/embedded-api/models/components/<name>` — Entity types
-- `@gusto/embedded-api/models/operations/<name>` — Request/response types
-- `@gusto/embedded-api/models/errors/<name>` — Error types
+- `@gusto/embedded-api-v-2025-11-15/react-query/<operation>` — React Query hooks
+- `@gusto/embedded-api-v-2025-11-15/models/components/<name>` — Entity types
+- `@gusto/embedded-api-v-2025-11-15/models/operations/<name>` — Request/response types
+- `@gusto/embedded-api-v-2025-11-15/models/errors/<name>` — Error types
 
 Hook naming: `use<Resource><Action>Suspense` (queries), `use<Resource><Action>Mutation` (mutations)
 
@@ -101,7 +101,7 @@ All user-facing text uses i18next. Run `npm run i18n:generate` after changing tr
 
 ### Partner hooks (`composeErrorHandler` / `composeSubmitHandler`)
 
-Exported headless hooks build `errorHandling` with **`composeErrorHandler`** (not a React hook). For multi-form screens, **`composeSubmitHandler`** coordinates validation + ordered submits and returns `{ handleSubmit, errorHandling }` aggregated across those forms. The result plugs back into `composeErrorHandler` when partners need extra `@gusto/embedded-api` queries or screen-level submit state in the same error surface — see [docs/hooks/hooks.md](docs/hooks/hooks.md).
+Exported headless hooks build `errorHandling` with **`composeErrorHandler`** (not a React hook). For multi-form screens, **`composeSubmitHandler`** coordinates validation + ordered submits and returns `{ handleSubmit, errorHandling }` aggregated across those forms. The result plugs back into `composeErrorHandler` when partners need extra `@gusto/embedded-api-v-2025-11-15` queries or screen-level submit state in the same error surface — see [docs/hooks/hooks.md](docs/hooks/hooks.md).
 
 ## PR and Commit Conventions
 

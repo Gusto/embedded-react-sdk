@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { GustoEmbeddedProvider } from '@gusto/embedded-api/react-query/_context'
-import { GustoEmbeddedCore } from '@gusto/embedded-api/core'
-import { SDKHooks as NativeSDKHooks } from '@gusto/embedded-api/hooks/hooks'
+import { GustoEmbeddedProvider } from '@gusto/embedded-api-v-2025-11-15/react-query/_context'
+import { GustoEmbeddedCore } from '@gusto/embedded-api-v-2025-11-15/core'
+import { SDKHooks as NativeSDKHooks } from '@gusto/embedded-api-v-2025-11-15/hooks/hooks'
 import { useMemo } from 'react'
 import { apiVersionHook } from './apiVersionHook'
 import type { SDKHooks, BeforeRequestHook } from '@/types/hooks'
@@ -85,10 +85,10 @@ export function ApiProvider({
     const client = new QueryClient()
 
     const onSuccess = async () => {
-      await client.invalidateQueries({ queryKey: ['@gusto/embedded-api'] })
+      await client.invalidateQueries({ queryKey: ['@gusto/embedded-api-v-2025-11-15'] })
     }
-    client.setQueryDefaults(['@gusto/embedded-api'], { retry: false })
-    client.setMutationDefaults(['@gusto/embedded-api'], { onSuccess, retry: false })
+    client.setQueryDefaults(['@gusto/embedded-api-v-2025-11-15'], { retry: false })
+    client.setMutationDefaults(['@gusto/embedded-api-v-2025-11-15'], { onSuccess, retry: false })
 
     return client
   }, [queryClientFromProps])

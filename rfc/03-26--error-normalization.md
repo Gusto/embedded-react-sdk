@@ -15,14 +15,14 @@ The implementation is in [PR #1286](https://github.com/Gusto/embedded-react-sdk/
 
 ### SDK
 
-- All error classes from `@gusto/embedded-api` should normalize into one shape
+- All error classes from `@gusto/embedded-api-v-2025-11-15` should normalize into one shape
 - The normalization function should be pure — classification based on the error type, no options or side effects
 - Observability context (component name, stack trace, timestamp) should not pollute the partner-facing type
 - Existing component error handling should continue to work without regressions
 
 ### SDK Considerations
 
-- The `@gusto/embedded-api` package defines ~10 error classes with varying shapes, but all HTTP errors share the same `{ errors: EntityErrorObject[] }` response structure from the Gusto API
+- The `@gusto/embedded-api-v-2025-11-15` package defines ~10 error classes with varying shapes, but all HTTP errors share the same `{ errors: EntityErrorObject[] }` response structure from the Gusto API
 - Today, field errors are only extracted from `UnprocessableEntityErrorObject` — other classes with identical `errors[]` arrays are shown as generic "An error was encountered"
 - `SDKValidationError` (Zod) and `HTTPClientError` (network) extend `Error` directly, not `GustoEmbeddedError`, so they follow different `instanceof` paths
 - The observability system (`ObservabilityError`) currently loses field-level detail that would be useful for error tracking
@@ -48,11 +48,11 @@ With hooks, errors become partner-facing. The SDK no longer owns the UI, so it c
 - `useMutation` returns `{ error }` as state — the partner decides what to render for a failed form submit
 - ErrorBoundary is reserved for unexpected JavaScript bugs only
 
-This means errors go from being an internal implementation detail to a first-class part of the partner API. Without normalization, partners would be doing `instanceof` checks against internal `@gusto/embedded-api` classes — leaking our implementation details into their code. They need a single, well-documented type to build against.
+This means errors go from being an internal implementation detail to a first-class part of the partner API. Without normalization, partners would be doing `instanceof` checks against internal `@gusto/embedded-api-v-2025-11-15` classes — leaking our implementation details into their code. They need a single, well-documented type to build against.
 
 ### What errors reach the SDK
 
-The `@gusto/embedded-api` package catches API failures and network issues, constructing typed error objects. The problem is that each error class has a different shape:
+The `@gusto/embedded-api-v-2025-11-15` package catches API failures and network issues, constructing typed error objects. The problem is that each error class has a different shape:
 
 - **Typed HTTP errors** like `UnprocessableEntityErrorObject` and `NotFoundErrorObject` parse the API response and expose an `errors[]` array with field-level detail (`errorKey`, `category`, `message`, `metadata`), plus `httpMeta` with the status code.
 - **`APIError`** (the fallback for unmapped status codes like 403, 429, 500) does _not_ parse the response body — the error detail is only available as a raw string inside `httpMeta.body`.
@@ -65,7 +65,7 @@ For the full catalog of every error class, their runtime shapes, and real captur
 
 ## Current error shapes
 
-These are the error objects the SDK receives from `@gusto/embedded-api`. Each class has a different shape, which is what partners would have to deal with without normalization.
+These are the error objects the SDK receives from `@gusto/embedded-api-v-2025-11-15`. Each class has a different shape, which is what partners would have to deal with without normalization.
 
 ### Typed HTTP errors (`UnprocessableEntityErrorObject`, `NotFoundErrorObject`, etc.)
 

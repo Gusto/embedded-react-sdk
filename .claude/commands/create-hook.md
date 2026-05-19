@@ -202,7 +202,7 @@ import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { {Entity} } from '@gusto/embedded-api/models/components/{entity}'
+import type { {Entity} } from '@gusto/embedded-api-v-2025-11-15/models/components/{entity}'
 // React-query hooks for the GET / mutations this hook drives
 import {
   create{Domain}Schema,

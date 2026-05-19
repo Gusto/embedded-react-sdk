@@ -7,8 +7,8 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 const ROOT = join(__dirname, '..')
-const FUNCS_DIR = join(ROOT, 'node_modules/@gusto/embedded-api/src/funcs')
-const OPS_DIR = join(ROOT, 'node_modules/@gusto/embedded-api/src/models/operations')
+const FUNCS_DIR = join(ROOT, 'node_modules/@gusto/embedded-api-v-2025-11-15/src/funcs')
+const OPS_DIR = join(ROOT, 'node_modules/@gusto/embedded-api-v-2025-11-15/src/models/operations')
 const COMPONENTS_DIR = join(ROOT, 'src/components')
 const JSON_OUTPUT_PATH = join(ROOT, 'docs/reference/endpoint-inventory.json')
 const MD_OUTPUT_PATH = join(ROOT, 'docs/reference/endpoint-reference.md')
@@ -33,7 +33,7 @@ interface FlowEntry {
   variables: string[]
 }
 
-// --- AST-based extraction from @gusto/embedded-api ---
+// --- AST-based extraction from @gusto/embedded-api-v-2025-11-15 ---
 
 function createApiProject(): Project {
   return new Project({
@@ -175,7 +175,7 @@ function walkDir(dir: string): string[] {
   return results
 }
 
-// --- Extract @gusto/embedded-api imports from component files ---
+// --- Extract @gusto/embedded-api-v-2025-11-15 imports from component files ---
 
 function extractApiImports(filePaths: string[]): Set<string> {
   const funcNames = new Set<string>()
@@ -626,7 +626,7 @@ function generateMarkdown(inventory: Inventory): string {
   return lines.join('\n')
 }
 
-// --- Validate all inventory endpoints exist in @gusto/embedded-api ---
+// --- Validate all inventory endpoints exist in @gusto/embedded-api-v-2025-11-15 ---
 
 function validateEndpoints(
   inventory: { blocks: Record<string, BlockEntry> },
@@ -648,7 +648,9 @@ function validateEndpoints(
   }
 
   if (invalid.length > 0) {
-    console.error('WARNING: Some inventory endpoints were not found in @gusto/embedded-api:')
+    console.error(
+      'WARNING: Some inventory endpoints were not found in @gusto/embedded-api-v-2025-11-15:',
+    )
     for (const ep of invalid) console.error(`  ${ep}`)
     console.error('')
   }
@@ -708,7 +710,7 @@ function verify() {
   console.error('This can happen when:')
   console.error('  - A component added or removed an API hook/function import')
   console.error('  - A flow added or removed a block component')
-  console.error('  - The @gusto/embedded-api package was updated')
+  console.error('  - The @gusto/embedded-api-v-2025-11-15 package was updated')
   console.error('  - The pre-commit hook was bypassed (--no-verify)')
   console.error('')
   console.error('Fix: run "npm run endpoints:derive" and commit the updated files.')
