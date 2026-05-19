@@ -231,13 +231,15 @@ jobs:
       - name: Run scenario unit tests
         run: npm run test:scenarios
 
-  # E2E Demo job: Run Playwright e2e tests against the live demo environment.
-  # This is the only E2E gate. The MSW-mode e2e job was removed because its
-  # mock fixtures could not keep pace with real demo backend behavior, and
-  # the duplicate run added CI minutes for shallow coverage that overlapped
-  # with Storybook + unit tests. Demo E2E exercises the actual API contract,
-  # scenario provisioning, and state machine terminal states.
-  e2e-demo:
+  # E2E job: Run Playwright e2e tests against the live demo environment.
+  # This is the sole Playwright gate. A previous MSW-mode e2e job was removed
+  # because its mock fixtures could not keep pace with real demo backend
+  # behavior, and the duplicate run added CI minutes for shallow coverage
+  # already provided by Storybook + unit tests. This job exercises the
+  # actual API contract, scenario provisioning, and state machine terminal
+  # states. The local npm script is still named test:e2e:demo to reflect
+  # what it points at.
+  e2e:
     needs: [setup, scenarios]
     runs-on: ubuntu-latest
     steps:
@@ -270,21 +272,21 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps chromium
 
-      - name: Run e2e tests against demo environment
+      - name: Run e2e tests
         run: npm run test:e2e:demo
 
-      - name: Upload demo test results
+      - name: Upload test results
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v6
         with:
-          name: playwright-report-demo
+          name: playwright-report
           path: playwright-report/
           retention-days: 7
 
-      - name: Upload demo scenario reports
+      - name: Upload scenario reports
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v6
         with:
-          name: e2e-scenario-report-demo
+          name: e2e-scenario-report
           path: e2e/reports/
           retention-days: 7
