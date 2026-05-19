@@ -1,0 +1,21 @@
+{
+  "$schema": "../../schema/scenario.schema.json",
+  "name": "Contractor payment flow",
+  "description": "Company with onboarded contractor ready for payment.",
+  "domain": "contractor",
+  "baseDemo": "react_sdk_demo_company_onboarded",
+  "decorations": {
+    "contractors": [
+      {
+        "key": "contractor-1",
+        "$ref": "../fragments/contractor-1099.json",
+        "overrides": {
+          "first_name": "Charlie",
+          "last_name": "Contractor",
+          "email": "charlie+{{ts}}@example.com"
+        }
+      }
+    ]
+  },
+  "expectedContext": ["companyId", "contractorIds.contractor-1"]
+}
