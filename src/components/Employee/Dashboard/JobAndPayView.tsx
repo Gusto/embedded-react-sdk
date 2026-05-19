@@ -38,6 +38,7 @@ export interface JobAndPayViewProps {
   isLoading?: boolean
   onEvent: OnEventType<EventType, unknown>
   onEditCompensation?: () => void
+  onAddJob?: () => void
   onAddDeduction?: () => void
   onPaystubDownload?: (payrollUuid: string) => void
   downloadingPayrollUuids?: ReadonlySet<string>
@@ -52,6 +53,7 @@ export function JobAndPayView({
   isLoading = false,
   onEvent,
   onEditCompensation,
+  onAddJob,
   onAddDeduction,
   onPaystubDownload,
   downloadingPayrollUuids,
@@ -231,62 +233,80 @@ export function JobAndPayView({
     <BaseLayout error={paymentMethodList.errorHandling.errors}>
       <Flex flexDirection="column" gap={24}>
         <Components.Box
+          withPadding={!!job}
           header={
             <Components.BoxHeader
               title={t('jobAndPay.compensation.title')}
               action={
-                <Components.Button variant="secondary" onClick={onEditCompensation}>
-                  {t('jobAndPay.compensation.editCta')}
-                </Components.Button>
+                job ? (
+                  <Components.Button variant="secondary" onClick={onEditCompensation}>
+                    {t('jobAndPay.compensation.editCta')}
+                  </Components.Button>
+                ) : (
+                  <Components.Button
+                    variant="secondary"
+                    onClick={onAddJob}
+                    icon={<PlusCircleIcon />}
+                  >
+                    {t('jobAndPay.compensation.addJobCta')}
+                  </Components.Button>
+                )
               }
             />
           }
         >
-          <Flex flexDirection="column" gap={16}>
-            <Flex flexDirection="column" gap={12}>
-              {job?.title && (
-                <Flex flexDirection="column" gap={0}>
-                  <Components.Text variant="supporting">
-                    {t('jobAndPay.compensation.jobTitle')}
-                  </Components.Text>
-                  <Components.Text>{job.title}</Components.Text>
-                </Flex>
-              )}
+          {job ? (
+            <Flex flexDirection="column" gap={16}>
+              <Flex flexDirection="column" gap={12}>
+                {job.title && (
+                  <Flex flexDirection="column" gap={0}>
+                    <Components.Text variant="supporting">
+                      {t('jobAndPay.compensation.jobTitle')}
+                    </Components.Text>
+                    <Components.Text>{job.title}</Components.Text>
+                  </Flex>
+                )}
 
-              {job?.paymentUnit && (
-                <Flex flexDirection="column" gap={0}>
-                  <Components.Text variant="supporting">
-                    {t('jobAndPay.compensation.type')}
-                  </Components.Text>
-                  <Components.Text>
-                    {job.paymentUnit === 'Hour'
-                      ? t('jobAndPay.compensation.types.hourly')
-                      : job.paymentUnit === 'Salary' || job.paymentUnit === 'Year'
-                        ? t('jobAndPay.compensation.types.salary')
-                        : job.paymentUnit}
-                  </Components.Text>
-                </Flex>
-              )}
+                {job.paymentUnit && (
+                  <Flex flexDirection="column" gap={0}>
+                    <Components.Text variant="supporting">
+                      {t('jobAndPay.compensation.type')}
+                    </Components.Text>
+                    <Components.Text>
+                      {job.paymentUnit === 'Hour'
+                        ? t('jobAndPay.compensation.types.hourly')
+                        : job.paymentUnit === 'Salary' || job.paymentUnit === 'Year'
+                          ? t('jobAndPay.compensation.types.salary')
+                          : job.paymentUnit}
+                    </Components.Text>
+                  </Flex>
+                )}
 
-              {job?.rate && job.paymentUnit && typeof job.rate === 'number' && (
-                <Flex flexDirection="column" gap={0}>
-                  <Components.Text variant="supporting">
-                    {t('jobAndPay.compensation.wage')}
-                  </Components.Text>
-                  <Components.Text>{formatPayRate(job.rate, job.paymentUnit)}</Components.Text>
-                </Flex>
-              )}
+                {job.rate && job.paymentUnit && typeof job.rate === 'number' && (
+                  <Flex flexDirection="column" gap={0}>
+                    <Components.Text variant="supporting">
+                      {t('jobAndPay.compensation.wage')}
+                    </Components.Text>
+                    <Components.Text>{formatPayRate(job.rate, job.paymentUnit)}</Components.Text>
+                  </Flex>
+                )}
 
-              {job?.hireDate && (
-                <Flex flexDirection="column" gap={0}>
-                  <Components.Text variant="supporting">
-                    {t('jobAndPay.compensation.startDate')}
-                  </Components.Text>
-                  <Components.Text>{formatDateLongWithYear(job.hireDate)}</Components.Text>
-                </Flex>
-              )}
+                {job.hireDate && (
+                  <Flex flexDirection="column" gap={0}>
+                    <Components.Text variant="supporting">
+                      {t('jobAndPay.compensation.startDate')}
+                    </Components.Text>
+                    <Components.Text>{formatDateLongWithYear(job.hireDate)}</Components.Text>
+                  </Flex>
+                )}
+              </Flex>
             </Flex>
-          </Flex>
+          ) : (
+            <EmptyData
+              title={t('jobAndPay.compensation.emptyState.title')}
+              description={t('jobAndPay.compensation.emptyState.description')}
+            />
+          )}
         </Components.Box>
 
         <Components.Box

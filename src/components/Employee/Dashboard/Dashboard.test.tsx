@@ -1,14 +1,22 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { HttpResponse } from 'msw'
 import { Dashboard } from './Dashboard'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
+import { server } from '@/test/mocks/server'
+import { handleGetEmployee } from '@/test/mocks/apis/employees'
+import { getFixture } from '@/test/mocks/fixtures/getFixture'
 import { componentEvents } from '@/shared/constants'
 
-vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', () => ({
-  useContainerBreakpoints: () => ['small', 'medium', 'large'],
-}))
+vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', () => {
+  const useContainerBreakpoints = () => ['small', 'medium', 'large']
+  return {
+    useContainerBreakpoints,
+    default: useContainerBreakpoints,
+  }
+})
 
 describe('Dashboard', () => {
   const onEvent = vi.fn()
@@ -95,6 +103,38 @@ describe('Dashboard', () => {
     await user.click(manageButtons[1]!)
 
     expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_WORK_ADDRESS, {
+      employeeId: 'employee-123',
+    })
+  })
+
+  it('shows an empty Compensation card with Add job CTA when the employee has no jobs', async () => {
+    const user = userEvent.setup()
+
+    const employeeFixture = (await getFixture('get-v1-employees')) as Record<string, unknown>
+    server.use(handleGetEmployee(() => HttpResponse.json({ ...employeeFixture, jobs: [] })))
+
+    renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
+
+    await waitFor(() => {
+      expect(screen.getByText('Legal name')).toBeTruthy()
+    })
+
+    await user.click(screen.getByRole('tab', { name: 'Job and pay' }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: 'Compensation' })).toBeInTheDocument()
+    })
+
+    expect(screen.getByText('No compensation')).toBeInTheDocument()
+    expect(screen.getByText('Compensation will appear here once added')).toBeInTheDocument()
+
+    const addJobButton = screen.getByRole('button', { name: 'Add job' })
+    expect(addJobButton).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
+
+    await user.click(addJobButton)
+
+    expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_JOB_ADD, {
       employeeId: 'employee-123',
     })
   })

@@ -75,6 +75,7 @@ All of the events emitted by sdk components are listed in the following table:
 | EMPLOYEE_HOME_ADDRESS                 | employee/addresses/home                       |
 | EMPLOYEE_HOME_ADDRESS_CREATED         | employee/addresses/home/created               |
 | EMPLOYEE_HOME_ADDRESS_UPDATED         | employee/addresses/home/updated               |
+| EMPLOYEE_JOB_ADD                      | employee/job/add                              |
 | EMPLOYEE_JOB_CREATED                  | employee/job/created                          |
 | EMPLOYEE_JOB_DELETED                  | employee/job/deleted                          |
 | EMPLOYEE_JOB_UPDATED                  | employee/job/updated                          |

@@ -30,17 +30,18 @@ function MyApp() {
 
 #### Events
 
-| Event type                   | Description                      | Data                                                     |
-| ---------------------------- | -------------------------------- | -------------------------------------------------------- |
-| EMPLOYEE_UPDATE              | Fired when editing basic details | { employeeId: string }                                   |
-| EMPLOYEE_HOME_ADDRESS        | Fired when managing home address | { employeeId: string }                                   |
-| EMPLOYEE_WORK_ADDRESS        | Fired when managing work address | { employeeId: string }                                   |
-| EMPLOYEE_COMPENSATION_UPDATE | Fired when editing compensation  | { employeeId: string, job: Job }                         |
-| EMPLOYEE_BANK_ACCOUNT_CREATE | Fired when adding a bank account | { employeeId: string }                                   |
-| EMPLOYEE_DEDUCTION_ADD       | Fired when adding a deduction    | { employeeId: string }                                   |
-| EMPLOYEE_FEDERAL_TAXES_EDIT  | Fired when editing federal taxes | { employeeId: string, federalTaxes: EmployeeFederalTax } |
-| EMPLOYEE_STATE_TAXES_EDIT    | Fired when editing state taxes   | { employeeId: string, state: string }                    |
-| EMPLOYEE_VIEW_FORM_TO_SIGN   | Fired when viewing a form        | { employeeId: string, formUuid: string }                 |
+| Event type                   | Description                                              | Data                                                     |
+| ---------------------------- | -------------------------------------------------------- | -------------------------------------------------------- |
+| EMPLOYEE_UPDATE              | Fired when editing basic details                         | { employeeId: string }                                   |
+| EMPLOYEE_HOME_ADDRESS        | Fired when managing home address                         | { employeeId: string }                                   |
+| EMPLOYEE_WORK_ADDRESS        | Fired when managing work address                         | { employeeId: string }                                   |
+| EMPLOYEE_COMPENSATION_UPDATE | Fired when editing compensation                          | { employeeId: string, job: Job }                         |
+| EMPLOYEE_JOB_ADD             | Fired when adding a job from the empty Compensation card | { employeeId: string }                                   |
+| EMPLOYEE_BANK_ACCOUNT_CREATE | Fired when adding a bank account                         | { employeeId: string }                                   |
+| EMPLOYEE_DEDUCTION_ADD       | Fired when adding a deduction                            | { employeeId: string }                                   |
+| EMPLOYEE_FEDERAL_TAXES_EDIT  | Fired when editing federal taxes                         | { employeeId: string, federalTaxes: EmployeeFederalTax } |
+| EMPLOYEE_STATE_TAXES_EDIT    | Fired when editing state taxes                           | { employeeId: string, state: string }                    |
+| EMPLOYEE_VIEW_FORM_TO_SIGN   | Fired when viewing a form                                | { employeeId: string, formUuid: string }                 |
 
 ## Using Dashboard Subcomponents
 
@@ -274,6 +275,7 @@ Loading states are handled per-tab, showing a loading spinner while data is bein
 
 Each section gracefully handles missing data:
 
+- **Compensation**: Empty state with description; the header CTA switches from "Edit" to "Add job" and emits `EMPLOYEE_JOB_ADD`
 - **Payment methods**: "No payment method on file" message with "Add bank account" CTA
 - **Deductions**: Empty state with description and "Add deduction" CTA
 - **Paystubs**: Empty state indicating paystubs appear after payroll is run
