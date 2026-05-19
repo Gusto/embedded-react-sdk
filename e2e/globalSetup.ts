@@ -1,6 +1,6 @@
 import { resolve } from 'path'
 import { resolve as dnsResolve } from 'dns/promises'
-import { existsSync, writeFileSync } from 'fs'
+import { existsSync, readFileSync, writeFileSync } from 'fs'
 import * as dotenv from 'dotenv'
 import { refreshTokenIfNeeded, createFreshDemo } from './scripts/refreshToken'
 
@@ -112,6 +112,7 @@ async function waitForGWSFlows(maxAttempts = 5): Promise<void> {
 }
 
 interface E2EState {
+  flowToken: string
   companyId: string
   employeeId: string
   contractorId: string
@@ -165,6 +166,29 @@ interface Termination {
   employee_uuid: string
   effective_date: string
   run_termination_payroll: boolean
+}
+
+async function isExistingStateValid(state: Partial<E2EState>): Promise<boolean> {
+  if (!state.companyId) return false
+
+  const flowToken = state.flowToken || process.env.E2E_FLOW_TOKEN || ''
+  if (!flowToken) return false
+
+  try {
+    const response = await fetch(
+      `${GWS_FLOWS_BASE}/fe_sdk/${flowToken}/v1/companies/${state.companyId}/locations`,
+      { signal: AbortSignal.timeout(5000) },
+    )
+    if (!response.ok) return false
+
+    // Promote to process env so workers spawning later can pick it up without
+    // re-reading the file, matching the local-dev path that uses local.config.env.
+    process.env.E2E_FLOW_TOKEN = flowToken
+    process.env.E2E_COMPANY_ID = state.companyId
+    return true
+  } catch {
+    return false
+  }
 }
 
 async function fetchFromApi<T>(endpoint: string): Promise<T> {
@@ -318,6 +342,27 @@ export default async function globalSetup() {
   console.log('\n=== E2E Global Setup ===')
   console.log(`Target: ${GWS_FLOWS_BASE}`)
 
+  // Idempotency: if a previous run (e.g. an upstream e2e-setup CI job) already
+  // provisioned demo companies and wrote e2e/.e2e-state.json, reuse that state
+  // instead of re-provisioning. Saves ~2 demo creations and ~3 minutes per
+  // shard, and keeps load on the demo backend low when many shards run in
+  // parallel.
+  const statePath = resolve(process.cwd(), 'e2e/.e2e-state.json')
+  if (existsSync(statePath)) {
+    try {
+      const existingState = JSON.parse(readFileSync(statePath, 'utf-8')) as Partial<E2EState>
+      console.log(`📂 Found existing state at ${statePath}`)
+      console.log(`   Validating company ${existingState.companyId}...`)
+      if (await isExistingStateValid(existingState)) {
+        console.log('✅ Existing state is valid, skipping provisioning')
+        return
+      }
+      console.log('⚠️  Existing state is stale, re-provisioning')
+    } catch (error) {
+      console.log(`⚠️  Could not read existing state (${error}), re-provisioning`)
+    }
+  }
+
   await waitForGWSFlows()
 
   const tokenInfo = await refreshTokenIfNeeded()
@@ -413,6 +458,7 @@ export default async function globalSetup() {
   }
 
   const state: E2EState = {
+    flowToken,
     companyId,
     employeeId,
     contractorId,
@@ -422,7 +468,6 @@ export default async function globalSetup() {
     terminatedEmployeeId,
   }
 
-  const statePath = resolve(process.cwd(), 'e2e/.e2e-state.json')
   writeFileSync(statePath, JSON.stringify(state, null, 2))
   console.log(`State written to ${statePath}`)
   console.log('=== Setup Complete ===\n')

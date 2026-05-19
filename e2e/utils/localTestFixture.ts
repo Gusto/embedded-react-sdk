@@ -5,6 +5,7 @@ import type { ScenarioContext } from '../scenario/cache'
 import { provisionScenario } from '../scenario/runner'
 
 interface E2EState {
+  flowToken: string
   companyId: string
   employeeId: string
   contractorId: string
@@ -56,7 +57,7 @@ export const test = base.extend<ScenarioFixtures & { localConfig: LocalConfig }>
 
       const config: LocalConfig = {
         isLocal,
-        flowToken: process.env.E2E_FLOW_TOKEN || '',
+        flowToken: dynamicState.flowToken || process.env.E2E_FLOW_TOKEN || '',
         companyId: dynamicState.companyId || process.env.E2E_COMPANY_ID || '123',
         employeeId: dynamicState.employeeId || process.env.E2E_EMPLOYEE_ID || '456',
         contractorId: dynamicState.contractorId || '789',
