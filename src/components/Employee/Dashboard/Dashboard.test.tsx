@@ -1,17 +1,23 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { screen, waitFor } from '@testing-library/react'
+import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { HttpResponse } from 'msw'
+import type { DashboardProps } from './Dashboard'
 import { Dashboard } from './Dashboard'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
+import { server } from '@/test/mocks/server'
+import { handleGetEmployeeForms, i9Form } from '@/test/mocks/apis/employee_forms'
 import { componentEvents } from '@/shared/constants'
+import { assertDefined } from '@/test-utils/assertions'
 
 vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', () => ({
   useContainerBreakpoints: () => ['small', 'medium', 'large'],
+  default: () => ['small', 'medium', 'large'],
 }))
 
 describe('Dashboard', () => {
-  const onEvent = vi.fn()
+  const onEvent = vi.fn<DashboardProps['onEvent']>()
 
   beforeEach(() => {
     onEvent.mockClear()
@@ -21,28 +27,19 @@ describe('Dashboard', () => {
   it('renders dashboard and loads employee data', async () => {
     renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
 
-    // Wait for component to finish loading by checking for a key element
-    await waitFor(
-      () => {
-        expect(screen.getByText('Legal name')).toBeTruthy()
-      },
-      { timeout: 5000 },
-    )
+    await waitFor(() => expect(screen.getByText('Legal name')).toBeInTheDocument())
 
-    // Verify basic structure is present
-    expect(screen.getByText('Home address')).toBeTruthy()
-    expect(screen.getByText('Work address')).toBeTruthy()
+    expect(screen.getByText('Home address')).toBeInTheDocument()
+    expect(screen.getByText('Work address')).toBeInTheDocument()
   })
 
   it('displays employee basic details', async () => {
     renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
 
-    await waitFor(() => {
-      expect(screen.getByText('Legal name')).toBeTruthy()
-    })
+    await waitFor(() => expect(screen.getByText('Legal name')).toBeInTheDocument())
 
-    expect(screen.getByText('Date of birth')).toBeTruthy()
-    expect(screen.getByText('Personal email')).toBeTruthy()
+    expect(screen.getByText('Date of birth')).toBeInTheDocument()
+    expect(screen.getByText('Personal email')).toBeInTheDocument()
   })
 
   it('emits EMPLOYEE_UPDATE event when clicking edit basic details', async () => {
@@ -50,13 +47,9 @@ describe('Dashboard', () => {
 
     renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
 
-    await waitFor(() => {
-      expect(screen.getByText('Legal name')).toBeTruthy()
-    })
+    await waitFor(() => expect(screen.getByText('Legal name')).toBeInTheDocument())
 
-    // Find the Edit button in Basic Details section
-    const editButtons = screen.getAllByText('Edit')
-    await user.click(editButtons[0]!)
+    await user.click(screen.getByRole('button', { name: 'Edit' }))
 
     expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_UPDATE, {
       employeeId: 'employee-123',
@@ -68,13 +61,13 @@ describe('Dashboard', () => {
 
     renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
 
-    await waitFor(() => {
-      expect(screen.getByText('Home address')).toBeTruthy()
-    })
+    await waitFor(() => expect(screen.getByText('Home address')).toBeInTheDocument())
 
-    // Find the Manage button for home address
-    const manageButtons = screen.getAllByText('Manage')
-    await user.click(manageButtons[0]!)
+    const homeAddressBox = screen
+      .getByRole('heading', { name: 'Home address' })
+      .closest<HTMLElement>('[data-testid="data-box"]')
+    assertDefined(homeAddressBox)
+    await user.click(within(homeAddressBox).getByRole('button', { name: 'Manage' }))
 
     expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_HOME_ADDRESS, {
       employeeId: 'employee-123',
@@ -86,13 +79,13 @@ describe('Dashboard', () => {
 
     renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
 
-    await waitFor(() => {
-      expect(screen.getByText('Work address')).toBeTruthy()
-    })
+    await waitFor(() => expect(screen.getByText('Work address')).toBeInTheDocument())
 
-    // Find the Manage button for work address
-    const manageButtons = screen.getAllByText('Manage')
-    await user.click(manageButtons[1]!)
+    const workAddressBox = screen
+      .getByRole('heading', { name: 'Work address' })
+      .closest<HTMLElement>('[data-testid="data-box"]')
+    assertDefined(workAddressBox)
+    await user.click(within(workAddressBox).getByRole('button', { name: 'Manage' }))
 
     expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_WORK_ADDRESS, {
       employeeId: 'employee-123',
@@ -104,23 +97,55 @@ describe('Dashboard', () => {
 
     renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
 
-    await waitFor(() => {
-      expect(screen.getByText('Legal name')).toBeTruthy()
-    })
+    await waitFor(() => expect(screen.getByText('Legal name')).toBeInTheDocument())
 
     await user.click(screen.getByRole('tab', { name: 'Taxes' }))
 
-    await waitFor(() => {
-      expect(screen.getByRole('heading', { name: 'State taxes' })).toBeInTheDocument()
-    })
+    await waitFor(() =>
+      expect(screen.getByRole('heading', { name: 'State taxes' })).toBeInTheDocument(),
+    )
 
-    const editButtons = screen.getAllByRole('button', { name: 'Edit' })
-    expect(editButtons.length).toBeGreaterThanOrEqual(2)
-    await user.click(editButtons[1]!)
+    const stateTaxesBox = screen
+      .getByRole('heading', { name: 'State taxes' })
+      .closest<HTMLElement>('[data-testid="data-box"]')
+    assertDefined(stateTaxesBox)
+    await user.click(within(stateTaxesBox).getByRole('button', { name: 'Edit' }))
 
     expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_STATE_TAXES_EDIT, {
       employeeId: 'employee-123',
     })
-    expect(onEvent.mock.calls.at(-1)?.[1]).toEqual({ employeeId: 'employee-123' })
+  })
+
+  it('shows employee forms on the Documents tab', async () => {
+    server.use(handleGetEmployeeForms(() => HttpResponse.json([i9Form])))
+    const user = userEvent.setup()
+
+    renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
+
+    await waitFor(() => expect(screen.getByText('Legal name')).toBeInTheDocument())
+
+    await user.click(screen.getByRole('tab', { name: 'Documents' }))
+
+    await waitFor(() => expect(screen.getByText('Form I-9')).toBeInTheDocument())
+  })
+
+  it('emits EMPLOYEE_VIEW_FORM_TO_SIGN with employeeId and formId when clicking View on a form', async () => {
+    server.use(handleGetEmployeeForms(() => HttpResponse.json([i9Form])))
+    const user = userEvent.setup()
+
+    renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
+
+    await waitFor(() => expect(screen.getByText('Legal name')).toBeInTheDocument())
+
+    await user.click(screen.getByRole('tab', { name: 'Documents' }))
+
+    await waitFor(() => expect(screen.getByText('Form I-9')).toBeInTheDocument())
+
+    await user.click(screen.getByRole('button', { name: 'View' }))
+
+    expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_VIEW_FORM_TO_SIGN, {
+      employeeId: 'employee-123',
+      formId: 'i9-form-123',
+    })
   })
 })
