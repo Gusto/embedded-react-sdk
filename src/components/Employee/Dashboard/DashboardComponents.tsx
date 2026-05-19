@@ -7,6 +7,7 @@ import { StateTaxes } from '@/components/Employee/StateTaxes/management/StateTax
 import { Profile } from '@/components/Employee/Profile/management/Profile'
 import { BankForm } from '@/components/Employee/PaymentMethod/onboarding/BankForm'
 import { SplitView } from '@/components/Employee/PaymentMethod/onboarding/SplitView'
+import { DocumentManager } from '@/components/Employee/Documents/management/DocumentManager'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { BaseComponent } from '@/components/Base'
@@ -18,6 +19,7 @@ export type DashboardSuccessAlert = 'bankAccountAdded' | 'bankAccountDeleted' | 
 
 export interface DashboardContextInterface extends FlowContextInterface {
   employeeId: string
+  formId?: string
   successAlert?: DashboardSuccessAlert | null
 }
 
@@ -90,5 +92,16 @@ export function PaymentSplitViewContextual() {
     <BaseComponent onEvent={onEvent}>
       <SplitView employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
     </BaseComponent>
+  )
+}
+
+export function DocumentManagerContextual() {
+  const { employeeId, formId, onEvent } = useFlow<DashboardContextInterface>()
+  return (
+    <DocumentManager
+      employeeId={ensureRequired(employeeId)}
+      formId={ensureRequired(formId)}
+      onEvent={onEvent}
+    />
   )
 }

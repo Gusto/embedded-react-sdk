@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useJobsAndCompensationsGetJobsSuspense } from '@gusto/embedded-api/react-query/jobsAndCompensationsGetJobs'
 import { type Job } from '@gusto/embedded-api/models/components/job'
 import type { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
-import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlowComponents'
+import type { OnboardingContextInterface } from '../../OnboardingFlow/OnboardingFlowComponents'
 import {
   InitialEditCompensationContextual,
   JobsListContextual,

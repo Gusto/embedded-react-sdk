@@ -5,8 +5,11 @@ import type { PaymentUnit } from '@gusto/embedded-api/models/components/compensa
 import type { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
 import type { MinimumWage } from '@gusto/embedded-api/models/components/minimumwage'
 import type { CompensationDefaultValues } from '../Compensation'
-import { useJobForm, type UseJobFormReady } from '../shared/useJobForm'
-import { useCompensationForm, type UseCompensationFormReady } from '../shared/useCompensationForm'
+import { useJobForm, type UseJobFormReady } from '../../shared/useJobForm'
+import {
+  useCompensationForm,
+  type UseCompensationFormReady,
+} from '../../shared/useCompensationForm'
 import styles from './EditCompensation.module.scss'
 import { BaseBoundaries, BaseLayout, type CommonComponentInterface } from '@/components/Base'
 import type { OnEventType } from '@/components/Base/useBase'
