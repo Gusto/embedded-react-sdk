@@ -74,6 +74,12 @@
   "hamburgerTitle": "Deduction actions menu",
   "editCta": "Edit deduction",
   "deleteCta": "Delete deduction",
+  "deleteDeductionDialog": {
+    "title": "Delete this deduction?",
+    "description": "{{deduction}} will no longer be deducted from this employee's paycheck.",
+    "confirmCta": "Delete",
+    "cancelCta": "Cancel"
+  },
   "addDeductionCta": "Add another deduction",
   "cancelCta": "Cancel",
   "validations": {

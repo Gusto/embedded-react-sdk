@@ -9,6 +9,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { DataView, useDataView, EmptyData, Loading } from '@/components/Common'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { BaseLayout } from '@/components/Base/Base'
+import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { formatDateLongWithYear } from '@/helpers/dateFormatting'
 import { useFormatPayRate } from '@/helpers/formattedStrings'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
@@ -18,8 +19,14 @@ import {
   useDeleteBankAccount,
   DeleteBankAccountDialog,
 } from '@/components/Employee/PaymentMethod/shared'
+import {
+  useDeductionsList,
+  useDeleteDeduction,
+  DeleteDeductionDialog,
+} from '@/components/Employee/Deductions/shared'
 import { componentEvents, PAYMENT_METHODS, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
+import PencilSvg from '@/assets/icons/pencil.svg?react'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 import PercentCircleIcon from '@/assets/icons/percent-circle.svg?react'
 import DownloadCloudIcon from '@/assets/icons/download-cloud.svg?react'
@@ -32,7 +39,6 @@ type EmployeePayStub = NonNullable<
 export interface JobAndPayViewProps {
   employeeId: string
   job?: Job
-  garnishments?: Garnishment[]
   payStubs?: EmployeePayStub[]
   payStubsPagination?: PaginationControlProps
   isLoading?: boolean
@@ -40,6 +46,7 @@ export interface JobAndPayViewProps {
   onEditCompensation?: () => void
   onAddJob?: () => void
   onAddDeduction?: () => void
+  onEditDeduction?: (deduction: Garnishment) => void
   onPaystubDownload?: (payrollUuid: string) => void
   downloadingPayrollUuids?: ReadonlySet<string>
 }
@@ -47,7 +54,6 @@ export interface JobAndPayViewProps {
 export function JobAndPayView({
   employeeId,
   job,
-  garnishments = [],
   payStubs = [],
   payStubsPagination,
   isLoading = false,
@@ -55,15 +61,19 @@ export function JobAndPayView({
   onEditCompensation,
   onAddJob,
   onAddDeduction,
+  onEditDeduction,
   onPaystubDownload,
   downloadingPayrollUuids,
 }: JobAndPayViewProps) {
   useI18n('Employee.PaymentMethod')
+  useI18n('Employee.Deductions')
   const { t } = useTranslation('Employee.Dashboard')
   const { t: tPayment } = useTranslation('Employee.PaymentMethod')
+  const { t: tDeductions } = useTranslation('Employee.Deductions')
   const Components = useComponentContext()
   const formatPayRate = useFormatPayRate()
   const formatCurrency = useNumberFormatter('currency')
+  const formatPercent = useNumberFormatter('percent')
 
   const paymentMethodList = usePaymentMethodList({ employeeId })
   const paymentMethod = paymentMethodList.isLoading
@@ -82,6 +92,28 @@ export function JobAndPayView({
         onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_DELETED, result.data)
       }
     })
+
+  const deductionsList = useDeductionsList({ employeeId })
+  const deductions = deductionsList.isLoading ? [] : deductionsList.data.deductions
+  const deletingGarnishmentUuid = deductionsList.isLoading
+    ? undefined
+    : deductionsList.status.deletingGarnishmentUuid
+
+  const {
+    pendingDeleteDeduction,
+    setPendingDeleteDeduction,
+    handleConfirmDelete: handleConfirmDeleteDeduction,
+  } = useDeleteDeduction(async garnishment => {
+    if (deductionsList.isLoading) return
+    const result = await deductionsList.actions.onDelete(garnishment)
+    if (result) {
+      onEvent(componentEvents.EMPLOYEE_DEDUCTION_DELETED, result.data.garnishment)
+    }
+  })
+
+  // Both hooks own a submit error state; merge into one error surface so
+  // the BaseLayout below shows whatever failed.
+  const errorHandling = composeErrorHandler([paymentMethodList, deductionsList])
 
   const bankAccountsColumns = [
     {
@@ -111,19 +143,25 @@ export function JobAndPayView({
       key: 'frequency',
       title: t('jobAndPay.deductions.frequency'),
       render: (garnishment: Garnishment) =>
-        garnishment.recurring ? t('jobAndPay.deductions.recurring') : '-',
+        garnishment.recurring
+          ? t('jobAndPay.deductions.recurring')
+          : t('jobAndPay.deductions.oneTime'),
     },
     {
       key: 'amount',
       title: t('jobAndPay.deductions.withhold'),
       render: (garnishment: Garnishment) => {
-        if (garnishment.amount && typeof garnishment.amount === 'number') {
-          return formatCurrency(garnishment.amount)
-        }
-        if (garnishment.annualMaximum) {
-          return `${garnishment.annualMaximum}% per paycheck`
-        }
-        return '-'
+        // `amount` is a string per the API. `deductAsPercentage` switches
+        // between currency and percent formatting; `recurring` adds the
+        // "{value} per paycheck" suffix. Mirrors the legacy DeductionsList.
+        const numericAmount = Number(garnishment.amount)
+        if (Number.isNaN(numericAmount)) return '-'
+        const formatted = garnishment.deductAsPercentage
+          ? formatPercent(numericAmount)
+          : formatCurrency(numericAmount)
+        return garnishment.recurring
+          ? t('jobAndPay.deductions.amountPerPaycheck', { value: formatted })
+          : formatted
       },
     },
   ]
@@ -182,8 +220,28 @@ export function JobAndPayView({
   })
 
   const garnishmentsDataView = useDataView({
-    data: garnishments,
+    data: deductions,
     columns: garnishmentsColumns,
+    itemMenu: (garnishment: Garnishment) => (
+      <HamburgerMenu
+        isLoading={deletingGarnishmentUuid === garnishment.uuid}
+        items={[
+          {
+            label: tDeductions('editCta'),
+            onClick: () => onEditDeduction?.(garnishment),
+            icon: <PencilSvg aria-hidden />,
+          },
+          {
+            label: tDeductions('deleteCta'),
+            onClick: () => {
+              setPendingDeleteDeduction(garnishment)
+            },
+            icon: <TrashCanSvg aria-hidden />,
+          },
+        ]}
+        triggerLabel={tDeductions('hamburgerTitle')}
+      />
+    ),
     emptyState: () => (
       <EmptyData
         title={t('jobAndPay.deductions.emptyState.title')}
@@ -223,14 +281,14 @@ export function JobAndPayView({
     ),
   })
 
-  if (isLoading || paymentMethodList.isLoading) {
+  if (isLoading || paymentMethodList.isLoading || deductionsList.isLoading) {
     return <Loading />
   }
 
   const isDirectDeposit = paymentMethod?.type === PAYMENT_METHODS.directDeposit
 
   return (
-    <BaseLayout error={paymentMethodList.errorHandling.errors}>
+    <BaseLayout error={errorHandling.errors}>
       <Flex flexDirection="column" gap={24}>
         <Components.Box
           withPadding={!!job}
@@ -398,6 +456,17 @@ export function JobAndPayView({
           }}
           onConfirm={() => {
             void handleConfirmDelete()
+          }}
+        />
+
+        <DeleteDeductionDialog
+          pendingDeleteDeduction={pendingDeleteDeduction}
+          isPrimaryActionLoading={deletingGarnishmentUuid === pendingDeleteDeduction?.uuid}
+          onClose={() => {
+            setPendingDeleteDeduction(null)
+          }}
+          onConfirm={() => {
+            void handleConfirmDeleteDeduction()
           }}
         />
       </Flex>
