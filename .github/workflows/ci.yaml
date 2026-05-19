@@ -231,63 +231,12 @@ jobs:
       - name: Run scenario unit tests
         run: npm run test:scenarios
 
-  # E2E job: Run Playwright e2e tests (parallel with other checks)
-  e2e:
-    needs: [setup, scenarios]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: '.nvmrc'
-
-      - name: Restore node_modules cache
-        uses: actions/cache/restore@v5
-        with:
-          path: node_modules
-          key: ${{ needs.setup.outputs.cache-key }}
-
-      - name: Cache Playwright browsers
-        id: playwright-cache
-        uses: actions/cache@v5
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            playwright-${{ runner.os }}-
-
-      - name: Install Playwright browsers
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps chromium
-
-      - name: Install Playwright system dependencies only
-        if: steps.playwright-cache.outputs.cache-hit == 'true'
-        run: npx playwright install-deps chromium
-
-      - name: Initialize MSW
-        run: npx msw init e2e/public --save=false
-
-      - name: Run e2e tests
-        run: npm run test:e2e
-
-      - name: Upload test results
-        if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v6
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 7
-
-      - name: Upload scenario reports
-        if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v6
-        with:
-          name: e2e-scenario-report
-          path: e2e/reports/
-          retention-days: 7
-
-  # E2E Demo job: Run Playwright e2e tests against the live demo environment
+  # E2E Demo job: Run Playwright e2e tests against the live demo environment.
+  # This is the only E2E gate. The MSW-mode e2e job was removed because its
+  # mock fixtures could not keep pace with real demo backend behavior, and
+  # the duplicate run added CI minutes for shallow coverage that overlapped
+  # with Storybook + unit tests. Demo E2E exercises the actual API contract,
+  # scenario provisioning, and state machine terminal states.
   e2e-demo:
     needs: [setup, scenarios]
     runs-on: ubuntu-latest
@@ -330,4 +279,12 @@ jobs:
         with:
           name: playwright-report-demo
           path: playwright-report/
+          retention-days: 7
+
+      - name: Upload demo scenario reports
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: e2e-scenario-report-demo
+          path: e2e/reports/
           retention-days: 7
