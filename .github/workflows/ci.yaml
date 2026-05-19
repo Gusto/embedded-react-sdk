@@ -239,9 +239,29 @@ jobs:
   # actual API contract, scenario provisioning, and state machine terminal
   # states. The local npm script is still named test:e2e:demo to reflect
   # what it points at.
+  #
+  # Sharded by domain so each domain runs in parallel and one domain's
+  # failure doesn't block feedback on the others. The `domain` filter is a
+  # Playwright path-substring match, so it picks up both flat specs at
+  # `e2e/tests/<domain>*.spec.ts` and nested specs at
+  # `e2e/tests/<domain>/**/*.spec.ts`.
   e2e:
     needs: [setup, scenarios]
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        domain:
+          - company
+          - contractor
+          - dismissal
+          - employee
+          - information-requests
+          - payroll
+          - termination
+          - time-off
+          - legacy
+    name: e2e (${{ matrix.domain }})
     steps:
       - uses: actions/checkout@v6
 
@@ -273,13 +293,13 @@ jobs:
         run: npx playwright install-deps chromium
 
       - name: Run e2e tests
-        run: npm run test:e2e:demo
+        run: npm run test:e2e:demo -- --pass-with-no-tests ${{ matrix.domain }}
 
       - name: Upload test results
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v6
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.domain }}
           path: playwright-report/
           retention-days: 7
 
@@ -287,6 +307,6 @@ jobs:
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v6
         with:
-          name: e2e-scenario-report
+          name: e2e-scenario-report-${{ matrix.domain }}
           path: e2e/reports/
           retention-days: 7
