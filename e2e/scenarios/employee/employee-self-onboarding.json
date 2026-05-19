@@ -1,0 +1,30 @@
+{
+  "$schema": "../../schema/scenario.schema.json",
+  "name": "Employee self-onboarding flow",
+  "description": "Company with a partially-created employee so self-onboarding has someone to drive.",
+  "domain": "employee",
+  "baseDemo": "react_sdk_demo",
+  "decorations": {
+    "locations": [
+      {
+        "key": "hq",
+        "street_1": "100 Self Onboard St",
+        "city": "San Francisco",
+        "state": "CA",
+        "zip": "94105",
+        "filing_address": true,
+        "mailing_address": true
+      }
+    ],
+    "employees": [
+      {
+        "key": "selfee",
+        "first_name": "Selma",
+        "last_name": "Selfonboard",
+        "email": "selma+{{ts}}@example.com",
+        "work_address": { "locationKey": "hq" }
+      }
+    ]
+  },
+  "expectedContext": ["companyId", "employeeIds.selfee"]
+}

@@ -1,5 +1,5 @@
-import { test, expect } from '../utils/localTestFixture'
-import { fillDate, generateUniqueSSN, waitForLoadingComplete } from '../utils/helpers'
+import { test, expect } from '../../utils/localTestFixture'
+import { fillDate, generateUniqueSSN, waitForLoadingComplete } from '../../utils/helpers'
 
 async function clickContinueAndWait(page: import('@playwright/test').Page) {
   const continueBtn = page.getByRole('button', { name: 'Continue' })
@@ -15,6 +15,13 @@ async function waitForPageReady(page: import('@playwright/test').Page, timeout =
 }
 
 test.describe('EmployeeOnboardingFlow', () => {
+  test.beforeEach(({}, testInfo) => {
+    testInfo.annotations.push({
+      type: 'scenario',
+      description: 'employee/employee-onboarding',
+    })
+  })
+
   test('completes the happy path successfully', async ({ page, localConfig }) => {
     await page.goto('/?flow=employee-onboarding&companyId=123')
 

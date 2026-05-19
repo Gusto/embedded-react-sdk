@@ -1,0 +1,33 @@
+{
+  "$schema": "../../schema/scenario.schema.json",
+  "name": "Employee onboarding with existing onboarded employee",
+  "description": "Onboarded company with one fully-onboarded employee so the employee list renders a row plus the Add CTA.",
+  "domain": "employee",
+  "baseDemo": "react_sdk_demo_company_onboarded",
+  "decorations": {
+    "locations": [
+      {
+        "key": "hq",
+        "street_1": "300 Existing Way",
+        "city": "San Francisco",
+        "state": "CA",
+        "zip": "94105",
+        "filing_address": true,
+        "mailing_address": true
+      }
+    ],
+    "employees": [
+      {
+        "key": "alice",
+        "$ref": "../fragments/w2-salaried-employee.json",
+        "overrides": {
+          "first_name": "Alice",
+          "last_name": "Existing",
+          "email": "alice-existing+{{ts}}@example.com",
+          "onboarding_status": "onboarding_completed"
+        }
+      }
+    ]
+  },
+  "expectedContext": ["companyId", "locationIds.hq", "employeeIds.alice"]
+}
