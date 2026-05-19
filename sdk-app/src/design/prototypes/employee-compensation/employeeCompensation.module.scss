@@ -1,0 +1,8 @@
+.alertContainer {
+  padding: toRem(20);
+  border-bottom: 1px solid var(--g-colorBorderSecondary);
+
+  > * > [role='alert'] {
+    margin-bottom: 0;
+  }
+}

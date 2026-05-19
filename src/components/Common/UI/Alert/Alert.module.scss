@@ -53,6 +53,13 @@
       margin-top: toRem(-4); // Pull content closer to H6
     }
 
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: toRem(8);
+      flex-shrink: 0;
+    }
+
     .dismiss {
       color: var(--g-colorBodySubContent);
       flex-shrink: 0;

@@ -33,6 +33,12 @@ export const categorizedRegistry: CategorizedRegistry = {
       description: 'The contractor-facing onboarding experience after receiving an invite link.',
     },
   ],
-  Employees: [],
+  Employees: [
+    {
+      name: 'Employee Compensation',
+      path: '/design/employee-compensation',
+      description: 'A prototype for managing employee compensation.',
+    },
+  ],
   Payroll: [],
 }

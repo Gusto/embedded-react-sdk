@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef } from 'react'
+import { Children, isValidElement, useEffect, useId, useRef } from 'react'
 import classNames from 'classnames'
 import { ButtonIcon } from '../Button/ButtonIcon'
 import { type AlertProps, AlertDefaults } from './AlertTypes'
@@ -34,6 +34,10 @@ export function Alert(rawProps: AlertProps) {
     }
   }, [disableScrollIntoView])
 
+  const childrenArray = Children.toArray(children)
+  const hasChildren = childrenArray.length > 0
+  const childrenAreAllElements = hasChildren && childrenArray.every(child => isValidElement(child))
+
   return (
     <div className={classNames(styles.root, className)}>
       <div
@@ -48,6 +52,7 @@ export function Alert(rawProps: AlertProps) {
           <div className={styles.iconLabelContainer}>
             <div className={styles.icon}>{icon || defaultIcon}</div>
             <h6 id={id}>{label}</h6>
+            {childrenAreAllElements && <div className={styles.actions}>{children}</div>}
             {onDismiss && (
               <div className={styles.dismiss}>
                 <ButtonIcon variant="tertiary" onClick={onDismiss} aria-label="Dismiss alert">
@@ -57,7 +62,7 @@ export function Alert(rawProps: AlertProps) {
             )}
           </div>
         </div>
-        {children && <div className={styles.content}>{children}</div>}
+        {hasChildren && !childrenAreAllElements && <div className={styles.content}>{children}</div>}
       </div>
     </div>
   )
