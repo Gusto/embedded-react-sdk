@@ -262,6 +262,13 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      # Throttle concurrent shards to avoid overwhelming flows.gusto-demo.com
+      # with parallel demo-company provisioning. Each shard creates ~2 demo
+      # companies in globalSetup plus scenario-driven companies per test;
+      # running all 9 shards simultaneously caused 200s flow-token timeouts
+      # on the demo backend. 2 concurrent shards keeps load manageable
+      # without serializing everything.
+      max-parallel: 2
       matrix:
         domain:
           - company
