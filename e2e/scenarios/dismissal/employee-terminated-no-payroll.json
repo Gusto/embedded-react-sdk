@@ -1,0 +1,36 @@
+{
+  "$schema": "../../schema/scenario.schema.json",
+  "name": "Employee terminated without termination payroll",
+  "description": "Onboarded company with a terminated employee whose termination should NOT auto-run a termination payroll, exercising the empty-pay-period branch.",
+  "domain": "dismissal",
+  "baseDemo": "react_sdk_demo_company_onboarded",
+  "decorations": {
+    "locations": [
+      {
+        "key": "hq",
+        "street_1": "600 No Payroll Way",
+        "city": "San Francisco",
+        "state": "CA",
+        "zip": "94105",
+        "filing_address": true,
+        "mailing_address": true
+      }
+    ],
+    "employees": [
+      {
+        "key": "terminated-no-payroll",
+        "$ref": "../fragments/w2-salaried-employee.json",
+        "overrides": {
+          "first_name": "Nora",
+          "last_name": "NoPayroll",
+          "email": "nora-no-payroll+{{ts}}@example.com",
+          "termination": {
+            "effective_date": "{{relative:+45d}}",
+            "run_termination_payroll": false
+          }
+        }
+      }
+    ]
+  },
+  "expectedContext": ["companyId", "employeeIds.terminated-no-payroll"]
+}
