@@ -394,7 +394,12 @@ jobs:
           path: e2e/reports/
           retention-days: 7
 
-  # E2E Demo job: Run Playwright e2e tests against the live demo environment
+  # E2E Demo job: Run Playwright e2e tests against the live demo environment.
+  # This is the only E2E gate. The MSW-mode e2e job was removed because its
+  # mock fixtures could not keep pace with real demo backend behavior, and
+  # the duplicate run added CI minutes for shallow coverage that overlapped
+  # with Storybook + unit tests. Demo E2E exercises the actual API contract,
+  # scenario provisioning, and state machine terminal states.
   e2e-demo:
     needs: [setup, scenarios]
     runs-on: ubuntu-latest
@@ -437,4 +442,12 @@ jobs:
         with:
           name: playwright-report-demo
           path: playwright-report/
+          retention-days: 7
+
+      - name: Upload demo scenario reports
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: e2e-scenario-report-demo
+          path: e2e/reports/
           retention-days: 7
