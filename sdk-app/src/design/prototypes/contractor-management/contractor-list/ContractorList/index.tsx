@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useOutletContext, useSearchParams } from 'react-router-dom'
-import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
-import { useContractorsList } from '@gusto/embedded-api/react-query/contractorsList'
-import { useContractorsDeleteMutation } from '@gusto/embedded-api/react-query/contractorsDelete'
-import { useContractorsUpdateOnboardingStatusMutation } from '@gusto/embedded-api/react-query/contractorsUpdateOnboardingStatus'
+import type { Contractor } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor'
+import { useContractorsList } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsList'
+import { useContractorsDeleteMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsDelete'
+import { useContractorsUpdateOnboardingStatusMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsUpdateOnboardingStatus'
 import { useQueryClient } from '@tanstack/react-query'
 import type { EntityIds } from '../../../../../../useEntities'
 import { contractorName } from '../../contractor-profile/components/contractorName'
@@ -467,7 +467,7 @@ function ContractorListContent() {
     if (msg) {
       setSuccessMessage(msg)
       setSearchParams({}, { replace: true })
-      queryClient.removeQueries({ queryKey: ['@gusto/embedded-api', 'Contractors'] })
+      queryClient.removeQueries({ queryKey: ['@gusto/embedded-api-v-2025-11-15', 'Contractors'] })
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
   const [selectedTab, setSelectedTab] = useState('active')
@@ -543,7 +543,7 @@ function ContractorListContent() {
           ? `Rehire cancelled for ${contractorName(contractor)}`
           : `Dismissal cancelled for ${contractorName(contractor)}`,
       )
-      queryClient.removeQueries({ queryKey: ['@gusto/embedded-api', 'Contractors'] })
+      queryClient.removeQueries({ queryKey: ['@gusto/embedded-api-v-2025-11-15', 'Contractors'] })
     } catch (error) {
       setConfirmCancelContractor(null)
       setErrorMessage(
@@ -576,7 +576,7 @@ function ContractorListContent() {
         setSuccessMessage(`Self-onboarding cancelled for ${name}`)
       }
       setOnboardingAction(null)
-      queryClient.removeQueries({ queryKey: ['@gusto/embedded-api', 'Contractors'] })
+      queryClient.removeQueries({ queryKey: ['@gusto/embedded-api-v-2025-11-15', 'Contractors'] })
     } catch (error) {
       setOnboardingAction(null)
       setErrorMessage(

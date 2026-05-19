@@ -1,6 +1,6 @@
 import { fn } from 'storybook/test'
-import type { Employee } from '@gusto/embedded-api/models/components/employee'
-import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
+import type { Employee } from '@gusto/embedded-api-v-2025-11-15/models/components/employee'
+import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollemployeecompensationstype'
 import { PayrollEditEmployeePresentation } from './PayrollEditEmployeePresentation'
 
 export default {

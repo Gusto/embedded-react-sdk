@@ -20,13 +20,13 @@ const basePolicyData: Record<string, unknown> = {
 
 let mockPolicyData: Record<string, unknown> = { ...basePolicyData }
 
-vi.mock('@gusto/embedded-api/react-query/timeOffPoliciesGet', () => ({
+vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/timeOffPoliciesGet', () => ({
   useTimeOffPoliciesGetSuspense: () => ({
     data: { timeOffPolicy: mockPolicyData },
   }),
 }))
 
-vi.mock('@gusto/embedded-api/react-query/timeOffPoliciesUpdate', () => ({
+vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/timeOffPoliciesUpdate', () => ({
   useTimeOffPoliciesUpdateMutation: () => ({
     mutateAsync: mockUpdateTimeOffPolicy,
     isPending: false,

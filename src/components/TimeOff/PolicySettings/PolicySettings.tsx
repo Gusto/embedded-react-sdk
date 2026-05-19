@@ -1,7 +1,7 @@
-import { useTimeOffPoliciesGetSuspense } from '@gusto/embedded-api/react-query/timeOffPoliciesGet'
-import { useTimeOffPoliciesUpdateMutation } from '@gusto/embedded-api/react-query/timeOffPoliciesUpdate'
-import type { PutV1TimeOffPoliciesTimeOffPolicyUuidRequestBody } from '@gusto/embedded-api/models/operations/putv1timeoffpoliciestimeoffpolicyuuid'
-import type { TimeOffPolicy } from '@gusto/embedded-api/models/components/timeoffpolicy'
+import { useTimeOffPoliciesGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/timeOffPoliciesGet'
+import { useTimeOffPoliciesUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/timeOffPoliciesUpdate'
+import type { PutV1TimeOffPoliciesTimeOffPolicyUuidRequestBody } from '@gusto/embedded-api-v-2025-11-15/models/operations/putv1timeoffpoliciestimeoffpolicyuuid'
+import type { TimeOffPolicy } from '@gusto/embedded-api-v-2025-11-15/models/components/timeoffpolicy'
 import { useQueryClient } from '@tanstack/react-query'
 import { PolicySettingsPresentation } from './PolicySettingsPresentation'
 import type { PolicySettingsFormData, PolicySettingsAccrualMethod } from './PolicySettingsTypes'
@@ -122,7 +122,7 @@ function Root({ policyId, mode }: PolicySettingsProps) {
       })
 
       void queryClient.invalidateQueries({
-        queryKey: ['@gusto/embedded-api', 'timeOffPolicies', 'get'],
+        queryKey: ['@gusto/embedded-api-v-2025-11-15', 'timeOffPolicies', 'get'],
       })
       onEvent(componentEvents.TIME_OFF_POLICY_SETTINGS_DONE, timeOffPolicy)
     })

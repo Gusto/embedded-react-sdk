@@ -1,4 +1,4 @@
-import type { EmployeeStateTaxesList } from '@gusto/embedded-api/models/components/employeestatetaxeslist'
+import type { EmployeeStateTaxesList } from '@gusto/embedded-api-v-2025-11-15/models/components/employeestatetaxeslist'
 import { createCompoundContext } from '@/components/Base'
 
 type TaxesContextType = {

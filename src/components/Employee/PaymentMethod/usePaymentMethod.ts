@@ -1,5 +1,5 @@
-import type { EmployeeBankAccount } from '@gusto/embedded-api/models/components/employeebankaccount'
-import type { EmployeePaymentMethod } from '@gusto/embedded-api/models/components/employeepaymentmethod'
+import type { EmployeeBankAccount } from '@gusto/embedded-api-v-2025-11-15/models/components/employeebankaccount'
+import type { EmployeePaymentMethod } from '@gusto/embedded-api-v-2025-11-15/models/components/employeepaymentmethod'
 import { z } from 'zod'
 import { BankAccountSchema } from './BankAccount'
 import { createCompoundContext } from '@/components/Base'

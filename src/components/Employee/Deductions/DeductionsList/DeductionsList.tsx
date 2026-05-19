@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
-import { useGarnishmentsListSuspense } from '@gusto/embedded-api/react-query/garnishmentsList'
-import { useGarnishmentsUpdateMutation } from '@gusto/embedded-api/react-query/garnishmentsUpdate'
-import { type Garnishment } from '@gusto/embedded-api/models/components/garnishment'
+import { useGarnishmentsListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/garnishmentsList'
+import { useGarnishmentsUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/garnishmentsUpdate'
+import { type Garnishment } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishment'
 import {
   BaseComponent,
   type BaseComponentInterface,
@@ -91,7 +91,7 @@ function Root({ className, children, employeeId, dictionary }: DeductionsListPro
     onEvent(componentEvents.EMPLOYEE_DEDUCTION_DONE)
   }
 
-  const { ...dataViewProps } = useDataView({
+  const { ...dataViewProps } = useDataView<Garnishment>({
     data: activeDeductions,
     columns: [
       {

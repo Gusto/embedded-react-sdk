@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next'
-import { useInformationRequestsGetInformationRequestsSuspense } from '@gusto/embedded-api/react-query/informationRequestsGetInformationRequests'
-import type { InformationRequest } from '@gusto/embedded-api/models/components/informationrequest'
+import { useInformationRequestsGetInformationRequestsSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/informationRequestsGetInformationRequests'
+import type { InformationRequest } from '@gusto/embedded-api-v-2025-11-15/models/components/informationrequest'
 import {
   InformationRequestStatus,
   InformationRequestType,
-} from '@gusto/embedded-api/models/components/informationrequest'
+} from '@gusto/embedded-api-v-2025-11-15/models/components/informationrequest'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useComponentDictionary, useI18n } from '@/i18n'
@@ -74,7 +74,7 @@ function Root({ companyId, dictionary, onEvent }: InformationRequestListProps) {
     }
   }
 
-  const dataViewProps = useDataView({
+  const dataViewProps = useDataView<InformationRequest>({
     data: visibleRequests,
     emptyState: () => (
       <EmptyData title={t('emptyTableTitle')} description={t('emptyTableDescription')} />

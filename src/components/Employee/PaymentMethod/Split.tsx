@@ -1,7 +1,7 @@
 import type { Control } from 'react-hook-form'
 import { useFormContext } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
-import { type EmployeePaymentMethod } from '@gusto/embedded-api/models/components/employeepaymentmethod'
+import { type EmployeePaymentMethod } from '@gusto/embedded-api-v-2025-11-15/models/components/employeepaymentmethod'
 import { ErrorMessage } from '@hookform/error-message'
 import { Fragment } from 'react/jsx-runtime'
 import DOMPurify from 'dompurify'

@@ -1,7 +1,7 @@
 import { useCallback, useDeferredValue, useMemo, useState } from 'react'
-import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
-import { Include } from '@gusto/embedded-api/models/operations/getv1companiescompanyidemployees'
-import type { PaidTimeOff } from '@gusto/embedded-api/models/components/paidtimeoff'
+import { useEmployeesListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesList'
+import { Include } from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1companiescompanyidemployees'
+import type { PaidTimeOff } from '@gusto/embedded-api-v-2025-11-15/models/components/paidtimeoff'
 import type { EmployeeItem } from './SelectEmployeesPresentationTypes'
 import { usePagination } from '@/hooks/usePagination/usePagination'
 

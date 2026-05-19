@@ -1,6 +1,6 @@
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useBankAccountsVerifyMutation } from '@gusto/embedded-api/react-query/bankAccountsVerify'
+import { useBankAccountsVerifyMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/bankAccountsVerify'
 import { Head } from './Head'
 import { BankAccountVerifyProvider } from './context'
 import type { BankAccountVerifyInputs } from './Form'

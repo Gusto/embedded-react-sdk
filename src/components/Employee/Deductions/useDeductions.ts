@@ -1,4 +1,4 @@
-import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
+import type { Garnishment } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishment'
 import { z } from 'zod'
 import { createCompoundContext } from '@/components/Base'
 

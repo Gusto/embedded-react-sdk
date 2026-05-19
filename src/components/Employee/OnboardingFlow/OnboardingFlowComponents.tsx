@@ -1,4 +1,4 @@
-import type { PaymentMethodBankAccount } from '@gusto/embedded-api/models/components/paymentmethodbankaccount'
+import type { PaymentMethodBankAccount } from '@gusto/embedded-api-v-2025-11-15/models/components/paymentmethodbankaccount'
 import { FederalTaxes } from '../FederalTaxes/onboarding/FederalTaxes'
 import { StateTaxes } from '../StateTaxes/onboarding/StateTaxes'
 import type { ProfileDefaultValues } from '../Profile/onboarding/Profile'

@@ -1,5 +1,6 @@
 import { Trans, useTranslation } from 'react-i18next'
-import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
+import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/paySchedulesGetAll'
+import type { PayScheduleShow } from '@gusto/embedded-api-v-2025-11-15/models/components/payscheduleshow'
 import styles from './PayScheduleList.module.scss'
 import { useDataView, DataView, Flex, VisuallyHidden, ActionsLayout } from '@/components/Common'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
@@ -19,7 +20,7 @@ export function PayScheduleList({ companyId, onEvent }: PayScheduleListProps) {
 
   const { data: paySchedules } = usePaySchedulesGetAllSuspense({ companyId })
 
-  const dataViewProps = useDataView({
+  const dataViewProps = useDataView<PayScheduleShow>({
     data: paySchedules.payScheduleShowResponse || [],
     columns: [
       {

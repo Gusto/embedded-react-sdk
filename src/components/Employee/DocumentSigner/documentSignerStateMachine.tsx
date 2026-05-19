@@ -1,4 +1,4 @@
-import { type Form } from '@gusto/embedded-api/models/components/form'
+import { type Form } from '@gusto/embedded-api-v-2025-11-15/models/components/form'
 import { DocumentList } from './DocumentList/DocumentList'
 import { SignatureForm } from './SignatureForm/SignatureForm'
 import { EmploymentEligibility } from './EmploymentEligibility'

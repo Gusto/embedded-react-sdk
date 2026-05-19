@@ -3,18 +3,18 @@ import { useQueryClient } from '@tanstack/react-query'
 import {
   usePayrollsListSuspense,
   invalidateAllPayrollsList,
-} from '@gusto/embedded-api/react-query/payrollsList'
-import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
-import { usePayrollsSkipMutation } from '@gusto/embedded-api/react-query/payrollsSkip'
-import { usePayrollsDeleteMutation } from '@gusto/embedded-api/react-query/payrollsDelete'
-import { usePayrollsGetBlockersSuspense } from '@gusto/embedded-api/react-query/payrollsGetBlockers'
-import { useWireInRequestsListSuspense } from '@gusto/embedded-api/react-query/wireInRequestsList'
-import { PayrollType } from '@gusto/embedded-api/models/operations/postcompaniespayrollskipcompanyuuid'
+} from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsList'
+import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/paySchedulesGetAll'
+import { usePayrollsSkipMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsSkip'
+import { usePayrollsDeleteMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsDelete'
+import { usePayrollsGetBlockersSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsGetBlockers'
+import { useWireInRequestsListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/wireInRequestsList'
+import { PayrollType } from '@gusto/embedded-api-v-2025-11-15/models/operations/postcompaniespayrollskipcompanyuuid'
 import {
   ProcessingStatuses,
   QueryParamPayrollTypes,
-} from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrolls'
-import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
+} from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1companiescompanyidpayrolls'
+import type { Payroll } from '@gusto/embedded-api-v-2025-11-15/models/components/payroll'
 import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
 import { PayrollListPresentation } from './PayrollListPresentation'
 import type { BaseComponentInterface } from '@/components/Base'

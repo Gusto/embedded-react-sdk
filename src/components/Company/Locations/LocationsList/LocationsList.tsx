@@ -1,4 +1,4 @@
-import { useLocationsGetSuspense } from '@gusto/embedded-api/react-query/locationsGet'
+import { useLocationsGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/locationsGet'
 import { Head } from './Head'
 import { List } from './List'
 import { Actions } from './Actions'

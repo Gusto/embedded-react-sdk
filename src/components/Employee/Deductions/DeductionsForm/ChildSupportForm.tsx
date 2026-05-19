@@ -3,14 +3,14 @@ import { FormProvider, useForm, useWatch, type SubmitHandler } from 'react-hook-
 import { useEffect, useMemo } from 'react'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { PaymentPeriod } from '@gusto/embedded-api/models/components/garnishmentchildsupport'
+import { PaymentPeriod } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishmentchildsupport'
 import {
   type Garnishment,
   type GarnishmentType,
-} from '@gusto/embedded-api/models/components/garnishment'
-import { useGarnishmentsCreateMutation } from '@gusto/embedded-api/react-query/garnishmentsCreate'
-import { useGarnishmentsUpdateMutation } from '@gusto/embedded-api/react-query/garnishmentsUpdate'
-import { type Agencies } from '@gusto/embedded-api/models/components/childsupportdata'
+} from '@gusto/embedded-api-v-2025-11-15/models/components/garnishment'
+import { useGarnishmentsCreateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/garnishmentsCreate'
+import { useGarnishmentsUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/garnishmentsUpdate'
+import { type Agencies } from '@gusto/embedded-api-v-2025-11-15/models/components/childsupportdata'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Form } from '@/components/Common/Form'
 import { ActionsLayout } from '@/components/Common'

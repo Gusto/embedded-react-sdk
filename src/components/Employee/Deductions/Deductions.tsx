@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { createMachine } from 'robot3'
-import { useGarnishmentsListSuspense } from '@gusto/embedded-api/react-query/garnishmentsList'
+import { useGarnishmentsListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/garnishmentsList'
 import { useMemo } from 'react'
 import type { OnboardingContextInterface } from '../OnboardingFlow/OnboardingFlowComponents'
 import {

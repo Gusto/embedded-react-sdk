@@ -1,5 +1,5 @@
 import { fn } from 'storybook/test'
-import { type Contractor } from '@gusto/embedded-api/models/components/contractor'
+import { type Contractor } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor'
 import { MockBaseProvider } from '../../../../.storybook/helpers/MockBaseProvider'
 import { ContractorProfileForm } from './ContractorProfileForm'
 import { ContractorType, WageType, useContractorProfile } from './useContractorProfile'
