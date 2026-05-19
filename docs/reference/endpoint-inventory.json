@@ -831,10 +831,6 @@
         },
         {
           "method": "GET",
-          "path": "/v1/employees/:employeeId/garnishments"
-        },
-        {
-          "method": "GET",
           "path": "/v1/employees/:employeeId/home_addresses"
         },
         {
@@ -1978,10 +1974,6 @@
         },
         {
           "method": "GET",
-          "path": "/v1/employees/:employeeId/garnishments"
-        },
-        {
-          "method": "GET",
           "path": "/v1/employees/:employeeId/home_addresses"
         },
         {
@@ -2589,6 +2581,7 @@
     },
     "Employee.DashboardFlow": {
       "blocks": [
+        "Employee.Deductions",
         "Employee.HomeAddress",
         "Employee.PaymentMethod",
         "Employee.WorkAddress",
@@ -2640,6 +2633,7 @@
         "EmployeeManagement.Profile",
         "EmployeeManagement.StateTaxes",
         "EmployeeManagement.WorkAddress",
+        "EmployeeOnboarding.Deductions",
         "EmployeeOnboarding.PaymentMethod"
       ]
     },

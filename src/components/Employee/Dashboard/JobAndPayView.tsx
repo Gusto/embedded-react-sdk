@@ -6,7 +6,7 @@ import type { GetV1EmployeesEmployeeUuidPayStubsResponse } from '@gusto/embedded
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { DataView, useDataView, EmptyData, Loading } from '@/components/Common'
+import { DataView, useDataView, EmptyData } from '@/components/Common'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { BaseLayout } from '@/components/Base/Base'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
@@ -282,7 +282,7 @@ export function JobAndPayView({
   })
 
   if (isLoading || paymentMethodList.isLoading || deductionsList.isLoading) {
-    return <Loading />
+    return <BaseLayout isLoading error={errorHandling.errors} />
   }
 
   const isDirectDeposit = paymentMethod?.type === PAYMENT_METHODS.directDeposit
