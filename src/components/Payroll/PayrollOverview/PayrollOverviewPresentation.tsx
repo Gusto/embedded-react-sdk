@@ -799,7 +799,7 @@ export const PayrollOverviewPresentation = ({
                 status="warning"
                 label={t('alerts.checkPaymentWarning', { count: checkPaymentsCount })}
               >
-                <Text>{t('alerts.checkPaymentWarningDescription')}</Text>
+                {t('alerts.checkPaymentWarningDescription')}
               </Alert>
             )}
             <Tabs
