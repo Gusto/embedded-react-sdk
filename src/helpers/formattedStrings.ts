@@ -114,6 +114,52 @@ export const useFormatPayRate = () => {
   )
 }
 
+/**
+ * Formats a compensation rate as-is, without annualizing weekly or monthly
+ * values. Use this for displaying compensation card data where the stored rate
+ * should be shown directly (e.g. "$950 per week", "$3,500 per month").
+ */
+export const formatCompensationRate = ({
+  rate,
+  paymentUnit,
+  t,
+  locale = 'en-US',
+}: {
+  rate: number
+  paymentUnit: string
+  t: TFunction
+  locale?: string
+}) => {
+  const amount = formatNumberAsCurrency(rate, locale)
+
+  switch (paymentUnit) {
+    case 'Hour':
+      return t('compensationRateFormats.hourly', { amount, ns: 'common' })
+    case 'Week':
+      return t('compensationRateFormats.weekly', { amount, ns: 'common' })
+    case 'Month':
+      return t('compensationRateFormats.monthly', { amount, ns: 'common' })
+    case 'Year':
+      return t('compensationRateFormats.yearly', { amount, ns: 'common' })
+    case 'Paycheck':
+      return t('compensationRateFormats.paycheck', { amount, ns: 'common' })
+    default:
+      return amount
+  }
+}
+
+export const useFormatCompensationRate = () => {
+  const { t } = useTranslation('common')
+  const { locale } = useLocale()
+
+  return useCallback(
+    (rate: number, paymentUnit: string) => {
+      return formatCompensationRate({ rate, paymentUnit, t, locale })
+    },
+    [t, locale],
+  )
+}
+
 const dompurifyConfig = { ALLOWED_TAGS: ['a', 'b', 'strong'], ALLOWED_ATTR: ['href', 'target'] }
 export function createMarkup(dirty: string) {
   if (!dirty) return { __html: '' }

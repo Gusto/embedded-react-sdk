@@ -3441,6 +3441,13 @@ export interface common{
 "yearly":string;
 "paycheck":string;
 };
+"compensationRateFormats":{
+"hourly":string;
+"weekly":string;
+"monthly":string;
+"yearly":string;
+"paycheck":string;
+};
 "validations":{
 "accountName":string;
 "routingNumber":string;

@@ -16,7 +16,7 @@ import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { BaseLayout } from '@/components/Base/Base'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { formatDateLongWithYear } from '@/helpers/dateFormatting'
-import { useFormatPayRate } from '@/helpers/formattedStrings'
+import { useFormatCompensationRate } from '@/helpers/formattedStrings'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 import { useI18n } from '@/i18n'
 import {
@@ -99,7 +99,7 @@ export function JobAndPayView({
   const { t: tCompensation } = useTranslation('Employee.Compensation')
   const { t: tDeductions } = useTranslation('Employee.Deductions')
   const Components = useComponentContext()
-  const formatPayRate = useFormatPayRate()
+  const formatCompensationRate = useFormatCompensationRate()
   const formatCurrency = useNumberFormatter('currency')
   const formatPercent = useNumberFormatter('percent')
 
@@ -183,7 +183,7 @@ export function JobAndPayView({
             <Components.Text>{job.title || '-'}</Components.Text>
             {numericRate !== null && job.paymentUnit ? (
               <Components.Text variant="supporting">
-                {formatPayRate(numericRate, job.paymentUnit)}
+                {formatCompensationRate(numericRate, job.paymentUnit)}
               </Components.Text>
             ) : null}
           </Flex>
@@ -537,7 +537,7 @@ export function JobAndPayView({
                       {t('jobAndPay.compensation.wage')}
                     </Components.Text>
                     <Components.Text>
-                      {formatPayRate(singleJobNumericRate, singleJob.paymentUnit)}
+                      {formatCompensationRate(singleJobNumericRate, singleJob.paymentUnit)}
                     </Components.Text>
                   </Flex>
                 )}

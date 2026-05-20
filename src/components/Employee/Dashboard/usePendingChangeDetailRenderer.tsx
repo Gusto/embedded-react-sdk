@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import type { PendingChangeDetail } from './getPendingCompensationChanges'
-import { useFormatPayRate } from '@/helpers/formattedStrings'
+import { useFormatCompensationRate } from '@/helpers/formattedStrings'
 
 /**
  * Renders a single `PendingChangeDetail` produced by `getPendingCompensationChanges`
@@ -11,7 +11,7 @@ import { useFormatPayRate } from '@/helpers/formattedStrings'
 export function usePendingChangeDetailRenderer(employeeFirstName: string | null | undefined) {
   const { t: tDashboard } = useTranslation('Employee.Dashboard')
   const { t: tCompensation } = useTranslation('Employee.Compensation')
-  const formatPayRate = useFormatPayRate()
+  const formatCompensationRate = useFormatCompensationRate()
   const name = employeeFirstName ?? ''
 
   return (detail: PendingChangeDetail): string => {
@@ -24,7 +24,7 @@ export function usePendingChangeDetailRenderer(employeeFirstName: string | null 
         })
       case 'payChange':
         return tDashboard('jobAndPay.compensation.pendingChange.details.payChange', {
-          formattedRate: formatPayRate(detail.rate, detail.paymentUnit),
+          formattedRate: formatCompensationRate(detail.rate, detail.paymentUnit),
           ...interpolation,
         })
       case 'flsaChange':
@@ -34,7 +34,9 @@ export function usePendingChangeDetailRenderer(employeeFirstName: string | null 
         })
       case 'newJob': {
         const hasRate = detail.rate !== null && detail.paymentUnit !== null
-        const formattedRate = hasRate ? formatPayRate(detail.rate!, detail.paymentUnit!) : null
+        const formattedRate = hasRate
+          ? formatCompensationRate(detail.rate!, detail.paymentUnit!)
+          : null
         if (detail.title && hasRate) {
           return tDashboard('jobAndPay.compensation.pendingChange.details.newJob', {
             name,
@@ -65,7 +67,7 @@ export function usePendingChangeDetailRenderer(employeeFirstName: string | null 
       case 'minWageEnabled':
         return detail.wage
           ? tDashboard('jobAndPay.compensation.pendingChange.details.minWageEnabled', {
-              formattedWage: formatPayRate(Number(detail.wage), 'Hour'),
+              formattedWage: formatCompensationRate(Number(detail.wage), 'Hour'),
               ...interpolation,
             })
           : tDashboard('jobAndPay.compensation.pendingChange.details.minWageEnabledNoRate')
@@ -74,7 +76,7 @@ export function usePendingChangeDetailRenderer(employeeFirstName: string | null 
       case 'minWageChanged':
         return detail.wage
           ? tDashboard('jobAndPay.compensation.pendingChange.details.minWageChanged', {
-              formattedWage: formatPayRate(Number(detail.wage), 'Hour'),
+              formattedWage: formatCompensationRate(Number(detail.wage), 'Hour'),
               ...interpolation,
             })
           : tDashboard('jobAndPay.compensation.pendingChange.details.minWageChangedNoRate')

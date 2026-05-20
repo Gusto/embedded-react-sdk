@@ -6,6 +6,7 @@ import {
   camelCaseToSnakeCase,
   formatNumberAsCurrency,
   formatPayRate,
+  formatCompensationRate,
   formatPhoneNumber,
 } from './formattedStrings'
 
@@ -64,14 +65,52 @@ describe('formattedStrings', () => {
     })
   })
 
+  describe('formatCompensationRate', () => {
+    const mockT = ((key: string, options?: { amount?: string; ns?: string }) => {
+      const templates: Record<string, string> = {
+        'compensationRateFormats.hourly': '{{amount}} per hour',
+        'compensationRateFormats.weekly': '{{amount}} per week',
+        'compensationRateFormats.monthly': '{{amount}} per month',
+        'compensationRateFormats.yearly': '{{amount}} per year',
+        'compensationRateFormats.paycheck': '{{amount}} per paycheck',
+      }
+      const template = templates[key] ?? key
+      return options?.amount ? template.replace('{{amount}}', options.amount) : template
+    }) as TFunction
+
+    it('displays weekly and monthly rates as-is without annualizing', () => {
+      expect(formatCompensationRate({ rate: 1000, paymentUnit: 'Week', t: mockT })).toBe(
+        '$1,000.00 per week',
+      )
+      expect(formatCompensationRate({ rate: 5000, paymentUnit: 'Month', t: mockT })).toBe(
+        '$5,000.00 per month',
+      )
+    })
+
+    it('displays hourly and yearly rates the same as formatPayRate', () => {
+      expect(formatCompensationRate({ rate: 25.5, paymentUnit: 'Hour', t: mockT })).toBe(
+        '$25.50 per hour',
+      )
+      expect(formatCompensationRate({ rate: 75000, paymentUnit: 'Year', t: mockT })).toBe(
+        '$75,000.00 per year',
+      )
+    })
+
+    it('falls back to currency amount for unknown payment units', () => {
+      expect(formatCompensationRate({ rate: 100, paymentUnit: 'Unknown', t: mockT })).toBe(
+        '$100.00',
+      )
+    })
+  })
+
   describe('formatPayRate', () => {
     const mockT = ((key: string, options?: { amount?: string; ns?: string }) => {
       const templates = {
-        'payRateFormats.hourly': '{{amount}} per hour',
-        'payRateFormats.weekly': '{{amount}} per year',
-        'payRateFormats.monthly': '{{amount}} per year',
-        'payRateFormats.yearly': '{{amount}} per year',
-        'payRateFormats.paycheck': '{{amount}} per paycheck',
+        'payRateFormats.hourly': '{{amount}}/hr',
+        'payRateFormats.weekly': '{{amount}}/yr',
+        'payRateFormats.monthly': '{{amount}}/yr',
+        'payRateFormats.yearly': '{{amount}}/yr',
+        'payRateFormats.paycheck': '{{amount}}/paycheck',
       }
       const template = templates[key as keyof typeof templates] || key
       return options?.amount ? template.replace('{{amount}}', options.amount) : template
@@ -80,7 +119,7 @@ describe('formattedStrings', () => {
     it('should format pay rates with basic functionality', () => {
       const result = formatPayRate({ rate: 25.5, paymentUnit: 'Hour', t: mockT })
       expect(typeof result).toBe('string')
-      expect(result).toBe('$25.50 per hour')
+      expect(result).toBe('$25.50/hr')
     })
 
     it('should handle different payment units', () => {
@@ -88,26 +127,19 @@ describe('formattedStrings', () => {
       const yearlyResult = formatPayRate({ rate: 75000, paymentUnit: 'Year', t: mockT })
       const unknownResult = formatPayRate({ rate: 100, paymentUnit: 'Unknown', t: mockT })
 
-      expect(typeof hourlyResult).toBe('string')
-      expect(typeof yearlyResult).toBe('string')
-      expect(typeof unknownResult).toBe('string')
-
-      expect(hourlyResult).toBe('$25.50 per hour')
-      expect(yearlyResult).toBe('$75,000.00 per year')
-      expect(unknownResult).toBe('$100.00') // Unknown units return just the amount
+      expect(hourlyResult).toBe('$25.50/hr')
+      expect(yearlyResult).toBe('$75,000.00/yr')
+      expect(unknownResult).toBe('$100.00')
     })
 
     it('should handle weekly and monthly calculations correctly', () => {
       const weeklyResult = formatPayRate({ rate: 1000, paymentUnit: 'Week', t: mockT })
       const monthlyResult = formatPayRate({ rate: 5000, paymentUnit: 'Month', t: mockT })
 
-      expect(typeof weeklyResult).toBe('string')
-      expect(typeof monthlyResult).toBe('string')
-
       // Weekly: 1000 * 52 = 52000 (annualized)
-      expect(weeklyResult).toBe('$52,000.00 per year')
+      expect(weeklyResult).toBe('$52,000.00/yr')
       // Monthly: 5000 * 12 = 60000 (annualized)
-      expect(monthlyResult).toBe('$60,000.00 per year')
+      expect(monthlyResult).toBe('$60,000.00/yr')
     })
   })
 
