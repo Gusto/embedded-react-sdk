@@ -13,6 +13,7 @@ import jsdoc from 'eslint-plugin-jsdoc'
 import tsdoc from 'eslint-plugin-tsdoc'
 
 const jsdocRequireOptions = {
+  // Only require JSDoc for exports
   publicOnly: true,
   require: {
     FunctionDeclaration: true,
@@ -22,10 +23,14 @@ const jsdocRequireOptions = {
     MethodDefinition: true,
   },
   contexts: [
+    // Require JSDoc for exported variables (often constants)
+    'ExportNamedDeclaration > VariableDeclaration',
+    // and for class properties (methods enabled via the `require` block)
     'PropertyDefinition',
-    'TSTypeAliasDeclaration',
-    'TSInterfaceDeclaration',
-    'TSEnumDeclaration',
+    // and for types, interfaces, and enums
+    'ExportNamedDeclaration > TSTypeAliasDeclaration',
+    'ExportNamedDeclaration > TSInterfaceDeclaration',
+    'ExportNamedDeclaration > TSEnumDeclaration',
   ],
   // If enabled, --fix will simply add an empty jsdoc comment
   enableFixer: false,
@@ -121,6 +126,15 @@ export default [
       '@typescript-eslint/no-unused-expressions': 'off', // TODO: fix instances
       '@typescript-eslint/unified-signatures': 'off', // TODO: re-enable when bug is fixed in typescript-eslint
       'no-console': 'error',
+      'no-restricted-syntax': [
+        'warn',
+        {
+          // Inline exports allow the jsdoc/requireJsdoc publicOnly option to work more effectively
+          selector: 'ExportNamedDeclaration[declaration=null]:not([source])',
+          message:
+            'Use inline exports (export class Foo {}) instead of grouped exports (export { Foo })',
+        },
+      ],
 
       'no-restricted-imports': [
         'error',
@@ -165,7 +179,6 @@ export default [
   },
   // TSDoc syntax validation on any comment that already exists.
   // Validates tag names, param format, brace escaping, etc.
-  // Will be promoted to 'error' once existing violations are resolved.
   {
     files: ['src/**/*.{ts,tsx}'],
     plugins: { tsdoc },
