@@ -1,8 +1,5 @@
 import { test, expect } from '../../../utils/localTestFixture'
-import {
-  runNextRegularPayroll,
-  terminateAndRunDismissalPayroll,
-} from '../../../utils/payrollFlowDrivers'
+import { terminateAndRunDismissalPayroll } from '../../../utils/payrollFlowDrivers'
 
 test.describe.serial('PayrollCanary 05 — dismissal payroll end-to-end', () => {
   test.beforeEach(({}, testInfo) => {
@@ -19,19 +16,20 @@ test.describe.serial('PayrollCanary 05 — dismissal payroll end-to-end', () => 
     test.skip(!scenario.flowToken, 'Requires scenario provisioning (local/demo runs only)')
     test.setTimeout(12 * 60_000)
 
-    // Run a regular payroll first so the company has an anchor pay period,
-    // then terminate an onboarded seed employee with last day = today so the
-    // backend creates an unprocessed termination pay period for the current
-    // open period. (Past last-day fails: the period the employee would have
-    // been paid for is already closed and can't accept a new payroll.)
-    await runNextRegularPayroll(page, scenario)
-
-    // Last day must be a date that falls inside the next currently-open pay
-    // period (not in the past, not in the period spec 01 just processed).
-    // Probing the demo backend confirmed the next open period starts the day
-    // after the just-processed period ends; tomorrow lands inside it cleanly.
+    // Do NOT run a regular payroll first: that consumes the company's current
+    // open biweekly pay period, and the next open period doesn't start for
+    // ~14 days, so any plausible lastDayOfWork lands in a closed period and
+    // the backend renders "There are no unprocessed termination pay periods
+    // available" on the Run Dismissal Payroll screen. Onboarded seed
+    // companies already have an open pay period that the dismissal flow can
+    // attach to without first running a regular payroll.
+    //
+    // lastDayOfWork = today + 7 keeps us comfortably inside the current open
+    // biweekly window regardless of which day of the cycle the test starts
+    // on, and is recent enough that the backend creates a termination pay
+    // period for the just-ending open window.
     const lastDay = new Date()
-    lastDay.setDate(lastDay.getDate() + 1)
+    lastDay.setDate(lastDay.getDate() + 7)
     await terminateAndRunDismissalPayroll(page, scenario, {
       lastDayOfWork: {
         month: lastDay.getMonth() + 1,

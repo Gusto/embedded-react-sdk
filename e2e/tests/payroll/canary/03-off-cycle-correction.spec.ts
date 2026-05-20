@@ -18,6 +18,11 @@ test.describe.serial('PayrollCanary 03 — off-cycle correction end-to-end', () 
 
     await createAndSubmitOffCycleBonus(page, scenario, { reason: 'Correction payment' })
 
-    await expect(page.getByText(/^total$/i).first()).toBeVisible({ timeout: 60_000 })
+    // The driver reaches Review Payroll for corrections and stops there.
+    // See comment in createAndSubmitOffCycleBonus for why we don't push past
+    // the SDK landmark into a guaranteed backend rejection on fresh demos.
+    await expect(page.getByRole('heading', { name: /review payroll/i, level: 1 })).toBeVisible({
+      timeout: 60_000,
+    })
   })
 })
