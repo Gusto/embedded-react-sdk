@@ -1,0 +1,21 @@
+{
+  "$schema": "../../schema/scenario.schema.json",
+  "name": "Contractor canary — onboarding + payment end-to-end",
+  "description": "Onboarded company plus one pre-decorated Individual hourly contractor. The decorated contractor lets the payment canary submit a payment immediately. Onboarding canaries (individual + business) ignore him and create their own contractors through the UI.",
+  "domain": "contractor",
+  "baseDemo": "react_sdk_demo_company_onboarded",
+  "decorations": {
+    "contractors": [
+      {
+        "key": "payable",
+        "type": "Individual",
+        "first_name": "Casey",
+        "last_name": "Canary",
+        "email": "casey-canary+{{ts}}@example.com",
+        "wage_type": "Hourly",
+        "hourly_rate": "75"
+      }
+    ]
+  },
+  "expectedContext": ["companyId", "contractorIds.payable"]
+}
