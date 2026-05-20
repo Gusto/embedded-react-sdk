@@ -305,9 +305,14 @@ export async function openEditBalanceModalForFirstEmployee(page: Page): Promise<
   await page.getByRole('tab', { name: /employees/i }).click()
   await waitForLoadingComplete(page)
 
-  const editBalanceButton = page.getByRole('button', { name: /edit balance/i }).first()
-  await expect(editBalanceButton).toBeVisible({ timeout: LONG_WAIT })
-  await editBalanceButton.click()
+  // The employee row exposes a HamburgerMenu trigger labelled
+  // "Actions <Employee Name>" (TimeOffPolicyDetail.tsx#L288). "Edit balance"
+  // is a menu item inside that menu, not a top-level button.
+  const actionsTrigger = page.getByRole('button', { name: /^actions\b/i }).first()
+  await expect(actionsTrigger).toBeVisible({ timeout: LONG_WAIT })
+  await actionsTrigger.click()
+
+  await page.getByRole('menuitem', { name: /edit balance/i }).click()
 
   await expect(page.getByRole('dialog')).toBeVisible({ timeout: 10_000 })
 }

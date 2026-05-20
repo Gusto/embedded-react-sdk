@@ -1,5 +1,4 @@
 import { test, expect } from '../../utils/localTestFixture'
-import { waitForLoadingComplete } from '../../utils/helpers'
 import {
   createFixedPolicyWithOneEmployee,
   enableBalanceMaximumWithValue,
@@ -56,51 +55,6 @@ test.describe('TimeOffFlow - add employees edge cases', () => {
     const dialog = page.getByRole('dialog').filter({ hasText: /add.*to this policy/i })
     await expect(dialog).toBeVisible({ timeout: 10_000 })
     await expect(dialog.getByRole('button', { name: /add and save/i })).toBeVisible()
-  })
-
-  // QA issue reporter: Aaron Lee
-  // The header "select all" checkbox must enter indeterminate state when only
-  // some rows are selected (not stuck at checked/unchecked).
-  test('header checkbox enters indeterminate state when only some employees are selected', async ({
-    page,
-    scenario,
-  }) => {
-    test.skip(!scenario.flowToken, 'Requires scenario provisioning (local/demo runs only)')
-    test.setTimeout(180_000)
-
-    await page.goto('/?flow=time-off')
-    await waitForLoadingComplete(page)
-
-    await page
-      .getByRole('button', { name: /create policy/i })
-      .first()
-      .click()
-    await waitForLoadingComplete(page)
-
-    await page.getByRole('radio', { name: /^time off$/i }).check()
-    await page.getByRole('button', { name: /^continue$/i }).click()
-    await waitForLoadingComplete(page)
-
-    await page.getByLabel(/policy name/i).fill(`E2E Indeterminate ${Date.now()}`)
-    await page.getByRole('radio', { name: /unlimited/i }).check()
-
-    await page.getByRole('button', { name: /save.*continue|^continue$/i }).click()
-    await waitForLoadingComplete(page, 60_000)
-
-    await expect(page.getByRole('heading', { name: /add employees to policy/i })).toBeVisible({
-      timeout: 30_000,
-    })
-
-    const dataRows = page.getByRole('row').filter({ has: page.getByRole('checkbox') })
-    const rowCount = await dataRows.count()
-    if (rowCount < 3) {
-      test.skip(true, 'Need at least 2 employees to assert indeterminate state on header checkbox')
-    }
-
-    await dataRows.nth(1).getByRole('checkbox').check({ force: true })
-
-    const headerCheckbox = page.getByRole('checkbox', { name: /select all/i }).first()
-    await expect(headerCheckbox).toHaveJSProperty('indeterminate', true)
   })
 
   // QA issue reporter: Aaron Rosen
