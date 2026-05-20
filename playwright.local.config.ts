@@ -27,7 +27,13 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: 2,
-  workers: process.env.CI ? 1 : undefined,
+  // Run sequentially everywhere: the scenario fixture caches a provisioned
+  // demo company per worker, so running multiple workers means multiple
+  // demo creations for tests that share a scenario ID. With workers: 1
+  // the worker-scoped cache effectively becomes suite-scoped. Override
+  // locally with --workers=N for parallel debugging of independent
+  // scenarios.
+  workers: 1,
   reporter: reporters,
   timeout: 120_000,
   expect: {

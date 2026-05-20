@@ -5,6 +5,7 @@ import { resolve, dirname } from 'path'
 interface PhaseTimings {
   provisioningMs: number
   bodyMs: number
+  provisioningCacheHit: boolean
 }
 
 interface TestEntry {
@@ -49,22 +50,25 @@ function extractAnnotation(test: TestCase, type: string): string | undefined {
 
 function extractPhaseTimings(test: TestCase, totalDurationMs: number): PhaseTimings {
   let provisioningMs = 0
+  let provisioningCacheHit = false
   for (const annotation of test.annotations) {
     if (annotation.type !== 'timing' || !annotation.description) continue
     try {
       const parsed = JSON.parse(annotation.description) as {
         phase?: string
         durationMs?: number
+        cacheHit?: boolean
       }
       if (parsed.phase === 'provisioning' && typeof parsed.durationMs === 'number') {
         provisioningMs = parsed.durationMs
+        if (parsed.cacheHit === true) provisioningCacheHit = true
       }
     } catch {
       // Malformed timing annotation; ignore so reporter never fails the run.
     }
   }
   const bodyMs = Math.max(0, totalDurationMs - provisioningMs)
-  return { provisioningMs, bodyMs }
+  return { provisioningMs, bodyMs, provisioningCacheHit }
 }
 
 function formatMs(ms: number): string {
@@ -139,6 +143,10 @@ class ScenarioReporter implements Reporter {
     lines.push('interactions, backend round-trips). Provisioning that dominates body time is the')
     lines.push('signal that we should be sharing companies across the suite.')
     lines.push('')
+    lines.push('Entries marked `(cached)` reused a demo company already provisioned earlier in the')
+    lines.push('same worker via the worker-scoped scenario cache; the first test for each scenario')
+    lines.push('still pays the full provisioning cost.')
+    lines.push('')
     lines.push(`Run: ${report.runId}`)
     lines.push(`Started: ${report.startedAt}`)
     lines.push(`Finished: ${report.finishedAt}`)
@@ -151,6 +159,7 @@ class ScenarioReporter implements Reporter {
       let domainBody = 0
       let domainTotal = 0
       let testCount = 0
+      let domainCacheHits = 0
 
       for (const [scenarioName, scenarioResult] of Object.entries(domainResult.scenarios)) {
         lines.push(`### Scenario: ${scenarioName}`)
@@ -159,21 +168,27 @@ class ScenarioReporter implements Reporter {
         lines.push('|------|--------|--------------|------|-------|')
 
         for (const test of scenarioResult.tests) {
+          const provisioningCell = test.timings.provisioningCacheHit
+            ? `${formatMs(test.timings.provisioningMs)} (cached)`
+            : formatMs(test.timings.provisioningMs)
           lines.push(
-            `| ${test.title} | ${test.status} | ${formatMs(test.timings.provisioningMs)} | ${formatMs(test.timings.bodyMs)} | ${formatMs(test.durationMs)} |`,
+            `| ${test.title} | ${test.status} | ${provisioningCell} | ${formatMs(test.timings.bodyMs)} | ${formatMs(test.durationMs)} |`,
           )
           domainProvisioning += test.timings.provisioningMs
           domainBody += test.timings.bodyMs
           domainTotal += test.durationMs
           testCount++
+          if (test.timings.provisioningCacheHit) domainCacheHits++
         }
         lines.push('')
       }
 
       const provisioningPct =
         domainTotal > 0 ? Math.round((domainProvisioning / domainTotal) * 100) : 0
+      const cacheHitSuffix =
+        testCount > 0 ? `, ${domainCacheHits}/${testCount} provisioning cache hits` : ''
       lines.push(
-        `**Domain totals (${testCount} tests):** ${formatMs(domainProvisioning)} provisioning + ${formatMs(domainBody)} body = ${formatMs(domainTotal)} (provisioning is ${provisioningPct}% of wall time)`,
+        `**Domain totals (${testCount} tests):** ${formatMs(domainProvisioning)} provisioning + ${formatMs(domainBody)} body = ${formatMs(domainTotal)} (provisioning is ${provisioningPct}% of wall time${cacheHitSuffix})`,
       )
       lines.push('')
     }
