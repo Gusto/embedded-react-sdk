@@ -1,5 +1,6 @@
-import { QueryClient } from '@tanstack/react-query'
+import type { QueryClient } from '@tanstack/react-query'
 import { GustoProvider } from '@/contexts'
+import { createSdkQueryClient } from '@/contexts/ApiProvider/createSdkQueryClient'
 import { API_BASE_URL } from '@/test/constants'
 
 interface GustoTestProviderProps {
@@ -11,17 +12,7 @@ export const GustoTestProvider = ({
   children,
   queryClient: queryClientFromProps,
 }: GustoTestProviderProps) => {
-  let queryClient = queryClientFromProps
-
-  if (!queryClientFromProps) {
-    queryClient = new QueryClient({
-      defaultOptions: {
-        queries: {
-          retry: false,
-        },
-      },
-    })
-  }
+  const queryClient = queryClientFromProps ?? createSdkQueryClient()
 
   return (
     <GustoProvider queryClient={queryClient} config={{ baseUrl: API_BASE_URL }}>

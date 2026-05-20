@@ -34,6 +34,15 @@ describe('Alert', () => {
     expect(screen.getByText('Additional content')).toBeInTheDocument()
   })
 
+  it('renders an action inline beside the label', () => {
+    render(<Alert label="Test Alert" action={<button>Review</button>} />)
+
+    const reviewButton = screen.getByRole('button', { name: 'Review' })
+    const heading = screen.getByText('Test Alert')
+    expect(reviewButton).toBeInTheDocument()
+    expect(heading.parentElement).toBe(reviewButton.parentElement?.parentElement)
+  })
+
   it('renders with custom icon', () => {
     render(<Alert label="Test Alert" icon={<InfoIcon aria-hidden />} />)
 

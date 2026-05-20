@@ -26,7 +26,10 @@ export type UseEmployeeBasicDetailsResult = HookLoadingResult | UseEmployeeBasic
 export function useEmployeeBasicDetails({
   employeeId,
 }: UseEmployeeBasicDetailsProps): UseEmployeeBasicDetailsResult {
-  const employeeQuery = useEmployeesGetSuspense({ employeeId })
+  const employeeQuery = useEmployeesGetSuspense({
+    employeeId,
+    include: ['all_compensations'],
+  })
   const addressesQuery = useEmployeeAddressesGetSuspense({ employeeId })
   const workAddressesQuery = useEmployeeAddressesGetWorkAddressesSuspense({ employeeId })
 

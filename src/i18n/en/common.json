@@ -72,11 +72,11 @@
     "workersCompensationRatePerHourAdornment": "/hr"
   },
   "payRateFormats": {
-    "hourly": "{{amount}}/hr",
-    "weekly": "{{amount}}/yr",
-    "monthly": "{{amount}}/yr",
-    "yearly": "{{amount}}/yr",
-    "paycheck": "{{amount}}/paycheck"
+    "hourly": "{{amount}} per hour",
+    "weekly": "{{amount}} per year",
+    "monthly": "{{amount}} per year",
+    "yearly": "{{amount}} per year",
+    "paycheck": "{{amount}} per paycheck"
   },
   "validations": {
     "accountName": "Account name is required",

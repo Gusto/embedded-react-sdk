@@ -67,11 +67,11 @@ describe('formattedStrings', () => {
   describe('formatPayRate', () => {
     const mockT = ((key: string, options?: { amount?: string; ns?: string }) => {
       const templates = {
-        'payRateFormats.hourly': '{{amount}}/hr',
-        'payRateFormats.weekly': '{{amount}}/yr',
-        'payRateFormats.monthly': '{{amount}}/yr',
-        'payRateFormats.yearly': '{{amount}}/yr',
-        'payRateFormats.paycheck': '{{amount}}/paycheck',
+        'payRateFormats.hourly': '{{amount}} per hour',
+        'payRateFormats.weekly': '{{amount}} per year',
+        'payRateFormats.monthly': '{{amount}} per year',
+        'payRateFormats.yearly': '{{amount}} per year',
+        'payRateFormats.paycheck': '{{amount}} per paycheck',
       }
       const template = templates[key as keyof typeof templates] || key
       return options?.amount ? template.replace('{{amount}}', options.amount) : template
@@ -80,7 +80,7 @@ describe('formattedStrings', () => {
     it('should format pay rates with basic functionality', () => {
       const result = formatPayRate({ rate: 25.5, paymentUnit: 'Hour', t: mockT })
       expect(typeof result).toBe('string')
-      expect(result).toBe('$25.50/hr')
+      expect(result).toBe('$25.50 per hour')
     })
 
     it('should handle different payment units', () => {
@@ -92,8 +92,8 @@ describe('formattedStrings', () => {
       expect(typeof yearlyResult).toBe('string')
       expect(typeof unknownResult).toBe('string')
 
-      expect(hourlyResult).toBe('$25.50/hr')
-      expect(yearlyResult).toBe('$75,000.00/yr')
+      expect(hourlyResult).toBe('$25.50 per hour')
+      expect(yearlyResult).toBe('$75,000.00 per year')
       expect(unknownResult).toBe('$100.00') // Unknown units return just the amount
     })
 
@@ -104,10 +104,10 @@ describe('formattedStrings', () => {
       expect(typeof weeklyResult).toBe('string')
       expect(typeof monthlyResult).toBe('string')
 
-      // Weekly: 1000 * 52 = 52000
-      expect(weeklyResult).toBe('$52,000.00/yr')
-      // Monthly: 5000 * 12 = 60000
-      expect(monthlyResult).toBe('$60,000.00/yr')
+      // Weekly: 1000 * 52 = 52000 (annualized)
+      expect(weeklyResult).toBe('$52,000.00 per year')
+      // Monthly: 5000 * 12 = 60000 (annualized)
+      expect(monthlyResult).toBe('$60,000.00 per year')
     })
   })
 

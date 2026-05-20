@@ -5,6 +5,9 @@ import type { Job } from '@gusto/embedded-api/models/components/job'
 import type { EmployeeBankAccount } from '@gusto/embedded-api/models/components/employeebankaccount'
 import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
 import type { GetV1EmployeesEmployeeUuidPayStubsResponse } from '@gusto/embedded-api/models/operations/getv1employeesemployeeuuidpaystubs'
+import type { PendingCompensationChange } from './getPendingCompensationChanges'
+import { usePendingChangeDetailRenderer } from './usePendingChangeDetailRenderer'
+import { PendingChangesReviewModal } from './PendingChangesReviewModal'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -49,6 +52,10 @@ export interface JobAndPayViewProps {
   employeeId: string
   jobs?: Job[]
   primaryFlsaStatus?: string
+  pendingChanges?: PendingCompensationChange[]
+  hasMultipleJobs?: boolean
+  employeeFirstName?: string | null
+  cancellingCompensationUuid?: string | null
   payStubs?: EmployeePayStub[]
   payStubsPagination?: PaginationControlProps
   isLoading?: boolean
@@ -56,6 +63,7 @@ export interface JobAndPayViewProps {
   onEditCompensation?: (job: Job) => void
   onAddJob?: () => void
   onAddAnotherJob?: () => void
+  onCancelChange?: (pendingChange: PendingCompensationChange) => void
   onAddDeduction?: () => void
   onEditDeduction?: (deduction: Garnishment) => void
   onPaystubDownload?: (payrollUuid: string) => void
@@ -66,6 +74,10 @@ export function JobAndPayView({
   employeeId,
   jobs = [],
   primaryFlsaStatus,
+  pendingChanges = [],
+  hasMultipleJobs: hasMultipleJobsProp,
+  employeeFirstName,
+  cancellingCompensationUuid = null,
   payStubs = [],
   payStubsPagination,
   isLoading = false,
@@ -73,6 +85,7 @@ export function JobAndPayView({
   onEditCompensation,
   onAddJob,
   onAddAnotherJob,
+  onCancelChange,
   onAddDeduction,
   onEditDeduction,
   onPaystubDownload,
@@ -107,9 +120,17 @@ export function JobAndPayView({
   }
 
   const singleJob = jobs.length === 1 ? jobs[0]! : undefined
-  const hasMultipleJobs = jobs.length > 1
+  const hasMultipleJobs = hasMultipleJobsProp ?? jobs.length > 1
   const canAddAnotherJob = jobs.length >= 1 && primaryFlsaStatus === FlsaStatus.NONEXEMPT
   const singleJobNumericRate = singleJob ? parseJobRate(singleJob.rate) : null
+
+  const [isReviewOpen, setIsReviewOpen] = useState(false)
+  const renderDetail = usePendingChangeDetailRenderer(employeeFirstName)
+
+  const hasPendingChanges = pendingChanges.length > 0
+  const showSummaryAlert = hasMultipleJobs && pendingChanges.length > 1
+  const showInlineAlert = hasPendingChanges && !showSummaryAlert
+  const nextChange = pendingChanges[0]
 
   const paymentMethodList = usePaymentMethodList({ employeeId })
   const paymentMethod = paymentMethodList.isLoading
@@ -425,14 +446,66 @@ export function JobAndPayView({
             ) : undefined
           }
         >
-          {hasMultipleJobs ? (
-            <DataView
-              label={t('jobAndPay.compensation.tableLabel')}
-              isWithinBox
-              {...jobsDataView}
-            />
-          ) : singleJob ? (
-            <Flex flexDirection="column" gap={16}>
+          <Flex flexDirection="column" gap={16}>
+            {showInlineAlert && nextChange && (
+              <Components.Alert
+                status="warning"
+                disableScrollIntoView
+                label={
+                  hasMultipleJobs
+                    ? t('jobAndPay.compensation.pendingChange.alertLabelWithJob', {
+                        jobTitle: nextChange.jobTitle,
+                        date: formatDateLongWithYear(nextChange.effectiveDate),
+                      })
+                    : t('jobAndPay.compensation.pendingChange.alertLabel', {
+                        date: formatDateLongWithYear(nextChange.effectiveDate),
+                      })
+                }
+              >
+                <Flex flexDirection="column" gap={12}>
+                  <Components.UnorderedList
+                    items={nextChange.details.map(detail => renderDetail(detail))}
+                  />
+                  <div>
+                    <Components.Button
+                      variant="secondary"
+                      isLoading={cancellingCompensationUuid === nextChange.compensationUuid}
+                      onClick={() => {
+                        onCancelChange?.(nextChange)
+                      }}
+                    >
+                      {t('jobAndPay.compensation.pendingChange.cancelCta')}
+                    </Components.Button>
+                  </div>
+                </Flex>
+              </Components.Alert>
+            )}
+            {showSummaryAlert && (
+              <Components.Alert
+                status="warning"
+                disableScrollIntoView
+                label={t('jobAndPay.compensation.pendingChange.summaryLabel', {
+                  name: employeeFirstName ?? '',
+                })}
+                action={
+                  <Components.Button
+                    variant="secondary"
+                    onClick={() => {
+                      setIsReviewOpen(true)
+                    }}
+                  >
+                    {t('jobAndPay.compensation.pendingChange.reviewCta')}
+                  </Components.Button>
+                }
+              />
+            )}
+            {hasMultipleJobs ? (
+              <DataView
+                label={t('jobAndPay.compensation.tableLabel')}
+                isWithinBox
+                {...jobsDataView}
+              />
+            ) : singleJob ? (
               <Flex flexDirection="column" gap={12}>
                 {singleJob.title && (
                   <Flex flexDirection="column" gap={0}>
@@ -478,13 +551,13 @@ export function JobAndPayView({
                   </Flex>
                 )}
               </Flex>
-            </Flex>
-          ) : (
-            <EmptyData
-              title={t('jobAndPay.compensation.emptyState.title')}
-              description={t('jobAndPay.compensation.emptyState.description')}
-            />
-          )}
+            ) : (
+              <EmptyData
+                title={t('jobAndPay.compensation.emptyState.title')}
+                description={t('jobAndPay.compensation.emptyState.description')}
+              />
+            )}
+          </Flex>
         </Components.Box>
 
         <Components.Box
@@ -567,6 +640,19 @@ export function JobAndPayView({
         >
           <DataView label={t('jobAndPay.paystubs.listLabel')} isWithinBox {...payStubsDataView} />
         </Components.Box>
+
+        <PendingChangesReviewModal
+          isOpen={isReviewOpen}
+          pendingChanges={pendingChanges}
+          employeeFirstName={employeeFirstName}
+          cancellingCompensationUuid={cancellingCompensationUuid}
+          onClose={() => {
+            setIsReviewOpen(false)
+          }}
+          onCancelChange={change => {
+            onCancelChange?.(change)
+          }}
+        />
 
         <DeleteBankAccountDialog
           pendingDeleteAccount={pendingDeleteAccount}
