@@ -342,13 +342,15 @@ export default async function globalSetup() {
   console.log('\n=== E2E Global Setup ===')
   console.log(`Target: ${GWS_FLOWS_BASE}`)
 
+  const disableCache = process.env.E2E_DISABLE_CACHE === 'true'
+
   // Idempotency: if a previous run (e.g. an upstream e2e-setup CI job) already
   // provisioned demo companies and wrote e2e/.e2e-state.json, reuse that state
   // instead of re-provisioning. Saves ~2 demo creations and ~3 minutes per
   // shard, and keeps load on the demo backend low when many shards run in
   // parallel.
   const statePath = resolve(process.cwd(), 'e2e/.e2e-state.json')
-  if (existsSync(statePath)) {
+  if (!disableCache && existsSync(statePath)) {
     try {
       const existingState = JSON.parse(readFileSync(statePath, 'utf-8')) as Partial<E2EState>
       console.log(`📂 Found existing state at ${statePath}`)
@@ -361,6 +363,8 @@ export default async function globalSetup() {
     } catch (error) {
       console.log(`⚠️  Could not read existing state (${error}), re-provisioning`)
     }
+  } else if (disableCache) {
+    console.log('🔄 Cache disabled, forcing fresh provisioning')
   }
 
   await waitForGWSFlows()
