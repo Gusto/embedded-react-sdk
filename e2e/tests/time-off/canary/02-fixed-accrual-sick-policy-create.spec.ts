@@ -9,7 +9,7 @@ test.describe.serial('TimeOffCanary 02 — fixed-accrual sick policy create end-
     })
   })
 
-  test('creates a fixed-amount-per-year sick policy through details + settings + add employees', async ({
+  test('creates a fixed-amount-per-year sick policy with custom settings + per-employee balances', async ({
     page,
     scenario,
   }) => {
@@ -18,7 +18,12 @@ test.describe.serial('TimeOffCanary 02 — fixed-accrual sick policy create end-
 
     const policyName = `Canary Sick Fixed ${Date.now()}`
 
-    await runFixedAccrualSickPolicyCreate(page, scenario, { policyName })
+    await runFixedAccrualSickPolicyCreate(page, scenario, {
+      policyName,
+      balanceMaximumHours: 240,
+      carryOverLimitHours: 40,
+      employeeBalances: ['8', '16', '24'],
+    })
 
     await expect(page.getByRole('heading', { name: new RegExp(policyName, 'i') })).toBeVisible({
       timeout: 60_000,

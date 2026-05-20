@@ -9,7 +9,7 @@ test.describe.serial('TimeOffCanary 03 — holiday pay policy create end-to-end'
     })
   })
 
-  test('creates a holiday pay policy with selected holidays and lands on the holiday detail view', async ({
+  test('creates a holiday pay policy with all holidays + all employees selected', async ({
     page,
     scenario,
   }) => {

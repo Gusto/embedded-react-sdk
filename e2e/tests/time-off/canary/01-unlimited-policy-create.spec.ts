@@ -9,7 +9,7 @@ test.describe.serial('TimeOffCanary 01 — unlimited policy create end-to-end', 
     })
   })
 
-  test('creates an unlimited time-off policy from the policy list through the detail view', async ({
+  test('creates an unlimited time-off policy with 2 selected employees and lands on the detail view', async ({
     page,
     scenario,
   }) => {
@@ -18,7 +18,7 @@ test.describe.serial('TimeOffCanary 01 — unlimited policy create end-to-end', 
 
     const policyName = `Canary Unlimited ${Date.now()}`
 
-    await runUnlimitedTimeOffPolicyCreate(page, scenario, { policyName })
+    await runUnlimitedTimeOffPolicyCreate(page, scenario, { policyName, employeesToSelect: 2 })
 
     await expect(page.getByRole('heading', { name: new RegExp(policyName, 'i') })).toBeVisible({
       timeout: 60_000,

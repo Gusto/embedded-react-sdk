@@ -48,10 +48,62 @@ async function deleteHolidayPolicyIfPresent(page: Page): Promise<void> {
   await waitForLoadingComplete(page, LONG_WAIT)
 }
 
+async function selectAllEmployeesOnAddStep(page: Page): Promise<number> {
+  const selectAll = page.getByRole('checkbox', { name: /select all/i }).first()
+  await expect(selectAll).toBeVisible({ timeout: 15_000 })
+  if (!(await selectAll.isChecked())) {
+    await selectAll.check({ force: true })
+  }
+
+  const dataRows = page.getByRole('row').filter({ has: page.getByRole('checkbox') })
+  return dataRows.count().then(n => Math.max(0, n - 1))
+}
+
+async function selectFirstNEmployeesOnAddStep(page: Page, count: number): Promise<void> {
+  await expect(page.getByRole('heading', { name: /add employees to policy/i })).toBeVisible({
+    timeout: LONG_WAIT,
+  })
+
+  const dataRows = page.getByRole('row').filter({ has: page.getByRole('checkbox') })
+  await expect(dataRows.first()).toBeVisible({ timeout: 15_000 })
+
+  for (let i = 1; i <= count; i++) {
+    const rowCheckbox = dataRows.nth(i).getByRole('checkbox').first()
+    if (!(await rowCheckbox.isChecked())) {
+      await rowCheckbox.check({ force: true })
+    }
+  }
+}
+
+async function fillStartingBalanceForRow(
+  page: Page,
+  rowIndex: number,
+  balance: string,
+): Promise<void> {
+  const dataRows = page.getByRole('row').filter({ has: page.getByRole('checkbox') })
+  const balanceInput = dataRows.nth(rowIndex).getByRole('textbox', {
+    name: /starting balance/i,
+  })
+  if (await balanceInput.isVisible({ timeout: 2_000 }).catch(() => false)) {
+    await balanceInput.fill(balance)
+  }
+}
+
+async function continueThroughAddConfirm(page: Page): Promise<void> {
+  await page.getByRole('button', { name: /^continue$/i }).click()
+
+  const addDialog = page.getByRole('dialog').filter({ hasText: /add.*to this policy/i })
+  if (await addDialog.isVisible({ timeout: 5_000 }).catch(() => false)) {
+    await addDialog.getByRole('button', { name: /add and save/i }).click()
+  }
+
+  await waitForLoadingComplete(page, LONG_WAIT)
+}
+
 export async function runUnlimitedTimeOffPolicyCreate(
   page: Page,
   _scenario: ScenarioContext,
-  opts: { policyName: string },
+  opts: { policyName: string; employeesToSelect?: number },
 ): Promise<void> {
   await landOnTimeOffPolicyList(page)
   await clickCreatePolicy(page)
@@ -69,11 +121,8 @@ export async function runUnlimitedTimeOffPolicyCreate(
   await chooseSaveAndContinue(page)
   await waitForLoadingComplete(page, LONG_WAIT)
 
-  await expect(page.getByRole('heading', { name: /add employees to policy/i })).toBeVisible({
-    timeout: LONG_WAIT,
-  })
-  await page.getByRole('button', { name: /^continue$/i }).click()
-  await waitForLoadingComplete(page, LONG_WAIT)
+  await selectFirstNEmployeesOnAddStep(page, opts.employeesToSelect ?? 2)
+  await continueThroughAddConfirm(page)
 
   await expect(page.getByRole('heading', { name: new RegExp(opts.policyName, 'i') })).toBeVisible({
     timeout: LONG_WAIT,
@@ -83,7 +132,12 @@ export async function runUnlimitedTimeOffPolicyCreate(
 export async function runFixedAccrualSickPolicyCreate(
   page: Page,
   _scenario: ScenarioContext,
-  opts: { policyName: string },
+  opts: {
+    policyName: string
+    balanceMaximumHours: number
+    carryOverLimitHours: number
+    employeeBalances: string[]
+  },
 ): Promise<void> {
   await landOnTimeOffPolicyList(page)
   await clickCreatePolicy(page)
@@ -107,14 +161,35 @@ export async function runFixedAccrualSickPolicyCreate(
   await expect(page.getByRole('heading', { name: /policy settings/i })).toBeVisible({
     timeout: LONG_WAIT,
   })
+
+  const balanceMaxSwitch = page.getByRole('switch', { name: /^balance maximum$/i })
+  await balanceMaxSwitch.click({ force: true })
+  await page
+    .getByRole('textbox', { name: /^balance maximum/i })
+    .fill(String(opts.balanceMaximumHours))
+
+  const carryOverSwitch = page.getByRole('switch', { name: /^carry over limit$/i })
+  await carryOverSwitch.click({ force: true })
+  await page
+    .getByRole('textbox', { name: /^carry over limit/i })
+    .fill(String(opts.carryOverLimitHours))
+
+  const payoutSwitch = page.getByRole('switch', { name: /payout on dismissal/i })
+  await payoutSwitch.click({ force: true })
+
   await page.getByRole('button', { name: /^save$/i }).click()
   await waitForLoadingComplete(page, LONG_WAIT)
 
   await expect(page.getByRole('heading', { name: /add employees to policy/i })).toBeVisible({
     timeout: LONG_WAIT,
   })
-  await page.getByRole('button', { name: /^continue$/i }).click()
-  await waitForLoadingComplete(page, LONG_WAIT)
+
+  await selectFirstNEmployeesOnAddStep(page, opts.employeeBalances.length)
+  for (let i = 0; i < opts.employeeBalances.length; i++) {
+    await fillStartingBalanceForRow(page, i + 1, opts.employeeBalances[i]!)
+  }
+
+  await continueThroughAddConfirm(page)
 
   await expect(page.getByRole('heading', { name: new RegExp(opts.policyName, 'i') })).toBeVisible({
     timeout: LONG_WAIT,
@@ -140,11 +215,11 @@ export async function runHolidayPayPolicyCreate(
   const newYearsCell = page.getByRole('gridcell', { name: /New Year's Day/i })
   await expect(newYearsCell).toBeVisible({ timeout: 15_000 })
 
-  const headerCheckbox = page.getByRole('checkbox', { name: /select all/i }).first()
-  if (await headerCheckbox.isVisible().catch(() => false)) {
-    await headerCheckbox.check()
+  const holidaySelectAll = page.getByRole('checkbox', { name: /select all/i }).first()
+  if (await holidaySelectAll.isVisible().catch(() => false)) {
+    await holidaySelectAll.check({ force: true })
   } else {
-    await page.getByRole('row').nth(1).getByRole('checkbox').check()
+    await page.getByRole('row').nth(1).getByRole('checkbox').check({ force: true })
   }
 
   await page.getByRole('button', { name: /^continue$/i }).click()
@@ -153,8 +228,11 @@ export async function runHolidayPayPolicyCreate(
   await expect(page.getByRole('heading', { name: /add employees to policy/i })).toBeVisible({
     timeout: LONG_WAIT,
   })
-  await page.getByRole('button', { name: /^continue$/i }).click()
-  await waitForLoadingComplete(page, LONG_WAIT)
+
+  const selectedEmployeeCount = await selectAllEmployeesOnAddStep(page)
+  expect(selectedEmployeeCount).toBeGreaterThan(0)
+
+  await continueThroughAddConfirm(page)
 
   await expect(page.getByRole('heading', { name: /holiday pay policy/i })).toBeVisible({
     timeout: LONG_WAIT,
@@ -184,11 +262,10 @@ async function createFixedPolicyForRename(page: Page, policyName: string): Promi
   await page.getByRole('button', { name: /^save$/i }).click()
   await waitForLoadingComplete(page, LONG_WAIT)
 
-  await expect(page.getByRole('heading', { name: /add employees to policy/i })).toBeVisible({
-    timeout: LONG_WAIT,
-  })
-  await page.getByRole('button', { name: /^continue$/i }).click()
-  await waitForLoadingComplete(page, LONG_WAIT)
+  await selectFirstNEmployeesOnAddStep(page, 1)
+  await fillStartingBalanceForRow(page, 1, '12')
+
+  await continueThroughAddConfirm(page)
 
   await expect(page.getByRole('heading', { name: new RegExp(policyName, 'i') })).toBeVisible({
     timeout: LONG_WAIT,
@@ -221,10 +298,21 @@ export async function runEditPolicyRename(
 
 export async function runDeletePolicyFromList(
   page: Page,
-  _scenario: ScenarioContext,
+  scenario: ScenarioContext,
   opts: { policyName: string },
 ): Promise<void> {
-  await runUnlimitedTimeOffPolicyCreate(page, _scenario, { policyName: opts.policyName })
+  // Delete spec uses an empty policy on purpose. Deleting a policy with
+  // enrolled employees on the demo backend is blocked by the
+  // "pending or approved time off requests must be declined first" rule
+  // — the seed employees on react_sdk_demo_company_onboarded carry
+  // pre-existing requests that surface as a UX blocker, not a real
+  // product regression. Specs 01-04 already exercise the populated-
+  // policy path. Spec 05 is the one whose contract is "delete-from-list
+  // confirmation flow", which is unaffected by enrollment count.
+  await runUnlimitedTimeOffPolicyCreate(page, scenario, {
+    policyName: opts.policyName,
+    employeesToSelect: 0,
+  })
 
   await page.getByRole('button', { name: /time off policies/i }).click()
   await waitForLoadingComplete(page)

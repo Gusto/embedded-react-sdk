@@ -9,7 +9,7 @@ test.describe.serial('TimeOffCanary 04 — edit policy rename end-to-end', () =>
     })
   })
 
-  test('creates a fixed-accrual policy, renames it via Edit, and returns to the detail view', async ({
+  test('creates a populated fixed-accrual policy, renames it via Edit, returns to detail view', async ({
     page,
     scenario,
   }) => {

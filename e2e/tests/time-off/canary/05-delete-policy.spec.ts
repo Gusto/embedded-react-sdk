@@ -1,7 +1,7 @@
 import { test, expect } from '../../../utils/localTestFixture'
 import { runDeletePolicyFromList } from '../../../utils/timeOffFlowDrivers'
 
-test.describe.serial('TimeOffCanary 05 — delete policy end-to-end', () => {
+test.describe.serial('TimeOffCanary 05 — delete policy from list end-to-end', () => {
   test.beforeEach(({}, testInfo) => {
     testInfo.annotations.push({
       type: 'scenario',
@@ -9,7 +9,7 @@ test.describe.serial('TimeOffCanary 05 — delete policy end-to-end', () => {
     })
   })
 
-  test('creates an unlimited policy then deletes it from the list with the confirmation dialog', async ({
+  test('creates an unlimited policy and deletes it from the list with the confirmation dialog', async ({
     page,
     scenario,
   }) => {
