@@ -158,6 +158,15 @@ export function PolicySettingsPresentation({
                       isDisabled={!waitingPeriodEnabled}
                       min={0}
                       max={20000}
+                      maximumFractionDigits={0}
+                      rules={{
+                        validate: (value: number) => {
+                          if (waitingPeriodEnabled && !isNaN(value) && !Number.isInteger(value)) {
+                            return t('policySettings.errors.waitingPeriodMustBeWholeNumber')
+                          }
+                          return true
+                        },
+                      }}
                     />
                     <div className={styles.toggleCell}>
                       <SwitchField

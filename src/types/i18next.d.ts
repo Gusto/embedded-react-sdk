@@ -428,6 +428,7 @@ export interface CompanyTimeOffCreateTimeOffPolicy{
 "continueCta":string;
 "errors":{
 "balanceExceedsMaximum":string;
+"waitingPeriodMustBeWholeNumber":string;
 };
 };
 "startingBalances":{
