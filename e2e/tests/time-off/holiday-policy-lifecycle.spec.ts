@@ -106,7 +106,7 @@ test.describe('TimeOffFlow - holiday policy lifecycle', () => {
       await waitForLoadingComplete(page, 60000)
       await page.getByRole('button', { name: /^continue$/i }).click()
       await waitForLoadingComplete(page, 60000)
-      await page.getByRole('button', { name: /time off policies/i }).click()
+      await page.getByRole('button', { name: /back to policies/i }).click()
       await waitForLoadingComplete(page)
     }
 
