@@ -314,7 +314,13 @@ export async function openEditBalanceModalForFirstEmployee(page: Page): Promise<
 
   await page.getByRole('menuitem', { name: /edit balance/i }).click()
 
-  await expect(page.getByRole('dialog')).toBeVisible({ timeout: 10_000 })
+  // The hamburger menu uses react-aria-Popover which also has role="dialog",
+  // and it briefly overlaps the real Edit balance modal during the exit
+  // animation (strict-mode collision). Scope to the dialog whose title text
+  // matches editBalanceModal.title ("Edit {name} time off balance").
+  await expect(page.getByRole('dialog').filter({ hasText: /time off balance/i })).toBeVisible({
+    timeout: 10_000,
+  })
 }
 
 export async function enableBalanceMaximumWithValue(page: Page, hours: string): Promise<void> {
