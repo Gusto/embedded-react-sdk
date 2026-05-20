@@ -51,6 +51,6 @@ test.describe('PayrollFlow — regular biweekly', () => {
       .getByText(/blocker|action.*required|complete.*setup|view.*blocker/i)
       .first()
 
-    await expect(payPeriodHeader.or(blockerSurface)).toBeVisible({ timeout: 30000 })
+    await expect(payPeriodHeader.or(blockerSurface).first()).toBeVisible({ timeout: 30000 })
   })
 })

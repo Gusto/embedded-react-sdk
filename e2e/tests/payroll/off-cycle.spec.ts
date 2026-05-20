@@ -18,7 +18,7 @@ test.describe('PayrollFlow — off-cycle eligible', () => {
 
     const payPeriodHeader = page.getByRole('columnheader', { name: /pay period/i })
     const blockerSurface = page.getByText(/blocker|action.*required|complete.*setup/i).first()
-    await expect(payPeriodHeader.or(blockerSurface)).toBeVisible({ timeout: 30000 })
+    await expect(payPeriodHeader.or(blockerSurface).first()).toBeVisible({ timeout: 30000 })
   })
 
   test('history tab opens its panel after switching from run payroll', async ({ page }) => {
