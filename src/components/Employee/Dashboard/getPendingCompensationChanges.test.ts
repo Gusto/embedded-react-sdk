@@ -3,6 +3,7 @@ import type { Job } from '@gusto/embedded-api/models/components/job'
 import { describe, expect, it } from 'vitest'
 import { getPendingCompensationChanges } from './getPendingCompensationChanges'
 import { FlsaStatus } from '@/shared/constants'
+import { assertDefined } from '@/test-utils/assertions'
 
 const TODAY = new Date('2026-05-19T12:00:00')
 
@@ -57,8 +58,8 @@ describe('getPendingCompensationChanges', () => {
       jobUuid: 'job-1',
       effectiveDate: '2026-06-01',
       jobTitle: 'Cashier',
+      details: [{ kind: 'payChange', rate: 35, paymentUnit: 'Hour' }],
     })
-    expect(result[0]!.details).toEqual([{ kind: 'payChange', rate: 35, paymentUnit: 'Hour' }])
   })
 
   it('emits payChange when only paymentUnit differs', () => {
@@ -73,7 +74,9 @@ describe('getPendingCompensationChanges', () => {
 
     const result = getPendingCompensationChanges([job], { today: TODAY })
 
-    expect(result[0]!.details).toEqual([{ kind: 'payChange', rate: 30, paymentUnit: 'Year' }])
+    expect(result[0]).toMatchObject({
+      details: [{ kind: 'payChange', rate: 30, paymentUnit: 'Year' }],
+    })
   })
 
   it('emits a single payChange when both rate and paymentUnit differ', () => {
@@ -88,7 +91,9 @@ describe('getPendingCompensationChanges', () => {
 
     const result = getPendingCompensationChanges([job], { today: TODAY })
 
-    expect(result[0]!.details).toEqual([{ kind: 'payChange', rate: 60000, paymentUnit: 'Year' }])
+    expect(result[0]).toMatchObject({
+      details: [{ kind: 'payChange', rate: 60000, paymentUnit: 'Year' }],
+    })
   })
 
   it('emits titleChange when only title differs', () => {
@@ -102,7 +107,9 @@ describe('getPendingCompensationChanges', () => {
 
     const result = getPendingCompensationChanges([job], { today: TODAY })
 
-    expect(result[0]!.details).toEqual([{ kind: 'titleChange', title: 'Senior Cashier' }])
+    expect(result[0]).toMatchObject({
+      details: [{ kind: 'titleChange', title: 'Senior Cashier' }],
+    })
   })
 
   it('emits both titleChange and payChange when both differ', () => {
@@ -117,10 +124,12 @@ describe('getPendingCompensationChanges', () => {
 
     const result = getPendingCompensationChanges([job], { today: TODAY })
 
-    expect(result[0]!.details).toEqual([
-      { kind: 'titleChange', title: 'Senior Cashier' },
-      { kind: 'payChange', rate: 35, paymentUnit: 'Hour' },
-    ])
+    expect(result[0]).toMatchObject({
+      details: [
+        { kind: 'titleChange', title: 'Senior Cashier' },
+        { kind: 'payChange', rate: 35, paymentUnit: 'Hour' },
+      ],
+    })
   })
 
   it('emits flsaChange carrying the new FlsaStatus enum value', () => {
@@ -134,9 +143,8 @@ describe('getPendingCompensationChanges', () => {
 
     const result = getPendingCompensationChanges([job], { today: TODAY })
 
-    expect(result[0]!.details).toContainEqual({
-      kind: 'flsaChange',
-      flsaStatus: FlsaStatus.EXEMPT,
+    expect(result[0]).toMatchObject({
+      details: expect.arrayContaining([{ kind: 'flsaChange', flsaStatus: FlsaStatus.EXEMPT }]),
     })
   })
 
@@ -153,7 +161,9 @@ describe('getPendingCompensationChanges', () => {
 
       const result = getPendingCompensationChanges([job], { today: TODAY })
 
-      expect(result[0]!.details).toContainEqual({ kind: 'minWageEnabled', wage: '16.50' })
+      expect(result[0]).toMatchObject({
+        details: expect.arrayContaining([{ kind: 'minWageEnabled', wage: '16.50' }]),
+      })
     })
 
     it('off → on without minimumWages entry emits minWageEnabled with wage=null', () => {
@@ -168,7 +178,9 @@ describe('getPendingCompensationChanges', () => {
 
       const result = getPendingCompensationChanges([job], { today: TODAY })
 
-      expect(result[0]!.details).toContainEqual({ kind: 'minWageEnabled', wage: null })
+      expect(result[0]).toMatchObject({
+        details: expect.arrayContaining([{ kind: 'minWageEnabled', wage: null }]),
+      })
     })
 
     it('on → off emits minWageDisabled', () => {
@@ -186,7 +198,9 @@ describe('getPendingCompensationChanges', () => {
 
       const result = getPendingCompensationChanges([job], { today: TODAY })
 
-      expect(result[0]!.details).toContainEqual({ kind: 'minWageDisabled' })
+      expect(result[0]).toMatchObject({
+        details: expect.arrayContaining([{ kind: 'minWageDisabled' }]),
+      })
     })
 
     it('on → on with a different minimum wage entry emits minWageChanged', () => {
@@ -204,7 +218,9 @@ describe('getPendingCompensationChanges', () => {
 
       const result = getPendingCompensationChanges([job], { today: TODAY })
 
-      expect(result[0]!.details).toContainEqual({ kind: 'minWageChanged', wage: '17.25' })
+      expect(result[0]).toMatchObject({
+        details: expect.arrayContaining([{ kind: 'minWageChanged', wage: '17.25' }]),
+      })
     })
 
     it('on → on with the same minimum wage entry emits no min-wage bullet', () => {
@@ -223,10 +239,9 @@ describe('getPendingCompensationChanges', () => {
 
       const result = getPendingCompensationChanges([job], { today: TODAY })
 
-      const kinds = result[0]!.details.map(d => d.kind)
-      expect(kinds).not.toContain('minWageEnabled')
-      expect(kinds).not.toContain('minWageDisabled')
-      expect(kinds).not.toContain('minWageChanged')
+      expect(result[0]).toMatchObject({
+        details: [{ kind: 'payChange', rate: 35, paymentUnit: 'Hour' }],
+      })
     })
   })
 
@@ -244,9 +259,9 @@ describe('getPendingCompensationChanges', () => {
 
     const result = getPendingCompensationChanges([job], { today: TODAY })
 
-    expect(result[0]!.details).toEqual([
-      { kind: 'newJob', title: 'Stock Associate', rate: 22, paymentUnit: 'Hour' },
-    ])
+    expect(result[0]).toMatchObject({
+      details: [{ kind: 'newJob', title: 'Stock Associate', rate: 22, paymentUnit: 'Hour' }],
+    })
   })
 
   it('treats a job whose currentCompensationUuid points at a future comp as a new job', () => {
@@ -260,7 +275,7 @@ describe('getPendingCompensationChanges', () => {
 
     const result = getPendingCompensationChanges([job], { today: TODAY })
 
-    expect(result[0]!.details[0]!.kind).toBe('newJob')
+    expect(result[0]).toMatchObject({ details: [{ kind: 'newJob' }] })
   })
 
   it('returns stacked future comps in ascending effectiveDate order with diff baselined to the previous comp', () => {
@@ -280,8 +295,12 @@ describe('getPendingCompensationChanges', () => {
     const result = getPendingCompensationChanges([job], { today: TODAY })
 
     expect(result.map(r => r.compensationUuid)).toEqual(['comp-future-a', 'comp-future-b'])
-    expect(result[0]!.details).toEqual([{ kind: 'payChange', rate: 32, paymentUnit: 'Hour' }])
-    expect(result[1]!.details).toEqual([{ kind: 'payChange', rate: 35, paymentUnit: 'Hour' }])
+    expect(result[0]).toMatchObject({
+      details: [{ kind: 'payChange', rate: 32, paymentUnit: 'Hour' }],
+    })
+    expect(result[1]).toMatchObject({
+      details: [{ kind: 'payChange', rate: 35, paymentUnit: 'Hour' }],
+    })
   })
 
   it('flattens pending changes across multiple jobs and sorts globally by effectiveDate', () => {
@@ -306,8 +325,12 @@ describe('getPendingCompensationChanges', () => {
     const result = getPendingCompensationChanges([jobA, jobB], { today: TODAY })
 
     expect(result.map(r => r.compensationUuid)).toEqual(['future-b', 'future-a'])
-    expect(result[0]!.jobUuid).toBe('job-b')
-    expect(result[1]!.jobUuid).toBe('job-a')
+
+    const [first, second] = result
+    assertDefined(first)
+    assertDefined(second)
+    expect(first.jobUuid).toBe('job-b')
+    expect(second.jobUuid).toBe('job-a')
   })
 
   it('ignores a compensation whose effectiveDate is exactly today (strict > semantics)', () => {
