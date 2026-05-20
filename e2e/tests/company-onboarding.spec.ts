@@ -76,12 +76,11 @@ test.describe('CompanyOnboardingFlow', () => {
       timeout: 30000,
     })
 
-    // Fill required Federal EIN - generate a unique one to avoid "already in use" errors
     const einField = page.getByLabel(/federal ein/i)
     if (await einField.isVisible().catch(() => false)) {
-      const uniqueEIN = `${Math.floor(Math.random() * 89 + 10)}-${Math.floor(Math.random() * 8999999 + 1000000)}`
+      const { generateUniqueEIN } = await import('../utils/helpers')
       await einField.clear()
-      await einField.fill(uniqueEIN)
+      await einField.fill(generateUniqueEIN())
     }
 
     // Select taxpayer type if dropdown is present and empty

@@ -28,8 +28,8 @@ test.describe('ContractorOnboardingFlow - Business contractor create lifecycle',
 
     const einField = page.getByLabel(/^ein$/i)
     if (await einField.isVisible().catch(() => false)) {
-      const uniqueEin = `${Math.floor(Math.random() * 89 + 10)}-${Math.floor(Math.random() * 8999999 + 1000000)}`
-      await einField.fill(uniqueEin)
+      const { generateUniqueEIN } = await import('../../utils/helpers')
+      await einField.fill(generateUniqueEIN())
     }
 
     await page.getByRole('radio', { name: /^fixed$/i }).check()

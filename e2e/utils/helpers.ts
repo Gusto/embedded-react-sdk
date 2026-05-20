@@ -1,11 +1,17 @@
+import { randomInt } from 'node:crypto'
 import type { Page } from '@playwright/test'
 
-// noboost: Math.random() is fine here — these are fake SSNs for e2e test form fills, not real secrets
 export function generateUniqueSSN(): string {
-  const area = Math.floor(Math.random() * 665) + 1 // noboost
-  const group = Math.floor(Math.random() * 98) + 1 // noboost
-  const serial = Math.floor(Math.random() * 9998) + 1 // noboost
+  const area = randomInt(1, 666)
+  const group = randomInt(1, 99)
+  const serial = randomInt(1, 9999)
   return `${area.toString().padStart(3, '0')}${group.toString().padStart(2, '0')}${serial.toString().padStart(4, '0')}`
+}
+
+export function generateUniqueEIN(): string {
+  const prefix = randomInt(10, 100)
+  const suffix = randomInt(1000000, 10000000)
+  return `${prefix}-${suffix}`
 }
 
 export async function fillDate(

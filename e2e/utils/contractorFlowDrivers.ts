@@ -1,6 +1,6 @@
 import { expect, type Page } from '@playwright/test'
 import type { ScenarioContext } from '../scenario/context'
-import { fillDate, generateUniqueSSN, waitForLoadingComplete } from './helpers'
+import { fillDate, generateUniqueEIN, generateUniqueSSN, waitForLoadingComplete } from './helpers'
 
 const LONG_WAIT = 60_000
 
@@ -63,9 +63,7 @@ async function fillBusinessProfile(page: Page, opts: OnboardBusinessOptions): Pr
   await page.getByRole('radio', { name: /^business$/i }).check()
   await page.getByLabel(/business name/i).fill(opts.businessName)
 
-  // EIN is required for Business; generate a unique-looking one to avoid demo-side collisions
-  const ein = `${Math.floor(Math.random() * 89 + 10)}-${Math.floor(Math.random() * 8999999 + 1000000)}` // noboost
-  await page.getByLabel(/^ein$/i).fill(ein)
+  await page.getByLabel(/^ein$/i).fill(generateUniqueEIN())
 
   await page.getByRole('radio', { name: /^fixed$/i }).check()
 
