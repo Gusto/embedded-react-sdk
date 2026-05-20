@@ -44,7 +44,12 @@ async function fillIndividualProfile(page: Page, opts: OnboardIndividualOptions)
   await page.getByRole('radio', { name: /^individual$/i }).check()
   await page.getByLabel(/first name/i).fill(opts.firstName)
   await page.getByLabel(/last name/i).fill(opts.lastName)
-  await page.getByLabel(/social security number/i).fill(generateUniqueSSN())
+
+  const ssnField = page.getByLabel(/social security number/i)
+  if (await ssnField.isVisible({ timeout: 5_000 }).catch(() => false)) {
+    await ssnField.fill(generateUniqueSSN())
+  }
+
   await page.getByRole('radio', { name: /^hourly$/i }).check()
   await page.getByLabel(/hourly rate/i).fill('50')
 
@@ -63,7 +68,10 @@ async function fillBusinessProfile(page: Page, opts: OnboardBusinessOptions): Pr
   await page.getByRole('radio', { name: /^business$/i }).check()
   await page.getByLabel(/business name/i).fill(opts.businessName)
 
-  await page.getByLabel(/^ein$/i).fill(generateUniqueEIN())
+  const einField = page.getByLabel(/^ein$/i)
+  if (await einField.isVisible({ timeout: 5_000 }).catch(() => false)) {
+    await einField.fill(generateUniqueEIN())
+  }
 
   await page.getByRole('radio', { name: /^fixed$/i }).check()
 

@@ -30,8 +30,7 @@ test.describe('ContractorPaymentFlow - submit payment lifecycle', () => {
     await expect(composition.or(empty)).toBeVisible({ timeout: 30000 })
 
     if (await empty.isVisible().catch(() => false)) {
-      await expect(empty).toBeVisible()
-      return
+      test.skip(true, 'No contractors provisioned — skipping payment flow')
     }
 
     const dateInput = page.getByLabel(/payment date/i)
