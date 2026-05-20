@@ -1,8 +1,10 @@
 import { test, expect } from '../../utils/localTestFixture'
+import {
+  OVERVIEW_HEADING,
+  BEGIN_ONBOARDING_BUTTON,
+  landOnCompanyOnboarding,
+} from '../../utils/companyFlowDrivers'
 import { waitForLoadingComplete } from '../../utils/helpers'
-
-const overviewHeading = /get started|let's get started|we need a few more details/i
-const beginOnboardingButton = /start onboarding|continue onboarding/i
 
 test.describe('CompanyOnboarding — step navigation', () => {
   test.beforeEach(({}, testInfo) => {
@@ -13,10 +15,9 @@ test.describe('CompanyOnboarding — step navigation', () => {
   })
 
   test('shows progress bar after entering first onboarding step', async ({ page }) => {
-    await page.goto('/?flow=company-onboarding')
-    await waitForLoadingComplete(page)
+    await landOnCompanyOnboarding(page)
 
-    await page.getByRole('button', { name: beginOnboardingButton }).click()
+    await page.getByRole('button', { name: BEGIN_ONBOARDING_BUTTON }).click()
     await waitForLoadingComplete(page)
 
     await expect(page.getByRole('heading', { name: /address/i })).toBeVisible({
@@ -28,10 +29,9 @@ test.describe('CompanyOnboarding — step navigation', () => {
   test('back button on first step returns to onboarding overview when present', async ({
     page,
   }) => {
-    await page.goto('/?flow=company-onboarding')
-    await waitForLoadingComplete(page)
+    await landOnCompanyOnboarding(page)
 
-    await page.getByRole('button', { name: beginOnboardingButton }).click()
+    await page.getByRole('button', { name: BEGIN_ONBOARDING_BUTTON }).click()
     await waitForLoadingComplete(page)
 
     await expect(page.getByRole('heading', { name: /address/i })).toBeVisible({
@@ -42,7 +42,7 @@ test.describe('CompanyOnboarding — step navigation', () => {
     if (await backButton.isVisible().catch(() => false)) {
       await backButton.click()
       await waitForLoadingComplete(page)
-      await expect(page.getByRole('heading', { name: overviewHeading })).toBeVisible({
+      await expect(page.getByRole('heading', { name: OVERVIEW_HEADING })).toBeVisible({
         timeout: 30000,
       })
     }

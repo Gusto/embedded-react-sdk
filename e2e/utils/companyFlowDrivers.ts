@@ -6,6 +6,9 @@ const LONG_WAIT = 60_000
 const MEDIUM_WAIT = 30_000
 const SHORT_WAIT = 5_000
 
+export const OVERVIEW_HEADING = /get started|let's get started|we need a few more details/i
+export const BEGIN_ONBOARDING_BUTTON = /start onboarding|continue onboarding/i
+
 /**
  * Land on the company-onboarding entry screen — the overview that shows
  * either "Let's get started" (fresh company) or "We need a few more
@@ -337,10 +340,7 @@ export async function advancePastStateTaxes(page: Page): Promise<void> {
  * Documents step renders (sign-off requires PDF signature interaction
  * which is brittle for canary).
  */
-export async function runFullOnboardingThroughDocuments(
-  page: Page,
-  _scenario: ScenarioContext,
-): Promise<void> {
+export async function runFullOnboardingThroughDocuments(page: Page): Promise<void> {
   await landOnCompanyOnboarding(page)
   await clickStartOrContinueOnboarding(page)
   await advancePastLocations(page)

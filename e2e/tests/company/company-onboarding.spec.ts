@@ -1,10 +1,8 @@
 import { test, expect } from '../../utils/localTestFixture'
+import { OVERVIEW_HEADING, BEGIN_ONBOARDING_BUTTON } from '../../utils/companyFlowDrivers'
 import { waitForLoadingComplete } from '../../utils/helpers'
 
 test.describe('CompanyOnboardingFlow', () => {
-  const overviewHeading = /get started|let's get started|we need a few more details/i
-  const beginOnboardingButton = /start onboarding|continue onboarding/i
-
   test.beforeEach(({}, testInfo) => {
     testInfo.annotations.push({
       type: 'scenario',
@@ -16,7 +14,7 @@ test.describe('CompanyOnboardingFlow', () => {
     await page.goto('/?flow=company-onboarding')
     await waitForLoadingComplete(page)
 
-    await expect(page.getByRole('heading', { name: overviewHeading })).toBeVisible({
+    await expect(page.getByRole('heading', { name: OVERVIEW_HEADING })).toBeVisible({
       timeout: 30000,
     })
 
@@ -25,14 +23,14 @@ test.describe('CompanyOnboardingFlow', () => {
     await expect(page.getByText(/industry/i).first()).toBeVisible()
     await expect(page.getByText(/employees/i).first()).toBeVisible()
 
-    await expect(page.getByRole('button', { name: beginOnboardingButton })).toBeVisible()
+    await expect(page.getByRole('button', { name: BEGIN_ONBOARDING_BUTTON })).toBeVisible()
   })
 
   test('can navigate to first step (Company addresses)', async ({ page }) => {
     await page.goto('/?flow=company-onboarding')
     await waitForLoadingComplete(page)
 
-    await page.getByRole('button', { name: beginOnboardingButton }).click()
+    await page.getByRole('button', { name: BEGIN_ONBOARDING_BUTTON }).click()
     await waitForLoadingComplete(page)
 
     await expect(page.getByRole('heading', { name: /address/i })).toBeVisible({ timeout: 30000 })
@@ -43,7 +41,7 @@ test.describe('CompanyOnboardingFlow', () => {
     await page.goto('/?flow=company-onboarding')
     await waitForLoadingComplete(page)
 
-    await page.getByRole('button', { name: beginOnboardingButton }).click()
+    await page.getByRole('button', { name: BEGIN_ONBOARDING_BUTTON }).click()
     await waitForLoadingComplete(page)
 
     await expect(page.getByRole('heading', { name: /address/i })).toBeVisible({ timeout: 30000 })
@@ -59,7 +57,7 @@ test.describe('CompanyOnboardingFlow', () => {
     await page.goto('/?flow=company-onboarding')
     await waitForLoadingComplete(page)
 
-    await page.getByRole('button', { name: beginOnboardingButton }).click()
+    await page.getByRole('button', { name: BEGIN_ONBOARDING_BUTTON }).click()
     await waitForLoadingComplete(page)
     await expect(page.getByRole('heading', { name: /address/i })).toBeVisible({ timeout: 30000 })
     await page.getByRole('button', { name: /continue/i }).click()
