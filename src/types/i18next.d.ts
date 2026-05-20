@@ -1475,6 +1475,8 @@ export interface EmployeeDashboard{
 "frequency":string;
 "withhold":string;
 "recurring":string;
+"oneTime":string;
+"amountPerPaycheck":string;
 "emptyState":{
 "title":string;
 "description":string;
@@ -1546,6 +1548,9 @@ export interface EmployeeDashboard{
 "bankAccountAdded":string;
 "bankAccountDeleted":string;
 "splitUpdated":string;
+"deductionAdded":string;
+"deductionUpdated":string;
+"deductionDeleted":string;
 };
 };
 export interface EmployeeDeductions{
@@ -1624,6 +1629,12 @@ export interface EmployeeDeductions{
 "hamburgerTitle":string;
 "editCta":string;
 "deleteCta":string;
+"deleteDeductionDialog":{
+"title":string;
+"description":string;
+"confirmCta":string;
+"cancelCta":string;
+};
 "addDeductionCta":string;
 "cancelCta":string;
 "validations":{

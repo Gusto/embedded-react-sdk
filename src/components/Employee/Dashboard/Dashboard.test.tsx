@@ -1,17 +1,68 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { HttpResponse } from 'msw'
+import { http, HttpResponse, type HttpResponseResolver } from 'msw'
 import type { DashboardProps } from './Dashboard'
 import { Dashboard } from './Dashboard'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { server } from '@/test/mocks/server'
+import { API_BASE_URL } from '@/test/constants'
 import { handleGetEmployeeForms, i9Form } from '@/test/mocks/apis/employee_forms'
 import { componentEvents } from '@/shared/constants'
 import { assertDefined } from '@/test-utils/assertions'
 import { getFixture } from '@/test/mocks/fixtures/getFixture'
 import { handleGetEmployee } from '@/test/mocks/apis/employees'
+
+type GarnishmentFixture = {
+  uuid: string
+  version: string
+  active: boolean
+  amount: string
+  description: string
+  recurring: boolean
+  deduct_as_percentage: boolean
+  court_ordered: boolean
+  times: number | null
+  annual_maximum: string | null
+  pay_period_maximum: string | null
+  total_amount: string | null
+}
+
+const buildGarnishment = (
+  overrides: Partial<GarnishmentFixture> & { uuid: string },
+): GarnishmentFixture => ({
+  active: true,
+  amount: '50',
+  description: 'Health Insurance',
+  recurring: true,
+  deduct_as_percentage: false,
+  court_ordered: false,
+  times: null,
+  annual_maximum: null,
+  pay_period_maximum: null,
+  total_amount: null,
+  version: `version-${overrides.uuid}`,
+  ...overrides,
+})
+
+const stubGarnishmentsList = (garnishments: GarnishmentFixture[]) => {
+  server.use(
+    http.get(`${API_BASE_URL}/v1/employees/:employee_id/garnishments`, () =>
+      HttpResponse.json(garnishments),
+    ),
+  )
+}
+
+const openJobAndPayTab = async (user: ReturnType<typeof userEvent.setup>) => {
+  await waitFor(() => {
+    expect(screen.getByText('Legal name')).toBeTruthy()
+  })
+  await user.click(screen.getByRole('tab', { name: 'Job and pay' }))
+  await waitFor(() => {
+    expect(screen.getByRole('heading', { name: 'Deductions' })).toBeInTheDocument()
+  })
+}
 
 vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', () => {
   const useContainerBreakpoints = () => ['small', 'medium', 'large']
@@ -126,6 +177,100 @@ describe('Dashboard', () => {
 
     expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_JOB_ADD, {
       employeeId: 'employee-123',
+    })
+  })
+
+  describe('Job and pay > Deductions', () => {
+    it('renders active deduction rows with formatted withheld amount', async () => {
+      stubGarnishmentsList([
+        buildGarnishment({ uuid: 'd-1', description: 'Health Insurance', amount: '120' }),
+        buildGarnishment({
+          uuid: 'd-2',
+          description: 'Parking Fee',
+          amount: '5',
+          deduct_as_percentage: true,
+        }),
+        buildGarnishment({
+          uuid: 'd-inactive',
+          description: 'Old Deduction',
+          active: false,
+        }),
+      ])
+      const user = userEvent.setup()
+
+      renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
+      await openJobAndPayTab(user)
+
+      expect(screen.getByText('Health Insurance')).toBeInTheDocument()
+      expect(screen.getByText('Parking Fee')).toBeInTheDocument()
+      // Inactive rows are filtered out by the hook
+      expect(screen.queryByText('Old Deduction')).toBeNull()
+    })
+
+    it('emits EMPLOYEE_DEDUCTION_ADD when clicking the Add deduction button', async () => {
+      stubGarnishmentsList([])
+      const user = userEvent.setup()
+
+      renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
+      await openJobAndPayTab(user)
+
+      await user.click(screen.getByRole('button', { name: 'Add deduction' }))
+
+      expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_DEDUCTION_ADD, {
+        employeeId: 'employee-123',
+      })
+    })
+
+    it('emits EMPLOYEE_DEDUCTION_EDIT with the garnishment when clicking Edit', async () => {
+      stubGarnishmentsList([
+        buildGarnishment({ uuid: 'd-1', description: 'Health Insurance', amount: '120' }),
+      ])
+      const user = userEvent.setup()
+
+      renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
+      await openJobAndPayTab(user)
+
+      await user.click(screen.getByRole('button', { name: 'Deduction actions menu' }))
+      await user.click(await screen.findByRole('menuitem', { name: 'Edit deduction' }))
+
+      expect(onEvent).toHaveBeenCalledWith(
+        componentEvents.EMPLOYEE_DEDUCTION_EDIT,
+        expect.objectContaining({ uuid: 'd-1', description: 'Health Insurance' }),
+      )
+    })
+
+    it('soft-deletes via PUT and emits EMPLOYEE_DEDUCTION_DELETED on confirm', async () => {
+      const target = buildGarnishment({ uuid: 'd-1', description: 'Health Insurance' })
+      stubGarnishmentsList([target])
+
+      let updatePath: string | null = null
+      let updateBody: Record<string, unknown> | null = null
+      const updateResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+        updatePath = new URL(request.url).pathname
+        updateBody = (await request.json()) as Record<string, unknown>
+        return HttpResponse.json({ ...target, active: false })
+      })
+      server.use(http.put(`${API_BASE_URL}/v1/garnishments/:garnishment_id`, updateResolver))
+
+      const user = userEvent.setup()
+      renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
+      await openJobAndPayTab(user)
+
+      await user.click(screen.getByRole('button', { name: 'Deduction actions menu' }))
+      await user.click(await screen.findByRole('menuitem', { name: 'Delete deduction' }))
+
+      const dialog = await screen.findByRole('dialog')
+      await user.click(within(dialog).getByRole('button', { name: 'Delete' }))
+
+      await waitFor(() => {
+        expect(updateResolver).toHaveBeenCalledTimes(1)
+      })
+      expect(updatePath).toBe('/v1/garnishments/d-1')
+      expect(updateBody).toMatchObject({ active: false, version: 'version-d-1' })
+      expect(onEvent).toHaveBeenCalledWith(
+        componentEvents.EMPLOYEE_DEDUCTION_DELETED,
+        expect.objectContaining({ uuid: 'd-1', active: false }),
+      )
     })
   })
 
