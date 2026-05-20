@@ -105,10 +105,15 @@ export function useClientPagination<TItem>(
     setCurrentPage(1)
   }, [])
 
+  const actions = useMemo(
+    () => ({ onSearchChange, onSearchClear }),
+    [onSearchChange, onSearchClear],
+  )
+
   return {
     data,
     pagination,
     searchValue,
-    actions: { onSearchChange, onSearchClear },
+    actions,
   }
 }

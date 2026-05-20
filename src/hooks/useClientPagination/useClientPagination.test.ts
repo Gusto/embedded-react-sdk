@@ -443,7 +443,7 @@ describe('useClientPagination — search', () => {
 })
 
 describe('useClientPagination — referential stability', () => {
-  test('data and pagination identity are stable across no-op rerenders', () => {
+  test('data, pagination, and actions identity are stable across no-op rerenders', () => {
     const stable = Array.from({ length: 8 }, (_, i) => makeItem(i))
     const { result, rerender } = renderHook(
       ({ data }: { data: FakeItem[] }) => useClientPagination(data),
@@ -452,11 +452,29 @@ describe('useClientPagination — referential stability', () => {
 
     const firstData = result.current.data
     const firstPagination = result.current.pagination
+    const firstActions = result.current.actions
 
     rerender({ data: stable })
 
     expect(result.current.data).toBe(firstData)
     expect(result.current.pagination).toBe(firstPagination)
+    expect(result.current.actions).toBe(firstActions)
+  })
+
+  test('actions identity is stable even when pagination state changes', () => {
+    const { result } = renderHook(() => useClientPagination(items))
+
+    const firstActions = result.current.actions
+
+    act(() => {
+      result.current.pagination.handleNextPage()
+    })
+    expect(result.current.actions).toBe(firstActions)
+
+    act(() => {
+      result.current.pagination.handleItemsPerPageChange(10)
+    })
+    expect(result.current.actions).toBe(firstActions)
   })
 
   test('a new allItems reference re-derives data and pagination', () => {
