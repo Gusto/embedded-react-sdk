@@ -91,7 +91,20 @@ export const test = base.extend<ScenarioFixtures & { localConfig: LocalConfig }>
         testInfo.annotations.push({ type: 'tag', description: `@${scenarioJson.domain}` })
       }
 
-      if (process.env.E2E_LOCAL !== 'true') {
+      // Scenario provisioning hits gws-flows to mint a fresh demo company
+      // per test. That requires a real backend, so we only do it when
+      // E2E_USE_REAL_BACKEND is set (true in CI's e2e job and via
+      // playwright.demo.config.ts / playwright.local.config.ts). When tests
+      // run against MSW mocks (the default `playwright test` config), no
+      // backend is reachable and we hand back an empty context — every
+      // scenario-driven spec self-skips via `test.skip(!scenario.flowToken)`.
+      //
+      // Note: an earlier version of this fixture gated on a separate
+      // E2E_LOCAL env var that was never set anywhere in the repo, which
+      // silently caused every scenario-based spec (including the canary
+      // suites) to skip in CI. Don't add another gate here without making
+      // sure something actually sets it.
+      if (process.env.E2E_USE_REAL_BACKEND !== 'true') {
         await use(EMPTY_SCENARIO_CONTEXT)
         return
       }
