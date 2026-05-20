@@ -1,4 +1,4 @@
-import { defineConfig, devices } from '@playwright/test'
+import { defineConfig, devices, type ReporterDescription } from '@playwright/test'
 import * as dotenv from 'dotenv'
 import * as path from 'path'
 import { fileURLToPath } from 'url'
@@ -9,6 +9,18 @@ dotenv.config({ path: path.resolve(__dirname, 'e2e/local.config.env') })
 process.env.E2E_USE_REAL_BACKEND = 'true'
 process.env.E2E_GWS_FLOWS_HOST = process.env.E2E_GWS_FLOWS_HOST || 'http://localhost:7777'
 
+// See playwright.demo.config.ts for the full reporter rationale; the same
+// stack runs against the local gws-flows + ZenPayroll proxy so output shape
+// stays consistent across environments.
+const reporters: ReporterDescription[] = [
+  ['list'],
+  ['html'],
+  ['./e2e/reporters/scenario-reporter.ts'],
+]
+if (process.env.GITHUB_ACTIONS === 'true') {
+  reporters.push(['github'])
+}
+
 export default defineConfig({
   globalSetup: './e2e/globalSetup.ts',
   testDir: './e2e/tests',
@@ -16,7 +28,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: 2,
   workers: process.env.CI ? 1 : undefined,
-  reporter: [['html'], ['./e2e/reporters/scenario-reporter.ts']],
+  reporter: reporters,
   timeout: 120_000,
   expect: {
     timeout: 30_000,
