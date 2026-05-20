@@ -1,0 +1,21 @@
+{
+  "$schema": "../../schema/scenario.schema.json",
+  "name": "Company onboarding full-flow canary",
+  "description": "Fresh react_sdk_demo company decorated with a single HQ location (filing + mailing) so the company-onboarding wizard can be driven end-to-end through the SDK UI. Federal taxes, industry, bank account, employees, pay schedule, state taxes, and documents are all driven via the SDK UI by the canary drivers.",
+  "domain": "company",
+  "baseDemo": "react_sdk_demo",
+  "decorations": {
+    "locations": [
+      {
+        "key": "hq",
+        "street_1": "100 Canary Way",
+        "city": "San Francisco",
+        "state": "CA",
+        "zip": "94105",
+        "filing_address": true,
+        "mailing_address": true
+      }
+    ]
+  },
+  "expectedContext": ["companyId", "locationIds.hq"]
+}
