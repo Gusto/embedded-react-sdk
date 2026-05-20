@@ -231,7 +231,6 @@ jobs:
       - name: Run scenario unit tests
         run: npm run test:scenarios
 
-
   # E2E job: Run Playwright e2e tests against the live demo environment.
   # This is the sole Playwright gate. A previous MSW-mode e2e job was removed
   # because its mock fixtures could not keep pace with real demo backend
