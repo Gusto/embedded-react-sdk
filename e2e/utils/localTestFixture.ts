@@ -1,7 +1,7 @@
 import { test as base } from '@playwright/test'
 import { existsSync, readFileSync } from 'fs'
 import { resolve } from 'path'
-import type { ScenarioContext } from '../scenario/cache'
+import type { ScenarioContext } from '../scenario/context'
 import { provisionScenario } from '../scenario/runner'
 
 interface E2EState {
