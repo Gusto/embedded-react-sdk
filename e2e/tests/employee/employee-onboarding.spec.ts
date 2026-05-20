@@ -22,7 +22,7 @@ test.describe('EmployeeOnboardingFlow', () => {
     })
   })
 
-  test('completes the happy path successfully', async ({ page, localConfig, scenario }) => {
+  test('completes the happy path successfully', async ({ page, scenario }) => {
     test.skip(!scenario.flowToken, 'Requires scenario provisioning (local/demo runs only)')
 
     await page.goto('/?flow=employee-onboarding')
@@ -73,21 +73,8 @@ test.describe('EmployeeOnboardingFlow', () => {
     await zipField.clear()
     await zipField.fill('94105')
 
-    if (localConfig.isLocal && !hasWorkAddress) {
-      await expect(page.getByLabel(/first name/i)).toHaveValue('john')
-      await expect(page.getByLabel(/last name/i)).toHaveValue('silver')
-      return
-    }
-
     const continueBtn = page.getByRole('button', { name: 'Continue' })
     await continueBtn.waitFor({ state: 'visible', timeout: 15000 })
-
-    const isDisabled = await continueBtn.isDisabled()
-    if (isDisabled && localConfig.isLocal) {
-      await expect(page.getByLabel(/first name/i)).toHaveValue('john')
-      await expect(page.getByLabel(/last name/i)).toHaveValue('silver')
-      return
-    }
 
     await clickContinueAndWait(page)
 
@@ -194,18 +181,8 @@ test.describe('EmployeeOnboardingFlow', () => {
 
     await waitForLoadingComplete(page, 30000)
 
-    const completedHeading = page.getByRole('heading', { name: /that's it/i })
-    const isCompleted = await completedHeading
-      .waitFor({ state: 'visible', timeout: 30000 })
-      .then(() => true)
-      .catch(() => false)
-
-    if (!isCompleted && localConfig.isLocal) {
-      const article = page.locator('article')
-      await expect(article).toBeVisible()
-      return
-    }
-
-    await expect(completedHeading).toBeVisible()
+    await expect(page.getByRole('heading', { name: /that's it/i })).toBeVisible({
+      timeout: 30000,
+    })
   })
 })
