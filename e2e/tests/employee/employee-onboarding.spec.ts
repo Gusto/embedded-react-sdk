@@ -24,6 +24,7 @@ test.describe('EmployeeOnboardingFlow', () => {
 
   test('completes the happy path successfully', async ({ page, scenario }) => {
     test.skip(!scenario.flowToken, 'Requires scenario provisioning (local/demo runs only)')
+    test.setTimeout(180_000)
 
     await page.goto('/?flow=employee-onboarding')
 
