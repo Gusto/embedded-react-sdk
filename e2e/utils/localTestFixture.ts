@@ -96,7 +96,18 @@ export const test = base.extend<ScenarioFixtures & { localConfig: LocalConfig }>
         return
       }
 
+      // Phase-level timing: capture how long scenario provisioning takes
+      // (creates a fresh demo company + decorates it) so we can see at the
+      // reporter level whether tests are spending their time on setup or on
+      // the actual SDK flow under test. See e2e/reporters/scenario-reporter.
+      const provisioningStart = Date.now()
       const ctx = await provisionScenario(scenarioPath)
+      const provisioningMs = Date.now() - provisioningStart
+      testInfo.annotations.push({
+        type: 'timing',
+        description: JSON.stringify({ phase: 'provisioning', durationMs: provisioningMs }),
+      })
+
       await use(ctx)
     },
     { scope: 'test' },

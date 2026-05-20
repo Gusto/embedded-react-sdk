@@ -46,15 +46,23 @@ test.describe('My feature', () => {
 
 The `scenario` fixture provisions the company (or returns a cached result), injects flowToken/companyId into `page.goto`, and auto-tags the test with `@<domain>` for grep filtering.
 
-### Prewarm & Cache
+### Prewarm
 
 ```bash
 npm run e2e:scenarios:prewarm                    # All scenarios
 npm run e2e:scenarios:prewarm -- --domain payroll # Single domain
-npm run e2e:scenarios:clear                      # Clear cache
 ```
 
-The runner caches provisioned companies in `e2e/.scenario-cache.json` (gitignored). Re-runs reuse cached companies when the scenario structure hasn't changed and the flow token is still valid.
+The prewarm script walks every scenario JSON and calls `provisionScenario()` against the demo backend so you can confirm scenarios are well-formed before running specs against them. **There is currently no provisioning cache** — every test run, and every test inside a run, creates a fresh demo company. See `e2e/reports/timings.md` after a run for per-test phase timings (provisioning vs body) to see how much wall time this costs.
+
+### Phase timings
+
+The custom Playwright reporter at `e2e/reporters/scenario-reporter.ts` writes two artifacts after every run:
+
+- `e2e/reports/results.json` — structured per-test results (status, durations, phase timings)
+- `e2e/reports/timings.md` — human-readable per-domain summary showing how much of each test's wall time is spent on `provisioning` (creating + decorating a fresh demo company) vs `body` (everything else: navigation, SDK interaction, backend round-trips)
+
+If `provisioning` dominates `body`, the suite is paying repeatedly for setup that could be shared across tests. If `body` dominates, the bottleneck is in the SDK flow itself or the backend's response time — not something a caching change will fix.
 
 ### Scenario Module Tests
 
