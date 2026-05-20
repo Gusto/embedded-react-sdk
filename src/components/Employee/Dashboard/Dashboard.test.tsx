@@ -692,7 +692,10 @@ describe('Dashboard', () => {
       })
     }
 
-    const baseJob = (overrides: Partial<JobFixture> = {}, compensations: Compensation[] = []): JobFixture => ({
+    const baseJob = (
+      overrides: Partial<JobFixture> = {},
+      compensations: Compensation[] = [],
+    ): JobFixture => ({
       uuid: 'job-1',
       version: 'job-v1',
       employee_uuid: 'employee-uuid',

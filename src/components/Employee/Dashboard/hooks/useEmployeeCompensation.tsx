@@ -110,9 +110,7 @@ export function useEmployeeCompensation({
   )
 
   const isPending =
-    employeeQuery.isFetching ||
-    payStubsQuery.isFetching ||
-    cancelCompensationMutation.isPending
+    employeeQuery.isFetching || payStubsQuery.isFetching || cancelCompensationMutation.isPending
 
   const isLoading = !employee && isPending
 
