@@ -1,6 +1,7 @@
 import { expect, type Page } from '@playwright/test'
 import type { ScenarioContext } from '../scenario/context'
 import { fillDate, waitForLoadingComplete } from './helpers'
+import { PAYROLL_CALCULATION_DEADLINE, SDK_NAVIGATION_DEADLINE } from './timeouts'
 
 interface DateParts {
   month: number
@@ -25,13 +26,14 @@ function dateOffsetFromToday(daysAhead: number): DateParts {
  * SDK copy changes.
  */
 
-const LONG_WAIT = 60_000
 const DEMO_GWS_FLOWS_HOST = 'https://flows.gusto-demo.com'
 
 async function landOnPayrollHome(page: Page) {
   await page.goto('/?flow=payroll')
-  await waitForLoadingComplete(page, LONG_WAIT)
-  await expect(page.getByRole('tab', { name: /run payroll/i })).toBeVisible({ timeout: 30_000 })
+  await waitForLoadingComplete(page, PAYROLL_CALCULATION_DEADLINE)
+  await expect(page.getByRole('tab', { name: /run payroll/i })).toBeVisible({
+    timeout: SDK_NAVIGATION_DEADLINE,
+  })
 }
 
 /**
@@ -53,9 +55,20 @@ export async function ensureCompanyIsPayrollReady(
 ): Promise<void> {
   if (!scenario.flowToken || !scenario.companyId) return
 
+  // Race the two terminal states the landing page can render: either the
+  // signature blocker heading is up (and we need to clear it via API) or the
+  // primary action button is visible (and the company is already payroll-
+  // ready). Whichever resolves first ends the wait — no blind hedge.
   const blocker = page.getByRole('heading', { name: /forms require signature/i })
-  const stillBlocked = await blocker.isVisible({ timeout: 5_000 }).catch(() => false)
-  if (!stillBlocked) return
+  const readyAction = page
+    .getByRole('button', { name: /^run payroll$/i })
+    .or(page.getByRole('button', { name: /review and submit/i }))
+    .or(page.getByRole('button', { name: /run off-cycle payroll/i }))
+    .first()
+  await expect(blocker.or(readyAction).first()).toBeVisible({
+    timeout: SDK_NAVIGATION_DEADLINE,
+  })
+  if (!(await blocker.isVisible())) return
 
   const gwsFlowsHost = process.env.E2E_GWS_FLOWS_HOST ?? DEMO_GWS_FLOWS_HOST
   const apiBase = `${gwsFlowsHost}/fe_sdk/${scenario.flowToken}/v1`
@@ -115,38 +128,49 @@ export async function ensureCompanyIsPayrollReady(
   }
 
   await page.reload()
-  await waitForLoadingComplete(page, LONG_WAIT)
-  await expect(blocker).not.toBeVisible({ timeout: 30_000 })
+  await waitForLoadingComplete(page, PAYROLL_CALCULATION_DEADLINE)
+  await expect(blocker).not.toBeVisible({ timeout: SDK_NAVIGATION_DEADLINE })
 }
 
 async function calculateAndReachReview(page: Page) {
   await expect(page.getByRole('heading', { name: /edit payroll/i, level: 1 })).toBeVisible({
-    timeout: 30_000,
+    timeout: SDK_NAVIGATION_DEADLINE,
   })
   await page.getByRole('button', { name: /calculate and review/i }).click()
-  await waitForLoadingComplete(page, LONG_WAIT)
+  await waitForLoadingComplete(page, PAYROLL_CALCULATION_DEADLINE)
 
   await expect(page.getByRole('heading', { name: /review payroll/i, level: 1 })).toBeVisible({
-    timeout: LONG_WAIT,
+    timeout: PAYROLL_CALCULATION_DEADLINE,
   })
 }
 
 async function calculateAndSubmit(page: Page) {
   await calculateAndReachReview(page)
   await page.getByRole('button', { name: /^submit$/i }).click()
-  await waitForLoadingComplete(page, LONG_WAIT)
+  await waitForLoadingComplete(page, PAYROLL_CALCULATION_DEADLINE)
 
   const submittedAlert = page.getByText(/payroll submitted/i).first()
   const summaryHeading = page.getByRole('heading', { name: /payroll summary/i, level: 1 })
-  await expect(submittedAlert.or(summaryHeading).first()).toBeVisible({ timeout: LONG_WAIT })
+  await expect(submittedAlert.or(summaryHeading).first()).toBeVisible({
+    timeout: PAYROLL_CALCULATION_DEADLINE,
+  })
 }
 
 async function openReceipt(page: Page) {
+  // After submit, the SDK lands on either the post-submit summary (which
+  // requires a "View payroll receipt" click to reveal totals) or directly on
+  // the receipt itself (totals already on screen). Race the two so we
+  // resolve the moment one renders.
   const viewReceipt = page.getByRole('button', { name: /view payroll receipt/i })
-  if (await viewReceipt.isVisible({ timeout: 10_000 }).catch(() => false)) {
+  const receiptTotal = page.getByText(/^total$/i).first()
+  await expect(viewReceipt.or(receiptTotal).first()).toBeVisible({
+    timeout: PAYROLL_CALCULATION_DEADLINE,
+  })
+
+  if (await viewReceipt.isVisible()) {
     await viewReceipt.click()
-    await waitForLoadingComplete(page, LONG_WAIT)
-    await expect(page.getByText(/^total$/i).first()).toBeVisible({ timeout: LONG_WAIT })
+    await waitForLoadingComplete(page, PAYROLL_CALCULATION_DEADLINE)
+    await expect(receiptTotal).toBeVisible({ timeout: PAYROLL_CALCULATION_DEADLINE })
   }
 }
 
@@ -154,13 +178,18 @@ export async function runNextRegularPayroll(page: Page, scenario: ScenarioContex
   await landOnPayrollHome(page)
   await ensureCompanyIsPayrollReady(page, scenario)
 
+  // The PayrollList row renders one of two CTAs depending on whether this
+  // payroll has been opened before: "Run payroll" for an untouched row,
+  // "Review and submit" for one that's been calculated already. Wait for
+  // either, then drive whichever is on screen.
   const runButton = page.getByRole('button', { name: /^run payroll$/i }).first()
   const reviewButton = page.getByRole('button', { name: /review and submit/i }).first()
-  const entry = (await runButton.isVisible({ timeout: 15_000 }).catch(() => false))
-    ? runButton
-    : reviewButton
+  await expect(runButton.or(reviewButton).first()).toBeVisible({
+    timeout: SDK_NAVIGATION_DEADLINE,
+  })
+  const entry = (await runButton.isVisible()) ? runButton : reviewButton
   await entry.click()
-  await waitForLoadingComplete(page, LONG_WAIT)
+  await waitForLoadingComplete(page, PAYROLL_CALCULATION_DEADLINE)
 
   await calculateAndSubmit(page)
   await openReceipt(page)
@@ -175,10 +204,10 @@ export async function createAndSubmitOffCycleBonus(
   await ensureCompanyIsPayrollReady(page, scenario)
 
   await page.getByRole('button', { name: /run off-cycle payroll/i }).click()
-  await waitForLoadingComplete(page, LONG_WAIT)
+  await waitForLoadingComplete(page, PAYROLL_CALCULATION_DEADLINE)
 
   await expect(page.getByRole('heading', { name: /new off-cycle payroll/i, level: 2 })).toBeVisible(
-    { timeout: 30_000 },
+    { timeout: SDK_NAVIGATION_DEADLINE },
   )
 
   const reasonPattern = opts.reason === 'Bonus' ? /^bonus$/i : /^correction payment$/i
@@ -193,21 +222,28 @@ export async function createAndSubmitOffCycleBonus(
   await fillDate(page, 'End date', dateOffsetFromToday(periodOffset))
   await fillDate(page, 'Payment date', dateOffsetFromToday(paymentOffset))
 
+  // The include-all-employees switch only renders when the company has more
+  // than one employee, but the deductions radio is always present. Wait for
+  // the radio (the next required step) and check the switch only if it
+  // happens to be on screen too — no blind hedge.
   const includeAllSwitch = page.getByRole('switch', {
     name: /include all employees in this payroll/i,
   })
-  if (await includeAllSwitch.isVisible({ timeout: 5_000 }).catch(() => false)) {
+  const deductionsRadio = page.getByRole('radio', {
+    name: /make all the regular deductions and contributions/i,
+  })
+  await expect(deductionsRadio).toBeVisible({ timeout: SDK_NAVIGATION_DEADLINE })
+
+  if (await includeAllSwitch.isVisible()) {
     if (!(await includeAllSwitch.isChecked())) {
       await includeAllSwitch.click({ force: true })
     }
   }
 
-  await page
-    .getByRole('radio', { name: /make all the regular deductions and contributions/i })
-    .check()
+  await deductionsRadio.check()
 
   await page.getByRole('button', { name: /^continue$/i }).click()
-  await waitForLoadingComplete(page, LONG_WAIT)
+  await waitForLoadingComplete(page, PAYROLL_CALCULATION_DEADLINE)
 
   // Corrections on a freshly-provisioned demo company have no historical
   // employee pay to actually correct, so the backend rejects the submit with
@@ -292,22 +328,27 @@ export async function changeScheduleAndRunTransitionPayroll(
   await landOnPayrollHome(page)
   await ensureCompanyIsPayrollReady(page, scenario)
   await page.reload()
-  await waitForLoadingComplete(page, LONG_WAIT)
+  await waitForLoadingComplete(page, PAYROLL_CALCULATION_DEADLINE)
 
   await page.getByRole('button', { name: /run transition payroll/i }).click()
-  await waitForLoadingComplete(page, LONG_WAIT)
+  await waitForLoadingComplete(page, PAYROLL_CALCULATION_DEADLINE)
 
   // The SDK auto-skips the Transition Creation screen and lands directly on
   // Edit Payroll when the backend has already created an unprocessed transition
-  // payroll for this period (it usually has, post-schedule-change). Drive
-  // creation only if we actually land on it.
+  // payroll for this period (it usually has, post-schedule-change). Race the
+  // two possible landings and drive whichever we got.
   const creationHeading = page.getByRole('heading', { name: /^transition payroll$/i, level: 2 })
-  if (await creationHeading.isVisible({ timeout: 5_000 }).catch(() => false)) {
+  const editPayrollHeading = page.getByRole('heading', { name: /edit payroll/i, level: 1 })
+  await expect(creationHeading.or(editPayrollHeading).first()).toBeVisible({
+    timeout: SDK_NAVIGATION_DEADLINE,
+  })
+
+  if (await creationHeading.isVisible()) {
     await page
       .getByRole('radio', { name: /make all the regular deductions and contributions/i })
       .check()
     await page.getByRole('button', { name: /^continue$/i }).click()
-    await waitForLoadingComplete(page, LONG_WAIT)
+    await waitForLoadingComplete(page, PAYROLL_CALCULATION_DEADLINE)
   }
 
   await calculateAndSubmit(page)
@@ -365,31 +406,40 @@ export async function terminateAndRunDismissalPayroll(
   }
 
   await page.goto(`/?flow=termination&employeeId=${encodeURIComponent(targetEmployeeId)}`)
-  await waitForLoadingComplete(page, LONG_WAIT)
+  await waitForLoadingComplete(page, PAYROLL_CALCULATION_DEADLINE)
 
   await expect(page.getByRole('heading', { name: /^terminate /i, level: 2 })).toBeVisible({
-    timeout: 30_000,
+    timeout: SDK_NAVIGATION_DEADLINE,
   })
 
   await fillDate(page, 'Last day of work', opts.lastDayOfWork)
 
   await page.getByLabel(/^dismissal payroll$/i).check()
   await page.getByRole('button', { name: /terminate employee/i }).click()
-  await waitForLoadingComplete(page, LONG_WAIT)
+  await waitForLoadingComplete(page, PAYROLL_CALCULATION_DEADLINE)
 
   await expect(page.getByRole('heading', { name: /termination summary/i, level: 2 })).toBeVisible({
-    timeout: LONG_WAIT,
+    timeout: PAYROLL_CALCULATION_DEADLINE,
   })
 
   await page.getByRole('button', { name: /run termination payroll/i }).click()
-  await waitForLoadingComplete(page, LONG_WAIT)
+  await waitForLoadingComplete(page, PAYROLL_CALCULATION_DEADLINE)
 
+  // The SDK shows the Pay Period selector when the backend created multiple
+  // termination pay periods to choose from; otherwise it auto-picks one and
+  // lands directly on Edit Payroll. Race the two so we move the moment the
+  // page settles.
   const payPeriodSelect = page.getByLabel(/^pay period$/i)
-  if (await payPeriodSelect.isVisible({ timeout: 10_000 }).catch(() => false)) {
+  const editPayrollHeading = page.getByRole('heading', { name: /edit payroll/i, level: 1 })
+  await expect(payPeriodSelect.or(editPayrollHeading).first()).toBeVisible({
+    timeout: SDK_NAVIGATION_DEADLINE,
+  })
+
+  if (await payPeriodSelect.isVisible()) {
     await payPeriodSelect.click()
     await page.getByRole('option').first().click()
     await page.getByRole('button', { name: /^continue$/i }).click()
-    await waitForLoadingComplete(page, LONG_WAIT)
+    await waitForLoadingComplete(page, PAYROLL_CALCULATION_DEADLINE)
   }
 
   await calculateAndSubmit(page)

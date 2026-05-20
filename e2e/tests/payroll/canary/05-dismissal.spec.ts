@@ -1,5 +1,9 @@
 import { test, expect } from '../../../utils/localTestFixture'
 import { terminateAndRunDismissalPayroll } from '../../../utils/payrollFlowDrivers'
+import {
+  CANARY_TEST_TIMEOUT_WITH_PRECURSOR_MS,
+  PAYROLL_CALCULATION_DEADLINE,
+} from '../../../utils/timeouts'
 
 test.describe.serial('PayrollCanary 05 — dismissal payroll end-to-end', () => {
   test.beforeEach(({}, testInfo) => {
@@ -14,7 +18,7 @@ test.describe.serial('PayrollCanary 05 — dismissal payroll end-to-end', () => 
     scenario,
   }) => {
     test.skip(!scenario.flowToken, 'Requires scenario provisioning (local/demo runs only)')
-    test.setTimeout(12 * 60_000)
+    test.setTimeout(CANARY_TEST_TIMEOUT_WITH_PRECURSOR_MS)
 
     // Do NOT run a regular payroll first: that consumes the company's current
     // open biweekly pay period, and the next open period doesn't start for
@@ -38,6 +42,8 @@ test.describe.serial('PayrollCanary 05 — dismissal payroll end-to-end', () => 
       },
     })
 
-    await expect(page.getByText(/^total$/i).first()).toBeVisible({ timeout: 60_000 })
+    await expect(page.getByText(/^total$/i).first()).toBeVisible({
+      timeout: PAYROLL_CALCULATION_DEADLINE,
+    })
   })
 })

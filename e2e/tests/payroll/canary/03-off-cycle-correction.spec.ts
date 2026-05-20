@@ -1,5 +1,6 @@
 import { test, expect } from '../../../utils/localTestFixture'
 import { createAndSubmitOffCycleBonus } from '../../../utils/payrollFlowDrivers'
+import { CANARY_TEST_TIMEOUT_MS, PAYROLL_CALCULATION_DEADLINE } from '../../../utils/timeouts'
 
 test.describe.serial('PayrollCanary 03 — off-cycle correction end-to-end', () => {
   test.beforeEach(({}, testInfo) => {
@@ -14,7 +15,7 @@ test.describe.serial('PayrollCanary 03 — off-cycle correction end-to-end', () 
     scenario,
   }) => {
     test.skip(!scenario.flowToken, 'Requires scenario provisioning (local/demo runs only)')
-    test.setTimeout(8 * 60_000)
+    test.setTimeout(CANARY_TEST_TIMEOUT_MS)
 
     await createAndSubmitOffCycleBonus(page, scenario, { reason: 'Correction payment' })
 
@@ -22,7 +23,7 @@ test.describe.serial('PayrollCanary 03 — off-cycle correction end-to-end', () 
     // See comment in createAndSubmitOffCycleBonus for why we don't push past
     // the SDK landmark into a guaranteed backend rejection on fresh demos.
     await expect(page.getByRole('heading', { name: /review payroll/i, level: 1 })).toBeVisible({
-      timeout: 60_000,
+      timeout: PAYROLL_CALCULATION_DEADLINE,
     })
   })
 })

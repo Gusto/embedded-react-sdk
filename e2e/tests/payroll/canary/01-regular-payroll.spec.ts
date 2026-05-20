@@ -1,5 +1,6 @@
 import { test, expect } from '../../../utils/localTestFixture'
 import { runNextRegularPayroll } from '../../../utils/payrollFlowDrivers'
+import { CANARY_TEST_TIMEOUT_MS, PAYROLL_CALCULATION_DEADLINE } from '../../../utils/timeouts'
 
 test.describe.serial('PayrollCanary 01 — regular payroll end-to-end', () => {
   test.beforeEach(({}, testInfo) => {
@@ -14,10 +15,12 @@ test.describe.serial('PayrollCanary 01 — regular payroll end-to-end', () => {
     scenario,
   }) => {
     test.skip(!scenario.flowToken, 'Requires scenario provisioning (local/demo runs only)')
-    test.setTimeout(8 * 60_000)
+    test.setTimeout(CANARY_TEST_TIMEOUT_MS)
 
     await runNextRegularPayroll(page, scenario)
 
-    await expect(page.getByText(/^total$/i).first()).toBeVisible({ timeout: 60_000 })
+    await expect(page.getByText(/^total$/i).first()).toBeVisible({
+      timeout: PAYROLL_CALCULATION_DEADLINE,
+    })
   })
 })
