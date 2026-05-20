@@ -1,5 +1,5 @@
 import { act, renderHook } from '@testing-library/react'
-import { beforeEach, describe, expect, test, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 import type * as ReactQuery from '@tanstack/react-query'
 import type * as GustoContext from '@gusto/embedded-api/react-query/_context'
 import type { ReactNode } from 'react'
@@ -11,6 +11,15 @@ import { GustoTestProvider } from '@/test/GustoTestApiProvider'
 // page handlers (first/last/next/previous), per-page changes, and the
 // safeCurrentPage clamping that activates when filtering shrinks the list
 // below the current page.
+
+// useClientPagination debounces search by 120ms; flush the timer inside act()
+// so React processes the resulting state update before assertions.
+const SEARCH_DEBOUNCE_MS = 120
+function flushSearchDebounce() {
+  act(() => {
+    vi.advanceTimersByTime(SEARCH_DEBOUNCE_MS)
+  })
+}
 
 vi.mock('@/i18n/I18n', () => ({
   useI18n: vi.fn(),
@@ -71,6 +80,11 @@ function wrapper({ children }: { children: ReactNode }) {
 describe('useSelectEmployeesData pagination', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    vi.useFakeTimers()
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
   })
 
   test('initial state: page 1, default 5 items per page, total 12', () => {
@@ -204,6 +218,7 @@ describe('useSelectEmployeesData pagination', () => {
     act(() => {
       result.current.handleSearchChange('Employee0 Test')
     })
+    flushSearchDebounce()
     expect(result.current.pagination.totalPages).toBe(1)
     expect(result.current.pagination.currentPage).toBe(1)
     expect(result.current.filteredEmployees).toHaveLength(1)
@@ -221,6 +236,7 @@ describe('useSelectEmployeesData pagination', () => {
     act(() => {
       result.current.handleSearchChange('Employee')
     })
+    flushSearchDebounce()
     expect(result.current.pagination.currentPage).toBe(1)
   })
 
@@ -230,6 +246,7 @@ describe('useSelectEmployeesData pagination', () => {
     act(() => {
       result.current.handleSearchChange('Employee')
     })
+    flushSearchDebounce()
     act(() => {
       result.current.pagination.handleNextPage()
     })
@@ -238,6 +255,7 @@ describe('useSelectEmployeesData pagination', () => {
     act(() => {
       result.current.handleSearchClear()
     })
+    flushSearchDebounce()
     expect(result.current.pagination.currentPage).toBe(1)
   })
 })

@@ -1,4 +1,4 @@
-import { useCallback, useDeferredValue, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import {
   buildEmployeesListQuery,
   useEmployeesListSuspense,
@@ -8,10 +8,7 @@ import { useSuspenseQueries } from '@tanstack/react-query'
 import { Include } from '@gusto/embedded-api/models/operations/getv1companiescompanyidemployees'
 import type { PaidTimeOff } from '@gusto/embedded-api/models/components/paidtimeoff'
 import type { EmployeeItem } from './SelectEmployeesPresentationTypes'
-import type {
-  PaginationControlProps,
-  PaginationItemsPerPage,
-} from '@/components/Common/PaginationControl/PaginationControlTypes'
+import { useClientPagination } from '@/hooks/useClientPagination/useClientPagination'
 
 const SERVER_MAX_PER_PAGE = 100
 
@@ -28,10 +25,6 @@ export function isStartedByToday(hireDate: string | undefined): boolean {
 export function useSelectEmployeesData(companyId: string, excludeUuids?: Set<string>) {
   const gustoClient = useGustoEmbeddedContext()
   const [selectedUuids, setSelectedUuids] = useState<Set<string>>(() => new Set())
-  const [searchValue, setSearchValue] = useState('')
-  const deferredSearchValue = useDeferredValue(searchValue)
-  const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage, setItemsPerPage] = useState<PaginationItemsPerPage>(5)
 
   // Fetch the full employees list up front so filter, search, and pagination
   // can all be applied client-side. include: all_compensations is required to
@@ -67,13 +60,14 @@ export function useSelectEmployeesData(companyId: string, excludeUuids?: Set<str
     ),
   })
 
-  const allEmployees = useMemo<EmployeeItem[]>(() => {
+  const eligibleEmployees = useMemo<EmployeeItem[]>(() => {
     const showEmployees = [
       ...(firstPage.showEmployees ?? []),
       ...restPageResults.flatMap(r => r.data.showEmployees ?? []),
     ]
     return showEmployees
       .filter(e => isStartedByToday(e.jobs?.find(job => job.primary)?.hireDate))
+      .filter(e => !excludeUuids?.has(e.uuid))
       .map(e => ({
         uuid: e.uuid,
         firstName: e.firstName,
@@ -82,61 +76,22 @@ export function useSelectEmployeesData(companyId: string, excludeUuids?: Set<str
         department: e.department ?? null,
         eligiblePaidTimeOff: e.eligiblePaidTimeOff as PaidTimeOff[] | undefined,
       }))
-  }, [firstPage.showEmployees, restPageResults])
+  }, [firstPage.showEmployees, restPageResults, excludeUuids])
 
-  const eligibleEmployees = useMemo<EmployeeItem[]>(
-    () => allEmployees.filter(e => !excludeUuids?.has(e.uuid)),
-    [allEmployees, excludeUuids],
-  )
-
-  const searchFilteredEmployees = useMemo<EmployeeItem[]>(() => {
-    if (!deferredSearchValue) return eligibleEmployees
-    const needle = deferredSearchValue.toLowerCase()
-    return eligibleEmployees.filter(e =>
-      `${e.firstName ?? ''} ${e.lastName ?? ''}`.toLowerCase().includes(needle),
-    )
-  }, [eligibleEmployees, deferredSearchValue])
-
-  const totalCount = searchFilteredEmployees.length
-  const totalPages = Math.max(1, Math.ceil(totalCount / itemsPerPage))
-  const safeCurrentPage = Math.min(currentPage, totalPages)
-
-  const filteredEmployees = useMemo<EmployeeItem[]>(() => {
-    const start = (safeCurrentPage - 1) * itemsPerPage
-    return searchFilteredEmployees.slice(start, start + itemsPerPage)
-  }, [searchFilteredEmployees, safeCurrentPage, itemsPerPage])
+  const {
+    data: filteredEmployees,
+    pagination,
+    searchValue,
+    actions: paginationActions,
+  } = useClientPagination(eligibleEmployees, {
+    searchPredicate: (employee, query) =>
+      `${employee.firstName ?? ''} ${employee.lastName ?? ''}`
+        .toLowerCase()
+        .includes(query.toLowerCase()),
+  })
 
   const isRestFetching = restPageResults.some(r => r.isFetching)
   const isFetching = isFirstPageFetching || isRestFetching
-
-  const pagination = useMemo<PaginationControlProps>(
-    () => ({
-      currentPage: safeCurrentPage,
-      totalPages,
-      totalCount,
-      itemsPerPage,
-      isFetching,
-      handleFirstPage: () => {
-        setCurrentPage(1)
-      },
-      handleLastPage: () => {
-        setCurrentPage(totalPages)
-      },
-      handleNextPage: () => {
-        setCurrentPage(prev => Math.min(prev + 1, totalPages))
-      },
-      handlePreviousPage: () => {
-        setCurrentPage(prev => Math.max(prev - 1, 1))
-      },
-      handleItemsPerPageChange: (value: PaginationItemsPerPage) => {
-        if (value !== itemsPerPage) {
-          setItemsPerPage(value)
-          setCurrentPage(1)
-        }
-      },
-    }),
-    [safeCurrentPage, totalPages, totalCount, itemsPerPage, isFetching],
-  )
 
   const handleSelect = useCallback((item: EmployeeItem, checked: boolean) => {
     setSelectedUuids(prev => {
@@ -158,25 +113,16 @@ export function useSelectEmployeesData(companyId: string, excludeUuids?: Set<str
     })
   }, [])
 
-  const handleSearchChange = useCallback((value: string) => {
-    setSearchValue(value)
-    setCurrentPage(1)
-  }, [])
-
-  const handleSearchClear = useCallback(() => {
-    setSearchValue('')
-    setCurrentPage(1)
-  }, [])
-
   return {
     filteredEmployees,
+    eligibleCount: eligibleEmployees.length,
     selectedUuids,
     searchValue,
     pagination,
     isFetching,
     handleSelect,
     handleSelectAll,
-    handleSearchChange,
-    handleSearchClear,
+    handleSearchChange: paginationActions.onSearchChange,
+    handleSearchClear: paginationActions.onSearchClear,
   }
 }

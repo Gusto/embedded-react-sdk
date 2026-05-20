@@ -115,15 +115,6 @@ vi.mock('@/components/Base/useBase', () => ({
   }),
 }))
 
-vi.mock('@/hooks/usePagination/usePagination', () => ({
-  usePagination: () => ({
-    currentPage: 1,
-    itemsPerPage: 25,
-    getPaginationProps: vi.fn().mockReturnValue(undefined),
-    resetPage: vi.fn(),
-  }),
-}))
-
 describe('useSelectEmployeesData multi-page fetching', () => {
   beforeEach(() => {
     vi.clearAllMocks()

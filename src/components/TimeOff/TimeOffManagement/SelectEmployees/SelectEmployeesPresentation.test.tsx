@@ -57,16 +57,16 @@ describe('SelectEmployeesPresentation', () => {
     expect(screen.getByText('title')).toBeInTheDocument()
   })
 
-  test('renders description by default', () => {
-    renderPresentation()
-    expect(screen.getByText('description')).toBeInTheDocument()
-    expect(screen.queryByText('holidayDescription')).not.toBeInTheDocument()
-  })
-
-  test('renders holidayDescription when isHolidayPolicy is true', () => {
-    renderPresentation({ isHolidayPolicy: true })
+  test('renders holidayDescription when showReassignmentWarning is false', () => {
+    renderPresentation({ showReassignmentWarning: false })
     expect(screen.getByText('holidayDescription')).toBeInTheDocument()
     expect(screen.queryByText('description')).not.toBeInTheDocument()
+  })
+
+  test('renders description when showReassignmentWarning is true', () => {
+    renderPresentation({ showReassignmentWarning: true })
+    expect(screen.getByText('description')).toBeInTheDocument()
+    expect(screen.queryByText('holidayDescription')).not.toBeInTheDocument()
   })
 
   test('does not render reassignment warning Alert when showReassignmentWarning is false', () => {
