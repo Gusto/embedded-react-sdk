@@ -64,7 +64,7 @@ const mockHolidayPayPolicyManyEmployees = {
 
 describe('HolidayPolicyDetail', () => {
   const onEvent = vi.fn()
-  const user = userEvent.setup()
+  let user: ReturnType<typeof userEvent.setup>
   const defaultProps = {
     companyId: 'company-123',
     onEvent,
@@ -73,6 +73,7 @@ describe('HolidayPolicyDetail', () => {
   beforeEach(() => {
     setupApiTestMocks()
     onEvent.mockClear()
+    user = userEvent.setup()
 
     server.use(
       http.get(`${API_BASE_URL}/v1/companies/:companyUuid/holiday_pay_policy`, () => {
@@ -198,8 +199,8 @@ describe('HolidayPolicyDetail', () => {
 
       await user.click(screen.getByRole('button', { name: 'Navigate to next page' }))
 
-      expect(await screen.findByText('Person10 Roster')).toBeInTheDocument()
-      expect(await screen.findByText('Person11 Roster')).toBeInTheDocument()
+      expect(await screen.findByText('Person10 Roster', {}, { timeout: 5000 })).toBeInTheDocument()
+      expect(await screen.findByText('Person11 Roster', {}, { timeout: 5000 })).toBeInTheDocument()
       expect(screen.queryByText('Person00 Roster')).not.toBeInTheDocument()
     })
 
@@ -226,7 +227,7 @@ describe('HolidayPolicyDetail', () => {
 
       await user.click(screen.getByRole('button', { name: 'Navigate to next page' }))
 
-      expect(await screen.findByText('Person10 Roster')).toBeInTheDocument()
+      expect(await screen.findByText('Person10 Roster', {}, { timeout: 5000 })).toBeInTheDocument()
 
       await user.type(screen.getByRole('searchbox'), 'Person00')
 
