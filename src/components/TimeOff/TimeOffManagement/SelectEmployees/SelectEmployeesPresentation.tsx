@@ -23,6 +23,7 @@ export function SelectEmployeesPresentation({
   onBack,
   onContinue,
   showReassignmentWarning,
+  isHolidayPolicy = false,
   policyTypeLabel,
   balances,
   onBalanceChange,
@@ -42,7 +43,7 @@ export function SelectEmployeesPresentation({
       <Flex flexDirection="column" gap={4}>
         <Heading as="h2">{t('title')}</Heading>
         <Text variant="supporting">
-          {showReassignmentWarning ? t('description') : t('holidayDescription')}
+          {isHolidayPolicy ? t('holidayDescription') : t('description')}
         </Text>
       </Flex>
 
