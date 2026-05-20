@@ -1,4 +1,5 @@
 import { transition, reduce, state } from 'robot3'
+import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
 import {
   DashboardViewContextual,
   HomeAddressContextual,
@@ -9,6 +10,7 @@ import {
   PaymentBankFormContextual,
   PaymentSplitViewContextual,
   DocumentManagerContextual,
+  DeductionFormContextual,
   type DashboardContextInterface,
 } from './DashboardComponents'
 import { componentEvents } from '@/shared/constants'
@@ -16,6 +18,7 @@ import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 
 type EventPayloads = {
   [componentEvents.EMPLOYEE_VIEW_FORM_TO_SIGN]: { employeeId: string; formId: string }
+  [componentEvents.EMPLOYEE_DEDUCTION_EDIT]: Garnishment
 }
 
 const returnToIndex = reduce(
@@ -150,6 +153,45 @@ export const dashboardStateMachine = {
       ),
     ),
     transition(
+      componentEvents.EMPLOYEE_DEDUCTION_ADD,
+      'deductionForm',
+      reduce(
+        (ctx: DashboardContextInterface): DashboardContextInterface => ({
+          ...ctx,
+          component: DeductionFormContextual,
+          header: { type: 'minimal' },
+          successAlert: null,
+          editingDeductionId: undefined,
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.EMPLOYEE_DEDUCTION_EDIT,
+      'deductionForm',
+      reduce(
+        (
+          ctx: DashboardContextInterface,
+          ev: MachineEventType<EventPayloads, typeof componentEvents.EMPLOYEE_DEDUCTION_EDIT>,
+        ): DashboardContextInterface => ({
+          ...ctx,
+          component: DeductionFormContextual,
+          header: { type: 'minimal' },
+          successAlert: null,
+          editingDeductionId: ev.payload.uuid,
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.EMPLOYEE_DEDUCTION_DELETED,
+      'index',
+      reduce(
+        (ctx: DashboardContextInterface): DashboardContextInterface => ({
+          ...ctx,
+          successAlert: 'deductionDeleted',
+        }),
+      ),
+    ),
+    transition(
       componentEvents.EMPLOYEE_DISMISS,
       'index',
       reduce(
@@ -185,6 +227,20 @@ export const dashboardStateMachine = {
     transition(componentEvents.CANCEL, 'index', returnToIndex),
   ),
   documentManager: state<MachineTransition>(
+    transition(componentEvents.CANCEL, 'index', returnToIndex),
+  ),
+  deductionForm: state<MachineTransition>(
+    transition(
+      componentEvents.EMPLOYEE_DEDUCTION_CREATED,
+      'index',
+      returnToIndexWithAlert('deductionAdded'),
+    ),
+    transition(
+      componentEvents.EMPLOYEE_DEDUCTION_UPDATED,
+      'index',
+      returnToIndexWithAlert('deductionUpdated'),
+    ),
+    transition(componentEvents.EMPLOYEE_DEDUCTION_CANCEL, 'index', returnToIndex),
     transition(componentEvents.CANCEL, 'index', returnToIndex),
   ),
 }

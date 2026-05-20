@@ -1,9 +1,7 @@
 import { useMemo } from 'react'
 import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
-import { useGarnishmentsListSuspense } from '@gusto/embedded-api/react-query/garnishmentsList'
 import { usePayrollsGetPayStubsSuspense } from '@gusto/embedded-api/react-query/payrollsGetPayStubs'
 import type { Job } from '@gusto/embedded-api/models/components/job'
-import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
 import type { GetV1EmployeesEmployeeUuidPayStubsResponse } from '@gusto/embedded-api/models/operations/getv1employeesemployeeuuidpaystubs'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { usePagination } from '@/hooks/usePagination/usePagination'
@@ -21,7 +19,6 @@ export interface UseEmployeeCompensationProps {
 interface UseEmployeeCompensationReady extends BaseHookReady<
   {
     primaryJob?: Job
-    garnishmentList: Garnishment[]
     payStubs: EmployeePayStub[]
   },
   { isPending: boolean }
@@ -41,7 +38,9 @@ export function useEmployeeCompensation({
   })
 
   const employeeQuery = useEmployeesGetSuspense({ employeeId })
-  const garnishmentsQuery = useGarnishmentsListSuspense({ employeeId })
+  // Garnishments are no longer fetched here — the consumer (JobAndPayView)
+  // owns its own fetch via `useDeductionsList`, which also handles the
+  // soft-delete mutation + error surface for the deductions section.
   const payStubsQuery = usePayrollsGetPayStubsSuspense({
     employeeId,
     page: currentPage,
@@ -49,7 +48,6 @@ export function useEmployeeCompensation({
   })
 
   const employee = employeeQuery.data.employee
-  const garnishmentList = garnishmentsQuery.data.garnishments
   const payStubsData = payStubsQuery.data
 
   const primaryJob = useMemo(() => {
@@ -63,12 +61,11 @@ export function useEmployeeCompensation({
     return getPaginationProps(headers, payStubsQuery.isFetching)
   }, [payStubsData.httpMeta.response.headers, payStubsQuery.isFetching, getPaginationProps])
 
-  const isPending =
-    employeeQuery.isFetching || garnishmentsQuery.isFetching || payStubsQuery.isFetching
+  const isPending = employeeQuery.isFetching || payStubsQuery.isFetching
 
   const isLoading = !employee && isPending
 
-  const errorHandling = composeErrorHandler([employeeQuery, garnishmentsQuery, payStubsQuery])
+  const errorHandling = composeErrorHandler([employeeQuery, payStubsQuery])
 
   if (isLoading) {
     return {
@@ -81,7 +78,6 @@ export function useEmployeeCompensation({
     isLoading: false,
     data: {
       primaryJob,
-      garnishmentList: garnishmentList || [],
       payStubs,
     },
     status: {

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
 import { payrollsGetPayStub } from '@gusto/embedded-api/funcs/payrollsGetPayStub'
 import { useErrorBoundary } from 'react-error-boundary'
+import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
 import {
   useEmployeeBasicDetails,
   useEmployeeCompensation,
@@ -72,6 +73,13 @@ function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
   const handleAddDeduction = useCallback(() => {
     onEvent(componentEvents.EMPLOYEE_DEDUCTION_ADD, { employeeId })
   }, [onEvent, employeeId])
+
+  const handleEditDeduction = useCallback(
+    (deduction: Garnishment) => {
+      onEvent(componentEvents.EMPLOYEE_DEDUCTION_EDIT, deduction)
+    },
+    [onEvent],
+  )
 
   const handlePaystubDownload = useCallback(
     async (payrollUuid: string) => {
@@ -164,7 +172,7 @@ function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
   }
 
   const { employee, currentHomeAddress, currentWorkAddress } = basicDetails.data
-  const { garnishmentList, payStubs } = compensation.data
+  const { payStubs } = compensation.data
   const { employeeStateTaxesList } = taxes.data
   const { formList } = forms.data
 
@@ -229,7 +237,6 @@ function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
             <JobAndPayView
               employeeId={employeeId}
               job={primaryJob}
-              garnishments={garnishmentList}
               payStubs={payStubs}
               payStubsPagination={payStubsPagination}
               isLoading={isLoadingJobAndPay}
@@ -237,6 +244,7 @@ function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
               onEditCompensation={handleEditCompensation}
               onAddJob={handleAddJob}
               onAddDeduction={handleAddDeduction}
+              onEditDeduction={handleEditDeduction}
               onPaystubDownload={handlePaystubDownload}
               downloadingPayrollUuids={downloadingPayrollUuids}
             />
