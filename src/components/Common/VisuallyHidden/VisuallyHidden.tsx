@@ -6,7 +6,7 @@ import styles from './VisuallyHidden.module.scss'
 export interface VisuallyHiddenProps extends HTMLAttributes<HTMLDivElement> {
   /**
    * The element to render the visually hidden content as.
-   * @default 'div'
+   * @defaultValue 'div'
    */
   as?: React.ElementType
   /**

@@ -3,7 +3,7 @@ let cachedRootFontSize: string | null = null
 /**
  * Detects font-size on the document root element with fallback to 16px which is the default browser setting.
  * The value is cached after the first call to avoid repeated expensive getComputedStyle() calls.
- * @param options.forceRefresh - Force a fresh detection instead of using the cached value
+ * @param options - Pass `{ forceRefresh: true }` to bypass the cached value and force fresh detection
  * @returns The root font size in pixels as a string
  */
 export function getRootFontSize(options?: { forceRefresh?: boolean }) {

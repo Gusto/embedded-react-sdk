@@ -151,7 +151,7 @@ export default [
     files: ['src/**/*.{ts,tsx}'],
     plugins: { tsdoc },
     rules: {
-      'tsdoc/syntax': 'warn',
+      'tsdoc/syntax': 'error',
     },
   },
 

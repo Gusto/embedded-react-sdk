@@ -6,7 +6,7 @@
  * The Speakeasy SDK transforms these into camelCase for the React Query layer.
  *
  * Each builder validates its output against the SDK's public `*FromJSON`
- * parser so any drift between our fixtures and the @gusto/embedded-api wire
+ * parser so any drift between our fixtures and the `@gusto/embedded-api` wire
  * schema fails loudly at the call site instead of producing silently-wrong
  * camelCase data inside hooks under test.
  */
