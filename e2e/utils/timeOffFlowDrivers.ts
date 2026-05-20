@@ -239,6 +239,91 @@ export async function runHolidayPayPolicyCreate(
   })
 }
 
+export async function createFixedPolicyWithOneEmployee(
+  page: Page,
+  policyName: string,
+  startingBalance: string = '12',
+): Promise<void> {
+  await landOnTimeOffPolicyList(page)
+  await clickCreatePolicy(page)
+
+  await page.getByRole('radio', { name: /^time off$/i }).check()
+  await page.getByRole('button', { name: /^continue$/i }).click()
+  await waitForLoadingComplete(page)
+
+  await page.getByLabel(/policy name/i).fill(policyName)
+  await page.getByRole('radio', { name: /fixed amount per year/i }).check()
+  await page.getByLabel(/total hours per year/i).fill('80')
+  await page.getByRole('radio', { name: /each pay period/i }).check()
+  await page.getByRole('radio', { name: /each employee's start date/i }).check()
+
+  await chooseSaveAndContinue(page)
+  await waitForLoadingComplete(page, LONG_WAIT)
+
+  await expect(page.getByRole('heading', { name: /policy settings/i })).toBeVisible({
+    timeout: LONG_WAIT,
+  })
+  await page.getByRole('button', { name: /^save$/i }).click()
+  await waitForLoadingComplete(page, LONG_WAIT)
+
+  await selectFirstNEmployeesOnAddStep(page, 1)
+  await fillStartingBalanceForRow(page, 1, startingBalance)
+
+  await continueThroughAddConfirm(page)
+
+  await expect(page.getByRole('heading', { name: new RegExp(policyName, 'i') })).toBeVisible({
+    timeout: LONG_WAIT,
+  })
+}
+
+export async function openPolicySettingsFromDetail(page: Page): Promise<void> {
+  const changeButton = page.getByRole('button', { name: /^change$/i }).first()
+  await expect(changeButton).toBeVisible({ timeout: LONG_WAIT })
+  await changeButton.click()
+  await waitForLoadingComplete(page)
+
+  await expect(page.getByRole('heading', { name: /settings/i })).toBeVisible({
+    timeout: LONG_WAIT,
+  })
+}
+
+export async function openAddEmployeesFromDetail(page: Page): Promise<void> {
+  await page.getByRole('tab', { name: /employees/i }).click()
+  await waitForLoadingComplete(page)
+
+  const addButton = page.getByRole('button', { name: /add employee/i }).first()
+  await expect(addButton).toBeVisible({ timeout: LONG_WAIT })
+  await addButton.click()
+  await waitForLoadingComplete(page)
+
+  await expect(page.getByRole('heading', { name: /add employees to policy/i })).toBeVisible({
+    timeout: LONG_WAIT,
+  })
+}
+
+export async function openEditBalanceModalForFirstEmployee(page: Page): Promise<void> {
+  await page.getByRole('tab', { name: /employees/i }).click()
+  await waitForLoadingComplete(page)
+
+  const editBalanceButton = page.getByRole('button', { name: /edit balance/i }).first()
+  await expect(editBalanceButton).toBeVisible({ timeout: LONG_WAIT })
+  await editBalanceButton.click()
+
+  await expect(page.getByRole('dialog')).toBeVisible({ timeout: 10_000 })
+}
+
+export async function enableBalanceMaximumWithValue(page: Page, hours: string): Promise<void> {
+  const balanceMaxSwitch = page.getByRole('switch', { name: /^balance maximum$/i })
+  const isChecked = await balanceMaxSwitch.getAttribute('aria-checked')
+  if (isChecked !== 'true') {
+    await balanceMaxSwitch.click({ force: true })
+  }
+
+  const balanceMaxInput = page.getByRole('textbox', { name: /^balance maximum/i })
+  await balanceMaxInput.clear()
+  await balanceMaxInput.fill(hours)
+}
+
 async function createFixedPolicyForRename(page: Page, policyName: string): Promise<void> {
   await landOnTimeOffPolicyList(page)
   await clickCreatePolicy(page)
