@@ -72,9 +72,16 @@
     "workersCompensationRatePerHourAdornment": "/hr"
   },
   "payRateFormats": {
+    "hourly": "{{amount}}/hr",
+    "weekly": "{{amount}}/yr",
+    "monthly": "{{amount}}/yr",
+    "yearly": "{{amount}}/yr",
+    "paycheck": "{{amount}}/paycheck"
+  },
+  "compensationRateFormats": {
     "hourly": "{{amount}} per hour",
-    "weekly": "{{amount}} per year",
-    "monthly": "{{amount}} per year",
+    "weekly": "{{amount}} per week",
+    "monthly": "{{amount}} per month",
     "yearly": "{{amount}} per year",
     "paycheck": "{{amount}} per paycheck"
   },
