@@ -20,6 +20,10 @@ export function handleGetJobCompensations(resolver: HttpResponseResolver) {
   return http.get(`${API_BASE_URL}/v1/jobs/:job_id/compensations`, resolver)
 }
 
+export function handleDeleteCompensation(resolver: HttpResponseResolver) {
+  return http.delete(`${API_BASE_URL}/v1/compensations/:compensation_id`, resolver)
+}
+
 const employeeCreateCompensation = handleCreateCompensation(async ({ request }) => {
   const requestBody = await request.json()
   return HttpResponse.json({
@@ -34,4 +38,8 @@ const employeeCreateCompensation = handleCreateCompensation(async ({ request }) 
   })
 })
 
-export default [employeeCreateCompensation]
+const employeeDeleteCompensation = handleDeleteCompensation(() => {
+  return new HttpResponse(null, { status: 204 })
+})
+
+export default [employeeCreateCompensation, employeeDeleteCompensation]

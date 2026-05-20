@@ -12,7 +12,7 @@ import CloseIcon from '@/assets/icons/close.svg?react'
 
 export function Alert(rawProps: AlertProps) {
   const resolvedProps = applyMissingDefaults(rawProps, AlertDefaults)
-  const { label, children, status, icon, className, onDismiss, disableScrollIntoView } =
+  const { label, children, action, status, icon, className, onDismiss, disableScrollIntoView } =
     resolvedProps
   const id = useId()
   const alertRef = useRef<HTMLDivElement>(null)
@@ -48,6 +48,7 @@ export function Alert(rawProps: AlertProps) {
           <div className={styles.iconLabelContainer}>
             <div className={styles.icon}>{icon || defaultIcon}</div>
             <h6 id={id}>{label}</h6>
+            {action && <div className={styles.action}>{action}</div>}
             {onDismiss && (
               <div className={styles.dismiss}>
                 <ButtonIcon variant="tertiary" onClick={onDismiss} aria-label="Dismiss alert">

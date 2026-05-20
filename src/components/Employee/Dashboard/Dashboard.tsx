@@ -2,8 +2,8 @@ import { useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
 import { payrollsGetPayStub } from '@gusto/embedded-api/funcs/payrollsGetPayStub'
-import type { Job } from '@gusto/embedded-api/models/components/job'
 import { useErrorBoundary } from 'react-error-boundary'
+import type { Job } from '@gusto/embedded-api/models/components/job'
 import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
 import {
   useEmployeeBasicDetails,
@@ -15,6 +15,7 @@ import { BasicDetailsView } from './BasicDetailsView'
 import { JobAndPayView } from './JobAndPayView'
 import { TaxesView } from './TaxesView'
 import { DocumentsView } from './DocumentsView'
+import type { PendingCompensationChange } from './getPendingCompensationChanges'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/components/Base/Base'
@@ -48,6 +49,15 @@ function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
   // Derive the inputs these callbacks depend on up here so all hooks are
   // declared before the early-return below (rules-of-hooks). The data fields
   // are only present on the non-loading variants of each hook result.
+  const pendingChanges = !compensation.isLoading ? compensation.data.pendingChanges : []
+  const hasMultipleJobs = !compensation.isLoading ? compensation.data.hasMultipleJobs : false
+  const cancellingCompensationUuid = !compensation.isLoading
+    ? compensation.status.cancellingCompensationUuid
+    : null
+  const cancelPendingChange = !compensation.isLoading
+    ? compensation.actions.cancelPendingChange
+    : undefined
+  const employeeFirstName = !basicDetails.isLoading ? basicDetails.data.employee.firstName : null
   const employeeFederalTax = !taxes.isLoading ? taxes.data.employeeFederalTax : undefined
 
   const handleEditBasicDetails = useCallback(() => {
@@ -67,6 +77,20 @@ function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
       onEvent(componentEvents.EMPLOYEE_COMPENSATION_CREATE, { employeeId, job })
     },
     [onEvent, employeeId],
+  )
+
+  const handleCancelCompensationChange = useCallback(
+    async (pendingChange: PendingCompensationChange) => {
+      if (!cancelPendingChange) return
+      const result = await cancelPendingChange(pendingChange)
+      if (result) {
+        onEvent(componentEvents.EMPLOYEE_COMPENSATION_CHANGE_CANCELLED, {
+          employeeId,
+          compensationId: pendingChange.compensationUuid,
+        })
+      }
+    },
+    [cancelPendingChange, onEvent, employeeId],
   )
 
   const handleAddJob = useCallback(() => {
@@ -245,6 +269,10 @@ function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
               employeeId={employeeId}
               jobs={jobs}
               primaryFlsaStatus={primaryFlsaStatus}
+              pendingChanges={pendingChanges}
+              hasMultipleJobs={hasMultipleJobs}
+              employeeFirstName={employeeFirstName}
+              cancellingCompensationUuid={cancellingCompensationUuid}
               payStubs={payStubs}
               payStubsPagination={payStubsPagination}
               isLoading={isLoadingJobAndPay}
@@ -252,6 +280,7 @@ function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
               onEditCompensation={handleEditCompensation}
               onAddJob={handleAddJob}
               onAddAnotherJob={handleAddAnotherJob}
+              onCancelChange={handleCancelCompensationChange}
               onAddDeduction={handleAddDeduction}
               onEditDeduction={handleEditDeduction}
               onPaystubDownload={handlePaystubDownload}
