@@ -188,9 +188,7 @@ describe('HolidayPolicyDetail', () => {
 
       await user.click(screen.getByRole('button', { name: 'Navigate to next page' }))
 
-      await waitFor(() => {
-        expect(screen.getByText('Person10 Roster')).toBeInTheDocument()
-      })
+      expect(await screen.findByText('Person10 Roster')).toBeInTheDocument()
       expect(screen.getByText('Person11 Roster')).toBeInTheDocument()
       expect(screen.queryByText('Person00 Roster')).not.toBeInTheDocument()
     })
@@ -213,9 +211,7 @@ describe('HolidayPolicyDetail', () => {
 
       await user.click(screen.getByRole('button', { name: 'Navigate to next page' }))
 
-      await waitFor(() => {
-        expect(screen.getByText('Person10 Roster')).toBeInTheDocument()
-      })
+      expect(await screen.findByText('Person10 Roster')).toBeInTheDocument()
 
       await user.type(screen.getByRole('searchbox'), 'Person00')
 
