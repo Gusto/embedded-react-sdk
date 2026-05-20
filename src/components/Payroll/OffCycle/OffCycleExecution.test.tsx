@@ -201,9 +201,7 @@ describe('OffCycleExecution - breadcrumb display', () => {
 
     renderWithProviders(<OffCycleFlowInExecutionState onEvent={onEvent} />)
 
-    await waitFor(() => {
-      expect(screen.getByText('Jane Doe')).toBeInTheDocument()
-    })
+    await screen.findByText('Jane Doe', undefined, { timeout: 5000 })
 
     const breadcrumb = screen.getByText('Run Off-Cycle Payroll')
     expect(breadcrumb).toBeInTheDocument()

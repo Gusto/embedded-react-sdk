@@ -1,6 +1,6 @@
 import { defineConfig, devices } from '@playwright/test'
 
-process.env.E2E_LOCAL = 'true'
+process.env.E2E_USE_REAL_BACKEND = 'true'
 process.env.E2E_GWS_FLOWS_HOST = process.env.E2E_GWS_FLOWS_HOST || 'https://flows.gusto-demo.com'
 
 export default defineConfig({
@@ -11,7 +11,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: 2,
   workers: process.env.CI ? 1 : undefined,
-  reporter: 'html',
+  reporter: [['html'], ['./e2e/reporters/scenario-reporter.ts']],
   timeout: 120_000,
   expect: {
     timeout: 30_000,
