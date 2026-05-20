@@ -1,0 +1,41 @@
+{
+  "$schema": "../../../node_modules/typedoc-plugin-markdown/typedoc-plugin-markdown.schema.json",
+  "plugin": [
+    "typedoc-plugin-markdown",
+    "typedoc-docusaurus-theme",
+    "typedoc-plugin-zod",
+    "./plugins/domain-router.mjs"
+  ],
+  "entryPoints": ["../../../src/index.ts"],
+  "tsconfig": "../../../tsconfig.json",
+  "out": "./docs",
+  "readme": "none",
+  "docsPath": "./docs",
+  "entryPointStrategy": "expand",
+  "exclude": ["**/*.test.*", "**/index.ts"],
+  "excludeExternals": true,
+  "excludeInternal": true,
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "flattenOutputFiles": false,
+  "categoryOrder": ["Flow", "Block", "Hook", "*"],
+  "hideGenerator": true,
+  "includeVersion": true,
+  "indexFormat": "table",
+  "name": "@gusto/embedded-react-sdk",
+  "router": "domain",
+  "parametersFormat": "table",
+  "classPropertiesFormat": "table",
+  "interfacePropertiesFormat": "table",
+  "sanitizeComments": false,
+  "typeDeclarationFormat": "table",
+  "useCodeBlocks": true,
+  "sidebar": {
+    "autoConfiguration": true,
+    "pretty": true,
+    "typescript": false
+  },
+  "validation": {
+    "notExported": false
+  }
+}
