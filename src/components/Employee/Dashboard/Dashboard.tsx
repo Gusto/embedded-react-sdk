@@ -49,7 +49,6 @@ function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
   // Derive the inputs these callbacks depend on up here so all hooks are
   // declared before the early-return below (rules-of-hooks). The data fields
   // are only present on the non-loading variants of each hook result.
-  const primaryJob = !compensation.isLoading ? compensation.data.primaryJob : undefined
   const pendingChanges = !compensation.isLoading ? compensation.data.pendingChanges : []
   const hasMultipleJobs = !compensation.isLoading ? compensation.data.hasMultipleJobs : false
   const cancellingCompensationUuid = !compensation.isLoading
@@ -73,9 +72,12 @@ function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
     onEvent(componentEvents.EMPLOYEE_WORK_ADDRESS, { employeeId })
   }, [onEvent, employeeId])
 
-  const handleEditCompensation = useCallback(() => {
-    onEvent(componentEvents.EMPLOYEE_COMPENSATION_UPDATE, { employeeId, job: primaryJob })
-  }, [onEvent, employeeId, primaryJob])
+  const handleEditCompensation = useCallback(
+    (job: Job) => {
+      onEvent(componentEvents.EMPLOYEE_COMPENSATION_CREATE, { employeeId, job })
+    },
+    [onEvent, employeeId],
+  )
 
   const handleCancelCompensationChange = useCallback(
     async (pendingChange: PendingCompensationChange) => {
@@ -102,6 +104,13 @@ function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
   const handleAddDeduction = useCallback(() => {
     onEvent(componentEvents.EMPLOYEE_DEDUCTION_ADD, { employeeId })
   }, [onEvent, employeeId])
+
+  const handleEditDeduction = useCallback(
+    (deduction: Garnishment) => {
+      onEvent(componentEvents.EMPLOYEE_DEDUCTION_EDIT, deduction)
+    },
+    [onEvent],
+  )
 
   const handlePaystubDownload = useCallback(
     async (payrollUuid: string) => {

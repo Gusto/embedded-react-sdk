@@ -159,7 +159,8 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | PUT | `/v1/employees/:employeeId/i9_authorization` |
 | **Employee.EmployeeDocuments** | GET | `/v1/employees/:employeeId` |
 |  | PUT | `/v1/employees/:employeeId/onboarding_documents_config` |
-| **Employee.DashboardFlow** | GET | `/v1/employees/:employeeId` |
+| **Employee.DashboardFlow** | DELETE | `/v1/compensations/:compensationId` |
+|  | GET | `/v1/employees/:employeeId` |
 |  | GET | `/v1/employees/:employeeId/forms` |
 |  | GET | `/v1/employees/:employeeId/home_addresses` |
 |  | GET | `/v1/employees/:employeeId/pay_stubs` |
@@ -371,7 +372,8 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 | **EmployeeManagement.DocumentManager** | GET | `/v1/employees/:employeeId/forms/:formId` |
 |  | GET | `/v1/employees/:employeeId/forms/:formId/pdf` |
 |  | PUT | `/v1/employees/:employeeId/forms/:formId/sign` |
-| **EmployeeManagement.DashboardFlow** | GET | `/v1/employees/:employeeId` |
+| **EmployeeManagement.DashboardFlow** | DELETE | `/v1/compensations/:compensationId` |
+|  | GET | `/v1/employees/:employeeId` |
 |  | GET | `/v1/employees/:employeeId/forms` |
 |  | GET | `/v1/employees/:employeeId/home_addresses` |
 |  | GET | `/v1/employees/:employeeId/pay_stubs` |
