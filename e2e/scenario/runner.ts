@@ -1,8 +1,6 @@
 import { resolve, relative } from 'node:path'
-import type { ScenarioContext } from './cache'
-import { getCachedScenario, setCachedScenario } from './cache'
-import { loadScenario, resolveScenario } from './loader'
-import { hashScenarioStructure } from './hash'
+import type { ScenarioContext } from './context'
+import { loadScenario } from './loader'
 import { createDemoAndProvision } from '../../sdk-app/scripts/demo-provisioner'
 import type {
   Scenario,
@@ -448,22 +446,9 @@ export async function provisionScenario(
 
   log(`Loading scenario: ${scenarioId}`)
 
-  const [scenario, preTemplateValue] = await Promise.all([
-    loadScenario(scenarioPath),
-    resolveScenario(scenarioPath),
-  ])
+  const scenario = await loadScenario(scenarioPath)
 
-  const hash = hashScenarioStructure(
-    preTemplateValue as Parameters<typeof hashScenarioStructure>[0],
-  )
-
-  const cached = await getCachedScenario(scenarioId, hash, gwsFlowsBase)
-  if (cached) {
-    log(`Cache hit for ${scenarioId}`)
-    return cached
-  }
-
-  log(`Cache miss — provisioning ${scenario.baseDemo} demo`)
+  log(`Provisioning ${scenario.baseDemo} demo for ${scenarioId}`)
   const demoResult = await createDemoAndProvision(gwsFlowsBase, scenario.baseDemo, {
     onProgress: options?.onProgress,
   })
@@ -506,8 +491,7 @@ export async function provisionScenario(
     validateExpectedContext(context, scenario.expectedContext)
   }
 
-  setCachedScenario(scenarioId, hash, context)
-  log(`Scenario ${scenarioId} provisioned and cached`)
+  log(`Scenario ${scenarioId} provisioned`)
 
   return context
 }
