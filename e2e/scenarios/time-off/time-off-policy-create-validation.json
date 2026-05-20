@@ -1,0 +1,33 @@
+{
+  "$schema": "../../schema/scenario.schema.json",
+  "name": "Time off policy create + required field validation",
+  "description": "Minimal onboarded company used to drive the create policy form: select policy type, leave required fields blank, assert validation surfaces.",
+  "domain": "time-off",
+  "baseDemo": "react_sdk_demo_company_onboarded",
+  "decorations": {
+    "locations": [
+      {
+        "key": "hq",
+        "street_1": "300 Mission St",
+        "city": "San Francisco",
+        "state": "CA",
+        "zip": "94105",
+        "filing_address": true,
+        "mailing_address": true
+      }
+    ],
+    "employees": [
+      {
+        "key": "alice",
+        "$ref": "../fragments/w2-salaried-employee.json",
+        "overrides": {
+          "first_name": "Alice",
+          "last_name": "PolicyCreate",
+          "email": "alice-policy-create+{{ts}}@example.com",
+          "onboarding_status": "onboarding_completed"
+        }
+      }
+    ]
+  },
+  "expectedContext": ["companyId", "locationIds.hq", "employeeIds.alice"]
+}
