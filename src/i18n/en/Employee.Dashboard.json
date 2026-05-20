@@ -41,6 +41,22 @@
       "wage": "Wage",
       "startDate": "Start date",
       "addJobCta": "Add job",
+      "addAnotherJobCta": "Add another job",
+      "tableLabel": "List of jobs",
+      "hamburgerTitle": "Job actions",
+      "editJobCta": "Edit",
+      "deleteJobCta": "Delete",
+      "columns": {
+        "jobTitle": "Job title",
+        "payType": "Pay type",
+        "startDate": "Start date"
+      },
+      "deleteJobDialog": {
+        "title": "Delete job?",
+        "description": "{{jobTitle}} will be permanently removed.",
+        "confirmCta": "Delete",
+        "cancelCta": "Cancel"
+      },
       "emptyState": {
         "title": "No compensation",
         "description": "Compensation will appear here once added"

@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
 import { payrollsGetPayStub } from '@gusto/embedded-api/funcs/payrollsGetPayStub'
+import type { Job } from '@gusto/embedded-api/models/components/job'
 import { useErrorBoundary } from 'react-error-boundary'
 import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
 import {
@@ -47,7 +48,6 @@ function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
   // Derive the inputs these callbacks depend on up here so all hooks are
   // declared before the early-return below (rules-of-hooks). The data fields
   // are only present on the non-loading variants of each hook result.
-  const primaryJob = !compensation.isLoading ? compensation.data.primaryJob : undefined
   const employeeFederalTax = !taxes.isLoading ? taxes.data.employeeFederalTax : undefined
 
   const handleEditBasicDetails = useCallback(() => {
@@ -62,9 +62,12 @@ function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
     onEvent(componentEvents.EMPLOYEE_WORK_ADDRESS, { employeeId })
   }, [onEvent, employeeId])
 
-  const handleEditCompensation = useCallback(() => {
-    onEvent(componentEvents.EMPLOYEE_COMPENSATION_UPDATE, { employeeId, job: primaryJob })
-  }, [onEvent, employeeId, primaryJob])
+  const handleEditCompensation = useCallback(
+    (job: Job) => {
+      onEvent(componentEvents.EMPLOYEE_COMPENSATION_CREATE, { employeeId, job })
+    },
+    [onEvent, employeeId],
+  )
 
   const handleAddJob = useCallback(() => {
     onEvent(componentEvents.EMPLOYEE_JOB_ADD, { employeeId })
@@ -172,7 +175,7 @@ function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
   }
 
   const { employee, currentHomeAddress, currentWorkAddress } = basicDetails.data
-  const { payStubs } = compensation.data
+  const { jobs, primaryFlsaStatus, payStubs } = compensation.data
   const { employeeStateTaxesList } = taxes.data
   const { formList } = forms.data
 
@@ -236,7 +239,8 @@ function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
           {selectedTab === 'jobAndPay' && (
             <JobAndPayView
               employeeId={employeeId}
-              job={primaryJob}
+              jobs={jobs}
+              primaryFlsaStatus={primaryFlsaStatus}
               payStubs={payStubs}
               payStubsPagination={payStubsPagination}
               isLoading={isLoadingJobAndPay}

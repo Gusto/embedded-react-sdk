@@ -1,4 +1,6 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useJobsAndCompensationsDeleteMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsDelete'
 import type { Job } from '@gusto/embedded-api/models/components/job'
 import type { EmployeeBankAccount } from '@gusto/embedded-api/models/components/employeebankaccount'
 import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
@@ -25,26 +27,33 @@ import {
   DeleteDeductionDialog,
   formatDeductionAmount,
 } from '@/components/Employee/Deductions/shared'
-import { componentEvents, PAYMENT_METHODS, type EventType } from '@/shared/constants'
+import { componentEvents, FlsaStatus, PAYMENT_METHODS, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
-import PencilSvg from '@/assets/icons/pencil.svg?react'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 import PercentCircleIcon from '@/assets/icons/percent-circle.svg?react'
 import DownloadCloudIcon from '@/assets/icons/download-cloud.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
+import PencilSvg from '@/assets/icons/pencil.svg?react'
 
 type EmployeePayStub = NonNullable<
   GetV1EmployeesEmployeeUuidPayStubsResponse['employeePayStubsList']
 >[number]
 
+function parseJobRate(rate: Job['rate']): number | null {
+  if (rate === undefined) return null
+  const numericRate = parseFloat(rate)
+  return Number.isFinite(numericRate) ? numericRate : null
+}
+
 export interface JobAndPayViewProps {
   employeeId: string
-  job?: Job
+  jobs?: Job[]
+  primaryFlsaStatus?: string
   payStubs?: EmployeePayStub[]
   payStubsPagination?: PaginationControlProps
   isLoading?: boolean
   onEvent: OnEventType<EventType, unknown>
-  onEditCompensation?: () => void
+  onEditCompensation?: (job: Job) => void
   onAddJob?: () => void
   onAddDeduction?: () => void
   onEditDeduction?: (deduction: Garnishment) => void
@@ -54,7 +63,8 @@ export interface JobAndPayViewProps {
 
 export function JobAndPayView({
   employeeId,
-  job,
+  jobs = [],
+  primaryFlsaStatus,
   payStubs = [],
   payStubsPagination,
   isLoading = false,
@@ -67,14 +77,37 @@ export function JobAndPayView({
   downloadingPayrollUuids,
 }: JobAndPayViewProps) {
   useI18n('Employee.PaymentMethod')
+  useI18n('Employee.Compensation')
   useI18n('Employee.Deductions')
   const { t } = useTranslation('Employee.Dashboard')
   const { t: tPayment } = useTranslation('Employee.PaymentMethod')
+  const { t: tCompensation } = useTranslation('Employee.Compensation')
   const { t: tDeductions } = useTranslation('Employee.Deductions')
   const Components = useComponentContext()
   const formatPayRate = useFormatPayRate()
   const formatCurrency = useNumberFormatter('currency')
   const formatPercent = useNumberFormatter('percent')
+
+  const [pendingDeleteJob, setPendingDeleteJob] = useState<{
+    uuid: string
+    title: string
+  } | null>(null)
+
+  const { mutateAsync: deleteEmployeeJob, isPending: isDeletingJob } =
+    useJobsAndCompensationsDeleteMutation()
+
+  const handleConfirmDeleteJob = async () => {
+    if (!pendingDeleteJob) return
+    const jobId = pendingDeleteJob.uuid
+    await deleteEmployeeJob({ request: { jobId } })
+    onEvent(componentEvents.EMPLOYEE_JOB_DELETED, { employeeId, jobId })
+    setPendingDeleteJob(null)
+  }
+
+  const singleJob = jobs.length === 1 ? jobs[0]! : undefined
+  const hasMultipleJobs = jobs.length > 1
+  const canAddAnotherJob = jobs.length >= 1 && primaryFlsaStatus === FlsaStatus.NONEXEMPT
+  const singleJobNumericRate = singleJob ? parseJobRate(singleJob.rate) : null
 
   const paymentMethodList = usePaymentMethodList({ employeeId })
   const paymentMethod = paymentMethodList.isLoading
@@ -115,6 +148,72 @@ export function JobAndPayView({
   // Both hooks own a submit error state; merge into one error surface so
   // the BaseLayout below shows whatever failed.
   const errorHandling = composeErrorHandler([paymentMethodList, deductionsList])
+
+  const jobsColumns = [
+    {
+      key: 'jobTitle',
+      title: t('jobAndPay.compensation.columns.jobTitle'),
+      render: (job: Job) => {
+        const numericRate = parseJobRate(job.rate)
+        return (
+          <Flex flexDirection="column" gap={0}>
+            <Components.Text>{job.title || '-'}</Components.Text>
+            {numericRate !== null && job.paymentUnit ? (
+              <Components.Text variant="supporting">
+                {formatPayRate(numericRate, job.paymentUnit)}
+              </Components.Text>
+            ) : null}
+          </Flex>
+        )
+      },
+    },
+    {
+      key: 'payType',
+      title: t('jobAndPay.compensation.columns.payType'),
+      render: (job: Job) => {
+        const flsaStatus = job.compensations?.find(
+          comp => comp.uuid === job.currentCompensationUuid,
+        )?.flsaStatus
+        return flsaStatus !== undefined ? tCompensation(`flsaStatusLabels.${flsaStatus}`) : '-'
+      },
+    },
+    {
+      key: 'startDate',
+      title: t('jobAndPay.compensation.columns.startDate'),
+      render: (job: Job) => (job.hireDate ? formatDateLongWithYear(job.hireDate) : '-'),
+    },
+  ]
+
+  const jobsDataView = useDataView({
+    data: jobs,
+    columns: jobsColumns,
+    itemMenu: (job: Job) => (
+      <HamburgerMenu
+        triggerLabel={t('jobAndPay.compensation.hamburgerTitle')}
+        isLoading={isDeletingJob}
+        items={[
+          {
+            label: t('jobAndPay.compensation.editJobCta'),
+            icon: <PencilSvg aria-hidden />,
+            onClick: () => {
+              onEditCompensation?.(job)
+            },
+          },
+          ...(!job.primary
+            ? [
+                {
+                  label: t('jobAndPay.compensation.deleteJobCta'),
+                  icon: <TrashCanSvg aria-hidden />,
+                  onClick: () => {
+                    setPendingDeleteJob({ uuid: job.uuid, title: job.title ?? '' })
+                  },
+                },
+              ]
+            : []),
+        ]}
+      />
+    ),
+  })
 
   const bankAccountsColumns = [
     {
@@ -286,13 +385,18 @@ export function JobAndPayView({
     <BaseLayout error={errorHandling.errors}>
       <Flex flexDirection="column" gap={24}>
         <Components.Box
-          withPadding={!!job}
+          withPadding={!hasMultipleJobs}
           header={
             <Components.BoxHeader
               title={t('jobAndPay.compensation.title')}
               action={
-                job ? (
-                  <Components.Button variant="secondary" onClick={onEditCompensation}>
+                hasMultipleJobs ? null : singleJob ? (
+                  <Components.Button
+                    variant="secondary"
+                    onClick={() => {
+                      onEditCompensation?.(singleJob)
+                    }}
+                  >
                     {t('jobAndPay.compensation.editCta')}
                   </Components.Button>
                 ) : (
@@ -307,49 +411,64 @@ export function JobAndPayView({
               }
             />
           }
+          footer={
+            canAddAnotherJob ? (
+              <Components.Button variant="secondary" onClick={onAddJob} icon={<PlusCircleIcon />}>
+                {t('jobAndPay.compensation.addAnotherJobCta')}
+              </Components.Button>
+            ) : undefined
+          }
         >
-          {job ? (
+          {hasMultipleJobs ? (
+            <DataView
+              label={t('jobAndPay.compensation.tableLabel')}
+              isWithinBox
+              {...jobsDataView}
+            />
+          ) : singleJob ? (
             <Flex flexDirection="column" gap={16}>
               <Flex flexDirection="column" gap={12}>
-                {job.title && (
+                {singleJob.title && (
                   <Flex flexDirection="column" gap={0}>
                     <Components.Text variant="supporting">
                       {t('jobAndPay.compensation.jobTitle')}
                     </Components.Text>
-                    <Components.Text>{job.title}</Components.Text>
+                    <Components.Text>{singleJob.title}</Components.Text>
                   </Flex>
                 )}
 
-                {job.paymentUnit && (
+                {singleJob.paymentUnit && (
                   <Flex flexDirection="column" gap={0}>
                     <Components.Text variant="supporting">
                       {t('jobAndPay.compensation.type')}
                     </Components.Text>
                     <Components.Text>
-                      {job.paymentUnit === 'Hour'
+                      {singleJob.paymentUnit === 'Hour'
                         ? t('jobAndPay.compensation.types.hourly')
-                        : job.paymentUnit === 'Salary' || job.paymentUnit === 'Year'
+                        : singleJob.paymentUnit === 'Salary' || singleJob.paymentUnit === 'Year'
                           ? t('jobAndPay.compensation.types.salary')
-                          : job.paymentUnit}
+                          : singleJob.paymentUnit}
                     </Components.Text>
                   </Flex>
                 )}
 
-                {job.rate && job.paymentUnit && typeof job.rate === 'number' && (
+                {singleJobNumericRate !== null && singleJob.paymentUnit && (
                   <Flex flexDirection="column" gap={0}>
                     <Components.Text variant="supporting">
                       {t('jobAndPay.compensation.wage')}
                     </Components.Text>
-                    <Components.Text>{formatPayRate(job.rate, job.paymentUnit)}</Components.Text>
+                    <Components.Text>
+                      {formatPayRate(singleJobNumericRate, singleJob.paymentUnit)}
+                    </Components.Text>
                   </Flex>
                 )}
 
-                {job.hireDate && (
+                {singleJob.hireDate && (
                   <Flex flexDirection="column" gap={0}>
                     <Components.Text variant="supporting">
                       {t('jobAndPay.compensation.startDate')}
                     </Components.Text>
-                    <Components.Text>{formatDateLongWithYear(job.hireDate)}</Components.Text>
+                    <Components.Text>{formatDateLongWithYear(singleJob.hireDate)}</Components.Text>
                   </Flex>
                 )}
               </Flex>
@@ -464,6 +583,27 @@ export function JobAndPayView({
             void handleConfirmDeleteDeduction()
           }}
         />
+
+        <Components.Dialog
+          isOpen={pendingDeleteJob !== null}
+          onClose={() => {
+            setPendingDeleteJob(null)
+          }}
+          onPrimaryActionClick={() => {
+            void handleConfirmDeleteJob()
+          }}
+          isPrimaryActionLoading={isDeletingJob}
+          isDestructive
+          title={t('jobAndPay.compensation.deleteJobDialog.title')}
+          primaryActionLabel={t('jobAndPay.compensation.deleteJobDialog.confirmCta')}
+          closeActionLabel={t('jobAndPay.compensation.deleteJobDialog.cancelCta')}
+        >
+          {pendingDeleteJob
+            ? t('jobAndPay.compensation.deleteJobDialog.description', {
+                jobTitle: pendingDeleteJob.title,
+              })
+            : null}
+        </Components.Dialog>
       </Flex>
     </BaseLayout>
   )

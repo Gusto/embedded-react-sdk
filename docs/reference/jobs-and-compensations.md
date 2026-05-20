@@ -744,7 +744,7 @@ These are places where the current SDK component would need explicit handling fo
 
 1. **PUT compensation has no `compensation_processed_on_payroll?` validator**. The risk is silent rewrite of the current row's history. For management, the SDK should require `effectiveDate` and route to POST when in the future; only PUT for the documented carve-out.
 2. **`useCompensationForm` (partner headless hook) is currently PUT-only**. Its `mode: 'create' | 'update'` flag controls validation requiredness, not API call routing. Management work needs to introduce a "create-future-comp" call (`useJobsAndCompensationsCreateCompensationMutation`).
-3. **The Dashboard fires `EMPLOYEE_COMPENSATION_UPDATE`** ([src/components/Employee/Dashboard/Dashboard.tsx](../../src/components/Employee/Dashboard/Dashboard.tsx)) but the management editor itself is not yet built. Until it is, partners reusing `Compensation` for management will hit the silent-overwrite risk.
+3. **The Dashboard fires `EMPLOYEE_COMPENSATION_CREATE`** ([src/components/Employee/Dashboard/Dashboard.tsx](../../src/components/Employee/Dashboard/Dashboard.tsx)) but the management editor itself is not yet built. Until it is, partners reusing `Compensation` for management will hit the silent-overwrite risk.
 4. **No "switch primary" capability** in the public API. Both gws-flows and the SDK lack a primary-switch flow because the API itself doesn't expose one.
 5. **Job-only field changes** (`twoPercentShareholder`, `stateWcCovered`, `stateWcClassCode`) should be a separate UX surface from compensation-changing fields, since they have no effective-dating semantics. Today's `useCompensationForm` mixes them.
 
