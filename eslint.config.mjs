@@ -9,6 +9,8 @@ import jsxA11y from 'eslint-plugin-jsx-a11y'
 import pluginReactHooks from 'eslint-plugin-react-hooks'
 import importPlugin from 'eslint-plugin-import'
 import reactRefresh from 'eslint-plugin-react-refresh'
+import jsdoc from 'eslint-plugin-jsdoc'
+import tsdoc from 'eslint-plugin-tsdoc'
 
 export default [
   { files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'] },
@@ -142,5 +144,49 @@ export default [
       '@typescript-eslint/no-unnecessary-type-arguments': 'off',
     },
   },
+  // TSDoc syntax validation on any comment that already exists.
+  // Validates tag names, param format, brace escaping, etc.
+  // Will be promoted to 'error' once existing violations are resolved.
+  {
+    files: ['src/**/*.{ts,tsx}'],
+    plugins: { tsdoc },
+    rules: {
+      'tsdoc/syntax': 'warn',
+    },
+  },
+
+  // Require TSDoc on exported symbols. Add a directory to `files` once its
+  // public API has been documented. Barrel index files are suppressed globally
+  // since re-exports carry no doc comment of their own.
+  //
+  // To enable for a directory, add a block like this:
+  //
+  // {
+  //   files: ['src/components/Employee/Compensation/**/*.{ts,tsx}'],
+  //   plugins: { jsdoc },
+  //   settings: { jsdoc: { mode: 'typescript' } },
+  //   rules: {
+  //     'jsdoc/require-jsdoc': [
+  //       'error',
+  //       {
+  //         publicOnly: true,
+  //         require: {
+  //           FunctionDeclaration: true,
+  //           ClassDeclaration: true,
+  //           ArrowFunctionExpression: false,
+  //           FunctionExpression: false,
+  //           MethodDefinition: false,
+  //         },
+  //         contexts: ['TSInterfaceDeclaration', 'TSTypeAliasDeclaration', 'TSEnumDeclaration'],
+  //         enableFixer: false,
+  //       },
+  //     ],
+  //   },
+  // },
+  // {
+  //   files: ['**/index.ts', '**/index.tsx', '**/exports/*.ts'],
+  //   rules: { 'jsdoc/require-jsdoc': 'off' },
+  // },
+
   ...storybook.configs['flat/recommended'],
 ]
