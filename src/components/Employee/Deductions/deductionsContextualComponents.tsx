@@ -41,7 +41,15 @@ export function IncludeDeductionsContextual() {
     onEvent(componentEvents.EMPLOYEE_DEDUCTION_DONE)
   }
 
-  return <IncludeDeductions onAdd={onAdd} onContinue={onContinue} />
+  // BaseLayout's inner FadeIn (width: 100%) is the canonical "page" container
+  // for content rendered inside <Flow>. Without it the outer row-direction
+  // Flex in Flow collapses to the intrinsic content width of its single
+  // child, producing the "squashed" layout for narrow content.
+  return (
+    <BaseLayout>
+      <IncludeDeductions onAdd={onAdd} onContinue={onContinue} />
+    </BaseLayout>
+  )
 }
 
 export function DeductionsListContextual() {

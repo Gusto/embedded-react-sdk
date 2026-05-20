@@ -65,8 +65,10 @@
       "listLabel": "List of deductions",
       "deduction": "Deduction",
       "frequency": "Frequency",
-      "withhold": "Withhold",
+      "withhold": "Withheld",
       "recurring": "Recurring",
+      "oneTime": "One-time",
+      "amountPerPaycheck": "{{value}} per paycheck",
       "emptyState": {
         "title": "No deductions",
         "description": "Employee deductions will appear here"
@@ -137,6 +139,9 @@
   "alerts": {
     "bankAccountAdded": "Bank account successfully added.",
     "bankAccountDeleted": "Bank account successfully deleted.",
-    "splitUpdated": "Split payment successfully updated."
+    "splitUpdated": "Split payment successfully updated.",
+    "deductionAdded": "Deduction successfully added.",
+    "deductionUpdated": "Deduction successfully updated.",
+    "deductionDeleted": "Deduction successfully deleted."
   }
 }
