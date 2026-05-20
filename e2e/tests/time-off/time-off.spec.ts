@@ -5,7 +5,7 @@ test.describe('TimeOffFlow - policy list smoke', () => {
   test.beforeEach(({}, testInfo) => {
     testInfo.annotations.push({
       type: 'scenario',
-      description: 'time-off/time-off-management',
+      description: 'time-off/time-off-policy-create-validation',
     })
   })
 
