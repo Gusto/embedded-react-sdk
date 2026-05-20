@@ -231,65 +231,6 @@ jobs:
       - name: Run scenario unit tests
         run: npm run test:scenarios
 
-  # E2E setup: Provision demo companies once on flows.gusto-demo.com and
-  # publish the resulting state (flow token, primary company, dismissal
-  # company, terminated employee, etc.) as an artifact. Each e2e shard
-  # downloads this artifact and skips provisioning thanks to
-  # globalSetup's idempotency check.
-  #
-  # Without this job, every shard's globalSetup re-provisions ~2 demo
-  # companies; with 9 shards that meant ~18 concurrent demo creations on
-  # the demo backend, which caused 200s flow-token lookup timeouts and
-  # cascading shard failures. Provisioning once removes the bottleneck.
-  e2e-setup:
-    needs: [setup, scenarios]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: '.nvmrc'
-
-      - name: Restore node_modules cache
-        uses: actions/cache/restore@v5
-        with:
-          path: node_modules
-          key: ${{ needs.setup.outputs.cache-key }}
-
-      - name: Cache Playwright browsers
-        id: playwright-cache
-        uses: actions/cache@v5
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            playwright-${{ runner.os }}-
-
-      - name: Install Playwright browsers
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps chromium
-
-      - name: Install Playwright system dependencies only
-        if: steps.playwright-cache.outputs.cache-hit == 'true'
-        run: npx playwright install-deps chromium
-
-      - name: Provision demo companies
-        env:
-          E2E_USE_REAL_BACKEND: 'true'
-          E2E_DISABLE_CACHE: 'true'
-        run: npm run e2e:setup
-
-      - name: Upload e2e state
-        uses: actions/upload-artifact@v6
-        with:
-          name: e2e-state
-          path: e2e/.e2e-state.json
-          # File starts with a dot (.e2e-state.json); upload-artifact@v6
-          # excludes hidden files by default, so opt in explicitly.
-          include-hidden-files: true
-          retention-days: 1
-          if-no-files-found: error
 
   # E2E job: Run Playwright e2e tests against the live demo environment.
   # This is the sole Playwright gate. A previous MSW-mode e2e job was removed
@@ -305,8 +246,12 @@ jobs:
   # Playwright path-substring match, so it picks up both flat specs at
   # `e2e/tests/<domain>*.spec.ts` and nested specs at
   # `e2e/tests/<domain>/**/*.spec.ts`.
+  #
+  # Each shard provisions its own demo companies via globalSetup, with no
+  # shared state caching. While this means more provisioning load, it avoids
+  # stale cache issues and keeps each shard independent.
   e2e:
-    needs: [setup, scenarios, e2e-setup]
+    needs: [setup, scenarios]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -358,15 +303,9 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps chromium
 
-      - name: Download e2e state
-        uses: actions/download-artifact@v6
-        with:
-          name: e2e-state
-          path: e2e/
-
       - name: Run e2e tests
         env:
-          E2E_DISABLE_CACHE: 'true'
+          E2E_USE_REAL_BACKEND: 'true'
         run: npm run test:e2e:demo -- --pass-with-no-tests ${{ matrix.domain }}
 
       - name: Upload test results
