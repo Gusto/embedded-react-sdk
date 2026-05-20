@@ -313,9 +313,10 @@ async function pickTerminationCandidateId(scenario: ScenarioContext): Promise<st
   // produces "Invalid hire date" — so we explicitly poll until we find a
   // seed employee with onboarded === true.
   for (let attempt = 0; attempt < 10; attempt++) {
-    const employees = (await fetch(`${apiBase}/companies/${scenario.companyId}/employees`).then(
+    const data: unknown = await fetch(`${apiBase}/companies/${scenario.companyId}/employees`).then(
       r => (r.ok ? r.json() : []),
-    )) as EmployeeSummary[]
+    )
+    const employees: EmployeeSummary[] = Array.isArray(data) ? (data as EmployeeSummary[]) : []
     const onboardedSeed = employees.find(
       e => !scenarioIds.has(e.uuid) && !e.terminated && e.onboarded === true,
     )

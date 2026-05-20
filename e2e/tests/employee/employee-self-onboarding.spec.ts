@@ -60,21 +60,8 @@ test.describe('EmployeeSelfOnboardingFlow', () => {
     await continueButton.click()
     await waitForLoadingComplete(page, 30000)
 
-    const completedHeading = page.getByText(/completed|that's it/i)
-    const reachedCompletion = await completedHeading
-      .waitFor({ state: 'visible', timeout: 5000 })
-      .then(() => true)
-      .catch(() => false)
-
-    if (reachedCompletion) {
-      await expect(completedHeading).toBeVisible()
-      return
-    }
-
-    await expect(
-      page
-        .getByRole('heading', { name: /federal tax|state tax|payment|sign|that's it|completed/i })
-        .or(page.getByRole('button', { name: 'Continue' })),
-    ).toBeVisible({ timeout: 30000 })
+    await expect(page.getByRole('heading', { name: /completed|that's it/i })).toBeVisible({
+      timeout: 60_000,
+    })
   })
 })

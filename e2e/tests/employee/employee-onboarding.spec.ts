@@ -22,8 +22,10 @@ test.describe('EmployeeOnboardingFlow', () => {
     })
   })
 
-  test('completes the happy path successfully', async ({ page, localConfig }) => {
-    await page.goto('/?flow=employee-onboarding&companyId=123')
+  test('completes the happy path successfully', async ({ page, localConfig, scenario }) => {
+    test.skip(!scenario.flowToken, 'Requires scenario provisioning (local/demo runs only)')
+
+    await page.goto('/?flow=employee-onboarding')
 
     await waitForPageReady(page, 30000)
 
