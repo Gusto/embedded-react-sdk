@@ -14,9 +14,9 @@ export async function fillDate(
   date: { month: number; day: number; year: number },
 ) {
   const dateGroup = page.getByRole('group', { name })
-  await dateGroup.getByRole('spinbutton', { name: /month/i }).fill(String(date.month))
-  await dateGroup.getByRole('spinbutton', { name: /day/i }).fill(String(date.day))
-  await dateGroup.getByRole('spinbutton', { name: /year/i }).fill(String(date.year))
+  await dateGroup.getByRole('spinbutton', { name: /^month/ }).fill(String(date.month))
+  await dateGroup.getByRole('spinbutton', { name: /^day/ }).fill(String(date.day))
+  await dateGroup.getByRole('spinbutton', { name: /^year/ }).fill(String(date.year))
 }
 
 /**
