@@ -231,6 +231,28 @@ jobs:
       - name: Run scenario unit tests
         run: npm run test:scenarios
 
+  # E2E domains: Discover which domains have e2e specs by listing the immediate
+  # subdirectories under e2e/tests/. The result is published as a JSON array
+  # and consumed by the e2e job's matrix via fromJson(). New domain folders
+  # automatically become shards with no CI edits; folders that disappear stop
+  # producing shards. Flat specs directly under e2e/tests/ are intentionally
+  # not picked up — the domain reorganization stack puts every shipping spec
+  # inside a domain folder.
+  e2e-domains:
+    needs: setup
+    runs-on: ubuntu-latest
+    outputs:
+      domains: ${{ steps.list.outputs.domains }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - id: list
+        name: Discover e2e domains from folders under e2e/tests/
+        run: |
+          domains=$(find e2e/tests -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort | jq -R . | jq -sc .)
+          echo "domains=$domains" >> "$GITHUB_OUTPUT"
+          echo "Discovered: $domains"
+
   # E2E setup: Provision demo companies once per CI run and share state across shards.
   # E2E_DISABLE_CACHE ensures fresh provisioning for each CI run (ignores stale
   # .e2e-state.json from previous runs), but the artifact sharing across shards
@@ -293,12 +315,16 @@ jobs:
   # what it points at.
   #
   # Sharded by domain so each domain runs in parallel and one domain's
-  # failure doesn't block feedback on the others. The `domain` filter is a
-  # Playwright path-substring match, so it picks up both flat specs at
-  # `e2e/tests/<domain>*.spec.ts` and nested specs at
-  # `e2e/tests/<domain>/**/*.spec.ts`.
+  # failure doesn't block feedback on the others. The matrix is built
+  # dynamically by the `e2e-domains` job from the subfolders under
+  # `e2e/tests/`, so adding a new domain folder is sufficient to add a
+  # shard. The `domain` filter is a Playwright path-substring match against
+  # specs under `e2e/tests/<domain>/**/*.spec.ts`.
   e2e:
-    needs: [setup, scenarios, e2e-setup]
+    needs: [setup, scenarios, e2e-setup, e2e-domains]
+    # Skip cleanly when no domain folders exist — fromJson on an empty array
+    # would otherwise fail matrix expansion.
+    if: needs.e2e-domains.outputs.domains != '[]'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -309,16 +335,7 @@ jobs:
       # load manageable.
       max-parallel: 2
       matrix:
-        domain:
-          - company
-          - contractor
-          - dismissal
-          - employee
-          - information-requests
-          - payroll
-          - termination
-          - time-off
-          - legacy
+        domain: ${{ fromJson(needs.e2e-domains.outputs.domains) }}
     name: e2e (${{ matrix.domain }})
     steps:
       - uses: actions/checkout@v6
