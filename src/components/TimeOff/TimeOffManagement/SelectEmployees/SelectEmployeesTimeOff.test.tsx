@@ -242,10 +242,12 @@ describe('SelectEmployeesTimeOff', () => {
     const input = screen.getByPlaceholderText('searchPlaceholder')
     await user.type(input, 'alice')
 
+    // useClientPagination debounces search by 120ms before the predicate runs,
+    // so wait for the filter to settle rather than asserting immediately.
     await waitFor(() => {
-      expect(screen.getByText('Alice Smith')).toBeInTheDocument()
+      expect(screen.queryByText('Bob Jones')).not.toBeInTheDocument()
     })
-    expect(screen.queryByText('Bob Jones')).not.toBeInTheDocument()
+    expect(screen.getByText('Alice Smith')).toBeInTheDocument()
   })
 
   it('fires TIME_OFF_ADD_EMPLOYEES_BACK when Back is clicked', async () => {

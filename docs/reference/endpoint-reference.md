@@ -285,14 +285,12 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | `/v1/time_off_policies/:timeOffPolicyUuid` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid` |
 |  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/add_employees` |
-|  | PUT | `/v1/time_off_policies/:timeOffPolicyUuid/remove_employees` |
 | **TimeOff.HolidaySelectionForm** | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
 |  | POST | `/v1/companies/:companyUuid/holiday_pay_policy` |
 |  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy` |
 | **TimeOff.AddEmployeesHoliday** | GET | `/v1/companies/:companyId/employees` |
 |  | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
 |  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/add` |
-|  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |
 | **TimeOff.ViewHolidayEmployees** | GET | `/v1/companies/:companyId/employees` |
 |  | GET | `/v1/companies/:companyUuid/holiday_pay_policy` |
 |  | PUT | `/v1/companies/:companyUuid/holiday_pay_policy/remove` |

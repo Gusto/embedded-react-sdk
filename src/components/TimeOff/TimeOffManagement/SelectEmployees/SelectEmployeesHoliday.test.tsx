@@ -144,10 +144,12 @@ describe('SelectEmployeesHoliday', () => {
     const input = screen.getByPlaceholderText('searchPlaceholder')
     await user.type(input, 'bob')
 
+    // useClientPagination debounces search by 120ms before the predicate runs,
+    // so wait for the filter to settle rather than asserting immediately.
     await waitFor(() => {
-      expect(screen.getByText('Bob Jones')).toBeInTheDocument()
+      expect(screen.queryByText('Alice Smith')).not.toBeInTheDocument()
     })
-    expect(screen.queryByText('Alice Smith')).not.toBeInTheDocument()
+    expect(screen.getByText('Bob Jones')).toBeInTheDocument()
   })
 
   it('fires CANCEL when Back is clicked', async () => {
