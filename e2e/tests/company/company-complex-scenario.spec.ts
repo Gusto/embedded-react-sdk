@@ -1,5 +1,8 @@
 import { test, expect } from '../../utils/localTestFixture'
-import { waitForLoadingComplete } from '../../utils/helpers'
+import {
+  landOnCompanyOnboarding,
+  clickStartOrContinueOnboarding,
+} from '../../utils/companyFlowDrivers'
 
 test.describe('CompanyComplexScenarioProvisioning', () => {
   test.beforeEach(({}, testInfo) => {
@@ -23,17 +26,8 @@ test.describe('CompanyComplexScenarioProvisioning', () => {
     expect(Object.keys(scenario.employeeIds)).toEqual(expect.arrayContaining(['alice', 'bob']))
     expect(Object.keys(scenario.contractorIds)).toEqual(expect.arrayContaining(['casey']))
 
-    await page.goto('/?flow=company-onboarding')
-    await waitForLoadingComplete(page)
-
-    await expect(
-      page.getByRole('heading', {
-        name: /get started|we need a few more details|company onboarding/i,
-      }),
-    ).toBeVisible({ timeout: 30000 })
-
-    await page.getByRole('button', { name: /start onboarding|continue onboarding/i }).click()
-    await waitForLoadingComplete(page, 30000)
+    await landOnCompanyOnboarding(page)
+    await clickStartOrContinueOnboarding(page)
 
     await expect(page.getByRole('heading', { name: /address/i })).toBeVisible({ timeout: 30000 })
     await expect(page.getByRole('progressbar')).toBeVisible()

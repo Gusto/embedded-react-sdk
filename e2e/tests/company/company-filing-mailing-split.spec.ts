@@ -1,5 +1,8 @@
 import { test, expect } from '../../utils/localTestFixture'
-import { waitForLoadingComplete } from '../../utils/helpers'
+import {
+  landOnCompanyOnboarding,
+  clickStartOrContinueOnboarding,
+} from '../../utils/companyFlowDrivers'
 
 test.describe('CompanyOnboarding — filing/mailing split', () => {
   test.beforeEach(({}, testInfo) => {
@@ -20,17 +23,8 @@ test.describe('CompanyOnboarding — filing/mailing split', () => {
       expect.arrayContaining(['filing-only', 'mailing-only']),
     )
 
-    await page.goto('/?flow=company-onboarding')
-    await waitForLoadingComplete(page)
-
-    await expect(
-      page.getByRole('heading', {
-        name: /get started|let's get started|we need a few more details/i,
-      }),
-    ).toBeVisible({ timeout: 30000 })
-
-    await page.getByRole('button', { name: /start onboarding|continue onboarding/i }).click()
-    await waitForLoadingComplete(page, 30000)
+    await landOnCompanyOnboarding(page)
+    await clickStartOrContinueOnboarding(page)
 
     await expect(page.getByRole('heading', { name: /address/i })).toBeVisible({ timeout: 30000 })
   })
