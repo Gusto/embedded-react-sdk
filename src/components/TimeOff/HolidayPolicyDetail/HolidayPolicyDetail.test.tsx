@@ -79,7 +79,12 @@ describe('HolidayPolicyDetail', () => {
         return HttpResponse.json(mockHolidayPayPolicy)
       }),
       http.get(`${API_BASE_URL}/v1/companies/:companyId/employees`, () => {
-        return HttpResponse.json(mockEmployees)
+        return HttpResponse.json(mockEmployees, {
+          headers: {
+            'x-total-pages': '1',
+            'x-total-count': mockEmployees.length.toString(),
+          },
+        })
       }),
     )
   })
@@ -171,7 +176,12 @@ describe('HolidayPolicyDetail', () => {
           return HttpResponse.json(mockHolidayPayPolicyManyEmployees)
         }),
         http.get(`${API_BASE_URL}/v1/companies/:companyId/employees`, () => {
-          return HttpResponse.json(manyEnrolledEmployees)
+          return HttpResponse.json(manyEnrolledEmployees, {
+            headers: {
+              'x-total-pages': '1',
+              'x-total-count': manyEnrolledEmployees.length.toString(),
+            },
+          })
         }),
       )
 
@@ -199,7 +209,12 @@ describe('HolidayPolicyDetail', () => {
           return HttpResponse.json(mockHolidayPayPolicyManyEmployees)
         }),
         http.get(`${API_BASE_URL}/v1/companies/:companyId/employees`, () => {
-          return HttpResponse.json(manyEnrolledEmployees)
+          return HttpResponse.json(manyEnrolledEmployees, {
+            headers: {
+              'x-total-pages': '1',
+              'x-total-count': manyEnrolledEmployees.length.toString(),
+            },
+          })
         }),
       )
 
