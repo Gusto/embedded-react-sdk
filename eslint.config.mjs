@@ -12,6 +12,25 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import jsdoc from 'eslint-plugin-jsdoc'
 import tsdoc from 'eslint-plugin-tsdoc'
 
+const jsdocRequireOptions = {
+  publicOnly: true,
+  require: {
+    FunctionDeclaration: true,
+    ClassDeclaration: true,
+    ArrowFunctionExpression: true,
+    FunctionExpression: true,
+    MethodDefinition: true,
+  },
+  contexts: [
+    'PropertyDefinition',
+    'TSTypeAliasDeclaration',
+    'TSInterfaceDeclaration',
+    'TSEnumDeclaration',
+  ],
+  // If enabled, --fix will simply add an empty jsdoc comment
+  enableFixer: false,
+}
+
 export default [
   { files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'] },
   { languageOptions: { globals: globals.browser } },
@@ -155,38 +174,30 @@ export default [
     },
   },
 
-  // Require TSDoc on exported symbols. Add a directory to `files` once its
-  // public API has been documented. Barrel index files are suppressed globally
-  // since re-exports carry no doc comment of their own.
-  //
-  // To enable for a directory, add a block like this:
-  //
+  // Require TSDoc on exported symbols. Everything starts at 'warn' by default.
+  // Add a directory glob to the allowlist block below to promote it to 'error'
+  // once that directory's public API has been fully documented.
+  {
+    files: ['src/**/*.{ts,tsx}'],
+    plugins: { jsdoc },
+    settings: { jsdoc: { mode: 'typescript' } },
+    rules: {
+      'jsdoc/require-jsdoc': ['warn', jsdocRequireOptions],
+    },
+  },
+  // Allowlist: promote to 'error' for directories whose public API is fully documented.
   // {
-  //   files: ['src/components/Employee/Compensation/**/*.{ts,tsx}'],
-  //   plugins: { jsdoc },
-  //   settings: { jsdoc: { mode: 'typescript' } },
+  //   files: [],
   //   rules: {
-  //     'jsdoc/require-jsdoc': [
-  //       'error',
-  //       {
-  //         publicOnly: true,
-  //         require: {
-  //           FunctionDeclaration: true,
-  //           ClassDeclaration: true,
-  //           ArrowFunctionExpression: false,
-  //           FunctionExpression: false,
-  //           MethodDefinition: false,
-  //         },
-  //         contexts: ['TSInterfaceDeclaration', 'TSTypeAliasDeclaration', 'TSEnumDeclaration'],
-  //         enableFixer: false,
-  //       },
-  //     ],
+  //     'jsdoc/require-jsdoc': ['error', jsdocRequireOptions],
   //   },
   // },
-  // {
-  //   files: ['**/index.ts', '**/index.tsx', '**/exports/*.ts'],
-  //   rules: { 'jsdoc/require-jsdoc': 'off' },
-  // },
+
+  // Do not enforce jsdoc rules for tests, mocks, and stories
+  {
+    files: ['**/*.stories.{ts,tsx}', '**/*.test.{ts,tsx}', 'src/test/**/*.{ts,tsx}'],
+    rules: { 'jsdoc/require-jsdoc': 'off' },
+  },
 
   ...storybook.configs['flat/recommended'],
 ]
