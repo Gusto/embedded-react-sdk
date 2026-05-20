@@ -61,7 +61,8 @@
     "numberOfDaysPlaceholder": "0",
     "continueCta": "Save",
     "errors": {
-      "balanceExceedsMaximum": "The balance maximum cannot be lower than an employee's current balance. Reduce the employee's balance first, or increase the maximum."
+      "balanceExceedsMaximum": "The balance maximum cannot be lower than an employee's current balance. Reduce the employee's balance first, or increase the maximum.",
+      "waitingPeriodMustBeWholeNumber": "Waiting period must be a whole number of days"
     }
   },
   "startingBalances": {
