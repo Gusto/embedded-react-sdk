@@ -1,19 +1,30 @@
-import { useCallback, useDeferredValue, useMemo, useState } from 'react'
+import { useCallback, useDeferredValue, useEffect, useMemo, useState } from 'react'
 import type {
   PaginationControlProps,
   PaginationItemsPerPage,
 } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
+const DEFAULT_SEARCH_DEBOUNCE_MS = 120
+
 interface UseClientPaginationOptions<TItem> {
   /**
-   * Optional substring/fuzzy/etc. predicate run against the deferred,
-   * trimmed search value. The hook owns search state and resets to page 1
-   * whenever the value changes. A trimmed-empty value is treated as "no
-   * search" and the predicate is not called. Omit to skip search entirely.
+   * Optional substring/fuzzy/etc. predicate run against the debounced,
+   * deferred, trimmed search value. The hook owns search state and
+   * resets to page 1 once the debounce settles. A trimmed-empty value is
+   * treated as "no search" and the predicate is not called. Omit to skip
+   * search entirely.
    */
   searchPredicate?: (item: TItem, query: string) => boolean
   /** Display rows-per-page. Default 5. */
   defaultItemsPerPage?: PaginationItemsPerPage
+  /**
+   * Debounce window (ms) applied to the search value before it reaches
+   * the predicate and page reset. Keeps the controlled input responsive
+   * while preventing the filter from running on every keystroke for
+   * large lists or expensive predicates. Defaults to 120ms. Pass 0 to
+   * disable debouncing entirely (useful for tests).
+   */
+  searchDebounceMs?: number
 }
 
 export interface UseClientPaginationResult<TItem> {
@@ -42,12 +53,32 @@ export function useClientPagination<TItem>(
   allItems: TItem[],
   options: UseClientPaginationOptions<TItem> = {},
 ): UseClientPaginationResult<TItem> {
-  const { searchPredicate, defaultItemsPerPage = 5 } = options
+  const {
+    searchPredicate,
+    defaultItemsPerPage = 5,
+    searchDebounceMs = DEFAULT_SEARCH_DEBOUNCE_MS,
+  } = options
 
   const [searchValue, setSearchValue] = useState('')
-  const deferredSearchValue = useDeferredValue(searchValue)
+  const [debouncedSearchValue, setDebouncedSearchValue] = useState('')
+  const deferredSearchValue = useDeferredValue(debouncedSearchValue)
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState<PaginationItemsPerPage>(defaultItemsPerPage)
+
+  useEffect(() => {
+    if (searchDebounceMs <= 0) {
+      setDebouncedSearchValue(prev => (prev === searchValue ? prev : searchValue))
+      setCurrentPage(prev => (prev === 1 ? prev : 1))
+      return
+    }
+    const timeoutId = setTimeout(() => {
+      setDebouncedSearchValue(prev => (prev === searchValue ? prev : searchValue))
+      setCurrentPage(prev => (prev === 1 ? prev : 1))
+    }, searchDebounceMs)
+    return () => {
+      clearTimeout(timeoutId)
+    }
+  }, [searchValue, searchDebounceMs])
 
   const searchFilteredItems = useMemo<TItem[]>(() => {
     if (!searchPredicate) return allItems
@@ -97,12 +128,10 @@ export function useClientPagination<TItem>(
 
   const onSearchChange = useCallback((value: string) => {
     setSearchValue(value)
-    setCurrentPage(1)
   }, [])
 
   const onSearchClear = useCallback(() => {
     setSearchValue('')
-    setCurrentPage(1)
   }, [])
 
   const actions = useMemo(

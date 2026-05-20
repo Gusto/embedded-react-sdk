@@ -1,5 +1,5 @@
 import { renderHook, act } from '@testing-library/react'
-import { describe, test, expect, vi } from 'vitest'
+import { afterEach, beforeEach, describe, test, expect, vi } from 'vitest'
 import { useClientPagination } from './useClientPagination'
 
 interface FakeItem {
@@ -15,8 +15,25 @@ function makeItem(index: number): FakeItem {
 const matchesName = (item: FakeItem, query: string) =>
   `${item.firstName} ${item.lastName}`.toLowerCase().includes(query.toLowerCase())
 
+// Default debounce is 120ms; flush it inside act() so React processes the
+// resulting state update before assertions.
+const DEBOUNCE_MS = 120
+function flushSearchDebounce() {
+  act(() => {
+    vi.advanceTimersByTime(DEBOUNCE_MS)
+  })
+}
+
 // 12 items fits cleanly into "5 per page" → 3 pages (5/5/2).
 const items = Array.from({ length: 12 }, (_, i) => makeItem(i))
+
+beforeEach(() => {
+  vi.useFakeTimers()
+})
+
+afterEach(() => {
+  vi.useRealTimers()
+})
 
 describe('useClientPagination', () => {
   test('initial state: page 1, default 5 per page, totalCount = items.length', () => {
@@ -144,6 +161,7 @@ describe('useClientPagination', () => {
     act(() => {
       result.current.actions.onSearchChange('First0 Last0')
     })
+    flushSearchDebounce()
 
     expect(result.current.searchValue).toBe('First0 Last0')
     expect(result.current.pagination.totalCount).toBe(1)
@@ -161,11 +179,13 @@ describe('useClientPagination', () => {
     act(() => {
       result.current.actions.onSearchChange('First9 Last9')
     })
+    flushSearchDebounce()
     expect(result.current.pagination.totalCount).toBe(1)
 
     act(() => {
       result.current.actions.onSearchClear()
     })
+    flushSearchDebounce()
     expect(result.current.searchValue).toBe('')
     expect(result.current.pagination.totalCount).toBe(12)
     expect(result.current.pagination.currentPage).toBe(1)
@@ -317,6 +337,7 @@ describe('useClientPagination — search', () => {
     act(() => {
       result.current.actions.onSearchChange('nope-not-a-real-name')
     })
+    flushSearchDebounce()
 
     expect(result.current.pagination.totalCount).toBe(0)
     expect(result.current.pagination.totalPages).toBe(1)
@@ -338,6 +359,7 @@ describe('useClientPagination — search', () => {
     act(() => {
       result.current.actions.onSearchChange('First1')
     })
+    flushSearchDebounce()
 
     expect(result.current.pagination.currentPage).toBe(1)
     expect(result.current.pagination.totalCount).toBe(11)
@@ -353,6 +375,7 @@ describe('useClientPagination — search', () => {
     act(() => {
       result.current.actions.onSearchChange('  Smith  ')
     })
+    flushSearchDebounce()
 
     expect(predicate).toHaveBeenCalled()
     for (const call of predicate.mock.calls) {
@@ -368,6 +391,7 @@ describe('useClientPagination — search', () => {
     act(() => {
       result.current.actions.onSearchChange('   ')
     })
+    flushSearchDebounce()
 
     expect(predicate).not.toHaveBeenCalled()
     expect(result.current.pagination.totalCount).toBe(12)
@@ -383,22 +407,26 @@ describe('useClientPagination — search', () => {
     act(() => {
       result.current.actions.onSearchChange('First1')
     })
+    flushSearchDebounce()
     expect(result.current.pagination.totalCount).toBe(3)
 
     act(() => {
       result.current.actions.onSearchChange('First11')
     })
+    flushSearchDebounce()
     expect(result.current.pagination.totalCount).toBe(1)
     expect(result.current.data[0]?.uuid).toBe('uuid-11')
 
     act(() => {
       result.current.actions.onSearchChange('zzz-no-match')
     })
+    flushSearchDebounce()
     expect(result.current.pagination.totalCount).toBe(0)
 
     act(() => {
       result.current.actions.onSearchChange('First2')
     })
+    flushSearchDebounce()
     expect(result.current.pagination.totalCount).toBe(1)
     expect(result.current.data[0]?.uuid).toBe('uuid-2')
   })
@@ -410,6 +438,7 @@ describe('useClientPagination — search', () => {
     act(() => {
       result.current.actions.onSearchChange('First1')
     })
+    flushSearchDebounce()
     expect(result.current.pagination.totalCount).toBe(11)
     expect(result.current.pagination.totalPages).toBe(3)
 
@@ -433,12 +462,99 @@ describe('useClientPagination — search', () => {
     act(() => {
       result.current.actions.onSearchChange('First1')
     })
+    flushSearchDebounce()
     expect(result.current.pagination.totalCount).toBe(11)
 
     rerender({ predicate: () => false })
 
     expect(result.current.pagination.totalCount).toBe(0)
     expect(result.current.data).toHaveLength(0)
+  })
+
+  test('searchValue is controlled-input instant; predicate is gated by debounce', () => {
+    const predicate = vi.fn<(item: FakeItem, query: string) => boolean>((item, query) =>
+      matchesName(item, query),
+    )
+    const { result } = renderHook(() => useClientPagination(items, { searchPredicate: predicate }))
+
+    act(() => {
+      result.current.actions.onSearchChange('F')
+    })
+    expect(result.current.searchValue).toBe('F')
+    expect(predicate).not.toHaveBeenCalled()
+
+    act(() => {
+      result.current.actions.onSearchChange('Fi')
+    })
+    act(() => {
+      result.current.actions.onSearchChange('Fir')
+    })
+    expect(result.current.searchValue).toBe('Fir')
+    expect(predicate).not.toHaveBeenCalled()
+
+    flushSearchDebounce()
+    expect(predicate).toHaveBeenCalled()
+  })
+
+  test('rapid typing coalesces into a single predicate pass per settle', () => {
+    const predicate = vi.fn<(item: FakeItem, query: string) => boolean>(() => true)
+    const { result } = renderHook(() => useClientPagination(items, { searchPredicate: predicate }))
+
+    for (const query of ['A', 'AB', 'ABC', 'ABCD', 'ABCDE']) {
+      act(() => {
+        result.current.actions.onSearchChange(query)
+      })
+      act(() => {
+        vi.advanceTimersByTime(DEBOUNCE_MS - 1)
+      })
+    }
+    expect(predicate).not.toHaveBeenCalled()
+
+    flushSearchDebounce()
+
+    const seenQueries = new Set(predicate.mock.calls.map(call => call[1]))
+    expect(seenQueries).toEqual(new Set(['ABCDE']))
+  })
+
+  test('searchDebounceMs: 0 disables debouncing (synchronous filter)', () => {
+    const predicate = vi.fn<(item: FakeItem, query: string) => boolean>((item, query) =>
+      matchesName(item, query),
+    )
+    const { result } = renderHook(() =>
+      useClientPagination(items, { searchPredicate: predicate, searchDebounceMs: 0 }),
+    )
+
+    act(() => {
+      result.current.actions.onSearchChange('First0')
+    })
+
+    expect(predicate).toHaveBeenCalled()
+    expect(result.current.pagination.totalCount).toBe(1)
+    expect(result.current.data[0]?.uuid).toBe('uuid-0')
+  })
+
+  test('respects a custom debounce window', () => {
+    const customDebounce = 300
+    const predicate = vi.fn<(item: FakeItem, query: string) => boolean>(() => true)
+    const { result } = renderHook(() =>
+      useClientPagination(items, {
+        searchPredicate: predicate,
+        searchDebounceMs: customDebounce,
+      }),
+    )
+
+    act(() => {
+      result.current.actions.onSearchChange('hi')
+    })
+    act(() => {
+      vi.advanceTimersByTime(customDebounce - 1)
+    })
+    expect(predicate).not.toHaveBeenCalled()
+
+    act(() => {
+      vi.advanceTimersByTime(1)
+    })
+    expect(predicate).toHaveBeenCalled()
   })
 })
 

@@ -147,8 +147,10 @@ describe('HolidayPolicyDetail', () => {
       const searchInput = screen.getByRole('searchbox')
       await user.type(searchInput, 'Alice')
 
+      await waitFor(() => {
+        expect(screen.queryByText('Bob Jones')).not.toBeInTheDocument()
+      })
       expect(screen.getByText('Alice Smith')).toBeInTheDocument()
-      expect(screen.queryByText('Bob Jones')).not.toBeInTheDocument()
     })
   })
 
@@ -218,9 +220,9 @@ describe('HolidayPolicyDetail', () => {
       await user.type(screen.getByRole('searchbox'), 'Person00')
 
       await waitFor(() => {
-        expect(screen.getByText('Person00 Roster')).toBeInTheDocument()
+        expect(screen.queryByText('Person10 Roster')).not.toBeInTheDocument()
       })
-      expect(screen.queryByText('Person10 Roster')).not.toBeInTheDocument()
+      expect(screen.getByText('Person00 Roster')).toBeInTheDocument()
       expect(screen.queryByText('Person11 Roster')).not.toBeInTheDocument()
     })
   })
