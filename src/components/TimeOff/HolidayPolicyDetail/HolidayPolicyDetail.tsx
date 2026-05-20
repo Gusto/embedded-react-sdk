@@ -10,6 +10,7 @@ import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employ
 import { getDefaultHolidayItems } from '../shared/holidayHelpers'
 import { HolidayPolicyDetailPresentation } from './HolidayPolicyDetailPresentation'
 import type { HolidayPolicyDetailEmployee } from './HolidayPolicyDetailTypes'
+import { useClientPagination } from '@/hooks/useClientPagination/useClientPagination'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useBase } from '@/components/Base/useBase'
@@ -51,7 +52,6 @@ function Root({ companyId, defaultTab = 'holidays' }: HolidayPolicyDetailProps) 
   const { onEvent, baseSubmitHandler } = useBase()
 
   const [selectedTabId, setSelectedTabId] = useState<string>(defaultTab)
-  const [searchValue, setSearchValue] = useState('')
   const [successAlert, setSuccessAlert] = useState<string | null>(null)
   const [removeDialogTarget, setRemoveDialogTarget] = useState<RemoveDialogTarget | null>(null)
 
@@ -91,17 +91,16 @@ function Root({ companyId, defaultTab = 'holidays' }: HolidayPolicyDetailProps) 
       }))
   }, [employeesData.showEmployees, policyEmployeeUuids])
 
-  const filteredEmployees = useMemo(() => {
-    if (!searchValue) return employees
-    const query = searchValue.toLowerCase()
-    return employees.filter(emp => {
-      const name = firstLastName({
-        first_name: emp.firstName,
-        last_name: emp.lastName,
-      }).toLowerCase()
-      return name.includes(query)
-    })
-  }, [employees, searchValue])
+  const {
+    data: pagedEmployees,
+    pagination,
+    searchValue,
+    actions: paginationActions,
+  } = useClientPagination(employees, {
+    defaultItemsPerPage: 10,
+    searchPredicate: (emp, query) =>
+      `${emp.firstName ?? ''} ${emp.lastName ?? ''}`.toLowerCase().includes(query.toLowerCase()),
+  })
 
   const handleRemoveEmployee = async () => {
     if (!removeDialogTarget) return
@@ -167,12 +166,11 @@ function Root({ companyId, defaultTab = 'holidays' }: HolidayPolicyDetailProps) 
       selectedTabId={selectedTabId}
       onTabChange={setSelectedTabId}
       employees={{
-        data: filteredEmployees,
+        data: pagedEmployees,
         searchValue,
-        onSearchChange: setSearchValue,
-        onSearchClear: () => {
-          setSearchValue('')
-        },
+        onSearchChange: paginationActions.onSearchChange,
+        onSearchClear: paginationActions.onSearchClear,
+        pagination,
         itemMenu: employee => (
           <HamburgerMenu
             items={[
