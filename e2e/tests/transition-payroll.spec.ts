@@ -260,7 +260,7 @@ test.describe('TransitionFlow', () => {
   })
 
   test.beforeAll(async () => {
-    const isLocal = process.env.E2E_LOCAL === 'true'
+    const isLocal = process.env.E2E_USE_REAL_BACKEND === 'true'
     if (!isLocal) return
 
     const statePath = resolve(process.cwd(), 'e2e/.e2e-state.json')

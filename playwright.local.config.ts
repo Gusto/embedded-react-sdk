@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 dotenv.config({ path: path.resolve(__dirname, 'e2e/local.config.env') })
 
-process.env.E2E_LOCAL = 'true'
+process.env.E2E_USE_REAL_BACKEND = 'true'
 process.env.E2E_GWS_FLOWS_HOST = process.env.E2E_GWS_FLOWS_HOST || 'http://localhost:7777'
 
 export default defineConfig({

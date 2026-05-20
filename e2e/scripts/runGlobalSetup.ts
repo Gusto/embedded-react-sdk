@@ -9,8 +9,8 @@
  * flows.gusto-demo.com.
  *
  * Locally you typically don't need to invoke this directly — running any
- * E2E spec with E2E_LOCAL=true will trigger globalSetup as part of the
- * Playwright run.
+ * E2E spec with E2E_USE_REAL_BACKEND=true will trigger globalSetup as
+ * part of the Playwright run.
  */
 import globalSetup from '../globalSetup'
 
