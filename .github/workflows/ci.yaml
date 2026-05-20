@@ -311,8 +311,7 @@ jobs:
   # behavior, and the duplicate run added CI minutes for shallow coverage
   # already provided by Storybook + unit tests. This job exercises the
   # actual API contract, scenario provisioning, and state machine terminal
-  # states. The local npm script is still named test:e2e:demo to reflect
-  # what it points at.
+  # states.
   #
   # Sharded by domain so each domain runs in parallel and one domain's
   # failure doesn't block feedback on the others. The matrix is built
@@ -391,63 +390,5 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: e2e-scenario-report-${{ matrix.domain }}
-          path: e2e/reports/
-          retention-days: 7
-
-  # E2E Demo job: Run Playwright e2e tests against the live demo environment.
-  # This is the only E2E gate. The MSW-mode e2e job was removed because its
-  # mock fixtures could not keep pace with real demo backend behavior, and
-  # the duplicate run added CI minutes for shallow coverage that overlapped
-  # with Storybook + unit tests. Demo E2E exercises the actual API contract,
-  # scenario provisioning, and state machine terminal states.
-  e2e-demo:
-    needs: [setup, scenarios]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: '.nvmrc'
-
-      - name: Restore node_modules cache
-        uses: actions/cache/restore@v5
-        with:
-          path: node_modules
-          key: ${{ needs.setup.outputs.cache-key }}
-
-      - name: Cache Playwright browsers
-        id: playwright-cache
-        uses: actions/cache@v5
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            playwright-${{ runner.os }}-
-
-      - name: Install Playwright browsers
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps chromium
-
-      - name: Install Playwright system dependencies only
-        if: steps.playwright-cache.outputs.cache-hit == 'true'
-        run: npx playwright install-deps chromium
-
-      - name: Run e2e tests against demo environment
-        run: npm run test:e2e:demo
-
-      - name: Upload demo test results
-        if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v6
-        with:
-          name: playwright-report-demo
-          path: playwright-report/
-          retention-days: 7
-
-      - name: Upload demo scenario reports
-        if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v6
-        with:
-          name: e2e-scenario-report-demo
           path: e2e/reports/
           retention-days: 7
