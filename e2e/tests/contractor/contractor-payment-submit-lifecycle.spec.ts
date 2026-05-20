@@ -31,6 +31,7 @@ test.describe('ContractorPaymentFlow - submit payment lifecycle', () => {
 
     if (await empty.isVisible().catch(() => false)) {
       test.skip(true, 'No contractors provisioned — skipping payment flow')
+      return
     }
 
     const dateInput = page.getByLabel(/payment date/i)
