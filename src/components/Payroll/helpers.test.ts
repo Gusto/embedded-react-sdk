@@ -40,11 +40,11 @@ describe('Payroll helpers', () => {
   describe('formatEmployeePayRate', () => {
     const mockT = ((key: string, options?: { amount?: string; ns?: string }) => {
       const templates = {
-        'payRateFormats.hourly': '{{amount}} per hour',
-        'payRateFormats.weekly': '{{amount}} per year',
-        'payRateFormats.monthly': '{{amount}} per year',
-        'payRateFormats.yearly': '{{amount}} per year',
-        'payRateFormats.paycheck': '{{amount}} per paycheck',
+        'payRateFormats.hourly': '{{amount}}/hr',
+        'payRateFormats.weekly': '{{amount}}/yr',
+        'payRateFormats.monthly': '{{amount}}/yr',
+        'payRateFormats.yearly': '{{amount}}/yr',
+        'payRateFormats.paycheck': '{{amount}}/paycheck',
       }
       const template = templates[key as keyof typeof templates] || key
       return options?.amount ? template.replace('{{amount}}', options.amount) : template
@@ -99,7 +99,7 @@ describe('Payroll helpers', () => {
           },
         ],
       }
-      expect(formatEmployeePayRate({ employee, t: mockT })).toBe('$25.50 per hour')
+      expect(formatEmployeePayRate({ employee, t: mockT })).toBe('$25.50/hr')
     })
 
     it('should use first job if no primary job found', () => {
@@ -117,7 +117,7 @@ describe('Payroll helpers', () => {
           },
         ],
       }
-      expect(formatEmployeePayRate({ employee, t: mockT })).toBe('$30.00 per hour')
+      expect(formatEmployeePayRate({ employee, t: mockT })).toBe('$30.00/hr')
     })
 
     it('should default to Hour payment unit', () => {
@@ -135,7 +135,7 @@ describe('Payroll helpers', () => {
           },
         ],
       }
-      expect(formatEmployeePayRate({ employee, t: mockT })).toBe('$20.00 per hour')
+      expect(formatEmployeePayRate({ employee, t: mockT })).toBe('$20.00/hr')
     })
   })
 
