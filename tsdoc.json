@@ -1,0 +1,28 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/tsdoc/v0/tsdoc.schema.json",
+
+  "supportForTags": {
+    "@alpha": true,
+    "@beta": true,
+    "@defaultValue": true,
+    "@deprecated": true,
+    "@example": true,
+    "@experimental": true,
+    "@inheritDoc": true,
+    "@link": true,
+    "@internal": true,
+    "@override": true,
+    "@packageDocumentation": true,
+    "@param": true,
+    "@privateRemarks": true,
+    "@public": true,
+    "@readonly": true,
+    "@remarks": true,
+    "@returns": true,
+    "@sealed": true,
+    "@see": true,
+    "@throws": true,
+    "@typeParam": true,
+    "@virtual": true
+  }
+}
