@@ -79,7 +79,6 @@ async function decorateLocations(
 
     const created = await api.post<{ uuid: string }>(`/companies/${companyId}/locations`, {
       street_1: loc.street_1,
-      street_2: loc.street_2,
       city: loc.city,
       state: loc.state,
       zip: loc.zip,
@@ -221,10 +220,6 @@ async function decorateContractors(
   for (const contractor of contractors) {
     if ('$ref' in contractor) continue
     log(`Creating contractor: ${contractor.key}`)
-    const startDate =
-      'start_date' in contractor && typeof contractor.start_date === 'string'
-        ? contractor.start_date
-        : new Date().toISOString().split('T')[0]
 
     const created = await api.post<{ uuid: string }>(`/companies/${companyId}/contractors`, {
       type: contractor.type,
@@ -234,7 +229,7 @@ async function decorateContractors(
       ...(contractor.email ? { email: contractor.email } : {}),
       ...(contractor.wage_type ? { wage_type: contractor.wage_type } : {}),
       ...(contractor.hourly_rate ? { hourly_rate: contractor.hourly_rate } : {}),
-      start_date: startDate,
+      start_date: new Date().toISOString().split('T')[0],
     })
 
     contractorIds[contractor.key] = created.uuid
