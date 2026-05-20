@@ -38,6 +38,7 @@ export const employeeEvents = {
   EMPLOYEE_COMPENSATION_CANCEL: 'employee/compensations/cancel',
   EMPLOYEE_COMPENSATION_RETURN_TO_LIST: 'employee/compensations/returnToList',
   EMPLOYEE_JOB_ADD: 'employee/job/add',
+  EMPLOYEE_JOB_ADD_ANOTHER: 'employee/job/addAnother',
   EMPLOYEE_JOB_EDIT: 'employee/job/edit',
   EMPLOYEE_PAYMENT_METHOD_UPDATED: 'employee/paymentMethod/updated',
   EMPLOYEE_PAYMENT_METHOD_DONE: 'employee/paymentMethod/done',

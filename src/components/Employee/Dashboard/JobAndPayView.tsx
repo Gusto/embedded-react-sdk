@@ -55,6 +55,7 @@ export interface JobAndPayViewProps {
   onEvent: OnEventType<EventType, unknown>
   onEditCompensation?: (job: Job) => void
   onAddJob?: () => void
+  onAddAnotherJob?: () => void
   onAddDeduction?: () => void
   onEditDeduction?: (deduction: Garnishment) => void
   onPaystubDownload?: (payrollUuid: string) => void
@@ -71,6 +72,7 @@ export function JobAndPayView({
   onEvent,
   onEditCompensation,
   onAddJob,
+  onAddAnotherJob,
   onAddDeduction,
   onEditDeduction,
   onPaystubDownload,
@@ -413,7 +415,11 @@ export function JobAndPayView({
           }
           footer={
             canAddAnotherJob ? (
-              <Components.Button variant="secondary" onClick={onAddJob} icon={<PlusCircleIcon />}>
+              <Components.Button
+                variant="secondary"
+                onClick={onAddAnotherJob}
+                icon={<PlusCircleIcon />}
+              >
                 {t('jobAndPay.compensation.addAnotherJobCta')}
               </Components.Button>
             ) : undefined

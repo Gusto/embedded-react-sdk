@@ -1560,6 +1560,11 @@ export interface EmployeeDashboard{
 "deductionUpdated":string;
 "deductionDeleted":string;
 };
+"compensationFlow":{
+"addJobTitle":string;
+"editTitle":string;
+"addAnotherJobTitle":string;
+};
 };
 export interface EmployeeDeductions{
 "pageTitle":string;
