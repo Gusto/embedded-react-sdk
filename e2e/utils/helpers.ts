@@ -13,10 +13,11 @@ export async function fillDate(
   name: string,
   date: { month: number; day: number; year: number },
 ) {
-  // React Aria DateSegment renders each spinbutton with aria-label like
-  // "month, <group name>" / "day, <group name>" / "year, <group name>".
-  // Anchor on the segment-type prefix so we don't false-match group names
-  // that themselves contain "day" (e.g. "Last day of work", "Birthday").
+  // Anchored at the start so the matcher won't catch sibling segments when
+  // the group name itself contains "day" / "month" / "year" (e.g. "Last day
+  // of work", "Birthday"). React Aria's spinbutton accessible names are
+  // "month, <group>", "day, <group>", "year, <group>" — so /^month/ etc.
+  // uniquely identifies each segment.
   const dateGroup = page.getByRole('group', { name })
   await dateGroup.getByRole('spinbutton', { name: /^month/i }).fill(String(date.month))
   await dateGroup.getByRole('spinbutton', { name: /^day/i }).fill(String(date.day))
