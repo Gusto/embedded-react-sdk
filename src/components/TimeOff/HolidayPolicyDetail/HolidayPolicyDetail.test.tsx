@@ -64,7 +64,6 @@ const mockHolidayPayPolicyManyEmployees = {
 
 describe('HolidayPolicyDetail', () => {
   const onEvent = vi.fn()
-  const user = userEvent.setup()
   const defaultProps = {
     companyId: 'company-123',
     onEvent,
@@ -138,6 +137,7 @@ describe('HolidayPolicyDetail', () => {
     })
 
     it('filters employees by search', async () => {
+      const user = userEvent.setup()
       renderWithProviders(<HolidayPolicyDetail {...defaultProps} defaultTab="employees" />)
 
       await waitFor(() => {
@@ -166,6 +166,7 @@ describe('HolidayPolicyDetail', () => {
     })
 
     it('paginates the roster at 10 per page and navigates between pages', async () => {
+      const user = userEvent.setup()
       server.use(
         http.get(`${API_BASE_URL}/v1/companies/:companyUuid/holiday_pay_policy`, () => {
           return HttpResponse.json(mockHolidayPayPolicyManyEmployees)
@@ -196,6 +197,7 @@ describe('HolidayPolicyDetail', () => {
     })
 
     it('resets to page 1 when a search filters the roster below the page threshold', async () => {
+      const user = userEvent.setup()
       server.use(
         http.get(`${API_BASE_URL}/v1/companies/:companyUuid/holiday_pay_policy`, () => {
           return HttpResponse.json(mockHolidayPayPolicyManyEmployees)
@@ -229,6 +231,7 @@ describe('HolidayPolicyDetail', () => {
 
   describe('navigation', () => {
     it('fires TIME_OFF_BACK_TO_LIST when back is clicked', async () => {
+      const user = userEvent.setup()
       renderWithProviders(<HolidayPolicyDetail {...defaultProps} defaultTab="holidays" />)
 
       await waitFor(() => {
@@ -243,6 +246,7 @@ describe('HolidayPolicyDetail', () => {
 
   describe('remove employee', () => {
     it('opens remove dialog and calls remove API on confirm', async () => {
+      const user = userEvent.setup()
       let removeCalled = false
       server.use(
         http.put(`${API_BASE_URL}/v1/companies/:companyUuid/holiday_pay_policy/remove`, () => {
@@ -282,6 +286,7 @@ describe('HolidayPolicyDetail', () => {
     })
 
     it('closes remove dialog on cancel', async () => {
+      const user = userEvent.setup()
       renderWithProviders(<HolidayPolicyDetail {...defaultProps} defaultTab="employees" />)
 
       await waitFor(() => {
