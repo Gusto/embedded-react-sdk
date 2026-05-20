@@ -39,7 +39,28 @@
         "salary": "Salary/No overtime"
       },
       "wage": "Wage",
-      "startDate": "Start date"
+      "startDate": "Start date",
+      "addJobCta": "Add job",
+      "addAnotherJobCta": "Add another job",
+      "tableLabel": "List of jobs",
+      "hamburgerTitle": "Job actions",
+      "editJobCta": "Edit",
+      "deleteJobCta": "Delete",
+      "columns": {
+        "jobTitle": "Job title",
+        "payType": "Pay type",
+        "startDate": "Start date"
+      },
+      "deleteJobDialog": {
+        "title": "Delete job?",
+        "description": "{{jobTitle}} will be permanently removed.",
+        "confirmCta": "Delete",
+        "cancelCta": "Cancel"
+      },
+      "emptyState": {
+        "title": "No compensation",
+        "description": "Compensation will appear here once added"
+      }
     },
     "payment": {
       "title": "Payment",
@@ -60,8 +81,10 @@
       "listLabel": "List of deductions",
       "deduction": "Deduction",
       "frequency": "Frequency",
-      "withhold": "Withhold",
+      "withhold": "Withheld",
       "recurring": "Recurring",
+      "oneTime": "One-time",
+      "amountPerPaycheck": "{{value}} per paycheck",
       "emptyState": {
         "title": "No deductions",
         "description": "Employee deductions will appear here"
@@ -109,8 +132,12 @@
       "title": "Form",
       "year": "Year",
       "status": "Status",
-      "requiresSigning": "Requires signing",
+      "requiresSigning": "Signing status",
       "actions": "Actions"
+    },
+    "signingStatus": {
+      "signed": "Signed",
+      "notSigned": "Not signed"
     },
     "status": {
       "draft": "Draft",
@@ -128,6 +155,9 @@
   "alerts": {
     "bankAccountAdded": "Bank account successfully added.",
     "bankAccountDeleted": "Bank account successfully deleted.",
-    "splitUpdated": "Split payment successfully updated."
+    "splitUpdated": "Split payment successfully updated.",
+    "deductionAdded": "Deduction successfully added.",
+    "deductionUpdated": "Deduction successfully updated.",
+    "deductionDeleted": "Deduction successfully deleted."
   }
 }

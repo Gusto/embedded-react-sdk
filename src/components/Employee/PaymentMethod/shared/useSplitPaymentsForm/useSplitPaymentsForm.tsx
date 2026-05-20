@@ -1,5 +1,6 @@
+import type { ComponentType } from 'react'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
-import { useForm, useWatch } from 'react-hook-form'
+import { useForm, useFormState, useWatch } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { EmployeeBankAccount } from '@gusto/embedded-api/models/components/employeebankaccount'
@@ -8,14 +9,17 @@ import { useEmployeePaymentMethodGet } from '@gusto/embedded-api/react-query/emp
 import { useEmployeePaymentMethodsGetBankAccounts } from '@gusto/embedded-api/react-query/employeePaymentMethodsGetBankAccounts'
 import { useEmployeePaymentMethodUpdateMutation } from '@gusto/embedded-api/react-query/employeePaymentMethodUpdate'
 import {
+  PERCENTAGE_TOTAL_PATH,
   SPLIT_BY_VALUES,
+  SplitPaymentsFormErrorCodes,
   type SplitByValue,
   type SplitPaymentsFormData,
   type SplitPaymentsFormOptionalFieldsToRequire,
   type SplitPaymentsFormOutputs,
   createSplitPaymentsFormSchema,
 } from './useSplitPaymentsFormSchema'
-import { SplitByField } from './fields'
+import { SplitByField, type SplitByFieldProps } from './fields'
+import { buildSplitFieldEntries, type SplitFieldEntry } from './splitFieldFactory'
 import { useDeriveFieldsMetadata } from '@/partner-hook-utils/form/useDeriveFieldsMetadata'
 import { useHookFormInternals } from '@/partner-hook-utils/form/useHookFormInternals'
 import { createGetFormSubmissionValues } from '@/partner-hook-utils/form/getFormSubmissionValues'
@@ -48,7 +52,8 @@ export interface UseSplitPaymentsFormProps {
 }
 
 export interface SplitPaymentsFormFields {
-  SplitBy: typeof SplitByField
+  SplitBy: ComponentType<SplitByFieldProps>
+  splits: SplitFieldEntry[]
 }
 
 export interface UseSplitPaymentsFormReady extends BaseFormHookReady<
@@ -62,17 +67,33 @@ export interface UseSplitPaymentsFormReady extends BaseFormHookReady<
     splits: WorkingSplit[]
     /** UUID of the split that absorbs the remainder in Amount mode (always the last by priority). */
     remainderId: string
+  }
+  status: {
+    isPending: boolean
+    mode: 'update'
+    /** Current `splitBy` value, reactively tracked. */
     splitBy: SplitByValue
     /** Live sum of `splitAmount` values; useful for displaying the current total in Percentage mode. */
     percentageTotal: number
+    /**
+     * Mirrors the schema-emitted `PERCENTAGE_TOTAL_MISMATCH` error at the
+     * synthetic form path. Tracks `formState.errors` directly and follows
+     * the standard react-hook-form validation lifecycle: with the default
+     * `validationMode: 'onSubmit'`, becomes `true` after the first failed
+     * Save attempt and clears live as the user corrects the total. Only
+     * surfaces in Percentage mode.
+     */
+    hasPercentageImbalance: boolean
   }
-  status: { isPending: boolean; mode: 'update' }
   actions: {
     onSubmit: () => Promise<HookSubmitResult<EmployeePaymentMethod> | undefined>
-    /** Reorders splits in Amount mode by updating their `priority` values; the last item becomes the remainder. */
-    reorderSplits: (newOrder: number[]) => void
-    /** Programmatic value update for a single split's amount. */
-    updateSplitAmount: (uuid: string, value: number | null) => void
+    /**
+     * Reorder splits by uuid (Amount mode). Pass the ordered list of split
+     * uuids; the last uuid becomes the remainder. The hook writes the new
+     * priority map and re-anchors the remainder's `splitAmount` to `null`
+     * (clearing the previous remainder to `0`).
+     */
+    reorderSplits: (orderedUuids: string[]) => void
   }
 }
 
@@ -124,22 +145,16 @@ export function useSplitPaymentsForm({
     const isAmountSplit = paymentMethod?.splitBy === SPLIT_BY.amount
     const splitAmount: Record<string, number | null> = {}
     const priority: Record<string, number> = {}
-    let lastSplitUuid = ''
     splits.forEach(split => {
       splitAmount[split.uuid] = isAmountSplit
         ? centsToDollars(split.splitAmount)
         : split.splitAmount
       priority[split.uuid] = split.priority
-      lastSplitUuid = split.uuid
     })
-    const remainder = isAmountSplit
-      ? (splits.find(s => s.splitAmount === null)?.uuid ?? lastSplitUuid)
-      : ''
     return {
       splitBy: (paymentMethod?.splitBy ?? SPLIT_BY.percentage) as SplitByValue,
       splitAmount,
       priority,
-      remainder,
     }
   }, [paymentMethod, splits])
 
@@ -172,8 +187,47 @@ export function useSplitPaymentsForm({
 
   const percentageTotal = useMemo(() => {
     if (watchedSplitBy !== SPLIT_BY.percentage) return 0
-    return Object.values(watchedSplitAmount).reduce<number>((acc, v) => acc + (v ?? 0), 0)
+    return Object.values(watchedSplitAmount).reduce<number>(
+      (acc, v) => acc + (typeof v === 'number' && Number.isFinite(v) ? v : 0),
+      0,
+    )
   }, [watchedSplitBy, watchedSplitAmount])
+
+  // Subscribe to the schema-emitted imbalance error. The schema places it at
+  // a synthetic path (`PERCENTAGE_TOTAL_PATH`) so it does not collide with
+  // per-uuid `splitAmount.<uuid>` errors. Following the standard validation
+  // lifecycle means `validationMode` (onSubmit / onChange / onBlur / ...)
+  // controls when the alert can appear. We subscribe to the full errors map
+  // because `name` only tracks registered field paths and our synthetic key
+  // is not a registered field. The derivation is also gated on Percentage
+  // mode so a stale error from a prior Percentage submit can't leak into
+  // Amount mode after a toggle.
+  const { errors: validationErrors, isSubmitted } = useFormState({
+    control: formMethods.control,
+  })
+  const hasPercentageImbalance =
+    watchedSplitBy === SPLIT_BY.percentage &&
+    (validationErrors as Record<string, { message?: string } | undefined>)[PERCENTAGE_TOTAL_PATH]
+      ?.message === SplitPaymentsFormErrorCodes.PERCENTAGE_TOTAL_MISMATCH
+
+  // Re-sync the synthetic PERCENTAGE_TOTAL_PATH error whenever any
+  // `splitAmount` value changes (in Percentage mode, after the first
+  // submit attempt). RHF's per-field reValidate after a failed submit
+  // scopes the resolver merge to the changed field's name, so an error
+  // at our form-level synthetic path is otherwise left stuck once the
+  // user has typed the total back to 100. Targeting the synthetic name
+  // re-runs the resolver and lets RHF set/unset that single path through
+  // its normal merge — preserving per-field error lifecycles unchanged.
+  const { trigger } = formMethods
+  useEffect(() => {
+    if (!isSubmitted) return
+    if (watchedSplitBy !== SPLIT_BY.percentage) return
+    // `trigger`'s type is keyed to registered field paths, but the
+    // synthetic `percentageTotal` resolves through RHF's get/set/unset
+    // helpers at runtime — cast at the boundary to keep the contract
+    // honest above.
+    void trigger(PERCENTAGE_TOTAL_PATH as Parameters<typeof trigger>[0])
+  }, [isSubmitted, watchedSplitBy, watchedSplitAmount, trigger])
 
   const remainderId = useMemo(() => {
     if (!Object.keys(watchedPriority).length) return ''
@@ -221,44 +275,74 @@ export function useSplitPaymentsForm({
     }
   }, [watchedSplitBy, setValue])
 
-  const updateSplitAmount = useCallback(
-    (uuid: string, value: number | null) => {
-      setValue(`splitAmount.${uuid}`, value)
-    },
-    [setValue],
-  )
-
   const reorderSplits = useCallback(
-    (newOrder: number[]) => {
+    (orderedUuids: string[]) => {
       const currentSplits = splitsRef.current
-      const newPriorities = newOrder.reduce<Record<string, number>>((acc, splitIndex, position) => {
-        const split = currentSplits[splitIndex]
-        if (split) acc[split.uuid] = position + 1
+      const knownUuids = new Set(currentSplits.map(s => s.uuid))
+      if (
+        orderedUuids.length !== knownUuids.size ||
+        !orderedUuids.every(uuid => knownUuids.has(uuid))
+      ) {
+        return
+      }
+
+      const newPriorities = orderedUuids.reduce<Record<string, number>>((acc, uuid, index) => {
+        acc[uuid] = index + 1
         return acc
       }, {})
-      const lastSplitIndex = newOrder[newOrder.length - 1]
-      if (lastSplitIndex === undefined) return
-      const lastSplit = currentSplits[lastSplitIndex]
-      if (!lastSplit) return
+      const newRemainderId = orderedUuids[orderedUuids.length - 1]
+      if (!newRemainderId) return
+
       setValue('priority', newPriorities)
       const previousRemainder = remainderIdRef.current
-      if (previousRemainder && previousRemainder !== lastSplit.uuid) {
+      if (previousRemainder && previousRemainder !== newRemainderId) {
         resetField(`splitAmount.${previousRemainder}`)
         setValue(`splitAmount.${previousRemainder}`, 0)
       }
-      setValue(`splitAmount.${lastSplit.uuid}`, null)
+      setValue(`splitAmount.${newRemainderId}`, null)
     },
     [setValue, resetField],
   )
 
   const splitByOptions = SPLIT_BY_VALUES.map(value => ({ value, label: value }))
   const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
-  const fieldsMetadata = {
+  const dynamicSplitMetadata = useMemo<FieldsMetadata>(() => {
+    const entries: FieldsMetadata = {}
+    const isAmountSplit = watchedSplitBy === SPLIT_BY.amount
+    for (const split of splits) {
+      const path = `splitAmount.${split.uuid}`
+      const isRemainder = isAmountSplit && split.uuid === remainderId
+      // Every split — including the remainder — is "required" from the
+      // user's perspective: the remainder always carries a value at submit
+      // (the API absorbs leftover). The form-state `null` is a modeling
+      // detail, not a UX choice, so we don't surface it as "(optional)" on
+      // the label. `isDisabled` already conveys the non-interactivity.
+      entries[path] = {
+        name: path,
+        isRequired: true,
+        isDisabled: isRemainder,
+      }
+    }
+    return entries
+  }, [splits, watchedSplitBy, remainderId])
+  const fieldsMetadata: FieldsMetadata = {
     splitBy: withOptions<SplitByValue>(baseMetadata.splitBy, splitByOptions, [...SPLIT_BY_VALUES]),
     splitAmount: baseMetadata.splitAmount,
     priority: baseMetadata.priority,
-    remainder: baseMetadata.remainder,
+    ...dynamicSplitMetadata,
   }
+
+  const splitFieldEntries = useMemo(
+    () =>
+      buildSplitFieldEntries(
+        splits.map(s => ({
+          uuid: s.uuid,
+          name: s.name,
+          hiddenAccountNumber: s.hiddenAccountNumber,
+        })),
+      ),
+    [splits],
+  )
 
   const onSubmit = async (): Promise<HookSubmitResult<EmployeePaymentMethod> | undefined> => {
     if (!paymentMethod) {
@@ -331,14 +415,18 @@ export function useSplitPaymentsForm({
       bankAccounts,
       splits,
       remainderId,
+    },
+    status: {
+      isPending,
+      mode: 'update' as const,
       splitBy: watchedSplitBy as SplitByValue,
       percentageTotal,
+      hasPercentageImbalance,
     },
-    status: { isPending, mode: 'update' as const },
-    actions: { onSubmit, reorderSplits, updateSplitAmount },
+    actions: { onSubmit, reorderSplits },
     errorHandling,
     form: {
-      Fields: { SplitBy: SplitByField },
+      Fields: { SplitBy: SplitByField, splits: splitFieldEntries },
       fieldsMetadata,
       hookFormInternals,
       getFormSubmissionValues: createGetFormSubmissionValues(formMethods, schema),

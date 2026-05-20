@@ -1,0 +1,8 @@
+{
+  "type": "Individual",
+  "first_name": "Casey",
+  "last_name": "Contractor",
+  "email": "casey+{{ts}}@example.com",
+  "wage_type": "Hourly",
+  "hourly_rate": "75"
+}

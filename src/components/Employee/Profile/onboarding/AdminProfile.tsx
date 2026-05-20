@@ -16,7 +16,7 @@ import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { composeSubmitHandler } from '@/partner-hook-utils/form/composeSubmitHandler'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { Grid } from '@/components/Common/Grid/Grid'
-import { ActionsLayout, DatePickerField } from '@/components/Common'
+import { ActionsLayout, DatePickerField, Flex } from '@/components/Common'
 import { Form } from '@/components/Common/Form'
 import { BaseLayout } from '@/components/Base'
 import { useI18n } from '@/i18n'
@@ -262,10 +262,10 @@ function AdminProfileReady({
       <BaseLayout error={errorHandling.errors}>
         <Form onSubmit={handleSubmit}>
           <Grid gridTemplateColumns="1fr" gap={24}>
-            <div>
+            <Flex flexDirection="column" gap={4}>
               <Components.Heading as="h2">{t('title')}</Components.Heading>
-              <Components.Text>{t('description')}</Components.Text>
-            </div>
+              <Components.Text variant="supporting">{t('description')}</Components.Text>
+            </Flex>
 
             {isSelfOnboardingEnabled && EmployeeFields.SelfOnboarding && (
               <div className={styles.switchFieldContainer}>
@@ -351,10 +351,11 @@ function AdminProfileReady({
 
             {shouldShowHomeAddress && (
               <SDKFormProvider formHookResult={homeAddress}>
-                <div>
+                <Flex flexDirection="column" gap={4}>
                   <Components.Heading as="h2">{tHome('formTitle')}</Components.Heading>
-                  <Components.Text>{tHome('desc')}</Components.Text>
-                </div>
+                  <Components.Text variant="supporting">{tHome('desc')}</Components.Text>
+                </Flex>
+
                 <Grid
                   gridTemplateColumns={{
                     base: '1fr',

@@ -2,12 +2,16 @@ import { useTimeOffPoliciesGetSuspense } from '@gusto/embedded-api/react-query/t
 import { useTimeOffPoliciesUpdateMutation } from '@gusto/embedded-api/react-query/timeOffPoliciesUpdate'
 import type { PutV1TimeOffPoliciesTimeOffPolicyUuidRequestBody } from '@gusto/embedded-api/models/operations/putv1timeoffpoliciestimeoffpolicyuuid'
 import type { TimeOffPolicy } from '@gusto/embedded-api/models/components/timeoffpolicy'
+import { UnprocessableEntityError } from '@gusto/embedded-api/models/errors/unprocessableentityerror'
 import { useQueryClient } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { PolicySettingsPresentation } from './PolicySettingsPresentation'
 import type { PolicySettingsFormData, PolicySettingsAccrualMethod } from './PolicySettingsTypes'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useBase } from '@/components/Base/useBase'
+import { SDKInternalError } from '@/types/sdkError'
 import { componentEvents } from '@/shared/constants'
+import { useI18n } from '@/i18n'
 
 export interface PolicySettingsProps extends BaseComponentInterface {
   policyId: string
@@ -97,6 +101,8 @@ function buildUpdateRequestBody(
 }
 
 function Root({ policyId, mode }: PolicySettingsProps) {
+  useI18n('Company.TimeOff.CreateTimeOffPolicy')
+  const { t } = useTranslation('Company.TimeOff.CreateTimeOffPolicy')
   const { onEvent, baseSubmitHandler } = useBase()
   const queryClient = useQueryClient()
 
@@ -114,17 +120,36 @@ function Root({ policyId, mode }: PolicySettingsProps) {
 
   const handleContinue = async (data: PolicySettingsFormData) => {
     await baseSubmitHandler(data, async () => {
-      const { timeOffPolicy } = await updateTimeOffPolicy({
-        request: {
-          timeOffPolicyUuid: policyId,
-          requestBody: buildUpdateRequestBody(data, version, accrualCategory),
-        },
-      })
+      try {
+        const { timeOffPolicy } = await updateTimeOffPolicy({
+          request: {
+            timeOffPolicyUuid: policyId,
+            requestBody: buildUpdateRequestBody(data, version, accrualCategory),
+          },
+        })
 
-      void queryClient.invalidateQueries({
-        queryKey: ['@gusto/embedded-api', 'timeOffPolicies', 'get'],
-      })
-      onEvent(componentEvents.TIME_OFF_POLICY_SETTINGS_DONE, timeOffPolicy)
+        void queryClient.invalidateQueries({
+          queryKey: ['@gusto/embedded-api', 'timeOffPolicies', 'get'],
+        })
+        onEvent(componentEvents.TIME_OFF_POLICY_SETTINGS_DONE, timeOffPolicy)
+      } catch (err) {
+        if (err instanceof UnprocessableEntityError) {
+          if (err.errors.some(e => e.message === 'LIMIT_VIOLATION_MAX_HOURS')) {
+            throw new SDKInternalError(
+              t('policySettings.errors.balanceExceedsMaximum'),
+              'api_error',
+            )
+          }
+          const uniqueMessages = [...new Set(err.errors.map(e => e.message).filter(Boolean))]
+          throw new SDKInternalError(
+            t('errors.updatePolicySettingsFailed', {
+              details: uniqueMessages.join('. '),
+            }),
+            'api_error',
+          )
+        }
+        throw err
+      }
     })
   }
 

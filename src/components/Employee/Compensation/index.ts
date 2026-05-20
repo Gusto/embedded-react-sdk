@@ -1,1 +1,1 @@
-export * from './Compensation'
+export * from './onboarding'

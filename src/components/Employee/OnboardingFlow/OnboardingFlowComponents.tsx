@@ -1,4 +1,5 @@
 import type { PaymentMethodBankAccount } from '@gusto/embedded-api/models/components/paymentmethodbankaccount'
+import { Deductions } from '../Deductions/Deductions'
 import { FederalTaxes } from '../FederalTaxes/onboarding/FederalTaxes'
 import { StateTaxes } from '../StateTaxes/onboarding/StateTaxes'
 import type { ProfileDefaultValues } from '../Profile/onboarding/Profile'
@@ -39,4 +40,9 @@ export function StateTaxesContextual() {
 export const EmployeeListContextual = () => {
   const { companyId, onEvent } = useFlow<OnboardingContextInterface>()
   return <EmployeeList companyId={companyId} onEvent={onEvent} />
+}
+
+export function DeductionsContextual() {
+  const { employeeId, onEvent } = useFlow<OnboardingContextInterface>()
+  return <Deductions onEvent={onEvent} employeeId={ensureRequired(employeeId)} />
 }

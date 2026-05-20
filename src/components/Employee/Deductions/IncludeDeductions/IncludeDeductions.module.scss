@@ -1,3 +1,7 @@
+.container {
+  width: 100%;
+}
+
 .emptyStateContainer {
   display: flex;
   justify-content: center;
@@ -11,7 +15,12 @@
 .coinHandsIconContainer {
   border: 1px solid var(--g-colorBorderPrimary);
   border-radius: toRem(11);
-  padding: toRem(11);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  width: toRem(48);
+  height: toRem(48);
   box-shadow: var(--g-shadowResting);
 }
 

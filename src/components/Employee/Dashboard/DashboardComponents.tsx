@@ -7,18 +7,31 @@ import { StateTaxes } from '@/components/Employee/StateTaxes/management/StateTax
 import { Profile } from '@/components/Employee/Profile/management/Profile'
 import { BankForm } from '@/components/Employee/PaymentMethod/onboarding/BankForm'
 import { SplitView } from '@/components/Employee/PaymentMethod/onboarding/SplitView'
+import { DocumentManager } from '@/components/Employee/Documents/management/DocumentManager'
+import { DeductionsForm } from '@/components/Employee/Deductions/DeductionsForm/DeductionsForm'
+import { useDeductionsList } from '@/components/Employee/Deductions/shared'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { BaseComponent } from '@/components/Base'
+import { BaseComponent, BaseLayout } from '@/components/Base'
 import { ensureRequired } from '@/helpers/ensureRequired'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 
-export type DashboardSuccessAlert = 'bankAccountAdded' | 'bankAccountDeleted' | 'splitUpdated'
+export type DashboardSuccessAlert =
+  | 'bankAccountAdded'
+  | 'bankAccountDeleted'
+  | 'splitUpdated'
+  | 'deductionAdded'
+  | 'deductionUpdated'
+  | 'deductionDeleted'
 
 export interface DashboardContextInterface extends FlowContextInterface {
   employeeId: string
+  formId?: string
   successAlert?: DashboardSuccessAlert | null
+  /** Set by the EMPLOYEE_DEDUCTION_EDIT transition; consumed by
+   *  DeductionFormContextual to pre-populate the form. */
+  editingDeductionId?: string
 }
 
 export function DashboardViewContextual() {
@@ -31,6 +44,9 @@ export function DashboardViewContextual() {
     bankAccountAdded: t('alerts.bankAccountAdded'),
     bankAccountDeleted: t('alerts.bankAccountDeleted'),
     splitUpdated: t('alerts.splitUpdated'),
+    deductionAdded: t('alerts.deductionAdded'),
+    deductionUpdated: t('alerts.deductionUpdated'),
+    deductionDeleted: t('alerts.deductionDeleted'),
   }
 
   return (
@@ -90,5 +106,51 @@ export function PaymentSplitViewContextual() {
     <BaseComponent onEvent={onEvent}>
       <SplitView employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
     </BaseComponent>
+  )
+}
+
+export function DocumentManagerContextual() {
+  const { employeeId, formId, onEvent } = useFlow<DashboardContextInterface>()
+  return (
+    <DocumentManager
+      employeeId={ensureRequired(employeeId)}
+      formId={ensureRequired(formId)}
+      onEvent={onEvent}
+    />
+  )
+}
+
+export function DeductionFormContextual() {
+  const { employeeId, editingDeductionId, onEvent } = useFlow<DashboardContextInterface>()
+  // The same list query the form hooks use internally — React Query dedupes,
+  // so this just looks up the loaded row to pre-populate edit mode.
+  const list = useDeductionsList({ employeeId: ensureRequired(employeeId) })
+
+  if (list.isLoading) {
+    return <BaseLayout isLoading error={list.errorHandling.errors} />
+  }
+
+  const deduction = editingDeductionId
+    ? (list.data.deductions.find(d => d.uuid === editingDeductionId) ?? null)
+    : null
+
+  return (
+    <BaseLayout error={list.errorHandling.errors}>
+      <DeductionsForm
+        employeeId={ensureRequired(employeeId)}
+        deduction={deduction}
+        onSaved={(saved, mode) => {
+          onEvent(
+            mode === 'create'
+              ? componentEvents.EMPLOYEE_DEDUCTION_CREATED
+              : componentEvents.EMPLOYEE_DEDUCTION_UPDATED,
+            saved,
+          )
+        }}
+        onCancel={() => {
+          onEvent(componentEvents.CANCEL)
+        }}
+      />
+    </BaseLayout>
   )
 }

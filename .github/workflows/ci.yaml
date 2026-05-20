@@ -207,9 +207,58 @@ jobs:
       - name: Test with coverage
         run: npm run test:ci
 
-  # E2E job: Run Playwright e2e tests (parallel with other checks)
-  e2e:
+  # Scenarios job: Validate scenario JSON against schema and run scenario unit tests.
+  # E2E jobs depend on this so a broken scenario fails fast (cheap) before Playwright runs (expensive).
+  scenarios:
     needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Restore node_modules cache
+        uses: actions/cache/restore@v5
+        with:
+          path: node_modules
+          key: ${{ needs.setup.outputs.cache-key }}
+
+      - name: Validate scenario JSON
+        run: npm run scenarios:validate
+
+      - name: Run scenario unit tests
+        run: npm run test:scenarios
+
+  # E2E domains: Discover which domains have e2e specs by listing the immediate
+  # subdirectories under e2e/tests/. The result is published as a JSON array
+  # and consumed by the e2e job's matrix via fromJson(). New domain folders
+  # automatically become shards with no CI edits; folders that disappear stop
+  # producing shards. Flat specs directly under e2e/tests/ are intentionally
+  # not picked up — the domain reorganization stack puts every shipping spec
+  # inside a domain folder.
+  e2e-domains:
+    needs: setup
+    runs-on: ubuntu-latest
+    outputs:
+      domains: ${{ steps.list.outputs.domains }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - id: list
+        name: Discover e2e domains from folders under e2e/tests/
+        run: |
+          domains=$(find e2e/tests -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort | jq -R . | jq -sc .)
+          echo "domains=$domains" >> "$GITHUB_OUTPUT"
+          echo "Discovered: $domains"
+
+  # E2E setup: Provision demo companies once per CI run and share state across shards.
+  # E2E_DISABLE_CACHE ensures fresh provisioning for each CI run (ignores stale
+  # .e2e-state.json from previous runs), but the artifact sharing across shards
+  # within this run avoids duplicate provisioning load on the demo backend.
+  e2e-setup:
+    needs: [setup, scenarios]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -241,61 +290,106 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps chromium
 
-      - name: Initialize MSW
-        run: npx msw init e2e/public --save=false
+      - name: Provision demo companies
+        env:
+          E2E_USE_REAL_BACKEND: 'true'
+          E2E_DISABLE_CACHE: 'true'
+        run: npm run e2e:setup
+
+      - name: Upload e2e state
+        uses: actions/upload-artifact@v6
+        with:
+          name: e2e-state
+          path: e2e/.e2e-state.json
+          include-hidden-files: true
+          retention-days: 1
+          if-no-files-found: error
+
+  # E2E job: Run Playwright e2e tests against the live demo environment.
+  # This is the sole Playwright gate. A previous MSW-mode e2e job was removed
+  # because its mock fixtures could not keep pace with real demo backend
+  # behavior, and the duplicate run added CI minutes for shallow coverage
+  # already provided by Storybook + unit tests. This job exercises the
+  # actual API contract, scenario provisioning, and state machine terminal
+  # states. The local npm script is still named test:e2e:demo to reflect
+  # what it points at.
+  #
+  # Sharded by domain so each domain runs in parallel and one domain's
+  # failure doesn't block feedback on the others. The matrix is built
+  # dynamically by the `e2e-domains` job from the subfolders under
+  # `e2e/tests/`, so adding a new domain folder is sufficient to add a
+  # shard. The `domain` filter is a Playwright path-substring match against
+  # specs under `e2e/tests/<domain>/**/*.spec.ts`.
+  e2e:
+    needs: [setup, scenarios, e2e-setup, e2e-domains]
+    # Skip cleanly when no domain folders exist — fromJson on an empty array
+    # would otherwise fail matrix expansion.
+    if: needs.e2e-domains.outputs.domains != '[]'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      # Throttle concurrent shards to avoid overwhelming flows.gusto-demo.com
+      # with per-test scenario provisioning. globalSetup is now shared via
+      # the e2e-setup job's artifact, but scenario-backed specs still create
+      # additional demo companies on demand. 2 concurrent shards keeps that
+      # load manageable.
+      max-parallel: 2
+      matrix:
+        domain: ${{ fromJson(needs.e2e-domains.outputs.domains) }}
+    name: e2e (${{ matrix.domain }})
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Restore node_modules cache
+        uses: actions/cache/restore@v5
+        with:
+          path: node_modules
+          key: ${{ needs.setup.outputs.cache-key }}
+
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            playwright-${{ runner.os }}-
+
+      - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+
+      - name: Install Playwright system dependencies only
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+
+      - name: Download e2e state
+        uses: actions/download-artifact@v6
+        with:
+          name: e2e-state
+          path: e2e/
 
       - name: Run e2e tests
-        run: npm run test:e2e
+        env:
+          E2E_USE_REAL_BACKEND: 'true'
+        run: npm run test:e2e:demo -- --pass-with-no-tests ${{ matrix.domain }}
 
       - name: Upload test results
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v6
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.domain }}
           path: playwright-report/
           retention-days: 7
 
-  # E2E Demo job: Run Playwright e2e tests against the live demo environment
-  e2e-demo:
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: '.nvmrc'
-
-      - name: Restore node_modules cache
-        uses: actions/cache/restore@v5
-        with:
-          path: node_modules
-          key: ${{ needs.setup.outputs.cache-key }}
-
-      - name: Cache Playwright browsers
-        id: playwright-cache
-        uses: actions/cache@v5
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            playwright-${{ runner.os }}-
-
-      - name: Install Playwright browsers
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps chromium
-
-      - name: Install Playwright system dependencies only
-        if: steps.playwright-cache.outputs.cache-hit == 'true'
-        run: npx playwright install-deps chromium
-
-      - name: Run e2e tests against demo environment
-        run: npm run test:e2e:demo
-
-      - name: Upload demo test results
+      - name: Upload scenario reports
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v6
         with:
-          name: playwright-report-demo
-          path: playwright-report/
+          name: e2e-scenario-report-${{ matrix.domain }}
+          path: e2e/reports/
           retention-days: 7

@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 dotenv.config({ path: path.resolve(__dirname, 'e2e/local.config.env') })
 
-process.env.E2E_LOCAL = 'true'
+process.env.E2E_USE_REAL_BACKEND = 'true'
 process.env.E2E_GWS_FLOWS_HOST = process.env.E2E_GWS_FLOWS_HOST || 'http://localhost:7777'
 
 export default defineConfig({
@@ -16,7 +16,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: 2,
   workers: process.env.CI ? 1 : undefined,
-  reporter: 'html',
+  reporter: [['html'], ['./e2e/reporters/scenario-reporter.ts']],
   timeout: 120_000,
   expect: {
     timeout: 30_000,

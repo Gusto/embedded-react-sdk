@@ -161,7 +161,13 @@ function buildUpdateRequestBody(
   }
 
   if (accrualMethod === 'unlimited') {
-    return { ...base, complete: true }
+    return {
+      ...base,
+      accrualRate: null,
+      accrualRateUnit: null,
+      policyResetDate: null,
+      complete: true,
+    }
   }
 
   const isHourly =

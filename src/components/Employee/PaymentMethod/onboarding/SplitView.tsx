@@ -1,14 +1,13 @@
-import { useFormState } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import DOMPurify from 'dompurify'
 import {
   useSplitPaymentsForm,
   type SplitByValue,
+  type SplitFieldEntry,
   type UseSplitPaymentsFormProps,
   type UseSplitPaymentsFormReady,
-  type WorkingSplit,
 } from '../shared/useSplitPaymentsForm'
-import { ActionsLayout, NumberInputField } from '@/components/Common'
+import { ActionsLayout } from '@/components/Common'
 import { Form } from '@/components/Common/Form'
 import { ReorderableList } from '@/components/Common/ReorderableList'
 import { BaseLayout } from '@/components/Base/Base'
@@ -41,18 +40,8 @@ function SplitViewReady({ onEvent, splitForm }: SplitViewReadyProps) {
   const { t } = useTranslation('Employee.PaymentMethod')
   const Components = useComponentContext()
   const { Fields } = splitForm.form
-  const { splits, remainderId, splitBy, percentageTotal, bankAccounts } = splitForm.data
-
-  const { errors } = useFormState({
-    control: splitForm.form.hookFormInternals.formMethods.control,
-  })
-  // Zod produces the cross-field total-mismatch error at path ['splitAmount'].
-  // react-hook-form lands path-level errors at .root when child fields are also
-  // registered under the same key, so check both locations to be safe.
-  const splitAmountError = errors.splitAmount as
-    | { message?: string; root?: { message?: string } }
-    | undefined
-  const splitAmountErrorMessage = splitAmountError?.root?.message ?? splitAmountError?.message
+  const { remainderId, bankAccounts } = splitForm.data
+  const { splitBy, percentageTotal, hasPercentageImbalance } = splitForm.status
 
   const handleSubmit = async () => {
     const result = await splitForm.actions.onSubmit()
@@ -67,21 +56,29 @@ function SplitViewReady({ onEvent, splitForm }: SplitViewReadyProps) {
 
   if (bankAccounts.length < 2) return null
 
-  const labelForSplit = (split: WorkingSplit) =>
+  const labelForSplit = (split: SplitFieldEntry) =>
     t('splitAmountLabel', {
       name: DOMPurify.sanitize(split.name ?? ''),
       account_number: DOMPurify.sanitize(split.hiddenAccountNumber ?? ''),
       interpolation: { escapeValue: false },
     })
 
+  const handleReorder = (indices: number[]) => {
+    const orderedUuids = indices
+      .map(index => Fields.splits[index]?.uuid)
+      .filter((uuid): uuid is string => Boolean(uuid))
+    splitForm.actions.reorderSplits(orderedUuids)
+  }
+
   return (
     <BaseLayout error={splitForm.errorHandling.errors}>
       <SDKFormProvider formHookResult={splitForm}>
         <Form onSubmit={handleSubmit}>
-          {splitAmountErrorMessage === 'PERCENTAGE_TOTAL_MISMATCH' && (
+          {hasPercentageImbalance && (
             <Components.Alert
               status="error"
               label={t('validations.percentageErrorWithTotal', { total: percentageTotal })}
+              disableScrollIntoView
             />
           )}
           <Components.Heading as="h2">{t('title')}</Components.Heading>
@@ -96,40 +93,34 @@ function SplitViewReady({ onEvent, splitForm }: SplitViewReadyProps) {
             <ReorderableList
               key={`reorderable-amount-list-${splitBy}`}
               label={t('draggableListLabel')}
-              items={splits.map(split => ({
+              items={Fields.splits.map(split => ({
                 label: split.name ?? '',
                 content: (
-                  <NumberInputField
+                  <split.Field
                     key={`amount-${split.uuid}`}
-                    name={`splitAmount.${split.uuid}`}
                     label={labelForSplit(split)}
-                    format="currency"
                     min={0}
-                    isRequired
-                    errorMessage={t('validations.amountError')}
-                    placeholder={remainderId === split.uuid ? t('remainderLabel') : ''}
-                    isDisabled={remainderId === split.uuid}
-                    onChange={value => {
-                      splitForm.actions.updateSplitAmount(split.uuid, value)
+                    validationMessages={{
+                      REQUIRED: t('validations.amountError'),
+                      INVALID_AMOUNT: t('validations.amountError'),
+                      INVALID_PERCENTAGE: t('validations.amountError'),
                     }}
+                    placeholder={remainderId === split.uuid ? t('remainderLabel') : ''}
                   />
                 ),
               }))}
-              onReorder={splitForm.actions.reorderSplits}
+              onReorder={handleReorder}
             />
           ) : (
-            splits.map(split => (
-              <NumberInputField
+            Fields.splits.map(split => (
+              <split.Field
                 key={`percentage-${split.uuid}`}
-                name={`splitAmount.${split.uuid}`}
                 label={labelForSplit(split)}
-                format="percent"
                 min={0}
-                maximumFractionDigits={0}
-                isRequired
-                errorMessage={t('validations.percentageAmountError')}
-                onChange={value => {
-                  splitForm.actions.updateSplitAmount(split.uuid, value)
+                validationMessages={{
+                  REQUIRED: t('validations.percentageAmountError'),
+                  INVALID_AMOUNT: t('validations.percentageAmountError'),
+                  INVALID_PERCENTAGE: t('validations.percentageAmountError'),
                 }}
               />
             ))

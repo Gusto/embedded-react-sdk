@@ -59,7 +59,11 @@
     "paidOutOnTerminationHint": "Choose if unused time off is paid out when an employee leaves. Some states require it by law.",
     "numberOfHoursPlaceholder": "0",
     "numberOfDaysPlaceholder": "0",
-    "continueCta": "Save"
+    "continueCta": "Save",
+    "errors": {
+      "balanceExceedsMaximum": "The balance maximum cannot be lower than an employee's current balance. Reduce the employee's balance first, or increase the maximum.",
+      "waitingPeriodMustBeWholeNumber": "Waiting period must be a whole number of days"
+    }
   },
   "startingBalances": {
     "title": "Starting balances",
@@ -76,6 +80,9 @@
   "continueCta": "Save & continue",
   "backCta": "Back",
   "cancelCta": "Cancel",
+  "errors": {
+    "updatePolicySettingsFailed": "Unable to update policy settings. {{details}}"
+  },
   "flash": {
     "policyUpdated": "Details for this policy have been updated.",
     "policyActive": "Your time off policy is active.",

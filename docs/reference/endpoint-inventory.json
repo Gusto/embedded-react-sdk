@@ -74,12 +74,12 @@
           "path": "/v1/companies/:companyUuid/signatories"
         },
         {
-          "method": "POST",
-          "path": "/v1/companies/:companyUuid/signatories/invite"
-        },
-        {
           "method": "DELETE",
           "path": "/v1/companies/:companyUuid/signatories/:signatoryUuid"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyUuid/signatories/invite"
         }
       ],
       "variables": [
@@ -146,12 +146,8 @@
     "Company.Locations": {
       "endpoints": [
         {
-          "method": "PUT",
-          "path": "/v1/locations/:locationId"
-        },
-        {
           "method": "GET",
-          "path": "/v1/locations/:locationId"
+          "path": "/v1/companies/:companyId/locations"
         },
         {
           "method": "POST",
@@ -159,7 +155,11 @@
         },
         {
           "method": "GET",
-          "path": "/v1/companies/:companyId/locations"
+          "path": "/v1/locations/:locationId"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/locations/:locationId"
         }
       ],
       "variables": [
@@ -170,16 +170,16 @@
     "Company.LocationForm": {
       "endpoints": [
         {
-          "method": "PUT",
-          "path": "/v1/locations/:locationId"
+          "method": "POST",
+          "path": "/v1/companies/:companyId/locations"
         },
         {
           "method": "GET",
           "path": "/v1/locations/:locationId"
         },
         {
-          "method": "POST",
-          "path": "/v1/companies/:companyId/locations"
+          "method": "PUT",
+          "path": "/v1/locations/:locationId"
         }
       ],
       "variables": [
@@ -194,20 +194,20 @@
           "path": "/v1/companies/:companyId/pay_schedules"
         },
         {
+          "method": "POST",
+          "path": "/v1/companies/:companyId/pay_schedules"
+        },
+        {
           "method": "GET",
+          "path": "/v1/companies/:companyId/pay_schedules/:payScheduleId"
+        },
+        {
+          "method": "PUT",
           "path": "/v1/companies/:companyId/pay_schedules/:payScheduleId"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/pay_schedules/preview"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/companies/:companyId/pay_schedules"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyId/pay_schedules/:payScheduleId"
         },
         {
           "method": "GET",
@@ -223,11 +223,11 @@
     "Company.FederalTaxes": {
       "endpoints": [
         {
-          "method": "PUT",
+          "method": "GET",
           "path": "/v1/companies/:companyId/federal_tax_details"
         },
         {
-          "method": "GET",
+          "method": "PUT",
           "path": "/v1/companies/:companyId/federal_tax_details"
         }
       ],
@@ -269,11 +269,11 @@
     "Company.StateTaxesForm": {
       "endpoints": [
         {
-          "method": "PUT",
+          "method": "GET",
           "path": "/v1/companies/:companyUuid/tax_requirements/:state"
         },
         {
-          "method": "GET",
+          "method": "PUT",
           "path": "/v1/companies/:companyUuid/tax_requirements/:state"
         }
       ],
@@ -285,16 +285,16 @@
     "Company.StateTaxes": {
       "endpoints": [
         {
-          "method": "PUT",
-          "path": "/v1/companies/:companyUuid/tax_requirements/:state"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyUuid/tax_requirements/:state"
-        },
-        {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/tax_requirements"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/tax_requirements/:state"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/companies/:companyUuid/tax_requirements/:state"
         }
       ],
       "variables": [
@@ -306,15 +306,15 @@
       "endpoints": [
         {
           "method": "GET",
-          "path": "/v1/contractors/:contractorUuid/payment_method"
-        },
-        {
-          "method": "GET",
           "path": "/v1/contractors/:contractorUuid/bank_accounts"
         },
         {
           "method": "POST",
           "path": "/v1/contractors/:contractorUuid/bank_accounts"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid/payment_method"
         },
         {
           "method": "PUT",
@@ -347,12 +347,12 @@
     "Contractor.ContractorList": {
       "endpoints": [
         {
-          "method": "DELETE",
-          "path": "/v1/contractors/:contractorUuid"
-        },
-        {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/contractors"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/contractors/:contractorUuid"
         }
       ],
       "variables": [
@@ -378,16 +378,16 @@
     "Contractor.ContractorSubmit": {
       "endpoints": [
         {
-          "method": "PUT",
-          "path": "/v1/contractors/:contractorUuid/onboarding_status"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/contractors/:contractorUuid/onboarding_status"
-        },
-        {
           "method": "GET",
           "path": "/v1/contractors/:contractorUuid"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid/onboarding_status"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/contractors/:contractorUuid/onboarding_status"
         }
       ],
       "variables": [
@@ -397,12 +397,12 @@
     "Contractor.ContractorProfile": {
       "endpoints": [
         {
-          "method": "GET",
-          "path": "/v1/contractors/:contractorUuid"
-        },
-        {
           "method": "POST",
           "path": "/v1/companies/:companyUuid/contractors"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid"
         },
         {
           "method": "PUT",
@@ -434,7 +434,7 @@
       "endpoints": [
         {
           "method": "GET",
-          "path": "/v1/companies/:companyUuid/contractors"
+          "path": "/v1/companies/:companyId/bank_accounts"
         },
         {
           "method": "POST",
@@ -446,7 +446,11 @@
         },
         {
           "method": "GET",
-          "path": "/v1/companies/:companyId/bank_accounts"
+          "path": "/v1/companies/:companyUuid/contractors"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/payment_configs"
         }
       ],
       "variables": [
@@ -457,16 +461,16 @@
     "Contractor.PaymentHistory": {
       "endpoints": [
         {
-          "method": "GET",
-          "path": "/v1/contractor_payment_groups/:contractorPaymentGroupUuid"
+          "method": "DELETE",
+          "path": "/v1/companies/:companyId/contractor_payments/:contractorPaymentId"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/contractors"
         },
         {
-          "method": "DELETE",
-          "path": "/v1/companies/:companyId/contractor_payments/:contractorPaymentId"
+          "method": "GET",
+          "path": "/v1/contractor_payment_groups/:contractorPaymentGroupUuid"
         }
       ],
       "variables": [
@@ -480,7 +484,7 @@
       "endpoints": [
         {
           "method": "GET",
-          "path": "/v1/contractor_payment_groups/:contractorPaymentGroupUuid"
+          "path": "/v1/companies/:companyId/bank_accounts"
         },
         {
           "method": "GET",
@@ -488,7 +492,7 @@
         },
         {
           "method": "GET",
-          "path": "/v1/companies/:companyId/bank_accounts"
+          "path": "/v1/contractor_payment_groups/:contractorPaymentGroupUuid"
         }
       ],
       "variables": [
@@ -501,11 +505,11 @@
       "endpoints": [
         {
           "method": "GET",
-          "path": "/v1/contractor_payment_groups/:contractorPaymentGroupUuid"
+          "path": "/v1/companies/:companyUuid/contractors"
         },
         {
           "method": "GET",
-          "path": "/v1/companies/:companyUuid/contractors"
+          "path": "/v1/contractor_payment_groups/:contractorPaymentGroupUuid"
         },
         {
           "method": "GET",
@@ -580,40 +584,8 @@
     "Employee.Profile": {
       "endpoints": [
         {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/work_addresses"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId"
-        },
-        {
           "method": "POST",
           "path": "/v1/companies/:companyId/employees"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeId"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeId/onboarding_status"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/home_addresses"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/home_addresses/:homeAddressUuid"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/employees/:employeeId/home_addresses"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/home_addresses/:homeAddressUuid"
         },
         {
           "method": "GET",
@@ -621,11 +593,43 @@
         },
         {
           "method": "GET",
-          "path": "/v1/work_addresses/:workAddressUuid"
+          "path": "/v1/employees/:employeeId"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/employees/:employeeId"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/home_addresses"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/employees/:employeeId/home_addresses"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/employees/:employeeId/onboarding_status"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/work_addresses"
         },
         {
           "method": "POST",
           "path": "/v1/employees/:employeeId/work_addresses"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/home_addresses/:homeAddressUuid"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/home_addresses/:homeAddressUuid"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/work_addresses/:workAddressUuid"
         },
         {
           "method": "PUT",
@@ -643,7 +647,31 @@
       "endpoints": [
         {
           "method": "GET",
+          "path": "/v1/companies/:companyId/federal_tax_details"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/compensations/:compensationId"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId"
+        },
+        {
+          "method": "GET",
           "path": "/v1/employees/:employeeId/jobs"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/employees/:employeeId/jobs"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/work_addresses"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/jobs/:jobId"
         },
         {
           "method": "DELETE",
@@ -654,32 +682,8 @@
           "path": "/v1/jobs/:jobId/compensations"
         },
         {
-          "method": "PUT",
-          "path": "/v1/compensations/:compensationId"
-        },
-        {
           "method": "GET",
           "path": "/v1/locations/:locationUuid/minimum_wages"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/work_addresses"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/employees/:employeeId/jobs"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/jobs/:jobId"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/federal_tax_details"
         }
       ],
       "variables": [
@@ -723,8 +727,16 @@
     "Employee.PaymentMethod": {
       "endpoints": [
         {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/bank_accounts"
+        },
+        {
           "method": "POST",
           "path": "/v1/employees/:employeeId/bank_accounts"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/employees/:employeeId/bank_accounts/:bankAccountUuid"
         },
         {
           "method": "GET",
@@ -733,14 +745,6 @@
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeId/payment_method"
-        },
-        {
-          "method": "DELETE",
-          "path": "/v1/employees/:employeeId/bank_accounts/:bankAccountUuid"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/bank_accounts"
         }
       ],
       "variables": [
@@ -752,11 +756,11 @@
       "endpoints": [
         {
           "method": "GET",
-          "path": "/v1/employees/:employeeId"
+          "path": "/v1/companies/:companyId"
         },
         {
           "method": "GET",
-          "path": "/v1/companies/:companyId"
+          "path": "/v1/employees/:employeeId"
         }
       ],
       "variables": [
@@ -768,19 +772,11 @@
       "endpoints": [
         {
           "method": "GET",
-          "path": "/v1/employees/:employeeId/forms"
-        },
-        {
-          "method": "GET",
           "path": "/v1/employees/:employeeId"
         },
         {
           "method": "GET",
-          "path": "/v1/employees/:employeeId/i9_authorization"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeId/i9_authorization"
+          "path": "/v1/employees/:employeeId/forms"
         },
         {
           "method": "GET",
@@ -793,6 +789,14 @@
         {
           "method": "PUT",
           "path": "/v1/employees/:employeeId/forms/:formId/sign"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/i9_authorization"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/employees/:employeeId/i9_authorization"
         }
       ],
       "variables": [
@@ -819,11 +823,11 @@
       "endpoints": [
         {
           "method": "GET",
-          "path": "/v1/payrolls/:payrollId/employees/:employeeId/pay_stub"
+          "path": "/v1/employees/:employeeId"
         },
         {
           "method": "GET",
-          "path": "/v1/employees/:employeeId"
+          "path": "/v1/employees/:employeeId/forms"
         },
         {
           "method": "GET",
@@ -831,19 +835,11 @@
         },
         {
           "method": "GET",
-          "path": "/v1/employees/:employeeId/work_addresses"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/garnishments"
-        },
-        {
-          "method": "GET",
           "path": "/v1/employees/:employeeId/pay_stubs"
         },
         {
           "method": "GET",
-          "path": "/v1/employees/:employeeId/forms"
+          "path": "/v1/employees/:employeeId/work_addresses"
         },
         {
           "method": "GET",
@@ -852,27 +848,36 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeUuid/state_taxes"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/jobs/:jobId"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/payrolls/:payrollId/employees/:employeeId/pay_stub"
         }
       ],
       "variables": [
         "employeeId",
         "employeeUuid",
+        "jobId",
         "payrollId"
       ]
     },
     "Employee.HomeAddress": {
       "endpoints": [
         {
-          "method": "DELETE",
-          "path": "/v1/home_addresses/:homeAddressUuid"
+          "method": "GET",
+          "path": "/v1/employees/:employeeId"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/home_addresses"
         },
         {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId"
+          "method": "DELETE",
+          "path": "/v1/home_addresses/:homeAddressUuid"
         }
       ],
       "variables": [
@@ -899,6 +904,18 @@
       "endpoints": [
         {
           "method": "GET",
+          "path": "/v1/companies/:companyId/pay_periods/unprocessed_termination_pay_periods"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/payrolls"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyId/payrolls"
+        },
+        {
+          "method": "GET",
           "path": "/v1/employees/:employeeId"
         },
         {
@@ -912,18 +929,6 @@
         {
           "method": "PUT",
           "path": "/v1/terminations/:employeeId"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/companies/:companyId/payrolls"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/pay_periods/unprocessed_termination_pay_periods"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/payrolls"
         }
       ],
       "variables": [
@@ -935,6 +940,10 @@
       "endpoints": [
         {
           "method": "GET",
+          "path": "/v1/companies/:companyId/employees"
+        },
+        {
+          "method": "GET",
           "path": "/v1/employees/:employeeId"
         },
         {
@@ -944,10 +953,6 @@
         {
           "method": "DELETE",
           "path": "/v1/employees/:employeeId/terminations"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/employees"
         }
       ],
       "variables": [
@@ -958,16 +963,16 @@
     "Employee.WorkAddress": {
       "endpoints": [
         {
-          "method": "DELETE",
-          "path": "/v1/work_addresses/:workAddressUuid"
+          "method": "GET",
+          "path": "/v1/employees/:employeeId"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/work_addresses"
         },
         {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId"
+          "method": "DELETE",
+          "path": "/v1/work_addresses/:workAddressUuid"
         }
       ],
       "variables": [
@@ -1045,26 +1050,6 @@
       "endpoints": [
         {
           "method": "GET",
-          "path": "/v1/companies/:companyId/payrolls/:payrollId"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyId/payrolls/:payrollId"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/payrolls/:payrollUuid/gross_up"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyUuid/payrolls/blockers"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyId/payrolls/:payrollId/calculate"
-        },
-        {
-          "method": "GET",
           "path": "/v1/companies/:companyId/employees"
         },
         {
@@ -1072,12 +1057,32 @@
           "path": "/v1/companies/:companyId/pay_schedules/:payScheduleId"
         },
         {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/payrolls/:payrollId"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/companies/:companyId/payrolls/:payrollId"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/companies/:companyId/payrolls/:payrollId/calculate"
+        },
+        {
           "method": "PUT",
           "path": "/v1/companies/:companyId/payrolls/:payrollId/prepare"
         },
         {
           "method": "GET",
+          "path": "/v1/companies/:companyUuid/payrolls/blockers"
+        },
+        {
+          "method": "GET",
           "path": "/v1/employees/:employeeId"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/payrolls/:payrollUuid/gross_up"
         }
       ],
       "variables": [
@@ -1093,20 +1098,29 @@
       "endpoints": [
         {
           "method": "GET",
+          "path": "/v1/companies/:companyId/pay_schedules/:payScheduleId"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/companies/:companyId/payrolls/:payrollId"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/companies/:companyId/payrolls/:payrollId/prepare"
+        },
+        {
+          "method": "GET",
           "path": "/v1/employees/:employeeId"
         },
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/bank_accounts"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyId/payrolls/:payrollId"
         }
       ],
       "variables": [
         "companyId",
         "employeeId",
+        "payScheduleId",
         "payrollId"
       ]
     },
@@ -1135,14 +1149,27 @@
       "endpoints": [
         {
           "method": "GET",
-          "path": "/v1/companies/:companyUuid/wire_in_requests"
+          "path": "/v1/companies/:companyId/pay_periods"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/pay_schedules"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/payrolls/blockers"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyUuid/payrolls/skip"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/wire_in_requests"
         }
       ],
       "variables": [
+        "companyId",
         "companyUuid"
       ]
     },
@@ -1150,15 +1177,11 @@
       "endpoints": [
         {
           "method": "GET",
-          "path": "/v1/companies/:companyId/payrolls"
-        },
-        {
-          "method": "GET",
           "path": "/v1/companies/:companyId/pay_schedules"
         },
         {
-          "method": "POST",
-          "path": "/v1/companies/:companyUuid/payrolls/skip"
+          "method": "GET",
+          "path": "/v1/companies/:companyId/payrolls"
         },
         {
           "method": "DELETE",
@@ -1167,6 +1190,10 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/payrolls/blockers"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyUuid/payrolls/skip"
         },
         {
           "method": "GET",
@@ -1182,18 +1209,6 @@
     "Payroll.PayrollOverview": {
       "endpoints": [
         {
-          "method": "PUT",
-          "path": "/v1/companies/:companyId/payrolls/:payrollId/submit"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyId/payrolls/:payrollId/cancel"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/payrolls/:payrollId"
-        },
-        {
           "method": "GET",
           "path": "/v1/companies/:companyId/bank_accounts"
         },
@@ -1203,15 +1218,32 @@
         },
         {
           "method": "GET",
-          "path": "/v1/wire_in_requests/:wireInRequestUuid"
+          "path": "/v1/companies/:companyId/payrolls/:payrollId"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/companies/:companyId/payrolls/:payrollId/cancel"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/companies/:companyId/payrolls/:payrollId/submit"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/payment_configs"
         },
         {
           "method": "GET",
           "path": "/v1/payrolls/:payrollId/employees/:employeeId/pay_stub"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/wire_in_requests/:wireInRequestUuid"
         }
       ],
       "variables": [
         "companyId",
+        "companyUuid",
         "employeeId",
         "payrollId",
         "wireInRequestUuid"
@@ -1221,11 +1253,11 @@
       "endpoints": [
         {
           "method": "GET",
-          "path": "/v1/companies/:companyId/payrolls/:payrollId"
+          "path": "/v1/companies/:companyId/payrolls"
         },
         {
           "method": "GET",
-          "path": "/v1/companies/:companyId/payrolls"
+          "path": "/v1/companies/:companyId/payrolls/:payrollId"
         }
       ],
       "variables": [
@@ -1248,18 +1280,18 @@
       "endpoints": [
         {
           "method": "GET",
+          "path": "/v1/companies/:companyId/payrolls"
+        },
+        {
+          "method": "GET",
           "path": "/v1/companies/:companyUuid/wire_in_requests"
         },
         {
           "method": "GET",
-          "path": "/v1/companies/:companyId/payrolls"
-        },
-        {
-          "method": "PUT",
           "path": "/v1/wire_in_requests/:wireInRequestUuid"
         },
         {
-          "method": "GET",
+          "method": "PUT",
           "path": "/v1/wire_in_requests/:wireInRequestUuid"
         }
       ],
@@ -1273,15 +1305,15 @@
       "endpoints": [
         {
           "method": "GET",
+          "path": "/v1/companies/:companyUuid/information_requests"
+        },
+        {
+          "method": "GET",
           "path": "/v1/companies/:companyUuid/payrolls/blockers"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/recovery_cases"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyUuid/information_requests"
         }
       ],
       "variables": [
@@ -1307,16 +1339,21 @@
     "Payroll.OffCycleCreation": {
       "endpoints": [
         {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/employees"
+        },
+        {
           "method": "POST",
           "path": "/v1/companies/:companyId/payrolls"
         },
         {
           "method": "GET",
-          "path": "/v1/companies/:companyId/employees"
+          "path": "/v1/companies/:companyUuid/payment_configs"
         }
       ],
       "variables": [
-        "companyId"
+        "companyId",
+        "companyUuid"
       ]
     },
     "Payroll.OffCycleFlow": {
@@ -1335,15 +1372,15 @@
       "endpoints": [
         {
           "method": "GET",
-          "path": "/v1/companies/:companyId/payrolls/:payrollId"
-        },
-        {
-          "method": "GET",
           "path": "/v1/companies/:companyId/pay_periods/unprocessed_termination_pay_periods"
         },
         {
           "method": "POST",
           "path": "/v1/companies/:companyId/payrolls"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/payrolls/:payrollId"
         }
       ],
       "variables": [
@@ -1366,38 +1403,35 @@
     "Payroll.TransitionCreation": {
       "endpoints": [
         {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/pay_schedules"
+        },
+        {
           "method": "POST",
           "path": "/v1/companies/:companyId/payrolls"
         },
         {
           "method": "GET",
-          "path": "/v1/companies/:companyId/pay_schedules"
+          "path": "/v1/companies/:companyUuid/payment_configs"
         }
       ],
       "variables": [
-        "companyId"
+        "companyId",
+        "companyUuid"
       ]
     },
     "TimeOff.PolicyList": {
       "endpoints": [
         {
           "method": "GET",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy/remove"
-        },
-        {
-          "method": "GET",
           "path": "/v1/companies/:companyId/employees"
         },
         {
-          "method": "POST",
+          "method": "GET",
           "path": "/v1/companies/:companyUuid/holiday_pay_policy"
         },
         {
-          "method": "PUT",
+          "method": "DELETE",
           "path": "/v1/companies/:companyUuid/holiday_pay_policy"
         },
         {
@@ -1407,38 +1441,6 @@
         {
           "method": "PUT",
           "path": "/v1/time_off_policies/:timeOffPolicyUuid/deactivate"
-        },
-        {
-          "method": "DELETE",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/companies/:companyUuid/time_off_policies"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy/add"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/add_employees"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/remove_employees"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/balance"
         }
       ],
       "variables": [
@@ -1452,68 +1454,10 @@
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/holiday_pay_policy"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy/remove"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/employees"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyUuid/time_off_policies"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/deactivate"
-        },
-        {
-          "method": "DELETE",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/companies/:companyUuid/time_off_policies"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy/add"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/add_employees"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/remove_employees"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/balance"
         }
       ],
       "variables": [
-        "companyId",
-        "companyUuid",
-        "timeOffPolicyUuid"
+        "companyUuid"
       ]
     },
     "TimeOff.PolicyConfigurationForm": {
@@ -1523,11 +1467,11 @@
           "path": "/v1/companies/:companyUuid/time_off_policies"
         },
         {
-          "method": "PUT",
+          "method": "GET",
           "path": "/v1/time_off_policies/:timeOffPolicyUuid"
         },
         {
-          "method": "GET",
+          "method": "PUT",
           "path": "/v1/time_off_policies/:timeOffPolicyUuid"
         }
       ],
@@ -1536,72 +1480,18 @@
         "timeOffPolicyUuid"
       ]
     },
-    "TimeOff.PolicySettingsPresentation": {
+    "TimeOff.PolicySettings": {
       "endpoints": [
         {
           "method": "GET",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy/remove"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/employees"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyUuid/time_off_policies"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/deactivate"
-        },
-        {
-          "method": "DELETE",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
-        },
-        {
-          "method": "GET",
           "path": "/v1/time_off_policies/:timeOffPolicyUuid"
         },
         {
           "method": "PUT",
           "path": "/v1/time_off_policies/:timeOffPolicyUuid"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/companies/:companyUuid/time_off_policies"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy/add"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/add_employees"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/remove_employees"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/balance"
         }
       ],
       "variables": [
-        "companyId",
-        "companyUuid",
         "timeOffPolicyUuid"
       ]
     },
@@ -1609,51 +1499,15 @@
       "endpoints": [
         {
           "method": "GET",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy/remove"
-        },
-        {
-          "method": "GET",
           "path": "/v1/companies/:companyId/employees"
         },
         {
-          "method": "POST",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyUuid/time_off_policies"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/deactivate"
-        },
-        {
-          "method": "DELETE",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
-        },
-        {
           "method": "GET",
           "path": "/v1/time_off_policies/:timeOffPolicyUuid"
         },
         {
           "method": "PUT",
           "path": "/v1/time_off_policies/:timeOffPolicyUuid"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/companies/:companyUuid/time_off_policies"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy/add"
         },
         {
           "method": "PUT",
@@ -1662,15 +1516,10 @@
         {
           "method": "PUT",
           "path": "/v1/time_off_policies/:timeOffPolicyUuid/remove_employees"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/balance"
         }
       ],
       "variables": [
         "companyId",
-        "companyUuid",
         "timeOffPolicyUuid"
       ]
     },
@@ -1681,113 +1530,27 @@
           "path": "/v1/companies/:companyUuid/holiday_pay_policy"
         },
         {
-          "method": "PUT",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy/remove"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/employees"
-        },
-        {
           "method": "POST",
           "path": "/v1/companies/:companyUuid/holiday_pay_policy"
         },
         {
           "method": "PUT",
           "path": "/v1/companies/:companyUuid/holiday_pay_policy"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyUuid/time_off_policies"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/deactivate"
-        },
-        {
-          "method": "DELETE",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/companies/:companyUuid/time_off_policies"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy/add"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/add_employees"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/remove_employees"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/balance"
         }
       ],
       "variables": [
-        "companyId",
-        "companyUuid",
-        "timeOffPolicyUuid"
+        "companyUuid"
       ]
     },
     "TimeOff.AddEmployeesHoliday": {
       "endpoints": [
         {
           "method": "GET",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy/remove"
-        },
-        {
-          "method": "GET",
           "path": "/v1/companies/:companyId/employees"
         },
         {
-          "method": "POST",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
-        },
-        {
           "method": "GET",
-          "path": "/v1/companies/:companyUuid/time_off_policies"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/deactivate"
-        },
-        {
-          "method": "DELETE",
           "path": "/v1/companies/:companyUuid/holiday_pay_policy"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/companies/:companyUuid/time_off_policies"
         },
         {
           "method": "PUT",
@@ -1795,247 +1558,91 @@
         },
         {
           "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/add_employees"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/remove_employees"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/balance"
+          "path": "/v1/companies/:companyUuid/holiday_pay_policy/remove"
         }
       ],
       "variables": [
         "companyId",
-        "companyUuid",
-        "timeOffPolicyUuid"
+        "companyUuid"
       ]
     },
     "TimeOff.ViewHolidayEmployees": {
       "endpoints": [
         {
           "method": "GET",
+          "path": "/v1/companies/:companyId/employees"
+        },
+        {
+          "method": "GET",
           "path": "/v1/companies/:companyUuid/holiday_pay_policy"
         },
         {
           "method": "PUT",
           "path": "/v1/companies/:companyUuid/holiday_pay_policy/remove"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/employees"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyUuid/time_off_policies"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/deactivate"
-        },
-        {
-          "method": "DELETE",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/companies/:companyUuid/time_off_policies"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy/add"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/add_employees"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/remove_employees"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/balance"
         }
       ],
       "variables": [
         "companyId",
-        "companyUuid",
-        "timeOffPolicyUuid"
+        "companyUuid"
       ]
     },
     "TimeOff.ViewHolidayPolicyDetails": {
       "endpoints": [
         {
           "method": "GET",
+          "path": "/v1/companies/:companyId/employees"
+        },
+        {
+          "method": "GET",
           "path": "/v1/companies/:companyUuid/holiday_pay_policy"
         },
         {
           "method": "PUT",
           "path": "/v1/companies/:companyUuid/holiday_pay_policy/remove"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/employees"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyUuid/time_off_policies"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/deactivate"
-        },
-        {
-          "method": "DELETE",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/companies/:companyUuid/time_off_policies"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy/add"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/add_employees"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/remove_employees"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/balance"
         }
       ],
       "variables": [
         "companyId",
-        "companyUuid",
-        "timeOffPolicyUuid"
+        "companyUuid"
       ]
     },
     "TimeOff.ViewHolidaySchedule": {
       "endpoints": [
         {
           "method": "GET",
+          "path": "/v1/companies/:companyId/employees"
+        },
+        {
+          "method": "GET",
           "path": "/v1/companies/:companyUuid/holiday_pay_policy"
         },
         {
           "method": "PUT",
           "path": "/v1/companies/:companyUuid/holiday_pay_policy/remove"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/employees"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyUuid/time_off_policies"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/deactivate"
-        },
-        {
-          "method": "DELETE",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/companies/:companyUuid/time_off_policies"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy/add"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/add_employees"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/remove_employees"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/balance"
         }
       ],
       "variables": [
         "companyId",
-        "companyUuid",
-        "timeOffPolicyUuid"
+        "companyUuid"
       ]
     },
     "TimeOff.TimeOffPolicyDetailPresentation": {
       "endpoints": [
         {
           "method": "GET",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
+          "path": "/v1/companies/:companyId/employees"
         },
         {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/remove_employees"
+          "method": "GET",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
         },
         {
           "method": "PUT",
           "path": "/v1/time_off_policies/:timeOffPolicyUuid/balance"
         },
         {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/employees"
+          "method": "PUT",
+          "path": "/v1/time_off_policies/:timeOffPolicyUuid/remove_employees"
         }
       ],
       "variables": [
@@ -2043,103 +1650,486 @@
         "timeOffPolicyUuid"
       ]
     },
-    "TimeOff.TimeOffFlow": {
+    "EmployeeOnboarding.EmployeeList": {
       "endpoints": [
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy/remove"
-        },
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/employees"
         },
         {
-          "method": "POST",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyUuid/time_off_policies"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/deactivate"
-        },
-        {
           "method": "DELETE",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
+          "path": "/v1/employees/:employeeId"
         },
         {
           "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/companies/:companyUuid/time_off_policies"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyUuid/holiday_pay_policy/add"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/add_employees"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/remove_employees"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/balance"
+          "path": "/v1/employees/:employeeId/onboarding_status"
         }
       ],
       "variables": [
         "companyId",
-        "companyUuid",
-        "timeOffPolicyUuid"
+        "employeeId"
       ]
-    }
-  },
-  "flows": {
-    "Company.OnboardingFlow": {
-      "blocks": [
-        "Company.BankAccount",
-        "Company.DocumentSigner",
-        "Company.FederalTaxes",
-        "Company.Industry",
-        "Company.Locations",
-        "Company.OnboardingFlow",
-        "Company.OnboardingOverview",
-        "Company.PaySchedule",
-        "Company.StateTaxes",
-        "Employee.OnboardingFlow"
-      ],
+    },
+    "EmployeeOnboarding.OnboardingSummary": {
       "endpoints": [
         {
           "method": "GET",
-          "path": "/v1/companies/:companyId/bank_accounts"
+          "path": "/v1/employees/:employeeId"
         },
         {
-          "method": "POST",
-          "path": "/v1/companies/:companyId/bank_accounts"
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/onboarding_status"
+        }
+      ],
+      "variables": [
+        "employeeId"
+      ]
+    },
+    "EmployeeOnboarding.Landing": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId"
+        }
+      ],
+      "variables": [
+        "companyId",
+        "employeeId"
+      ]
+    },
+    "EmployeeOnboarding.DocumentSigner": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/forms"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/forms/:formId"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/forms/:formId/pdf"
         },
         {
           "method": "PUT",
-          "path": "/v1/companies/:companyId/bank_accounts/:bankAccountUuid/verify"
+          "path": "/v1/employees/:employeeId/forms/:formId/sign"
         },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/i9_authorization"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/employees/:employeeId/i9_authorization"
+        }
+      ],
+      "variables": [
+        "employeeId",
+        "formId"
+      ]
+    },
+    "EmployeeOnboarding.EmploymentEligibility": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/i9_authorization"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/employees/:employeeId/i9_authorization"
+        }
+      ],
+      "variables": [
+        "employeeId"
+      ]
+    },
+    "EmployeeOnboarding.Profile": {
+      "endpoints": [
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyId/employees"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/locations"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/employees/:employeeId"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/home_addresses"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/employees/:employeeId/home_addresses"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/employees/:employeeId/onboarding_status"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/work_addresses"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/employees/:employeeId/work_addresses"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/home_addresses/:homeAddressUuid"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/home_addresses/:homeAddressUuid"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/work_addresses/:workAddressUuid"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/work_addresses/:workAddressUuid"
+        }
+      ],
+      "variables": [
+        "companyId",
+        "employeeId",
+        "homeAddressUuid",
+        "workAddressUuid"
+      ]
+    },
+    "EmployeeOnboarding.Compensation": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/federal_tax_details"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/compensations/:compensationId"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/jobs"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/employees/:employeeId/jobs"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/work_addresses"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/jobs/:jobId"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/jobs/:jobId"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/jobs/:jobId/compensations"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/locations/:locationUuid/minimum_wages"
+        }
+      ],
+      "variables": [
+        "companyId",
+        "compensationId",
+        "employeeId",
+        "jobId",
+        "locationUuid"
+      ]
+    },
+    "EmployeeOnboarding.Deductions": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/garnishments"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/employees/:employeeId/garnishments"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/garnishments/:garnishmentId"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/garnishments/child_support"
+        }
+      ],
+      "variables": [
+        "employeeId",
+        "garnishmentId"
+      ]
+    },
+    "EmployeeOnboarding.Taxes": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeUuid/federal_taxes"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/employees/:employeeUuid/federal_taxes"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeUuid/state_taxes"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/employees/:employeeUuid/state_taxes"
+        }
+      ],
+      "variables": [
+        "employeeUuid"
+      ]
+    },
+    "EmployeeManagement.EmployeeList": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/employees"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/employees/:employeeId"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/employees/:employeeId/onboarding_status"
+        }
+      ],
+      "variables": [
+        "companyId",
+        "employeeId"
+      ]
+    },
+    "EmployeeManagement.EmployeeDocuments": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/employees/:employeeId/onboarding_documents_config"
+        }
+      ],
+      "variables": [
+        "employeeId"
+      ]
+    },
+    "EmployeeManagement.DocumentManager": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/forms/:formId"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/forms/:formId/pdf"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/employees/:employeeId/forms/:formId/sign"
+        }
+      ],
+      "variables": [
+        "employeeId",
+        "formId"
+      ]
+    },
+    "EmployeeManagement.DashboardFlow": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/forms"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/home_addresses"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/pay_stubs"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/work_addresses"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeUuid/federal_taxes"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeUuid/state_taxes"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/jobs/:jobId"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/payrolls/:payrollId/employees/:employeeId/pay_stub"
+        }
+      ],
+      "variables": [
+        "employeeId",
+        "employeeUuid",
+        "jobId",
+        "payrollId"
+      ]
+    },
+    "EmployeeManagement.WorkAddress": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/work_addresses"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/work_addresses/:workAddressUuid"
+        }
+      ],
+      "variables": [
+        "employeeId",
+        "workAddressUuid"
+      ]
+    },
+    "EmployeeManagement.Profile": {
+      "endpoints": [
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyId/employees"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/employees/:employeeId"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/employees/:employeeId/onboarding_status"
+        }
+      ],
+      "variables": [
+        "companyId",
+        "employeeId"
+      ]
+    },
+    "EmployeeManagement.TerminateEmployee": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/pay_periods/unprocessed_termination_pay_periods"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/payrolls"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyId/payrolls"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/terminations"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/employees/:employeeId/terminations"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/terminations/:employeeId"
+        }
+      ],
+      "variables": [
+        "companyId",
+        "employeeId"
+      ]
+    },
+    "EmployeeManagement.TerminationSummary": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/employees"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/terminations"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/employees/:employeeId/terminations"
+        }
+      ],
+      "variables": [
+        "companyId",
+        "employeeId"
+      ]
+    },
+    "CompanyOnboarding.OnboardingOverview": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/onboarding_status"
+        }
+      ],
+      "variables": [
+        "companyUuid"
+      ]
+    },
+    "CompanyOnboarding.DocumentSigner": {
+      "endpoints": [
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/forms"
@@ -2159,15 +2149,32 @@
         {
           "method": "PUT",
           "path": "/v1/forms/:formId/sign"
-        },
+        }
+      ],
+      "variables": [
+        "companyId",
+        "companyUuid",
+        "formId"
+      ]
+    },
+    "CompanyOnboarding.DocumentList": {
+      "endpoints": [
         {
-          "method": "PUT",
-          "path": "/v1/companies/:companyId/federal_tax_details"
+          "method": "GET",
+          "path": "/v1/companies/:companyId/forms"
         },
         {
           "method": "GET",
-          "path": "/v1/companies/:companyId/federal_tax_details"
-        },
+          "path": "/v1/companies/:companyUuid/signatories"
+        }
+      ],
+      "variables": [
+        "companyId",
+        "companyUuid"
+      ]
+    },
+    "CompanyOnboarding.Industry": {
+      "endpoints": [
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/industry_selection"
@@ -2175,14 +2182,37 @@
         {
           "method": "PUT",
           "path": "/v1/companies/:companyId/industry_selection"
+        }
+      ],
+      "variables": [
+        "companyId"
+      ]
+    },
+    "CompanyOnboarding.BankAccount": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/bank_accounts"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyId/bank_accounts"
         },
         {
           "method": "PUT",
-          "path": "/v1/locations/:locationId"
-        },
+          "path": "/v1/companies/:companyId/bank_accounts/:bankAccountUuid/verify"
+        }
+      ],
+      "variables": [
+        "bankAccountUuid",
+        "companyId"
+      ]
+    },
+    "CompanyOnboarding.Locations": {
+      "endpoints": [
         {
           "method": "GET",
-          "path": "/v1/locations/:locationId"
+          "path": "/v1/companies/:companyId/locations"
         },
         {
           "method": "POST",
@@ -2190,18 +2220,54 @@
         },
         {
           "method": "GET",
+          "path": "/v1/locations/:locationId"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/locations/:locationId"
+        }
+      ],
+      "variables": [
+        "companyId",
+        "locationId"
+      ]
+    },
+    "CompanyOnboarding.LocationForm": {
+      "endpoints": [
+        {
+          "method": "POST",
           "path": "/v1/companies/:companyId/locations"
         },
         {
           "method": "GET",
-          "path": "/v1/companies/:companyUuid/onboarding_status"
+          "path": "/v1/locations/:locationId"
         },
+        {
+          "method": "PUT",
+          "path": "/v1/locations/:locationId"
+        }
+      ],
+      "variables": [
+        "companyId",
+        "locationId"
+      ]
+    },
+    "CompanyOnboarding.PaySchedule": {
+      "endpoints": [
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/pay_schedules"
         },
         {
+          "method": "POST",
+          "path": "/v1/companies/:companyId/pay_schedules"
+        },
+        {
           "method": "GET",
+          "path": "/v1/companies/:companyId/pay_schedules/:payScheduleId"
+        },
+        {
+          "method": "PUT",
           "path": "/v1/companies/:companyId/pay_schedules/:payScheduleId"
         },
         {
@@ -2209,38 +2275,288 @@
           "path": "/v1/companies/:companyId/pay_schedules/preview"
         },
         {
-          "method": "POST",
-          "path": "/v1/companies/:companyId/pay_schedules"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyId/pay_schedules/:payScheduleId"
-        },
-        {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/payment_configs"
+        }
+      ],
+      "variables": [
+        "companyId",
+        "companyUuid",
+        "payScheduleId"
+      ]
+    },
+    "CompanyOnboarding.FederalTaxes": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/federal_tax_details"
         },
         {
           "method": "PUT",
-          "path": "/v1/companies/:companyUuid/tax_requirements/:state"
+          "path": "/v1/companies/:companyId/federal_tax_details"
+        }
+      ],
+      "variables": [
+        "companyId"
+      ]
+    },
+    "CompanyOnboarding.StateTaxes": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/tax_requirements"
         },
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/tax_requirements/:state"
         },
+        {
+          "method": "PUT",
+          "path": "/v1/companies/:companyUuid/tax_requirements/:state"
+        }
+      ],
+      "variables": [
+        "companyUuid",
+        "state"
+      ]
+    },
+    "CompanyOnboarding.StateTaxesForm": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/tax_requirements/:state"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/companies/:companyUuid/tax_requirements/:state"
+        }
+      ],
+      "variables": [
+        "companyUuid",
+        "state"
+      ]
+    },
+    "CompanyOnboarding.StateTaxesList": {
+      "endpoints": [
         {
           "method": "GET",
           "path": "/v1/companies/:companyUuid/tax_requirements"
         }
       ],
       "variables": [
-        "bankAccountUuid",
-        "companyId",
+        "companyUuid"
+      ]
+    },
+    "CompanyOnboarding.AssignSignatory": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/signatories"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyUuid/signatories"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/companies/:companyUuid/signatories/:signatoryUuid"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/companies/:companyUuid/signatories/:signatoryUuid"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyUuid/signatories/invite"
+        }
+      ],
+      "variables": [
         "companyUuid",
-        "formId",
-        "locationId",
-        "payScheduleId",
-        "state"
+        "signatoryUuid"
+      ]
+    },
+    "CompanyOnboarding.CreateSignatory": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/signatories"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyUuid/signatories"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/companies/:companyUuid/signatories/:signatoryUuid"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/companies/:companyUuid/signatories/:signatoryUuid"
+        }
+      ],
+      "variables": [
+        "companyUuid",
+        "signatoryUuid"
+      ]
+    },
+    "CompanyOnboarding.InviteSignatory": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/signatories"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/companies/:companyUuid/signatories/:signatoryUuid"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyUuid/signatories/invite"
+        }
+      ],
+      "variables": [
+        "companyUuid",
+        "signatoryUuid"
+      ]
+    },
+    "ContractorOnboarding.ContractorList": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyUuid/contractors"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/contractors/:contractorUuid"
+        }
+      ],
+      "variables": [
+        "companyUuid",
+        "contractorUuid"
+      ]
+    },
+    "ContractorOnboarding.ContractorProfile": {
+      "endpoints": [
+        {
+          "method": "POST",
+          "path": "/v1/companies/:companyUuid/contractors"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/contractors/:contractorUuid"
+        }
+      ],
+      "variables": [
+        "companyUuid",
+        "contractorUuid"
+      ]
+    },
+    "ContractorOnboarding.Address": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid/address"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/contractors/:contractorUuid/address"
+        }
+      ],
+      "variables": [
+        "contractorUuid"
+      ]
+    },
+    "ContractorOnboarding.PaymentMethod": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid/bank_accounts"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/contractors/:contractorUuid/bank_accounts"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid/payment_method"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/contractors/:contractorUuid/payment_method"
+        }
+      ],
+      "variables": [
+        "contractorUuid"
+      ]
+    },
+    "ContractorOnboarding.NewHireReport": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/contractors/:contractorUuid"
+        }
+      ],
+      "variables": [
+        "contractorUuid"
+      ]
+    },
+    "ContractorOnboarding.ContractorSubmit": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/contractors/:contractorUuid/onboarding_status"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/contractors/:contractorUuid/onboarding_status"
+        }
+      ],
+      "variables": [
+        "contractorUuid"
+      ]
+    }
+  },
+  "flows": {
+    "Company.OnboardingFlow": {
+      "blocks": [
+        "Company.BankAccount",
+        "Company.DocumentSigner",
+        "Company.FederalTaxes",
+        "Company.Industry",
+        "Company.Locations",
+        "Company.OnboardingOverview",
+        "Company.PaySchedule",
+        "Company.StateTaxes",
+        "EmployeeOnboarding.OnboardingFlow"
+      ]
+    },
+    "CompanyOnboarding.OnboardingFlow": {
+      "blocks": [
+        "CompanyOnboarding.BankAccount",
+        "CompanyOnboarding.DocumentSigner",
+        "CompanyOnboarding.FederalTaxes",
+        "CompanyOnboarding.Industry",
+        "CompanyOnboarding.Locations",
+        "CompanyOnboarding.OnboardingOverview",
+        "CompanyOnboarding.PaySchedule",
+        "CompanyOnboarding.StateTaxes",
+        "EmployeeOnboarding.OnboardingFlow"
       ]
     },
     "Contractor.OnboardingFlow": {
@@ -2250,127 +2566,41 @@
         "Contractor.ContractorProfile",
         "Contractor.ContractorSubmit",
         "Contractor.NewHireReport",
-        "Contractor.OnboardingFlow",
         "Contractor.PaymentMethod"
-      ],
-      "endpoints": [
-        {
-          "method": "GET",
-          "path": "/v1/contractors/:contractorUuid"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/contractors/:contractorUuid/address"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/contractors/:contractorUuid/address"
-        },
-        {
-          "method": "DELETE",
-          "path": "/v1/contractors/:contractorUuid"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyUuid/contractors"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/companies/:companyUuid/contractors"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/contractors/:contractorUuid"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/contractors/:contractorUuid/onboarding_status"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/contractors/:contractorUuid/onboarding_status"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/contractors/:contractorUuid/payment_method"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/contractors/:contractorUuid/bank_accounts"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/contractors/:contractorUuid/bank_accounts"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/contractors/:contractorUuid/payment_method"
-        }
-      ],
-      "variables": [
-        "companyUuid",
-        "contractorUuid"
       ]
     },
-    "Contractor.Payments.PaymentFlow": {
+    "Contractor.PaymentFlow": {
       "blocks": [
         "Contractor.CreatePayment",
-        "Contractor.PaymentFlow",
         "Contractor.PaymentHistory",
         "Contractor.PaymentStatement",
         "Contractor.PaymentSummary",
         "Contractor.PaymentsList",
         "InformationRequests.InformationRequestsFlow"
-      ],
-      "endpoints": [
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyUuid/contractors"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/companies/:companyId/contractor_payment_groups"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/companies/:companyId/contractor_payment_groups/preview"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/bank_accounts"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/contractor_payment_groups/:contractorPaymentGroupUuid"
-        },
-        {
-          "method": "DELETE",
-          "path": "/v1/companies/:companyId/contractor_payments/:contractorPaymentId"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/contractor_payments/:contractorPaymentUuid/receipt"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/contractor_payment_groups"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyUuid/information_requests"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/information_requests/:informationRequestUuid/submit"
-        }
-      ],
-      "variables": [
-        "companyId",
-        "companyUuid",
-        "contractorPaymentGroupUuid",
-        "contractorPaymentId",
-        "contractorPaymentUuid",
-        "informationRequestUuid"
+      ]
+    },
+    "ContractorOnboarding.OnboardingFlow": {
+      "blocks": [
+        "ContractorOnboarding.Address",
+        "ContractorOnboarding.ContractorList",
+        "ContractorOnboarding.ContractorProfile",
+        "ContractorOnboarding.ContractorSubmit",
+        "ContractorOnboarding.NewHireReport",
+        "ContractorOnboarding.PaymentMethod"
+      ]
+    },
+    "Employee.DashboardFlow": {
+      "blocks": [
+        "Employee.Compensation",
+        "Employee.Deductions",
+        "Employee.HomeAddress",
+        "Employee.PaymentMethod",
+        "Employee.WorkAddress",
+        "EmployeeManagement.DocumentManager",
+        "EmployeeManagement.FederalTaxes",
+        "EmployeeManagement.Profile",
+        "EmployeeManagement.StateTaxes",
+        "EmployeeOnboarding.PaymentMethod"
       ]
     },
     "Employee.OnboardingFlow": {
@@ -2379,405 +2609,98 @@
         "Employee.Deductions",
         "Employee.EmployeeDocuments",
         "Employee.EmployeeList",
-        "Employee.FederalTaxes",
-        "Employee.OnboardingFlow",
         "Employee.OnboardingSummary",
         "Employee.PaymentMethod",
         "Employee.Profile",
-        "Employee.StateTaxes"
-      ],
-      "endpoints": [
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/jobs"
-        },
-        {
-          "method": "DELETE",
-          "path": "/v1/jobs/:jobId"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/jobs/:jobId/compensations"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/compensations/:compensationId"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/locations/:locationUuid/minimum_wages"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/work_addresses"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/employees/:employeeId/jobs"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/jobs/:jobId"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/federal_tax_details"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/garnishments"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/employees/:employeeId/garnishments"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/garnishments/:garnishmentId"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/garnishments/child_support"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeId/onboarding_documents_config"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/employees"
-        },
-        {
-          "method": "DELETE",
-          "path": "/v1/employees/:employeeId"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeId/onboarding_status"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeUuid/federal_taxes"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeUuid/federal_taxes"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/onboarding_status"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/employees/:employeeId/bank_accounts"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/payment_method"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeId/payment_method"
-        },
-        {
-          "method": "DELETE",
-          "path": "/v1/employees/:employeeId/bank_accounts/:bankAccountUuid"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/bank_accounts"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/companies/:companyId/employees"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeId"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/home_addresses"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/home_addresses/:homeAddressUuid"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/employees/:employeeId/home_addresses"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/home_addresses/:homeAddressUuid"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/locations"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/work_addresses/:workAddressUuid"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/employees/:employeeId/work_addresses"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/work_addresses/:workAddressUuid"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeUuid/state_taxes"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeUuid/state_taxes"
-        }
-      ],
-      "variables": [
-        "bankAccountUuid",
-        "companyId",
-        "compensationId",
-        "employeeId",
-        "employeeUuid",
-        "garnishmentId",
-        "homeAddressUuid",
-        "jobId",
-        "locationUuid",
-        "workAddressUuid"
+        "EmployeeOnboarding.FederalTaxes",
+        "EmployeeOnboarding.StateTaxes"
       ]
     },
     "Employee.SelfOnboardingFlow": {
       "blocks": [
         "Employee.DocumentSigner",
-        "Employee.FederalTaxes",
         "Employee.Landing",
         "Employee.OnboardingSummary",
         "Employee.PaymentMethod",
         "Employee.Profile",
-        "Employee.SelfOnboardingFlow",
-        "Employee.StateTaxes"
-      ],
-      "endpoints": [
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/forms"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/i9_authorization"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeId/i9_authorization"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/forms/:formId"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/forms/:formId/pdf"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeId/forms/:formId/sign"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeUuid/federal_taxes"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeUuid/federal_taxes"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/onboarding_status"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/employees/:employeeId/bank_accounts"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/payment_method"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeId/payment_method"
-        },
-        {
-          "method": "DELETE",
-          "path": "/v1/employees/:employeeId/bank_accounts/:bankAccountUuid"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/bank_accounts"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/work_addresses"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/companies/:companyId/employees"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeId"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeId/onboarding_status"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/home_addresses"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/home_addresses/:homeAddressUuid"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/employees/:employeeId/home_addresses"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/home_addresses/:homeAddressUuid"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/locations"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/work_addresses/:workAddressUuid"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/employees/:employeeId/work_addresses"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/work_addresses/:workAddressUuid"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeUuid/state_taxes"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/employees/:employeeUuid/state_taxes"
-        }
-      ],
-      "variables": [
-        "bankAccountUuid",
-        "companyId",
-        "employeeId",
-        "employeeUuid",
-        "formId",
-        "homeAddressUuid",
-        "workAddressUuid"
+        "EmployeeOnboarding.FederalTaxes",
+        "EmployeeOnboarding.StateTaxes"
       ]
     },
-    "Employee.Terminations.TerminationFlow": {
+    "Employee.TerminationFlow": {
       "blocks": [
         "Employee.TerminateEmployee",
-        "Employee.TerminationFlow",
         "Employee.TerminationSummary",
         "Payroll.DismissalFlow",
         "Payroll.PayrollLanding"
-      ],
-      "endpoints": [
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/terminations"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/employees/:employeeId/terminations"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/terminations/:employeeId"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/companies/:companyId/payrolls"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/pay_periods/unprocessed_termination_pay_periods"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/payrolls"
-        },
-        {
-          "method": "DELETE",
-          "path": "/v1/employees/:employeeId/terminations"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/employees"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/payrolls/:payrollId"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyUuid/wire_in_requests"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyUuid/payrolls/blockers"
-        }
-      ],
-      "variables": [
-        "companyId",
-        "companyUuid",
-        "employeeId",
-        "payrollId"
+      ]
+    },
+    "EmployeeManagement.DashboardFlow": {
+      "blocks": [
+        "Employee.HomeAddress",
+        "Employee.PaymentMethod",
+        "EmployeeManagement.DocumentManager",
+        "EmployeeManagement.FederalTaxes",
+        "EmployeeManagement.Profile",
+        "EmployeeManagement.StateTaxes",
+        "EmployeeManagement.WorkAddress",
+        "EmployeeOnboarding.Compensation",
+        "EmployeeOnboarding.Deductions",
+        "EmployeeOnboarding.PaymentMethod"
+      ]
+    },
+    "EmployeeManagement.TerminationFlow": {
+      "blocks": [
+        "EmployeeManagement.TerminateEmployee",
+        "EmployeeManagement.TerminationSummary",
+        "Payroll.DismissalFlow",
+        "Payroll.PayrollLanding"
+      ]
+    },
+    "EmployeeOnboarding.OnboardingFlow": {
+      "blocks": [
+        "Employee.EmployeeDocuments",
+        "Employee.PaymentMethod",
+        "EmployeeOnboarding.Compensation",
+        "EmployeeOnboarding.Deductions",
+        "EmployeeOnboarding.EmployeeList",
+        "EmployeeOnboarding.FederalTaxes",
+        "EmployeeOnboarding.OnboardingSummary",
+        "EmployeeOnboarding.Profile",
+        "EmployeeOnboarding.StateTaxes"
+      ]
+    },
+    "EmployeeOnboarding.SelfOnboardingFlow": {
+      "blocks": [
+        "Employee.PaymentMethod",
+        "EmployeeOnboarding.DocumentSigner",
+        "EmployeeOnboarding.FederalTaxes",
+        "EmployeeOnboarding.Landing",
+        "EmployeeOnboarding.OnboardingSummary",
+        "EmployeeOnboarding.Profile",
+        "EmployeeOnboarding.StateTaxes"
+      ]
+    },
+    "InformationRequests.InformationRequestsFlow": {
+      "blocks": [
+        "InformationRequests.InformationRequestForm",
+        "InformationRequests.InformationRequestList"
+      ]
+    },
+    "Payroll.DismissalFlow": {
+      "blocks": [
+        "Payroll.PayrollExecutionFlow"
+      ]
+    },
+    "Payroll.OffCycleFlow": {
+      "blocks": [
+        "Payroll.OffCycleCreation",
+        "Payroll.PayrollExecutionFlow"
       ]
     },
     "Payroll.PayrollExecutionFlow": {
       "blocks": [
         "Payroll.PayrollFlow"
-      ],
-      "endpoints": [
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/payrolls/:payrollId"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/payrolls"
-        }
-      ],
-      "variables": [
-        "companyId",
-        "payrollId"
       ]
     },
     "Payroll.PayrollFlow": {
@@ -2786,139 +2709,31 @@
         "Payroll.PayrollBlockerList",
         "Payroll.PayrollConfiguration",
         "Payroll.PayrollEditEmployee",
-        "Payroll.PayrollFlow",
+        "Payroll.PayrollExecutionFlow",
         "Payroll.PayrollLanding",
         "Payroll.PayrollOverview",
         "Payroll.PayrollReceipts",
         "Payroll.TransitionFlow"
-      ],
-      "endpoints": [
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/payrolls/:payrollId"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyUuid/payrolls/blockers"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyUuid/recovery_cases"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyUuid/information_requests"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyId/payrolls/:payrollId"
-        },
-        {
-          "method": "POST",
-          "path": "/v1/payrolls/:payrollUuid/gross_up"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyId/payrolls/:payrollId/calculate"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/employees"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/pay_schedules/:payScheduleId"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyId/payrolls/:payrollId/prepare"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/bank_accounts"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/payrolls"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyUuid/wire_in_requests"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyId/payrolls/:payrollId/submit"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/companies/:companyId/payrolls/:payrollId/cancel"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/bank_accounts"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/wire_in_requests/:wireInRequestUuid"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/payrolls/:payrollId/employees/:employeeId/pay_stub"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/payrolls/:payrollUuid/receipt"
-        }
-      ],
-      "variables": [
-        "companyId",
-        "companyUuid",
-        "employeeId",
-        "payScheduleId",
-        "payrollId",
-        "payrollUuid",
-        "wireInRequestUuid"
+      ]
+    },
+    "Payroll.TransitionFlow": {
+      "blocks": [
+        "Payroll.PayrollExecutionFlow",
+        "Payroll.TransitionCreation"
       ]
     },
     "TimeOff.TimeOffFlow": {
       "blocks": [
+        "TimeOff.AddEmployeesHoliday",
+        "TimeOff.AddEmployeesToPolicy",
+        "TimeOff.HolidaySelectionForm",
         "TimeOff.PolicyConfigurationForm",
-        "TimeOff.TimeOffPolicyDetailPresentation"
-      ],
-      "endpoints": [
-        {
-          "method": "POST",
-          "path": "/v1/companies/:companyUuid/time_off_policies"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/remove_employees"
-        },
-        {
-          "method": "PUT",
-          "path": "/v1/time_off_policies/:timeOffPolicyUuid/balance"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/companies/:companyId/employees"
-        }
-      ],
-      "variables": [
-        "companyId",
-        "companyUuid",
-        "timeOffPolicyUuid"
+        "TimeOff.PolicyList",
+        "TimeOff.PolicySettings",
+        "TimeOff.PolicyTypeSelector",
+        "TimeOff.TimeOffPolicyDetailPresentation",
+        "TimeOff.ViewHolidayEmployees",
+        "TimeOff.ViewHolidaySchedule"
       ]
     }
   }

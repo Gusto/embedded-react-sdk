@@ -24,3 +24,4 @@ export {
   type SplitByFieldProps,
   type RequiredValidation as SplitPaymentsFormRequiredValidation,
 } from './fields'
+export type { SplitFieldEntry, SplitFieldProps, SplitFieldValidation } from './splitFieldFactory'
