@@ -1,5 +1,5 @@
 import { test, expect } from '../../utils/localTestFixture'
-import { fillDate, waitForLoadingComplete } from '../../utils/helpers'
+import { fillDate, generateUniqueEIN, waitForLoadingComplete } from '../../utils/helpers'
 
 test.describe('ContractorOnboardingFlow - Business contractor create lifecycle', () => {
   test.beforeEach(({}, testInfo) => {
@@ -28,7 +28,6 @@ test.describe('ContractorOnboardingFlow - Business contractor create lifecycle',
 
     const einField = page.getByLabel(/^ein$/i)
     if (await einField.isVisible().catch(() => false)) {
-      const { generateUniqueEIN } = await import('../../utils/helpers')
       await einField.fill(generateUniqueEIN())
     }
 

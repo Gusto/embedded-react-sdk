@@ -1,5 +1,5 @@
 import { test, expect } from '../utils/localTestFixture'
-import { waitForLoadingComplete, waitForContentOrLoading } from '../utils/helpers'
+import { generateUniqueEIN, waitForLoadingComplete, waitForContentOrLoading } from '../utils/helpers'
 
 test.describe('CompanyOnboardingFlow', () => {
   test('displays the onboarding overview with all steps', async ({ page }) => {
@@ -78,7 +78,6 @@ test.describe('CompanyOnboardingFlow', () => {
 
     const einField = page.getByLabel(/federal ein/i)
     if (await einField.isVisible().catch(() => false)) {
-      const { generateUniqueEIN } = await import('../utils/helpers')
       await einField.clear()
       await einField.fill(generateUniqueEIN())
     }
