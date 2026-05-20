@@ -453,7 +453,7 @@ describe('Dashboard', () => {
     const addAnother = within(compensationCard).getByRole('button', { name: 'Add another job' })
     await user.click(addAnother)
 
-    expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_JOB_ADD, {
+    expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_JOB_ADD_ANOTHER, {
       employeeId: 'employee-123',
     })
   })
@@ -612,7 +612,7 @@ describe('Dashboard', () => {
     })
   })
 
-  it('emits EMPLOYEE_JOB_ADD when clicking the Add another job CTA in the multi-job view', async () => {
+  it('emits EMPLOYEE_JOB_ADD_ANOTHER when clicking the Add another job CTA in the multi-job view', async () => {
     const user = userEvent.setup()
 
     const multiJobFixture = await getMultiJobFixture()
@@ -629,7 +629,7 @@ describe('Dashboard', () => {
     const addAnother = await screen.findByRole('button', { name: 'Add another job' })
     await user.click(addAnother)
 
-    expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_JOB_ADD, {
+    expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_JOB_ADD_ANOTHER, {
       employeeId: 'employee-123',
     })
   })

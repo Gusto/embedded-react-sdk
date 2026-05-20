@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import type { Job } from '@gusto/embedded-api/models/components/job'
 import { Dashboard } from './Dashboard'
 import { HomeAddress } from '@/components/Employee/HomeAddress/management/HomeAddress'
 import { WorkAddress } from '@/components/Employee/WorkAddress/management/WorkAddress'
@@ -28,6 +29,7 @@ export type DashboardSuccessAlert =
 export interface DashboardContextInterface extends FlowContextInterface {
   employeeId: string
   formId?: string
+  currentJob?: Job | null
   successAlert?: DashboardSuccessAlert | null
   /** Set by the EMPLOYEE_DEDUCTION_EDIT transition; consumed by
    *  DeductionFormContextual to pre-populate the form. */
@@ -153,4 +155,25 @@ export function DeductionFormContextual() {
       />
     </BaseLayout>
   )
+}
+
+export function AddJobPlaceholderContextual() {
+  useI18n('Employee.Dashboard')
+  const { t } = useTranslation('Employee.Dashboard')
+  const Components = useComponentContext()
+  return <Components.Heading as="h2">{t('compensationFlow.addJobTitle')}</Components.Heading>
+}
+
+export function EditCompensationPlaceholderContextual() {
+  useI18n('Employee.Dashboard')
+  const { t } = useTranslation('Employee.Dashboard')
+  const Components = useComponentContext()
+  return <Components.Heading as="h2">{t('compensationFlow.editTitle')}</Components.Heading>
+}
+
+export function AddAnotherJobPlaceholderContextual() {
+  useI18n('Employee.Dashboard')
+  const { t } = useTranslation('Employee.Dashboard')
+  const Components = useComponentContext()
+  return <Components.Heading as="h2">{t('compensationFlow.addAnotherJobTitle')}</Components.Heading>
 }
