@@ -32,8 +32,8 @@
   ],
   "scripts": {
     "build": "npm run build:clean && npm run i18n:generate && vite build && npm run endpoints:derive",
-    "api-report:derive": "api-extractor run --local",
-    "api-report:verify": "api-extractor run",
+    "api-report:derive": "api-extractor run --local --config spike/autogen-docs/api-extractor/api-extractor.json",
+    "api-report:verify": "api-extractor run --config spike/autogen-docs/api-extractor/api-extractor.json",
     "endpoints:derive": "npx tsx ./build/deriveEndpointInventory.ts",
     "endpoints:verify": "npx tsx ./build/deriveEndpointInventory.ts --verify",
     "build:ci": "npm run build && npm run lint:check && npm run format:check && npm run test:ci",
@@ -87,6 +87,7 @@
     "@commitlint/cli": "^21.0.1",
     "@commitlint/config-conventional": "^21.0.1",
     "@eslint/js": "^9.39.2",
+    "@microsoft/api-documenter": "^7.30.5",
     "@microsoft/api-extractor": "^7.58.7",
     "@playwright/test": "^1.60.0",
     "@release-it/conventional-changelog": "^11.0.0",

@@ -3,23 +3,23 @@
   "mainEntryPointFilePath": "<projectFolder>/dist/index.d.ts",
   "bundledPackages": [],
   "compiler": {
-    "tsconfigFilePath": "<projectFolder>/tsconfig.api-extractor.json"
+    "tsconfigFilePath": "<projectFolder>/spike/autogen-docs/api-extractor/tsconfig.api-extractor.json"
   },
   "apiReport": {
     "enabled": true,
-    "reportFolder": "<projectFolder>/spike/autogen-docs/",
-    "reportTempFolder": "<projectFolder>/spike/autogen-docs/temp/",
+    "reportFolder": "<projectFolder>/spike/autogen-docs/api-extractor/",
+    "reportTempFolder": "<projectFolder>/spike/autogen-docs/api-extractor/temp/",
     "reportVariants": ["public"]
   },
   "docModel": {
     "enabled": true,
-    "apiJsonFilePath": "<projectFolder>/spike/autogen-docs/<unscopedPackageName>.api.json",
+    "apiJsonFilePath": "<projectFolder>/spike/autogen-docs/api-extractor/<unscopedPackageName>.api.json",
     "includeForgottenExports": false,
     "releaseTagsToTrim": ["@alpha", "@beta", "@internal"]
   },
   "dtsRollup": {
     "enabled": true,
-    "publicTrimmedFilePath": "<projectFolder>/spike/autogen-docs/<unscopedPackageName>.public.d.ts"
+    "publicTrimmedFilePath": "<projectFolder>/spike/autogen-docs/api-extractor/<unscopedPackageName>.public.d.ts"
   },
   "tsdocMetadata": {
     "enabled": false

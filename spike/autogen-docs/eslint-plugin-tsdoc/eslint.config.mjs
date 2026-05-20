@@ -9,6 +9,32 @@ import jsxA11y from 'eslint-plugin-jsx-a11y'
 import pluginReactHooks from 'eslint-plugin-react-hooks'
 import importPlugin from 'eslint-plugin-import'
 import reactRefresh from 'eslint-plugin-react-refresh'
+import jsdoc from 'eslint-plugin-jsdoc'
+import tsdoc from 'eslint-plugin-tsdoc'
+
+const jsdocRequireOptions = {
+  // Only require JSDoc for exports
+  publicOnly: true,
+  require: {
+    FunctionDeclaration: true,
+    ClassDeclaration: true,
+    ArrowFunctionExpression: true,
+    FunctionExpression: true,
+    MethodDefinition: true,
+  },
+  contexts: [
+    // Require JSDoc for exported variables (often constants)
+    'ExportNamedDeclaration > VariableDeclaration',
+    // and for class properties (methods enabled via the `require` block)
+    'PropertyDefinition',
+    // and for types, interfaces, and enums
+    'ExportNamedDeclaration > TSTypeAliasDeclaration',
+    'ExportNamedDeclaration > TSInterfaceDeclaration',
+    'ExportNamedDeclaration > TSEnumDeclaration',
+  ],
+  // If enabled, --fix will simply add an empty jsdoc comment
+  enableFixer: false,
+}
 
 export default [
   { files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'] },
@@ -100,6 +126,15 @@ export default [
       '@typescript-eslint/no-unused-expressions': 'off', // TODO: fix instances
       '@typescript-eslint/unified-signatures': 'off', // TODO: re-enable when bug is fixed in typescript-eslint
       'no-console': 'error',
+      'no-restricted-syntax': [
+        'warn',
+        {
+          // Inline exports allow the jsdoc/requireJsdoc publicOnly option to work more effectively
+          selector: 'ExportNamedDeclaration[declaration=null]:not([source])',
+          message:
+            'Use inline exports (export class Foo {}) instead of grouped exports (export { Foo })',
+        },
+      ],
 
       'no-restricted-imports': [
         'error',
@@ -142,5 +177,40 @@ export default [
       '@typescript-eslint/no-unnecessary-type-arguments': 'off',
     },
   },
+  // TSDoc syntax validation on any comment that already exists.
+  // Validates tag names, param format, brace escaping, etc.
+  {
+    files: ['src/**/*.{ts,tsx}'],
+    plugins: { tsdoc },
+    rules: {
+      'tsdoc/syntax': 'error',
+    },
+  },
+
+  // Require TSDoc on exported symbols. Everything starts at 'warn' by default.
+  // Add a directory glob to the allowlist block below to promote it to 'error'
+  // once that directory's public API has been fully documented.
+  {
+    files: ['src/**/*.{ts,tsx}'],
+    plugins: { jsdoc },
+    settings: { jsdoc: { mode: 'typescript' } },
+    rules: {
+      'jsdoc/require-jsdoc': ['warn', jsdocRequireOptions],
+    },
+  },
+  // Allowlist: promote to 'error' for directories whose public API is fully documented.
+  // {
+  //   files: [],
+  //   rules: {
+  //     'jsdoc/require-jsdoc': ['error', jsdocRequireOptions],
+  //   },
+  // },
+
+  // Do not enforce jsdoc rules for tests, mocks, and stories
+  {
+    files: ['**/*.stories.{ts,tsx}', '**/*.test.{ts,tsx}', 'src/test/**/*.{ts,tsx}'],
+    rules: { 'jsdoc/require-jsdoc': 'off' },
+  },
+
   ...storybook.configs['flat/recommended'],
 ]
