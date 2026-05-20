@@ -75,13 +75,11 @@ test.describe('TimeOffFlow - add employees edge cases', () => {
     await enableBalanceMaximumWithValue(page, '1')
 
     await page.getByRole('button', { name: /^save$/i }).click()
-    await page.waitForTimeout(3_000)
 
     const alert = page.getByRole('alert').first()
-    if (await alert.isVisible({ timeout: 5_000 }).catch(() => false)) {
-      const alertText = (await alert.textContent()) ?? ''
-      expect(alertText).not.toMatch(/[a-z]+_[a-z]+/)
-    }
+    await expect(alert).toBeVisible({ timeout: 10_000 })
+    const alertText = (await alert.textContent()) ?? ''
+    expect(alertText).not.toMatch(/[a-z]+_[a-z]+/)
   })
 
   // QA issue reporters: Kevin Bartels / Jeff Stephens
@@ -102,14 +100,12 @@ test.describe('TimeOffFlow - add employees edge cases', () => {
     await enableBalanceMaximumWithValue(page, '1')
 
     await page.getByRole('button', { name: /^save$/i }).click()
-    await page.waitForTimeout(3_000)
 
     await expect(page.getByText(/unexpected error/i)).toHaveCount(0)
 
     const alert = page.getByRole('alert').first()
-    if (await alert.isVisible({ timeout: 5_000 }).catch(() => false)) {
-      const alertText = ((await alert.textContent()) ?? '').toLowerCase()
-      expect(alertText).toMatch(/balance|employee/)
-    }
+    await expect(alert).toBeVisible({ timeout: 10_000 })
+    const alertText = ((await alert.textContent()) ?? '').toLowerCase()
+    expect(alertText).toMatch(/balance|employee/)
   })
 })
