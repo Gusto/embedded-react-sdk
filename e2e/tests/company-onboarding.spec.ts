@@ -1,5 +1,9 @@
 import { test, expect } from '../utils/localTestFixture'
-import { generateUniqueEIN, waitForLoadingComplete, waitForContentOrLoading } from '../utils/helpers'
+import {
+  generateUniqueEIN,
+  waitForLoadingComplete,
+  waitForContentOrLoading,
+} from '../utils/helpers'
 
 test.describe('CompanyOnboardingFlow', () => {
   test('displays the onboarding overview with all steps', async ({ page }) => {
