@@ -1,6 +1,6 @@
 import { defineConfig, devices } from '@playwright/test'
 
-process.env.E2E_LOCAL = 'true'
+process.env.E2E_USE_REAL_BACKEND = 'true'
 process.env.E2E_GWS_FLOWS_HOST = process.env.E2E_GWS_FLOWS_HOST || 'https://flows.gusto-demo.com'
 
 export default defineConfig({

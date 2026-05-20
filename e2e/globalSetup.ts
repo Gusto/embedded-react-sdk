@@ -332,7 +332,7 @@ async function logRemainingBlockers(flowToken: string, companyId: string): Promi
 }
 
 export default async function globalSetup() {
-  const isRealApi = process.env.E2E_LOCAL === 'true'
+  const isRealApi = process.env.E2E_USE_REAL_BACKEND === 'true'
 
   if (!isRealApi) {
     console.log('Skipping global setup - using MSW mocks')

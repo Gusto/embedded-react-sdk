@@ -52,7 +52,7 @@ function loadDynamicState(): Partial<E2EState> {
 export const test = base.extend<ScenarioFixtures & { localConfig: LocalConfig }>({
   localConfig: [
     async ({}, use) => {
-      const isLocal = process.env.E2E_LOCAL === 'true'
+      const isLocal = process.env.E2E_USE_REAL_BACKEND === 'true'
       const dynamicState = isLocal ? loadDynamicState() : {}
 
       const config: LocalConfig = {
@@ -91,7 +91,7 @@ export const test = base.extend<ScenarioFixtures & { localConfig: LocalConfig }>
         testInfo.annotations.push({ type: 'tag', description: `@${scenarioJson.domain}` })
       }
 
-      if (process.env.E2E_LOCAL !== 'true') {
+      if (process.env.E2E_USE_REAL_BACKEND !== 'true') {
         await use(EMPTY_SCENARIO_CONTEXT)
         return
       }
