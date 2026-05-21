@@ -1,14 +1,14 @@
-import { useState } from 'react'
 import classNames from 'classnames'
 import { Trans, useTranslation } from 'react-i18next'
 import type { PaymentUnit } from '@gusto/embedded-api/models/components/compensation'
 import type { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
 import type { MinimumWage } from '@gusto/embedded-api/models/components/minimumwage'
-import type { CompensationDefaultValues } from '../Compensation'
+import { useJobsAndCompensationsGetJobs } from '@gusto/embedded-api/react-query/jobsAndCompensationsGetJobs'
 import { useJobForm, type UseJobFormReady } from '../../shared/useJobForm'
 import {
   useCompensationForm,
   type UseCompensationFormReady,
+  type CompensationFormData,
 } from '../../shared/useCompensationForm'
 import styles from './EditCompensation.module.scss'
 import { BaseBoundaries, BaseLayout, type CommonComponentInterface } from '@/components/Base'
@@ -21,104 +21,95 @@ import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { composeSubmitHandler } from '@/partner-hook-utils/form/composeSubmitHandler'
 import { componentEvents, FLSA_OVERTIME_SALARY_LIMIT, type EventType } from '@/shared/constants'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
+import { addDays } from '@/helpers/dateFormatting'
 
 export interface EditCompensationProps extends CommonComponentInterface<'Employee.Compensation'> {
   employeeId: string
-  startDate: string
-  currentJobId?: string | null
-  title: string
-  submitCtaLabel: string
+  jobId: string
   onCancel?: () => void
-  partnerDefaultValues?: CompensationDefaultValues
-  /**
-   * Receives the broadcast events: `EMPLOYEE_JOB_CREATED` / `EMPLOYEE_JOB_UPDATED`
-   * (with the saved `Job`), then `EMPLOYEE_COMPENSATION_UPDATED` (with the saved
-   * `Compensation`) on a successful submit chain. Use `EMPLOYEE_COMPENSATION_UPDATED`
-   * for "save complete" branching.
-   */
+  /** Called with `EMPLOYEE_COMPENSATION_UPDATED` then `EMPLOYEE_COMPENSATION_DONE` on a successful save. Use `EMPLOYEE_COMPENSATION_DONE` to trigger navigation. */
   onEvent: OnEventType<EventType, unknown>
 }
 
 export function EditCompensation({ dictionary, ...props }: EditCompensationProps) {
   useComponentDictionary('Employee.Compensation', dictionary)
   return (
-    <BaseBoundaries componentName="Employee.Compensation">
-      <Root {...props} />
+    <BaseBoundaries componentName="Employee.Compensation.Management">
+      <CompensationDefaultsLoader {...props} />
     </BaseBoundaries>
   )
 }
 
-function Root({
+type LoaderProps = Omit<EditCompensationProps, 'dictionary'>
+
+// Fetches the current job's compensation data to pre-populate the form as
+// defaultValues before rendering Root. Uses the same non-suspense query that
+// useCompensationForm uses internally — React Query dedupes the request so no
+// extra network call is made once Root mounts.
+// defaultValues from CommonComponentInterface (unknown) is excluded from the
+// spread so it doesn't conflict with Root's typed defaultValues prop.
+function CompensationDefaultsLoader({
   employeeId,
-  startDate,
-  currentJobId,
-  title,
-  submitCtaLabel,
-  onCancel,
-  partnerDefaultValues,
-  className,
-  onEvent,
-}: EditCompensationProps) {
+  jobId,
+  defaultValues: _baseDefaults,
+  ...rest
+}: LoaderProps) {
+  const jobsQuery = useJobsAndCompensationsGetJobs({ employeeId }, { enabled: !!employeeId })
+
+  if (jobsQuery.isLoading || !jobsQuery.data) {
+    const errorHandling = composeErrorHandler([jobsQuery])
+    return <BaseLayout isLoading error={errorHandling.errors} />
+  }
+
+  const job = jobsQuery.data.jobs?.find(j => j.uuid === jobId)
+  const currentComp = job?.compensations?.find(c => c.uuid === job.currentCompensationUuid)
+
+  const defaultValues: Partial<CompensationFormData> | undefined = currentComp
+    ? {
+        title: currentComp.title ?? job?.title ?? undefined,
+        flsaStatus: currentComp.flsaStatus ?? undefined,
+        rate: Number(currentComp.rate),
+        paymentUnit: currentComp.paymentUnit ?? undefined,
+        adjustForMinimumWage: currentComp.adjustForMinimumWage ?? false,
+        minimumWageId: currentComp.minimumWages?.[0]?.uuid ?? '',
+        // effectiveDate intentionally omitted — user must choose a future date
+      }
+    : undefined
+
+  return <Root employeeId={employeeId} jobId={jobId} defaultValues={defaultValues} {...rest} />
+}
+
+interface RootProps extends LoaderProps {
+  defaultValues?: Partial<CompensationFormData>
+}
+
+function Root({ employeeId, jobId, defaultValues, onCancel, className, onEvent }: RootProps) {
   useI18n('Employee.Compensation')
 
-  // Track jobId locally so a partial-failure submit chain (job POST succeeds,
-  // comp PUT fails) doesn't re-POST and create a duplicate job on retry. We
-  // initialize from the prop and only write back when the partner-supplied
-  // `currentJobId` was nullish (i.e. add-job flow) — see the submit handler.
-  const [resolvedJobId, setResolvedJobId] = useState<string | undefined>(currentJobId ?? undefined)
-
+  // Job form handles the non-effective-dated fields: 2% shareholder + WA WC.
+  // Title is suppressed here because the compensation form owns title
+  // (effective-dated alongside rate/unit/FLSA on the future-dated row).
+  // Hire-date is suppressed because this surface never edits it.
   const jobForm = useJobForm({
     employeeId,
-    jobId: resolvedJobId,
-    // The Compensation flow does not surface a hire-date field — the date is
-    // derived from the employee's `startDate` (passed via submit options
-    // below). Hiding via the hook flag also drops the field from the schema
-    // so partner forms don't silently fail validation on create.
+    jobId,
+    withTitleField: false,
     withHireDateField: false,
-    defaultValues: {
-      title: partnerDefaultValues?.title ?? '',
-    },
-    // The Compensation flow always shows a job title field, even when editing
-    // an existing job. The hook's schema only requires `title` on create; we
-    // require it on update too to preserve the existing UX.
-    optionalFieldsToRequire: { update: ['title'] },
     shouldFocusError: false,
   })
 
-  // Resolve the compensationId from the job we just loaded so the comp form can
-  // seed from the existing comp on edit. While the job form is still loading we
-  // pass undefined (compensation form starts in create mode); once the job
-  // resolves the prop change re-renders the comp form into update mode with the
-  // existing compensation as the seed.
-  const resolvedCompensationId = jobForm.isLoading
-    ? undefined
-    : (jobForm.data.currentJob?.currentCompensationUuid ?? undefined)
-
+  // Compensation form runs in create mode (no compensationId) → POST
+  // /v1/jobs/:jobId/compensations, creating a new future-dated compensation.
+  // The form is pre-populated with the current comp's values via defaultValues
+  // (fetched by CompensationDefaultsLoader) so the user can edit from the
+  // current state, and picks a future effectiveDate to schedule the change.
   const compensationForm = useCompensationForm({
     employeeId,
-    jobId: resolvedJobId,
-    compensationId: resolvedCompensationId,
-    // No effective-date field is surfaced, and no `effectiveDate` is
-    // threaded into `actions.onSubmit` either: the server initializes
-    // `effective_date` on the auto-stub created by the parent job POST,
-    // and subsequent updates omit it from the PUT body so the existing
-    // value is preserved (e.g. a deliberately-set future-dated comp
-    // wouldn't be silently overwritten on an unrelated edit).
-    withEffectiveDateField: false,
-    // The Compensation flow always presents flsaStatus, rate, and paymentUnit
-    // as required, even when editing an existing compensation. The hook's
-    // schema marks them `'create'`-only by default; we promote them on update
-    // here to preserve the existing UX (no "(optional)" labels).
-    optionalFieldsToRequire: { update: ['flsaStatus', 'rate', 'paymentUnit'] },
-    defaultValues: {
-      flsaStatus: partnerDefaultValues?.flsaStatus,
-      rate:
-        typeof partnerDefaultValues?.rate === 'number'
-          ? partnerDefaultValues.rate
-          : partnerDefaultValues?.rate
-            ? Number(partnerDefaultValues.rate)
-            : undefined,
-      paymentUnit: partnerDefaultValues?.paymentUnit,
+    jobId,
+    defaultValues,
+    withEffectiveDateField: true,
+    optionalFieldsToRequire: {
+      create: ['title'],
     },
     shouldFocusError: false,
   })
@@ -128,39 +119,24 @@ function Root({
     return <BaseLayout isLoading error={loadingErrorHandling.errors} />
   }
 
+  // PUT job first (immediate mutation of 2% shareholder / WC), then POST
+  // the new compensation (the future-dated change). composeSubmitHandler
+  // validates both forms in parallel and short-circuits before any network
+  // I/O if either fails.
   const submitResult = composeSubmitHandler([jobForm, compensationForm], async () => {
-    const jobResult = await jobForm.actions.onSubmit({ employeeId, hireDate: startDate })
+    const jobResult = await jobForm.actions.onSubmit()
     if (!jobResult) return
 
-    onEvent(
-      jobResult.mode === 'create'
-        ? componentEvents.EMPLOYEE_JOB_CREATED
-        : componentEvents.EMPLOYEE_JOB_UPDATED,
-      jobResult.data,
-    )
+    onEvent(componentEvents.EMPLOYEE_JOB_UPDATED, jobResult.data)
 
-    // Always thread through the freshly returned job's currentCompensationUuid +
-    // its version so we PUT against the latest comp regardless of whether the job
-    // POST just auto-created the stub or the job PUT bumped a version.
-    const stubCompensation = jobResult.data.compensations?.find(
-      c => c.uuid === jobResult.data.currentCompensationUuid,
-    )
-
-    const compensationResult = await compensationForm.actions.onSubmit({
-      jobId: jobResult.data.uuid,
-      compensationId: jobResult.data.currentCompensationUuid ?? undefined,
-      compensationVersion: stubCompensation?.version ?? undefined,
-    })
-    if (!compensationResult) {
-      if (!currentJobId) setResolvedJobId(jobResult.data.uuid)
-      return
-    }
+    const compensationResult = await compensationForm.actions.onSubmit()
+    if (!compensationResult) return
 
     onEvent(componentEvents.EMPLOYEE_COMPENSATION_UPDATED, compensationResult.data)
+    onEvent(componentEvents.EMPLOYEE_COMPENSATION_DONE, compensationResult.data)
   })
 
   const errorHandling = composeErrorHandler([submitResult])
-
   const isPending = jobForm.status.isPending || compensationForm.status.isPending
 
   return (
@@ -170,8 +146,6 @@ function Root({
           <FormBody
             jobForm={jobForm}
             compensationForm={compensationForm}
-            title={title}
-            submitCtaLabel={submitCtaLabel}
             isPending={isPending}
             onCancel={onCancel}
           />
@@ -184,20 +158,11 @@ function Root({
 interface FormBodyProps {
   jobForm: UseJobFormReady
   compensationForm: UseCompensationFormReady
-  title: string
-  submitCtaLabel: string
   isPending: boolean
   onCancel?: () => void
 }
 
-function FormBody({
-  jobForm,
-  compensationForm,
-  title,
-  submitCtaLabel,
-  isPending,
-  onCancel,
-}: FormBodyProps) {
+function FormBody({ jobForm, compensationForm, isPending, onCancel }: FormBodyProps) {
   const { t } = useTranslation('Employee.Compensation')
   const Components = useComponentContext()
   const format = useNumberFormatter('currency')
@@ -207,22 +172,20 @@ function FormBody({
 
   return (
     <Flex flexDirection="column" gap={32}>
-      <Components.Heading as="h2">{title}</Components.Heading>
+      <Components.Heading as="h2">{t('management.editCompensationTitle')}</Components.Heading>
 
       {compensationForm.status.willDeleteSecondaryJobs && (
         <Components.Alert
-          label={t('validations.classificationChangeNotification')}
+          label={t('management.scheduledClassificationChangeNotification')}
           status="warning"
         />
       )}
 
-      {JobFields.Title && (
-        <JobFields.Title
-          label={t('jobTitle')}
-          validationMessages={{ REQUIRED: t('validations.title') }}
-          formHookResult={jobForm}
-        />
-      )}
+      <CompFields.Title
+        label={t('management.jobTitleLabel')}
+        validationMessages={{ REQUIRED: t('validations.jobTitleSentence') }}
+        formHookResult={compensationForm}
+      />
 
       {CompFields.FlsaStatus && (
         <CompFields.FlsaStatus
@@ -245,7 +208,7 @@ function FormBody({
       )}
 
       <CompFields.Rate
-        label={t('amount')}
+        label={t('management.wageLabel')}
         validationMessages={{
           REQUIRED: t('validations.rate'),
           RATE_MINIMUM: t('validations.nonZeroRate'),
@@ -257,12 +220,31 @@ function FormBody({
       />
 
       <CompFields.PaymentUnit
-        label={t('paymentUnitLabel')}
+        label={t('management.wageFrequencyLabel')}
         description={t('paymentUnitDescription')}
         validationMessages={{ REQUIRED: t('validations.paymentUnit') }}
-        getOptionLabel={(unit: PaymentUnit) => t(`paymentUnitOptions.${unit}`)}
+        getOptionLabel={(unit: PaymentUnit) =>
+          t(`management.wageFrequencyOptions.${unit}` as const)
+        }
         formHookResult={compensationForm}
       />
+
+      {CompFields.EffectiveDate && (
+        <CompFields.EffectiveDate
+          label={t('effectiveDateLabel')}
+          minDate={addDays(new Date(), 1)}
+          maxDate={
+            compensationForm.data.maximumEffectiveDate
+              ? new Date(compensationForm.data.maximumEffectiveDate)
+              : undefined
+          }
+          validationMessages={{
+            REQUIRED: t('validations.effectiveDate'),
+            EFFECTIVE_DATE_BEFORE_HIRE: t('validations.effectiveDateBeforeHire'),
+          }}
+          formHookResult={compensationForm}
+        />
+      )}
 
       {CompFields.AdjustForMinimumWage && (
         <CompFields.AdjustForMinimumWage
@@ -286,7 +268,7 @@ function FormBody({
 
       {JobFields.TwoPercentShareholder && (
         <JobFields.TwoPercentShareholder
-          label={t('twoPercentStakeholderLabel')}
+          label={t('management.twoPercentShareholderLabel')}
           formHookResult={jobForm}
         />
       )}
@@ -329,11 +311,11 @@ function FormBody({
       <ActionsLayout>
         {onCancel && (
           <Components.Button variant="secondary" onClick={onCancel} isDisabled={isPending}>
-            {t('cancelNewJobCta')}
+            {t('cancelCta')}
           </Components.Button>
         )}
         <Components.Button type="submit" isLoading={isPending}>
-          {submitCtaLabel}
+          {t('management.saveCta')}
         </Components.Button>
       </ActionsLayout>
     </Flex>
