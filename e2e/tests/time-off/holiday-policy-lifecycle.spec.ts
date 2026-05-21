@@ -93,9 +93,15 @@ test.describe('TimeOffFlow - holiday policy lifecycle', () => {
         .first()
         .click()
       await waitForLoadingComplete(page)
+      await expect(page.getByRole('heading', { name: /select policy type/i })).toBeVisible({
+        timeout: 30000,
+      })
       await page.getByRole('radio', { name: /holiday pay/i }).check()
       await page.getByRole('button', { name: /^continue$/i }).click()
       await waitForLoadingComplete(page)
+      await expect(
+        page.getByRole('heading', { name: /choose your company holidays/i }),
+      ).toBeVisible({ timeout: 30000 })
       const headerCheckbox = page.getByRole('checkbox', { name: /select all/i }).first()
       if (await headerCheckbox.isVisible().catch(() => false)) {
         await headerCheckbox.check()
