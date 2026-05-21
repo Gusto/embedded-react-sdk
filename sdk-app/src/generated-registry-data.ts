@@ -20,7 +20,6 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'Company.StateTaxes': ['companyId'],
   'Company.StateTaxesForm': ['companyId'],
   'Company.StateTaxesList': ['companyId'],
-  'Company.TaxFilingsFlow': ['companyId'],
   'Contractor.Address': ['contractorId'],
   'Contractor.ContractorList': ['companyId'],
   'Contractor.ContractorProfile': ['companyId'],

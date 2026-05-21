@@ -260,11 +260,6 @@ export const timeOffEvents = {
   TIME_OFF_DELETE_POLICY_DONE: 'timeOff/deletePolicy/done',
 } as const
 
-export const taxFilingsEvents = {
-  TAX_FILING_SELECTED: 'taxFilings/selected',
-  TAX_FILING_BACK: 'taxFilings/back',
-} as const
-
 export const agentPaymentsEvents = {
   AGENT_PAYMENT_SELECTED: 'agentPayments/selected',
   AGENT_PAYMENT_BACK: 'agentPayments/back',
@@ -287,7 +282,6 @@ export const componentEvents = {
   ...offCycleEvents,
   ...terminationEvents,
   ...timeOffEvents,
-  ...taxFilingsEvents,
   ...agentPaymentsEvents,
 } as const
 

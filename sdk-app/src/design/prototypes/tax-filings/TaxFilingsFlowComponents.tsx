@@ -1,10 +1,11 @@
+import { taxFilingsEvents } from './events'
 import { mockTaxFilings } from './taxFilingsMockData'
 import { TaxFilingsList } from './TaxFilingsList'
 import { TaxFilingDetail } from './TaxFilingDetail'
 import type { BaseComponentInterface } from '@/components/Base'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
-import { taxFilingsEvents } from '@/shared/constants'
 import { ensureRequired } from '@/helpers/ensureRequired'
+import type { EventType } from '@/shared/constants'
 
 export interface TaxFilingsFlowProps extends BaseComponentInterface {
   companyId: string
@@ -22,7 +23,7 @@ export function TaxFilingsListContextual() {
     <TaxFilingsList
       filings={mockTaxFilings}
       onSelectFiling={uuid => {
-        onEvent(taxFilingsEvents.TAX_FILING_SELECTED, uuid)
+        onEvent(taxFilingsEvents.TAX_FILING_SELECTED as EventType, uuid)
       }}
     />
   )
@@ -39,7 +40,7 @@ export function TaxFilingDetailContextual() {
     <TaxFilingDetail
       filing={filing}
       onBack={() => {
-        onEvent(taxFilingsEvents.TAX_FILING_BACK)
+        onEvent(taxFilingsEvents.TAX_FILING_BACK as EventType)
       }}
     />
   )

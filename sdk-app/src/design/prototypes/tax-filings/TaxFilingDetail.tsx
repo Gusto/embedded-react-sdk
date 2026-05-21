@@ -2,6 +2,7 @@ import type { TaxFiling, TaxFilingStatus } from './types'
 import styles from './TaxFilingsFlow.module.scss'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Flex } from '@/components/Common'
+import CaretLeftIcon from '@/assets/icons/caret-left.svg?react'
 
 const STATUS_LABELS: Record<TaxFilingStatus, string> = {
   not_started: 'Not Started',
@@ -73,59 +74,83 @@ export function TaxFilingDetail({ filing, onBack }: TaxFilingDetailProps) {
   return (
     <Flex flexDirection="column" gap={24}>
       <div>
-        <Button variant="secondary" onClick={onBack}>
-          ← Back to filings
+        <Button variant="secondary" icon={<CaretLeftIcon aria-hidden="true" />} onClick={onBack}>
+          Back to filings
         </Button>
       </div>
 
-      <Flex flexDirection="column" gap={4}>
-        <div className={styles.detailHeader}>
-          <Heading as="h2">{filing.form_name}</Heading>
-          <Badge status={STATUS_BADGE_VARIANTS[filing.status]} className={styles.statusBadgeLg}>
-            {STATUS_LABELS[filing.status]}
-          </Badge>
-          {filing.is_amendment && <Badge status="info">Amended</Badge>}
-        </div>
-        <Text variant="supporting">{filing.form_title}</Text>
-      </Flex>
-
-      <DescriptionList
-        layout="horizontal"
-        items={[
-          {
-            term: 'Agency',
-            description: filing.agency_name,
-          },
-          {
-            term: 'Jurisdiction',
-            description: filing.jurisdiction,
-          },
-          {
-            term: 'Period',
-            description: `${filing.period} (${formatDate(filing.period_start)} – ${formatDate(filing.period_end)})`,
-          },
-          {
-            term: 'Due Date',
-            description: formatDate(filing.due_date),
-          },
-          {
-            term: 'Filed',
-            description: filing.filed_at ? formatDateTimeWithRelative(filing.filed_at) : '—',
-          },
-          {
-            term: 'Last Updated',
-            description: formatDateTimeWithRelative(filing.status_updated_at),
-          },
-        ]}
-      />
+      <Box
+        header={
+          <BoxHeader
+            headingLevel="h2"
+            title={
+              <div className={styles.detailHeader}>
+                <span>{filing.form_name}</span>
+                <div className={styles.detailHeaderBadges}>
+                  <Badge
+                    status={STATUS_BADGE_VARIANTS[filing.status]}
+                    className={styles.statusBadgeLg}
+                  >
+                    {STATUS_LABELS[filing.status]}
+                  </Badge>
+                  {filing.is_amendment && <Badge status="info">Amended</Badge>}
+                </div>
+              </div>
+            }
+            description={filing.form_title}
+          />
+        }
+      >
+        <DescriptionList
+          layout="horizontal"
+          items={[
+            {
+              term: 'Agency',
+              description: filing.agency_name,
+            },
+            {
+              term: 'Jurisdiction',
+              description: filing.jurisdiction,
+            },
+            {
+              term: 'Period',
+              description: `${filing.period} (${formatDate(filing.period_start)} – ${formatDate(filing.period_end)})`,
+            },
+            {
+              term: 'Due Date',
+              description: formatDate(filing.due_date),
+            },
+            {
+              term: 'Filed',
+              description: filing.filed_at ? formatDateTimeWithRelative(filing.filed_at) : '—',
+            },
+            {
+              term: 'Last Updated',
+              description: formatDateTimeWithRelative(filing.status_updated_at),
+            },
+          ]}
+        />
+      </Box>
 
       {filing.document_uuid && (
-        <Box>
-          <BoxHeader title="Filed Document" />
-          <div className={styles.documentRow}>
-            <Text size="sm">The signed filing package is available for download.</Text>
-            <Link href={`#download-${filing.document_uuid}`}>Download PDF</Link>
-          </div>
+        <Box
+          header={<BoxHeader title="Filing Package" />}
+          footer={
+            <Button
+              variant="secondary"
+              onClick={() => {
+                window.location.hash = `download-${filing.document_uuid}`
+              }}
+            >
+              Download PDF
+            </Button>
+          }
+        >
+          <Flex flexDirection="row" gap={8} justifyContent="space-between" alignItems="center">
+            <Text size="sm" variant="supporting">
+              The signed filing package is available for download.
+            </Text>
+          </Flex>
         </Box>
       )}
 

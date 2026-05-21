@@ -19,7 +19,14 @@ export const categorizedRegistry: CategorizedRegistry = {
         'A single page demonstrating SDK components like Button, TextInput, Select, Alert, and more.',
     },
   ],
-  Companies: [],
+  Companies: [
+    {
+      name: 'Tax Filings',
+      path: '/design/tax-filings',
+      description:
+        'View tax filing status for a company — filter, sort, and drill into individual filings.',
+    },
+  ],
   Contractors: [
     {
       name: 'Contractor Management',
