@@ -5,7 +5,7 @@ test.describe('PayrollFlow - execution entry + cancel dialog lifecycle', () => {
   test.beforeEach(({}, testInfo) => {
     testInfo.annotations.push({
       type: 'scenario',
-      description: 'payroll/payroll-multi-entity-history',
+      description: 'payroll/biweekly-shared',
     })
   })
 

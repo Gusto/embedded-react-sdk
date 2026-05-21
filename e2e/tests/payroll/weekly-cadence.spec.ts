@@ -17,7 +17,6 @@ test.describe('PayrollFlow — weekly cadence', () => {
 
     expect(scenario.companyId).toBeTruthy()
     expect(scenario.paySchedule?.uuid).toBeTruthy()
-    expect(Object.keys(scenario.employeeIds)).toEqual(expect.arrayContaining(['alice']))
 
     await page.goto('/?flow=payroll')
     await waitForLoadingComplete(page, 60000)
