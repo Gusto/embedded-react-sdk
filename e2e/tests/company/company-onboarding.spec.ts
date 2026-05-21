@@ -1,6 +1,6 @@
 import { test, expect } from '../../utils/localTestFixture'
 import { OVERVIEW_HEADING, BEGIN_ONBOARDING_BUTTON } from '../../utils/companyFlowDrivers'
-import { waitForLoadingComplete } from '../../utils/helpers'
+import { generateUniqueEIN, waitForLoadingComplete } from '../../utils/helpers'
 
 test.describe('CompanyOnboardingFlow', () => {
   test.beforeEach(({}, testInfo) => {
@@ -68,9 +68,8 @@ test.describe('CompanyOnboardingFlow', () => {
 
     const einField = page.getByLabel(/federal ein/i)
     if (await einField.isVisible().catch(() => false)) {
-      const uniqueEIN = `${Math.floor(Math.random() * 89 + 10)}-${Math.floor(Math.random() * 8999999 + 1000000)}`
       await einField.clear()
-      await einField.fill(uniqueEIN)
+      await einField.fill(generateUniqueEIN())
     }
 
     const taxpayerButton = page.getByRole('button', { name: /taxpayer type/i })

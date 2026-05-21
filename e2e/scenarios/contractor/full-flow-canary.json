@@ -1,0 +1,9 @@
+{
+  "$schema": "../../schema/scenario.schema.json",
+  "name": "Contractor canary — onboarding + payment end-to-end",
+  "description": "Onboarded company with pre-existing payable contractors from the demo base. The payment canary submits a payment against one of those contractors. Onboarding canaries (individual + business) create their own contractors through the UI.",
+  "domain": "contractor",
+  "baseDemo": "react_sdk_demo_company_onboarded",
+  "decorations": {},
+  "expectedContext": ["companyId"]
+}
