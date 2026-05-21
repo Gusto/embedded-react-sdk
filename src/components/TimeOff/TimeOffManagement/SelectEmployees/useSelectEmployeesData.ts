@@ -115,6 +115,7 @@ export function useSelectEmployeesData(companyId: string, excludeUuids?: Set<str
 
   return {
     filteredEmployees,
+    eligibleEmployees,
     eligibleCount: eligibleEmployees.length,
     selectedUuids,
     searchValue,

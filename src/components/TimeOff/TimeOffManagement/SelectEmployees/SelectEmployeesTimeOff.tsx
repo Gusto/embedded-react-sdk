@@ -104,6 +104,7 @@ function SelectEmployeesTimeOffInner({
   const queryClient = useQueryClient()
   const {
     filteredEmployees,
+    eligibleEmployees,
     selectedUuids,
     searchValue,
     pagination,
@@ -147,8 +148,8 @@ function SelectEmployeesTimeOffInner({
   )
 
   const carryOverBalances = useMemo(
-    () => deriveCarryOverBalances(filteredEmployees, policyType),
-    [filteredEmployees, policyType],
+    () => deriveCarryOverBalances(eligibleEmployees, policyType),
+    [eligibleEmployees, policyType],
   )
 
   const [balances, setBalances] = useState<Record<string, string>>({})
