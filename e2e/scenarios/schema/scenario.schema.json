@@ -261,7 +261,24 @@
               "type": "string",
               "enum": ["Fixed", "Hourly"]
             },
-            "hourly_rate": { "type": "string" }
+            "hourly_rate": { "type": "string" },
+            "address": {
+              "type": "object",
+              "additionalProperties": true,
+              "description": "If present, runner PUTs the contractor's address before applying onboarding_status. Required to make a contractor payment-ready.",
+              "required": ["street_1", "city", "state", "zip"],
+              "properties": {
+                "street_1": { "type": "string" },
+                "street_2": { "type": "string" },
+                "city": { "type": "string" },
+                "state": { "type": "string", "minLength": 2, "maxLength": 2 },
+                "zip": { "type": "string" }
+              }
+            },
+            "onboarding_status": {
+              "type": "string",
+              "description": "Target contractor onboarding_status. When set to 'onboarding_completed', the runner marks the contractor as fully onboarded so they appear in the payment list."
+            }
           }
         }
       ]

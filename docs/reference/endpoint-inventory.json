@@ -822,6 +822,10 @@
     "Employee.DashboardFlow": {
       "endpoints": [
         {
+          "method": "DELETE",
+          "path": "/v1/compensations/:compensationId"
+        },
+        {
           "method": "GET",
           "path": "/v1/employees/:employeeId"
         },
@@ -859,6 +863,7 @@
         }
       ],
       "variables": [
+        "compensationId",
         "employeeId",
         "employeeUuid",
         "jobId",
@@ -1962,6 +1967,10 @@
     "EmployeeManagement.DashboardFlow": {
       "endpoints": [
         {
+          "method": "DELETE",
+          "path": "/v1/compensations/:compensationId"
+        },
+        {
           "method": "GET",
           "path": "/v1/employees/:employeeId"
         },
@@ -1999,6 +2008,7 @@
         }
       ],
       "variables": [
+        "compensationId",
         "employeeId",
         "employeeUuid",
         "jobId",

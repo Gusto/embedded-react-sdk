@@ -1,4 +1,16 @@
-import { defineConfig, devices } from '@playwright/test'
+import { defineConfig, devices, type ReporterDescription } from '@playwright/test'
+
+// See playwright.demo.config.ts for the full reporter rationale. We mirror
+// the stack here so the MSW-mode default config produces the same live
+// stdout signal and PR annotations as the demo/local configs.
+const reporters: ReporterDescription[] = [
+  ['list'],
+  ['html'],
+  ['./e2e/reporters/scenario-reporter.ts'],
+]
+if (process.env.GITHUB_ACTIONS === 'true') {
+  reporters.push(['github'])
+}
 
 export default defineConfig({
   testDir: './e2e/tests',
@@ -6,7 +18,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: [['html'], ['./e2e/reporters/scenario-reporter.ts']],
+  reporter: reporters,
   timeout: 60_000,
   expect: {
     timeout: 10_000,

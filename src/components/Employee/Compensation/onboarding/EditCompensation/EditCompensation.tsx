@@ -216,11 +216,13 @@ function FormBody({
         />
       )}
 
-      <JobFields.Title
-        label={t('jobTitle')}
-        validationMessages={{ REQUIRED: t('validations.title') }}
-        formHookResult={jobForm}
-      />
+      {JobFields.Title && (
+        <JobFields.Title
+          label={t('jobTitle')}
+          validationMessages={{ REQUIRED: t('validations.title') }}
+          formHookResult={jobForm}
+        />
+      )}
 
       {CompFields.FlsaStatus && (
         <CompFields.FlsaStatus

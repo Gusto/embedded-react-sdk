@@ -1,5 +1,55 @@
 # Changelog
 
+## [0.45.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.44.2...v0.45.0) (2026-05-21)
+
+### Features & Enhancements
+
+- Employee Dashboard Compensation card now displays a multi-job table for nonexempt employees, a Deductions block, pending compensation change alerts, and an empty state with an Add Job CTA ([#1872](https://github.com/Gusto/embedded-react-sdk/issues/1872), [#1877](https://github.com/Gusto/embedded-react-sdk/issues/1877), [#1878](https://github.com/Gusto/embedded-react-sdk/issues/1878), [#1886](https://github.com/Gusto/embedded-react-sdk/issues/1886))
+- Compensation editing is now routed through `DashboardFlow`, so users can edit job and pay details directly from the Employee Dashboard ([#1880](https://github.com/Gusto/embedded-react-sdk/issues/1880))
+- Add `DocumentManager` block to `DashboardFlow` for viewing and managing employee documents from the dashboard ([#1852](https://github.com/Gusto/embedded-react-sdk/issues/1852))
+- Payment method sub-flows (add/edit bank account, update payment method) are now available inside `DashboardFlow` ([#1821](https://github.com/Gusto/embedded-react-sdk/issues/1821))
+- Download paystub PDFs from the Employee Dashboard Job and Pay tab ([#1842](https://github.com/Gusto/embedded-react-sdk/issues/1842))
+- Migrate `EmployeeDeductions` to hook-based architecture, exposing `useEmployeeDeductions` for headless usage ([#1845](https://github.com/Gusto/embedded-react-sdk/issues/1845))
+- Add `useClientPagination` hook for in-memory list pagination ([#1885](https://github.com/Gusto/embedded-react-sdk/issues/1885))
+
+### Fixes
+
+- Lazy-load Employee Dashboard tab data to reduce first-paint API requests ([#1890](https://github.com/Gusto/embedded-react-sdk/issues/1890))
+- Stop sending `effective_date` in the compensation PUT body, which caused the API to reject updates in certain scenarios ([#1876](https://github.com/Gusto/embedded-react-sdk/issues/1876))
+- Fix check-payment warning alert rendering in `PayrollOverview` ([#1884](https://github.com/Gusto/embedded-react-sdk/issues/1884))
+- Display human-readable field names instead of raw `snake_case` keys in API error messages ([#1799](https://github.com/Gusto/embedded-react-sdk/issues/1799))
+- Apply consistent spacing and supporting text styling to component headers ([#1847](https://github.com/Gusto/embedded-react-sdk/issues/1847))
+- Fix back navigation from add-employees returning to the wrong step ([#1792](https://github.com/Gusto/embedded-react-sdk/issues/1792))
+- Add missing confirmation dialog when adding employees to a policy in standalone mode ([#1798](https://github.com/Gusto/embedded-react-sdk/issues/1798))
+- Add loading and disabled states to buttons across the Time Off flow to prevent double-submits ([#1812](https://github.com/Gusto/embedded-react-sdk/issues/1812))
+- Cap policy settings number inputs at 20,000 and validate waiting period as an integer ([#1791](https://github.com/Gusto/embedded-react-sdk/issues/1791), [#1879](https://github.com/Gusto/embedded-react-sdk/issues/1879))
+- Show a validation error when no policy type is selected ([#1802](https://github.com/Gusto/embedded-react-sdk/issues/1802))
+- Always dismiss the delete-policy dialog after the API call completes, even on error ([#1793](https://github.com/Gusto/embedded-react-sdk/issues/1793))
+- Clear stale policy reset date when switching accrual method to unlimited or per-anniversary-year ([#1801](https://github.com/Gusto/embedded-react-sdk/issues/1801), [#1850](https://github.com/Gusto/embedded-react-sdk/issues/1850))
+- Send `accrualRateUnit: null` for non-hourly accrual methods so the API does not reject the request ([#1786](https://github.com/Gusto/embedded-react-sdk/issues/1786))
+- Hide the balance column for unlimited accrual policies where it is not applicable ([#1789](https://github.com/Gusto/embedded-react-sdk/issues/1789), [#1822](https://github.com/Gusto/embedded-react-sdk/issues/1822))
+- Filter non-numeric input on balance fields and default starting balance to "0" for new employees ([#1790](https://github.com/Gusto/embedded-react-sdk/issues/1790), [#1788](https://github.com/Gusto/embedded-react-sdk/issues/1788))
+- Include employee balances in the wizard-mode add-employees API call so balances are not lost on submit ([#1787](https://github.com/Gusto/embedded-react-sdk/issues/1787))
+- Send a separate PUT with `complete: true` after the final wizard step to properly mark the policy as complete ([#1800](https://github.com/Gusto/embedded-react-sdk/issues/1800))
+- Display a friendly error message for `LIMIT_VIOLATION_MAX_HOURS` and de-duplicate repeated balance error messages on the policy settings screen ([#1831](https://github.com/Gusto/embedded-react-sdk/issues/1831), [#1851](https://github.com/Gusto/embedded-react-sdk/issues/1851))
+- Surface errors inline inside the edit-balance modal instead of silently failing ([#1794](https://github.com/Gusto/embedded-react-sdk/issues/1794))
+- Show the policy name in the heading when editing a time off policy ([#1811](https://github.com/Gusto/embedded-react-sdk/issues/1811))
+- Show the reassignment warning only when selected employees actually have existing PTO balances ([#1797](https://github.com/Gusto/embedded-react-sdk/issues/1797))
+- Show an empty-state CTA when a policy has no employees assigned ([#1813](https://github.com/Gusto/embedded-react-sdk/issues/1813))
+- Show job title column in the policy detail employee table ([#1795](https://github.com/Gusto/embedded-react-sdk/issues/1795))
+- Sort policies alphabetically by name for a stable display order ([#1796](https://github.com/Gusto/embedded-react-sdk/issues/1796))
+- Fix responsive layout of policy detail cards so they follow the Tabs mode correctly ([#1810](https://github.com/Gusto/embedded-react-sdk/issues/1810))
+- Constrain starting balance input width and center-align the empty search state in the employee table ([#1819](https://github.com/Gusto/embedded-react-sdk/issues/1819), [#1817](https://github.com/Gusto/embedded-react-sdk/issues/1817))
+- Use `DetailViewLayout` back button with secondary variant for visual consistency ([#1808](https://github.com/Gusto/embedded-react-sdk/issues/1808))
+
+### Chores & Maintenance
+
+- Refactor `EditCompensation` to consume `useJobForm` + `useCompensationForm` hooks and organize compensation files by journey ([#1736](https://github.com/Gusto/embedded-react-sdk/issues/1736), [#1860](https://github.com/Gusto/embedded-react-sdk/issues/1860))
+- Refactor `useSplitPaymentsForm` to align with canonical hook patterns ([#1866](https://github.com/Gusto/embedded-react-sdk/issues/1866))
+- Bump `dompurify` from 3.4.2 to 3.4.5 (security fix) ([#1816](https://github.com/Gusto/embedded-react-sdk/issues/1816), [#1881](https://github.com/Gusto/embedded-react-sdk/issues/1881))
+- Bump runtime dependencies (`i18next`, `react-hook-form`, `react-i18next`)
+- Bump dev dependencies (`@storybook/*`, `vitest`, `@vitest/coverage-v8`, `typescript-eslint`, `lint-staged`, `tsx`, `@commitlint/*`, `@vitejs/plugin-react-swc`, `eslint-plugin-storybook`, `@types/react`)
+
 ## [0.44.2](https://github.com/Gusto/embedded-react-sdk/compare/v0.44.1...v0.44.2) (2026-05-12)
 
 ### Fixes

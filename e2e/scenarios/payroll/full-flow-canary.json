@@ -1,0 +1,15 @@
+{
+  "$schema": "../../schema/scenario.schema.json",
+  "name": "Full-flow payroll canary",
+  "description": "Single onboarded company isolated from other payroll specs (the canary serial suite mutates state across its 5 tests: regular payroll, off-cycle bonus, off-cycle correction, transition, dismissal). The base demo react_sdk_demo_company_onboarded already provides 12+ onboarded seed employees and an open biweekly pay period, so we only need to overlay our own biweekly pay schedule (canary 04 reads scenario.paySchedule.uuid to drive the schedule-change API). No location/employee decorations are required — the canaries operate on demo seed employees throughout (canary 05 explicitly excludes scenario-decorated employees via pickOnboardedEmployeeId).",
+  "domain": "payroll",
+  "baseDemo": "react_sdk_demo_company_onboarded",
+  "decorations": {
+    "paySchedule": {
+      "frequency": "Every other week",
+      "anchor_pay_date": "{{relative:+14d:Friday}}",
+      "anchor_end_of_pay_period": "{{relative:+13d}}"
+    }
+  },
+  "expectedContext": ["companyId", "paySchedule.uuid"]
+}

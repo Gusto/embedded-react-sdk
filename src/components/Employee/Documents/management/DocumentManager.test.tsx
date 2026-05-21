@@ -76,6 +76,25 @@ describe('DocumentManager', () => {
 
       expect(screen.queryByLabelText('Signature')).not.toBeInTheDocument()
     })
+
+    it('does not nest an anchor inside the download CTA anchor', async () => {
+      const pdfHref = 'https://example.com/form-w4.pdf'
+      server.use(
+        handleGetEmployeeFormPdf(() => HttpResponse.json({ ...formPdf, document_url: pdfHref })),
+      )
+
+      const { container } = renderWithProviders(<DocumentManager {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(container.querySelector(`a[href="${pdfHref}"][download]`)).not.toBeNull()
+      })
+
+      // Every anchor must not contain another anchor — nested <a> elements
+      // are invalid HTML and trigger a React hydration error.
+      Array.from(container.querySelectorAll('a')).forEach(anchor => {
+        expect(anchor.querySelector('a')).toBeNull()
+      })
+    })
   })
 
   describe('signing mode (requiresSigning = true)', () => {

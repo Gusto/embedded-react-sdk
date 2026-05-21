@@ -1,0 +1,30 @@
+{
+  "$schema": "../../schema/scenario.schema.json",
+  "name": "Full-flow employee canary",
+  "description": "Single onboarded company shared across the employee canary suite. The suite drives this company through admin employee onboarding (create+onboard a fresh hire), employee self-onboarding (drive a pre-seeded unfinished employee through the self-serve flow), and termination (terminate a pre-onboarded seed philosopher via the TerminationFlow). One decorated `selfee` employee is needed for self-onboarding; admin onboarding creates its own employee; termination picks a seed employee from the demo because the scenario runner cannot fully transition a decorated employee into onboarding_completed (missing SSN/DOB/W-4/state-tax setup).",
+  "domain": "employee",
+  "baseDemo": "react_sdk_demo_company_onboarded",
+  "decorations": {
+    "locations": [
+      {
+        "key": "hq",
+        "street_1": "700 Canary Way",
+        "city": "San Francisco",
+        "state": "CA",
+        "zip": "94105",
+        "filing_address": true,
+        "mailing_address": true
+      }
+    ],
+    "employees": [
+      {
+        "key": "selfee",
+        "first_name": "Selma",
+        "last_name": "Selfonboard",
+        "email": "selma-canary+{{ts}}@example.com",
+        "work_address": { "locationKey": "hq" }
+      }
+    ]
+  },
+  "expectedContext": ["companyId", "locationIds.hq", "employeeIds.selfee"]
+}

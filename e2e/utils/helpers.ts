@@ -1,11 +1,17 @@
+import { randomInt } from 'node:crypto'
 import type { Page } from '@playwright/test'
 
-// noboost: Math.random() is fine here — these are fake SSNs for e2e test form fills, not real secrets
 export function generateUniqueSSN(): string {
-  const area = Math.floor(Math.random() * 665) + 1 // noboost
-  const group = Math.floor(Math.random() * 98) + 1 // noboost
-  const serial = Math.floor(Math.random() * 9998) + 1 // noboost
+  const area = randomInt(1, 666)
+  const group = randomInt(1, 99)
+  const serial = randomInt(1, 9999)
   return `${area.toString().padStart(3, '0')}${group.toString().padStart(2, '0')}${serial.toString().padStart(4, '0')}`
+}
+
+export function generateUniqueEIN(): string {
+  const prefix = randomInt(10, 100)
+  const suffix = randomInt(1000000, 10000000)
+  return `${prefix}-${suffix}`
 }
 
 export async function fillDate(
@@ -13,10 +19,15 @@ export async function fillDate(
   name: string,
   date: { month: number; day: number; year: number },
 ) {
+  // Anchored at the start so the matcher won't catch sibling segments when
+  // the group name itself contains "day" / "month" / "year" (e.g. "Last day
+  // of work", "Birthday"). React Aria's spinbutton accessible names are
+  // "month, <group>", "day, <group>", "year, <group>" — so /^month/ etc.
+  // uniquely identifies each segment.
   const dateGroup = page.getByRole('group', { name })
-  await dateGroup.getByRole('spinbutton', { name: /^month/ }).fill(String(date.month))
-  await dateGroup.getByRole('spinbutton', { name: /^day/ }).fill(String(date.day))
-  await dateGroup.getByRole('spinbutton', { name: /^year/ }).fill(String(date.year))
+  await dateGroup.getByRole('spinbutton', { name: /^month/i }).fill(String(date.month))
+  await dateGroup.getByRole('spinbutton', { name: /^day/i }).fill(String(date.day))
+  await dateGroup.getByRole('spinbutton', { name: /^year/i }).fill(String(date.year))
 }
 
 /**
@@ -35,6 +46,69 @@ export async function fillDate(
  * page surfaces as the meaningful landmark-assertion failure rather than a
  * generic "Loading did not complete."
  */
+// US federal holidays that the demo backend's "business day" validation
+// rejects for direct-deposit payment dates. Only encoding dates that the
+// canary specs could realistically hit (current calendar year + the next
+// one to cover roll-over). Revisit this list each January.
+//
+// TODO(2027): refresh entries; remove 2026 once it's fully in the past.
+const US_FEDERAL_HOLIDAYS_ISO: ReadonlySet<string> = new Set([
+  '2026-01-01', // New Year's Day
+  '2026-01-19', // MLK Day
+  '2026-02-16', // Presidents Day
+  '2026-05-25', // Memorial Day
+  '2026-06-19', // Juneteenth
+  '2026-07-03', // Independence Day (observed, July 4 is Saturday)
+  '2026-09-07', // Labor Day
+  '2026-10-12', // Columbus Day
+  '2026-11-11', // Veterans Day
+  '2026-11-26', // Thanksgiving
+  '2026-11-27', // Day after Thanksgiving (banking holiday)
+  '2026-12-25', // Christmas Day
+  '2027-01-01', // New Year's Day
+  '2027-01-18', // MLK Day
+  '2027-02-15', // Presidents Day
+  '2027-05-31', // Memorial Day
+  '2027-06-18', // Juneteenth (observed, June 19 is Saturday)
+  '2027-07-05', // Independence Day (observed, July 4 is Sunday)
+  '2027-09-06', // Labor Day
+  '2027-10-11', // Columbus Day
+  '2027-11-11', // Veterans Day
+  '2027-11-25', // Thanksgiving
+  '2027-11-26', // Day after Thanksgiving
+  '2027-12-24', // Christmas Day (observed, Dec 25 is Saturday)
+])
+
+function toIsoDate(date: Date): string {
+  return date.toISOString().slice(0, 10)
+}
+
+function isBusinessDay(date: Date): boolean {
+  const day = date.getUTCDay()
+  if (day === 0 || day === 6) return false
+  return !US_FEDERAL_HOLIDAYS_ISO.has(toIsoDate(date))
+}
+
+/**
+ * Return the first business day (weekday + not a US federal holiday) that is
+ * at least `minOffsetDays` after `from`. Operates in UTC to keep results
+ * stable regardless of the test runner's local timezone — the demo backend
+ * also validates against UTC dates.
+ *
+ * Designed for payment / pay-date pickers where the backend rejects
+ * non-business days. Without this, a +14 offset that lands on Memorial Day
+ * surfaces as a non-actionable form-validation alert in CI.
+ */
+export function nextBusinessDay(from: Date, minOffsetDays: number): Date {
+  const candidate = new Date(
+    Date.UTC(from.getUTCFullYear(), from.getUTCMonth(), from.getUTCDate() + minOffsetDays),
+  )
+  while (!isBusinessDay(candidate)) {
+    candidate.setUTCDate(candidate.getUTCDate() + 1)
+  }
+  return candidate
+}
+
 export async function waitForLoadingComplete(page: Page, timeout = 30_000) {
   const suspenseFallback = page.getByRole('region', { name: /^loading/i })
   await suspenseFallback

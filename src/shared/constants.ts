@@ -36,6 +36,7 @@ export const employeeEvents = {
   EMPLOYEE_COMPENSATION_UPDATED: 'employee/compensations/updated',
   EMPLOYEE_COMPENSATION_DONE: 'employee/compensations/done',
   EMPLOYEE_COMPENSATION_CANCEL: 'employee/compensations/cancel',
+  EMPLOYEE_COMPENSATION_CHANGE_CANCELLED: 'employee/compensations/changeCancelled',
   EMPLOYEE_COMPENSATION_RETURN_TO_LIST: 'employee/compensations/returnToList',
   EMPLOYEE_JOB_ADD: 'employee/job/add',
   EMPLOYEE_JOB_ADD_ANOTHER: 'employee/job/addAnother',
@@ -70,6 +71,7 @@ export const employeeEvents = {
   EMPLOYEE_ONBOARDING_DOCUMENTS_CONFIG_UPDATED: 'employee/onboardingDocumentsConfig/updated',
   EMPLOYEE_DOCUMENTS_DONE: 'employee/documents/done',
   EMPLOYEE_REHIRE: 'employee/rehire',
+  EMPLOYEE_DASHBOARD_TAB_CHANGE: 'employee/dashboard/tabChange',
 } as const
 
 export const companyEvents = {

@@ -1,0 +1,21 @@
+{
+  "$schema": "../../schema/scenario.schema.json",
+  "name": "Fresh company with HQ location",
+  "description": "Fresh react_sdk_demo company decorated with a single HQ location (filing + mailing). This is the shared baseline for every company-onboarding spec that needs the Locations step to have a row to continue past — covers the canary suite, basic onboarding specs, deep onboarding, step navigation, and bank-account empty-state. Specs requiring more exotic setup (filing/mailing split, already-onboarded company) use their own dedicated scenarios.",
+  "domain": "company",
+  "baseDemo": "react_sdk_demo",
+  "decorations": {
+    "locations": [
+      {
+        "key": "hq",
+        "street_1": "100 Test St",
+        "city": "San Francisco",
+        "state": "CA",
+        "zip": "94105",
+        "filing_address": true,
+        "mailing_address": true
+      }
+    ]
+  },
+  "expectedContext": ["companyId", "locationIds.hq"]
+}

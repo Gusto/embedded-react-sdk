@@ -1,54 +1,41 @@
-import { useState, useCallback } from 'react'
+import { Suspense, useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
-import { payrollsGetPayStub } from '@gusto/embedded-api/funcs/payrollsGetPayStub'
 import type { Job } from '@gusto/embedded-api/models/components/job'
-import { useErrorBoundary } from 'react-error-boundary'
 import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
-import {
-  useEmployeeBasicDetails,
-  useEmployeeCompensation,
-  useEmployeeTaxes,
-  useEmployeeForms,
-} from './hooks'
-import { BasicDetailsView } from './BasicDetailsView'
+import type { GetV1EmployeesEmployeeIdFederalTaxesResponse } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidfederaltaxes'
+import { BasicDetailsViewWithData } from './BasicDetailsView'
 import { JobAndPayView } from './JobAndPayView'
-import { TaxesView } from './TaxesView'
-import { DocumentsView } from './DocumentsView'
+import { TaxesViewWithData } from './TaxesView'
+import { DocumentsViewWithData } from './DocumentsView'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/components/Base/Base'
-import { readableStreamToBlob } from '@/helpers/readableStreamToBlob'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 
-type DashboardTab = 'basicDetails' | 'jobAndPay' | 'taxes' | 'documents'
+type EmployeeFederalTax = NonNullable<
+  GetV1EmployeesEmployeeIdFederalTaxesResponse['employeeFederalTax']
+>
+
+export type DashboardTab = 'basicDetails' | 'jobAndPay' | 'taxes' | 'documents'
 
 export interface DashboardProps extends BaseComponentInterface<'Employee.Dashboard'> {
   employeeId: string
+  selectedTab?: DashboardTab
 }
 
-function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
+function DashboardRoot({
+  employeeId,
+  dictionary,
+  onEvent,
+  selectedTab: controlledTab,
+}: DashboardProps) {
   useI18n('Employee.Dashboard')
   useComponentDictionary('Employee.Dashboard', dictionary)
   const { t } = useTranslation('Employee.Dashboard')
   const Components = useComponentContext()
-  const gustoEmbedded = useGustoEmbeddedContext()
-  const { showBoundary } = useErrorBoundary()
-  const [selectedTab, setSelectedTab] = useState<DashboardTab>('basicDetails')
-  const [downloadingPayrollUuids, setDownloadingPayrollUuids] = useState<ReadonlySet<string>>(
-    () => new Set(),
-  )
-
-  const basicDetails = useEmployeeBasicDetails({ employeeId })
-  const compensation = useEmployeeCompensation({ employeeId })
-  const taxes = useEmployeeTaxes({ employeeId })
-  const forms = useEmployeeForms({ employeeId })
-
-  // Derive the inputs these callbacks depend on up here so all hooks are
-  // declared before the early-return below (rules-of-hooks). The data fields
-  // are only present on the non-loading variants of each hook result.
-  const employeeFederalTax = !taxes.isLoading ? taxes.data.employeeFederalTax : undefined
+  const [internalTab, setInternalTab] = useState<DashboardTab>('basicDetails')
+  const selectedTab = controlledTab ?? internalTab
 
   const handleEditBasicDetails = useCallback(() => {
     onEvent(componentEvents.EMPLOYEE_UPDATE, { employeeId })
@@ -88,71 +75,12 @@ function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
     [onEvent],
   )
 
-  const handlePaystubDownload = useCallback(
-    async (payrollUuid: string) => {
-      const newWindow = window.open('', '_blank')
-      const loadingMessage = t('jobAndPay.paystubs.downloadLoadingMessage')
-      if (newWindow) {
-        // Avoid the user staring at about:blank while we fetch the PDF. The
-        // navigation to the Blob URL below replaces this document.
-        const doc = newWindow.document
-        doc.title = loadingMessage
-        const style = doc.createElement('style')
-        style.textContent =
-          'body{font-family:system-ui,-apple-system,sans-serif;display:flex;align-items:center;' +
-          'justify-content:center;height:100vh;margin:0;color:#444;gap:12px}' +
-          '.spinner{width:20px;height:20px;border:2px solid #ccc;border-top-color:#444;' +
-          'border-radius:50%;animation:spin .8s linear infinite}' +
-          '@keyframes spin{to{transform:rotate(360deg)}}'
-        doc.head.appendChild(style)
-        const spinner = doc.createElement('div')
-        spinner.className = 'spinner'
-        spinner.setAttribute('aria-hidden', 'true')
-        const label = doc.createElement('span')
-        label.textContent = loadingMessage
-        doc.body.replaceChildren(spinner, label)
-      }
-      setDownloadingPayrollUuids(prev => {
-        const next = new Set(prev)
-        next.add(payrollUuid)
-        return next
-      })
-      try {
-        const response = await payrollsGetPayStub(gustoEmbedded, {
-          payrollId: payrollUuid,
-          employeeId,
-        })
-        if (!response.value?.responseStream) {
-          throw new Error(t('jobAndPay.paystubs.downloadError'))
-        }
-        const pdfBlob = await readableStreamToBlob(response.value.responseStream, 'application/pdf')
-        const url = URL.createObjectURL(pdfBlob)
-        if (newWindow) {
-          newWindow.location.href = url
-        }
-        URL.revokeObjectURL(url)
-      } catch (err) {
-        if (newWindow) {
-          newWindow.close()
-        }
-        showBoundary(err instanceof Error ? err : new Error(String(err)))
-      } finally {
-        setDownloadingPayrollUuids(prev => {
-          const next = new Set(prev)
-          next.delete(payrollUuid)
-          return next
-        })
-      }
+  const handleEditFederalTaxes = useCallback(
+    (federalTaxes: EmployeeFederalTax | undefined) => {
+      onEvent(componentEvents.EMPLOYEE_FEDERAL_TAXES_EDIT, { employeeId, federalTaxes })
     },
-    [gustoEmbedded, employeeId, t, showBoundary],
+    [onEvent, employeeId],
   )
-
-  const handleEditFederalTaxes = useCallback(() => {
-    onEvent(componentEvents.EMPLOYEE_FEDERAL_TAXES_EDIT, {
-      employeeId,
-      federalTaxes: employeeFederalTax,
-    })
-  }, [onEvent, employeeId, employeeFederalTax])
 
   const handleEditStateTaxes = useCallback(() => {
     onEvent(componentEvents.EMPLOYEE_STATE_TAXES_EDIT, { employeeId })
@@ -164,33 +92,6 @@ function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
     },
     [onEvent, employeeId],
   )
-
-  // Collect all errors from hooks
-  const allErrors = [
-    ...basicDetails.errorHandling.errors,
-    ...compensation.errorHandling.errors,
-    ...taxes.errorHandling.errors,
-    ...forms.errorHandling.errors,
-  ]
-
-  // Show loading for initial data fetch
-  if (basicDetails.isLoading || compensation.isLoading || taxes.isLoading || forms.isLoading) {
-    return <BaseLayout isLoading error={allErrors} />
-  }
-
-  const { employee, currentHomeAddress, currentWorkAddress } = basicDetails.data
-  const { jobs, primaryFlsaStatus, payStubs } = compensation.data
-  const { employeeStateTaxesList } = taxes.data
-  const { formList } = forms.data
-
-  // Pagination props
-  const payStubsPagination = compensation.pagination.payStubs
-
-  // Tab-specific loading states based on isPending
-  const isLoadingBasicDetails = basicDetails.status.isPending
-  const isLoadingJobAndPay = compensation.status.isPending
-  const isLoadingTaxes = taxes.status.isPending
-  const isLoadingDocuments = forms.status.isPending
 
   const tabs = [
     {
@@ -216,69 +117,61 @@ function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
   ]
 
   return (
-    <BaseLayout error={allErrors}>
-      <Flex flexDirection="column" gap={32}>
-        <Components.Tabs
-          tabs={tabs}
-          selectedId={selectedTab}
-          onSelectionChange={id => {
-            setSelectedTab(id as DashboardTab)
-          }}
-          aria-label={t('tabsLabel')}
-        />
+    <Flex flexDirection="column" gap={32}>
+      <Components.Tabs
+        tabs={tabs}
+        selectedId={selectedTab}
+        onSelectionChange={id => {
+          const next = id as DashboardTab
+          setInternalTab(next)
+          onEvent(componentEvents.EMPLOYEE_DASHBOARD_TAB_CHANGE, { tab: next })
+        }}
+        aria-label={t('tabsLabel')}
+      />
 
-        <Flex flexDirection="column" gap={24}>
-          {selectedTab === 'basicDetails' && (
-            <BasicDetailsView
-              employee={employee}
-              currentHomeAddress={currentHomeAddress}
-              currentWorkAddress={currentWorkAddress}
-              isLoading={isLoadingBasicDetails}
+      <Flex flexDirection="column" gap={24}>
+        {selectedTab === 'basicDetails' && (
+          <Suspense fallback={<BaseLayout isLoading />}>
+            <BasicDetailsViewWithData
+              employeeId={employeeId}
               onEditBasicDetails={handleEditBasicDetails}
               onManageHomeAddress={handleManageHomeAddress}
               onManageWorkAddress={handleManageWorkAddress}
             />
-          )}
+          </Suspense>
+        )}
 
-          {selectedTab === 'jobAndPay' && (
+        {selectedTab === 'jobAndPay' && (
+          <Suspense fallback={<BaseLayout isLoading />}>
             <JobAndPayView
               employeeId={employeeId}
-              jobs={jobs}
-              primaryFlsaStatus={primaryFlsaStatus}
-              payStubs={payStubs}
-              payStubsPagination={payStubsPagination}
-              isLoading={isLoadingJobAndPay}
               onEvent={onEvent}
               onEditCompensation={handleEditCompensation}
               onAddJob={handleAddJob}
               onAddAnotherJob={handleAddAnotherJob}
               onAddDeduction={handleAddDeduction}
               onEditDeduction={handleEditDeduction}
-              onPaystubDownload={handlePaystubDownload}
-              downloadingPayrollUuids={downloadingPayrollUuids}
             />
-          )}
+          </Suspense>
+        )}
 
-          {selectedTab === 'taxes' && (
-            <TaxesView
-              federalTaxes={employeeFederalTax}
-              stateTaxes={employeeStateTaxesList}
-              isLoading={isLoadingTaxes}
+        {selectedTab === 'taxes' && (
+          <Suspense fallback={<BaseLayout isLoading />}>
+            <TaxesViewWithData
+              employeeId={employeeId}
               onEditFederalTaxes={handleEditFederalTaxes}
               onEditStateTaxes={handleEditStateTaxes}
             />
-          )}
+          </Suspense>
+        )}
 
-          {selectedTab === 'documents' && (
-            <DocumentsView
-              forms={formList}
-              isLoading={isLoadingDocuments}
-              onViewForm={handleViewForm}
-            />
-          )}
-        </Flex>
+        {selectedTab === 'documents' && (
+          <Suspense fallback={<BaseLayout isLoading />}>
+            <DocumentsViewWithData employeeId={employeeId} onViewForm={handleViewForm} />
+          </Suspense>
+        )}
       </Flex>
-    </BaseLayout>
+    </Flex>
   )
 }
 

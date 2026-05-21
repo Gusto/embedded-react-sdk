@@ -2,9 +2,11 @@ import { useTranslation } from 'react-i18next'
 import type { GetV1EmployeesEmployeeIdFederalTaxesResponse } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidfederaltaxes'
 import type { GetV1EmployeesEmployeeIdStateTaxesResponse } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidstatetaxes'
 import type { EmployeeStateTaxQuestion } from '@gusto/embedded-api/models/components/employeestatetaxquestion'
+import { useEmployeeTaxes } from './hooks'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Loading } from '@/components/Common'
+import { BaseLayout } from '@/components/Base/Base'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 
 type EmployeeFederalTax = NonNullable<
@@ -17,25 +19,63 @@ type EmployeeStateTax = NonNullable<
 export interface TaxesViewProps {
   federalTaxes?: EmployeeFederalTax
   stateTaxes?: EmployeeStateTax[]
+  /** Loads both cards. Override per-card via `isFederalTaxesLoading` /
+   *  `isStateTaxesLoading` when the queries resolve independently. */
   isLoading?: boolean
+  isFederalTaxesLoading?: boolean
+  isStateTaxesLoading?: boolean
   onEditFederalTaxes?: () => void
   onEditStateTaxes?: () => void
+}
+
+export interface TaxesViewWithDataProps {
+  employeeId: string
+  /** Receives the federal-tax record so the parent can preserve the
+   *  existing event payload (`{ employeeId, federalTaxes }`). */
+  onEditFederalTaxes?: (federalTaxes: EmployeeFederalTax | undefined) => void
+  onEditStateTaxes?: () => void
+}
+
+/**
+ * Tab-mounted container for the Taxes tab. Owns the `useEmployeeTaxes`
+ * fetch so federal/state tax requests only fire when the tab is mounted.
+ * Federal and state queries run independently — each card paints its
+ * own skeleton + content as data arrives.
+ */
+export function TaxesViewWithData({
+  employeeId,
+  onEditFederalTaxes,
+  onEditStateTaxes,
+}: TaxesViewWithDataProps) {
+  const taxes = useEmployeeTaxes({ employeeId })
+
+  const federalTaxes = taxes.data.employeeFederalTax
+  return (
+    <BaseLayout error={taxes.errorHandling.errors}>
+      <TaxesView
+        federalTaxes={federalTaxes}
+        stateTaxes={taxes.data.employeeStateTaxesList}
+        isFederalTaxesLoading={taxes.status.isFederalTaxesLoading}
+        isStateTaxesLoading={taxes.status.isStateTaxesLoading}
+        onEditFederalTaxes={() => onEditFederalTaxes?.(federalTaxes)}
+        onEditStateTaxes={onEditStateTaxes}
+      />
+    </BaseLayout>
+  )
 }
 
 export function TaxesView({
   federalTaxes,
   stateTaxes,
   isLoading = false,
+  isFederalTaxesLoading = isLoading,
+  isStateTaxesLoading = isLoading,
   onEditFederalTaxes,
   onEditStateTaxes,
 }: TaxesViewProps) {
   const { t } = useTranslation('Employee.Dashboard')
   const Components = useComponentContext()
   const formatCurrency = useNumberFormatter('currency')
-
-  if (isLoading) {
-    return <Loading />
-  }
 
   // Helper function to format state tax answer values
   const formatStateTaxAnswer = (
@@ -89,7 +129,11 @@ export function TaxesView({
           <Components.BoxHeader
             title={t('taxes.federal.title')}
             action={
-              <Components.Button variant="secondary" onClick={onEditFederalTaxes}>
+              <Components.Button
+                variant="secondary"
+                onClick={onEditFederalTaxes}
+                isDisabled={isFederalTaxesLoading}
+              >
                 {t('taxes.federal.editCta')}
               </Components.Button>
             }
@@ -97,7 +141,9 @@ export function TaxesView({
         }
       >
         <Flex flexDirection="column" gap={16}>
-          {federalTaxes && (
+          {isFederalTaxesLoading ? (
+            <Loading />
+          ) : federalTaxes ? (
             <Flex flexDirection="column" gap={12}>
               {federalTaxes.filingStatus && (
                 <Flex flexDirection="column" gap={0}>
@@ -163,7 +209,7 @@ export function TaxesView({
                 </Flex>
               )}
             </Flex>
-          )}
+          ) : null}
         </Flex>
       </Components.Box>
 
@@ -172,7 +218,11 @@ export function TaxesView({
           <Components.BoxHeader
             title={t('taxes.state.title')}
             action={
-              <Components.Button variant="secondary" onClick={onEditStateTaxes}>
+              <Components.Button
+                variant="secondary"
+                onClick={onEditStateTaxes}
+                isDisabled={isStateTaxesLoading}
+              >
                 {t('taxes.state.editCta')}
               </Components.Button>
             }
@@ -180,7 +230,9 @@ export function TaxesView({
         }
       >
         <Flex flexDirection="column" gap={16}>
-          {stateTaxes && stateTaxes.length > 0 ? (
+          {isStateTaxesLoading ? (
+            <Loading />
+          ) : stateTaxes && stateTaxes.length > 0 ? (
             <Flex flexDirection="column" gap={24}>
               {stateTaxes.map((stateTax, index) => (
                 <Flex key={stateTax.state || index} flexDirection="column" gap={16}>

@@ -1,6 +1,7 @@
 import { transition, reduce, state } from 'robot3'
 import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
 import type { Job } from '@gusto/embedded-api/models/components/job'
+import type { DashboardTab } from './Dashboard'
 import {
   DashboardViewContextual,
   HomeAddressContextual,
@@ -13,7 +14,7 @@ import {
   DocumentManagerContextual,
   DeductionFormContextual,
   AddJobPlaceholderContextual,
-  EditCompensationPlaceholderContextual,
+  EditCompensationContextual,
   AddAnotherJobPlaceholderContextual,
   type DashboardContextInterface,
 } from './DashboardComponents'
@@ -24,6 +25,7 @@ type EventPayloads = {
   [componentEvents.EMPLOYEE_VIEW_FORM_TO_SIGN]: { employeeId: string; formId: string }
   [componentEvents.EMPLOYEE_DEDUCTION_EDIT]: Garnishment
   [componentEvents.EMPLOYEE_COMPENSATION_CREATE]: { employeeId: string; job: Job }
+  [componentEvents.EMPLOYEE_DASHBOARD_TAB_CHANGE]: { tab: DashboardTab }
 }
 
 const returnToIndex = reduce(
@@ -171,7 +173,7 @@ export const dashboardStateMachine = {
           ev: MachineEventType<EventPayloads, typeof componentEvents.EMPLOYEE_COMPENSATION_CREATE>,
         ): DashboardContextInterface => ({
           ...ctx,
-          component: EditCompensationPlaceholderContextual,
+          component: EditCompensationContextual,
           header: { type: 'minimal' },
           currentJob: ev.payload.job,
           successAlert: null,
@@ -250,6 +252,19 @@ export const dashboardStateMachine = {
         }),
       ),
     ),
+    transition(
+      componentEvents.EMPLOYEE_DASHBOARD_TAB_CHANGE,
+      'index',
+      reduce(
+        (
+          ctx: DashboardContextInterface,
+          ev: MachineEventType<EventPayloads, typeof componentEvents.EMPLOYEE_DASHBOARD_TAB_CHANGE>,
+        ): DashboardContextInterface => ({
+          ...ctx,
+          selectedTab: ev.payload.tab,
+        }),
+      ),
+    ),
   ),
   homeAddress: state<MachineTransition>(transition(componentEvents.CANCEL, 'index', returnToIndex)),
   workAddress: state<MachineTransition>(transition(componentEvents.CANCEL, 'index', returnToIndex)),
@@ -294,6 +309,7 @@ export const dashboardStateMachine = {
   ),
   addJob: state<MachineTransition>(transition(componentEvents.CANCEL, 'index', returnToIndex)),
   editCompensation: state<MachineTransition>(
+    transition(componentEvents.EMPLOYEE_COMPENSATION_DONE, 'index', returnToIndex),
     transition(componentEvents.CANCEL, 'index', returnToIndex),
   ),
   addAnotherJob: state<MachineTransition>(

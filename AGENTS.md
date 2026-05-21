@@ -89,6 +89,17 @@ Import paths:
 
 Hook naming: `use<Resource><Action>Suspense` (queries), `use<Resource><Action>Mutation` (mutations)
 
+#### Auto-invalidation on mutation success
+
+The `QueryClient` produced by `createSdkQueryClient` (in `src/contexts/ApiProvider/createSdkQueryClient.ts`) sets a global mutation default: on any successful mutation under the `['@gusto/embedded-api']` key, it invalidates **every** SDK query. Both `ApiProvider` (production) and `GustoTestProvider` (tests) use this factory, so the behavior is identical in both environments.
+
+Implications when writing SDK code:
+
+- **Do not call `queryClient.invalidateQueries(...)` after a successful `@gusto/embedded-api` mutation.** It's redundant — the global `onSuccess` already invalidated the entire SDK namespace. Just `await mutateAsync(...)` and the next render's queries refetch automatically.
+- This is why `usePaymentMethodList`, `useEmployeeCompensation`, etc. don't manually invalidate after their delete/update mutations.
+- If a partner brings their own `QueryClient` to `ApiProvider`, the defaults are **not** applied to it — they're responsible for matching the contract if they want this behavior. Don't paper over that with manual invalidation in hooks; treat it as their responsibility.
+- If you need to invalidate _more narrowly_ (e.g. you only want one query to refetch, not the whole namespace), that's a code smell — most likely the global invalidate is already doing what you want.
+
 ### Provider Stack
 
 ```

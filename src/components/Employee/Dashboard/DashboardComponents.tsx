@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import type { Job } from '@gusto/embedded-api/models/components/job'
-import { Dashboard } from './Dashboard'
+import { Dashboard, type DashboardTab } from './Dashboard'
 import { HomeAddress } from '@/components/Employee/HomeAddress/management/HomeAddress'
 import { WorkAddress } from '@/components/Employee/WorkAddress/management/WorkAddress'
 import { FederalTaxes } from '@/components/Employee/FederalTaxes/management/FederalTaxes'
@@ -10,6 +10,7 @@ import { BankForm } from '@/components/Employee/PaymentMethod/onboarding/BankFor
 import { SplitView } from '@/components/Employee/PaymentMethod/onboarding/SplitView'
 import { DocumentManager } from '@/components/Employee/Documents/management/DocumentManager'
 import { DeductionsForm } from '@/components/Employee/Deductions/DeductionsForm/DeductionsForm'
+import { ManagementEditCompensation } from '@/components/Employee/Compensation/management'
 import { useDeductionsList } from '@/components/Employee/Deductions/shared'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -34,12 +35,15 @@ export interface DashboardContextInterface extends FlowContextInterface {
   /** Set by the EMPLOYEE_DEDUCTION_EDIT transition; consumed by
    *  DeductionFormContextual to pre-populate the form. */
   editingDeductionId?: string
+  /** Persists the active Dashboard tab across sub-flows so Cancel/Back
+   *  returns to the originating tab instead of resetting to basic details. */
+  selectedTab?: DashboardTab
 }
 
 export function DashboardViewContextual() {
   useI18n('Employee.Dashboard')
   const { t } = useTranslation('Employee.Dashboard')
-  const { employeeId, onEvent, successAlert } = useFlow<DashboardContextInterface>()
+  const { employeeId, onEvent, successAlert, selectedTab } = useFlow<DashboardContextInterface>()
   const Components = useComponentContext()
 
   const alertLabels: Record<DashboardSuccessAlert, string> = {
@@ -63,7 +67,11 @@ export function DashboardViewContextual() {
           disableScrollIntoView
         />
       )}
-      <Dashboard employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
+      <Dashboard
+        employeeId={ensureRequired(employeeId)}
+        onEvent={onEvent}
+        selectedTab={selectedTab}
+      />
     </>
   )
 }
@@ -164,11 +172,18 @@ export function AddJobPlaceholderContextual() {
   return <Components.Heading as="h2">{t('compensationFlow.addJobTitle')}</Components.Heading>
 }
 
-export function EditCompensationPlaceholderContextual() {
-  useI18n('Employee.Dashboard')
-  const { t } = useTranslation('Employee.Dashboard')
-  const Components = useComponentContext()
-  return <Components.Heading as="h2">{t('compensationFlow.editTitle')}</Components.Heading>
+export function EditCompensationContextual() {
+  const { employeeId, currentJob, onEvent } = useFlow<DashboardContextInterface>()
+  return (
+    <ManagementEditCompensation
+      employeeId={ensureRequired(employeeId)}
+      jobId={ensureRequired(currentJob?.uuid)}
+      onEvent={onEvent}
+      onCancel={() => {
+        onEvent(componentEvents.CANCEL, null)
+      }}
+    />
+  )
 }
 
 export function AddAnotherJobPlaceholderContextual() {

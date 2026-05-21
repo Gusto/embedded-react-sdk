@@ -231,6 +231,58 @@ async function decorateContractors(
     })
 
     contractorIds[contractor.key] = created.uuid
+
+    if (contractor.address) {
+      log(`  Setting address for ${contractor.key}`)
+      await api.put(`/contractors/${created.uuid}/address`, {
+        street_1: contractor.address.street_1,
+        ...(contractor.address.street_2 ? { street_2: contractor.address.street_2 } : {}),
+        city: contractor.address.city,
+        state: contractor.address.state,
+        zip: contractor.address.zip,
+      })
+    }
+
+    if (contractor.onboarding_status) {
+      const onboardingStatus =
+        contractor.onboarding_status === 'completed'
+          ? 'onboarding_completed'
+          : contractor.onboarding_status
+
+      if (onboardingStatus === 'onboarding_completed') {
+        // The contractor's PUT /onboarding_status only allows the transition
+        // from `admin_onboarding_review` -> `onboarding_completed`. Reaching
+        // `admin_onboarding_review` requires every *required* onboarding step
+        // to be complete: basic_details (from create), compensation_details
+        // (from wage_type+rate on create), add_address (handled above), and
+        // payment_details. Set the payment method to `Check` so the contractor
+        // auto-advances into `admin_onboarding_review` before we attempt the
+        // final transition.
+        log(`  Setting payment method to Check for ${contractor.key}`)
+        try {
+          const paymentMethod = await api.get<{ version?: string }>(
+            `/contractors/${created.uuid}/payment_method`,
+          )
+          await api.put(`/contractors/${created.uuid}/payment_method`, {
+            type: 'Check',
+            version: paymentMethod.version,
+          })
+        } catch (error) {
+          log(`  Payment method update failed for ${contractor.key}: ${String(error)}`)
+        }
+      }
+
+      log(`  Setting onboarding status for ${contractor.key}: ${contractor.onboarding_status}`)
+      try {
+        await api.put(`/contractors/${created.uuid}/onboarding_status`, {
+          onboarding_status: onboardingStatus,
+        })
+      } catch (error) {
+        log(
+          `  Skipping onboarding status update for ${contractor.key}; API rejected status (${String(error)})`,
+        )
+      }
+    }
   }
 
   return contractorIds
@@ -285,6 +337,22 @@ interface PayrollStatus {
   processing_request?: { status: string }
 }
 
+async function pollUntil<T>(
+  fn: () => Promise<T | null>,
+  options: { maxWaitMs: number; initialDelayMs?: number; maxDelayMs?: number },
+): Promise<T | null> {
+  const start = Date.now()
+  let delay = options.initialDelayMs ?? 500
+  const cap = options.maxDelayMs ?? 2000
+  while (Date.now() - start < options.maxWaitMs) {
+    const result = await fn()
+    if (result !== null) return result
+    await new Promise(r => setTimeout(r, delay))
+    delay = Math.min(delay * 2, cap)
+  }
+  return null
+}
+
 async function processPayroll(
   api: ApiClient,
   companyId: string,
@@ -297,32 +365,47 @@ async function processPayroll(
   log(`  Calculating payroll ${payrollUuid}`)
   await api.put(`/companies/${companyId}/payrolls/${payrollUuid}/calculate`, {})
 
-  const MAX_POLL = 20
-  const POLL_INTERVAL_MS = 3000
+  // Previously this was 20 attempts * 3s = 60s per phase with a 3s pre-sleep
+  // on every iteration. The exponential backoff below keeps the same ~60s
+  // overall budget per phase but lets fast paths return in <1s instead of
+  // always paying the 3s pre-sleep.
+  const PHASE_BUDGET_MS = 60_000
 
-  for (let i = 0; i < MAX_POLL; i++) {
-    await new Promise(r => setTimeout(r, POLL_INTERVAL_MS))
-    const payroll = await api.get<PayrollStatus>(`/companies/${companyId}/payrolls/${payrollUuid}`)
-    if (payroll.processing_request?.status === 'calculate_success') {
-      log(`  Submitting payroll ${payrollUuid}`)
-      await api.put(`/companies/${companyId}/payrolls/${payrollUuid}/submit`, {})
-      break
-    }
-    if (payroll.processing_request?.status === 'calculate_failed') {
-      throw new Error(`Payroll ${payrollUuid} calculation failed`)
-    }
+  const calculated = await pollUntil(
+    async () => {
+      const payroll = await api.get<PayrollStatus>(
+        `/companies/${companyId}/payrolls/${payrollUuid}`,
+      )
+      if (payroll.processing_request?.status === 'calculate_failed') {
+        throw new Error(`Payroll ${payrollUuid} calculation failed`)
+      }
+      return payroll.processing_request?.status === 'calculate_success' ? payroll : null
+    },
+    { maxWaitMs: PHASE_BUDGET_MS },
+  )
+
+  if (!calculated) {
+    throw new Error(`Payroll ${payrollUuid} calculation timed out`)
   }
 
-  for (let i = 0; i < MAX_POLL; i++) {
-    await new Promise(r => setTimeout(r, POLL_INTERVAL_MS))
-    const payroll = await api.get<PayrollStatus>(`/companies/${companyId}/payrolls/${payrollUuid}`)
-    if (payroll.processed) {
-      log(`  Payroll ${payrollUuid} processed`)
-      return
-    }
+  log(`  Submitting payroll ${payrollUuid}`)
+  await api.put(`/companies/${companyId}/payrolls/${payrollUuid}/submit`, {})
+
+  const processed = await pollUntil(
+    async () => {
+      const payroll = await api.get<PayrollStatus>(
+        `/companies/${companyId}/payrolls/${payrollUuid}`,
+      )
+      return payroll.processed ? payroll : null
+    },
+    { maxWaitMs: PHASE_BUDGET_MS },
+  )
+
+  if (!processed) {
+    throw new Error(`Payroll ${payrollUuid} processing timed out`)
   }
 
-  throw new Error(`Payroll ${payrollUuid} processing timed out`)
+  log(`  Payroll ${payrollUuid} processed`)
 }
 
 async function decoratePayrolls(

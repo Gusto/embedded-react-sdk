@@ -78,6 +78,20 @@
     "yearly": "{{amount}}/yr",
     "paycheck": "{{amount}}/paycheck"
   },
+  "compensationRateFormats": {
+    "hourly": "{{amount}} per hour",
+    "weekly": "{{amount}} per week",
+    "monthly": "{{amount}} per month",
+    "yearly": "{{amount}} per year",
+    "paycheck": "{{amount}} per paycheck"
+  },
+  "compensationRateFormats": {
+    "hourly": "{{amount}} per hour",
+    "weekly": "{{amount}} per week",
+    "monthly": "{{amount}} per month",
+    "yearly": "{{amount}} per year",
+    "paycheck": "{{amount}} per paycheck"
+  },
   "validations": {
     "accountName": "Account name is required",
     "routingNumber": "Routing number should be a number (9 digits)",
