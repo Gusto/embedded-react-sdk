@@ -178,20 +178,24 @@ describe('HolidayPolicyDetail', () => {
 
       renderWithProviders(<HolidayPolicyDetail {...defaultProps} defaultTab="employees" />)
 
-      await waitFor(() => {
-        expect(screen.getByText('Person00 Roster')).toBeInTheDocument()
-      })
+      await screen.findByText('Person00 Roster')
 
       expect(screen.getByText('Person09 Roster')).toBeInTheDocument()
       expect(screen.queryByText('Person10 Roster')).not.toBeInTheDocument()
       expect(screen.queryByText('Person11 Roster')).not.toBeInTheDocument()
       expect(screen.getByTestId('pagination-control')).toBeInTheDocument()
 
-      await user.click(screen.getByRole('button', { name: 'Navigate to next page' }))
+      // Targeting the next-page button by data-testid skips an i18n round-trip
+      // and is robust against renaming the aria label. Use findByTestId so we
+      // poll for the pagination control to mount (the roster query resolves
+      // independently of the pagination control's render path under React 19's
+      // concurrent rendering).
+      await user.click(await screen.findByTestId('pagination-next'))
 
-      await waitFor(() => {
-        expect(screen.getByText('Person10 Roster')).toBeInTheDocument()
-      })
+      // findByText polls up to 5s on the slowest CI runs. The earlier waitFor
+      // approach used the default 1s timeout, which intermittently expired
+      // under coverage instrumentation + parallel test workload.
+      await screen.findByText('Person10 Roster', undefined, { timeout: 5000 })
       expect(screen.getByText('Person11 Roster')).toBeInTheDocument()
       expect(screen.queryByText('Person00 Roster')).not.toBeInTheDocument()
     })
@@ -209,21 +213,20 @@ describe('HolidayPolicyDetail', () => {
 
       renderWithProviders(<HolidayPolicyDetail {...defaultProps} defaultTab="employees" />)
 
-      await waitFor(() => {
-        expect(screen.getByText('Person00 Roster')).toBeInTheDocument()
-      })
+      await screen.findByText('Person00 Roster')
 
-      await user.click(screen.getByRole('button', { name: 'Navigate to next page' }))
+      await user.click(await screen.findByTestId('pagination-next'))
 
-      await waitFor(() => {
-        expect(screen.getByText('Person10 Roster')).toBeInTheDocument()
-      })
+      await screen.findByText('Person10 Roster', undefined, { timeout: 5000 })
 
       await user.type(screen.getByRole('searchbox'), 'Person00')
 
-      await waitFor(() => {
-        expect(screen.queryByText('Person10 Roster')).not.toBeInTheDocument()
-      })
+      await waitFor(
+        () => {
+          expect(screen.queryByText('Person10 Roster')).not.toBeInTheDocument()
+        },
+        { timeout: 5000 },
+      )
       expect(screen.getByText('Person00 Roster')).toBeInTheDocument()
       expect(screen.queryByText('Person11 Roster')).not.toBeInTheDocument()
     })
