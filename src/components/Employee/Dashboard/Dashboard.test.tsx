@@ -645,52 +645,52 @@ describe('Dashboard', () => {
     })
   })
 
+  type Compensation = {
+    uuid: string
+    version: string
+    payment_unit: string
+    flsa_status: string
+    job_uuid: string
+    effective_date: string
+    rate: string
+    title?: string
+    adjust_for_minimum_wage?: boolean
+    minimum_wages?: Array<{ uuid: string; wage: string }>
+  }
+
+  type JobFixture = {
+    uuid: string
+    version: string
+    employee_uuid: string
+    current_compensation_uuid: string
+    payment_unit: string
+    primary: boolean
+    title: string
+    compensations: Compensation[]
+    rate: string
+    hire_date: string
+  }
+
+  const buildEmployeeWithJobs = async (jobs: JobFixture[]): Promise<Record<string, unknown>> => {
+    const base = (await getFixture('get-v1-employees')) as Record<string, unknown>
+    return { ...base, jobs }
+  }
+
+  const overrideEmployee = (employee: Record<string, unknown>) => {
+    server.use(handleGetEmployee(() => HttpResponse.json(employee)))
+  }
+
+  const goToJobAndPayTab = async (user: ReturnType<typeof userEvent.setup>) => {
+    await waitFor(() => {
+      expect(screen.getByText('Legal name')).toBeTruthy()
+    })
+    await user.click(screen.getByRole('tab', { name: 'Job and pay' }))
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: 'Compensation' })).toBeInTheDocument()
+    })
+  }
+
   describe('Compensation pending changes', () => {
-    type Compensation = {
-      uuid: string
-      version: string
-      payment_unit: string
-      flsa_status: string
-      job_uuid: string
-      effective_date: string
-      rate: string
-      title?: string
-      adjust_for_minimum_wage?: boolean
-      minimum_wages?: Array<{ uuid: string; wage: string }>
-    }
-
-    type JobFixture = {
-      uuid: string
-      version: string
-      employee_uuid: string
-      current_compensation_uuid: string
-      payment_unit: string
-      primary: boolean
-      title: string
-      compensations: Compensation[]
-      rate: string
-      hire_date: string
-    }
-
-    const buildEmployeeWithJobs = async (jobs: JobFixture[]): Promise<Record<string, unknown>> => {
-      const base = (await getFixture('get-v1-employees')) as Record<string, unknown>
-      return { ...base, jobs }
-    }
-
-    const overrideEmployee = (employee: Record<string, unknown>) => {
-      server.use(handleGetEmployee(() => HttpResponse.json(employee)))
-    }
-
-    const goToJobAndPayTab = async (user: ReturnType<typeof userEvent.setup>) => {
-      await waitFor(() => {
-        expect(screen.getByText('Legal name')).toBeTruthy()
-      })
-      await user.click(screen.getByRole('tab', { name: 'Job and pay' }))
-      await waitFor(() => {
-        expect(screen.getByRole('heading', { name: 'Compensation' })).toBeInTheDocument()
-      })
-    }
-
     const baseJob = (
       overrides: Partial<JobFixture> = {},
       compensations: Compensation[] = [],
@@ -1187,51 +1187,6 @@ describe('Dashboard', () => {
   })
 
   describe('Compensation pending badge (future-dated new job)', () => {
-    type Compensation = {
-      uuid: string
-      version: string
-      payment_unit: string
-      flsa_status: string
-      job_uuid: string
-      effective_date: string
-      rate: string
-      title?: string
-      adjust_for_minimum_wage?: boolean
-      minimum_wages?: Array<{ uuid: string; wage: string }>
-    }
-
-    type JobFixture = {
-      uuid: string
-      version: string
-      employee_uuid: string
-      current_compensation_uuid: string
-      payment_unit: string
-      primary: boolean
-      title: string
-      compensations: Compensation[]
-      rate: string
-      hire_date: string
-    }
-
-    const buildEmployeeWithJobs = async (jobs: JobFixture[]): Promise<Record<string, unknown>> => {
-      const base = (await getFixture('get-v1-employees')) as Record<string, unknown>
-      return { ...base, jobs }
-    }
-
-    const overrideEmployee = (employee: Record<string, unknown>) => {
-      server.use(handleGetEmployee(() => HttpResponse.json(employee)))
-    }
-
-    const goToJobAndPayTab = async (user: ReturnType<typeof userEvent.setup>) => {
-      await waitFor(() => {
-        expect(screen.getByText('Legal name')).toBeTruthy()
-      })
-      await user.click(screen.getByRole('tab', { name: 'Job and pay' }))
-      await waitFor(() => {
-        expect(screen.getByRole('heading', { name: 'Compensation' })).toBeInTheDocument()
-      })
-    }
-
     const pendingJob = (overrides: Partial<JobFixture> = {}): JobFixture => ({
       uuid: 'job-pending',
       version: 'v1',
