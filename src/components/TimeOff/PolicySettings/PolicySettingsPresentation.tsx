@@ -1,12 +1,26 @@
 import { useId } from 'react'
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
 import type { PolicySettingsFormData, PolicySettingsPresentationProps } from './PolicySettingsTypes'
 import styles from './PolicySettings.module.scss'
 import { Flex, ActionsLayout, NumberInputField, SwitchField } from '@/components/Common'
 import { Form as HtmlForm } from '@/components/Common/Form'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
+
+const PolicySettingsSchema = z.object({
+  accrualMaximumEnabled: z.boolean(),
+  accrualMaximum: z.number().optional(),
+  balanceMaximumEnabled: z.boolean(),
+  balanceMaximum: z.number().optional(),
+  carryOverLimitEnabled: z.boolean(),
+  carryOverLimit: z.number().optional(),
+  waitingPeriodEnabled: z.boolean(),
+  waitingPeriod: z.number().int().optional(),
+  paidOutOnTermination: z.boolean(),
+})
 
 export function PolicySettingsPresentation({
   accrualMethod,
@@ -28,6 +42,7 @@ export function PolicySettingsPresentation({
   const waitingPeriodInputId = useId()
 
   const formMethods = useForm<PolicySettingsFormData>({
+    resolver: zodResolver(PolicySettingsSchema),
     defaultValues: {
       accrualMaximumEnabled: false,
       balanceMaximumEnabled: false,
@@ -159,14 +174,7 @@ export function PolicySettingsPresentation({
                       min={0}
                       max={20000}
                       maximumFractionDigits={0}
-                      rules={{
-                        validate: (value: number) => {
-                          if (waitingPeriodEnabled && !isNaN(value) && !Number.isInteger(value)) {
-                            return t('policySettings.errors.waitingPeriodMustBeWholeNumber')
-                          }
-                          return true
-                        },
-                      }}
+                      errorMessage={t('policySettings.errors.waitingPeriodMustBeWholeNumber')}
                     />
                     <div className={styles.toggleCell}>
                       <SwitchField
