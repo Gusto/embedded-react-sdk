@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.46.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.45.0...v0.46.0) (2026-05-21)
+
+### Features & Enhancements
+
+- Add `EditCompensation` block for steady-state compensation edits from the Employee Dashboard ([#1861](https://github.com/Gusto/embedded-react-sdk/issues/1861))
+
+### Fixes
+
+- Fix React hydration error in the Employee Dashboard document viewer caused by the "download this document" link rendering as two nested `<a>` elements ([#1893](https://github.com/Gusto/embedded-react-sdk/issues/1893))
+- Preserve the selected `DashboardFlow` tab when entering and leaving a sub-flow (Add bank account, Add deduction, Edit Federal/State taxes, View document); Cancel/Back now returns to the originating tab instead of resetting to Basic details ([#1893](https://github.com/Gusto/embedded-react-sdk/issues/1893))
+- Show the compensation effective date instead of the hire date on the Employee Dashboard Job and Pay tab ([#1896](https://github.com/Gusto/embedded-react-sdk/issues/1896))
+- Validate the time-off policy waiting period as an integer; reject decimal and non-numeric values ([#1863](https://github.com/Gusto/embedded-react-sdk/issues/1863))
+- Replace Suspense-blocking queries on the Employee Dashboard with per-section skeleton states for faster perceived loading ([#1892](https://github.com/Gusto/embedded-react-sdk/issues/1892))
+
 ## [0.45.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.44.2...v0.45.0) (2026-05-21)
 
 ### Features & Enhancements
