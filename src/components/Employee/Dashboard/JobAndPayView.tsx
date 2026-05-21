@@ -120,7 +120,7 @@ export function JobAndPayView({
 
   const handlePaystubDownload = useCallback(
     async (payrollUuid: string) => {
-      const newWindow = window.open('', '_blank')
+      const newWindow = window.open('', '_blank', 'noopener,noreferrer')
       const loadingMessage = t('jobAndPay.paystubs.downloadLoadingMessage')
       if (newWindow) {
         // Avoid the user staring at about:blank while we fetch the PDF. The
