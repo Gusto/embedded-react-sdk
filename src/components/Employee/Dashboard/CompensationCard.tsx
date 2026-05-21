@@ -39,6 +39,8 @@ export function CompensationCard({
 
   const [isReviewOpen, setIsReviewOpen] = useState(false)
 
+  const currentComp = job?.compensations?.find(c => c.uuid === job.currentCompensationUuid)
+
   const hasPendingChanges = pendingChanges.length > 0
   const showSummaryAlert = hasMultipleJobs && pendingChanges.length > 1
   const showInlineAlert = hasPendingChanges && !showSummaryAlert
@@ -153,12 +155,14 @@ export function CompensationCard({
                 </Flex>
               )}
 
-              {job.hireDate && (
+              {currentComp?.effectiveDate && (
                 <Flex flexDirection="column" gap={0}>
                   <Components.Text variant="supporting">
-                    {t('jobAndPay.compensation.startDate')}
+                    {t('jobAndPay.compensation.effectiveDate')}
                   </Components.Text>
-                  <Components.Text>{formatDateLongWithYear(job.hireDate)}</Components.Text>
+                  <Components.Text>
+                    {formatDateLongWithYear(currentComp.effectiveDate)}
+                  </Components.Text>
                 </Flex>
               )}
             </Flex>
