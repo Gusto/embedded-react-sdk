@@ -17,18 +17,25 @@ type EmployeeFederalTax = NonNullable<
   GetV1EmployeesEmployeeIdFederalTaxesResponse['employeeFederalTax']
 >
 
-type DashboardTab = 'basicDetails' | 'jobAndPay' | 'taxes' | 'documents'
+export type DashboardTab = 'basicDetails' | 'jobAndPay' | 'taxes' | 'documents'
 
 export interface DashboardProps extends BaseComponentInterface<'Employee.Dashboard'> {
   employeeId: string
+  selectedTab?: DashboardTab
 }
 
-function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
+function DashboardRoot({
+  employeeId,
+  dictionary,
+  onEvent,
+  selectedTab: controlledTab,
+}: DashboardProps) {
   useI18n('Employee.Dashboard')
   useComponentDictionary('Employee.Dashboard', dictionary)
   const { t } = useTranslation('Employee.Dashboard')
   const Components = useComponentContext()
-  const [selectedTab, setSelectedTab] = useState<DashboardTab>('basicDetails')
+  const [internalTab, setInternalTab] = useState<DashboardTab>('basicDetails')
+  const selectedTab = controlledTab ?? internalTab
 
   const handleEditBasicDetails = useCallback(() => {
     onEvent(componentEvents.EMPLOYEE_UPDATE, { employeeId })
@@ -115,7 +122,9 @@ function DashboardRoot({ employeeId, dictionary, onEvent }: DashboardProps) {
         tabs={tabs}
         selectedId={selectedTab}
         onSelectionChange={id => {
-          setSelectedTab(id as DashboardTab)
+          const next = id as DashboardTab
+          setInternalTab(next)
+          onEvent(componentEvents.EMPLOYEE_DASHBOARD_TAB_CHANGE, { tab: next })
         }}
         aria-label={t('tabsLabel')}
       />

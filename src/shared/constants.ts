@@ -71,6 +71,7 @@ export const employeeEvents = {
   EMPLOYEE_ONBOARDING_DOCUMENTS_CONFIG_UPDATED: 'employee/onboardingDocumentsConfig/updated',
   EMPLOYEE_DOCUMENTS_DONE: 'employee/documents/done',
   EMPLOYEE_REHIRE: 'employee/rehire',
+  EMPLOYEE_DASHBOARD_TAB_CHANGE: 'employee/dashboard/tabChange',
 } as const
 
 export const companyEvents = {
