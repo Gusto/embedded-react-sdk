@@ -1478,7 +1478,9 @@ export interface EmployeeDashboard{
 "jobTitle":string;
 "payType":string;
 "effectiveDate":string;
+"status":string;
 };
+"pendingStatus":string;
 "deleteJobDialog":{
 "title":string;
 "description":string;

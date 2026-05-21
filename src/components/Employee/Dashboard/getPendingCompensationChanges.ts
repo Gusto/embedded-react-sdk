@@ -23,6 +23,12 @@ export interface PendingCompensationChange {
   effectiveDate: string
   jobTitle: string | null
   details: PendingChangeDetail[]
+  /**
+   * True when the job has no current (on-or-before-today) compensation —
+   * i.e., the job itself hasn't started yet. The UI renders a "Pending"
+   * badge rather than a change alert in this case.
+   */
+  isNewJob: boolean
 }
 
 const startOfLocalDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate())
@@ -160,6 +166,7 @@ export function getPendingCompensationChanges(
         effectiveDate: future.effectiveDate!,
         jobTitle: job.title,
         details,
+        isNewJob: baseline === null,
       })
     }
   }
