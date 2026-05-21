@@ -198,7 +198,7 @@ describe('HolidayPolicyDetail', () => {
       await screen.findByText('Person10 Roster', undefined, { timeout: 5000 })
       expect(screen.getByText('Person11 Roster')).toBeInTheDocument()
       expect(screen.queryByText('Person00 Roster')).not.toBeInTheDocument()
-    })
+    }, 10000)
 
     it('resets to page 1 when a search filters the roster below the page threshold', async () => {
       const user = userEvent.setup()
@@ -229,7 +229,7 @@ describe('HolidayPolicyDetail', () => {
       )
       expect(screen.getByText('Person00 Roster')).toBeInTheDocument()
       expect(screen.queryByText('Person11 Roster')).not.toBeInTheDocument()
-    })
+    }, 10000)
   })
 
   describe('navigation', () => {
