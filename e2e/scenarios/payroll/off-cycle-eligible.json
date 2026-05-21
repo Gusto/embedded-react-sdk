@@ -1,7 +1,7 @@
 {
   "$schema": "../../schema/scenario.schema.json",
-  "name": "Off-cycle eligible (one processed payroll)",
-  "description": "Company with one processed regular payroll so off-cycle is allowed.",
+  "name": "Off-cycle landing surface",
+  "description": "Onboarded company used by off-cycle.spec.ts to assert payroll-landing tabs and either the pay-period column or the blocker fallback. The two consuming tests don't actually drive an off-cycle payroll, don't read employees/paySchedule/payrollIds from ScenarioContext, and don't assert processed history — so the previous 'one processed regular payroll' decoration is removed. The runner could never satisfy that decoration anyway because the demo company is missing tax/W-4/SSN data, so the calculate step always 422'd with payroll_blocker:missing_forms and the runner skipped the rest of processPayroll.",
   "domain": "payroll",
   "baseDemo": "react_sdk_demo_company_onboarded",
   "decorations": {
@@ -31,14 +31,7 @@
       "frequency": "Every other week",
       "anchor_pay_date": "{{relative:+14d:Friday}}",
       "anchor_end_of_pay_period": "{{relative:+13d}}"
-    },
-    "payrolls": [
-      {
-        "key": "history-1",
-        "type": "regular",
-        "status": "processed"
-      }
-    ]
+    }
   },
   "expectedContext": ["companyId", "employeeIds.alice"]
 }

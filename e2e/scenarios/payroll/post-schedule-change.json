@@ -1,7 +1,7 @@
 {
   "$schema": "../../schema/scenario.schema.json",
-  "name": "Post schedule change (transition pay period)",
-  "description": "Company with processed payroll history and a schedule change creating a transition pay period.",
+  "name": "Transition payroll surface",
+  "description": "Onboarded company with a biweekly pay schedule used by transition.spec.ts to drive the TransitionFlow UI. The fixture injects scenario.paySchedule.uuid into the page URL via localTestFixture's page.goto override, so the schedule decoration is load-bearing. Specs use hardcoded transition start/end dates from e2e/main.tsx — they don't rely on actual processed payroll history, so the previous 'history-1 with status=processed' decoration is removed. The runner could never satisfy that decoration anyway because the demo company is missing tax/W-4/SSN data, so the calculate step always 422'd with payroll_blocker:missing_forms and the runner skipped the rest of processPayroll.",
   "domain": "payroll",
   "baseDemo": "react_sdk_demo_company_onboarded",
   "decorations": {
@@ -31,14 +31,7 @@
       "frequency": "Every other week",
       "anchor_pay_date": "{{relative:+14d:Friday}}",
       "anchor_end_of_pay_period": "{{relative:+13d}}"
-    },
-    "payrolls": [
-      {
-        "key": "history-1",
-        "type": "regular",
-        "status": "processed"
-      }
-    ]
+    }
   },
   "expectedContext": ["companyId", "employeeIds.alice", "paySchedule.uuid"]
 }

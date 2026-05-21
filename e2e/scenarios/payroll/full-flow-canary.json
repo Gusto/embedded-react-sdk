@@ -34,20 +34,6 @@
           "last_name": "Canary",
           "email": "bob-canary+{{ts}}@example.com"
         }
-      },
-      {
-        "key": "carol",
-        "$ref": "../fragments/w2-salaried-employee.json",
-        "overrides": {
-          "first_name": "Carol",
-          "last_name": "Canary",
-          "email": "carol-canary+{{ts}}@example.com",
-          "compensation": {
-            "rate": "95000",
-            "payment_unit": "Year",
-            "flsa_status": "Exempt"
-          }
-        }
       }
     ],
     "paySchedule": {
@@ -61,7 +47,6 @@
     "locationIds.hq",
     "employeeIds.alice",
     "employeeIds.bob",
-    "employeeIds.carol",
     "paySchedule.uuid"
   ]
 }

@@ -30,8 +30,7 @@
         },
         "work_address": { "locationKey": "hq" },
         "job": { "title": "Engineer", "hire_date": "2024-01-15", "locationKey": "hq" },
-        "compensation": { "rate": "85000", "payment_unit": "Year", "flsa_status": "Exempt" },
-        "onboarding_status": "completed"
+        "compensation": { "rate": "85000", "payment_unit": "Year", "flsa_status": "Exempt" }
       },
       {
         "key": "bob",

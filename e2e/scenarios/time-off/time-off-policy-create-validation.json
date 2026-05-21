@@ -23,8 +23,7 @@
         "overrides": {
           "first_name": "Alice",
           "last_name": "PolicyCreate",
-          "email": "alice-policy-create+{{ts}}@example.com",
-          "onboarding_status": "onboarding_completed"
+          "email": "alice-policy-create+{{ts}}@example.com"
         }
       }
     ]
