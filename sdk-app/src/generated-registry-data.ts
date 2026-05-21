@@ -2,7 +2,6 @@
 // Run: npx tsx sdk-app/scripts/analyze-component-props.ts
 
 export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
-  'Company.AgentPaymentsFlow': ['companyId'],
   'Company.AssignSignatory': ['companyId'],
   'Company.BankAccount': ['companyId'],
   'Company.CreateSignatory': ['companyId'],

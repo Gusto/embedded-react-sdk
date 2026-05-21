@@ -260,11 +260,6 @@ export const timeOffEvents = {
   TIME_OFF_DELETE_POLICY_DONE: 'timeOff/deletePolicy/done',
 } as const
 
-export const agentPaymentsEvents = {
-  AGENT_PAYMENT_SELECTED: 'agentPayments/selected',
-  AGENT_PAYMENT_BACK: 'agentPayments/back',
-} as const
-
 export const componentEvents = {
   ROBOT_MACHINE_DONE: 'done', //This is internal Robot event thrown when machine transitions to final state
   ERROR: 'ERROR',
@@ -282,7 +277,6 @@ export const componentEvents = {
   ...offCycleEvents,
   ...terminationEvents,
   ...timeOffEvents,
-  ...agentPaymentsEvents,
 } as const
 
 export type EventType = (typeof componentEvents)[keyof typeof componentEvents]

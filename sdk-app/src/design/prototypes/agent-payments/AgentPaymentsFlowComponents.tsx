@@ -1,11 +1,10 @@
+import { agentPaymentsEvents } from './events'
 import { mockAgentPayments } from './agentPaymentsMockData'
 import { AgentPaymentsList } from './AgentPaymentsList'
 import { AgentPaymentDetail } from './AgentPaymentDetail'
 import type { BaseComponentInterface } from '@/components/Base'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
-import { agentPaymentsEvents } from '@/shared/constants'
 import { ensureRequired } from '@/helpers/ensureRequired'
-
 export interface AgentPaymentsFlowProps extends BaseComponentInterface {
   companyId: string
 }
@@ -22,7 +21,8 @@ export function AgentPaymentsListContextual() {
     <AgentPaymentsList
       payments={mockAgentPayments}
       onSelectPayment={uuid => {
-        onEvent(agentPaymentsEvents.AGENT_PAYMENT_SELECTED, uuid)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onEvent(agentPaymentsEvents.AGENT_PAYMENT_SELECTED as any, uuid)
       }}
     />
   )
@@ -39,7 +39,8 @@ export function AgentPaymentDetailContextual() {
     <AgentPaymentDetail
       payment={payment}
       onBack={() => {
-        onEvent(agentPaymentsEvents.AGENT_PAYMENT_BACK)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onEvent(agentPaymentsEvents.AGENT_PAYMENT_BACK as any)
       }}
     />
   )
