@@ -1,0 +1,94 @@
+{
+  "$schema": "../../schema/scenario.schema.json",
+  "name": "Payroll with multi-entity history setup",
+  "description": "Onboarded company with multiple locations, mixed workforce, configured pay schedule, and an off-cycle payroll draft.",
+  "domain": "payroll",
+  "baseDemo": "react_sdk_demo_company_onboarded",
+  "decorations": {
+    "locations": [
+      {
+        "key": "hq",
+        "street_1": "400 Mission St",
+        "city": "San Francisco",
+        "state": "CA",
+        "zip": "94105",
+        "filing_address": true,
+        "mailing_address": true
+      },
+      {
+        "key": "remote-site",
+        "street_1": "20 S 1st St",
+        "city": "San Jose",
+        "state": "CA",
+        "zip": "95113"
+      }
+    ],
+    "employees": [
+      {
+        "key": "alice",
+        "$ref": "../fragments/w2-salaried-employee.json",
+        "overrides": {
+          "first_name": "Alice",
+          "last_name": "PayrollComplex",
+          "email": "alice-payroll-complex+{{ts}}@example.com",
+          "work_address": {
+            "locationKey": "hq"
+          }
+        }
+      },
+      {
+        "key": "bob",
+        "$ref": "../fragments/w2-hourly-employee.json",
+        "overrides": {
+          "first_name": "Bob",
+          "last_name": "PayrollComplex",
+          "email": "bob-payroll-complex+{{ts}}@example.com",
+          "work_address": {
+            "locationKey": "remote-site"
+          },
+          "job": {
+            "title": "Field Technician",
+            "hire_date": "2024-04-10",
+            "locationKey": "remote-site"
+          }
+        }
+      }
+    ],
+    "contractors": [
+      {
+        "key": "casey",
+        "$ref": "../fragments/contractor-1099.json",
+        "overrides": {
+          "first_name": "Casey",
+          "last_name": "PayrollComplex",
+          "email": "casey-payroll-complex+{{ts}}@example.com"
+        }
+      }
+    ],
+    "paySchedule": {
+      "frequency": "Every other week",
+      "anchor_pay_date": "{{relative:+14d:Friday}}",
+      "anchor_end_of_pay_period": "{{relative:+13d}}"
+    },
+    "payrolls": [
+      {
+        "key": "off-cycle-preview",
+        "type": "off_cycle",
+        "status": "unprocessed",
+        "start_date": "{{relative:+20d}}",
+        "end_date": "{{relative:+20d}}",
+        "check_date": "{{relative:+21d}}"
+      }
+    ]
+  },
+  "expectedContext": [
+    "companyId",
+    "locationIds.hq",
+    "locationIds.remote-site",
+    "employeeIds.alice",
+    "employeeIds.bob",
+    "contractorIds.casey",
+    "paySchedule.uuid",
+    "payrollIds.off-cycle-preview"
+  ]
+}

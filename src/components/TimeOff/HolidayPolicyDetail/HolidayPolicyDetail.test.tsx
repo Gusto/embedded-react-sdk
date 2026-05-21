@@ -48,9 +48,22 @@ const mockEmployees = [
   },
 ]
 
+// 12 enrolled employees → exercises the 10-per-page client pager (2 pages).
+const manyEnrolledEmployees = Array.from({ length: 12 }, (_, i) => ({
+  uuid: `many-emp-${i}`,
+  first_name: `Person${i.toString().padStart(2, '0')}`,
+  last_name: 'Roster',
+  email: `person${i}@example.com`,
+  jobs: [{ uuid: `many-job-${i}`, primary: true, title: 'Engineer' }],
+}))
+
+const mockHolidayPayPolicyManyEmployees = {
+  ...mockHolidayPayPolicy,
+  employees: manyEnrolledEmployees.map(e => ({ uuid: e.uuid })),
+}
+
 describe('HolidayPolicyDetail', () => {
   const onEvent = vi.fn()
-  const user = userEvent.setup()
   const defaultProps = {
     companyId: 'company-123',
     onEvent,
@@ -124,6 +137,7 @@ describe('HolidayPolicyDetail', () => {
     })
 
     it('filters employees by search', async () => {
+      const user = userEvent.setup()
       renderWithProviders(<HolidayPolicyDetail {...defaultProps} defaultTab="employees" />)
 
       await waitFor(() => {
@@ -133,13 +147,94 @@ describe('HolidayPolicyDetail', () => {
       const searchInput = screen.getByRole('searchbox')
       await user.type(searchInput, 'Alice')
 
+      await waitFor(() => {
+        expect(screen.queryByText('Bob Jones')).not.toBeInTheDocument()
+      })
       expect(screen.getByText('Alice Smith')).toBeInTheDocument()
-      expect(screen.queryByText('Bob Jones')).not.toBeInTheDocument()
+    })
+  })
+
+  describe('pagination', () => {
+    it('does not render the pagination control when the policy roster is below the page threshold', async () => {
+      renderWithProviders(<HolidayPolicyDetail {...defaultProps} defaultTab="employees" />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice Smith')).toBeInTheDocument()
+      })
+
+      expect(screen.queryByTestId('pagination-control')).not.toBeInTheDocument()
+    })
+
+    it('paginates the roster at 10 per page and navigates between pages', async () => {
+      const user = userEvent.setup()
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:companyUuid/holiday_pay_policy`, () => {
+          return HttpResponse.json(mockHolidayPayPolicyManyEmployees)
+        }),
+        http.get(`${API_BASE_URL}/v1/companies/:companyId/employees`, () => {
+          return HttpResponse.json(manyEnrolledEmployees)
+        }),
+      )
+
+      renderWithProviders(<HolidayPolicyDetail {...defaultProps} defaultTab="employees" />)
+
+      await screen.findByText('Person00 Roster')
+
+      expect(screen.getByText('Person09 Roster')).toBeInTheDocument()
+      expect(screen.queryByText('Person10 Roster')).not.toBeInTheDocument()
+      expect(screen.queryByText('Person11 Roster')).not.toBeInTheDocument()
+      expect(screen.getByTestId('pagination-control')).toBeInTheDocument()
+
+      // Targeting the next-page button by data-testid skips an i18n round-trip
+      // and is robust against renaming the aria label. Use findByTestId so we
+      // poll for the pagination control to mount (the roster query resolves
+      // independently of the pagination control's render path under React 19's
+      // concurrent rendering).
+      await user.click(await screen.findByTestId('pagination-next'))
+
+      // findByText polls up to 5s on the slowest CI runs. The earlier waitFor
+      // approach used the default 1s timeout, which intermittently expired
+      // under coverage instrumentation + parallel test workload.
+      await screen.findByText('Person10 Roster', undefined, { timeout: 5000 })
+      expect(screen.getByText('Person11 Roster')).toBeInTheDocument()
+      expect(screen.queryByText('Person00 Roster')).not.toBeInTheDocument()
+    })
+
+    it('resets to page 1 when a search filters the roster below the page threshold', async () => {
+      const user = userEvent.setup()
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:companyUuid/holiday_pay_policy`, () => {
+          return HttpResponse.json(mockHolidayPayPolicyManyEmployees)
+        }),
+        http.get(`${API_BASE_URL}/v1/companies/:companyId/employees`, () => {
+          return HttpResponse.json(manyEnrolledEmployees)
+        }),
+      )
+
+      renderWithProviders(<HolidayPolicyDetail {...defaultProps} defaultTab="employees" />)
+
+      await screen.findByText('Person00 Roster')
+
+      await user.click(await screen.findByTestId('pagination-next'))
+
+      await screen.findByText('Person10 Roster', undefined, { timeout: 5000 })
+
+      await user.type(screen.getByRole('searchbox'), 'Person00')
+
+      await waitFor(
+        () => {
+          expect(screen.queryByText('Person10 Roster')).not.toBeInTheDocument()
+        },
+        { timeout: 5000 },
+      )
+      expect(screen.getByText('Person00 Roster')).toBeInTheDocument()
+      expect(screen.queryByText('Person11 Roster')).not.toBeInTheDocument()
     })
   })
 
   describe('navigation', () => {
     it('fires TIME_OFF_BACK_TO_LIST when back is clicked', async () => {
+      const user = userEvent.setup()
       renderWithProviders(<HolidayPolicyDetail {...defaultProps} defaultTab="holidays" />)
 
       await waitFor(() => {
@@ -154,6 +249,7 @@ describe('HolidayPolicyDetail', () => {
 
   describe('remove employee', () => {
     it('opens remove dialog and calls remove API on confirm', async () => {
+      const user = userEvent.setup()
       let removeCalled = false
       server.use(
         http.put(`${API_BASE_URL}/v1/companies/:companyUuid/holiday_pay_policy/remove`, () => {
@@ -193,6 +289,7 @@ describe('HolidayPolicyDetail', () => {
     })
 
     it('closes remove dialog on cancel', async () => {
+      const user = userEvent.setup()
       renderWithProviders(<HolidayPolicyDetail {...defaultProps} defaultTab="employees" />)
 
       await waitFor(() => {

@@ -30,18 +30,19 @@ function MyApp() {
 
 #### Events
 
-| Event type                   | Description                                              | Data                                                     |
-| ---------------------------- | -------------------------------------------------------- | -------------------------------------------------------- |
-| EMPLOYEE_UPDATE              | Fired when editing basic details                         | { employeeId: string }                                   |
-| EMPLOYEE_HOME_ADDRESS        | Fired when managing home address                         | { employeeId: string }                                   |
-| EMPLOYEE_WORK_ADDRESS        | Fired when managing work address                         | { employeeId: string }                                   |
-| EMPLOYEE_COMPENSATION_UPDATE | Fired when editing compensation                          | { employeeId: string, job: Job }                         |
-| EMPLOYEE_JOB_ADD             | Fired when adding a job from the empty Compensation card | { employeeId: string }                                   |
-| EMPLOYEE_BANK_ACCOUNT_CREATE | Fired when adding a bank account                         | { employeeId: string }                                   |
-| EMPLOYEE_DEDUCTION_ADD       | Fired when adding a deduction                            | { employeeId: string }                                   |
-| EMPLOYEE_FEDERAL_TAXES_EDIT  | Fired when editing federal taxes                         | { employeeId: string, federalTaxes: EmployeeFederalTax } |
-| EMPLOYEE_STATE_TAXES_EDIT    | Fired when editing state taxes                           | { employeeId: string, state: string }                    |
-| EMPLOYEE_VIEW_FORM_TO_SIGN   | Fired when viewing a form                                | { employeeId: string, formUuid: string }                 |
+| Event type                   | Description                                             | Data                                                     |
+| ---------------------------- | ------------------------------------------------------- | -------------------------------------------------------- |
+| EMPLOYEE_UPDATE              | Fired when editing basic details                        | { employeeId: string }                                   |
+| EMPLOYEE_HOME_ADDRESS        | Fired when managing home address                        | { employeeId: string }                                   |
+| EMPLOYEE_WORK_ADDRESS        | Fired when managing work address                        | { employeeId: string }                                   |
+| EMPLOYEE_COMPENSATION_CREATE | Fired when editing compensation                         | { employeeId: string, job: Job }                         |
+| EMPLOYEE_JOB_ADD             | Fired when adding a job (empty state or multi-job view) | { employeeId: string }                                   |
+| EMPLOYEE_JOB_DELETED         | Fired after a non-primary job is deleted from the table | { employeeId: string, jobId: string }                    |
+| EMPLOYEE_BANK_ACCOUNT_CREATE | Fired when adding a bank account                        | { employeeId: string }                                   |
+| EMPLOYEE_DEDUCTION_ADD       | Fired when adding a deduction                           | { employeeId: string }                                   |
+| EMPLOYEE_FEDERAL_TAXES_EDIT  | Fired when editing federal taxes                        | { employeeId: string, federalTaxes: EmployeeFederalTax } |
+| EMPLOYEE_STATE_TAXES_EDIT    | Fired when editing state taxes                          | { employeeId: string, state: string }                    |
+| EMPLOYEE_VIEW_FORM_TO_SIGN   | Fired when viewing a form                               | { employeeId: string, formUuid: string }                 |
 
 ## Using Dashboard Subcomponents
 
@@ -199,11 +200,9 @@ Displays employment and payment information organized into four sections:
 
 **Compensation:**
 
-- Job title
-- Employment type (Salaried, Hourly, etc.)
-- Wage/salary
-- Job start date
-- "Edit" CTA to modify compensation
+- When the employee has a single job: job title, employment type (Salaried, Hourly, etc.), wage/salary, and job start date, with an "Edit" CTA in the card header that emits `EMPLOYEE_COMPENSATION_CREATE` with the job.
+- When the employee has multiple jobs (only possible when the primary job is nonexempt): a table of all jobs with columns for job title (with the pay rate beneath), pay type, and start date. Each row has a menu containing **Edit** (always; emits `EMPLOYEE_COMPENSATION_CREATE` with the row's job) and, for non-primary jobs only, **Delete** (opens a confirmation dialog; on confirm, deletes the job and emits `EMPLOYEE_JOB_DELETED`). The card header has no top-level Edit CTA in this state.
+- An "Add another job" CTA renders in the card footer whenever the primary job is nonexempt (regardless of whether the employee currently has one job or many) and emits `EMPLOYEE_JOB_ADD`.
 
 **Payment:**
 

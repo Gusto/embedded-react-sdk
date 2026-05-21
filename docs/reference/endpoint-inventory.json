@@ -822,6 +822,10 @@
     "Employee.DashboardFlow": {
       "endpoints": [
         {
+          "method": "DELETE",
+          "path": "/v1/compensations/:compensationId"
+        },
+        {
           "method": "GET",
           "path": "/v1/employees/:employeeId"
         },
@@ -850,13 +854,19 @@
           "path": "/v1/employees/:employeeUuid/state_taxes"
         },
         {
+          "method": "DELETE",
+          "path": "/v1/jobs/:jobId"
+        },
+        {
           "method": "GET",
           "path": "/v1/payrolls/:payrollId/employees/:employeeId/pay_stub"
         }
       ],
       "variables": [
+        "compensationId",
         "employeeId",
         "employeeUuid",
+        "jobId",
         "payrollId"
       ]
     },
@@ -1965,6 +1975,10 @@
     "EmployeeManagement.DashboardFlow": {
       "endpoints": [
         {
+          "method": "DELETE",
+          "path": "/v1/compensations/:compensationId"
+        },
+        {
           "method": "GET",
           "path": "/v1/employees/:employeeId"
         },
@@ -1993,13 +2007,19 @@
           "path": "/v1/employees/:employeeUuid/state_taxes"
         },
         {
+          "method": "DELETE",
+          "path": "/v1/jobs/:jobId"
+        },
+        {
           "method": "GET",
           "path": "/v1/payrolls/:payrollId/employees/:employeeId/pay_stub"
         }
       ],
       "variables": [
+        "compensationId",
         "employeeId",
         "employeeUuid",
+        "jobId",
         "payrollId"
       ]
     },
@@ -2581,6 +2601,7 @@
     },
     "Employee.DashboardFlow": {
       "blocks": [
+        "Employee.Compensation",
         "Employee.Deductions",
         "Employee.HomeAddress",
         "Employee.PaymentMethod",
@@ -2633,6 +2654,7 @@
         "EmployeeManagement.Profile",
         "EmployeeManagement.StateTaxes",
         "EmployeeManagement.WorkAddress",
+        "EmployeeOnboarding.Compensation",
         "EmployeeOnboarding.Deductions",
         "EmployeeOnboarding.PaymentMethod"
       ]

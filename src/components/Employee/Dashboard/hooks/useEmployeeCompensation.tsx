@@ -1,11 +1,18 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
+import { useJobsAndCompensationsDeleteCompensationMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsDeleteCompensation'
 import { usePayrollsGetPayStubsSuspense } from '@gusto/embedded-api/react-query/payrollsGetPayStubs'
 import type { Job } from '@gusto/embedded-api/models/components/job'
 import type { GetV1EmployeesEmployeeUuidPayStubsResponse } from '@gusto/embedded-api/models/operations/getv1employeesemployeeuuidpaystubs'
+import {
+  getPendingCompensationChanges,
+  type PendingCompensationChange,
+} from '../getPendingCompensationChanges'
+import { derivePrimaryFlsaStatus } from '@/components/Employee/Compensation/shared/derivePrimaryFlsaStatus'
+import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { usePagination } from '@/hooks/usePagination/usePagination'
-import type { HookLoadingResult, BaseHookReady } from '@/partner-hook-utils/types'
+import type { BaseHookReady, HookLoadingResult, HookSubmitResult } from '@/partner-hook-utils/types'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
 type EmployeePayStub = NonNullable<
@@ -18,13 +25,22 @@ export interface UseEmployeeCompensationProps {
 
 interface UseEmployeeCompensationReady extends BaseHookReady<
   {
+    jobs: Job[]
     primaryJob?: Job
+    primaryFlsaStatus?: string
+    hasMultipleJobs: boolean
+    pendingChanges: PendingCompensationChange[]
     payStubs: EmployeePayStub[]
   },
-  { isPending: boolean }
+  { isPending: boolean; cancellingCompensationUuid: string | null }
 > {
   pagination: {
     payStubs?: PaginationControlProps
+  }
+  actions: {
+    cancelPendingChange: (
+      pendingChange: PendingCompensationChange,
+    ) => Promise<HookSubmitResult<unknown> | undefined>
   }
 }
 
@@ -37,22 +53,34 @@ export function useEmployeeCompensation({
     defaultItemsPerPage: 10,
   })
 
-  const employeeQuery = useEmployeesGetSuspense({ employeeId })
-  // Garnishments are no longer fetched here — the consumer (JobAndPayView)
-  // owns its own fetch via `useDeductionsList`, which also handles the
-  // soft-delete mutation + error surface for the deductions section.
+  const employeeQuery = useEmployeesGetSuspense({
+    employeeId,
+    include: ['all_compensations'],
+  })
   const payStubsQuery = usePayrollsGetPayStubsSuspense({
     employeeId,
     page: currentPage,
     per: itemsPerPage,
   })
+  const cancelCompensationMutation = useJobsAndCompensationsDeleteCompensationMutation()
+  const {
+    baseSubmitHandler,
+    error: submitError,
+    setError: setSubmitError,
+  } = useBaseSubmit('Employee.Dashboard.JobAndPay.Compensation')
 
   const employee = employeeQuery.data.employee
   const payStubsData = payStubsQuery.data
 
-  const primaryJob = useMemo(() => {
-    return employee?.jobs?.find(job => job.primary === true)
-  }, [employee?.jobs])
+  const jobs = useMemo(() => employee?.jobs ?? [], [employee?.jobs])
+  const primaryJob = useMemo(() => jobs.find(job => job.primary === true), [jobs])
+  const primaryFlsaStatus = useMemo(() => derivePrimaryFlsaStatus(jobs), [jobs])
+  const hasMultipleJobs = jobs.length > 1
+
+  const pendingChanges = useMemo(
+    () => getPendingCompensationChanges(employee?.jobs),
+    [employee?.jobs],
+  )
 
   const payStubs = payStubsData.employeePayStubsList || []
 
@@ -61,11 +89,35 @@ export function useEmployeeCompensation({
     return getPaginationProps(headers, payStubsQuery.isFetching)
   }, [payStubsData.httpMeta.response.headers, payStubsQuery.isFetching, getPaginationProps])
 
-  const isPending = employeeQuery.isFetching || payStubsQuery.isFetching
+  const cancellingCompensationUuid = cancelCompensationMutation.isPending
+    ? cancelCompensationMutation.variables.request.compensationId
+    : null
+
+  const cancelPendingChange = useCallback(
+    async (
+      pendingChange: PendingCompensationChange,
+    ): Promise<HookSubmitResult<unknown> | undefined> => {
+      let submitResult: HookSubmitResult<unknown> | undefined
+      await baseSubmitHandler(pendingChange, async ({ compensationUuid }) => {
+        const data = await cancelCompensationMutation.mutateAsync({
+          request: { compensationId: compensationUuid },
+        })
+        submitResult = { mode: 'update', data }
+      })
+      return submitResult
+    },
+    [baseSubmitHandler, cancelCompensationMutation],
+  )
+
+  const isPending =
+    employeeQuery.isFetching || payStubsQuery.isFetching || cancelCompensationMutation.isPending
 
   const isLoading = !employee && isPending
 
-  const errorHandling = composeErrorHandler([employeeQuery, payStubsQuery])
+  const errorHandling = composeErrorHandler([employeeQuery, payStubsQuery], {
+    submitError,
+    setSubmitError,
+  })
 
   if (isLoading) {
     return {
@@ -77,14 +129,22 @@ export function useEmployeeCompensation({
   return {
     isLoading: false,
     data: {
+      jobs,
       primaryJob,
+      primaryFlsaStatus,
+      hasMultipleJobs,
+      pendingChanges,
       payStubs,
     },
     status: {
       isPending,
+      cancellingCompensationUuid,
     },
     pagination: {
       payStubs: payStubsPagination,
+    },
+    actions: {
+      cancelPendingChange,
     },
     errorHandling,
   }

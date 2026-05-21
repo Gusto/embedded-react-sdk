@@ -14,6 +14,14 @@ export interface AlertProps {
    */
   children?: ReactNode
   /**
+   * Optional action node (e.g. a Button) rendered inline beside the label,
+   * before the dismiss button. Use this for compact alerts that need a single
+   * call-to-action next to the heading (e.g. a "Review" button summarising
+   * details available in a modal). Multi-line supporting copy should still
+   * pass through `children`.
+   */
+  action?: ReactNode
+  /**
    * Optional custom icon component to override the default icon
    */
   icon?: ReactNode

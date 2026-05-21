@@ -1,5 +1,6 @@
 import { transition, reduce, state } from 'robot3'
 import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
+import type { Job } from '@gusto/embedded-api/models/components/job'
 import {
   DashboardViewContextual,
   HomeAddressContextual,
@@ -11,6 +12,9 @@ import {
   PaymentSplitViewContextual,
   DocumentManagerContextual,
   DeductionFormContextual,
+  AddJobPlaceholderContextual,
+  EditCompensationPlaceholderContextual,
+  AddAnotherJobPlaceholderContextual,
   type DashboardContextInterface,
 } from './DashboardComponents'
 import { componentEvents } from '@/shared/constants'
@@ -19,6 +23,7 @@ import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 type EventPayloads = {
   [componentEvents.EMPLOYEE_VIEW_FORM_TO_SIGN]: { employeeId: string; formId: string }
   [componentEvents.EMPLOYEE_DEDUCTION_EDIT]: Garnishment
+  [componentEvents.EMPLOYEE_COMPENSATION_CREATE]: { employeeId: string; job: Job }
 }
 
 const returnToIndex = reduce(
@@ -26,6 +31,7 @@ const returnToIndex = reduce(
     ...ctx,
     component: DashboardViewContextual,
     header: null,
+    currentJob: null,
     successAlert: null,
   }),
 )
@@ -36,6 +42,7 @@ const returnToIndexWithAlert = (alert: DashboardContextInterface['successAlert']
       ...ctx,
       component: DashboardViewContextual,
       header: null,
+      currentJob: null,
       successAlert: alert,
     }),
   )
@@ -143,6 +150,48 @@ export const dashboardStateMachine = {
       ),
     ),
     transition(
+      componentEvents.EMPLOYEE_JOB_ADD,
+      'addJob',
+      reduce(
+        (ctx: DashboardContextInterface): DashboardContextInterface => ({
+          ...ctx,
+          component: AddJobPlaceholderContextual,
+          header: { type: 'minimal' },
+          currentJob: null,
+          successAlert: null,
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.EMPLOYEE_COMPENSATION_CREATE,
+      'editCompensation',
+      reduce(
+        (
+          ctx: DashboardContextInterface,
+          ev: MachineEventType<EventPayloads, typeof componentEvents.EMPLOYEE_COMPENSATION_CREATE>,
+        ): DashboardContextInterface => ({
+          ...ctx,
+          component: EditCompensationPlaceholderContextual,
+          header: { type: 'minimal' },
+          currentJob: ev.payload.job,
+          successAlert: null,
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.EMPLOYEE_JOB_ADD_ANOTHER,
+      'addAnotherJob',
+      reduce(
+        (ctx: DashboardContextInterface): DashboardContextInterface => ({
+          ...ctx,
+          component: AddAnotherJobPlaceholderContextual,
+          header: { type: 'minimal' },
+          currentJob: null,
+          successAlert: null,
+        }),
+      ),
+    ),
+    transition(
       componentEvents.EMPLOYEE_BANK_ACCOUNT_DELETED,
       'index',
       reduce(
@@ -241,6 +290,13 @@ export const dashboardStateMachine = {
       returnToIndexWithAlert('deductionUpdated'),
     ),
     transition(componentEvents.EMPLOYEE_DEDUCTION_CANCEL, 'index', returnToIndex),
+    transition(componentEvents.CANCEL, 'index', returnToIndex),
+  ),
+  addJob: state<MachineTransition>(transition(componentEvents.CANCEL, 'index', returnToIndex)),
+  editCompensation: state<MachineTransition>(
+    transition(componentEvents.CANCEL, 'index', returnToIndex),
+  ),
+  addAnotherJob: state<MachineTransition>(
     transition(componentEvents.CANCEL, 'index', returnToIndex),
   ),
 }

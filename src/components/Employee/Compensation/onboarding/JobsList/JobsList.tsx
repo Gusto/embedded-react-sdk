@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { useJobsAndCompensationsGetJobsSuspense } from '@gusto/embedded-api/react-query/jobsAndCompensationsGetJobs'
 import { useJobsAndCompensationsDeleteMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsDelete'
+import { derivePrimaryFlsaStatus } from '../../shared/derivePrimaryFlsaStatus'
 import { JobsListPresentation } from './JobsListPresentation'
 import {
   BaseComponent,
@@ -34,15 +35,7 @@ function Root({ employeeId, className }: JobsListProps) {
   const { mutateAsync: deleteEmployeeJob, isPending: isDeleting } =
     useJobsAndCompensationsDeleteMutation()
 
-  const primaryFlsaStatus = useMemo<string | undefined>(() => {
-    return employeeJobs.reduce<string | undefined>((prev, curr) => {
-      const compensation = curr.compensations?.find(
-        comp => comp.uuid === curr.currentCompensationUuid,
-      )
-      if (!curr.primary || !compensation) return prev
-      return compensation.flsaStatus ?? prev
-    }, undefined)
-  }, [employeeJobs])
+  const primaryFlsaStatus = useMemo(() => derivePrimaryFlsaStatus(employeeJobs), [employeeJobs])
 
   const handleAdd = () => {
     onEvent(componentEvents.EMPLOYEE_JOB_ADD)
