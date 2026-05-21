@@ -39,7 +39,7 @@
         "salary": "Salary/No overtime"
       },
       "wage": "Wage",
-      "startDate": "Start date",
+      "effectiveDate": "Effective date",
       "addJobCta": "Add job",
       "addAnotherJobCta": "Add another job",
       "tableLabel": "List of jobs",
@@ -49,7 +49,7 @@
       "columns": {
         "jobTitle": "Job title",
         "payType": "Pay type",
-        "startDate": "Start date"
+        "effectiveDate": "Effective date"
       },
       "deleteJobDialog": {
         "title": "Delete job?",
