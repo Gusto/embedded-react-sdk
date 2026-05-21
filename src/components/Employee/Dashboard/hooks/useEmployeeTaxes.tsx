@@ -3,7 +3,7 @@ import { useEmployeeTaxSetupGetStateTaxes } from '@gusto/embedded-api/react-quer
 import type { GetV1EmployeesEmployeeIdFederalTaxesResponse } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidfederaltaxes'
 import type { GetV1EmployeesEmployeeIdStateTaxesResponse } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidstatetaxes'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
-import type { HookErrorHandling } from '@/partner-hook-utils/types'
+import type { BaseHookReady } from '@/partner-hook-utils/types'
 
 type EmployeeFederalTax = NonNullable<
   GetV1EmployeesEmployeeIdFederalTaxesResponse['employeeFederalTax']
@@ -16,18 +16,17 @@ export interface UseEmployeeTaxesProps {
   employeeId: string
 }
 
-export interface UseEmployeeTaxesResult {
-  data: {
+export type UseEmployeeTaxesResult = BaseHookReady<
+  {
     employeeFederalTax?: EmployeeFederalTax
     employeeStateTaxesList: EmployeeStateTax[]
-  }
-  status: {
+  },
+  {
     isPending: boolean
     isFederalTaxesLoading: boolean
     isStateTaxesLoading: boolean
   }
-  errorHandling: HookErrorHandling
-}
+>
 
 /**
  * Phase B: non-Suspense queries so the federal and state tax cards
@@ -48,6 +47,7 @@ export function useEmployeeTaxes({ employeeId }: UseEmployeeTaxesProps): UseEmpl
   )
 
   return {
+    isLoading: false,
     data: {
       employeeFederalTax: federalTaxesQuery.data?.employeeFederalTax,
       employeeStateTaxesList: stateTaxesQuery.data?.employeeStateTaxesList ?? [],

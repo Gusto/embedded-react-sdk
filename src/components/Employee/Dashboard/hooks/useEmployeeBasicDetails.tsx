@@ -6,26 +6,25 @@ import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { EmployeeAddress } from '@gusto/embedded-api/models/components/employeeaddress'
 import type { EmployeeWorkAddress } from '@gusto/embedded-api/models/components/employeeworkaddress'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
-import type { HookErrorHandling } from '@/partner-hook-utils/types'
+import type { BaseHookReady } from '@/partner-hook-utils/types'
 
 export interface UseEmployeeBasicDetailsProps {
   employeeId: string
 }
 
-export interface UseEmployeeBasicDetailsResult {
-  data: {
+export type UseEmployeeBasicDetailsResult = BaseHookReady<
+  {
     employee?: Employee
     currentHomeAddress?: EmployeeAddress
     currentWorkAddress?: EmployeeWorkAddress
-  }
-  status: {
+  },
+  {
     isPending: boolean
     isEmployeeLoading: boolean
     isHomeAddressLoading: boolean
     isWorkAddressLoading: boolean
   }
-  errorHandling: HookErrorHandling
-}
+>
 
 /**
  * Phase B: each query runs non-Suspense so the three cards (employee
@@ -61,6 +60,7 @@ export function useEmployeeBasicDetails({
   }, [employeeWorkAddressesList])
 
   return {
+    isLoading: false,
     data: {
       employee,
       currentHomeAddress,

@@ -12,7 +12,7 @@ import { derivePrimaryFlsaStatus } from '@/components/Employee/Compensation/shar
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { usePagination } from '@/hooks/usePagination/usePagination'
-import type { HookErrorHandling, HookSubmitResult } from '@/partner-hook-utils/types'
+import type { BaseHookReady, HookSubmitResult } from '@/partner-hook-utils/types'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
 type EmployeePayStub = NonNullable<
@@ -23,8 +23,8 @@ export interface UseEmployeeCompensationProps {
   employeeId: string
 }
 
-export interface UseEmployeeCompensationResult {
-  data: {
+export interface UseEmployeeCompensationResult extends BaseHookReady<
+  {
     jobs: Job[]
     primaryJob?: Job
     primaryFlsaStatus?: string
@@ -35,8 +35,8 @@ export interface UseEmployeeCompensationResult {
      *  in alerts (e.g. "Heads up, Jane has pending changes"). Optional
      *  because the employee record can omit it. */
     employeeFirstName?: string
-  }
-  status: {
+  },
+  {
     isPending: boolean
     cancellingCompensationUuid: string | null
     /** Compensation card depends on the employee fetch (jobs, pending
@@ -45,6 +45,7 @@ export interface UseEmployeeCompensationResult {
     /** Paystubs card depends on a separate paginated endpoint. */
     isPayStubsLoading: boolean
   }
+> {
   pagination: {
     payStubs?: PaginationControlProps
   }
@@ -53,7 +54,6 @@ export interface UseEmployeeCompensationResult {
       pendingChange: PendingCompensationChange,
     ) => Promise<HookSubmitResult<unknown> | undefined>
   }
-  errorHandling: HookErrorHandling
 }
 
 /**
@@ -137,6 +137,7 @@ export function useEmployeeCompensation({
   })
 
   return {
+    isLoading: false,
     data: {
       jobs,
       primaryJob,
