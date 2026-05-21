@@ -5,6 +5,7 @@ import {
   openAddEmployeesFromDetail,
   openPolicySettingsFromDetail,
 } from '../../utils/timeOffFlowDrivers'
+import { waitForLoadingComplete } from '../../utils/helpers'
 
 // Extracted from QA-fest issues surfaced in PR #1879 (Kristine White).
 // These guard contracts on the add-employees + edit-balance flows that the
@@ -75,6 +76,7 @@ test.describe('TimeOffFlow - add employees edge cases', () => {
     await enableBalanceMaximumWithValue(page, '1')
 
     await page.getByRole('button', { name: /^save$/i }).click()
+    await waitForLoadingComplete(page)
 
     const alert = page.getByRole('alert').first()
     await expect(alert).toBeVisible({ timeout: 10_000 })
@@ -100,6 +102,7 @@ test.describe('TimeOffFlow - add employees edge cases', () => {
     await enableBalanceMaximumWithValue(page, '1')
 
     await page.getByRole('button', { name: /^save$/i }).click()
+    await waitForLoadingComplete(page)
 
     await expect(page.getByText(/unexpected error/i)).toHaveCount(0)
 
