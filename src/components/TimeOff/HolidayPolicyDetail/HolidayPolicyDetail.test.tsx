@@ -199,15 +199,10 @@ describe('HolidayPolicyDetail', () => {
 
       await user.click(screen.getByRole('button', { name: 'Navigate to next page' }))
 
-      await waitFor(
-        async () => {
-          expect(await screen.findByText('Person10 Roster')).toBeInTheDocument()
-        },
-        { timeout: 5000 },
-      )
+      expect(await screen.findByText('Person10 Roster')).toBeInTheDocument()
       expect(screen.getByText('Person11 Roster')).toBeInTheDocument()
       expect(screen.queryByText('Person00 Roster')).not.toBeInTheDocument()
-    })
+    }, 15_000)
 
     it('resets to page 1 when a search filters the roster below the page threshold', async () => {
       server.use(
@@ -232,7 +227,7 @@ describe('HolidayPolicyDetail', () => {
 
       await user.click(screen.getByRole('button', { name: 'Navigate to next page' }))
 
-      expect(await screen.findByText('Person10 Roster', {}, { timeout: 5000 })).toBeInTheDocument()
+      expect(await screen.findByText('Person10 Roster')).toBeInTheDocument()
 
       await user.type(screen.getByRole('searchbox'), 'Person00')
 
@@ -241,7 +236,7 @@ describe('HolidayPolicyDetail', () => {
       })
       expect(screen.getByText('Person00 Roster')).toBeInTheDocument()
       expect(screen.queryByText('Person11 Roster')).not.toBeInTheDocument()
-    })
+    }, 15_000)
   })
 
   describe('navigation', () => {
