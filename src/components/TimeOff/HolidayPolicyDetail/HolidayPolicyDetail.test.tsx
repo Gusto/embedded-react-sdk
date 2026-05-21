@@ -192,12 +192,18 @@ describe('HolidayPolicyDetail', () => {
       // concurrent rendering).
       await user.click(await screen.findByTestId('pagination-next'))
 
-      // findByText polls up to 5s on the slowest CI runs. The earlier waitFor
-      // approach used the default 1s timeout, which intermittently expired
-      // under coverage instrumentation + parallel test workload.
-      await screen.findByText('Person10 Roster', undefined, { timeout: 5000 })
-      await screen.findByText('Person11 Roster', undefined, { timeout: 5000 })
-      expect(screen.queryByText('Person00 Roster')).not.toBeInTheDocument()
+      // Wait for the first page content to disappear, signaling the transition started.
+      await waitFor(
+        () => {
+          expect(screen.queryByText('Person00 Roster')).not.toBeInTheDocument()
+        },
+        { timeout: 10000 },
+      )
+
+      // Then wait for the second page content to appear. Increased timeout to 10s
+      // for slower CI environments with coverage instrumentation + parallel workload.
+      await screen.findByText('Person10 Roster', undefined, { timeout: 10000 })
+      await screen.findByText('Person11 Roster', undefined, { timeout: 10000 })
     }, 10000)
 
     it('resets to page 1 when a search filters the roster below the page threshold', async () => {
