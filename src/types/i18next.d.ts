@@ -1415,8 +1415,6 @@ export interface EmployeeCompensation{
 "title":string;
 "minimumWage":string;
 "stateWcClassCode":string;
-"effectiveDate":string;
-"effectiveDateBeforeHire":string;
 "jobTitleSentence":string;
 };
 "stateWcCoveredLabel":string;
