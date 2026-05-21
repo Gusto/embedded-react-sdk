@@ -290,7 +290,12 @@ export function useCompensationForm({
 
   const hireDate = currentJob?.hireDate ?? null
 
-  const futureCompensations = findFutureCompensations(currentJob)
+  // In update mode, exclude the compensation being edited so it doesn't
+  // bound `maximumEffectiveDate` to its own current date — that would prevent
+  // the user from pushing the pending effective date further out.
+  const futureCompensations = findFutureCompensations(currentJob).filter(
+    c => c.uuid !== compensationId,
+  )
   const hasPendingFutureCompensation = futureCompensations.length > 0
   const maximumEffectiveDate = minEffectiveDate(futureCompensations)
 

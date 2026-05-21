@@ -1,27 +1,17 @@
 import classNames from 'classnames'
-import { Trans, useTranslation } from 'react-i18next'
-import type { PaymentUnit } from '@gusto/embedded-api/models/components/compensation'
-import type { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
-import type { MinimumWage } from '@gusto/embedded-api/models/components/minimumwage'
+import { useTranslation } from 'react-i18next'
 import { useJobsAndCompensationsGetJobs } from '@gusto/embedded-api/react-query/jobsAndCompensationsGetJobs'
-import { useJobForm, type UseJobFormReady } from '../../shared/useJobForm'
-import {
-  useCompensationForm,
-  type UseCompensationFormReady,
-  type CompensationFormData,
-} from '../../shared/useCompensationForm'
+import { useJobForm } from '../../shared/useJobForm'
+import { useCompensationForm, type CompensationFormData } from '../../shared/useCompensationForm'
+import { ManagementCompensationFormBody } from '../ManagementCompensationFormBody'
 import styles from './EditCompensation.module.scss'
 import { BaseBoundaries, BaseLayout, type CommonComponentInterface } from '@/components/Base'
 import type { OnEventType } from '@/components/Base/useBase'
-import { ActionsLayout, Flex } from '@/components/Common'
 import { Form } from '@/components/Common/Form'
-import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { composeSubmitHandler } from '@/partner-hook-utils/form/composeSubmitHandler'
-import { componentEvents, FLSA_OVERTIME_SALARY_LIMIT, type EventType } from '@/shared/constants'
-import useNumberFormatter from '@/hooks/useNumberFormatter'
-import { addDays } from '@/helpers/dateFormatting'
+import { componentEvents, type EventType } from '@/shared/constants'
 
 export interface EditCompensationProps extends CommonComponentInterface<'Employee.Compensation'> {
   employeeId: string
@@ -85,6 +75,7 @@ interface RootProps extends LoaderProps {
 
 function Root({ employeeId, jobId, defaultValues, onCancel, className, onEvent }: RootProps) {
   useI18n('Employee.Compensation')
+  const { t } = useTranslation('Employee.Compensation')
 
   // Job form handles the non-effective-dated fields: 2% shareholder + WA WC.
   // Title is suppressed here because the compensation form owns title
@@ -143,181 +134,16 @@ function Root({ employeeId, jobId, defaultValues, onCancel, className, onEvent }
     <section className={classNames(styles.container, className)}>
       <BaseLayout error={errorHandling.errors}>
         <Form onSubmit={submitResult.handleSubmit}>
-          <FormBody
+          <ManagementCompensationFormBody
             jobForm={jobForm}
             compensationForm={compensationForm}
+            title={t('management.editCompensationTitle')}
+            submitCtaLabel={t('management.saveCta')}
             isPending={isPending}
             onCancel={onCancel}
           />
         </Form>
       </BaseLayout>
     </section>
-  )
-}
-
-interface FormBodyProps {
-  jobForm: UseJobFormReady
-  compensationForm: UseCompensationFormReady
-  isPending: boolean
-  onCancel?: () => void
-}
-
-function FormBody({ jobForm, compensationForm, isPending, onCancel }: FormBodyProps) {
-  const { t } = useTranslation('Employee.Compensation')
-  const Components = useComponentContext()
-  const format = useNumberFormatter('currency')
-
-  const JobFields = jobForm.form.Fields
-  const CompFields = compensationForm.form.Fields
-
-  return (
-    <Flex flexDirection="column" gap={32}>
-      <Components.Heading as="h2">{t('management.editCompensationTitle')}</Components.Heading>
-
-      {compensationForm.status.willDeleteSecondaryJobs && (
-        <Components.Alert
-          label={t('management.scheduledClassificationChangeNotification')}
-          status="warning"
-        />
-      )}
-
-      <CompFields.Title
-        label={t('management.jobTitleLabel')}
-        validationMessages={{ REQUIRED: t('validations.jobTitleSentence') }}
-        formHookResult={compensationForm}
-      />
-
-      {CompFields.FlsaStatus && (
-        <CompFields.FlsaStatus
-          label={t('employeeClassification')}
-          description={
-            <Trans
-              t={t}
-              i18nKey="classificationLink"
-              components={{ ClassificationLink: <Components.Link /> }}
-            />
-          }
-          validationMessages={{
-            REQUIRED: t('validations.exemptThreshold', {
-              limit: format(FLSA_OVERTIME_SALARY_LIMIT),
-            }),
-          }}
-          getOptionLabel={(status: FlsaStatusType) => t(`flsaStatusLabels.${status}`)}
-          formHookResult={compensationForm}
-        />
-      )}
-
-      <CompFields.Rate
-        label={t('management.wageLabel')}
-        validationMessages={{
-          REQUIRED: t('validations.rate'),
-          RATE_MINIMUM: t('validations.nonZeroRate'),
-          RATE_EXEMPT_THRESHOLD: t('validations.rateExemptThreshold', {
-            limit: format(FLSA_OVERTIME_SALARY_LIMIT),
-          }),
-        }}
-        formHookResult={compensationForm}
-      />
-
-      <CompFields.PaymentUnit
-        label={t('management.wageFrequencyLabel')}
-        description={t('paymentUnitDescription')}
-        validationMessages={{ REQUIRED: t('validations.paymentUnit') }}
-        getOptionLabel={(unit: PaymentUnit) =>
-          t(`management.wageFrequencyOptions.${unit}` as const)
-        }
-        formHookResult={compensationForm}
-      />
-
-      {CompFields.EffectiveDate && (
-        <CompFields.EffectiveDate
-          label={t('effectiveDateLabel')}
-          minDate={addDays(new Date(), 1)}
-          maxDate={
-            compensationForm.data.maximumEffectiveDate
-              ? new Date(compensationForm.data.maximumEffectiveDate)
-              : undefined
-          }
-          validationMessages={{
-            REQUIRED: t('validations.effectiveDate'),
-            EFFECTIVE_DATE_BEFORE_HIRE: t('validations.effectiveDateBeforeHire'),
-          }}
-          formHookResult={compensationForm}
-        />
-      )}
-
-      {CompFields.AdjustForMinimumWage && (
-        <CompFields.AdjustForMinimumWage
-          label={t('adjustForMinimumWage')}
-          description={t('adjustForMinimumWageDescription')}
-          formHookResult={compensationForm}
-        />
-      )}
-
-      {CompFields.MinimumWageId && (
-        <CompFields.MinimumWageId
-          label={t('minimumWageLabel')}
-          description={t('minimumWageDescription')}
-          validationMessages={{ REQUIRED: t('validations.minimumWage') }}
-          getOptionLabel={(wage: MinimumWage) =>
-            `${format(Number(wage.wage))} - ${wage.authority}: ${wage.notes ?? ''}`
-          }
-          formHookResult={compensationForm}
-        />
-      )}
-
-      {JobFields.TwoPercentShareholder && (
-        <JobFields.TwoPercentShareholder
-          label={t('management.twoPercentShareholderLabel')}
-          formHookResult={jobForm}
-        />
-      )}
-
-      {JobFields.StateWcCovered && (
-        <JobFields.StateWcCovered
-          label={t('stateWcCoveredLabel')}
-          description={
-            <Trans
-              t={t}
-              i18nKey="stateWcCoveredDescription"
-              components={{
-                wcLink: (
-                  <Components.Link
-                    href="https://www.lni.wa.gov/insurance/rates-risk-classes/risk-classes-for-workers-compensation/risk-class-lookup#/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  />
-                ),
-              }}
-            />
-          }
-          getOptionLabel={(covered: boolean) =>
-            covered ? t('stateWcCoveredOptions.yes') : t('stateWcCoveredOptions.no')
-          }
-          formHookResult={jobForm}
-        />
-      )}
-
-      {JobFields.StateWcClassCode && (
-        <JobFields.StateWcClassCode
-          label={t('stateWcClassCodeLabel')}
-          description={t('stateWcClassCodeDescription')}
-          placeholder={t('stateWcClassCodeLabel')}
-          validationMessages={{ REQUIRED: t('validations.stateWcClassCode') }}
-          formHookResult={jobForm}
-        />
-      )}
-
-      <ActionsLayout>
-        {onCancel && (
-          <Components.Button variant="secondary" onClick={onCancel} isDisabled={isPending}>
-            {t('cancelCta')}
-          </Components.Button>
-        )}
-        <Components.Button type="submit" isLoading={isPending}>
-          {t('management.saveCta')}
-        </Components.Button>
-      </ActionsLayout>
-    </Flex>
   )
 }

@@ -1,3 +1,5 @@
 export { EditCompensation as ManagementEditCompensation } from './EditCompensation'
 export type { EditCompensationProps as ManagementEditCompensationProps } from './EditCompensation'
+export { EditPendingCompensation as ManagementEditPendingCompensation } from './EditPendingCompensation/EditPendingCompensation'
+export type { EditPendingCompensationProps as ManagementEditPendingCompensationProps } from './EditPendingCompensation/EditPendingCompensation'
 export * from './AddAnotherJob/AddAnotherJob'

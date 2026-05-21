@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import type { Job } from '@gusto/embedded-api/models/components/job'
 import { Dashboard, type DashboardTab } from './Dashboard'
+import { getPendingCompensationChanges } from './getPendingCompensationChanges'
 import { HomeAddress } from '@/components/Employee/HomeAddress/management/HomeAddress'
 import { WorkAddress } from '@/components/Employee/WorkAddress/management/WorkAddress'
 import { FederalTaxes } from '@/components/Employee/FederalTaxes/management/FederalTaxes'
@@ -10,7 +11,10 @@ import { BankForm } from '@/components/Employee/PaymentMethod/onboarding/BankFor
 import { SplitView } from '@/components/Employee/PaymentMethod/onboarding/SplitView'
 import { DocumentManager } from '@/components/Employee/Documents/management/DocumentManager'
 import { DeductionsForm } from '@/components/Employee/Deductions/DeductionsForm/DeductionsForm'
-import { ManagementEditCompensation } from '@/components/Employee/Compensation/management'
+import {
+  ManagementEditCompensation,
+  ManagementEditPendingCompensation,
+} from '@/components/Employee/Compensation/management'
 import { useDeductionsList } from '@/components/Employee/Deductions/shared'
 import { AddAnotherJob } from '@/components/Employee/Compensation/management/AddAnotherJob/AddAnotherJob'
 import { EditCompensation } from '@/components/Employee/Compensation/onboarding/EditCompensation/EditCompensation'
@@ -188,6 +192,27 @@ export function AddJobContextual() {
 
 export function EditCompensationContextual() {
   const { employeeId, currentJob, onEvent } = useFlow<DashboardContextInterface>()
+
+  // Use getPendingCompensationChanges to find the nearest pending comp — the
+  // API does not guarantee ordering of job.compensations, so we rely on the
+  // same sorted helper that drives the card display (ascending by effectiveDate).
+  const pendingChanges = getPendingCompensationChanges(currentJob ? [currentJob] : [])
+  const nearestPending = pendingChanges[0]
+
+  if (nearestPending) {
+    return (
+      <ManagementEditPendingCompensation
+        employeeId={ensureRequired(employeeId)}
+        jobId={ensureRequired(currentJob?.uuid)}
+        compensationId={nearestPending.compensationUuid}
+        onEvent={onEvent}
+        onCancel={() => {
+          onEvent(componentEvents.CANCEL, null)
+        }}
+      />
+    )
+  }
+
   return (
     <ManagementEditCompensation
       employeeId={ensureRequired(employeeId)}
