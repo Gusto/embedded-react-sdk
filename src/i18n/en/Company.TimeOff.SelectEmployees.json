@@ -9,17 +9,9 @@
   "startingBalanceColumn": "Starting balance (hrs)",
   "backCta": "Back",
   "continueCta": "Continue",
+  "emptyState": "All eligible employees have already been added to this policy.",
   "errors": {
-    "removeEmployeesFailed": "Unable to remove employees from this policy. {{details}}",
     "completePolicyFailed": "Unable to complete this policy. {{details}}"
-  },
-  "removeConfirmDialog": {
-    "title_one": "Remove {{count}} employee from this policy?",
-    "title_other": "Remove {{count}} employees from this policy?",
-    "description_one": "This employee's balance for this policy will be removed. They can be re-added later.",
-    "description_other": "These employees' balances for this policy will be removed. They can be re-added later.",
-    "confirmCta": "Remove and save",
-    "cancelCta": "Cancel"
   },
   "addConfirmDialog": {
     "title_one": "Add {{count}} employee to this policy?",

@@ -17,6 +17,7 @@ export type DataViewProps<T> = {
   onSelect?: useDataViewPropReturn<T>['onSelect']
   onSelectAll?: useDataViewPropReturn<T>['onSelectAll']
   getIsItemSelected?: (item: T) => boolean
+  hideSelectAll?: useDataViewPropReturn<T>['hideSelectAll']
   breakAt?: string
   breakpoints?: useContainerBreakpointsProps['breakpoints']
   footer?: useDataViewPropReturn<T>['footer']
