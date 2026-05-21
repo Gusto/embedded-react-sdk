@@ -171,7 +171,6 @@ export const test = base.extend<ScenarioFixtures & { localConfig: LocalConfig },
         }),
       })
 
-
       await use(ctx)
     },
     { scope: 'test' },
