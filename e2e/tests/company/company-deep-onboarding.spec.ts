@@ -11,7 +11,7 @@ test.describe('CompanyOnboarding - deep flow through industry to bank account', 
   test.beforeEach(({}, testInfo) => {
     testInfo.annotations.push({
       type: 'scenario',
-      description: 'company/company-onboarding',
+      description: 'company/fresh-with-hq-location',
     })
   })
 

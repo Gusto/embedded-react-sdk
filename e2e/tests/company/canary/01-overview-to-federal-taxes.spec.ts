@@ -9,7 +9,7 @@ test.describe.serial('CompanyCanary 01 — overview to federal taxes', () => {
   test.beforeEach(({}, testInfo) => {
     testInfo.annotations.push({
       type: 'scenario',
-      description: 'company/full-flow-canary',
+      description: 'company/fresh-with-hq-location',
     })
   })
 

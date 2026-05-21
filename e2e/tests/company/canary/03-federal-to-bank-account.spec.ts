@@ -11,7 +11,7 @@ test.describe.serial('CompanyCanary 03 — federal taxes -> industry -> bank acc
   test.beforeEach(({}, testInfo) => {
     testInfo.annotations.push({
       type: 'scenario',
-      description: 'company/full-flow-canary',
+      description: 'company/fresh-with-hq-location',
     })
   })
 

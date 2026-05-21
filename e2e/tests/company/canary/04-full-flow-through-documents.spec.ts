@@ -5,7 +5,7 @@ test.describe.serial('CompanyCanary 04 — full wizard from overview through doc
   test.beforeEach(({}, testInfo) => {
     testInfo.annotations.push({
       type: 'scenario',
-      description: 'company/full-flow-canary',
+      description: 'company/fresh-with-hq-location',
     })
   })
 

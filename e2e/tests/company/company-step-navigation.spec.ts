@@ -10,7 +10,7 @@ test.describe('CompanyOnboarding — step navigation', () => {
   test.beforeEach(({}, testInfo) => {
     testInfo.annotations.push({
       type: 'scenario',
-      description: 'company/company-onboarding',
+      description: 'company/fresh-with-hq-location',
     })
   })
 
