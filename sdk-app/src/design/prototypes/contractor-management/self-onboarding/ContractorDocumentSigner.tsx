@@ -1,8 +1,8 @@
 import { Suspense, useState } from 'react'
-import { useContractorDocumentsGetAllSuspense } from '@gusto/embedded-api/react-query/contractorDocumentsGetAll'
-import { invalidateContractorDocumentsGetAll } from '@gusto/embedded-api/react-query/contractorDocumentsGetAll'
+import { useContractorDocumentsGetAllSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorDocumentsGetAll'
+import { invalidateContractorDocumentsGetAll } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorDocumentsGetAll'
 import { useQueryClient } from '@tanstack/react-query'
-import type { Document } from '@gusto/embedded-api/models/components/document'
+import type { Document } from '@gusto/embedded-api-v-2025-11-15/models/components/document'
 import { ContractorSignatureForm } from './ContractorSignatureForm'
 import { contractorSelfOnboardingEvents } from './events'
 import {

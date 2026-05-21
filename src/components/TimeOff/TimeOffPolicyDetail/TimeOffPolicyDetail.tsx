@@ -1,11 +1,10 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useTimeOffPoliciesGetSuspense } from '@gusto/embedded-api/react-query/timeOffPoliciesGet'
-import { useTimeOffPoliciesRemoveEmployeesMutation } from '@gusto/embedded-api/react-query/timeOffPoliciesRemoveEmployees'
-import { useTimeOffPoliciesUpdateBalanceMutation } from '@gusto/embedded-api/react-query/timeOffPoliciesUpdateBalance'
-import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
-import type { TimeOffPolicy } from '@gusto/embedded-api/models/components/timeoffpolicy'
-import { UnprocessableEntityError } from '@gusto/embedded-api/models/errors/unprocessableentityerror'
+import { useTimeOffPoliciesGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/timeOffPoliciesGet'
+import { useTimeOffPoliciesRemoveEmployeesMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/timeOffPoliciesRemoveEmployees'
+import { useTimeOffPoliciesUpdateBalanceMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/timeOffPoliciesUpdateBalance'
+import { useEmployeesListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesList'
+import type { TimeOffPolicy } from '@gusto/embedded-api-v-2025-11-15/models/components/timeoffpolicy'
 import { useQueryClient } from '@tanstack/react-query'
 import { TimeOffPolicyDetailPresentation } from './TimeOffPolicyDetailPresentation'
 import { EditEmployeeBalanceModal } from './EditEmployeeBalanceModal'
@@ -19,7 +18,6 @@ import type {
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useBase } from '@/components/Base/useBase'
-import { SDKInternalError } from '@/types/sdkError'
 import { componentEvents } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
@@ -120,7 +118,7 @@ function deriveEmployees(
       uuid: policyEmp.uuid ?? '',
       firstName: emp?.firstName ?? null,
       lastName: emp?.lastName ?? null,
-      jobTitle: primaryJob?.title ?? emp?.jobs?.[0]?.title ?? null,
+      jobTitle: primaryJob?.title ?? null,
       balance: policyEmp.balance != null ? Number(policyEmp.balance) : null,
     }
   })
@@ -186,13 +184,12 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
 
   const invalidatePolicy = useCallback(() => {
     void queryClient.invalidateQueries({
-      queryKey: ['@gusto/embedded-api', 'timeOffPolicies', 'get'],
+      queryKey: ['@gusto/embedded-api-v-2025-11-15', 'timeOffPolicies', 'get'],
     })
   }, [queryClient])
 
   const handleRemoveEmployee = useCallback(
     async (employeeUuid: string, employeeName: string) => {
-      setRemoveTarget(null)
       await baseSubmitHandler({}, async () => {
         await removeEmployees({
           request: {
@@ -201,6 +198,7 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
           },
         })
         invalidatePolicy()
+        setRemoveTarget(null)
         setSuccessAlert(t('flash.employeeRemoved', { name: employeeName }))
       })
     },
@@ -211,51 +209,20 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
     async (newBalance: number) => {
       if (!editBalanceState) return
       await baseSubmitHandler({}, async () => {
-        try {
-          await updateBalance({
-            request: {
-              timeOffPolicyUuid: policyId,
-              requestBody: {
-                employees: [{ uuid: editBalanceState.employeeUuid, balance: String(newBalance) }],
-              },
+        await updateBalance({
+          request: {
+            timeOffPolicyUuid: policyId,
+            requestBody: {
+              employees: [{ uuid: editBalanceState.employeeUuid, balance: String(newBalance) }],
             },
-          })
-        } catch (err) {
-          if (err instanceof UnprocessableEntityError) {
-            const maxHours = policy.maxHours != null ? Number(policy.maxHours) : null
-            const hasLimitViolation = err.errors.some(
-              e =>
-                e.message === 'LIMIT_VIOLATION_MAX_HOURS' ||
-                e.category === 'invalid_attribute_value',
-            )
-            if (hasLimitViolation && maxHours != null) {
-              throw new SDKInternalError(
-                t('editBalanceModal.errors.balanceExceedsMax', { max: maxHours }),
-                'api_error',
-              )
-            }
-            const messages = err.errors.map(e => e.message).filter(Boolean)
-            throw new SDKInternalError(
-              messages.join('. ') || t('editBalanceModal.errors.updateFailed'),
-              'api_error',
-            )
-          }
-          throw err
-        }
+          },
+        })
         invalidatePolicy()
         setEditBalanceState(null)
         setSuccessAlert(t('flash.balanceUpdated', { name: editBalanceState.employeeName }))
       })
     },
-    [
-      baseSubmitHandler,
-      updateBalance,
-      policyId,
-      editBalanceState,
-      invalidatePolicy,
-      t,
-      policy.maxHours,
-    ],
+    [baseSubmitHandler, updateBalance, policyId, editBalanceState, invalidatePolicy, t],
   )
 
   const handleAddEmployees = useCallback(() => {
@@ -298,7 +265,6 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
                 label: t('employeeTable.editBalance'),
                 icon: <EditIcon aria-hidden />,
                 onClick: () => {
-                  setError(null)
                   setEditBalanceState({
                     employeeUuid: employee.uuid,
                     employeeName,
@@ -323,7 +289,7 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
         />
       )
     },
-    [t, isUnlimited, setError],
+    [t, isUnlimited],
   )
 
   const discriminatedProps =

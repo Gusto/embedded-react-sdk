@@ -1,60 +1,43 @@
 import { useMemo } from 'react'
-import { useEmployeesGet } from '@gusto/embedded-api/react-query/employeesGet'
-import { useEmployeeAddressesGet } from '@gusto/embedded-api/react-query/employeeAddressesGet'
-import { useEmployeeAddressesGetWorkAddresses } from '@gusto/embedded-api/react-query/employeeAddressesGetWorkAddresses'
-import type { Employee } from '@gusto/embedded-api/models/components/employee'
-import type { EmployeeAddress } from '@gusto/embedded-api/models/components/employeeaddress'
-import type { EmployeeWorkAddress } from '@gusto/embedded-api/models/components/employeeworkaddress'
+import { useEmployeesGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesGet'
+import { useEmployeeAddressesGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeAddressesGet'
+import { useEmployeeAddressesGetWorkAddressesSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeAddressesGetWorkAddresses'
+import type { Employee } from '@gusto/embedded-api-v-2025-11-15/models/components/employee'
+import type { EmployeeAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeaddress'
+import type { EmployeeWorkAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeworkaddress'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
-import type { BaseHookReady } from '@/partner-hook-utils/types'
+import type { HookLoadingResult, BaseHookReady } from '@/partner-hook-utils/types'
 
 export interface UseEmployeeBasicDetailsProps {
   employeeId: string
 }
 
-export type UseEmployeeBasicDetailsResult = BaseHookReady<
+type UseEmployeeBasicDetailsReady = BaseHookReady<
   {
-    employee?: Employee
+    employee: Employee
     currentHomeAddress?: EmployeeAddress
     currentWorkAddress?: EmployeeWorkAddress
   },
-  {
-    isPending: boolean
-    isEmployeeLoading: boolean
-    isHomeAddressLoading: boolean
-    isWorkAddressLoading: boolean
-  }
+  { isPending: boolean }
 >
 
-/**
- * Phase B: each query runs non-Suspense so the three cards (employee
- * info, home address, work address) can paint independently. The
- * consuming view branches on the per-query loading flags to render
- * skeletons inside the box bodies.
- */
+export type UseEmployeeBasicDetailsResult = HookLoadingResult | UseEmployeeBasicDetailsReady
+
 export function useEmployeeBasicDetails({
   employeeId,
 }: UseEmployeeBasicDetailsProps): UseEmployeeBasicDetailsResult {
-  // staleTime: Infinity — see useEmployeeCompensation for rationale (SDK
-  // QueryClient invalidates on any mutation success).
-  //
-  // No `include: ['all_compensations']` here: BasicDetails only reads
-  // `firstName/lastName/dateOfBirth/email/hasSsn` and the first job's
-  // `hireDate` — the historical compensations are dead weight in this
-  // payload. `useEmployeeCompensation` keeps the include since the
-  // JobAndPay tab actually consumes it. The two hooks intentionally use
-  // different query keys; mount-time payload shrinks on the active tab.
-  const employeeQuery = useEmployeesGet({ employeeId }, { staleTime: Infinity })
-  const addressesQuery = useEmployeeAddressesGet({ employeeId }, { staleTime: Infinity })
-  const workAddressesQuery = useEmployeeAddressesGetWorkAddresses(
-    { employeeId },
-    { staleTime: Infinity },
-  )
+  const employeeQuery = useEmployeesGetSuspense({
+    employeeId,
+    include: ['all_compensations'],
+  })
+  const addressesQuery = useEmployeeAddressesGetSuspense({ employeeId })
+  const workAddressesQuery = useEmployeeAddressesGetWorkAddressesSuspense({ employeeId })
 
-  const employee = employeeQuery.data?.employee
-  const employeeAddressList = addressesQuery.data?.employeeAddressList
-  const employeeWorkAddressesList = workAddressesQuery.data?.employeeWorkAddressesList
+  const employee = employeeQuery.data.employee
+  const employeeAddressList = addressesQuery.data.employeeAddressList
+  const employeeWorkAddressesList = workAddressesQuery.data.employeeWorkAddressesList
 
+  // Derive current addresses
   const currentHomeAddress = useMemo(() => {
     return employeeAddressList?.find(address => address.active)
   }, [employeeAddressList])
@@ -63,20 +46,29 @@ export function useEmployeeBasicDetails({
     return employeeWorkAddressesList?.find(address => address.active)
   }, [employeeWorkAddressesList])
 
+  const isPending =
+    employeeQuery.isFetching || addressesQuery.isFetching || workAddressesQuery.isFetching
+  const isLoading = !employee && isPending
+
+  const errorHandling = composeErrorHandler([employeeQuery, addressesQuery, workAddressesQuery])
+
+  if (isLoading) {
+    return {
+      isLoading: true,
+      errorHandling,
+    }
+  }
+
   return {
     isLoading: false,
     data: {
-      employee,
+      employee: employee!,
       currentHomeAddress,
       currentWorkAddress,
     },
     status: {
-      isPending:
-        employeeQuery.isFetching || addressesQuery.isFetching || workAddressesQuery.isFetching,
-      isEmployeeLoading: employeeQuery.isLoading,
-      isHomeAddressLoading: addressesQuery.isLoading,
-      isWorkAddressLoading: workAddressesQuery.isLoading,
+      isPending,
     },
-    errorHandling: composeErrorHandler([employeeQuery, addressesQuery, workAddressesQuery]),
+    errorHandling,
   }
 }

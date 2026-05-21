@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 import { fn } from 'storybook/test'
-import type { Termination } from '@gusto/embedded-api/models/components/termination'
+import type { Termination } from '@gusto/embedded-api-v-2025-11-15/models/components/termination'
 import { TerminateEmployeePresentation } from './TerminateEmployeePresentation'
 import { useI18n } from '@/i18n'
 

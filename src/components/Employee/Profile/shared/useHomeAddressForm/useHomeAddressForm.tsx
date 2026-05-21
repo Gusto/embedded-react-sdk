@@ -2,11 +2,11 @@ import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { EmployeeAddress } from '@gusto/embedded-api/models/components/employeeaddress'
-import { useEmployeeAddressesRetrieveHomeAddress } from '@gusto/embedded-api/react-query/employeeAddressesRetrieveHomeAddress'
-import { useEmployeeAddressesCreateMutation } from '@gusto/embedded-api/react-query/employeeAddressesCreate'
-import { useEmployeeAddressesUpdateMutation } from '@gusto/embedded-api/react-query/employeeAddressesUpdate'
-import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
+import type { EmployeeAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeaddress'
+import { useEmployeeAddressesRetrieveHomeAddress } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeAddressesRetrieveHomeAddress'
+import { useEmployeeAddressesCreateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeAddressesCreate'
+import { useEmployeeAddressesUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeAddressesUpdate'
+import { RFCDate } from '@gusto/embedded-api-v-2025-11-15/types/rfcdate'
 import {
   createHomeAddressSchema,
   type HomeAddressOptionalFieldsToRequire,

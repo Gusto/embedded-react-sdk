@@ -1,5 +1,5 @@
-import { type Contractor } from '@gusto/embedded-api/models/components/contractor'
-import { useContractorsListSuspense } from '@gusto/embedded-api/react-query/contractorsList'
+import { type Contractor } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor'
+import { useContractorsListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsList'
 import { usePagination } from '@/hooks/usePagination/usePagination'
 
 export interface ContractorListContext {

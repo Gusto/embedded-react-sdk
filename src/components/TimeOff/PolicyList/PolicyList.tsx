@@ -4,15 +4,15 @@ import { useQueryClient } from '@tanstack/react-query'
 import {
   useTimeOffPoliciesGetAllSuspense,
   invalidateAllTimeOffPoliciesGetAll,
-} from '@gusto/embedded-api/react-query/timeOffPoliciesGetAll'
-import { useTimeOffPoliciesDeactivateMutation } from '@gusto/embedded-api/react-query/timeOffPoliciesDeactivate'
-import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
+} from '@gusto/embedded-api-v-2025-11-15/react-query/timeOffPoliciesGetAll'
+import { useTimeOffPoliciesDeactivateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/timeOffPoliciesDeactivate'
+import { useEmployeesListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesList'
 import {
   useHolidayPayPoliciesGet,
   invalidateAllHolidayPayPoliciesGet,
-} from '@gusto/embedded-api/react-query/holidayPayPoliciesGet'
-import { useHolidayPayPoliciesDeleteMutation } from '@gusto/embedded-api/react-query/holidayPayPoliciesDelete'
-import type { TimeOffPolicy } from '@gusto/embedded-api/models/components/timeoffpolicy'
+} from '@gusto/embedded-api-v-2025-11-15/react-query/holidayPayPoliciesGet'
+import { useHolidayPayPoliciesDeleteMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/holidayPayPoliciesDelete'
+import type { TimeOffPolicy } from '@gusto/embedded-api-v-2025-11-15/models/components/timeoffpolicy'
 import { PolicyListPresentation } from './PolicyListPresentation'
 import type { PolicyListItem } from './PolicyListTypes'
 import { isListedTimeOffPolicyType } from '@/components/TimeOff/TimeOffFlow/timeOffPolicyTypes'

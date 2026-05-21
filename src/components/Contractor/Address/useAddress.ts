@@ -1,5 +1,8 @@
-import type { Contractor, ContractorType } from '@gusto/embedded-api/models/components/contractor'
-import type { ContractorAddress } from '@gusto/embedded-api/models/components/contractoraddress'
+import type {
+  Contractor,
+  ContractorType,
+} from '@gusto/embedded-api-v-2025-11-15/models/components/contractor'
+import type { ContractorAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/contractoraddress'
 import { z } from 'zod'
 import { createCompoundContext } from '@/components/Base'
 import type { RequireAtLeastOne } from '@/types/Helpers'

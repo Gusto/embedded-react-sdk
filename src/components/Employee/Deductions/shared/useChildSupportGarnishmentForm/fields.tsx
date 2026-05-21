@@ -1,4 +1,4 @@
-import type { PaymentPeriod } from '@gusto/embedded-api/models/components/garnishmentchildsupport'
+import type { PaymentPeriod } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishmentchildsupport'
 import type { ChildSupportGarnishmentFormErrorCodes } from './childSupportGarnishmentFormSchema'
 import type { TextInputHookFieldProps } from '@/partner-hook-utils/form/fields/TextInputHookField'
 import type { NumberInputHookFieldProps } from '@/partner-hook-utils/form/fields/NumberInputHookField'

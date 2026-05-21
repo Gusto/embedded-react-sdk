@@ -10,7 +10,7 @@ import type {
   BeforeRequestContext,
   AfterSuccessContext,
   AfterErrorContext,
-} from '@gusto/embedded-api/hooks/types'
+} from '@gusto/embedded-api-v-2025-11-15/hooks/types'
 
 // Re-export hook types and contexts for consumer use
 export type {
@@ -28,7 +28,7 @@ export type {
  * SDK hooks interface for consumers
  *
  * This interface defines the supported hook types that can be passed to the GustoProvider.
- * Each hook type must implement the corresponding interface from @gusto/embedded-api/hooks/types.
+ * Each hook type must implement the corresponding interface from @gusto/embedded-api-v-2025-11-15/hooks/types.
  *
  * Only the following hook types are supported:
  * - beforeCreateRequest: Hooks executed before creating a Request object

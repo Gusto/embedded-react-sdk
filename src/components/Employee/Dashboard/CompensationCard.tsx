@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { Job } from '@gusto/embedded-api/models/components/job'
+import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
 import type { PendingCompensationChange } from './getPendingCompensationChanges'
 import { usePendingChangeDetailRenderer } from './usePendingChangeDetailRenderer'
 import { PendingChangesReviewModal } from './PendingChangesReviewModal'

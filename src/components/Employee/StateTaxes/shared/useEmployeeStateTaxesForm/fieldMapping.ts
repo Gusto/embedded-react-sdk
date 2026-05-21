@@ -1,4 +1,4 @@
-import type { EmployeeStateTaxQuestion } from '@gusto/embedded-api/models/components/employeestatetaxquestion'
+import type { EmployeeStateTaxQuestion } from '@gusto/embedded-api-v-2025-11-15/models/components/employeestatetaxquestion'
 
 /**
  * Lowercase post-mapping variant that decides which UI primitive renders

@@ -1,4 +1,4 @@
-import type { PaidTimeOff } from '@gusto/embedded-api/models/components/paidtimeoff'
+import type { PaidTimeOff } from '@gusto/embedded-api-v-2025-11-15/models/components/paidtimeoff'
 import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 
 export interface EmployeeItem {

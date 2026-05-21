@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
+import type { Garnishment } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishment'
 import type { UseDeductionsListReady } from '../shared/useDeductionsList'
 import { formatDeductionAmount } from '../shared/formatDeductionAmount'
 import { useDataView, DataView } from '@/components/Common'

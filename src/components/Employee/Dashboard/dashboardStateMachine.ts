@@ -1,7 +1,6 @@
 import { transition, reduce, state } from 'robot3'
-import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
-import type { Job } from '@gusto/embedded-api/models/components/job'
-import type { DashboardTab } from './Dashboard'
+import type { Garnishment } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishment'
+import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
 import {
   DashboardViewContextual,
   HomeAddressContextual,
@@ -13,9 +12,9 @@ import {
   PaymentSplitViewContextual,
   DocumentManagerContextual,
   DeductionFormContextual,
-  AddJobContextual,
-  EditCompensationContextual,
-  AddAnotherJobContextual,
+  AddJobPlaceholderContextual,
+  EditCompensationPlaceholderContextual,
+  AddAnotherJobPlaceholderContextual,
   type DashboardContextInterface,
 } from './DashboardComponents'
 import { componentEvents } from '@/shared/constants'
@@ -25,7 +24,6 @@ type EventPayloads = {
   [componentEvents.EMPLOYEE_VIEW_FORM_TO_SIGN]: { employeeId: string; formId: string }
   [componentEvents.EMPLOYEE_DEDUCTION_EDIT]: Garnishment
   [componentEvents.EMPLOYEE_COMPENSATION_CREATE]: { employeeId: string; job: Job }
-  [componentEvents.EMPLOYEE_DASHBOARD_TAB_CHANGE]: { tab: DashboardTab }
 }
 
 const returnToIndex = reduce(
@@ -157,7 +155,7 @@ export const dashboardStateMachine = {
       reduce(
         (ctx: DashboardContextInterface): DashboardContextInterface => ({
           ...ctx,
-          component: AddJobContextual,
+          component: AddJobPlaceholderContextual,
           header: { type: 'minimal' },
           currentJob: null,
           successAlert: null,
@@ -173,7 +171,7 @@ export const dashboardStateMachine = {
           ev: MachineEventType<EventPayloads, typeof componentEvents.EMPLOYEE_COMPENSATION_CREATE>,
         ): DashboardContextInterface => ({
           ...ctx,
-          component: EditCompensationContextual,
+          component: EditCompensationPlaceholderContextual,
           header: { type: 'minimal' },
           currentJob: ev.payload.job,
           successAlert: null,
@@ -186,7 +184,7 @@ export const dashboardStateMachine = {
       reduce(
         (ctx: DashboardContextInterface): DashboardContextInterface => ({
           ...ctx,
-          component: AddAnotherJobContextual,
+          component: AddAnotherJobPlaceholderContextual,
           header: { type: 'minimal' },
           currentJob: null,
           successAlert: null,
@@ -252,19 +250,6 @@ export const dashboardStateMachine = {
         }),
       ),
     ),
-    transition(
-      componentEvents.EMPLOYEE_DASHBOARD_TAB_CHANGE,
-      'index',
-      reduce(
-        (
-          ctx: DashboardContextInterface,
-          ev: MachineEventType<EventPayloads, typeof componentEvents.EMPLOYEE_DASHBOARD_TAB_CHANGE>,
-        ): DashboardContextInterface => ({
-          ...ctx,
-          selectedTab: ev.payload.tab,
-        }),
-      ),
-    ),
   ),
   homeAddress: state<MachineTransition>(transition(componentEvents.CANCEL, 'index', returnToIndex)),
   workAddress: state<MachineTransition>(transition(componentEvents.CANCEL, 'index', returnToIndex)),
@@ -307,24 +292,11 @@ export const dashboardStateMachine = {
     transition(componentEvents.EMPLOYEE_DEDUCTION_CANCEL, 'index', returnToIndex),
     transition(componentEvents.CANCEL, 'index', returnToIndex),
   ),
-  addJob: state<MachineTransition>(
-    transition(
-      componentEvents.EMPLOYEE_COMPENSATION_UPDATED,
-      'index',
-      returnToIndexWithAlert('jobAdded'),
-    ),
-    transition(componentEvents.CANCEL, 'index', returnToIndex),
-  ),
+  addJob: state<MachineTransition>(transition(componentEvents.CANCEL, 'index', returnToIndex)),
   editCompensation: state<MachineTransition>(
-    transition(componentEvents.EMPLOYEE_COMPENSATION_DONE, 'index', returnToIndex),
     transition(componentEvents.CANCEL, 'index', returnToIndex),
   ),
   addAnotherJob: state<MachineTransition>(
-    transition(
-      componentEvents.EMPLOYEE_COMPENSATION_UPDATED,
-      'index',
-      returnToIndexWithAlert('jobAdded'),
-    ),
     transition(componentEvents.CANCEL, 'index', returnToIndex),
   ),
 }

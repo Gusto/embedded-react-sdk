@@ -1,10 +1,11 @@
-import { useEmployeeTaxSetupGetFederalTaxes } from '@gusto/embedded-api/react-query/employeeTaxSetupGetFederalTaxes'
-import { useEmployeeTaxSetupGetStateTaxes } from '@gusto/embedded-api/react-query/employeeTaxSetupGetStateTaxes'
-import type { GetV1EmployeesEmployeeIdFederalTaxesResponse } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidfederaltaxes'
-import type { GetV1EmployeesEmployeeIdStateTaxesResponse } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidstatetaxes'
+import { useEmployeeTaxSetupGetFederalTaxesSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeTaxSetupGetFederalTaxes'
+import { useEmployeeTaxSetupGetStateTaxesSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeTaxSetupGetStateTaxes'
+import type { GetV1EmployeesEmployeeIdFederalTaxesResponse } from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1employeesemployeeidfederaltaxes'
+import type { GetV1EmployeesEmployeeIdStateTaxesResponse } from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1employeesemployeeidstatetaxes'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
-import type { BaseHookReady } from '@/partner-hook-utils/types'
+import type { HookLoadingResult, BaseHookReady } from '@/partner-hook-utils/types'
 
+// Derive types from operations responses
 type EmployeeFederalTax = NonNullable<
   GetV1EmployeesEmployeeIdFederalTaxesResponse['employeeFederalTax']
 >
@@ -16,47 +17,44 @@ export interface UseEmployeeTaxesProps {
   employeeId: string
 }
 
-export type UseEmployeeTaxesResult = BaseHookReady<
+type UseEmployeeTaxesReady = BaseHookReady<
   {
     employeeFederalTax?: EmployeeFederalTax
     employeeStateTaxesList: EmployeeStateTax[]
   },
-  {
-    isPending: boolean
-    isFederalTaxesLoading: boolean
-    isStateTaxesLoading: boolean
-  }
+  { isPending: boolean }
 >
 
-/**
- * Phase B: non-Suspense queries so the federal and state tax cards
- * paint independently. `isFederalTaxesLoading` and `isStateTaxesLoading`
- * let TaxesView render a per-card skeleton while the box header stays
- * visible.
- */
+export type UseEmployeeTaxesResult = HookLoadingResult | UseEmployeeTaxesReady
+
 export function useEmployeeTaxes({ employeeId }: UseEmployeeTaxesProps): UseEmployeeTaxesResult {
-  // staleTime: Infinity — see useEmployeeCompensation for rationale (SDK
-  // QueryClient invalidates on any mutation success).
-  const federalTaxesQuery = useEmployeeTaxSetupGetFederalTaxes(
-    { employeeUuid: employeeId },
-    { staleTime: Infinity },
-  )
-  const stateTaxesQuery = useEmployeeTaxSetupGetStateTaxes(
-    { employeeUuid: employeeId },
-    { staleTime: Infinity },
-  )
+  const federalTaxesQuery = useEmployeeTaxSetupGetFederalTaxesSuspense({ employeeUuid: employeeId })
+  const stateTaxesQuery = useEmployeeTaxSetupGetStateTaxesSuspense({ employeeUuid: employeeId })
+
+  const employeeFederalTax = federalTaxesQuery.data.employeeFederalTax
+  const employeeStateTaxesList = stateTaxesQuery.data.employeeStateTaxesList
+
+  const isPending = federalTaxesQuery.isFetching || stateTaxesQuery.isFetching
+  const isLoading = !employeeFederalTax && isPending
+
+  const errorHandling = composeErrorHandler([federalTaxesQuery, stateTaxesQuery])
+
+  if (isLoading) {
+    return {
+      isLoading: true,
+      errorHandling,
+    }
+  }
 
   return {
     isLoading: false,
     data: {
-      employeeFederalTax: federalTaxesQuery.data?.employeeFederalTax,
-      employeeStateTaxesList: stateTaxesQuery.data?.employeeStateTaxesList ?? [],
+      employeeFederalTax,
+      employeeStateTaxesList: employeeStateTaxesList || [],
     },
     status: {
-      isPending: federalTaxesQuery.isFetching || stateTaxesQuery.isFetching,
-      isFederalTaxesLoading: federalTaxesQuery.isLoading,
-      isStateTaxesLoading: stateTaxesQuery.isLoading,
+      isPending,
     },
-    errorHandling: composeErrorHandler([federalTaxesQuery, stateTaxesQuery]),
+    errorHandling,
   }
 }

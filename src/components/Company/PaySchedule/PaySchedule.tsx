@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { createMachine } from 'robot3'
-import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetAll'
+import { usePaySchedulesGetAllSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/paySchedulesGetAll'
 import { payScheduleStateMachine } from './payScheduleStateMachine'
 import type { PayScheduleContextInterface } from './PayScheduleComponents'
 import { PayScheduleFormContextual, PayScheduleListContextual } from './PayScheduleComponents'

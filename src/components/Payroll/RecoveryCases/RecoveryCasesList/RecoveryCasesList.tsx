@@ -2,8 +2,8 @@ import { useTranslation } from 'react-i18next'
 import type {
   RecoveryCase,
   RecoveryCaseStatus,
-} from '@gusto/embedded-api/models/components/recoverycase'
-import { useRecoveryCasesGetSuspense } from '@gusto/embedded-api/react-query/recoveryCasesGet'
+} from '@gusto/embedded-api-v-2025-11-15/models/components/recoverycase'
+import { useRecoveryCasesGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/recoveryCasesGet'
 import { useRecoveryCaseErrorCode } from '../useRecoveryCaseErrorCode'
 import styles from './RecoveryCasesList.module.scss'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'

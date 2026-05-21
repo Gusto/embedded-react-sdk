@@ -2,8 +2,8 @@ import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { EmployeeBankAccount } from '@gusto/embedded-api/models/components/employeebankaccount'
-import { useEmployeePaymentMethodCreateMutation } from '@gusto/embedded-api/react-query/employeePaymentMethodCreate'
+import type { EmployeeBankAccount } from '@gusto/embedded-api-v-2025-11-15/models/components/employeebankaccount'
+import { useEmployeePaymentMethodCreateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/employeePaymentMethodCreate'
 import {
   ACCOUNT_TYPES,
   type AccountType,

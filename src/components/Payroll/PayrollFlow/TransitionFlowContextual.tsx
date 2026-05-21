@@ -1,9 +1,9 @@
 import { useMemo, useRef } from 'react'
-import { usePayrollsListSuspense } from '@gusto/embedded-api/react-query/payrollsList'
+import { usePayrollsListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsList'
 import {
   ProcessingStatuses,
   QueryParamPayrollTypes,
-} from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrolls'
+} from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1companiescompanyidpayrolls'
 import { TransitionFlow } from '../Transition/TransitionFlow'
 import type { PayrollFlowContextInterface } from './PayrollFlowComponents'
 import { useFlow } from '@/components/Flow/useFlow'
