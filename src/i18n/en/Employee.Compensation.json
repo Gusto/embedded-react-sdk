@@ -1,5 +1,6 @@
 {
   "addAnotherJobCta": "+ Add another job",
+  "addAnotherJobTitle": "Add another job",
   "adjustForMinimumWage": "Adjust for minimum wage",
   "adjustForMinimumWageDescription": "Determines whether the compensation should be adjusted for minimum wage. Only applies to Nonexempt employees.",
   "minimumWageLabel": "Minimum wage",
@@ -30,7 +31,7 @@
   "hamburgerTitle": "Job actions",
   "jobTitle": "Job Title",
   "paymentUnitDescription": "The period over which the compensation amount is tracked (e.g., hourly, daily, weekly, monthly, annually).",
-  "paymentUnitLabel": "Per",
+  "paymentUnitLabel": "Wage frequency",
   "paymentUnitOptions": {
     "Hour": "Hour",
     "Month": "Month",
@@ -38,6 +39,9 @@
     "Week": "Week",
     "Year": "Year"
   },
+  "effectiveDate": "Effective date",
+  "effectiveDateDescription": "Changes will take effect on this date.",
+  "hireDate": "Start date",
   "saveNewJobCta": "Save job",
   "submitCta": "Continue",
   "title": "Compensation",
@@ -61,6 +65,9 @@
     "scheduledClassificationChangeNotification": "Scheduling this classification change will delete the employee's additional jobs when it goes into effect."
   },
   "validations": {
+    "effectiveDate": "Effective date is required",
+    "effectiveDateBeforeHire": "Effective date cannot be before the hire date",
+    "hireDate": "Start date is required",
     "classificationChangeNotification": "Changing this employee's classification will delete the employee's additional pay rates.",
     "exemptThreshold": "Most employees who make under {{limit}}/year should be eligible for overtime.",
     "paymentUnit": "Payment unit must be one of Hour, Week, Month, or Year",
