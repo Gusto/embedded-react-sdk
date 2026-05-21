@@ -1467,7 +1467,7 @@ export interface EmployeeDashboard{
 "salary":string;
 };
 "wage":string;
-"startDate":string;
+"effectiveDate":string;
 "addJobCta":string;
 "addAnotherJobCta":string;
 "tableLabel":string;
@@ -1477,7 +1477,7 @@ export interface EmployeeDashboard{
 "columns":{
 "jobTitle":string;
 "payType":string;
-"startDate":string;
+"effectiveDate":string;
 };
 "deleteJobDialog":{
 "title":string;
