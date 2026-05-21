@@ -18,10 +18,12 @@ export function EmployeeTable<T extends EmployeeTableItem>({
   onSearchChange,
   onSearchClear,
   searchPlaceholder,
+  hideSearch,
   selectionMode,
   onSelect,
   onSelectAll,
   getIsItemSelected,
+  hideSelectAll,
   itemMenu,
   pagination,
   isFetching,
@@ -93,23 +95,25 @@ export function EmployeeTable<T extends EmployeeTableItem>({
     isFetching,
     emptyState: resolvedEmptyState,
     footer,
-    ...(onSelect && { selectionMode, onSelect, onSelectAll, getIsItemSelected }),
+    ...(onSelect && { selectionMode, onSelect, onSelectAll, getIsItemSelected, hideSelectAll }),
   } as useDataViewProp<T>)
 
   return (
     <div className={styles.root} data-has-menu={itemMenu ? true : undefined}>
-      <div className={styles.searchContainer}>
-        <Components.TextInput
-          name="employee-search"
-          type="search"
-          label={t('searchLabel')}
-          shouldVisuallyHideLabel
-          placeholder={searchPlaceholder ?? t('searchPlaceholder')}
-          value={searchValue}
-          onChange={handleSearchChange}
-          adornmentStart={<SearchIcon aria-hidden />}
-        />
-      </div>
+      {!hideSearch && (
+        <div className={styles.searchContainer}>
+          <Components.TextInput
+            name="employee-search"
+            type="search"
+            label={t('searchLabel')}
+            shouldVisuallyHideLabel
+            placeholder={searchPlaceholder ?? t('searchPlaceholder')}
+            value={searchValue}
+            onChange={handleSearchChange}
+            adornmentStart={<SearchIcon aria-hidden />}
+          />
+        </div>
+      )}
       <DataView label={label ?? t('tableLabel')} {...dataViewProps} />
     </div>
   )
