@@ -256,10 +256,22 @@ async function setPaymentDate(page: Page): Promise<void> {
 }
 
 async function editFirstContractorPayment(page: Page, opts: { hours: string }): Promise<void> {
-  await page
-    .getByRole('button', { name: /^edit contractor payment$/i })
-    .first()
-    .click()
+  // Fast-fail the "no payable contractors" empty state. Without this, the
+  // edit-button click below would silently sit at the spec's 8-min test
+  // timeout waiting for a row that will never appear (e.g. when the demo
+  // company was just provisioned and no contractor has completed onboarding
+  // yet).
+  const emptyState = page.getByText(/no contractors available for payment/i).first()
+  if (await emptyState.isVisible({ timeout: 3_000 }).catch(() => false)) {
+    throw new Error(
+      'Pay contractors screen shows "No contractors available for payment" — demo company has no payment-ready contractors. ' +
+        'Either the base demo did not seed payable contractors or the scenario decoration did not complete onboarding.',
+    )
+  }
+
+  const editButton = page.getByRole('button', { name: /^edit contractor payment$/i }).first()
+  await expect(editButton).toBeVisible({ timeout: LONG_WAIT })
+  await editButton.click()
 
   await page
     .getByRole('menuitem', { name: /^edit contractor payment$/i })
@@ -270,8 +282,9 @@ async function editFirstContractorPayment(page: Page, opts: { hours: string }): 
     timeout: LONG_WAIT,
   })
 
-  // The decorated `payable` contractor is Hourly, so the modal renders Hours.
-  // Fixed contractors would render Wage instead — guard for that just in case.
+  // Demo's pre-existing payable contractors include both Hourly and Fixed
+  // wage types. The first row could be either, so handle whichever field
+  // the edit modal renders for the contractor we're paying.
   const hoursField = page.getByLabel(/^hours$/i)
   const wageField = page.getByLabel(/^wage$/i)
   if (await hoursField.isVisible({ timeout: 5_000 }).catch(() => false)) {
