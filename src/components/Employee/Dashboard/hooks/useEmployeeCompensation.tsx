@@ -31,6 +31,10 @@ interface UseEmployeeCompensationReady extends BaseHookReady<
     hasMultipleJobs: boolean
     pendingChanges: PendingCompensationChange[]
     payStubs: EmployeePayStub[]
+    /** First name from the shared employee fetch; useful for cosmetic copy
+     *  in alerts (e.g. "Heads up, Jane has pending changes"). Optional
+     *  because the employee record can omit it. */
+    employeeFirstName?: string
   },
   { isPending: boolean; cancellingCompensationUuid: string | null }
 > {
@@ -135,6 +139,7 @@ export function useEmployeeCompensation({
       hasMultipleJobs,
       pendingChanges,
       payStubs,
+      employeeFirstName: employee?.firstName ?? undefined,
     },
     status: {
       isPending,
