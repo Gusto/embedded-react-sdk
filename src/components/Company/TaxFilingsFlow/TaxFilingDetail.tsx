@@ -25,6 +25,19 @@ const FAILURE_CATEGORY_LABELS: Record<string, string> = {
   calculation_error: 'Calculation Error',
 }
 
+const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' })
+
+function formatRelative(iso: string): string {
+  const diff = (new Date(iso).getTime() - Date.now()) / 1000
+  const abs = Math.abs(diff)
+  if (abs < 60) return rtf.format(Math.round(diff), 'second')
+  if (abs < 3600) return rtf.format(Math.round(diff / 60), 'minute')
+  if (abs < 86400) return rtf.format(Math.round(diff / 3600), 'hour')
+  if (abs < 2592000) return rtf.format(Math.round(diff / 86400), 'day')
+  if (abs < 31536000) return rtf.format(Math.round(diff / 2592000), 'month')
+  return rtf.format(Math.round(diff / 31536000), 'year')
+}
+
 function formatDateTime(iso: string) {
   return new Date(iso).toLocaleString('en-US', {
     month: 'short',
@@ -34,6 +47,10 @@ function formatDateTime(iso: string) {
     minute: '2-digit',
     hour12: true,
   })
+}
+
+function formatDateTimeWithRelative(iso: string): string {
+  return `${formatRelative(iso)} — ${formatDateTime(iso)}`
 }
 
 function formatDate(iso: string) {
@@ -93,11 +110,11 @@ export function TaxFilingDetail({ filing, onBack }: TaxFilingDetailProps) {
           },
           {
             term: 'Filed',
-            description: filing.filed_at ? formatDateTime(filing.filed_at) : '—',
+            description: filing.filed_at ? formatDateTimeWithRelative(filing.filed_at) : '—',
           },
           {
             term: 'Last Updated',
-            description: formatDateTime(filing.status_updated_at),
+            description: formatDateTimeWithRelative(filing.status_updated_at),
           },
         ]}
       />
@@ -147,7 +164,7 @@ export function TaxFilingDetail({ filing, onBack }: TaxFilingDetailProps) {
                     {STATUS_LABELS[entry.status]}
                   </Badge>
                   <Text size="sm" variant="supporting">
-                    {formatDateTime(entry.changed_at)}
+                    {formatDateTimeWithRelative(entry.changed_at)}
                   </Text>
                 </div>
                 {entry.failure_reason && (
