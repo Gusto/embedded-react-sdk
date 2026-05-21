@@ -12,6 +12,7 @@ import { useEmployeeCompensation } from './hooks'
 import type { PendingCompensationChange } from './getPendingCompensationChanges'
 import { usePendingChangeDetailRenderer } from './usePendingChangeDetailRenderer'
 import { PendingChangesReviewModal } from './PendingChangesReviewModal'
+import styles from './JobAndPayView.module.scss'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { DataView, useDataView, EmptyData, Loading } from '@/components/Common'
@@ -548,57 +549,63 @@ export function JobAndPayView({
             <Loading />
           ) : (
             <Flex flexDirection="column" gap={16}>
-              {showInlineAlert && nextChange && (
-                <Components.Alert
-                  status="warning"
-                  disableScrollIntoView
-                  label={
-                    hasMultipleJobs
-                      ? t('jobAndPay.compensation.pendingChange.alertLabelWithJob', {
-                          jobTitle: nextChange.jobTitle,
-                          date: formatDateLongWithYear(nextChange.effectiveDate),
-                        })
-                      : t('jobAndPay.compensation.pendingChange.alertLabel', {
-                          date: formatDateLongWithYear(nextChange.effectiveDate),
-                        })
-                  }
-                >
-                  <Flex flexDirection="column" gap={12}>
-                    <Components.UnorderedList
-                      items={nextChange.details.map(detail => renderDetail(detail))}
-                    />
-                    <div>
-                      <Components.Button
-                        variant="secondary"
-                        isLoading={cancellingCompensationUuid === nextChange.compensationUuid}
-                        onClick={() => {
-                          void handleCancelChange(nextChange)
-                        }}
+              {hasPendingChanges && (
+                <div className={hasMultipleJobs ? styles.alertWrapper : undefined}>
+                  <Flex flexDirection="column" gap={16}>
+                    {showInlineAlert && nextChange && (
+                      <Components.Alert
+                        status="warning"
+                        disableScrollIntoView
+                        label={
+                          hasMultipleJobs
+                            ? t('jobAndPay.compensation.pendingChange.alertLabelWithJob', {
+                                jobTitle: nextChange.jobTitle,
+                                date: formatDateLongWithYear(nextChange.effectiveDate),
+                              })
+                            : t('jobAndPay.compensation.pendingChange.alertLabel', {
+                                date: formatDateLongWithYear(nextChange.effectiveDate),
+                              })
+                        }
                       >
-                        {t('jobAndPay.compensation.pendingChange.cancelCta')}
-                      </Components.Button>
-                    </div>
+                        <Flex flexDirection="column" gap={12}>
+                          <Components.UnorderedList
+                            items={nextChange.details.map(detail => renderDetail(detail))}
+                          />
+                          <div>
+                            <Components.Button
+                              variant="secondary"
+                              isLoading={cancellingCompensationUuid === nextChange.compensationUuid}
+                              onClick={() => {
+                                void handleCancelChange(nextChange)
+                              }}
+                            >
+                              {t('jobAndPay.compensation.pendingChange.cancelCta')}
+                            </Components.Button>
+                          </div>
+                        </Flex>
+                      </Components.Alert>
+                    )}
+                    {showSummaryAlert && (
+                      <Components.Alert
+                        status="warning"
+                        disableScrollIntoView
+                        label={t('jobAndPay.compensation.pendingChange.summaryLabel', {
+                          name: employeeFirstName ?? '',
+                        })}
+                        action={
+                          <Components.Button
+                            variant="secondary"
+                            onClick={() => {
+                              setIsReviewOpen(true)
+                            }}
+                          >
+                            {t('jobAndPay.compensation.pendingChange.reviewCta')}
+                          </Components.Button>
+                        }
+                      />
+                    )}
                   </Flex>
-                </Components.Alert>
-              )}
-              {showSummaryAlert && (
-                <Components.Alert
-                  status="warning"
-                  disableScrollIntoView
-                  label={t('jobAndPay.compensation.pendingChange.summaryLabel', {
-                    name: employeeFirstName ?? '',
-                  })}
-                  action={
-                    <Components.Button
-                      variant="secondary"
-                      onClick={() => {
-                        setIsReviewOpen(true)
-                      }}
-                    >
-                      {t('jobAndPay.compensation.pendingChange.reviewCta')}
-                    </Components.Button>
-                  }
-                />
+                </div>
               )}
               {hasMultipleJobs ? (
                 <DataView
