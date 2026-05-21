@@ -2,9 +2,11 @@ import { useTranslation } from 'react-i18next'
 import type { GetV1EmployeesEmployeeIdFederalTaxesResponse } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidfederaltaxes'
 import type { GetV1EmployeesEmployeeIdStateTaxesResponse } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidstatetaxes'
 import type { EmployeeStateTaxQuestion } from '@gusto/embedded-api/models/components/employeestatetaxquestion'
+import { useEmployeeTaxes } from './hooks'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Loading } from '@/components/Common'
+import { BaseLayout } from '@/components/Base/Base'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 
 type EmployeeFederalTax = NonNullable<
@@ -20,6 +22,43 @@ export interface TaxesViewProps {
   isLoading?: boolean
   onEditFederalTaxes?: () => void
   onEditStateTaxes?: () => void
+}
+
+export interface TaxesViewWithDataProps {
+  employeeId: string
+  /** Receives the federal-tax record so the parent can preserve the
+   *  existing event payload (`{ employeeId, federalTaxes }`). */
+  onEditFederalTaxes?: (federalTaxes: EmployeeFederalTax | undefined) => void
+  onEditStateTaxes?: () => void
+}
+
+/**
+ * Tab-mounted container for the Taxes tab. Owns the `useEmployeeTaxes`
+ * fetch so federal/state tax requests only fire when the tab is mounted.
+ * The presentational `TaxesView` stays pure for testing/stories.
+ */
+export function TaxesViewWithData({
+  employeeId,
+  onEditFederalTaxes,
+  onEditStateTaxes,
+}: TaxesViewWithDataProps) {
+  const taxes = useEmployeeTaxes({ employeeId })
+
+  if (taxes.isLoading) {
+    return <BaseLayout isLoading error={taxes.errorHandling.errors} />
+  }
+
+  const federalTaxes = taxes.data.employeeFederalTax
+  return (
+    <BaseLayout error={taxes.errorHandling.errors}>
+      <TaxesView
+        federalTaxes={federalTaxes}
+        stateTaxes={taxes.data.employeeStateTaxesList}
+        onEditFederalTaxes={() => onEditFederalTaxes?.(federalTaxes)}
+        onEditStateTaxes={onEditStateTaxes}
+      />
+    </BaseLayout>
+  )
 }
 
 export function TaxesView({

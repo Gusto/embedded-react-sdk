@@ -2,11 +2,13 @@ import { useTranslation } from 'react-i18next'
 import type { Employee } from '@gusto/embedded-api/models/components/employee'
 import type { EmployeeAddress } from '@gusto/embedded-api/models/components/employeeaddress'
 import type { EmployeeWorkAddress } from '@gusto/embedded-api/models/components/employeeworkaddress'
+import { useEmployeeBasicDetails } from './hooks'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { formatDateLongWithYear } from '@/helpers/dateFormatting'
 import { firstLastName, getStreet, getCityStateZip } from '@/helpers/formattedStrings'
 import { Loading } from '@/components/Common'
+import { BaseLayout } from '@/components/Base/Base'
 
 export interface BasicDetailsViewProps {
   employee?: Employee
@@ -16,6 +18,45 @@ export interface BasicDetailsViewProps {
   onEditBasicDetails?: () => void
   onManageHomeAddress?: () => void
   onManageWorkAddress?: () => void
+}
+
+export interface BasicDetailsViewWithDataProps {
+  employeeId: string
+  onEditBasicDetails?: () => void
+  onManageHomeAddress?: () => void
+  onManageWorkAddress?: () => void
+}
+
+/**
+ * Tab-mounted container for the Basic details tab. Owns the
+ * `useEmployeeBasicDetails` fetch (employee + home address + work address)
+ * so the requests only fire when the tab is mounted. The presentational
+ * `BasicDetailsView` stays pure for testing/stories.
+ */
+export function BasicDetailsViewWithData({
+  employeeId,
+  onEditBasicDetails,
+  onManageHomeAddress,
+  onManageWorkAddress,
+}: BasicDetailsViewWithDataProps) {
+  const basicDetails = useEmployeeBasicDetails({ employeeId })
+
+  if (basicDetails.isLoading) {
+    return <BaseLayout isLoading error={basicDetails.errorHandling.errors} />
+  }
+
+  return (
+    <BaseLayout error={basicDetails.errorHandling.errors}>
+      <BasicDetailsView
+        employee={basicDetails.data.employee}
+        currentHomeAddress={basicDetails.data.currentHomeAddress}
+        currentWorkAddress={basicDetails.data.currentWorkAddress}
+        onEditBasicDetails={onEditBasicDetails}
+        onManageHomeAddress={onManageHomeAddress}
+        onManageWorkAddress={onManageWorkAddress}
+      />
+    </BaseLayout>
+  )
 }
 
 export function BasicDetailsView({
