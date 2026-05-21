@@ -2546,6 +2546,9 @@
         "EmployeeOnboarding.OnboardingFlow"
       ]
     },
+    "Company.TaxFilingsFlow": {
+      "blocks": []
+    },
     "CompanyOnboarding.OnboardingFlow": {
       "blocks": [
         "CompanyOnboarding.BankAccount",
@@ -2721,6 +2724,9 @@
         "Payroll.PayrollExecutionFlow",
         "Payroll.TransitionCreation"
       ]
+    },
+    "TaxFilings.TaxFilingsFlow": {
+      "blocks": []
     },
     "TimeOff.TimeOffFlow": {
       "blocks": [

@@ -19,6 +19,25 @@ export interface ComponentMetadata {
 
 export const componentMetadata: Record<string, ComponentMetadata> = {
   // ─── Company ─────────────────────────────────────────────────────────
+  'Company.TaxFilingsFlow': {
+    description:
+      'View tax filing status for a company — federal (940, 941) and state (DE-9, etc.). Filter, sort, and drill into filing details with status history.',
+    keywords: [
+      'tax filings',
+      'filing status',
+      '940',
+      '941',
+      'DE-9',
+      'federal tax',
+      'state tax',
+      'IRS',
+      'EDD',
+      'quarterly filing',
+      'tax filing failed',
+      'accepted',
+      'in progress',
+    ],
+  },
   'Company.OnboardingFlow': {
     description: 'Onboard a company end-to-end (industry, signatory, taxes, bank, pay schedule).',
     keywords: [

@@ -8,6 +8,7 @@ import {
   type ReactNode,
 } from 'react'
 import { useParams } from 'react-router-dom'
+import { WorkbenchProvider } from '@gusto/workbench'
 import { findComponent, CATEGORIES } from './registry'
 import { resolveDefaults } from './component-defaults'
 import { useResolvedTheme } from './useThemeModeContext'
@@ -15,6 +16,7 @@ import { darkTheme } from './darkTheme'
 import { useThemeEditor } from './ThemePanel/ThemeEditorContext'
 import { useDesignSystem } from './ThemePanel/DesignSystemContext'
 import { nativeComponents } from './ThemePanel/adapters/nativeAdapter'
+import { cxPortalComponents } from './ThemePanel/adapters/cxPortalAdapter'
 import type { EntityIds } from './useEntities'
 import styles from './ComponentRenderer.module.scss'
 import { useCurrentComponentRegistry } from './useCurrentComponent'
@@ -139,7 +141,12 @@ export function ComponentRenderer({ entities, chromeHidden = false }: ComponentR
   const resolvedTheme = useResolvedTheme()
   const { themeOverrides } = useThemeEditor()
   const { designSystem } = useDesignSystem()
-  const resolvedComponents = designSystem === 'native' ? nativeComponents : undefined
+  const resolvedComponents =
+    designSystem === 'native'
+      ? nativeComponents
+      : designSystem === 'cx-portal'
+        ? cxPortalComponents
+        : undefined
   const resolvedSDKTheme = useMemo(() => {
     const base = resolvedTheme === 'dark' ? darkTheme : undefined
     const hasOverrides = Object.keys(themeOverrides).length > 0
@@ -291,16 +298,18 @@ export function ComponentRenderer({ entities, chromeHidden = false }: ComponentR
                 setResetKey(k => k + 1)
               }}
             >
-              <GustoProvider
-                config={{ baseUrl: `${window.location.origin}/api/` }}
-                theme={resolvedSDKTheme}
-                components={resolvedComponents}
-                key={providerKey}
-              >
-                <Suspense fallback={<div className={styles.contentLoading}>Loading...</div>}>
-                  <SdkComponent {...componentProps} />
-                </Suspense>
-              </GustoProvider>
+              <WorkbenchProvider>
+                <GustoProvider
+                  config={{ baseUrl: `${window.location.origin}/api/` }}
+                  theme={resolvedSDKTheme}
+                  components={resolvedComponents}
+                  key={providerKey}
+                >
+                  <Suspense fallback={<div className={styles.contentLoading}>Loading...</div>}>
+                    <SdkComponent {...componentProps} />
+                  </Suspense>
+                </GustoProvider>
+              </WorkbenchProvider>
             </ComponentErrorBoundary>
           </div>
         </div>

@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from 'react'
 
-export type DesignSystem = 'default' | 'native'
+export type DesignSystem = 'default' | 'native' | 'cx-portal'
 
 export interface DesignSystemContextValue {
   designSystem: DesignSystem

@@ -260,6 +260,11 @@ export const timeOffEvents = {
   TIME_OFF_DELETE_POLICY_DONE: 'timeOff/deletePolicy/done',
 } as const
 
+export const taxFilingsEvents = {
+  TAX_FILING_SELECTED: 'taxFilings/selected',
+  TAX_FILING_BACK: 'taxFilings/back',
+} as const
+
 export const componentEvents = {
   ROBOT_MACHINE_DONE: 'done', //This is internal Robot event thrown when machine transitions to final state
   ERROR: 'ERROR',
@@ -277,6 +282,7 @@ export const componentEvents = {
   ...offCycleEvents,
   ...terminationEvents,
   ...timeOffEvents,
+  ...taxFilingsEvents,
 } as const
 
 export type EventType = (typeof componentEvents)[keyof typeof componentEvents]

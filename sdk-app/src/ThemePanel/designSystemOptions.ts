@@ -10,4 +10,5 @@ export interface DesignSystemOption {
 export const DESIGN_SYSTEM_OPTIONS: DesignSystemOption[] = [
   { id: 'default', label: 'Gusto Default', logo: '🎨', available: true },
   { id: 'native', label: 'Native HTML', logo: '🌐', available: true },
+  { id: 'cx-portal', label: 'CX Portal', logo: '🏢', available: true },
 ]

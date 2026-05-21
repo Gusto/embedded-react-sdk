@@ -54,6 +54,16 @@ export default defineConfig(() => {
     aliases['@gusto/embedded-react-sdk'] = resolve(__dirname, '../dist/index.js')
   }
 
+  // Point workbench imports at the CXP's installed copy for the cx-portal design system adapter
+  const cxpNodeModules = resolve(__dirname, '../../embedded-cx-portal/node_modules')
+  aliases['@gusto/workbench'] = resolve(cxpNodeModules, '@gusto/workbench')
+  aliases['@gusto/workbench-icons'] = resolve(cxpNodeModules, '@gusto/workbench-icons')
+
+  // Force workbench to share the SDK's React instance (avoids "multiple React copies" hook errors)
+  const sdkNodeModules = resolve(__dirname, '../node_modules')
+  aliases['react'] = resolve(sdkNodeModules, 'react')
+  aliases['react-dom'] = resolve(sdkNodeModules, 'react-dom')
+
   return {
     root: resolve(__dirname),
     publicDir: resolve(__dirname, 'public'),
@@ -272,6 +282,7 @@ export default defineConfig(() => {
       __SDK_APP_ENV__: JSON.stringify(zpEnv),
       __SDK_APP_BUILD__: JSON.stringify(sdkBuild),
       __SDK_APP_PROXY_MODE__: JSON.stringify(proxyMode || 'none'),
+      'process.env.NODE_ENV': JSON.stringify('development'),
     },
   }
 })
