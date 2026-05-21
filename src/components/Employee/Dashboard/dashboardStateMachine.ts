@@ -1,6 +1,7 @@
 import { transition, reduce, state } from 'robot3'
 import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
 import type { Job } from '@gusto/embedded-api/models/components/job'
+import type { DashboardTab } from './Dashboard'
 import {
   DashboardViewContextual,
   HomeAddressContextual,
@@ -24,6 +25,7 @@ type EventPayloads = {
   [componentEvents.EMPLOYEE_VIEW_FORM_TO_SIGN]: { employeeId: string; formId: string }
   [componentEvents.EMPLOYEE_DEDUCTION_EDIT]: Garnishment
   [componentEvents.EMPLOYEE_COMPENSATION_CREATE]: { employeeId: string; job: Job }
+  [componentEvents.EMPLOYEE_DASHBOARD_TAB_CHANGE]: { tab: DashboardTab }
 }
 
 const returnToIndex = reduce(
@@ -247,6 +249,19 @@ export const dashboardStateMachine = {
         (ctx: DashboardContextInterface): DashboardContextInterface => ({
           ...ctx,
           successAlert: null,
+        }),
+      ),
+    ),
+    transition(
+      componentEvents.EMPLOYEE_DASHBOARD_TAB_CHANGE,
+      'index',
+      reduce(
+        (
+          ctx: DashboardContextInterface,
+          ev: MachineEventType<EventPayloads, typeof componentEvents.EMPLOYEE_DASHBOARD_TAB_CHANGE>,
+        ): DashboardContextInterface => ({
+          ...ctx,
+          selectedTab: ev.payload.tab,
         }),
       ),
     ),
