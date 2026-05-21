@@ -37,10 +37,14 @@ export function useEmployeeBasicDetails({
 }: UseEmployeeBasicDetailsProps): UseEmployeeBasicDetailsResult {
   // staleTime: Infinity — see useEmployeeCompensation for rationale (SDK
   // QueryClient invalidates on any mutation success).
-  const employeeQuery = useEmployeesGet(
-    { employeeId, include: ['all_compensations'] },
-    { staleTime: Infinity },
-  )
+  //
+  // No `include: ['all_compensations']` here: BasicDetails only reads
+  // `firstName/lastName/dateOfBirth/email/hasSsn` and the first job's
+  // `hireDate` — the historical compensations are dead weight in this
+  // payload. `useEmployeeCompensation` keeps the include since the
+  // JobAndPay tab actually consumes it. The two hooks intentionally use
+  // different query keys; mount-time payload shrinks on the active tab.
+  const employeeQuery = useEmployeesGet({ employeeId }, { staleTime: Infinity })
   const addressesQuery = useEmployeeAddressesGet({ employeeId }, { staleTime: Infinity })
   const workAddressesQuery = useEmployeeAddressesGetWorkAddresses(
     { employeeId },
