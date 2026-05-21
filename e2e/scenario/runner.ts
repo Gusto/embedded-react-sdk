@@ -231,6 +231,58 @@ async function decorateContractors(
     })
 
     contractorIds[contractor.key] = created.uuid
+
+    if (contractor.address) {
+      log(`  Setting address for ${contractor.key}`)
+      await api.put(`/contractors/${created.uuid}/address`, {
+        street_1: contractor.address.street_1,
+        ...(contractor.address.street_2 ? { street_2: contractor.address.street_2 } : {}),
+        city: contractor.address.city,
+        state: contractor.address.state,
+        zip: contractor.address.zip,
+      })
+    }
+
+    if (contractor.onboarding_status) {
+      const onboardingStatus =
+        contractor.onboarding_status === 'completed'
+          ? 'onboarding_completed'
+          : contractor.onboarding_status
+
+      if (onboardingStatus === 'onboarding_completed') {
+        // The contractor's PUT /onboarding_status only allows the transition
+        // from `admin_onboarding_review` -> `onboarding_completed`. Reaching
+        // `admin_onboarding_review` requires every *required* onboarding step
+        // to be complete: basic_details (from create), compensation_details
+        // (from wage_type+rate on create), add_address (handled above), and
+        // payment_details. Set the payment method to `Check` so the contractor
+        // auto-advances into `admin_onboarding_review` before we attempt the
+        // final transition.
+        log(`  Setting payment method to Check for ${contractor.key}`)
+        try {
+          const paymentMethod = await api.get<{ version?: string }>(
+            `/contractors/${created.uuid}/payment_method`,
+          )
+          await api.put(`/contractors/${created.uuid}/payment_method`, {
+            type: 'Check',
+            version: paymentMethod.version,
+          })
+        } catch (error) {
+          log(`  Payment method update failed for ${contractor.key}: ${String(error)}`)
+        }
+      }
+
+      log(`  Setting onboarding status for ${contractor.key}: ${contractor.onboarding_status}`)
+      try {
+        await api.put(`/contractors/${created.uuid}/onboarding_status`, {
+          onboarding_status: onboardingStatus,
+        })
+      } catch (error) {
+        log(
+          `  Skipping onboarding status update for ${contractor.key}; API rejected status (${String(error)})`,
+        )
+      }
+    }
   }
 
   return contractorIds
