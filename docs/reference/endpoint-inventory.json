@@ -2533,6 +2533,9 @@
     }
   },
   "flows": {
+    "Company.AgentPaymentsFlow": {
+      "blocks": []
+    },
     "Company.OnboardingFlow": {
       "blocks": [
         "Company.BankAccount",
