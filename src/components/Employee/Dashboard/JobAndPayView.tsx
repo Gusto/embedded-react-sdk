@@ -1,20 +1,24 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
+import { payrollsGetPayStub } from '@gusto/embedded-api/funcs/payrollsGetPayStub'
+import { useErrorBoundary } from 'react-error-boundary'
 import { useJobsAndCompensationsDeleteMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsDelete'
 import type { Job } from '@gusto/embedded-api/models/components/job'
 import type { EmployeeBankAccount } from '@gusto/embedded-api/models/components/employeebankaccount'
 import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
 import type { GetV1EmployeesEmployeeUuidPayStubsResponse } from '@gusto/embedded-api/models/operations/getv1employeesemployeeuuidpaystubs'
+import { useEmployeeCompensation } from './hooks'
 import type { PendingCompensationChange } from './getPendingCompensationChanges'
 import { usePendingChangeDetailRenderer } from './usePendingChangeDetailRenderer'
 import { PendingChangesReviewModal } from './PendingChangesReviewModal'
-import type { PaginationControlProps } from '@/components/Common/PaginationControl/PaginationControlTypes'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { DataView, useDataView, EmptyData } from '@/components/Common'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { BaseLayout } from '@/components/Base/Base'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
+import { readableStreamToBlob } from '@/helpers/readableStreamToBlob'
 import { formatDateLongWithYear } from '@/helpers/dateFormatting'
 import { useFormatCompensationRate } from '@/helpers/formattedStrings'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
@@ -50,46 +54,22 @@ function parseJobRate(rate: Job['rate']): number | null {
 
 export interface JobAndPayViewProps {
   employeeId: string
-  jobs?: Job[]
-  primaryFlsaStatus?: string
-  pendingChanges?: PendingCompensationChange[]
-  hasMultipleJobs?: boolean
-  employeeFirstName?: string | null
-  cancellingCompensationUuid?: string | null
-  payStubs?: EmployeePayStub[]
-  payStubsPagination?: PaginationControlProps
-  isLoading?: boolean
   onEvent: OnEventType<EventType, unknown>
   onEditCompensation?: (job: Job) => void
   onAddJob?: () => void
   onAddAnotherJob?: () => void
-  onCancelChange?: (pendingChange: PendingCompensationChange) => void
   onAddDeduction?: () => void
   onEditDeduction?: (deduction: Garnishment) => void
-  onPaystubDownload?: (payrollUuid: string) => void
-  downloadingPayrollUuids?: ReadonlySet<string>
 }
 
 export function JobAndPayView({
   employeeId,
-  jobs = [],
-  primaryFlsaStatus,
-  pendingChanges = [],
-  hasMultipleJobs: hasMultipleJobsProp,
-  employeeFirstName,
-  cancellingCompensationUuid = null,
-  payStubs = [],
-  payStubsPagination,
-  isLoading = false,
   onEvent,
   onEditCompensation,
   onAddJob,
   onAddAnotherJob,
-  onCancelChange,
   onAddDeduction,
   onEditDeduction,
-  onPaystubDownload,
-  downloadingPayrollUuids,
 }: JobAndPayViewProps) {
   useI18n('Employee.PaymentMethod')
   useI18n('Employee.Compensation')
@@ -102,6 +82,100 @@ export function JobAndPayView({
   const formatCompensationRate = useFormatCompensationRate()
   const formatCurrency = useNumberFormatter('currency')
   const formatPercent = useNumberFormatter('percent')
+  const gustoEmbedded = useGustoEmbeddedContext()
+  const { showBoundary } = useErrorBoundary()
+
+  const compensation = useEmployeeCompensation({ employeeId })
+  const jobs = compensation.isLoading ? [] : compensation.data.jobs
+  const primaryFlsaStatus = compensation.isLoading ? undefined : compensation.data.primaryFlsaStatus
+  const pendingChanges = compensation.isLoading ? [] : compensation.data.pendingChanges
+  const hasMultipleJobsFromHook = compensation.isLoading ? false : compensation.data.hasMultipleJobs
+  const payStubs = compensation.isLoading ? [] : compensation.data.payStubs
+  const payStubsPagination = compensation.isLoading ? undefined : compensation.pagination.payStubs
+  const cancellingCompensationUuid = compensation.isLoading
+    ? null
+    : compensation.status.cancellingCompensationUuid
+  const cancelPendingChange = compensation.isLoading
+    ? undefined
+    : compensation.actions.cancelPendingChange
+  const employeeFirstName = compensation.isLoading ? undefined : compensation.data.employeeFirstName
+
+  const handleCancelChange = useCallback(
+    async (pendingChange: PendingCompensationChange) => {
+      if (!cancelPendingChange) return
+      const result = await cancelPendingChange(pendingChange)
+      if (result) {
+        onEvent(componentEvents.EMPLOYEE_COMPENSATION_CHANGE_CANCELLED, {
+          employeeId,
+          compensationId: pendingChange.compensationUuid,
+        })
+      }
+    },
+    [cancelPendingChange, onEvent, employeeId],
+  )
+
+  const [downloadingPayrollUuids, setDownloadingPayrollUuids] = useState<ReadonlySet<string>>(
+    () => new Set(),
+  )
+
+  const handlePaystubDownload = useCallback(
+    async (payrollUuid: string) => {
+      const newWindow = window.open('', '_blank', 'noopener,noreferrer')
+      const loadingMessage = t('jobAndPay.paystubs.downloadLoadingMessage')
+      if (newWindow) {
+        // Avoid the user staring at about:blank while we fetch the PDF. The
+        // navigation to the Blob URL below replaces this document.
+        const doc = newWindow.document
+        doc.title = loadingMessage
+        const style = doc.createElement('style')
+        style.textContent =
+          'body{font-family:system-ui,-apple-system,sans-serif;display:flex;align-items:center;' +
+          'justify-content:center;height:100vh;margin:0;color:#444;gap:12px}' +
+          '.spinner{width:20px;height:20px;border:2px solid #ccc;border-top-color:#444;' +
+          'border-radius:50%;animation:spin .8s linear infinite}' +
+          '@keyframes spin{to{transform:rotate(360deg)}}'
+        doc.head.appendChild(style)
+        const spinner = doc.createElement('div')
+        spinner.className = 'spinner'
+        spinner.setAttribute('aria-hidden', 'true')
+        const label = doc.createElement('span')
+        label.textContent = loadingMessage
+        doc.body.replaceChildren(spinner, label)
+      }
+      setDownloadingPayrollUuids(prev => {
+        const next = new Set(prev)
+        next.add(payrollUuid)
+        return next
+      })
+      try {
+        const response = await payrollsGetPayStub(gustoEmbedded, {
+          payrollId: payrollUuid,
+          employeeId,
+        })
+        if (!response.value?.responseStream) {
+          throw new Error(t('jobAndPay.paystubs.downloadError'))
+        }
+        const pdfBlob = await readableStreamToBlob(response.value.responseStream, 'application/pdf')
+        const url = URL.createObjectURL(pdfBlob)
+        if (newWindow) {
+          newWindow.location.href = url
+        }
+        URL.revokeObjectURL(url)
+      } catch (err) {
+        if (newWindow) {
+          newWindow.close()
+        }
+        showBoundary(err instanceof Error ? err : new Error(String(err)))
+      } finally {
+        setDownloadingPayrollUuids(prev => {
+          const next = new Set(prev)
+          next.delete(payrollUuid)
+          return next
+        })
+      }
+    },
+    [gustoEmbedded, employeeId, t, showBoundary],
+  )
 
   const [pendingDeleteJob, setPendingDeleteJob] = useState<{
     uuid: string
@@ -120,7 +194,7 @@ export function JobAndPayView({
   }
 
   const singleJob = jobs.length === 1 ? jobs[0]! : undefined
-  const hasMultipleJobs = hasMultipleJobsProp ?? jobs.length > 1
+  const hasMultipleJobs = hasMultipleJobsFromHook
   const canAddAnotherJob = jobs.length >= 1 && primaryFlsaStatus === FlsaStatus.NONEXEMPT
   const singleJobNumericRate = singleJob ? parseJobRate(singleJob.rate) : null
 
@@ -168,9 +242,10 @@ export function JobAndPayView({
     }
   })
 
-  // Both hooks own a submit error state; merge into one error surface so
-  // the BaseLayout below shows whatever failed.
-  const errorHandling = composeErrorHandler([paymentMethodList, deductionsList])
+  // All three hooks own their own error state; merge into one error
+  // surface so the BaseLayout below shows whatever failed (read errors
+  // from the queries, submit errors from delete/cancel actions).
+  const errorHandling = composeErrorHandler([compensation, paymentMethodList, deductionsList])
 
   const jobsColumns = [
     {
@@ -373,7 +448,7 @@ export function JobAndPayView({
     pagination: payStubsPagination,
     itemMenu: payStub => {
       const isDownloading =
-        !!payStub.payrollUuid && !!downloadingPayrollUuids?.has(payStub.payrollUuid)
+        !!payStub.payrollUuid && downloadingPayrollUuids.has(payStub.payrollUuid)
       return (
         <Components.ButtonIcon
           variant="tertiary"
@@ -382,7 +457,7 @@ export function JobAndPayView({
           isLoading={isDownloading}
           onClick={() => {
             if (payStub.payrollUuid) {
-              onPaystubDownload?.(payStub.payrollUuid)
+              void handlePaystubDownload(payStub.payrollUuid)
             }
           }}
         >
@@ -398,7 +473,7 @@ export function JobAndPayView({
     ),
   })
 
-  if (isLoading || paymentMethodList.isLoading || deductionsList.isLoading) {
+  if (compensation.isLoading || paymentMethodList.isLoading || deductionsList.isLoading) {
     return <BaseLayout isLoading error={errorHandling.errors} />
   }
 
@@ -471,7 +546,7 @@ export function JobAndPayView({
                       variant="secondary"
                       isLoading={cancellingCompensationUuid === nextChange.compensationUuid}
                       onClick={() => {
-                        onCancelChange?.(nextChange)
+                        void handleCancelChange(nextChange)
                       }}
                     >
                       {t('jobAndPay.compensation.pendingChange.cancelCta')}
@@ -650,7 +725,7 @@ export function JobAndPayView({
             setIsReviewOpen(false)
           }}
           onCancelChange={change => {
-            onCancelChange?.(change)
+            void handleCancelChange(change)
           }}
         />
 
