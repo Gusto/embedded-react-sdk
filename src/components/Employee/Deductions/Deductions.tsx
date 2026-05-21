@@ -1,6 +1,6 @@
 import { createMachine } from 'robot3'
 import { useMemo } from 'react'
-import { useGarnishmentsListSuspense } from '@gusto/embedded-api/react-query/garnishmentsList'
+import { useGarnishmentsListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/garnishmentsList'
 import {
   IncludeDeductionsContextual,
   DeductionsListContextual,

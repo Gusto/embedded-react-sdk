@@ -1,6 +1,6 @@
 import { transition, reduce, state } from 'robot3'
-import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
-import type { Job } from '@gusto/embedded-api/models/components/job'
+import type { Garnishment } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishment'
+import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
 import {
   DashboardViewContextual,
   HomeAddressContextual,

@@ -67,7 +67,7 @@ const mockEmployees = [
   },
 ]
 
-vi.mock('@gusto/embedded-api/react-query/employeesList', () => ({
+vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/employeesList', () => ({
   useEmployeesListSuspense: (request: { searchTerm?: string }) => {
     const filtered = request.searchTerm
       ? mockEmployees.filter(e =>
@@ -84,21 +84,21 @@ vi.mock('@gusto/embedded-api/react-query/employeesList', () => ({
   },
 }))
 
-vi.mock('@gusto/embedded-api/react-query/timeOffPoliciesAddEmployees', () => ({
+vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/timeOffPoliciesAddEmployees', () => ({
   useTimeOffPoliciesAddEmployeesMutation: () => ({
     mutateAsync: mockAddEmployees,
     isPending: false,
   }),
 }))
 
-vi.mock('@gusto/embedded-api/react-query/timeOffPoliciesRemoveEmployees', () => ({
+vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/timeOffPoliciesRemoveEmployees', () => ({
   useTimeOffPoliciesRemoveEmployeesMutation: () => ({
     mutateAsync: mockRemoveEmployees,
     isPending: false,
   }),
 }))
 
-vi.mock('@gusto/embedded-api/react-query/timeOffPoliciesGet', () => ({
+vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/timeOffPoliciesGet', () => ({
   useTimeOffPoliciesGetSuspense: () => ({
     data: {
       timeOffPolicy: {
@@ -606,7 +606,7 @@ describe('SelectEmployeesTimeOff', () => {
         mockAddEmployees.mock.invocationCallOrder[0]!,
       )
       expect(mockInvalidateQueries).toHaveBeenCalledWith({
-        queryKey: ['@gusto/embedded-api', 'timeOffPolicies', 'get'],
+        queryKey: ['@gusto/embedded-api-v-2025-11-15', 'timeOffPolicies', 'get'],
       })
     })
   })
@@ -617,7 +617,7 @@ describe('SelectEmployeesTimeOff', () => {
       mockPolicyEmployees = [{ uuid: '1', balance: '12' }]
 
       const { UnprocessableEntityError } =
-        await import('@gusto/embedded-api/models/errors/unprocessableentityerror')
+        await import('@gusto/embedded-api-v-2025-11-15/models/errors/unprocessableentityerror')
       const apiError = new UnprocessableEntityError(
         {
           errors: [

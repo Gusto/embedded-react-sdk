@@ -1,14 +1,14 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
-import { useHolidayPayPoliciesAddEmployeesMutation } from '@gusto/embedded-api/react-query/holidayPayPoliciesAddEmployees'
-import { useHolidayPayPoliciesRemoveEmployeesMutation } from '@gusto/embedded-api/react-query/holidayPayPoliciesRemoveEmployees'
+import { useHolidayPayPoliciesAddEmployeesMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/holidayPayPoliciesAddEmployees'
+import { useHolidayPayPoliciesRemoveEmployeesMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/holidayPayPoliciesRemoveEmployees'
 import {
   useHolidayPayPoliciesGetSuspense,
   queryKeyHolidayPayPoliciesGet,
   invalidateAllHolidayPayPoliciesGet,
   type HolidayPayPoliciesGetQueryData,
-} from '@gusto/embedded-api/react-query/holidayPayPoliciesGet'
-import type { HolidayPayPolicy } from '@gusto/embedded-api/models/components/holidaypaypolicy'
+} from '@gusto/embedded-api-v-2025-11-15/react-query/holidayPayPoliciesGet'
+import type { HolidayPayPolicy } from '@gusto/embedded-api-v-2025-11-15/models/components/holidaypaypolicy'
 import { SelectEmployeesPresentation } from './SelectEmployeesPresentation'
 import { useSelectEmployeesData } from './useSelectEmployeesData'
 import { useBase } from '@/components/Base/useBase'

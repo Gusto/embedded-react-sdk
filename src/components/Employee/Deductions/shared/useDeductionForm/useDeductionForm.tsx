@@ -5,10 +5,10 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import {
   type Garnishment,
   type GarnishmentType,
-} from '@gusto/embedded-api/models/components/garnishment'
-import { useGarnishmentsCreateMutation } from '@gusto/embedded-api/react-query/garnishmentsCreate'
-import { useGarnishmentsUpdateMutation } from '@gusto/embedded-api/react-query/garnishmentsUpdate'
-import { useGarnishmentsList } from '@gusto/embedded-api/react-query/garnishmentsList'
+} from '@gusto/embedded-api-v-2025-11-15/models/components/garnishment'
+import { useGarnishmentsCreateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/garnishmentsCreate'
+import { useGarnishmentsUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/garnishmentsUpdate'
+import { useGarnishmentsList } from '@gusto/embedded-api-v-2025-11-15/react-query/garnishmentsList'
 import {
   createDeductionFormSchema,
   type DeductionFormData,

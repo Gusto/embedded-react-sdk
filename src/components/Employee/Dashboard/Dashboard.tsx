@@ -1,10 +1,10 @@
 import { useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
-import { payrollsGetPayStub } from '@gusto/embedded-api/funcs/payrollsGetPayStub'
+import { useGustoEmbeddedContext } from '@gusto/embedded-api-v-2025-11-15/react-query/_context'
+import { payrollsGetPayStub } from '@gusto/embedded-api-v-2025-11-15/funcs/payrollsGetPayStub'
 import { useErrorBoundary } from 'react-error-boundary'
-import type { Job } from '@gusto/embedded-api/models/components/job'
-import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
+import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
+import type { Garnishment } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishment'
 import {
   useEmployeeBasicDetails,
   useEmployeeCompensation,

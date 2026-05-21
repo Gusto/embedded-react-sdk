@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import classNames from 'classnames'
 import { Trans, useTranslation } from 'react-i18next'
-import type { PaymentUnit } from '@gusto/embedded-api/models/components/compensation'
-import type { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
-import type { MinimumWage } from '@gusto/embedded-api/models/components/minimumwage'
+import type { PaymentUnit } from '@gusto/embedded-api-v-2025-11-15/models/components/compensation'
+import type { FlsaStatusType } from '@gusto/embedded-api-v-2025-11-15/models/components/flsastatustype'
+import type { MinimumWage } from '@gusto/embedded-api-v-2025-11-15/models/components/minimumwage'
 import type { CompensationDefaultValues } from '../Compensation'
 import { useJobForm, type UseJobFormReady } from '../../shared/useJobForm'
 import {

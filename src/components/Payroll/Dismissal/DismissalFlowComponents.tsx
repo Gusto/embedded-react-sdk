@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { usePayrollsGetSuspense } from '@gusto/embedded-api/react-query/payrollsGet'
+import { usePayrollsGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsGet'
 import {
   PayrollExecutionFlow,
   type PayrollExecutionFlowProps,

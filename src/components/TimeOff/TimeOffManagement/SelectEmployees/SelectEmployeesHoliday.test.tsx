@@ -30,7 +30,7 @@ const mockEmployees = [
   },
 ]
 
-vi.mock('@gusto/embedded-api/react-query/employeesList', () => ({
+vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/employeesList', () => ({
   useEmployeesListSuspense: (request: { searchTerm?: string }) => {
     const filtered = request.searchTerm
       ? mockEmployees.filter(e =>
@@ -49,7 +49,7 @@ vi.mock('@gusto/embedded-api/react-query/employeesList', () => ({
 
 const mockHolidayPolicyEmployees: Array<{ uuid: string }> = []
 
-vi.mock('@gusto/embedded-api/react-query/holidayPayPoliciesGet', () => ({
+vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/holidayPayPoliciesGet', () => ({
   useHolidayPayPoliciesGetSuspense: () => ({
     data: {
       holidayPayPolicy: { version: 'abc123', employees: mockHolidayPolicyEmployees },
@@ -57,21 +57,21 @@ vi.mock('@gusto/embedded-api/react-query/holidayPayPoliciesGet', () => ({
   }),
   invalidateAllHolidayPayPoliciesGet: vi.fn(),
   queryKeyHolidayPayPoliciesGet: (companyUuid: string) => [
-    '@gusto/embedded-api',
+    '@gusto/embedded-api-v-2025-11-15',
     'holidayPayPolicies',
     'get',
     companyUuid,
   ],
 }))
 
-vi.mock('@gusto/embedded-api/react-query/holidayPayPoliciesAddEmployees', () => ({
+vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/holidayPayPoliciesAddEmployees', () => ({
   useHolidayPayPoliciesAddEmployeesMutation: () => ({
     mutateAsync: mockAddEmployees,
     isPending: false,
   }),
 }))
 
-vi.mock('@gusto/embedded-api/react-query/holidayPayPoliciesRemoveEmployees', () => ({
+vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/holidayPayPoliciesRemoveEmployees', () => ({
   useHolidayPayPoliciesRemoveEmployeesMutation: () => ({
     mutateAsync: vi.fn(),
     isPending: false,

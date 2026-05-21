@@ -1,9 +1,9 @@
 import { useIsMutating } from '@tanstack/react-query'
-import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
+import { useEmployeesGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesGet'
 import {
   useEmployeesUpdateOnboardingDocumentsConfigMutation,
   mutationKeyEmployeesUpdateOnboardingDocumentsConfig,
-} from '@gusto/embedded-api/react-query/employeesUpdateOnboardingDocumentsConfig'
+} from '@gusto/embedded-api-v-2025-11-15/react-query/employeesUpdateOnboardingDocumentsConfig'
 import {
   EmployeeDocumentsPresentation,
   type EmployeeDocumentsFormValues,

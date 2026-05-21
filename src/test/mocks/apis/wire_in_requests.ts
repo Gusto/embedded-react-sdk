@@ -1,6 +1,6 @@
 import type { HttpResponseResolver, PathParams } from 'msw'
 import { http, HttpResponse } from 'msw'
-import type { GetCompaniesCompanyUuidWireInRequestUuidRequest } from '@gusto/embedded-api/models/operations/getcompaniescompanyuuidwireinrequestuuid'
+import type { GetCompaniesCompanyUuidWireInRequestUuidRequest } from '@gusto/embedded-api-v-2025-11-15/models/operations/getcompaniescompanyuuidwireinrequestuuid'
 import { API_BASE_URL } from '@/test/constants'
 
 export const createWireInRequest = (overrides: Record<string, unknown> = {}) => ({
@@ -16,7 +16,7 @@ export const createWireInRequest = (overrides: Record<string, unknown> = {}) => 
   bank_name: null,
   date_sent: null,
   unique_tracking_code: 'TRACK123',
-  payment_type: 'Payroll',
+  payment_type: 'payroll',
   payment_uuid: 'payroll-uuid-1',
   amount_sent: null,
   requested_amount: '5000.00',

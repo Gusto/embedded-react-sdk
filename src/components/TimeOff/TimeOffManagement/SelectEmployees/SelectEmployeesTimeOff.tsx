@@ -1,9 +1,9 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
-import { useTimeOffPoliciesAddEmployeesMutation } from '@gusto/embedded-api/react-query/timeOffPoliciesAddEmployees'
-import { useTimeOffPoliciesRemoveEmployeesMutation } from '@gusto/embedded-api/react-query/timeOffPoliciesRemoveEmployees'
-import { useTimeOffPoliciesGetSuspense } from '@gusto/embedded-api/react-query/timeOffPoliciesGet'
-import { useTimeOffPoliciesUpdateMutation } from '@gusto/embedded-api/react-query/timeOffPoliciesUpdate'
-import { UnprocessableEntityError } from '@gusto/embedded-api/models/errors/unprocessableentityerror'
+import { useTimeOffPoliciesAddEmployeesMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/timeOffPoliciesAddEmployees'
+import { useTimeOffPoliciesRemoveEmployeesMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/timeOffPoliciesRemoveEmployees'
+import { useTimeOffPoliciesGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/timeOffPoliciesGet'
+import { useTimeOffPoliciesUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/timeOffPoliciesUpdate'
+import { UnprocessableEntityError } from '@gusto/embedded-api-v-2025-11-15/models/errors/unprocessableentityerror'
 import { useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import type { CreatableTimeOffPolicyType } from '../../TimeOffFlow/timeOffPolicyTypes'
@@ -256,7 +256,7 @@ function SelectEmployeesTimeOffInner({
           }
         }
         void queryClient.invalidateQueries({
-          queryKey: ['@gusto/embedded-api', 'timeOffPolicies', 'get'],
+          queryKey: ['@gusto/embedded-api-v-2025-11-15', 'timeOffPolicies', 'get'],
         })
         onEvent(componentEvents.TIME_OFF_ADD_EMPLOYEES_DONE, policyResult)
       })

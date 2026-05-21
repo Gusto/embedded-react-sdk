@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import type { Job } from '@gusto/embedded-api/models/components/job'
+import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
 import { Dashboard } from './Dashboard'
 import { HomeAddress } from '@/components/Employee/HomeAddress/management/HomeAddress'
 import { WorkAddress } from '@/components/Employee/WorkAddress/management/WorkAddress'

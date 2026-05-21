@@ -47,7 +47,6 @@ export const PayrollOverviewStory = () => {
         payrollUuid: '9f2013b1-caa6-4b49-8ae2-abc988615808',
         companyUuid: '624e94a3-da0a-48e1-9f9b-667f8d502ce1',
         offCycle: false,
-        autoPilot: false,
         external: false,
         payPeriod: {
           startDate: '2025-09-12',
@@ -1891,7 +1890,6 @@ export const PayrollOverviewWithWireFunds = () => {
         payrollUuid: '9f2013b1-caa6-4b49-8ae2-abc988615808',
         companyUuid: '624e94a3-da0a-48e1-9f9b-667f8d502ce1',
         offCycle: false,
-        autoPilot: false,
         external: false,
         payPeriod: {
           startDate: '2025-09-12',
@@ -1954,7 +1952,6 @@ export const PayrollOverviewWith4DayDirectDeposit = () => {
         payrollUuid: '9f2013b1-caa6-4b49-8ae2-abc988615808',
         companyUuid: '624e94a3-da0a-48e1-9f9b-667f8d502ce1',
         offCycle: false,
-        autoPilot: false,
         external: false,
         payPeriod: {
           startDate: '2025-09-12',
@@ -2021,7 +2018,6 @@ export const WithSkippedEmployee = () => {
         payrollUuid: 'payroll-uuid',
         companyUuid: 'company-uuid',
         offCycle: false,
-        autoPilot: false,
         external: false,
         payPeriod: {
           startDate: '2025-09-12',

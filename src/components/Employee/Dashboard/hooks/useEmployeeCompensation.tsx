@@ -1,9 +1,9 @@
 import { useCallback, useMemo } from 'react'
-import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
-import { useJobsAndCompensationsDeleteCompensationMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsDeleteCompensation'
-import { usePayrollsGetPayStubsSuspense } from '@gusto/embedded-api/react-query/payrollsGetPayStubs'
-import type { Job } from '@gusto/embedded-api/models/components/job'
-import type { GetV1EmployeesEmployeeUuidPayStubsResponse } from '@gusto/embedded-api/models/operations/getv1employeesemployeeuuidpaystubs'
+import { useEmployeesGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesGet'
+import { useJobsAndCompensationsDeleteCompensationMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/jobsAndCompensationsDeleteCompensation'
+import { usePayrollsGetPayStubsSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsGetPayStubs'
+import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
+import type { GetV1EmployeesEmployeeUuidPayStubsResponse } from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1employeesemployeeuuidpaystubs'
 import {
   getPendingCompensationChanges,
   type PendingCompensationChange,
