@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.45.1](https://github.com/Gusto/embedded-react-sdk/compare/v0.45.0...v0.45.1) (2026-05-21)
+
+### Fixes
+
+- Fix React hydration error in the Employee Dashboard document viewer caused by the "download this document" link rendering as two nested `<a>` elements ([#1893](https://github.com/Gusto/embedded-react-sdk/issues/1893))
+- Preserve the selected `DashboardFlow` tab when entering and leaving a sub-flow (Add bank account, Add deduction, Edit Federal/State taxes, View document); Cancel/Back now returns to the originating tab instead of resetting to Basic details ([#1893](https://github.com/Gusto/embedded-react-sdk/issues/1893))
+- Replace Suspense-blocking queries on the Employee Dashboard with per-section skeleton states for faster perceived loading ([#1892](https://github.com/Gusto/embedded-react-sdk/issues/1892))
+
 ## [0.45.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.44.2...v0.45.0) (2026-05-21)
 
 ### Features & Enhancements
