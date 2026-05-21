@@ -55,11 +55,13 @@ export function AddCompensationFormBody({
         />
       )}
 
-      <JobFields.Title
-        label={t('jobTitle')}
-        validationMessages={{ REQUIRED: t('validations.title') }}
-        formHookResult={jobForm}
-      />
+      {JobFields.Title && (
+        <JobFields.Title
+          label={t('jobTitle')}
+          validationMessages={{ REQUIRED: t('validations.title') }}
+          formHookResult={jobForm}
+        />
+      )}
 
       {JobFields.HireDate && (
         <JobFields.HireDate
