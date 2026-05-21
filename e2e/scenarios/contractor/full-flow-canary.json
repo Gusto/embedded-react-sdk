@@ -1,9 +1,28 @@
 {
   "$schema": "../../schema/scenario.schema.json",
   "name": "Contractor canary — onboarding + payment end-to-end",
-  "description": "Onboarded company with pre-existing payable contractors from the demo base. The payment canary submits a payment against one of those contractors. Onboarding canaries (individual + business) create their own contractors through the UI.",
+  "description": "Onboarded company with one payment-ready contractor provisioned by the scenario itself (address + onboarding_status=onboarding_completed). The payment canary submits a payment against this contractor. The base demo's seeded contractor is left in its default (un-onboarded) state and is filtered out of the Pay Contractors list. Onboarding canaries (individual + business) create their own contractors through the UI and do not rely on this decoration.",
   "domain": "contractor",
   "baseDemo": "react_sdk_demo_company_onboarded",
-  "decorations": {},
-  "expectedContext": ["companyId"]
+  "decorations": {
+    "contractors": [
+      {
+        "key": "payable",
+        "type": "Individual",
+        "first_name": "Pat",
+        "last_name": "Payable",
+        "email": "pat-payable+{{ts}}@example.com",
+        "wage_type": "Hourly",
+        "hourly_rate": "75",
+        "address": {
+          "street_1": "500 3rd Street",
+          "city": "San Francisco",
+          "state": "CA",
+          "zip": "94107"
+        },
+        "onboarding_status": "onboarding_completed"
+      }
+    ]
+  },
+  "expectedContext": ["companyId", "contractorIds.payable"]
 }

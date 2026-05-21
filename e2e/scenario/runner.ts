@@ -231,6 +231,34 @@ async function decorateContractors(
     })
 
     contractorIds[contractor.key] = created.uuid
+
+    if (contractor.address) {
+      log(`  Setting address for ${contractor.key}`)
+      await api.put(`/contractors/${created.uuid}/address`, {
+        street_1: contractor.address.street_1,
+        ...(contractor.address.street_2 ? { street_2: contractor.address.street_2 } : {}),
+        city: contractor.address.city,
+        state: contractor.address.state,
+        zip: contractor.address.zip,
+      })
+    }
+
+    if (contractor.onboarding_status) {
+      const onboardingStatus =
+        contractor.onboarding_status === 'completed'
+          ? 'onboarding_completed'
+          : contractor.onboarding_status
+      log(`  Setting onboarding status for ${contractor.key}: ${contractor.onboarding_status}`)
+      try {
+        await api.put(`/contractors/${created.uuid}/onboarding_status`, {
+          onboarding_status: onboardingStatus,
+        })
+      } catch (error) {
+        log(
+          `  Skipping onboarding status update for ${contractor.key}; API rejected status (${String(error)})`,
+        )
+      }
+    }
   }
 
   return contractorIds

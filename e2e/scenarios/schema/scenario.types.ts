@@ -84,6 +84,21 @@ export type ContractorDecoration =
       email?: string
       wage_type?: 'Fixed' | 'Hourly'
       hourly_rate?: string
+      /**
+       * If present, runner PUTs the contractor's address before applying onboarding_status. Required to make a contractor payment-ready.
+       */
+      address?: {
+        street_1: string
+        street_2?: string
+        city: string
+        state: string
+        zip: string
+        [k: string]: unknown
+      }
+      /**
+       * Target contractor onboarding_status. When set to 'onboarding_completed', the runner marks the contractor as fully onboarded so they appear in the payment list.
+       */
+      onboarding_status?: string
       [k: string]: unknown
     }
 
