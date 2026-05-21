@@ -1,6 +1,12 @@
 import { expect, type Page } from '@playwright/test'
 import type { ScenarioContext } from '../scenario/context'
-import { fillDate, generateUniqueEIN, generateUniqueSSN, waitForLoadingComplete } from './helpers'
+import {
+  fillDate,
+  generateUniqueEIN,
+  generateUniqueSSN,
+  nextBusinessDay,
+  waitForLoadingComplete,
+} from './helpers'
 
 const LONG_WAIT = 60_000
 
@@ -240,10 +246,12 @@ async function setPaymentDate(page: Page): Promise<void> {
   const dateInput = page.getByLabel(/^payment date$/i)
   await expect(dateInput).toBeVisible({ timeout: LONG_WAIT })
 
-  // Direct deposit needs a payment date several business days out. Pick +14d
-  // to comfortably clear cutoff + weekend rules on the demo backend.
-  const future = new Date()
-  future.setDate(future.getDate() + 14)
+  // Direct deposit needs a payment date several business days out. Pick the
+  // next business day at least 14d ahead so we comfortably clear cutoff,
+  // weekends, AND US federal holidays. The demo backend rejects e.g.
+  // Memorial Day with "Mon, May 25th is not a business day", which surfaces
+  // only as a non-actionable form alert otherwise.
+  const future = nextBusinessDay(new Date(), 14)
   await dateInput.fill(future.toISOString().slice(0, 10))
 }
 
