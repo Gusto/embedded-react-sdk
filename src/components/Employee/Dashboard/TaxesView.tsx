@@ -129,7 +129,11 @@ export function TaxesView({
           <Components.BoxHeader
             title={t('taxes.federal.title')}
             action={
-              <Components.Button variant="secondary" onClick={onEditFederalTaxes}>
+              <Components.Button
+                variant="secondary"
+                onClick={onEditFederalTaxes}
+                isDisabled={isFederalTaxesLoading}
+              >
                 {t('taxes.federal.editCta')}
               </Components.Button>
             }
@@ -214,7 +218,11 @@ export function TaxesView({
           <Components.BoxHeader
             title={t('taxes.state.title')}
             action={
-              <Components.Button variant="secondary" onClick={onEditStateTaxes}>
+              <Components.Button
+                variant="secondary"
+                onClick={onEditStateTaxes}
+                isDisabled={isStateTaxesLoading}
+              >
                 {t('taxes.state.editCta')}
               </Components.Button>
             }

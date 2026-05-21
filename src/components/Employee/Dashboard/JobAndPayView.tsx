@@ -472,8 +472,15 @@ export function JobAndPayView({
     ),
   })
 
-  const isPaymentMethodLoading = paymentMethodList.isLoading
-  const isDeductionsLoading = deductionsList.isLoading
+  // `usePaymentMethodList` and `useDeductionsList` still use the older
+  // `HookLoadingResult | Ready` shape, which returns `isLoading: true`
+  // when the query has errored AND data is missing. Treat those rows
+  // as "not loading" so the section doesn't show a perpetual skeleton
+  // while BaseLayout already renders the error alert above.
+  const isPaymentMethodLoading =
+    paymentMethodList.isLoading && paymentMethodList.errorHandling.errors.length === 0
+  const isDeductionsLoading =
+    deductionsList.isLoading && deductionsList.errorHandling.errors.length === 0
   const isDirectDeposit = paymentMethod?.type === PAYMENT_METHODS.directDeposit
 
   return (
@@ -485,7 +492,11 @@ export function JobAndPayView({
             <Components.BoxHeader
               title={t('jobAndPay.compensation.title')}
               action={
-                hasMultipleJobs ? null : singleJob ? (
+                // While the compensation card is loading we don't yet
+                // know if the employee has jobs — suppress the action
+                // so we don't surface an "Add job" CTA against an
+                // employee who already has one.
+                isCompensationCardLoading ? null : hasMultipleJobs ? null : singleJob ? (
                   <Components.Button
                     variant="secondary"
                     onClick={() => {
@@ -507,7 +518,7 @@ export function JobAndPayView({
             />
           }
           footer={
-            canAddAnotherJob ? (
+            !isCompensationCardLoading && canAddAnotherJob ? (
               <Components.Button
                 variant="secondary"
                 onClick={onAddAnotherJob}

@@ -92,7 +92,11 @@ export function BasicDetailsView({
           <Components.BoxHeader
             title={t('basicDetails.title')}
             action={
-              <Components.Button variant="secondary" onClick={onEditBasicDetails}>
+              <Components.Button
+                variant="secondary"
+                onClick={onEditBasicDetails}
+                isDisabled={isEmployeeLoading}
+              >
                 {t('basicDetails.editCta')}
               </Components.Button>
             }
@@ -100,9 +104,9 @@ export function BasicDetailsView({
         }
       >
         <Flex flexDirection="column" gap={16}>
-          {isEmployeeLoading || !employee ? (
+          {isEmployeeLoading ? (
             <Loading />
-          ) : (
+          ) : employee ? (
             <Flex flexDirection="column" gap={12}>
               {legalName && (
                 <Flex flexDirection="column" gap={0}>
@@ -149,7 +153,7 @@ export function BasicDetailsView({
                 </Flex>
               )}
             </Flex>
-          )}
+          ) : null}
         </Flex>
       </Components.Box>
 
@@ -158,7 +162,11 @@ export function BasicDetailsView({
           <Components.BoxHeader
             title={t('homeAddress.title')}
             action={
-              <Components.Button variant="secondary" onClick={onManageHomeAddress}>
+              <Components.Button
+                variant="secondary"
+                onClick={onManageHomeAddress}
+                isDisabled={isHomeAddressLoading}
+              >
                 {t('homeAddress.manageCta')}
               </Components.Button>
             }
@@ -187,7 +195,11 @@ export function BasicDetailsView({
           <Components.BoxHeader
             title={t('workAddress.title')}
             action={
-              <Components.Button variant="secondary" onClick={onManageWorkAddress}>
+              <Components.Button
+                variant="secondary"
+                onClick={onManageWorkAddress}
+                isDisabled={isWorkAddressLoading}
+              >
                 {t('workAddress.manageCta')}
               </Components.Button>
             }
