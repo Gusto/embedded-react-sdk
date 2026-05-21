@@ -23,8 +23,7 @@
         "overrides": {
           "first_name": "Alice",
           "last_name": "Canary",
-          "email": "alice-timeoff-canary+{{ts}}@example.com",
-          "onboarding_status": "onboarding_completed"
+          "email": "alice-timeoff-canary+{{ts}}@example.com"
         }
       }
     ]

@@ -5,7 +5,7 @@ test.describe('TransitionFlow — post schedule change', () => {
   test.beforeEach(({}, testInfo) => {
     testInfo.annotations.push({
       type: 'scenario',
-      description: 'payroll/post-schedule-change',
+      description: 'payroll/biweekly-shared',
     })
   })
 

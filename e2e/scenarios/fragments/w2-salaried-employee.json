@@ -20,6 +20,5 @@
     "rate": "85000",
     "payment_unit": "Year",
     "flsa_status": "Exempt"
-  },
-  "onboarding_status": "completed"
+  }
 }

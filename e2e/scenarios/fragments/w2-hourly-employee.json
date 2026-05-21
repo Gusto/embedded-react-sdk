@@ -20,6 +20,5 @@
     "rate": "30",
     "payment_unit": "Hour",
     "flsa_status": "Nonexempt"
-  },
-  "onboarding_status": "completed"
+  }
 }
