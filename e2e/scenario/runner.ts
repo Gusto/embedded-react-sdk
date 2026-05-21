@@ -285,6 +285,22 @@ interface PayrollStatus {
   processing_request?: { status: string }
 }
 
+async function pollUntil<T>(
+  fn: () => Promise<T | null>,
+  options: { maxWaitMs: number; initialDelayMs?: number; maxDelayMs?: number },
+): Promise<T | null> {
+  const start = Date.now()
+  let delay = options.initialDelayMs ?? 500
+  const cap = options.maxDelayMs ?? 2000
+  while (Date.now() - start < options.maxWaitMs) {
+    const result = await fn()
+    if (result !== null) return result
+    await new Promise(r => setTimeout(r, delay))
+    delay = Math.min(delay * 2, cap)
+  }
+  return null
+}
+
 async function processPayroll(
   api: ApiClient,
   companyId: string,
@@ -297,32 +313,47 @@ async function processPayroll(
   log(`  Calculating payroll ${payrollUuid}`)
   await api.put(`/companies/${companyId}/payrolls/${payrollUuid}/calculate`, {})
 
-  const MAX_POLL = 20
-  const POLL_INTERVAL_MS = 3000
+  // Previously this was 20 attempts * 3s = 60s per phase with a 3s pre-sleep
+  // on every iteration. The exponential backoff below keeps the same ~60s
+  // overall budget per phase but lets fast paths return in <1s instead of
+  // always paying the 3s pre-sleep.
+  const PHASE_BUDGET_MS = 60_000
 
-  for (let i = 0; i < MAX_POLL; i++) {
-    await new Promise(r => setTimeout(r, POLL_INTERVAL_MS))
-    const payroll = await api.get<PayrollStatus>(`/companies/${companyId}/payrolls/${payrollUuid}`)
-    if (payroll.processing_request?.status === 'calculate_success') {
-      log(`  Submitting payroll ${payrollUuid}`)
-      await api.put(`/companies/${companyId}/payrolls/${payrollUuid}/submit`, {})
-      break
-    }
-    if (payroll.processing_request?.status === 'calculate_failed') {
-      throw new Error(`Payroll ${payrollUuid} calculation failed`)
-    }
+  const calculated = await pollUntil(
+    async () => {
+      const payroll = await api.get<PayrollStatus>(
+        `/companies/${companyId}/payrolls/${payrollUuid}`,
+      )
+      if (payroll.processing_request?.status === 'calculate_failed') {
+        throw new Error(`Payroll ${payrollUuid} calculation failed`)
+      }
+      return payroll.processing_request?.status === 'calculate_success' ? payroll : null
+    },
+    { maxWaitMs: PHASE_BUDGET_MS },
+  )
+
+  if (!calculated) {
+    throw new Error(`Payroll ${payrollUuid} calculation timed out`)
   }
 
-  for (let i = 0; i < MAX_POLL; i++) {
-    await new Promise(r => setTimeout(r, POLL_INTERVAL_MS))
-    const payroll = await api.get<PayrollStatus>(`/companies/${companyId}/payrolls/${payrollUuid}`)
-    if (payroll.processed) {
-      log(`  Payroll ${payrollUuid} processed`)
-      return
-    }
+  log(`  Submitting payroll ${payrollUuid}`)
+  await api.put(`/companies/${companyId}/payrolls/${payrollUuid}/submit`, {})
+
+  const processed = await pollUntil(
+    async () => {
+      const payroll = await api.get<PayrollStatus>(
+        `/companies/${companyId}/payrolls/${payrollUuid}`,
+      )
+      return payroll.processed ? payroll : null
+    },
+    { maxWaitMs: PHASE_BUDGET_MS },
+  )
+
+  if (!processed) {
+    throw new Error(`Payroll ${payrollUuid} processing timed out`)
   }
 
-  throw new Error(`Payroll ${payrollUuid} processing timed out`)
+  log(`  Payroll ${payrollUuid} processed`)
 }
 
 async function decoratePayrolls(

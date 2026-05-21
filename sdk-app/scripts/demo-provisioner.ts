@@ -61,9 +61,14 @@ export interface DemoResult {
 export async function createDemoAndProvision(
   gwsFlowsHost: string,
   demoType: string,
-  options: { maxPollAttempts?: number; onProgress?: (msg: string) => void } = {},
+  options: { onProgress?: (msg: string) => void } = {},
 ): Promise<DemoResult> {
-  const { maxPollAttempts = 60, onProgress } = options
+  // 180s budget matches the previous 60 attempts * 3s wall-time ceiling so
+  // slow-seed demos still have the same headroom. Fast demos return as soon
+  // as the demo HTML exposes the flow link instead of waiting out a 3s
+  // pre-sleep on every cold provision.
+  const { onProgress } = options
+  const maxPollWaitMs = 180_000
 
   const safeHost = validateHost(gwsFlowsHost)
   onProgress?.(`Creating ${demoType} demo at ${safeHost}...`)
@@ -100,9 +105,10 @@ export async function createDemoAndProvision(
 
   onProgress?.('Waiting for demo to be ready...')
   let flowToken = ''
-  for (let attempt = 1; attempt <= maxPollAttempts; attempt++) {
-    await new Promise(r => setTimeout(r, 3000))
-
+  const pollStart = Date.now()
+  let nextDelayMs = 500
+  let lastProgressBucket = 0
+  while (Date.now() - pollStart < maxPollWaitMs) {
     try {
       const pollRes = await fetch(`${safeHost}/demos/${demoId}`, {
         signal: AbortSignal.timeout(10000),
@@ -117,13 +123,19 @@ export async function createDemoAndProvision(
       // Transient fetch errors during polling are expected
     }
 
-    if (attempt % 5 === 0) {
-      onProgress?.(`Still waiting... (${attempt * 3}s)`)
+    const elapsedSec = Math.floor((Date.now() - pollStart) / 1000)
+    const bucket = Math.floor(elapsedSec / 15)
+    if (bucket > lastProgressBucket) {
+      lastProgressBucket = bucket
+      onProgress?.(`Still waiting... (${elapsedSec}s)`)
     }
+
+    await new Promise(r => setTimeout(r, nextDelayMs))
+    nextDelayMs = Math.min(nextDelayMs * 2, 2000)
   }
 
   if (!flowToken) {
-    throw new Error(`Demo creation timed out after ${maxPollAttempts * 3}s`)
+    throw new Error(`Demo creation timed out after ${Math.round(maxPollWaitMs / 1000)}s`)
   }
 
   onProgress?.(`Flow token: ${flowToken.slice(0, 15)}...`)
