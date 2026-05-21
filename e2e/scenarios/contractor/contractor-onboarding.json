@@ -1,9 +1,0 @@
-{
-  "$schema": "../../schema/scenario.schema.json",
-  "name": "Contractor onboarding flow",
-  "description": "Company set up for contractor onboarding.",
-  "domain": "contractor",
-  "baseDemo": "react_sdk_demo",
-  "decorations": {},
-  "expectedContext": ["companyId"]
-}
