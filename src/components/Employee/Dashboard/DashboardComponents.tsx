@@ -12,6 +12,8 @@ import { DocumentManager } from '@/components/Employee/Documents/management/Docu
 import { DeductionsForm } from '@/components/Employee/Deductions/DeductionsForm/DeductionsForm'
 import { ManagementEditCompensation } from '@/components/Employee/Compensation/management'
 import { useDeductionsList } from '@/components/Employee/Deductions/shared'
+import { AddAnotherJob } from '@/components/Employee/Compensation/management/AddAnotherJob/AddAnotherJob'
+import { EditCompensation } from '@/components/Employee/Compensation/onboarding/EditCompensation/EditCompensation'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { BaseComponent, BaseLayout } from '@/components/Base'
@@ -26,6 +28,7 @@ export type DashboardSuccessAlert =
   | 'deductionAdded'
   | 'deductionUpdated'
   | 'deductionDeleted'
+  | 'jobAdded'
 
 export interface DashboardContextInterface extends FlowContextInterface {
   employeeId: string
@@ -53,6 +56,7 @@ export function DashboardViewContextual() {
     deductionAdded: t('alerts.deductionAdded'),
     deductionUpdated: t('alerts.deductionUpdated'),
     deductionDeleted: t('alerts.deductionDeleted'),
+    jobAdded: t('alerts.jobAdded'),
   }
 
   return (
@@ -165,11 +169,21 @@ export function DeductionFormContextual() {
   )
 }
 
-export function AddJobPlaceholderContextual() {
+export function AddJobContextual() {
   useI18n('Employee.Dashboard')
   const { t } = useTranslation('Employee.Dashboard')
-  const Components = useComponentContext()
-  return <Components.Heading as="h2">{t('compensationFlow.addJobTitle')}</Components.Heading>
+  const { employeeId, onEvent } = useFlow<DashboardContextInterface>()
+  return (
+    <EditCompensation
+      employeeId={ensureRequired(employeeId)}
+      title={t('compensationFlow.addJobTitle')}
+      submitCtaLabel={t('compensationFlow.saveCta')}
+      onEvent={onEvent}
+      onCancel={() => {
+        onEvent(componentEvents.CANCEL)
+      }}
+    />
+  )
 }
 
 export function EditCompensationContextual() {
@@ -186,9 +200,15 @@ export function EditCompensationContextual() {
   )
 }
 
-export function AddAnotherJobPlaceholderContextual() {
-  useI18n('Employee.Dashboard')
-  const { t } = useTranslation('Employee.Dashboard')
-  const Components = useComponentContext()
-  return <Components.Heading as="h2">{t('compensationFlow.addAnotherJobTitle')}</Components.Heading>
+export function AddAnotherJobContextual() {
+  const { employeeId, onEvent } = useFlow<DashboardContextInterface>()
+  return (
+    <AddAnotherJob
+      employeeId={ensureRequired(employeeId)}
+      onEvent={onEvent}
+      onCancel={() => {
+        onEvent(componentEvents.CANCEL)
+      }}
+    />
+  )
 }

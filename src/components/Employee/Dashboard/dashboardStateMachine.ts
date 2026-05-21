@@ -13,9 +13,9 @@ import {
   PaymentSplitViewContextual,
   DocumentManagerContextual,
   DeductionFormContextual,
-  AddJobPlaceholderContextual,
+  AddJobContextual,
   EditCompensationContextual,
-  AddAnotherJobPlaceholderContextual,
+  AddAnotherJobContextual,
   type DashboardContextInterface,
 } from './DashboardComponents'
 import { componentEvents } from '@/shared/constants'
@@ -157,7 +157,7 @@ export const dashboardStateMachine = {
       reduce(
         (ctx: DashboardContextInterface): DashboardContextInterface => ({
           ...ctx,
-          component: AddJobPlaceholderContextual,
+          component: AddJobContextual,
           header: { type: 'minimal' },
           currentJob: null,
           successAlert: null,
@@ -186,7 +186,7 @@ export const dashboardStateMachine = {
       reduce(
         (ctx: DashboardContextInterface): DashboardContextInterface => ({
           ...ctx,
-          component: AddAnotherJobPlaceholderContextual,
+          component: AddAnotherJobContextual,
           header: { type: 'minimal' },
           currentJob: null,
           successAlert: null,
@@ -307,12 +307,24 @@ export const dashboardStateMachine = {
     transition(componentEvents.EMPLOYEE_DEDUCTION_CANCEL, 'index', returnToIndex),
     transition(componentEvents.CANCEL, 'index', returnToIndex),
   ),
-  addJob: state<MachineTransition>(transition(componentEvents.CANCEL, 'index', returnToIndex)),
+  addJob: state<MachineTransition>(
+    transition(
+      componentEvents.EMPLOYEE_COMPENSATION_UPDATED,
+      'index',
+      returnToIndexWithAlert('jobAdded'),
+    ),
+    transition(componentEvents.CANCEL, 'index', returnToIndex),
+  ),
   editCompensation: state<MachineTransition>(
     transition(componentEvents.EMPLOYEE_COMPENSATION_DONE, 'index', returnToIndex),
     transition(componentEvents.CANCEL, 'index', returnToIndex),
   ),
   addAnotherJob: state<MachineTransition>(
+    transition(
+      componentEvents.EMPLOYEE_COMPENSATION_UPDATED,
+      'index',
+      returnToIndexWithAlert('jobAdded'),
+    ),
     transition(componentEvents.CANCEL, 'index', returnToIndex),
   ),
 }
