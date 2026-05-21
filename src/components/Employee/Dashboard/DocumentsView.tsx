@@ -26,13 +26,13 @@ export interface DocumentsViewWithDataProps {
 export function DocumentsViewWithData({ employeeId, onViewForm }: DocumentsViewWithDataProps) {
   const forms = useEmployeeForms({ employeeId })
 
-  if (forms.isLoading) {
-    return <BaseLayout isLoading error={forms.errorHandling.errors} />
-  }
-
   return (
     <BaseLayout error={forms.errorHandling.errors}>
-      <DocumentsView forms={forms.data.formList} onViewForm={onViewForm} />
+      <DocumentsView
+        forms={forms.data.formList}
+        isLoading={forms.status.isFormsLoading}
+        onViewForm={onViewForm}
+      />
     </BaseLayout>
   )
 }
@@ -99,15 +99,15 @@ export function DocumentsView({ forms = [], isLoading = false, onViewForm }: Doc
     ),
   })
 
-  if (isLoading) {
-    return <Loading />
-  }
-
   return (
     <Flex flexDirection="column" gap={24}>
       <Components.Box header={<Components.BoxHeader title={t('documents.title')} />}>
         <Flex flexDirection="column" gap={16}>
-          <DataView label={t('documents.listLabel')} {...formsDataView} />
+          {isLoading ? (
+            <Loading />
+          ) : (
+            <DataView label={t('documents.listLabel')} {...formsDataView} />
+          )}
         </Flex>
       </Components.Box>
     </Flex>

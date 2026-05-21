@@ -270,11 +270,10 @@ describe('Dashboard', () => {
 
     await user.click(screen.getByRole('tab', { name: 'Job and pay' }))
 
-    await waitFor(() => {
-      expect(screen.getByRole('heading', { name: 'Compensation' })).toBeInTheDocument()
-    })
-
-    expect(screen.getByText('No compensation')).toBeInTheDocument()
+    // BasicDetails and Compensation use different employeesGet query
+    // keys now (the include differs), so Compensation does its own
+    // fetch — wait for the empty-state copy rather than just the header.
+    expect(await screen.findByText('No compensation')).toBeInTheDocument()
     expect(screen.getByText('Compensation will appear here once added')).toBeInTheDocument()
 
     const addJobButton = screen.getByRole('button', { name: 'Add job' })
@@ -786,8 +785,10 @@ describe('Dashboard', () => {
     it('cancel-change: fires DELETE with the right path, refetches, emits the event', async () => {
       const user = userEvent.setup()
       let deletePath: string | null = null
+      let wasDeleteCalled = false
       const deleteResolver = vi.fn<HttpResponseResolver>(({ request }) => {
         deletePath = new URL(request.url).pathname
+        wasDeleteCalled = true
         return new HttpResponse(null, { status: 204 })
       })
 
@@ -801,12 +802,15 @@ describe('Dashboard', () => {
       ])
       const employeeAfter = await buildEmployeeWithJobs([baseJob({}, [baseComp()])])
 
-      let getCallCount = 0
+      // Return employeeBefore until the DELETE fires, then employeeAfter.
+      // BasicDetails and Compensation now use different employeesGet
+      // query keys (the include differs), so each tab fetches the
+      // employee independently — a count-based handler would diverge
+      // between tabs.
       server.use(
-        handleGetEmployee(() => {
-          getCallCount += 1
-          return HttpResponse.json(getCallCount === 1 ? employeeBefore : employeeAfter)
-        }),
+        handleGetEmployee(() =>
+          HttpResponse.json(wasDeleteCalled ? employeeAfter : employeeBefore),
+        ),
       )
       server.use(handleDeleteCompensation(deleteResolver))
 
@@ -968,9 +972,11 @@ describe('Dashboard', () => {
 
     it('confirms cancel from inside the review modal and only removes the cancelled change', async () => {
       const user = userEvent.setup()
-      const deleteResolver = vi.fn<HttpResponseResolver>(
-        () => new HttpResponse(null, { status: 204 }),
-      )
+      let wasDeleteCalled = false
+      const deleteResolver = vi.fn<HttpResponseResolver>(() => {
+        wasDeleteCalled = true
+        return new HttpResponse(null, { status: 204 })
+      })
 
       const futurePrimary = baseComp({
         uuid: 'comp-primary-future',
@@ -1032,12 +1038,14 @@ describe('Dashboard', () => {
         ),
       ])
 
-      let getCallCount = 0
+      // Return employeeBefore until the DELETE fires, then employeeAfter.
+      // BasicDetails and Compensation use different employeesGet query
+      // keys (the include differs), so a count-based handler would
+      // diverge between tabs.
       server.use(
-        handleGetEmployee(() => {
-          getCallCount += 1
-          return HttpResponse.json(getCallCount === 1 ? employeeBefore : employeeAfter)
-        }),
+        handleGetEmployee(() =>
+          HttpResponse.json(wasDeleteCalled ? employeeAfter : employeeBefore),
+        ),
       )
       server.use(handleDeleteCompensation(deleteResolver))
 

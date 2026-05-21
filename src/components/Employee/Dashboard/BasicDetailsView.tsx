@@ -14,7 +14,12 @@ export interface BasicDetailsViewProps {
   employee?: Employee
   currentHomeAddress?: EmployeeAddress
   currentWorkAddress?: EmployeeWorkAddress
+  /** Loads all three cards. Per-section flags below take precedence
+   *  when each query resolves independently. */
   isLoading?: boolean
+  isEmployeeLoading?: boolean
+  isHomeAddressLoading?: boolean
+  isWorkAddressLoading?: boolean
   onEditBasicDetails?: () => void
   onManageHomeAddress?: () => void
   onManageWorkAddress?: () => void
@@ -30,8 +35,8 @@ export interface BasicDetailsViewWithDataProps {
 /**
  * Tab-mounted container for the Basic details tab. Owns the
  * `useEmployeeBasicDetails` fetch (employee + home address + work address)
- * so the requests only fire when the tab is mounted. The presentational
- * `BasicDetailsView` stays pure for testing/stories.
+ * so the requests only fire when the tab is mounted. Each card paints
+ * its own skeleton + content as the underlying query resolves.
  */
 export function BasicDetailsViewWithData({
   employeeId,
@@ -41,16 +46,15 @@ export function BasicDetailsViewWithData({
 }: BasicDetailsViewWithDataProps) {
   const basicDetails = useEmployeeBasicDetails({ employeeId })
 
-  if (basicDetails.isLoading) {
-    return <BaseLayout isLoading error={basicDetails.errorHandling.errors} />
-  }
-
   return (
     <BaseLayout error={basicDetails.errorHandling.errors}>
       <BasicDetailsView
         employee={basicDetails.data.employee}
         currentHomeAddress={basicDetails.data.currentHomeAddress}
         currentWorkAddress={basicDetails.data.currentWorkAddress}
+        isEmployeeLoading={basicDetails.status.isEmployeeLoading}
+        isHomeAddressLoading={basicDetails.status.isHomeAddressLoading}
+        isWorkAddressLoading={basicDetails.status.isWorkAddressLoading}
         onEditBasicDetails={onEditBasicDetails}
         onManageHomeAddress={onManageHomeAddress}
         onManageWorkAddress={onManageWorkAddress}
@@ -64,6 +68,9 @@ export function BasicDetailsView({
   currentHomeAddress,
   currentWorkAddress,
   isLoading = false,
+  isEmployeeLoading = isLoading,
+  isHomeAddressLoading = isLoading,
+  isWorkAddressLoading = isLoading,
   onEditBasicDetails,
   onManageHomeAddress,
   onManageWorkAddress,
@@ -71,17 +78,12 @@ export function BasicDetailsView({
   const { t } = useTranslation('Employee.Dashboard')
   const Components = useComponentContext()
 
-  if (isLoading || !employee) {
-    return <Loading />
-  }
-
-  const legalName = firstLastName({
-    first_name: employee.firstName,
-    last_name: employee.lastName,
-  })
-  const startDate = formatDateLongWithYear(employee.jobs?.[0]?.hireDate)
-  const dateOfBirth = formatDateLongWithYear(employee.dateOfBirth)
-  const maskedSsn = employee.hasSsn ? 'XXX-XX-XXXX' : undefined
+  const legalName = employee
+    ? firstLastName({ first_name: employee.firstName, last_name: employee.lastName })
+    : undefined
+  const startDate = employee ? formatDateLongWithYear(employee.jobs?.[0]?.hireDate) : undefined
+  const dateOfBirth = employee ? formatDateLongWithYear(employee.dateOfBirth) : undefined
+  const maskedSsn = employee?.hasSsn ? 'XXX-XX-XXXX' : undefined
 
   return (
     <Flex flexDirection="column" gap={24}>
@@ -90,7 +92,11 @@ export function BasicDetailsView({
           <Components.BoxHeader
             title={t('basicDetails.title')}
             action={
-              <Components.Button variant="secondary" onClick={onEditBasicDetails}>
+              <Components.Button
+                variant="secondary"
+                onClick={onEditBasicDetails}
+                isDisabled={isEmployeeLoading}
+              >
                 {t('basicDetails.editCta')}
               </Components.Button>
             }
@@ -98,52 +104,56 @@ export function BasicDetailsView({
         }
       >
         <Flex flexDirection="column" gap={16}>
-          <Flex flexDirection="column" gap={12}>
-            {legalName && (
-              <Flex flexDirection="column" gap={0}>
-                <Components.Text variant="supporting">
-                  {t('basicDetails.legalName')}
-                </Components.Text>
-                <Components.Text>{legalName}</Components.Text>
-              </Flex>
-            )}
+          {isEmployeeLoading ? (
+            <Loading />
+          ) : employee ? (
+            <Flex flexDirection="column" gap={12}>
+              {legalName && (
+                <Flex flexDirection="column" gap={0}>
+                  <Components.Text variant="supporting">
+                    {t('basicDetails.legalName')}
+                  </Components.Text>
+                  <Components.Text>{legalName}</Components.Text>
+                </Flex>
+              )}
 
-            {startDate && (
-              <Flex flexDirection="column" gap={0}>
-                <Components.Text variant="supporting">
-                  {t('basicDetails.startDate')}
-                </Components.Text>
-                <Components.Text>{startDate}</Components.Text>
-              </Flex>
-            )}
+              {startDate && (
+                <Flex flexDirection="column" gap={0}>
+                  <Components.Text variant="supporting">
+                    {t('basicDetails.startDate')}
+                  </Components.Text>
+                  <Components.Text>{startDate}</Components.Text>
+                </Flex>
+              )}
 
-            {maskedSsn && (
-              <Flex flexDirection="column" gap={0}>
-                <Components.Text variant="supporting">
-                  {t('basicDetails.socialSecurityNumber')}
-                </Components.Text>
-                <Components.Text>{maskedSsn}</Components.Text>
-              </Flex>
-            )}
+              {maskedSsn && (
+                <Flex flexDirection="column" gap={0}>
+                  <Components.Text variant="supporting">
+                    {t('basicDetails.socialSecurityNumber')}
+                  </Components.Text>
+                  <Components.Text>{maskedSsn}</Components.Text>
+                </Flex>
+              )}
 
-            {dateOfBirth && (
-              <Flex flexDirection="column" gap={0}>
-                <Components.Text variant="supporting">
-                  {t('basicDetails.dateOfBirth')}
-                </Components.Text>
-                <Components.Text>{dateOfBirth}</Components.Text>
-              </Flex>
-            )}
+              {dateOfBirth && (
+                <Flex flexDirection="column" gap={0}>
+                  <Components.Text variant="supporting">
+                    {t('basicDetails.dateOfBirth')}
+                  </Components.Text>
+                  <Components.Text>{dateOfBirth}</Components.Text>
+                </Flex>
+              )}
 
-            {employee.email && (
-              <Flex flexDirection="column" gap={0}>
-                <Components.Text variant="supporting">
-                  {t('basicDetails.personalEmail')}
-                </Components.Text>
-                <Components.Text>{employee.email}</Components.Text>
-              </Flex>
-            )}
-          </Flex>
+              {employee.email && (
+                <Flex flexDirection="column" gap={0}>
+                  <Components.Text variant="supporting">
+                    {t('basicDetails.personalEmail')}
+                  </Components.Text>
+                  <Components.Text>{employee.email}</Components.Text>
+                </Flex>
+              )}
+            </Flex>
+          ) : null}
         </Flex>
       </Components.Box>
 
@@ -152,7 +162,11 @@ export function BasicDetailsView({
           <Components.BoxHeader
             title={t('homeAddress.title')}
             action={
-              <Components.Button variant="secondary" onClick={onManageHomeAddress}>
+              <Components.Button
+                variant="secondary"
+                onClick={onManageHomeAddress}
+                isDisabled={isHomeAddressLoading}
+              >
                 {t('homeAddress.manageCta')}
               </Components.Button>
             }
@@ -160,7 +174,9 @@ export function BasicDetailsView({
         }
       >
         <Flex flexDirection="column" gap={16}>
-          {currentHomeAddress ? (
+          {isHomeAddressLoading ? (
+            <Loading />
+          ) : currentHomeAddress ? (
             <Flex flexDirection="column" gap={0}>
               <Components.Text variant="supporting">
                 {t('homeAddress.currentAddress')}
@@ -179,7 +195,11 @@ export function BasicDetailsView({
           <Components.BoxHeader
             title={t('workAddress.title')}
             action={
-              <Components.Button variant="secondary" onClick={onManageWorkAddress}>
+              <Components.Button
+                variant="secondary"
+                onClick={onManageWorkAddress}
+                isDisabled={isWorkAddressLoading}
+              >
                 {t('workAddress.manageCta')}
               </Components.Button>
             }
@@ -187,7 +207,9 @@ export function BasicDetailsView({
         }
       >
         <Flex flexDirection="column" gap={16}>
-          {currentWorkAddress ? (
+          {isWorkAddressLoading ? (
+            <Loading />
+          ) : currentWorkAddress ? (
             <Flex flexDirection="column" gap={0}>
               <Components.Text variant="supporting">
                 {t('workAddress.currentAddress')}

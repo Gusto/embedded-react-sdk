@@ -1,41 +1,38 @@
-import { useEmployeeFormsListSuspense } from '@gusto/embedded-api/react-query/employeeFormsList'
+import { useEmployeeFormsList } from '@gusto/embedded-api/react-query/employeeFormsList'
 import type { Form } from '@gusto/embedded-api/models/components/form'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
-import type { HookLoadingResult, BaseHookReady } from '@/partner-hook-utils/types'
+import type { BaseHookReady } from '@/partner-hook-utils/types'
 
 export interface UseEmployeeFormsProps {
   employeeId: string
 }
 
-type UseEmployeeFormsReady = BaseHookReady<{ formList: Form[] }, { isPending: boolean }>
+export type UseEmployeeFormsResult = BaseHookReady<
+  { formList: Form[] },
+  { isPending: boolean; isFormsLoading: boolean }
+>
 
-export type UseEmployeeFormsResult = HookLoadingResult | UseEmployeeFormsReady
-
+/**
+ * Phase B: non-Suspense query so the consuming view can paint its frame
+ * (box header, tab structure) before the data arrives. The `formList`
+ * defaults to `[]` while the query is loading — consumers branch on
+ * `status.isFormsLoading` to distinguish "still loading" from "loaded
+ * empty" and render a skeleton accordingly.
+ */
 export function useEmployeeForms({ employeeId }: UseEmployeeFormsProps): UseEmployeeFormsResult {
-  const formsQuery = useEmployeeFormsListSuspense({ employeeId })
-
-  const formList = formsQuery.data.forms
-
-  const isPending = formsQuery.isFetching
-  const isLoading = !formList && isPending
-
-  const errorHandling = composeErrorHandler([formsQuery])
-
-  if (isLoading) {
-    return {
-      isLoading: true,
-      errorHandling,
-    }
-  }
+  // staleTime: Infinity — see useEmployeeCompensation for rationale (SDK
+  // QueryClient invalidates on any mutation success).
+  const formsQuery = useEmployeeFormsList({ employeeId }, { staleTime: Infinity })
 
   return {
     isLoading: false,
     data: {
-      formList: formList || [],
+      formList: formsQuery.data?.forms ?? [],
     },
     status: {
-      isPending,
+      isPending: formsQuery.isFetching,
+      isFormsLoading: formsQuery.isLoading,
     },
-    errorHandling,
+    errorHandling: composeErrorHandler([formsQuery]),
   }
 }
