@@ -2,6 +2,7 @@ import { test as base } from '@playwright/test'
 import { existsSync, readFileSync } from 'fs'
 import { resolve } from 'path'
 import type { ScenarioContext } from '../scenario/context'
+import { createValidationErrorCollector } from './validationErrorCollector'
 
 interface E2EState {
   flowToken: string
@@ -178,7 +179,16 @@ export const test = base.extend<ScenarioFixtures & { localConfig: LocalConfig },
     { scope: 'test' },
   ],
 
-  page: async ({ page, localConfig, scenario }, use) => {
+  page: async ({ page, localConfig, scenario }, use, testInfo) => {
+    // `@gusto/embedded-api` validates every response with Zod and wraps Zod
+    // failures in `SDKValidationError`. When the backend ships a shape that
+    // disagrees with the published schema, the SDK surfaces this either as
+    // an uncaught page error or via React's error-boundary `console.error`.
+    // Tests can otherwise pass while the SDK is silently crashing mid-flow,
+    // so we fail the test if any such error fires during its lifetime. See
+    // `validationErrorCollector` for the detection contract and tests.
+    const validationErrors = createValidationErrorCollector(page)
+
     const originalGoto = page.goto.bind(page)
 
     page.goto = async (url: string, options?: Parameters<typeof page.goto>[1]) => {
@@ -238,6 +248,26 @@ export const test = base.extend<ScenarioFixtures & { localConfig: LocalConfig },
     }
 
     await use(page)
+
+    const collected = validationErrors.getErrors()
+    if (collected.length > 0) {
+      const detail = validationErrors.format()
+      await testInfo.attach('validation-errors.txt', {
+        body: detail,
+        contentType: 'text/plain',
+      })
+      // Only fail the test if it would otherwise pass — if it already failed
+      // for another reason, surface the validation errors as an attachment
+      // but don't overwrite the existing failure.
+      if (testInfo.status === 'passed' || testInfo.status === undefined) {
+        throw new Error(
+          `Detected ${collected.length} response-shape validation error(s) in the browser ` +
+            `console during this test. This means the backend returned a response shape that ` +
+            `disagrees with the @gusto/embedded-api Zod schema. See the validation-errors.txt ` +
+            `attachment for the full text.\n\n${detail}`,
+        )
+      }
+    }
   },
 })
 
