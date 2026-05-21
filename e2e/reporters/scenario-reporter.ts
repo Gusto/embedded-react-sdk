@@ -2,10 +2,17 @@ import type { Reporter, TestCase, TestResult, FullResult } from '@playwright/tes
 import { mkdirSync, writeFileSync } from 'fs'
 import { resolve, dirname } from 'path'
 
+interface PhaseTimings {
+  provisioningMs: number
+  bodyMs: number
+  provisioningCacheHit: boolean
+}
+
 interface TestEntry {
   title: string
   status: string
   durationMs: number
+  timings: PhaseTimings
 }
 
 interface ScenarioResult {
@@ -41,6 +48,34 @@ function extractAnnotation(test: TestCase, type: string): string | undefined {
   return test.annotations.find(a => a.type === type)?.description ?? undefined
 }
 
+function extractPhaseTimings(test: TestCase, totalDurationMs: number): PhaseTimings {
+  let provisioningMs = 0
+  let provisioningCacheHit = false
+  for (const annotation of test.annotations) {
+    if (annotation.type !== 'timing' || !annotation.description) continue
+    try {
+      const parsed = JSON.parse(annotation.description) as {
+        phase?: string
+        durationMs?: number
+        cacheHit?: boolean
+      }
+      if (parsed.phase === 'provisioning' && typeof parsed.durationMs === 'number') {
+        provisioningMs = parsed.durationMs
+        if (parsed.cacheHit === true) provisioningCacheHit = true
+      }
+    } catch {
+      // Malformed timing annotation; ignore so reporter never fails the run.
+    }
+  }
+  const bodyMs = Math.max(0, totalDurationMs - provisioningMs)
+  return { provisioningMs, bodyMs, provisioningCacheHit }
+}
+
+function formatMs(ms: number): string {
+  if (ms < 1000) return `${ms}ms`
+  return `${(ms / 1000).toFixed(1)}s`
+}
+
 class ScenarioReporter implements Reporter {
   private startedAt = ''
   private domains: Record<string, DomainResult> = {}
@@ -64,6 +99,7 @@ class ScenarioReporter implements Reporter {
       title: test.title,
       status: result.status,
       durationMs: result.duration,
+      timings: extractPhaseTimings(test, result.duration),
     })
   }
 
@@ -94,6 +130,72 @@ class ScenarioReporter implements Reporter {
     const outputPath = resolve(process.cwd(), 'e2e/reports/results.json')
     mkdirSync(dirname(outputPath), { recursive: true })
     writeFileSync(outputPath, JSON.stringify(report, null, 2), 'utf-8')
+
+    this.writeTimingSummary(report)
+  }
+
+  private writeTimingSummary(report: ReportData): void {
+    const lines: string[] = []
+    lines.push('# E2E Phase Timings')
+    lines.push('')
+    lines.push('Per-test wall time split into `provisioning` (creating a fresh demo company')
+    lines.push('and decorating it) vs `body` (everything else: navigation, SDK rendering, user')
+    lines.push('interactions, backend round-trips). Provisioning that dominates body time is the')
+    lines.push('signal that we should be sharing companies across the suite.')
+    lines.push('')
+    lines.push('Entries marked `(cached)` reused a demo company already provisioned earlier in the')
+    lines.push('same worker via the worker-scoped scenario cache; the first test for each scenario')
+    lines.push('still pays the full provisioning cost.')
+    lines.push('')
+    lines.push(`Run: ${report.runId}`)
+    lines.push(`Started: ${report.startedAt}`)
+    lines.push(`Finished: ${report.finishedAt}`)
+    lines.push('')
+
+    for (const [domain, domainResult] of Object.entries(report.domains)) {
+      lines.push(`## Domain: ${domain}`)
+      lines.push('')
+      let domainProvisioning = 0
+      let domainBody = 0
+      let domainTotal = 0
+      let testCount = 0
+      let domainCacheHits = 0
+
+      for (const [scenarioName, scenarioResult] of Object.entries(domainResult.scenarios)) {
+        lines.push(`### Scenario: ${scenarioName}`)
+        lines.push('')
+        lines.push('| Test | Status | Provisioning | Body | Total |')
+        lines.push('|------|--------|--------------|------|-------|')
+
+        for (const test of scenarioResult.tests) {
+          const provisioningCell = test.timings.provisioningCacheHit
+            ? `${formatMs(test.timings.provisioningMs)} (cached)`
+            : formatMs(test.timings.provisioningMs)
+          lines.push(
+            `| ${test.title} | ${test.status} | ${provisioningCell} | ${formatMs(test.timings.bodyMs)} | ${formatMs(test.durationMs)} |`,
+          )
+          domainProvisioning += test.timings.provisioningMs
+          domainBody += test.timings.bodyMs
+          domainTotal += test.durationMs
+          testCount++
+          if (test.timings.provisioningCacheHit) domainCacheHits++
+        }
+        lines.push('')
+      }
+
+      const provisioningPct =
+        domainTotal > 0 ? Math.round((domainProvisioning / domainTotal) * 100) : 0
+      const cacheHitSuffix =
+        testCount > 0 ? `, ${domainCacheHits}/${testCount} provisioning cache hits` : ''
+      lines.push(
+        `**Domain totals (${testCount} tests):** ${formatMs(domainProvisioning)} provisioning + ${formatMs(domainBody)} body = ${formatMs(domainTotal)} (provisioning is ${provisioningPct}% of wall time${cacheHitSuffix})`,
+      )
+      lines.push('')
+    }
+
+    const summaryPath = resolve(process.cwd(), 'e2e/reports/timings.md')
+    mkdirSync(dirname(summaryPath), { recursive: true })
+    writeFileSync(summaryPath, lines.join('\n'), 'utf-8')
   }
 }
 

@@ -22,13 +22,30 @@ jobs:
         with:
           node-version-file: '.nvmrc'
 
+      # Install commitlint into a scratch directory so npm doesn't pick up
+      # the SDK's package.json and try to install ~600 transitive deps just
+      # to lint a one-line PR title. Pinning the versions to whatever the
+      # SDK uses keeps lint behavior consistent with local commits.
+      #
+      # Why a scratch dir: doing `npm install --no-save <pkg>` in the repo
+      # root pulls in every dependency in package.json before adding the
+      # requested package. That triggered intermittent kernel-level
+      # ETXTBSY failures during esbuild's postinstall (see e.g.
+      # https://github.com/evanw/esbuild/issues/3320 — concurrent
+      # postinstall scripts try to spawn a binary that's still being
+      # written to). The scratch dir avoids the SDK's deps entirely.
       - name: Install commitlint
         run: |
           CLI=$(node -p "require('./package.json').devDependencies['@commitlint/cli']")
           CONFIG=$(node -p "require('./package.json').devDependencies['@commitlint/config-conventional']")
-          npm install --no-save "@commitlint/cli@$CLI" "@commitlint/config-conventional@$CONFIG"
+          mkdir -p "$RUNNER_TEMP/commitlint-install"
+          cd "$RUNNER_TEMP/commitlint-install"
+          npm init -y >/dev/null
+          npm install "@commitlint/cli@$CLI" "@commitlint/config-conventional@$CONFIG"
 
       - name: Check PR title follows conventional commits
         env:
           PR_TITLE: ${{ github.event.pull_request.title }}
-        run: echo "$PR_TITLE" | npx commitlint
+        run: |
+          cd "$RUNNER_TEMP/commitlint-install"
+          echo "$PR_TITLE" | npx commitlint --extends '@commitlint/config-conventional'
