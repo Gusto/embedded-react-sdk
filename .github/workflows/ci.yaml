@@ -337,12 +337,14 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      # Throttle concurrent shards to avoid overwhelming flows.gusto-demo.com
-      # with per-test scenario provisioning. globalSetup is now shared via
-      # the e2e-setup job's artifact, but scenario-backed specs still create
-      # additional demo companies on demand. 2 concurrent shards keeps that
-      # load manageable.
-      max-parallel: 2
+      # Concurrent shard ceiling against flows.gusto-demo.com. We only have 3
+      # domains today (employee/time-off/payroll), so 4 effectively means "no
+      # throttle — let every shard run in parallel". The matrix is generated
+      # dynamically from e2e/tests/<domain>/, so this gives headroom for one
+      # more domain without needing another bump. Each shard still runs with
+      # workers: 1 in playwright.demo.config.ts, so per-shard backend load is
+      # unchanged.
+      max-parallel: 4
       matrix:
         domain: ${{ fromJson(needs.e2e-domains.outputs.domains) }}
     name: e2e (${{ matrix.domain }})
