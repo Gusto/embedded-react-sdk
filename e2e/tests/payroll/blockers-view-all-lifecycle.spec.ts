@@ -5,7 +5,7 @@ test.describe('PayrollFlow - view all blockers lifecycle', () => {
   test.beforeEach(({}, testInfo) => {
     testInfo.annotations.push({
       type: 'scenario',
-      description: 'payroll/standard-biweekly-2-employees',
+      description: 'payroll/biweekly-shared',
     })
   })
 

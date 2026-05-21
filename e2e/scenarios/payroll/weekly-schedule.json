@@ -1,37 +1,15 @@
 {
   "$schema": "../../schema/scenario.schema.json",
-  "name": "Weekly pay schedule with single salaried employee",
-  "description": "Onboarded company with a weekly pay schedule to exercise cadence and date math separately from biweekly defaults.",
+  "name": "Weekly pay schedule",
+  "description": "Onboarded company with a weekly pay schedule, used by weekly-cadence.spec.ts to verify the payroll landing renders correctly under weekly cadence (date math, period boundaries) — distinct from the biweekly default. The base demo provides the onboarded employees needed to populate the landing, so no decorated employees are needed here.",
   "domain": "payroll",
   "baseDemo": "react_sdk_demo_company_onboarded",
   "decorations": {
-    "locations": [
-      {
-        "key": "hq",
-        "street_1": "500 Test Way",
-        "city": "San Francisco",
-        "state": "CA",
-        "zip": "94105",
-        "filing_address": true,
-        "mailing_address": true
-      }
-    ],
-    "employees": [
-      {
-        "key": "alice",
-        "$ref": "../fragments/w2-salaried-employee.json",
-        "overrides": {
-          "first_name": "Alice",
-          "last_name": "Weekly",
-          "email": "alice-weekly+{{ts}}@example.com"
-        }
-      }
-    ],
     "paySchedule": {
       "frequency": "Every week",
       "anchor_pay_date": "{{relative:+7d:Friday}}",
       "anchor_end_of_pay_period": "{{relative:+6d}}"
     }
   },
-  "expectedContext": ["companyId", "locationIds.hq", "employeeIds.alice", "paySchedule.uuid"]
+  "expectedContext": ["companyId", "paySchedule.uuid"]
 }

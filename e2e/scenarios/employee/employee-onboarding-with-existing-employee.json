@@ -1,0 +1,36 @@
+{
+  "$schema": "../../schema/scenario.schema.json",
+  "name": "Employee onboarding with existing employee row",
+  "description": "Onboarded company with one minimally-decorated employee so the employee list renders a row plus the Add CTA. The two consuming specs (employee-list-with-existing-employee and employee-update-reentry-lifecycle) only assert that a grid row appears and that the edit form pre-fills first_name — no compensation/job/onboarding_status setup needed. Keeping home_address + work_address means the row is still 'real' enough to enter the edit flow without the SDK crashing on missing data.",
+  "domain": "employee",
+  "baseDemo": "react_sdk_demo_company_onboarded",
+  "decorations": {
+    "locations": [
+      {
+        "key": "hq",
+        "street_1": "300 Existing Way",
+        "city": "San Francisco",
+        "state": "CA",
+        "zip": "94105",
+        "filing_address": true,
+        "mailing_address": true
+      }
+    ],
+    "employees": [
+      {
+        "key": "alice",
+        "first_name": "Alice",
+        "last_name": "Existing",
+        "email": "alice-existing+{{ts}}@example.com",
+        "home_address": {
+          "street_1": "1 Home Way",
+          "city": "San Francisco",
+          "state": "CA",
+          "zip": "94110"
+        },
+        "work_address": { "locationKey": "hq" }
+      }
+    ]
+  },
+  "expectedContext": ["companyId", "locationIds.hq", "employeeIds.alice"]
+}
