@@ -1,0 +1,28 @@
+{
+  "$schema": "../../schema/scenario.schema.json",
+  "name": "Contractor roster with one individual and one business contractor",
+  "description": "Onboarded company shared across non-canary contractor list/edit lifecycle specs (contractor-business, contractor-mixed-roster, contractor-onboarding-edit-lifecycle). One individual + one business contractor cover both the business profile branch (Acme Consulting LLC) and the mixed-roster list assertion (Charlie Individual). The business contractor's name (Acme Consulting) is treated as a fixture key by the consuming specs — don't rename it without updating those specs. Specs that mutate state through onboarding (contractor-onboarding, contractor-cancel-lifecycle, contractor-business-create-lifecycle) intentionally use contractor-onboarding instead so this roster stays stable.",
+  "domain": "contractor",
+  "baseDemo": "react_sdk_demo_company_onboarded",
+  "decorations": {
+    "contractors": [
+      {
+        "key": "individual",
+        "$ref": "../fragments/contractor-1099.json",
+        "overrides": {
+          "first_name": "Charlie",
+          "last_name": "Individual",
+          "email": "charlie-ind+{{ts}}@example.com"
+        }
+      },
+      {
+        "key": "business",
+        "type": "Business",
+        "business_name": "Acme Consulting LLC",
+        "email": "billing-acme+{{ts}}@example.com",
+        "wage_type": "Fixed"
+      }
+    ]
+  },
+  "expectedContext": ["companyId", "contractorIds.individual", "contractorIds.business"]
+}

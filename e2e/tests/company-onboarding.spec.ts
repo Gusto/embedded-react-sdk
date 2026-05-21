@@ -1,5 +1,9 @@
 import { test, expect } from '../utils/localTestFixture'
-import { waitForLoadingComplete, waitForContentOrLoading } from '../utils/helpers'
+import {
+  generateUniqueEIN,
+  waitForLoadingComplete,
+  waitForContentOrLoading,
+} from '../utils/helpers'
 
 test.describe('CompanyOnboardingFlow', () => {
   test('displays the onboarding overview with all steps', async ({ page }) => {
@@ -76,12 +80,10 @@ test.describe('CompanyOnboardingFlow', () => {
       timeout: 30000,
     })
 
-    // Fill required Federal EIN - generate a unique one to avoid "already in use" errors
     const einField = page.getByLabel(/federal ein/i)
     if (await einField.isVisible().catch(() => false)) {
-      const uniqueEIN = `${Math.floor(Math.random() * 89 + 10)}-${Math.floor(Math.random() * 8999999 + 1000000)}`
       await einField.clear()
-      await einField.fill(uniqueEIN)
+      await einField.fill(generateUniqueEIN())
     }
 
     // Select taxpayer type if dropdown is present and empty
