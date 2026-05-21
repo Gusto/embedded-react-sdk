@@ -1,21 +1,9 @@
 {
   "$schema": "../../schema/scenario.schema.json",
   "name": "Contractor payment flow",
-  "description": "Company with onboarded contractor ready for payment.",
+  "description": "Onboarded company for non-canary contractor payment specs (contractor-payment, contractor-payment-create-full-lifecycle, contractor-payment-submit-lifecycle). The base demo react_sdk_demo_company_onboarded already ships with payment-ready contractors (Ella Fitzgerald, Louis Armstrong) — the scenario runner's contractor decoration only sets profile fields (no address, no payment method, no onboarding completion), so a decorated contractor never appears in the 'Pay contractors' list anyway. No decorations are needed; this scenario exists as a distinct id from contractor/full-flow-canary so the canary suite's mutating tests stay cache-isolated from these read-only payment lifecycle specs.",
   "domain": "contractor",
   "baseDemo": "react_sdk_demo_company_onboarded",
-  "decorations": {
-    "contractors": [
-      {
-        "key": "contractor-1",
-        "$ref": "../fragments/contractor-1099.json",
-        "overrides": {
-          "first_name": "Charlie",
-          "last_name": "Contractor",
-          "email": "charlie+{{ts}}@example.com"
-        }
-      }
-    ]
-  },
-  "expectedContext": ["companyId", "contractorIds.contractor-1"]
+  "decorations": {},
+  "expectedContext": ["companyId"]
 }

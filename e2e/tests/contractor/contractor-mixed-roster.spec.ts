@@ -26,7 +26,7 @@ test.describe('ContractorOnboarding — mixed roster', () => {
       timeout: 30000,
     })
 
-    await expect(page.getByText(/Bright Services/i).first()).toBeVisible({ timeout: 15000 })
+    await expect(page.getByText(/Acme Consulting/i).first()).toBeVisible({ timeout: 15000 })
     await expect(page.getByText(/Charlie/i).first()).toBeVisible({ timeout: 15000 })
   })
 })
