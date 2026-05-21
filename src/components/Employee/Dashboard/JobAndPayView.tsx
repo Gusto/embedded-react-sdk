@@ -212,6 +212,19 @@ export function JobAndPayView({
   const canAddAnotherJob =
     jobs.length >= 1 && primaryFlsaStatus === FlsaStatus.NONEXEMPT && !hasFutureNonNonexemptComp
   const singleJobNumericRate = singleJob ? parseJobRate(singleJob.rate) : null
+  const singleJobCurrentComp = singleJob?.compensations?.find(
+    c => c.uuid === singleJob.currentCompensationUuid,
+  )
+  const singleJobEffectiveDateRow = singleJobCurrentComp?.effectiveDate ? (
+    <Flex flexDirection="column" gap={0}>
+      <Components.Text variant="supporting">
+        {t('jobAndPay.compensation.effectiveDate')}
+      </Components.Text>
+      <Components.Text>
+        {formatDateLongWithYear(singleJobCurrentComp.effectiveDate)}
+      </Components.Text>
+    </Flex>
+  ) : null
 
   const [isReviewOpen, setIsReviewOpen] = useState(false)
   const renderDetail = usePendingChangeDetailRenderer(employeeFirstName)
@@ -291,9 +304,12 @@ export function JobAndPayView({
       },
     },
     {
-      key: 'startDate',
-      title: t('jobAndPay.compensation.columns.startDate'),
-      render: (job: Job) => (job.hireDate ? formatDateLongWithYear(job.hireDate) : '-'),
+      key: 'effectiveDate',
+      title: t('jobAndPay.compensation.columns.effectiveDate'),
+      render: (job: Job) => {
+        const currentComp = job.compensations?.find(c => c.uuid === job.currentCompensationUuid)
+        return currentComp?.effectiveDate ? formatDateLongWithYear(currentComp.effectiveDate) : '-'
+      },
     },
   ]
 
@@ -650,16 +666,7 @@ export function JobAndPayView({
                     </Flex>
                   )}
 
-                  {singleJob.hireDate && (
-                    <Flex flexDirection="column" gap={0}>
-                      <Components.Text variant="supporting">
-                        {t('jobAndPay.compensation.startDate')}
-                      </Components.Text>
-                      <Components.Text>
-                        {formatDateLongWithYear(singleJob.hireDate)}
-                      </Components.Text>
-                    </Flex>
-                  )}
+                  {singleJobEffectiveDateRow}
                 </Flex>
               ) : (
                 <EmptyData
