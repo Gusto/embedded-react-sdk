@@ -14,7 +14,7 @@ import {
   DocumentManagerContextual,
   DeductionFormContextual,
   AddJobPlaceholderContextual,
-  EditCompensationPlaceholderContextual,
+  EditCompensationContextual,
   AddAnotherJobPlaceholderContextual,
   type DashboardContextInterface,
 } from './DashboardComponents'
@@ -173,7 +173,7 @@ export const dashboardStateMachine = {
           ev: MachineEventType<EventPayloads, typeof componentEvents.EMPLOYEE_COMPENSATION_CREATE>,
         ): DashboardContextInterface => ({
           ...ctx,
-          component: EditCompensationPlaceholderContextual,
+          component: EditCompensationContextual,
           header: { type: 'minimal' },
           currentJob: ev.payload.job,
           successAlert: null,
@@ -309,6 +309,7 @@ export const dashboardStateMachine = {
   ),
   addJob: state<MachineTransition>(transition(componentEvents.CANCEL, 'index', returnToIndex)),
   editCompensation: state<MachineTransition>(
+    transition(componentEvents.EMPLOYEE_COMPENSATION_DONE, 'index', returnToIndex),
     transition(componentEvents.CANCEL, 'index', returnToIndex),
   ),
   addAnotherJob: state<MachineTransition>(

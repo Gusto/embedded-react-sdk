@@ -51,16 +51,33 @@ interface JobSchemaOptions {
    * Defaults to `true`.
    */
   withHireDateField?: boolean
+  /**
+   * When `false`, drops `title` from the validated shape entirely and the
+   * hook stops sending it on PUT `/v1/jobs/:id`. Use this when title is
+   * being driven via the compensation form instead (steady-state edits,
+   * where title is effective-dated alongside rate/unit/FLSA on a future
+   * compensation row). Defaults to `true`.
+   */
+  withTitleField?: boolean
 }
 
 export function createJobSchema(options: JobSchemaOptions = {}) {
-  const { mode = 'create', optionalFieldsToRequire, withHireDateField = true } = options
+  const {
+    mode = 'create',
+    optionalFieldsToRequire,
+    withHireDateField = true,
+    withTitleField = true,
+  } = options
+
+  const excludeFields: Array<keyof typeof fieldValidators> = []
+  if (!withHireDateField) excludeFields.push('hireDate')
+  if (!withTitleField) excludeFields.push('title')
 
   return buildFormSchema(fieldValidators, {
     requiredFieldsConfig,
     requiredErrorCode: JobErrorCodes.REQUIRED,
     mode,
     optionalFieldsToRequire,
-    excludeFields: withHireDateField ? [] : ['hireDate'],
+    excludeFields,
   })
 }

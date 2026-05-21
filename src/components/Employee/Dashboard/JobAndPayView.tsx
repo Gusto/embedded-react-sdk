@@ -12,6 +12,7 @@ import { useEmployeeCompensation } from './hooks'
 import type { PendingCompensationChange } from './getPendingCompensationChanges'
 import { usePendingChangeDetailRenderer } from './usePendingChangeDetailRenderer'
 import { PendingChangesReviewModal } from './PendingChangesReviewModal'
+import styles from './JobAndPayView.module.scss'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { DataView, useDataView, EmptyData, Loading } from '@/components/Common'
@@ -19,7 +20,7 @@ import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { BaseLayout } from '@/components/Base/Base'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { readableStreamToBlob } from '@/helpers/readableStreamToBlob'
-import { formatDateLongWithYear } from '@/helpers/dateFormatting'
+import { formatDateLongWithYear, formatDateToStringDate } from '@/helpers/dateFormatting'
 import { useFormatCompensationRate } from '@/helpers/formattedStrings'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 import { useI18n } from '@/i18n'
@@ -194,7 +195,22 @@ export function JobAndPayView({
 
   const singleJob = jobs.length === 1 ? jobs[0]! : undefined
   const hasMultipleJobs = hasMultipleJobsFromHook
-  const canAddAnotherJob = jobs.length >= 1 && primaryFlsaStatus === FlsaStatus.NONEXEMPT
+  // Block adding a secondary if the primary already has a future-dated
+  // compensation that isn't Nonexempt — that comp will delete secondary jobs
+  // at its effective date, matching the gws-flows guard on the new-job action.
+  // Use local date (not UTC) so the comparison matches how effectiveDate strings
+  // are handled throughout the dashboard (same as getPendingCompensationChanges).
+  const localTodayISO = formatDateToStringDate(new Date()) ?? ''
+  const primaryJob = jobs.find(j => j.primary)
+  const hasFutureNonNonexemptComp =
+    primaryJob?.compensations?.some(
+      c =>
+        c.effectiveDate !== undefined &&
+        c.effectiveDate > localTodayISO &&
+        c.flsaStatus !== FlsaStatus.NONEXEMPT,
+    ) ?? false
+  const canAddAnotherJob =
+    jobs.length >= 1 && primaryFlsaStatus === FlsaStatus.NONEXEMPT && !hasFutureNonNonexemptComp
   const singleJobNumericRate = singleJob ? parseJobRate(singleJob.rate) : null
 
   const [isReviewOpen, setIsReviewOpen] = useState(false)
@@ -533,57 +549,63 @@ export function JobAndPayView({
             <Loading />
           ) : (
             <Flex flexDirection="column" gap={16}>
-              {showInlineAlert && nextChange && (
-                <Components.Alert
-                  status="warning"
-                  disableScrollIntoView
-                  label={
-                    hasMultipleJobs
-                      ? t('jobAndPay.compensation.pendingChange.alertLabelWithJob', {
-                          jobTitle: nextChange.jobTitle,
-                          date: formatDateLongWithYear(nextChange.effectiveDate),
-                        })
-                      : t('jobAndPay.compensation.pendingChange.alertLabel', {
-                          date: formatDateLongWithYear(nextChange.effectiveDate),
-                        })
-                  }
-                >
-                  <Flex flexDirection="column" gap={12}>
-                    <Components.UnorderedList
-                      items={nextChange.details.map(detail => renderDetail(detail))}
-                    />
-                    <div>
-                      <Components.Button
-                        variant="secondary"
-                        isLoading={cancellingCompensationUuid === nextChange.compensationUuid}
-                        onClick={() => {
-                          void handleCancelChange(nextChange)
-                        }}
+              {hasPendingChanges && (
+                <div className={hasMultipleJobs ? styles.alertWrapper : undefined}>
+                  <Flex flexDirection="column" gap={16}>
+                    {showInlineAlert && nextChange && (
+                      <Components.Alert
+                        status="warning"
+                        disableScrollIntoView
+                        label={
+                          hasMultipleJobs
+                            ? t('jobAndPay.compensation.pendingChange.alertLabelWithJob', {
+                                jobTitle: nextChange.jobTitle,
+                                date: formatDateLongWithYear(nextChange.effectiveDate),
+                              })
+                            : t('jobAndPay.compensation.pendingChange.alertLabel', {
+                                date: formatDateLongWithYear(nextChange.effectiveDate),
+                              })
+                        }
                       >
-                        {t('jobAndPay.compensation.pendingChange.cancelCta')}
-                      </Components.Button>
-                    </div>
+                        <Flex flexDirection="column" gap={12}>
+                          <Components.UnorderedList
+                            items={nextChange.details.map(detail => renderDetail(detail))}
+                          />
+                          <div>
+                            <Components.Button
+                              variant="secondary"
+                              isLoading={cancellingCompensationUuid === nextChange.compensationUuid}
+                              onClick={() => {
+                                void handleCancelChange(nextChange)
+                              }}
+                            >
+                              {t('jobAndPay.compensation.pendingChange.cancelCta')}
+                            </Components.Button>
+                          </div>
+                        </Flex>
+                      </Components.Alert>
+                    )}
+                    {showSummaryAlert && (
+                      <Components.Alert
+                        status="warning"
+                        disableScrollIntoView
+                        label={t('jobAndPay.compensation.pendingChange.summaryLabel', {
+                          name: employeeFirstName ?? '',
+                        })}
+                        action={
+                          <Components.Button
+                            variant="secondary"
+                            onClick={() => {
+                              setIsReviewOpen(true)
+                            }}
+                          >
+                            {t('jobAndPay.compensation.pendingChange.reviewCta')}
+                          </Components.Button>
+                        }
+                      />
+                    )}
                   </Flex>
-                </Components.Alert>
-              )}
-              {showSummaryAlert && (
-                <Components.Alert
-                  status="warning"
-                  disableScrollIntoView
-                  label={t('jobAndPay.compensation.pendingChange.summaryLabel', {
-                    name: employeeFirstName ?? '',
-                  })}
-                  action={
-                    <Components.Button
-                      variant="secondary"
-                      onClick={() => {
-                        setIsReviewOpen(true)
-                      }}
-                    >
-                      {t('jobAndPay.compensation.pendingChange.reviewCta')}
-                    </Components.Button>
-                  }
-                />
+                </div>
               )}
               {hasMultipleJobs ? (
                 <DataView

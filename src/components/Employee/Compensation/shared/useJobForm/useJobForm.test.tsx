@@ -633,4 +633,91 @@ describe('useJobForm', () => {
       expect(updateJobBody).toMatchObject({ hire_date: '2024-12-24' })
     })
   })
+
+  describe('withTitleField', () => {
+    it('hides Fields.Title when withTitleField: false', async () => {
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'singleNonexempt' })),
+        ),
+      )
+
+      const { result } = renderHook(
+        () =>
+          useJobForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+            withTitleField: false,
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      assertReady(result.current)
+      expect(result.current.form.Fields.Title).toBeUndefined()
+      expect(result.current.form.Fields.HireDate).toBeDefined()
+    })
+
+    it('update mode: omits title from the PUT body when field is hidden', async () => {
+      let updateJobBody: Record<string, unknown> | null = null
+      const updateJobResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+        updateJobBody = (await request.json()) as Record<string, unknown>
+        return HttpResponse.json({
+          uuid: 'job-uuid',
+          version: 'v2',
+          employee_uuid: 'employee-uuid',
+          current_compensation_uuid: 'compensation-uuid',
+          payment_unit: 'Hour',
+          primary: true,
+          title: 'Senior Engineer',
+          hire_date: '2024-12-24',
+          two_percent_shareholder: true,
+          state_wc_covered: false,
+          state_wc_class_code: null,
+          compensations: [],
+          rate: '0.00',
+        })
+      })
+
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'singleNonexempt' })),
+        ),
+        handleUpdateEmployeeJob(updateJobResolver),
+      )
+
+      const { result } = renderHook(
+        () =>
+          useJobForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+            withTitleField: false,
+            withHireDateField: false,
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      await act(async () => {
+        assertReady(result.current)
+        await result.current.actions.onSubmit()
+      })
+
+      expect(updateJobResolver).toHaveBeenCalledTimes(1)
+      expect(updateJobBody).not.toHaveProperty('title')
+    })
+
+    it('drops title from validation when withTitleField is false', () => {
+      const [schema] = createJobSchema({ mode: 'create', withTitleField: false })
+      const { title: _omit, ...rest } = VALID_FORM_DATA
+      const result = schema.safeParse(rest)
+      expect(result.success).toBe(true)
+    })
+  })
 })

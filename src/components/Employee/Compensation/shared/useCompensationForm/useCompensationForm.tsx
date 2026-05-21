@@ -301,7 +301,11 @@ export function useCompensationForm({
   // the secondary itself must match — so the FLSA field is not user-editable
   // in this branch. We force the form value to the primary's FLSA below and
   // hide `Fields.FlsaStatus`.
-  const isAddingSecondaryJob = isCreateMode && primaryFlsaStatus === FlsaStatus.NONEXEMPT
+  // True when adding a brand-new secondary job (not when scheduling a future
+  // comp for the primary). The distinction matters: for the primary's future
+  // comp, FLSA should be editable; for a secondary, it must match the primary.
+  const isAddingSecondaryJob =
+    isCreateMode && primaryFlsaStatus === FlsaStatus.NONEXEMPT && currentJob?.primary !== true
 
   const [schema, metadataConfig] = useMemo(
     () =>
@@ -323,9 +327,15 @@ export function useCompensationForm({
   // current compensation so multi-job classification stays consistent. The
   // schema enforces requiredness on submit in `create` mode (see
   // `requiredFieldsConfig` in compensationSchema.ts).
+  //
+  // `title` falls back to the parent job's title when the loaded compensation
+  // row has none — a compensation only carries a non-null `title` when an
+  // explicit title change has been scheduled on it. For steady-state edits
+  // we want the input to show the employee's current title as the starting
+  // value so the user can edit-in-place rather than re-typing.
   const resolvedDefaults: CompensationFormData = useMemo(
     () => ({
-      title: currentCompensation?.title ?? partnerDefaults?.title ?? '',
+      title: currentCompensation?.title ?? currentJob?.title ?? partnerDefaults?.title ?? '',
       // When adding a secondary, the FLSA must match the primary's — force it
       // here (overriding any partner default) so the form submits the right
       // value even though `Fields.FlsaStatus` is hidden.
@@ -344,7 +354,7 @@ export function useCompensationForm({
         currentCompensation?.paymentUnit ?? partnerDefaults?.paymentUnit ?? PAY_PERIODS.HOUR,
       effectiveDate: currentCompensation?.effectiveDate ?? partnerDefaults?.effectiveDate ?? null,
     }),
-    [currentCompensation, partnerDefaults, primaryFlsaStatus, isAddingSecondaryJob],
+    [currentCompensation, currentJob, partnerDefaults, primaryFlsaStatus, isAddingSecondaryJob],
   )
 
   const formMethods = useForm<CompensationFormData, unknown, CompensationFormOutputs>({
@@ -377,36 +387,41 @@ export function useCompensationForm({
     }
   }, [watchedFlsaStatus, setValue, resolvedDefaults.paymentUnit])
 
-  // Carve-out branch — true when submitting the form right now would delete
-  // the employee's secondary jobs server-side. Drives both the
-  // `effectiveDate`-lock side effect below and the `status.willDeleteSecondaryJobs`
-  // flag exposed to partners.
-  //
-  // Conditions (matches gws-flows): update mode, the loaded compensation is
-  // Nonexempt, the form's `flsaStatus` has been changed to a non-Nonexempt
-  // value, and the employee has at least one secondary job.
-  const currentCompensationFlsaStatus = currentCompensation?.flsaStatus
+  // The FLSA status that represents the employee's current classification.
+  // In update mode this is the compensation being edited. In create mode
+  // `currentCompensation` is null, so fall back to the job's active
+  // compensation (identified by currentCompensationUuid) — this lets the
+  // secondary-job warning fire even when scheduling a future-dated change.
+  const currentJobActiveComp = currentJob
+    ? currentJob.compensations?.find(c => c.uuid === currentJob.currentCompensationUuid)
+    : undefined
+  const effectiveBaseFlsaStatus =
+    currentCompensation?.flsaStatus ?? currentJobActiveComp?.flsaStatus ?? null
+
+  // True when the user is changing FLSA away from Nonexempt on a job that has
+  // secondary jobs — those secondaries will be deleted by the API when the
+  // new classification takes effect (immediately in update mode, at the chosen
+  // effective date in create mode). Drives the warning and, in update mode
+  // only, the effectiveDate-lock side effect below.
   const willDeleteSecondaryJobs =
-    !isCreateMode &&
-    currentCompensationFlsaStatus === FlsaStatus.NONEXEMPT &&
+    effectiveBaseFlsaStatus === FlsaStatus.NONEXEMPT &&
     watchedFlsaStatus !== undefined &&
     watchedFlsaStatus !== FlsaStatus.NONEXEMPT &&
     otherJobsCount > 0
 
-  // Carve-out UX (matches gws-flows): while the carve-out branch is active
-  // the server only honors the FLSA change immediately — saving "deletes" the
-  // secondary jobs. Mirror the screen UX by forcing `effectiveDate` to today
-  // (so submits route through PUT-current rather than create-future) and
-  // disabling the field. Snapshot the prior value so a revert (back to
-  // Nonexempt before saving) restores what the user had selected.
+  // Carve-out UX — update mode only: while willDeleteSecondaryJobs is active
+  // the server deletes secondaries immediately on PUT. Mirror this by forcing
+  // `effectiveDate` to today and disabling the field. In create mode the
+  // deletion happens at the chosen future date, so we show the warning but
+  // leave the date field editable.
   const carveOutActiveRef = useRef(false)
   const priorEffectiveDateRef = useRef<string | null>(null)
   useEffect(() => {
-    if (willDeleteSecondaryJobs && !carveOutActiveRef.current) {
+    if (!isCreateMode && willDeleteSecondaryJobs && !carveOutActiveRef.current) {
       priorEffectiveDateRef.current = getValues('effectiveDate') ?? null
       setValue('effectiveDate', todayISO(), { shouldDirty: true, shouldValidate: false })
       carveOutActiveRef.current = true
-    } else if (!willDeleteSecondaryJobs && carveOutActiveRef.current) {
+    } else if (!isCreateMode && !willDeleteSecondaryJobs && carveOutActiveRef.current) {
       setValue('effectiveDate', priorEffectiveDateRef.current ?? null, {
         shouldDirty: true,
         shouldValidate: false,
@@ -414,7 +429,7 @@ export function useCompensationForm({
       priorEffectiveDateRef.current = null
       carveOutActiveRef.current = false
     }
-  }, [willDeleteSecondaryJobs, getValues, setValue])
+  }, [isCreateMode, willDeleteSecondaryJobs, getValues, setValue])
 
   const updateCompensationMutation = useJobsAndCompensationsUpdateCompensationMutation()
   const createCompensationMutation = useJobsAndCompensationsCreateCompensationMutation()
@@ -479,7 +494,10 @@ export function useCompensationForm({
   const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
   const fieldsMetadata = {
     title: baseMetadata.title,
-    effectiveDate: { ...baseMetadata.effectiveDate, isDisabled: willDeleteSecondaryJobs },
+    effectiveDate: {
+      ...baseMetadata.effectiveDate,
+      isDisabled: willDeleteSecondaryJobs && !isCreateMode,
+    },
     flsaStatus: withOptions<FlsaStatusType>(
       baseMetadata.flsaStatus,
       flsaOptions,

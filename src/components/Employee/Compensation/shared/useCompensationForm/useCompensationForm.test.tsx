@@ -550,6 +550,43 @@ describe('useCompensationForm', () => {
       })
     })
 
+    it('willDeleteSecondaryJobs=true in create mode when scheduling future FLSA change away from Nonexempt with secondaries (effectiveDate stays editable)', async () => {
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'multiJob' })),
+        ),
+      )
+
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid', // primary — no compensationId → create mode
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+      expect(result.current.status.willDeleteSecondaryJobs).toBe(false)
+
+      const { formMethods } = result.current.form.hookFormInternals
+      act(() => {
+        formMethods.setValue('flsaStatus', FlsaStatus.EXEMPT)
+      })
+
+      await waitFor(() => {
+        if (result.current.isLoading) throw new Error('still loading')
+        expect(result.current.status.willDeleteSecondaryJobs).toBe(true)
+      })
+      // In create mode: date must NOT be forced to today
+      expect(formMethods.getValues('effectiveDate')).toBeNull()
+      // In create mode: effective date field must NOT be disabled
+      expect(result.current.form.fieldsMetadata.effectiveDate?.isDisabled).toBeFalsy()
+    })
+
     it('willDeleteSecondaryJobs=false when employee has no secondary jobs (single primary)', async () => {
       server.use(
         handleGetEmployeeJobs(() =>
@@ -812,6 +849,31 @@ describe('useCompensationForm', () => {
           useCompensationForm({
             employeeId: 'employee-uuid',
             jobId: 'job-uuid',
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+      expect(result.current.form.Fields.FlsaStatus).toBeDefined()
+    })
+
+    it('exposes Fields.FlsaStatus when creating a future-dated compensation for the primary job', async () => {
+      // Regression guard: isAddingSecondaryJob must not fire when jobId points
+      // to the primary job, even though primaryFlsaStatus is Nonexempt.
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'singleNonexempt' })),
+        ),
+      )
+
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid', // primary job
           }),
         { wrapper: GustoTestProvider },
       )

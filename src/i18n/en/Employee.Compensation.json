@@ -43,6 +43,23 @@
   "title": "Compensation",
   "editTitle": "Edit job",
   "addTitle": "Add job",
+  "effectiveDateLabel": "Effective date",
+  "management": {
+    "editCompensationTitle": "Edit compensation",
+    "jobTitleLabel": "Job title",
+    "wageLabel": "Wage",
+    "wageFrequencyLabel": "Wage frequency",
+    "wageFrequencyOptions": {
+      "Hour": "Hourly",
+      "Week": "Weekly",
+      "Month": "Monthly",
+      "Year": "Annually",
+      "Paycheck": "Per paycheck"
+    },
+    "twoPercentShareholderLabel": "This employee is a 2% shareholder",
+    "saveCta": "Save",
+    "scheduledClassificationChangeNotification": "Scheduling this classification change will delete the employee's additional jobs when it goes into effect."
+  },
   "validations": {
     "classificationChangeNotification": "Changing this employee's classification will delete the employee's additional pay rates.",
     "exemptThreshold": "Most employees who make under {{limit}}/year should be eligible for overtime.",
@@ -52,7 +69,10 @@
     "rateExemptThreshold": "FLSA Exempt employees must meet salary threshold of {{limit}}/year",
     "title": "Title is a required field",
     "minimumWage": "Please select minimum wage for adjustment",
-    "stateWcClassCode": "Please select a risk class code"
+    "stateWcClassCode": "Please select a risk class code",
+    "effectiveDate": "Effective date is a required field",
+    "effectiveDateBeforeHire": "Effective date cannot be before the employee's hire date.",
+    "jobTitleSentence": "Job title is a required field"
   },
   "stateWcCoveredLabel": "Workers' compensation coverage",
   "stateWcCoveredDescription": "Washington administers <wcLink>workers’ compensation insurance</wcLink> to protect workers and employers from the financial impact of a work-related injury. Indicate here if this employee is exempt from the workers’ comp tax.",
