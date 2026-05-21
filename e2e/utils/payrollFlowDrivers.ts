@@ -425,44 +425,55 @@ export async function terminateAndRunDismissalPayroll(
   await page.getByRole('button', { name: /run termination payroll/i }).click()
   await waitForLoadingComplete(page, PAYROLL_CALCULATION_DEADLINE)
 
-  // The Run Dismissal Payroll screen always renders its "Run dismissal
-  // payroll" heading, but underneath it the SDK shows one of three states
-  // depending on what the backend returned from
-  // /pay_schedules/unprocessed_termination_periods:
-  //   - 1+ periods → Pay period selector (driver picks the first option)
-  //   - 0 periods → empty-state Alert ("There are no unprocessed
-  //     termination pay periods available."). On the demo backend this
-  //     occasionally appears immediately after a termination because the
-  //     period hasn't been created server-side yet — a single page reload
-  //     re-runs the suspense query and lets the backend catch up.
-  // We don't race against an Edit Payroll heading because navigating to
-  // /?flow=termination without a payrollId param means shouldAutoAdvance
-  // is false, so DismissalPayPeriodSelection never auto-advances.
+  // After clicking "Run termination payroll" the SDK lands on one of two
+  // places depending on whether the backend has already produced the
+  // dismissal payroll record:
+  //   - DismissalPayPeriodSelection ("Run dismissal payroll" h2) when the
+  //     payroll hasn't been created yet — driver picks a period or reloads
+  //     to wait for the backend to catch up.
+  //   - Edit Payroll directly (h1 "Edit Payroll", breadcrumb "Pay Period ›
+  //     Edit Dismissal Payroll") when the backend already had an
+  //     unprocessed termination period for this employee. The SDK
+  //     auto-advances past pay-period selection in that case.
+  // The post-mutation landing can take longer than a plain SDK navigation
+  // because the backend computes pay periods + creates the dismissal
+  // payroll record synchronously, so we wait on the longer
+  // PAYROLL_CALCULATION_DEADLINE budget for the first landmark.
   const dismissalHeading = page.getByRole('heading', { name: /run dismissal payroll/i, level: 2 })
+  const editPayrollHeading = page.getByRole('heading', { name: /edit payroll/i, level: 1 })
   const payPeriodSelect = page.getByLabel(/^pay period$/i)
   const emptyStateAlert = page.getByText(/no unprocessed termination pay periods available/i)
 
-  await expect(dismissalHeading).toBeVisible({ timeout: SDK_NAVIGATION_DEADLINE })
+  await expect(dismissalHeading.or(editPayrollHeading).first()).toBeVisible({
+    timeout: PAYROLL_CALCULATION_DEADLINE,
+  })
 
-  for (let attempt = 0; attempt < 3; attempt++) {
-    await expect(payPeriodSelect.or(emptyStateAlert).first()).toBeVisible({
-      timeout: SDK_NAVIGATION_DEADLINE,
-    })
-    if (await payPeriodSelect.isVisible()) break
-    if (attempt === 2) {
-      throw new Error(
-        'Run Dismissal Payroll stayed on the empty state after 3 reloads — backend never produced an unprocessed termination pay period for this employee',
-      )
+  if (await dismissalHeading.isVisible()) {
+    for (let attempt = 0; attempt < 3; attempt++) {
+      await expect(payPeriodSelect.or(emptyStateAlert).first()).toBeVisible({
+        timeout: SDK_NAVIGATION_DEADLINE,
+      })
+      if (await payPeriodSelect.isVisible()) break
+      if (attempt === 2) {
+        throw new Error(
+          'Run Dismissal Payroll stayed on the empty state after 3 reloads — backend never produced an unprocessed termination pay period for this employee',
+        )
+      }
+      await page.reload()
+      await waitForLoadingComplete(page, PAYROLL_CALCULATION_DEADLINE)
+      await expect(dismissalHeading.or(editPayrollHeading).first()).toBeVisible({
+        timeout: SDK_NAVIGATION_DEADLINE,
+      })
+      if (await editPayrollHeading.isVisible()) break
     }
-    await page.reload()
-    await waitForLoadingComplete(page, PAYROLL_CALCULATION_DEADLINE)
-    await expect(dismissalHeading).toBeVisible({ timeout: SDK_NAVIGATION_DEADLINE })
-  }
 
-  await payPeriodSelect.click()
-  await page.getByRole('option').first().click()
-  await page.getByRole('button', { name: /^continue$/i }).click()
-  await waitForLoadingComplete(page, PAYROLL_CALCULATION_DEADLINE)
+    if (await payPeriodSelect.isVisible()) {
+      await payPeriodSelect.click()
+      await page.getByRole('option').first().click()
+      await page.getByRole('button', { name: /^continue$/i }).click()
+      await waitForLoadingComplete(page, PAYROLL_CALCULATION_DEADLINE)
+    }
+  }
 
   await calculateAndSubmit(page)
   await openReceipt(page)
