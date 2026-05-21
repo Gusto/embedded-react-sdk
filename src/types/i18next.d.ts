@@ -585,6 +585,8 @@ export interface CompanyTimeOffSelectEmployees{
 "emptyState":string;
 "errors":{
 "completePolicyFailed":string;
+"ineligibleEmployees":string;
+"ineligibleUnknownReason":string;
 };
 "addConfirmDialog":{
 "title_one":string;
