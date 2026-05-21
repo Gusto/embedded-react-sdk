@@ -196,7 +196,7 @@ describe('HolidayPolicyDetail', () => {
       // approach used the default 1s timeout, which intermittently expired
       // under coverage instrumentation + parallel test workload.
       await screen.findByText('Person10 Roster', undefined, { timeout: 5000 })
-      expect(screen.getByText('Person11 Roster')).toBeInTheDocument()
+      await screen.findByText('Person11 Roster', undefined, { timeout: 5000 })
       expect(screen.queryByText('Person00 Roster')).not.toBeInTheDocument()
     }, 10000)
 
