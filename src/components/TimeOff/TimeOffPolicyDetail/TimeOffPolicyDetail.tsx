@@ -190,6 +190,7 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
 
   const handleRemoveEmployee = useCallback(
     async (employeeUuid: string, employeeName: string) => {
+      setRemoveTarget(null)
       await baseSubmitHandler({}, async () => {
         await removeEmployees({
           request: {
@@ -198,7 +199,6 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
           },
         })
         invalidatePolicy()
-        setRemoveTarget(null)
         setSuccessAlert(t('flash.employeeRemoved', { name: employeeName }))
       })
     },
@@ -265,6 +265,7 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
                 label: t('employeeTable.editBalance'),
                 icon: <EditIcon aria-hidden />,
                 onClick: () => {
+                  setError(null)
                   setEditBalanceState({
                     employeeUuid: employee.uuid,
                     employeeName,
@@ -289,7 +290,7 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
         />
       )
     },
-    [t, isUnlimited],
+    [t, isUnlimited, setError],
   )
 
   const discriminatedProps =
