@@ -190,13 +190,38 @@ function SelectEmployeesTimeOffInner({
       await baseSubmitHandler({}, async () => {
         let policyResult: unknown
         if (toAdd.length > 0) {
-          const response = await addEmployees({
-            request: {
-              timeOffPolicyUuid: policyId,
-              requestBody: { employees: buildAddPayload(toAdd) },
-            },
-          })
-          policyResult = response.timeOffPolicy
+          try {
+            const response = await addEmployees({
+              request: {
+                timeOffPolicyUuid: policyId,
+                requestBody: { employees: buildAddPayload(toAdd) },
+              },
+            })
+            policyResult = response.timeOffPolicy
+          } catch (err) {
+            if (err instanceof UnprocessableEntityError) {
+              const messages = err.errors
+                .map(e => {
+                  const uuid = e.errorKey
+                  const employee = selectedEmployeesRef.current.get(uuid)
+                  const name = employee
+                    ? `${employee.firstName ?? ''} ${employee.lastName ?? ''}`.trim()
+                    : null
+                  const reason = e.message ?? t('errors.ineligibleUnknownReason')
+                  return name ? `${name}: ${reason}` : reason
+                })
+                .filter(Boolean)
+              throw new SDKInternalError(
+                messages.length > 0
+                  ? t('errors.ineligibleEmployees', {
+                      details: messages.join('; '),
+                    })
+                  : (err.errors[0]?.message ?? 'Unable to add employees'),
+                'api_error',
+              )
+            }
+            throw err
+          }
         }
         if (mode === 'wizard' && policyResult) {
           const version =

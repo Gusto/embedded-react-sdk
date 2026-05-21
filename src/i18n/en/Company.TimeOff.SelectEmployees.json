@@ -11,7 +11,9 @@
   "continueCta": "Continue",
   "emptyState": "All eligible employees have already been added to this policy.",
   "errors": {
-    "completePolicyFailed": "Unable to complete this policy. {{details}}"
+    "completePolicyFailed": "Unable to complete this policy. {{details}}",
+    "ineligibleEmployees": "Some employees could not be added to this policy: {{details}}",
+    "ineligibleUnknownReason": "not eligible for this policy"
   },
   "addConfirmDialog": {
     "title_one": "Add {{count}} employee to this policy?",
