@@ -1398,9 +1398,9 @@ export interface EmployeeCompensation{
 "Year":string;
 "Paycheck":string;
 };
-"effectiveDateWarning":string;
 "twoPercentShareholderLabel":string;
 "saveCta":string;
+"scheduledClassificationChangeNotification":string;
 };
 "validations":{
 "classificationChangeNotification":string;

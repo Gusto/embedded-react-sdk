@@ -19,7 +19,7 @@ import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { BaseLayout } from '@/components/Base/Base'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { readableStreamToBlob } from '@/helpers/readableStreamToBlob'
-import { formatDateLongWithYear } from '@/helpers/dateFormatting'
+import { formatDateLongWithYear, formatDateToStringDate } from '@/helpers/dateFormatting'
 import { useFormatCompensationRate } from '@/helpers/formattedStrings'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 import { useI18n } from '@/i18n'
@@ -194,7 +194,22 @@ export function JobAndPayView({
 
   const singleJob = jobs.length === 1 ? jobs[0]! : undefined
   const hasMultipleJobs = hasMultipleJobsFromHook
-  const canAddAnotherJob = jobs.length >= 1 && primaryFlsaStatus === FlsaStatus.NONEXEMPT
+  // Block adding a secondary if the primary already has a future-dated
+  // compensation that isn't Nonexempt — that comp will delete secondary jobs
+  // at its effective date, matching the gws-flows guard on the new-job action.
+  // Use local date (not UTC) so the comparison matches how effectiveDate strings
+  // are handled throughout the dashboard (same as getPendingCompensationChanges).
+  const localTodayISO = formatDateToStringDate(new Date()) ?? ''
+  const primaryJob = jobs.find(j => j.primary)
+  const hasFutureNonNonexemptComp =
+    primaryJob?.compensations?.some(
+      c =>
+        c.effectiveDate !== undefined &&
+        c.effectiveDate > localTodayISO &&
+        c.flsaStatus !== FlsaStatus.NONEXEMPT,
+    ) ?? false
+  const canAddAnotherJob =
+    jobs.length >= 1 && primaryFlsaStatus === FlsaStatus.NONEXEMPT && !hasFutureNonNonexemptComp
   const singleJobNumericRate = singleJob ? parseJobRate(singleJob.rate) : null
 
   const [isReviewOpen, setIsReviewOpen] = useState(false)

@@ -56,9 +56,9 @@
       "Year": "Annually",
       "Paycheck": "Per paycheck"
     },
-    "effectiveDateWarning": "Changing an employee's start date may impact when they get paid, their time off balance and accruals, and possibly create the need for an additional off-cycle payroll.",
     "twoPercentShareholderLabel": "This employee is a 2% shareholder",
-    "saveCta": "Save"
+    "saveCta": "Save",
+    "scheduledClassificationChangeNotification": "Scheduling this classification change will delete the employee's additional jobs when it goes into effect."
   },
   "validations": {
     "classificationChangeNotification": "Changing this employee's classification will delete the employee's additional pay rates.",

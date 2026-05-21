@@ -10,6 +10,7 @@ import { BankForm } from '@/components/Employee/PaymentMethod/onboarding/BankFor
 import { SplitView } from '@/components/Employee/PaymentMethod/onboarding/SplitView'
 import { DocumentManager } from '@/components/Employee/Documents/management/DocumentManager'
 import { DeductionsForm } from '@/components/Employee/Deductions/DeductionsForm/DeductionsForm'
+import { ManagementEditCompensation } from '@/components/Employee/Compensation/management'
 import { useDeductionsList } from '@/components/Employee/Deductions/shared'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -171,11 +172,18 @@ export function AddJobPlaceholderContextual() {
   return <Components.Heading as="h2">{t('compensationFlow.addJobTitle')}</Components.Heading>
 }
 
-export function EditCompensationPlaceholderContextual() {
-  useI18n('Employee.Dashboard')
-  const { t } = useTranslation('Employee.Dashboard')
-  const Components = useComponentContext()
-  return <Components.Heading as="h2">{t('compensationFlow.editTitle')}</Components.Heading>
+export function EditCompensationContextual() {
+  const { employeeId, currentJob, onEvent } = useFlow<DashboardContextInterface>()
+  return (
+    <ManagementEditCompensation
+      employeeId={ensureRequired(employeeId)}
+      jobId={ensureRequired(currentJob?.uuid)}
+      onEvent={onEvent}
+      onCancel={() => {
+        onEvent(componentEvents.CANCEL, null)
+      }}
+    />
+  )
 }
 
 export function AddAnotherJobPlaceholderContextual() {
