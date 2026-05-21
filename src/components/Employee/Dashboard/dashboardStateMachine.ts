@@ -309,7 +309,7 @@ export const dashboardStateMachine = {
   ),
   addJob: state<MachineTransition>(transition(componentEvents.CANCEL, 'index', returnToIndex)),
   editCompensation: state<MachineTransition>(
-    transition(componentEvents.EMPLOYEE_COMPENSATION_UPDATED, 'index', returnToIndex),
+    transition(componentEvents.EMPLOYEE_COMPENSATION_DONE, 'index', returnToIndex),
     transition(componentEvents.CANCEL, 'index', returnToIndex),
   ),
   addAnotherJob: state<MachineTransition>(

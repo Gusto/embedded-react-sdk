@@ -27,12 +27,7 @@ export interface EditCompensationProps extends CommonComponentInterface<'Employe
   employeeId: string
   jobId: string
   onCancel?: () => void
-  /**
-   * Receives `EMPLOYEE_JOB_UPDATED` (with the saved `Job`) and then
-   * `EMPLOYEE_COMPENSATION_UPDATED` (with the saved `Compensation`) on a
-   * successful submit chain. Use `EMPLOYEE_COMPENSATION_UPDATED` for
-   * "save complete" branching.
-   */
+  /** Called with `EMPLOYEE_COMPENSATION_UPDATED` then `EMPLOYEE_COMPENSATION_DONE` on a successful save. Use `EMPLOYEE_COMPENSATION_DONE` to trigger navigation. */
   onEvent: OnEventType<EventType, unknown>
 }
 
@@ -138,6 +133,7 @@ function Root({ employeeId, jobId, defaultValues, onCancel, className, onEvent }
     if (!compensationResult) return
 
     onEvent(componentEvents.EMPLOYEE_COMPENSATION_UPDATED, compensationResult.data)
+    onEvent(componentEvents.EMPLOYEE_COMPENSATION_DONE, compensationResult.data)
   })
 
   const errorHandling = composeErrorHandler([submitResult])

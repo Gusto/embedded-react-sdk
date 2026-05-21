@@ -164,6 +164,10 @@ describe('management/EditCompensation', () => {
         componentEvents.EMPLOYEE_COMPENSATION_UPDATED,
         expect.objectContaining({ uuid: 'new-compensation-uuid' }),
       )
+      expect(onEvent).toHaveBeenCalledWith(
+        componentEvents.EMPLOYEE_COMPENSATION_DONE,
+        expect.anything(),
+      )
     })
   })
 
