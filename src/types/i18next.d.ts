@@ -371,6 +371,7 @@ export interface CompanyTimeOffCreateTimeOffPolicy{
 "policyNameLabel":string;
 "accrualMethodLabel":string;
 "accrualMethodHint":string;
+"accrualMethodLockedHint":string;
 "perHourPaidLabel":string;
 "perHourPaidHint":string;
 "perYearLabel":string;
