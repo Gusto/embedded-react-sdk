@@ -243,6 +243,9 @@ jobs:
   # every shipping spec lives inside a domain folder.
   e2e-setup:
     needs: [setup, scenarios]
+    # Temporarily skip E2E on pushes to main while we stabilize the demo backend
+    # contract. PR runs and manual dispatches still execute the suite.
+    if: github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
     outputs:
       domains: ${{ steps.list-domains.outputs.domains }}
@@ -325,8 +328,9 @@ jobs:
   e2e:
     needs: [setup, scenarios, e2e-setup]
     # Skip cleanly when no domain folders exist — fromJson on an empty array
-    # would otherwise fail matrix expansion.
-    if: needs.e2e-setup.outputs.domains != '[]'
+    # would otherwise fail matrix expansion. Also skipped on main while we
+    # stabilize the demo backend contract (mirrors the e2e-setup gate).
+    if: github.ref != 'refs/heads/main' && needs.e2e-setup.outputs.domains != '[]'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
