@@ -651,6 +651,10 @@ export interface CompanyTimeOffTimeOffPolicies{
 "holidayDeleted":string;
 "invalidPolicyType":string;
 };
+"errors":{
+"pendingRequestsBlockDeletion":string;
+"deleteFailed":string;
+};
 };
 export interface CompanyTimeOffTimeOffPolicyDetails{
 "breadcrumb":string;
