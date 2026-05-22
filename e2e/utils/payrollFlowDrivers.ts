@@ -422,9 +422,6 @@ export async function terminateAndRunDismissalPayroll(
     timeout: PAYROLL_CALCULATION_DEADLINE,
   })
 
-  await page.getByRole('button', { name: /run termination payroll/i }).click()
-  await waitForLoadingComplete(page, PAYROLL_CALCULATION_DEADLINE)
-
   // After clicking "Run termination payroll" the SDK lands on one of two
   // places depending on whether the backend has already produced the
   // dismissal payroll record:
@@ -444,8 +441,10 @@ export async function terminateAndRunDismissalPayroll(
   const payPeriodSelect = page.getByLabel(/^pay period$/i)
   const emptyStateAlert = page.getByText(/no unprocessed termination pay periods available/i)
 
-  await expect(dismissalHeading.or(editPayrollHeading).first()).toBeVisible({
+  await page.getByRole('button', { name: /run termination payroll/i }).click()
+  await waitForLoadingComplete(page, {
     timeout: PAYROLL_CALCULATION_DEADLINE,
+    anchor: dismissalHeading.or(editPayrollHeading).first(),
   })
 
   if (await dismissalHeading.isVisible()) {
@@ -460,9 +459,9 @@ export async function terminateAndRunDismissalPayroll(
         )
       }
       await page.reload()
-      await waitForLoadingComplete(page, PAYROLL_CALCULATION_DEADLINE)
-      await expect(dismissalHeading.or(editPayrollHeading).first()).toBeVisible({
-        timeout: SDK_NAVIGATION_DEADLINE,
+      await waitForLoadingComplete(page, {
+        timeout: PAYROLL_CALCULATION_DEADLINE,
+        anchor: dismissalHeading.or(editPayrollHeading).first(),
       })
       if (await editPayrollHeading.isVisible()) break
     }

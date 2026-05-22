@@ -310,10 +310,9 @@ async function editFirstContractorPayment(page: Page, opts: { hours: string }): 
 
 async function reviewAndSubmitPayment(page: Page): Promise<void> {
   await page.getByRole('button', { name: /^continue$/i }).click()
-  await waitForLoadingComplete(page, 2 * LONG_WAIT)
-
-  await expect(page.getByRole('heading', { name: /^review and submit$/i })).toBeVisible({
-    timeout: LONG_WAIT,
+  await waitForLoadingComplete(page, {
+    timeout: 2 * LONG_WAIT,
+    anchor: page.getByRole('heading', { name: /^review and submit$/i }),
   })
 
   await page.getByRole('button', { name: /^submit$/i }).click()

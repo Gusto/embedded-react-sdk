@@ -19,9 +19,11 @@ test.describe('PayrollFlow — weekly cadence', () => {
     expect(scenario.paySchedule?.uuid).toBeTruthy()
 
     await page.goto('/?flow=payroll')
-    await waitForLoadingComplete(page, 60000)
+    await waitForLoadingComplete(page, {
+      timeout: 60000,
+      anchor: page.getByRole('tab', { name: /run payroll/i }),
+    })
 
-    await expect(page.getByRole('tab', { name: /run payroll/i })).toBeVisible({ timeout: 30000 })
     await expect(page.getByRole('tab', { name: /payroll history/i })).toBeVisible()
 
     const payPeriodHeader = page.getByRole('columnheader', { name: /pay period/i })

@@ -18,9 +18,9 @@ const DEMO_GWS_FLOWS_HOST = 'https://flows.gusto-demo.com'
 
 async function landOnEmployeeOnboardingHome(page: Page) {
   await page.goto('/?flow=employee-onboarding')
-  await waitForLoadingComplete(page, LONG_WAIT)
-  await expect(page.getByRole('heading', { name: /your employees/i })).toBeVisible({
-    timeout: 30_000,
+  await waitForLoadingComplete(page, {
+    timeout: LONG_WAIT,
+    anchor: page.getByRole('heading', { name: /your employees/i }),
   })
 }
 
@@ -346,10 +346,9 @@ export async function runEmployeeTermination(
   }
 
   await page.goto(`/?flow=termination&employeeId=${employeeId}`)
-  await waitForLoadingComplete(page, LONG_WAIT)
-
-  await expect(page.getByRole('heading', { name: /^terminate /i, level: 2 })).toBeVisible({
-    timeout: 30_000,
+  await waitForLoadingComplete(page, {
+    timeout: LONG_WAIT,
+    anchor: page.getByRole('heading', { name: /^terminate /i, level: 2 }),
   })
 
   // Last day of work: must be in the future for "Regular payroll" path
@@ -367,10 +366,9 @@ export async function runEmployeeTermination(
   await page.getByRole('radio', { name: /^regular payroll$/i }).check({ force: true })
 
   await page.getByRole('button', { name: /^terminate employee$/i }).click()
-  await waitForLoadingComplete(page, LONG_WAIT)
-
-  await expect(page.getByRole('heading', { name: /^termination summary$/i })).toBeVisible({
+  await waitForLoadingComplete(page, {
     timeout: LONG_WAIT,
+    anchor: page.getByRole('heading', { name: /^termination summary$/i }),
   })
   await expect(page.getByText(/has been successfully terminated/i)).toBeVisible({
     timeout: LONG_WAIT,
