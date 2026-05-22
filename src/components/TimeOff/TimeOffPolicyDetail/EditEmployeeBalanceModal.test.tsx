@@ -42,6 +42,15 @@ describe('EditEmployeeBalanceModal', () => {
     })
   })
 
+  it('marks the balance field as required (no "(optional)" suffix in the label)', async () => {
+    renderModal()
+
+    const balanceInput = await screen.findByRole('textbox', { name: /balance/i })
+    expect(balanceInput).toHaveAttribute('aria-required', 'true')
+
+    expect(screen.queryByText(/\(optional\)/i)).not.toBeInTheDocument()
+  })
+
   it('calls onConfirm with the balance value when Update balance is clicked', async () => {
     const user = userEvent.setup()
     renderModal()
