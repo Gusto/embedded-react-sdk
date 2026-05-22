@@ -1,0 +1,15 @@
+{
+  "$schema": "../../schema/scenario.schema.json",
+  "name": "Skip-payroll canary scenario",
+  "description": "Dedicated onboarded company for the skip-payroll canary. Skipping the current open biweekly period is destructive (no more unprocessed regular payroll exists after the skip), so the skip-canary cannot share the payroll/full-flow-canary scenario which the regular/off-cycle/transition/dismissal canaries depend on. Same baseDemo + biweekly schedule overlay as full-flow-canary so the row, hamburger menu, and skip dialog render identically.",
+  "domain": "payroll",
+  "baseDemo": "react_sdk_demo_company_onboarded",
+  "decorations": {
+    "paySchedule": {
+      "frequency": "Every other week",
+      "anchor_pay_date": "{{relative:+14d:Friday}}",
+      "anchor_end_of_pay_period": "{{relative:+13d}}"
+    }
+  },
+  "expectedContext": ["companyId", "paySchedule.uuid"]
+}

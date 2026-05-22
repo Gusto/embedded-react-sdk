@@ -195,6 +195,111 @@ export async function runNextRegularPayroll(page: Page, scenario: ScenarioContex
   await openReceipt(page)
 }
 
+/**
+ * Drive from the payroll landing page into the Edit Payroll screen for the
+ * next unprocessed regular payroll, stopping at the per-employee
+ * compensations table. Used by canaries that want to interact with an
+ * individual employee's compensation form without driving the payroll
+ * through to calculate/submit (e.g. the reimbursement read+write canary).
+ */
+export async function landOnEditPayrollForNextRegular(
+  page: Page,
+  scenario: ScenarioContext,
+): Promise<void> {
+  await landOnPayrollHome(page)
+  await ensureCompanyIsPayrollReady(page, scenario)
+
+  const runButton = page.getByRole('button', { name: /^run payroll$/i }).first()
+  const reviewButton = page.getByRole('button', { name: /review and submit/i }).first()
+  await expect(runButton.or(reviewButton).first()).toBeVisible({
+    timeout: SDK_NAVIGATION_DEADLINE,
+  })
+  const entry = (await runButton.isVisible()) ? runButton : reviewButton
+  await entry.click()
+  await waitForLoadingComplete(page, PAYROLL_CALCULATION_DEADLINE)
+
+  await expect(page.getByRole('heading', { name: /edit payroll/i, level: 1 })).toBeVisible({
+    timeout: SDK_NAVIGATION_DEADLINE,
+  })
+}
+
+/**
+ * Open the per-row "Edit" menu on the first employee compensation row of
+ * Edit Payroll and click into the per-employee Edit form. The row's
+ * actions are surfaced via a kebab/hamburger menu (i18n
+ * Payroll.PayrollConfiguration.editMenu.edit = "Edit").
+ */
+export async function openEditEmployeeForFirstRow(page: Page): Promise<void> {
+  // The first body row (nth(1) — nth(0) is the header) is the first
+  // employee compensation entry. Each row exposes a menu trigger whose
+  // accessible name is the row's employee. We don't pin to a specific
+  // name because demo seed employees vary; we just open the menu on the
+  // first body row.
+  const firstRow = page.getByRole('row').nth(1)
+  await expect(firstRow).toBeVisible({ timeout: PAYROLL_CALCULATION_DEADLINE })
+
+  await firstRow.getByRole('button').last().click()
+
+  await page.getByRole('menuitem', { name: /^edit$/i }).click()
+  await waitForLoadingComplete(page, PAYROLL_CALCULATION_DEADLINE)
+
+  // The per-employee Edit form renders the "Save" footer button. Once
+  // visible the form has mounted and the caller can interact with it.
+  await expect(page.getByRole('button', { name: /^save$/i })).toBeVisible({
+    timeout: PAYROLL_CALCULATION_DEADLINE,
+  })
+}
+
+/**
+ * Click Save on the per-employee Edit form and wait for the SDK to
+ * navigate back to the Edit Payroll compensations table.
+ */
+export async function saveEditEmployeeAndReturn(page: Page): Promise<void> {
+  await page.getByRole('button', { name: /^save$/i }).click()
+  await waitForLoadingComplete(page, PAYROLL_CALCULATION_DEADLINE)
+
+  await expect(page.getByRole('heading', { name: /edit payroll/i, level: 1 })).toBeVisible({
+    timeout: PAYROLL_CALCULATION_DEADLINE,
+  })
+}
+
+/**
+ * Open the row-level actions menu on the first unprocessed payroll row of
+ * the PayrollList, click "Skip payroll", confirm the dialog, and assert
+ * the "Payroll skipped" success alert renders. This drives the v11-15
+ * skip-payroll wire contract (the body now requires pay_schedule_uuid +
+ * end_date in addition to payroll_type + start_date).
+ */
+export async function skipFirstUnprocessedPayroll(
+  page: Page,
+  scenario: ScenarioContext,
+): Promise<void> {
+  await landOnPayrollHome(page)
+  await ensureCompanyIsPayrollReady(page, scenario)
+
+  // The row-level kebab menu trigger uses the SDK's MenuTrigger
+  // accessible name "Open menu" (i18n.common.openMenu). Pick the first
+  // such trigger on the page (the first unprocessed payroll row).
+  await page
+    .getByRole('button', { name: /open menu/i })
+    .first()
+    .click()
+
+  await page.getByRole('menuitem', { name: /^skip payroll$/i }).click()
+
+  // Confirm dialog body copy:
+  //   Payroll.PayrollList.skipPayrollDialog.confirmCta = "Yes, skip payroll"
+  await page.getByRole('button', { name: /yes, skip payroll/i }).click()
+  await waitForLoadingComplete(page, PAYROLL_CALCULATION_DEADLINE)
+
+  // Positive contract: the "Payroll skipped" alert renders. If the SDK
+  // dropped pay_schedule_uuid or end_date from the request body, the
+  // backend would return 422 and the alert would never appear.
+  await expect(page.getByText(/^payroll skipped$/i)).toBeVisible({
+    timeout: PAYROLL_CALCULATION_DEADLINE,
+  })
+}
+
 export async function createAndSubmitOffCycleBonus(
   page: Page,
   scenario: ScenarioContext,
