@@ -35,6 +35,6 @@ test.describe('PayrollFlow - view all blockers lifecycle', () => {
       return
     }
 
-    await expect(directBlockerSurface.or(payPeriodHeader)).toBeVisible({ timeout: 15000 })
+    await expect(directBlockerSurface.or(payPeriodHeader).first()).toBeVisible({ timeout: 15000 })
   })
 })

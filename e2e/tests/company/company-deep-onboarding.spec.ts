@@ -26,10 +26,16 @@ test.describe('CompanyOnboarding - deep flow through industry to bank account', 
     await advancePastFederalTaxes(page)
     await advancePastIndustry(page)
 
+    // The bank-account step renders both a page heading ("Bank account" /
+    // "Company bank...") and a section heading mentioning verification, so
+    // the .or() locator matches multiple elements. .first() picks the
+    // page-level heading, which is what landing on the step is supposed
+    // to confirm.
     await expect(
       page
         .getByRole('heading', { name: /bank account|company bank/i })
-        .or(page.getByRole('heading', { name: /verify|verification/i })),
+        .or(page.getByRole('heading', { name: /verify|verification/i }))
+        .first(),
     ).toBeVisible({ timeout: 30000 })
   })
 })

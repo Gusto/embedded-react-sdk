@@ -99,7 +99,8 @@ async function fillAddressStep(
   await expect(
     page
       .getByRole('heading', { name: /^home address$/i })
-      .or(page.getByRole('heading', { name: /^business address$/i })),
+      .or(page.getByRole('heading', { name: /^business address$/i }))
+      .first(),
   ).toBeVisible({ timeout: LONG_WAIT })
 
   await page.getByLabel(/^street 1$/i).fill(opts.street1 ?? '548 Market St')
