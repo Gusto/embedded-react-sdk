@@ -8,7 +8,7 @@ describe('apiVersionHook', () => {
 
     const modifiedRequest = apiVersionHook.beforeRequest(mockContext, mockRequest) as Request
 
-    expect(modifiedRequest.headers.get('X-Gusto-API-Version')).toBe('2025-06-15')
+    expect(modifiedRequest.headers.get('X-Gusto-API-Version')).toBe('2025-11-15')
   })
 
   test('overrides existing X-Gusto-API-Version header', () => {
@@ -21,7 +21,7 @@ describe('apiVersionHook', () => {
 
     const modifiedRequest = apiVersionHook.beforeRequest(mockContext, mockRequest) as Request
 
-    expect(modifiedRequest.headers.get('X-Gusto-API-Version')).toBe('2025-06-15')
+    expect(modifiedRequest.headers.get('X-Gusto-API-Version')).toBe('2025-11-15')
   })
 
   test('preserves other headers', () => {
@@ -37,7 +37,7 @@ describe('apiVersionHook', () => {
 
     expect(modifiedRequest.headers.get('Authorization')).toBe('Bearer test-token')
     expect(modifiedRequest.headers.get('Content-Type')).toBe('application/json')
-    expect(modifiedRequest.headers.get('X-Gusto-API-Version')).toBe('2025-06-15')
+    expect(modifiedRequest.headers.get('X-Gusto-API-Version')).toBe('2025-11-15')
   })
 
   test('returns the same request object', () => {
