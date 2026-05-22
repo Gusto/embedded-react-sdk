@@ -9,7 +9,7 @@ import { useContractorsUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/r
 import type { ContractorCreateRequestBody } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorcreaterequestbody'
 import type { ContractorUpdateRequestBody } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorupdaterequestbody'
 import {
-  ContractorWageType as ApiWageType,
+  WageType as ApiWageType,
   ContractorType as ApiContractorType,
   type Contractor,
 } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor'

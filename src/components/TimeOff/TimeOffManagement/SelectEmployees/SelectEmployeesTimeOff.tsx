@@ -222,7 +222,7 @@ function SelectEmployeesTimeOffInner({
           }
         }
         void queryClient.invalidateQueries({
-          queryKey: ['@gusto/embedded-api', 'timeOffPolicies', 'get'],
+          queryKey: ['@gusto/embedded-api-v-2025-11-15', 'timeOffPolicies', 'get'],
         })
         onEvent(componentEvents.TIME_OFF_ADD_EMPLOYEES_DONE, policyResult)
       })

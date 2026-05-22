@@ -167,7 +167,7 @@ export const Root = ({
 
               return {
                 label:
-                  paymentType === 'payroll'
+                  paymentType === 'Payroll'
                     ? payrollRange
                       ? t('selectLabelPayroll', { payrollRange })
                       : t('selectFallback')

@@ -16,7 +16,7 @@ export const createWireInRequest = (overrides: Record<string, unknown> = {}) => 
   bank_name: null,
   date_sent: null,
   unique_tracking_code: 'TRACK123',
-  payment_type: 'payroll',
+  payment_type: 'Payroll',
   payment_uuid: 'payroll-uuid-1',
   amount_sent: null,
   requested_amount: '5000.00',

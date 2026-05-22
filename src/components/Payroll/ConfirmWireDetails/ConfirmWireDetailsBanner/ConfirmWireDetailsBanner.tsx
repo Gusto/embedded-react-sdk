@@ -131,7 +131,7 @@ const Root = ({
         <UnorderedList
           items={wireInRequestsWithPayrolls.map(
             ({ paymentType, payrollRange, requestedAmount }, index) =>
-              paymentType === 'payroll' ? (
+              paymentType === 'Payroll' ? (
                 <Text key={index}>{t('banner.requestLabelPayroll', { payrollRange })}</Text>
               ) : (
                 <Text key={index}>

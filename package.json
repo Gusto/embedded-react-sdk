@@ -159,7 +159,7 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@gusto/embedded-api-v-2025-11-15": "^0.0.1",
+    "@gusto/embedded-api-v-2025-11-15": "^0.0.2",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^5.2.2",
     "@internationalized/date": "^3.12.1",
