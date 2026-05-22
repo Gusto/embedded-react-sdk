@@ -102,8 +102,8 @@ export function PolicyConfigurationFormPresentation({
     [setValue],
   )
 
-  const accrualMethodOptions = useMemo(
-    () => [
+  const accrualMethodOptions = useMemo(() => {
+    const allOptions = [
       {
         value: 'per_hour_paid' as AccrualMethod,
         label: t('policyDetails.perHourPaidLabel'),
@@ -118,11 +118,16 @@ export function PolicyConfigurationFormPresentation({
         value: 'unlimited' as AccrualMethod,
         label: t('policyDetails.unlimitedLabel'),
         description: t('policyDetails.unlimitedHint'),
-        isDisabled: lockedAccrualCategory === 'accrual_based',
       },
-    ],
-    [t, lockedAccrualCategory],
-  )
+    ]
+    if (lockedAccrualCategory === 'unlimited') {
+      return allOptions.filter(option => option.value === 'unlimited')
+    }
+    if (lockedAccrualCategory === 'accrual_based') {
+      return allOptions.filter(option => option.value !== 'unlimited')
+    }
+    return allOptions
+  }, [t, lockedAccrualCategory])
 
   const accrualMethodFixedOptions = useMemo(
     () => [
@@ -181,19 +186,21 @@ export function PolicyConfigurationFormPresentation({
               errorMessage={t('policyDetails.validations.policyName')}
             />
 
-            <RadioGroupField<AccrualMethod>
-              name="accrualMethod"
-              label={t('policyDetails.accrualMethodLabel')}
-              description={
-                lockedAccrualCategory
-                  ? t('policyDetails.accrualMethodLockedHint')
-                  : t('policyDetails.accrualMethodHint')
-              }
-              options={accrualMethodOptions}
-              isRequired
-              isDisabled={lockedAccrualCategory === 'unlimited'}
-              errorMessage={t('policyDetails.validations.accrualMethod')}
-            />
+            {accrualMethodOptions.length === 1 ? (
+              <Flex flexDirection="column" gap={4}>
+                <Text weight="medium">{t('policyDetails.accrualMethodLabel')}</Text>
+                <Text>{accrualMethodOptions[0]!.label}</Text>
+              </Flex>
+            ) : (
+              <RadioGroupField<AccrualMethod>
+                name="accrualMethod"
+                label={t('policyDetails.accrualMethodLabel')}
+                description={t('policyDetails.accrualMethodHint')}
+                options={accrualMethodOptions}
+                isRequired
+                errorMessage={t('policyDetails.validations.accrualMethod')}
+              />
+            )}
 
             {isHourlyMethod && (
               <>
