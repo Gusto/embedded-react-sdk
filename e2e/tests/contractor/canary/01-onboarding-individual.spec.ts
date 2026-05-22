@@ -14,7 +14,7 @@ test.describe.serial('ContractorCanary 01 — individual contractor onboarding e
     scenario,
   }) => {
     test.skip(!scenario.flowToken, 'Requires scenario provisioning (local/demo runs only)')
-    test.setTimeout(8 * 60_000)
+    test.setTimeout(5 * 60_000)
 
     await runIndividualContractorOnboarding(page, scenario)
 

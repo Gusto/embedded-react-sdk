@@ -20,7 +20,7 @@ test.describe.serial('CompanyCanary 03 — federal taxes -> industry -> bank acc
     scenario,
   }) => {
     test.skip(!scenario.flowToken, 'Requires scenario provisioning (local/demo runs only)')
-    test.setTimeout(8 * 60_000)
+    test.setTimeout(5 * 60_000)
 
     await landOnCompanyOnboarding(page)
     await clickStartOrContinueOnboarding(page)

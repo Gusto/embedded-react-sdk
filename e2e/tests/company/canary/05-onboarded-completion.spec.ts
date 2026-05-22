@@ -16,7 +16,7 @@ test.describe
     scenario,
   }) => {
     test.skip(!scenario.flowToken, 'Requires scenario provisioning (local/demo runs only)')
-    test.setTimeout(8 * 60_000)
+    test.setTimeout(5 * 60_000)
 
     await page.goto('/?flow=company-onboarding')
     await waitForLoadingComplete(page, 60_000)

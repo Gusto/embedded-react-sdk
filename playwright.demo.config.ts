@@ -25,7 +25,12 @@ export default defineConfig({
   testIgnore: ['**/transition-payroll*'],
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: 2,
+  // Drop from 2 → 1 retry on demo runs. With waitForLoadingComplete now
+  // failing loudly (commit 1) and scenario provisioning errors no longer
+  // swallowed (commit 2), the residual flake surface is small enough that a
+  // second retry mostly just multiplies CI minutes. A failing test that
+  // can't be reproduced in 2 attempts almost never reproduces in 3.
+  retries: 1,
   // Run sequentially everywhere: the scenario fixture caches a provisioned
   // demo company per worker, so running multiple workers means multiple
   // demo creations against flows.gusto-demo.com for tests that share a

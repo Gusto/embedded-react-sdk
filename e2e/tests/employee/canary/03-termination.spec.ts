@@ -14,7 +14,7 @@ test.describe.serial('EmployeeCanary 03 — employee termination end-to-end', ()
     scenario,
   }) => {
     test.skip(!scenario.flowToken, 'Requires scenario provisioning (local/demo runs only)')
-    test.setTimeout(8 * 60_000)
+    test.setTimeout(5 * 60_000)
 
     await runEmployeeTermination(page, scenario)
 

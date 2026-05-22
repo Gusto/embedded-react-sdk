@@ -14,7 +14,7 @@ test.describe.serial('TimeOffCanary 05 — delete policy from list end-to-end', 
     scenario,
   }) => {
     test.skip(!scenario.flowToken, 'Requires scenario provisioning (local/demo runs only)')
-    test.setTimeout(12 * 60_000)
+    test.setTimeout(8 * 60_000)
 
     const policyName = `Canary Delete ${Date.now()}`
 

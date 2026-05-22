@@ -14,7 +14,7 @@ test.describe.serial('CompanyCanary 04 — full wizard from overview through doc
     scenario,
   }) => {
     test.skip(!scenario.flowToken, 'Requires scenario provisioning (local/demo runs only)')
-    test.setTimeout(12 * 60_000)
+    test.setTimeout(8 * 60_000)
 
     await runFullOnboardingThroughDocuments(page)
 
