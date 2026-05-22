@@ -93,7 +93,11 @@
     "currentBalance": "Current balance",
     "hoursUnit": "hours",
     "cancelCta": "Cancel",
-    "updateCta": "Update balance"
+    "updateCta": "Update balance",
+    "errors": {
+      "balanceExceedsMax": "Balance cannot exceed the policy maximum of {{max}} hours. Reduce the balance or increase the policy's balance maximum.",
+      "updateFailed": "Unable to update balance. Please try again."
+    }
   },
   "removeEmployeeModal": {
     "title": "Remove {{name}} from policy?",
