@@ -8,6 +8,10 @@ export interface FieldMetadata {
   isRequired?: boolean
   isDisabled?: boolean
   hasRedactedValue?: boolean
+  /** ISO date string lower bound for date picker fields. Set by hooks; consumed by DatePickerHookField. */
+  minDate?: string | null
+  /** ISO date string upper bound for date picker fields. Set by hooks; consumed by DatePickerHookField. */
+  maxDate?: string | null
 }
 
 export interface FieldMetadataWithOptions<TEntry = unknown> extends FieldMetadata {

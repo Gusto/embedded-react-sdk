@@ -414,7 +414,7 @@ describe('management/EditCompensation', () => {
 
     expect(
       await screen.findByText(
-        "Scheduling this classification change will delete the employee's additional jobs when it goes into effect.",
+        "Changing this employee's classification will immediately delete their additional jobs.",
       ),
     ).toBeInTheDocument()
 

@@ -16,9 +16,6 @@ export interface AddCompensationFormBodyProps {
   submitCtaLabel: string
   isPending: boolean
   onCancel?: () => void
-  /** Override the lower bound for the effective date picker. When omitted, the hook's
-   *  `minimumEffectiveDate` (the parent job's hire date) is used as the floor. */
-  minEffectiveDate?: Date
 }
 
 /**
@@ -35,7 +32,6 @@ export function AddCompensationFormBody({
   submitCtaLabel,
   isPending,
   onCancel,
-  minEffectiveDate,
 }: AddCompensationFormBodyProps) {
   const { t } = useTranslation('Employee.Compensation')
   const Components = useComponentContext()
@@ -139,17 +135,6 @@ export function AddCompensationFormBody({
             EFFECTIVE_DATE_BEFORE_HIRE: t('validations.effectiveDateBeforeHire'),
             EFFECTIVE_DATE_BEFORE_MIN: t('validations.effectiveDateBeforeMin'),
           }}
-          minDate={
-            minEffectiveDate ??
-            (compensationForm.data.minimumEffectiveDate
-              ? new Date(compensationForm.data.minimumEffectiveDate)
-              : undefined)
-          }
-          maxDate={
-            compensationForm.data.maximumEffectiveDate
-              ? new Date(compensationForm.data.maximumEffectiveDate)
-              : undefined
-          }
           formHookResult={compensationForm}
         />
       )}

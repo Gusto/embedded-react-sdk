@@ -7,7 +7,6 @@ import styles from './EditPendingCompensation.module.scss'
 import { BaseBoundaries, BaseLayout, type CommonComponentInterface } from '@/components/Base'
 import type { OnEventType } from '@/components/Base/useBase'
 import { Form } from '@/components/Common/Form'
-import { addDays, normalizeToDate } from '@/helpers/dateFormatting'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { composeSubmitHandler } from '@/partner-hook-utils/form/composeSubmitHandler'
@@ -99,18 +98,8 @@ function Root({
     return <BaseLayout isLoading error={loadingErrorHandling.errors} />
   }
 
-  // Secondary new job: UI min date for the DatePicker (mirrors the schema
-  // floor enforced internally by useCompensationForm).
-  const tomorrow = addDays(new Date(), 1)
-  const minEffectiveDateForPicker =
-    isNewJob && !isPrimaryJob && jobForm.data.currentJob?.hireDate
-      ? new Date(
-          Math.max(
-            tomorrow.getTime(),
-            (normalizeToDate(jobForm.data.currentJob.hireDate) ?? tomorrow).getTime(),
-          ),
-        )
-      : undefined
+  // minEffectiveDate for the Zod schema and DatePicker bounds are now derived
+  // internally by useCompensationForm and surfaced via fieldsMetadata.
 
   const submitResult = composeSubmitHandler([jobForm, compensationForm], async () => {
     // For a primary new job, the user edits the hire date field. We read it
@@ -158,7 +147,6 @@ function Root({
             submitCtaLabel={t('management.saveCta')}
             isPending={isPending}
             onCancel={onCancel}
-            minEffectiveDate={minEffectiveDateForPicker}
           />
         </Form>
       </BaseLayout>

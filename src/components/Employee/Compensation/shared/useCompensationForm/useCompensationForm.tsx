@@ -534,11 +534,20 @@ export function useCompensationForm({
   }))
 
   const baseMetadata = useDeriveFieldsMetadata(metadataConfig, formMethods.control)
+  const effectiveDateMinDate = useMemo(
+    () =>
+      [internalMinEffectiveDate, hireDate]
+        .filter((d): d is string => !!d)
+        .reduce<string | null>((max, d) => (!max || d > max ? d : max), null),
+    [internalMinEffectiveDate, hireDate],
+  )
   const fieldsMetadata = {
     title: baseMetadata.title,
     effectiveDate: {
       ...baseMetadata.effectiveDate,
       isDisabled: willDeleteSecondaryJobs && !isCreateMode,
+      minDate: effectiveDateMinDate,
+      maxDate: maximumEffectiveDate,
     },
     flsaStatus: withOptions<FlsaStatusType>(
       baseMetadata.flsaStatus,
@@ -679,7 +688,7 @@ export function useCompensationForm({
       compensation: currentCompensation,
       currentJob,
       minimumWages,
-      minimumEffectiveDate: hireDate,
+      minimumEffectiveDate: effectiveDateMinDate,
       maximumEffectiveDate,
       hasPendingFutureCompensation,
     },
