@@ -33,22 +33,18 @@ export const PAYROLL_CALCULATION_DEADLINE = 60_000
 /**
  * Whole-test ceiling for canary specs that drive a single payroll flow
  * (regular, off-cycle bonus, off-cycle correction). Sized to cover landing
- * → calculate → submit → receipt with headroom for slow demo responses.
- *
- * Reduced from 8 min to 5 min once the suite-wide silent timeout swallow
- * was removed (commit 1) — the previous ceiling was sized to absorb the
- * 30s × N-step compounding noise from waitForLoadingComplete returning
- * silently on a stuck page. With that gone, a healthy canary completes
- * comfortably under 4 min; 5 min keeps a margin for slow demo responses
- * without paying for the old failure mode.
+ * → calculate → submit → receipt with margin for slow demo responses. A
+ * healthy canary today completes well under 4 min against the demo
+ * backend; 5 min is the wallclock budget at which we'd rather fail the
+ * shard than wait longer.
  */
 export const CANARY_TEST_TIMEOUT_MS = 5 * 60_000
 
 /**
  * Whole-test ceiling for canaries that perform additional setup before
  * driving the payroll flow (transition payroll changes the pay schedule
- * first; dismissal payroll terminates an employee first).
- *
- * Reduced from 12 min to 8 min for the same reason as CANARY_TEST_TIMEOUT_MS.
+ * first; dismissal payroll terminates an employee first). 8 min = the
+ * 5-min single-flow budget plus ~3 min of headroom for the precursor
+ * step's own round-trips.
  */
 export const CANARY_TEST_TIMEOUT_WITH_PRECURSOR_MS = 8 * 60_000

@@ -274,12 +274,10 @@ async function decorateContractors(
       // into admin_onboarding_review (eligible for the final transition);
       // others stay in self_onboarding_not_invited or admin_onboarding_incomplete
       // depending on the base demo's seed state. Only the first group can
-      // be PUT to onboarding_completed via the API alone. Day-one CI showed
-      // this failure 52 times across 21 contractor shards — even after
-      // commit 2's 30s admin_onboarding_review poll, the contractor never
-      // converged on some runs, suggesting the missing prereq is not
-      // transient consistency but a structural gap (e.g., an onboarding
-      // step the API runner cannot fulfill).
+      // be PUT to onboarding_completed via the API alone — the second
+      // group is missing a prerequisite (typically an onboarding step the
+      // scenario runner cannot fulfill) and never converges, regardless
+      // of how long we wait.
       //
       // Strategy: try the transition with a short retry window for the
       // genuinely-eventual-consistent cases, but treat persistent 422 as a

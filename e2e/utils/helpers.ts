@@ -30,27 +30,6 @@ export async function fillDate(
   await dateGroup.getByRole('spinbutton', { name: /^year/i }).fill(String(date.year))
 }
 
-/**
- * Wait for the SDK's top-level Suspense fallback (`<Loading>` region with
- * `aria-label` = `common:status.loading` = "Loading component...") to detach.
- *
- * Two call shapes:
- *
- *   await waitForLoadingComplete(page, 60_000)
- *   await waitForLoadingComplete(page, { timeout: 60_000, anchor: heading })
- *
- * The two-arg form waits only for the Suspense region to detach. The options
- * form additionally waits for `anchor` to be visible — use it whenever the
- * caller's *next* step is `expect(landmark).toBeVisible()`, so the wait and
- * the assertion share one budget instead of two and a stuck page fails on the
- * landmark, not on a generic timeout.
- *
- * If the loading region never detaches within `timeout`, this function throws
- * (it used to swallow that error, which caused downstream `expect` calls to
- * race against half-rendered pages and produce misleading "element not found"
- * failures 30s later). The previous behavior is preserved by always waiting on
- * `.first()` so multiple Suspense regions don't deadlock the helper.
- */
 // US federal holidays that the demo backend's "business day" validation
 // rejects for direct-deposit payment dates. Only encoding dates that the
 // canary specs could realistically hit (current calendar year + the next
@@ -119,6 +98,27 @@ interface WaitForLoadingOptions {
   anchor?: Locator
 }
 
+/**
+ * Wait for the SDK's top-level Suspense fallback (`<Loading>` region with
+ * `aria-label` = `common:status.loading` = "Loading component...") to detach.
+ *
+ * Two call shapes:
+ *
+ *   await waitForLoadingComplete(page, 60_000)
+ *   await waitForLoadingComplete(page, { timeout: 60_000, anchor: heading })
+ *
+ * The two-arg form waits only for the Suspense region to detach. The options
+ * form additionally waits for `anchor` to be visible — use it whenever the
+ * caller's *next* step is `expect(landmark).toBeVisible()`, so the wait and
+ * the assertion share one budget instead of two and a stuck page fails on the
+ * landmark, not on a generic timeout.
+ *
+ * If the loading region never detaches within `timeout`, this function
+ * throws — a stuck Suspense fallback is a real bug and downstream `expect`
+ * calls produce more misleading errors if it's silenced. Always waits on
+ * `.first()` so a page with multiple Suspense regions doesn't deadlock the
+ * helper.
+ */
 export async function waitForLoadingComplete(
   page: Page,
   timeoutOrOptions: number | WaitForLoadingOptions = 30_000,

@@ -1,5 +1,6 @@
 import { test, expect } from '../../utils/localTestFixture'
 import { waitForLoadingComplete } from '../../utils/helpers'
+import { PAYROLL_CALCULATION_DEADLINE, SDK_NAVIGATION_DEADLINE } from '../../utils/timeouts'
 
 test.describe('PayrollFlow — weekly cadence', () => {
   test.beforeEach(({}, testInfo) => {
@@ -20,21 +21,20 @@ test.describe('PayrollFlow — weekly cadence', () => {
 
     await page.goto('/?flow=payroll')
     await waitForLoadingComplete(page, {
-      timeout: 60000,
+      timeout: PAYROLL_CALCULATION_DEADLINE,
       anchor: page.getByRole('tab', { name: /run payroll/i }),
     })
 
     await expect(page.getByRole('tab', { name: /payroll history/i })).toBeVisible()
 
-    // Previously this asserted payPeriodHeader.or(blockerSurface) — meaning a
-    // blocker screen ("Action required", "Complete setup") would *pass* the
-    // test. That masked the day-one failure mode where the weekly schedule
-    // wasn't actually provisioned and the test landed on a blocker. With
-    // commit 2's loud provisioning errors a blocker here would itself be a
-    // bug, so assert the pay period column directly and let any blocker
-    // surface fail the test on its own merits.
+    // Assert the pay period column directly rather than allowing a blocker
+    // surface ("Action required", "Complete setup") as a fallback. The
+    // scenario runner is responsible for provisioning a real weekly
+    // schedule before the test starts; if we reach this point and a
+    // blocker is what's rendered, that's a regression worth failing on,
+    // not a degraded-but-acceptable state to accept via `.or()`.
     await expect(page.getByRole('columnheader', { name: /pay period/i })).toBeVisible({
-      timeout: 30000,
+      timeout: SDK_NAVIGATION_DEADLINE,
     })
   })
 })
