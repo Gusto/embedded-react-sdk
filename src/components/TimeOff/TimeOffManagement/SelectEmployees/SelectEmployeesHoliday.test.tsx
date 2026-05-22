@@ -18,14 +18,14 @@ const mockEmployees = [
     uuid: '1',
     firstName: 'Alice',
     lastName: 'Smith',
-    jobs: [{ primary: true, title: 'Engineer' }],
+    jobs: [{ primary: true, title: 'Engineer', hireDate: '2020-01-01' }],
     department: 'Engineering',
   },
   {
     uuid: '2',
     firstName: 'Bob',
     lastName: 'Jones',
-    jobs: [{ primary: true, title: 'Designer' }],
+    jobs: [{ primary: true, title: 'Designer', hireDate: '2020-01-01' }],
     department: 'Design',
   },
 ]
@@ -151,9 +151,9 @@ describe('SelectEmployeesHoliday', () => {
     await user.type(input, 'bob')
 
     await waitFor(() => {
-      expect(screen.getByText('Bob Jones')).toBeInTheDocument()
+      expect(screen.queryByText('Alice Smith')).not.toBeInTheDocument()
     })
-    expect(screen.queryByText('Alice Smith')).not.toBeInTheDocument()
+    expect(screen.getByText('Bob Jones')).toBeInTheDocument()
   })
 
   it('fires CANCEL when Back is clicked', async () => {
@@ -227,52 +227,42 @@ describe('SelectEmployeesHoliday', () => {
         })
       })
     })
+
+    it('emits DONE without calling mutation when nothing is selected', async () => {
+      const user = userEvent.setup()
+      renderComponent({ mode: 'standalone' })
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'continueCta' })).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByRole('button', { name: 'continueCta' }))
+
+      await waitFor(() => {
+        expect(mockOnEvent).toHaveBeenCalledWith(
+          componentEvents.TIME_OFF_HOLIDAY_ADD_EMPLOYEES_DONE,
+        )
+      })
+      expect(mockAddEmployees).not.toHaveBeenCalled()
+    })
   })
 
-  describe('pre-selection', () => {
-    it('pre-selects employees already on the holiday policy', async () => {
-      mockHolidayPolicyEmployees.length = 0
+  describe('existing assignees', () => {
+    it('filters existing holiday policy assignees out of the selectable list', async () => {
       mockHolidayPolicyEmployees.push({ uuid: '1' })
 
-      try {
-        renderComponent({ mode: 'standalone' })
+      renderComponent({ mode: 'standalone' })
 
-        await waitFor(() => {
-          expect(screen.getAllByRole('checkbox').length).toBe(3)
-        })
+      await waitFor(() => {
+        expect(screen.getByText('Bob Jones')).toBeInTheDocument()
+      })
 
-        const checkboxes = screen.getAllByRole('checkbox') as HTMLInputElement[]
-        expect(checkboxes[FIRST_EMPLOYEE_CHECKBOX]).toBeChecked()
-        expect(checkboxes[SECOND_EMPLOYEE_CHECKBOX]).not.toBeChecked()
-      } finally {
-        mockHolidayPolicyEmployees.length = 0
-      }
-    })
+      // Alice is already on the holiday policy and must not appear in the add list
+      expect(screen.queryByText('Alice Smith')).not.toBeInTheDocument()
+      // select-all header + Bob = 2 (Alice already on policy)
+      expect(screen.getAllByRole('checkbox').length).toBe(2)
 
-    it('emits done event without calling mutations when nothing changed', async () => {
       mockHolidayPolicyEmployees.length = 0
-      mockHolidayPolicyEmployees.push({ uuid: '1' })
-
-      try {
-        const user = userEvent.setup()
-        renderComponent({ mode: 'standalone' })
-
-        await waitFor(() => {
-          expect(screen.getByRole('button', { name: 'continueCta' })).toBeInTheDocument()
-        })
-
-        await user.click(screen.getByRole('button', { name: 'continueCta' }))
-
-        await waitFor(() => {
-          expect(mockOnEvent).toHaveBeenCalledWith(
-            componentEvents.TIME_OFF_HOLIDAY_ADD_EMPLOYEES_DONE,
-          )
-        })
-
-        expect(mockAddEmployees).not.toHaveBeenCalled()
-      } finally {
-        mockHolidayPolicyEmployees.length = 0
-      }
     })
   })
 
