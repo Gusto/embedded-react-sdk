@@ -26,8 +26,15 @@ test.describe('PayrollFlow — weekly cadence', () => {
 
     await expect(page.getByRole('tab', { name: /payroll history/i })).toBeVisible()
 
-    const payPeriodHeader = page.getByRole('columnheader', { name: /pay period/i })
-    const blockerSurface = page.getByText(/blocker|action.*required|complete.*setup/i).first()
-    await expect(payPeriodHeader.or(blockerSurface)).toBeVisible({ timeout: 30000 })
+    // Previously this asserted payPeriodHeader.or(blockerSurface) — meaning a
+    // blocker screen ("Action required", "Complete setup") would *pass* the
+    // test. That masked the day-one failure mode where the weekly schedule
+    // wasn't actually provisioned and the test landed on a blocker. With
+    // commit 2's loud provisioning errors a blocker here would itself be a
+    // bug, so assert the pay period column directly and let any blocker
+    // surface fail the test on its own merits.
+    await expect(page.getByRole('columnheader', { name: /pay period/i })).toBeVisible({
+      timeout: 30000,
+    })
   })
 })
