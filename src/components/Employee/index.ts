@@ -14,6 +14,8 @@ export { SelfOnboardingFlow } from './SelfOnboardingFlow/SelfOnboardingFlow'
 export { EmployeeDocuments } from './Documents/onboarding/EmployeeDocuments'
 export { DashboardFlow } from './Dashboard'
 export type { DashboardFlowProps } from './Dashboard'
+export { EmployeeListFlow } from './EmployeeListFlow'
+export type { EmployeeListFlowProps } from './EmployeeListFlow'
 export { HomeAddress } from './HomeAddress/management/HomeAddress'
 export type { HomeAddressProps } from './HomeAddress/management/HomeAddress'
 

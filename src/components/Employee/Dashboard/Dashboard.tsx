@@ -1,5 +1,6 @@
 import { Suspense, useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
 import type { Job } from '@gusto/embedded-api/models/components/job'
 import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
 import type { GetV1EmployeesEmployeeIdFederalTaxesResponse } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidfederaltaxes'
@@ -12,6 +13,7 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/components/Base/Base'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
+import { firstLastName } from '@/helpers/formattedStrings'
 
 type EmployeeFederalTax = NonNullable<
   GetV1EmployeesEmployeeIdFederalTaxesResponse['employeeFederalTax']
@@ -118,6 +120,9 @@ function DashboardRoot({
 
   return (
     <Flex flexDirection="column" gap={32}>
+      <Suspense fallback={null}>
+        <DashboardHeader employeeId={employeeId} />
+      </Suspense>
       <Components.Tabs
         tabs={tabs}
         selectedId={selectedTab}
@@ -171,6 +176,23 @@ function DashboardRoot({
           </Suspense>
         )}
       </Flex>
+    </Flex>
+  )
+}
+
+function DashboardHeader({ employeeId }: { employeeId: string }) {
+  const { t } = useTranslation('Employee.Dashboard')
+  const Components = useComponentContext()
+  const {
+    data: { employee },
+  } = useEmployeesGetSuspense({ employeeId })
+
+  return (
+    <Flex flexDirection="column" gap={4}>
+      <Components.Heading as="h2">
+        {firstLastName({ first_name: employee?.firstName, last_name: employee?.lastName })}
+      </Components.Heading>
+      <Components.Text>{t('employeeRoleLabel')}</Components.Text>
     </Flex>
   )
 }

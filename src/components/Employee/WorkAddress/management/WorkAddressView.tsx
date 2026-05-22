@@ -9,7 +9,14 @@ import {
 import ListIcon from '@/assets/icons/list.svg?react'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
-import { DataView, EmptyData, Grid, HamburgerMenu, useDataView } from '@/components/Common'
+import {
+  ActionsLayout,
+  DataView,
+  EmptyData,
+  Grid,
+  HamburgerMenu,
+  useDataView,
+} from '@/components/Common'
 import { Flex, FlexItem } from '@/components/Common/Flex/Flex'
 import {
   LocationField,
@@ -33,6 +40,7 @@ export interface WorkAddressViewProps {
   employeeDisplayName: string
   onConfirmDelete: (workAddressUuid: string) => Promise<boolean>
   onWorkAddressSaved: (result: HookSubmitResult<EmployeeWorkAddress>) => void
+  onBack: () => void
   isDeletePending?: boolean
 }
 
@@ -70,6 +78,7 @@ export function WorkAddressView({
   employeeDisplayName,
   onConfirmDelete,
   onWorkAddressSaved,
+  onBack,
   isDeletePending = false,
 }: WorkAddressViewProps) {
   const { t } = useTranslation('Employee.WorkAddress.Management')
@@ -364,6 +373,12 @@ export function WorkAddressView({
         </Components.Heading>
         <DataView label={t('historySectionTitle')} {...historyDataView} />
       </Flex>
+
+      <ActionsLayout>
+        <Components.Button variant="secondary" onClick={onBack}>
+          {t('backCta')}
+        </Components.Button>
+      </ActionsLayout>
 
       <Components.Modal
         isOpen={addressModal !== null}

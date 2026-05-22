@@ -27,6 +27,18 @@ export interface CtaConfig {
 export type FlowHeaderConfig =
   | {
       type: 'minimal'
+      /**
+       * Optional override for the default back button (defaults to
+       * `t('back')` + `componentEvents.CANCEL`). Provide both `label` and
+       * `event` to render a flow-specific affordance — e.g. "Back to
+       * employees" routed to a dedicated state-machine transition so nested
+       * flows don't intercept it as a generic cancel.
+       */
+      back?: {
+        labelKey: string
+        namespace: keyof CustomTypeOptions['resources']
+        event: EventType
+      }
       cta?: React.ComponentType
     }
   | {

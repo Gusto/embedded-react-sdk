@@ -63,10 +63,6 @@ function ManagementEmployeeListRoot({
     onEvent(componentEvents.EMPLOYEE_DISMISS, { employeeId })
   }
 
-  const handleRehire = (employeeId: string) => {
-    onEvent(componentEvents.EMPLOYEE_REHIRE, { employeeId })
-  }
-
   const handleTabChange = (tab: EmployeeTab) => {
     setSelectedTab(tab)
   }
@@ -89,7 +85,6 @@ function ManagementEmployeeListRoot({
             },
           })
         }}
-        onRehire={handleRehire}
         onAddEmployee={handleAddEmployee}
       />
     </BaseLayout>

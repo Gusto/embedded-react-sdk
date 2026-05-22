@@ -1,5 +1,6 @@
 {
   "title": "Employee Dashboard",
+  "employeeRoleLabel": "Employee",
   "tabsLabel": "Employee dashboard tabs",
   "tabs": {
     "basicDetails": "Basic details",

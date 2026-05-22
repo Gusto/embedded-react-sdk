@@ -40,6 +40,7 @@
   },
   "submitCta": "Submit",
   "cancelCta": "Cancel",
+  "backCta": "Back",
   "deleteModalTitle": "Delete address?",
   "deleteModalDescription": "Deleting an address can't be undone. <strong>{{address}}</strong> will be removed from history.",
   "deleteModalConfirmCta": "Delete address"
