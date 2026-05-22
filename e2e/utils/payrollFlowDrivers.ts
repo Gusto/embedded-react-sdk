@@ -459,10 +459,12 @@ export async function terminateAndRunDismissalPayroll(
         )
       }
       await page.reload()
-      await waitForLoadingComplete(page, {
-        timeout: PAYROLL_CALCULATION_DEADLINE,
-        anchor: dismissalHeading.or(editPayrollHeading).first(),
-      })
+      // Intentionally NOT anchored: the next iteration's expect(payPeriodSelect.or(emptyStateAlert))
+      // is the real landmark check, and on a slow demo backend the heading
+      // can take longer than this loading wait to render. Anchoring here
+      // turned a recoverable slow load into an unrecoverable test failure
+      // because the throw exits the retry loop entirely.
+      await waitForLoadingComplete(page, PAYROLL_CALCULATION_DEADLINE)
       if (await editPayrollHeading.isVisible()) break
     }
 
