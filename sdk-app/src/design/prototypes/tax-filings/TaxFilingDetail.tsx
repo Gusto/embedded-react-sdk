@@ -177,8 +177,7 @@ export function TaxFilingDetail({ filing, onBack }: TaxFilingDetailProps) {
         </Alert>
       )}
 
-      <Flex flexDirection="column" gap={16}>
-        <Heading as="h3">Status History</Heading>
+      <Box header={<BoxHeader title="Status History" />}>
         <div className={styles.timeline}>
           {[...filing.status_history].reverse().map((entry, idx) => (
             <div key={idx} className={styles.timelineEntry}>
@@ -189,7 +188,7 @@ export function TaxFilingDetail({ filing, onBack }: TaxFilingDetailProps) {
                     {STATUS_LABELS[entry.status]}
                   </Badge>
                   <Text size="sm" variant="supporting">
-                    {formatDateTimeWithRelative(entry.changed_at)}
+                    {formatDateTime(entry.changed_at)}
                   </Text>
                 </div>
                 {entry.failure_reason && (
@@ -201,7 +200,7 @@ export function TaxFilingDetail({ filing, onBack }: TaxFilingDetailProps) {
             </div>
           ))}
         </div>
-      </Flex>
+      </Box>
     </Flex>
   )
 }

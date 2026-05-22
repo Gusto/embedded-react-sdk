@@ -42,12 +42,12 @@ export const mockTaxFilings: TaxFiling[] = [
     is_amendment: false,
     amends_filing_uuid: null,
     status: 'in_progress',
-    status_updated_at: '2026-04-01T00:00:00Z',
+    status_updated_at: '2026-05-01T08:00:00Z',
     document_uuid: null,
     failure_reason: null,
     status_history: [
       { status: 'not_started', changed_at: '2026-04-01T00:00:00Z', failure_reason: null },
-      { status: 'in_progress', changed_at: '2026-07-02T08:00:00Z', failure_reason: null },
+      { status: 'in_progress', changed_at: '2026-05-01T08:00:00Z', failure_reason: null },
     ],
   },
   {
