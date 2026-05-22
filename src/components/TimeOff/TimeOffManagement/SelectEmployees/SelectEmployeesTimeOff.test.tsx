@@ -23,7 +23,7 @@ const mockEmployees = [
     uuid: '1',
     firstName: 'Alice',
     lastName: 'Smith',
-    jobs: [{ primary: true, title: 'Engineer', hireDate: '2020-01-01' }],
+    jobs: [{ primary: true, title: 'Engineer', hireDate: '2024-01-01' }],
     department: 'Engineering',
     eligiblePaidTimeOff: [
       {
@@ -44,7 +44,7 @@ const mockEmployees = [
     uuid: '2',
     firstName: 'Bob',
     lastName: 'Jones',
-    jobs: [{ primary: true, title: 'Designer', hireDate: '2020-01-01' }],
+    jobs: [{ primary: true, title: 'Designer', hireDate: '2024-01-01' }],
     department: 'Design',
     eligiblePaidTimeOff: [
       {
@@ -59,7 +59,7 @@ const mockEmployees = [
     uuid: '3',
     firstName: 'Carol',
     lastName: 'Davis',
-    jobs: [{ primary: true, title: 'Manager', hireDate: '2020-01-01' }],
+    jobs: [{ primary: true, title: 'Manager', hireDate: '2024-01-01' }],
     department: 'Management',
     // New hire — no PTO history
     eligiblePaidTimeOff: [],
@@ -86,6 +86,13 @@ vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/employeesList', () => ({
 vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/timeOffPoliciesAddEmployees', () => ({
   useTimeOffPoliciesAddEmployeesMutation: () => ({
     mutateAsync: mockAddEmployees,
+    isPending: false,
+  }),
+}))
+
+vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/timeOffPoliciesUpdate', () => ({
+  useTimeOffPoliciesUpdateMutation: () => ({
+    mutateAsync: vi.fn().mockResolvedValue({ timeOffPolicy: { uuid: 'policy-456' } }),
     isPending: false,
   }),
 }))
@@ -169,6 +176,27 @@ describe('SelectEmployeesTimeOff', () => {
     expect(screen.getByText('Bob Jones')).toBeInTheDocument()
   })
 
+  it('hides employees whose primary job hire_date is in the future', async () => {
+    const future = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10)
+    mockEmployees.push({
+      uuid: '99',
+      firstName: 'Future',
+      lastName: 'Hire',
+      jobs: [{ primary: true, title: 'Engineer', hireDate: future }],
+      department: 'Engineering',
+      eligiblePaidTimeOff: [],
+    })
+    try {
+      renderComponent()
+      await waitFor(() => {
+        expect(screen.getByText('Alice Smith')).toBeInTheDocument()
+      })
+      expect(screen.queryByText('Future Hire')).not.toBeInTheDocument()
+    } finally {
+      mockEmployees.pop()
+    }
+  })
+
   it('renders department column values', async () => {
     renderComponent()
     await waitFor(() => {
@@ -214,6 +242,8 @@ describe('SelectEmployeesTimeOff', () => {
     const input = screen.getByPlaceholderText('searchPlaceholder')
     await user.type(input, 'alice')
 
+    // useClientPagination debounces search by 120ms before the predicate runs,
+    // so wait for the filter to settle rather than asserting immediately.
     await waitFor(() => {
       expect(screen.queryByText('Bob Jones')).not.toBeInTheDocument()
     })
@@ -436,7 +466,6 @@ describe('SelectEmployeesTimeOff', () => {
       }>
       expect(submitted.find(e => e.uuid === '1')).toEqual({ uuid: '1', balance: '40' })
     })
-
     it('opens add confirm dialog and gates submission until confirmed', async () => {
       const user = userEvent.setup()
       renderComponent({ mode: 'standalone' })
@@ -474,6 +503,19 @@ describe('SelectEmployeesTimeOff', () => {
       const cancelBtn = await screen.findByRole('button', { name: 'addConfirmDialog.cancelCta' })
       await user.click(cancelBtn)
 
+      expect(mockAddEmployees).not.toHaveBeenCalled()
+    })
+
+    it('emits DONE without any mutation when nothing is selected', async () => {
+      const user = userEvent.setup()
+      renderComponent({ mode: 'standalone' })
+      await waitFor(() => {
+        expect(screen.getByText('Alice Smith')).toBeInTheDocument()
+      })
+      await user.click(screen.getByRole('button', { name: 'continueCta' }))
+      await waitFor(() => {
+        expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.TIME_OFF_ADD_EMPLOYEES_DONE)
+      })
       expect(mockAddEmployees).not.toHaveBeenCalled()
     })
   })

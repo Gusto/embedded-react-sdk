@@ -18,14 +18,14 @@ const mockEmployees = [
     uuid: '1',
     firstName: 'Alice',
     lastName: 'Smith',
-    jobs: [{ primary: true, title: 'Engineer', hireDate: '2020-01-01' }],
+    jobs: [{ primary: true, title: 'Engineer', hireDate: '2024-01-01' }],
     department: 'Engineering',
   },
   {
     uuid: '2',
     firstName: 'Bob',
     lastName: 'Jones',
-    jobs: [{ primary: true, title: 'Designer', hireDate: '2020-01-01' }],
+    jobs: [{ primary: true, title: 'Designer', hireDate: '2024-01-01' }],
     department: 'Design',
   },
 ]
@@ -71,13 +71,6 @@ vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/holidayPayPoliciesAddEmplo
   }),
 }))
 
-vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/holidayPayPoliciesRemoveEmployees', () => ({
-  useHolidayPayPoliciesRemoveEmployeesMutation: () => ({
-    mutateAsync: vi.fn(),
-    isPending: false,
-  }),
-}))
-
 vi.mock('@/components/Base/useBase', () => ({
   useBase: () => ({
     onEvent: mockOnEvent,
@@ -113,6 +106,7 @@ describe('SelectEmployeesHoliday', () => {
     mockAddEmployees.mockResolvedValue({
       holidayPayPolicy: { companyUuid: 'company-123', version: 'abc123' },
     })
+    mockHolidayPolicyEmployees.length = 0
   })
 
   it('renders employee names from API data', async () => {
@@ -150,6 +144,8 @@ describe('SelectEmployeesHoliday', () => {
     const input = screen.getByPlaceholderText('searchPlaceholder')
     await user.type(input, 'bob')
 
+    // useClientPagination debounces search by 120ms before the predicate runs,
+    // so wait for the filter to settle rather than asserting immediately.
     await waitFor(() => {
       expect(screen.queryByText('Alice Smith')).not.toBeInTheDocument()
     })
@@ -205,7 +201,7 @@ describe('SelectEmployeesHoliday', () => {
       const user = userEvent.setup()
       renderComponent({ mode: 'standalone' })
 
-      // 1 select-all header + 2 employees = 3 checkboxes
+      // select-all header + 2 employees = 3
       await waitFor(() => {
         expect(screen.getAllByRole('checkbox').length).toBe(3)
       })
@@ -261,8 +257,6 @@ describe('SelectEmployeesHoliday', () => {
       expect(screen.queryByText('Alice Smith')).not.toBeInTheDocument()
       // select-all header + Bob = 2 (Alice already on policy)
       expect(screen.getAllByRole('checkbox').length).toBe(2)
-
-      mockHolidayPolicyEmployees.length = 0
     })
   })
 
@@ -292,7 +286,7 @@ describe('SelectEmployeesHoliday', () => {
       const user = userEvent.setup()
       renderComponent({ mode: 'wizard' })
 
-      // 1 select-all header + 2 employees = 3 checkboxes
+      // select-all header + 2 employees = 3
       await waitFor(() => {
         expect(screen.getAllByRole('checkbox').length).toBe(3)
       })
