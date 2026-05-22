@@ -205,6 +205,8 @@ export function EditCompensationContextual() {
         employeeId={ensureRequired(employeeId)}
         jobId={ensureRequired(currentJob?.uuid)}
         compensationId={nearestPending.compensationUuid}
+        isNewJob={nearestPending.isNewJob}
+        isPrimaryJob={currentJob?.primary ?? false}
         onEvent={onEvent}
         onCancel={() => {
           onEvent(componentEvents.CANCEL, null)

@@ -17,6 +17,9 @@ export interface ManagementCompensationFormBodyProps {
   submitCtaLabel: string
   isPending: boolean
   onCancel?: () => void
+  /** Override the minimum selectable date for the Effective date field. Defaults to tomorrow.
+   *  Used by EditPendingCompensation for secondary new jobs where the floor is the job's hire date. */
+  minEffectiveDate?: Date
 }
 
 /**
@@ -33,6 +36,7 @@ export function ManagementCompensationFormBody({
   submitCtaLabel,
   isPending,
   onCancel,
+  minEffectiveDate,
 }: ManagementCompensationFormBodyProps) {
   const { t } = useTranslation('Employee.Compensation')
   const Components = useComponentContext()
@@ -57,6 +61,16 @@ export function ManagementCompensationFormBody({
         validationMessages={{ REQUIRED: t('validations.jobTitleSentence') }}
         formHookResult={compensationForm}
       />
+
+      {JobFields.HireDate && (
+        <JobFields.HireDate
+          label={t('management.hireDateLabel')}
+          validationMessages={{
+            REQUIRED: t('validations.hireDate'),
+          }}
+          formHookResult={jobForm}
+        />
+      )}
 
       {CompFields.FlsaStatus && (
         <CompFields.FlsaStatus
@@ -103,7 +117,7 @@ export function ManagementCompensationFormBody({
       {CompFields.EffectiveDate && (
         <CompFields.EffectiveDate
           label={t('effectiveDateLabel')}
-          minDate={addDays(new Date(), 1)}
+          minDate={minEffectiveDate ?? addDays(new Date(), 1)}
           maxDate={
             compensationForm.data.maximumEffectiveDate
               ? new Date(compensationForm.data.maximumEffectiveDate)

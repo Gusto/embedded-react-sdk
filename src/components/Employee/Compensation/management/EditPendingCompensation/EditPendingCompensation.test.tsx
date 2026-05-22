@@ -66,6 +66,8 @@ describe('management/EditPendingCompensation', () => {
         employeeId="employee-uuid"
         jobId="job-uuid"
         compensationId="compensation-future-uuid"
+        isNewJob={false}
+        isPrimaryJob={true}
         onEvent={() => {}}
       />,
     )
@@ -85,6 +87,8 @@ describe('management/EditPendingCompensation', () => {
         employeeId="employee-uuid"
         jobId="job-uuid"
         compensationId="compensation-future-uuid"
+        isNewJob={false}
+        isPrimaryJob={true}
         onEvent={() => {}}
       />,
     )
@@ -102,6 +106,8 @@ describe('management/EditPendingCompensation', () => {
         employeeId="employee-uuid"
         jobId="job-uuid"
         compensationId="compensation-future-uuid"
+        isNewJob={false}
+        isPrimaryJob={true}
         onEvent={() => {}}
       />,
     )
@@ -136,6 +142,8 @@ describe('management/EditPendingCompensation', () => {
         employeeId="employee-uuid"
         jobId="job-uuid"
         compensationId="compensation-future-uuid"
+        isNewJob={false}
+        isPrimaryJob={true}
         onEvent={onEvent}
       />,
     )
@@ -192,6 +200,8 @@ describe('management/EditPendingCompensation', () => {
         employeeId="employee-uuid"
         jobId="job-uuid"
         compensationId="compensation-future-uuid"
+        isNewJob={false}
+        isPrimaryJob={true}
         onEvent={() => {}}
       />,
     )
@@ -227,6 +237,8 @@ describe('management/EditPendingCompensation', () => {
         employeeId="employee-uuid"
         jobId="job-uuid"
         compensationId="compensation-future-uuid"
+        isNewJob={false}
+        isPrimaryJob={true}
         onEvent={onEvent}
       />,
     )
@@ -270,6 +282,8 @@ describe('management/EditPendingCompensation', () => {
         employeeId="employee-uuid"
         jobId="job-uuid"
         compensationId="compensation-future-uuid"
+        isNewJob={false}
+        isPrimaryJob={true}
         onEvent={() => {}}
       />,
     )
@@ -288,5 +302,98 @@ describe('management/EditPendingCompensation', () => {
 
     expect(updateCompensationBody).toMatchObject({ title: 'Senior Engineer' })
     expect(updateJobBody).not.toHaveProperty('title')
+  })
+})
+
+describe('management/EditPendingCompensation — primary new job (isNewJob + isPrimaryJob)', () => {
+  beforeEach(() => {
+    setupApiTestMocks()
+    server.use(getMinimumWages)
+    server.use(
+      handleGetEmployeeJobs(() =>
+        HttpResponse.json(buildEmployeeWithJobs({ scenario: 'newPrimaryJob' })),
+      ),
+    )
+  })
+
+  it('shows Hire date field and hides Effective date field', async () => {
+    renderWithProviders(
+      <EditPendingCompensation
+        employeeId="employee-uuid"
+        jobId="job-uuid"
+        compensationId="compensation-uuid"
+        isNewJob={true}
+        isPrimaryJob={true}
+        onEvent={() => {}}
+      />,
+    )
+
+    await screen.findByRole('heading', { name: 'Edit compensation' })
+
+    expect(screen.getByLabelText('Hire date')).toBeInTheDocument()
+    expect(screen.queryByLabelText('Effective date')).toBeNull()
+  })
+
+  it('prefills the Hire date field from the job hire_date', async () => {
+    renderWithProviders(
+      <EditPendingCompensation
+        employeeId="employee-uuid"
+        jobId="job-uuid"
+        compensationId="compensation-uuid"
+        isNewJob={true}
+        isPrimaryJob={true}
+        onEvent={() => {}}
+      />,
+    )
+
+    await screen.findByRole('heading', { name: 'Edit compensation' })
+
+    const dateInput = screen.getByLabelText('Hire date')
+    expect(within(dateInput).getByRole('spinbutton', { name: /^year/i })).toHaveValue(2099)
+    expect(within(dateInput).getByRole('spinbutton', { name: /^month/i })).toHaveValue(6)
+    expect(within(dateInput).getByRole('spinbutton', { name: /^day/i })).toHaveValue(1)
+  })
+
+  it('sends the same date to PUT /v1/jobs hire_date and PUT /v1/compensations effective_date', async () => {
+    let updateJobBody: Record<string, unknown> | null = null
+    const updateJobResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+      updateJobBody = (await request.json()) as Record<string, unknown>
+      return makeUpdateJobResponse({ hire_date: '2099-06-01' })
+    })
+
+    let updateCompensationBody: Record<string, unknown> | null = null
+    const updateCompensationResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+      updateCompensationBody = (await request.json()) as Record<string, unknown>
+      return makeUpdateCompensationResponse({ effective_date: '2099-06-01' })
+    })
+
+    server.use(
+      handleUpdateEmployeeJob(updateJobResolver),
+      handleUpdateEmployeeCompensation(updateCompensationResolver),
+    )
+
+    const user = userEvent.setup()
+
+    renderWithProviders(
+      <EditPendingCompensation
+        employeeId="employee-uuid"
+        jobId="job-uuid"
+        compensationId="compensation-uuid"
+        isNewJob={true}
+        isPrimaryJob={true}
+        onEvent={() => {}}
+      />,
+    )
+
+    await screen.findByRole('heading', { name: 'Edit compensation' })
+    await user.click(screen.getByRole('button', { name: 'Save' }))
+
+    await waitFor(() => {
+      expect(updateCompensationResolver).toHaveBeenCalledTimes(1)
+    })
+
+    expect(updateJobResolver).toHaveBeenCalledTimes(1)
+    expect(updateJobBody).toMatchObject({ hire_date: '2099-06-01' })
+    expect(updateCompensationBody).toMatchObject({ effective_date: '2099-06-01' })
   })
 })

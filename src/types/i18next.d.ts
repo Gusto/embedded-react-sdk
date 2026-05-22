@@ -1398,6 +1398,7 @@ export interface EmployeeCompensation{
 "Year":string;
 "Paycheck":string;
 };
+"hireDateLabel":string;
 "twoPercentShareholderLabel":string;
 "saveCta":string;
 "scheduledClassificationChangeNotification":string;
