@@ -26,6 +26,7 @@
   "startDateHelper": "The date the employee started living at this address.",
   "submitCta": "Save",
   "cancelCta": "Cancel",
+  "backCta": "Back",
   "deleteModalTitle": "Delete address?",
   "deleteModalDescription": "Deleting an address can't be undone. <strong>{{address}}</strong> will be deleted. This can have implications on your tax calculations & withholdings.",
   "deleteModalConfirmCta": "Delete address",

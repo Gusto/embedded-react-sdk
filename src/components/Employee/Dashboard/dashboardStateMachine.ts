@@ -58,7 +58,6 @@ export const dashboardStateMachine = {
         (ctx: DashboardContextInterface): DashboardContextInterface => ({
           ...ctx,
           component: ProfileContextual,
-          header: { type: 'minimal' },
           successAlert: null,
         }),
       ),
@@ -70,7 +69,6 @@ export const dashboardStateMachine = {
         (ctx: DashboardContextInterface): DashboardContextInterface => ({
           ...ctx,
           component: HomeAddressContextual,
-          header: { type: 'minimal' },
           successAlert: null,
         }),
       ),
@@ -82,7 +80,6 @@ export const dashboardStateMachine = {
         (ctx: DashboardContextInterface): DashboardContextInterface => ({
           ...ctx,
           component: WorkAddressContextual,
-          header: { type: 'minimal' },
           successAlert: null,
         }),
       ),
@@ -94,7 +91,6 @@ export const dashboardStateMachine = {
         (ctx: DashboardContextInterface): DashboardContextInterface => ({
           ...ctx,
           component: FederalTaxesContextual,
-          header: { type: 'minimal' },
           successAlert: null,
         }),
       ),
@@ -106,7 +102,6 @@ export const dashboardStateMachine = {
         (ctx: DashboardContextInterface): DashboardContextInterface => ({
           ...ctx,
           component: StateTaxesContextual,
-          header: { type: 'minimal' },
           successAlert: null,
         }),
       ),
@@ -118,7 +113,6 @@ export const dashboardStateMachine = {
         (ctx: DashboardContextInterface): DashboardContextInterface => ({
           ...ctx,
           component: PaymentBankFormContextual,
-          header: { type: 'minimal' },
           successAlert: null,
         }),
       ),
@@ -130,7 +124,6 @@ export const dashboardStateMachine = {
         (ctx: DashboardContextInterface): DashboardContextInterface => ({
           ...ctx,
           component: PaymentSplitViewContextual,
-          header: { type: 'minimal' },
           successAlert: null,
         }),
       ),
@@ -145,7 +138,6 @@ export const dashboardStateMachine = {
         ): DashboardContextInterface => ({
           ...ctx,
           component: DocumentManagerContextual,
-          header: { type: 'minimal' },
           formId: ev.payload.formId,
           successAlert: null,
         }),
@@ -158,7 +150,6 @@ export const dashboardStateMachine = {
         (ctx: DashboardContextInterface): DashboardContextInterface => ({
           ...ctx,
           component: AddJobContextual,
-          header: { type: 'minimal' },
           currentJob: null,
           successAlert: null,
         }),
@@ -174,7 +165,6 @@ export const dashboardStateMachine = {
         ): DashboardContextInterface => ({
           ...ctx,
           component: EditCompensationContextual,
-          header: { type: 'minimal' },
           currentJob: ev.payload.job,
           successAlert: null,
         }),
@@ -187,7 +177,6 @@ export const dashboardStateMachine = {
         (ctx: DashboardContextInterface): DashboardContextInterface => ({
           ...ctx,
           component: AddAnotherJobContextual,
-          header: { type: 'minimal' },
           currentJob: null,
           successAlert: null,
         }),
@@ -210,7 +199,6 @@ export const dashboardStateMachine = {
         (ctx: DashboardContextInterface): DashboardContextInterface => ({
           ...ctx,
           component: DeductionFormContextual,
-          header: { type: 'minimal' },
           successAlert: null,
           editingDeductionId: undefined,
         }),
@@ -226,7 +214,6 @@ export const dashboardStateMachine = {
         ): DashboardContextInterface => ({
           ...ctx,
           component: DeductionFormContextual,
-          header: { type: 'minimal' },
           successAlert: null,
           editingDeductionId: ev.payload.uuid,
         }),

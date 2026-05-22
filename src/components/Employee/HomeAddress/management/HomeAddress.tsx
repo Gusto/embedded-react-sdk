@@ -52,6 +52,9 @@ function HomeAddressRoot({ employeeId, onEvent, dictionary }: HomeAddressProps) 
         onEditAddressTargetChange={management.actions.setEditAddressTarget}
         onSaved={handleSaved}
         onConfirmDelete={management.actions.confirmDeleteHomeAddress}
+        onBack={() => {
+          onEvent(componentEvents.CANCEL)
+        }}
         isDeletePending={management.status.isDeletePending}
       />
     </BaseLayout>

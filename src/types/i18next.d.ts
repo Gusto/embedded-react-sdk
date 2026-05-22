@@ -1435,6 +1435,7 @@ export interface EmployeeCompensation{
 };
 export interface EmployeeDashboard{
 "title":string;
+"employeeRoleLabel":string;
 "tabsLabel":string;
 "tabs":{
 "basicDetails":string;
@@ -1941,6 +1942,7 @@ export interface EmployeeHomeAddressManagement{
 "startDateHelper":string;
 "submitCta":string;
 "cancelCta":string;
+"backCta":string;
 "deleteModalTitle":string;
 "deleteModalDescription":string;
 "deleteModalConfirmCta":string;
@@ -2431,6 +2433,7 @@ export interface EmployeeWorkAddressManagement{
 };
 "submitCta":string;
 "cancelCta":string;
+"backCta":string;
 "deleteModalTitle":string;
 "deleteModalDescription":string;
 "deleteModalConfirmCta":string;

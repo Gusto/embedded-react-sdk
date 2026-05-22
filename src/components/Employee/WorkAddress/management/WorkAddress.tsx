@@ -52,6 +52,9 @@ function WorkAddressRoot({ employeeId, dictionary, onEvent }: WorkAddressProps) 
         employeeDisplayName={management.data.employeeDisplayName}
         onConfirmDelete={management.actions.confirmDeleteWorkAddress}
         onWorkAddressSaved={handleWorkAddressSaved}
+        onBack={() => {
+          onEvent(componentEvents.CANCEL)
+        }}
         isDeletePending={management.status.isDeletePending}
       />
     </BaseLayout>

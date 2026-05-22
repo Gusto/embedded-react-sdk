@@ -14,7 +14,7 @@ import { HomeAddressErrorCodes } from '@/components/Employee/Profile/shared/useH
 import type { UseHomeAddressFormReady } from '@/components/Employee/Profile/shared/useHomeAddressForm'
 import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import type { HookSubmitResult } from '@/partner-hook-utils/types'
-import { DataView, EmptyData, HamburgerMenu, useDataView } from '@/components/Common'
+import { ActionsLayout, DataView, EmptyData, HamburgerMenu, useDataView } from '@/components/Common'
 import { Flex, FlexItem } from '@/components/Common/Flex/Flex'
 import { Grid } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -72,6 +72,7 @@ export interface HomeAddressViewProps {
   onEditAddressTargetChange: (homeAddressUuid: string | undefined) => void
   onSaved: (result: HookSubmitResult<EmployeeAddress>) => void
   onConfirmDelete: (homeAddressUuid: string) => Promise<boolean>
+  onBack: () => void
   isDeletePending?: boolean
 }
 
@@ -84,6 +85,7 @@ export function HomeAddressView({
   onEditAddressTargetChange,
   onSaved,
   onConfirmDelete,
+  onBack,
   isDeletePending = false,
 }: HomeAddressViewProps) {
   const { t } = useTranslation('Employee.HomeAddress.Management')
@@ -393,6 +395,12 @@ export function HomeAddressView({
         </Components.Heading>
         <DataView label={t('historySectionTitle')} {...historyDataView} />
       </Flex>
+
+      <ActionsLayout>
+        <Components.Button variant="secondary" onClick={onBack}>
+          {t('backCta')}
+        </Components.Button>
+      </ActionsLayout>
 
       <Components.Modal
         isOpen={addressModal !== null}
