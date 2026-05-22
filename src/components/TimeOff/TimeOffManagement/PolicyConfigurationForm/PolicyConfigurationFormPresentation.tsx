@@ -30,6 +30,7 @@ export function PolicyConfigurationFormPresentation({
   defaultValues,
   editingPolicyName,
   isPending = false,
+  lockedAccrualCategory,
 }: PolicyConfigurationFormPresentationProps) {
   useI18n('Company.TimeOff.CreateTimeOffPolicy')
   const { t } = useTranslation('Company.TimeOff.CreateTimeOffPolicy')
@@ -117,9 +118,10 @@ export function PolicyConfigurationFormPresentation({
         value: 'unlimited' as AccrualMethod,
         label: t('policyDetails.unlimitedLabel'),
         description: t('policyDetails.unlimitedHint'),
+        isDisabled: lockedAccrualCategory === 'accrual_based',
       },
     ],
-    [t],
+    [t, lockedAccrualCategory],
   )
 
   const accrualMethodFixedOptions = useMemo(
@@ -182,9 +184,14 @@ export function PolicyConfigurationFormPresentation({
             <RadioGroupField<AccrualMethod>
               name="accrualMethod"
               label={t('policyDetails.accrualMethodLabel')}
-              description={t('policyDetails.accrualMethodHint')}
+              description={
+                lockedAccrualCategory
+                  ? t('policyDetails.accrualMethodLockedHint')
+                  : t('policyDetails.accrualMethodHint')
+              }
               options={accrualMethodOptions}
               isRequired
+              isDisabled={lockedAccrualCategory === 'unlimited'}
               errorMessage={t('policyDetails.validations.accrualMethod')}
             />
 

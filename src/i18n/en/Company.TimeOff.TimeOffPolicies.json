@@ -37,5 +37,9 @@
     "policyDeleted": "Policy \"{{name}}\" deleted successfully",
     "holidayDeleted": "Holiday pay policy deleted successfully",
     "invalidPolicyType": "Please select a valid policy type."
+  },
+  "errors": {
+    "pendingRequestsBlockDeletion": "\"{{name}}\" has pending or approved time off requests. Please decline or cancel those requests before deleting this policy.",
+    "deleteFailed": "Unable to delete this policy. Please try again."
   }
 }

@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.46.1](https://github.com/Gusto/embedded-react-sdk/compare/v0.46.0...v0.46.1) (2026-05-22)
+
+### Features & Enhancements
+
+- Route the date field by job type when editing a pending compensation on the Employee Dashboard ([#1909](https://github.com/Gusto/embedded-react-sdk/issues/1909))
+- Show a "Pending" badge on the Employee Dashboard job card and jobs table for compensations with a future effective date ([#1897](https://github.com/Gusto/embedded-react-sdk/issues/1897))
+- Wire up the add-job and add-another-job compensation forms in the Employee Dashboard ([#1898](https://github.com/Gusto/embedded-react-sdk/issues/1898))
+
+### Fixes
+
+- Fix paystub download from the Employee Dashboard Job and Pay tab — the new tab no longer stays blank ([#1915](https://github.com/Gusto/embedded-react-sdk/issues/1915))
+- Show the job title in pending compensation change alerts on the Employee Dashboard ([#1908](https://github.com/Gusto/embedded-react-sdk/issues/1908))
+- Fall back to the first job's title when no primary job is flagged ([#1902](https://github.com/Gusto/embedded-react-sdk/issues/1902))
+- Always show the Create Policy button in the time-off policy page header ([#1905](https://github.com/Gusto/embedded-react-sdk/issues/1905))
+- Hide already-assigned employees from the time-off policy add-employees list ([#1843](https://github.com/Gusto/embedded-react-sdk/issues/1843))
+- Preserve the date picker selection when switching the time-off policy balance back from unlimited ([#1904](https://github.com/Gusto/embedded-react-sdk/issues/1904))
+- Show a descriptive error when a time-off balance update exceeds the policy maximum ([#1903](https://github.com/Gusto/embedded-react-sdk/issues/1903))
+- Close the remove-employee modal on error and clear stale errors in the balance modal ([#1899](https://github.com/Gusto/embedded-react-sdk/issues/1899))
+
 ## [0.46.0](https://github.com/Gusto/embedded-react-sdk/compare/v0.45.0...v0.46.0) (2026-05-21)
 
 ### Features & Enhancements

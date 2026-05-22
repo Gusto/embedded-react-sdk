@@ -371,6 +371,7 @@ export interface CompanyTimeOffCreateTimeOffPolicy{
 "policyNameLabel":string;
 "accrualMethodLabel":string;
 "accrualMethodHint":string;
+"accrualMethodLockedHint":string;
 "perHourPaidLabel":string;
 "perHourPaidHint":string;
 "perYearLabel":string;
@@ -650,6 +651,10 @@ export interface CompanyTimeOffTimeOffPolicies{
 "policyDeleted":string;
 "holidayDeleted":string;
 "invalidPolicyType":string;
+};
+"errors":{
+"pendingRequestsBlockDeletion":string;
+"deleteFailed":string;
 };
 };
 export interface CompanyTimeOffTimeOffPolicyDetails{

@@ -972,10 +972,11 @@ describe('PolicyConfigurationForm - edit mode (deriveFormDefaults)', () => {
     expect(screen.getByLabelText('Custom date')).toBeChecked()
   })
 
-  it('sends policyResetDate: null when switching from hourly to unlimited', async () => {
+  it('allows switching from hourly to unlimited for incomplete policies', async () => {
     const user = userEvent.setup()
     renderEditComponent({
       name: 'Hourly Vacation',
+      complete: false,
       accrualMethod: 'per_hour_paid',
       accrualRate: '1.5',
       accrualRateUnit: '40',
@@ -1003,10 +1004,94 @@ describe('PolicyConfigurationForm - edit mode (deriveFormDefaults)', () => {
             policyResetDate: null,
             accrualRate: null,
             accrualRateUnit: null,
-            complete: true,
           }),
         },
       })
+    })
+  })
+
+  describe('accrual method locking for complete policies', () => {
+    it('disables all accrual method radios for a complete unlimited policy', async () => {
+      renderEditComponent({
+        name: 'Unlimited PTO',
+        complete: true,
+        accrualMethod: 'unlimited',
+      })
+
+      await waitFor(() => {
+        expect(screen.getByDisplayValue('Unlimited PTO')).toBeInTheDocument()
+      })
+
+      expect(screen.getByLabelText('Unlimited')).toBeDisabled()
+      expect(screen.getByLabelText('Based on hours worked')).toBeDisabled()
+      expect(screen.getByLabelText('Fixed amount per year')).toBeDisabled()
+      expect(
+        screen.getByText(
+          'The accrual type cannot be changed for an existing policy. Create a new policy to use a different accrual type.',
+        ),
+      ).toBeInTheDocument()
+    })
+
+    it('disables only the unlimited radio for a complete accrual-based policy', async () => {
+      renderEditComponent({
+        name: 'Hourly Vacation',
+        complete: true,
+        accrualMethod: 'per_hour_paid',
+        accrualRate: '1.5',
+        accrualRateUnit: '40',
+      })
+
+      await waitFor(() => {
+        expect(screen.getByDisplayValue('Hourly Vacation')).toBeInTheDocument()
+      })
+
+      expect(screen.getByLabelText('Unlimited')).toBeDisabled()
+      expect(screen.getByLabelText('Based on hours worked')).toBeEnabled()
+      expect(screen.getByLabelText('Fixed amount per year')).toBeEnabled()
+      expect(
+        screen.getByText(
+          'The accrual type cannot be changed for an existing policy. Create a new policy to use a different accrual type.',
+        ),
+      ).toBeInTheDocument()
+    })
+
+    it('allows switching between accrual subtypes for a complete accrual-based policy', async () => {
+      const user = userEvent.setup()
+      renderEditComponent({
+        name: 'Hourly Vacation',
+        complete: true,
+        accrualMethod: 'per_hour_paid',
+        accrualRate: '1.5',
+        accrualRateUnit: '40',
+      })
+
+      await waitFor(() => {
+        expect(screen.getByDisplayValue('Hourly Vacation')).toBeInTheDocument()
+      })
+
+      await user.click(screen.getByLabelText('Fixed amount per year'))
+
+      await waitFor(() => {
+        expect(screen.getByLabelText('Fixed amount per year')).toBeChecked()
+      })
+    })
+
+    it('does not lock accrual method radios for an incomplete policy', async () => {
+      renderEditComponent({
+        name: 'Incomplete Policy',
+        complete: false,
+        accrualMethod: 'per_hour_paid',
+        accrualRate: '1',
+        accrualRateUnit: '40',
+      })
+
+      await waitFor(() => {
+        expect(screen.getByDisplayValue('Incomplete Policy')).toBeInTheDocument()
+      })
+
+      expect(screen.getByLabelText('Unlimited')).toBeEnabled()
+      expect(screen.getByLabelText('Based on hours worked')).toBeEnabled()
+      expect(screen.getByLabelText('Fixed amount per year')).toBeEnabled()
     })
   })
 })

@@ -13,11 +13,13 @@ import {
 } from '@gusto/embedded-api-v-2025-11-15/react-query/holidayPayPoliciesGet'
 import { useHolidayPayPoliciesDeleteMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/holidayPayPoliciesDelete'
 import type { TimeOffPolicy } from '@gusto/embedded-api-v-2025-11-15/models/components/timeoffpolicy'
+import { UnprocessableEntityError } from '@gusto/embedded-api-v-2025-11-15/models/errors/unprocessableentityerror'
 import { PolicyListPresentation } from './PolicyListPresentation'
 import type { PolicyListItem } from './PolicyListTypes'
 import { isListedTimeOffPolicyType } from '@/components/TimeOff/TimeOffFlow/timeOffPolicyTypes'
 import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/components/Base'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
+import { SDKInternalError } from '@/types/sdkError'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { componentEvents } from '@/shared/constants'
 import { useI18n } from '@/i18n'
@@ -140,9 +142,28 @@ function Root({ companyId, onEvent }: PolicyListProps) {
         await invalidateAllHolidayPayPoliciesGet(queryClient)
         setDeleteSuccessAlert(t('flash.holidayDeleted'))
       } else {
-        await deactivatePolicyMutation.mutateAsync({
-          request: { timeOffPolicyUuid: policy.uuid },
-        })
+        try {
+          await deactivatePolicyMutation.mutateAsync({
+            request: { timeOffPolicyUuid: policy.uuid },
+          })
+        } catch (err) {
+          if (err instanceof UnprocessableEntityError) {
+            const hasPendingRequests = err.errors.some(
+              e =>
+                e.message?.toLowerCase().includes('pending') ||
+                e.message?.toLowerCase().includes('approved'),
+            )
+            if (hasPendingRequests) {
+              throw new SDKInternalError(
+                t('errors.pendingRequestsBlockDeletion', { name: policy.name }),
+                'api_error',
+              )
+            }
+            const messages = err.errors.map(e => e.message).filter(Boolean)
+            throw new SDKInternalError(messages.join('. ') || t('errors.deleteFailed'), 'api_error')
+          }
+          throw err
+        }
         await invalidateAllTimeOffPoliciesGetAll(queryClient)
         setDeleteSuccessAlert(t('flash.policyDeleted', { name: policy.name }))
       }
