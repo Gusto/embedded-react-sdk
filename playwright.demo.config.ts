@@ -40,7 +40,16 @@ export default defineConfig({
   // you specifically want parallel debugging of independent scenarios.
   workers: 1,
   reporter: reporters,
-  timeout: 120_000,
+  // 4-minute per-test ceiling. Test bodies typically finish in under 90s
+  // against the demo backend, but the scenario fixture's setup phase can
+  // take up to ~100s during demo-factory degraded windows (up to 4 batches
+  // of parallel demo creations at ~25s each before a healthy one is
+  // returned — see e2e/scenario/runner.ts BASE_DEMO_VALIDATION_BATCH_SIZES).
+  // 240_000 keeps a healthy headroom over that worst case so the fixture's
+  // own retry budget gets to run to completion instead of being killed by
+  // the test-level timeout. Canary tests still set their own explicit
+  // longer timeouts via test.setTimeout(CANARY_TEST_TIMEOUT_MS).
+  timeout: 240_000,
   expect: {
     timeout: 30_000,
   },
