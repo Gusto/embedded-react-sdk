@@ -166,7 +166,6 @@ function buildUpdateRequestBody(
       accrualRate: null,
       accrualRateUnit: null,
       policyResetDate: null,
-      complete: true,
     }
   }
 
@@ -282,6 +281,12 @@ function EditRoot({ companyId, policyType, policyId, defaultValues }: EditRootPr
   const fetchedDefaults = deriveFormDefaults(policy)
   const mergedDefaults = { ...fetchedDefaults, ...defaultValues }
 
+  const lockedAccrualCategory = policy.complete
+    ? fetchedDefaults.accrualMethod === 'unlimited'
+      ? ('unlimited' as const)
+      : ('accrual_based' as const)
+    : undefined
+
   const handleContinue = useCallback(
     async (data: PolicyConfigurationFormData) => {
       await baseSubmitHandler(data, async () => {
@@ -318,6 +323,7 @@ function EditRoot({ companyId, policyType, policyId, defaultValues }: EditRootPr
       defaultValues={mergedDefaults}
       editingPolicyName={policy.name}
       isPending={isPending}
+      lockedAccrualCategory={lockedAccrualCategory}
     />
   )
 }

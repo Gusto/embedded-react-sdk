@@ -15,10 +15,13 @@ export interface PolicyConfigurationFormData {
   resetDay?: number
 }
 
+export type LockedAccrualCategory = 'unlimited' | 'accrual_based'
+
 export interface PolicyConfigurationFormPresentationProps {
   onContinue: (data: PolicyConfigurationFormData) => void
   onCancel: () => void
   defaultValues?: Partial<PolicyConfigurationFormData>
   editingPolicyName?: string
   isPending?: boolean
+  lockedAccrualCategory?: LockedAccrualCategory
 }
