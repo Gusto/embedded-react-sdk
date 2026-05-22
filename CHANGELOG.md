@@ -1,5 +1,36 @@
 # Changelog
 
+## [0.46.2](https://github.com/Gusto/embedded-react-sdk/compare/v0.46.0...v0.46.2) (2026-05-22)
+
+### Features & Enhancements
+
+- **compensation:** enforce effectiveDate floor via Zod schema with distinct error messages ([#1919](https://github.com/Gusto/embedded-react-sdk/issues/1919)) ([c1bfb2c](https://github.com/Gusto/embedded-react-sdk/commit/c1bfb2c796eb05d8ef70c75426dd80ad016b1e6c))
+- **Dashboard:** fix pending compensation edit — route date field by job type ([#1909](https://github.com/Gusto/embedded-react-sdk/issues/1909)) ([362d94f](https://github.com/Gusto/embedded-react-sdk/commit/362d94f9d27e260f4492f1ea1241be31ceda8b04))
+- **dashboard:** show Pending badge for future-dated compensations on job card and table ([#1897](https://github.com/Gusto/embedded-react-sdk/issues/1897)) ([41031b4](https://github.com/Gusto/embedded-react-sdk/commit/41031b48e45b4bf03ea69d0df51c6b59e29230f3))
+- **Dashboard:** wire add-job and add-another-job compensation forms ([#1898](https://github.com/Gusto/embedded-react-sdk/issues/1898)) ([bd0ecff](https://github.com/Gusto/embedded-react-sdk/commit/bd0ecff3b3752b2ce6fd1780df55976f31d24cff))
+- **SDK-517:** add EmployeeListFlow for management employee navigation ([#1921](https://github.com/Gusto/embedded-react-sdk/issues/1921)) ([3304000](https://github.com/Gusto/embedded-react-sdk/commit/330400023966c5b4b641f1d2a65b043acf6f123e))
+
+### Fixes
+
+- always show Create Policy button in page header ([#1905](https://github.com/Gusto/embedded-react-sdk/issues/1905)) ([962b8a4](https://github.com/Gusto/embedded-react-sdk/commit/962b8a4a88f31d087fd48e0c9a4b341c8c316b03))
+- block switching between unlimited and accrual-based time off policy types ([#1900](https://github.com/Gusto/embedded-react-sdk/issues/1900)) ([b3e737b](https://github.com/Gusto/embedded-react-sdk/commit/b3e737b08a700fdb9426b7b33577fd98b69a6f8a))
+- clarify policy deletion error when pending requests exist ([#1906](https://github.com/Gusto/embedded-react-sdk/issues/1906)) ([d4cdb8a](https://github.com/Gusto/embedded-react-sdk/commit/d4cdb8ac81cb23f9141a60e7b0d531c74b2d2693))
+- close remove-employee modal on error and clear stale errors in balance modal ([#1899](https://github.com/Gusto/embedded-react-sdk/issues/1899)) ([0987443](https://github.com/Gusto/embedded-react-sdk/commit/0987443147881b074a2c224e150e0bbeaf364e21))
+- **Dashboard:** show pending compensation changes including title ([#1908](https://github.com/Gusto/embedded-react-sdk/issues/1908)) ([420e8e3](https://github.com/Gusto/embedded-react-sdk/commit/420e8e3956a50aedc1fa039284b3594525368c8a))
+- **Dashboard:** unblock paystub download — drop noopener and defer blob URL revoke ([#1915](https://github.com/Gusto/embedded-react-sdk/issues/1915)) ([507bb47](https://github.com/Gusto/embedded-react-sdk/commit/507bb47812d915c19fe5163746d9e05af15ff0c2))
+- **Deductions:** await column header render before asserting in DeductionsList test ([#1910](https://github.com/Gusto/embedded-react-sdk/issues/1910)) ([3f005ad](https://github.com/Gusto/embedded-react-sdk/commit/3f005adb802af1b73b8e7c33b8a4d1756d823706))
+- fall back to first job title when no primary job is flagged ([#1902](https://github.com/Gusto/embedded-react-sdk/issues/1902)) ([729dbdb](https://github.com/Gusto/embedded-react-sdk/commit/729dbdb214020fdaba0b94f6f4e6f729e4e11e70))
+- hide assigned employees from time-off add list (SDK-894) ([#1843](https://github.com/Gusto/embedded-react-sdk/issues/1843)) ([acb6194](https://github.com/Gusto/embedded-react-sdk/commit/acb6194e164df578bd23e946b7ccb58c92080134)), closes [#1887](https://github.com/Gusto/embedded-react-sdk/issues/1887) [#1849](https://github.com/Gusto/embedded-react-sdk/issues/1849)
+- preserve carry-over balances when adding employees to policy ([#1907](https://github.com/Gusto/embedded-react-sdk/issues/1907)) ([094a9fc](https://github.com/Gusto/embedded-react-sdk/commit/094a9fc587716efb09a4ec8ed42e4275eb060f9a))
+- preserve date picker state when switching back from unlimited ([#1904](https://github.com/Gusto/embedded-react-sdk/issues/1904)) ([fa9e0b0](https://github.com/Gusto/embedded-react-sdk/commit/fa9e0b08cc978da58357a699ef38cf46ce152ac1))
+- provide descriptive error when balance update exceeds policy max ([#1903](https://github.com/Gusto/embedded-react-sdk/issues/1903)) ([88af535](https://github.com/Gusto/embedded-react-sdk/commit/88af535ff68c613301f0afb0aa1db66889f08db9))
+- route holiday Add Employees back button to policy detail ([#1918](https://github.com/Gusto/embedded-react-sdk/issues/1918)) ([1db88fd](https://github.com/Gusto/embedded-react-sdk/commit/1db88fd17f0d272f0aa45d179ddab166df7cd29a))
+- use fresh compensation version from job PUT response in EditPendingCompensation ([#1920](https://github.com/Gusto/embedded-react-sdk/issues/1920)) ([9de8a5b](https://github.com/Gusto/embedded-react-sdk/commit/9de8a5bb403ecefbe585f62ea61f89209cd0186e))
+
+### Chores & Maintenance
+
+- release 0.46.1 ([#1916](https://github.com/Gusto/embedded-react-sdk/issues/1916)) ([3acabc3](https://github.com/Gusto/embedded-react-sdk/commit/3acabc3bcbae06c36fdd38a36bd6a675c7967c77))
+
 ## [0.46.1](https://github.com/Gusto/embedded-react-sdk/compare/v0.46.0...v0.46.1) (2026-05-22)
 
 ### Features & Enhancements
