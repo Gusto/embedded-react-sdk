@@ -612,7 +612,85 @@ async function checkBaseDemoState(
   return null
 }
 
-const BASE_DEMO_VALIDATION_MAX_ATTEMPTS = 3
+/**
+ * Batch sizes used to find an acceptable base demo when the factory is in a
+ * degraded mode. The factory's bad output is statistically independent
+ * per-demo invocation (verified empirically), so a parallel batch converts
+ * serial retry latency into one round-trip per batch. The escalation goes:
+ *   1, 4, 4, 4   (total worst case: 13 demos, ~4 round-trips of ~25s each)
+ *
+ * At an observed factory good-rate of ~21% during a bad window:
+ *   batch 1 (size 1):   P(success) = 0.21
+ *   batch 2 (size 4):   P(at-least-one-good) = 1 - 0.79^4 = 0.61, cumulative 0.69
+ *   batch 3 (size 4):   cumulative 0.88
+ *   batch 4 (size 4):   cumulative 0.96
+ *
+ * Each subsequent batch is bounded by the slowest demo creation, not the
+ * sum, so worst-case wallclock is ~4 * 25s = 100s. On the common
+ * factory-healthy path the first attempt resolves and total cost is ~25s.
+ *
+ * Lone size-1 attempt up front avoids spending 4 demo-creation quotas on
+ * the (most common) case where the factory is happy. Then escalates to
+ * batches of 4 once we know it isn't.
+ */
+const BASE_DEMO_VALIDATION_BATCH_SIZES = [1, 4, 4, 4] as const
+
+async function findAcceptableBaseDemo(
+  gwsFlowsBase: string,
+  baseDemoType: string,
+  requirements: { onboarded: boolean; onboardedEmployees: boolean },
+  log: ReturnType<typeof makeLog>,
+  onProgress?: ProgressFn,
+): Promise<{
+  demo: Awaited<ReturnType<typeof createDemoAndProvision>> | null
+  failures: string[]
+}> {
+  const failures: string[] = []
+
+  for (let batchIdx = 0; batchIdx < BASE_DEMO_VALIDATION_BATCH_SIZES.length; batchIdx++) {
+    const batchSize = BASE_DEMO_VALIDATION_BATCH_SIZES[batchIdx]!
+    if (batchIdx > 0) {
+      log(
+        `  Previous attempt(s) returned degraded demos; escalating to parallel batch of ${batchSize}`,
+      )
+    }
+
+    const batch = await Promise.all(
+      Array.from({ length: batchSize }, () =>
+        createDemoAndProvision(gwsFlowsBase, baseDemoType, { onProgress }),
+      ),
+    )
+
+    // Validate every candidate in parallel; pick the first acceptable one.
+    const validations = await Promise.all(
+      batch.map(async candidate => {
+        const candidateApi = makeApi(gwsFlowsBase, candidate.flowToken)
+        const reason = await checkBaseDemoState(candidateApi, candidate.companyId, requirements)
+        return { candidate, reason }
+      }),
+    )
+
+    const acceptable = validations.find(v => v.reason === null)
+    if (acceptable) {
+      // Log the discard count so the timing-reporter and triagers can see how
+      // many parallel demos we burned to find one good one in this batch.
+      const discarded = validations.length - 1
+      if (discarded > 0) {
+        log(`  Found acceptable demo on batch ${batchIdx + 1} (discarded ${discarded} degraded)`)
+      }
+      return { demo: acceptable.candidate, failures }
+    }
+
+    for (const v of validations) {
+      failures.push(`batch ${batchIdx + 1} (${v.candidate.companyId.slice(0, 8)}): ${v.reason}`)
+    }
+    log(
+      `  Batch ${batchIdx + 1} of ${BASE_DEMO_VALIDATION_BATCH_SIZES.length} returned ${batch.length}/${batch.length} degraded demos`,
+    )
+  }
+
+  return { demo: null, failures }
+}
 
 export async function provisionScenario(
   scenarioPath: string,
@@ -635,36 +713,27 @@ export async function provisionScenario(
 
   log(`Provisioning ${scenario.baseDemo} demo for ${scenarioId}`)
   let demoResult: Awaited<ReturnType<typeof createDemoAndProvision>> | null = null
-  const validationFailures: string[] = []
-  for (let attempt = 1; attempt <= BASE_DEMO_VALIDATION_MAX_ATTEMPTS; attempt++) {
-    const candidate = await createDemoAndProvision(gwsFlowsBase, scenario.baseDemo, {
+  let validationFailures: string[] = []
+
+  if (!requireOnboarded) {
+    demoResult = await createDemoAndProvision(gwsFlowsBase, scenario.baseDemo, {
       onProgress: options?.onProgress,
     })
-
-    if (!requireOnboarded) {
-      demoResult = candidate
-      break
-    }
-
-    const candidateApi = makeApi(gwsFlowsBase, candidate.flowToken)
-    const reason = await checkBaseDemoState(candidateApi, candidate.companyId, {
-      onboarded: requireOnboarded,
-      onboardedEmployees: requireOnboardedEmployees,
-    })
-    if (reason === null) {
-      demoResult = candidate
-      break
-    }
-
-    validationFailures.push(`attempt ${attempt}: ${reason}`)
-    log(
-      `  Base demo ${candidate.companyId} did not satisfy scenario preconditions (${reason}); discarding and retrying (${attempt}/${BASE_DEMO_VALIDATION_MAX_ATTEMPTS})`,
+  } else {
+    const result = await findAcceptableBaseDemo(
+      gwsFlowsBase,
+      scenario.baseDemo,
+      { onboarded: requireOnboarded, onboardedEmployees: requireOnboardedEmployees },
+      log,
+      options?.onProgress,
     )
+    demoResult = result.demo
+    validationFailures = result.failures
   }
 
   if (!demoResult) {
     throw new Error(
-      `Base demo "${scenario.baseDemo}" failed scenario preconditions after ${BASE_DEMO_VALIDATION_MAX_ATTEMPTS} attempts:\n${validationFailures
+      `Base demo "${scenario.baseDemo}" failed scenario preconditions after ${BASE_DEMO_VALIDATION_BATCH_SIZES.reduce((s, n) => s + n, 0)} attempts across ${BASE_DEMO_VALIDATION_BATCH_SIZES.length} batches:\n${validationFailures
         .map(f => `  - ${f}`)
         .join(
           '\n',
