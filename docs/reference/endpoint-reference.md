@@ -163,6 +163,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | `/v1/employees/:employeeId` |
 |  | GET | `/v1/employees/:employeeId/forms` |
 |  | GET | `/v1/employees/:employeeId/home_addresses` |
+|  | GET | `/v1/employees/:employeeId/jobs` |
 |  | GET | `/v1/employees/:employeeId/pay_stubs` |
 |  | GET | `/v1/employees/:employeeId/work_addresses` |
 |  | GET | `/v1/employees/:employeeUuid/federal_taxes` |
@@ -374,6 +375,7 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | `/v1/employees/:employeeId` |
 |  | GET | `/v1/employees/:employeeId/forms` |
 |  | GET | `/v1/employees/:employeeId/home_addresses` |
+|  | GET | `/v1/employees/:employeeId/jobs` |
 |  | GET | `/v1/employees/:employeeId/pay_stubs` |
 |  | GET | `/v1/employees/:employeeId/work_addresses` |
 |  | GET | `/v1/employees/:employeeUuid/federal_taxes` |

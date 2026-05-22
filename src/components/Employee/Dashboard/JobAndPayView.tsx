@@ -98,7 +98,7 @@ export function JobAndPayView({
   const payStubsPagination = compensation.pagination.payStubs
   const cancellingCompensationUuid = compensation.status.cancellingCompensationUuid
   const { cancelPendingChange } = compensation.actions
-  const isCompensationCardLoading = compensation.status.isEmployeeLoading
+  const isCompensationCardLoading = compensation.status.isCompensationLoading
   const isPayStubsLoading = compensation.status.isPayStubsLoading
 
   const handleCancelChange = useCallback(
@@ -566,7 +566,11 @@ export function JobAndPayView({
           ) : (
             <Flex flexDirection="column" gap={16}>
               {hasPendingChanges && (
-                <div className={hasMultipleJobs ? styles.alertWrapper : undefined}>
+                <div
+                  className={[styles.alertWrapper, hasMultipleJobs && styles.alertWrapperPadded]
+                    .filter(Boolean)
+                    .join(' ')}
+                >
                   <Flex flexDirection="column" gap={16}>
                     {showInlineAlert && nextChange && (
                       <Components.Alert
