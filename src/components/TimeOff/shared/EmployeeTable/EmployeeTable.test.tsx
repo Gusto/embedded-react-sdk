@@ -116,6 +116,19 @@ describe('EmployeeTable', () => {
     expect(screen.getByPlaceholderText('Find team members')).toBeInTheDocument()
   })
 
+  test('hides the search input when hideSearch is true', () => {
+    renderEmployeeTable({ hideSearch: true })
+
+    expect(screen.queryByRole('searchbox')).not.toBeInTheDocument()
+    expect(screen.queryByPlaceholderText('searchPlaceholder')).not.toBeInTheDocument()
+  })
+
+  test('renders the search input when hideSearch is false', () => {
+    renderEmployeeTable({ hideSearch: false })
+
+    expect(screen.getByRole('searchbox')).toBeInTheDocument()
+  })
+
   test('fires onSearchChange when user types in search', async () => {
     const onSearchChange = vi.fn()
     renderEmployeeTable({ onSearchChange })

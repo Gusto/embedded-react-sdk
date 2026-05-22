@@ -114,6 +114,13 @@ describe('DataCards', () => {
       await userEvent.click(screen.getAllByRole('checkbox')[0] as HTMLElement)
       expect(onSelectAllMock).toHaveBeenCalledWith(false, testData)
     })
+
+    test('does not render select-all checkbox when hideSelectAll is true', () => {
+      renderCards({ ...selectableProps, hideSelectAll: true })
+      expect(screen.queryByLabelText('Select all rows')).not.toBeInTheDocument()
+      // Per-row checkboxes should still render.
+      expect(screen.getAllByRole('checkbox')).toHaveLength(testData.length)
+    })
   })
 
   test('should render empty state with proper accessibility structure when emptyState is provided', () => {

@@ -25,6 +25,12 @@ type BaseDataViewProps<T> = {
   emptyState?: () => React.ReactNode
   footer?: () => Partial<Record<FooterKeys<T>, React.ReactNode>>
   isFetching?: boolean
+  /**
+   * When true, hides the select-all header checkbox (DataTable) and the
+   * select-all row (DataCards). Only meaningful with `selectionMode: 'multiple'`.
+   * Per-row checkboxes are unaffected.
+   */
+  hideSelectAll?: boolean
 }
 
 type NoSelectionProps = {
@@ -69,6 +75,7 @@ export type useDataViewPropReturn<T> = {
   onSelect?: (item: T, checked: boolean) => void
   onSelectAll?: (checked: boolean, visibleData: T[]) => void
   getIsItemSelected?: (item: T) => boolean
+  hideSelectAll?: boolean
   emptyState?: () => React.ReactNode
   footer?: () => Partial<Record<FooterKeys<T>, React.ReactNode>>
   isFetching?: boolean
@@ -82,6 +89,7 @@ export const useDataView = <T>({
   onSelect,
   onSelectAll,
   getIsItemSelected,
+  hideSelectAll,
   pagination,
   emptyState,
   footer,
@@ -97,6 +105,7 @@ export const useDataView = <T>({
       onSelect,
       onSelectAll,
       getIsItemSelected,
+      hideSelectAll,
       emptyState,
       footer,
       isFetching,
@@ -110,6 +119,7 @@ export const useDataView = <T>({
     onSelect,
     onSelectAll,
     getIsItemSelected,
+    hideSelectAll,
     emptyState,
     footer,
     isFetching,

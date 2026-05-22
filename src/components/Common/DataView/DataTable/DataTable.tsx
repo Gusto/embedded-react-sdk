@@ -14,6 +14,7 @@ export type DataTableProps<T> = {
   onSelect?: useDataViewPropReturn<T>['onSelect']
   onSelectAll?: (checked: boolean, visibleData: T[]) => void
   getIsItemSelected?: (item: T) => boolean
+  hideSelectAll?: useDataViewPropReturn<T>['hideSelectAll']
   emptyState?: useDataViewPropReturn<T>['emptyState']
   footer?: useDataViewPropReturn<T>['footer']
   isWithinBox?: TableProps['isWithinBox']
@@ -44,6 +45,7 @@ export const DataTable = <T,>({
   onSelect,
   onSelectAll,
   getIsItemSelected,
+  hideSelectAll,
   emptyState,
   footer,
   isWithinBox,
@@ -61,7 +63,10 @@ export const DataTable = <T,>({
           {
             key: 'select-header',
             content:
-              selectionMode === 'multiple' && getIsItemSelected ? (
+              selectionMode === 'multiple' &&
+              getIsItemSelected &&
+              !hideSelectAll &&
+              data.length > 0 ? (
                 // Stop propagation so the surrounding react-aria-components
                 // <Column> press handler doesn't intercept the checkbox click
                 // and desync the controlled DOM state. The inner <input> is

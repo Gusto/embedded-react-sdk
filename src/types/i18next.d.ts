@@ -582,17 +582,9 @@ export interface CompanyTimeOffSelectEmployees{
 "startingBalanceColumn":string;
 "backCta":string;
 "continueCta":string;
+"emptyState":string;
 "errors":{
-"removeEmployeesFailed":string;
 "completePolicyFailed":string;
-};
-"removeConfirmDialog":{
-"title_one":string;
-"title_other":string;
-"description_one":string;
-"description_other":string;
-"confirmCta":string;
-"cancelCta":string;
 };
 "addConfirmDialog":{
 "title_one":string;
@@ -1342,6 +1334,7 @@ export interface EmployeeBankAccount{
 };
 export interface EmployeeCompensation{
 "addAnotherJobCta":string;
+"addAnotherJobTitle":string;
 "adjustForMinimumWage":string;
 "adjustForMinimumWageDescription":string;
 "minimumWageLabel":string;
@@ -1380,6 +1373,9 @@ export interface EmployeeCompensation{
 "Week":string;
 "Year":string;
 };
+"effectiveDate":string;
+"effectiveDateDescription":string;
+"hireDate":string;
 "saveNewJobCta":string;
 "submitCta":string;
 "title":string;
@@ -1403,6 +1399,9 @@ export interface EmployeeCompensation{
 "scheduledClassificationChangeNotification":string;
 };
 "validations":{
+"effectiveDate":string;
+"effectiveDateBeforeHire":string;
+"hireDate":string;
 "classificationChangeNotification":string;
 "exemptThreshold":string;
 "paymentUnit":string;
@@ -1615,11 +1614,13 @@ export interface EmployeeDashboard{
 "deductionAdded":string;
 "deductionUpdated":string;
 "deductionDeleted":string;
+"jobAdded":string;
 };
 "compensationFlow":{
 "addJobTitle":string;
 "editTitle":string;
 "addAnotherJobTitle":string;
+"saveCta":string;
 };
 };
 export interface EmployeeDeductions{

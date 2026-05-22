@@ -16,6 +16,7 @@ export type DataCardsProps<T> = {
   onSelect?: (item: T, checked: boolean) => void
   onSelectAll?: (checked: boolean, visibleData: T[]) => void
   getIsItemSelected?: (item: T) => boolean
+  hideSelectAll?: useDataViewPropReturn<T>['hideSelectAll']
   emptyState?: useDataViewPropReturn<T>['emptyState']
   footer?: useDataViewPropReturn<T>['footer']
   selectionMode?: SelectionMode
@@ -30,6 +31,7 @@ export const DataCards = <T,>({
   onSelect,
   onSelectAll,
   getIsItemSelected,
+  hideSelectAll,
   emptyState,
   footer,
   selectionMode = 'multiple',
@@ -73,15 +75,19 @@ export const DataCards = <T,>({
 
   return (
     <div className={cn(styles.root, isWithinBox && styles.withinBox)} data-testid="data-cards">
-      {onSelect && getIsItemSelected && selectionMode === 'multiple' && data.length > 0 && (
-        <div className={styles.selectAllRow}>
-          <Components.Checkbox
-            value={allSelected}
-            onChange={(checked: boolean) => onSelectAll?.(checked, data)}
-            label={t('card.selectAllRowsLabel')}
-          />
-        </div>
-      )}
+      {onSelect &&
+        getIsItemSelected &&
+        selectionMode === 'multiple' &&
+        !hideSelectAll &&
+        data.length > 0 && (
+          <div className={styles.selectAllRow}>
+            <Components.Checkbox
+              value={allSelected}
+              onChange={(checked: boolean) => onSelectAll?.(checked, data)}
+              label={t('card.selectAllRowsLabel')}
+            />
+          </div>
+        )}
       <div role="list" aria-label={label}>
         {data.length === 0 && emptyState && (
           <div role="listitem">

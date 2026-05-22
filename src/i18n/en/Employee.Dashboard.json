@@ -186,11 +186,13 @@
     "splitUpdated": "Split payment successfully updated.",
     "deductionAdded": "Deduction successfully added.",
     "deductionUpdated": "Deduction successfully updated.",
-    "deductionDeleted": "Deduction successfully deleted."
+    "deductionDeleted": "Deduction successfully deleted.",
+    "jobAdded": "Job successfully added."
   },
   "compensationFlow": {
     "addJobTitle": "Add a job",
     "editTitle": "Edit compensation",
-    "addAnotherJobTitle": "Add another job"
+    "addAnotherJobTitle": "Add another job",
+    "saveCta": "Save job"
   }
 }
