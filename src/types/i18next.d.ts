@@ -2036,6 +2036,7 @@ export interface EmployeeLanding{
 export interface EmployeeManagementEmployeeList{
 "title":string;
 "addEmployeeCta":string;
+"backToListCta":string;
 "tabsLabel":string;
 "tabs":{
 "active":string;

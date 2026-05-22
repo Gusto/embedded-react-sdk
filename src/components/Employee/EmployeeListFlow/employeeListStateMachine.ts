@@ -1,17 +1,37 @@
 import { transition, reduce, state } from 'robot3'
 import {
   DashboardFlowContextual,
+  EmployeeListContextual,
   OnboardingFlowContextual,
   TerminationFlowContextual,
   type EmployeeListFlowContextInterface,
 } from './EmployeeListFlowComponents'
 import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
+import type { FlowHeaderConfig } from '@/components/Flow/useFlow'
 
 type EventPayloads = {
   [componentEvents.EMPLOYEE_UPDATE]: { employeeId: string }
   [componentEvents.EMPLOYEE_DISMISS]: { employeeId: string }
 }
+
+const backToListHeader: FlowHeaderConfig = {
+  type: 'minimal',
+  back: {
+    labelKey: 'backToListCta',
+    namespace: 'Employee.ManagementEmployeeList',
+    event: componentEvents.EMPLOYEE_RETURN_TO_LIST,
+  },
+}
+
+const returnToList = reduce(
+  (ctx: EmployeeListFlowContextInterface): EmployeeListFlowContextInterface => ({
+    ...ctx,
+    component: EmployeeListContextual,
+    header: null,
+    employeeId: undefined,
+  }),
+)
 
 export const employeeListStateMachine = {
   list: state<MachineTransition>(
@@ -25,6 +45,7 @@ export const employeeListStateMachine = {
         ): EmployeeListFlowContextInterface => ({
           ...ctx,
           component: DashboardFlowContextual,
+          header: backToListHeader,
           employeeId: ev.payload.employeeId,
         }),
       ),
@@ -39,6 +60,7 @@ export const employeeListStateMachine = {
         ): EmployeeListFlowContextInterface => ({
           ...ctx,
           component: TerminationFlowContextual,
+          header: backToListHeader,
           employeeId: ev.payload.employeeId,
         }),
       ),
@@ -50,11 +72,18 @@ export const employeeListStateMachine = {
         (ctx: EmployeeListFlowContextInterface): EmployeeListFlowContextInterface => ({
           ...ctx,
           component: OnboardingFlowContextual,
+          header: backToListHeader,
         }),
       ),
     ),
   ),
-  dashboard: state<MachineTransition>(),
-  terminate: state<MachineTransition>(),
-  onboard: state<MachineTransition>(),
+  dashboard: state<MachineTransition>(
+    transition(componentEvents.EMPLOYEE_RETURN_TO_LIST, 'list', returnToList),
+  ),
+  terminate: state<MachineTransition>(
+    transition(componentEvents.EMPLOYEE_RETURN_TO_LIST, 'list', returnToList),
+  ),
+  onboard: state<MachineTransition>(
+    transition(componentEvents.EMPLOYEE_RETURN_TO_LIST, 'list', returnToList),
+  ),
 }
