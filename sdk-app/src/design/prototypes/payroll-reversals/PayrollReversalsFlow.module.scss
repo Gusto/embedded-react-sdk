@@ -1,0 +1,142 @@
+.dataViewFilters {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 12px;
+}
+
+.searchRow {
+  width: 100%;
+}
+
+.filterRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.sortButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-weight: 600;
+  font-size: var(--g-fontSizeSmall, 0.875rem);
+  color: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:hover {
+    color: var(--g-colorPrimary, #0a8080);
+  }
+}
+
+.warningBox {
+  background: var(--g-colorWarningSubtle, #fefce8);
+  border: 1px solid var(--g-colorWarning, #d97706);
+  border-radius: var(--g-inputRadius, 6px);
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.warningBoxTitle {
+  font-weight: 600;
+  font-size: var(--g-fontSizeBase, 1rem);
+  color: var(--g-colorBodyContent, #111827);
+  margin: 0 0 8px;
+}
+
+.warningBulletSection {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.warningBulletHeading {
+  font-weight: 600;
+  font-size: var(--g-fontSizeSmall, 0.875rem);
+  color: var(--g-colorBodyContent, #111827);
+  margin: 0 0 4px;
+}
+
+.warningBulletList {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  li {
+    font-size: var(--g-fontSizeSmall, 0.875rem);
+    color: var(--g-colorBodyContent, #111827);
+  }
+}
+
+.stepProgress {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.stepProgressHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stepProgressLabel {
+  font-weight: 600;
+  font-size: var(--g-fontSizeSmall, 0.875rem);
+  color: var(--g-colorBodySubContent, #4b5563);
+}
+
+.summaryBox {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.summaryRow {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--g-colorBorderPrimary, #e5e7eb);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.summaryTerm {
+  flex: 0 0 200px;
+  font-size: var(--g-fontSizeSmall, 0.875rem);
+  font-weight: 600;
+  color: var(--g-colorBodyContent, #111827);
+}
+
+.summaryDescription {
+  flex: 1;
+  font-size: var(--g-fontSizeSmall, 0.875rem);
+  color: var(--g-colorBodySubContent, #4b5563);
+}
+
+.checkboxRow {
+  padding: 16px;
+  background: var(--g-colorBodyAccent, #f9fafb);
+  border: 1px solid var(--g-colorBorderPrimary, #e5e7eb);
+  border-radius: var(--g-inputRadius, 6px);
+}
+
+.actionRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}

@@ -32,6 +32,12 @@ export const categorizedRegistry: CategorizedRegistry = {
       description:
         'View tax payment status for a company — outstanding amounts, agencies, due dates, and per-payroll tax liabilities.',
     },
+    {
+      name: 'Payroll Reversals',
+      path: '/design/payroll-reversals',
+      description:
+        'Step-by-step payroll reversal wizard — select payroll, choose employees, review and confirm.',
+    },
   ],
   Contractors: [
     {

@@ -16,6 +16,7 @@ import { AddContractor } from './design/prototypes/contractor-management/contrac
 import { ContractorSelfOnboarding } from './design/prototypes/contractor-management/self-onboarding'
 import { TaxFilings } from './design/prototypes/tax-filings'
 import { AgentPayments } from './design/prototypes/agent-payments'
+import { PayrollReversals } from './design/prototypes/payroll-reversals'
 import './app.scss'
 import '@/styles/sdk.scss'
 
@@ -47,6 +48,7 @@ const router = createBrowserRouter([
           { path: 'contractor-self-onboarding', element: <ContractorSelfOnboarding /> },
           { path: 'tax-filings', element: <TaxFilings /> },
           { path: 'agent-payments', element: <AgentPayments /> },
+          { path: 'payroll-reversals', element: <PayrollReversals /> },
         ],
       },
     ],
