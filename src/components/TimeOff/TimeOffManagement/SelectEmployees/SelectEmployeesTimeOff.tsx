@@ -7,7 +7,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import type { CreatableTimeOffPolicyType } from '../../TimeOffFlow/timeOffPolicyTypes'
 import { SelectEmployeesPresentation } from './SelectEmployeesPresentation'
-import { useSelectEmployeesData } from './useSelectEmployeesData'
+import { matchesEmployeeSearch, useSelectEmployeesData } from './useSelectEmployeesData'
 import type { EmployeeItem } from './SelectEmployeesPresentationTypes'
 import { useBase } from '@/components/Base/useBase'
 import { SDKInternalError } from '@/types/sdkError'
@@ -116,9 +116,10 @@ function SelectEmployeesTimeOffInner({
   } = useSelectEmployeesData(companyId, existingAssigneeUuids)
 
   // Captures the full Employee record at the moment a row is selected so
-  // their carry-over balance is still available at submit time even if the
-  // user has since searched/paginated the row out of view. Without this,
-  // `selectedUuids` would point at UUIDs we no longer have data for.
+  // their record is still available for the reassignment-warning check at
+  // submit time even if the user has since searched/paginated the row out of
+  // view. Without this, `selectedUuids` would point at UUIDs we no longer
+  // have data for.
   const selectedEmployeesRef = useRef(new Map<string, EmployeeItem>())
 
   const handleSelectWithCapture = useCallback(
@@ -134,17 +135,23 @@ function SelectEmployeesTimeOffInner({
   )
 
   const handleSelectAllWithCapture = useCallback(
-    (checked: boolean, visibleItems: EmployeeItem[]) => {
-      for (const item of visibleItems) {
+    (checked: boolean) => {
+      // Mirror the hook's scope: full search-filtered list across pages, not
+      // just the visible page slice. Keeps `selectedEmployeesRef` in sync so
+      // off-page selections survive a submit (carry-over balances, etc.).
+      const scope = searchValue
+        ? eligibleEmployees.filter(employee => matchesEmployeeSearch(employee, searchValue))
+        : eligibleEmployees
+      for (const item of scope) {
         if (checked) {
           selectedEmployeesRef.current.set(item.uuid, item)
         } else {
           selectedEmployeesRef.current.delete(item.uuid)
         }
       }
-      handleSelectAll(checked, visibleItems)
+      handleSelectAll(checked)
     },
-    [handleSelectAll],
+    [eligibleEmployees, searchValue, handleSelectAll],
   )
 
   const carryOverBalances = useMemo(
