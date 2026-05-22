@@ -392,7 +392,6 @@ describe('management/EditCompensation', () => {
   })
 
   it('shows the secondary-jobs warning when scheduling a future FLSA change away from Nonexempt', async () => {
-    // Scheduling a future non-Nonexempt comp will delete secondary jobs at the
     // effective date. The warning must fire in create mode too — the date field
     // stays editable (unlike update mode where it is forced to today).
     server.use(
@@ -415,7 +414,7 @@ describe('management/EditCompensation', () => {
 
     expect(
       await screen.findByText(
-        "Scheduling this classification change will delete the employee's additional jobs when it goes into effect.",
+        "Changing this employee's classification will immediately delete their additional jobs.",
       ),
     ).toBeInTheDocument()
 

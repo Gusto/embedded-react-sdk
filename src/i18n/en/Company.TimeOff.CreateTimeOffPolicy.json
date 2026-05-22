@@ -5,7 +5,6 @@
     "policyNameLabel": "Policy name",
     "accrualMethodLabel": "Accrual method",
     "accrualMethodHint": "The rate at which employees will accrue time paid time off.",
-    "accrualMethodLockedHint": "The accrual type cannot be changed for an existing policy. Create a new policy to use a different accrual type.",
     "perHourPaidLabel": "Based on hours worked",
     "perHourPaidHint": "Employees earn time off based on hours worked (e.g., 1 hour for every 40 hours worked).",
     "perYearLabel": "Fixed amount per year",

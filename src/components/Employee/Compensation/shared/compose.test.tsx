@@ -90,8 +90,11 @@ describe('composeSubmitHandler([useJobForm, useCompensationForm])', () => {
             rate: 25,
             paymentUnit: PAY_PERIODS.HOUR,
             flsaStatus: FlsaStatus.NONEXEMPT,
-            effectiveDate: '2025-01-15',
           },
+          // Onboarding does not surface an effectiveDate field — the server
+          // initializes it on the auto-created stub. Mirror the actual
+          // onboarding component behaviour here.
+          withEffectiveDateField: false,
           shouldFocusError: false,
         })
         return { jobForm, compensationForm }
@@ -180,8 +183,8 @@ describe('composeSubmitHandler([useJobForm, useCompensationForm])', () => {
             rate: 0,
             paymentUnit: PAY_PERIODS.HOUR,
             flsaStatus: FlsaStatus.NONEXEMPT,
-            effectiveDate: '2025-01-15',
           },
+          withEffectiveDateField: false,
           shouldFocusError: false,
         })
         return { jobForm, compensationForm }
@@ -233,8 +236,8 @@ describe('composeSubmitHandler([useJobForm, useCompensationForm])', () => {
             rate: 25,
             paymentUnit: PAY_PERIODS.HOUR,
             flsaStatus: FlsaStatus.NONEXEMPT,
-            effectiveDate: '2025-01-15',
           },
+          withEffectiveDateField: false,
           shouldFocusError: false,
         })
         return { jobForm, compensationForm }

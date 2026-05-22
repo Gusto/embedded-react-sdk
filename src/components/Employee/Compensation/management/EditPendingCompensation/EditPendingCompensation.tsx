@@ -7,7 +7,6 @@ import styles from './EditPendingCompensation.module.scss'
 import { BaseBoundaries, BaseLayout, type CommonComponentInterface } from '@/components/Base'
 import type { OnEventType } from '@/components/Base/useBase'
 import { Form } from '@/components/Common/Form'
-import { addDays, normalizeToDate } from '@/helpers/dateFormatting'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { composeSubmitHandler } from '@/partner-hook-utils/form/composeSubmitHandler'
@@ -96,19 +95,6 @@ function Root({
     return <BaseLayout isLoading error={loadingErrorHandling.errors} />
   }
 
-  // Secondary new job: effective date must be on or after the secondary job's
-  // hire date (and at least tomorrow) so we don't set a date before the job
-  // even starts.
-  const minEffectiveDate =
-    isNewJob && !isPrimaryJob && jobForm.data.currentJob?.hireDate
-      ? new Date(
-          Math.max(
-            addDays(new Date(), 1).getTime(),
-            (normalizeToDate(jobForm.data.currentJob.hireDate) ?? addDays(new Date(), 1)).getTime(),
-          ),
-        )
-      : undefined
-
   const submitResult = composeSubmitHandler([jobForm, compensationForm], async () => {
     // For a primary new job, the user edits the hire date field. We read it
     // back here and pass it to the comp submit so both the job's hire_date and
@@ -123,9 +109,18 @@ function Root({
 
     onEvent(componentEvents.EMPLOYEE_JOB_UPDATED, jobResult.data)
 
-    const compensationResult = await compensationForm.actions.onSubmit(
-      hireDateOverride ? { effectiveDate: hireDateOverride } : undefined,
-    )
+    // When the hire date moves forward, the API auto-syncs the compensation's
+    // effective_date to the new hire_date as part of the job PUT, which bumps
+    // the compensation's version. Read it from the job response so the
+    // subsequent compensation PUT doesn't send a stale version.
+    const freshCompVersion = jobResult.data.compensations?.find(
+      c => c.uuid === compensationId,
+    )?.version
+
+    const compensationResult = await compensationForm.actions.onSubmit({
+      ...(hireDateOverride ? { effectiveDate: hireDateOverride } : {}),
+      compensationVersion: freshCompVersion,
+    })
     if (!compensationResult) return
 
     onEvent(componentEvents.EMPLOYEE_COMPENSATION_UPDATED, compensationResult.data)
@@ -146,7 +141,6 @@ function Root({
             submitCtaLabel={t('management.saveCta')}
             isPending={isPending}
             onCancel={onCancel}
-            minEffectiveDate={minEffectiveDate}
           />
         </Form>
       </BaseLayout>
