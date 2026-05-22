@@ -39,7 +39,14 @@ function assertReady(hookResult: UseCompensationFormResult): asserts hookResult 
 }
 
 function todayISO(): string {
-  return new Date().toISOString().split('T')[0]!
+  const d = new Date()
+  return `${String(d.getFullYear())}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
+function tomorrowISO(): string {
+  const d = new Date()
+  d.setDate(d.getDate() + 1)
+  return `${String(d.getFullYear())}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 }
 
 const VALID_FORM_DATA: CompensationFormData = {
@@ -89,6 +96,47 @@ describe('createCompensationSchema', () => {
     // Fields.EffectiveDate would otherwise be trapped with no way to recover.
     const [schema] = createCompensationSchema({ mode: 'update', hireDate: '2025-05-08' })
     const result = schema.safeParse({ ...VALID_FORM_DATA, effectiveDate: '2020-01-01' })
+    expect(result.success).toBe(true)
+  })
+
+  it('rejects effectiveDate before minEffectiveDate on create (EFFECTIVE_DATE_BEFORE_MIN)', () => {
+    const [schema] = createCompensationSchema({
+      mode: 'create',
+      minEffectiveDate: '2099-01-02',
+    })
+    const result = schema.safeParse({ ...VALID_FORM_DATA, effectiveDate: '2099-01-01' })
+    expect(result.success).toBe(false)
+    if (result.success) return
+    const issue = result.error.issues.find(i => String(i.path[0]) === 'effectiveDate')
+    expect(issue?.message).toBe(CompensationErrorCodes.EFFECTIVE_DATE_BEFORE_MIN)
+  })
+
+  it('rejects effectiveDate before minEffectiveDate on update (EFFECTIVE_DATE_BEFORE_MIN)', () => {
+    // Unlike hireDate, minEffectiveDate is enforced in both modes — callers
+    // only supply it when the carve-out cannot fire (e.g. secondary jobs).
+    const [schema] = createCompensationSchema({
+      mode: 'update',
+      minEffectiveDate: '2099-01-02',
+    })
+    const result = schema.safeParse({ ...VALID_FORM_DATA, effectiveDate: '2099-01-01' })
+    expect(result.success).toBe(false)
+    if (result.success) return
+    const issue = result.error.issues.find(i => String(i.path[0]) === 'effectiveDate')
+    expect(issue?.message).toBe(CompensationErrorCodes.EFFECTIVE_DATE_BEFORE_MIN)
+  })
+
+  it('accepts effectiveDate equal to minEffectiveDate', () => {
+    const [schema] = createCompensationSchema({
+      mode: 'create',
+      minEffectiveDate: '2099-01-01',
+    })
+    const result = schema.safeParse({ ...VALID_FORM_DATA, effectiveDate: '2099-01-01' })
+    expect(result.success).toBe(true)
+  })
+
+  it('does not raise EFFECTIVE_DATE_BEFORE_MIN when minEffectiveDate is absent', () => {
+    const [schema] = createCompensationSchema({ mode: 'create' })
+    const result = schema.safeParse({ ...VALID_FORM_DATA, effectiveDate: '2000-01-01' })
     expect(result.success).toBe(true)
   })
 
@@ -1178,6 +1226,215 @@ describe('useCompensationForm', () => {
 
       expect(updateResolver).toHaveBeenCalledTimes(1)
       expect(updateBody).not.toHaveProperty('effective_date')
+    })
+  })
+
+  describe('internalMinEffectiveDate', () => {
+    it('blocks onSubmit in create mode when effectiveDate is before tomorrow', async () => {
+      const createResolver = vi.fn<HttpResponseResolver>(() =>
+        HttpResponse.json({}, { status: 201 }),
+      )
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'singleNonexempt' })),
+        ),
+        handleCreateCompensation(createResolver),
+      )
+
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+
+      const { formMethods } = result.current.form.hookFormInternals
+      act(() => {
+        formMethods.setValue('flsaStatus', 'Nonexempt')
+        formMethods.setValue('paymentUnit', 'Hour')
+        formMethods.setValue('rate', 25)
+        formMethods.setValue('effectiveDate', todayISO())
+      })
+
+      await act(async () => {
+        assertReady(result.current)
+        await result.current.actions.onSubmit()
+      })
+
+      expect(createResolver).not.toHaveBeenCalled()
+    })
+
+    it('allows onSubmit in create mode when effectiveDate is tomorrow', async () => {
+      let createBody: Record<string, unknown> | null = null
+      const createResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+        createBody = (await request.json()) as Record<string, unknown>
+        return HttpResponse.json(
+          {
+            uuid: 'new-comp-uuid',
+            version: 'v1',
+            job_uuid: 'job-uuid',
+            payment_unit: 'Hour',
+            flsa_status: 'Nonexempt',
+            adjust_for_minimum_wage: false,
+            effective_date: tomorrowISO(),
+            rate: '25',
+          },
+          { status: 201 },
+        )
+      })
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'singleNonexempt' })),
+        ),
+        handleCreateCompensation(createResolver),
+      )
+
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+
+      const { formMethods } = result.current.form.hookFormInternals
+      act(() => {
+        formMethods.setValue('flsaStatus', 'Nonexempt')
+        formMethods.setValue('paymentUnit', 'Hour')
+        formMethods.setValue('rate', 25)
+        formMethods.setValue('effectiveDate', tomorrowISO())
+      })
+
+      await act(async () => {
+        assertReady(result.current)
+        await result.current.actions.onSubmit()
+      })
+
+      expect(createResolver).toHaveBeenCalledTimes(1)
+      expect(createBody).toMatchObject({ effective_date: tomorrowISO() })
+    })
+
+    it('blocks onSubmit in update mode for a secondary job when effectiveDate is before the hire date', async () => {
+      const updateResolver = vi.fn<HttpResponseResolver>(() =>
+        HttpResponse.json({
+          uuid: 'secondary-comp-uuid',
+          version: 'v2',
+          job_uuid: 'secondary-job-uuid',
+          rate: '25.00',
+          payment_unit: 'Hour',
+          flsa_status: 'Nonexempt',
+          effective_date: '2099-06-01',
+          adjust_for_minimum_wage: false,
+        }),
+      )
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json([
+            buildJob({ uuid: 'job-uuid', primary: true }),
+            buildJob({
+              uuid: 'secondary-job-uuid',
+              primary: false,
+              hireDate: '2099-06-01',
+              currentCompensationUuid: 'secondary-comp-uuid',
+              compensations: [
+                buildCompensation({
+                  uuid: 'secondary-comp-uuid',
+                  job_uuid: 'secondary-job-uuid',
+                  effective_date: '2099-06-01',
+                }),
+              ],
+            }),
+          ]),
+        ),
+        handleUpdateEmployeeCompensation(updateResolver),
+      )
+
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            compensationId: 'secondary-comp-uuid',
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+
+      const { formMethods } = result.current.form.hookFormInternals
+      act(() => {
+        // tomorrow is before the secondary job's hire date '2099-06-01'
+        formMethods.setValue('effectiveDate', tomorrowISO())
+      })
+
+      await act(async () => {
+        assertReady(result.current)
+        await result.current.actions.onSubmit()
+      })
+
+      expect(updateResolver).not.toHaveBeenCalled()
+    })
+
+    it('does not enforce a minimum in update mode for a primary job (today is allowed)', async () => {
+      const updateResolver = vi.fn<HttpResponseResolver>(() =>
+        HttpResponse.json({
+          uuid: 'compensation-uuid',
+          version: 'v2',
+          job_uuid: 'job-uuid',
+          rate: '100.00',
+          payment_unit: 'Hour',
+          flsa_status: 'Nonexempt',
+          effective_date: todayISO(),
+          adjust_for_minimum_wage: false,
+        }),
+      )
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'singleNonexempt' })),
+        ),
+        handleUpdateEmployeeCompensation(updateResolver),
+      )
+
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            compensationId: 'compensation-uuid',
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+
+      const { formMethods } = result.current.form.hookFormInternals
+      act(() => {
+        formMethods.setValue('effectiveDate', todayISO())
+      })
+
+      await act(async () => {
+        assertReady(result.current)
+        await result.current.actions.onSubmit()
+      })
+
+      expect(updateResolver).toHaveBeenCalledTimes(1)
     })
   })
 })

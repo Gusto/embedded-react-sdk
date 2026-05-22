@@ -250,7 +250,7 @@ describe('Compensation', () => {
 
       expect(
         screen.queryByText(
-          "Changing this employee's classification will delete the employee's additional pay rates.",
+          "Changing this employee's classification will immediately delete their additional jobs.",
         ),
       ).not.toBeInTheDocument()
 
@@ -631,7 +631,7 @@ describe('Compensation', () => {
 
       expect(
         screen.getByText(
-          "Changing this employee's classification will delete the employee's additional pay rates.",
+          "Changing this employee's classification will immediately delete their additional jobs.",
         ),
       ).toBeInTheDocument()
 
