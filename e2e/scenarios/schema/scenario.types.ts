@@ -151,6 +151,14 @@ export interface Scenario {
    * Dotted-path keys the scenario guarantees will be populated in ScenarioContext after provisioning. The runner fails fast if any are missing post-decoration.
    */
   expectedContext?: string[]
+  /**
+   * When true, the runner validates after demo creation that the base demo's company is fully onboarded (GET /companies/:id/onboarding_status returns onboarding_completed=true). If the demo factory returns a degraded company, the runner discards it and retries up to 3 times before failing. Set on scenarios that depend on the seeded onboarded state (e.g., react_sdk_demo_company_onboarded canaries that need seed employees + an open pay period). Defaults to false.
+   */
+  requireOnboardedCompany?: boolean
+  /**
+   * When true, the runner additionally validates that the base demo's company has at least one onboarded, non-terminated employee. Implies requireOnboardedCompany. Used by payroll canaries that drive flows against the seed's pre-onboarded employees rather than scenario-decorated ones. Defaults to false.
+   */
+  requireOnboardedEmployees?: boolean
 }
 /**
  * Reference to a shared fragment file with optional deep-merge overrides.

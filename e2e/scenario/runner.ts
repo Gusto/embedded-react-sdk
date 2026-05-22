@@ -555,6 +555,65 @@ function validateExpectedContext(context: ScenarioContext, expectedPaths: string
   }
 }
 
+/**
+ * Validate that the base demo's company satisfies the scenario's stated
+ * preconditions (onboarding complete, employees seeded, etc.).
+ *
+ * The `react_sdk_demo_company_onboarded` factory on flows.gusto-demo.com is
+ * non-deterministic: most invocations return a fully-onboarded company with
+ * ~14 seed employees, but a meaningful minority return an effectively-fresh
+ * company with 8+ payroll blockers and no employees. Tests that depend on
+ * the seeded onboarded state (the four canaries that opt in via
+ * requireOnboardedCompany / requireOnboardedEmployees) fail downstream with
+ * misleading errors when this happens.
+ *
+ * Returns null on success, or a human-readable reason string when the demo
+ * is degraded. The caller re-provisions on a non-null result.
+ */
+async function checkBaseDemoState(
+  api: ApiClient,
+  companyId: string,
+  requirements: { onboarded: boolean; onboardedEmployees: boolean },
+): Promise<string | null> {
+  if (!requirements.onboarded && !requirements.onboardedEmployees) return null
+
+  try {
+    const status = await api.get<{ onboarding_completed?: boolean }>(
+      `/companies/${companyId}/onboarding_status`,
+    )
+    if (status.onboarding_completed !== true) {
+      return `expected onboarding_completed=true, got ${status.onboarding_completed ?? 'undefined'}`
+    }
+  } catch (error) {
+    return `could not read onboarding_status: ${String(error)}`
+  }
+
+  if (requirements.onboardedEmployees) {
+    try {
+      type EmployeeSummary = {
+        uuid: string
+        onboarded?: boolean
+        onboarding_status?: string
+        terminated?: boolean
+      }
+      const employees = await api.get<EmployeeSummary[]>(`/companies/${companyId}/employees`)
+      const onboarded = employees.filter(
+        e =>
+          !e.terminated && (e.onboarded === true || e.onboarding_status === 'onboarding_completed'),
+      )
+      if (onboarded.length === 0) {
+        return `expected ≥1 onboarded non-terminated employee, got ${employees.length} total / 0 onboarded`
+      }
+    } catch (error) {
+      return `could not read employees: ${String(error)}`
+    }
+  }
+
+  return null
+}
+
+const BASE_DEMO_VALIDATION_MAX_ATTEMPTS = 3
+
 export async function provisionScenario(
   scenarioPath: string,
   options?: { gwsFlowsHost?: string; onProgress?: ProgressFn },
@@ -568,10 +627,50 @@ export async function provisionScenario(
 
   const scenario = await loadScenario(scenarioPath)
 
+  // requireOnboardedEmployees implies requireOnboardedCompany — if you need
+  // onboarded employees you definitionally need onboarding to be complete.
+  const requireOnboarded =
+    scenario.requireOnboardedCompany === true || scenario.requireOnboardedEmployees === true
+  const requireOnboardedEmployees = scenario.requireOnboardedEmployees === true
+
   log(`Provisioning ${scenario.baseDemo} demo for ${scenarioId}`)
-  const demoResult = await createDemoAndProvision(gwsFlowsBase, scenario.baseDemo, {
-    onProgress: options?.onProgress,
-  })
+  let demoResult: Awaited<ReturnType<typeof createDemoAndProvision>> | null = null
+  const validationFailures: string[] = []
+  for (let attempt = 1; attempt <= BASE_DEMO_VALIDATION_MAX_ATTEMPTS; attempt++) {
+    const candidate = await createDemoAndProvision(gwsFlowsBase, scenario.baseDemo, {
+      onProgress: options?.onProgress,
+    })
+
+    if (!requireOnboarded) {
+      demoResult = candidate
+      break
+    }
+
+    const candidateApi = makeApi(gwsFlowsBase, candidate.flowToken)
+    const reason = await checkBaseDemoState(candidateApi, candidate.companyId, {
+      onboarded: requireOnboarded,
+      onboardedEmployees: requireOnboardedEmployees,
+    })
+    if (reason === null) {
+      demoResult = candidate
+      break
+    }
+
+    validationFailures.push(`attempt ${attempt}: ${reason}`)
+    log(
+      `  Base demo ${candidate.companyId} did not satisfy scenario preconditions (${reason}); discarding and retrying (${attempt}/${BASE_DEMO_VALIDATION_MAX_ATTEMPTS})`,
+    )
+  }
+
+  if (!demoResult) {
+    throw new Error(
+      `Base demo "${scenario.baseDemo}" failed scenario preconditions after ${BASE_DEMO_VALIDATION_MAX_ATTEMPTS} attempts:\n${validationFailures
+        .map(f => `  - ${f}`)
+        .join(
+          '\n',
+        )}\nThis indicates a regression in the demo factory on the gws-flows backend, not in the SDK.`,
+    )
+  }
 
   const { flowToken, companyId } = demoResult
   const api = makeApi(gwsFlowsBase, flowToken)

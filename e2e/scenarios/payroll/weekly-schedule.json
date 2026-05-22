@@ -11,5 +11,6 @@
       "anchor_end_of_pay_period": "{{relative:+6d}}"
     }
   },
-  "expectedContext": ["companyId", "paySchedule.uuid"]
+  "expectedContext": ["companyId", "paySchedule.uuid"],
+  "requireOnboardedEmployees": true
 }
