@@ -539,6 +539,19 @@ describe('timeOffStateMachine', () => {
       expect(service.context.policyId).toBe('holiday-policy')
     })
 
+    it('cancels from addEmployeesHoliday back to viewHolidayEmployees when entered from detail', () => {
+      const service = createService()
+      toViewHolidayEmployees(service)
+      send(service, componentEvents.TIME_OFF_HOLIDAY_ADD_EMPLOYEES)
+      expect(service.machine.current).toBe('addEmployeesHoliday')
+
+      send(service, componentEvents.CANCEL)
+
+      expect(service.machine.current).toBe('viewHolidayEmployees')
+      expect(service.context.policyId).toBe('holiday-policy')
+      expect(service.context.addEmployeesSource).toBeUndefined()
+    })
+
     it('cancels from editHolidaySelectionForm back to viewHolidayEmployees', () => {
       const service = createService()
       toViewHolidayEmployees(service)
