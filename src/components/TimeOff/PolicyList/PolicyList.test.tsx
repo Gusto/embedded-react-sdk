@@ -269,7 +269,8 @@ describe('PolicyList', () => {
       renderWithProviders(<PolicyList {...defaultProps} />)
 
       await waitFor(() => {
-        expect(screen.getByRole('button', { name: 'Create policy' })).toBeInTheDocument()
+        const buttons = screen.getAllByRole('button', { name: 'Create policy' })
+        expect(buttons.length).toBeGreaterThanOrEqual(1)
       })
     })
   })

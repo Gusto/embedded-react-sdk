@@ -137,11 +137,9 @@ export function PolicyListPresentation({
         gap={{ base: 12, medium: 24 }}
       >
         <Heading as="h2">{t('pageTitle')}</Heading>
-        {policies.length > 0 && (
-          <Button variant="primary" onClick={onCreatePolicy}>
-            {t('createPolicyCta')}
-          </Button>
-        )}
+        <Button variant="primary" onClick={onCreatePolicy}>
+          {t('createPolicyCta')}
+        </Button>
       </Flex>
 
       <DataView label={t('tableLabel')} {...dataViewProps} />
