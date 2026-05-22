@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { screen, waitFor } from '@testing-library/react'
+import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
 import type { UseDeductionsListReady } from '../shared/useDeductionsList'
@@ -60,10 +60,7 @@ describe('DeductionsList', () => {
       />,
     )
 
-    await waitFor(() => {
-      expect(screen.getByTestId('data-table')).toBeInTheDocument()
-    })
-    expect(screen.getByText('Deduction')).toBeInTheDocument()
+    await screen.findByText('Deduction')
     expect(screen.getByText('Frequency')).toBeInTheDocument()
     expect(screen.getByText('Withheld')).toBeInTheDocument()
     expect(screen.getByText('Add another deduction')).toBeInTheDocument()
