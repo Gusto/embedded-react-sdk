@@ -14,7 +14,7 @@ test.describe.serial('TimeOffCanary 04 — edit policy rename end-to-end', () =>
     scenario,
   }) => {
     test.skip(!scenario.flowToken, 'Requires scenario provisioning (local/demo runs only)')
-    test.setTimeout(8 * 60_000)
+    test.setTimeout(10 * 60_000)
 
     const ts = Date.now()
     const originalName = `Canary Edit ${ts}`

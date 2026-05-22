@@ -50,8 +50,14 @@ export default defineConfig({
   // the test-level timeout. Canary tests still set their own explicit
   // longer timeouts via test.setTimeout(CANARY_TEST_TIMEOUT_MS).
   timeout: 240_000,
+  // Default per-assertion timeout. Bumped from 30s to 60s for the same
+  // reason as the per-driver MEDIUM_WAIT bump in companyFlowDrivers: the
+  // demo backend's per-request latency is uneven (sometimes 20-40s for a
+  // single navigation), so 30s leaves too thin a margin on otherwise-
+  // healthy tests. Tests that genuinely need a tighter assertion still
+  // override per-call (e.g., expect(locator).toBeVisible({ timeout: 5000 })).
   expect: {
-    timeout: 30_000,
+    timeout: 60_000,
   },
   use: {
     baseURL: 'http://localhost:5173',

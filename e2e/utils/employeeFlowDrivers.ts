@@ -13,7 +13,7 @@ import { fillDate, generateUniqueSSN, waitForLoadingComplete } from './helpers'
  * lockstep if the SDK copy changes.
  */
 
-const LONG_WAIT = 60_000
+const LONG_WAIT = 90_000
 const DEMO_GWS_FLOWS_HOST = 'https://flows.gusto-demo.com'
 
 async function landOnEmployeeOnboardingHome(page: Page) {

@@ -20,7 +20,7 @@ test.describe.serial('CompanyCanary 02 — locations: add another address', () =
     scenario,
   }) => {
     test.skip(!scenario.flowToken, 'Requires scenario provisioning (local/demo runs only)')
-    test.setTimeout(5 * 60_000)
+    test.setTimeout(6 * 60_000)
 
     await landOnCompanyOnboarding(page)
     await clickStartOrContinueOnboarding(page)

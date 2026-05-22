@@ -287,7 +287,13 @@ async function decorateContractors(
       // case themselves by picking from the demo seed's pre-existing
       // contractors. Other 4xx/5xx codes still fail fast.
       log(`  Setting onboarding status for ${contractor.key}: ${contractor.onboarding_status}`)
-      const ONBOARDING_RETRY_BUDGET_MS = 30_000
+      // Bumped from 30s to 90s. The previous 30s budget (6 attempts at 5s
+      // intervals) was reaching exhaustion in CI under the slow demo
+      // backend — the contractor's intermediate onboarding state was
+      // taking longer to advance than 30s allowed for. 90s gives 18
+      // attempts, comfortably enough margin that "still not ready after
+      // 90s" is a real degraded state, not retry-budget exhaustion.
+      const ONBOARDING_RETRY_BUDGET_MS = 90_000
       const start = Date.now()
       let lastError: unknown = null
       let attempt = 0

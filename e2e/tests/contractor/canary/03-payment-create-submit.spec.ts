@@ -14,7 +14,7 @@ test.describe.serial('ContractorCanary 03 — contractor payment end-to-end', ()
     scenario,
   }) => {
     test.skip(!scenario.flowToken, 'Requires scenario provisioning (local/demo runs only)')
-    test.setTimeout(5 * 60_000)
+    test.setTimeout(6 * 60_000)
 
     await runContractorPayment(page, scenario)
 

@@ -14,7 +14,7 @@ test.describe.serial('TimeOffCanary 02 — fixed-accrual sick policy create end-
     scenario,
   }) => {
     test.skip(!scenario.flowToken, 'Requires scenario provisioning (local/demo runs only)')
-    test.setTimeout(5 * 60_000)
+    test.setTimeout(6 * 60_000)
 
     const policyName = `Canary Sick Fixed ${Date.now()}`
 

@@ -335,11 +335,12 @@ jobs:
     # Wallclock ceiling per shard. Even with the per-test timeouts in
     # playwright.demo.config.ts and the canary test.setTimeout overrides, a
     # single hung test on a wedged demo backend can otherwise burn a full
-    # 6-hour Github runner. 25m is comfortably above the largest expected
+    # 6-hour Github runner. 30m is comfortably above the largest expected
     # shard wallclock (sum of all canaries with 1 retry each on the slowest
-    # domain) but tight enough that a stuck run releases CI minutes for the
-    # next push.
-    timeout-minutes: 25
+    # domain, accounting for the bumped per-canary patience for slow demo
+    # backend) but tight enough that a stuck run releases CI minutes for
+    # the next push.
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       # Concurrent shard ceiling against flows.gusto-demo.com. We only have 3

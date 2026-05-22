@@ -8,7 +8,7 @@ import {
   waitForLoadingComplete,
 } from './helpers'
 
-const LONG_WAIT = 60_000
+const LONG_WAIT = 90_000
 
 export interface OnboardIndividualOptions {
   firstName: string
