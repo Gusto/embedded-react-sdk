@@ -1,8 +1,9 @@
 import type { AgentPayment, AgentPaymentStatus, TaxLiabilityPaymentState } from './types'
 import { deriveAgentPaymentStatus } from './types'
 import styles from './AgentPaymentsFlow.module.scss'
+import { InfoTooltip } from '../shared/InfoTooltip'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { DataView, Flex, useDataView } from '@/components/Common'
+import { Flex } from '@/components/Common'
 import CaretLeftIcon from '@/assets/icons/caret-left.svg?react'
 
 const TODAY = new Date().toISOString().slice(0, 10)
@@ -76,8 +77,9 @@ function formatDate(iso: string) {
 }
 
 function formatUSD(amount: string): string {
-  const n = parseFloat(amount)
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(n)
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(
+    parseFloat(amount),
+  )
 }
 
 interface AgentPaymentDetailProps {
@@ -86,84 +88,47 @@ interface AgentPaymentDetailProps {
 }
 
 export function AgentPaymentDetail({ payment, onBack }: AgentPaymentDetailProps) {
-  const { Alert, Badge, Button, DescriptionList, Heading, Text } = useComponentContext()
+  const { Alert, Badge, Box, BoxHeader, Button, DescriptionList, Table, Text } =
+    useComponentContext()
 
   const status = deriveAgentPaymentStatus(payment, TODAY)
-
-  const liabilityDataViewProps = useDataView({
-    data: payment.tax_liabilities ?? [],
-    columns: [
-      {
-        key: 'tax_description',
-        title: 'Tax Description',
-        render: l => <span className={styles.formName}>{l.tax_description}</span>,
-      },
-      {
-        key: 'check_date',
-        title: 'Check Date',
-        render: l => (
-          <Text as="span" size="sm" variant="supporting">
-            {new Date(l.check_date).toLocaleDateString('en-US', {
-              month: 'short',
-              day: 'numeric',
-              year: 'numeric',
-            })}
-          </Text>
-        ),
-      },
-      {
-        key: 'payroll_uuid',
-        title: 'Payroll',
-        render: l => (
-          <Text as="span" size="sm" variant="supporting">
-            {l.payroll_uuid.length > 12
-              ? `${l.payroll_uuid.slice(0, 8)}…${l.payroll_uuid.slice(-4)}`
-              : l.payroll_uuid}
-          </Text>
-        ),
-      },
-      {
-        key: 'amount',
-        title: 'Amount',
-        render: l => (
-          <Text as="span" size="sm" variant="supporting">
-            {formatUSD(l.amount)}
-          </Text>
-        ),
-      },
-      {
-        key: 'payment_state',
-        title: 'State',
-        render: l => (
-          <Badge status={LIABILITY_STATE_VARIANTS[l.payment_state]}>
-            {LIABILITY_STATE_LABELS[l.payment_state]}
-          </Badge>
-        ),
-      },
-    ],
-    emptyState: () => (
-      <Text size="sm" variant="supporting">
-        No tax liabilities on record for this payment.
-      </Text>
-    ),
-  })
+  const liabilities = payment.tax_liabilities ?? []
 
   return (
     <Flex flexDirection="column" gap={24}>
       <div>
-        <Button variant="tertiary" onClick={onBack}>
-          <CaretLeftIcon aria-hidden />
+        <Button variant="secondary" icon={<CaretLeftIcon aria-hidden="true" />} onClick={onBack}>
           Back to payments
         </Button>
       </div>
 
-      <Flex flexDirection="column" gap={4}>
-        <div className={styles.detailHeader}>
-          <Heading as="h2">{payment.agent_name}</Heading>
-          <Badge status={STATUS_BADGE_VARIANTS[status]}>{STATUS_LABELS[status]}</Badge>
-        </div>
-        <Text variant="supporting">{payment.payment_type}</Text>
-      </Flex>
+      <Box
+        header={
+          <BoxHeader
+            headingLevel="h2"
+            title={
+              <div className={styles.detailHeader}>
+                <span>{payment.agent_name}</span>
+                <Badge status={STATUS_BADGE_VARIANTS[status]}>{STATUS_LABELS[status]}</Badge>
+              </div>
+            }
+            description={payment.payment_type}
+          />
+        }
+      >
+        <DescriptionList
+          layout="horizontal"
+          items={[
+            { term: 'Description', description: payment.description },
+            { term: 'Due Date', description: formatDate(payment.due_date) },
+            {
+              term: 'Paid',
+              description: payment.paid_at ? formatDateTimeWithRelative(payment.paid_at) : '—',
+            },
+            { term: 'Amount', description: formatUSD(payment.amount) },
+          ]}
+        />
+      </Box>
 
       {status === 'overdue' && (
         <Alert status="warning" label="Payment overdue">
@@ -173,24 +138,86 @@ export function AgentPaymentDetail({ payment, onBack }: AgentPaymentDetailProps)
         </Alert>
       )}
 
-      <DescriptionList
-        layout="horizontal"
-        items={[
-          { term: 'Payment Type', description: payment.payment_type },
-          { term: 'Description', description: payment.description },
-          { term: 'Due Date', description: formatDate(payment.due_date) },
-          {
-            term: 'Paid',
-            description: payment.paid_at ? formatDateTimeWithRelative(payment.paid_at) : '—',
-          },
-          { term: 'Amount', description: formatUSD(payment.amount) },
-        ]}
-      />
-
-      <Flex flexDirection="column" gap={12}>
-        <Heading as="h3">Tax Liabilities</Heading>
-        <DataView label="Tax liabilities" {...liabilityDataViewProps} />
-      </Flex>
+      {liabilities.length > 0 && (
+        <Box
+          header={
+            <BoxHeader
+              title="Tax Liabilities"
+              description="The individual tax components that make up this payment, grouped by payroll run. Multiple payrolls may contribute to a single deposit depending on the tax frequency."
+            />
+          }
+        >
+          <Table
+            aria-label="Tax liabilities"
+            isWithinBox
+            headers={[
+              { key: 'description', content: 'Tax Description' },
+              { key: 'check_date', content: 'Check Date' },
+              {
+                key: 'payroll',
+                content: (
+                  <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+                    Payroll
+                    <InfoTooltip>
+                      The unique ID of the payroll run that generated this tax liability. One
+                      payment may include liabilities from multiple payroll runs.
+                    </InfoTooltip>
+                  </span>
+                ),
+              },
+              { key: 'amount', content: 'Amount' },
+              { key: 'state', content: 'State' },
+            ]}
+            rows={liabilities.map((l, i) => ({
+              key: String(i),
+              data: [
+                {
+                  key: 'description',
+                  content: <span className={styles.formName}>{l.tax_description}</span>,
+                },
+                {
+                  key: 'check_date',
+                  content: (
+                    <Text as="span" size="sm" variant="supporting">
+                      {new Date(l.check_date).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                      })}
+                    </Text>
+                  ),
+                },
+                {
+                  key: 'payroll',
+                  content: (
+                    <Text as="span" size="sm" variant="supporting">
+                      {l.payroll_uuid.length > 12
+                        ? `${l.payroll_uuid.slice(0, 8)}…${l.payroll_uuid.slice(-4)}`
+                        : l.payroll_uuid}
+                    </Text>
+                  ),
+                },
+                {
+                  key: 'amount',
+                  content: (
+                    <Text as="span" size="sm" variant="supporting">
+                      {formatUSD(l.amount)}
+                    </Text>
+                  ),
+                },
+                {
+                  key: 'state',
+                  content: (
+                    <Badge status={LIABILITY_STATE_VARIANTS[l.payment_state]}>
+                      {LIABILITY_STATE_LABELS[l.payment_state]}
+                    </Badge>
+                  ),
+                },
+              ],
+            }))}
+          />
+        </Box>
+      )}
     </Flex>
   )
 }

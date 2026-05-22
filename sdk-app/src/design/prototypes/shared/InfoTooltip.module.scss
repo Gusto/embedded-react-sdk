@@ -1,0 +1,77 @@
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--g-colorBodySubContent, #6b7280);
+  line-height: 0;
+  vertical-align: middle;
+  margin-left: 4px;
+  border-radius: 50%;
+
+  &:hover {
+    color: var(--g-colorBodyContent, #1c1c1c);
+  }
+
+  &[data-focus-visible] {
+    outline: var(--g-focusRingWidth, 2px) solid var(--g-focusRingColor, #0a8080);
+    outline-offset: 2px;
+  }
+}
+
+.icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.tooltip {
+  background: var(--g-colorBodyContent, #1c1c1c);
+  color: var(--g-colorBody, #fff);
+  font-size: var(--g-fontSizeExtraSmall, 0.75rem);
+  line-height: 1.4;
+  padding: 6px 10px;
+  border-radius: var(--g-inputRadius, 6px);
+  max-width: 260px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 200;
+
+  // Arrow
+  &[data-placement='top']::before {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid var(--g-colorBodyContent, #1c1c1c);
+  }
+
+  &[data-placement='bottom']::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 5px solid var(--g-colorBodyContent, #1c1c1c);
+  }
+
+  &[data-entering] {
+    animation: tooltipIn 0.1s ease;
+  }
+
+  &[data-exiting] {
+    animation: tooltipIn 0.1s ease reverse;
+  }
+}
+
+@keyframes tooltipIn {
+  from { opacity: 0; transform: translateY(2px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

@@ -4,6 +4,7 @@ import { deriveAgentPaymentStatus } from './types'
 import type { FilterDef, FilterOption } from '../tax-filings/filterUtils'
 import styles from './AgentPaymentsFlow.module.scss'
 import { DataViewFilters } from '../tax-filings/DataViewFilters'
+import { InfoTooltip } from '../shared/InfoTooltip'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { DataView, Flex, useDataView } from '@/components/Common'
 import EyeIcon from '@/assets/icons/eye.svg?react'
@@ -193,7 +194,18 @@ export function AgentPaymentsList({ payments, onSelectPayment }: AgentPaymentsLi
       },
       {
         key: 'status',
-        title: sortHeader('Status', 'status'),
+        title: (
+          <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+            {sortHeader('Status', 'status')}
+            <InfoTooltip>
+              <strong>Draft</strong> — scheduled but not yet submitted.{'\n'}
+              <strong>Pending</strong> — submitted and awaiting confirmation.{'\n'}
+              <strong>Paid</strong> — confirmed paid to the agency.{'\n'}
+              <strong>Overdue</strong> — past the due date and unpaid.{'\n'}
+              <strong>Refunded</strong> — a credit or reversal was applied.
+            </InfoTooltip>
+          </span>
+        ),
         render: p => {
           const status = deriveAgentPaymentStatus(p, TODAY)
           return <Badge status={STATUS_BADGE_VARIANTS[status]}>{STATUS_LABELS[status]}</Badge>
@@ -222,7 +234,13 @@ export function AgentPaymentsList({ payments, onSelectPayment }: AgentPaymentsLi
 
   return (
     <Flex flexDirection="column" gap={24}>
-      <Heading as="h2">Agent Payments</Heading>
+      <Flex flexDirection="column" gap={8}>
+        <Heading as="h2">Agent Payments</Heading>
+        <Text variant="supporting" size="sm">
+          Gusto collects and remits tax deposits to government agencies on your company&apos;s
+          behalf. Each payment represents a tax deposit made or scheduled for a specific period.
+        </Text>
+      </Flex>
 
       {overduePayments.length > 0 && (
         <Alert

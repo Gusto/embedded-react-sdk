@@ -3,6 +3,7 @@ import type { TaxFiling, TaxFilingStatus } from './types'
 import type { FilterDef, FilterOption } from './filterUtils'
 import styles from './TaxFilingsFlow.module.scss'
 import { DataViewFilters } from './DataViewFilters'
+import { InfoTooltip } from '../shared/InfoTooltip'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { DataView, Flex, useDataView } from '@/components/Common'
 import EyeIcon from '@/assets/icons/eye.svg?react'
@@ -215,7 +216,19 @@ export function TaxFilingsList({ filings, onSelectFiling }: TaxFilingsListProps)
       },
       {
         key: 'status',
-        title: sortHeader('Status', 'status'),
+        title: (
+          <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+            {sortHeader('Status', 'status')}
+            <InfoTooltip>
+              <strong>Not started</strong> — filing period has opened but preparation hasn&apos;t
+              begun.{'\n'}
+              <strong>In progress</strong> — Gusto is preparing or has submitted the filing.{'\n'}
+              <strong>Accepted</strong> — the agency confirmed receipt and acceptance.{'\n'}
+              <strong>Needs action</strong> — the filing failed and requires attention before the
+              deadline.
+            </InfoTooltip>
+          </span>
+        ),
         render: filing => (
           <Badge status={STATUS_BADGE_VARIANTS[filing.status]}>
             {STATUS_LABELS[filing.status]}
@@ -245,7 +258,14 @@ export function TaxFilingsList({ filings, onSelectFiling }: TaxFilingsListProps)
 
   return (
     <Flex flexDirection="column" gap={24}>
-      <Heading as="h2">Tax Filings</Heading>
+      <Flex flexDirection="column" gap={8}>
+        <Heading as="h2">Tax Filings</Heading>
+        <Text variant="supporting" size="sm">
+          Tax filings Gusto prepares and submits to government agencies on your company&apos;s
+          behalf. Federal and state filings are required at regular intervals based on your payroll
+          activity.
+        </Text>
+      </Flex>
 
       <DataViewFilters
         search={search}
