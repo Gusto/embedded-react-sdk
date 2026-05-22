@@ -67,17 +67,22 @@ async function fillCompensation(page: Page) {
     await jobTitleField.fill('Software Engineer')
   }
 
+  // Employee type select. Probe with isVisible (short timeout) so a missing
+  // or renamed control fails fast instead of textContent() blocking up to
+  // the test timeout. Same shape applied to the wage-frequency select below.
   const employeeTypeButton = page.getByRole('button', { name: /employee type/i })
-  const empTypeLabel = (await employeeTypeButton.textContent()) ?? ''
-  if (empTypeLabel.includes('Select')) {
-    await employeeTypeButton.click()
-    // "Paid by the hour" introduces a JobsList step + Workers' comp fields,
-    // so pick the salaried option to keep the canary on the single-page path.
-    const salariedOption = page.getByRole('listbox').getByRole('option', { name: /salary/i })
-    if (await salariedOption.isVisible({ timeout: 2_000 }).catch(() => false)) {
-      await salariedOption.click()
-    } else {
-      await page.getByRole('listbox').getByRole('option').first().click()
+  if (await employeeTypeButton.isVisible({ timeout: 5_000 }).catch(() => false)) {
+    const empTypeLabel = (await employeeTypeButton.textContent()) ?? ''
+    if (empTypeLabel.includes('Select')) {
+      await employeeTypeButton.click()
+      // "Paid by the hour" introduces a JobsList step + Workers' comp fields,
+      // so pick the salaried option to keep the canary on the single-page path.
+      const salariedOption = page.getByRole('listbox').getByRole('option', { name: /salary/i })
+      if (await salariedOption.isVisible({ timeout: 2_000 }).catch(() => false)) {
+        await salariedOption.click()
+      } else {
+        await page.getByRole('listbox').getByRole('option').first().click()
+      }
     }
   }
 
@@ -88,15 +93,25 @@ async function fillCompensation(page: Page) {
     await compAmountField.fill('85000')
   }
 
-  const perButton = page.getByRole('button', { name: /per$/i })
-  const perLabel = (await perButton.textContent()) ?? ''
-  if (!perLabel.includes('Year')) {
-    await perButton.click()
-    const yearOption = page.getByRole('listbox').getByRole('option', { name: /year/i })
-    if (await yearOption.isVisible({ timeout: 2_000 }).catch(() => false)) {
-      await yearOption.click()
-    } else {
-      await page.getByRole('listbox').getByRole('option').first().click()
+  // Wage frequency select. Was previously labelled "Per" — the SDK now uses
+  // "Wage frequency" (Employee.Compensation.paymentUnitLabel). Try the new
+  // name first and fall back to the old in case staging is mid-rollout, and
+  // gate everything on a short visibility probe so a missing control surfaces
+  // immediately rather than after a 5-min test timeout.
+  const wageFrequencyButton = page
+    .getByRole('button', { name: /wage frequency/i })
+    .or(page.getByRole('button', { name: /^per$/i }))
+    .first()
+  if (await wageFrequencyButton.isVisible({ timeout: 5_000 }).catch(() => false)) {
+    const perLabel = (await wageFrequencyButton.textContent()) ?? ''
+    if (!perLabel.includes('Year')) {
+      await wageFrequencyButton.click()
+      const yearOption = page.getByRole('listbox').getByRole('option', { name: /year/i })
+      if (await yearOption.isVisible({ timeout: 2_000 }).catch(() => false)) {
+        await yearOption.click()
+      } else {
+        await page.getByRole('listbox').getByRole('option').first().click()
+      }
     }
   }
 

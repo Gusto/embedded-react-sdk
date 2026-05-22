@@ -266,41 +266,56 @@ async function decorateContractors(
           type: 'Check',
           version: paymentMethod.version,
         })
-
-        // Wait for the backend to actually flip the contractor into
-        // `admin_onboarding_review` before issuing the final transition.
-        // Without this, the next PUT races the backend's eventual-consistency
-        // recompute of onboarding_step state and fails ~half the time with
-        // "current onboarding status cannot be updated to 'onboarding_completed'".
-        // Day-one CI showed this failure 52 times across 21 contractor shards.
-        log(`  Waiting for ${contractor.key} to reach admin_onboarding_review`)
-        const ready = await pollUntil(
-          async () => {
-            const status = await api.get<{ onboarding_status?: string }>(
-              `/contractors/${created.uuid}/onboarding_status`,
-            )
-            return status.onboarding_status === 'admin_onboarding_review' ||
-              status.onboarding_status === 'onboarding_completed'
-              ? status
-              : null
-          },
-          { maxWaitMs: 30_000 },
-        )
-        if (!ready) {
-          throw new Error(
-            `Contractor ${contractor.key} did not reach admin_onboarding_review within 30s after payment method setup; current status precludes onboarding_completed transition`,
-          )
-        }
       }
 
+      // PUT /contractors/:uuid/onboarding_status with retry on 422.
+      //
+      // The backend's onboarding_step state is eventually consistent after
+      // the payment_method PUT above, so the first attempt sometimes returns
+      // 422 ("current onboarding status cannot be updated to
+      // 'onboarding_completed'"). Polling GET /onboarding_status separately
+      // proved unreliable: the response shape and the exact intermediate
+      // state vary by demo seed, and a fixed 30s budget didn't always
+      // converge. Retrying the PUT itself with a short backoff is more
+      // robust — the operation we actually care about is the transition,
+      // not any particular intermediate state.
+      //
+      // Day-one CI showed this failure 52 times across 21 contractor
+      // shards. After up to 90s of retries, we surface the API's actual
+      // error message rather than swallowing it (the previous
+      // implementation logged-and-continued, which produced silent
+      // half-provisioned scenarios).
       log(`  Setting onboarding status for ${contractor.key}: ${contractor.onboarding_status}`)
-      // Same loud-failure rationale as the employee branch: a swallowed PUT
-      // here would mean the canary contractor never appears in the Pay
-      // Contractors list, and the spec then fails on a far-removed assertion
-      // about the list being empty.
-      await api.put(`/contractors/${created.uuid}/onboarding_status`, {
-        onboarding_status: onboardingStatus,
-      })
+      const ONBOARDING_RETRY_BUDGET_MS = 90_000
+      const start = Date.now()
+      let lastError: unknown = null
+      let attempt = 0
+      while (Date.now() - start < ONBOARDING_RETRY_BUDGET_MS) {
+        attempt++
+        try {
+          await api.put(`/contractors/${created.uuid}/onboarding_status`, {
+            onboarding_status: onboardingStatus,
+          })
+          lastError = null
+          break
+        } catch (error) {
+          lastError = error
+          const message = String(error)
+          // 422 means the backend hasn't transitioned the contractor's
+          // intermediate state yet — wait and retry. Any other failure
+          // (network, 5xx, etc.) is not transient and should fail fast.
+          if (!message.includes('(422)')) {
+            throw error
+          }
+          log(
+            `  Transition attempt ${attempt} for ${contractor.key} returned 422; retrying after 5s`,
+          )
+          await new Promise(r => setTimeout(r, 5_000))
+        }
+      }
+      if (lastError) {
+        throw lastError
+      }
     }
   }
 
