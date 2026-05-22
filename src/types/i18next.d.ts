@@ -1398,6 +1398,7 @@ export interface EmployeeCompensation{
 "Year":string;
 "Paycheck":string;
 };
+"hireDateLabel":string;
 "twoPercentShareholderLabel":string;
 "saveCta":string;
 "scheduledClassificationChangeNotification":string;
@@ -1415,8 +1416,6 @@ export interface EmployeeCompensation{
 "title":string;
 "minimumWage":string;
 "stateWcClassCode":string;
-"effectiveDate":string;
-"effectiveDateBeforeHire":string;
 "jobTitleSentence":string;
 };
 "stateWcCoveredLabel":string;

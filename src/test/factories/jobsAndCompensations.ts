@@ -131,6 +131,7 @@ export type EmployeeJobsScenario =
   | 'singleExempt'
   | 'multiJob'
   | 'futureCompPending'
+  | 'newPrimaryJob'
 
 export interface BuildEmployeeWithJobsOptions {
   scenario: EmployeeJobsScenario
@@ -257,6 +258,35 @@ export function buildEmployeeWithJobs({
               payment_unit: 'Hour',
               rate: '125.00',
               effective_date: '2099-01-01',
+            }),
+          ],
+        }),
+      ]
+
+    case 'newPrimaryJob':
+      // Primary job that hasn't started yet — hire_date and the single
+      // compensation's effective_date are both in the future. No current
+      // (on-or-before-today) comp, so isNewJob is true.
+      return [
+        buildJob({
+          uuid: 'job-uuid',
+          employeeUuid,
+          primary: true,
+          title: 'My New Job',
+          flsaStatus: 'Nonexempt',
+          paymentUnit: 'Hour',
+          rate: '50.00',
+          hireDate: '2099-06-01',
+          currentCompensationUuid: 'compensation-uuid',
+          compensations: [
+            buildCompensation({
+              uuid: 'compensation-uuid',
+              version: 'compensation-version-123',
+              job_uuid: 'job-uuid',
+              flsa_status: 'Nonexempt',
+              payment_unit: 'Hour',
+              rate: '50.00',
+              effective_date: '2099-06-01',
             }),
           ],
         }),
