@@ -184,15 +184,15 @@ async function decorateEmployees(
       const onboardingStatus =
         emp.onboarding_status === 'completed' ? 'onboarding_completed' : emp.onboarding_status
       log(`  Setting onboarding status for ${emp.key}: ${emp.onboarding_status}`)
-      try {
-        await api.put(`/employees/${uuid}/onboarding_status`, {
-          onboarding_status: onboardingStatus,
-        })
-      } catch (error) {
-        log(
-          `  Skipping onboarding status update for ${emp.key}; API rejected status (${String(error)})`,
-        )
-      }
+      // The previous implementation swallowed this error and continued, which
+      // turned a half-provisioned scenario into a downstream test failure
+      // 30+s later (e.g. "list shows no employees" when in fact the runner
+      // never finished provisioning). If this PUT fails, the scenario can't
+      // be delivered as declared — fail fast with the API's reason rather
+      // than letting tests run against an unfinished company.
+      await api.put(`/employees/${uuid}/onboarding_status`, {
+        onboarding_status: onboardingStatus,
+      })
     }
 
     if (emp.termination) {
@@ -259,29 +259,48 @@ async function decorateContractors(
         // auto-advances into `admin_onboarding_review` before we attempt the
         // final transition.
         log(`  Setting payment method to Check for ${contractor.key}`)
-        try {
-          const paymentMethod = await api.get<{ version?: string }>(
-            `/contractors/${created.uuid}/payment_method`,
+        const paymentMethod = await api.get<{ version?: string }>(
+          `/contractors/${created.uuid}/payment_method`,
+        )
+        await api.put(`/contractors/${created.uuid}/payment_method`, {
+          type: 'Check',
+          version: paymentMethod.version,
+        })
+
+        // Wait for the backend to actually flip the contractor into
+        // `admin_onboarding_review` before issuing the final transition.
+        // Without this, the next PUT races the backend's eventual-consistency
+        // recompute of onboarding_step state and fails ~half the time with
+        // "current onboarding status cannot be updated to 'onboarding_completed'".
+        // Day-one CI showed this failure 52 times across 21 contractor shards.
+        log(`  Waiting for ${contractor.key} to reach admin_onboarding_review`)
+        const ready = await pollUntil(
+          async () => {
+            const status = await api.get<{ onboarding_status?: string }>(
+              `/contractors/${created.uuid}/onboarding_status`,
+            )
+            return status.onboarding_status === 'admin_onboarding_review' ||
+              status.onboarding_status === 'onboarding_completed'
+              ? status
+              : null
+          },
+          { maxWaitMs: 30_000 },
+        )
+        if (!ready) {
+          throw new Error(
+            `Contractor ${contractor.key} did not reach admin_onboarding_review within 30s after payment method setup; current status precludes onboarding_completed transition`,
           )
-          await api.put(`/contractors/${created.uuid}/payment_method`, {
-            type: 'Check',
-            version: paymentMethod.version,
-          })
-        } catch (error) {
-          log(`  Payment method update failed for ${contractor.key}: ${String(error)}`)
         }
       }
 
       log(`  Setting onboarding status for ${contractor.key}: ${contractor.onboarding_status}`)
-      try {
-        await api.put(`/contractors/${created.uuid}/onboarding_status`, {
-          onboarding_status: onboardingStatus,
-        })
-      } catch (error) {
-        log(
-          `  Skipping onboarding status update for ${contractor.key}; API rejected status (${String(error)})`,
-        )
-      }
+      // Same loud-failure rationale as the employee branch: a swallowed PUT
+      // here would mean the canary contractor never appears in the Pay
+      // Contractors list, and the spec then fails on a far-removed assertion
+      // about the list being empty.
+      await api.put(`/contractors/${created.uuid}/onboarding_status`, {
+        onboarding_status: onboardingStatus,
+      })
     }
   }
 
