@@ -75,9 +75,6 @@ function Root({
     shouldFocusError: false,
   })
 
-  // minEffectiveDate for the Zod schema is now derived internally by
-  // useCompensationForm based on mode and job type.
-
   const compensationForm = useCompensationForm({
     employeeId,
     jobId,
@@ -97,9 +94,6 @@ function Root({
     const loadingErrorHandling = composeErrorHandler([jobForm, compensationForm])
     return <BaseLayout isLoading error={loadingErrorHandling.errors} />
   }
-
-  // minEffectiveDate for the Zod schema and DatePicker bounds are now derived
-  // internally by useCompensationForm and surfaced via fieldsMetadata.
 
   const submitResult = composeSubmitHandler([jobForm, compensationForm], async () => {
     // For a primary new job, the user edits the hire date field. We read it

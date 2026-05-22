@@ -1405,7 +1405,6 @@ export interface EmployeeCompensation{
 "hireDateLabel":string;
 "twoPercentShareholderLabel":string;
 "saveCta":string;
-"scheduledClassificationChangeNotification":string;
 };
 "validations":{
 "effectiveDate":string;
