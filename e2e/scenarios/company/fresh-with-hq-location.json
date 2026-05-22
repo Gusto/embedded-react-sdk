@@ -8,10 +8,10 @@
     "locations": [
       {
         "key": "hq",
-        "street_1": "100 Test St",
+        "street_1": "500 3rd Street",
         "city": "San Francisco",
         "state": "CA",
-        "zip": "94105",
+        "zip": "94107",
         "filing_address": true,
         "mailing_address": true
       }

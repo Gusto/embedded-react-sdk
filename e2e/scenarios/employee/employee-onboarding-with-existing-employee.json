@@ -8,10 +8,10 @@
     "locations": [
       {
         "key": "hq",
-        "street_1": "300 Existing Way",
+        "street_1": "500 3rd Street",
         "city": "San Francisco",
         "state": "CA",
-        "zip": "94105",
+        "zip": "94107",
         "filing_address": true,
         "mailing_address": true
       }
@@ -23,10 +23,10 @@
         "last_name": "Existing",
         "email": "alice-existing+{{ts}}@example.com",
         "home_address": {
-          "street_1": "1 Home Way",
+          "street_1": "425 California St",
           "city": "San Francisco",
           "state": "CA",
-          "zip": "94110"
+          "zip": "94104"
         },
         "work_address": { "locationKey": "hq" }
       }
