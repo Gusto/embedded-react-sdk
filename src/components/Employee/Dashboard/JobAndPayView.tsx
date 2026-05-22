@@ -120,7 +120,9 @@ export function JobAndPayView({
 
   const handlePaystubDownload = useCallback(
     async (payrollUuid: string) => {
-      const newWindow = window.open('', '_blank', 'noopener,noreferrer')
+      // Omit `noopener` — it makes window.open return null in modern browsers,
+      // which would leave us unable to navigate the new tab to the blob URL.
+      const newWindow = window.open('', '_blank')
       const loadingMessage = t('jobAndPay.paystubs.downloadLoadingMessage')
       if (newWindow) {
         // Avoid the user staring at about:blank while we fetch the PDF. The
@@ -158,9 +160,15 @@ export function JobAndPayView({
         const pdfBlob = await readableStreamToBlob(response.value.responseStream, 'application/pdf')
         const url = URL.createObjectURL(pdfBlob)
         if (newWindow) {
+          // Revoke after the new tab has loaded the blob; revoking synchronously
+          // would race the navigation and leave the tab blank.
+          newWindow.addEventListener('load', () => {
+            URL.revokeObjectURL(url)
+          })
           newWindow.location.href = url
+        } else {
+          URL.revokeObjectURL(url)
         }
-        URL.revokeObjectURL(url)
       } catch (err) {
         if (newWindow) {
           newWindow.close()
