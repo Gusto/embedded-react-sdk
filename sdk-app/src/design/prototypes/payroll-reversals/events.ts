@@ -1,4 +1,5 @@
 export const payrollReversalEvents = {
+  REVERSAL_START_NEW: 'payrollReversal/startNew',
   REVERSAL_CONTINUE_TO_PAYROLL_SELECT: 'payrollReversal/continueTo/payrollSelect',
   REVERSAL_PAYROLL_SELECTED: 'payrollReversal/payrollSelected',
   REVERSAL_CONTINUE_TO_REVIEW: 'payrollReversal/continueTo/review',

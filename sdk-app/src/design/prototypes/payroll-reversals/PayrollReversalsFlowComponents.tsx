@@ -1,5 +1,6 @@
 import { payrollReversalEvents } from './events'
-import { mockPayrolls, mockEmployees } from './mockData'
+import { mockPayrolls, mockEmployees, mockReversals } from './mockData'
+import { ReversalsListStep } from './ReversalsListStep'
 import { WarningStep } from './WarningStep'
 import { SelectPayrollStep } from './SelectPayrollStep'
 import { SelectEmployeesStep } from './SelectEmployeesStep'
@@ -19,6 +20,18 @@ export interface PayrollReversalsFlowContextInterface extends FlowContextInterfa
   companyId?: string
   selectedPayroll: PayrollOption | null
   selectedEmployeeUuids: string[]
+}
+
+export function ReversalsListContextual() {
+  const { onEvent } = useFlow<PayrollReversalsFlowContextInterface>()
+  return (
+    <ReversalsListStep
+      reversals={mockReversals}
+      onStartNew={() => {
+        onEvent(payrollReversalEvents.REVERSAL_START_NEW as EventType)
+      }}
+    />
+  )
 }
 
 export function WarningContextual() {
@@ -99,7 +112,7 @@ export function DoneContextual() {
   return (
     <DoneStep
       onStartOver={() => {
-        onEvent(payrollReversalEvents.REVERSAL_CONTINUE_TO_PAYROLL_SELECT as EventType)
+        onEvent(payrollReversalEvents.REVERSAL_START_NEW as EventType)
       }}
     />
   )

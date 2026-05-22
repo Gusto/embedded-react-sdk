@@ -1,4 +1,4 @@
-import type { PayrollOption, EmployeeOption } from './types'
+import type { PayrollOption, EmployeeOption, ReversalRecord } from './types'
 
 export const mockPayrolls: PayrollOption[] = [
   {
@@ -83,4 +83,34 @@ export const mockEmployees: EmployeeOption[] = [
   { uuid: 'emp-046', firstName: 'Kit', lastName: 'Stewart', department: 'Design', netPay: '$3,350.00' },
   { uuid: 'emp-047', firstName: 'Lore', lastName: 'Sanchez', department: 'Engineering', netPay: '$4,450.00' },
   { uuid: 'emp-048', firstName: 'Mace', lastName: 'Morris', department: 'Finance', netPay: '$3,600.00' },
+]
+
+export const mockReversals: ReversalRecord[] = [
+  {
+    reversed_payroll_uuid: 'payroll-feb-16-28-2026',
+    reversal_payroll_uuid: 'reversal-payroll-0001',
+    reason: 'Employee was terminated before payroll processed — pay should not have been issued.',
+    approved_at: '2026-03-12T18:44:00Z',
+    category: 'incorrect_payroll',
+    reversed_employee_uuids: ['emp-003', 'emp-017'],
+    _payPeriodLabel: 'Feb 16 – 28, 2026',
+  },
+  {
+    reversed_payroll_uuid: 'payroll-jan-16-31-2026',
+    reversal_payroll_uuid: 'reversal-payroll-0002',
+    reason: 'Duplicate payroll run submitted in error.',
+    approved_at: '2026-02-08T14:20:00Z',
+    category: 'duplicate_payment',
+    reversed_employee_uuids: ['emp-001', 'emp-002', 'emp-004', 'emp-007', 'emp-011'],
+    _payPeriodLabel: 'Jan 16 – 31, 2026',
+  },
+  {
+    reversed_payroll_uuid: 'payroll-dec-1-15-2025',
+    reversal_payroll_uuid: null,
+    reason: 'Employee requested reversal — direct deposit sent to closed bank account.',
+    approved_at: '2026-01-03T09:15:00Z',
+    category: 'convert_check_ee_requested',
+    reversed_employee_uuids: ['emp-022'],
+    _payPeriodLabel: 'Dec 1 – 15, 2025',
+  },
 ]
