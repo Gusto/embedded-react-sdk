@@ -44,13 +44,13 @@ async function fillBasicsAndHomeAddress(
   await workAddressButton.click()
   await page.getByRole('listbox').getByRole('option').first().click()
 
-  await page.getByLabel('Street 1').fill('100 Canary Lane')
+  await page.getByLabel('Street 1').fill('425 California St')
   await page.getByLabel(/city/i).fill('San Francisco')
   await page.getByLabel('State').click()
   await page.getByRole('listbox').getByRole('option', { name: 'California' }).click()
   const zipField = page.getByLabel(/zip/i)
   await zipField.clear()
-  await zipField.fill('94105')
+  await zipField.fill('94104')
 
   await page.getByRole('button', { name: /^continue$/i }).click()
   await waitForLoadingComplete(page, LONG_WAIT)
@@ -277,13 +277,13 @@ export async function runEmployeeSelfOnboarding(
   const streetField = page.getByLabel('Street 1')
   const streetValue = await streetField.inputValue().catch(() => '')
   if (!streetValue) {
-    await streetField.fill('200 Canary Place')
+    await streetField.fill('425 California St')
     await page.getByLabel(/city/i).fill('San Francisco')
     await page.getByLabel('State').click()
     await page.getByRole('listbox').getByRole('option', { name: 'California' }).click()
     const zipField = page.getByLabel(/zip/i)
     await zipField.clear()
-    await zipField.fill('94105')
+    await zipField.fill('94104')
   }
 
   await page.getByRole('button', { name: /^continue$/i }).click()

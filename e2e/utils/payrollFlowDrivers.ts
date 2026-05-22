@@ -91,10 +91,10 @@ export async function ensureCompanyIsPayrollReady(
         email: `signer-canary+${Date.now()}@example.com`,
         ssn: '123456789',
         home_address: {
-          street_1: '500 Canary Way',
+          street_1: '425 California St',
           city: 'San Francisco',
           state: 'CA',
-          zip: '94105',
+          zip: '94104',
         },
       }),
     })

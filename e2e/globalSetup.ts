@@ -236,10 +236,10 @@ async function getOrCreateLocation(flowToken: string, companyId: string): Promis
 
   console.log('No locations found, creating one...')
   const newLocation = await postToApi<Location>(endpoint, {
-    street_1: '100 Test Street',
+    street_1: '500 3rd Street',
     city: 'San Francisco',
     state: 'CA',
-    zip: '94105',
+    zip: '94107',
     phone_number: '4155551234',
   })
   console.log(`Created location: ${newLocation.street_1}, ${newLocation.city}`)
