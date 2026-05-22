@@ -23,7 +23,8 @@ export type RateValidation = (typeof CompensationErrorCodes)[
   | 'RATE_EXEMPT_THRESHOLD']
 export type EffectiveDateValidation = (typeof CompensationErrorCodes)[
   | 'REQUIRED'
-  | 'EFFECTIVE_DATE_BEFORE_HIRE']
+  | 'EFFECTIVE_DATE_BEFORE_HIRE'
+  | 'EFFECTIVE_DATE_BEFORE_MIN']
 
 export type TitleFieldProps = HookFieldProps<TextInputHookFieldProps<RequiredValidation>>
 

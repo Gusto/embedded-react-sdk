@@ -126,6 +126,7 @@ export function ManagementCompensationFormBody({
           validationMessages={{
             REQUIRED: t('validations.effectiveDate'),
             EFFECTIVE_DATE_BEFORE_HIRE: t('validations.effectiveDateBeforeHire'),
+            EFFECTIVE_DATE_BEFORE_MIN: t('validations.effectiveDateBeforeMin'),
           }}
           formHookResult={compensationForm}
         />

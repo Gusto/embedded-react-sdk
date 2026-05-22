@@ -76,6 +76,9 @@ function Root({
     shouldFocusError: false,
   })
 
+  // minEffectiveDate for the Zod schema is now derived internally by
+  // useCompensationForm based on mode and job type.
+
   const compensationForm = useCompensationForm({
     employeeId,
     jobId,
@@ -96,15 +99,15 @@ function Root({
     return <BaseLayout isLoading error={loadingErrorHandling.errors} />
   }
 
-  // Secondary new job: effective date must be on or after the secondary job's
-  // hire date (and at least tomorrow) so we don't set a date before the job
-  // even starts.
-  const minEffectiveDate =
+  // Secondary new job: UI min date for the DatePicker (mirrors the schema
+  // floor enforced internally by useCompensationForm).
+  const tomorrow = addDays(new Date(), 1)
+  const minEffectiveDateForPicker =
     isNewJob && !isPrimaryJob && jobForm.data.currentJob?.hireDate
       ? new Date(
           Math.max(
-            addDays(new Date(), 1).getTime(),
-            (normalizeToDate(jobForm.data.currentJob.hireDate) ?? addDays(new Date(), 1)).getTime(),
+            tomorrow.getTime(),
+            (normalizeToDate(jobForm.data.currentJob.hireDate) ?? tomorrow).getTime(),
           ),
         )
       : undefined
@@ -155,7 +158,7 @@ function Root({
             submitCtaLabel={t('management.saveCta')}
             isPending={isPending}
             onCancel={onCancel}
-            minEffectiveDate={minEffectiveDate}
+            minEffectiveDate={minEffectiveDateForPicker}
           />
         </Form>
       </BaseLayout>

@@ -137,6 +137,7 @@ export function AddCompensationFormBody({
           validationMessages={{
             REQUIRED: t('validations.effectiveDate'),
             EFFECTIVE_DATE_BEFORE_HIRE: t('validations.effectiveDateBeforeHire'),
+            EFFECTIVE_DATE_BEFORE_MIN: t('validations.effectiveDateBeforeMin'),
           }}
           minDate={
             minEffectiveDate ??

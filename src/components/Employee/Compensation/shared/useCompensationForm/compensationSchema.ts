@@ -18,6 +18,7 @@ export const CompensationErrorCodes = {
   PAYMENT_UNIT_COMMISSION: 'PAYMENT_UNIT_COMMISSION',
   RATE_COMMISSION_ZERO: 'RATE_COMMISSION_ZERO',
   EFFECTIVE_DATE_BEFORE_HIRE: 'EFFECTIVE_DATE_BEFORE_HIRE',
+  EFFECTIVE_DATE_BEFORE_MIN: 'EFFECTIVE_DATE_BEFORE_MIN',
 } as const
 
 export type CompensationErrorCode =
@@ -164,6 +165,21 @@ export interface CompensationSchemaOptions {
    */
   hireDate?: string | null
   /**
+   * Absolute lower bound for `effectiveDate`, enforced in both create and
+   * update modes whenever provided. Typically `addDays(today, 1)` (tomorrow)
+   * for management screens where effective dates must be in the future, or
+   * `max(tomorrow, hireDate)` for secondary new jobs. Surfaces an
+   * `EFFECTIVE_DATE_BEFORE_MIN` issue when violated.
+   *
+   * **Callers must only pass this when the carve-out cannot fire.** The
+   * carve-out (`willDeleteSecondaryJobs` in update mode) forces `effectiveDate`
+   * to today on a disabled field — passing `minEffectiveDate` for a primary
+   * job in update mode would cause a spurious validation failure on submit.
+   * Secondary jobs are safe because their FLSA field is hidden, preventing the
+   * carve-out from activating.
+   */
+  minEffectiveDate?: string | null
+  /**
    * When `false`, drops `effectiveDate` from the validated shape — the field
    * becomes hook-managed (e.g. seeded from the parent job's `hireDate` during
    * onboarding). Partners may still supply the value at submit time via
@@ -177,6 +193,7 @@ export function createCompensationSchema(options: CompensationSchemaOptions = {}
     mode = 'create',
     optionalFieldsToRequire,
     hireDate,
+    minEffectiveDate,
     withEffectiveDateField = true,
   } = options
 
@@ -188,20 +205,36 @@ export function createCompensationSchema(options: CompensationSchemaOptions = {}
     excludeFields: withEffectiveDateField ? [] : ['effectiveDate'],
     superRefine: (data, ctx) => {
       validateFlsaRules(data, ctx)
-      // Only enforce the hire-date lower bound when picking a brand-new
-      // effective date (create mode). On update, the loaded effectiveDate
-      // can legitimately predate the parent job's hireDate (e.g. carried
-      // over from a stub or out-of-order data) and the API accepts the
-      // unchanged value or omitting it entirely. Blocking the submit here
-      // would trap partners whose flow doesn't render Fields.EffectiveDate.
+      // Enforce the hire-date lower bound in create mode always, and in
+      // update mode when `minEffectiveDate` is also set (management screens
+      // where the user is actively picking a new date). On plain update
+      // without `minEffectiveDate`, the loaded effectiveDate can legitimately
+      // predate the hire date (stub or out-of-order data) and the API
+      // accepts the unchanged value — blocking the submit would trap
+      // partners whose flow doesn't render Fields.EffectiveDate.
       // When `withEffectiveDateField` is false the field is excluded from
       // the shape and `data.effectiveDate` is undefined — this check
       // naturally short-circuits.
-      if (mode === 'create' && hireDate && data.effectiveDate && data.effectiveDate < hireDate) {
+      if (
+        hireDate &&
+        data.effectiveDate &&
+        data.effectiveDate < hireDate &&
+        (mode === 'create' || minEffectiveDate)
+      ) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           path: ['effectiveDate'],
           message: CompensationErrorCodes.EFFECTIVE_DATE_BEFORE_HIRE,
+        })
+      }
+      // Enforce the caller-supplied minimum effective date in both modes.
+      // Callers must only pass this when the carve-out cannot fire (see
+      // CompensationSchemaOptions.minEffectiveDate for details).
+      if (minEffectiveDate && data.effectiveDate && data.effectiveDate < minEffectiveDate) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['effectiveDate'],
+          message: CompensationErrorCodes.EFFECTIVE_DATE_BEFORE_MIN,
         })
       }
     },

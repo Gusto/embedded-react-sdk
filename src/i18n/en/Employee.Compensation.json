@@ -80,6 +80,7 @@
     "stateWcClassCode": "Please select a risk class code",
     "effectiveDate": "Effective date is a required field",
     "effectiveDateBeforeHire": "Effective date cannot be before the employee's hire date.",
+    "effectiveDateBeforeMin": "Effective date must be in the future",
     "jobTitleSentence": "Job title is a required field"
   },
   "stateWcCoveredLabel": "Workers' compensation coverage",

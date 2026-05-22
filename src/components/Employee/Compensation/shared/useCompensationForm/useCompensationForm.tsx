@@ -7,6 +7,7 @@ import type { Job } from '@gusto/embedded-api/models/components/job'
 import type { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
 import type { MinimumWage } from '@gusto/embedded-api/models/components/minimumwage'
 import { useJobsAndCompensationsGetJobs } from '@gusto/embedded-api/react-query/jobsAndCompensationsGetJobs'
+import { GetV1EmployeesEmployeeIdJobsQueryParamInclude } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidjobs'
 import { useJobsAndCompensationsCreateCompensationMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsCreateCompensation'
 import { useJobsAndCompensationsUpdateCompensationMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsUpdateCompensation'
 import { useLocationsGetMinimumWages } from '@gusto/embedded-api/react-query/locationsGetMinimumWages'
@@ -41,6 +42,7 @@ import type {
 import { FlsaStatus, PAY_PERIODS, TIP_CREDITS_UNSUPPORTED_STATES } from '@/shared/constants'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { SDKInternalError } from '@/types/sdkError'
+import { addDays, formatDateToStringDate } from '@/helpers/dateFormatting'
 
 export interface CompensationSubmitOptions {
   /** Override jobId — required when creating a compensation if not configured at hook construction (e.g. when the parent job was just created in the same submit chain). */
@@ -159,7 +161,10 @@ function resolveCompAndJob(
       const compensation = job.compensations?.find(c => c.uuid === compensationId)
       if (compensation) return { compensation, job }
     }
-    return { compensation: null, job: null }
+    // If the comp isn't in any job's compensations list, still try to resolve
+    // the job by jobId so callers can check job metadata (e.g. job.primary).
+    const fallbackJob = jobId ? (jobs.find(j => j.uuid === jobId) ?? null) : null
+    return { compensation: null, job: fallbackJob }
   }
   if (jobId) return { compensation: null, job: jobs.find(j => j.uuid === jobId) ?? null }
   return { compensation: null, job: null }
@@ -181,7 +186,7 @@ function findFutureCompensations(job: Job | null): Compensation[] {
   return job.compensations.filter(c => c.effectiveDate !== undefined && c.effectiveDate > today)
 }
 
-function minEffectiveDate(comps: Compensation[]): string | null {
+function earliestEffectiveDate(comps: Compensation[]): string | null {
   if (comps.length === 0) return null
   return comps.reduce<string | null>((min, c) => {
     const d = c.effectiveDate
@@ -227,7 +232,15 @@ export function useCompensationForm({
   withEffectiveDateField = true,
 }: UseCompensationFormProps): HookLoadingResult | UseCompensationFormReady {
   const jobsQuery = useJobsAndCompensationsGetJobs(
-    { employeeId: employeeId ?? '' },
+    {
+      employeeId: employeeId ?? '',
+      // Fetch all effective-dated compensations when editing an existing one so
+      // resolveCompAndJob can find the target comp (future-dated comps are
+      // omitted from the default response, which only returns the current comp).
+      include: compensationId
+        ? GetV1EmployeesEmployeeIdJobsQueryParamInclude.AllCompensations
+        : undefined,
+    },
     { enabled: !!employeeId },
   )
   const addressesQuery = useEmployeeAddressesGetWorkAddresses(
@@ -288,7 +301,13 @@ export function useCompensationForm({
   // primary has no current compensation yet.
   const primaryFlsaStatus = hadPrimaryAtMount ? findPrimaryFlsaStatus(employeeJobs) : null
 
-  const hireDate = currentJob?.hireDate ?? null
+  const hireDate =
+    currentJob?.hireDate ??
+    // Secondary jobs being created (AddAnotherJob) have no hireDate until the
+    // job POST completes. Fall back to the primary job's hireDate so the schema
+    // can enforce EFFECTIVE_DATE_BEFORE_HIRE during that window.
+    employeeJobs?.find(j => j.primary)?.hireDate ??
+    null
 
   // In update mode, exclude the compensation being edited so it doesn't
   // bound `maximumEffectiveDate` to its own current date — that would prevent
@@ -297,7 +316,7 @@ export function useCompensationForm({
     c => c.uuid !== compensationId,
   )
   const hasPendingFutureCompensation = futureCompensations.length > 0
-  const maximumEffectiveDate = minEffectiveDate(futureCompensations)
+  const maximumEffectiveDate = earliestEffectiveDate(futureCompensations)
 
   const isCreateMode = !compensationId
   const mode = isCreateMode ? 'create' : 'update'
@@ -312,15 +331,33 @@ export function useCompensationForm({
   const isAddingSecondaryJob =
     isCreateMode && primaryFlsaStatus === FlsaStatus.NONEXEMPT && currentJob?.primary !== true
 
+  // Derive the effective-date floor internally so consumers don't need to wire
+  // it up. Rules by mode and job type:
+  //   create (any job): tomorrow — new comp must be future-dated
+  //   update, primary: undefined — the carve-out (willDeleteSecondaryJobs) can
+  //     force effectiveDate to today on a disabled field; enforcing a floor here
+  //     would produce a spurious EFFECTIVE_DATE_BEFORE_MIN on submit.
+  //   update, secondary: tomorrow — must be in the future
+  // The hire-date lower bound is handled separately in the schema via the
+  // `hireDate` option (→ EFFECTIVE_DATE_BEFORE_HIRE), which fires alongside
+  // this check so each violation gets its own error message.
+  const internalMinEffectiveDate = useMemo(() => {
+    if (!withEffectiveDateField) return undefined
+    if (!isCreateMode && currentJob?.primary === true) return undefined
+
+    return formatDateToStringDate(addDays(new Date(), 1)) ?? undefined
+  }, [isCreateMode, currentJob?.primary, withEffectiveDateField])
+
   const [schema, metadataConfig] = useMemo(
     () =>
       createCompensationSchema({
         mode,
         optionalFieldsToRequire,
         hireDate,
+        minEffectiveDate: internalMinEffectiveDate,
         withEffectiveDateField,
       }),
-    [mode, optionalFieldsToRequire, hireDate, withEffectiveDateField],
+    [mode, optionalFieldsToRequire, hireDate, internalMinEffectiveDate, withEffectiveDateField],
   )
 
   const state = currentWorkAddress?.state
