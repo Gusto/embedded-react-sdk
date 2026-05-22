@@ -5,6 +5,7 @@ import { useTimeOffPoliciesRemoveEmployeesMutation } from '@gusto/embedded-api/r
 import { useTimeOffPoliciesUpdateBalanceMutation } from '@gusto/embedded-api/react-query/timeOffPoliciesUpdateBalance'
 import { useEmployeesListSuspense } from '@gusto/embedded-api/react-query/employeesList'
 import type { TimeOffPolicy } from '@gusto/embedded-api/models/components/timeoffpolicy'
+import { UnprocessableEntityError } from '@gusto/embedded-api/models/errors/unprocessableentityerror'
 import { useQueryClient } from '@tanstack/react-query'
 import { TimeOffPolicyDetailPresentation } from './TimeOffPolicyDetailPresentation'
 import { EditEmployeeBalanceModal } from './EditEmployeeBalanceModal'
@@ -18,6 +19,7 @@ import type {
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { BaseComponent, type BaseComponentInterface } from '@/components/Base'
 import { useBase } from '@/components/Base/useBase'
+import { SDKInternalError } from '@/types/sdkError'
 import { componentEvents } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
@@ -209,20 +211,51 @@ function Root({ policyId }: TimeOffPolicyDetailProps) {
     async (newBalance: number) => {
       if (!editBalanceState) return
       await baseSubmitHandler({}, async () => {
-        await updateBalance({
-          request: {
-            timeOffPolicyUuid: policyId,
-            requestBody: {
-              employees: [{ uuid: editBalanceState.employeeUuid, balance: String(newBalance) }],
+        try {
+          await updateBalance({
+            request: {
+              timeOffPolicyUuid: policyId,
+              requestBody: {
+                employees: [{ uuid: editBalanceState.employeeUuid, balance: String(newBalance) }],
+              },
             },
-          },
-        })
+          })
+        } catch (err) {
+          if (err instanceof UnprocessableEntityError) {
+            const maxHours = policy.maxHours != null ? Number(policy.maxHours) : null
+            const hasLimitViolation = err.errors.some(
+              e =>
+                e.message === 'LIMIT_VIOLATION_MAX_HOURS' ||
+                e.category === 'invalid_attribute_value',
+            )
+            if (hasLimitViolation && maxHours != null) {
+              throw new SDKInternalError(
+                t('editBalanceModal.errors.balanceExceedsMax', { max: maxHours }),
+                'api_error',
+              )
+            }
+            const messages = err.errors.map(e => e.message).filter(Boolean)
+            throw new SDKInternalError(
+              messages.join('. ') || t('editBalanceModal.errors.updateFailed'),
+              'api_error',
+            )
+          }
+          throw err
+        }
         invalidatePolicy()
         setEditBalanceState(null)
         setSuccessAlert(t('flash.balanceUpdated', { name: editBalanceState.employeeName }))
       })
     },
-    [baseSubmitHandler, updateBalance, policyId, editBalanceState, invalidatePolicy, t],
+    [
+      baseSubmitHandler,
+      updateBalance,
+      policyId,
+      editBalanceState,
+      invalidatePolicy,
+      t,
+      policy.maxHours,
+    ],
   )
 
   const handleAddEmployees = useCallback(() => {
