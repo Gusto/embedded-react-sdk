@@ -12,15 +12,10 @@ import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { server } from '@/test/mocks/server'
 import { API_BASE_URL } from '@/test/constants'
 import { handleGetEmployeeForms, i9Form } from '@/test/mocks/apis/employee_forms'
-import {
-  handleGetEmployee,
-  handleGetEmployeeJobs,
-  handleDeleteEmployeeJob,
-} from '@/test/mocks/apis/employees'
+import { handleGetEmployeeJobs, handleDeleteEmployeeJob } from '@/test/mocks/apis/employees'
 import { handleDeleteCompensation } from '@/test/mocks/apis/compensations'
 import { componentEvents } from '@/shared/constants'
 import { assertDefined } from '@/test-utils/assertions'
-import { getFixture } from '@/test/mocks/fixtures/getFixture'
 
 type GarnishmentFixture = {
   uuid: string
@@ -663,13 +658,8 @@ describe('Dashboard', () => {
     hire_date: string
   }
 
-  const buildEmployeeWithJobs = async (jobs: JobFixture[]): Promise<Record<string, unknown>> => {
-    const base = (await getFixture('get-v1-employees')) as Record<string, unknown>
-    return { ...base, jobs }
-  }
-
-  const overrideEmployee = (employee: Record<string, unknown>) => {
-    server.use(handleGetEmployee(() => HttpResponse.json(employee)))
+  const overrideEmployeeJobs = (jobs: JobFixture[]) => {
+    server.use(handleGetEmployeeJobs(() => HttpResponse.json(jobs)))
   }
 
   const goToJobAndPayTab = async (user: ReturnType<typeof userEvent.setup>) => {
@@ -683,10 +673,6 @@ describe('Dashboard', () => {
   }
 
   describe('Compensation pending changes', () => {
-    const overrideEmployeeJobs = (jobs: JobFixture[]) => {
-      server.use(handleGetEmployeeJobs(() => HttpResponse.json(jobs)))
-    }
-
     const baseJob = (
       overrides: Partial<JobFixture> = {},
       compensations: Compensation[] = [],
@@ -1196,8 +1182,7 @@ describe('Dashboard', () => {
 
     it('shows a Pending badge row on the single-job card when the job has no current comp (exempt/salary)', async () => {
       const user = userEvent.setup()
-      const employee = await buildEmployeeWithJobs([pendingJob()])
-      overrideEmployee(employee)
+      overrideEmployeeJobs([pendingJob()])
 
       renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
       await goToJobAndPayTab(user)
@@ -1213,7 +1198,7 @@ describe('Dashboard', () => {
 
     it('shows a Pending badge row on the single nonexempt job card when the job has no current comp', async () => {
       const user = userEvent.setup()
-      const employee = await buildEmployeeWithJobs([
+      overrideEmployeeJobs([
         pendingJob({
           payment_unit: 'Hour',
           compensations: [
@@ -1231,7 +1216,6 @@ describe('Dashboard', () => {
           ],
         }),
       ])
-      overrideEmployee(employee)
 
       renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
       await goToJobAndPayTab(user)
@@ -1247,7 +1231,7 @@ describe('Dashboard', () => {
 
     it('still shows the alert (not badge) when the single job has a current comp and a future update', async () => {
       const user = userEvent.setup()
-      const employee = await buildEmployeeWithJobs([
+      overrideEmployeeJobs([
         {
           uuid: 'job-1',
           version: 'v1',
@@ -1284,7 +1268,6 @@ describe('Dashboard', () => {
           ],
         },
       ])
-      overrideEmployee(employee)
 
       renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
       await goToJobAndPayTab(user)
@@ -1302,7 +1285,7 @@ describe('Dashboard', () => {
 
     it('shows a Pending Status column in the multi-job table when a secondary job is pending-new', async () => {
       const user = userEvent.setup()
-      const employee = await buildEmployeeWithJobs([
+      overrideEmployeeJobs([
         {
           uuid: PRIMARY_JOB_UUID,
           version: 'primary-version',
@@ -1352,7 +1335,6 @@ describe('Dashboard', () => {
           ],
         },
       ])
-      overrideEmployee(employee)
 
       renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
       await goToJobAndPayTab(user)
@@ -1375,8 +1357,7 @@ describe('Dashboard', () => {
     it('shows no Status column when all multi-job table rows have current compensations', async () => {
       const user = userEvent.setup()
 
-      const multiJobFixture = getMultiJobFixture()
-      server.use(handleGetEmployee(() => HttpResponse.json(multiJobFixture)))
+      overrideEmployeeJobs(getMultiJobFixture())
 
       renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
       await goToJobAndPayTab(user)
@@ -1391,7 +1372,7 @@ describe('Dashboard', () => {
 
     it('shows both a Pending badge in the table and an alert when one job is pending-new and another has a comp update', async () => {
       const user = userEvent.setup()
-      const employee = await buildEmployeeWithJobs([
+      overrideEmployeeJobs([
         {
           uuid: PRIMARY_JOB_UUID,
           version: 'primary-version',
@@ -1452,7 +1433,6 @@ describe('Dashboard', () => {
           ],
         },
       ])
-      overrideEmployee(employee)
 
       renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
       await goToJobAndPayTab(user)
