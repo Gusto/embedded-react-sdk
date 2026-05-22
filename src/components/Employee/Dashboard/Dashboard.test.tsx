@@ -632,47 +632,47 @@ describe('Dashboard', () => {
     })
   })
 
+  type Compensation = {
+    uuid: string
+    version: string
+    payment_unit: string
+    flsa_status: string
+    job_uuid: string
+    effective_date: string
+    rate: string
+    title?: string
+    adjust_for_minimum_wage?: boolean
+    minimum_wages?: Array<{ uuid: string; wage: string }>
+  }
+
+  type JobFixture = {
+    uuid: string
+    version: string
+    employee_uuid: string
+    current_compensation_uuid: string
+    payment_unit: string
+    primary: boolean
+    title: string
+    compensations: Compensation[]
+    rate: string
+    hire_date: string
+  }
+
+  const overrideEmployeeJobs = (jobs: JobFixture[]) => {
+    server.use(handleGetEmployeeJobs(() => HttpResponse.json(jobs)))
+  }
+
+  const goToJobAndPayTab = async (user: ReturnType<typeof userEvent.setup>) => {
+    await waitFor(() => {
+      expect(screen.getByText('Legal name')).toBeTruthy()
+    })
+    await user.click(screen.getByRole('tab', { name: 'Job and pay' }))
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: 'Compensation' })).toBeInTheDocument()
+    })
+  }
+
   describe('Compensation pending changes', () => {
-    type Compensation = {
-      uuid: string
-      version: string
-      payment_unit: string
-      flsa_status: string
-      job_uuid: string
-      effective_date: string
-      rate: string
-      title?: string
-      adjust_for_minimum_wage?: boolean
-      minimum_wages?: Array<{ uuid: string; wage: string }>
-    }
-
-    type JobFixture = {
-      uuid: string
-      version: string
-      employee_uuid: string
-      current_compensation_uuid: string
-      payment_unit: string
-      primary: boolean
-      title: string
-      compensations: Compensation[]
-      rate: string
-      hire_date: string
-    }
-
-    const overrideEmployeeJobs = (jobs: JobFixture[]) => {
-      server.use(handleGetEmployeeJobs(() => HttpResponse.json(jobs)))
-    }
-
-    const goToJobAndPayTab = async (user: ReturnType<typeof userEvent.setup>) => {
-      await waitFor(() => {
-        expect(screen.getByText('Legal name')).toBeTruthy()
-      })
-      await user.click(screen.getByRole('tab', { name: 'Job and pay' }))
-      await waitFor(() => {
-        expect(screen.getByRole('heading', { name: 'Compensation' })).toBeInTheDocument()
-      })
-    }
-
     const baseJob = (
       overrides: Partial<JobFixture> = {},
       compensations: Compensation[] = [],
@@ -1150,6 +1150,303 @@ describe('Dashboard', () => {
         expect(within(alert).getByRole('button', { name: 'Review' })).toBeInTheDocument()
         expect(within(alert).queryByRole('button', { name: 'Cancel change' })).toBeNull()
       })
+    })
+  })
+
+  describe('Compensation pending badge (future-dated new job)', () => {
+    const pendingJob = (overrides: Partial<JobFixture> = {}): JobFixture => ({
+      uuid: 'job-pending',
+      version: 'v1',
+      employee_uuid: 'employee-123',
+      current_compensation_uuid: 'comp-pending',
+      payment_unit: 'Year',
+      primary: true,
+      title: 'Marketing Director',
+      rate: '120000.00',
+      hire_date: ONE_YEAR_AHEAD,
+      compensations: [
+        {
+          uuid: 'comp-pending',
+          version: 'comp-v1',
+          payment_unit: 'Year',
+          flsa_status: 'Exempt',
+          job_uuid: 'job-pending',
+          effective_date: ONE_YEAR_AHEAD,
+          rate: '120000.00',
+          adjust_for_minimum_wage: false,
+          minimum_wages: [],
+        },
+      ],
+      ...overrides,
+    })
+
+    it('shows a Pending badge row on the single-job card when the job has no current comp (exempt/salary)', async () => {
+      const user = userEvent.setup()
+      overrideEmployeeJobs([pendingJob()])
+
+      renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
+      await goToJobAndPayTab(user)
+
+      const compensationCard = screen
+        .getByRole('heading', { name: 'Compensation' })
+        .closest('[data-testid="data-box"]')! as HTMLElement
+
+      expect(within(compensationCard).getByText('Status')).toBeInTheDocument()
+      expect(within(compensationCard).getByText('Pending')).toBeInTheDocument()
+      expect(within(compensationCard).queryByRole('alert')).toBeNull()
+    })
+
+    it('shows a Pending badge row on the single nonexempt job card when the job has no current comp', async () => {
+      const user = userEvent.setup()
+      overrideEmployeeJobs([
+        pendingJob({
+          payment_unit: 'Hour',
+          compensations: [
+            {
+              uuid: 'comp-pending',
+              version: 'comp-v1',
+              payment_unit: 'Hour',
+              flsa_status: 'Nonexempt',
+              job_uuid: 'job-pending',
+              effective_date: ONE_YEAR_AHEAD,
+              rate: '28.00',
+              adjust_for_minimum_wage: false,
+              minimum_wages: [],
+            },
+          ],
+        }),
+      ])
+
+      renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
+      await goToJobAndPayTab(user)
+
+      const compensationCard = screen
+        .getByRole('heading', { name: 'Compensation' })
+        .closest('[data-testid="data-box"]')! as HTMLElement
+
+      expect(within(compensationCard).getByText('Status')).toBeInTheDocument()
+      expect(within(compensationCard).getByText('Pending')).toBeInTheDocument()
+      expect(within(compensationCard).queryByRole('alert')).toBeNull()
+    })
+
+    it('still shows the alert (not badge) when the single job has a current comp and a future update', async () => {
+      const user = userEvent.setup()
+      overrideEmployeeJobs([
+        {
+          uuid: 'job-1',
+          version: 'v1',
+          employee_uuid: 'employee-123',
+          current_compensation_uuid: 'comp-current',
+          payment_unit: 'Year',
+          primary: true,
+          title: 'Marketing Director',
+          rate: '100000.00',
+          hire_date: '2024-01-01',
+          compensations: [
+            {
+              uuid: 'comp-current',
+              version: 'v1',
+              payment_unit: 'Year',
+              flsa_status: 'Exempt',
+              job_uuid: 'job-1',
+              effective_date: '2024-01-01',
+              rate: '100000.00',
+              adjust_for_minimum_wage: false,
+              minimum_wages: [],
+            },
+            {
+              uuid: 'comp-future',
+              version: 'v2',
+              payment_unit: 'Year',
+              flsa_status: 'Exempt',
+              job_uuid: 'job-1',
+              effective_date: ONE_YEAR_AHEAD,
+              rate: '120000.00',
+              adjust_for_minimum_wage: false,
+              minimum_wages: [],
+            },
+          ],
+        },
+      ])
+
+      renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
+      await goToJobAndPayTab(user)
+
+      const compensationCard = screen
+        .getByRole('heading', { name: 'Compensation' })
+        .closest('[data-testid="data-box"]')! as HTMLElement
+
+      expect(within(compensationCard).queryByText('Pending')).toBeNull()
+      expect(within(compensationCard).queryByText('Status')).toBeNull()
+
+      const alert = await screen.findByRole('alert')
+      expect(within(alert).getByText(/Compensation will change on/)).toBeInTheDocument()
+    })
+
+    it('shows a Pending Status column in the multi-job table when a secondary job is pending-new', async () => {
+      const user = userEvent.setup()
+      overrideEmployeeJobs([
+        {
+          uuid: PRIMARY_JOB_UUID,
+          version: 'primary-version',
+          employee_uuid: 'employee-123',
+          current_compensation_uuid: 'primary-comp-uuid',
+          payment_unit: 'Hour',
+          primary: true,
+          title: 'Cashier',
+          rate: '30.00',
+          hire_date: '2024-01-01',
+          compensations: [
+            {
+              uuid: 'primary-comp-uuid',
+              version: 'v1',
+              payment_unit: 'Hour',
+              flsa_status: 'Nonexempt',
+              job_uuid: PRIMARY_JOB_UUID,
+              effective_date: '2024-01-01',
+              rate: '30.00',
+              adjust_for_minimum_wage: false,
+              minimum_wages: [],
+            },
+          ],
+        },
+        {
+          uuid: SECONDARY_JOB_UUID,
+          version: 'secondary-version',
+          employee_uuid: 'employee-123',
+          current_compensation_uuid: 'secondary-comp-pending',
+          payment_unit: 'Hour',
+          primary: false,
+          title: 'Stock Associate',
+          rate: '22.00',
+          hire_date: ONE_YEAR_AHEAD,
+          compensations: [
+            {
+              uuid: 'secondary-comp-pending',
+              version: 'v1',
+              payment_unit: 'Hour',
+              flsa_status: 'Nonexempt',
+              job_uuid: SECONDARY_JOB_UUID,
+              effective_date: ONE_YEAR_AHEAD,
+              rate: '22.00',
+              adjust_for_minimum_wage: false,
+              minimum_wages: [],
+            },
+          ],
+        },
+      ])
+
+      renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
+      await goToJobAndPayTab(user)
+
+      const compensationCard = screen
+        .getByRole('heading', { name: 'Compensation' })
+        .closest('[data-testid="data-box"]')! as HTMLElement
+
+      expect(within(compensationCard).getByText('Status')).toBeInTheDocument()
+
+      const pendingRow = screen.getByText('Stock Associate').closest('[role="row"]')! as HTMLElement
+      expect(within(pendingRow).getByText('Pending')).toBeInTheDocument()
+
+      const currentRow = screen.getByText('Cashier').closest('[role="row"]')! as HTMLElement
+      expect(within(currentRow).queryByText('Pending')).toBeNull()
+
+      expect(within(compensationCard).queryByRole('alert')).toBeNull()
+    })
+
+    it('shows no Status column when all multi-job table rows have current compensations', async () => {
+      const user = userEvent.setup()
+
+      overrideEmployeeJobs(getMultiJobFixture())
+
+      renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
+      await goToJobAndPayTab(user)
+
+      const compensationCard = screen
+        .getByRole('heading', { name: 'Compensation' })
+        .closest('[data-testid="data-box"]')! as HTMLElement
+
+      expect(within(compensationCard).queryByText('Status')).toBeNull()
+      expect(within(compensationCard).queryByText('Pending')).toBeNull()
+    })
+
+    it('shows both a Pending badge in the table and an alert when one job is pending-new and another has a comp update', async () => {
+      const user = userEvent.setup()
+      overrideEmployeeJobs([
+        {
+          uuid: PRIMARY_JOB_UUID,
+          version: 'primary-version',
+          employee_uuid: 'employee-123',
+          current_compensation_uuid: 'primary-comp-uuid',
+          payment_unit: 'Hour',
+          primary: true,
+          title: 'Cashier',
+          rate: '30.00',
+          hire_date: '2024-01-01',
+          compensations: [
+            {
+              uuid: 'primary-comp-uuid',
+              version: 'v1',
+              payment_unit: 'Hour',
+              flsa_status: 'Nonexempt',
+              job_uuid: PRIMARY_JOB_UUID,
+              effective_date: '2024-01-01',
+              rate: '30.00',
+              adjust_for_minimum_wage: false,
+              minimum_wages: [],
+            },
+            {
+              uuid: 'primary-comp-future',
+              version: 'v2',
+              payment_unit: 'Hour',
+              flsa_status: 'Nonexempt',
+              job_uuid: PRIMARY_JOB_UUID,
+              effective_date: ONE_YEAR_AHEAD,
+              rate: '35.00',
+              adjust_for_minimum_wage: false,
+              minimum_wages: [],
+            },
+          ],
+        },
+        {
+          uuid: SECONDARY_JOB_UUID,
+          version: 'secondary-version',
+          employee_uuid: 'employee-123',
+          current_compensation_uuid: 'secondary-comp-pending',
+          payment_unit: 'Hour',
+          primary: false,
+          title: 'Stock Associate',
+          rate: '22.00',
+          hire_date: TWO_YEARS_AHEAD,
+          compensations: [
+            {
+              uuid: 'secondary-comp-pending',
+              version: 'v1',
+              payment_unit: 'Hour',
+              flsa_status: 'Nonexempt',
+              job_uuid: SECONDARY_JOB_UUID,
+              effective_date: TWO_YEARS_AHEAD,
+              rate: '22.00',
+              adjust_for_minimum_wage: false,
+              minimum_wages: [],
+            },
+          ],
+        },
+      ])
+
+      renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
+      await goToJobAndPayTab(user)
+
+      const compensationCard = screen
+        .getByRole('heading', { name: 'Compensation' })
+        .closest('[data-testid="data-box"]')! as HTMLElement
+
+      expect(within(compensationCard).getByText('Status')).toBeInTheDocument()
+      const pendingRow = screen.getByText('Stock Associate').closest('[role="row"]')! as HTMLElement
+      expect(within(pendingRow).getByText('Pending')).toBeInTheDocument()
+
+      const alert = await screen.findByRole('alert')
+      expect(within(alert).getByText(/Compensation for Cashier will change on/)).toBeInTheDocument()
     })
   })
 

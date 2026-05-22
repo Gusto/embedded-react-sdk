@@ -15,7 +15,7 @@ import { PendingChangesReviewModal } from './PendingChangesReviewModal'
 import styles from './JobAndPayView.module.scss'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { DataView, useDataView, EmptyData, Loading } from '@/components/Common'
+import { DataView, useDataView, EmptyData, Loading, VisuallyHidden } from '@/components/Common'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { BaseLayout } from '@/components/Base/Base'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
@@ -229,10 +229,21 @@ export function JobAndPayView({
   const [isReviewOpen, setIsReviewOpen] = useState(false)
   const renderDetail = usePendingChangeDetailRenderer(employeeFirstName)
 
-  const hasPendingChanges = pendingChanges.length > 0
-  const showSummaryAlert = hasMultipleJobs && pendingChanges.length > 1
-  const showInlineAlert = hasPendingChanges && !showSummaryAlert
-  const nextChange = pendingChanges[0]
+  // Split pending changes: "new job" (job hasn't started yet, no current comp)
+  // vs "update" (existing comp with a scheduled future change).
+  // New-job changes get a Pending badge on the card/table row.
+  // Update changes get the existing warning alert treatment.
+  const newJobPendingChanges = pendingChanges.filter(c => c.isNewJob)
+  const updatePendingChanges = pendingChanges.filter(c => !c.isNewJob)
+
+  const pendingNewJobUuids = new Set(newJobPendingChanges.map(c => c.jobUuid))
+  const singleJobIsPendingNew = singleJob ? pendingNewJobUuids.has(singleJob.uuid) : false
+  const hasAnyPendingNewJobs = pendingNewJobUuids.size > 0
+
+  const hasPendingUpdates = updatePendingChanges.length > 0
+  const showSummaryAlert = hasMultipleJobs && updatePendingChanges.length > 1
+  const showInlineAlert = hasPendingUpdates && !showSummaryAlert
+  const nextChange = updatePendingChanges[0]
 
   const paymentMethodList = usePaymentMethodList({ employeeId })
   const paymentMethod = paymentMethodList.isLoading
@@ -311,6 +322,20 @@ export function JobAndPayView({
         return currentComp?.effectiveDate ? formatDateLongWithYear(currentComp.effectiveDate) : '-'
       },
     },
+    ...(hasAnyPendingNewJobs
+      ? [
+          {
+            key: 'status',
+            title: <VisuallyHidden>{t('jobAndPay.compensation.columns.status')}</VisuallyHidden>,
+            render: (job: Job) =>
+              pendingNewJobUuids.has(job.uuid) ? (
+                <Components.Badge status="warning">
+                  {t('jobAndPay.compensation.pendingStatus')}
+                </Components.Badge>
+              ) : null,
+          },
+        ]
+      : []),
   ]
 
   const jobsDataView = useDataView({
@@ -565,7 +590,7 @@ export function JobAndPayView({
             <Loading />
           ) : (
             <Flex flexDirection="column" gap={16}>
-              {hasPendingChanges && (
+              {hasPendingUpdates && (
                 <div
                   className={[styles.alertWrapper, hasMultipleJobs && styles.alertWrapperPadded]
                     .filter(Boolean)
@@ -671,6 +696,19 @@ export function JobAndPayView({
                   )}
 
                   {singleJobEffectiveDateRow}
+
+                  {singleJobIsPendingNew && (
+                    <Flex flexDirection="column" gap={0}>
+                      <Components.Text variant="supporting">
+                        {t('jobAndPay.compensation.columns.status')}
+                      </Components.Text>
+                      <div>
+                        <Components.Badge status="warning">
+                          {t('jobAndPay.compensation.pendingStatus')}
+                        </Components.Badge>
+                      </div>
+                    </Flex>
+                  )}
                 </Flex>
               ) : (
                 <EmptyData
@@ -775,7 +813,7 @@ export function JobAndPayView({
 
         <PendingChangesReviewModal
           isOpen={isReviewOpen}
-          pendingChanges={pendingChanges}
+          pendingChanges={updatePendingChanges}
           employeeFirstName={employeeFirstName}
           cancellingCompensationUuid={cancellingCompensationUuid}
           onClose={() => {

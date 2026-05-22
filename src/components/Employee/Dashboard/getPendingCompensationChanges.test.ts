@@ -299,6 +299,49 @@ describe('getPendingCompensationChanges', () => {
     expect(result[0]).toMatchObject({ details: [{ kind: 'newJob' }] })
   })
 
+  describe('isNewJob flag', () => {
+    it('sets isNewJob=false when there is a current comp and a future update', () => {
+      const current = buildComp()
+      const future = buildComp({ uuid: 'comp-future', rate: '35.00', effectiveDate: '2026-06-01' })
+      const job = buildJob({}, [current, future])
+
+      const result = getPendingCompensationChanges([job], { today: TODAY })
+
+      expect(result).toHaveLength(1)
+      expect(result[0]).toMatchObject({ isNewJob: false })
+    })
+
+    it('sets isNewJob=true when the job has only a future-dated compensation (job not yet started)', () => {
+      const future = buildComp({ uuid: 'comp-future', rate: '22.00', effectiveDate: '2026-06-01' })
+      const job = buildJob({ currentCompensationUuid: 'comp-future' }, [future])
+
+      const result = getPendingCompensationChanges([job], { today: TODAY })
+
+      expect(result).toHaveLength(1)
+      expect(result[0]).toMatchObject({ isNewJob: true })
+    })
+
+    it('sets isNewJob=true on only the first stacked comp when a new job has stacked future comps', () => {
+      const futureA = buildComp({
+        uuid: 'comp-future-a',
+        rate: '22.00',
+        effectiveDate: '2026-06-01',
+      })
+      const futureB = buildComp({
+        uuid: 'comp-future-b',
+        rate: '25.00',
+        effectiveDate: '2026-09-01',
+      })
+      const job = buildJob({ currentCompensationUuid: 'comp-future-a' }, [futureA, futureB])
+
+      const result = getPendingCompensationChanges([job], { today: TODAY })
+
+      expect(result).toHaveLength(2)
+      expect(result[0]).toMatchObject({ compensationUuid: 'comp-future-a', isNewJob: true })
+      expect(result[1]).toMatchObject({ compensationUuid: 'comp-future-b', isNewJob: false })
+    })
+  })
+
   it('returns stacked future comps in ascending effectiveDate order with diff baselined to the previous comp', () => {
     const current = buildComp({ rate: '30.00' })
     const futureA = buildComp({

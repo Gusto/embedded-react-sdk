@@ -49,8 +49,10 @@
       "columns": {
         "jobTitle": "Job title",
         "payType": "Pay type",
-        "effectiveDate": "Effective date"
+        "effectiveDate": "Effective date",
+        "status": "Status"
       },
+      "pendingStatus": "Pending",
       "deleteJobDialog": {
         "title": "Delete job?",
         "description": "{{jobTitle}} will be permanently removed.",
