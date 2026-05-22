@@ -98,7 +98,7 @@ export function JobAndPayView({
   const payStubsPagination = compensation.pagination.payStubs
   const cancellingCompensationUuid = compensation.status.cancellingCompensationUuid
   const { cancelPendingChange } = compensation.actions
-  const isCompensationCardLoading = compensation.status.isEmployeeLoading
+  const isCompensationCardLoading = compensation.status.isCompensationLoading
   const isPayStubsLoading = compensation.status.isPayStubsLoading
 
   const handleCancelChange = useCallback(

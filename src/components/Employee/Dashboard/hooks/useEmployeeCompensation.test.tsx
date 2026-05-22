@@ -75,13 +75,13 @@ describe('useEmployeeCompensation', () => {
       wrapper: GustoTestProvider,
     })
 
-    expect(result.current.status.isEmployeeLoading).toBe(true)
+    expect(result.current.status.isCompensationLoading).toBe(true)
     expect(result.current.status.isPayStubsLoading).toBe(true)
     expect(result.current.data.jobs).toEqual([])
     expect(result.current.data.payStubs).toEqual([])
 
     await waitFor(() => {
-      expect(result.current.status.isEmployeeLoading).toBe(false)
+      expect(result.current.status.isCompensationLoading).toBe(false)
       expect(result.current.status.isPayStubsLoading).toBe(false)
     })
 
@@ -101,7 +101,7 @@ describe('useEmployeeCompensation', () => {
     })
 
     await waitFor(() => {
-      expect(result.current.status.isEmployeeLoading).toBe(false)
+      expect(result.current.status.isCompensationLoading).toBe(false)
     })
 
     expect(result.current.data.primaryJob).toMatchObject({ uuid: 'job-1', primary: true })
@@ -129,7 +129,7 @@ describe('useEmployeeCompensation', () => {
     })
 
     await waitFor(() => {
-      expect(result.current.status.isEmployeeLoading).toBe(false)
+      expect(result.current.status.isCompensationLoading).toBe(false)
     })
 
     expect(result.current.data.hasMultipleJobs).toBe(true)
@@ -159,7 +159,7 @@ describe('useEmployeeCompensation', () => {
     })
 
     await waitFor(() => {
-      expect(result.current.status.isEmployeeLoading).toBe(false)
+      expect(result.current.status.isCompensationLoading).toBe(false)
     })
 
     expect(result.current.data.pendingChanges).toHaveLength(1)
@@ -267,7 +267,7 @@ describe('useEmployeeCompensation', () => {
     })
 
     await waitFor(() => {
-      expect(result.current.status.isEmployeeLoading).toBe(false)
+      expect(result.current.status.isCompensationLoading).toBe(false)
     })
 
     expect(jobsRequestUrl).not.toBeNull()

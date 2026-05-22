@@ -43,7 +43,7 @@ export interface UseEmployeeCompensationResult extends BaseHookReady<
     cancellingCompensationUuid: string | null
     /** Compensation card depends on the jobs fetch (jobs, pending
      *  changes, FLSA status). */
-    isEmployeeLoading: boolean
+    isCompensationLoading: boolean
     /** Paystubs card depends on a separate paginated endpoint. */
     isPayStubsLoading: boolean
   }
@@ -160,7 +160,7 @@ export function useEmployeeCompensation({
     status: {
       isPending,
       cancellingCompensationUuid,
-      isEmployeeLoading: jobsQuery.isLoading,
+      isCompensationLoading: jobsQuery.isLoading,
       isPayStubsLoading: payStubsQuery.isLoading,
     },
     pagination: {
