@@ -1,5 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import { useEmployeesGet } from '@gusto/embedded-api/react-query/employeesGet'
+import { useJobsAndCompensationsGetJobs } from '@gusto/embedded-api/react-query/jobsAndCompensationsGetJobs'
+import { GetV1EmployeesEmployeeIdJobsQueryParamInclude } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidjobs'
 import { useJobsAndCompensationsDeleteCompensationMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsDeleteCompensation'
 import { usePayrollsGetPayStubs } from '@gusto/embedded-api/react-query/payrollsGetPayStubs'
 import type { Job } from '@gusto/embedded-api/models/components/job'
@@ -39,7 +41,7 @@ export interface UseEmployeeCompensationResult extends BaseHookReady<
   {
     isPending: boolean
     cancellingCompensationUuid: string | null
-    /** Compensation card depends on the employee fetch (jobs, pending
+    /** Compensation card depends on the jobs fetch (jobs, pending
      *  changes, FLSA status). */
     isEmployeeLoading: boolean
     /** Paystubs card depends on a separate paginated endpoint. */
@@ -73,10 +75,18 @@ export function useEmployeeCompensation({
   // invalidates all queries on any mutation success, so post-write
   // freshness is preserved. Without this, every subscriber re-mount
   // (e.g. tab navigation) would fire a redundant background refetch.
-  const employeeQuery = useEmployeesGet(
-    { employeeId, include: ['all_compensations'] },
+  //
+  // GET /v1/employees/:id/jobs?include=all_compensations returns all effective-
+  // dated compensations (current + future) with compensation.title on each,
+  // which is required for pending-change detection. Without the include param,
+  // only the current compensation is returned.
+  const jobsQuery = useJobsAndCompensationsGetJobs(
+    { employeeId, include: GetV1EmployeesEmployeeIdJobsQueryParamInclude.AllCompensations },
     { staleTime: Infinity },
   )
+  // Employee query is a lightweight secondary fetch for cosmetic data only
+  // (first name used in alert copy). Jobs / compensation data comes from jobsQuery.
+  const employeeQuery = useEmployeesGet({ employeeId }, { staleTime: Infinity })
   const payStubsQuery = usePayrollsGetPayStubs(
     { employeeId, page: currentPage, per: itemsPerPage },
     { staleTime: Infinity },
@@ -90,15 +100,12 @@ export function useEmployeeCompensation({
 
   const employee = employeeQuery.data?.employee
 
-  const jobs = useMemo(() => employee?.jobs ?? [], [employee?.jobs])
+  const jobs = useMemo(() => jobsQuery.data?.jobs ?? [], [jobsQuery.data?.jobs])
   const primaryJob = useMemo(() => jobs.find(job => job.primary === true), [jobs])
   const primaryFlsaStatus = useMemo(() => derivePrimaryFlsaStatus(jobs), [jobs])
   const hasMultipleJobs = jobs.length > 1
 
-  const pendingChanges = useMemo(
-    () => getPendingCompensationChanges(employee?.jobs),
-    [employee?.jobs],
-  )
+  const pendingChanges = useMemo(() => getPendingCompensationChanges(jobs), [jobs])
 
   const payStubs = payStubsQuery.data?.employeePayStubsList ?? []
 
@@ -129,9 +136,12 @@ export function useEmployeeCompensation({
   )
 
   const isPending =
-    employeeQuery.isFetching || payStubsQuery.isFetching || cancelCompensationMutation.isPending
+    jobsQuery.isFetching ||
+    employeeQuery.isFetching ||
+    payStubsQuery.isFetching ||
+    cancelCompensationMutation.isPending
 
-  const errorHandling = composeErrorHandler([employeeQuery, payStubsQuery], {
+  const errorHandling = composeErrorHandler([jobsQuery, employeeQuery, payStubsQuery], {
     submitError,
     setSubmitError,
   })
@@ -150,7 +160,7 @@ export function useEmployeeCompensation({
     status: {
       isPending,
       cancellingCompensationUuid,
-      isEmployeeLoading: employeeQuery.isLoading,
+      isEmployeeLoading: jobsQuery.isLoading,
       isPayStubsLoading: payStubsQuery.isLoading,
     },
     pagination: {

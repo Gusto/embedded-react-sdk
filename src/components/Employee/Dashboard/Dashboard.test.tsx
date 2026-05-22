@@ -12,11 +12,10 @@ import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { server } from '@/test/mocks/server'
 import { API_BASE_URL } from '@/test/constants'
 import { handleGetEmployeeForms, i9Form } from '@/test/mocks/apis/employee_forms'
-import { handleGetEmployee, handleDeleteEmployeeJob } from '@/test/mocks/apis/employees'
+import { handleGetEmployeeJobs, handleDeleteEmployeeJob } from '@/test/mocks/apis/employees'
 import { handleDeleteCompensation } from '@/test/mocks/apis/compensations'
 import { componentEvents } from '@/shared/constants'
 import { assertDefined } from '@/test-utils/assertions'
-import { getFixture } from '@/test/mocks/fixtures/getFixture'
 
 type GarnishmentFixture = {
   uuid: string
@@ -71,94 +70,89 @@ const openJobAndPayTab = async (user: ReturnType<typeof userEvent.setup>) => {
 const PRIMARY_JOB_UUID = '428a653a-0745-4db4-9c80-558288d416fa'
 const SECONDARY_JOB_UUID = 'secondary-job-uuid'
 
-async function getSingleNonexemptJobFixture() {
-  const employeeFixture = (await getFixture('get-v1-employees')) as Record<string, unknown>
-  return {
-    ...employeeFixture,
-    jobs: [
-      {
-        uuid: PRIMARY_JOB_UUID,
-        version: 'primary-version',
-        employee_uuid: 'employee-123',
-        current_compensation_uuid: 'primary-comp-uuid',
-        payment_unit: 'Hour',
-        primary: true,
-        title: 'Office Admin',
-        compensations: [
-          {
-            uuid: 'primary-comp-uuid',
-            version: 'primary-comp-version',
-            payment_unit: 'Hour',
-            flsa_status: 'Nonexempt',
-            job_uuid: PRIMARY_JOB_UUID,
-            effective_date: '2019-06-06',
-            rate: '32.00',
-            adjust_for_minimum_wage: false,
-            minimum_wages: [],
-          },
-        ],
-        rate: '32.00',
-        hire_date: '2019-06-06',
-      },
-    ],
-  }
+function getSingleNonexemptJobFixture() {
+  return [
+    {
+      uuid: PRIMARY_JOB_UUID,
+      version: 'primary-version',
+      employee_uuid: 'employee-123',
+      current_compensation_uuid: 'primary-comp-uuid',
+      payment_unit: 'Hour',
+      primary: true,
+      title: 'Office Admin',
+      compensations: [
+        {
+          uuid: 'primary-comp-uuid',
+          version: 'primary-comp-version',
+          payment_unit: 'Hour',
+          flsa_status: 'Nonexempt',
+          job_uuid: PRIMARY_JOB_UUID,
+          effective_date: '2019-06-06',
+          rate: '32.00',
+          title: 'Office Admin',
+          adjust_for_minimum_wage: false,
+          minimum_wages: [],
+        },
+      ],
+      rate: '32.00',
+      hire_date: '2019-06-06',
+    },
+  ]
 }
 
-async function getMultiJobFixture() {
-  const employeeFixture = (await getFixture('get-v1-employees')) as Record<string, unknown>
-  return {
-    ...employeeFixture,
-    jobs: [
-      {
-        uuid: PRIMARY_JOB_UUID,
-        version: 'primary-version',
-        employee_uuid: 'employee-123',
-        current_compensation_uuid: 'primary-comp-uuid',
-        payment_unit: 'Hour',
-        primary: true,
-        title: 'Administrator',
-        compensations: [
-          {
-            uuid: 'primary-comp-uuid',
-            version: 'primary-comp-version',
-            payment_unit: 'Hour',
-            flsa_status: 'Nonexempt',
-            job_uuid: PRIMARY_JOB_UUID,
-            effective_date: '2019-04-05',
-            rate: '35.00',
-            adjust_for_minimum_wage: false,
-            minimum_wages: [],
-          },
-        ],
-        rate: '35.00',
-        hire_date: '2019-04-05',
-      },
-      {
-        uuid: SECONDARY_JOB_UUID,
-        version: 'secondary-version',
-        employee_uuid: 'employee-123',
-        current_compensation_uuid: 'secondary-comp-uuid',
-        payment_unit: 'Hour',
-        primary: false,
-        title: 'Administrative Supervisor',
-        compensations: [
-          {
-            uuid: 'secondary-comp-uuid',
-            version: 'secondary-comp-version',
-            payment_unit: 'Hour',
-            flsa_status: 'Nonexempt',
-            job_uuid: SECONDARY_JOB_UUID,
-            effective_date: '2026-05-01',
-            rate: '35.00',
-            adjust_for_minimum_wage: false,
-            minimum_wages: [],
-          },
-        ],
-        rate: '35.00',
-        hire_date: '2026-05-01',
-      },
-    ],
-  }
+function getMultiJobFixture() {
+  return [
+    {
+      uuid: PRIMARY_JOB_UUID,
+      version: 'primary-version',
+      employee_uuid: 'employee-123',
+      current_compensation_uuid: 'primary-comp-uuid',
+      payment_unit: 'Hour',
+      primary: true,
+      title: 'Administrator',
+      compensations: [
+        {
+          uuid: 'primary-comp-uuid',
+          version: 'primary-comp-version',
+          payment_unit: 'Hour',
+          flsa_status: 'Nonexempt',
+          job_uuid: PRIMARY_JOB_UUID,
+          effective_date: '2019-04-05',
+          rate: '35.00',
+          title: 'Administrator',
+          adjust_for_minimum_wage: false,
+          minimum_wages: [],
+        },
+      ],
+      rate: '35.00',
+      hire_date: '2019-04-05',
+    },
+    {
+      uuid: SECONDARY_JOB_UUID,
+      version: 'secondary-version',
+      employee_uuid: 'employee-123',
+      current_compensation_uuid: 'secondary-comp-uuid',
+      payment_unit: 'Hour',
+      primary: false,
+      title: 'Administrative Supervisor',
+      compensations: [
+        {
+          uuid: 'secondary-comp-uuid',
+          version: 'secondary-comp-version',
+          payment_unit: 'Hour',
+          flsa_status: 'Nonexempt',
+          job_uuid: SECONDARY_JOB_UUID,
+          effective_date: '2026-05-01',
+          rate: '35.00',
+          title: 'Administrative Supervisor',
+          adjust_for_minimum_wage: false,
+          minimum_wages: [],
+        },
+      ],
+      rate: '35.00',
+      hire_date: '2026-05-01',
+    },
+  ]
 }
 
 const ONE_YEAR_AHEAD = (() => {
@@ -259,8 +253,7 @@ describe('Dashboard', () => {
   it('shows an empty Compensation card with Add job CTA when the employee has no jobs', async () => {
     const user = userEvent.setup()
 
-    const employeeFixture = (await getFixture('get-v1-employees')) as Record<string, unknown>
-    server.use(handleGetEmployee(() => HttpResponse.json({ ...employeeFixture, jobs: [] })))
+    server.use(handleGetEmployeeJobs(() => HttpResponse.json([])))
 
     renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
 
@@ -270,9 +263,8 @@ describe('Dashboard', () => {
 
     await user.click(screen.getByRole('tab', { name: 'Job and pay' }))
 
-    // BasicDetails and Compensation use different employeesGet query
-    // keys now (the include differs), so Compensation does its own
-    // fetch — wait for the empty-state copy rather than just the header.
+    // BasicDetails uses the employee endpoint; Compensation uses the jobs
+    // endpoint — wait for the empty-state copy rather than just the header.
     expect(await screen.findByText('No compensation')).toBeInTheDocument()
     expect(screen.getByText('Compensation will appear here once added')).toBeInTheDocument()
 
@@ -384,6 +376,7 @@ describe('Dashboard', () => {
   it('emits EMPLOYEE_COMPENSATION_CREATE with the primary job when clicking the single-job Edit CTA', async () => {
     const user = userEvent.setup()
 
+    server.use(handleGetEmployeeJobs(() => HttpResponse.json(getSingleNonexemptJobFixture())))
     renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
 
     await waitFor(() => {
@@ -437,8 +430,7 @@ describe('Dashboard', () => {
   it('shows the single-job detail view with both Edit and Add another job when the primary job is nonexempt', async () => {
     const user = userEvent.setup()
 
-    const fixture = await getSingleNonexemptJobFixture()
-    server.use(handleGetEmployee(() => HttpResponse.json(fixture)))
+    server.use(handleGetEmployeeJobs(() => HttpResponse.json(getSingleNonexemptJobFixture())))
 
     renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
 
@@ -472,8 +464,7 @@ describe('Dashboard', () => {
   it('renders a jobs table with no header Edit CTA when the employee has multiple nonexempt jobs', async () => {
     const user = userEvent.setup()
 
-    const multiJobFixture = await getMultiJobFixture()
-    server.use(handleGetEmployee(() => HttpResponse.json(multiJobFixture)))
+    server.use(handleGetEmployeeJobs(() => HttpResponse.json(getMultiJobFixture())))
 
     renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
 
@@ -503,8 +494,7 @@ describe('Dashboard', () => {
   it('hides Delete on the primary job and shows Edit + Delete on the non-primary job', async () => {
     const user = userEvent.setup()
 
-    const multiJobFixture = await getMultiJobFixture()
-    server.use(handleGetEmployee(() => HttpResponse.json(multiJobFixture)))
+    server.use(handleGetEmployeeJobs(() => HttpResponse.json(getMultiJobFixture())))
 
     renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
 
@@ -539,8 +529,7 @@ describe('Dashboard', () => {
   it('emits EMPLOYEE_COMPENSATION_CREATE with the row job when clicking the per-row Edit menu item', async () => {
     const user = userEvent.setup()
 
-    const multiJobFixture = await getMultiJobFixture()
-    server.use(handleGetEmployee(() => HttpResponse.json(multiJobFixture)))
+    server.use(handleGetEmployeeJobs(() => HttpResponse.json(getMultiJobFixture())))
 
     renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
 
@@ -572,8 +561,7 @@ describe('Dashboard', () => {
   it('opens the delete dialog and calls the delete API when confirming a non-primary job deletion', async () => {
     const user = userEvent.setup()
 
-    const multiJobFixture = await getMultiJobFixture()
-    server.use(handleGetEmployee(() => HttpResponse.json(multiJobFixture)))
+    server.use(handleGetEmployeeJobs(() => HttpResponse.json(getMultiJobFixture())))
 
     let deletePath: string | null = null
     const deleteJobResolver = vi.fn<
@@ -626,8 +614,7 @@ describe('Dashboard', () => {
   it('emits EMPLOYEE_JOB_ADD_ANOTHER when clicking the Add another job CTA in the multi-job view', async () => {
     const user = userEvent.setup()
 
-    const multiJobFixture = await getMultiJobFixture()
-    server.use(handleGetEmployee(() => HttpResponse.json(multiJobFixture)))
+    server.use(handleGetEmployeeJobs(() => HttpResponse.json(getMultiJobFixture())))
 
     renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
 
@@ -672,13 +659,8 @@ describe('Dashboard', () => {
       hire_date: string
     }
 
-    const buildEmployeeWithJobs = async (jobs: JobFixture[]): Promise<Record<string, unknown>> => {
-      const base = (await getFixture('get-v1-employees')) as Record<string, unknown>
-      return { ...base, jobs }
-    }
-
-    const overrideEmployee = (employee: Record<string, unknown>) => {
-      server.use(handleGetEmployee(() => HttpResponse.json(employee)))
+    const overrideEmployeeJobs = (jobs: JobFixture[]) => {
+      server.use(handleGetEmployeeJobs(() => HttpResponse.json(jobs)))
     }
 
     const goToJobAndPayTab = async (user: ReturnType<typeof userEvent.setup>) => {
@@ -732,7 +714,7 @@ describe('Dashboard', () => {
 
     it('renders an inline alert with bullet details and a Cancel button for a single-job pending change', async () => {
       const user = userEvent.setup()
-      const employee = await buildEmployeeWithJobs([
+      overrideEmployeeJobs([
         baseJob({}, [
           baseComp(),
           baseComp({
@@ -743,7 +725,6 @@ describe('Dashboard', () => {
           }),
         ]),
       ])
-      overrideEmployee(employee)
 
       renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
       await goToJobAndPayTab(user)
@@ -757,7 +738,7 @@ describe('Dashboard', () => {
 
     it('shows the nearest upcoming change when a single job has stacked future compensations', async () => {
       const user = userEvent.setup()
-      const employee = await buildEmployeeWithJobs([
+      overrideEmployeeJobs([
         baseJob({}, [
           baseComp(),
           baseComp({
@@ -772,7 +753,6 @@ describe('Dashboard', () => {
           }),
         ]),
       ])
-      overrideEmployee(employee)
 
       renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
       await goToJobAndPayTab(user)
@@ -797,20 +777,15 @@ describe('Dashboard', () => {
         rate: '35.00',
         effective_date: ONE_YEAR_AHEAD,
       })
-      const employeeBefore = await buildEmployeeWithJobs([
-        baseJob({}, [baseComp(), futureCompensation]),
-      ])
-      const employeeAfter = await buildEmployeeWithJobs([baseJob({}, [baseComp()])])
+      const jobsBefore = [baseJob({}, [baseComp(), futureCompensation])]
+      const jobsAfter = [baseJob({}, [baseComp()])]
 
-      // Return employeeBefore until the DELETE fires, then employeeAfter.
-      // BasicDetails and Compensation now use different employeesGet
-      // query keys (the include differs), so each tab fetches the
-      // employee independently — a count-based handler would diverge
-      // between tabs.
+      // Return jobsBefore until the DELETE fires, then jobsAfter.
+      // BasicDetails uses the employee endpoint; Compensation uses the jobs
+      // endpoint — they have different query keys so a count-based handler
+      // would diverge between tabs.
       server.use(
-        handleGetEmployee(() =>
-          HttpResponse.json(wasDeleteCalled ? employeeAfter : employeeBefore),
-        ),
+        handleGetEmployeeJobs(() => HttpResponse.json(wasDeleteCalled ? jobsAfter : jobsBefore)),
       )
       server.use(handleDeleteCompensation(deleteResolver))
 
@@ -849,8 +824,7 @@ describe('Dashboard', () => {
         rate: '35.00',
         effective_date: ONE_YEAR_AHEAD,
       })
-      const employee = await buildEmployeeWithJobs([baseJob({}, [baseComp(), futureCompensation])])
-      overrideEmployee(employee)
+      overrideEmployeeJobs([baseJob({}, [baseComp(), futureCompensation])])
       server.use(handleDeleteCompensation(deleteResolver))
 
       renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
@@ -875,7 +849,7 @@ describe('Dashboard', () => {
 
     it('renders a summary alert with a Review button when the employee has multiple jobs with pending changes', async () => {
       const user = userEvent.setup()
-      const employee = await buildEmployeeWithJobs([
+      overrideEmployeeJobs([
         baseJob({ uuid: 'job-primary', current_compensation_uuid: 'comp-primary-current' }, [
           baseComp({ uuid: 'comp-primary-current', job_uuid: 'job-primary' }),
           baseComp({
@@ -909,7 +883,6 @@ describe('Dashboard', () => {
           ],
         ),
       ])
-      overrideEmployee(employee)
 
       renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
       await goToJobAndPayTab(user)
@@ -921,7 +894,7 @@ describe('Dashboard', () => {
 
     it('opens the review modal listing pending changes chronologically when Review is clicked', async () => {
       const user = userEvent.setup()
-      const employee = await buildEmployeeWithJobs([
+      overrideEmployeeJobs([
         baseJob({ uuid: 'job-primary', current_compensation_uuid: 'comp-primary-current' }, [
           baseComp({ uuid: 'comp-primary-current', job_uuid: 'job-primary' }),
           baseComp({
@@ -955,7 +928,6 @@ describe('Dashboard', () => {
           ],
         ),
       ])
-      overrideEmployee(employee)
 
       renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
       await goToJobAndPayTab(user)
@@ -992,7 +964,7 @@ describe('Dashboard', () => {
         effective_date: ONE_YEAR_AHEAD,
       })
 
-      const employeeBefore = await buildEmployeeWithJobs([
+      const jobsBefore = [
         baseJob({ uuid: 'job-primary', current_compensation_uuid: 'comp-primary-current' }, [
           baseComp({ uuid: 'comp-primary-current', job_uuid: 'job-primary' }),
           futurePrimary,
@@ -1014,8 +986,8 @@ describe('Dashboard', () => {
             futureSecondary,
           ],
         ),
-      ])
-      const employeeAfter = await buildEmployeeWithJobs([
+      ]
+      const jobsAfter = [
         baseJob({ uuid: 'job-primary', current_compensation_uuid: 'comp-primary-current' }, [
           baseComp({ uuid: 'comp-primary-current', job_uuid: 'job-primary' }),
           futurePrimary,
@@ -1036,16 +1008,14 @@ describe('Dashboard', () => {
             }),
           ],
         ),
-      ])
+      ]
 
-      // Return employeeBefore until the DELETE fires, then employeeAfter.
-      // BasicDetails and Compensation use different employeesGet query
-      // keys (the include differs), so a count-based handler would
-      // diverge between tabs.
+      // Return jobsBefore until the DELETE fires, then jobsAfter.
+      // BasicDetails uses the employee endpoint; Compensation uses the jobs
+      // endpoint — they have different query keys so a count-based handler
+      // would diverge between tabs.
       server.use(
-        handleGetEmployee(() =>
-          HttpResponse.json(wasDeleteCalled ? employeeAfter : employeeBefore),
-        ),
+        handleGetEmployeeJobs(() => HttpResponse.json(wasDeleteCalled ? jobsAfter : jobsBefore)),
       )
       server.use(handleDeleteCompensation(deleteResolver))
 
@@ -1071,13 +1041,12 @@ describe('Dashboard', () => {
     describe('multi-job alert variants', () => {
       it('single hourly job with a comp update: shows inline alert with standard copy', async () => {
         const user = userEvent.setup()
-        const employee = await buildEmployeeWithJobs([
+        overrideEmployeeJobs([
           baseJob({}, [
             baseComp(),
             baseComp({ uuid: 'comp-future', rate: '35.00', effective_date: ONE_YEAR_AHEAD }),
           ]),
         ])
-        overrideEmployee(employee)
 
         renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
         await goToJobAndPayTab(user)
@@ -1090,7 +1059,7 @@ describe('Dashboard', () => {
 
       it('multiple hourly jobs with a single comp update: shows inline alert including the job title', async () => {
         const user = userEvent.setup()
-        const employee = await buildEmployeeWithJobs([
+        overrideEmployeeJobs([
           baseJob(
             {
               uuid: 'job-primary',
@@ -1124,7 +1093,6 @@ describe('Dashboard', () => {
             ],
           ),
         ])
-        overrideEmployee(employee)
 
         renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
         await goToJobAndPayTab(user)
@@ -1139,7 +1107,7 @@ describe('Dashboard', () => {
 
       it('multiple hourly jobs with multiple comp updates: shows summary alert with Review CTA', async () => {
         const user = userEvent.setup()
-        const employee = await buildEmployeeWithJobs([
+        overrideEmployeeJobs([
           baseJob({ uuid: 'job-primary', current_compensation_uuid: 'comp-primary-current' }, [
             baseComp({ uuid: 'comp-primary-current', job_uuid: 'job-primary' }),
             baseComp({
@@ -1173,7 +1141,6 @@ describe('Dashboard', () => {
             ],
           ),
         ])
-        overrideEmployee(employee)
 
         renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
         await goToJobAndPayTab(user)

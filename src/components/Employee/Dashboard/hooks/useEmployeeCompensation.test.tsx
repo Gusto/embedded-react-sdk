@@ -4,15 +4,14 @@ import { http, HttpResponse, type HttpResponseResolver } from 'msw'
 import { useEmployeeCompensation } from './useEmployeeCompensation'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
 import { server } from '@/test/mocks/server'
-import { handleGetEmployee } from '@/test/mocks/apis/employees'
+import { handleGetEmployee, handleGetEmployeeJobs } from '@/test/mocks/apis/employees'
 import { handleDeleteCompensation } from '@/test/mocks/apis/compensations'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { API_BASE_URL } from '@/test/constants'
 import { FlsaStatus } from '@/shared/constants'
 
-// Test fixtures — these match the default `get-v1-employees.json` shape
-// but are inlined here so the test pins behaviour to specific values
-// rather than a moving fixture file.
+// Test fixtures — inlined to pin behaviour to specific values rather than a
+// moving fixture file.
 type JobFixture = Record<string, unknown>
 
 const ONE_YEAR_AHEAD = (() => {
@@ -26,14 +25,14 @@ const TWO_YEARS_AHEAD = (() => {
   return d.toISOString().split('T')[0]!
 })()
 
-const buildEmployee = (jobs: JobFixture[]) => ({
+const buildEmployee = (overrides: Record<string, unknown> = {}) => ({
   uuid: 'employee-123',
   first_name: 'Isom',
   last_name: 'Jaskolski',
   email: 'isom@example.com',
   date_of_birth: '1986-06-25',
   has_ssn: true,
-  jobs,
+  ...overrides,
 })
 
 const baseJob = (
@@ -89,12 +88,11 @@ describe('useEmployeeCompensation', () => {
     expect(result.current.data.jobs.length).toBeGreaterThan(0)
   })
 
-  it('derives primaryJob, primaryFlsaStatus, hasMultipleJobs, and employeeFirstName from the employee fetch', async () => {
+  it('derives primaryJob, primaryFlsaStatus, hasMultipleJobs, and employeeFirstName from the respective fetches', async () => {
     server.use(
-      handleGetEmployee(() =>
-        HttpResponse.json(
-          buildEmployee([baseJob({ primary: true }, [baseComp({ flsa_status: 'Nonexempt' })])]),
-        ),
+      handleGetEmployee(() => HttpResponse.json(buildEmployee())),
+      handleGetEmployeeJobs(() =>
+        HttpResponse.json([baseJob({ primary: true }, [baseComp({ flsa_status: 'Nonexempt' })])]),
       ),
     )
 
@@ -114,17 +112,15 @@ describe('useEmployeeCompensation', () => {
 
   it('reports hasMultipleJobs=true and surfaces all jobs when the employee has more than one', async () => {
     server.use(
-      handleGetEmployee(() =>
-        HttpResponse.json(
-          buildEmployee([
-            baseJob({ uuid: 'job-primary', primary: true, title: 'Manager' }, [
-              baseComp({ uuid: 'comp-primary', job_uuid: 'job-primary' }),
-            ]),
-            baseJob({ uuid: 'job-secondary', primary: false, title: 'Cashier' }, [
-              baseComp({ uuid: 'comp-secondary', job_uuid: 'job-secondary' }),
-            ]),
+      handleGetEmployeeJobs(() =>
+        HttpResponse.json([
+          baseJob({ uuid: 'job-primary', primary: true, title: 'Manager' }, [
+            baseComp({ uuid: 'comp-primary', job_uuid: 'job-primary' }),
           ]),
-        ),
+          baseJob({ uuid: 'job-secondary', primary: false, title: 'Cashier' }, [
+            baseComp({ uuid: 'comp-secondary', job_uuid: 'job-secondary' }),
+          ]),
+        ]),
       ),
     )
 
@@ -143,20 +139,18 @@ describe('useEmployeeCompensation', () => {
 
   it('derives pendingChanges from future-effective compensations on each job', async () => {
     server.use(
-      handleGetEmployee(() =>
-        HttpResponse.json(
-          buildEmployee([
-            baseJob({ uuid: 'job-primary', current_compensation_uuid: 'comp-primary-current' }, [
-              baseComp({ uuid: 'comp-primary-current', job_uuid: 'job-primary' }),
-              baseComp({
-                uuid: 'comp-primary-future',
-                job_uuid: 'job-primary',
-                rate: '35.00',
-                effective_date: ONE_YEAR_AHEAD,
-              }),
-            ]),
+      handleGetEmployeeJobs(() =>
+        HttpResponse.json([
+          baseJob({ uuid: 'job-primary', current_compensation_uuid: 'comp-primary-current' }, [
+            baseComp({ uuid: 'comp-primary-current', job_uuid: 'job-primary' }),
+            baseComp({
+              uuid: 'comp-primary-future',
+              job_uuid: 'job-primary',
+              rate: '35.00',
+              effective_date: ONE_YEAR_AHEAD,
+            }),
           ]),
-        ),
+        ]),
       ),
     )
 
@@ -177,19 +171,17 @@ describe('useEmployeeCompensation', () => {
 
   it('actions.cancelPendingChange fires DELETE /v1/compensations/:id and returns a HookSubmitResult', async () => {
     server.use(
-      handleGetEmployee(() =>
-        HttpResponse.json(
-          buildEmployee([
-            baseJob({}, [
-              baseComp(),
-              baseComp({
-                uuid: 'comp-future',
-                rate: '35.00',
-                effective_date: ONE_YEAR_AHEAD,
-              }),
-            ]),
+      handleGetEmployeeJobs(() =>
+        HttpResponse.json([
+          baseJob({}, [
+            baseComp(),
+            baseComp({
+              uuid: 'comp-future',
+              rate: '35.00',
+              effective_date: ONE_YEAR_AHEAD,
+            }),
           ]),
-        ),
+        ]),
       ),
     )
 
@@ -221,19 +213,17 @@ describe('useEmployeeCompensation', () => {
 
   it('surfaces a failing cancel mutation through errorHandling.errors and leaves submitResult undefined', async () => {
     server.use(
-      handleGetEmployee(() =>
-        HttpResponse.json(
-          buildEmployee([
-            baseJob({}, [
-              baseComp(),
-              baseComp({
-                uuid: 'comp-future',
-                rate: '35.00',
-                effective_date: TWO_YEARS_AHEAD,
-              }),
-            ]),
+      handleGetEmployeeJobs(() =>
+        HttpResponse.json([
+          baseJob({}, [
+            baseComp(),
+            baseComp({
+              uuid: 'comp-future',
+              rate: '35.00',
+              effective_date: TWO_YEARS_AHEAD,
+            }),
           ]),
-        ),
+        ]),
       ),
     )
     server.use(
@@ -263,12 +253,12 @@ describe('useEmployeeCompensation', () => {
     expect(result.current.errorHandling.errors.length).toBeGreaterThan(0)
   })
 
-  it('requests the employee with `include=all_compensations` so JobAndPay sees compensation history', async () => {
-    let employeeRequestUrl: string | null = null
+  it('requests the jobs endpoint so JobAndPay sees compensation history with titles', async () => {
+    let jobsRequestUrl: string | null = null
     server.use(
-      handleGetEmployee(({ request }) => {
-        employeeRequestUrl = request.url
-        return HttpResponse.json(buildEmployee([baseJob({}, [baseComp()])]))
+      handleGetEmployeeJobs(({ request }) => {
+        jobsRequestUrl = request.url
+        return HttpResponse.json([baseJob({}, [baseComp()])])
       }),
     )
 
@@ -280,8 +270,9 @@ describe('useEmployeeCompensation', () => {
       expect(result.current.status.isEmployeeLoading).toBe(false)
     })
 
-    expect(employeeRequestUrl).not.toBeNull()
-    expect(employeeRequestUrl).toContain('all_compensations')
+    expect(jobsRequestUrl).not.toBeNull()
+    expect(jobsRequestUrl).toContain('/v1/employees/employee-123/jobs')
+    expect(jobsRequestUrl).toContain('include=all_compensations')
   })
 
   it('surfaces paystub pagination control props once the paystubs query resolves', async () => {

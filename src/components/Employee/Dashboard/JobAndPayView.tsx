@@ -566,7 +566,11 @@ export function JobAndPayView({
           ) : (
             <Flex flexDirection="column" gap={16}>
               {hasPendingChanges && (
-                <div className={hasMultipleJobs ? styles.alertWrapper : undefined}>
+                <div
+                  className={[styles.alertWrapper, hasMultipleJobs && styles.alertWrapperPadded]
+                    .filter(Boolean)
+                    .join(' ')}
+                >
                   <Flex flexDirection="column" gap={16}>
                     {showInlineAlert && nextChange && (
                       <Components.Alert
