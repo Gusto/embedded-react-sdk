@@ -1405,7 +1405,6 @@ export interface EmployeeCompensation{
 "hireDateLabel":string;
 "twoPercentShareholderLabel":string;
 "saveCta":string;
-"scheduledClassificationChangeNotification":string;
 };
 "validations":{
 "effectiveDate":string;
@@ -1420,6 +1419,7 @@ export interface EmployeeCompensation{
 "title":string;
 "minimumWage":string;
 "stateWcClassCode":string;
+"effectiveDateBeforeMin":string;
 "jobTitleSentence":string;
 };
 "stateWcCoveredLabel":string;

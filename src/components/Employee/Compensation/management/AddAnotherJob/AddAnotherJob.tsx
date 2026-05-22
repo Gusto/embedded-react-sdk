@@ -5,7 +5,6 @@ import { useJobForm } from '../../shared/useJobForm'
 import { useCompensationForm } from '../../shared/useCompensationForm'
 import { AddCompensationFormBody } from '../../shared/AddCompensationFormBody'
 import styles from './AddAnotherJob.module.scss'
-import { normalizeToDate } from '@/helpers/dateFormatting'
 import { BaseBoundaries, BaseLayout, type CommonComponentInterface } from '@/components/Base'
 import type { OnEventType } from '@/components/Base/useBase'
 import { Form } from '@/components/Common/Form'
@@ -74,13 +73,6 @@ function Root({
   // since useJobForm has already loaded it.
   const primaryHireDate = jobForm.data.jobs?.find(j => j.primary)?.hireDate ?? undefined
 
-  const tomorrow = new Date()
-  tomorrow.setDate(tomorrow.getDate() + 1)
-
-  const primaryHireDateParsed = normalizeToDate(primaryHireDate)
-  const minEffectiveDate =
-    primaryHireDateParsed && primaryHireDateParsed > tomorrow ? primaryHireDateParsed : tomorrow
-
   const submitResult = composeSubmitHandler([jobForm, compensationForm], async () => {
     const jobResult = await jobForm.actions.onSubmit({ employeeId, hireDate: primaryHireDate })
     if (!jobResult) return
@@ -118,7 +110,6 @@ function Root({
             submitCtaLabel={t('saveNewJobCta')}
             isPending={isPending}
             onCancel={onCancel}
-            minEffectiveDate={minEffectiveDate}
           />
         </Form>
       </BaseLayout>

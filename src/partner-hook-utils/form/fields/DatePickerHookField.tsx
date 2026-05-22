@@ -4,6 +4,7 @@ import type { BaseFieldProps, ValidationMessages, FormHookResult } from '../../t
 import { withFieldElementRegistry } from './withFieldElementRegistry'
 import { DatePickerField } from '@/components/Common/Fields/DatePickerField'
 import type { DatePickerProps } from '@/components/Common/UI/DatePicker/DatePickerTypes'
+import { normalizeToDate } from '@/helpers/dateFormatting'
 
 export interface DatePickerHookFieldProps<TErrorCode extends string = never>
   extends BaseFieldProps, Pick<DatePickerProps, 'portalContainer' | 'minDate' | 'maxDate'> {
@@ -45,8 +46,14 @@ export function DatePickerHookField<TErrorCode extends string>({
       isDisabled={fieldMetadata?.isDisabled}
       FieldComponent={FieldComponent}
       portalContainer={portalContainer}
-      minDate={minDate}
-      maxDate={maxDate}
+      minDate={
+        minDate ??
+        (fieldMetadata?.minDate ? (normalizeToDate(fieldMetadata.minDate) ?? undefined) : undefined)
+      }
+      maxDate={
+        maxDate ??
+        (fieldMetadata?.maxDate ? (normalizeToDate(fieldMetadata.maxDate) ?? undefined) : undefined)
+      }
     />,
   )
 }
