@@ -66,13 +66,13 @@ export function useSelectEmployeesData(companyId: string, excludeUuids?: Set<str
       ...restPageResults.flatMap(r => r.data.showEmployees ?? []),
     ]
     return showEmployees
-      .filter(e => isStartedByToday(e.jobs?.find(job => job.primary)?.hireDate))
+      .filter(e => isStartedByToday((e.jobs?.find(job => job.primary) ?? e.jobs?.[0])?.hireDate))
       .filter(e => !excludeUuids?.has(e.uuid))
       .map(e => ({
         uuid: e.uuid,
         firstName: e.firstName,
         lastName: e.lastName,
-        jobTitle: e.jobs?.find(job => job.primary)?.title ?? null,
+        jobTitle: e.jobs?.find(job => job.primary)?.title ?? e.jobs?.[0]?.title ?? null,
         department: e.department ?? null,
         eligiblePaidTimeOff: e.eligiblePaidTimeOff as PaidTimeOff[] | undefined,
       }))
