@@ -118,7 +118,7 @@ function deriveEmployees(
       uuid: policyEmp.uuid ?? '',
       firstName: emp?.firstName ?? null,
       lastName: emp?.lastName ?? null,
-      jobTitle: primaryJob?.title ?? null,
+      jobTitle: primaryJob?.title ?? emp?.jobs?.[0]?.title ?? null,
       balance: policyEmp.balance != null ? Number(policyEmp.balance) : null,
     }
   })

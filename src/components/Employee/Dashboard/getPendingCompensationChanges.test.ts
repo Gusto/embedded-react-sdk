@@ -112,6 +112,27 @@ describe('getPendingCompensationChanges', () => {
     })
   })
 
+  it('detects titleChange when baseline.title is absent and future.title differs from jobTitle', () => {
+    // Real-world scenario: GET /v1/employees/:id/jobs returns compensation.title
+    // only when it was explicitly stored via PUT /v1/compensations/:id.
+    // The current comp may have title=undefined (API omits it) while the future
+    // comp carries the new title. The jobTitle fallback on the baseline must not
+    // mask the difference.
+    const current = buildComp({ title: undefined })
+    const future = buildComp({
+      uuid: 'comp-future',
+      title: 'Senior Cashier',
+      effectiveDate: '2026-06-01',
+    })
+    const job = buildJob({ title: 'Cashier' }, [current, future])
+
+    const result = getPendingCompensationChanges([job], { today: TODAY })
+
+    expect(result[0]).toMatchObject({
+      details: [{ kind: 'titleChange', title: 'Senior Cashier' }],
+    })
+  })
+
   it('emits both titleChange and payChange when both differ', () => {
     const current = buildComp({ title: 'Cashier', rate: '30.00' })
     const future = buildComp({
