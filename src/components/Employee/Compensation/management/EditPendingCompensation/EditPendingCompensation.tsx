@@ -123,9 +123,18 @@ function Root({
 
     onEvent(componentEvents.EMPLOYEE_JOB_UPDATED, jobResult.data)
 
-    const compensationResult = await compensationForm.actions.onSubmit(
-      hireDateOverride ? { effectiveDate: hireDateOverride } : undefined,
-    )
+    // When the hire date moves forward, the API auto-syncs the compensation's
+    // effective_date to the new hire_date as part of the job PUT, which bumps
+    // the compensation's version. Read it from the job response so the
+    // subsequent compensation PUT doesn't send a stale version.
+    const freshCompVersion = jobResult.data.compensations?.find(
+      c => c.uuid === compensationId,
+    )?.version
+
+    const compensationResult = await compensationForm.actions.onSubmit({
+      ...(hireDateOverride ? { effectiveDate: hireDateOverride } : {}),
+      compensationVersion: freshCompVersion,
+    })
     if (!compensationResult) return
 
     onEvent(componentEvents.EMPLOYEE_COMPENSATION_UPDATED, compensationResult.data)
