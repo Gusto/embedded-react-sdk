@@ -622,24 +622,36 @@ async function checkBaseDemoState(
  * Batch sizes used to find an acceptable base demo when the factory is in a
  * degraded mode. The factory's bad output is statistically independent
  * per-demo invocation (verified empirically), so a parallel batch converts
- * serial retry latency into one round-trip per batch. The escalation goes:
- *   1, 4, 4, 4   (total worst case: 13 demos, ~4 round-trips of ~25s each)
+ * serial retry latency into one round-trip per batch.
  *
- * At an observed factory good-rate of ~21% during a bad window:
+ * Sized to be gentle on the demo backend. An earlier iteration used 4-way
+ * parallel retries — that worked when one CI run hit the backend at a
+ * time, but multiple concurrent CI runs (5 in parallel hitting backend
+ * simultaneously, ~200 concurrent POST /demos calls) overloaded the
+ * factory and made BOTH the original creation AND subsequent retries
+ * time out at 180s. 2-way batches at 3 attempts is enough headroom at
+ * the observed ~21% degraded-factory good-rate without flooding the
+ * backend:
+ *
  *   batch 1 (size 1):   P(success) = 0.21
- *   batch 2 (size 4):   P(at-least-one-good) = 1 - 0.79^4 = 0.61, cumulative 0.69
- *   batch 3 (size 4):   cumulative 0.88
- *   batch 4 (size 4):   cumulative 0.96
+ *   batch 2 (size 2):   P(at-least-one-good) = 1 - 0.79^2 = 0.38, cumulative 0.51
+ *   batch 3 (size 2):   cumulative 0.69
+ *   batch 4 (size 2):   cumulative 0.81
  *
- * Each subsequent batch is bounded by the slowest demo creation, not the
- * sum, so worst-case wallclock is ~4 * 25s = 100s. On the common
- * factory-healthy path the first attempt resolves and total cost is ~25s.
- *
- * Lone size-1 attempt up front avoids spending 4 demo-creation quotas on
- * the (most common) case where the factory is happy. Then escalates to
- * batches of 4 once we know it isn't.
+ * Total worst-case demos: 7 (vs 13 before). Wall time worst case is
+ * still ~4 batches × ~25s each = ~100s, because each batch is bounded
+ * by the slowest demo not the sum.
  */
-const BASE_DEMO_VALIDATION_BATCH_SIZES = [1, 4, 4, 4] as const
+const BASE_DEMO_VALIDATION_BATCH_SIZES = [1, 2, 2, 2] as const
+
+/**
+ * Wait between batches to give the demo backend time to settle if it's
+ * overloaded. The 5-run-concurrent stress test showed POST /demos
+ * timing out at 180s when hammered; a brief pause between escalating
+ * batches lets the backend recover (and lets a flaky transient
+ * degraded factory window pass).
+ */
+const BASE_DEMO_VALIDATION_INTER_BATCH_DELAY_MS = 5_000
 
 async function findAcceptableBaseDemo(
   gwsFlowsBase: string,
@@ -657,29 +669,52 @@ async function findAcceptableBaseDemo(
     const batchSize = BASE_DEMO_VALIDATION_BATCH_SIZES[batchIdx]!
     if (batchIdx > 0) {
       log(
-        `  Previous attempt(s) returned degraded demos; escalating to parallel batch of ${batchSize}`,
+        `  Previous attempt(s) returned degraded demos; pausing ${BASE_DEMO_VALIDATION_INTER_BATCH_DELAY_MS}ms then escalating to parallel batch of ${batchSize}`,
       )
+      await new Promise(r => setTimeout(r, BASE_DEMO_VALIDATION_INTER_BATCH_DELAY_MS))
     }
 
-    const batch = await Promise.all(
+    // Settle individually so one demo's 180s timeout doesn't kill the whole
+    // batch — that would force the caller to re-create everything from
+    // scratch on the next batch.  Each batch member resolves either to a
+    // ready demo or to a creation error we record in failures.
+    const batch = await Promise.allSettled(
       Array.from({ length: batchSize }, () =>
         createDemoAndProvision(gwsFlowsBase, baseDemoType, { onProgress }),
       ),
     )
 
-    // Validate every candidate in parallel; pick the first acceptable one.
+    const creations: Array<{
+      candidate: Awaited<ReturnType<typeof createDemoAndProvision>> | null
+      reason: string | null
+    }> = []
+    for (const settled of batch) {
+      if (settled.status === 'fulfilled') {
+        creations.push({ candidate: settled.value, reason: null })
+      } else {
+        creations.push({ candidate: null, reason: `creation failed: ${String(settled.reason)}` })
+      }
+    }
+
+    // Validate each successfully-created candidate in parallel; pick the
+    // first acceptable one.
     const validations = await Promise.all(
-      batch.map(async candidate => {
-        const candidateApi = makeApi(gwsFlowsBase, candidate.flowToken)
-        const reason = await checkBaseDemoState(candidateApi, candidate.companyId, requirements)
-        return { candidate, reason }
+      creations.map(async creation => {
+        if (!creation.candidate) {
+          return { candidate: null, reason: creation.reason ?? 'creation failed' }
+        }
+        const candidateApi = makeApi(gwsFlowsBase, creation.candidate.flowToken)
+        const reason = await checkBaseDemoState(
+          candidateApi,
+          creation.candidate.companyId,
+          requirements,
+        )
+        return { candidate: creation.candidate, reason }
       }),
     )
 
-    const acceptable = validations.find(v => v.reason === null)
-    if (acceptable) {
-      // Log the discard count so the timing-reporter and triagers can see how
-      // many parallel demos we burned to find one good one in this batch.
+    const acceptable = validations.find(v => v.reason === null && v.candidate !== null)
+    if (acceptable?.candidate) {
       const discarded = validations.length - 1
       if (discarded > 0) {
         log(`  Found acceptable demo on batch ${batchIdx + 1} (discarded ${discarded} degraded)`)
@@ -688,7 +723,8 @@ async function findAcceptableBaseDemo(
     }
 
     for (const v of validations) {
-      failures.push(`batch ${batchIdx + 1} (${v.candidate.companyId.slice(0, 8)}): ${v.reason}`)
+      const companyHint = v.candidate ? v.candidate.companyId.slice(0, 8) : 'no-company'
+      failures.push(`batch ${batchIdx + 1} (${companyHint}): ${v.reason}`)
     }
     log(
       `  Batch ${batchIdx + 1} of ${BASE_DEMO_VALIDATION_BATCH_SIZES.length} returned ${batch.length}/${batch.length} degraded demos`,
