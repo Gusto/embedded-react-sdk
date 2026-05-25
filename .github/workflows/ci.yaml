@@ -418,12 +418,14 @@ jobs:
       - name: Run e2e tests
         env:
           E2E_USE_REAL_BACKEND: 'true'
-        # Path-anchored grep so each shard only runs the specs directly under
-        # its own directory. Bare `${{ matrix.domain }}` would substring-match
-        # any path containing that word — so the `company` shard would also
-        # pick up `canaries/company/` etc. Anchoring to e2e/tests/<domain>/
-        # makes each shard exactly its top-level directory.
-        run: npm run test:e2e:demo -- --pass-with-no-tests "^e2e/tests/${{ matrix.domain }}/"
+        # Path-bounded grep so each shard runs only the specs directly under
+        # its own top-level directory. Bare `${{ matrix.domain }}` would
+        # substring-match any path containing that word — so the `company`
+        # shard would also pick up `canaries/company/`. Playwright matches
+        # the positional regex against absolute file paths; `tests/<domain>/`
+        # is the smallest disambiguating substring that anchors to the
+        # top-level directory without leaking into nested duplicates.
+        run: npm run test:e2e:demo -- --pass-with-no-tests "tests/${{ matrix.domain }}/"
 
       - name: Upload test results
         if: ${{ !cancelled() }}
