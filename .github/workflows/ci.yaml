@@ -250,12 +250,12 @@ jobs:
     # Wallclock ceiling for provisioning all demo companies (primary +
     # dismissal + every shared scenario in e2e/scenarios/shared/). Each
     # scenario gets up to 180s of patient polling for the demo backend's
-    # background seeding to complete. With ~3 shared scenarios + 2 legacy
-    # companies, worst case is ~15 min; 20 leaves margin for slow demo
-    # backend. If this is consistently hitting the cap, the demo factory
-    # is degraded — surface that here rather than smearing the failure
-    # across every downstream shard.
-    timeout-minutes: 20
+    # background seeding to complete. With 2 shared scenarios + 2 legacy
+    # companies, worst case is ~12 min; 15 leaves a small margin. If this
+    # is consistently hitting the cap, the demo factory is degraded —
+    # surface that here rather than smearing the failure across every
+    # downstream shard.
+    timeout-minutes: 15
     outputs:
       domains: ${{ steps.list-domains.outputs.domains }}
     steps:
