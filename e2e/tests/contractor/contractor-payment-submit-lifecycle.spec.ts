@@ -5,7 +5,7 @@ test.describe('ContractorPaymentFlow - submit payment lifecycle', () => {
   test.beforeEach(({}, testInfo) => {
     testInfo.annotations.push({
       type: 'scenario',
-      description: 'contractor/full-flow-canary',
+      description: 'shared/onboarded-ro',
     })
   })
 

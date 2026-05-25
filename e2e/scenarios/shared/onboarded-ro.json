@@ -1,0 +1,66 @@
+{
+  "$schema": "../schema/scenario.schema.json",
+  "name": "Shared onboarded company for read-only + create-isolated-entity tests",
+  "description": "Single onboarded react_sdk_demo_company_onboarded company shared across all non-canary tests in every domain. Hosts read-only specs (payroll lifecycle, employee list, contractor roster) plus specs that create uniquely-named entities (time-off policies with timestamped names). The combined decoration set covers every entity contract any RO spec needs:\n\n- HQ location for employee work-address picker and time-off employee enrollment\n- Biweekly pay schedule for payroll landing / blockers / off-cycle / transition lifecycle specs and weekly-cadence (which only asserts payroll landing UI)\n- One salaried alice employee for employee-list and time-off enrollment specs\n- Two contractors (Charlie Individual + Acme Consulting LLC business) for contractor-business, contractor-mixed-roster, and contractor-onboarding-edit-lifecycle specs. The 'Acme Consulting' business name is a fixture key in those specs — don't rename without updating them.\n\nThis company is NOT used by any canary suite — those mutate state across tests and need their own isolated onboarded company (see shared/onboarded-canary). The full health gate (requireOnboardedCompany + requireOnboardedEmployees + requireSignatory + requireNoBlockers) runs at e2e-setup time so every test that uses this company is guaranteed a payroll-ready state.",
+  "domain": "shared",
+  "baseDemo": "react_sdk_demo_company_onboarded",
+  "decorations": {
+    "locations": [
+      {
+        "key": "hq",
+        "street_1": "500 3rd Street",
+        "city": "San Francisco",
+        "state": "CA",
+        "zip": "94107",
+        "filing_address": true,
+        "mailing_address": true
+      }
+    ],
+    "paySchedule": {
+      "frequency": "Every other week",
+      "anchor_pay_date": "{{relative:+14d:Friday}}",
+      "anchor_end_of_pay_period": "{{relative:+13d}}"
+    },
+    "employees": [
+      {
+        "key": "alice",
+        "$ref": "../fragments/w2-salaried-employee.json",
+        "overrides": {
+          "first_name": "Alice",
+          "last_name": "Existing",
+          "email": "alice-existing+{{ts}}@example.com"
+        }
+      }
+    ],
+    "contractors": [
+      {
+        "key": "individual",
+        "$ref": "../fragments/contractor-1099.json",
+        "overrides": {
+          "first_name": "Charlie",
+          "last_name": "Individual",
+          "email": "charlie-ind+{{ts}}@example.com"
+        }
+      },
+      {
+        "key": "business",
+        "type": "Business",
+        "business_name": "Acme Consulting LLC",
+        "email": "billing-acme+{{ts}}@example.com",
+        "wage_type": "Fixed"
+      }
+    ]
+  },
+  "expectedContext": [
+    "companyId",
+    "locationIds.hq",
+    "paySchedule.uuid",
+    "employeeIds.alice",
+    "contractorIds.individual",
+    "contractorIds.business"
+  ],
+  "requireOnboardedCompany": true,
+  "requireOnboardedEmployees": true,
+  "requireSignatory": true,
+  "requireNoBlockers": true
+}

@@ -5,7 +5,7 @@ test.describe('TimeOffFlow - cancel mid-create returns to list', () => {
   test.beforeEach(({}, testInfo) => {
     testInfo.annotations.push({
       type: 'scenario',
-      description: 'time-off/time-off-policy-create-validation',
+      description: 'shared/onboarded-ro',
     })
   })
 

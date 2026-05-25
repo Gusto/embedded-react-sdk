@@ -1,0 +1,63 @@
+{
+  "$schema": "../schema/scenario.schema.json",
+  "name": "Shared onboarded company for the canary suite (all domains)",
+  "description": "Single onboarded react_sdk_demo_company_onboarded company shared by every canary spec across all domains. The canary suite intentionally mutates state across tests (submitting payrolls, terminating seed employees, creating policies that persist), so the suite must run serially. Tests live under e2e/tests/canaries/<domain>/ and rely on Playwright's workers:1 + describe.serial + alphabetical file ordering to keep mutations from racing.\n\nDecorations:\n- HQ location for employee work-address picker\n- Biweekly pay schedule that payroll canary 04 reads via scenario.paySchedule.uuid to drive its schedule-change API\n- 'selfee' employee (work_address only) for the employee self-onboarding canary 02 — scenario.employeeIds.selfee is a contract\n- 'payable' contractor (Pat Payable, Hourly, onboarding_completed) for the contractor payment canary 03 — scenario.contractorIds.payable is a contract\n\nWhat is intentionally NOT decorated:\n- Admin-employee-onboarding canary 01 creates its own employee via UI\n- Payroll dismissal canary 05 picks a seed philosopher to terminate (not the decorated selfee)\n- Time-off canaries create policies with timestamped names (no decoration needed)\n- Onboarded-completion company-canary 05 needs no decoration — just asserts the company lands on the completion overview\n\nFull health gate runs at e2e-setup time: onboarding_completed, signatory with passed identity verification, zero payroll blockers, at least one onboarded employee.",
+  "domain": "shared",
+  "baseDemo": "react_sdk_demo_company_onboarded",
+  "decorations": {
+    "locations": [
+      {
+        "key": "hq",
+        "street_1": "500 3rd Street",
+        "city": "San Francisco",
+        "state": "CA",
+        "zip": "94107",
+        "filing_address": true,
+        "mailing_address": true
+      }
+    ],
+    "paySchedule": {
+      "frequency": "Every other week",
+      "anchor_pay_date": "{{relative:+14d:Friday}}",
+      "anchor_end_of_pay_period": "{{relative:+13d}}"
+    },
+    "employees": [
+      {
+        "key": "selfee",
+        "first_name": "Selma",
+        "last_name": "Selfonboard",
+        "email": "selma-canary+{{ts}}@example.com",
+        "work_address": { "locationKey": "hq" }
+      }
+    ],
+    "contractors": [
+      {
+        "key": "payable",
+        "type": "Individual",
+        "first_name": "Pat",
+        "last_name": "Payable",
+        "email": "pat-payable+{{ts}}@example.com",
+        "wage_type": "Hourly",
+        "hourly_rate": "75",
+        "address": {
+          "street_1": "500 3rd Street",
+          "city": "San Francisco",
+          "state": "CA",
+          "zip": "94107"
+        },
+        "onboarding_status": "onboarding_completed"
+      }
+    ]
+  },
+  "expectedContext": [
+    "companyId",
+    "locationIds.hq",
+    "paySchedule.uuid",
+    "employeeIds.selfee",
+    "contractorIds.payable"
+  ],
+  "requireOnboardedCompany": true,
+  "requireOnboardedEmployees": true,
+  "requireSignatory": true,
+  "requireNoBlockers": true
+}

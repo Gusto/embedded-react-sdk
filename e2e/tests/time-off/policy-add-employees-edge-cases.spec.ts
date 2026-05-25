@@ -13,7 +13,7 @@ test.describe('TimeOffFlow - add employees edge cases', () => {
   test.beforeEach(({}, testInfo) => {
     testInfo.annotations.push({
       type: 'scenario',
-      description: 'time-off/time-off-policy-create-validation',
+      description: 'shared/onboarded-ro',
     })
   })
 

@@ -247,6 +247,15 @@ jobs:
     # contract. PR runs and manual dispatches still execute the suite.
     if: github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
+    # Wallclock ceiling for provisioning all demo companies (primary +
+    # dismissal + every shared scenario in e2e/scenarios/shared/). Each
+    # scenario gets up to 180s of patient polling for the demo backend's
+    # background seeding to complete. With ~3 shared scenarios + 2 legacy
+    # companies, worst case is ~15 min; 20 leaves margin for slow demo
+    # backend. If this is consistently hitting the cap, the demo factory
+    # is degraded — surface that here rather than smearing the failure
+    # across every downstream shard.
+    timeout-minutes: 20
     outputs:
       domains: ${{ steps.list-domains.outputs.domains }}
     steps:
@@ -306,7 +315,14 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: e2e-state
-          path: e2e/.e2e-state.json
+          # Includes both the legacy primary/dismissal state (used by
+          # dismissal.spec.ts) and the shared scenarios artifact (used by
+          # all scenario-annotated tests via the localTestFixture).
+          # Provision-once / share-many model: every scenario is created and
+          # validated here, every shard just downloads and reads.
+          path: |
+            e2e/.e2e-state.json
+            e2e/.e2e-scenarios.json
           include-hidden-files: true
           retention-days: 1
           if-no-files-found: error
@@ -332,15 +348,14 @@ jobs:
     # stabilize the demo backend contract (mirrors the e2e-setup gate).
     if: github.ref != 'refs/heads/main' && needs.e2e-setup.outputs.domains != '[]'
     runs-on: ubuntu-latest
-    # Wallclock ceiling per shard. Even with the per-test timeouts in
-    # playwright.demo.config.ts and the canary test.setTimeout overrides, a
-    # single hung test on a wedged demo backend can otherwise burn a full
-    # 6-hour Github runner. 30m is comfortably above the largest expected
-    # shard wallclock (sum of all canaries with 1 retry each on the slowest
-    # domain, accounting for the bumped per-canary patience for slow demo
-    # backend) but tight enough that a stuck run releases CI minutes for
-    # the next push.
-    timeout-minutes: 30
+    # Wallclock ceiling per shard. Scenario provisioning is now done in
+    # e2e-setup, so shards just download the artifact and run tests against
+    # pre-provisioned companies — no demo creation latency during the test
+    # run. 20m is comfortable for the largest expected shard (the canaries
+    # shard, which runs all 17 canary specs serially across 5 domains on
+    # one shared company) with margin for slow demo backend. Tight enough
+    # that a stuck run releases CI minutes quickly.
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       # Concurrent shard ceiling against flows.gusto-demo.com. We only have 3
@@ -403,7 +418,12 @@ jobs:
       - name: Run e2e tests
         env:
           E2E_USE_REAL_BACKEND: 'true'
-        run: npm run test:e2e:demo -- --pass-with-no-tests ${{ matrix.domain }}
+        # Path-anchored grep so each shard only runs the specs directly under
+        # its own directory. Bare `${{ matrix.domain }}` would substring-match
+        # any path containing that word — so the `company` shard would also
+        # pick up `canaries/company/` etc. Anchoring to e2e/tests/<domain>/
+        # makes each shard exactly its top-level directory.
+        run: npm run test:e2e:demo -- --pass-with-no-tests "^e2e/tests/${{ matrix.domain }}/"
 
       - name: Upload test results
         if: ${{ !cancelled() }}

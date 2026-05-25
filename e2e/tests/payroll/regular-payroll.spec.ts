@@ -5,7 +5,7 @@ test.describe('PayrollFlow — regular biweekly', () => {
   test.beforeEach(({}, testInfo) => {
     testInfo.annotations.push({
       type: 'scenario',
-      description: 'payroll/biweekly-shared',
+      description: 'shared/onboarded-ro',
     })
   })
 

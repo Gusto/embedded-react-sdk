@@ -13,7 +13,7 @@ test.describe('TimeOffFlow - input error handling regressions', () => {
   test.beforeEach(({}, testInfo) => {
     testInfo.annotations.push({
       type: 'scenario',
-      description: 'time-off/time-off-policy-create-validation',
+      description: 'shared/onboarded-ro',
     })
   })
 

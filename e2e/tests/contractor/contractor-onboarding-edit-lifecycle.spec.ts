@@ -5,7 +5,7 @@ test.describe('ContractorOnboardingFlow - edit re-entry from list lifecycle', ()
   test.beforeEach(({}, testInfo) => {
     testInfo.annotations.push({
       type: 'scenario',
-      description: 'contractor/contractor-mixed-roster',
+      description: 'shared/onboarded-ro',
     })
   })
 

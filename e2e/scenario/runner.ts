@@ -13,13 +13,13 @@ import type {
 
 const DEFAULT_GWS_FLOWS_HOST = 'https://flows.gusto-demo.com'
 
-interface ApiClient {
+export interface ApiClient {
   get: <T>(path: string) => Promise<T>
   post: <T>(path: string, body: Record<string, unknown>) => Promise<T>
   put: <T>(path: string, body: Record<string, unknown>) => Promise<T>
 }
 
-function makeApi(gwsFlowsBase: string, flowToken: string): ApiClient {
+export function makeApi(gwsFlowsBase: string, flowToken: string): ApiClient {
   const base = `${gwsFlowsBase}/fe_sdk/${flowToken}/v1`
 
   async function request<T>(
@@ -565,18 +565,13 @@ function validateExpectedContext(context: ScenarioContext, expectedPaths: string
  * Validate that the base demo's company satisfies the scenario's stated
  * preconditions (onboarding complete, employees seeded, etc.).
  *
- * The `react_sdk_demo_company_onboarded` factory on flows.gusto-demo.com is
- * non-deterministic: most invocations return a fully-onboarded company with
- * ~14 seed employees, but a meaningful minority return an effectively-fresh
- * company with 8+ payroll blockers and no employees. Tests that depend on
- * the seeded onboarded state (the four canaries that opt in via
- * requireOnboardedCompany / requireOnboardedEmployees) fail downstream with
- * misleading errors when this happens.
+ * Single-shot check. Caller wraps in waitForBaseDemoReady when polling is
+ * required.
  *
  * Returns null on success, or a human-readable reason string when the demo
- * is degraded. The caller re-provisions on a non-null result.
+ * isn't ready.
  */
-async function checkBaseDemoState(
+export async function checkBaseDemoState(
   api: ApiClient,
   companyId: string,
   requirements: { onboarded: boolean; onboardedEmployees: boolean },
@@ -619,119 +614,59 @@ async function checkBaseDemoState(
 }
 
 /**
- * Batch sizes used to find an acceptable base demo when the factory is in a
- * degraded mode. The factory's bad output is statistically independent
- * per-demo invocation (verified empirically), so a parallel batch converts
- * serial retry latency into one round-trip per batch.
+ * Maximum patience for the base demo's background seeding to complete.
+ * The react_sdk_demo_company_onboarded factory finishes seeding the company
+ * (signatory creation, form signing, employee roster materialization) on a
+ * background job after POST /demos returns the flow token. Observed
+ * seeding window: 10-90s, with the long tail going up toward 2-3 minutes
+ * when the demo backend is under load. 180s gives a 1.5x margin over the
+ * upper end of the observed window.
  *
- * Sized to be gentle on the demo backend. An earlier iteration used 4-way
- * parallel retries — that worked when one CI run hit the backend at a
- * time, but multiple concurrent CI runs (5 in parallel hitting backend
- * simultaneously, ~200 concurrent POST /demos calls) overloaded the
- * factory and made BOTH the original creation AND subsequent retries
- * time out at 180s. 2-way batches at 3 attempts is enough headroom at
- * the observed ~21% degraded-factory good-rate without flooding the
- * backend:
- *
- *   batch 1 (size 1):   P(success) = 0.21
- *   batch 2 (size 2):   P(at-least-one-good) = 1 - 0.79^2 = 0.38, cumulative 0.51
- *   batch 3 (size 2):   cumulative 0.69
- *   batch 4 (size 2):   cumulative 0.81
- *
- * Total worst-case demos: 7 (vs 13 before). Wall time worst case is
- * still ~4 batches × ~25s each = ~100s, because each batch is bounded
- * by the slowest demo not the sum.
+ * We trust the backend to eventually finish — we don't discard demos and
+ * retry, we just wait. If a single demo can't reach the required state in
+ * 180s, that's a real backend regression and the caller fails loudly.
  */
-const BASE_DEMO_VALIDATION_BATCH_SIZES = [1, 2, 2, 2] as const
+const BASE_DEMO_READINESS_BUDGET_MS = 180_000
 
 /**
- * Wait between batches to give the demo backend time to settle if it's
- * overloaded. The 5-run-concurrent stress test showed POST /demos
- * timing out at 180s when hammered; a brief pause between escalating
- * batches lets the backend recover (and lets a flaky transient
- * degraded factory window pass).
+ * Poll a single demo's company state with exponential backoff until it
+ * satisfies the requirements, or the readiness budget runs out.
+ *
+ * Returns null on success, the last validation reason on timeout.
  */
-const BASE_DEMO_VALIDATION_INTER_BATCH_DELAY_MS = 5_000
-
-async function findAcceptableBaseDemo(
-  gwsFlowsBase: string,
-  baseDemoType: string,
+async function waitForBaseDemoReady(
+  api: ApiClient,
+  companyId: string,
   requirements: { onboarded: boolean; onboardedEmployees: boolean },
   log: ReturnType<typeof makeLog>,
-  onProgress?: ProgressFn,
-): Promise<{
-  demo: Awaited<ReturnType<typeof createDemoAndProvision>> | null
-  failures: string[]
-}> {
-  const failures: string[] = []
+): Promise<string | null> {
+  const start = Date.now()
+  let delay = 500
+  let lastReason: string | null = null
+  let pollCount = 0
 
-  for (let batchIdx = 0; batchIdx < BASE_DEMO_VALIDATION_BATCH_SIZES.length; batchIdx++) {
-    const batchSize = BASE_DEMO_VALIDATION_BATCH_SIZES[batchIdx]!
-    if (batchIdx > 0) {
-      log(
-        `  Previous attempt(s) returned degraded demos; pausing ${BASE_DEMO_VALIDATION_INTER_BATCH_DELAY_MS}ms then escalating to parallel batch of ${batchSize}`,
-      )
-      await new Promise(r => setTimeout(r, BASE_DEMO_VALIDATION_INTER_BATCH_DELAY_MS))
-    }
-
-    // Settle individually so one demo's 180s timeout doesn't kill the whole
-    // batch — that would force the caller to re-create everything from
-    // scratch on the next batch.  Each batch member resolves either to a
-    // ready demo or to a creation error we record in failures.
-    const batch = await Promise.allSettled(
-      Array.from({ length: batchSize }, () =>
-        createDemoAndProvision(gwsFlowsBase, baseDemoType, { onProgress }),
-      ),
-    )
-
-    const creations: Array<{
-      candidate: Awaited<ReturnType<typeof createDemoAndProvision>> | null
-      reason: string | null
-    }> = []
-    for (const settled of batch) {
-      if (settled.status === 'fulfilled') {
-        creations.push({ candidate: settled.value, reason: null })
-      } else {
-        creations.push({ candidate: null, reason: `creation failed: ${String(settled.reason)}` })
-      }
-    }
-
-    // Validate each successfully-created candidate in parallel; pick the
-    // first acceptable one.
-    const validations = await Promise.all(
-      creations.map(async creation => {
-        if (!creation.candidate) {
-          return { candidate: null, reason: creation.reason ?? 'creation failed' }
-        }
-        const candidateApi = makeApi(gwsFlowsBase, creation.candidate.flowToken)
-        const reason = await checkBaseDemoState(
-          candidateApi,
-          creation.candidate.companyId,
-          requirements,
+  while (Date.now() - start < BASE_DEMO_READINESS_BUDGET_MS) {
+    pollCount++
+    lastReason = await checkBaseDemoState(api, companyId, requirements)
+    if (lastReason === null) {
+      if (pollCount > 1) {
+        log(
+          `  Demo ${companyId.slice(0, 8)} became ready after ${pollCount} poll(s) (${Math.round(
+            (Date.now() - start) / 1000,
+          )}s)`,
         )
-        return { candidate: creation.candidate, reason }
-      }),
-    )
-
-    const acceptable = validations.find(v => v.reason === null && v.candidate !== null)
-    if (acceptable?.candidate) {
-      const discarded = validations.length - 1
-      if (discarded > 0) {
-        log(`  Found acceptable demo on batch ${batchIdx + 1} (discarded ${discarded} degraded)`)
       }
-      return { demo: acceptable.candidate, failures }
+      return null
     }
-
-    for (const v of validations) {
-      const companyHint = v.candidate ? v.candidate.companyId.slice(0, 8) : 'no-company'
-      failures.push(`batch ${batchIdx + 1} (${companyHint}): ${v.reason}`)
-    }
-    log(
-      `  Batch ${batchIdx + 1} of ${BASE_DEMO_VALIDATION_BATCH_SIZES.length} returned ${batch.length}/${batch.length} degraded demos`,
-    )
+    await new Promise(r => setTimeout(r, delay))
+    delay = Math.min(delay * 2, 2_000)
   }
 
-  return { demo: null, failures }
+  const elapsedSec = Math.round((Date.now() - start) / 1000)
+  log(
+    `  Demo ${companyId.slice(0, 8)} not ready after ${elapsedSec}s / ${pollCount} polls (last reason: ${lastReason})`,
+  )
+  return lastReason
 }
 
 export async function provisionScenario(
@@ -754,37 +689,30 @@ export async function provisionScenario(
   const requireOnboardedEmployees = scenario.requireOnboardedEmployees === true
 
   log(`Provisioning ${scenario.baseDemo} demo for ${scenarioId}`)
-  let demoResult: Awaited<ReturnType<typeof createDemoAndProvision>> | null = null
-  let validationFailures: string[] = []
-
-  if (!requireOnboarded) {
-    demoResult = await createDemoAndProvision(gwsFlowsBase, scenario.baseDemo, {
-      onProgress: options?.onProgress,
-    })
-  } else {
-    const result = await findAcceptableBaseDemo(
-      gwsFlowsBase,
-      scenario.baseDemo,
-      { onboarded: requireOnboarded, onboardedEmployees: requireOnboardedEmployees },
-      log,
-      options?.onProgress,
-    )
-    demoResult = result.demo
-    validationFailures = result.failures
-  }
-
-  if (!demoResult) {
-    throw new Error(
-      `Base demo "${scenario.baseDemo}" failed scenario preconditions after ${BASE_DEMO_VALIDATION_BATCH_SIZES.reduce((s, n) => s + n, 0)} attempts across ${BASE_DEMO_VALIDATION_BATCH_SIZES.length} batches:\n${validationFailures
-        .map(f => `  - ${f}`)
-        .join(
-          '\n',
-        )}\nThis indicates a regression in the demo factory on the gws-flows backend, not in the SDK.`,
-    )
-  }
+  const demoResult = await createDemoAndProvision(gwsFlowsBase, scenario.baseDemo, {
+    onProgress: options?.onProgress,
+  })
 
   const { flowToken, companyId } = demoResult
   const api = makeApi(gwsFlowsBase, flowToken)
+
+  if (requireOnboarded) {
+    const reason = await waitForBaseDemoReady(
+      api,
+      companyId,
+      { onboarded: requireOnboarded, onboardedEmployees: requireOnboardedEmployees },
+      log,
+    )
+    if (reason !== null) {
+      throw new Error(
+        `Base demo "${scenario.baseDemo}" (company ${companyId.slice(
+          0,
+          8,
+        )}) failed readiness check after ${BASE_DEMO_READINESS_BUDGET_MS / 1000}s of patient polling: ${reason}\nThis indicates a regression in the demo factory on the gws-flows backend, not in the SDK.`,
+      )
+    }
+  }
+
   const decorations = scenario.decorations
 
   const locationIds = decorations.locations

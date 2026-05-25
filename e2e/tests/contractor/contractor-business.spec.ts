@@ -5,7 +5,7 @@ test.describe('ContractorOnboarding — business profile branch', () => {
   test.beforeEach(({}, testInfo) => {
     testInfo.annotations.push({
       type: 'scenario',
-      description: 'contractor/contractor-mixed-roster',
+      description: 'shared/onboarded-ro',
     })
   })
 

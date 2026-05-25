@@ -5,7 +5,7 @@ test.describe('EmployeeOnboarding — list with existing onboarded employee', ()
   test.beforeEach(({}, testInfo) => {
     testInfo.annotations.push({
       type: 'scenario',
-      description: 'employee/employee-onboarding-with-existing-employee',
+      description: 'shared/onboarded-ro',
     })
   })
 

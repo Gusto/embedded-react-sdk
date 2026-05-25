@@ -5,7 +5,7 @@ test.describe('ContractorOnboardingFlow - cancel mid-onboarding returns to list'
   test.beforeEach(({}, testInfo) => {
     testInfo.annotations.push({
       type: 'scenario',
-      description: 'contractor/full-flow-canary',
+      description: 'shared/onboarded-ro',
     })
   })
 

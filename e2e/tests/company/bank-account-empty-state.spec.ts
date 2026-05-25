@@ -11,7 +11,7 @@ test.describe('CompanyOnboarding - bank account empty-state lifecycle', () => {
   test.beforeEach(({}, testInfo) => {
     testInfo.annotations.push({
       type: 'scenario',
-      description: 'company/fresh-with-hq-location',
+      description: 'shared/fresh-wizard',
     })
   })
 

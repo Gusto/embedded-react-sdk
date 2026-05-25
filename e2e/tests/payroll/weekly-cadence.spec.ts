@@ -2,15 +2,15 @@ import { test, expect } from '../../utils/localTestFixture'
 import { waitForLoadingComplete } from '../../utils/helpers'
 import { PAYROLL_CALCULATION_DEADLINE, SDK_NAVIGATION_DEADLINE } from '../../utils/timeouts'
 
-test.describe('PayrollFlow — weekly cadence', () => {
+test.describe('PayrollFlow — landing', () => {
   test.beforeEach(({}, testInfo) => {
     testInfo.annotations.push({
       type: 'scenario',
-      description: 'payroll/weekly-schedule',
+      description: 'shared/onboarded-ro',
     })
   })
 
-  test('payroll landing loads under weekly schedule with provisioned context', async ({
+  test('payroll landing renders run-payroll + history tabs with the pay period column', async ({
     page,
     scenario,
   }) => {
@@ -29,10 +29,9 @@ test.describe('PayrollFlow — weekly cadence', () => {
 
     // Assert the pay period column directly rather than allowing a blocker
     // surface ("Action required", "Complete setup") as a fallback. The
-    // scenario runner is responsible for provisioning a real weekly
-    // schedule before the test starts; if we reach this point and a
-    // blocker is what's rendered, that's a regression worth failing on,
-    // not a degraded-but-acceptable state to accept via `.or()`.
+    // e2e-setup health gate guarantees this company has zero blockers when
+    // the test runs; if a blocker surface appears, that's a real regression
+    // worth failing on, not a degraded-but-acceptable state to accept via `.or()`.
     await expect(page.getByRole('columnheader', { name: /pay period/i })).toBeVisible({
       timeout: SDK_NAVIGATION_DEADLINE,
     })
