@@ -426,90 +426,78 @@ export async function terminateAndRunDismissalPayroll(
   // places depending on whether the backend has already produced the
   // dismissal payroll record:
   //   - DismissalPayPeriodSelection ("Run dismissal payroll" h2) when the
-  //     payroll hasn't been created yet — driver picks a period or reloads
-  //     to wait for the backend to catch up.
-  //   - Edit Payroll directly (h1 "Edit Payroll", breadcrumb "Pay Period ›
-  //     Edit Dismissal Payroll") when the backend already had an
-  //     unprocessed termination period for this employee. The SDK
-  //     auto-advances past pay-period selection in that case.
-  // The post-mutation landing can take longer than a plain SDK navigation
-  // because the backend computes pay periods + creates the dismissal
-  // payroll record synchronously, so we wait on the longer
-  // PAYROLL_CALCULATION_DEADLINE budget for the first landmark.
-  const dismissalHeading = page.getByRole('heading', { name: /run dismissal payroll/i, level: 2 })
+  //     payroll hasn't been created yet — we poll the API and navigate fresh.
+  //   - Edit Payroll directly (h1 "Edit Payroll") when the backend had an
+  //     unprocessed termination period already. SDK auto-advances.
   const editPayrollHeading = page.getByRole('heading', { name: /edit payroll/i, level: 1 })
-  const payPeriodSelect = page.getByLabel(/^pay period$/i)
-  const emptyStateAlert = page.getByText(/no unprocessed termination pay periods available/i)
+  const dismissalHeading = page.getByRole('heading', { name: /run dismissal payroll/i, level: 2 })
 
   await page.getByRole('button', { name: /run termination payroll/i }).click()
   await waitForLoadingComplete(page, {
     timeout: PAYROLL_CALCULATION_DEADLINE,
     anchor: dismissalHeading.or(editPayrollHeading).first(),
-  })
+  }).catch(() => {})
 
-  if (await dismissalHeading.isVisible()) {
-    // The demo backend creates the dismissal payroll record asynchronously
-    // after we click "Run termination payroll". The pay period dropdown only
-    // appears once that record exists. On a slow backend this can take 30-120s.
+  if (await dismissalHeading.isVisible({ timeout: 2_000 }).catch(() => false)) {
+    // The DismissalPayPeriodSelection SDK component calls
+    // GET /v1/companies/{id}/pay_periods/unprocessed_termination_pay_periods
+    // once on mount — it has no refetchInterval. When the backend hasn't
+    // created the termination pay period yet, the component shows the empty
+    // state and sits there permanently.
     //
-    // Poll with short per-check timeouts and a page reload between each
-    // attempt. The reload lets the backend's async pay-period creation surface
-    // on a fresh page load.
-    //
-    // Two important constraints:
-    // 1. Use non-throwing isVisible() probes — a throwing expect() escapes the
-    //    loop on first timeout, making retries impossible.
-    // 2. Wrap page.reload() with .catch() — the SDK may start a client-side
-    //    navigation away from the dismissal screen at any moment (once the
-    //    backend produces the payroll record), causing reload() to throw
-    //    net::ERR_ABORTED if called mid-navigation. Catching it and re-checking
-    //    the landmarks is safer than crashing.
-    //
-    // Give this step 3× PAYROLL_CALCULATION_DEADLINE (270s) since it involves
-    // async backend work on top of normal load time. The per-test ceiling
-    // CANARY_TEST_TIMEOUT_WITH_PRECURSOR_MS (10 min) covers the full scenario.
-    const DISMISSAL_PAYROLL_BUDGET_MS = 3 * PAYROLL_CALCULATION_DEADLINE
-    const pollStart = Date.now()
-    let foundPayPeriod = false
-    while (Date.now() - pollStart < DISMISSAL_PAYROLL_BUDGET_MS) {
-      if (await payPeriodSelect.isVisible({ timeout: 5_000 }).catch(() => false)) {
-        foundPayPeriod = true
-        break
+    // Rather than reloading the page repeatedly (each reload races against
+    // in-flight navigations and slow Suspense loading), we poll the API
+    // directly until the pay period exists, then navigate fresh to the
+    // dismissal flow. A fresh page.goto triggers a new React mount + fresh
+    // query, so the component always loads with data already available.
+    const gwsFlowsHost = process.env.E2E_GWS_FLOWS_HOST ?? DEMO_GWS_FLOWS_HOST
+    const apiBase = `${gwsFlowsHost}/fe_sdk/${scenario.flowToken}/v1`
+    const DISMISSAL_POLL_BUDGET_MS = 3 * PAYROLL_CALCULATION_DEADLINE // 270s
+
+    type TerminationPeriod = { employee_uuid?: string; employeeUuid?: string }
+    const periodPollStart = Date.now()
+    let periodFound = false
+    while (Date.now() - periodPollStart < DISMISSAL_POLL_BUDGET_MS) {
+      try {
+        const periods = (await fetch(
+          `${apiBase}/companies/${scenario.companyId}/pay_periods/unprocessed_termination_pay_periods`,
+        ).then(r => (r.ok ? r.json() : []))) as TerminationPeriod[]
+        const match = periods.find(p => (p.employee_uuid ?? p.employeeUuid) === targetEmployeeId)
+        if (match) {
+          periodFound = true
+          break
+        }
+      } catch {
+        // Transient fetch errors — keep polling
       }
-      if (await editPayrollHeading.isVisible({ timeout: 2_000 }).catch(() => false)) {
-        // SDK auto-advanced past pay-period selection — backend was fast.
-        break
-      }
-      // Neither the pay period select nor the edit payroll heading is visible yet.
-      // Reload and let the page re-render. Guard against ERR_ABORTED in case
-      // the SDK started a client-side navigation just as we reloaded.
-      // Also catch timeouts from waitForLoadingComplete — on a very slow backend
-      // the Suspense region itself may take >90s to detach, which would throw
-      // and exit the while loop. Swallowing that timeout here lets us keep
-      // polling rather than crashing.
-      await page.reload().catch(() => {})
-      await waitForLoadingComplete(page, PAYROLL_CALCULATION_DEADLINE).catch(() => {})
-      // After reload, check again immediately before the next loop iteration
-      if (await editPayrollHeading.isVisible({ timeout: 2_000 }).catch(() => false)) {
-        break
-      }
+      await new Promise(r => setTimeout(r, 5_000))
     }
 
-    if (
-      !foundPayPeriod &&
-      !(await editPayrollHeading.isVisible({ timeout: 2_000 }).catch(() => false))
-    ) {
+    if (!periodFound) {
       throw new Error(
-        `Run Dismissal Payroll: pay period select never appeared within ${DISMISSAL_PAYROLL_BUDGET_MS / 1000}s of patient polling (backend never produced an unprocessed termination pay period for this employee)`,
+        `Dismissal pay period never appeared within ${DISMISSAL_POLL_BUDGET_MS / 1000}s for employee ${targetEmployeeId} (backend never produced an unprocessed termination pay period)`,
       )
     }
 
-    if (await payPeriodSelect.isVisible()) {
+    // Navigate fresh so the SDK mounts DismissalPayPeriodSelection with the
+    // pay period already available — avoids the empty-state / reload dance.
+    await page.goto(`/?flow=dismissal&employeeId=${encodeURIComponent(targetEmployeeId)}`)
+    await waitForLoadingComplete(page, {
+      timeout: PAYROLL_CALCULATION_DEADLINE,
+      anchor: page
+        .getByRole('heading', { name: /run dismissal payroll/i, level: 2 })
+        .or(editPayrollHeading)
+        .first(),
+    })
+
+    const payPeriodSelect = page.getByLabel(/^pay period$/i)
+    if (await payPeriodSelect.isVisible({ timeout: SDK_NAVIGATION_DEADLINE }).catch(() => false)) {
       await payPeriodSelect.click()
       await page.getByRole('option').first().click()
       await page.getByRole('button', { name: /^continue$/i }).click()
       await waitForLoadingComplete(page, PAYROLL_CALCULATION_DEADLINE)
     }
+    // If editPayrollHeading is visible instead, the SDK auto-advanced — nothing to do.
   }
 
   await calculateAndSubmit(page)
