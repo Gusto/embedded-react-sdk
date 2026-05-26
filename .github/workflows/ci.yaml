@@ -231,21 +231,159 @@ jobs:
       - name: Run scenario unit tests
         run: npm run test:scenarios
 
+  # E2E changes: Decide which domain shards should run for this event.
+  #
+  # Domains are discovered dynamically from `e2e/tests/<domain>/`. The
+  # naming contract is `e2e/tests/<kebab>` ↔ `src/components/<Pascal>`
+  # (e.g. time-off ↔ TimeOff). Adding or removing a domain folder is the
+  # only thing required to add or remove a shard.
+  #
+  # The selection is a two-stage filter:
+  #
+  #   1. Drop files whose extension can't affect runtime or test
+  #      behavior (.md, LICENSE, .gitignore, images, etc.). A docs-only
+  #      PR produces an empty filtered diff and skips e2e entirely.
+  #   2. Of the surviving files, if any sit OUTSIDE every known domain's
+  #      surface area (`src/components/<Pascal>/` or `e2e/tests/<kebab>/`),
+  #      treat the change as cross-cutting and run every shard.
+  #      Otherwise run only the domains whose surface was actually touched.
+  #
+  # Stage 2 is safe by default: new code in unfamiliar locations (e.g. a
+  # fresh top-level directory like `src/middleware/`) fans out to all
+  # shards rather than silently producing an empty matrix.
+  #
+  # On pushes to main and manual dispatches we run every domain
+  # unconditionally — main is the canonical "all green" signal regardless
+  # of which paths landed in the merge commit.
+  #
+  # Output is a JSON array of domain folder names that downstream
+  # `e2e-setup` and `e2e` consume via fromJson() for matrix expansion. An
+  # empty array is a valid result and short-circuits both downstream jobs.
+  e2e-changes:
+    needs: setup
+    runs-on: ubuntu-latest
+    outputs:
+      domains: ${{ steps.resolve.outputs.domains }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          # Need merge-base history to diff PR branches against base. Default
+          # depth=1 has no shared history with origin/<base>, which would
+          # make `git diff base...HEAD` empty and silently skip every shard.
+          fetch-depth: 0
+
+      - id: resolve
+        name: Resolve domains JSON
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          REF: ${{ github.ref }}
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          set -euo pipefail
+
+          # Domain folder convention is the contract: every folder under
+          # e2e/tests/ is a domain shard, and its name in kebab-case maps to
+          # a PascalCase folder under src/components/ (e.g. time-off ↔
+          # TimeOff). Discover both ends from disk so adding a new domain
+          # never requires a CI edit.
+          mapfile -t domains < <(find e2e/tests -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort)
+          all_domains_json=$(printf '%s\n' "${domains[@]}" | jq -R . | jq -sc .)
+
+          # On main and manual dispatch we always run every domain so main
+          # is a true "all green" signal regardless of which paths landed
+          # in the merge commit.
+          if [[ "$EVENT_NAME" == "workflow_dispatch" || "$REF" == "refs/heads/main" ]]; then
+            echo "Running all domains (event=$EVENT_NAME ref=$REF)"
+            echo "domains=$all_domains_json" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Otherwise diff against the PR base. github.base_ref is set on
+          # pull_request events; on a plain push to a feature branch we
+          # fall back to origin/main as the comparison point.
+          base="${BASE_REF:-main}"
+          git fetch --no-tags --depth=0 origin "$base" >/dev/null 2>&1 || git fetch origin "$base"
+          all_changed=$(git diff --name-only "origin/${base}...HEAD")
+          echo "All changed files vs origin/${base}:"
+          echo "$all_changed" | sed 's/^/  /'
+
+          # Filter to extensions that can actually affect SDK runtime or
+          # test behavior. Markdown, license files, gitignore, editorconfig,
+          # images, etc. are dropped — they can't change what the e2e
+          # suite exercises, so a docs-only PR shouldn't burn CI minutes
+          # running the full Playwright matrix. Anything *new* with one of
+          # these extensions in an unfamiliar location still falls through
+          # to the cross-cutting branch below, preserving the safe default.
+          changed=$(echo "$all_changed" | grep -E '\.(ts|tsx|js|jsx|cjs|mjs|json|ya?ml|s?css|html|svg|env)$' || true)
+
+          if [[ -z "$changed" ]]; then
+            echo "No code/config changes detected (only non-runtime files)"
+            echo "domains=[]" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "Filtered changed files (runtime-affecting):"
+          echo "$changed" | sed 's/^/  /'
+
+          # Build the regex that matches "this file is part of some
+          # domain's owned surface area" — i.e. lives under either
+          # src/components/<Pascal>/ or e2e/tests/<kebab>/ for a known
+          # domain. kebab→Pascal converts time-off → TimeOff so the
+          # single discovered name covers both ends.
+          kebab_to_pascal() {
+            local kebab="$1"
+            echo "$kebab" | awk -F- '{ for (i=1;i<=NF;i++) printf "%s%s", toupper(substr($i,1,1)), substr($i,2); print "" }'
+          }
+
+          domain_owned_regex=""
+          for domain in "${domains[@]}"; do
+            pascal=$(kebab_to_pascal "$domain")
+            entry="^(src/components/${pascal}/|e2e/tests/${domain}/)"
+            if [[ -z "$domain_owned_regex" ]]; then
+              domain_owned_regex="$entry"
+            else
+              domain_owned_regex="${domain_owned_regex}|${entry}"
+            fi
+          done
+
+          # Any file in the diff that ISN'T claimed by a domain is by
+          # definition cross-cutting — run everything. This is the
+          # default-safe policy: unknown locations fan out instead of
+          # silently producing an empty matrix.
+          unowned=$(echo "$changed" | grep -vE "$domain_owned_regex" || true)
+          if [[ -n "$unowned" ]]; then
+            echo "Cross-cutting changes detected (not under any domain):"
+            echo "$unowned" | sed 's/^/  /'
+            echo "Running all domains"
+            echo "domains=$all_domains_json" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # All changes are domain-owned — pick exactly the domains
+          # whose surface area was touched.
+          selected=()
+          for domain in "${domains[@]}"; do
+            pascal=$(kebab_to_pascal "$domain")
+            if echo "$changed" | grep -qE "^(src/components/${pascal}/|e2e/tests/${domain}/)"; then
+              selected+=("$domain")
+            fi
+          done
+
+          domains_json=$(printf '%s\n' "${selected[@]}" | jq -R . | jq -sc .)
+          echo "Running selected domains: $domains_json"
+          echo "domains=$domains_json" >> "$GITHUB_OUTPUT"
+
   # E2E setup: Provision demo companies once per CI run and share state across
-  # shards, and discover which domain folders under e2e/tests/ should become
-  # matrix shards. E2E_DISABLE_CACHE ensures fresh provisioning for each CI run
+  # shards. E2E_DISABLE_CACHE ensures fresh provisioning for each CI run
   # (ignores stale .e2e-state.json from previous runs), but the artifact sharing
   # across shards within this run avoids duplicate provisioning load on the
-  # demo backend. The `domains` output is a JSON array consumed by the e2e
-  # job's matrix via fromJson() — new domain folders automatically become
-  # shards with no CI edits; folders that disappear stop producing shards.
-  # Flat specs directly under e2e/tests/ are intentionally not picked up —
-  # every shipping spec lives inside a domain folder.
+  # demo backend. The set of domains to run is computed by `e2e-changes` and
+  # passed through unchanged so downstream `e2e` consumers have a single
+  # source of truth. Skipped entirely when `e2e-changes` produced an empty
+  # array (a PR with no e2e-affecting changes).
   e2e-setup:
-    needs: [setup, scenarios]
-    # Temporarily skip E2E on pushes to main while we stabilize the demo backend
-    # contract. PR runs and manual dispatches still execute the suite.
-    if: github.ref != 'refs/heads/main'
+    needs: [setup, scenarios, e2e-changes]
+    if: needs.e2e-changes.outputs.domains != '[]'
     runs-on: ubuntu-latest
     # Wallclock ceiling for provisioning all demo companies (primary +
     # dismissal + every shared scenario in e2e/scenarios/shared/). Each
@@ -257,16 +395,9 @@ jobs:
     # downstream shard.
     timeout-minutes: 15
     outputs:
-      domains: ${{ steps.list-domains.outputs.domains }}
+      domains: ${{ needs.e2e-changes.outputs.domains }}
     steps:
       - uses: actions/checkout@v6
-
-      - id: list-domains
-        name: Discover e2e domains from folders under e2e/tests/
-        run: |
-          domains=$(find e2e/tests -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort | jq -R . | jq -sc .)
-          echo "domains=$domains" >> "$GITHUB_OUTPUT"
-          echo "Discovered: $domains"
 
       - uses: actions/setup-node@v6
         with:
@@ -343,10 +474,11 @@ jobs:
   # specs under `e2e/tests/<domain>/**/*.spec.ts`.
   e2e:
     needs: [setup, scenarios, e2e-setup]
-    # Skip cleanly when no domain folders exist — fromJson on an empty array
-    # would otherwise fail matrix expansion. Also skipped on main while we
-    # stabilize the demo backend contract (mirrors the e2e-setup gate).
-    if: github.ref != 'refs/heads/main' && needs.e2e-setup.outputs.domains != '[]'
+    # Skip cleanly when no domain folders are selected — fromJson on an empty
+    # array would otherwise fail matrix expansion. The selection itself
+    # (including the "always run all on main" rule) is computed in
+    # `e2e-changes`; we just honor whatever it produced.
+    if: needs.e2e-setup.outputs.domains != '[]'
     runs-on: ubuntu-latest
     # Wallclock ceiling per shard. Scenario provisioning is now done in
     # e2e-setup, so shards just download the artifact and run tests against
@@ -442,3 +574,36 @@ jobs:
           name: e2e-scenario-report-${{ matrix.domain }}
           path: e2e/reports/
           retention-days: 7
+
+  # E2E success: Single required check that branch protection can gate on.
+  #
+  # Aggregates the result of every job that collectively constitutes "e2e
+  # passed" — scenarios validation, the provisioning job, and the matrix
+  # itself (whose `result` is the rolled-up status across every shard).
+  # Skipped counts as success so a PR that only touches paths outside any
+  # domain (and therefore produced an empty matrix) still satisfies the
+  # gate. Failure or cancellation of any contributing job fails this check.
+  #
+  # `if: !cancelled()` is required: without it, a failed upstream short-
+  # circuits this job to `skipped`, which branch protection treats as
+  # passing — exactly the bug we're trying to avoid.
+  e2e-success:
+    needs: [scenarios, e2e-changes, e2e-setup, e2e]
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify required e2e jobs succeeded
+        env:
+          SCENARIOS: ${{ needs.scenarios.result }}
+          E2E_CHANGES: ${{ needs.e2e-changes.result }}
+          E2E_SETUP: ${{ needs.e2e-setup.result }}
+          E2E: ${{ needs.e2e.result }}
+        run: |
+          set -euo pipefail
+          echo "scenarios=$SCENARIOS e2e-changes=$E2E_CHANGES e2e-setup=$E2E_SETUP e2e=$E2E"
+          for r in "$SCENARIOS" "$E2E_CHANGES" "$E2E_SETUP" "$E2E"; do
+            case "$r" in
+              success|skipped) ;;
+              *) echo "Required job result was '$r'"; exit 1 ;;
+            esac
+          done
