@@ -20,7 +20,17 @@
     "remaining": "{{balance}} remaining"
   },
   "additionalEarningsTitle": "Additional earnings",
-  "reimbursementTitle": "Reimbursement",
+  "reimbursementTitle": "Reimbursements",
+  "reimbursementDescriptionLabel": "Description",
+  "reimbursementDescriptionPlaceholder": "e.g., Office supplies",
+  "reimbursementAmountLabel": "Amount",
+  "reimbursementUnnamedFallback": "Reimbursement",
+  "addReimbursementLink": "Add one-time reimbursement",
+  "saveReimbursementCta": "Save reimbursement",
+  "cancelReimbursementCta": "Cancel reimbursement",
+  "removeReimbursementLabel": "Remove {{description}} reimbursement",
+  "recurringReimbursementLabel": "{{description}} (recurring reimbursement)",
+  "recurringReimbursementTooltip": "Recurring reimbursements are managed outside of payroll.",
   "fixedCompensationNames": {
     "bonus": "Bonus",
     "paycheckTips": "Paycheck tips",

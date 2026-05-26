@@ -3,7 +3,11 @@ import {
   type PayrollShowFixedCompensations,
   OffCycleReasonType,
 } from '@gusto/embedded-api-v-2025-11-15/models/components/payroll'
-import type { PayrollEmployeeCompensationsTypeFixedCompensations as FixedCompensations } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollemployeecompensationstype'
+import type {
+  PayrollEmployeeCompensationsTypeFixedCompensations as FixedCompensations,
+  PayrollEmployeeCompensationsTypeReimbursements as Reimbursement,
+} from '@gusto/embedded-api-v-2025-11-15/models/components/payrollemployeecompensationstype'
+import type { PayrollUpdateReimbursements } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollupdate'
 import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollfixedcompensationtypestype'
 import { useCallback } from 'react'
 import type { TFunction } from 'i18next'
@@ -19,7 +23,7 @@ import type { PayrollType } from './PayrollList/types'
 import { PayrollCategory, isOffCyclePayroll } from './payrollTypes'
 import { formatPayRate } from '@/helpers/formattedStrings'
 import { useLocale } from '@/contexts/LocaleProvider/useLocale'
-import { COMPENSATION_NAME_REIMBURSEMENT, FlsaStatus } from '@/shared/constants'
+import { FlsaStatus } from '@/shared/constants'
 import { MS_PER_HOUR } from '@/helpers/dateFormatting'
 const REGULAR_HOURS_NAME = 'regular hours'
 
@@ -159,6 +163,13 @@ export const getAdditionalEarnings = (compensation: PayrollEmployeeCompensations
 }
 
 export const getReimbursements = (compensation: PayrollEmployeeCompensationsType) => {
+  if (compensation.reimbursements && compensation.reimbursements.length > 0) {
+    return compensation.reimbursements.reduce(
+      (sum, reimbursement) => sum + parseFloat(reimbursement.amount || '0'),
+      0,
+    )
+  }
+
   if (!compensation.fixedCompensations) {
     return 0
   }
@@ -167,6 +178,59 @@ export const getReimbursements = (compensation: PayrollEmployeeCompensationsType
     fixedCompensation => fixedCompensation.name?.toLowerCase() === 'reimbursement',
   )
   return reimbursementComp ? parseFloat(reimbursementComp.amount || '0') : 0
+}
+
+/**
+ * Normalizes a reimbursement list for submission to the v2025-11-15 API:
+ *
+ * - Drops named rows that would be no-ops on the server (zero amount with no
+ *   existing uuid).
+ * - Drops named rows with an existing uuid and zero amount — these are removals,
+ *   and the backend's `replace_itemized_reimbursements` deletes any persisted
+ *   reimbursement whose uuid is omitted from the incoming list.
+ * - Consolidates multiple unnamed (description-less) rows into a single unnamed
+ *   entry, since the API rejects more than one unnamed reimbursement per employee.
+ * - When the consolidated unnamed total is zero, sends no unnamed entry at all.
+ *   The backend's full-replace semantics then delete any persisted unnamed entry
+ *   (unnamed entries never have uuids, so this is the only way to remove them).
+ * - Maps the read shape (`description: string | null`) to the write shape
+ *   (`description?: string`), omitting the field when there is no description.
+ */
+export const cleanupReimbursements = (
+  reimbursements: Reimbursement[],
+): PayrollUpdateReimbursements[] => {
+  const consolidated: PayrollUpdateReimbursements[] = []
+  let unnamedTotal = 0
+
+  reimbursements.forEach(reimbursement => {
+    const amount = reimbursement.amount
+    const numericAmount = parseFloat(amount || '0')
+    const description = reimbursement.description?.trim() || ''
+    const uuid = reimbursement.uuid ?? undefined
+
+    if (description === '') {
+      unnamedTotal += numericAmount
+      return
+    }
+
+    if (numericAmount === 0 && !uuid) {
+      return
+    }
+
+    consolidated.push({
+      amount,
+      description,
+      ...(uuid ? { uuid } : {}),
+    })
+  })
+
+  if (unnamedTotal > 0) {
+    consolidated.push({
+      amount: unnamedTotal.toFixed(2),
+    })
+  }
+
+  return consolidated
 }
 
 export const formatHoursDisplay = (hours: number): string => {
@@ -582,35 +646,6 @@ export const getAdditionalEarningsCompensations = ({
   return allFixedCompensations
     .filter(comp => comp.name && !excludedTypes.includes(comp.name))
     .sort((a, b) => (a.name || '').localeCompare(b.name || ''))
-}
-
-export const getReimbursementCompensation = (
-  fixedCompensations: FixedCompensations[],
-  fixedCompensationTypes: PayrollFixedCompensationTypesType[],
-  primaryJobUuid?: string,
-) => {
-  const reimbursementCompensation = fixedCompensations.find(
-    comp => comp.name?.toLowerCase() === COMPENSATION_NAME_REIMBURSEMENT.toLowerCase(),
-  )
-
-  if (reimbursementCompensation) {
-    return reimbursementCompensation
-  }
-
-  if (
-    primaryJobUuid &&
-    fixedCompensationTypes.some(
-      type => type.name?.toLowerCase() === COMPENSATION_NAME_REIMBURSEMENT.toLowerCase(),
-    )
-  ) {
-    return {
-      name: COMPENSATION_NAME_REIMBURSEMENT,
-      amount: '0.00',
-      jobUuid: primaryJobUuid,
-    }
-  }
-
-  return null
 }
 
 export const hasDirectDepositEmployees = (

@@ -5,12 +5,12 @@ import {
   getTotalPtoHours,
   getAdditionalEarnings,
   getReimbursements,
+  cleanupReimbursements,
   formatHoursDisplay,
   calculateGrossPay,
   getPayrollType,
   getPayrollTypeLabel,
   getAdditionalEarningsCompensations,
-  getReimbursementCompensation,
   canCancelPayroll,
 } from './helpers'
 import { PayrollCategory } from './payrollTypes'
@@ -233,12 +233,31 @@ describe('Payroll helpers', () => {
   })
 
   describe('getReimbursements', () => {
-    it('should return 0 when no fixed compensations', () => {
+    it('should return 0 when no fixed compensations or reimbursements', () => {
       const compensation = {} as EmployeeCompensations
       expect(getReimbursements(compensation)).toBe(0)
     })
 
-    it('should find and return reimbursement amount', () => {
+    it('should sum the reimbursements[] array when present', () => {
+      const compensation = {
+        reimbursements: [
+          { description: 'Travel', amount: '50.00' },
+          { description: null, amount: '25.50' },
+          { description: 'Meals', amount: '10.00' },
+        ],
+      } as EmployeeCompensations
+      expect(getReimbursements(compensation)).toBe(85.5)
+    })
+
+    it('should prefer reimbursements[] over legacy fixed_compensations when both exist', () => {
+      const compensation = {
+        reimbursements: [{ description: 'Travel', amount: '75.00' }],
+        fixedCompensations: [{ name: 'Reimbursement', amount: '999.00' }],
+      } as EmployeeCompensations
+      expect(getReimbursements(compensation)).toBe(75)
+    })
+
+    it('should fall back to legacy fixed_compensations when reimbursements[] is absent', () => {
       const compensation = {
         fixedCompensations: [
           { name: 'Bonus', amount: '500.00' },
@@ -248,21 +267,29 @@ describe('Payroll helpers', () => {
       expect(getReimbursements(compensation)).toBe(100)
     })
 
-    it('should handle case-insensitive name matching', () => {
+    it('should fall back to legacy fixed_compensations when reimbursements[] is empty', () => {
+      const compensation = {
+        reimbursements: [],
+        fixedCompensations: [{ name: 'Reimbursement', amount: '40.00' }],
+      } as EmployeeCompensations
+      expect(getReimbursements(compensation)).toBe(40)
+    })
+
+    it('should handle case-insensitive name matching on legacy lookup', () => {
       const compensation = {
         fixedCompensations: [{ name: 'REIMBURSEMENT', amount: '75.50' }],
       } as EmployeeCompensations
       expect(getReimbursements(compensation)).toBe(75.5)
     })
 
-    it('should return 0 when no reimbursement found', () => {
+    it('should return 0 when no reimbursement found in legacy lookup', () => {
       const compensation = {
         fixedCompensations: [{ name: 'Bonus', amount: '500.00' }],
       } as EmployeeCompensations
       expect(getReimbursements(compensation)).toBe(0)
     })
 
-    it('should handle missing amount gracefully', () => {
+    it('should handle missing amount gracefully on legacy lookup', () => {
       const compensation = {
         fixedCompensations: [{ name: 'Reimbursement', amount: undefined }],
       } as EmployeeCompensations
@@ -1193,127 +1220,87 @@ describe('Payroll helpers', () => {
     })
   })
 
-  describe('getReimbursementCompensation', () => {
-    const primaryJobUuid = 'job-123'
-    const fixedCompensationTypes: PayrollFixedCompensationTypesType[] = [
-      { name: 'Bonus' },
-      { name: 'Commission' },
-      { name: 'Reimbursement' },
-    ]
+  describe('cleanupReimbursements', () => {
+    it('passes through named entries with descriptions trimmed', () => {
+      const result = cleanupReimbursements([
+        { description: '  Travel expenses  ', amount: '250.00', uuid: 'reimb-1' },
+        { description: 'Office supplies', amount: '50.00' },
+      ])
 
-    it('returns existing reimbursement compensation when found', () => {
-      const fixedCompensations = [
-        { name: 'Bonus', amount: '100.00', jobUuid: primaryJobUuid },
-        { name: 'Reimbursement', amount: '50.00', jobUuid: primaryJobUuid },
-      ]
-
-      const result = getReimbursementCompensation(
-        fixedCompensations,
-        fixedCompensationTypes,
-        primaryJobUuid,
-      )
-
-      expect(result).toEqual({
-        name: 'Reimbursement',
-        amount: '50.00',
-        jobUuid: primaryJobUuid,
-      })
+      expect(result).toEqual([
+        { description: 'Travel expenses', amount: '250.00', uuid: 'reimb-1' },
+        { description: 'Office supplies', amount: '50.00' },
+      ])
     })
 
-    it('returns case-insensitive match for existing reimbursement', () => {
-      const fixedCompensations = [
-        { name: 'REIMBURSEMENT', amount: '75.50', jobUuid: primaryJobUuid },
-      ]
+    it('drops zero-amount rows that have no uuid (new no-op entries)', () => {
+      const result = cleanupReimbursements([
+        { description: '', amount: '0', uuid: null },
+        { description: 'Travel', amount: '25.00' },
+      ])
 
-      const result = getReimbursementCompensation(
-        fixedCompensations,
-        fixedCompensationTypes,
-        primaryJobUuid,
-      )
-
-      expect(result).toEqual({
-        name: 'REIMBURSEMENT',
-        amount: '75.50',
-        jobUuid: primaryJobUuid,
-      })
+      expect(result).toEqual([{ description: 'Travel', amount: '25.00' }])
     })
 
-    it('creates new reimbursement when not found but available in types', () => {
-      const fixedCompensations = [{ name: 'Bonus', amount: '100.00', jobUuid: primaryJobUuid }]
+    it('keeps zero-amount rows that have a uuid (soft-delete signal)', () => {
+      const result = cleanupReimbursements([
+        { description: 'Travel', amount: '0', uuid: 'reimb-1' },
+      ])
 
-      const result = getReimbursementCompensation(
-        fixedCompensations,
-        fixedCompensationTypes,
-        primaryJobUuid,
-      )
-
-      expect(result).toEqual({
-        name: 'Reimbursement',
-        amount: '0.00',
-        jobUuid: primaryJobUuid,
-      })
+      expect(result).toEqual([{ description: 'Travel', amount: '0', uuid: 'reimb-1' }])
     })
 
-    it('returns null when reimbursement not found and not available in types', () => {
-      const fixedCompensations = [{ name: 'Bonus', amount: '100.00', jobUuid: primaryJobUuid }]
+    it('consolidates multiple unnamed rows into a single unnamed entry', () => {
+      const result = cleanupReimbursements([
+        { description: null, amount: '15.00' },
+        { description: '   ', amount: '7.25' },
+        { description: 'Office supplies', amount: '50.00' },
+      ])
 
-      const fixedCompensationTypesWithoutReimbursement = [{ name: 'Bonus' }, { name: 'Commission' }]
-
-      const result = getReimbursementCompensation(
-        fixedCompensations,
-        fixedCompensationTypesWithoutReimbursement,
-        primaryJobUuid,
-      )
-
-      expect(result).toBeNull()
+      expect(result).toEqual([
+        { description: 'Office supplies', amount: '50.00' },
+        { amount: '22.25' },
+      ])
     })
 
-    it('returns null when no primary job UUID provided', () => {
-      const fixedCompensations = [{ name: 'Bonus', amount: '100.00', jobUuid: primaryJobUuid }]
-
-      const result = getReimbursementCompensation(
-        fixedCompensations,
-        fixedCompensationTypes,
-        undefined,
-      )
-
-      expect(result).toBeNull()
+    it('returns an empty array when there are no reimbursements to send', () => {
+      expect(cleanupReimbursements([])).toEqual([])
+      expect(
+        cleanupReimbursements([
+          { description: '', amount: '0' },
+          { description: null, amount: '0', uuid: null },
+        ]),
+      ).toEqual([])
     })
 
-    it('handles case-insensitive matching for compensation types', () => {
-      const fixedCompensations = [{ name: 'Bonus', amount: '100.00', jobUuid: primaryJobUuid }]
+    it('maps null description from the read shape to omitted description on write', () => {
+      const result = cleanupReimbursements([{ description: null, amount: '100.00' }])
 
-      const fixedCompensationTypesWithDifferentCase = [{ name: 'Bonus' }, { name: 'REIMBURSEMENT' }]
-
-      const result = getReimbursementCompensation(
-        fixedCompensations,
-        fixedCompensationTypesWithDifferentCase,
-        primaryJobUuid,
-      )
-
-      expect(result).toEqual({
-        name: 'Reimbursement',
-        amount: '0.00',
-        jobUuid: primaryJobUuid,
-      })
+      expect(result).toEqual([{ amount: '100.00' }])
     })
 
-    it('handles empty fixed compensations array', () => {
-      const result = getReimbursementCompensation([], fixedCompensationTypes, primaryJobUuid)
+    it('omits the unnamed entry entirely when the consolidated total is zero', () => {
+      const result = cleanupReimbursements([
+        { description: null, amount: '0' },
+        { description: '', amount: '0.00' },
+      ])
 
-      expect(result).toEqual({
-        name: 'Reimbursement',
-        amount: '0.00',
-        jobUuid: primaryJobUuid,
-      })
+      expect(result).toEqual([])
     })
 
-    it('handles empty fixed compensation types array', () => {
-      const fixedCompensations = [{ name: 'Bonus', amount: '100.00', jobUuid: primaryJobUuid }]
+    it('omits the unnamed entry when it represents removal of a server orphan (sum is zero, no uuid)', () => {
+      const result = cleanupReimbursements([{ description: null, amount: '0', uuid: null }])
 
-      const result = getReimbursementCompensation(fixedCompensations, [], primaryJobUuid)
+      expect(result).toEqual([])
+    })
 
-      expect(result).toBeNull()
+    it('omits a named row whose amount was zeroed and has no uuid (still in-progress add)', () => {
+      const result = cleanupReimbursements([
+        { description: 'Office supplies', amount: '0' },
+        { description: 'Travel', amount: '25.00' },
+      ])
+
+      expect(result).toEqual([{ description: 'Travel', amount: '25.00' }])
     })
   })
 

@@ -16,6 +16,7 @@ import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
 import {
   calculateTotalPayroll,
   getPayrollTypeLabel,
+  getReimbursements,
   hasDirectDepositEmployees,
   isDismissalPayroll,
 } from '../helpers'
@@ -160,16 +161,6 @@ export const PayrollOverviewPresentation = ({
       ) ?? 0
     )
   }
-  const getReimbursements = (employeeCompensation: EmployeeCompensations) => {
-    return employeeCompensation.fixedCompensations?.length
-      ? Number(
-          employeeCompensation.fixedCompensations.find(
-            c => c.name?.toLowerCase() === compensationTypeLabels.REIMBURSEMENT_NAME.toLowerCase(),
-          )?.amount || 0,
-        )
-      : 0
-  }
-
   const getCompanyCost = (employeeCompensation: EmployeeCompensations) => {
     return (
       employeeCompensation.grossPay! +

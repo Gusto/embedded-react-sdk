@@ -2949,6 +2949,16 @@ export interface PayrollPayrollEditEmployee{
 };
 "additionalEarningsTitle":string;
 "reimbursementTitle":string;
+"reimbursementDescriptionLabel":string;
+"reimbursementDescriptionPlaceholder":string;
+"reimbursementAmountLabel":string;
+"reimbursementUnnamedFallback":string;
+"addReimbursementLink":string;
+"saveReimbursementCta":string;
+"cancelReimbursementCta":string;
+"removeReimbursementLabel":string;
+"recurringReimbursementLabel":string;
+"recurringReimbursementTooltip":string;
 "fixedCompensationNames":{
 "bonus":string;
 "paycheckTips":string;

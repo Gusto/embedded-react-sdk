@@ -113,10 +113,13 @@ const mockEmployeeCompensation: PayrollEmployeeCompensationsType = {
       amount: '200.00',
       jobUuid: 'job-1',
     },
+  ],
+  reimbursements: [
     {
-      name: 'Reimbursement',
+      uuid: 'reimb-1',
+      description: 'Travel expenses',
       amount: '100.00',
-      jobUuid: 'job-1',
+      recurring: false,
     },
   ],
   paidTimeOff: [
@@ -176,10 +179,13 @@ const expectedUpdatedCompensation = {
       amount: '200.00',
       jobUuid: 'job-1',
     },
+  ],
+  reimbursements: [
     {
-      name: 'Reimbursement',
+      uuid: 'reimb-1',
+      description: 'Travel expenses',
       amount: '100.00',
-      jobUuid: 'job-1',
+      recurring: false,
     },
   ],
   paidTimeOff: [
@@ -813,13 +819,14 @@ describe('PayrollEditEmployeePresentation', () => {
       })
     })
 
-    it('renders reimbursement field separately when present', async () => {
+    it('renders reimbursement rows when present', async () => {
       renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} />)
 
       await waitFor(() => {
-        expect(screen.getByRole('heading', { name: 'Reimbursement' })).toBeInTheDocument()
-        expect(screen.getByLabelText('Reimbursement')).toBeInTheDocument()
+        expect(screen.getByRole('heading', { name: 'Reimbursements' })).toBeInTheDocument()
       })
+      expect(screen.getByText('Travel expenses')).toBeInTheDocument()
+      expect(screen.getByText('$100.00')).toBeInTheDocument()
     })
 
     it('does not render additional earnings section for owners if they have no existing fixed compensations', () => {
@@ -841,11 +848,13 @@ describe('PayrollEditEmployeePresentation', () => {
         },
         employeeCompensation: {
           ...mockEmployeeCompensation,
-          fixedCompensations: [
+          fixedCompensations: [],
+          reimbursements: [
             {
-              name: 'Reimbursement',
+              uuid: 'reimb-1',
+              description: 'Travel expenses',
               amount: '100.00',
-              jobUuid: 'job-1',
+              recurring: false,
             },
           ],
         },
@@ -855,7 +864,7 @@ describe('PayrollEditEmployeePresentation', () => {
       renderWithProviders(<PayrollEditEmployeePresentation {...ownerProps} />)
 
       expect(screen.queryByText('Additional earnings')).not.toBeInTheDocument()
-      expect(screen.getByRole('heading', { name: 'Reimbursement' })).toBeInTheDocument()
+      expect(screen.getByRole('heading', { name: 'Reimbursements' })).toBeInTheDocument()
     })
 
     it('updates fixed compensations when form values change', async () => {
@@ -883,11 +892,6 @@ describe('PayrollEditEmployeePresentation', () => {
               amount: '200.00',
               jobUuid: 'job-1',
             }),
-            expect.objectContaining({
-              name: 'Reimbursement',
-              amount: '100.00',
-              jobUuid: 'job-1',
-            }),
           ]),
         }),
       )
@@ -902,7 +906,14 @@ describe('PayrollEditEmployeePresentation', () => {
         fixedCompensations: [
           { name: 'Bonus', amount: '100.00', jobUuid: 'job-1' },
           { name: 'Commission', amount: '50.00', jobUuid: 'job-1' },
-          { name: 'Reimbursement', amount: '25.00', jobUuid: 'job-1' },
+        ],
+        reimbursements: [
+          {
+            uuid: 'reimb-1',
+            description: 'Travel expenses',
+            amount: '25.00',
+            recurring: false,
+          },
         ],
       },
       fixedCompensationTypes: [
@@ -911,7 +922,6 @@ describe('PayrollEditEmployeePresentation', () => {
         { name: 'Paycheck Tips' },
         { name: 'Cash Tips' },
         { name: 'Correction Payment' },
-        { name: 'Reimbursement' },
       ],
     }
 
@@ -929,58 +939,40 @@ describe('PayrollEditEmployeePresentation', () => {
       expect(commissionInput).toHaveValue(50)
     })
 
-    it('renders reimbursement section separately when employee has reimbursement', () => {
+    it('renders reimbursement rows when employee has reimbursements', () => {
       renderWithProviders(
         <PayrollEditEmployeePresentation {...defaultPropsWithAdditionalEarnings} />,
       )
 
-      expect(screen.getByRole('heading', { name: 'Reimbursement' })).toBeInTheDocument()
-
-      const reimbursementInput = screen.getByLabelText('Reimbursement')
-      expect(reimbursementInput).toHaveValue(25)
+      expect(screen.getByRole('heading', { name: 'Reimbursements' })).toBeInTheDocument()
+      expect(screen.getByText('Travel expenses')).toBeInTheDocument()
+      expect(screen.getByText('$25.00')).toBeInTheDocument()
     })
 
-    it('renders reimbursement section when reimbursement is available in compensation types', () => {
-      const propsWithReimbursementType = {
+    it('always renders the reimbursements section header and Add link when withReimbursements is true', () => {
+      const propsWithoutReimbursements = {
         ...defaultPropsWithAdditionalEarnings,
         employeeCompensation: {
           ...defaultPropsWithAdditionalEarnings.employeeCompensation,
-          fixedCompensations: [
-            { name: 'Bonus', amount: '100.00', jobUuid: 'job-1' },
-            { name: 'Commission', amount: '50.00', jobUuid: 'job-1' },
-          ],
+          reimbursements: [],
         },
-        fixedCompensationTypes: [
-          { name: 'Bonus' },
-          { name: 'Commission' },
-          { name: 'Reimbursement' },
-        ],
       }
 
-      renderWithProviders(<PayrollEditEmployeePresentation {...propsWithReimbursementType} />)
+      renderWithProviders(<PayrollEditEmployeePresentation {...propsWithoutReimbursements} />)
 
-      expect(screen.getByRole('heading', { name: 'Reimbursement' })).toBeInTheDocument()
-
-      const reimbursementInput = screen.getByLabelText('Reimbursement')
-      expect(reimbursementInput).toHaveValue(0)
+      expect(screen.getByRole('heading', { name: 'Reimbursements' })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: 'Add one-time reimbursement' })).toBeInTheDocument()
     })
 
-    it('does not render reimbursement section when employee has no reimbursement and it is not available', () => {
-      const propsWithoutReimbursement = {
-        ...defaultPropsWithAdditionalEarnings,
-        employeeCompensation: {
-          ...defaultPropsWithAdditionalEarnings.employeeCompensation,
-          fixedCompensations: [
-            { name: 'Bonus', amount: '100.00', jobUuid: 'job-1' },
-            { name: 'Commission', amount: '50.00', jobUuid: 'job-1' },
-          ],
-        },
-        fixedCompensationTypes: [{ name: 'Bonus' }, { name: 'Commission' }],
-      }
+    it('does not render reimbursement section when withReimbursements is false', () => {
+      renderWithProviders(
+        <PayrollEditEmployeePresentation
+          {...defaultPropsWithAdditionalEarnings}
+          withReimbursements={false}
+        />,
+      )
 
-      renderWithProviders(<PayrollEditEmployeePresentation {...propsWithoutReimbursement} />)
-
-      expect(screen.queryByRole('heading', { name: 'Reimbursement' })).not.toBeInTheDocument()
+      expect(screen.queryByRole('heading', { name: 'Reimbursements' })).not.toBeInTheDocument()
     })
 
     it('creates missing additional earnings for non-owner employees', () => {
@@ -1071,13 +1063,9 @@ describe('PayrollEditEmployeePresentation', () => {
         employeeCompensation: {
           ...defaultProps.employeeCompensation,
           fixedCompensations: [{ name: 'Bonus', amount: '100.00', jobUuid: 'job-1' }],
+          reimbursements: [],
         },
-        fixedCompensationTypes: [
-          { name: 'Bonus' },
-          { name: 'Commission' },
-          { name: 'Cash Tips' },
-          { name: 'Reimbursement' },
-        ],
+        fixedCompensationTypes: [{ name: 'Bonus' }, { name: 'Commission' }, { name: 'Cash Tips' }],
       }
 
       renderWithProviders(<PayrollEditEmployeePresentation {...propsForSubmitTest} />)
@@ -1090,10 +1078,6 @@ describe('PayrollEditEmployeePresentation', () => {
       await user.clear(cashTipsInput)
       await user.type(cashTipsInput, '0')
 
-      const reimbursementInput = screen.getByLabelText('Reimbursement')
-      await user.clear(reimbursementInput)
-      await user.type(reimbursementInput, '25.00')
-
       const saveButton = screen.getByRole('button', { name: /save/i })
       await user.click(saveButton)
 
@@ -1102,7 +1086,6 @@ describe('PayrollEditEmployeePresentation', () => {
           fixedCompensations: expect.arrayContaining([
             expect.objectContaining({ name: 'Bonus', amount: '100.00', jobUuid: 'job-1' }),
             expect.objectContaining({ name: 'Commission', amount: '75.5', jobUuid: 'job-1' }),
-            expect.objectContaining({ name: 'Reimbursement', amount: '25', jobUuid: 'job-1' }),
           ]),
         }),
       )
@@ -1131,7 +1114,6 @@ describe('PayrollEditEmployeePresentation', () => {
           fixedCompensations: expect.arrayContaining([
             expect.objectContaining({ name: 'Bonus', amount: '0', jobUuid: 'job-1' }),
             expect.objectContaining({ name: 'Commission', amount: '50.00', jobUuid: 'job-1' }),
-            expect.objectContaining({ name: 'Reimbursement', amount: '25.00', jobUuid: 'job-1' }),
           ]),
         }),
       )
@@ -1415,6 +1397,307 @@ describe('PayrollEditEmployeePresentation', () => {
           paymentMethod: PaymentMethods.Check,
         }),
       )
+    })
+  })
+
+  describe('Itemized Reimbursements', () => {
+    const propsWithNoReimbursements = {
+      ...defaultProps,
+      employeeCompensation: {
+        ...mockEmployeeCompensation,
+        reimbursements: [],
+      },
+    }
+
+    it('renders the Add one-time reimbursement link', async () => {
+      renderWithProviders(<PayrollEditEmployeePresentation {...propsWithNoReimbursements} />)
+
+      expect(
+        await screen.findByRole('button', { name: 'Add one-time reimbursement' }),
+      ).toBeInTheDocument()
+    })
+
+    it('appends a new editable row when Add is clicked', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(<PayrollEditEmployeePresentation {...propsWithNoReimbursements} />)
+
+      const addButton = await screen.findByRole('button', { name: 'Add one-time reimbursement' })
+      await user.click(addButton)
+
+      expect(await screen.findByLabelText(/Description/i)).toBeInTheDocument()
+      expect(screen.getByLabelText('Amount')).toBeInTheDocument()
+    })
+
+    it('submits a newly added reimbursement row', async () => {
+      const onSave = vi.fn()
+      const user = userEvent.setup()
+      renderWithProviders(
+        <PayrollEditEmployeePresentation {...propsWithNoReimbursements} onSave={onSave} />,
+      )
+
+      const addButton = await screen.findByRole('button', { name: 'Add one-time reimbursement' })
+      await user.click(addButton)
+
+      const descriptionInput = await screen.findByLabelText(/Description/i)
+      await user.type(descriptionInput, 'Office supplies')
+
+      const amountInput = screen.getByLabelText('Amount')
+      await user.clear(amountInput)
+      await user.type(amountInput, '42.50')
+
+      await user.click(screen.getByRole('button', { name: 'Save reimbursement' }))
+
+      expect(await screen.findByText('Office supplies')).toBeInTheDocument()
+      expect(screen.getByText('$42.50')).toBeInTheDocument()
+
+      await user.click(screen.getByRole('button', { name: 'Save' }))
+
+      expect(onSave).toHaveBeenCalledWith(
+        expect.objectContaining({
+          reimbursements: [
+            expect.objectContaining({
+              description: 'Office supplies',
+              amount: '42.50',
+              uuid: null,
+              recurring: false,
+            }),
+          ],
+        }),
+      )
+    })
+
+    it('cancels the inline add form without appending a row', async () => {
+      const onSave = vi.fn()
+      const user = userEvent.setup()
+      renderWithProviders(
+        <PayrollEditEmployeePresentation {...propsWithNoReimbursements} onSave={onSave} />,
+      )
+
+      const addButton = await screen.findByRole('button', { name: 'Add one-time reimbursement' })
+      await user.click(addButton)
+
+      const descriptionInput = await screen.findByLabelText(/Description/i)
+      await user.type(descriptionInput, 'Office supplies')
+
+      await user.click(screen.getByRole('button', { name: 'Cancel reimbursement' }))
+
+      expect(screen.queryByLabelText(/Description/i)).not.toBeInTheDocument()
+      expect(screen.queryByText('Office supplies')).not.toBeInTheDocument()
+
+      await user.click(screen.getByRole('button', { name: 'Save' }))
+
+      expect(onSave).toHaveBeenCalledWith(
+        expect.objectContaining({
+          reimbursements: [],
+        }),
+      )
+    })
+
+    it('does not append a zero-amount draft when Save reimbursement is clicked', async () => {
+      const onSave = vi.fn()
+      const user = userEvent.setup()
+      renderWithProviders(
+        <PayrollEditEmployeePresentation {...propsWithNoReimbursements} onSave={onSave} />,
+      )
+
+      const addButton = await screen.findByRole('button', { name: 'Add one-time reimbursement' })
+      await user.click(addButton)
+
+      const descriptionInput = await screen.findByLabelText(/Description/i)
+      await user.type(descriptionInput, 'Office supplies')
+
+      await user.click(screen.getByRole('button', { name: 'Save reimbursement' }))
+
+      expect(screen.queryByText('Office supplies')).not.toBeInTheDocument()
+    })
+
+    it('soft-deletes an existing reimbursement on Remove (keeps uuid, sets amount to 0)', async () => {
+      const onSave = vi.fn()
+      const user = userEvent.setup()
+      renderWithProviders(<PayrollEditEmployeePresentation {...defaultProps} onSave={onSave} />)
+
+      const removeButton = await screen.findByRole('button', { name: /Remove Travel expenses/i })
+      await user.click(removeButton)
+
+      expect(screen.queryByText('Travel expenses')).not.toBeInTheDocument()
+
+      await user.click(screen.getByRole('button', { name: 'Save' }))
+
+      expect(onSave).toHaveBeenCalledWith(
+        expect.objectContaining({
+          reimbursements: [
+            expect.objectContaining({
+              uuid: 'reimb-1',
+              description: 'Travel expenses',
+              amount: '0',
+            }),
+          ],
+        }),
+      )
+    })
+
+    it('removes a server-returned unnamed orphan reimbursement (no uuid) on Save', async () => {
+      const onSave = vi.fn()
+      const user = userEvent.setup()
+
+      const propsWithUnnamedOrphan = {
+        ...defaultProps,
+        employeeCompensation: {
+          ...mockEmployeeCompensation,
+          reimbursements: [
+            {
+              uuid: null,
+              description: null,
+              amount: '45.00',
+              recurring: false,
+            },
+          ],
+        },
+      }
+
+      renderWithProviders(
+        <PayrollEditEmployeePresentation {...propsWithUnnamedOrphan} onSave={onSave} />,
+      )
+
+      const removeButton = await screen.findByRole('button', { name: /Remove Reimbursement/i })
+      await user.click(removeButton)
+
+      expect(screen.queryByText('$45.00')).not.toBeInTheDocument()
+
+      await user.click(screen.getByRole('button', { name: 'Save' }))
+
+      const savedCompensation = onSave.mock.calls[0]![0] as PayrollEmployeeCompensationsType
+      expect(savedCompensation.reimbursements).toEqual([])
+    })
+
+    it('renders recurring reimbursements as read-only (no Remove button, no editable fields)', async () => {
+      const propsWithRecurring = {
+        ...defaultProps,
+        employeeCompensation: {
+          ...mockEmployeeCompensation,
+          reimbursements: [
+            {
+              uuid: 'reimb-recurring-1',
+              description: 'Phone stipend',
+              amount: '50.00',
+              recurring: true,
+            },
+          ],
+        },
+      }
+
+      renderWithProviders(<PayrollEditEmployeePresentation {...propsWithRecurring} />)
+
+      expect(await screen.findByText('Phone stipend')).toBeInTheDocument()
+      expect(screen.getByText('$50.00')).toBeInTheDocument()
+      expect(
+        screen.getByRole('img', {
+          name: 'Recurring reimbursements are managed outside of payroll.',
+        }),
+      ).toBeInTheDocument()
+      expect(screen.queryByLabelText(/Description/i)).not.toBeInTheDocument()
+      expect(screen.queryByLabelText('Amount')).not.toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: /Remove/i })).not.toBeInTheDocument()
+    })
+
+    it('hides the entire section when withReimbursements is false', async () => {
+      renderWithProviders(
+        <PayrollEditEmployeePresentation {...defaultProps} withReimbursements={false} />,
+      )
+
+      await waitFor(() => {
+        expect(screen.queryByRole('heading', { name: 'Reimbursements' })).not.toBeInTheDocument()
+      })
+      expect(
+        screen.queryByRole('button', { name: 'Add one-time reimbursement' }),
+      ).not.toBeInTheDocument()
+    })
+  })
+
+  describe('Off-Cycle Reimbursements', () => {
+    const offCycleEmployeeCompensation: PayrollEmployeeCompensationsType = {
+      employeeUuid: 'emp-1',
+      hourlyCompensations: [],
+      fixedCompensations: [
+        { name: 'Bonus', amount: '0.00', jobUuid: 'job-1' },
+        { name: 'Reimbursement', amount: '75.50', jobUuid: 'job-1' },
+      ],
+      paidTimeOff: [],
+      paymentMethod: 'Direct Deposit',
+      version: 'v1',
+    }
+
+    const offCycleProps = {
+      ...defaultProps,
+      employeeCompensation: offCycleEmployeeCompensation,
+      payrollCategory: PayrollCategory.Bonus,
+      fixedCompensationTypes: [{ name: 'Bonus' }, { name: 'Reimbursement' }],
+    }
+
+    it('renders a single Reimbursement input pre-filled from fixed_compensations on off-cycle', async () => {
+      renderWithProviders(<PayrollEditEmployeePresentation {...offCycleProps} />)
+
+      const reimbursementInput = await screen.findByLabelText('Reimbursement')
+      expect(reimbursementInput).toHaveValue(75.5)
+    })
+
+    it('does not render the itemized Add link on off-cycle', async () => {
+      renderWithProviders(<PayrollEditEmployeePresentation {...offCycleProps} />)
+
+      await screen.findByLabelText('Reimbursement')
+      expect(
+        screen.queryByRole('button', { name: 'Add one-time reimbursement' }),
+      ).not.toBeInTheDocument()
+    })
+
+    it('defaults the single field to 0.00 when no Reimbursement entry exists yet', async () => {
+      const propsWithoutReimbursement = {
+        ...offCycleProps,
+        employeeCompensation: {
+          ...offCycleEmployeeCompensation,
+          fixedCompensations: [{ name: 'Bonus', amount: '0.00', jobUuid: 'job-1' }],
+        },
+      }
+
+      renderWithProviders(<PayrollEditEmployeePresentation {...propsWithoutReimbursement} />)
+
+      const reimbursementInput = await screen.findByLabelText('Reimbursement')
+      expect(reimbursementInput).toHaveValue(0)
+    })
+
+    it('submits the updated Reimbursement in fixed_compensations on off-cycle', async () => {
+      const onSave = vi.fn()
+      const user = userEvent.setup()
+      renderWithProviders(<PayrollEditEmployeePresentation {...offCycleProps} onSave={onSave} />)
+
+      const reimbursementInput = await screen.findByLabelText('Reimbursement')
+      await user.clear(reimbursementInput)
+      await user.type(reimbursementInput, '125')
+
+      await user.click(screen.getByRole('button', { name: 'Save' }))
+
+      const savedCompensation = onSave.mock.calls[0]![0] as PayrollEmployeeCompensationsType
+      expect(savedCompensation.fixedCompensations).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            name: 'Reimbursement',
+            amount: '125',
+            jobUuid: 'job-1',
+          }),
+        ]),
+      )
+      expect(savedCompensation.reimbursements).toEqual([])
+    })
+
+    it('hides the reimbursement section entirely when withReimbursements is false on off-cycle', async () => {
+      renderWithProviders(
+        <PayrollEditEmployeePresentation {...offCycleProps} withReimbursements={false} />,
+      )
+
+      await waitFor(() => {
+        expect(screen.queryByRole('heading', { name: 'Reimbursements' })).not.toBeInTheDocument()
+      })
+      expect(screen.queryByLabelText('Reimbursement')).not.toBeInTheDocument()
     })
   })
 })
