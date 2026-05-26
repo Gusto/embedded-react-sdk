@@ -22,6 +22,14 @@ export function isStartedByToday(hireDate: string | undefined): boolean {
   return hireDate <= today
 }
 
+// Single source of truth for the search predicate so the client-pagination
+// hook and the select-all handler agree on what's "in scope" for a query.
+export function matchesEmployeeSearch(employee: EmployeeItem, query: string): boolean {
+  return `${employee.firstName ?? ''} ${employee.lastName ?? ''}`
+    .toLowerCase()
+    .includes(query.toLowerCase())
+}
+
 export function useSelectEmployeesData(companyId: string, excludeUuids?: Set<string>) {
   const gustoClient = useGustoEmbeddedContext()
   const [selectedUuids, setSelectedUuids] = useState<Set<string>>(() => new Set())
@@ -84,10 +92,7 @@ export function useSelectEmployeesData(companyId: string, excludeUuids?: Set<str
     searchValue,
     actions: paginationActions,
   } = useClientPagination(eligibleEmployees, {
-    searchPredicate: (employee, query) =>
-      `${employee.firstName ?? ''} ${employee.lastName ?? ''}`
-        .toLowerCase()
-        .includes(query.toLowerCase()),
+    searchPredicate: matchesEmployeeSearch,
   })
 
   const isRestFetching = restPageResults.some(r => r.isFetching)
@@ -102,19 +107,31 @@ export function useSelectEmployeesData(companyId: string, excludeUuids?: Set<str
     })
   }, [])
 
-  const handleSelectAll = useCallback((checked: boolean, visibleItems: EmployeeItem[]) => {
-    setSelectedUuids(prev => {
-      const next = new Set(prev)
-      for (const item of visibleItems) {
-        if (checked) next.add(item.uuid)
-        else next.delete(item.uuid)
-      }
-      return next
-    })
-  }, [])
+  // Select-all scopes to the full search-filtered list (every page), not just
+  // the rendered page slice that DataView passes in. This matches the user
+  // expectation that "select all" actually means "all" — including any
+  // employees the current pagination has scrolled off-screen. The second
+  // argument from DataView (the visible page slice) is intentionally ignored.
+  const handleSelectAll = useCallback(
+    (checked: boolean, _visibleItems?: EmployeeItem[]) => {
+      const scope = searchValue
+        ? eligibleEmployees.filter(employee => matchesEmployeeSearch(employee, searchValue))
+        : eligibleEmployees
+      setSelectedUuids(prev => {
+        const next = new Set(prev)
+        for (const item of scope) {
+          if (checked) next.add(item.uuid)
+          else next.delete(item.uuid)
+        }
+        return next
+      })
+    },
+    [eligibleEmployees, searchValue],
+  )
 
   return {
     filteredEmployees,
+    eligibleEmployees,
     eligibleCount: eligibleEmployees.length,
     selectedUuids,
     searchValue,

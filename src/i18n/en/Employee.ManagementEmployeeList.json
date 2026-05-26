@@ -1,6 +1,7 @@
 {
   "title": "Employees",
   "addEmployeeCta": "Add employee",
+  "backToListCta": "Back to employees",
   "tabsLabel": "Employee status tabs",
   "tabs": {
     "active": "Active",

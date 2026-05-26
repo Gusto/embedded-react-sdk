@@ -25,7 +25,6 @@ export interface ManagementEmployeeListViewProps extends Pick<
   onEdit: (employeeId: string) => void
   onDismiss: (employeeId: string) => void
   onDelete: (employeeId: string) => Promise<void>
-  onRehire: (employeeId: string) => void
   onAddEmployee: () => void
 }
 
@@ -38,7 +37,6 @@ export function ManagementEmployeeListView({
   onEdit,
   onDismiss,
   onDelete,
-  onRehire,
   onAddEmployee,
   pagination,
 }: ManagementEmployeeListViewProps) {
@@ -171,16 +169,6 @@ export function ManagementEmployeeListView({
           label: t('cancelCta'),
           onClick: () => {
             setEmployeeToDelete(employee.uuid)
-          },
-          icon: <PencilSvg aria-hidden />,
-        })
-      }
-
-      if (employee.allowedActions.includes('rehire')) {
-        menuItems.push({
-          label: t('rehireCta'),
-          onClick: () => {
-            onRehire(employee.uuid)
           },
           icon: <PencilSvg aria-hidden />,
         })

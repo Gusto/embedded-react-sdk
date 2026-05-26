@@ -371,7 +371,6 @@ export interface CompanyTimeOffCreateTimeOffPolicy{
 "policyNameLabel":string;
 "accrualMethodLabel":string;
 "accrualMethodHint":string;
-"accrualMethodLockedHint":string;
 "perHourPaidLabel":string;
 "perHourPaidHint":string;
 "perYearLabel":string;
@@ -1406,7 +1405,6 @@ export interface EmployeeCompensation{
 "hireDateLabel":string;
 "twoPercentShareholderLabel":string;
 "saveCta":string;
-"scheduledClassificationChangeNotification":string;
 };
 "validations":{
 "effectiveDate":string;
@@ -1421,6 +1419,7 @@ export interface EmployeeCompensation{
 "title":string;
 "minimumWage":string;
 "stateWcClassCode":string;
+"effectiveDateBeforeMin":string;
 "jobTitleSentence":string;
 };
 "stateWcCoveredLabel":string;
@@ -1435,6 +1434,7 @@ export interface EmployeeCompensation{
 };
 export interface EmployeeDashboard{
 "title":string;
+"employeeRoleLabel":string;
 "tabsLabel":string;
 "tabs":{
 "basicDetails":string;
@@ -1941,6 +1941,7 @@ export interface EmployeeHomeAddressManagement{
 "startDateHelper":string;
 "submitCta":string;
 "cancelCta":string;
+"backCta":string;
 "deleteModalTitle":string;
 "deleteModalDescription":string;
 "deleteModalConfirmCta":string;
@@ -2036,6 +2037,7 @@ export interface EmployeeLanding{
 export interface EmployeeManagementEmployeeList{
 "title":string;
 "addEmployeeCta":string;
+"backToListCta":string;
 "tabsLabel":string;
 "tabs":{
 "active":string;
@@ -2430,6 +2432,7 @@ export interface EmployeeWorkAddressManagement{
 };
 "submitCta":string;
 "cancelCta":string;
+"backCta":string;
 "deleteModalTitle":string;
 "deleteModalDescription":string;
 "deleteModalConfirmCta":string;

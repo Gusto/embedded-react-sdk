@@ -2613,6 +2613,14 @@
         "EmployeeOnboarding.PaymentMethod"
       ]
     },
+    "Employee.EmployeeListFlow": {
+      "blocks": [
+        "Employee.DashboardFlow",
+        "Employee.OnboardingFlow",
+        "Employee.TerminationFlow",
+        "EmployeeManagement.EmployeeList"
+      ]
+    },
     "Employee.OnboardingFlow": {
       "blocks": [
         "Employee.Compensation",
@@ -2657,6 +2665,14 @@
         "EmployeeOnboarding.Compensation",
         "EmployeeOnboarding.Deductions",
         "EmployeeOnboarding.PaymentMethod"
+      ]
+    },
+    "EmployeeManagement.EmployeeListFlow": {
+      "blocks": [
+        "EmployeeManagement.DashboardFlow",
+        "EmployeeManagement.EmployeeList",
+        "EmployeeManagement.TerminationFlow",
+        "EmployeeOnboarding.OnboardingFlow"
       ]
     },
     "EmployeeManagement.TerminationFlow": {

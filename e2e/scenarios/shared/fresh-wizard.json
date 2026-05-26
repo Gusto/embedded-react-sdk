@@ -1,0 +1,21 @@
+{
+  "$schema": "../schema/scenario.schema.json",
+  "name": "Fresh company with HQ location for wizard tests",
+  "description": "Fresh react_sdk_demo company decorated with a single HQ location (filing + mailing). Used by every company-onboarding spec that drives the wizard from an empty starting state: canary suite, basic onboarding specs, deep onboarding, step navigation, and bank-account empty-state. Cannot be combined with onboarded scenarios — those are based on react_sdk_demo_company_onboarded which has already completed onboarding.",
+  "domain": "company",
+  "baseDemo": "react_sdk_demo",
+  "decorations": {
+    "locations": [
+      {
+        "key": "hq",
+        "street_1": "500 3rd Street",
+        "city": "San Francisco",
+        "state": "CA",
+        "zip": "94107",
+        "filing_address": true,
+        "mailing_address": true
+      }
+    ]
+  },
+  "expectedContext": ["companyId", "locationIds.hq"]
+}

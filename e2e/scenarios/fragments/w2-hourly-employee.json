@@ -3,10 +3,10 @@
   "last_name": "Baker",
   "email": "bob+{{ts}}@example.com",
   "home_address": {
-    "street_1": "2 Hourly Lane",
+    "street_1": "425 California St",
     "city": "San Francisco",
     "state": "CA",
-    "zip": "94110"
+    "zip": "94104"
   },
   "work_address": {
     "locationKey": "hq"

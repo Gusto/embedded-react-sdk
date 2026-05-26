@@ -8,7 +8,6 @@ import { ActionsLayout, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { FLSA_OVERTIME_SALARY_LIMIT } from '@/shared/constants'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
-import { addDays } from '@/helpers/dateFormatting'
 
 export interface ManagementCompensationFormBodyProps {
   jobForm: UseJobFormReady
@@ -17,9 +16,6 @@ export interface ManagementCompensationFormBodyProps {
   submitCtaLabel: string
   isPending: boolean
   onCancel?: () => void
-  /** Override the minimum selectable date for the Effective date field. Defaults to tomorrow.
-   *  Used by EditPendingCompensation for secondary new jobs where the floor is the job's hire date. */
-  minEffectiveDate?: Date
 }
 
 /**
@@ -36,7 +32,6 @@ export function ManagementCompensationFormBody({
   submitCtaLabel,
   isPending,
   onCancel,
-  minEffectiveDate,
 }: ManagementCompensationFormBodyProps) {
   const { t } = useTranslation('Employee.Compensation')
   const Components = useComponentContext()
@@ -51,7 +46,7 @@ export function ManagementCompensationFormBody({
 
       {compensationForm.status.willDeleteSecondaryJobs && (
         <Components.Alert
-          label={t('management.scheduledClassificationChangeNotification')}
+          label={t('validations.classificationChangeNotification')}
           status="warning"
         />
       )}
@@ -117,15 +112,10 @@ export function ManagementCompensationFormBody({
       {CompFields.EffectiveDate && (
         <CompFields.EffectiveDate
           label={t('effectiveDateLabel')}
-          minDate={minEffectiveDate ?? addDays(new Date(), 1)}
-          maxDate={
-            compensationForm.data.maximumEffectiveDate
-              ? new Date(compensationForm.data.maximumEffectiveDate)
-              : undefined
-          }
           validationMessages={{
             REQUIRED: t('validations.effectiveDate'),
             EFFECTIVE_DATE_BEFORE_HIRE: t('validations.effectiveDateBeforeHire'),
+            EFFECTIVE_DATE_BEFORE_MIN: t('validations.effectiveDateBeforeMin'),
           }}
           formHookResult={compensationForm}
         />

@@ -258,4 +258,82 @@ describe('useSelectEmployeesData pagination', () => {
     flushSearchDebounce()
     expect(result.current.pagination.currentPage).toBe(1)
   })
+
+  describe('handleSelectAll scope', () => {
+    test('selects every eligible employee across all pages when no search is active', () => {
+      const { result } = renderHook(() => useSelectEmployeesData('company-123'), { wrapper })
+
+      // Stay on page 1 (5 of 12 visible) — select-all should still grab all 12.
+      act(() => {
+        result.current.handleSelectAll(true, result.current.filteredEmployees)
+      })
+
+      expect(result.current.selectedUuids.size).toBe(12)
+      for (let i = 0; i < 12; i++) {
+        expect(result.current.selectedUuids.has(`uuid-${i}`)).toBe(true)
+      }
+    })
+
+    test('unselects every eligible employee across all pages', () => {
+      const { result } = renderHook(() => useSelectEmployeesData('company-123'), { wrapper })
+
+      act(() => {
+        result.current.handleSelectAll(true, result.current.filteredEmployees)
+      })
+      expect(result.current.selectedUuids.size).toBe(12)
+
+      act(() => {
+        result.current.handleSelectAll(false, result.current.filteredEmployees)
+      })
+      expect(result.current.selectedUuids.size).toBe(0)
+    })
+
+    test('with a search active, selects only employees matching the search across all pages', () => {
+      const { result } = renderHook(() => useSelectEmployeesData('company-123'), { wrapper })
+
+      // "Employee1" matches Employee1, Employee10, Employee11 — 3 employees
+      // spanning pages 1 and 3 of the unfiltered list.
+      act(() => {
+        result.current.handleSearchChange('Employee1')
+      })
+      flushSearchDebounce()
+      expect(result.current.pagination.totalCount).toBe(3)
+
+      act(() => {
+        result.current.handleSelectAll(true, result.current.filteredEmployees)
+      })
+
+      expect(result.current.selectedUuids.size).toBe(3)
+      expect(result.current.selectedUuids.has('uuid-1')).toBe(true)
+      expect(result.current.selectedUuids.has('uuid-10')).toBe(true)
+      expect(result.current.selectedUuids.has('uuid-11')).toBe(true)
+    })
+
+    test('with a search active, unselect-all only unselects employees matching the search', () => {
+      const { result } = renderHook(() => useSelectEmployeesData('company-123'), { wrapper })
+
+      // First select everyone with no search.
+      act(() => {
+        result.current.handleSelectAll(true, result.current.filteredEmployees)
+      })
+      expect(result.current.selectedUuids.size).toBe(12)
+
+      // Then apply a search for "Employee1" (matches uuid-1, uuid-10, uuid-11)
+      // and unselect all matching — leaves 9 employees still selected.
+      act(() => {
+        result.current.handleSearchChange('Employee1')
+      })
+      flushSearchDebounce()
+      act(() => {
+        result.current.handleSelectAll(false, result.current.filteredEmployees)
+      })
+
+      expect(result.current.selectedUuids.size).toBe(9)
+      expect(result.current.selectedUuids.has('uuid-1')).toBe(false)
+      expect(result.current.selectedUuids.has('uuid-10')).toBe(false)
+      expect(result.current.selectedUuids.has('uuid-11')).toBe(false)
+      expect(result.current.selectedUuids.has('uuid-0')).toBe(true)
+      expect(result.current.selectedUuids.has('uuid-9')).toBe(true)
+    })
+  })
 })

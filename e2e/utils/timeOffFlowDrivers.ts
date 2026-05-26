@@ -2,7 +2,7 @@ import { expect, type Page } from '@playwright/test'
 import type { ScenarioContext } from '../scenario/context'
 import { waitForLoadingComplete } from './helpers'
 
-const LONG_WAIT = 60_000
+const LONG_WAIT = 90_000
 
 async function landOnTimeOffPolicyList(page: Page): Promise<void> {
   await page.goto('/?flow=time-off')

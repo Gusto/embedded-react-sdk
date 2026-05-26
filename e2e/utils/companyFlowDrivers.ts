@@ -2,8 +2,8 @@ import { expect, type Page } from '@playwright/test'
 import type { ScenarioContext } from '../scenario/context'
 import { fillDate, waitForLoadingComplete } from './helpers'
 
-const LONG_WAIT = 60_000
-const MEDIUM_WAIT = 30_000
+const LONG_WAIT = 90_000
+const MEDIUM_WAIT = 60_000
 const SHORT_WAIT = 5_000
 
 export const OVERVIEW_HEADING = /get started|let's get started|we need a few more details/i

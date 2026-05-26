@@ -1011,7 +1011,7 @@ describe('PolicyConfigurationForm - edit mode (deriveFormDefaults)', () => {
   })
 
   describe('accrual method locking for complete policies', () => {
-    it('disables all accrual method radios for a complete unlimited policy', async () => {
+    it('hides accrual method radios and shows static label for a complete unlimited policy', async () => {
       renderEditComponent({
         name: 'Unlimited PTO',
         complete: true,
@@ -1022,17 +1022,14 @@ describe('PolicyConfigurationForm - edit mode (deriveFormDefaults)', () => {
         expect(screen.getByDisplayValue('Unlimited PTO')).toBeInTheDocument()
       })
 
-      expect(screen.getByLabelText('Unlimited')).toBeDisabled()
-      expect(screen.getByLabelText('Based on hours worked')).toBeDisabled()
-      expect(screen.getByLabelText('Fixed amount per year')).toBeDisabled()
-      expect(
-        screen.getByText(
-          'The accrual type cannot be changed for an existing policy. Create a new policy to use a different accrual type.',
-        ),
-      ).toBeInTheDocument()
+      expect(screen.queryByLabelText('Unlimited')).not.toBeInTheDocument()
+      expect(screen.queryByLabelText('Based on hours worked')).not.toBeInTheDocument()
+      expect(screen.queryByLabelText('Fixed amount per year')).not.toBeInTheDocument()
+      expect(screen.getByText('Accrual method')).toBeInTheDocument()
+      expect(screen.getByText('Unlimited')).toBeInTheDocument()
     })
 
-    it('disables only the unlimited radio for a complete accrual-based policy', async () => {
+    it('hides only the unlimited radio for a complete accrual-based policy', async () => {
       renderEditComponent({
         name: 'Hourly Vacation',
         complete: true,
@@ -1045,14 +1042,9 @@ describe('PolicyConfigurationForm - edit mode (deriveFormDefaults)', () => {
         expect(screen.getByDisplayValue('Hourly Vacation')).toBeInTheDocument()
       })
 
-      expect(screen.getByLabelText('Unlimited')).toBeDisabled()
+      expect(screen.queryByLabelText('Unlimited')).not.toBeInTheDocument()
       expect(screen.getByLabelText('Based on hours worked')).toBeEnabled()
       expect(screen.getByLabelText('Fixed amount per year')).toBeEnabled()
-      expect(
-        screen.getByText(
-          'The accrual type cannot be changed for an existing policy. Create a new policy to use a different accrual type.',
-        ),
-      ).toBeInTheDocument()
     })
 
     it('allows switching between accrual subtypes for a complete accrual-based policy', async () => {

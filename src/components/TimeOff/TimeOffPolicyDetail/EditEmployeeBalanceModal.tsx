@@ -61,6 +61,7 @@ export function EditEmployeeBalanceModal({
         <NumberInput
           name="balance"
           label={t('editBalanceModal.balanceLabel')}
+          isRequired
           value={balance}
           onChange={setBalance}
           minimumFractionDigits={1}

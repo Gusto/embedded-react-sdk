@@ -466,6 +466,41 @@ describe('SelectEmployeesTimeOff', () => {
       }>
       expect(submitted.find(e => e.uuid === '1')).toEqual({ uuid: '1', balance: '40' })
     })
+
+    it('select-all submits every eligible employee with their carry-over balance', async () => {
+      const user = userEvent.setup()
+      renderComponent({ mode: 'standalone', policyType: 'vacation' })
+
+      await waitFor(() => {
+        expect(screen.getByText('Alice Smith')).toBeInTheDocument()
+      })
+
+      // Header select-all (index 0) selects every eligible employee, not just
+      // the current page. With 3 employees and the existing carry-over fix,
+      // the submit payload must include all 3 with their respective vacation
+      // carry-over balances.
+      const headerCheckbox = screen.getAllByRole('checkbox')[0] as Element
+      await user.click(headerCheckbox)
+
+      await user.click(screen.getByRole('button', { name: 'continueCta' }))
+      await user.click(await screen.findByRole('button', { name: 'addConfirmDialog.confirmCta' }))
+
+      await waitFor(() => {
+        expect(mockAddEmployees).toHaveBeenCalled()
+      })
+      const submitted = mockAddEmployees.mock.calls[0]?.[0].request.requestBody.employees as Array<{
+        uuid: string
+        balance?: string
+      }>
+      expect(submitted).toEqual(
+        expect.arrayContaining([
+          { uuid: '1', balance: '40' }, // Alice — vacation carry-over 40
+          { uuid: '2', balance: '0' }, // Bob — vacation carry-over 0
+          { uuid: '3', balance: '0' }, // Carol — no PTO history, default to 0
+        ]),
+      )
+      expect(submitted).toHaveLength(3)
+    })
     it('opens add confirm dialog and gates submission until confirmed', async () => {
       const user = userEvent.setup()
       renderComponent({ mode: 'standalone' })

@@ -1,0 +1,91 @@
+{
+  "$schema": "../schema/scenario.schema.json",
+  "name": "Shared onboarded company for all non-fresh-wizard tests",
+  "description": "Single onboarded react_sdk_demo_company_onboarded company shared across every spec in every domain except company-onboarding wizard tests (which need a fresh react_sdk_demo via shared/fresh-wizard). Replaces the previous onboarded-ro + onboarded-canary split — those existed to separate read-only specs from mutating canaries when they lived in different shards. Now that canary specs live in their domain folders alongside lifecycle specs, ordering is handled by numeric filename prefix:\n\n- 01-89: read-only or create-isolated-entity specs (timestamped names, no shared mutations)\n- 90-99: mutating specs (consume pay periods, terminate employees, submit policies). Within 90-99, lower numbers run first; ordering matters when one mutation depends on another's preconditions (e.g. payroll dismissal must run before regular payroll consumes the open period).\n\nDecorations cover every entity contract any consuming spec needs:\n\n- HQ location for employee work-address picker and time-off employee enrollment\n- Biweekly pay schedule for payroll landing + transition + canary 04 (which mutates it to weekly mid-suite)\n- alice (full salaried, w2-salaried-employee fragment) for employee-list and time-off enrollment specs\n- selfee (work_address only) for the employee self-onboarding submit spec — scenario.employeeIds.selfee is a contract\n- charlie (individual, contractor-1099 fragment) for contractor-mixed-roster\n- acme (business, 'Acme Consulting LLC') for contractor-business and contractor-onboarding-edit specs — the business name is a fixture key\n- payable (Pat Payable, Hourly $75, onboarding_completed) for contractor payment submit specs — scenario.contractorIds.payable is a contract\n\nFull health gate runs at e2e-setup time: onboarding_completed, signatory with passed identity verification, zero payroll blockers, at least one onboarded employee. Refusing to write the artifact if any check fails.",
+  "domain": "shared",
+  "baseDemo": "react_sdk_demo_company_onboarded",
+  "decorations": {
+    "locations": [
+      {
+        "key": "hq",
+        "street_1": "500 3rd Street",
+        "city": "San Francisco",
+        "state": "CA",
+        "zip": "94107",
+        "filing_address": true,
+        "mailing_address": true
+      }
+    ],
+    "paySchedule": {
+      "frequency": "Every other week",
+      "anchor_pay_date": "{{relative:+14d:Friday}}",
+      "anchor_end_of_pay_period": "{{relative:+13d}}"
+    },
+    "employees": [
+      {
+        "key": "alice",
+        "$ref": "../fragments/w2-salaried-employee.json",
+        "overrides": {
+          "first_name": "Alice",
+          "last_name": "Existing",
+          "email": "alice-existing+{{ts}}@example.com"
+        }
+      },
+      {
+        "key": "selfee",
+        "first_name": "Selma",
+        "last_name": "Selfonboard",
+        "email": "selma-canary+{{ts}}@example.com",
+        "work_address": { "locationKey": "hq" }
+      }
+    ],
+    "contractors": [
+      {
+        "key": "individual",
+        "$ref": "../fragments/contractor-1099.json",
+        "overrides": {
+          "first_name": "Charlie",
+          "last_name": "Individual",
+          "email": "charlie-ind+{{ts}}@example.com"
+        }
+      },
+      {
+        "key": "business",
+        "type": "Business",
+        "business_name": "Acme Consulting LLC",
+        "email": "billing-acme+{{ts}}@example.com",
+        "wage_type": "Fixed"
+      },
+      {
+        "key": "payable",
+        "type": "Individual",
+        "first_name": "Pat",
+        "last_name": "Payable",
+        "email": "pat-payable+{{ts}}@example.com",
+        "wage_type": "Hourly",
+        "hourly_rate": "75",
+        "address": {
+          "street_1": "500 3rd Street",
+          "city": "San Francisco",
+          "state": "CA",
+          "zip": "94107"
+        },
+        "onboarding_status": "onboarding_completed"
+      }
+    ]
+  },
+  "expectedContext": [
+    "companyId",
+    "locationIds.hq",
+    "paySchedule.uuid",
+    "employeeIds.alice",
+    "employeeIds.selfee",
+    "contractorIds.individual",
+    "contractorIds.business",
+    "contractorIds.payable"
+  ],
+  "requireOnboardedCompany": true,
+  "requireOnboardedEmployees": true,
+  "requireSignatory": true,
+  "requireNoBlockers": true
+}

@@ -1,10 +1,11 @@
 import { useTranslation } from 'react-i18next'
+import type { CustomTypeOptions } from 'i18next'
 import { FlowBreadcrumbs } from '../Common/FlowBreadcrumbs/FlowBreadcrumbs'
 import type { BreadcrumbTrail } from '../Common/FlowBreadcrumbs/FlowBreadcrumbsTypes'
 import { Flex } from '../Common/Flex'
 import { FlexItem } from '../Common'
 import { useFlow } from './useFlow'
-import { componentEvents } from '@/shared/constants'
+import { componentEvents, type EventType } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import CaretLeftIcon from '@/assets/icons/caret-left.svg?react'
 
@@ -30,7 +31,7 @@ export function FlowHeader() {
 
   switch (header.type) {
     case 'minimal':
-      return <MinimalHeader cta={header.cta} />
+      return <MinimalHeader back={header.back} cta={header.cta} />
     case 'progress':
       return (
         <ProgressHeader
@@ -56,10 +57,23 @@ export function FlowHeader() {
   }
 }
 
-function MinimalHeader({ cta: Cta }: { cta?: React.ComponentType }) {
+function MinimalHeader({
+  back,
+  cta: Cta,
+}: {
+  back?: {
+    labelKey: string
+    namespace: keyof CustomTypeOptions['resources']
+    event: EventType
+  }
+  cta?: React.ComponentType
+}) {
   const { onEvent } = useFlow()
   const Components = useComponentContext()
-  const { t } = useTranslation()
+  const { t } = useTranslation(back?.namespace)
+
+  const label = back ? t(back.labelKey as never) : t('back')
+  const event = back?.event ?? componentEvents.CANCEL
 
   return (
     <Flex flexDirection="row" justifyContent="space-between" alignItems="center">
@@ -68,10 +82,10 @@ function MinimalHeader({ cta: Cta }: { cta?: React.ComponentType }) {
           variant="secondary"
           icon={<CaretLeftIcon aria-hidden="true" />}
           onClick={() => {
-            onEvent(componentEvents.CANCEL, undefined)
+            onEvent(event, undefined)
           }}
         >
-          {t('back')}
+          {label}
         </Components.Button>
       </FlexItem>
       {Cta && (
