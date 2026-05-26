@@ -450,34 +450,45 @@ export async function terminateAndRunDismissalPayroll(
   if (await dismissalHeading.isVisible()) {
     // The demo backend creates the dismissal payroll record asynchronously
     // after we click "Run termination payroll". The pay period dropdown only
-    // appears once that record exists. On a slow backend this can take 30-90s.
+    // appears once that record exists. On a slow backend this can take 30-120s.
     //
     // Poll with short per-check timeouts and a page reload between each
-    // attempt. Using a throwing `expect(...).toBeVisible({ timeout: 60s })`
-    // inside a for-loop doesn't work because the throw escapes the loop after
-    // the first timeout — only one attempt fires rather than three.
+    // attempt. The reload lets the backend's async pay-period creation surface
+    // on a fresh page load.
     //
-    // Instead: poll with a total budget of PAYROLL_CALCULATION_DEADLINE,
-    // checking every 5s with a short non-throwing isVisible() probe, reloading
-    // after each failed check. The reload lets the backend's asynchronous
-    // pay-period creation surface on a fresh page load.
+    // Two important constraints:
+    // 1. Use non-throwing isVisible() probes — a throwing expect() escapes the
+    //    loop on first timeout, making retries impossible.
+    // 2. Wrap page.reload() with .catch() — the SDK may start a client-side
+    //    navigation away from the dismissal screen at any moment (once the
+    //    backend produces the payroll record), causing reload() to throw
+    //    net::ERR_ABORTED if called mid-navigation. Catching it and re-checking
+    //    the landmarks is safer than crashing.
+    //
+    // Give this step 3× PAYROLL_CALCULATION_DEADLINE (270s) since it involves
+    // async backend work on top of normal load time. The per-test ceiling
+    // CANARY_TEST_TIMEOUT_WITH_PRECURSOR_MS (10 min) covers the full scenario.
+    const DISMISSAL_PAYROLL_BUDGET_MS = 3 * PAYROLL_CALCULATION_DEADLINE
     const pollStart = Date.now()
     let foundPayPeriod = false
-    while (Date.now() - pollStart < PAYROLL_CALCULATION_DEADLINE) {
+    while (Date.now() - pollStart < DISMISSAL_PAYROLL_BUDGET_MS) {
       if (await payPeriodSelect.isVisible({ timeout: 5_000 }).catch(() => false)) {
         foundPayPeriod = true
         break
       }
-      if (await emptyStateAlert.isVisible({ timeout: 2_000 }).catch(() => false)) {
-        // Empty state means the backend produced a response but no period yet.
-        // Reload and try again.
-      }
       if (await editPayrollHeading.isVisible({ timeout: 2_000 }).catch(() => false)) {
-        // SDK auto-advanced past pay-period selection.
+        // SDK auto-advanced past pay-period selection — backend was fast.
         break
       }
-      await page.reload()
+      // Neither the pay period select nor the edit payroll heading is visible yet.
+      // Reload and let the page re-render. Guard against ERR_ABORTED in case
+      // the SDK started a client-side navigation just as we reloaded.
+      await page.reload().catch(() => {})
       await waitForLoadingComplete(page, PAYROLL_CALCULATION_DEADLINE)
+      // After reload, check again immediately before sleeping
+      if (await editPayrollHeading.isVisible({ timeout: 2_000 }).catch(() => false)) {
+        break
+      }
     }
 
     if (
@@ -485,7 +496,7 @@ export async function terminateAndRunDismissalPayroll(
       !(await editPayrollHeading.isVisible({ timeout: 2_000 }).catch(() => false))
     ) {
       throw new Error(
-        `Run Dismissal Payroll: pay period select never appeared within ${PAYROLL_CALCULATION_DEADLINE / 1000}s of patient polling (backend never produced an unprocessed termination pay period for this employee)`,
+        `Run Dismissal Payroll: pay period select never appeared within ${DISMISSAL_PAYROLL_BUDGET_MS / 1000}s of patient polling (backend never produced an unprocessed termination pay period for this employee)`,
       )
     }
 
