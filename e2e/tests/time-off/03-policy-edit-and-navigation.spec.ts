@@ -66,7 +66,14 @@ test.describe('TimeOffFlow - edit unlimited + navigation regressions', () => {
 
     const nameField = page.getByLabel(/policy name/i)
     await expect(nameField).toHaveValue(policyName)
-    await expect(page.getByRole('radio', { name: /unlimited/i })).toBeChecked()
+    // The edit form locks the accrual method for unlimited policies and
+    // renders it as a label + plain text (see
+    // PolicyConfigurationFormPresentation.tsx — when accrualMethodOptions
+    // collapses to a single option the radio group is replaced with two
+    // <Text> nodes). Asserting the label and value verifies the unlimited
+    // selection survived the round-trip without re-introducing the radio.
+    await expect(page.getByText(/^accrual method$/i)).toBeVisible()
+    await expect(page.getByText(/^unlimited$/i)).toBeVisible()
 
     await expect(page.getByText(/unexpected error/i)).toHaveCount(0)
     await expect(page.getByText(/cannot read propert/i)).toHaveCount(0)
