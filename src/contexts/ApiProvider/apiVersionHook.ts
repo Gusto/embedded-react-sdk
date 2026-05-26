@@ -1,6 +1,6 @@
 import type { BeforeRequestHook } from '@/types/hooks'
 
-const CURRENT_API_VERSION = '2025-06-15'
+const CURRENT_API_VERSION = '2026-02-01'
 
 export const apiVersionHook: BeforeRequestHook = {
   beforeRequest: (_context, request) => {

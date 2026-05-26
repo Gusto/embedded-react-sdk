@@ -151,7 +151,7 @@ describe('ApiProvider', () => {
     })
   })
 
-  test('always sets API version header to 2025-06-15', () => {
+  test('always sets API version header to 2026-02-01', () => {
     render(
       <ApiProvider url="https://api.example.com">
         <div>Test</div>
@@ -170,6 +170,6 @@ describe('ApiProvider', () => {
 
     const modifiedRequest = apiVersionHook.beforeRequest(mockContext, mockRequest)
 
-    expect(modifiedRequest.headers.get('X-Gusto-API-Version')).toBe('2025-06-15')
+    expect(modifiedRequest.headers.get('X-Gusto-API-Version')).toBe('2026-02-01')
   })
 })

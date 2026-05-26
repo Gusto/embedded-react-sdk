@@ -2,13 +2,13 @@ import { describe, test, expect } from 'vitest'
 import { apiVersionHook } from './apiVersionHook'
 
 describe('apiVersionHook', () => {
-  test('sets X-Gusto-API-Version header to 2025-06-15', () => {
+  test('sets X-Gusto-API-Version header to 2026-02-01', () => {
     const mockRequest = new Request('https://api.example.com/v1/companies')
     const mockContext = {} as Parameters<typeof apiVersionHook.beforeRequest>[0]
 
     const modifiedRequest = apiVersionHook.beforeRequest(mockContext, mockRequest) as Request
 
-    expect(modifiedRequest.headers.get('X-Gusto-API-Version')).toBe('2025-06-15')
+    expect(modifiedRequest.headers.get('X-Gusto-API-Version')).toBe('2026-02-01')
   })
 
   test('overrides existing X-Gusto-API-Version header', () => {
@@ -21,7 +21,7 @@ describe('apiVersionHook', () => {
 
     const modifiedRequest = apiVersionHook.beforeRequest(mockContext, mockRequest) as Request
 
-    expect(modifiedRequest.headers.get('X-Gusto-API-Version')).toBe('2025-06-15')
+    expect(modifiedRequest.headers.get('X-Gusto-API-Version')).toBe('2026-02-01')
   })
 
   test('preserves other headers', () => {
@@ -37,7 +37,7 @@ describe('apiVersionHook', () => {
 
     expect(modifiedRequest.headers.get('Authorization')).toBe('Bearer test-token')
     expect(modifiedRequest.headers.get('Content-Type')).toBe('application/json')
-    expect(modifiedRequest.headers.get('X-Gusto-API-Version')).toBe('2025-06-15')
+    expect(modifiedRequest.headers.get('X-Gusto-API-Version')).toBe('2026-02-01')
   })
 
   test('returns the same request object', () => {
