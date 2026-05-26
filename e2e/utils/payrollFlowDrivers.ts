@@ -483,9 +483,13 @@ export async function terminateAndRunDismissalPayroll(
       // Neither the pay period select nor the edit payroll heading is visible yet.
       // Reload and let the page re-render. Guard against ERR_ABORTED in case
       // the SDK started a client-side navigation just as we reloaded.
+      // Also catch timeouts from waitForLoadingComplete — on a very slow backend
+      // the Suspense region itself may take >90s to detach, which would throw
+      // and exit the while loop. Swallowing that timeout here lets us keep
+      // polling rather than crashing.
       await page.reload().catch(() => {})
-      await waitForLoadingComplete(page, PAYROLL_CALCULATION_DEADLINE)
-      // After reload, check again immediately before sleeping
+      await waitForLoadingComplete(page, PAYROLL_CALCULATION_DEADLINE).catch(() => {})
+      // After reload, check again immediately before the next loop iteration
       if (await editPayrollHeading.isVisible({ timeout: 2_000 }).catch(() => false)) {
         break
       }
