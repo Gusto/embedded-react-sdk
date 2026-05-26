@@ -1038,6 +1038,136 @@ describe('Dashboard', () => {
       })
     })
 
+    it('closes the review modal when all pending changes are cancelled', async () => {
+      const user = userEvent.setup()
+      let deleteCallCount = 0
+      const deleteResolver = vi.fn<HttpResponseResolver>(() => {
+        deleteCallCount += 1
+        return new HttpResponse(null, { status: 204 })
+      })
+
+      const futurePrimary = baseComp({
+        uuid: 'comp-primary-future',
+        job_uuid: 'job-primary',
+        rate: '35.00',
+        effective_date: TWO_YEARS_AHEAD,
+      })
+      const futureSecondary = baseComp({
+        uuid: 'comp-secondary-future',
+        job_uuid: 'job-secondary',
+        title: 'Stock Associate',
+        rate: '24.00',
+        effective_date: ONE_YEAR_AHEAD,
+      })
+
+      const jobsBefore = [
+        baseJob({ uuid: 'job-primary', current_compensation_uuid: 'comp-primary-current' }, [
+          baseComp({ uuid: 'comp-primary-current', job_uuid: 'job-primary' }),
+          futurePrimary,
+        ]),
+        baseJob(
+          {
+            uuid: 'job-secondary',
+            primary: false,
+            title: 'Stock Associate',
+            current_compensation_uuid: 'comp-secondary-current',
+          },
+          [
+            baseComp({
+              uuid: 'comp-secondary-current',
+              job_uuid: 'job-secondary',
+              title: 'Stock Associate',
+              rate: '22.00',
+            }),
+            futureSecondary,
+          ],
+        ),
+      ]
+      const jobsAfterSecondaryCancelled = [
+        baseJob({ uuid: 'job-primary', current_compensation_uuid: 'comp-primary-current' }, [
+          baseComp({ uuid: 'comp-primary-current', job_uuid: 'job-primary' }),
+          futurePrimary,
+        ]),
+        baseJob(
+          {
+            uuid: 'job-secondary',
+            primary: false,
+            title: 'Stock Associate',
+            current_compensation_uuid: 'comp-secondary-current',
+          },
+          [
+            baseComp({
+              uuid: 'comp-secondary-current',
+              job_uuid: 'job-secondary',
+              title: 'Stock Associate',
+              rate: '22.00',
+            }),
+          ],
+        ),
+      ]
+      const jobsAfterAllCancelled = [
+        baseJob({ uuid: 'job-primary', current_compensation_uuid: 'comp-primary-current' }, [
+          baseComp({ uuid: 'comp-primary-current', job_uuid: 'job-primary' }),
+        ]),
+        baseJob(
+          {
+            uuid: 'job-secondary',
+            primary: false,
+            title: 'Stock Associate',
+            current_compensation_uuid: 'comp-secondary-current',
+          },
+          [
+            baseComp({
+              uuid: 'comp-secondary-current',
+              job_uuid: 'job-secondary',
+              title: 'Stock Associate',
+              rate: '22.00',
+            }),
+          ],
+        ),
+      ]
+
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(
+            deleteCallCount === 0
+              ? jobsBefore
+              : deleteCallCount === 1
+                ? jobsAfterSecondaryCancelled
+                : jobsAfterAllCancelled,
+          ),
+        ),
+      )
+      server.use(handleDeleteCompensation(deleteResolver))
+
+      renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
+      await goToJobAndPayTab(user)
+
+      const alert = await screen.findByRole('alert')
+      await user.click(within(alert).getByRole('button', { name: 'Review' }))
+
+      const modal = await screen.findByRole('dialog')
+      const cancelButtons = within(modal).getAllByRole('button', { name: 'Cancel change' })
+      await user.click(cancelButtons[0]!)
+
+      await waitFor(() => {
+        expect(deleteResolver).toHaveBeenCalledTimes(1)
+      })
+      expect(screen.getByRole('dialog')).toBeInTheDocument()
+
+      const remainingCancelButtons = within(screen.getByRole('dialog')).getAllByRole('button', {
+        name: 'Cancel change',
+      })
+      await user.click(remainingCancelButtons[0]!)
+
+      await waitFor(() => {
+        expect(deleteResolver).toHaveBeenCalledTimes(2)
+      })
+      await waitFor(() => {
+        expect(screen.queryByRole('dialog')).toBeNull()
+      })
+    })
+
     describe('multi-job alert variants', () => {
       it('single hourly job with a comp update: shows inline alert with standard copy', async () => {
         const user = userEvent.setup()
