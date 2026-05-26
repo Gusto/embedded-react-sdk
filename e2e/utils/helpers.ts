@@ -1,5 +1,5 @@
 import { randomInt } from 'node:crypto'
-import type { Page } from '@playwright/test'
+import type { Locator, Page } from '@playwright/test'
 
 export function generateUniqueSSN(): string {
   const area = randomInt(1, 666)
@@ -30,22 +30,6 @@ export async function fillDate(
   await dateGroup.getByRole('spinbutton', { name: /^year/i }).fill(String(date.year))
 }
 
-/**
- * Wait for the SDK's top-level Suspense fallback (`<Loading>` region with
- * `aria-label` = `common:status.loading` = "Loading component...") to detach.
- *
- * The previous implementation polled four broad selectors including
- * `getByText(/loading/i)`, which false-matched legitimate page content
- * (e.g. "Calculating payroll...") and per-section spinners that may
- * legitimately persist during background polling. It required three
- * consecutive non-loading checks and rarely got them, silently sitting at
- * its 60s timeout while Playwright printed no step-level progress.
- *
- * Now we wait specifically for the Suspense fallback to detach. Downstream
- * `expect(...).toBeVisible()` calls handle their own retries, so a stuck
- * page surfaces as the meaningful landmark-assertion failure rather than a
- * generic "Loading did not complete."
- */
 // US federal holidays that the demo backend's "business day" validation
 // rejects for direct-deposit payment dates. Only encoding dates that the
 // canary specs could realistically hit (current calendar year + the next
@@ -109,12 +93,48 @@ export function nextBusinessDay(from: Date, minOffsetDays: number): Date {
   return candidate
 }
 
-export async function waitForLoadingComplete(page: Page, timeout = 30_000) {
-  const suspenseFallback = page.getByRole('region', { name: /^loading/i })
-  await suspenseFallback
-    .first()
-    .waitFor({ state: 'detached', timeout })
-    .catch(() => {})
+interface WaitForLoadingOptions {
+  timeout?: number
+  anchor?: Locator
+}
+
+/**
+ * Wait for the SDK's top-level Suspense fallback (`<Loading>` region with
+ * `aria-label` = `common:status.loading` = "Loading component...") to detach.
+ *
+ * Two call shapes:
+ *
+ *   await waitForLoadingComplete(page, 60_000)
+ *   await waitForLoadingComplete(page, { timeout: 60_000, anchor: heading })
+ *
+ * The two-arg form waits only for the Suspense region to detach. The options
+ * form additionally waits for `anchor` to be visible — use it whenever the
+ * caller's *next* step is `expect(landmark).toBeVisible()`, so the wait and
+ * the assertion share one budget instead of two and a stuck page fails on the
+ * landmark, not on a generic timeout.
+ *
+ * If the loading region never detaches within `timeout`, this function
+ * throws — a stuck Suspense fallback is a real bug and downstream `expect`
+ * calls produce more misleading errors if it's silenced. Always waits on
+ * `.first()` so a page with multiple Suspense regions doesn't deadlock the
+ * helper.
+ */
+export async function waitForLoadingComplete(
+  page: Page,
+  timeoutOrOptions: number | WaitForLoadingOptions = 30_000,
+): Promise<void> {
+  const { timeout = 30_000, anchor } =
+    typeof timeoutOrOptions === 'number' ? { timeout: timeoutOrOptions } : timeoutOrOptions
+
+  const suspenseFallback = page.getByRole('region', { name: /^loading/i }).first()
+  const detach = suspenseFallback.waitFor({ state: 'detached', timeout })
+
+  if (anchor) {
+    await Promise.all([detach, anchor.waitFor({ state: 'visible', timeout })])
+    return
+  }
+
+  await detach
 }
 
 export async function skipPendingPayrolls(config: { flowToken: string; companyId: string }) {

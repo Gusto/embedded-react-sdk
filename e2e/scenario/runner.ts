@@ -13,13 +13,13 @@ import type {
 
 const DEFAULT_GWS_FLOWS_HOST = 'https://flows.gusto-demo.com'
 
-interface ApiClient {
+export interface ApiClient {
   get: <T>(path: string) => Promise<T>
   post: <T>(path: string, body: Record<string, unknown>) => Promise<T>
   put: <T>(path: string, body: Record<string, unknown>) => Promise<T>
 }
 
-function makeApi(gwsFlowsBase: string, flowToken: string): ApiClient {
+export function makeApi(gwsFlowsBase: string, flowToken: string): ApiClient {
   const base = `${gwsFlowsBase}/fe_sdk/${flowToken}/v1`
 
   async function request<T>(
@@ -184,15 +184,15 @@ async function decorateEmployees(
       const onboardingStatus =
         emp.onboarding_status === 'completed' ? 'onboarding_completed' : emp.onboarding_status
       log(`  Setting onboarding status for ${emp.key}: ${emp.onboarding_status}`)
-      try {
-        await api.put(`/employees/${uuid}/onboarding_status`, {
-          onboarding_status: onboardingStatus,
-        })
-      } catch (error) {
-        log(
-          `  Skipping onboarding status update for ${emp.key}; API rejected status (${String(error)})`,
-        )
-      }
+      // The previous implementation swallowed this error and continued, which
+      // turned a half-provisioned scenario into a downstream test failure
+      // 30+s later (e.g. "list shows no employees" when in fact the runner
+      // never finished provisioning). If this PUT fails, the scenario can't
+      // be delivered as declared — fail fast with the API's reason rather
+      // than letting tests run against an unfinished company.
+      await api.put(`/employees/${uuid}/onboarding_status`, {
+        onboarding_status: onboardingStatus,
+      })
     }
 
     if (emp.termination) {
@@ -259,27 +259,70 @@ async function decorateContractors(
         // auto-advances into `admin_onboarding_review` before we attempt the
         // final transition.
         log(`  Setting payment method to Check for ${contractor.key}`)
-        try {
-          const paymentMethod = await api.get<{ version?: string }>(
-            `/contractors/${created.uuid}/payment_method`,
-          )
-          await api.put(`/contractors/${created.uuid}/payment_method`, {
-            type: 'Check',
-            version: paymentMethod.version,
-          })
-        } catch (error) {
-          log(`  Payment method update failed for ${contractor.key}: ${String(error)}`)
-        }
+        const paymentMethod = await api.get<{ version?: string }>(
+          `/contractors/${created.uuid}/payment_method`,
+        )
+        await api.put(`/contractors/${created.uuid}/payment_method`, {
+          type: 'Check',
+          version: paymentMethod.version,
+        })
       }
 
+      // PUT /contractors/:uuid/onboarding_status with retry on 422.
+      //
+      // Setting payment_method = Check transitions some demo contractors
+      // into admin_onboarding_review (eligible for the final transition);
+      // others stay in self_onboarding_not_invited or admin_onboarding_incomplete
+      // depending on the base demo's seed state. Only the first group can
+      // be PUT to onboarding_completed via the API alone — the second
+      // group is missing a prerequisite (typically an onboarding step the
+      // scenario runner cannot fulfill) and never converges, regardless
+      // of how long we wait.
+      //
+      // Strategy: try the transition with a short retry window for the
+      // genuinely-eventual-consistent cases, but treat persistent 422 as a
+      // best-effort warning rather than a fatal scenario error. Downstream
+      // contractor specs that need a payment-ready contractor (canary 03,
+      // contractor-payment-submit-lifecycle) handle the empty-payable-list
+      // case themselves by picking from the demo seed's pre-existing
+      // contractors. Other 4xx/5xx codes still fail fast.
       log(`  Setting onboarding status for ${contractor.key}: ${contractor.onboarding_status}`)
-      try {
-        await api.put(`/contractors/${created.uuid}/onboarding_status`, {
-          onboarding_status: onboardingStatus,
-        })
-      } catch (error) {
+      // Bumped from 30s to 90s. The previous 30s budget (6 attempts at 5s
+      // intervals) was reaching exhaustion in CI under the slow demo
+      // backend — the contractor's intermediate onboarding state was
+      // taking longer to advance than 30s allowed for. 90s gives 18
+      // attempts, comfortably enough margin that "still not ready after
+      // 90s" is a real degraded state, not retry-budget exhaustion.
+      const ONBOARDING_RETRY_BUDGET_MS = 90_000
+      const start = Date.now()
+      let lastError: unknown = null
+      let attempt = 0
+      let succeeded = false
+      while (Date.now() - start < ONBOARDING_RETRY_BUDGET_MS) {
+        attempt++
+        try {
+          await api.put(`/contractors/${created.uuid}/onboarding_status`, {
+            onboarding_status: onboardingStatus,
+          })
+          lastError = null
+          succeeded = true
+          break
+        } catch (error) {
+          lastError = error
+          const message = String(error)
+          // 422 means the backend won't accept the transition from the
+          // contractor's current state — wait and retry in case it's
+          // eventual consistency. Any other failure (network, 5xx, etc.)
+          // is not transient and should fail fast.
+          if (!message.includes('(422)')) {
+            throw error
+          }
+          await new Promise(r => setTimeout(r, 5_000))
+        }
+      }
+      if (!succeeded) {
         log(
-          `  Skipping onboarding status update for ${contractor.key}; API rejected status (${String(error)})`,
+          `  Transition to ${contractor.onboarding_status} for ${contractor.key} did not succeed after ${attempt} attempts (${Math.round((Date.now() - start) / 1000)}s); continuing as best-effort. Last error: ${String(lastError)}`,
         )
       }
     }
@@ -518,6 +561,114 @@ function validateExpectedContext(context: ScenarioContext, expectedPaths: string
   }
 }
 
+/**
+ * Validate that the base demo's company satisfies the scenario's stated
+ * preconditions (onboarding complete, employees seeded, etc.).
+ *
+ * Single-shot check. Caller wraps in waitForBaseDemoReady when polling is
+ * required.
+ *
+ * Returns null on success, or a human-readable reason string when the demo
+ * isn't ready.
+ */
+export async function checkBaseDemoState(
+  api: ApiClient,
+  companyId: string,
+  requirements: { onboarded: boolean; onboardedEmployees: boolean },
+): Promise<string | null> {
+  if (!requirements.onboarded && !requirements.onboardedEmployees) return null
+
+  try {
+    const status = await api.get<{ onboarding_completed?: boolean }>(
+      `/companies/${companyId}/onboarding_status`,
+    )
+    if (status.onboarding_completed !== true) {
+      return `expected onboarding_completed=true, got ${status.onboarding_completed ?? 'undefined'}`
+    }
+  } catch (error) {
+    return `could not read onboarding_status: ${String(error)}`
+  }
+
+  if (requirements.onboardedEmployees) {
+    try {
+      type EmployeeSummary = {
+        uuid: string
+        onboarded?: boolean
+        onboarding_status?: string
+        terminated?: boolean
+      }
+      const employees = await api.get<EmployeeSummary[]>(`/companies/${companyId}/employees`)
+      const onboarded = employees.filter(
+        e =>
+          !e.terminated && (e.onboarded === true || e.onboarding_status === 'onboarding_completed'),
+      )
+      if (onboarded.length === 0) {
+        return `expected ≥1 onboarded non-terminated employee, got ${employees.length} total / 0 onboarded`
+      }
+    } catch (error) {
+      return `could not read employees: ${String(error)}`
+    }
+  }
+
+  return null
+}
+
+/**
+ * Maximum patience for the base demo's background seeding to complete.
+ * The react_sdk_demo_company_onboarded factory finishes seeding the company
+ * (signatory creation, form signing, employee roster materialization) on a
+ * background job after POST /demos returns the flow token. Observed
+ * seeding window: 10-90s, with the long tail going up toward 2-3 minutes
+ * when the demo backend is under load. 180s gives a 1.5x margin over the
+ * upper end of the observed window.
+ *
+ * We trust the backend to eventually finish — we don't discard demos and
+ * retry, we just wait. If a single demo can't reach the required state in
+ * 180s, that's a real backend regression and the caller fails loudly.
+ */
+const BASE_DEMO_READINESS_BUDGET_MS = 180_000
+
+/**
+ * Poll a single demo's company state with exponential backoff until it
+ * satisfies the requirements, or the readiness budget runs out.
+ *
+ * Returns null on success, the last validation reason on timeout.
+ */
+async function waitForBaseDemoReady(
+  api: ApiClient,
+  companyId: string,
+  requirements: { onboarded: boolean; onboardedEmployees: boolean },
+  log: ReturnType<typeof makeLog>,
+): Promise<string | null> {
+  const start = Date.now()
+  let delay = 500
+  let lastReason: string | null = null
+  let pollCount = 0
+
+  while (Date.now() - start < BASE_DEMO_READINESS_BUDGET_MS) {
+    pollCount++
+    lastReason = await checkBaseDemoState(api, companyId, requirements)
+    if (lastReason === null) {
+      if (pollCount > 1) {
+        log(
+          `  Demo ${companyId.slice(0, 8)} became ready after ${pollCount} poll(s) (${Math.round(
+            (Date.now() - start) / 1000,
+          )}s)`,
+        )
+      }
+      return null
+    }
+    await new Promise(r => setTimeout(r, delay))
+    delay = Math.min(delay * 2, 2_000)
+  }
+
+  const elapsedSec = Math.round((Date.now() - start) / 1000)
+  log(
+    `  Demo ${companyId.slice(0, 8)} not ready after ${elapsedSec}s / ${pollCount} polls (last reason: ${lastReason})`,
+  )
+  return lastReason
+}
+
 export async function provisionScenario(
   scenarioPath: string,
   options?: { gwsFlowsHost?: string; onProgress?: ProgressFn },
@@ -531,6 +682,12 @@ export async function provisionScenario(
 
   const scenario = await loadScenario(scenarioPath)
 
+  // requireOnboardedEmployees implies requireOnboardedCompany — if you need
+  // onboarded employees you definitionally need onboarding to be complete.
+  const requireOnboarded =
+    scenario.requireOnboardedCompany === true || scenario.requireOnboardedEmployees === true
+  const requireOnboardedEmployees = scenario.requireOnboardedEmployees === true
+
   log(`Provisioning ${scenario.baseDemo} demo for ${scenarioId}`)
   const demoResult = await createDemoAndProvision(gwsFlowsBase, scenario.baseDemo, {
     onProgress: options?.onProgress,
@@ -538,6 +695,24 @@ export async function provisionScenario(
 
   const { flowToken, companyId } = demoResult
   const api = makeApi(gwsFlowsBase, flowToken)
+
+  if (requireOnboarded) {
+    const reason = await waitForBaseDemoReady(
+      api,
+      companyId,
+      { onboarded: requireOnboarded, onboardedEmployees: requireOnboardedEmployees },
+      log,
+    )
+    if (reason !== null) {
+      throw new Error(
+        `Base demo "${scenario.baseDemo}" (company ${companyId.slice(
+          0,
+          8,
+        )}) failed readiness check after ${BASE_DEMO_READINESS_BUDGET_MS / 1000}s of patient polling: ${reason}\nThis indicates a regression in the demo factory on the gws-flows backend, not in the SDK.`,
+      )
+    }
+  }
+
   const decorations = scenario.decorations
 
   const locationIds = decorations.locations

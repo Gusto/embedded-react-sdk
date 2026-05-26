@@ -13,14 +13,14 @@ import { fillDate, generateUniqueSSN, waitForLoadingComplete } from './helpers'
  * lockstep if the SDK copy changes.
  */
 
-const LONG_WAIT = 60_000
+const LONG_WAIT = 90_000
 const DEMO_GWS_FLOWS_HOST = 'https://flows.gusto-demo.com'
 
 async function landOnEmployeeOnboardingHome(page: Page) {
   await page.goto('/?flow=employee-onboarding')
-  await waitForLoadingComplete(page, LONG_WAIT)
-  await expect(page.getByRole('heading', { name: /your employees/i })).toBeVisible({
-    timeout: 30_000,
+  await waitForLoadingComplete(page, {
+    timeout: LONG_WAIT,
+    anchor: page.getByRole('heading', { name: /your employees/i }),
   })
 }
 
@@ -44,13 +44,13 @@ async function fillBasicsAndHomeAddress(
   await workAddressButton.click()
   await page.getByRole('listbox').getByRole('option').first().click()
 
-  await page.getByLabel('Street 1').fill('100 Canary Lane')
+  await page.getByLabel('Street 1').fill('425 California St')
   await page.getByLabel(/city/i).fill('San Francisco')
   await page.getByLabel('State').click()
   await page.getByRole('listbox').getByRole('option', { name: 'California' }).click()
   const zipField = page.getByLabel(/zip/i)
   await zipField.clear()
-  await zipField.fill('94105')
+  await zipField.fill('94104')
 
   await page.getByRole('button', { name: /^continue$/i }).click()
   await waitForLoadingComplete(page, LONG_WAIT)
@@ -67,7 +67,11 @@ async function fillCompensation(page: Page) {
     await jobTitleField.fill('Software Engineer')
   }
 
+  // Employee type select. The form requires this control; if it ever stops
+  // rendering or gets renamed we want a loud, attributable failure here
+  // rather than a Continue-click that silently fails validation downstream.
   const employeeTypeButton = page.getByRole('button', { name: /employee type/i })
+  await expect(employeeTypeButton).toBeVisible({ timeout: 5_000 })
   const empTypeLabel = (await employeeTypeButton.textContent()) ?? ''
   if (empTypeLabel.includes('Select')) {
     await employeeTypeButton.click()
@@ -88,10 +92,19 @@ async function fillCompensation(page: Page) {
     await compAmountField.fill('85000')
   }
 
-  const perButton = page.getByRole('button', { name: /per$/i })
-  const perLabel = (await perButton.textContent()) ?? ''
+  // Wage frequency select. The current SDK label is "Wage frequency"
+  // (Employee.Compensation.paymentUnitLabel); the older "Per" name is kept
+  // as a fallback in case staging is mid-rollout. The control is required
+  // on this form, so assert visibility loudly — otherwise a Continue click
+  // would fail validation 5 minutes downstream with no clear cause.
+  const wageFrequencyButton = page
+    .getByRole('button', { name: /wage frequency/i })
+    .or(page.getByRole('button', { name: /^per$/i }))
+    .first()
+  await expect(wageFrequencyButton).toBeVisible({ timeout: 5_000 })
+  const perLabel = (await wageFrequencyButton.textContent()) ?? ''
   if (!perLabel.includes('Year')) {
-    await perButton.click()
+    await wageFrequencyButton.click()
     const yearOption = page.getByRole('listbox').getByRole('option', { name: /year/i })
     if (await yearOption.isVisible({ timeout: 2_000 }).catch(() => false)) {
       await yearOption.click()
@@ -264,13 +277,13 @@ export async function runEmployeeSelfOnboarding(
   const streetField = page.getByLabel('Street 1')
   const streetValue = await streetField.inputValue().catch(() => '')
   if (!streetValue) {
-    await streetField.fill('200 Canary Place')
+    await streetField.fill('425 California St')
     await page.getByLabel(/city/i).fill('San Francisco')
     await page.getByLabel('State').click()
     await page.getByRole('listbox').getByRole('option', { name: 'California' }).click()
     const zipField = page.getByLabel(/zip/i)
     await zipField.clear()
-    await zipField.fill('94105')
+    await zipField.fill('94104')
   }
 
   await page.getByRole('button', { name: /^continue$/i }).click()
@@ -346,10 +359,9 @@ export async function runEmployeeTermination(
   }
 
   await page.goto(`/?flow=termination&employeeId=${employeeId}`)
-  await waitForLoadingComplete(page, LONG_WAIT)
-
-  await expect(page.getByRole('heading', { name: /^terminate /i, level: 2 })).toBeVisible({
-    timeout: 30_000,
+  await waitForLoadingComplete(page, {
+    timeout: LONG_WAIT,
+    anchor: page.getByRole('heading', { name: /^terminate /i, level: 2 }),
   })
 
   // Last day of work: must be in the future for "Regular payroll" path
@@ -367,10 +379,9 @@ export async function runEmployeeTermination(
   await page.getByRole('radio', { name: /^regular payroll$/i }).check({ force: true })
 
   await page.getByRole('button', { name: /^terminate employee$/i }).click()
-  await waitForLoadingComplete(page, LONG_WAIT)
-
-  await expect(page.getByRole('heading', { name: /^termination summary$/i })).toBeVisible({
+  await waitForLoadingComplete(page, {
     timeout: LONG_WAIT,
+    anchor: page.getByRole('heading', { name: /^termination summary$/i }),
   })
   await expect(page.getByText(/has been successfully terminated/i)).toBeVisible({
     timeout: LONG_WAIT,

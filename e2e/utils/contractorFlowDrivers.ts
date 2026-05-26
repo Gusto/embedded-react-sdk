@@ -8,7 +8,7 @@ import {
   waitForLoadingComplete,
 } from './helpers'
 
-const LONG_WAIT = 60_000
+const LONG_WAIT = 90_000
 
 export interface OnboardIndividualOptions {
   firstName: string
@@ -99,7 +99,8 @@ async function fillAddressStep(
   await expect(
     page
       .getByRole('heading', { name: /^home address$/i })
-      .or(page.getByRole('heading', { name: /^business address$/i })),
+      .or(page.getByRole('heading', { name: /^business address$/i }))
+      .first(),
   ).toBeVisible({ timeout: LONG_WAIT })
 
   await page.getByLabel(/^street 1$/i).fill(opts.street1 ?? '548 Market St')
@@ -247,12 +248,27 @@ async function setPaymentDate(page: Page): Promise<void> {
   await expect(dateInput).toBeVisible({ timeout: LONG_WAIT })
 
   // Direct deposit needs a payment date several business days out. Pick the
-  // next business day at least 14d ahead so we comfortably clear cutoff,
-  // weekends, AND US federal holidays. The demo backend rejects e.g.
-  // Memorial Day with "Mon, May 25th is not a business day", which surfaces
-  // only as a non-actionable form alert otherwise.
-  const future = nextBusinessDay(new Date(), 14)
-  await dateInput.fill(future.toISOString().slice(0, 10))
+  // next business day at least 21d ahead — generous so we clear cutoff,
+  // weekends, ALL US federal holidays in the next 3 weeks, AND the demo
+  // backend's own "next valid date" calculation which sometimes disagrees
+  // with ours.
+  const targetIso = nextBusinessDay(new Date(), 21).toISOString().slice(0, 10)
+
+  // The SDK's CreatePayment component has a useEffect that recomputes the
+  // initial payment date once `paymentSpeed` resolves from the API and
+  // overwrites whatever the user typed before that effect fired. Setting
+  // the date once, then waiting on the read-back, lets us catch the
+  // overwrite case and re-fill: poll the input value until it matches our
+  // target, retrying the fill if the SDK has overwritten it.
+  for (let attempt = 0; attempt < 5; attempt++) {
+    await dateInput.fill(targetIso)
+    await page.waitForTimeout(500)
+    const currentValue = await dateInput.inputValue()
+    if (currentValue === targetIso) return
+  }
+  throw new Error(
+    `Payment date input did not stick at ${targetIso} after 5 fill attempts; SDK is overwriting via useEffect race`,
+  )
 }
 
 async function editFirstContractorPayment(page: Page, opts: { hours: string }): Promise<void> {
@@ -269,7 +285,22 @@ async function editFirstContractorPayment(page: Page, opts: { hours: string }): 
     )
   }
 
-  const editButton = page.getByRole('button', { name: /^edit contractor payment$/i }).first()
+  // Prefer a row whose payment method is already Check. Direct-deposit rows
+  // impose an ACH cutoff constraint on the payment date that races the SDK's
+  // own date-recompute useEffect; if we pay only check-method rows the
+  // backend's date validation tolerates a wider window. Falls back to the
+  // first row if no check-method row exists (then we'll try to switch via
+  // the radio inside the edit modal).
+  await expect(page.getByRole('grid', { name: /hours and payments/i })).toBeVisible({
+    timeout: LONG_WAIT,
+  })
+  const checkMethodRow = page
+    .getByRole('row')
+    .filter({ has: page.getByRole('gridcell', { name: /^check$/i }) })
+    .first()
+  const editButton = (await checkMethodRow.isVisible({ timeout: 3_000 }).catch(() => false))
+    ? checkMethodRow.getByRole('button', { name: /^edit contractor payment$/i })
+    : page.getByRole('button', { name: /^edit contractor payment$/i }).first()
   await expect(editButton).toBeVisible({ timeout: LONG_WAIT })
   await editButton.click()
 
@@ -293,8 +324,10 @@ async function editFirstContractorPayment(page: Page, opts: { hours: string }): 
     await wageField.fill('500')
   }
 
-  // Force the Check payment method to skip any wire/funding submission blockers
-  // tied to direct-deposit-only ACH thresholds on fresh demo companies.
+  // Force the Check payment method to skip ACH cutoff validation. This is
+  // belt-and-suspenders alongside the row-selection above: if the picked
+  // row was already Check this is a no-op; if it was Direct Deposit (fallback
+  // case) this switches it. Idempotent and harmless either way.
   const checkRadio = page
     .getByRole('group', { name: /payment method/i })
     .getByRole('radio', { name: /^check$/i })
@@ -310,10 +343,9 @@ async function editFirstContractorPayment(page: Page, opts: { hours: string }): 
 
 async function reviewAndSubmitPayment(page: Page): Promise<void> {
   await page.getByRole('button', { name: /^continue$/i }).click()
-  await waitForLoadingComplete(page, 2 * LONG_WAIT)
-
-  await expect(page.getByRole('heading', { name: /^review and submit$/i })).toBeVisible({
-    timeout: LONG_WAIT,
+  await waitForLoadingComplete(page, {
+    timeout: 2 * LONG_WAIT,
+    anchor: page.getByRole('heading', { name: /^review and submit$/i }),
   })
 
   await page.getByRole('button', { name: /^submit$/i }).click()
@@ -335,8 +367,16 @@ async function assertPaymentSummary(page: Page): Promise<void> {
 export async function runContractorPayment(page: Page, _scenario: ScenarioContext): Promise<void> {
   await landOnPaymentList(page)
   await startNewPayment(page)
-  await setPaymentDate(page)
+
+  // Edit the first row first, BEFORE setting the payment date. The SDK has a
+  // useEffect that overwrites the date input once `paymentSpeed` resolves
+  // from the API; opening + closing the edit modal gives that race time to
+  // settle before we lock in the date. setPaymentDate then re-fills with
+  // retry-on-overwrite to belt-and-suspenders the still-possible second
+  // resolution race.
   await editFirstContractorPayment(page, { hours: '8' })
+  await setPaymentDate(page)
+
   await reviewAndSubmitPayment(page)
   await assertPaymentSummary(page)
 }

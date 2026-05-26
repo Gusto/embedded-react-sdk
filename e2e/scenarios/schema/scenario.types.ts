@@ -129,6 +129,7 @@ export interface Scenario {
     | 'time-off'
     | 'dismissal'
     | 'information-requests'
+    | 'shared'
   /**
    * gws-flows demo form value to provision before decoration. Start from the cheapest demo that gets us close; decorate the rest.
    */
@@ -151,6 +152,22 @@ export interface Scenario {
    * Dotted-path keys the scenario guarantees will be populated in ScenarioContext after provisioning. The runner fails fast if any are missing post-decoration.
    */
   expectedContext?: string[]
+  /**
+   * When true, e2e-setup validates that the base demo's company is fully onboarded (GET /companies/:id/onboarding_status returns onboarding_completed=true) before writing the scenario to the artifact. The runner polls the same demo with backoff up to a 180s budget to tolerate the demo backend's 10-90s seeding window. Set on scenarios that depend on the seeded onboarded state. Defaults to false.
+   */
+  requireOnboardedCompany?: boolean
+  /**
+   * When true, e2e-setup additionally validates that the base demo's company has at least one onboarded, non-terminated employee. Implies requireOnboardedCompany. Used by payroll canaries that drive flows against the seed's pre-onboarded employees rather than scenario-decorated ones. Defaults to false.
+   */
+  requireOnboardedEmployees?: boolean
+  /**
+   * When true, e2e-setup ensures the company has at least one signatory with identity_verification_status='Pass'. If missing, e2e-setup runs the self-heal step that POSTs a canonical test signatory and signs all required forms. Then asserts the final state. Defaults to false.
+   */
+  requireSignatory?: boolean
+  /**
+   * When true, e2e-setup asserts that GET /companies/:id/payrolls/blockers returns an empty array. Fails loudly with the list of present blockers if any exist, refusing to write the scenario artifact. Defaults to false.
+   */
+  requireNoBlockers?: boolean
 }
 /**
  * Reference to a shared fragment file with optional deep-merge overrides.

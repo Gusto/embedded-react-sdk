@@ -1,8 +1,13 @@
 import { resolve } from 'path'
 import { resolve as dnsResolve } from 'dns/promises'
-import { existsSync, readFileSync, writeFileSync } from 'fs'
+import { existsSync, readFileSync, readdirSync, writeFileSync } from 'fs'
 import * as dotenv from 'dotenv'
 import { refreshTokenIfNeeded, createFreshDemo } from './scripts/refreshToken'
+import type { ScenarioContext } from './scenario/context'
+import { makeApi, provisionScenario } from './scenario/runner'
+import { ensureSignatoryAndSignedForms } from './scenario/selfHeal'
+import { assertCompanyIsReadyForTests } from './scenario/healthGate'
+import { loadScenario } from './scenario/loader'
 
 const localEnvPath = resolve(process.cwd(), 'e2e/local.config.env')
 if (existsSync(localEnvPath)) {
@@ -236,10 +241,10 @@ async function getOrCreateLocation(flowToken: string, companyId: string): Promis
 
   console.log('No locations found, creating one...')
   const newLocation = await postToApi<Location>(endpoint, {
-    street_1: '100 Test Street',
+    street_1: '500 3rd Street',
     city: 'San Francisco',
     state: 'CA',
-    zip: '94105',
+    zip: '94107',
     phone_number: '4155551234',
   })
   console.log(`Created location: ${newLocation.street_1}, ${newLocation.city}`)
@@ -350,13 +355,22 @@ export default async function globalSetup() {
   // shard, and keeps load on the demo backend low when many shards run in
   // parallel.
   const statePath = resolve(process.cwd(), 'e2e/.e2e-state.json')
+  const scenariosPath = resolve(process.cwd(), SHARED_SCENARIOS_FILENAME)
   if (!disableCache && existsSync(statePath)) {
     try {
       const existingState = JSON.parse(readFileSync(statePath, 'utf-8')) as Partial<E2EState>
       console.log(`📂 Found existing state at ${statePath}`)
       console.log(`   Validating company ${existingState.companyId}...`)
       if (await isExistingStateValid(existingState)) {
-        console.log('✅ Existing state is valid, skipping provisioning')
+        const hasScenarios = existsSync(scenariosPath)
+        if (hasScenarios) {
+          console.log('✅ Existing state + shared scenarios are valid, skipping provisioning')
+          return
+        }
+        console.log(
+          '⚠️  State is valid but shared scenarios artifact is missing — re-provisioning scenarios only',
+        )
+        await provisionAndWriteSharedScenarios()
         return
       }
       console.log('⚠️  Existing state is stale, re-provisioning')
@@ -474,5 +488,88 @@ export default async function globalSetup() {
 
   writeFileSync(statePath, JSON.stringify(state, null, 2))
   console.log(`State written to ${statePath}`)
+
+  // Provision every shared scenario upfront. Tests load these contexts from
+  // the artifact instead of provisioning per-scenario at test time, which
+  // dramatically reduces demo-creation latency during the actual test run
+  // and lets us run a hard health gate exactly once per company before any
+  // test starts.
+  await provisionAndWriteSharedScenarios()
+
   console.log('=== Setup Complete ===\n')
+}
+
+interface ScenariosArtifact {
+  /** Map of scenarioId (e.g. "shared/onboarded-ro") -> ScenarioContext */
+  scenarios: Record<string, ScenarioContext>
+}
+
+const SHARED_SCENARIOS_FILENAME = 'e2e/.e2e-scenarios.json'
+
+async function provisionAndWriteSharedScenarios(): Promise<void> {
+  const scenariosPath = resolve(process.cwd(), SHARED_SCENARIOS_FILENAME)
+  const sharedDir = resolve(process.cwd(), 'e2e/scenarios/shared')
+
+  if (!existsSync(sharedDir)) {
+    console.log(`No shared scenarios directory at ${sharedDir}; skipping`)
+    return
+  }
+
+  const scenarioFiles = readdirSync(sharedDir)
+    .filter(f => f.endsWith('.json'))
+    .map(f => `e2e/scenarios/shared/${f}`)
+
+  if (scenarioFiles.length === 0) {
+    console.log(`No shared scenarios found; skipping`)
+    return
+  }
+
+  console.log(`\n=== Provisioning ${scenarioFiles.length} shared scenario(s) ===`)
+
+  const scenarios: Record<string, ScenarioContext> = {}
+
+  for (const file of scenarioFiles) {
+    const scenarioId = file.replace(/^e2e\/scenarios\//, '').replace(/\.json$/, '')
+    console.log(`\n--- ${scenarioId} ---`)
+
+    try {
+      // 1. Provision the demo + apply decorations. waitForBaseDemoReady
+      //    inside provisionScenario polls until onboarding_completed is true
+      //    (when requireOnboardedCompany / requireOnboardedEmployees are set).
+      const ctx = await provisionScenario(file)
+
+      const scenario = await loadScenario(file)
+      const api = makeApi(GWS_FLOWS_BASE, ctx.flowToken)
+
+      // 2. Self-heal: bring signatory + signed forms up to standard if the
+      //    factory's seeding didn't fully produce them. Idempotent and fast
+      //    when nothing's needed.
+      if (scenario.requireSignatory === true) {
+        await ensureSignatoryAndSignedForms(api, ctx.companyId, msg => console.log(msg))
+      }
+
+      // 3. Hard health gate. Refuses to proceed if any check fails — the
+      //    artifact will not include this scenario and globalSetup throws.
+      await assertCompanyIsReadyForTests(api, ctx.companyId, {
+        requireOnboarded:
+          scenario.requireOnboardedCompany === true || scenario.requireOnboardedEmployees === true,
+        requireSignatory: scenario.requireSignatory === true,
+        requireNoBlockers: scenario.requireNoBlockers === true,
+      })
+
+      scenarios[scenarioId] = ctx
+      console.log(
+        `  ✓ ${scenarioId} provisioned and verified (company ${ctx.companyId.slice(0, 8)})`,
+      )
+    } catch (error) {
+      console.error(`\n✗ Failed to provision ${scenarioId}: ${String(error)}`)
+      throw error
+    }
+  }
+
+  const artifact: ScenariosArtifact = { scenarios }
+  writeFileSync(scenariosPath, JSON.stringify(artifact, null, 2))
+  console.log(
+    `\nShared scenarios written to ${scenariosPath} (${Object.keys(scenarios).length} scenarios)`,
+  )
 }

@@ -2,7 +2,6 @@ import { test as base } from '@playwright/test'
 import { existsSync, readFileSync } from 'fs'
 import { resolve } from 'path'
 import type { ScenarioContext } from '../scenario/context'
-import { provisionScenario } from '../scenario/runner'
 
 interface E2EState {
   flowToken: string
@@ -29,12 +28,20 @@ interface LocalConfig {
   payScheduleUuid: string
 }
 
+interface ScenariosArtifact {
+  scenarios: Record<string, ScenarioContext>
+}
+
 export type ScenarioFixtures = { scenario: ScenarioContext }
 
-type ScenarioCache = Map<string, Promise<ScenarioContext>>
-
 interface WorkerFixtures {
-  _scenarioCache: ScenarioCache
+  /**
+   * Worker-scoped Map of scenarioId -> ScenarioContext, loaded once per
+   * worker from e2e/.e2e-scenarios.json. The artifact is written by
+   * globalSetup (or downloaded from the e2e-setup CI job's artifact); tests
+   * just look up their scenario synchronously.
+   */
+  _scenariosMap: Map<string, ScenarioContext>
 }
 
 const EMPTY_SCENARIO_CONTEXT: ScenarioContext = {
@@ -55,18 +62,34 @@ function loadDynamicState(): Partial<E2EState> {
   return {}
 }
 
+function loadScenariosMap(): Map<string, ScenarioContext> {
+  const map = new Map<string, ScenarioContext>()
+  const scenariosPath = resolve(process.cwd(), 'e2e/.e2e-scenarios.json')
+  if (!existsSync(scenariosPath)) return map
+  try {
+    const content = readFileSync(scenariosPath, 'utf-8')
+    const parsed = JSON.parse(content) as ScenariosArtifact
+    for (const [id, ctx] of Object.entries(parsed.scenarios)) {
+      map.set(id, ctx)
+    }
+  } catch {
+    // Malformed file — return empty map; the scenario fixture will throw a
+    // clearer error on first lookup.
+  }
+  return map
+}
+
 export const test = base.extend<ScenarioFixtures & { localConfig: LocalConfig }, WorkerFixtures>({
-  // Worker-scoped cache that lets every test sharing a scenario ID reuse a
-  // single provisioned demo company. Without this each test pays a full
-  // POST /demos round-trip + decoration (~16s on flows.gusto-demo.com),
-  // dominating shard wall time. Storing a Promise (not the resolved
-  // context) means a race within a worker shares a single in-flight
-  // provisioning attempt instead of issuing duplicates.
-  _scenarioCache: [
+  // Worker-scoped Map of all provisioned scenarios, loaded once per worker
+  // from e2e/.e2e-scenarios.json. This file is produced by globalSetup
+  // (running in e2e-setup CI job or locally) and downloaded as an artifact
+  // by every domain shard. Per-test cost is a Map.get — tests no longer
+  // race the demo backend during their run.
+  _scenariosMap: [
     // eslint-disable-next-line no-empty-pattern
     async ({}, use) => {
-      const cache: ScenarioCache = new Map()
-      await use(cache)
+      const map = loadScenariosMap()
+      await use(map)
     },
     { scope: 'worker' },
   ],
@@ -97,7 +120,7 @@ export const test = base.extend<ScenarioFixtures & { localConfig: LocalConfig },
   ],
 
   scenario: [
-    async ({ _scenarioCache }, use, testInfo) => {
+    async ({ _scenariosMap }, use, testInfo) => {
       const annotation = testInfo.annotations.find(a => a.type === 'scenario')
       if (!annotation?.description) {
         await use(EMPTY_SCENARIO_CONTEXT)
@@ -105,69 +128,48 @@ export const test = base.extend<ScenarioFixtures & { localConfig: LocalConfig },
       }
 
       const scenarioId = annotation.description
-      const scenarioPath = resolve(process.cwd(), 'e2e/scenarios', `${scenarioId}.json`)
-      const scenarioJson = JSON.parse(readFileSync(scenarioPath, 'utf-8')) as {
-        domain?: string
-      }
-      if (scenarioJson.domain) {
-        testInfo.annotations.push({ type: 'tag', description: `@${scenarioJson.domain}` })
-      }
 
-      // Scenario provisioning hits gws-flows to mint a fresh demo company
-      // per test. That requires a real backend, so we only do it when
-      // E2E_USE_REAL_BACKEND is set (true in CI's e2e job and via
-      // playwright.demo.config.ts / playwright.local.config.ts). When tests
-      // run against MSW mocks (the default `playwright test` config), no
-      // backend is reachable and we hand back an empty context — every
-      // scenario-driven spec self-skips via `test.skip(!scenario.flowToken)`.
-      //
-      // Note: an earlier version of this fixture gated on a separate
-      // E2E_LOCAL env var that was never set anywhere in the repo, which
-      // silently caused every scenario-based spec (including the canary
-      // suites) to skip in CI. Don't add another gate here without making
-      // sure something actually sets it.
+      // Skip scenario provisioning when running against MSW mocks (the
+      // default `playwright test` config). Every scenario-driven spec
+      // self-skips via `test.skip(!scenario.flowToken)`.
       if (process.env.E2E_USE_REAL_BACKEND !== 'true') {
         await use(EMPTY_SCENARIO_CONTEXT)
         return
       }
 
-      // Phase-level timing: capture how long scenario provisioning takes
-      // (creates a fresh demo company + decorates it) so we can see at the
-      // reporter level whether tests are spending their time on setup or on
-      // the actual SDK flow under test. See e2e/reporters/scenario-reporter.
-      //
-      // Cache hits are typically <50ms (a Map lookup + an already-resolved
-      // promise await); cache misses pay full demo creation + decoration.
-      // The reporter renders cacheHit=true entries with a "(cached)" marker
-      // so the timings.md summary makes it obvious when reuse is engaged.
-      let provisioningPromise = _scenarioCache.get(scenarioId)
-      const cacheHit = provisioningPromise !== undefined
-
-      const provisioningStart = Date.now()
-      if (!provisioningPromise) {
-        provisioningPromise = provisionScenario(scenarioPath)
-        _scenarioCache.set(scenarioId, provisioningPromise)
+      // Auto-tag the test with its scenario's domain so --grep filters can
+      // target specific domains. We still read the JSON file here even
+      // though provisioning is now done upfront in e2e-setup — it's a
+      // one-time per-worker file read.
+      const scenarioPath = resolve(process.cwd(), 'e2e/scenarios', `${scenarioId}.json`)
+      if (existsSync(scenarioPath)) {
+        const scenarioJson = JSON.parse(readFileSync(scenarioPath, 'utf-8')) as {
+          domain?: string
+        }
+        if (scenarioJson.domain) {
+          testInfo.annotations.push({ type: 'tag', description: `@${scenarioJson.domain}` })
+        }
       }
 
-      let ctx: ScenarioContext
-      try {
-        ctx = await provisioningPromise
-      } catch (error) {
-        // Don't poison the cache for the rest of the worker if a single
-        // provisioning attempt fails — let the next test for this scenario
-        // retry from scratch instead of inheriting a permanently broken
-        // entry.
-        _scenarioCache.delete(scenarioId)
-        throw error
+      // Look up the pre-provisioned context. globalSetup wrote
+      // e2e/.e2e-scenarios.json; if the lookup fails, the message lists
+      // available scenarios so the typo is obvious.
+      const lookupStart = Date.now()
+      const ctx = _scenariosMap.get(scenarioId)
+      if (!ctx) {
+        const available = [..._scenariosMap.keys()].join(', ') || '(none)'
+        throw new Error(
+          `Scenario "${scenarioId}" not found in e2e/.e2e-scenarios.json. ` +
+            `Did e2e-setup provision it? Available scenarios: ${available}`,
+        )
       }
 
-      const provisioningMs = Date.now() - provisioningStart
       testInfo.annotations.push({
         type: 'timing',
         description: JSON.stringify({
           phase: 'provisioning',
-          durationMs: provisioningMs,
-          cacheHit,
+          durationMs: Date.now() - lookupStart,
+          cacheHit: true,
         }),
       })
 
