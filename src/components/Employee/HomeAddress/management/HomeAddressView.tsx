@@ -264,6 +264,14 @@ export function HomeAddressView({
   const closeAddressModal = () => {
     setAddressModal(null)
     onEditAddressTargetChange(undefined)
+    // Forms set `resetOptions: { keepDirtyValues: true }` to preserve typed input
+    // across `values` re-syncs; override here so closing actually clears dirty inputs.
+    editHomeAddressForm.form.hookFormInternals.formMethods.reset(undefined, {
+      keepDirtyValues: false,
+    })
+    createHomeAddressForm.form.hookFormInternals.formMethods.reset(undefined, {
+      keepDirtyValues: false,
+    })
   }
 
   const handleDeleteModalConfirm = async () => {
