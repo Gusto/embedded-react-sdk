@@ -139,6 +139,11 @@ dist
 # Docusaurus cache and generated files
 
 .docusaurus
+website/build/
+website/.docusaurus/
+
+# Docusaurus OpenAPI plugin generated docs
+docs/api/
 
 # Serverless directories
 
