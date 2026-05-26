@@ -452,7 +452,14 @@ export async function terminateAndRunDismissalPayroll(
     // query, so the component always loads with data already available.
     const gwsFlowsHost = process.env.E2E_GWS_FLOWS_HOST ?? DEMO_GWS_FLOWS_HOST
     const apiBase = `${gwsFlowsHost}/fe_sdk/${scenario.flowToken}/v1`
-    const DISMISSAL_POLL_BUDGET_MS = 3 * PAYROLL_CALCULATION_DEADLINE // 270s
+    // The demo backend either produces the termination pay period within the
+    // first one or two 5s poll intervals or it isn't going to inside this
+    // run. Capping the budget at 60s keeps the payroll shard from paying
+    // ~5 minutes of wall time every CI run just to skip this canary when
+    // the demo is in the degraded state it's been in lately. If/when the
+    // backend reliably produces the period again, raise this back up — the
+    // skip path is here so flaky demo seeding doesn't fail the shard.
+    const DISMISSAL_POLL_BUDGET_MS = 60_000
 
     type TerminationPeriod = { employee_uuid?: string; employeeUuid?: string }
     const periodPollStart = Date.now()
