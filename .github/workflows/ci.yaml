@@ -278,100 +278,7 @@ jobs:
           EVENT_NAME: ${{ github.event_name }}
           REF: ${{ github.ref }}
           BASE_REF: ${{ github.base_ref }}
-        run: |
-          set -euo pipefail
-
-          # Domain folder convention is the contract: every folder under
-          # e2e/tests/ is a domain shard, and its name in kebab-case maps to
-          # a PascalCase folder under src/components/ (e.g. time-off ↔
-          # TimeOff). Discover both ends from disk so adding a new domain
-          # never requires a CI edit.
-          mapfile -t domains < <(find e2e/tests -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort)
-          all_domains_json=$(printf '%s\n' "${domains[@]}" | jq -R . | jq -sc .)
-
-          # On main and manual dispatch we always run every domain so main
-          # is a true "all green" signal regardless of which paths landed
-          # in the merge commit.
-          if [[ "$EVENT_NAME" == "workflow_dispatch" || "$REF" == "refs/heads/main" ]]; then
-            echo "Running all domains (event=$EVENT_NAME ref=$REF)"
-            echo "domains=$all_domains_json" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          # Otherwise diff against the PR base. github.base_ref is set on
-          # pull_request events; on a plain push to a feature branch we
-          # fall back to origin/main as the comparison point.
-          base="${BASE_REF:-main}"
-          git fetch --no-tags --depth=0 origin "$base" >/dev/null 2>&1 || git fetch origin "$base"
-          all_changed=$(git diff --name-only "origin/${base}...HEAD")
-          echo "All changed files vs origin/${base}:"
-          echo "$all_changed" | sed 's/^/  /'
-
-          # Filter to extensions that can actually affect SDK runtime or
-          # test behavior. Markdown, license files, gitignore, editorconfig,
-          # images, etc. are dropped — they can't change what the e2e
-          # suite exercises, so a docs-only PR shouldn't burn CI minutes
-          # running the full Playwright matrix. Anything *new* with one of
-          # these extensions in an unfamiliar location still falls through
-          # to the cross-cutting branch below, preserving the safe default.
-          changed=$(echo "$all_changed" | grep -E '\.(ts|tsx|js|jsx|cjs|mjs|json|ya?ml|s?css|html|svg|env)$' || true)
-
-          if [[ -z "$changed" ]]; then
-            echo "No code/config changes detected (only non-runtime files)"
-            echo "domains=[]" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          echo "Filtered changed files (runtime-affecting):"
-          echo "$changed" | sed 's/^/  /'
-
-          # Build the regex that matches "this file is part of some
-          # domain's owned surface area" — i.e. lives under either
-          # src/components/<Pascal>/ or e2e/tests/<kebab>/ for a known
-          # domain. kebab→Pascal converts time-off → TimeOff so the
-          # single discovered name covers both ends.
-          kebab_to_pascal() {
-            local kebab="$1"
-            echo "$kebab" | awk -F- '{ for (i=1;i<=NF;i++) printf "%s%s", toupper(substr($i,1,1)), substr($i,2); print "" }'
-          }
-
-          domain_owned_regex=""
-          for domain in "${domains[@]}"; do
-            pascal=$(kebab_to_pascal "$domain")
-            entry="^(src/components/${pascal}/|e2e/tests/${domain}/)"
-            if [[ -z "$domain_owned_regex" ]]; then
-              domain_owned_regex="$entry"
-            else
-              domain_owned_regex="${domain_owned_regex}|${entry}"
-            fi
-          done
-
-          # Any file in the diff that ISN'T claimed by a domain is by
-          # definition cross-cutting — run everything. This is the
-          # default-safe policy: unknown locations fan out instead of
-          # silently producing an empty matrix.
-          unowned=$(echo "$changed" | grep -vE "$domain_owned_regex" || true)
-          if [[ -n "$unowned" ]]; then
-            echo "Cross-cutting changes detected (not under any domain):"
-            echo "$unowned" | sed 's/^/  /'
-            echo "Running all domains"
-            echo "domains=$all_domains_json" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          # All changes are domain-owned — pick exactly the domains
-          # whose surface area was touched.
-          selected=()
-          for domain in "${domains[@]}"; do
-            pascal=$(kebab_to_pascal "$domain")
-            if echo "$changed" | grep -qE "^(src/components/${pascal}/|e2e/tests/${domain}/)"; then
-              selected+=("$domain")
-            fi
-          done
-
-          domains_json=$(printf '%s\n' "${selected[@]}" | jq -R . | jq -sc .)
-          echo "Running selected domains: $domains_json"
-          echo "domains=$domains_json" >> "$GITHUB_OUTPUT"
+        run: bash .github/scripts/e2e-discover-domains.sh
 
   # E2E setup: Provision demo companies once per CI run and share state across
   # shards. E2E_DISABLE_CACHE ensures fresh provisioning for each CI run
@@ -592,18 +499,11 @@ jobs:
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v6
       - name: Verify required e2e jobs succeeded
         env:
           SCENARIOS: ${{ needs.scenarios.result }}
           E2E_DISCOVER: ${{ needs.e2e-discover.result }}
           E2E_SETUP: ${{ needs.e2e-setup.result }}
           E2E: ${{ needs.e2e.result }}
-        run: |
-          set -euo pipefail
-          echo "scenarios=$SCENARIOS e2e-discover=$E2E_DISCOVER e2e-setup=$E2E_SETUP e2e=$E2E"
-          for r in "$SCENARIOS" "$E2E_DISCOVER" "$E2E_SETUP" "$E2E"; do
-            case "$r" in
-              success|skipped) ;;
-              *) echo "Required job result was '$r'"; exit 1 ;;
-            esac
-          done
+        run: bash .github/scripts/e2e-verify-success.sh
