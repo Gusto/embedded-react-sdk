@@ -29,20 +29,26 @@
 #   e2e/tests/<kebab>  ↔  src/components/<Pascal>     (e.g. time-off ↔ TimeOff)
 # The list is discovered from disk on every run; no maintenance needed.
 #
-# Portability: depends on bash 4+ (`mapfile`) and GNU find (`-printf`).
-# Both are present on the GitHub-hosted ubuntu-latest runner this is
-# intended for. Running on macOS for local debugging will fail the
-# `mapfile` line — install `bash` and `findutils` from Homebrew or just
-# run the workflow.
+# Portability: written for POSIX-ish bash 3.2+ and either GNU or BSD find,
+# so it runs natively on the GitHub-hosted ubuntu-latest runner AND on
+# macOS for local debugging. Required tools: bash, find, sed, awk, jq, git.
 
 set -euo pipefail
 
 if [[ -z "${GITHUB_OUTPUT:-}" ]]; then
-  echo "ERROR: GITHUB_OUTPUT is not set — this script must run inside a GitHub Actions step" >&2
+  echo "ERROR: GITHUB_OUTPUT is not set — set it to a writable file path" >&2
+  echo "       (GitHub Actions sets this automatically; locally use a tempfile)" >&2
   exit 2
 fi
 
-mapfile -t domains < <(find e2e/tests -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort)
+# Discover domains. `find ... | sed 's|.*/||'` is the portable equivalent
+# of GNU find's `-printf '%f\n'` — strip everything up to and including
+# the last slash to get the basename. The `while read` loop is the
+# bash 3.2-compatible equivalent of `mapfile -t`.
+domains=()
+while IFS= read -r domain; do
+  domains+=("$domain")
+done < <(find e2e/tests -mindepth 1 -maxdepth 1 -type d | sed 's|.*/||' | sort)
 all_domains_json=$(printf '%s\n' "${domains[@]}" | jq -R . | jq -sc .)
 
 EVENT_NAME="${EVENT_NAME:-}"
