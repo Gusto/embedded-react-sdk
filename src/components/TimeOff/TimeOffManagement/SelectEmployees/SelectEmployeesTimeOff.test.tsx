@@ -250,6 +250,24 @@ describe('SelectEmployeesTimeOff', () => {
     expect(screen.getByText('Alice Smith')).toBeInTheDocument()
   })
 
+  it('filters employees by department', async () => {
+    const user = userEvent.setup()
+    renderComponent()
+
+    await waitFor(() => {
+      expect(screen.getByText('Alice Smith')).toBeInTheDocument()
+    })
+
+    const input = screen.getByPlaceholderText('searchPlaceholder')
+    await user.type(input, 'Engineering')
+
+    await waitFor(() => {
+      expect(screen.queryByText('Bob Jones')).not.toBeInTheDocument()
+    })
+    expect(screen.getByText('Alice Smith')).toBeInTheDocument()
+    expect(screen.queryByText('Carol Davis')).not.toBeInTheDocument()
+  })
+
   it('fires TIME_OFF_ADD_EMPLOYEES_BACK when Back is clicked', async () => {
     const user = userEvent.setup()
     renderComponent()
@@ -314,7 +332,6 @@ describe('SelectEmployeesTimeOff', () => {
 
       await user.click(screen.getAllByRole('checkbox')[FIRST_EMPLOYEE_CHECKBOX] as Element)
       await user.click(screen.getByRole('button', { name: 'continueCta' }))
-      await user.click(await screen.findByRole('button', { name: 'addConfirmDialog.confirmCta' }))
 
       await waitFor(() => {
         expect(mockAddEmployees).toHaveBeenCalledWith({
@@ -343,7 +360,6 @@ describe('SelectEmployeesTimeOff', () => {
 
       await user.click(screen.getAllByRole('checkbox')[FIRST_EMPLOYEE_CHECKBOX] as Element)
       await user.click(screen.getByRole('button', { name: 'continueCta' }))
-      await user.click(await screen.findByRole('button', { name: 'addConfirmDialog.confirmCta' }))
 
       await waitFor(() => {
         expect(mockAddEmployees).toHaveBeenCalledWith({
@@ -370,7 +386,6 @@ describe('SelectEmployeesTimeOff', () => {
 
       await user.click(screen.getAllByRole('checkbox')[FIRST_EMPLOYEE_CHECKBOX] as Element)
       await user.click(screen.getByRole('button', { name: 'continueCta' }))
-      await user.click(await screen.findByRole('button', { name: 'addConfirmDialog.confirmCta' }))
 
       await waitFor(() => {
         expect(mockAddEmployees).toHaveBeenCalled()
@@ -393,7 +408,6 @@ describe('SelectEmployeesTimeOff', () => {
       // Select Carol (third employee) — she has no PTO history, no user input
       await user.click(screen.getAllByRole('checkbox')[3] as Element)
       await user.click(screen.getByRole('button', { name: 'continueCta' }))
-      await user.click(await screen.findByRole('button', { name: 'addConfirmDialog.confirmCta' }))
 
       await waitFor(() => {
         expect(mockAddEmployees).toHaveBeenCalled()
@@ -418,7 +432,6 @@ describe('SelectEmployeesTimeOff', () => {
       await user.click(checkboxes[FIRST_EMPLOYEE_CHECKBOX] as Element)
       await user.click(checkboxes[SECOND_EMPLOYEE_CHECKBOX] as Element)
       await user.click(screen.getByRole('button', { name: 'continueCta' }))
-      await user.click(await screen.findByRole('button', { name: 'addConfirmDialog.confirmCta' }))
 
       await waitFor(() => {
         expect(mockAddEmployees).toHaveBeenCalledWith({
@@ -455,7 +468,6 @@ describe('SelectEmployeesTimeOff', () => {
       // Submit — Alice's carry-over should still be in the request even though
       // her row is no longer rendered (carry-over is captured at select-time).
       await user.click(screen.getByRole('button', { name: 'continueCta' }))
-      await user.click(await screen.findByRole('button', { name: 'addConfirmDialog.confirmCta' }))
 
       await waitFor(() => {
         expect(mockAddEmployees).toHaveBeenCalled()
@@ -483,7 +495,6 @@ describe('SelectEmployeesTimeOff', () => {
       await user.click(headerCheckbox)
 
       await user.click(screen.getByRole('button', { name: 'continueCta' }))
-      await user.click(await screen.findByRole('button', { name: 'addConfirmDialog.confirmCta' }))
 
       await waitFor(() => {
         expect(mockAddEmployees).toHaveBeenCalled()
@@ -500,45 +511,6 @@ describe('SelectEmployeesTimeOff', () => {
         ]),
       )
       expect(submitted).toHaveLength(3)
-    })
-    it('opens add confirm dialog and gates submission until confirmed', async () => {
-      const user = userEvent.setup()
-      renderComponent({ mode: 'standalone' })
-
-      await waitFor(() => {
-        expect(screen.getAllByRole('checkbox').length).toBeGreaterThan(1)
-      })
-
-      await user.click(screen.getAllByRole('checkbox')[FIRST_EMPLOYEE_CHECKBOX] as Element)
-      await user.click(screen.getByRole('button', { name: 'continueCta' }))
-
-      expect(
-        await screen.findByRole('button', { name: 'addConfirmDialog.confirmCta' }),
-      ).toBeInTheDocument()
-      expect(mockAddEmployees).not.toHaveBeenCalled()
-
-      await user.click(screen.getByRole('button', { name: 'addConfirmDialog.confirmCta' }))
-
-      await waitFor(() => {
-        expect(mockAddEmployees).toHaveBeenCalledTimes(1)
-      })
-    })
-
-    it('cancelling the add confirm dialog does not submit', async () => {
-      const user = userEvent.setup()
-      renderComponent({ mode: 'standalone' })
-
-      await waitFor(() => {
-        expect(screen.getAllByRole('checkbox').length).toBeGreaterThan(1)
-      })
-
-      await user.click(screen.getAllByRole('checkbox')[FIRST_EMPLOYEE_CHECKBOX] as Element)
-      await user.click(screen.getByRole('button', { name: 'continueCta' }))
-
-      const cancelBtn = await screen.findByRole('button', { name: 'addConfirmDialog.cancelCta' })
-      await user.click(cancelBtn)
-
-      expect(mockAddEmployees).not.toHaveBeenCalled()
     })
 
     it('emits DONE without any mutation when nothing is selected', async () => {
@@ -578,7 +550,6 @@ describe('SelectEmployeesTimeOff', () => {
       // Add Bob — he is not yet on the policy
       await user.click(screen.getAllByRole('checkbox')[FIRST_EMPLOYEE_CHECKBOX] as Element)
       await user.click(screen.getByRole('button', { name: 'continueCta' }))
-      await user.click(await screen.findByRole('button', { name: 'addConfirmDialog.confirmCta' }))
       await waitFor(() => {
         expect(mockAddEmployees).toHaveBeenCalledWith({
           request: {
@@ -617,7 +588,6 @@ describe('SelectEmployeesTimeOff', () => {
 
       await user.click(screen.getAllByRole('checkbox')[FIRST_EMPLOYEE_CHECKBOX] as Element)
       await user.click(screen.getByRole('button', { name: 'continueCta' }))
-      await user.click(await screen.findByRole('button', { name: 'addConfirmDialog.confirmCta' }))
 
       await waitFor(() => {
         expect(mockAddEmployees).toHaveBeenCalledWith({

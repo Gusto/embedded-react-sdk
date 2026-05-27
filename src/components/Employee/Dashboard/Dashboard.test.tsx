@@ -13,6 +13,7 @@ import { server } from '@/test/mocks/server'
 import { API_BASE_URL } from '@/test/constants'
 import { handleGetEmployeeForms, i9Form } from '@/test/mocks/apis/employee_forms'
 import { handleGetEmployeeJobs, handleDeleteEmployeeJob } from '@/test/mocks/apis/employees'
+import { handleGetEmployeeStateTaxes } from '@/test/mocks/apis/employee_state_taxes'
 import { handleDeleteCompensation } from '@/test/mocks/apis/compensations'
 import { componentEvents } from '@/shared/constants'
 import { assertDefined } from '@/test-utils/assertions'
@@ -1765,6 +1766,45 @@ describe('Dashboard', () => {
     expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_STATE_TAXES_EDIT, {
       employeeId: 'employee-123',
     })
+  })
+
+  it('renders no-withholding messaging and hides Edit when the state has no income tax', async () => {
+    server.use(
+      handleGetEmployeeStateTaxes(() =>
+        HttpResponse.json([
+          {
+            employee_uuid: 'employee-123',
+            state: 'WA',
+            file_new_hire_report: false,
+            is_work_state: true,
+            questions: [],
+          },
+        ]),
+      ),
+    )
+    const user = userEvent.setup()
+
+    renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
+
+    await waitFor(() => expect(screen.getByText('Legal name')).toBeInTheDocument())
+    await user.click(screen.getByRole('tab', { name: 'Taxes' }))
+
+    await waitFor(() =>
+      expect(screen.getByRole('heading', { name: 'State taxes' })).toBeInTheDocument(),
+    )
+
+    const stateTaxesBox = screen
+      .getByRole('heading', { name: 'State taxes' })
+      .closest<HTMLElement>('[data-testid="data-box"]')
+    assertDefined(stateTaxesBox)
+
+    expect(
+      await within(stateTaxesBox).findByRole('heading', { name: 'Washington' }),
+    ).toBeInTheDocument()
+    expect(
+      within(stateTaxesBox).getByText('No state income tax withholding required.'),
+    ).toBeInTheDocument()
+    expect(within(stateTaxesBox).queryByRole('button', { name: 'Edit' })).toBeNull()
   })
 
   it('shows employee forms on the Documents tab', async () => {

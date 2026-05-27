@@ -196,6 +196,17 @@ describe('DataTable Component', () => {
     })
   })
 
+  describe('column justify', () => {
+    test('wraps header and cell content in a flex-end container when justify is end', () => {
+      renderTable({
+        columns: [{ key: 'name', title: 'Name', justify: 'end', render: item => item.name }],
+      })
+
+      expect(screen.getByText('Name').closest('div')?.className).toMatch(/cellEnd/)
+      expect(screen.getByText('Alice').closest('div')?.className).toMatch(/cellEnd/)
+    })
+  })
+
   describe('accessibility', () => {
     it('should not have any accessibility violations - empty table', async () => {
       const { container } = renderTable({ data: [], columns: [] })

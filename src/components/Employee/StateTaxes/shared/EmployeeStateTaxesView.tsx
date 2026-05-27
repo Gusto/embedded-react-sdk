@@ -40,20 +40,24 @@ export function EmployeeStateTaxesView({
           <Form onSubmit={onSubmit}>
             {alert}
 
-            {groups.map(group => {
-              const stateName = tCommon(`statesHash.${group.state}`, group.state)
-              return (
-                <Fragment key={group.state}>
-                  <Components.Heading as="h2">
-                    {t('stateTaxesTitle', { state: stateName })}
-                  </Components.Heading>
+            {groups.length === 0 ? (
+              <Components.Text>{t('noWithholding')}</Components.Text>
+            ) : (
+              groups.map(group => {
+                const stateName = tCommon(`statesHash.${group.state}`, group.state)
+                return (
+                  <Fragment key={group.state}>
+                    <Components.Heading as="h2">
+                      {t('stateTaxesTitle', { state: stateName })}
+                    </Components.Heading>
 
-                  {group.questions.map(({ questionId, Field }) => {
-                    return <Field key={questionId} />
-                  })}
-                </Fragment>
-              )
-            })}
+                    {group.questions.map(({ questionId, Field }) => {
+                      return <Field key={questionId} />
+                    })}
+                  </Fragment>
+                )
+              })
+            )}
 
             {actions}
           </Form>
