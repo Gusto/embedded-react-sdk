@@ -41,6 +41,74 @@ The pipeline is: **TSDoc comments inline in source → TypeDoc generates Markdow
 
 The same comments that feed TypeDoc also feed the IDE. TypeScript preserves TSDoc comments in emitted `.d.ts` declaration files, and IDEs read these to surface documentation in hover tooltips, autocomplete, and signature help. Partners and their LLM agents get inline access to descriptions, parameter docs, and examples without leaving their editor and without needing the SDK source checked out. This is a single authoring step with two outputs: the reference docs site and the IDE experience.
 
+## Example
+
+The `useEmployeeDetailsForm` hook already has comprehensive markdown documentation. We could rewrite some of that as a single TSDoc comment on the actual function:
+
+```tsx
+/**
+ * Creates or updates an employee's profile information — name, email, SSN,
+ * date of birth, and self-onboarding preference.
+ *
+ * @remarks
+ * Omit `employeeId` to create a new employee; provide it to edit an existing one.
+ *
+ * Returns a discriminated union on `isLoading`. While employee data is being fetched,
+ * only `errorHandling` is available. Once ready, `form.Fields`, `actions.onSubmit`,
+ * and `data.employee` are accessible.
+ *
+ * `firstName` and `lastName` are required on create by default. The `ssn` requirement
+ * is automatically waived when the employee already has an SSN on file.
+ *
+ * @param props - Either {@link UseEmployeeDetailsFormCreateProps} or {@link UseEmployeeDetailsFormUpdateProps}
+ *
+ * @returns A {@link HookLoadingResult} while data is loading, or a
+ *   {@link UseEmployeeDetailsFormReady} once the form is ready.
+ *
+ * @example
+ * Create mode — wrap Fields in SDKFormProvider for context-based connection:
+ * ```tsx
+ * import { useEmployeeDetailsForm, SDKFormProvider } from '@gusto/embedded-react-sdk'
+ *
+ * function AddEmployee({ companyId }: { companyId: string }) {
+ *   const hook = useEmployeeDetailsForm({ companyId })
+ *   if (hook.isLoading) return <div>Loading...</div>
+ *   const { Fields } = hook.form
+ *   return (
+ *     <SDKFormProvider formHookResult={hook}>
+ *       <form onSubmit={e => { e.preventDefault(); void hook.actions.onSubmit() }}>
+ *         <Fields.FirstName label="First name" />
+ *         <Fields.LastName label="Last name" />
+ *         <Fields.Email label="Personal email" />
+ *         {Fields.SelfOnboarding && <Fields.SelfOnboarding label="Invite to self-onboard" />}
+ *         <button type="submit" disabled={hook.status.isPending}>Add employee</button>
+ *       </form>
+ *     </SDKFormProvider>
+ *   )
+ * }
+ * ```
+ *
+ * @example
+ * Update mode — require SSN and date of birth on edit:
+ * ```ts
+ * const hook = useEmployeeDetailsForm({
+ *   employeeId,
+ *   optionalFieldsToRequire: { update: ['ssn', 'dateOfBirth'] },
+ * })
+ * ```
+ *
+ * @see {@link UseEmployeeDetailsFormReady} for the full ready-state shape.
+ * @see {@link EmployeeDetailsSubmitCallbacks} for the callbacks accepted by `onSubmit`.
+ */
+export function useEmployeeDetailsForm(props: UseEmployeeDetailsFormProps): HookLoadingResult | UseEmployeeDetailsFormReady {}
+```
+
+This single comment produces two outputs:
+
+**In the IDE:** Hovering `useEmployeeDetailsForm` shows the summary and `@remarks` block. Each parameter shows its description in signature help. Examples appear in autocomplete and hover documentation. `{@link TypeName}` references render as clickable links to the type's definition. This works wherever the SDK is installed — no source checkout required, because TypeScript preserves TSDoc comments in emitted `.d.ts` declaration files.
+
+**In generated docs:** TypeDoc produces a Markdown page containing the function alongside all its related types and their full property tables — no click-through required. Parameters appear in a table with the inferred type and description; there is no need to duplicate type information that TypeScript already expresses. `@example` blocks render as labeled, syntax-highlighted code sections. `@see` references become anchor links to other sections.
+
 ---
 
 ## Decisions
@@ -65,7 +133,9 @@ If TSDoc comments are the source of truth for API documentation, every missing o
 
 Today, the SDK's exported symbols have little to no TSDoc coverage. Turning on strict enforcement all at once would require documenting hundreds of exports before any linting work could be merged. Instead, enforcement is layered on incrementally using an allowlist of directories and files that have been fully documented, to avoid regressions.
 
-Files not yet on the allowlist are linted at `warn` severity — no release tag required, no block on CI. Files on the allowlist are linted at `error` severity, and every exported symbol must carry a release tag (`@public` or `@beta`) and a description. New files added to the repo will not be added to the allowlist by default, but the expectation is that new exports are documented before being shipped — the allowlist is a migration tool, not a permanent exemption list.
+Files not yet on the allowlist are linted at `warn` severity — no release tag required, no block on CI. Files on the allowlist are linted at `error` severity, and **every exported symbol must carry a TSDoc comment** — including types and helpers that are exported only for library-internal use and not intended for partners.
+
+For library-internal symbols, the minimum is `/** @internal */` with no further prose; the tag alone satisfies the lint rule and signals that the symbol is intentionally excluded from generated docs and the documented public API. Symbols tagged `@public` or `@beta` require a description and `@param`/`@returns` documentation. New files added to the repo will not be added to the allowlist by default, but the expectation is that new exports are documented before being shipped — the allowlist is a migration tool, not a permanent exemption list.
 
 ### TypeDoc is the chosen doc generator
 
@@ -156,13 +226,47 @@ Install `eslint-plugin-tsdoc` (syntax validation) and `eslint-plugin-jsdoc` (pre
 
 These represent improvements to documentation and development processes that are out of scope for this project, but would be valuable to consider.
 
-### Zod type expansion
+### Treat the emitted type surface as a first-class API contract
 
-All `*FormData` and `*FormOutputs` types are mapped types over an unexported `fieldValidators` const. TypeScript preserves the opaque `{ [K in keyof typeof fieldValidators_N]: z.infer<...> }` expression in `.d.ts` emit. TypeDoc and any other documentation tool reading the source or compiled declarations sees the formula, not the expanded field shape.
+Most exported types in the SDK today are derived from implementation details — Zod validators, mapped types over internal constants, and object-type aliases — rather than declared explicitly. TypeScript preserves these derived forms verbatim in `.d.ts` emit, so partners, documentation tools, and IDE hover see the formula rather than the intended shape. Two examples:
 
-[`ts-morph`](https://ts-morph.com/) can call `alias.getType().getText(alias)` on any exported type alias after `npm run build` — this is the same `typeToString` path the language server uses, and it returns the fully resolved, expanded type string. A post-processing step that rewrites these types in-place in `dist/` would produce the same concrete expansion the IDE hover shows. The improved types would benefit both the distributed `.d.ts` files and the autogenerated documentation.
+- `*FormData` and `*FormOutputs` types are mapped types over an unexported `fieldValidators` const. TypeScript emits `{ [K in keyof typeof fieldValidators_N]: z.infer<...> }` — the formula, not the fields.
+- Object-shape props types declared as `type Foo = { ... }` are rendered by TypeDoc as `type Foo = object`, suppressing all property documentation. TypeScript also does not preserve member-level comments on type aliases in `.d.ts` emit.
 
-This approach was validated in a spike: it correctly expands all 11 Employee `*FormData` and `*FormOutputs` types, including `z.preprocess` fields, `.optional()`, and `z.enum` literals. The build pipeline order is `npm run build` → type expansion → `npm run docs`. A `Prettify<T>` source wrapper was also spiked and ruled out — it creates a circular type inference chain in schema files that reference `fieldValidators` in the same scope.
+The goal is to invert the design: **declare the intended public shape explicitly, then use the type system to validate that the implementation conforms.** The emitted `.d.ts` then reflects the contract rather than the derivation. Configurability — `buildFormSchema`, `optionalFieldsToRequire`, discriminated union props — is preserved; the change is in what TypeScript emits and how it gets there.
+
+Two patterns cover the majority of cases:
+
+**Interface-first for form data types.** Declare `*FormData` as an explicit interface and constrain the validators to match it using `satisfies`:
+
+```ts
+export interface EmployeeDetailsFormData {
+  firstName: string
+  middleInitial: string
+  // ...
+}
+
+const fieldValidators = {
+  firstName: z.string().min(1)...,
+  // ...
+} satisfies FieldValidators<EmployeeDetailsFormData>
+```
+
+If a key is missing or mapped to the wrong kind of Zod type, a type error is emitted:
+
+```
+Type 'ZodNumber' is not assignable to type 'ZodType<string, string, $ZodTypeInternals<string, string>>'.
+  Types of property '_output' are incompatible.
+    Type 'number' is not assignable to type 'string'.ts(2322)
+```
+
+The interface is the source of truth. `satisfies` is a compile-time check that the validators produce the declared shape — TypeScript catches mismatches with no runtime cost. The emitted `.d.ts` contains the concrete interface, not the opaque mapped type.
+
+**`interface` over `type = { ... }` for named object shapes.** TypeDoc treats interface declarations as first-class reflections: all properties appear in a table, `extends` relationships are tracked, and inherited properties carry an "Inherited from" annotation. TypeScript also preserves member-level comments in `.d.ts` emit for interfaces but not for object-type aliases. Named object shapes that carry documented properties — props types, return types, callback signatures — should use `interface`; `extends` replaces intersection (`&`) for composition.
+
+Neither pattern requires a build pipeline step. Both are source-level changes that preserve the existing runtime behavior and public API shape. The natural entry point is the SDK-971 migration: as files are documented and added to the allowlist, update the types in those files to conform. An ESLint rule can enforce the interface preference mechanically once the convention is established.
+
+TypeDoc also supports an [`@interface`](https://typedoc.org/documents/Tags._interface.html) modifier tag that causes TypeDoc to render a type alias as if it were an interface — property tables, "Inherited from" annotations — without changing the source. This is a documentation-layer migration path only: TypeScript emits `.d.ts` files without processing TypeDoc-specific tags, so IDE hover and intellisense still see the original type alias form. `@interface` is useful as a low-friction intermediate step to improve generated docs for types that cannot yet be refactored to true `interface` declarations, but it does not improve the IDE experience — only source-level `interface` declarations do both.
 
 ### TypeScript API contract report
 
@@ -171,3 +275,25 @@ This approach was validated in a spike: it correctly expands all 11 Employee `*F
 The first — its `.api.md` report for catching accidental API breakage — overlaps significantly with what TypeDoc validation + CI output diff already provides. TypeDoc's `notExported`, `notDocumented`, and output diff checks cover most of the same ground; api-extractor's main remaining advantage here is a cleaner, purpose-built diff format for PR review.
 
 The second is more distinct: api-extractor can produce a single rolled-up `.d.ts` file filtered by release tag, exposing only `@public` and `@beta` symbols in the distributed package. Vite's [`vite-plugin-dts`](https://www.npmjs.com/package/vite-plugin-dts) emits declarations that mirror the source structure with no concept of release tags, so `@internal` types are currently visible and importable by partners. The rollup would eliminate that leak and give partners a declaration file that matches the documented API surface exactly.
+
+### Co-locate guide content with component source
+
+Today, narrative guide content lives in `docs/` while the code it describes lives in `src/`. When an API changes, the guide is only found by whoever happens to look for it — there is no proximity signal. Moving guide content closer to the component source would reduce drift and make it easier to keep docs updated alongside code.
+
+One approach: keep `.md` files in the same directory as the components or domains they document. TypeDoc's [`@include`](https://typedoc.org/documents/Tags.__include_.html) and [`@includeCode`](https://typedoc.org/documents/Tags.__include_.html) tags let a TSDoc comment embed an external Markdown or source file verbatim — so a hook's TSDoc can reference a sibling `guide.md` rather than embedding multi-paragraph prose directly in a comment. This keeps comments readable in the editor while binding guide content to the code it describes.
+
+This likely requires coordinating changes to the Docusaurus and TypeDoc configurations so that the output still integrates with the published docs site. It may also require a convention for when a topic belongs in a component-adjacent guide vs. a broader concept doc that spans multiple components.
+
+### Expand autogenerated documentation coverage
+
+The three core tickets in this RFC focus on TypeDoc/TSDoc for the hook, component, and type API. Several other documentation categories already have working autogen scripts in `build/` but are not yet integrated into the unified pipeline:
+
+**Endpoint inventory** (`build/deriveEndpointInventory.ts`, `npm run endpoints:derive`). Uses ts-morph to statically trace which `@gusto/embedded-api` hooks each block and flow imports, resolves those to HTTP method + path pairs, and emits `docs/reference/endpoint-inventory.json` and `endpoint-reference.md`. Already has a `--verify` mode used in CI. This one cannot come from source comments — it requires static analysis of import graphs. Integration work is about ensuring its output fits the Docusaurus structure alongside TypeDoc output.
+
+**Component adapter props** (`build/generateAdapterPropDocs.ts`, `npm run adapter:docs:generate`). Uses ts-morph to read `ComponentAdapter` types and emit a prop table reference. This overlaps with what TypeDoc would generate for the same types; the two approaches should be reconciled — either migrate to TypeDoc or keep the custom script and integrate its output into the docs pipeline.
+
+**Theme variables** (`build/generateThemeDocs.ts`, `npm run theme:docs:generate`). Uses ts-morph to read `GustoSDKTheme` and emit a variable reference table. Similar situation to adapter props.
+
+**Event string constants** (`build/eventTypeDocsEmitter.ts`, `npm run docs:events`). Reads the `componentEvents` constant and emits a key→value table. This only documents event string values — not the payload shapes partners need when implementing `onEvent`. The more useful reference is the discriminated union of event payloads, which would benefit from the same TSDoc + TypeDoc treatment as the hook API. Once event payload types carry TSDoc and `@public` tags, TypeDoc can generate the full event reference without a separate script.
+
+**Translation keys.** No autogen script exists yet. Partners can override translations but have no generated reference of available keys and default values. This cannot come from TSDoc alone — keys and defaults live in JSON files, not TypeScript source — and would require a separate build step or TypeDoc plugin.
