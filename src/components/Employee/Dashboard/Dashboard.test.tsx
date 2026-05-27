@@ -1281,6 +1281,169 @@ describe('Dashboard', () => {
         expect(within(alert).queryByRole('button', { name: 'Cancel change' })).toBeNull()
       })
     })
+
+    describe('Edit suppression while a comp update is pending', () => {
+      it('hides the single-job card Edit button while a pending comp update exists', async () => {
+        const user = userEvent.setup()
+        overrideEmployeeJobs([
+          baseJob({}, [
+            baseComp(),
+            baseComp({ uuid: 'comp-future', rate: '35.00', effective_date: ONE_YEAR_AHEAD }),
+          ]),
+        ])
+
+        renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
+        await goToJobAndPayTab(user)
+
+        const compensationCard = screen
+          .getByRole('heading', { name: 'Compensation' })
+          .closest('[data-testid="data-box"]')! as HTMLElement
+
+        expect(
+          within(compensationCard).queryByRole('button', { name: 'Edit' }),
+        ).not.toBeInTheDocument()
+        expect(
+          within(compensationCard).getByRole('button', { name: 'Cancel change' }),
+        ).toBeInTheDocument()
+      })
+
+      it('restores the single-job card Edit button after the pending update is cancelled', async () => {
+        const user = userEvent.setup()
+        let wasDeleteCalled = false
+        const deleteResolver = vi.fn<HttpResponseResolver>(() => {
+          wasDeleteCalled = true
+          return new HttpResponse(null, { status: 204 })
+        })
+
+        const futureCompensation = baseComp({
+          uuid: 'comp-future',
+          rate: '35.00',
+          effective_date: ONE_YEAR_AHEAD,
+        })
+        const jobsBefore = [baseJob({}, [baseComp(), futureCompensation])]
+        const jobsAfter = [baseJob({}, [baseComp()])]
+
+        server.use(
+          handleGetEmployeeJobs(() => HttpResponse.json(wasDeleteCalled ? jobsAfter : jobsBefore)),
+        )
+        server.use(handleDeleteCompensation(deleteResolver))
+
+        renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
+        await goToJobAndPayTab(user)
+
+        const compensationCard = screen
+          .getByRole('heading', { name: 'Compensation' })
+          .closest('[data-testid="data-box"]')! as HTMLElement
+
+        expect(
+          within(compensationCard).queryByRole('button', { name: 'Edit' }),
+        ).not.toBeInTheDocument()
+
+        await user.click(within(compensationCard).getByRole('button', { name: 'Cancel change' }))
+
+        await waitFor(() => {
+          expect(within(compensationCard).getByRole('button', { name: 'Edit' })).toBeInTheDocument()
+        })
+      })
+
+      it('hides the per-row Edit menu item for a multi-job row with a pending comp update, keeping it on rows without one', async () => {
+        const user = userEvent.setup()
+        overrideEmployeeJobs([
+          baseJob({ uuid: 'job-primary', current_compensation_uuid: 'comp-primary-current' }, [
+            baseComp({ uuid: 'comp-primary-current', job_uuid: 'job-primary' }),
+            baseComp({
+              uuid: 'comp-primary-future',
+              job_uuid: 'job-primary',
+              rate: '35.00',
+              effective_date: ONE_YEAR_AHEAD,
+            }),
+          ]),
+          baseJob(
+            {
+              uuid: 'job-secondary',
+              primary: false,
+              title: 'Stock Associate',
+              current_compensation_uuid: 'comp-secondary-current',
+            },
+            [
+              baseComp({
+                uuid: 'comp-secondary-current',
+                job_uuid: 'job-secondary',
+                title: 'Stock Associate',
+                rate: '22.00',
+              }),
+            ],
+          ),
+        ])
+
+        renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
+        await goToJobAndPayTab(user)
+
+        // The job title appears both in the table row and in the inline alert
+        // ("Compensation for Cashier will change on..."), so scope row lookups
+        // to the jobs table to disambiguate.
+        const jobsTable = screen.getByRole('grid', { name: 'List of jobs' })
+
+        const primaryRow = within(jobsTable)
+          .getByText('Cashier')
+          .closest('[role="row"]')! as HTMLElement
+        expect(
+          within(primaryRow).queryByRole('button', { name: 'Job actions' }),
+        ).not.toBeInTheDocument()
+
+        const secondaryRow = within(jobsTable)
+          .getByText('Stock Associate')
+          .closest('[role="row"]')! as HTMLElement
+        await user.click(within(secondaryRow).getByRole('button', { name: 'Job actions' }))
+
+        expect(screen.getByRole('menuitem', { name: 'Edit' })).toBeInTheDocument()
+        expect(screen.getByRole('menuitem', { name: 'Delete' })).toBeInTheDocument()
+      })
+
+      it('keeps Delete in the per-row menu for a non-primary job whose Edit is suppressed by a pending update', async () => {
+        const user = userEvent.setup()
+        overrideEmployeeJobs([
+          baseJob({ uuid: 'job-primary', current_compensation_uuid: 'comp-primary-current' }, [
+            baseComp({ uuid: 'comp-primary-current', job_uuid: 'job-primary' }),
+          ]),
+          baseJob(
+            {
+              uuid: 'job-secondary',
+              primary: false,
+              title: 'Stock Associate',
+              current_compensation_uuid: 'comp-secondary-current',
+            },
+            [
+              baseComp({
+                uuid: 'comp-secondary-current',
+                job_uuid: 'job-secondary',
+                title: 'Stock Associate',
+                rate: '22.00',
+              }),
+              baseComp({
+                uuid: 'comp-secondary-future',
+                job_uuid: 'job-secondary',
+                title: 'Stock Associate',
+                rate: '24.00',
+                effective_date: ONE_YEAR_AHEAD,
+              }),
+            ],
+          ),
+        ])
+
+        renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
+        await goToJobAndPayTab(user)
+
+        const jobsTable = screen.getByRole('grid', { name: 'List of jobs' })
+        const secondaryRow = within(jobsTable)
+          .getByText('Stock Associate')
+          .closest('[role="row"]')! as HTMLElement
+        await user.click(within(secondaryRow).getByRole('button', { name: 'Job actions' }))
+
+        expect(screen.queryByRole('menuitem', { name: 'Edit' })).not.toBeInTheDocument()
+        expect(screen.getByRole('menuitem', { name: 'Delete' })).toBeInTheDocument()
+      })
+    })
   })
 
   describe('Compensation pending badge (future-dated new job)', () => {
