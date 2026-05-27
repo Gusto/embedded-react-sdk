@@ -81,19 +81,20 @@ export function SelectEmployeesPresentation({
                   key: 'balance' as keyof EmployeeItem,
                   title: t('startingBalanceColumn'),
                   render: (employee: EmployeeItem) => (
-                    <Components.TextInput
-                      name={`balance-${employee.uuid}`}
-                      label={t('startingBalanceColumn')}
-                      shouldVisuallyHideLabel
-                      aria-labelledby={`employee-name-${employee.uuid} ${balanceColHeaderId}`}
-                      value={balances?.[employee.uuid] ?? ''}
-                      onChange={(value: string) => {
-                        if (value !== '' && !isNumericInput(value)) return
-                        onBalanceChange(employee.uuid, value)
-                      }}
-                      placeholder="0"
-                      className={styles.balanceInput}
-                    />
+                    <div className={styles.balanceInput}>
+                      <Components.TextInput
+                        name={`balance-${employee.uuid}`}
+                        label={t('startingBalanceColumn')}
+                        shouldVisuallyHideLabel
+                        aria-labelledby={`employee-name-${employee.uuid} ${balanceColHeaderId}`}
+                        value={balances?.[employee.uuid] ?? ''}
+                        onChange={(value: string) => {
+                          if (value !== '' && !isNumericInput(value)) return
+                          onBalanceChange(employee.uuid, value)
+                        }}
+                        placeholder="0"
+                      />
+                    </div>
                   ),
                 },
               ]
