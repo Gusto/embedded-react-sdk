@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
 import { payrollsGetPayStub } from '@gusto/embedded-api/funcs/payrollsGetPayStub'
@@ -243,6 +243,12 @@ export function JobAndPayView({
   // Update changes get the existing warning alert treatment.
   const newJobPendingChanges = pendingChanges.filter(c => c.isNewJob)
   const updatePendingChanges = pendingChanges.filter(c => !c.isNewJob)
+
+  useEffect(() => {
+    if (updatePendingChanges.length === 0) {
+      setIsReviewOpen(false)
+    }
+  }, [updatePendingChanges.length])
 
   const pendingNewJobUuids = new Set(newJobPendingChanges.map(c => c.jobUuid))
   const singleJobIsPendingNew = singleJob ? pendingNewJobUuids.has(singleJob.uuid) : false
