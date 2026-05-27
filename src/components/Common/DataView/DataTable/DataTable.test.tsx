@@ -118,6 +118,11 @@ describe('DataTable Component', () => {
       expect(screen.getAllByRole('checkbox')[0]).not.toBeChecked()
     })
 
+    test('header checkbox is indeterminate when some (but not all) rows are selected', () => {
+      renderTable({ ...selectableProps, getIsItemSelected: item => item.id === 1 })
+      expect(screen.getAllByRole('checkbox')[0]).toBePartiallyChecked()
+    })
+
     test('clicking the header checkbox fires onSelectAll with checked=true when not all selected', async () => {
       const onSelectAllMock = vi.fn()
       renderTable({ ...selectableProps, onSelectAll: onSelectAllMock })

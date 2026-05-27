@@ -97,6 +97,11 @@ describe('DataCards', () => {
       expect(screen.getByLabelText('Select all rows')).toBeChecked()
     })
 
+    test('select-all checkbox is indeterminate when some (but not all) rows are selected', () => {
+      renderCards({ ...selectableProps, getIsItemSelected: item => item.id === 1 })
+      expect(screen.getByLabelText('Select all rows')).toBePartiallyChecked()
+    })
+
     test('clicking select-all fires onSelectAll with true when not all selected', async () => {
       const onSelectAllMock = vi.fn()
       renderCards({ ...selectableProps, onSelectAll: onSelectAllMock })

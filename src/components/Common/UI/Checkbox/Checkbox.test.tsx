@@ -81,6 +81,16 @@ describe('Checkbox', () => {
     expect(checkbox).toBeChecked()
   })
 
+  it('sets indeterminate property on input when isIndeterminate is true', () => {
+    renderWithProviders(<Checkbox {...defaultProps} isIndeterminate />)
+    expect(screen.getByRole('checkbox')).toBePartiallyChecked()
+  })
+
+  it('does not set indeterminate when isIndeterminate is false', () => {
+    renderWithProviders(<Checkbox {...defaultProps} isIndeterminate={false} />)
+    expect(screen.getByRole('checkbox')).not.toBePartiallyChecked()
+  })
+
   it('renders with description', () => {
     renderWithProviders(<Checkbox {...defaultProps} description="Helpful description" />)
     expect(screen.getByText('Helpful description')).toBeInTheDocument()
