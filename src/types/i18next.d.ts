@@ -1585,6 +1585,7 @@ export interface EmployeeDashboard{
 "title":string;
 "editCta":string;
 "noStateTaxes":string;
+"noWithholdingForState":string;
 };
 };
 "documents":{
@@ -2246,6 +2247,7 @@ export interface EmployeeSplitPaycheck{
 };
 export interface EmployeeStateTaxes{
 "stateTaxesTitle":string;
+"noWithholding":string;
 "submitCta":string;
 "saveCta":string;
 "cancelCta":string;
