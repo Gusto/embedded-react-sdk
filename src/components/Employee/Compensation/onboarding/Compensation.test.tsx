@@ -52,10 +52,33 @@ describe('Compensation', () => {
       expect(compensationAmountInput).toHaveValue('0.00')
 
       const payPeriodControl = screen.getByRole('button', {
-        name: /Hour/i,
+        name: /Hourly/i,
         expanded: false,
       })
       expect(payPeriodControl).toBeInTheDocument()
+    })
+
+    it('renders wage frequency options using the natural-language frequency copy', async () => {
+      const user = userEvent.setup()
+
+      renderWithProviders(
+        <Compensation employeeId="employee_id" startDate="2024-12-24" onEvent={() => {}} />,
+      )
+
+      await screen.findByRole('heading', { name: 'Compensation' })
+
+      const payPeriodControl = screen.getByRole('button', {
+        name: /Hourly/i,
+        expanded: false,
+      })
+      await user.click(payPeriodControl)
+
+      const listbox = await screen.findByRole('listbox')
+      expect(within(listbox).getByRole('option', { name: 'Hourly' })).toBeInTheDocument()
+      expect(within(listbox).getByRole('option', { name: 'Weekly' })).toBeInTheDocument()
+      expect(within(listbox).getByRole('option', { name: 'Monthly' })).toBeInTheDocument()
+      expect(within(listbox).getByRole('option', { name: 'Annually' })).toBeInTheDocument()
+      expect(within(listbox).getByRole('option', { name: 'Per paycheck' })).toBeInTheDocument()
     })
 
     it('navigates to jobs list if form is filled out with hourly employment type', async () => {
@@ -321,7 +344,7 @@ describe('Compensation', () => {
       expect(compensationAmountInput).toHaveValue('100,000.00')
 
       const payPeriodControl = screen.getByRole('button', {
-        name: /Year/i,
+        name: /Annually/i,
         expanded: false,
       })
       expect(payPeriodControl).toBeInTheDocument()

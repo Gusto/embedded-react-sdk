@@ -33,11 +33,11 @@
   "paymentUnitDescription": "The period over which the compensation amount is tracked (e.g., hourly, daily, weekly, monthly, annually).",
   "paymentUnitLabel": "Wage frequency",
   "paymentUnitOptions": {
-    "Hour": "Hour",
-    "Month": "Month",
-    "Paycheck": "Paycheck",
-    "Week": "Week",
-    "Year": "Year"
+    "Hour": "Hourly",
+    "Month": "Monthly",
+    "Paycheck": "Per paycheck",
+    "Week": "Weekly",
+    "Year": "Annually"
   },
   "effectiveDate": "Effective date",
   "effectiveDateDescription": "Changes will take effect on this date.",
@@ -53,13 +53,6 @@
     "jobTitleLabel": "Job title",
     "wageLabel": "Wage",
     "wageFrequencyLabel": "Wage frequency",
-    "wageFrequencyOptions": {
-      "Hour": "Hourly",
-      "Week": "Weekly",
-      "Month": "Monthly",
-      "Year": "Annually",
-      "Paycheck": "Per paycheck"
-    },
     "hireDateLabel": "Hire date",
     "twoPercentShareholderLabel": "This employee is a 2% shareholder",
     "saveCta": "Save"

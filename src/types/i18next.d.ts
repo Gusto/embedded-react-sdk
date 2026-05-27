@@ -1395,13 +1395,6 @@ export interface EmployeeCompensation{
 "jobTitleLabel":string;
 "wageLabel":string;
 "wageFrequencyLabel":string;
-"wageFrequencyOptions":{
-"Hour":string;
-"Week":string;
-"Month":string;
-"Year":string;
-"Paycheck":string;
-};
 "hireDateLabel":string;
 "twoPercentShareholderLabel":string;
 "saveCta":string;
