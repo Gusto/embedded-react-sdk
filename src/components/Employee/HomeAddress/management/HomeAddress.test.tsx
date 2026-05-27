@@ -62,6 +62,25 @@ describe('HomeAddress', () => {
     expect(screen.getByRole('heading', { name: 'Add a new home address' })).toBeInTheDocument()
   })
 
+  it('marks the Start date as required in the Add address modal', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<HomeAddress employeeId="employee-123" onEvent={onEvent} />)
+
+    await waitFor(
+      () => {
+        expect(screen.getByRole('button', { name: 'Change address' })).toBeInTheDocument()
+      },
+      { timeout: 5000 },
+    )
+
+    await user.click(screen.getByRole('button', { name: 'Change address' }))
+
+    const dialog = await screen.findByRole('dialog')
+    const startDateLabel = within(dialog).getByText('Start date').closest('label')
+    expect(startDateLabel).not.toBeNull()
+    expect(startDateLabel?.textContent ?? '').not.toMatch(/\(optional\)/i)
+  })
+
   it('keeps the Add address modal open and surfaces inline validation when Save is clicked with empty fields', async () => {
     const user = userEvent.setup()
     const createResolver = vi.fn<HttpResponseResolver>(() => HttpResponse.json({}, { status: 201 }))
