@@ -80,6 +80,7 @@ export function SelectEmployeesPresentation({
                 {
                   key: 'balance' as keyof EmployeeItem,
                   title: t('startingBalanceColumn'),
+                  justify: 'end' as const,
                   render: (employee: EmployeeItem) => (
                     <div className={styles.balanceInput}>
                       <Components.TextInput
