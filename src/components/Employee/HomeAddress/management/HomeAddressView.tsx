@@ -288,13 +288,11 @@ export function HomeAddressView({
     addressModal === 'edit'
       ? {
           onSubmit: editOnSubmit,
-          formMethods: editHomeAddressForm.form.hookFormInternals.formMethods,
           isPending: editStatus.isPending,
         }
       : addressModal === 'create'
         ? {
             onSubmit: createOnSubmit,
-            formMethods: createHomeAddressForm.form.hookFormInternals.formMethods,
             isPending: createStatus.isPending,
           }
         : null
@@ -308,10 +306,6 @@ export function HomeAddressView({
 
     if (submitResult) {
       onSaved(submitResult)
-    }
-
-    const hasFieldErrors = Object.keys(addressModalSession.formMethods.formState.errors).length > 0
-    if (submitResult || !hasFieldErrors) {
       closeAddressModal()
     }
   }
