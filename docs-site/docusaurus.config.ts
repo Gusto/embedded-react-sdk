@@ -52,23 +52,6 @@ const config: Config = {
     ],
   ],
 
-  plugins: [
-    function webpackPolyfills() {
-      return {
-        name: 'webpack-node-polyfills',
-        configureWebpack() {
-          return {
-            resolve: {
-              fallback: {
-                path: require.resolve('path-browserify'),
-              },
-            },
-          }
-        },
-      }
-    },
-  ],
-
   themeConfig: {
     colorMode: {
       defaultMode: 'light',
