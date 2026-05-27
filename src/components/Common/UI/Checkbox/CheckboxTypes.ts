@@ -10,6 +10,11 @@ export interface CheckboxProps
    */
   value?: boolean
   /**
+   * Renders the checkbox in an indeterminate state (dash icon). Intended for
+   * select-all controls where only some items in the set are selected.
+   */
+  isIndeterminate?: boolean
+  /**
    * Callback when checkbox state changes
    */
   onChange?: (value: boolean) => void

@@ -40,7 +40,7 @@ export const DataCards = <T,>({
   const Components = useComponentContext()
   const { t } = useTranslation('common')
   const radioGroupName = useId()
-  const { allSelected } = useSelectionState(data, getIsItemSelected)
+  const { allSelected, isIndeterminate } = useSelectionState(data, getIsItemSelected)
 
   const renderAction = (item: T, index: number) => {
     if (!onSelect) return undefined
@@ -83,6 +83,7 @@ export const DataCards = <T,>({
           <div className={styles.selectAllRow}>
             <Components.Checkbox
               value={allSelected}
+              isIndeterminate={isIndeterminate}
               onChange={(checked: boolean) => onSelectAll?.(checked, data)}
               label={t('card.selectAllRowsLabel')}
             />

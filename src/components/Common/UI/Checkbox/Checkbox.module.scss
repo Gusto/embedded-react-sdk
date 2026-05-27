@@ -43,7 +43,8 @@
   }
 }
 
-.checked .checkbox {
+.checked .checkbox,
+.indeterminate .checkbox {
   border-color: var(--g-colorPrimary);
   background: var(--g-colorPrimary);
 
