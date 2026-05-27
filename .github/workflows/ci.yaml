@@ -231,7 +231,7 @@ jobs:
       - name: Run scenario unit tests
         run: npm run test:scenarios
 
-  # E2E changes: Decide which domain shards should run for this event.
+  # E2E discover: Decide which domain shards should run for this event.
   #
   # Domains are discovered dynamically from `e2e/tests/<domain>/`. The
   # naming contract is `e2e/tests/<kebab>` ↔ `src/components/<Pascal>`
@@ -259,7 +259,7 @@ jobs:
   # Output is a JSON array of domain folder names that downstream
   # `e2e-setup` and `e2e` consume via fromJson() for matrix expansion. An
   # empty array is a valid result and short-circuits both downstream jobs.
-  e2e-changes:
+  e2e-discover:
     needs: setup
     runs-on: ubuntu-latest
     outputs:
@@ -377,13 +377,13 @@ jobs:
   # shards. E2E_DISABLE_CACHE ensures fresh provisioning for each CI run
   # (ignores stale .e2e-state.json from previous runs), but the artifact sharing
   # across shards within this run avoids duplicate provisioning load on the
-  # demo backend. The set of domains to run is computed by `e2e-changes` and
-  # passed through unchanged so downstream `e2e` consumers have a single
-  # source of truth. Skipped entirely when `e2e-changes` produced an empty
-  # array (a PR with no e2e-affecting changes).
+  # demo backend. The set of domains to run is computed by `e2e-discover`
+  # and passed through unchanged so downstream `e2e` consumers have a
+  # single source of truth. Skipped entirely when `e2e-discover` produced
+  # an empty array (a PR with no e2e-affecting changes).
   e2e-setup:
-    needs: [setup, scenarios, e2e-changes]
-    if: needs.e2e-changes.outputs.domains != '[]'
+    needs: [setup, scenarios, e2e-discover]
+    if: needs.e2e-discover.outputs.domains != '[]'
     runs-on: ubuntu-latest
     # Wallclock ceiling for provisioning all demo companies (primary +
     # dismissal + every shared scenario in e2e/scenarios/shared/). Each
@@ -395,7 +395,7 @@ jobs:
     # downstream shard.
     timeout-minutes: 15
     outputs:
-      domains: ${{ needs.e2e-changes.outputs.domains }}
+      domains: ${{ needs.e2e-discover.outputs.domains }}
     steps:
       - uses: actions/checkout@v6
 
@@ -477,7 +477,7 @@ jobs:
     # Skip cleanly when no domain folders are selected — fromJson on an empty
     # array would otherwise fail matrix expansion. The selection itself
     # (including the "always run all on main" rule) is computed in
-    # `e2e-changes`; we just honor whatever it produced.
+    # `e2e-discover`; we just honor whatever it produced.
     if: needs.e2e-setup.outputs.domains != '[]'
     runs-on: ubuntu-latest
     # Wallclock ceiling per shard. Scenario provisioning is now done in
@@ -588,20 +588,20 @@ jobs:
   # circuits this job to `skipped`, which branch protection treats as
   # passing — exactly the bug we're trying to avoid.
   e2e-success:
-    needs: [scenarios, e2e-changes, e2e-setup, e2e]
+    needs: [scenarios, e2e-discover, e2e-setup, e2e]
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     steps:
       - name: Verify required e2e jobs succeeded
         env:
           SCENARIOS: ${{ needs.scenarios.result }}
-          E2E_CHANGES: ${{ needs.e2e-changes.result }}
+          E2E_DISCOVER: ${{ needs.e2e-discover.result }}
           E2E_SETUP: ${{ needs.e2e-setup.result }}
           E2E: ${{ needs.e2e.result }}
         run: |
           set -euo pipefail
-          echo "scenarios=$SCENARIOS e2e-changes=$E2E_CHANGES e2e-setup=$E2E_SETUP e2e=$E2E"
-          for r in "$SCENARIOS" "$E2E_CHANGES" "$E2E_SETUP" "$E2E"; do
+          echo "scenarios=$SCENARIOS e2e-discover=$E2E_DISCOVER e2e-setup=$E2E_SETUP e2e=$E2E"
+          for r in "$SCENARIOS" "$E2E_DISCOVER" "$E2E_SETUP" "$E2E"; do
             case "$r" in
               success|skipped) ;;
               *) echo "Required job result was '$r'"; exit 1 ;;
