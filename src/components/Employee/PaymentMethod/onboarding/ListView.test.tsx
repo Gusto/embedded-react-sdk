@@ -236,7 +236,9 @@ describe('PaymentMethod onboarding ListView', () => {
       await waitFor(() => {
         expect(screen.getByText('Routing number should be a number (9 digits)')).toBeInTheDocument()
       })
-      expect(screen.getByText('Account number is a required field')).toBeInTheDocument()
+      expect(
+        screen.getByText('Account number should contain only digits (up to 17)'),
+      ).toBeInTheDocument()
     })
 
     it('returns to list view when Cancel is clicked from BankForm', async () => {
