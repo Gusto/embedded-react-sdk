@@ -139,8 +139,8 @@ dist
 # Docusaurus cache and generated files
 
 .docusaurus
-website/build/
-website/.docusaurus/
+docs-site/build/
+docs-site/.docusaurus/
 
 # Docusaurus OpenAPI plugin generated docs
 docs/api/
