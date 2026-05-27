@@ -142,4 +142,33 @@ describe('HomeAddress', () => {
     const reopenedDialog = await screen.findByRole('dialog')
     expect(within(reopenedDialog).getByLabelText(/Street 1/i)).toHaveValue('')
   })
+
+  it('opens the edit modal for a history row without re-fetching that row individually', async () => {
+    const user = userEvent.setup()
+
+    // Block the single-address retrieve endpoint. With the cache-warming fix,
+    // editing a list-known row should not hit it; without the fix, the call
+    // would hang and the page would stay in a loading state.
+    const retrieveResolver = vi.fn<HttpResponseResolver>(() => new Promise(() => {}) as never)
+    server.use(http.get(`${API_BASE_URL}/v1/home_addresses/:uuid`, retrieveResolver))
+
+    renderWithProviders(<HomeAddress employeeId="employee-123" onEvent={onEvent} />)
+
+    await waitFor(
+      () => {
+        expect(screen.getByText(/644 Fay Vista/)).toBeInTheDocument()
+      },
+      { timeout: 5000 },
+    )
+
+    const menuButtons = screen.getAllByRole('button', {
+      name: 'Open address row actions',
+    })
+    await user.click(menuButtons[0] as HTMLElement)
+    await user.click(await screen.findByRole('menuitem', { name: 'Edit' }))
+
+    const dialog = await screen.findByRole('dialog')
+    expect(within(dialog).getByRole('heading', { name: 'Edit home address' })).toBeInTheDocument()
+    expect(retrieveResolver).not.toHaveBeenCalled()
+  })
 })
