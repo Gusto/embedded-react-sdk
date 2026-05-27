@@ -152,6 +152,23 @@ describe('SelectEmployeesHoliday', () => {
     expect(screen.getByText('Bob Jones')).toBeInTheDocument()
   })
 
+  it('filters employees by department', async () => {
+    const user = userEvent.setup()
+    renderComponent()
+
+    await waitFor(() => {
+      expect(screen.getByText('Alice Smith')).toBeInTheDocument()
+    })
+
+    const input = screen.getByPlaceholderText('searchPlaceholder')
+    await user.type(input, 'Design')
+
+    await waitFor(() => {
+      expect(screen.queryByText('Alice Smith')).not.toBeInTheDocument()
+    })
+    expect(screen.getByText('Bob Jones')).toBeInTheDocument()
+  })
+
   it('fires CANCEL when Back is clicked', async () => {
     const user = userEvent.setup()
     renderComponent()

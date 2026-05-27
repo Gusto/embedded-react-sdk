@@ -25,7 +25,7 @@ export function isStartedByToday(hireDate: string | undefined): boolean {
 // Single source of truth for the search predicate so the client-pagination
 // hook and the select-all handler agree on what's "in scope" for a query.
 export function matchesEmployeeSearch(employee: EmployeeItem, query: string): boolean {
-  return `${employee.firstName ?? ''} ${employee.lastName ?? ''}`
+  return `${employee.firstName ?? ''} ${employee.lastName ?? ''} ${employee.department ?? ''}`
     .toLowerCase()
     .includes(query.toLowerCase())
 }

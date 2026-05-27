@@ -586,14 +586,6 @@ export interface CompanyTimeOffSelectEmployees{
 "errors":{
 "completePolicyFailed":string;
 };
-"addConfirmDialog":{
-"title_one":string;
-"title_other":string;
-"description_one":string;
-"description_other":string;
-"confirmCta":string;
-"cancelCta":string;
-};
 };
 export interface CompanyTimeOffSelectPolicyType{
 "title":string;
@@ -1578,6 +1570,7 @@ export interface EmployeeDashboard{
 "title":string;
 "editCta":string;
 "noStateTaxes":string;
+"noWithholdingForState":string;
 };
 };
 "documents":{
@@ -2239,6 +2232,7 @@ export interface EmployeeSplitPaycheck{
 };
 export interface EmployeeStateTaxes{
 "stateTaxesTitle":string;
+"noWithholding":string;
 "submitCta":string;
 "saveCta":string;
 "cancelCta":string;
