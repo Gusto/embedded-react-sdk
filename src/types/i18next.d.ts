@@ -2185,6 +2185,7 @@ export interface EmployeePaymentMethod{
 "accountName":string;
 "routingNumber":string;
 "accountNumber":string;
+"accountNumberFormat":string;
 };
 };
 export interface EmployeeProfile{
