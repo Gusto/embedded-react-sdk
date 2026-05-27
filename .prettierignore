@@ -7,4 +7,4 @@ docs/reference/endpoint-inventory.json
 docs/reference/endpoint-reference.md
 docs/api/
 .claude/settings.local.json
-website/build/
+docs-site/build/
