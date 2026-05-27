@@ -1,4 +1,4 @@
-export type PaginationItemsPerPage = 5 | 10 | 50
+export type PaginationItemsPerPage = 5 | 10 | 25 | 50
 
 export type PaginationControlProps = {
   handleFirstPage: () => void

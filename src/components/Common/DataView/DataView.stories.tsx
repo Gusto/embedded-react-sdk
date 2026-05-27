@@ -263,7 +263,7 @@ export const DataViewWithPagination = () => {
 
 export const DataViewSelectableWithPagination = () => {
   const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage, setItemsPerPage] = useState<5 | 10 | 50>(5)
+  const [itemsPerPage, setItemsPerPage] = useState<5 | 10 | 25 | 50>(5)
   const [selectedIds, setSelectedIds] = useState(new Set<string>())
 
   const totalPages = Math.ceil(compensationData.length / itemsPerPage)

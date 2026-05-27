@@ -93,6 +93,7 @@ export function useSelectEmployeesData(companyId: string, excludeUuids?: Set<str
     actions: paginationActions,
   } = useClientPagination(eligibleEmployees, {
     searchPredicate: matchesEmployeeSearch,
+    defaultItemsPerPage: 25,
   })
 
   const isRestFetching = restPageResults.some(r => r.isFetching)
