@@ -101,25 +101,47 @@ export type ChildSupportGarnishmentFormOutputs = ChildSupportGarnishmentFormData
 interface ChildSupportGarnishmentFormSchemaOptions {
   mode?: 'create' | 'update'
   /**
-   * The agency record matching the currently selected `state`. The agency's
-   * `requiredAttributes` determine which of `caseNumber` / `orderNumber` /
-   * `remittanceNumber` are required. When omitted (no agency selected yet),
-   * all three are optional.
+   * The agency record matching the currently selected `state`. Used only when
+   * `agencyList` is not provided — `requiredAttributes` are pinned to this
+   * single agency, so the schema must be rebuilt whenever the user picks a
+   * different state. Prefer passing `agencyList` instead so requiredness
+   * tracks the form's `state` value dynamically.
    */
   selectedAgency?: Agencies | null
+  /**
+   * Full list of agencies. When provided, the schema's requiredness for
+   * `caseNumber` / `orderNumber` / `remittanceNumber` is computed at validation
+   * time by looking up the agency whose `state` matches the form's `state`
+   * value — so a single schema instance stays correct as the user changes
+   * states. Takes precedence over `selectedAgency`.
+   */
+  agencyList?: readonly Agencies[]
 }
 
 export function createChildSupportGarnishmentFormSchema({
   mode = 'create',
   selectedAgency,
+  agencyList,
 }: ChildSupportGarnishmentFormSchemaOptions = {}) {
-  const requiredAttrKeys = getRequiredAttrKeys(selectedAgency)
-
-  const requiredFieldsConfig = {
-    caseNumber: requiredAttrKeys.has('case_number') ? 'always' : 'never',
-    orderNumber: requiredAttrKeys.has('order_number') ? 'always' : 'never',
-    remittanceNumber: requiredAttrKeys.has('remittance_number') ? 'always' : 'never',
-  } satisfies RequiredFieldConfig<typeof fieldValidators>
+  const requiredFieldsConfig = agencyList
+    ? ({
+        caseNumber: data =>
+          getRequiredAttrKeys(agencyList.find(a => a.state === data.state)).has('case_number'),
+        orderNumber: data =>
+          getRequiredAttrKeys(agencyList.find(a => a.state === data.state)).has('order_number'),
+        remittanceNumber: data =>
+          getRequiredAttrKeys(agencyList.find(a => a.state === data.state)).has(
+            'remittance_number',
+          ),
+      } satisfies RequiredFieldConfig<typeof fieldValidators>)
+    : (() => {
+        const requiredAttrKeys = getRequiredAttrKeys(selectedAgency)
+        return {
+          caseNumber: requiredAttrKeys.has('case_number') ? 'always' : 'never',
+          orderNumber: requiredAttrKeys.has('order_number') ? 'always' : 'never',
+          remittanceNumber: requiredAttrKeys.has('remittance_number') ? 'always' : 'never',
+        } satisfies RequiredFieldConfig<typeof fieldValidators>
+      })()
 
   return buildFormSchema(fieldValidators, {
     requiredFieldsConfig,
