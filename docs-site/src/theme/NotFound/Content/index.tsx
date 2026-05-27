@@ -1,11 +1,14 @@
 import Link from '@docusaurus/Link'
+import useBaseUrl from '@docusaurus/useBaseUrl'
 import Heading from '@theme/Heading'
 import type { ReactNode } from 'react'
 import styles from './styles.module.css'
 
 export default function NotFoundContent(): ReactNode {
+  const homeUrl = useBaseUrl('/')
+
   return (
-    <main className={styles.root}>
+    <div className={styles.root}>
       <div className={styles.container}>
         <Heading as="h1" className={styles.title}>
           Page Not Found
@@ -14,7 +17,7 @@ export default function NotFoundContent(): ReactNode {
           The page you&apos;re looking for doesn&apos;t exist or has been moved.
         </p>
         <div className={styles.links}>
-          <Link to="/" className={styles.homeLink}>
+          <Link to={homeUrl} className={styles.homeLink}>
             Go to Home
           </Link>
           <Link to="/docs/what-is-the-gep-react-sdk" className={styles.docsLink}>
@@ -39,6 +42,6 @@ export default function NotFoundContent(): ReactNode {
           </ul>
         </div>
       </div>
-    </main>
+    </div>
   )
 }

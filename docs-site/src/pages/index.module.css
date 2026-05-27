@@ -31,19 +31,19 @@
   width: auto;
 }
 
-.heroLogoDark {
+.heroLogoForLight {
   display: block;
 }
 
-.heroLogoLight {
+.heroLogoForDark {
   display: none;
 }
 
-[data-theme='dark'] .heroLogoDark {
+[data-theme='dark'] .heroLogoForLight {
   display: none;
 }
 
-[data-theme='dark'] .heroLogoLight {
+[data-theme='dark'] .heroLogoForDark {
   display: block;
 }
 
