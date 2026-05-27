@@ -45,7 +45,9 @@ describe('management/EditCompensation', () => {
     expect(
       screen.getByRole('button', { name: /Paid by the hour/i, expanded: false }),
     ).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /Hourly/i, expanded: false })).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: 'Hour Wage frequency', expanded: false }),
+    ).toBeInTheDocument()
   })
 
   it('leaves the effective date blank so the user must choose a future date', async () => {

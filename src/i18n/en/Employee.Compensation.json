@@ -33,11 +33,11 @@
   "paymentUnitDescription": "The period over which the compensation amount is tracked (e.g., hourly, daily, weekly, monthly, annually).",
   "paymentUnitLabel": "Wage frequency",
   "paymentUnitOptions": {
-    "Hour": "Hourly",
-    "Month": "Monthly",
-    "Paycheck": "Per paycheck",
-    "Week": "Weekly",
-    "Year": "Annually"
+    "Hour": "Hour",
+    "Month": "Month",
+    "Paycheck": "Paycheck",
+    "Week": "Week",
+    "Year": "Year"
   },
   "effectiveDate": "Effective date",
   "effectiveDateDescription": "Changes will take effect on this date.",

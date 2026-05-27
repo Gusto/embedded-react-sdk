@@ -52,13 +52,13 @@ describe('Compensation', () => {
       expect(compensationAmountInput).toHaveValue('0.00')
 
       const payPeriodControl = screen.getByRole('button', {
-        name: /Hourly/i,
+        name: /Hour/i,
         expanded: false,
       })
       expect(payPeriodControl).toBeInTheDocument()
     })
 
-    it('renders wage frequency options using the natural-language frequency copy', async () => {
+    it('renders wage frequency options using the shared paymentUnit copy', async () => {
       const user = userEvent.setup()
 
       renderWithProviders(
@@ -68,17 +68,17 @@ describe('Compensation', () => {
       await screen.findByRole('heading', { name: 'Compensation' })
 
       const payPeriodControl = screen.getByRole('button', {
-        name: /Hourly/i,
+        name: 'Hour Wage frequency',
         expanded: false,
       })
       await user.click(payPeriodControl)
 
       const listbox = await screen.findByRole('listbox')
-      expect(within(listbox).getByRole('option', { name: 'Hourly' })).toBeInTheDocument()
-      expect(within(listbox).getByRole('option', { name: 'Weekly' })).toBeInTheDocument()
-      expect(within(listbox).getByRole('option', { name: 'Monthly' })).toBeInTheDocument()
-      expect(within(listbox).getByRole('option', { name: 'Annually' })).toBeInTheDocument()
-      expect(within(listbox).getByRole('option', { name: 'Per paycheck' })).toBeInTheDocument()
+      expect(within(listbox).getByRole('option', { name: 'Hour' })).toBeInTheDocument()
+      expect(within(listbox).getByRole('option', { name: 'Week' })).toBeInTheDocument()
+      expect(within(listbox).getByRole('option', { name: 'Month' })).toBeInTheDocument()
+      expect(within(listbox).getByRole('option', { name: 'Year' })).toBeInTheDocument()
+      expect(within(listbox).getByRole('option', { name: 'Paycheck' })).toBeInTheDocument()
     })
 
     it('navigates to jobs list if form is filled out with hourly employment type', async () => {
@@ -344,7 +344,7 @@ describe('Compensation', () => {
       expect(compensationAmountInput).toHaveValue('100,000.00')
 
       const payPeriodControl = screen.getByRole('button', {
-        name: /Annually/i,
+        name: /Year/i,
         expanded: false,
       })
       expect(payPeriodControl).toBeInTheDocument()
