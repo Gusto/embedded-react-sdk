@@ -33,7 +33,6 @@ const defaultProps: SelectEmployeesPresentationProps = {
   onSearchClear: vi.fn(),
   onBack: vi.fn(),
   onContinue: vi.fn(),
-  showReassignmentWarning: false,
 }
 
 function renderPresentation(overrides: Partial<SelectEmployeesPresentationProps> = {}) {
@@ -69,14 +68,14 @@ describe('SelectEmployeesPresentation', () => {
     expect(screen.queryByText('description')).not.toBeInTheDocument()
   })
 
-  test('does not render reassignment warning Alert when showReassignmentWarning is false', () => {
-    renderPresentation({ showReassignmentWarning: false })
-    expect(screen.queryByText('reassignmentWarning')).not.toBeInTheDocument()
+  test('always renders reassignment warning Alert for time off policies', () => {
+    renderPresentation()
+    expect(screen.getByText('reassignmentWarning')).toBeInTheDocument()
   })
 
-  test('renders reassignment warning Alert when showReassignmentWarning is true', () => {
-    renderPresentation({ showReassignmentWarning: true })
-    expect(screen.getByText('reassignmentWarning')).toBeInTheDocument()
+  test('does not render reassignment warning Alert for holiday policies', () => {
+    renderPresentation({ isHolidayPolicy: true })
+    expect(screen.queryByText('reassignmentWarning')).not.toBeInTheDocument()
   })
 
   test('renders Department column header and values', () => {
