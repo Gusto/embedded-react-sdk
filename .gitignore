@@ -142,9 +142,6 @@ dist
 docs-site/build/
 docs-site/.docusaurus/
 
-# Docusaurus OpenAPI plugin generated docs
-docs/api/
-
 # Serverless directories
 
 .serverless/

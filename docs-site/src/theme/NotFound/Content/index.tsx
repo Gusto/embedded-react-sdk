@@ -1,9 +1,9 @@
 import Link from '@docusaurus/Link'
 import Heading from '@theme/Heading'
-import clsx from 'clsx'
+import type { ReactNode } from 'react'
 import styles from './styles.module.css'
 
-export default function NotFoundContent(): JSX.Element {
+export default function NotFoundContent(): ReactNode {
   return (
     <main className={styles.root}>
       <div className={styles.container}>

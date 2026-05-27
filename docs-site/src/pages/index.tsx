@@ -1,4 +1,5 @@
 import Link from '@docusaurus/Link'
+import useBaseUrl from '@docusaurus/useBaseUrl'
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
 import Layout from '@theme/Layout'
 import clsx from 'clsx'
@@ -143,18 +144,20 @@ const features: Feature[] = [
 
 function HeroSection() {
   const { siteConfig } = useDocusaurusContext()
+  const logoForLightMode = useBaseUrl('/img/gusto-logo-dark.svg')
+  const logoForDarkMode = useBaseUrl('/img/gusto-logo.svg')
 
   return (
     <header className={styles.hero}>
       <div className={styles.heroInner}>
         <h1 className={styles.heroBrand}>
           <img
-            src="/img/gusto-logo-dark.svg"
+            src={logoForLightMode}
             alt={siteConfig.title}
             className={clsx(styles.heroLogo, styles.heroLogoDark)}
           />
           <img
-            src="/img/gusto-logo.svg"
+            src={logoForDarkMode}
             alt={siteConfig.title}
             className={clsx(styles.heroLogo, styles.heroLogoLight)}
           />
@@ -227,7 +230,7 @@ function QuickLinksSection() {
   )
 }
 
-export default function Home(): JSX.Element {
+export default function Home(): ReactNode {
   const { siteConfig } = useDocusaurusContext()
 
   return (

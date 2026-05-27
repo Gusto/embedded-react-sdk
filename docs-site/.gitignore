@@ -3,4 +3,3 @@ node_modules/
 build/
 .cache-loader/
 package-lock.json
-openapi/
