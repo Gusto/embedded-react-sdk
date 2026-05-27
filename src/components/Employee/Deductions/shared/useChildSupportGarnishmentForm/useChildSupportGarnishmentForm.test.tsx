@@ -205,6 +205,31 @@ describe('useChildSupportGarnishmentForm', () => {
       expect(fm.getValues('orderNumber')).toBe('')
       expect(fm.getValues('remittanceNumber')).toBe('')
     })
+
+    it('marks agency-required attribute fields as required in metadata after selecting that agency', async () => {
+      const { result } = renderHook(
+        () => useChildSupportGarnishmentForm({ employeeId: 'employee-123' }),
+        { wrapper: GustoTestProvider },
+      )
+
+      const ready = await waitForReady(() => result.current)
+
+      act(() => {
+        ready.form.hookFormInternals.formMethods.setValue('state', 'OH')
+      })
+
+      await waitFor(() => {
+        const r = result.current
+        assertReady(r)
+        expect(r.status.selectedAgency?.state).toBe('OH')
+      })
+
+      const updated = result.current
+      assertReady(updated)
+      expect(updated.form.fieldsMetadata.caseNumber?.isRequired).toBe(true)
+      expect(updated.form.fieldsMetadata.orderNumber?.isRequired).toBe(true)
+      expect(updated.form.fieldsMetadata.remittanceNumber?.isRequired).toBe(false)
+    })
   })
 
   describe('create submit', () => {
