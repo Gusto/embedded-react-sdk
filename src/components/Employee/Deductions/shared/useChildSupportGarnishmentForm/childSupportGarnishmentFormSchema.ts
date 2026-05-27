@@ -123,16 +123,27 @@ export function createChildSupportGarnishmentFormSchema({
   selectedAgency,
   agencyList,
 }: ChildSupportGarnishmentFormSchemaOptions = {}) {
+  // Read `data.state` eagerly (outside the `agencyList.find` callback) so that
+  // `buildFormSchema`'s proxy-based predicate-dep detection always observes
+  // the `state` access — otherwise an empty `agencyList` at schema-build time
+  // would short-circuit the `find` before the proxy sees `data.state` and
+  // `useDeriveFieldsMetadata` would treat the field metadata as static.
   const requiredFieldsConfig = agencyList
     ? ({
-        caseNumber: data =>
-          getRequiredAttrKeys(agencyList.find(a => a.state === data.state)).has('case_number'),
-        orderNumber: data =>
-          getRequiredAttrKeys(agencyList.find(a => a.state === data.state)).has('order_number'),
-        remittanceNumber: data =>
-          getRequiredAttrKeys(agencyList.find(a => a.state === data.state)).has(
+        caseNumber: data => {
+          const state = data.state
+          return getRequiredAttrKeys(agencyList.find(a => a.state === state)).has('case_number')
+        },
+        orderNumber: data => {
+          const state = data.state
+          return getRequiredAttrKeys(agencyList.find(a => a.state === state)).has('order_number')
+        },
+        remittanceNumber: data => {
+          const state = data.state
+          return getRequiredAttrKeys(agencyList.find(a => a.state === state)).has(
             'remittance_number',
-          ),
+          )
+        },
       } satisfies RequiredFieldConfig<typeof fieldValidators>)
     : (() => {
         const requiredAttrKeys = getRequiredAttrKeys(selectedAgency)
