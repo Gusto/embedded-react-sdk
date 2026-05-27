@@ -80,7 +80,6 @@ html {
 .navbar {
   box-shadow: none;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 0 1.5rem;
 }
 
 .navbar__title {
@@ -88,11 +87,6 @@ html {
   font-weight: 300;
   color: rgba(255, 255, 255, 0.5);
   margin-left: -0.15rem;
-}
-
-.navbar__inner {
-  max-width: 1400px;
-  margin: 0 auto;
 }
 
 .navbar__link {
@@ -436,16 +430,4 @@ code {
 
 .navbar__items .clean-btn[class*='toggle'] svg {
   color: #ffffff;
-}
-
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
 }

@@ -112,7 +112,7 @@ function GearIcon({ className }: { className?: string }) {
 interface Feature {
   title: string
   description: string
-  icon: (props: { className?: string }) => ReactNode
+  Icon: (props: { className?: string }) => ReactNode
 }
 
 const features: Feature[] = [
@@ -120,46 +120,45 @@ const features: Feature[] = [
     title: 'Pre-built Workflows',
     description:
       'Complete multi-step flows for employee onboarding, payroll, contractor management, and more — ready to drop into your app.',
-    icon: WorkflowIcon,
+    Icon: WorkflowIcon,
   },
   {
     title: 'Full UI Control',
     description:
       'Use theming, component adapters, and composition to match your design system. Native React components, not iframes.',
-    icon: PaletteIcon,
+    Icon: PaletteIcon,
   },
   {
     title: 'Event-driven',
     description:
       'Every component emits typed events for user actions and API responses. Drive navigation, analytics, and side effects.',
-    icon: SignalIcon,
+    Icon: SignalIcon,
   },
   {
     title: 'Built-in Business Logic',
     description:
       'API calls, form validation, error handling, and state transitions are managed internally with React Query, react-hook-form, and Zod.',
-    icon: GearIcon,
+    Icon: GearIcon,
   },
 ]
 
 function HeroSection() {
-  const { siteConfig } = useDocusaurusContext()
   const logoForLightMode = useBaseUrl('/img/gusto-logo-dark.svg')
   const logoForDarkMode = useBaseUrl('/img/gusto-logo.svg')
 
   return (
-    <header className={styles.hero}>
+    <section className={styles.hero}>
       <div className={styles.heroInner}>
         <h1 className={styles.heroBrand}>
           <img
             src={logoForLightMode}
-            alt={siteConfig.title}
-            className={clsx(styles.heroLogo, styles.heroLogoDark)}
+            alt="Gusto Embedded"
+            className={clsx(styles.heroLogo, styles.heroLogoForLight)}
           />
           <img
             src={logoForDarkMode}
-            alt={siteConfig.title}
-            className={clsx(styles.heroLogo, styles.heroLogoLight)}
+            alt="Gusto Embedded"
+            className={clsx(styles.heroLogo, styles.heroLogoForDark)}
           />
           <span className={styles.heroSdkLabel}>SDK</span>
         </h1>
@@ -179,21 +178,20 @@ function HeroSection() {
           <code>npm install @gusto/embedded-react-sdk</code>
         </div>
       </div>
-    </header>
+    </section>
   )
 }
 
 function FeaturesSection() {
   return (
-    <section className={styles.features}>
+    <section className={styles.features} aria-label="Key features">
       <div className={styles.featuresInner}>
-        <h2 className="sr-only">Key Features</h2>
         <div className={styles.featuresGrid}>
-          {features.map(feature => (
-            <div key={feature.title} className={styles.featureCard}>
-              <feature.icon className={styles.featureIcon} />
-              <h3 className={styles.featureTitle}>{feature.title}</h3>
-              <p className={styles.featureDescription}>{feature.description}</p>
+          {features.map(({ title, description, Icon }) => (
+            <div key={title} className={styles.featureCard}>
+              <Icon className={styles.featureIcon} />
+              <h3 className={styles.featureTitle}>{title}</h3>
+              <p className={styles.featureDescription}>{description}</p>
             </div>
           ))}
         </div>
