@@ -9,6 +9,7 @@ import jsxA11y from 'eslint-plugin-jsx-a11y'
 import pluginReactHooks from 'eslint-plugin-react-hooks'
 import importPlugin from 'eslint-plugin-import'
 import reactRefresh from 'eslint-plugin-react-refresh'
+import tsdoc from 'eslint-plugin-tsdoc'
 
 export default [
   { files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'] },
@@ -142,5 +143,15 @@ export default [
       '@typescript-eslint/no-unnecessary-type-arguments': 'off',
     },
   },
+  // TSDoc syntax validation on any comment that already exists.
+  // Validates tag names, param format, brace escaping, etc.
+  {
+    files: ['src/**/*.{ts,tsx}'],
+    plugins: { tsdoc },
+    rules: {
+      'tsdoc/syntax': 'error',
+    },
+  },
+
   ...storybook.configs['flat/recommended'],
 ]

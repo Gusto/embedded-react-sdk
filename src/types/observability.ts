@@ -125,7 +125,7 @@ export interface ObservabilityHook {
 
   /**
    * Configuration for sanitizing data before sending to observability tools.
-   * Default: { enabled: true, includeRawError: false }
+   * Default: `{ enabled: true, includeRawError: false }`
    */
   sanitization?: SanitizationConfig
 }
