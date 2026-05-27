@@ -8,6 +8,22 @@ const DEMO_URL = `${GWS_FLOWS_BASE}/demos?react_sdk=true`
 const ENV_FILE_PATH = resolve(process.cwd(), 'e2e/local.config.env')
 const isLocalHost = GWS_FLOWS_BASE.includes('localhost')
 
+// Per-navigation timeout for any goto/waitForURL/reload against the demo
+// backend. Default Playwright timeout is 30s, which is too tight for
+// flows.gusto-demo.com during seeding waves where individual page loads
+// can take 60-90s. 120s gives real headroom without holding the job
+// hostage if the host is genuinely down (the retry loop below covers
+// transient flake separately).
+const NAV_TIMEOUT_MS = 120_000
+
+// Retry budget for the initial page.goto into the demo flow. The host
+// occasionally drops a connection or returns a slow first response after
+// a quiet period; a couple of retries with a short backoff almost always
+// recovers without us paying the full per-attempt timeout. 3 attempts ×
+// 120s worst-case = 6 min, well under the 15 min e2e-setup job ceiling.
+const INITIAL_GOTO_MAX_ATTEMPTS = 3
+const INITIAL_GOTO_BACKOFF_MS = 2_000
+
 interface TokenInfo {
   flowToken: string
   companyId: string
@@ -33,6 +49,32 @@ export async function createFreshDemo(flowType: string = 'react_sdk_demo'): Prom
   return extractTokenFromPage(flowType)
 }
 
+async function gotoWithRetry(page: import('@playwright/test').Page, url: string): Promise<void> {
+  let lastError: unknown
+  for (let attempt = 1; attempt <= INITIAL_GOTO_MAX_ATTEMPTS; attempt++) {
+    try {
+      await page.goto(url, { waitUntil: 'networkidle', timeout: NAV_TIMEOUT_MS })
+      if (attempt > 1) {
+        console.log(`  ↻ Recovered on attempt ${attempt}`)
+      }
+      return
+    } catch (error) {
+      lastError = error
+      const remaining = INITIAL_GOTO_MAX_ATTEMPTS - attempt
+      if (remaining === 0) break
+      const message = error instanceof Error ? error.message : String(error)
+      console.warn(
+        `  ⚠️  page.goto failed on attempt ${attempt}/${INITIAL_GOTO_MAX_ATTEMPTS}: ${message}`,
+      )
+      console.warn(
+        `  ↻ Retrying in ${INITIAL_GOTO_BACKOFF_MS / 1000}s (${remaining} attempts left)...`,
+      )
+      await page.waitForTimeout(INITIAL_GOTO_BACKOFF_MS)
+    }
+  }
+  throw lastError
+}
+
 async function extractTokenFromPage(flowType: string = 'react_sdk_demo'): Promise<TokenInfo> {
   console.log('🔄 Launching browser to get fresh token from GWS-Flows...')
 
@@ -41,7 +83,7 @@ async function extractTokenFromPage(flowType: string = 'react_sdk_demo'): Promis
   const page = await context.newPage()
 
   try {
-    await page.goto(DEMO_URL, { waitUntil: 'networkidle' })
+    await gotoWithRetry(page, DEMO_URL)
 
     const flowTypeSelect = page.locator('#demo_flow_type')
     await flowTypeSelect.selectOption(flowType)
@@ -51,7 +93,7 @@ async function extractTokenFromPage(flowType: string = 'react_sdk_demo'): Promis
     const submitButton = page.getByRole('button', { name: /create/i })
     await submitButton.click()
 
-    await page.waitForURL(/\/demos\/[a-f0-9-]+/, { timeout: 30000 })
+    await page.waitForURL(/\/demos\/[a-f0-9-]+/, { timeout: NAV_TIMEOUT_MS })
     const demoPageUrl = page.url()
     console.log(`📍 Navigated to demo page: ${demoPageUrl}`)
 
@@ -112,7 +154,9 @@ async function extractTokenFromPage(flowType: string = 'react_sdk_demo'): Promis
 
     if (!companyId) {
       const flowPageUrl = `${GWS_FLOWS_BASE}/flows/${flowToken}`
-      await page.goto(flowPageUrl, { waitUntil: 'networkidle', timeout: 30000 }).catch(() => {})
+      await page
+        .goto(flowPageUrl, { waitUntil: 'networkidle', timeout: NAV_TIMEOUT_MS })
+        .catch(() => {})
       await page.waitForTimeout(2000)
 
       const flowPageContent = await page.content()

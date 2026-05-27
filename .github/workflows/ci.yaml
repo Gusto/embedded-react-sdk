@@ -231,21 +231,66 @@ jobs:
       - name: Run scenario unit tests
         run: npm run test:scenarios
 
+  # E2E discover: Decide which domain shards should run for this event.
+  #
+  # Domains are discovered dynamically from `e2e/tests/<domain>/`. The
+  # naming contract is `e2e/tests/<kebab>` ↔ `src/components/<Pascal>`
+  # (e.g. time-off ↔ TimeOff). Adding or removing a domain folder is the
+  # only thing required to add or remove a shard.
+  #
+  # The selection is a two-stage filter:
+  #
+  #   1. Drop files whose extension can't affect runtime or test
+  #      behavior (.md, LICENSE, .gitignore, images, etc.). A docs-only
+  #      PR produces an empty filtered diff and skips e2e entirely.
+  #   2. Of the surviving files, if any sit OUTSIDE every known domain's
+  #      surface area (`src/components/<Pascal>/` or `e2e/tests/<kebab>/`),
+  #      treat the change as cross-cutting and run every shard.
+  #      Otherwise run only the domains whose surface was actually touched.
+  #
+  # Stage 2 is safe by default: new code in unfamiliar locations (e.g. a
+  # fresh top-level directory like `src/middleware/`) fans out to all
+  # shards rather than silently producing an empty matrix.
+  #
+  # On pushes to main and manual dispatches we run every domain
+  # unconditionally — main is the canonical "all green" signal regardless
+  # of which paths landed in the merge commit.
+  #
+  # Output is a JSON array of domain folder names that downstream
+  # `e2e-setup` and `e2e` consume via fromJson() for matrix expansion. An
+  # empty array is a valid result and short-circuits both downstream jobs.
+  e2e-discover:
+    needs: setup
+    runs-on: ubuntu-latest
+    outputs:
+      domains: ${{ steps.resolve.outputs.domains }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          # Need merge-base history to diff PR branches against base. Default
+          # depth=1 has no shared history with origin/<base>, which would
+          # make `git diff base...HEAD` empty and silently skip every shard.
+          fetch-depth: 0
+
+      - id: resolve
+        name: Resolve domains JSON
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          REF: ${{ github.ref }}
+          BASE_REF: ${{ github.base_ref }}
+        run: bash .github/scripts/e2e-discover-domains.sh
+
   # E2E setup: Provision demo companies once per CI run and share state across
-  # shards, and discover which domain folders under e2e/tests/ should become
-  # matrix shards. E2E_DISABLE_CACHE ensures fresh provisioning for each CI run
+  # shards. E2E_DISABLE_CACHE ensures fresh provisioning for each CI run
   # (ignores stale .e2e-state.json from previous runs), but the artifact sharing
   # across shards within this run avoids duplicate provisioning load on the
-  # demo backend. The `domains` output is a JSON array consumed by the e2e
-  # job's matrix via fromJson() — new domain folders automatically become
-  # shards with no CI edits; folders that disappear stop producing shards.
-  # Flat specs directly under e2e/tests/ are intentionally not picked up —
-  # every shipping spec lives inside a domain folder.
+  # demo backend. The set of domains to run is computed by `e2e-discover`
+  # and passed through unchanged so downstream `e2e` consumers have a
+  # single source of truth. Skipped entirely when `e2e-discover` produced
+  # an empty array (a PR with no e2e-affecting changes).
   e2e-setup:
-    needs: [setup, scenarios]
-    # Temporarily skip E2E on pushes to main while we stabilize the demo backend
-    # contract. PR runs and manual dispatches still execute the suite.
-    if: github.ref != 'refs/heads/main'
+    needs: [setup, scenarios, e2e-discover]
+    if: needs.e2e-discover.outputs.domains != '[]'
     runs-on: ubuntu-latest
     # Wallclock ceiling for provisioning all demo companies (primary +
     # dismissal + every shared scenario in e2e/scenarios/shared/). Each
@@ -257,16 +302,9 @@ jobs:
     # downstream shard.
     timeout-minutes: 15
     outputs:
-      domains: ${{ steps.list-domains.outputs.domains }}
+      domains: ${{ needs.e2e-discover.outputs.domains }}
     steps:
       - uses: actions/checkout@v6
-
-      - id: list-domains
-        name: Discover e2e domains from folders under e2e/tests/
-        run: |
-          domains=$(find e2e/tests -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort | jq -R . | jq -sc .)
-          echo "domains=$domains" >> "$GITHUB_OUTPUT"
-          echo "Discovered: $domains"
 
       - uses: actions/setup-node@v6
         with:
@@ -343,10 +381,11 @@ jobs:
   # specs under `e2e/tests/<domain>/**/*.spec.ts`.
   e2e:
     needs: [setup, scenarios, e2e-setup]
-    # Skip cleanly when no domain folders exist — fromJson on an empty array
-    # would otherwise fail matrix expansion. Also skipped on main while we
-    # stabilize the demo backend contract (mirrors the e2e-setup gate).
-    if: github.ref != 'refs/heads/main' && needs.e2e-setup.outputs.domains != '[]'
+    # Skip cleanly when no domain folders are selected — fromJson on an empty
+    # array would otherwise fail matrix expansion. The selection itself
+    # (including the "always run all on main" rule) is computed in
+    # `e2e-discover`; we just honor whatever it produced.
+    if: needs.e2e-setup.outputs.domains != '[]'
     runs-on: ubuntu-latest
     # Wallclock ceiling per shard. Scenario provisioning is now done in
     # e2e-setup, so shards just download the artifact and run tests against
@@ -442,3 +481,29 @@ jobs:
           name: e2e-scenario-report-${{ matrix.domain }}
           path: e2e/reports/
           retention-days: 7
+
+  # E2E success: Single required check that branch protection can gate on.
+  #
+  # Aggregates the result of every job that collectively constitutes "e2e
+  # passed" — scenarios validation, the provisioning job, and the matrix
+  # itself (whose `result` is the rolled-up status across every shard).
+  # Skipped counts as success so a PR that only touches paths outside any
+  # domain (and therefore produced an empty matrix) still satisfies the
+  # gate. Failure or cancellation of any contributing job fails this check.
+  #
+  # `if: !cancelled()` is required: without it, a failed upstream short-
+  # circuits this job to `skipped`, which branch protection treats as
+  # passing — exactly the bug we're trying to avoid.
+  e2e-success:
+    needs: [scenarios, e2e-discover, e2e-setup, e2e]
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Verify required e2e jobs succeeded
+        env:
+          SCENARIOS: ${{ needs.scenarios.result }}
+          E2E_DISCOVER: ${{ needs.e2e-discover.result }}
+          E2E_SETUP: ${{ needs.e2e-setup.result }}
+          E2E: ${{ needs.e2e.result }}
+        run: bash .github/scripts/e2e-verify-success.sh
