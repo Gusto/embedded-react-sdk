@@ -34,14 +34,19 @@ export function DocumentViewer({
     type: 'application/pdf',
   }
 
+  // Keying the `<embed>` on the URL forces React to remount the element when
+  // the URL changes (e.g. after signing replaces an unsigned PDF). Without
+  // this, React reuses the existing DOM node, the browser's PDF plugin
+  // doesn't reload the new src, and the viewer renders blank until a manual
+  // reload.
   return (
     <div className={styles.container} ref={containerRef}>
       {isContainerWidthSmallOrGreater ? (
-        <embed {...commonEmbeddedPdfProps} className={styles.embedPdf} />
+        <embed key={url} {...commonEmbeddedPdfProps} className={styles.embedPdf} />
       ) : (
         <div className={styles.smallEmbedPdfContainer}>
           <Flex gap={20}>
-            <embed {...commonEmbeddedPdfProps} className={styles.smallEmbedPdf} />
+            <embed key={url} {...commonEmbeddedPdfProps} className={styles.smallEmbedPdf} />
             <Flex flexDirection="column" gap={8}>
               <div>
                 {title && (

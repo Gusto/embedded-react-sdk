@@ -17,10 +17,10 @@ test.describe('TimeOffFlow - add employees edge cases', () => {
     })
   })
 
-  // QA issue reporter: Wil Alvarez
-  // Adding employees to an already-populated policy must surface a
-  // confirmation dialog so the partner can review before committing.
-  test('confirmation dialog appears when adding employees to an existing populated policy', async ({
+  // SDK-977: adding employees from the detail view used to surface a
+  // confirmation dialog after Continue. The dialog was removed; Continue
+  // now saves immediately and returns to the policy detail view.
+  test('adding employees from the detail view saves immediately without a confirmation dialog', async ({
     page,
     scenario,
   }) => {
@@ -38,7 +38,6 @@ test.describe('TimeOffFlow - add employees edge cases', () => {
       test.skip(true, 'Need at least one additional unenrolled employee in the seeded company')
     }
 
-    // Pick the first selectable unenrolled row.
     let selected = false
     for (let i = 1; i < rowCount; i++) {
       const rowCheckbox = dataRows.nth(i).getByRole('checkbox').first()
@@ -52,9 +51,12 @@ test.describe('TimeOffFlow - add employees edge cases', () => {
 
     await page.getByRole('button', { name: /^continue$/i }).click()
 
-    const dialog = page.getByRole('dialog').filter({ hasText: /add.*to this policy/i })
-    await expect(dialog).toBeVisible({ timeout: 10_000 })
-    await expect(dialog.getByRole('button', { name: /add and save/i })).toBeVisible()
+    await expect(page.getByRole('heading', { name: new RegExp(policyName, 'i') })).toBeVisible({
+      timeout: 30_000,
+    })
+    await expect(page.getByRole('dialog').filter({ hasText: /add.*to this policy/i })).toHaveCount(
+      0,
+    )
   })
 
   // QA issue reporter: Aaron Rosen

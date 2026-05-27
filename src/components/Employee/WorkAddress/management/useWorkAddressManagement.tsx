@@ -139,12 +139,17 @@ export function useWorkAddressManagement({
     return employeeWorkAddresses.find(w => w.uuid === editTargetUuid)
   }, [editTargetUuid, employeeWorkAddresses])
 
+  const editingWorkAddressRow = workAddressUuidForEdit
+    ? employeeWorkAddresses?.find(w => w.uuid === workAddressUuidForEdit)
+    : undefined
+
   const withEffectiveDateOnEdit = editInactiveRow ? editInactiveRow.active !== true : false
 
   const editWorkAddressForm = useWorkAddressForm({
     companyId,
     employeeId,
     workAddressUuid: workAddressUuidForEdit,
+    initialAddress: editingWorkAddressRow,
     withEffectiveDateField: withEffectiveDateOnEdit,
   })
 

@@ -8,11 +8,13 @@ type DataViewColumn<T> =
       key: keyof T
       title: string | React.ReactNode
       render?: (item: T) => React.ReactNode
+      justify?: 'start' | 'end'
     }
   | {
       key?: string
       title: string | React.ReactNode
       render: (item: T) => React.ReactNode
+      justify?: 'start' | 'end'
     }
 
 type FooterKeys<T> = keyof T | string
