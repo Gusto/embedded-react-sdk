@@ -101,14 +101,15 @@ export function DocumentsView({ forms = [], isLoading = false, onViewForm }: Doc
 
   return (
     <Flex flexDirection="column" gap={24}>
-      <Components.Box header={<Components.BoxHeader title={t('documents.title')} />}>
-        <Flex flexDirection="column" gap={16}>
-          {isLoading ? (
-            <Loading />
-          ) : (
-            <DataView label={t('documents.listLabel')} {...formsDataView} />
-          )}
-        </Flex>
+      <Components.Box
+        withPadding={false}
+        header={<Components.BoxHeader title={t('documents.title')} />}
+      >
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <DataView label={t('documents.listLabel')} isWithinBox {...formsDataView} />
+        )}
       </Components.Box>
     </Flex>
   )
