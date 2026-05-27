@@ -7,8 +7,8 @@
   "selectAll": "Select all",
   "clearAriaLabel": "Clear selected employees",
   "clear": "Clear",
-  "searchPlaceholder": "Search employees",
-  "searchLabel": "Search employees",
+  "searchPlaceholder": "Search by name or department",
+  "searchLabel": "Search by name or department",
   "tableLabel": "Employees",
   "noSearchResults": "No employees found",
   "clearSearch": "Clear search"

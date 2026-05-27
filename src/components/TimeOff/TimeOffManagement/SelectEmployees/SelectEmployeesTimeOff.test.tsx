@@ -250,6 +250,24 @@ describe('SelectEmployeesTimeOff', () => {
     expect(screen.getByText('Alice Smith')).toBeInTheDocument()
   })
 
+  it('filters employees by department', async () => {
+    const user = userEvent.setup()
+    renderComponent()
+
+    await waitFor(() => {
+      expect(screen.getByText('Alice Smith')).toBeInTheDocument()
+    })
+
+    const input = screen.getByPlaceholderText('searchPlaceholder')
+    await user.type(input, 'Engineering')
+
+    await waitFor(() => {
+      expect(screen.queryByText('Bob Jones')).not.toBeInTheDocument()
+    })
+    expect(screen.getByText('Alice Smith')).toBeInTheDocument()
+    expect(screen.queryByText('Carol Davis')).not.toBeInTheDocument()
+  })
+
   it('fires TIME_OFF_ADD_EMPLOYEES_BACK when Back is clicked', async () => {
     const user = userEvent.setup()
     renderComponent()
