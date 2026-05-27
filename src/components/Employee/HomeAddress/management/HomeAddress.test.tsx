@@ -113,6 +113,36 @@ describe('HomeAddress', () => {
     expect(createResolver).not.toHaveBeenCalled()
   })
 
+  it('clears entered values when the Add address modal is closed and reopened', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<HomeAddress employeeId="employee-123" onEvent={onEvent} />)
+
+    await waitFor(
+      () => {
+        expect(screen.getByRole('button', { name: 'Change address' })).toBeInTheDocument()
+      },
+      { timeout: 5000 },
+    )
+
+    await user.click(screen.getByRole('button', { name: 'Change address' }))
+
+    const firstOpenDialog = await screen.findByRole('dialog')
+    const street1FirstOpen = within(firstOpenDialog).getByLabelText(/Street 1/i)
+    await user.type(street1FirstOpen, '999 Throwaway Lane')
+    expect(street1FirstOpen).toHaveValue('999 Throwaway Lane')
+
+    await user.click(within(firstOpenDialog).getByRole('button', { name: 'Cancel' }))
+
+    await waitFor(() => {
+      expect(screen.queryByRole('heading', { name: 'Add a new home address' })).toBeNull()
+    })
+
+    await user.click(screen.getByRole('button', { name: 'Change address' }))
+
+    const reopenedDialog = await screen.findByRole('dialog')
+    expect(within(reopenedDialog).getByLabelText(/Street 1/i)).toHaveValue('')
+  })
+
   it('opens the edit modal for a history row without re-fetching that row individually', async () => {
     const user = userEvent.setup()
 
