@@ -55,7 +55,7 @@ export function BankForm({ employeeId, onEvent, ...hookProps }: BankFormProps) {
             label={t('accountNumberLabel')}
             validationMessages={{
               REQUIRED: t('validations.accountNumber'),
-              INVALID_ACCOUNT_NUMBER: t('validations.accountNumber'),
+              INVALID_ACCOUNT_NUMBER: t('validations.accountNumberFormat'),
             }}
           />
           <Fields.AccountType

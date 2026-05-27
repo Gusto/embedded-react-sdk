@@ -40,7 +40,6 @@ export type HomeAddressFormOutputs = HomeAddressFormData
 
 const requiredFieldsConfig = {
   street2: 'never',
-  effectiveDate: 'never',
 } satisfies RequiredFieldConfig<typeof fieldValidators>
 
 // ── Schema factory ─────────────────────────────────────────────────────

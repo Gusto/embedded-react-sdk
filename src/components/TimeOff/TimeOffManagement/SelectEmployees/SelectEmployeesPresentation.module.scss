@@ -1,7 +1,3 @@
 .balanceInput {
   width: toRem(120);
-
-  :global(.react-aria-Cell) & {
-    margin-left: auto;
-  }
 }

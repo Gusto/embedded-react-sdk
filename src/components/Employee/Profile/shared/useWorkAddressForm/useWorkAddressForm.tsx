@@ -52,6 +52,11 @@ export interface UseWorkAddressFormProps {
    * When omitted, the form is in create mode (POST).
    */
   workAddressUuid?: string
+  /**
+   * Pre-loaded address matching `workAddressUuid`. When supplied, the form uses it directly
+   * instead of issuing a GET — useful when the parent already has the row from a list query.
+   */
+  initialAddress?: EmployeeWorkAddress
   withEffectiveDateField?: boolean
   optionalFieldsToRequire?: WorkAddressOptionalFieldsToRequire
   defaultValues?: Partial<WorkAddressFormData>
@@ -87,6 +92,7 @@ export function useWorkAddressForm({
   companyId,
   employeeId,
   workAddressUuid,
+  initialAddress,
   withEffectiveDateField = true,
   optionalFieldsToRequire,
   defaultValues: partnerDefaults,
@@ -95,9 +101,11 @@ export function useWorkAddressForm({
 }: UseWorkAddressFormProps): HookLoadingResult | UseWorkAddressFormReady {
   const locationsQuery = useLocationsGet({ companyId: companyId ?? '' }, { enabled: !!companyId })
 
+  const hasInitialAddressMatch = !!workAddressUuid && initialAddress?.uuid === workAddressUuid
+
   const retrieveWorkAddressQuery = useEmployeeAddressesRetrieveWorkAddress(
     { workAddressUuid: workAddressUuid ?? '' },
-    { enabled: !!workAddressUuid },
+    { enabled: !!workAddressUuid && !hasInitialAddressMatch },
   )
 
   const companyLocations = locationsQuery.data?.companyLocationsList
@@ -105,7 +113,9 @@ export function useWorkAddressForm({
   const isCreateMode = !workAddressUuid
 
   const fetchedWorkAddress = workAddressUuid
-    ? retrieveWorkAddressQuery.data?.employeeWorkAddress
+    ? hasInitialAddressMatch
+      ? initialAddress
+      : retrieveWorkAddressQuery.data?.employeeWorkAddress
     : undefined
 
   const schemaMode = isCreateMode ? 'create' : 'update'

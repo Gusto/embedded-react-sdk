@@ -150,7 +150,8 @@
     "state": {
       "title": "State taxes",
       "editCta": "Edit",
-      "noStateTaxes": "No state taxes on file"
+      "noStateTaxes": "No state taxes on file",
+      "noWithholdingForState": "No state income tax withholding required."
     }
   },
   "documents": {

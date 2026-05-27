@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
 import { payrollsGetPayStub } from '@gusto/embedded-api/funcs/payrollsGetPayStub'
@@ -244,9 +244,22 @@ export function JobAndPayView({
   const newJobPendingChanges = pendingChanges.filter(c => c.isNewJob)
   const updatePendingChanges = pendingChanges.filter(c => !c.isNewJob)
 
+  useEffect(() => {
+    if (updatePendingChanges.length === 0) {
+      setIsReviewOpen(false)
+    }
+  }, [updatePendingChanges.length])
+
   const pendingNewJobUuids = new Set(newJobPendingChanges.map(c => c.jobUuid))
   const singleJobIsPendingNew = singleJob ? pendingNewJobUuids.has(singleJob.uuid) : false
   const hasAnyPendingNewJobs = pendingNewJobUuids.size > 0
+
+  // Jobs with a future-dated comp stacked on a current comp ("pending update"
+  // as opposed to "pending new job"). Editing while one is queued would just
+  // stack another future comp on top — confusing UX. Hide Edit until the
+  // existing pending change is cancelled or it goes into effect.
+  const pendingUpdateJobUuids = new Set(updatePendingChanges.map(c => c.jobUuid))
+  const singleJobHasPendingUpdate = singleJob ? pendingUpdateJobUuids.has(singleJob.uuid) : false
 
   const hasPendingUpdates = updatePendingChanges.length > 0
   const showSummaryAlert = hasMultipleJobs && updatePendingChanges.length > 1
@@ -349,32 +362,41 @@ export function JobAndPayView({
   const jobsDataView = useDataView({
     data: jobs,
     columns: jobsColumns,
-    itemMenu: (job: Job) => (
-      <HamburgerMenu
-        triggerLabel={t('jobAndPay.compensation.hamburgerTitle')}
-        isLoading={isDeletingJob}
-        items={[
-          {
-            label: t('jobAndPay.compensation.editJobCta'),
-            icon: <PencilSvg aria-hidden />,
-            onClick: () => {
-              onEditCompensation?.(job)
-            },
-          },
-          ...(!job.primary
-            ? [
-                {
-                  label: t('jobAndPay.compensation.deleteJobCta'),
-                  icon: <TrashCanSvg aria-hidden />,
-                  onClick: () => {
-                    setPendingDeleteJob({ uuid: job.uuid, title: job.title ?? '' })
-                  },
+    itemMenu: (job: Job) => {
+      const jobHasPendingUpdate = pendingUpdateJobUuids.has(job.uuid)
+      const items = [
+        ...(jobHasPendingUpdate
+          ? []
+          : [
+              {
+                label: t('jobAndPay.compensation.editJobCta'),
+                icon: <PencilSvg aria-hidden />,
+                onClick: () => {
+                  onEditCompensation?.(job)
                 },
-              ]
-            : []),
-        ]}
-      />
-    ),
+              },
+            ]),
+        ...(!job.primary
+          ? [
+              {
+                label: t('jobAndPay.compensation.deleteJobCta'),
+                icon: <TrashCanSvg aria-hidden />,
+                onClick: () => {
+                  setPendingDeleteJob({ uuid: job.uuid, title: job.title ?? '' })
+                },
+              },
+            ]
+          : []),
+      ]
+      if (items.length === 0) return null
+      return (
+        <HamburgerMenu
+          triggerLabel={t('jobAndPay.compensation.hamburgerTitle')}
+          isLoading={isDeletingJob}
+          items={items}
+        />
+      )
+    },
   })
 
   const bankAccountsColumns = [
@@ -562,14 +584,16 @@ export function JobAndPayView({
                 // so we don't surface an "Add job" CTA against an
                 // employee who already has one.
                 isCompensationCardLoading ? null : hasMultipleJobs ? null : singleJob ? (
-                  <Components.Button
-                    variant="secondary"
-                    onClick={() => {
-                      onEditCompensation?.(singleJob)
-                    }}
-                  >
-                    {t('jobAndPay.compensation.editCta')}
-                  </Components.Button>
+                  singleJobHasPendingUpdate ? null : (
+                    <Components.Button
+                      variant="secondary"
+                      onClick={() => {
+                        onEditCompensation?.(singleJob)
+                      }}
+                    >
+                      {t('jobAndPay.compensation.editCta')}
+                    </Components.Button>
+                  )
                 ) : (
                   <Components.Button
                     variant="secondary"
