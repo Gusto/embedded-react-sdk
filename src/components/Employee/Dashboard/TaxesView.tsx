@@ -74,8 +74,11 @@ export function TaxesView({
   onEditStateTaxes,
 }: TaxesViewProps) {
   const { t } = useTranslation('Employee.Dashboard')
+  const { t: tCommon } = useTranslation('common')
   const Components = useComponentContext()
   const formatCurrency = useNumberFormatter('currency')
+
+  const stateTaxesHaveAnyQuestions = !!stateTaxes?.some(s => (s.questions?.length ?? 0) > 0)
 
   // Helper function to format state tax answer values
   const formatStateTaxAnswer = (
@@ -218,13 +221,15 @@ export function TaxesView({
           <Components.BoxHeader
             title={t('taxes.state.title')}
             action={
-              <Components.Button
-                variant="secondary"
-                onClick={onEditStateTaxes}
-                isDisabled={isStateTaxesLoading}
-              >
-                {t('taxes.state.editCta')}
-              </Components.Button>
+              isStateTaxesLoading || stateTaxesHaveAnyQuestions ? (
+                <Components.Button
+                  variant="secondary"
+                  onClick={onEditStateTaxes}
+                  isDisabled={isStateTaxesLoading}
+                >
+                  {t('taxes.state.editCta')}
+                </Components.Button>
+              ) : undefined
             }
           />
         }
@@ -234,29 +239,43 @@ export function TaxesView({
             <Loading />
           ) : stateTaxes && stateTaxes.length > 0 ? (
             <Flex flexDirection="column" gap={24}>
-              {stateTaxes.map((stateTax, index) => (
-                <Flex key={stateTax.state || index} flexDirection="column" gap={16}>
-                  <Components.Heading as="h4">{stateTax.state}</Components.Heading>
+              {stateTaxes.map((stateTax, index) => {
+                const stateName = stateTax.state
+                  ? tCommon(`statesHash.${stateTax.state}`, stateTax.state)
+                  : ''
+                const hasQuestions = (stateTax.questions?.length ?? 0) > 0
+                return (
+                  <Flex key={stateTax.state || index} flexDirection="column" gap={16}>
+                    {stateName ? (
+                      <Components.Heading as="h4">{stateName}</Components.Heading>
+                    ) : null}
 
-                  {stateTax.questions && stateTax.questions.length > 0 && (
-                    <Flex flexDirection="column" gap={12}>
-                      {stateTax.questions.map((question, qIndex) => {
-                        const answer = question.answers[0]?.value
-                        if (answer === null || answer === undefined) return null
+                    {hasQuestions ? (
+                      <Flex flexDirection="column" gap={12}>
+                        {stateTax.questions!.map((question, qIndex) => {
+                          const answer = question.answers[0]?.value
+                          if (answer === null || answer === undefined) return null
 
-                        return (
-                          <Flex key={question.key || qIndex} flexDirection="column" gap={0}>
-                            <Components.Text variant="supporting">{question.label}</Components.Text>
-                            <Components.Text>
-                              {formatStateTaxAnswer(question, answer)}
-                            </Components.Text>
-                          </Flex>
-                        )
-                      })}
-                    </Flex>
-                  )}
-                </Flex>
-              ))}
+                          return (
+                            <Flex key={question.key || qIndex} flexDirection="column" gap={0}>
+                              <Components.Text variant="supporting">
+                                {question.label}
+                              </Components.Text>
+                              <Components.Text>
+                                {formatStateTaxAnswer(question, answer)}
+                              </Components.Text>
+                            </Flex>
+                          )
+                        })}
+                      </Flex>
+                    ) : (
+                      <Components.Text variant="supporting">
+                        {t('taxes.state.noWithholdingForState')}
+                      </Components.Text>
+                    )}
+                  </Flex>
+                )
+              })}
             </Flex>
           ) : (
             <Components.Text>{t('taxes.state.noStateTaxes')}</Components.Text>
