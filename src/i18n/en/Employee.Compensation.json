@@ -53,13 +53,6 @@
     "jobTitleLabel": "Job title",
     "wageLabel": "Wage",
     "wageFrequencyLabel": "Wage frequency",
-    "wageFrequencyOptions": {
-      "Hour": "Hourly",
-      "Week": "Weekly",
-      "Month": "Monthly",
-      "Year": "Annually",
-      "Paycheck": "Per paycheck"
-    },
     "hireDateLabel": "Hire date",
     "twoPercentShareholderLabel": "This employee is a 2% shareholder",
     "saveCta": "Save"
