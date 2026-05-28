@@ -257,17 +257,6 @@ function SelectEmployeesTimeOffInner({
     await submitAdd(toAdd)
   }, [mode, selectedUuids, onEvent, submitAdd])
 
-  const showReassignmentWarning = useMemo(() => {
-    const targetPtoName = PAID_TIME_OFF_NAME_BY_POLICY_TYPE[policyType]
-    for (const uuid of selectedUuids) {
-      const employee = selectedEmployeesRef.current.get(uuid)
-      if (employee?.eligiblePaidTimeOff?.some(pto => pto.name === targetPtoName)) {
-        return true
-      }
-    }
-    return false
-  }, [selectedUuids, policyType])
-
   const handleBack = useCallback(() => {
     onEvent(componentEvents.TIME_OFF_ADD_EMPLOYEES_BACK)
   }, [onEvent])
@@ -283,8 +272,6 @@ function SelectEmployeesTimeOffInner({
       onSearchClear={handleSearchClear}
       onBack={handleBack}
       onContinue={handleContinue}
-      showReassignmentWarning={showReassignmentWarning}
-      policyTypeLabel={t(`policyTypeLabel_${policyType}`)}
       balances={hideBalances ? undefined : effectiveBalances}
       onBalanceChange={hideBalances ? undefined : handleBalanceChange}
       pagination={pagination}

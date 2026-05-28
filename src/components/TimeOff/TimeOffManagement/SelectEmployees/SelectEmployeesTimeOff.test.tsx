@@ -205,30 +205,13 @@ describe('SelectEmployeesTimeOff', () => {
     expect(screen.getByText('Design')).toBeInTheDocument()
   })
 
-  it('shows reassignment warning alert when selecting employee with existing PTO', async () => {
+  it('always shows the reassignment warning alert, regardless of selection', async () => {
     renderComponent()
     await waitFor(() => {
       expect(screen.getByText('Alice Smith')).toBeInTheDocument()
     })
 
-    const checkboxes = screen.getAllByRole('checkbox')
-    fireEvent.click(checkboxes[FIRST_EMPLOYEE_CHECKBOX]!)
-
-    await waitFor(() => {
-      expect(screen.getByText('reassignmentWarning')).toBeInTheDocument()
-    })
-  })
-
-  it('does not show reassignment warning for employee without existing PTO', async () => {
-    renderComponent()
-    await waitFor(() => {
-      expect(screen.getByText('Carol Davis')).toBeInTheDocument()
-    })
-
-    const checkboxes = screen.getAllByRole('checkbox')
-    fireEvent.click(checkboxes[checkboxes.length - 1]!)
-
-    expect(screen.queryByText('reassignmentWarning')).not.toBeInTheDocument()
+    expect(screen.getByText('reassignmentWarning')).toBeInTheDocument()
   })
 
   it('filters employees by search value', async () => {
