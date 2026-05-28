@@ -408,14 +408,20 @@ export function useCompensationForm({
     resetOptions: { keepDirtyValues: true },
   })
 
-  const { control, getValues, setValue } = formMethods
+  const { control, getValues, setValue, clearErrors } = formMethods
   const watchedFlsaStatus = useWatch({ control, name: 'flsaStatus' })
   const watchedAdjustForMinimumWage = useWatch({
     control,
     name: 'adjustForMinimumWage',
   })
 
+  // Validation rules for `paymentUnit` and `rate` are FLSA-driven, so any
+  // prior error on those fields is stale once FLSA changes. RHF doesn't clear
+  // them on its own (`setValue` without `shouldValidate` skips the resolver,
+  // and reValidate is per-field) — clear eagerly and let the next blur/submit
+  // re-establish the error if it still applies.
   useEffect(() => {
+    clearErrors(['paymentUnit', 'rate'])
     if (watchedFlsaStatus === FlsaStatus.OWNER) {
       setValue('paymentUnit', PAY_PERIODS.PAYCHECK)
     } else if (
@@ -427,7 +433,7 @@ export function useCompensationForm({
     } else {
       setValue('paymentUnit', resolvedDefaults.paymentUnit)
     }
-  }, [watchedFlsaStatus, setValue, resolvedDefaults.paymentUnit])
+  }, [watchedFlsaStatus, setValue, clearErrors, resolvedDefaults.paymentUnit])
 
   // The FLSA status that represents the employee's current classification.
   // In update mode this is the compensation being edited. In create mode
@@ -526,7 +532,10 @@ export function useCompensationForm({
     if (getValues('minimumWageId')) {
       setValue('minimumWageId', '', { shouldDirty: true, shouldValidate: false })
     }
-  }, [isAdjustMinimumWageEnabled, getValues, setValue])
+    // Both fields stop rendering once the gate closes — clear errors so a
+    // stale one doesn't silently fail the next submit with no visible UI to fix.
+    clearErrors(['adjustForMinimumWage', 'minimumWageId'])
+  }, [isAdjustMinimumWageEnabled, getValues, setValue, clearErrors])
 
   const minimumWageOptions = minimumWages.map(wage => ({
     value: wage.uuid,

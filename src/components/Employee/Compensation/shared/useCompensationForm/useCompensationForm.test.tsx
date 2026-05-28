@@ -882,6 +882,240 @@ describe('useCompensationForm', () => {
         expect(result.current.form.Fields.MinimumWageId).toBeUndefined()
       })
     })
+
+    it('clears stale rate error when FLSA changes to Commission Only (rate becomes hook-forced and disabled)', async () => {
+      // Repro: partner submits with Exempt + below-threshold rate → schema fires
+      // RATE_EXEMPT_THRESHOLD on `rate`. Partner then changes FLSA to Commission
+      // Only — the hook forces rate=0 and marks the field disabled, so the stale
+      // "must meet salary threshold" message no longer applies and should clear.
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'singleExempt' })),
+        ),
+      )
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+            compensationId: 'compensation-uuid',
+          }),
+        { wrapper: GustoTestProvider },
+      )
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+      const { formMethods } = result.current.form.hookFormInternals
+
+      act(() => {
+        formMethods.setValue('rate', 50)
+      })
+      await act(async () => {
+        await formMethods.trigger()
+      })
+      expect(formMethods.getFieldState('rate').error?.message).toBe(
+        CompensationErrorCodes.RATE_EXEMPT_THRESHOLD,
+      )
+
+      act(() => {
+        formMethods.setValue('flsaStatus', FlsaStatus.COMMISSION_ONLY_NONEXEMPT)
+      })
+
+      await waitFor(() => {
+        expect(formMethods.getValues('rate')).toBe(0)
+        expect(formMethods.getFieldState('rate').error).toBeUndefined()
+      })
+    })
+
+    it('clears stale paymentUnit error when FLSA changes to a value that hook-forces paymentUnit', async () => {
+      // Setup: get the form into a state where paymentUnit has a stale validation
+      // error (PAYMENT_UNIT_OWNER) — set FLSA to Owner so the hook auto-forces
+      // paymentUnit to Paycheck, then override paymentUnit to Hour before
+      // triggering validation. Then flip FLSA to Commission Only, which forces
+      // paymentUnit to Year and disables the field. The stale error must clear.
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'singleExempt' })),
+        ),
+      )
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+            compensationId: 'compensation-uuid',
+          }),
+        { wrapper: GustoTestProvider },
+      )
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+      const { formMethods } = result.current.form.hookFormInternals
+
+      // Trip the Owner branch so paymentUnit's auto-force effect runs and settles,
+      // then override paymentUnit manually so trigger() produces PAYMENT_UNIT_OWNER.
+      act(() => {
+        formMethods.setValue('flsaStatus', FlsaStatus.OWNER)
+      })
+      await waitFor(() => {
+        expect(formMethods.getValues('paymentUnit')).toBe(PAY_PERIODS.PAYCHECK)
+      })
+      act(() => {
+        formMethods.setValue('paymentUnit', PAY_PERIODS.HOUR)
+      })
+      await act(async () => {
+        await formMethods.trigger()
+      })
+      expect(formMethods.getFieldState('paymentUnit').error?.message).toBe(
+        CompensationErrorCodes.PAYMENT_UNIT_OWNER,
+      )
+
+      act(() => {
+        formMethods.setValue('flsaStatus', FlsaStatus.COMMISSION_ONLY_NONEXEMPT)
+      })
+
+      await waitFor(() => {
+        expect(formMethods.getValues('paymentUnit')).toBe(PAY_PERIODS.YEAR)
+        expect(formMethods.getFieldState('paymentUnit').error).toBeUndefined()
+      })
+    })
+
+    it('clears stale rate error when FLSA changes to another editable status that no longer triggers the error', async () => {
+      // Repro of the bug Marie flagged on the original PR: switching FLSA between
+      // two editable statuses (Exempt → Nonexempt) doesn't enter either of the
+      // hook-forced branches, but the validation rules are FLSA-dependent — so a
+      // RATE_EXEMPT_THRESHOLD error from when FLSA was Exempt should not linger
+      // once FLSA is Nonexempt and rate=50 is perfectly valid.
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'singleExempt' })),
+        ),
+      )
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+            compensationId: 'compensation-uuid',
+          }),
+        { wrapper: GustoTestProvider },
+      )
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+      const { formMethods } = result.current.form.hookFormInternals
+
+      act(() => {
+        formMethods.setValue('rate', 50)
+      })
+      await act(async () => {
+        await formMethods.trigger()
+      })
+      expect(formMethods.getFieldState('rate').error?.message).toBe(
+        CompensationErrorCodes.RATE_EXEMPT_THRESHOLD,
+      )
+
+      act(() => {
+        formMethods.setValue('flsaStatus', FlsaStatus.NONEXEMPT)
+      })
+
+      await waitFor(() => {
+        // rate=50 is valid for Nonexempt (passes the `rate >= 1` minimum), so
+        // the stale RATE_EXEMPT_THRESHOLD message must clear.
+        expect(formMethods.getValues('rate')).toBe(50)
+        expect(formMethods.getFieldState('rate').error).toBeUndefined()
+      })
+    })
+
+    it('clears stale minimumWageId error when FLSA leaves Nonexempt (field is reset and hidden)', async () => {
+      // The min-wage gate closes when FLSA leaves Nonexempt — the hook resets
+      // adjustForMinimumWage/minimumWageId values and the fields stop rendering.
+      // Any stale REQUIRED error on minimumWageId from a prior submit must be
+      // cleared so it doesn't haunt the next submit attempt invisibly.
+      const minWageUuid = '70c523ff-c71e-4474-9c83-a4ea51bd54a8'
+      server.use(
+        // Default fixture work address is in AK (in TIP_CREDITS_UNSUPPORTED_STATES);
+        // override to TX so the min-wage gate can open.
+        http.get(`${API_BASE_URL}/v1/employees/:employee_id/work_addresses`, () =>
+          HttpResponse.json([
+            {
+              uuid: 'wa-uuid',
+              employee_uuid: 'employee-uuid',
+              location_uuid: 'tx-loc-uuid',
+              effective_date: '2024-01-01',
+              active: true,
+              version: 'wa-v1',
+              street_1: '100 Congress',
+              street_2: '',
+              city: 'Austin',
+              state: 'TX',
+              zip: '78701',
+              country: 'USA',
+            },
+          ]),
+        ),
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json([
+            buildJob({
+              uuid: 'job-uuid',
+              flsaStatus: FlsaStatus.NONEXEMPT,
+              compensations: [
+                buildCompensation({
+                  uuid: 'compensation-uuid',
+                  flsa_status: FlsaStatus.NONEXEMPT,
+                  adjust_for_minimum_wage: true,
+                  minimum_wages: [{ uuid: minWageUuid }],
+                }),
+              ],
+            }),
+          ]),
+        ),
+      )
+
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+            compensationId: 'compensation-uuid',
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+      const { formMethods } = result.current.form.hookFormInternals
+
+      await waitFor(() => {
+        if (result.current.isLoading) throw new Error('still loading')
+        expect(result.current.form.Fields.AdjustForMinimumWage).toBeDefined()
+        expect(result.current.form.Fields.MinimumWageId).toBeDefined()
+      })
+
+      act(() => {
+        formMethods.setValue('minimumWageId', '')
+      })
+      await act(async () => {
+        await formMethods.trigger()
+      })
+      expect(formMethods.getFieldState('minimumWageId').error?.message).toBe(
+        CompensationErrorCodes.REQUIRED,
+      )
+
+      act(() => {
+        formMethods.setValue('flsaStatus', FlsaStatus.EXEMPT)
+      })
+
+      await waitFor(() => {
+        expect(formMethods.getValues('minimumWageId')).toBe('')
+        expect(formMethods.getFieldState('minimumWageId').error).toBeUndefined()
+      })
+    })
   })
 
   describe('FLSA field availability', () => {
