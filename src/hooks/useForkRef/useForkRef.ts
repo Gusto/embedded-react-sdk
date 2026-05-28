@@ -10,6 +10,7 @@ const setRef = <T>(
 
 /**
  * Sets multiple refs with a single handler.
+ *
  * @param refs - The refs to set.
  * @returns A single ref handler that sets all the provided refs which can be passed to the `ref` prop of a component.
  */
