@@ -5,16 +5,7 @@
     margin-bottom: toRem(16);
   }
 
-  dt {
-    font-size: toRem(16);
-    font-weight: var(--g-fontWeightMedium);
-    color: var(--g-colorBodyContent);
-  }
-
   dd {
-    font-size: toRem(16);
-    font-weight: var(--g-fontWeightRegular);
-    color: var(--g-colorBodySubContent);
     margin-inline-start: 0;
   }
 

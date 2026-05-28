@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import { type DescriptionListProps, DescriptionListDefaults } from './DescriptionListTypes'
 import styles from './DescriptionList.module.scss'
 import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
+import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
 export function DescriptionList(rawProps: DescriptionListProps) {
   const resolvedProps = applyMissingDefaults(rawProps, DescriptionListDefaults)
@@ -18,6 +19,8 @@ export function DescriptionList(rawProps: DescriptionListProps) {
     return descriptions.map((d, i) => <dd key={i}>{d}</dd>)
   }
 
+  const Components = useComponentContext()
+
   return (
     <dl
       className={classNames(styles.root, showSeparators && styles.withSeparators, className)}
@@ -25,8 +28,10 @@ export function DescriptionList(rawProps: DescriptionListProps) {
     >
       {items.map((item, index) => (
         <div key={index} className={styles.item}>
-          {renderTerms(item.term)}
-          {renderDescriptions(item.description)}
+          <Components.Text weight="medium">{renderTerms(item.term)}</Components.Text>
+          <Components.Text variant="supporting">
+            {renderDescriptions(item.description)}
+          </Components.Text>
         </div>
       ))}
     </dl>

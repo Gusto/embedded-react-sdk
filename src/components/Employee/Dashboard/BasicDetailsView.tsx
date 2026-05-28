@@ -141,11 +141,12 @@ export function BasicDetailsView({
             <Loading />
           ) : currentHomeAddress ? (
             <Flex flexDirection="column" gap={0}>
-              <Components.Text variant="supporting">
-                {t('homeAddress.currentAddress')}
+              <Components.Text weight="medium">
+                {getStreet(currentHomeAddress).replace(',', '')}
               </Components.Text>
-              <Components.Text>{getStreet(currentHomeAddress).replace(',', '')}</Components.Text>
-              <Components.Text>{getCityStateZip(currentHomeAddress)}</Components.Text>
+              <Components.Text variant="supporting">
+                {getCityStateZip(currentHomeAddress)}
+              </Components.Text>
             </Flex>
           ) : (
             <Components.Text>{t('homeAddress.noAddress')}</Components.Text>
@@ -174,14 +175,11 @@ export function BasicDetailsView({
             <Loading />
           ) : currentWorkAddress ? (
             <Flex flexDirection="column" gap={0}>
-              <Components.Text variant="supporting">
-                {t('workAddress.currentAddress')}
-              </Components.Text>
-              <Components.Text>
+              <Components.Text weight="medium">
                 {currentWorkAddress.street1}
                 {currentWorkAddress.street2 ? `, ${currentWorkAddress.street2}` : ''}
               </Components.Text>
-              <Components.Text>
+              <Components.Text variant="supporting">
                 {currentWorkAddress.city}, {currentWorkAddress.state} {currentWorkAddress.zip}
               </Components.Text>
             </Flex>
