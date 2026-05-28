@@ -32,7 +32,6 @@ export function TimeOffPolicyDetailPresentation({
 }: TimeOffPolicyDetailPresentationProps) {
   useI18n('Company.TimeOff.TimeOffPolicyDetails')
   const { t } = useTranslation('Company.TimeOff.TimeOffPolicyDetails')
-  const { Text } = useComponentContext()
 
   const isUnlimited = policyDetails.accrualMethod === 'unlimited'
 
@@ -44,12 +43,10 @@ export function TimeOffPolicyDetailPresentation({
             {
               key: 'balance' as keyof TimeOffPolicyDetailEmployee,
               title: t('employeeTable.balance'),
-              render: (item: TimeOffPolicyDetailEmployee) => (
-                <Text as="span">{item.balance ?? '-'}</Text>
-              ),
+              render: (item: TimeOffPolicyDetailEmployee) => item.balance ?? '-',
             },
           ],
-    [t, isUnlimited, Text],
+    [t, isUnlimited],
   )
 
   const detailsTabContent = (
