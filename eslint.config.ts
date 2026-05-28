@@ -3,7 +3,7 @@ import storybook from 'eslint-plugin-storybook'
 
 import globals from 'globals'
 import pluginJs from '@eslint/js'
-import tseslint from 'typescript-eslint'
+import tseslint, { Config } from 'typescript-eslint'
 import pluginReact from 'eslint-plugin-react'
 import jsxA11y from 'eslint-plugin-jsx-a11y'
 import pluginReactHooks from 'eslint-plugin-react-hooks'
@@ -155,4 +155,4 @@ export default [
   },
 
   ...storybook.configs['flat/recommended'],
-]
+] satisfies Config
