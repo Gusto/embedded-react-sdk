@@ -57,8 +57,11 @@ async function main() {
   const zpEnvInput = envArg?.split('=')[1] || process.env.npm_config_env || 'demo'
   const zpEnv = zpEnvInput === 'local' ? 'localzp' : zpEnvInput
 
-  console.log(`\n  SDK Dev App`)
-  console.log(`  Build: ${sdkBuild} | Environment: ${zpEnvInput}\n`)
+  execSync('node ./build/prompt.js', { stdio: 'inherit', cwd: ROOT_DIR })
+
+  const dim = '\x1b[2m'
+  const reset = '\x1b[0m'
+  console.log(`${dim}  Build: ${sdkBuild}  ·  Environment: ${zpEnvInput}${reset}\n`)
 
   try {
     execSync('npx tsx sdk-app/scripts/analyze-component-props.ts', { cwd: ROOT_DIR, stdio: 'pipe' })
