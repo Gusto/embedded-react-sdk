@@ -50,7 +50,7 @@ export const buildBreadcrumbs = (nodes: BreadcrumbNodes): BreadcrumbTrail => {
 /**
  * Resolves template variables in breadcrumb labels using values from a context object.
  *
- * Supports Handlebars-style template syntax ({{variableName}}) for dynamic breadcrumb labels.
+ * Supports Handlebars-style template syntax (`{{variableName}}`) for dynamic breadcrumb labels.
  * Variables enclosed in double braces are replaced with their corresponding values from the context.
  * Non-template strings are returned as-is.
  */

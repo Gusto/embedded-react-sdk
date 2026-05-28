@@ -12,7 +12,7 @@ import { SPLIT_BY } from '@/shared/constants'
 /**
  * Validation codes a bound split-amount Field can emit at submit time:
  * `REQUIRED` (every non-remainder split must have a value), `INVALID_AMOUNT`
- * (Amount mode, value < 0), `INVALID_PERCENTAGE` (Percentage mode, non-integer
+ * (Amount mode, `value < 0`), `INVALID_PERCENTAGE` (Percentage mode, non-integer
  * or out of `0..100`). Supply translations for all three via `validationMessages`.
  * The sum-to-100 invariant is surfaced separately via `status.hasPercentageImbalance`.
  */

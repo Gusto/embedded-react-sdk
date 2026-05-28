@@ -4,18 +4,21 @@ import type { Transform } from '@/components/Common/Fields/hooks/useField'
  * Formats a string according to a specified mask pattern.
  * @param value - The input string to format
  * @param mask - The mask pattern where:
- *   # represents a digit (\d)
- *   @ represents a letter ([a-zA-Z])
- *   ^ represents an uppercase letter ([A-Z])
- *   % represents a digit or uppercase letter ([0-9A-Z])
+ *   `#` represents a digit (`\d`)
+ *   `@` represents a letter (`[a-zA-Z]`)
+ *   `^` represents an uppercase letter (`[A-Z]`)
+ *   `%` represents a digit or uppercase letter (`[0-9A-Z]`)
  *   any other character represents the literal character
  * @returns The formatted string according to the mask
+ *
  * @example
+ * ```ts
  * formatWithMask('123456789', '###-##-####') // returns '123-45-6789'
  * formatWithMask('ABC123', '@@@-###') // returns 'ABC-123'
  * formatWithMask('123456', '(###) ###-####') // returns '(123) 456'
  * formatWithMask('ABC123', '^^^-###') // returns 'ABC-123'
  * formatWithMask('A1B2C3', '%%%-%%%') // returns 'A1B-2C3'
+ * ```
  */
 export const formatWithMask = (value: string, mask: string | null): string => {
   if (!value || !mask) return value

@@ -205,7 +205,7 @@ Additional structural rules:
 - **Adding a secondary job** is allowed only when the primary's current FLSA is `Nonexempt` (or `Unknown`). This is enforced in `JobFacade` by `validate :only_hourly_employees_can_have_multiple_jobs, if: -> { action == :create }`, which checks `employee.flsa_status_on(Time.zone.today)` against `[FLSA_STATUS_NON_EXEMPT, FLSA_STATUS_UNKNOWN]`. Note: this validation runs **only on create**, so it cannot be retroactively triggered by editing an existing job.
 - **Switching primary from hourly to non-hourly** with active secondaries triggers `EmployeeJobCompensation`'s `before_validation :deactivate_other_jobs, if: -> { primary? && latest? && (switched_from_hourly? || pending_change_from_hourly?) }`, which auto-deactivates the secondaries on the comp save. There is also an `after_destroy :deactivate_other_jobs, if: -> { primary? && latest? && pending_change_to_hourly? }` for the destroy-a-pending-comp path.
 
-**Annualization formula for the Exempt $35,568 floor** (matches SDK's `yearlyRate` helper in [src/helpers/payRateCalculator.ts](../../src/helpers/payRateCalculator.ts), constants in `src/shared/constants.ts`):
+**Annualization formula for the Exempt $35,568 floor** (matches SDK's `yearlyRate` helper in `src/helpers/payRateCalculator.ts`, constants in `src/shared/constants.ts`):
 
 | `paymentUnit` | Annualized                                              |
 | ------------- | ------------------------------------------------------- |
@@ -744,7 +744,7 @@ These are places where the current SDK component would need explicit handling fo
 
 1. **PUT compensation has no `compensation_processed_on_payroll?` validator**. The risk is silent rewrite of the current row's history. For management, the SDK should require `effectiveDate` and route to POST when in the future; only PUT for the documented carve-out.
 2. **`useCompensationForm` (partner headless hook) is currently PUT-only**. Its `mode: 'create' | 'update'` flag controls validation requiredness, not API call routing. Management work needs to introduce a "create-future-comp" call (`useJobsAndCompensationsCreateCompensationMutation`).
-3. **The Dashboard fires `EMPLOYEE_COMPENSATION_CREATE`** ([src/components/Employee/Dashboard/Dashboard.tsx](../../src/components/Employee/Dashboard/Dashboard.tsx)) but the management editor itself is not yet built. Until it is, partners reusing `Compensation` for management will hit the silent-overwrite risk.
+3. **The Dashboard fires `EMPLOYEE_COMPENSATION_CREATE`** (`src/components/Employee/Dashboard/Dashboard.tsx`) but the management editor itself is not yet built. Until it is, partners reusing `Compensation` for management will hit the silent-overwrite risk.
 4. **No "switch primary" capability** in the public API. Both gws-flows and the SDK lack a primary-switch flow because the API itself doesn't expose one.
 5. **Job-only field changes** (`twoPercentShareholder`, `stateWcCovered`, `stateWcClassCode`) should be a separate UX surface from compensation-changing fields, since they have no effective-dating semantics. Today's `useCompensationForm` mixes them.
 
@@ -758,7 +758,7 @@ These are places where the current SDK component would need explicit handling fo
 - ZenPayroll models: [`EmployeeJob`](https://github.com/Gusto/zenpayroll/blob/main/packs/product_services/payroll/employee_jobs/app/models/employee_job.rb), [`EmployeeJobCompensation`](https://github.com/Gusto/zenpayroll/blob/main/packs/product_services/payroll/employee_jobs/app/models/employee_job_compensation.rb)
 - ZenPayroll facades: [`JobFacade`](https://github.com/Gusto/zenpayroll/blob/main/packs/product_services/gusto_embedded/partners_api/app/services/api/v1/facades/job_facade.rb), [`CompensationFacade`](https://github.com/Gusto/zenpayroll/blob/main/packs/product_services/gusto_embedded/partners_api/app/services/api/v1/facades/compensation_facade.rb)
 - ZenPayroll validators: [`Validators::CommissionOnly`](https://github.com/Gusto/zenpayroll/blob/main/packs/product_services/payroll/employee_jobs/app/services/validators/commission_only.rb), `ExemptSalaryThresholdValidator`
-- SDK component: [`src/components/Employee/Compensation/Compensation.tsx`](../../src/components/Employee/Compensation/Compensation.tsx)
-- SDK partner hook: [`src/components/Employee/Compensation/shared/useCompensationForm/useCompensationForm.tsx`](../../src/components/Employee/Compensation/shared/useCompensationForm/useCompensationForm.tsx)
+- SDK component: `src/components/Employee/Compensation/Compensation.tsx`
+- SDK partner hook: `src/components/Employee/Compensation/shared/useCompensationForm/useCompensationForm.tsx`
 - Public API docs: [Manage jobs and compensation](https://docs.gusto.com/embedded-payroll/docs/create-a-job-and-compensation), [Adjust for minimum wage](https://docs.gusto.com/embedded-payroll/docs/adjust-for-minimum-wage)
 - Internal product docs: [Steady State Management SDK — PRD](https://docs.google.com/document/d/10IY_m6F8l7j1BJ9_OjNc28I3BsNdIg4j6kGo_vHteio), [UAC — Employee Management Flow](https://docs.google.com/spreadsheets/d/1V3yaHhflxZ7UUuQycaksR-GBuPFqVrNRfArIgJ5GWY8)
