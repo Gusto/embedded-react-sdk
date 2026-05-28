@@ -314,14 +314,14 @@ export function JobAndPayView({
       render: (job: Job) => {
         const numericRate = parseJobRate(job.rate)
         return (
-          <Flex flexDirection="column" gap={0}>
-            <Components.Text>{job.title || '-'}</Components.Text>
+          <>
+            {job.title || '-'}
             {numericRate !== null && job.paymentUnit ? (
-              <Components.Text variant="supporting">
+              <Components.Text variant="supporting" size="sm">
                 {formatCompensationRate(numericRate, job.paymentUnit)}
               </Components.Text>
             ) : null}
-          </Flex>
+          </>
         )
       },
     },
