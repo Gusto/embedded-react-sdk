@@ -87,7 +87,7 @@ export default [
     rules: {
       '@typescript-eslint/consistent-type-imports': 'error',
       '@typescript-eslint/restrict-template-expressions': 'off',
-      '@typescript-eslint/no-unused-vars': 'off',
+      '@typescript-eslint/no-unused-vars': 'off', // TODO SDK-486: this override is load-bearing; removing it unmasked 35 violations across src/. Address in a dedicated cleanup PR.
       '@typescript-eslint/no-unnecessary-condition': ['error', { checkTypePredicates: true }],
       '@typescript-eslint/no-unnecessary-type-assertion': 'off', // TODO: fix instances; auto-fix in typescript-eslint 8.59 removes `as` casts that tsc still requires
       '@typescript-eslint/no-deprecated': 'off', // TODO: fix instances
@@ -97,8 +97,8 @@ export default [
       '@typescript-eslint/no-unsafe-assignment': 'off', // TODO: fix instances
       '@typescript-eslint/no-unsafe-member-access': 'off', // TODO: fix instances
       '@typescript-eslint/no-unsafe-return': 'off', // TODO: fix instances
-      '@typescript-eslint/no-unused-expressions': 'off', // TODO: fix instances
-      '@typescript-eslint/unified-signatures': 'off', // TODO: re-enable when bug is fixed in typescript-eslint
+      '@typescript-eslint/no-unused-expressions': 'error',
+      '@typescript-eslint/unified-signatures': 'error',
       'no-console': 'error',
 
       'no-restricted-imports': [

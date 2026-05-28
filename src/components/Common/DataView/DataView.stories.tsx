@@ -169,7 +169,11 @@ function useIdSelection<T extends { id: string }>(allData: T[]) {
       onSelect: (item: T, checked: boolean) => {
         setSelectedIds(prev => {
           const next = new Set(prev)
-          checked ? next.add(item.id) : next.delete(item.id)
+          if (checked) {
+            next.add(item.id)
+          } else {
+            next.delete(item.id)
+          }
           return next
         })
       },
@@ -278,7 +282,11 @@ export const DataViewSelectableWithPagination = () => {
     onSelect: (item: CompensationRow, checked: boolean) => {
       setSelectedIds(prev => {
         const next = new Set(prev)
-        checked ? next.add(item.id) : next.delete(item.id)
+        if (checked) {
+          next.add(item.id)
+        } else {
+          next.delete(item.id)
+        }
         return next
       })
     },
