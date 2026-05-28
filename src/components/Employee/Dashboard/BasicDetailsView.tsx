@@ -85,6 +85,16 @@ export function BasicDetailsView({
   const dateOfBirth = employee ? formatDateLongWithYear(employee.dateOfBirth) : undefined
   const maskedSsn = employee?.hasSsn ? 'XXX-XX-XXXX' : undefined
 
+  const basicDetailsItems = employee
+    ? [
+        { term: t('basicDetails.legalName'), description: legalName || '–' },
+        { term: t('basicDetails.startDate'), description: startDate || '–' },
+        { term: t('basicDetails.socialSecurityNumber'), description: maskedSsn || '–' },
+        { term: t('basicDetails.dateOfBirth'), description: dateOfBirth || '–' },
+        { term: t('basicDetails.personalEmail'), description: employee.email || '–' },
+      ]
+    : []
+
   return (
     <Flex flexDirection="column" gap={24}>
       <Components.Box
@@ -103,58 +113,11 @@ export function BasicDetailsView({
           />
         }
       >
-        <Flex flexDirection="column" gap={16}>
-          {isEmployeeLoading ? (
-            <Loading />
-          ) : employee ? (
-            <Flex flexDirection="column" gap={12}>
-              {legalName && (
-                <Flex flexDirection="column" gap={0}>
-                  <Components.Text variant="supporting">
-                    {t('basicDetails.legalName')}
-                  </Components.Text>
-                  <Components.Text>{legalName}</Components.Text>
-                </Flex>
-              )}
-
-              {startDate && (
-                <Flex flexDirection="column" gap={0}>
-                  <Components.Text variant="supporting">
-                    {t('basicDetails.startDate')}
-                  </Components.Text>
-                  <Components.Text>{startDate}</Components.Text>
-                </Flex>
-              )}
-
-              {maskedSsn && (
-                <Flex flexDirection="column" gap={0}>
-                  <Components.Text variant="supporting">
-                    {t('basicDetails.socialSecurityNumber')}
-                  </Components.Text>
-                  <Components.Text>{maskedSsn}</Components.Text>
-                </Flex>
-              )}
-
-              {dateOfBirth && (
-                <Flex flexDirection="column" gap={0}>
-                  <Components.Text variant="supporting">
-                    {t('basicDetails.dateOfBirth')}
-                  </Components.Text>
-                  <Components.Text>{dateOfBirth}</Components.Text>
-                </Flex>
-              )}
-
-              {employee.email && (
-                <Flex flexDirection="column" gap={0}>
-                  <Components.Text variant="supporting">
-                    {t('basicDetails.personalEmail')}
-                  </Components.Text>
-                  <Components.Text>{employee.email}</Components.Text>
-                </Flex>
-              )}
-            </Flex>
-          ) : null}
-        </Flex>
+        {isEmployeeLoading ? (
+          <Loading />
+        ) : employee ? (
+          <Components.DescriptionList items={basicDetailsItems} />
+        ) : null}
       </Components.Box>
 
       <Components.Box
