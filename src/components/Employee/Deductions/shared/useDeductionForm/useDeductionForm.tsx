@@ -65,9 +65,9 @@ export interface UseDeductionFormProps {
    */
   garnishmentId?: string
   /**
-   * Court-ordered deductions are stored as garnishments with `courtOrdered:
-   * true` and require a `garnishmentType` (Federal Tax Lien, Student Loan,
-   * etc.). When `false`, the form is for a "custom" post-tax deduction —
+   * Court-ordered deductions are stored as garnishments with `courtOrdered: true`
+   * and require a `garnishmentType` (Federal Tax Lien, Student Loan, etc.).
+   * When `false`, the form is for a "custom" post-tax deduction —
    * `garnishmentType` is excluded from the schema and submit payload.
    *
    * Note: this hook does NOT handle `garnishmentType: 'child_support'`. Use

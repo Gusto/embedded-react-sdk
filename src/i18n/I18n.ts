@@ -23,9 +23,9 @@ function resolveTranslationLoader(lng: string | undefined, ns: string) {
 const resourceCache = new LRUCache(50)
 /**
  * Dynamic loading of translation resources - works with Suspence to prevent early access to loadable strings
- * @param lng(string): resource language
- * @param ns(string): Namespace/name of the component/resource
- * @returns Promise<Translation resource>
+ * @param lng - resource language
+ * @param ns - Namespace/name of the component/resource
+ * @returns translation resource
  */
 const loadResource = ({ lng = 'en', ns }: { ns: string; lng?: string }) => {
   let isLoading = true
@@ -62,7 +62,8 @@ const loadResource = ({ lng = 'en', ns }: { ns: string; lng?: string }) => {
 
 /**
  * Hook that allows component to load custom dictionary
- * @param @private {string} ns - Namespace - should match component name exactly - not exposed to consumers
+ * @param ns - Namespace - should match component name exactly - not exposed to consumers
+ * @internal
  */
 export const useI18n = (
   namespaces:
