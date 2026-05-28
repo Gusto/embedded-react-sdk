@@ -9,17 +9,29 @@ export function DescriptionList(rawProps: DescriptionListProps) {
   const resolvedProps = applyMissingDefaults(rawProps, DescriptionListDefaults)
   const { items, layout, showSeparators, className } = resolvedProps
 
+  const Components = useComponentContext()
+
   const renderTerms = (term: ReactNode | ReactNode[]) => {
     const terms = Array.isArray(term) ? term : [term]
-    return terms.map((t, i) => <dt key={i}>{t}</dt>)
+    return terms.map((t, i) => (
+      <dt key={i}>
+        <Components.Text as="span" weight="medium">
+          {t}
+        </Components.Text>
+      </dt>
+    ))
   }
 
   const renderDescriptions = (description: ReactNode | ReactNode[]) => {
     const descriptions = Array.isArray(description) ? description : [description]
-    return descriptions.map((d, i) => <dd key={i}>{d}</dd>)
+    return descriptions.map((d, i) => (
+      <dd key={i}>
+        <Components.Text as="span" variant="supporting">
+          {d}
+        </Components.Text>
+      </dd>
+    ))
   }
-
-  const Components = useComponentContext()
 
   return (
     <dl
@@ -28,10 +40,8 @@ export function DescriptionList(rawProps: DescriptionListProps) {
     >
       {items.map((item, index) => (
         <div key={index} className={styles.item}>
-          <Components.Text weight="medium">{renderTerms(item.term)}</Components.Text>
-          <Components.Text variant="supporting">
-            {renderDescriptions(item.description)}
-          </Components.Text>
+          {renderTerms(item.term)}
+          {renderDescriptions(item.description)}
         </div>
       ))}
     </dl>

@@ -1,10 +1,11 @@
 import { describe, it, expect } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { screen } from '@testing-library/react'
 import { DescriptionList } from './DescriptionList'
+import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 describe('DescriptionList', () => {
   it('renders a description list with items', () => {
-    render(
+    renderWithProviders(
       <DescriptionList
         items={[
           { term: 'Term 1', description: 'Description 1' },
@@ -20,7 +21,7 @@ describe('DescriptionList', () => {
   })
 
   it('applies custom className', () => {
-    const { container } = render(
+    const { container } = renderWithProviders(
       <DescriptionList className="custom-class" items={[{ term: 'Term', description: 'Desc' }]} />,
     )
 
@@ -29,7 +30,7 @@ describe('DescriptionList', () => {
   })
 
   it('renders with ReactNode items', () => {
-    render(
+    renderWithProviders(
       <DescriptionList
         items={[
           {
@@ -45,7 +46,7 @@ describe('DescriptionList', () => {
   })
 
   it('renders empty list when items array is empty', () => {
-    const { container } = render(<DescriptionList items={[]} />)
+    const { container } = renderWithProviders(<DescriptionList items={[]} />)
 
     const dl = container.querySelector('dl')
     expect(dl).toBeInTheDocument()
@@ -53,7 +54,7 @@ describe('DescriptionList', () => {
   })
 
   it('renders multiple terms for one description', () => {
-    const { container } = render(
+    const { container } = renderWithProviders(
       <DescriptionList
         items={[
           {
@@ -76,7 +77,7 @@ describe('DescriptionList', () => {
   })
 
   it('renders one term with multiple descriptions', () => {
-    const { container } = render(
+    const { container } = renderWithProviders(
       <DescriptionList
         items={[
           {
@@ -98,7 +99,7 @@ describe('DescriptionList', () => {
   })
 
   it('renders mixed patterns of terms and descriptions', () => {
-    const { container } = render(
+    const { container } = renderWithProviders(
       <DescriptionList
         items={[
           { term: 'Single', description: 'Single' },
