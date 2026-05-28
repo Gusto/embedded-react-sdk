@@ -415,22 +415,21 @@ export function useCompensationForm({
     name: 'adjustForMinimumWage',
   })
 
-  // Forcing a value via `setValue` does not re-run validation (no
-  // `shouldValidate: true`) and won't trigger RHF's per-field reValidate cycle
-  // either, so any stale error already on the field would persist visibly even
-  // though the field is now hook-managed and disabled. Clear the affected fields'
-  // errors here so they don't outlive the condition that produced them.
+  // Validation rules for `paymentUnit` and `rate` are FLSA-driven, so any
+  // prior error on those fields is stale once FLSA changes. RHF doesn't clear
+  // them on its own (`setValue` without `shouldValidate` skips the resolver,
+  // and reValidate is per-field) — clear eagerly and let the next blur/submit
+  // re-establish the error if it still applies.
   useEffect(() => {
+    clearErrors(['paymentUnit', 'rate'])
     if (watchedFlsaStatus === FlsaStatus.OWNER) {
       setValue('paymentUnit', PAY_PERIODS.PAYCHECK)
-      clearErrors('paymentUnit')
     } else if (
       watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_NONEXEMPT ||
       watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT
     ) {
       setValue('paymentUnit', PAY_PERIODS.YEAR)
       setValue('rate', 0)
-      clearErrors(['paymentUnit', 'rate'])
     } else {
       setValue('paymentUnit', resolvedDefaults.paymentUnit)
     }
@@ -533,9 +532,8 @@ export function useCompensationForm({
     if (getValues('minimumWageId')) {
       setValue('minimumWageId', '', { shouldDirty: true, shouldValidate: false })
     }
-    // Once the gate closes, both fields stop rendering — without this, a stale
-    // error from a prior submit would linger in form state and silently fail the
-    // next submit attempt with no visible UI to fix it.
+    // Both fields stop rendering once the gate closes — clear errors so a
+    // stale one doesn't silently fail the next submit with no visible UI to fix.
     clearErrors(['adjustForMinimumWage', 'minimumWageId'])
   }, [isAdjustMinimumWageEnabled, getValues, setValue, clearErrors])
 

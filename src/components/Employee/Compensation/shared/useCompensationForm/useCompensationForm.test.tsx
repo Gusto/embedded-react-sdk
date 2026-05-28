@@ -982,6 +982,54 @@ describe('useCompensationForm', () => {
       })
     })
 
+    it('clears stale rate error when FLSA changes to another editable status that no longer triggers the error', async () => {
+      // Repro of the bug Marie flagged on the original PR: switching FLSA between
+      // two editable statuses (Exempt → Nonexempt) doesn't enter either of the
+      // hook-forced branches, but the validation rules are FLSA-dependent — so a
+      // RATE_EXEMPT_THRESHOLD error from when FLSA was Exempt should not linger
+      // once FLSA is Nonexempt and rate=50 is perfectly valid.
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'singleExempt' })),
+        ),
+      )
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+            compensationId: 'compensation-uuid',
+          }),
+        { wrapper: GustoTestProvider },
+      )
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+      const { formMethods } = result.current.form.hookFormInternals
+
+      act(() => {
+        formMethods.setValue('rate', 50)
+      })
+      await act(async () => {
+        await formMethods.trigger()
+      })
+      expect(formMethods.getFieldState('rate').error?.message).toBe(
+        CompensationErrorCodes.RATE_EXEMPT_THRESHOLD,
+      )
+
+      act(() => {
+        formMethods.setValue('flsaStatus', FlsaStatus.NONEXEMPT)
+      })
+
+      await waitFor(() => {
+        // rate=50 is valid for Nonexempt (passes the `rate >= 1` minimum), so
+        // the stale RATE_EXEMPT_THRESHOLD message must clear.
+        expect(formMethods.getValues('rate')).toBe(50)
+        expect(formMethods.getFieldState('rate').error).toBeUndefined()
+      })
+    })
+
     it('clears stale minimumWageId error when FLSA leaves Nonexempt (field is reset and hidden)', async () => {
       // The min-wage gate closes when FLSA leaves Nonexempt — the hook resets
       // adjustForMinimumWage/minimumWageId values and the fields stop rendering.
