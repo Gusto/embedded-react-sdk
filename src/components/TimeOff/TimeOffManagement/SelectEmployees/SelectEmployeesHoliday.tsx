@@ -146,7 +146,6 @@ function SelectEmployeesHolidayInner({
       onSearchClear={handleSearchClear}
       onBack={handleBack}
       onContinue={handleContinue}
-      showReassignmentWarning={false}
       isHolidayPolicy
       pagination={pagination}
       isFetching={isFetching}

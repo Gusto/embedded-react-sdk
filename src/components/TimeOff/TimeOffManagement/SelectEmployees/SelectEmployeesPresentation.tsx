@@ -22,9 +22,7 @@ export function SelectEmployeesPresentation({
   onSearchClear,
   onBack,
   onContinue,
-  showReassignmentWarning,
   isHolidayPolicy = false,
-  policyTypeLabel,
   balances,
   onBalanceChange,
   pagination,
@@ -46,9 +44,7 @@ export function SelectEmployeesPresentation({
         </Text>
       </Flex>
 
-      {showReassignmentWarning && (
-        <Alert status="warning" label={t('reassignmentWarning', { policyType: policyTypeLabel })} />
-      )}
+      {!isHolidayPolicy && <Alert status="warning" label={t('reassignmentWarning')} />}
 
       <EmployeeTable<EmployeeItem>
         data={employees}
