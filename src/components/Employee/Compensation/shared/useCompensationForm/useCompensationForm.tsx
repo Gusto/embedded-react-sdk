@@ -408,26 +408,33 @@ export function useCompensationForm({
     resetOptions: { keepDirtyValues: true },
   })
 
-  const { control, getValues, setValue } = formMethods
+  const { control, getValues, setValue, clearErrors } = formMethods
   const watchedFlsaStatus = useWatch({ control, name: 'flsaStatus' })
   const watchedAdjustForMinimumWage = useWatch({
     control,
     name: 'adjustForMinimumWage',
   })
 
+  // Forcing a value via `setValue` does not re-run validation (no
+  // `shouldValidate: true`) and won't trigger RHF's per-field reValidate cycle
+  // either, so any stale error already on the field would persist visibly even
+  // though the field is now hook-managed and disabled. Clear the affected fields'
+  // errors here so they don't outlive the condition that produced them.
   useEffect(() => {
     if (watchedFlsaStatus === FlsaStatus.OWNER) {
       setValue('paymentUnit', PAY_PERIODS.PAYCHECK)
+      clearErrors('paymentUnit')
     } else if (
       watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_NONEXEMPT ||
       watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT
     ) {
       setValue('paymentUnit', PAY_PERIODS.YEAR)
       setValue('rate', 0)
+      clearErrors(['paymentUnit', 'rate'])
     } else {
       setValue('paymentUnit', resolvedDefaults.paymentUnit)
     }
-  }, [watchedFlsaStatus, setValue, resolvedDefaults.paymentUnit])
+  }, [watchedFlsaStatus, setValue, clearErrors, resolvedDefaults.paymentUnit])
 
   // The FLSA status that represents the employee's current classification.
   // In update mode this is the compensation being edited. In create mode
@@ -526,7 +533,11 @@ export function useCompensationForm({
     if (getValues('minimumWageId')) {
       setValue('minimumWageId', '', { shouldDirty: true, shouldValidate: false })
     }
-  }, [isAdjustMinimumWageEnabled, getValues, setValue])
+    // Once the gate closes, both fields stop rendering — without this, a stale
+    // error from a prior submit would linger in form state and silently fail the
+    // next submit attempt with no visible UI to fix it.
+    clearErrors(['adjustForMinimumWage', 'minimumWageId'])
+  }, [isAdjustMinimumWageEnabled, getValues, setValue, clearErrors])
 
   const minimumWageOptions = minimumWages.map(wage => ({
     value: wage.uuid,
