@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 
 /**
  * Normalizes string input to a 9 digit EIN format with two leading digits, a dash, and 7 trailing digits removing any non-numeric characters.
+ *
  * @param value - Raw string value to be formatted as a federal EIN
  * @returns String in the federal EIN format with all invalid characters removed
  */

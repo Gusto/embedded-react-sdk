@@ -1,6 +1,7 @@
 import React from 'react'
 /**
  * Triggers re-render of a component to allow ErrorBoundary to catch a thrown error - that way we can handle all exceptions from asynchrounous functions in the same way and catch them in react boundary
+ *
  * @returns Function
  */
 export const useAsyncError = () => {

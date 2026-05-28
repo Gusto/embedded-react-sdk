@@ -10,6 +10,19 @@ import pluginReactHooks from 'eslint-plugin-react-hooks'
 import importPlugin from 'eslint-plugin-import'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import tsdoc from 'eslint-plugin-tsdoc'
+import { tsdocCoverage } from './eslint-rules/plugins'
+
+// Base paths for public library code
+const LIBRARY_BASE_PATHS = ['src/**/*.{ts,tsx}']
+// Paths within the library that can be ignored, as they have no public code
+const LIBRARY_IGNORE_PATHS = [
+  '**/*.stories.{ts,tsx}',
+  '**/*.test.{ts,tsx}',
+  '**/__fixtures__/**',
+  'src/test/**/*.{ts,tsx}',
+  'src/test-utils/**',
+  'src/**/*test-utils.{ts,tsx}',
+]
 
 export default [
   { files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'] },
@@ -144,13 +157,36 @@ export default [
       '@typescript-eslint/no-unnecessary-type-arguments': 'off',
     },
   },
-  // TSDoc syntax validation on any comment that already exists.
-  // Validates tag names, param format, brace escaping, etc.
   {
-    files: ['src/**/*.{ts,tsx}'],
-    plugins: { tsdoc },
+    plugins: { tsdoc, 'tsdoc-coverage': tsdocCoverage },
+  },
+  /** Library: baseline. All source code with a TSDoc comment should have valid syntax. */
+  {
+    files: LIBRARY_BASE_PATHS,
+    ignores: LIBRARY_IGNORE_PATHS,
     rules: {
       'tsdoc/syntax': 'error',
+      'tsdoc-coverage/sort-tags': 'error',
+    },
+  },
+  /** Library: well-documented code. */
+  {
+    files: LIBRARY_BASE_PATHS,
+    ignores: [
+      ...LIBRARY_IGNORE_PATHS,
+      // As we improve documentation, remove directories from the ignore path
+      'src/components/**',
+      'src/contexts/**',
+      'src/helpers/**',
+      'src/hooks/**',
+      'src/models/**',
+      'src/partner-hook-utils/**',
+      'src/shared/**',
+      'src/types/**',
+    ],
+    rules: {
+      'tsdoc-coverage/require-comment': 'error',
+      'tsdoc-coverage/require-release-tag': 'error',
     },
   },
 
