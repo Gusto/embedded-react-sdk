@@ -77,6 +77,7 @@ export default [
       '**/.prettierrc.js',
       '.storybook/**/*',
       'storybook-static/**/*',
+      'docs-site/**/*',
     ],
   },
   {

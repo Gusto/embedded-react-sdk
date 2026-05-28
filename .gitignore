@@ -139,6 +139,8 @@ dist
 # Docusaurus cache and generated files
 
 .docusaurus
+docs-site/build/
+docs-site/.docusaurus/
 
 # Serverless directories
 

@@ -1,0 +1,5 @@
+node_modules/
+.docusaurus/
+build/
+.cache-loader/
+package-lock.json
