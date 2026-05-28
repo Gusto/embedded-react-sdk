@@ -121,9 +121,14 @@ export function useHomeAddressManagement({
 
   const editingHomeAddressUuid = editTargetUuid ?? currentHomeAddress?.uuid
 
+  const editingHomeAddressRow = editingHomeAddressUuid
+    ? employeeHomeAddresses?.find(a => a.uuid === editingHomeAddressUuid)
+    : undefined
+
   const editHomeAddressForm = useHomeAddressForm({
     employeeId,
     homeAddressUuid: editingHomeAddressUuid,
+    initialAddress: editingHomeAddressRow,
     withEffectiveDateField: false,
   })
   const createHomeAddressForm = useHomeAddressForm({

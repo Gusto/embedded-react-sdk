@@ -36,8 +36,8 @@ function makeEmployee(index: number) {
   }
 }
 
-// 12 employees fits cleanly into "5 per page" → 3 pages (5/5/2).
-const employees = Array.from({ length: 12 }, (_, i) => makeEmployee(i))
+// 52 employees fits cleanly into "25 per page" → 3 pages (25/25/2).
+const employees = Array.from({ length: 52 }, (_, i) => makeEmployee(i))
 
 vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/employeesList', () => ({
   useEmployeesListSuspense: () => ({
@@ -87,13 +87,13 @@ describe('useSelectEmployeesData pagination', () => {
     vi.useRealTimers()
   })
 
-  test('initial state: page 1, default 5 items per page, total 12', () => {
+  test('initial state: page 1, default 25 items per page, total 52', () => {
     const { result } = renderHook(() => useSelectEmployeesData('company-123'), { wrapper })
     expect(result.current.pagination.currentPage).toBe(1)
-    expect(result.current.pagination.itemsPerPage).toBe(5)
-    expect(result.current.pagination.totalCount).toBe(12)
+    expect(result.current.pagination.itemsPerPage).toBe(25)
+    expect(result.current.pagination.totalCount).toBe(52)
     expect(result.current.pagination.totalPages).toBe(3)
-    expect(result.current.filteredEmployees).toHaveLength(5)
+    expect(result.current.filteredEmployees).toHaveLength(25)
     expect(result.current.filteredEmployees[0]?.uuid).toBe('uuid-0')
   })
 
@@ -104,7 +104,7 @@ describe('useSelectEmployeesData pagination', () => {
       result.current.pagination.handleNextPage()
     })
     expect(result.current.pagination.currentPage).toBe(2)
-    expect(result.current.filteredEmployees[0]?.uuid).toBe('uuid-5')
+    expect(result.current.filteredEmployees[0]?.uuid).toBe('uuid-25')
 
     act(() => {
       result.current.pagination.handleNextPage()
@@ -182,7 +182,7 @@ describe('useSelectEmployeesData pagination', () => {
       result.current.pagination.handleItemsPerPageChange(10)
     })
     expect(result.current.pagination.itemsPerPage).toBe(10)
-    expect(result.current.pagination.totalPages).toBe(2)
+    expect(result.current.pagination.totalPages).toBe(6)
     expect(result.current.pagination.currentPage).toBe(1)
     expect(result.current.filteredEmployees).toHaveLength(10)
   })
@@ -196,7 +196,7 @@ describe('useSelectEmployeesData pagination', () => {
     expect(result.current.pagination.currentPage).toBe(2)
 
     act(() => {
-      result.current.pagination.handleItemsPerPageChange(5)
+      result.current.pagination.handleItemsPerPageChange(25)
     })
     // Page should NOT reset back to 1 since itemsPerPage didn't change.
     expect(result.current.pagination.currentPage).toBe(2)
@@ -263,13 +263,13 @@ describe('useSelectEmployeesData pagination', () => {
     test('selects every eligible employee across all pages when no search is active', () => {
       const { result } = renderHook(() => useSelectEmployeesData('company-123'), { wrapper })
 
-      // Stay on page 1 (5 of 12 visible) — select-all should still grab all 12.
+      // Stay on page 1 (25 of 52 visible) — select-all should still grab all 52.
       act(() => {
         result.current.handleSelectAll(true, result.current.filteredEmployees)
       })
 
-      expect(result.current.selectedUuids.size).toBe(12)
-      for (let i = 0; i < 12; i++) {
+      expect(result.current.selectedUuids.size).toBe(52)
+      for (let i = 0; i < 52; i++) {
         expect(result.current.selectedUuids.has(`uuid-${i}`)).toBe(true)
       }
     })
@@ -280,7 +280,7 @@ describe('useSelectEmployeesData pagination', () => {
       act(() => {
         result.current.handleSelectAll(true, result.current.filteredEmployees)
       })
-      expect(result.current.selectedUuids.size).toBe(12)
+      expect(result.current.selectedUuids.size).toBe(52)
 
       act(() => {
         result.current.handleSelectAll(false, result.current.filteredEmployees)
@@ -291,19 +291,18 @@ describe('useSelectEmployeesData pagination', () => {
     test('with a search active, selects only employees matching the search across all pages', () => {
       const { result } = renderHook(() => useSelectEmployeesData('company-123'), { wrapper })
 
-      // "Employee1" matches Employee1, Employee10, Employee11 — 3 employees
-      // spanning pages 1 and 3 of the unfiltered list.
+      // "Employee1" matches Employee1, Employee10–Employee19 — 11 employees.
       act(() => {
         result.current.handleSearchChange('Employee1')
       })
       flushSearchDebounce()
-      expect(result.current.pagination.totalCount).toBe(3)
+      expect(result.current.pagination.totalCount).toBe(11)
 
       act(() => {
         result.current.handleSelectAll(true, result.current.filteredEmployees)
       })
 
-      expect(result.current.selectedUuids.size).toBe(3)
+      expect(result.current.selectedUuids.size).toBe(11)
       expect(result.current.selectedUuids.has('uuid-1')).toBe(true)
       expect(result.current.selectedUuids.has('uuid-10')).toBe(true)
       expect(result.current.selectedUuids.has('uuid-11')).toBe(true)
@@ -316,10 +315,10 @@ describe('useSelectEmployeesData pagination', () => {
       act(() => {
         result.current.handleSelectAll(true, result.current.filteredEmployees)
       })
-      expect(result.current.selectedUuids.size).toBe(12)
+      expect(result.current.selectedUuids.size).toBe(52)
 
-      // Then apply a search for "Employee1" (matches uuid-1, uuid-10, uuid-11)
-      // and unselect all matching — leaves 9 employees still selected.
+      // Then apply a search for "Employee1" (matches uuid-1, uuid-10–uuid-19 = 11)
+      // and unselect all matching — leaves 41 employees still selected.
       act(() => {
         result.current.handleSearchChange('Employee1')
       })
@@ -328,7 +327,7 @@ describe('useSelectEmployeesData pagination', () => {
         result.current.handleSelectAll(false, result.current.filteredEmployees)
       })
 
-      expect(result.current.selectedUuids.size).toBe(9)
+      expect(result.current.selectedUuids.size).toBe(41)
       expect(result.current.selectedUuids.has('uuid-1')).toBe(false)
       expect(result.current.selectedUuids.has('uuid-10')).toBe(false)
       expect(result.current.selectedUuids.has('uuid-11')).toBe(false)

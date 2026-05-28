@@ -360,6 +360,10 @@ export function WorkAddressView({
                   effectiveDate: pendingFutureAddress.effectiveDate
                     ? formatDateLongWithYear(pendingFutureAddress.effectiveDate)
                     : '—',
+                  // Values are inserted into JSX text, so the browser already
+                  // escapes them. Telling i18next to escape too produces
+                  // double-encoded entities like `&#39;` showing as text.
+                  interpolation: { escapeValue: false },
                 })}
               </Components.Text>
             </Components.Alert>

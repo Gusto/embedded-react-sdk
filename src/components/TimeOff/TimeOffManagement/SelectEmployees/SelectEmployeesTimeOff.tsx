@@ -172,8 +172,6 @@ function SelectEmployeesTimeOffInner({
     useTimeOffPoliciesUpdateMutation()
   const isSubmitPending = isAddPending || isUpdatePending
 
-  const [confirmAddOpen, setConfirmAddOpen] = useState(false)
-
   const handleBalanceChange = useCallback((uuid: string, value: string) => {
     setBalances(prev => ({ ...prev, [uuid]: value }))
   }, [])
@@ -256,30 +254,8 @@ function SelectEmployeesTimeOffInner({
       return
     }
 
-    if (mode === 'standalone' && toAdd.length > 0) {
-      setConfirmAddOpen(true)
-      return
-    }
-
     await submitAdd(toAdd)
   }, [mode, selectedUuids, onEvent, submitAdd])
-
-  const handleConfirmAdd = useCallback(async () => {
-    const toAdd = [...selectedUuids]
-    setConfirmAddOpen(false)
-    await submitAdd(toAdd)
-  }, [selectedUuids, submitAdd])
-
-  const showReassignmentWarning = useMemo(() => {
-    const targetPtoName = PAID_TIME_OFF_NAME_BY_POLICY_TYPE[policyType]
-    for (const uuid of selectedUuids) {
-      const employee = selectedEmployeesRef.current.get(uuid)
-      if (employee?.eligiblePaidTimeOff?.some(pto => pto.name === targetPtoName)) {
-        return true
-      }
-    }
-    return false
-  }, [selectedUuids, policyType])
 
   const handleBack = useCallback(() => {
     onEvent(componentEvents.TIME_OFF_ADD_EMPLOYEES_BACK)
@@ -296,28 +272,11 @@ function SelectEmployeesTimeOffInner({
       onSearchClear={handleSearchClear}
       onBack={handleBack}
       onContinue={handleContinue}
-      showReassignmentWarning={showReassignmentWarning}
-      policyTypeLabel={t(`policyTypeLabel_${policyType}`)}
       balances={hideBalances ? undefined : effectiveBalances}
       onBalanceChange={hideBalances ? undefined : handleBalanceChange}
       pagination={pagination}
       isFetching={isFetching}
       isPending={isSubmitPending}
-      addConfirmDialog={
-        mode === 'standalone'
-          ? {
-              isOpen: confirmAddOpen,
-              count: selectedUuids.size,
-              onConfirm: () => {
-                void handleConfirmAdd()
-              },
-              onClose: () => {
-                setConfirmAddOpen(false)
-              },
-              isPending: isAddPending,
-            }
-          : undefined
-      }
     />
   )
 }

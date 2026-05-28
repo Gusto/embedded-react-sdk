@@ -264,6 +264,14 @@ export function HomeAddressView({
   const closeAddressModal = () => {
     setAddressModal(null)
     onEditAddressTargetChange(undefined)
+    // Forms set `resetOptions: { keepDirtyValues: true }` to preserve typed input
+    // across `values` re-syncs; override here so closing actually clears dirty inputs.
+    editHomeAddressForm.form.hookFormInternals.formMethods.reset(undefined, {
+      keepDirtyValues: false,
+    })
+    createHomeAddressForm.form.hookFormInternals.formMethods.reset(undefined, {
+      keepDirtyValues: false,
+    })
   }
 
   const handleDeleteModalConfirm = async () => {
@@ -280,13 +288,11 @@ export function HomeAddressView({
     addressModal === 'edit'
       ? {
           onSubmit: editOnSubmit,
-          formMethods: editHomeAddressForm.form.hookFormInternals.formMethods,
           isPending: editStatus.isPending,
         }
       : addressModal === 'create'
         ? {
             onSubmit: createOnSubmit,
-            formMethods: createHomeAddressForm.form.hookFormInternals.formMethods,
             isPending: createStatus.isPending,
           }
         : null
@@ -300,10 +306,6 @@ export function HomeAddressView({
 
     if (submitResult) {
       onSaved(submitResult)
-    }
-
-    const hasFieldErrors = Object.keys(addressModalSession.formMethods.formState.errors).length > 0
-    if (submitResult || !hasFieldErrors) {
       closeAddressModal()
     }
   }

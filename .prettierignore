@@ -6,3 +6,4 @@ src/types/i18nresources.d.ts
 docs/reference/endpoint-inventory.json
 docs/reference/endpoint-reference.md
 .claude/settings.local.json
+docs-site/build/

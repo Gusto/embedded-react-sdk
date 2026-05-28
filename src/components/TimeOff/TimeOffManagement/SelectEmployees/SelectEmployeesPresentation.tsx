@@ -22,20 +22,17 @@ export function SelectEmployeesPresentation({
   onSearchClear,
   onBack,
   onContinue,
-  showReassignmentWarning,
   isHolidayPolicy = false,
-  policyTypeLabel,
   balances,
   onBalanceChange,
   pagination,
   isFetching,
-  addConfirmDialog,
   isPending = false,
 }: SelectEmployeesPresentationProps) {
   useI18n('Company.TimeOff.SelectEmployees')
   const { t } = useTranslation('Company.TimeOff.SelectEmployees')
   const Components = useComponentContext()
-  const { Heading, Text, Button, Alert, Dialog } = Components
+  const { Heading, Text, Button, Alert } = Components
   const balanceColHeaderId = useId()
 
   return (
@@ -47,9 +44,7 @@ export function SelectEmployeesPresentation({
         </Text>
       </Flex>
 
-      {showReassignmentWarning && (
-        <Alert status="warning" label={t('reassignmentWarning', { policyType: policyTypeLabel })} />
-      )}
+      {!isHolidayPolicy && <Alert status="warning" label={t('reassignmentWarning')} />}
 
       <EmployeeTable<EmployeeItem>
         data={employees}
@@ -80,20 +75,22 @@ export function SelectEmployeesPresentation({
                 {
                   key: 'balance' as keyof EmployeeItem,
                   title: t('startingBalanceColumn'),
+                  justify: 'end' as const,
                   render: (employee: EmployeeItem) => (
-                    <Components.TextInput
-                      name={`balance-${employee.uuid}`}
-                      label={t('startingBalanceColumn')}
-                      shouldVisuallyHideLabel
-                      aria-labelledby={`employee-name-${employee.uuid} ${balanceColHeaderId}`}
-                      value={balances?.[employee.uuid] ?? ''}
-                      onChange={(value: string) => {
-                        if (value !== '' && !isNumericInput(value)) return
-                        onBalanceChange(employee.uuid, value)
-                      }}
-                      placeholder="0"
-                      className={styles.balanceInput}
-                    />
+                    <div className={styles.balanceInput}>
+                      <Components.TextInput
+                        name={`balance-${employee.uuid}`}
+                        label={t('startingBalanceColumn')}
+                        shouldVisuallyHideLabel
+                        aria-labelledby={`employee-name-${employee.uuid} ${balanceColHeaderId}`}
+                        value={balances?.[employee.uuid] ?? ''}
+                        onChange={(value: string) => {
+                          if (value !== '' && !isNumericInput(value)) return
+                          onBalanceChange(employee.uuid, value)
+                        }}
+                        placeholder="0"
+                      />
+                    </div>
                   ),
                 },
               ]
@@ -109,20 +106,6 @@ export function SelectEmployeesPresentation({
           {t('continueCta')}
         </Button>
       </ActionsLayout>
-
-      {addConfirmDialog && (
-        <Dialog
-          isOpen={addConfirmDialog.isOpen}
-          onClose={addConfirmDialog.onClose}
-          onPrimaryActionClick={addConfirmDialog.onConfirm}
-          isPrimaryActionLoading={addConfirmDialog.isPending}
-          title={t('addConfirmDialog.title', { count: addConfirmDialog.count })}
-          primaryActionLabel={t('addConfirmDialog.confirmCta')}
-          closeActionLabel={t('addConfirmDialog.cancelCta')}
-        >
-          {t('addConfirmDialog.description', { count: addConfirmDialog.count })}
-        </Dialog>
-      )}
     </Flex>
   )
 }

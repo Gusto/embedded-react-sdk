@@ -170,16 +170,14 @@ export function useChildSupportGarnishmentForm({
     [fetchedDeduction, partnerDefaults],
   )
 
-  // The schema is built statically here. The agency-attribute fields
-  // (`caseNumber`, `orderNumber`, `remittanceNumber`) are kept optional in the
-  // schema and surfaced as `isRequired` at the metadata level when the
-  // selected agency declares them in `required_attributes`. This matches the
-  // legacy ChildSupportForm, which also used a static schema and relied on the
-  // API to enforce missing-attribute validation. The hook's `requiredAttrKeys`
-  // status flag tells consumers which UI fields to mark required.
+  // Pass the full agency list so requiredness for the agency-attribute fields
+  // (`caseNumber`, `orderNumber`, `remittanceNumber`) is derived dynamically
+  // from the form's `state` value. The schema doesn't need to rebuild when the
+  // user changes states — the predicate runs at validation time and via
+  // `useDeriveFieldsMetadata` for the (optional) label.
   const [schema, metadataConfig] = useMemo(
-    () => createChildSupportGarnishmentFormSchema({ mode: schemaMode }),
-    [schemaMode],
+    () => createChildSupportGarnishmentFormSchema({ mode: schemaMode, agencyList }),
+    [schemaMode, agencyList],
   )
 
   const formMethods = useForm<

@@ -139,6 +139,8 @@ dist
 # Docusaurus cache and generated files
 
 .docusaurus
+docs-site/build/
+docs-site/.docusaurus/
 
 # Serverless directories
 
@@ -180,9 +182,6 @@ src/types/schema.*
 src/types/i18next.*
 dist
 
-# Temporary documentation publishing files
-.docs/temp-publish-docs/
-.docs/temp-publish-docs/.secrets
 .secrets
 
 *storybook.log

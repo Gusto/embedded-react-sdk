@@ -11,14 +11,6 @@ export interface EmployeeItem {
   eligiblePaidTimeOff?: PaidTimeOff[]
 }
 
-export interface ConfirmDialogState {
-  isOpen: boolean
-  count: number
-  onConfirm: () => void
-  onClose: () => void
-  isPending?: boolean
-}
-
 export interface SelectEmployeesPresentationProps {
   employees: EmployeeItem[]
   selectedUuids: Set<string>
@@ -29,15 +21,11 @@ export interface SelectEmployeesPresentationProps {
   onSearchClear: () => void
   onBack: () => void
   onContinue: () => void
-  showReassignmentWarning: boolean
   isHolidayPolicy?: boolean
-  policyTypeLabel?: string
   balances?: Record<string, string>
   onBalanceChange?: (uuid: string, value: string) => void
   pagination?: PaginationControlProps
   isFetching?: boolean
-  /** Optional confirm dialog shown before submitting an add to the policy. */
-  addConfirmDialog?: ConfirmDialogState
   /** Disables the back button and shows a spinner on the continue button while a submit is in flight. */
   isPending?: boolean
 }

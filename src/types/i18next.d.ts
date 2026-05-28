@@ -576,8 +576,6 @@ export interface CompanyTimeOffSelectEmployees{
 "description":string;
 "holidayDescription":string;
 "reassignmentWarning":string;
-"policyTypeLabel_vacation":string;
-"policyTypeLabel_sick":string;
 "departmentColumn":string;
 "startingBalanceColumn":string;
 "backCta":string;
@@ -585,14 +583,6 @@ export interface CompanyTimeOffSelectEmployees{
 "emptyState":string;
 "errors":{
 "completePolicyFailed":string;
-};
-"addConfirmDialog":{
-"title_one":string;
-"title_other":string;
-"description_one":string;
-"description_other":string;
-"confirmCta":string;
-"cancelCta":string;
 };
 };
 export interface CompanyTimeOffSelectPolicyType{
@@ -1395,13 +1385,6 @@ export interface EmployeeCompensation{
 "jobTitleLabel":string;
 "wageLabel":string;
 "wageFrequencyLabel":string;
-"wageFrequencyOptions":{
-"Hour":string;
-"Week":string;
-"Month":string;
-"Year":string;
-"Paycheck":string;
-};
 "hireDateLabel":string;
 "twoPercentShareholderLabel":string;
 "saveCta":string;
@@ -1585,6 +1568,7 @@ export interface EmployeeDashboard{
 "title":string;
 "editCta":string;
 "noStateTaxes":string;
+"noWithholdingForState":string;
 };
 };
 "documents":{
@@ -2185,6 +2169,7 @@ export interface EmployeePaymentMethod{
 "accountName":string;
 "routingNumber":string;
 "accountNumber":string;
+"accountNumberFormat":string;
 };
 };
 export interface EmployeeProfile{
@@ -2245,6 +2230,7 @@ export interface EmployeeSplitPaycheck{
 };
 export interface EmployeeStateTaxes{
 "stateTaxesTitle":string;
+"noWithholding":string;
 "submitCta":string;
 "saveCta":string;
 "cancelCta":string;

@@ -169,7 +169,11 @@ function useIdSelection<T extends { id: string }>(allData: T[]) {
       onSelect: (item: T, checked: boolean) => {
         setSelectedIds(prev => {
           const next = new Set(prev)
-          checked ? next.add(item.id) : next.delete(item.id)
+          if (checked) {
+            next.add(item.id)
+          } else {
+            next.delete(item.id)
+          }
           return next
         })
       },
@@ -263,7 +267,7 @@ export const DataViewWithPagination = () => {
 
 export const DataViewSelectableWithPagination = () => {
   const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage, setItemsPerPage] = useState<5 | 10 | 50>(5)
+  const [itemsPerPage, setItemsPerPage] = useState<5 | 10 | 25 | 50>(5)
   const [selectedIds, setSelectedIds] = useState(new Set<string>())
 
   const totalPages = Math.ceil(compensationData.length / itemsPerPage)
@@ -278,7 +282,11 @@ export const DataViewSelectableWithPagination = () => {
     onSelect: (item: CompensationRow, checked: boolean) => {
       setSelectedIds(prev => {
         const next = new Set(prev)
-        checked ? next.add(item.id) : next.delete(item.id)
+        if (checked) {
+          next.add(item.id)
+        } else {
+          next.delete(item.id)
+        }
         return next
       })
     },

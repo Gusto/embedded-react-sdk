@@ -52,6 +52,11 @@ export interface UseHomeAddressFormProps {
    * When omitted, the form is in create mode (POST).
    */
   homeAddressUuid?: string
+  /**
+   * Pre-loaded address matching `homeAddressUuid`. When supplied, the form uses it directly
+   * instead of issuing a GET — useful when the parent already has the row from a list query.
+   */
+  initialAddress?: EmployeeAddress
   withEffectiveDateField?: boolean
   optionalFieldsToRequire?: HomeAddressOptionalFieldsToRequire
   defaultValues?: Partial<HomeAddressFormData>
@@ -89,21 +94,26 @@ export interface UseHomeAddressFormReady extends BaseFormHookReady<
 export function useHomeAddressForm({
   employeeId,
   homeAddressUuid,
+  initialAddress,
   withEffectiveDateField = true,
   optionalFieldsToRequire,
   defaultValues: partnerDefaults,
   validationMode = 'onSubmit',
   shouldFocusError = true,
 }: UseHomeAddressFormProps): HookLoadingResult | UseHomeAddressFormReady {
+  const hasInitialAddressMatch = !!homeAddressUuid && initialAddress?.uuid === homeAddressUuid
+
   const retrieveHomeAddressQuery = useEmployeeAddressesRetrieveHomeAddress(
     { homeAddressUuid: homeAddressUuid ?? '' },
-    { enabled: !!homeAddressUuid },
+    { enabled: !!homeAddressUuid && !hasInitialAddressMatch },
   )
 
   const isCreateMode = !homeAddressUuid
 
   const fetchedHomeAddress = homeAddressUuid
-    ? retrieveHomeAddressQuery.data?.employeeAddress
+    ? hasInitialAddressMatch
+      ? initialAddress
+      : retrieveHomeAddressQuery.data?.employeeAddress
     : undefined
 
   const schemaMode = isCreateMode ? 'create' : 'update'

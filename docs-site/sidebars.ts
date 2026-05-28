@@ -1,0 +1,103 @@
+import type { SidebarsConfig } from '@docusaurus/plugin-content-docs'
+
+const sidebars: SidebarsConfig = {
+  docs: [
+    'what-is-the-gep-react-sdk',
+    {
+      type: 'category',
+      label: 'Deciding to build with the SDK',
+      link: { type: 'doc', id: 'deciding-to-build-with-the-sdk/deciding-to-build-with-the-sdk' },
+      items: [
+        'deciding-to-build-with-the-sdk/build-pathways-sdk-flows-api',
+        'deciding-to-build-with-the-sdk/component-types',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Getting Started',
+      link: { type: 'doc', id: 'getting-started/getting-started' },
+      items: ['getting-started/authentication', 'getting-started/proxy-security-partner-guidance'],
+    },
+    {
+      type: 'category',
+      label: 'Workflows Overview',
+      link: { type: 'doc', id: 'workflows-overview/workflows-overview' },
+      items: [
+        'workflows-overview/company-onboarding',
+        {
+          type: 'category',
+          label: 'Employee Onboarding',
+          link: { type: 'doc', id: 'workflows-overview/employee-onboarding/employee-onboarding' },
+          items: ['workflows-overview/employee-onboarding/employee-self-onboarding'],
+        },
+        'workflows-overview/employee-dashboard',
+        'workflows-overview/employee-termination',
+        'workflows-overview/run-payroll',
+        'workflows-overview/off-cycle-payroll',
+        'workflows-overview/dismissal-payroll',
+        'workflows-overview/transition-payroll',
+        'workflows-overview/contractor-onboarding',
+        'workflows-overview/contractor-payments',
+        'workflows-overview/information-requests',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Component Adapter',
+      link: { type: 'doc', id: 'component-adapter/component-adapter' },
+      items: [
+        'component-adapter/how-the-component-adapter-works',
+        'component-adapter/setting-up-your-component-adapter',
+        'component-adapter/component-adapter-types',
+        'component-adapter/component-inventory',
+        'component-adapter/component-adapter-faq',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Theming',
+      link: { type: 'doc', id: 'theming/theming' },
+      items: ['theming/theme-variables', 'theming/theming-guide'],
+    },
+    {
+      type: 'category',
+      label: 'Integration Guide',
+      link: { type: 'doc', id: 'integration-guide/integration-guide' },
+      items: [
+        'integration-guide/versioning',
+        'integration-guide/event-handling',
+        'integration-guide/event-types',
+        'integration-guide/request-interceptors',
+        'integration-guide/customizing-sdk-ui',
+        'integration-guide/composition',
+        'integration-guide/providing-your-own-data',
+        'integration-guide/translation',
+        'integration-guide/routing',
+        'integration-guide/error-handling',
+        'integration-guide/observability',
+        'integration-guide/observability-examples',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Hooks (Experimental)',
+      link: { type: 'doc', id: 'hooks/hooks' },
+      items: [
+        'hooks/useEmployeeDetailsForm',
+        'hooks/useCompensationForm',
+        'hooks/useWorkAddressForm',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Reference',
+      items: [
+        'reference/endpoint-reference',
+        'reference/jobs-and-compensations',
+        'reference/proxy-examples',
+      ],
+    },
+  ],
+}
+
+export default sidebars
