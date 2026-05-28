@@ -58,6 +58,29 @@ describe('Compensation', () => {
       expect(payPeriodControl).toBeInTheDocument()
     })
 
+    it('renders wage frequency options using the shared paymentUnit copy', async () => {
+      const user = userEvent.setup()
+
+      renderWithProviders(
+        <Compensation employeeId="employee_id" startDate="2024-12-24" onEvent={() => {}} />,
+      )
+
+      await screen.findByRole('heading', { name: 'Compensation' })
+
+      const payPeriodControl = screen.getByRole('button', {
+        name: 'Hour Wage frequency',
+        expanded: false,
+      })
+      await user.click(payPeriodControl)
+
+      const listbox = await screen.findByRole('listbox')
+      expect(within(listbox).getByRole('option', { name: 'Hour' })).toBeInTheDocument()
+      expect(within(listbox).getByRole('option', { name: 'Week' })).toBeInTheDocument()
+      expect(within(listbox).getByRole('option', { name: 'Month' })).toBeInTheDocument()
+      expect(within(listbox).getByRole('option', { name: 'Year' })).toBeInTheDocument()
+      expect(within(listbox).getByRole('option', { name: 'Paycheck' })).toBeInTheDocument()
+    })
+
     it('navigates to jobs list if form is filled out with hourly employment type', async () => {
       const user = userEvent.setup()
 

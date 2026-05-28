@@ -103,9 +103,7 @@ export function ManagementCompensationFormBody({
         label={t('management.wageFrequencyLabel')}
         description={t('paymentUnitDescription')}
         validationMessages={{ REQUIRED: t('validations.paymentUnit') }}
-        getOptionLabel={(unit: PaymentUnit) =>
-          t(`management.wageFrequencyOptions.${unit}` as const)
-        }
+        getOptionLabel={(unit: PaymentUnit) => t(`paymentUnitOptions.${unit}` as const)}
         formHookResult={compensationForm}
       />
 
