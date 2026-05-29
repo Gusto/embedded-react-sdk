@@ -201,7 +201,7 @@ describe('Dashboard', () => {
     expect(screen.getByText('Personal email')).toBeInTheDocument()
   })
 
-  it('emits EMPLOYEE_UPDATE event when clicking edit basic details', async () => {
+  it('emits the scoped EMPLOYEE_PROFILE_MANAGEMENT_EDIT_REQUESTED event when clicking edit basic details', async () => {
     const user = userEvent.setup()
 
     renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
@@ -210,9 +210,10 @@ describe('Dashboard', () => {
 
     await user.click(screen.getByRole('button', { name: 'Edit' }))
 
-    expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_UPDATE, {
-      employeeId: 'employee-123',
-    })
+    expect(onEvent).toHaveBeenCalledWith(
+      componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_EDIT_REQUESTED,
+      { employeeId: 'employee-123' },
+    )
   })
 
   it('emits EMPLOYEE_HOME_ADDRESS event when clicking manage home address', async () => {

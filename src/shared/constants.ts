@@ -73,6 +73,8 @@ export const employeeEvents = {
   EMPLOYEE_REHIRE: 'employee/rehire',
   EMPLOYEE_DASHBOARD_TAB_CHANGE: 'employee/dashboard/tabChange',
   EMPLOYEE_RETURN_TO_LIST: 'employee/returnToList',
+  EMPLOYEE_PROFILE_MANAGEMENT_EDIT_REQUESTED: 'employee/profile/management/editRequested',
+  EMPLOYEE_PROFILE_MANAGEMENT_UPDATED: 'employee/profile/management/updated',
 } as const
 
 export const companyEvents = {

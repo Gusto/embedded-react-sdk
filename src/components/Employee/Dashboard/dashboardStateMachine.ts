@@ -52,7 +52,7 @@ const returnToIndexWithAlert = (alert: DashboardContextInterface['successAlert']
 export const dashboardStateMachine = {
   index: state<MachineTransition>(
     transition(
-      componentEvents.EMPLOYEE_UPDATE,
+      componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_EDIT_REQUESTED,
       'profile',
       reduce(
         (ctx: DashboardContextInterface): DashboardContextInterface => ({
