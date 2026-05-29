@@ -223,6 +223,14 @@ export function JobAndPayView({
   const singleJobCurrentComp = singleJob?.compensations?.find(
     c => c.uuid === singleJob.currentCompensationUuid,
   )
+  const emptyPlaceholder = <span aria-label={t('listEmptyPlaceholder')}>–</span>
+  const singleJobPaymentTypeLabel = singleJob?.paymentUnit
+    ? singleJob.paymentUnit === 'Hour'
+      ? t('jobAndPay.compensation.types.hourly')
+      : singleJob.paymentUnit === 'Salary' || singleJob.paymentUnit === 'Year'
+        ? t('jobAndPay.compensation.types.salary')
+        : singleJob.paymentUnit
+    : null
 
   const [isReviewOpen, setIsReviewOpen] = useState(false)
   const renderDetail = usePendingChangeDetailRenderer(employeeFirstName)
@@ -683,47 +691,27 @@ export function JobAndPayView({
               ) : singleJob ? (
                 <Components.DescriptionList
                   items={[
-                    ...(singleJob.title
-                      ? [
-                          {
-                            term: t('jobAndPay.compensation.jobTitle'),
-                            description: singleJob.title,
-                          },
-                        ]
-                      : []),
-                    ...(singleJob.paymentUnit
-                      ? [
-                          {
-                            term: t('jobAndPay.compensation.type'),
-                            description:
-                              singleJob.paymentUnit === 'Hour'
-                                ? t('jobAndPay.compensation.types.hourly')
-                                : singleJob.paymentUnit === 'Salary' ||
-                                    singleJob.paymentUnit === 'Year'
-                                  ? t('jobAndPay.compensation.types.salary')
-                                  : singleJob.paymentUnit,
-                          },
-                        ]
-                      : []),
-                    ...(singleJobNumericRate !== null && singleJob.paymentUnit
-                      ? [
-                          {
-                            term: t('jobAndPay.compensation.wage'),
-                            description: formatCompensationRate(
-                              singleJobNumericRate,
-                              singleJob.paymentUnit,
-                            ),
-                          },
-                        ]
-                      : []),
-                    ...(singleJobCurrentComp?.effectiveDate
-                      ? [
-                          {
-                            term: t('jobAndPay.compensation.effectiveDate'),
-                            description: formatDateLongWithYear(singleJobCurrentComp.effectiveDate),
-                          },
-                        ]
-                      : []),
+                    {
+                      term: t('jobAndPay.compensation.jobTitle'),
+                      description: singleJob.title || emptyPlaceholder,
+                    },
+                    {
+                      term: t('jobAndPay.compensation.type'),
+                      description: singleJobPaymentTypeLabel || emptyPlaceholder,
+                    },
+                    {
+                      term: t('jobAndPay.compensation.wage'),
+                      description:
+                        singleJobNumericRate !== null && singleJob.paymentUnit
+                          ? formatCompensationRate(singleJobNumericRate, singleJob.paymentUnit)
+                          : emptyPlaceholder,
+                    },
+                    {
+                      term: t('jobAndPay.compensation.effectiveDate'),
+                      description: singleJobCurrentComp?.effectiveDate
+                        ? formatDateLongWithYear(singleJobCurrentComp.effectiveDate)
+                        : emptyPlaceholder,
+                    },
                     ...(singleJobIsPendingNew
                       ? [
                           {

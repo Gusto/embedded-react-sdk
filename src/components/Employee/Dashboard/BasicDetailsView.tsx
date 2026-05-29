@@ -85,13 +85,17 @@ export function BasicDetailsView({
   const dateOfBirth = employee ? formatDateLongWithYear(employee.dateOfBirth) : undefined
   const maskedSsn = employee?.hasSsn ? 'XXX-XX-XXXX' : undefined
 
+  const emptyPlaceholder = <span aria-label={t('listEmptyPlaceholder')}>–</span>
   const basicDetailsItems = employee
     ? [
-        { term: t('basicDetails.legalName'), description: legalName || '–' },
-        { term: t('basicDetails.startDate'), description: startDate || '–' },
-        { term: t('basicDetails.socialSecurityNumber'), description: maskedSsn || '–' },
-        { term: t('basicDetails.dateOfBirth'), description: dateOfBirth || '–' },
-        { term: t('basicDetails.personalEmail'), description: employee.email || '–' },
+        { term: t('basicDetails.legalName'), description: legalName || emptyPlaceholder },
+        { term: t('basicDetails.startDate'), description: startDate || emptyPlaceholder },
+        {
+          term: t('basicDetails.socialSecurityNumber'),
+          description: maskedSsn || emptyPlaceholder,
+        },
+        { term: t('basicDetails.dateOfBirth'), description: dateOfBirth || emptyPlaceholder },
+        { term: t('basicDetails.personalEmail'), description: employee.email || emptyPlaceholder },
       ]
     : []
 

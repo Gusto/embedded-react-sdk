@@ -125,6 +125,8 @@ export function TaxesView({
     return answer
   }
 
+  const emptyPlaceholder = <span aria-label={t('listEmptyPlaceholder')}>–</span>
+
   return (
     <Flex flexDirection="column" gap={24}>
       <Components.Box
@@ -149,54 +151,47 @@ export function TaxesView({
           ) : federalTaxes ? (
             <Components.DescriptionList
               items={[
-                ...(federalTaxes.filingStatus
-                  ? [
-                      {
-                        term: t('taxes.federal.filingStatus'),
-                        description: federalTaxes.filingStatus,
-                      },
-                    ]
-                  : []),
-                ...('twoJobs' in federalTaxes && federalTaxes.twoJobs !== null
-                  ? [
-                      {
-                        term: t('taxes.federal.multipleJobs'),
-                        description: federalTaxes.twoJobs ? t('common.yes') : t('common.no'),
-                      },
-                    ]
-                  : []),
-                ...('dependentsAmount' in federalTaxes && federalTaxes.dependentsAmount
-                  ? [
-                      {
-                        term: t('taxes.federal.dependentsAndOtherCredits'),
-                        description: formatCurrency(parseFloat(federalTaxes.dependentsAmount)),
-                      },
-                    ]
-                  : []),
-                ...('otherIncome' in federalTaxes && federalTaxes.otherIncome
-                  ? [
-                      {
-                        term: t('taxes.federal.otherIncome'),
-                        description: formatCurrency(parseFloat(federalTaxes.otherIncome)),
-                      },
-                    ]
-                  : []),
-                ...('deductions' in federalTaxes && federalTaxes.deductions
-                  ? [
-                      {
-                        term: t('taxes.federal.deductions'),
-                        description: formatCurrency(parseFloat(federalTaxes.deductions)),
-                      },
-                    ]
-                  : []),
-                ...('extraWithholding' in federalTaxes && federalTaxes.extraWithholding
-                  ? [
-                      {
-                        term: t('taxes.federal.extraWithholding'),
-                        description: formatCurrency(parseFloat(federalTaxes.extraWithholding)),
-                      },
-                    ]
-                  : []),
+                {
+                  term: t('taxes.federal.filingStatus'),
+                  description: federalTaxes.filingStatus || emptyPlaceholder,
+                },
+                {
+                  term: t('taxes.federal.multipleJobs'),
+                  description:
+                    'twoJobs' in federalTaxes && federalTaxes.twoJobs !== null
+                      ? federalTaxes.twoJobs
+                        ? t('common.yes')
+                        : t('common.no')
+                      : emptyPlaceholder,
+                },
+                {
+                  term: t('taxes.federal.dependentsAndOtherCredits'),
+                  description:
+                    'dependentsAmount' in federalTaxes && federalTaxes.dependentsAmount
+                      ? formatCurrency(parseFloat(federalTaxes.dependentsAmount))
+                      : emptyPlaceholder,
+                },
+                {
+                  term: t('taxes.federal.otherIncome'),
+                  description:
+                    'otherIncome' in federalTaxes && federalTaxes.otherIncome
+                      ? formatCurrency(parseFloat(federalTaxes.otherIncome))
+                      : emptyPlaceholder,
+                },
+                {
+                  term: t('taxes.federal.deductions'),
+                  description:
+                    'deductions' in federalTaxes && federalTaxes.deductions
+                      ? formatCurrency(parseFloat(federalTaxes.deductions))
+                      : emptyPlaceholder,
+                },
+                {
+                  term: t('taxes.federal.extraWithholding'),
+                  description:
+                    'extraWithholding' in federalTaxes && federalTaxes.extraWithholding
+                      ? formatCurrency(parseFloat(federalTaxes.extraWithholding))
+                      : emptyPlaceholder,
+                },
               ]}
             />
           ) : null}
@@ -239,15 +234,15 @@ export function TaxesView({
 
                     {hasQuestions ? (
                       <Components.DescriptionList
-                        items={stateTax.questions!.flatMap(question => {
+                        items={stateTax.questions!.map(question => {
                           const answer = question.answers[0]?.value
-                          if (answer === null || answer === undefined) return []
-                          return [
-                            {
-                              term: question.label,
-                              description: formatStateTaxAnswer(question, answer),
-                            },
-                          ]
+                          return {
+                            term: question.label,
+                            description:
+                              answer === null || answer === undefined
+                                ? emptyPlaceholder
+                                : formatStateTaxAnswer(question, answer),
+                          }
                         })}
                       />
                     ) : (
