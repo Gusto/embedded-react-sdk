@@ -67,6 +67,76 @@ const cancelToPolicyList = transition(
   ),
 )
 
+// Browser back/forward integration: each state below appends a set of
+// `GOTO_STEP` transitions so that popstate-driven navigation can jump the
+// machine to any synced step. The hash format is `#step=<stateName>`, mirroring
+// these keys exactly. Edit-mode states are intentionally not synced because
+// entering them requires a `policyId` the URL does not carry.
+const SYNCED_STEPS = {
+  policyList: PolicyListContextual,
+  policyTypeSelector: SelectPolicyTypeContextual,
+  policyDetailsForm: PolicyDetailsFormContextual,
+  policySettings: PolicySettingsContextual,
+  addEmployeesToPolicy: AddEmployeesToPolicyContextual,
+  holidaySelectionForm: HolidaySelectionFormContextual,
+  addEmployeesHoliday: AddEmployeesHolidayContextual,
+  viewTimeOffPolicyDetail: TimeOffPolicyDetailContextual,
+  viewHolidayEmployees: ViewHolidayEmployeesContextual,
+  viewHolidaySchedule: ViewHolidayScheduleContextual,
+} as const
+
+type SyncedStepName = keyof typeof SYNCED_STEPS
+
+export const TIME_OFF_SYNCED_STEP_NAMES: readonly SyncedStepName[] = Object.keys(
+  SYNCED_STEPS,
+) as SyncedStepName[]
+
+type GotoPayload = { target: SyncedStepName }
+
+function isGotoTarget(name: SyncedStepName) {
+  return (_ctx: TimeOffFlowContextInterface, ev: { payload: GotoPayload }) =>
+    ev.payload.target === name
+}
+
+const gotoStepTransitions: MachineTransition[] = TIME_OFF_SYNCED_STEP_NAMES.map(name => {
+  const Component = SYNCED_STEPS[name]
+  // Returning to the list clears policy context so the list view never inherits
+  // a stale selection from the user's deeper navigation.
+  if (name === 'policyList') {
+    return transition(
+      componentEvents.GOTO_STEP,
+      name,
+      guard(isGotoTarget(name)),
+      reduce(
+        (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
+          ...ctx,
+          component: Component,
+          policyId: undefined,
+          policyType: undefined,
+          alerts: undefined,
+        }),
+      ),
+    )
+  }
+  return transition(
+    componentEvents.GOTO_STEP,
+    name,
+    guard(isGotoTarget(name)),
+    reduce(
+      (ctx: TimeOffFlowContextInterface): TimeOffFlowContextInterface => ({
+        ...ctx,
+        component: Component,
+        alerts: undefined,
+      }),
+    ),
+  )
+})
+
+function stepState(...transitions: MachineTransition[]) {
+  const s = state
+  return s<MachineTransition>(...transitions, ...gotoStepTransitions)
+}
+
 const backToListTransition = transition(
   componentEvents.TIME_OFF_BACK_TO_LIST,
   'policyList',
@@ -82,7 +152,7 @@ const backToListTransition = transition(
 )
 
 export const timeOffMachine = {
-  policyList: state<MachineTransition>(
+  policyList: stepState(
     transition(
       componentEvents.TIME_OFF_CREATE_POLICY,
       'policyTypeSelector',
@@ -132,7 +202,7 @@ export const timeOffMachine = {
     ),
   ),
 
-  policyTypeSelector: state<MachineTransition>(
+  policyTypeSelector: stepState(
     transition(
       componentEvents.TIME_OFF_POLICY_TYPE_SELECTED,
       'policyDetailsForm',
@@ -168,7 +238,7 @@ export const timeOffMachine = {
     cancelToPolicyList,
   ),
 
-  policyDetailsForm: state<MachineTransition>(
+  policyDetailsForm: stepState(
     transition(
       componentEvents.TIME_OFF_POLICY_DETAILS_DONE,
       'addEmployeesToPolicy',
@@ -218,7 +288,7 @@ export const timeOffMachine = {
     cancelToPolicyList,
   ),
 
-  policySettings: state<MachineTransition>(
+  policySettings: stepState(
     transition(
       componentEvents.TIME_OFF_POLICY_SETTINGS_DONE,
       'addEmployeesToPolicy',
@@ -259,7 +329,7 @@ export const timeOffMachine = {
     cancelToPolicyList,
   ),
 
-  addEmployeesToPolicy: state<MachineTransition>(
+  addEmployeesToPolicy: stepState(
     transition(
       componentEvents.TIME_OFF_ADD_EMPLOYEES_DONE,
       'viewTimeOffPolicyDetail',
@@ -342,7 +412,7 @@ export const timeOffMachine = {
     cancelToPolicyList,
   ),
 
-  viewTimeOffPolicyDetail: state<MachineTransition>(
+  viewTimeOffPolicyDetail: stepState(
     transition(
       componentEvents.TIME_OFF_ADD_EMPLOYEES_TO_POLICY,
       'addEmployeesToPolicy',
@@ -395,7 +465,7 @@ export const timeOffMachine = {
   // Distinct from `policyDetailsForm` (the create-flow step) so that DONE
   // returns to the policy detail view rather than continuing into the
   // create flow's settings step.
-  editPolicyDetailsForm: state<MachineTransition>(
+  editPolicyDetailsForm: stepState(
     transition(
       componentEvents.TIME_OFF_POLICY_DETAILS_DONE,
       'viewTimeOffPolicyDetail',
@@ -427,7 +497,7 @@ export const timeOffMachine = {
   // Distinct from `policySettings` (the create-flow step) so that DONE/BACK
   // return to the policy detail view instead of routing into the create
   // flow's add-employees / details-form steps.
-  editPolicySettings: state<MachineTransition>(
+  editPolicySettings: stepState(
     transition(
       componentEvents.TIME_OFF_POLICY_SETTINGS_DONE,
       'viewTimeOffPolicyDetail',
@@ -453,7 +523,7 @@ export const timeOffMachine = {
     cancelToPolicyList,
   ),
 
-  holidaySelectionForm: state<MachineTransition>(
+  holidaySelectionForm: stepState(
     transition(
       componentEvents.TIME_OFF_HOLIDAY_SELECTION_DONE,
       'addEmployeesHoliday',
@@ -482,7 +552,7 @@ export const timeOffMachine = {
     cancelToPolicyList,
   ),
 
-  addEmployeesHoliday: state<MachineTransition>(
+  addEmployeesHoliday: stepState(
     transition(
       componentEvents.TIME_OFF_HOLIDAY_ADD_EMPLOYEES_DONE,
       'viewHolidayEmployees',
@@ -526,7 +596,7 @@ export const timeOffMachine = {
     cancelToPolicyList,
   ),
 
-  viewHolidayEmployees: state<MachineTransition>(
+  viewHolidayEmployees: stepState(
     transition(
       componentEvents.TIME_OFF_HOLIDAY_ADD_EMPLOYEES,
       'addEmployeesHoliday',
@@ -563,7 +633,7 @@ export const timeOffMachine = {
     backToListTransition,
   ),
 
-  viewHolidaySchedule: state<MachineTransition>(
+  viewHolidaySchedule: stepState(
     transition(
       componentEvents.TIME_OFF_VIEW_HOLIDAY_EMPLOYEES,
       'viewHolidayEmployees',
@@ -603,7 +673,7 @@ export const timeOffMachine = {
   // Distinct from `holidaySelectionForm` (the create-flow step) so that
   // DONE returns to the holiday detail view instead of routing into
   // `addEmployeesHoliday`.
-  editHolidaySelectionForm: state<MachineTransition>(
+  editHolidaySelectionForm: stepState(
     transition(
       componentEvents.TIME_OFF_HOLIDAY_SELECTION_EDIT_DONE,
       'viewHolidayEmployees',

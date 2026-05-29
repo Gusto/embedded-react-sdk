@@ -269,6 +269,9 @@ export const componentEvents = {
   ERROR: 'ERROR',
   CANCEL: 'CANCEL',
   BREADCRUMB_NAVIGATE: 'breadcrumb/navigate',
+  // Dispatched by Flow's browser-history sync to jump the machine to a named
+  // state in response to a popstate (back/forward) event or a deep-link hash.
+  GOTO_STEP: 'flow/gotoStep',
   ...employeeEvents,
   ...companyEvents,
   ...payScheduleEvents,
