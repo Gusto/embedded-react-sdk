@@ -3,10 +3,19 @@ name: write-tsdoc
 description: >-
   Write a valid TSDoc comment for an exported SDK symbol. Use when adding
   documentation to a new export, documenting an existing export, or when a
-  symbol is missing a TSDoc block.
+  symbol is missing a TSDoc block. Only applies to exported symbols in src/
+  that are not test, fixture, story, or mock files.
 ---
 
 # Write TSDoc
+
+Only invoke this skill for **exported symbols** in **`src/**/\*.{ts,tsx}`\*\*, excluding:
+
+- `**/*.stories.{ts,tsx}`
+- `**/*.test.{ts,tsx}`
+- `**/__fixtures__/**`
+
+Do not invoke for files in `build/`, `sdk-app/`, `e2e/`, `eslint-rules/`, or any other non-library directory.
 
 ## 1. Generate the skeleton
 
@@ -16,7 +25,11 @@ If any segment of the file path is `shared` or `helpers`, pass `--default-releas
 npx tsx build/tsdoc-stub.ts --file <path> --symbol <name> [--default-release internal]
 ```
 
-The output is two parts: a `LINE:N` header giving the line number of the declaration, then the comment skeleton. Parse `N` — you will insert the finished comment immediately before that line. If the release tag is `@internal`, prose is optional — `/** @internal */` alone is sufficient, but document the symbol if it is non-obvious or complex.
+The output varies by case — do not read the source file:
+
+- **No existing comment**: `LINE:N` then `DECLARATION:...\n---` then skeleton. Insert the finished comment before line N.
+- **Existing comment, not aligned**: `LINE:N`, `DELETE_THROUGH:M`, `OLD_COMMENT:...\n---`, `DECLARATION:...\n---`, then skeleton with summary pre-filled. Use the OLD_COMMENT text + first line of the declaration as the Edit `old_string`; replace with the finished comment + that same first line.
+- **Existing comment, already aligned**: nothing emitted (stderr message, exit 0) — skip. Aligned means: has a release tag, correct `@param` names matching the signature exactly, `@returns` present iff the function has a non-void return, and correct `@typeParam` names.
 
 ## 2. Fill in the prose
 
@@ -58,6 +71,9 @@ The output is two parts: a `LINE:N` header giving the line number of the declara
 - `@typeParam`, `@param`, `@returns`, `@deprecated`, and the release tag are one group — no blank lines between them
 - Each `@example` is its own group
 
-## 4. Output
+## 4. Write to file
 
-Print the comment block. Do not write it to the file.
+Use the Edit tool to write the finished comment to the source file:
+
+- **Insert**: `old_string` = first line of declaration; `new_string` = finished comment + `\n` + that line.
+- **Replace**: `old_string` = OLD_COMMENT text + `\n` + first line of declaration; `new_string` = finished comment + `\n` + that line.
