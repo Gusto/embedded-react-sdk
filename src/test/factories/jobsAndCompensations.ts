@@ -132,6 +132,7 @@ export type EmployeeJobsScenario =
   | 'multiJob'
   | 'futureCompPending'
   | 'newPrimaryJob'
+  | 'newPrimaryJobWithSecondaries'
 
 export interface BuildEmployeeWithJobsOptions {
   scenario: EmployeeJobsScenario
@@ -287,6 +288,84 @@ export function buildEmployeeWithJobs({
               payment_unit: 'Hour',
               rate: '50.00',
               effective_date: '2099-06-01',
+            }),
+          ],
+        }),
+      ]
+
+    case 'newPrimaryJobWithSecondaries':
+      // Primary new job (future hire_date) plus two secondary jobs covering both
+      // branches of the slide-2 rule when the primary's hire_date moves:
+      //   secondary A: comp effective_date is later than the primary hire_date
+      //     (stays-the-same case when hire_date moves within that window)
+      //   secondary B: comp effective_date equals the primary hire_date
+      //     (must-advance case for any forward hire_date change)
+      return [
+        buildJob({
+          uuid: 'job-uuid',
+          employeeUuid,
+          primary: true,
+          title: 'My New Job',
+          flsaStatus: 'Nonexempt',
+          paymentUnit: 'Hour',
+          rate: '50.00',
+          hireDate: '2099-07-01',
+          currentCompensationUuid: 'compensation-uuid',
+          compensations: [
+            buildCompensation({
+              uuid: 'compensation-uuid',
+              version: 'compensation-version-primary',
+              job_uuid: 'job-uuid',
+              flsa_status: 'Nonexempt',
+              payment_unit: 'Hour',
+              rate: '50.00',
+              effective_date: '2099-07-01',
+            }),
+          ],
+        }),
+        buildJob({
+          uuid: 'job-uuid-secondary-a',
+          version: 'job-version-secondary-a',
+          employeeUuid,
+          primary: false,
+          title: 'Side Gig A',
+          flsaStatus: 'Nonexempt',
+          paymentUnit: 'Hour',
+          rate: '20.00',
+          hireDate: '2099-07-01',
+          currentCompensationUuid: 'compensation-uuid-secondary-a',
+          compensations: [
+            buildCompensation({
+              uuid: 'compensation-uuid-secondary-a',
+              version: 'compensation-version-secondary-a',
+              job_uuid: 'job-uuid-secondary-a',
+              flsa_status: 'Nonexempt',
+              payment_unit: 'Hour',
+              rate: '20.00',
+              effective_date: '2099-08-16',
+            }),
+          ],
+        }),
+        buildJob({
+          uuid: 'job-uuid-secondary-b',
+          version: 'job-version-secondary-b',
+          employeeUuid,
+          primary: false,
+          title: 'Side Gig B',
+          flsaStatus: 'Nonexempt',
+          paymentUnit: 'Hour',
+          rate: '30.00',
+          hireDate: '2099-07-01',
+          currentCompensationUuid: 'compensation-uuid-secondary-b',
+          compensations: [
+            buildCompensation({
+              uuid: 'compensation-uuid-secondary-b',
+              version: 'compensation-version-secondary-b',
+              job_uuid: 'job-uuid-secondary-b',
+              flsa_status: 'Nonexempt',
+              payment_unit: 'Hour',
+              rate: '30.00',
+              effective_date: '2099-07-01',
             }),
           ],
         }),
