@@ -100,7 +100,7 @@ describe('management/EditPendingCompensation', () => {
     expect(within(dateInput).getByRole('spinbutton', { name: /^year/i })).toHaveValue(2099)
   })
 
-  it('does not expose the job title field (title belongs on the compensation form)', async () => {
+  it('renders exactly one Job title input (steady-state edit; title is owned by the comp form)', async () => {
     renderWithProviders(
       <EditPendingCompensation
         employeeId="employee-uuid"
@@ -114,8 +114,9 @@ describe('management/EditPendingCompensation', () => {
 
     await screen.findByRole('heading', { name: 'Edit compensation' })
 
-    // Only the compensation-form title field is rendered; useJobForm runs with
-    // withTitleField: false so Fields.Title is undefined on the job form.
+    // For steady-state edits, `useJobForm` runs with `withTitleField: false`
+    // and `useCompensationForm` owns the title field — exactly one Job title
+    // input is rendered (the comp form's).
     expect(screen.getAllByLabelText('Job title')).toHaveLength(1)
   })
 
@@ -395,5 +396,53 @@ describe('management/EditPendingCompensation — primary new job (isNewJob + isP
     expect(updateJobResolver).toHaveBeenCalledTimes(1)
     expect(updateJobBody).toMatchObject({ hire_date: '2099-06-01' })
     expect(updateCompensationBody).toMatchObject({ effective_date: '2099-06-01' })
+  })
+})
+
+describe('management/EditPendingCompensation — secondary new job (isNewJob, not primary)', () => {
+  beforeEach(() => {
+    setupApiTestMocks()
+    server.use(getMinimumWages)
+    server.use(
+      handleGetEmployeeJobs(() =>
+        HttpResponse.json(buildEmployeeWithJobs({ scenario: 'newSecondaryJob' })),
+      ),
+    )
+  })
+
+  it('shows Effective date and hides Hire date', async () => {
+    renderWithProviders(
+      <EditPendingCompensation
+        employeeId="employee-uuid"
+        jobId="secondary-job-uuid"
+        compensationId="secondary-compensation-uuid"
+        isNewJob={true}
+        isPrimaryJob={false}
+        onEvent={() => {}}
+      />,
+    )
+
+    await screen.findByRole('heading', { name: 'Edit compensation' })
+
+    expect(screen.getByLabelText('Effective date')).toBeInTheDocument()
+    expect(screen.queryByLabelText('Hire date')).toBeNull()
+  })
+
+  it('prefills the Job title from the loaded compensation and the wage from the pending compensation', async () => {
+    renderWithProviders(
+      <EditPendingCompensation
+        employeeId="employee-uuid"
+        jobId="secondary-job-uuid"
+        compensationId="secondary-compensation-uuid"
+        isNewJob={true}
+        isPrimaryJob={false}
+        onEvent={() => {}}
+      />,
+    )
+
+    await screen.findByRole('heading', { name: 'Edit compensation' })
+
+    expect(screen.getByLabelText('Job title')).toHaveValue('My Secondary Job')
+    expect(screen.getByLabelText('Wage')).toHaveValue('50.00')
   })
 })

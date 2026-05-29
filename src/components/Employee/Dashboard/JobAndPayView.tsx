@@ -310,10 +310,16 @@ export function JobAndPayView({
       key: 'jobTitle',
       title: t('jobAndPay.compensation.columns.jobTitle'),
       render: (job: Job) => {
+        // Title lives on compensation in the API — `job.title` is a
+        // denormalized snapshot that can lag behind comp-level title edits on
+        // pending (not-yet-started) jobs, so read from the comp pointed to by
+        // `currentCompensationUuid` like the pay-type / effective-date /
+        // status columns do.
+        const currentComp = job.compensations?.find(c => c.uuid === job.currentCompensationUuid)
         const numericRate = parseJobRate(job.rate)
         return (
           <>
-            {job.title || '-'}
+            {currentComp?.title || '-'}
             {numericRate !== null && job.paymentUnit ? (
               <Components.Text variant="supporting" size="sm">
                 {formatCompensationRate(numericRate, job.paymentUnit)}
@@ -380,7 +386,13 @@ export function JobAndPayView({
                 label: t('jobAndPay.compensation.deleteJobCta'),
                 icon: <TrashCanSvg aria-hidden />,
                 onClick: () => {
-                  setPendingDeleteJob({ uuid: job.uuid, title: job.title ?? '' })
+                  // Match the title shown on the row (comp-derived), since
+                  // `job.title` can lag behind comp-level edits on
+                  // secondaries.
+                  const currentComp = job.compensations?.find(
+                    c => c.uuid === job.currentCompensationUuid,
+                  )
+                  setPendingDeleteJob({ uuid: job.uuid, title: currentComp?.title ?? '' })
                 },
               },
             ]

@@ -16,6 +16,7 @@ const primaryJob = {
   compensations: [
     {
       uuid: 'comp-1',
+      title: 'Primary Job',
       flsaStatus: FlsaStatus.NONEXEMPT,
     },
   ],
@@ -31,6 +32,7 @@ const additionalJob = {
   compensations: [
     {
       uuid: 'comp-2',
+      title: 'Additional Job',
       flsaStatus: FlsaStatus.NONEXEMPT,
     },
   ],
