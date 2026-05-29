@@ -3,16 +3,33 @@
   "projectFolder": "../../",
   "mainEntryPointFilePath": "<projectFolder>/dist/index.d.ts",
   "bundledPackages": [],
+  "newlineKind": "lf",
   "compiler": {
-    "tsconfigFilePath": "<projectFolder>/.reports/config/tsconfig.json"
+    "overrideTsconfig": {
+      "compilerOptions": {
+        "lib": [
+          "ESNext",
+          "DOM"
+        ],
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
+        "jsx": "react-jsx",
+        "declaration": true,
+        "skipLibCheck": true,
+        "strict": true
+      },
+      "files": [
+        "dist/index.d.ts"
+      ]
+    }
   },
   "apiReport": {
     "enabled": true,
     "reportFolder": "<projectFolder>/.reports/",
-    "reportTempFolder": "<projectFolder>/.reports/temp/",
-    "reportVariants": [
-      "public"
-    ]
+    "reportTempFolder": "<projectFolder>/.reports/temp/"
   },
   "docModel": {
     "enabled": false
