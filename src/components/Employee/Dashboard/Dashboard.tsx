@@ -123,58 +123,61 @@ function DashboardRoot({
       <Suspense fallback={null}>
         <DashboardHeader employeeId={employeeId} />
       </Suspense>
-      <Components.Tabs
-        tabs={tabs}
-        selectedId={selectedTab}
-        onSelectionChange={id => {
-          const next = id as DashboardTab
-          setInternalTab(next)
-          onEvent(componentEvents.EMPLOYEE_DASHBOARD_TAB_CHANGE, { tab: next })
-        }}
-        aria-label={t('tabsLabel')}
-      />
 
-      <Flex flexDirection="column" gap={24}>
-        {selectedTab === 'basicDetails' && (
-          <Suspense fallback={<BaseLayout isLoading />}>
-            <BasicDetailsViewWithData
-              employeeId={employeeId}
-              onEditBasicDetails={handleEditBasicDetails}
-              onManageHomeAddress={handleManageHomeAddress}
-              onManageWorkAddress={handleManageWorkAddress}
-            />
-          </Suspense>
-        )}
+      <Flex flexDirection="column" gap={8}>
+        <Components.Tabs
+          tabs={tabs}
+          selectedId={selectedTab}
+          onSelectionChange={id => {
+            const next = id as DashboardTab
+            setInternalTab(next)
+            onEvent(componentEvents.EMPLOYEE_DASHBOARD_TAB_CHANGE, { tab: next })
+          }}
+          aria-label={t('tabsLabel')}
+        />
 
-        {selectedTab === 'jobAndPay' && (
-          <Suspense fallback={<BaseLayout isLoading />}>
-            <JobAndPayView
-              employeeId={employeeId}
-              onEvent={onEvent}
-              onEditCompensation={handleEditCompensation}
-              onAddJob={handleAddJob}
-              onAddAnotherJob={handleAddAnotherJob}
-              onAddDeduction={handleAddDeduction}
-              onEditDeduction={handleEditDeduction}
-            />
-          </Suspense>
-        )}
+        <Flex flexDirection="column" gap={24}>
+          {selectedTab === 'basicDetails' && (
+            <Suspense fallback={<BaseLayout isLoading />}>
+              <BasicDetailsViewWithData
+                employeeId={employeeId}
+                onEditBasicDetails={handleEditBasicDetails}
+                onManageHomeAddress={handleManageHomeAddress}
+                onManageWorkAddress={handleManageWorkAddress}
+              />
+            </Suspense>
+          )}
 
-        {selectedTab === 'taxes' && (
-          <Suspense fallback={<BaseLayout isLoading />}>
-            <TaxesViewWithData
-              employeeId={employeeId}
-              onEditFederalTaxes={handleEditFederalTaxes}
-              onEditStateTaxes={handleEditStateTaxes}
-            />
-          </Suspense>
-        )}
+          {selectedTab === 'jobAndPay' && (
+            <Suspense fallback={<BaseLayout isLoading />}>
+              <JobAndPayView
+                employeeId={employeeId}
+                onEvent={onEvent}
+                onEditCompensation={handleEditCompensation}
+                onAddJob={handleAddJob}
+                onAddAnotherJob={handleAddAnotherJob}
+                onAddDeduction={handleAddDeduction}
+                onEditDeduction={handleEditDeduction}
+              />
+            </Suspense>
+          )}
 
-        {selectedTab === 'documents' && (
-          <Suspense fallback={<BaseLayout isLoading />}>
-            <DocumentsViewWithData employeeId={employeeId} onViewForm={handleViewForm} />
-          </Suspense>
-        )}
+          {selectedTab === 'taxes' && (
+            <Suspense fallback={<BaseLayout isLoading />}>
+              <TaxesViewWithData
+                employeeId={employeeId}
+                onEditFederalTaxes={handleEditFederalTaxes}
+                onEditStateTaxes={handleEditStateTaxes}
+              />
+            </Suspense>
+          )}
+
+          {selectedTab === 'documents' && (
+            <Suspense fallback={<BaseLayout isLoading />}>
+              <DocumentsViewWithData employeeId={employeeId} onViewForm={handleViewForm} />
+            </Suspense>
+          )}
+        </Flex>
       </Flex>
     </Flex>
   )
@@ -192,7 +195,7 @@ function DashboardHeader({ employeeId }: { employeeId: string }) {
       <Components.Heading as="h2">
         {firstLastName({ first_name: employee?.firstName, last_name: employee?.lastName })}
       </Components.Heading>
-      <Components.Text>{t('employeeRoleLabel')}</Components.Text>
+      <Components.Text variant="supporting">{t('employeeRoleLabel')}</Components.Text>
     </Flex>
   )
 }
