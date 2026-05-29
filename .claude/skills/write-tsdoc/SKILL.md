@@ -35,6 +35,8 @@ The output varies by case — do not read the source file:
 
 **Summary** — one sentence after `/**`. Active verb for functions (`Formats…`, `Returns…`); shape description for types/interfaces. Under ~100 characters.
 
+**`@typeParam T -`** — one clause naming what the type parameter represents (e.g. `The shape of the form values`, `The entity type being listed`). Don't restate the constraint already in the signature.
+
 **`@param name -`** — one clause; don't restate the type. For complex params with discriminated unions, link the types directly: `{@link CreateProps} or {@link UpdateProps}`.
 
 **`@returns`** — what the value is, not its type. For loading-state hooks describe both branches: `A {@link HookLoadingResult} while loading, or a {@link UseXxxReady} once ready.`
