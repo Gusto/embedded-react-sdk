@@ -9,11 +9,17 @@ import {
   handleGetEmployeeJobs,
   handleCreateEmployeeJob,
   handleUpdateEmployeeJob,
+  handleUpdateEmployeeCompensation,
 } from '@/test/mocks/apis/employees'
 import { handleGetCompanyFederalTaxes } from '@/test/mocks/apis/company_federal_taxes'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
-import { buildEmployeeWithJobs } from '@/test/factories/jobsAndCompensations'
+import {
+  buildEmployeeWithJobs,
+  buildJob,
+  buildCompensation,
+  type CompensationFixture,
+} from '@/test/factories/jobsAndCompensations'
 import { fieldsMetadataEntry } from '@/test/fieldsMetadata'
 import { API_BASE_URL } from '@/test/constants'
 
@@ -718,6 +724,181 @@ describe('useJobForm', () => {
       const { title: _omit, ...rest } = VALID_FORM_DATA
       const result = schema.safeParse(rest)
       expect(result.success).toBe(true)
+    })
+  })
+
+  describe('primary-job hire_date PUT → secondary compensation correction', () => {
+    // After the primary's hire_date PUT, the server clobbers every secondary
+    // current-compensation effective_date to the new hire_date and bumps each
+    // compensation version. We model that by reusing the pre-PUT scenario and
+    // tagging versions with a `-next` suffix and pushing effective_date to the
+    // new hire_date — the hook's refetch reads `version` and the test asserts
+    // the request bodies the corrective block sent back.
+    function buildAfterPrimaryPutJobs(newHireDate: string) {
+      return buildEmployeeWithJobs({ scenario: 'newPrimaryJobWithSecondaries' }).map(job => ({
+        ...job,
+        version: `${job.version}-next`,
+        hire_date: newHireDate,
+        compensations: job.compensations.map(c => ({
+          ...c,
+          version: `${c.version}-next`,
+          effective_date: newHireDate,
+        })),
+      }))
+    }
+
+    // Two-phase GET: first call returns the pre-PUT scenario, subsequent calls
+    // (the hook's post-PUT refetch) return the after-PUT shape with bumped
+    // secondary versions.
+    function getJobsResolver(afterHireDate: string) {
+      let calls = 0
+      return vi.fn<HttpResponseResolver>(() => {
+        calls += 1
+        return HttpResponse.json(
+          calls === 1
+            ? buildEmployeeWithJobs({ scenario: 'newPrimaryJobWithSecondaries' })
+            : buildAfterPrimaryPutJobs(afterHireDate),
+        )
+      })
+    }
+
+    // Captures every PUT /v1/compensations/:id call so the tests can pick the
+    // body that hit a specific secondary's URL.
+    function compPutResolver() {
+      const calls: { compensationId: string; body: Record<string, unknown> }[] = []
+      const resolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
+        const compensationId = new URL(request.url).pathname.split('/').pop() ?? ''
+        const body = (await request.json()) as Record<string, unknown>
+        calls.push({ compensationId, body })
+        return HttpResponse.json(
+          buildCompensation({ uuid: compensationId, ...(body as Partial<CompensationFixture>) }),
+        )
+      })
+      return { resolver, calls }
+    }
+
+    function jobPutResponse(newHireDate: string) {
+      return HttpResponse.json(
+        buildJob({ uuid: 'job-uuid', version: 'job-version-next', hireDate: newHireDate }),
+      )
+    }
+
+    async function renderAndSubmit(newHireDate: string | null) {
+      const { result } = renderHook(
+        () =>
+          useJobForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+            withHireDateField: newHireDate !== null,
+          }),
+        { wrapper: GustoTestProvider },
+      )
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      if (newHireDate !== null) {
+        act(() => {
+          assertReady(result.current)
+          result.current.form.hookFormInternals.formMethods.setValue('hireDate', newHireDate)
+        })
+      }
+      let submitResult: unknown
+      await act(async () => {
+        assertReady(result.current)
+        submitResult = await result.current.actions.onSubmit()
+      })
+      return { result, submitResult }
+    }
+
+    it('does not PUT any secondary compensation when the hire date is unchanged', async () => {
+      const { resolver: updateCompResolver, calls: compCalls } = compPutResolver()
+      server.use(
+        handleGetEmployeeJobs(getJobsResolver('2099-07-01')),
+        handleUpdateEmployeeJob(() => jobPutResponse('2099-07-01')),
+        handleUpdateEmployeeCompensation(updateCompResolver),
+      )
+
+      await renderAndSubmit(null)
+
+      expect(compCalls).toHaveLength(0)
+    })
+
+    it('does not PUT any secondary compensation when there are no secondaries', async () => {
+      const { resolver: updateCompResolver, calls: compCalls } = compPutResolver()
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'newPrimaryJob' })),
+        ),
+        handleUpdateEmployeeJob(() => jobPutResponse('2099-08-01')),
+        handleUpdateEmployeeCompensation(updateCompResolver),
+      )
+
+      await renderAndSubmit('2099-08-01')
+
+      expect(compCalls).toHaveLength(0)
+    })
+
+    it("keeps a secondary's effective_date when it is still after the new hire date", async () => {
+      const { resolver: updateCompResolver, calls: compCalls } = compPutResolver()
+      server.use(
+        handleGetEmployeeJobs(getJobsResolver('2099-08-01')),
+        handleUpdateEmployeeJob(() => jobPutResponse('2099-08-01')),
+        handleUpdateEmployeeCompensation(updateCompResolver),
+      )
+
+      await renderAndSubmit('2099-08-01')
+
+      const aCall = compCalls.find(c => c.compensationId === 'compensation-uuid-secondary-a')
+      const bCall = compCalls.find(c => c.compensationId === 'compensation-uuid-secondary-b')
+
+      // A's original effective_date (2099-08-16) is still after the new hire
+      // date (2099-08-01), so it stays put. B's original (2099-07-01) is
+      // before the new hire date, so it advances.
+      expect(aCall?.body).toMatchObject({
+        effective_date: '2099-08-16',
+        version: 'compensation-version-secondary-a-next',
+      })
+      expect(bCall?.body).toMatchObject({
+        effective_date: '2099-08-01',
+        version: 'compensation-version-secondary-b-next',
+      })
+    })
+
+    it('advances every secondary effective_date when the new hire date passes them all', async () => {
+      const { resolver: updateCompResolver, calls: compCalls } = compPutResolver()
+      server.use(
+        handleGetEmployeeJobs(getJobsResolver('2099-09-01')),
+        handleUpdateEmployeeJob(() => jobPutResponse('2099-09-01')),
+        handleUpdateEmployeeCompensation(updateCompResolver),
+      )
+
+      await renderAndSubmit('2099-09-01')
+
+      const aCall = compCalls.find(c => c.compensationId === 'compensation-uuid-secondary-a')
+      const bCall = compCalls.find(c => c.compensationId === 'compensation-uuid-secondary-b')
+
+      expect(aCall?.body).toMatchObject({ effective_date: '2099-09-01' })
+      expect(bCall?.body).toMatchObject({ effective_date: '2099-09-01' })
+    })
+
+    it('surfaces a secondary PUT failure through errorHandling and skips submitResult', async () => {
+      const updateCompResolver = vi.fn<HttpResponseResolver>(({ request }) => {
+        const compensationId = new URL(request.url).pathname.split('/').pop() ?? ''
+        if (compensationId === 'compensation-uuid-secondary-a') {
+          return new HttpResponse(null, { status: 500 })
+        }
+        return HttpResponse.json(buildCompensation({ uuid: compensationId }))
+      })
+      server.use(
+        handleGetEmployeeJobs(getJobsResolver('2099-09-01')),
+        handleUpdateEmployeeJob(() => jobPutResponse('2099-09-01')),
+        handleUpdateEmployeeCompensation(updateCompResolver),
+      )
+
+      const { result, submitResult } = await renderAndSubmit('2099-09-01')
+
+      expect(submitResult).toBeUndefined()
+      expect(result.current.errorHandling.errors.length).toBeGreaterThan(0)
     })
   })
 })

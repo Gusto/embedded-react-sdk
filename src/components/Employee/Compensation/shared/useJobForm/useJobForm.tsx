@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import type { UseFormProps } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -8,6 +8,7 @@ import type { EmployeeWorkAddress } from '@gusto/embedded-api/models/components/
 import { useJobsAndCompensationsGetJobs } from '@gusto/embedded-api/react-query/jobsAndCompensationsGetJobs'
 import { useJobsAndCompensationsCreateJobMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsCreateJob'
 import { useJobsAndCompensationsUpdateMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsUpdate'
+import { useJobsAndCompensationsUpdateCompensationMutation } from '@gusto/embedded-api/react-query/jobsAndCompensationsUpdateCompensation'
 import { useEmployeeAddressesGetWorkAddresses } from '@gusto/embedded-api/react-query/employeeAddressesGetWorkAddresses'
 import { useEmployeesGet } from '@gusto/embedded-api/react-query/employeesGet'
 import { useFederalTaxDetailsGet } from '@gusto/embedded-api/react-query/federalTaxDetailsGet'
@@ -190,7 +191,18 @@ export function useJobForm({
 
   const createJobMutation = useJobsAndCompensationsCreateJobMutation()
   const updateJobMutation = useJobsAndCompensationsUpdateMutation()
-  const isPending = createJobMutation.isPending || updateJobMutation.isPending
+  const updateSecondaryCompMutation = useJobsAndCompensationsUpdateCompensationMutation()
+  // Tracks the post-primary-PUT corrective block (jobs refetch + parallel
+  // secondary comp PUTs). No single mutation hook reports `isPending` for the
+  // whole window — the refetch isn't a mutation, and `Promise.all` over one
+  // mutation hook makes its `isPending` track the latest-settled call — so we
+  // OR this in to keep the spinner solid through it.
+  const [isCorrectingSecondaries, setIsCorrectingSecondaries] = useState(false)
+  const isPending =
+    createJobMutation.isPending ||
+    updateJobMutation.isPending ||
+    updateSecondaryCompMutation.isPending ||
+    isCorrectingSecondaries
 
   const {
     baseSubmitHandler,
@@ -261,6 +273,27 @@ export function useJobForm({
             // it with whatever sat in form state.
             const titleToSend = withTitleField ? payload.title : undefined
 
+            // When a primary job's hire_date is PUT and the value actually
+            // changes, the API unconditionally overwrites every secondary's
+            // current-compensation effective_date to match the new hire_date —
+            // even when the secondary's original effective_date was already on
+            // or after the new hire_date. Read those originals now so we can
+            // PUT them back below; by the time we re-fetch they'll be gone.
+            const shouldCorrectSecondaries =
+              !isCreateMode &&
+              currentJob?.primary === true &&
+              !!resolvedHireDate &&
+              resolvedHireDate !== currentJob.hireDate
+            const secondaryJobEffectiveDates = shouldCorrectSecondaries
+              ? (employeeJobs ?? [])
+                  .filter(j => !j.primary && j.currentCompensationUuid)
+                  .map(j => ({
+                    compId: j.currentCompensationUuid!,
+                    effectiveDate: j.compensations?.find(c => c.uuid === j.currentCompensationUuid)
+                      ?.effectiveDate,
+                  }))
+              : []
+
             let updatedJob: Job
 
             if (isCreateMode) {
@@ -313,6 +346,48 @@ export function useJobForm({
                 throw new SDKInternalError('Job update failed')
               }
               updatedJob = result.job
+
+              // The primary PUT above clobbered each secondary's
+              // current-compensation effective_date. Refetch jobs for the
+              // bumped versions, then PUT each secondary back to
+              // max(originalEffectiveDate, newHireDate) in parallel — the
+              // requests are independent (different compensation_id, separate
+              // versions), and `Promise.all` still surfaces the first
+              // rejection through the surrounding baseSubmitHandler's catch.
+              if (shouldCorrectSecondaries && secondaryJobEffectiveDates.length > 0) {
+                setIsCorrectingSecondaries(true)
+                try {
+                  const refreshed = await jobsQuery.refetch()
+                  const freshComps = (refreshed.data?.jobs ?? []).flatMap(
+                    j => j.compensations ?? [],
+                  )
+                  await Promise.all(
+                    secondaryJobEffectiveDates.flatMap(entry => {
+                      const freshComp = freshComps.find(c => c.uuid === entry.compId)
+                      if (!freshComp?.version) return []
+
+                      const desired =
+                        !entry.effectiveDate || entry.effectiveDate < resolvedHireDate
+                          ? resolvedHireDate
+                          : entry.effectiveDate
+
+                      return [
+                        updateSecondaryCompMutation.mutateAsync({
+                          request: {
+                            compensationId: entry.compId,
+                            compensationsUpdateRequestBody: {
+                              version: freshComp.version,
+                              effectiveDate: desired,
+                            },
+                          },
+                        }),
+                      ]
+                    }),
+                  )
+                } finally {
+                  setIsCorrectingSecondaries(false)
+                }
+              }
             }
 
             submitResult = {
