@@ -21,15 +21,37 @@ Do not invoke for files in `build/`, `sdk-app/`, `e2e/`, `eslint-rules/`, or any
 
 If any segment of the file path is `shared` or `helpers`, pass `--default-release internal`; otherwise omit it.
 
+**Each `tsdoc-stub` invocation is expensive — never call it more than once per file.**
+
+- When documenting multiple symbols from the same file, always generate all skeletons in a single call.
+- Use `--all-exports` when you need every exported symbol in the file (e.g. working from a violation list that covers the whole file).
+- Use `--symbols` when you have a known subset.
+- Only use `--symbol` (singular) when there is exactly one symbol to document in the file.
+
+**All exported symbols in a file (use when the violation list covers most or all of a file):**
+```bash
+npx tsx build/tsdoc-stub.ts --file <path> --all-exports [--default-release internal]
+```
+
+**A specific subset of symbols from the same file:**
+```bash
+npx tsx build/tsdoc-stub.ts --file <path> --symbols Name1,Name2,Name3 [--default-release internal]
+```
+
+**Single symbol (only when there is exactly one symbol to document in this file):**
 ```bash
 npx tsx build/tsdoc-stub.ts --file <path> --symbol <name> [--default-release internal]
 ```
 
-The output varies by case — do not read the source file:
+Single-symbol output varies by case — do not read the source file:
 
-- **No existing comment**: `LINE:N` then `DECLARATION:...\n---` then skeleton. Insert the finished comment before line N.
-- **Existing comment, not aligned**: `LINE:N`, `DELETE_THROUGH:M`, `OLD_COMMENT:...\n---`, `DECLARATION:...\n---`, then skeleton with summary pre-filled. Use the OLD_COMMENT text + first line of the declaration as the Edit `old_string`; replace with the finished comment + that same first line.
+- **No existing comment**: `LINE:N` then `DECLARATION:...\n---` then (optionally) `EVENTS:...\n---` then skeleton. Insert the finished comment before line N.
+- **Existing comment, not aligned**: `LINE:N`, `DELETE_THROUGH:M`, `OLD_COMMENT:...\n---`, `DECLARATION:...\n---`, then (optionally) `EVENTS:...\n---`, then skeleton with summary pre-filled. Use the OLD_COMMENT text + first line of the declaration as the Edit `old_string`; replace with the finished comment + that same first line.
 - **Existing comment, already aligned**: nothing emitted (stderr message, exit 0) — skip. Aligned means: has a release tag, correct `@param` names matching the signature exactly, `@returns` present iff the function has a non-void return, and correct `@typeParam` names.
+
+Batch output (`--symbols` / `--all-exports`) prefixes each symbol with `SYMBOL: NAME\n`, then either the same block as single mode or `SKIP\n` if already aligned.
+
+**`EVENTS:` section** — present on component/function symbols that accept `onEvent`. Each line is `KEY string-value` (e.g. `TIME_OFF_CREATE_POLICY timeOff/createPolicy`). Use this directly to build the `@remarks` events table — no additional file reads or greps needed.
 
 ## 2. Fill in the prose
 
@@ -43,12 +65,12 @@ The output varies by case — do not read the source file:
 
 **`@remarks`** (optional) — behavioral notes, edge cases, or constraints that don't fit the summary. Place between summary and the param group.
 
-For exported **React components**, `@remarks` must include an events table listing every `onEvent` payload the component can emit:
+For exported **React components**, `@remarks` must include an events table listing every `onEvent` payload the component can emit. When the stub emitted an `EVENTS:` section, use those entries directly as the row list — do not grep for events. When the stub emitted no `EVENTS:` section, the component does not use `onEvent` and no table is needed.
 
 ```
 | Event | Description | Data |
 | ----- | ----------- | ---- |
-| `EVENT_NAME` | What triggers it | {@link DataType} or — |
+| `event/string/value` | What triggers it | {@link DataType} or — |
 ```
 
 Use `{@link TypeName}` (importing the type if needed) for the Data column when a type from `@gusto/embedded-api/models/components/` matches. Use `—` when the event carries no data.

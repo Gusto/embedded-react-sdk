@@ -45,11 +45,11 @@ These were discovered by the tsdoc-backfill agent as missing TSDoc in $TARGET.
 Violation list:
 <paste the full violation list from Phase 1>
 
-Work through each file in order. For each symbol:
-- Check docs/ for existing prose to adapt (docs/hooks/ for hooks, docs/integration-guide/ for utilities)
-- If docs/ has nothing and this is a top-level or complex symbol, check MCP (Jira, Confluence, Notion) for product context
-- Use the write-tsdoc skill to generate the skeleton and fill in prose
-- Run ESLint on the file after completing it; fix any errors before moving on
+Work through each file in order. For each file:
+1. Run tsdoc-stub **once** for the whole file using `--all-exports` (or `--symbols` if only a subset needs documenting) to generate all skeletons in a single call. Never call tsdoc-stub once per symbol — each invocation is expensive.
+2. Check docs/ for existing prose to adapt before filling in any prose (docs/hooks/ for hooks, docs/integration-guide/ for utilities). For top-level or complex symbols with nothing in docs/, check MCP (Jira, Confluence, Notion) for product context.
+3. Fill in prose for all symbols in the file, then write them all to the file (multiple Edit calls in the same turn where possible).
+4. Run ESLint on the file once after all symbols are written; fix any errors before moving on.
 
 For exported **React components**, before writing the events table in `@remarks`:
 - Find every `onEvent(companyEvents.*, ...)` call in the component file — including calls inside nested handler functions (e.g. a function like `onXxxFormEvent` that proxies events from a child component's `onEvent`). These bubbled-up events must appear in the table.
