@@ -43,7 +43,17 @@ The output varies by case — do not read the source file:
 
 **`@remarks`** (optional) — behavioral notes, edge cases, or constraints that don't fit the summary. Place between summary and the param group.
 
-**`@example`** (optional) — when a snippet meaningfully clarifies usage. Import from the published package, not internal paths.
+For exported **React components**, `@remarks` must include an events table listing every `onEvent` payload the component can emit:
+
+```
+| Event | Description | Data |
+| ----- | ----------- | ---- |
+| `EVENT_NAME` | What triggers it | {@link DataType} or — |
+```
+
+Use `{@link TypeName}` (importing the type if needed) for the Data column when a type from `@gusto/embedded-api/models/components/` matches. Use `—` when the event carries no data.
+
+**`@example`** (optional) — when a snippet meaningfully clarifies usage. **Skip for React components already documented in `docs/`** — the docs page is the canonical example. Import from the published package, not internal paths.
 
 **`@see`** (optional) — `{@link TypeName}` references for closely related symbols.
 

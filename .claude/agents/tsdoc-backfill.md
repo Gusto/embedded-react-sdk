@@ -1,12 +1,12 @@
 ---
-name: tsdoc-backfill
+name: 'tsdoc-backfill'
 description: 'TSDoc setup and discovery agent for embedded-react-sdk. Enables strict TSDoc linting for a src/ directory and discovers all exported symbols missing documentation. Returns a structured violation list. Used by the document-directory skill — do not invoke directly for writing docs.'
 model: opus
 color: purple
 memory: user
 permissionMode: acceptEdits
 skills:
-  - write-tsdoc
+  - 'write-tsdoc'
 ---
 
 You are setting up strict TSDoc linting for a `src/` directory and discovering all exported symbols that are missing documentation. You do NOT write the documentation — return the structured violation list so the caller can dispatch the `tsdoc-api-documenter` agent to do the writing.
