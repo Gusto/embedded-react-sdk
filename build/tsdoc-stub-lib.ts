@@ -208,11 +208,11 @@ export function collectOnEventKeys(info: SymbolInfo, sf: SourceFile): string[] |
   const fileText = sf.getFullText()
 
   const hasOnEventParam = info.params.some(p => p.includes('onEvent'))
-  const hasDirectCalls = /onEvent\(componentEvents\./.test(fileText)
+  const hasDirectCalls = /onEvent\(\w+Events\./.test(fileText)
   if (!hasOnEventParam && !hasDirectCalls) return null
 
   const keys = new Set<string>()
-  const EVENT_REF = /componentEvents\.(\w+)/g
+  const EVENT_REF = /\w+Events\.(\w+)/g
 
   function scanText(text: string) {
     for (const m of text.matchAll(EVENT_REF)) {

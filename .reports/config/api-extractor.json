@@ -7,10 +7,7 @@
   "compiler": {
     "overrideTsconfig": {
       "compilerOptions": {
-        "lib": [
-          "ESNext",
-          "DOM"
-        ],
+        "lib": ["ESNext", "DOM"],
         "target": "ESNext",
         "module": "ESNext",
         "moduleResolution": "bundler",
@@ -21,9 +18,7 @@
         "skipLibCheck": true,
         "strict": true
       },
-      "files": [
-        "dist/index.d.ts"
-      ]
+      "files": ["dist/index.d.ts"]
     }
   },
   "apiReport": {

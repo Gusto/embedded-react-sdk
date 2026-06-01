@@ -37,12 +37,7 @@
 
 import { Project } from 'ts-morph'
 import { resolve } from 'path'
-import {
-  ROOT,
-  VALID_RELEASE_TAGS,
-  type ReleaseTag,
-  processSymbol,
-} from './tsdoc-stub-lib.js'
+import { ROOT, VALID_RELEASE_TAGS, type ReleaseTag, processSymbol } from './tsdoc-stub-lib.js'
 
 function getArg(flag: string): string | undefined {
   const idx = process.argv.indexOf(flag)
@@ -133,7 +128,10 @@ if (allExports) {
     .filter(([, decls]) => decls[0]?.getSourceFile().getFilePath() === absPath)
     .map(([name]) => name)
 } else {
-  symbolNames = (symbolsArg ?? '').split(',').map(s => s.trim()).filter(Boolean)
+  symbolNames = (symbolsArg ?? '')
+    .split(',')
+    .map(s => s.trim())
+    .filter(Boolean)
   if (symbolNames.length === 0) {
     process.stderr.write('Error: --symbols requires a comma-separated list of symbol names\n')
     process.exit(1)
