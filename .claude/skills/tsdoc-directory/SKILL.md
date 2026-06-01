@@ -1,5 +1,5 @@
 ---
-name: document-directory
+name: tsdoc-directory
 description: >-
   Fully document a src/ directory by orchestrating the tsdoc-backfill and
   tsdoc-api-documenter agents. Use when asked to document a directory, expand
@@ -17,6 +17,19 @@ Orchestrates two agents to fully document a `src/` directory:
 ## Argument handling
 
 `$ARGUMENTS` is the target directory. Normalise it: strip leading `./` or trailing `/`. If it doesn't start with `src/`, prepend `src/`.
+
+## Phase 0 — Baseline build and API report
+
+Before doing anything else, run a clean build and derive the current API report:
+
+```bash
+npm run build && npm run api-report:derive 2>&1
+```
+
+This ensures the API report reflects the current state of the repo before any documentation changes are made. The diff
+in Phase 3 will then show only what this run changed.
+
+If the build fails, stop and report the error to the user — do not proceed.
 
 ## Phase 1 — Setup and discovery (foreground)
 
@@ -39,6 +52,7 @@ Spawn the `tsdoc-api-documenter` agent with **`run_in_background: true`**:
 - **prompt**:
 
 ```
+
 Document the following exported symbols in the embedded-react-sdk repo.
 These were discovered by the tsdoc-backfill agent as missing TSDoc in $TARGET.
 
@@ -46,16 +60,19 @@ Violation list:
 <paste the full violation list from Phase 1>
 
 Work through each file in order. For each file:
+
 1. Run tsdoc-stub **once** for the whole file using `--all-exports` (or `--symbols` if only a subset needs documenting) to generate all skeletons in a single call. Never call tsdoc-stub once per symbol — each invocation is expensive.
 2. Check docs/ for existing prose to adapt before filling in any prose (docs/hooks/ for hooks, docs/integration-guide/ for utilities). For top-level or complex symbols with nothing in docs/, check MCP (Jira, Confluence, Notion) for product context.
 3. Fill in prose for all symbols in the file, then write them all to the file (multiple Edit calls in the same turn where possible).
 4. Run ESLint on the file once after all symbols are written; fix any errors before moving on.
 
 For exported **React components**, before writing the events table in `@remarks`:
+
 - Find every `onEvent(companyEvents.*, ...)` call in the component file — including calls inside nested handler functions (e.g. a function like `onXxxFormEvent` that proxies events from a child component's `onEvent`). These bubbled-up events must appear in the table.
 - Cross-reference the events table in docs/ to catch any you might have missed.
 
 Return a summary of what was documented and any symbols skipped with reasons.
+
 ```
 
 ## Phase 3 — Final verification and report (on completion notification)
@@ -63,16 +80,19 @@ Return a summary of what was documented and any symbols skipped with reasons.
 When the background agent completes, run in sequence:
 
 **Step 1 — ESLint**
+
 ```bash
 npx eslint '$TARGET' 2>&1
 ```
 
 **Step 2 — Build and API report**
+
 ```bash
 npm run build && npm run api-report:derive 2>&1
 ```
 
 Then diff the report to see what changed:
+
 ```bash
 git diff .reports/embedded-react-sdk.api.md
 ```
@@ -80,7 +100,8 @@ git diff .reports/embedded-react-sdk.api.md
 **Step 3 — Fix forgotten exports**
 
 Scan the diff for `ae-forgotten-export` warnings. For each one:
-- Find which barrel file exports the symbol that *references* the forgotten type (e.g. if `AssignSignatoryProps` is forgotten and `AssignSignatory` is exported from `Company/exports/companyOnboarding.ts`, add `AssignSignatoryProps` there too).
+
+- Find which barrel file exports the symbol that _references_ the forgotten type (e.g. if `AssignSignatoryProps` is forgotten and `AssignSignatory` is exported from `Company/exports/companyOnboarding.ts`, add `AssignSignatoryProps` there too).
 - The type does not need to be re-exported from the top-level `src/index.ts` — the nearest barrel file that already exports the referencing symbol is sufficient.
 - Re-run `npm run build && npm run api-report:derive` after making changes to confirm the warning is gone.
 

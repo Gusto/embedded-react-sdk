@@ -1,5 +1,5 @@
 ---
-name: write-tsdoc
+name: tsdoc-file
 description: >-
   Write a valid TSDoc comment for an exported SDK symbol. Use when adding
   documentation to a new export, documenting an existing export, or when a
@@ -9,7 +9,7 @@ description: >-
 
 # Write TSDoc
 
-Only invoke this skill for **exported symbols** in **`src/**/\*.{ts,tsx}`\*\*, excluding:
+Only invoke this skill for **exported symbols** in **`src/**\/\*.{ts,tsx}`\*\*, excluding:
 
 - `**/*.stories.{ts,tsx}`
 - `**/*.test.{ts,tsx}`
@@ -29,16 +29,19 @@ If any segment of the file path is `shared` or `helpers`, pass `--default-releas
 - Only use `--symbol` (singular) when there is exactly one symbol to document in the file.
 
 **All exported symbols in a file (use when the violation list covers most or all of a file):**
+
 ```bash
 npx tsx build/tsdoc-stub.ts --file <path> --all-exports [--default-release internal]
 ```
 
 **A specific subset of symbols from the same file:**
+
 ```bash
 npx tsx build/tsdoc-stub.ts --file <path> --symbols Name1,Name2,Name3 [--default-release internal]
 ```
 
 **Single symbol (only when there is exactly one symbol to document in this file):**
+
 ```bash
 npx tsx build/tsdoc-stub.ts --file <path> --symbol <name> [--default-release internal]
 ```

@@ -1,6 +1,6 @@
 ---
 name: 'tsdoc-backfill'
-description: 'TSDoc setup and discovery agent for embedded-react-sdk. Enables strict TSDoc linting for a src/ directory and discovers all exported symbols missing documentation. Returns a structured violation list. Used by the document-directory skill — do not invoke directly for writing docs.'
+description: 'TSDoc setup and discovery agent for embedded-react-sdk. Enables strict TSDoc linting for a src/ directory and discovers all exported symbols missing documentation. Returns a structured violation list. Used by the tsdoc-directory skill — do not invoke directly for writing docs.'
 model: opus
 color: purple
 memory: user
