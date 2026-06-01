@@ -20,14 +20,6 @@
   "cancelNewJobCta": "Cancel",
   "classificationLink": "<ClassificationLink href=\"https://support.gusto.com/team-management/team-payments/pay-rates/1001671771/Employee-classification-options.htm\" target=\"_blank\">Learn more about employee classifications.</ClassificationLink>",
   "commissionAlerts": {
-    "timeTrackingImpact": {
-      "label": "This change may impact time tracking eligibility and overtime.",
-      "intro": "Before saving changes to employee type, keep in mind:",
-      "items": {
-        "notEligibleForTimeTracking": "Commission-only employees are not eligible for time tracking.",
-        "overtimeNotRetroactive": "Overtime eligibility changes won’t apply retroactively to time tracking, and overtime hours may require additional admin review."
-      }
-    },
     "federalMinimumPay": {
       "label": "Commission-only employees must earn the federal minimum pay",
       "body": "Federal laws say that employees not eligible for overtime should be paid at least $684 per week ($35,568 per year). You’ve classified this employee as not eligible for overtime—make sure they meet the Department of Labor’s definition of an exempt employee."

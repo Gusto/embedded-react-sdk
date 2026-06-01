@@ -1352,14 +1352,6 @@ export interface EmployeeCompensation{
 "cancelNewJobCta":string;
 "classificationLink":string;
 "commissionAlerts":{
-"timeTrackingImpact":{
-"label":string;
-"intro":string;
-"items":{
-"notEligibleForTimeTracking":string;
-"overtimeNotRetroactive":string;
-};
-};
 "federalMinimumPay":{
 "label":string;
 "body":string;

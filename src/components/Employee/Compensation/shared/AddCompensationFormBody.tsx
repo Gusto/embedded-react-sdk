@@ -87,25 +87,61 @@ export function AddCompensationFormBody({
         />
       )}
 
-      <CompFields.Rate
-        label={t('amount')}
-        validationMessages={{
-          REQUIRED: t('validations.rate'),
-          RATE_MINIMUM: t('validations.nonZeroRate'),
-          RATE_EXEMPT_THRESHOLD: t('validations.rateExemptThreshold', {
-            limit: format(FLSA_OVERTIME_SALARY_LIMIT),
-          }),
-        }}
-        formHookResult={compensationForm}
-      />
+      {compensationForm.status.showCommissionFederalMinimumPayAlert && (
+        <Components.Alert
+          status="warning"
+          label={t('commissionAlerts.federalMinimumPay.label')}
+          disableScrollIntoView
+        >
+          {t('commissionAlerts.federalMinimumPay.body')}
+        </Components.Alert>
+      )}
 
-      <CompFields.PaymentUnit
-        label={t('paymentUnitLabel')}
-        description={t('paymentUnitDescription')}
-        validationMessages={{ REQUIRED: t('validations.paymentUnit') }}
-        getOptionLabel={(unit: PaymentUnit) => t(`paymentUnitOptions.${unit}`)}
-        formHookResult={compensationForm}
-      />
+      {compensationForm.status.showCommissionMinimumWageAlert && (
+        <Components.Alert
+          status="warning"
+          label={t('commissionAlerts.minimumWage.label')}
+          disableScrollIntoView
+        >
+          <Trans
+            t={t}
+            i18nKey="commissionAlerts.minimumWage.body"
+            components={{
+              minimumWageLink: (
+                <Components.Link
+                  href="https://support.gusto.com/article/112472520100000/manage-tip-wages-distributed-service-charges-and-tip-credits-in-gusto-for-admins"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                />
+              ),
+            }}
+          />
+        </Components.Alert>
+      )}
+
+      {CompFields.Rate && (
+        <CompFields.Rate
+          label={t('amount')}
+          validationMessages={{
+            REQUIRED: t('validations.rate'),
+            RATE_MINIMUM: t('validations.nonZeroRate'),
+            RATE_EXEMPT_THRESHOLD: t('validations.rateExemptThreshold', {
+              limit: format(FLSA_OVERTIME_SALARY_LIMIT),
+            }),
+          }}
+          formHookResult={compensationForm}
+        />
+      )}
+
+      {CompFields.PaymentUnit && (
+        <CompFields.PaymentUnit
+          label={t('paymentUnitLabel')}
+          description={t('paymentUnitDescription')}
+          validationMessages={{ REQUIRED: t('validations.paymentUnit') }}
+          getOptionLabel={(unit: PaymentUnit) => t(`paymentUnitOptions.${unit}`)}
+          formHookResult={compensationForm}
+        />
+      )}
 
       {CompFields.AdjustForMinimumWage && (
         <CompFields.AdjustForMinimumWage

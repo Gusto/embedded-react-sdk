@@ -1,4 +1,3 @@
-import { useWatch } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import type { PaymentUnit } from '@gusto/embedded-api-v-2025-11-15/models/components/compensation'
 import type { FlsaStatusType } from '@gusto/embedded-api-v-2025-11-15/models/components/flsastatustype'
@@ -7,7 +6,7 @@ import type { UseJobFormReady } from '../shared/useJobForm'
 import type { UseCompensationFormReady } from '../shared/useCompensationForm'
 import { ActionsLayout, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { FLSA_OVERTIME_SALARY_LIMIT, FlsaStatus } from '@/shared/constants'
+import { FLSA_OVERTIME_SALARY_LIMIT } from '@/shared/constants'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 
 export interface ManagementCompensationFormBodyProps {
@@ -40,11 +39,6 @@ export function ManagementCompensationFormBody({
 
   const JobFields = jobForm.form.Fields
   const CompFields = compensationForm.form.Fields
-
-  const watchedFlsaStatus = useWatch({
-    control: compensationForm.form.hookFormInternals.formMethods.control,
-    name: 'flsaStatus',
-  })
 
   return (
     <Flex flexDirection="column" gap={32}>
@@ -93,81 +87,62 @@ export function ManagementCompensationFormBody({
               getOptionLabel={(status: FlsaStatusType) => t(`flsaStatusLabels.${status}`)}
               formHookResult={compensationForm}
             />
-            {(watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT ||
-              watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_NONEXEMPT) && (
-              <Flex flexDirection="column" gap={0}>
-                <Components.Alert
-                  status="info"
-                  label={t('commissionAlerts.timeTrackingImpact.label')}
-                  disableScrollIntoView
-                >
-                  {t('commissionAlerts.timeTrackingImpact.intro')}
-                  <Components.UnorderedList
-                    items={[
-                      t('commissionAlerts.timeTrackingImpact.items.notEligibleForTimeTracking'),
-                      t('commissionAlerts.timeTrackingImpact.items.overtimeNotRetroactive'),
-                    ]}
-                  />
-                </Components.Alert>
-                {watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT && (
-                  <Components.Alert
-                    status="warning"
-                    label={t('commissionAlerts.federalMinimumPay.label')}
-                    disableScrollIntoView
-                  >
-                    {t('commissionAlerts.federalMinimumPay.body')}
-                  </Components.Alert>
-                )}
-                {watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_NONEXEMPT && (
-                  <Components.Alert
-                    status="warning"
-                    label={t('commissionAlerts.minimumWage.label')}
-                    disableScrollIntoView
-                  >
-                    <Trans
-                      t={t}
-                      i18nKey="commissionAlerts.minimumWage.body"
-                      components={{
-                        minimumWageLink: (
-                          <Components.Link
-                            href="https://support.gusto.com/article/112472520100000/manage-tip-wages-distributed-service-charges-and-tip-credits-in-gusto-for-admins"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          />
-                        ),
-                      }}
-                    />
-                  </Components.Alert>
-                )}
-              </Flex>
+            {compensationForm.status.showCommissionFederalMinimumPayAlert && (
+              <Components.Alert
+                status="warning"
+                label={t('commissionAlerts.federalMinimumPay.label')}
+                disableScrollIntoView
+              >
+                {t('commissionAlerts.federalMinimumPay.body')}
+              </Components.Alert>
+            )}
+            {compensationForm.status.showCommissionMinimumWageAlert && (
+              <Components.Alert
+                status="warning"
+                label={t('commissionAlerts.minimumWage.label')}
+                disableScrollIntoView
+              >
+                <Trans
+                  t={t}
+                  i18nKey="commissionAlerts.minimumWage.body"
+                  components={{
+                    minimumWageLink: (
+                      <Components.Link
+                        href="https://support.gusto.com/article/112472520100000/manage-tip-wages-distributed-service-charges-and-tip-credits-in-gusto-for-admins"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      />
+                    ),
+                  }}
+                />
+              </Components.Alert>
             )}
           </>
         )}
 
-        {watchedFlsaStatus !== FlsaStatus.COMMISSION_ONLY_EXEMPT &&
-          watchedFlsaStatus !== FlsaStatus.COMMISSION_ONLY_NONEXEMPT && (
-            <>
-              <CompFields.Rate
-                label={t('management.wageLabel')}
-                validationMessages={{
-                  REQUIRED: t('validations.rate'),
-                  RATE_MINIMUM: t('validations.nonZeroRate'),
-                  RATE_EXEMPT_THRESHOLD: t('validations.rateExemptThreshold', {
-                    limit: format(FLSA_OVERTIME_SALARY_LIMIT),
-                  }),
-                }}
-                formHookResult={compensationForm}
-              />
+        {CompFields.Rate && (
+          <CompFields.Rate
+            label={t('management.wageLabel')}
+            validationMessages={{
+              REQUIRED: t('validations.rate'),
+              RATE_MINIMUM: t('validations.nonZeroRate'),
+              RATE_EXEMPT_THRESHOLD: t('validations.rateExemptThreshold', {
+                limit: format(FLSA_OVERTIME_SALARY_LIMIT),
+              }),
+            }}
+            formHookResult={compensationForm}
+          />
+        )}
 
-              <CompFields.PaymentUnit
-                label={t('management.wageFrequencyLabel')}
-                description={t('paymentUnitDescription')}
-                validationMessages={{ REQUIRED: t('validations.paymentUnit') }}
-                getOptionLabel={(unit: PaymentUnit) => t(`paymentUnitOptions.${unit}` as const)}
-                formHookResult={compensationForm}
-              />
-            </>
-          )}
+        {CompFields.PaymentUnit && (
+          <CompFields.PaymentUnit
+            label={t('management.wageFrequencyLabel')}
+            description={t('paymentUnitDescription')}
+            validationMessages={{ REQUIRED: t('validations.paymentUnit') }}
+            getOptionLabel={(unit: PaymentUnit) => t(`paymentUnitOptions.${unit}` as const)}
+            formHookResult={compensationForm}
+          />
+        )}
 
         {CompFields.EffectiveDate && (
           <CompFields.EffectiveDate
