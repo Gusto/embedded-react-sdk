@@ -14,11 +14,23 @@
     "tableLabel": "List of all jobs for the employee",
     "typeColumn": "Pay type"
   },
-  "amount": "Compensation amount",
   "backCta": "Back",
   "cancelCta": "Cancel",
   "cancelNewJobCta": "Cancel",
   "classificationLink": "<ClassificationLink href=\"https://support.gusto.com/team-management/team-payments/pay-rates/1001671771/Employee-classification-options.htm\" target=\"_blank\">Learn more about employee classifications.</ClassificationLink>",
+  "commissionAlerts": {
+    "federalMinimumPay": {
+      "label": "Commission-only employees must earn the federal minimum pay",
+      "body": "Federal laws say that employees not eligible for overtime should be paid at least $684 per week ($35,568 per year). You’ve classified this employee as not eligible for overtime—make sure they meet the Department of Labor’s definition of an exempt employee."
+    },
+    "minimumWage": {
+      "label": "Commission-only employees must earn at least the minimum wage",
+      "body": "To stay compliant, <minimumWageLink>check your local regulations</minimumWageLink>."
+    },
+    "ownerSalary": {
+      "label": "The IRS requires owners of S corps to pay themselves a reasonable salary similar to others in the same role, before taking any distributions."
+    }
+  },
   "employeeClassification": "Employee type",
   "flsaStatusLabels": {
     "Commission Only Exempt": "Commission Only/No Overtime",
@@ -31,7 +43,8 @@
   "hamburgerTitle": "Job actions",
   "jobTitle": "Job Title",
   "paymentUnitDescription": "The period over which the compensation amount is tracked (e.g., hourly, daily, weekly, monthly, annually).",
-  "paymentUnitLabel": "Wage frequency",
+  "wageLabel": "Wage",
+  "wageFrequencyLabel": "Wage frequency",
   "paymentUnitOptions": {
     "Hour": "Hour",
     "Month": "Month",
@@ -51,8 +64,6 @@
   "management": {
     "editCompensationTitle": "Edit compensation",
     "jobTitleLabel": "Job title",
-    "wageLabel": "Wage",
-    "wageFrequencyLabel": "Wage frequency",
     "hireDateLabel": "Hire date",
     "twoPercentShareholderLabel": "This employee is a 2% shareholder",
     "saveCta": "Save"

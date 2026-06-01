@@ -97,8 +97,8 @@ export interface UseCompensationFormProps {
 export interface CompensationFormFields {
   Title: typeof TitleField
   FlsaStatus: typeof FlsaStatusField | undefined
-  Rate: typeof RateField
-  PaymentUnit: typeof PaymentUnitField
+  Rate: typeof RateField | undefined
+  PaymentUnit: typeof PaymentUnitField | undefined
   AdjustForMinimumWage: typeof AdjustForMinimumWageField | undefined
   MinimumWageId: typeof MinimumWageIdField | undefined
   EffectiveDate: typeof EffectiveDateField | undefined
@@ -145,6 +145,29 @@ export interface UseCompensationFormReady extends BaseFormHookReady<
      * this flag — no separate confirmation step is needed.
      */
     willDeleteSecondaryJobs: boolean
+    /**
+     * True when the current `flsaStatus` is `COMMISSION_ONLY_EXEMPT`
+     * (Commission Only/No Overtime). Render the federal-minimum-pay
+     * warning alert when this flag is true. While this flag is true,
+     * `Fields.Rate` and `Fields.PaymentUnit` are also `undefined` (the
+     * hook forces `rate=0`, `paymentUnit=YEAR` on the form values).
+     */
+    showCommissionFederalMinimumPayAlert: boolean
+    /**
+     * True when the current `flsaStatus` is `COMMISSION_ONLY_NONEXEMPT`
+     * (Commission Only/Eligible for overtime). Render the local-minimum-wage
+     * warning alert when this flag is true. While this flag is true,
+     * `Fields.Rate` and `Fields.PaymentUnit` are also `undefined` (the
+     * hook forces `rate=0`, `paymentUnit=YEAR` on the form values).
+     */
+    showCommissionMinimumWageAlert: boolean
+    /**
+     * True when the current `flsaStatus` is `OWNER` (Owner's draw). Render
+     * an informational alert reminding partners that the IRS requires
+     * S-corp owners to pay themselves a reasonable salary for similar
+     * work before taking distributions.
+     */
+    showOwnerSalaryAlert: boolean
   }
   actions: {
     onSubmit: (
@@ -707,6 +730,9 @@ export function useCompensationForm({
       isPending,
       mode,
       willDeleteSecondaryJobs,
+      showCommissionFederalMinimumPayAlert: watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT,
+      showCommissionMinimumWageAlert: watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_NONEXEMPT,
+      showOwnerSalaryAlert: watchedFlsaStatus === FlsaStatus.OWNER,
     },
     actions: { onSubmit },
     errorHandling,
@@ -714,8 +740,8 @@ export function useCompensationForm({
       Fields: {
         Title: TitleField,
         FlsaStatus: isFlsaSelectionEnabled ? FlsaStatusField : undefined,
-        Rate: RateField,
-        PaymentUnit: PaymentUnitField,
+        Rate: isCommissionOnly ? undefined : RateField,
+        PaymentUnit: isCommissionOnly ? undefined : PaymentUnitField,
         AdjustForMinimumWage: isAdjustMinimumWageEnabled ? AdjustForMinimumWageField : undefined,
         MinimumWageId:
           isAdjustMinimumWageEnabled && watchedAdjustForMinimumWage
