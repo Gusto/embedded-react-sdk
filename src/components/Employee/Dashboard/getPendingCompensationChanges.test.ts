@@ -112,12 +112,13 @@ describe('getPendingCompensationChanges', () => {
     })
   })
 
-  it('detects titleChange when baseline.title is absent and future.title differs from jobTitle', () => {
+  it('detects titleChange when baseline.title is absent and future.title carries the new title', () => {
     // Real-world scenario: GET /v1/employees/:id/jobs returns compensation.title
     // only when it was explicitly stored via PUT /v1/compensations/:id.
     // The current comp may have title=undefined (API omits it) while the future
-    // comp carries the new title. The jobTitle fallback on the baseline must not
-    // mask the difference.
+    // comp carries the new title. Diff detection compares comp.title to
+    // comp.title directly — falling back to `job.title` would mask the
+    // difference (job.title can be stale relative to the actual comp).
     const current = buildComp({ title: undefined })
     const future = buildComp({
       uuid: 'comp-future',

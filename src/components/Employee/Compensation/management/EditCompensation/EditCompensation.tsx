@@ -56,7 +56,10 @@ function CompensationDefaultsLoader({
 
   const defaultValues: Partial<CompensationFormData> | undefined = currentComp
     ? {
-        title: currentComp.title ?? job?.title ?? undefined,
+        // Title lives on compensation in the API — `job.title` can lag
+        // behind comp-level edits on secondaries, so seed directly from
+        // the comp.
+        title: currentComp.title ?? undefined,
         flsaStatus: currentComp.flsaStatus ?? undefined,
         rate: Number(currentComp.rate),
         paymentUnit: currentComp.paymentUnit ?? undefined,
