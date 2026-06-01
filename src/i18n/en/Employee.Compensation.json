@@ -29,6 +29,12 @@
     "Salaried Nonexempt": "Salary/Eligible for overtime"
   },
   "hamburgerTitle": "Job actions",
+  "history": {
+    "effectiveDateColumn": "Effective date",
+    "employeeTypeColumn": "Employee type",
+    "wageColumn": "Wage",
+    "tableLabel": "Compensation history for {{jobTitle}}"
+  },
   "jobTitle": "Job Title",
   "paymentUnitDescription": "The period over which the compensation amount is tracked (e.g., hourly, daily, weekly, monthly, annually).",
   "paymentUnitLabel": "Wage frequency",

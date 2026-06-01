@@ -59,6 +59,7 @@ export interface JobAndPayViewProps {
   onEditCompensation?: (job: Job) => void
   onAddJob?: () => void
   onAddAnotherJob?: () => void
+  onViewHistory?: () => void
   onAddDeduction?: () => void
   onEditDeduction?: (deduction: Garnishment) => void
 }
@@ -69,6 +70,7 @@ export function JobAndPayView({
   onEditCompensation,
   onAddJob,
   onAddAnotherJob,
+  onViewHistory,
   onAddDeduction,
   onEditDeduction,
 }: JobAndPayViewProps) {
@@ -617,14 +619,21 @@ export function JobAndPayView({
             />
           }
           footer={
-            !isCompensationCardLoading && canAddAnotherJob ? (
-              <Components.Button
-                variant="secondary"
-                onClick={onAddAnotherJob}
-                icon={<PlusCircleIcon />}
-              >
-                {t('jobAndPay.compensation.addAnotherJobCta')}
-              </Components.Button>
+            !isCompensationCardLoading && jobs.length > 0 ? (
+              <Flex gap={8} alignItems="center">
+                {canAddAnotherJob && (
+                  <Components.Button
+                    variant="secondary"
+                    onClick={onAddAnotherJob}
+                    icon={<PlusCircleIcon />}
+                  >
+                    {t('jobAndPay.compensation.addAnotherJobCta')}
+                  </Components.Button>
+                )}
+                <Components.Button variant="tertiary" onClick={onViewHistory}>
+                  {t('jobAndPay.compensation.viewHistoryCta')}
+                </Components.Button>
+              </Flex>
             ) : undefined
           }
         >

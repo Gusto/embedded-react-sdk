@@ -17,6 +17,7 @@ import {
 } from '@/components/Employee/Compensation/management'
 import { useDeductionsList } from '@/components/Employee/Deductions/shared'
 import { AddAnotherJob } from '@/components/Employee/Compensation/management/AddAnotherJob/AddAnotherJob'
+import { CompensationHistory } from '@/components/Employee/Compensation/management/CompensationHistory'
 import { EditCompensation } from '@/components/Employee/Compensation/onboarding/EditCompensation/EditCompensation'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -234,6 +235,18 @@ export function AddAnotherJobContextual() {
       employeeId={ensureRequired(employeeId)}
       onEvent={onEvent}
       onCancel={() => {
+        onEvent(componentEvents.CANCEL)
+      }}
+    />
+  )
+}
+
+export function CompensationHistoryContextual() {
+  const { employeeId, onEvent } = useFlow<DashboardContextInterface>()
+  return (
+    <CompensationHistory
+      employeeId={ensureRequired(employeeId)}
+      onBack={() => {
         onEvent(componentEvents.CANCEL)
       }}
     />
