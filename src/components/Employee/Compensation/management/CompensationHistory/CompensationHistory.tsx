@@ -6,7 +6,7 @@ import type { Job } from '@gusto/embedded-api/models/components/job'
 import type { Compensation } from '@gusto/embedded-api/models/components/compensation'
 import style from './CompensationHistory.module.scss'
 import { BaseBoundaries, BaseLayout, type CommonComponentInterface } from '@/components/Base'
-import { ActionsLayout, DataView, Flex, FlexItem, useDataView } from '@/components/Common'
+import { ActionsLayout, DataView, Flex, useDataView } from '@/components/Common'
 import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { formatDateLongWithYear } from '@/helpers/dateFormatting'
@@ -193,22 +193,18 @@ function CombinedCompensationHistory({ jobs }: { jobs: Job[] }) {
           alignItems={isDesktop ? 'center' : 'stretch'}
           gap={isDesktop ? 0 : 16}
         >
-          <FlexItem>
-            <Components.Heading as="h2">{t('history.heading')}</Components.Heading>
-          </FlexItem>
-          <FlexItem>
-            <div className={style.jobFilter}>
-              <Components.Select
-                label={t('history.jobFilterLabel')}
-                shouldVisuallyHideLabel
-                value={selectedJobUuid}
-                onChange={value => {
-                  setSelectedJobUuid(value)
-                }}
-                options={options}
-              />
-            </div>
-          </FlexItem>
+          <Components.Heading as="h2">{t('history.heading')}</Components.Heading>
+          <div className={style.jobFilter}>
+            <Components.Select
+              label={t('history.jobFilterLabel')}
+              shouldVisuallyHideLabel
+              value={selectedJobUuid}
+              onChange={value => {
+                setSelectedJobUuid(value)
+              }}
+              options={options}
+            />
+          </div>
         </Flex>
         <DataView label={t('history.combinedTableLabel')} {...dataViewProps} />
       </Flex>
