@@ -64,13 +64,17 @@ function Root({
   // second compensation when the initial comp moves off the hire date.
   const isPrimaryNewJob = isNewJob && isPrimaryJob
 
+  // Title is owned by `useCompensationForm` here: title is stored on
+  // compensation in the API (job.title is just a denormalized snapshot of
+  // the primary comp's title), so writing it via PUT /v1/compensations is
+  // the direct path. The dashboard row reads the title off the comp pointed
+  // to by `currentCompensationUuid`, so the change surfaces immediately
+  // whether the job is in effect today or still pending.
   const jobForm = useJobForm({
     employeeId,
     jobId,
     withTitleField: false,
     withHireDateField: isPrimaryNewJob,
-    // hireDate is optional by default in update mode — promote it so the form
-    // validates it and the label doesn't show "(optional)".
     optionalFieldsToRequire: isPrimaryNewJob ? { update: ['hireDate'] } : undefined,
     shouldFocusError: false,
   })
