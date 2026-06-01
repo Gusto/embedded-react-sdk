@@ -2,7 +2,7 @@ import { QueryClient } from '@tanstack/react-query'
 
 /**
  * Creates a QueryClient pre-configured with the SDK's defaults for queries and
- * mutations under the `['@gusto/embedded-api']` key:
+ * mutations under the `['@gusto/embedded-api-v-2025-11-15']` key:
  *
  * - `retry: false` on both queries and mutations.
  * - On any successful mutation, all SDK queries are invalidated so the next
@@ -17,11 +17,11 @@ import { QueryClient } from '@tanstack/react-query'
  */
 export function createSdkQueryClient(): QueryClient {
   const client = new QueryClient()
-  client.setQueryDefaults(['@gusto/embedded-api'], { retry: false })
-  client.setMutationDefaults(['@gusto/embedded-api'], {
+  client.setQueryDefaults(['@gusto/embedded-api-v-2025-11-15'], { retry: false })
+  client.setMutationDefaults(['@gusto/embedded-api-v-2025-11-15'], {
     retry: false,
     onSuccess: async () => {
-      await client.invalidateQueries({ queryKey: ['@gusto/embedded-api'] })
+      await client.invalidateQueries({ queryKey: ['@gusto/embedded-api-v-2025-11-15'] })
     },
   })
   return client

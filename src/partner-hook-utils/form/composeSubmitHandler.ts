@@ -138,7 +138,7 @@ function focusFirstInvalidAcrossForms(results: FormValidationResult[]): void {
  *
  * The returned `errorHandling` is the same shape every SDK hook returns, so the whole result
  * can be passed back into `composeErrorHandler` when you need to add extra
- * `@gusto/embedded-api` queries or screen-level submit state.
+ * `@gusto/embedded-api-v-2025-11-15` queries or screen-level submit state.
  *
  * @example
  * ```ts

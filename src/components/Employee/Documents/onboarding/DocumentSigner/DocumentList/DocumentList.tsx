@@ -1,5 +1,5 @@
-import { useEmployeeFormsListSuspense } from '@gusto/embedded-api/react-query/employeeFormsList'
-import { type Form } from '@gusto/embedded-api/models/components/form'
+import { useEmployeeFormsListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeFormsList'
+import { type Form } from '@gusto/embedded-api-v-2025-11-15/models/components/form'
 import { Head } from './Head'
 import { List } from './List'
 import { Actions } from './Actions'

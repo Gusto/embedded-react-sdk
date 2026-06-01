@@ -1,7 +1,7 @@
 import { act, renderHook } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 import type * as ReactQuery from '@tanstack/react-query'
-import type * as GustoContext from '@gusto/embedded-api/react-query/_context'
+import type * as GustoContext from '@gusto/embedded-api-v-2025-11-15/react-query/_context'
 import type { ReactNode } from 'react'
 import { Suspense } from 'react'
 import { useSelectEmployeesData } from './useSelectEmployeesData'
@@ -39,7 +39,7 @@ function makeEmployee(index: number) {
 // 52 employees fits cleanly into "25 per page" → 3 pages (25/25/2).
 const employees = Array.from({ length: 52 }, (_, i) => makeEmployee(i))
 
-vi.mock('@gusto/embedded-api/react-query/employeesList', () => ({
+vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/employeesList', () => ({
   useEmployeesListSuspense: () => ({
     data: {
       showEmployees: employees,
@@ -53,7 +53,7 @@ vi.mock('@gusto/embedded-api/react-query/employeesList', () => ({
   }),
 }))
 
-vi.mock('@gusto/embedded-api/react-query/_context', async importOriginal => {
+vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/_context', async importOriginal => {
   const actual = await importOriginal<typeof GustoContext>()
   return {
     ...actual,

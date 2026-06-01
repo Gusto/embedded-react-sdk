@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import type { Form } from '@gusto/embedded-api/models/components/form'
+import type { Form } from '@gusto/embedded-api-v-2025-11-15/models/components/form'
 import { useEmployeeForms } from './hooks'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'

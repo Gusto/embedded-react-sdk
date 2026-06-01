@@ -1,8 +1,8 @@
-import type { PolicyType } from '@gusto/embedded-api/models/components/timeoffpolicy'
+import type { PolicyType } from '@gusto/embedded-api-v-2025-11-15/models/components/timeoffpolicy'
 
 // SDK exposes more PolicyType values (bereavement, custom, etc.) but only
 // vacation and sick are creatable through the time-off policy endpoint.
-// Holiday is a distinct concept routed through @gusto/embedded-api's
+// Holiday is a distinct concept routed through @gusto/embedded-api-v-2025-11-15's
 // holidayPayPolicies* hooks against a different endpoint family.
 export type CreatableTimeOffPolicyType = Extract<PolicyType, 'sick' | 'vacation'>
 export type TimeOffPolicyType = PolicyType | 'holiday'

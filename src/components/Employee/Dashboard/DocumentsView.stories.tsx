@@ -1,5 +1,5 @@
 import { fn } from 'storybook/test'
-import type { Form } from '@gusto/embedded-api/models/components/form'
+import type { Form } from '@gusto/embedded-api-v-2025-11-15/models/components/form'
 import { DocumentsView } from './DocumentsView'
 import { BaseComponent } from '@/components/Base'
 

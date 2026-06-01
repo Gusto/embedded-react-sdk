@@ -1,7 +1,7 @@
 import { renderHook, act, waitFor } from '@testing-library/react'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { http, HttpResponse, type HttpResponseResolver } from 'msw'
-import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
+import type { Garnishment } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishment'
 import { useDeductionsList, type UseDeductionsListResult } from './useDeductionsList'
 import { server } from '@/test/mocks/server'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'

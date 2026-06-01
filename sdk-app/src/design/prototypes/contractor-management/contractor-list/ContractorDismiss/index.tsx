@@ -1,7 +1,7 @@
 import { Suspense, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useQueryClient } from '@tanstack/react-query'
-import { useContractorsGetSuspense } from '@gusto/embedded-api/react-query/contractorsGet'
+import { useContractorsGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsGet'
 import { ContractorDismissalForm } from '../../contractor-profile/components/ContractorDismissalForm'
 import { contractorName } from '../../contractor-profile/components/contractorName'
 import { Skeleton } from '../../contractor-profile/components/Skeleton'
@@ -47,7 +47,7 @@ function ContractorDismissContent() {
       const today = new Date().toISOString().slice(0, 10)
       const message =
         endDate <= today ? `${name} has been dismissed` : `Dismissal scheduled for ${name}`
-      queryClient.removeQueries({ queryKey: ['@gusto/embedded-api', 'Contractors'] })
+      queryClient.removeQueries({ queryKey: ['@gusto/embedded-api-v-2025-11-15', 'Contractors'] })
       void navigate(`..?success=${encodeURIComponent(message)}`, {
         replace: true,
       })

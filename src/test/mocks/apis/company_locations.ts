@@ -1,6 +1,6 @@
 import { http, HttpResponse, type PathParams } from 'msw'
-import type { CompanyLocationRequest } from '@gusto/embedded-api/models/components/companylocationrequest'
-import type { PutV1LocationsLocationIdRequestBody } from '@gusto/embedded-api/models/operations/putv1locationslocationid'
+import type { CompanyLocationRequest } from '@gusto/embedded-api-v-2025-11-15/models/components/companylocationrequest'
+import type { PutV1LocationsLocationIdRequestBody } from '@gusto/embedded-api-v-2025-11-15/models/operations/putv1locationslocationid'
 import { getFixture } from '../fixtures/getFixture'
 import { API_BASE_URL } from '@/test/constants'
 

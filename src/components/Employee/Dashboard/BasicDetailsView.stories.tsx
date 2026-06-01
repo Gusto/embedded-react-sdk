@@ -1,7 +1,7 @@
 import { fn } from 'storybook/test'
-import type { Employee } from '@gusto/embedded-api/models/components/employee'
-import type { EmployeeAddress } from '@gusto/embedded-api/models/components/employeeaddress'
-import type { EmployeeWorkAddress } from '@gusto/embedded-api/models/components/employeeworkaddress'
+import type { Employee } from '@gusto/embedded-api-v-2025-11-15/models/components/employee'
+import type { EmployeeAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeaddress'
+import type { EmployeeWorkAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeworkaddress'
 import { BasicDetailsView } from './BasicDetailsView'
 import { BaseComponent } from '@/components/Base'
 

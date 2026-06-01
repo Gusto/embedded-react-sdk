@@ -2,11 +2,11 @@ import { useCallback, useMemo, useState } from 'react'
 import {
   buildEmployeesListQuery,
   useEmployeesListSuspense,
-} from '@gusto/embedded-api/react-query/employeesList'
-import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
+} from '@gusto/embedded-api-v-2025-11-15/react-query/employeesList'
+import { useGustoEmbeddedContext } from '@gusto/embedded-api-v-2025-11-15/react-query/_context'
 import { useSuspenseQueries } from '@tanstack/react-query'
-import { Include } from '@gusto/embedded-api/models/operations/getv1companiescompanyidemployees'
-import type { PaidTimeOff } from '@gusto/embedded-api/models/components/paidtimeoff'
+import { Include } from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1companiescompanyidemployees'
+import type { PaidTimeOff } from '@gusto/embedded-api-v-2025-11-15/models/components/paidtimeoff'
 import type { EmployeeItem } from './SelectEmployeesPresentationTypes'
 import { useClientPagination } from '@/hooks/useClientPagination/useClientPagination'
 

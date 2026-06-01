@@ -1,13 +1,14 @@
-import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
-import { useEmployeePaymentMethodsGetBankAccountsSuspense } from '@gusto/embedded-api/react-query/employeePaymentMethodsGetBankAccounts'
-import { usePayrollsUpdateMutation } from '@gusto/embedded-api/react-query/payrollsUpdate'
-import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
-import type { PayrollUpdateEmployeeCompensations } from '@gusto/embedded-api/models/components/payrollupdate'
+import { useEmployeesGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesGet'
+import { useEmployeePaymentMethodsGetBankAccountsSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/employeePaymentMethodsGetBankAccounts'
+import { usePayrollsUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsUpdate'
+import type { PayrollEmployeeCompensationsType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollemployeecompensationstype'
+import type { PayrollUpdateEmployeeCompensations } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollupdate'
 import { useMemo } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { usePreparedPayrollData } from '../usePreparedPayrollData'
 import { PREPARE_QUERY_KEY } from '../PayrollConfiguration/usePayrollConfigurationData'
-import { derivePayrollCategory } from '../payrollTypes'
+import { derivePayrollCategory, isOffCyclePayroll } from '../payrollTypes'
+import { cleanupReimbursements } from '../helpers'
 import { PayrollEditEmployeePresentation } from './PayrollEditEmployeePresentation'
 import { componentEvents } from '@/shared/constants'
 import type { BaseComponentInterface } from '@/components/Base/Base'
@@ -60,6 +61,8 @@ export const Root = ({
   const employeeCompensation = preparedPayroll?.employeeCompensations?.at(0)
   const bankAccounts = bankAccountsList.employeeBankAccounts || []
   const hasDirectDepositSetup = bankAccounts.length > 0
+  const payrollCategory = derivePayrollCategory(preparedPayroll ?? {})
+  const usesItemizedReimbursements = !isOffCyclePayroll(payrollCategory)
 
   const transformEmployeeCompensation = ({
     paymentMethod,
@@ -70,6 +73,13 @@ export const Root = ({
       ...compensation,
       ...(paymentMethod && paymentMethod !== 'Historical' ? { paymentMethod } : {}),
       memo: compensation.memo || undefined,
+      // Off-cycle payrolls write reimbursements via the legacy fixed_compensations field; the
+      // itemized array gets rejected by the `emb_off_cycle_disable_named_reimbursements` backend
+      // flag (default-on globally, expected removal 2026-09-01).
+      // TODO(post-2026-09-01): drop the branch once the flag is gone.
+      ...(usesItemizedReimbursements && reimbursements
+        ? { reimbursements: cleanupReimbursements(reimbursements) }
+        : {}),
     }
   }
 
@@ -115,7 +125,7 @@ export const Root = ({
       fixedCompensationTypes={preparedPayroll?.fixedCompensationTypes || []}
       payPeriodStartDate={preparedPayroll?.payPeriod?.startDate}
       paySchedule={paySchedule}
-      payrollCategory={derivePayrollCategory(preparedPayroll ?? {})}
+      payrollCategory={payrollCategory}
       withReimbursements={withReimbursements}
       hasDirectDepositSetup={hasDirectDepositSetup}
     />

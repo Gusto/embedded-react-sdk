@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
-import { NotFoundErrorObject } from '@gusto/embedded-api/models/errors/notfounderrorobject'
-import { APIError } from '@gusto/embedded-api/models/errors/apierror'
-import { UnprocessableEntityError } from '@gusto/embedded-api/models/errors/unprocessableentityerror'
-import { GustoEmbeddedError } from '@gusto/embedded-api/models/errors/gustoembeddederror'
+import { NotFoundErrorObject } from '@gusto/embedded-api-v-2025-11-15/models/errors/notfounderrorobject'
+import { APIError } from '@gusto/embedded-api-v-2025-11-15/models/errors/apierror'
+import { UnprocessableEntityError } from '@gusto/embedded-api-v-2025-11-15/models/errors/unprocessableentityerror'
+import { GustoEmbeddedError } from '@gusto/embedded-api-v-2025-11-15/models/errors/gustoembeddederror'
 import { useBaseSubmit } from './useBaseSubmit'
 
 const createMockHttpMeta = () => ({

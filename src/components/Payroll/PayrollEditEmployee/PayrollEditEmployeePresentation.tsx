@@ -1,14 +1,15 @@
-import { FormProvider, useForm, useWatch } from 'react-hook-form'
-import { useMemo, useRef } from 'react'
-import type { Employee } from '@gusto/embedded-api/models/components/employee'
+import { FormProvider, useFieldArray, useForm, useWatch } from 'react-hook-form'
+import { useMemo, useRef, useState } from 'react'
+import type { Employee } from '@gusto/embedded-api-v-2025-11-15/models/components/employee'
 import type {
   PayrollEmployeeCompensationsTypeFixedCompensations as FixedCompensations,
   PayrollEmployeeCompensationsType,
   PayrollEmployeeCompensationsTypePaidTimeOff,
-} from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
-import { PayrollEmployeeCompensationsTypePaymentMethod } from '@gusto/embedded-api/models/components/payrollemployeecompensationstype'
-import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api/models/components/payrollfixedcompensationtypestype'
-import type { PayScheduleShow as PayScheduleObject } from '@gusto/embedded-api/models/components/payscheduleshow'
+  PayrollEmployeeCompensationsTypeReimbursements as Reimbursement,
+} from '@gusto/embedded-api-v-2025-11-15/models/components/payrollemployeecompensationstype'
+import { PayrollEmployeeCompensationsTypePaymentMethod } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollemployeecompensationstype'
+import type { PayrollFixedCompensationTypesType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollfixedcompensationtypestype'
+import type { PayScheduleShow as PayScheduleObject } from '@gusto/embedded-api-v-2025-11-15/models/components/payscheduleshow'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -19,12 +20,8 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import { useI18n } from '@/i18n'
 import { Form } from '@/components/Common/Form'
 import { formatNumberAsCurrency, firstLastName } from '@/helpers/formattedStrings'
-import {
-  getAdditionalEarningsCompensations,
-  getReimbursementCompensation,
-  calculateGrossPay,
-} from '@/components/Payroll/helpers'
-import { PayrollCategory } from '@/components/Payroll/payrollTypes'
+import { getAdditionalEarningsCompensations, calculateGrossPay } from '@/components/Payroll/helpers'
+import { PayrollCategory, isOffCyclePayroll } from '@/components/Payroll/payrollTypes'
 import {
   COMPENSATION_NAME_DOUBLE_OVERTIME,
   COMPENSATION_NAME_OVERTIME,
@@ -39,6 +36,9 @@ import {
   COMPENSATION_NAME_CASH_TIPS,
 } from '@/shared/constants'
 import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
+import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
+import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
+import InfoIcon from '@/assets/icons/info.svg?react'
 
 interface PayrollEditEmployeeProps {
   onSave: (updatedCompensation: PayrollEmployeeCompensationsType) => void
@@ -54,11 +54,19 @@ interface PayrollEditEmployeeProps {
   hasDirectDepositSetup?: boolean
 }
 
+const ReimbursementFormSchema = z.object({
+  uuid: z.string().nullable().optional(),
+  description: z.string(),
+  amount: z.string(),
+  recurring: z.boolean().optional(),
+})
+
 export const PayrollEditEmployeeFormSchema = z.object({
   hourlyCompensations: z.record(z.string(), z.record(z.string(), z.string().optional())),
   timeOffCompensations: z.record(z.string(), z.string().optional()),
   finalPayoutCompensations: z.record(z.string(), z.string().optional()),
   fixedCompensations: z.record(z.string(), z.string().optional()),
+  reimbursements: z.array(ReimbursementFormSchema),
   paymentMethod: z.enum(PayrollEmployeeCompensationsTypePaymentMethod).optional(),
 })
 
@@ -112,9 +120,24 @@ const buildCompensationFromFormData = (
     }
   })
 
+  // Off-cycle payrolls today use the legacy single Reimbursement field in fixed_compensations
+  // because the backend feature flag `emb_off_cycle_disable_named_reimbursements` (default: true,
+  // expected removal 2026-09-01) rejects named entries in the itemized `reimbursements[]` array.
+  // TODO(post-2026-09-01): once that flag is removed, unify on the itemized path for all categories.
+  const usesItemizedReimbursements = !isOffCyclePayroll(payrollCategory)
+
   const updatedFixedCompensations: FixedCompensations[] = []
 
   Object.entries(formData.fixedCompensations).forEach(([fixedCompensationName, formAmount]) => {
+    const isReimbursementEntry =
+      fixedCompensationName.toLowerCase() === COMPENSATION_NAME_REIMBURSEMENT.toLowerCase()
+
+    // Regular payrolls write reimbursements via the itemized array; never let the legacy
+    // fixed_compensations entry slip through (the backend rejects it on v2025-11-15+).
+    if (isReimbursementEntry && usesItemizedReimbursements) {
+      return
+    }
+
     const existingFixedCompensation = employeeCompensation?.fixedCompensations?.find(
       fixedCompensation =>
         fixedCompensation.name?.toLowerCase() === fixedCompensationName.toLowerCase(),
@@ -139,6 +162,19 @@ const buildCompensationFromFormData = (
 
   updatedCompensation.fixedCompensations = updatedFixedCompensations
 
+  if (usesItemizedReimbursements) {
+    updatedCompensation.reimbursements = formData.reimbursements.map(reimbursement => ({
+      amount: reimbursement.amount,
+      description:
+        reimbursement.description.trim() === '' ? null : reimbursement.description.trim(),
+      uuid: reimbursement.uuid ?? null,
+      recurring: reimbursement.recurring,
+    }))
+  } else {
+    // Off-cycle: ensure no itemized array leaks through. The container also strips this defensively.
+    updatedCompensation.reimbursements = []
+  }
+
   return updatedCompensation
 }
 
@@ -155,7 +191,7 @@ export const PayrollEditEmployeePresentation = ({
   withReimbursements = true,
   hasDirectDepositSetup = true,
 }: PayrollEditEmployeeProps) => {
-  const { Button, Heading, Text } = useComponentContext()
+  const { Button, ButtonIcon, Heading, Text, TextInput } = useComponentContext()
 
   const { t } = useTranslation('Payroll.PayrollEditEmployee')
   useI18n('Payroll.PayrollEditEmployee')
@@ -189,13 +225,30 @@ export const PayrollEditEmployeePresentation = ({
     excludedTypes: EXCLUDED_ADDITIONAL_EARNINGS,
   })
 
-  const reimbursement = withReimbursements
-    ? getReimbursementCompensation(
-        employeeCompensation?.fixedCompensations || [],
-        fixedCompensationTypes,
-        primaryJob?.uuid,
-      )
-    : null
+  // Off-cycle payrolls use the legacy single Reimbursement field in fixed_compensations because
+  // the backend `emb_off_cycle_disable_named_reimbursements` flag (default: true, expected
+  // removal 2026-09-01) rejects named entries in the itemized `reimbursements[]` array.
+  // TODO(post-2026-09-01): unify on the itemized path once that flag is removed.
+  const usesItemizedReimbursements = !isOffCyclePayroll(payrollCategory)
+
+  const initialReimbursements: Reimbursement[] = useMemo(
+    () =>
+      withReimbursements && usesItemizedReimbursements
+        ? (employeeCompensation?.reimbursements ?? [])
+        : [],
+    [withReimbursements, usesItemizedReimbursements, employeeCompensation?.reimbursements],
+  )
+
+  const existingReimbursementFixedCompensation = useMemo(
+    () =>
+      employeeCompensation?.fixedCompensations?.find(
+        comp => comp.name?.toLowerCase() === COMPENSATION_NAME_REIMBURSEMENT.toLowerCase(),
+      ),
+    [employeeCompensation?.fixedCompensations],
+  )
+
+  const showLegacyReimbursementField =
+    withReimbursements && !usesItemizedReimbursements && Boolean(primaryJob?.uuid)
 
   const findMatchingCompensation = (jobUuid: string, compensationName: string) => {
     return employeeCompensation?.hourlyCompensations?.find(
@@ -287,12 +340,20 @@ export const PayrollEditEmployeePresentation = ({
         fixedCompensations[fixedComp.name!] = fixedComp.amount ?? ''
       })
 
-      if (reimbursement) {
-        fixedCompensations[reimbursement.name!] = reimbursement.amount ?? ''
+      if (showLegacyReimbursementField) {
+        fixedCompensations[COMPENSATION_NAME_REIMBURSEMENT] =
+          existingReimbursementFixedCompensation?.amount ?? '0.00'
       }
 
       return fixedCompensations
     })(),
+
+    reimbursements: initialReimbursements.map(reimbursement => ({
+      uuid: reimbursement.uuid ?? null,
+      description: reimbursement.description ?? '',
+      amount: reimbursement.amount,
+      recurring: reimbursement.recurring ?? false,
+    })),
 
     paymentMethod:
       employeeCompensation?.paymentMethod ||
@@ -303,6 +364,53 @@ export const PayrollEditEmployeePresentation = ({
     resolver: zodResolver(PayrollEditEmployeeFormSchema),
     defaultValues,
   })
+
+  const {
+    fields: reimbursementFields,
+    append: appendReimbursement,
+    remove: removeReimbursement,
+    update: updateReimbursement,
+  } = useFieldArray({
+    control: formHandlers.control,
+    name: 'reimbursements',
+  })
+
+  const handleRemoveReimbursement = (index: number) => {
+    const field = reimbursementFields[index]
+    if (!field) return
+
+    if (field.uuid) {
+      updateReimbursement(index, { ...field, amount: '0' })
+    } else {
+      removeReimbursement(index)
+    }
+  }
+
+  const [isAddingReimbursement, setIsAddingReimbursement] = useState(false)
+  const [draftReimbursementDescription, setDraftReimbursementDescription] = useState('')
+  const [draftReimbursementAmount, setDraftReimbursementAmount] = useState('')
+
+  const resetReimbursementDraft = () => {
+    setIsAddingReimbursement(false)
+    setDraftReimbursementDescription('')
+    setDraftReimbursementAmount('')
+  }
+
+  const handleSaveReimbursementDraft = () => {
+    const trimmedAmount = draftReimbursementAmount.trim()
+    const parsedAmount = parseFloat(trimmedAmount || '0')
+    if (Number.isNaN(parsedAmount) || parsedAmount <= 0) {
+      return
+    }
+
+    appendReimbursement({
+      uuid: null,
+      description: draftReimbursementDescription.trim(),
+      amount: parsedAmount.toFixed(2),
+      recurring: false,
+    })
+    resetReimbursementDraft()
+  }
 
   const watchedFormData = useWatch({
     control: formHandlers.control,
@@ -319,11 +427,21 @@ export const PayrollEditEmployeePresentation = ({
         })
       }
 
+      const reimbursementsWithDefaults: PayrollEditEmployeeFormValues['reimbursements'] = (
+        watchedFormData.reimbursements ?? []
+      ).map(reimbursement => ({
+        uuid: reimbursement.uuid ?? null,
+        description: reimbursement.description ?? '',
+        amount: reimbursement.amount ?? '0',
+        recurring: reimbursement.recurring,
+      }))
+
       const formDataWithDefaults: PayrollEditEmployeeFormValues = {
         hourlyCompensations,
         timeOffCompensations: watchedFormData.timeOffCompensations || {},
         finalPayoutCompensations: watchedFormData.finalPayoutCompensations || {},
         fixedCompensations: watchedFormData.fixedCompensations || {},
+        reimbursements: reimbursementsWithDefaults,
         paymentMethod: watchedFormData.paymentMethod,
       }
 
@@ -516,7 +634,7 @@ export const PayrollEditEmployeePresentation = ({
               </Grid>
             </div>
           )}
-          {reimbursement && (
+          {showLegacyReimbursementField && (
             <div className={styles.fieldGroup}>
               <Heading as="h4">{t('reimbursementTitle')}</Heading>
               <Grid gridTemplateColumns={{ base: '1fr', small: [320, 320] }} gap={20}>
@@ -525,10 +643,109 @@ export const PayrollEditEmployeePresentation = ({
                   min={0}
                   adornmentStart="$"
                   isRequired
-                  label={getFixedCompensationLabel(reimbursement.name)}
-                  name={`fixedCompensations.${reimbursement.name}`}
+                  label={getFixedCompensationLabel(COMPENSATION_NAME_REIMBURSEMENT)}
+                  name={`fixedCompensations.${COMPENSATION_NAME_REIMBURSEMENT}`}
                 />
               </Grid>
+            </div>
+          )}
+          {withReimbursements && usesItemizedReimbursements && (
+            <div className={styles.fieldGroup}>
+              <Heading as="h4">{t('reimbursementTitle')}</Heading>
+              {reimbursementFields.map((field, index) => {
+                const isSoftDeleted = parseFloat(field.amount || '0') === 0
+                if (isSoftDeleted) {
+                  return null
+                }
+
+                const displayDescription =
+                  field.description.trim() || t('reimbursementUnnamedFallback')
+                const formattedAmount = formatNumberAsCurrency(parseFloat(field.amount || '0'))
+
+                if (field.recurring) {
+                  return (
+                    <Flex
+                      key={field.id}
+                      alignItems="center"
+                      justifyContent="space-between"
+                      gap={12}
+                      aria-label={t('recurringReimbursementLabel', {
+                        description: displayDescription,
+                      })}
+                    >
+                      <Text>{displayDescription}</Text>
+                      <Flex alignItems="center" gap={8}>
+                        <Text>{formattedAmount}</Text>
+                        <InfoIcon aria-label={t('recurringReimbursementTooltip')} role="img" />
+                      </Flex>
+                    </Flex>
+                  )
+                }
+
+                return (
+                  <Flex key={field.id} alignItems="center" justifyContent="space-between" gap={12}>
+                    <Text>{displayDescription}</Text>
+                    <Flex alignItems="center" gap={12}>
+                      <Text>{formattedAmount}</Text>
+                      <ButtonIcon
+                        variant="tertiary"
+                        onClick={() => {
+                          handleRemoveReimbursement(index)
+                        }}
+                        aria-label={t('removeReimbursementLabel', {
+                          description: displayDescription,
+                        })}
+                      >
+                        <TrashCanSvg aria-hidden />
+                      </ButtonIcon>
+                    </Flex>
+                  </Flex>
+                )
+              })}
+              {isAddingReimbursement ? (
+                <Flex flexDirection="column" gap={12}>
+                  <Grid gridTemplateColumns={{ base: '1fr', small: [320, 320] }} gap={20}>
+                    <TextInput
+                      name="newReimbursementDescription"
+                      label={t('reimbursementDescriptionLabel')}
+                      placeholder={t('reimbursementDescriptionPlaceholder')}
+                      value={draftReimbursementDescription}
+                      onChange={setDraftReimbursementDescription}
+                    />
+                    <TextInput
+                      name="newReimbursementAmount"
+                      type="number"
+                      min={0}
+                      adornmentStart="$"
+                      isRequired
+                      label={t('reimbursementAmountLabel')}
+                      value={draftReimbursementAmount}
+                      onChange={setDraftReimbursementAmount}
+                    />
+                  </Grid>
+                  <Flex gap={12}>
+                    <Button onClick={handleSaveReimbursementDraft}>
+                      {t('saveReimbursementCta')}
+                    </Button>
+                    <Button variant="secondary" onClick={resetReimbursementDraft}>
+                      {t('cancelReimbursementCta')}
+                    </Button>
+                  </Flex>
+                </Flex>
+              ) : (
+                <div>
+                  <Button
+                    variant="tertiary"
+                    onClick={() => {
+                      setIsAddingReimbursement(true)
+                    }}
+                    title={t('addReimbursementLink')}
+                    icon={<PlusCircleIcon aria-hidden />}
+                  >
+                    {t('addReimbursementLink')}
+                  </Button>
+                </div>
+              )}
             </div>
           )}
           {hasDirectDepositSetup && (

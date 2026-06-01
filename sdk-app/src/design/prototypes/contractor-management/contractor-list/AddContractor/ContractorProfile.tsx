@@ -2,16 +2,16 @@ import { useMemo } from 'react'
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { useContractorsGetSuspense } from '@gusto/embedded-api/react-query/contractorsGet'
-import { useContractorsCreateMutation } from '@gusto/embedded-api/react-query/contractorsCreate'
-import { useContractorsUpdateMutation } from '@gusto/embedded-api/react-query/contractorsUpdate'
+import { useContractorsGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsGet'
+import { useContractorsCreateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsCreate'
+import { useContractorsUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsUpdate'
 import {
-  ContractorWageType as WageType,
+  WageType,
   ContractorType,
   type Contractor,
-} from '@gusto/embedded-api/models/components/contractor'
-import type { ContractorCreateRequestBody } from '@gusto/embedded-api/models/components/contractorcreaterequestbody'
-import type { ContractorUpdateRequestBody } from '@gusto/embedded-api/models/components/contractorupdaterequestbody'
+} from '@gusto/embedded-api-v-2025-11-15/models/components/contractor'
+import type { ContractorCreateRequestBody } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorcreaterequestbody'
+import type { ContractorUpdateRequestBody } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorupdaterequestbody'
 import { BaseComponent, useBase } from '@/components/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Form } from '@/components/Common/Form'

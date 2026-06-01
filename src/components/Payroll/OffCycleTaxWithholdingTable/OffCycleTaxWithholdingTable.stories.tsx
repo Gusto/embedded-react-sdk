@@ -1,5 +1,5 @@
 import { Suspense, useState } from 'react'
-import { WithholdingPayPeriod } from '@gusto/embedded-api/models/operations/postv1companiescompanyidpayrolls'
+import { WithholdingPayPeriod } from '@gusto/embedded-api-v-2025-11-15/models/operations/postv1companiescompanyidpayrolls'
 import { OffCycleTaxWithholdingModal } from '../OffCycleTaxWithholdingModal/OffCycleTaxWithholdingModal'
 import { OffCycleTaxWithholdingTable } from './OffCycleTaxWithholdingTable'
 import type {

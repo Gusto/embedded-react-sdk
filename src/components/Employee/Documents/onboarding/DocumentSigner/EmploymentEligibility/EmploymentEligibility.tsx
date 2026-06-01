@@ -1,6 +1,6 @@
-import { GustoEmbeddedError } from '@gusto/embedded-api/models/errors/gustoembeddederror'
-import { useI9VerificationGetAuthorization } from '@gusto/embedded-api/react-query/i9VerificationGetAuthorization'
-import { useI9VerificationUpdateMutation } from '@gusto/embedded-api/react-query/i9VerificationUpdate'
+import { GustoEmbeddedError } from '@gusto/embedded-api-v-2025-11-15/models/errors/gustoembeddederror'
+import { useI9VerificationGetAuthorization } from '@gusto/embedded-api-v-2025-11-15/react-query/i9VerificationGetAuthorization'
+import { useI9VerificationUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/i9VerificationUpdate'
 import { EmploymentEligibilityPresentation } from './EmploymentEligibilityPresentation'
 import type {
   EmploymentEligibilityInputs,

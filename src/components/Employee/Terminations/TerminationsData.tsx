@@ -1,24 +1,24 @@
 import { Suspense, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
-import { usePayrollsListSuspense } from '@gusto/embedded-api/react-query/payrollsList'
-import { usePaySchedulesGetUnprocessedTerminationPeriodsSuspense } from '@gusto/embedded-api/react-query/paySchedulesGetUnprocessedTerminationPeriods'
+import { usePayrollsListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsList'
+import { usePaySchedulesGetUnprocessedTerminationPeriodsSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/paySchedulesGetUnprocessedTerminationPeriods'
 import {
   useEmployeesListSuspense,
   invalidateAllEmployeesList,
-} from '@gusto/embedded-api/react-query/employeesList'
-import { useGustoEmbeddedContext } from '@gusto/embedded-api/react-query/_context'
-import { payrollsPrepare } from '@gusto/embedded-api/funcs/payrollsPrepare'
+} from '@gusto/embedded-api-v-2025-11-15/react-query/employeesList'
+import { useGustoEmbeddedContext } from '@gusto/embedded-api-v-2025-11-15/react-query/_context'
+import { payrollsPrepare } from '@gusto/embedded-api-v-2025-11-15/funcs/payrollsPrepare'
 import {
   ProcessingStatuses,
   QueryParamPayrollTypes,
-} from '@gusto/embedded-api/models/operations/getv1companiescompanyidpayrolls'
+} from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1companiescompanyidpayrolls'
 // @ts-expect-error — module path may not exist in all API package versions
-import { OffCycleReasonType } from '@gusto/embedded-api/models/components/offcyclereasontype'
-import type { Payroll } from '@gusto/embedded-api/models/components/payroll'
-import type { UnprocessedTerminationPayPeriod } from '@gusto/embedded-api/models/components/unprocessedterminationpayperiod'
+import { OffCycleReasonType } from '@gusto/embedded-api-v-2025-11-15/models/components/offcyclereasontype'
+import type { Payroll } from '@gusto/embedded-api-v-2025-11-15/models/components/payroll'
+import type { UnprocessedTerminationPayPeriod } from '@gusto/embedded-api-v-2025-11-15/models/components/unprocessedterminationpayperiod'
 // @ts-expect-error — module path may not exist in all API package versions
-import type { PayrollPrepared } from '@gusto/embedded-api/models/components/payrollprepared'
-import type { ShowEmployees } from '@gusto/embedded-api/models/components/showemployees'
+import type { PayrollPrepared } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollprepared'
+import type { ShowEmployees } from '@gusto/embedded-api-v-2025-11-15/models/components/showemployees'
 import { TerminateEmployee } from './TerminateEmployee/TerminateEmployee'
 import { TerminationSummary } from './TerminationSummary/TerminationSummary'
 import { TerminationFlow } from './TerminationFlow/TerminationFlow'
