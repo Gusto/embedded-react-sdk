@@ -51,135 +51,180 @@ export function ManagementCompensationFormBody({
         />
       )}
 
-      <CompFields.Title
-        label={t('management.jobTitleLabel')}
-        validationMessages={{ REQUIRED: t('validations.jobTitleSentence') }}
-        formHookResult={compensationForm}
-      />
-
-      {JobFields.HireDate && (
-        <JobFields.HireDate
-          label={t('management.hireDateLabel')}
-          validationMessages={{
-            REQUIRED: t('validations.hireDate'),
-          }}
-          formHookResult={jobForm}
-        />
-      )}
-
-      {CompFields.FlsaStatus && (
-        <CompFields.FlsaStatus
-          label={t('employeeClassification')}
-          description={
-            <Trans
-              t={t}
-              i18nKey="classificationLink"
-              components={{ ClassificationLink: <Components.Link /> }}
-            />
-          }
-          validationMessages={{
-            REQUIRED: t('validations.exemptThreshold', {
-              limit: format(FLSA_OVERTIME_SALARY_LIMIT),
-            }),
-          }}
-          getOptionLabel={(status: FlsaStatusType) => t(`flsaStatusLabels.${status}`)}
+      <Flex flexDirection="column" gap={20}>
+        <CompFields.Title
+          label={t('management.jobTitleLabel')}
+          validationMessages={{ REQUIRED: t('validations.jobTitleSentence') }}
           formHookResult={compensationForm}
         />
-      )}
 
-      <CompFields.Rate
-        label={t('management.wageLabel')}
-        validationMessages={{
-          REQUIRED: t('validations.rate'),
-          RATE_MINIMUM: t('validations.nonZeroRate'),
-          RATE_EXEMPT_THRESHOLD: t('validations.rateExemptThreshold', {
-            limit: format(FLSA_OVERTIME_SALARY_LIMIT),
-          }),
-        }}
-        formHookResult={compensationForm}
-      />
+        {JobFields.HireDate && (
+          <JobFields.HireDate
+            label={t('management.hireDateLabel')}
+            validationMessages={{
+              REQUIRED: t('validations.hireDate'),
+            }}
+            formHookResult={jobForm}
+          />
+        )}
 
-      <CompFields.PaymentUnit
-        label={t('management.wageFrequencyLabel')}
-        description={t('paymentUnitDescription')}
-        validationMessages={{ REQUIRED: t('validations.paymentUnit') }}
-        getOptionLabel={(unit: PaymentUnit) => t(`paymentUnitOptions.${unit}` as const)}
-        formHookResult={compensationForm}
-      />
-
-      {CompFields.EffectiveDate && (
-        <CompFields.EffectiveDate
-          label={t('effectiveDateLabel')}
-          validationMessages={{
-            REQUIRED: t('validations.effectiveDate'),
-            EFFECTIVE_DATE_BEFORE_HIRE: t('validations.effectiveDateBeforeHire'),
-            EFFECTIVE_DATE_BEFORE_MIN: t('validations.effectiveDateBeforeMin'),
-          }}
-          formHookResult={compensationForm}
-        />
-      )}
-
-      {CompFields.AdjustForMinimumWage && (
-        <CompFields.AdjustForMinimumWage
-          label={t('adjustForMinimumWage')}
-          description={t('adjustForMinimumWageDescription')}
-          formHookResult={compensationForm}
-        />
-      )}
-
-      {CompFields.MinimumWageId && (
-        <CompFields.MinimumWageId
-          label={t('minimumWageLabel')}
-          description={t('minimumWageDescription')}
-          validationMessages={{ REQUIRED: t('validations.minimumWage') }}
-          getOptionLabel={(wage: MinimumWage) =>
-            `${format(Number(wage.wage))} - ${wage.authority}: ${wage.notes ?? ''}`
-          }
-          formHookResult={compensationForm}
-        />
-      )}
-
-      {JobFields.TwoPercentShareholder && (
-        <JobFields.TwoPercentShareholder
-          label={t('management.twoPercentShareholderLabel')}
-          formHookResult={jobForm}
-        />
-      )}
-
-      {JobFields.StateWcCovered && (
-        <JobFields.StateWcCovered
-          label={t('stateWcCoveredLabel')}
-          description={
-            <Trans
-              t={t}
-              i18nKey="stateWcCoveredDescription"
-              components={{
-                wcLink: (
-                  <Components.Link
-                    href="https://www.lni.wa.gov/insurance/rates-risk-classes/risk-classes-for-workers-compensation/risk-class-lookup#/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  />
-                ),
+        {CompFields.FlsaStatus && (
+          <>
+            <CompFields.FlsaStatus
+              label={t('employeeClassification')}
+              description={
+                <Trans
+                  t={t}
+                  i18nKey="classificationLink"
+                  components={{ ClassificationLink: <Components.Link /> }}
+                />
+              }
+              validationMessages={{
+                REQUIRED: t('validations.exemptThreshold', {
+                  limit: format(FLSA_OVERTIME_SALARY_LIMIT),
+                }),
               }}
+              getOptionLabel={(status: FlsaStatusType) => t(`flsaStatusLabels.${status}`)}
+              formHookResult={compensationForm}
             />
-          }
-          getOptionLabel={(covered: boolean) =>
-            covered ? t('stateWcCoveredOptions.yes') : t('stateWcCoveredOptions.no')
-          }
-          formHookResult={jobForm}
-        />
-      )}
+            {compensationForm.status.showCommissionFederalMinimumPayAlert && (
+              <Components.Alert
+                status="warning"
+                label={t('commissionAlerts.federalMinimumPay.label')}
+                disableScrollIntoView
+              >
+                {t('commissionAlerts.federalMinimumPay.body')}
+              </Components.Alert>
+            )}
+            {compensationForm.status.showCommissionMinimumWageAlert && (
+              <Components.Alert
+                status="warning"
+                label={t('commissionAlerts.minimumWage.label')}
+                disableScrollIntoView
+              >
+                <Trans
+                  t={t}
+                  i18nKey="commissionAlerts.minimumWage.body"
+                  components={{
+                    minimumWageLink: (
+                      <Components.Link
+                        href="https://support.gusto.com/article/112472520100000/manage-tip-wages-distributed-service-charges-and-tip-credits-in-gusto-for-admins"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      />
+                    ),
+                  }}
+                />
+              </Components.Alert>
+            )}
+            {compensationForm.status.showOwnerSalaryAlert && (
+              <Components.Alert
+                status="info"
+                label={t('commissionAlerts.ownerSalary.label')}
+                disableScrollIntoView
+              />
+            )}
+          </>
+        )}
 
-      {JobFields.StateWcClassCode && (
-        <JobFields.StateWcClassCode
-          label={t('stateWcClassCodeLabel')}
-          description={t('stateWcClassCodeDescription')}
-          placeholder={t('stateWcClassCodeLabel')}
-          validationMessages={{ REQUIRED: t('validations.stateWcClassCode') }}
-          formHookResult={jobForm}
-        />
-      )}
+        {CompFields.Rate && (
+          <CompFields.Rate
+            label={t('wageLabel')}
+            validationMessages={{
+              REQUIRED: t('validations.rate'),
+              RATE_MINIMUM: t('validations.nonZeroRate'),
+              RATE_EXEMPT_THRESHOLD: t('validations.rateExemptThreshold', {
+                limit: format(FLSA_OVERTIME_SALARY_LIMIT),
+              }),
+            }}
+            formHookResult={compensationForm}
+          />
+        )}
+
+        {CompFields.PaymentUnit && (
+          <CompFields.PaymentUnit
+            label={t('wageFrequencyLabel')}
+            description={t('paymentUnitDescription')}
+            validationMessages={{ REQUIRED: t('validations.paymentUnit') }}
+            getOptionLabel={(unit: PaymentUnit) => t(`paymentUnitOptions.${unit}` as const)}
+            formHookResult={compensationForm}
+          />
+        )}
+
+        {CompFields.EffectiveDate && (
+          <CompFields.EffectiveDate
+            label={t('effectiveDateLabel')}
+            validationMessages={{
+              REQUIRED: t('validations.effectiveDate'),
+              EFFECTIVE_DATE_BEFORE_HIRE: t('validations.effectiveDateBeforeHire'),
+              EFFECTIVE_DATE_BEFORE_MIN: t('validations.effectiveDateBeforeMin'),
+            }}
+            formHookResult={compensationForm}
+          />
+        )}
+
+        {CompFields.AdjustForMinimumWage && (
+          <CompFields.AdjustForMinimumWage
+            label={t('adjustForMinimumWage')}
+            description={t('adjustForMinimumWageDescription')}
+            formHookResult={compensationForm}
+          />
+        )}
+
+        {CompFields.MinimumWageId && (
+          <CompFields.MinimumWageId
+            label={t('minimumWageLabel')}
+            description={t('minimumWageDescription')}
+            validationMessages={{ REQUIRED: t('validations.minimumWage') }}
+            getOptionLabel={(wage: MinimumWage) =>
+              `${format(Number(wage.wage))} - ${wage.authority}: ${wage.notes ?? ''}`
+            }
+            formHookResult={compensationForm}
+          />
+        )}
+
+        {JobFields.TwoPercentShareholder && (
+          <JobFields.TwoPercentShareholder
+            label={t('management.twoPercentShareholderLabel')}
+            formHookResult={jobForm}
+          />
+        )}
+
+        {JobFields.StateWcCovered && (
+          <JobFields.StateWcCovered
+            label={t('stateWcCoveredLabel')}
+            description={
+              <Trans
+                t={t}
+                i18nKey="stateWcCoveredDescription"
+                components={{
+                  wcLink: (
+                    <Components.Link
+                      href="https://www.lni.wa.gov/insurance/rates-risk-classes/risk-classes-for-workers-compensation/risk-class-lookup#/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    />
+                  ),
+                }}
+              />
+            }
+            getOptionLabel={(covered: boolean) =>
+              covered ? t('stateWcCoveredOptions.yes') : t('stateWcCoveredOptions.no')
+            }
+            formHookResult={jobForm}
+          />
+        )}
+
+        {JobFields.StateWcClassCode && (
+          <JobFields.StateWcClassCode
+            label={t('stateWcClassCodeLabel')}
+            description={t('stateWcClassCodeDescription')}
+            placeholder={t('stateWcClassCodeLabel')}
+            validationMessages={{ REQUIRED: t('validations.stateWcClassCode') }}
+            formHookResult={jobForm}
+          />
+        )}
+      </Flex>
 
       <ActionsLayout>
         {onCancel && (

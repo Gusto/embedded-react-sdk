@@ -145,7 +145,7 @@ describe('EmployeeOnboardingFlow', () => {
       await user.type(await screen.findByLabelText(/job title/i), 'cat herder')
       await user.click(await screen.findByLabelText('Employee type'))
       await user.click(await screen.findByRole('option', { name: 'Paid by the hour' }))
-      await user.type(await screen.findByLabelText(/compensation amount/i), '100')
+      await user.type(await screen.findByLabelText(/^wage$/i), '100')
       await user.click(await screen.findByRole('button', { name: 'Continue' }))
 
       // Page - Compensation pt 2

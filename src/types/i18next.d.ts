@@ -1346,11 +1346,23 @@ export interface EmployeeCompensation{
 "tableLabel":string;
 "typeColumn":string;
 };
-"amount":string;
 "backCta":string;
 "cancelCta":string;
 "cancelNewJobCta":string;
 "classificationLink":string;
+"commissionAlerts":{
+"federalMinimumPay":{
+"label":string;
+"body":string;
+};
+"minimumWage":{
+"label":string;
+"body":string;
+};
+"ownerSalary":{
+"label":string;
+};
+};
 "employeeClassification":string;
 "flsaStatusLabels":{
 "Commission Only Exempt":string;
@@ -1363,7 +1375,8 @@ export interface EmployeeCompensation{
 "hamburgerTitle":string;
 "jobTitle":string;
 "paymentUnitDescription":string;
-"paymentUnitLabel":string;
+"wageLabel":string;
+"wageFrequencyLabel":string;
 "paymentUnitOptions":{
 "Hour":string;
 "Month":string;
@@ -1383,8 +1396,6 @@ export interface EmployeeCompensation{
 "management":{
 "editCompensationTitle":string;
 "jobTitleLabel":string;
-"wageLabel":string;
-"wageFrequencyLabel":string;
 "hireDateLabel":string;
 "twoPercentShareholderLabel":string;
 "saveCta":string;
