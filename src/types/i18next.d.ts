@@ -1351,6 +1351,24 @@ export interface EmployeeCompensation{
 "cancelCta":string;
 "cancelNewJobCta":string;
 "classificationLink":string;
+"commissionAlerts":{
+"timeTrackingImpact":{
+"label":string;
+"intro":string;
+"items":{
+"notEligibleForTimeTracking":string;
+"overtimeNotRetroactive":string;
+};
+};
+"federalMinimumPay":{
+"label":string;
+"body":string;
+};
+"minimumWage":{
+"label":string;
+"body":string;
+};
+};
 "employeeClassification":string;
 "flsaStatusLabels":{
 "Commission Only Exempt":string;
