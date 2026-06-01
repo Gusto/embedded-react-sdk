@@ -1366,6 +1366,12 @@ export interface EmployeeCompensation{
 "employeeTypeColumn":string;
 "wageColumn":string;
 "tableLabel":string;
+"jobTitleColumn":string;
+"combinedTableLabel":string;
+"heading":string;
+"jobFilterLabel":string;
+"allJobsOption":string;
+"emptyState":string;
 };
 "jobTitle":string;
 "paymentUnitDescription":string;

@@ -33,7 +33,13 @@
     "effectiveDateColumn": "Effective date",
     "employeeTypeColumn": "Employee type",
     "wageColumn": "Wage",
-    "tableLabel": "Compensation history for {{jobTitle}}"
+    "tableLabel": "Compensation history for {{jobTitle}}",
+    "jobTitleColumn": "Job title",
+    "combinedTableLabel": "Compensation history across all jobs",
+    "heading": "Compensation history",
+    "jobFilterLabel": "Filter by job",
+    "allJobsOption": "All jobs",
+    "emptyState": "No compensation history yet."
   },
   "jobTitle": "Job Title",
   "paymentUnitDescription": "The period over which the compensation amount is tracked (e.g., hourly, daily, weekly, monthly, annually).",
