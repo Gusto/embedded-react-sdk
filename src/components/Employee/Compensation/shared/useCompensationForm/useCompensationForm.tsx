@@ -370,14 +370,13 @@ export function useCompensationForm({
   // schema enforces requiredness on submit in `create` mode (see
   // `requiredFieldsConfig` in compensationSchema.ts).
   //
-  // `title` falls back to the parent job's title when the loaded compensation
-  // row has none — a compensation only carries a non-null `title` when an
-  // explicit title change has been scheduled on it. For steady-state edits
-  // we want the input to show the employee's current title as the starting
-  // value so the user can edit-in-place rather than re-typing.
+  // `title` lives on compensation in the API — `job.title` is a denormalized
+  // snapshot of the primary comp's title that can lag behind comp-level edits
+  // on secondaries. Seed directly from the loaded compensation so editing in
+  // place can't silently re-introduce a stale title from the job record.
   const resolvedDefaults: CompensationFormData = useMemo(
     () => ({
-      title: currentCompensation?.title ?? currentJob?.title ?? partnerDefaults?.title ?? '',
+      title: currentCompensation?.title ?? partnerDefaults?.title ?? '',
       // When adding a secondary, the FLSA must match the primary's — force it
       // here (overriding any partner default) so the form submits the right
       // value even though `Fields.FlsaStatus` is hidden.
