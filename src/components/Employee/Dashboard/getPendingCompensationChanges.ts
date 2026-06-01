@@ -56,12 +56,15 @@ const numericRate = (rate: string | undefined): number | null => {
 function buildExistingJobDetails(
   baseline: Compensation,
   future: Compensation,
-  jobTitle: string | null,
 ): PendingChangeDetail[] {
   const details: PendingChangeDetail[] = []
 
-  const baseTitle = baseline.title ?? jobTitle
-  const futureTitle = future.title ?? jobTitle
+  // Title diffs come straight from `compensation.title` — that's where the
+  // value lives in the API. A future comp that doesn't carry a title (e.g.
+  // a pay-only change) leaves `future.title` undefined; the `futureTitle &&`
+  // guard prevents that case from emitting a spurious title change.
+  const baseTitle = baseline.title ?? null
+  const futureTitle = future.title ?? null
   if (futureTitle && baseTitle !== futureTitle) {
     details.push({ kind: 'titleChange', title: futureTitle })
   }
@@ -98,12 +101,12 @@ function buildExistingJobDetails(
   return details
 }
 
-function buildNewJobDetails(future: Compensation, jobTitle: string | null): PendingChangeDetail[] {
+function buildNewJobDetails(future: Compensation): PendingChangeDetail[] {
   const rate = numericRate(future.rate)
   return [
     {
       kind: 'newJob',
-      title: future.title ?? jobTitle,
+      title: future.title ?? null,
       rate,
       paymentUnit: rate !== null && future.paymentUnit ? future.paymentUnit : null,
     },
@@ -152,19 +155,28 @@ export function getPendingCompensationChanges(
         ? referencedCurrent
         : null
 
+    // Title lives on compensation; `job.title` is a denormalized snapshot of
+    // the primary comp's title and can lag behind comp-level edits on
+    // secondaries (and on primaries until the server resyncs). For UI strings
+    // that contextualize a change ("Compensation for X will change on..."),
+    // use the title from the currently-in-effect comp; for a job that hasn't
+    // started yet (`currentComp === null`), fall back to the first future
+    // comp's title — that's the title the job is starting with.
+    const displayTitle = currentComp?.title ?? futureComps[0]?.title ?? null
+
     for (let i = 0; i < futureComps.length; i++) {
       const future = futureComps[i]!
       const baseline = i === 0 ? currentComp : futureComps[i - 1]!
 
       const details = baseline
-        ? buildExistingJobDetails(baseline, future, job.title)
-        : buildNewJobDetails(future, job.title)
+        ? buildExistingJobDetails(baseline, future)
+        : buildNewJobDetails(future)
 
       results.push({
         compensationUuid: future.uuid,
         jobUuid: job.uuid,
         effectiveDate: future.effectiveDate!,
-        jobTitle: job.title,
+        jobTitle: displayTitle,
         details,
         isNewJob: baseline === null,
       })

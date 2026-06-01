@@ -125,6 +125,8 @@ export function TaxesView({
     return answer
   }
 
+  const emptyPlaceholder = <span aria-label={t('listEmptyPlaceholder')}>–</span>
+
   return (
     <Flex flexDirection="column" gap={24}>
       <Components.Box
@@ -147,71 +149,51 @@ export function TaxesView({
           {isFederalTaxesLoading ? (
             <Loading />
           ) : federalTaxes ? (
-            <Flex flexDirection="column" gap={12}>
-              {federalTaxes.filingStatus && (
-                <Flex flexDirection="column" gap={0}>
-                  <Components.Text variant="supporting">
-                    {t('taxes.federal.filingStatus')}
-                  </Components.Text>
-                  <Components.Text>{federalTaxes.filingStatus}</Components.Text>
-                </Flex>
-              )}
-
-              {'twoJobs' in federalTaxes && federalTaxes.twoJobs !== null && (
-                <Flex flexDirection="column" gap={0}>
-                  <Components.Text variant="supporting">
-                    {t('taxes.federal.multipleJobs')}
-                  </Components.Text>
-                  <Components.Text>
-                    {federalTaxes.twoJobs ? t('common.yes') : t('common.no')}
-                  </Components.Text>
-                </Flex>
-              )}
-
-              {'dependentsAmount' in federalTaxes && federalTaxes.dependentsAmount && (
-                <Flex flexDirection="column" gap={0}>
-                  <Components.Text variant="supporting">
-                    {t('taxes.federal.dependentsAndOtherCredits')}
-                  </Components.Text>
-                  <Components.Text>
-                    {formatCurrency(parseFloat(federalTaxes.dependentsAmount))}
-                  </Components.Text>
-                </Flex>
-              )}
-
-              {'otherIncome' in federalTaxes && federalTaxes.otherIncome && (
-                <Flex flexDirection="column" gap={0}>
-                  <Components.Text variant="supporting">
-                    {t('taxes.federal.otherIncome')}
-                  </Components.Text>
-                  <Components.Text>
-                    {formatCurrency(parseFloat(federalTaxes.otherIncome))}
-                  </Components.Text>
-                </Flex>
-              )}
-
-              {'deductions' in federalTaxes && federalTaxes.deductions && (
-                <Flex flexDirection="column" gap={0}>
-                  <Components.Text variant="supporting">
-                    {t('taxes.federal.deductions')}
-                  </Components.Text>
-                  <Components.Text>
-                    {formatCurrency(parseFloat(federalTaxes.deductions))}
-                  </Components.Text>
-                </Flex>
-              )}
-
-              {'extraWithholding' in federalTaxes && federalTaxes.extraWithholding && (
-                <Flex flexDirection="column" gap={0}>
-                  <Components.Text variant="supporting">
-                    {t('taxes.federal.extraWithholding')}
-                  </Components.Text>
-                  <Components.Text>
-                    {formatCurrency(parseFloat(federalTaxes.extraWithholding))}
-                  </Components.Text>
-                </Flex>
-              )}
-            </Flex>
+            <Components.DescriptionList
+              items={[
+                {
+                  term: t('taxes.federal.filingStatus'),
+                  description: federalTaxes.filingStatus || emptyPlaceholder,
+                },
+                {
+                  term: t('taxes.federal.multipleJobs'),
+                  description:
+                    'twoJobs' in federalTaxes && federalTaxes.twoJobs !== null
+                      ? federalTaxes.twoJobs
+                        ? t('common.yes')
+                        : t('common.no')
+                      : emptyPlaceholder,
+                },
+                {
+                  term: t('taxes.federal.dependentsAndOtherCredits'),
+                  description:
+                    'dependentsAmount' in federalTaxes && federalTaxes.dependentsAmount
+                      ? formatCurrency(parseFloat(federalTaxes.dependentsAmount))
+                      : emptyPlaceholder,
+                },
+                {
+                  term: t('taxes.federal.otherIncome'),
+                  description:
+                    'otherIncome' in federalTaxes && federalTaxes.otherIncome
+                      ? formatCurrency(parseFloat(federalTaxes.otherIncome))
+                      : emptyPlaceholder,
+                },
+                {
+                  term: t('taxes.federal.deductions'),
+                  description:
+                    'deductions' in federalTaxes && federalTaxes.deductions
+                      ? formatCurrency(parseFloat(federalTaxes.deductions))
+                      : emptyPlaceholder,
+                },
+                {
+                  term: t('taxes.federal.extraWithholding'),
+                  description:
+                    'extraWithholding' in federalTaxes && federalTaxes.extraWithholding
+                      ? formatCurrency(parseFloat(federalTaxes.extraWithholding))
+                      : emptyPlaceholder,
+                },
+              ]}
+            />
           ) : null}
         </Flex>
       </Components.Box>
@@ -251,23 +233,18 @@ export function TaxesView({
                     ) : null}
 
                     {hasQuestions ? (
-                      <Flex flexDirection="column" gap={12}>
-                        {stateTax.questions!.map((question, qIndex) => {
+                      <Components.DescriptionList
+                        items={stateTax.questions!.map(question => {
                           const answer = question.answers[0]?.value
-                          if (answer === null || answer === undefined) return null
-
-                          return (
-                            <Flex key={question.key || qIndex} flexDirection="column" gap={0}>
-                              <Components.Text variant="supporting">
-                                {question.label}
-                              </Components.Text>
-                              <Components.Text>
-                                {formatStateTaxAnswer(question, answer)}
-                              </Components.Text>
-                            </Flex>
-                          )
+                          return {
+                            term: question.label,
+                            description:
+                              answer === null || answer === undefined
+                                ? emptyPlaceholder
+                                : formatStateTaxAnswer(question, answer),
+                          }
                         })}
-                      </Flex>
+                      />
                     ) : (
                       <Components.Text variant="supporting">
                         {t('taxes.state.noWithholdingForState')}

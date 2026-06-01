@@ -4,6 +4,7 @@ import type { CustomTypeOptions } from 'i18next'
 import { LRUCache } from '@/helpers/LRUCache'
 import type { ResourceDictionary, Resources } from '@/types/Helpers'
 
+/** @internal */
 export const defaultNS = 'common'
 
 const translationLoaders = import.meta.glob<Record<string, string>>('./*/*.json', {
@@ -23,6 +24,7 @@ function resolveTranslationLoader(lng: string | undefined, ns: string) {
 const resourceCache = new LRUCache(50)
 /**
  * Dynamic loading of translation resources - works with Suspence to prevent early access to loadable strings
+ *
  * @param lng - resource language
  * @param ns - Namespace/name of the component/resource
  * @returns translation resource
@@ -62,6 +64,7 @@ const loadResource = ({ lng = 'en', ns }: { ns: string; lng?: string }) => {
 
 /**
  * Hook that allows component to load custom dictionary
+ *
  * @param ns - Namespace - should match component name exactly - not exposed to consumers
  * @internal
  */
@@ -98,7 +101,11 @@ export const useI18n = (
   }
 }
 
-//Used by individual components to override their dictionaries with partner provided resources
+/**
+ * Used by individual components to override their dictionaries with partner provided resources
+ *
+ * @internal
+ */
 export const useComponentDictionary = <K extends keyof Resources>(
   ns: keyof CustomTypeOptions['resources'],
   resource?: ResourceDictionary<K> | null,

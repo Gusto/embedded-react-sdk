@@ -39,7 +39,10 @@ export function JobsListPresentation({
       {
         key: 'title',
         title: t('allCompensations.jobColumn'),
-        render: (job: Job) => job.title || '',
+        render: (job: Job) => {
+          const currentComp = job.compensations?.find(c => c.uuid === job.currentCompensationUuid)
+          return currentComp?.title || ''
+        },
       },
       {
         key: 'flsaStatus',

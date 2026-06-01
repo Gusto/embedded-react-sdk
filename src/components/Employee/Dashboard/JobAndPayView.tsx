@@ -223,16 +223,14 @@ export function JobAndPayView({
   const singleJobCurrentComp = singleJob?.compensations?.find(
     c => c.uuid === singleJob.currentCompensationUuid,
   )
-  const singleJobEffectiveDateRow = singleJobCurrentComp?.effectiveDate ? (
-    <Flex flexDirection="column" gap={0}>
-      <Components.Text variant="supporting">
-        {t('jobAndPay.compensation.effectiveDate')}
-      </Components.Text>
-      <Components.Text>
-        {formatDateLongWithYear(singleJobCurrentComp.effectiveDate)}
-      </Components.Text>
-    </Flex>
-  ) : null
+  const emptyPlaceholder = <span aria-label={t('listEmptyPlaceholder')}>–</span>
+  const singleJobPaymentTypeLabel = singleJob?.paymentUnit
+    ? singleJob.paymentUnit === 'Hour'
+      ? t('jobAndPay.compensation.types.hourly')
+      : singleJob.paymentUnit === 'Salary' || singleJob.paymentUnit === 'Year'
+        ? t('jobAndPay.compensation.types.salary')
+        : singleJob.paymentUnit
+    : null
 
   const [isReviewOpen, setIsReviewOpen] = useState(false)
   const renderDetail = usePendingChangeDetailRenderer(employeeFirstName)
@@ -312,10 +310,16 @@ export function JobAndPayView({
       key: 'jobTitle',
       title: t('jobAndPay.compensation.columns.jobTitle'),
       render: (job: Job) => {
+        // Title lives on compensation in the API — `job.title` is a
+        // denormalized snapshot that can lag behind comp-level title edits on
+        // pending (not-yet-started) jobs, so read from the comp pointed to by
+        // `currentCompensationUuid` like the pay-type / effective-date /
+        // status columns do.
+        const currentComp = job.compensations?.find(c => c.uuid === job.currentCompensationUuid)
         const numericRate = parseJobRate(job.rate)
         return (
           <>
-            {job.title || '-'}
+            {currentComp?.title || '-'}
             {numericRate !== null && job.paymentUnit ? (
               <Components.Text variant="supporting" size="sm">
                 {formatCompensationRate(numericRate, job.paymentUnit)}
@@ -382,7 +386,13 @@ export function JobAndPayView({
                 label: t('jobAndPay.compensation.deleteJobCta'),
                 icon: <TrashCanSvg aria-hidden />,
                 onClick: () => {
-                  setPendingDeleteJob({ uuid: job.uuid, title: job.title ?? '' })
+                  // Match the title shown on the row (comp-derived), since
+                  // `job.title` can lag behind comp-level edits on
+                  // secondaries.
+                  const currentComp = job.compensations?.find(
+                    c => c.uuid === job.currentCompensationUuid,
+                  )
+                  setPendingDeleteJob({ uuid: job.uuid, title: currentComp?.title ?? '' })
                 },
               },
             ]
@@ -691,57 +701,43 @@ export function JobAndPayView({
                   {...jobsDataView}
                 />
               ) : singleJob ? (
-                <Flex flexDirection="column" gap={12}>
-                  {singleJob.title && (
-                    <Flex flexDirection="column" gap={0}>
-                      <Components.Text variant="supporting">
-                        {t('jobAndPay.compensation.jobTitle')}
-                      </Components.Text>
-                      <Components.Text>{singleJob.title}</Components.Text>
-                    </Flex>
-                  )}
-
-                  {singleJob.paymentUnit && (
-                    <Flex flexDirection="column" gap={0}>
-                      <Components.Text variant="supporting">
-                        {t('jobAndPay.compensation.type')}
-                      </Components.Text>
-                      <Components.Text>
-                        {singleJob.paymentUnit === 'Hour'
-                          ? t('jobAndPay.compensation.types.hourly')
-                          : singleJob.paymentUnit === 'Salary' || singleJob.paymentUnit === 'Year'
-                            ? t('jobAndPay.compensation.types.salary')
-                            : singleJob.paymentUnit}
-                      </Components.Text>
-                    </Flex>
-                  )}
-
-                  {singleJobNumericRate !== null && singleJob.paymentUnit && (
-                    <Flex flexDirection="column" gap={0}>
-                      <Components.Text variant="supporting">
-                        {t('jobAndPay.compensation.wage')}
-                      </Components.Text>
-                      <Components.Text>
-                        {formatCompensationRate(singleJobNumericRate, singleJob.paymentUnit)}
-                      </Components.Text>
-                    </Flex>
-                  )}
-
-                  {singleJobEffectiveDateRow}
-
-                  {singleJobIsPendingNew && (
-                    <Flex flexDirection="column" gap={0}>
-                      <Components.Text variant="supporting">
-                        {t('jobAndPay.compensation.columns.status')}
-                      </Components.Text>
-                      <div>
-                        <Components.Badge status="warning">
-                          {t('jobAndPay.compensation.pendingStatus')}
-                        </Components.Badge>
-                      </div>
-                    </Flex>
-                  )}
-                </Flex>
+                <Components.DescriptionList
+                  items={[
+                    {
+                      term: t('jobAndPay.compensation.jobTitle'),
+                      description: singleJob.title || emptyPlaceholder,
+                    },
+                    {
+                      term: t('jobAndPay.compensation.type'),
+                      description: singleJobPaymentTypeLabel || emptyPlaceholder,
+                    },
+                    {
+                      term: t('jobAndPay.compensation.wage'),
+                      description:
+                        singleJobNumericRate !== null && singleJob.paymentUnit
+                          ? formatCompensationRate(singleJobNumericRate, singleJob.paymentUnit)
+                          : emptyPlaceholder,
+                    },
+                    {
+                      term: t('jobAndPay.compensation.effectiveDate'),
+                      description: singleJobCurrentComp?.effectiveDate
+                        ? formatDateLongWithYear(singleJobCurrentComp.effectiveDate)
+                        : emptyPlaceholder,
+                    },
+                    ...(singleJobIsPendingNew
+                      ? [
+                          {
+                            term: t('jobAndPay.compensation.columns.status'),
+                            description: (
+                              <Components.Badge status="warning">
+                                {t('jobAndPay.compensation.pendingStatus')}
+                              </Components.Badge>
+                            ),
+                          },
+                        ]
+                      : []),
+                  ]}
+                />
               ) : (
                 <EmptyData
                   title={t('jobAndPay.compensation.emptyState.title')}
@@ -787,14 +783,16 @@ export function JobAndPayView({
           {isPaymentMethodLoading ? (
             <Loading />
           ) : bankAccounts.length === 0 ? (
-            <Flex flexDirection="column" gap={0}>
-              <Components.Text variant="supporting">
-                {tPayment('paymentMethodLabel')}
-              </Components.Text>
-              <Components.Text>
-                {isDirectDeposit ? tPayment('directDepositLabel') : tPayment('checkLabel')}
-              </Components.Text>
-            </Flex>
+            <Components.DescriptionList
+              items={[
+                {
+                  term: tPayment('paymentMethodLabel'),
+                  description: isDirectDeposit
+                    ? tPayment('directDepositLabel')
+                    : tPayment('checkLabel'),
+                },
+              ]}
+            />
           ) : (
             <DataView
               label={t('jobAndPay.payment.listLabel')}

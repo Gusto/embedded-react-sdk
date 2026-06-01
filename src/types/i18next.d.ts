@@ -1419,6 +1419,7 @@ export interface EmployeeDashboard{
 "title":string;
 "employeeRoleLabel":string;
 "tabsLabel":string;
+"listEmptyPlaceholder":string;
 "tabs":{
 "basicDetails":string;
 "jobAndPay":string;

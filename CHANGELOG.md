@@ -1,5 +1,72 @@
 # Changelog
 
+## [0.46.3](https://github.com/Gusto/embedded-react-sdk/compare/v0.46.2...v0.46.3) (2026-06-01)
+
+### Features & Enhancements
+
+- allow searching by department in add-employee tables (SDK-892) ([#1959](https://github.com/Gusto/embedded-react-sdk/issues/1959)) ([e610081](https://github.com/Gusto/embedded-react-sdk/commit/e61008103c4a7ab7317086704b3cc61fb9c8b584))
+- **e2e:** reliability hardening — provisioning, loading waits, retries ([#1914](https://github.com/Gusto/embedded-react-sdk/issues/1914)) ([7356c6b](https://github.com/Gusto/embedded-react-sdk/commit/7356c6b94884312ed6a5bac25a6b2edf446a6291)), closes [employeeFlowDrivers#landOnEmployeeOnboardingHome](https://github.com/Gusto/employeeFlowDrivers/issues/landOnEmployeeOnboardingHome) [contractorFlowDrivers#reviewAndSubmitPayment](https://github.com/Gusto/contractorFlowDrivers/issues/reviewAndSubmitPayment) [payrollFlowDrivers#terminateAndRunDismissalPayroll](https://github.com/Gusto/payrollFlowDrivers/issues/terminateAndRunDismissalPayroll) [employeeFlowDrivers#runEmployeeTermination](https://github.com/Gusto/employeeFlowDrivers/issues/runEmployeeTermination) [#1](https://github.com/Gusto/embedded-react-sdk/issues/1) [#4](https://github.com/Gusto/embedded-react-sdk/issues/4) [#2](https://github.com/Gusto/embedded-react-sdk/issues/2) [#5](https://github.com/Gusto/embedded-react-sdk/issues/5)
+
+### Fixes
+
+- align wage frequency option copy between add and edit forms (SDK-974) ([#1957](https://github.com/Gusto/embedded-react-sdk/issues/1957)) ([c49aa0e](https://github.com/Gusto/embedded-react-sdk/commit/c49aa0ef298a2571395ba8bf5dfb48d4d7d9f7ee))
+- always show reassignment warning on time off add employees view ([#1960](https://github.com/Gusto/embedded-react-sdk/issues/1960)) ([0d222f9](https://github.com/Gusto/embedded-react-sdk/commit/0d222f97c6925584bb31c56a9d8299131eb6aac7))
+- clear stale compensation field errors when FLSA change disables them ([#1965](https://github.com/Gusto/embedded-react-sdk/issues/1965)) ([16cb010](https://github.com/Gusto/embedded-react-sdk/commit/16cb01048f4fff11ff9f92bc50628a20b3bd0ab0))
+- **Dashboard:** close review modal when all pending changes are cancelled ([#1937](https://github.com/Gusto/embedded-react-sdk/issues/1937)) ([52edc54](https://github.com/Gusto/embedded-react-sdk/commit/52edc540e99a8ff128c363293e4b1b9613cad5c1))
+- **dashboard:** show compensation.title (not job.title) on job & pay row ([#1975](https://github.com/Gusto/embedded-react-sdk/issues/1975)) ([aaaff5a](https://github.com/Gusto/embedded-react-sdk/commit/aaaff5afbce1eac97997fdd6f4439b4266d6ad4f))
+- hide compensation Edit while a pending update exists (SDK-975) ([#1956](https://github.com/Gusto/embedded-react-sdk/issues/1956)) ([5e4bc87](https://github.com/Gusto/embedded-react-sdk/commit/5e4bc87a2dc31430a8091fee80256f7de15dc275))
+- increase default pagination for add-employee flows (SDK-889) ([#1947](https://github.com/Gusto/embedded-react-sdk/issues/1947)) ([44d0540](https://github.com/Gusto/embedded-react-sdk/commit/44d0540b1bd67bcaf687a8b79a7bad8da45a1786))
+- remove confirmation dialog from add employees view (SDK-977) ([#1958](https://github.com/Gusto/embedded-react-sdk/issues/1958)) ([c4dde85](https://github.com/Gusto/embedded-react-sdk/commit/c4dde85651669d5f83ecba051e005a893feb8a19))
+- remove Flex container from job cell in employee dashboard ([#1961](https://github.com/Gusto/embedded-react-sdk/issues/1961)) ([c736551](https://github.com/Gusto/embedded-react-sdk/commit/c736551521644f67e45e3596bd2eabc3c4bc968e))
+- remove Text wrapper from time off balance cell ([#1962](https://github.com/Gusto/embedded-react-sdk/issues/1962)) ([2c69e69](https://github.com/Gusto/embedded-react-sdk/commit/2c69e697daf699105d73e848a74db855a2360e08))
+- render employee steady-state details with DescriptionList ([#1964](https://github.com/Gusto/embedded-react-sdk/issues/1964)) ([2e297db](https://github.com/Gusto/embedded-react-sdk/commit/2e297dbd381a11ddaad962dfad6a11d3d60608ac))
+- **SDK-927:** require Start date in home address creation modal ([#1935](https://github.com/Gusto/embedded-react-sdk/issues/1935)) ([5d2be6c](https://github.com/Gusto/embedded-react-sdk/commit/5d2be6c9034f7f14aca39f0928a1fb156469d7a6))
+- **SDK-928:** reset home address form state when closing the modal ([#1938](https://github.com/Gusto/embedded-react-sdk/issues/1938)) ([50f474d](https://github.com/Gusto/embedded-react-sdk/commit/50f474d434c40967732ec18d536e0055356b9820))
+- **SDK-929:** keep home address modal open on invalid Save ([#1936](https://github.com/Gusto/embedded-react-sdk/issues/1936)) ([9dd04b4](https://github.com/Gusto/embedded-react-sdk/commit/9dd04b4ac8239e5cbf32a707bb59b0132b6b9518))
+- **SDK-933:** track agency-required garnishment fields dynamically ([#1950](https://github.com/Gusto/embedded-react-sdk/issues/1950)) ([df6013c](https://github.com/Gusto/embedded-react-sdk/commit/df6013c30966bc1a3ae731e8923f3db5141794aa))
+- **SDK-934:** stop double-encoding interpolated values in work address banner ([#1953](https://github.com/Gusto/embedded-react-sdk/issues/1953)) ([478d597](https://github.com/Gusto/embedded-react-sdk/commit/478d597907fd8d4d12fae28e2775e48b9082d8a2)), closes [#39](https://github.com/Gusto/embedded-react-sdk/issues/39)
+- **SDK-935:** expose Start date in the home address Edit modal ([#1982](https://github.com/Gusto/embedded-react-sdk/issues/1982)) ([eab07d8](https://github.com/Gusto/embedded-react-sdk/commit/eab07d8d0e93a39fbab1c001130c802a0f8dde65))
+- **SDK-936:** edit just-created home/work address without page-level loading ([#1939](https://github.com/Gusto/embedded-react-sdk/issues/1939)) ([64de9c8](https://github.com/Gusto/embedded-react-sdk/commit/64de9c8631169daf3ea1fb993ec8109d6601c8dc))
+- **SDK-937:** switch Amount helper text when toggling Percentage / Fixed ([#1973](https://github.com/Gusto/embedded-react-sdk/issues/1973)) ([77602a7](https://github.com/Gusto/embedded-react-sdk/commit/77602a7e9374605127634670c2ecb06364c6ffab))
+- **SDK-938:** show a format-specific message for invalid account numbers ([#1951](https://github.com/Gusto/embedded-react-sdk/issues/1951)) ([38a8db5](https://github.com/Gusto/embedded-react-sdk/commit/38a8db55eed510270aaeb1ea07c17a8a9686eea8))
+- **SDK-940:** make Documents tab forms table flush with its container ([#1952](https://github.com/Gusto/embedded-react-sdk/issues/1952)) ([13c3a5f](https://github.com/Gusto/embedded-react-sdk/commit/13c3a5fa46bb5ccc3335447a90a1d25d38d29734))
+- **SDK-942:** handle no-income-tax states in State taxes card and edit form ([#1954](https://github.com/Gusto/embedded-react-sdk/issues/1954)) ([aab92b3](https://github.com/Gusto/embedded-react-sdk/commit/aab92b312d738a20a39480fbf792ff6abc79aab5))
+- **SDK-946:** remount DocumentViewer embed when the PDF url changes ([#1955](https://github.com/Gusto/embedded-react-sdk/issues/1955)) ([5222623](https://github.com/Gusto/embedded-react-sdk/commit/5222623df12c67bf24578cc771cfd9ee38528af6))
+- **SDK-948:** hide PDF viewer black-flash behind page background ([#1974](https://github.com/Gusto/embedded-react-sdk/issues/1974)) ([6368a06](https://github.com/Gusto/embedded-react-sdk/commit/6368a060dfa044f4ad38a5e0f235f63ed4baf39e))
+- **SDK-949:** select existing value when a NumberInput is focused ([#1971](https://github.com/Gusto/embedded-react-sdk/issues/1971)) ([77d7e08](https://github.com/Gusto/embedded-react-sdk/commit/77d7e0878ed2f815c91d95739b8be469f19d251f))
+- **SDK-978:** preserve secondary compensation effective_date when primary hire_date changes ([#1972](https://github.com/Gusto/embedded-react-sdk/issues/1972)) ([38642f6](https://github.com/Gusto/embedded-react-sdk/commit/38642f67e3fe7d79a91e5404fa4b629d3b9853d2))
+- use max-width to constrain starting balance input width (SDK-893) ([#1949](https://github.com/Gusto/embedded-react-sdk/issues/1949)) ([347aba5](https://github.com/Gusto/embedded-react-sdk/commit/347aba509d8118bef73b927421cfcd568a801821))
+
+### Chores & Maintenance
+
+- colorize ASCII art banners with Gusto coral ([#1966](https://github.com/Gusto/embedded-react-sdk/issues/1966)) ([e593d2c](https://github.com/Gusto/embedded-react-sdk/commit/e593d2c6e81d07aa7ebc6d27ff40bef759886fad)), closes [#F45D48](https://github.com/Gusto/embedded-react-sdk/issues/F45D48)
+- **deps-dev:** bump @commitlint/config-conventional from 21.0.1 to 21.0.2 ([#1978](https://github.com/Gusto/embedded-react-sdk/issues/1978)) ([2f53edc](https://github.com/Gusto/embedded-react-sdk/commit/2f53edc90e9bae3fcc7f8c0f4e2bc209f23af6bc))
+- **deps-dev:** bump @release-it/conventional-changelog from 11.0.0 to 11.0.1 ([#1979](https://github.com/Gusto/embedded-react-sdk/issues/1979)) ([7b7ae8f](https://github.com/Gusto/embedded-react-sdk/commit/7b7ae8fe79e1eef046248c71c05ef4ac62865eff))
+- **deps-dev:** bump @storybook/addon-a11y from 10.4.0 to 10.4.1 ([#1931](https://github.com/Gusto/embedded-react-sdk/issues/1931)) ([3962ee5](https://github.com/Gusto/embedded-react-sdk/commit/3962ee543949d7f3dbdde71c6955e208f2bf87f6))
+- **deps-dev:** bump @storybook/addon-docs from 10.4.0 to 10.4.1 ([#1927](https://github.com/Gusto/embedded-react-sdk/issues/1927)) ([90b9e7e](https://github.com/Gusto/embedded-react-sdk/commit/90b9e7e45fdaf054b5b92755ff110366af090a9d))
+- **deps-dev:** bump @storybook/addon-onboarding from 10.4.0 to 10.4.1 ([#1925](https://github.com/Gusto/embedded-react-sdk/issues/1925)) ([dbdc532](https://github.com/Gusto/embedded-react-sdk/commit/dbdc532a3399e6e39b1390912fb2a32e3bd0c169))
+- **deps-dev:** bump @storybook/react-vite from 10.4.0 to 10.4.1 ([#1929](https://github.com/Gusto/embedded-react-sdk/issues/1929)) ([465768d](https://github.com/Gusto/embedded-react-sdk/commit/465768d18e23431f4733816b6713960c7a9aeea2))
+- **deps-dev:** bump eslint-plugin-storybook from 10.4.0 to 10.4.1 ([#1932](https://github.com/Gusto/embedded-react-sdk/issues/1932)) ([561bcca](https://github.com/Gusto/embedded-react-sdk/commit/561bcca6851723c6032e4fcea193c2ee7d6e73ff))
+- **deps-dev:** bump lint-staged from 17.0.5 to 17.0.7 ([#1981](https://github.com/Gusto/embedded-react-sdk/issues/1981)) ([0e01c04](https://github.com/Gusto/embedded-react-sdk/commit/0e01c04c36a75498cfa86c5548de1abbbd02c2d4))
+- **deps-dev:** bump react-router-dom from 7.15.1 to 7.16.0 ([#1970](https://github.com/Gusto/embedded-react-sdk/issues/1970)) ([6312d9d](https://github.com/Gusto/embedded-react-sdk/commit/6312d9d985c036da25e4bc73017def7aacabdcc8))
+- **deps-dev:** bump release-it from 20.0.1 to 20.2.0 ([#1977](https://github.com/Gusto/embedded-react-sdk/issues/1977)) ([1349ea6](https://github.com/Gusto/embedded-react-sdk/commit/1349ea679b8720333d72364555e83e8a08eb3081))
+- **deps-dev:** bump sass-embedded from 1.99.0 to 1.100.0 ([#1912](https://github.com/Gusto/embedded-react-sdk/issues/1912)) ([b60e3f9](https://github.com/Gusto/embedded-react-sdk/commit/b60e3f98091eed5002984fd3384f8443bc3474d8))
+- **deps-dev:** bump typescript-eslint from 8.59.4 to 8.60.0 ([#1930](https://github.com/Gusto/embedded-react-sdk/issues/1930)) ([4fd978d](https://github.com/Gusto/embedded-react-sdk/commit/4fd978df43e0f2c844ef28c476f89f431614ddc5))
+- **deps-dev:** bump vite-plugin-checker from 0.13.0 to 0.14.1 ([#1945](https://github.com/Gusto/embedded-react-sdk/issues/1945)) ([89eda8a](https://github.com/Gusto/embedded-react-sdk/commit/89eda8ac14d4a8274c21e69011d9a2e10f3d9cb1))
+- **deps:** bump @hookform/resolvers from 5.2.2 to 5.4.0 ([#1911](https://github.com/Gusto/embedded-react-sdk/issues/1911)) ([93fda39](https://github.com/Gusto/embedded-react-sdk/commit/93fda396e2cea94ca4d693bcf0f3e0f68c83d4fb))
+- **deps:** bump @internationalized/date from 3.12.1 to 3.12.2 ([#1969](https://github.com/Gusto/embedded-react-sdk/issues/1969)) ([1c9a377](https://github.com/Gusto/embedded-react-sdk/commit/1c9a377098aecd6479a21b36821ffbc0fcbf39f8))
+- **deps:** bump @internationalized/number from 3.6.6 to 3.6.7 ([#1968](https://github.com/Gusto/embedded-react-sdk/issues/1968)) ([82331bf](https://github.com/Gusto/embedded-react-sdk/commit/82331bf3af9144fe941475d6ff77acdbf7d542cb))
+- **deps:** bump dompurify from 3.4.5 to 3.4.7 ([#1944](https://github.com/Gusto/embedded-react-sdk/issues/1944)) ([bf47a3c](https://github.com/Gusto/embedded-react-sdk/commit/bf47a3cd939eb265512a51467d8d1aeefb1afeee))
+- **deps:** bump i18next from 26.2.0 to 26.3.0 ([#1946](https://github.com/Gusto/embedded-react-sdk/issues/1946)) ([8176319](https://github.com/Gusto/embedded-react-sdk/commit/81763196b355a43dcc53883be1f0792bc410ca03))
+- **deps:** bump react-error-boundary from 6.1.1 to 6.1.2 ([#1926](https://github.com/Gusto/embedded-react-sdk/issues/1926)) ([8097fec](https://github.com/Gusto/embedded-react-sdk/commit/8097fecfd443d3d523e5ea3a9571c5c82ffac2e9))
+- **deps:** bump react-hook-form from 7.76.0 to 7.76.1 ([#1928](https://github.com/Gusto/embedded-react-sdk/issues/1928)) ([e686f90](https://github.com/Gusto/embedded-react-sdk/commit/e686f90e5b3a36703055526ead5a0132cb925269))
+- **lint:** re-enable trivially-clean strict typescript-eslint rules ([#1924](https://github.com/Gusto/embedded-react-sdk/issues/1924)) ([77900d5](https://github.com/Gusto/embedded-react-sdk/commit/77900d5771c70813c86a3b02c22ebbbbd96f1184))
+- remove ReadMe docs publishing pipeline ([#1940](https://github.com/Gusto/embedded-react-sdk/issues/1940)) ([f4a4c99](https://github.com/Gusto/embedded-react-sdk/commit/f4a4c99fd171c539837afe0e2be6c04393f7c124))
+- **SDK-899:** add RFC for autogenerated API docs ([#1942](https://github.com/Gusto/embedded-react-sdk/issues/1942)) ([1380f06](https://github.com/Gusto/embedded-react-sdk/commit/1380f069a894e88514ed28485057b9e1937a0e2d))
+- **SDK-970:** install eslint-plugin-tsdoc to lint comment syntax ([#1963](https://github.com/Gusto/embedded-react-sdk/issues/1963)) ([85fd0f0](https://github.com/Gusto/embedded-react-sdk/commit/85fd0f07e2641b98c4b9afa7a506b7f55c5381c1))
+- **SDK-970:** lint tsdoc coverage and quality ([#1967](https://github.com/Gusto/embedded-react-sdk/issues/1967)) ([7ff453d](https://github.com/Gusto/embedded-react-sdk/commit/7ff453dfffbd814b4cf343f4c39382742e5edc27))
+- stand up Docusaurus site for ongoing docs work ([#1943](https://github.com/Gusto/embedded-react-sdk/issues/1943)) ([a659e82](https://github.com/Gusto/embedded-react-sdk/commit/a659e82f23450630618959fc77b54e3db75a80a9))
+
 ## [0.46.2](https://github.com/Gusto/embedded-react-sdk/compare/v0.46.0...v0.46.2) (2026-05-22)
 
 ### Features & Enhancements

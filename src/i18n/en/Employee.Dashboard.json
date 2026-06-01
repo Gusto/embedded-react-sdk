@@ -2,6 +2,7 @@
   "title": "Employee Dashboard",
   "employeeRoleLabel": "Employee",
   "tabsLabel": "Employee dashboard tabs",
+  "listEmptyPlaceholder": "No value",
   "tabs": {
     "basicDetails": "Basic details",
     "jobAndPay": "Job and pay",

@@ -171,4 +171,28 @@ describe('HomeAddress', () => {
     expect(within(dialog).getByRole('heading', { name: 'Edit home address' })).toBeInTheDocument()
     expect(retrieveResolver).not.toHaveBeenCalled()
   })
+
+  it('exposes the Start date field in the Edit modal so it can be corrected', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<HomeAddress employeeId="employee-123" onEvent={onEvent} />)
+
+    await waitFor(
+      () => {
+        expect(screen.getByText(/644 Fay Vista/)).toBeInTheDocument()
+      },
+      { timeout: 5000 },
+    )
+
+    const menuButtons = screen.getAllByRole('button', {
+      name: 'Open address row actions',
+    })
+    await user.click(menuButtons[0] as HTMLElement)
+    await user.click(await screen.findByRole('menuitem', { name: 'Edit' }))
+
+    const dialog = await screen.findByRole('dialog')
+    expect(within(dialog).getByRole('heading', { name: 'Edit home address' })).toBeInTheDocument()
+    // Start date field must be present so the effective date can be corrected
+    // without round-tripping through delete + create.
+    expect(within(dialog).getByText('Start date')).toBeInTheDocument()
+  })
 })

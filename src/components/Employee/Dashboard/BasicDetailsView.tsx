@@ -85,6 +85,20 @@ export function BasicDetailsView({
   const dateOfBirth = employee ? formatDateLongWithYear(employee.dateOfBirth) : undefined
   const maskedSsn = employee?.hasSsn ? 'XXX-XX-XXXX' : undefined
 
+  const emptyPlaceholder = <span aria-label={t('listEmptyPlaceholder')}>–</span>
+  const basicDetailsItems = employee
+    ? [
+        { term: t('basicDetails.legalName'), description: legalName || emptyPlaceholder },
+        { term: t('basicDetails.startDate'), description: startDate || emptyPlaceholder },
+        {
+          term: t('basicDetails.socialSecurityNumber'),
+          description: maskedSsn || emptyPlaceholder,
+        },
+        { term: t('basicDetails.dateOfBirth'), description: dateOfBirth || emptyPlaceholder },
+        { term: t('basicDetails.personalEmail'), description: employee.email || emptyPlaceholder },
+      ]
+    : []
+
   return (
     <Flex flexDirection="column" gap={24}>
       <Components.Box
@@ -103,58 +117,11 @@ export function BasicDetailsView({
           />
         }
       >
-        <Flex flexDirection="column" gap={16}>
-          {isEmployeeLoading ? (
-            <Loading />
-          ) : employee ? (
-            <Flex flexDirection="column" gap={12}>
-              {legalName && (
-                <Flex flexDirection="column" gap={0}>
-                  <Components.Text variant="supporting">
-                    {t('basicDetails.legalName')}
-                  </Components.Text>
-                  <Components.Text>{legalName}</Components.Text>
-                </Flex>
-              )}
-
-              {startDate && (
-                <Flex flexDirection="column" gap={0}>
-                  <Components.Text variant="supporting">
-                    {t('basicDetails.startDate')}
-                  </Components.Text>
-                  <Components.Text>{startDate}</Components.Text>
-                </Flex>
-              )}
-
-              {maskedSsn && (
-                <Flex flexDirection="column" gap={0}>
-                  <Components.Text variant="supporting">
-                    {t('basicDetails.socialSecurityNumber')}
-                  </Components.Text>
-                  <Components.Text>{maskedSsn}</Components.Text>
-                </Flex>
-              )}
-
-              {dateOfBirth && (
-                <Flex flexDirection="column" gap={0}>
-                  <Components.Text variant="supporting">
-                    {t('basicDetails.dateOfBirth')}
-                  </Components.Text>
-                  <Components.Text>{dateOfBirth}</Components.Text>
-                </Flex>
-              )}
-
-              {employee.email && (
-                <Flex flexDirection="column" gap={0}>
-                  <Components.Text variant="supporting">
-                    {t('basicDetails.personalEmail')}
-                  </Components.Text>
-                  <Components.Text>{employee.email}</Components.Text>
-                </Flex>
-              )}
-            </Flex>
-          ) : null}
-        </Flex>
+        {isEmployeeLoading ? (
+          <Loading />
+        ) : employee ? (
+          <Components.DescriptionList items={basicDetailsItems} />
+        ) : null}
       </Components.Box>
 
       <Components.Box
@@ -178,11 +145,12 @@ export function BasicDetailsView({
             <Loading />
           ) : currentHomeAddress ? (
             <Flex flexDirection="column" gap={0}>
-              <Components.Text variant="supporting">
-                {t('homeAddress.currentAddress')}
+              <Components.Text weight="medium">
+                {getStreet(currentHomeAddress).replace(',', '')}
               </Components.Text>
-              <Components.Text>{getStreet(currentHomeAddress).replace(',', '')}</Components.Text>
-              <Components.Text>{getCityStateZip(currentHomeAddress)}</Components.Text>
+              <Components.Text variant="supporting">
+                {getCityStateZip(currentHomeAddress)}
+              </Components.Text>
             </Flex>
           ) : (
             <Components.Text>{t('homeAddress.noAddress')}</Components.Text>
@@ -211,14 +179,11 @@ export function BasicDetailsView({
             <Loading />
           ) : currentWorkAddress ? (
             <Flex flexDirection="column" gap={0}>
-              <Components.Text variant="supporting">
-                {t('workAddress.currentAddress')}
-              </Components.Text>
-              <Components.Text>
+              <Components.Text weight="medium">
                 {currentWorkAddress.street1}
                 {currentWorkAddress.street2 ? `, ${currentWorkAddress.street2}` : ''}
               </Components.Text>
-              <Components.Text>
+              <Components.Text variant="supporting">
                 {currentWorkAddress.city}, {currentWorkAddress.state} {currentWorkAddress.zip}
               </Components.Text>
             </Flex>
