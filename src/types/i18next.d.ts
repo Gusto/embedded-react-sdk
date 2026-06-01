@@ -1361,18 +1361,6 @@ export interface EmployeeCompensation{
 "Salaried Nonexempt":string;
 };
 "hamburgerTitle":string;
-"history":{
-"effectiveDateColumn":string;
-"employeeTypeColumn":string;
-"wageColumn":string;
-"tableLabel":string;
-"jobTitleColumn":string;
-"combinedTableLabel":string;
-"heading":string;
-"jobFilterLabel":string;
-"allJobsOption":string;
-"emptyState":string;
-};
 "jobTitle":string;
 "paymentUnitDescription":string;
 "paymentUnitLabel":string;
@@ -1473,7 +1461,6 @@ export interface EmployeeDashboard{
 "effectiveDate":string;
 "addJobCta":string;
 "addAnotherJobCta":string;
-"viewHistoryCta":string;
 "tableLabel":string;
 "hamburgerTitle":string;
 "editJobCta":string;

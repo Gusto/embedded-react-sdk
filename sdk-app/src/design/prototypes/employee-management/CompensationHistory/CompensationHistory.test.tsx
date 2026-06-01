@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { HttpResponse } from 'msw'
-import { CompensationHistory } from './CompensationHistory'
+import { CompensationHistory } from './'
 import { server } from '@/test/mocks/server'
 import { handleGetEmployeeJobs } from '@/test/mocks/apis/employees'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
@@ -10,7 +10,7 @@ import { buildEmployeeWithJobs } from '@/test/factories/jobsAndCompensations'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { mockUseContainerBreakpoints } from '@/test/setup'
 
-describe('Employee.Compensation.CompensationHistory', () => {
+describe('prototypes/employee-management/CompensationHistory', () => {
   beforeEach(() => {
     setupApiTestMocks()
     // Force the DataView's container-breakpoints hook to report a desktop

@@ -1,36 +1,61 @@
 import { useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useOutletContext } from 'react-router-dom'
 import { useJobsAndCompensationsGetJobs } from '@gusto/embedded-api/react-query/jobsAndCompensationsGetJobs'
 import { GetV1EmployeesEmployeeIdJobsQueryParamInclude } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidjobs'
 import type { Job } from '@gusto/embedded-api/models/components/job'
 import type { Compensation } from '@gusto/embedded-api/models/components/compensation'
+import type { EntityIds } from '../../../../useEntities'
 import style from './CompensationHistory.module.scss'
-import { BaseBoundaries, BaseLayout, type CommonComponentInterface } from '@/components/Base'
+import { BaseBoundaries, BaseLayout } from '@/components/Base'
 import { ActionsLayout, DataView, Flex, useDataView } from '@/components/Common'
 import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { formatDateLongWithYear } from '@/helpers/dateFormatting'
 import { useFormatCompensationRate } from '@/helpers/formattedStrings'
-import { useComponentDictionary, useI18n } from '@/i18n'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 
-export interface CompensationHistoryProps extends CommonComponentInterface<'Employee.Compensation'> {
-  employeeId: string
+const FLSA_STATUS_LABELS: Record<string, string> = {
+  'Commission Only Exempt': 'Commission Only/No Overtime',
+  'Commission Only Nonexempt': 'Commission Only/Eligible for overtime',
+  Exempt: 'Salary/No overtime',
+  Nonexempt: 'Paid by the hour',
+  Owner: "Owner's draw",
+  'Salaried Nonexempt': 'Salary/Eligible for overtime',
+}
+
+const COLUMN_LABELS = {
+  effectiveDate: 'Effective date',
+  employeeType: 'Employee type',
+  wage: 'Wage',
+  jobTitle: 'Job title',
+}
+
+export interface CompensationHistoryProps {
+  employeeId?: string
   onBack?: () => void
 }
 
-export function CompensationHistory({ dictionary, ...props }: CompensationHistoryProps) {
-  useComponentDictionary('Employee.Compensation', dictionary)
+export function CompensationHistory(props: CompensationHistoryProps = {}) {
+  const outletContext = useOutletContext<{ entities: EntityIds } | null>()
+  const employeeId = props.employeeId ?? outletContext?.entities.employeeId ?? ''
+
+  if (!employeeId) {
+    return (
+      <p>
+        No employee ID is configured. Set <code>VITE_EMPLOYEE_ID</code> or pick an employee from the
+        entity panel to view this prototype.
+      </p>
+    )
+  }
+
   return (
-    <BaseBoundaries componentName="Employee.Compensation.Management.CompensationHistory">
-      <Root {...props} />
+    <BaseBoundaries componentName="CompensationHistory">
+      <Root employeeId={employeeId} onBack={props.onBack} />
     </BaseBoundaries>
   )
 }
 
-function Root({ employeeId, onBack }: Omit<CompensationHistoryProps, 'dictionary'>) {
-  useI18n('Employee.Compensation')
-  const { t } = useTranslation('Employee.Compensation')
+function Root({ employeeId, onBack }: { employeeId: string; onBack?: () => void }) {
   const Components = useComponentContext()
 
   const jobsQuery = useJobsAndCompensationsGetJobs(
@@ -53,7 +78,7 @@ function Root({ employeeId, onBack }: Omit<CompensationHistoryProps, 'dictionary
     <BaseLayout error={errorHandling.errors}>
       <Flex flexDirection="column" gap={32}>
         {jobs.length === 0 ? (
-          <Components.Text>{t('history.emptyState')}</Components.Text>
+          <Components.Text>No compensation history yet.</Components.Text>
         ) : jobs.length === 1 && jobs[0] ? (
           <JobCompensationHistory job={jobs[0]} />
         ) : (
@@ -62,7 +87,7 @@ function Root({ employeeId, onBack }: Omit<CompensationHistoryProps, 'dictionary
         {onBack && (
           <ActionsLayout>
             <Components.Button variant="secondary" onClick={onBack}>
-              {t('backCta')}
+              Back
             </Components.Button>
           </ActionsLayout>
         )}
@@ -76,8 +101,12 @@ function getJobTitle(job: Job): string {
   return currentComp?.title ?? job.title ?? ''
 }
 
+function formatFlsaStatus(status: string | undefined): string {
+  if (!status) return ''
+  return FLSA_STATUS_LABELS[status] ?? status
+}
+
 function JobCompensationHistory({ job }: { job: Job }) {
-  const { t } = useTranslation('Employee.Compensation')
   const Components = useComponentContext()
   const formatCompensationRate = useFormatCompensationRate()
 
@@ -92,20 +121,17 @@ function JobCompensationHistory({ job }: { job: Job }) {
     columns: [
       {
         key: 'effectiveDate',
-        title: t('history.effectiveDateColumn'),
+        title: COLUMN_LABELS.effectiveDate,
         render: compensation => formatDateLongWithYear(compensation.effectiveDate),
       },
       {
         key: 'flsaStatus',
-        title: t('history.employeeTypeColumn'),
-        render: compensation =>
-          compensation.flsaStatus !== undefined
-            ? t(`flsaStatusLabels.${compensation.flsaStatus}`)
-            : '',
+        title: COLUMN_LABELS.employeeType,
+        render: compensation => formatFlsaStatus(compensation.flsaStatus),
       },
       {
         key: 'rate',
-        title: t('history.wageColumn'),
+        title: COLUMN_LABELS.wage,
         render: compensation => {
           const rate = Number(compensation.rate)
           if (!compensation.paymentUnit || Number.isNaN(rate)) return ''
@@ -118,7 +144,7 @@ function JobCompensationHistory({ job }: { job: Job }) {
   return (
     <Flex flexDirection="column" gap={16}>
       <Components.Heading as="h2">{jobTitle}</Components.Heading>
-      <DataView label={t('history.tableLabel', { jobTitle })} {...dataViewProps} />
+      <DataView label={`Compensation history for ${jobTitle}`} {...dataViewProps} />
     </Flex>
   )
 }
@@ -129,7 +155,6 @@ type CombinedRow = {
 }
 
 function CombinedCompensationHistory({ jobs }: { jobs: Job[] }) {
-  const { t } = useTranslation('Employee.Compensation')
   const Components = useComponentContext()
   const formatCompensationRate = useFormatCompensationRate()
   const [selectedJobUuid, setSelectedJobUuid] = useState<string>('all')
@@ -147,7 +172,7 @@ function CombinedCompensationHistory({ jobs }: { jobs: Job[] }) {
     )
 
   const options = [
-    { value: 'all', label: t('history.allJobsOption') },
+    { value: 'all', label: 'All jobs' },
     ...jobs.map(job => ({ value: job.uuid, label: getJobTitle(job) })),
   ]
 
@@ -156,25 +181,22 @@ function CombinedCompensationHistory({ jobs }: { jobs: Job[] }) {
     columns: [
       {
         key: 'effectiveDate',
-        title: t('history.effectiveDateColumn'),
+        title: COLUMN_LABELS.effectiveDate,
         render: row => formatDateLongWithYear(row.compensation.effectiveDate),
       },
       {
         key: 'title',
-        title: t('history.jobTitleColumn'),
+        title: COLUMN_LABELS.jobTitle,
         render: row => row.compensation.title ?? row.job.title ?? '',
       },
       {
         key: 'flsaStatus',
-        title: t('history.employeeTypeColumn'),
-        render: row =>
-          row.compensation.flsaStatus !== undefined
-            ? t(`flsaStatusLabels.${row.compensation.flsaStatus}`)
-            : '',
+        title: COLUMN_LABELS.employeeType,
+        render: row => formatFlsaStatus(row.compensation.flsaStatus),
       },
       {
         key: 'rate',
-        title: t('history.wageColumn'),
+        title: COLUMN_LABELS.wage,
         render: row => {
           const rate = Number(row.compensation.rate)
           if (!row.compensation.paymentUnit || Number.isNaN(rate)) return ''
@@ -193,10 +215,10 @@ function CombinedCompensationHistory({ jobs }: { jobs: Job[] }) {
           alignItems={isDesktop ? 'center' : 'stretch'}
           gap={isDesktop ? 0 : 16}
         >
-          <Components.Heading as="h2">{t('history.heading')}</Components.Heading>
+          <Components.Heading as="h2">Compensation history</Components.Heading>
           <div className={style.jobFilter}>
             <Components.Select
-              label={t('history.jobFilterLabel')}
+              label="Filter by job"
               shouldVisuallyHideLabel
               value={selectedJobUuid}
               onChange={value => {
@@ -206,7 +228,7 @@ function CombinedCompensationHistory({ jobs }: { jobs: Job[] }) {
             />
           </div>
         </Flex>
-        <DataView label={t('history.combinedTableLabel')} {...dataViewProps} />
+        <DataView label="Compensation history across all jobs" {...dataViewProps} />
       </Flex>
     </div>
   )

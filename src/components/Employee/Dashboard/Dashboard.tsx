@@ -66,10 +66,6 @@ function DashboardRoot({
     onEvent(componentEvents.EMPLOYEE_JOB_ADD_ANOTHER, { employeeId })
   }, [onEvent, employeeId])
 
-  const handleViewCompensationHistory = useCallback(() => {
-    onEvent(componentEvents.EMPLOYEE_COMPENSATION_HISTORY_VIEW, { employeeId })
-  }, [onEvent, employeeId])
-
   const handleAddDeduction = useCallback(() => {
     onEvent(componentEvents.EMPLOYEE_DEDUCTION_ADD, { employeeId })
   }, [onEvent, employeeId])
@@ -160,7 +156,6 @@ function DashboardRoot({
                 onEditCompensation={handleEditCompensation}
                 onAddJob={handleAddJob}
                 onAddAnotherJob={handleAddAnotherJob}
-                onViewHistory={handleViewCompensationHistory}
                 onAddDeduction={handleAddDeduction}
                 onEditDeduction={handleEditDeduction}
               />

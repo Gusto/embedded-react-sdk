@@ -14,6 +14,7 @@ import { ContractorDismiss } from './design/prototypes/contractor-management/con
 import { ContractorRehire } from './design/prototypes/contractor-management/contractor-list/ContractorRehire'
 import { AddContractor } from './design/prototypes/contractor-management/contractor-list/AddContractor'
 import { ContractorSelfOnboarding } from './design/prototypes/contractor-management/self-onboarding'
+import { CompensationHistory } from './design/prototypes/employee-management/CompensationHistory'
 import './app.scss'
 import '@/styles/sdk.scss'
 
@@ -43,6 +44,7 @@ const router = createBrowserRouter([
             ],
           },
           { path: 'contractor-self-onboarding', element: <ContractorSelfOnboarding /> },
+          { path: 'employee-compensation-history', element: <CompensationHistory /> },
         ],
       },
     ],

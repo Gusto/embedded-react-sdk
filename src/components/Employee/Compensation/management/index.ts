@@ -3,4 +3,3 @@ export type { EditCompensationProps as ManagementEditCompensationProps } from '.
 export { EditPendingCompensation as ManagementEditPendingCompensation } from './EditPendingCompensation/EditPendingCompensation'
 export type { EditPendingCompensationProps as ManagementEditPendingCompensationProps } from './EditPendingCompensation/EditPendingCompensation'
 export * from './AddAnotherJob/AddAnotherJob'
-export * from './CompensationHistory'
