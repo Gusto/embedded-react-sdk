@@ -39,48 +39,4 @@ describe('ProfileCard', () => {
       { employeeId: 'employee-123' },
     )
   })
-
-  it('renders the localized success alert when successAlert code is provided', async () => {
-    renderWithProviders(
-      <ProfileCard employeeId="employee-123" onEvent={onEvent} successAlert="profileUpdated" />,
-    )
-
-    await waitFor(() => {
-      expect(screen.getByText('Profile updated')).toBeInTheDocument()
-    })
-  })
-
-  it('does not render the success alert when successAlert is null', async () => {
-    renderWithProviders(
-      <ProfileCard employeeId="employee-123" onEvent={onEvent} successAlert={null} />,
-    )
-
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Edit' })).toBeEnabled()
-    })
-
-    expect(screen.queryByText('Profile updated')).toBeNull()
-  })
-
-  it('calls onDismissAlert when the user dismisses the success alert', async () => {
-    const onDismissAlert = vi.fn()
-    const user = userEvent.setup()
-    renderWithProviders(
-      <ProfileCard
-        employeeId="employee-123"
-        onEvent={onEvent}
-        successAlert="profileUpdated"
-        onDismissAlert={onDismissAlert}
-      />,
-    )
-
-    await waitFor(() => {
-      expect(screen.getByText('Profile updated')).toBeInTheDocument()
-    })
-
-    const dismiss = screen.getByRole('button', { name: 'Dismiss alert' })
-    await user.click(dismiss)
-
-    expect(onDismissAlert).toHaveBeenCalledTimes(1)
-  })
 })

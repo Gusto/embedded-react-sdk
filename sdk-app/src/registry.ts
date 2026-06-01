@@ -2,6 +2,8 @@ import { ENTITY_REQUIREMENTS, ADDITIONAL_REQUIRED_PROPS } from './generated-regi
 import * as Company from '@/components/Company'
 import * as Contractor from '@/components/Contractor'
 import * as Employee from '@/components/Employee'
+import * as EmployeeManagement from '@/components/Employee/exports/employeeManagement'
+import * as EmployeeOnboarding from '@/components/Employee/exports/employeeOnboarding'
 import * as Payroll from '@/components/Payroll'
 import * as InformationRequests from '@/components/InformationRequests'
 import * as TimeOff from '@/components/TimeOff'
@@ -10,6 +12,8 @@ export type Category =
   | 'Company'
   | 'Contractor'
   | 'Employee'
+  | 'EmployeeManagement'
+  | 'EmployeeOnboarding'
   | 'Payroll'
   | 'InformationRequests'
   | 'TimeOff'
@@ -26,6 +30,8 @@ const namespaces: Record<Category, Record<string, unknown>> = {
   Company,
   Contractor,
   Employee,
+  EmployeeManagement,
+  EmployeeOnboarding,
   Payroll,
   InformationRequests,
   TimeOff,
@@ -70,6 +76,8 @@ export const categorizedRegistry: Record<Category, ComponentEntry[]> = {
   Company: [],
   Contractor: [],
   Employee: [],
+  EmployeeManagement: [],
+  EmployeeOnboarding: [],
   Payroll: [],
   InformationRequests: [],
   TimeOff: [],
@@ -81,6 +89,8 @@ for (const entry of componentRegistry) {
 
 export const CATEGORIES: Category[] = [
   'Company',
+  'EmployeeManagement',
+  'EmployeeOnboarding',
   'Employee',
   'Contractor',
   'Payroll',

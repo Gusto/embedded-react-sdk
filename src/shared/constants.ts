@@ -75,6 +75,8 @@ export const employeeEvents = {
   EMPLOYEE_RETURN_TO_LIST: 'employee/returnToList',
   EMPLOYEE_PROFILE_MANAGEMENT_EDIT_REQUESTED: 'employee/profile/management/editRequested',
   EMPLOYEE_PROFILE_MANAGEMENT_UPDATED: 'employee/profile/management/updated',
+  EMPLOYEE_PROFILE_MANAGEMENT_EDIT_CANCELLED: 'employee/profile/management/editCancelled',
+  EMPLOYEE_PROFILE_MANAGEMENT_ALERT_DISMISSED: 'employee/profile/management/alertDismissed',
 } as const
 
 export const companyEvents = {

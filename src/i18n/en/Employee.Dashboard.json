@@ -181,7 +181,8 @@
     "deductionAdded": "Deduction successfully added.",
     "deductionUpdated": "Deduction successfully updated.",
     "deductionDeleted": "Deduction successfully deleted.",
-    "jobAdded": "Job successfully added."
+    "jobAdded": "Job successfully added.",
+    "profileUpdated": "Profile updated"
   },
   "compensationFlow": {
     "addJobTitle": "Add a job",

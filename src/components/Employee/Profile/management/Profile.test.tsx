@@ -90,7 +90,10 @@ describe('Profile (management block)', () => {
     })
 
     expect(screen.queryByText('Profile updated')).toBeNull()
-    expect(onEvent).toHaveBeenCalledWith(componentEvents.CANCEL, undefined)
+    expect(onEvent).toHaveBeenCalledWith(
+      componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_EDIT_CANCELLED,
+      undefined,
+    )
   })
 
   it('returns to the card with the profileUpdated alert after a successful save', async () => {

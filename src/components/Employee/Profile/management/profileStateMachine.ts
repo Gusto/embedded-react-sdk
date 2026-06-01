@@ -35,7 +35,7 @@ export const profileStateMachine = {
         }),
       ),
     ),
-    transition(componentEvents.EMPLOYEE_DISMISS, 'card', returnToCard),
+    transition(componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_ALERT_DISMISSED, 'card', returnToCard),
   ),
   editProfile: state<MachineTransition>(
     transition(
@@ -43,6 +43,6 @@ export const profileStateMachine = {
       'card',
       returnToCardWithAlert('profileUpdated'),
     ),
-    transition(componentEvents.CANCEL, 'card', returnToCard),
+    transition(componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_EDIT_CANCELLED, 'card', returnToCard),
   ),
 }

@@ -27,6 +27,8 @@ const ENTITY_ID_PATTERN = /^(company|employee|contractor|payroll|request)Id$/
 const NAMESPACES: Record<string, string> = {
   Company: 'src/components/Company/index.tsx',
   Employee: 'src/components/Employee/index.ts',
+  EmployeeManagement: 'src/components/Employee/exports/employeeManagement.ts',
+  EmployeeOnboarding: 'src/components/Employee/exports/employeeOnboarding.ts',
   Contractor: 'src/components/Contractor/index.ts',
   Payroll: 'src/components/Payroll/index.ts',
   InformationRequests: 'src/components/InformationRequests/index.ts',
@@ -90,7 +92,7 @@ function analyzeComponents(): Record<string, ComponentData> {
 
     for (const exportDecl of sourceFile.getExportDeclarations()) {
       for (const namedExport of exportDecl.getNamedExports()) {
-        const name = namedExport.getName()
+        const name = namedExport.getAliasNode()?.getText() ?? namedExport.getName()
         const key = `${namespace}.${name}`
 
         const symbol = namedExport.getNameNode().getSymbol()

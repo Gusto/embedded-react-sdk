@@ -67,7 +67,7 @@ function EditProfileRoot({ employeeId, className, dictionary, onEvent }: EditPro
   }
 
   const handleCancel = () => {
-    onEvent(componentEvents.CANCEL)
+    onEvent(componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_EDIT_CANCELLED)
   }
 
   const alert = showSuccess ? (

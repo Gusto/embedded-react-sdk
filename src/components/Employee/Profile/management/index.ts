@@ -1,6 +1,6 @@
 export { Profile } from './Profile'
 export type { ProfileProps } from './Profile'
 export { ProfileCard } from './ProfileCard'
-export type { ProfileCardProps, ProfileCardSuccessAlertCode } from './ProfileCard'
+export type { ProfileCardProps } from './ProfileCard'
 export { EditProfile } from './EditProfile'
 export type { EditProfileProps } from './EditProfile'

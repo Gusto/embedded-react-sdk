@@ -1599,6 +1599,7 @@ export interface EmployeeDashboard{
 "deductionUpdated":string;
 "deductionDeleted":string;
 "jobAdded":string;
+"profileUpdated":string;
 };
 "compensationFlow":{
 "addJobTitle":string;

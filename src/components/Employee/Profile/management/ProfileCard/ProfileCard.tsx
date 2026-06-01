@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next'
 import { useEmployeeProfileSummary } from '../../shared/useEmployeeProfileSummary'
-import { Flex } from '@/components/Common/Flex/Flex'
 import { Loading } from '@/components/Common'
 import { BaseLayout } from '@/components/Base/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -10,32 +9,20 @@ import { useI18n } from '@/i18n'
 import { componentEvents, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
 
-export type ProfileCardSuccessAlertCode = 'profileUpdated'
-
 export interface ProfileCardProps {
   employeeId: string
   onEvent: OnEventType<EventType, unknown>
-  /**
-   * Optional success banner displayed inside the card. The card translates
-   * the code into the localized label from `Employee.Profile.Management:alerts.*`.
-   * Pass `null` or omit to hide the banner.
-   */
-  successAlert?: ProfileCardSuccessAlertCode | null
-  onDismissAlert?: () => void
 }
 
 /**
  * Standalone "Basic details" card. Owns its own data fetch via
- * `useEmployeeProfileSummary`, emits `EMPLOYEE_PROFILE_MANAGEMENT_EDIT_REQUESTED`
- * when the Edit button is clicked, and renders a parent-supplied success
- * banner above the field list when present.
+ * `useEmployeeProfileSummary` and emits
+ * `EMPLOYEE_PROFILE_MANAGEMENT_EDIT_REQUESTED` when the Edit button is
+ * clicked. The card has no alert API — alert rendering is the
+ * orchestrator's responsibility (block's `CardContextual` for standalone
+ * consumption, dashboard chrome for dashboard consumption).
  */
-export function ProfileCard({
-  employeeId,
-  onEvent,
-  successAlert = null,
-  onDismissAlert,
-}: ProfileCardProps) {
+export function ProfileCard({ employeeId, onEvent }: ProfileCardProps) {
   useI18n('Employee.Profile.Management')
   const { t } = useTranslation('Employee.Profile.Management')
   const Components = useComponentContext()
@@ -86,20 +73,11 @@ export function ProfileCard({
           />
         }
       >
-        <Flex flexDirection="column" gap={16}>
-          {successAlert ? (
-            <Components.Alert
-              status="success"
-              label={t(`alerts.${successAlert}`)}
-              onDismiss={onDismissAlert}
-            />
-          ) : null}
-          {isEmployeeLoading ? (
-            <Loading />
-          ) : employee ? (
-            <Components.DescriptionList items={profileItems} />
-          ) : null}
-        </Flex>
+        {isEmployeeLoading ? (
+          <Loading />
+        ) : employee ? (
+          <Components.DescriptionList items={profileItems} />
+        ) : null}
       </Components.Box>
     </BaseLayout>
   )
