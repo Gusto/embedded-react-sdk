@@ -32,7 +32,7 @@ Employee management components can be used to compose your own workflow, or can 
 
 - [EmployeeManagement.DashboardFlow](#employeemanagementdashboardflow)
 - [EmployeeManagement.Profile](#employeemanagementprofile)
-  - [Composing from EmployeeManagement.ProfileCard and EmployeeManagement.EditProfile directly](#composing-from-employeemanagementprofilecard-and-employeemanagementeditprofile-directly)
+  - [Composing from EmployeeManagement.ProfileCard and EmployeeManagement.ProfileEditForm directly](#composing-from-employeemanagementprofilecard-and-employeemanagementprofileeditform-directly)
 
 ### EmployeeManagement.DashboardFlow
 
@@ -132,11 +132,11 @@ function MyComponent() {
 | EMPLOYEE_PROFILE_MANAGEMENT_EDIT_CANCELLED  | Fired when the user clicks Cancel on the edit form; the block returns to the card view  | None                      |
 | EMPLOYEE_PROFILE_MANAGEMENT_ALERT_DISMISSED | Fired when the user dismisses the "Profile updated" success alert above the card        | None                      |
 
-#### Composing from EmployeeManagement.ProfileCard and EmployeeManagement.EditProfile directly
+#### Composing from EmployeeManagement.ProfileCard and EmployeeManagement.ProfileEditForm directly
 
 `EmployeeManagement.Profile` above is the recommended entry point for the basic-details experience — it bundles the card, the edit form, the swap between them, and the success-alert wiring as a single drop-in. The card and edit form are also exported individually for cases where that orchestration is the wrong fit — for example, when the edit surface needs to render in a modal or drawer, when the card needs to appear read-only with no edit affordance, or when the swap is driven by a router. Using them directly means owning the swap, the alert, and any cross-component state yourself.
 
-`EmployeeManagement.ProfileCard` renders the read-only basic-details card and emits a single event when its "Edit" CTA is clicked. `EmployeeManagement.EditProfile` renders the corresponding edit form and emits one event on a successful save and another on cancel. Each piece's `onEvent` receives the event type as its first argument and any associated payload as its second — branch on the event type to drive the swap (and any of your own behavior, e.g. surfacing a success message after a save). The per-piece events tables below list every event each piece emits.
+`EmployeeManagement.ProfileCard` renders the read-only basic-details card and emits a single event when its "Edit" CTA is clicked. `EmployeeManagement.ProfileEditForm` renders the corresponding edit form and emits one event on a successful save and another on cancel. Each piece's `onEvent` receives the event type as its first argument and any associated payload as its second — branch on the event type to drive the swap (and any of your own behavior, e.g. surfacing a success message after a save). The per-piece events tables below list every event each piece emits.
 
 ```jsx
 import { useState } from 'react'
@@ -147,7 +147,7 @@ function MyBasicDetailsPanel({ employeeId }) {
 
   if (isEditing) {
     return (
-      <EmployeeManagement.EditProfile
+      <EmployeeManagement.ProfileEditForm
         employeeId={employeeId}
         onEvent={eventType => {
           if (
@@ -189,7 +189,7 @@ function MyBasicDetailsPanel({ employeeId }) {
 | ------------------------------------------ | ----------------------------------------------------- | ---------------------- |
 | EMPLOYEE_PROFILE_MANAGEMENT_EDIT_REQUESTED | Fired when the user clicks the "Edit" CTA on the card | { employeeId: string } |
 
-##### EmployeeManagement.EditProfile
+##### EmployeeManagement.ProfileEditForm
 
 **Props**
 

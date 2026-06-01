@@ -1,7 +1,7 @@
 import { reduce, state, transition } from 'robot3'
 import type { ComponentType } from 'react'
 import type { ProfileContextInterface } from './ProfileComponents'
-import { CardContextual, EditProfileContextual } from './ProfileComponents'
+import { CardContextual, ProfileEditFormContextual } from './ProfileComponents'
 import { componentEvents } from '@/shared/constants'
 import type { MachineTransition } from '@/types/Helpers'
 
@@ -30,7 +30,7 @@ export const profileStateMachine = {
       reduce(
         (ctx: ProfileContextInterface): ProfileContextInterface => ({
           ...ctx,
-          component: EditProfileContextual as ComponentType,
+          component: ProfileEditFormContextual as ComponentType,
           successAlert: null,
         }),
       ),

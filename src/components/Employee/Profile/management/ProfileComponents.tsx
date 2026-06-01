@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { EditProfile } from './EditProfile'
+import { ProfileEditForm } from './ProfileEditForm'
 import { ProfileCard } from './ProfileCard'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
@@ -34,7 +34,7 @@ export function CardContextual() {
   )
 }
 
-export function EditProfileContextual() {
+export function ProfileEditFormContextual() {
   const { employeeId, onEvent } = useFlow<ProfileContextInterface>()
-  return <EditProfile employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
+  return <ProfileEditForm employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
 }

@@ -17,23 +17,23 @@ import { useI18n, useComponentDictionary } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
-export interface EditProfileProps extends CommonComponentInterface<'Employee.Profile'> {
+export interface ProfileEditFormProps extends CommonComponentInterface<'Employee.Profile'> {
   employeeId: string
   onEvent: BaseComponentInterface['onEvent']
 }
 
-export function EditProfile({
+export function ProfileEditForm({
   FallbackComponent,
   ...props
-}: EditProfileProps & Pick<BaseComponentInterface, 'FallbackComponent'>) {
+}: ProfileEditFormProps & Pick<BaseComponentInterface, 'FallbackComponent'>) {
   return (
     <BaseBoundaries componentName="Employee.Profile" FallbackComponent={FallbackComponent}>
-      <EditProfileRoot {...props} />
+      <ProfileEditFormRoot {...props} />
     </BaseBoundaries>
   )
 }
 
-function EditProfileRoot({ employeeId, className, dictionary, onEvent }: EditProfileProps) {
+function ProfileEditFormRoot({ employeeId, className, dictionary, onEvent }: ProfileEditFormProps) {
   useI18n('Employee.Profile')
   useComponentDictionary('Employee.Profile', dictionary)
   const { t } = useTranslation('Employee.Profile')

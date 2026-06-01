@@ -163,14 +163,17 @@ The corollary is that the canonical references this skill cites for the _code sh
 | Block component                 | Feature name (`Compensation`, `Deductions`, `Documents`, …)                                                                                      |
 | State machine context interface | `<Feature>ContextInterface`                                                                                                                      |
 | State machine                   | `<feature>StateMachine`                                                                                                                          |
-| Contextual adapters             | `<Action>Contextual` (e.g. `CardContextual`, `EditCompensationContextual`, `AddJobContextual`)                                                   |
+| Contextual adapters             | `<Action>Contextual` (e.g. `CardContextual`, `CompensationEditFormContextual`, `CompensationAddJobFormContextual`)                               |
 | Standalone card                 | `<Feature>Card` (self-fetching via the data hook)                                                                                                |
+| Standalone edit form            | `<Feature>EditForm` for the single-form case; `<Feature><Action>Form` (`CompensationAddJobForm`, `CompensationEditJobForm`) for multi-action     |
 | Data hook                       | `use<Feature><Role>` — e.g. `useCompensationManagement`, `usePaymentMethodList` (matches the existing naming for non-form list/management hooks) |
 | State machine states            | `card` (initial), one `<action>` per edit CTA (`editJob`, `addJob`, `editFederal`, `viewForm`, …)                                                |
 
 `card` (not `index`, not `list`) is the canonical initial state name for a card-as-block. Use `index` only when an existing block already does (e.g. `dashboardStateMachine`) — new blocks should standardise on `card`. `PaymentMethod/management` uses `list` for historical reasons; that's an exception, not a model.
 
 **Component names follow the domain folder, not the dashboard's display copy.** The card the dashboard surfaces as "Basic details" is exported as `ProfileCard` because it lives under `Employee/Profile/`. The i18n keys for the surface label (`Employee.Dashboard:basicDetails.*`) stay where they are — they're the partner-visible copy contract. See "Cards in scope" for the full surface-label-to-component-name mapping.
+
+**Subordinate pieces of a block start with the block name, not the action.** Use `ProfileEditForm`, not `EditProfile`; `HomeAddressEditForm`, not `EditHomeAddress`; `CompensationAddJobForm`, not `AddJobForCompensation`. The SDK dev app's sidebar lists every component in a category alphabetically, so feature-prefixed names group all of a block's pieces together (`Profile`, `ProfileCard`, `ProfileEditForm`) instead of scattering them under the action verb (`EditProfile` under "E", `Profile`/`ProfileCard` under "P"). This applies to the public export name, the file name, the component function, and the contextual adapter (`ProfileEditFormContextual`). State machine state names stay verb-ish (`editProfile`, `addJob`) — they describe what the user is doing, are internal, and never reach the sidebar.
 
 ## The card component contract
 
@@ -222,8 +225,8 @@ The minimum shape is three states: `card` (initial) + one `edit*` state per CTA 
 import { transition, reduce, state } from 'robot3'
 import {
   CardContextual,
-  EditCompensationContextual,
-  AddJobContextual,
+  CompensationEditFormContextual,
+  CompensationAddJobFormContextual,
   type CompensationContextInterface,
 } from './CompensationComponents'
 import { componentEvents } from '@/shared/constants'
@@ -256,7 +259,7 @@ export const compensationStateMachine = {
       reduce(
         (ctx: CompensationContextInterface, ev): CompensationContextInterface => ({
           ...ctx,
-          component: EditCompensationContextual,
+          component: CompensationEditFormContextual,
           currentJob: ev.payload.job,
           successAlert: null,
         }),
@@ -328,7 +331,7 @@ import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { ensureRequired } from '@/helpers/ensureRequired'
 import { componentEvents } from '@/shared/constants'
 import { CompensationCard } from './CompensationCard'
-import { ManagementEditCompensation } from './EditCompensation'
+import { CompensationEditForm } from './CompensationEditForm'
 
 export interface CompensationContextInterface extends FlowContextInterface {
   employeeId: string
@@ -341,10 +344,10 @@ export function CardContextual() {
   return <CompensationCard employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
 }
 
-export function EditCompensationContextual() {
+export function CompensationEditFormContextual() {
   const { employeeId, currentJob, onEvent } = useFlow<CompensationContextInterface>()
   return (
-    <ManagementEditCompensation
+    <CompensationEditForm
       employeeId={ensureRequired(employeeId)}
       jobId={ensureRequired(currentJob?.uuid)}
       onEvent={onEvent}
@@ -354,7 +357,7 @@ export function EditCompensationContextual() {
 }
 ```
 
-Note how thin `CardContextual` is: the card owns its own data fetching and fires its own `componentEvents` via `onEvent`, so the adapter just forwards `employeeId` + `onEvent` from flow context. `EditCompensationContextual` is the only adapter that has to do real work — pulling per-transition context off the flow (e.g. `currentJob`) to seed the edit screen, and translating its `onCancel` into a `CANCEL` event. The state machine handles `CANCEL` and the edit screen's `onEvent` (e.g. `EMPLOYEE_COMPENSATION_DONE`) by transitioning back to `card`; the card's own events (e.g. `EMPLOYEE_COMPENSATION_CREATE`) transition forward to `editCompensation`.
+Note how thin `CardContextual` is: the card owns its own data fetching and fires its own `componentEvents` via `onEvent`, so the adapter just forwards `employeeId` + `onEvent` from flow context. `CompensationEditFormContextual` is the only adapter that has to do real work — pulling per-transition context off the flow (e.g. `currentJob`) to seed the edit screen, and translating its `onCancel` into a `CANCEL` event. The state machine handles `CANCEL` and the edit screen's `onEvent` (e.g. `EMPLOYEE_COMPENSATION_DONE`) by transitioning back to `card`; the card's own events (e.g. `EMPLOYEE_COMPENSATION_CREATE`) transition forward to `editCompensation`.
 
 ## Dedicated event surface per block
 
@@ -590,9 +593,11 @@ export { CompensationCard } from './CompensationCard'
 export type { CompensationCardProps } from './CompensationCard'
 export { Compensation } from './Compensation'
 export type { CompensationProps } from './Compensation'
-// edit screens already exposed today keep their existing names
-export { EditCompensation as ManagementEditCompensation } from './EditCompensation'
+export { CompensationEditForm } from './CompensationEditForm'
+export type { CompensationEditFormProps } from './CompensationEditForm'
 ```
+
+If a previous version of this feature already shipped under a legacy export name (e.g. `ManagementEditCompensation` re-exported from `Employee/exports/employeeManagement.ts`), keep the legacy name as a deprecated alias for one release window before deleting it, rather than renaming it in-place. Drop it from the barrel in the cleanup PR after partners have had a release to migrate.
 
 `Employee/<Feature>/shared/index.ts`:
 
@@ -608,14 +613,14 @@ export type {
 Do **not** attach pieces as `Block.Card = …` / `Block.EditScreen = …` namespace properties. That dot-notation is a one-off in [`Compensation/onboarding/Compensation.tsx`](../../../src/components/Employee/Compensation/onboarding/Compensation.tsx) and is not the SDK convention — none of the existing management blocks use it.
 
 - Add the block to [`Employee/exports/employeeManagement.ts`](../../../src/components/Employee/exports/employeeManagement.ts) if it isn't already exposed there.
-- **Naming conflict resolution.** When a feature's current `management/<Feature>.tsx` is an edit screen with the same name as the new block (e.g. `Employee.HomeAddress` today _is_ the edit screen), rename the existing edit screen to `<Feature>Edit` (or a more specific action name like `EditHomeAddress`), then take the original name for the new block. Update the export in `employeeManagement.ts` _in the same PR_ to keep the public surface intact:
+- **Naming conflict resolution.** When a feature's current `management/<Feature>.tsx` is an edit screen with the same name as the new block (e.g. `Employee.HomeAddress` today _is_ the edit screen), rename the existing edit screen to `<Feature>EditForm` (matching the subordinate-piece convention — see "Naming conventions" above), then take the original name for the new block. Update the export in `employeeManagement.ts` _in the same PR_ to keep the public surface intact:
 
   ```ts
   // Before
   export { HomeAddress } from '../HomeAddress/management/HomeAddress'
   // After
   export { HomeAddress } from '../HomeAddress/management/HomeAddress' // now the block
-  export { EditHomeAddress } from '../HomeAddress/management/EditHomeAddress' // newly-renamed edit screen
+  export { HomeAddressEditForm } from '../HomeAddress/management/HomeAddressEditForm' // renamed edit screen
   ```
 
   Do this inside the card's own migration PR. No drive-by renames.
@@ -661,19 +666,17 @@ The dev app (`sdk-app/`) drives its sidebar from a generated registry that stati
 3. **Commit the regenerated file** alongside the block's other changes. Reviewers expect the registry diff to match the new barrel exports — drift is a red flag.
 
 4. **Spot-check in the dev app** (`npm run sdk-app`):
-   - The new entries appear under the **Employee Management** sidebar section (e.g. `Profile`, `ProfileCard`, `EditProfile` after the Profile migration).
+   - The new entries appear under the **Employee Management** sidebar section, grouped alphabetically — feature-prefixed naming (e.g. `Profile`, `ProfileCard`, `ProfileEditForm`) keeps the block and its pieces adjacent in the list. If you see an edit-form piece floating off under "E" (`EditProfile`, `EditHomeAddress`), the name is wrong — see "Naming conventions" above.
    - Clicking each piece resolves its entity IDs from the entity picker and renders against live demo data.
    - The events log shows the scoped `EMPLOYEE_<FEATURE>_MANAGEMENT_*` events when interacting with the card and the edit screen.
 
-The legacy `Employee` sidebar section continues to surface the deprecated unified `Employee.*` exports — leave it alone during card migrations. It's the catch-all for the cards that haven't been split out yet and disappears naturally as `Employee/index.ts` re-exports get pruned during the final cleanup.
+The deprecated unified `Employee.*` namespace was removed from the dev app's sidebar. Only `EmployeeManagement` and `EmployeeOnboarding` surface there now, so any new piece must be a named export of one of those barrels (typically [`employeeManagement.ts`](../../../src/components/Employee/exports/employeeManagement.ts) for management cards). The legacy `Employee/index.ts` barrel still exists for partner backward compatibility but no longer drives the dev app.
 
 ### When the dev app doesn't show your piece
 
 - **The exported name isn't in `generated-registry-data.ts`.** Either the barrel wasn't updated or the script wasn't re-run. Re-run the script; if still missing, check that [`employeeManagement.ts`](../../../src/components/Employee/exports/employeeManagement.ts) actually re-exports the symbol.
 - **The piece appears but renders an "unknown entity" warning.** The script defaulted the required entity to `['companyId']` because it couldn't detect the prop. Verify the card's props interface declares `employeeId: string` (no optional `?`, no union with `undefined`) — the analyzer keys off required-and-named-`*Id` props.
 - **Clicking the entry crashes.** The dev app wraps every component in an error boundary that surfaces the message — typically a runtime auth or data issue, not a registry one. Check the events log and the network tab.
-
-The legacy `Employee` namespace currently has one gap the new namespaces inherit: `HomeAddress` is exported there but not from `EmployeeManagement`. When the HomeAddress card migration lands, add `HomeAddress` to [`employeeManagement.ts`](../../../src/components/Employee/exports/employeeManagement.ts) so the dev app's "Employee Management" section gains it alongside `WorkAddress`.
 
 ## Document the new block in `employee-management.md`
 
@@ -683,7 +686,7 @@ Every card migration adds an entry for its **block** (`EmployeeManagement.<Featu
 
 The doc convention mirrors `employee-onboarding.md`: each subcomponent entry documents **one drop-in component** — the orchestrated block — not the four-surface architecture underneath it. `Employee.Profile`, `Employee.Compensation`, `Employee.PaymentMethod` in the onboarding doc are the same kind of thing: a single component partners can drop in that handles the whole card-and-form experience for that feature. The block is the recommended consumption path and stays the **headline** entry for the feature — its own `###` section in the umbrella doc.
 
-The standalone card and edit screen are also documented — they're real partner-consumable exports (see "Standalone composability per piece" above), and partners who want to render the card on a custom dashboard, swap the edit form into a modal, or otherwise own the orchestration need to know they exist and what they emit. They get a **`####` subsection nested inside the block's `###` section**, not a peer `###` section. Putting them at peer level in the TOC ("Profile, ProfileCard / EditProfile") implies they're alternatives partners pick between; nesting them under Profile structurally matches the conceptual hierarchy ("here's the block, and here are the pieces it's built from") and keeps the top-level TOC scannable as more blocks land. The data hook stays out of `employee-management.md` — it's a power-user surface with its own audience (custom UI builders) and would bloat the umbrella doc.
+The standalone card and edit screen are also documented — they're real partner-consumable exports (see "Standalone composability per piece" above), and partners who want to render the card on a custom dashboard, swap the edit form into a modal, or otherwise own the orchestration need to know they exist and what they emit. They get a **`####` subsection nested inside the block's `###` section**, not a peer `###` section. Putting them at peer level in the TOC ("Profile, ProfileCard, ProfileEditForm") implies they're alternatives partners pick between; nesting them under Profile structurally matches the conceptual hierarchy ("here's the block, and here are the pieces it's built from") and keeps the top-level TOC scannable as more blocks land. The data hook stays out of `employee-management.md` — it's a power-user surface with its own audience (custom UI builders) and would bloat the umbrella doc.
 
 For each card migration:
 

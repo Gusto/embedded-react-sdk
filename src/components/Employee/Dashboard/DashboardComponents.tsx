@@ -6,7 +6,7 @@ import { HomeAddress } from '@/components/Employee/HomeAddress/management/HomeAd
 import { WorkAddress } from '@/components/Employee/WorkAddress/management/WorkAddress'
 import { FederalTaxes } from '@/components/Employee/FederalTaxes/management/FederalTaxes'
 import { StateTaxes } from '@/components/Employee/StateTaxes/management/StateTaxes'
-import { EditProfile } from '@/components/Employee/Profile/management/EditProfile'
+import { ProfileEditForm } from '@/components/Employee/Profile/management/ProfileEditForm'
 import { BankForm } from '@/components/Employee/PaymentMethod/onboarding/BankForm'
 import { SplitView } from '@/components/Employee/PaymentMethod/onboarding/SplitView'
 import { DocumentManager } from '@/components/Employee/Documents/management/DocumentManager'
@@ -108,7 +108,7 @@ export function StateTaxesContextual() {
 
 export function ProfileContextual() {
   const { employeeId, onEvent } = useFlow<DashboardContextInterface>()
-  return <EditProfile employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
+  return <ProfileEditForm employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
 }
 
 export function PaymentBankFormContextual() {
