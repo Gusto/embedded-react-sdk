@@ -12,16 +12,16 @@ type PropValue = string | number | boolean | null
 type PropValueOrFactory = PropValue | (() => PropValue)
 
 export const DEFAULT_COMPONENT_PROPS: Record<string, Record<string, PropValueOrFactory>> = {
-  'Employee.Profile': {
+  'EmployeeOnboarding.Profile': {
     isAdmin: true,
   },
-  'Employee.Compensation': {
+  'EmployeeOnboarding.Compensation': {
     startDate: '2020-01-01',
   },
-  'Employee.DocumentSigner': {
+  'EmployeeOnboarding.DocumentSigner': {
     withEmployeeI9: true,
   },
-  'Employee.StateTaxes': {
+  'EmployeeOnboarding.StateTaxes': {
     isAdmin: true,
   },
 }
