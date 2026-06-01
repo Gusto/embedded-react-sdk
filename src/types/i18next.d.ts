@@ -1346,7 +1346,6 @@ export interface EmployeeCompensation{
 "tableLabel":string;
 "typeColumn":string;
 };
-"amount":string;
 "backCta":string;
 "cancelCta":string;
 "cancelNewJobCta":string;
@@ -1359,6 +1358,9 @@ export interface EmployeeCompensation{
 "minimumWage":{
 "label":string;
 "body":string;
+};
+"ownerSalary":{
+"label":string;
 };
 };
 "employeeClassification":string;
@@ -1373,7 +1375,8 @@ export interface EmployeeCompensation{
 "hamburgerTitle":string;
 "jobTitle":string;
 "paymentUnitDescription":string;
-"paymentUnitLabel":string;
+"wageLabel":string;
+"wageFrequencyLabel":string;
 "paymentUnitOptions":{
 "Hour":string;
 "Month":string;
@@ -1393,8 +1396,6 @@ export interface EmployeeCompensation{
 "management":{
 "editCompensationTitle":string;
 "jobTitleLabel":string;
-"wageLabel":string;
-"wageFrequencyLabel":string;
 "hireDateLabel":string;
 "twoPercentShareholderLabel":string;
 "saveCta":string;

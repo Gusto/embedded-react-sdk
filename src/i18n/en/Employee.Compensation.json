@@ -14,7 +14,6 @@
     "tableLabel": "List of all jobs for the employee",
     "typeColumn": "Pay type"
   },
-  "amount": "Compensation amount",
   "backCta": "Back",
   "cancelCta": "Cancel",
   "cancelNewJobCta": "Cancel",
@@ -27,6 +26,9 @@
     "minimumWage": {
       "label": "Commission-only employees must earn at least the minimum wage",
       "body": "To stay compliant, <minimumWageLink>check your local regulations</minimumWageLink>."
+    },
+    "ownerSalary": {
+      "label": "The IRS requires owners of S corps to pay themselves a reasonable salary similar to others in the same role, before taking any distributions."
     }
   },
   "employeeClassification": "Employee type",
@@ -41,7 +43,8 @@
   "hamburgerTitle": "Job actions",
   "jobTitle": "Job Title",
   "paymentUnitDescription": "The period over which the compensation amount is tracked (e.g., hourly, daily, weekly, monthly, annually).",
-  "paymentUnitLabel": "Wage frequency",
+  "wageLabel": "Wage",
+  "wageFrequencyLabel": "Wage frequency",
   "paymentUnitOptions": {
     "Hour": "Hour",
     "Month": "Month",
@@ -61,8 +64,6 @@
   "management": {
     "editCompensationTitle": "Edit compensation",
     "jobTitleLabel": "Job title",
-    "wageLabel": "Wage",
-    "wageFrequencyLabel": "Wage frequency",
     "hireDateLabel": "Hire date",
     "twoPercentShareholderLabel": "This employee is a 2% shareholder",
     "saveCta": "Save"

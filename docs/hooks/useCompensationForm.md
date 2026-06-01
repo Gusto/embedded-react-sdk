@@ -122,6 +122,7 @@ The hook returns a discriminated union on `isLoading`.
     willDeleteSecondaryJobs: boolean              // see "Derived helpers" below
     showCommissionFederalMinimumPayAlert: boolean // see "Derived helpers" below
     showCommissionMinimumWageAlert: boolean       // see "Derived helpers" below
+    showOwnerSalaryAlert: boolean                 // see "Derived helpers" below
   }
   actions: {
     onSubmit: (
@@ -175,6 +176,7 @@ The hook exposes derived values for driving UX. Static, entity-derived values li
 - **`status.willDeleteSecondaryJobs`** — reactive: `true` when the form is currently positioned to delete the employee's secondary jobs server-side (the "carve-out" branch). Conditions: update mode, the loaded compensation is `Nonexempt`, the form's `flsaStatus` has been changed to a non-`Nonexempt` value, and the employee has at least one secondary job. While this flag is `true` the hook also locks the `effectiveDate` field — it forces the form value to today and exposes `fieldsMetadata.effectiveDate.isDisabled = true` so `Fields.EffectiveDate` renders as disabled. Reverting `flsaStatus` back to `Nonexempt` restores the prior `effectiveDate`. Use the flag to render an inline warning ("Saving will delete this employee's secondary jobs"); choose either to render the disabled `Fields.EffectiveDate` (so users can see why the date is forced) or to hide it entirely while the flag is on.
 - **`status.showCommissionFederalMinimumPayAlert`** — reactive: `true` when `flsaStatus` is `Commission Only Exempt` (Commission Only/No Overtime). Render a warning explaining that commission-only exempt employees must still earn the federal minimum pay (currently $684/week, $35,568/year) and meet the Department of Labor's exempt definition. While this flag is `true`, `Fields.Rate` and `Fields.PaymentUnit` are also `undefined` and the hook forces `rate=0`, `paymentUnit=Year` on the form values (so submits stay valid even with the inputs hidden).
 - **`status.showCommissionMinimumWageAlert`** — reactive: `true` when `flsaStatus` is `Commission Only Nonexempt` (Commission Only/Eligible for overtime). Render a warning that commission-only employees must earn at least the local minimum wage, ideally with a link to your local regulations reference. While this flag is `true`, `Fields.Rate` and `Fields.PaymentUnit` are also `undefined` and the hook forces `rate=0`, `paymentUnit=Year` on the form values.
+- **`status.showOwnerSalaryAlert`** — reactive: `true` when `flsaStatus` is `Owner` (Owner's draw). Render an informational alert reminding the partner that the IRS requires S-corp owners to pay themselves a reasonable salary for similar work before taking distributions. `Fields.PaymentUnit` stays rendered but is `isDisabled` and locked to `Paycheck` while this flag is `true`.
 - **`data.minimumEffectiveDate`** — lower bound for the `effectiveDate` field. Typically the parent job's `hireDate`. Pass this as `min` to the date picker.
 - **`data.maximumEffectiveDate`** — upper bound for the `effectiveDate` field, when a future-dated compensation already exists for this job. Pass this as `max` to the date picker so users can't push a new entry past a pending one.
 - **`data.hasPendingFutureCompensation`** — `true` when at least one future-dated compensation exists for this job. Use this to render an explanatory note ("A future rate change is already scheduled for …").
@@ -401,6 +403,7 @@ function CompensationFormReady({ compensation }: { compensation: UseCompensation
     willDeleteSecondaryJobs,
     showCommissionFederalMinimumPayAlert,
     showCommissionMinimumWageAlert,
+    showOwnerSalaryAlert,
   } = compensation.status
 
   return (
@@ -434,6 +437,13 @@ function CompensationFormReady({ compensation }: { compensation: UseCompensation
 
         {showCommissionMinimumWageAlert && (
           <p role="alert">Commission-only employees must earn at least the local minimum wage.</p>
+        )}
+
+        {showOwnerSalaryAlert && (
+          <p>
+            The IRS requires S-corp owners to pay themselves a reasonable salary before taking
+            distributions.
+          </p>
         )}
 
         {Fields.Rate && (

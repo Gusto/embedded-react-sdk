@@ -161,6 +161,13 @@ export interface UseCompensationFormReady extends BaseFormHookReady<
      * hook forces `rate=0`, `paymentUnit=YEAR` on the form values).
      */
     showCommissionMinimumWageAlert: boolean
+    /**
+     * True when the current `flsaStatus` is `OWNER` (Owner's draw). Render
+     * an informational alert reminding partners that the IRS requires
+     * S-corp owners to pay themselves a reasonable salary for similar
+     * work before taking distributions.
+     */
+    showOwnerSalaryAlert: boolean
   }
   actions: {
     onSubmit: (
@@ -725,6 +732,7 @@ export function useCompensationForm({
       willDeleteSecondaryJobs,
       showCommissionFederalMinimumPayAlert: watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_EXEMPT,
       showCommissionMinimumWageAlert: watchedFlsaStatus === FlsaStatus.COMMISSION_ONLY_NONEXEMPT,
+      showOwnerSalaryAlert: watchedFlsaStatus === FlsaStatus.OWNER,
     },
     actions: { onSubmit },
     errorHandling,

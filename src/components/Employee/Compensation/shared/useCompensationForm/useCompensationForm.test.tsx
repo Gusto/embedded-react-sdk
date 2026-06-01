@@ -823,6 +823,7 @@ describe('useCompensationForm', () => {
       expect(result.current.status).toMatchObject({
         showCommissionFederalMinimumPayAlert: false,
         showCommissionMinimumWageAlert: false,
+        showOwnerSalaryAlert: false,
       })
       expect(typeof result.current.form.Fields.Rate).toBe('function')
       expect(typeof result.current.form.Fields.PaymentUnit).toBe('function')
@@ -852,12 +853,23 @@ describe('useCompensationForm', () => {
       })
 
       act(() => {
+        formMethods.setValue('flsaStatus', FlsaStatus.OWNER)
+      })
+      await waitFor(() => {
+        assertReady(result.current)
+        expect(result.current.status.showOwnerSalaryAlert).toBe(true)
+        expect(result.current.status.showCommissionFederalMinimumPayAlert).toBe(false)
+        expect(result.current.status.showCommissionMinimumWageAlert).toBe(false)
+      })
+
+      act(() => {
         formMethods.setValue('flsaStatus', FlsaStatus.EXEMPT)
       })
       await waitFor(() => {
         assertReady(result.current)
         expect(result.current.status.showCommissionFederalMinimumPayAlert).toBe(false)
         expect(result.current.status.showCommissionMinimumWageAlert).toBe(false)
+        expect(result.current.status.showOwnerSalaryAlert).toBe(false)
         expect(typeof result.current.form.Fields.Rate).toBe('function')
         expect(typeof result.current.form.Fields.PaymentUnit).toBe('function')
       })

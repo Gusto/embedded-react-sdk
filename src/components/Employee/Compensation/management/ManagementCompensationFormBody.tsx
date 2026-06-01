@@ -117,12 +117,19 @@ export function ManagementCompensationFormBody({
                 />
               </Components.Alert>
             )}
+            {compensationForm.status.showOwnerSalaryAlert && (
+              <Components.Alert
+                status="info"
+                label={t('commissionAlerts.ownerSalary.label')}
+                disableScrollIntoView
+              />
+            )}
           </>
         )}
 
         {CompFields.Rate && (
           <CompFields.Rate
-            label={t('management.wageLabel')}
+            label={t('wageLabel')}
             validationMessages={{
               REQUIRED: t('validations.rate'),
               RATE_MINIMUM: t('validations.nonZeroRate'),
@@ -136,7 +143,7 @@ export function ManagementCompensationFormBody({
 
         {CompFields.PaymentUnit && (
           <CompFields.PaymentUnit
-            label={t('management.wageFrequencyLabel')}
+            label={t('wageFrequencyLabel')}
             description={t('paymentUnitDescription')}
             validationMessages={{ REQUIRED: t('validations.paymentUnit') }}
             getOptionLabel={(unit: PaymentUnit) => t(`paymentUnitOptions.${unit}` as const)}
