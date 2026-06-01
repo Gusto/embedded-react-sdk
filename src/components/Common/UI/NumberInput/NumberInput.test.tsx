@@ -260,4 +260,17 @@ describe('NumberInput', () => {
       },
     )
   })
+
+  describe('focus behavior', () => {
+    it('selects the existing value on focus so typing replaces it', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(<ControlledNumberInput label="Amount" value={42} />)
+
+      const input = screen.getByRole('textbox') as HTMLInputElement
+      await user.click(input)
+
+      expect(input.selectionStart).toBe(0)
+      expect(input.selectionEnd).toBe(input.value.length)
+    })
+  })
 })

@@ -466,13 +466,13 @@ The props for this component are defined in [BaseListProps](#baselistprops).
 | **currentPage**              | `number`                                                         | Yes      | -           |
 | **totalPages**               | `number`                                                         | Yes      | -           |
 | **totalCount**               | `number`                                                         | No       | -           |
-| **itemsPerPage**             | `5 \| 10 \| 50`                                                  | No       | -           |
+| **itemsPerPage**             | `5 \| 10 \| 25 \| 50`                                            | No       | -           |
 | **isFetching**               | `boolean`                                                        | No       | -           |
 
 ### PaginationItemsPerPage
 
 ```typescript
-type PaginationItemsPerPage = 5 | 10 | 50
+type PaginationItemsPerPage = 5 | 10 | 25 | 50
 ```
 
 ## PayrollLoadingProps

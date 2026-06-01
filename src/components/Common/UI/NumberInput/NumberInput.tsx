@@ -98,6 +98,12 @@ export function NumberInput({
             placeholder={placeholder}
             aria-describedby={ariaDescribedBy}
             isDisabled={isDisabled}
+            // Select the existing value on focus so users can overwrite the
+            // formatted placeholder (e.g. "0.00") by typing instead of having
+            // to clear the field first.
+            onFocus={event => {
+              event.currentTarget.select()
+            }}
           />
         </Group>
       </AriaNumberField>
