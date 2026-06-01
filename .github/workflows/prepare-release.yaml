@@ -51,6 +51,29 @@ jobs:
             npx release-it --ci
           fi
 
+      - name: Install docs dependencies
+        working-directory: docs-site
+        run: npm ci
+
+      - name: Snapshot docs for this version
+        working-directory: docs-site
+        run: |
+          VERSION=$(node -p "require('../package.json').version")
+          # Idempotent: re-running the workflow on the same release PR should
+          # not error on an existing snapshot.
+          rm -rf "versioned_docs/version-$VERSION" "versioned_sidebars/version-$VERSION-sidebars.json"
+          if [ -f versions.json ]; then
+            node -e "const v=require('./versions.json').filter(x=>x!=='$VERSION');require('fs').writeFileSync('./versions.json',JSON.stringify(v,null,2)+'\n')"
+          fi
+          npx docusaurus docs:version "$VERSION"
+
+      - name: Fold docs snapshot into the release commit
+        run: |
+          git add docs-site/versions.json docs-site/versioned_docs docs-site/versioned_sidebars
+          if ! git diff --cached --quiet; then
+            git commit --amend --no-edit
+          fi
+
       - name: Push branch and open PR
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

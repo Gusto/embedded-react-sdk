@@ -7,8 +7,12 @@ const config: Config = {
   tagline: 'Embedded Payroll React SDK Documentation',
   favicon: 'img/favicon.svg',
 
-  url: 'http://localhost',
+  // Interim: site is served at the obfuscated *.pages.github.io subdomain
+  // GitHub auto-assigns to private/internal repos. Swap to https://sdk.gusto.com
+  // once the custom domain is provisioned (SDK-831).
+  url: 'https://expert-adventure-1q5rvvv.pages.github.io',
   baseUrl: '/',
+  trailingSlash: false,
 
   onBrokenLinks: 'throw',
   onBrokenAnchors: 'throw',

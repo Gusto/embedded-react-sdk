@@ -1,0 +1,99 @@
+name: Publish Docs
+
+# Fires after a successful NPM publish on main so the docs version on the
+# public site always matches what was actually released. Lives in its own
+# workflow file (rather than appended to publish.yaml) so a docs failure
+# does not fail the NPM publish, and vice versa.
+#
+# Activation gate: the `publish-docs` job is gated on the repo variable
+# DOCS_PUBLISH_ENABLED == 'true'. While that variable is unset, every
+# release skips this job cleanly (no failed-check noise). To turn the
+# pipeline on:
+#   1. Provision the cross-repo publishing GitHub App and install it on
+#      Gusto/embedded-sdk-docs with `contents: write` + `metadata: read`.
+#   2. Add repo secrets DOCS_PUBLISH_APP_ID and DOCS_PUBLISH_APP_PRIVATE_KEY
+#      to Gusto/embedded-react-sdk.
+#   3. Add repo variable DOCS_PUBLISH_ENABLED=true.
+#   4. Enable GitHub Pages on Gusto/embedded-sdk-docs (branch: gh-pages, /).
+# The manual seed of Gusto/embedded-sdk-docs keeps the live site current
+# until step 4 is done.
+
+on:
+  workflow_run:
+    workflows: [Publish to NPM]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: publish-docs
+  cancel-in-progress: false
+
+jobs:
+  publish-docs:
+    # Dormant until DOCS_PUBLISH_ENABLED is set (see header comment).
+    # workflow_dispatch still honors the gate so the job can't be triggered
+    # by hand into a missing-secrets failure either.
+    if: |
+      vars.DOCS_PUBLISH_ENABLED == 'true' &&
+      (github.event_name == 'workflow_dispatch' ||
+       github.event.workflow_run.conclusion == 'success')
+    runs-on:
+      group: gusto-ubuntu-default
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Install docs dependencies
+        working-directory: docs-site
+        run: npm ci
+
+      - name: Build docs
+        working-directory: docs-site
+        run: npm run build
+
+      - name: Mint GitHub App token for target repo
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.DOCS_PUBLISH_APP_ID }}
+          private-key: ${{ secrets.DOCS_PUBLISH_APP_PRIVATE_KEY }}
+          owner: Gusto
+          repositories: embedded-sdk-docs
+
+      - name: Checkout target repo (gh-pages branch)
+        uses: actions/checkout@v6
+        with:
+          repository: Gusto/embedded-sdk-docs
+          ref: gh-pages
+          token: ${{ steps.app-token.outputs.token }}
+          path: target-repo
+
+      - name: Sync built site into target repo
+        run: |
+          # Preserve .git, .nojekyll, and any CNAME; replace everything else.
+          find target-repo -mindepth 1 -maxdepth 1 \
+            ! -name .git ! -name .nojekyll ! -name CNAME -exec rm -rf {} +
+          cp -R docs-site/build/. target-repo/
+          # .nojekyll is required so GH Pages does not run Jekyll, which
+          # strips the `_`-prefixed asset directories Docusaurus emits.
+          touch target-repo/.nojekyll
+
+      - name: Commit and push
+        working-directory: target-repo
+        run: |
+          git config user.name "gusto-docs-publisher[bot]"
+          git config user.email "gusto-docs-publisher[bot]@users.noreply.github.com"
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No changes to publish."
+            exit 0
+          fi
+          SDK_VERSION=$(node -p "require('../package.json').version")
+          git add -A
+          git commit -m "docs: publish v$SDK_VERSION ($GITHUB_SHA)"
+          git push origin gh-pages
