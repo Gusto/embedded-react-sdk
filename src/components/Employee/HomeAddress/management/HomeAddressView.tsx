@@ -136,6 +136,7 @@ export function HomeAddressView({
       State: EditState,
       Zip: EditZip,
       CourtesyWithholding: EditCourtesyWithholding,
+      EffectiveDate: EditEffectiveDate,
     },
   } = editForm
 
@@ -449,6 +450,14 @@ export function HomeAddressView({
                 }}
                 gap={20}
               >
+                {EditEffectiveDate ? (
+                  <EditEffectiveDate
+                    label={t('columns.startDate')}
+                    description={t('startDateHelper')}
+                    validationMessages={startDateValidation}
+                    portalContainer={addressModalPortal}
+                  />
+                ) : null}
                 <EditStreet1
                   label={tHa('street1')}
                   validationMessages={{

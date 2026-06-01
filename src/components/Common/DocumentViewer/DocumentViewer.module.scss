@@ -7,6 +7,11 @@
     width: 100%;
     height: toRem(700);
     border: 1px solid var(--g-colorBodyContent);
+    // The native `<embed>` element renders the browser's default (often black)
+    // until the PDF plugin paints, which causes a black flash when the viewer
+    // remounts after a successful sign. Setting a theme-aware background
+    // hides the flash behind the page color.
+    background-color: var(--g-colorBody);
   }
 
   .smallEmbedPdfContainer {
@@ -23,6 +28,7 @@
     box-shadow: var(--g-shadowResting);
     overflow: hidden;
     pointer-events: none;
+    background-color: var(--g-colorBody);
   }
 
   .heading {

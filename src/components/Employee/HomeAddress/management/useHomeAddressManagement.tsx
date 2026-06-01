@@ -129,7 +129,7 @@ export function useHomeAddressManagement({
     employeeId,
     homeAddressUuid: editingHomeAddressUuid,
     initialAddress: editingHomeAddressRow,
-    withEffectiveDateField: false,
+    withEffectiveDateField: true,
   })
   const createHomeAddressForm = useHomeAddressForm({
     employeeId,
