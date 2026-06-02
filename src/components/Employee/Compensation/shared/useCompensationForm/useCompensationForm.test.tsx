@@ -799,6 +799,82 @@ describe('useCompensationForm', () => {
       })
     })
 
+    it('exposes commission-only alert flags and hides Rate/PaymentUnit fields by FLSA status', async () => {
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'singleExempt' })),
+        ),
+      )
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+            compensationId: 'compensation-uuid',
+          }),
+        { wrapper: GustoTestProvider },
+      )
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+      const { formMethods } = result.current.form.hookFormInternals
+
+      expect(result.current.status).toMatchObject({
+        showCommissionFederalMinimumPayAlert: false,
+        showCommissionMinimumWageAlert: false,
+        showOwnerSalaryAlert: false,
+      })
+      expect(typeof result.current.form.Fields.Rate).toBe('function')
+      expect(typeof result.current.form.Fields.PaymentUnit).toBe('function')
+
+      act(() => {
+        formMethods.setValue('flsaStatus', FlsaStatus.COMMISSION_ONLY_EXEMPT)
+      })
+      await waitFor(() => {
+        assertReady(result.current)
+        expect(result.current.status.showCommissionFederalMinimumPayAlert).toBe(true)
+        expect(result.current.status.showCommissionMinimumWageAlert).toBe(false)
+        expect(result.current.form.Fields.Rate).toBeUndefined()
+        expect(result.current.form.Fields.PaymentUnit).toBeUndefined()
+        expect(result.current.form.fieldsMetadata.rate?.isDisabled).toBe(true)
+        expect(result.current.form.fieldsMetadata.paymentUnit?.isDisabled).toBe(true)
+      })
+
+      act(() => {
+        formMethods.setValue('flsaStatus', FlsaStatus.COMMISSION_ONLY_NONEXEMPT)
+      })
+      await waitFor(() => {
+        assertReady(result.current)
+        expect(result.current.status.showCommissionFederalMinimumPayAlert).toBe(false)
+        expect(result.current.status.showCommissionMinimumWageAlert).toBe(true)
+        expect(result.current.form.Fields.Rate).toBeUndefined()
+        expect(result.current.form.Fields.PaymentUnit).toBeUndefined()
+      })
+
+      act(() => {
+        formMethods.setValue('flsaStatus', FlsaStatus.OWNER)
+      })
+      await waitFor(() => {
+        assertReady(result.current)
+        expect(result.current.status.showOwnerSalaryAlert).toBe(true)
+        expect(result.current.status.showCommissionFederalMinimumPayAlert).toBe(false)
+        expect(result.current.status.showCommissionMinimumWageAlert).toBe(false)
+      })
+
+      act(() => {
+        formMethods.setValue('flsaStatus', FlsaStatus.EXEMPT)
+      })
+      await waitFor(() => {
+        assertReady(result.current)
+        expect(result.current.status.showCommissionFederalMinimumPayAlert).toBe(false)
+        expect(result.current.status.showCommissionMinimumWageAlert).toBe(false)
+        expect(result.current.status.showOwnerSalaryAlert).toBe(false)
+        expect(typeof result.current.form.Fields.Rate).toBe('function')
+        expect(typeof result.current.form.Fields.PaymentUnit).toBe('function')
+      })
+    })
+
     it('resets adjustForMinimumWage and minimumWageId when FLSA leaves Nonexempt', async () => {
       // Min-wage adjustment is API-side gated to flsa_status: Nonexempt, but
       // because Fields.AdjustForMinimumWage / MinimumWageId stop rendering as

@@ -85,7 +85,13 @@ async function fillCompensation(page: Page) {
     }
   }
 
-  const compAmountField = page.getByRole('textbox', { name: /compensation amount/i })
+  // The wage amount input. The current SDK label is "Wage"
+  // (Employee.Compensation.wageLabel); the older "Compensation amount" name
+  // is kept as a fallback in case staging is mid-rollout.
+  const compAmountField = page
+    .getByRole('textbox', { name: /^wage$/i })
+    .or(page.getByRole('textbox', { name: /compensation amount/i }))
+    .first()
   const compValue = await compAmountField.inputValue().catch(() => '')
   if (!compValue || compValue === '0.00') {
     await compAmountField.clear()
@@ -93,7 +99,7 @@ async function fillCompensation(page: Page) {
   }
 
   // Wage frequency select. The current SDK label is "Wage frequency"
-  // (Employee.Compensation.paymentUnitLabel); the older "Per" name is kept
+  // (Employee.Compensation.wageFrequencyLabel); the older "Per" name is kept
   // as a fallback in case staging is mid-rollout. The control is required
   // on this form, so assert visibility loudly — otherwise a Continue click
   // would fail validation 5 minutes downstream with no clear cause.
