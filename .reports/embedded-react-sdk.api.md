@@ -793,11 +793,11 @@ export interface CompensationFormFields {
     // Warning: (ae-forgotten-export) The symbol "PaymentUnitField" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
-    PaymentUnit: typeof PaymentUnitField;
+    PaymentUnit: typeof PaymentUnitField | undefined;
     // Warning: (ae-forgotten-export) The symbol "RateField" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
-    Rate: typeof RateField;
+    Rate: typeof RateField | undefined;
     // Warning: (ae-forgotten-export) The symbol "TitleField" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
@@ -1079,6 +1079,10 @@ export const componentEvents: {
     readonly EMPLOYEE_REHIRE: "employee/rehire";
     readonly EMPLOYEE_DASHBOARD_TAB_CHANGE: "employee/dashboard/tabChange";
     readonly EMPLOYEE_RETURN_TO_LIST: "employee/returnToList";
+    readonly EMPLOYEE_PROFILE_MANAGEMENT_EDIT_REQUESTED: "employee/profile/management/editRequested";
+    readonly EMPLOYEE_PROFILE_MANAGEMENT_UPDATED: "employee/profile/management/updated";
+    readonly EMPLOYEE_PROFILE_MANAGEMENT_EDIT_CANCELLED: "employee/profile/management/editCancelled";
+    readonly EMPLOYEE_PROFILE_MANAGEMENT_ALERT_DISMISSED: "employee/profile/management/alertDismissed";
     readonly ROBOT_MACHINE_DONE: "done";
     readonly ERROR: "ERROR";
     readonly CANCEL: "CANCEL";
@@ -2008,6 +2012,8 @@ declare namespace EmployeeManagement {
         EmployeeDocuments,
         DocumentManager,
         DashboardFlow,
+        HomeAddress,
+        HomeAddressProps,
         WorkAddress,
         WorkAddressProps,
         FederalTaxes_2 as FederalTaxes,
@@ -2015,7 +2021,11 @@ declare namespace EmployeeManagement {
         StateTaxes_2 as StateTaxes,
         StateTaxesProps_2 as StateTaxesProps,
         Profile_2 as Profile,
+        ProfileCard,
+        ProfileEditForm,
         ProfileProps_2 as ProfileProps,
+        ProfileCardProps,
+        ProfileEditFormProps,
         PaymentMethod_3 as PaymentMethod,
         PaymentMethodProps_3 as PaymentMethodProps,
         TerminateEmployee,
@@ -3800,16 +3810,46 @@ function Profile(input: ProfileProps & BaseComponentInterface): JSX_2.Element;
 // Warning: (ae-missing-release-tag) "Profile" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function Profile_2(input: ProfileProps_2 & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX_2.Element;
+function Profile_2(input: ProfileProps_2 & BaseComponentInterface<'Employee.Profile.Management'>): JSX_2.Element;
 
-// Warning: (ae-missing-release-tag) "ProfileProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-missing-release-tag) "ProfileCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+function ProfileCard(input: ProfileCardProps): JSX_2.Element;
+
+// Warning: (ae-missing-release-tag) "ProfileCardProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-interface ProfileProps_2 extends CommonComponentInterface<'Employee.Profile'> {
+interface ProfileCardProps {
+    // (undocumented)
+    employeeId: string;
+    // (undocumented)
+    onEvent: OnEventType<EventType, unknown>;
+}
+
+// Warning: (ae-missing-release-tag) "ProfileEditForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+function ProfileEditForm(input: ProfileEditFormProps & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX_2.Element;
+
+// Warning: (ae-missing-release-tag) "ProfileEditFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+interface ProfileEditFormProps extends CommonComponentInterface<'Employee.Profile'> {
     // (undocumented)
     employeeId: string;
     // (undocumented)
     onEvent: BaseComponentInterface['onEvent'];
+}
+
+// Warning: (ae-missing-release-tag) "ProfileProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+interface ProfileProps_2 extends CommonComponentInterface<'Employee.Profile.Management'> {
+    // (undocumented)
+    employeeId: string;
+    // (undocumented)
+    onEvent: OnEventType<EventType, unknown>;
 }
 
 // Warning: (ae-missing-release-tag) "ProgressBarProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -4990,6 +5030,9 @@ export interface UseCompensationFormReady extends BaseFormHookReady<FieldsMetada
         isPending: boolean;
         mode: 'create' | 'update';
         willDeleteSecondaryJobs: boolean;
+        showCommissionFederalMinimumPayAlert: boolean;
+        showCommissionMinimumWageAlert: boolean;
+        showOwnerSalaryAlert: boolean;
     };
 }
 
