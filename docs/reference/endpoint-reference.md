@@ -162,7 +162,6 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 | **Employee.DashboardFlow** | DELETE | `/v1/compensations/:compensationId` |
 |  | GET | `/v1/employees/:employeeId` |
 |  | GET | `/v1/employees/:employeeId/forms` |
-|  | GET | `/v1/employees/:employeeId/home_addresses` |
 |  | GET | `/v1/employees/:employeeId/jobs` |
 |  | GET | `/v1/employees/:employeeId/pay_stubs` |
 |  | GET | `/v1/employees/:employeeId/work_addresses` |
@@ -374,7 +373,6 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 | **EmployeeManagement.DashboardFlow** | DELETE | `/v1/compensations/:compensationId` |
 |  | GET | `/v1/employees/:employeeId` |
 |  | GET | `/v1/employees/:employeeId/forms` |
-|  | GET | `/v1/employees/:employeeId/home_addresses` |
 |  | GET | `/v1/employees/:employeeId/jobs` |
 |  | GET | `/v1/employees/:employeeId/pay_stubs` |
 |  | GET | `/v1/employees/:employeeId/work_addresses` |

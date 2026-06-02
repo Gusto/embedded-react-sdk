@@ -835,10 +835,6 @@
         },
         {
           "method": "GET",
-          "path": "/v1/employees/:employeeId/home_addresses"
-        },
-        {
-          "method": "GET",
           "path": "/v1/employees/:employeeId/jobs"
         },
         {
@@ -1981,10 +1977,6 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/forms"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/home_addresses"
         },
         {
           "method": "GET",

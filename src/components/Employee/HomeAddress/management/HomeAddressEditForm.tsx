@@ -20,7 +20,7 @@ export interface HomeAddressEditFormProps extends CommonComponentInterface<'Empl
 }
 
 function HomeAddressEditFormRoot({ employeeId, onEvent, dictionary }: HomeAddressEditFormProps) {
-  useI18n(['Employee.HomeAddress.Management', 'Employee.HomeAddress'])
+  useI18n('Employee.HomeAddress.Management')
   useComponentDictionary('Employee.HomeAddress.Management', dictionary)
 
   const management = useHomeAddressManagement({ employeeId, onEvent })
