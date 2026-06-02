@@ -278,14 +278,12 @@ export const components: PrototypeComponent[] = [
         slug: 'empty',
         name: 'Empty',
         description: 'No contractors in any tab.',
-        handlers: [],
         render: renderListDemo({ active: [], onboarding: [], dismissed: [] }),
       },
       {
         slug: 'active',
         name: 'Active list',
         description: 'Three regular active contractors. No status badges.',
-        handlers: [],
         render: renderListDemo({
           active: regularActives,
           onboarding: [],
@@ -297,7 +295,6 @@ export const components: PrototypeComponent[] = [
         name: 'Pending rehires',
         description:
           'Active tab includes a previously-dismissed contractor scheduled to be rehired — shows the "Starts {date}" info badge.',
-        handlers: [],
         render: renderListDemo({
           active: [...regularActives, ...pendingRehires],
           onboarding: [],
@@ -309,7 +306,6 @@ export const components: PrototypeComponent[] = [
         name: 'Upcoming dismissal',
         description:
           'Active tab includes a contractor with a scheduled dismissal — shows the "Last day {date}" warning badge.',
-        handlers: [],
         render: renderListDemo({
           active: [...regularActives, activeWithUpcomingDismissal],
           onboarding: [],
@@ -321,7 +317,6 @@ export const components: PrototypeComponent[] = [
         name: 'Onboarding states',
         description:
           'Onboarding tab with several states: admin-incomplete, self-invited, self-review, and two onboarded-with-future-start.',
-        handlers: [],
         render: renderListDemo({
           active: [],
           onboarding: onboardingContractors,
@@ -333,7 +328,6 @@ export const components: PrototypeComponent[] = [
         name: 'Dismissed',
         description:
           'Dismissed tab with two terminated contractors — one with a recent (cancellable) dismissal, one with an older one.',
-        handlers: [],
         render: renderListDemo({
           active: [],
           onboarding: [],
@@ -345,7 +339,6 @@ export const components: PrototypeComponent[] = [
         name: 'Mixed',
         description:
           'All three tabs populated with semantically correct contractor states — the full surface in one config.',
-        handlers: [],
         render: renderListDemo({
           active: [...regularActives, activeWithUpcomingDismissal, ...pendingRehires],
           onboarding: onboardingContractors,
@@ -356,7 +349,6 @@ export const components: PrototypeComponent[] = [
         slug: 'many',
         name: 'Many contractors',
         description: 'Twelve active contractors — exercises a longer list.',
-        handlers: [],
         render: renderListDemo({ active: manyActives, onboarding: [], dismissed: [] }),
       },
     ],
@@ -369,7 +361,6 @@ export const components: PrototypeComponent[] = [
         slug: 'default',
         name: 'Individual contractor',
         description: 'Standard dismissal form for an hourly individual contractor.',
-        handlers: [],
         render: renderDismissalFormDemo({
           contractor: build({
             uuid: 'contractor-dismiss-1',
@@ -386,7 +377,6 @@ export const components: PrototypeComponent[] = [
         name: 'Business contractor',
         description:
           'Dismissal form for a Business-type contractor — heading uses the business name.',
-        handlers: [],
         render: renderDismissalFormDemo({
           contractor: build({
             uuid: 'contractor-dismiss-business',
@@ -407,7 +397,6 @@ export const components: PrototypeComponent[] = [
         name: 'Recent start date',
         description:
           'Contractor started a few days ago — the date picker enforces a minDate of (start + 1 day) so earlier dates are disabled.',
-        handlers: [],
         render: renderDismissalFormDemo({
           contractor: build({
             uuid: 'contractor-dismiss-new',
@@ -423,7 +412,6 @@ export const components: PrototypeComponent[] = [
         slug: 'pending',
         name: 'Submitting',
         description: 'The submit button shows its loading state while the dismissal is in flight.',
-        handlers: [],
         render: renderDismissalFormDemo({
           isPending: true,
           contractor: build({
@@ -446,7 +434,6 @@ export const components: PrototypeComponent[] = [
         slug: 'individual',
         name: 'Individual contractor',
         description: 'Fully filled-in details for an individual contractor.',
-        handlers: [],
         render: renderDetailsDemo({
           editable: true,
           contractor: build({
@@ -465,7 +452,6 @@ export const components: PrototypeComponent[] = [
         slug: 'business',
         name: 'Business contractor',
         description: 'Business contractor — shows business name and EIN.',
-        handlers: [],
         render: renderDetailsDemo({
           editable: true,
           contractor: build({
@@ -484,7 +470,6 @@ export const components: PrototypeComponent[] = [
         slug: 'missing-data',
         name: 'Missing data',
         description: 'Individual without SSN or email — shows the dash fallback.',
-        handlers: [],
         render: renderDetailsDemo({
           editable: true,
           contractor: build({
@@ -502,7 +487,6 @@ export const components: PrototypeComponent[] = [
         slug: 'read-only',
         name: 'Read-only',
         description: 'No `onEdit` prop, so the Edit button is hidden.',
-        handlers: [],
         render: renderDetailsDemo({
           contractor: build({
             uuid: 'contractor-details-readonly',

@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react'
-import type { RequestHandler } from 'msw'
 
 export interface PrototypeConfiguration {
   /** URL segment, e.g. "single-job" */
@@ -8,9 +7,7 @@ export interface PrototypeConfiguration {
   name: string
   /** Optional helper text */
   description?: string
-  /** MSW handlers installed while this configuration is active */
-  handlers: RequestHandler[]
-  /** Renders the component under test with the mocked data */
+  /** Renders the component under test with mock props */
   render: () => ReactNode
 }
 

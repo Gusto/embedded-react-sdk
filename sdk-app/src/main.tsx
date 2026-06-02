@@ -15,7 +15,6 @@ import { ContractorRehire } from './design/prototypes/contractor-management/Cont
 import { AddContractor } from './design/prototypes/contractor-management/AddContractor'
 import { ContractorSelfOnboarding } from './design/prototypes/contractor-self-onboarding'
 import { ContractorManagementStates } from './design/prototypes/contractor-management'
-import { MockedEntitiesOutlet } from './design/prototypes/MockedEntitiesOutlet'
 import {
   CompensationHistoryPrototype,
   CompensationHistoryStates,
@@ -45,7 +44,6 @@ const router = createBrowserRouter([
               { path: 'add/:contractorId', element: <AddContractor /> },
               {
                 path: 'component-states',
-                element: <MockedEntitiesOutlet />,
                 children: [
                   { index: true, element: <ContractorManagementStates /> },
                   {

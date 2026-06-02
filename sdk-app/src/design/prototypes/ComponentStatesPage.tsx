@@ -3,7 +3,6 @@ import { createPortal } from 'react-dom'
 import { Navigate, useParams } from 'react-router-dom'
 import { DESIGN_RIGHT_RAIL_ID } from '../DesignLayout'
 import { ComponentStatesSidebar } from './ComponentStatesSidebar'
-import { MockedRender } from './MockedRender'
 import type { PrototypeComponent } from './prototypeTypes'
 import styles from './ComponentStatesPage.module.scss'
 
@@ -46,10 +45,7 @@ export function ComponentStatesPage({ basePath, components }: ComponentStatesPag
   return (
     <>
       {component && configuration ? (
-        <MockedRender
-          key={`${component.slug}/${configuration.slug}`}
-          configuration={configuration}
-        />
+        <div key={`${component.slug}/${configuration.slug}`}>{configuration.render()}</div>
       ) : (
         <div className={styles.empty}>Configuration not found.</div>
       )}
