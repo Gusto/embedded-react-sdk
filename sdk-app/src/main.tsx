@@ -12,7 +12,7 @@ import { ContractorListRoute } from './design/prototypes/contractor-management/C
 import { ContractorProfile } from './design/prototypes/contractor-management/contractor-profile/ContractorProfile'
 import { ContractorDismissRoute } from './design/prototypes/contractor-management/ContractorDismissRoute'
 import { ContractorRehireRoute } from './design/prototypes/contractor-management/ContractorRehireRoute'
-import { AddContractor } from './design/prototypes/contractor-management/contractor-list/AddContractor'
+import { AddContractor } from './design/prototypes/contractor-management/AddContractor'
 import { ContractorSelfOnboarding } from './design/prototypes/contractor-management/self-onboarding'
 import { ContractorManagementStates } from './design/prototypes/contractor-management'
 import { MockedEntitiesOutlet } from './design/prototypes/MockedEntitiesOutlet'

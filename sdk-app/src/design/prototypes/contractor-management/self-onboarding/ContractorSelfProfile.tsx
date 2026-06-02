@@ -5,7 +5,7 @@ import type { ContractorUpdateRequestBody } from '@gusto/embedded-api/models/com
 import {
   ProfileDetailsForm,
   type ProfileDetailsFormValues,
-} from '../../../components/contractor/management/ProfileDetailsForm/ProfileDetailsForm'
+} from '../../../components/contractor/shared/ProfileDetailsForm/ProfileDetailsForm'
 import { BaseComponent, useBase } from '@/components/Base'
 import { removeNonDigits } from '@/helpers/formattedStrings'
 import { componentEvents } from '@/shared/constants'

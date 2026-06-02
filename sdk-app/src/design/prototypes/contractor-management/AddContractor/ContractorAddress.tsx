@@ -4,7 +4,7 @@ import { useContractorsUpdateAddressMutation } from '@gusto/embedded-api/react-q
 import {
   AddressForm,
   type AddressFormValues,
-} from '../../../../components/contractor/management/AddressForm/AddressForm'
+} from '../../../components/contractor/shared/AddressForm/AddressForm'
 import { BaseComponent, useBase } from '@/components/Base'
 import { componentEvents } from '@/shared/constants'
 

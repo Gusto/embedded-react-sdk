@@ -1,5 +1,5 @@
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
-import { AddressForm, type AddressFormValues } from '../AddressForm/AddressForm'
+import { AddressForm, type AddressFormValues } from '../../shared/AddressForm/AddressForm'
 import { useBase } from '@/components/Base/useBase'
 
 interface ContractorAddressFormProps {

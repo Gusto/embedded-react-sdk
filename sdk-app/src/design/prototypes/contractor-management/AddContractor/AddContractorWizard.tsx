@@ -1,7 +1,7 @@
 import { Suspense, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useQueryClient } from '@tanstack/react-query'
-import { Skeleton } from '../../../../components/common/Skeleton'
+import { Skeleton } from '../../../components/common/Skeleton'
 import { ContractorProfile } from './ContractorProfile'
 import { ContractorAddress } from './ContractorAddress'
 import { ContractorPaymentMethod } from './ContractorPaymentMethod'
