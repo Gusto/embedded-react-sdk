@@ -6,6 +6,10 @@ import {
   ContractorListDemo,
   type ContractorTabFixtures,
 } from '../../components/contractor/management/ContractorList/ContractorListStates'
+import { ProfileDetailsForm } from '../../components/contractor/shared/ProfileDetailsForm/ProfileDetailsForm'
+import { AddressForm } from '../../components/contractor/shared/AddressForm/AddressForm'
+import { PaymentMethodForm } from '../../components/contractor/shared/PaymentMethodForm/PaymentMethodForm'
+import { CONTRACTOR_TYPE } from '@/shared/constants'
 
 /**
  * Mock contractor builder.
@@ -269,6 +273,55 @@ function renderDetailsDemo(args: { contractor: Contractor; editable?: boolean })
   return ContractorDetailsConfigDemo
 }
 
+function renderProfileDetailsForm(args: {
+  contractor: Contractor
+  heading: string
+  description: string
+  showStartDate?: boolean
+  showEmail?: boolean
+}) {
+  function ProfileDetailsConfigDemo() {
+    return (
+      <ProfileDetailsForm {...args} onCancel={() => {}} onSubmit={async () => Promise.resolve()} />
+    )
+  }
+  return ProfileDetailsConfigDemo
+}
+
+function renderAddressForm(args: {
+  heading: string
+  description: string
+  defaultValues?: {
+    street1?: string
+    street2?: string
+    city?: string
+    state?: string
+    zip?: string
+  }
+}) {
+  function AddressFormConfigDemo() {
+    return <AddressForm {...args} onCancel={() => {}} onSubmit={async () => Promise.resolve()} />
+  }
+  return AddressFormConfigDemo
+}
+
+function renderPaymentMethodForm(args: {
+  heading: string
+  description: string
+  defaultValues: {
+    type: 'Direct Deposit' | 'Check'
+    name: string
+    routingNumber: string
+    accountNumber: string
+    accountType: 'Checking' | 'Savings'
+  }
+}) {
+  function PaymentMethodConfigDemo() {
+    return <PaymentMethodForm {...args} onSubmit={async () => Promise.resolve()} />
+  }
+  return PaymentMethodConfigDemo
+}
+
 export const components: PrototypeComponent[] = [
   {
     slug: 'list',
@@ -497,6 +550,125 @@ export const components: PrototypeComponent[] = [
             hasSsn: true,
             startDate: '2024-01-10',
           }),
+        }),
+      },
+    ],
+  },
+  {
+    slug: 'profile-details-form',
+    name: 'Profile Details Form',
+    configurations: [
+      {
+        slug: 'individual',
+        name: 'Individual contractor',
+        description:
+          'Edit basic details for an individual contractor with SSN already on file. Renders the LockedField with a Change button.',
+        render: renderProfileDetailsForm({
+          contractor: build({
+            uuid: 'contractor-profile-individual',
+            type: CONTRACTOR_TYPE.INDIVIDUAL,
+            firstName: 'Avery',
+            middleInitial: 'J',
+            lastName: 'Garcia',
+            email: 'avery.garcia@example.com',
+            hasSsn: true,
+            startDate: '2024-03-15',
+          }),
+          heading: 'Edit basic details',
+          description: 'Update the contractor\u2019s personal information.',
+          showStartDate: true,
+          showEmail: true,
+        }),
+      },
+      {
+        slug: 'business',
+        name: 'Business contractor',
+        description: 'Edit basic details for a Business-type contractor with EIN already on file.',
+        render: renderProfileDetailsForm({
+          contractor: build({
+            uuid: 'contractor-profile-business',
+            type: CONTRACTOR_TYPE.BUSINESS,
+            businessName: 'Pacific Design Co.',
+            firstName: 'Mason',
+            lastName: 'Park',
+            email: 'mason.park@pacificdesign.com',
+            hasEin: true,
+            startDate: '2023-11-01',
+          }),
+          heading: 'Edit basic details',
+          description: 'Update the contractor\u2019s business information.',
+          showStartDate: true,
+          showEmail: true,
+        }),
+      },
+    ],
+  },
+  {
+    slug: 'address-form',
+    name: 'Address Form',
+    configurations: [
+      {
+        slug: 'existing',
+        name: 'Existing address',
+        description: 'Edit the contractor\u2019s home address — fields prefilled from the record.',
+        render: renderAddressForm({
+          heading: 'Edit address',
+          description: 'Update the contractor\u2019s home address.',
+          defaultValues: {
+            street1: '123 Mission St',
+            street2: 'Apt 4B',
+            city: 'San Francisco',
+            state: 'CA',
+            zip: '94103',
+          },
+        }),
+      },
+      {
+        slug: 'empty',
+        name: 'No address on file',
+        description: 'No address on the contractor record — fields render empty.',
+        render: renderAddressForm({
+          heading: 'Edit address',
+          description: 'Update the contractor\u2019s home address.',
+        }),
+      },
+    ],
+  },
+  {
+    slug: 'payment-method-form',
+    name: 'Payment Method Form',
+    configurations: [
+      {
+        slug: 'check',
+        name: 'Check',
+        description: 'Contractor receives a paper check — bank account fields hidden.',
+        render: renderPaymentMethodForm({
+          heading: 'Payment method',
+          description: 'Edit how this contractor gets paid.',
+          defaultValues: {
+            type: 'Check',
+            name: '',
+            routingNumber: '',
+            accountNumber: '',
+            accountType: 'Checking',
+          },
+        }),
+      },
+      {
+        slug: 'direct-deposit-existing',
+        name: 'Direct deposit (existing bank account)',
+        description:
+          'Direct deposit with a bank account already on file. Account number renders as the masked default.',
+        render: renderPaymentMethodForm({
+          heading: 'Payment method',
+          description: 'Edit how this contractor gets paid.',
+          defaultValues: {
+            type: 'Direct Deposit',
+            name: 'Primary checking',
+            routingNumber: '110000000',
+            accountNumber: 'XXXXXX1234',
+            accountType: 'Checking',
+          },
         }),
       },
     ],

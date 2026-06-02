@@ -44,6 +44,18 @@ export const categorizedRegistry: CategorizedRegistry = {
       name: 'Contractor Self-Onboarding',
       path: '/design/contractor-self-onboarding',
       description: 'The contractor-facing onboarding experience after receiving an invite link.',
+      children: [
+        {
+          name: 'Prototype',
+          path: '/design/contractor-self-onboarding',
+          description: 'Live prototype against the real API.',
+        },
+        {
+          name: 'Component states',
+          path: '/design/contractor-self-onboarding/component-states',
+          description: 'Browse individual components and configurations with mock data.',
+        },
+      ],
     },
   ],
   Employees: [

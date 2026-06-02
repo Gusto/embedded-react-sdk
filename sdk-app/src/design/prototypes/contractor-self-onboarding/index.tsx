@@ -1,10 +1,14 @@
 import { Suspense } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import type { EntityIds } from '../../../useEntities'
+import { ComponentStatesPage } from '../ComponentStatesPage'
 import { ContractorSelfOnboardingWizard } from './ContractorSelfOnboardingWizard'
+import { components } from './states'
 import { Flex } from '@/components/Common'
 import { BaseComponent } from '@/components/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+
+const BASE_PATH = '/design/contractor-self-onboarding'
 
 function ContractorSelfOnboardingContent() {
   const { entities } = useOutletContext<{ entities: EntityIds }>()
@@ -41,4 +45,8 @@ export function ContractorSelfOnboarding() {
       </Flex>
     </BaseComponent>
   )
+}
+
+export function ContractorSelfOnboardingStates() {
+  return <ComponentStatesPage basePath={`${BASE_PATH}/component-states`} components={components} />
 }

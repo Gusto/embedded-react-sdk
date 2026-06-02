@@ -13,7 +13,10 @@ import { ContractorProfile } from './design/prototypes/contractor-management/Con
 import { ContractorDismiss } from './design/prototypes/contractor-management/ContractorDismiss'
 import { ContractorRehire } from './design/prototypes/contractor-management/ContractorRehire'
 import { AddContractor } from './design/prototypes/contractor-management/AddContractor'
-import { ContractorSelfOnboarding } from './design/prototypes/contractor-self-onboarding'
+import {
+  ContractorSelfOnboarding,
+  ContractorSelfOnboardingStates,
+} from './design/prototypes/contractor-self-onboarding'
 import { ContractorManagementStates } from './design/prototypes/contractor-management'
 import {
   CompensationHistoryPrototype,
@@ -57,7 +60,22 @@ const router = createBrowserRouter([
               { path: ':contractorId/rehire', element: <ContractorRehire /> },
             ],
           },
-          { path: 'contractor-self-onboarding', element: <ContractorSelfOnboarding /> },
+          {
+            path: 'contractor-self-onboarding',
+            children: [
+              { index: true, element: <ContractorSelfOnboarding /> },
+              {
+                path: 'component-states',
+                children: [
+                  { index: true, element: <ContractorSelfOnboardingStates /> },
+                  {
+                    path: ':componentSlug/:configSlug',
+                    element: <ContractorSelfOnboardingStates />,
+                  },
+                ],
+              },
+            ],
+          },
           {
             path: 'employee-compensation-history',
             children: [
