@@ -6,6 +6,7 @@ export interface PrototypeEntry {
   name: string
   path: string
   description: string
+  children?: PrototypeEntry[]
 }
 
 export type CategorizedRegistry = Record<Category, PrototypeEntry[]>
@@ -39,6 +40,18 @@ export const categorizedRegistry: CategorizedRegistry = {
       path: '/design/employee-compensation-history',
       description:
         'A read-only view of an employee’s compensation history across all of their jobs, with a job filter for multi-job employees.',
+      children: [
+        {
+          name: 'Prototype',
+          path: '/design/employee-compensation-history/prototype',
+          description: 'Live prototype against the real API.',
+        },
+        {
+          name: 'Component states',
+          path: '/design/employee-compensation-history/component-states',
+          description: 'Browse individual components and configurations with mock data.',
+        },
+      ],
     },
   ],
   Payroll: [],

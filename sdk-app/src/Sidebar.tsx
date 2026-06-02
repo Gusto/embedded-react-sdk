@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 import {
   categorizedRegistry as previewRegistry,
   CATEGORIES as PREVIEW_CATEGORIES,
@@ -21,6 +21,16 @@ interface SidebarProps {
   onShowShortcuts: () => void
 }
 
+interface SidebarItem {
+  name: string
+  path?: string
+  children?: SidebarItem[]
+}
+
+function isUnder(pathname: string, target: string): boolean {
+  return pathname === target || pathname.startsWith(`${target}/`)
+}
+
 function CategorySection({
   category,
   items,
@@ -28,16 +38,20 @@ function CategorySection({
   mode,
 }: {
   category: string
-  items: { name: string; path?: string }[]
+  items: SidebarItem[]
   searchQuery: string
   mode: AppMode
 }) {
   const [collapsed, setCollapsed] = useState(false)
+  const { pathname } = useLocation()
 
   const filteredItems = useMemo(() => {
     if (!searchQuery) return items
     const q = searchQuery.toLowerCase()
-    return items.filter(item => item.name.toLowerCase().includes(q))
+    return items.filter(item => {
+      if (item.name.toLowerCase().includes(q)) return true
+      return item.children?.some(child => child.name.toLowerCase().includes(q)) ?? false
+    })
   }, [items, searchQuery])
 
   if (searchQuery && filteredItems.length === 0) return null
@@ -64,7 +78,6 @@ function CategorySection({
           />
           {displayCategory}
         </div>
-
         <span className={styles.categoryCount}>{filteredItems.length}</span>
       </div>
       {!collapsed && (
@@ -72,9 +85,22 @@ function CategorySection({
           {filteredItems.map(item => {
             const to =
               mode === 'design' && item.path ? item.path : `/${category.toLowerCase()}/${item.name}`
+            const showChildren =
+              !!item.children?.length && !!item.path && isUnder(pathname, item.path)
             return (
               <li key={item.name} className={styles.item}>
-                <NavLink to={to}>{item.name}</NavLink>
+                <NavLink to={to} end={!item.children}>
+                  {item.name}
+                </NavLink>
+                {showChildren && item.children && (
+                  <ul className={styles.subItems}>
+                    {item.children.map(child => (
+                      <li key={child.name} className={styles.subItem}>
+                        <NavLink to={child.path ?? '#'}>{child.name}</NavLink>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </li>
             )
           })}
@@ -84,14 +110,7 @@ function CategorySection({
   )
 }
 
-export function Sidebar({
-  mode,
-  searchQuery,
-  onSearchChange,
-  isOpen,
-  onToggle,
-  onShowShortcuts,
-}: SidebarProps) {
+export function Sidebar({ mode, searchQuery, onSearchChange, isOpen, onToggle }: SidebarProps) {
   const placeholder = mode === 'design' ? 'Search prototypes...' : 'Search components...'
 
   if (!isOpen) {
@@ -113,14 +132,6 @@ export function Sidebar({
   return (
     <aside className={styles.root}>
       <div className={styles.search}>
-        <button
-          type="button"
-          className={styles.shortcutHint}
-          onClick={onShowShortcuts}
-          aria-label="Show keyboard shortcuts"
-        >
-          Press <kbd className={styles.shortcutHintKey}>?</kbd> for shortcuts
-        </button>
         <div className={styles.searchRow}>
           <input
             type="text"

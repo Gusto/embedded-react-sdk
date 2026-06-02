@@ -21,8 +21,13 @@ export function DesignLayout() {
       config={{ baseUrl: `${window.location.origin}/api/` }}
       theme={resolvedTheme === 'dark' ? darkTheme : undefined}
     >
-      <div className={styles.bodyContent} style={maxWidth ? { maxWidth } : undefined}>
-        <Outlet context={{ entities }} />
+      <div className={styles.shell}>
+        <main className={styles.bodyArea}>
+          <div className={styles.bodyContent} style={maxWidth ? { maxWidth } : undefined}>
+            <Outlet context={{ entities }} />
+          </div>
+        </main>
+        <div id={DESIGN_RIGHT_RAIL_ID} className={styles.rightRail} />
       </div>
       <div className={styles.switcherContainer}>
         <BreakpointSwitcher value={breakpoint} onChange={setBreakpoint} />
@@ -30,3 +35,5 @@ export function DesignLayout() {
     </GustoProvider>
   )
 }
+
+export const DESIGN_RIGHT_RAIL_ID = 'design-right-rail'

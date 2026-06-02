@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { HttpResponse } from 'msw'
-import { CompensationHistory } from './'
+import { CompensationHistoryComponent } from './CompensationHistoryComponent'
 import { server } from '@/test/mocks/server'
 import { handleGetEmployeeJobs } from '@/test/mocks/apis/employees'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
@@ -26,7 +26,7 @@ describe('prototypes/employee-management/CompensationHistory', () => {
       ),
     )
 
-    renderWithProviders(<CompensationHistory employeeId="employee-uuid" />)
+    renderWithProviders(<CompensationHistoryComponent employeeId="employee-uuid" />)
 
     expect(await screen.findByRole('heading', { name: 'My Job' })).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /All jobs/i })).not.toBeInTheDocument()
@@ -40,7 +40,7 @@ describe('prototypes/employee-management/CompensationHistory', () => {
       ),
     )
 
-    renderWithProviders(<CompensationHistory employeeId="employee-uuid" />)
+    renderWithProviders(<CompensationHistoryComponent employeeId="employee-uuid" />)
 
     expect(await screen.findByRole('heading', { name: 'Compensation history' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /All jobs/i })).toBeInTheDocument()
@@ -57,7 +57,7 @@ describe('prototypes/employee-management/CompensationHistory', () => {
     )
 
     const user = userEvent.setup()
-    renderWithProviders(<CompensationHistory employeeId="employee-uuid" />)
+    renderWithProviders(<CompensationHistoryComponent employeeId="employee-uuid" />)
 
     await screen.findByRole('heading', { name: 'Compensation history' })
 
@@ -68,15 +68,17 @@ describe('prototypes/employee-management/CompensationHistory', () => {
     expect(screen.queryByRole('gridcell', { name: 'My Job' })).not.toBeInTheDocument()
   })
 
-  it('renders an empty state when the employee has no jobs', async () => {
+  it('renders an empty DataView with an emptyState message when the employee has no jobs', async () => {
     server.use(
       handleGetEmployeeJobs(() => HttpResponse.json(buildEmployeeWithJobs({ scenario: 'noJobs' }))),
     )
 
-    renderWithProviders(<CompensationHistory employeeId="employee-uuid" />)
+    renderWithProviders(<CompensationHistoryComponent employeeId="employee-uuid" />)
 
-    expect(await screen.findByText('No compensation history yet.')).toBeInTheDocument()
-    expect(screen.queryByRole('heading', { name: 'Compensation history' })).not.toBeInTheDocument()
-    expect(screen.queryByRole('grid')).not.toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Compensation history' })).toBeInTheDocument()
+    expect(screen.getByRole('grid')).toBeInTheDocument()
+    expect(screen.getByText('There is no compensation history.')).toBeInTheDocument()
+    // No job filter is shown when there are no jobs to filter to.
+    expect(screen.queryByRole('button', { name: /All jobs/i })).not.toBeInTheDocument()
   })
 })

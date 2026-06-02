@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import { App } from './App'
 import { Home } from './Home'
 import { RoutedComponentRenderer } from './RoutedComponentRenderer'
@@ -14,7 +14,10 @@ import { ContractorDismiss } from './design/prototypes/contractor-management/con
 import { ContractorRehire } from './design/prototypes/contractor-management/contractor-list/ContractorRehire'
 import { AddContractor } from './design/prototypes/contractor-management/contractor-list/AddContractor'
 import { ContractorSelfOnboarding } from './design/prototypes/contractor-management/self-onboarding'
-import { CompensationHistory } from './design/prototypes/employee-management/CompensationHistory'
+import {
+  CompensationHistoryPrototype,
+  CompensationHistoryStates,
+} from './design/prototypes/employee-management/CompensationHistory'
 import './app.scss'
 import '@/styles/sdk.scss'
 
@@ -44,7 +47,23 @@ const router = createBrowserRouter([
             ],
           },
           { path: 'contractor-self-onboarding', element: <ContractorSelfOnboarding /> },
-          { path: 'employee-compensation-history', element: <CompensationHistory /> },
+          {
+            path: 'employee-compensation-history',
+            children: [
+              { index: true, element: <Navigate to="prototype" replace /> },
+              { path: 'prototype', element: <CompensationHistoryPrototype /> },
+              {
+                path: 'component-states',
+                children: [
+                  { index: true, element: <CompensationHistoryStates /> },
+                  {
+                    path: ':componentSlug/:configSlug',
+                    element: <CompensationHistoryStates />,
+                  },
+                ],
+              },
+            ],
+          },
         ],
       },
     ],
