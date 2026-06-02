@@ -1,7 +1,7 @@
 import { useOutletContext } from 'react-router-dom'
 import type { EntityIds } from '../../../../useEntities'
 import { ComponentStatesPage } from '../../ComponentStatesPage'
-import { CompensationHistoryComponent } from './CompensationHistoryComponent'
+import { CompensationHistory } from './CompensationHistory'
 import { components } from './states'
 
 const BASE_PATH = '/design/employee-compensation-history'
@@ -19,7 +19,7 @@ export function CompensationHistoryPrototype() {
     )
   }
 
-  return <CompensationHistoryComponent employeeId={employeeId} />
+  return <CompensationHistory employeeId={employeeId} />
 }
 
 export function CompensationHistoryStates() {

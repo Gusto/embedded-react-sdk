@@ -1,16 +1,12 @@
 import { useRef, useState } from 'react'
-import { useJobsAndCompensationsGetJobs } from '@gusto/embedded-api-v-2025-11-15/react-query/jobsAndCompensationsGetJobs'
-import { GetV1EmployeesEmployeeIdJobsQueryParamInclude } from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1employeesemployeeidjobs'
 import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
 import type { Compensation } from '@gusto/embedded-api-v-2025-11-15/models/components/compensation'
 import style from './CompensationHistory.module.scss'
-import { BaseBoundaries, BaseLayout } from '@/components/Base'
 import { ActionsLayout, DataView, Flex, useDataView } from '@/components/Common'
 import useContainerBreakpoints from '@/hooks/useContainerBreakpoints/useContainerBreakpoints'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { formatDateLongWithYear } from '@/helpers/dateFormatting'
 import { useFormatCompensationRate } from '@/helpers/formattedStrings'
-import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 
 const FLSA_STATUS_LABELS: Record<string, string> = {
   'Commission Only Exempt': 'Commission Only/No Overtime',
@@ -28,55 +24,29 @@ const COLUMN_LABELS = {
   jobTitle: 'Job title',
 }
 
-export interface CompensationHistoryComponentProps {
-  employeeId: string
+export interface CompensationHistoryProps {
+  jobs: Job[]
   onBack?: () => void
 }
 
-export function CompensationHistoryComponent(props: CompensationHistoryComponentProps) {
-  return (
-    <BaseBoundaries componentName="CompensationHistory">
-      <Root {...props} />
-    </BaseBoundaries>
-  )
-}
-
-function Root({ employeeId, onBack }: CompensationHistoryComponentProps) {
+export function CompensationHistory({ jobs, onBack }: CompensationHistoryProps) {
   const Components = useComponentContext()
 
-  const jobsQuery = useJobsAndCompensationsGetJobs(
-    {
-      employeeId,
-      include: GetV1EmployeesEmployeeIdJobsQueryParamInclude.AllCompensations,
-    },
-    { enabled: !!employeeId },
-  )
-
-  const errorHandling = composeErrorHandler([jobsQuery])
-
-  if (jobsQuery.isLoading || !jobsQuery.data) {
-    return <BaseLayout isLoading error={errorHandling.errors} />
-  }
-
-  const jobs = jobsQuery.data.jobs ?? []
-
   return (
-    <BaseLayout error={errorHandling.errors}>
-      <Flex flexDirection="column" gap={32}>
-        {jobs.length === 1 && jobs[0] ? (
-          <JobCompensationHistory job={jobs[0]} />
-        ) : (
-          <CombinedCompensationHistory jobs={jobs} />
-        )}
-        {onBack && (
-          <ActionsLayout>
-            <Components.Button variant="secondary" onClick={onBack}>
-              Back
-            </Components.Button>
-          </ActionsLayout>
-        )}
-      </Flex>
-    </BaseLayout>
+    <Flex flexDirection="column" gap={32}>
+      {jobs.length === 1 && jobs[0] ? (
+        <JobCompensationHistory job={jobs[0]} />
+      ) : (
+        <CombinedCompensationHistory jobs={jobs} />
+      )}
+      {onBack && (
+        <ActionsLayout>
+          <Components.Button variant="secondary" onClick={onBack}>
+            Back
+          </Components.Button>
+        </ActionsLayout>
+      )}
+    </Flex>
   )
 }
 
