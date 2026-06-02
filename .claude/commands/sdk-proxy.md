@@ -18,7 +18,19 @@ This command depends on the **Gusto Embedded Dev Assistant MCP** (server name `e
 
 Then restart Cursor. Verify by asking the agent "what MCP tools do you have access to?" — you should see tools from the `embedded-payroll` server.
 
-If the MCP isn't installed when this command runs, the agent should stop after Step 2 and surface the docs link rather than guessing API paths from memory.
+### First-install gotcha — toggle the MCP off, then on
+
+On the very first install (whether via the project-level prompt or an edit to `~/.cursor/mcp.json`), Cursor often shows `embedded-payroll` as enabled but doesn't actually load its tools until you manually toggle it. If the agent runs `/sdk-proxy` and reports it can't see any `embedded-payroll` tools even though you just clicked "Enable" or restarted Cursor, do this:
+
+1. Open Cursor Settings: `Cmd+,` (macOS) or `Ctrl+,` (Windows/Linux).
+2. In the left sidebar, click **Tools & MCP** (older Cursor builds may label this **MCP** or **Integrations**).
+3. Find the **embedded-payroll** entry in the list.
+4. Toggle it **off**, wait a second, then toggle it **on** again.
+5. Ask the agent again: "what `embedded-payroll` tools do you have?" — tools should now be listed.
+
+This is a one-time step per workstation. Subsequent restarts pick up the MCP cleanly.
+
+If the MCP isn't installed when this command runs, the agent should stop after Step 2, surface the docs link, and walk the user through this toggle dance — never guess API paths from memory.
 
 The user's free-form arguments after `/sdk-proxy` describe the request in plain language. Examples:
 
@@ -204,7 +216,21 @@ Never guess API paths, methods, request bodies, or query parameters from memory 
 
 Typical flow: discover the endpoint → fetch a curl template → adapt to the proxy URL → run. For onboarding or payroll sequences, validate the call order first so you don't fire half a sequence and leave entities in a broken state.
 
-**If the `embedded-payroll` MCP isn't loaded** (the agent doesn't see any of its tools), stop here. Tell the user the MCP is missing and link them to the Prerequisites section at the top of this file. Do **not** fall back to guessing paths from documentation in memory — that's the failure mode this command exists to prevent.
+**If the `embedded-payroll` MCP isn't loaded** (you don't see any of its tools), do **not** fall back to guessing paths from memory — that's the failure mode this command exists to prevent. Instead, stop and pause for the user with this exact message (adapt only the heading; keep the steps verbatim, since the toggle dance is the most common first-install fix):
+
+> The `embedded-payroll` MCP doesn't appear to be loaded — I can't see any of its tools. This is almost always one of two things:
+>
+> **If you've never installed it before**, the repo ships a project-level config at [`.cursor/mcp.json`](.cursor/mcp.json). Open the workspace, accept Cursor's "Enable MCP server" prompt, then follow the toggle step below. Full setup guide: [docs.gusto.com — Dev Assistant MCP](https://docs.gusto.com/embedded-payroll/docs/dev-assistant-mcp).
+>
+> **If you just installed it** (or just restarted Cursor after installing), you need to manually toggle the MCP off and back on before its tools become available. Cursor's first-install handshake has a known wrinkle here.
+>
+> 1. Open Cursor Settings: `Cmd+,` (macOS) or `Ctrl+,` (Windows/Linux).
+> 2. In the left sidebar, click **Tools & MCP** (older builds may say **MCP** or **Integrations**).
+> 3. Find the **embedded-payroll** entry.
+> 4. Toggle it **off**, wait a second, then toggle it **on** again.
+> 5. Reply here when done and I'll retry the request.
+
+Wait for the user's confirmation before retrying. Once they say it's done, re-check the available tools and continue from Step 3 with the original request — no need for them to re-issue `/sdk-proxy`.
 
 ## Step 4 — Build and run the curl
 
