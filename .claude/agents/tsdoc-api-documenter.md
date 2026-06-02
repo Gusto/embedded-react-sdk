@@ -79,20 +79,11 @@ Do NOT add TSDoc to internal/non-exported symbols, test utilities, Storybook-onl
 - Do NOT speculate about the partner's app or workflow. Describe what it does and how to use it.
 - Write neutrally or in second person — not "partners should…".
 - Keep examples minimal but realistic.
+- Do NOT leak internal implementation details into `@public`, `@beta`, or `@alpha` comments. Never mention internal components, hooks, utilities, or patterns by name (e.g. "this component uses `ComponentsContext`" or "calls `useInternalFoo` internally"). The audience for these tags is a library consumer who cannot see or use internal symbols. `@internal` comments may reference anything since their audience is SDK contributors.
 
 ## TypeScript Patterns That Affect Doc Quality
 
 **Prefer `interface` over `type = { ... }` for named object shapes** (props types, return types, callback signatures). TypeDoc renders interfaces with full property tables and tracks `extends` relationships. TypeScript preserves member-level TSDoc in `.d.ts` emit for interfaces but not for object-type aliases — so IDE hover tooltips only show per-property docs when the type is declared as an `interface`. If you're adding TSDoc to a type alias that has documented properties, flag it for conversion to `interface`.
-
-## Codebase-Specific Patterns
-
-**ComponentsContext**: Note that UI rendering goes through `useComponentContext()` and visual output depends on the configured component set.
-
-**Field Components** (`src/components/Common/Fields/`): Must be used inside a `FormProvider` from react-hook-form.
-
-**Partner hooks**: For hooks returning `errorHandling`, document how the result integrates with `composeErrorHandler`. Reference `composeSubmitHandler` for multi-form screens.
-
-**API hooks** wrapping `@gusto/embedded-api`: Document the resource/action, the Suspense/mutation variant, and the auto-invalidation behavior (mutations trigger global SDK query invalidation — partners do not need to call `invalidateQueries` manually).
 
 ## ESLint Compliance
 
@@ -111,14 +102,13 @@ The **`tsdoc-file` skill is preloaded in your context** — follow its instructi
    - If `docs/` has nothing relevant **and** the symbol is a top-level concern — a flow component (e.g. `EmployeeOnboarding`, `PayrollFlow`), a major exported hook, or anything where `@remarks` and `@example` require product context beyond the implementation — check MCP servers (Jira, Confluence, Notion) for product documentation or design specs. Treat MCP content the same as `docs/` prose: adapt it, don't invent.
    - If docs are missing and MCP yields nothing useful for a complex symbol, stop and check in rather than guessing.
 3. **Generate skeletons in batch per file.** When you have multiple symbols from the same file, call `tsdoc-stub` once with `--symbols Name1,Name2,...` instead of once per symbol. This amortizes the project-load cost across all symbols in the file. The output is one `SYMBOL: NAME\n<block>` section per symbol; `SKIP` means already aligned. Then write each non-SKIP comment following tsdoc-file steps 2–4.
-4. After each file, run ESLint and fix errors before moving on.
+4. After writing all symbols in a file, fix any ESLint errors in a single pass, then run ESLint once to confirm clean before moving to the next file.
 5. If behavior is unclear from the implementation, stop — see Guardrails below.
 
 ## Guardrails — When to Stop and Check In
 
 Stop and ask the human before continuing if any of these occur:
 
-- **Comment length**: The TSDoc comment you are drafting is more than twice as long as the code it documents.
 - **Repeated ESLint failures**: Five ESLint failures in a row on the same file or symbol without a clear path to fixing them.
 - **Guessing**: You are inferring what a symbol does rather than reading it clearly from the source. If the behavior is not obvious from the implementation, say so — do not speculate.
 - **Conflicting information**: Sources disagree (source code, `docs/`, MCP content) and it's not clear which is authoritative.

@@ -42,13 +42,28 @@ Wait for it to complete. Capture the violation list and the eslint.config.ts cha
 
 If it reports zero violations, skip Phase 2, run the final verification below, and return the report.
 
-## Phase 2 — Write documentation (background)
+## Phase 2 — Write documentation (batched, background)
 
-Tell the user: "Phase 1 complete — $N violations found. Documenting in the background, I'll report back when done."
+### Batching strategy
 
-Spawn the `tsdoc-api-documenter` agent with **`run_in_background: true`**:
+Before spawning any agents, group the violations by **immediate parent directory** (the directory containing each file). Files in the same directory share `docs/` and MCP context and should be processed in the same session.
 
-- **description**: `"Document violations in $TARGET"`
+For each directory group:
+
+- **≤5 files**: one batch → one documenter session
+- **>5 files**: split into sequential batches of up to 5 files each
+
+Spawn all **first-batch** agents across different directory groups **in parallel** (all `run_in_background: true` at once). Within a single directory group that needs multiple batches, wait for batch N to complete before spawning batch N+1 for that group.
+
+Tell the user: "Phase 1 complete — $N violations found across $M files. Documenting in $K batches across $G directory groups, I'll report back when all are done."
+
+Wait for **all background agents to complete** before proceeding to Phase 3.
+
+### Spawning each batch
+
+For each batch, spawn `tsdoc-api-documenter` with **`run_in_background: true`**:
+
+- **description**: `"Document violations in $DIRECTORY (batch $BATCH_N of $BATCH_TOTAL)"`
 - **prompt**:
 
 ```
@@ -57,14 +72,14 @@ Document the following exported symbols in the embedded-react-sdk repo.
 These were discovered by the tsdoc-backfill agent as missing TSDoc in $TARGET.
 
 Violation list:
-<paste the full violation list from Phase 1>
+<paste only the violations for this batch>
 
 Work through each file in order. For each file:
 
 1. Run tsdoc-stub **once** for the whole file using `--all-exports` (or `--symbols` if only a subset needs documenting) to generate all skeletons in a single call. Never call tsdoc-stub once per symbol — each invocation is expensive.
 2. Check docs/ for existing prose to adapt before filling in any prose (docs/hooks/ for hooks, docs/integration-guide/ for utilities). For top-level or complex symbols with nothing in docs/, check MCP (Jira, Confluence, Notion) for product context.
 3. Fill in prose for all symbols in the file, then write them all to the file (multiple Edit calls in the same turn where possible).
-4. Run ESLint on the file once after all symbols are written; fix any errors before moving on.
+4. After writing all symbols in a file, fix any ESLint errors in a single pass, then run ESLint once to confirm clean before moving to the next file.
 
 For exported **React components**, before writing the events table in `@remarks`:
 

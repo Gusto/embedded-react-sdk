@@ -76,7 +76,7 @@ For exported **React components**, `@remarks` must include an events table listi
 | `event/string/value` | What triggers it | {@link DataType} or — |
 ```
 
-Use `{@link TypeName}` (importing the type if needed) for the Data column when a type from `@gusto/embedded-api/models/components/` matches. Use `—` when the event carries no data.
+For the Data column, describe what the event carries in plain text, or use `—` when the event carries no data.
 
 **`@example`** (optional) — when a snippet meaningfully clarifies usage. **Skip for React components already documented in `docs/`** — the docs page is the canonical example. Import from the published package, not internal paths.
 

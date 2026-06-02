@@ -23,8 +23,11 @@ TSDoc rules.
 If `<TARGET>/**` appears literally (e.g. `'src/helpers/**'`), delete only that one string. Leave all sibling entries untouched.
 
 **Case B — an ancestor glob covers the target.**
-If a parent-level glob (e.g. `'src/components/**'`) matches `<TARGET>` but `<TARGET>/**` is not listed, do NOT modify the existing block. Instead, append a new
-config block immediately after the well-documented block:
+If a parent-level glob (e.g. `'src/components/**'`) matches `<TARGET>` but `<TARGET>/**` is not listed, do NOT modify the existing block.
+
+First, check whether a Case B override block already exists — look for a block whose comment starts with `/** Library: well-documented code —`. If one exists, **add `'<TARGET>/**/\*.{ts,tsx}'`to its`files` array\*\* rather than creating a new block. Update the comment to list all covered paths.
+
+If no Case B block exists yet, append a new one immediately after the well-documented block:
 
 ```ts
 /** Library: well-documented code — <TARGET>. */
@@ -46,7 +49,7 @@ config block immediately after the well-documented block:
 npx eslint '<TARGET>' 2>&1
 ```
 
-Collect every line containing `tsdoc-coverage/require-comment`, `tsdoc-coverage/require-release-tag`, or `tsdoc/syntax`. Build a list of `{ file, line, rule }` entries.
+Collect every line containing `tsdoc-coverage/require-comment`, `tsdoc-coverage/require-release-tag`, or `tsdoc/syntax`. Build a list of `{ file, line, rule }` entries. The ESLint output already contains file paths, line numbers, and symbol names — do not read source files to confirm; use the ESLint output directly to build the violation list.
 
 Return your output in this format:
 
