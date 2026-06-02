@@ -65,7 +65,7 @@ function ContractorRehireContent() {
   )
 }
 
-export function ContractorRehireRoute() {
+export function ContractorRehire() {
   return (
     <BaseComponent onEvent={() => {}}>
       <Suspense fallback={<RehireSkeleton />}>

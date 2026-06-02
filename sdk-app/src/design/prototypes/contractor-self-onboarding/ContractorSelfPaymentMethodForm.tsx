@@ -1,4 +1,4 @@
-import { PaymentMethodForm } from '../../../components/contractor/shared/PaymentMethodForm/PaymentMethodForm'
+import { PaymentMethodForm } from '../../components/contractor/shared/PaymentMethodForm/PaymentMethodForm'
 import { BaseComponent } from '@/components/Base'
 import { componentEvents } from '@/shared/constants'
 

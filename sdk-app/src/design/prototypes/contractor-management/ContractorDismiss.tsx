@@ -68,7 +68,7 @@ function ContractorDismissContent() {
   )
 }
 
-export function ContractorDismissRoute() {
+export function ContractorDismiss() {
   return (
     <BaseComponent onEvent={() => {}}>
       <Suspense fallback={<DismissSkeleton />}>

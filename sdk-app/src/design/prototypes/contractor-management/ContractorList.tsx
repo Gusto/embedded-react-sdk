@@ -8,12 +8,12 @@ import { useQueryClient } from '@tanstack/react-query'
 import type { EntityIds } from '../../../useEntities'
 import { contractorName } from '../../components/common/contractorName'
 import {
-  ContractorList,
+  ContractorList as ContractorListView,
   type ContractorListTab,
 } from '../../components/contractor/management/ContractorList/ContractorList'
 import { ContractorOnboardingStatus } from '@/shared/constants'
 
-export function ContractorListRoute() {
+export function ContractorList() {
   const { entities } = useOutletContext<{ entities: EntityIds }>()
   const companyId = entities.companyId
   const navigate = useNavigate()
@@ -103,7 +103,7 @@ export function ContractorListRoute() {
   }
 
   return (
-    <ContractorList
+    <ContractorListView
       contractors={contractors}
       isFetching={isPending}
       selectedTab={selectedTab}

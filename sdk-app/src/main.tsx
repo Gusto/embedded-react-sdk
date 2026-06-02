@@ -7,13 +7,13 @@ import { RoutedComponentRenderer } from './RoutedComponentRenderer'
 import { DesignLayout } from './design/DesignLayout'
 import { DesignHome } from './design/DesignHome'
 import { ComponentShowcase } from './design/prototypes/component-showcase'
-import { ContractorManagementFlow } from './design/prototypes/contractor-management/contractor-profile/ContractorManagementFlow'
-import { ContractorListRoute } from './design/prototypes/contractor-management/ContractorListRoute'
-import { ContractorProfile } from './design/prototypes/contractor-management/contractor-profile/ContractorProfile'
-import { ContractorDismissRoute } from './design/prototypes/contractor-management/ContractorDismissRoute'
-import { ContractorRehireRoute } from './design/prototypes/contractor-management/ContractorRehireRoute'
+import { ContractorManagementFlow } from './design/prototypes/contractor-management/ContractorManagementFlow'
+import { ContractorList } from './design/prototypes/contractor-management/ContractorList'
+import { ContractorProfile } from './design/prototypes/contractor-management/ContractorProfile'
+import { ContractorDismiss } from './design/prototypes/contractor-management/ContractorDismiss'
+import { ContractorRehire } from './design/prototypes/contractor-management/ContractorRehire'
 import { AddContractor } from './design/prototypes/contractor-management/AddContractor'
-import { ContractorSelfOnboarding } from './design/prototypes/contractor-management/self-onboarding'
+import { ContractorSelfOnboarding } from './design/prototypes/contractor-self-onboarding'
 import { ContractorManagementStates } from './design/prototypes/contractor-management'
 import { MockedEntitiesOutlet } from './design/prototypes/MockedEntitiesOutlet'
 import {
@@ -40,7 +40,7 @@ const router = createBrowserRouter([
             path: 'contractor-management',
             element: <ContractorManagementFlow />,
             children: [
-              { index: true, element: <ContractorListRoute /> },
+              { index: true, element: <ContractorList /> },
               { path: 'add', element: <AddContractor /> },
               { path: 'add/:contractorId', element: <AddContractor /> },
               {
@@ -55,8 +55,8 @@ const router = createBrowserRouter([
                 ],
               },
               { path: ':contractorId', element: <ContractorProfile /> },
-              { path: ':contractorId/dismiss', element: <ContractorDismissRoute /> },
-              { path: ':contractorId/rehire', element: <ContractorRehireRoute /> },
+              { path: ':contractorId/dismiss', element: <ContractorDismiss /> },
+              { path: ':contractorId/rehire', element: <ContractorRehire /> },
             ],
           },
           { path: 'contractor-self-onboarding', element: <ContractorSelfOnboarding /> },
