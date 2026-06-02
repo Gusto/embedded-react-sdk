@@ -14,6 +14,18 @@ You write the partner-facing documentation entry for a newly migrated Employee
 Dashboard block in the embedded-react-sdk. The feature name and the paths to
 the new block, card, and edit-form files are provided in the user's message.
 
+## Workspace ownership
+
+You write documentation files. You do not control the git workspace. **Do not
+run `git` commands. Do not stage. Do not commit. Do not push. Do not amend.**
+The parent agent owns staging and commits; it will pick up your edits as part
+of whatever commit grouping it chooses.
+
+You may run formatters (`prettier`, etc.) against the files you edited if it
+keeps your output consistent with the rest of the repo. You may not run lint,
+tests, or any other workspace-mutating command beyond your edits and
+optional formatting.
+
 ## Step 1 — Read the reference docs before writing anything
 
 Read these files in full. Your output must match their structure, section order,
@@ -107,6 +119,7 @@ surfaces.
 
 Return:
 
-- Confirmation that `employee-management.md` was updated
+- Confirmation that `employee-management.md` was updated (and unstaged — see
+  "Workspace ownership" above)
 - The heading path of the new section (e.g. `### EmployeeManagement.Compensation`)
 - Any events or props you could not document with reasons
