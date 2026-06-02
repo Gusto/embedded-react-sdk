@@ -1,5 +1,4 @@
 import { fn } from 'storybook/test'
-import type { Employee } from '@gusto/embedded-api-v-2025-11-15/models/components/employee'
 import type { EmployeeAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeaddress'
 import type { EmployeeWorkAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeworkaddress'
 import { BasicDetailsView } from './BasicDetailsView'
@@ -16,20 +15,11 @@ export default {
   ],
 }
 
-const onEditBasicDetails = fn().mockName('onEditBasicDetails')
+const onEvent = fn().mockName('onEvent')
 const onManageHomeAddress = fn().mockName('onManageHomeAddress')
 const onManageWorkAddress = fn().mockName('onManageWorkAddress')
 
-const employee: Employee = {
-  uuid: 'employee-123',
-  firstName: 'Isom',
-  lastName: 'Jaskolski',
-  paymentMethod: 'Direct Deposit',
-  email: 'isom.jaskolski@example.com',
-  dateOfBirth: '1986-06-25',
-  hasSsn: true,
-  jobs: [{ uuid: 'job-1', title: 'Software Engineer', hireDate: '2020-01-20' }],
-}
+const EMPLOYEE_ID = 'employee-123'
 
 const homeAddress: EmployeeAddress = {
   uuid: 'home-address-1',
@@ -51,14 +41,16 @@ const workAddress: EmployeeWorkAddress = {
   zip: '99737',
 }
 
-export const Loading = () => <BasicDetailsView isLoading />
+export const Loading = () => (
+  <BasicDetailsView employeeId={EMPLOYEE_ID} onEvent={onEvent} isLoading />
+)
 
 export const WithAllDetails = () => (
   <BasicDetailsView
-    employee={employee}
+    employeeId={EMPLOYEE_ID}
+    onEvent={onEvent}
     currentHomeAddress={homeAddress}
     currentWorkAddress={workAddress}
-    onEditBasicDetails={onEditBasicDetails}
     onManageHomeAddress={onManageHomeAddress}
     onManageWorkAddress={onManageWorkAddress}
   />
@@ -66,8 +58,8 @@ export const WithAllDetails = () => (
 
 export const WithoutAddresses = () => (
   <BasicDetailsView
-    employee={employee}
-    onEditBasicDetails={onEditBasicDetails}
+    employeeId={EMPLOYEE_ID}
+    onEvent={onEvent}
     onManageHomeAddress={onManageHomeAddress}
     onManageWorkAddress={onManageWorkAddress}
   />

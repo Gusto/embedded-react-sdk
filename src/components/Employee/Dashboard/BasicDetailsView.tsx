@@ -1,46 +1,46 @@
 import { useTranslation } from 'react-i18next'
-import type { Employee } from '@gusto/embedded-api-v-2025-11-15/models/components/employee'
 import type { EmployeeAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeaddress'
 import type { EmployeeWorkAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeworkaddress'
 import { useEmployeeBasicDetails } from './hooks'
+import { ProfileCard } from '@/components/Employee/Profile/management/ProfileCard'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { formatDateLongWithYear } from '@/helpers/dateFormatting'
-import { firstLastName, getStreet, getCityStateZip } from '@/helpers/formattedStrings'
+import { getStreet, getCityStateZip } from '@/helpers/formattedStrings'
 import { Loading } from '@/components/Common'
 import { BaseLayout } from '@/components/Base/Base'
+import type { OnEventType } from '@/components/Base/useBase'
+import type { EventType } from '@/shared/constants'
 
 export interface BasicDetailsViewProps {
-  employee?: Employee
+  employeeId: string
+  onEvent: OnEventType<EventType, unknown>
   currentHomeAddress?: EmployeeAddress
   currentWorkAddress?: EmployeeWorkAddress
-  /** Loads all three cards. Per-section flags below take precedence
+  /** Loads the address cards. Per-section flags below take precedence
    *  when each query resolves independently. */
   isLoading?: boolean
-  isEmployeeLoading?: boolean
   isHomeAddressLoading?: boolean
   isWorkAddressLoading?: boolean
-  onEditBasicDetails?: () => void
   onManageHomeAddress?: () => void
   onManageWorkAddress?: () => void
 }
 
 export interface BasicDetailsViewWithDataProps {
   employeeId: string
-  onEditBasicDetails?: () => void
+  onEvent: OnEventType<EventType, unknown>
   onManageHomeAddress?: () => void
   onManageWorkAddress?: () => void
 }
 
 /**
  * Tab-mounted container for the Basic details tab. Owns the
- * `useEmployeeBasicDetails` fetch (employee + home address + work address)
- * so the requests only fire when the tab is mounted. Each card paints
- * its own skeleton + content as the underlying query resolves.
+ * `useEmployeeBasicDetails` fetch for the home + work address cards.
+ * The basic-details card is now self-fetching via `<ProfileCard />`,
+ * so this container no longer threads employee data through.
  */
 export function BasicDetailsViewWithData({
   employeeId,
-  onEditBasicDetails,
+  onEvent,
   onManageHomeAddress,
   onManageWorkAddress,
 }: BasicDetailsViewWithDataProps) {
@@ -49,13 +49,12 @@ export function BasicDetailsViewWithData({
   return (
     <BaseLayout error={basicDetails.errorHandling.errors}>
       <BasicDetailsView
-        employee={basicDetails.data.employee}
+        employeeId={employeeId}
+        onEvent={onEvent}
         currentHomeAddress={basicDetails.data.currentHomeAddress}
         currentWorkAddress={basicDetails.data.currentWorkAddress}
-        isEmployeeLoading={basicDetails.status.isEmployeeLoading}
         isHomeAddressLoading={basicDetails.status.isHomeAddressLoading}
         isWorkAddressLoading={basicDetails.status.isWorkAddressLoading}
-        onEditBasicDetails={onEditBasicDetails}
         onManageHomeAddress={onManageHomeAddress}
         onManageWorkAddress={onManageWorkAddress}
       />
@@ -64,65 +63,22 @@ export function BasicDetailsViewWithData({
 }
 
 export function BasicDetailsView({
-  employee,
+  employeeId,
+  onEvent,
   currentHomeAddress,
   currentWorkAddress,
   isLoading = false,
-  isEmployeeLoading = isLoading,
   isHomeAddressLoading = isLoading,
   isWorkAddressLoading = isLoading,
-  onEditBasicDetails,
   onManageHomeAddress,
   onManageWorkAddress,
 }: BasicDetailsViewProps) {
   const { t } = useTranslation('Employee.Dashboard')
   const Components = useComponentContext()
 
-  const legalName = employee
-    ? firstLastName({ first_name: employee.firstName, last_name: employee.lastName })
-    : undefined
-  const startDate = employee ? formatDateLongWithYear(employee.jobs?.[0]?.hireDate) : undefined
-  const dateOfBirth = employee ? formatDateLongWithYear(employee.dateOfBirth) : undefined
-  const maskedSsn = employee?.hasSsn ? 'XXX-XX-XXXX' : undefined
-
-  const emptyPlaceholder = <span aria-label={t('listEmptyPlaceholder')}>–</span>
-  const basicDetailsItems = employee
-    ? [
-        { term: t('basicDetails.legalName'), description: legalName || emptyPlaceholder },
-        { term: t('basicDetails.startDate'), description: startDate || emptyPlaceholder },
-        {
-          term: t('basicDetails.socialSecurityNumber'),
-          description: maskedSsn || emptyPlaceholder,
-        },
-        { term: t('basicDetails.dateOfBirth'), description: dateOfBirth || emptyPlaceholder },
-        { term: t('basicDetails.personalEmail'), description: employee.email || emptyPlaceholder },
-      ]
-    : []
-
   return (
     <Flex flexDirection="column" gap={24}>
-      <Components.Box
-        header={
-          <Components.BoxHeader
-            title={t('basicDetails.title')}
-            action={
-              <Components.Button
-                variant="secondary"
-                onClick={onEditBasicDetails}
-                isDisabled={isEmployeeLoading}
-              >
-                {t('basicDetails.editCta')}
-              </Components.Button>
-            }
-          />
-        }
-      >
-        {isEmployeeLoading ? (
-          <Loading />
-        ) : employee ? (
-          <Components.DescriptionList items={basicDetailsItems} />
-        ) : null}
-      </Components.Box>
+      <ProfileCard employeeId={employeeId} onEvent={onEvent} />
 
       <Components.Box
         header={
