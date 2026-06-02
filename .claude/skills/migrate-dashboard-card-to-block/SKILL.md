@@ -32,7 +32,7 @@ The orchestrated block is one of **four** independently consumable surfaces a pa
 | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Data hook**            | Non-form hook that returns the card's data + actions in the `BaseHookReady` shape                                                | `use<Feature><Role>({ employeeId }) → HookLoadingResult \| BaseHookReady<…>` | [`useEmployeeList`](../../../src/components/Employee/EmployeeList/shared/useEmployeeList.tsx), [`usePaymentMethodList`](../../../src/components/Employee/PaymentMethod/shared/usePaymentMethodList.ts) |
 | **Standalone card**      | The card UI for one section, **doing its own data fetching internally** via the hook above                                       | `<Feature>Card({ employeeId, onEvent })`                                     | [`PaymentMethod/management/ListView.tsx`](../../../src/components/Employee/PaymentMethod/management/ListView.tsx)                                                                                      |
-| **Standalone edit/form** | The edit screen for that section, hook-driven per [`migrate-sdk-component-to-hooks`](../migrate-sdk-component-to-hooks/SKILL.md) | `<EditFeature>({ employeeId, onEvent, onCancel })`                           | [`Employee/HomeAddress/management/HomeAddress.tsx`](../../../src/components/Employee/HomeAddress/management/HomeAddress.tsx)                                                                           |
+| **Standalone edit/form** | The edit screen for that section, hook-driven per [`migrate-sdk-component-to-hooks`](../migrate-sdk-component-to-hooks/SKILL.md) | `<Feature>EditForm({ employeeId, onEvent, onCancel })`                       | [`Employee/Profile/management/ProfileEditForm.tsx`](../../../src/components/Employee/Profile/management/ProfileEditForm.tsx)                                                                           |
 | **Orchestrated block**   | The card + edit screen(s) composed via a local robot3 state machine; what `DashboardFlow` actually imports                       | `<Feature>({ employeeId, onEvent })`                                         | [`Employee/PaymentMethod/management/PaymentMethod.tsx`](../../../src/components/Employee/PaymentMethod/management/PaymentMethod.tsx)                                                                   |
 
 Concrete implications that run through the rest of this skill:
@@ -49,9 +49,26 @@ The orchestrated block is **not** what `DashboardFlow` imports after migration. 
 - **The block** (`<Profile employeeId={…} />`) is an in-place card↔edit surface — clicking Edit swaps the card view for the edit form inside the same box, and Cancel/Save returns to the card view in the same box. It is designed for partners who want a single self-contained surface on their own page.
 - **The dashboard** is navigation-style — clicking Edit on a card replaces the entire dashboard chrome with the edit screen, and Cancel/Save returns to the dashboard. That UX is the partner-visible behavior of `DashboardFlow` today and must be preserved.
 
-Because of that UX mismatch, **the dashboard imports the individual pieces** — `<FeatureCard />` for the card surface (rendered inline inside the relevant tab view) and `<EditFeature />` for the edit surface (rendered as the contextual adapter for the dashboard's edit state). The dashboard's existing `dashboardStateMachine` continues to handle the card↔edit routing, just with the new scoped event names (see "Dedicated event surface per block" below). The block is never instantiated inside `DashboardFlow`.
+Because of that UX mismatch, **the dashboard imports the individual pieces** — `<FeatureCard />` for the card surface (rendered inline inside the relevant tab view) and `<FeatureEditForm />` for the edit surface (rendered as the contextual adapter for the dashboard's edit state). The dashboard's existing `dashboardStateMachine` continues to handle the card↔edit routing, just with the new scoped event names (see "Dedicated event surface per block" below). The block is never instantiated inside `DashboardFlow`.
 
 This is the canonical mental model for every card migration: the pieces are the primary product; the block is one convenience composition, the dashboard is another convenience composition, and partners can write their own.
+
+## Phase 0 — Reconnaissance (before writing any code)
+
+Spawn the **`dashboard-card-scout`** agent to analyze the existing dashboard code
+and produce a structured migration brief. Wait for it to complete and review
+the brief before proceeding — it tells you exactly what needs to be built,
+what events need renaming, whether alert wiring is needed, and what already
+exists in `management/` that can be reused.
+
+Spawn the agent (foreground — wait for it):
+
+- **description**: `"Scout $FEATURE card for migration"`
+- **prompt**: `"Analyze the existing dashboard code for the $FEATURE card and produce a structured migration brief."`
+
+Review the brief carefully. If the brief surfaces a friction point (e.g. the
+edit screen isn't hook-migrated yet, or a precursor PR is needed to resolve an
+existing flow), address it before continuing.
 
 ## Read these first
 
@@ -630,7 +647,7 @@ Do **not** attach pieces as `Block.Card = …` / `Block.EditScreen = …` namesp
 The dashboard composes pieces (card + edit screen), not the block. The cleanup in `DashboardFlow` is small and mechanical. Touch only the card you migrated:
 
 1. **`dashboardStateMachine.ts`** — update the transition triggers from the legacy event names to the new scoped events (e.g. `EMPLOYEE_COMPENSATION_CREATE` → `EMPLOYEE_COMPENSATION_MANAGEMENT_EDIT_REQUESTED`). The `index` and sub-state structure stays — the dashboard still needs to nav between the card surface and the edit surface. Update the `returnToIndexWithAlert(...)` triggers similarly for any `EMPLOYEE_<FEATURE>_<ACTION>_DONE`-style events the edit screen now fires under scoped names. Move the card's `successAlert` codes out of `DashboardContextInterface.successAlert` if and only if the dashboard no longer needs to render that alert at the tabs level (most cards: drop the alert from the dashboard and let the card render it itself once the card is the partner-visible surface; some cards may keep a dashboard-level alert at the page level — call this out per-card).
-2. **`DashboardComponents.tsx`** — update the contextual adapter for the card's edit state(s) to render the renamed `<EditFeature />` piece (the renamed standalone edit screen) instead of the previous import. The contextual adapter remains a thin pull-from-flow-context shell. Do **not** delete it — the dashboard still routes here when its state machine enters the edit sub-state.
+2. **`DashboardComponents.tsx`** — update the contextual adapter for the card's edit state(s) to render the renamed `<FeatureEditForm />` piece (the renamed standalone edit screen) instead of the previous import. The contextual adapter remains a thin pull-from-flow-context shell. Do **not** delete it — the dashboard still routes here when its state machine enters the edit sub-state.
 3. **Tab view (`BasicDetailsView.tsx` / `JobAndPayView.tsx` / `TaxesView.tsx` / `DocumentsView.tsx`)** — delete the inline card markup for this card and replace it with the standalone card piece: `<FeatureCard employeeId={employeeId} onEvent={onEvent} />`. The tab view stops being responsible for the card's data fetch (the card owns it) and stops needing per-card edit callbacks (the card fires events directly).
 4. **`Dashboard.tsx`** — drop the `handle<X>` callbacks that fed the inline card. The card now fires its scoped events through the `onEvent` flowing in from `useFlow`.
 
@@ -680,103 +697,16 @@ The deprecated unified `Employee.*` namespace was removed from the dev app's sid
 
 ## Document the new block in `employee-management.md`
 
-Every card migration adds an entry for its **block** (`EmployeeManagement.<Feature>`) to [`docs/workflows-overview/employee-management/employee-management.md`](../../../docs/workflows-overview/employee-management/employee-management.md). That file is the partner-facing umbrella doc for the namespace — same role [`employee-onboarding.md`](../../../docs/workflows-overview/employee-onboarding/employee-onboarding.md) plays for `EmployeeOnboarding.*`.
+Once the migration is complete and tests are passing, spawn the **`dashboard-block-documenter`** agent in the background to write the partner-facing doc entry. You do not need to wait for it.
 
-### What to document — the block first, the pieces nested under it
+Spawn the agent (background):
 
-The doc convention mirrors `employee-onboarding.md`: each subcomponent entry documents **one drop-in component** — the orchestrated block — not the four-surface architecture underneath it. `Employee.Profile`, `Employee.Compensation`, `Employee.PaymentMethod` in the onboarding doc are the same kind of thing: a single component partners can drop in that handles the whole card-and-form experience for that feature. The block is the recommended consumption path and stays the **headline** entry for the feature — its own `###` section in the umbrella doc.
+- **description**: `"Document $FEATURE block in employee-management.md"`
+- **prompt**: `"Write the employee-management.md documentation entry for the newly migrated $FEATURE block. The block is at src/components/Employee/$FEATURE/management/$FEATURE.tsx, the card is at src/components/Employee/$FEATURE/management/${FEATURE}Card/${FEATURE}Card.tsx, and the edit form is at src/components/Employee/$FEATURE/management/[path to edit form]."`
 
-The standalone card and edit screen are also documented — they're real partner-consumable exports (see "Standalone composability per piece" above), and partners who want to render the card on a custom dashboard, swap the edit form into a modal, or otherwise own the orchestration need to know they exist and what they emit. They get a **`####` subsection nested inside the block's `###` section**, not a peer `###` section. Putting them at peer level in the TOC ("Profile, ProfileCard, ProfileEditForm") implies they're alternatives partners pick between; nesting them under Profile structurally matches the conceptual hierarchy ("here's the block, and here are the pieces it's built from") and keeps the top-level TOC scannable as more blocks land. The data hook stays out of `employee-management.md` — it's a power-user surface with its own audience (custom UI builders) and would bloat the umbrella doc.
-
-For each card migration:
-
-- **Required:** a `### EmployeeManagement.<Feature>` section documenting the block (description, JSX sample, `####` Props table, `####` Events table). This is the canonical partner-facing surface for the feature.
-- **Required:** a `#### Composing from EmployeeManagement.<Feature>Card and EmployeeManagement.Edit<Feature> directly` subsection placed inside the block's section, after the block's Props and Events tables. One short composition example showing the swap pattern with local state, then **one `##### EmployeeManagement.<Feature>Card` sub-subsection and one `##### EmployeeManagement.Edit<Feature>` sub-subsection**, each containing its own Props and Events tables under bolded labels. Open the subsection by naming the block as the recommended default and the use cases that justify reaching for the pieces directly (modal/drawer edit surface, read-only card with no edit affordance, router-driven swap). Keep it minimal — the subsection exists to make the pieces discoverable and pin their event surface, not to enumerate every composition pattern. Do **not** collapse the per-piece tables into one combined table with an "Applies to" / "Emitted by" column — the card and the form are distinct components with asymmetric APIs (the edit form is typically a superset of the card's props, and each piece emits a disjoint set of events), and forcing them into one table makes a partner looking at just one piece mentally filter every row on every read. The combined-table-with-discriminator-column pattern used by `EmployeeOnboarding.FederalTaxes / EmployeeManagement.FederalTaxes` in [`employee-onboarding.md`](../../../docs/workflows-overview/employee-onboarding/employee-onboarding.md) works there because those two are functionally identical variants of the same form; the card and the form aren't variants, they're a card and a form.
-- **Required:** update to the `EmployeeManagement.DashboardFlow` event table when the migration renames any events the dashboard forwards (e.g. swapping `EMPLOYEE_UPDATE` → `EMPLOYEE_PROFILE_MANAGEMENT_EDIT_REQUESTED` after the Profile extraction). The dashboard forwards the card's events to the partner, so the dashboard doc must reflect the post-migration event surface.
-- **Optional:** a hook entry. The data hook (`use<Feature><Role>`) is a partner export but it has a different audience (partners building custom UI from scratch) and a different doc shape (`BaseHookReady` contract, not props/events). Default is to skip in `employee-management.md`; cover hooks in [`docs/hooks/hooks.md`](../../../docs/hooks/hooks.md) instead when they need a partner-facing entry.
-
-### Mechanics
-
-Match the shape of every other entry in `employee-management.md` (and of [`employee-onboarding.md`](../../../docs/workflows-overview/employee-onboarding/employee-onboarding.md)):
-
-1. Add the block to the **Available Subcomponents** list at the top as a top-level item, then add the pieces subsection as an **indented sub-item** under it. The resulting TOC looks like:
-   ```markdown
-   - [EmployeeManagement.<Feature>](#employeemanagement<feature>)
-     - [Composing from <Feature>Card and Edit<Feature> directly](#composing-from-employeemanagement<feature>card-and-employeemanagementedit<feature>-directly)
-   ```
-   This keeps the headline TOC entries one per block while still surfacing the pieces' anchor for partners scanning for finer-grained composition.
-2. Add a `### EmployeeManagement.<Feature>` section with:
-   - A 1–3 sentence description of what the block does end-to-end — read the card, click Edit, submit the form, return to the card with a success alert. Write it as one user-facing flow, not as a decomposition of pieces.
-   - A short JSX implementation sample importing from `@gusto/embedded-react-sdk` (never `@/...` aliases — docs use only the published surface, per the `docs/` rule in [`CLAUDE.md`](../../../CLAUDE.md)).
-   - A `#### Props` table — typically `employeeId`, `onEvent`, `dictionary`, `FallbackComponent`.
-   - A `#### Events` table covering the full partner-visible event surface: the card's edit-requested event, the edit form's updated/cancel events, and any alert-dismissal event the block forwards (scoped per the rule above — e.g. `EMPLOYEE_PROFILE_MANAGEMENT_ALERT_DISMISSED`, not generic `EMPLOYEE_DISMISS`).
-3. Inside the same `### EmployeeManagement.<Feature>` section, after the block's Events table, add a `#### Composing from EmployeeManagement.<Feature>Card and EmployeeManagement.Edit<Feature> directly` subsection with:
-   - An opening paragraph naming the block as the recommended default and the use cases where reaching for the pieces is appropriate (modal/drawer edit surface, read-only card, router-driven swap). Don't speculate about the integrator's app — describe the SDK contract.
-   - One short JSX composition sample showing the card-↔-form swap with local state. The example must show explicit event-type branching — see "Composition example shape" below for the required form and the failure mode to avoid.
-   - A brief sentence above the example noting that each piece's `onEvent` receives `(eventType, data)` and pointing to the per-piece events tables below for what each emits.
-   - A `##### EmployeeManagement.<Feature>Card` sub-subsection with bolded **Props** and **Events** labels and their tables. Card props are typically just `employeeId` + `onEvent`; card events are typically just the edit-requested event.
-   - A `##### EmployeeManagement.Edit<Feature>` sub-subsection with bolded **Props** and **Events** labels and their tables. Edit-form props typically extend the card's with `className`, `dictionary`, and `FallbackComponent` from `CommonComponentInterface` + `BaseComponentInterface`; edit-form events are typically the updated event (with the updated entity as data) and the cancel event.
-   - Do **not** collapse the two pieces into one combined table with an "Applies to" or "Emitted by" column. The card and the form are asymmetric — different prop shapes, disjoint event surfaces — and the combined-table pattern (which works for `EmployeeOnboarding.FederalTaxes / EmployeeManagement.FederalTaxes` in [`employee-onboarding.md`](../../../docs/workflows-overview/employee-onboarding/employee-onboarding.md)) is appropriate only for functionally identical variants of the same component, not for a card-and-form pair.
-4. Source every event list from the **block's** state machine (`<feature>StateMachine.ts`) and the events its standalone pieces fire in source — `<Feature>Card.tsx`, `Edit<Feature>.tsx`, the block's `<Feature>Components.tsx` (for alert dismiss). Do not paste from the pre-refactor dashboard event names.
-5. If the migration also touches [`employee-dashboard.md`](../../../docs/workflows-overview/employee-dashboard.md) (the deeper reference on dashboard internals), update it for consistency in the same PR.
-
-### Composition example shape
-
-The JSX composition example inside the pieces subsection must show **explicit event-type branching** using `componentEvents` imported from the published surface. Use this template, substituting the feature-specific event names:
-
-```jsx
-import { useState } from 'react'
-import { componentEvents, EmployeeManagement } from '@gusto/embedded-react-sdk'
-
-function MyPanel({ employeeId }) {
-  const [isEditing, setIsEditing] = useState(false)
-
-  if (isEditing) {
-    return (
-      <EmployeeManagement.Edit<Feature>
-        employeeId={employeeId}
-        onEvent={eventType => {
-          if (
-            eventType === componentEvents.EMPLOYEE_<FEATURE>_MANAGEMENT_UPDATED ||
-            eventType === componentEvents.EMPLOYEE_<FEATURE>_MANAGEMENT_EDIT_CANCELLED
-          ) {
-            setIsEditing(false)
-          }
-        }}
-      />
-    )
-  }
-
-  return (
-    <EmployeeManagement.<Feature>Card
-      employeeId={employeeId}
-      onEvent={eventType => {
-        if (eventType === componentEvents.EMPLOYEE_<FEATURE>_MANAGEMENT_EDIT_REQUESTED) {
-          setIsEditing(true)
-        }
-      }}
-    />
-  )
-}
-```
-
-**The failure mode to avoid:** an engineer following this skill will write the minimal swap, notice that both edit-form events drive the same transition in the example (`setIsEditing(false)`), and collapse the handler to a no-arg form like `onEvent={() => setIsEditing(false)}`. That looks cleaner but is wrong for this section because:
-
-- **Pieces examples ≠ block examples.** Block-level examples elsewhere in the umbrella doc use `onEvent={() => {}}` because there the partner is a passive observer of an internally-orchestrated component — they're shown the event surface in the events table and can branch in their own handler if they want, but the block itself drives behavior. Pieces examples are the opposite: the partner _is_ the orchestration, and the example is the canonical demonstration of how to do that orchestration. Skipping the branching hides the entire point of the section.
-- **Forward incompatibility.** If the edit form grows a third event later (e.g. `EMPLOYEE_<FEATURE>_MANAGEMENT_SAVE_ERROR`), a no-arg handler silently routes it to the same transition as save/cancel. Explicit branching is robust to event-surface growth.
-- **`componentEvents` is the partner-idiomatic identifier.** Don't paste raw string literals like `'employee/profile/management/updated'` either — they bypass the typed export, break on rename, and read as magic strings.
-
-Also branch in the card's handler even though it currently emits a single event (as in the template above) — keeps the pattern consistent across both pieces, demonstrates the same shape the edit form uses, and stays forward-compatible if the card grows a second event later.
-
-### Voice and content rules ([`CLAUDE.md`](../../../CLAUDE.md) `docs/` section)
-
-- The reader **is** the partner. Don't refer to "partners" in third person; write neutrally or in second person.
-- Don't speculate about the integrator's app or workflow ("captured on a previous step", "in your onboarding wizard"). Describe what the API does and how to use it.
-- Code samples must compile against the published SDK surface only. No `@/` import aliases, no internal helpers.
+The agent will produce the `### EmployeeManagement.<Feature>` section (block + pieces subsection) and update the Available Subcomponents list at the top of the file. You will be notified when it finishes — review the output and commit it alongside the migration or as a fast-follow.
 
 ### Why this matters
-
-The dev app surfacing makes the pieces discoverable to internal developers. The doc entries make the block and its pieces discoverable to partners and pin their supported contracts: prop shape, event names, payload types. The block is the surface most partners will integrate, so it leads — but the standalone card and edit screen are part of the public surface the moment they're exported under `EmployeeManagement.*`, and an undocumented public export is effectively unusable. Documenting the pieces alongside the block (one combined subsection, block-first framing) keeps the headline focused on the recommended consumption path while pinning the lower-level contract for partners who need finer-grained composition.
 
 ## Reconciling parallel work on `main`
 
@@ -911,7 +841,7 @@ Each arrow is independently shippable. The dashboard works at every boundary.
 - [ ] `dashboardStateMachine.ts` transitions and `DashboardComponents.tsx` contextual adapters for this card retargeted to the scoped event names; the card's inline markup in its tab view replaced with `<FeatureCard employeeId={…} onEvent={onEvent} />`. `Dashboard.tsx` no longer holds the card's `handle<X>` callbacks. Pre-release: `DashboardFlow.tsx` itself stays untouched — no compatibility shim layer (see "No compatibility shim during pre-release").
 - [ ] SDK dev app updated: `npx tsx sdk-app/scripts/analyze-component-props.ts` re-run so the regenerated [`sdk-app/src/generated-registry-data.ts`](../../../sdk-app/src/generated-registry-data.ts) gains `EmployeeManagement.<Feature>` + `EmployeeManagement.<Feature>Card` (and any other newly-exported pieces) with the correct entity-id requirements. Verified locally that the new entries appear under the "Employee Management" sidebar section and render against demo data.
 - [ ] [`docs/workflows-overview/employee-management/employee-management.md`](../../../docs/workflows-overview/employee-management/employee-management.md) updated with a `### EmployeeManagement.<Feature>` section for the new **block** — description, JSX sample, `#### Props` table, and `#### Events` table covering the full partner-visible event surface (edit-requested, updated, cancel, dismiss — all scoped per the rule above). If any of the card's events renamed, the `EmployeeManagement.DashboardFlow` event table in the same file reflects the post-refactor surface. [`employee-dashboard.md`](../../../docs/workflows-overview/employee-dashboard.md) updated for consistency where it touches the same card.
-- [ ] Same block section also contains a `#### Composing from EmployeeManagement.<Feature>Card and EmployeeManagement.Edit<Feature> directly` subsection (placed inside the block's `###`, after its Events table) with the opening framing (block recommended, pieces for advanced composition), one short JSX swap-with-local-state sample, then a `##### EmployeeManagement.<Feature>Card` sub-subsection and a `##### EmployeeManagement.Edit<Feature>` sub-subsection, each with their own bolded **Props** and **Events** labels and tables. **Per-piece, not combined** — the card and the form are asymmetric components, not variants of the same thing. Subcomponent anchor list at the top of the doc lists the block as a top-level item with the pieces subsection as an indented sub-item under it. See "Document the new block in employee-management.md" for the full spec.
+- [ ] Same block section also contains a `#### Composing from EmployeeManagement.<Feature>Card and EmployeeManagement.<Feature>EditForm directly` subsection (placed inside the block's `###`, after its Events table) with the opening framing (block recommended, pieces for advanced composition), one short JSX swap-with-local-state sample, then a `##### EmployeeManagement.<Feature>Card` sub-subsection and a `##### EmployeeManagement.<Feature>EditForm` sub-subsection, each with their own bolded **Props** and **Events** labels and tables. **Per-piece, not combined** — the card and the form are asymmetric components, not variants of the same thing. Subcomponent anchor list at the top of the doc lists the block as a top-level item with the pieces subsection as an indented sub-item under it. See "Document the new block in employee-management.md" for the full spec.
 - [ ] The composition example inside that subsection shows **explicit event-type branching** on both pieces' `onEvent` handlers, comparing `eventType` against `componentEvents.EMPLOYEE_<FEATURE>_MANAGEMENT_*` imported from `@gusto/embedded-react-sdk`. **Not** a no-arg handler like `onEvent={() => setIsEditing(false)}` — even when both edit-form events happen to drive the same transition in the minimal example. See "Composition example shape" for the required template and the reasoning.
 - [ ] Per-card data hook landed at `Employee/<Feature>/shared/use<Feature><Role>/` in its own subfolder (`use<Feature><Role>.tsx` + `use<Feature><Role>.test.tsx` + `index.ts`). The feature's `shared/index.ts` barrel re-exports through that folder. Hook returns the `HookLoadingResult | BaseHookReady<…>` discriminated union, uses `composeErrorHandler` + `useBaseSubmit`, and matches the shape of [`usePaymentMethodList`](../../../src/components/Employee/PaymentMethod/shared/usePaymentMethodList.ts) / [`useEmployeeList`](../../../src/components/Employee/EmployeeList/shared/useEmployeeList.tsx). Renamed to drop the `Employee` prefix per the data-hooks table. If the source hook bundled multiple cards, the split happens here. If `Dashboard/hooks/index.ts` is now empty, delete `Dashboard/hooks/`.
 - [ ] Hook test inside the subfolder covers loading branch, ready branch (`BaseHookReady` shape), each action's mutation + `HookSubmitResult`, and `composeErrorHandler` aggregation. Model on [`useEmployeeList.test.tsx`](../../../src/components/Employee/EmployeeList/shared/useEmployeeList.test.tsx).
