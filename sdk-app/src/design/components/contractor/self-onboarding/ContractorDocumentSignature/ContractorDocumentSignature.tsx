@@ -6,22 +6,22 @@ import { CheckboxField } from '@/components/Common/Fields/CheckboxField'
 import { DocumentViewer } from '@/components/Common/DocumentViewer'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
-export interface ContractorSignaturePadValues {
+export interface ContractorDocumentSignatureValues {
   signature: string
   agree: boolean
 }
 
-interface ContractorSignaturePadProps {
+interface ContractorDocumentSignatureProps {
   title: string
   description?: string | null
   pdfUrl: string | null
   isPending?: boolean
-  onSubmit: (data: ContractorSignaturePadValues) => void | Promise<void>
+  onSubmit: (data: ContractorDocumentSignatureValues) => void | Promise<void>
   onBack: () => void
   className?: string
 }
 
-export function ContractorSignaturePad({
+export function ContractorDocumentSignature({
   title,
   description,
   pdfUrl,
@@ -29,10 +29,10 @@ export function ContractorSignaturePad({
   onSubmit,
   onBack,
   className,
-}: ContractorSignaturePadProps) {
+}: ContractorDocumentSignatureProps) {
   const Components = useComponentContext()
 
-  const formMethods = useForm<ContractorSignaturePadValues>({
+  const formMethods = useForm<ContractorDocumentSignatureValues>({
     defaultValues: {
       signature: '',
       agree: false,

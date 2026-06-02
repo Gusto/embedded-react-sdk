@@ -3,7 +3,7 @@ import type { Document } from '@gusto/embedded-api-v-2025-11-15/models/component
 import type { PrototypeComponent } from '../prototypeTypes'
 import { ContractorWelcome } from '../../components/contractor/self-onboarding/ContractorWelcome/ContractorWelcome'
 import { ContractorDocumentList } from '../../components/contractor/self-onboarding/ContractorDocumentList/ContractorDocumentList'
-import { ContractorSignaturePad } from '../../components/contractor/self-onboarding/ContractorSignaturePad/ContractorSignaturePad'
+import { ContractorDocumentSignature } from '../../components/contractor/self-onboarding/ContractorDocumentSignature/ContractorDocumentSignature'
 import { ContractorOnboardingComplete } from '../../components/contractor/self-onboarding/ContractorOnboardingComplete/ContractorOnboardingComplete'
 import { ProfileDetailsForm } from '../../components/contractor/shared/ProfileDetailsForm/ProfileDetailsForm'
 import { AddressForm } from '../../components/contractor/shared/AddressForm/AddressForm'
@@ -73,20 +73,24 @@ function renderDocumentList(documents: Document[]) {
   return DocumentListDemo
 }
 
-// -- SignaturePad -----------------------------------------------------
+// -- DocumentSignature ------------------------------------------------
 
-function renderSignaturePad(props: {
+function renderDocumentSignature(props: {
   title: string
   description?: string
   pdfUrl: string | null
   isPending?: boolean
 }) {
-  function SignaturePadDemo() {
+  function DocumentSignatureDemo() {
     return (
-      <ContractorSignaturePad {...props} onSubmit={async () => Promise.resolve()} onBack={noop} />
+      <ContractorDocumentSignature
+        {...props}
+        onSubmit={async () => Promise.resolve()}
+        onBack={noop}
+      />
     )
   }
-  return SignaturePadDemo
+  return DocumentSignatureDemo
 }
 
 // -- OnboardingComplete -----------------------------------------------
@@ -375,27 +379,28 @@ export const components: PrototypeComponent[] = [
     ],
   },
   {
-    slug: 'signature-pad',
-    name: 'Signature Pad',
+    slug: 'document-signature',
+    name: 'Document Signature',
     configurations: [
       {
         slug: 'default',
         name: 'Default',
-        description: 'A typical document signing screen with title, description, and PDF link.',
-        render: renderSignaturePad({
-          title: 'Non-disclosure agreement',
-          description: 'Please review and sign this NDA to proceed.',
-          pdfUrl: null,
+        description:
+          'A typical document signing screen — title, description, View document link to the W-9 PDF, signature input, and agree checkbox.',
+        render: renderDocumentSignature({
+          title: 'Form W-9',
+          description: 'Please review and sign your W-9 to proceed.',
+          pdfUrl: 'https://www.irs.gov/pub/irs-pdf/fw9.pdf',
         }),
       },
       {
         slug: 'pending',
         name: 'Submitting',
         description: 'Sign-document mutation is in flight — button shows the loading state.',
-        render: renderSignaturePad({
-          title: 'Non-disclosure agreement',
-          description: 'Please review and sign this NDA to proceed.',
-          pdfUrl: null,
+        render: renderDocumentSignature({
+          title: 'Form W-9',
+          description: 'Please review and sign your W-9 to proceed.',
+          pdfUrl: 'https://www.irs.gov/pub/irs-pdf/fw9.pdf',
           isPending: true,
         }),
       },

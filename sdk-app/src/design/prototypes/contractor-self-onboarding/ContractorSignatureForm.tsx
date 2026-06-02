@@ -2,9 +2,9 @@ import { useContractorDocumentsGetSuspense } from '@gusto/embedded-api-v-2025-11
 import { useContractorDocumentsGetPdfSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorDocumentsGetPdf'
 import { useContractorDocumentsSignMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorDocumentsSign'
 import {
-  ContractorSignaturePad,
-  type ContractorSignaturePadValues,
-} from '../../components/contractor/self-onboarding/ContractorSignaturePad/ContractorSignaturePad'
+  ContractorDocumentSignature,
+  type ContractorDocumentSignatureValues,
+} from '../../components/contractor/self-onboarding/ContractorDocumentSignature/ContractorDocumentSignature'
 import { contractorSelfOnboardingEvents } from './events'
 import { useBase } from '@/components/Base'
 
@@ -35,7 +35,7 @@ export function ContractorSignatureForm({
 
   const pdfUrl = documentPdf?.documentUrl ?? null
 
-  const onSubmit = async (data: ContractorSignaturePadValues) => {
+  const onSubmit = async (data: ContractorDocumentSignatureValues) => {
     const fields = (document?.fields ?? []).map(field => ({
       key: field.key ?? '',
       value: field.key?.includes('signature') ? data.signature : (field.value ?? ''),
@@ -56,7 +56,7 @@ export function ContractorSignatureForm({
   }
 
   return (
-    <ContractorSignaturePad
+    <ContractorDocumentSignature
       title={document?.title ?? 'Sign document'}
       description={document?.description}
       pdfUrl={pdfUrl}
