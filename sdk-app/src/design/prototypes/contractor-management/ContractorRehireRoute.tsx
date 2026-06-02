@@ -2,9 +2,9 @@ import { Suspense, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useQueryClient } from '@tanstack/react-query'
 import { useContractorsGetSuspense } from '@gusto/embedded-api/react-query/contractorsGet'
-import { contractorName } from '../../../../components/common/contractorName'
-import { ContractorRehireForm } from '../../../../components/contractor/management/ContractorRehireForm/ContractorRehireForm'
-import { Skeleton } from '../../../../components/common/Skeleton'
+import { contractorName } from '../../components/common/contractorName'
+import { ContractorRehireForm } from '../../components/contractor/management/ContractorRehireForm/ContractorRehireForm'
+import { Skeleton } from '../../components/common/Skeleton'
 import { Flex } from '@/components/Common'
 import { BaseComponent } from '@/components/Base'
 
@@ -39,8 +39,8 @@ function ContractorRehireContent() {
       })
 
       if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}))
-        throw new Error(errorData.message || `Failed to rehire contractor (${res.status})`)
+        const errorData = (await res.json().catch(() => ({}))) as { message?: string }
+        throw new Error(errorData.message ?? `Failed to rehire contractor (${res.status})`)
       }
 
       const name = contractorName(contractor)
@@ -65,7 +65,7 @@ function ContractorRehireContent() {
   )
 }
 
-export function ContractorRehire() {
+export function ContractorRehireRoute() {
   return (
     <BaseComponent onEvent={() => {}}>
       <Suspense fallback={<RehireSkeleton />}>

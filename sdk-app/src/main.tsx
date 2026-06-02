@@ -11,7 +11,7 @@ import { ContractorManagementFlow } from './design/prototypes/contractor-managem
 import { ContractorListRoute } from './design/prototypes/contractor-management/ContractorListRoute'
 import { ContractorProfile } from './design/prototypes/contractor-management/contractor-profile/ContractorProfile'
 import { ContractorDismissRoute } from './design/prototypes/contractor-management/ContractorDismissRoute'
-import { ContractorRehire } from './design/prototypes/contractor-management/contractor-list/ContractorRehire'
+import { ContractorRehireRoute } from './design/prototypes/contractor-management/ContractorRehireRoute'
 import { AddContractor } from './design/prototypes/contractor-management/contractor-list/AddContractor'
 import { ContractorSelfOnboarding } from './design/prototypes/contractor-management/self-onboarding'
 import { ContractorManagementStates } from './design/prototypes/contractor-management'
@@ -56,7 +56,7 @@ const router = createBrowserRouter([
               },
               { path: ':contractorId', element: <ContractorProfile /> },
               { path: ':contractorId/dismiss', element: <ContractorDismissRoute /> },
-              { path: ':contractorId/rehire', element: <ContractorRehire /> },
+              { path: ':contractorId/rehire', element: <ContractorRehireRoute /> },
             ],
           },
           { path: 'contractor-self-onboarding', element: <ContractorSelfOnboarding /> },
