@@ -3,7 +3,7 @@ import { useWatch } from 'react-hook-form'
 import type {
   Garnishment,
   GarnishmentType,
-} from '@gusto/embedded-api/models/components/garnishment'
+} from '@gusto/embedded-api-v-2025-11-15/models/components/garnishment'
 import type { Control } from 'react-hook-form'
 import { useDeductionForm } from '../shared/useDeductionForm'
 import type { DeductionFormData } from '../shared/useDeductionForm'
@@ -89,10 +89,17 @@ function ReadyForm({
   // useWatch subscribes to changes; getValues only reads once. We need the
   // subscription because `Fields.Amount`'s `format` and `description` props
   // need to re-render when the user toggles Percentage / Fixed amount.
-  const watchedDeductAsPercentage = useWatch({
+  // The RadioGroup's options carry string values (`'true'`/`'false'`), which
+  // round-trip into form state as strings — only `coerceStringBoolean` in the
+  // zod preprocessor turns them into actual booleans at validation time. So
+  // here we explicitly compare against both shapes; `Boolean('false')` would
+  // be truthy and surface the wrong copy under the Amount field.
+  const watchedDeductAsPercentageRaw = useWatch({
     control: form.form.hookFormInternals.formMethods.control as Control<DeductionFormData>,
     name: 'deductAsPercentage',
-  })
+  }) as boolean | 'true' | 'false' | undefined
+  const watchedDeductAsPercentage =
+    watchedDeductAsPercentageRaw === true || watchedDeductAsPercentageRaw === 'true'
 
   const handleSubmit = async () => {
     const result = await form.actions.onSubmit()

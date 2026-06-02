@@ -66,7 +66,7 @@ const mockEmployees = [
   },
 ]
 
-vi.mock('@gusto/embedded-api/react-query/employeesList', () => ({
+vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/employeesList', () => ({
   useEmployeesListSuspense: (request: { searchTerm?: string }) => {
     const filtered = request.searchTerm
       ? mockEmployees.filter(e =>
@@ -83,21 +83,21 @@ vi.mock('@gusto/embedded-api/react-query/employeesList', () => ({
   },
 }))
 
-vi.mock('@gusto/embedded-api/react-query/timeOffPoliciesAddEmployees', () => ({
+vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/timeOffPoliciesAddEmployees', () => ({
   useTimeOffPoliciesAddEmployeesMutation: () => ({
     mutateAsync: mockAddEmployees,
     isPending: false,
   }),
 }))
 
-vi.mock('@gusto/embedded-api/react-query/timeOffPoliciesUpdate', () => ({
+vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/timeOffPoliciesUpdate', () => ({
   useTimeOffPoliciesUpdateMutation: () => ({
     mutateAsync: vi.fn().mockResolvedValue({ timeOffPolicy: { uuid: 'policy-456' } }),
     isPending: false,
   }),
 }))
 
-vi.mock('@gusto/embedded-api/react-query/timeOffPoliciesGet', () => ({
+vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/timeOffPoliciesGet', () => ({
   useTimeOffPoliciesGetSuspense: () => ({
     data: {
       timeOffPolicy: {

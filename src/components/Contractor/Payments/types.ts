@@ -1,6 +1,6 @@
-import type { ContractorPaymentGroup } from '@gusto/embedded-api/models/components/contractorpaymentgroup'
-import type { ContractorPaymentForGroup } from '@gusto/embedded-api/models/components/contractorpaymentforgroup'
-import type { ContractorPaymentGroupTotals } from '@gusto/embedded-api/models/components/contractorpaymentgroup'
+import type { ContractorPaymentGroup } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentgroup'
+import type { ContractorPaymentForGroup } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentforgroup'
+import type { ContractorPaymentGroupTotals } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentgroup'
 import type { ReactNode } from 'react'
 
 export type { ContractorPaymentGroup, ContractorPaymentForGroup, ContractorPaymentGroupTotals }

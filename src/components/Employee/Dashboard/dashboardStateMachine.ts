@@ -1,6 +1,6 @@
 import { transition, reduce, state } from 'robot3'
-import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
-import type { Job } from '@gusto/embedded-api/models/components/job'
+import type { Garnishment } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishment'
+import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
 import type { DashboardTab } from './Dashboard'
 import {
   DashboardViewContextual,
@@ -52,7 +52,7 @@ const returnToIndexWithAlert = (alert: DashboardContextInterface['successAlert']
 export const dashboardStateMachine = {
   index: state<MachineTransition>(
     transition(
-      componentEvents.EMPLOYEE_UPDATE,
+      componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_EDIT_REQUESTED,
       'profile',
       reduce(
         (ctx: DashboardContextInterface): DashboardContextInterface => ({
@@ -260,7 +260,14 @@ export const dashboardStateMachine = {
     transition(componentEvents.EMPLOYEE_FEDERAL_TAXES_DONE, 'index', returnToIndex),
   ),
   stateTaxes: state<MachineTransition>(transition(componentEvents.CANCEL, 'index', returnToIndex)),
-  profile: state<MachineTransition>(transition(componentEvents.CANCEL, 'index', returnToIndex)),
+  profile: state<MachineTransition>(
+    transition(componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_EDIT_CANCELLED, 'index', returnToIndex),
+    transition(
+      componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_UPDATED,
+      'index',
+      returnToIndexWithAlert('profileUpdated'),
+    ),
+  ),
   paymentBankForm: state<MachineTransition>(
     transition(
       componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATED,

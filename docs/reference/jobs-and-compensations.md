@@ -8,7 +8,7 @@ A consolidated reference for the Embedded API's `Job` and `Compensation` resourc
 
 All items in this doc are tied to verified behavior in:
 
-- **`@gusto/embedded-api`** generated types (`JobsCreateRequestBody`, `JobsUpdateRequestBody`, `CompensationsRequestBody`, `CompensationsUpdateRequestBody`, `Job`, `Compensation`)
+- **`@gusto/embedded-api-v-2025-11-15`** generated types (`JobsCreateRequestBody`, `JobsUpdateRequestBody`, `CompensationsRequestBody`, `CompensationsUpdateRequestBody`, `Job`, `Compensation`)
 - **gws-flows** Rails controllers, Stimulus controllers, and ERB form views
 - **zenpayroll** model code, validators, and partner facades (`JobFacade`, `CompensationFacade`)
 
@@ -46,7 +46,7 @@ Key consequences:
 
 ## 2. Endpoint reference
 
-All hooks live under `@gusto/embedded-api/react-query/`. Mapping:
+All hooks live under `@gusto/embedded-api-v-2025-11-15/react-query/`. Mapping:
 
 | HTTP / Path                                    | Purpose                                                        | React Query hook                                                                                   |
 | ---------------------------------------------- | -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |

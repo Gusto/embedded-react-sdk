@@ -1,8 +1,11 @@
 import { expect, describe, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { type PayrollShow, OffCycleReasonType } from '@gusto/embedded-api/models/components/payroll'
-import type { PayrollSubmissionBlockerType } from '@gusto/embedded-api/models/components/payrollsubmissionblockertype'
+import {
+  type PayrollShow,
+  OffCycleReasonType,
+} from '@gusto/embedded-api-v-2025-11-15/models/components/payroll'
+import type { PayrollSubmissionBlockerType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollsubmissionblockertype'
 import { PayrollOverviewPresentation } from './PayrollOverviewPresentation'
 import { PayrollOverviewStatus } from './PayrollOverviewTypes'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
@@ -17,7 +20,6 @@ const mockPayrollData: PayrollShow = {
   payrollUuid: 'payroll-uuid',
   companyUuid: 'company-uuid',
   offCycle: false,
-  autoPilot: false,
   external: false,
   payPeriod: {
     startDate: '2025-08-01',

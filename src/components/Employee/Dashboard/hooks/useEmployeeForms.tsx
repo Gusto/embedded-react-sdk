@@ -1,5 +1,5 @@
-import { useEmployeeFormsList } from '@gusto/embedded-api/react-query/employeeFormsList'
-import type { Form } from '@gusto/embedded-api/models/components/form'
+import { useEmployeeFormsList } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeFormsList'
+import type { Form } from '@gusto/embedded-api-v-2025-11-15/models/components/form'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type { BaseHookReady } from '@/partner-hook-utils/types'
 

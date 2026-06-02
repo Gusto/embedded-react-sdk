@@ -1,6 +1,6 @@
 import { z } from 'zod'
-import { PaymentPeriod } from '@gusto/embedded-api/models/components/garnishmentchildsupport'
-import type { Agencies } from '@gusto/embedded-api/models/components/childsupportdata'
+import { PaymentPeriod } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishmentchildsupport'
+import type { Agencies } from '@gusto/embedded-api-v-2025-11-15/models/components/childsupportdata'
 import {
   buildFormSchema,
   type RequiredFieldConfig,

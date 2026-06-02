@@ -1,4 +1,4 @@
-import type { EntityErrorObject } from '@gusto/embedded-api/models/components/entityerrorobject'
+import type { EntityErrorObject } from '@gusto/embedded-api-v-2025-11-15/models/components/entityerrorobject'
 import { snakeCaseToCamelCase } from './formattedStrings'
 
 /**Traverses errorList and finds items with message properties */

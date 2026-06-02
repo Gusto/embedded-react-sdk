@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import type { Form } from '@gusto/embedded-api/models/components/form'
+import type { Form } from '@gusto/embedded-api-v-2025-11-15/models/components/form'
 import { DocumentsView } from './DocumentsView'
 import { assertLength } from '@/test-utils/assertions'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'

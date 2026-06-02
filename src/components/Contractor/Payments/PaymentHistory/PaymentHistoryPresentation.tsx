@@ -1,6 +1,6 @@
 import { Trans, useTranslation } from 'react-i18next'
-import type { ContractorPaymentGroup } from '@gusto/embedded-api/models/components/contractorpaymentgroup'
-import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
+import type { ContractorPaymentGroup } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentgroup'
+import type { Contractor } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor'
 import { getContractorDisplayName } from '../CreatePayment/helpers'
 import styles from './PaymentHistoryPresentation.module.scss'
 import { DataView, Flex, EmptyData } from '@/components/Common'

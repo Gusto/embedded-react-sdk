@@ -31,6 +31,16 @@ function isUnder(pathname: string, target: string): boolean {
   return pathname === target || pathname.startsWith(`${target}/`)
 }
 
+const PREVIEW_CATEGORY_LABELS: Record<string, string> = {
+  InformationRequests: 'Info Requests',
+  EmployeeManagement: 'Employee Management',
+  EmployeeOnboarding: 'Employee Onboarding',
+}
+
+function formatPreviewCategory(category: string): string {
+  return PREVIEW_CATEGORY_LABELS[category] ?? category
+}
+
 function CategorySection({
   category,
   items,
@@ -56,8 +66,7 @@ function CategorySection({
 
   if (searchQuery && filteredItems.length === 0) return null
 
-  const displayCategory =
-    mode === 'preview' && category === 'InformationRequests' ? 'Info Requests' : category
+  const displayCategory = mode === 'preview' ? formatPreviewCategory(category) : category
 
   return (
     <div className={styles.category}>

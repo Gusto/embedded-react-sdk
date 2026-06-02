@@ -14,11 +14,13 @@
       "excluded": false,
       "payment_method": "Direct Deposit",
       "memo": null,
-      "fixed_compensations": [
+      "fixed_compensations": [],
+      "reimbursements": [
         {
-          "name": "reimbursement",
+          "uuid": "reimb-uuid-1",
+          "description": "Travel expenses",
           "amount": "100.00",
-          "job_uuid": "61cf645d-85dc-47e7-b5f9-c74041f19425"
+          "recurring": false
         }
       ],
       "hourly_compensations": [

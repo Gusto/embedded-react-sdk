@@ -6,10 +6,10 @@ import { useIsMutating } from '@tanstack/react-query'
 import {
   useWireInRequestsSubmitMutation,
   mutationKeyWireInRequestsSubmit,
-} from '@gusto/embedded-api/react-query/wireInRequestsSubmit'
-import { useWireInRequestsGetSuspense } from '@gusto/embedded-api/react-query/wireInRequestsGet'
-import type { PutWireInRequestsWireInRequestUuidRequest } from '@gusto/embedded-api/models/operations/putwireinrequestswireinrequestuuid'
-import { usePayrollsListSuspense } from '@gusto/embedded-api/react-query/payrollsList'
+} from '@gusto/embedded-api-v-2025-11-15/react-query/wireInRequestsSubmit'
+import { useWireInRequestsGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/wireInRequestsGet'
+import type { PutWireInRequestsWireInRequestUuidRequest } from '@gusto/embedded-api-v-2025-11-15/models/operations/putwireinrequestswireinrequestuuid'
+import { usePayrollsListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsList'
 import styles from './ConfirmWireDetailsForm.module.scss'
 import { Form as HtmlForm } from '@/components/Common/Form'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'

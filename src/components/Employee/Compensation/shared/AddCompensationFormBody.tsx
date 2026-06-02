@@ -1,7 +1,7 @@
 import { Trans, useTranslation } from 'react-i18next'
-import type { PaymentUnit } from '@gusto/embedded-api/models/components/compensation'
-import type { FlsaStatusType } from '@gusto/embedded-api/models/components/flsastatustype'
-import type { MinimumWage } from '@gusto/embedded-api/models/components/minimumwage'
+import type { PaymentUnit } from '@gusto/embedded-api-v-2025-11-15/models/components/compensation'
+import type { FlsaStatusType } from '@gusto/embedded-api-v-2025-11-15/models/components/flsastatustype'
+import type { MinimumWage } from '@gusto/embedded-api-v-2025-11-15/models/components/minimumwage'
 import type { UseJobFormReady } from './useJobForm'
 import type { UseCompensationFormReady } from './useCompensationForm'
 import { ActionsLayout, Flex } from '@/components/Common'
@@ -87,25 +87,69 @@ export function AddCompensationFormBody({
         />
       )}
 
-      <CompFields.Rate
-        label={t('amount')}
-        validationMessages={{
-          REQUIRED: t('validations.rate'),
-          RATE_MINIMUM: t('validations.nonZeroRate'),
-          RATE_EXEMPT_THRESHOLD: t('validations.rateExemptThreshold', {
-            limit: format(FLSA_OVERTIME_SALARY_LIMIT),
-          }),
-        }}
-        formHookResult={compensationForm}
-      />
+      {compensationForm.status.showCommissionFederalMinimumPayAlert && (
+        <Components.Alert
+          status="warning"
+          label={t('commissionAlerts.federalMinimumPay.label')}
+          disableScrollIntoView
+        >
+          {t('commissionAlerts.federalMinimumPay.body')}
+        </Components.Alert>
+      )}
 
-      <CompFields.PaymentUnit
-        label={t('paymentUnitLabel')}
-        description={t('paymentUnitDescription')}
-        validationMessages={{ REQUIRED: t('validations.paymentUnit') }}
-        getOptionLabel={(unit: PaymentUnit) => t(`paymentUnitOptions.${unit}`)}
-        formHookResult={compensationForm}
-      />
+      {compensationForm.status.showCommissionMinimumWageAlert && (
+        <Components.Alert
+          status="warning"
+          label={t('commissionAlerts.minimumWage.label')}
+          disableScrollIntoView
+        >
+          <Trans
+            t={t}
+            i18nKey="commissionAlerts.minimumWage.body"
+            components={{
+              minimumWageLink: (
+                <Components.Link
+                  href="https://support.gusto.com/article/112472520100000/manage-tip-wages-distributed-service-charges-and-tip-credits-in-gusto-for-admins"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                />
+              ),
+            }}
+          />
+        </Components.Alert>
+      )}
+
+      {compensationForm.status.showOwnerSalaryAlert && (
+        <Components.Alert
+          status="info"
+          label={t('commissionAlerts.ownerSalary.label')}
+          disableScrollIntoView
+        />
+      )}
+
+      {CompFields.Rate && (
+        <CompFields.Rate
+          label={t('wageLabel')}
+          validationMessages={{
+            REQUIRED: t('validations.rate'),
+            RATE_MINIMUM: t('validations.nonZeroRate'),
+            RATE_EXEMPT_THRESHOLD: t('validations.rateExemptThreshold', {
+              limit: format(FLSA_OVERTIME_SALARY_LIMIT),
+            }),
+          }}
+          formHookResult={compensationForm}
+        />
+      )}
+
+      {CompFields.PaymentUnit && (
+        <CompFields.PaymentUnit
+          label={t('wageFrequencyLabel')}
+          description={t('paymentUnitDescription')}
+          validationMessages={{ REQUIRED: t('validations.paymentUnit') }}
+          getOptionLabel={(unit: PaymentUnit) => t(`paymentUnitOptions.${unit}`)}
+          formHookResult={compensationForm}
+        />
+      )}
 
       {CompFields.AdjustForMinimumWage && (
         <CompFields.AdjustForMinimumWage

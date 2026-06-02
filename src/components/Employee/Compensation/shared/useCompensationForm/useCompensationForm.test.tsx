@@ -2,7 +2,7 @@ import { renderHook, act, waitFor } from '@testing-library/react'
 import { describe, it, expect, beforeEach, assertType, vi } from 'vitest'
 import { http, HttpResponse, type HttpResponseResolver } from 'msw'
 import { QueryClient } from '@tanstack/react-query'
-import { invalidateAllJobsAndCompensationsGetJobs } from '@gusto/embedded-api/react-query/jobsAndCompensationsGetJobs'
+import { invalidateAllJobsAndCompensationsGetJobs } from '@gusto/embedded-api-v-2025-11-15/react-query/jobsAndCompensationsGetJobs'
 import { useCompensationForm } from './useCompensationForm'
 import type { UseCompensationFormResult } from './useCompensationForm'
 import {
@@ -796,6 +796,82 @@ describe('useCompensationForm', () => {
       await waitFor(() => {
         expect(formMethods.getValues('paymentUnit')).toBe(PAY_PERIODS.YEAR)
         expect(formMethods.getValues('rate')).toBe(0)
+      })
+    })
+
+    it('exposes commission-only alert flags and hides Rate/PaymentUnit fields by FLSA status', async () => {
+      server.use(
+        handleGetEmployeeJobs(() =>
+          HttpResponse.json(buildEmployeeWithJobs({ scenario: 'singleExempt' })),
+        ),
+      )
+      const { result } = renderHook(
+        () =>
+          useCompensationForm({
+            employeeId: 'employee-uuid',
+            jobId: 'job-uuid',
+            compensationId: 'compensation-uuid',
+          }),
+        { wrapper: GustoTestProvider },
+      )
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+      const { formMethods } = result.current.form.hookFormInternals
+
+      expect(result.current.status).toMatchObject({
+        showCommissionFederalMinimumPayAlert: false,
+        showCommissionMinimumWageAlert: false,
+        showOwnerSalaryAlert: false,
+      })
+      expect(typeof result.current.form.Fields.Rate).toBe('function')
+      expect(typeof result.current.form.Fields.PaymentUnit).toBe('function')
+
+      act(() => {
+        formMethods.setValue('flsaStatus', FlsaStatus.COMMISSION_ONLY_EXEMPT)
+      })
+      await waitFor(() => {
+        assertReady(result.current)
+        expect(result.current.status.showCommissionFederalMinimumPayAlert).toBe(true)
+        expect(result.current.status.showCommissionMinimumWageAlert).toBe(false)
+        expect(result.current.form.Fields.Rate).toBeUndefined()
+        expect(result.current.form.Fields.PaymentUnit).toBeUndefined()
+        expect(result.current.form.fieldsMetadata.rate?.isDisabled).toBe(true)
+        expect(result.current.form.fieldsMetadata.paymentUnit?.isDisabled).toBe(true)
+      })
+
+      act(() => {
+        formMethods.setValue('flsaStatus', FlsaStatus.COMMISSION_ONLY_NONEXEMPT)
+      })
+      await waitFor(() => {
+        assertReady(result.current)
+        expect(result.current.status.showCommissionFederalMinimumPayAlert).toBe(false)
+        expect(result.current.status.showCommissionMinimumWageAlert).toBe(true)
+        expect(result.current.form.Fields.Rate).toBeUndefined()
+        expect(result.current.form.Fields.PaymentUnit).toBeUndefined()
+      })
+
+      act(() => {
+        formMethods.setValue('flsaStatus', FlsaStatus.OWNER)
+      })
+      await waitFor(() => {
+        assertReady(result.current)
+        expect(result.current.status.showOwnerSalaryAlert).toBe(true)
+        expect(result.current.status.showCommissionFederalMinimumPayAlert).toBe(false)
+        expect(result.current.status.showCommissionMinimumWageAlert).toBe(false)
+      })
+
+      act(() => {
+        formMethods.setValue('flsaStatus', FlsaStatus.EXEMPT)
+      })
+      await waitFor(() => {
+        assertReady(result.current)
+        expect(result.current.status.showCommissionFederalMinimumPayAlert).toBe(false)
+        expect(result.current.status.showCommissionMinimumWageAlert).toBe(false)
+        expect(result.current.status.showOwnerSalaryAlert).toBe(false)
+        expect(typeof result.current.form.Fields.Rate).toBe('function')
+        expect(typeof result.current.form.Fields.PaymentUnit).toBe('function')
       })
     })
 

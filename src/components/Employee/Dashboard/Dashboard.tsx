@@ -1,9 +1,9 @@
 import { Suspense, useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useEmployeesGetSuspense } from '@gusto/embedded-api/react-query/employeesGet'
-import type { Job } from '@gusto/embedded-api/models/components/job'
-import type { Garnishment } from '@gusto/embedded-api/models/components/garnishment'
-import type { GetV1EmployeesEmployeeIdFederalTaxesResponse } from '@gusto/embedded-api/models/operations/getv1employeesemployeeidfederaltaxes'
+import { useEmployeesGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesGet'
+import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
+import type { Garnishment } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishment'
+import type { GetV1EmployeesEmployeeIdFederalTaxesResponse } from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1employeesemployeeidfederaltaxes'
 import { BasicDetailsViewWithData } from './BasicDetailsView'
 import { JobAndPayView } from './JobAndPayView'
 import { TaxesViewWithData } from './TaxesView'
@@ -38,10 +38,6 @@ function DashboardRoot({
   const Components = useComponentContext()
   const [internalTab, setInternalTab] = useState<DashboardTab>('basicDetails')
   const selectedTab = controlledTab ?? internalTab
-
-  const handleEditBasicDetails = useCallback(() => {
-    onEvent(componentEvents.EMPLOYEE_UPDATE, { employeeId })
-  }, [onEvent, employeeId])
 
   const handleManageHomeAddress = useCallback(() => {
     onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS, { employeeId })
@@ -141,7 +137,7 @@ function DashboardRoot({
             <Suspense fallback={<BaseLayout isLoading />}>
               <BasicDetailsViewWithData
                 employeeId={employeeId}
-                onEditBasicDetails={handleEditBasicDetails}
+                onEvent={onEvent}
                 onManageHomeAddress={handleManageHomeAddress}
                 onManageWorkAddress={handleManageWorkAddress}
               />

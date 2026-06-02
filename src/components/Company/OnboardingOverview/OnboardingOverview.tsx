@@ -1,4 +1,4 @@
-import { useCompaniesGetOnboardingStatusSuspense } from '@gusto/embedded-api/react-query/companiesGetOnboardingStatus'
+import { useCompaniesGetOnboardingStatusSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/companiesGetOnboardingStatus'
 import { OnboardingOverviewProvider } from './context'
 import { MissingRequirements } from './MissingRequirements'
 import { Completed } from './Completed'

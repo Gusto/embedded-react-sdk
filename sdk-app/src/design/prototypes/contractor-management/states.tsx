@@ -1,4 +1,4 @@
-import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
+import type { Contractor } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor'
 import type { PrototypeComponent } from '../prototypeTypes'
 import { ContractorDetailsDemo } from '../../components/contractor/management/ContractorDetails/ContractorDetailsStates'
 import { ContractorDismissalFormDemo } from '../../components/contractor/management/ContractorDismissalForm/ContractorDismissalFormStates'

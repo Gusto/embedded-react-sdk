@@ -1,7 +1,7 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useWatch } from 'react-hook-form'
-import type { EmployeeAddress } from '@gusto/embedded-api/models/components/employeeaddress'
+import type { EmployeeAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeaddress'
 import type { TFunction } from 'i18next'
 import {
   formatPendingHomeAddressLine,
@@ -136,6 +136,7 @@ export function HomeAddressView({
       State: EditState,
       Zip: EditZip,
       CourtesyWithholding: EditCourtesyWithholding,
+      EffectiveDate: EditEffectiveDate,
     },
   } = editForm
 
@@ -449,6 +450,14 @@ export function HomeAddressView({
                 }}
                 gap={20}
               >
+                {EditEffectiveDate ? (
+                  <EditEffectiveDate
+                    label={t('columns.startDate')}
+                    description={t('startDateHelper')}
+                    validationMessages={startDateValidation}
+                    portalContainer={addressModalPortal}
+                  />
+                ) : null}
                 <EditStreet1
                   label={tHa('street1')}
                   validationMessages={{

@@ -1,5 +1,5 @@
-import { OnboardingStatus } from '@gusto/embedded-api/models/operations/putv1employeesemployeeidonboardingstatus'
-import { ContractorOnboardingStatus1 } from '@gusto/embedded-api/models/components/contractor'
+import { OnboardingStatus } from '@gusto/embedded-api-v-2025-11-15/models/operations/putv1employeesemployeeidonboardingstatus'
+import { ContractorOnboardingStatus1 } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor'
 
 export const employeeEvents = {
   EMPLOYEE_CREATE: 'employee/create',
@@ -73,6 +73,10 @@ export const employeeEvents = {
   EMPLOYEE_REHIRE: 'employee/rehire',
   EMPLOYEE_DASHBOARD_TAB_CHANGE: 'employee/dashboard/tabChange',
   EMPLOYEE_RETURN_TO_LIST: 'employee/returnToList',
+  EMPLOYEE_PROFILE_MANAGEMENT_EDIT_REQUESTED: 'employee/profile/management/editRequested',
+  EMPLOYEE_PROFILE_MANAGEMENT_UPDATED: 'employee/profile/management/updated',
+  EMPLOYEE_PROFILE_MANAGEMENT_EDIT_CANCELLED: 'employee/profile/management/editCancelled',
+  EMPLOYEE_PROFILE_MANAGEMENT_ALERT_DISMISSED: 'employee/profile/management/alertDismissed',
 } as const
 
 export const companyEvents = {

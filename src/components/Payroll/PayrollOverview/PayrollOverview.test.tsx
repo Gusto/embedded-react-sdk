@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
-import type { PayrollShow } from '@gusto/embedded-api/models/components/payroll'
-import { OffCycleReasonType } from '@gusto/embedded-api/models/components/payroll'
+import type { PayrollShow } from '@gusto/embedded-api-v-2025-11-15/models/components/payroll'
+import { OffCycleReasonType } from '@gusto/embedded-api-v-2025-11-15/models/components/payroll'
 import { PayrollOverview } from './PayrollOverview'
 import { componentEvents } from '@/shared/constants'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
@@ -19,7 +19,6 @@ const basePayrollData: PayrollShow = {
   companyUuid: 'company-uuid',
   offCycle: true,
   offCycleReason: OffCycleReasonType.DismissedEmployee,
-  autoPilot: false,
   external: false,
   payPeriod: {
     startDate: '2025-08-01',
@@ -63,39 +62,39 @@ const basePayrollData: PayrollShow = {
 
 let mockPayrollData = { ...basePayrollData }
 
-vi.mock('@gusto/embedded-api/react-query/payrollsGet', () => ({
+vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/payrollsGet', () => ({
   usePayrollsGetSuspense: () => ({
     data: { payrollShow: mockPayrollData },
   }),
 }))
 
-vi.mock('@gusto/embedded-api/react-query/payrollsSubmit', () => ({
+vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/payrollsSubmit', () => ({
   usePayrollsSubmitMutation: () => ({
     mutateAsync: mockSubmitPayroll,
     isPending: false,
   }),
 }))
 
-vi.mock('@gusto/embedded-api/react-query/payrollsCancel', () => ({
+vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/payrollsCancel', () => ({
   usePayrollsCancelMutation: () => ({
     mutateAsync: vi.fn(),
     isPending: false,
   }),
 }))
 
-vi.mock('@gusto/embedded-api/react-query/bankAccountsGet', () => ({
+vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/bankAccountsGet', () => ({
   useBankAccountsGetSuspense: () => ({
     data: { companyBankAccounts: [{ hiddenAccountNumber: '****1234' }] },
   }),
 }))
 
-vi.mock('@gusto/embedded-api/react-query/employeesList', () => ({
+vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/employeesList', () => ({
   useEmployeesListSuspense: () => ({
     data: { showEmployees: [] },
   }),
 }))
 
-vi.mock('@gusto/embedded-api/react-query/wireInRequestsGet', () => ({
+vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/wireInRequestsGet', () => ({
   useWireInRequestsGet: () => ({ data: undefined }),
 }))
 
@@ -106,7 +105,7 @@ vi.mock('@/hooks/useCompanyPaymentSpeed', () => ({
   }),
 }))
 
-vi.mock('@gusto/embedded-api/react-query/_context', async importOriginal => {
+vi.mock('@gusto/embedded-api-v-2025-11-15/react-query/_context', async importOriginal => {
   const actual = await importOriginal()
   return {
     ...(actual as Record<string, unknown>),
@@ -114,7 +113,7 @@ vi.mock('@gusto/embedded-api/react-query/_context', async importOriginal => {
   }
 })
 
-vi.mock('@gusto/embedded-api/funcs/payrollsGetPayStub', () => ({
+vi.mock('@gusto/embedded-api-v-2025-11-15/funcs/payrollsGetPayStub', () => ({
   payrollsGetPayStub: vi.fn(),
 }))
 

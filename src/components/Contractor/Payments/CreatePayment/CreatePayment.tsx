@@ -1,19 +1,19 @@
-import { useContractorsListSuspense } from '@gusto/embedded-api/react-query/contractorsList'
-import { useContractorPaymentGroupsCreateMutation } from '@gusto/embedded-api/react-query/contractorPaymentGroupsCreate'
+import { useContractorsListSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsList'
+import { useContractorPaymentGroupsCreateMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorPaymentGroupsCreate'
 import type {
   ContractorPayments,
   PostV1CompaniesCompanyIdContractorPaymentGroupsRequestBody,
   SubmissionBlockers,
-} from '@gusto/embedded-api/models/operations/postv1companiescompanyidcontractorpaymentgroups'
-import { useContractorPaymentGroupsPreviewMutation } from '@gusto/embedded-api/react-query/contractorPaymentGroupsPreview'
+} from '@gusto/embedded-api-v-2025-11-15/models/operations/postv1companiescompanyidcontractorpaymentgroups'
+import { useContractorPaymentGroupsPreviewMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorPaymentGroupsPreview'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import DOMPurify from 'dompurify'
-import { RFCDate } from '@gusto/embedded-api/types/rfcdate'
+import { RFCDate } from '@gusto/embedded-api-v-2025-11-15/types/rfcdate'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslation } from 'react-i18next'
-import type { ContractorPaymentGroupPreview } from '@gusto/embedded-api/models/components/contractorpaymentgrouppreview'
-import { useBankAccountsGet } from '@gusto/embedded-api/react-query/bankAccountsGet'
+import type { ContractorPaymentGroupPreview } from '@gusto/embedded-api-v-2025-11-15/models/components/contractorpaymentgrouppreview'
+import { useBankAccountsGet } from '@gusto/embedded-api-v-2025-11-15/react-query/bankAccountsGet'
 import type { InternalAlert } from '../types'
 import { CreatePaymentPresentation } from './CreatePaymentPresentation'
 import { EditContractorPaymentPresentation } from './EditContractorPaymentPresentation'

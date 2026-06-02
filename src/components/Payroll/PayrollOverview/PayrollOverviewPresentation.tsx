@@ -2,20 +2,21 @@ import { Trans, useTranslation } from 'react-i18next'
 import type {
   EmployeeCompensations,
   PayrollShow,
-} from '@gusto/embedded-api/models/components/payroll'
-import type { PayrollPayPeriodType } from '@gusto/embedded-api/models/components/payrollpayperiodtype'
-import type { CompanyBankAccount } from '@gusto/embedded-api/models/components/companybankaccount'
+} from '@gusto/embedded-api-v-2025-11-15/models/components/payroll'
+import type { PayrollPayPeriodType } from '@gusto/embedded-api-v-2025-11-15/models/components/payrollpayperiodtype'
+import type { CompanyBankAccount } from '@gusto/embedded-api-v-2025-11-15/models/components/companybankaccount'
 import { useState, useRef } from 'react'
-import type { Employee } from '@gusto/embedded-api/models/components/employee'
+import type { Employee } from '@gusto/embedded-api-v-2025-11-15/models/components/employee'
 import type {
   PayrollSubmissionBlockerType,
   UnblockOptions,
-} from '@gusto/embedded-api/models/components/payrollsubmissionblockertype'
-import type { PaymentSpeed } from '@gusto/embedded-api/models/components/paymentconfigs'
+} from '@gusto/embedded-api-v-2025-11-15/models/components/payrollsubmissionblockertype'
+import type { PaymentSpeed } from '@gusto/embedded-api-v-2025-11-15/models/components/paymentconfigs'
 import type { PayrollFlowAlert } from '../PayrollFlow/PayrollFlowComponents'
 import {
   calculateTotalPayroll,
   getPayrollTypeLabel,
+  getReimbursements,
   hasDirectDepositEmployees,
   isDismissalPayroll,
 } from '../helpers'
@@ -160,16 +161,6 @@ export const PayrollOverviewPresentation = ({
       ) ?? 0
     )
   }
-  const getReimbursements = (employeeCompensation: EmployeeCompensations) => {
-    return employeeCompensation.fixedCompensations?.length
-      ? Number(
-          employeeCompensation.fixedCompensations.find(
-            c => c.name?.toLowerCase() === compensationTypeLabels.REIMBURSEMENT_NAME.toLowerCase(),
-          )?.amount || 0,
-        )
-      : 0
-  }
-
   const getCompanyCost = (employeeCompensation: EmployeeCompensations) => {
     return (
       employeeCompensation.grossPay! +
