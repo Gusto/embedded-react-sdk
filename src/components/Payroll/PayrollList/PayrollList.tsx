@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import {
   usePayrollsListSuspense,
@@ -16,6 +16,7 @@ import {
 } from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1companiescompanyidpayrolls'
 import type { Payroll } from '@gusto/embedded-api-v-2025-11-15/models/components/payroll'
 import type { ApiPayrollBlocker } from '../PayrollBlocker/payrollHelpers'
+import { useUnprocessedTransitionPayPeriods } from '../useUnprocessedTransitionPayPeriods'
 import { PayrollListPresentation } from './PayrollListPresentation'
 import type { BaseComponentInterface } from '@/components/Base'
 import { BaseComponent, useBase } from '@/components/Base'
@@ -27,6 +28,22 @@ interface PayrollListBlockProps extends BaseComponentInterface {
   companyId: string
 }
 
+/**
+ * Lists upcoming payrolls and lets users start running them.
+ *
+ * Disables the Run Payroll action on Regular rows when the company has any
+ * unprocessed transition pay periods within the next 90 days — running a
+ * regular payroll before resolving a transition causes the transition to be
+ * dropped on the backend, so this gate matches the behavior shipped in
+ * Gusto-hosted flows. Off-cycle rows and the Run off-cycle CTA are
+ * intentionally left enabled, since off-cycle is the path used to actually
+ * run a transition payroll.
+ *
+ * When composed via `Payroll.PayrollLanding`, the alert that explains the
+ * block (and lets the user resolve it via Run / Skip) is rendered
+ * automatically. When using `PayrollList` directly, render an equivalent
+ * resolution surface alongside it.
+ */
 export function PayrollList(props: PayrollListBlockProps) {
   return (
     <BaseComponent {...props}>
@@ -98,6 +115,14 @@ const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
   })
 
   const wireInRequests = wireInRequestsData.wireInRequestList ?? []
+
+  const { hasUnprocessedTransitions } = useUnprocessedTransitionPayPeriods(companyId)
+
+  useEffect(() => {
+    if (hasUnprocessedTransitions) {
+      onEvent(componentEvents.RUN_PAYROLL_BLOCKED_BY_TRANSITION)
+    }
+  }, [hasUnprocessedTransitions, onEvent])
 
   const { mutateAsync: skipPayroll } = usePayrollsSkipMutation()
   const { mutateAsync: deletePayrollMutation } = usePayrollsDeleteMutation()
@@ -182,6 +207,7 @@ const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
       blockers={blockers}
       wireInRequests={wireInRequests}
       dateRangeFilter={dateRangeFilter}
+      hasUnprocessedTransitions={hasUnprocessedTransitions}
     />
   )
 }

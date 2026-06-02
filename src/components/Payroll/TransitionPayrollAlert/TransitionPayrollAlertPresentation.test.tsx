@@ -87,6 +87,11 @@ describe('TransitionPayrollAlertPresentation', () => {
 
       expect(await screen.findByText(/Transition payroll - Dec 1/)).toBeInTheDocument()
       expect(screen.getByText(/you changed your pay schedule/i)).toBeInTheDocument()
+      expect(
+        screen.getByText(
+          /Regular payroll functionality is blocked until you either run or skip transition payrolls/i,
+        ),
+      ).toBeInTheDocument()
     })
 
     it('shows run action directly without schedule name for single group', async () => {

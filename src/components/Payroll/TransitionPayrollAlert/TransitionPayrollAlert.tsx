@@ -1,11 +1,9 @@
 import { useMemo, useState, useCallback, useEffect } from 'react'
-import { usePaySchedulesGetPayPeriods } from '@gusto/embedded-api-v-2025-11-15/react-query/paySchedulesGetPayPeriods'
 import { usePaySchedulesGetAll } from '@gusto/embedded-api-v-2025-11-15/react-query/paySchedulesGetAll'
 import { usePayrollsSkipMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/payrollsSkip'
 import { PayrollType } from '@gusto/embedded-api-v-2025-11-15/models/operations/postcompaniespayrollskipcompanyuuid'
-import { PayrollTypes } from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1companiescompanyidpayperiods'
 import type { PayPeriod } from '@gusto/embedded-api-v-2025-11-15/models/components/payperiod'
-import { RFCDate } from '@gusto/embedded-api-v-2025-11-15/types/rfcdate'
+import { useUnprocessedTransitionPayPeriods } from '../useUnprocessedTransitionPayPeriods'
 import {
   TransitionPayrollAlertPresentation,
   type TransitionPayPeriodGroup,
@@ -28,23 +26,13 @@ interface RootProps {
   groupedPayPeriods: TransitionPayPeriodGroup[]
 }
 
-const LOOK_AHEAD_DAYS = 90
 const COMPONENT_NAME = 'Payroll.TransitionPayrollAlert'
 
 export function TransitionPayrollAlert({ companyId, onEvent }: TransitionPayrollAlertProps) {
   const { observability } = useObservability()
 
-  const lookAheadEndDate = useMemo(() => {
-    const date = new Date()
-    date.setDate(date.getDate() + LOOK_AHEAD_DAYS)
-    return new RFCDate(date)
-  }, [])
-
-  const { data: payPeriodsData, error: payPeriodsError } = usePaySchedulesGetPayPeriods({
-    companyId,
-    payrollTypes: PayrollTypes.Transition,
-    endDate: lookAheadEndDate,
-  })
+  const { unprocessedPayPeriods, error: payPeriodsError } =
+    useUnprocessedTransitionPayPeriods(companyId)
 
   const { data: paySchedulesData, error: paySchedulesError } = usePaySchedulesGetAll({ companyId })
 
@@ -62,14 +50,11 @@ export function TransitionPayrollAlert({ companyId, onEvent }: TransitionPayroll
   }, [gateError, onEvent, observability])
 
   const groupedPayPeriods = useMemo<TransitionPayPeriodGroup[]>(() => {
-    if (!payPeriodsData || !paySchedulesData) return []
+    if (!paySchedulesData) return []
     const paySchedules = paySchedulesData.payScheduleShowResponse ?? []
-    const unprocessed = (payPeriodsData.payPeriods ?? []).filter(
-      (pp: PayPeriod) => !pp.payroll?.processed,
-    )
 
     const groups = new Map<string, PayPeriod[]>()
-    for (const period of unprocessed) {
+    for (const period of unprocessedPayPeriods) {
       const uuid = period.payScheduleUuid ?? 'unknown'
       const existing = groups.get(uuid) ?? []
       existing.push(period)
@@ -81,9 +66,9 @@ export function TransitionPayrollAlert({ companyId, onEvent }: TransitionPayroll
       const payScheduleName = schedule?.customName || schedule?.name || 'Transition'
       return { payScheduleUuid, payScheduleName, payPeriods }
     })
-  }, [payPeriodsData, paySchedulesData])
+  }, [unprocessedPayPeriods, paySchedulesData])
 
-  if (!payPeriodsData || !paySchedulesData || groupedPayPeriods.length === 0) {
+  if (!paySchedulesData || groupedPayPeriods.length === 0) {
     return null
   }
 

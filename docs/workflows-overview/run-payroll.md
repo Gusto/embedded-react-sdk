@@ -105,6 +105,8 @@ function MyComponent() {
 
 Displays a list of available payrolls that can be run, including pay period dates and status information. Users can run payrolls, submit calculated payrolls, skip payrolls, and view any payroll blockers.
 
+> **Note:** When the company has unprocessed transition pay periods within the next 90 days, the Run Payroll action on Regular rows is disabled to prevent regular payrolls from being run before the transition is resolved. Off-cycle rows and the Run off-cycle action remain enabled. `Payroll.PayrollLanding` pairs this list with the alert that lets users run or skip the pending transition; when using `Payroll.PayrollList` directly, render an equivalent resolution surface alongside it.
+
 ```jsx
 import { Payroll } from '@gusto/embedded-react-sdk'
 
@@ -123,12 +125,13 @@ function MyComponent() {
 
 #### Events
 
-| Event type                    | Description                                  | Data                  |
-| ----------------------------- | -------------------------------------------- | --------------------- |
-| RUN_PAYROLL_SELECTED          | Fired when user selects a payroll to run     | { payrollId: string } |
-| REVIEW_PAYROLL                | Fired when user selects to review a payroll  | { payrollId: string } |
-| PAYROLL_SKIPPED               | Fired when a payroll is successfully skipped | { payrollId: string } |
-| RUN_PAYROLL_BLOCKERS_VIEW_ALL | Fired when user views all payroll blockers   | None                  |
+| Event type                        | Description                                                                               | Data                  |
+| --------------------------------- | ----------------------------------------------------------------------------------------- | --------------------- |
+| RUN_PAYROLL_SELECTED              | Fired when user selects a payroll to run                                                  | { payrollId: string } |
+| REVIEW_PAYROLL                    | Fired when user selects to review a payroll                                               | { payrollId: string } |
+| PAYROLL_SKIPPED                   | Fired when a payroll is successfully skipped                                              | { payrollId: string } |
+| RUN_PAYROLL_BLOCKERS_VIEW_ALL     | Fired when user views all payroll blockers                                                | None                  |
+| RUN_PAYROLL_BLOCKED_BY_TRANSITION | Fired when the list disables Run Payroll on regular rows due to an unprocessed transition | None                  |
 
 ### Payroll.PayrollHistory
 
