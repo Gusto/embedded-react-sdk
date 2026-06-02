@@ -1,6 +1,24 @@
 # Hit the Gusto API via the SDK Dev App proxy
 
-This command lets you test API behavior end-to-end against the demo company you already have running in the SDK Dev App. It teaches the agent the SDK app's auth-and-proxy setup, points it at the `gusto-payroll` MCP for endpoint discovery, and has it run real `curl` requests through the same Vite proxy the browser uses.
+This command lets you test API behavior end-to-end against the demo company you already have running in the SDK Dev App. It teaches the agent the SDK app's auth-and-proxy setup, points it at the `embedded-payroll` MCP for endpoint discovery, and has it run real `curl` requests through the same Vite proxy the browser uses.
+
+## Prerequisites
+
+This command depends on the **Gusto Embedded Dev Assistant MCP** (server name `embedded-payroll`). The repo's [.cursor/mcp.json](.cursor/mcp.json) lists it at the project level, so on first open Cursor should prompt you to enable it. If it doesn't, or if you're on a different IDE, follow the official setup guide: [docs.gusto.com — Dev Assistant MCP](https://docs.gusto.com/embedded-payroll/docs/dev-assistant-mcp). For Cursor specifically, add to `~/.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "embedded-payroll": {
+      "url": "https://embedded-payroll.readme.io/mcp"
+    }
+  }
+}
+```
+
+Then restart Cursor. Verify by asking the agent "what MCP tools do you have access to?" — you should see tools from the `embedded-payroll` server.
+
+If the MCP isn't installed when this command runs, the agent should stop after Step 2 and surface the docs link rather than guessing API paths from memory.
 
 The user's free-form arguments after `/sdk-proxy` describe the request in plain language. Examples:
 
@@ -172,21 +190,21 @@ EOF
 
 If the user's call mutates state and you observe a 401 / 404 / company-mismatch response, blow away the cache before retrying: `rm -f "$SDK_PROXY_CACHE"`.
 
-## Step 3 — Discover the endpoint via the `gusto-payroll` MCP
+## Step 3 — Discover the endpoint via the `embedded-payroll` MCP
 
-Never guess paths from memory. The MCP exposes:
+Never guess API paths, methods, request bodies, or query parameters from memory or training data — use the MCP. The MCP's exact tool surface evolves over time, so describe what you need by **capability**, not by hardcoded tool name. Inspect the MCP's available tools (e.g. "what `embedded-payroll` tools do you have?") and pick the right one for each capability below:
 
-| Tool                  | Use for                                                                                      |
-| --------------------- | -------------------------------------------------------------------------------------------- |
-| `find_endpoint`       | Fuzzy search by intent (`"create employee"` → `POST /v1/companies/{company_id}/employees`)   |
-| `generate_curl`       | Produce a templated curl with the right headers and body shape                               |
-| `check_scopes`        | Confirm the demo flow token covers the operation                                             |
-| `validate_workflow`   | For multi-step flows (onboarding, payroll), confirm the call order before running them       |
-| `generate_typescript` | Mirror the call in SDK code afterwards (only when the goal is to wire it into the React app) |
+| Capability you need                                                                 | What to ask the MCP for                                                                                                                  |
+| ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Find the HTTP path + method for a piece of functionality                            | Endpoint-discovery / API-reference-search tool, queried by intent (e.g. "create employee" → `POST /v1/companies/{company_id}/employees`) |
+| Get a templated request (headers, body shape, query params) for a known endpoint    | Curl-or-snippet-generation tool                                                                                                          |
+| Confirm the demo flow token covers a given operation                                | Scopes / authorization tool, if exposed                                                                                                  |
+| Validate the call order for a multi-step flow (onboarding, payroll, etc.)           | Workflow-validation tool, if exposed; otherwise fetch the relevant guide via the docs-search tool                                        |
+| Get TypeScript that mirrors the curl (when wiring the same call into the React app) | Code-generation tool                                                                                                                     |
 
-Typical flow: `find_endpoint` → `generate_curl` → adapt to the proxy URL → run.
+Typical flow: discover the endpoint → fetch a curl template → adapt to the proxy URL → run. For onboarding or payroll sequences, validate the call order first so you don't fire half a sequence and leave entities in a broken state.
 
-For onboarding or payroll sequences, run `validate_workflow` first so you don't fire half a sequence and leave entities in a broken state.
+**If the `embedded-payroll` MCP isn't loaded** (the agent doesn't see any of its tools), stop here. Tell the user the MCP is missing and link them to the Prerequisites section at the top of this file. Do **not** fall back to guessing paths from documentation in memory — that's the failure mode this command exists to prevent.
 
 ## Step 4 — Build and run the curl
 
@@ -244,8 +262,8 @@ User: /sdk-proxy create an employee named Alice Johnson
 Agent:
   1. Runs the discovery snippet → SDK_APP_PORT=5201 (5200 was taken by a sibling repo)
   2. Curls http://localhost:5201/api/v1/companies → 200, picks [0].uuid as company_id
-  3. Calls gusto-payroll find_endpoint("create employee") → POST /v1/companies/{company_id}/employees
-  4. Calls generate_curl, swaps the host for http://localhost:5201/api, strips Authorization
+  3. Calls the embedded-payroll MCP's endpoint-discovery tool with "create employee" → POST /v1/companies/{company_id}/employees
+  4. Calls the MCP's curl-template tool, swaps the host for http://localhost:5201/api, strips Authorization
   5. POSTs { first_name: "Alice", last_name: "Johnson", ... } via the proxy
   6. Parses 201 response, reports new employee UUID + version
   7. Optionally suggests follow-up calls (add home address, create job, etc.)
@@ -254,7 +272,7 @@ Agent:
 ## Escape hatches
 
 - **Large or chained output** — if the response will be huge (list endpoints with no filter, full payroll dumps) or you're chaining 5+ calls, run the work in a subagent via the Task tool so the raw curl output doesn't pollute conversation context. Return only the summary.
-- **Discovery-only requests** — if the user is asking what a request _looks like_ (not asking you to send it), stop after `find_endpoint` + `generate_curl` and show the template. Don't fire.
+- **Discovery-only requests** — if the user is asking what a request _looks like_ (not asking you to send it), stop after endpoint discovery + curl-template generation (Step 3) and show the template. Don't fire.
 - **Destructive operations** — for `DELETE` requests or operations that finalize payroll, repeat the resolved URL back to the user and ask for confirmation before running.
 - **SDK app not running** — never auto-start it; that would block this command for ~30s and steal a terminal. Tell the user to start it themselves.
 - **Token refresh** — never run `npm run sdk-app:setup` automatically. It re-provisions a brand-new demo, throwing away the company the user is working with. Always ask first.

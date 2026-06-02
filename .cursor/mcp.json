@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "embedded-payroll": {
+      "url": "https://embedded-payroll.readme.io/mcp"
+    }
+  }
+}
