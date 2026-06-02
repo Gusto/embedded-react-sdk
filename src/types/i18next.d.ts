@@ -1930,6 +1930,9 @@ export interface EmployeeHomeAddressManagement{
 "submitCta":string;
 "cancelCta":string;
 "backCta":string;
+"submitErrorAlertTitle":string;
+"submitErrorAlertFallback":string;
+"submitErrorAlertHelp":string;
 "deleteModalTitle":string;
 "deleteModalDescription":string;
 "deleteModalConfirmCta":string;
