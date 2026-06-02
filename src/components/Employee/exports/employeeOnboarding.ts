@@ -1,4 +1,9 @@
 export { OnboardingFlow } from '../OnboardingFlow/OnboardingFlow'
+export {
+  OnboardingExecutionFlow,
+  type OnboardingExecutionFlowProps,
+  type OnboardingExecutionInitialState,
+} from '../OnboardingExecutionFlow'
 export { SelfOnboardingFlow } from '../SelfOnboardingFlow/SelfOnboardingFlow'
 export { EmployeeList } from '../EmployeeList/onboarding/EmployeeList'
 export { OnboardingSummary } from '../OnboardingSummary'
