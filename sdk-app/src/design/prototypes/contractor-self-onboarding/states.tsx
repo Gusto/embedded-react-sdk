@@ -390,7 +390,7 @@ export const components: PrototypeComponent[] = [
         render: renderDocumentSignature({
           title: 'Form W-9',
           description: 'Please review and sign your W-9 to proceed.',
-          pdfUrl: 'https://www.irs.gov/pub/irs-pdf/fw9.pdf',
+          pdfUrl: '/sample-documents/w9.pdf',
         }),
       },
       {
@@ -400,7 +400,7 @@ export const components: PrototypeComponent[] = [
         render: renderDocumentSignature({
           title: 'Form W-9',
           description: 'Please review and sign your W-9 to proceed.',
-          pdfUrl: 'https://www.irs.gov/pub/irs-pdf/fw9.pdf',
+          pdfUrl: '/sample-documents/w9.pdf',
           isPending: true,
         }),
       },
