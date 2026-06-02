@@ -36,7 +36,7 @@ export function TerminationFlowContextual() {
   )
 }
 
-export function OnboardingFlowContextual() {
+export function OnboardingExecutionFlowContextual() {
   const { companyId, onEvent } = useFlow<EmployeeListFlowContextInterface>()
   return <OnboardingExecutionFlow companyId={ensureRequired(companyId)} onEvent={onEvent} />
 }

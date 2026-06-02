@@ -2,7 +2,7 @@ import { transition, reduce, state } from 'robot3'
 import {
   DashboardFlowContextual,
   EmployeeListContextual,
-  OnboardingFlowContextual,
+  OnboardingExecutionFlowContextual,
   TerminationFlowContextual,
   type EmployeeListFlowContextInterface,
 } from './EmployeeListFlowComponents'
@@ -71,7 +71,7 @@ export const employeeListStateMachine = {
       reduce(
         (ctx: EmployeeListFlowContextInterface): EmployeeListFlowContextInterface => ({
           ...ctx,
-          component: OnboardingFlowContextual,
+          component: OnboardingExecutionFlowContextual,
           header: backToListHeader,
         }),
       ),
