@@ -33,6 +33,8 @@ Employee management components can be used to compose your own workflow, or can 
 - [EmployeeManagement.DashboardFlow](#employeemanagementdashboardflow)
 - [EmployeeManagement.Profile](#employeemanagementprofile)
   - [Composing from EmployeeManagement.ProfileCard and EmployeeManagement.ProfileEditForm directly](#composing-from-employeemanagementprofilecard-and-employeemanagementprofileeditform-directly)
+- [EmployeeManagement.HomeAddress](#employeemanagementhomeaddress)
+  - [Composing from EmployeeManagement.HomeAddressCard and EmployeeManagement.HomeAddressEditForm directly](#composing-from-employeemanagementhomeaddresscard-and-employeemanagementhomeaddresseditform-directly)
 
 ### EmployeeManagement.DashboardFlow
 
@@ -207,3 +209,114 @@ function MyBasicDetailsPanel({ employeeId }) {
 | ------------------------------------------ | --------------------------------------------------- | ------------------------- |
 | EMPLOYEE_PROFILE_MANAGEMENT_UPDATED        | Fired after the edit form is successfully submitted | Updated `Employee` entity |
 | EMPLOYEE_PROFILE_MANAGEMENT_EDIT_CANCELLED | Fired when the user clicks Cancel on the edit form  | None                      |
+
+### EmployeeManagement.HomeAddress
+
+A self-contained block for viewing and managing an employee's home address — the same "Home address" experience the dashboard surfaces, but as a drop-in component that doesn't require the surrounding dashboard chrome. Renders a read-only card showing the employee's current home address. Clicking the card's "Manage" CTA swaps the card view for an inline manage screen that surfaces the current address, the address history, and forms for editing the current address, adding a new one, or deleting a non-active one. Clicking Back returns to the card view; creates, updates, and deletes happen in place on the manage screen and do not navigate away.
+
+```jsx
+import { EmployeeManagement } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return (
+    <EmployeeManagement.HomeAddress
+      employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
+      onEvent={() => {}}
+    />
+  )
+}
+```
+
+#### Props
+
+| Name                | Type                | Description                                                                                                                              |
+| ------------------- | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| employeeId Required | string              | The associated employee identifier.                                                                                                      |
+| onEvent Required    | function            | See events table for available events.                                                                                                   |
+| dictionary          | object              | Optional translations for component text. Keys are namespaced under `Employee.HomeAddress.Management` — see the source JSON for the set. |
+| FallbackComponent   | React.ComponentType | Optional custom error fallback component used by the internal `BaseBoundaries` wrapper.                                                  |
+
+#### Events
+
+| Event type                                      | Description                                                                                   | Data                             |
+| ----------------------------------------------- | --------------------------------------------------------------------------------------------- | -------------------------------- |
+| EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_REQUESTED | Fired when the user clicks the "Manage" CTA on the card; the block swaps to the manage screen | { employeeId: string }           |
+| EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_CANCELLED | Fired when the user clicks Back on the manage screen; the block returns to the card view      | None                             |
+| EMPLOYEE_HOME_ADDRESS_MANAGEMENT_CREATED        | Fired after a new home address is successfully created from the manage screen                 | Created `EmployeeAddress` entity |
+| EMPLOYEE_HOME_ADDRESS_MANAGEMENT_UPDATED        | Fired after an existing home address is successfully updated from the manage screen           | Updated `EmployeeAddress` entity |
+| EMPLOYEE_HOME_ADDRESS_MANAGEMENT_DELETED        | Fired after a non-active home address is successfully deleted from the manage screen          | Deleted `EmployeeAddress` entity |
+
+#### Composing from EmployeeManagement.HomeAddressCard and EmployeeManagement.HomeAddressEditForm directly
+
+`EmployeeManagement.HomeAddress` above is the recommended entry point for the home-address experience — it bundles the card, the manage screen, and the swap between them as a single drop-in. The card and edit form are also exported individually for cases where that orchestration is the wrong fit — for example, when the manage screen needs to render in a modal or drawer, when the card needs to appear read-only with no manage affordance, or when the swap is driven by a router. Using them directly means owning the swap and any cross-component state yourself.
+
+`EmployeeManagement.HomeAddressCard` renders the read-only home-address card and emits a single event when its "Manage" CTA is clicked. `EmployeeManagement.HomeAddressEditForm` renders the corresponding manage screen and emits events on create, update, delete, and cancel. Each piece's `onEvent` receives the event type as its first argument and any associated payload as its second — branch on the event type to drive the swap (and any of your own behavior, e.g. surfacing a success message after a save). The per-piece events tables below list every event each piece emits.
+
+```jsx
+import { useState } from 'react'
+import { componentEvents, EmployeeManagement } from '@gusto/embedded-react-sdk'
+
+function MyHomeAddressPanel({ employeeId }) {
+  const [isEditing, setIsEditing] = useState(false)
+
+  if (isEditing) {
+    return (
+      <EmployeeManagement.HomeAddressEditForm
+        employeeId={employeeId}
+        onEvent={eventType => {
+          if (eventType === componentEvents.EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_CANCELLED) {
+            setIsEditing(false)
+          }
+        }}
+      />
+    )
+  }
+
+  return (
+    <EmployeeManagement.HomeAddressCard
+      employeeId={employeeId}
+      onEvent={eventType => {
+        if (eventType === componentEvents.EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_REQUESTED) {
+          setIsEditing(true)
+        }
+      }}
+    />
+  )
+}
+```
+
+##### EmployeeManagement.HomeAddressCard
+
+**Props**
+
+| Name                | Type     | Description                            |
+| ------------------- | -------- | -------------------------------------- |
+| employeeId Required | string   | The associated employee identifier.    |
+| onEvent Required    | function | See events table for available events. |
+
+**Events**
+
+| Event type                                      | Description                                             | Data                   |
+| ----------------------------------------------- | ------------------------------------------------------- | ---------------------- |
+| EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_REQUESTED | Fired when the user clicks the "Manage" CTA on the card | { employeeId: string } |
+
+##### EmployeeManagement.HomeAddressEditForm
+
+**Props**
+
+| Name                | Type                | Description                                                                                                                              |
+| ------------------- | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| employeeId Required | string              | The associated employee identifier.                                                                                                      |
+| onEvent Required    | function            | See events table for available events.                                                                                                   |
+| className           | string              | Optional class applied to the form's root section element.                                                                               |
+| dictionary          | object              | Optional translations for component text. Keys are namespaced under `Employee.HomeAddress.Management` — see the source JSON for the set. |
+| FallbackComponent   | React.ComponentType | Optional custom error fallback component used by the internal `BaseBoundaries` wrapper.                                                  |
+
+**Events**
+
+| Event type                                      | Description                                                   | Data                             |
+| ----------------------------------------------- | ------------------------------------------------------------- | -------------------------------- |
+| EMPLOYEE_HOME_ADDRESS_MANAGEMENT_CREATED        | Fired after a new home address is successfully created        | Created `EmployeeAddress` entity |
+| EMPLOYEE_HOME_ADDRESS_MANAGEMENT_UPDATED        | Fired after an existing home address is successfully updated  | Updated `EmployeeAddress` entity |
+| EMPLOYEE_HOME_ADDRESS_MANAGEMENT_DELETED        | Fired after a non-active home address is successfully deleted | Deleted `EmployeeAddress` entity |
+| EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_CANCELLED | Fired when the user clicks Back on the manage screen          | None                             |
