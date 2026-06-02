@@ -7,12 +7,18 @@ import type {
   DeleteV1JobsJobIdResponse,
 } from '@gusto/embedded-api-v-2025-11-15/models/operations/deletev1jobsjobid'
 import { Dashboard, type DashboardProps } from './Dashboard'
+import { DashboardFlow } from './DashboardFlow'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { server } from '@/test/mocks/server'
 import { API_BASE_URL } from '@/test/constants'
 import { handleGetEmployeeForms, i9Form } from '@/test/mocks/apis/employee_forms'
-import { handleGetEmployeeJobs, handleDeleteEmployeeJob } from '@/test/mocks/apis/employees'
+import {
+  handleGetEmployee,
+  handleGetEmployeeJobs,
+  handleDeleteEmployeeJob,
+  handleUpdateEmployee,
+} from '@/test/mocks/apis/employees'
 import { handleGetEmployeeStateTaxes } from '@/test/mocks/apis/employee_state_taxes'
 import { handleDeleteCompensation } from '@/test/mocks/apis/compensations'
 import { componentEvents } from '@/shared/constants'
@@ -201,7 +207,7 @@ describe('Dashboard', () => {
     expect(screen.getByText('Personal email')).toBeInTheDocument()
   })
 
-  it('emits EMPLOYEE_UPDATE event when clicking edit basic details', async () => {
+  it('emits the scoped EMPLOYEE_PROFILE_MANAGEMENT_EDIT_REQUESTED event when clicking edit basic details', async () => {
     const user = userEvent.setup()
 
     renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
@@ -210,9 +216,67 @@ describe('Dashboard', () => {
 
     await user.click(screen.getByRole('button', { name: 'Edit' }))
 
-    expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_UPDATE, {
-      employeeId: 'employee-123',
+    expect(onEvent).toHaveBeenCalledWith(
+      componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_EDIT_REQUESTED,
+      { employeeId: 'employee-123' },
+    )
+  })
+
+  it('renders the dashboard chrome "Profile updated" alert after a successful basic-details save (via DashboardFlow)', async () => {
+    const user = userEvent.setup()
+    const employee = {
+      uuid: 'employee-123',
+      first_name: 'Isom',
+      middle_initial: 'J',
+      last_name: 'Jaskolski',
+      email: 'isom@example.com',
+      version: '1',
+      date_of_birth: '1986-06-25',
+      has_ssn: true,
+      ssn: '',
+      jobs: [
+        {
+          uuid: 'job-1',
+          version: '1',
+          employee_uuid: 'employee-123',
+          primary: true,
+          hire_date: '2020-01-20',
+          compensations: [],
+        },
+      ],
+    }
+    server.use(
+      handleGetEmployee(() => HttpResponse.json(employee)),
+      handleUpdateEmployee(async ({ request }) => {
+        const body = (await request.json()) as Record<string, unknown>
+        return HttpResponse.json({ ...employee, ...body, version: '2' })
+      }),
+    )
+
+    renderWithProviders(<DashboardFlow employeeId="employee-123" onEvent={onEvent} />)
+
+    await waitFor(() => expect(screen.getByText('Legal name')).toBeInTheDocument())
+
+    await user.click(screen.getByRole('button', { name: 'Edit' }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Save' })).toBeInTheDocument()
     })
+
+    await user.click(screen.getByRole('button', { name: 'Save' }))
+
+    await waitFor(
+      () => {
+        expect(screen.getByText('Profile updated')).toBeInTheDocument()
+      },
+      { timeout: 5000 },
+    )
+
+    expect(screen.getByRole('tab', { name: 'Basic details' })).toBeInTheDocument()
+    expect(onEvent).toHaveBeenCalledWith(
+      componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_UPDATED,
+      expect.any(Object),
+    )
   })
 
   it('emits EMPLOYEE_HOME_ADDRESS event when clicking manage home address', async () => {

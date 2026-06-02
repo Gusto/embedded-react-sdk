@@ -1,143 +1,52 @@
-import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import classNames from 'classnames'
-import { useEmployeeDetailsForm } from '../shared/useEmployeeDetailsForm'
-import styles from './Profile.module.scss'
+import { createMachine } from 'robot3'
+import { useMemo } from 'react'
+import { CardContextual, type ProfileContextInterface } from './ProfileComponents'
+import { profileStateMachine } from './profileStateMachine'
+import { Flow } from '@/components/Flow/Flow'
 import {
   BaseBoundaries,
-  BaseLayout,
   type BaseComponentInterface,
   type CommonComponentInterface,
 } from '@/components/Base'
-import { ActionsLayout } from '@/components/Common'
-import { Form } from '@/components/Common/Form'
-import { Grid } from '@/components/Common/Grid/Grid'
-import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
-import { useI18n, useComponentDictionary } from '@/i18n'
-import { componentEvents } from '@/shared/constants'
-import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { type EventType } from '@/shared/constants'
+import { useComponentDictionary } from '@/i18n/I18n'
+import { useI18n } from '@/i18n'
+import type { OnEventType } from '@/components/Base/useBase'
 
-export interface ProfileProps extends CommonComponentInterface<'Employee.Profile'> {
+export interface ProfileProps extends CommonComponentInterface<'Employee.Profile.Management'> {
   employeeId: string
-  onEvent: BaseComponentInterface['onEvent']
+  onEvent: OnEventType<EventType, unknown>
+}
+
+function ProfileFlow({ employeeId, onEvent }: ProfileProps) {
+  useI18n('Employee.Profile.Management')
+
+  const machine = useMemo(
+    () =>
+      createMachine('card', profileStateMachine, (ctx: ProfileContextInterface) => ({
+        ...ctx,
+        component: CardContextual,
+        employeeId,
+        successAlert: null,
+      })),
+    [employeeId],
+  )
+
+  return <Flow machine={machine} onEvent={onEvent} />
 }
 
 export function Profile({
+  dictionary,
   FallbackComponent,
   ...props
-}: ProfileProps & Pick<BaseComponentInterface, 'FallbackComponent'>) {
+}: ProfileProps & BaseComponentInterface<'Employee.Profile.Management'>) {
+  useComponentDictionary('Employee.Profile.Management', dictionary)
   return (
-    <BaseBoundaries componentName="Employee.Profile" FallbackComponent={FallbackComponent}>
-      <ProfileRoot {...props} />
+    <BaseBoundaries
+      componentName="Employee.Profile.Management"
+      FallbackComponent={FallbackComponent}
+    >
+      <ProfileFlow {...props} />
     </BaseBoundaries>
-  )
-}
-
-function ProfileRoot({ employeeId, className, dictionary, onEvent }: ProfileProps) {
-  useI18n('Employee.Profile')
-  useComponentDictionary('Employee.Profile', dictionary)
-  const { t } = useTranslation('Employee.Profile')
-  const Components = useComponentContext()
-
-  const employeeDetails = useEmployeeDetailsForm({
-    employeeId,
-    withSelfOnboardingField: false,
-    optionalFieldsToRequire: {
-      update: ['firstName', 'lastName', 'email', 'dateOfBirth', 'ssn'],
-    },
-  })
-
-  const [showSuccess, setShowSuccess] = useState(false)
-
-  if (employeeDetails.isLoading) {
-    return <BaseLayout isLoading error={employeeDetails.errorHandling.errors} />
-  }
-
-  const Fields = employeeDetails.form.Fields
-
-  const handleSubmit = async () => {
-    setShowSuccess(false)
-    const result = await employeeDetails.actions.onSubmit({
-      onEmployeeUpdated: emp => {
-        onEvent(componentEvents.EMPLOYEE_UPDATED, emp)
-      },
-    })
-    if (!result) return
-    setShowSuccess(true)
-  }
-
-  const handleCancel = () => {
-    onEvent(componentEvents.CANCEL)
-  }
-
-  const alert = showSuccess ? (
-    <Components.Alert
-      status="success"
-      label={t('successAlert')}
-      onDismiss={() => {
-        setShowSuccess(false)
-      }}
-    />
-  ) : undefined
-
-  return (
-    <section className={classNames(styles.container, className)}>
-      <BaseLayout error={employeeDetails.errorHandling.errors}>
-        <SDKFormProvider formHookResult={employeeDetails}>
-          <Form onSubmit={handleSubmit}>
-            {alert}
-            <Components.Heading as="h1">{t('title')}</Components.Heading>
-            <Grid
-              gap={{ base: 20, small: 8 }}
-              gridTemplateColumns={{ base: '1fr', small: ['1fr', 200] }}
-            >
-              <Fields.FirstName
-                label={t('firstName')}
-                validationMessages={{
-                  REQUIRED: t('validations.firstName'),
-                  INVALID_NAME: t('validations.firstName'),
-                }}
-              />
-              <Fields.MiddleInitial label={t('middleInitial')} />
-            </Grid>
-            <Fields.LastName
-              label={t('lastName')}
-              validationMessages={{
-                REQUIRED: t('validations.lastName'),
-                INVALID_NAME: t('validations.lastName'),
-              }}
-            />
-            <Fields.Email
-              label={t('email')}
-              description={t('emailDescription')}
-              validationMessages={{
-                REQUIRED: t('validations.email'),
-                INVALID_EMAIL: t('validations.email'),
-                EMAIL_REQUIRED_FOR_SELF_ONBOARDING: t('validations.email'),
-              }}
-            />
-            <Fields.Ssn
-              label={t('ssnLabel')}
-              validationMessages={{
-                INVALID_SSN: t('validations.ssn', { ns: 'common' }),
-                REQUIRED: t('validations.ssnRequired', { ns: 'common' }),
-              }}
-            />
-            <Fields.DateOfBirth
-              label={t('dobLabel')}
-              validationMessages={{ REQUIRED: t('validations.dob', { ns: 'common' }) }}
-            />
-            <ActionsLayout>
-              <Components.Button variant="secondary" onClick={handleCancel}>
-                {t('cancelCta')}
-              </Components.Button>
-              <Components.Button type="submit" isLoading={employeeDetails.status.isPending}>
-                {t('saveCta')}
-              </Components.Button>
-            </ActionsLayout>
-          </Form>
-        </SDKFormProvider>
-      </BaseLayout>
-    </section>
   )
 }
