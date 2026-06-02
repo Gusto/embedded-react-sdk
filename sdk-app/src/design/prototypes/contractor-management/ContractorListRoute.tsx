@@ -10,7 +10,7 @@ import { contractorName } from '../../components/common/contractorName'
 import {
   ContractorList,
   type ContractorListTab,
-} from '../../components/contractor/ContractorList/ContractorList'
+} from '../../components/contractor/management/ContractorList/ContractorList'
 import { ContractorOnboardingStatus } from '@/shared/constants'
 
 export function ContractorListRoute() {

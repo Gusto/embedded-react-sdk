@@ -1,7 +1,10 @@
 import { useContractorsGetSuspense } from '@gusto/embedded-api/react-query/contractorsGet'
 import { useContractorsGetAddressSuspense } from '@gusto/embedded-api/react-query/contractorsGetAddress'
 import { useContractorsUpdateAddressMutation } from '@gusto/embedded-api/react-query/contractorsUpdateAddress'
-import { AddressForm, type AddressFormValues } from '../common/AddressForm'
+import {
+  AddressForm,
+  type AddressFormValues,
+} from '../../../components/contractor/management/AddressForm/AddressForm'
 import { BaseComponent, useBase } from '@/components/Base'
 import { componentEvents } from '@/shared/constants'
 

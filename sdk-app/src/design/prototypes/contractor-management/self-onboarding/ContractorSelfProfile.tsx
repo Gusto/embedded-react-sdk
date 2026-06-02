@@ -2,7 +2,10 @@ import { useContractorsGetSuspense } from '@gusto/embedded-api/react-query/contr
 import { useContractorsUpdateMutation } from '@gusto/embedded-api/react-query/contractorsUpdate'
 import { ContractorType as ApiContractorType } from '@gusto/embedded-api/models/components/contractor'
 import type { ContractorUpdateRequestBody } from '@gusto/embedded-api/models/components/contractorupdaterequestbody'
-import { ProfileDetailsForm, type ProfileDetailsFormValues } from '../common/ProfileDetailsForm'
+import {
+  ProfileDetailsForm,
+  type ProfileDetailsFormValues,
+} from '../../../components/contractor/management/ProfileDetailsForm/ProfileDetailsForm'
 import { BaseComponent, useBase } from '@/components/Base'
 import { removeNonDigits } from '@/helpers/formattedStrings'
 import { componentEvents } from '@/shared/constants'

@@ -1,5 +1,8 @@
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
-import { ProfileDetailsForm, type ProfileDetailsFormValues } from '../../common/ProfileDetailsForm'
+import {
+  ProfileDetailsForm,
+  type ProfileDetailsFormValues,
+} from '../ProfileDetailsForm/ProfileDetailsForm'
 import { useBase } from '@/components/Base/useBase'
 import { CONTRACTOR_TYPE } from '@/shared/constants'
 

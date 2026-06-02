@@ -1,4 +1,4 @@
-import { PaymentMethodForm } from '../../common/PaymentMethodForm'
+import { PaymentMethodForm } from '../../../../components/contractor/management/PaymentMethodForm/PaymentMethodForm'
 import { BaseComponent } from '@/components/Base'
 
 interface ContractorPaymentMethodProps {

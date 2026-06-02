@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
-import { contractorName } from '../../common/contractorName'
-import { Skeleton } from '../../common/Skeleton'
+import { contractorName } from '../../../common/contractorName'
+import { Skeleton } from '../../../common/Skeleton'
 import { SkeletonDataView } from './SkeletonDataView'
 import { EmptyData, Flex } from '@/components/Common'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu/HamburgerMenu'
@@ -110,22 +110,33 @@ function activeContractorActions(
   },
 ) {
   const actions: { label: string; onClick: () => void }[] = [
-    { label: 'View details', onClick: () => { callbacks.onViewDetails(contractor); } },
+    {
+      label: 'View details',
+      onClick: () => {
+        callbacks.onViewDetails(contractor)
+      },
+    },
   ]
   if (contractor.upcomingEmployment && contractor.rehireCancellationEligible) {
     actions.push({
       label: 'Cancel rehire',
-      onClick: () => { callbacks.onCancelRehire(contractor); },
+      onClick: () => {
+        callbacks.onCancelRehire(contractor)
+      },
     })
   } else if (contractor.dismissalDate && contractor.dismissalCancellationEligible) {
     actions.push({
       label: 'Cancel dismissal',
-      onClick: () => { callbacks.onCancelDismissal(contractor); },
+      onClick: () => {
+        callbacks.onCancelDismissal(contractor)
+      },
     })
   } else if (!contractor.dismissalDate && !contractor.upcomingEmployment) {
     actions.push({
       label: 'Dismiss contractor',
-      onClick: () => { callbacks.onDismiss(contractor); },
+      onClick: () => {
+        callbacks.onDismiss(contractor)
+      },
     })
   }
   return actions
@@ -207,7 +218,12 @@ function onboardingContractorActions(
     status === ContractorOnboardingStatus.ADMIN_ONBOARDING_INCOMPLETE ||
     status === ContractorOnboardingStatus.SELF_ONBOARDING_NOT_INVITED
   ) {
-    actions.push({ label: 'Remove', onClick: () => { callbacks.onRemove(contractor); } })
+    actions.push({
+      label: 'Remove',
+      onClick: () => {
+        callbacks.onRemove(contractor)
+      },
+    })
   } else if (
     status === ContractorOnboardingStatus.SELF_ONBOARDING_INVITED ||
     status === ContractorOnboardingStatus.SELF_ONBOARDING_STARTED
@@ -215,19 +231,41 @@ function onboardingContractorActions(
     actions.push(
       {
         label: 'Cancel self-onboarding',
-        onClick: () => { callbacks.onCancelSelfOnboarding(contractor); },
+        onClick: () => {
+          callbacks.onCancelSelfOnboarding(contractor)
+        },
       },
-      { label: 'Remove', onClick: () => { callbacks.onRemove(contractor); } },
+      {
+        label: 'Remove',
+        onClick: () => {
+          callbacks.onRemove(contractor)
+        },
+      },
     )
   } else if (
     status === ContractorOnboardingStatus.ADMIN_ONBOARDING_REVIEW ||
     status === ContractorOnboardingStatus.SELF_ONBOARDING_REVIEW
   ) {
-    actions.push({ label: 'Remove', onClick: () => { callbacks.onRemove(contractor); } })
+    actions.push({
+      label: 'Remove',
+      onClick: () => {
+        callbacks.onRemove(contractor)
+      },
+    })
   } else if (status === ContractorOnboardingStatus.ONBOARDING_COMPLETED) {
     actions.push(
-      { label: 'View details', onClick: () => { callbacks.onViewDetails(contractor); } },
-      { label: 'Remove', onClick: () => { callbacks.onRemove(contractor); } },
+      {
+        label: 'View details',
+        onClick: () => {
+          callbacks.onViewDetails(contractor)
+        },
+      },
+      {
+        label: 'Remove',
+        onClick: () => {
+          callbacks.onRemove(contractor)
+        },
+      },
     )
   }
   return actions
@@ -247,7 +285,12 @@ function OnboardingActionButton({
     status === ContractorOnboardingStatus.SELF_ONBOARDING_NOT_INVITED
   ) {
     return (
-      <Components.Button variant="secondary" onClick={() => { onEdit(contractor); }}>
+      <Components.Button
+        variant="secondary"
+        onClick={() => {
+          onEdit(contractor)
+        }}
+      >
         Continue
       </Components.Button>
     )
@@ -257,7 +300,12 @@ function OnboardingActionButton({
     status === ContractorOnboardingStatus.SELF_ONBOARDING_REVIEW
   ) {
     return (
-      <Components.Button variant="secondary" onClick={() => { onEdit(contractor); }}>
+      <Components.Button
+        variant="secondary"
+        onClick={() => {
+          onEdit(contractor)
+        }}
+      >
         Review
       </Components.Button>
     )
@@ -339,22 +387,36 @@ function dismissedContractorActions(
   },
 ) {
   const actions: { label: string; onClick: () => void }[] = [
-    { label: 'View details', onClick: () => { callbacks.onViewDetails(contractor); } },
+    {
+      label: 'View details',
+      onClick: () => {
+        callbacks.onViewDetails(contractor)
+      },
+    },
   ]
   if (contractor.upcomingEmployment) {
     if (contractor.rehireCancellationEligible) {
       actions.push({
         label: 'Cancel rehire',
-        onClick: () => { callbacks.onCancelDismissal(contractor); },
+        onClick: () => {
+          callbacks.onCancelDismissal(contractor)
+        },
       })
     }
   } else if (contractor.dismissalCancellationEligible) {
     actions.push({
       label: 'Cancel dismissal',
-      onClick: () => { callbacks.onCancelDismissal(contractor); },
+      onClick: () => {
+        callbacks.onCancelDismissal(contractor)
+      },
     })
   } else if (!contractor.isActive) {
-    actions.push({ label: 'Rehire contractor', onClick: () => { callbacks.onRehire(contractor); } })
+    actions.push({
+      label: 'Rehire contractor',
+      onClick: () => {
+        callbacks.onRehire(contractor)
+      },
+    })
   }
   return actions
 }
@@ -552,7 +614,9 @@ export function ContractorList({
       </Flex>
       <Flex flexDirection="column" gap={0}>
         <Components.Tabs
-          onSelectionChange={tab => { onSelectTab(tab as ContractorListTab); }}
+          onSelectionChange={tab => {
+            onSelectTab(tab as ContractorListTab)
+          }}
           tabs={tabs}
           selectedId={selectedTab}
         />

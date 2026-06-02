@@ -1,10 +1,11 @@
 import type { Contractor } from '@gusto/embedded-api/models/components/contractor'
 import type { PrototypeComponent } from '../prototypeTypes'
-import { ContractorDismissalFormDemo } from '../../components/contractor/ContractorDismissalForm/ContractorDismissalFormStates'
+import { ContractorDetailsDemo } from '../../components/contractor/management/ContractorDetails/ContractorDetailsStates'
+import { ContractorDismissalFormDemo } from '../../components/contractor/management/ContractorDismissalForm/ContractorDismissalFormStates'
 import {
   ContractorListDemo,
   type ContractorTabFixtures,
-} from '../../components/contractor/ContractorList/ContractorListStates'
+} from '../../components/contractor/management/ContractorList/ContractorListStates'
 
 /**
  * Mock contractor builder.
@@ -261,6 +262,13 @@ function renderDismissalFormDemo(args: { contractor: Contractor; isPending?: boo
   return ContractorDismissalFormConfigDemo
 }
 
+function renderDetailsDemo(args: { contractor: Contractor; editable?: boolean }) {
+  function ContractorDetailsConfigDemo() {
+    return <ContractorDetailsDemo contractor={args.contractor} editable={args.editable} />
+  }
+  return ContractorDetailsConfigDemo
+}
+
 export const components: PrototypeComponent[] = [
   {
     slug: 'list',
@@ -424,6 +432,85 @@ export const components: PrototypeComponent[] = [
             lastName: 'Okonkwo',
             email: 'imani.okonkwo@example.com',
             hourlyRate: '75.00',
+            startDate: '2024-01-10',
+          }),
+        }),
+      },
+    ],
+  },
+  {
+    slug: 'basic-details',
+    name: 'Basic Details',
+    configurations: [
+      {
+        slug: 'individual',
+        name: 'Individual contractor',
+        description: 'Fully filled-in details for an individual contractor.',
+        handlers: [],
+        render: renderDetailsDemo({
+          editable: true,
+          contractor: build({
+            uuid: 'contractor-details-individual',
+            type: 'Individual',
+            firstName: 'Avery',
+            middleInitial: 'J',
+            lastName: 'Garcia',
+            email: 'avery.garcia@example.com',
+            hasSsn: true,
+            startDate: '2024-03-15',
+          }),
+        }),
+      },
+      {
+        slug: 'business',
+        name: 'Business contractor',
+        description: 'Business contractor — shows business name and EIN.',
+        handlers: [],
+        render: renderDetailsDemo({
+          editable: true,
+          contractor: build({
+            uuid: 'contractor-details-business',
+            type: 'Business',
+            businessName: 'Pacific Design Co.',
+            firstName: 'Mason',
+            lastName: 'Park',
+            email: 'mason.park@pacificdesign.com',
+            hasEin: true,
+            startDate: '2023-11-01',
+          }),
+        }),
+      },
+      {
+        slug: 'missing-data',
+        name: 'Missing data',
+        description: 'Individual without SSN or email — shows the dash fallback.',
+        handlers: [],
+        render: renderDetailsDemo({
+          editable: true,
+          contractor: build({
+            uuid: 'contractor-details-sparse',
+            type: 'Individual',
+            firstName: 'Riya',
+            lastName: 'Patel',
+            email: '',
+            hasSsn: false,
+            startDate: '2024-06-22',
+          }),
+        }),
+      },
+      {
+        slug: 'read-only',
+        name: 'Read-only',
+        description: 'No `onEdit` prop, so the Edit button is hidden.',
+        handlers: [],
+        render: renderDetailsDemo({
+          contractor: build({
+            uuid: 'contractor-details-readonly',
+            type: 'Individual',
+            firstName: 'Quinn',
+            lastName: 'Chen',
+            email: 'quinn.chen@example.com',
+            hasSsn: true,
             startDate: '2024-01-10',
           }),
         }),
