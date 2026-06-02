@@ -27,6 +27,18 @@ export const categorizedRegistry: CategorizedRegistry = {
       path: '/design/contractor-management',
       description:
         'A prototype flow for managing contractors — view the list and drill into individual profiles.',
+      children: [
+        {
+          name: 'Prototype',
+          path: '/design/contractor-management',
+          description: 'Live prototype against the real API.',
+        },
+        {
+          name: 'Component states',
+          path: '/design/contractor-management/component-states',
+          description: 'Browse individual components and configurations with mock data.',
+        },
+      ],
     },
     {
       name: 'Contractor Self-Onboarding',

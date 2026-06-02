@@ -8,12 +8,14 @@ import { DesignLayout } from './design/DesignLayout'
 import { DesignHome } from './design/DesignHome'
 import { ComponentShowcase } from './design/prototypes/component-showcase'
 import { ContractorManagementFlow } from './design/prototypes/contractor-management/contractor-profile/ContractorManagementFlow'
-import ContractorList from './design/prototypes/contractor-management/contractor-list/ContractorList'
+import { ContractorListRoute } from './design/prototypes/contractor-management/ContractorListRoute'
 import { ContractorProfile } from './design/prototypes/contractor-management/contractor-profile/ContractorProfile'
-import { ContractorDismiss } from './design/prototypes/contractor-management/contractor-list/ContractorDismiss'
+import { ContractorDismissRoute } from './design/prototypes/contractor-management/ContractorDismissRoute'
 import { ContractorRehire } from './design/prototypes/contractor-management/contractor-list/ContractorRehire'
 import { AddContractor } from './design/prototypes/contractor-management/contractor-list/AddContractor'
 import { ContractorSelfOnboarding } from './design/prototypes/contractor-management/self-onboarding'
+import { ContractorManagementStates } from './design/prototypes/contractor-management'
+import { MockedEntitiesOutlet } from './design/prototypes/MockedEntitiesOutlet'
 import {
   CompensationHistoryPrototype,
   CompensationHistoryStates,
@@ -38,11 +40,22 @@ const router = createBrowserRouter([
             path: 'contractor-management',
             element: <ContractorManagementFlow />,
             children: [
-              { index: true, element: <ContractorList /> },
+              { index: true, element: <ContractorListRoute /> },
               { path: 'add', element: <AddContractor /> },
               { path: 'add/:contractorId', element: <AddContractor /> },
+              {
+                path: 'component-states',
+                element: <MockedEntitiesOutlet />,
+                children: [
+                  { index: true, element: <ContractorManagementStates /> },
+                  {
+                    path: ':componentSlug/:configSlug',
+                    element: <ContractorManagementStates />,
+                  },
+                ],
+              },
               { path: ':contractorId', element: <ContractorProfile /> },
-              { path: ':contractorId/dismiss', element: <ContractorDismiss /> },
+              { path: ':contractorId/dismiss', element: <ContractorDismissRoute /> },
               { path: ':contractorId/rehire', element: <ContractorRehire /> },
             ],
           },

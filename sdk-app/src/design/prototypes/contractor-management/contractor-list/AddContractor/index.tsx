@@ -1,7 +1,7 @@
 import { Suspense, useState } from 'react'
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom'
 import { useQueryClient } from '@tanstack/react-query'
-import { Skeleton } from '../../contractor-profile/components/Skeleton'
+import { Skeleton } from '../../../../components/common/Skeleton'
 import type { EntityIds } from '../../../../../../useEntities'
 import { AddContractorWizard } from './AddContractorWizard'
 import type { WizardStep } from './AddContractorWizard'

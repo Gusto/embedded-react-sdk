@@ -1,5 +1,5 @@
 import type { ContractorBankAccount } from '@gusto/embedded-api/models/components/contractorbankaccount'
-import { Skeleton } from './Skeleton'
+import { Skeleton } from '../../../../components/common/Skeleton'
 import { DataView, Flex, useDataView } from '@/components/Common'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu/HamburgerMenu'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'

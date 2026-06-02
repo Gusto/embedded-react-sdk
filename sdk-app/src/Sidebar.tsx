@@ -94,11 +94,32 @@ function CategorySection({
                 </NavLink>
                 {showChildren && item.children && (
                   <ul className={styles.subItems}>
-                    {item.children.map(child => (
-                      <li key={child.name} className={styles.subItem}>
-                        <NavLink to={child.path ?? '#'}>{child.name}</NavLink>
-                      </li>
-                    ))}
+                    {item.children.map(child => {
+                      const childPath = child.path ?? '#'
+                      // A child is "active" when the URL is under its path,
+                      // unless the URL is under a deeper sibling's path
+                      // (so e.g. Prototype stays highlighted while drilled
+                      // into the live flow but un-highlights on Component
+                      // states).
+                      const isActiveByPath = !!child.path && isUnder(pathname, child.path)
+                      const isUnderDeeperSibling =
+                        !!child.path &&
+                        item.children!.some(
+                          other =>
+                            other !== child &&
+                            !!other.path &&
+                            other.path.startsWith(`${child.path!}/`) &&
+                            isUnder(pathname, other.path),
+                        )
+                      const isActive = isActiveByPath && !isUnderDeeperSibling
+                      return (
+                        <li key={child.name} className={styles.subItem}>
+                          <NavLink to={childPath} className={() => (isActive ? 'active' : '')}>
+                            {child.name}
+                          </NavLink>
+                        </li>
+                      )
+                    })}
                   </ul>
                 )}
               </li>
