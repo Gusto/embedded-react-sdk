@@ -190,6 +190,7 @@ export default [
   /** Library: well-documented code */
   {
     files: [
+      'src/components/Base/**/*.{ts,tsx}',
       'src/contexts/ApiProvider/**/*.{ts,tsx}',
       'src/contexts/LocaleProvider/**/*.{ts,tsx}',
       'src/contexts/LoadingIndicatorProvider/**/*.{ts,tsx}',
