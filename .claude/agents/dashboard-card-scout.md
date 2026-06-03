@@ -65,11 +65,11 @@ refactor (not just that one exists):
   the partner sees in standalone use. Add a `successAlert` field to the block's
   state-machine context, a `returnToCardWithAlert(...)` reducer, and a
   `<Components.Alert>` render in `CardContextual` whose `onDismiss` fires the
-  block's `EMPLOYEE_<FEATURE>_MANAGEMENT_ALERT_DISMISSED` event.
+  block's `EMPLOYEE_MANAGEMENT_<FEATURE>_ALERT_DISMISSED` event.
 
 Most cards want both (dashboard chrome for the dashboard path, block-internal
 for the standalone path) — the alert string ends up in both
-`Employee.Dashboard.json` and `Employee.<Feature>.Management.json` and both
+`Employee.Dashboard.json` and `Employee.Management.<Feature>.json` and both
 flows render it. See the "Success alerts" section of the skill for the full
 two-mode pattern and worked Profile example.
 
@@ -106,9 +106,9 @@ and the payload:
 
 ### Proposed scoped event names
 
-Map each legacy event to its new `EMPLOYEE_<FEATURE>_MANAGEMENT_*` name:
+Map each legacy event to its new `EMPLOYEE_MANAGEMENT_<FEATURE>_*` name:
 
-- `<LEGACY_NAME>` → `EMPLOYEE_<FEATURE>_MANAGEMENT_<ACTION>`
+- `<LEGACY_NAME>` → `EMPLOYEE_MANAGEMENT_<FEATURE>_<ACTION>`
 - ...
 
 ### State machine design
@@ -137,7 +137,7 @@ or requires a precursor PR.
 ### Translation keys to move
 
 List the `Employee.Dashboard:` key prefixes that belong to this card and their
-target namespace (`Employee.<Feature>.Management`).
+target namespace (`Employee.Management.<Feature>`).
 
 ### Friction points or open questions
 
