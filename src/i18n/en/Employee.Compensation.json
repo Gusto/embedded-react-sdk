@@ -73,6 +73,7 @@
     "effectiveDateBeforeHire": "Effective date cannot be before the hire date",
     "hireDate": "Start date is required",
     "classificationChangeNotification": "Changing this employee's classification will immediately delete their additional jobs.",
+    "classificationChangeRemovesSecondaryJobs": "Only employees that are paid by the hour can have multiple jobs.",
     "exemptThreshold": "Most employees who make under {{limit}}/year should be eligible for overtime.",
     "paymentUnit": "Payment unit must be one of Hour, Week, Month, or Year",
     "rate": "Amount is a required field",
