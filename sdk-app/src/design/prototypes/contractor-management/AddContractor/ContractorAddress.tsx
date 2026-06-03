@@ -5,6 +5,7 @@ import {
   AddressForm,
   type AddressFormValues,
 } from '../../../components/contractor/shared/AddressForm/AddressForm'
+import { contractorName } from '../../../components/contractor/shared/contractorName'
 import { BaseComponent, useBase } from '@/components/Base'
 import { componentEvents } from '@/shared/constants'
 
@@ -37,7 +38,7 @@ function Root({ contractorId }: { contractorId: string }) {
       const { contractorAddress } = await updateAddress({
         request: {
           contractorUuid: contractorId,
-          requestBody: {
+          contractorAddressUpdateBody: {
             version: address?.version as string,
             street1: payload.street1,
             street2: payload.street2,
@@ -57,9 +58,9 @@ function Root({ contractorId }: { contractorId: string }) {
     <AddressForm
       heading={contractor?.type === 'Business' ? 'Business address' : 'Home address'}
       description={
-        contractor?.type === 'Business'
-          ? "Enter the contractor's business address."
-          : "Enter the contractor's home address."
+        contractor
+          ? `Enter ${contractorName(contractor)}’s ${contractor.type === 'Business' ? 'business' : 'home'} address.`
+          : ''
       }
       defaultValues={{
         street1: address?.street1 || '',

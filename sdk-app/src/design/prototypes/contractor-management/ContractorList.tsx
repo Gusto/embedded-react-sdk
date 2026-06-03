@@ -6,7 +6,7 @@ import { useContractorsDeleteMutation } from '@gusto/embedded-api-v-2025-11-15/r
 import { useContractorsUpdateOnboardingStatusMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsUpdateOnboardingStatus'
 import { useQueryClient } from '@tanstack/react-query'
 import type { EntityIds } from '../../../useEntities'
-import { contractorName } from '../../components/common/contractorName'
+import { contractorName } from '../../components/contractor/shared/contractorName'
 import {
   ContractorList as ContractorListView,
   type ContractorListTab,

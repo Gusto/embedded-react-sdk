@@ -3,6 +3,7 @@ import {
   ProfileDetailsForm,
   type ProfileDetailsFormValues,
 } from '../../shared/ProfileDetailsForm/ProfileDetailsForm'
+import { contractorName } from '../../shared/contractorName'
 import { useBase } from '@/components/Base/useBase'
 import { CONTRACTOR_TYPE } from '@/shared/constants'
 
@@ -32,11 +33,7 @@ export function ContractorDetailsForm({
     <ProfileDetailsForm
       contractor={contractor}
       heading="Edit basic details"
-      description={
-        isBusiness
-          ? 'Update the contractor\u2019s business information.'
-          : 'Update the contractor\u2019s personal information.'
-      }
+      description={`Update ${contractorName(contractor)}’s ${isBusiness ? 'business' : 'personal'} information.`}
       isPending={isPending}
       showStartDate
       showEmail

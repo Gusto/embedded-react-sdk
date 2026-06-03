@@ -1,6 +1,8 @@
 import type { Contractor } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor'
 import { AddressForm, type AddressFormValues } from '../../shared/AddressForm/AddressForm'
+import { contractorName } from '../../shared/contractorName'
 import { useBase } from '@/components/Base/useBase'
+import { CONTRACTOR_TYPE } from '@/shared/constants'
 
 interface ContractorAddressFormProps {
   contractor: Contractor
@@ -16,6 +18,7 @@ export function ContractorAddressForm({
   onSave,
 }: ContractorAddressFormProps) {
   const { baseSubmitHandler } = useBase()
+  const isBusiness = contractor.type === CONTRACTOR_TYPE.BUSINESS
 
   const handleSubmit = async (data: AddressFormValues) => {
     await baseSubmitHandler(data, async payload => {
@@ -26,7 +29,7 @@ export function ContractorAddressForm({
   return (
     <AddressForm
       heading="Edit address"
-      description="Update the contractor\u2019s home address."
+      description={`Update ${contractorName(contractor)}’s ${isBusiness ? 'business' : 'home'} address.`}
       defaultValues={{
         street1: contractor.address?.street1 ?? '',
         street2: contractor.address?.street2 ?? '',

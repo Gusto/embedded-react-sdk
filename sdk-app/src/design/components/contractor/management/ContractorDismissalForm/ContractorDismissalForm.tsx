@@ -2,7 +2,7 @@ import type { Contractor } from '@gusto/embedded-api-v-2025-11-15/models/compone
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { contractorName } from '../../../common/contractorName'
+import { contractorName } from '../../shared/contractorName'
 import { DatePickerField, Flex } from '@/components/Common'
 import { ActionsLayout } from '@/components/Common/ActionsLayout/ActionsLayout'
 import { useBase } from '@/components/Base/useBase'

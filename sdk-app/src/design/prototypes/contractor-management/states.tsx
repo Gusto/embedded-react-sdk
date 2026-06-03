@@ -575,7 +575,7 @@ export const components: PrototypeComponent[] = [
             startDate: '2024-03-15',
           }),
           heading: 'Edit basic details',
-          description: 'Update the contractor\u2019s personal information.',
+          description: 'Update Avery Garcia’s personal information.',
           showStartDate: true,
           showEmail: true,
         }),
@@ -596,7 +596,7 @@ export const components: PrototypeComponent[] = [
             startDate: '2023-11-01',
           }),
           heading: 'Edit basic details',
-          description: 'Update the contractor\u2019s business information.',
+          description: 'Update Pacific Design Co.’s business information.',
           showStartDate: true,
           showEmail: true,
         }),
@@ -610,10 +610,10 @@ export const components: PrototypeComponent[] = [
       {
         slug: 'existing',
         name: 'Existing address',
-        description: 'Edit the contractor\u2019s home address — fields prefilled from the record.',
+        description: 'Edit the contractor’s home address — fields prefilled from the record.',
         render: renderAddressForm({
           heading: 'Edit address',
-          description: 'Update the contractor\u2019s home address.',
+          description: 'Update Avery Garcia’s home address.',
           defaultValues: {
             street1: '123 Mission St',
             street2: 'Apt 4B',
@@ -629,7 +629,7 @@ export const components: PrototypeComponent[] = [
         description: 'No address on the contractor record — fields render empty.',
         render: renderAddressForm({
           heading: 'Edit address',
-          description: 'Update the contractor\u2019s home address.',
+          description: 'Update Avery Garcia’s home address.',
         }),
       },
     ],
@@ -644,7 +644,7 @@ export const components: PrototypeComponent[] = [
         description: 'Contractor receives a paper check — bank account fields hidden.',
         render: renderPaymentMethodForm({
           heading: 'Payment method',
-          description: 'Edit how this contractor gets paid.',
+          description: 'Edit how Avery Garcia gets paid.',
           defaultValues: {
             type: 'Check',
             name: '',
@@ -661,7 +661,7 @@ export const components: PrototypeComponent[] = [
           'Direct deposit with a bank account already on file. Account number renders as the masked default.',
         render: renderPaymentMethodForm({
           heading: 'Payment method',
-          description: 'Edit how this contractor gets paid.',
+          description: 'Edit how Avery Garcia gets paid.',
           defaultValues: {
             type: 'Direct Deposit',
             name: 'Primary checking',

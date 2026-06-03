@@ -41,7 +41,7 @@ function Root({ contractorId }: { contractorId: string }) {
       await updateAddress({
         request: {
           contractorUuid: contractorId,
-          requestBody: {
+          contractorAddressUpdateBody: {
             version: address?.version ?? '',
             street1: payload.street1,
             street2: payload.street2,

@@ -16,7 +16,7 @@ import { useContractorsUpdateMutation } from '@gusto/embedded-api-v-2025-11-15/r
 import { useContractorsUpdateOnboardingStatusMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/contractorsUpdateOnboardingStatus'
 import { useGustoEmbeddedContext } from '@gusto/embedded-api-v-2025-11-15/react-query/_context'
 import { useQueryClient } from '@tanstack/react-query'
-import { contractorName } from '../../../components/common/contractorName'
+import { contractorName } from '../../../components/contractor/shared/contractorName'
 import { ContractorAddress } from '../../../components/contractor/management/ContractorAddress/ContractorAddress'
 import { ContractorAddressForm } from '../../../components/contractor/management/ContractorAddressForm/ContractorAddressForm'
 import { ContractorDetails } from '../../../components/contractor/management/ContractorDetails/ContractorDetails'
@@ -225,7 +225,7 @@ function ProfileViewContent({ contractor }: { contractor: Contractor }) {
       await updateOnboardingStatus({
         request: {
           contractorUuid: contractor.uuid,
-          requestBody: { onboardingStatus: 'onboarding_completed' },
+          contractorOnboardingStatusUpdateRequestBody: { onboardingStatus: 'onboarding_completed' },
         },
       })
 
@@ -484,7 +484,7 @@ function EditAddressContent() {
     await updateAddress({
       request: {
         contractorUuid: contractor.uuid,
-        requestBody: {
+        contractorAddressUpdateBody: {
           version: address?.version ?? '',
           street1: data.street1,
           street2: data.street2,
@@ -540,7 +540,7 @@ function AddPaymentMethodContent() {
     await createBankAccount({
       request: {
         contractorUuid: contractor.uuid,
-        requestBody: {
+        contractorBankAccountCreateRequestBody: {
           name: data.name,
           routingNumber: data.routingNumber,
           accountNumber: data.accountNumber,
@@ -615,7 +615,7 @@ function EditPaymentMethodContent() {
     await createBankAccount({
       request: {
         contractorUuid: contractor.uuid,
-        requestBody: {
+        contractorBankAccountCreateRequestBody: {
           name: data.name,
           routingNumber: data.routingNumber,
           accountNumber: data.accountNumber,

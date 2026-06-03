@@ -165,7 +165,7 @@ export const components: PrototypeComponent[] = [
       {
         slug: 'individual',
         name: 'Individual contractor',
-        description: 'Greeting personalized with the contractor\u2019s first name.',
+        description: 'Greeting personalized with the contractor’s first name.',
         render: renderWelcome({ contractorName: 'Sasha', companyName: 'Acme Inc' }),
       },
       {
@@ -268,7 +268,7 @@ export const components: PrototypeComponent[] = [
         description: 'Default state — Check selected, bank account fields hidden.',
         render: renderPaymentMethodForm({
           heading: 'Set up your payment method',
-          description: 'Choose how you\u2019d like to get paid.',
+          description: 'Choose how you’d like to get paid.',
           defaultValues: {
             type: 'Check',
             name: '',
@@ -284,7 +284,7 @@ export const components: PrototypeComponent[] = [
         description: 'Direct deposit selected with no bank account on file — all fields empty.',
         render: renderPaymentMethodForm({
           heading: 'Set up your payment method',
-          description: 'Choose how you\u2019d like to get paid.',
+          description: 'Choose how you’d like to get paid.',
           defaultValues: {
             type: 'Direct Deposit',
             name: '',
@@ -301,7 +301,7 @@ export const components: PrototypeComponent[] = [
           'Returning contractor with a bank account already on file — account number renders as masked default.',
         render: renderPaymentMethodForm({
           heading: 'Set up your payment method',
-          description: 'Choose how you\u2019d like to get paid.',
+          description: 'Choose how you’d like to get paid.',
           defaultValues: {
             type: 'Direct Deposit',
             name: 'Primary checking',
