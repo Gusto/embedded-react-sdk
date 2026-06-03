@@ -1,7 +1,8 @@
 {
   "mcpServers": {
-    "embedded-payroll": {
-      "url": "https://embedded-payroll.readme.io/mcp"
+    "gusto-payroll": {
+      "url": "https://gusto-partner-api.staging.zp-int.com/sse",
+      "transport": "sse"
     }
   }
 }

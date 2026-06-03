@@ -1,36 +1,39 @@
 # Hit the Gusto API via the SDK Dev App proxy
 
-This command lets you test API behavior end-to-end against the demo company you already have running in the SDK Dev App. It teaches the agent the SDK app's auth-and-proxy setup, points it at the `embedded-payroll` MCP for endpoint discovery, and has it run real `curl` requests through the same Vite proxy the browser uses.
+This command lets you test API behavior end-to-end against the demo company you already have running in the SDK Dev App. It teaches the agent the SDK app's auth-and-proxy setup, points it at the `gusto-payroll` MCP for endpoint discovery, and has it run real `curl` requests through the same Vite proxy the browser uses.
 
 ## Prerequisites
 
-This command depends on the **Gusto Embedded Dev Assistant MCP** (server name `embedded-payroll`). The repo's [.cursor/mcp.json](.cursor/mcp.json) lists it at the project level, so on first open Cursor should prompt you to enable it. If it doesn't, or if you're on a different IDE, follow the official setup guide: [docs.gusto.com — Dev Assistant MCP](https://docs.gusto.com/embedded-payroll/docs/dev-assistant-mcp). For Cursor specifically, add to `~/.cursor/mcp.json`:
+This command depends on the **Gusto Embedded Dev Assistant MCP** (server name `gusto-payroll`). The repo's [.cursor/mcp.json](.cursor/mcp.json) points it at Gusto's internal staging endpoint, which has been more reliable in day-to-day use than the public partner-facing endpoint. On first open of the workspace, Cursor should prompt you to enable it. If it doesn't, add this to `~/.cursor/mcp.json`:
 
 ```json
 {
   "mcpServers": {
-    "embedded-payroll": {
-      "url": "https://embedded-payroll.readme.io/mcp"
+    "gusto-payroll": {
+      "url": "https://gusto-partner-api.staging.zp-int.com/sse",
+      "transport": "sse"
     }
   }
 }
 ```
 
-Then restart Cursor. Verify by asking the agent "what MCP tools do you have access to?" — you should see tools from the `embedded-payroll` server.
+Then restart Cursor. Verify by asking the agent "what MCP tools do you have access to?" — you should see tools from the `gusto-payroll` server.
+
+**Outside Gusto's network?** The staging endpoint isn't publicly reachable. Use the official partner-facing alternative described at [docs.gusto.com — Dev Assistant MCP](https://docs.gusto.com/embedded-payroll/docs/dev-assistant-mcp). It serves the same capabilities under the server name `embedded-payroll`. The `/sdk-proxy` walkthroughs below assume `gusto-payroll`; mentally swap that for `embedded-payroll` (or whatever local name you give it) if you're using the public MCP.
 
 ### First-install gotcha — toggle the MCP off, then on
 
-On the very first install (whether via the project-level prompt or an edit to `~/.cursor/mcp.json`), Cursor often shows `embedded-payroll` as enabled but doesn't actually load its tools until you manually toggle it. If the agent runs `/sdk-proxy` and reports it can't see any `embedded-payroll` tools even though you just clicked "Enable" or restarted Cursor, do this:
+On the very first install (whether via the project-level prompt or an edit to `~/.cursor/mcp.json`), Cursor often shows the MCP as enabled but doesn't actually load its tools until you manually toggle it. If the agent runs `/sdk-proxy` and reports it can't see any `gusto-payroll` tools even though you just clicked "Enable" or restarted Cursor, do this:
 
 1. Open Cursor Settings: `Cmd+,` (macOS) or `Ctrl+,` (Windows/Linux).
 2. In the left sidebar, click **Tools & MCP** (older Cursor builds may label this **MCP** or **Integrations**).
-3. Find the **embedded-payroll** entry in the list.
+3. Find the **gusto-payroll** entry in the list.
 4. Toggle it **off**, wait a second, then toggle it **on** again.
-5. Ask the agent again: "what `embedded-payroll` tools do you have?" — tools should now be listed.
+5. Ask the agent again: "what `gusto-payroll` tools do you have?" — tools should now be listed.
 
 This is a one-time step per workstation. Subsequent restarts pick up the MCP cleanly.
 
-If the MCP isn't installed when this command runs, the agent should stop after Step 2, surface the docs link, and walk the user through this toggle dance — never guess API paths from memory.
+If the MCP isn't installed when this command runs, the agent should stop after Step 2, surface the install instructions above, and walk the user through this toggle dance — never guess API paths from memory.
 
 The user's free-form arguments after `/sdk-proxy` describe the request in plain language. Examples:
 
@@ -202,9 +205,9 @@ EOF
 
 If the user's call mutates state and you observe a 401 / 404 / company-mismatch response, blow away the cache before retrying: `rm -f "$SDK_PROXY_CACHE"`.
 
-## Step 3 — Discover the endpoint via the `embedded-payroll` MCP
+## Step 3 — Discover the endpoint via the `gusto-payroll` MCP
 
-Never guess API paths, methods, request bodies, or query parameters from memory or training data — use the MCP. The MCP's exact tool surface evolves over time, so describe what you need by **capability**, not by hardcoded tool name. Inspect the MCP's available tools (e.g. "what `embedded-payroll` tools do you have?") and pick the right one for each capability below:
+Never guess API paths, methods, request bodies, or query parameters from memory or training data — use the MCP. The MCP's exact tool surface evolves over time, so describe what you need by **capability**, not by hardcoded tool name. Inspect the MCP's available tools (e.g. "what `gusto-payroll` tools do you have?") and pick the right one for each capability below:
 
 | Capability you need                                                                 | What to ask the MCP for                                                                                                                  |
 | ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
@@ -216,17 +219,17 @@ Never guess API paths, methods, request bodies, or query parameters from memory 
 
 Typical flow: discover the endpoint → fetch a curl template → adapt to the proxy URL → run. For onboarding or payroll sequences, validate the call order first so you don't fire half a sequence and leave entities in a broken state.
 
-**If the `embedded-payroll` MCP isn't loaded** (you don't see any of its tools), do **not** fall back to guessing paths from memory — that's the failure mode this command exists to prevent. Instead, stop and pause for the user with this exact message (adapt only the heading; keep the steps verbatim, since the toggle dance is the most common first-install fix):
+**If the `gusto-payroll` MCP isn't loaded** (you don't see any of its tools), do **not** fall back to guessing paths from memory — that's the failure mode this command exists to prevent. Instead, stop and pause for the user with this exact message (adapt only the heading; keep the steps verbatim, since the toggle dance is the most common first-install fix):
 
-> The `embedded-payroll` MCP doesn't appear to be loaded — I can't see any of its tools. This is almost always one of two things:
+> The `gusto-payroll` MCP doesn't appear to be loaded — I can't see any of its tools. This is almost always one of two things:
 >
-> **If you've never installed it before**, the repo ships a project-level config at [`.cursor/mcp.json`](.cursor/mcp.json). Open the workspace, accept Cursor's "Enable MCP server" prompt, then follow the toggle step below. Full setup guide: [docs.gusto.com — Dev Assistant MCP](https://docs.gusto.com/embedded-payroll/docs/dev-assistant-mcp).
+> **If you've never installed it before**, the repo ships a project-level config at [`.cursor/mcp.json`](.cursor/mcp.json) that points at Gusto's internal staging endpoint. Open the workspace, accept Cursor's "Enable MCP server" prompt, then follow the toggle step below. Outside Gusto's network? See the Prerequisites section of [`.claude/commands/sdk-proxy.md`](.claude/commands/sdk-proxy.md) for the public partner-facing alternative.
 >
 > **If you just installed it** (or just restarted Cursor after installing), you need to manually toggle the MCP off and back on before its tools become available. Cursor's first-install handshake has a known wrinkle here.
 >
 > 1. Open Cursor Settings: `Cmd+,` (macOS) or `Ctrl+,` (Windows/Linux).
 > 2. In the left sidebar, click **Tools & MCP** (older builds may say **MCP** or **Integrations**).
-> 3. Find the **embedded-payroll** entry.
+> 3. Find the **gusto-payroll** entry.
 > 4. Toggle it **off**, wait a second, then toggle it **on** again.
 > 5. Reply here when done and I'll retry the request.
 
@@ -288,7 +291,7 @@ User: /sdk-proxy create an employee named Alice Johnson
 Agent:
   1. Runs the discovery snippet → SDK_APP_PORT=5201 (5200 was taken by a sibling repo)
   2. Curls http://localhost:5201/api/v1/companies → 200, picks [0].uuid as company_id
-  3. Calls the embedded-payroll MCP's endpoint-discovery tool with "create employee" → POST /v1/companies/{company_id}/employees
+  3. Calls the gusto-payroll MCP's endpoint-discovery tool with "create employee" → POST /v1/companies/{company_id}/employees
   4. Calls the MCP's curl-template tool, swaps the host for http://localhost:5201/api, strips Authorization
   5. POSTs { first_name: "Alice", last_name: "Johnson", ... } via the proxy
   6. Parses 201 response, reports new employee UUID + version
