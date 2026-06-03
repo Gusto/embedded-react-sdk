@@ -835,10 +835,6 @@
         },
         {
           "method": "GET",
-          "path": "/v1/employees/:employeeId/home_addresses"
-        },
-        {
-          "method": "GET",
           "path": "/v1/employees/:employeeId/jobs"
         },
         {
@@ -1984,10 +1980,6 @@
         },
         {
           "method": "GET",
-          "path": "/v1/employees/:employeeId/home_addresses"
-        },
-        {
-          "method": "GET",
           "path": "/v1/employees/:employeeId/jobs"
         },
         {
@@ -2636,22 +2628,27 @@
     "Employee.EmployeeListFlow": {
       "blocks": [
         "Employee.DashboardFlow",
-        "Employee.OnboardingFlow",
+        "Employee.OnboardingExecutionFlow",
         "Employee.TerminationFlow",
         "EmployeeManagement.EmployeeList"
       ]
     },
-    "Employee.OnboardingFlow": {
+    "Employee.OnboardingExecutionFlow": {
       "blocks": [
         "Employee.Compensation",
         "Employee.Deductions",
         "Employee.EmployeeDocuments",
-        "Employee.EmployeeList",
         "Employee.OnboardingSummary",
         "Employee.PaymentMethod",
         "Employee.Profile",
         "EmployeeOnboarding.FederalTaxes",
         "EmployeeOnboarding.StateTaxes"
+      ]
+    },
+    "Employee.OnboardingFlow": {
+      "blocks": [
+        "Employee.EmployeeList",
+        "Employee.OnboardingExecutionFlow"
       ]
     },
     "Employee.SelfOnboardingFlow": {
@@ -2692,7 +2689,7 @@
         "EmployeeManagement.DashboardFlow",
         "EmployeeManagement.EmployeeList",
         "EmployeeManagement.TerminationFlow",
-        "EmployeeOnboarding.OnboardingFlow"
+        "EmployeeOnboarding.OnboardingExecutionFlow"
       ]
     },
     "EmployeeManagement.TerminationFlow": {
@@ -2703,17 +2700,22 @@
         "Payroll.PayrollLanding"
       ]
     },
-    "EmployeeOnboarding.OnboardingFlow": {
+    "EmployeeOnboarding.OnboardingExecutionFlow": {
       "blocks": [
         "Employee.EmployeeDocuments",
         "Employee.PaymentMethod",
         "EmployeeOnboarding.Compensation",
         "EmployeeOnboarding.Deductions",
-        "EmployeeOnboarding.EmployeeList",
         "EmployeeOnboarding.FederalTaxes",
         "EmployeeOnboarding.OnboardingSummary",
         "EmployeeOnboarding.Profile",
         "EmployeeOnboarding.StateTaxes"
+      ]
+    },
+    "EmployeeOnboarding.OnboardingFlow": {
+      "blocks": [
+        "EmployeeOnboarding.EmployeeList",
+        "EmployeeOnboarding.OnboardingExecutionFlow"
       ]
     },
     "EmployeeOnboarding.SelfOnboardingFlow": {

@@ -24,11 +24,11 @@ import { formatStreetForDisplay, getCityStateZip } from '@/helpers/formattedStri
 function HomeAddressCourtesyWithholdingBlock({
   CourtesyWithholding,
   formHook,
-  tHa,
+  t,
 }: {
   CourtesyWithholding: UseHomeAddressFormReady['form']['Fields']['CourtesyWithholding']
   formHook: UseHomeAddressFormReady
-  tHa: TFunction<'Employee.HomeAddress'>
+  t: TFunction<'Employee.HomeAddress.Management'>
 }) {
   const Components = useComponentContext()
   const { control } = formHook.form.hookFormInternals.formMethods
@@ -37,13 +37,13 @@ function HomeAddressCourtesyWithholdingBlock({
   return (
     <>
       <CourtesyWithholding
-        label={tHa('courtesyWithholdingLabel')}
+        label={t('form.courtesyWithholdingLabel')}
         description={
           <>
-            {tHa('courtesyWithholdingDescription')}
+            {t('form.courtesyWithholdingDescription')}
             <Trans
-              t={tHa}
-              i18nKey="learnMoreCta"
+              t={t}
+              i18nKey="form.learnMoreCta"
               components={{
                 LearnMoreLink: <Components.Link />,
               }}
@@ -52,8 +52,8 @@ function HomeAddressCourtesyWithholdingBlock({
         }
       />
       {courtesyWithholdingEnabled ? (
-        <Components.Alert label={tHa('withholdingTitle')} status="warning">
-          <Trans t={tHa} i18nKey="withholdingNote" />
+        <Components.Alert label={t('form.withholdingTitle')} status="warning">
+          <Trans t={t} i18nKey="form.withholdingNote" />
         </Components.Alert>
       ) : null}
     </>
@@ -89,7 +89,6 @@ export function HomeAddressView({
   isDeletePending = false,
 }: HomeAddressViewProps) {
   const { t } = useTranslation('Employee.HomeAddress.Management')
-  const { t: tHa } = useTranslation('Employee.HomeAddress')
   const Components = useComponentContext()
   const [addressModal, setAddressModal] = useState<'edit' | 'create' | null>(null)
   const [deleteConfirmUuid, setDeleteConfirmUuid] = useState<string | null>(null)
@@ -153,8 +152,8 @@ export function HomeAddressView({
   } = createForm
 
   const zipValidation = {
-    [HomeAddressErrorCodes.REQUIRED]: tHa('validations.zip'),
-    [HomeAddressErrorCodes.INVALID_ZIP]: tHa('validations.zip'),
+    [HomeAddressErrorCodes.REQUIRED]: t('form.validations.zip'),
+    [HomeAddressErrorCodes.INVALID_ZIP]: t('form.validations.zip'),
   }
 
   const startDateValidation = {
@@ -378,7 +377,7 @@ export function HomeAddressView({
               ) : null}
             </Flex>
           ) : (
-            <Components.Text>{tHa('formTitle')}</Components.Text>
+            <Components.Text>{t('form.noCurrentAddress')}</Components.Text>
           )}
           {pendingFutureAddress ? (
             <Components.Alert status="warning" label={t('changePendingTitle')}>
@@ -485,35 +484,35 @@ export function HomeAddressView({
                   />
                 ) : null}
                 <EditStreet1
-                  label={tHa('street1')}
+                  label={t('form.street1')}
                   validationMessages={{
-                    [HomeAddressErrorCodes.REQUIRED]: tHa('validations.street1'),
+                    [HomeAddressErrorCodes.REQUIRED]: t('form.validations.street1'),
                   }}
                 />
                 <EditStreet2
-                  label={tHa('street2')}
+                  label={t('form.street2')}
                   validationMessages={{
-                    [HomeAddressErrorCodes.REQUIRED]: tHa('validations.street1'),
+                    [HomeAddressErrorCodes.REQUIRED]: t('form.validations.street1'),
                   }}
                 />
                 <EditCity
-                  label={tHa('city')}
+                  label={t('form.city')}
                   validationMessages={{
-                    [HomeAddressErrorCodes.REQUIRED]: tHa('validations.city'),
+                    [HomeAddressErrorCodes.REQUIRED]: t('form.validations.city'),
                   }}
                 />
                 <EditState
-                  label={tHa('state')}
+                  label={t('form.state')}
                   validationMessages={{
-                    [HomeAddressErrorCodes.REQUIRED]: tHa('validations.state'),
+                    [HomeAddressErrorCodes.REQUIRED]: t('form.validations.state'),
                   }}
                   portalContainer={addressModalPortal}
                 />
-                <EditZip label={tHa('zip')} validationMessages={zipValidation} />
+                <EditZip label={t('form.zip')} validationMessages={zipValidation} />
                 <HomeAddressCourtesyWithholdingBlock
                   CourtesyWithholding={EditCourtesyWithholding}
                   formHook={editHomeAddressForm}
-                  tHa={tHa}
+                  t={t}
                 />
               </Grid>
             </SDKFormProvider>
@@ -536,35 +535,35 @@ export function HomeAddressView({
                   />
                 ) : null}
                 <CreateStreet1
-                  label={tHa('street1')}
+                  label={t('form.street1')}
                   validationMessages={{
-                    [HomeAddressErrorCodes.REQUIRED]: tHa('validations.street1'),
+                    [HomeAddressErrorCodes.REQUIRED]: t('form.validations.street1'),
                   }}
                 />
                 <CreateStreet2
-                  label={tHa('street2')}
+                  label={t('form.street2')}
                   validationMessages={{
-                    [HomeAddressErrorCodes.REQUIRED]: tHa('validations.street1'),
+                    [HomeAddressErrorCodes.REQUIRED]: t('form.validations.street1'),
                   }}
                 />
                 <CreateCity
-                  label={tHa('city')}
+                  label={t('form.city')}
                   validationMessages={{
-                    [HomeAddressErrorCodes.REQUIRED]: tHa('validations.city'),
+                    [HomeAddressErrorCodes.REQUIRED]: t('form.validations.city'),
                   }}
                 />
                 <CreateState
-                  label={tHa('state')}
+                  label={t('form.state')}
                   validationMessages={{
-                    [HomeAddressErrorCodes.REQUIRED]: tHa('validations.state'),
+                    [HomeAddressErrorCodes.REQUIRED]: t('form.validations.state'),
                   }}
                   portalContainer={addressModalPortal}
                 />
-                <CreateZip label={tHa('zip')} validationMessages={zipValidation} />
+                <CreateZip label={t('form.zip')} validationMessages={zipValidation} />
                 <HomeAddressCourtesyWithholdingBlock
                   CourtesyWithholding={CreateCourtesyWithholding}
                   formHook={createHomeAddressForm}
-                  tHa={tHa}
+                  t={t}
                 />
               </Grid>
             </SDKFormProvider>

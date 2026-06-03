@@ -279,7 +279,7 @@ describe('Dashboard', () => {
     )
   })
 
-  it('emits EMPLOYEE_HOME_ADDRESS event when clicking manage home address', async () => {
+  it('emits the scoped EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_REQUESTED event when clicking manage home address', async () => {
     const user = userEvent.setup()
 
     renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
@@ -292,9 +292,10 @@ describe('Dashboard', () => {
     assertDefined(homeAddressBox)
     await user.click(within(homeAddressBox).getByRole('button', { name: 'Manage' }))
 
-    expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_HOME_ADDRESS, {
-      employeeId: 'employee-123',
-    })
+    expect(onEvent).toHaveBeenCalledWith(
+      componentEvents.EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_REQUESTED,
+      { employeeId: 'employee-123' },
+    )
   })
 
   it('emits EMPLOYEE_WORK_ADDRESS event when clicking manage work address', async () => {

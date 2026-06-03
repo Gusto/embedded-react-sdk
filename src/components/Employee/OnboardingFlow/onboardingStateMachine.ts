@@ -1,188 +1,61 @@
-import { transition, reduce, state, guard } from 'robot3'
+import { transition, reduce, state } from 'robot3'
 import {
-  FederalTaxesContextual,
-  StateTaxesContextual,
-  type OnboardingContextInterface,
   EmployeeListContextual,
+  OnboardingExecutionFlowContextual,
+  type OnboardingContextInterface,
 } from './OnboardingFlowComponents'
-import {
-  componentEvents,
-  EmployeeSelfOnboardingStatuses,
-  EmployeeOnboardingStatus,
-} from '@/shared/constants'
+import { componentEvents, type EmployeeOnboardingStatus } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
-import { CompensationContextual } from '@/components/Employee/Compensation'
-import { DeductionsContextual } from '@/components/Employee/OnboardingFlow/OnboardingFlowComponents'
-import { EmployeeDocumentsContextual } from '@/components/Employee/Documents/onboarding/EmployeeDocuments'
-import { PaymentMethodContextual } from '@/components/Employee/PaymentMethod'
-import { ProfileContextual } from '@/components/Employee/Profile/onboarding/Profile'
-import { OnboardingSummaryContextual } from '@/components/Employee/OnboardingSummary'
 
 type EventPayloads = {
   [componentEvents.EMPLOYEE_UPDATE]: {
     employeeId: string
     onboardingStatus: (typeof EmployeeOnboardingStatus)[keyof typeof EmployeeOnboardingStatus]
   }
-  [componentEvents.EMPLOYEE_PROFILE_DONE]: {
-    uuid: string
-    onboardingStatus: (typeof EmployeeOnboardingStatus)[keyof typeof EmployeeOnboardingStatus]
-    startDate: string
-  }
 }
 
-const createReducer = (props: Partial<OnboardingContextInterface>) => {
-  return (ctx: OnboardingContextInterface): OnboardingContextInterface => ({
+const returnToIndex = reduce(
+  (ctx: OnboardingContextInterface): OnboardingContextInterface => ({
     ...ctx,
-    ...props,
-  })
-}
-
-const cancelTransition = (target: string, component?: React.ComponentType) =>
-  transition(
-    componentEvents.CANCEL,
-    target,
-    reduce(createReducer({ component: component ?? EmployeeListContextual })),
-  )
-
-const employeeDocumentsConfigCompletedStatuses: Set<
-  (typeof EmployeeOnboardingStatus)[keyof typeof EmployeeOnboardingStatus]
-> = new Set([
-  EmployeeOnboardingStatus.SELF_ONBOARDING_COMPLETED_BY_EMPLOYEE,
-  EmployeeOnboardingStatus.SELF_ONBOARDING_AWAITING_ADMIN_REVIEW,
-  EmployeeOnboardingStatus.ONBOARDING_COMPLETED,
-])
-
-const employeeDocumentsGuard = (ctx: OnboardingContextInterface) => {
-  if (!ctx.withEmployeeI9) return false
-  if (ctx.onboardingStatus && employeeDocumentsConfigCompletedStatuses.has(ctx.onboardingStatus))
-    return false
-  return true
-}
-
-const selfOnboardingGuard = (ctx: OnboardingContextInterface) =>
-  ctx.onboardingStatus
-    ? !(
-        // prettier-ignore
-        // @ts-expect-error: onboarding_status during runtime can be one of self onboarding statuses
-        (EmployeeSelfOnboardingStatuses.has(ctx.onboardingStatus) ||
-        ctx.onboardingStatus === EmployeeOnboardingStatus.SELF_ONBOARDING_PENDING_INVITE)
-      )
-    : true
+    component: EmployeeListContextual,
+    employeeId: undefined,
+    onboardingStatus: undefined,
+  }),
+)
 
 export const employeeOnboardingMachine = {
   index: state<MachineTransition>(
     transition(
       componentEvents.EMPLOYEE_CREATE,
-      'employeeProfile',
-      reduce(createReducer({ component: ProfileContextual, employeeId: undefined })),
+      'executing',
+      reduce(
+        (ctx: OnboardingContextInterface): OnboardingContextInterface => ({
+          ...ctx,
+          component: OnboardingExecutionFlowContextual,
+          employeeId: undefined,
+        }),
+      ),
     ),
     transition(
       componentEvents.EMPLOYEE_UPDATE,
-      'employeeProfile',
-
+      'executing',
       reduce(
         (
           ctx: OnboardingContextInterface,
           ev: MachineEventType<EventPayloads, typeof componentEvents.EMPLOYEE_UPDATE>,
-        ): OnboardingContextInterface => {
-          return {
-            ...ctx,
-            component: ProfileContextual,
-            employeeId: ev.payload.employeeId,
-            onboardingStatus: ev.payload.onboardingStatus,
-          }
-        },
+        ): OnboardingContextInterface => ({
+          ...ctx,
+          component: OnboardingExecutionFlowContextual,
+          employeeId: ev.payload.employeeId,
+          onboardingStatus: ev.payload.onboardingStatus,
+        }),
       ),
     ),
     transition(componentEvents.EMPLOYEE_ONBOARDING_DONE, 'final'),
   ),
-  employeeProfile: state<MachineTransition>(
-    transition(
-      componentEvents.EMPLOYEE_PROFILE_DONE,
-      'compensation',
-      reduce(
-        (
-          ctx: OnboardingContextInterface,
-          ev: MachineEventType<EventPayloads, typeof componentEvents.EMPLOYEE_PROFILE_DONE>,
-        ): OnboardingContextInterface => ({
-          ...ctx,
-          component: CompensationContextual,
-          employeeId: ev.payload.uuid,
-          onboardingStatus: ev.payload.onboardingStatus,
-          startDate: ev.payload.startDate,
-        }),
-      ),
-    ),
-    cancelTransition('index'),
-  ),
-  compensation: state<MachineTransition>(
-    transition(
-      componentEvents.EMPLOYEE_COMPENSATION_DONE,
-      'federalTaxes',
-      reduce(createReducer({ component: FederalTaxesContextual })),
-      guard(selfOnboardingGuard),
-    ),
-    transition(
-      componentEvents.EMPLOYEE_COMPENSATION_DONE,
-      'deductions',
-      reduce(createReducer({ component: DeductionsContextual })),
-    ),
-    cancelTransition('index'),
-  ),
-  federalTaxes: state<MachineTransition>(
-    transition(
-      componentEvents.EMPLOYEE_FEDERAL_TAXES_DONE,
-      'stateTaxes',
-      reduce(createReducer({ component: StateTaxesContextual })),
-      guard(selfOnboardingGuard),
-    ),
-    cancelTransition('index'),
-  ),
-  stateTaxes: state<MachineTransition>(
-    transition(
-      componentEvents.EMPLOYEE_STATE_TAXES_DONE,
-      'paymentMethod',
-      reduce(createReducer({ component: PaymentMethodContextual })),
-      guard(selfOnboardingGuard),
-    ),
-    cancelTransition('index'),
-  ),
-  paymentMethod: state<MachineTransition>(
-    transition(
-      componentEvents.EMPLOYEE_PAYMENT_METHOD_DONE,
-      'deductions',
-      reduce(createReducer({ component: DeductionsContextual })),
-    ),
-    cancelTransition('index'),
-  ),
-  deductions: state<MachineTransition>(
-    transition(
-      componentEvents.EMPLOYEE_DEDUCTION_DONE,
-      'employeeDocuments',
-      reduce(createReducer({ component: EmployeeDocumentsContextual })),
-      guard(employeeDocumentsGuard),
-    ),
-    transition(
-      componentEvents.EMPLOYEE_DEDUCTION_DONE,
-      'summary',
-      reduce(createReducer({ component: OnboardingSummaryContextual })),
-    ),
-    cancelTransition('index'),
-  ),
-  employeeDocuments: state<MachineTransition>(
-    transition(
-      componentEvents.EMPLOYEE_DOCUMENTS_DONE,
-      'summary',
-      reduce(createReducer({ component: OnboardingSummaryContextual })),
-    ),
-    cancelTransition('index'),
-  ),
-  summary: state<MachineTransition>(
-    transition(
-      componentEvents.EMPLOYEES_LIST,
-      'index',
-      reduce(createReducer({ component: EmployeeListContextual, employeeId: undefined })),
-    ),
+  executing: state<MachineTransition>(
+    transition(componentEvents.EMPLOYEES_LIST, 'index', returnToIndex),
+    transition(componentEvents.CANCEL, 'index', returnToIndex),
   ),
   final: state<MachineTransition>(),
 }
