@@ -21,33 +21,34 @@ interface TransitionPayrollAlertProps {
   onEvent: OnEventType<EventType, unknown>
 }
 
-interface RootProps {
-  companyId: string
-  groupedPayPeriods: TransitionPayPeriodGroup[]
-}
-
 const COMPONENT_NAME = 'Payroll.TransitionPayrollAlert'
 
 export function TransitionPayrollAlert({ companyId, onEvent }: TransitionPayrollAlertProps) {
+  return (
+    <BaseComponent onEvent={onEvent}>
+      <Root companyId={companyId} />
+    </BaseComponent>
+  )
+}
+
+function Root({ companyId }: { companyId: string }) {
+  const { onEvent, baseSubmitHandler } = useBase()
   const { observability } = useObservability()
 
-  const { unprocessedPayPeriods, error: payPeriodsError } =
-    useUnprocessedTransitionPayPeriods(companyId)
+  const { unprocessedPayPeriods } = useUnprocessedTransitionPayPeriods(companyId)
 
   const { data: paySchedulesData, error: paySchedulesError } = usePaySchedulesGetAll({ companyId })
 
-  const gateError = payPeriodsError ?? paySchedulesError
-
   useEffect(() => {
-    if (!gateError) return
-    onEvent(componentEvents.ERROR, gateError)
-    const sdkError = normalizeToSDKError(gateError)
+    if (!paySchedulesError) return
+    onEvent(componentEvents.ERROR, paySchedulesError)
+    const sdkError = normalizeToSDKError(paySchedulesError)
     observability?.onError?.({
       ...sdkError,
       timestamp: Date.now(),
       componentName: COMPONENT_NAME,
     })
-  }, [gateError, onEvent, observability])
+  }, [paySchedulesError, onEvent, observability])
 
   const groupedPayPeriods = useMemo<TransitionPayPeriodGroup[]>(() => {
     if (!paySchedulesData) return []
@@ -67,20 +68,6 @@ export function TransitionPayrollAlert({ companyId, onEvent }: TransitionPayroll
       return { payScheduleUuid, payScheduleName, payPeriods }
     })
   }, [unprocessedPayPeriods, paySchedulesData])
-
-  if (!paySchedulesData || groupedPayPeriods.length === 0) {
-    return null
-  }
-
-  return (
-    <BaseComponent onEvent={onEvent}>
-      <Root companyId={companyId} groupedPayPeriods={groupedPayPeriods} />
-    </BaseComponent>
-  )
-}
-
-function Root({ companyId, groupedPayPeriods }: RootProps) {
-  const { onEvent, baseSubmitHandler } = useBase()
 
   const [showSkipSuccessAlert, setShowSkipSuccessAlert] = useState(false)
   const [skippingPayPeriod, setSkippingPayPeriod] = useState<PayPeriod | null>(null)
@@ -128,6 +115,10 @@ function Root({ companyId, groupedPayPeriods }: RootProps) {
   const handleDismissSkipSuccessAlert = useCallback(() => {
     setShowSkipSuccessAlert(false)
   }, [])
+
+  if (!paySchedulesData || groupedPayPeriods.length === 0) {
+    return null
+  }
 
   return (
     <TransitionPayrollAlertPresentation

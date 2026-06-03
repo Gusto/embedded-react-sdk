@@ -12,7 +12,6 @@
   },
   "payrollsListLabel": "Payrolls",
   "runPayrollTitle": "Run Payroll",
-  "runPayrollDisabledByTransitionTitle": "A pending transition payroll must be run or skipped before running this payroll.",
   "submitPayrollCta": "Review and submit",
   "skipPayrollCta": "Skip payroll",
   "payrollMenuLabel": "Payroll actions",

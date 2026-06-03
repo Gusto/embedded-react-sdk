@@ -403,17 +403,13 @@ describe('PayrollListPresentation', () => {
       payrollType: 'Off-Cycle',
     }
 
-    const disabledByTransitionName =
-      'A pending transition payroll must be run or skipped before running this payroll.'
-
     it('disables the run payroll button on regular rows when transitions are unprocessed', async () => {
       renderWithProviders(
         <PayrollListPresentation {...defaultProps} hasUnprocessedTransitions={true} />,
       )
 
       await screen.findByRole('heading', { name: 'Upcoming payroll' })
-      const runPayrollButton = screen.getByRole('button', { name: disabledByTransitionName })
-      expect(runPayrollButton).toBeDisabled()
+      expect(screen.getByRole('button', { name: 'Run Payroll' })).toBeDisabled()
     })
 
     it('does not disable the run payroll button on regular rows when no transitions exist', async () => {
@@ -435,10 +431,10 @@ describe('PayrollListPresentation', () => {
       )
 
       await screen.findByRole('heading', { name: 'Upcoming payroll' })
-      const disabledRegularButton = screen.getByRole('button', { name: disabledByTransitionName })
-      const enabledOffCycleButton = screen.getByRole('button', { name: 'Run Payroll' })
-      expect(disabledRegularButton).toBeDisabled()
-      expect(enabledOffCycleButton).not.toBeDisabled()
+      const runButtons = screen.getAllByRole('button', { name: 'Run Payroll' })
+      // First row is the Regular payroll (disabled); second is Off-Cycle (enabled).
+      expect(runButtons[0]).toBeDisabled()
+      expect(runButtons[1]).not.toBeDisabled()
     })
   })
 

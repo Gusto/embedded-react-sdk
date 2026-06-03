@@ -1186,6 +1186,10 @@
       "endpoints": [
         {
           "method": "GET",
+          "path": "/v1/companies/:companyId/pay_periods"
+        },
+        {
+          "method": "GET",
           "path": "/v1/companies/:companyId/pay_schedules"
         },
         {

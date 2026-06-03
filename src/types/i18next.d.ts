@@ -3054,7 +3054,6 @@ export interface PayrollPayrollList{
 };
 "payrollsListLabel":string;
 "runPayrollTitle":string;
-"runPayrollDisabledByTransitionTitle":string;
 "submitPayrollCta":string;
 "skipPayrollCta":string;
 "payrollMenuLabel":string;

@@ -125,13 +125,12 @@ function MyComponent() {
 
 #### Events
 
-| Event type                        | Description                                                                               | Data                  |
-| --------------------------------- | ----------------------------------------------------------------------------------------- | --------------------- |
-| RUN_PAYROLL_SELECTED              | Fired when user selects a payroll to run                                                  | { payrollId: string } |
-| REVIEW_PAYROLL                    | Fired when user selects to review a payroll                                               | { payrollId: string } |
-| PAYROLL_SKIPPED                   | Fired when a payroll is successfully skipped                                              | { payrollId: string } |
-| RUN_PAYROLL_BLOCKERS_VIEW_ALL     | Fired when user views all payroll blockers                                                | None                  |
-| RUN_PAYROLL_BLOCKED_BY_TRANSITION | Fired when the list disables Run Payroll on regular rows due to an unprocessed transition | None                  |
+| Event type                    | Description                                  | Data                  |
+| ----------------------------- | -------------------------------------------- | --------------------- |
+| RUN_PAYROLL_SELECTED          | Fired when user selects a payroll to run     | { payrollId: string } |
+| REVIEW_PAYROLL                | Fired when user selects to review a payroll  | { payrollId: string } |
+| PAYROLL_SKIPPED               | Fired when a payroll is successfully skipped | { payrollId: string } |
+| RUN_PAYROLL_BLOCKERS_VIEW_ALL | Fired when user views all payroll blockers   | None                  |
 
 ### Payroll.PayrollHistory
 

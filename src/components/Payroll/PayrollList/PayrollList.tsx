@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import {
   usePayrollsListSuspense,
@@ -117,12 +117,6 @@ const Root = ({ companyId, onEvent }: PayrollListBlockProps) => {
   const wireInRequests = wireInRequestsData.wireInRequestList ?? []
 
   const { hasUnprocessedTransitions } = useUnprocessedTransitionPayPeriods(companyId)
-
-  useEffect(() => {
-    if (hasUnprocessedTransitions) {
-      onEvent(componentEvents.RUN_PAYROLL_BLOCKED_BY_TRANSITION)
-    }
-  }, [hasUnprocessedTransitions, onEvent])
 
   const { mutateAsync: skipPayroll } = usePayrollsSkipMutation()
   const { mutateAsync: deletePayrollMutation } = usePayrollsDeleteMutation()

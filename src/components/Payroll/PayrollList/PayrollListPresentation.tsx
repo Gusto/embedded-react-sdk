@@ -200,8 +200,6 @@ export const PayrollListPresentation = ({
     const isRegular = !payroll.offCycle
     const isDisabledByTransition = isRegular && hasUnprocessedTransitions
 
-    const ariaLabel = isDisabledByTransition ? t('runPayrollDisabledByTransitionTitle') : undefined
-
     return calculatedAt ? (
       <Button
         isLoading={isProcessingSkipPayroll}
@@ -210,7 +208,6 @@ export const PayrollListPresentation = ({
           onSubmitPayroll({ payrollUuid, payPeriod })
         }}
         title={t('submitPayrollCta')}
-        aria-label={ariaLabel}
         variant="secondary"
       >
         {t('submitPayrollCta')}
@@ -223,7 +220,6 @@ export const PayrollListPresentation = ({
           onRunPayroll({ payrollUuid, payPeriod })
         }}
         title={t('runPayrollTitle')}
-        aria-label={ariaLabel}
         variant="secondary"
       >
         {t('runPayrollTitle')}

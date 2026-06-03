@@ -5,7 +5,6 @@ import { PayrollList } from './PayrollList'
 import { server } from '@/test/mocks/server'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { API_BASE_URL } from '@/test/constants'
-import { componentEvents } from '@/shared/constants'
 
 const sharedHandlers = [
   http.get(`${API_BASE_URL}/v1/companies/:company_id/pay_schedules`, () => {
@@ -114,7 +113,7 @@ describe('PayrollList', () => {
       payroll: { processed: false, payroll_type: 'transition' },
     }
 
-    it('disables Run Payroll on regular rows and emits the blocker event when an unprocessed transition exists', async () => {
+    it('disables Run Payroll on regular rows when an unprocessed transition exists', async () => {
       server.use(
         http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls`, () =>
           HttpResponse.json([regularPayroll]),
@@ -133,17 +132,10 @@ describe('PayrollList', () => {
         ),
       )
 
-      const onEvent = vi.fn()
-      renderWithProviders(<PayrollList companyId="company-123" onEvent={onEvent} />)
+      renderWithProviders(<PayrollList {...defaultProps} />)
 
-      const runPayrollButton = await screen.findByRole('button', {
-        name: /pending transition payroll must be run or skipped/i,
-      })
+      const runPayrollButton = await screen.findByRole('button', { name: 'Run Payroll' })
       expect(runPayrollButton).toBeDisabled()
-
-      await waitFor(() => {
-        expect(onEvent).toHaveBeenCalledWith(componentEvents.RUN_PAYROLL_BLOCKED_BY_TRANSITION)
-      })
     })
 
     it('does not disable Run Payroll when there are no unprocessed transitions', async () => {
@@ -154,12 +146,10 @@ describe('PayrollList', () => {
         ...sharedHandlers,
       )
 
-      const onEvent = vi.fn()
-      renderWithProviders(<PayrollList companyId="company-123" onEvent={onEvent} />)
+      renderWithProviders(<PayrollList {...defaultProps} />)
 
       const runPayrollButton = await screen.findByRole('button', { name: 'Run Payroll' })
       expect(runPayrollButton).not.toBeDisabled()
-      expect(onEvent).not.toHaveBeenCalledWith(componentEvents.RUN_PAYROLL_BLOCKED_BY_TRANSITION)
     })
   })
 
