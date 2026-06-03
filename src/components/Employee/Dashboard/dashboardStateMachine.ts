@@ -63,7 +63,7 @@ export const dashboardStateMachine = {
       ),
     ),
     transition(
-      componentEvents.EMPLOYEE_HOME_ADDRESS,
+      componentEvents.EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_REQUESTED,
       'homeAddress',
       reduce(
         (ctx: DashboardContextInterface): DashboardContextInterface => ({
@@ -253,7 +253,13 @@ export const dashboardStateMachine = {
       ),
     ),
   ),
-  homeAddress: state<MachineTransition>(transition(componentEvents.CANCEL, 'index', returnToIndex)),
+  homeAddress: state<MachineTransition>(
+    transition(
+      componentEvents.EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_CANCELLED,
+      'index',
+      returnToIndex,
+    ),
+  ),
   workAddress: state<MachineTransition>(transition(componentEvents.CANCEL, 'index', returnToIndex)),
   federalTaxes: state<MachineTransition>(
     transition(componentEvents.CANCEL, 'index', returnToIndex),

@@ -15,6 +15,18 @@ You write partner-facing documentation for a new SDK form hook in the
 embedded-react-sdk. The hook name and file path are provided in the user's
 message.
 
+## Workspace ownership
+
+You write documentation files. You do not control the git workspace. **Do not
+run `git` commands. Do not stage. Do not commit. Do not push. Do not amend.**
+The parent agent owns staging and commits; it will pick up your edits as part
+of whatever commit grouping it chooses.
+
+You may run formatters (`prettier`, etc.) against the files you edited if it
+keeps your output consistent with the rest of the repo. You may not run lint,
+tests, or any other workspace-mutating command beyond your edits and
+optional formatting.
+
 ## Step 1 — Read the reference docs before writing anything
 
 Read these files in full. Your output must match their structure, section order,
@@ -73,6 +85,6 @@ Voice and style rules (from CLAUDE.md `docs/` section):
 
 Return:
 
-- The path to the created doc file
+- The path to the created doc file (unstaged — see "Workspace ownership" above)
 - Confirmation that `docs/hooks/hooks.md` was updated
 - Any fields or behaviors you skipped with reasons

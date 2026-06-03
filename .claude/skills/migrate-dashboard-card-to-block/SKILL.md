@@ -572,13 +572,19 @@ The block does **not** read from `Employee.Dashboard`. Whatever the card surface
 
 ### When the feature already has multiple namespaces
 
-Some features have `Employee.<Feature>.json` (the onboarding/form namespace) plus `Employee.<Feature>.Management.json` (the management namespace). Pattern from [`HomeAddress.tsx`](../../../src/components/Employee/HomeAddress/management/HomeAddress.tsx):
+Some features have `Employee.<Feature>.json` (the onboarding/form namespace) plus `Employee.<Feature>.Management.json` (the management namespace). The default is to load **only** the management namespace from the block, the card, and the edit screen:
 
 ```tsx
-useI18n(['Employee.HomeAddress.Management', 'Employee.HomeAddress'])
+useI18n('Employee.HomeAddress.Management')
 ```
 
-The management block can load both: its own `Management` namespace for management-specific strings, plus the feature's base namespace for strings shared with the edit/form path. The block's _new_ strings always go into `.Management.json`; reuse from the base namespace only for strings that genuinely live in both contexts (e.g. validation messages on a form field shared with onboarding). When in doubt, copy the string into `.Management.json` — duplication is cheaper than coupling the block to onboarding's namespace.
+Don't reach for the base namespace just because a shared form **hook** is rendered in both places. Form hooks like `useHomeAddressForm` emit field _components_ (e.g. `Street1`, `City`, `Zip`); they don't render any text themselves. Each call site passes its own `label` and `validationMessages` props from whatever namespace is convenient. The onboarding consumer reads from `Employee.HomeAddress`, the management consumer reads from `Employee.HomeAddress.Management`, and the two never need to share a translation namespace just because they share field components.
+
+Concrete heuristic — only dual-load the base namespace if **a runtime-shared piece of UI** (a shared presentational component that itself calls `useTranslation('Employee.<Feature>')`) is rendered inside the management path. If the management-side consumer of those strings is only ever rendered in the management path (e.g. a `<Feature>View` that exists solely under `management/`), copy the strings it needs into `Employee.<Feature>.Management.json` and read everything from one namespace. Don't reach across.
+
+Concretely: the field labels, validation messages, and courtesy-withholding copy that `HomeAddress/management/HomeAddressView.tsx` renders are duplicated into `Employee.HomeAddress.Management.json` rather than dual-loading `Employee.HomeAddress`, because `HomeAddressView` is exclusive to the management path. Onboarding's `EmployeeProfile`/`AdminProfile` keep reading the same keys from `Employee.HomeAddress`.
+
+Duplication is the cost; it buys a fully self-contained block. A partner who only overrides `Employee.HomeAddress.Management` via `useComponentDictionary` gets a coherent result without having to discover that they also need to override `Employee.HomeAddress`. When the same copy needs to change in both contexts (rare for field labels; almost never for validation messages), the change is two edits instead of one — that's a worthwhile trade.
 
 ### Strings to move out of `Employee.Dashboard` during migration
 
