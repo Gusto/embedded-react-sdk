@@ -109,7 +109,7 @@ export function useWorkAddressManagement({
     baseSubmitHandler,
     error: rootSubmitError,
     setError: setRootSubmitError,
-  } = useBaseSubmit('Employee.WorkAddress.Management')
+  } = useBaseSubmit('Employee.Management.WorkAddress')
   const deleteWorkAddressMutation = useEmployeeAddressesDeleteWorkAddressMutation()
   const [editTargetUuid, setEditTargetUuid] = useState<string | undefined>(undefined)
 
@@ -219,7 +219,7 @@ export function useWorkAddressManagement({
         })
         succeeded = true
         if (snap) {
-          onEvent(componentEvents.EMPLOYEE_WORK_ADDRESS_DELETED, snap)
+          onEvent(componentEvents.EMPLOYEE_MANAGEMENT_WORK_ADDRESS_DELETED, snap)
         }
       },
     )
