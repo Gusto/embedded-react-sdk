@@ -178,7 +178,6 @@ export default [
       'src/components/**',
       'src/contexts/**',
       'src/helpers/**',
-      'src/hooks/**',
       'src/partner-hook-utils/**',
       'src/shared/**',
       'src/types/**',

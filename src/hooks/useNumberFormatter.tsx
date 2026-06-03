@@ -2,7 +2,19 @@ import { useMemo } from 'react'
 import { NumberFormatter } from '@internationalized/number'
 import { useLocale } from '@/contexts/LocaleProvider'
 
-/**Custom hook wrapping NumberFormatter and returing format method */
+/**
+ * Returns a locale-aware number formatter for currency or percentage values.
+ *
+ * @remarks
+ * Wraps `NumberFormatter` from `@internationalized/number` with the SDK's current locale and
+ * currency. Currency output uses two fraction digits; percentage output uses zero minimum and two
+ * maximum. Percentages are divided by 100 before formatting because the Gusto API stores them as
+ * whole numbers (e.g. `25` for 25%) rather than fractions.
+ *
+ * @param style - `'currency'` (default) or `'percent'`.
+ * @returns A function that formats a numeric value into a localized string.
+ * @internal
+ */
 const useNumberFormatter = (style: 'currency' | 'percent' = 'currency') => {
   const { locale, currency } = useLocale()
   return useMemo(() => {

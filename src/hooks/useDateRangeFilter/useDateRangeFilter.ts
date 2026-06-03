@@ -11,6 +11,12 @@ interface DateRangeApiParams {
   endDate?: string
 }
 
+/**
+ * Return shape of {@link useDateRangeFilter}, exposing the current filter dates,
+ * change handlers, and helpers for date-picker bounds and API query params.
+ *
+ * @internal
+ */
 export interface UseDateRangeFilterResult {
   filterStartDate: Date | null
   filterEndDate: Date | null
@@ -31,6 +37,18 @@ const addMonths = (date: Date, months: number): Date => {
   return result
 }
 
+/**
+ * Manages an optional start/end date range filter, capping the span at 12 months.
+ *
+ * @remarks
+ * `getMaxEndDate` and `getMinStartDate` return bounds for date pickers that keep the
+ * selected range within 12 months of the opposite endpoint. `getApiDateParams` returns
+ * only the dates that are set, formatted as `YYYY-MM-DD` strings for API requests.
+ *
+ * @param options - Optional configuration; `onFilterChange` fires after any filter mutation.
+ * @returns The current filter state and handlers — see {@link UseDateRangeFilterResult}.
+ * @internal
+ */
 export function useDateRangeFilter(options?: UseDateRangeFilterOptions): UseDateRangeFilterResult {
   const { onFilterChange } = options ?? {}
 
