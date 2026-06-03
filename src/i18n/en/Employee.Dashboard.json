@@ -9,12 +9,6 @@
     "taxes": "Taxes",
     "documents": "Documents"
   },
-  "homeAddress": {
-    "title": "Home address",
-    "manageCta": "Manage",
-    "currentAddress": "Current address",
-    "noAddress": "No home address on file"
-  },
   "workAddress": {
     "title": "Work address",
     "manageCta": "Manage",

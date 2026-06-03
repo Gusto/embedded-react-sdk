@@ -1,76 +1,51 @@
-import type { EmployeeAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeaddress'
-import { HomeAddressView } from './HomeAddressView'
-import {
-  isUseHomeAddressManagementSuccess,
-  useHomeAddressManagement,
-} from './useHomeAddressManagement'
+import { createMachine } from 'robot3'
+import { useMemo } from 'react'
+import { CardContextual, type HomeAddressContextInterface } from './HomeAddressComponents'
+import { homeAddressStateMachine } from './homeAddressStateMachine'
+import { Flow } from '@/components/Flow/Flow'
 import {
   BaseBoundaries,
-  BaseLayout,
   type BaseComponentInterface,
   type CommonComponentInterface,
-} from '@/components/Base/Base'
-import { useI18n, useComponentDictionary } from '@/i18n'
-import type { HookSubmitResult } from '@/partner-hook-utils/types'
-import { componentEvents } from '@/shared/constants'
+} from '@/components/Base'
+import { type EventType } from '@/shared/constants'
+import { useComponentDictionary } from '@/i18n/I18n'
+import { useI18n } from '@/i18n'
+import type { OnEventType } from '@/components/Base/useBase'
 
 export interface HomeAddressProps extends CommonComponentInterface<'Employee.HomeAddress.Management'> {
   employeeId: string
-  onEvent: BaseComponentInterface['onEvent']
+  onEvent: OnEventType<EventType, unknown>
 }
 
-function HomeAddressRoot({ employeeId, onEvent, dictionary }: HomeAddressProps) {
-  useI18n(['Employee.HomeAddress.Management', 'Employee.HomeAddress'])
-  useComponentDictionary('Employee.HomeAddress.Management', dictionary)
+function HomeAddressFlow({ employeeId, onEvent }: HomeAddressProps) {
+  useI18n('Employee.HomeAddress.Management')
 
-  const management = useHomeAddressManagement({ employeeId, onEvent })
-
-  if (management.isLoading) {
-    return <BaseLayout isLoading error={management.errorHandling.errors} />
-  }
-
-  if (!isUseHomeAddressManagementSuccess(management)) {
-    return <BaseLayout error={management.errorHandling.errors} />
-  }
-
-  const handleSaved = (result: HookSubmitResult<EmployeeAddress>) => {
-    if (result.mode === 'create') {
-      onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_CREATED, result.data)
-    } else {
-      onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_UPDATED, result.data)
-    }
-  }
-
-  return (
-    <BaseLayout error={management.errorHandling.errors}>
-      <HomeAddressView
-        editHomeAddressForm={management.data.editHomeAddressForm}
-        createHomeAddressForm={management.data.createHomeAddressForm}
-        employeeHomeAddresses={management.data.employeeHomeAddresses}
-        employeeDisplayName={management.data.employeeDisplayName}
-        editingHomeAddressUuid={management.data.editingHomeAddressUuid}
-        onEditAddressTargetChange={management.actions.setEditAddressTarget}
-        onSaved={handleSaved}
-        onConfirmDelete={management.actions.confirmDeleteHomeAddress}
-        onBack={() => {
-          onEvent(componentEvents.CANCEL)
-        }}
-        isDeletePending={management.status.isDeletePending}
-      />
-    </BaseLayout>
+  const machine = useMemo(
+    () =>
+      createMachine('card', homeAddressStateMachine, (ctx: HomeAddressContextInterface) => ({
+        ...ctx,
+        component: CardContextual,
+        employeeId,
+      })),
+    [employeeId],
   )
+
+  return <Flow machine={machine} onEvent={onEvent} />
 }
 
 export function HomeAddress({
+  dictionary,
   FallbackComponent,
   ...props
-}: HomeAddressProps & BaseComponentInterface) {
+}: HomeAddressProps & BaseComponentInterface<'Employee.HomeAddress.Management'>) {
+  useComponentDictionary('Employee.HomeAddress.Management', dictionary)
   return (
     <BaseBoundaries
       componentName="Employee.HomeAddress.Management"
       FallbackComponent={FallbackComponent}
     >
-      <HomeAddressRoot {...props} />
+      <HomeAddressFlow {...props} />
     </BaseBoundaries>
   )
 }

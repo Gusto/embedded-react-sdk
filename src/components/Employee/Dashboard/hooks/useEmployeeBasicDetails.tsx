@@ -1,9 +1,5 @@
 import { useMemo } from 'react'
-import { useEmployeesGet } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesGet'
-import { useEmployeeAddressesGet } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeAddressesGet'
 import { useEmployeeAddressesGetWorkAddresses } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeAddressesGetWorkAddresses'
-import type { Employee } from '@gusto/embedded-api-v-2025-11-15/models/components/employee'
-import type { EmployeeAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeaddress'
 import type { EmployeeWorkAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeworkaddress'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type { BaseHookReady } from '@/partner-hook-utils/types'
@@ -14,50 +10,31 @@ export interface UseEmployeeBasicDetailsProps {
 
 export type UseEmployeeBasicDetailsResult = BaseHookReady<
   {
-    employee?: Employee
-    currentHomeAddress?: EmployeeAddress
     currentWorkAddress?: EmployeeWorkAddress
   },
   {
     isPending: boolean
-    isEmployeeLoading: boolean
-    isHomeAddressLoading: boolean
     isWorkAddressLoading: boolean
   }
 >
 
 /**
- * Phase B: each query runs non-Suspense so the three cards (employee
- * info, home address, work address) can paint independently. The
- * consuming view branches on the per-query loading flags to render
- * skeletons inside the box bodies.
+ * Tab-mounted hook for the Basic details tab. After the Profile and
+ * Home address cards moved to standalone self-fetching surfaces, this
+ * hook only feeds the inline Work address card. It will be deleted
+ * once the Work address card migrates to its own self-fetching block.
  */
 export function useEmployeeBasicDetails({
   employeeId,
 }: UseEmployeeBasicDetailsProps): UseEmployeeBasicDetailsResult {
-  // staleTime: Infinity — see useEmployeeCompensation for rationale (SDK
-  // QueryClient invalidates on any mutation success).
-  //
-  // No `include: ['all_compensations']` here: BasicDetails only reads
-  // `firstName/lastName/dateOfBirth/email/hasSsn` and the first job's
-  // `hireDate` — the historical compensations are dead weight in this
-  // payload. `useEmployeeCompensation` keeps the include since the
-  // JobAndPay tab actually consumes it. The two hooks intentionally use
-  // different query keys; mount-time payload shrinks on the active tab.
-  const employeeQuery = useEmployeesGet({ employeeId }, { staleTime: Infinity })
-  const addressesQuery = useEmployeeAddressesGet({ employeeId }, { staleTime: Infinity })
+  // staleTime: Infinity — the SDK QueryClient invalidates on any mutation
+  // success, so individual hooks don't need their own refetch policy.
   const workAddressesQuery = useEmployeeAddressesGetWorkAddresses(
     { employeeId },
     { staleTime: Infinity },
   )
 
-  const employee = employeeQuery.data?.employee
-  const employeeAddressList = addressesQuery.data?.employeeAddressList
   const employeeWorkAddressesList = workAddressesQuery.data?.employeeWorkAddressesList
-
-  const currentHomeAddress = useMemo(() => {
-    return employeeAddressList?.find(address => address.active)
-  }, [employeeAddressList])
 
   const currentWorkAddress = useMemo(() => {
     return employeeWorkAddressesList?.find(address => address.active)
@@ -66,17 +43,12 @@ export function useEmployeeBasicDetails({
   return {
     isLoading: false,
     data: {
-      employee,
-      currentHomeAddress,
       currentWorkAddress,
     },
     status: {
-      isPending:
-        employeeQuery.isFetching || addressesQuery.isFetching || workAddressesQuery.isFetching,
-      isEmployeeLoading: employeeQuery.isLoading,
-      isHomeAddressLoading: addressesQuery.isLoading,
+      isPending: workAddressesQuery.isFetching,
       isWorkAddressLoading: workAddressesQuery.isLoading,
     },
-    errorHandling: composeErrorHandler([employeeQuery, addressesQuery, workAddressesQuery]),
+    errorHandling: composeErrorHandler([workAddressesQuery]),
   }
 }

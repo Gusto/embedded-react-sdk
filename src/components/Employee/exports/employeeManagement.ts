@@ -5,8 +5,12 @@ export type { EmployeeListFlowProps } from '../EmployeeListFlow'
 export { EmployeeDocuments } from '../Documents/onboarding/EmployeeDocuments'
 export { DocumentManager } from '../Documents/management/DocumentManager'
 export { DashboardFlow } from '../Dashboard'
-export { HomeAddress } from '../HomeAddress/management/HomeAddress'
-export type { HomeAddressProps } from '../HomeAddress/management/HomeAddress'
+export { HomeAddress, HomeAddressCard, HomeAddressEditForm } from '../HomeAddress/management'
+export type {
+  HomeAddressProps,
+  HomeAddressCardProps,
+  HomeAddressEditFormProps,
+} from '../HomeAddress/management'
 export { WorkAddress } from '../WorkAddress/management/WorkAddress'
 export type { WorkAddressProps } from '../WorkAddress/management/WorkAddress'
 export { FederalTaxes, type FederalTaxesProps } from '../FederalTaxes/management/FederalTaxes'

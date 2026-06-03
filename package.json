@@ -191,7 +191,8 @@
   "msw": {
     "workerDirectory": [
       "e2e",
-      "e2e/public"
+      "e2e/public",
+      "sdk-app/public"
     ]
   }
 }
