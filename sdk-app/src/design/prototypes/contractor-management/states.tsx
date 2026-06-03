@@ -22,7 +22,7 @@ import { CONTRACTOR_TYPE } from '@/shared/constants'
  */
 function build(overrides: Partial<Contractor>): Contractor {
   return {
-    uuid: `contractor-${Math.random().toString(36).slice(2, 8)}`,
+    uuid: 'contractor-default',
     companyUuid: 'mock-company-uuid',
     wageType: 'Hourly',
     startDate: '2024-01-01',
