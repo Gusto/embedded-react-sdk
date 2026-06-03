@@ -57,6 +57,7 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'EmployeeOnboarding.EmploymentEligibility': ['employeeId'],
   'EmployeeOnboarding.FederalTaxes': ['employeeId'],
   'EmployeeOnboarding.Landing': ['employeeId', 'companyId'],
+  'EmployeeOnboarding.OnboardingExecutionFlow': ['companyId'],
   'EmployeeOnboarding.OnboardingFlow': ['companyId'],
   'EmployeeOnboarding.OnboardingSummary': ['employeeId'],
   'EmployeeOnboarding.PaymentMethod': ['employeeId'],
