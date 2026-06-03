@@ -1,15 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import type React from 'react'
-import type { BREAKPOINTS } from '@/shared/constants'
 import { BREAKPOINTS_VALUES } from '@/shared/constants'
 import { remToPx } from '@/helpers/rem'
-
-/**
- * Named breakpoint identifier (`'base'`, `'small'`, `'medium'`, or `'large'`) used by container-aware UI components.
- *
- * @internal
- */
-export type BreakpointKey = (typeof BREAKPOINTS)[keyof typeof BREAKPOINTS]
 
 /**
  * Options for {@link useContainerBreakpoints}.

@@ -63,5 +63,3 @@ export const useOverflowDetection = ({
 
   return isOverflowing
 }
-
-export default useOverflowDetection
