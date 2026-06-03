@@ -175,7 +175,7 @@ export function useHomeAddressManagement({
         })
         succeeded = true
         if (snap) {
-          onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_DELETED, snap)
+          onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_MANAGEMENT_DELETED, snap)
         }
       },
     )

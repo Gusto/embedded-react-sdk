@@ -1437,12 +1437,6 @@ export interface EmployeeDashboard{
 "taxes":string;
 "documents":string;
 };
-"homeAddress":{
-"title":string;
-"manageCta":string;
-"currentAddress":string;
-"noAddress":string;
-};
 "workAddress":{
 "title":string;
 "manageCta":string;
@@ -1902,6 +1896,11 @@ export interface EmployeeFederalTaxes{
 };
 };
 export interface EmployeeHomeAddressManagement{
+"card":{
+"title":string;
+"manageCta":string;
+"noAddress":string;
+};
 "title":string;
 "description":string;
 "rowMenuAriaLabel":string;
@@ -1934,7 +1933,24 @@ export interface EmployeeHomeAddressManagement{
 "deleteModalDescription":string;
 "deleteModalConfirmCta":string;
 "form":{
+"street1":string;
+"street2":string;
+"city":string;
+"state":string;
+"zip":string;
+"noCurrentAddress":string;
+"courtesyWithholdingLabel":string;
+"courtesyWithholdingDescription":string;
+"learnMoreCta":string;
+"withholdingTitle":string;
+"withholdingNote":string;
 "startDateRequired":string;
+"validations":{
+"street1":string;
+"city":string;
+"state":string;
+"zip":string;
+};
 };
 };
 export interface EmployeeHomeAddress{

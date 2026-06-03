@@ -1,0 +1,76 @@
+import type { EmployeeAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeaddress'
+import { HomeAddressView } from './HomeAddressView'
+import {
+  isUseHomeAddressManagementSuccess,
+  useHomeAddressManagement,
+} from './useHomeAddressManagement'
+import {
+  BaseBoundaries,
+  BaseLayout,
+  type BaseComponentInterface,
+  type CommonComponentInterface,
+} from '@/components/Base/Base'
+import { useI18n, useComponentDictionary } from '@/i18n'
+import type { HookSubmitResult } from '@/partner-hook-utils/types'
+import { componentEvents } from '@/shared/constants'
+
+export interface HomeAddressEditFormProps extends CommonComponentInterface<'Employee.HomeAddress.Management'> {
+  employeeId: string
+  onEvent: BaseComponentInterface['onEvent']
+}
+
+function HomeAddressEditFormRoot({ employeeId, onEvent, dictionary }: HomeAddressEditFormProps) {
+  useI18n('Employee.HomeAddress.Management')
+  useComponentDictionary('Employee.HomeAddress.Management', dictionary)
+
+  const management = useHomeAddressManagement({ employeeId, onEvent })
+
+  if (management.isLoading) {
+    return <BaseLayout isLoading error={management.errorHandling.errors} />
+  }
+
+  if (!isUseHomeAddressManagementSuccess(management)) {
+    return <BaseLayout error={management.errorHandling.errors} />
+  }
+
+  const handleSaved = (result: HookSubmitResult<EmployeeAddress>) => {
+    if (result.mode === 'create') {
+      onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_MANAGEMENT_CREATED, result.data)
+    } else {
+      onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_MANAGEMENT_UPDATED, result.data)
+    }
+  }
+
+  return (
+    <BaseLayout error={management.errorHandling.errors}>
+      <HomeAddressView
+        editHomeAddressForm={management.data.editHomeAddressForm}
+        createHomeAddressForm={management.data.createHomeAddressForm}
+        employeeHomeAddresses={management.data.employeeHomeAddresses}
+        employeeDisplayName={management.data.employeeDisplayName}
+        editingHomeAddressUuid={management.data.editingHomeAddressUuid}
+        onEditAddressTargetChange={management.actions.setEditAddressTarget}
+        onSaved={handleSaved}
+        onConfirmDelete={management.actions.confirmDeleteHomeAddress}
+        onBack={() => {
+          onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_CANCELLED)
+        }}
+        isDeletePending={management.status.isDeletePending}
+      />
+    </BaseLayout>
+  )
+}
+
+export function HomeAddressEditForm({
+  FallbackComponent,
+  ...props
+}: HomeAddressEditFormProps & BaseComponentInterface) {
+  return (
+    <BaseBoundaries
+      componentName="Employee.HomeAddress.Management"
+      FallbackComponent={FallbackComponent}
+    >
+      <HomeAddressEditFormRoot {...props} />
+    </BaseBoundaries>
+  )
+}
