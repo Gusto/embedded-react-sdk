@@ -70,21 +70,6 @@
           "minWageChangedNoRate": "Minimum wage adjustment will change"
         }
       }
-    },
-    "deductions": {
-      "title": "Deductions",
-      "addDeductionCta": "Add deduction",
-      "listLabel": "List of deductions",
-      "deduction": "Deduction",
-      "frequency": "Frequency",
-      "withhold": "Withheld",
-      "recurring": "Recurring",
-      "oneTime": "One-time",
-      "amountPerPaycheck": "{{value}} per paycheck",
-      "emptyState": {
-        "title": "No deductions",
-        "description": "Employee deductions will appear here"
-      }
     }
   },
   "taxes": {

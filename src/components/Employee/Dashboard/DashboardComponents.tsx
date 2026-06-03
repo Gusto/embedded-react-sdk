@@ -10,17 +10,15 @@ import { ProfileEditForm } from '@/components/Employee/Profile/management/Profil
 import { PaymentMethodBankForm } from '@/components/Employee/PaymentMethod/management/PaymentMethodBankForm'
 import { PaymentMethodSplitForm } from '@/components/Employee/PaymentMethod/management/PaymentMethodSplitForm'
 import { DocumentManager } from '@/components/Employee/Documents/management/DocumentManager'
-import { DeductionsForm } from '@/components/Employee/Deductions/onboarding/DeductionsForm/DeductionsForm'
+import { DeductionsEditForm } from '@/components/Employee/Deductions/management/DeductionsEditForm'
 import {
   ManagementEditCompensation,
   ManagementEditPendingCompensation,
 } from '@/components/Employee/Compensation/management'
-import { useDeductionsList } from '@/components/Employee/Deductions/shared'
 import { AddAnotherJob } from '@/components/Employee/Compensation/management/AddAnotherJob/AddAnotherJob'
 import { EditCompensation } from '@/components/Employee/Compensation/onboarding/EditCompensation/EditCompensation'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { BaseLayout } from '@/components/Base'
 import { ensureRequired } from '@/helpers/ensureRequired'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
@@ -41,8 +39,8 @@ export interface DashboardContextInterface extends FlowContextInterface {
   formId?: string
   currentJob?: Job | null
   successAlert?: DashboardSuccessAlert | null
-  /** Set by the EMPLOYEE_DEDUCTION_EDIT transition; consumed by
-   *  DeductionFormContextual to pre-populate the form. */
+  /** Set by the EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_EDIT_REQUESTED transition;
+   *  consumed by `DeductionsEditFormContextual` to pre-populate the form. */
   editingDeductionId?: string
   /** Persists the active Dashboard tab across sub-flows so Cancel/Back
    *  returns to the originating tab instead of resetting to basic details. */
@@ -134,38 +132,14 @@ export function DocumentManagerContextual() {
   )
 }
 
-export function DeductionFormContextual() {
+export function DeductionsEditFormContextual() {
   const { employeeId, editingDeductionId, onEvent } = useFlow<DashboardContextInterface>()
-  // The same list query the form hooks use internally — React Query dedupes,
-  // so this just looks up the loaded row to pre-populate edit mode.
-  const list = useDeductionsList({ employeeId: ensureRequired(employeeId) })
-
-  if (list.isLoading) {
-    return <BaseLayout isLoading error={list.errorHandling.errors} />
-  }
-
-  const deduction = editingDeductionId
-    ? (list.data.deductions.find(d => d.uuid === editingDeductionId) ?? null)
-    : null
-
   return (
-    <BaseLayout error={list.errorHandling.errors}>
-      <DeductionsForm
-        employeeId={ensureRequired(employeeId)}
-        deduction={deduction}
-        onSaved={(saved, mode) => {
-          onEvent(
-            mode === 'create'
-              ? componentEvents.EMPLOYEE_DEDUCTION_CREATED
-              : componentEvents.EMPLOYEE_DEDUCTION_UPDATED,
-            saved,
-          )
-        }}
-        onCancel={() => {
-          onEvent(componentEvents.CANCEL)
-        }}
-      />
-    </BaseLayout>
+    <DeductionsEditForm
+      employeeId={ensureRequired(employeeId)}
+      editingDeductionId={editingDeductionId}
+      onEvent={onEvent}
+    />
   )
 }
 

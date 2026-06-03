@@ -113,6 +113,18 @@ export const employeeEvents = {
   EMPLOYEE_MANAGEMENT_PAYSTUBS_CARD_DOWNLOAD_REQUESTED:
     'employee/management/paystubs/card/downloadRequested',
   EMPLOYEE_MANAGEMENT_PAYSTUBS_CARD_DOWNLOADED: 'employee/management/paystubs/card/downloaded',
+  EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_ADD_REQUESTED:
+    'employee/management/deductions/card/addRequested',
+  EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_EDIT_REQUESTED:
+    'employee/management/deductions/card/editRequested',
+  EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_DELETED: 'employee/management/deductions/card/deleted',
+  EMPLOYEE_MANAGEMENT_DEDUCTIONS_EDIT_FORM_CREATED:
+    'employee/management/deductions/editForm/created',
+  EMPLOYEE_MANAGEMENT_DEDUCTIONS_EDIT_FORM_UPDATED:
+    'employee/management/deductions/editForm/updated',
+  EMPLOYEE_MANAGEMENT_DEDUCTIONS_EDIT_FORM_CANCELLED:
+    'employee/management/deductions/editForm/cancelled',
+  EMPLOYEE_MANAGEMENT_DEDUCTIONS_ALERT_DISMISSED: 'employee/management/deductions/alertDismissed',
 } as const
 
 /**

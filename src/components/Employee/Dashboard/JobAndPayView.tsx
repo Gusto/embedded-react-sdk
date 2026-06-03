@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useJobsAndCompensationsDeleteMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/jobsAndCompensationsDelete'
 import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
-import type { Garnishment } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishment'
 import { useEmployeeCompensation } from './hooks'
 import type { PendingCompensationChange } from './getPendingCompensationChanges'
 import { usePendingChangeDetailRenderer } from './usePendingChangeDetailRenderer'
@@ -16,15 +15,9 @@ import { BaseLayout } from '@/components/Base/Base'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { formatDateLongWithYear, formatDateToStringDate } from '@/helpers/dateFormatting'
 import { useFormatCompensationRate } from '@/helpers/formattedStrings'
-import useNumberFormatter from '@/hooks/useNumberFormatter'
 import { useI18n } from '@/i18n'
 import { PaymentMethodCard } from '@/components/Employee/PaymentMethod/management'
-import {
-  useDeductionsList,
-  useDeleteDeduction,
-  DeleteDeductionDialog,
-  formatDeductionAmount,
-} from '@/components/Employee/Deductions/shared'
+import { DeductionsCard } from '@/components/Employee/Deductions/management/DeductionsCard'
 import { PaystubsCard } from '@/components/Employee/Paystubs/management/PaystubsCard'
 import { componentEvents, FlsaStatus, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
@@ -44,8 +37,6 @@ export interface JobAndPayViewProps {
   onEditCompensation?: (job: Job) => void
   onAddJob?: () => void
   onAddAnotherJob?: () => void
-  onAddDeduction?: () => void
-  onEditDeduction?: (deduction: Garnishment) => void
 }
 
 export function JobAndPayView({
@@ -54,18 +45,12 @@ export function JobAndPayView({
   onEditCompensation,
   onAddJob,
   onAddAnotherJob,
-  onAddDeduction,
-  onEditDeduction,
 }: JobAndPayViewProps) {
   useI18n('Employee.Compensation')
-  useI18n('Employee.Deductions')
   const { t } = useTranslation('Employee.Dashboard')
   const { t: tCompensation } = useTranslation('Employee.Compensation')
-  const { t: tDeductions } = useTranslation('Employee.Deductions')
   const Components = useComponentContext()
   const formatCompensationRate = useFormatCompensationRate()
-  const formatCurrency = useNumberFormatter('currency')
-  const formatPercent = useNumberFormatter('percent')
 
   const compensation = useEmployeeCompensation({ employeeId })
   const {
@@ -171,29 +156,10 @@ export function JobAndPayView({
   const showInlineAlert = hasPendingUpdates && !showSummaryAlert
   const nextChange = updatePendingChanges[0]
 
-  const deductionsList = useDeductionsList({ employeeId })
-  const deductions = deductionsList.isLoading ? [] : deductionsList.data.deductions
-  const deletingGarnishmentUuid = deductionsList.isLoading
-    ? undefined
-    : deductionsList.status.deletingGarnishmentUuid
-
-  const {
-    pendingDeleteDeduction,
-    setPendingDeleteDeduction,
-    handleConfirmDelete: handleConfirmDeleteDeduction,
-  } = useDeleteDeduction(async garnishment => {
-    if (deductionsList.isLoading) return
-    const result = await deductionsList.actions.onDelete(garnishment)
-    if (result) {
-      onEvent(componentEvents.EMPLOYEE_DEDUCTION_DELETED, result.data.garnishment)
-    }
-  })
-
-  // Compensation + Deductions own their own error state; merge into one
-  // error surface so the BaseLayout below shows whatever failed. The
-  // Payment card renders its own errors via its internal BaseLayout, so
-  // payment-method errors are excluded here to avoid duplicates.
-  const errorHandling = composeErrorHandler([compensation, deductionsList])
+  // Compensation owns the only inline-rendered error state remaining.
+  // The Payment, Deductions, and Paystubs cards each render their own
+  // errors via their internal BaseLayouts, so they are not merged in here.
+  const errorHandling = composeErrorHandler([compensation])
 
   const jobsColumns = [
     {
@@ -298,71 +264,6 @@ export function JobAndPayView({
       )
     },
   })
-
-  const garnishmentsColumns = [
-    {
-      key: 'description',
-      title: t('jobAndPay.deductions.deduction'),
-      render: (garnishment: Garnishment) => garnishment.description || '-',
-    },
-    {
-      key: 'frequency',
-      title: t('jobAndPay.deductions.frequency'),
-      render: (garnishment: Garnishment) =>
-        garnishment.recurring
-          ? t('jobAndPay.deductions.recurring')
-          : t('jobAndPay.deductions.oneTime'),
-    },
-    {
-      key: 'amount',
-      title: t('jobAndPay.deductions.withhold'),
-      render: (garnishment: Garnishment) =>
-        formatDeductionAmount(garnishment, {
-          formatCurrency,
-          formatPercent,
-          formatPerPaycheck: (value: string) =>
-            t('jobAndPay.deductions.amountPerPaycheck', { value }),
-        }),
-    },
-  ]
-
-  const garnishmentsDataView = useDataView({
-    data: deductions,
-    columns: garnishmentsColumns,
-    itemMenu: (garnishment: Garnishment) => (
-      <HamburgerMenu
-        isLoading={deletingGarnishmentUuid === garnishment.uuid}
-        items={[
-          {
-            label: tDeductions('editCta'),
-            onClick: () => onEditDeduction?.(garnishment),
-            icon: <PencilSvg aria-hidden />,
-          },
-          {
-            label: tDeductions('deleteCta'),
-            onClick: () => {
-              setPendingDeleteDeduction(garnishment)
-            },
-            icon: <TrashCanSvg aria-hidden />,
-          },
-        ]}
-        triggerLabel={tDeductions('hamburgerTitle')}
-      />
-    ),
-    emptyState: () => (
-      <EmptyData
-        title={t('jobAndPay.deductions.emptyState.title')}
-        description={t('jobAndPay.deductions.emptyState.description')}
-      />
-    ),
-  })
-
-  // `useDeductionsList` still uses the older `HookLoadingResult | Ready`
-  // shape, which returns `isLoading: true` when the query has errored AND
-  // data is missing. Treat as "not loading" so the section doesn't show a
-  // perpetual skeleton while BaseLayout already renders the error alert above.
-  const isDeductionsLoading =
-    deductionsList.isLoading && deductionsList.errorHandling.errors.length === 0
 
   return (
     <BaseLayout error={errorHandling.errors}>
@@ -534,33 +435,7 @@ export function JobAndPayView({
 
         <PaymentMethodCard employeeId={employeeId} onEvent={onEvent} />
 
-        <Components.Box
-          withPadding={false}
-          header={
-            <Components.BoxHeader
-              title={t('jobAndPay.deductions.title')}
-              action={
-                <Components.Button
-                  variant="secondary"
-                  onClick={onAddDeduction}
-                  icon={<PlusCircleIcon />}
-                >
-                  {t('jobAndPay.deductions.addDeductionCta')}
-                </Components.Button>
-              }
-            />
-          }
-        >
-          {isDeductionsLoading ? (
-            <Loading />
-          ) : (
-            <DataView
-              label={t('jobAndPay.deductions.listLabel')}
-              isWithinBox
-              {...garnishmentsDataView}
-            />
-          )}
-        </Components.Box>
+        <DeductionsCard employeeId={employeeId} onEvent={onEvent} />
 
         <PaystubsCard employeeId={employeeId} onEvent={onEvent} />
 
@@ -574,17 +449,6 @@ export function JobAndPayView({
           }}
           onCancelChange={change => {
             void handleCancelChange(change)
-          }}
-        />
-
-        <DeleteDeductionDialog
-          pendingDeleteDeduction={pendingDeleteDeduction}
-          isPrimaryActionLoading={deletingGarnishmentUuid === pendingDeleteDeduction?.uuid}
-          onClose={() => {
-            setPendingDeleteDeduction(null)
-          }}
-          onConfirm={() => {
-            void handleConfirmDeleteDeduction()
           }}
         />
 

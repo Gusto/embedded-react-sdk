@@ -1,0 +1,31 @@
+{
+  "title": "Deductions",
+  "addDeductionCta": "Add deduction",
+  "listLabel": "List of deductions",
+  "columns": {
+    "deduction": "Deduction",
+    "frequency": "Frequency",
+    "withhold": "Withheld"
+  },
+  "recurring": "Recurring",
+  "oneTime": "One-time",
+  "amountPerPaycheck": "{{value}} per paycheck",
+  "emptyState": {
+    "title": "No deductions",
+    "description": "Employee deductions will appear here"
+  },
+  "hamburgerTitle": "Deduction actions menu",
+  "editCta": "Edit deduction",
+  "deleteCta": "Delete deduction",
+  "deleteDeductionDialog": {
+    "title": "Delete this deduction?",
+    "description": "{{deduction}} will no longer be deducted from this employee's paycheck.",
+    "confirmCta": "Delete",
+    "cancelCta": "Cancel"
+  },
+  "alerts": {
+    "deductionAdded": "Deduction successfully added.",
+    "deductionUpdated": "Deduction successfully updated.",
+    "deductionDeleted": "Deduction successfully deleted."
+  }
+}
