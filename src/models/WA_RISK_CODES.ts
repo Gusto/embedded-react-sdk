@@ -1,5 +1,16 @@
+/**
+ * A Washington state workers' compensation risk classification entry.
+ *
+ * @internal
+ */
 export type WARiskClassCode = { code: string; description: string }
 
+/**
+ * The full set of Washington state workers' compensation risk class codes used to populate the
+ * job form's `stateWcClassCode` select when the employee's work address is in Washington.
+ *
+ * @internal
+ */
 export const WA_RISK_CLASS_CODES: WARiskClassCode[] = [
   {
     code: '010102',

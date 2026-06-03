@@ -1,3 +1,8 @@
+/**
+ * Static `[code, title]` tuples for every NAICS industry classification.
+ *
+ * @internal
+ */
 const values: [string, string][] = [
   ['111110', 'Soybean Farming'],
   ['111120', 'Oilseed (except Soybean) Farming '],

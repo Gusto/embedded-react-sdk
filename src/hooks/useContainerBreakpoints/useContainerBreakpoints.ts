@@ -4,16 +4,41 @@ import type { BREAKPOINTS } from '@/shared/constants'
 import { BREAKPOINTS_VALUES } from '@/shared/constants'
 import { remToPx } from '@/helpers/rem'
 
+/**
+ * Named breakpoint identifier (`'base'`, `'small'`, `'medium'`, or `'large'`) used by container-aware UI components.
+ *
+ * @internal
+ */
 export type BreakpointKey = (typeof BREAKPOINTS)[keyof typeof BREAKPOINTS]
 
+/**
+ * Options for {@link useContainerBreakpoints}.
+ *
+ * @internal
+ */
 export type useContainerBreakpointsProps = {
+  /** Ref to the container element whose width drives breakpoint matching. */
   ref: React.RefObject<HTMLElement | null>
+  /** Map of breakpoint name to minimum width (rem string or px number). Defaults to the SDK's `BREAKPOINTS_VALUES`. */
   breakpoints?: Record<string, number | string>
+  /** Debounce delay in milliseconds applied to resize updates. Defaults to 10. */
   debounceTimeout?: number
 }
 
 const DEBOUNCE_TIMEOUT = 10
 
+/**
+ * Tracks which named breakpoints are currently satisfied by the observed container's width.
+ *
+ * @remarks
+ * Uses `ResizeObserver` on the referenced element and recomputes (debounced) which breakpoints
+ * are active by comparing the element's width against each entry in `breakpoints`. Returned
+ * keys are every breakpoint whose minimum width is less than or equal to the current container width.
+ *
+ * @param props - {@link useContainerBreakpointsProps} with the container ref and optional breakpoint map.
+ * @returns The array of breakpoint keys currently active for the container.
+ * @internal
+ */
 export const useContainerBreakpoints = ({
   ref,
   breakpoints = BREAKPOINTS_VALUES,
