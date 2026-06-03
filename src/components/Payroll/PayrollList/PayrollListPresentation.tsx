@@ -71,6 +71,7 @@ interface PayrollListPresentationProps {
   blockers: ApiPayrollBlocker[]
   wireInRequests: WireInRequest[]
   dateRangeFilter: UseDateRangeFilterResult
+  hasUnprocessedTransitions?: boolean
 }
 
 export const PayrollListPresentation = ({
@@ -91,6 +92,7 @@ export const PayrollListPresentation = ({
   blockers,
   wireInRequests,
   dateRangeFilter,
+  hasUnprocessedTransitions = false,
 }: PayrollListPresentationProps) => {
   const { Box, Button, ButtonIcon, Dialog, Heading, Text, Alert } = useComponentContext()
   useI18n('Payroll.PayrollList')
@@ -195,10 +197,13 @@ export const PayrollListPresentation = ({
     }
 
     const isProcessingSkipPayroll = skippingPayrollId === payrollUuid
+    const isRegular = !payroll.offCycle
+    const isDisabledByTransition = isRegular && hasUnprocessedTransitions
 
     return calculatedAt ? (
       <Button
         isLoading={isProcessingSkipPayroll}
+        isDisabled={isDisabledByTransition}
         onClick={() => {
           onSubmitPayroll({ payrollUuid, payPeriod })
         }}
@@ -210,6 +215,7 @@ export const PayrollListPresentation = ({
     ) : (
       <Button
         isLoading={isProcessingSkipPayroll}
+        isDisabled={isDisabledByTransition}
         onClick={() => {
           onRunPayroll({ payrollUuid, payPeriod })
         }}

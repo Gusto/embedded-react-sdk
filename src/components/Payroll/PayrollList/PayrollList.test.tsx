@@ -18,6 +18,10 @@ const sharedHandlers = [
   http.get(`${API_BASE_URL}/v1/companies/:company_uuid/wire_in_requests`, () => {
     return HttpResponse.json([])
   }),
+
+  http.get(`${API_BASE_URL}/v1/companies/:company_id/pay_periods`, () => {
+    return HttpResponse.json([])
+  }),
 ]
 
 describe('PayrollList', () => {
@@ -85,6 +89,68 @@ describe('PayrollList', () => {
 
     expect(capturedPayrollListUrl!.searchParams.get('page')).toBeTruthy()
     expect(capturedPayrollListUrl!.searchParams.get('per')).toBeTruthy()
+  })
+
+  describe('transition payroll blocker', () => {
+    const regularPayroll = {
+      payroll_uuid: 'payroll-regular-1',
+      processed: false,
+      off_cycle: false,
+      payroll_type: 'Regular',
+      check_date: '2025-01-15',
+      payroll_deadline: '2025-01-14T23:30:00Z',
+      pay_period: {
+        start_date: '2025-01-01',
+        end_date: '2025-01-15',
+        pay_schedule_uuid: 'schedule-1',
+      },
+    }
+
+    const transitionPayPeriod = {
+      start_date: '2025-01-16',
+      end_date: '2025-01-31',
+      pay_schedule_uuid: 'schedule-1',
+      payroll: { processed: false, payroll_type: 'transition' },
+    }
+
+    it('disables Run Payroll on regular rows when an unprocessed transition exists', async () => {
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls`, () =>
+          HttpResponse.json([regularPayroll]),
+        ),
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/pay_schedules`, () =>
+          HttpResponse.json([]),
+        ),
+        http.get(`${API_BASE_URL}/v1/companies/:company_uuid/payrolls/blockers`, () =>
+          HttpResponse.json([]),
+        ),
+        http.get(`${API_BASE_URL}/v1/companies/:company_uuid/wire_in_requests`, () =>
+          HttpResponse.json([]),
+        ),
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/pay_periods`, () =>
+          HttpResponse.json([transitionPayPeriod]),
+        ),
+      )
+
+      renderWithProviders(<PayrollList {...defaultProps} />)
+
+      const runPayrollButton = await screen.findByRole('button', { name: 'Run Payroll' })
+      expect(runPayrollButton).toBeDisabled()
+    })
+
+    it('does not disable Run Payroll when there are no unprocessed transitions', async () => {
+      server.use(
+        http.get(`${API_BASE_URL}/v1/companies/:company_id/payrolls`, () =>
+          HttpResponse.json([regularPayroll]),
+        ),
+        ...sharedHandlers,
+      )
+
+      renderWithProviders(<PayrollList {...defaultProps} />)
+
+      const runPayrollButton = await screen.findByRole('button', { name: 'Run Payroll' })
+      expect(runPayrollButton).not.toBeDisabled()
+    })
   })
 
   it('renders pagination controls when totalCount exceeds page size', async () => {
