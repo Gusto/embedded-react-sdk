@@ -191,7 +191,11 @@ export default [
   },
   /** Library: well-documented code */
   {
-    files: ['src/contexts/ApiProvider/**/*.{ts,tsx}', 'src/contexts/LocaleProvider/**/*.{ts,tsx}'],
+    files: [
+      'src/contexts/ApiProvider/**/*.{ts,tsx}',
+      'src/contexts/LocaleProvider/**/*.{ts,tsx}',
+      'src/contexts/LoadingIndicatorProvider/**/*.{ts,tsx}',
+    ],
     ignores: LIBRARY_IGNORE_PATHS,
     rules: {
       'tsdoc-coverage/require-comment': 'error',
