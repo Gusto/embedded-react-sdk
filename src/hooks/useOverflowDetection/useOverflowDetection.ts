@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import type React from 'react'
 
+/** @internal */
 export type UseOverflowDetectionProps = {
   ref: React.RefObject<HTMLElement | null>
   debounceTimeout?: number
@@ -8,6 +9,18 @@ export type UseOverflowDetectionProps = {
 
 const DEBOUNCE_TIMEOUT = 10
 
+/**
+ * Tracks whether the element referenced by `ref` is vertically overflowing its container.
+ *
+ * @remarks
+ * Compares `scrollHeight` against `clientHeight` on mount and on every `ResizeObserver`
+ * entry for the referenced element. Resize callbacks are debounced so rapid layout changes
+ * collapse into a single overflow check.
+ *
+ * @param props - Configuration containing the element ref and an optional debounce interval.
+ * @returns `true` while the referenced element's content exceeds its visible height, otherwise `false`.
+ * @internal
+ */
 export const useOverflowDetection = ({
   ref,
   debounceTimeout = DEBOUNCE_TIMEOUT,

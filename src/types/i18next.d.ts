@@ -1405,6 +1405,7 @@ export interface EmployeeCompensation{
 "effectiveDateBeforeHire":string;
 "hireDate":string;
 "classificationChangeNotification":string;
+"classificationChangeRemovesSecondaryJobs":string;
 "exemptThreshold":string;
 "paymentUnit":string;
 "rate":string;

@@ -44,13 +44,6 @@ export function ManagementCompensationFormBody({
     <Flex flexDirection="column" gap={32}>
       <Components.Heading as="h2">{title}</Components.Heading>
 
-      {compensationForm.status.willDeleteSecondaryJobs && (
-        <Components.Alert
-          label={t('validations.classificationChangeNotification')}
-          status="warning"
-        />
-      )}
-
       <Flex flexDirection="column" gap={20}>
         <CompFields.Title
           label={t('management.jobTitleLabel')}
@@ -87,42 +80,57 @@ export function ManagementCompensationFormBody({
               getOptionLabel={(status: FlsaStatusType) => t(`flsaStatusLabels.${status}`)}
               formHookResult={compensationForm}
             />
-            {compensationForm.status.showCommissionFederalMinimumPayAlert && (
-              <Components.Alert
-                status="warning"
-                label={t('commissionAlerts.federalMinimumPay.label')}
-                disableScrollIntoView
-              >
-                {t('commissionAlerts.federalMinimumPay.body')}
-              </Components.Alert>
-            )}
-            {compensationForm.status.showCommissionMinimumWageAlert && (
-              <Components.Alert
-                status="warning"
-                label={t('commissionAlerts.minimumWage.label')}
-                disableScrollIntoView
-              >
-                <Trans
-                  t={t}
-                  i18nKey="commissionAlerts.minimumWage.body"
-                  components={{
-                    minimumWageLink: (
-                      <Components.Link
-                        href="https://support.gusto.com/article/112472520100000/manage-tip-wages-distributed-service-charges-and-tip-credits-in-gusto-for-admins"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      />
-                    ),
-                  }}
-                />
-              </Components.Alert>
-            )}
-            {compensationForm.status.showOwnerSalaryAlert && (
-              <Components.Alert
-                status="info"
-                label={t('commissionAlerts.ownerSalary.label')}
-                disableScrollIntoView
-              />
+            {(compensationForm.status.showCommissionFederalMinimumPayAlert ||
+              compensationForm.status.showCommissionMinimumWageAlert ||
+              compensationForm.status.showOwnerSalaryAlert ||
+              compensationForm.status.willDeleteSecondaryJobs) && (
+              <Flex flexDirection="column" gap={0}>
+                {compensationForm.status.willDeleteSecondaryJobs && (
+                  <Components.Alert
+                    label={t('validations.classificationChangeNotification')}
+                    status="warning"
+                  >
+                    {t('validations.classificationChangeRemovesSecondaryJobs')}
+                  </Components.Alert>
+                )}
+                {compensationForm.status.showCommissionFederalMinimumPayAlert && (
+                  <Components.Alert
+                    status="info"
+                    label={t('commissionAlerts.federalMinimumPay.label')}
+                    disableScrollIntoView
+                  >
+                    {t('commissionAlerts.federalMinimumPay.body')}
+                  </Components.Alert>
+                )}
+                {compensationForm.status.showCommissionMinimumWageAlert && (
+                  <Components.Alert
+                    status="info"
+                    label={t('commissionAlerts.minimumWage.label')}
+                    disableScrollIntoView
+                  >
+                    <Trans
+                      t={t}
+                      i18nKey="commissionAlerts.minimumWage.body"
+                      components={{
+                        minimumWageLink: (
+                          <Components.Link
+                            href="https://support.gusto.com/article/112472520100000/manage-tip-wages-distributed-service-charges-and-tip-credits-in-gusto-for-admins"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          />
+                        ),
+                      }}
+                    />
+                  </Components.Alert>
+                )}
+                {compensationForm.status.showOwnerSalaryAlert && (
+                  <Components.Alert
+                    status="info"
+                    label={t('commissionAlerts.ownerSalary.label')}
+                    disableScrollIntoView
+                  />
+                )}
+              </Flex>
             )}
           </>
         )}
