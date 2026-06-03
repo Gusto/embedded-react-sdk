@@ -2,7 +2,7 @@ import { transition, reduce, state } from 'robot3'
 import {
   DashboardFlowContextual,
   EmployeeListContextual,
-  OnboardingFlowContextual,
+  OnboardingExecutionFlowContextual,
   TerminationFlowContextual,
   type EmployeeListFlowContextInterface,
 } from './EmployeeListFlowComponents'
@@ -71,7 +71,7 @@ export const employeeListStateMachine = {
       reduce(
         (ctx: EmployeeListFlowContextInterface): EmployeeListFlowContextInterface => ({
           ...ctx,
-          component: OnboardingFlowContextual,
+          component: OnboardingExecutionFlowContextual,
           header: backToListHeader,
         }),
       ),
@@ -85,5 +85,7 @@ export const employeeListStateMachine = {
   ),
   onboard: state<MachineTransition>(
     transition(componentEvents.EMPLOYEE_RETURN_TO_LIST, 'list', returnToList),
+    transition(componentEvents.EMPLOYEES_LIST, 'list', returnToList),
+    transition(componentEvents.CANCEL, 'list', returnToList),
   ),
 }
