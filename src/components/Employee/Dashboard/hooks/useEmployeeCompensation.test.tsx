@@ -1,13 +1,12 @@
 import { renderHook, waitFor, act } from '@testing-library/react'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { http, HttpResponse, type HttpResponseResolver } from 'msw'
+import { HttpResponse, type HttpResponseResolver } from 'msw'
 import { useEmployeeCompensation } from './useEmployeeCompensation'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
 import { server } from '@/test/mocks/server'
 import { handleGetEmployee, handleGetEmployeeJobs } from '@/test/mocks/apis/employees'
 import { handleDeleteCompensation } from '@/test/mocks/apis/compensations'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
-import { API_BASE_URL } from '@/test/constants'
 import { FlsaStatus } from '@/shared/constants'
 
 // Test fixtures — inlined to pin behaviour to specific values rather than a
@@ -76,13 +75,10 @@ describe('useEmployeeCompensation', () => {
     })
 
     expect(result.current.status.isCompensationLoading).toBe(true)
-    expect(result.current.status.isPayStubsLoading).toBe(true)
     expect(result.current.data.jobs).toEqual([])
-    expect(result.current.data.payStubs).toEqual([])
 
     await waitFor(() => {
       expect(result.current.status.isCompensationLoading).toBe(false)
-      expect(result.current.status.isPayStubsLoading).toBe(false)
     })
 
     expect(result.current.data.jobs.length).toBeGreaterThan(0)
@@ -273,25 +269,5 @@ describe('useEmployeeCompensation', () => {
     expect(jobsRequestUrl).not.toBeNull()
     expect(jobsRequestUrl).toContain('/v1/employees/employee-123/jobs')
     expect(jobsRequestUrl).toContain('include=all_compensations')
-  })
-
-  it('surfaces paystub pagination control props once the paystubs query resolves', async () => {
-    server.use(
-      http.get(`${API_BASE_URL}/v1/employees/:employee_uuid/pay_stubs`, () =>
-        HttpResponse.json([], {
-          headers: { 'x-total-count': '0', 'x-total-pages': '1', 'x-page': '1' },
-        }),
-      ),
-    )
-
-    const { result } = renderHook(() => useEmployeeCompensation({ employeeId: 'employee-123' }), {
-      wrapper: GustoTestProvider,
-    })
-
-    await waitFor(() => {
-      expect(result.current.status.isPayStubsLoading).toBe(false)
-    })
-
-    expect(result.current.pagination.payStubs).toBeDefined()
   })
 })

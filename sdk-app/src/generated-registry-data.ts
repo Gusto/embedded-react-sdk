@@ -45,6 +45,8 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'EmployeeManagement.PaymentMethodBankForm': ['employeeId'],
   'EmployeeManagement.PaymentMethodCard': ['employeeId'],
   'EmployeeManagement.PaymentMethodSplitForm': ['employeeId'],
+  'EmployeeManagement.Paystubs': ['employeeId'],
+  'EmployeeManagement.PaystubsCard': ['employeeId'],
   'EmployeeManagement.Profile': ['employeeId'],
   'EmployeeManagement.ProfileCard': ['employeeId'],
   'EmployeeManagement.ProfileEditForm': ['employeeId'],

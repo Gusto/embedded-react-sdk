@@ -100,6 +100,9 @@ export const employeeEvents = {
     'employee/management/paymentMethod/splitForm/cancelled',
   EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_ALERT_DISMISSED:
     'employee/management/paymentMethod/alertDismissed',
+  EMPLOYEE_MANAGEMENT_PAYSTUBS_CARD_DOWNLOAD_REQUESTED:
+    'employee/management/paystubs/card/downloadRequested',
+  EMPLOYEE_MANAGEMENT_PAYSTUBS_CARD_DOWNLOADED: 'employee/management/paystubs/card/downloaded',
 } as const
 
 export const companyEvents = {
