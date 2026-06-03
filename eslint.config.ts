@@ -189,9 +189,9 @@ export default [
       'tsdoc-coverage/require-release-tag': 'error',
     },
   },
-  /** Library: well-documented code — src/contexts/ApiProvider. */
+  /** Library: well-documented code */
   {
-    files: ['src/contexts/ApiProvider/**/*.{ts,tsx}'],
+    files: ['src/contexts/ApiProvider/**/*.{ts,tsx}', 'src/contexts/LocaleProvider/**/*.{ts,tsx}'],
     ignores: LIBRARY_IGNORE_PATHS,
     rules: {
       'tsdoc-coverage/require-comment': 'error',
