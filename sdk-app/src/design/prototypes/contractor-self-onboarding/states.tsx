@@ -44,7 +44,7 @@ function buildContractor(overrides: Partial<Contractor>): Contractor {
 
 function buildDocument(overrides: Partial<Document>): Document {
   return {
-    uuid: `doc-${Math.random().toString(36).slice(2, 8)}`,
+    uuid: 'doc-default',
     name: 'Document',
     title: 'Document',
     description: 'A document to sign',
