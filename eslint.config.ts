@@ -195,6 +195,7 @@ export default [
       'src/contexts/ApiProvider/**/*.{ts,tsx}',
       'src/contexts/LocaleProvider/**/*.{ts,tsx}',
       'src/contexts/LoadingIndicatorProvider/**/*.{ts,tsx}',
+      'src/contexts/ObservabilityProvider/**/*.{ts,tsx}',
     ],
     ignores: LIBRARY_IGNORE_PATHS,
     rules: {

@@ -3025,6 +3025,14 @@ export type NumberStateTaxFieldProps = BaseStateTaxFieldProps & {
     FieldComponent?: ComponentType<NumberInputProps>;
 };
 
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ObservabilityContext"
+//
+// @public
+export interface ObservabilityContextValue {
+    // (undocumented)
+    observability: ObservabilityHook | undefined;
+}
+
 // Warning: (ae-missing-release-tag) "ObservabilityError" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public
@@ -3059,14 +3067,10 @@ export interface ObservabilityMetric {
 // @public (undocumented)
 export type ObservabilityMetricUnit = 'ms' | 'count' | 'bytes' | 'percent';
 
-// Warning: (ae-missing-release-tag) "ObservabilityProvider" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export const ObservabilityProvider: (input: ObservabilityProviderProps) => JSX_2.Element;
 
-// Warning: (ae-missing-release-tag) "ObservabilityProviderProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface ObservabilityProviderProps {
     // (undocumented)
     children: ReactNode;
@@ -5351,10 +5355,7 @@ export interface UseJobFormReady extends BaseFormHookReady<FieldsMetadata, JobFo
 // @public (undocumented)
 export type UseJobFormResult = HookLoadingResult | UseJobFormReady;
 
-// Warning: (ae-forgotten-export) The symbol "ObservabilityContextValue" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "useObservability" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export const useObservability: () => ObservabilityContextValue;
 
 // Warning: (ae-missing-release-tag) "usePaymentMethodForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
