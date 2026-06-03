@@ -1,0 +1,58 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/api-extractor/v7/api-extractor.schema.json",
+  "projectFolder": "../../",
+  "mainEntryPointFilePath": "<projectFolder>/dist/index.d.ts",
+  "bundledPackages": [],
+  "newlineKind": "lf",
+  "compiler": {
+    "overrideTsconfig": {
+      "compilerOptions": {
+        "lib": ["ESNext", "DOM"],
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
+        "jsx": "react-jsx",
+        "declaration": true,
+        "skipLibCheck": true,
+        "strict": true
+      },
+      "files": ["dist/index.d.ts"]
+    }
+  },
+  "apiReport": {
+    "enabled": true,
+    "reportFolder": "<projectFolder>/.reports/",
+    "reportTempFolder": "<projectFolder>/.reports/temp/"
+  },
+  "docModel": {
+    "enabled": false
+  },
+  "dtsRollup": {
+    "enabled": false
+  },
+  "tsdocMetadata": {
+    "enabled": false
+  },
+  "messages": {
+    "extractorMessageReporting": {
+      "ae-missing-release-tag": {
+        "logLevel": "none",
+        "addToApiReportFile": true
+      },
+      "ae-forgotten-export": {
+        "logLevel": "none",
+        "addToApiReportFile": true
+      },
+      "ae-unresolved-link": {
+        "logLevel": "none",
+        "addToApiReportFile": true
+      },
+      "ae-incompatible-release-tags": {
+        "logLevel": "none",
+        "addToApiReportFile": true
+      }
+    }
+  }
+}
