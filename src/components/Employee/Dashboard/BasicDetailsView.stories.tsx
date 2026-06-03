@@ -1,6 +1,4 @@
 import { fn } from 'storybook/test'
-import type { Employee } from '@gusto/embedded-api-v-2025-11-15/models/components/employee'
-import type { EmployeeAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeaddress'
 import type { EmployeeWorkAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeworkaddress'
 import { BasicDetailsView } from './BasicDetailsView'
 import { BaseComponent } from '@/components/Base'
@@ -16,30 +14,10 @@ export default {
   ],
 }
 
-const onEditBasicDetails = fn().mockName('onEditBasicDetails')
-const onManageHomeAddress = fn().mockName('onManageHomeAddress')
+const onEvent = fn().mockName('onEvent')
 const onManageWorkAddress = fn().mockName('onManageWorkAddress')
 
-const employee: Employee = {
-  uuid: 'employee-123',
-  firstName: 'Isom',
-  lastName: 'Jaskolski',
-  paymentMethod: 'Direct Deposit',
-  email: 'isom.jaskolski@example.com',
-  dateOfBirth: '1986-06-25',
-  hasSsn: true,
-  jobs: [{ uuid: 'job-1', title: 'Software Engineer', hireDate: '2020-01-20' }],
-}
-
-const homeAddress: EmployeeAddress = {
-  uuid: 'home-address-1',
-  version: '1',
-  country: 'USA',
-  street1: '100 5th Ave',
-  city: 'New York',
-  state: 'NY',
-  zip: '10001',
-}
+const EMPLOYEE_ID = 'employee-123'
 
 const workAddress: EmployeeWorkAddress = {
   uuid: 'work-address-1',
@@ -51,24 +29,23 @@ const workAddress: EmployeeWorkAddress = {
   zip: '99737',
 }
 
-export const Loading = () => <BasicDetailsView isLoading />
+export const Loading = () => (
+  <BasicDetailsView employeeId={EMPLOYEE_ID} onEvent={onEvent} isLoading />
+)
 
 export const WithAllDetails = () => (
   <BasicDetailsView
-    employee={employee}
-    currentHomeAddress={homeAddress}
+    employeeId={EMPLOYEE_ID}
+    onEvent={onEvent}
     currentWorkAddress={workAddress}
-    onEditBasicDetails={onEditBasicDetails}
-    onManageHomeAddress={onManageHomeAddress}
     onManageWorkAddress={onManageWorkAddress}
   />
 )
 
 export const WithoutAddresses = () => (
   <BasicDetailsView
-    employee={employee}
-    onEditBasicDetails={onEditBasicDetails}
-    onManageHomeAddress={onManageHomeAddress}
+    employeeId={EMPLOYEE_ID}
+    onEvent={onEvent}
     onManageWorkAddress={onManageWorkAddress}
   />
 )

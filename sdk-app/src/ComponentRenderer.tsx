@@ -44,6 +44,16 @@ interface ValidationIssue {
   message: string
 }
 
+const CATEGORY_LABELS: Record<string, string> = {
+  InformationRequests: 'Info Requests',
+  EmployeeManagement: 'Employee Management',
+  EmployeeOnboarding: 'Employee Onboarding',
+}
+
+function formatCategoryLabel(category: string): string {
+  return CATEGORY_LABELS[category] ?? category
+}
+
 function parseValidationError(error: Error): ValidationIssue[] | null {
   const cause = (error as { cause?: { issues?: { path?: string[]; message?: string }[] } }).cause
   if (cause?.issues) {
@@ -194,8 +204,7 @@ export function ComponentRenderer({ entities, chromeHidden = false }: ComponentR
   }
 
   const SdkComponent = entry.component
-  const displayCategory =
-    entry.category === 'InformationRequests' ? 'Info Requests' : entry.category
+  const displayCategory = formatCategoryLabel(entry.category)
 
   const registryKey = `${entry.category}.${entry.name}`
   const defaults = resolveDefaults(registryKey)

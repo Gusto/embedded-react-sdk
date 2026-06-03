@@ -43,28 +43,16 @@ Common anti-patterns to avoid:
 
 ## 0. Pre-Migration Test Coverage
 
-Before touching any implementation code, write thorough unit tests for the **existing** component. These tests are the regression safety net — if the migration breaks behavior, a test failure tells you immediately.
+Before touching any implementation code, spawn the **`sdk-premigration-tests`** agent to write thorough unit tests for the existing component. These tests are the regression safety net — they must pass before migration begins and again after it finishes.
 
-### Required coverage
+Spawn the agent (foreground — wait for it to complete before proceeding):
 
-- **Default render** — fields, labels, and submit button are present with correct text
-- **Successful submission** — form submits and `onEvent` fires with the correct event type(s) and payload shape(s); cover both create mode and update mode if both exist
-- **Validation errors** — each field shows the correct message for required and format failures; simulate a 422 API response with `fieldErrors` and verify inline field errors appear
-- **Loading state** — while data fetches, the loading indicator is shown and the form is not rendered
-- **API error state** — when a query fails, an error message is shown and a retry action is available
-- **Conditional field visibility** — any field that shows/hides based on form state or server data is verified in both the shown and hidden states
-- **i18n** — rendered labels and button text match the expected translation keys (no raw key strings visible to the user)
+- **description**: `"Write pre-migration tests for $COMPONENT_PATH"`
+- **prompt**: `"Write pre-migration unit tests for the existing component at $COMPONENT_PATH before it is migrated to hook-based architecture."`
 
-### Process
+Review the test file the agent produces. If any required coverage area is missing or a test is failing, address it before writing a single line of migration code.
 
-1. Run the existing test file first to establish the baseline: `npm run test -- --run src/components/path/to/Component.test.tsx`
-2. Add test cases until all required coverage areas above are represented
-3. Run again and confirm all tests pass before writing a single line of migration code
-4. A test that fails at this stage is a bug in the test — fix it now, not after the migration
-
-### What tests to keep after migration
-
-Tests for the component's **public behavior** (rendered output, events emitted, loading/error states) survive the migration unchanged. Tests for internal helpers, context providers, or sub-components that are deleted during cleanup (Section 9) are removed along with that code. Do not delete a test just because the internal structure changed — delete it only when the thing it tested no longer exists.
+**What tests to keep after migration:** Tests for the component's public behavior (rendered output, events emitted, loading/error states) survive the migration unchanged. Tests for internal helpers, context providers, or sub-components deleted during cleanup (Section 9) are removed along with that code. Do not delete a test just because the internal structure changed — delete it only when the thing it tested no longer exists.
 
 ## 1. Component Structure
 
@@ -588,41 +576,14 @@ Reference examples (read the closest match before scaffolding):
 
 ## 11. Documentation
 
-Two documentation updates are required for every new hook. Complete both before marking the migration done.
+Once the migration is complete and tests are passing, spawn the **`sdk-hook-documenter`** agent in the background to write the partner-facing docs. You do not need to wait for it — it runs while you move on to cleanup or open the PR.
 
-### Before writing anything, read the existing docs
+Spawn the agent (background):
 
-Read these files in full — structure, section order, table columns, frontmatter, and code snippet style must all match:
+- **description**: `"Document $HOOK_NAME hook"`
+- **prompt**: `"Write partner-facing documentation for the new $HOOK_NAME hook at $HOOK_PATH. Add it to the docs/hooks/ inventory and create docs/hooks/$HOOK_NAME.md."`
 
-- `docs/hooks/useEmployeeDetailsForm.md` — chained-submit hook with `*SubmitCallbacks`
-- `docs/hooks/useWorkAddressForm.md` — single-mutation hook with optional submit-time entity ids
-- `docs/hooks/useJobForm.md` and `docs/hooks/useCompensationForm.md` — Compensation-domain hooks (predicate-based requiredness, cross-field `superRefine`, status flags)
-- `docs/hooks/usePayScheduleForm.md` — company-domain hook with admin-only fields and a side query
-- `docs/hooks/hooks.md` (for the inventory table format)
-
-Do not rely on the description below as a substitute for reading the source material.
-
-### 1. Add a row to the inventory table in `docs/hooks/hooks.md`
-
-Add one row to the `Available Hooks` table, following the existing column order and link format exactly:
-
-```md
-| `useMyForm` | One-line description of what the hook manages | [useMyForm](./useMyForm.md) |
-```
-
-### 2. Create `docs/hooks/use<Name>Form.md`
-
-Use the structure of the existing hook doc files as the template. Required sections, in order:
-
-- **Frontmatter** — `title` (hook name) and `order` (increment beyond the highest existing value; check other files' frontmatter)
-- **H1** matching the hook name
-- Short description paragraph + import snippet
-- **Props** — table with columns: Prop, Type, Required, Description
-- **Return Type** — loading branch shape and ready branch shape, with TypeScript interface blocks
-- **Fields Reference** — per-field table with columns: Field, Input type, Required by default, Error codes, Conditional availability
-- **Usage Examples** — `SDKFormProvider` pattern and `formHookResult` prop pattern, both with complete runnable snippets
-
-Keep description style, table formatting, and code fence language tags consistent with the existing files you read.
+The agent will produce `docs/hooks/use<Name>Form.md` and update the inventory row in `docs/hooks/hooks.md`. You will be notified when it finishes — review the output and commit it alongside the migration or as a fast-follow.
 
 ## 12. Migration Checklist
 

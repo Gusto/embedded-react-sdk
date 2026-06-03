@@ -52,7 +52,7 @@ const returnToIndexWithAlert = (alert: DashboardContextInterface['successAlert']
 export const dashboardStateMachine = {
   index: state<MachineTransition>(
     transition(
-      componentEvents.EMPLOYEE_UPDATE,
+      componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_EDIT_REQUESTED,
       'profile',
       reduce(
         (ctx: DashboardContextInterface): DashboardContextInterface => ({
@@ -63,7 +63,7 @@ export const dashboardStateMachine = {
       ),
     ),
     transition(
-      componentEvents.EMPLOYEE_HOME_ADDRESS,
+      componentEvents.EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_REQUESTED,
       'homeAddress',
       reduce(
         (ctx: DashboardContextInterface): DashboardContextInterface => ({
@@ -253,14 +253,27 @@ export const dashboardStateMachine = {
       ),
     ),
   ),
-  homeAddress: state<MachineTransition>(transition(componentEvents.CANCEL, 'index', returnToIndex)),
+  homeAddress: state<MachineTransition>(
+    transition(
+      componentEvents.EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_CANCELLED,
+      'index',
+      returnToIndex,
+    ),
+  ),
   workAddress: state<MachineTransition>(transition(componentEvents.CANCEL, 'index', returnToIndex)),
   federalTaxes: state<MachineTransition>(
     transition(componentEvents.CANCEL, 'index', returnToIndex),
     transition(componentEvents.EMPLOYEE_FEDERAL_TAXES_DONE, 'index', returnToIndex),
   ),
   stateTaxes: state<MachineTransition>(transition(componentEvents.CANCEL, 'index', returnToIndex)),
-  profile: state<MachineTransition>(transition(componentEvents.CANCEL, 'index', returnToIndex)),
+  profile: state<MachineTransition>(
+    transition(componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_EDIT_CANCELLED, 'index', returnToIndex),
+    transition(
+      componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_UPDATED,
+      'index',
+      returnToIndexWithAlert('profileUpdated'),
+    ),
+  ),
   paymentBankForm: state<MachineTransition>(
     transition(
       componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATED,

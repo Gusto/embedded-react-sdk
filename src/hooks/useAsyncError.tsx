@@ -1,8 +1,17 @@
 import React from 'react'
 /**
- * Triggers re-render of a component to allow ErrorBoundary to catch a thrown error - that way we can handle all exceptions from asynchrounous functions in the same way and catch them in react boundary
+ * Surfaces an asynchronous error to the nearest React `ErrorBoundary`.
  *
- * @returns Function
+ * @remarks
+ * Errors thrown inside async callbacks (event handlers, effects, promises) are not caught by
+ * React's error boundary machinery. The returned callback schedules a state update that re-throws
+ * the supplied error during render, which causes the boundary to receive it like any sync error.
+ *
+ * Non-`Error` values are coerced — strings become the error message, anything else becomes
+ * `"Unknown error"`.
+ *
+ * @returns A callback that, when invoked with an error, triggers the surrounding error boundary.
+ * @internal
  */
 export const useAsyncError = () => {
   const [_, setError] = React.useState()

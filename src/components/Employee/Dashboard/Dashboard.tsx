@@ -39,14 +39,6 @@ function DashboardRoot({
   const [internalTab, setInternalTab] = useState<DashboardTab>('basicDetails')
   const selectedTab = controlledTab ?? internalTab
 
-  const handleEditBasicDetails = useCallback(() => {
-    onEvent(componentEvents.EMPLOYEE_UPDATE, { employeeId })
-  }, [onEvent, employeeId])
-
-  const handleManageHomeAddress = useCallback(() => {
-    onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS, { employeeId })
-  }, [onEvent, employeeId])
-
   const handleManageWorkAddress = useCallback(() => {
     onEvent(componentEvents.EMPLOYEE_WORK_ADDRESS, { employeeId })
   }, [onEvent, employeeId])
@@ -141,8 +133,7 @@ function DashboardRoot({
             <Suspense fallback={<BaseLayout isLoading />}>
               <BasicDetailsViewWithData
                 employeeId={employeeId}
-                onEditBasicDetails={handleEditBasicDetails}
-                onManageHomeAddress={handleManageHomeAddress}
+                onEvent={onEvent}
                 onManageWorkAddress={handleManageWorkAddress}
               />
             </Suspense>

@@ -9,21 +9,6 @@
     "taxes": "Taxes",
     "documents": "Documents"
   },
-  "basicDetails": {
-    "title": "Basic details",
-    "editCta": "Edit",
-    "legalName": "Legal name",
-    "startDate": "Start date",
-    "socialSecurityNumber": "Social security number",
-    "dateOfBirth": "Date of birth",
-    "personalEmail": "Personal email"
-  },
-  "homeAddress": {
-    "title": "Home address",
-    "manageCta": "Manage",
-    "currentAddress": "Current address",
-    "noAddress": "No home address on file"
-  },
   "workAddress": {
     "title": "Work address",
     "manageCta": "Manage",
@@ -190,7 +175,8 @@
     "deductionAdded": "Deduction successfully added.",
     "deductionUpdated": "Deduction successfully updated.",
     "deductionDeleted": "Deduction successfully deleted.",
-    "jobAdded": "Job successfully added."
+    "jobAdded": "Job successfully added.",
+    "profileUpdated": "Profile updated"
   },
   "compensationFlow": {
     "addJobTitle": "Add a job",

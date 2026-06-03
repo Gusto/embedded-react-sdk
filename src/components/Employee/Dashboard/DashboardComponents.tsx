@@ -2,11 +2,11 @@ import { useTranslation } from 'react-i18next'
 import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
 import { Dashboard, type DashboardTab } from './Dashboard'
 import { getPendingCompensationChanges } from './getPendingCompensationChanges'
-import { HomeAddress } from '@/components/Employee/HomeAddress/management/HomeAddress'
+import { HomeAddressEditForm } from '@/components/Employee/HomeAddress/management/HomeAddressEditForm'
 import { WorkAddress } from '@/components/Employee/WorkAddress/management/WorkAddress'
 import { FederalTaxes } from '@/components/Employee/FederalTaxes/management/FederalTaxes'
 import { StateTaxes } from '@/components/Employee/StateTaxes/management/StateTaxes'
-import { Profile } from '@/components/Employee/Profile/management/Profile'
+import { ProfileEditForm } from '@/components/Employee/Profile/management/ProfileEditForm'
 import { BankForm } from '@/components/Employee/PaymentMethod/onboarding/BankForm'
 import { SplitView } from '@/components/Employee/PaymentMethod/onboarding/SplitView'
 import { DocumentManager } from '@/components/Employee/Documents/management/DocumentManager'
@@ -33,6 +33,7 @@ export type DashboardSuccessAlert =
   | 'deductionUpdated'
   | 'deductionDeleted'
   | 'jobAdded'
+  | 'profileUpdated'
 
 export interface DashboardContextInterface extends FlowContextInterface {
   employeeId: string
@@ -61,6 +62,7 @@ export function DashboardViewContextual() {
     deductionUpdated: t('alerts.deductionUpdated'),
     deductionDeleted: t('alerts.deductionDeleted'),
     jobAdded: t('alerts.jobAdded'),
+    profileUpdated: t('alerts.profileUpdated'),
   }
 
   return (
@@ -86,7 +88,7 @@ export function DashboardViewContextual() {
 
 export function HomeAddressContextual() {
   const { employeeId, onEvent } = useFlow<DashboardContextInterface>()
-  return <HomeAddress employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
+  return <HomeAddressEditForm employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
 }
 
 export function WorkAddressContextual() {
@@ -106,7 +108,7 @@ export function StateTaxesContextual() {
 
 export function ProfileContextual() {
   const { employeeId, onEvent } = useFlow<DashboardContextInterface>()
-  return <Profile employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
+  return <ProfileEditForm employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
 }
 
 export function PaymentBankFormContextual() {

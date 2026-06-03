@@ -1,7 +1,7 @@
 import { ManagementEmployeeList } from '../EmployeeList/management/ManagementEmployeeList'
 import { DashboardFlow } from '../Dashboard'
 import { TerminationFlow } from '../Terminations/TerminationFlow/TerminationFlow'
-import { OnboardingFlow } from '../OnboardingFlow/OnboardingFlow'
+import { OnboardingExecutionFlow } from '../OnboardingExecutionFlow/OnboardingExecutionFlow'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import type { BaseComponentInterface } from '@/components/Base'
 import { ensureRequired } from '@/helpers/ensureRequired'
@@ -36,7 +36,7 @@ export function TerminationFlowContextual() {
   )
 }
 
-export function OnboardingFlowContextual() {
+export function OnboardingExecutionFlowContextual() {
   const { companyId, onEvent } = useFlow<EmployeeListFlowContextInterface>()
-  return <OnboardingFlow companyId={ensureRequired(companyId)} onEvent={onEvent} />
+  return <OnboardingExecutionFlow companyId={ensureRequired(companyId)} onEvent={onEvent} />
 }

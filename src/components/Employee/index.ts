@@ -10,14 +10,19 @@ export { PaymentMethod } from './PaymentMethod'
 export { Landing } from './Landing'
 export { DocumentSigner } from './Documents/onboarding/DocumentSigner'
 export { OnboardingFlow } from './OnboardingFlow/OnboardingFlow'
+export {
+  OnboardingExecutionFlow,
+  type OnboardingExecutionFlowProps,
+  type OnboardingExecutionInitialState,
+} from './OnboardingExecutionFlow'
 export { SelfOnboardingFlow } from './SelfOnboardingFlow/SelfOnboardingFlow'
 export { EmployeeDocuments } from './Documents/onboarding/EmployeeDocuments'
 export { DashboardFlow } from './Dashboard'
 export type { DashboardFlowProps } from './Dashboard'
 export { EmployeeListFlow } from './EmployeeListFlow'
 export type { EmployeeListFlowProps } from './EmployeeListFlow'
-export { HomeAddress } from './HomeAddress/management/HomeAddress'
-export type { HomeAddressProps } from './HomeAddress/management/HomeAddress'
+export { HomeAddress } from './HomeAddress/management'
+export type { HomeAddressProps } from './HomeAddress/management'
 
 export { EmploymentEligibility } from './Documents/onboarding/DocumentSigner/EmploymentEligibility'
 export type { EmploymentEligibilityProps } from './Documents/onboarding/DocumentSigner/EmploymentEligibility'

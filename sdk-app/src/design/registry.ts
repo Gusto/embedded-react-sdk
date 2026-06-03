@@ -6,6 +6,7 @@ export interface PrototypeEntry {
   name: string
   path: string
   description: string
+  children?: PrototypeEntry[]
 }
 
 export type CategorizedRegistry = Record<Category, PrototypeEntry[]>
@@ -26,13 +27,56 @@ export const categorizedRegistry: CategorizedRegistry = {
       path: '/design/contractor-management',
       description:
         'A prototype flow for managing contractors — view the list and drill into individual profiles.',
+      children: [
+        {
+          name: 'Prototype',
+          path: '/design/contractor-management',
+          description: 'Live prototype against the real API.',
+        },
+        {
+          name: 'Component states',
+          path: '/design/contractor-management/component-states',
+          description: 'Browse individual components and configurations with mock data.',
+        },
+      ],
     },
     {
       name: 'Contractor Self-Onboarding',
       path: '/design/contractor-self-onboarding',
       description: 'The contractor-facing onboarding experience after receiving an invite link.',
+      children: [
+        {
+          name: 'Prototype',
+          path: '/design/contractor-self-onboarding',
+          description: 'Live prototype against the real API.',
+        },
+        {
+          name: 'Component states',
+          path: '/design/contractor-self-onboarding/component-states',
+          description: 'Browse individual components and configurations with mock data.',
+        },
+      ],
     },
   ],
-  Employees: [],
+  Employees: [
+    {
+      name: 'Compensation History',
+      path: '/design/employee-compensation-history',
+      description:
+        'A read-only view of an employee’s compensation history across all of their jobs, with a job filter for multi-job employees.',
+      children: [
+        {
+          name: 'Prototype',
+          path: '/design/employee-compensation-history/prototype',
+          description: 'Live prototype against the real API.',
+        },
+        {
+          name: 'Component states',
+          path: '/design/employee-compensation-history/component-states',
+          description: 'Browse individual components and configurations with mock data.',
+        },
+      ],
+    },
+  ],
   Payroll: [],
 }

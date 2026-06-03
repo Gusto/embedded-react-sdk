@@ -32,6 +32,7 @@
   ],
   "scripts": {
     "build": "npm run build:clean && npm run i18n:generate && vite build && npm run endpoints:derive",
+    "api-report:derive": "api-extractor run --local --config .reports/config/api-extractor.json",
     "endpoints:derive": "npx tsx ./build/deriveEndpointInventory.ts",
     "endpoints:verify": "npx tsx ./build/deriveEndpointInventory.ts --verify",
     "build:ci": "npm run build && npm run lint:check && npm run format:check && npm run test:ci",
@@ -88,15 +89,16 @@
     "sdk-app:analyze-props": "npx tsx sdk-app/scripts/analyze-component-props.ts"
   },
   "devDependencies": {
-    "@commitlint/cli": "^21.0.1",
+    "@commitlint/cli": "^21.0.2",
     "@commitlint/config-conventional": "^21.0.2",
     "@eslint/js": "^9.39.2",
+    "@microsoft/api-extractor": "^7.58.7",
     "@playwright/test": "^1.60.0",
     "@release-it/conventional-changelog": "^11.0.1",
     "@storybook/addon-a11y": "^10.4.1",
     "@storybook/addon-docs": "^10.4.1",
     "@storybook/addon-onboarding": "^10.4.1",
-    "@storybook/react-vite": "^10.4.1",
+    "@storybook/react-vite": "^10.4.2",
     "@storybook/test-runner": "^0.24.4",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
@@ -146,7 +148,7 @@
     "ts-morph": "^28.0.0",
     "tsx": "^4.22.4",
     "typescript-eslint": "^8.60.0",
-    "vite": "^6.4.2",
+    "vite": "^6.4.3",
     "vite-plugin-checker": "^0.14.1",
     "vite-plugin-circular-dependency": "^0.6.0",
     "vite-plugin-dts": "^4.5.3",
@@ -170,7 +172,7 @@
     "classnames": "^2.5.1",
     "deepmerge": "^4.3.1",
     "dompurify": "^3.4.7",
-    "i18next": "^26.3.0",
+    "i18next": "^26.3.1",
     "react-aria": "^3.47.0",
     "react-aria-components": "1.16.0",
     "react-error-boundary": "^6.1.2",
@@ -189,7 +191,8 @@
   "msw": {
     "workerDirectory": [
       "e2e",
-      "e2e/public"
+      "e2e/public",
+      "sdk-app/public"
     ]
   }
 }

@@ -27,6 +27,14 @@ interface UseClientPaginationOptions<TItem> {
   searchDebounceMs?: number
 }
 
+/**
+ * Return shape of {@link useClientPagination}: the current-page slice, a
+ * `PaginationControlProps`-shaped object, the controlled search value, and
+ * search actions.
+ *
+ * @typeParam TItem - The element type of the paginated list.
+ * @internal
+ */
 export interface UseClientPaginationResult<TItem> {
   /** Current-page slice. */
   data: TItem[]
@@ -41,13 +49,25 @@ export interface UseClientPaginationResult<TItem> {
 }
 
 /**
- * Client-side pagination + optional search over an in-memory array.
+ * Client-side pagination and optional search over an in-memory array.
  *
+ * @remarks
  * Returns a `PaginationControlProps`-shaped pagination object that drops
  * straight into `useDataView` / `PaginationControl`. Use this when the
  * caller already has the full list of items and wants to paginate/search
  * it locally. Pair with `usePagination` if you want to page through an
  * API endpoint instead.
+ *
+ * Search state is owned by the hook, debounced, and resets the current
+ * page to 1 once the debounce settles. The current page is clamped to the
+ * latest total so a shrinking filtered list never lands on an empty page.
+ *
+ * @typeParam TItem - The element type of the paginated list.
+ * @param allItems - The full in-memory list to paginate and optionally filter.
+ * @param options - Search predicate, default rows-per-page, and debounce window.
+ * @returns A {@link UseClientPaginationResult} with the current-page slice,
+ *   pagination controls, the controlled search value, and search actions.
+ * @internal
  */
 export function useClientPagination<TItem>(
   allItems: TItem[],

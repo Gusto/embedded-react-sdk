@@ -1,4 +1,9 @@
 {
+  "card": {
+    "title": "Home address",
+    "manageCta": "Manage",
+    "noAddress": "No home address on file"
+  },
   "title": "Manage home address",
   "description": "An employee's home address is used to calculate their taxes and determine eligibility for certain benefits. Make sure to keep it up-to-date.",
   "rowMenuAriaLabel": "Open address row actions",
@@ -27,10 +32,30 @@
   "submitCta": "Save",
   "cancelCta": "Cancel",
   "backCta": "Back",
+  "submitErrorAlertTitle": "We couldn't save this address",
+  "submitErrorAlertFallback": "The address couldn't be verified.",
+  "submitErrorAlertHelp": "Double-check the street, city, state, and ZIP. If they look right, the address may not be recognized by USPS — try a nearby valid address or contact your administrator.",
   "deleteModalTitle": "Delete address?",
   "deleteModalDescription": "Deleting an address can't be undone. <strong>{{address}}</strong> will be deleted. This can have implications on your tax calculations & withholdings.",
   "deleteModalConfirmCta": "Delete address",
   "form": {
-    "startDateRequired": "Start date is required"
+    "street1": "Street 1",
+    "street2": "Street 2",
+    "city": "City",
+    "state": "State",
+    "zip": "Zip",
+    "noCurrentAddress": "Home address",
+    "courtesyWithholdingLabel": "Include courtesy withholding",
+    "courtesyWithholdingDescription": "Withhold and pay local income taxes for employees who live and work in different states. ",
+    "learnMoreCta": "<LearnMoreLink href=\"https://support.gusto.com/article/101365481100000/Reciprocal-agreements-and-courtesy-withholding\" target=\"_blank\">Learn more about courtesy withholdings.</LearnMoreLink>",
+    "withholdingTitle": "Courtesy withholding",
+    "withholdingNote": "<p>Withholding on an employee's behalf will require your company to register with any corresponding agencies.</p><p>Also, if this employee's home address will change your company's state tax requirements, you may need to complete your company's state tax setup again.</p>",
+    "startDateRequired": "Start date is required",
+    "validations": {
+      "street1": "Street address is required",
+      "city": "Please provide valid city name",
+      "state": "Please select a state",
+      "zip": "Please provide valid zip code"
+    }
   }
 }

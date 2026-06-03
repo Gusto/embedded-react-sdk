@@ -9,6 +9,21 @@ import { type SDKError, SDKInternalError, normalizeToSDKError } from '@/types/sd
 
 type SubmitHandler<T> = (data: T) => Promise<void>
 
+/**
+ * Provides the standard SDK form-submit wrapper with normalized error state and observability instrumentation.
+ *
+ * @remarks
+ * The returned `baseSubmitHandler` clears prior error state, awaits the caller's handler, normalizes
+ * any caught `APIError`, `SDKValidationError`, `UnprocessableEntityError`, `GustoEmbeddedError`, or
+ * `SDKInternalError` into an {@link SDKError}, and surfaces it on the `error` field. Any other thrown
+ * value is re-thrown asynchronously so the nearest React error boundary catches it. An
+ * `sdk.form.submit_duration` observability metric is emitted on every attempt, tagged with success or
+ * error status.
+ *
+ * @param componentName - Optional component identifier used to tag observability errors and metrics.
+ * @returns An object containing `baseSubmitHandler`, the current `error`, and `setError`.
+ * @internal
+ */
 export const useBaseSubmit = (componentName?: string) => {
   const [error, setError] = useState<SDKError | null>(null)
   const throwError = useAsyncError()
