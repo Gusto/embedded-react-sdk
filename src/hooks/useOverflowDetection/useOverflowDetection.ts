@@ -1,11 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import type React from 'react'
 
-/**
- * Props for {@link useOverflowDetection}.
- *
- * @internal
- */
+/** @internal */
 export type UseOverflowDetectionProps = {
   ref: React.RefObject<HTMLElement | null>
   debounceTimeout?: number

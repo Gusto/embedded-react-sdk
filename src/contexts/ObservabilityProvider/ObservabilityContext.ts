@@ -2,11 +2,12 @@ import { createContext } from 'react'
 import type { ObservabilityHook } from '@/types/observability'
 
 /**
- * Value provided by {@link ObservabilityContext}, exposing the configured observability hook to descendants.
+ * Value provided by the SDK's observability context, exposing the configured observability hook to descendants.
  *
  * @public
  */
 export interface ObservabilityContextValue {
+  /** The partner-supplied observability hook, or `undefined` if none was configured. */
   observability: ObservabilityHook | undefined
 }
 

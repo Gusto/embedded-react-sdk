@@ -144,11 +144,7 @@ export const BaseComponent = <TResourceKey extends keyof Resources = keyof Resou
   )
 }
 
-/**
- * Props for {@link BaseLayout}: optional children, an optional single or aggregated {@link SDKError}, and a loading flag.
- *
- * @internal
- */
+/** @internal */
 export interface BaseLayoutProps {
   children?: ReactNode
   error?: SDKError | SDKError[] | null
@@ -303,11 +299,7 @@ function SuspenseFallback({ componentName }: { componentName?: string }) {
   )
 }
 
-/**
- * Props for {@link BaseBoundaries}: children, an optional error fallback component, an error-boundary callback, and the wrapped component's name for observability.
- *
- * @internal
- */
+/** @internal */
 export interface BaseBoundariesProps {
   children?: ReactNode
   FallbackComponent?: (props: FallbackProps) => JSX.Element

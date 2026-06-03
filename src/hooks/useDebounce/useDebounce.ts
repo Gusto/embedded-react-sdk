@@ -40,9 +40,5 @@ export function useDebounce<
   }
 }
 
-/**
- * Default export alias for {@link useDebounce}.
- *
- * @internal
- */
+/** @internal */
 export default useDebounce

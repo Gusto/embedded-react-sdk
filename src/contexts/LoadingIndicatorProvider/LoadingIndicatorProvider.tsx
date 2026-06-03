@@ -2,11 +2,7 @@ import type { ReactNode } from 'react'
 import { LoadingIndicatorContext, type LoadingIndicatorContextProps } from './useLoadingIndicator'
 import { Loading } from '@/components/Common/Loading/Loading'
 
-/**
- * Props for {@link LoadingIndicatorProvider}.
- *
- * @internal
- */
+/** @internal */
 export interface LoadingIndicatorProviderProps {
   children: ReactNode
   value?: LoadingIndicatorContextProps['LoadingIndicator']
