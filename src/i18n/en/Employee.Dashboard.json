@@ -71,19 +71,6 @@
         }
       }
     },
-    "payment": {
-      "title": "Payment",
-      "splitPaycheckCta": "Split paycheck",
-      "addBankAccountCta": "Add bank account",
-      "listLabel": "List of bank accounts",
-      "nickname": "Nickname",
-      "routingNumber": "Routing number",
-      "accountType": "Account type",
-      "emptyState": {
-        "title": "No bank accounts",
-        "description": "Bank accounts will appear here once added"
-      }
-    },
     "deductions": {
       "title": "Deductions",
       "addDeductionCta": "Add deduction",

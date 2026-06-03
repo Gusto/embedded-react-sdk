@@ -1,0 +1,26 @@
+{
+  "title": "Payment",
+  "splitCta": "Split paycheck",
+  "addBankAccountCta": "Add bank account",
+  "addAnotherCta": "Add another bank account",
+  "bankAccountsListLabel": "List of employee bank accounts",
+  "nicknameColumn": "Nickname",
+  "routingNumberColumn": "Routing number",
+  "accountTypeColumn": "Account type",
+  "deleteBankAccountCta": "Delete",
+  "deleteBankAccountDialog": {
+    "title": "Delete bank account",
+    "description": "Are you sure you want to delete the bank account {{account}}?",
+    "confirmCta": "Delete",
+    "cancelCta": "Cancel"
+  },
+  "hamburgerTitle": "Bank account actions",
+  "paymentMethodLabel": "Payment method",
+  "directDepositLabel": "Direct Deposit",
+  "checkLabel": "Check",
+  "alerts": {
+    "bankAccountAdded": "Bank account successfully added.",
+    "bankAccountDeleted": "Bank account successfully deleted.",
+    "splitUpdated": "Split payment successfully updated."
+  }
+}

@@ -78,7 +78,7 @@ describe('PaymentMethod (management)', () => {
     onEvent.mockClear()
   })
 
-  describe('ListView', () => {
+  describe('PaymentMethodCard', () => {
     it('renders the bank accounts list with fixture data', async () => {
       renderWithProviders(<PaymentMethod employeeId="employee-123" onEvent={onEvent} />)
 
@@ -129,7 +129,7 @@ describe('PaymentMethod (management)', () => {
       expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument()
     })
 
-    it('creates a bank account and fires EMPLOYEE_BANK_ACCOUNT_CREATED', async () => {
+    it('creates a bank account and fires EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_BANK_FORM_SUBMITTED', async () => {
       const user = userEvent.setup()
       // POST /v1/employees/:id/bank_accounts expects 201
       server.use(
@@ -167,7 +167,7 @@ describe('PaymentMethod (management)', () => {
 
       await waitFor(() => {
         expect(onEvent).toHaveBeenCalledWith(
-          componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATED,
+          componentEvents.EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_BANK_FORM_SUBMITTED,
           expect.any(Object),
         )
       })
@@ -279,7 +279,7 @@ describe('PaymentMethod (management)', () => {
       expect(within(list).getByLabelText(/Wells Fargo \(XXXX1111\)/)).toBeInTheDocument()
     })
 
-    it('fires EMPLOYEE_PAYMENT_METHOD_UPDATED when percentage split is saved', async () => {
+    it('fires EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_SPLIT_FORM_SUBMITTED when percentage split is saved', async () => {
       const user = userEvent.setup()
       mockTwoBankAccounts()
       renderWithProviders(
@@ -297,7 +297,7 @@ describe('PaymentMethod (management)', () => {
 
       await waitFor(() => {
         expect(onEvent).toHaveBeenCalledWith(
-          componentEvents.EMPLOYEE_PAYMENT_METHOD_UPDATED,
+          componentEvents.EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_SPLIT_FORM_SUBMITTED,
           expect.any(Object),
         )
       })
@@ -326,7 +326,7 @@ describe('PaymentMethod (management)', () => {
   })
 
   describe('delete bank account', () => {
-    it('shows delete dialog and fires EMPLOYEE_BANK_ACCOUNT_DELETED on confirm', async () => {
+    it('shows delete dialog and fires EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_BANK_ACCOUNT_DELETED on confirm', async () => {
       const user = userEvent.setup()
       renderWithProviders(<PaymentMethod employeeId="employee-123" onEvent={onEvent} />)
 
@@ -348,7 +348,7 @@ describe('PaymentMethod (management)', () => {
 
       await waitFor(() => {
         expect(onEvent).toHaveBeenCalledWith(
-          componentEvents.EMPLOYEE_BANK_ACCOUNT_DELETED,
+          componentEvents.EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_BANK_ACCOUNT_DELETED,
           expect.anything(),
         )
       })
@@ -379,7 +379,7 @@ describe('PaymentMethod (management)', () => {
       })
 
       expect(onEvent).not.toHaveBeenCalledWith(
-        componentEvents.EMPLOYEE_BANK_ACCOUNT_DELETED,
+        componentEvents.EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_BANK_ACCOUNT_DELETED,
         expect.anything(),
       )
     })
