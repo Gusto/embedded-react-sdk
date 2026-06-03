@@ -179,7 +179,6 @@ export default [
       'src/contexts/**',
       'src/helpers/**',
       'src/hooks/**',
-      'src/models/**',
       'src/partner-hook-utils/**',
       'src/shared/**',
       'src/types/**',
