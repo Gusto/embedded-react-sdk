@@ -60,11 +60,11 @@ refactor (not just that one exists):
   alert should appear above the tabs after a successful edit; the dashboard's
   `DashboardViewContextual` already owns this rendering and the migration only
   needs to update the alert code's union membership and the event trigger.
-- **Block-internal (`CardContextual` in the new `<Feature>Components.tsx`)** —
+- **Block-internal (`<Feature>CardContextual` in the new `<Feature>Components.tsx`)** —
   move the alert into the block when the alert belongs above the card surface
   the partner sees in standalone use. Add a `successAlert` field to the block's
   state-machine context, a `returnToCardWithAlert(...)` reducer, and a
-  `<Components.Alert>` render in `CardContextual` whose `onDismiss` fires the
+  `<Components.Alert>` render in `<Feature>CardContextual` whose `onDismiss` fires the
   block's `EMPLOYEE_MANAGEMENT_<FEATURE>_ALERT_DISMISSED` event.
 
 Most cards want both (dashboard chrome for the dashboard path, block-internal

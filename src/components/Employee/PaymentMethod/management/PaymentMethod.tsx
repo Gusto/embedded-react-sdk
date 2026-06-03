@@ -1,7 +1,11 @@
 import { createMachine } from 'robot3'
 import { useMemo } from 'react'
 import type { PaymentMethodContextInterface } from './PaymentMethodComponents'
-import { CardContextual, BankFormContextual, SplitViewContextual } from './PaymentMethodComponents'
+import {
+  PaymentMethodCardContextual,
+  PaymentMethodBankFormContextual,
+  PaymentMethodSplitFormContextual,
+} from './PaymentMethodComponents'
 import { paymentMethodStateMachine } from './paymentMethodStateMachine'
 import { Flow } from '@/components/Flow/Flow'
 import {
@@ -32,10 +36,10 @@ function PaymentMethodFlow({
 
   const initialComponent =
     initialState === 'add'
-      ? BankFormContextual
+      ? PaymentMethodBankFormContextual
       : initialState === 'split'
-        ? SplitViewContextual
-        : CardContextual
+        ? PaymentMethodSplitFormContextual
+        : PaymentMethodCardContextual
 
   const machine = useMemo(
     () =>

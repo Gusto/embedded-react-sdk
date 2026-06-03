@@ -5,6 +5,7 @@ import {
 } from '../shared/usePaymentMethodList'
 import { useDeleteBankAccount } from '../shared/useDeleteBankAccount'
 import { DeleteBankAccountDialog } from '../shared/DeleteBankAccountDialog'
+import styles from './PaymentMethodCard.module.scss'
 import { DataView, useDataView } from '@/components/Common'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
@@ -28,8 +29,9 @@ export interface PaymentMethodCardProps {
  * {@link usePaymentMethodList} and emits the management block's scoped events
  * (`EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_*`) when the user clicks the card's
  * CTAs or confirms a bank-account deletion. The card has no alert API — alert
- * rendering is the orchestrator's responsibility (the block's `CardContextual`
- * for standalone consumption; the dashboard chrome for dashboard consumption).
+ * rendering is the orchestrator's responsibility (the block's
+ * `PaymentMethodCardContextual` for standalone consumption; the dashboard
+ * chrome for dashboard consumption).
  */
 export function PaymentMethodCard({ employeeId, onEvent }: PaymentMethodCardProps) {
   useI18n('Employee.Management.PaymentMethod')
@@ -117,7 +119,7 @@ function PaymentMethodCardReady({
   const isDirectDeposit = paymentMethod.type === PAYMENT_METHODS.directDeposit
 
   const headerAction = (
-    <Flex gap={8} alignItems="center" justifyContent="flex-end">
+    <div className={styles.headerAction}>
       {isDirectDeposit && bankAccounts.length > 1 && (
         <Components.Button
           variant="secondary"
@@ -138,7 +140,7 @@ function PaymentMethodCardReady({
       >
         {bankAccounts.length > 0 ? t('addAnotherCta') : t('addBankAccountCta')}
       </Components.Button>
-    </Flex>
+    </div>
   )
 
   const isShowingBankAccountTable = isDirectDeposit && bankAccounts.length > 0

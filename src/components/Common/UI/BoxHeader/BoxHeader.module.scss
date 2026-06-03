@@ -4,10 +4,3 @@
   align-items: center;
   gap: toRem(16);
 }
-
-.titleColumn {
-  display: flex;
-  flex-direction: column;
-  gap: toRem(4);
-  min-width: 0;
-}

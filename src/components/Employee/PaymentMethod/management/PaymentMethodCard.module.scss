@@ -1,0 +1,11 @@
+.headerAction {
+  display: flex;
+  flex-direction: column;
+  gap: toRem(8);
+  flex-shrink: 0;
+
+  @include container-query(40em) {
+    flex-direction: row;
+    align-items: center;
+  }
+}

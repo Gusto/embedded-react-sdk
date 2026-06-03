@@ -46,11 +46,12 @@ shapes. Do not infer from the state machine alone — read every `onEvent(` call
 - `src/components/Employee/<Feature>/management/<feature>StateMachine.ts` —
   all states and transition event names
 - `src/components/Employee/<Feature>/management/<Feature>Components.tsx` —
-  the contextual adapters (`CardContextual`, `<Feature>EditFormContextual`).
-  Orchestrator-owned alerts are fired from here, not from the card or the
+  the contextual adapters (`<Feature>CardContextual`, `<Feature>EditFormContextual`).
+  Each adapter's name mirrors the leaf component it wraps. Orchestrator-owned
+  alerts are fired from here, not from the card or the
   form — e.g. the `EMPLOYEE_MANAGEMENT_<FEATURE>_ALERT_DISMISSED` event a
   block emits when the user dismisses the success banner above the card lives
-  in `CardContextual`'s `onDismiss` handler. Read this file or you will miss
+  in `<Feature>CardContextual`'s `onDismiss` handler. Read this file or you will miss
   alert-dismiss events.
 - `src/components/Employee/<Feature>/management/<Feature>Card/<Feature>Card.tsx` —
   events the card fires via `onEvent`; the card's prop interface

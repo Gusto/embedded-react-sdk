@@ -18,7 +18,7 @@ export interface PaymentMethodContextInterface extends FlowContextInterface {
   successAlert?: PaymentMethodSuccessAlertCode | null
 }
 
-export function CardContextual() {
+export function PaymentMethodCardContextual() {
   const { employeeId, onEvent, successAlert } = useFlow<PaymentMethodContextInterface>()
   const { t } = useTranslation('Employee.Management.PaymentMethod')
   const Components = useComponentContext()
@@ -38,12 +38,12 @@ export function CardContextual() {
   )
 }
 
-export function BankFormContextual() {
+export function PaymentMethodBankFormContextual() {
   const { employeeId, onEvent } = useFlow<PaymentMethodContextInterface>()
   return <PaymentMethodBankForm employeeId={employeeId} onEvent={onEvent} />
 }
 
-export function SplitViewContextual() {
+export function PaymentMethodSplitFormContextual() {
   const { employeeId, onEvent } = useFlow<PaymentMethodContextInterface>()
   return <PaymentMethodSplitForm employeeId={employeeId} onEvent={onEvent} />
 }

@@ -175,16 +175,16 @@ The corollary is that the canonical references this skill cites for the _code sh
 
 ## Naming conventions
 
-| Thing                           | Name                                                                                                                                             |
-| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Block component                 | Feature name (`Compensation`, `Deductions`, `Documents`, …)                                                                                      |
-| State machine context interface | `<Feature>ContextInterface`                                                                                                                      |
-| State machine                   | `<feature>StateMachine`                                                                                                                          |
-| Contextual adapters             | `<Action>Contextual` (e.g. `CardContextual`, `CompensationEditFormContextual`, `CompensationAddJobFormContextual`)                               |
-| Standalone card                 | `<Feature>Card` (self-fetching via the data hook)                                                                                                |
-| Standalone edit form            | `<Feature>EditForm` for the single-form case; `<Feature><Action>Form` (`CompensationAddJobForm`, `CompensationEditJobForm`) for multi-action     |
-| Data hook                       | `use<Feature><Role>` — e.g. `useCompensationManagement`, `usePaymentMethodList` (matches the existing naming for non-form list/management hooks) |
-| State machine states            | `card` (initial), one `<action>` per edit CTA (`editJob`, `addJob`, `editFederal`, `viewForm`, …)                                                |
+| Thing                           | Name                                                                                                                                                                                                            |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Block component                 | Feature name (`Compensation`, `Deductions`, `Documents`, …)                                                                                                                                                     |
+| State machine context interface | `<Feature>ContextInterface`                                                                                                                                                                                     |
+| State machine                   | `<feature>StateMachine`                                                                                                                                                                                         |
+| Contextual adapters             | `<WrappedComponent>Contextual` — mirror the exact name of the standalone component the adapter wraps (e.g. `PaymentMethodCardContextual`, `CompensationEditFormContextual`, `CompensationAddJobFormContextual`) |
+| Standalone card                 | `<Feature>Card` (self-fetching via the data hook)                                                                                                                                                               |
+| Standalone edit form            | `<Feature>EditForm` for the single-form case; `<Feature><Action>Form` (`CompensationAddJobForm`, `CompensationEditJobForm`) for multi-action                                                                    |
+| Data hook                       | `use<Feature><Role>` — e.g. `useCompensationManagement`, `usePaymentMethodList` (matches the existing naming for non-form list/management hooks)                                                                |
+| State machine states            | `card` (initial), one `<action>` per edit CTA (`editJob`, `addJob`, `editFederal`, `viewForm`, …)                                                                                                               |
 
 `card` (not `index`, not `list`) is the canonical initial state name for a card-as-block. Use `index` only when an existing block already does (e.g. `dashboardStateMachine`) — new blocks should standardise on `card`. `PaymentMethod/management` uses `list` for historical reasons; that's an exception, not a model.
 
@@ -259,22 +259,46 @@ return (
 
 The pairing matters: `withPadding={false}` lets the table reach the box border, and `isWithinBox` on the `DataView` strips its outer chrome so the visual separation comes from the box itself. The condition is the same on both sides (table vs. fallback) because the fallback content still wants normal box padding.
 
-**Multi-button header action.** `BoxHeader`'s `action` slot accepts a single `ReactNode`. When the card needs more than one CTA in the header (e.g. PaymentMethod's optional "Split paycheck" alongside "Add another bank account"), wrap them in a `Flex` with **`justifyContent="flex-end"`**:
+**Multi-button header action.** `BoxHeader`'s `action` slot accepts a single `ReactNode`. When the card needs more than one CTA in the header (e.g. PaymentMethod's optional "Split paycheck" alongside "Add another bank account"), wrap them in a plain `<div>` styled via a co-located CSS module — mobile-first column layout that upgrades to a row at the small breakpoint — not `<Flex>`, and not inline styles:
+
+```scss
+/* <Feature>Card.module.scss */
+.headerAction {
+  display: flex;
+  flex-direction: column;
+  gap: toRem(8);
+  flex-shrink: 0;
+
+  @include container-query(40em) {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+```
 
 ```tsx
+import styles from './<Feature>Card.module.scss'
+
 const headerAction = (
-  <Flex gap={8} alignItems="center" justifyContent="flex-end">
+  <div className={styles.headerAction}>
     {showSecondaryCta && (
       <Components.Button variant="secondary" /* … */>{t('splitCta')}</Components.Button>
     )}
     <Components.Button variant="secondary" icon={<PlusCircleIcon />} /* … */>
       {bankAccounts.length > 0 ? t('addAnotherCta') : t('addBankAccountCta')}
     </Components.Button>
-  </Flex>
+  </div>
 )
 ```
 
-The `flex-end` is essential. The `Flex` component always renders an inner container with `width: 100%` (to support container queries), so as a flex item inside `BoxHeader`'s `space-between` root it stretches to fill the available right-side space. With the default `justifyContent` ('normal' / flex-start), buttons cluster at the wrapper's left edge — visually misaligned even though the wrapper itself is pinned right. `flex-end` keeps the buttons against the box's right edge, where the `space-between` intent expects them. A single-button action passed directly (no `Flex` wrapper) doesn't have this problem because the button sits at its natural width.
+Both CSS rules are load-bearing:
+
+- **`display: flex` (not `<Flex>`):** the SDK's `Flex` primitive renders an outer `.flexContainer` with `width: 100%` (to support container queries), so as a flex item inside `BoxHeader`'s inner `space-between` it competes with the title for width and shrinks to roughly 50% of the row — at the wide breakpoint the buttons end up cramped against the title; at the narrow breakpoint the wrapper gets shrunk below its content and the buttons overflow to the right. A plain `<div>` with `display: flex` is content-sized instead, so the wrapper itself naturally sits flush right at any width. Reserve `<Flex>` for body layouts where container-query width really is what you want.
+- **`flex-shrink: 0`:** the SDK's `Button` is `flex-shrink: 0` but has `white-space: normal`, so its `min-content` is the longest word in the label (e.g. "another"), not the full button width. Without `flex-shrink: 0` on the wrapper, `BoxHeader`'s outer flex shrinks the wrapper down to roughly the buttons' aggregated min-content (~150px). The buttons then refuse to shrink (`flex-shrink: 0` on each) and overflow the wrapper to the right, drifting past the box's right edge with their right halves clipped. `flex-shrink: 0` on the wrapper pins it at its content width and forces the title to give up the space instead.
+
+**Why a container query.** Plain `display: flex` solves the wide-card layout but isn't responsive on its own — at narrow box widths (≤ ~640px container, e.g. tablet portrait or mobile), the two CTAs side-by-side leave the title with almost no room and the entire row hugs the right edge. Reach for the SDK-standard `container-query` mixin from [`src/styles/_Responsive.scss`](../../../src/styles/_Responsive.scss) (auto-injected via Vite, so no `@use` import in your `.module.scss`) and use the `40em` "small" breakpoint that matches the global `$global-breakpoints.small` value. Default to column layout (stacked CTAs) and upgrade to row layout at ≥ `40em`. This mirrors the responsive contract `<Flex>` ships with under the hood — we just can't borrow it here because of the `width: 100%` issue above.
+
+A single-button action passed directly (no wrapper at all) doesn't need any of this — the button is already a single content-sized flex item with `flex-shrink: 0`, so it sits flush right naturally at every width. The wrapper rules only apply when you're grouping more than one CTA. Keep the wrapper's styles in a co-located `.module.scss` next to the card file, matching the convention used by every other styled card in the codebase (e.g. `Profile.module.scss`, `JobAndPayView.module.scss`) — don't reach for inline `style={{ … }}` props.
 
 **No glyph duplication in icon-button labels.** When a CTA uses a glyph-icon prop (`icon={<PlusCircleIcon />}`, `icon={<PercentCircleIcon />}`, etc.), the icon is the glyph — don't prefix the label string with the same glyph. Translation strings should read as plain copy: `"Add another bank account"`, not `"+ Add another bank account"`. The button component composes icon + label; baking the glyph into the copy doubles it and bleeds presentational concerns into i18n.
 
@@ -285,7 +309,7 @@ The minimum shape is three states: `card` (initial) + one `edit*` state per CTA 
 ```ts
 import { transition, reduce, state } from 'robot3'
 import {
-  CardContextual,
+  CompensationCardContextual,
   CompensationEditFormContextual,
   CompensationAddJobFormContextual,
   type CompensationContextInterface,
@@ -296,7 +320,7 @@ import type { MachineTransition } from '@/types/Helpers'
 const returnToCard = reduce(
   (ctx: CompensationContextInterface): CompensationContextInterface => ({
     ...ctx,
-    component: CardContextual,
+    component: CompensationCardContextual,
     successAlert: null,
     currentJob: null,
   }),
@@ -306,7 +330,7 @@ const returnToCardWithAlert = (alert: CompensationContextInterface['successAlert
   reduce(
     (ctx: CompensationContextInterface): CompensationContextInterface => ({
       ...ctx,
-      component: CardContextual,
+      component: CompensationCardContextual,
       successAlert: alert,
       currentJob: null,
     }),
@@ -353,7 +377,10 @@ Block file:
 import { createMachine } from 'robot3'
 import { useMemo } from 'react'
 import { compensationStateMachine } from './compensationStateMachine'
-import { CardContextual, type CompensationContextInterface } from './CompensationComponents'
+import {
+  CompensationCardContextual,
+  type CompensationContextInterface,
+} from './CompensationComponents'
 import { Flow } from '@/components/Flow/Flow'
 import { BaseBoundaries, type BaseComponentInterface } from '@/components/Base'
 
@@ -366,7 +393,7 @@ export function Compensation({ employeeId, onEvent, FallbackComponent }: Compens
     () =>
       createMachine('card', compensationStateMachine, (ctx: CompensationContextInterface) => ({
         ...ctx,
-        component: CardContextual,
+        component: CompensationCardContextual,
         employeeId,
       })),
     [employeeId],
@@ -400,7 +427,7 @@ export interface CompensationContextInterface extends FlowContextInterface {
   successAlert?: 'jobAdded' | 'jobUpdated' | null
 }
 
-export function CardContextual() {
+export function CompensationCardContextual() {
   const { employeeId, onEvent } = useFlow<CompensationContextInterface>()
   return <CompensationCard employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
 }
@@ -418,7 +445,9 @@ export function CompensationEditFormContextual() {
 }
 ```
 
-Note how thin `CardContextual` is: the card owns its own data fetching and fires its own `componentEvents` via `onEvent`, so the adapter just forwards `employeeId` + `onEvent` from flow context. `CompensationEditFormContextual` is the only adapter that has to do real work — pulling per-transition context off the flow (e.g. `currentJob`) to seed the edit screen, and translating its `onCancel` into a `CANCEL` event. The state machine handles `CANCEL` and the edit screen's `onEvent` (e.g. `EMPLOYEE_COMPENSATION_DONE`) by transitioning back to `card`; the card's own events (e.g. `EMPLOYEE_COMPENSATION_CREATE`) transition forward to `editCompensation`.
+Note how thin `CompensationCardContextual` is: the card owns its own data fetching and fires its own `componentEvents` via `onEvent`, so the adapter just forwards `employeeId` + `onEvent` from flow context. `CompensationEditFormContextual` is the only adapter that has to do real work — pulling per-transition context off the flow (e.g. `currentJob`) to seed the edit screen, and translating its `onCancel` into a `CANCEL` event. The state machine handles `CANCEL` and the edit screen's `onEvent` (e.g. `EMPLOYEE_COMPENSATION_DONE`) by transitioning back to `card`; the card's own events (e.g. `EMPLOYEE_COMPENSATION_CREATE`) transition forward to `editCompensation`.
+
+The contextual's name mirrors the wrapped component exactly — `CompensationCardContextual` wraps `CompensationCard`, `CompensationEditFormContextual` wraps `CompensationEditForm`. This keeps a 1:1 grep mapping from machine wiring to leaf component. Older blocks (`HomeAddress`, `Profile`) still use the unqualified `CardContextual` historically; align them when you touch the file, but don't drift into them as part of an unrelated PR.
 
 ## Dedicated event surface per block
 
@@ -476,7 +505,7 @@ If the dashboard never emitted an event for this card surface (e.g. Paystubs has
 
 Alerts are rendered by the **orchestrator**, not the card. The card stays a pure standalone surface with only `{ employeeId, onEvent }` — it has no `successAlert` / `onDismissAlert` props. Each orchestrator owns its own alert placement at the location idiomatic for its chrome:
 
-- **Standalone block** (`<Profile employeeId={…} onEvent={…} />`) — the block's `CardContextual` reads `successAlert` from flow context and renders `<Components.Alert>` directly **above** the card.
+- **Standalone block** (`<Profile employeeId={…} onEvent={…} />`) — the block's `<Feature>CardContextual` reads `successAlert` from flow context and renders `<Components.Alert>` directly **above** the card.
 - **Dashboard** (`<DashboardFlow />`) — [`DashboardViewContextual`](../../../src/components/Employee/Dashboard/DashboardComponents.tsx) renders alerts at the **top** of the dashboard chrome using its existing `DashboardSuccessAlert` union + `returnToIndexWithAlert(...)` pattern. The dashboard chrome stays; it's the right scope for dashboard-mode alerts.
 - **Direct card** (`<ProfileCard employeeId={…} onEvent={…} />` mounted by a partner without a Flow) — no built-in alert. The partner owns their own notification UI.
 
@@ -484,7 +513,7 @@ Same event drives both orchestrators. When the edit screen fires `EMPLOYEE_MANAG
 
 ### The duplication is intentional — don't try to unify it
 
-Implementing the alert in both the dashboard chrome and the block's `CardContextual` looks like duplication on first read. It is — **and that is the design**. Resist the instinct to collapse it into "one source of truth" by, for example:
+Implementing the alert in both the dashboard chrome and the block's `<Feature>CardContextual` looks like duplication on first read. It is — **and that is the design**. Resist the instinct to collapse it into "one source of truth" by, for example:
 
 - Making `JobAndPayView` render the alert inline above `<PaymentMethodCard>` and dropping the chrome-top renderer for that card.
 - Replacing the dashboard's card-piece + edit-piece composition with the block itself (`<PaymentMethod>` in the tab).
@@ -511,9 +540,9 @@ The Profile card extraction got this wrong in its first iteration (added a `'pro
 2. **Wire the success transition in both state machines:**
    - Block (`<feature>StateMachine.ts`): `transition(EMPLOYEE_MANAGEMENT_<FEATURE>_UPDATED, 'card', returnToCardWithAlert('<code>'))`.
    - Dashboard ([`dashboardStateMachine.ts`](../../../src/components/Employee/Dashboard/dashboardStateMachine.ts)): in the corresponding sub-state, add `transition(EMPLOYEE_MANAGEMENT_<FEATURE>_UPDATED, 'index', returnToIndexWithAlert('<code>'))` alongside the existing `CANCEL` transition.
-3. **Block's `CardContextual` renders the alert above the card** (the card itself stays alert-free):
+3. **Block's `<Feature>CardContextual` renders the alert above the card** (the card itself stays alert-free):
    ```tsx
-   export function CardContextual() {
+   export function FeatureCardContextual() {
      const { employeeId, onEvent, successAlert } = useFlow<FeatureContextInterface>()
      const { t } = useTranslation('Employee.Management.<Feature>')
      const Components = useComponentContext()
@@ -996,9 +1025,9 @@ Each arrow is independently shippable. The dashboard works at every boundary.
 - [ ] State machine uses `card` as the initial state name (not `index`) and the `returnToCard` / `returnToCardWithAlert` reducer pattern.
 - [ ] Dedicated translations file at `src/i18n/en/Employee.Management.<Feature>.json` (and locale equivalents). The block, card, edit screen, and hook all call `useI18n('Employee.Management.<Feature>')` — no reads from `Employee.Dashboard`. Strings that previously lived under `Employee.Dashboard:<feature>.*` (including the card's success-alert labels) moved into this file; the dashboard-side keys are deleted, not aliased. Partner override supported via `useComponentDictionary('Employee.Management.<Feature>', dictionary)`. Run `npm run i18n:generate` after the file change.
 - [ ] `<Feature>Card.tsx` is **self-fetching and standalone**: required props are `{ employeeId, onEvent }`, it calls `use<Feature><Role>` internally, branches on `isLoading`, wraps in `<BaseLayout>`, and fires `componentEvents` directly via `onEvent`. The only optional props are `successAlert` + `onDismissAlert` for the orchestrated block to drive the alert. No state-machine import, no `useFlow`.
-- [ ] Card chrome composition follows the patterns in "Card chrome layout": `Components.Box` uses `withPadding={!isShowingTable}` (or the per-card equivalent) when the body is a `DataView` / `Table`, and the `DataView` itself is rendered with `isWithinBox`. A multi-button header action is wrapped in a `<Flex gap={…} alignItems="center" justifyContent="flex-end">` (the `flex-end` is required — `Flex`'s `.flexContainer` is `width: 100%`). CTA label strings do not duplicate the glyph supplied by an `icon={…}` prop.
+- [ ] Card chrome composition follows the patterns in "Card chrome layout": `Components.Box` uses `withPadding={!isShowingTable}` (or the per-card equivalent) when the body is a `DataView` / `Table`, and the `DataView` itself is rendered with `isWithinBox`. A multi-button header action is wrapped in a plain `<div className={styles.headerAction}>` whose **co-located `.module.scss`** sets `display: flex; flex-direction: column; gap: toRem(8); flex-shrink: 0;` and upgrades to `flex-direction: row; align-items: center;` inside `@include container-query(40em)` (the SDK-standard "small" breakpoint, auto-injected via `@/styles/Responsive`). Not `<Flex>` (whose `.flexContainer` is `width: 100%` and would compete with the title for header width), not inline `style={{ … }}` props, not without `flex-shrink: 0` (the buttons would otherwise overflow the shrunk wrapper to the right), and not row-only (CTAs cram against the title on narrow containers). CTA label strings do not duplicate the glyph supplied by an `icon={…}` prop.
 - [ ] If the card's edit screen is a form shared with onboarding, the management flow gets its own thin wrapper components (one per form, named `<Feature><Component>`) consuming the shared form hook, each with its own `Employee.Management.<Feature><Component>.json` namespace and its own component-scoped events (`EMPLOYEE_MANAGEMENT_<FEATURE>_<COMPONENT>_SUBMITTED` / `_CANCELLED`). The wrappers are exported alongside the card and the block. See "When the shared piece is a stateful form — wrap, don't share".
-- [ ] Success alert state moved into `<Feature>ContextInterface`, surfaced to the card through the `successAlert` / `onDismissAlert` controlled props, dismissed via `componentEvents.EMPLOYEE_DISMISS` in `CardContextual`.
+- [ ] Success alert state moved into `<Feature>ContextInterface`, surfaced to the card through the `successAlert` / `onDismissAlert` controlled props, dismissed via `componentEvents.EMPLOYEE_DISMISS` in the block's `<Feature>CardContextual` (the contextual mirrors the wrapped component name — `<Feature>CardContextual` wraps `<Feature>Card`).
 - [ ] `Employee/<Feature>/management/index.ts` exports the block, the card, and any partner-facing edit screens as sibling named exports; `Employee/<Feature>/shared/index.ts` exports the hook + its types. No `Block.Card = …` dot-notation.
 - [ ] [`Employee/exports/employeeManagement.ts`](../../../src/components/Employee/exports/employeeManagement.ts) points at the new block. If a naming conflict required renaming the existing edit screen, the rename + re-export happens in this same PR.
 - [ ] **Only** this card's transitions/contextual adapter/prop are touched in `dashboardStateMachine.ts` / `DashboardComponents.tsx` / the relevant tab view. Other cards untouched.

@@ -4,14 +4,18 @@ import type {
   PaymentMethodContextInterface,
   PaymentMethodSuccessAlertCode,
 } from './PaymentMethodComponents'
-import { CardContextual, BankFormContextual, SplitViewContextual } from './PaymentMethodComponents'
+import {
+  PaymentMethodCardContextual,
+  PaymentMethodBankFormContextual,
+  PaymentMethodSplitFormContextual,
+} from './PaymentMethodComponents'
 import { componentEvents } from '@/shared/constants'
 import type { MachineTransition } from '@/types/Helpers'
 
 const returnToList = reduce(
   (ctx: PaymentMethodContextInterface): PaymentMethodContextInterface => ({
     ...ctx,
-    component: CardContextual as ComponentType,
+    component: PaymentMethodCardContextual as ComponentType,
     successAlert: null,
   }),
 )
@@ -20,7 +24,7 @@ const returnToListWithAlert = (alert: PaymentMethodSuccessAlertCode) =>
   reduce(
     (ctx: PaymentMethodContextInterface): PaymentMethodContextInterface => ({
       ...ctx,
-      component: CardContextual as ComponentType,
+      component: PaymentMethodCardContextual as ComponentType,
       successAlert: alert,
     }),
   )
@@ -33,7 +37,7 @@ export const paymentMethodStateMachine = {
       reduce(
         (ctx: PaymentMethodContextInterface): PaymentMethodContextInterface => ({
           ...ctx,
-          component: BankFormContextual as ComponentType,
+          component: PaymentMethodBankFormContextual as ComponentType,
           successAlert: null,
         }),
       ),
@@ -44,7 +48,7 @@ export const paymentMethodStateMachine = {
       reduce(
         (ctx: PaymentMethodContextInterface): PaymentMethodContextInterface => ({
           ...ctx,
-          component: SplitViewContextual as ComponentType,
+          component: PaymentMethodSplitFormContextual as ComponentType,
           successAlert: null,
         }),
       ),
