@@ -291,6 +291,17 @@ export const dashboardStateMachine = {
     transition(componentEvents.CANCEL, 'index', returnToIndex),
   ),
   documentManager: state<MachineTransition>(
+    // After signing, return to the dashboard with a success alert rather than
+    // leaving the user on a read-only view that embeds a just-signed PDF the
+    // backend may not have finished generating (SDK-946). Re-opening the
+    // document later fetches a fresh document URL and renders. Mirrors the
+    // onboarding DocumentSigner flow and the gws-flows reference, both of which
+    // return to the forms list on sign.
+    transition(
+      componentEvents.EMPLOYEE_SIGN_FORM,
+      'index',
+      returnToIndexWithAlert('documentSigned'),
+    ),
     transition(componentEvents.CANCEL, 'index', returnToIndex),
   ),
   deductionForm: state<MachineTransition>(
