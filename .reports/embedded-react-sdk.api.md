@@ -199,24 +199,15 @@ interface ApiPayrollBlocker {
     message?: string;
 }
 
-// Warning: (ae-missing-release-tag) "ApiProvider" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export function ApiProvider(input: ApiProviderProps): JSX_2.Element;
 
-// Warning: (ae-missing-release-tag) "ApiProviderProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface ApiProviderProps {
-    // (undocumented)
     children: React.ReactNode;
-    // (undocumented)
     headers?: HeadersInit;
-    // (undocumented)
     hooks?: SDKHooks;
-    // (undocumented)
     queryClient?: QueryClient;
-    // (undocumented)
     url: string;
 }
 

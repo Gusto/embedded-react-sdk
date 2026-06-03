@@ -7,14 +7,42 @@ import { apiVersionHook } from './apiVersionHook'
 import { createSdkQueryClient } from './createSdkQueryClient'
 import type { SDKHooks, BeforeRequestHook } from '@/types/hooks'
 
+/**
+ * Props for {@link ApiProvider}.
+ *
+ * @public
+ */
 export interface ApiProviderProps {
+  /** Base URL the SDK uses for all `@gusto/embedded-api-v-2025-11-15` requests. */
   url: string
+  /** Default headers applied to every SDK request, in addition to the `X-Gusto-API-Version` header set automatically. */
   headers?: HeadersInit
+  /** Lifecycle hooks for intercepting and modifying SDK requests and responses. */
   hooks?: SDKHooks
+  /** Subtree that renders inside the API + React Query providers. */
   children: React.ReactNode
+  /** Optional React Query client. When omitted, a client is created with the SDK's defaults (auto-invalidation on mutation success). */
   queryClient?: QueryClient
 }
 
+/**
+ * Wires the `@gusto/embedded-api-v-2025-11-15` client and a React Query client into the React tree.
+ *
+ * @remarks
+ * Registers the SDK's `X-Gusto-API-Version` header on every request, applies any default `headers`,
+ * and registers user-supplied lifecycle hooks (`beforeCreateRequest`, `beforeRequest`, `afterSuccess`,
+ * `afterError`). When no `queryClient` is supplied, one is created with the SDK's defaults so
+ * successful mutations under the `['@gusto/embedded-api-v-2025-11-15']` key invalidate every SDK
+ * query automatically. Partners who supply their own `QueryClient` are responsible for matching that
+ * contract.
+ *
+ * Typically wrapped by {@link GustoProvider}; use directly only when composing the provider stack
+ * manually.
+ *
+ * @param props - See {@link ApiProviderProps}.
+ * @returns A React subtree wrapped in `QueryClientProvider` and the embedded API context.
+ * @public
+ */
 export function ApiProvider({
   url,
   headers,
