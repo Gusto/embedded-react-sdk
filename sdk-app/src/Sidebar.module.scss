@@ -51,48 +51,6 @@
   border-bottom: 0.0625rem solid var(--color-border);
 }
 
-.shortcutHint {
-  display: flex;
-  align-items: center;
-  gap: 0.375rem;
-  width: 100%;
-  margin-bottom: 0.5rem;
-  padding: 0.25rem 0.5rem;
-  border: none;
-  border-radius: 0.25rem;
-  background: transparent;
-  font: inherit;
-  font-size: 0.6875rem;
-  text-align: left;
-  color: var(--color-text-muted);
-  cursor: pointer;
-  user-select: none;
-
-  &:hover {
-    color: var(--color-text);
-    background: var(--color-hover-bg);
-  }
-
-  &:focus-visible {
-    outline: 0.125rem solid var(--color-active);
-    outline-offset: 0.125rem;
-  }
-}
-
-.shortcutHintKey {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 1.125rem;
-  padding: 0 0.3125rem;
-  border: 0.0625rem solid var(--color-border);
-  border-radius: 0.1875rem;
-  background: var(--color-badge-bg);
-  font-family: monospace;
-  font-size: 0.625rem;
-  color: var(--color-text);
-}
-
 .searchRow {
   display: flex;
   align-items: stretch;
@@ -158,10 +116,8 @@
   justify-content: space-between;
   padding: 0.5rem 1rem;
   cursor: pointer;
-  font-weight: 500;
-  font-size: 0.8rem;
-  color: var(--color-text-muted);
   user-select: none;
+
   &:hover {
     color: var(--color-text);
   }
@@ -173,14 +129,17 @@
   border-radius: 0.625rem;
   font-size: 0.6875rem;
   font-weight: 500;
+  color: var(--color-text-muted);
 }
 
 .categoryTitle {
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
-  font-weight: 500;
-  font-size: 0.8rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
   color: var(--color-text-muted);
 }
 
@@ -197,25 +156,47 @@
   list-style: none;
 }
 
-.item a {
+.item > a {
   display: block;
-  padding: 0.375rem 1rem 0.375rem 1.75rem;
+  padding: 0.375rem 1rem 0.375rem 1.5rem;
   color: var(--color-text);
   text-decoration: none;
   font-size: 0.8125rem;
-  border-left: 0.1875rem solid transparent;
+  font-weight: 500;
   transition:
     background 0.1s,
-    border-color 0.1s;
+    color 0.1s;
 
   &:hover {
     background: var(--color-hover-bg);
   }
 
   &:global(.active) {
-    background: var(--color-active-bg);
-    border-left-color: var(--color-active);
     color: var(--color-active);
-    font-weight: 500;
+  }
+}
+
+.subItems {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.subItem a {
+  display: block;
+  padding: 0.3125rem 1rem 0.3125rem 2.25rem;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  font-size: 0.75rem;
+  transition:
+    background 0.1s,
+    color 0.1s;
+
+  &:hover {
+    background: var(--color-hover-bg);
+  }
+
+  &:global(.active) {
+    color: var(--color-active);
   }
 }
