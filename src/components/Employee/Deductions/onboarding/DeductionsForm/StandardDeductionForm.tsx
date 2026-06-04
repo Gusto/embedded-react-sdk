@@ -5,8 +5,8 @@ import type {
   GarnishmentType,
 } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishment'
 import type { Control } from 'react-hook-form'
-import { useDeductionForm } from '../shared/useDeductionForm'
-import type { DeductionFormData } from '../shared/useDeductionForm'
+import { useDeductionForm } from '../../shared/useDeductionForm'
+import type { DeductionFormData } from '../../shared/useDeductionForm'
 import { Form } from '@/components/Common/Form'
 import { ActionsLayout } from '@/components/Common'
 import { Flex } from '@/components/Common/Flex/Flex'

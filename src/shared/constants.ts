@@ -79,6 +79,11 @@ export const employeeEvents = {
   EMPLOYEE_PROFILE_MANAGEMENT_UPDATED: 'employee/profile/management/updated',
   EMPLOYEE_PROFILE_MANAGEMENT_EDIT_CANCELLED: 'employee/profile/management/editCancelled',
   EMPLOYEE_PROFILE_MANAGEMENT_ALERT_DISMISSED: 'employee/profile/management/alertDismissed',
+  EMPLOYEE_MANAGEMENT_WORK_ADDRESS_EDIT_REQUESTED: 'employee/management/workAddress/editRequested',
+  EMPLOYEE_MANAGEMENT_WORK_ADDRESS_CREATED: 'employee/management/workAddress/created',
+  EMPLOYEE_MANAGEMENT_WORK_ADDRESS_UPDATED: 'employee/management/workAddress/updated',
+  EMPLOYEE_MANAGEMENT_WORK_ADDRESS_DELETED: 'employee/management/workAddress/deleted',
+  EMPLOYEE_MANAGEMENT_WORK_ADDRESS_EDIT_CANCELLED: 'employee/management/workAddress/editCancelled',
 } as const
 
 export const companyEvents = {

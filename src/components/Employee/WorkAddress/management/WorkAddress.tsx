@@ -1,76 +1,54 @@
-import type { EmployeeWorkAddress } from '@gusto/embedded-api-v-2025-11-15/models/components/employeeworkaddress'
-import { WorkAddressView } from './WorkAddressView'
+import { createMachine } from 'robot3'
+import { useMemo } from 'react'
 import {
-  isUseWorkAddressManagementSuccess,
-  useWorkAddressManagement,
-} from './useWorkAddressManagement'
+  WorkAddressCardContextual,
+  type WorkAddressContextInterface,
+} from './WorkAddressComponents'
+import { workAddressStateMachine } from './workAddressStateMachine'
+import { Flow } from '@/components/Flow/Flow'
 import {
   BaseBoundaries,
-  BaseLayout,
   type BaseComponentInterface,
   type CommonComponentInterface,
-} from '@/components/Base/Base'
-import { useI18n, useComponentDictionary } from '@/i18n'
-import type { HookSubmitResult } from '@/partner-hook-utils/types'
-import { componentEvents } from '@/shared/constants'
+} from '@/components/Base'
+import { type EventType } from '@/shared/constants'
+import { useComponentDictionary } from '@/i18n/I18n'
+import { useI18n } from '@/i18n'
+import type { OnEventType } from '@/components/Base/useBase'
 
-export interface WorkAddressProps extends CommonComponentInterface<'Employee.WorkAddress.Management'> {
+export interface WorkAddressProps extends CommonComponentInterface<'Employee.Management.WorkAddress'> {
   employeeId: string
-  onEvent: BaseComponentInterface['onEvent']
+  onEvent: OnEventType<EventType, unknown>
 }
 
-function WorkAddressRoot({ employeeId, dictionary, onEvent }: WorkAddressProps) {
-  useI18n(['Employee.WorkAddress.Management'])
-  useComponentDictionary('Employee.WorkAddress.Management', dictionary)
+function WorkAddressFlow({ employeeId, onEvent }: WorkAddressProps) {
+  useI18n('Employee.Management.WorkAddress')
 
-  const management = useWorkAddressManagement({ employeeId, onEvent })
-
-  if (management.isLoading) {
-    return <BaseLayout isLoading error={management.errorHandling.errors} />
-  }
-
-  if (!isUseWorkAddressManagementSuccess(management)) {
-    return <BaseLayout error={management.errorHandling.errors} />
-  }
-
-  const handleWorkAddressSaved = (result: HookSubmitResult<EmployeeWorkAddress>) => {
-    if (result.mode === 'create') {
-      onEvent(componentEvents.EMPLOYEE_WORK_ADDRESS_CREATED, result.data)
-    } else {
-      onEvent(componentEvents.EMPLOYEE_WORK_ADDRESS_UPDATED, result.data)
-    }
-  }
-
-  return (
-    <BaseLayout error={management.errorHandling.errors}>
-      <WorkAddressView
-        editWorkAddressForm={management.data.editWorkAddressForm}
-        changeWorkAddressForm={management.data.changeWorkAddressForm}
-        workAddresses={management.data.employeeWorkAddresses}
-        editTargetUuid={management.data.editTargetUuid}
-        onEditTargetUuidChange={management.actions.setEditTargetUuid}
-        employeeDisplayName={management.data.employeeDisplayName}
-        onConfirmDelete={management.actions.confirmDeleteWorkAddress}
-        onWorkAddressSaved={handleWorkAddressSaved}
-        onBack={() => {
-          onEvent(componentEvents.CANCEL)
-        }}
-        isDeletePending={management.status.isDeletePending}
-      />
-    </BaseLayout>
+  const machine = useMemo(
+    () =>
+      createMachine('card', workAddressStateMachine, (ctx: WorkAddressContextInterface) => ({
+        ...ctx,
+        component: WorkAddressCardContextual,
+        employeeId,
+      })),
+    [employeeId],
   )
+
+  return <Flow machine={machine} onEvent={onEvent} />
 }
 
 export function WorkAddress({
+  dictionary,
   FallbackComponent,
   ...props
-}: WorkAddressProps & BaseComponentInterface) {
+}: WorkAddressProps & BaseComponentInterface<'Employee.Management.WorkAddress'>) {
+  useComponentDictionary('Employee.Management.WorkAddress', dictionary)
   return (
     <BaseBoundaries
-      componentName="Employee.WorkAddress.Management"
+      componentName="Employee.Management.WorkAddress"
       FallbackComponent={FallbackComponent}
     >
-      <WorkAddressRoot {...props} />
+      <WorkAddressFlow {...props} />
     </BaseBoundaries>
   )
 }
