@@ -1,79 +1,91 @@
 import { reduce, state, transition } from 'robot3'
 import type { ComponentType } from 'react'
-import type { PaymentMethodContextInterface } from './PaymentMethodComponents'
+import type {
+  PaymentMethodContextInterface,
+  PaymentMethodSuccessAlertCode,
+} from './PaymentMethodComponents'
 import {
-  ListViewContextual,
-  BankFormContextual,
-  SplitViewContextual,
+  PaymentMethodCardContextual,
+  PaymentMethodBankFormContextual,
+  PaymentMethodSplitFormContextual,
 } from './PaymentMethodComponents'
 import { componentEvents } from '@/shared/constants'
 import type { MachineTransition } from '@/types/Helpers'
 
+const returnToList = reduce(
+  (ctx: PaymentMethodContextInterface): PaymentMethodContextInterface => ({
+    ...ctx,
+    component: PaymentMethodCardContextual as ComponentType,
+    successAlert: null,
+  }),
+)
+
+const returnToListWithAlert = (alert: PaymentMethodSuccessAlertCode) =>
+  reduce(
+    (ctx: PaymentMethodContextInterface): PaymentMethodContextInterface => ({
+      ...ctx,
+      component: PaymentMethodCardContextual as ComponentType,
+      successAlert: alert,
+    }),
+  )
+
 export const paymentMethodStateMachine = {
   list: state<MachineTransition>(
     transition(
-      componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATE,
+      componentEvents.EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_ADD_REQUESTED,
       'add',
       reduce(
         (ctx: PaymentMethodContextInterface): PaymentMethodContextInterface => ({
           ...ctx,
-          component: BankFormContextual as ComponentType,
+          component: PaymentMethodBankFormContextual as ComponentType,
+          successAlert: null,
         }),
       ),
     ),
     transition(
-      componentEvents.EMPLOYEE_SPLIT_PAYCHECK,
+      componentEvents.EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_SPLIT_REQUESTED,
       'split',
       reduce(
         (ctx: PaymentMethodContextInterface): PaymentMethodContextInterface => ({
           ...ctx,
-          component: SplitViewContextual as ComponentType,
+          component: PaymentMethodSplitFormContextual as ComponentType,
+          successAlert: null,
         }),
       ),
+    ),
+    transition(
+      componentEvents.EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_BANK_ACCOUNT_DELETED,
+      'list',
+      returnToListWithAlert('bankAccountDeleted'),
+    ),
+    transition(
+      componentEvents.EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_ALERT_DISMISSED,
+      'list',
+      returnToList,
     ),
   ),
   add: state<MachineTransition>(
     transition(
-      componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATED,
+      componentEvents.EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_BANK_FORM_SUBMITTED,
       'list',
-      reduce(
-        (ctx: PaymentMethodContextInterface): PaymentMethodContextInterface => ({
-          ...ctx,
-          component: ListViewContextual as ComponentType,
-        }),
-      ),
+      returnToListWithAlert('bankAccountAdded'),
     ),
     transition(
-      componentEvents.CANCEL,
+      componentEvents.EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_BANK_FORM_CANCELLED,
       'list',
-      reduce(
-        (ctx: PaymentMethodContextInterface): PaymentMethodContextInterface => ({
-          ...ctx,
-          component: ListViewContextual as ComponentType,
-        }),
-      ),
+      returnToList,
     ),
   ),
   split: state<MachineTransition>(
     transition(
-      componentEvents.EMPLOYEE_PAYMENT_METHOD_UPDATED,
+      componentEvents.EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_SPLIT_FORM_SUBMITTED,
       'list',
-      reduce(
-        (ctx: PaymentMethodContextInterface): PaymentMethodContextInterface => ({
-          ...ctx,
-          component: ListViewContextual as ComponentType,
-        }),
-      ),
+      returnToListWithAlert('splitUpdated'),
     ),
     transition(
-      componentEvents.CANCEL,
+      componentEvents.EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_SPLIT_FORM_CANCELLED,
       'list',
-      reduce(
-        (ctx: PaymentMethodContextInterface): PaymentMethodContextInterface => ({
-          ...ctx,
-          component: ListViewContextual as ComponentType,
-        }),
-      ),
+      returnToList,
     ),
   ),
 }

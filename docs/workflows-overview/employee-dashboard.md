@@ -30,19 +30,21 @@ function MyApp() {
 
 #### Events
 
-| Event type                                      | Description                                                     | Data                                                     |
-| ----------------------------------------------- | --------------------------------------------------------------- | -------------------------------------------------------- |
-| EMPLOYEE_UPDATE                                 | Fired when editing basic details                                | { employeeId: string }                                   |
-| EMPLOYEE_HOME_ADDRESS                           | Fired when managing home address                                | { employeeId: string }                                   |
-| EMPLOYEE_MANAGEMENT_WORK_ADDRESS_EDIT_REQUESTED | Fired when the "Manage" CTA is clicked on the Work address card | { employeeId: string }                                   |
-| EMPLOYEE_COMPENSATION_CREATE                    | Fired when editing compensation                                 | { employeeId: string, job: Job }                         |
-| EMPLOYEE_JOB_ADD                                | Fired when adding a job (empty state or multi-job view)         | { employeeId: string }                                   |
-| EMPLOYEE_JOB_DELETED                            | Fired after a non-primary job is deleted from the table         | { employeeId: string, jobId: string }                    |
-| EMPLOYEE_BANK_ACCOUNT_CREATE                    | Fired when adding a bank account                                | { employeeId: string }                                   |
-| EMPLOYEE_DEDUCTION_ADD                          | Fired when adding a deduction                                   | { employeeId: string }                                   |
-| EMPLOYEE_FEDERAL_TAXES_EDIT                     | Fired when editing federal taxes                                | { employeeId: string, federalTaxes: EmployeeFederalTax } |
-| EMPLOYEE_STATE_TAXES_EDIT                       | Fired when editing state taxes                                  | { employeeId: string, state: string }                    |
-| EMPLOYEE_VIEW_FORM_TO_SIGN                      | Fired when viewing a form                                       | { employeeId: string, formUuid: string }                 |
+| Event type                                                   | Description                                                     | Data                                                     |
+| ------------------------------------------------------------ | --------------------------------------------------------------- | -------------------------------------------------------- |
+| EMPLOYEE_UPDATE                                              | Fired when editing basic details                                | { employeeId: string }                                   |
+| EMPLOYEE_HOME_ADDRESS                                        | Fired when managing home address                                | { employeeId: string }                                   |
+| EMPLOYEE_MANAGEMENT_WORK_ADDRESS_EDIT_REQUESTED              | Fired when the "Manage" CTA is clicked on the Work address card | { employeeId: string }                                   |
+| EMPLOYEE_COMPENSATION_CREATE                                 | Fired when editing compensation                                 | { employeeId: string, job: Job }                         |
+| EMPLOYEE_JOB_ADD                                             | Fired when adding a job (empty state or multi-job view)         | { employeeId: string }                                   |
+| EMPLOYEE_JOB_DELETED                                         | Fired after a non-primary job is deleted from the table         | { employeeId: string, jobId: string }                    |
+| EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_ADD_REQUESTED        | Fired when adding a bank account from the Payment card          | None                                                     |
+| EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_SPLIT_REQUESTED      | Fired when splitting the paycheck from the Payment card         | None                                                     |
+| EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_BANK_ACCOUNT_DELETED | Fired after a bank account is deleted from the Payment card     | Response from the Delete a bank account endpoint         |
+| EMPLOYEE_DEDUCTION_ADD                                       | Fired when adding a deduction                                   | { employeeId: string }                                   |
+| EMPLOYEE_FEDERAL_TAXES_EDIT                                  | Fired when editing federal taxes                                | { employeeId: string, federalTaxes: EmployeeFederalTax } |
+| EMPLOYEE_STATE_TAXES_EDIT                                    | Fired when editing state taxes                                  | { employeeId: string, state: string }                    |
+| EMPLOYEE_VIEW_FORM_TO_SIGN                                   | Fired when viewing a form                                       | { employeeId: string, formUuid: string }                 |
 
 ## Using Dashboard Subcomponents
 
@@ -348,7 +350,7 @@ function MyDashboard() {
           case componentEvents.EMPLOYEE_UPDATE:
             // Navigate to employee edit form
             break
-          case componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATE:
+          case componentEvents.EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_ADD_REQUESTED:
             // Show bank account creation flow
             break
           case componentEvents.EMPLOYEE_VIEW_FORM_TO_SIGN:

@@ -31,7 +31,7 @@ The orchestrated block is one of **four** independently consumable surfaces a pa
 | Surface                  | What it is                                                                                                                       | API shape                                                                    | Reference                                                                                                                                                                                              |
 | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Data hook**            | Non-form hook that returns the card's data + actions in the `BaseHookReady` shape                                                | `use<Feature><Role>({ employeeId }) → HookLoadingResult \| BaseHookReady<…>` | [`useEmployeeList`](../../../src/components/Employee/EmployeeList/shared/useEmployeeList.tsx), [`usePaymentMethodList`](../../../src/components/Employee/PaymentMethod/shared/usePaymentMethodList.ts) |
-| **Standalone card**      | The card UI for one section, **doing its own data fetching internally** via the hook above                                       | `<Feature>Card({ employeeId, onEvent })`                                     | [`PaymentMethod/management/ListView.tsx`](../../../src/components/Employee/PaymentMethod/management/ListView.tsx)                                                                                      |
+| **Standalone card**      | The card UI for one section, **doing its own data fetching internally** via the hook above                                       | `<Feature>Card({ employeeId, onEvent })`                                     | [`PaymentMethod/management/PaymentMethodCard.tsx`](../../../src/components/Employee/PaymentMethod/management/PaymentMethodCard.tsx)                                                                    |
 | **Standalone edit/form** | The edit screen for that section, hook-driven per [`migrate-sdk-component-to-hooks`](../migrate-sdk-component-to-hooks/SKILL.md) | `<Feature>EditForm({ employeeId, onEvent, onCancel })`                       | [`Employee/Profile/management/ProfileEditForm.tsx`](../../../src/components/Employee/Profile/management/ProfileEditForm.tsx)                                                                           |
 | **Orchestrated block**   | The card + edit screen(s) composed via a local robot3 state machine; what `DashboardFlow` actually imports                       | `<Feature>({ employeeId, onEvent })`                                         | [`Employee/PaymentMethod/management/PaymentMethod.tsx`](../../../src/components/Employee/PaymentMethod/management/PaymentMethod.tsx)                                                                   |
 
@@ -78,7 +78,7 @@ Before writing any code, read these files in full. The patterns and code shapes 
   [`Employee/PaymentMethod/management/PaymentMethod.tsx`](../../../src/components/Employee/PaymentMethod/management/PaymentMethod.tsx),
   [`paymentMethodStateMachine.ts`](../../../src/components/Employee/PaymentMethod/management/paymentMethodStateMachine.ts),
   [`PaymentMethodComponents.tsx`](../../../src/components/Employee/PaymentMethod/management/PaymentMethodComponents.tsx),
-  [`ListView.tsx`](../../../src/components/Employee/PaymentMethod/management/ListView.tsx) (self-fetching standalone card),
+  [`PaymentMethodCard.tsx`](../../../src/components/Employee/PaymentMethod/management/PaymentMethodCard.tsx) (self-fetching standalone card),
   [`shared/usePaymentMethodList.ts`](../../../src/components/Employee/PaymentMethod/shared/usePaymentMethodList.ts) (the `BaseHookReady`-shaped hook the card and partners both consume),
   [`management/index.ts`](../../../src/components/Employee/PaymentMethod/management/index.ts). This is the only fully-realised card-as-block in the repo today; every new block should look like it.
 - **The `BaseHookReady` data-hook contract** —
@@ -88,7 +88,7 @@ Before writing any code, read these files in full. The patterns and code shapes 
   [`OnboardingFlowComponents.tsx`](../../../src/components/Employee/OnboardingFlow/OnboardingFlowComponents.tsx),
   [`onboardingStateMachine.ts`](../../../src/components/Employee/OnboardingFlow/onboardingStateMachine.ts). Shows how a thin flow composes per-feature blocks.
 - **The pieces-as-named-exports pattern** —
-  [`Employee/PaymentMethod/management/index.ts`](../../../src/components/Employee/PaymentMethod/management/index.ts) (`export { ListView }; export { PaymentMethod }; export type { PaymentMethodProps }`). The standalone card and the block are sibling named exports from the same barrel.
+  [`Employee/PaymentMethod/management/index.ts`](../../../src/components/Employee/PaymentMethod/management/index.ts) (`export { PaymentMethodCard }; export { PaymentMethod }; export type { PaymentMethodProps }`). The standalone card and the block are sibling named exports from the same barrel.
 - **The hook-driven editing surface this skill builds on top of** —
   [`migrate-sdk-component-to-hooks/SKILL.md`](../migrate-sdk-component-to-hooks/SKILL.md). Edit screens already use form hooks; the block is the orchestrator above them. If a card's edit screen has not been hook-migrated yet, do that first via the other skill, then do the block migration.
 - **What you're decomposing** —
@@ -161,9 +161,9 @@ Subfolder naming preserves the public name exactly: `CompensationCard/Compensati
 
 ### Don't reformat existing structures
 
-This skill creates new pieces in subfolders. It does **not** restructure existing files in features whose pieces are currently flat. Leave [`PaymentMethod/shared/usePaymentMethodList.ts`](../../../src/components/Employee/PaymentMethod/shared/usePaymentMethodList.ts), [`PaymentMethod/management/ListView.tsx`](../../../src/components/Employee/PaymentMethod/management/ListView.tsx), [`HomeAddress/management/HomeAddress.tsx`](../../../src/components/Employee/HomeAddress/management/HomeAddress.tsx), and similar where they are. A "reformat the existing pieces" pass, if desired, is a separate follow-up — not bundled into a card migration PR.
+This skill creates new pieces in subfolders. It does **not** restructure existing files in features whose pieces are currently flat. Leave [`PaymentMethod/shared/usePaymentMethodList.ts`](../../../src/components/Employee/PaymentMethod/shared/usePaymentMethodList.ts), [`PaymentMethod/management/PaymentMethodCard.tsx`](../../../src/components/Employee/PaymentMethod/management/PaymentMethodCard.tsx), [`HomeAddress/management/HomeAddress.tsx`](../../../src/components/Employee/HomeAddress/management/HomeAddress.tsx), and similar where they are. A "reformat the existing pieces" pass, if desired, is a separate follow-up — not bundled into a card migration PR.
 
-The corollary is that the canonical references this skill cites for the _code shape_ (`PaymentMethod/management/ListView.tsx` as the self-fetching standalone card, `PaymentMethod/shared/usePaymentMethodList.ts` as the `BaseHookReady`-shaped hook) are flat by historical accident. The pattern they demonstrate is correct; the file layout for any _new_ piece this skill produces uses a subfolder.
+The corollary is that the canonical references this skill cites for the _code shape_ (`PaymentMethod/management/PaymentMethodCard.tsx` as the self-fetching standalone card, `PaymentMethod/shared/usePaymentMethodList.ts` as the `BaseHookReady`-shaped hook) are flat by historical accident. The pattern they demonstrate is correct; the file layout for any _new_ piece this skill produces uses a subfolder.
 
 ### Why each piece is separate
 
@@ -175,16 +175,16 @@ The corollary is that the canonical references this skill cites for the _code sh
 
 ## Naming conventions
 
-| Thing                           | Name                                                                                                                                             |
-| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Block component                 | Feature name (`Compensation`, `Deductions`, `Documents`, …)                                                                                      |
-| State machine context interface | `<Feature>ContextInterface`                                                                                                                      |
-| State machine                   | `<feature>StateMachine`                                                                                                                          |
-| Contextual adapters             | `<Action>Contextual` (e.g. `CardContextual`, `CompensationEditFormContextual`, `CompensationAddJobFormContextual`)                               |
-| Standalone card                 | `<Feature>Card` (self-fetching via the data hook)                                                                                                |
-| Standalone edit form            | `<Feature>EditForm` for the single-form case; `<Feature><Action>Form` (`CompensationAddJobForm`, `CompensationEditJobForm`) for multi-action     |
-| Data hook                       | `use<Feature><Role>` — e.g. `useCompensationManagement`, `usePaymentMethodList` (matches the existing naming for non-form list/management hooks) |
-| State machine states            | `card` (initial), one `<action>` per edit CTA (`editJob`, `addJob`, `editFederal`, `viewForm`, …)                                                |
+| Thing                           | Name                                                                                                                                                                                                            |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Block component                 | Feature name (`Compensation`, `Deductions`, `Documents`, …)                                                                                                                                                     |
+| State machine context interface | `<Feature>ContextInterface`                                                                                                                                                                                     |
+| State machine                   | `<feature>StateMachine`                                                                                                                                                                                         |
+| Contextual adapters             | `<WrappedComponent>Contextual` — mirror the exact name of the standalone component the adapter wraps (e.g. `PaymentMethodCardContextual`, `CompensationEditFormContextual`, `CompensationAddJobFormContextual`) |
+| Standalone card                 | `<Feature>Card` (self-fetching via the data hook)                                                                                                                                                               |
+| Standalone edit form            | `<Feature>EditForm` for the single-form case; `<Feature><Action>Form` (`CompensationAddJobForm`, `CompensationEditJobForm`) for multi-action                                                                    |
+| Data hook                       | `use<Feature><Role>` — e.g. `useCompensationManagement`, `usePaymentMethodList` (matches the existing naming for non-form list/management hooks)                                                                |
+| State machine states            | `card` (initial), one `<action>` per edit CTA (`editJob`, `addJob`, `editFederal`, `viewForm`, …)                                                                                                               |
 
 `card` (not `index`, not `list`) is the canonical initial state name for a card-as-block. Use `index` only when an existing block already does (e.g. `dashboardStateMachine`) — new blocks should standardise on `card`. `PaymentMethod/management` uses `list` for historical reasons; that's an exception, not a model.
 
@@ -203,7 +203,7 @@ The corollary is that the canonical references this skill cites for the _code sh
 - Fire `componentEvents.<EVENT>` via `onEvent` for every CTA. **Never import the state machine** — the card has no idea whether it's sitting inside the orchestrated block or in a partner's own page.
 - Render its own success alert if applicable (driven by transient state owned by the card or by a controlled prop on the orchestrated block — see "Success alerts" below).
 
-The canonical reference is [`PaymentMethod/management/ListView.tsx`](../../../src/components/Employee/PaymentMethod/management/ListView.tsx). It takes `{ employeeId, onEvent }`, calls `usePaymentMethodList({ employeeId })` internally, gates on `paymentMethodList.isLoading`, fires `componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATE` / `EMPLOYEE_SPLIT_PAYCHECK` / `EMPLOYEE_BANK_ACCOUNT_DELETED` via `onEvent`. That is exactly the shape every new `<Feature>Card.tsx` should match.
+The canonical reference is [`PaymentMethod/management/PaymentMethodCard.tsx`](../../../src/components/Employee/PaymentMethod/management/PaymentMethodCard.tsx). It takes `{ employeeId, onEvent }`, calls `usePaymentMethodList({ employeeId })` internally, gates on `paymentMethodList.isLoading`, fires the scoped `EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_ADD_REQUESTED` / `EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_SPLIT_REQUESTED` / `EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_BANK_ACCOUNT_DELETED` events via `onEvent`. That is exactly the shape every new `<Feature>Card.tsx` should match.
 
 Sketch:
 
@@ -234,6 +234,74 @@ export function CompensationCard({ employeeId, onEvent }: CompensationCardProps)
 
 When you build `<Feature>Card.tsx`, lift the JSX for that card section out of the current tab view file ([`BasicDetailsView`](../../../src/components/Employee/Dashboard/BasicDetailsView.tsx) is the template for multi-section cards, [`DocumentsView`](../../../src/components/Employee/Dashboard/DocumentsView.tsx) for single-table cards), then swap the prop-driven data inputs for the dedicated hook call and the prop-driven action callbacks for direct `onEvent` calls.
 
+### Card chrome layout
+
+A few `Box` / `BoxHeader` composition details are easy to get wrong because the SDK's `Flex` and `BoxHeader` primitives interact in non-obvious ways. Match the patterns below from the start.
+
+**Edge-to-edge table body.** When the card's body is a `DataView` (or any `Table`), drop the box's body padding so the table runs flush with the box edges, the same way Compensation, Deductions, and Paystubs do in [`JobAndPayView`](../../../src/components/Employee/Dashboard/JobAndPayView.tsx):
+
+```tsx
+const isShowingTable = isDirectDeposit && bankAccounts.length > 0
+
+return (
+  <Components.Box
+    withPadding={!isShowingTable}
+    header={<Components.BoxHeader title={t('title')} action={headerAction} />}
+  >
+    {isShowingTable ? (
+      <DataView label={t('listLabel')} isWithinBox {...dataViewProps} />
+    ) : (
+      <Flex flexDirection="column">/* text-only fallback */</Flex>
+    )}
+  </Components.Box>
+)
+```
+
+The pairing matters: `withPadding={false}` lets the table reach the box border, and `isWithinBox` on the `DataView` strips its outer chrome so the visual separation comes from the box itself. The condition is the same on both sides (table vs. fallback) because the fallback content still wants normal box padding.
+
+**Multi-button header action.** `BoxHeader`'s `action` slot accepts a single `ReactNode`. When the card needs more than one CTA in the header (e.g. PaymentMethod's optional "Split paycheck" alongside "Add another bank account"), wrap them in a plain `<div>` styled via a co-located CSS module — mobile-first column layout that upgrades to a row at the small breakpoint — not `<Flex>`, and not inline styles:
+
+```scss
+/* <Feature>Card.module.scss */
+.headerAction {
+  display: flex;
+  flex-direction: column;
+  gap: toRem(8);
+  flex-shrink: 0;
+
+  @include container-query(40em) {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+```
+
+```tsx
+import styles from './<Feature>Card.module.scss'
+
+const headerAction = (
+  <div className={styles.headerAction}>
+    {showSecondaryCta && (
+      <Components.Button variant="secondary" /* … */>{t('splitCta')}</Components.Button>
+    )}
+    <Components.Button variant="secondary" icon={<PlusCircleIcon />} /* … */>
+      {bankAccounts.length > 0 ? t('addAnotherCta') : t('addBankAccountCta')}
+    </Components.Button>
+  </div>
+)
+```
+
+Both CSS rules are load-bearing:
+
+- **`display: flex` (not `<Flex>`):** the SDK's `Flex` primitive renders an outer `.flexContainer` with `width: 100%` (to support container queries), so as a flex item inside `BoxHeader`'s inner `space-between` it competes with the title for width and shrinks to roughly 50% of the row — at the wide breakpoint the buttons end up cramped against the title; at the narrow breakpoint the wrapper gets shrunk below its content and the buttons overflow to the right. A plain `<div>` with `display: flex` is content-sized instead, so the wrapper itself naturally sits flush right at any width. Reserve `<Flex>` for body layouts where container-query width really is what you want.
+- **`flex-shrink: 0`:** the SDK's `Button` is `flex-shrink: 0` but has `white-space: normal`, so its `min-content` is the longest word in the label (e.g. "another"), not the full button width. Without `flex-shrink: 0` on the wrapper, `BoxHeader`'s outer flex shrinks the wrapper down to roughly the buttons' aggregated min-content (~150px). The buttons then refuse to shrink (`flex-shrink: 0` on each) and overflow the wrapper to the right, drifting past the box's right edge with their right halves clipped. `flex-shrink: 0` on the wrapper pins it at its content width and forces the title to give up the space instead.
+
+**Why a container query.** Plain `display: flex` solves the wide-card layout but isn't responsive on its own — at narrow box widths (≤ ~640px container, e.g. tablet portrait or mobile), the two CTAs side-by-side leave the title with almost no room and the entire row hugs the right edge. Reach for the SDK-standard `container-query` mixin from [`src/styles/_Responsive.scss`](../../../src/styles/_Responsive.scss) (auto-injected via Vite, so no `@use` import in your `.module.scss`) and use the `40em` "small" breakpoint that matches the global `$global-breakpoints.small` value. Default to column layout (stacked CTAs) and upgrade to row layout at ≥ `40em`. This mirrors the responsive contract `<Flex>` ships with under the hood — we just can't borrow it here because of the `width: 100%` issue above.
+
+A single-button action passed directly (no wrapper at all) doesn't need any of this — the button is already a single content-sized flex item with `flex-shrink: 0`, so it sits flush right naturally at every width. The wrapper rules only apply when you're grouping more than one CTA. Keep the wrapper's styles in a co-located `.module.scss` next to the card file, matching the convention used by every other styled card in the codebase (e.g. `Profile.module.scss`, `JobAndPayView.module.scss`) — don't reach for inline `style={{ … }}` props.
+
+**No glyph duplication in icon-button labels.** When a CTA uses a glyph-icon prop (`icon={<PlusCircleIcon />}`, `icon={<PercentCircleIcon />}`, etc.), the icon is the glyph — don't prefix the label string with the same glyph. Translation strings should read as plain copy: `"Add another bank account"`, not `"+ Add another bank account"`. The button component composes icon + label; baking the glyph into the copy doubles it and bleeds presentational concerns into i18n.
+
 ## State machine pattern
 
 The minimum shape is three states: `card` (initial) + one `edit*` state per CTA + a transition back to `card`. Reuse the `returnToIndex` reducer helper exactly as [`dashboardStateMachine.ts`](../../../src/components/Employee/Dashboard/dashboardStateMachine.ts) defines it today (lines 31–50), renamed to `returnToCard` for the new state name:
@@ -241,7 +309,7 @@ The minimum shape is three states: `card` (initial) + one `edit*` state per CTA 
 ```ts
 import { transition, reduce, state } from 'robot3'
 import {
-  CardContextual,
+  CompensationCardContextual,
   CompensationEditFormContextual,
   CompensationAddJobFormContextual,
   type CompensationContextInterface,
@@ -252,7 +320,7 @@ import type { MachineTransition } from '@/types/Helpers'
 const returnToCard = reduce(
   (ctx: CompensationContextInterface): CompensationContextInterface => ({
     ...ctx,
-    component: CardContextual,
+    component: CompensationCardContextual,
     successAlert: null,
     currentJob: null,
   }),
@@ -262,7 +330,7 @@ const returnToCardWithAlert = (alert: CompensationContextInterface['successAlert
   reduce(
     (ctx: CompensationContextInterface): CompensationContextInterface => ({
       ...ctx,
-      component: CardContextual,
+      component: CompensationCardContextual,
       successAlert: alert,
       currentJob: null,
     }),
@@ -309,7 +377,10 @@ Block file:
 import { createMachine } from 'robot3'
 import { useMemo } from 'react'
 import { compensationStateMachine } from './compensationStateMachine'
-import { CardContextual, type CompensationContextInterface } from './CompensationComponents'
+import {
+  CompensationCardContextual,
+  type CompensationContextInterface,
+} from './CompensationComponents'
 import { Flow } from '@/components/Flow/Flow'
 import { BaseBoundaries, type BaseComponentInterface } from '@/components/Base'
 
@@ -322,7 +393,7 @@ export function Compensation({ employeeId, onEvent, FallbackComponent }: Compens
     () =>
       createMachine('card', compensationStateMachine, (ctx: CompensationContextInterface) => ({
         ...ctx,
-        component: CardContextual,
+        component: CompensationCardContextual,
         employeeId,
       })),
     [employeeId],
@@ -330,7 +401,7 @@ export function Compensation({ employeeId, onEvent, FallbackComponent }: Compens
 
   return (
     <BaseBoundaries
-      componentName="Employee.Compensation.Management"
+      componentName="Employee.Management.Compensation"
       FallbackComponent={FallbackComponent}
     >
       <Flow machine={machine} onEvent={onEvent} />
@@ -356,7 +427,7 @@ export interface CompensationContextInterface extends FlowContextInterface {
   successAlert?: 'jobAdded' | 'jobUpdated' | null
 }
 
-export function CardContextual() {
+export function CompensationCardContextual() {
   const { employeeId, onEvent } = useFlow<CompensationContextInterface>()
   return <CompensationCard employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
 }
@@ -374,7 +445,9 @@ export function CompensationEditFormContextual() {
 }
 ```
 
-Note how thin `CardContextual` is: the card owns its own data fetching and fires its own `componentEvents` via `onEvent`, so the adapter just forwards `employeeId` + `onEvent` from flow context. `CompensationEditFormContextual` is the only adapter that has to do real work — pulling per-transition context off the flow (e.g. `currentJob`) to seed the edit screen, and translating its `onCancel` into a `CANCEL` event. The state machine handles `CANCEL` and the edit screen's `onEvent` (e.g. `EMPLOYEE_COMPENSATION_DONE`) by transitioning back to `card`; the card's own events (e.g. `EMPLOYEE_COMPENSATION_CREATE`) transition forward to `editCompensation`.
+Note how thin `CompensationCardContextual` is: the card owns its own data fetching and fires its own `componentEvents` via `onEvent`, so the adapter just forwards `employeeId` + `onEvent` from flow context. `CompensationEditFormContextual` is the only adapter that has to do real work — pulling per-transition context off the flow (e.g. `currentJob`) to seed the edit screen, and translating its `onCancel` into a `CANCEL` event. The state machine handles `CANCEL` and the edit screen's `onEvent` (e.g. `EMPLOYEE_COMPENSATION_DONE`) by transitioning back to `card`; the card's own events (e.g. `EMPLOYEE_COMPENSATION_CREATE`) transition forward to `editCompensation`.
+
+The contextual's name mirrors the wrapped component exactly — `CompensationCardContextual` wraps `CompensationCard`, `CompensationEditFormContextual` wraps `CompensationEditForm`. This keeps a 1:1 grep mapping from machine wiring to leaf component. Older blocks (`HomeAddress`, `Profile`) still use the unqualified `CardContextual` historically; align them when you touch the file, but don't drift into them as part of an unrelated PR.
 
 ## Dedicated event surface per block
 
@@ -382,7 +455,7 @@ Every new management block defines and fires its **own** `componentEvent` consta
 
 ### Naming convention
 
-Add the block's events to [`src/shared/constants.ts`](../../../src/shared/constants.ts) under the existing `componentEvents` object. Use a `_MANAGEMENT_` segment in the constant key and a `/management/` segment in the slash-delimited string value so management events are unambiguously distinct from onboarding/dashboard equivalents:
+Add the block's events to [`src/shared/constants.ts`](../../../src/shared/constants.ts) under the existing `componentEvents` object. Place `MANAGEMENT` directly after the actor (`EMPLOYEE_MANAGEMENT_<FEATURE>_…` in the constant key, `employee/management/<feature>/…` in the slash-delimited value) so the partner-visible event vocabulary is "this is a management-context event for `<feature>`," not "this is a `<feature>` event that happens to be management":
 
 ```ts
 // src/shared/constants.ts
@@ -390,21 +463,23 @@ export const componentEvents = {
   // …existing events…
 
   // Compensation management block — owned by Employee/Compensation/management/
-  EMPLOYEE_COMPENSATION_MANAGEMENT_EDIT_REQUESTED: 'employee/compensation/management/editRequested',
-  EMPLOYEE_COMPENSATION_MANAGEMENT_ADD_JOB_REQUESTED:
-    'employee/compensation/management/addJobRequested',
-  EMPLOYEE_COMPENSATION_MANAGEMENT_JOB_UPDATED: 'employee/compensation/management/jobUpdated',
-  EMPLOYEE_COMPENSATION_MANAGEMENT_JOB_ADDED: 'employee/compensation/management/jobAdded',
-  EMPLOYEE_COMPENSATION_MANAGEMENT_JOB_DELETED: 'employee/compensation/management/jobDeleted',
+  EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_REQUESTED: 'employee/management/compensation/editRequested',
+  EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_JOB_REQUESTED:
+    'employee/management/compensation/addJobRequested',
+  EMPLOYEE_MANAGEMENT_COMPENSATION_JOB_UPDATED: 'employee/management/compensation/jobUpdated',
+  EMPLOYEE_MANAGEMENT_COMPENSATION_JOB_ADDED: 'employee/management/compensation/jobAdded',
+  EMPLOYEE_MANAGEMENT_COMPENSATION_JOB_DELETED: 'employee/management/compensation/jobDeleted',
   // …
 } as const
 ```
+
+i18n namespaces for management blocks follow the same convention: dedicated files live at `Employee.Management.<Feature>.json` (and per-component variants like `Employee.Management.<Feature><Component>.json`) rather than `Employee.<Feature>.Management.json`. Some pre-existing namespaces (e.g. `Employee.HomeAddress.Management.json`, `Employee.WorkAddress.Management.json`) still use the older suffix-style name; new files should use the prefix style, and older files migrate opportunistically as their owning card is touched.
 
 The card, the edit screen, and the block all fire only these scoped events via `onEvent`. The state machine's transitions match on them.
 
 ### No compatibility shim during pre-release
 
-The SDK is pre-release — there are no external partners consuming `DashboardFlow` today, so renaming a dashboard event from `EMPLOYEE_COMPENSATION_CREATED` to `EMPLOYEE_COMPENSATION_MANAGEMENT_JOB_ADDED` is not a breaking change. `DashboardFlow` simply forwards whatever its inner card blocks emit:
+The SDK is pre-release — there are no external partners consuming `DashboardFlow` today, so renaming a dashboard event from `EMPLOYEE_COMPENSATION_CREATED` to `EMPLOYEE_MANAGEMENT_COMPENSATION_JOB_ADDED` is not a breaking change. `DashboardFlow` simply forwards whatever its inner card blocks emit:
 
 ```tsx
 // src/components/Employee/Dashboard/DashboardFlow.tsx
@@ -417,7 +492,7 @@ export const DashboardFlow = ({ employeeId, onEvent }: DashboardFlowProps) => {
 Concrete consequences for a card migration:
 
 - The `dashboardStateMachine` transitions retarget from any legacy event name to the new scoped event in the same PR. No translation layer.
-- Any `Dashboard.test.tsx` cases that asserted the legacy event name (e.g. `expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_UPDATE, …)`) get updated to assert the scoped name (e.g. `EMPLOYEE_PROFILE_MANAGEMENT_EDIT_REQUESTED`). Those tests are pinning internal behavior, not a partner contract — the rename _is_ the change under test.
+- Any `Dashboard.test.tsx` cases that asserted the legacy event name (e.g. `expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_UPDATE, …)`) get updated to assert the scoped name (e.g. `EMPLOYEE_MANAGEMENT_PROFILE_EDIT_REQUESTED`). Those tests are pinning internal behavior, not a partner contract — the rename _is_ the change under test.
 - No need to enumerate the dashboard's pre-migration event surface or capture a translation table in the PR description. The new scoped events _are_ the surface.
 
 If the SDK ever ships a stable release and a later card migration would rename a partner-visible event, that's when a translation shim at the `DashboardFlow` boundary becomes worth introducing. Until then, skip it — it's dead weight, an extra layer for reviewers to follow, and a test that pins behavior nobody depends on.
@@ -430,11 +505,23 @@ If the dashboard never emitted an event for this card surface (e.g. Paystubs has
 
 Alerts are rendered by the **orchestrator**, not the card. The card stays a pure standalone surface with only `{ employeeId, onEvent }` — it has no `successAlert` / `onDismissAlert` props. Each orchestrator owns its own alert placement at the location idiomatic for its chrome:
 
-- **Standalone block** (`<Profile employeeId={…} onEvent={…} />`) — the block's `CardContextual` reads `successAlert` from flow context and renders `<Components.Alert>` directly **above** the card.
+- **Standalone block** (`<Profile employeeId={…} onEvent={…} />`) — the block's `<Feature>CardContextual` reads `successAlert` from flow context and renders `<Components.Alert>` directly **above** the card.
 - **Dashboard** (`<DashboardFlow />`) — [`DashboardViewContextual`](../../../src/components/Employee/Dashboard/DashboardComponents.tsx) renders alerts at the **top** of the dashboard chrome using its existing `DashboardSuccessAlert` union + `returnToIndexWithAlert(...)` pattern. The dashboard chrome stays; it's the right scope for dashboard-mode alerts.
 - **Direct card** (`<ProfileCard employeeId={…} onEvent={…} />` mounted by a partner without a Flow) — no built-in alert. The partner owns their own notification UI.
 
-Same event drives both orchestrators. When the edit screen fires `EMPLOYEE_<FEATURE>_MANAGEMENT_UPDATED`, whichever state machine is in scope catches it; both end up with `successAlert: '<code>'` in their respective contexts, and the two contextual layers each render at the right spot.
+Same event drives both orchestrators. When the edit screen fires `EMPLOYEE_MANAGEMENT_<FEATURE>_UPDATED`, whichever state machine is in scope catches it; both end up with `successAlert: '<code>'` in their respective contexts, and the two contextual layers each render at the right spot.
+
+### The duplication is intentional — don't try to unify it
+
+Implementing the alert in both the dashboard chrome and the block's `<Feature>CardContextual` looks like duplication on first read. It is — **and that is the design**. Resist the instinct to collapse it into "one source of truth" by, for example:
+
+- Making `JobAndPayView` render the alert inline above `<PaymentMethodCard>` and dropping the chrome-top renderer for that card.
+- Replacing the dashboard's card-piece + edit-piece composition with the block itself (`<PaymentMethod>` in the tab).
+- Extracting a shared "card + alert wrapper" component both orchestrators consume.
+
+Each of those simplifications changes partner-visible behavior — alert position moves from page-top to inline-above-card, or the dashboard's edit UX flips from nav-style to in-place. The two orchestrators are intentionally rendering at different scopes (`<DashboardFlow>` renders the alert at page chrome scope; `<Block>` renders it at component scope), and partners consuming either surface have built expectations around those scopes.
+
+So: yes, wire the alert in both state machines. Yes, duplicate the label across both i18n namespaces. Yes, test both layers. The two-mode wiring is the **deliverable**, not a transitional artifact. Each card migration that needs an alert pays this small cost and that's correct.
 
 ### When does this card need alert wiring?
 
@@ -451,13 +538,13 @@ The Profile card extraction got this wrong in its first iteration (added a `'pro
    - Block: `<Feature>ContextInterface.successAlert?: <FeatureSuccessAlertCode> | null` (alongside the block's own state-machine context).
    - Dashboard: add the code to the [`DashboardSuccessAlert`](../../../src/components/Employee/Dashboard/DashboardComponents.tsx) union and a `<code>: t('alerts.<code>')` entry to the `alertLabels` map in `DashboardViewContextual`.
 2. **Wire the success transition in both state machines:**
-   - Block (`<feature>StateMachine.ts`): `transition(EMPLOYEE_<FEATURE>_MANAGEMENT_UPDATED, 'card', returnToCardWithAlert('<code>'))`.
-   - Dashboard ([`dashboardStateMachine.ts`](../../../src/components/Employee/Dashboard/dashboardStateMachine.ts)): in the corresponding sub-state, add `transition(EMPLOYEE_<FEATURE>_MANAGEMENT_UPDATED, 'index', returnToIndexWithAlert('<code>'))` alongside the existing `CANCEL` transition.
-3. **Block's `CardContextual` renders the alert above the card** (the card itself stays alert-free):
+   - Block (`<feature>StateMachine.ts`): `transition(EMPLOYEE_MANAGEMENT_<FEATURE>_UPDATED, 'card', returnToCardWithAlert('<code>'))`.
+   - Dashboard ([`dashboardStateMachine.ts`](../../../src/components/Employee/Dashboard/dashboardStateMachine.ts)): in the corresponding sub-state, add `transition(EMPLOYEE_MANAGEMENT_<FEATURE>_UPDATED, 'index', returnToIndexWithAlert('<code>'))` alongside the existing `CANCEL` transition.
+3. **Block's `<Feature>CardContextual` renders the alert above the card** (the card itself stays alert-free):
    ```tsx
-   export function CardContextual() {
+   export function FeatureCardContextual() {
      const { employeeId, onEvent, successAlert } = useFlow<FeatureContextInterface>()
-     const { t } = useTranslation('Employee.<Feature>.Management')
+     const { t } = useTranslation('Employee.Management.<Feature>')
      const Components = useComponentContext()
      return (
        <Flex flexDirection="column" gap={16}>
@@ -473,7 +560,7 @@ The Profile card extraction got this wrong in its first iteration (added a `'pro
      )
    }
    ```
-4. **i18n: duplicate the label across both namespaces.** Blocks don't read across namespaces, and the dashboard chrome reads from `Employee.Dashboard`. Add `alerts.<code>` to both `Employee.<Feature>.Management.json` and `Employee.Dashboard.json`. Re-run `npm run i18n:generate`.
+4. **i18n: duplicate the label across both namespaces.** Blocks don't read across namespaces, and the dashboard chrome reads from `Employee.Dashboard`. Add `alerts.<code>` to both `Employee.Management.<Feature>.json` and `Employee.Dashboard.json`. Re-run `npm run i18n:generate`.
 5. **Test in both layers.**
    - Block: a block-integration test in `management/<Feature>.test.tsx` rendering `<Feature>` and asserting the alert text appears after Edit → Save.
    - Dashboard: a chrome-alert test in `Dashboard/Dashboard.test.tsx` rendering `<DashboardFlow />` (not bare `<Dashboard />` — the chrome only lives inside the flow context) and asserting the same.
@@ -552,12 +639,12 @@ Every new management block ships its own translation namespace. The block, the c
 
 | Thing                | Convention                                                                                                                                                             |
 | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Namespace name       | `Employee.<Feature>.Management`                                                                                                                                        |
-| Translation file     | `src/i18n/en/Employee.<Feature>.Management.json` (and locale equivalents)                                                                                              |
-| Registration in code | `useI18n('Employee.<Feature>.Management')` (block, card, edit screen)                                                                                                  |
-| Partner override     | `useComponentDictionary('Employee.<Feature>.Management', dictionary)` per [`HomeAddress.tsx`](../../../src/components/Employee/HomeAddress/management/HomeAddress.tsx) |
+| Namespace name       | `Employee.Management.<Feature>`                                                                                                                                        |
+| Translation file     | `src/i18n/en/Employee.Management.<Feature>.json` (and locale equivalents)                                                                                              |
+| Registration in code | `useI18n('Employee.Management.<Feature>')` (block, card, edit screen)                                                                                                  |
+| Partner override     | `useComponentDictionary('Employee.Management.<Feature>', dictionary)` per [`HomeAddress.tsx`](../../../src/components/Employee/HomeAddress/management/HomeAddress.tsx) |
 
-The convention already exists for two features ([`Employee.HomeAddress.Management.json`](../../../src/i18n/en/Employee.HomeAddress.Management.json), [`Employee.WorkAddress.Management.json`](../../../src/i18n/en/Employee.WorkAddress.Management.json)) — match those for every new block. Run `npm run i18n:generate` after creating/changing the file so the typed key contract is regenerated.
+Two pre-existing namespaces ([`Employee.HomeAddress.Management.json`](../../../src/i18n/en/Employee.HomeAddress.Management.json), [`Employee.WorkAddress.Management.json`](../../../src/i18n/en/Employee.WorkAddress.Management.json)) use the older suffix-style name — they predate the prefix convention and are fine to leave in place until their owning card is touched. For every new block, use the prefix-style name in the table above (see [`Employee.Management.PaymentMethod.json`](../../../src/i18n/en/Employee.Management.PaymentMethod.json) for a current example). Run `npm run i18n:generate` after creating/changing the file so the typed key contract is regenerated.
 
 ### What goes in the file
 
@@ -572,7 +659,7 @@ The block does **not** read from `Employee.Dashboard`. Whatever the card surface
 
 ### When the feature already has multiple namespaces
 
-Some features have `Employee.<Feature>.json` (the onboarding/form namespace) plus `Employee.<Feature>.Management.json` (the management namespace). The default is to load **only** the management namespace from the block, the card, and the edit screen:
+Some features have `Employee.<Feature>.json` (the onboarding/form namespace) plus a separate management namespace. New files use the prefix-style name `Employee.Management.<Feature>.json`; pre-existing files like [`Employee.HomeAddress.Management.json`](../../../src/i18n/en/Employee.HomeAddress.Management.json) and [`Employee.WorkAddress.Management.json`](../../../src/i18n/en/Employee.WorkAddress.Management.json) still use the older suffix-style name and migrate opportunistically when their owning card is touched. Either way the default is to load **only** the management namespace from the block, the card, and the edit screen:
 
 ```tsx
 useI18n('Employee.HomeAddress.Management')
@@ -580,28 +667,111 @@ useI18n('Employee.HomeAddress.Management')
 
 Don't reach for the base namespace just because a shared form **hook** is rendered in both places. Form hooks like `useHomeAddressForm` emit field _components_ (e.g. `Street1`, `City`, `Zip`); they don't render any text themselves. Each call site passes its own `label` and `validationMessages` props from whatever namespace is convenient. The onboarding consumer reads from `Employee.HomeAddress`, the management consumer reads from `Employee.HomeAddress.Management`, and the two never need to share a translation namespace just because they share field components.
 
-Concrete heuristic — only dual-load the base namespace if **a runtime-shared piece of UI** (a shared presentational component that itself calls `useTranslation('Employee.<Feature>')`) is rendered inside the management path. If the management-side consumer of those strings is only ever rendered in the management path (e.g. a `<Feature>View` that exists solely under `management/`), copy the strings it needs into `Employee.<Feature>.Management.json` and read everything from one namespace. Don't reach across.
+Concrete heuristic — only dual-load the base namespace if **a runtime-shared piece of UI** (a shared presentational component that itself calls `useTranslation('Employee.<Feature>')`) is rendered inside the management path. If the management-side consumer of those strings is only ever rendered in the management path (e.g. a `<Feature>View` that exists solely under `management/`), copy the strings it needs into the feature's management namespace and read everything from one namespace. Don't reach across.
 
 Concretely: the field labels, validation messages, and courtesy-withholding copy that `HomeAddress/management/HomeAddressView.tsx` renders are duplicated into `Employee.HomeAddress.Management.json` rather than dual-loading `Employee.HomeAddress`, because `HomeAddressView` is exclusive to the management path. Onboarding's `EmployeeProfile`/`AdminProfile` keep reading the same keys from `Employee.HomeAddress`.
 
-Duplication is the cost; it buys a fully self-contained block. A partner who only overrides `Employee.HomeAddress.Management` via `useComponentDictionary` gets a coherent result without having to discover that they also need to override `Employee.HomeAddress`. When the same copy needs to change in both contexts (rare for field labels; almost never for validation messages), the change is two edits instead of one — that's a worthwhile trade.
+Duplication is the cost; it buys a fully self-contained block. A partner who only overrides the management namespace via `useComponentDictionary` gets a coherent result without having to discover that they also need to override `Employee.HomeAddress`. When the same copy needs to change in both contexts (rare for field labels; almost never for validation messages), the change is two edits instead of one — that's a worthwhile trade.
+
+### Components shared across flows must be presentational (no i18n)
+
+A `shared/` component consumed by **more than one flow** (e.g. the onboarding screen and the management card) must not own its own translations. If it does, a partner overriding the shared namespace to retune the string for one flow silently changes the other flow too — a copy override propagating across contexts the partner didn't intend to touch.
+
+The rule: presentational components in `shared/` take all visible copy as props. Each consumer reads the strings from its own namespace and passes them in. The shared component contains no `useI18n`, no `useTranslation`, no namespace-name string literals.
+
+The reference is [`PaymentMethod/shared/DeleteBankAccountDialog.tsx`](../../../src/components/Employee/PaymentMethod/shared/DeleteBankAccountDialog.tsx). It's rendered by both the onboarding `ListView` and the management `PaymentMethodCard`. The dialog declares `title`, `description`, `confirmLabel`, `cancelLabel` as props:
+
+```tsx
+export function DeleteBankAccountDialog({
+  pendingDeleteAccount,
+  isPrimaryActionLoading,
+  onClose,
+  onConfirm,
+  title,
+  description,
+  confirmLabel,
+  cancelLabel,
+}: {
+  /* … */
+  title: string
+  description: ReactNode
+  confirmLabel: string
+  cancelLabel: string
+}) {
+  /* no useI18n, no useTranslation */
+}
+```
+
+Each consumer reads from its own namespace and passes the labels in:
+
+```tsx
+// management/PaymentMethodCard.tsx — uses Employee.Management.PaymentMethod
+const { t } = useTranslation('Employee.Management.PaymentMethod')
+<DeleteBankAccountDialog
+  title={t('deleteBankAccountDialog.title')}
+  description={t('deleteBankAccountDialog.description', { account: … })}
+  confirmLabel={t('deleteBankAccountDialog.confirmCta')}
+  cancelLabel={t('deleteBankAccountDialog.cancelCta')}
+  /* … */
+/>
+
+// onboarding/ListView.tsx — uses Employee.PaymentMethod
+const { t } = useTranslation('Employee.PaymentMethod')
+<DeleteBankAccountDialog
+  title={t('deleteBankAccountDialog.title')}
+  /* same prop shape, different namespace source */
+/>
+```
+
+The `deleteBankAccountDialog.*` subtree is **duplicated** across `Employee.PaymentMethod.json` and `Employee.Management.PaymentMethod.json` — identical English copy, but independent keys. A partner overriding `Employee.Management.PaymentMethod.deleteBankAccountDialog.title` retunes only the management card; the onboarding flow is untouched. That is the point: duplication in the JSON is the price of decoupled overrides, and it's the right trade-off.
+
+When this rule applies — anytime you find yourself reaching for `useI18n` or `useTranslation` inside a `shared/` component used by more than one block/flow, stop and lift the strings into props instead. If a `shared/` component is genuinely consumed by only one flow today and may grow more callers later, it's still fine for it to be presentational on day one — the prop-driven shape costs little and removes the future refactor entirely.
+
+What still belongs in a shared namespace (`Employee.<Feature>.json`):
+
+- Strings consumed by feature-specific orchestrators (the onboarding flow's screens, the management block's contextual adapters) that are _not_ delegated through a shared presentational component.
+- Validation messages on form fields the feature defines.
+- Anything single-consumer that happens to live in the base namespace for historical reasons.
+
+The rule is specifically about **shared presentational components**, not about the namespaces themselves.
+
+### When the shared piece is a stateful form — wrap, don't share
+
+The presentational-component rule above works when the cross-flow piece is a leaf (a dialog, a row, a static section). It doesn't work when the shared piece is a full form screen with its own validation, submit, hook-driven state, and a body of translated copy — lifting all of that out into props would mean a sprawling label-prop surface and partner overrides would still have to plumb through that surface.
+
+For stateful form screens shared between onboarding and management (e.g. `PaymentMethod/onboarding/BankForm.tsx`, `PaymentMethod/onboarding/SplitView.tsx`), don't make the form itself presentational. Instead, extract the form's brains into a hook in `shared/` (the migrate-sdk-component-to-hooks pattern), then build a thin **per-flow wrapper component** in each flow that consumes the hook and owns:
+
+- its **own i18n namespace** (`Employee.Management.<Feature><Component>.json` for the management wrapper, `Employee.<Feature>.json` keys for the onboarding wrapper), and
+- its **own component-scoped events** (`EMPLOYEE_MANAGEMENT_<FEATURE>_<COMPONENT>_SUBMITTED` / `_CANCELLED`, etc.).
+
+The wrappers are tiny — they `useI18n` their dedicated namespace, render the shared hook's fields and submit action, and translate the hook's `onSuccess` / `onCancel` callbacks into their flow's scoped events. Both wrappers are publicly exported as first-class SDK components alongside the card and the block.
+
+The reference is [`PaymentMethod/management/PaymentMethodBankForm.tsx`](../../../src/components/Employee/PaymentMethod/management/PaymentMethodBankForm.tsx) and [`PaymentMethod/management/PaymentMethodSplitForm.tsx`](../../../src/components/Employee/PaymentMethod/management/PaymentMethodSplitForm.tsx). Each wraps a shared form hook (`useBankForm`, `useSplitPaymentsForm`), loads its own `Employee.Management.PaymentMethod<Bank|Split>Form` namespace, and emits `EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_<BANK|SPLIT>_FORM_SUBMITTED` / `_CANCELLED`. The onboarding equivalents stay where they are with their own namespace + events; nothing changes for the onboarding flow.
+
+Why this shape:
+
+- **The block's contextual adapter stays thin.** The management state machine listens for the wrapper's scoped events directly — no `if (eventType === LEGACY) onEvent(SCOPED)` translation layer in the contextual adapter. A previous iteration that translated events inline made the contextual layer harder to follow than it needed to be; the wrapper is the right abstraction.
+- **Partners get a real export per piece.** A partner who only wants the bank-form on their own route gets `EmployeeManagement.PaymentMethodBankForm` as a top-level export rather than having to compose against an onboarding-flavored form whose event names imply "you're inside onboarding."
+- **Translation overrides decouple by flow.** A partner overriding `Employee.Management.PaymentMethodBankForm.saveCta` retunes only the management bank-account form; the onboarding equivalent stays put. Same trade-off as the presentational-dialog rule, applied at a coarser grain.
+
+The wrappers belong in the management block's checklist alongside the card and the block — exports, registry regen, and the per-component i18n file all follow the standard pattern (just with `<Feature><Component>` substituted for `<Feature>` in the names).
 
 ### Strings to move out of `Employee.Dashboard` during migration
 
 The current [`Employee.Dashboard.json`](../../../src/i18n/en/Employee.Dashboard.json) bundles every card's copy under tab-scoped keys (`basicDetails.*`, `homeAddress.*`, `workAddress.*`, `jobAndPay.compensation.*`, `jobAndPay.payment.*`, `jobAndPay.deductions.*`, `jobAndPay.paystubs.*`, `taxes.federal.*`, `taxes.state.*`, `documents.*`, `alerts.*`). Each card's migration relocates its slice:
 
-| Source keys in `Employee.Dashboard:`                                    | Target file                                                                                                 |
-| ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `basicDetails.*` + relevant `alerts.*`                                  | `Employee.Profile.Management.json` (card-specific subtree)                                                  |
-| `homeAddress.*` + relevant `alerts.*`                                   | Merge into existing `Employee.HomeAddress.Management.json`                                                  |
-| `workAddress.*` + relevant `alerts.*`                                   | Merge into existing `Employee.WorkAddress.Management.json`                                                  |
-| `jobAndPay.compensation.*` + `alerts.jobAdded` etc.                     | `Employee.Compensation.Management.json` (new file)                                                          |
-| `jobAndPay.payment.*` + `alerts.bankAccountAdded` / `splitUpdated` etc. | `Employee.PaymentMethod.Management.json` (new file)                                                         |
-| `jobAndPay.deductions.*` + `alerts.deductionAdded` etc.                 | `Employee.Deductions.Management.json` (new file)                                                            |
-| `jobAndPay.paystubs.*`                                                  | `Employee.Paystubs.Management.json` (new file)                                                              |
-| `taxes.federal.*`                                                       | Merge into existing `Employee.FederalTaxes.json` (or split into `.Management.json` if the file grows large) |
-| `taxes.state.*`                                                         | Merge into existing `Employee.StateTaxes.json` (same caveat)                                                |
-| `documents.*`                                                           | `Employee.Documents.Management.json` (new file)                                                             |
+| Source keys in `Employee.Dashboard:`                                    | Target file                                                                                                       |
+| ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `basicDetails.*` + relevant `alerts.*`                                  | `Employee.Management.Profile.json` (card-specific subtree)                                                        |
+| `homeAddress.*` + relevant `alerts.*`                                   | Merge into existing `Employee.HomeAddress.Management.json`                                                        |
+| `workAddress.*` + relevant `alerts.*`                                   | Merge into existing `Employee.WorkAddress.Management.json`                                                        |
+| `jobAndPay.compensation.*` + `alerts.jobAdded` etc.                     | `Employee.Management.Compensation.json` (new file)                                                                |
+| `jobAndPay.payment.*` + `alerts.bankAccountAdded` / `splitUpdated` etc. | `Employee.Management.PaymentMethod.json` (new file)                                                               |
+| `jobAndPay.deductions.*` + `alerts.deductionAdded` etc.                 | `Employee.Management.Deductions.json` (new file)                                                                  |
+| `jobAndPay.paystubs.*`                                                  | `Employee.Management.Paystubs.json` (new file)                                                                    |
+| `taxes.federal.*`                                                       | Merge into existing `Employee.FederalTaxes.json` (or split into `Employee.Management.FederalTaxes.json` if large) |
+| `taxes.state.*`                                                         | Merge into existing `Employee.StateTaxes.json` (same caveat)                                                      |
+| `documents.*`                                                           | `Employee.Management.Documents.json` (new file)                                                                   |
 
 Each card's PR deletes the moved keys from `Employee.Dashboard.json` and the corresponding `useTranslation('Employee.Dashboard')` calls inside the relocated component. The dashboard tab views (`BasicDetailsView`, `JobAndPayView`, etc.) shrink as the cards leave; whatever `Employee.Dashboard` keys remain are tab-chrome strings only (tab labels, page header), not card content. When the last card migrates, `Employee.Dashboard.json` should contain only tab/page chrome — and if even that's gone, the file gets deleted in the last card's PR.
 
@@ -652,7 +822,7 @@ Do **not** attach pieces as `Block.Card = …` / `Block.EditScreen = …` namesp
 
 The dashboard composes pieces (card + edit screen), not the block. The cleanup in `DashboardFlow` is small and mechanical. Touch only the card you migrated:
 
-1. **`dashboardStateMachine.ts`** — update the transition triggers from the legacy event names to the new scoped events (e.g. `EMPLOYEE_COMPENSATION_CREATE` → `EMPLOYEE_COMPENSATION_MANAGEMENT_EDIT_REQUESTED`). The `index` and sub-state structure stays — the dashboard still needs to nav between the card surface and the edit surface. Update the `returnToIndexWithAlert(...)` triggers similarly for any `EMPLOYEE_<FEATURE>_<ACTION>_DONE`-style events the edit screen now fires under scoped names. Move the card's `successAlert` codes out of `DashboardContextInterface.successAlert` if and only if the dashboard no longer needs to render that alert at the tabs level (most cards: drop the alert from the dashboard and let the card render it itself once the card is the partner-visible surface; some cards may keep a dashboard-level alert at the page level — call this out per-card).
+1. **`dashboardStateMachine.ts`** — update the transition triggers from the legacy event names to the new scoped events (e.g. `EMPLOYEE_COMPENSATION_CREATE` → `EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_REQUESTED`). The `index` and sub-state structure stays — the dashboard still needs to nav between the card surface and the edit surface. Update the `returnToIndexWithAlert(...)` triggers similarly for any `EMPLOYEE_<FEATURE>_<ACTION>_DONE`-style events the edit screen now fires under scoped names. Move the card's `successAlert` codes out of `DashboardContextInterface.successAlert` if and only if the dashboard no longer needs to render that alert at the tabs level (most cards: drop the alert from the dashboard and let the card render it itself once the card is the partner-visible surface; some cards may keep a dashboard-level alert at the page level — call this out per-card).
 2. **`DashboardComponents.tsx`** — update the contextual adapter for the card's edit state(s) to render the renamed `<FeatureEditForm />` piece (the renamed standalone edit screen) instead of the previous import. The contextual adapter remains a thin pull-from-flow-context shell. Do **not** delete it — the dashboard still routes here when its state machine enters the edit sub-state.
 3. **Tab view (`BasicDetailsView.tsx` / `JobAndPayView.tsx` / `TaxesView.tsx` / `DocumentsView.tsx`)** — delete the inline card markup for this card and replace it with the standalone card piece: `<FeatureCard employeeId={employeeId} onEvent={onEvent} />`. The tab view stops being responsible for the card's data fetch (the card owns it) and stops needing per-card edit callbacks (the card fires events directly).
 4. **`Dashboard.tsx`** — drop the `handle<X>` callbacks that fed the inline card. The card now fires its scoped events through the `onEvent` flowing in from `useFlow`.
@@ -691,7 +861,7 @@ The dev app (`sdk-app/`) drives its sidebar from a generated registry that stati
 4. **Spot-check in the dev app** (`npm run sdk-app`):
    - The new entries appear under the **Employee Management** sidebar section, grouped alphabetically — feature-prefixed naming (e.g. `Profile`, `ProfileCard`, `ProfileEditForm`) keeps the block and its pieces adjacent in the list. If you see an edit-form piece floating off under "E" (`EditProfile`, `EditHomeAddress`), the name is wrong — see "Naming conventions" above.
    - Clicking each piece resolves its entity IDs from the entity picker and renders against live demo data.
-   - The events log shows the scoped `EMPLOYEE_<FEATURE>_MANAGEMENT_*` events when interacting with the card and the edit screen.
+   - The events log shows the scoped `EMPLOYEE_MANAGEMENT_<FEATURE>_*` events when interacting with the card and the edit screen.
 
 The deprecated unified `Employee.*` namespace was removed from the dev app's sidebar. Only `EmployeeManagement` and `EmployeeOnboarding` surface there now, so any new piece must be a named export of one of those barrels (typically [`employeeManagement.ts`](../../../src/components/Employee/exports/employeeManagement.ts) for management cards). The legacy `Employee/index.ts` barrel still exists for partner backward compatibility but no longer drives the dev app.
 
@@ -728,7 +898,7 @@ Dashboard work continues in parallel with this migration. When you rebase a card
 3. **Port the substantive improvement into the new card's source** (`management/<Feature>Card/<Feature>Card.tsx`). Worked examples:
    - Switch from hand-rolled `<Flex>`/`<Text>` stacks to `Components.DescriptionList` with an `emptyPlaceholder` — port the items array + the `DescriptionList` render call into the card body, replacing the equivalent stack the card had.
    - A new field added to the row, a copy fix, a label tweak — apply it to the card.
-4. **If the improvement relied on a key from `Employee.Dashboard`** (e.g. `listEmptyPlaceholder`), copy the key into the block's own `Employee.<Feature>.Management.json`. Blocks never read across namespaces. Re-run `npm run i18n:generate` so `i18next.d.ts` picks up the new key.
+4. **If the improvement relied on a key from `Employee.Dashboard`** (e.g. `listEmptyPlaceholder`), copy the key into the block's own `Employee.Management.<Feature>.json`. Blocks never read across namespaces. Re-run `npm run i18n:generate` so `i18next.d.ts` picks up the new key.
 5. **Resolve `Dashboard.tsx` conflicts by combining both sides** — structural changes from `main` (e.g. a wrapping `<Flex gap={…}>`) and prop-shape changes from your branch (e.g. swapping `onEdit<X>` for `onEvent`) are usually orthogonal. Restore any incidentally-dropped attributes (`variant`, `weight`, `aria-*`).
 6. **Re-run the card test and the dashboard test** — the card test pins the new render path; the dashboard test pins that the dashboard still composes correctly.
 
@@ -810,7 +980,7 @@ Ten cards render across the four dashboard tabs. Each one becomes one card-as-bl
 
 ### Component name follows the domain folder, not the dashboard's display copy
 
-Card surface labels (the strings the user sees: "Basic details", "Payment", "Paystubs", etc.) live in i18n; the exported component name follows the domain folder. So the card for the Basic-details surface is `ProfileCard` (exported from `Employee/Profile/management/ProfileCard/`), even though it renders under the "Basic details" label. The i18n keys themselves **move** during migration from `Employee.Dashboard:*` into the block's dedicated namespace (`Employee.Profile.Management.json` for this case) — see "Translations" below. The display copy is preserved verbatim; only its namespace changes. Same principle applies to any future card whose surface label diverges from its domain.
+Card surface labels (the strings the user sees: "Basic details", "Payment", "Paystubs", etc.) live in i18n; the exported component name follows the domain folder. So the card for the Basic-details surface is `ProfileCard` (exported from `Employee/Profile/management/ProfileCard/`), even though it renders under the "Basic details" label. The i18n keys themselves **move** during migration from `Employee.Dashboard:*` into the block's dedicated namespace (`Employee.Management.Profile.json` for this case) — see "Translations" below. The display copy is preserved verbatim; only its namespace changes. Same principle applies to any future card whose surface label diverges from its domain.
 
 ### Friction points (three non-clean fits)
 
@@ -843,19 +1013,21 @@ Each arrow is independently shippable. The dashboard works at every boundary.
 - [ ] This PR migrates exactly one card. No bundled migrations.
 - [ ] Read the canonical template ([`PaymentMethod/management/`](../../../src/components/Employee/PaymentMethod/management/)) and the OnboardingFlow precedent before writing code.
 - [ ] If the card's edit screen has not been hook-migrated yet, do that first via [`migrate-sdk-component-to-hooks`](../migrate-sdk-component-to-hooks/SKILL.md) — separate PR.
-- [ ] Dedicated `EMPLOYEE_<FEATURE>_MANAGEMENT_*` event constants added to [`src/shared/constants.ts`](../../../src/shared/constants.ts). The block, card, edit screen, and state machine fire only these scoped events — no reuse of onboarding or sibling-block events.
+- [ ] Dedicated `EMPLOYEE_MANAGEMENT_<FEATURE>_*` event constants added to [`src/shared/constants.ts`](../../../src/shared/constants.ts). The block, card, edit screen, and state machine fire only these scoped events — no reuse of onboarding or sibling-block events.
 - [ ] `dashboardStateMachine.ts` transitions and `DashboardComponents.tsx` contextual adapters for this card retargeted to the scoped event names; the card's inline markup in its tab view replaced with `<FeatureCard employeeId={…} onEvent={onEvent} />`. `Dashboard.tsx` no longer holds the card's `handle<X>` callbacks. Pre-release: `DashboardFlow.tsx` itself stays untouched — no compatibility shim layer (see "No compatibility shim during pre-release").
 - [ ] SDK dev app updated: `npx tsx sdk-app/scripts/analyze-component-props.ts` re-run so the regenerated [`sdk-app/src/generated-registry-data.ts`](../../../sdk-app/src/generated-registry-data.ts) gains `EmployeeManagement.<Feature>` + `EmployeeManagement.<Feature>Card` (and any other newly-exported pieces) with the correct entity-id requirements. Verified locally that the new entries appear under the "Employee Management" sidebar section and render against demo data.
 - [ ] [`docs/workflows-overview/employee-management/employee-management.md`](../../../docs/workflows-overview/employee-management/employee-management.md) updated with a `### EmployeeManagement.<Feature>` section for the new **block** — description, JSX sample, `#### Props` table, and `#### Events` table covering the full partner-visible event surface (edit-requested, updated, cancel, dismiss — all scoped per the rule above). If any of the card's events renamed, the `EmployeeManagement.DashboardFlow` event table in the same file reflects the post-refactor surface. [`employee-dashboard.md`](../../../docs/workflows-overview/employee-dashboard.md) updated for consistency where it touches the same card.
 - [ ] Same block section also contains a `#### Composing from EmployeeManagement.<Feature>Card and EmployeeManagement.<Feature>EditForm directly` subsection (placed inside the block's `###`, after its Events table) with the opening framing (block recommended, pieces for advanced composition), one short JSX swap-with-local-state sample, then a `##### EmployeeManagement.<Feature>Card` sub-subsection and a `##### EmployeeManagement.<Feature>EditForm` sub-subsection, each with their own bolded **Props** and **Events** labels and tables. **Per-piece, not combined** — the card and the form are asymmetric components, not variants of the same thing. Subcomponent anchor list at the top of the doc lists the block as a top-level item with the pieces subsection as an indented sub-item under it. See "Document the new block in employee-management.md" for the full spec.
-- [ ] The composition example inside that subsection shows **explicit event-type branching** on both pieces' `onEvent` handlers, comparing `eventType` against `componentEvents.EMPLOYEE_<FEATURE>_MANAGEMENT_*` imported from `@gusto/embedded-react-sdk`. **Not** a no-arg handler like `onEvent={() => setIsEditing(false)}` — even when both edit-form events happen to drive the same transition in the minimal example. See "Composition example shape" for the required template and the reasoning.
+- [ ] The composition example inside that subsection shows **explicit event-type branching** on both pieces' `onEvent` handlers, comparing `eventType` against `componentEvents.EMPLOYEE_MANAGEMENT_<FEATURE>_*` imported from `@gusto/embedded-react-sdk`. **Not** a no-arg handler like `onEvent={() => setIsEditing(false)}` — even when both edit-form events happen to drive the same transition in the minimal example. See "Composition example shape" for the required template and the reasoning.
 - [ ] Per-card data hook landed at `Employee/<Feature>/shared/use<Feature><Role>/` in its own subfolder (`use<Feature><Role>.tsx` + `use<Feature><Role>.test.tsx` + `index.ts`). The feature's `shared/index.ts` barrel re-exports through that folder. Hook returns the `HookLoadingResult | BaseHookReady<…>` discriminated union, uses `composeErrorHandler` + `useBaseSubmit`, and matches the shape of [`usePaymentMethodList`](../../../src/components/Employee/PaymentMethod/shared/usePaymentMethodList.ts) / [`useEmployeeList`](../../../src/components/Employee/EmployeeList/shared/useEmployeeList.tsx). Renamed to drop the `Employee` prefix per the data-hooks table. If the source hook bundled multiple cards, the split happens here. If `Dashboard/hooks/index.ts` is now empty, delete `Dashboard/hooks/`.
 - [ ] Hook test inside the subfolder covers loading branch, ready branch (`BaseHookReady` shape), each action's mutation + `HookSubmitResult`, and `composeErrorHandler` aggregation. Model on [`useEmployeeList.test.tsx`](../../../src/components/Employee/EmployeeList/shared/useEmployeeList.test.tsx).
 - [ ] Create `Employee/<Feature>/management/` with the block orchestrator and internal helpers flat (`<Feature>.tsx`, `<Feature>.test.tsx`, `<Feature>Components.tsx`, `<feature>StateMachine.ts`, `index.ts`) plus the standalone card in its own subfolder (`<Feature>Card/<Feature>Card.tsx` + `<Feature>Card/<Feature>Card.test.tsx` + `<Feature>Card/index.ts`). Subfolder names match the public name exactly (no `Card/Card.tsx`).
 - [ ] State machine uses `card` as the initial state name (not `index`) and the `returnToCard` / `returnToCardWithAlert` reducer pattern.
-- [ ] Dedicated translations file at `src/i18n/en/Employee.<Feature>.Management.json` (and locale equivalents). The block, card, edit screen, and hook all call `useI18n('Employee.<Feature>.Management')` — no reads from `Employee.Dashboard`. Strings that previously lived under `Employee.Dashboard:<feature>.*` (including the card's success-alert labels) moved into this file; the dashboard-side keys are deleted, not aliased. Partner override supported via `useComponentDictionary('Employee.<Feature>.Management', dictionary)`. Run `npm run i18n:generate` after the file change.
+- [ ] Dedicated translations file at `src/i18n/en/Employee.Management.<Feature>.json` (and locale equivalents). The block, card, edit screen, and hook all call `useI18n('Employee.Management.<Feature>')` — no reads from `Employee.Dashboard`. Strings that previously lived under `Employee.Dashboard:<feature>.*` (including the card's success-alert labels) moved into this file; the dashboard-side keys are deleted, not aliased. Partner override supported via `useComponentDictionary('Employee.Management.<Feature>', dictionary)`. Run `npm run i18n:generate` after the file change.
 - [ ] `<Feature>Card.tsx` is **self-fetching and standalone**: required props are `{ employeeId, onEvent }`, it calls `use<Feature><Role>` internally, branches on `isLoading`, wraps in `<BaseLayout>`, and fires `componentEvents` directly via `onEvent`. The only optional props are `successAlert` + `onDismissAlert` for the orchestrated block to drive the alert. No state-machine import, no `useFlow`.
-- [ ] Success alert state moved into `<Feature>ContextInterface`, surfaced to the card through the `successAlert` / `onDismissAlert` controlled props, dismissed via `componentEvents.EMPLOYEE_DISMISS` in `CardContextual`.
+- [ ] Card chrome composition follows the patterns in "Card chrome layout": `Components.Box` uses `withPadding={!isShowingTable}` (or the per-card equivalent) when the body is a `DataView` / `Table`, and the `DataView` itself is rendered with `isWithinBox`. A multi-button header action is wrapped in a plain `<div className={styles.headerAction}>` whose **co-located `.module.scss`** sets `display: flex; flex-direction: column; gap: toRem(8); flex-shrink: 0;` and upgrades to `flex-direction: row; align-items: center;` inside `@include container-query(40em)` (the SDK-standard "small" breakpoint, auto-injected via `@/styles/Responsive`). Not `<Flex>` (whose `.flexContainer` is `width: 100%` and would compete with the title for header width), not inline `style={{ … }}` props, not without `flex-shrink: 0` (the buttons would otherwise overflow the shrunk wrapper to the right), and not row-only (CTAs cram against the title on narrow containers). CTA label strings do not duplicate the glyph supplied by an `icon={…}` prop.
+- [ ] If the card's edit screen is a form shared with onboarding, the management flow gets its own thin wrapper components (one per form, named `<Feature><Component>`) consuming the shared form hook, each with its own `Employee.Management.<Feature><Component>.json` namespace and its own component-scoped events (`EMPLOYEE_MANAGEMENT_<FEATURE>_<COMPONENT>_SUBMITTED` / `_CANCELLED`). The wrappers are exported alongside the card and the block. See "When the shared piece is a stateful form — wrap, don't share".
+- [ ] Success alert state moved into `<Feature>ContextInterface`, surfaced to the card through the `successAlert` / `onDismissAlert` controlled props, dismissed via `componentEvents.EMPLOYEE_DISMISS` in the block's `<Feature>CardContextual` (the contextual mirrors the wrapped component name — `<Feature>CardContextual` wraps `<Feature>Card`).
 - [ ] `Employee/<Feature>/management/index.ts` exports the block, the card, and any partner-facing edit screens as sibling named exports; `Employee/<Feature>/shared/index.ts` exports the hook + its types. No `Block.Card = …` dot-notation.
 - [ ] [`Employee/exports/employeeManagement.ts`](../../../src/components/Employee/exports/employeeManagement.ts) points at the new block. If a naming conflict required renaming the existing edit screen, the rename + re-export happens in this same PR.
 - [ ] **Only** this card's transitions/contextual adapter/prop are touched in `dashboardStateMachine.ts` / `DashboardComponents.tsx` / the relevant tab view. Other cards untouched.

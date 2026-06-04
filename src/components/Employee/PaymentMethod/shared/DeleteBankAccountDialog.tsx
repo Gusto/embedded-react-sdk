@@ -1,18 +1,30 @@
-import { useTranslation } from 'react-i18next'
+import type { ReactNode } from 'react'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
+/**
+ * Presentational confirm dialog for deleting a bank account. All copy is
+ * passed in by the caller so each consumer owns its own translation strings
+ * — partner overrides on one flow's namespace won't leak into another.
+ */
 export function DeleteBankAccountDialog({
   pendingDeleteAccount,
   isPrimaryActionLoading,
   onClose,
   onConfirm,
+  title,
+  description,
+  confirmLabel,
+  cancelLabel,
 }: {
   pendingDeleteAccount: { uuid: string; hiddenAccountNumber: string | undefined } | null
   isPrimaryActionLoading: boolean
   onClose: () => void
   onConfirm: () => void
+  title: string
+  description: ReactNode
+  confirmLabel: string
+  cancelLabel: string
 }) {
-  const { t } = useTranslation('Employee.PaymentMethod')
   const Components = useComponentContext()
   return (
     <Components.Dialog
@@ -21,14 +33,11 @@ export function DeleteBankAccountDialog({
       onPrimaryActionClick={onConfirm}
       isPrimaryActionLoading={isPrimaryActionLoading}
       isDestructive
-      title={t('deleteBankAccountDialog.title')}
-      primaryActionLabel={t('deleteBankAccountDialog.confirmCta')}
-      closeActionLabel={t('deleteBankAccountDialog.cancelCta')}
+      title={title}
+      primaryActionLabel={confirmLabel}
+      closeActionLabel={cancelLabel}
     >
-      {pendingDeleteAccount &&
-        t('deleteBankAccountDialog.description', {
-          account: pendingDeleteAccount.hiddenAccountNumber ?? '',
-        })}
+      {pendingDeleteAccount && description}
     </Components.Dialog>
   )
 }
