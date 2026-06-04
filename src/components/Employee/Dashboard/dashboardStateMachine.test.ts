@@ -25,9 +25,9 @@ function send(service: ReturnType<typeof createService>, type: string, payload?:
 }
 
 describe('dashboardStateMachine — documentManager', () => {
-  it('enters documentManager from index on EMPLOYEE_VIEW_FORM_TO_SIGN', () => {
+  it('enters documentManager from index on EMPLOYEE_MANAGEMENT_DOCUMENTS_CARD_VIEW_REQUESTED', () => {
     const service = createService('index')
-    send(service, componentEvents.EMPLOYEE_VIEW_FORM_TO_SIGN, {
+    send(service, componentEvents.EMPLOYEE_MANAGEMENT_DOCUMENTS_CARD_VIEW_REQUESTED, {
       employeeId: 'employee-123',
       formId: 'form-1',
     })

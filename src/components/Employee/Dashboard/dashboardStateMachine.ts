@@ -22,7 +22,10 @@ import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 
 type EventPayloads = {
-  [componentEvents.EMPLOYEE_VIEW_FORM_TO_SIGN]: { employeeId: string; formId: string }
+  [componentEvents.EMPLOYEE_MANAGEMENT_DOCUMENTS_CARD_VIEW_REQUESTED]: {
+    employeeId: string
+    formId: string
+  }
   [componentEvents.EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_EDIT_REQUESTED]: Garnishment
   [componentEvents.EMPLOYEE_COMPENSATION_CREATE]: { employeeId: string; job: Job }
   [componentEvents.EMPLOYEE_DASHBOARD_TAB_CHANGE]: { tab: DashboardTab }
@@ -129,12 +132,15 @@ export const dashboardStateMachine = {
       ),
     ),
     transition(
-      componentEvents.EMPLOYEE_VIEW_FORM_TO_SIGN,
+      componentEvents.EMPLOYEE_MANAGEMENT_DOCUMENTS_CARD_VIEW_REQUESTED,
       'documentManager',
       reduce(
         (
           ctx: DashboardContextInterface,
-          ev: MachineEventType<EventPayloads, typeof componentEvents.EMPLOYEE_VIEW_FORM_TO_SIGN>,
+          ev: MachineEventType<
+            EventPayloads,
+            typeof componentEvents.EMPLOYEE_MANAGEMENT_DOCUMENTS_CARD_VIEW_REQUESTED
+          >,
         ): DashboardContextInterface => ({
           ...ctx,
           component: DocumentManagerContextual,

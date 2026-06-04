@@ -3,7 +3,12 @@ export { EmployeeListFlow } from '../EmployeeListFlow'
 export type { EmployeeListFlowProps } from '../EmployeeListFlow'
 /** @deprecated Use EmployeeOnboarding.EmployeeDocuments; not applicable for post-onboarding flows. Will be removed in a future version. */
 export { EmployeeDocuments } from '../Documents/onboarding/EmployeeDocuments'
-export { DocumentManager } from '../Documents/management/DocumentManager'
+export { Documents, DocumentsCard, DocumentManager } from '../Documents/management'
+export type {
+  DocumentsProps,
+  DocumentsCardProps,
+  DocumentManagerProps,
+} from '../Documents/management'
 export { DashboardFlow } from '../Dashboard'
 export { HomeAddress, HomeAddressCard, HomeAddressEditForm } from '../HomeAddress/management'
 export type {

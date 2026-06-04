@@ -2,6 +2,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import { useEmployeeFormsGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeFormsGet'
 import { useEmployeeFormsGetPdfSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeFormsGetPdf'
 import { SignatureForm } from '../shared/SignatureForm/SignatureForm'
+import { useManagementSignatureFormDictionary } from './useSignatureFormDictionary'
 import { BaseComponent, useBase, type BaseComponentInterface } from '@/components/Base'
 import { ActionsLayout, Flex } from '@/components/Common'
 import { DocumentViewer } from '@/components/Common/DocumentViewer'
@@ -16,6 +17,7 @@ export interface DocumentManagerProps {
 
 export function DocumentManager(props: DocumentManagerProps & BaseComponentInterface) {
   useI18n('Employee.DocumentManager')
+  useI18n('Employee.Management.Documents')
   return (
     <BaseComponent {...props} componentName="Employee.DocumentManager">
       <DocumentManagerRoot employeeId={props.employeeId} formId={props.formId} />
@@ -25,6 +27,7 @@ export function DocumentManager(props: DocumentManagerProps & BaseComponentInter
 
 function DocumentManagerRoot({ employeeId, formId }: DocumentManagerProps) {
   const { t } = useTranslation('Employee.DocumentManager')
+  const signatureFormDictionary = useManagementSignatureFormDictionary()
   const Components = useComponentContext()
   const { onEvent } = useBase()
 
@@ -40,7 +43,14 @@ function DocumentManagerRoot({ employeeId, formId }: DocumentManagerProps) {
   if (!form) return null
 
   if (form.requiresSigning) {
-    return <SignatureForm employeeId={employeeId} formId={formId} onEvent={onEvent} />
+    return (
+      <SignatureForm
+        employeeId={employeeId}
+        formId={formId}
+        onEvent={onEvent}
+        dictionary={signatureFormDictionary}
+      />
+    )
   }
 
   return (

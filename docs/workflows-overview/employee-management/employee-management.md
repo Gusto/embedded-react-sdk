@@ -46,6 +46,8 @@ Employee management components can be used to compose your own workflow, or can 
   - [Composing from EmployeeManagement.FederalTaxesCard and EmployeeManagement.FederalTaxesEditForm directly](#composing-from-employeemanagementfederaltaxescard-and-employeemanagementfederaltaxeseditform-directly)
 - [EmployeeManagement.StateTaxes](#employeemanagementstatetaxes)
   - [Composing from EmployeeManagement.StateTaxesCard and EmployeeManagement.StateTaxesEditForm directly](#composing-from-employeemanagementstatetaxescard-and-employeemanagementstatetaxeseditform-directly)
+- [EmployeeManagement.Documents](#employeemanagementdocuments)
+  - [Composing from EmployeeManagement.DocumentsCard and EmployeeManagement.DocumentManager directly](#composing-from-employeemanagementdocumentscard-and-employeemanagementdocumentmanager-directly)
 
 ### EmployeeManagement.DashboardFlow
 
@@ -932,3 +934,117 @@ function MyStateTaxesPanel({ employeeId }) {
 | ---------------------------------------------- | -------------------------------------------------- | ---------------------------------------------------- |
 | EMPLOYEE_MANAGEMENT_STATE_TAXES_UPDATED        | Fired after the edit form is successfully saved    | { employeeStateTaxesList: EmployeeStateTaxesList[] } |
 | EMPLOYEE_MANAGEMENT_STATE_TAXES_EDIT_CANCELLED | Fired when the user clicks Cancel on the edit form | None                                                 |
+
+### EmployeeManagement.Documents
+
+A self-contained block for viewing and signing an employee's forms (documents) — the same "Documents" experience the dashboard surfaces, but as a drop-in component that doesn't require the surrounding dashboard chrome. Renders a read-only card listing each form with its year, status, and signing status, plus a per-row "View" action. Clicking "View" swaps the card for the document viewer, which renders the form PDF — and, for forms that require a signature, the signing form. Signing a form returns to the card view with a dismissible "Document successfully signed." alert; clicking Back returns to the card view without changes.
+
+```jsx
+import { EmployeeManagement } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return (
+    <EmployeeManagement.Documents
+      employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
+      onEvent={() => {}}
+    />
+  )
+}
+```
+
+#### Props
+
+| Name                | Type                | Description                                                                                                                            |
+| ------------------- | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| employeeId Required | string              | The associated employee identifier.                                                                                                    |
+| onEvent Required    | function            | See events table for available events.                                                                                                 |
+| dictionary          | object              | Optional translations for component text. Keys are namespaced under `Employee.Management.Documents` — see the source JSON for the set. |
+| FallbackComponent   | React.ComponentType | Optional custom error fallback component used by the internal `BaseBoundaries` wrapper.                                                |
+
+#### Events
+
+| Event type                                        | Description                                                                                                                        | Data                                             |
+| ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| EMPLOYEE_MANAGEMENT_DOCUMENTS_CARD_VIEW_REQUESTED | Fired when a form row's "View" CTA is clicked on the card; the block swaps to the document viewer                                  | { employeeId: string, formId: string }           |
+| EMPLOYEE_SIGN_FORM                                | Fired after a form that requires signing is successfully signed; the block returns to the card view and surfaces the success alert | Response from the Sign an employee form endpoint |
+| EMPLOYEE_MANAGEMENT_DOCUMENTS_ALERT_DISMISSED     | Fired when the user dismisses the "Document successfully signed." success alert above the card                                     | null                                             |
+| CANCEL                                            | Fired when the user clicks Back in the document viewer; the block returns to the card view                                         | None                                             |
+
+#### Composing from EmployeeManagement.DocumentsCard and EmployeeManagement.DocumentManager directly
+
+`EmployeeManagement.Documents` above is the recommended entry point for the documents experience — it bundles the card, the document viewer/signer, the swap between them, and the success-alert wiring as a single drop-in. The card and the document viewer are also exported individually for cases where that orchestration is the wrong fit — for example, when the viewer needs to render in a modal or drawer, when the card needs to appear read-only with no view affordance, or when navigation to the viewer is driven by a router. Using them directly means owning the swap, the alert, and any cross-component state yourself. There is no dedicated edit form for this feature: the read-only card pairs with `EmployeeManagement.DocumentManager`, which renders the selected form's PDF and, for forms that require a signature, the signing form.
+
+`EmployeeManagement.DocumentsCard` renders the read-only documents card, self-fetches its rows, and emits a single event when a row's "View" CTA is clicked. `EmployeeManagement.DocumentManager` renders the selected form: for a form that requires signing it shows the signing form and emits one event on a successful sign and another on Back; for a form that does not require signing it shows the PDF with a Back action that emits the same cancel event. Each piece's `onEvent` receives the event type as its first argument and any associated payload as its second — branch on the event type to drive the swap. The per-piece events tables below list every event each piece emits.
+
+```jsx
+import { useState } from 'react'
+import { componentEvents, EmployeeManagement } from '@gusto/embedded-react-sdk'
+
+function MyDocumentsPanel({ employeeId }) {
+  const [viewingFormId, setViewingFormId] = useState(null)
+
+  if (viewingFormId) {
+    return (
+      <EmployeeManagement.DocumentManager
+        employeeId={employeeId}
+        formId={viewingFormId}
+        onEvent={eventType => {
+          if (
+            eventType === componentEvents.EMPLOYEE_SIGN_FORM ||
+            eventType === componentEvents.CANCEL
+          ) {
+            setViewingFormId(null)
+          }
+        }}
+      />
+    )
+  }
+
+  return (
+    <EmployeeManagement.DocumentsCard
+      employeeId={employeeId}
+      onEvent={(eventType, payload) => {
+        if (eventType === componentEvents.EMPLOYEE_MANAGEMENT_DOCUMENTS_CARD_VIEW_REQUESTED) {
+          setViewingFormId(payload.formId)
+        }
+      }}
+    />
+  )
+}
+```
+
+##### EmployeeManagement.DocumentsCard
+
+**Props**
+
+| Name                | Type     | Description                            |
+| ------------------- | -------- | -------------------------------------- |
+| employeeId Required | string   | The associated employee identifier.    |
+| onEvent Required    | function | See events table for available events. |
+
+**Events**
+
+| Event type                                        | Description                                   | Data                                   |
+| ------------------------------------------------- | --------------------------------------------- | -------------------------------------- |
+| EMPLOYEE_MANAGEMENT_DOCUMENTS_CARD_VIEW_REQUESTED | Fired when a form row's "View" CTA is clicked | { employeeId: string, formId: string } |
+
+##### EmployeeManagement.DocumentManager
+
+**Props**
+
+| Name                | Type                | Description                                                                                                                       |
+| ------------------- | ------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| employeeId Required | string              | The associated employee identifier.                                                                                               |
+| formId Required     | string              | The identifier of the form to view or sign.                                                                                       |
+| onEvent Required    | function            | See events table for available events.                                                                                            |
+| dictionary          | object              | Optional translations for component text. Keys are namespaced under `Employee.DocumentManager` — see the source JSON for the set. |
+| FallbackComponent   | React.ComponentType | Optional custom error fallback component used by the internal `BaseComponent` wrapper.                                            |
+
+The read-only viewer's text resolves from `Employee.DocumentManager`. When the selected form requires a signature, the signing form's text resolves from `Employee.Management.Documents` under the `signatureForm.*` keys, so override that namespace to retext the signing screen.
+
+**Events**
+
+| Event type         | Description                                                          | Data                                             |
+| ------------------ | -------------------------------------------------------------------- | ------------------------------------------------ |
+| EMPLOYEE_SIGN_FORM | Fired after a form that requires signing is successfully signed      | Response from the Sign an employee form endpoint |
+| CANCEL             | Fired when the user clicks Back in the viewer (signing or read-only) | None                                             |
