@@ -3019,9 +3019,9 @@ export type NameValidation = (typeof EmployeeDetailsErrorCodes)['REQUIRED' | 'IN
 // @public (undocumented)
 function NewHireReport(props: NewHireReportProps): JSX_2.Element;
 
-// Warning: (ae-missing-release-tag) "normalizeToSDKError" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-internal-missing-underscore) The name "normalizeToSDKError" should be prefixed with an underscore because the declaration is marked as @internal
 //
-// @public
+// @internal
 export function normalizeToSDKError(error: unknown): SDKError;
 
 // Warning: (ae-missing-release-tag) "NumberInputHookField" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -3083,8 +3083,6 @@ export interface ObservabilityContextValue {
     observability: ObservabilityHook | undefined;
 }
 
-// Warning: (ae-missing-release-tag) "ObservabilityError" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export interface ObservabilityError extends SDKError {
     componentName?: string;
@@ -3092,8 +3090,6 @@ export interface ObservabilityError extends SDKError {
     timestamp: number;
 }
 
-// Warning: (ae-missing-release-tag) "ObservabilityHook" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export interface ObservabilityHook {
     onError?: (error: ObservabilityError) => void;
@@ -3101,9 +3097,7 @@ export interface ObservabilityHook {
     sanitization?: SanitizationConfig;
 }
 
-// Warning: (ae-missing-release-tag) "ObservabilityMetric" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface ObservabilityMetric {
     name: string;
     tags?: Record<string, string>;
@@ -3112,9 +3106,7 @@ export interface ObservabilityMetric {
     value: number;
 }
 
-// Warning: (ae-missing-release-tag) "ObservabilityMetricUnit" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type ObservabilityMetricUnit = 'ms' | 'count' | 'bytes' | 'percent';
 
 // Warning: (ae-internal-missing-underscore) The name "ObservabilityProvider" should be prefixed with an underscore because the declaration is marked as @internal
@@ -4049,8 +4041,6 @@ export type RoutingNumberFieldProps = HookFieldProps<TextInputHookFieldProps<Rou
 // @public (undocumented)
 export type RoutingNumberValidation = (typeof BankFormErrorCodes)[keyof Pick<typeof BankFormErrorCodes, 'REQUIRED' | 'INVALID_ROUTING_NUMBER'>];
 
-// Warning: (ae-missing-release-tag) "SanitizationConfig" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export interface SanitizationConfig {
     additionalSensitiveFields?: string[];
@@ -4060,8 +4050,6 @@ export interface SanitizationConfig {
     includeRawError?: boolean;
 }
 
-// Warning: (ae-missing-release-tag) "SDKError" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export interface SDKError {
     category: SDKErrorCategory;
@@ -4072,13 +4060,10 @@ export interface SDKError {
 }
 
 // Warning: (ae-forgotten-export) The symbol "SDKErrorCategories" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "SDKErrorCategory" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
-// @public (undocumented)
+// @public
 export type SDKErrorCategory = (typeof SDKErrorCategories)[keyof typeof SDKErrorCategories];
 
-// Warning: (ae-missing-release-tag) "SDKFieldError" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export interface SDKFieldError {
     category: string;
@@ -4095,8 +4080,6 @@ export function SDKFormProvider<TFormData extends FieldValues = FieldValues, TFi
     [K in keyof TFieldsMetadata]: FieldMetadata | FieldMetadataWithOptions;
 } = Record<string, FieldMetadata | FieldMetadataWithOptions>>(input: SDKFormProviderProps<TFormData, TFieldsMetadata>): JSX_2.Element;
 
-// Warning: (ae-missing-release-tag) "SDKHooks" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export interface SDKHooks {
     afterError?: AfterErrorHook[];
@@ -4105,9 +4088,9 @@ export interface SDKHooks {
     beforeRequest?: BeforeRequestHook[];
 }
 
-// Warning: (ae-missing-release-tag) "SDKInternalError" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-internal-missing-underscore) The name "SDKInternalError" should be prefixed with an underscore because the declaration is marked as @internal
 //
-// @public
+// @internal
 export class SDKInternalError extends Error {
     constructor(message: string, category?: SDKErrorCategory);
     // (undocumented)

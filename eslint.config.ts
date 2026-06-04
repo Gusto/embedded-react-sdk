@@ -179,7 +179,6 @@ export default [
       'src/contexts/**',
       'src/partner-hook-utils/**',
       'src/shared/**',
-      'src/types/**',
     ],
     rules: {
       'tsdoc-coverage/require-comment': 'error',
