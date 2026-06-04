@@ -7,6 +7,9 @@ const config: Config = {
   tagline: 'Embedded Payroll React SDK Documentation',
   favicon: 'img/favicon.svg',
 
+  // docs-site/ in this repo is a local-dev preview of the current docs
+  // only. The public site (with version history) lives in
+  // Gusto/embedded-sdk-docs and owns its own production URL.
   url: 'http://localhost',
   baseUrl: '/',
 

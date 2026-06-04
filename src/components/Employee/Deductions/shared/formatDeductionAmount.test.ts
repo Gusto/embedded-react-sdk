@@ -8,10 +8,14 @@ const formatters = {
   formatPerPaycheck: (value: string) => `${value} per paycheck`,
 }
 
-const baseDeduction: Pick<Garnishment, 'amount' | 'deductAsPercentage' | 'recurring'> = {
+const baseDeduction: Pick<
+  Garnishment,
+  'amount' | 'deductAsPercentage' | 'recurring' | 'payPeriodMaximum'
+> = {
   amount: '50',
   deductAsPercentage: false,
   recurring: false,
+  payPeriodMaximum: null,
 }
 
 describe('formatDeductionAmount', () => {
@@ -36,7 +40,10 @@ describe('formatDeductionAmount', () => {
 
   it('formats a recurring percentage deduction as percent with per-paycheck suffix', () => {
     expect(
-      formatDeductionAmount({ amount: '5', deductAsPercentage: true, recurring: true }, formatters),
+      formatDeductionAmount(
+        { amount: '5', deductAsPercentage: true, recurring: true, payPeriodMaximum: null },
+        formatters,
+      ),
     ).toBe('5% per paycheck')
   })
 
@@ -50,10 +57,49 @@ describe('formatDeductionAmount', () => {
     )
   })
 
+  // SDK-945: child-support garnishments are stored as deductAsPercentage:true
+  // even when the user only set a fixed dollar cap (payPeriodMaximum) and no
+  // percentage. The amount is then "0", which must not render as "0%".
+  it('shows the dollar cap (not "0%") for a percentage deduction with no percentage but a payPeriodMaximum', () => {
+    expect(
+      formatDeductionAmount(
+        { amount: '0', deductAsPercentage: true, recurring: true, payPeriodMaximum: '300' },
+        formatters,
+      ),
+    ).toBe('$300.00 per paycheck')
+  })
+
+  it('shows the dollar cap without suffix for a one-time percentage deduction with only a payPeriodMaximum', () => {
+    expect(
+      formatDeductionAmount(
+        { amount: '0', deductAsPercentage: true, recurring: false, payPeriodMaximum: '300' },
+        formatters,
+      ),
+    ).toBe('$300.00')
+  })
+
+  it('returns "-" for a percentage deduction with neither a percentage nor a payPeriodMaximum', () => {
+    expect(
+      formatDeductionAmount(
+        { amount: '0', deductAsPercentage: true, recurring: true, payPeriodMaximum: null },
+        formatters,
+      ),
+    ).toBe('-')
+  })
+
+  it('still formats a non-zero percentage normally even when a payPeriodMaximum is also set', () => {
+    expect(
+      formatDeductionAmount(
+        { amount: '25', deductAsPercentage: true, recurring: true, payPeriodMaximum: '300' },
+        formatters,
+      ),
+    ).toBe('25% per paycheck')
+  })
+
   it('routes the suffix through formatPerPaycheck so the caller owns the i18n template', () => {
     const formatPerPaycheck = vi.fn((value: string) => `${value} per paycheck`)
     formatDeductionAmount(
-      { amount: '100', deductAsPercentage: false, recurring: true },
+      { amount: '100', deductAsPercentage: false, recurring: true, payPeriodMaximum: null },
       { ...formatters, formatPerPaycheck },
     )
     expect(formatPerPaycheck).toHaveBeenCalledWith('$100.00')
