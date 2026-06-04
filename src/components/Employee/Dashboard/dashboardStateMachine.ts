@@ -96,7 +96,7 @@ export const dashboardStateMachine = {
       ),
     ),
     transition(
-      componentEvents.EMPLOYEE_STATE_TAXES_EDIT,
+      componentEvents.EMPLOYEE_MANAGEMENT_STATE_TAXES_EDIT_REQUESTED,
       'stateTaxes',
       reduce(
         (ctx: DashboardContextInterface): DashboardContextInterface => ({
@@ -274,7 +274,18 @@ export const dashboardStateMachine = {
     transition(componentEvents.CANCEL, 'index', returnToIndex),
     transition(componentEvents.EMPLOYEE_FEDERAL_TAXES_DONE, 'index', returnToIndex),
   ),
-  stateTaxes: state<MachineTransition>(transition(componentEvents.CANCEL, 'index', returnToIndex)),
+  stateTaxes: state<MachineTransition>(
+    transition(
+      componentEvents.EMPLOYEE_MANAGEMENT_STATE_TAXES_UPDATED,
+      'index',
+      returnToIndexWithAlert('stateTaxesUpdated'),
+    ),
+    transition(
+      componentEvents.EMPLOYEE_MANAGEMENT_STATE_TAXES_EDIT_CANCELLED,
+      'index',
+      returnToIndex,
+    ),
+  ),
   profile: state<MachineTransition>(
     transition(componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_EDIT_CANCELLED, 'index', returnToIndex),
     transition(

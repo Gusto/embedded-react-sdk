@@ -42,6 +42,8 @@ Employee management components can be used to compose your own workflow, or can 
 - [EmployeeManagement.WorkAddress](#employeemanagementworkaddress)
   - [Composing from EmployeeManagement.WorkAddressCard and EmployeeManagement.WorkAddressEditForm directly](#composing-from-employeemanagementworkaddresscard-and-employeemanagementworkaddresseditform-directly)
 - [EmployeeManagement.PaystubsCard](#employeemanagementpaystubscard)
+- [EmployeeManagement.StateTaxes](#employeemanagementstatetaxes)
+  - [Composing from EmployeeManagement.StateTaxesCard and EmployeeManagement.StateTaxesEditForm directly](#composing-from-employeemanagementstatetaxescard-and-employeemanagementstatetaxeseditform-directly)
 
 ### EmployeeManagement.DashboardFlow
 
@@ -705,3 +707,113 @@ The card populates its "Payment method" column from the employee's payment metho
 | ---------------------------------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------- |
 | EMPLOYEE_MANAGEMENT_PAYSTUBS_CARD_DOWNLOAD_REQUESTED | Fired when the user clicks a row's download button, before the PDF is fetched | { employeeId: string, payrollUuid: string } |
 | EMPLOYEE_MANAGEMENT_PAYSTUBS_CARD_DOWNLOADED         | Fired after the paystub PDF is successfully fetched and opened in a new tab   | { employeeId: string, payrollUuid: string } |
+
+### EmployeeManagement.StateTaxes
+
+A self-contained block for viewing and editing an employee's state tax withholding settings — the same "State taxes" experience the dashboard surfaces, but as a drop-in component that doesn't require the surrounding dashboard chrome. Renders a read-only card listing each work state's tax-withholding questions and the employee's current answers. Clicking the card's "Edit" CTA swaps the card view for an inline edit form; saving keeps the user on the form and surfaces a dismissible "Successfully updated state tax settings." alert; cancelling returns to the card view without saving. The "Edit" CTA is hidden when none of the employee's states have any withholding questions (e.g. a state with no income tax has nothing to edit).
+
+```jsx
+import { EmployeeManagement } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return (
+    <EmployeeManagement.StateTaxes
+      employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
+      onEvent={() => {}}
+    />
+  )
+}
+```
+
+#### Props
+
+| Name                | Type                | Description                                                                                                                             |
+| ------------------- | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| employeeId Required | string              | The associated employee identifier.                                                                                                     |
+| onEvent Required    | function            | See events table for available events.                                                                                                  |
+| dictionary          | object              | Optional translations for component text. Keys are namespaced under `Employee.Management.StateTaxes` — see the source JSON for the set. |
+| FallbackComponent   | React.ComponentType | Optional custom error fallback component used by the internal `BaseBoundaries` wrapper.                                                 |
+
+#### Events
+
+| Event type                                     | Description                                                                                                          | Data                                                 |
+| ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| EMPLOYEE_MANAGEMENT_STATE_TAXES_EDIT_REQUESTED | Fired when the user clicks the "Edit" CTA on the card; the block swaps to the edit form                              | { employeeId: string }                               |
+| EMPLOYEE_MANAGEMENT_STATE_TAXES_UPDATED        | Fired after the edit form is successfully saved; the block keeps the user on the form and surfaces the success alert | { employeeStateTaxesList: EmployeeStateTaxesList[] } |
+| EMPLOYEE_MANAGEMENT_STATE_TAXES_EDIT_CANCELLED | Fired when the user clicks Cancel on the edit form; the block returns to the card view                               | None                                                 |
+
+#### Composing from EmployeeManagement.StateTaxesCard and EmployeeManagement.StateTaxesEditForm directly
+
+`EmployeeManagement.StateTaxes` above is the recommended entry point for the state-taxes experience — it bundles the card, the edit form, the swap between them, and the success-alert wiring as a single drop-in. The card and edit form are also exported individually for cases where that orchestration is the wrong fit — for example, when the edit surface needs to render in a modal or drawer, when the card needs to appear read-only with no edit affordance, or when the swap is driven by a router. Using them directly means owning the swap and any cross-component state yourself.
+
+`EmployeeManagement.StateTaxesCard` renders the read-only state-taxes card and emits a single event when its "Edit" CTA is clicked. `EmployeeManagement.StateTaxesEditForm` renders the corresponding edit form and emits one event on a successful save and another on cancel. A successful save does not navigate away — the edit form surfaces its own inline success alert and stays put, so only the cancel event (`EMPLOYEE_MANAGEMENT_STATE_TAXES_EDIT_CANCELLED`) is meant to return to the card. Each piece's `onEvent` receives the event type as its first argument and any associated payload as its second — branch on the event type to drive the swap (and any of your own behavior, e.g. surfacing a confirmation after a save). The per-piece events tables below list every event each piece emits.
+
+```jsx
+import { useState } from 'react'
+import { componentEvents, EmployeeManagement } from '@gusto/embedded-react-sdk'
+
+function MyStateTaxesPanel({ employeeId }) {
+  const [isEditing, setIsEditing] = useState(false)
+
+  if (isEditing) {
+    return (
+      <EmployeeManagement.StateTaxesEditForm
+        employeeId={employeeId}
+        onEvent={(eventType, data) => {
+          if (eventType === componentEvents.EMPLOYEE_MANAGEMENT_STATE_TAXES_EDIT_CANCELLED) {
+            setIsEditing(false)
+          } else if (eventType === componentEvents.EMPLOYEE_MANAGEMENT_STATE_TAXES_UPDATED) {
+            // The form stays open after a save; handle this here to surface
+            // your own confirmation or refresh related data.
+          }
+        }}
+      />
+    )
+  }
+
+  return (
+    <EmployeeManagement.StateTaxesCard
+      employeeId={employeeId}
+      onEvent={eventType => {
+        if (eventType === componentEvents.EMPLOYEE_MANAGEMENT_STATE_TAXES_EDIT_REQUESTED) {
+          setIsEditing(true)
+        }
+      }}
+    />
+  )
+}
+```
+
+##### EmployeeManagement.StateTaxesCard
+
+**Props**
+
+| Name                | Type     | Description                            |
+| ------------------- | -------- | -------------------------------------- |
+| employeeId Required | string   | The associated employee identifier.    |
+| onEvent Required    | function | See events table for available events. |
+
+**Events**
+
+| Event type                                     | Description                                           | Data                   |
+| ---------------------------------------------- | ----------------------------------------------------- | ---------------------- |
+| EMPLOYEE_MANAGEMENT_STATE_TAXES_EDIT_REQUESTED | Fired when the user clicks the "Edit" CTA on the card | { employeeId: string } |
+
+##### EmployeeManagement.StateTaxesEditForm
+
+**Props**
+
+| Name                | Type                | Description                                                                                                                             |
+| ------------------- | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| employeeId Required | string              | The associated employee identifier.                                                                                                     |
+| onEvent Required    | function            | See events table for available events.                                                                                                  |
+| className           | string              | Optional class applied to the form's root section element.                                                                              |
+| dictionary          | object              | Optional translations for component text. Keys are namespaced under `Employee.Management.StateTaxes` — see the source JSON for the set. |
+| FallbackComponent   | React.ComponentType | Optional custom error fallback component used by the internal `BaseBoundaries` wrapper.                                                 |
+
+**Events**
+
+| Event type                                     | Description                                        | Data                                                 |
+| ---------------------------------------------- | -------------------------------------------------- | ---------------------------------------------------- |
+| EMPLOYEE_MANAGEMENT_STATE_TAXES_UPDATED        | Fired after the edit form is successfully saved    | { employeeStateTaxesList: EmployeeStateTaxesList[] } |
+| EMPLOYEE_MANAGEMENT_STATE_TAXES_EDIT_CANCELLED | Fired when the user clicks Cancel on the edit form | None                                                 |
