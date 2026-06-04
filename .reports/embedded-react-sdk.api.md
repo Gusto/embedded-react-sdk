@@ -1055,6 +1055,13 @@ export const componentEvents: {
     readonly EMPLOYEE_MANAGEMENT_WORK_ADDRESS_UPDATED: "employee/management/workAddress/updated";
     readonly EMPLOYEE_MANAGEMENT_WORK_ADDRESS_DELETED: "employee/management/workAddress/deleted";
     readonly EMPLOYEE_MANAGEMENT_WORK_ADDRESS_EDIT_CANCELLED: "employee/management/workAddress/editCancelled";
+    readonly EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_ADD_REQUESTED: "employee/management/deductions/card/addRequested";
+    readonly EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_EDIT_REQUESTED: "employee/management/deductions/card/editRequested";
+    readonly EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_DELETED: "employee/management/deductions/card/deleted";
+    readonly EMPLOYEE_MANAGEMENT_DEDUCTIONS_EDIT_FORM_CREATED: "employee/management/deductions/editForm/created";
+    readonly EMPLOYEE_MANAGEMENT_DEDUCTIONS_EDIT_FORM_UPDATED: "employee/management/deductions/editForm/updated";
+    readonly EMPLOYEE_MANAGEMENT_DEDUCTIONS_EDIT_FORM_CANCELLED: "employee/management/deductions/editForm/cancelled";
+    readonly EMPLOYEE_MANAGEMENT_DEDUCTIONS_ALERT_DISMISSED: "employee/management/deductions/alertDismissed";
     readonly ROBOT_MACHINE_DONE: "done";
     readonly ERROR: "ERROR";
     readonly CANCEL: "CANCEL";
@@ -1718,10 +1725,60 @@ export type DeductionFormRequiredValidation = typeof DeductionFormErrorCodes.REQ
 // @public (undocumented)
 function Deductions(input: DeductionsProps): JSX_2.Element;
 
+// Warning: (ae-missing-release-tag) "Deductions" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+function Deductions_2(input: DeductionsProps_2 & BaseComponentInterface<'Employee.Management.Deductions'>): JSX_2.Element;
+
+// Warning: (ae-missing-release-tag) "DeductionsCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+function DeductionsCard(input: DeductionsCardProps): JSX_2.Element;
+
+// Warning: (ae-missing-release-tag) "DeductionsCardProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+interface DeductionsCardProps {
+    // (undocumented)
+    employeeId: string;
+    // Warning: (ae-forgotten-export) The symbol "OnEventType" needs to be exported by the entry point index.d.ts
+    // Warning: (ae-forgotten-export) The symbol "EventType" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    onEvent: OnEventType<EventType, unknown>;
+}
+
+// Warning: (ae-missing-release-tag) "DeductionsEditForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+function DeductionsEditForm(input: DeductionsEditFormProps & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX_2.Element;
+
+// Warning: (ae-forgotten-export) The symbol "CommonComponentInterface" needs to be exported by the entry point index.d.ts
+// Warning: (ae-missing-release-tag) "DeductionsEditFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+interface DeductionsEditFormProps extends CommonComponentInterface<'Employee.Management.Deductions'> {
+    editingDeductionId?: string;
+    // (undocumented)
+    employeeId: string;
+    // (undocumented)
+    onEvent: BaseComponentInterface['onEvent'];
+}
+
 // Warning: (ae-missing-release-tag) "DeductionsFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
 export type DeductionsFieldProps = HookFieldProps<NumberInputHookFieldProps<FederalTaxesRequiredValidation>>;
+
+// Warning: (ae-missing-release-tag) "DeductionsProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+interface DeductionsProps_2 extends CommonComponentInterface<'Employee.Management.Deductions'> {
+    // (undocumented)
+    employeeId: string;
+    // (undocumented)
+    onEvent: OnEventType<EventType, unknown>;
+}
 
 // Warning: (ae-missing-release-tag) "DependentsAmountFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -1791,9 +1848,6 @@ interface DismissalFlowProps {
     companyId: string;
     // (undocumented)
     employeeId?: string;
-    // Warning: (ae-forgotten-export) The symbol "OnEventType" needs to be exported by the entry point index.d.ts
-    // Warning: (ae-forgotten-export) The symbol "EventType" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     onEvent: OnEventType<EventType, unknown>;
     // (undocumented)
@@ -2003,6 +2057,12 @@ declare namespace EmployeeManagement {
         ProfileEditFormProps,
         PaymentMethod_3 as PaymentMethod,
         PaymentMethodProps_3 as PaymentMethodProps,
+        Deductions_2 as Deductions,
+        DeductionsCard,
+        DeductionsEditForm,
+        DeductionsProps_2 as DeductionsProps,
+        DeductionsCardProps,
+        DeductionsEditFormProps,
         TerminateEmployee,
         TerminationSummary,
         TerminationFlow
@@ -2219,7 +2279,6 @@ export type FederalTaxesFormOutputs = FederalTaxesFormData;
 // @public (undocumented)
 export type FederalTaxesOptionalFieldsToRequire = OptionalFieldsToRequire<typeof requiredFieldsConfig_10>;
 
-// Warning: (ae-forgotten-export) The symbol "CommonComponentInterface" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "FederalTaxesProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)

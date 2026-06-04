@@ -6,10 +6,11 @@ import type {
 } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishment'
 import { StandardDeductionForm } from './StandardDeductionForm'
 import { ChildSupportFormView } from './ChildSupportFormView'
+import type { DeductionsFormDictionary } from './types'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Grid } from '@/components/Common/Grid/Grid'
 import { Flex } from '@/components/Common/Flex/Flex'
-import { useI18n } from '@/i18n'
+import { useComponentDictionary, useI18n } from '@/i18n'
 
 // Garnishment types the form supports (mirrors the legacy SUPPORTED_GARNISHMENT_TYPES).
 const SUPPORTED_GARNISHMENT_TYPES: readonly GarnishmentType[] = [
@@ -39,6 +40,13 @@ export interface DeductionsFormProps {
   /** When provided, the form is in edit mode and the deduction's existing
    *  garnishment type selects the inline form variant. Omit for add mode. */
   deduction?: Garnishment | null
+  /**
+   * Per-surface translation override. Each consuming block builds this from
+   * its own namespace (via a `useFormDictionary` hook) and passes the
+   * resolved dictionary so partner overrides on the block's namespace flow
+   * into the form text.
+   */
+  formDictionary?: DeductionsFormDictionary
   onSaved: (deduction: Garnishment, mode: 'create' | 'update') => void
   onCancel: () => void
 }
@@ -47,15 +55,17 @@ export function DeductionsForm({
   className,
   employeeId,
   deduction,
+  formDictionary,
   onSaved,
   onCancel,
 }: DeductionsFormProps) {
-  useI18n('Employee.Deductions')
-  const { t } = useTranslation('Employee.Deductions')
+  useI18n('Employee.DeductionsForm')
+  useComponentDictionary('Employee.DeductionsForm', formDictionary)
+  const { t } = useTranslation('Employee.DeductionsForm')
   const Components = useComponentContext()
 
   const isEdit = !!deduction
-  const title = isEdit ? t('editDeductionTitle') : t('addDeductionTitle')
+  const title = isEdit ? t('editTitle') : t('addTitle')
 
   // Pre-select the variant in edit mode; let the user pick in add mode.
   const initialVariant = useMemo<Variant | null>(
@@ -90,20 +100,18 @@ export function DeductionsForm({
       <Grid gap={32}>
         <Flex flexDirection="column" gap={2}>
           <Components.Heading as="h2">{title}</Components.Heading>
-          <Components.Text variant="supporting">
-            {t('externalPostTaxDeductionsDescription')}
-          </Components.Text>
+          <Components.Text variant="supporting">{t('description')}</Components.Text>
         </Flex>
 
         {!isEdit && (
           <>
             <Flex flexDirection="column" gap={20}>
               <Components.RadioGroup
-                label={t('deductionTypeLabel')}
-                description={t('deductionTypeRadioLabel')}
+                label={t('variantLabel')}
+                description={t('variantDescription')}
                 options={[
                   { value: 'garnishment', label: t('garnishmentOption') },
-                  { value: 'custom', label: t('customDeductionOption') },
+                  { value: 'custom', label: t('customOption') },
                 ]}
                 defaultValue={variant?.kind === 'custom' ? 'custom' : undefined}
                 onChange={handleSelectDeductionType}
@@ -112,7 +120,7 @@ export function DeductionsForm({
 
               {variant?.kind === 'garnishment' && (
                 <Components.Select
-                  label={t('garnishmentType')}
+                  label={t('garnishmentTypeLabel')}
                   options={garnishmentTypeOptions}
                   value={variant.type}
                   onChange={handleSelectGarnishmentType}
@@ -130,7 +138,7 @@ export function DeductionsForm({
             employeeId={employeeId}
             deduction={deduction ?? null}
             courtOrdered={false}
-            title={t('customDeductionTitle')}
+            title={t('types.custom')}
             onSaved={onSaved}
             onCancel={onCancel}
           />
@@ -160,23 +168,23 @@ export function DeductionsForm({
 }
 
 function garnishmentTypeLabel(
-  t: ReturnType<typeof useTranslation<'Employee.Deductions'>>['t'],
+  t: ReturnType<typeof useTranslation<'Employee.DeductionsForm'>>['t'],
   value: GarnishmentType,
 ): string {
   switch (value) {
     case 'child_support':
-      return t('childSupportTitle')
+      return t('types.childSupport')
     case 'federal_tax_lien':
-      return t('federalTaxLien')
+      return t('types.federalTaxLien')
     case 'state_tax_lien':
-      return t('stateTaxLien')
+      return t('types.stateTaxLien')
     case 'student_loan':
-      return t('studentLoan')
+      return t('types.studentLoan')
     case 'creditor_garnishment':
-      return t('creditorGarnishment')
+      return t('types.creditorGarnishment')
     case 'federal_loan':
-      return t('federalLoan')
+      return t('types.federalLoan')
     case 'other_garnishment':
-      return t('otherGarnishment')
+      return t('types.otherGarnishment')
   }
 }

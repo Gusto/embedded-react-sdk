@@ -1,8 +1,9 @@
 import { type Garnishment } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishment'
 import { useDeductionsList } from '../shared/useDeductionsList'
+import { DeductionsForm } from '../shared/DeductionsForm'
 import { IncludeDeductions } from './IncludeDeductions/IncludeDeductions'
 import { DeductionsList } from './DeductionsList/DeductionsList'
-import { DeductionsForm } from './DeductionsForm/DeductionsForm'
+import { useOnboardingDeductionsFormDictionary } from './useFormDictionary'
 import { BaseLayout } from '@/components/Base/Base'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { componentEvents } from '@/shared/constants'
@@ -99,6 +100,7 @@ export function DeductionsFormContextual() {
   // The same list query the form hooks use internally — React Query dedupes
   // so this is the only outstanding request.
   const list = useDeductionsList({ employeeId: ensureRequired(employeeId) })
+  const formDictionary = useOnboardingDeductionsFormDictionary()
 
   if (list.isLoading) {
     return <BaseLayout isLoading error={list.errorHandling.errors} />
@@ -130,6 +132,7 @@ export function DeductionsFormContextual() {
       <DeductionsForm
         employeeId={ensureRequired(employeeId)}
         deduction={deduction}
+        formDictionary={formDictionary}
         onSaved={onSaved}
         onCancel={onCancel}
       />

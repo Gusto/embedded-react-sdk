@@ -5,8 +5,8 @@ import type {
   GarnishmentType,
 } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishment'
 import type { Control } from 'react-hook-form'
-import { useDeductionForm } from '../../shared/useDeductionForm'
-import type { DeductionFormData } from '../../shared/useDeductionForm'
+import { useDeductionForm } from '../useDeductionForm'
+import type { DeductionFormData } from '../useDeductionForm'
 import { Form } from '@/components/Common/Form'
 import { ActionsLayout } from '@/components/Common'
 import { Flex } from '@/components/Common/Flex/Flex'
@@ -39,7 +39,7 @@ export function StandardDeductionForm({
   onSaved,
   onCancel,
 }: StandardDeductionFormProps) {
-  const { t } = useTranslation('Employee.Deductions')
+  const { t } = useTranslation('Employee.DeductionsForm')
   const Components = useComponentContext()
 
   const form = useDeductionForm({
@@ -81,7 +81,7 @@ function ReadyForm({
   form: Extract<ReturnType<typeof useDeductionForm>, { isLoading: false }>
   Fields: Extract<ReturnType<typeof useDeductionForm>, { isLoading: false }>['form']['Fields']
   Components: ReturnType<typeof useComponentContext>
-  t: ReturnType<typeof useTranslation<'Employee.Deductions'>>['t']
+  t: ReturnType<typeof useTranslation<'Employee.DeductionsForm'>>['t']
   title: string
   onSaved: (deduction: Garnishment, mode: 'create' | 'update') => void
   onCancel: () => void
@@ -115,58 +115,56 @@ function ReadyForm({
             <Flex flexDirection="column" gap={20}>
               <Flex flexDirection="column" gap={20}>
                 <Fields.Description
-                  label={t('descriptionLabelV2')}
-                  validationMessages={{ REQUIRED: t('descriptionRequired') }}
+                  label={t('standard.descriptionLabel')}
+                  validationMessages={{ REQUIRED: t('standard.descriptionRequired') }}
                 />
                 <Fields.Recurring
-                  label={t('frequencyLabel')}
+                  label={t('standard.frequencyLabel')}
                   getOptionLabel={(value: boolean) =>
-                    value ? t('frequencyRecurringOptionV2') : t('frequencyOneTimeOptionV2')
+                    value ? t('standard.frequencyRecurring') : t('standard.frequencyOneTime')
                   }
-                  validationMessages={{ REQUIRED: t('frequencyRequired') }}
+                  validationMessages={{ REQUIRED: t('standard.frequencyRequired') }}
                 />
                 <Fields.DeductAsPercentage
-                  label={t('deductionTypeLabelV2')}
+                  label={t('standard.typeLabel')}
                   getOptionLabel={(value: boolean) =>
-                    value
-                      ? t('deductionTypePercentageOptionV2')
-                      : t('deductionTypeFixedAmountOption')
+                    value ? t('standard.typePercentage') : t('standard.typeFixed')
                   }
-                  validationMessages={{ REQUIRED: t('deductionTypeRequired') }}
+                  validationMessages={{ REQUIRED: t('standard.typeRequired') }}
                 />
                 <Fields.Amount
-                  label={t('deductionAmountLabel')}
+                  label={t('standard.amountLabel')}
                   format={watchedDeductAsPercentage ? 'percent' : 'currency'}
                   description={
                     watchedDeductAsPercentage
-                      ? t('deductionAmountDescriptionPercentage')
-                      : t('deductionAmountDescriptionFixed')
+                      ? t('standard.amountPercentDescription')
+                      : t('standard.amountFixedDescription')
                   }
                   min={0}
                   validationMessages={{
-                    REQUIRED: t('amountRequired'),
-                    NEGATIVE_AMOUNT: t('amountNonNegative'),
+                    REQUIRED: t('standard.amountRequired'),
+                    NEGATIVE_AMOUNT: t('standard.amountNonNegative'),
                   }}
                 />
               </Flex>
               {Fields.TotalAmount && Fields.AnnualMaximum && (
                 <Flex flexDirection="column" gap={20}>
                   <Fields.TotalAmount
-                    label={t('totalAmountLabel')}
-                    description={t('totalAmountDescription')}
+                    label={t('standard.totalAmountLabel')}
+                    description={t('standard.totalAmountDescription')}
                     format="currency"
                     min={0}
                     validationMessages={{
-                      NEGATIVE_AMOUNT: t('amountNonNegative'),
+                      NEGATIVE_AMOUNT: t('standard.amountNonNegative'),
                     }}
                   />
                   <Fields.AnnualMaximum
-                    label={t('annualMaxLabel')}
-                    description={t('annualMaxDescription')}
+                    label={t('standard.annualMaxLabel')}
+                    description={t('standard.annualMaxDescription')}
                     format="currency"
                     min={0}
                     validationMessages={{
-                      NEGATIVE_AMOUNT: t('amountNonNegative'),
+                      NEGATIVE_AMOUNT: t('standard.amountNonNegative'),
                     }}
                   />
                 </Flex>
@@ -174,10 +172,10 @@ function ReadyForm({
             </Flex>
             <ActionsLayout>
               <Components.Button variant="secondary" type="button" onClick={onCancel}>
-                {t('cancelCta')}
+                {t('actions.cancel')}
               </Components.Button>
               <Components.Button type="submit" isLoading={form.status.isPending}>
-                {t('saveCta')}
+                {t('actions.save')}
               </Components.Button>
             </ActionsLayout>
           </Flex>

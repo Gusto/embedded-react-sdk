@@ -1,5 +1,6 @@
-import { DeductionsForm } from '../onboarding/DeductionsForm/DeductionsForm'
-import { useDeductionsList } from '../shared/useDeductionsList'
+import { DeductionsForm } from '../../shared/DeductionsForm'
+import { useDeductionsList } from '../../shared/useDeductionsList'
+import { useManagementDeductionsFormDictionary } from './useFormDictionary'
 import {
   BaseBoundaries,
   BaseLayout,
@@ -9,7 +10,7 @@ import {
 import { useI18n, useComponentDictionary } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 
-export interface DeductionsEditFormProps extends CommonComponentInterface<'Employee.Deductions'> {
+export interface DeductionsEditFormProps extends CommonComponentInterface<'Employee.Management.Deductions'> {
   employeeId: string
   /** When provided, the form opens in edit mode pre-populated with the
    *  matching active deduction. Omit to open in add mode. */
@@ -18,10 +19,11 @@ export interface DeductionsEditFormProps extends CommonComponentInterface<'Emplo
 }
 
 /**
- * Standalone add/edit surface for a single deduction. Wraps the shared
- * `DeductionsForm` (which is also used by the onboarding flow), looks up
- * the row to edit by id, and translates the form's `onSaved` / `onCancel`
- * callbacks into the management block's scoped events
+ * Standalone add/edit surface for a single deduction. Renders the shared
+ * `DeductionsForm` with management's own translation dictionary so partner
+ * overrides on `Employee.Management.Deductions` flow into the form text.
+ * Looks up the row to edit by id and translates the form's `onSaved` /
+ * `onCancel` callbacks into the management block's scoped events
  * (`EMPLOYEE_MANAGEMENT_DEDUCTIONS_EDIT_FORM_CREATED` / `_UPDATED` /
  * `_CANCELLED`).
  */
@@ -45,12 +47,13 @@ function DeductionsEditFormRoot({
   dictionary,
   onEvent,
 }: DeductionsEditFormProps) {
-  useI18n('Employee.Deductions')
-  useComponentDictionary('Employee.Deductions', dictionary)
+  useI18n('Employee.Management.Deductions')
+  useComponentDictionary('Employee.Management.Deductions', dictionary)
 
   // React Query dedupes against any sibling consumer of this list, so this
   // is just a typed handle on the loaded row used to seed edit mode.
   const list = useDeductionsList({ employeeId })
+  const formDictionary = useManagementDeductionsFormDictionary()
 
   if (list.isLoading) {
     return <BaseLayout isLoading error={list.errorHandling.errors} />
@@ -65,6 +68,7 @@ function DeductionsEditFormRoot({
       <DeductionsForm
         employeeId={employeeId}
         deduction={deduction}
+        formDictionary={formDictionary}
         onSaved={(saved, mode) => {
           onEvent(
             mode === 'create'

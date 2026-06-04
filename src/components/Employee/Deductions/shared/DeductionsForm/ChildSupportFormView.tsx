@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next'
 import type { Garnishment } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishment'
 import type { PaymentPeriod } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishmentchildsupport'
-import { useChildSupportGarnishmentForm } from '../../shared/useChildSupportGarnishmentForm'
-import type { StateFieldEntry, CountyEntry } from '../../shared/useChildSupportGarnishmentForm'
+import { useChildSupportGarnishmentForm } from '../useChildSupportGarnishmentForm'
+import type { StateFieldEntry, CountyEntry } from '../useChildSupportGarnishmentForm'
 import { Form } from '@/components/Common/Form'
 import { ActionsLayout } from '@/components/Common'
 import { Flex } from '@/components/Common/Flex/Flex'
@@ -23,7 +23,7 @@ export function ChildSupportFormView({
   onSaved,
   onCancel,
 }: ChildSupportFormViewProps) {
-  const { t } = useTranslation('Employee.Deductions')
+  const { t } = useTranslation('Employee.DeductionsForm')
   const Components = useComponentContext()
 
   const form = useChildSupportGarnishmentForm({
@@ -48,88 +48,95 @@ export function ChildSupportFormView({
       <SDKFormProvider formHookResult={form}>
         <Form onSubmit={handleSubmit}>
           <Flex flexDirection="column" gap={32}>
-            <Components.Heading as="h3">{t('childSupportTitle')}</Components.Heading>
+            <Components.Heading as="h3">{t('types.childSupport')}</Components.Heading>
 
             <Flex flexDirection="column" gap={20}>
               <Fields.State
-                label={t('agency')}
-                description={t('agencyDescription')}
+                label={t('childSupport.agencyLabel')}
+                description={t('childSupport.agencyDescription')}
                 getOptionLabel={(entry: StateFieldEntry) => entry.name}
-                validationMessages={{ REQUIRED: t('agencyRequired') }}
+                validationMessages={{ REQUIRED: t('childSupport.agencyRequired') }}
               />
 
               {form.status.isManualPaymentRequired && (
-                <Components.Alert status="warning" label={t('manualPaymentRequired')} />
+                <Components.Alert
+                  status="warning"
+                  label={t('childSupport.manualPaymentRequired')}
+                />
               )}
 
               {hasSelection && (
                 <Flex flexDirection="column" gap={20}>
                   {Fields.FipsCode && (
                     <Fields.FipsCode
-                      label={t('county')}
-                      description={t('countyDescription')}
-                      getOptionLabel={(entry: CountyEntry) => entry.county ?? t('allCounties')}
-                      validationMessages={{ REQUIRED: t('countyRequired') }}
+                      label={t('childSupport.countyLabel')}
+                      description={t('childSupport.countyDescription')}
+                      getOptionLabel={(entry: CountyEntry) =>
+                        entry.county ?? t('childSupport.allCounties')
+                      }
+                      validationMessages={{ REQUIRED: t('childSupport.countyRequired') }}
                     />
                   )}
                   {Fields.CaseNumber && (
                     <Fields.CaseNumber
                       label={requiredAttrLabel(form.status.selectedAgency, 'case_number')}
-                      description={t('caseNumberDescription')}
-                      validationMessages={{ REQUIRED: t('caseNumberRequired') }}
+                      description={t('childSupport.caseNumberDescription')}
+                      validationMessages={{ REQUIRED: t('childSupport.caseNumberRequired') }}
                     />
                   )}
                   {Fields.OrderNumber && (
                     <Fields.OrderNumber
                       label={requiredAttrLabel(form.status.selectedAgency, 'order_number')}
-                      description={t('orderNumberDescription')}
-                      validationMessages={{ REQUIRED: t('orderNumberRequired') }}
+                      description={t('childSupport.orderNumberDescription')}
+                      validationMessages={{ REQUIRED: t('childSupport.orderNumberRequired') }}
                     />
                   )}
                   {Fields.RemittanceNumber && (
                     <Fields.RemittanceNumber
                       label={requiredAttrLabel(form.status.selectedAgency, 'remittance_number')}
-                      description={t('remittanceNumberDescription')}
-                      validationMessages={{ REQUIRED: t('remittanceNumberRequired') }}
+                      description={t('childSupport.remittanceNumberDescription')}
+                      validationMessages={{
+                        REQUIRED: t('childSupport.remittanceNumberRequired'),
+                      }}
                     />
                   )}
                   <Fields.PayPeriodMaximum
-                    label={t('totalAmountWithheld')}
-                    description={t('totalAmountWithheldDescription')}
+                    label={t('childSupport.totalAmountWithheld')}
+                    description={t('childSupport.totalAmountWithheldDescription')}
                     format="currency"
                     min={0}
                     validationMessages={{
-                      REQUIRED: t('payPeriodMaximumRequired'),
-                      NEGATIVE_AMOUNT: t('amountNonNegative'),
+                      REQUIRED: t('childSupport.payPeriodMaximumRequired'),
+                      NEGATIVE_AMOUNT: t('childSupport.amountNonNegative'),
                     }}
                   />
                   <Fields.Amount
-                    label={t('maxPaycheckPercentage')}
-                    description={t('maxPaycheckPercentageDescription')}
+                    label={t('childSupport.maxPaycheckPercentage')}
+                    description={t('childSupport.maxPaycheckPercentageDescription')}
                     format="percent"
                     min={0}
                     max={100}
                     validationMessages={{
-                      REQUIRED: t('amountRequired'),
-                      PERCENT_OUT_OF_RANGE: t('percentOutOfRange'),
+                      REQUIRED: t('childSupport.amountRequired'),
+                      PERCENT_OUT_OF_RANGE: t('childSupport.percentOutOfRange'),
                     }}
                   />
                   <Fields.PaymentPeriod
-                    label={t('per')}
-                    description={t('perDescription')}
+                    label={t('childSupport.paymentPeriodLabel')}
+                    description={t('childSupport.paymentPeriodDescription')}
                     getOptionLabel={(value: PaymentPeriod) => paymentPeriodLabel(t, value)}
-                    validationMessages={{ REQUIRED: t('paymentPeriodRequired') }}
+                    validationMessages={{ REQUIRED: t('childSupport.paymentPeriodRequired') }}
                   />
                 </Flex>
               )}
             </Flex>
             <ActionsLayout>
               <Components.Button variant="secondary" type="button" onClick={onCancel}>
-                {t('cancelCta')}
+                {t('actions.cancel')}
               </Components.Button>
               {hasSelection && (
                 <Components.Button type="submit" isLoading={form.status.isPending}>
-                  {t('saveCta')}
+                  {t('actions.save')}
                 </Components.Button>
               )}
             </ActionsLayout>
@@ -149,17 +156,17 @@ function requiredAttrLabel(
 }
 
 function paymentPeriodLabel(
-  t: ReturnType<typeof useTranslation<'Employee.Deductions'>>['t'],
+  t: ReturnType<typeof useTranslation<'Employee.DeductionsForm'>>['t'],
   value: PaymentPeriod,
 ): string {
   switch (value) {
     case 'Every week':
-      return t('everyWeek')
+      return t('childSupport.paymentPeriod.everyWeek')
     case 'Every other week':
-      return t('everyOtherWeek')
+      return t('childSupport.paymentPeriod.everyOtherWeek')
     case 'Twice per month':
-      return t('twicePerMonth')
+      return t('childSupport.paymentPeriod.twicePerMonth')
     case 'Monthly':
-      return t('monthly')
+      return t('childSupport.paymentPeriod.monthly')
   }
 }

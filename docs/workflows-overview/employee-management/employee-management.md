@@ -311,13 +311,13 @@ function MyDeductionsPanel({ employeeId }) {
 
 **Props**
 
-| Name                | Type                | Description                                                                                                                  |
-| ------------------- | ------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| employeeId Required | string              | The associated employee identifier.                                                                                          |
-| editingDeductionId  | string              | Optional `uuid` of the deduction to edit. When omitted the form opens in add mode; when set the form pre-populates that row. |
-| onEvent Required    | function            | See events table for available events.                                                                                       |
-| dictionary          | object              | Optional translations for component text. Keys are namespaced under `Employee.Management.Deductions`.                        |
-| FallbackComponent   | React.ComponentType | Optional custom error fallback component used by the internal `BaseBoundaries` wrapper.                                      |
+| Name                | Type                | Description                                                                                                                             |
+| ------------------- | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| employeeId Required | string              | The associated employee identifier.                                                                                                     |
+| onEvent Required    | function            | See events table for available events.                                                                                                  |
+| editingDeductionId  | string              | When provided, opens the form in edit mode pre-populated with the matching deduction. Omit to open in add mode.                         |
+| dictionary          | object              | Optional translations for component text. Keys are namespaced under `Employee.Management.Deductions` — see the source JSON for the set. |
+| FallbackComponent   | React.ComponentType | Optional custom error fallback component used by the internal `BaseBoundaries` wrapper.                                                 |
 
 **Events**
 
