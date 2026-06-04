@@ -10,3 +10,8 @@ export { DeleteDeductionDialog } from './DeleteDeductionDialog'
 export { formatDeductionAmount, type DeductionAmountFormatters } from './formatDeductionAmount'
 export * from './useDeductionForm'
 export * from './useChildSupportGarnishmentForm'
+export {
+  DeductionsForm,
+  type DeductionsFormProps,
+  type DeductionsFormDictionary,
+} from './DeductionsForm'
