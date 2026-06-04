@@ -22,16 +22,6 @@ name: Publish Docs
 # end-to-end before flipping the variable.
 
 on:
-  # ============================================================
-  # TEMP — REMOVE BEFORE MERGE
-  # Branch-scoped push trigger lets the App-token + push-to-docs
-  # flow be exercised before this workflow ever lives on main.
-  # The matching `github.event_name == 'push'` allowance in the
-  # job's `if:` below also needs to go. The PR is held in Draft
-  # state as the actual merge-blocker.
-  # ============================================================
-  push:
-    branches: [jeff/docs-publishing-pipeline]
   workflow_run:
     workflows: [Publish to NPM]
     types: [completed]
@@ -49,7 +39,6 @@ jobs:
     # won't auto-publish docs until that variable is explicitly set.
     if: |
       github.event_name == 'workflow_dispatch' ||
-      github.event_name == 'push' ||
       (vars.DOCS_PUBLISH_ENABLED == 'true' &&
        github.event.workflow_run.conclusion == 'success')
     runs-on:
