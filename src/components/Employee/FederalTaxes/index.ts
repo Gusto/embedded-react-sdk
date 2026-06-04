@@ -1,4 +1,9 @@
-export { FederalTaxes, type FederalTaxesProps } from './management/FederalTaxes'
+export { FederalTaxes, FederalTaxesCard, FederalTaxesEditForm } from './management'
+export type {
+  FederalTaxesProps,
+  FederalTaxesCardProps,
+  FederalTaxesEditFormProps,
+} from './management'
 export {
   useFederalTaxesForm,
   createFederalTaxesSchema,
@@ -26,3 +31,9 @@ export type {
   DeductionsFieldProps,
   ExtraWithholdingFieldProps,
 } from './shared/useFederalTaxesForm'
+export {
+  useFederalTaxesSummary,
+  type UseFederalTaxesSummaryParams,
+  type UseFederalTaxesSummaryReady,
+  type UseFederalTaxesSummaryResult,
+} from './shared/useFederalTaxesSummary'

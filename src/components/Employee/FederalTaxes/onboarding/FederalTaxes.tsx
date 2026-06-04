@@ -5,6 +5,7 @@ import {
   type UseFederalTaxesFormProps,
   type FederalTaxesFormData,
 } from '../shared/useFederalTaxesForm'
+import { useOnboardingFederalTaxesViewDictionary } from './useViewDictionary'
 import {
   BaseBoundaries,
   BaseLayout,
@@ -43,6 +44,7 @@ function FederalTaxesRoot({
 }: FederalTaxesProps) {
   useI18n('Employee.FederalTaxes')
   useComponentDictionary('Employee.FederalTaxes', dictionary)
+  const viewDictionary = useOnboardingFederalTaxesViewDictionary()
 
   const federalTaxes = useFederalTaxesForm({
     employeeId,
@@ -70,6 +72,7 @@ function FederalTaxesRoot({
       onSubmit={handleSubmit}
       actions={<ContinueAction isPending={federalTaxes.status.isPending} />}
       className={className}
+      dictionary={viewDictionary}
     >
       {children}
     </FederalTaxesView>

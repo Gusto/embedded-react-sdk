@@ -3,14 +3,14 @@ import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { HttpResponse } from 'msw'
 import { FederalTaxes } from './FederalTaxes'
-import { server } from '@/test/mocks/server'
 import {
   handleGetEmployeeFederalTaxes,
   handleUpdateEmployeeFederalTaxes,
 } from '@/test/mocks/apis/employee_federal_taxes'
+import { server } from '@/test/mocks/server'
+import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { componentEvents } from '@/shared/constants'
-import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
 const fixtureFederalTaxes = {
   version: 'federal-tax-version',
@@ -24,12 +24,12 @@ const fixtureFederalTaxes = {
   w4_data_type: 'rev_2020_w4',
 }
 
-describe('Employee.FederalTaxes (management)', () => {
-  const mockOnEvent = vi.fn()
+describe('FederalTaxes (management block)', () => {
+  const onEvent = vi.fn()
 
   beforeEach(() => {
     setupApiTestMocks()
-    mockOnEvent.mockClear()
+    onEvent.mockClear()
 
     server.use(
       handleGetEmployeeFederalTaxes(() => HttpResponse.json(fixtureFederalTaxes)),
@@ -37,107 +37,89 @@ describe('Employee.FederalTaxes (management)', () => {
     )
   })
 
-  it('renders the W-4 form fields', async () => {
-    renderWithProviders(<FederalTaxes employeeId="employee-1" onEvent={mockOnEvent} />)
-
-    await screen.findByRole('heading', { name: /Federal tax withholdings/i })
-
-    expect(screen.getByLabelText(/Federal filing status/i)).toBeInTheDocument()
-    expect(screen.getByText(/Multiple jobs/i)).toBeInTheDocument()
-    expect(screen.getByLabelText(/Dependents/i)).toBeInTheDocument()
-    expect(screen.getByLabelText(/Other income/i)).toBeInTheDocument()
-    expect(screen.getByLabelText(/Deductions/i)).toBeInTheDocument()
-    expect(screen.getByLabelText(/Extra withholding/i)).toBeInTheDocument()
-  })
-
-  it('prefills filing status from API data', async () => {
-    server.use(
-      handleGetEmployeeFederalTaxes(() =>
-        HttpResponse.json({ ...fixtureFederalTaxes, filing_status: 'Married' }),
-      ),
-    )
-
-    renderWithProviders(<FederalTaxes employeeId="employee-1" onEvent={mockOnEvent} />)
+  it('renders the card initially with the title and an Edit button', async () => {
+    renderWithProviders(<FederalTaxes employeeId="employee-123" onEvent={onEvent} />)
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /Married/i, expanded: false })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: 'Edit' })).toBeEnabled()
     })
+
+    expect(screen.getByText('Federal taxes')).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: /Federal tax withholdings/i })).toBeNull()
   })
 
-  it('renders Cancel and Save buttons (no Continue)', async () => {
-    renderWithProviders(<FederalTaxes employeeId="employee-1" onEvent={mockOnEvent} />)
-
-    await screen.findByRole('heading', { name: /Federal tax withholdings/i })
-
-    expect(screen.getByRole('button', { name: /^Cancel$/i })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /^Save$/i })).toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: /Continue/i })).not.toBeInTheDocument()
-  })
-
-  it('emits CANCEL event when the Cancel button is clicked without submitting', async () => {
+  it('transitions card → editFederalTaxes when Edit is clicked', async () => {
     const user = userEvent.setup()
-    renderWithProviders(<FederalTaxes employeeId="employee-1" onEvent={mockOnEvent} />)
+    renderWithProviders(<FederalTaxes employeeId="employee-123" onEvent={onEvent} />)
 
-    await screen.findByRole('heading', { name: /Federal tax withholdings/i })
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Edit' })).toBeEnabled()
+    })
+
+    await user.click(screen.getByRole('button', { name: 'Edit' }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /Federal tax withholdings/i })).toBeInTheDocument()
+    })
+
+    expect(onEvent).toHaveBeenCalledWith(
+      componentEvents.EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_CARD_EDIT_REQUESTED,
+      { employeeId: 'employee-123' },
+    )
+  })
+
+  it('returns to the card when Cancel is clicked in the edit form', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<FederalTaxes employeeId="employee-123" onEvent={onEvent} />)
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Edit' })).toBeEnabled()
+    })
+    await user.click(screen.getByRole('button', { name: 'Edit' }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /Federal tax withholdings/i })).toBeInTheDocument()
+    })
 
     await user.click(screen.getByRole('button', { name: /^Cancel$/i }))
 
-    expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.CANCEL)
-    expect(mockOnEvent).not.toHaveBeenCalledWith(
-      componentEvents.EMPLOYEE_FEDERAL_TAXES_UPDATED,
-      expect.anything(),
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Edit' })).toBeInTheDocument()
+    })
+
+    expect(screen.queryByRole('heading', { name: /Federal tax withholdings/i })).toBeNull()
+    expect(onEvent).toHaveBeenCalledWith(
+      componentEvents.EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_EDIT_FORM_CANCELLED,
+      undefined,
     )
-    expect(mockOnEvent).not.toHaveBeenCalledWith(componentEvents.EMPLOYEE_FEDERAL_TAXES_DONE)
   })
 
-  it('saves and shows a success alert without emitting DONE', async () => {
+  it('returns to the card after a successful save and emits SUBMITTED', async () => {
     const user = userEvent.setup()
-    renderWithProviders(<FederalTaxes employeeId="employee-1" onEvent={mockOnEvent} />)
+    renderWithProviders(<FederalTaxes employeeId="employee-123" onEvent={onEvent} />)
 
-    await screen.findByRole('heading', { name: /Federal tax withholdings/i })
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Edit' })).toBeEnabled()
+    })
+    await user.click(screen.getByRole('button', { name: 'Edit' }))
 
-    expect(screen.queryByText(/Successfully updated federal tax settings/i)).not.toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /^Save$/i })).toBeInTheDocument()
+    })
 
     await user.click(screen.getByRole('button', { name: /^Save$/i }))
 
     await waitFor(() => {
-      expect(mockOnEvent).toHaveBeenCalledWith(
-        componentEvents.EMPLOYEE_FEDERAL_TAXES_UPDATED,
+      expect(onEvent).toHaveBeenCalledWith(
+        componentEvents.EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_EDIT_FORM_SUBMITTED,
         expect.anything(),
       )
     })
 
-    expect(mockOnEvent).not.toHaveBeenCalledWith(componentEvents.EMPLOYEE_FEDERAL_TAXES_DONE)
-
     await waitFor(() => {
-      expect(screen.getByText(/Successfully updated federal tax settings/i)).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: 'Edit' })).toBeInTheDocument()
     })
 
-    expect(screen.getByRole('heading', { name: /Federal tax withholdings/i })).toBeInTheDocument()
-  })
-
-  it('does not submit and surfaces a required error when filing status is empty', async () => {
-    server.use(
-      handleGetEmployeeFederalTaxes(() =>
-        HttpResponse.json({ ...fixtureFederalTaxes, filing_status: null }),
-      ),
-    )
-
-    const user = userEvent.setup()
-    renderWithProviders(<FederalTaxes employeeId="employee-1" onEvent={mockOnEvent} />)
-
-    await screen.findByRole('heading', { name: /Federal tax withholdings/i })
-
-    await user.click(screen.getByRole('button', { name: /^Save$/i }))
-
-    await waitFor(() => {
-      expect(screen.getByText(/Please select filing status/i)).toBeInTheDocument()
-    })
-
-    expect(screen.queryByText(/Successfully updated federal tax settings/i)).not.toBeInTheDocument()
-    expect(mockOnEvent).not.toHaveBeenCalledWith(
-      componentEvents.EMPLOYEE_FEDERAL_TAXES_UPDATED,
-      expect.anything(),
-    )
+    expect(screen.queryByRole('heading', { name: /Federal tax withholdings/i })).toBeNull()
   })
 })

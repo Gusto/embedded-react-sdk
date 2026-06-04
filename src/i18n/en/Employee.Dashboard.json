@@ -72,18 +72,6 @@
       }
     }
   },
-  "taxes": {
-    "federal": {
-      "title": "Federal taxes",
-      "editCta": "Edit",
-      "filingStatus": "Filing status",
-      "multipleJobs": "Multiple jobs",
-      "dependentsAndOtherCredits": "Dependents and other credits",
-      "otherIncome": "Other income",
-      "deductions": "Deductions",
-      "extraWithholding": "Extra withholding"
-    }
-  },
   "documents": {
     "title": "Forms",
     "listLabel": "List of employee forms",

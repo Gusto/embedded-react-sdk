@@ -6,8 +6,22 @@ import { Form } from '@/components/Common/Form'
 import { Flex } from '@/components/Common/Flex'
 import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { useComponentDictionary, useI18n } from '@/i18n'
+import type { ResourceDictionary } from '@/types/Helpers'
 
 type ReadyFederalTaxesForm = Extract<ReturnType<typeof useFederalTaxesForm>, { isLoading: false }>
+
+/**
+ * Override surface for {@link FederalTaxesView}'s default copy. Each consuming
+ * flow (onboarding, management) builds a resolved dictionary from its own
+ * translation namespace via a dedicated `use*FederalTaxesViewDictionary` hook
+ * and passes it here, so partner overrides on the flow's namespace flow into
+ * the shared view text at render time.
+ *
+ * The underlying `Employee.FederalTaxesView` namespace is an implementation
+ * detail of the shared view — consumers shouldn't reference it directly.
+ */
+export type FederalTaxesViewDictionary = ResourceDictionary<'Employee.FederalTaxesView'>
 
 export interface FederalTaxesViewProps {
   federalTaxes: ReadyFederalTaxesForm
@@ -16,6 +30,13 @@ export interface FederalTaxesViewProps {
   alert?: ReactNode
   className?: string
   children?: ReactNode
+  /**
+   * Per-flow translation override for this shared view. Consumers build the
+   * value inside a flow-local `use*FederalTaxesViewDictionary` hook that
+   * resolves the view's keys against the flow's own namespace, so partner
+   * overrides on the flow's `dictionary` prop propagate into the view.
+   */
+  dictionary?: FederalTaxesViewDictionary
 }
 
 export function FederalTaxesView({
@@ -25,8 +46,12 @@ export function FederalTaxesView({
   alert,
   className,
   children,
+  dictionary,
 }: FederalTaxesViewProps) {
-  const { t } = useTranslation('Employee.FederalTaxes')
+  useI18n('Employee.FederalTaxesView')
+  useComponentDictionary('Employee.FederalTaxesView', dictionary)
+
+  const { t } = useTranslation('Employee.FederalTaxesView')
   const Components = useComponentContext()
   const Fields = federalTaxes.form.Fields
 
