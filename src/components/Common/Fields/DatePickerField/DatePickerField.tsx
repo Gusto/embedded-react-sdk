@@ -11,11 +11,13 @@ import {
 
 type DateFieldValue = string | Date | null
 
+/** @internal */
 export interface DatePickerFieldProps<TValue extends DateFieldValue = Date | null>
   extends Omit<DatePickerProps, 'name' | 'onChange' | 'isInvalid'>, UseFieldProps<TValue> {
   FieldComponent?: ComponentType<DatePickerProps>
 }
 
+/** @internal */
 export const DatePickerField = <TValue extends DateFieldValue = Date | null>({
   rules,
   defaultValue,

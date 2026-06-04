@@ -8,6 +8,7 @@ import {
 
 type GenericComboBoxOption<TValue> = OptionWithGenericValue<TValue, ComboBoxOption>
 
+/** @internal */
 export interface ComboBoxFieldProps<TValue>
   extends
     Omit<
@@ -20,6 +21,7 @@ export interface ComboBoxFieldProps<TValue>
   allowsCustomValue?: TValue extends string ? boolean : never
 }
 
+/** @internal */
 export const ComboBoxField = <TValue = string,>({
   rules,
   defaultValue,

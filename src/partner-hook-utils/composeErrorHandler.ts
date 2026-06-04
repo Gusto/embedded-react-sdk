@@ -6,14 +6,27 @@ import type { SDKError } from '@/types/sdkError'
 type QueryWithRefetch = Pick<UseQueryResult, 'error' | 'refetch'>
 
 /**
- * Submit-side error state to merge with query errors. From `useBaseSubmit`, destructure
- * `{ error: submitError, setError: setSubmitError }` and pass `{ submitError, setSubmitError }`.
+ * Submit-side error state to merge into a composed {@link HookErrorHandling}.
+ *
+ * @remarks
+ * Pass to {@link composeErrorHandler} when a screen has its own submit state outside of
+ * any SDK form hook, so submit errors appear in the same error surface as query errors
+ * and can be cleared together with `clearSubmitError`.
+ *
+ * @public
  */
 export type SubmitStateForErrorHandling = {
   submitError: SDKError | null
   setSubmitError: (error: SDKError | null) => void
 }
 
+/**
+ * Accepted input shape for {@link composeErrorHandler}: either a React Query result
+ * (anything with `error` and `refetch`) or another SDK hook result that exposes
+ * an `errorHandling` object.
+ *
+ * @public
+ */
 export type MixedErrorSource = QueryWithRefetch | { errorHandling: HookErrorHandling }
 
 function isHookResultWithErrorHandling(
@@ -23,11 +36,53 @@ function isHookResultWithErrorHandling(
 }
 
 /**
- * Composes `HookErrorHandling` from React Query results, optional submit state from `useBaseSubmit`,
- * and/or nested SDK hook results that expose `errorHandling`.
+ * Merges multiple error sources into a single {@link HookErrorHandling}.
  *
- * Pairs with `composeSubmitHandler` by name: this composes **error state and recovery**; it is not a
- * submit callback.
+ * @remarks
+ * Accepts any mix of `@gusto/embedded-api-v-2025-11-15` React Query results and SDK hook
+ * results that already expose an `errorHandling` object (including the value returned by
+ * {@link composeSubmitHandler}). Query errors are normalized to `SDKError`, nested hook
+ * errors are flattened in, and an optional submit-state argument adds a submit error to
+ * the same list.
+ *
+ * The returned `retryQueries` refetches every failed query and delegates into each nested
+ * hook so their retries fire too. `clearSubmitError` clears the optional submit state and
+ * delegates into each nested hook.
+ *
+ * Pairs with {@link composeSubmitHandler} by name only — this composes error state and
+ * recovery, not a submit callback.
+ *
+ * @param sources - Error sources to merge. Each entry is either a React Query result or
+ *   an object with an `errorHandling` property.
+ * @param submitState - Optional screen-level submit state to fold into the result.
+ * @returns A single `HookErrorHandling` covering every source.
+ * @public
+ *
+ * @example
+ * ```tsx
+ * import { composeErrorHandler, useEmployeeDetailsForm } from '@gusto/embedded-react-sdk'
+ * import { useEmployeeFormsList } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeFormsList'
+ *
+ * function EmployeeProfileView({ companyId, employeeId }: { companyId: string; employeeId: string }) {
+ *   const employeeDetails = useEmployeeDetailsForm({ companyId, employeeId })
+ *   const formsListQuery = useEmployeeFormsList({ employeeId })
+ *
+ *   const errorHandling = composeErrorHandler([employeeDetails, formsListQuery])
+ *
+ *   if (errorHandling.errors.length > 0) {
+ *     return (
+ *       <div role="alert">
+ *         {errorHandling.errors.map((error, i) => (
+ *           <p key={i}>{error.message}</p>
+ *         ))}
+ *         <button onClick={errorHandling.retryQueries}>Retry</button>
+ *       </div>
+ *     )
+ *   }
+ *
+ *   return null
+ * }
+ * ```
  */
 export function composeErrorHandler(
   sources: MixedErrorSource[],

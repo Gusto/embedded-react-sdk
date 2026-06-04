@@ -10,6 +10,8 @@ interface FieldElementRegistryProviderProps {
  * Publishes a `FieldElementRegistry` via context so `useField` can populate it.
  * `SDKFormProvider` wires this automatically; partners who build their own form
  * surface can wrap with this provider directly to opt into cross-form focus.
+ *
+ * @internal
  */
 export function FieldElementRegistryProvider({
   registry,

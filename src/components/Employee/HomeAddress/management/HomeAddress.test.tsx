@@ -1,10 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { screen, waitFor } from '@testing-library/react'
+import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { HttpResponse, http, type HttpResponseResolver } from 'msw'
 import { HomeAddress } from './HomeAddress'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
+import { server } from '@/test/mocks/server'
 import { componentEvents } from '@/shared/constants'
+import { API_BASE_URL } from '@/test/constants'
 
 describe('HomeAddress (management block)', () => {
   const onEvent = vi.fn()
@@ -76,5 +79,98 @@ describe('HomeAddress (management block)', () => {
       componentEvents.EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_CANCELLED,
       undefined,
     )
+  })
+
+  it('keeps the Edit modal open and renders the submit error inside the modal when the API returns 422 (SDK-930)', async () => {
+    const user = userEvent.setup()
+    const updateResolver = vi.fn<HttpResponseResolver>(() =>
+      HttpResponse.json(
+        {
+          errors: [
+            {
+              error_key: 'street1',
+              category: 'invalid_attribute_value',
+              message: 'Could not be verified by USPS',
+            },
+          ],
+        },
+        { status: 422 },
+      ),
+    )
+    server.use(http.put(`${API_BASE_URL}/v1/home_addresses/:uuid`, updateResolver))
+
+    renderWithProviders(<HomeAddress employeeId="employee-123" onEvent={onEvent} />)
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Manage' })).toBeEnabled()
+    })
+    await user.click(screen.getByRole('button', { name: 'Manage' }))
+
+    const editButton = await screen.findByRole('button', { name: /^Edit$/ }, { timeout: 5000 })
+    await user.click(editButton)
+
+    const dialog = await screen.findByRole('dialog')
+    expect(within(dialog).getByRole('heading', { name: 'Edit home address' })).toBeInTheDocument()
+
+    await user.click(within(dialog).getByRole('button', { name: 'Save' }))
+
+    expect(updateResolver).toHaveBeenCalledTimes(1)
+
+    // Error renders inside the modal.
+    expect(await within(dialog).findByText("We couldn't save this address")).toBeInTheDocument()
+    // API message appears at least once inside the dialog (alert + possible field-level echo).
+    expect(within(dialog).getAllByText('Could not be verified by USPS').length).toBeGreaterThan(0)
+
+    // Modal stays open.
+    expect(within(dialog).getByRole('heading', { name: 'Edit home address' })).toBeInTheDocument()
+
+    // Page-level alert outside the dialog is not the source of the submit error.
+    // (BaseLayout would render an alert with role="alert" at the page level — assert none exist
+    // outside the dialog scope.)
+    const pageAlerts = screen.queryAllByRole('alert').filter(alert => !dialog.contains(alert))
+    expect(pageAlerts).toHaveLength(0)
+  })
+
+  it('clears the submit error from the modal when it is closed and reopened (SDK-930)', async () => {
+    const user = userEvent.setup()
+    const updateResolver = vi.fn<HttpResponseResolver>(() =>
+      HttpResponse.json(
+        {
+          errors: [
+            {
+              error_key: 'street1',
+              category: 'invalid_attribute_value',
+              message: 'Could not be verified by USPS',
+            },
+          ],
+        },
+        { status: 422 },
+      ),
+    )
+    server.use(http.put(`${API_BASE_URL}/v1/home_addresses/:uuid`, updateResolver))
+
+    renderWithProviders(<HomeAddress employeeId="employee-123" onEvent={onEvent} />)
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Manage' })).toBeEnabled()
+    })
+    await user.click(screen.getByRole('button', { name: 'Manage' }))
+
+    const editButton = await screen.findByRole('button', { name: /^Edit$/ }, { timeout: 5000 })
+    await user.click(editButton)
+    const firstOpenDialog = await screen.findByRole('dialog')
+    await user.click(within(firstOpenDialog).getByRole('button', { name: 'Save' }))
+    await within(firstOpenDialog).findByText("We couldn't save this address")
+
+    await user.click(within(firstOpenDialog).getByRole('button', { name: 'Cancel' }))
+
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).toBeNull()
+    })
+
+    await user.click(await screen.findByRole('button', { name: /^Edit$/ }))
+
+    const reopenedDialog = await screen.findByRole('dialog')
+    expect(within(reopenedDialog).queryByText("We couldn't save this address")).toBeNull()
   })
 })

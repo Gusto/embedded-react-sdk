@@ -46,18 +46,19 @@ shapes. Do not infer from the state machine alone — read every `onEvent(` call
 - `src/components/Employee/<Feature>/management/<feature>StateMachine.ts` —
   all states and transition event names
 - `src/components/Employee/<Feature>/management/<Feature>Components.tsx` —
-  the contextual adapters (`CardContextual`, `<Feature>EditFormContextual`).
-  Orchestrator-owned alerts are fired from here, not from the card or the
-  form — e.g. the `EMPLOYEE_<FEATURE>_MANAGEMENT_ALERT_DISMISSED` event a
+  the contextual adapters (`<Feature>CardContextual`, `<Feature>EditFormContextual`).
+  Each adapter's name mirrors the leaf component it wraps. Orchestrator-owned
+  alerts are fired from here, not from the card or the
+  form — e.g. the `EMPLOYEE_MANAGEMENT_<FEATURE>_ALERT_DISMISSED` event a
   block emits when the user dismisses the success banner above the card lives
-  in `CardContextual`'s `onDismiss` handler. Read this file or you will miss
+  in `<Feature>CardContextual`'s `onDismiss` handler. Read this file or you will miss
   alert-dismiss events.
 - `src/components/Employee/<Feature>/management/<Feature>Card/<Feature>Card.tsx` —
   events the card fires via `onEvent`; the card's prop interface
 - The edit-form component(s) — events the form fires via `onEvent` and `onCancel`;
   the form's prop interface
 - `src/shared/constants.ts` — confirm the exact string values of the
-  `EMPLOYEE_<FEATURE>_MANAGEMENT_*` event constants
+  `EMPLOYEE_MANAGEMENT_<FEATURE>_*` event constants
 
 ## Step 3 — Write the documentation
 
@@ -93,7 +94,7 @@ by feature name within the appropriate section):
   integrator's app.
 - One JSX composition sample showing the card↔form swap with local state. **Must
   use explicit event-type branching** — compare `eventType` against
-  `componentEvents.EMPLOYEE_<FEATURE>_MANAGEMENT_*` even if both edit-form
+  `componentEvents.EMPLOYEE_MANAGEMENT_<FEATURE>_*` even if both edit-form
   events drive the same local transition. Never use a no-arg handler like
   `onEvent={() => setIsEditing(false)}`. See the skill for the required template.
 - `##### EmployeeManagement.<Feature>Card` sub-subsection with bolded **Props**

@@ -74,7 +74,7 @@ export const dashboardStateMachine = {
       ),
     ),
     transition(
-      componentEvents.EMPLOYEE_WORK_ADDRESS,
+      componentEvents.EMPLOYEE_MANAGEMENT_WORK_ADDRESS_EDIT_REQUESTED,
       'workAddress',
       reduce(
         (ctx: DashboardContextInterface): DashboardContextInterface => ({
@@ -107,7 +107,7 @@ export const dashboardStateMachine = {
       ),
     ),
     transition(
-      componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATE,
+      componentEvents.EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_ADD_REQUESTED,
       'paymentBankForm',
       reduce(
         (ctx: DashboardContextInterface): DashboardContextInterface => ({
@@ -118,7 +118,7 @@ export const dashboardStateMachine = {
       ),
     ),
     transition(
-      componentEvents.EMPLOYEE_SPLIT_PAYCHECK,
+      componentEvents.EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_SPLIT_REQUESTED,
       'paymentSplitView',
       reduce(
         (ctx: DashboardContextInterface): DashboardContextInterface => ({
@@ -183,7 +183,7 @@ export const dashboardStateMachine = {
       ),
     ),
     transition(
-      componentEvents.EMPLOYEE_BANK_ACCOUNT_DELETED,
+      componentEvents.EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_BANK_ACCOUNT_DELETED,
       'index',
       reduce(
         (ctx: DashboardContextInterface): DashboardContextInterface => ({
@@ -260,7 +260,13 @@ export const dashboardStateMachine = {
       returnToIndex,
     ),
   ),
-  workAddress: state<MachineTransition>(transition(componentEvents.CANCEL, 'index', returnToIndex)),
+  workAddress: state<MachineTransition>(
+    transition(
+      componentEvents.EMPLOYEE_MANAGEMENT_WORK_ADDRESS_EDIT_CANCELLED,
+      'index',
+      returnToIndex,
+    ),
+  ),
   federalTaxes: state<MachineTransition>(
     transition(componentEvents.CANCEL, 'index', returnToIndex),
     transition(componentEvents.EMPLOYEE_FEDERAL_TAXES_DONE, 'index', returnToIndex),
@@ -276,19 +282,27 @@ export const dashboardStateMachine = {
   ),
   paymentBankForm: state<MachineTransition>(
     transition(
-      componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATED,
+      componentEvents.EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_BANK_FORM_SUBMITTED,
       'index',
       returnToIndexWithAlert('bankAccountAdded'),
     ),
-    transition(componentEvents.CANCEL, 'index', returnToIndex),
+    transition(
+      componentEvents.EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_BANK_FORM_CANCELLED,
+      'index',
+      returnToIndex,
+    ),
   ),
   paymentSplitView: state<MachineTransition>(
     transition(
-      componentEvents.EMPLOYEE_PAYMENT_METHOD_UPDATED,
+      componentEvents.EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_SPLIT_FORM_SUBMITTED,
       'index',
       returnToIndexWithAlert('splitUpdated'),
     ),
-    transition(componentEvents.CANCEL, 'index', returnToIndex),
+    transition(
+      componentEvents.EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_SPLIT_FORM_CANCELLED,
+      'index',
+      returnToIndex,
+    ),
   ),
   documentManager: state<MachineTransition>(
     // After signing, return to the dashboard with a success alert rather than

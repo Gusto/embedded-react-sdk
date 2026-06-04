@@ -60,16 +60,16 @@ refactor (not just that one exists):
   alert should appear above the tabs after a successful edit; the dashboard's
   `DashboardViewContextual` already owns this rendering and the migration only
   needs to update the alert code's union membership and the event trigger.
-- **Block-internal (`CardContextual` in the new `<Feature>Components.tsx`)** —
+- **Block-internal (`<Feature>CardContextual` in the new `<Feature>Components.tsx`)** —
   move the alert into the block when the alert belongs above the card surface
   the partner sees in standalone use. Add a `successAlert` field to the block's
   state-machine context, a `returnToCardWithAlert(...)` reducer, and a
-  `<Components.Alert>` render in `CardContextual` whose `onDismiss` fires the
-  block's `EMPLOYEE_<FEATURE>_MANAGEMENT_ALERT_DISMISSED` event.
+  `<Components.Alert>` render in `<Feature>CardContextual` whose `onDismiss` fires the
+  block's `EMPLOYEE_MANAGEMENT_<FEATURE>_ALERT_DISMISSED` event.
 
 Most cards want both (dashboard chrome for the dashboard path, block-internal
 for the standalone path) — the alert string ends up in both
-`Employee.Dashboard.json` and `Employee.<Feature>.Management.json` and both
+`Employee.Dashboard.json` and `Employee.Management.<Feature>.json` and both
 flows render it. See the "Success alerts" section of the skill for the full
 two-mode pattern and worked Profile example.
 
@@ -106,9 +106,9 @@ and the payload:
 
 ### Proposed scoped event names
 
-Map each legacy event to its new `EMPLOYEE_<FEATURE>_MANAGEMENT_*` name:
+Map each legacy event to its new `EMPLOYEE_MANAGEMENT_<FEATURE>_*` name:
 
-- `<LEGACY_NAME>` → `EMPLOYEE_<FEATURE>_MANAGEMENT_<ACTION>`
+- `<LEGACY_NAME>` → `EMPLOYEE_MANAGEMENT_<FEATURE>_<ACTION>`
 - ...
 
 ### State machine design
@@ -137,7 +137,7 @@ or requires a precursor PR.
 ### Translation keys to move
 
 List the `Employee.Dashboard:` key prefixes that belong to this card and their
-target namespace (`Employee.<Feature>.Management`).
+target namespace (`Employee.Management.<Feature>`).
 
 ### Friction points or open questions
 

@@ -1,1 +1,1 @@
-export { FileInputField, type FileInputFieldProps } from './FileInputField'
+export { FileInputField } from './FileInputField'

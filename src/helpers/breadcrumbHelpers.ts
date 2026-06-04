@@ -24,9 +24,14 @@ const getBreadcrumbsHeader = (header: FlowHeaderConfig | null | undefined): Brea
 /**
  * Builds a complete breadcrumb trail map from a hierarchical node structure.
  *
- * Takes a tree structure of breadcrumb nodes and generates a map where each state
- * has its complete breadcrumb trail from root to that state. This is useful for
- * initializing breadcrumb navigation in state machines or multi-step flows.
+ * @remarks Walks each node's `parent` pointer to assemble a root-to-state trail, producing
+ * one entry per state. Use it to seed breadcrumb navigation when initializing a state
+ * machine or multi-step flow.
+ *
+ * @param nodes - Map of state names to breadcrumb nodes, each carrying an `item` and an
+ * optional `parent` state key.
+ * @returns A map from state name to its ordered breadcrumb trail.
+ * @internal
  */
 export const buildBreadcrumbs = (nodes: BreadcrumbNodes): BreadcrumbTrail => {
   const map: Record<string, FlowBreadcrumb[]> = {}
@@ -50,9 +55,16 @@ export const buildBreadcrumbs = (nodes: BreadcrumbNodes): BreadcrumbTrail => {
 /**
  * Resolves template variables in breadcrumb labels using values from a context object.
  *
- * Supports Handlebars-style template syntax (`{{variableName}}`) for dynamic breadcrumb labels.
- * Variables enclosed in double braces are replaced with their corresponding values from the context.
- * Non-template strings are returned as-is.
+ * @remarks Supports Handlebars-style `{{variableName}}` syntax. Values enclosed in double
+ * braces are replaced with the corresponding key on `context`; missing keys resolve to an
+ * empty string. Strings without a template token are returned unchanged.
+ *
+ * @param variables - Map of variable names to either a literal or a `{{key}}` template.
+ * Pass `undefined` to skip resolution.
+ * @param context - Source values referenced by template tokens.
+ * @returns A map of variable names to resolved values, or an empty object when `variables`
+ * is `undefined`.
+ * @internal
  */
 export const resolveBreadcrumbVariables = (
   variables: Record<string, string> | undefined,
@@ -76,11 +88,18 @@ export const resolveBreadcrumbVariables = (
 }
 
 /**
- * Merges `patch` fields into the existing breadcrumbs header on a context,
- * preserving the existing trails and CTA. If the context has no breadcrumbs
- * header, a fresh one is created. Useful when a transition needs to flip
- * breadcrumbs visibility (`currentBreadcrumbId`) without rebuilding any
- * trails.
+ * Merges `patch` fields into the existing breadcrumbs header on a context.
+ *
+ * @remarks Preserves existing trails and CTA; if the context has no breadcrumbs header
+ * a fresh one is created. Use this when a transition needs to flip breadcrumb visibility
+ * (for example `currentBreadcrumbId`) without rebuilding any trails.
+ *
+ * @typeParam T - Context shape carrying an optional `header` of the discriminated union.
+ * @param context - The context whose breadcrumbs header should be patched.
+ * @param patch - Partial breadcrumbs-header fields to merge in. The `type` discriminator
+ * cannot be overridden.
+ * @returns A new context with the patched breadcrumbs header.
+ * @internal
  */
 export const patchBreadcrumbsHeader = <T extends WithHeader>(
   context: T,
@@ -91,9 +110,16 @@ export const patchBreadcrumbsHeader = <T extends WithHeader>(
 }
 
 /**
- * Removes a breadcrumb from all trails in the context's breadcrumbs header.
- * Use this in state machine reducers to hide a step entirely (e.g. after
- * payroll submission).
+ * Removes a breadcrumb from every trail in the context's breadcrumbs header.
+ *
+ * @remarks Use in state machine reducers to hide a step entirely, for example after
+ * payroll submission when the step should no longer appear in any trail.
+ *
+ * @typeParam T - Context shape carrying an optional `header` of the discriminated union.
+ * @param breadcrumbId - Id of the breadcrumb to strip from every trail.
+ * @param context - The context whose breadcrumbs header should be updated.
+ * @returns A new context with the breadcrumb removed from all trails.
+ * @internal
  */
 export const hideBreadcrumb = <T extends WithHeader>(breadcrumbId: string, context: T): T => {
   const breadcrumbsHeader = getBreadcrumbsHeader(context.header)
@@ -111,9 +137,16 @@ export const hideBreadcrumb = <T extends WithHeader>(breadcrumbId: string, conte
 }
 
 /**
- * Marks a breadcrumb as non-navigable across all trails in the context's
- * breadcrumbs header. Use this in state machine reducers to disable backward
- * navigation to a specific step.
+ * Marks a breadcrumb as non-navigable across every trail in the context's breadcrumbs header.
+ *
+ * @remarks Use in state machine reducers to disable backward navigation to a specific step
+ * while still showing it in the trail.
+ *
+ * @typeParam T - Context shape carrying an optional `header` of the discriminated union.
+ * @param breadcrumbId - Id of the breadcrumb to mark `isNavigable: false`.
+ * @param context - The context whose breadcrumbs header should be updated.
+ * @returns A new context with the breadcrumb locked in every trail.
+ * @internal
  */
 export const lockBreadcrumb = <T extends WithHeader>(breadcrumbId: string, context: T): T => {
   const breadcrumbsHeader = getBreadcrumbsHeader(context.header)
@@ -131,14 +164,22 @@ export const lockBreadcrumb = <T extends WithHeader>(breadcrumbId: string, conte
 }
 
 /**
- * Updates the breadcrumb trail for a specific state with resolved variables
- * and switches the active breadcrumb to that state.
+ * Updates the breadcrumb trail for a specific state with resolved variables and switches
+ * the active breadcrumb to that state.
  *
- * This function is typically used in state machine transitions to update
- * breadcrumb navigation when moving between states. It preserves all existing
- * breadcrumb trails for other states and only updates the trail for the
- * specified state by resolving any template variables for that state's
- * breadcrumb. The resulting context's header is always of type `'breadcrumbs'`.
+ * @remarks Typically called from state machine transitions to update breadcrumb navigation
+ * when moving between states. Existing trails for other states are preserved; only the trail
+ * for `stateName` is rewritten with `variables` resolved against the context. The resulting
+ * context's header is always of type `'breadcrumbs'`.
+ *
+ * @typeParam T - Context shape carrying an optional `header` of the discriminated union.
+ * @param stateName - The state whose breadcrumb trail should be updated and made active.
+ * @param context - The context whose breadcrumbs header should be updated.
+ * @param variables - Optional template variables to resolve against the context for each
+ * breadcrumb in the target state's trail.
+ * @returns A new context with the trail for `stateName` updated and `currentBreadcrumbId`
+ * set to `stateName`.
+ * @internal
  */
 export const updateBreadcrumbs = <T extends WithHeader>(
   stateName: string,

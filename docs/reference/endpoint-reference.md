@@ -163,12 +163,9 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | `/v1/employees/:employeeId` |
 |  | GET | `/v1/employees/:employeeId/forms` |
 |  | GET | `/v1/employees/:employeeId/jobs` |
-|  | GET | `/v1/employees/:employeeId/pay_stubs` |
-|  | GET | `/v1/employees/:employeeId/work_addresses` |
 |  | GET | `/v1/employees/:employeeUuid/federal_taxes` |
 |  | GET | `/v1/employees/:employeeUuid/state_taxes` |
 |  | DELETE | `/v1/jobs/:jobId` |
-|  | GET | `/v1/payrolls/:payrollId/employees/:employeeId/pay_stub` |
 | **Employee.HomeAddress** | GET | `/v1/employees/:employeeId` |
 |  | GET | `/v1/employees/:employeeId/home_addresses` |
 |  | DELETE | `/v1/home_addresses/:homeAddressUuid` |
@@ -229,7 +226,8 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | `/v1/companies/:companyUuid/payrolls/blockers` |
 |  | POST | `/v1/companies/:companyUuid/payrolls/skip` |
 |  | GET | `/v1/companies/:companyUuid/wire_in_requests` |
-| **Payroll.PayrollList** | GET | `/v1/companies/:companyId/pay_schedules` |
+| **Payroll.PayrollList** | GET | `/v1/companies/:companyId/pay_periods` |
+|  | GET | `/v1/companies/:companyId/pay_schedules` |
 |  | GET | `/v1/companies/:companyId/payrolls` |
 |  | DELETE | `/v1/companies/:companyId/payrolls/:payrollId` |
 |  | GET | `/v1/companies/:companyUuid/payrolls/blockers` |
@@ -374,12 +372,9 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | `/v1/employees/:employeeId` |
 |  | GET | `/v1/employees/:employeeId/forms` |
 |  | GET | `/v1/employees/:employeeId/jobs` |
-|  | GET | `/v1/employees/:employeeId/pay_stubs` |
-|  | GET | `/v1/employees/:employeeId/work_addresses` |
 |  | GET | `/v1/employees/:employeeUuid/federal_taxes` |
 |  | GET | `/v1/employees/:employeeUuid/state_taxes` |
 |  | DELETE | `/v1/jobs/:jobId` |
-|  | GET | `/v1/payrolls/:payrollId/employees/:employeeId/pay_stub` |
 | **EmployeeManagement.HomeAddress** | GET | `/v1/employees/:employeeId` |
 |  | GET | `/v1/employees/:employeeId/home_addresses` |
 |  | DELETE | `/v1/home_addresses/:homeAddressUuid` |
@@ -390,6 +385,8 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | `/v1/employees/:employeeId` |
 |  | PUT | `/v1/employees/:employeeId` |
 |  | PUT | `/v1/employees/:employeeId/onboarding_status` |
+| **EmployeeManagement.PaystubsCard** | GET | `/v1/employees/:employeeId/pay_stubs` |
+|  | GET | `/v1/payrolls/:payrollId/employees/:employeeId/pay_stub` |
 | **EmployeeManagement.TerminateEmployee** | GET | `/v1/companies/:companyId/pay_periods/unprocessed_termination_pay_periods` |
 |  | GET | `/v1/companies/:companyId/payrolls` |
 |  | POST | `/v1/companies/:companyId/payrolls` |
@@ -486,13 +483,13 @@ Flows compose multiple blocks into a single workflow. The endpoint list for a fl
 | **Contractor.OnboardingFlow** | Contractor.Address, Contractor.ContractorList, Contractor.ContractorProfile, Contractor.ContractorSubmit, Contractor.NewHireReport, Contractor.PaymentMethod |
 | **Contractor.PaymentFlow** | Contractor.CreatePayment, Contractor.PaymentHistory, Contractor.PaymentStatement, Contractor.PaymentSummary, Contractor.PaymentsList, InformationRequests.InformationRequestsFlow |
 | **ContractorOnboarding.OnboardingFlow** | ContractorOnboarding.Address, ContractorOnboarding.ContractorList, ContractorOnboarding.ContractorProfile, ContractorOnboarding.ContractorSubmit, ContractorOnboarding.NewHireReport, ContractorOnboarding.PaymentMethod |
-| **Employee.DashboardFlow** | Employee.Compensation, Employee.Deductions, Employee.HomeAddress, Employee.PaymentMethod, Employee.WorkAddress, EmployeeManagement.DocumentManager, EmployeeManagement.FederalTaxes, EmployeeManagement.Profile, EmployeeManagement.StateTaxes, EmployeeOnboarding.PaymentMethod |
+| **Employee.DashboardFlow** | Employee.Compensation, Employee.Deductions, Employee.HomeAddress, Employee.WorkAddress, EmployeeManagement.DocumentManager, EmployeeManagement.FederalTaxes, EmployeeManagement.PaymentMethod, EmployeeManagement.PaystubsCard, EmployeeManagement.Profile, EmployeeManagement.StateTaxes |
 | **Employee.EmployeeListFlow** | Employee.DashboardFlow, Employee.OnboardingExecutionFlow, Employee.TerminationFlow, EmployeeManagement.EmployeeList |
 | **Employee.OnboardingExecutionFlow** | Employee.Compensation, Employee.Deductions, Employee.EmployeeDocuments, Employee.OnboardingSummary, Employee.PaymentMethod, Employee.Profile, EmployeeOnboarding.FederalTaxes, EmployeeOnboarding.StateTaxes |
 | **Employee.OnboardingFlow** | Employee.EmployeeList, Employee.OnboardingExecutionFlow |
 | **Employee.SelfOnboardingFlow** | Employee.DocumentSigner, Employee.Landing, Employee.OnboardingSummary, Employee.PaymentMethod, Employee.Profile, EmployeeOnboarding.FederalTaxes, EmployeeOnboarding.StateTaxes |
 | **Employee.TerminationFlow** | Employee.TerminateEmployee, Employee.TerminationSummary, Payroll.DismissalFlow, Payroll.PayrollLanding |
-| **EmployeeManagement.DashboardFlow** | Employee.PaymentMethod, EmployeeManagement.DocumentManager, EmployeeManagement.FederalTaxes, EmployeeManagement.HomeAddress, EmployeeManagement.Profile, EmployeeManagement.StateTaxes, EmployeeManagement.WorkAddress, EmployeeOnboarding.Compensation, EmployeeOnboarding.Deductions, EmployeeOnboarding.PaymentMethod |
+| **EmployeeManagement.DashboardFlow** | EmployeeManagement.DocumentManager, EmployeeManagement.FederalTaxes, EmployeeManagement.HomeAddress, EmployeeManagement.PaymentMethod, EmployeeManagement.PaystubsCard, EmployeeManagement.Profile, EmployeeManagement.StateTaxes, EmployeeManagement.WorkAddress, EmployeeOnboarding.Compensation, EmployeeOnboarding.Deductions |
 | **EmployeeManagement.EmployeeListFlow** | EmployeeManagement.DashboardFlow, EmployeeManagement.EmployeeList, EmployeeManagement.TerminationFlow, EmployeeOnboarding.OnboardingExecutionFlow |
 | **EmployeeManagement.TerminationFlow** | EmployeeManagement.TerminateEmployee, EmployeeManagement.TerminationSummary, Payroll.DismissalFlow, Payroll.PayrollLanding |
 | **EmployeeOnboarding.OnboardingExecutionFlow** | Employee.EmployeeDocuments, Employee.PaymentMethod, EmployeeOnboarding.Compensation, EmployeeOnboarding.Deductions, EmployeeOnboarding.FederalTaxes, EmployeeOnboarding.OnboardingSummary, EmployeeOnboarding.Profile, EmployeeOnboarding.StateTaxes |

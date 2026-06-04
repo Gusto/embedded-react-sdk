@@ -10,19 +10,23 @@ import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentCon
 import CaretLeftIcon from '@/assets/icons/caret-left.svg?react'
 
 /**
- * Renders the chrome above the active flow component (back affordance,
- * progress bar, breadcrumbs, ...). Layout is driven by a single
- * discriminated `header` field on the flow context. Each variant maps to a
- * focused renderer below:
+ * Renders the chrome above the active flow component (back affordance, progress bar, breadcrumbs).
  *
- *   header.type === 'minimal'     → MinimalHeader
- *   header.type === 'progress'    → ProgressHeader
- *   header.type === 'breadcrumbs' → BreadcrumbsHeader
+ * @remarks
+ * Reads the discriminated `header` value from {@link FlowContext} and dispatches to the matching
+ * internal renderer:
  *
- * To add a new piece of chrome:
- *   1. Add a new variant to `FlowHeaderConfig` in `useFlow.ts`.
- *   2. Add a new renderer function below.
- *   3. Branch on it in `FlowHeader`.
+ * - `header.type === 'minimal'` — back button and optional CTA.
+ * - `header.type === 'progress'` — step indicator with `currentStep` / `totalSteps`.
+ * - `header.type === 'breadcrumbs'` — breadcrumb trail; renders nothing while
+ *   `currentBreadcrumbId` is absent so passive states (e.g. landing screens) don't reset the bar.
+ *
+ * When no `header` is configured, or there is no active `component` in context, nothing is
+ * rendered. To add a new chrome variant: extend {@link FlowHeaderConfig}, add a renderer below,
+ * and add a branch here.
+ *
+ * @returns A header element above the active flow component, or `null` when no header should show.
+ * @internal
  */
 export function FlowHeader() {
   const { header, component } = useFlow()

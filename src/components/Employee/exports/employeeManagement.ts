@@ -11,13 +11,28 @@ export type {
   HomeAddressCardProps,
   HomeAddressEditFormProps,
 } from '../HomeAddress/management'
-export { WorkAddress } from '../WorkAddress/management/WorkAddress'
-export type { WorkAddressProps } from '../WorkAddress/management/WorkAddress'
+export { WorkAddress, WorkAddressCard, WorkAddressEditForm } from '../WorkAddress/management'
+export type {
+  WorkAddressProps,
+  WorkAddressCardProps,
+  WorkAddressEditFormProps,
+} from '../WorkAddress/management'
 export { FederalTaxes, type FederalTaxesProps } from '../FederalTaxes/management/FederalTaxes'
 export { StateTaxes, type StateTaxesProps } from '../StateTaxes/management/StateTaxes'
 export { Profile, ProfileCard, ProfileEditForm } from '../Profile/management'
 export type { ProfileProps, ProfileCardProps, ProfileEditFormProps } from '../Profile/management'
-export { PaymentMethod, type PaymentMethodProps } from '../PaymentMethod/management'
+export {
+  PaymentMethod,
+  type PaymentMethodProps,
+  PaymentMethodCard,
+  type PaymentMethodCardProps,
+  PaymentMethodBankForm,
+  type PaymentMethodBankFormProps,
+  PaymentMethodSplitForm,
+  type PaymentMethodSplitFormProps,
+} from '../PaymentMethod/management'
+export { PaystubsCard } from '../Paystubs/management'
+export type { PaystubsCardProps } from '../Paystubs/management'
 export { TerminateEmployee } from '../Terminations/TerminateEmployee/TerminateEmployee'
 export { TerminationSummary } from '../Terminations/TerminationSummary/TerminationSummary'
 export { TerminationFlow } from '../Terminations/TerminationFlow/TerminationFlow'

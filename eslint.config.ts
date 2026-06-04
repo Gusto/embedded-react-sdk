@@ -177,13 +177,24 @@ export default [
       // As we improve documentation, remove directories from the ignore path
       'src/components/**',
       'src/contexts/**',
-      'src/helpers/**',
-      'src/hooks/**',
-      'src/models/**',
-      'src/partner-hook-utils/**',
-      'src/shared/**',
-      'src/types/**',
     ],
+    rules: {
+      'tsdoc-coverage/require-comment': 'error',
+      'tsdoc-coverage/require-release-tag': 'error',
+    },
+  },
+  /** Library: well-documented code allowlist. */
+  {
+    files: [
+      'src/components/Base/**/*.{ts,tsx}',
+      'src/components/Common/Fields/**/*.{ts,tsx}',
+      'src/components/Flow/**/*.{ts,tsx}',
+      'src/contexts/ApiProvider/**/*.{ts,tsx}',
+      'src/contexts/LocaleProvider/**/*.{ts,tsx}',
+      'src/contexts/LoadingIndicatorProvider/**/*.{ts,tsx}',
+      'src/contexts/ObservabilityProvider/**/*.{ts,tsx}',
+    ],
+    ignores: LIBRARY_IGNORE_PATHS,
     rules: {
       'tsdoc-coverage/require-comment': 'error',
       'tsdoc-coverage/require-release-tag': 'error',

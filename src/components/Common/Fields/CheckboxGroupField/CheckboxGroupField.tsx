@@ -9,6 +9,7 @@ import {
 
 type GenericCheckboxGroupOption<TValue> = OptionWithGenericValue<TValue, CheckboxGroupOption>
 
+/** @internal */
 export interface CheckboxGroupFieldProps<TValue>
   extends
     Omit<CheckboxGroupProps, 'value' | 'onChange' | 'options' | 'isInvalid'>,
@@ -17,6 +18,7 @@ export interface CheckboxGroupFieldProps<TValue>
   convertValueToString?: (value: TValue) => string
 }
 
+/** @internal */
 export const CheckboxGroupField = <TValue = string,>({
   rules,
   defaultValue,

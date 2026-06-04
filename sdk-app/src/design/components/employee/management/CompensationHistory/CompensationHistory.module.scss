@@ -1,0 +1,12 @@
+.container {
+  container-type: inline-size;
+  width: 100%;
+}
+
+.jobFilter {
+  width: 100%;
+
+  @container (min-width: 40rem) {
+    width: toRem(280);
+  }
+}

@@ -839,14 +839,6 @@
         },
         {
           "method": "GET",
-          "path": "/v1/employees/:employeeId/pay_stubs"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/work_addresses"
-        },
-        {
-          "method": "GET",
           "path": "/v1/employees/:employeeUuid/federal_taxes"
         },
         {
@@ -856,18 +848,13 @@
         {
           "method": "DELETE",
           "path": "/v1/jobs/:jobId"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/payrolls/:payrollId/employees/:employeeId/pay_stub"
         }
       ],
       "variables": [
         "compensationId",
         "employeeId",
         "employeeUuid",
-        "jobId",
-        "payrollId"
+        "jobId"
       ]
     },
     "Employee.HomeAddress": {
@@ -1180,6 +1167,10 @@
     },
     "Payroll.PayrollList": {
       "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/pay_periods"
+        },
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/pay_schedules"
@@ -1984,14 +1975,6 @@
         },
         {
           "method": "GET",
-          "path": "/v1/employees/:employeeId/pay_stubs"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/work_addresses"
-        },
-        {
-          "method": "GET",
           "path": "/v1/employees/:employeeUuid/federal_taxes"
         },
         {
@@ -2001,18 +1984,13 @@
         {
           "method": "DELETE",
           "path": "/v1/jobs/:jobId"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/payrolls/:payrollId/employees/:employeeId/pay_stub"
         }
       ],
       "variables": [
         "compensationId",
         "employeeId",
         "employeeUuid",
-        "jobId",
-        "payrollId"
+        "jobId"
       ]
     },
     "EmployeeManagement.HomeAddress": {
@@ -2077,6 +2055,22 @@
       "variables": [
         "companyId",
         "employeeId"
+      ]
+    },
+    "EmployeeManagement.PaystubsCard": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/pay_stubs"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/payrolls/:payrollId/employees/:employeeId/pay_stub"
+        }
+      ],
+      "variables": [
+        "employeeId",
+        "payrollId"
       ]
     },
     "EmployeeManagement.TerminateEmployee": {
@@ -2616,13 +2610,13 @@
         "Employee.Compensation",
         "Employee.Deductions",
         "Employee.HomeAddress",
-        "Employee.PaymentMethod",
         "Employee.WorkAddress",
         "EmployeeManagement.DocumentManager",
         "EmployeeManagement.FederalTaxes",
+        "EmployeeManagement.PaymentMethod",
+        "EmployeeManagement.PaystubsCard",
         "EmployeeManagement.Profile",
-        "EmployeeManagement.StateTaxes",
-        "EmployeeOnboarding.PaymentMethod"
+        "EmployeeManagement.StateTaxes"
       ]
     },
     "Employee.EmployeeListFlow": {
@@ -2672,16 +2666,16 @@
     },
     "EmployeeManagement.DashboardFlow": {
       "blocks": [
-        "Employee.PaymentMethod",
         "EmployeeManagement.DocumentManager",
         "EmployeeManagement.FederalTaxes",
         "EmployeeManagement.HomeAddress",
+        "EmployeeManagement.PaymentMethod",
+        "EmployeeManagement.PaystubsCard",
         "EmployeeManagement.Profile",
         "EmployeeManagement.StateTaxes",
         "EmployeeManagement.WorkAddress",
         "EmployeeOnboarding.Compensation",
-        "EmployeeOnboarding.Deductions",
-        "EmployeeOnboarding.PaymentMethod"
+        "EmployeeOnboarding.Deductions"
       ]
     },
     "EmployeeManagement.EmployeeListFlow": {

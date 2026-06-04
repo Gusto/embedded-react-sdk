@@ -1,8 +1,34 @@
+.shell {
+  display: flex;
+  align-items: stretch;
+  min-height: 100vh;
+}
+
+.bodyArea {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+}
+
 .bodyContent {
-  padding: 2rem;
+  width: 100%;
   max-width: 1200px;
-  margin: 0 auto;
+  padding: 2rem;
   transition: max-width 0.2s ease;
+}
+
+.rightRail {
+  flex-shrink: 0;
+  display: flex;
+  position: sticky;
+  top: var(--topbar-height, 0);
+  height: calc(100vh - var(--topbar-height, 0px));
+  align-self: flex-start;
+
+  &:empty {
+    display: none;
+  }
 }
 
 .switcherContainer {

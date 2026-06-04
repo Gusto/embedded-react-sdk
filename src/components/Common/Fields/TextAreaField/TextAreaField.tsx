@@ -2,11 +2,13 @@ import { useField, type UseFieldProps } from '@/components/Common/Fields/hooks/u
 import type { TextAreaProps } from '@/components/Common/UI/TextArea/TextAreaTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
+/** @internal */
 export interface TextAreaFieldProps
   extends
     Omit<TextAreaProps, 'name' | 'value' | 'isInvalid'>,
     UseFieldProps<string, HTMLTextAreaElement> {}
 
+/** @internal */
 export const TextAreaField: React.FC<TextAreaFieldProps> = ({
   rules,
   defaultValue,
