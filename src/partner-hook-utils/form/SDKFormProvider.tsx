@@ -54,24 +54,32 @@ interface SDKFormProviderProps<
 }
 
 /**
- * Wraps form fields with the React context they need to discover form state,
- * field metadata, and error syncing from a single form hook result.
+ * Provides form context to field components so they can read metadata, control,
+ * and error state without an explicit `formHookResult` prop on each field.
+ * Server-side field errors are automatically synced onto their corresponding fields.
  *
- * @remarks
- * Fields rendered inside `SDKFormProvider` no longer need an explicit
- * `formHookResult` prop — they read metadata, control, and error state from
- * context instead. Server-side field errors (e.g. 422 responses) are
- * automatically synced onto the corresponding form fields so they surface
- * alongside client-side validation errors.
- *
- * When the same field is also passed `formHookResult` as a prop, the prop wins
- * and the surrounding provider is ignored. Avoid that combination.
- *
- * @typeParam TFormData - The shape of values managed by the underlying form hook.
- * @typeParam TFieldsMetadata - The map of field names to their metadata entries.
- * @param props - The wrapper props, including the `formHookResult` from a form hook.
- * @returns A React element that scopes form context to its children.
  * @public
+ *
+ * @example
+ * ```tsx
+ * const formHookResult = useEmployeeDetailsForm({ employeeId })
+ * const { Fields } = formHookResult.form
+ *
+ * // SDKFormProvider supplies context only — wire up submission and render the
+ * // <form> element yourself.
+ * const handleSubmit = () =>
+ *   formHookResult.actions.onSubmit({ onEmployeeUpdated: (emp) => { ... } })
+ *
+ * return (
+ *   <SDKFormProvider formHookResult={formHookResult}>
+ *     <form onSubmit={handleSubmit}>
+ *       <Fields.FirstName label="First name" />
+ *       <Fields.LastName label="Last name" />
+ *       <button type="submit">Save</button>
+ *     </form>
+ *   </SDKFormProvider>
+ * )
+ * ```
  */
 export function SDKFormProvider<
   TFormData extends FieldValues = FieldValues,

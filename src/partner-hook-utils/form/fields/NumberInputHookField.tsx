@@ -6,7 +6,10 @@ import { NumberInputField } from '@/components/Common'
 import type { NumberInputProps } from '@/components/Common/UI/NumberInput/NumberInputTypes'
 
 /**
- * Props for {@link NumberInputHookField}.
+ * Props accepted by a number input field surfaced through a form hook.
+ * Exposes numeric constraints (`min`, `max`), display `format`, `placeholder` text,
+ * and `validationMessages` for custom error text alongside the shared base field
+ * attributes (`label`, `description`).
  *
  * @typeParam TErrorCode - Validation error code keys mapped via `validationMessages`.
  * @public
@@ -14,13 +17,21 @@ import type { NumberInputProps } from '@/components/Common/UI/NumberInput/Number
 export interface NumberInputHookFieldProps<
   TErrorCode extends string = never,
 > extends BaseFieldProps {
+  /** The field name; must match the corresponding key in the form schema. */
   name: string
+  /** Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. */
   formHookResult?: FormHookResult
+  /** Display format for the number value (e.g. `'currency'`). */
   format?: NumberInputProps['format']
+  /** Minimum allowed numeric value. */
   min?: NumberInputProps['min']
+  /** Maximum allowed numeric value. */
   max?: NumberInputProps['max']
+  /** Placeholder text displayed when the field has no value. */
   placeholder?: NumberInputProps['placeholder']
+  /** Custom error text keyed by validation error code. */
   validationMessages?: ValidationMessages<TErrorCode>
+  /** Replaces the default number input UI component; must accept the same props as `NumberInputProps`. */
   FieldComponent?: ComponentType<NumberInputProps>
 }
 

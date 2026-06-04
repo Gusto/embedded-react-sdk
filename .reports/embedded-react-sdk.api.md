@@ -323,30 +323,22 @@ export interface BannerProps extends Pick<HTMLAttributes<HTMLDivElement>, 'class
 
 // @public
 export interface BaseFieldProps {
-    // (undocumented)
     description?: default_2.ReactNode;
-    // (undocumented)
     label: string;
 }
 
 // @public
 export interface BaseFormHookReady<TFieldsMetadata extends FieldsMetadata = FieldsMetadata, TFormData extends FieldValues = FieldValues, TFields extends object = Record<string, unknown>> {
-    // (undocumented)
     actions: Record<string, unknown>;
-    // (undocumented)
     data: Record<string, unknown>;
-    // (undocumented)
     errorHandling: HookErrorHandling;
-    // (undocumented)
     form: {
         Fields: TFields;
         fieldsMetadata: TFieldsMetadata;
         hookFormInternals: HookFormInternals<TFormData>;
         getFormSubmissionValues: () => Record<string, unknown> | undefined;
     };
-    // (undocumented)
     isLoading: false;
-    // (undocumented)
     status: {
         isPending: boolean;
         mode: 'create' | 'update';
@@ -355,13 +347,9 @@ export interface BaseFormHookReady<TFieldsMetadata extends FieldsMetadata = Fiel
 
 // @public
 export interface BaseHookReady<TData extends Record<string, unknown> = Record<string, unknown>, TStatus extends Record<string, unknown> = Record<string, unknown>> {
-    // (undocumented)
     data: TData;
-    // (undocumented)
     errorHandling: HookErrorHandling;
-    // (undocumented)
     isLoading: false;
-    // (undocumented)
     status: TStatus;
 }
 
@@ -498,13 +486,9 @@ export function CheckboxHookField<TErrorCode extends string>(input: CheckboxHook
 
 // @public
 export interface CheckboxHookFieldProps<TErrorCode extends string = never> extends BaseFieldProps {
-    // (undocumented)
     FieldComponent?: ComponentType<CheckboxProps>;
-    // (undocumented)
     formHookResult?: FormHookResult;
-    // (undocumented)
     name: string;
-    // (undocumented)
     validationMessages?: ValidationMessages<TErrorCode>;
 }
 
@@ -831,19 +815,6 @@ export interface CompensationSubmitOptions {
 // @public (undocumented)
 export type CompensationTitleFieldProps = HookFieldProps<TextInputHookFieldProps<CompensationRequiredValidation>>;
 
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "employeeEvents"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "companyEvents"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "contractorEvents"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "contractorPaymentEvents"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "payScheduleEvents"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "runPayrollEvents"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "payrollWireEvents"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "informationRequestEvents"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "recoveryCasesEvents"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "offCycleEvents"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "terminationEvents"
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "timeOffEvents"
-//
 // @public
 export const componentEvents: {
     readonly TIME_OFF_CREATE_POLICY: "timeOff/createPolicy";
@@ -1599,14 +1570,10 @@ export function DatePickerHookField<TErrorCode extends string>(input: DatePicker
 
 // @public
 export interface DatePickerHookFieldProps<TErrorCode extends string = never> extends BaseFieldProps, Pick<DatePickerProps, 'portalContainer' | 'minDate' | 'maxDate'> {
-    // (undocumented)
     FieldComponent?: ComponentType<DatePickerProps>;
-    // (undocumented)
     formHookResult?: FormHookResult;
-    // (undocumented)
     name: string;
     portalContainer?: DatePickerProps['portalContainer'];
-    // (undocumented)
     validationMessages?: ValidationMessages<TErrorCode>;
 }
 
@@ -2284,23 +2251,17 @@ export type FederalTaxesRequiredValidation = typeof FederalTaxesErrorCodes.REQUI
 
 // @public
 export interface FieldMetadata {
-    // (undocumented)
     hasRedactedValue?: boolean;
-    // (undocumented)
     isDisabled?: boolean;
-    // (undocumented)
     isRequired?: boolean;
     maxDate?: string | null;
     minDate?: string | null;
-    // (undocumented)
     name: string;
 }
 
 // @public
 export interface FieldMetadataWithOptions<TEntry = unknown> extends FieldMetadata {
-    // (undocumented)
     entries?: readonly TEntry[];
-    // (undocumented)
     options: Array<{
         label: string;
         value: string;
@@ -2664,11 +2625,8 @@ export interface HomeAddressSubmitOptions {
 
 // @public
 export interface HookErrorHandling {
-    // (undocumented)
     clearSubmitError: () => void;
-    // (undocumented)
     errors: SDKError[];
-    // (undocumented)
     retryQueries: () => void;
 }
 
@@ -2679,25 +2637,20 @@ export type HookFieldProps<TProps extends {
 
 // @public
 export interface HookFormInternals<TFormData extends FieldValues = FieldValues> {
-    // @internal (undocumented)
+    // @internal
     _fieldElementRegistry?: FieldElementRegistry;
-    // (undocumented)
     formMethods: UseFormReturn<TFormData>;
 }
 
 // @public
 export interface HookLoadingResult {
-    // (undocumented)
     errorHandling: HookErrorHandling;
-    // (undocumented)
     isLoading: true;
 }
 
 // @public
 export interface HookSubmitResult<T> {
-    // (undocumented)
     data: T;
-    // (undocumented)
     mode: 'create' | 'update';
 }
 
@@ -3012,21 +2965,13 @@ export function NumberInputHookField<TErrorCode extends string>(input: NumberInp
 
 // @public
 export interface NumberInputHookFieldProps<TErrorCode extends string = never> extends BaseFieldProps {
-    // (undocumented)
     FieldComponent?: ComponentType<NumberInputProps>;
-    // (undocumented)
     format?: NumberInputProps['format'];
-    // (undocumented)
     formHookResult?: FormHookResult;
-    // (undocumented)
     max?: NumberInputProps['max'];
-    // (undocumented)
     min?: NumberInputProps['min'];
-    // (undocumented)
     name: string;
-    // (undocumented)
     placeholder?: NumberInputProps['placeholder'];
-    // (undocumented)
     validationMessages?: ValidationMessages<TErrorCode>;
 }
 
@@ -3929,15 +3874,10 @@ export function RadioGroupHookField<TErrorCode extends string, TEntry = unknown>
 
 // @public
 export interface RadioGroupHookFieldProps<TErrorCode extends string = never, TEntry = unknown> extends BaseFieldProps {
-    // (undocumented)
     FieldComponent?: ComponentType<RadioGroupProps>;
-    // (undocumented)
     formHookResult?: FormHookResult;
-    // (undocumented)
     getOptionLabel?: (entry: TEntry) => string;
-    // (undocumented)
     name: string;
-    // (undocumented)
     validationMessages?: ValidationMessages<TErrorCode>;
 }
 
@@ -4080,18 +4020,12 @@ export function SelectHookField<TErrorCode extends string, TEntry = unknown>(inp
 
 // @public
 export interface SelectHookFieldProps<TErrorCode extends string = never, TEntry = unknown> extends BaseFieldProps, Pick<SelectProps, 'portalContainer'> {
-    // (undocumented)
     FieldComponent?: ComponentType<SelectProps>;
-    // (undocumented)
     formHookResult?: FormHookResult;
-    // (undocumented)
     getOptionLabel?: (entry: TEntry) => string;
-    // (undocumented)
     name: string;
-    // (undocumented)
     placeholder?: string;
     portalContainer?: SelectProps['portalContainer'];
-    // (undocumented)
     validationMessages?: ValidationMessages<TErrorCode>;
 }
 
@@ -4576,13 +4510,9 @@ export function SwitchHookField<TErrorCode extends string>(input: SwitchHookFiel
 
 // @public
 export interface SwitchHookFieldProps<TErrorCode extends string = never> extends BaseFieldProps {
-    // (undocumented)
     FieldComponent?: ComponentType<SwitchProps>;
-    // (undocumented)
     formHookResult?: FormHookResult;
-    // (undocumented)
     name: string;
-    // (undocumented)
     validationMessages?: ValidationMessages<TErrorCode>;
 }
 
@@ -4715,17 +4645,11 @@ export function TextInputHookField<TErrorCode extends string, TOptionalErrorCode
 
 // @public
 export interface TextInputHookFieldProps<TErrorCode extends string = never, TOptionalErrorCode extends string = never> extends BaseFieldProps {
-    // (undocumented)
     FieldComponent?: ComponentType<TextInputProps>;
-    // (undocumented)
     formHookResult?: FormHookResult;
-    // (undocumented)
     name: string;
-    // (undocumented)
     placeholder?: string;
-    // (undocumented)
     transform?: (value: string) => string;
-    // (undocumented)
     validationMessages?: ValidationMessages<TErrorCode, TOptionalErrorCode>;
 }
 
@@ -5148,7 +5072,9 @@ export interface UseDeductionFormReady extends BaseFormHookReady<FieldsMetadata,
 // @public (undocumented)
 export type UseDeductionFormResult = HookLoadingResult | UseDeductionFormReady;
 
-// @public
+// Warning: (ae-internal-missing-underscore) The name "useDeriveFieldsMetadata" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
 export function useDeriveFieldsMetadata<T extends Record<string, z.ZodType>, TFormData extends FieldValues = FieldValues>(metadataConfig: FieldsMetadataConfig<T>, control: Control<TFormData>): Record<keyof T, FieldMetadata>;
 
 // Warning: (ae-missing-release-tag) "UsedPreparerFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -5289,7 +5215,9 @@ export interface UseFederalTaxesFormReady extends BaseFormHookReady<FieldsMetada
 // @public (undocumented)
 export type UseFederalTaxesFormResult = HookLoadingResult | UseFederalTaxesFormReady;
 
-// @public
+// Warning: (ae-internal-missing-underscore) The name "useFieldErrorMessage" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
 export function useFieldErrorMessage<TErrorCode extends string>(fieldName: string, validationMessages?: ValidationMessages<TErrorCode>): string | undefined;
 
 // Warning: (ae-missing-release-tag) "useHomeAddressForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -5743,7 +5671,9 @@ interface ViewHolidayScheduleProps extends BaseComponentInterface {
     companyId: string;
 }
 
-// @public
+// Warning: (ae-internal-missing-underscore) The name "withOptions" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
 export function withOptions<TEntry = unknown>(base: FieldMetadata, options: Array<{
     label: string;
     value: string;
@@ -5893,7 +5823,7 @@ export type ZipValidation = (typeof HomeAddressErrorCodes)['REQUIRED' | 'INVALID
 
 // Warnings were encountered during analysis:
 //
-// dist/partner-hook-utils/types.d.ts:228:13 - (ae-forgotten-export) The symbol "FieldElementRegistry" needs to be exported by the entry point index.d.ts
+// dist/partner-hook-utils/types.d.ts:267:13 - (ae-forgotten-export) The symbol "FieldElementRegistry" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

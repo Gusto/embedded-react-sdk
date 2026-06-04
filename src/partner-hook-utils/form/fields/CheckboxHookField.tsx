@@ -6,15 +6,21 @@ import { CheckboxField } from '@/components/Common'
 import type { CheckboxProps } from '@/components/Common/UI/Checkbox/CheckboxTypes'
 
 /**
- * Props for {@link CheckboxHookField}.
+ * Props accepted by a checkbox field surfaced through a form hook.
+ * Exposes `validationMessages` for custom error text alongside the shared base
+ * field attributes (`label`, `description`).
  *
  * @typeParam TErrorCode - Validation error code keys mapped via `validationMessages`.
  * @public
  */
 export interface CheckboxHookFieldProps<TErrorCode extends string = never> extends BaseFieldProps {
+  /** The field name; must match the corresponding key in the form schema. */
   name: string
+  /** Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. */
   formHookResult?: FormHookResult
+  /** Custom error text keyed by validation error code. */
   validationMessages?: ValidationMessages<TErrorCode>
+  /** Replaces the default checkbox UI component; must accept the same props as `CheckboxProps`. */
   FieldComponent?: ComponentType<CheckboxProps>
 }
 

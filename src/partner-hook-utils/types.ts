@@ -14,9 +14,13 @@ import type { SDKError } from '@/types/sdkError'
  * @public
  */
 export interface FieldMetadata {
+  /** Field name as registered with react-hook-form. */
   name: string
+  /** Whether the field must have a value for the form to submit. */
   isRequired?: boolean
+  /** Whether the field should be rendered in a non-interactive state. */
   isDisabled?: boolean
+  /** Whether the server returned a redacted placeholder instead of the real value. */
   hasRedactedValue?: boolean
   /** ISO date string lower bound for date picker fields. Set by hooks; consumed by DatePickerHookField. */
   minDate?: string | null
@@ -36,7 +40,9 @@ export interface FieldMetadata {
  * @public
  */
 export interface FieldMetadataWithOptions<TEntry = unknown> extends FieldMetadata {
+  /** Display options as `label`/`value` pairs used to render the select-like control. */
   options: Array<{ label: string; value: string }>
+  /** Raw records the options were derived from; present when the hook supplies them for callers that need additional attributes. */
   entries?: readonly TEntry[]
 }
 
@@ -75,7 +81,9 @@ export type ValidationMessages<
  * @public
  */
 export interface BaseFieldProps {
+  /** Visible label rendered above the field. */
   label: string
+  /** Optional helper text rendered below the field. */
   description?: React.ReactNode
 }
 
@@ -103,8 +111,19 @@ export type HookFieldProps<TProps extends { name: string }> = Omit<TProps, 'name
  * @public
  */
 export interface HookFormInternals<TFormData extends FieldValues = FieldValues> {
+  /** The full react-hook-form return value; use for watching fields, setting values, or triggering validation. */
   formMethods: UseFormReturn<TFormData>
-  /** @internal */
+  /**
+   * Internal field element registry; not part of the public API surface.
+   *
+   * @privateRemarks
+   * Per-form map of registered field `name` → DOM element. Populated by
+   * `useField` via a ref callback and consumed by `composeSubmitHandler` to
+   * focus the visually first invalid field across multiple composed forms.
+   * `SDKFormProvider` and the `withFieldElementRegistry` HookField wrapper
+   * publish it via context for `useField` to populate.
+   * @internal
+   */
   _fieldElementRegistry?: FieldElementRegistry
 }
 
@@ -120,7 +139,9 @@ export interface HookFormInternals<TFormData extends FieldValues = FieldValues> 
  * @public
  */
 export interface HookLoadingResult {
+  /** Always `true` in this branch; narrows to `false` once the hook's ready-state shape is available. */
   isLoading: true
+  /** Error state available before the form loads, e.g. for query errors surfaced during data fetching. */
   errorHandling: HookErrorHandling
 }
 
@@ -137,7 +158,9 @@ export interface HookLoadingResult {
  * @public
  */
 export interface HookSubmitResult<T> {
+  /** Whether the submission created a new entity or updated an existing one. */
   mode: 'create' | 'update'
+  /** The saved entity returned by the API. */
   data: T
 }
 
@@ -155,8 +178,11 @@ export interface HookSubmitResult<T> {
  * @public
  */
 export interface HookErrorHandling {
+  /** Aggregated fetch and submit errors as normalized {@link SDKError} values. */
   errors: SDKError[]
+  /** Refetches every failed data-fetching query; dependent queries re-trigger automatically when their dependencies resolve. */
   retryQueries: () => void
+  /** Clears the most recent submission error. */
   clearSubmitError: () => void
 }
 
@@ -177,9 +203,13 @@ export interface BaseHookReady<
   TData extends Record<string, unknown> = Record<string, unknown>,
   TStatus extends Record<string, unknown> = Record<string, unknown>,
 > {
+  /** Always `false` in this branch; discriminates from {@link HookLoadingResult}. */
   isLoading: false
+  /** Hook-specific data payload; shape is narrowed by each concrete hook via `TData`. */
   data: TData
+  /** Hook-specific status flags; shape is narrowed by each concrete hook via `TStatus`. */
   status: TStatus
+  /** Error state and recovery actions. */
   errorHandling: HookErrorHandling
 }
 
@@ -206,11 +236,17 @@ export interface BaseFormHookReady<
   TFormData extends FieldValues = FieldValues,
   TFields extends object = Record<string, unknown>,
 > {
+  /** Always `false` in this branch; discriminates from {@link HookLoadingResult}. */
   isLoading: false
+  /** Hook-specific data payload; shape is narrowed by each concrete hook. */
   data: Record<string, unknown>
+  /** Submission state; `isPending` is `true` while a mutation is in flight, `mode` reflects whether the hook will create or update. */
   status: { isPending: boolean; mode: 'create' | 'update' }
+  /** Hook-specific submit actions; shape is narrowed by each concrete hook. */
   actions: Record<string, unknown>
+  /** Error state and recovery actions. */
   errorHandling: HookErrorHandling
+  /** Form bindings: pre-bound field components, per-field metadata, submission values, and react-hook-form internals. */
   form: {
     Fields: TFields
     fieldsMetadata: TFieldsMetadata
@@ -230,6 +266,10 @@ export interface BaseFormHookReady<
  * under an `SDKFormProvider`.
  *
  * @public
+ * @privateRemarks
+ * `_fieldElementRegistry` is forwarded from {@link HookFormInternals} so HookFields
+ * can self-publish the registry for descendant `useField` calls when partners
+ * use the prop-based field connection path (no `SDKFormProvider`).
  */
 export type FormHookResult = {
   errorHandling: Pick<BaseFormHookReady['errorHandling'], 'errors'>

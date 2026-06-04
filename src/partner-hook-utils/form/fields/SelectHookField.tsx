@@ -7,7 +7,11 @@ import { SelectField } from '@/components/Common'
 import type { SelectProps } from '@/components/Common/UI/Select/SelectTypes'
 
 /**
- * Props for {@link SelectHookField}.
+ * Props accepted by a select field surfaced through a form hook.
+ * Exposes `getOptionLabel` to customize how option entries are rendered as labels,
+ * `placeholder` text, `portalContainer` for correct stacking inside modals,
+ * and `validationMessages` for custom error text alongside the shared base field
+ * attributes (`label`, `description`).
  *
  * @typeParam TErrorCode - Validation error code keys mapped via `validationMessages`.
  * @typeParam TEntry - Shape of each option entry consumed by `getOptionLabel`.
@@ -15,13 +19,19 @@ import type { SelectProps } from '@/components/Common/UI/Select/SelectTypes'
  */
 export interface SelectHookFieldProps<TErrorCode extends string = never, TEntry = unknown>
   extends BaseFieldProps, Pick<SelectProps, 'portalContainer'> {
+  /** The field name; must match the corresponding key in the form schema. */
   name: string
+  /** Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. */
   formHookResult?: FormHookResult
+  /** Custom error text keyed by validation error code. */
   validationMessages?: ValidationMessages<TErrorCode>
+  /** Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. */
   getOptionLabel?: (entry: TEntry) => string
+  /** Placeholder text displayed when no option is selected. */
   placeholder?: string
+  /** Replaces the default select UI component; must accept the same props as `SelectProps`. */
   FieldComponent?: ComponentType<SelectProps>
-  /** When used inside a modal, pass the modal backdrop ref’s element so the listbox stacks correctly. */
+  /** When used inside a modal, pass the modal backdrop ref's element so the listbox stacks correctly. */
   portalContainer?: SelectProps['portalContainer']
 }
 

@@ -25,7 +25,7 @@ import type { FieldsMetadataConfig } from './buildFormSchema'
  * @param control - react-hook-form `control` returned by `useForm`.
  * @returns A map from field name to {@link FieldMetadata}, recomputed whenever
  *   a watched dependency changes.
- * @public
+ * @internal
  */
 export function useDeriveFieldsMetadata<
   T extends Record<string, z.ZodType>,

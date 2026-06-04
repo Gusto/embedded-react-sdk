@@ -422,14 +422,8 @@ export const timeOffEvents = {
  * always one of the string values in this object. Use this map to compare
  * against the incoming `type` rather than hard-coding strings.
  *
- * All domain-specific event groups ({@link employeeEvents},
- * {@link companyEvents}, {@link contractorEvents},
- * {@link contractorPaymentEvents}, {@link payScheduleEvents},
- * {@link runPayrollEvents}, {@link payrollWireEvents},
- * {@link informationRequestEvents}, {@link recoveryCasesEvents},
- * {@link offCycleEvents}, {@link terminationEvents}, {@link timeOffEvents})
- * are spread into this object alongside a few cross-cutting keys: `ERROR`,
- * `CANCEL`, and `BREADCRUMB_NAVIGATE`.
+ * All domain-specific event groups are spread into this object alongside
+ * a few cross-cutting keys: `ERROR`, `CANCEL`, and `BREADCRUMB_NAVIGATE`.
  *
  * @public
  *

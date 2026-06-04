@@ -7,7 +7,10 @@ import { RadioGroupField } from '@/components/Common'
 import type { RadioGroupProps } from '@/components/Common/UI/RadioGroup/RadioGroupTypes'
 
 /**
- * Props for {@link RadioGroupHookField}.
+ * Props accepted by a radio group field surfaced through a form hook.
+ * Exposes `getOptionLabel` to customize how option entries are rendered as labels,
+ * and `validationMessages` for custom error text alongside the shared base field
+ * attributes (`label`, `description`).
  *
  * @typeParam TErrorCode - Validation error code keys mapped via `validationMessages`.
  * @typeParam TEntry - Shape of each option entry consumed by `getOptionLabel`.
@@ -17,10 +20,15 @@ export interface RadioGroupHookFieldProps<
   TErrorCode extends string = never,
   TEntry = unknown,
 > extends BaseFieldProps {
+  /** The field name; must match the corresponding key in the form schema. */
   name: string
+  /** Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. */
   formHookResult?: FormHookResult
+  /** Custom error text keyed by validation error code. */
   validationMessages?: ValidationMessages<TErrorCode>
+  /** Maps a raw option entry to its display label; when omitted, options use the labels provided by the hook. */
   getOptionLabel?: (entry: TEntry) => string
+  /** Replaces the default radio group UI component; must accept the same props as `RadioGroupProps`. */
   FieldComponent?: ComponentType<RadioGroupProps>
 }
 
