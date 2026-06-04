@@ -39,6 +39,7 @@ Employee management components can be used to compose your own workflow, or can 
   - [Composing from EmployeeManagement.HomeAddressCard and EmployeeManagement.HomeAddressEditForm directly](#composing-from-employeemanagementhomeaddresscard-and-employeemanagementhomeaddresseditform-directly)
 - [EmployeeManagement.WorkAddress](#employeemanagementworkaddress)
   - [Composing from EmployeeManagement.WorkAddressCard and EmployeeManagement.WorkAddressEditForm directly](#composing-from-employeemanagementworkaddresscard-and-employeemanagementworkaddresseditform-directly)
+- [EmployeeManagement.PaystubsCard](#employeemanagementpaystubscard)
 
 ### EmployeeManagement.DashboardFlow
 
@@ -536,3 +537,42 @@ function MyWorkAddressPanel({ employeeId }) {
 | EMPLOYEE_MANAGEMENT_WORK_ADDRESS_UPDATED        | Fired after a work address is updated              | Updated `EmployeeWorkAddress` entity |
 | EMPLOYEE_MANAGEMENT_WORK_ADDRESS_DELETED        | Fired after a work address is deleted              | Deleted `EmployeeWorkAddress` entity |
 | EMPLOYEE_MANAGEMENT_WORK_ADDRESS_EDIT_CANCELLED | Fired when the user clicks Back on the edit screen | None                                 |
+
+### EmployeeManagement.PaystubsCard
+
+A self-contained, read-only card for viewing an employee's paystubs — the same "Paystubs" surface the dashboard renders, drop-in usable anywhere. Renders a paginated table showing each payday, check amount, gross pay, and payment method, with a per-row download button. Clicking a row's download button fetches that paystub's PDF and opens it in a new browser tab — there is no edit surface or view to swap into; the card's only action is the download side effect.
+
+Unlike most other `EmployeeManagement.*` components, the paystubs surface is exported only as a card and not as a block: there is no edit form to orchestrate transitions with, so the card is the entire feature. Render it inline anywhere a `<div>` would go; wrap it in your own error and suspense boundaries if you want fallback UI for those scenarios.
+
+```jsx
+import { componentEvents, EmployeeManagement } from '@gusto/embedded-react-sdk'
+
+function MyPaystubsPanel({ employeeId }) {
+  return (
+    <EmployeeManagement.PaystubsCard
+      employeeId={employeeId}
+      onEvent={(eventType, payload) => {
+        if (eventType === componentEvents.EMPLOYEE_MANAGEMENT_PAYSTUBS_CARD_DOWNLOADED) {
+          // payload is { employeeId, payrollUuid }
+        }
+      }}
+    />
+  )
+}
+```
+
+The card populates its "Payment method" column from the employee's payment method, which it fetches internally alongside the paystubs list — the per-paystub event payload does not carry the payment method itself.
+
+#### Props
+
+| Name                | Type     | Description                            |
+| ------------------- | -------- | -------------------------------------- |
+| employeeId Required | string   | The associated employee identifier.    |
+| onEvent Required    | function | See events table for available events. |
+
+#### Events
+
+| Event type                                           | Description                                                                   | Data                                        |
+| ---------------------------------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------- |
+| EMPLOYEE_MANAGEMENT_PAYSTUBS_CARD_DOWNLOAD_REQUESTED | Fired when the user clicks a row's download button, before the PDF is fetched | { employeeId: string, payrollUuid: string } |
+| EMPLOYEE_MANAGEMENT_PAYSTUBS_CARD_DOWNLOADED         | Fired after the paystub PDF is successfully fetched and opened in a new tab   | { employeeId: string, payrollUuid: string } |

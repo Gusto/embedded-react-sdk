@@ -4,6 +4,7 @@ interface QueryWithError {
   error: Error | null
 }
 
+/** @internal */
 export function collectErrors(queries: QueryWithError[], submitError: SDKError | null): SDKError[] {
   const queryErrors = queries
     .filter((q): q is QueryWithError & { error: Error } => q.error != null)

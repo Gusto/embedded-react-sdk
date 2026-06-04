@@ -9,6 +9,13 @@ interface FormFieldsMetadataProviderProps {
   children: ReactNode
 }
 
+/**
+ * Publishes field metadata and current form errors via {@link FormFieldsMetadataContext}
+ * so descendant hook fields can resolve their requiredness, options, and inline
+ * error messages without prop drilling.
+ *
+ * @internal
+ */
 export function FormFieldsMetadataProvider({
   metadata,
   errors,

@@ -5,13 +5,33 @@ import { withFieldElementRegistry } from './withFieldElementRegistry'
 import { SwitchField } from '@/components/Common'
 import type { SwitchProps } from '@/components/Common/UI/Switch/SwitchTypes'
 
+/**
+ * Props accepted by a toggle switch field surfaced through a form hook.
+ * Exposes `validationMessages` for custom error text alongside the shared base
+ * field attributes (`label`, `description`).
+ *
+ * @typeParam TErrorCode - Validation error code keys mapped via `validationMessages`.
+ * @public
+ */
 export interface SwitchHookFieldProps<TErrorCode extends string = never> extends BaseFieldProps {
+  /** The field name; must match the corresponding key in the form schema. */
   name: string
+  /** Form hook result to connect to; falls back to the nearest `SDKFormProvider` when omitted. */
   formHookResult?: FormHookResult
+  /** Custom error text keyed by validation error code. */
   validationMessages?: ValidationMessages<TErrorCode>
+  /** Replaces the default toggle switch UI component; must accept the same props as `SwitchProps`. */
   FieldComponent?: ComponentType<SwitchProps>
 }
 
+/**
+ * Switch field connected to a partner form hook result via `useHookFieldResolution`.
+ *
+ * @typeParam TErrorCode - Validation error code keys mapped via `validationMessages`.
+ * @param props - Field configuration including `name`, `formHookResult`, and label content.
+ * @returns The rendered switch field wrapped in the field element registry.
+ * @internal
+ */
 export function SwitchHookField<TErrorCode extends string>({
   name,
   formHookResult,

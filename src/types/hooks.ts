@@ -25,27 +25,41 @@ export type {
 }
 
 /**
- * SDK hooks interface for consumers
+ * Request interceptors for customizing HTTP requests and responses.
  *
- * This interface defines the supported hook types that can be passed to the GustoProvider.
- * Each hook type must implement the corresponding interface from `@gusto/embedded-api-v-2025-11-15/hooks/types`.
+ * @remarks
+ * Pass an instance of this interface to {@link GustoProvider} via `config.hooks` to
+ * inspect or modify requests and responses across the four lifecycle stages.
+ * Each entry is an array of objects implementing the corresponding hook type
+ * from `@gusto/embedded-api-v-2025-11-15/hooks/types`.
  *
- * Only the following hook types are supported:
- * - beforeCreateRequest: Hooks executed before creating a Request object
- * - beforeRequest: Hooks executed after Request creation but before sending
- * - afterSuccess: Hooks executed after successful responses (2xx status codes)
- * - afterError: Hooks executed after error responses (4xx, 5xx) or network failures
+ * | Stage | When it runs |
+ * | ----- | ------------ |
+ * | `beforeCreateRequest` | Before the `Request` object is constructed (URL / method changes) |
+ * | `beforeRequest` | After the `Request` is created but before it is sent (headers, auth tokens) |
+ * | `afterSuccess` | After a successful response (2xx) |
+ * | `afterError` | After an error response (4xx, 5xx) or network failure |
+ *
+ * @public
  *
  * @example
- * ```typescript
+ * ```tsx
+ * import { GustoProvider, type SDKHooks } from '@gusto/embedded-react-sdk'
+ *
  * const hooks: SDKHooks = {
- *   beforeRequest: [{
- *     beforeRequest: (context, request) => {
- *       request.headers.set('Authorization', 'Bearer token')
- *       return request
- *     }
- *   }]
+ *   beforeRequest: [
+ *     {
+ *       beforeRequest: (context, request) => {
+ *         request.headers.set('Authorization', `Bearer ${getToken()}`)
+ *         return request
+ *       },
+ *     },
+ *   ],
  * }
+ *
+ * <GustoProvider config={{ baseUrl: '/api/', hooks }}>
+ *   <YourApp />
+ * </GustoProvider>
  * ```
  */
 export interface SDKHooks {

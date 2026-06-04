@@ -34,6 +34,7 @@ export type DashboardSuccessAlert =
   | 'deductionDeleted'
   | 'jobAdded'
   | 'profileUpdated'
+  | 'documentSigned'
 
 export interface DashboardContextInterface extends FlowContextInterface {
   employeeId: string
@@ -63,6 +64,7 @@ export function DashboardViewContextual() {
     deductionDeleted: t('alerts.deductionDeleted'),
     jobAdded: t('alerts.jobAdded'),
     profileUpdated: t('alerts.profileUpdated'),
+    documentSigned: t('alerts.documentSigned'),
   }
 
   return (
