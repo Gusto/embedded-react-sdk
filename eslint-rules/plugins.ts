@@ -1,5 +1,6 @@
 import { FlatConfig } from 'typescript-eslint'
 import requireComment from './tsdoc-require-comment'
+import requireMemberComment from './tsdoc-require-member-comment'
 import requireReleaseTag from './tsdoc-require-release-tag'
 import sortTags from './tsdoc-sort-tags'
 
@@ -15,6 +16,7 @@ export const tsdocCoverage: FlatConfig.Plugin = {
   rules: {
     'require-release-tag': requireReleaseTag,
     'require-comment': requireComment,
+    'require-member-comment': requireMemberComment,
     'sort-tags': sortTags,
   },
 }

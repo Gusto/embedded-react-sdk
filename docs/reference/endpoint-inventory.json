@@ -838,10 +838,6 @@
           "path": "/v1/employees/:employeeId/jobs"
         },
         {
-          "method": "GET",
-          "path": "/v1/employees/:employeeUuid/federal_taxes"
-        },
-        {
           "method": "DELETE",
           "path": "/v1/jobs/:jobId"
         }
@@ -849,7 +845,6 @@
       "variables": [
         "compensationId",
         "employeeId",
-        "employeeUuid",
         "jobId"
       ]
     },
@@ -1970,10 +1965,6 @@
           "path": "/v1/employees/:employeeId/jobs"
         },
         {
-          "method": "GET",
-          "path": "/v1/employees/:employeeUuid/federal_taxes"
-        },
-        {
           "method": "DELETE",
           "path": "/v1/jobs/:jobId"
         }
@@ -1981,7 +1972,6 @@
       "variables": [
         "compensationId",
         "employeeId",
-        "employeeUuid",
         "jobId"
       ]
     },

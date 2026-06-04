@@ -41,6 +41,8 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'EmployeeManagement.EmployeeList': ['companyId'],
   'EmployeeManagement.EmployeeListFlow': ['companyId'],
   'EmployeeManagement.FederalTaxes': ['employeeId'],
+  'EmployeeManagement.FederalTaxesCard': ['employeeId'],
+  'EmployeeManagement.FederalTaxesEditForm': ['employeeId'],
   'EmployeeManagement.HomeAddress': ['employeeId'],
   'EmployeeManagement.HomeAddressCard': ['employeeId'],
   'EmployeeManagement.HomeAddressEditForm': ['employeeId'],

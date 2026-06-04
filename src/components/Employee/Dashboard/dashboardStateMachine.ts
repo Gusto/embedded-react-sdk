@@ -85,7 +85,7 @@ export const dashboardStateMachine = {
       ),
     ),
     transition(
-      componentEvents.EMPLOYEE_FEDERAL_TAXES_EDIT,
+      componentEvents.EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_CARD_EDIT_REQUESTED,
       'federalTaxes',
       reduce(
         (ctx: DashboardContextInterface): DashboardContextInterface => ({
@@ -271,8 +271,16 @@ export const dashboardStateMachine = {
     ),
   ),
   federalTaxes: state<MachineTransition>(
-    transition(componentEvents.CANCEL, 'index', returnToIndex),
-    transition(componentEvents.EMPLOYEE_FEDERAL_TAXES_DONE, 'index', returnToIndex),
+    transition(
+      componentEvents.EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_EDIT_FORM_CANCELLED,
+      'index',
+      returnToIndex,
+    ),
+    transition(
+      componentEvents.EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_EDIT_FORM_SUBMITTED,
+      'index',
+      returnToIndexWithAlert('federalTaxesUpdated'),
+    ),
   ),
   stateTaxes: state<MachineTransition>(
     transition(

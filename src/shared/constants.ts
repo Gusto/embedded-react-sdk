@@ -128,6 +128,14 @@ export const employeeEvents = {
   EMPLOYEE_MANAGEMENT_DEDUCTIONS_EDIT_FORM_CANCELLED:
     'employee/management/deductions/editForm/cancelled',
   EMPLOYEE_MANAGEMENT_DEDUCTIONS_ALERT_DISMISSED: 'employee/management/deductions/alertDismissed',
+  EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_CARD_EDIT_REQUESTED:
+    'employee/management/federalTaxes/card/editRequested',
+  EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_EDIT_FORM_SUBMITTED:
+    'employee/management/federalTaxes/editForm/submitted',
+  EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_EDIT_FORM_CANCELLED:
+    'employee/management/federalTaxes/editForm/cancelled',
+  EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_ALERT_DISMISSED:
+    'employee/management/federalTaxes/alertDismissed',
 } as const
 
 /**
