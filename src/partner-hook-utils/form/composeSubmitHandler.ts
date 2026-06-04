@@ -59,7 +59,9 @@ interface FormValidationResult {
  * @public
  */
 export interface ComposeSubmitHandlerResult {
+  /** Submit handler to pass to a form's `onSubmit`. Validates all composed forms before calling `onAllValid`. */
   handleSubmit: (e: SyntheticEvent) => Promise<void>
+  /** Aggregated error state across all composed SDK form hooks. Pass to {@link composeErrorHandler} for screen-level error surfaces. */
   errorHandling: HookErrorHandling
 }
 
@@ -147,7 +149,7 @@ function focusFirstInvalidAcrossForms(results: FormValidationResult[]): void {
  * cross-form focus instead.
  *
  * The returned `errorHandling` is the same shape every SDK hook returns, so the whole result
- * can be passed back into `composeErrorHandler` when you need to add extra
+ * can be passed back into {@link composeErrorHandler} when you need to add extra
  * `@gusto/embedded-api-v-2025-11-15` queries or screen-level submit state.
  *
  * @typeParam TForms - Tuple of form value shapes, one per slot of `forms`.

@@ -202,8 +202,7 @@ After writing documentation, run ESLint on each modified file and fix any report
 npx eslint path/to/modified-file.ts
 ```
 
-The rules that will catch TSDoc issues are tsdoc/syntax, tsdoc-coverage/sort-tags, tsdoc-coverage/require-release-tag, and tsdoc-coverage/require-comment. ESLint
-will auto-fix tag ordering with --fix; syntax and missing-tag errors require manual correction.
+The rules that will catch TSDoc issues are tsdoc/syntax, tsdoc-coverage/sort-tags, tsdoc-coverage/require-release-tag, tsdoc-coverage/require-comment, and tsdoc-coverage/require-member-comment. ESLint will auto-fix tag ordering with --fix; syntax and missing-tag errors require manual correction. `require-member-comment` fires when a member of a `@public`-facing interface lacks any `/** */` comment — fix by adding a one-line `/** description */` inline on the property or method signature.
 
 Manual checks ESLint cannot catch:
 
