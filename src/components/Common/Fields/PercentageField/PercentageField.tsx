@@ -5,6 +5,7 @@ import { useField } from '@/components/Common/Fields/hooks/useField'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { decimalToPercent, percentToDecimal } from '@/helpers/percentageConversion'
 
+/** @internal */
 export interface PercentageFieldProps extends Pick<
   NumberInputProps,
   'isDisabled' | 'className' | 'label' | 'isRequired' | 'description' | 'errorMessage'
@@ -20,6 +21,7 @@ function toDefaultString(value?: string | number | boolean | null): string | und
   return String(value)
 }
 
+/** @internal */
 export function PercentageField({
   decimalValue,
   decimalMin,

@@ -1,1 +1,1 @@
-export { CheckboxGroupField, type CheckboxGroupFieldProps } from './CheckboxGroupField'
+export { CheckboxGroupField } from './CheckboxGroupField'

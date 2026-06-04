@@ -9,6 +9,7 @@ import {
 
 type GenericSelectOption<TValue> = OptionWithGenericValue<TValue, SelectOption>
 
+/** @internal */
 export interface SelectFieldProps<TValue>
   extends
     Omit<SelectProps, 'name' | 'value' | 'onChange' | 'options' | 'isInvalid'>,
@@ -18,6 +19,7 @@ export interface SelectFieldProps<TValue>
   FieldComponent?: ComponentType<SelectProps>
 }
 
+/** @internal */
 export const SelectField = <TValue = string,>({
   rules,
   defaultValue,

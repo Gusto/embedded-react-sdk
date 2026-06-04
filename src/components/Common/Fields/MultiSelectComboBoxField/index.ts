@@ -1,4 +1,1 @@
-export {
-  MultiSelectComboBoxField,
-  type MultiSelectComboBoxFieldProps,
-} from './MultiSelectComboBoxField'
+export { MultiSelectComboBoxField } from './MultiSelectComboBoxField'

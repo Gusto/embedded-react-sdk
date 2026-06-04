@@ -3,11 +3,13 @@ import { useField, type UseFieldProps } from '@/components/Common/Fields/hooks/u
 import type { NumberInputProps } from '@/components/Common/UI/NumberInput/NumberInputTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
+/** @internal */
 export interface NumberInputFieldProps
   extends Omit<NumberInputProps, 'name' | 'value' | 'isInvalid'>, UseFieldProps<number> {
   FieldComponent?: ComponentType<NumberInputProps>
 }
 
+/** @internal */
 export const NumberInputField: React.FC<NumberInputFieldProps> = ({
   rules: providedRules,
   defaultValue,
