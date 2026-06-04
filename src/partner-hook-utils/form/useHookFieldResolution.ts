@@ -13,9 +13,9 @@ interface HookFieldResolution {
 }
 
 /**
- * Resolves all data a HookField needs from either a `formHookResult` prop or
- * the standard context providers (FormProvider + FormFieldsMetadataProvider).
+ * Resolves all data a HookField needs from either a `formHookResult` prop or the standard context providers (FormProvider + FormFieldsMetadataProvider).
  *
+ * @remarks
  * When `formHookResult` is provided, metadata/errors/control/registry are read
  * from the prop — no context providers required. When absent, falls back to
  * the existing context-based path.
@@ -29,6 +29,14 @@ interface HookFieldResolution {
  * self-publish the registry via `withFieldElementRegistry`. In the
  * `SDKFormProvider` path the wrap is a no-op (no registry on the prop) and the
  * outer provider's registry remains in scope.
+ *
+ * @typeParam TErrorCode - Required error codes the field can produce.
+ * @typeParam TOptionalErrorCode - Optional error codes that only apply in some configurations.
+ * @param name - Form-field name to resolve metadata, errors, and control for.
+ * @param formHookResult - Form hook result passed via the `formHookResult` prop, or `undefined` to read from context.
+ * @param validationMessages - Map of error codes to display strings, forwarded to error resolution.
+ * @returns The metadata entry, RHF `control`, resolved error message, and field element registry for this field.
+ * @internal
  */
 export function useHookFieldResolution<
   TErrorCode extends string,

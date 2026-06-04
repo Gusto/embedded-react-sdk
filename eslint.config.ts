@@ -177,9 +177,6 @@ export default [
       // As we improve documentation, remove directories from the ignore path
       'src/components/**',
       'src/contexts/**',
-      'src/partner-hook-utils/**',
-      'src/shared/**',
-      'src/types/**',
     ],
     rules: {
       'tsdoc-coverage/require-comment': 'error',

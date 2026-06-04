@@ -53,6 +53,34 @@ interface SDKFormProviderProps<
   children: ReactNode
 }
 
+/**
+ * Provides form context to field components so they can read metadata, control,
+ * and error state without an explicit `formHookResult` prop on each field.
+ * Server-side field errors are automatically synced onto their corresponding fields.
+ *
+ * @public
+ *
+ * @example
+ * ```tsx
+ * const formHookResult = useEmployeeDetailsForm({ employeeId })
+ * const { Fields } = formHookResult.form
+ *
+ * // SDKFormProvider supplies context only — wire up submission and render the
+ * // <form> element yourself.
+ * const handleSubmit = () =>
+ *   formHookResult.actions.onSubmit({ onEmployeeUpdated: (emp) => { ... } })
+ *
+ * return (
+ *   <SDKFormProvider formHookResult={formHookResult}>
+ *     <form onSubmit={handleSubmit}>
+ *       <Fields.FirstName label="First name" />
+ *       <Fields.LastName label="Last name" />
+ *       <button type="submit">Save</button>
+ *     </form>
+ *   </SDKFormProvider>
+ * )
+ * ```
+ */
 export function SDKFormProvider<
   TFormData extends FieldValues = FieldValues,
   TFieldsMetadata extends {

@@ -3,17 +3,23 @@
  */
 import type { SDKError } from './sdkError'
 
+/**
+ * Unit of measure for an {@link ObservabilityMetric}.
+ *
+ * @public
+ */
 export type ObservabilityMetricUnit = 'ms' | 'count' | 'bytes' | 'percent'
 
 /**
- * An `SDKError` enriched with internal component context for observability telemetry.
+ * An {@link SDKError} enriched with component context for observability telemetry.
  *
- * Partners receive this type through `ObservabilityHook.onError`. It extends the
- * core `SDKError` with `timestamp`, `componentName`, and `componentStack` so that
- * error-tracking tools (e.g. Sentry) can correlate and group errors.
+ * @remarks
+ * Delivered to {@link ObservabilityHook.onError}. Extends {@link SDKError} with
+ * `timestamp`, `componentName`, and `componentStack` so error-tracking tools
+ * (e.g. Sentry) can correlate and group errors. The base {@link SDKError}
+ * (without these fields) is the shape exposed through form hooks.
  *
- * The base `SDKError` (without these fields) is the type used in partner-facing
- * hooks like `useEmployeeForm`, keeping the public API clean.
+ * @public
  */
 export interface ObservabilityError extends SDKError {
   /** When the error occurred (Unix timestamp in milliseconds) */
@@ -26,6 +32,16 @@ export interface ObservabilityError extends SDKError {
   componentStack?: string
 }
 
+/**
+ * A performance metric emitted by the SDK to {@link ObservabilityHook.onMetric}.
+ *
+ * @remarks
+ * Built-in metric names include `sdk.form.submit_duration` (form submission time)
+ * and `sdk.component.loading_duration` (time spent in loading/suspense state).
+ * Tags may include `status` (`success` or `error`) and `component` when known.
+ *
+ * @public
+ */
 export interface ObservabilityMetric {
   /** Metric name (e.g., 'sdk.form.submit_duration', 'sdk.component.loading_duration') */
   name: string
@@ -44,7 +60,16 @@ export interface ObservabilityMetric {
 }
 
 /**
- * Configuration for data sanitization in observability hooks
+ * Configuration for sanitizing error and metric data before it reaches observability hooks.
+ *
+ * @remarks
+ * Sanitization runs by default to prevent PII leakage. When enabled, the SDK
+ * pattern-redacts SSNs, emails, phone numbers, credit card numbers, and API
+ * tokens from messages and tags, and removes values for fields with sensitive
+ * names (`password`, `ssn`, `bankAccount`, etc.) from metadata. The `raw`
+ * error object is excluded unless `includeRawError` is set to `true`.
+ *
+ * @public
  */
 export interface SanitizationConfig {
   /**
@@ -75,37 +100,38 @@ export interface SanitizationConfig {
 }
 
 /**
- * Observability hook interface for SDK consumers to implement
+ * Hooks for routing SDK errors and performance metrics into an external monitoring tool.
+ *
+ * @remarks
+ * Pass an instance to {@link GustoProvider} via `config.observability` to forward
+ * errors to services like Sentry or Datadog and to capture performance metrics
+ * for form submissions and component loading. Sanitization is applied before
+ * the hooks are invoked; see {@link SanitizationConfig}.
+ *
+ * @public
  *
  * @example
  * ```tsx
  * import * as Sentry from '@sentry/react'
- * import { GustoProvider } from '@gusto/embedded-react-sdk'
+ * import { GustoProvider, type ObservabilityHook } from '@gusto/embedded-react-sdk'
  *
- * <GustoProvider
- *   config={{
- *     baseUrl: '/api/',
- *     observability: {
- *       onError: (error: ObservabilityError) => {
- *         Sentry.captureException(error.raw, {
- *           level: error.category === 'validation_error' ? 'warning' : 'error',
- *           tags: {
- *             error_category: error.category,
- *             component: error.componentName ?? 'unknown',
- *             http_status: String(error.httpStatus ?? ''),
- *           },
- *         })
+ * const observability: ObservabilityHook = {
+ *   onError: error => {
+ *     Sentry.captureException(error.raw ?? new Error(error.message), {
+ *       level: error.category === 'validation_error' ? 'warning' : 'error',
+ *       tags: {
+ *         error_category: error.category,
+ *         component: error.componentName ?? 'unknown',
+ *         http_status: String(error.httpStatus ?? ''),
  *       },
- *       onMetric: (metric) => {
- *         console.log(`[Metric] ${metric.name}: ${metric.value}${metric.unit}`)
- *       },
- *       sanitization: {
- *         enabled: true,
- *         includeRawError: false,
- *       }
- *     }
- *   }}
- * >
+ *     })
+ *   },
+ *   onMetric: metric => {
+ *     console.log(`[Metric] ${metric.name}: ${metric.value}${metric.unit ?? ''}`)
+ *   },
+ * }
+ *
+ * <GustoProvider config={{ baseUrl: '/api/', observability }}>
  *   <YourApp />
  * </GustoProvider>
  * ```

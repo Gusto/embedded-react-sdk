@@ -32,10 +32,14 @@ interface ComposableFormHookResult {
 /**
  * Accepted input for a single slot of `composeSubmitHandler`'s `forms` array.
  *
+ * @remarks
  * - SDK form hook results (anything matching `ComposableFormHookResult`) are composed directly.
  * - A raw `react-hook-form` `UseFormReturn<T>` is supported for screen-local auxiliary forms
  *   that don't warrant a dedicated SDK hook. Raw forms contribute validation/focus behavior
  *   but no `errorHandling` (fields surface their own inline errors via react-hook-form).
+ *
+ * @typeParam T - The shape of the form values when a raw `UseFormReturn` is passed.
+ * @internal
  */
 export type ComposeSubmitInput<T extends FieldValues = FieldValues> =
   | ComposableFormHookResult
@@ -48,6 +52,12 @@ interface FormValidationResult {
   errors: Record<string, unknown>
 }
 
+/**
+ * Result returned by {@link composeSubmitHandler}: a single submit handler that
+ * coordinates validation across the composed forms, and aggregated error state.
+ *
+ * @public
+ */
 export interface ComposeSubmitHandlerResult {
   handleSubmit: (e: SyntheticEvent) => Promise<void>
   errorHandling: HookErrorHandling
@@ -121,9 +131,9 @@ function focusFirstInvalidAcrossForms(results: FormValidationResult[]): void {
 }
 
 /**
- * Coordinates validation and submission across multiple form hooks on the same page, and
- * returns aggregated `errorHandling` for those forms so you can drive a single error surface.
+ * Coordinates validation and submission across multiple form hooks on the same page.
  *
+ * @remarks
  * Validates all forms simultaneously via `handleSubmit()`, then focuses the visually first
  * invalid field across all forms (sorted by `getBoundingClientRect()`). Only calls
  * `onAllValid` when every form passes.
@@ -140,8 +150,14 @@ function focusFirstInvalidAcrossForms(results: FormValidationResult[]): void {
  * can be passed back into `composeErrorHandler` when you need to add extra
  * `@gusto/embedded-api-v-2025-11-15` queries or screen-level submit state.
  *
+ * @typeParam TForms - Tuple of form value shapes, one per slot of `forms`.
+ * @param forms - Form hook results and/or raw `UseFormReturn` instances to coordinate.
+ * @param onAllValid - Async callback invoked once every form has passed validation.
+ * @returns A {@link ComposeSubmitHandlerResult} with a unified `handleSubmit` and aggregated `errorHandling`.
+ * @public
+ *
  * @example
- * ```ts
+ * ```tsx
  * const detailsForm = useEmployeeDetailsForm({ employeeId, shouldFocusError: false })
  * const addressForm = useHomeAddressForm({ employeeId, shouldFocusError: false })
  *
@@ -152,9 +168,6 @@ function focusFirstInvalidAcrossForms(results: FormValidationResult[]): void {
  *     await addressForm.actions.onSubmit()
  *   },
  * )
- *
- * // With extra queries or screen-level submit state:
- * // const errorHandling = composeErrorHandler([submitResult, extraQuery], { submitError, setSubmitError })
  *
  * return <form onSubmit={handleSubmit}>...</form>
  * ```
