@@ -41,6 +41,7 @@ Spawn the `tsdoc-backfill` agent:
 Wait for it to complete. Capture the violation list and the eslint.config.ts change it reports.
 
 If it reports zero violations, skip Phase 2, run the final verification below, and return the report.
+If the backfill agent reports a blocking error, stop and relay to the user.
 
 ## Phase 2 — Write documentation (batched, background)
 
@@ -57,7 +58,8 @@ Spawn all **first-batch** agents across different directory groups **in parallel
 
 Tell the user: "Phase 1 complete — $N violations found across $M files. Documenting in $K batches across $G directory groups, I'll report back when all are done."
 
-Wait for **all background agents to complete** before proceeding to Phase 3.
+Wait for **all background agents to complete successfully** before proceeding to Phase 3.
+If any agents report a blocking error, stop and relay to the user.
 
 ### Spawning each batch
 
@@ -67,7 +69,6 @@ For each batch, spawn `tsdoc-api-documenter` with **`run_in_background: true`**:
 - **prompt**:
 
 ```
-
 Document the following exported symbols in the embedded-react-sdk repo.
 These were discovered by the tsdoc-backfill agent as missing TSDoc in $TARGET.
 
@@ -81,23 +82,17 @@ Work through each file in order. For each file:
 3. Fill in prose for all symbols in the file, then write them all to the file (multiple Edit calls in the same turn where possible).
 4. After writing all symbols in a file, fix any ESLint errors in a single pass, then run ESLint once to confirm clean before moving to the next file.
 
-For exported **React components**, before writing the events table in `@remarks`:
-
-- Find every `onEvent(companyEvents.*, ...)` call in the component file — including calls inside nested handler functions (e.g. a function like `onXxxFormEvent` that proxies events from a child component's `onEvent`). These bubbled-up events must appear in the table.
-- Cross-reference the events table in docs/ to catch any you might have missed.
-
-Return a summary of what was documented and any symbols skipped with reasons.
-
+Return a summary of what was documented and any symbols skipped with reasons. Check stderr output from tsdoc-stub calls and include any unresolved symbol warnings.
 ```
 
 ## Phase 3 — Final verification and report (on completion notification)
 
-When the background agent completes, run in sequence:
+When the background agents complete, run in sequence:
 
 **Step 1 — ESLint**
 
 ```bash
-npx eslint '$TARGET' 2>&1
+npx eslint '$TARGET' --fix 2>&1
 ```
 
 **Step 2 — Build and API report**
@@ -106,7 +101,7 @@ npx eslint '$TARGET' 2>&1
 npm run build && npm run api-report:derive 2>&1
 ```
 
-Then diff the report to see what changed:
+If there are build errors, stop and report to the user. Otherwise, diff the report to see what changed:
 
 ```bash
 git diff .reports/embedded-react-sdk.api.md

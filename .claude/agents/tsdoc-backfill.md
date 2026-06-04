@@ -14,6 +14,32 @@ The target directory is provided in the user's message. Normalise it: strip any 
 
 ---
 
+## Step 0 — Remove dead code with knip
+
+Run knip scoped to the target directory so deleted exports don't appear as TSDoc violations:
+
+```bash
+bash .claude/scripts/knip-fix.sh '<TARGET>'
+```
+
+After the script exits, run the build to surface any type errors introduced by the export removal:
+
+```bash
+npm run build 2>&1
+```
+
+If there are errors, read the affected files and fix them. Common cases:
+
+- An import referencing an export knip removed → delete or update the import.
+- A re-export barrel that now re-exports nothing → remove the barrel entry.
+- A type that was removed but is still referenced → inline the type or restore the export if it's genuinely public.
+
+Repeat `npm run build` until the build is clean. If you get stuck after one retry, stop and explain what's blocking to the user.
+
+If this step produces any file changes (knip removed exports or deleted files), note them briefly. Then continue to Step 1.
+
+---
+
 ## Step 1 — Update eslint.config.ts
 
 Read `eslint.config.ts`. Locate the block marked with the comment `/** Library: well-documented code. */`. Its `ignores` array lists directories excluded from strict
@@ -25,31 +51,17 @@ If `<TARGET>/**` appears literally (e.g. `'src/helpers/**'`), delete only that o
 **Case B — an ancestor glob covers the target.**
 If a parent-level glob (e.g. `'src/components/**'`) matches `<TARGET>` but `<TARGET>/**` is not listed, do NOT modify the existing block.
 
-First, check whether a Case B override block already exists — look for a block whose comment starts with `/** Library: well-documented code —`. If one exists, **add `'<TARGET>/**/\*.{ts,tsx}'`to its`files` array\*\* rather than creating a new block. Update the comment to list all covered paths.
-
-If no Case B block exists yet, append a new one immediately after the well-documented block:
-
-```ts
-/** Library: well-documented code — <TARGET>. */
-{
-  files: ['<TARGET>/**/*.{ts,tsx}'],
-  ignores: LIBRARY_IGNORE_PATHS,
-  rules: {
-    'tsdoc-coverage/require-comment': 'error',
-    'tsdoc-coverage/require-release-tag': 'error',
-  },
-},
-```
+Locate the block with the comment `/** Library: well-documented code allowlist. */` and add `'<TARGET>/**/\*.{ts,tsx}' `to its `files` array.
 
 ---
 
 ## Step 2 — Discover violations
 
 ```bash
-npx eslint '<TARGET>' 2>&1
+npx eslint '<TARGET>' --fix 2>&1
 ```
 
-Collect every line containing `tsdoc-coverage/require-comment`, `tsdoc-coverage/require-release-tag`, or `tsdoc/syntax`. Build a list of `{ file, line, rule }` entries. The ESLint output already contains file paths, line numbers, and symbol names — do not read source files to confirm; use the ESLint output directly to build the violation list.
+Collect every line containing rules that start with `tsdoc/` or `tsdoc-coverage/`. Build a list of `{ file, line, rule }` entries. The ESLint output already contains file paths, line numbers, and symbol names — do not read source files to confirm; use the ESLint output directly to build the violation list.
 
 Return your output in this format:
 

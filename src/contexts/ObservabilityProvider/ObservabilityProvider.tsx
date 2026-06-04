@@ -6,7 +6,7 @@ import type { ObservabilityHook } from '@/types/observability'
 /**
  * Props for {@link ObservabilityProvider}.
  *
- * @public
+ * @internal
  */
 export interface ObservabilityProviderProps {
   children: ReactNode
@@ -23,7 +23,7 @@ export interface ObservabilityProviderProps {
  *
  * @param props - {@link ObservabilityProviderProps} containing the children and optional observability hook.
  * @returns The provider element wrapping `children` with the observability context.
- * @public
+ * @internal
  */
 export const ObservabilityProvider = ({ children, observability }: ObservabilityProviderProps) => {
   const value = useMemo(() => ({ observability }), [observability])

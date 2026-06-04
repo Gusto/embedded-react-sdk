@@ -15,7 +15,7 @@ import { useSanitizedObservability } from './useSanitizedObservability'
  * are dropped.
  *
  * @returns A context value whose `observability` is either the sanitized hook or `undefined`.
- * @public
+ * @internal
  */
 export const useObservability = (): ObservabilityContextValue => {
   const context = useContext(ObservabilityContext)
