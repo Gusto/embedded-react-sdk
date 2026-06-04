@@ -3,7 +3,7 @@ import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job
 import { Dashboard, type DashboardTab } from './Dashboard'
 import { getPendingCompensationChanges } from './getPendingCompensationChanges'
 import { HomeAddressEditForm } from '@/components/Employee/HomeAddress/management/HomeAddressEditForm'
-import { WorkAddress } from '@/components/Employee/WorkAddress/management/WorkAddress'
+import { WorkAddressEditForm } from '@/components/Employee/WorkAddress/management/WorkAddressEditForm'
 import { FederalTaxes } from '@/components/Employee/FederalTaxes/management/FederalTaxes'
 import { StateTaxes } from '@/components/Employee/StateTaxes/management/StateTaxes'
 import { ProfileEditForm } from '@/components/Employee/Profile/management/ProfileEditForm'
@@ -93,7 +93,7 @@ export function HomeAddressContextual() {
 
 export function WorkAddressContextual() {
   const { employeeId, onEvent } = useFlow<DashboardContextInterface>()
-  return <WorkAddress employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
+  return <WorkAddressEditForm employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
 }
 
 export function FederalTaxesContextual() {

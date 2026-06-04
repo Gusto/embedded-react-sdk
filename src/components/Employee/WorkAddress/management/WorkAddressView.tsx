@@ -81,7 +81,7 @@ export function WorkAddressView({
   onBack,
   isDeletePending = false,
 }: WorkAddressViewProps) {
-  const { t } = useTranslation('Employee.WorkAddress.Management')
+  const { t } = useTranslation('Employee.Management.WorkAddress')
   const Components = useComponentContext()
   const [addressModal, setAddressModal] = useState<'edit' | 'create' | null>(null)
   const [deleteConfirmUuid, setDeleteConfirmUuid] = useState<string | null>(null)
