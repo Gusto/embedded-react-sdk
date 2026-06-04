@@ -173,4 +173,43 @@ describe('HomeAddress (management block)', () => {
     const reopenedDialog = await screen.findByRole('dialog')
     expect(within(reopenedDialog).queryByText("We couldn't save this address")).toBeNull()
   })
+
+  it('keeps the Current home address card pinned to the active row when editing a history row', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<HomeAddress employeeId="employee-123" onEvent={onEvent} />)
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Manage' })).toBeEnabled()
+    })
+    await user.click(screen.getByRole('button', { name: 'Manage' }))
+
+    // Fixture: 100 5th Ave is active, 644 Fay Vista is in history.
+    await waitFor(
+      () => {
+        expect(screen.getByText(/100 5th Ave/)).toBeInTheDocument()
+      },
+      { timeout: 5000 },
+    )
+
+    const currentSection = screen
+      .getByRole('heading', { name: 'Current home address' })
+      .closest<HTMLElement>('[data-testid="data-box"]')
+    expect(currentSection).not.toBeNull()
+    expect(within(currentSection!).getByText(/100 5th Ave/)).toBeInTheDocument()
+
+    // Open Edit on the (inactive) history row via the kebab menu.
+    const menuButtons = screen.getAllByRole('button', {
+      name: 'Open address row actions',
+    })
+    await user.click(menuButtons[0] as HTMLElement)
+    await user.click(await screen.findByRole('menuitem', { name: 'Edit' }))
+
+    expect(await screen.findByRole('dialog')).toBeInTheDocument()
+
+    // The Current card must still show the active address — not the row being
+    // edited. Without the fix, the card mirrors whichever uuid the edit form
+    // is pointing at.
+    expect(within(currentSection!).getByText(/100 5th Ave/)).toBeInTheDocument()
+    expect(within(currentSection!).queryByText(/644 Fay Vista/)).toBeNull()
+  })
 })

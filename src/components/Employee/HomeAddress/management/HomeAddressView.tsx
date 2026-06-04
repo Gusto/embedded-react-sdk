@@ -113,13 +113,19 @@ export function HomeAddressView({
   }, [addressModal])
 
   const {
-    data: { homeAddress },
     status: editStatus,
     actions: { onSubmit: editOnSubmit },
     form: editForm,
   } = editHomeAddressForm
 
   const homeAddresses = employeeHomeAddresses
+
+  // The "Current home address" card must always show the active address,
+  // independent of which row the edit modal is currently pointed at. Reading
+  // `editHomeAddressForm.data.homeAddress` (which mirrors whichever uuid is
+  // being edited) caused the card to mutate to the history row's content as
+  // soon as the user opened Edit from the kebab menu.
+  const currentHomeAddress = homeAddresses?.find(a => a.active === true) ?? homeAddresses?.[0]
 
   const {
     status: createStatus,
@@ -331,7 +337,7 @@ export function HomeAddressView({
           <Components.BoxHeader
             title={t('currentSectionTitle')}
             action={
-              homeAddress ? (
+              currentHomeAddress ? (
                 <Components.Button
                   variant="secondary"
                   onClick={() => {
@@ -360,18 +366,20 @@ export function HomeAddressView({
         }
       >
         <Flex flexDirection="column" gap={16}>
-          {homeAddress ? (
+          {currentHomeAddress ? (
             <Flex flexDirection="column" gap={4}>
               <FlexItem>
                 <Components.Text weight="medium">
-                  {formatStreetForDisplay(homeAddress)}
+                  {formatStreetForDisplay(currentHomeAddress)}
                 </Components.Text>
-                <Components.Text weight="medium">{getCityStateZip(homeAddress)}</Components.Text>
+                <Components.Text weight="medium">
+                  {getCityStateZip(currentHomeAddress)}
+                </Components.Text>
               </FlexItem>
-              {homeAddress.effectiveDate ? (
+              {currentHomeAddress.effectiveDate ? (
                 <Components.Text variant="supporting">
                   {t('currentSince', {
-                    date: formatDateLongWithYear(homeAddress.effectiveDate.toString()),
+                    date: formatDateLongWithYear(currentHomeAddress.effectiveDate.toString()),
                   })}
                 </Components.Text>
               ) : null}
