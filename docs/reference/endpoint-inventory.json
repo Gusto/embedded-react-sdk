@@ -2057,7 +2057,7 @@
         "employeeId"
       ]
     },
-    "EmployeeManagement.Paystubs": {
+    "EmployeeManagement.PaystubsCard": {
       "endpoints": [
         {
           "method": "GET",
@@ -2614,7 +2614,7 @@
         "EmployeeManagement.DocumentManager",
         "EmployeeManagement.FederalTaxes",
         "EmployeeManagement.PaymentMethod",
-        "EmployeeManagement.Paystubs",
+        "EmployeeManagement.PaystubsCard",
         "EmployeeManagement.Profile",
         "EmployeeManagement.StateTaxes"
       ]
@@ -2670,7 +2670,7 @@
         "EmployeeManagement.FederalTaxes",
         "EmployeeManagement.HomeAddress",
         "EmployeeManagement.PaymentMethod",
-        "EmployeeManagement.Paystubs",
+        "EmployeeManagement.PaystubsCard",
         "EmployeeManagement.Profile",
         "EmployeeManagement.StateTaxes",
         "EmployeeManagement.WorkAddress",
