@@ -1,6 +1,11 @@
 import type { InputHTMLAttributes, Ref } from 'react'
 import type { SharedFieldLayoutProps } from '@/components/Common/FieldLayout/FieldLayoutTypes'
 
+/**
+ * Option entry for the ComboBox dropdown list.
+ *
+ * @public
+ */
 export interface ComboBoxOption {
   /**
    * Display text for the option
@@ -12,6 +17,13 @@ export interface ComboBoxOption {
   value: string
 }
 
+/**
+ * Props your `ComboBox` implementation must accept from the component adapter.
+ * Renders a form field wrapping a filterable `<input />` for single-option selection, optionally allowing free-form values.
+ *
+ * @public
+ * @see {@link MultiSelectComboBoxProps}
+ */
 export interface ComboBoxProps
   extends
     SharedFieldLayoutProps,

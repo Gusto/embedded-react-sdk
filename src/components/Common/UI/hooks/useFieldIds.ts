@@ -9,6 +9,7 @@ interface UseFieldIdsProps {
   ariaDescribedBy?: string
 }
 
+/** @internal */
 export function useFieldIds({
   inputId: providedInputId,
   errorMessage,

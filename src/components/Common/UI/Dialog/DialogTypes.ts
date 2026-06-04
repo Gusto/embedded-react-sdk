@@ -1,8 +1,15 @@
 import type { ReactNode } from 'react'
 
+/**
+ * Props your `Dialog` implementation must accept from the component adapter.
+ * Renders a modal confirmation dialog with a primary action and a cancel action.
+ *
+ * @public
+ */
 export interface DialogProps {
   /**
    * Controls whether the dialog is open or closed
+   * @defaultValue `false`
    */
   isOpen?: boolean
   /**
@@ -15,10 +22,12 @@ export interface DialogProps {
   onPrimaryActionClick?: () => void
   /**
    * Whether the primary action is destructive (changes button style to error variant)
+   * @defaultValue `false`
    */
   isDestructive?: boolean
   /**
    * Whether the primary action button is in loading state
+   * @defaultValue `false`
    */
   isPrimaryActionLoading?: boolean
   /**
@@ -39,12 +48,15 @@ export interface DialogProps {
   children?: ReactNode
   /**
    * Whether clicking the backdrop should close the dialog
+   * @defaultValue `false`
    */
   shouldCloseOnBackdropClick?: boolean
 }
 
 /**
- * Default prop values for Dialog component.
+ * Default prop values for the Dialog component.
+ *
+ * @internal
  */
 export const DialogDefaults = {
   isOpen: false,

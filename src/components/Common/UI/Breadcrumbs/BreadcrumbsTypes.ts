@@ -1,7 +1,18 @@
 import type { ReactNode } from 'react'
 
+/**
+ * Single entry in a {@link BreadcrumbsProps | Breadcrumbs} trail.
+ *
+ * @public
+ */
 export interface Breadcrumb {
+  /**
+   * Unique identifier for the breadcrumb. Matches against `currentBreadcrumbId` and is passed to `onClick`.
+   */
   id: string
+  /**
+   * Display content rendered for the breadcrumb.
+   */
   label: ReactNode
   /**
    * When false, the breadcrumb is rendered as plain text even if onClick is provided.
@@ -9,6 +20,12 @@ export interface Breadcrumb {
    */
   isClickable?: boolean
 }
+/**
+ * Props your `Breadcrumbs` implementation must accept from the component adapter.
+ * Renders a navigation breadcrumb trail showing the user's position in a multi-step flow.
+ *
+ * @public
+ */
 export interface BreadcrumbsProps {
   /**
    * Array of breadcrumbs
@@ -20,6 +37,8 @@ export interface BreadcrumbsProps {
   currentBreadcrumbId?: string
   /**
    * Accessibility label for the breadcrumbs
+   *
+   * @defaultValue `'Breadcrumbs'`
    */
   'aria-label'?: string
   /**
@@ -35,12 +54,16 @@ export interface BreadcrumbsProps {
    * At this size, the breadcrumb typically does not have sufficient size to render
    * completely. In our implementation, we switch to a condensed mobile version of
    * the breadcrumbs
+   *
+   * @defaultValue `false`
    */
   isSmallContainer?: boolean
 }
 
 /**
  * Default prop values for Breadcrumbs component.
+ *
+ * @internal
  */
 export const BreadcrumbsDefaults = {
   isSmallContainer: false,

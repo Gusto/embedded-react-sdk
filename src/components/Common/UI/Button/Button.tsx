@@ -4,6 +4,13 @@ import { type ButtonProps, ButtonDefaults } from './ButtonTypes'
 import styles from './Button.module.scss'
 import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 
+/**
+ * Renders an interactive button with primary, secondary, tertiary, or error variants and built-in loading state.
+ *
+ * @param rawProps - The {@link ButtonProps} controlling appearance, content, and click behavior.
+ * @returns The rendered button element.
+ * @internal
+ */
 export function Button(rawProps: ButtonProps) {
   const resolvedProps = applyMissingDefaults(rawProps, ButtonDefaults)
   const {

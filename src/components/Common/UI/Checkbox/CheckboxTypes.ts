@@ -1,6 +1,12 @@
 import type { InputHTMLAttributes, Ref } from 'react'
 import type { SharedHorizontalFieldLayoutProps } from '@/components/Common/HorizontalFieldLayout/HorizontalFieldLayoutTypes'
 
+/**
+ * Props your `Checkbox` implementation must accept from the component adapter.
+ * Renders a form field wrapping an `<input type="checkbox" />` with a label, optional description, and error message.
+ *
+ * @public
+ */
 export interface CheckboxProps
   extends
     SharedHorizontalFieldLayoutProps,
@@ -19,10 +25,14 @@ export interface CheckboxProps
   inputRef?: Ref<HTMLInputElement>
   /**
    * Indicates if the checkbox is in an invalid state
+   *
+   * @defaultValue `false`
    */
   isInvalid?: boolean
   /**
    * Disables the checkbox and prevents interaction
+   *
+   * @defaultValue `false`
    */
   isDisabled?: boolean
   /**
@@ -33,6 +43,8 @@ export interface CheckboxProps
 
 /**
  * Default prop values for Checkbox component.
+ *
+ * @internal
  */
 export const CheckboxDefaults = {
   isInvalid: false,

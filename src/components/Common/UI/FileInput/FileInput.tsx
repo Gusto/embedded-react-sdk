@@ -75,6 +75,18 @@ function formatAcceptedTypes(accept: string[] | undefined): string | null {
   return uniqueExtensions.join(', ')
 }
 
+/**
+ * File upload input with drag-and-drop, file type filtering, and a preview of the selected file.
+ *
+ * @remarks
+ * Renders a drop zone with click-to-upload until a file is selected, then swaps to a
+ * preview row showing the file name, size, and a remove button. Wraps `react-aria-components`'
+ * `FileTrigger` and `DropZone` to provide accessible keyboard and screen reader support.
+ *
+ * @param rawProps - File input configuration including value, change handler, accepted types, and field layout props.
+ * @returns The rendered file input element.
+ * @internal
+ */
 export function FileInput(rawProps: FileInputProps) {
   const { t } = useTranslation('common')
   const resolvedProps = applyMissingDefaults(rawProps, FileInputDefaults)

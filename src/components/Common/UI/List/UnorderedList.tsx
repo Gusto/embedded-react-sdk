@@ -2,6 +2,13 @@ import classnames from 'classnames'
 import type { UnorderedListProps } from './ListTypes'
 import styles from './List.module.scss'
 
+/**
+ * Renders an unordered (bulleted) list from an array of item nodes.
+ *
+ * @param props - See {@link UnorderedListProps}.
+ * @returns The rendered unordered list element.
+ * @internal
+ */
 export function UnorderedList({ items, className, ...props }: UnorderedListProps) {
   return (
     <ul className={classnames(styles.list, className)} data-variant="unordered" {...props}>

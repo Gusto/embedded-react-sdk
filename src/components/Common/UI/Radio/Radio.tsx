@@ -7,6 +7,17 @@ import { RadioDefaults } from './RadioTypes'
 import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 import { HorizontalFieldLayout } from '@/components/Common/HorizontalFieldLayout'
 
+/**
+ * Renders a single radio button with label, description, and error message support.
+ *
+ * @remarks
+ * Use {@link RadioGroup} when presenting multiple mutually exclusive options together — this
+ * primitive is the building block for a single radio entry.
+ *
+ * @param rawProps - The {@link RadioProps} controlling the radio's label, checked state, and validation.
+ * @returns The rendered radio input with its associated label.
+ * @internal
+ */
 export const Radio = (rawProps: RadioProps) => {
   const resolvedProps = applyMissingDefaults(rawProps, RadioDefaults)
   const {

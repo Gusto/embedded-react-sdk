@@ -6,6 +6,15 @@ import { InputDefaults } from './InputTypes'
 import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 import AlertCircle from '@/assets/icons/alert-circle.svg?react'
 
+/**
+ * Low-level text input primitive with optional start and end adornments.
+ *
+ * @remarks
+ * The building block used by higher-level field components such as TextInput
+ * and NumberInput. Most consumers should reach for those instead.
+ *
+ * @internal
+ */
 export function Input(rawProps: InputProps) {
   const resolvedProps = applyMissingDefaults(rawProps, InputDefaults)
   const {

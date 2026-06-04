@@ -4,8 +4,20 @@ import { Flex } from '../../Flex/Flex'
 import type { CalendarPreviewProps } from './CalendarPreviewTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
+/**
+ * Props for the CalendarLegend subcomponent rendered alongside {@link CalendarPreviewProps | CalendarPreview}.
+ *
+ * @internal
+ */
 export type CalendarLegendProps = Pick<CalendarPreviewProps, 'highlightDates' | 'dateRange'>
 
+/**
+ * Renders the legend portion of a {@link CalendarPreview}, listing each highlighted date with its color and label.
+ *
+ * @param props - The {@link CalendarLegendProps} controlling which dates appear in the legend.
+ * @returns The rendered legend element.
+ * @internal
+ */
 export const CalendarLegend = ({ highlightDates }: CalendarLegendProps) => {
   const { t } = useTranslation('Company.PaySchedule')
   const { Text } = useComponentContext()

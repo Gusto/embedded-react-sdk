@@ -6,6 +6,13 @@ import type { NumberInputProps } from './NumberInputTypes'
 import { FieldLayout } from '@/components/Common/FieldLayout'
 import { useLocale } from '@/contexts/LocaleProvider'
 
+/**
+ * Renders a numeric input with locale-aware formatting for currency, decimal, or percent values.
+ *
+ * @param props - The {@link NumberInputProps} controlling the input's label, value, format, and validation state.
+ * @returns The rendered number input field.
+ * @internal
+ */
 export function NumberInput({
   name,
   format,

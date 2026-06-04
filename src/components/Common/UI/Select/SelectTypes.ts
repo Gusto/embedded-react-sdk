@@ -1,6 +1,11 @@
 import type { Ref, SelectHTMLAttributes } from 'react'
 import type { SharedFieldLayoutProps } from '@/components/Common/FieldLayout/FieldLayoutTypes'
 
+/**
+ * Option entry your `Select` implementation receives in the `options` array when rendering each item in the dropdown.
+ *
+ * @public
+ */
 export interface SelectOption {
   /**
    * Value of the option that will be passed to onChange
@@ -12,6 +17,12 @@ export interface SelectOption {
   label: string
 }
 
+/**
+ * Props your `Select` implementation must accept from the component adapter.
+ * Renders a form field wrapping a single-select dropdown with a label, description, and error message.
+ *
+ * @public
+ */
 export interface SelectProps
   extends
     SharedFieldLayoutProps,

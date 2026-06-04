@@ -1,5 +1,12 @@
+/** @public */
 export type PaginationItemsPerPage = 5 | 10 | 25 | 50
 
+/**
+ * Props your `PaginationControl` implementation must accept from the component adapter.
+ * Renders pagination controls for navigating between pages of results.
+ *
+ * @public
+ */
 export type PaginationControlProps = {
   handleFirstPage: () => void
   handlePreviousPage: () => void

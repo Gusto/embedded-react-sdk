@@ -2,6 +2,12 @@ import type { InputHTMLAttributes, Ref } from 'react'
 import type { InputProps } from '../Input/InputTypes'
 import type { SharedFieldLayoutProps } from '@/components/Common/FieldLayout/FieldLayoutTypes'
 
+/**
+ * Props your `NumberInput` implementation must accept from the component adapter.
+ * Renders a form field wrapping a numeric `<input />` for currency, decimal, or percent values, with optional start/end adornments.
+ *
+ * @public
+ */
 export interface NumberInputProps
   extends
     SharedFieldLayoutProps,

@@ -1,5 +1,11 @@
 import type { HTMLAttributes, ReactNode } from 'react'
 
+/**
+ * Props your `Heading` implementation must accept from the component adapter.
+ * Renders an HTML heading (`<h1>`–`<h6>`) whose visual style level is controlled independently from its semantic level.
+ *
+ * @public
+ */
 export interface HeadingProps extends Pick<HTMLAttributes<HTMLHeadingElement>, 'className' | 'id'> {
   /**
    * The HTML heading element to render (h1-h6)

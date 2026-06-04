@@ -8,6 +8,16 @@ import { useOverflowDetection } from '@/hooks/useOverflowDetection/useOverflowDe
 import { useForkRef } from '@/hooks/useForkRef/useForkRef'
 import { transitionDuration } from '@/contexts/ThemeProvider/theme'
 
+/**
+ * Native `<dialog>`-backed modal with backdrop dismissal, Escape-key support, and a fixed footer.
+ *
+ * @remarks
+ * Used as the base primitive for higher-level surfaces like {@link DialogProps | Dialog}. Body and footer content scroll independently when the body overflows.
+ *
+ * @param rawProps - See {@link ModalProps}.
+ * @returns The rendered modal element.
+ * @internal
+ */
 export function Modal(rawProps: ModalProps) {
   const resolvedProps = applyMissingDefaults(rawProps, ModalDefaults)
   const { isOpen, onClose, shouldCloseOnBackdropClick, children, footer, containerRef } =

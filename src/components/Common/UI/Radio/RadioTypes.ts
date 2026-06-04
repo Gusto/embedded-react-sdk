@@ -1,6 +1,12 @@
 import type { InputHTMLAttributes, Ref } from 'react'
 import type { SharedHorizontalFieldLayoutProps } from '@/components/Common/HorizontalFieldLayout/HorizontalFieldLayoutTypes'
 
+/**
+ * Props your `Radio` implementation must accept from the component adapter.
+ * Renders a form field wrapping an `<input type="radio" />` with a label, optional description, and error message.
+ *
+ * @public
+ */
 export interface RadioProps
   extends
     SharedHorizontalFieldLayoutProps,
@@ -19,16 +25,22 @@ export interface RadioProps
   inputRef?: Ref<HTMLInputElement>
   /**
    * Indicates that the field has an error
+   *
+   * @defaultValue `false`
    */
   isInvalid?: boolean
   /**
    * Disables the radio button and prevents interaction
+   *
+   * @defaultValue `false`
    */
   isDisabled?: boolean
 }
 
 /**
- * Default prop values for Radio component.
+ * Default prop values for the Radio component.
+ *
+ * @internal
  */
 export const RadioDefaults = {
   isInvalid: false,

@@ -5,6 +5,13 @@ import styles from './DescriptionList.module.scss'
 import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
+/**
+ * Renders an HTML description list (`<dl>`) of term/description pairs.
+ *
+ * @param rawProps - The {@link DescriptionListProps} containing the items to render and layout options.
+ * @returns The rendered description list.
+ * @internal
+ */
 export function DescriptionList(rawProps: DescriptionListProps) {
   const resolvedProps = applyMissingDefaults(rawProps, DescriptionListDefaults)
   const { items, layout, showSeparators, className } = resolvedProps

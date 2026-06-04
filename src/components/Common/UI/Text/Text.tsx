@@ -4,6 +4,13 @@ import { TextDefaults } from './TextTypes'
 import styles from './Text.module.scss'
 import { applyMissingDefaults } from '@/helpers/applyMissingDefaults'
 
+/**
+ * Renders body text with configurable element, size, weight, alignment, and variant.
+ *
+ * @param rawProps - Text configuration; see {@link TextProps}.
+ * @returns The rendered text element.
+ * @public
+ */
 export const Text = (rawProps: TextProps) => {
   const resolvedProps = applyMissingDefaults(rawProps, TextDefaults)
   const { as: Component, size, textAlign, weight, className, children, variant, id } = resolvedProps
