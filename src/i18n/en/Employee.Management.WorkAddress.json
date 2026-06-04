@@ -1,4 +1,7 @@
 {
+  "cardTitle": "Work address",
+  "cardManageCta": "Manage",
+  "cardNoAddress": "No work address on file",
   "title": "Work address",
   "description": "An employee's work address is the primary location where they perform their job. Keep it accurate for payroll and tax purposes.",
   "rowMenuAriaLabel": "Open work address row actions",

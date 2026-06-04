@@ -298,7 +298,7 @@ describe('Dashboard', () => {
     )
   })
 
-  it('emits EMPLOYEE_WORK_ADDRESS event when clicking manage work address', async () => {
+  it('emits the scoped EMPLOYEE_MANAGEMENT_WORK_ADDRESS_EDIT_REQUESTED event when clicking manage work address', async () => {
     const user = userEvent.setup()
 
     renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
@@ -309,11 +309,15 @@ describe('Dashboard', () => {
       .getByRole('heading', { name: 'Work address' })
       .closest<HTMLElement>('[data-testid="data-box"]')
     assertDefined(workAddressBox)
+    await waitFor(() => {
+      expect(within(workAddressBox).getByRole('button', { name: 'Manage' })).toBeEnabled()
+    })
     await user.click(within(workAddressBox).getByRole('button', { name: 'Manage' }))
 
-    expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_WORK_ADDRESS, {
-      employeeId: 'employee-123',
-    })
+    expect(onEvent).toHaveBeenCalledWith(
+      componentEvents.EMPLOYEE_MANAGEMENT_WORK_ADDRESS_EDIT_REQUESTED,
+      { employeeId: 'employee-123' },
+    )
   })
 
   it('shows an empty Compensation card with Add job CTA when the employee has no jobs', async () => {
@@ -1831,6 +1835,9 @@ describe('Dashboard', () => {
       .getByRole('heading', { name: 'State taxes' })
       .closest<HTMLElement>('[data-testid="data-box"]')
     assertDefined(stateTaxesBox)
+    await waitFor(() => {
+      expect(within(stateTaxesBox).getByRole('button', { name: 'Edit' })).toBeEnabled()
+    })
     await user.click(within(stateTaxesBox).getByRole('button', { name: 'Edit' }))
 
     expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_STATE_TAXES_EDIT, {

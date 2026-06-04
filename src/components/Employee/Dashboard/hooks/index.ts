@@ -1,9 +1,3 @@
-export { useEmployeeBasicDetails } from './useEmployeeBasicDetails'
-export type {
-  UseEmployeeBasicDetailsProps,
-  UseEmployeeBasicDetailsResult,
-} from './useEmployeeBasicDetails'
-
 export { useEmployeeCompensation } from './useEmployeeCompensation'
 export type {
   UseEmployeeCompensationProps,

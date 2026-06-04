@@ -194,8 +194,18 @@ export function useDeductionForm({
   // The cap fields only appear when the deduction is recurring. Watching here
   // (inside the hook) keeps the consumer from having to reach into
   // hookFormInternals — the conditional Fields below flip to `undefined`.
-  const watchedRecurring = useWatch({ control: formMethods.control, name: 'recurring' })
-  const isRecurring = watchedRecurring
+  // The `recurring` RadioGroup round-trips its value as the strings `'true'`/
+  // `'false'` (only the zod preprocessor coerces to a real boolean at
+  // validation time). The string `'false'` is truthy, so reading the raw
+  // watched value here would leave the cap fields visible for one-time
+  // deductions after a frequency toggle. Compare against both shapes — mirrors
+  // the `deductAsPercentage` handling in StandardDeductionForm.
+  const watchedRecurring = useWatch({ control: formMethods.control, name: 'recurring' }) as
+    | boolean
+    | 'true'
+    | 'false'
+    | undefined
+  const isRecurring = watchedRecurring === true || watchedRecurring === 'true'
 
   const createGarnishmentMutation = useGarnishmentsCreateMutation()
   const updateGarnishmentMutation = useGarnishmentsUpdateMutation()
