@@ -1,12 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useGustoEmbeddedContext } from '@gusto/embedded-api-v-2025-11-15/react-query/_context'
-import { payrollsGetPayStub } from '@gusto/embedded-api-v-2025-11-15/funcs/payrollsGetPayStub'
-import { useErrorBoundary } from 'react-error-boundary'
 import { useJobsAndCompensationsDeleteMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/jobsAndCompensationsDelete'
 import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
 import type { Garnishment } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishment'
-import type { GetV1EmployeesEmployeeUuidPayStubsResponse } from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1employeesemployeeuuidpaystubs'
 import { useEmployeeCompensation } from './hooks'
 import type { PendingCompensationChange } from './getPendingCompensationChanges'
 import { usePendingChangeDetailRenderer } from './usePendingChangeDetailRenderer'
@@ -18,12 +14,10 @@ import { DataView, useDataView, EmptyData, Loading, VisuallyHidden } from '@/com
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { BaseLayout } from '@/components/Base/Base'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
-import { readableStreamToBlob } from '@/helpers/readableStreamToBlob'
 import { formatDateLongWithYear, formatDateToStringDate } from '@/helpers/dateFormatting'
 import { useFormatCompensationRate } from '@/helpers/formattedStrings'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 import { useI18n } from '@/i18n'
-import { usePaymentMethodList } from '@/components/Employee/PaymentMethod/shared'
 import { PaymentMethodCard } from '@/components/Employee/PaymentMethod/management'
 import {
   useDeductionsList,
@@ -31,16 +25,12 @@ import {
   DeleteDeductionDialog,
   formatDeductionAmount,
 } from '@/components/Employee/Deductions/shared'
+import { PaystubsCard } from '@/components/Employee/Paystubs/management/PaystubsCard'
 import { componentEvents, FlsaStatus, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
-import DownloadCloudIcon from '@/assets/icons/download-cloud.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
-
-type EmployeePayStub = NonNullable<
-  GetV1EmployeesEmployeeUuidPayStubsResponse['employeePayStubsList']
->[number]
 
 function parseJobRate(rate: Job['rate']): number | null {
   if (rate === undefined) return null
@@ -76,8 +66,6 @@ export function JobAndPayView({
   const formatCompensationRate = useFormatCompensationRate()
   const formatCurrency = useNumberFormatter('currency')
   const formatPercent = useNumberFormatter('percent')
-  const gustoEmbedded = useGustoEmbeddedContext()
-  const { showBoundary } = useErrorBoundary()
 
   const compensation = useEmployeeCompensation({ employeeId })
   const {
@@ -85,14 +73,11 @@ export function JobAndPayView({
     primaryFlsaStatus,
     pendingChanges,
     hasMultipleJobs: hasMultipleJobsFromHook,
-    payStubs,
     employeeFirstName,
   } = compensation.data
-  const payStubsPagination = compensation.pagination.payStubs
   const cancellingCompensationUuid = compensation.status.cancellingCompensationUuid
   const { cancelPendingChange } = compensation.actions
   const isCompensationCardLoading = compensation.status.isCompensationLoading
-  const isPayStubsLoading = compensation.status.isPayStubsLoading
 
   const handleCancelChange = useCallback(
     async (pendingChange: PendingCompensationChange) => {
@@ -105,77 +90,6 @@ export function JobAndPayView({
       }
     },
     [cancelPendingChange, onEvent, employeeId],
-  )
-
-  const [downloadingPayrollUuids, setDownloadingPayrollUuids] = useState<ReadonlySet<string>>(
-    () => new Set(),
-  )
-
-  const handlePaystubDownload = useCallback(
-    async (payrollUuid: string) => {
-      // Omit `noopener` — it makes window.open return null in modern browsers,
-      // which would leave us unable to navigate the new tab to the blob URL.
-      const newWindow = window.open('', '_blank')
-      const loadingMessage = t('jobAndPay.paystubs.downloadLoadingMessage')
-      if (newWindow) {
-        // Avoid the user staring at about:blank while we fetch the PDF. The
-        // navigation to the Blob URL below replaces this document.
-        const doc = newWindow.document
-        doc.title = loadingMessage
-        const style = doc.createElement('style')
-        style.textContent =
-          'body{font-family:system-ui,-apple-system,sans-serif;display:flex;align-items:center;' +
-          'justify-content:center;height:100vh;margin:0;color:#444;gap:12px}' +
-          '.spinner{width:20px;height:20px;border:2px solid #ccc;border-top-color:#444;' +
-          'border-radius:50%;animation:spin .8s linear infinite}' +
-          '@keyframes spin{to{transform:rotate(360deg)}}'
-        doc.head.appendChild(style)
-        const spinner = doc.createElement('div')
-        spinner.className = 'spinner'
-        spinner.setAttribute('aria-hidden', 'true')
-        const label = doc.createElement('span')
-        label.textContent = loadingMessage
-        doc.body.replaceChildren(spinner, label)
-      }
-      setDownloadingPayrollUuids(prev => {
-        const next = new Set(prev)
-        next.add(payrollUuid)
-        return next
-      })
-      try {
-        const response = await payrollsGetPayStub(gustoEmbedded, {
-          payrollId: payrollUuid,
-          employeeId,
-        })
-        if (!response.value?.responseStream) {
-          throw new Error(t('jobAndPay.paystubs.downloadError'))
-        }
-        const pdfBlob = await readableStreamToBlob(response.value.responseStream, 'application/pdf')
-        const url = URL.createObjectURL(pdfBlob)
-        if (newWindow) {
-          // Revoke after the new tab has loaded the blob; revoking synchronously
-          // would race the navigation and leave the tab blank.
-          newWindow.addEventListener('load', () => {
-            URL.revokeObjectURL(url)
-          })
-          newWindow.location.href = url
-        } else {
-          URL.revokeObjectURL(url)
-        }
-      } catch (err) {
-        if (newWindow) {
-          newWindow.close()
-        }
-        showBoundary(err instanceof Error ? err : new Error(String(err)))
-      } finally {
-        setDownloadingPayrollUuids(prev => {
-          const next = new Set(prev)
-          next.delete(payrollUuid)
-          return next
-        })
-      }
-    },
-    [gustoEmbedded, employeeId, t, showBoundary],
   )
 
   const [pendingDeleteJob, setPendingDeleteJob] = useState<{
@@ -256,15 +170,6 @@ export function JobAndPayView({
   const showSummaryAlert = hasMultipleJobs && updatePendingChanges.length > 1
   const showInlineAlert = hasPendingUpdates && !showSummaryAlert
   const nextChange = updatePendingChanges[0]
-
-  // The Paystubs column reads `paymentMethod?.type` for one row of metadata.
-  // The Payment card itself is rendered standalone by `<PaymentMethodCard />`
-  // below and owns its own data fetch + error handling — this call is just
-  // for the Paystubs column. React Query dedupes the request.
-  const paymentMethodList = usePaymentMethodList({ employeeId })
-  const paymentMethod = paymentMethodList.isLoading
-    ? undefined
-    : paymentMethodList.data.paymentMethod
 
   const deductionsList = useDeductionsList({ employeeId })
   const deductions = deductionsList.isLoading ? [] : deductionsList.data.deductions
@@ -421,37 +326,6 @@ export function JobAndPayView({
     },
   ]
 
-  const payStubsColumns = [
-    {
-      key: 'payday',
-      title: t('jobAndPay.paystubs.payday'),
-      render: (payStub: EmployeePayStub) => formatDateLongWithYear(payStub.checkDate) || '-',
-    },
-    {
-      key: 'checkAmount',
-      title: t('jobAndPay.paystubs.checkAmount'),
-      render: (payStub: EmployeePayStub) => {
-        if (!payStub.netPay) return '-'
-        const amount = parseFloat(payStub.netPay)
-        return isNaN(amount) ? '-' : formatCurrency(amount)
-      },
-    },
-    {
-      key: 'grossPay',
-      title: t('jobAndPay.paystubs.grossPay'),
-      render: (payStub: EmployeePayStub) => {
-        if (!payStub.grossPay) return '-'
-        const amount = parseFloat(payStub.grossPay)
-        return isNaN(amount) ? '-' : formatCurrency(amount)
-      },
-    },
-    {
-      key: 'paymentMethod',
-      title: t('jobAndPay.paystubs.paymentMethod'),
-      render: () => paymentMethod?.type || t('jobAndPay.paystubs.noPaymentMethod'),
-    },
-  ]
-
   const garnishmentsDataView = useDataView({
     data: deductions,
     columns: garnishmentsColumns,
@@ -479,37 +353,6 @@ export function JobAndPayView({
       <EmptyData
         title={t('jobAndPay.deductions.emptyState.title')}
         description={t('jobAndPay.deductions.emptyState.description')}
-      />
-    ),
-  })
-
-  const payStubsDataView = useDataView({
-    data: payStubs,
-    columns: payStubsColumns,
-    pagination: payStubsPagination,
-    itemMenu: payStub => {
-      const isDownloading =
-        !!payStub.payrollUuid && downloadingPayrollUuids.has(payStub.payrollUuid)
-      return (
-        <Components.ButtonIcon
-          variant="tertiary"
-          aria-label={t('jobAndPay.paystubs.downloadCta')}
-          isDisabled={!payStub.payrollUuid}
-          isLoading={isDownloading}
-          onClick={() => {
-            if (payStub.payrollUuid) {
-              void handlePaystubDownload(payStub.payrollUuid)
-            }
-          }}
-        >
-          <DownloadCloudIcon aria-hidden />
-        </Components.ButtonIcon>
-      )
-    },
-    emptyState: () => (
-      <EmptyData
-        title={t('jobAndPay.paystubs.emptyState.title')}
-        description={t('jobAndPay.paystubs.emptyState.description')}
       />
     ),
   })
@@ -719,16 +562,7 @@ export function JobAndPayView({
           )}
         </Components.Box>
 
-        <Components.Box
-          withPadding={false}
-          header={<Components.BoxHeader title={t('jobAndPay.paystubs.title')} />}
-        >
-          {isPayStubsLoading ? (
-            <Loading />
-          ) : (
-            <DataView label={t('jobAndPay.paystubs.listLabel')} isWithinBox {...payStubsDataView} />
-          )}
-        </Components.Box>
+        <PaystubsCard employeeId={employeeId} onEvent={onEvent} />
 
         <PendingChangesReviewModal
           isOpen={isReviewOpen}
