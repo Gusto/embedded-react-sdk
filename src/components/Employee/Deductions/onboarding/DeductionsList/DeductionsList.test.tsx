@@ -83,6 +83,31 @@ describe('DeductionsList', () => {
     expect(onAdd).toHaveBeenCalledTimes(1)
   })
 
+  it('shows the dollar cap instead of "0%" for a percentage garnishment saved with only a payPeriodMaximum (SDK-945)', async () => {
+    const childSupport: Garnishment = {
+      ...buildDeduction('cs-1', 'Child Support'),
+      deductAsPercentage: true,
+      amount: '0',
+      payPeriodMaximum: '300',
+      recurring: true,
+    }
+    renderWithProviders(
+      <DeductionsList
+        deductionsList={buildReady([childSupport])}
+        onAdd={vi.fn()}
+        onEdit={vi.fn()}
+        onDelete={vi.fn()}
+        onContinue={vi.fn()}
+      />,
+    )
+
+    await screen.findByText('Child Support')
+    // The fixed dollar cap the user entered is shown...
+    expect(screen.getByText(/300/)).toBeInTheDocument()
+    // ...and the misleading "0%" label is gone (the named behavior under test).
+    expect(screen.queryByText(/0\s*%/)).toBeNull()
+  })
+
   it('invokes onContinue when "Continue" is clicked', async () => {
     const onContinue = vi.fn()
     renderWithProviders(
