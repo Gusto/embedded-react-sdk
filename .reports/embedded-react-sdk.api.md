@@ -1023,9 +1023,12 @@ export const componentEvents: {
     readonly EMPLOYEE_FEDERAL_TAXES_EDIT: "employee/federalTaxes/edit";
     readonly EMPLOYEE_FEDERAL_TAXES_UPDATED: "employee/federalTaxes/updated";
     readonly EMPLOYEE_FEDERAL_TAXES_DONE: "employee/federalTaxes/done";
-    readonly EMPLOYEE_STATE_TAXES_EDIT: "employee/stateTaxes/edit";
     readonly EMPLOYEE_STATE_TAXES_UPDATED: "employee/stateTaxes/updated";
     readonly EMPLOYEE_STATE_TAXES_DONE: "employee/stateTaxes/done";
+    readonly EMPLOYEE_MANAGEMENT_STATE_TAXES_EDIT_REQUESTED: "employee/management/stateTaxes/editRequested";
+    readonly EMPLOYEE_MANAGEMENT_STATE_TAXES_EDIT_CANCELLED: "employee/management/stateTaxes/editCancelled";
+    readonly EMPLOYEE_MANAGEMENT_STATE_TAXES_UPDATED: "employee/management/stateTaxes/updated";
+    readonly EMPLOYEE_MANAGEMENT_STATE_TAXES_ALERT_DISMISSED: "employee/management/stateTaxes/alertDismissed";
     readonly EMPLOYEE_TAXES_DONE: "employee/taxes/done";
     readonly EMPLOYEE_SPLIT_PAYCHECK: "employee/bankAccount/split";
     readonly EMPLOYEE_JOB_CREATED: "employee/job/created";
@@ -1071,6 +1074,10 @@ export const componentEvents: {
     readonly EMPLOYEE_MANAGEMENT_DEDUCTIONS_EDIT_FORM_UPDATED: "employee/management/deductions/editForm/updated";
     readonly EMPLOYEE_MANAGEMENT_DEDUCTIONS_EDIT_FORM_CANCELLED: "employee/management/deductions/editForm/cancelled";
     readonly EMPLOYEE_MANAGEMENT_DEDUCTIONS_ALERT_DISMISSED: "employee/management/deductions/alertDismissed";
+    readonly EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_CARD_EDIT_REQUESTED: "employee/management/federalTaxes/card/editRequested";
+    readonly EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_EDIT_FORM_SUBMITTED: "employee/management/federalTaxes/editForm/submitted";
+    readonly EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_EDIT_FORM_CANCELLED: "employee/management/federalTaxes/editForm/cancelled";
+    readonly EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_ALERT_DISMISSED: "employee/management/federalTaxes/alertDismissed";
     readonly ROBOT_MACHINE_DONE: "done";
     readonly ERROR: "ERROR";
     readonly CANCEL: "CANCEL";
@@ -2055,9 +2062,17 @@ declare namespace EmployeeManagement {
         WorkAddressCardProps,
         WorkAddressEditFormProps,
         FederalTaxes_2 as FederalTaxes,
+        FederalTaxesCard,
+        FederalTaxesEditForm,
         FederalTaxesProps_2 as FederalTaxesProps,
+        FederalTaxesCardProps,
+        FederalTaxesEditFormProps,
         StateTaxes_2 as StateTaxes,
+        StateTaxesCard,
+        StateTaxesEditForm,
         StateTaxesProps_2 as StateTaxesProps,
+        StateTaxesCardProps,
+        StateTaxesEditFormProps,
         Profile_2 as Profile,
         ProfileCard,
         ProfileEditForm,
@@ -2213,12 +2228,44 @@ function FederalTaxes(props: FederalTaxesProps & BaseComponentInterface): JSX;
 // Warning: (ae-missing-release-tag) "FederalTaxes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function FederalTaxes_2(input: FederalTaxesProps_2 & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
+function FederalTaxes_2(input: FederalTaxesProps_2 & BaseComponentInterface<'Employee.Management.FederalTaxes'>): JSX;
 
 // Warning: (ae-missing-release-tag) "FederalTaxes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
 function FederalTaxes_3(input: FederalTaxesProps_3 & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
+
+// Warning: (ae-missing-release-tag) "FederalTaxesCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+function FederalTaxesCard(input: FederalTaxesCardProps): JSX;
+
+// Warning: (ae-missing-release-tag) "FederalTaxesCardProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+interface FederalTaxesCardProps {
+    // (undocumented)
+    employeeId: string;
+    // (undocumented)
+    onEvent: OnEventType<EventType, unknown>;
+}
+
+// Warning: (ae-missing-release-tag) "FederalTaxesEditForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+function FederalTaxesEditForm(input: FederalTaxesEditFormProps & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
+
+// Warning: (ae-missing-release-tag) "FederalTaxesEditFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+interface FederalTaxesEditFormProps extends CommonComponentInterface<'Employee.Management.FederalTaxes'> {
+    // (undocumented)
+    defaultValues?: Partial<FederalTaxesFormData>;
+    // (undocumented)
+    employeeId: string;
+    // (undocumented)
+    onEvent: BaseComponentInterface['onEvent'];
+}
 
 // Warning: (ae-missing-release-tag) "FederalTaxesErrorCode" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -2299,13 +2346,11 @@ export type FederalTaxesOptionalFieldsToRequire = OptionalFieldsToRequire<typeof
 // Warning: (ae-missing-release-tag) "FederalTaxesProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-interface FederalTaxesProps_2 extends CommonComponentInterface<'Employee.FederalTaxes'> {
-    // (undocumented)
-    defaultValues?: Partial<FederalTaxesFormData>;
+interface FederalTaxesProps_2 extends CommonComponentInterface<'Employee.Management.FederalTaxes'> {
     // (undocumented)
     employeeId: string;
     // (undocumented)
-    onEvent: BaseComponentInterface['onEvent'];
+    onEvent: OnEventType<EventType, unknown>;
 }
 
 // Warning: (ae-missing-release-tag) "FederalTaxesProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -4524,12 +4569,40 @@ function StateTaxes(input: StateTaxesProps): JSX;
 // Warning: (ae-missing-release-tag) "StateTaxes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function StateTaxes_2(input: StateTaxesProps_2 & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
+function StateTaxes_2(input: StateTaxesProps_2 & BaseComponentInterface<'Employee.Management.StateTaxes'>): JSX;
 
 // Warning: (ae-missing-release-tag) "StateTaxes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
 function StateTaxes_3(input: StateTaxesProps_3 & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
+
+// Warning: (ae-missing-release-tag) "StateTaxesCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+function StateTaxesCard(input: StateTaxesCardProps): JSX;
+
+// Warning: (ae-missing-release-tag) "StateTaxesCardProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+interface StateTaxesCardProps {
+    // (undocumented)
+    employeeId: string;
+    // (undocumented)
+    onEvent: OnEventType<EventType, unknown>;
+}
+
+// Warning: (ae-missing-release-tag) "StateTaxesEditForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+function StateTaxesEditForm(input: StateTaxesEditFormProps & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
+
+// Warning: (ae-missing-release-tag) "StateTaxesEditFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+type StateTaxesEditFormProps = Omit<CommonComponentInterface<'Employee.Management.StateTaxes'>, 'children'> & {
+    employeeId: string;
+    onEvent: BaseComponentInterface['onEvent'];
+};
 
 // Warning: (ae-forgotten-export) The symbol "StateTaxesFormProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "StateTaxesForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -4546,10 +4619,12 @@ function StateTaxesList(props: StateTaxesListProps): JSX;
 // Warning: (ae-missing-release-tag) "StateTaxesProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-type StateTaxesProps_2 = Omit<CommonComponentInterface<'Employee.StateTaxes'>, 'children'> & {
+interface StateTaxesProps_2 extends CommonComponentInterface<'Employee.Management.StateTaxes'> {
+    // (undocumented)
     employeeId: string;
-    onEvent: BaseComponentInterface['onEvent'];
-};
+    // (undocumented)
+    onEvent: OnEventType<EventType, unknown>;
+}
 
 // Warning: (ae-missing-release-tag) "StateTaxesProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
