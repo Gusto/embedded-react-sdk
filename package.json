@@ -31,7 +31,7 @@
     "./CHANGELOG.md"
   ],
   "scripts": {
-    "build": "npm run build:clean && npm run i18n:generate && vite build && npm run endpoints:derive",
+    "build": "npm run build:clean && npm run i18n:generate && vite build",
     "api-report:derive": "api-extractor run --local --config .reports/config/api-extractor.json",
     "endpoints:derive": "npx tsx ./build/deriveEndpointInventory.ts",
     "endpoints:verify": "npx tsx ./build/deriveEndpointInventory.ts --verify",
