@@ -321,9 +321,7 @@ export interface BannerProps extends Pick<HTMLAttributes<HTMLDivElement>, 'class
     title: ReactNode;
 }
 
-// Warning: (ae-missing-release-tag) "BaseFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface BaseFieldProps {
     // (undocumented)
     description?: default_2.ReactNode;
@@ -331,8 +329,6 @@ export interface BaseFieldProps {
     label: string;
 }
 
-// Warning: (ae-missing-release-tag) "BaseFormHookReady" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export interface BaseFormHookReady<TFieldsMetadata extends FieldsMetadata = FieldsMetadata, TFormData extends FieldValues = FieldValues, TFields extends object = Record<string, unknown>> {
     // (undocumented)
@@ -357,8 +353,6 @@ export interface BaseFormHookReady<TFieldsMetadata extends FieldsMetadata = Fiel
     };
 }
 
-// Warning: (ae-missing-release-tag) "BaseHookReady" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export interface BaseHookReady<TData extends Record<string, unknown> = Record<string, unknown>, TStatus extends Record<string, unknown> = Record<string, unknown>> {
     // (undocumented)
@@ -497,14 +491,12 @@ export interface CheckboxGroupProps extends SharedFieldLayoutProps, Pick<Fieldse
     value?: string[];
 }
 
-// Warning: (ae-missing-release-tag) "CheckboxHookField" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-internal-missing-underscore) The name "CheckboxHookField" should be prefixed with an underscore because the declaration is marked as @internal
 //
-// @public (undocumented)
+// @internal
 export function CheckboxHookField<TErrorCode extends string>(input: CheckboxHookFieldProps<TErrorCode>): ReactElement<unknown, string | JSXElementConstructor<any>>;
 
-// Warning: (ae-missing-release-tag) "CheckboxHookFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface CheckboxHookFieldProps<TErrorCode extends string = never> extends BaseFieldProps {
     // (undocumented)
     FieldComponent?: ComponentType<CheckboxProps>;
@@ -627,9 +619,9 @@ export type ChildSupportGarnishmentStateFieldProps = HookFieldProps<SelectHookFi
 export type CityFieldProps = HookFieldProps<TextInputHookFieldProps<HomeAddressRequiredValidation>>;
 
 // Warning: (ae-forgotten-export) The symbol "QueryWithError" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "collectErrors" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-internal-missing-underscore) The name "collectErrors" should be prefixed with an underscore because the declaration is marked as @internal
 //
-// @public (undocumented)
+// @internal (undocumented)
 export function collectErrors(queries: QueryWithError[], submitError: SDKError | null): SDKError[];
 
 // Warning: (ae-missing-release-tag) "ComboBoxOption" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -839,9 +831,20 @@ export interface CompensationSubmitOptions {
 // @public (undocumented)
 export type CompensationTitleFieldProps = HookFieldProps<TextInputHookFieldProps<CompensationRequiredValidation>>;
 
-// Warning: (ae-missing-release-tag) "componentEvents" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "employeeEvents"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "companyEvents"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "contractorEvents"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "contractorPaymentEvents"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "payScheduleEvents"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "runPayrollEvents"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "payrollWireEvents"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "informationRequestEvents"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "recoveryCasesEvents"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "offCycleEvents"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "terminationEvents"
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "timeOffEvents"
 //
-// @public (undocumented)
+// @public
 export const componentEvents: {
     readonly TIME_OFF_CREATE_POLICY: "timeOff/createPolicy";
     readonly TIME_OFF_VIEW_POLICY: "timeOff/viewPolicy";
@@ -1175,14 +1178,12 @@ export interface ComponentsContextType {
     UnorderedList: (props: UnorderedListProps) => JSX.Element | null;
 }
 
-// Warning: (ae-missing-release-tag) "composeErrorHandler" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export function composeErrorHandler(sources: MixedErrorSource[], submitState?: SubmitStateForErrorHandling): HookErrorHandling;
 
 // Warning: (ae-forgotten-export) The symbol "ComposeSubmitInput" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "ComposeSubmitHandlerResult" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "composeSubmitHandler" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "ComposeSubmitHandlerResult"
 //
 // @public
 export function composeSubmitHandler<TForms extends readonly FieldValues[]>(forms: readonly [...{
@@ -1591,14 +1592,12 @@ interface DashboardFlowProps extends BaseComponentInterface {
 // @public (undocumented)
 export type DateOfBirthFieldProps = HookFieldProps<DatePickerHookFieldProps<EmployeeDetailsRequiredValidation>>;
 
-// Warning: (ae-missing-release-tag) "DatePickerHookField" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-internal-missing-underscore) The name "DatePickerHookField" should be prefixed with an underscore because the declaration is marked as @internal
 //
-// @public (undocumented)
+// @internal
 export function DatePickerHookField<TErrorCode extends string>(input: DatePickerHookFieldProps<TErrorCode>): ReactElement<unknown, string | JSXElementConstructor<any>>;
 
-// Warning: (ae-missing-release-tag) "DatePickerHookFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface DatePickerHookFieldProps<TErrorCode extends string = never> extends BaseFieldProps, Pick<DatePickerProps, 'portalContainer' | 'minDate' | 'maxDate'> {
     // (undocumented)
     FieldComponent?: ComponentType<DatePickerProps>;
@@ -2283,9 +2282,7 @@ interface FederalTaxesProps_3 extends CommonComponentInterface<'Employee.Federal
 // @public (undocumented)
 export type FederalTaxesRequiredValidation = typeof FederalTaxesErrorCodes.REQUIRED;
 
-// Warning: (ae-missing-release-tag) "FieldMetadata" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface FieldMetadata {
     // (undocumented)
     hasRedactedValue?: boolean;
@@ -2299,9 +2296,7 @@ export interface FieldMetadata {
     name: string;
 }
 
-// Warning: (ae-missing-release-tag) "FieldMetadataWithOptions" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface FieldMetadataWithOptions<TEntry = unknown> extends FieldMetadata {
     // (undocumented)
     entries?: readonly TEntry[];
@@ -2312,9 +2307,7 @@ export interface FieldMetadataWithOptions<TEntry = unknown> extends FieldMetadat
     }>;
 }
 
-// Warning: (ae-missing-release-tag) "FieldsMetadata" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type FieldsMetadata = {
     [key: string]: FieldMetadata | FieldMetadataWithOptions;
 };
@@ -2364,9 +2357,9 @@ export type FirstNameFieldProps = HookFieldProps<TextInputHookFieldProps<NameVal
 // @public (undocumented)
 export type FlsaStatusFieldProps = HookFieldProps<SelectHookFieldProps<CompensationRequiredValidation, FlsaStatusType>>;
 
-// Warning: (ae-missing-release-tag) "FormFieldsMetadataContextValue" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-internal-missing-underscore) The name "FormFieldsMetadataContextValue" should be prefixed with an underscore because the declaration is marked as @internal
 //
-// @public (undocumented)
+// @internal
 export interface FormFieldsMetadataContextValue {
     // (undocumented)
     errors: SDKError[];
@@ -2375,14 +2368,12 @@ export interface FormFieldsMetadataContextValue {
 }
 
 // Warning: (ae-forgotten-export) The symbol "FormFieldsMetadataProviderProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "FormFieldsMetadataProvider" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-internal-missing-underscore) The name "FormFieldsMetadataProvider" should be prefixed with an underscore because the declaration is marked as @internal
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FormFieldsMetadataContext"
 //
-// @public (undocumented)
+// @internal
 export function FormFieldsMetadataProvider(input: FormFieldsMetadataProviderProps): JSX_2.Element;
 
-// Warning: (ae-missing-release-tag) "FormHookResult" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "useHookFieldResolution"
-//
 // @public
 export type FormHookResult = {
     errorHandling: Pick<BaseFormHookReady['errorHandling'], 'errors'>;
@@ -2671,8 +2662,6 @@ export interface HomeAddressSubmitOptions {
     employeeId?: string;
 }
 
-// Warning: (ae-missing-release-tag) "HookErrorHandling" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export interface HookErrorHandling {
     // (undocumented)
@@ -2683,24 +2672,19 @@ export interface HookErrorHandling {
     retryQueries: () => void;
 }
 
-// Warning: (ae-missing-release-tag) "HookFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export type HookFieldProps<TProps extends {
     name: string;
 }> = Omit<TProps, 'name'>;
 
-// Warning: (ae-missing-release-tag) "HookFormInternals" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export interface HookFormInternals<TFormData extends FieldValues = FieldValues> {
+    // @internal (undocumented)
     _fieldElementRegistry?: FieldElementRegistry;
     // (undocumented)
     formMethods: UseFormReturn<TFormData>;
 }
 
-// Warning: (ae-missing-release-tag) "HookLoadingResult" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export interface HookLoadingResult {
     // (undocumented)
@@ -2709,8 +2693,6 @@ export interface HookLoadingResult {
     isLoading: true;
 }
 
-// Warning: (ae-missing-release-tag) "HookSubmitResult" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export interface HookSubmitResult<T> {
     // (undocumented)
@@ -2984,9 +2966,8 @@ export type MiddleInitialFieldProps = HookFieldProps<TextInputHookFieldProps<Emp
 export type MinimumWageIdFieldProps = HookFieldProps<SelectHookFieldProps<CompensationRequiredValidation, MinimumWage>>;
 
 // Warning: (ae-forgotten-export) The symbol "QueryWithRefetch" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "MixedErrorSource" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
-// @public (undocumented)
+// @public
 export type MixedErrorSource = QueryWithRefetch | {
     errorHandling: HookErrorHandling;
 };
@@ -3024,14 +3005,12 @@ function NewHireReport(props: NewHireReportProps): JSX_2.Element;
 // @internal
 export function normalizeToSDKError(error: unknown): SDKError;
 
-// Warning: (ae-missing-release-tag) "NumberInputHookField" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-internal-missing-underscore) The name "NumberInputHookField" should be prefixed with an underscore because the declaration is marked as @internal
 //
-// @public (undocumented)
+// @internal
 export function NumberInputHookField<TErrorCode extends string>(input: NumberInputHookFieldProps<TErrorCode>): ReactElement<unknown, string | JSXElementConstructor<any>>;
 
-// Warning: (ae-missing-release-tag) "NumberInputHookFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface NumberInputHookFieldProps<TErrorCode extends string = never> extends BaseFieldProps {
     // (undocumented)
     FieldComponent?: ComponentType<NumberInputProps>;
@@ -3943,14 +3922,12 @@ export interface ProgressBarProps {
     totalSteps: number;
 }
 
-// Warning: (ae-missing-release-tag) "RadioGroupHookField" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-internal-missing-underscore) The name "RadioGroupHookField" should be prefixed with an underscore because the declaration is marked as @internal
 //
-// @public (undocumented)
+// @internal
 export function RadioGroupHookField<TErrorCode extends string, TEntry = unknown>(input: RadioGroupHookFieldProps<TErrorCode, TEntry>): ReactElement<unknown, string | JSXElementConstructor<any>>;
 
-// Warning: (ae-missing-release-tag) "RadioGroupHookFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface RadioGroupHookFieldProps<TErrorCode extends string = never, TEntry = unknown> extends BaseFieldProps {
     // (undocumented)
     FieldComponent?: ComponentType<RadioGroupProps>;
@@ -4073,9 +4050,8 @@ export interface SDKFieldError {
 }
 
 // Warning: (ae-forgotten-export) The symbol "SDKFormProviderProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "SDKFormProvider" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
-// @public (undocumented)
+// @public
 export function SDKFormProvider<TFormData extends FieldValues = FieldValues, TFieldsMetadata extends {
     [K in keyof TFieldsMetadata]: FieldMetadata | FieldMetadataWithOptions;
 } = Record<string, FieldMetadata | FieldMetadataWithOptions>>(input: SDKFormProviderProps<TFormData, TFieldsMetadata>): JSX_2.Element;
@@ -4097,14 +4073,12 @@ export class SDKInternalError extends Error {
     readonly category: SDKErrorCategory;
 }
 
-// Warning: (ae-missing-release-tag) "SelectHookField" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-internal-missing-underscore) The name "SelectHookField" should be prefixed with an underscore because the declaration is marked as @internal
 //
-// @public (undocumented)
+// @internal
 export function SelectHookField<TErrorCode extends string, TEntry = unknown>(input: SelectHookFieldProps<TErrorCode, TEntry>): ReactElement<unknown, string | JSXElementConstructor<any>>;
 
-// Warning: (ae-missing-release-tag) "SelectHookFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface SelectHookFieldProps<TErrorCode extends string = never, TEntry = unknown> extends BaseFieldProps, Pick<SelectProps, 'portalContainer'> {
     // (undocumented)
     FieldComponent?: ComponentType<SelectProps>;
@@ -4579,8 +4553,6 @@ export type Street1FieldProps = HookFieldProps<TextInputHookFieldProps<HomeAddre
 // @public (undocumented)
 export type Street2FieldProps = HookFieldProps<TextInputHookFieldProps<HomeAddressRequiredValidation>>;
 
-// Warning: (ae-missing-release-tag) "SubmitStateForErrorHandling" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export type SubmitStateForErrorHandling = {
     submitError: SDKError | null;
@@ -5735,8 +5707,6 @@ export interface UseWorkAddressFormReady extends BaseFormHookReady<FieldsMetadat
 // @public (undocumented)
 export type UseWorkAddressFormResult = HookLoadingResult | UseWorkAddressFormReady;
 
-// Warning: (ae-missing-release-tag) "ValidationMessages" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export type ValidationMessages<TErrorCode extends string, TOptionalErrorCode extends string = never> = Record<TErrorCode, string> & Partial<Record<TOptionalErrorCode, string>>;
 
@@ -5933,7 +5903,7 @@ export type ZipValidation = (typeof HomeAddressErrorCodes)['REQUIRED' | 'INVALID
 
 // Warnings were encountered during analysis:
 //
-// dist/partner-hook-utils/types.d.ts:117:13 - (ae-forgotten-export) The symbol "FieldElementRegistry" needs to be exported by the entry point index.d.ts
+// dist/partner-hook-utils/types.d.ts:228:13 - (ae-forgotten-export) The symbol "FieldElementRegistry" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

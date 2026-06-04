@@ -1,6 +1,16 @@
 import { OnboardingStatus } from '@gusto/embedded-api-v-2025-11-15/models/operations/putv1employeesemployeeidonboardingstatus'
 import { ContractorOnboardingStatus1 } from '@gusto/embedded-api-v-2025-11-15/models/components/contractor'
 
+/**
+ * Event keys emitted by employee-related components.
+ *
+ * @remarks
+ * These keys are merged into {@link componentEvents}. Consume them through the
+ * `onEvent` handler of an employee component (e.g. `EmployeeOnboarding`,
+ * `EmployeeProfile`) and compare against the value of an entry on this object.
+ *
+ * @public
+ */
 export const employeeEvents = {
   EMPLOYEE_CREATE: 'employee/create',
   EMPLOYEE_CREATED: 'employee/created',
@@ -102,6 +112,16 @@ export const employeeEvents = {
     'employee/management/paymentMethod/alertDismissed',
 } as const
 
+/**
+ * Event keys emitted by company-related components.
+ *
+ * @remarks
+ * These keys are merged into {@link componentEvents}. Consume them through the
+ * `onEvent` handler of a company component (e.g. company onboarding, signatory,
+ * bank account, locations) and compare against the value of an entry on this object.
+ *
+ * @public
+ */
 export const companyEvents = {
   COMPANY_INDUSTRY: 'company/industry',
   COMPANY_INDUSTRY_SELECTED: 'company/industry/selected',
@@ -138,6 +158,16 @@ export const companyEvents = {
   COMPANY_OVERVIEW_CONTINUE: 'company/overview/continue',
 } as const
 
+/**
+ * Event keys emitted by contractor-related components.
+ *
+ * @remarks
+ * These keys are merged into {@link componentEvents}. Consume them through the
+ * `onEvent` handler of a contractor component (e.g. contractor onboarding,
+ * profile, payment method) and compare against the value of an entry on this object.
+ *
+ * @public
+ */
 export const contractorEvents = {
   CONTRACTOR_ADDRESS_UPDATED: 'contractor/address/updated',
   CONTRACTOR_ADDRESS_DONE: 'contractor/address/done',
@@ -158,6 +188,16 @@ export const contractorEvents = {
   CONTRACTOR_ONBOARDING_CONTINUE: 'contractor/onboarding/continue',
 } as const
 
+/**
+ * Event keys emitted by contractor payment components.
+ *
+ * @remarks
+ * These keys are merged into {@link componentEvents}. Consume them through the
+ * `onEvent` handler of a contractor payment component and compare against the
+ * value of an entry on this object.
+ *
+ * @public
+ */
 export const contractorPaymentEvents = {
   CONTRACTOR_PAYMENT_CREATE: 'contractor/payments/create',
   CONTRACTOR_PAYMENT_EDIT: 'contractor/payments/edit',
@@ -173,6 +213,16 @@ export const contractorPaymentEvents = {
   CONTRACTOR_PAYMENT_RFI_RESPOND: 'contractor/payments/rfi/respond',
 } as const
 
+/**
+ * Event keys emitted by employee termination components.
+ *
+ * @remarks
+ * These keys are merged into {@link componentEvents}. Consume them through the
+ * `onEvent` handler of a termination component and compare against the value of
+ * an entry on this object.
+ *
+ * @public
+ */
 export const terminationEvents = {
   EMPLOYEE_TERMINATION_CREATED: 'employee/termination/created',
   EMPLOYEE_TERMINATION_UPDATED: 'employee/termination/updated',
@@ -186,6 +236,16 @@ export const terminationEvents = {
   EMPLOYEE_TERMINATION_VIEW_SUMMARY: 'employee/termination/viewSummary',
 } as const
 
+/**
+ * Event keys emitted by pay schedule components.
+ *
+ * @remarks
+ * These keys are merged into {@link componentEvents}. Consume them through the
+ * `onEvent` handler of a pay schedule component and compare against the value
+ * of an entry on this object.
+ *
+ * @public
+ */
 export const payScheduleEvents = {
   PAY_SCHEDULE_CREATE: 'paySchedule/create',
   PAY_SCHEDULE_CREATED: 'paySchedule/created',
@@ -196,6 +256,17 @@ export const payScheduleEvents = {
   PAY_SCHEDULE_DONE: 'paySchedule/done',
 } as const
 
+/**
+ * Event keys emitted by run-payroll components.
+ *
+ * @remarks
+ * These keys are merged into {@link componentEvents}. Consume them through the
+ * `onEvent` handler of a payroll component (e.g. `PayrollFlow`, run-payroll,
+ * off-cycle payroll, gross-up) and compare against the value of an entry on
+ * this object.
+ *
+ * @public
+ */
 export const runPayrollEvents = {
   RUN_PAYROLL_BACK: 'runPayroll/back',
   RUN_PAYROLL_CALCULATED: 'runPayroll/calculated',
@@ -230,6 +301,16 @@ export const runPayrollEvents = {
   RUN_PAYROLL_GROSS_UP_CALCULATED: 'runPayroll/grossUp/calculated',
 } as const
 
+/**
+ * Event keys emitted by payroll wire transfer components.
+ *
+ * @remarks
+ * These keys are merged into {@link componentEvents}. Consume them through the
+ * `onEvent` handler of a wire transfer component and compare against the value
+ * of an entry on this object.
+ *
+ * @public
+ */
 export const payrollWireEvents = {
   PAYROLL_WIRE_START_TRANSFER: 'payroll/wire/startTransfer',
   PAYROLL_WIRE_INSTRUCTIONS_DONE: 'payroll/wire/instructions/done',
@@ -239,6 +320,16 @@ export const payrollWireEvents = {
   PAYROLL_WIRE_FORM_CANCEL: 'payroll/wire/form/cancel',
 } as const
 
+/**
+ * Event keys emitted by information request components.
+ *
+ * @remarks
+ * These keys are merged into {@link componentEvents}. Consume them through the
+ * `onEvent` handler of an information request component and compare against
+ * the value of an entry on this object.
+ *
+ * @public
+ */
 export const informationRequestEvents = {
   INFORMATION_REQUEST_RESPOND: 'informationRequest/respond',
   INFORMATION_REQUEST_FORM_SUBMIT: 'informationRequest/form/submit',
@@ -246,6 +337,16 @@ export const informationRequestEvents = {
   INFORMATION_REQUEST_FORM_DONE: 'informationRequest/form/done',
 } as const
 
+/**
+ * Event keys emitted by recovery case components.
+ *
+ * @remarks
+ * These keys are merged into {@link componentEvents}. Consume them through the
+ * `onEvent` handler of a recovery case component and compare against the value
+ * of an entry on this object.
+ *
+ * @public
+ */
 export const recoveryCasesEvents = {
   RECOVERY_CASE_RESOLVE: 'recoveryCase/resolve',
   RECOVERY_CASE_RESUBMIT: 'recoveryCase/resubmit',
@@ -253,6 +354,16 @@ export const recoveryCasesEvents = {
   RECOVERY_CASE_RESUBMIT_DONE: 'recoveryCase/resubmit/done',
 } as const
 
+/**
+ * Event keys emitted by off-cycle payroll and transition components.
+ *
+ * @remarks
+ * These keys are merged into {@link componentEvents}. Consume them through the
+ * `onEvent` handler of an off-cycle payroll or transition component and compare
+ * against the value of an entry on this object.
+ *
+ * @public
+ */
 export const offCycleEvents = {
   OFF_CYCLE_CREATED: 'offCycle/created',
   DISMISSAL_PAY_PERIOD_SELECTED: 'dismissal/payPeriod/selected',
@@ -261,6 +372,17 @@ export const offCycleEvents = {
   TRANSITION_PAYROLL_SKIPPED: 'transition/payrollSkipped',
 } as const
 
+/**
+ * Event keys emitted by time-off policy components.
+ *
+ * @remarks
+ * These keys are merged into {@link componentEvents}. Consume them through the
+ * `onEvent` handler of a time-off component (e.g. policy creation, holiday
+ * scheduling, policy management) and compare against the value of an entry on
+ * this object.
+ *
+ * @public
+ */
 export const timeOffEvents = {
   TIME_OFF_CREATE_POLICY: 'timeOff/createPolicy',
   TIME_OFF_VIEW_POLICY: 'timeOff/viewPolicy',
@@ -291,6 +413,40 @@ export const timeOffEvents = {
   TIME_OFF_DELETE_POLICY_DONE: 'timeOff/deletePolicy/done',
 } as const
 
+/**
+ * Catalog of every event key that an SDK component can emit through `onEvent`.
+ *
+ * @remarks
+ * Components surface user actions and lifecycle transitions to the integrating
+ * application through an `onEvent(type, data)` callback. The `type` argument is
+ * always one of the string values in this object. Use this map to compare
+ * against the incoming `type` rather than hard-coding strings.
+ *
+ * All domain-specific event groups ({@link employeeEvents},
+ * {@link companyEvents}, {@link contractorEvents},
+ * {@link contractorPaymentEvents}, {@link payScheduleEvents},
+ * {@link runPayrollEvents}, {@link payrollWireEvents},
+ * {@link informationRequestEvents}, {@link recoveryCasesEvents},
+ * {@link offCycleEvents}, {@link terminationEvents}, {@link timeOffEvents})
+ * are spread into this object alongside a few cross-cutting keys: `ERROR`,
+ * `CANCEL`, and `BREADCRUMB_NAVIGATE`.
+ *
+ * @public
+ *
+ * @example
+ * ```tsx
+ * import { componentEvents, EmployeeOnboarding } from '@gusto/embedded-react-sdk'
+ *
+ * <EmployeeOnboarding
+ *   companyId={companyId}
+ *   onEvent={(type, data) => {
+ *     if (type === componentEvents.EMPLOYEE_ONBOARDING_DONE) {
+ *       navigate('/employees')
+ *     }
+ *   }}
+ * />
+ * ```
+ */
 export const componentEvents = {
   ROBOT_MACHINE_DONE: 'done', //This is internal Robot event thrown when machine transitions to final state
   ERROR: 'ERROR',
@@ -310,8 +466,38 @@ export const componentEvents = {
   ...timeOffEvents,
 } as const
 
+/**
+ * Union of every event string value defined in {@link componentEvents}.
+ *
+ * @remarks
+ * This is the type of the first argument passed to a component's `onEvent`
+ * handler. Use it when typing your own handler so TypeScript can narrow against
+ * the specific event keys you care about.
+ *
+ * @public
+ *
+ * @example
+ * ```tsx
+ * import { componentEvents, type EventType } from '@gusto/embedded-react-sdk'
+ *
+ * const handleEvent = (type: EventType, data: unknown) => {
+ *   if (type === componentEvents.EMPLOYEE_CREATED) {
+ *     // ...
+ *   }
+ * }
+ * ```
+ */
 export type EventType = (typeof componentEvents)[keyof typeof componentEvents]
 
+/**
+ * Map of employee onboarding status values returned by the Gusto API.
+ *
+ * @remarks
+ * Use these keys to compare against the `onboardingStatus` field on an employee
+ * record. The values mirror the strings returned by the API.
+ *
+ * @public
+ */
 export const EmployeeOnboardingStatus = {
   ADMIN_ONBOARDING_INCOMPLETE: OnboardingStatus.AdminOnboardingIncomplete,
   SELF_ONBOARDING_PENDING_INVITE: OnboardingStatus.SelfOnboardingPendingInvite,
@@ -323,12 +509,31 @@ export const EmployeeOnboardingStatus = {
   ONBOARDING_COMPLETED: OnboardingStatus.OnboardingCompleted,
 } as const
 
+/**
+ * Set of {@link EmployeeOnboardingStatus} values that indicate the employee is
+ * completing self-onboarding.
+ *
+ * @remarks
+ * Use this set to check whether an employee is currently in a self-onboarding
+ * flow (invited, started, or overdue) versus an admin-driven onboarding flow.
+ *
+ * @public
+ */
 export const EmployeeSelfOnboardingStatuses = new Set([
   EmployeeOnboardingStatus.SELF_ONBOARDING_INVITED,
   EmployeeOnboardingStatus.SELF_ONBOARDING_INVITED_STARTED,
   EmployeeOnboardingStatus.SELF_ONBOARDING_INVITED_OVERDUE,
 ])
 
+/**
+ * Map of contractor onboarding status values returned by the Gusto API.
+ *
+ * @remarks
+ * Use these keys to compare against the `onboardingStatus` field on a contractor
+ * record. The values mirror the strings returned by the API.
+ *
+ * @public
+ */
 export const ContractorOnboardingStatus = {
   ADMIN_ONBOARDING_INCOMPLETE: ContractorOnboardingStatus1.AdminOnboardingIncomplete,
   ADMIN_ONBOARDING_REVIEW: ContractorOnboardingStatus1.AdminOnboardingReview,
@@ -339,6 +544,17 @@ export const ContractorOnboardingStatus = {
   ONBOARDING_COMPLETED: ContractorOnboardingStatus1.OnboardingCompleted,
 } as const
 
+/**
+ * Set of {@link ContractorOnboardingStatus} values that indicate the contractor
+ * is completing self-onboarding.
+ *
+ * @remarks
+ * Use this set to check whether a contractor is currently in a self-onboarding
+ * flow (not invited, invited, started, or under review) versus an admin-driven
+ * onboarding flow.
+ *
+ * @public
+ */
 export const ContractorSelfOnboardingStatuses = new Set([
   ContractorOnboardingStatus.SELF_ONBOARDING_NOT_INVITED,
   ContractorOnboardingStatus.SELF_ONBOARDING_INVITED,
@@ -346,7 +562,11 @@ export const ContractorSelfOnboardingStatuses = new Set([
   ContractorOnboardingStatus.SELF_ONBOARDING_REVIEW,
 ])
 
-/**Map of API response flsa statuses */
+/**
+ * Map of API response FLSA statuses.
+ *
+ * @internal
+ */
 export const FlsaStatus = {
   EXEMPT: 'Exempt',
   SALARIED_NONEXEMPT: 'Salaried Nonexempt',
@@ -356,6 +576,7 @@ export const FlsaStatus = {
   COMMISSION_ONLY_NONEXEMPT: 'Commission Only Nonexempt',
 } as const
 
+/** @internal */
 export const compensationTypeLabels = {
   REIMBURSEMENT_NAME: 'reimbursement',
   REGULAR_HOURS_NAME: 'regular hours',
@@ -366,19 +587,24 @@ export const compensationTypeLabels = {
   MINIMUM_WAGE_ADJUSTMENT: 'minimum wage adjustment',
 } as const
 
-//ZP: https://github.com/Gusto/zenpayroll/blob/main/config/initializers/constants/pay_period_constants.rb#L56
+/**
+ * FLSA overtime salary threshold in USD. Mirrors the value in zenpayroll at
+ * config/initializers/constants/pay_period_constants.rb.
+ *
+ * @internal
+ */
 export const FLSA_OVERTIME_SALARY_LIMIT = 35568
-export const HOURS_PER_PAY_PERIOD_DAILY = 5.69863
+/** @internal */
 export const HOURS_PER_PAY_PERIOD_WEEKLY = 40
-export const HOURS_PER_PAY_PERIOD_BIWEEKLY = 80
-export const HOURS_PER_PAY_PERIOD_SEMIMONTHLY = 86.666667
+/** @internal */
 export const HOURS_PER_PAY_PERIOD_MONTHLY = 173.333333
-export const HOURS_PER_PAY_PERIOD_QUARTERLY = 520
-export const HOURS_PER_PAY_PERIOD_SEMIANNUALLY = 1040
+/** @internal */
 export const HOURS_PER_PAY_PERIOD_ANNUALLY = 2080
 
+/** @internal */
 export const I9_FORM_NAME = 'US_I-9'
 
+/** @internal */
 export const STATES_ABBR = [
   'AL',
   'AK',
@@ -433,6 +659,7 @@ export const STATES_ABBR = [
   'WY',
 ] as const
 
+/** @internal */
 export const SIGNATORY_TITLES = {
   OWNER: 'owner',
   PRESIDENT: 'president',
@@ -443,6 +670,7 @@ export const SIGNATORY_TITLES = {
   MEMBER: 'member',
 } as const
 
+/** @internal */
 export const PAY_PERIODS = {
   HOUR: 'Hour',
   WEEK: 'Week',
@@ -451,6 +679,7 @@ export const PAY_PERIODS = {
   PAYCHECK: 'Paycheck',
 } as const
 
+/** @internal */
 export const BREAKPOINTS = {
   BASE: 'base',
   SMALL: 'small',
@@ -458,6 +687,7 @@ export const BREAKPOINTS = {
   LARGE: 'large',
 } as const
 
+/** @internal */
 export const BREAKPOINTS_VALUES = {
   [BREAKPOINTS.BASE]: '0rem',
   [BREAKPOINTS.SMALL]: '40rem',
@@ -465,54 +695,63 @@ export const BREAKPOINTS_VALUES = {
   [BREAKPOINTS.LARGE]: '64rem',
 } as const
 
+/** @internal */
 export const PAYMENT_METHODS = {
   check: 'Check',
   directDeposit: 'Direct Deposit',
 } as const
 
+/** @internal */
 export const SPLIT_BY = {
   percentage: 'Percentage',
   amount: 'Amount',
 } as const
 
+/** @internal */
 export const CONTRACTOR_TYPE = {
   BUSINESS: 'Business',
   INDIVIDUAL: 'Individual',
 } as const
 
+/** @internal */
 export const COMPENSATION_NAME_REGULAR_HOURS = 'Regular Hours'
+/** @internal */
 export const COMPENSATION_NAME_OVERTIME = 'Overtime'
+/** @internal */
 export const COMPENSATION_NAME_DOUBLE_OVERTIME = 'Double overtime'
+/** @internal */
 export const HOURS_COMPENSATION_NAMES = [
   COMPENSATION_NAME_REGULAR_HOURS,
   COMPENSATION_NAME_OVERTIME,
   COMPENSATION_NAME_DOUBLE_OVERTIME,
 ]
 
+/** @internal */
 export const COMPENSATION_NAME_BONUS = 'Bonus'
+/** @internal */
 export const COMPENSATION_NAME_PAYCHECK_TIPS = 'Paycheck Tips'
+/** @internal */
 export const COMPENSATION_NAME_CORRECTION_PAYMENT = 'Correction Payment'
+/** @internal */
 export const COMPENSATION_NAME_COMMISSION = 'Commission'
+/** @internal */
 export const COMPENSATION_NAME_CASH_TIPS = 'Cash Tips'
+/** @internal */
 export const COMPENSATION_NAME_REIMBURSEMENT = 'Reimbursement'
 
-export const FIXED_COMPENSATION_NAMES = [
-  COMPENSATION_NAME_BONUS,
-  COMPENSATION_NAME_PAYCHECK_TIPS,
-  COMPENSATION_NAME_CORRECTION_PAYMENT,
-  COMPENSATION_NAME_COMMISSION,
-  COMPENSATION_NAME_CASH_TIPS,
-]
+/** @internal */
+const OWNERS_DRAW = "Owner's Draw"
+/** @internal */
+const MIN_WAGE_ADJUST = 'Minimum Wage Adjustment'
 
-export const OWNERS_DRAW = "Owner's Draw"
-export const MIN_WAGE_ADJUST = 'Minimum Wage Adjustment'
-
+/** @internal */
 export const EXCLUDED_ADDITIONAL_EARNINGS = [
   OWNERS_DRAW,
   MIN_WAGE_ADJUST,
   COMPENSATION_NAME_REIMBURSEMENT,
 ]
 
+/** @internal */
 export const PAYROLL_PROCESSING_STATUS = {
   calculating: 'calculating',
   calculate_success: 'calculate_success',
@@ -521,9 +760,11 @@ export const PAYROLL_PROCESSING_STATUS = {
   processing_failed: 'processing_failed',
 } as const
 
+/** @internal */
 export const PAYROLL_RESOLVABLE_SUBMISSION_BLOCKER_TYPES: string[] = [
   'fast_ach_threshold_exceeded',
   'needs_earned_access_for_fast_ach',
 ]
 
+/** @internal */
 export const TIP_CREDITS_UNSUPPORTED_STATES: string[] = ['AK', 'CA', 'MN', 'NV', 'OR', 'WA']
