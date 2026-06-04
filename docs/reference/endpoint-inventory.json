@@ -2616,9 +2616,9 @@
         "Employee.WorkAddress",
         "EmployeeManagement.DocumentManager",
         "EmployeeManagement.FederalTaxes",
+        "EmployeeManagement.PaymentMethod",
         "EmployeeManagement.Profile",
-        "EmployeeManagement.StateTaxes",
-        "EmployeeOnboarding.PaymentMethod"
+        "EmployeeManagement.StateTaxes"
       ]
     },
     "Employee.EmployeeListFlow": {
@@ -2672,12 +2672,12 @@
         "EmployeeManagement.DocumentManager",
         "EmployeeManagement.FederalTaxes",
         "EmployeeManagement.HomeAddress",
+        "EmployeeManagement.PaymentMethod",
         "EmployeeManagement.Profile",
         "EmployeeManagement.StateTaxes",
         "EmployeeManagement.WorkAddress",
         "EmployeeOnboarding.Compensation",
-        "EmployeeOnboarding.Deductions",
-        "EmployeeOnboarding.PaymentMethod"
+        "EmployeeOnboarding.Deductions"
       ]
     },
     "EmployeeManagement.EmployeeListFlow": {

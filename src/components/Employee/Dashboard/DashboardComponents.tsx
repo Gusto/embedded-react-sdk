@@ -7,8 +7,8 @@ import { WorkAddressEditForm } from '@/components/Employee/WorkAddress/managemen
 import { FederalTaxes } from '@/components/Employee/FederalTaxes/management/FederalTaxes'
 import { StateTaxes } from '@/components/Employee/StateTaxes/management/StateTaxes'
 import { ProfileEditForm } from '@/components/Employee/Profile/management/ProfileEditForm'
-import { BankForm } from '@/components/Employee/PaymentMethod/onboarding/BankForm'
-import { SplitView } from '@/components/Employee/PaymentMethod/onboarding/SplitView'
+import { PaymentMethodBankForm } from '@/components/Employee/PaymentMethod/management/PaymentMethodBankForm'
+import { PaymentMethodSplitForm } from '@/components/Employee/PaymentMethod/management/PaymentMethodSplitForm'
 import { DocumentManager } from '@/components/Employee/Documents/management/DocumentManager'
 import { DeductionsForm } from '@/components/Employee/Deductions/onboarding/DeductionsForm/DeductionsForm'
 import {
@@ -20,7 +20,7 @@ import { AddAnotherJob } from '@/components/Employee/Compensation/management/Add
 import { EditCompensation } from '@/components/Employee/Compensation/onboarding/EditCompensation/EditCompensation'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { BaseComponent, BaseLayout } from '@/components/Base'
+import { BaseLayout } from '@/components/Base'
 import { ensureRequired } from '@/helpers/ensureRequired'
 import { useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
@@ -113,20 +113,12 @@ export function ProfileContextual() {
 
 export function PaymentBankFormContextual() {
   const { employeeId, onEvent } = useFlow<DashboardContextInterface>()
-  return (
-    <BaseComponent onEvent={onEvent}>
-      <BankForm employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
-    </BaseComponent>
-  )
+  return <PaymentMethodBankForm employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
 }
 
 export function PaymentSplitViewContextual() {
   const { employeeId, onEvent } = useFlow<DashboardContextInterface>()
-  return (
-    <BaseComponent onEvent={onEvent}>
-      <SplitView employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
-    </BaseComponent>
-  )
+  return <PaymentMethodSplitForm employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
 }
 
 export function DocumentManagerContextual() {

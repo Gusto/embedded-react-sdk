@@ -84,6 +84,22 @@ export const employeeEvents = {
   EMPLOYEE_MANAGEMENT_WORK_ADDRESS_UPDATED: 'employee/management/workAddress/updated',
   EMPLOYEE_MANAGEMENT_WORK_ADDRESS_DELETED: 'employee/management/workAddress/deleted',
   EMPLOYEE_MANAGEMENT_WORK_ADDRESS_EDIT_CANCELLED: 'employee/management/workAddress/editCancelled',
+  EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_ADD_REQUESTED:
+    'employee/management/paymentMethod/card/addRequested',
+  EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_SPLIT_REQUESTED:
+    'employee/management/paymentMethod/card/splitRequested',
+  EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_BANK_ACCOUNT_DELETED:
+    'employee/management/paymentMethod/card/bankAccountDeleted',
+  EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_BANK_FORM_SUBMITTED:
+    'employee/management/paymentMethod/bankForm/submitted',
+  EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_BANK_FORM_CANCELLED:
+    'employee/management/paymentMethod/bankForm/cancelled',
+  EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_SPLIT_FORM_SUBMITTED:
+    'employee/management/paymentMethod/splitForm/submitted',
+  EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_SPLIT_FORM_CANCELLED:
+    'employee/management/paymentMethod/splitForm/cancelled',
+  EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_ALERT_DISMISSED:
+    'employee/management/paymentMethod/alertDismissed',
 } as const
 
 export const companyEvents = {

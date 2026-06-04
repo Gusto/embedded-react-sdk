@@ -21,7 +21,16 @@ export { FederalTaxes, type FederalTaxesProps } from '../FederalTaxes/management
 export { StateTaxes, type StateTaxesProps } from '../StateTaxes/management/StateTaxes'
 export { Profile, ProfileCard, ProfileEditForm } from '../Profile/management'
 export type { ProfileProps, ProfileCardProps, ProfileEditFormProps } from '../Profile/management'
-export { PaymentMethod, type PaymentMethodProps } from '../PaymentMethod/management'
+export {
+  PaymentMethod,
+  type PaymentMethodProps,
+  PaymentMethodCard,
+  type PaymentMethodCardProps,
+  PaymentMethodBankForm,
+  type PaymentMethodBankFormProps,
+  PaymentMethodSplitForm,
+  type PaymentMethodSplitFormProps,
+} from '../PaymentMethod/management'
 export { TerminateEmployee } from '../Terminations/TerminateEmployee/TerminateEmployee'
 export { TerminationSummary } from '../Terminations/TerminationSummary/TerminationSummary'
 export { TerminationFlow } from '../Terminations/TerminationFlow/TerminationFlow'

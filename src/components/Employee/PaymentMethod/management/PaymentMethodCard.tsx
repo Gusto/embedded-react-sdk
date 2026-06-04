@@ -5,24 +5,36 @@ import {
 } from '../shared/usePaymentMethodList'
 import { useDeleteBankAccount } from '../shared/useDeleteBankAccount'
 import { DeleteBankAccountDialog } from '../shared/DeleteBankAccountDialog'
+import styles from './PaymentMethodCard.module.scss'
 import { DataView, useDataView } from '@/components/Common'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
 import { BaseLayout } from '@/components/Base/Base'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { useI18n } from '@/i18n'
 import { componentEvents, PAYMENT_METHODS, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
 import PercentCircleIcon from '@/assets/icons/percent-circle.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 
-interface ListViewProps {
+export interface PaymentMethodCardProps {
   employeeId: string
   onEvent: OnEventType<EventType, unknown>
 }
 
-export function ListView({ employeeId, onEvent }: ListViewProps) {
+/**
+ * Standalone "Payment" card. Owns its own data fetch via
+ * {@link usePaymentMethodList} and emits the management block's scoped events
+ * (`EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_*`) when the user clicks the card's
+ * CTAs or confirms a bank-account deletion. The card has no alert API — alert
+ * rendering is the orchestrator's responsibility (the block's
+ * `PaymentMethodCardContextual` for standalone consumption; the dashboard
+ * chrome for dashboard consumption).
+ */
+export function PaymentMethodCard({ employeeId, onEvent }: PaymentMethodCardProps) {
+  useI18n('Employee.Management.PaymentMethod')
   const paymentMethodList = usePaymentMethodList({ employeeId })
 
   const errorHandling = composeErrorHandler([paymentMethodList])
@@ -32,7 +44,7 @@ export function ListView({ employeeId, onEvent }: ListViewProps) {
   }
 
   return (
-    <ListViewReady
+    <PaymentMethodCardReady
       employeeId={employeeId}
       onEvent={onEvent}
       paymentMethodList={paymentMethodList}
@@ -41,29 +53,31 @@ export function ListView({ employeeId, onEvent }: ListViewProps) {
   )
 }
 
-interface ListViewReadyProps extends ListViewProps {
+interface PaymentMethodCardReadyProps extends PaymentMethodCardProps {
   paymentMethodList: UsePaymentMethodListReady
   errorHandling: ReturnType<typeof composeErrorHandler>
 }
 
-function ListViewReady({ onEvent, paymentMethodList, errorHandling }: ListViewReadyProps) {
+function PaymentMethodCardReady({
+  onEvent,
+  paymentMethodList,
+  errorHandling,
+}: PaymentMethodCardReadyProps) {
   const { paymentMethod, bankAccounts } = paymentMethodList.data
   const { deletePendingBankAccountUuid } = paymentMethodList.status
-  const { t } = useTranslation('Employee.PaymentMethod')
+  const { t } = useTranslation('Employee.Management.PaymentMethod')
   const Components = useComponentContext()
 
-  const {
-    pendingDeleteAccount,
-    setPendingDeleteAccount,
-    deletedAccountNumber,
-    setDeletedAccountNumber,
-    handleConfirmDelete,
-  } = useDeleteBankAccount(async uuid => {
-    const result = await paymentMethodList.actions.onDelete(uuid)
-    if (result) {
-      onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_DELETED, result.data)
-    }
-  })
+  const { pendingDeleteAccount, setPendingDeleteAccount, handleConfirmDelete } =
+    useDeleteBankAccount(async uuid => {
+      const result = await paymentMethodList.actions.onDelete(uuid)
+      if (result) {
+        onEvent(
+          componentEvents.EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_BANK_ACCOUNT_DELETED,
+          result.data,
+        )
+      }
+    })
 
   const { ...dataViewProps } = useDataView({
     data: bankAccounts,
@@ -105,12 +119,12 @@ function ListViewReady({ onEvent, paymentMethodList, errorHandling }: ListViewRe
   const isDirectDeposit = paymentMethod.type === PAYMENT_METHODS.directDeposit
 
   const headerAction = (
-    <Flex gap={8} alignItems="center">
+    <div className={styles.headerAction}>
       {isDirectDeposit && bankAccounts.length > 1 && (
         <Components.Button
           variant="secondary"
           onClick={() => {
-            onEvent(componentEvents.EMPLOYEE_SPLIT_PAYCHECK)
+            onEvent(componentEvents.EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_SPLIT_REQUESTED)
           }}
           icon={<PercentCircleIcon />}
         >
@@ -120,33 +134,26 @@ function ListViewReady({ onEvent, paymentMethodList, errorHandling }: ListViewRe
       <Components.Button
         variant="secondary"
         onClick={() => {
-          onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATE)
+          onEvent(componentEvents.EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_ADD_REQUESTED)
         }}
         icon={<PlusCircleIcon />}
       >
         {bankAccounts.length > 0 ? t('addAnotherCta') : t('addBankAccountCta')}
       </Components.Button>
-    </Flex>
+    </div>
   )
+
+  const isShowingBankAccountTable = isDirectDeposit && bankAccounts.length > 0
 
   return (
     <>
       <BaseLayout error={errorHandling.errors}>
         <Components.Box
-          header={<Components.BoxHeader title={t('managementTitle')} action={headerAction} />}
+          withPadding={!isShowingBankAccountTable}
+          header={<Components.BoxHeader title={t('title')} action={headerAction} />}
         >
-          {deletedAccountNumber !== null && (
-            <Components.Alert
-              status="success"
-              label={t('deleteBankAccountSuccessAlert', { account: deletedAccountNumber })}
-              onDismiss={() => {
-                setDeletedAccountNumber(null)
-              }}
-              disableScrollIntoView
-            />
-          )}
-          {isDirectDeposit && bankAccounts.length > 0 ? (
-            <DataView label={t('bankAccountsListLabel')} {...dataViewProps} />
+          {isShowingBankAccountTable ? (
+            <DataView label={t('bankAccountsListLabel')} isWithinBox {...dataViewProps} />
           ) : (
             <Flex flexDirection="column" gap={0}>
               <Components.Text variant="supporting">{t('paymentMethodLabel')}</Components.Text>
@@ -166,6 +173,12 @@ function ListViewReady({ onEvent, paymentMethodList, errorHandling }: ListViewRe
         onConfirm={() => {
           void handleConfirmDelete()
         }}
+        title={t('deleteBankAccountDialog.title')}
+        description={t('deleteBankAccountDialog.description', {
+          account: pendingDeleteAccount?.hiddenAccountNumber ?? '',
+        })}
+        confirmLabel={t('deleteBankAccountDialog.confirmCta')}
+        cancelLabel={t('deleteBankAccountDialog.cancelCta')}
       />
     </>
   )
