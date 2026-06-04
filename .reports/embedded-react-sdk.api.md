@@ -1076,6 +1076,11 @@ export const componentEvents: {
     readonly EMPLOYEE_PROFILE_MANAGEMENT_UPDATED: "employee/profile/management/updated";
     readonly EMPLOYEE_PROFILE_MANAGEMENT_EDIT_CANCELLED: "employee/profile/management/editCancelled";
     readonly EMPLOYEE_PROFILE_MANAGEMENT_ALERT_DISMISSED: "employee/profile/management/alertDismissed";
+    readonly EMPLOYEE_MANAGEMENT_WORK_ADDRESS_EDIT_REQUESTED: "employee/management/workAddress/editRequested";
+    readonly EMPLOYEE_MANAGEMENT_WORK_ADDRESS_CREATED: "employee/management/workAddress/created";
+    readonly EMPLOYEE_MANAGEMENT_WORK_ADDRESS_UPDATED: "employee/management/workAddress/updated";
+    readonly EMPLOYEE_MANAGEMENT_WORK_ADDRESS_DELETED: "employee/management/workAddress/deleted";
+    readonly EMPLOYEE_MANAGEMENT_WORK_ADDRESS_EDIT_CANCELLED: "employee/management/workAddress/editCancelled";
     readonly ROBOT_MACHINE_DONE: "done";
     readonly ERROR: "ERROR";
     readonly CANCEL: "CANCEL";
@@ -2015,7 +2020,11 @@ declare namespace EmployeeManagement {
         HomeAddressCardProps,
         HomeAddressEditFormProps,
         WorkAddress,
+        WorkAddressCard,
+        WorkAddressEditForm,
         WorkAddressProps,
+        WorkAddressCardProps,
+        WorkAddressEditFormProps,
         FederalTaxes_2 as FederalTaxes,
         FederalTaxesProps_2 as FederalTaxesProps,
         StateTaxes_2 as StateTaxes,
@@ -3641,7 +3650,7 @@ function PayrollLanding(props: PayrollLandingProps): JSX_2.Element;
 // Warning: (ae-forgotten-export) The symbol "PayrollListBlockProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "PayrollList" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
-// @public (undocumented)
+// @public
 function PayrollList(props: PayrollListBlockProps): JSX_2.Element;
 
 // Warning: (ae-missing-release-tag) "PayrollLoadingProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -5792,7 +5801,37 @@ export function withOptions<TEntry = unknown>(base: FieldMetadata, options: Arra
 // Warning: (ae-missing-release-tag) "WorkAddress" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function WorkAddress(input: WorkAddressProps & BaseComponentInterface): JSX_2.Element;
+function WorkAddress(input: WorkAddressProps & BaseComponentInterface<'Employee.Management.WorkAddress'>): JSX_2.Element;
+
+// Warning: (ae-missing-release-tag) "WorkAddressCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+function WorkAddressCard(input: WorkAddressCardProps): JSX_2.Element;
+
+// Warning: (ae-missing-release-tag) "WorkAddressCardProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+interface WorkAddressCardProps {
+    // (undocumented)
+    employeeId: string;
+    // (undocumented)
+    onEvent: OnEventType<EventType, unknown>;
+}
+
+// Warning: (ae-missing-release-tag) "WorkAddressEditForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+function WorkAddressEditForm(input: WorkAddressEditFormProps & BaseComponentInterface): JSX_2.Element;
+
+// Warning: (ae-missing-release-tag) "WorkAddressEditFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+interface WorkAddressEditFormProps extends CommonComponentInterface<'Employee.Management.WorkAddress'> {
+    // (undocumented)
+    employeeId: string;
+    // (undocumented)
+    onEvent: BaseComponentInterface['onEvent'];
+}
 
 // Warning: (ae-missing-release-tag) "WorkAddressErrorCode" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -5843,11 +5882,11 @@ export type WorkAddressOptionalFieldsToRequire = OptionalFieldsToRequire<typeof 
 // Warning: (ae-missing-release-tag) "WorkAddressProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-interface WorkAddressProps extends CommonComponentInterface<'Employee.WorkAddress.Management'> {
+interface WorkAddressProps extends CommonComponentInterface<'Employee.Management.WorkAddress'> {
     // (undocumented)
     employeeId: string;
     // (undocumented)
-    onEvent: BaseComponentInterface['onEvent'];
+    onEvent: OnEventType<EventType, unknown>;
 }
 
 // Warning: (ae-missing-release-tag) "RequiredValidation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)

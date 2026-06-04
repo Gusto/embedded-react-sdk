@@ -4,7 +4,7 @@ import { useEmployeesGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-
 import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
 import type { Garnishment } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishment'
 import type { GetV1EmployeesEmployeeIdFederalTaxesResponse } from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1employeesemployeeidfederaltaxes'
-import { BasicDetailsViewWithData } from './BasicDetailsView'
+import { BasicDetailsView } from './BasicDetailsView'
 import { JobAndPayView } from './JobAndPayView'
 import { TaxesViewWithData } from './TaxesView'
 import { DocumentsViewWithData } from './DocumentsView'
@@ -38,10 +38,6 @@ function DashboardRoot({
   const Components = useComponentContext()
   const [internalTab, setInternalTab] = useState<DashboardTab>('basicDetails')
   const selectedTab = controlledTab ?? internalTab
-
-  const handleManageWorkAddress = useCallback(() => {
-    onEvent(componentEvents.EMPLOYEE_WORK_ADDRESS, { employeeId })
-  }, [onEvent, employeeId])
 
   const handleEditCompensation = useCallback(
     (job: Job) => {
@@ -131,11 +127,7 @@ function DashboardRoot({
         <Flex flexDirection="column" gap={24}>
           {selectedTab === 'basicDetails' && (
             <Suspense fallback={<BaseLayout isLoading />}>
-              <BasicDetailsViewWithData
-                employeeId={employeeId}
-                onEvent={onEvent}
-                onManageWorkAddress={handleManageWorkAddress}
-              />
+              <BasicDetailsView employeeId={employeeId} onEvent={onEvent} />
             </Suspense>
           )}
 

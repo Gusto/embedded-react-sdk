@@ -9,12 +9,6 @@
     "taxes": "Taxes",
     "documents": "Documents"
   },
-  "workAddress": {
-    "title": "Work address",
-    "manageCta": "Manage",
-    "currentAddress": "Current address",
-    "noAddress": "No work address on file"
-  },
   "jobAndPay": {
     "compensation": {
       "title": "Compensation",
