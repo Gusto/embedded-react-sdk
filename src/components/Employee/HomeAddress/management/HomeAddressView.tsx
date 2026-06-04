@@ -272,6 +272,9 @@ export function HomeAddressView({
     createHomeAddressForm.form.hookFormInternals.formMethods.reset(undefined, {
       keepDirtyValues: false,
     })
+    // Clear any submit errors so reopening doesn't show stale state.
+    editHomeAddressForm.errorHandling.clearSubmitError()
+    createHomeAddressForm.errorHandling.clearSubmitError()
   }
 
   const handleDeleteModalConfirm = async () => {
@@ -289,11 +292,13 @@ export function HomeAddressView({
       ? {
           onSubmit: editOnSubmit,
           isPending: editStatus.isPending,
+          errorHandling: editHomeAddressForm.errorHandling,
         }
       : addressModal === 'create'
         ? {
             onSubmit: createOnSubmit,
             isPending: createStatus.isPending,
+            errorHandling: createHomeAddressForm.errorHandling,
           }
         : null
 
@@ -440,6 +445,27 @@ export function HomeAddressView({
               {addressModal === 'edit' ? t('editModalDescription') : t('createModalDescription')}
             </Components.Text>
           </Flex>
+          {addressModalSession && addressModalSession.errorHandling.errors.length > 0 ? (
+            <Components.Alert status="error" label={t('submitErrorAlertTitle')}>
+              <Components.UnorderedList
+                items={addressModalSession.errorHandling.errors.flatMap(
+                  (submitError, errorIndex) => {
+                    const visibleFieldErrors = submitError.fieldErrors.filter(
+                      fieldError => fieldError.message,
+                    )
+                    if (visibleFieldErrors.length > 0) {
+                      return visibleFieldErrors.map(fieldError => (
+                        <span key={`${errorIndex}-${fieldError.field}`}>{fieldError.message}</span>
+                      ))
+                    }
+                    const message = submitError.message || t('submitErrorAlertFallback')
+                    return [<span key={errorIndex}>{message}</span>]
+                  },
+                )}
+              />
+              <Components.Text variant="supporting">{t('submitErrorAlertHelp')}</Components.Text>
+            </Components.Alert>
+          ) : null}
           {addressModal === 'edit' ? (
             <SDKFormProvider formHookResult={editHomeAddressForm}>
               <Grid

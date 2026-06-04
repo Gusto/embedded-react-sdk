@@ -22,6 +22,19 @@ interface UsePaginationResult {
   resetPage: () => void
 }
 
+/**
+ * Manages page and items-per-page state for a paginated list backed by API response headers.
+ *
+ * @remarks
+ * Reads `x-total-pages` and `x-total-count` from a {@link Headers} object to build the
+ * props for a `PaginationControl`. Changing the items-per-page value resets `currentPage` to 1.
+ *
+ * @param options - Configures the initial items-per-page value.
+ * @returns The current page and items-per-page values, a `getPaginationProps` builder that
+ *   produces the `PaginationControl` props from the API response headers, and a `resetPage`
+ *   callback that returns to page 1.
+ * @internal
+ */
 export function usePagination(options?: UsePaginationOptions): UsePaginationResult {
   const { defaultItemsPerPage = 5 } = options ?? {}
   const [currentPage, setCurrentPage] = useState(1)

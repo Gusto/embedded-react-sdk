@@ -199,24 +199,15 @@ interface ApiPayrollBlocker {
     message?: string;
 }
 
-// Warning: (ae-missing-release-tag) "ApiProvider" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export function ApiProvider(input: ApiProviderProps): JSX_2.Element;
 
-// Warning: (ae-missing-release-tag) "ApiProviderProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface ApiProviderProps {
-    // (undocumented)
     children: React.ReactNode;
-    // (undocumented)
     headers?: HeadersInit;
-    // (undocumented)
     hooks?: SDKHooks;
-    // (undocumented)
     queryClient?: QueryClient;
-    // (undocumented)
     url: string;
 }
 
@@ -1016,11 +1007,13 @@ export const componentEvents: {
     readonly EMPLOYEE_DISMISS: "employee/dismiss";
     readonly EMPLOYEE_ONBOARDING_DONE: "employee/onboarding/done";
     readonly EMPLOYEE_PROFILE_DONE: "employee/profile/done";
-    readonly EMPLOYEE_HOME_ADDRESS: "employee/addresses/home";
-    readonly EMPLOYEE_HOME_ADDRESS_UPDATE: "employee/addresses/home/update";
     readonly EMPLOYEE_HOME_ADDRESS_CREATED: "employee/addresses/home/created";
     readonly EMPLOYEE_HOME_ADDRESS_UPDATED: "employee/addresses/home/updated";
-    readonly EMPLOYEE_HOME_ADDRESS_DELETED: "employee/addresses/home/deleted";
+    readonly EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_REQUESTED: "employee/homeAddress/management/editRequested";
+    readonly EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_CANCELLED: "employee/homeAddress/management/editCancelled";
+    readonly EMPLOYEE_HOME_ADDRESS_MANAGEMENT_CREATED: "employee/homeAddress/management/created";
+    readonly EMPLOYEE_HOME_ADDRESS_MANAGEMENT_UPDATED: "employee/homeAddress/management/updated";
+    readonly EMPLOYEE_HOME_ADDRESS_MANAGEMENT_DELETED: "employee/homeAddress/management/deleted";
     readonly EMPLOYEE_WORK_ADDRESS: "employee/addresses/work";
     readonly EMPLOYEE_WORK_ADDRESS_UPDATE: "employee/addresses/work/update";
     readonly EMPLOYEE_WORK_ADDRESS_CREATED: "employee/addresses/work/created";
@@ -1083,6 +1076,11 @@ export const componentEvents: {
     readonly EMPLOYEE_PROFILE_MANAGEMENT_UPDATED: "employee/profile/management/updated";
     readonly EMPLOYEE_PROFILE_MANAGEMENT_EDIT_CANCELLED: "employee/profile/management/editCancelled";
     readonly EMPLOYEE_PROFILE_MANAGEMENT_ALERT_DISMISSED: "employee/profile/management/alertDismissed";
+    readonly EMPLOYEE_MANAGEMENT_WORK_ADDRESS_EDIT_REQUESTED: "employee/management/workAddress/editRequested";
+    readonly EMPLOYEE_MANAGEMENT_WORK_ADDRESS_CREATED: "employee/management/workAddress/created";
+    readonly EMPLOYEE_MANAGEMENT_WORK_ADDRESS_UPDATED: "employee/management/workAddress/updated";
+    readonly EMPLOYEE_MANAGEMENT_WORK_ADDRESS_DELETED: "employee/management/workAddress/deleted";
+    readonly EMPLOYEE_MANAGEMENT_WORK_ADDRESS_EDIT_CANCELLED: "employee/management/workAddress/editCancelled";
     readonly ROBOT_MACHINE_DONE: "done";
     readonly ERROR: "ERROR";
     readonly CANCEL: "CANCEL";
@@ -1889,6 +1887,9 @@ declare namespace Employee {
         Landing,
         DocumentSigner_2 as DocumentSigner,
         OnboardingFlow_3 as OnboardingFlow,
+        OnboardingExecutionFlow,
+        OnboardingExecutionFlowProps,
+        OnboardingExecutionInitialState,
         SelfOnboardingFlow,
         EmployeeDocuments,
         DashboardFlow,
@@ -2013,9 +2014,17 @@ declare namespace EmployeeManagement {
         DocumentManager,
         DashboardFlow,
         HomeAddress,
+        HomeAddressCard,
+        HomeAddressEditForm,
         HomeAddressProps,
+        HomeAddressCardProps,
+        HomeAddressEditFormProps,
         WorkAddress,
+        WorkAddressCard,
+        WorkAddressEditForm,
         WorkAddressProps,
+        WorkAddressCardProps,
+        WorkAddressEditFormProps,
         FederalTaxes_2 as FederalTaxes,
         FederalTaxesProps_2 as FederalTaxesProps,
         StateTaxes_2 as StateTaxes,
@@ -2037,6 +2046,9 @@ declare namespace EmployeeManagement {
 declare namespace EmployeeOnboarding {
     export {
         OnboardingFlow_3 as OnboardingFlow,
+        OnboardingExecutionFlow,
+        OnboardingExecutionFlowProps,
+        OnboardingExecutionInitialState,
         SelfOnboardingFlow,
         EmployeeList,
         OnboardingSummary,
@@ -2551,7 +2563,37 @@ interface HolidaySelectionFormProps extends BaseComponentInterface {
 // Warning: (ae-missing-release-tag) "HomeAddress" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function HomeAddress(input: HomeAddressProps & BaseComponentInterface): JSX_2.Element;
+function HomeAddress(input: HomeAddressProps & BaseComponentInterface<'Employee.HomeAddress.Management'>): JSX_2.Element;
+
+// Warning: (ae-missing-release-tag) "HomeAddressCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+function HomeAddressCard(input: HomeAddressCardProps): JSX_2.Element;
+
+// Warning: (ae-missing-release-tag) "HomeAddressCardProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+interface HomeAddressCardProps {
+    // (undocumented)
+    employeeId: string;
+    // (undocumented)
+    onEvent: OnEventType<EventType, unknown>;
+}
+
+// Warning: (ae-missing-release-tag) "HomeAddressEditForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+function HomeAddressEditForm(input: HomeAddressEditFormProps & BaseComponentInterface): JSX_2.Element;
+
+// Warning: (ae-missing-release-tag) "HomeAddressEditFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+interface HomeAddressEditFormProps extends CommonComponentInterface<'Employee.HomeAddress.Management'> {
+    // (undocumented)
+    employeeId: string;
+    // (undocumented)
+    onEvent: BaseComponentInterface['onEvent'];
+}
 
 // Warning: (ae-missing-release-tag) "EffectiveDateFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -2612,7 +2654,7 @@ interface HomeAddressProps extends CommonComponentInterface<'Employee.HomeAddres
     // (undocumented)
     employeeId: string;
     // (undocumented)
-    onEvent: BaseComponentInterface['onEvent'];
+    onEvent: OnEventType<EventType, unknown>;
 }
 
 // Warning: (ae-missing-release-tag) "RequiredValidation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -3034,6 +3076,11 @@ export type NumberStateTaxFieldProps = BaseStateTaxFieldProps & {
     FieldComponent?: ComponentType<NumberInputProps>;
 };
 
+// @public
+export interface ObservabilityContextValue {
+    observability: ObservabilityHook | undefined;
+}
+
 // Warning: (ae-missing-release-tag) "ObservabilityError" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public
@@ -3068,14 +3115,10 @@ export interface ObservabilityMetric {
 // @public (undocumented)
 export type ObservabilityMetricUnit = 'ms' | 'count' | 'bytes' | 'percent';
 
-// Warning: (ae-missing-release-tag) "ObservabilityProvider" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export const ObservabilityProvider: (input: ObservabilityProviderProps) => JSX_2.Element;
 
-// Warning: (ae-missing-release-tag) "ObservabilityProviderProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface ObservabilityProviderProps {
     // (undocumented)
     children: ReactNode;
@@ -3216,6 +3259,45 @@ interface OffCycleReasonSelectionProps extends BaseComponentInterface<'Payroll.O
     // (undocumented)
     companyId: string;
 }
+
+// Warning: (ae-missing-release-tag) "OnboardingExecutionFlow" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+function OnboardingExecutionFlow(input: OnboardingExecutionFlowProps): JSX_2.Element;
+
+// Warning: (ae-missing-release-tag) "OnboardingExecutionFlowProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+interface OnboardingExecutionFlowProps {
+    // (undocumented)
+    companyId: string;
+    // Warning: (ae-forgotten-export) The symbol "OnboardingDefaultValues" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    defaultValues?: OnboardingDefaultValues;
+    // (undocumented)
+    initialEmployeeId?: string;
+    // Warning: (ae-forgotten-export) The symbol "EmployeeOnboardingStatus" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    initialOnboardingStatus?: (typeof EmployeeOnboardingStatus)[keyof typeof EmployeeOnboardingStatus];
+    // (undocumented)
+    initialState?: OnboardingExecutionInitialState;
+    // (undocumented)
+    isAdmin?: boolean;
+    // (undocumented)
+    isSelfOnboardingEnabled?: boolean;
+    // (undocumented)
+    onEvent: OnEventType<EventType, unknown>;
+    // (undocumented)
+    withEmployeeI9?: boolean;
+}
+
+// Warning: (ae-forgotten-export) The symbol "INITIAL_COMPONENT_MAP" needs to be exported by the entry point index.d.ts
+// Warning: (ae-missing-release-tag) "OnboardingExecutionInitialState" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+type OnboardingExecutionInitialState = keyof typeof INITIAL_COMPONENT_MAP;
 
 // Warning: (ae-forgotten-export) The symbol "OnboardingFlowProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "OnboardingFlow" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -3568,7 +3650,7 @@ function PayrollLanding(props: PayrollLandingProps): JSX_2.Element;
 // Warning: (ae-forgotten-export) The symbol "PayrollListBlockProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "PayrollList" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
-// @public (undocumented)
+// @public
 function PayrollList(props: PayrollListBlockProps): JSX_2.Element;
 
 // Warning: (ae-missing-release-tag) "PayrollLoadingProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -5360,10 +5442,7 @@ export interface UseJobFormReady extends BaseFormHookReady<FieldsMetadata, JobFo
 // @public (undocumented)
 export type UseJobFormResult = HookLoadingResult | UseJobFormReady;
 
-// Warning: (ae-forgotten-export) The symbol "ObservabilityContextValue" needs to be exported by the entry point index.d.ts
-// Warning: (ae-missing-release-tag) "useObservability" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export const useObservability: () => ObservabilityContextValue;
 
 // Warning: (ae-missing-release-tag) "usePaymentMethodForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -5722,7 +5801,37 @@ export function withOptions<TEntry = unknown>(base: FieldMetadata, options: Arra
 // Warning: (ae-missing-release-tag) "WorkAddress" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function WorkAddress(input: WorkAddressProps & BaseComponentInterface): JSX_2.Element;
+function WorkAddress(input: WorkAddressProps & BaseComponentInterface<'Employee.Management.WorkAddress'>): JSX_2.Element;
+
+// Warning: (ae-missing-release-tag) "WorkAddressCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+function WorkAddressCard(input: WorkAddressCardProps): JSX_2.Element;
+
+// Warning: (ae-missing-release-tag) "WorkAddressCardProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+interface WorkAddressCardProps {
+    // (undocumented)
+    employeeId: string;
+    // (undocumented)
+    onEvent: OnEventType<EventType, unknown>;
+}
+
+// Warning: (ae-missing-release-tag) "WorkAddressEditForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+function WorkAddressEditForm(input: WorkAddressEditFormProps & BaseComponentInterface): JSX_2.Element;
+
+// Warning: (ae-missing-release-tag) "WorkAddressEditFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+interface WorkAddressEditFormProps extends CommonComponentInterface<'Employee.Management.WorkAddress'> {
+    // (undocumented)
+    employeeId: string;
+    // (undocumented)
+    onEvent: BaseComponentInterface['onEvent'];
+}
 
 // Warning: (ae-missing-release-tag) "WorkAddressErrorCode" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -5773,11 +5882,11 @@ export type WorkAddressOptionalFieldsToRequire = OptionalFieldsToRequire<typeof 
 // Warning: (ae-missing-release-tag) "WorkAddressProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-interface WorkAddressProps extends CommonComponentInterface<'Employee.WorkAddress.Management'> {
+interface WorkAddressProps extends CommonComponentInterface<'Employee.Management.WorkAddress'> {
     // (undocumented)
     employeeId: string;
     // (undocumented)
-    onEvent: BaseComponentInterface['onEvent'];
+    onEvent: OnEventType<EventType, unknown>;
 }
 
 // Warning: (ae-missing-release-tag) "RequiredValidation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)

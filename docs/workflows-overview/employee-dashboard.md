@@ -30,23 +30,23 @@ function MyApp() {
 
 #### Events
 
-| Event type                   | Description                                             | Data                                                     |
-| ---------------------------- | ------------------------------------------------------- | -------------------------------------------------------- |
-| EMPLOYEE_UPDATE              | Fired when editing basic details                        | { employeeId: string }                                   |
-| EMPLOYEE_HOME_ADDRESS        | Fired when managing home address                        | { employeeId: string }                                   |
-| EMPLOYEE_WORK_ADDRESS        | Fired when managing work address                        | { employeeId: string }                                   |
-| EMPLOYEE_COMPENSATION_CREATE | Fired when editing compensation                         | { employeeId: string, job: Job }                         |
-| EMPLOYEE_JOB_ADD             | Fired when adding a job (empty state or multi-job view) | { employeeId: string }                                   |
-| EMPLOYEE_JOB_DELETED         | Fired after a non-primary job is deleted from the table | { employeeId: string, jobId: string }                    |
-| EMPLOYEE_BANK_ACCOUNT_CREATE | Fired when adding a bank account                        | { employeeId: string }                                   |
-| EMPLOYEE_DEDUCTION_ADD       | Fired when adding a deduction                           | { employeeId: string }                                   |
-| EMPLOYEE_FEDERAL_TAXES_EDIT  | Fired when editing federal taxes                        | { employeeId: string, federalTaxes: EmployeeFederalTax } |
-| EMPLOYEE_STATE_TAXES_EDIT    | Fired when editing state taxes                          | { employeeId: string, state: string }                    |
-| EMPLOYEE_VIEW_FORM_TO_SIGN   | Fired when viewing a form                               | { employeeId: string, formUuid: string }                 |
+| Event type                                      | Description                                                     | Data                                                     |
+| ----------------------------------------------- | --------------------------------------------------------------- | -------------------------------------------------------- |
+| EMPLOYEE_UPDATE                                 | Fired when editing basic details                                | { employeeId: string }                                   |
+| EMPLOYEE_HOME_ADDRESS                           | Fired when managing home address                                | { employeeId: string }                                   |
+| EMPLOYEE_MANAGEMENT_WORK_ADDRESS_EDIT_REQUESTED | Fired when the "Manage" CTA is clicked on the Work address card | { employeeId: string }                                   |
+| EMPLOYEE_COMPENSATION_CREATE                    | Fired when editing compensation                                 | { employeeId: string, job: Job }                         |
+| EMPLOYEE_JOB_ADD                                | Fired when adding a job (empty state or multi-job view)         | { employeeId: string }                                   |
+| EMPLOYEE_JOB_DELETED                            | Fired after a non-primary job is deleted from the table         | { employeeId: string, jobId: string }                    |
+| EMPLOYEE_BANK_ACCOUNT_CREATE                    | Fired when adding a bank account                                | { employeeId: string }                                   |
+| EMPLOYEE_DEDUCTION_ADD                          | Fired when adding a deduction                                   | { employeeId: string }                                   |
+| EMPLOYEE_FEDERAL_TAXES_EDIT                     | Fired when editing federal taxes                                | { employeeId: string, federalTaxes: EmployeeFederalTax } |
+| EMPLOYEE_STATE_TAXES_EDIT                       | Fired when editing state taxes                                  | { employeeId: string, state: string }                    |
+| EMPLOYEE_VIEW_FORM_TO_SIGN                      | Fired when viewing a form                                       | { employeeId: string, formUuid: string }                 |
 
 ## Using Dashboard Subcomponents
 
-The Dashboard workflow can be used through the wrapping flow component or rendered directly without the flow wrapper. The `EmployeeManagement` namespace also exports related steady-state components that are typically rendered in response to events emitted from the Dashboard (for example, an "Edit work address" CTA emits `EMPLOYEE_WORK_ADDRESS` and your application should render `EmployeeManagement.WorkAddress` in response). For guidance on creating a custom workflow, see [docs on composition](../integration-guide/composition.md).
+The Dashboard workflow can be used through the wrapping flow component or rendered directly without the flow wrapper. The `EmployeeManagement` namespace also exports related steady-state components that are typically rendered in response to events emitted from the Dashboard (for example, an "Edit work address" CTA emits `EMPLOYEE_MANAGEMENT_WORK_ADDRESS_EDIT_REQUESTED` and your application should render `EmployeeManagement.WorkAddress` in response). For guidance on creating a custom workflow, see [docs on composition](../integration-guide/composition.md).
 
 ### Available Subcomponents
 
@@ -120,7 +120,7 @@ function MyComponent() {
 
 ### EmployeeManagement.WorkAddress
 
-A standalone management screen for viewing and editing an employee's work addresses. Supports adding, switching the active address (with an effective date), editing existing addresses, and deleting addresses. Typically rendered in response to the `EMPLOYEE_WORK_ADDRESS` event emitted from the Dashboard.
+A self-contained block for viewing and managing an employee's work addresses. Renders a read-only card; clicking the card's "Manage" CTA swaps the card view for an edit screen that supports adding, switching the active address (with an effective date), editing existing addresses, and deleting addresses. Typically rendered in response to the `EMPLOYEE_MANAGEMENT_WORK_ADDRESS_EDIT_REQUESTED` event emitted from the Dashboard. See [employee-management.md](./employee-management/employee-management.md#employeemanagementworkaddress) for the full props and events surface.
 
 ```jsx
 import { EmployeeManagement } from '@gusto/embedded-react-sdk'
@@ -141,11 +141,13 @@ function MyComponent() {
 
 #### Events
 
-| Event type                    | Description                                    | Data                                                                                                                                               |
-| ----------------------------- | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| EMPLOYEE_WORK_ADDRESS_CREATED | Fired when a new work address is created       | [Response from the Create a work address endpoint](https://docs.gusto.com/embedded-payroll/reference/post-v1-employees-employee_id-work_addresses) |
-| EMPLOYEE_WORK_ADDRESS_UPDATED | Fired when an existing work address is updated | [Response from the Update a work address endpoint](https://docs.gusto.com/embedded-payroll/reference/put-v1-work_addresses-work_address_uuid)      |
-| EMPLOYEE_WORK_ADDRESS_DELETED | Fired when a work address is deleted           | The deleted `EmployeeWorkAddress` snapshot                                                                                                         |
+| Event type                                      | Description                                                                            | Data                                                                                                                                               |
+| ----------------------------------------------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| EMPLOYEE_MANAGEMENT_WORK_ADDRESS_EDIT_REQUESTED | Fired when the "Manage" CTA is clicked on the card; the block swaps to the edit screen | { employeeId: string }                                                                                                                             |
+| EMPLOYEE_MANAGEMENT_WORK_ADDRESS_CREATED        | Fired when a new work address is created on the edit screen                            | [Response from the Create a work address endpoint](https://docs.gusto.com/embedded-payroll/reference/post-v1-employees-employee_id-work_addresses) |
+| EMPLOYEE_MANAGEMENT_WORK_ADDRESS_UPDATED        | Fired when an existing work address is updated on the edit screen                      | [Response from the Update a work address endpoint](https://docs.gusto.com/embedded-payroll/reference/put-v1-work_addresses-work_address_uuid)      |
+| EMPLOYEE_MANAGEMENT_WORK_ADDRESS_DELETED        | Fired when a work address is deleted on the edit screen                                | The deleted `EmployeeWorkAddress` snapshot                                                                                                         |
+| EMPLOYEE_MANAGEMENT_WORK_ADDRESS_EDIT_CANCELLED | Fired when the user clicks Back on the edit screen; the block returns to the card view | None                                                                                                                                               |
 
 ### EmployeeManagement.StateTaxes
 

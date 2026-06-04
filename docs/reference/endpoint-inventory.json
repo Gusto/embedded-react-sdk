@@ -843,10 +843,6 @@
         },
         {
           "method": "GET",
-          "path": "/v1/employees/:employeeId/work_addresses"
-        },
-        {
-          "method": "GET",
           "path": "/v1/employees/:employeeUuid/federal_taxes"
         },
         {
@@ -1180,6 +1176,10 @@
     },
     "Payroll.PayrollList": {
       "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/companies/:companyId/pay_periods"
+        },
         {
           "method": "GET",
           "path": "/v1/companies/:companyId/pay_schedules"
@@ -1985,10 +1985,6 @@
         {
           "method": "GET",
           "path": "/v1/employees/:employeeId/pay_stubs"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/work_addresses"
         },
         {
           "method": "GET",

@@ -150,8 +150,11 @@ export function useHomeAddressManagement({
     }).trim()
   }, [employeeQuery.data?.employee])
 
+  // Form hooks are intentionally excluded here so their submit errors don't render in the
+  // page-level BaseLayout outside the edit/create modal (SDK-930). The view renders those
+  // errors inside the modal directly via the form hook's own errorHandling.
   const errorHandling: HookErrorHandling = composeErrorHandler(
-    [employeeQuery, homeAddressesQuery, editHomeAddressForm, createHomeAddressForm],
+    [employeeQuery, homeAddressesQuery],
     { submitError: rootSubmitError, setSubmitError: setRootSubmitError },
   )
 

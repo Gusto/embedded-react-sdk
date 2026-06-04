@@ -63,8 +63,8 @@ describe('TransitionPayrollAlert', () => {
 
   it('renders nothing and emits an ERROR event when a gate query fails', async () => {
     server.use(
-      http.get(payPeriodsPath, () => new HttpResponse(null, { status: 500 })),
-      http.get(paySchedulesPath, () => HttpResponse.json(paySchedulesResponse)),
+      http.get(payPeriodsPath, () => HttpResponse.json([])),
+      http.get(paySchedulesPath, () => new HttpResponse(null, { status: 500 })),
     )
     const onEvent = vi.fn()
 

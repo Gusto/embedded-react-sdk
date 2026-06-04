@@ -74,7 +74,7 @@ export const dashboardStateMachine = {
       ),
     ),
     transition(
-      componentEvents.EMPLOYEE_WORK_ADDRESS,
+      componentEvents.EMPLOYEE_MANAGEMENT_WORK_ADDRESS_EDIT_REQUESTED,
       'workAddress',
       reduce(
         (ctx: DashboardContextInterface): DashboardContextInterface => ({
@@ -260,7 +260,13 @@ export const dashboardStateMachine = {
       returnToIndex,
     ),
   ),
-  workAddress: state<MachineTransition>(transition(componentEvents.CANCEL, 'index', returnToIndex)),
+  workAddress: state<MachineTransition>(
+    transition(
+      componentEvents.EMPLOYEE_MANAGEMENT_WORK_ADDRESS_EDIT_CANCELLED,
+      'index',
+      returnToIndex,
+    ),
+  ),
   federalTaxes: state<MachineTransition>(
     transition(componentEvents.CANCEL, 'index', returnToIndex),
     transition(componentEvents.EMPLOYEE_FEDERAL_TAXES_DONE, 'index', returnToIndex),

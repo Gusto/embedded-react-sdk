@@ -394,6 +394,50 @@ describe('PayrollListPresentation', () => {
     })
   })
 
+  describe('transition payroll blocker', () => {
+    const offCyclePayroll: PresentationPayroll = {
+      ...mockUnprocessedPayroll,
+      payrollUuid: 'payroll-off-cycle',
+      offCycle: true,
+      offCycleReason: 'Bonus',
+      payrollType: 'Off-Cycle',
+    }
+
+    it('disables the run payroll button on regular rows when transitions are unprocessed', async () => {
+      renderWithProviders(
+        <PayrollListPresentation {...defaultProps} hasUnprocessedTransitions={true} />,
+      )
+
+      await screen.findByRole('heading', { name: 'Upcoming payroll' })
+      expect(screen.getByRole('button', { name: 'Run Payroll' })).toBeDisabled()
+    })
+
+    it('does not disable the run payroll button on regular rows when no transitions exist', async () => {
+      renderWithProviders(
+        <PayrollListPresentation {...defaultProps} hasUnprocessedTransitions={false} />,
+      )
+
+      await screen.findByRole('heading', { name: 'Upcoming payroll' })
+      expect(screen.getByRole('button', { name: 'Run Payroll' })).not.toBeDisabled()
+    })
+
+    it('leaves off-cycle rows enabled when transitions are unprocessed', async () => {
+      renderWithProviders(
+        <PayrollListPresentation
+          {...defaultProps}
+          payrolls={[mockUnprocessedPayroll, offCyclePayroll]}
+          hasUnprocessedTransitions={true}
+        />,
+      )
+
+      await screen.findByRole('heading', { name: 'Upcoming payroll' })
+      const runButtons = screen.getAllByRole('button', { name: 'Run Payroll' })
+      // First row is the Regular payroll (disabled); second is Off-Cycle (enabled).
+      expect(runButtons[0]).toBeDisabled()
+      expect(runButtons[1]).not.toBeDisabled()
+    })
+  })
+
   describe('skip success alert', () => {
     it('shows skip success alert when showSkipSuccessAlert is true', async () => {
       renderWithProviders(<PayrollListPresentation {...defaultProps} showSkipSuccessAlert={true} />)

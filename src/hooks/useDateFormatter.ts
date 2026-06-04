@@ -12,6 +12,25 @@ import {
 } from '@/helpers/dateFormatting'
 import { useLocale } from '@/contexts/LocaleProvider'
 
+/**
+ * Returns a set of locale-aware date formatting helpers bound to the current SDK locale.
+ *
+ * @remarks
+ * Each helper accepts a `string | Date | null | undefined` and renders an empty string for nullish
+ * input. The locale is read from {@link useLocale} and the returned object is memoized so consumers
+ * can safely depend on its identity.
+ *
+ * Available formatters:
+ * - `formatShortWithWeekday` / `formatShortWithWeekdayAndYear` — short numeric date with weekday.
+ * - `formatShort` / `formatShortWithYear` — short numeric date.
+ * - `formatLong` / `formatLongWithYear` — long month name with day.
+ * - `formatWithTime` — date plus time.
+ * - `formatPayPeriod` — single pay period label.
+ * - `formatPayPeriodRange` — pay period range with an optional `useShortMonth` option.
+ *
+ * @returns A memoized object of formatter functions.
+ * @internal
+ */
 export const useDateFormatter = () => {
   const { locale } = useLocale()
 

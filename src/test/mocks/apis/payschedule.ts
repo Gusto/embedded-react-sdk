@@ -64,10 +64,15 @@ export const getPaySchedulePreview = http.get<
   return HttpResponse.json(responseFixture)
 })
 
+export const getPayPeriods = http.get(`${API_BASE_URL}/v1/companies/:company_id/pay_periods`, () =>
+  HttpResponse.json([]),
+)
+
 export default [
   getPaySchedules,
   getPaySchedule,
   createPaySchedule,
   updatePaySchedule,
   getPaySchedulePreview,
+  getPayPeriods,
 ]

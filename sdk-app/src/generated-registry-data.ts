@@ -50,6 +50,8 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'EmployeeManagement.TerminationFlow': ['companyId', 'employeeId'],
   'EmployeeManagement.TerminationSummary': ['employeeId', 'companyId'],
   'EmployeeManagement.WorkAddress': ['employeeId'],
+  'EmployeeManagement.WorkAddressCard': ['employeeId'],
+  'EmployeeManagement.WorkAddressEditForm': ['employeeId'],
   'EmployeeOnboarding.Compensation': ['employeeId'],
   'EmployeeOnboarding.Deductions': ['employeeId'],
   'EmployeeOnboarding.DocumentSigner': ['employeeId'],
