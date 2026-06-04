@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FederalTaxesView } from '../shared/FederalTaxesView'
 import {
@@ -60,40 +59,25 @@ function FederalTaxesEditFormRoot({
     },
   } satisfies UseFederalTaxesFormProps)
 
-  const [showSuccess, setShowSuccess] = useState(false)
-
   if (federalTaxes.isLoading) {
     return <BaseLayout isLoading error={federalTaxes.errorHandling.errors} />
   }
 
   const handleSubmit = async () => {
-    setShowSuccess(false)
     const result = await federalTaxes.actions.onSubmit()
     if (!result) return
 
     onEvent(componentEvents.EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_EDIT_FORM_SUBMITTED, result.data)
-    setShowSuccess(true)
   }
 
   const handleCancel = () => {
     onEvent(componentEvents.EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_EDIT_FORM_CANCELLED)
   }
 
-  const alert = showSuccess ? (
-    <Components.Alert
-      status="success"
-      label={t('successAlert')}
-      onDismiss={() => {
-        setShowSuccess(false)
-      }}
-    />
-  ) : undefined
-
   return (
     <FederalTaxesView
       federalTaxes={federalTaxes}
       onSubmit={handleSubmit}
-      alert={alert}
       actions={
         <ActionsLayout>
           <Components.Button variant="secondary" onClick={handleCancel}>

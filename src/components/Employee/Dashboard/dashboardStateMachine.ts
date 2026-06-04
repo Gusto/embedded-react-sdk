@@ -279,7 +279,7 @@ export const dashboardStateMachine = {
     transition(
       componentEvents.EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_EDIT_FORM_SUBMITTED,
       'index',
-      returnToIndex,
+      returnToIndexWithAlert('federalTaxesUpdated'),
     ),
   ),
   stateTaxes: state<MachineTransition>(

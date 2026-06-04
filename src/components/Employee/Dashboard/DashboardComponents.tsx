@@ -33,6 +33,7 @@ export type DashboardSuccessAlert =
   | 'jobAdded'
   | 'profileUpdated'
   | 'documentSigned'
+  | 'federalTaxesUpdated'
   | 'stateTaxesUpdated'
 
 export interface DashboardContextInterface extends FlowContextInterface {
@@ -64,6 +65,7 @@ export function DashboardViewContextual() {
     jobAdded: t('alerts.jobAdded'),
     profileUpdated: t('alerts.profileUpdated'),
     documentSigned: t('alerts.documentSigned'),
+    federalTaxesUpdated: t('alerts.federalTaxesUpdated'),
     stateTaxesUpdated: t('alerts.stateTaxesUpdated'),
   }
 

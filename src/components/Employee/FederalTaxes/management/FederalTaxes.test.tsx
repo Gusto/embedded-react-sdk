@@ -94,7 +94,7 @@ describe('FederalTaxes (management block)', () => {
     )
   })
 
-  it('returns to the card after a successful save and emits SUBMITTED', async () => {
+  it('returns to the card with a success alert after a successful save', async () => {
     const user = userEvent.setup()
     renderWithProviders(<FederalTaxes employeeId="employee-123" onEvent={onEvent} />)
 
@@ -121,5 +121,56 @@ describe('FederalTaxes (management block)', () => {
     })
 
     expect(screen.queryByRole('heading', { name: /Federal tax withholdings/i })).toBeNull()
+    expect(
+      await screen.findByText(/Federal tax settings successfully updated/i),
+    ).toBeInTheDocument()
+  })
+
+  it('dismisses the success alert when the dismiss button is clicked', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<FederalTaxes employeeId="employee-123" onEvent={onEvent} />)
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Edit' })).toBeEnabled()
+    })
+    await user.click(screen.getByRole('button', { name: 'Edit' }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /^Save$/i })).toBeInTheDocument()
+    })
+    await user.click(screen.getByRole('button', { name: /^Save$/i }))
+
+    await screen.findByText(/Federal tax settings successfully updated/i)
+
+    await user.click(screen.getByRole('button', { name: /dismiss/i }))
+
+    await waitFor(() => {
+      expect(screen.queryByText(/Federal tax settings successfully updated/i)).toBeNull()
+    })
+    expect(onEvent).toHaveBeenCalledWith(
+      componentEvents.EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_ALERT_DISMISSED,
+      null,
+    )
+  })
+
+  it('clears the success alert when the user transitions back to edit', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<FederalTaxes employeeId="employee-123" onEvent={onEvent} />)
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Edit' })).toBeEnabled()
+    })
+    await user.click(screen.getByRole('button', { name: 'Edit' }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /^Save$/i })).toBeInTheDocument()
+    })
+    await user.click(screen.getByRole('button', { name: /^Save$/i }))
+
+    await screen.findByText(/Federal tax settings successfully updated/i)
+
+    await user.click(screen.getByRole('button', { name: 'Edit' }))
+
+    expect(screen.queryByText(/Federal tax settings successfully updated/i)).toBeNull()
   })
 })

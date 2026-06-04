@@ -30,6 +30,7 @@ function FederalTaxesFlow({ employeeId, onEvent }: FederalTaxesProps) {
         ...ctx,
         component: FederalTaxesCardContextual,
         employeeId,
+        successAlert: null,
       })),
     [employeeId],
   )

@@ -134,6 +134,8 @@ export const employeeEvents = {
     'employee/management/federalTaxes/editForm/submitted',
   EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_EDIT_FORM_CANCELLED:
     'employee/management/federalTaxes/editForm/cancelled',
+  EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_ALERT_DISMISSED:
+    'employee/management/federalTaxes/alertDismissed',
 } as const
 
 /**

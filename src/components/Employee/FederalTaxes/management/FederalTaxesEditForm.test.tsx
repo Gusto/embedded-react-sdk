@@ -91,13 +91,11 @@ describe('FederalTaxesEditForm (management)', () => {
     )
   })
 
-  it('saves and shows a success alert; emits the scoped SUBMITTED event', async () => {
+  it('emits the scoped SUBMITTED event with the updated entity on save', async () => {
     const user = userEvent.setup()
     renderWithProviders(<FederalTaxesEditForm employeeId="employee-1" onEvent={mockOnEvent} />)
 
     await screen.findByRole('heading', { name: /Federal tax withholdings/i })
-
-    expect(screen.queryByText(/Successfully updated federal tax settings/i)).not.toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: /^Save$/i }))
 
@@ -107,12 +105,6 @@ describe('FederalTaxesEditForm (management)', () => {
         expect.anything(),
       )
     })
-
-    await waitFor(() => {
-      expect(screen.getByText(/Successfully updated federal tax settings/i)).toBeInTheDocument()
-    })
-
-    expect(screen.getByRole('heading', { name: /Federal tax withholdings/i })).toBeInTheDocument()
   })
 
   it('does not submit and surfaces a required error when filing status is empty', async () => {
@@ -133,7 +125,6 @@ describe('FederalTaxesEditForm (management)', () => {
       expect(screen.getByText(/Please select filing status/i)).toBeInTheDocument()
     })
 
-    expect(screen.queryByText(/Successfully updated federal tax settings/i)).not.toBeInTheDocument()
     expect(mockOnEvent).not.toHaveBeenCalledWith(
       componentEvents.EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_EDIT_FORM_SUBMITTED,
       expect.anything(),

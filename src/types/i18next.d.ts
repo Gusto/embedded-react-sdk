@@ -1539,6 +1539,7 @@ export interface EmployeeDashboard{
 "jobAdded":string;
 "profileUpdated":string;
 "documentSigned":string;
+"federalTaxesUpdated":string;
 "stateTaxesUpdated":string;
 };
 "compensationFlow":{
@@ -2227,7 +2228,9 @@ export interface EmployeeManagementFederalTaxes{
 };
 "saveCta":string;
 "cancelCta":string;
-"successAlert":string;
+"alerts":{
+"federalTaxesUpdated":string;
+};
 };
 export interface EmployeeManagementPaymentMethod{
 "title":string;

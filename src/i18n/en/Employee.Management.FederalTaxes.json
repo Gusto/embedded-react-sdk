@@ -38,5 +38,7 @@
   },
   "saveCta": "Save",
   "cancelCta": "Cancel",
-  "successAlert": "Successfully updated federal tax settings."
+  "alerts": {
+    "federalTaxesUpdated": "Federal tax settings successfully updated."
+  }
 }
