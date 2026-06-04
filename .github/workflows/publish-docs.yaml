@@ -1,0 +1,96 @@
+name: Publish Docs
+
+# Fires after a successful NPM publish on main. Builds the Docusaurus site
+# from docs/ + docs-site/ and pushes the built output to the main branch of
+# Gusto/embedded-sdk-docs, which serves what's on main.
+#
+# Auth: a GitHub App installed on Gusto/embedded-sdk-docs with
+# Contents: write. Credentials live in this repo's `publish-docs`
+# environment as DOCS_APP_ID and DOCS_APP_PRIVATE_KEY.
+#
+# To activate:
+#   1. Install the cross-repo publishing GitHub App on
+#      Gusto/embedded-sdk-docs with Contents: write.
+#   2. In the `publish-docs` environment on this repo, add secrets
+#      DOCS_APP_ID and DOCS_APP_PRIVATE_KEY (paste the entire .pem
+#      contents for the private key).
+#   3. Once a manual workflow_dispatch run is green, set repo variable
+#      DOCS_PUBLISH_ENABLED=true to turn on auto-publish on release.
+#
+# Manual `workflow_dispatch` triggers fire any time (the gate below only
+# guards the auto-on-release path), so the pipeline can be exercised
+# end-to-end before flipping the variable.
+
+on:
+  workflow_run:
+    workflows: [Publish to NPM]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: publish-docs
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    # workflow_dispatch always allowed (for manual testing). workflow_run
+    # only fires when DOCS_PUBLISH_ENABLED=true, so the next NPM release
+    # won't auto-publish docs until that variable is explicitly set.
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (vars.DOCS_PUBLISH_ENABLED == 'true' &&
+       github.event.workflow_run.conclusion == 'success')
+    runs-on:
+      group: gusto-ubuntu-default
+    environment: publish-docs
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+
+      - name: Read SDK version
+        id: version
+        run: echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Install docs dependencies
+        working-directory: docs-site
+        run: npm ci
+
+      - name: Build docs
+        run: npm run docs:build
+
+      - name: Mint GitHub App token for docs repo
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.DOCS_APP_ID }}
+          private-key: ${{ secrets.DOCS_APP_PRIVATE_KEY }}
+          owner: Gusto
+          repositories: embedded-sdk-docs
+
+      # Hand-rolled push instead of peaceiris/actions-gh-pages because
+      # Gusto's org actions allowlist doesn't include it. Initializing a
+      # fresh repo inside docs-site/build/ and force-pushing means each
+      # publish replaces embedded-sdk-docs:main with a single-commit
+      # orphan history — no merge logic, no conflicts. The token is in an
+      # env var so the URL doesn't appear verbatim in command logs, and
+      # the App token is auto-redacted by Actions even if it did.
+      - name: Push built site to embedded-sdk-docs
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          SDK_VERSION: ${{ steps.version.outputs.version }}
+        working-directory: docs-site/build
+        run: |
+          git init -q -b main
+          git config user.name "gusto-embedded-docs[bot]"
+          git config user.email "gusto-embedded-docs[bot]@users.noreply.github.com"
+          git add .
+          git commit -q -m "docs: publish SDK $SDK_VERSION"
+          git push --force "https://x-access-token:$GH_TOKEN@github.com/Gusto/embedded-sdk-docs.git" HEAD:main
