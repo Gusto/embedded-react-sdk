@@ -2,11 +2,13 @@ import { useField, type UseFieldProps } from '@/components/Common/Fields/hooks/u
 import type { MultiSelectComboBoxProps } from '@/components/Common/UI/MultiSelectComboBox/MultiSelectComboBoxTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
+/** @internal */
 export interface MultiSelectComboBoxFieldProps
   extends
     Omit<MultiSelectComboBoxProps, 'name' | 'value' | 'onChange' | 'isInvalid'>,
     UseFieldProps<string[]> {}
 
+/** @internal */
 export const MultiSelectComboBoxField: React.FC<MultiSelectComboBoxFieldProps> = ({
   rules,
   defaultValue,

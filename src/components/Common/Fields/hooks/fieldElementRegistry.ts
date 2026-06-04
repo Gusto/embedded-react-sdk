@@ -8,6 +8,8 @@ import { createContext, useContext, useRef } from 'react'
  * Lives here (next to `useField`) rather than in `partner-hook-utils` so the
  * established module-boundary direction (`partner-hook-utils` → `Common`) is
  * preserved. Partner code consumes it via re-exports from `partner-hook-utils/form`.
+ *
+ * @internal
  */
 export interface FieldElementRegistry {
   register: (name: string, element: HTMLElement | null) => void
@@ -37,6 +39,8 @@ function createFieldElementRegistry(): FieldElementRegistry {
 /**
  * Creates a stable `FieldElementRegistry` scoped to the caller's lifetime.
  * Intended to be called once per form hook (via `useHookFormInternals`).
+ *
+ * @internal
  */
 export function useFieldElementRegistry(): FieldElementRegistry {
   const ref = useRef<FieldElementRegistry | null>(null)
@@ -46,8 +50,10 @@ export function useFieldElementRegistry(): FieldElementRegistry {
   return ref.current
 }
 
+/** @internal */
 export const FieldElementRegistryContext = createContext<FieldElementRegistry | null>(null)
 
+/** @internal */
 export function useFieldElementRegistryContext(): FieldElementRegistry | null {
   return useContext(FieldElementRegistryContext)
 }

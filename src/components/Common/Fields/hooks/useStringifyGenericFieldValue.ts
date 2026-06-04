@@ -1,7 +1,9 @@
 import { useCallback, useMemo } from 'react'
 
+/** @internal */
 export type ConvertValueToString<TValue> = (value: TValue) => string
 
+/** @internal */
 export type OptionWithGenericValue<TValue, TOption> = Omit<TOption, 'value'> & {
   value: TValue
 }
@@ -43,6 +45,7 @@ interface UseStringifyGenericFieldValueProps<TValue, TOption> {
   convertValueToString?: ConvertValueToString<TValue>
 }
 
+/** @internal */
 export function useStringifyGenericFieldValue<TValue, TOption>({
   options,
   value,
@@ -81,6 +84,7 @@ interface UseStringifyGenericFieldValueArrayProps<TValue, TOption> {
   convertValueToString?: ConvertValueToString<TValue>
 }
 
+/** @internal */
 export function useStringifyGenericFieldValueArray<TValue, TOption>({
   options,
   value,

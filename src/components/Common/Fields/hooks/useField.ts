@@ -5,8 +5,10 @@ import { useFieldElementRegistryContext } from './fieldElementRegistry'
 import { createMarkup } from '@/helpers/formattedStrings'
 import { useForkRef } from '@/hooks/useForkRef/useForkRef'
 
+/** @internal */
 export type Transform<TValue> = (value: TValue) => TValue
 
+/** @internal */
 export interface UseFieldProps<TValue = string, TRef = HTMLInputElement> {
   name: string
   control?: Control
@@ -32,6 +34,7 @@ const processDescription = (description: React.ReactNode): React.ReactNode => {
   })
 }
 
+/** @internal */
 export function useField<TValue = string, TRef = HTMLInputElement>({
   name,
   control: controlProp,

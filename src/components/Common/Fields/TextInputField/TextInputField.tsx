@@ -3,11 +3,13 @@ import { useField, type UseFieldProps } from '@/components/Common/Fields/hooks/u
 import type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
+/** @internal */
 export interface TextInputFieldProps
   extends Omit<TextInputProps, 'name' | 'value' | 'isInvalid'>, UseFieldProps {
   FieldComponent?: ComponentType<TextInputProps>
 }
 
+/** @internal */
 export const TextInputField: React.FC<TextInputFieldProps> = ({
   rules,
   defaultValue,

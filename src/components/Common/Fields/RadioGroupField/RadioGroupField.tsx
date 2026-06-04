@@ -12,6 +12,7 @@ import {
 
 type GenericRadioGroupOption<TValue> = OptionWithGenericValue<TValue, RadioGroupOption>
 
+/** @internal */
 export interface RadioGroupFieldProps<TValue>
   extends
     Omit<RadioGroupProps, 'value' | 'onChange' | 'options' | 'isInvalid' | 'defaultValue'>,
@@ -21,6 +22,7 @@ export interface RadioGroupFieldProps<TValue>
   FieldComponent?: ComponentType<RadioGroupProps>
 }
 
+/** @internal */
 export const RadioGroupField = <TValue = string,>({
   rules,
   defaultValue,

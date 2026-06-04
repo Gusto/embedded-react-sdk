@@ -1,3 +1,16 @@
+/**
+ * Drains a binary `ReadableStream` and packages the bytes into a `Blob`.
+ *
+ * @remarks
+ * Reads all chunks from the stream, concatenates them into a single `Uint8Array`, and wraps the
+ * result in a `Blob` tagged with `mimeType`. Used to materialize downloads returned by streaming
+ * API responses.
+ *
+ * @param stream - The byte stream to read to completion
+ * @param mimeType - The MIME type assigned to the resulting `Blob`
+ * @returns A `Blob` containing the full contents of the stream
+ * @internal
+ */
 export async function readableStreamToBlob(stream: ReadableStream<Uint8Array>, mimeType: string) {
   const reader = stream.getReader()
   const chunks: Uint8Array[] = []

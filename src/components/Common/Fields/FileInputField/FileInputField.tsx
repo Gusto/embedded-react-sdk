@@ -2,11 +2,13 @@ import { useField, type UseFieldProps } from '@/components/Common/Fields/hooks/u
 import type { FileInputProps } from '@/components/Common/UI/FileInput/FileInputTypes'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
+/** @internal */
 export interface FileInputFieldProps
   extends
     Omit<FileInputProps, 'name' | 'value' | 'onChange' | 'isInvalid'>,
     UseFieldProps<File | null> {}
 
+/** @internal */
 export const FileInputField: React.FC<FileInputFieldProps> = ({
   rules,
   defaultValue,

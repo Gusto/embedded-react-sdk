@@ -1,7 +1,13 @@
 import type { EntityErrorObject } from '@gusto/embedded-api-v-2025-11-15/models/components/entityerrorobject'
 import { snakeCaseToCamelCase } from './formattedStrings'
 
-/**Traverses errorList and finds items with message properties */
+/**
+ * Renders each error in the list that carries a `message` as a `<span>` keyed by `errorKey`.
+ *
+ * @param errorList - Flat list of entity errors returned by the API.
+ * @returns React nodes for messaged entries; entries without a message yield `null`.
+ * @internal
+ */
 export const renderErrorList = (errorList: Array<EntityErrorObject>): React.ReactNode[] => {
   return errorList.map(errorFromList => {
     if (errorFromList.message) {
@@ -10,8 +16,18 @@ export const renderErrorList = (errorList: Array<EntityErrorObject>): React.Reac
     return null
   })
 }
-/**Recuresively parses error list and constructs an array of objects containing attribute value error messages associated with form fields. Nested errors construct '.' separated keys
- * metadata.state is a special case for state taxes validation errors
+/**
+ * Recursively flattens a nested API error tree into a list keyed for form-field display.
+ *
+ * @remarks Builds dot-separated `errorKey` paths from nested errors and converts each segment
+ * from snake_case to camelCase so the resulting keys match react-hook-form field names.
+ * `metadata.key` is used as the path segment for nested errors when present; `metadata.state`
+ * is a special case for state-tax validation errors, falling back to the node's own `errorKey`.
+ *
+ * @param error - The root entity error to flatten.
+ * @param parentKey - Accumulated dot-path prefix used during recursion. Omit at the top level.
+ * @returns A flat list of `{ errorKey, message, category }` entries ready to bind to form fields.
+ * @internal
  */
 export const getFieldErrors = (
   error: EntityErrorObject,
