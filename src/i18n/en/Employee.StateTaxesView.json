@@ -1,0 +1,7 @@
+{
+  "stateTaxesTitle": "{{state}} Tax Requirements",
+  "noWithholding": "No state income tax withholding is required for this employee's work state.",
+  "validations": {
+    "required": "This field is a required field. Please enter a value."
+  }
+}

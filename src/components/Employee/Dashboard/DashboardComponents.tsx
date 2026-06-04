@@ -5,7 +5,7 @@ import { getPendingCompensationChanges } from './getPendingCompensationChanges'
 import { HomeAddressEditForm } from '@/components/Employee/HomeAddress/management/HomeAddressEditForm'
 import { WorkAddressEditForm } from '@/components/Employee/WorkAddress/management/WorkAddressEditForm'
 import { FederalTaxes } from '@/components/Employee/FederalTaxes/management/FederalTaxes'
-import { StateTaxes } from '@/components/Employee/StateTaxes/management/StateTaxes'
+import { StateTaxesEditForm } from '@/components/Employee/StateTaxes/management/StateTaxesEditForm'
 import { ProfileEditForm } from '@/components/Employee/Profile/management/ProfileEditForm'
 import { PaymentMethodBankForm } from '@/components/Employee/PaymentMethod/management/PaymentMethodBankForm'
 import { PaymentMethodSplitForm } from '@/components/Employee/PaymentMethod/management/PaymentMethodSplitForm'
@@ -33,6 +33,7 @@ export type DashboardSuccessAlert =
   | 'jobAdded'
   | 'profileUpdated'
   | 'documentSigned'
+  | 'stateTaxesUpdated'
 
 export interface DashboardContextInterface extends FlowContextInterface {
   employeeId: string
@@ -63,6 +64,7 @@ export function DashboardViewContextual() {
     jobAdded: t('alerts.jobAdded'),
     profileUpdated: t('alerts.profileUpdated'),
     documentSigned: t('alerts.documentSigned'),
+    stateTaxesUpdated: t('alerts.stateTaxesUpdated'),
   }
 
   return (
@@ -103,7 +105,7 @@ export function FederalTaxesContextual() {
 
 export function StateTaxesContextual() {
   const { employeeId, onEvent } = useFlow<DashboardContextInterface>()
-  return <StateTaxes employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
+  return <StateTaxesEditForm employeeId={ensureRequired(employeeId)} onEvent={onEvent} />
 }
 
 export function ProfileContextual() {

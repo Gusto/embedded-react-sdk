@@ -53,6 +53,8 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'EmployeeManagement.ProfileCard': ['employeeId'],
   'EmployeeManagement.ProfileEditForm': ['employeeId'],
   'EmployeeManagement.StateTaxes': ['employeeId'],
+  'EmployeeManagement.StateTaxesCard': ['employeeId'],
+  'EmployeeManagement.StateTaxesEditForm': ['employeeId'],
   'EmployeeManagement.TerminateEmployee': ['employeeId', 'companyId'],
   'EmployeeManagement.TerminationFlow': ['companyId', 'employeeId'],
   'EmployeeManagement.TerminationSummary': ['employeeId', 'companyId'],

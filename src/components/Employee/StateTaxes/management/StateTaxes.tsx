@@ -1,87 +1,51 @@
-import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { EmployeeStateTaxesView, useEmployeeStateTaxesForm } from '../shared'
+import { createMachine } from 'robot3'
+import { useMemo } from 'react'
+import { StateTaxesCardContextual, type StateTaxesContextInterface } from './StateTaxesComponents'
+import { stateTaxesStateMachine } from './stateTaxesStateMachine'
+import { Flow } from '@/components/Flow/Flow'
 import {
   BaseBoundaries,
-  BaseLayout,
   type BaseComponentInterface,
   type CommonComponentInterface,
 } from '@/components/Base'
-import { ActionsLayout } from '@/components/Common'
-import { useI18n, useComponentDictionary } from '@/i18n'
-import { componentEvents } from '@/shared/constants'
-import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { type EventType } from '@/shared/constants'
+import { useComponentDictionary } from '@/i18n/I18n'
+import { useI18n } from '@/i18n'
+import type { OnEventType } from '@/components/Base/useBase'
 
-export type StateTaxesProps = Omit<CommonComponentInterface<'Employee.StateTaxes'>, 'children'> & {
+export interface StateTaxesProps extends CommonComponentInterface<'Employee.Management.StateTaxes'> {
   employeeId: string
-  onEvent: BaseComponentInterface['onEvent']
+  onEvent: OnEventType<EventType, unknown>
+}
+
+function StateTaxesFlow({ employeeId, onEvent }: StateTaxesProps) {
+  useI18n('Employee.Management.StateTaxes')
+
+  const machine = useMemo(
+    () =>
+      createMachine('card', stateTaxesStateMachine, (ctx: StateTaxesContextInterface) => ({
+        ...ctx,
+        component: StateTaxesCardContextual,
+        employeeId,
+      })),
+    [employeeId],
+  )
+
+  return <Flow machine={machine} onEvent={onEvent} />
 }
 
 export function StateTaxes({
+  dictionary,
   FallbackComponent,
   ...props
-}: StateTaxesProps & Pick<BaseComponentInterface, 'FallbackComponent'>) {
+}: StateTaxesProps & BaseComponentInterface<'Employee.Management.StateTaxes'>) {
+  useComponentDictionary('Employee.Management.StateTaxes', dictionary)
   return (
-    <BaseBoundaries componentName="Employee.StateTaxes" FallbackComponent={FallbackComponent}>
-      <StateTaxesRoot {...props} />
+    <BaseBoundaries
+      componentName="Employee.Management.StateTaxes"
+      FallbackComponent={FallbackComponent}
+    >
+      <StateTaxesFlow {...props} />
     </BaseBoundaries>
-  )
-}
-
-function StateTaxesRoot({ employeeId, className, dictionary, onEvent }: StateTaxesProps) {
-  useI18n('Employee.StateTaxes')
-  useComponentDictionary('Employee.StateTaxes', dictionary)
-  const { t } = useTranslation('Employee.StateTaxes')
-  const Components = useComponentContext()
-
-  const stateTaxes = useEmployeeStateTaxesForm({ employeeId })
-  const [showSuccess, setShowSuccess] = useState(false)
-
-  if (stateTaxes.isLoading) {
-    return <BaseLayout isLoading error={stateTaxes.errorHandling.errors} />
-  }
-
-  const handleSubmit = async () => {
-    setShowSuccess(false)
-    const result = await stateTaxes.actions.onSubmit()
-    if (!result) return
-
-    onEvent(componentEvents.EMPLOYEE_STATE_TAXES_UPDATED, {
-      employeeStateTaxesList: result.data,
-    })
-    setShowSuccess(true)
-  }
-
-  const handleCancel = () => {
-    onEvent(componentEvents.CANCEL)
-  }
-
-  const alert = showSuccess ? (
-    <Components.Alert
-      status="success"
-      label={t('successAlert')}
-      onDismiss={() => {
-        setShowSuccess(false)
-      }}
-    />
-  ) : undefined
-
-  return (
-    <EmployeeStateTaxesView
-      stateTaxes={stateTaxes}
-      onSubmit={handleSubmit}
-      alert={alert}
-      actions={
-        <ActionsLayout>
-          <Components.Button variant="secondary" onClick={handleCancel}>
-            {t('cancelCta')}
-          </Components.Button>
-          <Components.Button type="submit" isLoading={stateTaxes.status.isPending}>
-            {t('saveCta')}
-          </Components.Button>
-        </ActionsLayout>
-      }
-      className={className}
-    />
   )
 }

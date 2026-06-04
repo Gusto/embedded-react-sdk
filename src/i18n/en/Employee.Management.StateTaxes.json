@@ -1,0 +1,21 @@
+{
+  "card": {
+    "title": "State taxes",
+    "editCta": "Edit",
+    "noStateTaxes": "No state taxes on file",
+    "noWithholdingForState": "No state income tax withholding required.",
+    "listEmptyPlaceholder": "No value",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "stateTaxesTitle": "{{state}} Tax Requirements",
+  "noWithholding": "No state income tax withholding is required for this employee's work state.",
+  "saveCta": "Save",
+  "cancelCta": "Cancel",
+  "alerts": {
+    "stateTaxesUpdated": "Successfully updated state tax settings."
+  },
+  "validations": {
+    "required": "This field is a required field. Please enter a value."
+  }
+}

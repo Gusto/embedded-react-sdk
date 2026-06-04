@@ -60,10 +60,6 @@ function DashboardRoot({
     [onEvent, employeeId],
   )
 
-  const handleEditStateTaxes = useCallback(() => {
-    onEvent(componentEvents.EMPLOYEE_STATE_TAXES_EDIT, { employeeId })
-  }, [onEvent, employeeId])
-
   const handleViewForm = useCallback(
     (formId: string) => {
       onEvent(componentEvents.EMPLOYEE_VIEW_FORM_TO_SIGN, { employeeId, formId })
@@ -135,8 +131,8 @@ function DashboardRoot({
             <Suspense fallback={<BaseLayout isLoading />}>
               <TaxesViewWithData
                 employeeId={employeeId}
+                onEvent={onEvent}
                 onEditFederalTaxes={handleEditFederalTaxes}
-                onEditStateTaxes={handleEditStateTaxes}
               />
             </Suspense>
           )}

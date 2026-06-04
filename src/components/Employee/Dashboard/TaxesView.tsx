@@ -1,264 +1,142 @@
 import { useTranslation } from 'react-i18next'
 import type { GetV1EmployeesEmployeeIdFederalTaxesResponse } from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1employeesemployeeidfederaltaxes'
-import type { GetV1EmployeesEmployeeIdStateTaxesResponse } from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1employeesemployeeidstatetaxes'
-import type { EmployeeStateTaxQuestion } from '@gusto/embedded-api-v-2025-11-15/models/components/employeestatetaxquestion'
 import { useEmployeeTaxes } from './hooks'
+import { StateTaxesCard } from '@/components/Employee/StateTaxes/management/StateTaxesCard'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Loading } from '@/components/Common'
 import { BaseLayout } from '@/components/Base/Base'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
+import type { OnEventType } from '@/components/Base/useBase'
+import type { EventType } from '@/shared/constants'
 
 type EmployeeFederalTax = NonNullable<
   GetV1EmployeesEmployeeIdFederalTaxesResponse['employeeFederalTax']
 >
-type EmployeeStateTax = NonNullable<
-  GetV1EmployeesEmployeeIdStateTaxesResponse['employeeStateTaxesList']
->[number]
 
 export interface TaxesViewProps {
   federalTaxes?: EmployeeFederalTax
-  stateTaxes?: EmployeeStateTax[]
-  /** Loads both cards. Override per-card via `isFederalTaxesLoading` /
-   *  `isStateTaxesLoading` when the queries resolve independently. */
+  /** Loads the federal card. */
   isLoading?: boolean
   isFederalTaxesLoading?: boolean
-  isStateTaxesLoading?: boolean
   onEditFederalTaxes?: () => void
-  onEditStateTaxes?: () => void
 }
 
 export interface TaxesViewWithDataProps {
   employeeId: string
+  onEvent: OnEventType<EventType, unknown>
   /** Receives the federal-tax record so the parent can preserve the
    *  existing event payload (`{ employeeId, federalTaxes }`). */
   onEditFederalTaxes?: (federalTaxes: EmployeeFederalTax | undefined) => void
-  onEditStateTaxes?: () => void
 }
 
 /**
  * Tab-mounted container for the Taxes tab. Owns the `useEmployeeTaxes`
- * fetch so federal/state tax requests only fire when the tab is mounted.
- * Federal and state queries run independently — each card paints its
- * own skeleton + content as data arrives.
+ * federal-tax fetch (state taxes is now self-fetching via the
+ * standalone `<StateTaxesCard />` rendered below).
  */
 export function TaxesViewWithData({
   employeeId,
+  onEvent,
   onEditFederalTaxes,
-  onEditStateTaxes,
 }: TaxesViewWithDataProps) {
   const taxes = useEmployeeTaxes({ employeeId })
 
   const federalTaxes = taxes.data.employeeFederalTax
   return (
     <BaseLayout error={taxes.errorHandling.errors}>
-      <TaxesView
-        federalTaxes={federalTaxes}
-        stateTaxes={taxes.data.employeeStateTaxesList}
-        isFederalTaxesLoading={taxes.status.isFederalTaxesLoading}
-        isStateTaxesLoading={taxes.status.isStateTaxesLoading}
-        onEditFederalTaxes={() => onEditFederalTaxes?.(federalTaxes)}
-        onEditStateTaxes={onEditStateTaxes}
-      />
+      <Flex flexDirection="column" gap={24}>
+        <TaxesView
+          federalTaxes={federalTaxes}
+          isFederalTaxesLoading={taxes.status.isFederalTaxesLoading}
+          onEditFederalTaxes={() => onEditFederalTaxes?.(federalTaxes)}
+        />
+        <StateTaxesCard employeeId={employeeId} onEvent={onEvent} />
+      </Flex>
     </BaseLayout>
   )
 }
 
 export function TaxesView({
   federalTaxes,
-  stateTaxes,
   isLoading = false,
   isFederalTaxesLoading = isLoading,
-  isStateTaxesLoading = isLoading,
   onEditFederalTaxes,
-  onEditStateTaxes,
 }: TaxesViewProps) {
   const { t } = useTranslation('Employee.Dashboard')
-  const { t: tCommon } = useTranslation('common')
   const Components = useComponentContext()
   const formatCurrency = useNumberFormatter('currency')
-
-  const stateTaxesHaveAnyQuestions = !!stateTaxes?.some(s => (s.questions?.length ?? 0) > 0)
-
-  // Helper function to format state tax answer values
-  const formatStateTaxAnswer = (
-    question: EmployeeStateTaxQuestion,
-    answer: string | number | boolean,
-  ) => {
-    // For Select type questions, look up the label from options
-    if (
-      question.inputQuestionFormat.type === 'Select' &&
-      question.inputQuestionFormat.options &&
-      question.inputQuestionFormat.options.length > 0
-    ) {
-      const option = question.inputQuestionFormat.options.find(opt => opt.value === answer)
-      if (option?.label) {
-        return option.label
-      }
-    }
-
-    // For numeric values, only format as currency for Currency questions
-    if (typeof answer === 'number') {
-      if (question.inputQuestionFormat.type === 'Currency') {
-        return formatCurrency(answer)
-      }
-      return answer
-    }
-
-    // For string currency values (like "0.0")
-    if (typeof answer === 'string' && !isNaN(parseFloat(answer))) {
-      const numValue = parseFloat(answer)
-      // Check if this looks like a currency (has decimal point or question type is Currency)
-      if (question.inputQuestionFormat.type === 'Currency') {
-        return formatCurrency(numValue)
-      }
-      // For non-currency numeric strings, return as-is
-      return answer
-    }
-
-    // For boolean values
-    if (typeof answer === 'boolean') {
-      return answer ? t('common.yes') : t('common.no')
-    }
-
-    // Default: return string value as-is
-    return answer
-  }
 
   const emptyPlaceholder = <span aria-label={t('listEmptyPlaceholder')}>–</span>
 
   return (
-    <Flex flexDirection="column" gap={24}>
-      <Components.Box
-        header={
-          <Components.BoxHeader
-            title={t('taxes.federal.title')}
-            action={
-              <Components.Button
-                variant="secondary"
-                onClick={onEditFederalTaxes}
-                isDisabled={isFederalTaxesLoading}
-              >
-                {t('taxes.federal.editCta')}
-              </Components.Button>
-            }
+    <Components.Box
+      header={
+        <Components.BoxHeader
+          title={t('taxes.federal.title')}
+          action={
+            <Components.Button
+              variant="secondary"
+              onClick={onEditFederalTaxes}
+              isDisabled={isFederalTaxesLoading}
+            >
+              {t('taxes.federal.editCta')}
+            </Components.Button>
+          }
+        />
+      }
+    >
+      <Flex flexDirection="column" gap={16}>
+        {isFederalTaxesLoading ? (
+          <Loading />
+        ) : federalTaxes ? (
+          <Components.DescriptionList
+            items={[
+              {
+                term: t('taxes.federal.filingStatus'),
+                description: federalTaxes.filingStatus || emptyPlaceholder,
+              },
+              {
+                term: t('taxes.federal.multipleJobs'),
+                description:
+                  'twoJobs' in federalTaxes && federalTaxes.twoJobs !== null
+                    ? federalTaxes.twoJobs
+                      ? t('common.yes')
+                      : t('common.no')
+                    : emptyPlaceholder,
+              },
+              {
+                term: t('taxes.federal.dependentsAndOtherCredits'),
+                description:
+                  'dependentsAmount' in federalTaxes && federalTaxes.dependentsAmount
+                    ? formatCurrency(parseFloat(federalTaxes.dependentsAmount))
+                    : emptyPlaceholder,
+              },
+              {
+                term: t('taxes.federal.otherIncome'),
+                description:
+                  'otherIncome' in federalTaxes && federalTaxes.otherIncome
+                    ? formatCurrency(parseFloat(federalTaxes.otherIncome))
+                    : emptyPlaceholder,
+              },
+              {
+                term: t('taxes.federal.deductions'),
+                description:
+                  'deductions' in federalTaxes && federalTaxes.deductions
+                    ? formatCurrency(parseFloat(federalTaxes.deductions))
+                    : emptyPlaceholder,
+              },
+              {
+                term: t('taxes.federal.extraWithholding'),
+                description:
+                  'extraWithholding' in federalTaxes && federalTaxes.extraWithholding
+                    ? formatCurrency(parseFloat(federalTaxes.extraWithholding))
+                    : emptyPlaceholder,
+              },
+            ]}
           />
-        }
-      >
-        <Flex flexDirection="column" gap={16}>
-          {isFederalTaxesLoading ? (
-            <Loading />
-          ) : federalTaxes ? (
-            <Components.DescriptionList
-              items={[
-                {
-                  term: t('taxes.federal.filingStatus'),
-                  description: federalTaxes.filingStatus || emptyPlaceholder,
-                },
-                {
-                  term: t('taxes.federal.multipleJobs'),
-                  description:
-                    'twoJobs' in federalTaxes && federalTaxes.twoJobs !== null
-                      ? federalTaxes.twoJobs
-                        ? t('common.yes')
-                        : t('common.no')
-                      : emptyPlaceholder,
-                },
-                {
-                  term: t('taxes.federal.dependentsAndOtherCredits'),
-                  description:
-                    'dependentsAmount' in federalTaxes && federalTaxes.dependentsAmount
-                      ? formatCurrency(parseFloat(federalTaxes.dependentsAmount))
-                      : emptyPlaceholder,
-                },
-                {
-                  term: t('taxes.federal.otherIncome'),
-                  description:
-                    'otherIncome' in federalTaxes && federalTaxes.otherIncome
-                      ? formatCurrency(parseFloat(federalTaxes.otherIncome))
-                      : emptyPlaceholder,
-                },
-                {
-                  term: t('taxes.federal.deductions'),
-                  description:
-                    'deductions' in federalTaxes && federalTaxes.deductions
-                      ? formatCurrency(parseFloat(federalTaxes.deductions))
-                      : emptyPlaceholder,
-                },
-                {
-                  term: t('taxes.federal.extraWithholding'),
-                  description:
-                    'extraWithholding' in federalTaxes && federalTaxes.extraWithholding
-                      ? formatCurrency(parseFloat(federalTaxes.extraWithholding))
-                      : emptyPlaceholder,
-                },
-              ]}
-            />
-          ) : null}
-        </Flex>
-      </Components.Box>
-
-      <Components.Box
-        header={
-          <Components.BoxHeader
-            title={t('taxes.state.title')}
-            action={
-              isStateTaxesLoading || stateTaxesHaveAnyQuestions ? (
-                <Components.Button
-                  variant="secondary"
-                  onClick={onEditStateTaxes}
-                  isDisabled={isStateTaxesLoading}
-                >
-                  {t('taxes.state.editCta')}
-                </Components.Button>
-              ) : undefined
-            }
-          />
-        }
-      >
-        <Flex flexDirection="column" gap={16}>
-          {isStateTaxesLoading ? (
-            <Loading />
-          ) : stateTaxes && stateTaxes.length > 0 ? (
-            <Flex flexDirection="column" gap={24}>
-              {stateTaxes.map((stateTax, index) => {
-                const stateName = stateTax.state
-                  ? tCommon(`statesHash.${stateTax.state}`, stateTax.state)
-                  : ''
-                const hasQuestions = (stateTax.questions?.length ?? 0) > 0
-                return (
-                  <Flex key={stateTax.state || index} flexDirection="column" gap={16}>
-                    {stateName ? (
-                      <Components.Heading as="h4">{stateName}</Components.Heading>
-                    ) : null}
-
-                    {hasQuestions ? (
-                      <Components.DescriptionList
-                        items={stateTax.questions!.map(question => {
-                          const answer = question.answers[0]?.value
-                          return {
-                            term: question.label,
-                            description:
-                              answer === null || answer === undefined
-                                ? emptyPlaceholder
-                                : formatStateTaxAnswer(question, answer),
-                          }
-                        })}
-                      />
-                    ) : (
-                      <Components.Text variant="supporting">
-                        {t('taxes.state.noWithholdingForState')}
-                      </Components.Text>
-                    )}
-                  </Flex>
-                )
-              })}
-            </Flex>
-          ) : (
-            <Components.Text>{t('taxes.state.noStateTaxes')}</Components.Text>
-          )}
-        </Flex>
-      </Components.Box>
-    </Flex>
+        ) : null}
+      </Flex>
+    </Components.Box>
   )
 }

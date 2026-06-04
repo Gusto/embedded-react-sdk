@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { EmployeeStateTaxesView, useEmployeeStateTaxesForm } from '../shared'
+import { useOnboardingStateTaxesViewDictionary } from './useViewDictionary'
 import {
   BaseBoundaries,
   BaseLayout,
@@ -40,6 +41,7 @@ function StateTaxesRoot({
   useComponentDictionary('Employee.StateTaxes', dictionary)
 
   const stateTaxes = useEmployeeStateTaxesForm({ employeeId, isAdmin })
+  const onboardingStateTaxesDictionary = useOnboardingStateTaxesViewDictionary()
 
   if (stateTaxes.isLoading) {
     return <BaseLayout isLoading error={stateTaxes.errorHandling.errors} />
@@ -61,6 +63,7 @@ function StateTaxesRoot({
       onSubmit={handleSubmit}
       actions={<ContinueAction isPending={stateTaxes.status.isPending} />}
       className={className}
+      dictionary={onboardingStateTaxesDictionary}
     />
   )
 }

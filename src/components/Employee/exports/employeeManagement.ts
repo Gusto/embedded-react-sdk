@@ -18,7 +18,12 @@ export type {
   WorkAddressEditFormProps,
 } from '../WorkAddress/management'
 export { FederalTaxes, type FederalTaxesProps } from '../FederalTaxes/management/FederalTaxes'
-export { StateTaxes, type StateTaxesProps } from '../StateTaxes/management/StateTaxes'
+export { StateTaxes, StateTaxesCard, StateTaxesEditForm } from '../StateTaxes/management'
+export type {
+  StateTaxesProps,
+  StateTaxesCardProps,
+  StateTaxesEditFormProps,
+} from '../StateTaxes/management'
 export { Profile, ProfileCard, ProfileEditForm } from '../Profile/management'
 export type { ProfileProps, ProfileCardProps, ProfileEditFormProps } from '../Profile/management'
 export {

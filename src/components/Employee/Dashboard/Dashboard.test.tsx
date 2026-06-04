@@ -1819,7 +1819,7 @@ describe('Dashboard', () => {
     })
   })
 
-  it('emits EMPLOYEE_STATE_TAXES_EDIT with only employeeId when clicking state taxes edit', async () => {
+  it('emits the scoped state-taxes edit event with only employeeId when clicking Edit', async () => {
     const user = userEvent.setup()
 
     renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
@@ -1841,9 +1841,10 @@ describe('Dashboard', () => {
     })
     await user.click(within(stateTaxesBox).getByRole('button', { name: 'Edit' }))
 
-    expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_STATE_TAXES_EDIT, {
-      employeeId: 'employee-123',
-    })
+    expect(onEvent).toHaveBeenCalledWith(
+      componentEvents.EMPLOYEE_MANAGEMENT_STATE_TAXES_EDIT_REQUESTED,
+      { employeeId: 'employee-123' },
+    )
   })
 
   it('renders no-withholding messaging and hides Edit when the state has no income tax', async () => {
