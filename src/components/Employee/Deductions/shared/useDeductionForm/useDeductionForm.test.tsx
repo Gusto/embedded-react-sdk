@@ -123,6 +123,41 @@ describe('useDeductionForm', () => {
       expect(result.current.form.Fields.AnnualMaximum).toBeUndefined()
     })
 
+    // The frequency RadioGroup writes the string `'false'` into form state
+    // (not a boolean) — and `'false'` is truthy. Without coercion the cap
+    // fields would stay visible for one-time deductions (SDK-944). This guards
+    // the string shape specifically; the boolean case is covered above.
+    it('hides the cap fields when recurring is set to the string "false" (RadioGroup shape)', async () => {
+      const { result } = renderHook(
+        () =>
+          useDeductionForm({
+            employeeId: 'employee-123',
+            courtOrdered: false,
+            defaultValues: { recurring: true },
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      assertReady(result.current)
+      expect(result.current.form.Fields.TotalAmount).toBeDefined()
+
+      act(() => {
+        assertReady(result.current)
+        result.current.form.hookFormInternals.formMethods.setValue(
+          'recurring',
+          'false' as unknown as boolean,
+        )
+      })
+
+      await waitFor(() => {
+        assertReady(result.current)
+        expect(result.current.status.isRecurring).toBe(false)
+      })
+
+      expect(result.current.form.Fields.TotalAmount).toBeUndefined()
+      expect(result.current.form.Fields.AnnualMaximum).toBeUndefined()
+    })
+
     it('POSTs a custom deduction with courtOrdered:false and no garnishment_type', async () => {
       let createBody: Record<string, unknown> | null = null
       const createResolver = vi.fn<HttpResponseResolver>(async ({ request }) => {
@@ -355,6 +390,35 @@ describe('useDeductionForm', () => {
         mode: 'update',
         data: { uuid: 'existing-1', description: 'Renamed' },
       })
+    })
+
+    it('hides the cap fields on load when editing a one-time deduction, and matches create-mode visibility', async () => {
+      const oneTime = buildDeductionFixture({
+        uuid: 'one-time-1',
+        description: 'Parking',
+        recurring: false,
+        court_ordered: false,
+      })
+      stubList([oneTime])
+
+      const { result } = renderHook(
+        () =>
+          useDeductionForm({
+            employeeId: 'employee-123',
+            garnishmentId: 'one-time-1',
+            courtOrdered: false,
+          }),
+        { wrapper: GustoTestProvider },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+      assertReady(result.current)
+      expect(result.current.status.isRecurring).toBe(false)
+      // Consistent with creating a one-time deduction: caps are not shown.
+      expect(result.current.form.Fields.TotalAmount).toBeUndefined()
+      expect(result.current.form.Fields.AnnualMaximum).toBeUndefined()
     })
   })
 })
