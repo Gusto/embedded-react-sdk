@@ -6,16 +6,26 @@ import type { FieldMetadata } from '../types'
 import type { FieldsMetadataConfig } from './buildFormSchema'
 
 /**
- * Resolves dynamic field metadata (e.g. `isRequired` driven by predicate
- * rules) by watching only the form fields that predicates actually read.
+ * Resolves dynamic per-field metadata (e.g. `isRequired` driven by predicate
+ * rules) by subscribing only to the form fields the predicates actually read.
  *
- * `buildFormSchema` auto-detects predicate dependencies via a recording
- * Proxy and exposes them as `predicateDeps`. This hook subscribes to only
- * those fields, so typing into unrelated inputs does not trigger re-renders
- * — preserving react-hook-form's per-field optimization.
+ * @remarks
+ * The companion schema builder records predicate dependencies via a recording
+ * Proxy and exposes them on the config as `predicateDeps`. This hook subscribes
+ * to only those fields, so typing into unrelated inputs does not trigger
+ * re-renders — preserving react-hook-form's per-field rendering optimization.
  *
  * When no predicates exist (`predicateDeps` is empty), the hook skips
- * `useWatch` entirely and returns static metadata.
+ * subscribing entirely and returns static metadata derived once per render.
+ *
+ * @typeParam T - Map of field name to Zod validator, mirroring the schema config.
+ * @typeParam TFormData - Shape of the form values managed by react-hook-form.
+ * @param metadataConfig - Metadata config produced alongside the form schema,
+ *   carrying both the resolver function and the predicate dependency list.
+ * @param control - react-hook-form `control` returned by `useForm`.
+ * @returns A map from field name to {@link FieldMetadata}, recomputed whenever
+ *   a watched dependency changes.
+ * @public
  */
 export function useDeriveFieldsMetadata<
   T extends Record<string, z.ZodType>,

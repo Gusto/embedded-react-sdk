@@ -6,6 +6,12 @@ import { DatePickerField } from '@/components/Common/Fields/DatePickerField'
 import type { DatePickerProps } from '@/components/Common/UI/DatePicker/DatePickerTypes'
 import { normalizeToDate } from '@/helpers/dateFormatting'
 
+/**
+ * Props for {@link DatePickerHookField}.
+ *
+ * @typeParam TErrorCode - Validation error code keys mapped via `validationMessages`.
+ * @public
+ */
 export interface DatePickerHookFieldProps<TErrorCode extends string = never>
   extends BaseFieldProps, Pick<DatePickerProps, 'portalContainer' | 'minDate' | 'maxDate'> {
   name: string
@@ -16,6 +22,14 @@ export interface DatePickerHookFieldProps<TErrorCode extends string = never>
   portalContainer?: DatePickerProps['portalContainer']
 }
 
+/**
+ * Date picker field connected to a partner form hook result via `useHookFieldResolution`.
+ *
+ * @typeParam TErrorCode - Validation error code keys mapped via `validationMessages`.
+ * @param props - Field configuration including `name`, `formHookResult`, label content, and optional date bounds.
+ * @returns The rendered date picker field wrapped in the field element registry.
+ * @internal
+ */
 export function DatePickerHookField<TErrorCode extends string>({
   name,
   formHookResult,

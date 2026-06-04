@@ -5,6 +5,13 @@ import { withFieldElementRegistry } from './withFieldElementRegistry'
 import { TextInputField } from '@/components/Common'
 import type { TextInputProps } from '@/components/Common/UI/TextInput/TextInputTypes'
 
+/**
+ * Props for {@link TextInputHookField}.
+ *
+ * @typeParam TErrorCode - Required validation error code keys mapped via `validationMessages`.
+ * @typeParam TOptionalErrorCode - Optional validation error code keys mapped via `validationMessages`.
+ * @public
+ */
 export interface TextInputHookFieldProps<
   TErrorCode extends string = never,
   TOptionalErrorCode extends string = never,
@@ -17,6 +24,15 @@ export interface TextInputHookFieldProps<
   FieldComponent?: ComponentType<TextInputProps>
 }
 
+/**
+ * Text input field connected to a partner form hook result via `useHookFieldResolution`.
+ *
+ * @typeParam TErrorCode - Required validation error code keys mapped via `validationMessages`.
+ * @typeParam TOptionalErrorCode - Optional validation error code keys mapped via `validationMessages`.
+ * @param props - Field configuration including `name`, `formHookResult`, `transform`, `placeholder`, and label content.
+ * @returns The rendered text input field wrapped in the field element registry.
+ * @internal
+ */
 export function TextInputHookField<
   TErrorCode extends string,
   TOptionalErrorCode extends string = never,

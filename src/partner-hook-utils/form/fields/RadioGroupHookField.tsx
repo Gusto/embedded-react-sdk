@@ -6,6 +6,13 @@ import { withFieldElementRegistry } from './withFieldElementRegistry'
 import { RadioGroupField } from '@/components/Common'
 import type { RadioGroupProps } from '@/components/Common/UI/RadioGroup/RadioGroupTypes'
 
+/**
+ * Props for {@link RadioGroupHookField}.
+ *
+ * @typeParam TErrorCode - Validation error code keys mapped via `validationMessages`.
+ * @typeParam TEntry - Shape of each option entry consumed by `getOptionLabel`.
+ * @public
+ */
 export interface RadioGroupHookFieldProps<
   TErrorCode extends string = never,
   TEntry = unknown,
@@ -17,6 +24,15 @@ export interface RadioGroupHookFieldProps<
   FieldComponent?: ComponentType<RadioGroupProps>
 }
 
+/**
+ * Radio group field connected to a partner form hook result via `useHookFieldResolution`.
+ *
+ * @typeParam TErrorCode - Validation error code keys mapped via `validationMessages`.
+ * @typeParam TEntry - Shape of each option entry consumed by `getOptionLabel`.
+ * @param props - Field configuration including `name`, `formHookResult`, and an optional `getOptionLabel`.
+ * @returns The rendered radio group field wrapped in the field element registry.
+ * @internal
+ */
 export function RadioGroupHookField<TErrorCode extends string, TEntry = unknown>({
   name,
   formHookResult,

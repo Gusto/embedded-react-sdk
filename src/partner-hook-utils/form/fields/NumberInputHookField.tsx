@@ -5,6 +5,12 @@ import { withFieldElementRegistry } from './withFieldElementRegistry'
 import { NumberInputField } from '@/components/Common'
 import type { NumberInputProps } from '@/components/Common/UI/NumberInput/NumberInputTypes'
 
+/**
+ * Props for {@link NumberInputHookField}.
+ *
+ * @typeParam TErrorCode - Validation error code keys mapped via `validationMessages`.
+ * @public
+ */
 export interface NumberInputHookFieldProps<
   TErrorCode extends string = never,
 > extends BaseFieldProps {
@@ -18,6 +24,14 @@ export interface NumberInputHookFieldProps<
   FieldComponent?: ComponentType<NumberInputProps>
 }
 
+/**
+ * Number input field connected to a partner form hook result via `useHookFieldResolution`.
+ *
+ * @typeParam TErrorCode - Validation error code keys mapped via `validationMessages`.
+ * @param props - Field configuration including `name`, `formHookResult`, formatting, and numeric bounds.
+ * @returns The rendered number input field wrapped in the field element registry.
+ * @internal
+ */
 export function NumberInputHookField<TErrorCode extends string>({
   name,
   formHookResult,

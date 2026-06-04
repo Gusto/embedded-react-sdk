@@ -6,6 +6,13 @@ import { withFieldElementRegistry } from './withFieldElementRegistry'
 import { SelectField } from '@/components/Common'
 import type { SelectProps } from '@/components/Common/UI/Select/SelectTypes'
 
+/**
+ * Props for {@link SelectHookField}.
+ *
+ * @typeParam TErrorCode - Validation error code keys mapped via `validationMessages`.
+ * @typeParam TEntry - Shape of each option entry consumed by `getOptionLabel`.
+ * @public
+ */
 export interface SelectHookFieldProps<TErrorCode extends string = never, TEntry = unknown>
   extends BaseFieldProps, Pick<SelectProps, 'portalContainer'> {
   name: string
@@ -18,6 +25,15 @@ export interface SelectHookFieldProps<TErrorCode extends string = never, TEntry 
   portalContainer?: SelectProps['portalContainer']
 }
 
+/**
+ * Select field connected to a partner form hook result via `useHookFieldResolution`.
+ *
+ * @typeParam TErrorCode - Validation error code keys mapped via `validationMessages`.
+ * @typeParam TEntry - Shape of each option entry consumed by `getOptionLabel`.
+ * @param props - Field configuration including `name`, `formHookResult`, and an optional `getOptionLabel`.
+ * @returns The rendered select field wrapped in the field element registry.
+ * @internal
+ */
 export function SelectHookField<TErrorCode extends string, TEntry = unknown>({
   name,
   formHookResult,

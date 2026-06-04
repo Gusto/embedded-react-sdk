@@ -5,6 +5,12 @@ import { withFieldElementRegistry } from './withFieldElementRegistry'
 import { SwitchField } from '@/components/Common'
 import type { SwitchProps } from '@/components/Common/UI/Switch/SwitchTypes'
 
+/**
+ * Props for {@link SwitchHookField}.
+ *
+ * @typeParam TErrorCode - Validation error code keys mapped via `validationMessages`.
+ * @public
+ */
 export interface SwitchHookFieldProps<TErrorCode extends string = never> extends BaseFieldProps {
   name: string
   formHookResult?: FormHookResult
@@ -12,6 +18,14 @@ export interface SwitchHookFieldProps<TErrorCode extends string = never> extends
   FieldComponent?: ComponentType<SwitchProps>
 }
 
+/**
+ * Switch field connected to a partner form hook result via `useHookFieldResolution`.
+ *
+ * @typeParam TErrorCode - Validation error code keys mapped via `validationMessages`.
+ * @param props - Field configuration including `name`, `formHookResult`, and label content.
+ * @returns The rendered switch field wrapped in the field element registry.
+ * @internal
+ */
 export function SwitchHookField<TErrorCode extends string>({
   name,
   formHookResult,
