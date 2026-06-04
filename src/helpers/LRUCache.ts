@@ -1,3 +1,12 @@
+/**
+ * Least-recently-used cache keyed by string with thunk values producing translation tables.
+ *
+ * @remarks Backs the i18n translation cache so loaded language bundles can be evicted in
+ * insertion-recency order once the configured capacity is reached. Reading or writing a key
+ * promotes it to the most-recently-used position.
+ *
+ * @internal
+ */
 export class LRUCache {
   capacity: number
   map: Map<string, () => Record<string, string>>

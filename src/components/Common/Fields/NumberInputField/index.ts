@@ -1,1 +1,1 @@
-export { NumberInputField, type NumberInputFieldProps } from './NumberInputField'
+export { NumberInputField } from './NumberInputField'

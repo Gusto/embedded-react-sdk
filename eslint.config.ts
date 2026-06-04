@@ -177,7 +177,6 @@ export default [
       // As we improve documentation, remove directories from the ignore path
       'src/components/**',
       'src/contexts/**',
-      'src/helpers/**',
       'src/partner-hook-utils/**',
       'src/shared/**',
       'src/types/**',
@@ -191,6 +190,7 @@ export default [
   {
     files: [
       'src/components/Base/**/*.{ts,tsx}',
+      'src/components/Common/Fields/**/*.{ts,tsx}',
       'src/components/Flow/**/*.{ts,tsx}',
       'src/contexts/ApiProvider/**/*.{ts,tsx}',
       'src/contexts/LocaleProvider/**/*.{ts,tsx}',
