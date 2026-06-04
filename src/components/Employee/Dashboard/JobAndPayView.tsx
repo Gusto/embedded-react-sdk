@@ -5,7 +5,6 @@ import { payrollsGetPayStub } from '@gusto/embedded-api-v-2025-11-15/funcs/payro
 import { useErrorBoundary } from 'react-error-boundary'
 import { useJobsAndCompensationsDeleteMutation } from '@gusto/embedded-api-v-2025-11-15/react-query/jobsAndCompensationsDelete'
 import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
-import type { EmployeeBankAccount } from '@gusto/embedded-api-v-2025-11-15/models/components/employeebankaccount'
 import type { Garnishment } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishment'
 import type { GetV1EmployeesEmployeeUuidPayStubsResponse } from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1employeesemployeeuuidpaystubs'
 import { useEmployeeCompensation } from './hooks'
@@ -24,21 +23,17 @@ import { formatDateLongWithYear, formatDateToStringDate } from '@/helpers/dateFo
 import { useFormatCompensationRate } from '@/helpers/formattedStrings'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 import { useI18n } from '@/i18n'
-import {
-  usePaymentMethodList,
-  useDeleteBankAccount,
-  DeleteBankAccountDialog,
-} from '@/components/Employee/PaymentMethod/shared'
+import { usePaymentMethodList } from '@/components/Employee/PaymentMethod/shared'
+import { PaymentMethodCard } from '@/components/Employee/PaymentMethod/management'
 import {
   useDeductionsList,
   useDeleteDeduction,
   DeleteDeductionDialog,
   formatDeductionAmount,
 } from '@/components/Employee/Deductions/shared'
-import { componentEvents, FlsaStatus, PAYMENT_METHODS, type EventType } from '@/shared/constants'
+import { componentEvents, FlsaStatus, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
 import PlusCircleIcon from '@/assets/icons/plus-circle.svg?react'
-import PercentCircleIcon from '@/assets/icons/percent-circle.svg?react'
 import DownloadCloudIcon from '@/assets/icons/download-cloud.svg?react'
 import TrashCanSvg from '@/assets/icons/trashcan.svg?react'
 import PencilSvg from '@/assets/icons/pencil.svg?react'
@@ -72,11 +67,9 @@ export function JobAndPayView({
   onAddDeduction,
   onEditDeduction,
 }: JobAndPayViewProps) {
-  useI18n('Employee.PaymentMethod')
   useI18n('Employee.Compensation')
   useI18n('Employee.Deductions')
   const { t } = useTranslation('Employee.Dashboard')
-  const { t: tPayment } = useTranslation('Employee.PaymentMethod')
   const { t: tCompensation } = useTranslation('Employee.Compensation')
   const { t: tDeductions } = useTranslation('Employee.Deductions')
   const Components = useComponentContext()
@@ -264,23 +257,14 @@ export function JobAndPayView({
   const showInlineAlert = hasPendingUpdates && !showSummaryAlert
   const nextChange = updatePendingChanges[0]
 
+  // The Paystubs column reads `paymentMethod?.type` for one row of metadata.
+  // The Payment card itself is rendered standalone by `<PaymentMethodCard />`
+  // below and owns its own data fetch + error handling — this call is just
+  // for the Paystubs column. React Query dedupes the request.
   const paymentMethodList = usePaymentMethodList({ employeeId })
   const paymentMethod = paymentMethodList.isLoading
     ? undefined
     : paymentMethodList.data.paymentMethod
-  const bankAccounts = paymentMethodList.isLoading ? [] : paymentMethodList.data.bankAccounts
-  const deletePendingBankAccountUuid = paymentMethodList.isLoading
-    ? undefined
-    : paymentMethodList.status.deletePendingBankAccountUuid
-
-  const { pendingDeleteAccount, setPendingDeleteAccount, handleConfirmDelete } =
-    useDeleteBankAccount(async uuid => {
-      if (paymentMethodList.isLoading) return
-      const result = await paymentMethodList.actions.onDelete(uuid)
-      if (result) {
-        onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_DELETED, result.data)
-      }
-    })
 
   const deductionsList = useDeductionsList({ employeeId })
   const deductions = deductionsList.isLoading ? [] : deductionsList.data.deductions
@@ -300,10 +284,11 @@ export function JobAndPayView({
     }
   })
 
-  // All three hooks own their own error state; merge into one error
-  // surface so the BaseLayout below shows whatever failed (read errors
-  // from the queries, submit errors from delete/cancel actions).
-  const errorHandling = composeErrorHandler([compensation, paymentMethodList, deductionsList])
+  // Compensation + Deductions own their own error state; merge into one
+  // error surface so the BaseLayout below shows whatever failed. The
+  // Payment card renders its own errors via its internal BaseLayout, so
+  // payment-method errors are excluded here to avoid duplicates.
+  const errorHandling = composeErrorHandler([compensation, deductionsList])
 
   const jobsColumns = [
     {
@@ -409,24 +394,6 @@ export function JobAndPayView({
     },
   })
 
-  const bankAccountsColumns = [
-    {
-      key: 'nickname',
-      title: t('jobAndPay.payment.nickname'),
-      render: (bankAccount: EmployeeBankAccount) => bankAccount.name || '-',
-    },
-    {
-      key: 'routingNumber',
-      title: t('jobAndPay.payment.routingNumber'),
-      render: (bankAccount: EmployeeBankAccount) => bankAccount.routingNumber || '-',
-    },
-    {
-      key: 'accountType',
-      title: t('jobAndPay.payment.accountType'),
-      render: (bankAccount: EmployeeBankAccount) => bankAccount.accountType || '-',
-    },
-  ]
-
   const garnishmentsColumns = [
     {
       key: 'description',
@@ -484,28 +451,6 @@ export function JobAndPayView({
       render: () => paymentMethod?.type || t('jobAndPay.paystubs.noPaymentMethod'),
     },
   ]
-
-  const bankAccountsDataView = useDataView({
-    data: bankAccounts,
-    columns: bankAccountsColumns,
-    itemMenu: (bankAccount: EmployeeBankAccount) => (
-      <HamburgerMenu
-        items={[
-          {
-            label: tPayment('deleteBankAccountCta'),
-            onClick: () => {
-              setPendingDeleteAccount({
-                uuid: bankAccount.uuid,
-                hiddenAccountNumber: bankAccount.hiddenAccountNumber,
-              })
-            },
-            icon: <TrashCanSvg aria-hidden />,
-          },
-        ]}
-        triggerLabel={tPayment('hamburgerTitle')}
-      />
-    ),
-  })
 
   const garnishmentsDataView = useDataView({
     data: deductions,
@@ -569,16 +514,12 @@ export function JobAndPayView({
     ),
   })
 
-  // `usePaymentMethodList` and `useDeductionsList` still use the older
-  // `HookLoadingResult | Ready` shape, which returns `isLoading: true`
-  // when the query has errored AND data is missing. Treat those rows
-  // as "not loading" so the section doesn't show a perpetual skeleton
-  // while BaseLayout already renders the error alert above.
-  const isPaymentMethodLoading =
-    paymentMethodList.isLoading && paymentMethodList.errorHandling.errors.length === 0
+  // `useDeductionsList` still uses the older `HookLoadingResult | Ready`
+  // shape, which returns `isLoading: true` when the query has errored AND
+  // data is missing. Treat as "not loading" so the section doesn't show a
+  // perpetual skeleton while BaseLayout already renders the error alert above.
   const isDeductionsLoading =
     deductionsList.isLoading && deductionsList.errorHandling.errors.length === 0
-  const isDirectDeposit = paymentMethod?.type === PAYMENT_METHODS.directDeposit
 
   return (
     <BaseLayout error={errorHandling.errors}>
@@ -748,59 +689,7 @@ export function JobAndPayView({
           )}
         </Components.Box>
 
-        <Components.Box
-          withPadding={bankAccounts.length === 0}
-          header={
-            <Components.BoxHeader
-              title={t('jobAndPay.payment.title')}
-              action={
-                <Flex gap={8} alignItems="center" justifyContent="flex-end">
-                  {isDirectDeposit && bankAccounts.length > 1 && (
-                    <Components.Button
-                      variant="secondary"
-                      onClick={() => {
-                        onEvent(componentEvents.EMPLOYEE_SPLIT_PAYCHECK, { employeeId })
-                      }}
-                      icon={<PercentCircleIcon />}
-                    >
-                      {t('jobAndPay.payment.splitPaycheckCta')}
-                    </Components.Button>
-                  )}
-                  <Components.Button
-                    variant="secondary"
-                    onClick={() => {
-                      onEvent(componentEvents.EMPLOYEE_BANK_ACCOUNT_CREATE, { employeeId })
-                    }}
-                    icon={<PlusCircleIcon />}
-                  >
-                    {t('jobAndPay.payment.addBankAccountCta')}
-                  </Components.Button>
-                </Flex>
-              }
-            />
-          }
-        >
-          {isPaymentMethodLoading ? (
-            <Loading />
-          ) : bankAccounts.length === 0 ? (
-            <Components.DescriptionList
-              items={[
-                {
-                  term: tPayment('paymentMethodLabel'),
-                  description: isDirectDeposit
-                    ? tPayment('directDepositLabel')
-                    : tPayment('checkLabel'),
-                },
-              ]}
-            />
-          ) : (
-            <DataView
-              label={t('jobAndPay.payment.listLabel')}
-              isWithinBox
-              {...bankAccountsDataView}
-            />
-          )}
-        </Components.Box>
+        <PaymentMethodCard employeeId={employeeId} onEvent={onEvent} />
 
         <Components.Box
           withPadding={false}
@@ -851,17 +740,6 @@ export function JobAndPayView({
           }}
           onCancelChange={change => {
             void handleCancelChange(change)
-          }}
-        />
-
-        <DeleteBankAccountDialog
-          pendingDeleteAccount={pendingDeleteAccount}
-          isPrimaryActionLoading={deletePendingBankAccountUuid === pendingDeleteAccount?.uuid}
-          onClose={() => {
-            setPendingDeleteAccount(null)
-          }}
-          onConfirm={() => {
-            void handleConfirmDelete()
           }}
         />
 

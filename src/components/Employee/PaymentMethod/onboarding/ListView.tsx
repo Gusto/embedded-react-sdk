@@ -220,6 +220,12 @@ function ListViewReady({
         onConfirm={() => {
           void handleConfirmDelete()
         }}
+        title={t('deleteBankAccountDialog.title')}
+        description={t('deleteBankAccountDialog.description', {
+          account: pendingDeleteAccount?.hiddenAccountNumber ?? '',
+        })}
+        confirmLabel={t('deleteBankAccountDialog.confirmCta')}
+        cancelLabel={t('deleteBankAccountDialog.cancelCta')}
       />
     </>
   )

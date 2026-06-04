@@ -2,9 +2,9 @@ import { createMachine } from 'robot3'
 import { useMemo } from 'react'
 import type { PaymentMethodContextInterface } from './PaymentMethodComponents'
 import {
-  ListViewContextual,
-  BankFormContextual,
-  SplitViewContextual,
+  PaymentMethodCardContextual,
+  PaymentMethodBankFormContextual,
+  PaymentMethodSplitFormContextual,
 } from './PaymentMethodComponents'
 import { paymentMethodStateMachine } from './paymentMethodStateMachine'
 import { Flow } from '@/components/Flow/Flow'
@@ -18,7 +18,7 @@ import { useComponentDictionary } from '@/i18n/I18n'
 import { useI18n } from '@/i18n'
 import type { OnEventType } from '@/components/Base/useBase'
 
-export interface PaymentMethodProps extends CommonComponentInterface<'Employee.PaymentMethod'> {
+export interface PaymentMethodProps extends CommonComponentInterface<'Employee.Management.PaymentMethod'> {
   employeeId: string
   defaultValues?: never
   isAdmin?: boolean
@@ -32,14 +32,14 @@ function PaymentMethodFlow({
   initialState = 'list',
   onEvent,
 }: PaymentMethodProps) {
-  useI18n('Employee.PaymentMethod')
+  useI18n('Employee.Management.PaymentMethod')
 
   const initialComponent =
     initialState === 'add'
-      ? BankFormContextual
+      ? PaymentMethodBankFormContextual
       : initialState === 'split'
-        ? SplitViewContextual
-        : ListViewContextual
+        ? PaymentMethodSplitFormContextual
+        : PaymentMethodCardContextual
 
   const machine = useMemo(
     () =>
@@ -51,6 +51,7 @@ function PaymentMethodFlow({
           component: initialComponent,
           employeeId,
           isAdmin,
+          successAlert: null,
         }),
       ),
     [employeeId, isAdmin, initialState, initialComponent],
@@ -63,11 +64,11 @@ export function PaymentMethod({
   dictionary,
   FallbackComponent,
   ...props
-}: PaymentMethodProps & BaseComponentInterface) {
-  useComponentDictionary('Employee.PaymentMethod', dictionary)
+}: PaymentMethodProps & BaseComponentInterface<'Employee.Management.PaymentMethod'>) {
+  useComponentDictionary('Employee.Management.PaymentMethod', dictionary)
   return (
     <BaseBoundaries
-      componentName="Employee.PaymentMethod.Management"
+      componentName="Employee.Management.PaymentMethod"
       FallbackComponent={FallbackComponent}
     >
       <PaymentMethodFlow {...props} />
