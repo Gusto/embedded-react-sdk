@@ -86,12 +86,12 @@ function PaymentMethodCardReady({
         key: 'name',
         title: t('nicknameColumn'),
         render: bankAccount => (
-          <Flex flexDirection="column" gap={0}>
-            <Components.Text>{bankAccount.name}</Components.Text>
-            <Components.Text variant="supporting">
+          <>
+            {bankAccount.name}
+            <Components.Text variant="supporting" size="sm">
               {bankAccount.hiddenAccountNumber}
             </Components.Text>
-          </Flex>
+          </>
         ),
       },
       { key: 'routingNumber', title: t('routingNumberColumn') },
