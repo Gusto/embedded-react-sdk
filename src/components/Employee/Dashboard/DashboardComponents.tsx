@@ -10,7 +10,7 @@ import { ProfileEditForm } from '@/components/Employee/Profile/management/Profil
 import { BankForm } from '@/components/Employee/PaymentMethod/onboarding/BankForm'
 import { SplitView } from '@/components/Employee/PaymentMethod/onboarding/SplitView'
 import { DocumentManager } from '@/components/Employee/Documents/management/DocumentManager'
-import { DeductionsForm } from '@/components/Employee/Deductions/DeductionsForm/DeductionsForm'
+import { DeductionsForm } from '@/components/Employee/Deductions/onboarding/DeductionsForm/DeductionsForm'
 import {
   ManagementEditCompensation,
   ManagementEditPendingCompensation,

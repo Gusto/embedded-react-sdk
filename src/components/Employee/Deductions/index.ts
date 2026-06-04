@@ -1,1 +1,1 @@
-export * from './Deductions'
+export * from './onboarding'

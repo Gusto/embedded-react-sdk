@@ -1,5 +1,5 @@
 import type { PaymentMethodBankAccount } from '@gusto/embedded-api-v-2025-11-15/models/components/paymentmethodbankaccount'
-import { Deductions } from '../Deductions/Deductions'
+import { Deductions } from '../Deductions/onboarding/Deductions'
 import { FederalTaxes } from '../FederalTaxes/onboarding/FederalTaxes'
 import { StateTaxes } from '../StateTaxes/onboarding/StateTaxes'
 import type { ProfileDefaultValues } from '../Profile/onboarding/Profile'
