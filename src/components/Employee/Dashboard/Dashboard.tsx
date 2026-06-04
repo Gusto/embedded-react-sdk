@@ -2,7 +2,6 @@ import { Suspense, useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useEmployeesGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesGet'
 import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
-import type { GetV1EmployeesEmployeeIdFederalTaxesResponse } from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1employeesemployeeidfederaltaxes'
 import { BasicDetailsView } from './BasicDetailsView'
 import { JobAndPayView } from './JobAndPayView'
 import { TaxesViewWithData } from './TaxesView'
@@ -13,10 +12,6 @@ import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/compo
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { firstLastName } from '@/helpers/formattedStrings'
-
-type EmployeeFederalTax = NonNullable<
-  GetV1EmployeesEmployeeIdFederalTaxesResponse['employeeFederalTax']
->
 
 export type DashboardTab = 'basicDetails' | 'jobAndPay' | 'taxes' | 'documents'
 
@@ -52,13 +47,6 @@ function DashboardRoot({
   const handleAddAnotherJob = useCallback(() => {
     onEvent(componentEvents.EMPLOYEE_JOB_ADD_ANOTHER, { employeeId })
   }, [onEvent, employeeId])
-
-  const handleEditFederalTaxes = useCallback(
-    (federalTaxes: EmployeeFederalTax | undefined) => {
-      onEvent(componentEvents.EMPLOYEE_FEDERAL_TAXES_EDIT, { employeeId, federalTaxes })
-    },
-    [onEvent, employeeId],
-  )
 
   const handleViewForm = useCallback(
     (formId: string) => {
@@ -129,11 +117,7 @@ function DashboardRoot({
 
           {selectedTab === 'taxes' && (
             <Suspense fallback={<BaseLayout isLoading />}>
-              <TaxesViewWithData
-                employeeId={employeeId}
-                onEvent={onEvent}
-                onEditFederalTaxes={handleEditFederalTaxes}
-              />
+              <TaxesViewWithData employeeId={employeeId} onEvent={onEvent} />
             </Suspense>
           )}
 

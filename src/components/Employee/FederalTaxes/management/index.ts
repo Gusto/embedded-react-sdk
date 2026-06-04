@@ -1,1 +1,6 @@
-export { FederalTaxes, type FederalTaxesProps } from './FederalTaxes'
+export { FederalTaxes } from './FederalTaxes'
+export type { FederalTaxesProps } from './FederalTaxes'
+export { FederalTaxesCard } from './FederalTaxesCard'
+export type { FederalTaxesCardProps } from './FederalTaxesCard'
+export { FederalTaxesEditForm } from './FederalTaxesEditForm'
+export type { FederalTaxesEditFormProps } from './FederalTaxesEditForm'

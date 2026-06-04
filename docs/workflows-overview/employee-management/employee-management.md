@@ -42,6 +42,8 @@ Employee management components can be used to compose your own workflow, or can 
 - [EmployeeManagement.WorkAddress](#employeemanagementworkaddress)
   - [Composing from EmployeeManagement.WorkAddressCard and EmployeeManagement.WorkAddressEditForm directly](#composing-from-employeemanagementworkaddresscard-and-employeemanagementworkaddresseditform-directly)
 - [EmployeeManagement.PaystubsCard](#employeemanagementpaystubscard)
+- [EmployeeManagement.FederalTaxes](#employeemanagementfederaltaxes)
+  - [Composing from EmployeeManagement.FederalTaxesCard and EmployeeManagement.FederalTaxesEditForm directly](#composing-from-employeemanagementfederaltaxescard-and-employeemanagementfederaltaxeseditform-directly)
 - [EmployeeManagement.StateTaxes](#employeemanagementstatetaxes)
   - [Composing from EmployeeManagement.StateTaxesCard and EmployeeManagement.StateTaxesEditForm directly](#composing-from-employeemanagementstatetaxescard-and-employeemanagementstatetaxeseditform-directly)
 
@@ -707,6 +709,119 @@ The card populates its "Payment method" column from the employee's payment metho
 | ---------------------------------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------- |
 | EMPLOYEE_MANAGEMENT_PAYSTUBS_CARD_DOWNLOAD_REQUESTED | Fired when the user clicks a row's download button, before the PDF is fetched | { employeeId: string, payrollUuid: string } |
 | EMPLOYEE_MANAGEMENT_PAYSTUBS_CARD_DOWNLOADED         | Fired after the paystub PDF is successfully fetched and opened in a new tab   | { employeeId: string, payrollUuid: string } |
+
+### EmployeeManagement.FederalTaxes
+
+A self-contained block for viewing and editing an employee's federal tax withholding settings — the same "Federal taxes" experience the dashboard surfaces, but as a drop-in component that doesn't require the surrounding dashboard chrome. Renders a read-only card summarizing the employee's filing status, multiple-jobs election, dependents and other credits, other income, deductions, and extra withholding. Clicking the card's "Edit" CTA swaps the card view for an inline edit form; saving the form returns to the card view; cancelling returns to the card view without saving.
+
+```jsx
+import { EmployeeManagement } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return (
+    <EmployeeManagement.FederalTaxes
+      employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
+      onEvent={() => {}}
+    />
+  )
+}
+```
+
+#### Props
+
+| Name                | Type                | Description                                                                                                                               |
+| ------------------- | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| employeeId Required | string              | The associated employee identifier.                                                                                                       |
+| onEvent Required    | function            | See events table for available events.                                                                                                    |
+| dictionary          | object              | Optional translations for component text. Keys are namespaced under `Employee.Management.FederalTaxes` — see the source JSON for the set. |
+| FallbackComponent   | React.ComponentType | Optional custom error fallback component used by the internal `BaseBoundaries` wrapper.                                                   |
+
+#### Events
+
+| Event type                                            | Description                                                                             | Data                                |
+| ----------------------------------------------------- | --------------------------------------------------------------------------------------- | ----------------------------------- |
+| EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_CARD_EDIT_REQUESTED | Fired when the user clicks the "Edit" CTA on the card; the block swaps to the edit form | { employeeId: string }              |
+| EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_EDIT_FORM_SUBMITTED | Fired after the edit form is successfully submitted; the block returns to the card view | Updated `EmployeeFederalTax` entity |
+| EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_EDIT_FORM_CANCELLED | Fired when the user clicks Cancel on the edit form; the block returns to the card view  | None                                |
+
+#### Composing from EmployeeManagement.FederalTaxesCard and EmployeeManagement.FederalTaxesEditForm directly
+
+`EmployeeManagement.FederalTaxes` above is the recommended entry point for the federal-taxes experience — it bundles the card, the edit form, and the swap between them as a single drop-in. The card and edit form are also exported individually for cases where that orchestration is the wrong fit — for example, when the edit surface needs to render in a modal or drawer, when the card needs to appear read-only with no edit affordance, or when the swap is driven by a router. Using them directly means owning the swap and any cross-component state yourself.
+
+`EmployeeManagement.FederalTaxesCard` renders the read-only federal-taxes card and emits a single event when its "Edit" CTA is clicked. `EmployeeManagement.FederalTaxesEditForm` renders the corresponding edit form, emits one event on a successful save and another on cancel, and renders its own dismissible success alert above the form after a save (the card has no alert surface of its own). Each piece's `onEvent` receives the event type as its first argument and any associated payload as its second — branch on the event type to drive the swap (and any of your own behavior). The per-piece events tables below list every event each piece emits.
+
+```jsx
+import { useState } from 'react'
+import { componentEvents, EmployeeManagement } from '@gusto/embedded-react-sdk'
+
+function MyFederalTaxesPanel({ employeeId }) {
+  const [isEditing, setIsEditing] = useState(false)
+
+  if (isEditing) {
+    return (
+      <EmployeeManagement.FederalTaxesEditForm
+        employeeId={employeeId}
+        onEvent={(eventType, data) => {
+          if (eventType === componentEvents.EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_EDIT_FORM_SUBMITTED) {
+            // data is the updated EmployeeFederalTax entity
+            setIsEditing(false)
+          } else if (
+            eventType === componentEvents.EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_EDIT_FORM_CANCELLED
+          ) {
+            setIsEditing(false)
+          }
+        }}
+      />
+    )
+  }
+
+  return (
+    <EmployeeManagement.FederalTaxesCard
+      employeeId={employeeId}
+      onEvent={eventType => {
+        if (eventType === componentEvents.EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_CARD_EDIT_REQUESTED) {
+          setIsEditing(true)
+        }
+      }}
+    />
+  )
+}
+```
+
+##### EmployeeManagement.FederalTaxesCard
+
+**Props**
+
+| Name                | Type     | Description                            |
+| ------------------- | -------- | -------------------------------------- |
+| employeeId Required | string   | The associated employee identifier.    |
+| onEvent Required    | function | See events table for available events. |
+
+**Events**
+
+| Event type                                            | Description                                           | Data                   |
+| ----------------------------------------------------- | ----------------------------------------------------- | ---------------------- |
+| EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_CARD_EDIT_REQUESTED | Fired when the user clicks the "Edit" CTA on the card | { employeeId: string } |
+
+##### EmployeeManagement.FederalTaxesEditForm
+
+**Props**
+
+| Name                | Type                | Description                                                                                                                               |
+| ------------------- | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| employeeId Required | string              | The associated employee identifier.                                                                                                       |
+| onEvent Required    | function            | See events table for available events.                                                                                                    |
+| defaultValues       | object              | Optional default values for the federal-taxes form fields. If employee data is available via the API, defaultValues will be overwritten.  |
+| className           | string              | Optional class applied to the form's root section element.                                                                                |
+| dictionary          | object              | Optional translations for component text. Keys are namespaced under `Employee.Management.FederalTaxes` — see the source JSON for the set. |
+| FallbackComponent   | React.ComponentType | Optional custom error fallback component used by the internal `BaseBoundaries` wrapper.                                                   |
+
+**Events**
+
+| Event type                                            | Description                                         | Data                                |
+| ----------------------------------------------------- | --------------------------------------------------- | ----------------------------------- |
+| EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_EDIT_FORM_SUBMITTED | Fired after the edit form is successfully submitted | Updated `EmployeeFederalTax` entity |
+| EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_EDIT_FORM_CANCELLED | Fired when the user clicks Cancel on the edit form  | None                                |
 
 ### EmployeeManagement.StateTaxes
 
