@@ -8,7 +8,7 @@ import { createContext, useContext } from 'react'
  * rendered wrapper's `lang` attribute. `currency` is an ISO 4217 currency code (defaults to
  * `USD`) consumed by currency-aware inputs.
  *
- * @public
+ * @internal
  */
 export interface LocaleProps {
   locale?: string
@@ -27,7 +27,7 @@ export const LocaleContext = createContext<LocaleProps | null>(null)
  *
  * @returns An object with `locale` (defaulting to `en-US`) and `currency` (defaulting to `USD`).
  * @throws An `Error` when called outside a {@link LocaleProvider}.
- * @public
+ * @internal
  *
  * @example
  * ```tsx

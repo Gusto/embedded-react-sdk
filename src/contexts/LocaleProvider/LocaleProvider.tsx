@@ -4,7 +4,7 @@ import { LocaleContext } from './useLocale'
 /**
  * Props for {@link LocaleProvider}: the {@link LocaleProps} settings plus any children to render within the locale scope.
  *
- * @public
+ * @internal
  */
 export interface LocaleProviderProps extends LocaleProps {
   children?: React.ReactNode
@@ -19,7 +19,7 @@ export interface LocaleProviderProps extends LocaleProps {
  *
  * @param props - The {@link LocaleProviderProps} controlling locale, currency, and children.
  * @returns A `div` with `lang` set to the locale, wrapping `children` in the locale context.
- * @public
+ * @internal
  */
 export function LocaleProvider({
   locale = 'en-US',
