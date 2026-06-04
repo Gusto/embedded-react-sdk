@@ -41,12 +41,11 @@ export interface DeductionsFormProps {
    *  garnishment type selects the inline form variant. Omit for add mode. */
   deduction?: Garnishment | null
   /**
-   * Per-surface translation override. Each consuming block builds this from
-   * its own namespace (via a `useFormDictionary` hook) and passes the
-   * resolved dictionary so partner overrides on the block's namespace flow
-   * into the form text.
+   * Translation overrides for the form's strings. Each consuming block
+   * passes the dictionary it resolved from its own namespace so partner
+   * overrides on that namespace flow into the form text.
    */
-  formDictionary?: DeductionsFormDictionary
+  dictionary?: DeductionsFormDictionary
   onSaved: (deduction: Garnishment, mode: 'create' | 'update') => void
   onCancel: () => void
 }
@@ -55,12 +54,12 @@ export function DeductionsForm({
   className,
   employeeId,
   deduction,
-  formDictionary,
+  dictionary,
   onSaved,
   onCancel,
 }: DeductionsFormProps) {
   useI18n('Employee.DeductionsForm')
-  useComponentDictionary('Employee.DeductionsForm', formDictionary)
+  useComponentDictionary('Employee.DeductionsForm', dictionary)
   const { t } = useTranslation('Employee.DeductionsForm')
   const Components = useComponentContext()
 

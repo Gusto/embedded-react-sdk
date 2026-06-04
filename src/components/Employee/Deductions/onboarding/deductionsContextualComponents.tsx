@@ -132,7 +132,7 @@ export function DeductionsFormContextual() {
       <DeductionsForm
         employeeId={ensureRequired(employeeId)}
         deduction={deduction}
-        formDictionary={formDictionary}
+        dictionary={formDictionary}
         onSaved={onSaved}
         onCancel={onCancel}
       />

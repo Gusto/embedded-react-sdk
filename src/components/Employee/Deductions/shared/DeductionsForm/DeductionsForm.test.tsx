@@ -47,8 +47,8 @@ describe('DeductionsForm', () => {
     })
   })
 
-  it('renders strings from the formDictionary prop in place of the defaults', async () => {
-    const formDictionary: DeductionsFormDictionary = {
+  it('renders strings from the dictionary prop in place of the defaults', async () => {
+    const dictionary: DeductionsFormDictionary = {
       en: {
         addTitle: 'Add a payroll deduction',
         variantLabel: 'Choose deduction type',
@@ -59,7 +59,7 @@ describe('DeductionsForm', () => {
     renderWithProviders(
       <DeductionsForm
         employeeId="employee-123"
-        formDictionary={formDictionary}
+        dictionary={dictionary}
         onSaved={vi.fn()}
         onCancel={vi.fn()}
       />,

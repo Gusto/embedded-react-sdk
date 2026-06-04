@@ -68,7 +68,7 @@ function DeductionsEditFormRoot({
       <DeductionsForm
         employeeId={employeeId}
         deduction={deduction}
-        formDictionary={formDictionary}
+        dictionary={formDictionary}
         onSaved={(saved, mode) => {
           onEvent(
             mode === 'create'

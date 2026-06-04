@@ -766,33 +766,33 @@ The pattern: give the shared component its **own** dedicated namespace internall
 
 **Architecture**
 
-- The shared component lives at `<Feature>/shared/<Component>/`. Internally it calls `useI18n('Employee.<Component>')`, `useComponentDictionary('Employee.<Component>', formDictionary)`, and `useTranslation('Employee.<Component>')`. It never references either surface's namespace.
-- The shared component accepts a `formDictionary?: <Component>Dictionary` prop. `<Component>Dictionary` is a thin type alias for `ResourceDictionary<'Employee.<Component>'>` exported from the shared component's folder — callers reference the structural alias, never the namespace string.
-- An `Employee.<Component>.json` defaults file under `src/i18n/en/` carries the full English copy in the nested shape the component renders. It serves two purposes: it's the type contract that `<Component>Dictionary` is keyed against (via `i18n:generate`), and it's the safety net for any caller that doesn't pass `formDictionary`.
-- Each surface adds a `useFormDictionary` hook colocated with that surface's block. The hook calls `useTranslation` against the **surface's** namespace (`Employee.<Feature>` for onboarding, `Employee.<Feature>.Management` for management), reads the keys that surface wants to expose to the form, and returns them packed into the shared component's `<Component>Dictionary` shape.
-- The block passes `useFormDictionary()`'s result into the shared component as `formDictionary`. Because the hook calls `t()` against the surface's namespace at render time, partner overrides on the surface's namespace flow through naturally — no extra wiring.
+- The shared component lives at `<Feature>/shared/<Component>/`. Internally it calls `useI18n('Employee.<Component>')`, `useComponentDictionary('Employee.<Component>', dictionary)`, and `useTranslation('Employee.<Component>')`. It never references either surface's namespace.
+- The shared component accepts a standard `dictionary?: <Component>Dictionary` prop (same prop name SDK components everywhere use). `<Component>Dictionary` is a thin type alias for `ResourceDictionary<'Employee.<Component>'>` exported from the shared component's folder — callers reference the structural alias, never the namespace string.
+- An `Employee.<Component>.json` defaults file under `src/i18n/en/` carries the full English copy in the nested shape the component renders. It serves two purposes: it's the type contract that `<Component>Dictionary` is keyed against (via `i18n:generate`), and it's the safety net for any caller that doesn't pass `dictionary`.
+- Each surface adds a small per-surface hook colocated with that surface's block (the reference implementation calls it `useFormDictionary`, but the name is local — pick whatever reads naturally for the component). The hook calls `useTranslation` against the **surface's** namespace (`Employee.<Feature>` for onboarding, `Employee.<Feature>.Management` for management), reads the keys that surface wants to expose to the shared component, and returns them packed into the `<Component>Dictionary` shape.
+- The block passes the hook's result down as `dictionary={…}`. Because the hook calls `t()` against the surface's namespace at render time, partner overrides on the surface's namespace flow through naturally — no extra wiring.
 
 **Override chain (one direction)**
 
-`partner dictionary` → `useComponentDictionary('Employee.<Surface>', dictionary)` → surface namespace → `useFormDictionary` resolves `t(...)` → `formDictionary` prop → `useComponentDictionary('Employee.<Component>', formDictionary)` → shared component's internal namespace → rendered string.
+`partner dictionary` → `useComponentDictionary('Employee.<Surface>', dictionary)` → surface namespace → per-surface hook resolves `t(...)` → `dictionary` prop on the shared component → `useComponentDictionary('Employee.<Component>', dictionary)` → shared component's internal namespace → rendered string.
 
 The same chain works at the GustoProvider level — a `dictionary={{ en: { 'Employee.<Surface>': { ... } } }}` global override hits the surface's namespace first, the hook re-resolves, and the result flows down to the shared component. No global override has to know about the shared component's namespace.
 
 **Reference implementation — `DeductionsForm`**
 
-- Shared component: [`src/components/Employee/Deductions/shared/DeductionsForm/`](../../../src/components/Employee/Deductions/shared/DeductionsForm/) — the component itself plus the exported `DeductionsFormDictionary` type and the barrel that re-exports both.
+- Shared component: [`src/components/Employee/Deductions/shared/DeductionsForm/`](../../../src/components/Employee/Deductions/shared/DeductionsForm/) — the component itself (`dictionary?: DeductionsFormDictionary` prop) plus the exported `DeductionsFormDictionary` type and the barrel that re-exports both.
 - Internal namespace + defaults: [`src/i18n/en/Employee.DeductionsForm.json`](../../../src/i18n/en/Employee.DeductionsForm.json) — full nested shape (`addTitle`, `standard.*`, `childSupport.*`, `actions.*`, etc.).
 - Onboarding's per-surface hook: [`src/components/Employee/Deductions/onboarding/useFormDictionary.ts`](../../../src/components/Employee/Deductions/onboarding/useFormDictionary.ts) — resolves `t(...)` against onboarding's historical flat keys in `Employee.Deductions` (`addDeductionTitle`, `descriptionLabelV2`, `agency`, `per`, …) and packs them into `DeductionsFormDictionary`'s nested shape.
 - Management's per-surface hook: [`src/components/Employee/Deductions/management/DeductionsEditForm/useFormDictionary.ts`](../../../src/components/Employee/Deductions/management/DeductionsEditForm/useFormDictionary.ts) — resolves `t('form.*')` against `Employee.Management.Deductions`, which carries a dedicated nested `form.*` subtree.
 
 **Backward compatibility when retrofitting an existing shared component**
 
-If the shared component existed previously and one surface (typically onboarding) had partners overriding flat key names on the original namespace, write that surface's `useFormDictionary` first as a pure key-rename mapping over the historical keys. Don't change the surface's JSON file — leave every existing key in place. The mapping `descriptionLabel: t('descriptionLabelV2')` etc. is what proves no partner override breaks. The second surface (management) can adopt the new nested shape directly in its own JSON file because it had no historical partner contract to preserve.
+If the shared component existed previously and one surface (typically onboarding) had partners overriding flat key names on the original namespace, write that surface's per-surface hook first as a pure key-rename mapping over the historical keys. Don't change the surface's JSON file — leave every existing key in place. The mapping `descriptionLabel: t('descriptionLabelV2')` etc. is what proves no partner override breaks. The second surface (management) can adopt the new nested shape directly in its own JSON file because it had no historical partner contract to preserve.
 
 **Why this pattern over duplication or dual-load**
 
 - Shared JSX stays shared — no copy-paste maintenance burden when the form structure changes.
-- Each surface owns its full translation surface in one JSON. A partner overriding `Employee.<Feature>.Management` via `useComponentDictionary` gets coherent management-side text including form strings, without having to discover and override a separate shared namespace.
+- Each surface owns its full translation surface in one JSON. A partner overriding `Employee.<Feature>.Management` via `useComponentDictionary` gets coherent management-side text including the shared component's strings, without having to discover and override a separate shared namespace.
 - The shared component's namespace is purely an implementation detail. Surfaces don't import it, partners don't see it, and the two surfaces' overrides are fully decoupled — neither surface's translations can leak into the other.
 
 ### Strings to move out of `Employee.Dashboard` during migration
