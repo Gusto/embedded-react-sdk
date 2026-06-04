@@ -30,14 +30,14 @@
  *   /** skeleton * /
  *
  * Usage:
- *   npx tsx build/tsdoc-stub.ts --file <path> --symbol <name> [--default-release alpha|beta|public|internal]
- *   npx tsx build/tsdoc-stub.ts --file <path> --symbols <n1,n2,...> [--default-release ...]
- *   npx tsx build/tsdoc-stub.ts --file <path> --all-exports [--default-release ...]
+ *   npx tsx build/tsdoc-stub.ts --file <path> --symbol <name>
+ *   npx tsx build/tsdoc-stub.ts --file <path> --symbols <n1,n2,...>
+ *   npx tsx build/tsdoc-stub.ts --file <path> --all-exports
  */
 
 import { Project } from 'ts-morph'
 import { resolve } from 'path'
-import { ROOT, VALID_RELEASE_TAGS, type ReleaseTag, processSymbol } from './tsdoc-stub-lib.js'
+import { ROOT, processSymbol } from './tsdoc-stub-lib.js'
 
 function getArg(flag: string): string | undefined {
   const idx = process.argv.indexOf(flag)
@@ -52,7 +52,6 @@ const filePath = getArg('--file')
 const symbolArg = getArg('--symbol')
 const symbolsArg = getArg('--symbols')
 const allExports = hasFlag('--all-exports')
-const defaultRelease = (getArg('--default-release') ?? 'alpha') as ReleaseTag
 
 // ─── Validation ───────────────────────────────────────────────────────────────
 
@@ -66,22 +65,15 @@ if (modeCount === 0) {
   process.stderr.write(
     'Error: one of --symbol, --symbols, or --all-exports is required\n' +
       'Usage:\n' +
-      '  npx tsx build/tsdoc-stub.ts --file <path> --symbol <name> [--default-release ...]\n' +
-      '  npx tsx build/tsdoc-stub.ts --file <path> --symbols <n1,n2,...> [--default-release ...]\n' +
-      '  npx tsx build/tsdoc-stub.ts --file <path> --all-exports [--default-release ...]\n',
+      '  npx tsx build/tsdoc-stub.ts --file <path> --symbol <name>\n' +
+      '  npx tsx build/tsdoc-stub.ts --file <path> --symbols <n1,n2,...>\n' +
+      '  npx tsx build/tsdoc-stub.ts --file <path> --all-exports\n',
   )
   process.exit(1)
 }
 
 if (modeCount > 1) {
   process.stderr.write('Error: --symbol, --symbols, and --all-exports are mutually exclusive\n')
-  process.exit(1)
-}
-
-if (!VALID_RELEASE_TAGS.includes(defaultRelease)) {
-  process.stderr.write(
-    `Invalid --default-release "${defaultRelease}". Must be one of: ${VALID_RELEASE_TAGS.join(', ')}\n`,
-  )
   process.exit(1)
 }
 
@@ -105,7 +97,7 @@ if (!sourceFile) {
 
 if (symbolArg) {
   try {
-    const block = processSymbol(symbolArg, sourceFile, defaultRelease)
+    const block = processSymbol(symbolArg, sourceFile)
     if (block === null) {
       process.stderr.write(`Symbol '${symbolArg}' already has a TSDoc comment — skipping.\n`)
       process.exit(0)
@@ -140,7 +132,7 @@ if (allExports) {
 
 for (const name of symbolNames) {
   try {
-    const block = processSymbol(name, sourceFile, defaultRelease)
+    const block = processSymbol(name, sourceFile)
     if (block === null) {
       process.stdout.write(`SYMBOL: ${name}\nSKIP\n`)
     } else {

@@ -1,0 +1,37 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "tags": [],
+  "workspaces": {
+    ".": {
+      "entry": ["src/index.ts", ".storybook/*.{ts,tsx}", "playwright.*.config.ts"],
+      "project": ["src/**/*.{ts,tsx}", ".storybook/**/*.{ts,tsx}"]
+    },
+    "build": {
+      "entry": ["*.ts"],
+      "project": ["**/*.ts"]
+    },
+    "eslint-rules": {
+      "entry": ["plugins.ts", "*.test.ts"],
+      "project": ["**/*.ts"]
+    },
+    "sdk-app": {
+      "entry": ["src/main.tsx", "vite.config.ts", "scripts/*.ts"],
+      "project": ["**/*.{ts,tsx}"]
+    },
+    "e2e": {
+      "entry": [
+        "main.tsx",
+        "globalSetup.ts",
+        "vite.config.ts",
+        "tests/**/*.spec.ts",
+        "scenarios/scripts/*.mjs",
+        "scripts/*.ts"
+      ],
+      "project": ["**/*.{ts,tsx,js,mjs}"]
+    },
+    "stylelint-rules": {
+      "entry": ["*.js"],
+      "project": ["**/*.js"]
+    }
+  }
+}
