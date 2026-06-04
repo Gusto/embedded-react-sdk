@@ -164,7 +164,6 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | `/v1/employees/:employeeId/forms` |
 |  | GET | `/v1/employees/:employeeId/jobs` |
 |  | GET | `/v1/employees/:employeeUuid/federal_taxes` |
-|  | GET | `/v1/employees/:employeeUuid/state_taxes` |
 |  | DELETE | `/v1/jobs/:jobId` |
 | **Employee.HomeAddress** | GET | `/v1/employees/:employeeId` |
 |  | GET | `/v1/employees/:employeeId/home_addresses` |
@@ -373,7 +372,6 @@ import inventory from '@gusto/embedded-react-sdk/endpoint-inventory.json'
 |  | GET | `/v1/employees/:employeeId/forms` |
 |  | GET | `/v1/employees/:employeeId/jobs` |
 |  | GET | `/v1/employees/:employeeUuid/federal_taxes` |
-|  | GET | `/v1/employees/:employeeUuid/state_taxes` |
 |  | DELETE | `/v1/jobs/:jobId` |
 | **EmployeeManagement.HomeAddress** | GET | `/v1/employees/:employeeId` |
 |  | GET | `/v1/employees/:employeeId/home_addresses` |
@@ -483,13 +481,13 @@ Flows compose multiple blocks into a single workflow. The endpoint list for a fl
 | **Contractor.OnboardingFlow** | Contractor.Address, Contractor.ContractorList, Contractor.ContractorProfile, Contractor.ContractorSubmit, Contractor.NewHireReport, Contractor.PaymentMethod |
 | **Contractor.PaymentFlow** | Contractor.CreatePayment, Contractor.PaymentHistory, Contractor.PaymentStatement, Contractor.PaymentSummary, Contractor.PaymentsList, InformationRequests.InformationRequestsFlow |
 | **ContractorOnboarding.OnboardingFlow** | ContractorOnboarding.Address, ContractorOnboarding.ContractorList, ContractorOnboarding.ContractorProfile, ContractorOnboarding.ContractorSubmit, ContractorOnboarding.NewHireReport, ContractorOnboarding.PaymentMethod |
-| **Employee.DashboardFlow** | Employee.Compensation, Employee.Deductions, Employee.HomeAddress, Employee.WorkAddress, EmployeeManagement.DocumentManager, EmployeeManagement.FederalTaxes, EmployeeManagement.PaymentMethod, EmployeeManagement.PaystubsCard, EmployeeManagement.Profile, EmployeeManagement.StateTaxes |
+| **Employee.DashboardFlow** | Employee.Compensation, Employee.HomeAddress, Employee.WorkAddress, EmployeeManagement.Deductions, EmployeeManagement.DocumentManager, EmployeeManagement.FederalTaxes, EmployeeManagement.PaymentMethod, EmployeeManagement.PaystubsCard, EmployeeManagement.Profile, EmployeeManagement.StateTaxes |
 | **Employee.EmployeeListFlow** | Employee.DashboardFlow, Employee.OnboardingExecutionFlow, Employee.TerminationFlow, EmployeeManagement.EmployeeList |
 | **Employee.OnboardingExecutionFlow** | Employee.Compensation, Employee.Deductions, Employee.EmployeeDocuments, Employee.OnboardingSummary, Employee.PaymentMethod, Employee.Profile, EmployeeOnboarding.FederalTaxes, EmployeeOnboarding.StateTaxes |
 | **Employee.OnboardingFlow** | Employee.EmployeeList, Employee.OnboardingExecutionFlow |
 | **Employee.SelfOnboardingFlow** | Employee.DocumentSigner, Employee.Landing, Employee.OnboardingSummary, Employee.PaymentMethod, Employee.Profile, EmployeeOnboarding.FederalTaxes, EmployeeOnboarding.StateTaxes |
 | **Employee.TerminationFlow** | Employee.TerminateEmployee, Employee.TerminationSummary, Payroll.DismissalFlow, Payroll.PayrollLanding |
-| **EmployeeManagement.DashboardFlow** | EmployeeManagement.DocumentManager, EmployeeManagement.FederalTaxes, EmployeeManagement.HomeAddress, EmployeeManagement.PaymentMethod, EmployeeManagement.PaystubsCard, EmployeeManagement.Profile, EmployeeManagement.StateTaxes, EmployeeManagement.WorkAddress, EmployeeOnboarding.Compensation, EmployeeOnboarding.Deductions |
+| **EmployeeManagement.DashboardFlow** | EmployeeManagement.Deductions, EmployeeManagement.DocumentManager, EmployeeManagement.FederalTaxes, EmployeeManagement.HomeAddress, EmployeeManagement.PaymentMethod, EmployeeManagement.PaystubsCard, EmployeeManagement.Profile, EmployeeManagement.StateTaxes, EmployeeManagement.WorkAddress, EmployeeOnboarding.Compensation |
 | **EmployeeManagement.EmployeeListFlow** | EmployeeManagement.DashboardFlow, EmployeeManagement.EmployeeList, EmployeeManagement.TerminationFlow, EmployeeOnboarding.OnboardingExecutionFlow |
 | **EmployeeManagement.TerminationFlow** | EmployeeManagement.TerminateEmployee, EmployeeManagement.TerminationSummary, Payroll.DismissalFlow, Payroll.PayrollLanding |
 | **EmployeeOnboarding.OnboardingExecutionFlow** | Employee.EmployeeDocuments, Employee.PaymentMethod, EmployeeOnboarding.Compensation, EmployeeOnboarding.Deductions, EmployeeOnboarding.FederalTaxes, EmployeeOnboarding.OnboardingSummary, EmployeeOnboarding.Profile, EmployeeOnboarding.StateTaxes |

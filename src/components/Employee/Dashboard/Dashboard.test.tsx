@@ -376,7 +376,7 @@ describe('Dashboard', () => {
       expect(screen.queryByText('Old Deduction')).toBeNull()
     })
 
-    it('emits EMPLOYEE_DEDUCTION_ADD when clicking the Add deduction button', async () => {
+    it('emits EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_ADD_REQUESTED when clicking the Add deduction button', async () => {
       stubGarnishmentsList([])
       const user = userEvent.setup()
 
@@ -385,12 +385,13 @@ describe('Dashboard', () => {
 
       await user.click(screen.getByRole('button', { name: 'Add deduction' }))
 
-      expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_DEDUCTION_ADD, {
-        employeeId: 'employee-123',
-      })
+      expect(onEvent).toHaveBeenCalledWith(
+        componentEvents.EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_ADD_REQUESTED,
+        { employeeId: 'employee-123' },
+      )
     })
 
-    it('emits EMPLOYEE_DEDUCTION_EDIT with the garnishment when clicking Edit', async () => {
+    it('emits EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_EDIT_REQUESTED with the garnishment when clicking Edit', async () => {
       stubGarnishmentsList([
         buildGarnishment({ uuid: 'd-1', description: 'Health Insurance', amount: '120' }),
       ])
@@ -403,12 +404,12 @@ describe('Dashboard', () => {
       await user.click(await screen.findByRole('menuitem', { name: 'Edit deduction' }))
 
       expect(onEvent).toHaveBeenCalledWith(
-        componentEvents.EMPLOYEE_DEDUCTION_EDIT,
+        componentEvents.EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_EDIT_REQUESTED,
         expect.objectContaining({ uuid: 'd-1', description: 'Health Insurance' }),
       )
     })
 
-    it('soft-deletes via PUT and emits EMPLOYEE_DEDUCTION_DELETED on confirm', async () => {
+    it('soft-deletes via PUT and emits EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_DELETED on confirm', async () => {
       const target = buildGarnishment({ uuid: 'd-1', description: 'Health Insurance' })
       stubGarnishmentsList([target])
 
@@ -437,7 +438,7 @@ describe('Dashboard', () => {
       expect(updatePath).toBe('/v1/garnishments/d-1')
       expect(updateBody).toMatchObject({ active: false, version: 'version-d-1' })
       expect(onEvent).toHaveBeenCalledWith(
-        componentEvents.EMPLOYEE_DEDUCTION_DELETED,
+        componentEvents.EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_DELETED,
         expect.objectContaining({ uuid: 'd-1', active: false }),
       )
     })
@@ -1818,7 +1819,7 @@ describe('Dashboard', () => {
     })
   })
 
-  it('emits EMPLOYEE_STATE_TAXES_EDIT with only employeeId when clicking state taxes edit', async () => {
+  it('emits the scoped state-taxes edit event with only employeeId when clicking Edit', async () => {
     const user = userEvent.setup()
 
     renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
@@ -1840,9 +1841,10 @@ describe('Dashboard', () => {
     })
     await user.click(within(stateTaxesBox).getByRole('button', { name: 'Edit' }))
 
-    expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_STATE_TAXES_EDIT, {
-      employeeId: 'employee-123',
-    })
+    expect(onEvent).toHaveBeenCalledWith(
+      componentEvents.EMPLOYEE_MANAGEMENT_STATE_TAXES_EDIT_REQUESTED,
+      { employeeId: 'employee-123' },
+    )
   })
 
   it('renders no-withholding messaging and hides Edit when the state has no income tax', async () => {

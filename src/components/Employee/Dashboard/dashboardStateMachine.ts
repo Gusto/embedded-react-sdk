@@ -12,7 +12,7 @@ import {
   PaymentBankFormContextual,
   PaymentSplitViewContextual,
   DocumentManagerContextual,
-  DeductionFormContextual,
+  DeductionsEditFormContextual,
   AddJobContextual,
   EditCompensationContextual,
   AddAnotherJobContextual,
@@ -23,7 +23,7 @@ import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 
 type EventPayloads = {
   [componentEvents.EMPLOYEE_VIEW_FORM_TO_SIGN]: { employeeId: string; formId: string }
-  [componentEvents.EMPLOYEE_DEDUCTION_EDIT]: Garnishment
+  [componentEvents.EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_EDIT_REQUESTED]: Garnishment
   [componentEvents.EMPLOYEE_COMPENSATION_CREATE]: { employeeId: string; job: Job }
   [componentEvents.EMPLOYEE_DASHBOARD_TAB_CHANGE]: { tab: DashboardTab }
 }
@@ -96,7 +96,7 @@ export const dashboardStateMachine = {
       ),
     ),
     transition(
-      componentEvents.EMPLOYEE_STATE_TAXES_EDIT,
+      componentEvents.EMPLOYEE_MANAGEMENT_STATE_TAXES_EDIT_REQUESTED,
       'stateTaxes',
       reduce(
         (ctx: DashboardContextInterface): DashboardContextInterface => ({
@@ -193,34 +193,37 @@ export const dashboardStateMachine = {
       ),
     ),
     transition(
-      componentEvents.EMPLOYEE_DEDUCTION_ADD,
-      'deductionForm',
+      componentEvents.EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_ADD_REQUESTED,
+      'editDeduction',
       reduce(
         (ctx: DashboardContextInterface): DashboardContextInterface => ({
           ...ctx,
-          component: DeductionFormContextual,
+          component: DeductionsEditFormContextual,
           successAlert: null,
           editingDeductionId: undefined,
         }),
       ),
     ),
     transition(
-      componentEvents.EMPLOYEE_DEDUCTION_EDIT,
-      'deductionForm',
+      componentEvents.EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_EDIT_REQUESTED,
+      'editDeduction',
       reduce(
         (
           ctx: DashboardContextInterface,
-          ev: MachineEventType<EventPayloads, typeof componentEvents.EMPLOYEE_DEDUCTION_EDIT>,
+          ev: MachineEventType<
+            EventPayloads,
+            typeof componentEvents.EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_EDIT_REQUESTED
+          >,
         ): DashboardContextInterface => ({
           ...ctx,
-          component: DeductionFormContextual,
+          component: DeductionsEditFormContextual,
           successAlert: null,
           editingDeductionId: ev.payload.uuid,
         }),
       ),
     ),
     transition(
-      componentEvents.EMPLOYEE_DEDUCTION_DELETED,
+      componentEvents.EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_DELETED,
       'index',
       reduce(
         (ctx: DashboardContextInterface): DashboardContextInterface => ({
@@ -271,7 +274,18 @@ export const dashboardStateMachine = {
     transition(componentEvents.CANCEL, 'index', returnToIndex),
     transition(componentEvents.EMPLOYEE_FEDERAL_TAXES_DONE, 'index', returnToIndex),
   ),
-  stateTaxes: state<MachineTransition>(transition(componentEvents.CANCEL, 'index', returnToIndex)),
+  stateTaxes: state<MachineTransition>(
+    transition(
+      componentEvents.EMPLOYEE_MANAGEMENT_STATE_TAXES_UPDATED,
+      'index',
+      returnToIndexWithAlert('stateTaxesUpdated'),
+    ),
+    transition(
+      componentEvents.EMPLOYEE_MANAGEMENT_STATE_TAXES_EDIT_CANCELLED,
+      'index',
+      returnToIndex,
+    ),
+  ),
   profile: state<MachineTransition>(
     transition(componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_EDIT_CANCELLED, 'index', returnToIndex),
     transition(
@@ -318,19 +332,22 @@ export const dashboardStateMachine = {
     ),
     transition(componentEvents.CANCEL, 'index', returnToIndex),
   ),
-  deductionForm: state<MachineTransition>(
+  editDeduction: state<MachineTransition>(
     transition(
-      componentEvents.EMPLOYEE_DEDUCTION_CREATED,
+      componentEvents.EMPLOYEE_MANAGEMENT_DEDUCTIONS_EDIT_FORM_CREATED,
       'index',
       returnToIndexWithAlert('deductionAdded'),
     ),
     transition(
-      componentEvents.EMPLOYEE_DEDUCTION_UPDATED,
+      componentEvents.EMPLOYEE_MANAGEMENT_DEDUCTIONS_EDIT_FORM_UPDATED,
       'index',
       returnToIndexWithAlert('deductionUpdated'),
     ),
-    transition(componentEvents.EMPLOYEE_DEDUCTION_CANCEL, 'index', returnToIndex),
-    transition(componentEvents.CANCEL, 'index', returnToIndex),
+    transition(
+      componentEvents.EMPLOYEE_MANAGEMENT_DEDUCTIONS_EDIT_FORM_CANCELLED,
+      'index',
+      returnToIndex,
+    ),
   ),
   addJob: state<MachineTransition>(
     transition(

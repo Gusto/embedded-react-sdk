@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { DeductionsForm } from './DeductionsForm'
+import { DeductionsForm, type DeductionsFormDictionary } from './DeductionsForm'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 
@@ -44,5 +44,30 @@ describe('DeductionsForm', () => {
         screen.getByText('Enter the percentage of your employee’s wages to withhold.'),
       ).toBeInTheDocument()
     })
+  })
+
+  it('renders strings from the dictionary prop in place of the defaults', async () => {
+    const dictionary: DeductionsFormDictionary = {
+      en: {
+        addTitle: 'Add a payroll deduction',
+        variantLabel: 'Choose deduction type',
+        customOption: 'Voluntary deduction',
+      },
+    }
+
+    renderWithProviders(
+      <DeductionsForm
+        employeeId="employee-123"
+        dictionary={dictionary}
+        onSaved={vi.fn()}
+        onCancel={vi.fn()}
+      />,
+    )
+
+    expect(
+      await screen.findByRole('heading', { name: 'Add a payroll deduction' }),
+    ).toBeInTheDocument()
+    expect(screen.getByText('Choose deduction type')).toBeInTheDocument()
+    expect(screen.getByRole('radio', { name: 'Voluntary deduction' })).toBeInTheDocument()
   })
 })

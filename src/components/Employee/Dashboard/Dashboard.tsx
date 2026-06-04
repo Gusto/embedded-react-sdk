@@ -2,7 +2,6 @@ import { Suspense, useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useEmployeesGetSuspense } from '@gusto/embedded-api-v-2025-11-15/react-query/employeesGet'
 import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
-import type { Garnishment } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishment'
 import type { GetV1EmployeesEmployeeIdFederalTaxesResponse } from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1employeesemployeeidfederaltaxes'
 import { BasicDetailsView } from './BasicDetailsView'
 import { JobAndPayView } from './JobAndPayView'
@@ -54,27 +53,12 @@ function DashboardRoot({
     onEvent(componentEvents.EMPLOYEE_JOB_ADD_ANOTHER, { employeeId })
   }, [onEvent, employeeId])
 
-  const handleAddDeduction = useCallback(() => {
-    onEvent(componentEvents.EMPLOYEE_DEDUCTION_ADD, { employeeId })
-  }, [onEvent, employeeId])
-
-  const handleEditDeduction = useCallback(
-    (deduction: Garnishment) => {
-      onEvent(componentEvents.EMPLOYEE_DEDUCTION_EDIT, deduction)
-    },
-    [onEvent],
-  )
-
   const handleEditFederalTaxes = useCallback(
     (federalTaxes: EmployeeFederalTax | undefined) => {
       onEvent(componentEvents.EMPLOYEE_FEDERAL_TAXES_EDIT, { employeeId, federalTaxes })
     },
     [onEvent, employeeId],
   )
-
-  const handleEditStateTaxes = useCallback(() => {
-    onEvent(componentEvents.EMPLOYEE_STATE_TAXES_EDIT, { employeeId })
-  }, [onEvent, employeeId])
 
   const handleViewForm = useCallback(
     (formId: string) => {
@@ -139,8 +123,6 @@ function DashboardRoot({
                 onEditCompensation={handleEditCompensation}
                 onAddJob={handleAddJob}
                 onAddAnotherJob={handleAddAnotherJob}
-                onAddDeduction={handleAddDeduction}
-                onEditDeduction={handleEditDeduction}
               />
             </Suspense>
           )}
@@ -149,8 +131,8 @@ function DashboardRoot({
             <Suspense fallback={<BaseLayout isLoading />}>
               <TaxesViewWithData
                 employeeId={employeeId}
+                onEvent={onEvent}
                 onEditFederalTaxes={handleEditFederalTaxes}
-                onEditStateTaxes={handleEditStateTaxes}
               />
             </Suspense>
           )}

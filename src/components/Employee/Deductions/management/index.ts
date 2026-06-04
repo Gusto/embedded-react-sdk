@@ -1,0 +1,6 @@
+export { Deductions } from './Deductions'
+export type { DeductionsProps } from './Deductions'
+export { DeductionsCard } from './DeductionsCard'
+export type { DeductionsCardProps } from './DeductionsCard'
+export { DeductionsEditForm } from './DeductionsEditForm'
+export type { DeductionsEditFormProps } from './DeductionsEditForm'

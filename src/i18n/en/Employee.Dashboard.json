@@ -70,21 +70,6 @@
           "minWageChangedNoRate": "Minimum wage adjustment will change"
         }
       }
-    },
-    "deductions": {
-      "title": "Deductions",
-      "addDeductionCta": "Add deduction",
-      "listLabel": "List of deductions",
-      "deduction": "Deduction",
-      "frequency": "Frequency",
-      "withhold": "Withheld",
-      "recurring": "Recurring",
-      "oneTime": "One-time",
-      "amountPerPaycheck": "{{value}} per paycheck",
-      "emptyState": {
-        "title": "No deductions",
-        "description": "Employee deductions will appear here"
-      }
     }
   },
   "taxes": {
@@ -97,12 +82,6 @@
       "otherIncome": "Other income",
       "deductions": "Deductions",
       "extraWithholding": "Extra withholding"
-    },
-    "state": {
-      "title": "State taxes",
-      "editCta": "Edit",
-      "noStateTaxes": "No state taxes on file",
-      "noWithholdingForState": "No state income tax withholding required."
     }
   },
   "documents": {
@@ -142,7 +121,8 @@
     "deductionDeleted": "Deduction successfully deleted.",
     "jobAdded": "Job successfully added.",
     "profileUpdated": "Profile updated",
-    "documentSigned": "Document successfully signed."
+    "documentSigned": "Document successfully signed.",
+    "stateTaxesUpdated": "Successfully updated state tax settings."
   },
   "compensationFlow": {
     "addJobTitle": "Add a job",

@@ -7,11 +7,25 @@ import { BaseLayout } from '@/components/Base'
 import { Form } from '@/components/Common/Form'
 import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { useComponentDictionary, useI18n } from '@/i18n'
+import type { ResourceDictionary } from '@/types/Helpers'
 
 type ReadyEmployeeStateTaxesForm = Extract<
   ReturnType<typeof useEmployeeStateTaxesForm>,
   { isLoading: false }
 >
+
+/**
+ * Override surface for {@link EmployeeStateTaxesView}'s default copy. Each
+ * consuming flow (onboarding, management) builds a resolved dictionary from
+ * its own translation namespace via a dedicated `use*StateTaxesViewDictionary`
+ * hook and passes it here, so partner overrides on the flow's namespace flow
+ * into the shared view text at render time.
+ *
+ * The underlying `Employee.StateTaxesView` namespace is an implementation
+ * detail of the shared view — consumers shouldn't reference it directly.
+ */
+export type StateTaxesViewDictionary = ResourceDictionary<'Employee.StateTaxesView'>
 
 export interface EmployeeStateTaxesViewProps {
   stateTaxes: ReadyEmployeeStateTaxesForm
@@ -19,6 +33,13 @@ export interface EmployeeStateTaxesViewProps {
   actions: ReactNode
   alert?: ReactNode
   className?: string
+  /**
+   * Per-flow translation override for this shared view. Consumers build the
+   * value inside a flow-local `use*StateTaxesViewDictionary` hook that
+   * resolves the view's keys against the flow's own namespace, so partner
+   * overrides on the flow's `dictionary` prop propagate into the view.
+   */
+  dictionary?: StateTaxesViewDictionary
 }
 
 export function EmployeeStateTaxesView({
@@ -27,8 +48,12 @@ export function EmployeeStateTaxesView({
   actions,
   alert,
   className,
+  dictionary,
 }: EmployeeStateTaxesViewProps) {
-  const { t } = useTranslation('Employee.StateTaxes')
+  useI18n('Employee.StateTaxesView')
+  useComponentDictionary('Employee.StateTaxesView', dictionary)
+
+  const { t } = useTranslation('Employee.StateTaxesView')
   const { t: tCommon } = useTranslation('common')
   const Components = useComponentContext()
   const groups = stateTaxes.form.Fields

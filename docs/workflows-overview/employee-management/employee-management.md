@@ -33,6 +33,8 @@ Employee management components can be used to compose your own workflow, or can 
 - [EmployeeManagement.DashboardFlow](#employeemanagementdashboardflow)
 - [EmployeeManagement.PaymentMethod](#employeemanagementpaymentmethod)
   - [Composing from EmployeeManagement.PaymentMethodCard directly](#composing-from-employeemanagementpaymentmethodcard-directly)
+- [EmployeeManagement.Deductions](#employeemanagementdeductions)
+  - [Composing from EmployeeManagement.DeductionsCard and EmployeeManagement.DeductionsEditForm directly](#composing-from-employeemanagementdeductionscard-and-employeemanagementdeductionseditform-directly)
 - [EmployeeManagement.Profile](#employeemanagementprofile)
   - [Composing from EmployeeManagement.ProfileCard and EmployeeManagement.ProfileEditForm directly](#composing-from-employeemanagementprofilecard-and-employeemanagementprofileeditform-directly)
 - [EmployeeManagement.HomeAddress](#employeemanagementhomeaddress)
@@ -40,6 +42,8 @@ Employee management components can be used to compose your own workflow, or can 
 - [EmployeeManagement.WorkAddress](#employeemanagementworkaddress)
   - [Composing from EmployeeManagement.WorkAddressCard and EmployeeManagement.WorkAddressEditForm directly](#composing-from-employeemanagementworkaddresscard-and-employeemanagementworkaddresseditform-directly)
 - [EmployeeManagement.PaystubsCard](#employeemanagementpaystubscard)
+- [EmployeeManagement.StateTaxes](#employeemanagementstatetaxes)
+  - [Composing from EmployeeManagement.StateTaxesCard and EmployeeManagement.StateTaxesEditForm directly](#composing-from-employeemanagementstatetaxescard-and-employeemanagementstatetaxeseditform-directly)
 
 ### EmployeeManagement.DashboardFlow
 
@@ -94,11 +98,11 @@ The dashboard forwards every event emitted by its card surfaces and edit screens
 | EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_BANK_ACCOUNT_DELETED | Fired after a bank account is deleted; surfaces the "Bank account deleted" alert                  | Response from the Delete a bank account endpoint                 |
 | EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_SPLIT_REQUESTED      | Fired when the "Split paycheck" CTA is clicked on the Payment card                                | None                                                             |
 | EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_SPLIT_FORM_SUBMITTED      | Fired after a split-paycheck save succeeds; surfaces the "Split updated" alert                    | Response from the Update payment method endpoint                 |
-| EMPLOYEE_DEDUCTION_ADD                                       | Fired when the "Add deduction" CTA is clicked                                                     | { employeeId: string }                                           |
-| EMPLOYEE_DEDUCTION_EDIT                                      | Fired when an existing deduction is selected for editing                                          | The `Garnishment` entity being edited                            |
-| EMPLOYEE_DEDUCTION_CREATED                                   | Fired after a new deduction is created; surfaces the "Deduction added" alert                      | Response from the Create a garnishment endpoint                  |
-| EMPLOYEE_DEDUCTION_UPDATED                                   | Fired after a deduction is updated; surfaces the "Deduction updated" alert                        | Response from the Update a garnishment endpoint                  |
-| EMPLOYEE_DEDUCTION_DELETED                                   | Fired after a deduction is deleted; surfaces the "Deduction deleted" alert                        | Response from the Update a garnishment endpoint                  |
+| EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_ADD_REQUESTED            | Fired when the "Add deduction" CTA is clicked on the Deductions card                              | { employeeId: string }                                           |
+| EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_EDIT_REQUESTED           | Fired when a row's "Edit" menu item is chosen on the Deductions card                              | The `Garnishment` row being edited                               |
+| EMPLOYEE_MANAGEMENT_DEDUCTIONS_EDIT_FORM_CREATED             | Fired after a new deduction is created; surfaces the "Deduction added" alert                      | The created `Garnishment`                                        |
+| EMPLOYEE_MANAGEMENT_DEDUCTIONS_EDIT_FORM_UPDATED             | Fired after a deduction is updated; surfaces the "Deduction updated" alert                        | The updated `Garnishment`                                        |
+| EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_DELETED                  | Fired after the soft-delete dialog is confirmed; surfaces the "Deduction deleted" alert           | The now-inactive `Garnishment`                                   |
 | EMPLOYEE_FEDERAL_TAXES_EDIT                                  | Fired when the "Edit" CTA is clicked on the Federal taxes card                                    | { employeeId: string, federalTaxes: EmployeeFederalTax }         |
 | EMPLOYEE_FEDERAL_TAXES_DONE                                  | Fired after a federal-taxes save succeeds (from inside the dashboard's edit sub-flow)             | None                                                             |
 | EMPLOYEE_STATE_TAXES_EDIT                                    | Fired when the "Edit" CTA is clicked on a per-state State taxes card                              | { employeeId: string, state: string }                            |
@@ -197,6 +201,133 @@ function MyPaymentPanel({ employeeId, onAddBankAccount, onSplitPaycheck }) {
 | EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_ADD_REQUESTED        | Fired when the user clicks "Add bank account" / "Add another bank account"     | None                                             |
 | EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_SPLIT_REQUESTED      | Fired when the user clicks "Split paycheck"                                    | None                                             |
 | EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_BANK_ACCOUNT_DELETED | Fired after the user confirms a bank-account deletion from the card's row menu | Response from the Delete a bank account endpoint |
+
+### EmployeeManagement.Deductions
+
+A self-contained block for viewing and managing an employee's post-tax deductions. Renders a read-only card listing each deduction with its frequency and withholding amount; clicking "Add deduction" or a row's "Edit" menu item swaps the card for the add/edit form, saving returns to the card view with a dismissible success alert ("Deduction successfully added/updated"), and confirming the delete dialog removes a deduction and returns with a "Deduction successfully deleted" alert. Cancelling the form returns to the card view without saving. Wraps everything in error and suspense boundaries via `BaseBoundaries`.
+
+```jsx
+import { EmployeeManagement } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return (
+    <EmployeeManagement.Deductions
+      employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
+      onEvent={() => {}}
+    />
+  )
+}
+```
+
+#### Props
+
+| Name                | Type                | Description                                                                                                                             |
+| ------------------- | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| employeeId Required | string              | The associated employee identifier.                                                                                                     |
+| onEvent Required    | function            | See events table for available events.                                                                                                  |
+| dictionary          | object              | Optional translations for component text. Keys are namespaced under `Employee.Management.Deductions` — see the source JSON for the set. |
+| FallbackComponent   | React.ComponentType | Optional custom error fallback component used by the internal `BaseBoundaries` wrapper.                                                 |
+
+#### Events
+
+| Event type                                         | Description                                                                                        | Data                               |
+| -------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_ADD_REQUESTED  | Fired when the "Add deduction" CTA is clicked on the card                                          | { employeeId: string }             |
+| EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_EDIT_REQUESTED | Fired when a deduction's "Edit" menu item is chosen on the card                                    | The `Garnishment` row being edited |
+| EMPLOYEE_MANAGEMENT_DEDUCTIONS_EDIT_FORM_CREATED   | Fired after a new deduction is saved; the block returns to the card with the "added" alert         | The created `Garnishment`          |
+| EMPLOYEE_MANAGEMENT_DEDUCTIONS_EDIT_FORM_UPDATED   | Fired after an existing deduction is saved; the block returns to the card with the "updated" alert | The updated `Garnishment`          |
+| EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_DELETED        | Fired after the delete dialog is confirmed; the block returns to the card with the "deleted" alert | The now-inactive `Garnishment`     |
+| EMPLOYEE_MANAGEMENT_DEDUCTIONS_EDIT_FORM_CANCELLED | Fired when the user clicks Cancel on the form; the block returns to the card view                  | None                               |
+| EMPLOYEE_MANAGEMENT_DEDUCTIONS_ALERT_DISMISSED     | Fired when the user dismisses the success alert above the card                                     | null                               |
+
+#### Composing from EmployeeManagement.DeductionsCard and EmployeeManagement.DeductionsEditForm directly
+
+`EmployeeManagement.Deductions` above is the recommended entry point for the deductions experience — it bundles the card, the add/edit form, the swap between them, the delete dialog, and the success-alert wiring as a single drop-in. The card and edit form are also exported individually for cases where that orchestration is the wrong fit — for example, when the add/edit surface needs to render in a modal or drawer, when the card needs to appear read-only with no add/edit affordances, or when the swap is driven by a router. Using them directly means owning the swap, the alert, and any cross-component state yourself.
+
+`EmployeeManagement.DeductionsCard` renders the read-only deductions card, self-fetches its rows, and emits events when "Add deduction" is clicked, a row's "Edit" item is chosen, or a deduction is deleted via its built-in confirm dialog. `EmployeeManagement.DeductionsEditForm` renders the add/edit form: omit `editingDeductionId` to open in add mode, or pass a deduction's `uuid` (e.g. from the `EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_EDIT_REQUESTED` payload) to open in edit mode pre-populated with that garnishment. It emits one event on a successful create, another on a successful update, and another on cancel. Each piece's `onEvent` receives the event type as its first argument and any associated payload as its second — branch on the event type to drive the swap. The per-piece events tables below list every event each piece emits.
+
+```jsx
+import { useState } from 'react'
+import { componentEvents, EmployeeManagement } from '@gusto/embedded-react-sdk'
+
+function MyDeductionsPanel({ employeeId }) {
+  const [isEditing, setIsEditing] = useState(false)
+  const [editingDeduction, setEditingDeduction] = useState(null)
+
+  if (isEditing) {
+    return (
+      <EmployeeManagement.DeductionsEditForm
+        employeeId={employeeId}
+        editingDeductionId={editingDeduction?.uuid}
+        onEvent={eventType => {
+          if (
+            eventType === componentEvents.EMPLOYEE_MANAGEMENT_DEDUCTIONS_EDIT_FORM_CREATED ||
+            eventType === componentEvents.EMPLOYEE_MANAGEMENT_DEDUCTIONS_EDIT_FORM_UPDATED ||
+            eventType === componentEvents.EMPLOYEE_MANAGEMENT_DEDUCTIONS_EDIT_FORM_CANCELLED
+          ) {
+            setEditingDeduction(null)
+            setIsEditing(false)
+          }
+        }}
+      />
+    )
+  }
+
+  return (
+    <EmployeeManagement.DeductionsCard
+      employeeId={employeeId}
+      onEvent={(eventType, payload) => {
+        if (eventType === componentEvents.EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_ADD_REQUESTED) {
+          setEditingDeduction(null)
+          setIsEditing(true)
+        } else if (
+          eventType === componentEvents.EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_EDIT_REQUESTED
+        ) {
+          setEditingDeduction(payload)
+          setIsEditing(true)
+        }
+      }}
+    />
+  )
+}
+```
+
+##### EmployeeManagement.DeductionsCard
+
+**Props**
+
+| Name                | Type     | Description                            |
+| ------------------- | -------- | -------------------------------------- |
+| employeeId Required | string   | The associated employee identifier.    |
+| onEvent Required    | function | See events table for available events. |
+
+**Events**
+
+| Event type                                         | Description                                         | Data                               |
+| -------------------------------------------------- | --------------------------------------------------- | ---------------------------------- |
+| EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_ADD_REQUESTED  | Fired when the "Add deduction" CTA is clicked       | { employeeId: string }             |
+| EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_EDIT_REQUESTED | Fired when a deduction's "Edit" menu item is chosen | The `Garnishment` row being edited |
+| EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_DELETED        | Fired after the soft-delete dialog is confirmed     | The now-inactive `Garnishment`     |
+
+##### EmployeeManagement.DeductionsEditForm
+
+**Props**
+
+| Name                | Type                | Description                                                                                                                             |
+| ------------------- | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| employeeId Required | string              | The associated employee identifier.                                                                                                     |
+| onEvent Required    | function            | See events table for available events.                                                                                                  |
+| editingDeductionId  | string              | When provided, opens the form in edit mode pre-populated with the matching deduction. Omit to open in add mode.                         |
+| dictionary          | object              | Optional translations for component text. Keys are namespaced under `Employee.Management.Deductions` — see the source JSON for the set. |
+| FallbackComponent   | React.ComponentType | Optional custom error fallback component used by the internal `BaseBoundaries` wrapper.                                                 |
+
+**Events**
+
+| Event type                                         | Description                                                                         | Data                      |
+| -------------------------------------------------- | ----------------------------------------------------------------------------------- | ------------------------- |
+| EMPLOYEE_MANAGEMENT_DEDUCTIONS_EDIT_FORM_CREATED   | Fired after a new deduction is saved                                                | The created `Garnishment` |
+| EMPLOYEE_MANAGEMENT_DEDUCTIONS_EDIT_FORM_UPDATED   | Fired after an existing deduction is saved                                          | The updated `Garnishment` |
+| EMPLOYEE_MANAGEMENT_DEDUCTIONS_EDIT_FORM_CANCELLED | Fired when the user clicks Cancel and the orchestrator should swap back to the card | None                      |
 
 ### EmployeeManagement.Profile
 
@@ -576,3 +707,113 @@ The card populates its "Payment method" column from the employee's payment metho
 | ---------------------------------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------- |
 | EMPLOYEE_MANAGEMENT_PAYSTUBS_CARD_DOWNLOAD_REQUESTED | Fired when the user clicks a row's download button, before the PDF is fetched | { employeeId: string, payrollUuid: string } |
 | EMPLOYEE_MANAGEMENT_PAYSTUBS_CARD_DOWNLOADED         | Fired after the paystub PDF is successfully fetched and opened in a new tab   | { employeeId: string, payrollUuid: string } |
+
+### EmployeeManagement.StateTaxes
+
+A self-contained block for viewing and editing an employee's state tax withholding settings — the same "State taxes" experience the dashboard surfaces, but as a drop-in component that doesn't require the surrounding dashboard chrome. Renders a read-only card listing each work state's tax-withholding questions and the employee's current answers. Clicking the card's "Edit" CTA swaps the card view for an inline edit form; saving keeps the user on the form and surfaces a dismissible "Successfully updated state tax settings." alert; cancelling returns to the card view without saving. The "Edit" CTA is hidden when none of the employee's states have any withholding questions (e.g. a state with no income tax has nothing to edit).
+
+```jsx
+import { EmployeeManagement } from '@gusto/embedded-react-sdk'
+
+function MyComponent() {
+  return (
+    <EmployeeManagement.StateTaxes
+      employeeId="4b3f930f-82cd-48a8-b797-798686e12e5e"
+      onEvent={() => {}}
+    />
+  )
+}
+```
+
+#### Props
+
+| Name                | Type                | Description                                                                                                                             |
+| ------------------- | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| employeeId Required | string              | The associated employee identifier.                                                                                                     |
+| onEvent Required    | function            | See events table for available events.                                                                                                  |
+| dictionary          | object              | Optional translations for component text. Keys are namespaced under `Employee.Management.StateTaxes` — see the source JSON for the set. |
+| FallbackComponent   | React.ComponentType | Optional custom error fallback component used by the internal `BaseBoundaries` wrapper.                                                 |
+
+#### Events
+
+| Event type                                     | Description                                                                                                          | Data                                                 |
+| ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| EMPLOYEE_MANAGEMENT_STATE_TAXES_EDIT_REQUESTED | Fired when the user clicks the "Edit" CTA on the card; the block swaps to the edit form                              | { employeeId: string }                               |
+| EMPLOYEE_MANAGEMENT_STATE_TAXES_UPDATED        | Fired after the edit form is successfully saved; the block keeps the user on the form and surfaces the success alert | { employeeStateTaxesList: EmployeeStateTaxesList[] } |
+| EMPLOYEE_MANAGEMENT_STATE_TAXES_EDIT_CANCELLED | Fired when the user clicks Cancel on the edit form; the block returns to the card view                               | None                                                 |
+
+#### Composing from EmployeeManagement.StateTaxesCard and EmployeeManagement.StateTaxesEditForm directly
+
+`EmployeeManagement.StateTaxes` above is the recommended entry point for the state-taxes experience — it bundles the card, the edit form, the swap between them, and the success-alert wiring as a single drop-in. The card and edit form are also exported individually for cases where that orchestration is the wrong fit — for example, when the edit surface needs to render in a modal or drawer, when the card needs to appear read-only with no edit affordance, or when the swap is driven by a router. Using them directly means owning the swap and any cross-component state yourself.
+
+`EmployeeManagement.StateTaxesCard` renders the read-only state-taxes card and emits a single event when its "Edit" CTA is clicked. `EmployeeManagement.StateTaxesEditForm` renders the corresponding edit form and emits one event on a successful save and another on cancel. A successful save does not navigate away — the edit form surfaces its own inline success alert and stays put, so only the cancel event (`EMPLOYEE_MANAGEMENT_STATE_TAXES_EDIT_CANCELLED`) is meant to return to the card. Each piece's `onEvent` receives the event type as its first argument and any associated payload as its second — branch on the event type to drive the swap (and any of your own behavior, e.g. surfacing a confirmation after a save). The per-piece events tables below list every event each piece emits.
+
+```jsx
+import { useState } from 'react'
+import { componentEvents, EmployeeManagement } from '@gusto/embedded-react-sdk'
+
+function MyStateTaxesPanel({ employeeId }) {
+  const [isEditing, setIsEditing] = useState(false)
+
+  if (isEditing) {
+    return (
+      <EmployeeManagement.StateTaxesEditForm
+        employeeId={employeeId}
+        onEvent={(eventType, data) => {
+          if (eventType === componentEvents.EMPLOYEE_MANAGEMENT_STATE_TAXES_EDIT_CANCELLED) {
+            setIsEditing(false)
+          } else if (eventType === componentEvents.EMPLOYEE_MANAGEMENT_STATE_TAXES_UPDATED) {
+            // The form stays open after a save; handle this here to surface
+            // your own confirmation or refresh related data.
+          }
+        }}
+      />
+    )
+  }
+
+  return (
+    <EmployeeManagement.StateTaxesCard
+      employeeId={employeeId}
+      onEvent={eventType => {
+        if (eventType === componentEvents.EMPLOYEE_MANAGEMENT_STATE_TAXES_EDIT_REQUESTED) {
+          setIsEditing(true)
+        }
+      }}
+    />
+  )
+}
+```
+
+##### EmployeeManagement.StateTaxesCard
+
+**Props**
+
+| Name                | Type     | Description                            |
+| ------------------- | -------- | -------------------------------------- |
+| employeeId Required | string   | The associated employee identifier.    |
+| onEvent Required    | function | See events table for available events. |
+
+**Events**
+
+| Event type                                     | Description                                           | Data                   |
+| ---------------------------------------------- | ----------------------------------------------------- | ---------------------- |
+| EMPLOYEE_MANAGEMENT_STATE_TAXES_EDIT_REQUESTED | Fired when the user clicks the "Edit" CTA on the card | { employeeId: string } |
+
+##### EmployeeManagement.StateTaxesEditForm
+
+**Props**
+
+| Name                | Type                | Description                                                                                                                             |
+| ------------------- | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| employeeId Required | string              | The associated employee identifier.                                                                                                     |
+| onEvent Required    | function            | See events table for available events.                                                                                                  |
+| className           | string              | Optional class applied to the form's root section element.                                                                              |
+| dictionary          | object              | Optional translations for component text. Keys are namespaced under `Employee.Management.StateTaxes` — see the source JSON for the set. |
+| FallbackComponent   | React.ComponentType | Optional custom error fallback component used by the internal `BaseBoundaries` wrapper.                                                 |
+
+**Events**
+
+| Event type                                     | Description                                        | Data                                                 |
+| ---------------------------------------------- | -------------------------------------------------- | ---------------------------------------------------- |
+| EMPLOYEE_MANAGEMENT_STATE_TAXES_UPDATED        | Fired after the edit form is successfully saved    | { employeeStateTaxesList: EmployeeStateTaxesList[] } |
+| EMPLOYEE_MANAGEMENT_STATE_TAXES_EDIT_CANCELLED | Fired when the user clicks Cancel on the edit form | None                                                 |

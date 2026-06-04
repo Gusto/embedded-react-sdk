@@ -31,7 +31,7 @@ interface MetaProps {
 }
 
 function useStateTaxValidationDefaults(): StateTaxValidationMessages {
-  const { t } = useTranslation('Employee.StateTaxes')
+  const { t } = useTranslation('Employee.StateTaxesView')
   return { [EmployeeStateTaxesErrorCodes.REQUIRED]: t('validations.required') }
 }
 

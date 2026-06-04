@@ -18,7 +18,12 @@ export type {
   WorkAddressEditFormProps,
 } from '../WorkAddress/management'
 export { FederalTaxes, type FederalTaxesProps } from '../FederalTaxes/management/FederalTaxes'
-export { StateTaxes, type StateTaxesProps } from '../StateTaxes/management/StateTaxes'
+export { StateTaxes, StateTaxesCard, StateTaxesEditForm } from '../StateTaxes/management'
+export type {
+  StateTaxesProps,
+  StateTaxesCardProps,
+  StateTaxesEditFormProps,
+} from '../StateTaxes/management'
 export { Profile, ProfileCard, ProfileEditForm } from '../Profile/management'
 export type { ProfileProps, ProfileCardProps, ProfileEditFormProps } from '../Profile/management'
 export {
@@ -33,6 +38,12 @@ export {
 } from '../PaymentMethod/management'
 export { PaystubsCard } from '../Paystubs/management'
 export type { PaystubsCardProps } from '../Paystubs/management'
+export { Deductions, DeductionsCard, DeductionsEditForm } from '../Deductions/management'
+export type {
+  DeductionsProps,
+  DeductionsCardProps,
+  DeductionsEditFormProps,
+} from '../Deductions/management'
 export { TerminateEmployee } from '../Terminations/TerminateEmployee/TerminateEmployee'
 export { TerminationSummary } from '../Terminations/TerminationSummary/TerminationSummary'
 export { TerminationFlow } from '../Terminations/TerminationFlow/TerminationFlow'

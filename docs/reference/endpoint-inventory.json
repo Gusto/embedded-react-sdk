@@ -842,10 +842,6 @@
           "path": "/v1/employees/:employeeUuid/federal_taxes"
         },
         {
-          "method": "GET",
-          "path": "/v1/employees/:employeeUuid/state_taxes"
-        },
-        {
           "method": "DELETE",
           "path": "/v1/jobs/:jobId"
         }
@@ -1978,10 +1974,6 @@
           "path": "/v1/employees/:employeeUuid/federal_taxes"
         },
         {
-          "method": "GET",
-          "path": "/v1/employees/:employeeUuid/state_taxes"
-        },
-        {
           "method": "DELETE",
           "path": "/v1/jobs/:jobId"
         }
@@ -2608,9 +2600,9 @@
     "Employee.DashboardFlow": {
       "blocks": [
         "Employee.Compensation",
-        "Employee.Deductions",
         "Employee.HomeAddress",
         "Employee.WorkAddress",
+        "EmployeeManagement.Deductions",
         "EmployeeManagement.DocumentManager",
         "EmployeeManagement.FederalTaxes",
         "EmployeeManagement.PaymentMethod",
@@ -2666,6 +2658,7 @@
     },
     "EmployeeManagement.DashboardFlow": {
       "blocks": [
+        "EmployeeManagement.Deductions",
         "EmployeeManagement.DocumentManager",
         "EmployeeManagement.FederalTaxes",
         "EmployeeManagement.HomeAddress",
@@ -2674,8 +2667,7 @@
         "EmployeeManagement.Profile",
         "EmployeeManagement.StateTaxes",
         "EmployeeManagement.WorkAddress",
-        "EmployeeOnboarding.Compensation",
-        "EmployeeOnboarding.Deductions"
+        "EmployeeOnboarding.Compensation"
       ]
     },
     "EmployeeManagement.EmployeeListFlow": {

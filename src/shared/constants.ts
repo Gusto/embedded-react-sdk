@@ -63,9 +63,12 @@ export const employeeEvents = {
   EMPLOYEE_FEDERAL_TAXES_EDIT: 'employee/federalTaxes/edit',
   EMPLOYEE_FEDERAL_TAXES_UPDATED: 'employee/federalTaxes/updated',
   EMPLOYEE_FEDERAL_TAXES_DONE: 'employee/federalTaxes/done',
-  EMPLOYEE_STATE_TAXES_EDIT: 'employee/stateTaxes/edit',
   EMPLOYEE_STATE_TAXES_UPDATED: 'employee/stateTaxes/updated',
   EMPLOYEE_STATE_TAXES_DONE: 'employee/stateTaxes/done',
+  EMPLOYEE_MANAGEMENT_STATE_TAXES_EDIT_REQUESTED: 'employee/management/stateTaxes/editRequested',
+  EMPLOYEE_MANAGEMENT_STATE_TAXES_EDIT_CANCELLED: 'employee/management/stateTaxes/editCancelled',
+  EMPLOYEE_MANAGEMENT_STATE_TAXES_UPDATED: 'employee/management/stateTaxes/updated',
+  EMPLOYEE_MANAGEMENT_STATE_TAXES_ALERT_DISMISSED: 'employee/management/stateTaxes/alertDismissed',
   EMPLOYEE_TAXES_DONE: 'employee/taxes/done',
   EMPLOYEE_SPLIT_PAYCHECK: 'employee/bankAccount/split',
   EMPLOYEE_JOB_CREATED: 'employee/job/created',
@@ -113,6 +116,18 @@ export const employeeEvents = {
   EMPLOYEE_MANAGEMENT_PAYSTUBS_CARD_DOWNLOAD_REQUESTED:
     'employee/management/paystubs/card/downloadRequested',
   EMPLOYEE_MANAGEMENT_PAYSTUBS_CARD_DOWNLOADED: 'employee/management/paystubs/card/downloaded',
+  EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_ADD_REQUESTED:
+    'employee/management/deductions/card/addRequested',
+  EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_EDIT_REQUESTED:
+    'employee/management/deductions/card/editRequested',
+  EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_DELETED: 'employee/management/deductions/card/deleted',
+  EMPLOYEE_MANAGEMENT_DEDUCTIONS_EDIT_FORM_CREATED:
+    'employee/management/deductions/editForm/created',
+  EMPLOYEE_MANAGEMENT_DEDUCTIONS_EDIT_FORM_UPDATED:
+    'employee/management/deductions/editForm/updated',
+  EMPLOYEE_MANAGEMENT_DEDUCTIONS_EDIT_FORM_CANCELLED:
+    'employee/management/deductions/editForm/cancelled',
+  EMPLOYEE_MANAGEMENT_DEDUCTIONS_ALERT_DISMISSED: 'employee/management/deductions/alertDismissed',
 } as const
 
 /**

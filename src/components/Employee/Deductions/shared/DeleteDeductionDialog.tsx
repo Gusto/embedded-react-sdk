@@ -1,19 +1,31 @@
-import { useTranslation } from 'react-i18next'
+import type { ReactNode } from 'react'
 import type { Garnishment } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishment'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
+/**
+ * Presentational confirm dialog for deleting a deduction. All copy is
+ * passed in by the caller so each consumer owns its own translation strings
+ * — partner overrides on one flow's namespace won't leak into another.
+ */
 export function DeleteDeductionDialog({
   pendingDeleteDeduction,
   isPrimaryActionLoading,
   onClose,
   onConfirm,
+  title,
+  description,
+  confirmLabel,
+  cancelLabel,
 }: {
   pendingDeleteDeduction: Garnishment | null
   isPrimaryActionLoading: boolean
   onClose: () => void
   onConfirm: () => void
+  title: string
+  description: ReactNode
+  confirmLabel: string
+  cancelLabel: string
 }) {
-  const { t } = useTranslation('Employee.Deductions')
   const Components = useComponentContext()
   return (
     <Components.Dialog
@@ -22,14 +34,11 @@ export function DeleteDeductionDialog({
       onPrimaryActionClick={onConfirm}
       isPrimaryActionLoading={isPrimaryActionLoading}
       isDestructive
-      title={t('deleteDeductionDialog.title')}
-      primaryActionLabel={t('deleteDeductionDialog.confirmCta')}
-      closeActionLabel={t('deleteDeductionDialog.cancelCta')}
+      title={title}
+      primaryActionLabel={confirmLabel}
+      closeActionLabel={cancelLabel}
     >
-      {pendingDeleteDeduction &&
-        t('deleteDeductionDialog.description', {
-          deduction: pendingDeleteDeduction.description ?? '',
-        })}
+      {pendingDeleteDeduction && description}
     </Components.Dialog>
   )
 }

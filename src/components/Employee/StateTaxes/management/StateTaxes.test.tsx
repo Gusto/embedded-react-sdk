@@ -2,10 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { HttpResponse } from 'msw'
-import {
-  caEmployeeStateTaxes,
-  unsetAnswersStateTaxes,
-} from '../shared/useEmployeeStateTaxesForm/__fixtures__/stateTaxesFixtures'
+import { caEmployeeStateTaxes } from '../shared/useEmployeeStateTaxesForm/__fixtures__/stateTaxesFixtures'
 import { toWireStateTaxes } from '../shared/useEmployeeStateTaxesForm/__fixtures__/toWireFormat'
 import { StateTaxes } from './StateTaxes'
 import { server } from '@/test/mocks/server'
@@ -14,15 +11,15 @@ import {
   handleUpdateEmployeeStateTaxes,
 } from '@/test/mocks/apis/employee_state_taxes'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
-import { componentEvents } from '@/shared/constants'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+import { componentEvents } from '@/shared/constants'
 
-describe('Employee.StateTaxes (management)', () => {
-  const mockOnEvent = vi.fn()
+describe('StateTaxes (management block)', () => {
+  const onEvent = vi.fn()
 
   beforeEach(() => {
     setupApiTestMocks()
-    mockOnEvent.mockClear()
+    onEvent.mockClear()
 
     server.use(
       handleGetEmployeeStateTaxes(() => HttpResponse.json(toWireStateTaxes(caEmployeeStateTaxes))),
@@ -32,185 +29,138 @@ describe('Employee.StateTaxes (management)', () => {
     )
   })
 
-  it('renders the state heading and form fields', async () => {
-    renderWithProviders(<StateTaxes employeeId="employee-1" onEvent={mockOnEvent} />)
+  it('renders the card initially with the State taxes title and an Edit button', async () => {
+    renderWithProviders(<StateTaxes employeeId="employee-123" onEvent={onEvent} />)
 
-    await screen.findByRole('heading', { name: /California Tax Requirements/i })
-    expect(screen.getByLabelText(/Filing Status/i)).toBeInTheDocument()
-    expect(screen.getByLabelText(/Withholding Allowance/i)).toBeInTheDocument()
-    expect(screen.getByLabelText(/Additional Withholding/i)).toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Edit' })).toBeEnabled()
+    })
+
+    expect(screen.getByRole('heading', { name: 'State taxes' })).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: /California Tax Requirements/i })).toBeNull()
   })
 
-  it('never shows the file_new_hire_report radio controls', async () => {
-    renderWithProviders(<StateTaxes employeeId="employee-1" onEvent={mockOnEvent} />)
-
-    await screen.findByRole('heading', { name: /California Tax Requirements/i })
-
-    expect(
-      screen.queryByRole('radio', { name: /Yes, file the state new hire report for me/i }),
-    ).not.toBeInTheDocument()
-    expect(
-      screen.queryByRole('radio', { name: /No, I have already filed/i }),
-    ).not.toBeInTheDocument()
-  })
-
-  it('renders Cancel and Save buttons (no Continue)', async () => {
-    renderWithProviders(<StateTaxes employeeId="employee-1" onEvent={mockOnEvent} />)
-
-    await screen.findByRole('heading', { name: /California Tax Requirements/i })
-
-    expect(screen.getByRole('button', { name: /^Cancel$/i })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /^Save$/i })).toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: /Continue/i })).not.toBeInTheDocument()
-  })
-
-  it('emits CANCEL when the Cancel button is clicked without submitting', async () => {
+  it('transitions card → editStateTaxes when the Edit button is clicked', async () => {
     const user = userEvent.setup()
-    renderWithProviders(<StateTaxes employeeId="employee-1" onEvent={mockOnEvent} />)
+    renderWithProviders(<StateTaxes employeeId="employee-123" onEvent={onEvent} />)
 
-    await screen.findByRole('heading', { name: /California Tax Requirements/i })
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Edit' })).toBeEnabled()
+    })
+
+    await user.click(screen.getByRole('button', { name: 'Edit' }))
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', { name: /California Tax Requirements/i }),
+      ).toBeInTheDocument()
+    })
+
+    expect(onEvent).toHaveBeenCalledWith(
+      componentEvents.EMPLOYEE_MANAGEMENT_STATE_TAXES_EDIT_REQUESTED,
+      { employeeId: 'employee-123' },
+    )
+  })
+
+  it('returns to the card when Cancel is clicked from the edit screen', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<StateTaxes employeeId="employee-123" onEvent={onEvent} />)
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Edit' })).toBeEnabled()
+    })
+    await user.click(screen.getByRole('button', { name: 'Edit' }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /^Cancel$/i })).toBeInTheDocument()
+    })
 
     await user.click(screen.getByRole('button', { name: /^Cancel$/i }))
 
-    expect(mockOnEvent).toHaveBeenCalledWith(componentEvents.CANCEL)
-    expect(mockOnEvent).not.toHaveBeenCalledWith(
-      componentEvents.EMPLOYEE_STATE_TAXES_UPDATED,
-      expect.anything(),
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: 'State taxes' })).toBeInTheDocument()
+    })
+
+    expect(onEvent).toHaveBeenCalledWith(
+      componentEvents.EMPLOYEE_MANAGEMENT_STATE_TAXES_EDIT_CANCELLED,
+      undefined,
     )
-    expect(mockOnEvent).not.toHaveBeenCalledWith(componentEvents.EMPLOYEE_STATE_TAXES_DONE)
   })
 
-  it('saves and shows a success alert without emitting DONE', async () => {
+  it('returns to the card with a success alert after a successful Save', async () => {
     const user = userEvent.setup()
-    renderWithProviders(<StateTaxes employeeId="employee-1" onEvent={mockOnEvent} />)
+    renderWithProviders(<StateTaxes employeeId="employee-123" onEvent={onEvent} />)
 
-    await screen.findByRole('heading', { name: /California Tax Requirements/i })
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Edit' })).toBeEnabled()
+    })
+    await user.click(screen.getByRole('button', { name: 'Edit' }))
 
-    expect(screen.queryByText(/Successfully updated state tax settings/i)).not.toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /^Save$/i })).toBeInTheDocument()
+    })
 
     await user.click(screen.getByRole('button', { name: /^Save$/i }))
 
     await waitFor(() => {
-      expect(mockOnEvent).toHaveBeenCalledWith(
-        componentEvents.EMPLOYEE_STATE_TAXES_UPDATED,
+      expect(onEvent).toHaveBeenCalledWith(
+        componentEvents.EMPLOYEE_MANAGEMENT_STATE_TAXES_UPDATED,
         expect.objectContaining({ employeeStateTaxesList: expect.any(Array) }),
       )
     })
 
-    expect(mockOnEvent).not.toHaveBeenCalledWith(componentEvents.EMPLOYEE_STATE_TAXES_DONE)
-
     await waitFor(() => {
-      expect(screen.getByText(/Successfully updated state tax settings/i)).toBeInTheDocument()
+      expect(screen.getByRole('heading', { name: 'State taxes' })).toBeInTheDocument()
     })
-
-    expect(
-      screen.getByRole('heading', { name: /California Tax Requirements/i }),
-    ).toBeInTheDocument()
+    expect(await screen.findByText(/Successfully updated state tax settings/i)).toBeInTheDocument()
   })
 
-  it('dismisses the success alert when onDismiss is called', async () => {
+  it('dismisses the success alert when the dismiss control is clicked', async () => {
     const user = userEvent.setup()
-    renderWithProviders(<StateTaxes employeeId="employee-1" onEvent={mockOnEvent} />)
-
-    await screen.findByRole('heading', { name: /California Tax Requirements/i })
-    await user.click(screen.getByRole('button', { name: /^Save$/i }))
+    renderWithProviders(<StateTaxes employeeId="employee-123" onEvent={onEvent} />)
 
     await waitFor(() => {
-      expect(screen.getByText(/Successfully updated state tax settings/i)).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: 'Edit' })).toBeEnabled()
     })
+    await user.click(screen.getByRole('button', { name: 'Edit' }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /^Save$/i })).toBeInTheDocument()
+    })
+    await user.click(screen.getByRole('button', { name: /^Save$/i }))
+
+    const alertText = await screen.findByText(/Successfully updated state tax settings/i)
+    expect(alertText).toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: /dismiss/i }))
 
     await waitFor(() => {
-      expect(screen.queryByText(/Successfully updated state tax settings/i)).not.toBeInTheDocument()
+      expect(screen.queryByText(/Successfully updated state tax settings/i)).toBeNull()
     })
+    expect(screen.getByRole('heading', { name: 'State taxes' })).toBeInTheDocument()
   })
 
-  it('does not submit and surfaces validation errors when required fields are empty', async () => {
-    server.use(
-      handleGetEmployeeStateTaxes(() =>
-        HttpResponse.json(toWireStateTaxes(unsetAnswersStateTaxes)),
-      ),
-    )
-
+  it('clears the success alert when the user clicks Edit again', async () => {
     const user = userEvent.setup()
-    let updateCalled = false
-    server.use(
-      handleUpdateEmployeeStateTaxes(() => {
-        updateCalled = true
-        return HttpResponse.json([])
-      }),
-    )
-
-    renderWithProviders(<StateTaxes employeeId="employee-1" onEvent={mockOnEvent} />)
-
-    await screen.findByRole('heading', { name: /California Tax Requirements/i })
-    await user.click(screen.getByRole('button', { name: /^Save$/i }))
+    renderWithProviders(<StateTaxes employeeId="employee-123" onEvent={onEvent} />)
 
     await waitFor(() => {
-      expect(mockOnEvent).not.toHaveBeenCalledWith(
-        componentEvents.EMPLOYEE_STATE_TAXES_UPDATED,
-        expect.anything(),
-      )
+      expect(screen.getByRole('button', { name: 'Edit' })).toBeEnabled()
     })
-    expect(updateCalled).toBe(false)
-  })
+    await user.click(screen.getByRole('button', { name: 'Edit' }))
 
-  it('renders inline API error messages on the correct field on 422', async () => {
-    const user = userEvent.setup()
-    server.use(
-      handleUpdateEmployeeStateTaxes(() =>
-        HttpResponse.json(
-          {
-            errors: [
-              {
-                error_key: 'states',
-                category: 'nested_errors',
-                errors: [
-                  {
-                    error_key: 'questions',
-                    category: 'nested_errors',
-                    metadata: { state: 'CA' },
-                    errors: [
-                      {
-                        error_key: 'answers',
-                        category: 'nested_errors',
-                        metadata: { key: 'withholding_allowance' },
-                        errors: [
-                          {
-                            error_key: 'value',
-                            category: 'invalid_attribute_value',
-                            message: 'Total Exemptions must be less than or equal to 20',
-                          },
-                        ],
-                      },
-                    ],
-                  },
-                ],
-              },
-            ],
-          },
-          { status: 422 },
-        ),
-      ),
-    )
-
-    renderWithProviders(<StateTaxes employeeId="employee-1" onEvent={mockOnEvent} />)
-
-    await screen.findByRole('heading', { name: /California Tax Requirements/i })
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /^Save$/i })).toBeInTheDocument()
+    })
     await user.click(screen.getByRole('button', { name: /^Save$/i }))
 
-    const allowanceField = await screen.findByLabelText(/Withholding Allowance/i)
+    await screen.findByText(/Successfully updated state tax settings/i)
+
+    await user.click(screen.getByRole('button', { name: 'Edit' }))
+
     await waitFor(() => {
-      expect(allowanceField).toHaveAttribute('aria-invalid', 'true')
+      expect(screen.getByRole('button', { name: /^Save$/i })).toBeInTheDocument()
     })
-
-    const describedByIds = allowanceField.getAttribute('aria-describedby')?.split(' ') ?? []
-    const errorMessageId = describedByIds.find(id => id.startsWith('error-message-'))
-    expect(errorMessageId).toBeTruthy()
-    const inlineError = document.getElementById(errorMessageId!)
-    expect(inlineError).toHaveTextContent(/Total Exemptions must be less than or equal to 20/i)
-
-    expect(screen.queryByText(/Successfully updated state tax settings/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/Successfully updated state tax settings/i)).toBeNull()
   })
 })

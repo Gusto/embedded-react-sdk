@@ -667,11 +667,13 @@ useI18n('Employee.HomeAddress.Management')
 
 Don't reach for the base namespace just because a shared form **hook** is rendered in both places. Form hooks like `useHomeAddressForm` emit field _components_ (e.g. `Street1`, `City`, `Zip`); they don't render any text themselves. Each call site passes its own `label` and `validationMessages` props from whatever namespace is convenient. The onboarding consumer reads from `Employee.HomeAddress`, the management consumer reads from `Employee.HomeAddress.Management`, and the two never need to share a translation namespace just because they share field components.
 
-Concrete heuristic — only dual-load the base namespace if **a runtime-shared piece of UI** (a shared presentational component that itself calls `useTranslation('Employee.<Feature>')`) is rendered inside the management path. If the management-side consumer of those strings is only ever rendered in the management path (e.g. a `<Feature>View` that exists solely under `management/`), copy the strings it needs into the feature's management namespace and read everything from one namespace. Don't reach across.
+Concrete heuristic by scenario:
 
-Concretely: the field labels, validation messages, and courtesy-withholding copy that `HomeAddress/management/HomeAddressView.tsx` renders are duplicated into `Employee.HomeAddress.Management.json` rather than dual-loading `Employee.HomeAddress`, because `HomeAddressView` is exclusive to the management path. Onboarding's `EmployeeProfile`/`AdminProfile` keep reading the same keys from `Employee.HomeAddress`.
+- **Shared UI lives only in the management path** (e.g. a `<Feature>View` that exists solely under `management/`) — copy the strings it needs into `Employee.<Feature>.Management.json` and read everything from one namespace. Don't reach across. The field labels, validation messages, and courtesy-withholding copy that `HomeAddress/management/HomeAddressView.tsx` renders are duplicated into `Employee.HomeAddress.Management.json` for exactly this reason; onboarding's `EmployeeProfile`/`AdminProfile` keep reading the same keys from `Employee.HomeAddress`. Duplication is the cost; it buys a fully self-contained block. A partner who only overrides `Employee.HomeAddress.Management` via `useComponentDictionary` gets a coherent result without having to discover that they also need to override `Employee.HomeAddress`.
+- **Shared UI is a hook with no text of its own** — each call site passes its own `label` / `validationMessages` props (see paragraph above). No coordination needed.
+- **Shared UI is a JSX component that renders text and is mounted in both surfaces** — don't dual-load and don't duplicate the JSX. Use the per-surface `dictionary`-prop pattern described in "When a shared component renders in multiple surfaces" below. The shared component gets its own dedicated namespace and each surface injects its strings through a typed dictionary prop, so neither surface needs to reach across to the other or to the shared component's namespace.
 
-Duplication is the cost; it buys a fully self-contained block. A partner who only overrides the management namespace via `useComponentDictionary` gets a coherent result without having to discover that they also need to override `Employee.HomeAddress`. When the same copy needs to change in both contexts (rare for field labels; almost never for validation messages), the change is two edits instead of one — that's a worthwhile trade.
+When the same copy needs to change in both contexts (rare for field labels; almost never for validation messages), the change is two edits instead of one — that's a worthwhile trade.
 
 ### Components shared across flows must be presentational (no i18n)
 
@@ -755,6 +757,43 @@ Why this shape:
 - **Translation overrides decouple by flow.** A partner overriding `Employee.Management.PaymentMethodBankForm.saveCta` retunes only the management bank-account form; the onboarding equivalent stays put. Same trade-off as the presentational-dialog rule, applied at a coarser grain.
 
 The wrappers belong in the management block's checklist alongside the card and the block — exports, registry regen, and the per-component i18n file all follow the standard pattern (just with `<Feature><Component>` substituted for `<Feature>` in the names).
+
+### When a shared component renders in multiple surfaces
+
+Sometimes the same JSX renders in both an onboarding flow and a management block — `DeductionsForm` is the canonical case: identical variant picker, identical child-support and standard sub-forms, mounted by both `Employee/Deductions/onboarding/deductionsContextualComponents.tsx` and `Employee/Deductions/management/DeductionsEditForm/`. The "dual-load or duplicate" choices above don't apply, because the JSX itself is one source of truth and we want each surface to own its own translation surface.
+
+The pattern: give the shared component its **own** dedicated namespace internally, and let each surface inject the resolved strings it wants to render through a typed dictionary prop. Surfaces never reference the shared component's namespace; the shared component never reads from a surface's namespace.
+
+**Architecture**
+
+- The shared component lives at `<Feature>/shared/<Component>/`. Internally it calls `useI18n('Employee.<Component>')`, `useComponentDictionary('Employee.<Component>', dictionary)`, and `useTranslation('Employee.<Component>')`. It never references either surface's namespace.
+- The shared component accepts a standard `dictionary?: <Component>Dictionary` prop (same prop name SDK components everywhere use). `<Component>Dictionary` is a thin type alias for `ResourceDictionary<'Employee.<Component>'>` exported from the shared component's folder — callers reference the structural alias, never the namespace string.
+- An `Employee.<Component>.json` defaults file under `src/i18n/en/` carries the full English copy in the nested shape the component renders. It serves two purposes: it's the type contract that `<Component>Dictionary` is keyed against (via `i18n:generate`), and it's the safety net for any caller that doesn't pass `dictionary`.
+- Each surface adds a small per-surface hook colocated with that surface's block (the reference implementation calls it `useFormDictionary`, but the name is local — pick whatever reads naturally for the component). The hook calls `useTranslation` against the **surface's** namespace (`Employee.<Feature>` for onboarding, `Employee.<Feature>.Management` for management), reads the keys that surface wants to expose to the shared component, and returns them packed into the `<Component>Dictionary` shape.
+- The block passes the hook's result down as `dictionary={…}`. Because the hook calls `t()` against the surface's namespace at render time, partner overrides on the surface's namespace flow through naturally — no extra wiring.
+
+**Override chain (one direction)**
+
+`partner dictionary` → `useComponentDictionary('Employee.<Surface>', dictionary)` → surface namespace → per-surface hook resolves `t(...)` → `dictionary` prop on the shared component → `useComponentDictionary('Employee.<Component>', dictionary)` → shared component's internal namespace → rendered string.
+
+The same chain works at the GustoProvider level — a `dictionary={{ en: { 'Employee.<Surface>': { ... } } }}` global override hits the surface's namespace first, the hook re-resolves, and the result flows down to the shared component. No global override has to know about the shared component's namespace.
+
+**Reference implementation — `DeductionsForm`**
+
+- Shared component: [`src/components/Employee/Deductions/shared/DeductionsForm/`](../../../src/components/Employee/Deductions/shared/DeductionsForm/) — the component itself (`dictionary?: DeductionsFormDictionary` prop) plus the exported `DeductionsFormDictionary` type and the barrel that re-exports both.
+- Internal namespace + defaults: [`src/i18n/en/Employee.DeductionsForm.json`](../../../src/i18n/en/Employee.DeductionsForm.json) — full nested shape (`addTitle`, `standard.*`, `childSupport.*`, `actions.*`, etc.).
+- Onboarding's per-surface hook: [`src/components/Employee/Deductions/onboarding/useFormDictionary.ts`](../../../src/components/Employee/Deductions/onboarding/useFormDictionary.ts) — resolves `t(...)` against onboarding's historical flat keys in `Employee.Deductions` (`addDeductionTitle`, `descriptionLabelV2`, `agency`, `per`, …) and packs them into `DeductionsFormDictionary`'s nested shape.
+- Management's per-surface hook: [`src/components/Employee/Deductions/management/DeductionsEditForm/useFormDictionary.ts`](../../../src/components/Employee/Deductions/management/DeductionsEditForm/useFormDictionary.ts) — resolves `t('form.*')` against `Employee.Management.Deductions`, which carries a dedicated nested `form.*` subtree.
+
+**Backward compatibility when retrofitting an existing shared component**
+
+If the shared component existed previously and one surface (typically onboarding) had partners overriding flat key names on the original namespace, write that surface's per-surface hook first as a pure key-rename mapping over the historical keys. Don't change the surface's JSON file — leave every existing key in place. The mapping `descriptionLabel: t('descriptionLabelV2')` etc. is what proves no partner override breaks. The second surface (management) can adopt the new nested shape directly in its own JSON file because it had no historical partner contract to preserve.
+
+**Why this pattern over duplication or dual-load**
+
+- Shared JSX stays shared — no copy-paste maintenance burden when the form structure changes.
+- Each surface owns its full translation surface in one JSON. A partner overriding `Employee.<Feature>.Management` via `useComponentDictionary` gets coherent management-side text including the shared component's strings, without having to discover and override a separate shared namespace.
+- The shared component's namespace is purely an implementation detail. Surfaces don't import it, partners don't see it, and the two surfaces' overrides are fully decoupled — neither surface's translations can leak into the other.
 
 ### Strings to move out of `Employee.Dashboard` during migration
 

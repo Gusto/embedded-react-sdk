@@ -1,16 +1,11 @@
 import { useEmployeeTaxSetupGetFederalTaxes } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeTaxSetupGetFederalTaxes'
-import { useEmployeeTaxSetupGetStateTaxes } from '@gusto/embedded-api-v-2025-11-15/react-query/employeeTaxSetupGetStateTaxes'
 import type { GetV1EmployeesEmployeeIdFederalTaxesResponse } from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1employeesemployeeidfederaltaxes'
-import type { GetV1EmployeesEmployeeIdStateTaxesResponse } from '@gusto/embedded-api-v-2025-11-15/models/operations/getv1employeesemployeeidstatetaxes'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type { BaseHookReady } from '@/partner-hook-utils/types'
 
 type EmployeeFederalTax = NonNullable<
   GetV1EmployeesEmployeeIdFederalTaxesResponse['employeeFederalTax']
 >
-type EmployeeStateTax = NonNullable<
-  GetV1EmployeesEmployeeIdStateTaxesResponse['employeeStateTaxesList']
->[number]
 
 export interface UseEmployeeTaxesProps {
   employeeId: string
@@ -19,29 +14,25 @@ export interface UseEmployeeTaxesProps {
 export type UseEmployeeTaxesResult = BaseHookReady<
   {
     employeeFederalTax?: EmployeeFederalTax
-    employeeStateTaxesList: EmployeeStateTax[]
   },
   {
     isPending: boolean
     isFederalTaxesLoading: boolean
-    isStateTaxesLoading: boolean
   }
 >
 
 /**
- * Phase B: non-Suspense queries so the federal and state tax cards
- * paint independently. `isFederalTaxesLoading` and `isStateTaxesLoading`
- * let TaxesView render a per-card skeleton while the box header stays
- * visible.
+ * Non-Suspense federal-taxes query for the Dashboard's Taxes tab. The
+ * state-taxes card is now self-fetching via `useStateTaxesSummary` and
+ * is rendered as a sibling of the federal `TaxesView`. When Federal
+ * Taxes migrates to its own management block this hook can be deleted
+ * and the federal card rendered inline alongside the state card.
  */
 export function useEmployeeTaxes({ employeeId }: UseEmployeeTaxesProps): UseEmployeeTaxesResult {
-  // staleTime: Infinity — see useEmployeeCompensation for rationale (SDK
-  // QueryClient invalidates on any mutation success).
+  // staleTime: Infinity — the SDK QueryClient invalidates on any mutation
+  // success, so we don't need TanStack Query to refetch on focus changes
+  // or remounts inside the dashboard tabs.
   const federalTaxesQuery = useEmployeeTaxSetupGetFederalTaxes(
-    { employeeUuid: employeeId },
-    { staleTime: Infinity },
-  )
-  const stateTaxesQuery = useEmployeeTaxSetupGetStateTaxes(
     { employeeUuid: employeeId },
     { staleTime: Infinity },
   )
@@ -50,13 +41,11 @@ export function useEmployeeTaxes({ employeeId }: UseEmployeeTaxesProps): UseEmpl
     isLoading: false,
     data: {
       employeeFederalTax: federalTaxesQuery.data?.employeeFederalTax,
-      employeeStateTaxesList: stateTaxesQuery.data?.employeeStateTaxesList ?? [],
     },
     status: {
-      isPending: federalTaxesQuery.isFetching || stateTaxesQuery.isFetching,
+      isPending: federalTaxesQuery.isFetching,
       isFederalTaxesLoading: federalTaxesQuery.isLoading,
-      isStateTaxesLoading: stateTaxesQuery.isLoading,
     },
-    errorHandling: composeErrorHandler([federalTaxesQuery, stateTaxesQuery]),
+    errorHandling: composeErrorHandler([federalTaxesQuery]),
   }
 }
