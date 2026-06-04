@@ -31,6 +31,8 @@ export {
   PaymentMethodSplitForm,
   type PaymentMethodSplitFormProps,
 } from '../PaymentMethod/management'
+export { PaystubsCard } from '../Paystubs/management'
+export type { PaystubsCardProps } from '../Paystubs/management'
 export { TerminateEmployee } from '../Terminations/TerminateEmployee/TerminateEmployee'
 export { TerminationSummary } from '../Terminations/TerminationSummary/TerminationSummary'
 export { TerminationFlow } from '../Terminations/TerminationFlow/TerminationFlow'
