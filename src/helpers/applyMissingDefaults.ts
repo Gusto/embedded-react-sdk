@@ -1,6 +1,15 @@
 /**
- * Applies default values only to properties that are undefined in the source object.
- * This is more efficient than object spread as it only sets values that are actually missing.
+ * Returns a copy of `rawProps` with `defaults` filled in only where the source value is `undefined`.
+ *
+ * @remarks Cheaper than `{ ...defaults, ...rawProps }` because it copies the source once and only
+ * writes the keys that are actually missing. Properties explicitly set to `null` or `false` are
+ * preserved as-is.
+ *
+ * @typeParam T - Shape of the props object.
+ * @param rawProps - Caller-supplied props; values set here always win.
+ * @param defaults - Fallback values applied only when the corresponding `rawProps` value is `undefined`.
+ * @returns A new object combining `rawProps` with defaults filled in for missing keys.
+ * @internal
  */
 export function applyMissingDefaults<T>(rawProps: T, defaults: Partial<T>): T {
   const result = { ...rawProps }

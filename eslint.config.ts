@@ -177,7 +177,6 @@ export default [
       // As we improve documentation, remove directories from the ignore path
       'src/components/**',
       'src/contexts/**',
-      'src/helpers/**',
       'src/partner-hook-utils/**',
       'src/shared/**',
       'src/types/**',
