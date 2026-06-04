@@ -2608,9 +2608,9 @@
     "Employee.DashboardFlow": {
       "blocks": [
         "Employee.Compensation",
-        "Employee.Deductions",
         "Employee.HomeAddress",
         "Employee.WorkAddress",
+        "EmployeeManagement.Deductions",
         "EmployeeManagement.DocumentManager",
         "EmployeeManagement.FederalTaxes",
         "EmployeeManagement.PaymentMethod",
@@ -2666,6 +2666,7 @@
     },
     "EmployeeManagement.DashboardFlow": {
       "blocks": [
+        "EmployeeManagement.Deductions",
         "EmployeeManagement.DocumentManager",
         "EmployeeManagement.FederalTaxes",
         "EmployeeManagement.HomeAddress",
@@ -2674,8 +2675,7 @@
         "EmployeeManagement.Profile",
         "EmployeeManagement.StateTaxes",
         "EmployeeManagement.WorkAddress",
-        "EmployeeOnboarding.Compensation",
-        "EmployeeOnboarding.Deductions"
+        "EmployeeOnboarding.Compensation"
       ]
     },
     "EmployeeManagement.EmployeeListFlow": {

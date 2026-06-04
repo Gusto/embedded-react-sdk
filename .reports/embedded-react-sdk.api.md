@@ -44,7 +44,6 @@ import { HTMLAttributes } from 'react';
 import { InputHTMLAttributes } from 'react';
 import { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job';
 import { JSX } from 'react';
-import { JSX as JSX_2 } from 'react/jsx-runtime';
 import { JSXElementConstructor } from 'react';
 import { Location as Location_2 } from '@gusto/embedded-api-v-2025-11-15/models/components/location';
 import { MinimumWage } from '@gusto/embedded-api-v-2025-11-15/models/components/minimumwage';
@@ -97,7 +96,7 @@ export type AccountTypeFieldProps = HookFieldProps<RadioGroupHookFieldProps<Bank
 // Warning: (ae-missing-release-tag) "AddEmployeesHoliday" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function AddEmployeesHoliday(props: AddEmployeesHolidayProps): JSX_2.Element;
+function AddEmployeesHoliday(props: AddEmployeesHolidayProps): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "BaseComponentInterface" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "AddEmployeesHolidayProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -111,7 +110,7 @@ interface AddEmployeesHolidayProps extends BaseComponentInterface {
 // Warning: (ae-missing-release-tag) "AddEmployeesToPolicy" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function AddEmployeesToPolicy(props: AddEmployeesToPolicyProps): JSX_2.Element;
+function AddEmployeesToPolicy(props: AddEmployeesToPolicyProps): JSX;
 
 // Warning: (ae-missing-release-tag) "AddEmployeesToPolicyProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -131,7 +130,7 @@ interface AddEmployeesToPolicyProps extends BaseComponentInterface {
 // Warning: (ae-missing-release-tag) "Address" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function Address(props: AddressProps): JSX_2.Element;
+function Address(props: AddressProps): JSX;
 
 // Warning: (ae-missing-release-tag) "AdjustForMinimumWageFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -200,7 +199,7 @@ interface ApiPayrollBlocker {
 }
 
 // @public
-export function ApiProvider(input: ApiProviderProps): JSX_2.Element;
+export function ApiProvider(input: ApiProviderProps): JSX;
 
 // @public
 export interface ApiProviderProps {
@@ -215,7 +214,7 @@ export interface ApiProviderProps {
 // Warning: (ae-missing-release-tag) "AssignSignatory" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function AssignSignatory(props: AssignSignatoryProps): JSX_2.Element;
+function AssignSignatory(props: AssignSignatoryProps): JSX;
 
 // Warning: (ae-missing-release-tag) "BadgeProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -232,7 +231,7 @@ export interface BadgeProps extends Pick<HTMLAttributes<HTMLSpanElement>, 'class
 // Warning: (ae-missing-release-tag) "BankAccount" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function BankAccount(props: BankAccountProps): JSX_2.Element;
+function BankAccount(props: BankAccountProps): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "fieldValidators_8" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "BankFormData" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -681,7 +680,7 @@ declare namespace CompanyOnboarding {
 // Warning: (ae-missing-release-tag) "Compensation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function Compensation_2(props: CompensationProps): JSX_2.Element;
+function Compensation_2(props: CompensationProps): JSX;
 
 // @public (undocumented)
 namespace Compensation_2 {
@@ -1055,6 +1054,16 @@ export const componentEvents: {
     readonly EMPLOYEE_MANAGEMENT_WORK_ADDRESS_UPDATED: "employee/management/workAddress/updated";
     readonly EMPLOYEE_MANAGEMENT_WORK_ADDRESS_DELETED: "employee/management/workAddress/deleted";
     readonly EMPLOYEE_MANAGEMENT_WORK_ADDRESS_EDIT_CANCELLED: "employee/management/workAddress/editCancelled";
+    readonly EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_ADD_REQUESTED: "employee/management/paymentMethod/card/addRequested";
+    readonly EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_SPLIT_REQUESTED: "employee/management/paymentMethod/card/splitRequested";
+    readonly EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_BANK_ACCOUNT_DELETED: "employee/management/paymentMethod/card/bankAccountDeleted";
+    readonly EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_BANK_FORM_SUBMITTED: "employee/management/paymentMethod/bankForm/submitted";
+    readonly EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_BANK_FORM_CANCELLED: "employee/management/paymentMethod/bankForm/cancelled";
+    readonly EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_SPLIT_FORM_SUBMITTED: "employee/management/paymentMethod/splitForm/submitted";
+    readonly EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_SPLIT_FORM_CANCELLED: "employee/management/paymentMethod/splitForm/cancelled";
+    readonly EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_ALERT_DISMISSED: "employee/management/paymentMethod/alertDismissed";
+    readonly EMPLOYEE_MANAGEMENT_PAYSTUBS_CARD_DOWNLOAD_REQUESTED: "employee/management/paystubs/card/downloadRequested";
+    readonly EMPLOYEE_MANAGEMENT_PAYSTUBS_CARD_DOWNLOADED: "employee/management/paystubs/card/downloaded";
     readonly EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_ADD_REQUESTED: "employee/management/deductions/card/addRequested";
     readonly EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_EDIT_REQUESTED: "employee/management/deductions/card/editRequested";
     readonly EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_DELETED: "employee/management/deductions/card/deleted";
@@ -1177,7 +1186,7 @@ export type ConfirmSignatureFieldProps = HookFieldProps<CheckboxHookFieldProps<S
 // Warning: (ae-missing-release-tag) "ConfirmWireDetails" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function ConfirmWireDetails(input: ConfirmWireDetailsInternalProps): JSX_2.Element;
+function ConfirmWireDetails(input: ConfirmWireDetailsInternalProps): JSX;
 
 // Warning: (ae-missing-release-tag) "ConfirmWireDetailsComponentType" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -1218,7 +1227,7 @@ declare namespace Contractor {
 // Warning: (ae-missing-release-tag) "ContractorList" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function ContractorList(props: ContractorListProps & BaseComponentInterface): JSX_2.Element;
+function ContractorList(props: ContractorListProps & BaseComponentInterface): JSX;
 
 declare namespace ContractorOnboarding {
     export {
@@ -1236,13 +1245,13 @@ declare namespace ContractorOnboarding {
 // Warning: (ae-missing-release-tag) "ContractorProfile" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function ContractorProfile(props: ContractorProfileProps & BaseComponentInterface): JSX_2.Element;
+function ContractorProfile(props: ContractorProfileProps & BaseComponentInterface): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "ContractorSubmitProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "ContractorSubmit" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function ContractorSubmit(props: ContractorSubmitProps & BaseComponentInterface): JSX_2.Element;
+function ContractorSubmit(props: ContractorSubmitProps & BaseComponentInterface): JSX;
 
 // Warning: (ae-missing-release-tag) "CountyEntry" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -1403,7 +1412,7 @@ stateWcClassCode: z.ZodString;
 // Warning: (ae-missing-release-tag) "CreatePayment" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function CreatePayment(props: CreatePaymentProps): JSX_2.Element;
+function CreatePayment(props: CreatePaymentProps): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "PaymentMethodFormSchemaOptions" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "createPaymentMethodFormSchema" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -1439,7 +1448,7 @@ day2: z.ZodPipe<z.ZodTransform<number, unknown>, z.ZodNumber>;
 // Warning: (ae-missing-release-tag) "CreateSignatory" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function CreateSignatory(props: CreateSignatoryProps & BaseComponentInterface): JSX_2.Element;
+function CreateSignatory(props: CreateSignatoryProps & BaseComponentInterface): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "SignCompanyFormSchemaOptions" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "createSignCompanyFormSchema" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -1555,7 +1564,7 @@ export type CustomTwicePerMonthFieldProps = HookFieldProps<RadioGroupHookFieldPr
 // Warning: (ae-missing-release-tag) "DashboardFlow" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-const DashboardFlow: (input: DashboardFlowProps) => JSX_2.Element;
+const DashboardFlow: (input: DashboardFlowProps) => JSX;
 
 // Warning: (ae-missing-release-tag) "DashboardFlowProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -1723,17 +1732,17 @@ export type DeductionFormRequiredValidation = typeof DeductionFormErrorCodes.REQ
 // Warning: (ae-missing-release-tag) "Deductions" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function Deductions(input: DeductionsProps): JSX_2.Element;
+function Deductions(input: DeductionsProps): JSX;
 
 // Warning: (ae-missing-release-tag) "Deductions" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function Deductions_2(input: DeductionsProps_2 & BaseComponentInterface<'Employee.Management.Deductions'>): JSX_2.Element;
+function Deductions_2(input: DeductionsProps_2 & BaseComponentInterface<'Employee.Management.Deductions'>): JSX;
 
 // Warning: (ae-missing-release-tag) "DeductionsCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public
-function DeductionsCard(input: DeductionsCardProps): JSX_2.Element;
+function DeductionsCard(input: DeductionsCardProps): JSX;
 
 // Warning: (ae-missing-release-tag) "DeductionsCardProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -1751,7 +1760,7 @@ interface DeductionsCardProps {
 // Warning: (ae-missing-release-tag) "DeductionsEditForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public
-function DeductionsEditForm(input: DeductionsEditFormProps & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX_2.Element;
+function DeductionsEditForm(input: DeductionsEditFormProps & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "CommonComponentInterface" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "DeductionsEditFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -1825,7 +1834,7 @@ export interface DialogProps {
 // Warning: (ae-missing-release-tag) "DismissalFlow" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function DismissalFlow(input: DismissalFlowProps): JSX_2.Element;
+function DismissalFlow(input: DismissalFlowProps): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "FlowContextInterface" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "DismissalFlowContextInterface" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -1858,25 +1867,25 @@ interface DismissalFlowProps {
 // Warning: (ae-missing-release-tag) "DocumentList" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function DocumentList(props: DocumentListProps): JSX_2.Element;
+function DocumentList(props: DocumentListProps): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "DocumentManagerProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "DocumentManager" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function DocumentManager(props: DocumentManagerProps & BaseComponentInterface): JSX_2.Element;
+function DocumentManager(props: DocumentManagerProps & BaseComponentInterface): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "DocumentSignerProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "DocumentSigner" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function DocumentSigner(props: DocumentSignerProps): JSX_2.Element;
+function DocumentSigner(props: DocumentSignerProps): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "DocumentSignerProps_2" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "DocumentSigner" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function DocumentSigner_2(props: DocumentSignerProps_2): JSX_2.Element;
+function DocumentSigner_2(props: DocumentSignerProps_2): JSX;
 
 // Warning: (ae-missing-release-tag) "EffectiveDateFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -2004,18 +2013,18 @@ export interface EmployeeDetailsSubmitCallbacks {
 // Warning: (ae-missing-release-tag) "EmployeeDocuments" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function EmployeeDocuments(props: EmployeeDocumentsProps): JSX_2.Element;
+function EmployeeDocuments(props: EmployeeDocumentsProps): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "EmployeeListProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "EmployeeList" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function EmployeeList(input: EmployeeListProps & BaseComponentInterface): JSX_2.Element;
+function EmployeeList(input: EmployeeListProps & BaseComponentInterface): JSX;
 
 // Warning: (ae-missing-release-tag) "EmployeeListFlow" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-const EmployeeListFlow: (input: EmployeeListFlowProps) => JSX_2.Element;
+const EmployeeListFlow: (input: EmployeeListFlowProps) => JSX;
 
 // Warning: (ae-missing-release-tag) "EmployeeListFlowProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -2057,6 +2066,14 @@ declare namespace EmployeeManagement {
         ProfileEditFormProps,
         PaymentMethod_3 as PaymentMethod,
         PaymentMethodProps_3 as PaymentMethodProps,
+        PaymentMethodCard,
+        PaymentMethodCardProps,
+        PaymentMethodBankForm,
+        PaymentMethodBankFormProps,
+        PaymentMethodSplitForm,
+        PaymentMethodSplitFormProps,
+        PaystubsCard,
+        PaystubsCardProps,
         Deductions_2 as Deductions,
         DeductionsCard,
         DeductionsEditForm,
@@ -2172,7 +2189,7 @@ export interface EmployeeStateTaxesSchemaOptions {
 // Warning: (ae-missing-release-tag) "EmploymentEligibility" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function EmploymentEligibility(props: EmploymentEligibilityProps): JSX_2.Element;
+function EmploymentEligibility(props: EmploymentEligibilityProps): JSX;
 
 // Warning: (ae-missing-release-tag) "EmploymentEligibilityProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -2191,17 +2208,17 @@ export type ExtraWithholdingFieldProps = HookFieldProps<NumberInputHookFieldProp
 // Warning: (ae-missing-release-tag) "FederalTaxes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function FederalTaxes(props: FederalTaxesProps & BaseComponentInterface): JSX_2.Element;
+function FederalTaxes(props: FederalTaxesProps & BaseComponentInterface): JSX;
 
 // Warning: (ae-missing-release-tag) "FederalTaxes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function FederalTaxes_2(input: FederalTaxesProps_2 & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX_2.Element;
+function FederalTaxes_2(input: FederalTaxesProps_2 & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
 
 // Warning: (ae-missing-release-tag) "FederalTaxes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function FederalTaxes_3(input: FederalTaxesProps_3 & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX_2.Element;
+function FederalTaxes_3(input: FederalTaxesProps_3 & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
 
 // Warning: (ae-missing-release-tag) "FederalTaxesErrorCode" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -2392,7 +2409,7 @@ export interface FormFieldsMetadataContextValue {
 // Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "FormFieldsMetadataContext"
 //
 // @internal
-export function FormFieldsMetadataProvider(input: FormFieldsMetadataProviderProps): JSX_2.Element;
+export function FormFieldsMetadataProvider(input: FormFieldsMetadataProviderProps): JSX;
 
 // @public
 export type FormHookResult = {
@@ -2559,7 +2576,7 @@ interface HolidayPolicyDetailPresentationProps {
 // Warning: (ae-missing-release-tag) "HolidaySelectionForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function HolidaySelectionForm(props: HolidaySelectionFormProps): JSX_2.Element;
+function HolidaySelectionForm(props: HolidaySelectionFormProps): JSX;
 
 // Warning: (ae-missing-release-tag) "HolidaySelectionFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -2574,12 +2591,12 @@ interface HolidaySelectionFormProps extends BaseComponentInterface {
 // Warning: (ae-missing-release-tag) "HomeAddress" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function HomeAddress(input: HomeAddressProps & BaseComponentInterface<'Employee.HomeAddress.Management'>): JSX_2.Element;
+function HomeAddress(input: HomeAddressProps & BaseComponentInterface<'Employee.HomeAddress.Management'>): JSX;
 
 // Warning: (ae-missing-release-tag) "HomeAddressCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public
-function HomeAddressCard(input: HomeAddressCardProps): JSX_2.Element;
+function HomeAddressCard(input: HomeAddressCardProps): JSX;
 
 // Warning: (ae-missing-release-tag) "HomeAddressCardProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -2594,7 +2611,7 @@ interface HomeAddressCardProps {
 // Warning: (ae-missing-release-tag) "HomeAddressEditForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function HomeAddressEditForm(input: HomeAddressEditFormProps & BaseComponentInterface): JSX_2.Element;
+function HomeAddressEditForm(input: HomeAddressEditFormProps & BaseComponentInterface): JSX;
 
 // Warning: (ae-missing-release-tag) "HomeAddressEditFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -2717,28 +2734,28 @@ export interface HookSubmitResult<T> {
 // Warning: (ae-missing-release-tag) "Industry" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function Industry<T>(props: IndustryProps<T>): JSX_2.Element;
+function Industry<T>(props: IndustryProps<T>): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "InformationRequestFormProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "InformationRequestForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 // Warning: (ae-missing-release-tag) "InformationRequestForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function InformationRequestForm(props: InformationRequestFormProps): JSX_2.Element;
+function InformationRequestForm(props: InformationRequestFormProps): JSX;
 
 // @public (undocumented)
 namespace InformationRequestForm {
     var // (undocumented)
     Footer: (input: {
         onEvent: OnEventType<EventType, unknown>;
-    }) => JSX_2.Element;
+    }) => JSX;
 }
 
 // Warning: (ae-forgotten-export) The symbol "InformationRequestListProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "InformationRequestList" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function InformationRequestList(props: InformationRequestListProps): JSX_2.Element;
+function InformationRequestList(props: InformationRequestListProps): JSX;
 
 declare namespace InformationRequests {
     export {
@@ -2752,13 +2769,13 @@ declare namespace InformationRequests {
 // Warning: (ae-missing-release-tag) "InformationRequestsFlow" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function InformationRequestsFlow(input: InformationRequestsFlowProps): JSX_2.Element;
+function InformationRequestsFlow(input: InformationRequestsFlowProps): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "InviteSignatoryProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "InviteSignatory" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function InviteSignatory(props: InviteSignatoryProps & BaseComponentInterface): JSX_2.Element;
+function InviteSignatory(props: InviteSignatoryProps & BaseComponentInterface): JSX;
 
 // Warning: (ae-missing-release-tag) "JobErrorCode" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -2844,7 +2861,7 @@ export type JobTitleFieldProps = HookFieldProps<TextInputHookFieldProps<JobRequi
 // Warning: (ae-missing-release-tag) "Landing" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function Landing(props: SummaryProps_2 & BaseComponentInterface): JSX_2.Element;
+function Landing(props: SummaryProps_2 & BaseComponentInterface): JSX;
 
 // Warning: (ae-missing-release-tag) "LastNameFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -2923,19 +2940,19 @@ export type LocationFieldProps = HookFieldProps<SelectHookFieldProps<WorkAddress
 // Warning: (ae-missing-release-tag) "LocationForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function LocationForm(input: LocationFormProps & BaseComponentInterface): JSX_2.Element;
+function LocationForm(input: LocationFormProps & BaseComponentInterface): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "LocationsProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "Locations" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function Locations(input: LocationsProps): JSX_2.Element;
+function Locations(input: LocationsProps): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "ManagementEmployeeListProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "ManagementEmployeeList" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function ManagementEmployeeList(input: ManagementEmployeeListProps & BaseComponentInterface): JSX_2.Element;
+function ManagementEmployeeList(input: ManagementEmployeeListProps & BaseComponentInterface): JSX;
 
 // Warning: (ae-missing-release-tag) "MAX_PREPARERS" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -3010,7 +3027,7 @@ export type NameValidation = (typeof EmployeeDetailsErrorCodes)['REQUIRED' | 'IN
 // Warning: (ae-missing-release-tag) "NewHireReport" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function NewHireReport(props: NewHireReportProps): JSX_2.Element;
+function NewHireReport(props: NewHireReportProps): JSX;
 
 // Warning: (ae-internal-missing-underscore) The name "normalizeToSDKError" should be prefixed with an underscore because the declaration is marked as @internal
 //
@@ -3095,7 +3112,7 @@ export type ObservabilityMetricUnit = 'ms' | 'count' | 'bytes' | 'percent';
 // Warning: (ae-internal-missing-underscore) The name "ObservabilityProvider" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export const ObservabilityProvider: (input: ObservabilityProviderProps) => JSX_2.Element;
+export const ObservabilityProvider: (input: ObservabilityProviderProps) => JSX;
 
 // Warning: (ae-internal-missing-underscore) The name "ObservabilityProviderProps" should be prefixed with an underscore because the declaration is marked as @internal
 //
@@ -3110,7 +3127,7 @@ export interface ObservabilityProviderProps {
 // Warning: (ae-missing-release-tag) "OffCycleCreation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function OffCycleCreation(props: OffCycleCreationProps): JSX_2.Element;
+function OffCycleCreation(props: OffCycleCreationProps): JSX;
 
 // Warning: (ae-missing-release-tag) "OffCycleCreationFormData" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -3139,7 +3156,7 @@ interface OffCycleCreationProps extends BaseComponentInterface<'Payroll.OffCycle
 // Warning: (ae-missing-release-tag) "OffCycleDeductionsSetting" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function OffCycleDeductionsSetting(input: OffCycleDeductionsSettingProps): JSX_2.Element;
+function OffCycleDeductionsSetting(input: OffCycleDeductionsSettingProps): JSX;
 
 // Warning: (ae-missing-release-tag) "OffCycleDeductionsSettingChangePayload" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -3162,7 +3179,7 @@ interface OffCycleDeductionsSettingProps extends CommonComponentInterface<'Payro
 // Warning: (ae-missing-release-tag) "OffCycleFlow" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function OffCycleFlow(input: OffCycleFlowProps): JSX_2.Element;
+function OffCycleFlow(input: OffCycleFlowProps): JSX;
 
 // Warning: (ae-missing-release-tag) "OffCycleFlowContextInterface" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -3231,7 +3248,7 @@ interface OffCycleReasonDefaults {
 // Warning: (ae-missing-release-tag) "OffCycleReasonSelection" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function OffCycleReasonSelection(props: OffCycleReasonSelectionProps): JSX_2.Element;
+function OffCycleReasonSelection(props: OffCycleReasonSelectionProps): JSX;
 
 // Warning: (ae-missing-release-tag) "OffCycleReasonSelectionProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -3244,7 +3261,7 @@ interface OffCycleReasonSelectionProps extends BaseComponentInterface<'Payroll.O
 // Warning: (ae-missing-release-tag) "OnboardingExecutionFlow" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function OnboardingExecutionFlow(input: OnboardingExecutionFlowProps): JSX_2.Element;
+function OnboardingExecutionFlow(input: OnboardingExecutionFlowProps): JSX;
 
 // Warning: (ae-missing-release-tag) "OnboardingExecutionFlowProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -3284,31 +3301,31 @@ type OnboardingExecutionInitialState = keyof typeof INITIAL_COMPONENT_MAP;
 // Warning: (ae-missing-release-tag) "OnboardingFlow" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-const OnboardingFlow: (input: OnboardingFlowProps) => JSX_2.Element;
+const OnboardingFlow: (input: OnboardingFlowProps) => JSX;
 
 // Warning: (ae-forgotten-export) The symbol "OnboardingFlowProps_2" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "OnboardingFlow" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-const OnboardingFlow_2: (input: OnboardingFlowProps_2) => JSX_2.Element;
+const OnboardingFlow_2: (input: OnboardingFlowProps_2) => JSX;
 
 // Warning: (ae-forgotten-export) The symbol "OnboardingFlowProps_3" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "OnboardingFlow" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-const OnboardingFlow_3: (input: OnboardingFlowProps_3) => JSX_2.Element;
+const OnboardingFlow_3: (input: OnboardingFlowProps_3) => JSX;
 
 // Warning: (ae-forgotten-export) The symbol "OnboardingOverviewProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "OnboardingOverview" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function OnboardingOverview(props: OnboardingOverviewProps & BaseComponentInterface): JSX_2.Element;
+function OnboardingOverview(props: OnboardingOverviewProps & BaseComponentInterface): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "SummaryProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "OnboardingSummary" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function OnboardingSummary(props: SummaryProps & BaseComponentInterface): JSX_2.Element;
+function OnboardingSummary(props: SummaryProps & BaseComponentInterface): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "BaseListProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "OrderedListProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -3356,29 +3373,60 @@ export const PAYMENT_METHOD_TYPES: readonly ["Direct Deposit", "Check"];
 // Warning: (ae-missing-release-tag) "PaymentFlow" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-const PaymentFlow: (input: PaymentFlowProps) => JSX_2.Element;
+const PaymentFlow: (input: PaymentFlowProps) => JSX;
 
 // Warning: (ae-forgotten-export) The symbol "PaymentHistoryProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "PaymentHistory" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function PaymentHistory(props: PaymentHistoryProps): JSX_2.Element;
+function PaymentHistory(props: PaymentHistoryProps): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "PaymentMethodProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "PaymentMethod" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function PaymentMethod(props: PaymentMethodProps): JSX_2.Element;
+function PaymentMethod(props: PaymentMethodProps): JSX;
 
 // Warning: (ae-missing-release-tag) "PaymentMethod" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function PaymentMethod_2(input: PaymentMethodProps_2 & BaseComponentInterface): JSX_2.Element;
+function PaymentMethod_2(input: PaymentMethodProps_2 & BaseComponentInterface): JSX;
 
 // Warning: (ae-missing-release-tag) "PaymentMethod" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function PaymentMethod_3(input: PaymentMethodProps_3 & BaseComponentInterface): JSX_2.Element;
+function PaymentMethod_3(input: PaymentMethodProps_3 & BaseComponentInterface<'Employee.Management.PaymentMethod'>): JSX;
+
+// Warning: (ae-missing-release-tag) "PaymentMethodBankForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+function PaymentMethodBankForm(input: PaymentMethodBankFormProps): JSX;
+
+// Warning: (ae-missing-release-tag) "PaymentMethodBankFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+interface PaymentMethodBankFormProps extends Omit<UseBankFormProps, 'employeeId'> {
+    // (undocumented)
+    employeeId: string;
+    // (undocumented)
+    onEvent: OnEventType<EventType, unknown>;
+}
+
+// Warning: (ae-missing-release-tag) "PaymentMethodCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "usePaymentMethodList"
+//
+// @public
+function PaymentMethodCard(input: PaymentMethodCardProps): JSX;
+
+// Warning: (ae-missing-release-tag) "PaymentMethodCardProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+interface PaymentMethodCardProps {
+    // (undocumented)
+    employeeId: string;
+    // (undocumented)
+    onEvent: OnEventType<EventType, unknown>;
+}
 
 // Warning: (ae-forgotten-export) The symbol "fieldValidators_9" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "PaymentMethodFormData" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -3453,7 +3501,7 @@ interface PaymentMethodProps_2 extends CommonComponentInterface<'Employee.Paymen
 // Warning: (ae-missing-release-tag) "PaymentMethodProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-interface PaymentMethodProps_3 extends CommonComponentInterface<'Employee.PaymentMethod'> {
+interface PaymentMethodProps_3 extends CommonComponentInterface<'Employee.Management.PaymentMethod'> {
     // (undocumented)
     defaultValues?: never;
     // (undocumented)
@@ -3462,6 +3510,21 @@ interface PaymentMethodProps_3 extends CommonComponentInterface<'Employee.Paymen
     initialState?: 'list' | 'add' | 'split';
     // (undocumented)
     isAdmin?: boolean;
+    // (undocumented)
+    onEvent: OnEventType<EventType, unknown>;
+}
+
+// Warning: (ae-missing-release-tag) "PaymentMethodSplitForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+function PaymentMethodSplitForm(input: PaymentMethodSplitFormProps): JSX;
+
+// Warning: (ae-missing-release-tag) "PaymentMethodSplitFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+interface PaymentMethodSplitFormProps extends Omit<UseSplitPaymentsFormProps, 'employeeId'> {
+    // (undocumented)
+    employeeId: string;
     // (undocumented)
     onEvent: OnEventType<EventType, unknown>;
 }
@@ -3480,19 +3543,19 @@ export type PaymentPeriodFieldProps = HookFieldProps<SelectHookFieldProps<ChildS
 // Warning: (ae-missing-release-tag) "PaymentsList" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function PaymentsList(props: PaymentsListProps): JSX_2.Element;
+function PaymentsList(props: PaymentsListProps): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "PaymentStatementProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "PaymentStatement" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function PaymentStatement(props: PaymentStatementProps): JSX_2.Element;
+function PaymentStatement(props: PaymentStatementProps): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "PaymentSummaryProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "PaymentSummary" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-const PaymentSummary: (input: PaymentSummaryProps) => JSX_2.Element | null;
+const PaymentSummary: (input: PaymentSummaryProps) => JSX | null;
 
 // Warning: (ae-missing-release-tag) "PaymentUnitFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -3560,24 +3623,24 @@ declare namespace Payroll {
 // Warning: (ae-missing-release-tag) "PayrollBlockerList" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public
-function PayrollBlockerList(props: PayrollBlockerListProps): JSX_2.Element;
+function PayrollBlockerList(props: PayrollBlockerListProps): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "PayrollConfigurationProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "PayrollConfiguration" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function PayrollConfiguration(props: PayrollConfigurationProps & BaseComponentInterface): JSX_2.Element;
+function PayrollConfiguration(props: PayrollConfigurationProps & BaseComponentInterface): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "PayrollEditEmployeeProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "PayrollEditEmployee" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function PayrollEditEmployee(props: PayrollEditEmployeeProps & BaseComponentInterface): JSX_2.Element;
+function PayrollEditEmployee(props: PayrollEditEmployeeProps & BaseComponentInterface): JSX;
 
 // Warning: (ae-missing-release-tag) "PayrollExecutionFlow" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function PayrollExecutionFlow(input: PayrollExecutionFlowProps): JSX_2.Element;
+function PayrollExecutionFlow(input: PayrollExecutionFlowProps): JSX;
 
 // Warning: (ae-missing-release-tag) "PayrollExecutionFlowProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -3614,25 +3677,25 @@ type PayrollExecutionInitialState = 'configuration' | 'overview';
 // Warning: (ae-missing-release-tag) "PayrollFlow" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-const PayrollFlow: (input: PayrollFlowProps) => JSX_2.Element;
+const PayrollFlow: (input: PayrollFlowProps) => JSX;
 
 // Warning: (ae-forgotten-export) The symbol "PayrollHistoryProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "PayrollHistory" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function PayrollHistory(props: PayrollHistoryProps): JSX_2.Element;
+function PayrollHistory(props: PayrollHistoryProps): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "PayrollLandingProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "PayrollLanding" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function PayrollLanding(props: PayrollLandingProps): JSX_2.Element;
+function PayrollLanding(props: PayrollLandingProps): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "PayrollListBlockProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "PayrollList" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public
-function PayrollList(props: PayrollListBlockProps): JSX_2.Element;
+function PayrollList(props: PayrollListBlockProps): JSX;
 
 // Warning: (ae-missing-release-tag) "PayrollLoadingProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -3653,19 +3716,19 @@ type PayrollOption = 'dismissalPayroll' | 'regularPayroll' | 'anotherWay';
 // Warning: (ae-missing-release-tag) "PayrollOverview" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function PayrollOverview(props: PayrollOverviewProps): JSX_2.Element;
+function PayrollOverview(props: PayrollOverviewProps): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "PayrollReceiptsProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "PayrollReceipts" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function PayrollReceipts(props: PayrollReceiptsProps): JSX_2.Element;
+function PayrollReceipts(props: PayrollReceiptsProps): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "PayScheduleProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "PaySchedule" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-const PaySchedule: (input: PayScheduleProps & BaseComponentInterface) => JSX_2.Element;
+const PaySchedule: (input: PayScheduleProps & BaseComponentInterface) => JSX;
 
 // Warning: (ae-missing-release-tag) "PayScheduleErrorCode" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -3725,10 +3788,26 @@ export type PayScheduleOptionalFieldsToRequire = OptionalFieldsToRequire<typeof 
 // @public (undocumented)
 export type PayScheduleRequiredValidation = typeof PayScheduleErrorCodes.REQUIRED;
 
+// Warning: (ae-missing-release-tag) "PaystubsCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-unresolved-link) The @link reference could not be resolved: The package "@gusto/embedded-react-sdk" does not have an export "usePaystubsList"
+//
+// @public
+function PaystubsCard(input: PaystubsCardProps): JSX;
+
+// Warning: (ae-missing-release-tag) "PaystubsCardProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+interface PaystubsCardProps {
+    // (undocumented)
+    employeeId: string;
+    // (undocumented)
+    onEvent: OnEventType<EventType, unknown>;
+}
+
 // Warning: (ae-missing-release-tag) "PolicyConfigurationForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function PolicyConfigurationForm(props: PolicyConfigurationFormProps): JSX_2.Element;
+function PolicyConfigurationForm(props: PolicyConfigurationFormProps): JSX;
 
 // Warning: (ae-missing-release-tag) "PolicyConfigurationFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -3756,7 +3835,7 @@ type PolicyDetails = UnlimitedPolicyDetails | RateBasedPolicyDetails;
 // Warning: (ae-missing-release-tag) "PolicyList" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function PolicyList(input: PolicyListProps): JSX_2.Element;
+function PolicyList(input: PolicyListProps): JSX;
 
 // Warning: (ae-missing-release-tag) "PolicyListProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -3785,7 +3864,7 @@ interface PolicySettingsDisplay {
 // Warning: (ae-missing-release-tag) "PolicySettingsPresentation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function PolicySettingsPresentation(input: PolicySettingsPresentationProps): JSX_2.Element;
+function PolicySettingsPresentation(input: PolicySettingsPresentationProps): JSX;
 
 // Warning: (ae-missing-release-tag) "PolicySettingsPresentationProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -3814,7 +3893,7 @@ interface PolicySettingsPresentationProps {
 // Warning: (ae-missing-release-tag) "PolicyTypeSelector" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function PolicyTypeSelector(props: PolicyTypeSelectorProps): JSX_2.Element;
+function PolicyTypeSelector(props: PolicyTypeSelectorProps): JSX;
 
 // Warning: (ae-missing-release-tag) "PolicyTypeSelectorProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -3868,17 +3947,17 @@ export type PreparerTextFieldProps = HookFieldProps<TextInputHookFieldProps<Sign
 // Warning: (ae-missing-release-tag) "Profile" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function Profile(input: ProfileProps & BaseComponentInterface): JSX_2.Element;
+function Profile(input: ProfileProps & BaseComponentInterface): JSX;
 
 // Warning: (ae-missing-release-tag) "Profile" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function Profile_2(input: ProfileProps_2 & BaseComponentInterface<'Employee.Profile.Management'>): JSX_2.Element;
+function Profile_2(input: ProfileProps_2 & BaseComponentInterface<'Employee.Profile.Management'>): JSX;
 
 // Warning: (ae-missing-release-tag) "ProfileCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public
-function ProfileCard(input: ProfileCardProps): JSX_2.Element;
+function ProfileCard(input: ProfileCardProps): JSX;
 
 // Warning: (ae-missing-release-tag) "ProfileCardProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -3893,7 +3972,7 @@ interface ProfileCardProps {
 // Warning: (ae-missing-release-tag) "ProfileEditForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function ProfileEditForm(input: ProfileEditFormProps & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX_2.Element;
+function ProfileEditForm(input: ProfileEditFormProps & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
 
 // Warning: (ae-missing-release-tag) "ProfileEditFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -3995,7 +4074,7 @@ export type RateValidation = (typeof CompensationErrorCodes)['REQUIRED' | 'RATE_
 // Warning: (ae-missing-release-tag) "RecoveryCases" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function RecoveryCases(input: RecoveryCasesInternalProps): JSX_2.Element;
+function RecoveryCases(input: RecoveryCasesInternalProps): JSX;
 
 // Warning: (ae-missing-release-tag) "RecurringFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -4053,7 +4132,7 @@ export interface SDKFieldError {
 // @public
 export function SDKFormProvider<TFormData extends FieldValues = FieldValues, TFieldsMetadata extends {
     [K in keyof TFieldsMetadata]: FieldMetadata | FieldMetadataWithOptions;
-} = Record<string, FieldMetadata | FieldMetadataWithOptions>>(input: SDKFormProviderProps<TFormData, TFieldsMetadata>): JSX_2.Element;
+} = Record<string, FieldMetadata | FieldMetadataWithOptions>>(input: SDKFormProviderProps<TFormData, TFieldsMetadata>): JSX;
 
 // @public
 export interface SDKHooks {
@@ -4139,7 +4218,7 @@ export type SelfOnboardingFieldProps = HookFieldProps<SwitchHookFieldProps>;
 // Warning: (ae-missing-release-tag) "SelfOnboardingFlow" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-const SelfOnboardingFlow: (input: SelfOnboardingFlowProps) => JSX_2.Element;
+const SelfOnboardingFlow: (input: SelfOnboardingFlowProps) => JSX;
 
 // Warning: (ae-missing-release-tag) "SignatureFieldProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -4150,7 +4229,7 @@ export type SignatureFieldProps = HookFieldProps<TextInputHookFieldProps<SignCom
 // Warning: (ae-missing-release-tag) "SignatureForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function SignatureForm(props: SignatureFormProps): JSX_2.Element;
+function SignatureForm(props: SignatureFormProps): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "fieldValidators_14" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "SignCompanyFormData" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -4440,29 +4519,29 @@ export type StateFieldProps = HookFieldProps<SelectHookFieldProps<HomeAddressReq
 // Warning: (ae-missing-release-tag) "StateTaxes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function StateTaxes(input: StateTaxesProps): JSX_2.Element;
+function StateTaxes(input: StateTaxesProps): JSX;
 
 // Warning: (ae-missing-release-tag) "StateTaxes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function StateTaxes_2(input: StateTaxesProps_2 & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX_2.Element;
+function StateTaxes_2(input: StateTaxesProps_2 & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
 
 // Warning: (ae-missing-release-tag) "StateTaxes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function StateTaxes_3(input: StateTaxesProps_3 & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX_2.Element;
+function StateTaxes_3(input: StateTaxesProps_3 & Pick<BaseComponentInterface, 'FallbackComponent'>): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "StateTaxesFormProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "StateTaxesForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function StateTaxesForm(props: StateTaxesFormProps & BaseComponentInterface): JSX_2.Element;
+function StateTaxesForm(props: StateTaxesFormProps & BaseComponentInterface): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "StateTaxesListProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "StateTaxesList" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function StateTaxesList(props: StateTaxesListProps): JSX_2.Element;
+function StateTaxesList(props: StateTaxesListProps): JSX;
 
 // Warning: (ae-missing-release-tag) "StateTaxesProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -4634,12 +4713,12 @@ export interface TabsProps {
 // Warning: (ae-missing-release-tag) "Taxes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public @deprecated (undocumented)
-function Taxes(props: TaxesProps & BaseComponentInterface): JSX_2.Element;
+function Taxes(props: TaxesProps & BaseComponentInterface): JSX;
 
 // Warning: (ae-missing-release-tag) "TerminateEmployee" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function TerminateEmployee(props: TerminateEmployeeProps): JSX_2.Element;
+function TerminateEmployee(props: TerminateEmployeeProps): JSX;
 
 // Warning: (ae-missing-release-tag) "TerminateEmployeeProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -4654,7 +4733,7 @@ interface TerminateEmployeeProps extends BaseComponentInterface<'Employee.Termin
 // Warning: (ae-missing-release-tag) "TerminationFlow" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-const TerminationFlow: (input: TerminationFlowProps) => JSX_2.Element;
+const TerminationFlow: (input: TerminationFlowProps) => JSX;
 
 // Warning: (ae-missing-release-tag) "TerminationFlowProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -4669,7 +4748,7 @@ interface TerminationFlowProps extends BaseComponentInterface {
 // Warning: (ae-missing-release-tag) "TerminationSummary" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function TerminationSummary(props: TerminationSummaryProps): JSX_2.Element;
+function TerminationSummary(props: TerminationSummaryProps): JSX;
 
 // Warning: (ae-missing-release-tag) "TerminationSummaryProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -4783,7 +4862,7 @@ declare namespace TimeOff {
 // Warning: (ae-missing-release-tag) "TimeOffFlow" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-const TimeOffFlow: (input: TimeOffFlowProps) => JSX_2.Element;
+const TimeOffFlow: (input: TimeOffFlowProps) => JSX;
 
 // Warning: (ae-missing-release-tag) "TimeOffFlowProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -4806,7 +4885,7 @@ interface TimeOffPolicyDetailEmployee extends EmployeeTableItem {
 // Warning: (ae-missing-release-tag) "TimeOffPolicyDetailPresentation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function TimeOffPolicyDetailPresentation(input: TimeOffPolicyDetailPresentationProps): JSX_2.Element;
+function TimeOffPolicyDetailPresentation(input: TimeOffPolicyDetailPresentationProps): JSX;
 
 // Warning: (ae-forgotten-export) The symbol "TimeOffPolicyDetailPresentationBaseProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "TimeOffPolicyDetailPresentationProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -4830,7 +4909,7 @@ export type TotalAmountFieldProps = HookFieldProps<NumberInputHookFieldProps<Ded
 // Warning: (ae-missing-release-tag) "TransitionCreation" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function TransitionCreation(props: TransitionCreationProps): JSX_2.Element;
+function TransitionCreation(props: TransitionCreationProps): JSX;
 
 // Warning: (ae-missing-release-tag) "TransitionCreationFormData" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -4859,7 +4938,7 @@ interface TransitionCreationProps extends BaseComponentInterface<'Payroll.Transi
 // Warning: (ae-missing-release-tag) "TransitionFlow" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function TransitionFlow(input: TransitionFlowProps): JSX_2.Element;
+function TransitionFlow(input: TransitionFlowProps): JSX;
 
 // Warning: (ae-missing-release-tag) "TransitionFlowContextInterface" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -5692,7 +5771,7 @@ export type ValidationMessages<TErrorCode extends string, TOptionalErrorCode ext
 // Warning: (ae-missing-release-tag) "ViewHolidayEmployees" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function ViewHolidayEmployees(props: ViewHolidayEmployeesProps): JSX_2.Element;
+function ViewHolidayEmployees(props: ViewHolidayEmployeesProps): JSX;
 
 // Warning: (ae-missing-release-tag) "ViewHolidayEmployeesProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -5705,7 +5784,7 @@ interface ViewHolidayEmployeesProps extends BaseComponentInterface {
 // Warning: (ae-missing-release-tag) "ViewHolidayPolicyDetails" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function ViewHolidayPolicyDetails(props: ViewHolidayPolicyDetailsProps): JSX_2.Element;
+function ViewHolidayPolicyDetails(props: ViewHolidayPolicyDetailsProps): JSX;
 
 // Warning: (ae-missing-release-tag) "ViewHolidayPolicyDetailsProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -5720,7 +5799,7 @@ interface ViewHolidayPolicyDetailsProps extends BaseComponentInterface {
 // Warning: (ae-missing-release-tag) "ViewHolidaySchedule" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function ViewHolidaySchedule(props: ViewHolidayScheduleProps): JSX_2.Element;
+function ViewHolidaySchedule(props: ViewHolidayScheduleProps): JSX;
 
 // Warning: (ae-missing-release-tag) "ViewHolidayScheduleProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -5741,12 +5820,12 @@ export function withOptions<TEntry = unknown>(base: FieldMetadata, options: Arra
 // Warning: (ae-missing-release-tag) "WorkAddress" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function WorkAddress(input: WorkAddressProps & BaseComponentInterface<'Employee.Management.WorkAddress'>): JSX_2.Element;
+function WorkAddress(input: WorkAddressProps & BaseComponentInterface<'Employee.Management.WorkAddress'>): JSX;
 
 // Warning: (ae-missing-release-tag) "WorkAddressCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public
-function WorkAddressCard(input: WorkAddressCardProps): JSX_2.Element;
+function WorkAddressCard(input: WorkAddressCardProps): JSX;
 
 // Warning: (ae-missing-release-tag) "WorkAddressCardProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -5761,7 +5840,7 @@ interface WorkAddressCardProps {
 // Warning: (ae-missing-release-tag) "WorkAddressEditForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function WorkAddressEditForm(input: WorkAddressEditFormProps & BaseComponentInterface): JSX_2.Element;
+function WorkAddressEditForm(input: WorkAddressEditFormProps & BaseComponentInterface): JSX;
 
 // Warning: (ae-missing-release-tag) "WorkAddressEditFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -5882,7 +5961,7 @@ export type ZipValidation = (typeof HomeAddressErrorCodes)['REQUIRED' | 'INVALID
 
 // Warnings were encountered during analysis:
 //
-// dist/partner-hook-utils/types.d.ts:267:13 - (ae-forgotten-export) The symbol "FieldElementRegistry" needs to be exported by the entry point index.d.ts
+// dist/partner-hook-utils/types.d.ts:268:13 - (ae-forgotten-export) The symbol "FieldElementRegistry" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

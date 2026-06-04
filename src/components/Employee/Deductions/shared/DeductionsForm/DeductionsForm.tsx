@@ -6,11 +6,13 @@ import type {
 } from '@gusto/embedded-api-v-2025-11-15/models/components/garnishment'
 import { StandardDeductionForm } from './StandardDeductionForm'
 import { ChildSupportFormView } from './ChildSupportFormView'
-import type { DeductionsFormDictionary } from './types'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { Grid } from '@/components/Common/Grid/Grid'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentDictionary, useI18n } from '@/i18n'
+import type { ResourceDictionary } from '@/types/Helpers'
+
+export type DeductionsFormDictionary = ResourceDictionary<'Employee.DeductionsForm'>
 
 // Garnishment types the form supports (mirrors the legacy SUPPORTED_GARNISHMENT_TYPES).
 const SUPPORTED_GARNISHMENT_TYPES: readonly GarnishmentType[] = [

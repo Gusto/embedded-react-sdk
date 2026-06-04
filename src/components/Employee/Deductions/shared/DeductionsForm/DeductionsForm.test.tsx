@@ -1,8 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { DeductionsForm } from './DeductionsForm'
-import type { DeductionsFormDictionary } from './types'
+import { DeductionsForm, type DeductionsFormDictionary } from './DeductionsForm'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 

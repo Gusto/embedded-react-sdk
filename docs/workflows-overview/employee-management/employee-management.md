@@ -321,10 +321,10 @@ function MyDeductionsPanel({ employeeId }) {
 
 **Events**
 
-| Event type                                         | Description                                                                | Data                      |
-| -------------------------------------------------- | -------------------------------------------------------------------------- | ------------------------- |
-| EMPLOYEE_MANAGEMENT_DEDUCTIONS_EDIT_FORM_CREATED   | Fired after a new deduction is saved                                       | The created `Garnishment` |
-| EMPLOYEE_MANAGEMENT_DEDUCTIONS_EDIT_FORM_UPDATED   | Fired after an existing deduction is saved                                 | The updated `Garnishment` |
+| Event type                                         | Description                                                                         | Data                      |
+| -------------------------------------------------- | ----------------------------------------------------------------------------------- | ------------------------- |
+| EMPLOYEE_MANAGEMENT_DEDUCTIONS_EDIT_FORM_CREATED   | Fired after a new deduction is saved                                                | The created `Garnishment` |
+| EMPLOYEE_MANAGEMENT_DEDUCTIONS_EDIT_FORM_UPDATED   | Fired after an existing deduction is saved                                          | The updated `Garnishment` |
 | EMPLOYEE_MANAGEMENT_DEDUCTIONS_EDIT_FORM_CANCELLED | Fired when the user clicks Cancel and the orchestrator should swap back to the card | None                      |
 
 ### EmployeeManagement.Profile
