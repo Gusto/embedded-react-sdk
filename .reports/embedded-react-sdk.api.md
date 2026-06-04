@@ -3076,7 +3076,9 @@ export type NumberStateTaxFieldProps = BaseStateTaxFieldProps & {
     FieldComponent?: ComponentType<NumberInputProps>;
 };
 
-// @public
+// Warning: (ae-internal-missing-underscore) The name "ObservabilityContextValue" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
 export interface ObservabilityContextValue {
     observability: ObservabilityHook | undefined;
 }
@@ -3115,10 +3117,14 @@ export interface ObservabilityMetric {
 // @public (undocumented)
 export type ObservabilityMetricUnit = 'ms' | 'count' | 'bytes' | 'percent';
 
-// @public
+// Warning: (ae-internal-missing-underscore) The name "ObservabilityProvider" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
 export const ObservabilityProvider: (input: ObservabilityProviderProps) => JSX_2.Element;
 
-// @public
+// Warning: (ae-internal-missing-underscore) The name "ObservabilityProviderProps" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
 export interface ObservabilityProviderProps {
     // (undocumented)
     children: ReactNode;
@@ -5442,7 +5448,9 @@ export interface UseJobFormReady extends BaseFormHookReady<FieldsMetadata, JobFo
 // @public (undocumented)
 export type UseJobFormResult = HookLoadingResult | UseJobFormReady;
 
-// @public
+// Warning: (ae-internal-missing-underscore) The name "useObservability" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
 export const useObservability: () => ObservabilityContextValue;
 
 // Warning: (ae-missing-release-tag) "usePaymentMethodForm" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
