@@ -1,107 +1,55 @@
-import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { FederalTaxesView } from '../shared/FederalTaxesView'
+import { createMachine } from 'robot3'
+import { useMemo } from 'react'
 import {
-  useFederalTaxesForm,
-  type UseFederalTaxesFormProps,
-  type FederalTaxesFormData,
-} from '../shared/useFederalTaxesForm'
+  FederalTaxesCardContextual,
+  type FederalTaxesContextInterface,
+} from './FederalTaxesComponents'
+import { federalTaxesStateMachine } from './federalTaxesStateMachine'
+import { Flow } from '@/components/Flow/Flow'
 import {
   BaseBoundaries,
-  BaseLayout,
   type BaseComponentInterface,
   type CommonComponentInterface,
 } from '@/components/Base'
-import { ActionsLayout } from '@/components/Common'
-import { useI18n, useComponentDictionary } from '@/i18n'
-import { componentEvents } from '@/shared/constants'
-import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
+import { type EventType } from '@/shared/constants'
+import { useComponentDictionary } from '@/i18n/I18n'
+import { useI18n } from '@/i18n'
+import type { OnEventType } from '@/components/Base/useBase'
 
-export interface FederalTaxesProps extends CommonComponentInterface<'Employee.FederalTaxes'> {
+export interface FederalTaxesProps extends CommonComponentInterface<'Employee.Management.FederalTaxes'> {
   employeeId: string
-  defaultValues?: Partial<FederalTaxesFormData>
-  onEvent: BaseComponentInterface['onEvent']
+  onEvent: OnEventType<EventType, unknown>
+}
+
+function FederalTaxesFlow({ employeeId, onEvent }: FederalTaxesProps) {
+  useI18n('Employee.Management.FederalTaxes')
+
+  const machine = useMemo(
+    () =>
+      createMachine('card', federalTaxesStateMachine, (ctx: FederalTaxesContextInterface) => ({
+        ...ctx,
+        component: FederalTaxesCardContextual,
+        employeeId,
+        successAlert: null,
+      })),
+    [employeeId],
+  )
+
+  return <Flow machine={machine} onEvent={onEvent} />
 }
 
 export function FederalTaxes({
+  dictionary,
   FallbackComponent,
   ...props
-}: FederalTaxesProps & Pick<BaseComponentInterface, 'FallbackComponent'>) {
+}: FederalTaxesProps & BaseComponentInterface<'Employee.Management.FederalTaxes'>) {
+  useComponentDictionary('Employee.Management.FederalTaxes', dictionary)
   return (
-    <BaseBoundaries componentName="Employee.FederalTaxes" FallbackComponent={FallbackComponent}>
-      <FederalTaxesRoot {...props} />
-    </BaseBoundaries>
-  )
-}
-
-function FederalTaxesRoot({
-  employeeId,
-  className,
-  children,
-  dictionary,
-  defaultValues,
-  onEvent,
-}: FederalTaxesProps) {
-  useI18n('Employee.FederalTaxes')
-  useComponentDictionary('Employee.FederalTaxes', dictionary)
-  const { t } = useTranslation('Employee.FederalTaxes')
-  const Components = useComponentContext()
-
-  const federalTaxes = useFederalTaxesForm({
-    employeeId,
-    defaultValues,
-    optionalFieldsToRequire: {
-      update: ['twoJobs', 'dependentsAmount', 'otherIncome', 'deductions', 'extraWithholding'],
-    },
-  } satisfies UseFederalTaxesFormProps)
-
-  const [showSuccess, setShowSuccess] = useState(false)
-
-  if (federalTaxes.isLoading) {
-    return <BaseLayout isLoading error={federalTaxes.errorHandling.errors} />
-  }
-
-  const handleSubmit = async () => {
-    setShowSuccess(false)
-    const result = await federalTaxes.actions.onSubmit()
-    if (!result) return
-
-    onEvent(componentEvents.EMPLOYEE_FEDERAL_TAXES_UPDATED, result.data)
-    setShowSuccess(true)
-  }
-
-  const handleCancel = () => {
-    onEvent(componentEvents.CANCEL)
-  }
-
-  const alert = showSuccess ? (
-    <Components.Alert
-      status="success"
-      label={t('successAlert')}
-      onDismiss={() => {
-        setShowSuccess(false)
-      }}
-    />
-  ) : undefined
-
-  return (
-    <FederalTaxesView
-      federalTaxes={federalTaxes}
-      onSubmit={handleSubmit}
-      alert={alert}
-      actions={
-        <ActionsLayout>
-          <Components.Button variant="secondary" onClick={handleCancel}>
-            {t('cancelCta')}
-          </Components.Button>
-          <Components.Button type="submit" isLoading={federalTaxes.status.isPending}>
-            {t('saveCta')}
-          </Components.Button>
-        </ActionsLayout>
-      }
-      className={className}
+    <BaseBoundaries
+      componentName="Employee.Management.FederalTaxes"
+      FallbackComponent={FallbackComponent}
     >
-      {children}
-    </FederalTaxesView>
+      <FederalTaxesFlow {...props} />
+    </BaseBoundaries>
   )
 }

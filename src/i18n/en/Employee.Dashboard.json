@@ -72,18 +72,6 @@
       }
     }
   },
-  "taxes": {
-    "federal": {
-      "title": "Federal taxes",
-      "editCta": "Edit",
-      "filingStatus": "Filing status",
-      "multipleJobs": "Multiple jobs",
-      "dependentsAndOtherCredits": "Dependents and other credits",
-      "otherIncome": "Other income",
-      "deductions": "Deductions",
-      "extraWithholding": "Extra withholding"
-    }
-  },
   "documents": {
     "title": "Forms",
     "listLabel": "List of employee forms",
@@ -122,6 +110,7 @@
     "jobAdded": "Job successfully added.",
     "profileUpdated": "Profile updated",
     "documentSigned": "Document successfully signed.",
+    "federalTaxesUpdated": "Federal tax settings successfully updated.",
     "stateTaxesUpdated": "Successfully updated state tax settings."
   },
   "compensationFlow": {
