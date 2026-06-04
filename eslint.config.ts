@@ -187,7 +187,7 @@ export default [
       'tsdoc-coverage/require-release-tag': 'error',
     },
   },
-  /** Library: well-documented code */
+  /** Library: well-documented code allowlist. */
   {
     files: [
       'src/components/Base/**/*.{ts,tsx}',

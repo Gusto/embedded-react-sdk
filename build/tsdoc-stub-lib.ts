@@ -17,9 +17,6 @@ import { readFileSync, existsSync } from 'fs'
 
 export const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 
-export const VALID_RELEASE_TAGS = ['alpha', 'beta', 'public', 'internal'] as const
-export type ReleaseTag = (typeof VALID_RELEASE_TAGS)[number]
-
 export const RELEASE_TAG_PATTERN = /@(?:public|beta|alpha|internal)\b/
 
 export interface ExistingComment {
@@ -161,25 +158,10 @@ export function extractInfo(node: Node): SymbolInfo {
   return { typeParams: [], params: [], hasReturn: false }
 }
 
-// ─── Release tag resolution ───────────────────────────────────────────────────
-
-export function resolveReleaseTag(symbolName: string, fallback: ReleaseTag): string {
-  const reportPath = resolve(ROOT, '.reports/embedded-react-sdk.api.md')
-  let report: string
-  try {
-    report = readFileSync(reportPath, 'utf8')
-  } catch {
-    return `@${fallback}`
-  }
-  const marker = `(ae-missing-release-tag) "${symbolName}"`
-  return report.includes(marker) ? '@public' : `@${fallback}`
-}
-
 // ─── Skeleton builder ─────────────────────────────────────────────────────────
 
 export function buildSkeleton(
   { typeParams, params, hasReturn }: SymbolInfo,
-  releaseTag: string,
   summary: string | null = null,
 ): string {
   const tagLines: string[] = []
@@ -193,7 +175,7 @@ export function buildSkeleton(
   if (hasReturn) {
     tagLines.push(' * @returns')
   }
-  tagLines.push(` * ${releaseTag}`)
+  tagLines.push(' * @release')
 
   const summaryLine = summary ? ` * ${summary}` : ' *'
   return ['/**', summaryLine, ...tagLines, ' */'].join('\n')
@@ -267,11 +249,7 @@ export function resolveEventValues(keys: string[]): Map<string, string> {
  * Errors (symbol not found, declaration missing) are thrown so the CLI can
  * decide whether to exit or continue to the next symbol.
  */
-export function processSymbol(
-  symbolName: string,
-  sourceFile: SourceFile,
-  defaultRelease: ReleaseTag,
-): string | null {
+export function processSymbol(symbolName: string, sourceFile: SourceFile): string | null {
   const exportedDecls = sourceFile.getExportedDeclarations()
   const decls = exportedDecls.get(symbolName)
   if (!decls || decls.length === 0) {
@@ -286,9 +264,8 @@ export function processSymbol(
     return null
   }
 
-  const releaseTag = resolveReleaseTag(symbolName, defaultRelease)
   const declarationText = decl.getText()
-  const skeleton = buildSkeleton(info, releaseTag, existingComment?.summary ?? null)
+  const skeleton = buildSkeleton(info, existingComment?.summary ?? null)
 
   let output = existingComment
     ? `LINE:${existingComment.startLine}\nDELETE_THROUGH:${existingComment.endLine}\nOLD_COMMENT:\n${existingComment.text}\n---\n`
