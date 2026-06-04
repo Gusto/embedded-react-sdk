@@ -5,12 +5,20 @@ import { SDKValidationError } from '@gusto/embedded-api-v-2025-11-15/models/erro
 import { getFieldErrors } from '@/helpers/apiErrorToList'
 
 /**
- * High-level classification of where/how the error originated.
+ * Constant map of {@link SDKErrorCategory} string values keyed by uppercase name.
  *
- * - `api_error` — HTTP error response from the Gusto API (422, 404, 409, 500, etc.)
- * - `validation_error` — Client-side Zod schema validation before the request was sent
- * - `network_error` — Network connectivity failure (connection refused, timeout, abort)
- * - `internal_error` — Unexpected runtime error (unhandled exception, initialization failure)
+ * @remarks
+ * Use this when you need to reference a category value by name (e.g.
+ * `SDKErrorCategories.API_ERROR`). Each entry corresponds to one classification:
+ *
+ * | Value | When it applies |
+ * | ----- | --------------- |
+ * | `api_error` | HTTP error response from the Gusto API (422, 404, 409, 500, etc.) |
+ * | `validation_error` | Client-side Zod schema validation before the request was sent |
+ * | `network_error` | Network connectivity failure (connection refused, timeout, abort) |
+ * | `internal_error` | Unexpected runtime error (unhandled exception, initialization failure) |
+ *
+ * @public
  */
 export const SDKErrorCategories = {
   API_ERROR: 'api_error',
@@ -19,6 +27,11 @@ export const SDKErrorCategories = {
   INTERNAL_ERROR: 'internal_error',
 } as const
 
+/**
+ * High-level classification of where an {@link SDKError} originated.
+ *
+ * @public
+ */
 export type SDKErrorCategory = (typeof SDKErrorCategories)[keyof typeof SDKErrorCategories]
 
 /**
@@ -27,6 +40,8 @@ export type SDKErrorCategory = (typeof SDKErrorCategories)[keyof typeof SDKError
  *
  * Use this for guard clauses and data integrity checks inside submit handler
  * callbacks where the error should surface as an inline banner, not a crash.
+ *
+ * @internal
  *
  * @example
  * ```typescript
@@ -51,9 +66,13 @@ export class SDKInternalError extends Error {
 /**
  * A flattened, field-level error extracted from an API response.
  *
- * For API errors with `errors[]`, nested structures are recursively flattened
- * into leaf entries. The `field` property is the dot-separated camelCase path
- * (e.g. `"states.CA.filingStatus.value"`).
+ * @remarks
+ * For API errors with structured field errors (e.g. 422 responses), nested
+ * `errors[]` structures are recursively flattened into one entry per leaf
+ * field. The `field` property is the dot-separated camelCase path
+ * (e.g. `"firstName"`, `"states.CA.filingStatus.value"`).
+ *
+ * @public
  */
 export interface SDKFieldError {
   /** Dot-separated camelCase field path (e.g. "firstName", "states.CA.filingStatus.value") */
@@ -67,15 +86,26 @@ export interface SDKFieldError {
 }
 
 /**
- * The unified SDK error type for all error scenarios.
+ * Unified error shape returned by every form hook and error-handling surface.
  *
- * This is the core error shape exposed through partner-facing hooks. For
- * observability telemetry (which includes component context), see
- * `ObservabilityError` in `@/types/observability`.
+ * @remarks
+ * Every caught error — whether from the Gusto API, client-side Zod validation,
+ * a network failure, or an unexpected runtime exception — is normalized into
+ * this shape. The {@link SDKErrorCategory} `category` field distinguishes
+ * which source produced the error; `fieldErrors` is populated for structured
+ * API responses (typically 422) and is an empty array otherwise.
+ *
+ * Observability telemetry uses {@link ObservabilityError}, which extends this
+ * shape with component context.
+ *
+ * @public
  *
  * @example
  * ```tsx
- * const { error } = useEmployeeForm({ employeeId })
+ * import { useEmployeeForm } from '@gusto/embedded-react-sdk'
+ *
+ * const { errorHandling } = useEmployeeForm({ employeeId })
+ * const error = errorHandling.error
  *
  * if (error) {
  *   console.log(error.category)    // 'api_error'
@@ -211,6 +241,8 @@ function buildApiErrorMessage(fieldErrors: SDKFieldError[], fallbackMessage: str
  * - `SDKValidationError` → `validation_error`
  * - `HTTPClientError` subclasses → `network_error`
  * - Everything else → `internal_error`
+ *
+ * @internal
  */
 export function normalizeToSDKError(error: unknown): SDKError {
   if (error instanceof SDKInternalError) {
