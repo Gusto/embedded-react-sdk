@@ -16,8 +16,10 @@ import {
 import './globals.d.ts'
 import './mockVirtualizers'
 
-// Mock useContainerBreakpoints hook to return mobile breakpoints by default
-const mockUseContainerBreakpoints = vi.fn(() => ['base'])
+// Mock useContainerBreakpoints hook to return all breakpoints (desktop) by default
+// so DataView/table-based components render their table layout without per-test setup.
+// Tests that need the mobile/card layout opt in via mockUseContainerBreakpoints.mockReturnValue(['base']).
+const mockUseContainerBreakpoints = vi.fn(() => ['base', 'small', 'medium', 'large'])
 
 vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', () => ({
   useContainerBreakpoints: mockUseContainerBreakpoints,
@@ -27,9 +29,12 @@ vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', () => ({
 // Export the mock function so tests can configure it
 export { mockUseContainerBreakpoints }
 
-// Reset mocks before each test to allow individual configuration
+// Reset mocks before each test to allow individual configuration. Re-applying the
+// desktop default here (not just mockClear) ensures a test that opts into the mobile
+// layout via mockReturnValue(['base']) doesn't leak that override into later tests.
 beforeEach(() => {
   mockUseContainerBreakpoints.mockClear()
+  mockUseContainerBreakpoints.mockReturnValue(['base', 'small', 'medium', 'large'])
   mockResizeObserver()
   resetPayrollPhase()
 })

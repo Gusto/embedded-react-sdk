@@ -4,7 +4,6 @@ import type * as ReactQuery from '@tanstack/react-query'
 import type * as GustoContext from '@gusto/embedded-api-v-2025-11-15/react-query/_context'
 import { SelectEmployeesTimeOff } from './SelectEmployeesTimeOff'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
-import { mockUseContainerBreakpoints } from '@/test/setup'
 
 // This file exercises the multi-page fetch path in useSelectEmployeesData:
 // - reads x-total-pages from the first page's response headers
@@ -118,7 +117,6 @@ vi.mock('@/components/Base/useBase', () => ({
 describe('useSelectEmployeesData multi-page fetching', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mockUseContainerBreakpoints.mockReturnValue(['base', 'small', 'medium', 'large'])
     mockTotalPages = 1
   })
 

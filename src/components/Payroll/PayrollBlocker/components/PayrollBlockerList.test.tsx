@@ -10,6 +10,7 @@ import { handleGetRecoveryCases } from '@/test/mocks/apis/recovery_cases'
 import { handleGetInformationRequests } from '@/test/mocks/apis/information_requests'
 import { handleGetPayrollBlockers } from '@/test/mocks/apis/payrolls'
 import { recoveryCasesEvents, informationRequestEvents } from '@/shared/constants'
+import { mockUseContainerBreakpoints } from '@/test/setup'
 
 let mockRecoveryCasesOnEvent: ((type: string, data?: unknown) => void) | null = null
 let mockInformationRequestsOnEvent: ((type: string, data?: unknown) => void) | null = null
@@ -52,6 +53,7 @@ const createMockBlocker = (overrides: Record<string, unknown> = {}) => ({
 
 describe('PayrollBlockerList', () => {
   beforeEach(() => {
+    mockUseContainerBreakpoints.mockReturnValue(['base'])
     defaultOnEvent.mockClear()
     mockRecoveryCasesOnEvent = null
     mockInformationRequestsOnEvent = null

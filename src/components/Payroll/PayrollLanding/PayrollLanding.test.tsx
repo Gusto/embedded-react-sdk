@@ -11,21 +11,15 @@ import { API_BASE_URL } from '@/test/constants'
 import { getFixture } from '@/test/mocks/fixtures/getFixture'
 import { handleGetWireInRequests, createWireInRequest } from '@/test/mocks/apis/wire_in_requests'
 
-vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints')
-
 describe('PayrollLanding', () => {
   const defaultProps = {
     companyId: 'test-company-123',
     onEvent: vi.fn(),
   }
 
-  beforeEach(async () => {
+  beforeEach(() => {
     vi.clearAllMocks()
     setupApiTestMocks()
-
-    const { useContainerBreakpoints } =
-      await import('@/hooks/useContainerBreakpoints/useContainerBreakpoints')
-    vi.mocked(useContainerBreakpoints).mockReturnValue(['base', 'small', 'medium'])
   })
 
   describe('rendering', () => {

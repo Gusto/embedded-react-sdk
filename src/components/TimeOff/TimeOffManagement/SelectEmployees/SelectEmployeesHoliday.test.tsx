@@ -4,7 +4,6 @@ import userEvent from '@testing-library/user-event'
 import { SelectEmployeesHoliday } from './SelectEmployeesHoliday'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { componentEvents } from '@/shared/constants'
-import { mockUseContainerBreakpoints } from '@/test/setup'
 
 vi.mock('@/i18n/I18n', () => ({
   useI18n: vi.fn(),
@@ -102,7 +101,6 @@ const SECOND_EMPLOYEE_CHECKBOX = 2
 describe('SelectEmployeesHoliday', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mockUseContainerBreakpoints.mockReturnValue(['base', 'small', 'medium', 'large'])
     mockAddEmployees.mockResolvedValue({
       holidayPayPolicy: { companyUuid: 'company-123', version: 'abc123' },
     })

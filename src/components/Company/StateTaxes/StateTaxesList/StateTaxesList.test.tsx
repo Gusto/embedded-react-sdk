@@ -10,15 +10,6 @@ import { server } from '@/test/mocks/server'
 import { getEmptyAllStateTaxRequirements } from '@/test/mocks/apis/company_state_taxes'
 import { API_BASE_URL } from '@/test/constants'
 
-vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', async () => {
-  const actual = await vi.importActual('@/hooks/useContainerBreakpoints/useContainerBreakpoints')
-  return {
-    ...actual,
-    default: () => ['base', 'small', 'medium'],
-    useContainerBreakpoints: () => ['base', 'small', 'medium'],
-  }
-})
-
 describe('StateTaxesList', () => {
   const onEvent = vi.fn()
   const user = userEvent.setup()

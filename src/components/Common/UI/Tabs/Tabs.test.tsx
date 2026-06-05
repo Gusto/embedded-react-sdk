@@ -5,8 +5,6 @@ import { Tabs } from './Tabs'
 import type { TabProps } from './TabsTypes'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
-vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints')
-
 describe('Tabs', () => {
   const tabs: TabProps[] = [
     { id: 'tab1', label: 'First', content: <div>First content</div> },
@@ -15,12 +13,6 @@ describe('Tabs', () => {
   ]
 
   describe('Desktop mode (horizontal tabs)', () => {
-    beforeEach(async () => {
-      const { useContainerBreakpoints } =
-        await import('@/hooks/useContainerBreakpoints/useContainerBreakpoints')
-      vi.mocked(useContainerBreakpoints).mockReturnValue(['base', 'small', 'medium'])
-    })
-
     it('renders horizontal tabs and shows selected content', async () => {
       const onSelectionChange = vi.fn()
       renderWithProviders(

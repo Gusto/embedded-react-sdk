@@ -4,15 +4,6 @@ import userEvent from '@testing-library/user-event'
 import { IncludeDeductions } from './IncludeDeductions'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 
-vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', async () => {
-  const actual = await vi.importActual('@/hooks/useContainerBreakpoints/useContainerBreakpoints')
-  return {
-    ...actual,
-    default: () => ['base', 'small', 'medium', 'large'],
-    useContainerBreakpoints: () => ['base', 'small', 'medium', 'large'],
-  }
-})
-
 describe('IncludeDeductions', () => {
   const user = userEvent.setup()
 

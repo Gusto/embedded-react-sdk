@@ -9,15 +9,6 @@ import { GustoTestProvider } from '@/test/GustoTestApiProvider'
 import { server } from '@/test/mocks/server'
 import { API_BASE_URL } from '@/test/constants'
 
-vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', async () => {
-  const actual = await vi.importActual('@/hooks/useContainerBreakpoints/useContainerBreakpoints')
-  return {
-    ...actual,
-    default: () => ['base', 'small', 'medium'],
-    useContainerBreakpoints: () => ['base', 'small', 'medium'],
-  }
-})
-
 describe('StateTaxesForm', () => {
   const onEvent = vi.fn()
   const user = userEvent.setup()

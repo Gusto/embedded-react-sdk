@@ -11,15 +11,6 @@ import {
   mockRecoveryCases,
 } from '@/test/mocks/apis/recovery_cases'
 
-vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints', async () => {
-  const actual = await vi.importActual('@/hooks/useContainerBreakpoints/useContainerBreakpoints')
-  return {
-    ...actual,
-    default: () => ['base', 'small', 'medium'],
-    useContainerBreakpoints: () => ['base', 'small', 'medium'],
-  }
-})
-
 describe('RecoveryCasesList', () => {
   const onEvent = vi.fn()
   const defaultProps = {

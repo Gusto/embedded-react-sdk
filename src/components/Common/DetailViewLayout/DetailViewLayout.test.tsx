@@ -1,21 +1,14 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { DetailViewLayout } from './DetailViewLayout'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
-
-vi.mock('@/hooks/useContainerBreakpoints/useContainerBreakpoints')
 
 describe('DetailViewLayout', () => {
   const tabs = [
     { id: 'details', label: 'Details', content: <div>Details tab content</div> },
     { id: 'employees', label: 'Employees', content: <div>Employees tab content</div> },
   ]
-  beforeEach(async () => {
-    const { useContainerBreakpoints } =
-      await import('@/hooks/useContainerBreakpoints/useContainerBreakpoints')
-    vi.mocked(useContainerBreakpoints).mockReturnValue(['base', 'small', 'medium'])
-  })
 
   describe('Rendering', () => {
     it('renders title as a heading', async () => {

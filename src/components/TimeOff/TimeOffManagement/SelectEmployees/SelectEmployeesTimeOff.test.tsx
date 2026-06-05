@@ -6,7 +6,6 @@ import type { CreatableTimeOffPolicyType } from '../../TimeOffFlow/timeOffPolicy
 import { SelectEmployeesTimeOff } from './SelectEmployeesTimeOff'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { componentEvents } from '@/shared/constants'
-import { mockUseContainerBreakpoints } from '@/test/setup'
 
 vi.mock('@/i18n/I18n', () => ({
   useI18n: vi.fn(),
@@ -162,7 +161,6 @@ const SECOND_EMPLOYEE_CHECKBOX = 2
 describe('SelectEmployeesTimeOff', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mockUseContainerBreakpoints.mockReturnValue(['base', 'small', 'medium', 'large'])
     mockAddEmployees.mockResolvedValue({ timeOffPolicy: { uuid: 'policy-456' } })
     mockPolicyEmployees = []
     mockPolicyAccrualMethod = undefined

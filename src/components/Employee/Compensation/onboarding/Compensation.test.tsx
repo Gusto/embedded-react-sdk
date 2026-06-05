@@ -18,9 +18,11 @@ import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { getMinimumWages } from '@/test/mocks/apis/company_locations'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { buildEmployeeWithJobs } from '@/test/factories/jobsAndCompensations'
+import { mockUseContainerBreakpoints } from '@/test/setup'
 
 describe('Compensation', () => {
   beforeEach(() => {
+    mockUseContainerBreakpoints.mockReturnValue(['base'])
     setupApiTestMocks()
     server.use(getMinimumWages)
   })

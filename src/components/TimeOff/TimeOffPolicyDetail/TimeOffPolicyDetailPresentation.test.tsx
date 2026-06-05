@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { TimeOffPolicyDetailPresentation } from './TimeOffPolicyDetailPresentation'
 import type { TimeOffPolicyDetailEmployee, PolicySettingsDisplay } from './TimeOffPolicyDetailTypes'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
+import { mockUseContainerBreakpoints } from '@/test/setup'
 
 const limitedPolicyDetails = {
   policyType: 'vacation' as const,
@@ -71,6 +72,7 @@ describe('TimeOffPolicyDetailPresentation', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
+    mockUseContainerBreakpoints.mockReturnValue(['base'])
   })
 
   function renderComponent(overrides: Record<string, unknown> = {}) {
