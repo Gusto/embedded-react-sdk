@@ -6,7 +6,7 @@ import { DeleteDeductionDialog } from '../../shared/DeleteDeductionDialog'
 import { formatDeductionAmount } from '../../shared/formatDeductionAmount'
 import { DataView, useDataView, EmptyData, Loading } from '@/components/Common'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
-import { BaseLayout } from '@/components/Base/Base'
+import { BaseBoundaries, BaseLayout } from '@/components/Base/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 import { useI18n } from '@/i18n'
@@ -31,7 +31,15 @@ export interface DeductionsCardProps {
  * `DeductionsCardContextual` for standalone consumption, dashboard chrome
  * for dashboard consumption).
  */
-export function DeductionsCard({ employeeId, onEvent }: DeductionsCardProps) {
+export function DeductionsCard(props: DeductionsCardProps) {
+  return (
+    <BaseBoundaries componentName="Employee.Management.Deductions">
+      <DeductionsCardContent {...props} />
+    </BaseBoundaries>
+  )
+}
+
+function DeductionsCardContent({ employeeId, onEvent }: DeductionsCardProps) {
   useI18n('Employee.Management.Deductions')
   const { t } = useTranslation('Employee.Management.Deductions')
   const Components = useComponentContext()

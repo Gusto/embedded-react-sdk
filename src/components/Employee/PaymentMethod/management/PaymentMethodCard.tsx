@@ -9,7 +9,7 @@ import styles from './PaymentMethodCard.module.scss'
 import { DataView, useDataView, Loading } from '@/components/Common'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
-import { BaseLayout } from '@/components/Base/Base'
+import { BaseBoundaries, BaseLayout } from '@/components/Base/Base'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
@@ -33,7 +33,15 @@ export interface PaymentMethodCardProps {
  * `PaymentMethodCardContextual` for standalone consumption; the dashboard
  * chrome for dashboard consumption).
  */
-export function PaymentMethodCard({ employeeId, onEvent }: PaymentMethodCardProps) {
+export function PaymentMethodCard(props: PaymentMethodCardProps) {
+  return (
+    <BaseBoundaries componentName="Employee.Management.PaymentMethod">
+      <PaymentMethodCardContent {...props} />
+    </BaseBoundaries>
+  )
+}
+
+function PaymentMethodCardContent({ employeeId, onEvent }: PaymentMethodCardProps) {
   useI18n('Employee.Management.PaymentMethod')
   const { t } = useTranslation('Employee.Management.PaymentMethod')
   const Components = useComponentContext()

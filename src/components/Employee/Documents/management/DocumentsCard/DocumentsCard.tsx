@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import type { Form } from '@gusto/embedded-api-v-2025-11-15/models/components/form'
 import { useDocumentsList } from '../../shared/useDocumentsList'
 import { DataView, useDataView, EmptyData, Loading } from '@/components/Common'
-import { BaseLayout } from '@/components/Base/Base'
+import { BaseBoundaries, BaseLayout } from '@/components/Base/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 import { componentEvents, type EventType } from '@/shared/constants'
@@ -24,7 +24,15 @@ export interface DocumentsCardProps {
  * `DocumentsCardContextual` for standalone consumption; the dashboard chrome
  * for dashboard consumption).
  */
-export function DocumentsCard({ employeeId, onEvent }: DocumentsCardProps) {
+export function DocumentsCard(props: DocumentsCardProps) {
+  return (
+    <BaseBoundaries componentName="Employee.Management.Documents">
+      <DocumentsCardContent {...props} />
+    </BaseBoundaries>
+  )
+}
+
+function DocumentsCardContent({ employeeId, onEvent }: DocumentsCardProps) {
   useI18n('Employee.Management.Documents')
   const { t } = useTranslation('Employee.Management.Documents')
   const Components = useComponentContext()

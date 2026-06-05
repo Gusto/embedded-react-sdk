@@ -7,7 +7,7 @@ import { TaxesViewWithData } from './TaxesView'
 import { DocumentsCard } from '@/components/Employee/Documents/management/DocumentsCard'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/components/Base/Base'
+import { BaseBoundaries, type BaseComponentInterface } from '@/components/Base/Base'
 import { useComponentDictionary, useI18n } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { firstLastName } from '@/helpers/formattedStrings'
@@ -75,27 +75,19 @@ function DashboardRoot({
 
         <Flex flexDirection="column" gap={24}>
           {selectedTab === 'basicDetails' && (
-            <Suspense fallback={<BaseLayout isLoading />}>
-              <BasicDetailsView employeeId={employeeId} onEvent={onEvent} />
-            </Suspense>
+            <BasicDetailsView employeeId={employeeId} onEvent={onEvent} />
           )}
 
           {selectedTab === 'jobAndPay' && (
-            <Suspense fallback={<BaseLayout isLoading />}>
-              <JobAndPayView employeeId={employeeId} onEvent={onEvent} />
-            </Suspense>
+            <JobAndPayView employeeId={employeeId} onEvent={onEvent} />
           )}
 
           {selectedTab === 'taxes' && (
-            <Suspense fallback={<BaseLayout isLoading />}>
-              <TaxesViewWithData employeeId={employeeId} onEvent={onEvent} />
-            </Suspense>
+            <TaxesViewWithData employeeId={employeeId} onEvent={onEvent} />
           )}
 
           {selectedTab === 'documents' && (
-            <Suspense fallback={<BaseLayout isLoading />}>
-              <DocumentsCard employeeId={employeeId} onEvent={onEvent} />
-            </Suspense>
+            <DocumentsCard employeeId={employeeId} onEvent={onEvent} />
           )}
         </Flex>
       </Flex>
