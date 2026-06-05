@@ -33,7 +33,7 @@ export function ManagementCompensationFormBody({
   isPending,
   onCancel,
 }: ManagementCompensationFormBodyProps) {
-  const { t } = useTranslation('Employee.Compensation')
+  const { t } = useTranslation('Employee.Management.Compensation')
   const Components = useComponentContext()
   const format = useNumberFormatter('currency')
 
@@ -46,14 +46,14 @@ export function ManagementCompensationFormBody({
 
       <Flex flexDirection="column" gap={20}>
         <CompFields.Title
-          label={t('management.jobTitleLabel')}
+          label={t('jobTitleLabel')}
           validationMessages={{ REQUIRED: t('validations.jobTitleSentence') }}
           formHookResult={compensationForm}
         />
 
         {JobFields.HireDate && (
           <JobFields.HireDate
-            label={t('management.hireDateLabel')}
+            label={t('hireDateLabel')}
             validationMessages={{
               REQUIRED: t('validations.hireDate'),
             }}
@@ -193,7 +193,7 @@ export function ManagementCompensationFormBody({
 
         {JobFields.TwoPercentShareholder && (
           <JobFields.TwoPercentShareholder
-            label={t('management.twoPercentShareholderLabel')}
+            label={t('twoPercentShareholderLabel')}
             formHookResult={jobForm}
           />
         )}

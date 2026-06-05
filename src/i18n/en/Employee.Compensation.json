@@ -61,13 +61,6 @@
   "editTitle": "Edit job",
   "addTitle": "Add job",
   "effectiveDateLabel": "Effective date",
-  "management": {
-    "editCompensationTitle": "Edit compensation",
-    "jobTitleLabel": "Job title",
-    "hireDateLabel": "Hire date",
-    "twoPercentShareholderLabel": "This employee is a 2% shareholder",
-    "saveCta": "Save"
-  },
   "validations": {
     "effectiveDate": "Effective date is required",
     "effectiveDateBeforeHire": "Effective date cannot be before the hire date",

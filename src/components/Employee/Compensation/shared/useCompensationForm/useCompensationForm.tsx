@@ -329,7 +329,7 @@ export function useCompensationForm({
 
   const hireDate =
     currentJob?.hireDate ??
-    // Secondary jobs being created (AddAnotherJob) have no hireDate until the
+    // Secondary jobs being created (CompensationAddAnotherJobForm) have no hireDate until the
     // job POST completes. Fall back to the primary job's hireDate so the schema
     // can enforce EFFECTIVE_DATE_BEFORE_HIRE during that window.
     employeeJobs?.find(j => j.primary)?.hireDate ??

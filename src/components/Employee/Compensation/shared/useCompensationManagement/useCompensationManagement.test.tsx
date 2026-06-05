@@ -1,7 +1,7 @@
 import { renderHook, waitFor, act } from '@testing-library/react'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { HttpResponse, type HttpResponseResolver } from 'msw'
-import { useEmployeeCompensation } from './useEmployeeCompensation'
+import { useCompensationManagement } from './useCompensationManagement'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
 import { server } from '@/test/mocks/server'
 import { handleGetEmployee, handleGetEmployeeJobs } from '@/test/mocks/apis/employees'
@@ -64,13 +64,13 @@ const baseComp = (overrides: Partial<Record<string, unknown>> = {}) => ({
   ...overrides,
 })
 
-describe('useEmployeeCompensation', () => {
+describe('useCompensationManagement', () => {
   beforeEach(() => {
     setupApiTestMocks()
   })
 
   it('starts loading with both per-query flags true and resolves to populated data', async () => {
-    const { result } = renderHook(() => useEmployeeCompensation({ employeeId: 'employee-123' }), {
+    const { result } = renderHook(() => useCompensationManagement({ employeeId: 'employee-123' }), {
       wrapper: GustoTestProvider,
     })
 
@@ -92,7 +92,7 @@ describe('useEmployeeCompensation', () => {
       ),
     )
 
-    const { result } = renderHook(() => useEmployeeCompensation({ employeeId: 'employee-123' }), {
+    const { result } = renderHook(() => useCompensationManagement({ employeeId: 'employee-123' }), {
       wrapper: GustoTestProvider,
     })
 
@@ -120,7 +120,7 @@ describe('useEmployeeCompensation', () => {
       ),
     )
 
-    const { result } = renderHook(() => useEmployeeCompensation({ employeeId: 'employee-123' }), {
+    const { result } = renderHook(() => useCompensationManagement({ employeeId: 'employee-123' }), {
       wrapper: GustoTestProvider,
     })
 
@@ -150,7 +150,7 @@ describe('useEmployeeCompensation', () => {
       ),
     )
 
-    const { result } = renderHook(() => useEmployeeCompensation({ employeeId: 'employee-123' }), {
+    const { result } = renderHook(() => useCompensationManagement({ employeeId: 'employee-123' }), {
       wrapper: GustoTestProvider,
     })
 
@@ -188,7 +188,7 @@ describe('useEmployeeCompensation', () => {
     })
     server.use(handleDeleteCompensation(deleteResolver))
 
-    const { result } = renderHook(() => useEmployeeCompensation({ employeeId: 'employee-123' }), {
+    const { result } = renderHook(() => useCompensationManagement({ employeeId: 'employee-123' }), {
       wrapper: GustoTestProvider,
     })
 
@@ -231,7 +231,7 @@ describe('useEmployeeCompensation', () => {
       ),
     )
 
-    const { result } = renderHook(() => useEmployeeCompensation({ employeeId: 'employee-123' }), {
+    const { result } = renderHook(() => useCompensationManagement({ employeeId: 'employee-123' }), {
       wrapper: GustoTestProvider,
     })
 
@@ -258,7 +258,7 @@ describe('useEmployeeCompensation', () => {
       }),
     )
 
-    const { result } = renderHook(() => useEmployeeCompensation({ employeeId: 'employee-123' }), {
+    const { result } = renderHook(() => useCompensationManagement({ employeeId: 'employee-123' }), {
       wrapper: GustoTestProvider,
     })
 

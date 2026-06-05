@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next'
 import { useJobForm } from '../../shared/useJobForm'
 import { useCompensationForm } from '../../shared/useCompensationForm'
 import { AddCompensationFormBody } from '../../shared/AddCompensationFormBody'
-import styles from './AddAnotherJob.module.scss'
+import { useManagementCompensationDictionary } from '../useManagementCompensationDictionary'
+import styles from './CompensationAddAnotherJobForm.module.scss'
 import { BaseBoundaries, BaseLayout, type CommonComponentInterface } from '@/components/Base'
 import type { OnEventType } from '@/components/Base/useBase'
 import { Form } from '@/components/Common/Form'
@@ -13,16 +14,21 @@ import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { composeSubmitHandler } from '@/partner-hook-utils/form/composeSubmitHandler'
 import { componentEvents, type EventType } from '@/shared/constants'
 
-export interface AddAnotherJobProps extends CommonComponentInterface<'Employee.Compensation'> {
+export interface CompensationAddAnotherJobFormProps extends CommonComponentInterface<'Employee.Management.Compensation'> {
   employeeId: string
-  onCancel?: () => void
+  /** Fires `EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_ANOTHER_JOB_FORM_SUBMITTED` (with
+   *  the saved `Compensation`) on a successful save, and
+   *  `EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_ANOTHER_JOB_FORM_CANCELLED` when the user cancels. */
   onEvent: OnEventType<EventType, unknown>
 }
 
-export function AddAnotherJob({ dictionary, ...props }: AddAnotherJobProps) {
-  useComponentDictionary('Employee.Compensation', dictionary)
+export function CompensationAddAnotherJobForm({
+  dictionary,
+  ...props
+}: CompensationAddAnotherJobFormProps) {
+  useComponentDictionary('Employee.Management.Compensation', dictionary)
   return (
-    <BaseBoundaries componentName="Employee.Compensation">
+    <BaseBoundaries componentName="Employee.Management.Compensation">
       <Root {...props} />
     </BaseBoundaries>
   )
@@ -30,12 +36,12 @@ export function AddAnotherJob({ dictionary, ...props }: AddAnotherJobProps) {
 
 function Root({
   employeeId,
-  onCancel,
   className,
   onEvent,
-}: Omit<AddAnotherJobProps, 'dictionary'>) {
-  useI18n('Employee.Compensation')
-  const { t } = useTranslation('Employee.Compensation')
+}: Omit<CompensationAddAnotherJobFormProps, 'dictionary'>) {
+  useI18n('Employee.Management.Compensation')
+  const { t } = useTranslation('Employee.Management.Compensation')
+  const formDictionary = useManagementCompensationDictionary()
 
   // Track jobId locally so a partial-failure submit chain (job POST succeeds,
   // comp PUT fails) doesn't re-POST and create a duplicate job on retry.
@@ -77,8 +83,6 @@ function Root({
     const jobResult = await jobForm.actions.onSubmit({ employeeId, hireDate: primaryHireDate })
     if (!jobResult) return
 
-    onEvent(componentEvents.EMPLOYEE_JOB_CREATED, jobResult.data)
-
     const stubCompensation = jobResult.data.compensations?.find(
       c => c.uuid === jobResult.data.currentCompensationUuid,
     )
@@ -93,7 +97,10 @@ function Root({
       return
     }
 
-    onEvent(componentEvents.EMPLOYEE_COMPENSATION_UPDATED, compensationResult.data)
+    onEvent(
+      componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_ANOTHER_JOB_FORM_SUBMITTED,
+      compensationResult.data,
+    )
   })
 
   const errorHandling = composeErrorHandler([submitResult])
@@ -109,7 +116,12 @@ function Root({
             title={t('addAnotherJobTitle')}
             submitCtaLabel={t('saveNewJobCta')}
             isPending={isPending}
-            onCancel={onCancel}
+            onCancel={() => {
+              onEvent(
+                componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_ANOTHER_JOB_FORM_CANCELLED,
+              )
+            }}
+            dictionary={formDictionary}
           />
         </Form>
       </BaseLayout>
