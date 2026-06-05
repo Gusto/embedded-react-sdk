@@ -104,10 +104,9 @@ jobs:
           find . -type d -empty -not -path './.git*' -delete
           cp -R ../docs-site/build/. .
 
+          # Always commit (even with no file changes) so every publish run
+          # leaves a release-marker in the docs repo's history, matching
+          # 1:1 with the NPM releases that triggered it.
           git add -A
-          if git diff --cached --quiet; then
-            echo "No documentation changes since last publish; nothing to push."
-            exit 0
-          fi
-          git commit -q -m "docs: publish SDK $SDK_VERSION"
+          git commit -q --allow-empty -m "docs: publish SDK $SDK_VERSION"
           git push origin main
