@@ -56,6 +56,18 @@ ruleTester.run('tsdoc-require-member-comment', rule, {
       '/** @public */',
       'export interface AlsoExported {}',
     ].join('\n'),
+
+    // type alias with object body — all members documented
+    `/** @public */\nexport type Foo = {\n  /** documented */\n  x: string\n}`,
+
+    // @internal type alias — members never need docs
+    `/** @internal */\nexport type Foo = {\n  x: string\n}`,
+
+    // type alias that is not an object literal — ignored
+    `/** @public */\nexport type Foo = string | number`,
+
+    // Empty object type alias — nothing to check
+    `/** @public */\nexport type Foo = {}`,
   ],
 
   invalid: [
@@ -107,6 +119,37 @@ ruleTester.run('tsdoc-require-member-comment', rule, {
     // Method signature with no comment
     {
       code: `/** @public */\nexport interface Foo {\n  bar(): void\n}`,
+      errors: [{ messageId: 'missingMemberTSDoc' }],
+    },
+
+    // type alias with object body — undocumented member
+    {
+      code: `/** @public */\nexport type Foo = {\n  x: string\n}`,
+      errors: [{ messageId: 'missingMemberTSDoc' }],
+    },
+
+    // type alias with object body — multiple undocumented members
+    {
+      code: `/** @public */\nexport type Foo = {\n  x: string\n  y: number\n}`,
+      errors: [{ messageId: 'missingMemberTSDoc' }, { messageId: 'missingMemberTSDoc' }],
+    },
+
+    // type alias with object body — one documented, one not
+    {
+      code: [
+        '/** @public */',
+        'export type Foo = {',
+        '  /** documented */',
+        '  x: string',
+        '  y: number',
+        '}',
+      ].join('\n'),
+      errors: [{ messageId: 'missingMemberTSDoc' }],
+    },
+
+    // export { TypeAlias } with undocumented member
+    {
+      code: ['type ExportedLater = {', '  x: string', '}', 'export { ExportedLater }'].join('\n'),
       errors: [{ messageId: 'missingMemberTSDoc' }],
     },
   ],
