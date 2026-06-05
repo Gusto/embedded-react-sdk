@@ -59,7 +59,7 @@ function ProfileEditFormRoot({ employeeId, className, dictionary, onEvent }: Pro
     setShowSuccess(false)
     const result = await employeeDetails.actions.onSubmit({
       onEmployeeUpdated: emp => {
-        onEvent(componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_UPDATED, emp)
+        onEvent(componentEvents.EMPLOYEE_MANAGEMENT_PROFILE_UPDATED, emp)
       },
     })
     if (!result) return
@@ -67,7 +67,7 @@ function ProfileEditFormRoot({ employeeId, className, dictionary, onEvent }: Pro
   }
 
   const handleCancel = () => {
-    onEvent(componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_EDIT_CANCELLED)
+    onEvent(componentEvents.EMPLOYEE_MANAGEMENT_PROFILE_EDIT_CANCELLED)
   }
 
   const alert = showSuccess ? (

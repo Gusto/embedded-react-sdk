@@ -66,7 +66,7 @@ describe('Profile (management block)', () => {
 
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument()
     expect(onEvent).toHaveBeenCalledWith(
-      componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_EDIT_REQUESTED,
+      componentEvents.EMPLOYEE_MANAGEMENT_PROFILE_EDIT_REQUESTED,
       { employeeId: 'employee-123' },
     )
   })
@@ -91,7 +91,7 @@ describe('Profile (management block)', () => {
 
     expect(screen.queryByText('Profile updated')).toBeNull()
     expect(onEvent).toHaveBeenCalledWith(
-      componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_EDIT_CANCELLED,
+      componentEvents.EMPLOYEE_MANAGEMENT_PROFILE_EDIT_CANCELLED,
       undefined,
     )
   })
@@ -134,7 +134,7 @@ describe('Profile (management block)', () => {
 
     expect(screen.getByRole('button', { name: 'Edit' })).toBeInTheDocument()
     expect(onEvent).toHaveBeenCalledWith(
-      componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_UPDATED,
+      componentEvents.EMPLOYEE_MANAGEMENT_PROFILE_UPDATED,
       expect.any(Object),
     )
   })

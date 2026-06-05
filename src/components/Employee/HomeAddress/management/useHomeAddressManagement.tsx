@@ -109,7 +109,7 @@ export function useHomeAddressManagement({
     baseSubmitHandler,
     error: rootSubmitError,
     setError: setRootSubmitError,
-  } = useBaseSubmit('Employee.HomeAddress.Management')
+  } = useBaseSubmit('Employee.Management.HomeAddress')
   const deleteHomeAddressMutation = useEmployeeAddressesDeleteMutation()
 
   const [editTargetUuid, setEditAddressTarget] = useState<string | undefined>(undefined)
@@ -178,7 +178,7 @@ export function useHomeAddressManagement({
         })
         succeeded = true
         if (snap) {
-          onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_MANAGEMENT_DELETED, snap)
+          onEvent(componentEvents.EMPLOYEE_MANAGEMENT_HOME_ADDRESS_DELETED, snap)
         }
       },
     )

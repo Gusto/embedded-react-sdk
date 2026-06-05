@@ -13,13 +13,13 @@ import { useComponentDictionary } from '@/i18n/I18n'
 import { useI18n } from '@/i18n'
 import type { OnEventType } from '@/components/Base/useBase'
 
-export interface HomeAddressProps extends CommonComponentInterface<'Employee.HomeAddress.Management'> {
+export interface HomeAddressProps extends CommonComponentInterface<'Employee.Management.HomeAddress'> {
   employeeId: string
   onEvent: OnEventType<EventType, unknown>
 }
 
 function HomeAddressFlow({ employeeId, onEvent }: HomeAddressProps) {
-  useI18n('Employee.HomeAddress.Management')
+  useI18n('Employee.Management.HomeAddress')
 
   const machine = useMemo(
     () =>
@@ -38,11 +38,11 @@ export function HomeAddress({
   dictionary,
   FallbackComponent,
   ...props
-}: HomeAddressProps & BaseComponentInterface<'Employee.HomeAddress.Management'>) {
-  useComponentDictionary('Employee.HomeAddress.Management', dictionary)
+}: HomeAddressProps & BaseComponentInterface<'Employee.Management.HomeAddress'>) {
+  useComponentDictionary('Employee.Management.HomeAddress', dictionary)
   return (
     <BaseBoundaries
-      componentName="Employee.HomeAddress.Management"
+      componentName="Employee.Management.HomeAddress"
       FallbackComponent={FallbackComponent}
     >
       <HomeAddressFlow {...props} />

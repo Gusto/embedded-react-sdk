@@ -207,7 +207,7 @@ describe('Dashboard', () => {
     expect(screen.getByText('Personal email')).toBeInTheDocument()
   })
 
-  it('emits the scoped EMPLOYEE_PROFILE_MANAGEMENT_EDIT_REQUESTED event when clicking edit basic details', async () => {
+  it('emits the scoped EMPLOYEE_MANAGEMENT_PROFILE_EDIT_REQUESTED event when clicking edit basic details', async () => {
     const user = userEvent.setup()
 
     renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
@@ -217,7 +217,7 @@ describe('Dashboard', () => {
     await user.click(screen.getByRole('button', { name: 'Edit' }))
 
     expect(onEvent).toHaveBeenCalledWith(
-      componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_EDIT_REQUESTED,
+      componentEvents.EMPLOYEE_MANAGEMENT_PROFILE_EDIT_REQUESTED,
       { employeeId: 'employee-123' },
     )
   })
@@ -274,12 +274,12 @@ describe('Dashboard', () => {
 
     expect(screen.getByRole('tab', { name: 'Basic details' })).toBeInTheDocument()
     expect(onEvent).toHaveBeenCalledWith(
-      componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_UPDATED,
+      componentEvents.EMPLOYEE_MANAGEMENT_PROFILE_UPDATED,
       expect.any(Object),
     )
   })
 
-  it('emits the scoped EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_REQUESTED event when clicking manage home address', async () => {
+  it('emits the scoped EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_REQUESTED event when clicking manage home address', async () => {
     const user = userEvent.setup()
 
     renderWithProviders(<Dashboard employeeId="employee-123" onEvent={onEvent} />)
@@ -293,7 +293,7 @@ describe('Dashboard', () => {
     await user.click(within(homeAddressBox).getByRole('button', { name: 'Manage' }))
 
     expect(onEvent).toHaveBeenCalledWith(
-      componentEvents.EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_REQUESTED,
+      componentEvents.EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_REQUESTED,
       { employeeId: 'employee-123' },
     )
   })

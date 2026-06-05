@@ -16,7 +16,7 @@ export interface ProfileContextInterface extends FlowContextInterface {
 
 export function CardContextual() {
   const { employeeId, onEvent, successAlert } = useFlow<ProfileContextInterface>()
-  const { t } = useTranslation('Employee.Profile.Management')
+  const { t } = useTranslation('Employee.Management.Profile')
   const Components = useComponentContext()
   return (
     <Flex flexDirection="column" gap={16}>
@@ -25,7 +25,7 @@ export function CardContextual() {
           status="success"
           label={t(`alerts.${successAlert}`)}
           onDismiss={() => {
-            onEvent(componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_ALERT_DISMISSED, null)
+            onEvent(componentEvents.EMPLOYEE_MANAGEMENT_PROFILE_ALERT_DISMISSED, null)
           }}
         />
       ) : null}

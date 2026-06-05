@@ -84,10 +84,10 @@ The dashboard forwards every event emitted by its card surfaces and edit screens
 
 | Event type                                                   | Description                                                                                       | Data                                                             |
 | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| EMPLOYEE_PROFILE_MANAGEMENT_EDIT_REQUESTED                   | Fired when the "Edit" CTA is clicked on the Basic details card                                    | { employeeId: string }                                           |
-| EMPLOYEE_PROFILE_MANAGEMENT_UPDATED                          | Fired after the basic-details edit form is successfully saved                                     | Updated `Employee` entity                                        |
-| EMPLOYEE_PROFILE_MANAGEMENT_EDIT_CANCELLED                   | Fired when the user clicks Cancel on the basic-details edit form                                  | None                                                             |
-| EMPLOYEE_PROFILE_MANAGEMENT_ALERT_DISMISSED                  | Fired when the user dismisses the in-card "Profile updated" alert (standalone block path)         | None                                                             |
+| EMPLOYEE_MANAGEMENT_PROFILE_EDIT_REQUESTED                   | Fired when the "Edit" CTA is clicked on the Basic details card                                    | { employeeId: string }                                           |
+| EMPLOYEE_MANAGEMENT_PROFILE_UPDATED                          | Fired after the basic-details edit form is successfully saved                                     | Updated `Employee` entity                                        |
+| EMPLOYEE_MANAGEMENT_PROFILE_EDIT_CANCELLED                   | Fired when the user clicks Cancel on the basic-details edit form                                  | None                                                             |
+| EMPLOYEE_MANAGEMENT_PROFILE_ALERT_DISMISSED                  | Fired when the user dismisses the in-card "Profile updated" alert (standalone block path)         | None                                                             |
 | EMPLOYEE_HOME_ADDRESS                                        | Fired when the "Manage" CTA is clicked on the Home address card                                   | { employeeId: string }                                           |
 | EMPLOYEE_MANAGEMENT_WORK_ADDRESS_EDIT_REQUESTED              | Fired when the "Manage" CTA is clicked on the Work address card                                   | { employeeId: string }                                           |
 | EMPLOYEE_MANAGEMENT_WORK_ADDRESS_CREATED                     | Fired after a new work address is added on the work-address edit screen                           | Created `EmployeeWorkAddress` entity                             |
@@ -567,17 +567,17 @@ function MyComponent() {
 | ------------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
 | employeeId Required | string              | The associated employee identifier.                                                                                                  |
 | onEvent Required    | function            | See events table for available events.                                                                                               |
-| dictionary          | object              | Optional translations for component text. Keys are namespaced under `Employee.Profile.Management` — see the source JSON for the set. |
+| dictionary          | object              | Optional translations for component text. Keys are namespaced under `Employee.Management.Profile` — see the source JSON for the set. |
 | FallbackComponent   | React.ComponentType | Optional custom error fallback component used by the internal `BaseBoundaries` wrapper.                                              |
 
 #### Events
 
 | Event type                                  | Description                                                                             | Data                      |
 | ------------------------------------------- | --------------------------------------------------------------------------------------- | ------------------------- |
-| EMPLOYEE_PROFILE_MANAGEMENT_EDIT_REQUESTED  | Fired when the user clicks the "Edit" CTA on the card                                   | { employeeId: string }    |
-| EMPLOYEE_PROFILE_MANAGEMENT_UPDATED         | Fired after the edit form is successfully submitted; the block returns to the card view | Updated `Employee` entity |
-| EMPLOYEE_PROFILE_MANAGEMENT_EDIT_CANCELLED  | Fired when the user clicks Cancel on the edit form; the block returns to the card view  | None                      |
-| EMPLOYEE_PROFILE_MANAGEMENT_ALERT_DISMISSED | Fired when the user dismisses the "Profile updated" success alert above the card        | None                      |
+| EMPLOYEE_MANAGEMENT_PROFILE_EDIT_REQUESTED  | Fired when the user clicks the "Edit" CTA on the card                                   | { employeeId: string }    |
+| EMPLOYEE_MANAGEMENT_PROFILE_UPDATED         | Fired after the edit form is successfully submitted; the block returns to the card view | Updated `Employee` entity |
+| EMPLOYEE_MANAGEMENT_PROFILE_EDIT_CANCELLED  | Fired when the user clicks Cancel on the edit form; the block returns to the card view  | None                      |
+| EMPLOYEE_MANAGEMENT_PROFILE_ALERT_DISMISSED | Fired when the user dismisses the "Profile updated" success alert above the card        | None                      |
 
 #### Composing from EmployeeManagement.ProfileCard and EmployeeManagement.ProfileEditForm directly
 
@@ -598,8 +598,8 @@ function MyBasicDetailsPanel({ employeeId }) {
         employeeId={employeeId}
         onEvent={eventType => {
           if (
-            eventType === componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_UPDATED ||
-            eventType === componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_EDIT_CANCELLED
+            eventType === componentEvents.EMPLOYEE_MANAGEMENT_PROFILE_UPDATED ||
+            eventType === componentEvents.EMPLOYEE_MANAGEMENT_PROFILE_EDIT_CANCELLED
           ) {
             setIsEditing(false)
           }
@@ -612,7 +612,7 @@ function MyBasicDetailsPanel({ employeeId }) {
     <EmployeeManagement.ProfileCard
       employeeId={employeeId}
       onEvent={eventType => {
-        if (eventType === componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_EDIT_REQUESTED) {
+        if (eventType === componentEvents.EMPLOYEE_MANAGEMENT_PROFILE_EDIT_REQUESTED) {
           setIsEditing(true)
         }
       }}
@@ -634,7 +634,7 @@ function MyBasicDetailsPanel({ employeeId }) {
 
 | Event type                                 | Description                                           | Data                   |
 | ------------------------------------------ | ----------------------------------------------------- | ---------------------- |
-| EMPLOYEE_PROFILE_MANAGEMENT_EDIT_REQUESTED | Fired when the user clicks the "Edit" CTA on the card | { employeeId: string } |
+| EMPLOYEE_MANAGEMENT_PROFILE_EDIT_REQUESTED | Fired when the user clicks the "Edit" CTA on the card | { employeeId: string } |
 
 ##### EmployeeManagement.ProfileEditForm
 
@@ -652,8 +652,8 @@ function MyBasicDetailsPanel({ employeeId }) {
 
 | Event type                                 | Description                                         | Data                      |
 | ------------------------------------------ | --------------------------------------------------- | ------------------------- |
-| EMPLOYEE_PROFILE_MANAGEMENT_UPDATED        | Fired after the edit form is successfully submitted | Updated `Employee` entity |
-| EMPLOYEE_PROFILE_MANAGEMENT_EDIT_CANCELLED | Fired when the user clicks Cancel on the edit form  | None                      |
+| EMPLOYEE_MANAGEMENT_PROFILE_UPDATED        | Fired after the edit form is successfully submitted | Updated `Employee` entity |
+| EMPLOYEE_MANAGEMENT_PROFILE_EDIT_CANCELLED | Fired when the user clicks Cancel on the edit form  | None                      |
 
 ### EmployeeManagement.HomeAddress
 
@@ -678,18 +678,18 @@ function MyComponent() {
 | ------------------- | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
 | employeeId Required | string              | The associated employee identifier.                                                                                                      |
 | onEvent Required    | function            | See events table for available events.                                                                                                   |
-| dictionary          | object              | Optional translations for component text. Keys are namespaced under `Employee.HomeAddress.Management` — see the source JSON for the set. |
+| dictionary          | object              | Optional translations for component text. Keys are namespaced under `Employee.Management.HomeAddress` — see the source JSON for the set. |
 | FallbackComponent   | React.ComponentType | Optional custom error fallback component used by the internal `BaseBoundaries` wrapper.                                                  |
 
 #### Events
 
 | Event type                                      | Description                                                                                   | Data                             |
 | ----------------------------------------------- | --------------------------------------------------------------------------------------------- | -------------------------------- |
-| EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_REQUESTED | Fired when the user clicks the "Manage" CTA on the card; the block swaps to the manage screen | { employeeId: string }           |
-| EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_CANCELLED | Fired when the user clicks Back on the manage screen; the block returns to the card view      | None                             |
-| EMPLOYEE_HOME_ADDRESS_MANAGEMENT_CREATED        | Fired after a new home address is successfully created from the manage screen                 | Created `EmployeeAddress` entity |
-| EMPLOYEE_HOME_ADDRESS_MANAGEMENT_UPDATED        | Fired after an existing home address is successfully updated from the manage screen           | Updated `EmployeeAddress` entity |
-| EMPLOYEE_HOME_ADDRESS_MANAGEMENT_DELETED        | Fired after a non-active home address is successfully deleted from the manage screen          | Deleted `EmployeeAddress` entity |
+| EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_REQUESTED | Fired when the user clicks the "Manage" CTA on the card; the block swaps to the manage screen | { employeeId: string }           |
+| EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_CANCELLED | Fired when the user clicks Back on the manage screen; the block returns to the card view      | None                             |
+| EMPLOYEE_MANAGEMENT_HOME_ADDRESS_CREATED        | Fired after a new home address is successfully created from the manage screen                 | Created `EmployeeAddress` entity |
+| EMPLOYEE_MANAGEMENT_HOME_ADDRESS_UPDATED        | Fired after an existing home address is successfully updated from the manage screen           | Updated `EmployeeAddress` entity |
+| EMPLOYEE_MANAGEMENT_HOME_ADDRESS_DELETED        | Fired after a non-active home address is successfully deleted from the manage screen          | Deleted `EmployeeAddress` entity |
 
 #### Composing from EmployeeManagement.HomeAddressCard and EmployeeManagement.HomeAddressEditForm directly
 
@@ -709,7 +709,7 @@ function MyHomeAddressPanel({ employeeId }) {
       <EmployeeManagement.HomeAddressEditForm
         employeeId={employeeId}
         onEvent={eventType => {
-          if (eventType === componentEvents.EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_CANCELLED) {
+          if (eventType === componentEvents.EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_CANCELLED) {
             setIsEditing(false)
           }
         }}
@@ -721,7 +721,7 @@ function MyHomeAddressPanel({ employeeId }) {
     <EmployeeManagement.HomeAddressCard
       employeeId={employeeId}
       onEvent={eventType => {
-        if (eventType === componentEvents.EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_REQUESTED) {
+        if (eventType === componentEvents.EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_REQUESTED) {
           setIsEditing(true)
         }
       }}
@@ -743,7 +743,7 @@ function MyHomeAddressPanel({ employeeId }) {
 
 | Event type                                      | Description                                             | Data                   |
 | ----------------------------------------------- | ------------------------------------------------------- | ---------------------- |
-| EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_REQUESTED | Fired when the user clicks the "Manage" CTA on the card | { employeeId: string } |
+| EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_REQUESTED | Fired when the user clicks the "Manage" CTA on the card | { employeeId: string } |
 
 ##### EmployeeManagement.HomeAddressEditForm
 
@@ -754,17 +754,17 @@ function MyHomeAddressPanel({ employeeId }) {
 | employeeId Required | string              | The associated employee identifier.                                                                                                      |
 | onEvent Required    | function            | See events table for available events.                                                                                                   |
 | className           | string              | Optional class applied to the form's root section element.                                                                               |
-| dictionary          | object              | Optional translations for component text. Keys are namespaced under `Employee.HomeAddress.Management` — see the source JSON for the set. |
+| dictionary          | object              | Optional translations for component text. Keys are namespaced under `Employee.Management.HomeAddress` — see the source JSON for the set. |
 | FallbackComponent   | React.ComponentType | Optional custom error fallback component used by the internal `BaseBoundaries` wrapper.                                                  |
 
 **Events**
 
 | Event type                                      | Description                                                   | Data                             |
 | ----------------------------------------------- | ------------------------------------------------------------- | -------------------------------- |
-| EMPLOYEE_HOME_ADDRESS_MANAGEMENT_CREATED        | Fired after a new home address is successfully created        | Created `EmployeeAddress` entity |
-| EMPLOYEE_HOME_ADDRESS_MANAGEMENT_UPDATED        | Fired after an existing home address is successfully updated  | Updated `EmployeeAddress` entity |
-| EMPLOYEE_HOME_ADDRESS_MANAGEMENT_DELETED        | Fired after a non-active home address is successfully deleted | Deleted `EmployeeAddress` entity |
-| EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_CANCELLED | Fired when the user clicks Back on the manage screen          | None                             |
+| EMPLOYEE_MANAGEMENT_HOME_ADDRESS_CREATED        | Fired after a new home address is successfully created        | Created `EmployeeAddress` entity |
+| EMPLOYEE_MANAGEMENT_HOME_ADDRESS_UPDATED        | Fired after an existing home address is successfully updated  | Updated `EmployeeAddress` entity |
+| EMPLOYEE_MANAGEMENT_HOME_ADDRESS_DELETED        | Fired after a non-active home address is successfully deleted | Deleted `EmployeeAddress` entity |
+| EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_CANCELLED | Fired when the user clicks Back on the manage screen          | None                             |
 
 ### EmployeeManagement.WorkAddress
 
