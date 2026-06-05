@@ -192,6 +192,7 @@ export default [
       'src/components/Common/UI/**/*.{ts,tsx}',
       'src/components/Flow/**/*.{ts,tsx}',
       'src/contexts/ApiProvider/**/*.{ts,tsx}',
+      'src/contexts/ComponentAdapter/**/*.{ts,tsx}',
       'src/contexts/LocaleProvider/**/*.{ts,tsx}',
       'src/contexts/LoadingIndicatorProvider/**/*.{ts,tsx}',
       'src/contexts/ObservabilityProvider/**/*.{ts,tsx}',

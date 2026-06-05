@@ -38,6 +38,61 @@ import type { BoxHeaderProps } from '@/components/Common/UI/BoxHeader/BoxHeaderT
 import type { MultiSelectComboBoxProps } from '@/components/Common/UI/MultiSelectComboBox/MultiSelectComboBoxTypes'
 import type { PayrollLoadingProps } from '@/components/Common/PayrollLoading/PayrollLoadingTypes'
 
+/**
+ * Full map of UI components used by the SDK. Every property is a React component that the
+ * SDK renders internally — override any of them to substitute your own design system.
+ *
+ * Pass a `Partial<ComponentsContextType>` to `GustoProvider` via the `components` prop to
+ * replace specific components while keeping SDK defaults for the rest.
+ *
+ * To take full control of every UI component (and eliminate the React Aria dependency),
+ * pass a complete `ComponentsContextType` to `GustoProviderCustomUIAdapter` instead.
+ * All properties are then required except `PaginationControl` and `PayrollLoading`,
+ * which fall back to built-in SDK implementations when omitted.
+ *
+ * @public
+ *
+ * @example Partial override with GustoProvider
+ * ```tsx
+ * import { GustoProvider } from '@gusto/embedded-react-sdk'
+ *
+ * function App() {
+ *   return (
+ *     <GustoProvider
+ *       config={{ baseUrl: '/api/gusto/' }}
+ *       components={{
+ *         Button: MyButton,
+ *         TextInput: MyTextInput,
+ *       }}
+ *     >
+ *       <EmployeeOnboardingFlow companyId="company_123" />
+ *     </GustoProvider>
+ *   )
+ * }
+ * ```
+ *
+ * @example Full replacement with GustoProviderCustomUIAdapter
+ * ```tsx
+ * import { GustoProviderCustomUIAdapter, type ComponentsContextType } from '@gusto/embedded-react-sdk'
+ *
+ * const myComponents: ComponentsContextType = {
+ *   Alert: props => <MyAlert {...props} />,
+ *   Button: props => <MyButton {...props} />,
+ *   // ... all required components
+ * }
+ *
+ * function App() {
+ *   return (
+ *     <GustoProviderCustomUIAdapter
+ *       config={{ baseUrl: '/api/gusto/' }}
+ *       components={myComponents}
+ *     >
+ *       <EmployeeOnboardingFlow companyId="company_123" />
+ *     </GustoProviderCustomUIAdapter>
+ *   )
+ * }
+ * ```
+ */
 export interface ComponentsContextType {
   /** Status message with an optional dismiss action; used for errors, warnings, success, and info. */
   Alert: (props: AlertProps) => JSX.Element | null
@@ -119,8 +174,11 @@ export interface ComponentsContextType {
   /** Loading indicator for payroll calculation. Defaults to the SDK's built-in loading state when omitted. */
   PayrollLoading?: (props: PayrollLoadingProps) => JSX.Element | null
 }
+
+/** @internal */
 export const ComponentsContext = createContext<ComponentsContextType | null>(null)
 
+/** @internal */
 export const useComponentContext = () => {
   const context = useContext(ComponentsContext)
   if (!context) {

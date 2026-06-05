@@ -75,6 +75,7 @@ import { DescriptionList } from '@/components/Common/UI/DescriptionList'
 import type { FileInputProps } from '@/components/Common/UI/FileInput/FileInputTypes'
 import { FileInput } from '@/components/Common/UI/FileInput'
 
+/** @internal */
 export const defaultComponents: ComponentsContextType = {
   Alert: (props: AlertProps) => <Alert {...props} />,
   Badge: (props: BadgeProps) => <Badge {...props} />,

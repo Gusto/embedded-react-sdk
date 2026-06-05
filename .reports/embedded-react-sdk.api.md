@@ -1047,8 +1047,6 @@ export const componentEvents: {
     readonly BREADCRUMB_NAVIGATE: "breadcrumb/navigate";
 };
 
-// Warning: (ae-missing-release-tag) "ComponentsContextType" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export interface ComponentsContextType {
     Alert: (props: AlertProps) => JSX.Element | null;
