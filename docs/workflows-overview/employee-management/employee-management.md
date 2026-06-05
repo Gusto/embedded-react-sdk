@@ -80,42 +80,66 @@ function MyApp() {
 
 #### Events
 
-The dashboard forwards every event emitted by its card surfaces and edit screens to the partner via `onEvent`. The events below are the partner-visible surface; the dashboard's internal state machine also reacts to them to swap between card and edit views.
+The dashboard composes self-fetching cards and their edit forms and forwards every event they emit to the partner via `onEvent`; its internal state machine also reacts to a subset of these events to swap between the cards and edit screens and to surface success alerts. The table below is the complete, current set of events observable from `<EmployeeManagement.DashboardFlow>`, grouped by the tab that emits them.
 
-| Event type                                                   | Description                                                                                       | Data                                                             |
-| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| EMPLOYEE_PROFILE_MANAGEMENT_EDIT_REQUESTED                   | Fired when the "Edit" CTA is clicked on the Basic details card                                    | { employeeId: string }                                           |
-| EMPLOYEE_PROFILE_MANAGEMENT_UPDATED                          | Fired after the basic-details edit form is successfully saved                                     | Updated `Employee` entity                                        |
-| EMPLOYEE_PROFILE_MANAGEMENT_EDIT_CANCELLED                   | Fired when the user clicks Cancel on the basic-details edit form                                  | None                                                             |
-| EMPLOYEE_PROFILE_MANAGEMENT_ALERT_DISMISSED                  | Fired when the user dismisses the in-card "Profile updated" alert (standalone block path)         | None                                                             |
-| EMPLOYEE_HOME_ADDRESS                                        | Fired when the "Manage" CTA is clicked on the Home address card                                   | { employeeId: string }                                           |
-| EMPLOYEE_MANAGEMENT_WORK_ADDRESS_EDIT_REQUESTED              | Fired when the "Manage" CTA is clicked on the Work address card                                   | { employeeId: string }                                           |
-| EMPLOYEE_MANAGEMENT_WORK_ADDRESS_CREATED                     | Fired after a new work address is added on the work-address edit screen                           | Created `EmployeeWorkAddress` entity                             |
-| EMPLOYEE_MANAGEMENT_WORK_ADDRESS_UPDATED                     | Fired after a work address is updated on the work-address edit screen                             | Updated `EmployeeWorkAddress` entity                             |
-| EMPLOYEE_MANAGEMENT_WORK_ADDRESS_DELETED                     | Fired after a work address is deleted on the work-address edit screen                             | Deleted `EmployeeWorkAddress` entity                             |
-| EMPLOYEE_COMPENSATION_CREATE                                 | Fired when the "Edit" CTA is clicked for an existing job (single- or multi-job views)             | { employeeId: string, job: Job }                                 |
-| EMPLOYEE_JOB_ADD                                             | Fired when the "Add job" / "Add another job" CTA is clicked                                       | { employeeId: string }                                           |
-| EMPLOYEE_JOB_ADD_ANOTHER                                     | Fired when "Add another job" is selected in the multi-job view                                    | { employeeId: string }                                           |
-| EMPLOYEE_JOB_DELETED                                         | Fired after a non-primary job is deleted from the multi-job table                                 | Response from the Delete a job endpoint                          |
-| EMPLOYEE_COMPENSATION_UPDATED                                | Fired after an Add / Add-another-job submission succeeds; surfaces the "Job added" alert          | Response from the Update a compensation endpoint                 |
-| EMPLOYEE_COMPENSATION_DONE                                   | Fired after an Edit-compensation submission succeeds                                              | None                                                             |
-| EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_ADD_REQUESTED        | Fired when the "Add bank account" / "Add another bank account" CTA is clicked on the Payment card | None                                                             |
-| EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_BANK_FORM_SUBMITTED       | Fired after a bank account is successfully created; surfaces the "Bank account added" alert       | Response from the Create a bank account endpoint                 |
-| EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_BANK_ACCOUNT_DELETED | Fired after a bank account is deleted; surfaces the "Bank account deleted" alert                  | Response from the Delete a bank account endpoint                 |
-| EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_SPLIT_REQUESTED      | Fired when the "Split paycheck" CTA is clicked on the Payment card                                | None                                                             |
-| EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_SPLIT_FORM_SUBMITTED      | Fired after a split-paycheck save succeeds; surfaces the "Split updated" alert                    | Response from the Update payment method endpoint                 |
-| EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_ADD_REQUESTED            | Fired when the "Add deduction" CTA is clicked on the Deductions card                              | { employeeId: string }                                           |
-| EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_EDIT_REQUESTED           | Fired when a row's "Edit" menu item is chosen on the Deductions card                              | The `Garnishment` row being edited                               |
-| EMPLOYEE_MANAGEMENT_DEDUCTIONS_EDIT_FORM_CREATED             | Fired after a new deduction is created; surfaces the "Deduction added" alert                      | The created `Garnishment`                                        |
-| EMPLOYEE_MANAGEMENT_DEDUCTIONS_EDIT_FORM_UPDATED             | Fired after a deduction is updated; surfaces the "Deduction updated" alert                        | The updated `Garnishment`                                        |
-| EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_DELETED                  | Fired after the soft-delete dialog is confirmed; surfaces the "Deduction deleted" alert           | The now-inactive `Garnishment`                                   |
-| EMPLOYEE_FEDERAL_TAXES_EDIT                                  | Fired when the "Edit" CTA is clicked on the Federal taxes card                                    | { employeeId: string, federalTaxes: EmployeeFederalTax }         |
-| EMPLOYEE_FEDERAL_TAXES_DONE                                  | Fired after a federal-taxes save succeeds (from inside the dashboard's edit sub-flow)             | None                                                             |
-| EMPLOYEE_STATE_TAXES_EDIT                                    | Fired when the "Edit" CTA is clicked on a per-state State taxes card                              | { employeeId: string, state: string }                            |
-| EMPLOYEE_VIEW_FORM_TO_SIGN                                   | Fired when a document row's "View" CTA is clicked                                                 | { employeeId: string, formId: string }                           |
-| EMPLOYEE_DASHBOARD_TAB_CHANGE                                | Fired when the user switches dashboard tabs                                                       | { tab: 'basicDetails' \| 'jobAndPay' \| 'taxes' \| 'documents' } |
-| EMPLOYEE_DISMISS                                             | Fired when the user dismisses the top-of-dashboard success alert                                  | None                                                             |
-| CANCEL                                                       | Fired when the user cancels an in-flight edit and returns to the card view                        | None                                                             |
+<!--
+  Profile and Home address events are documented under their canonical names
+  (EMPLOYEE_MANAGEMENT_PROFILE_* / EMPLOYEE_MANAGEMENT_HOME_ADDRESS_*). These
+  assume the in-flight canonical-alignment PR that renames the current code
+  constants (EMPLOYEE_PROFILE_MANAGEMENT_* / EMPLOYEE_HOME_ADDRESS_MANAGEMENT_*).
+-->
+
+| Event type                                                      | Description                                                                                                                   | Data                                                             |
+| --------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| EMPLOYEE_MANAGEMENT_PROFILE_EDIT_REQUESTED                      | Fired when "Edit" is clicked on the Basic details (Profile) card                                                              | { employeeId: string }                                           |
+| EMPLOYEE_MANAGEMENT_PROFILE_UPDATED                             | Fired after the basic-details edit form is saved; the dashboard returns to the cards and surfaces the "Profile updated" alert | Updated `Employee` entity                                        |
+| EMPLOYEE_MANAGEMENT_PROFILE_EDIT_CANCELLED                      | Fired when the user clicks Cancel on the basic-details edit form; the dashboard returns to the cards                          | None                                                             |
+| EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_REQUESTED                 | Fired when "Manage" is clicked on the Home address card                                                                       | { employeeId: string }                                           |
+| EMPLOYEE_MANAGEMENT_HOME_ADDRESS_CREATED                        | Fired after a new home address is created on the manage screen; the manage screen stays open                                  | Created `EmployeeAddress` entity                                 |
+| EMPLOYEE_MANAGEMENT_HOME_ADDRESS_UPDATED                        | Fired after a home address is updated on the manage screen; the manage screen stays open                                      | Updated `EmployeeAddress` entity                                 |
+| EMPLOYEE_MANAGEMENT_HOME_ADDRESS_DELETED                        | Fired after a non-active home address is deleted on the manage screen; the manage screen stays open                           | Deleted `EmployeeAddress` entity                                 |
+| EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_CANCELLED                 | Fired when the user clicks Back on the manage screen; the dashboard returns to the cards                                      | None                                                             |
+| EMPLOYEE_MANAGEMENT_WORK_ADDRESS_EDIT_REQUESTED                 | Fired when "Manage" is clicked on the Work address card                                                                       | { employeeId: string }                                           |
+| EMPLOYEE_MANAGEMENT_WORK_ADDRESS_CREATED                        | Fired after a new work address is created on the manage screen; the manage screen stays open                                  | Created `EmployeeWorkAddress` entity                             |
+| EMPLOYEE_MANAGEMENT_WORK_ADDRESS_UPDATED                        | Fired after a work address is updated on the manage screen; the manage screen stays open                                      | Updated `EmployeeWorkAddress` entity                             |
+| EMPLOYEE_MANAGEMENT_WORK_ADDRESS_DELETED                        | Fired after a work address is deleted on the manage screen; the manage screen stays open                                      | Deleted `EmployeeWorkAddress` entity                             |
+| EMPLOYEE_MANAGEMENT_WORK_ADDRESS_EDIT_CANCELLED                 | Fired when the user clicks Back on the manage screen; the dashboard returns to the cards                                      | None                                                             |
+| EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_EDIT_REQUESTED            | Fired when an "Edit" CTA is clicked for a job on the Compensation card                                                        | { employeeId: string, jobId: string }                            |
+| EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_ADD_REQUESTED             | Fired when "Add job" is clicked from the Compensation card's empty state                                                      | { employeeId: string }                                           |
+| EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_ADD_ANOTHER_REQUESTED     | Fired when "Add another job" is clicked on the Compensation card                                                              | { employeeId: string }                                           |
+| EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_JOB_DELETED               | Fired after a non-primary job is deleted via the card's confirm dialog                                                        | { employeeId: string, jobId: string }                            |
+| EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_CHANGE_CANCELLED          | Fired after a scheduled future-dated change is cancelled from the card                                                        | { employeeId: string, compensationId: string }                   |
+| EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_SUBMITTED            | Fired after an edit-compensation save completes; the dashboard returns to the cards                                           | Updated `Compensation` entity                                    |
+| EMPLOYEE_MANAGEMENT_COMPENSATION_EDIT_FORM_CANCELLED            | Fired when the user cancels the edit-compensation form; the dashboard returns to the cards                                    | None                                                             |
+| EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_JOB_FORM_SUBMITTED         | Fired after the first job and compensation are saved; the dashboard returns to the cards and surfaces the "Job added" alert   | Updated `Compensation` entity                                    |
+| EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_JOB_FORM_CANCELLED         | Fired when the user cancels the add-job form; the dashboard returns to the cards                                              | None                                                             |
+| EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_ANOTHER_JOB_FORM_SUBMITTED | Fired after a secondary job and compensation are saved; the dashboard returns to the cards and surfaces the "Job added" alert | Updated `Compensation` entity                                    |
+| EMPLOYEE_MANAGEMENT_COMPENSATION_ADD_ANOTHER_JOB_FORM_CANCELLED | Fired when the user cancels the add-another-job form; the dashboard returns to the cards                                      | None                                                             |
+| EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_ADD_REQUESTED           | Fired when "Add bank account" / "Add another bank account" is clicked on the Payment card                                     | None                                                             |
+| EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_SPLIT_REQUESTED         | Fired when "Split paycheck" is clicked on the Payment card                                                                    | None                                                             |
+| EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_BANK_ACCOUNT_DELETED    | Fired after a bank account is deleted from the card; the dashboard surfaces the "Bank account deleted" alert                  | Response from the Delete a bank account endpoint                 |
+| EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_BANK_FORM_SUBMITTED          | Fired after a new bank account is saved; the dashboard returns to the cards and surfaces the "Bank account added" alert       | Created `EmployeeBankAccount` entity                             |
+| EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_BANK_FORM_CANCELLED          | Fired when the user cancels the add-bank-account screen; the dashboard returns to the cards                                   | None                                                             |
+| EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_SPLIT_FORM_SUBMITTED         | Fired after the split configuration is saved; the dashboard returns to the cards and surfaces the "Split updated" alert       | Updated `EmployeePaymentMethod` entity                           |
+| EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_SPLIT_FORM_CANCELLED         | Fired when the user cancels the split-paycheck screen; the dashboard returns to the cards                                     | None                                                             |
+| EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_ADD_REQUESTED               | Fired when "Add deduction" is clicked on the Deductions card                                                                  | { employeeId: string }                                           |
+| EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_EDIT_REQUESTED              | Fired when a row's "Edit" menu item is chosen on the Deductions card                                                          | The `Garnishment` row being edited                               |
+| EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_DELETED                     | Fired after the soft-delete dialog is confirmed; the dashboard surfaces the "Deduction deleted" alert                         | The now-inactive `Garnishment`                                   |
+| EMPLOYEE_MANAGEMENT_DEDUCTIONS_EDIT_FORM_CREATED                | Fired after a new deduction is created; the dashboard returns to the cards and surfaces the "Deduction added" alert           | The created `Garnishment`                                        |
+| EMPLOYEE_MANAGEMENT_DEDUCTIONS_EDIT_FORM_UPDATED                | Fired after a deduction is updated; the dashboard returns to the cards and surfaces the "Deduction updated" alert             | The updated `Garnishment`                                        |
+| EMPLOYEE_MANAGEMENT_DEDUCTIONS_EDIT_FORM_CANCELLED              | Fired when the user cancels the add/edit deduction form; the dashboard returns to the cards                                   | None                                                             |
+| EMPLOYEE_MANAGEMENT_PAYSTUBS_CARD_DOWNLOAD_REQUESTED            | Fired when a paystub row's download button is clicked, before the PDF is fetched                                              | { employeeId: string, payrollUuid: string }                      |
+| EMPLOYEE_MANAGEMENT_PAYSTUBS_CARD_DOWNLOADED                    | Fired after the paystub PDF is fetched and opened in a new tab                                                                | { employeeId: string, payrollUuid: string }                      |
+| EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_CARD_EDIT_REQUESTED           | Fired when "Edit" is clicked on the Federal taxes card                                                                        | { employeeId: string }                                           |
+| EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_EDIT_FORM_SUBMITTED           | Fired after a federal-taxes save succeeds; the dashboard returns to the cards and surfaces the "Federal taxes updated" alert  | Updated `EmployeeFederalTax` entity                              |
+| EMPLOYEE_MANAGEMENT_FEDERAL_TAXES_EDIT_FORM_CANCELLED           | Fired when the user cancels the federal-taxes edit form; the dashboard returns to the cards                                   | None                                                             |
+| EMPLOYEE_MANAGEMENT_STATE_TAXES_EDIT_REQUESTED                  | Fired when "Edit" is clicked on the State taxes card                                                                          | { employeeId: string }                                           |
+| EMPLOYEE_MANAGEMENT_STATE_TAXES_UPDATED                         | Fired after a state-taxes save succeeds; the dashboard returns to the cards and surfaces the "State taxes updated" alert      | { employeeStateTaxesList: EmployeeStateTaxesList[] }             |
+| EMPLOYEE_MANAGEMENT_STATE_TAXES_EDIT_CANCELLED                  | Fired when the user cancels the state-taxes edit form; the dashboard returns to the cards                                     | None                                                             |
+| EMPLOYEE_MANAGEMENT_DOCUMENTS_CARD_VIEW_REQUESTED               | Fired when a document row's "View" CTA is clicked; the dashboard swaps to the read-only document viewer                       | { employeeId: string, formId: string }                           |
+| CANCEL                                                          | Fired when the user clicks Back in the document viewer; the dashboard returns to the cards                                    | None                                                             |
+| EMPLOYEE_DASHBOARD_TAB_CHANGE                                   | Fired when the user switches dashboard tabs                                                                                   | { tab: 'basicDetails' \| 'jobAndPay' \| 'taxes' \| 'documents' } |
+| EMPLOYEE_DISMISS                                                | Fired when the user dismisses a top-of-dashboard success alert                                                                | None                                                             |
 
 ### EmployeeManagement.PaymentMethod
 
@@ -138,13 +162,14 @@ function MyComponent() {
 
 #### Props
 
-| Name                | Type                | Default | Description                                                                                                                                |
-| ------------------- | ------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| employeeId Required | string              |         | The associated employee identifier.                                                                                                        |
-| onEvent Required    | function            |         | See events table for available events.                                                                                                     |
-| isAdmin             | boolean             | true    | Whether the screens are presented in the admin context. When false, the experience is configured for employee self-service.                |
-| dictionary          | object              |         | Optional translations for component text. Keys are namespaced under `Employee.Management.PaymentMethod` — see the source JSON for the set. |
-| FallbackComponent   | React.ComponentType |         | Optional custom error fallback component used by the internal `BaseBoundaries` wrapper.                                                    |
+| Name                | Type                       | Default | Description                                                                                                                                                       |
+| ------------------- | -------------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| employeeId Required | string                     |         | The associated employee identifier.                                                                                                                               |
+| onEvent Required    | function                   |         | See events table for available events.                                                                                                                            |
+| isAdmin             | boolean                    | true    | Whether the screens are presented in the admin context. When false, the experience is configured for employee self-service.                                       |
+| initialState        | 'list' \| 'add' \| 'split' | 'list'  | Which screen the block renders on first mount: the read-only bank-account card (`list`), the add-bank-account form (`add`), or the split-paycheck form (`split`). |
+| dictionary          | object                     |         | Optional translations for component text. Keys are namespaced under `Employee.Management.PaymentMethod` — see the source JSON for the set.                        |
+| FallbackComponent   | React.ComponentType        |         | Optional custom error fallback component used by the internal `BaseBoundaries` wrapper.                                                                           |
 
 #### Events
 
@@ -207,6 +232,49 @@ function MyPaymentPanel({ employeeId, onAddBankAccount, onSplitPaycheck }) {
 | EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_ADD_REQUESTED        | Fired when the user clicks "Add bank account" / "Add another bank account"     | None                                             |
 | EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_SPLIT_REQUESTED      | Fired when the user clicks "Split paycheck"                                    | None                                             |
 | EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_BANK_ACCOUNT_DELETED | Fired after the user confirms a bank-account deletion from the card's row menu | Response from the Delete a bank account endpoint |
+
+##### EmployeeManagement.PaymentMethodBankForm
+
+The standalone add-bank-account form. Self-fetches nothing — it only creates a new direct-deposit bank account for the employee — and emits one event on a successful save and another on cancel. Render it in response to the card's `EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_ADD_REQUESTED` event, then return to the card when it emits `EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_BANK_FORM_SUBMITTED` or `EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_BANK_FORM_CANCELLED`.
+
+**Props**
+
+| Name                    | Type     | Description                                                                                                                             |
+| ----------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| employeeId Required     | string   | The associated employee identifier.                                                                                                     |
+| onEvent Required        | function | See events table for available events.                                                                                                  |
+| defaultValues           | object   | Optional initial values for the bank-account fields (`name`, `routingNumber`, `accountNumber`, `accountType`).                          |
+| optionalFieldsToRequire | array    | Field names to treat as required during validation, in addition to the form's built-in required fields.                                 |
+| validationMode          | string   | When the form validates its fields, following react-hook-form's `mode` (e.g. `onSubmit`, `onBlur`, `onChange`). Defaults to `onSubmit`. |
+| shouldFocusError        | boolean  | Whether to move focus to the first field with an error after a failed submit. Defaults to `true`.                                       |
+
+**Events**
+
+| Event type                                             | Description                                                             | Data                                 |
+| ------------------------------------------------------ | ----------------------------------------------------------------------- | ------------------------------------ |
+| EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_BANK_FORM_SUBMITTED | Fired after the new bank account is saved; use it to return to the card | Created `EmployeeBankAccount` entity |
+| EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_BANK_FORM_CANCELLED | Fired when the user clicks Cancel; use it to return to the card         | None                                 |
+
+##### EmployeeManagement.PaymentMethodSplitForm
+
+The standalone split-paycheck form. Self-fetches the employee's payment method and bank accounts and lets the user split their paycheck across accounts by percentage or by fixed amount; it renders nothing until at least two bank accounts exist. It emits one event on a successful save and another on cancel. Render it in response to the card's `EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_SPLIT_REQUESTED` event, then return to the card when it emits `EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_SPLIT_FORM_SUBMITTED` or `EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_SPLIT_FORM_CANCELLED`.
+
+**Props**
+
+| Name                    | Type     | Description                                                                                                                             |
+| ----------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| employeeId Required     | string   | The associated employee identifier.                                                                                                     |
+| onEvent Required        | function | See events table for available events.                                                                                                  |
+| optionalFieldsToRequire | array    | Field names to treat as required during validation, in addition to the form's built-in required fields.                                 |
+| validationMode          | string   | When the form validates its fields, following react-hook-form's `mode` (e.g. `onSubmit`, `onBlur`, `onChange`). Defaults to `onSubmit`. |
+| shouldFocusError        | boolean  | Whether to move focus to the first field with an error after a failed submit. Defaults to `true`.                                       |
+
+**Events**
+
+| Event type                                              | Description                                                                | Data                                   |
+| ------------------------------------------------------- | -------------------------------------------------------------------------- | -------------------------------------- |
+| EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_SPLIT_FORM_SUBMITTED | Fired after the split configuration is saved; use it to return to the card | Updated `EmployeePaymentMethod` entity |
+| EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_SPLIT_FORM_CANCELLED | Fired when the user clicks Cancel; use it to return to the card            | None                                   |
 
 ### EmployeeManagement.Compensation
 
@@ -574,10 +642,10 @@ function MyComponent() {
 
 | Event type                                  | Description                                                                             | Data                      |
 | ------------------------------------------- | --------------------------------------------------------------------------------------- | ------------------------- |
-| EMPLOYEE_PROFILE_MANAGEMENT_EDIT_REQUESTED  | Fired when the user clicks the "Edit" CTA on the card                                   | { employeeId: string }    |
-| EMPLOYEE_PROFILE_MANAGEMENT_UPDATED         | Fired after the edit form is successfully submitted; the block returns to the card view | Updated `Employee` entity |
-| EMPLOYEE_PROFILE_MANAGEMENT_EDIT_CANCELLED  | Fired when the user clicks Cancel on the edit form; the block returns to the card view  | None                      |
-| EMPLOYEE_PROFILE_MANAGEMENT_ALERT_DISMISSED | Fired when the user dismisses the "Profile updated" success alert above the card        | None                      |
+| EMPLOYEE_MANAGEMENT_PROFILE_EDIT_REQUESTED  | Fired when the user clicks the "Edit" CTA on the card                                   | { employeeId: string }    |
+| EMPLOYEE_MANAGEMENT_PROFILE_UPDATED         | Fired after the edit form is successfully submitted; the block returns to the card view | Updated `Employee` entity |
+| EMPLOYEE_MANAGEMENT_PROFILE_EDIT_CANCELLED  | Fired when the user clicks Cancel on the edit form; the block returns to the card view  | None                      |
+| EMPLOYEE_MANAGEMENT_PROFILE_ALERT_DISMISSED | Fired when the user dismisses the "Profile updated" success alert above the card        | None                      |
 
 #### Composing from EmployeeManagement.ProfileCard and EmployeeManagement.ProfileEditForm directly
 
@@ -598,8 +666,8 @@ function MyBasicDetailsPanel({ employeeId }) {
         employeeId={employeeId}
         onEvent={eventType => {
           if (
-            eventType === componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_UPDATED ||
-            eventType === componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_EDIT_CANCELLED
+            eventType === componentEvents.EMPLOYEE_MANAGEMENT_PROFILE_UPDATED ||
+            eventType === componentEvents.EMPLOYEE_MANAGEMENT_PROFILE_EDIT_CANCELLED
           ) {
             setIsEditing(false)
           }
@@ -612,7 +680,7 @@ function MyBasicDetailsPanel({ employeeId }) {
     <EmployeeManagement.ProfileCard
       employeeId={employeeId}
       onEvent={eventType => {
-        if (eventType === componentEvents.EMPLOYEE_PROFILE_MANAGEMENT_EDIT_REQUESTED) {
+        if (eventType === componentEvents.EMPLOYEE_MANAGEMENT_PROFILE_EDIT_REQUESTED) {
           setIsEditing(true)
         }
       }}
@@ -634,7 +702,7 @@ function MyBasicDetailsPanel({ employeeId }) {
 
 | Event type                                 | Description                                           | Data                   |
 | ------------------------------------------ | ----------------------------------------------------- | ---------------------- |
-| EMPLOYEE_PROFILE_MANAGEMENT_EDIT_REQUESTED | Fired when the user clicks the "Edit" CTA on the card | { employeeId: string } |
+| EMPLOYEE_MANAGEMENT_PROFILE_EDIT_REQUESTED | Fired when the user clicks the "Edit" CTA on the card | { employeeId: string } |
 
 ##### EmployeeManagement.ProfileEditForm
 
@@ -652,8 +720,8 @@ function MyBasicDetailsPanel({ employeeId }) {
 
 | Event type                                 | Description                                         | Data                      |
 | ------------------------------------------ | --------------------------------------------------- | ------------------------- |
-| EMPLOYEE_PROFILE_MANAGEMENT_UPDATED        | Fired after the edit form is successfully submitted | Updated `Employee` entity |
-| EMPLOYEE_PROFILE_MANAGEMENT_EDIT_CANCELLED | Fired when the user clicks Cancel on the edit form  | None                      |
+| EMPLOYEE_MANAGEMENT_PROFILE_UPDATED        | Fired after the edit form is successfully submitted | Updated `Employee` entity |
+| EMPLOYEE_MANAGEMENT_PROFILE_EDIT_CANCELLED | Fired when the user clicks Cancel on the edit form  | None                      |
 
 ### EmployeeManagement.HomeAddress
 
@@ -685,11 +753,11 @@ function MyComponent() {
 
 | Event type                                      | Description                                                                                   | Data                             |
 | ----------------------------------------------- | --------------------------------------------------------------------------------------------- | -------------------------------- |
-| EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_REQUESTED | Fired when the user clicks the "Manage" CTA on the card; the block swaps to the manage screen | { employeeId: string }           |
-| EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_CANCELLED | Fired when the user clicks Back on the manage screen; the block returns to the card view      | None                             |
-| EMPLOYEE_HOME_ADDRESS_MANAGEMENT_CREATED        | Fired after a new home address is successfully created from the manage screen                 | Created `EmployeeAddress` entity |
-| EMPLOYEE_HOME_ADDRESS_MANAGEMENT_UPDATED        | Fired after an existing home address is successfully updated from the manage screen           | Updated `EmployeeAddress` entity |
-| EMPLOYEE_HOME_ADDRESS_MANAGEMENT_DELETED        | Fired after a non-active home address is successfully deleted from the manage screen          | Deleted `EmployeeAddress` entity |
+| EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_REQUESTED | Fired when the user clicks the "Manage" CTA on the card; the block swaps to the manage screen | { employeeId: string }           |
+| EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_CANCELLED | Fired when the user clicks Back on the manage screen; the block returns to the card view      | None                             |
+| EMPLOYEE_MANAGEMENT_HOME_ADDRESS_CREATED        | Fired after a new home address is successfully created from the manage screen                 | Created `EmployeeAddress` entity |
+| EMPLOYEE_MANAGEMENT_HOME_ADDRESS_UPDATED        | Fired after an existing home address is successfully updated from the manage screen           | Updated `EmployeeAddress` entity |
+| EMPLOYEE_MANAGEMENT_HOME_ADDRESS_DELETED        | Fired after a non-active home address is successfully deleted from the manage screen          | Deleted `EmployeeAddress` entity |
 
 #### Composing from EmployeeManagement.HomeAddressCard and EmployeeManagement.HomeAddressEditForm directly
 
@@ -709,7 +777,7 @@ function MyHomeAddressPanel({ employeeId }) {
       <EmployeeManagement.HomeAddressEditForm
         employeeId={employeeId}
         onEvent={eventType => {
-          if (eventType === componentEvents.EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_CANCELLED) {
+          if (eventType === componentEvents.EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_CANCELLED) {
             setIsEditing(false)
           }
         }}
@@ -721,7 +789,7 @@ function MyHomeAddressPanel({ employeeId }) {
     <EmployeeManagement.HomeAddressCard
       employeeId={employeeId}
       onEvent={eventType => {
-        if (eventType === componentEvents.EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_REQUESTED) {
+        if (eventType === componentEvents.EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_REQUESTED) {
           setIsEditing(true)
         }
       }}
@@ -743,7 +811,7 @@ function MyHomeAddressPanel({ employeeId }) {
 
 | Event type                                      | Description                                             | Data                   |
 | ----------------------------------------------- | ------------------------------------------------------- | ---------------------- |
-| EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_REQUESTED | Fired when the user clicks the "Manage" CTA on the card | { employeeId: string } |
+| EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_REQUESTED | Fired when the user clicks the "Manage" CTA on the card | { employeeId: string } |
 
 ##### EmployeeManagement.HomeAddressEditForm
 
@@ -761,10 +829,10 @@ function MyHomeAddressPanel({ employeeId }) {
 
 | Event type                                      | Description                                                   | Data                             |
 | ----------------------------------------------- | ------------------------------------------------------------- | -------------------------------- |
-| EMPLOYEE_HOME_ADDRESS_MANAGEMENT_CREATED        | Fired after a new home address is successfully created        | Created `EmployeeAddress` entity |
-| EMPLOYEE_HOME_ADDRESS_MANAGEMENT_UPDATED        | Fired after an existing home address is successfully updated  | Updated `EmployeeAddress` entity |
-| EMPLOYEE_HOME_ADDRESS_MANAGEMENT_DELETED        | Fired after a non-active home address is successfully deleted | Deleted `EmployeeAddress` entity |
-| EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_CANCELLED | Fired when the user clicks Back on the manage screen          | None                             |
+| EMPLOYEE_MANAGEMENT_HOME_ADDRESS_CREATED        | Fired after a new home address is successfully created        | Created `EmployeeAddress` entity |
+| EMPLOYEE_MANAGEMENT_HOME_ADDRESS_UPDATED        | Fired after an existing home address is successfully updated  | Updated `EmployeeAddress` entity |
+| EMPLOYEE_MANAGEMENT_HOME_ADDRESS_DELETED        | Fired after a non-active home address is successfully deleted | Deleted `EmployeeAddress` entity |
+| EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_CANCELLED | Fired when the user clicks Back on the manage screen          | None                             |
 
 ### EmployeeManagement.WorkAddress
 
