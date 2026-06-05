@@ -1421,19 +1421,13 @@ export interface EmployeeCompensation{
 "twoPercentStakeholderLabel":string;
 };
 export interface EmployeeDashboard{
-"title":string;
 "employeeRoleLabel":string;
 "tabsLabel":string;
-"listEmptyPlaceholder":string;
 "tabs":{
 "basicDetails":string;
 "jobAndPay":string;
 "taxes":string;
 "documents":string;
-};
-"common":{
-"yes":string;
-"no":string;
 };
 "alerts":{
 "bankAccountAdded":string;
