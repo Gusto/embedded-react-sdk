@@ -1,8 +1,9 @@
-name: Publish Docs
+name: Sync Docs Source
 
-# Fires after a successful NPM publish on main. Builds the Docusaurus site
-# from docs/ + docs-site/ and pushes the built output to the main branch of
-# Gusto/embedded-sdk-docs, which serves what's on main.
+# Fires after a successful NPM publish on main. Pushes the Docusaurus
+# source (docs/ + docs-site/ + .nvmrc) to the main branch of
+# Gusto/embedded-sdk-docs. That repo's Buildkite pipeline runs the
+# Docusaurus build and publishes the result to its gh-pages branch.
 #
 # Auth: a GitHub App installed on Gusto/embedded-sdk-docs with
 # Contents: write. Credentials live in this repo's `publish-docs`
@@ -33,7 +34,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  publish:
+  sync:
     # workflow_dispatch always allowed (for manual testing). workflow_run
     # only fires when DOCS_PUBLISH_ENABLED=true, so the next NPM release
     # won't auto-publish docs until that variable is explicitly set.
@@ -51,20 +52,9 @@ jobs:
         with:
           ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: .nvmrc
-
       - name: Read SDK version
         id: version
         run: echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
-
-      - name: Install docs dependencies
-        working-directory: docs-site
-        run: npm ci
-
-      - name: Build docs
-        run: npm run docs:build
 
       - name: Mint GitHub App token for docs repo
         id: app-token
@@ -75,17 +65,16 @@ jobs:
           owner: Gusto
           repositories: embedded-sdk-docs
 
-      # Hand-rolled push instead of peaceiris/actions-gh-pages because
-      # Gusto's org actions allowlist doesn't include it. We clone the
-      # existing embedded-sdk-docs repo, replace its tracked files with
-      # the freshly built site, and add one commit per publish — so the
-      # docs repo accumulates a real release-by-release history instead
-      # of being overwritten by an orphan commit each time. The token is
-      # in an env var so the URL doesn't appear verbatim in command logs,
-      # and the App token is auto-redacted by Actions even if it did.
-      # `concurrency: publish-docs` above prevents overlapping pushes, so
-      # a non-force push is safe.
-      - name: Push built site to embedded-sdk-docs
+      # Push docs source (markdown + Docusaurus config + Node pin) to
+      # embedded-sdk-docs/main. Its Buildkite pipeline then builds and
+      # publishes the result to gh-pages.
+      #
+      # .buildkite/ on the docs repo is owned by that repo and excluded
+      # from the wipe so it survives across syncs.
+      #
+      # `concurrency: publish-docs` above prevents overlapping pushes,
+      # so a non-force push is safe.
+      - name: Push docs source to embedded-sdk-docs
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
           SDK_VERSION: ${{ steps.version.outputs.version }}
@@ -97,16 +86,23 @@ jobs:
           git config user.name "gusto-embedded-docs[bot]"
           git config user.email "gusto-embedded-docs[bot]@users.noreply.github.com"
 
-          # Wipe currently-tracked files (keeps .git intact), then copy
-          # the fresh build in. `git add -A` afterwards picks up both
-          # additions and deletions relative to the previous publish.
-          git ls-files -z | xargs -0 -r rm -f
-          find . -type d -empty -not -path './.git*' -delete
-          cp -R ../docs-site/build/. .
+          # Wipe currently-tracked files, but preserve .buildkite/ (the
+          # docs repo owns its own CI config). `git add -A` afterwards
+          # picks up additions and deletions relative to the previous sync.
+          git ls-files -z ':!.buildkite/' | xargs -0 -r rm -f
+          find . -type d -empty -not -path './.git*' -not -path './.buildkite*' -delete
 
-          # Always commit (even with no file changes) so every publish run
+          # Copy markdown source + Docusaurus config + Node pin.
+          cp -R ../docs .
+          cp -R ../docs-site .
+          cp ../.nvmrc .
+
+          # Strip anything that shouldn't ship with source.
+          rm -rf docs-site/node_modules docs-site/build
+
+          # Always commit (even with no file changes) so every sync run
           # leaves a release-marker in the docs repo's history, matching
           # 1:1 with the NPM releases that triggered it.
           git add -A
-          git commit -q --allow-empty -m "docs: publish SDK $SDK_VERSION"
+          git commit -q --allow-empty -m "docs: sync source for SDK $SDK_VERSION"
           git push origin main
