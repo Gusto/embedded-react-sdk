@@ -77,12 +77,14 @@ jobs:
 
       # Hand-rolled push instead of peaceiris/actions-gh-pages because
       # Gusto's org actions allowlist doesn't include it. We clone the
-      # existing embedded-sdk-docs repo, replace its tracked files with
-      # the freshly built site, and add one commit per publish — so the
-      # docs repo accumulates a real release-by-release history instead
-      # of being overwritten by an orphan commit each time. The token is
-      # in an env var so the URL doesn't appear verbatim in command logs,
-      # and the App token is auto-redacted by Actions even if it did.
+      # existing embedded-sdk-docs repo, overlay the freshly built site
+      # on top of whatever is already there, and add one commit per
+      # publish — so the docs repo accumulates a real release-by-release
+      # history. We deliberately never delete anything we didn't build,
+      # so infrastructure files that live in embedded-sdk-docs directly
+      # (e.g. `.buildkite/`) survive every publish. The token is in an
+      # env var so the URL doesn't appear verbatim in command logs, and
+      # the App token is auto-redacted by Actions even if it did.
       # `concurrency: publish-docs` above prevents overlapping pushes, so
       # a non-force push is safe.
       - name: Push built site to embedded-sdk-docs
@@ -97,11 +99,10 @@ jobs:
           git config user.name "gusto-embedded-docs[bot]"
           git config user.email "gusto-embedded-docs[bot]@users.noreply.github.com"
 
-          # Wipe currently-tracked files (keeps .git intact), then copy
-          # the fresh build in. `git add -A` afterwards picks up both
-          # additions and deletions relative to the previous publish.
-          git ls-files -z | xargs -0 -r rm -f
-          find . -type d -empty -not -path './.git*' -delete
+          # Overlay the freshly built site onto the docs repo. `git add -A`
+          # below picks up modifications and additions; nothing is staged
+          # for deletion because nothing was deleted, which is what keeps
+          # docs-repo-owned files (e.g. `.buildkite/`) intact.
           cp -R ../docs-site/build/. .
 
           # Always commit (even with no file changes) so every publish run
