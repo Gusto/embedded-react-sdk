@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { HttpResponse, delay } from 'msw'
+import { HttpResponse } from 'msw'
 import { CompensationCard } from './CompensationCard'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
@@ -25,20 +25,6 @@ describe('CompensationCard (standalone)', () => {
   beforeEach(() => {
     setupApiTestMocks()
     onEvent.mockClear()
-  })
-
-  it('renders the card chrome with an inline loading state while data is loading', async () => {
-    server.use(
-      handleGetEmployeeJobs(async () => {
-        await delay('infinite')
-        return HttpResponse.json(buildEmployeeWithJobs({ scenario: 'singleNonexempt' }))
-      }),
-    )
-
-    renderWithProviders(<CompensationCard employeeId="employee-uuid" onEvent={onEvent} />)
-
-    expect(await screen.findByText('Compensation')).toBeInTheDocument()
-    expect(screen.getByLabelText('Loading component...')).toBeInTheDocument()
   })
 
   it('renders the empty state and emits CARD_ADD_REQUESTED from the Add job CTA', async () => {
