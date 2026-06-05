@@ -108,6 +108,62 @@ describe('Employee SignatureForm', () => {
       })
     })
 
+    it('does not surface a page-level error when the post-sign PDF refetch fails (SDK-947)', async () => {
+      const user = userEvent.setup()
+
+      // The preview PDF loads fine on mount, but the refetch forced by the
+      // global post-mutation invalidation fails — the backend hasn't generated
+      // the signed PDF yet. A failed preview fetch must not be reported as a
+      // failed signature.
+      let signed = false
+      server.use(
+        handleSignEmployeeForm(() => {
+          signed = true
+          return HttpResponse.json({ ...testForm, requires_signing: false })
+        }),
+        handleGetEmployeeFormPdf(() =>
+          signed
+            ? HttpResponse.json(
+                {
+                  errors: [
+                    {
+                      error_key: 'request',
+                      category: 'internal_error',
+                      message: 'An unexpected error has occurred.',
+                    },
+                  ],
+                },
+                { status: 500 },
+              )
+            : HttpResponse.json(testFormPdf),
+        ),
+      )
+
+      renderWithProviders(<SignatureForm {...defaultProps} />)
+
+      await waitFor(() => {
+        expect(screen.getByLabelText('Signature')).toBeInTheDocument()
+      })
+
+      await user.type(screen.getByLabelText('Signature'), 'Jane Doe')
+      await user.click(
+        screen.getByLabelText('I am the employee and I agree to sign electronically'),
+      )
+      await user.click(screen.getByRole('button', { name: 'Sign form' }))
+
+      // The signature still succeeds and the success event still fires...
+      await waitFor(() => {
+        expect(mockOnEvent).toHaveBeenCalledWith(
+          componentEvents.EMPLOYEE_SIGN_FORM,
+          expect.objectContaining({ uuid: testForm.uuid }),
+        )
+      })
+
+      // ...and the failed post-sign PDF refetch never becomes a page-level
+      // error alert (the named behavior under test).
+      expect(screen.queryByRole('alert')).toBeNull()
+    })
+
     it('does not submit when signature is empty', async () => {
       const user = userEvent.setup()
 
