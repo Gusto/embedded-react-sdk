@@ -76,21 +76,37 @@ jobs:
           repositories: embedded-sdk-docs
 
       # Hand-rolled push instead of peaceiris/actions-gh-pages because
-      # Gusto's org actions allowlist doesn't include it. Initializing a
-      # fresh repo inside docs-site/build/ and force-pushing means each
-      # publish replaces embedded-sdk-docs:main with a single-commit
-      # orphan history — no merge logic, no conflicts. The token is in an
-      # env var so the URL doesn't appear verbatim in command logs, and
-      # the App token is auto-redacted by Actions even if it did.
+      # Gusto's org actions allowlist doesn't include it. We clone the
+      # existing embedded-sdk-docs repo, replace its tracked files with
+      # the freshly built site, and add one commit per publish — so the
+      # docs repo accumulates a real release-by-release history instead
+      # of being overwritten by an orphan commit each time. The token is
+      # in an env var so the URL doesn't appear verbatim in command logs,
+      # and the App token is auto-redacted by Actions even if it did.
+      # `concurrency: publish-docs` above prevents overlapping pushes, so
+      # a non-force push is safe.
       - name: Push built site to embedded-sdk-docs
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
           SDK_VERSION: ${{ steps.version.outputs.version }}
-        working-directory: docs-site/build
         run: |
-          git init -q -b main
+          git clone --depth 50 \
+            "https://x-access-token:$GH_TOKEN@github.com/Gusto/embedded-sdk-docs.git" \
+            docs-repo
+          cd docs-repo
           git config user.name "gusto-embedded-docs[bot]"
           git config user.email "gusto-embedded-docs[bot]@users.noreply.github.com"
-          git add .
-          git commit -q -m "docs: publish SDK $SDK_VERSION"
-          git push --force "https://x-access-token:$GH_TOKEN@github.com/Gusto/embedded-sdk-docs.git" HEAD:main
+
+          # Wipe currently-tracked files (keeps .git intact), then copy
+          # the fresh build in. `git add -A` afterwards picks up both
+          # additions and deletions relative to the previous publish.
+          git ls-files -z | xargs -0 -r rm -f
+          find . -type d -empty -not -path './.git*' -delete
+          cp -R ../docs-site/build/. .
+
+          # Always commit (even with no file changes) so every publish run
+          # leaves a release-marker in the docs repo's history, matching
+          # 1:1 with the NPM releases that triggered it.
+          git add -A
+          git commit -q --allow-empty -m "docs: publish SDK $SDK_VERSION"
+          git push origin main

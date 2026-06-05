@@ -72,30 +72,6 @@
       }
     }
   },
-  "documents": {
-    "title": "Forms",
-    "listLabel": "List of employee forms",
-    "viewCta": "View",
-    "columns": {
-      "title": "Form",
-      "year": "Year",
-      "status": "Status",
-      "requiresSigning": "Signing status",
-      "actions": "Actions"
-    },
-    "signingStatus": {
-      "signed": "Signed",
-      "notSigned": "Not signed"
-    },
-    "status": {
-      "draft": "Draft",
-      "final": "Final"
-    },
-    "emptyState": {
-      "title": "No forms",
-      "description": "Employee forms will appear here once available"
-    }
-  },
   "common": {
     "yes": "Yes",
     "no": "No"
@@ -109,7 +85,6 @@
     "deductionDeleted": "Deduction successfully deleted.",
     "jobAdded": "Job successfully added.",
     "profileUpdated": "Profile updated",
-    "documentSigned": "Document successfully signed.",
     "federalTaxesUpdated": "Federal tax settings successfully updated.",
     "stateTaxesUpdated": "Successfully updated state tax settings."
   },
