@@ -1,6 +1,6 @@
 /**
- * Requires a TSDoc comment on every member of an exported interface,
- * unless the interface itself is tagged @internal.
+ * Requires a TSDoc comment on every member of an exported interface or
+ * object-literal type alias, unless the type is tagged @internal.
  */
 
 import { AST_NODE_TYPES, ESLintUtils } from '@typescript-eslint/utils'
@@ -21,7 +21,7 @@ export default ESLintUtils.RuleCreator.withoutDocs({
     },
     schema: [],
     messages: {
-      missingMemberTSDoc: '@public interface member is missing a TSDoc comment.',
+      missingMemberTSDoc: '@public type member is missing a TSDoc comment.',
     },
   },
 
@@ -30,12 +30,23 @@ export default ESLintUtils.RuleCreator.withoutDocs({
     const { declarationsByName, onProgram } = createDeclarationTracker()
 
     function checkMembers(commentNode: TSESTree.Node, declaration: SupportedDeclaration): void {
-      if (declaration.type !== AST_NODE_TYPES.TSInterfaceDeclaration) return
+      let members: TSESTree.TypeElement[]
+
+      if (declaration.type === AST_NODE_TYPES.TSInterfaceDeclaration) {
+        members = declaration.body.body
+      } else if (
+        declaration.type === AST_NODE_TYPES.TSTypeAliasDeclaration &&
+        declaration.typeAnnotation.type === AST_NODE_TYPES.TSTypeLiteral
+      ) {
+        members = declaration.typeAnnotation.members
+      } else {
+        return
+      }
 
       const comment = getTSDocComment(sourceCode, commentNode)
       if (comment !== null && getTags(comment.value).includes('@internal')) return
 
-      for (const member of declaration.body.body) {
+      for (const member of members) {
         if (
           member.type !== AST_NODE_TYPES.TSPropertySignature &&
           member.type !== AST_NODE_TYPES.TSMethodSignature

@@ -114,6 +114,18 @@ All user-facing text uses i18next. Run `npm run i18n:generate` after changing tr
 
 Exported headless hooks build `errorHandling` with **`composeErrorHandler`** (not a React hook). For multi-form screens, **`composeSubmitHandler`** coordinates validation + ordered submits and returns `{ handleSubmit, errorHandling }` aggregated across those forms. The result plugs back into `composeErrorHandler` when partners need extra `@gusto/embedded-api-v-2025-11-15` queries or screen-level submit state in the same error surface — see [docs/hooks/hooks.md](docs/hooks/hooks.md).
 
+### Component & Feature Conventions
+
+Durable conventions that apply SDK-wide to any component or feature:
+
+- **One i18n namespace per self-contained component.** A self-contained component owns a single translation namespace and reads only from it — never reach across namespaces. Run `npm run i18n:generate` after changing translations.
+- **Scoped, unique events.** Prefer unique event names scoped to the component/surface that fires them over sharing or borrowing names across flows (e.g. don't reuse an onboarding event from a different surface).
+- **Standalone components take IDs, not entities.** Public/standalone components accept entity IDs (e.g. `employeeId`, `jobId`) and fetch their own data rather than receiving full entity objects across the public API. Passing data structures is fine for internal-only components.
+- **Non-form data hooks return the standard union.** Data-fetching hooks return the `HookLoadingResult | BaseHookReady<…>` discriminated union (see `src/partner-hook-utils/types.ts`) for consistent loading/error/action ergonomics.
+- **Shared UI stays presentational.** UI reused across multiple flows takes its copy via props or an injected `dictionary` so a partner's copy override in one surface doesn't leak into another (e.g. the `DeductionsForm` + `useFormDictionary` pattern).
+- **Partial, in-place loading.** Prefer consistent partial loading — component chrome plus an inline loader — over full-surface loaders.
+- **Thin orchestrators.** Orchestrators stay thin and compose standalone, independently-consumable pieces.
+
 ## PR and Commit Conventions
 
 - Follow conventional commits: `feat:`, `fix:`, `chore:`, `docs:`, `refactor:`, `test:`, `ci:`, etc.
