@@ -1,17 +1,11 @@
 {
-  "title": "Employee Dashboard",
   "employeeRoleLabel": "Employee",
   "tabsLabel": "Employee dashboard tabs",
-  "listEmptyPlaceholder": "No value",
   "tabs": {
     "basicDetails": "Basic details",
     "jobAndPay": "Job and pay",
     "taxes": "Taxes",
     "documents": "Documents"
-  },
-  "common": {
-    "yes": "Yes",
-    "no": "No"
   },
   "alerts": {
     "bankAccountAdded": "Bank account successfully added.",
