@@ -138,13 +138,14 @@ function MyComponent() {
 
 #### Props
 
-| Name                | Type                | Default | Description                                                                                                                                |
-| ------------------- | ------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| employeeId Required | string              |         | The associated employee identifier.                                                                                                        |
-| onEvent Required    | function            |         | See events table for available events.                                                                                                     |
-| isAdmin             | boolean             | true    | Whether the screens are presented in the admin context. When false, the experience is configured for employee self-service.                |
-| dictionary          | object              |         | Optional translations for component text. Keys are namespaced under `Employee.Management.PaymentMethod` — see the source JSON for the set. |
-| FallbackComponent   | React.ComponentType |         | Optional custom error fallback component used by the internal `BaseBoundaries` wrapper.                                                    |
+| Name                | Type                       | Default | Description                                                                                                                                                       |
+| ------------------- | -------------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| employeeId Required | string                     |         | The associated employee identifier.                                                                                                                               |
+| onEvent Required    | function                   |         | See events table for available events.                                                                                                                            |
+| isAdmin             | boolean                    | true    | Whether the screens are presented in the admin context. When false, the experience is configured for employee self-service.                                       |
+| initialState        | 'list' \| 'add' \| 'split' | 'list'  | Which screen the block renders on first mount: the read-only bank-account card (`list`), the add-bank-account form (`add`), or the split-paycheck form (`split`). |
+| dictionary          | object                     |         | Optional translations for component text. Keys are namespaced under `Employee.Management.PaymentMethod` — see the source JSON for the set.                        |
+| FallbackComponent   | React.ComponentType        |         | Optional custom error fallback component used by the internal `BaseBoundaries` wrapper.                                                                           |
 
 #### Events
 
@@ -207,6 +208,49 @@ function MyPaymentPanel({ employeeId, onAddBankAccount, onSplitPaycheck }) {
 | EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_ADD_REQUESTED        | Fired when the user clicks "Add bank account" / "Add another bank account"     | None                                             |
 | EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_SPLIT_REQUESTED      | Fired when the user clicks "Split paycheck"                                    | None                                             |
 | EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_BANK_ACCOUNT_DELETED | Fired after the user confirms a bank-account deletion from the card's row menu | Response from the Delete a bank account endpoint |
+
+##### EmployeeManagement.PaymentMethodBankForm
+
+The standalone add-bank-account form. Self-fetches nothing — it only creates a new direct-deposit bank account for the employee — and emits one event on a successful save and another on cancel. Render it in response to the card's `EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_ADD_REQUESTED` event, then return to the card when it emits `EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_BANK_FORM_SUBMITTED` or `EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_BANK_FORM_CANCELLED`.
+
+**Props**
+
+| Name                    | Type     | Description                                                                                                                             |
+| ----------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| employeeId Required     | string   | The associated employee identifier.                                                                                                     |
+| onEvent Required        | function | See events table for available events.                                                                                                  |
+| defaultValues           | object   | Optional initial values for the bank-account fields (`name`, `routingNumber`, `accountNumber`, `accountType`).                          |
+| optionalFieldsToRequire | array    | Field names to treat as required during validation, in addition to the form's built-in required fields.                                 |
+| validationMode          | string   | When the form validates its fields, following react-hook-form's `mode` (e.g. `onSubmit`, `onBlur`, `onChange`). Defaults to `onSubmit`. |
+| shouldFocusError        | boolean  | Whether to move focus to the first field with an error after a failed submit. Defaults to `true`.                                       |
+
+**Events**
+
+| Event type                                             | Description                                                             | Data                                 |
+| ------------------------------------------------------ | ----------------------------------------------------------------------- | ------------------------------------ |
+| EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_BANK_FORM_SUBMITTED | Fired after the new bank account is saved; use it to return to the card | Created `EmployeeBankAccount` entity |
+| EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_BANK_FORM_CANCELLED | Fired when the user clicks Cancel; use it to return to the card         | None                                 |
+
+##### EmployeeManagement.PaymentMethodSplitForm
+
+The standalone split-paycheck form. Self-fetches the employee's payment method and bank accounts and lets the user split their paycheck across accounts by percentage or by fixed amount; it renders nothing until at least two bank accounts exist. It emits one event on a successful save and another on cancel. Render it in response to the card's `EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_CARD_SPLIT_REQUESTED` event, then return to the card when it emits `EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_SPLIT_FORM_SUBMITTED` or `EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_SPLIT_FORM_CANCELLED`.
+
+**Props**
+
+| Name                    | Type     | Description                                                                                                                             |
+| ----------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| employeeId Required     | string   | The associated employee identifier.                                                                                                     |
+| onEvent Required        | function | See events table for available events.                                                                                                  |
+| optionalFieldsToRequire | array    | Field names to treat as required during validation, in addition to the form's built-in required fields.                                 |
+| validationMode          | string   | When the form validates its fields, following react-hook-form's `mode` (e.g. `onSubmit`, `onBlur`, `onChange`). Defaults to `onSubmit`. |
+| shouldFocusError        | boolean  | Whether to move focus to the first field with an error after a failed submit. Defaults to `true`.                                       |
+
+**Events**
+
+| Event type                                              | Description                                                                | Data                                   |
+| ------------------------------------------------------- | -------------------------------------------------------------------------- | -------------------------------------- |
+| EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_SPLIT_FORM_SUBMITTED | Fired after the split configuration is saved; use it to return to the card | Updated `EmployeePaymentMethod` entity |
+| EMPLOYEE_MANAGEMENT_PAYMENT_METHOD_SPLIT_FORM_CANCELLED | Fired when the user clicks Cancel; use it to return to the card            | None                                   |
 
 ### EmployeeManagement.Compensation
 
