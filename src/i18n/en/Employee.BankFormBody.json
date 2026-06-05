@@ -1,0 +1,17 @@
+{
+  "nameLabel": "Account nickname",
+  "routingNumberLabel": "Routing number",
+  "routingNumberDescription": "(9 digits)",
+  "accountNumberLabel": "Account number",
+  "accountTypeLabel": "Account type",
+  "accountTypeChecking": "Checking",
+  "accountTypeSavings": "Savings",
+  "cancelCta": "Cancel",
+  "saveCta": "Save",
+  "validations": {
+    "accountName": "Account name is required",
+    "routingNumber": "Routing number should be a number (9 digits)",
+    "accountNumber": "Account number is a required field",
+    "accountNumberFormat": "Account number should contain only digits (up to 17)"
+  }
+}

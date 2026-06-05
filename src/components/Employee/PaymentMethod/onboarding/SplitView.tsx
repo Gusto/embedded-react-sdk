@@ -1,19 +1,7 @@
-import { Trans, useTranslation } from 'react-i18next'
-import DOMPurify from 'dompurify'
-import {
-  useSplitPaymentsForm,
-  type SplitByValue,
-  type SplitFieldEntry,
-  type UseSplitPaymentsFormProps,
-  type UseSplitPaymentsFormReady,
-} from '../shared/useSplitPaymentsForm'
-import { ActionsLayout } from '@/components/Common'
-import { Form } from '@/components/Common/Form'
-import { ReorderableList } from '@/components/Common/ReorderableList'
-import { BaseLayout } from '@/components/Base/Base'
-import { SDKFormProvider } from '@/partner-hook-utils/form/SDKFormProvider'
-import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
-import { componentEvents, SPLIT_BY, type EventType } from '@/shared/constants'
+import { SplitPaymentsFormBody } from '../shared/SplitPaymentsFormBody'
+import type { UseSplitPaymentsFormProps } from '../shared/useSplitPaymentsForm'
+import { useOnboardingSplitFormDictionary } from './useFormDictionary'
+import { componentEvents, type EventType } from '@/shared/constants'
 import type { OnEventType } from '@/components/Base/useBase'
 
 export interface SplitViewProps extends Omit<UseSplitPaymentsFormProps, 'employeeId'> {
@@ -22,119 +10,19 @@ export interface SplitViewProps extends Omit<UseSplitPaymentsFormProps, 'employe
 }
 
 export function SplitView({ employeeId, onEvent, ...hookProps }: SplitViewProps) {
-  const splitForm = useSplitPaymentsForm({ employeeId, ...hookProps })
-
-  if (splitForm.isLoading) {
-    return <BaseLayout isLoading error={splitForm.errorHandling.errors} />
-  }
-
-  return <SplitViewReady onEvent={onEvent} splitForm={splitForm} />
-}
-
-interface SplitViewReadyProps {
-  onEvent: OnEventType<EventType, unknown>
-  splitForm: UseSplitPaymentsFormReady
-}
-
-function SplitViewReady({ onEvent, splitForm }: SplitViewReadyProps) {
-  const { t } = useTranslation('Employee.PaymentMethod')
-  const Components = useComponentContext()
-  const { Fields } = splitForm.form
-  const { remainderId, bankAccounts } = splitForm.data
-  const { splitBy, percentageTotal, hasPercentageImbalance } = splitForm.status
-
-  const handleSubmit = async () => {
-    const result = await splitForm.actions.onSubmit()
-    if (result) {
-      onEvent(componentEvents.EMPLOYEE_PAYMENT_METHOD_UPDATED, result.data)
-    }
-  }
-
-  const handleCancel = () => {
-    onEvent(componentEvents.CANCEL)
-  }
-
-  if (bankAccounts.length < 2) return null
-
-  const labelForSplit = (split: SplitFieldEntry) =>
-    t('splitAmountLabel', {
-      name: DOMPurify.sanitize(split.name ?? ''),
-      account_number: DOMPurify.sanitize(split.hiddenAccountNumber ?? ''),
-      interpolation: { escapeValue: false },
-    })
-
-  const handleReorder = (indices: number[]) => {
-    const orderedUuids = indices
-      .map(index => Fields.splits[index]?.uuid)
-      .filter((uuid): uuid is string => Boolean(uuid))
-    splitForm.actions.reorderSplits(orderedUuids)
-  }
+  const dictionary = useOnboardingSplitFormDictionary()
 
   return (
-    <BaseLayout error={splitForm.errorHandling.errors}>
-      <SDKFormProvider formHookResult={splitForm}>
-        <Form onSubmit={handleSubmit}>
-          {hasPercentageImbalance && (
-            <Components.Alert
-              status="error"
-              label={t('validations.percentageErrorWithTotal', { total: percentageTotal })}
-              disableScrollIntoView
-            />
-          )}
-          <Components.Heading as="h2">{t('title')}</Components.Heading>
-          <Trans t={t} i18nKey="splitDescription" components={{ p: <Components.Text /> }} />
-          <Fields.SplitBy
-            label={t('splitByLabel')}
-            getOptionLabel={(value: SplitByValue) =>
-              value === SPLIT_BY.percentage ? t('percentageLabel') : t('amountLabel')
-            }
-          />
-          {splitBy === SPLIT_BY.amount ? (
-            <ReorderableList
-              key={`reorderable-amount-list-${splitBy}`}
-              label={t('draggableListLabel')}
-              items={Fields.splits.map(split => ({
-                label: split.name ?? '',
-                content: (
-                  <split.Field
-                    key={`amount-${split.uuid}`}
-                    label={labelForSplit(split)}
-                    min={0}
-                    validationMessages={{
-                      REQUIRED: t('validations.amountError'),
-                      INVALID_AMOUNT: t('validations.amountError'),
-                      INVALID_PERCENTAGE: t('validations.amountError'),
-                    }}
-                    placeholder={remainderId === split.uuid ? t('remainderLabel') : ''}
-                  />
-                ),
-              }))}
-              onReorder={handleReorder}
-            />
-          ) : (
-            Fields.splits.map(split => (
-              <split.Field
-                key={`percentage-${split.uuid}`}
-                label={labelForSplit(split)}
-                min={0}
-                validationMessages={{
-                  REQUIRED: t('validations.percentageAmountError'),
-                  INVALID_AMOUNT: t('validations.percentageAmountError'),
-                  INVALID_PERCENTAGE: t('validations.percentageAmountError'),
-                }}
-              />
-            ))
-          )}
-          <ActionsLayout>
-            <Components.Button variant="secondary" type="button" onClick={handleCancel}>
-              {t('cancelAddCta')}
-            </Components.Button>
-            <Components.Button type="submit" isLoading={splitForm.status.isPending}>
-              {t('saveCta')}
-            </Components.Button>
-          </ActionsLayout>
-        </Form>
-      </SDKFormProvider>
-    </BaseLayout>
+    <SplitPaymentsFormBody
+      employeeId={employeeId}
+      dictionary={dictionary}
+      onSaved={data => {
+        onEvent(componentEvents.EMPLOYEE_PAYMENT_METHOD_UPDATED, data)
+      }}
+      onCancel={() => {
+        onEvent(componentEvents.CANCEL)
+      }}
+      {...hookProps}
+    />
   )
 }
