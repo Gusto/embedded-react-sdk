@@ -28,7 +28,7 @@ function HomeAddressCourtesyWithholdingBlock({
 }: {
   CourtesyWithholding: UseHomeAddressFormReady['form']['Fields']['CourtesyWithholding']
   formHook: UseHomeAddressFormReady
-  t: TFunction<'Employee.HomeAddress.Management'>
+  t: TFunction<'Employee.Management.HomeAddress'>
 }) {
   const Components = useComponentContext()
   const { control } = formHook.form.hookFormInternals.formMethods
@@ -88,7 +88,7 @@ export function HomeAddressView({
   onBack,
   isDeletePending = false,
 }: HomeAddressViewProps) {
-  const { t } = useTranslation('Employee.HomeAddress.Management')
+  const { t } = useTranslation('Employee.Management.HomeAddress')
   const Components = useComponentContext()
   const [addressModal, setAddressModal] = useState<'edit' | 'create' | null>(null)
   const [deleteConfirmUuid, setDeleteConfirmUuid] = useState<string | null>(null)

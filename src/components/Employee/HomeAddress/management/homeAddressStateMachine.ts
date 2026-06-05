@@ -15,7 +15,7 @@ const returnToCard = reduce(
 export const homeAddressStateMachine = {
   card: state<MachineTransition>(
     transition(
-      componentEvents.EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_REQUESTED,
+      componentEvents.EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_REQUESTED,
       'editHomeAddress',
       reduce(
         (ctx: HomeAddressContextInterface): HomeAddressContextInterface => ({
@@ -27,7 +27,7 @@ export const homeAddressStateMachine = {
   ),
   editHomeAddress: state<MachineTransition>(
     transition(
-      componentEvents.EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_CANCELLED,
+      componentEvents.EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_CANCELLED,
       'card',
       returnToCard,
     ),

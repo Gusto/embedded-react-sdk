@@ -45,7 +45,7 @@ describe('HomeAddressCard', () => {
     expect(screen.getByText('No home address on file')).toBeInTheDocument()
   })
 
-  it('fires EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_REQUESTED with { employeeId } when Manage is clicked', async () => {
+  it('fires EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_REQUESTED with { employeeId } when Manage is clicked', async () => {
     const user = userEvent.setup()
     renderWithProviders(<HomeAddressCard employeeId="employee-123" onEvent={onEvent} />)
 
@@ -56,7 +56,7 @@ describe('HomeAddressCard', () => {
     await user.click(screen.getByRole('button', { name: 'Manage' }))
 
     expect(onEvent).toHaveBeenCalledWith(
-      componentEvents.EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_REQUESTED,
+      componentEvents.EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_REQUESTED,
       { employeeId: 'employee-123' },
     )
   })

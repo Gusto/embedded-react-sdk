@@ -982,11 +982,11 @@ export const componentEvents: {
     readonly EMPLOYEE_PROFILE_DONE: "employee/profile/done";
     readonly EMPLOYEE_HOME_ADDRESS_CREATED: "employee/addresses/home/created";
     readonly EMPLOYEE_HOME_ADDRESS_UPDATED: "employee/addresses/home/updated";
-    readonly EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_REQUESTED: "employee/homeAddress/management/editRequested";
-    readonly EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_CANCELLED: "employee/homeAddress/management/editCancelled";
-    readonly EMPLOYEE_HOME_ADDRESS_MANAGEMENT_CREATED: "employee/homeAddress/management/created";
-    readonly EMPLOYEE_HOME_ADDRESS_MANAGEMENT_UPDATED: "employee/homeAddress/management/updated";
-    readonly EMPLOYEE_HOME_ADDRESS_MANAGEMENT_DELETED: "employee/homeAddress/management/deleted";
+    readonly EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_REQUESTED: "employee/management/homeAddress/editRequested";
+    readonly EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_CANCELLED: "employee/management/homeAddress/editCancelled";
+    readonly EMPLOYEE_MANAGEMENT_HOME_ADDRESS_CREATED: "employee/management/homeAddress/created";
+    readonly EMPLOYEE_MANAGEMENT_HOME_ADDRESS_UPDATED: "employee/management/homeAddress/updated";
+    readonly EMPLOYEE_MANAGEMENT_HOME_ADDRESS_DELETED: "employee/management/homeAddress/deleted";
     readonly EMPLOYEE_WORK_ADDRESS: "employee/addresses/work";
     readonly EMPLOYEE_WORK_ADDRESS_UPDATE: "employee/addresses/work/update";
     readonly EMPLOYEE_WORK_ADDRESS_CREATED: "employee/addresses/work/created";
@@ -1045,10 +1045,10 @@ export const componentEvents: {
     readonly EMPLOYEE_REHIRE: "employee/rehire";
     readonly EMPLOYEE_DASHBOARD_TAB_CHANGE: "employee/dashboard/tabChange";
     readonly EMPLOYEE_RETURN_TO_LIST: "employee/returnToList";
-    readonly EMPLOYEE_PROFILE_MANAGEMENT_EDIT_REQUESTED: "employee/profile/management/editRequested";
-    readonly EMPLOYEE_PROFILE_MANAGEMENT_UPDATED: "employee/profile/management/updated";
-    readonly EMPLOYEE_PROFILE_MANAGEMENT_EDIT_CANCELLED: "employee/profile/management/editCancelled";
-    readonly EMPLOYEE_PROFILE_MANAGEMENT_ALERT_DISMISSED: "employee/profile/management/alertDismissed";
+    readonly EMPLOYEE_MANAGEMENT_PROFILE_EDIT_REQUESTED: "employee/management/profile/editRequested";
+    readonly EMPLOYEE_MANAGEMENT_PROFILE_UPDATED: "employee/management/profile/updated";
+    readonly EMPLOYEE_MANAGEMENT_PROFILE_EDIT_CANCELLED: "employee/management/profile/editCancelled";
+    readonly EMPLOYEE_MANAGEMENT_PROFILE_ALERT_DISMISSED: "employee/management/profile/alertDismissed";
     readonly EMPLOYEE_MANAGEMENT_WORK_ADDRESS_EDIT_REQUESTED: "employee/management/workAddress/editRequested";
     readonly EMPLOYEE_MANAGEMENT_WORK_ADDRESS_CREATED: "employee/management/workAddress/created";
     readonly EMPLOYEE_MANAGEMENT_WORK_ADDRESS_UPDATED: "employee/management/workAddress/updated";
@@ -2591,7 +2591,7 @@ interface HolidaySelectionFormProps extends BaseComponentInterface {
 // Warning: (ae-missing-release-tag) "HomeAddress" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function HomeAddress(input: HomeAddressProps & BaseComponentInterface<'Employee.HomeAddress.Management'>): JSX;
+function HomeAddress(input: HomeAddressProps & BaseComponentInterface<'Employee.Management.HomeAddress'>): JSX;
 
 // Warning: (ae-missing-release-tag) "HomeAddressCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -2616,7 +2616,7 @@ function HomeAddressEditForm(input: HomeAddressEditFormProps & BaseComponentInte
 // Warning: (ae-missing-release-tag) "HomeAddressEditFormProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-interface HomeAddressEditFormProps extends CommonComponentInterface<'Employee.HomeAddress.Management'> {
+interface HomeAddressEditFormProps extends CommonComponentInterface<'Employee.Management.HomeAddress'> {
     // (undocumented)
     employeeId: string;
     // (undocumented)
@@ -2678,7 +2678,7 @@ export type HomeAddressOptionalFieldsToRequire = OptionalFieldsToRequire<typeof 
 // Warning: (ae-missing-release-tag) "HomeAddressProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-interface HomeAddressProps extends CommonComponentInterface<'Employee.HomeAddress.Management'> {
+interface HomeAddressProps extends CommonComponentInterface<'Employee.Management.HomeAddress'> {
     // (undocumented)
     employeeId: string;
     // (undocumented)
@@ -3952,7 +3952,7 @@ function Profile(input: ProfileProps & BaseComponentInterface): JSX;
 // Warning: (ae-missing-release-tag) "Profile" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-function Profile_2(input: ProfileProps_2 & BaseComponentInterface<'Employee.Profile.Management'>): JSX;
+function Profile_2(input: ProfileProps_2 & BaseComponentInterface<'Employee.Management.Profile'>): JSX;
 
 // Warning: (ae-missing-release-tag) "ProfileCard" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -3987,7 +3987,7 @@ interface ProfileEditFormProps extends CommonComponentInterface<'Employee.Profil
 // Warning: (ae-missing-release-tag) "ProfileProps" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-interface ProfileProps_2 extends CommonComponentInterface<'Employee.Profile.Management'> {
+interface ProfileProps_2 extends CommonComponentInterface<'Employee.Management.Profile'> {
     // (undocumented)
     employeeId: string;
     // (undocumented)

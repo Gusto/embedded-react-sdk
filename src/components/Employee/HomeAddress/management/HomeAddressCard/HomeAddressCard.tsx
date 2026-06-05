@@ -17,13 +17,13 @@ export interface HomeAddressCardProps {
 /**
  * Standalone "Home address" card. Owns its own data fetch via
  * `useHomeAddressSummary` and emits
- * `EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_REQUESTED` when the Manage
+ * `EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_REQUESTED` when the Manage
  * button is clicked. The card has no alert API — alert rendering
  * (when introduced) is the orchestrator's responsibility.
  */
 export function HomeAddressCard({ employeeId, onEvent }: HomeAddressCardProps) {
-  useI18n('Employee.HomeAddress.Management')
-  const { t } = useTranslation('Employee.HomeAddress.Management')
+  useI18n('Employee.Management.HomeAddress')
+  const { t } = useTranslation('Employee.Management.HomeAddress')
   const Components = useComponentContext()
 
   const summary = useHomeAddressSummary({ employeeId })
@@ -32,7 +32,7 @@ export function HomeAddressCard({ employeeId, onEvent }: HomeAddressCardProps) {
   const currentHomeAddress = summary.isLoading ? undefined : summary.data.currentHomeAddress
 
   const handleManage = () => {
-    onEvent(componentEvents.EMPLOYEE_HOME_ADDRESS_MANAGEMENT_EDIT_REQUESTED, { employeeId })
+    onEvent(componentEvents.EMPLOYEE_MANAGEMENT_HOME_ADDRESS_EDIT_REQUESTED, { employeeId })
   }
 
   return (

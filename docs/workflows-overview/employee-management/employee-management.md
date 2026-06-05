@@ -82,13 +82,6 @@ function MyApp() {
 
 The dashboard composes self-fetching cards and their edit forms and forwards every event they emit to the partner via `onEvent`; its internal state machine also reacts to a subset of these events to swap between the cards and edit screens and to surface success alerts. The table below is the complete, current set of events observable from `<EmployeeManagement.DashboardFlow>`, grouped by the tab that emits them.
 
-<!--
-  Profile and Home address events are documented under their canonical names
-  (EMPLOYEE_MANAGEMENT_PROFILE_* / EMPLOYEE_MANAGEMENT_HOME_ADDRESS_*). These
-  assume the in-flight canonical-alignment PR that renames the current code
-  constants (EMPLOYEE_PROFILE_MANAGEMENT_* / EMPLOYEE_HOME_ADDRESS_MANAGEMENT_*).
--->
-
 | Event type                                                      | Description                                                                                                                   | Data                                                             |
 | --------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
 | EMPLOYEE_MANAGEMENT_PROFILE_EDIT_REQUESTED                      | Fired when "Edit" is clicked on the Basic details (Profile) card                                                              | { employeeId: string }                                           |
@@ -635,7 +628,7 @@ function MyComponent() {
 | ------------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
 | employeeId Required | string              | The associated employee identifier.                                                                                                  |
 | onEvent Required    | function            | See events table for available events.                                                                                               |
-| dictionary          | object              | Optional translations for component text. Keys are namespaced under `Employee.Profile.Management` — see the source JSON for the set. |
+| dictionary          | object              | Optional translations for component text. Keys are namespaced under `Employee.Management.Profile` — see the source JSON for the set. |
 | FallbackComponent   | React.ComponentType | Optional custom error fallback component used by the internal `BaseBoundaries` wrapper.                                              |
 
 #### Events
@@ -746,7 +739,7 @@ function MyComponent() {
 | ------------------- | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
 | employeeId Required | string              | The associated employee identifier.                                                                                                      |
 | onEvent Required    | function            | See events table for available events.                                                                                                   |
-| dictionary          | object              | Optional translations for component text. Keys are namespaced under `Employee.HomeAddress.Management` — see the source JSON for the set. |
+| dictionary          | object              | Optional translations for component text. Keys are namespaced under `Employee.Management.HomeAddress` — see the source JSON for the set. |
 | FallbackComponent   | React.ComponentType | Optional custom error fallback component used by the internal `BaseBoundaries` wrapper.                                                  |
 
 #### Events
@@ -822,7 +815,7 @@ function MyHomeAddressPanel({ employeeId }) {
 | employeeId Required | string              | The associated employee identifier.                                                                                                      |
 | onEvent Required    | function            | See events table for available events.                                                                                                   |
 | className           | string              | Optional class applied to the form's root section element.                                                                               |
-| dictionary          | object              | Optional translations for component text. Keys are namespaced under `Employee.HomeAddress.Management` — see the source JSON for the set. |
+| dictionary          | object              | Optional translations for component text. Keys are namespaced under `Employee.Management.HomeAddress` — see the source JSON for the set. |
 | FallbackComponent   | React.ComponentType | Optional custom error fallback component used by the internal `BaseBoundaries` wrapper.                                                  |
 
 **Events**
