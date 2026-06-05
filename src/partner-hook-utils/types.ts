@@ -272,7 +272,9 @@ export interface BaseFormHookReady<
  * use the prop-based field connection path (no `SDKFormProvider`).
  */
 export type FormHookResult = {
+  /** The error handling surface; pass to {@link composeErrorHandler}. */
   errorHandling: Pick<BaseFormHookReady['errorHandling'], 'errors'>
+  /** The form surface; provides field metadata and internal react-hook-form wiring. */
   form: Pick<BaseFormHookReady['form'], 'fieldsMetadata'> & {
     hookFormInternals: {
       formMethods: { control: unknown }
