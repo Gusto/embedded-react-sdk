@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job'
 import { Dashboard, type DashboardTab } from './Dashboard'
-import { getPendingCompensationChanges } from './getPendingCompensationChanges'
+import { getPendingCompensationChanges } from '@/components/Employee/Compensation/shared/getPendingCompensationChanges'
 import { HomeAddressEditForm } from '@/components/Employee/HomeAddress/management/HomeAddressEditForm'
 import { WorkAddressEditForm } from '@/components/Employee/WorkAddress/management/WorkAddressEditForm'
 import { FederalTaxesEditForm } from '@/components/Employee/FederalTaxes/management/FederalTaxesEditForm'
@@ -11,11 +11,9 @@ import { PaymentMethodBankForm } from '@/components/Employee/PaymentMethod/manag
 import { PaymentMethodSplitForm } from '@/components/Employee/PaymentMethod/management/PaymentMethodSplitForm'
 import { DocumentManager } from '@/components/Employee/Documents/management/DocumentManager'
 import { DeductionsEditForm } from '@/components/Employee/Deductions/management/DeductionsEditForm'
-import {
-  ManagementEditCompensation,
-  ManagementEditPendingCompensation,
-} from '@/components/Employee/Compensation/management'
-import { AddAnotherJob } from '@/components/Employee/Compensation/management/AddAnotherJob/AddAnotherJob'
+import { CompensationEditJobForm } from '@/components/Employee/Compensation/management/CompensationEditJobForm/CompensationEditJobForm'
+import { CompensationEditPendingJobForm } from '@/components/Employee/Compensation/management/CompensationEditPendingJobForm/CompensationEditPendingJobForm'
+import { CompensationAddAnotherJobForm } from '@/components/Employee/Compensation/management/CompensationAddAnotherJobForm/CompensationAddAnotherJobForm'
 import { EditCompensation } from '@/components/Employee/Compensation/onboarding/EditCompensation/EditCompensation'
 import { useFlow, type FlowContextInterface } from '@/components/Flow/useFlow'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
@@ -173,7 +171,7 @@ export function EditCompensationContextual() {
 
   if (nearestPending) {
     return (
-      <ManagementEditPendingCompensation
+      <CompensationEditPendingJobForm
         employeeId={ensureRequired(employeeId)}
         jobId={ensureRequired(currentJob?.uuid)}
         compensationId={nearestPending.compensationUuid}
@@ -188,7 +186,7 @@ export function EditCompensationContextual() {
   }
 
   return (
-    <ManagementEditCompensation
+    <CompensationEditJobForm
       employeeId={ensureRequired(employeeId)}
       jobId={ensureRequired(currentJob?.uuid)}
       onEvent={onEvent}
@@ -202,7 +200,7 @@ export function EditCompensationContextual() {
 export function AddAnotherJobContextual() {
   const { employeeId, onEvent } = useFlow<DashboardContextInterface>()
   return (
-    <AddAnotherJob
+    <CompensationAddAnotherJobForm
       employeeId={ensureRequired(employeeId)}
       onEvent={onEvent}
       onCancel={() => {

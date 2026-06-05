@@ -13,11 +13,11 @@ import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import type { BaseHookReady, HookSubmitResult } from '@/partner-hook-utils/types'
 
-export interface UseEmployeeCompensationProps {
+export interface UseCompensationManagementProps {
   employeeId: string
 }
 
-export interface UseEmployeeCompensationResult extends BaseHookReady<
+export interface UseCompensationManagementResult extends BaseHookReady<
   {
     jobs: Job[]
     primaryJob?: Job
@@ -45,15 +45,13 @@ export interface UseEmployeeCompensationResult extends BaseHookReady<
 }
 
 /**
- * Non-Suspense queries for the Compensation card on the Job and pay tab.
+ * Non-Suspense queries powering the standalone Compensation management card.
  * Returns jobs + pending-changes + the employee's first name (for cosmetic
- * alert copy) along with a cancel-pending-change action. Paystubs data
- * moved into `@/components/Employee/Paystubs/shared/usePaystubsList` when
- * the Paystubs card became its own management block.
+ * alert copy) along with a cancel-pending-change action.
  */
-export function useEmployeeCompensation({
+export function useCompensationManagement({
   employeeId,
-}: UseEmployeeCompensationProps): UseEmployeeCompensationResult {
+}: UseCompensationManagementProps): UseCompensationManagementResult {
   // staleTime: Infinity on dashboard reads — the SDK QueryClient already
   // invalidates all queries on any mutation success, so post-write
   // freshness is preserved. Without this, every subscriber re-mount
@@ -75,7 +73,7 @@ export function useEmployeeCompensation({
     baseSubmitHandler,
     error: submitError,
     setError: setSubmitError,
-  } = useBaseSubmit('Employee.Dashboard.JobAndPay.Compensation')
+  } = useBaseSubmit('Employee.Management.Compensation')
 
   const employee = employeeQuery.data?.employee
 

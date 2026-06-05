@@ -54,6 +54,20 @@ export type {
   DeductionsCardProps,
   DeductionsEditFormProps,
 } from '../Deductions/management'
+export {
+  Compensation,
+  CompensationCard,
+  CompensationEditForm,
+  CompensationAddJobForm,
+  CompensationAddAnotherJobForm,
+} from '../Compensation/management'
+export type {
+  CompensationProps,
+  CompensationCardProps,
+  CompensationEditFormProps,
+  CompensationAddJobFormProps,
+  CompensationAddAnotherJobFormProps,
+} from '../Compensation/management'
 export { TerminateEmployee } from '../Terminations/TerminateEmployee/TerminateEmployee'
 export { TerminationSummary } from '../Terminations/TerminationSummary/TerminationSummary'
 export { TerminationFlow } from '../Terminations/TerminationFlow/TerminationFlow'

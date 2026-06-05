@@ -22,7 +22,7 @@ export function PendingChangesReviewModal({
   onClose,
   onCancelChange,
 }: PendingChangesReviewModalProps) {
-  const { t } = useTranslation('Employee.Dashboard')
+  const { t } = useTranslation('Employee.Management.Compensation')
   const Components = useComponentContext()
   const renderDetail = usePendingChangeDetailRenderer(employeeFirstName)
 
@@ -34,7 +34,7 @@ export function PendingChangesReviewModal({
       footer={
         <Flex justifyContent="flex-end" gap={8}>
           <Components.Button variant="secondary" onClick={onClose}>
-            {t('jobAndPay.compensation.pendingChange.modal.closeCta')}
+            {t('card.pendingChange.modal.closeCta')}
           </Components.Button>
         </Flex>
       }
@@ -42,10 +42,10 @@ export function PendingChangesReviewModal({
       <Flex flexDirection="column" gap={32}>
         <Flex flexDirection="column" gap={4}>
           <Components.Heading as="h3" styledAs="h4">
-            {t('jobAndPay.compensation.pendingChange.modal.title')}
+            {t('card.pendingChange.modal.title')}
           </Components.Heading>
           <Components.Text variant="supporting">
-            {t('jobAndPay.compensation.pendingChange.modal.description')}
+            {t('card.pendingChange.modal.description')}
           </Components.Text>
         </Flex>
         <Flex flexDirection="column" gap={16}>
@@ -60,7 +60,7 @@ export function PendingChangesReviewModal({
                     onCancelChange(change)
                   }}
                 >
-                  {t('jobAndPay.compensation.pendingChange.cancelCta')}
+                  {t('card.pendingChange.cancelCta')}
                 </Components.Button>
               }
             >

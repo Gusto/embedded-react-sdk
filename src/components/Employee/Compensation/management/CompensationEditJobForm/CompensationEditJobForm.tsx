@@ -4,7 +4,7 @@ import { useJobsAndCompensationsGetJobs } from '@gusto/embedded-api-v-2025-11-15
 import { useJobForm } from '../../shared/useJobForm'
 import { useCompensationForm, type CompensationFormData } from '../../shared/useCompensationForm'
 import { ManagementCompensationFormBody } from '../ManagementCompensationFormBody'
-import styles from './EditCompensation.module.scss'
+import styles from './CompensationEditJobForm.module.scss'
 import { BaseBoundaries, BaseLayout, type CommonComponentInterface } from '@/components/Base'
 import type { OnEventType } from '@/components/Base/useBase'
 import { Form } from '@/components/Common/Form'
@@ -13,7 +13,7 @@ import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { composeSubmitHandler } from '@/partner-hook-utils/form/composeSubmitHandler'
 import { componentEvents, type EventType } from '@/shared/constants'
 
-export interface EditCompensationProps extends CommonComponentInterface<'Employee.Compensation'> {
+export interface CompensationEditJobFormProps extends CommonComponentInterface<'Employee.Management.Compensation'> {
   employeeId: string
   jobId: string
   onCancel?: () => void
@@ -21,16 +21,16 @@ export interface EditCompensationProps extends CommonComponentInterface<'Employe
   onEvent: OnEventType<EventType, unknown>
 }
 
-export function EditCompensation({ dictionary, ...props }: EditCompensationProps) {
-  useComponentDictionary('Employee.Compensation', dictionary)
+export function CompensationEditJobForm({ dictionary, ...props }: CompensationEditJobFormProps) {
+  useComponentDictionary('Employee.Management.Compensation', dictionary)
   return (
-    <BaseBoundaries componentName="Employee.Compensation.Management">
+    <BaseBoundaries componentName="Employee.Management.Compensation">
       <CompensationDefaultsLoader {...props} />
     </BaseBoundaries>
   )
 }
 
-type LoaderProps = Omit<EditCompensationProps, 'dictionary'>
+type LoaderProps = Omit<CompensationEditJobFormProps, 'dictionary'>
 
 // Fetches the current job's compensation data to pre-populate the form as
 // defaultValues before rendering Root. Uses the same non-suspense query that
@@ -77,8 +77,8 @@ interface RootProps extends LoaderProps {
 }
 
 function Root({ employeeId, jobId, defaultValues, onCancel, className, onEvent }: RootProps) {
-  useI18n('Employee.Compensation')
-  const { t } = useTranslation('Employee.Compensation')
+  useI18n('Employee.Management.Compensation')
+  const { t } = useTranslation('Employee.Management.Compensation')
 
   // Job form handles the non-effective-dated fields: 2% shareholder + WA WC.
   // Title is suppressed here because the compensation form owns title
@@ -140,8 +140,8 @@ function Root({ employeeId, jobId, defaultValues, onCancel, className, onEvent }
           <ManagementCompensationFormBody
             jobForm={jobForm}
             compensationForm={compensationForm}
-            title={t('management.editCompensationTitle')}
-            submitCtaLabel={t('management.saveCta')}
+            title={t('editCompensationTitle')}
+            submitCtaLabel={t('saveCta')}
             isPending={isPending}
             onCancel={onCancel}
           />

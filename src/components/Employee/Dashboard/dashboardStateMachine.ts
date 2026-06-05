@@ -27,7 +27,10 @@ type EventPayloads = {
     formId: string
   }
   [componentEvents.EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_EDIT_REQUESTED]: Garnishment
-  [componentEvents.EMPLOYEE_COMPENSATION_CREATE]: { employeeId: string; job: Job }
+  [componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_EDIT_REQUESTED]: {
+    employeeId: string
+    job: Job
+  }
   [componentEvents.EMPLOYEE_DASHBOARD_TAB_CHANGE]: { tab: DashboardTab }
 }
 
@@ -150,7 +153,7 @@ export const dashboardStateMachine = {
       ),
     ),
     transition(
-      componentEvents.EMPLOYEE_JOB_ADD,
+      componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_ADD_REQUESTED,
       'addJob',
       reduce(
         (ctx: DashboardContextInterface): DashboardContextInterface => ({
@@ -162,12 +165,15 @@ export const dashboardStateMachine = {
       ),
     ),
     transition(
-      componentEvents.EMPLOYEE_COMPENSATION_CREATE,
+      componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_EDIT_REQUESTED,
       'editCompensation',
       reduce(
         (
           ctx: DashboardContextInterface,
-          ev: MachineEventType<EventPayloads, typeof componentEvents.EMPLOYEE_COMPENSATION_CREATE>,
+          ev: MachineEventType<
+            EventPayloads,
+            typeof componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_EDIT_REQUESTED
+          >,
         ): DashboardContextInterface => ({
           ...ctx,
           component: EditCompensationContextual,
@@ -177,7 +183,7 @@ export const dashboardStateMachine = {
       ),
     ),
     transition(
-      componentEvents.EMPLOYEE_JOB_ADD_ANOTHER,
+      componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_ADD_ANOTHER_REQUESTED,
       'addAnotherJob',
       reduce(
         (ctx: DashboardContextInterface): DashboardContextInterface => ({

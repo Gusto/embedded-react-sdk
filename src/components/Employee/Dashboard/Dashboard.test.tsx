@@ -344,9 +344,12 @@ describe('Dashboard', () => {
 
     await user.click(addJobButton)
 
-    expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_JOB_ADD, {
-      employeeId: 'employee-123',
-    })
+    expect(onEvent).toHaveBeenCalledWith(
+      componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_ADD_REQUESTED,
+      {
+        employeeId: 'employee-123',
+      },
+    )
   })
 
   describe('Job and pay > Deductions', () => {
@@ -465,7 +468,7 @@ describe('Dashboard', () => {
     await user.click(within(compensationCard as HTMLElement).getByRole('button', { name: 'Edit' }))
 
     expect(onEvent).toHaveBeenCalledWith(
-      componentEvents.EMPLOYEE_COMPENSATION_CREATE,
+      componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_EDIT_REQUESTED,
       expect.objectContaining({
         employeeId: 'employee-123',
         job: expect.objectContaining({ uuid: PRIMARY_JOB_UUID, primary: true }),
@@ -527,9 +530,12 @@ describe('Dashboard', () => {
     const addAnother = within(compensationCard).getByRole('button', { name: 'Add another job' })
     await user.click(addAnother)
 
-    expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_JOB_ADD_ANOTHER, {
-      employeeId: 'employee-123',
-    })
+    expect(onEvent).toHaveBeenCalledWith(
+      componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_ADD_ANOTHER_REQUESTED,
+      {
+        employeeId: 'employee-123',
+      },
+    )
   })
 
   it('renders a jobs table with no header Edit CTA when the employee has multiple nonexempt jobs', async () => {
@@ -621,7 +627,7 @@ describe('Dashboard', () => {
     await user.click(screen.getByRole('menuitem', { name: 'Edit' }))
 
     expect(onEvent).toHaveBeenCalledWith(
-      componentEvents.EMPLOYEE_COMPENSATION_CREATE,
+      componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_EDIT_REQUESTED,
       expect.objectContaining({
         employeeId: 'employee-123',
         job: expect.objectContaining({ uuid: SECONDARY_JOB_UUID, primary: false }),
@@ -675,10 +681,13 @@ describe('Dashboard', () => {
     expect(deletePath).toBe(`/v1/jobs/${SECONDARY_JOB_UUID}`)
 
     await waitFor(() => {
-      expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_JOB_DELETED, {
-        employeeId: 'employee-123',
-        jobId: SECONDARY_JOB_UUID,
-      })
+      expect(onEvent).toHaveBeenCalledWith(
+        componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_JOB_DELETED,
+        {
+          employeeId: 'employee-123',
+          jobId: SECONDARY_JOB_UUID,
+        },
+      )
     })
   })
 
@@ -698,9 +707,12 @@ describe('Dashboard', () => {
     const addAnother = await screen.findByRole('button', { name: 'Add another job' })
     await user.click(addAnother)
 
-    expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_JOB_ADD_ANOTHER, {
-      employeeId: 'employee-123',
-    })
+    expect(onEvent).toHaveBeenCalledWith(
+      componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_ADD_ANOTHER_REQUESTED,
+      {
+        employeeId: 'employee-123',
+      },
+    )
   })
 
   type Compensation = {
@@ -875,10 +887,13 @@ describe('Dashboard', () => {
         expect(screen.queryByRole('alert')).toBeNull()
       })
 
-      expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_COMPENSATION_CHANGE_CANCELLED, {
-        employeeId: 'employee-123',
-        compensationId: 'comp-future',
-      })
+      expect(onEvent).toHaveBeenCalledWith(
+        componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_CHANGE_CANCELLED,
+        {
+          employeeId: 'employee-123',
+          compensationId: 'comp-future',
+        },
+      )
     })
 
     it('surfaces a DELETE failure through the error surface and does not emit the success event', async () => {
@@ -913,7 +928,7 @@ describe('Dashboard', () => {
       })
 
       expect(onEvent).not.toHaveBeenCalledWith(
-        componentEvents.EMPLOYEE_COMPENSATION_CHANGE_CANCELLED,
+        componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_CHANGE_CANCELLED,
         expect.anything(),
       )
     })
@@ -1103,10 +1118,13 @@ describe('Dashboard', () => {
       await waitFor(() => {
         expect(deleteResolver).toHaveBeenCalledTimes(1)
       })
-      expect(onEvent).toHaveBeenCalledWith(componentEvents.EMPLOYEE_COMPENSATION_CHANGE_CANCELLED, {
-        employeeId: 'employee-123',
-        compensationId: 'comp-secondary-future',
-      })
+      expect(onEvent).toHaveBeenCalledWith(
+        componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_CHANGE_CANCELLED,
+        {
+          employeeId: 'employee-123',
+          compensationId: 'comp-secondary-future',
+        },
+      )
     })
 
     it('closes the review modal when all pending changes are cancelled', async () => {

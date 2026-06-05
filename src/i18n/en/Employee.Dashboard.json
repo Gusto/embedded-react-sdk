@@ -9,69 +9,6 @@
     "taxes": "Taxes",
     "documents": "Documents"
   },
-  "jobAndPay": {
-    "compensation": {
-      "title": "Compensation",
-      "editCta": "Edit",
-      "jobTitle": "Job title",
-      "type": "Type",
-      "types": {
-        "hourly": "Hourly/Overtime eligible",
-        "salary": "Salary/No overtime"
-      },
-      "wage": "Wage",
-      "effectiveDate": "Effective date",
-      "addJobCta": "Add job",
-      "addAnotherJobCta": "Add another job",
-      "tableLabel": "List of jobs",
-      "hamburgerTitle": "Job actions",
-      "editJobCta": "Edit",
-      "deleteJobCta": "Delete",
-      "columns": {
-        "jobTitle": "Job title",
-        "payType": "Pay type",
-        "effectiveDate": "Effective date",
-        "status": "Status"
-      },
-      "pendingStatus": "Pending",
-      "deleteJobDialog": {
-        "title": "Delete job?",
-        "description": "{{jobTitle}} will be permanently removed.",
-        "confirmCta": "Delete",
-        "cancelCta": "Cancel"
-      },
-      "emptyState": {
-        "title": "No compensation",
-        "description": "Compensation will appear here once added"
-      },
-      "pendingChange": {
-        "alertLabel": "Compensation will change on {{date}}.",
-        "alertLabelWithJob": "Compensation for {{jobTitle}} will change on {{date}}.",
-        "summaryLabel": "There are multiple pending changes to {{name}}'s compensation.",
-        "reviewCta": "Review",
-        "cancelCta": "Cancel change",
-        "modal": {
-          "title": "Review pending changes",
-          "description": "These compensation changes are scheduled to take effect on the dates below. Cancel any change to remove it.",
-          "closeCta": "Close"
-        },
-        "details": {
-          "titleChange": "Job title will change to {{title}}",
-          "payChange": "Pay will change to {{formattedRate}}",
-          "flsaChange": "Employee type will change to {{flsaLabel}}",
-          "newJob": "{{name}} will start an additional job as {{title}} at {{formattedRate}}",
-          "newJobNoTitle": "{{name}} will start an additional job at {{formattedRate}}",
-          "newJobNoRate": "{{name}} will start an additional job as {{title}}",
-          "newJobMinimal": "{{name}} will start an additional job",
-          "minWageEnabled": "Minimum wage adjustment will be enabled at {{formattedWage}}",
-          "minWageEnabledNoRate": "Minimum wage adjustment will be enabled",
-          "minWageDisabled": "Minimum wage adjustment will be removed",
-          "minWageChanged": "Minimum wage adjustment rate will change to {{formattedWage}}",
-          "minWageChangedNoRate": "Minimum wage adjustment will change"
-        }
-      }
-    }
-  },
   "common": {
     "yes": "Yes",
     "no": "No"

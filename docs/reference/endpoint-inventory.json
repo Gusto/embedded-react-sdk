@@ -654,6 +654,10 @@
           "path": "/v1/compensations/:compensationId"
         },
         {
+          "method": "DELETE",
+          "path": "/v1/compensations/:compensationId"
+        },
+        {
           "method": "GET",
           "path": "/v1/employees/:employeeId"
         },
@@ -822,26 +826,12 @@
     "Employee.DashboardFlow": {
       "endpoints": [
         {
-          "method": "DELETE",
-          "path": "/v1/compensations/:compensationId"
-        },
-        {
           "method": "GET",
           "path": "/v1/employees/:employeeId"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/jobs"
-        },
-        {
-          "method": "DELETE",
-          "path": "/v1/jobs/:jobId"
         }
       ],
       "variables": [
-        "compensationId",
-        "employeeId",
-        "jobId"
+        "employeeId"
       ]
     },
     "Employee.HomeAddress": {
@@ -1800,6 +1790,10 @@
           "path": "/v1/compensations/:compensationId"
         },
         {
+          "method": "DELETE",
+          "path": "/v1/compensations/:compensationId"
+        },
+        {
           "method": "GET",
           "path": "/v1/employees/:employeeId"
         },
@@ -1945,26 +1939,12 @@
     "EmployeeManagement.DashboardFlow": {
       "endpoints": [
         {
-          "method": "DELETE",
-          "path": "/v1/compensations/:compensationId"
-        },
-        {
           "method": "GET",
           "path": "/v1/employees/:employeeId"
-        },
-        {
-          "method": "GET",
-          "path": "/v1/employees/:employeeId/jobs"
-        },
-        {
-          "method": "DELETE",
-          "path": "/v1/jobs/:jobId"
         }
       ],
       "variables": [
-        "compensationId",
-        "employeeId",
-        "jobId"
+        "employeeId"
       ]
     },
     "EmployeeManagement.HomeAddress": {
@@ -2045,6 +2025,22 @@
       "variables": [
         "employeeId",
         "payrollId"
+      ]
+    },
+    "EmployeeManagement.Compensation": {
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v1/employees/:employeeId/jobs"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/jobs/:jobId"
+        }
+      ],
+      "variables": [
+        "employeeId",
+        "jobId"
       ]
     },
     "EmployeeManagement.TerminateEmployee": {
@@ -2584,6 +2580,7 @@
         "Employee.Compensation",
         "Employee.HomeAddress",
         "Employee.WorkAddress",
+        "EmployeeManagement.Compensation",
         "EmployeeManagement.Deductions",
         "EmployeeManagement.Documents",
         "EmployeeManagement.FederalTaxes",
@@ -2640,6 +2637,7 @@
     },
     "EmployeeManagement.DashboardFlow": {
       "blocks": [
+        "EmployeeManagement.Compensation",
         "EmployeeManagement.Deductions",
         "EmployeeManagement.Documents",
         "EmployeeManagement.FederalTaxes",

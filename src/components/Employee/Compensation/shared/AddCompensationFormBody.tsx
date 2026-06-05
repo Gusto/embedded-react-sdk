@@ -8,6 +8,17 @@ import { ActionsLayout, Flex } from '@/components/Common'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { FLSA_OVERTIME_SALARY_LIMIT } from '@/shared/constants'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
+import { useComponentDictionary, useI18n } from '@/i18n'
+import type { ResourceDictionary } from '@/types/Helpers'
+
+/**
+ * Translation overrides for the shared add-compensation form body. The body
+ * reads its copy from the onboarding `Employee.Compensation` namespace by
+ * default; management surfaces resolve this dictionary from
+ * `Employee.Management.Compensation` and pass it in so management copy renders
+ * while the two surfaces stay isolated.
+ */
+export type AddCompensationFormDictionary = ResourceDictionary<'Employee.Compensation'>
 
 export interface AddCompensationFormBodyProps {
   jobForm: UseJobFormReady
@@ -16,14 +27,20 @@ export interface AddCompensationFormBodyProps {
   submitCtaLabel: string
   isPending: boolean
   onCancel?: () => void
+  /** Per-surface translation overrides resolved against the consumer's namespace. */
+  dictionary?: AddCompensationFormDictionary
 }
 
 /**
  * Renders the shared field layout used by both `EditCompensation` (onboarding) and
- * `AddAnotherJob` (management). Field visibility is driven entirely by the hook
+ * `CompensationAddAnotherJobForm` (management). Field visibility is driven entirely by the hook
  * configuration — `JobFields.HireDate` is only defined when `withHireDateField: true`,
  * and `CompFields.EffectiveDate` is only defined when `withEffectiveDateField: true` —
  * so this component renders the correct subset for each use case with no extra props.
+ *
+ * Copy resolves from the onboarding `Employee.Compensation` namespace by default; management
+ * consumers inject a `dictionary` mapped from `Employee.Management.Compensation` to keep
+ * onboarding and management strings independently overridable.
  */
 export function AddCompensationFormBody({
   jobForm,
@@ -32,7 +49,10 @@ export function AddCompensationFormBody({
   submitCtaLabel,
   isPending,
   onCancel,
+  dictionary,
 }: AddCompensationFormBodyProps) {
+  useI18n('Employee.Compensation')
+  useComponentDictionary('Employee.Compensation', dictionary)
   const { t } = useTranslation('Employee.Compensation')
   const Components = useComponentContext()
   const format = useNumberFormatter('currency')

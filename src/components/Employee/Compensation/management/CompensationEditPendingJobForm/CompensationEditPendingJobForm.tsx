@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useJobForm } from '../../shared/useJobForm'
 import { useCompensationForm } from '../../shared/useCompensationForm'
 import { ManagementCompensationFormBody } from '../ManagementCompensationFormBody'
-import styles from './EditPendingCompensation.module.scss'
+import styles from './CompensationEditPendingJobForm.module.scss'
 import { BaseBoundaries, BaseLayout, type CommonComponentInterface } from '@/components/Base'
 import type { OnEventType } from '@/components/Base/useBase'
 import { Form } from '@/components/Common/Form'
@@ -12,7 +12,7 @@ import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import { composeSubmitHandler } from '@/partner-hook-utils/form/composeSubmitHandler'
 import { componentEvents, type EventType } from '@/shared/constants'
 
-export interface EditPendingCompensationProps extends CommonComponentInterface<'Employee.Compensation'> {
+export interface CompensationEditPendingJobFormProps extends CommonComponentInterface<'Employee.Management.Compensation'> {
   employeeId: string
   jobId: string
   /** The UUID of the pending (future-dated) compensation to update. Always required — this
@@ -34,16 +34,19 @@ export interface EditPendingCompensationProps extends CommonComponentInterface<'
   onEvent: OnEventType<EventType, unknown>
 }
 
-export function EditPendingCompensation({ dictionary, ...props }: EditPendingCompensationProps) {
-  useComponentDictionary('Employee.Compensation', dictionary)
+export function CompensationEditPendingJobForm({
+  dictionary,
+  ...props
+}: CompensationEditPendingJobFormProps) {
+  useComponentDictionary('Employee.Management.Compensation', dictionary)
   return (
-    <BaseBoundaries componentName="Employee.Compensation.Management">
+    <BaseBoundaries componentName="Employee.Management.Compensation">
       <Root {...props} />
     </BaseBoundaries>
   )
 }
 
-type RootProps = Omit<EditPendingCompensationProps, 'dictionary'>
+type RootProps = Omit<CompensationEditPendingJobFormProps, 'dictionary'>
 
 function Root({
   employeeId,
@@ -55,8 +58,8 @@ function Root({
   className,
   onEvent,
 }: RootProps) {
-  useI18n('Employee.Compensation')
-  const { t } = useTranslation('Employee.Compensation')
+  useI18n('Employee.Management.Compensation')
+  const { t } = useTranslation('Employee.Management.Compensation')
 
   // For a primary new job (hire date in the future, no current comp), the hire
   // date field is shown instead of the effective date field. This keeps
@@ -141,8 +144,8 @@ function Root({
           <ManagementCompensationFormBody
             jobForm={jobForm}
             compensationForm={compensationForm}
-            title={t('management.editCompensationTitle')}
-            submitCtaLabel={t('management.saveCta')}
+            title={t('editCompensationTitle')}
+            submitCtaLabel={t('saveCta')}
             isPending={isPending}
             onCancel={onCancel}
           />
