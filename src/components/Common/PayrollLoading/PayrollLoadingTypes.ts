@@ -7,6 +7,8 @@ import type { ReactNode } from 'react'
  * @public
  */
 export interface PayrollLoadingProps {
+  /** The heading text displayed above the loading animation. */
   title: ReactNode
+  /** Optional supporting text displayed below the title. */
   description?: ReactNode
 }

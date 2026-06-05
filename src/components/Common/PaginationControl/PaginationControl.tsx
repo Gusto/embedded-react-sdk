@@ -95,6 +95,7 @@ const DefaultPaginationControl = ({
   )
 }
 
+/** @internal */
 export const PaginationControl = (props: PaginationControlProps) => {
   const Components = useComponentContext()
 

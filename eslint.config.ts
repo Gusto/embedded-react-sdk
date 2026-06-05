@@ -190,6 +190,8 @@ export default [
       'src/components/Base/**/*.{ts,tsx}',
       'src/components/Common/Fields/**/*.{ts,tsx}',
       'src/components/Common/UI/**/*.{ts,tsx}',
+      'src/components/Common/PaginationControl/**',
+      'src/components/Common/PayrollLoading/**',
       'src/components/Flow/**/*.{ts,tsx}',
       'src/contexts/ApiProvider/**/*.{ts,tsx}',
       'src/contexts/ComponentAdapter/**/*.{ts,tsx}',
