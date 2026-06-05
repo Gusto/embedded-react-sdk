@@ -22,7 +22,10 @@ import { componentEvents } from '@/shared/constants'
 import type { MachineEventType, MachineTransition } from '@/types/Helpers'
 
 type EventPayloads = {
-  [componentEvents.EMPLOYEE_VIEW_FORM_TO_SIGN]: { employeeId: string; formId: string }
+  [componentEvents.EMPLOYEE_MANAGEMENT_DOCUMENTS_CARD_VIEW_REQUESTED]: {
+    employeeId: string
+    formId: string
+  }
   [componentEvents.EMPLOYEE_MANAGEMENT_DEDUCTIONS_CARD_EDIT_REQUESTED]: Garnishment
   [componentEvents.EMPLOYEE_COMPENSATION_CREATE]: { employeeId: string; job: Job }
   [componentEvents.EMPLOYEE_DASHBOARD_TAB_CHANGE]: { tab: DashboardTab }
@@ -129,12 +132,15 @@ export const dashboardStateMachine = {
       ),
     ),
     transition(
-      componentEvents.EMPLOYEE_VIEW_FORM_TO_SIGN,
+      componentEvents.EMPLOYEE_MANAGEMENT_DOCUMENTS_CARD_VIEW_REQUESTED,
       'documentManager',
       reduce(
         (
           ctx: DashboardContextInterface,
-          ev: MachineEventType<EventPayloads, typeof componentEvents.EMPLOYEE_VIEW_FORM_TO_SIGN>,
+          ev: MachineEventType<
+            EventPayloads,
+            typeof componentEvents.EMPLOYEE_MANAGEMENT_DOCUMENTS_CARD_VIEW_REQUESTED
+          >,
         ): DashboardContextInterface => ({
           ...ctx,
           component: DocumentManagerContextual,
@@ -327,17 +333,9 @@ export const dashboardStateMachine = {
     ),
   ),
   documentManager: state<MachineTransition>(
-    // After signing, return to the dashboard with a success alert rather than
-    // leaving the user on a read-only view that embeds a just-signed PDF the
-    // backend may not have finished generating (SDK-946). Re-opening the
-    // document later fetches a fresh document URL and renders. Mirrors the
-    // onboarding DocumentSigner flow and the gws-flows reference, both of which
-    // return to the forms list on sign.
-    transition(
-      componentEvents.EMPLOYEE_SIGN_FORM,
-      'index',
-      returnToIndexWithAlert('documentSigned'),
-    ),
+    // Admin-facing dashboard: documents are read-only here, so the viewer only
+    // returns to the dashboard on Back. Signing happens in the employee
+    // onboarding DocumentSigner flow, not from this surface.
     transition(componentEvents.CANCEL, 'index', returnToIndex),
   ),
   editDeduction: state<MachineTransition>(

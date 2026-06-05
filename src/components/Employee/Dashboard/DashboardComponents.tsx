@@ -32,7 +32,6 @@ export type DashboardSuccessAlert =
   | 'deductionDeleted'
   | 'jobAdded'
   | 'profileUpdated'
-  | 'documentSigned'
   | 'federalTaxesUpdated'
   | 'stateTaxesUpdated'
 
@@ -64,7 +63,6 @@ export function DashboardViewContextual() {
     deductionDeleted: t('alerts.deductionDeleted'),
     jobAdded: t('alerts.jobAdded'),
     profileUpdated: t('alerts.profileUpdated'),
-    documentSigned: t('alerts.documentSigned'),
     federalTaxesUpdated: t('alerts.federalTaxesUpdated'),
     stateTaxesUpdated: t('alerts.stateTaxesUpdated'),
   }

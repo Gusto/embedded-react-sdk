@@ -37,6 +37,8 @@ export const ENTITY_REQUIREMENTS: Record<string, string[]> = {
   'EmployeeManagement.DeductionsCard': ['employeeId'],
   'EmployeeManagement.DeductionsEditForm': ['employeeId'],
   'EmployeeManagement.DocumentManager': ['employeeId'],
+  'EmployeeManagement.Documents': ['employeeId'],
+  'EmployeeManagement.DocumentsCard': ['employeeId'],
   'EmployeeManagement.EmployeeDocuments': ['employeeId'],
   'EmployeeManagement.EmployeeList': ['companyId'],
   'EmployeeManagement.EmployeeListFlow': ['companyId'],

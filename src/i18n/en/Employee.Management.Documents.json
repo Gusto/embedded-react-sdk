@@ -1,0 +1,24 @@
+{
+  "title": "Forms",
+  "listLabel": "List of employee forms",
+  "viewCta": "View",
+  "columns": {
+    "title": "Form",
+    "year": "Year",
+    "status": "Status",
+    "requiresSigning": "Signing status",
+    "actions": "Actions"
+  },
+  "signingStatus": {
+    "signed": "Signed",
+    "notSigned": "Not signed"
+  },
+  "status": {
+    "draft": "Draft",
+    "final": "Final"
+  },
+  "emptyState": {
+    "title": "No forms",
+    "description": "Employee forms will appear here once available"
+  }
+}

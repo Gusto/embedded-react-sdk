@@ -5,7 +5,7 @@ import type { Job } from '@gusto/embedded-api-v-2025-11-15/models/components/job
 import { BasicDetailsView } from './BasicDetailsView'
 import { JobAndPayView } from './JobAndPayView'
 import { TaxesViewWithData } from './TaxesView'
-import { DocumentsViewWithData } from './DocumentsView'
+import { DocumentsCard } from '@/components/Employee/Documents/management/DocumentsCard'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { BaseBoundaries, BaseLayout, type BaseComponentInterface } from '@/components/Base/Base'
@@ -47,13 +47,6 @@ function DashboardRoot({
   const handleAddAnotherJob = useCallback(() => {
     onEvent(componentEvents.EMPLOYEE_JOB_ADD_ANOTHER, { employeeId })
   }, [onEvent, employeeId])
-
-  const handleViewForm = useCallback(
-    (formId: string) => {
-      onEvent(componentEvents.EMPLOYEE_VIEW_FORM_TO_SIGN, { employeeId, formId })
-    },
-    [onEvent, employeeId],
-  )
 
   const tabs = [
     {
@@ -123,7 +116,7 @@ function DashboardRoot({
 
           {selectedTab === 'documents' && (
             <Suspense fallback={<BaseLayout isLoading />}>
-              <DocumentsViewWithData employeeId={employeeId} onViewForm={handleViewForm} />
+              <DocumentsCard employeeId={employeeId} onEvent={onEvent} />
             </Suspense>
           )}
         </Flex>
