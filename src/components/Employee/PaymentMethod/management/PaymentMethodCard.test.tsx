@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { http, HttpResponse } from 'msw'
+import { http, HttpResponse, delay } from 'msw'
 import { PaymentMethodCard } from './PaymentMethodCard'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
@@ -92,6 +92,24 @@ describe('PaymentMethodCard (standalone)', () => {
   beforeEach(() => {
     setupApiTestMocks()
     onEvent.mockClear()
+  })
+
+  it('renders the card chrome with an inline loading state while data is loading', async () => {
+    server.use(
+      http.get(`${API_BASE_URL}/v1/employees/:employee_id/bank_accounts`, async () => {
+        await delay('infinite')
+        return HttpResponse.json([])
+      }),
+      http.get(`${API_BASE_URL}/v1/employees/:employee_id/payment_method`, async () => {
+        await delay('infinite')
+        return HttpResponse.json({})
+      }),
+    )
+
+    renderWithProviders(<PaymentMethodCard employeeId="employee-123" onEvent={onEvent} />)
+
+    expect(await screen.findByText('Payment')).toBeInTheDocument()
+    expect(screen.getByLabelText('Loading component...')).toBeInTheDocument()
   })
 
   it('renders the Payment card title and bank accounts once data loads', async () => {

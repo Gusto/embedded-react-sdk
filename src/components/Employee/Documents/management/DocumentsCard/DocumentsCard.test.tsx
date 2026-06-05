@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { HttpResponse } from 'msw'
+import { HttpResponse, delay } from 'msw'
 import { DocumentsCard } from './DocumentsCard'
 import { renderWithProviders } from '@/test-utils/renderWithProviders'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
@@ -15,6 +15,20 @@ describe('DocumentsCard', () => {
   beforeEach(() => {
     setupApiTestMocks()
     onEvent.mockClear()
+  })
+
+  it('renders the card chrome with an inline loading state while data is loading', async () => {
+    server.use(
+      handleGetEmployeeForms(async () => {
+        await delay('infinite')
+        return HttpResponse.json([i9Form])
+      }),
+    )
+
+    renderWithProviders(<DocumentsCard employeeId="employee-123" onEvent={onEvent} />)
+
+    expect(await screen.findByRole('heading', { name: 'Forms' })).toBeInTheDocument()
+    expect(screen.getByLabelText('Loading component...')).toBeInTheDocument()
   })
 
   it('renders the card title and the employee forms once loaded', async () => {

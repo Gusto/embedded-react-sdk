@@ -48,15 +48,20 @@ export function CompensationCard({ employeeId, onEvent }: CompensationCardProps)
   const formatCompensationRate = useFormatCompensationRate()
 
   const compensation = useCompensationManagement({ employeeId })
-  const { jobs, primaryFlsaStatus, pendingChanges, hasMultipleJobs, employeeFirstName } =
-    compensation.data
-  const cancellingCompensationUuid = compensation.status.cancellingCompensationUuid
-  const { cancelPendingChange } = compensation.actions
-  const isCompensationCardLoading = compensation.status.isCompensationLoading
+  const isCompensationCardLoading = compensation.isLoading
+  const jobs = compensation.isLoading ? [] : compensation.data.jobs
+  const primaryFlsaStatus = compensation.isLoading ? undefined : compensation.data.primaryFlsaStatus
+  const pendingChanges = compensation.isLoading ? [] : compensation.data.pendingChanges
+  const hasMultipleJobs = compensation.isLoading ? false : compensation.data.hasMultipleJobs
+  const employeeFirstName = compensation.isLoading ? undefined : compensation.data.employeeFirstName
+  const cancellingCompensationUuid = compensation.isLoading
+    ? null
+    : compensation.status.cancellingCompensationUuid
 
   const handleCancelChange = useCallback(
     async (pendingChange: PendingCompensationChange) => {
-      const result = await cancelPendingChange(pendingChange)
+      if (compensation.isLoading) return
+      const result = await compensation.actions.cancelPendingChange(pendingChange)
       if (result) {
         onEvent(componentEvents.EMPLOYEE_MANAGEMENT_COMPENSATION_CARD_CHANGE_CANCELLED, {
           employeeId,
@@ -64,7 +69,7 @@ export function CompensationCard({ employeeId, onEvent }: CompensationCardProps)
         })
       }
     },
-    [cancelPendingChange, onEvent, employeeId],
+    [compensation, onEvent, employeeId],
   )
 
   const [pendingDeleteJob, setPendingDeleteJob] = useState<{
