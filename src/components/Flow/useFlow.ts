@@ -62,6 +62,42 @@ export type FlowHeaderConfig =
     }
 
 /**
+ * Builds a `(labelKey) => FlowHeaderConfig` factory bound to a flow-specific
+ * translation namespace and back event.
+ *
+ * @remarks
+ * Each step's `header` should name the step the user will return to (i.e. its
+ * predecessor in the forward graph). Declaring one factory at the top of a
+ * flow's state machine keeps the per-state header configs terse:
+ *
+ * ```ts
+ * const backHeaderTo = createBackHeaderFactory({
+ *   namespace: 'Employee.OnboardingExecutionFlow',
+ *   event: componentEvents.EMPLOYEE_ONBOARDING_BACK,
+ * })
+ * const backToProfileHeader = backHeaderTo('employeeProfile')
+ * const backToCompensationHeader = backHeaderTo('compensation')
+ * ```
+ *
+ * Use a dedicated `*_BACK` event constant per flow rather than a generic
+ * `BACK` — generic events collide with nested-flow event bubbling.
+ *
+ * @internal
+ */
+export function createBackHeaderFactory({
+  namespace,
+  event,
+}: {
+  namespace: keyof CustomTypeOptions['resources']
+  event: EventType
+}): (labelKey: string) => FlowHeaderConfig {
+  return (labelKey: string) => ({
+    type: 'minimal',
+    back: { labelKey, namespace, event },
+  })
+}
+
+/**
  * Shape of the value carried by {@link FlowContext}: the active step component, the upstream
  * event dispatcher, and optional defaults / chrome configuration.
  *

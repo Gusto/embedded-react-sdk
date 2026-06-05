@@ -19,6 +19,7 @@ export const employeeEvents = {
   EMPLOYEE_DELETED: 'employee/deleted',
   EMPLOYEE_DISMISS: 'employee/dismiss',
   EMPLOYEE_ONBOARDING_DONE: 'employee/onboarding/done',
+  EMPLOYEE_ONBOARDING_BACK: 'employee/onboarding/back',
   EMPLOYEE_PROFILE_DONE: 'employee/profile/done',
   EMPLOYEE_HOME_ADDRESS_CREATED: 'employee/addresses/home/created',
   EMPLOYEE_HOME_ADDRESS_UPDATED: 'employee/addresses/home/updated',

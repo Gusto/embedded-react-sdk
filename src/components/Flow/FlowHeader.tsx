@@ -74,9 +74,13 @@ function MinimalHeader({
 }) {
   const { onEvent } = useFlow()
   const Components = useComponentContext()
-  const { t } = useTranslation(back?.namespace)
-
-  const label = back ? t(back.labelKey as never) : t('back')
+  // Pass the namespace per-call via the `ns` option rather than binding it via
+  // `useTranslation(ns)`. The hook caches the namespace on first render and
+  // does not re-bind when the `back.namespace` prop changes between steps,
+  // which leaves `t(key)` resolving against a stale namespace and returning
+  // the key literal.
+  const { t } = useTranslation()
+  const label = back ? t(back.labelKey as never, { ns: back.namespace }) : t('back')
   const event = back?.event ?? componentEvents.CANCEL
 
   return (

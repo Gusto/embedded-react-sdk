@@ -12,6 +12,8 @@ import {
 import { Flow } from '@/components/Flow/Flow'
 import type { OnEventType } from '@/components/Base/useBase'
 import type { EventType, EmployeeOnboardingStatus } from '@/shared/constants'
+import type { FlowHeaderConfig } from '@/components/Flow/useFlow'
+import { useI18n } from '@/i18n'
 
 /**
  * Props for {@link OnboardingExecutionFlow}.
@@ -37,6 +39,13 @@ export interface OnboardingExecutionFlowProps {
   isSelfOnboardingEnabled?: boolean
   /** When true, enables the Employee Documents step in the flow, allowing the admin to configure I-9 document requirements. Defaults to `false`. */
   withEmployeeI9?: boolean
+  /**
+   * Optional header shown above the initial step. When supplied, the back
+   * affordance is preserved if the user navigates back to step one from a
+   * later step. Use this to expose an "exit" path when the flow is rendered
+   * inside a parent flow (e.g. back to an employee list).
+   */
+  initialBackHeader?: FlowHeaderConfig
 }
 
 /**
@@ -78,7 +87,9 @@ export function OnboardingExecutionFlow({
   isAdmin = true,
   isSelfOnboardingEnabled = true,
   withEmployeeI9 = false,
+  initialBackHeader,
 }: OnboardingExecutionFlowProps) {
+  useI18n('Employee.OnboardingExecutionFlow')
   const machine = useMemo(
     () =>
       createMachine(
@@ -87,6 +98,8 @@ export function OnboardingExecutionFlow({
         (initialContext: OnboardingContextInterface) => ({
           ...initialContext,
           component: INITIAL_COMPONENT_MAP[initialState],
+          header: initialBackHeader ?? null,
+          initialHeader: initialBackHeader ?? null,
           companyId,
           employeeId: initialEmployeeId,
           onboardingStatus: initialOnboardingStatus,
@@ -105,6 +118,7 @@ export function OnboardingExecutionFlow({
       isAdmin,
       isSelfOnboardingEnabled,
       withEmployeeI9,
+      initialBackHeader,
     ],
   )
 
