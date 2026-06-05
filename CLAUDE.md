@@ -114,6 +114,24 @@ All user-facing text uses i18next. Run `npm run i18n:generate` after changing tr
 
 Exported headless hooks build `errorHandling` with **`composeErrorHandler`** (not a React hook). For multi-form screens, **`composeSubmitHandler`** coordinates validation + ordered submits and returns `{ handleSubmit, errorHandling }` aggregated across those forms. The result plugs back into `composeErrorHandler` when partners need extra `@gusto/embedded-api-v-2025-11-15` queries or screen-level submit state in the same error surface — see [docs/hooks/hooks.md](docs/hooks/hooks.md).
 
+### Employee Management Blocks
+
+Each employee management feature exposes **four standalone, independently-consumable surfaces** so a partner can drop in a hook, a card, an edit form, or the full orchestrated block on its own. `src/components/Employee/PaymentMethod/management/` is the canonical example:
+
+- **Data hook** — a `BaseHookReady`-shaped hook in `shared/use<Feature><Role>/` (e.g. `usePaymentMethodList`). Returns the `HookLoadingResult | BaseHookReady<…>` discriminated union and is consumable on its own.
+- **Card** — a self-fetching `<Feature>Card` with props `{ employeeId, onEvent }` that renders the read view.
+- **Edit form** — an `<Feature>EditForm` that renders the mutation/edit view.
+- **Block** — an orchestrated `<Feature>` component backed by a robot3 state machine that composes the card ↔ edit transitions.
+
+Conventions:
+
+- **Location.** Blocks live under `src/components/Employee/<Feature>/management/`; the standalone card and data hook each get their own subfolder (`management/<Feature>Card/`, `shared/use<Feature><Role>/`).
+- **Events.** Each block defines and fires its **own** scoped events `EMPLOYEE_MANAGEMENT_<FEATURE>_*` (value `employee/management/<feature>/...`) in `src/shared/constants.ts`. Never borrow employee onboarding events.
+- **i18n.** Each block reads from a dedicated namespace `Employee.Management.<Feature>` (file `src/i18n/en/Employee.Management.<Feature>.json`); run `npm run i18n:generate` after changes. Blocks support partner overrides via `useComponentDictionary`.
+- **Loading.** Cards use **partial** loading — card chrome plus an inline `Loading` — not the full-screen `BaseLayout` `isLoading`.
+- **Sharing a stateful form across onboarding + management.** When onboarding and management need the same form, use the shared-component + injected-`dictionary` pattern: a shared component owns the behavior and its own internal namespace and accepts a typed `dictionary` prop, while each surface supplies a small per-surface `useFormDictionary` that resolves its own namespace. See `src/components/Employee/Deductions/shared/DeductionsForm/` with `onboarding/useFormDictionary.ts` and `management/DeductionsEditForm/useFormDictionary.ts`.
+- **Dashboard.** The Employee Dashboard (`src/components/Employee/Dashboard/`) composes the individual pieces — cards plus edit forms wired through `dashboardStateMachine` — **not** the orchestrated blocks; this preserves the nav-style dashboard UX. Per-card data hooks live under each feature's `shared/` (there is no longer a `Dashboard/hooks/` directory).
+
 ## PR and Commit Conventions
 
 - Follow conventional commits: `feat:`, `fix:`, `chore:`, `docs:`, `refactor:`, `test:`, `ci:`, etc.
