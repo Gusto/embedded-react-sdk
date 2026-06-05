@@ -1,13 +1,26 @@
 import { renderHook, waitFor, act } from '@testing-library/react'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { HttpResponse, type HttpResponseResolver } from 'msw'
-import { useCompensationManagement } from './useCompensationManagement'
+import {
+  useCompensationManagement,
+  type UseCompensationManagementResult,
+} from './useCompensationManagement'
 import { GustoTestProvider } from '@/test/GustoTestApiProvider'
 import { server } from '@/test/mocks/server'
 import { handleGetEmployee, handleGetEmployeeJobs } from '@/test/mocks/apis/employees'
 import { handleDeleteCompensation } from '@/test/mocks/apis/compensations'
 import { setupApiTestMocks } from '@/test/mocks/apiServer'
 import { FlsaStatus } from '@/shared/constants'
+
+type ReadyResult = Extract<UseCompensationManagementResult, { isLoading: false }>
+
+function assertReady(
+  hookResult: UseCompensationManagementResult,
+): asserts hookResult is ReadyResult {
+  if (hookResult.isLoading) {
+    throw new Error('Expected hook to be ready but it is still loading')
+  }
+}
 
 // Test fixtures — inlined to pin behaviour to specific values rather than a
 // moving fixture file.
@@ -69,18 +82,19 @@ describe('useCompensationManagement', () => {
     setupApiTestMocks()
   })
 
-  it('starts loading with both per-query flags true and resolves to populated data', async () => {
+  it('starts in the loading state and resolves to populated data', async () => {
     const { result } = renderHook(() => useCompensationManagement({ employeeId: 'employee-123' }), {
       wrapper: GustoTestProvider,
     })
 
-    expect(result.current.status.isCompensationLoading).toBe(true)
-    expect(result.current.data.jobs).toEqual([])
+    expect(result.current.isLoading).toBe(true)
+    expect(result.current.errorHandling.errors).toEqual([])
 
     await waitFor(() => {
-      expect(result.current.status.isCompensationLoading).toBe(false)
+      expect(result.current.isLoading).toBe(false)
     })
 
+    assertReady(result.current)
     expect(result.current.data.jobs.length).toBeGreaterThan(0)
   })
 
@@ -97,9 +111,10 @@ describe('useCompensationManagement', () => {
     })
 
     await waitFor(() => {
-      expect(result.current.status.isCompensationLoading).toBe(false)
+      expect(result.current.isLoading).toBe(false)
     })
 
+    assertReady(result.current)
     expect(result.current.data.primaryJob).toMatchObject({ uuid: 'job-1', primary: true })
     expect(result.current.data.primaryFlsaStatus).toBe(FlsaStatus.NONEXEMPT)
     expect(result.current.data.hasMultipleJobs).toBe(false)
@@ -125,9 +140,10 @@ describe('useCompensationManagement', () => {
     })
 
     await waitFor(() => {
-      expect(result.current.status.isCompensationLoading).toBe(false)
+      expect(result.current.isLoading).toBe(false)
     })
 
+    assertReady(result.current)
     expect(result.current.data.hasMultipleJobs).toBe(true)
     expect(result.current.data.jobs).toHaveLength(2)
     expect(result.current.data.primaryJob?.uuid).toBe('job-primary')
@@ -155,9 +171,10 @@ describe('useCompensationManagement', () => {
     })
 
     await waitFor(() => {
-      expect(result.current.status.isCompensationLoading).toBe(false)
+      expect(result.current.isLoading).toBe(false)
     })
 
+    assertReady(result.current)
     expect(result.current.data.pendingChanges).toHaveLength(1)
     expect(result.current.data.pendingChanges[0]).toMatchObject({
       compensationUuid: 'comp-primary-future',
@@ -193,13 +210,16 @@ describe('useCompensationManagement', () => {
     })
 
     await waitFor(() => {
-      expect(result.current.data.pendingChanges).toHaveLength(1)
+      expect(result.current.isLoading).toBe(false)
     })
+    assertReady(result.current)
+    expect(result.current.data.pendingChanges).toHaveLength(1)
     const change = result.current.data.pendingChanges[0]!
+    const { cancelPendingChange } = result.current.actions
 
     let submitResult: unknown
     await act(async () => {
-      submitResult = await result.current.actions.cancelPendingChange(change)
+      submitResult = await cancelPendingChange(change)
     })
 
     expect(deleteResolver).toHaveBeenCalledTimes(1)
@@ -236,13 +256,16 @@ describe('useCompensationManagement', () => {
     })
 
     await waitFor(() => {
-      expect(result.current.data.pendingChanges).toHaveLength(1)
+      expect(result.current.isLoading).toBe(false)
     })
+    assertReady(result.current)
+    expect(result.current.data.pendingChanges).toHaveLength(1)
     const change = result.current.data.pendingChanges[0]!
+    const { cancelPendingChange } = result.current.actions
 
     let submitResult: unknown = 'unset'
     await act(async () => {
-      submitResult = await result.current.actions.cancelPendingChange(change)
+      submitResult = await cancelPendingChange(change)
     })
 
     expect(submitResult).toBeUndefined()
@@ -263,7 +286,7 @@ describe('useCompensationManagement', () => {
     })
 
     await waitFor(() => {
-      expect(result.current.status.isCompensationLoading).toBe(false)
+      expect(result.current.isLoading).toBe(false)
     })
 
     expect(jobsRequestUrl).not.toBeNull()

@@ -6,7 +6,7 @@ import {
   type EmployeePayStub,
   type UsePaystubsListReady,
 } from '../../shared/usePaystubsList'
-import { DataView, EmptyData, useDataView } from '@/components/Common'
+import { DataView, EmptyData, useDataView, Loading } from '@/components/Common'
 import { BaseLayout } from '@/components/Base/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
@@ -37,13 +37,21 @@ export interface PaystubsCardProps {
  */
 export function PaystubsCard({ employeeId, onEvent }: PaystubsCardProps) {
   useI18n('Employee.Management.Paystubs')
+  const { t } = useTranslation('Employee.Management.Paystubs')
+  const Components = useComponentContext()
   const paystubsList = usePaystubsList({ employeeId })
   const paymentMethodList = usePaymentMethodList({ employeeId })
 
   const errorHandling = composeErrorHandler([paystubsList, paymentMethodList])
 
   if (paystubsList.isLoading) {
-    return <BaseLayout isLoading error={errorHandling.errors} />
+    return (
+      <BaseLayout error={errorHandling.errors}>
+        <Components.Box header={<Components.BoxHeader title={t('title')} />}>
+          <Loading />
+        </Components.Box>
+      </BaseLayout>
+    )
   }
 
   return (

@@ -11,13 +11,13 @@ import {
 import { derivePrimaryFlsaStatus } from '@/components/Employee/Compensation/shared/derivePrimaryFlsaStatus'
 import { useBaseSubmit } from '@/components/Base/useBaseSubmit'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
-import type { BaseHookReady, HookSubmitResult } from '@/partner-hook-utils/types'
+import type { BaseHookReady, HookLoadingResult, HookSubmitResult } from '@/partner-hook-utils/types'
 
 export interface UseCompensationManagementProps {
   employeeId: string
 }
 
-export interface UseCompensationManagementResult extends BaseHookReady<
+export interface UseCompensationManagementReady extends BaseHookReady<
   {
     jobs: Job[]
     primaryJob?: Job
@@ -32,9 +32,6 @@ export interface UseCompensationManagementResult extends BaseHookReady<
   {
     isPending: boolean
     cancellingCompensationUuid: string | null
-    /** Compensation card depends on the jobs fetch (jobs, pending
-     *  changes, FLSA status). */
-    isCompensationLoading: boolean
   }
 > {
   actions: {
@@ -43,6 +40,8 @@ export interface UseCompensationManagementResult extends BaseHookReady<
     ) => Promise<HookSubmitResult<unknown> | undefined>
   }
 }
+
+export type UseCompensationManagementResult = HookLoadingResult | UseCompensationManagementReady
 
 /**
  * Non-Suspense queries powering the standalone Compensation management card.
@@ -112,6 +111,13 @@ export function useCompensationManagement({
     setSubmitError,
   })
 
+  // The card depends on the jobs fetch (jobs, pending changes, FLSA status).
+  // The employee fetch is cosmetic (first name for alert copy) and is not
+  // gated on here so the card can render as soon as jobs resolve.
+  if (jobsQuery.isLoading) {
+    return { isLoading: true, errorHandling }
+  }
+
   return {
     isLoading: false,
     data: {
@@ -125,7 +131,6 @@ export function useCompensationManagement({
     status: {
       isPending,
       cancellingCompensationUuid,
-      isCompensationLoading: jobsQuery.isLoading,
     },
     actions: {
       cancelPendingChange,
