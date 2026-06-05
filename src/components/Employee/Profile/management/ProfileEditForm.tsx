@@ -17,7 +17,7 @@ import { useI18n, useComponentDictionary } from '@/i18n'
 import { componentEvents } from '@/shared/constants'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 
-export interface ProfileEditFormProps extends CommonComponentInterface<'Employee.Profile'> {
+export interface ProfileEditFormProps extends CommonComponentInterface<'Employee.Management.Profile'> {
   employeeId: string
   onEvent: BaseComponentInterface['onEvent']
 }
@@ -27,16 +27,19 @@ export function ProfileEditForm({
   ...props
 }: ProfileEditFormProps & Pick<BaseComponentInterface, 'FallbackComponent'>) {
   return (
-    <BaseBoundaries componentName="Employee.Profile" FallbackComponent={FallbackComponent}>
+    <BaseBoundaries
+      componentName="Employee.Management.Profile"
+      FallbackComponent={FallbackComponent}
+    >
       <ProfileEditFormRoot {...props} />
     </BaseBoundaries>
   )
 }
 
 function ProfileEditFormRoot({ employeeId, className, dictionary, onEvent }: ProfileEditFormProps) {
-  useI18n('Employee.Profile')
-  useComponentDictionary('Employee.Profile', dictionary)
-  const { t } = useTranslation('Employee.Profile')
+  useI18n('Employee.Management.Profile')
+  useComponentDictionary('Employee.Management.Profile', dictionary)
+  const { t } = useTranslation('Employee.Management.Profile')
   const Components = useComponentContext()
 
   const employeeDetails = useEmployeeDetailsForm({
@@ -73,7 +76,7 @@ function ProfileEditFormRoot({ employeeId, className, dictionary, onEvent }: Pro
   const alert = showSuccess ? (
     <Components.Alert
       status="success"
-      label={t('successAlert')}
+      label={t('form.successAlert')}
       onDismiss={() => {
         setShowSuccess(false)
       }}
@@ -86,53 +89,53 @@ function ProfileEditFormRoot({ employeeId, className, dictionary, onEvent }: Pro
         <SDKFormProvider formHookResult={employeeDetails}>
           <Form onSubmit={handleSubmit}>
             {alert}
-            <Components.Heading as="h1">{t('title')}</Components.Heading>
+            <Components.Heading as="h1">{t('form.title')}</Components.Heading>
             <Grid
               gap={{ base: 20, small: 8 }}
               gridTemplateColumns={{ base: '1fr', small: ['1fr', 200] }}
             >
               <Fields.FirstName
-                label={t('firstName')}
+                label={t('form.firstName')}
                 validationMessages={{
-                  REQUIRED: t('validations.firstName'),
-                  INVALID_NAME: t('validations.firstName'),
+                  REQUIRED: t('form.validations.firstName'),
+                  INVALID_NAME: t('form.validations.firstName'),
                 }}
               />
-              <Fields.MiddleInitial label={t('middleInitial')} />
+              <Fields.MiddleInitial label={t('form.middleInitial')} />
             </Grid>
             <Fields.LastName
-              label={t('lastName')}
+              label={t('form.lastName')}
               validationMessages={{
-                REQUIRED: t('validations.lastName'),
-                INVALID_NAME: t('validations.lastName'),
+                REQUIRED: t('form.validations.lastName'),
+                INVALID_NAME: t('form.validations.lastName'),
               }}
             />
             <Fields.Email
-              label={t('email')}
-              description={t('emailDescription')}
+              label={t('form.email')}
+              description={t('form.emailDescription')}
               validationMessages={{
-                REQUIRED: t('validations.email'),
-                INVALID_EMAIL: t('validations.email'),
-                EMAIL_REQUIRED_FOR_SELF_ONBOARDING: t('validations.email'),
+                REQUIRED: t('form.validations.email'),
+                INVALID_EMAIL: t('form.validations.email'),
+                EMAIL_REQUIRED_FOR_SELF_ONBOARDING: t('form.validations.email'),
               }}
             />
             <Fields.Ssn
-              label={t('ssnLabel')}
+              label={t('form.ssnLabel')}
               validationMessages={{
                 INVALID_SSN: t('validations.ssn', { ns: 'common' }),
                 REQUIRED: t('validations.ssnRequired', { ns: 'common' }),
               }}
             />
             <Fields.DateOfBirth
-              label={t('dobLabel')}
+              label={t('form.dobLabel')}
               validationMessages={{ REQUIRED: t('validations.dob', { ns: 'common' }) }}
             />
             <ActionsLayout>
               <Components.Button variant="secondary" onClick={handleCancel}>
-                {t('cancelCta')}
+                {t('form.cancelCta')}
               </Components.Button>
               <Components.Button type="submit" isLoading={employeeDetails.status.isPending}>
-                {t('saveCta')}
+                {t('form.saveCta')}
               </Components.Button>
             </ActionsLayout>
           </Form>
