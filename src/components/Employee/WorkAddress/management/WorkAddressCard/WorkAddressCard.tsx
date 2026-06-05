@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { useEmployeeWorkAddressSummary } from '../../shared/useEmployeeWorkAddressSummary'
 import { Loading } from '@/components/Common'
 import { Flex } from '@/components/Common/Flex/Flex'
-import { BaseLayout } from '@/components/Base/Base'
+import { BaseBoundaries, BaseLayout } from '@/components/Base/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { useI18n } from '@/i18n'
 import { componentEvents, type EventType } from '@/shared/constants'
@@ -21,7 +21,15 @@ export interface WorkAddressCardProps {
  * orchestrator's responsibility (block's `WorkAddressCardContextual` for
  * standalone consumption, dashboard chrome for dashboard consumption).
  */
-export function WorkAddressCard({ employeeId, onEvent }: WorkAddressCardProps) {
+export function WorkAddressCard(props: WorkAddressCardProps) {
+  return (
+    <BaseBoundaries componentName="Employee.Management.WorkAddress">
+      <WorkAddressCardContent {...props} />
+    </BaseBoundaries>
+  )
+}
+
+function WorkAddressCardContent({ employeeId, onEvent }: WorkAddressCardProps) {
   useI18n('Employee.Management.WorkAddress')
   const { t } = useTranslation('Employee.Management.WorkAddress')
   const Components = useComponentContext()

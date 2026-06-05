@@ -7,7 +7,7 @@ import {
   type UsePaystubsListReady,
 } from '../../shared/usePaystubsList'
 import { DataView, EmptyData, useDataView, Loading } from '@/components/Common'
-import { BaseLayout } from '@/components/Base/Base'
+import { BaseBoundaries, BaseLayout } from '@/components/Base/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { composeErrorHandler } from '@/partner-hook-utils/composeErrorHandler'
 import {
@@ -35,7 +35,15 @@ export interface PaystubsCardProps {
  * paystubs is a read-only surface whose only action is a download side
  * effect that opens the PDF in a new tab.
  */
-export function PaystubsCard({ employeeId, onEvent }: PaystubsCardProps) {
+export function PaystubsCard(props: PaystubsCardProps) {
+  return (
+    <BaseBoundaries componentName="Employee.Management.Paystubs">
+      <PaystubsCardContent {...props} />
+    </BaseBoundaries>
+  )
+}
+
+function PaystubsCardContent({ employeeId, onEvent }: PaystubsCardProps) {
   useI18n('Employee.Management.Paystubs')
   const { t } = useTranslation('Employee.Management.Paystubs')
   const Components = useComponentContext()

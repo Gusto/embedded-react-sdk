@@ -14,7 +14,7 @@ import { Flex } from '@/components/Common/Flex/Flex'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { DataView, useDataView, EmptyData, Loading, VisuallyHidden } from '@/components/Common'
 import { HamburgerMenu } from '@/components/Common/HamburgerMenu'
-import { BaseLayout } from '@/components/Base/Base'
+import { BaseBoundaries, BaseLayout } from '@/components/Base/Base'
 import { formatDateLongWithYear, formatDateToStringDate } from '@/helpers/dateFormatting'
 import { useFormatCompensationRate } from '@/helpers/formattedStrings'
 import { useI18n } from '@/i18n'
@@ -44,7 +44,15 @@ export interface CompensationCardProps {
  * (the `Compensation` block or the dashboard) routes those to the edit/add
  * surfaces and renders any success alerts.
  */
-export function CompensationCard({ employeeId, onEvent }: CompensationCardProps) {
+export function CompensationCard(props: CompensationCardProps) {
+  return (
+    <BaseBoundaries componentName="Employee.Management.Compensation">
+      <CompensationCardContent {...props} />
+    </BaseBoundaries>
+  )
+}
+
+function CompensationCardContent({ employeeId, onEvent }: CompensationCardProps) {
   useI18n('Employee.Management.Compensation')
   const { t } = useTranslation('Employee.Management.Compensation')
   const Components = useComponentContext()

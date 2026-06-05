@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { useHomeAddressSummary } from '../../shared/useHomeAddressSummary'
 import { Loading } from '@/components/Common'
 import { Flex } from '@/components/Common/Flex/Flex'
-import { BaseLayout } from '@/components/Base/Base'
+import { BaseBoundaries, BaseLayout } from '@/components/Base/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { getStreet, getCityStateZip } from '@/helpers/formattedStrings'
 import { useI18n } from '@/i18n'
@@ -21,7 +21,15 @@ export interface HomeAddressCardProps {
  * button is clicked. The card has no alert API — alert rendering
  * (when introduced) is the orchestrator's responsibility.
  */
-export function HomeAddressCard({ employeeId, onEvent }: HomeAddressCardProps) {
+export function HomeAddressCard(props: HomeAddressCardProps) {
+  return (
+    <BaseBoundaries componentName="Employee.Management.HomeAddress">
+      <HomeAddressCardContent {...props} />
+    </BaseBoundaries>
+  )
+}
+
+function HomeAddressCardContent({ employeeId, onEvent }: HomeAddressCardProps) {
   useI18n('Employee.Management.HomeAddress')
   const { t } = useTranslation('Employee.Management.HomeAddress')
   const Components = useComponentContext()

@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useEmployeeProfileSummary } from '../../shared/useEmployeeProfileSummary'
 import { Loading } from '@/components/Common'
-import { BaseLayout } from '@/components/Base/Base'
+import { BaseBoundaries, BaseLayout } from '@/components/Base/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import { formatDateLongWithYear } from '@/helpers/dateFormatting'
 import { firstLastName } from '@/helpers/formattedStrings'
@@ -22,7 +22,15 @@ export interface ProfileCardProps {
  * orchestrator's responsibility (block's `CardContextual` for standalone
  * consumption, dashboard chrome for dashboard consumption).
  */
-export function ProfileCard({ employeeId, onEvent }: ProfileCardProps) {
+export function ProfileCard(props: ProfileCardProps) {
+  return (
+    <BaseBoundaries componentName="Employee.Management.Profile">
+      <ProfileCardContent {...props} />
+    </BaseBoundaries>
+  )
+}
+
+function ProfileCardContent({ employeeId, onEvent }: ProfileCardProps) {
   useI18n('Employee.Management.Profile')
   const { t } = useTranslation('Employee.Management.Profile')
   const Components = useComponentContext()

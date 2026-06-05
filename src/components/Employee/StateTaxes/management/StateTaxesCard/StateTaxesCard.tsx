@@ -3,7 +3,7 @@ import type { EmployeeStateTaxQuestion } from '@gusto/embedded-api-v-2025-11-15/
 import { useStateTaxesSummary } from '../../shared/useStateTaxesSummary'
 import { Flex } from '@/components/Common/Flex/Flex'
 import { Loading } from '@/components/Common'
-import { BaseLayout } from '@/components/Base/Base'
+import { BaseBoundaries, BaseLayout } from '@/components/Base/Base'
 import { useComponentContext } from '@/contexts/ComponentAdapter/useComponentContext'
 import useNumberFormatter from '@/hooks/useNumberFormatter'
 import { useI18n } from '@/i18n'
@@ -23,7 +23,15 @@ export interface StateTaxesCardProps {
  * record has any tax-withholding questions (e.g. WA), matching the
  * product rule that a state with no income tax has nothing to edit.
  */
-export function StateTaxesCard({ employeeId, onEvent }: StateTaxesCardProps) {
+export function StateTaxesCard(props: StateTaxesCardProps) {
+  return (
+    <BaseBoundaries componentName="Employee.Management.StateTaxes">
+      <StateTaxesCardContent {...props} />
+    </BaseBoundaries>
+  )
+}
+
+function StateTaxesCardContent({ employeeId, onEvent }: StateTaxesCardProps) {
   useI18n('Employee.Management.StateTaxes')
   const { t } = useTranslation('Employee.Management.StateTaxes')
   const { t: tCommon } = useTranslation('common')
